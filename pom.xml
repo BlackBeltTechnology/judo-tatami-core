@@ -35,7 +35,7 @@
                             <tag>${project.version}</tag>
                             <fileSets>
                                 <fileSet>
-                                    <directory>judo-tatami-parent/target</directory>
+                                    <directory>judo-tatami-parent</directory>
                                     <includes>
                                         <include>*.xml</include>
                                     </includes>
