@@ -8,11 +8,11 @@ build:
     - blackbelttechnology/version-from-git-tag@1.0.4
  
     - blackbelttechnology/version-from-pom@1.0.2:
-      pom: solr-osgi-parent/pom.xml
+      pom: judo-tatami-parent/pom.xml
       
     - wercker/maven:
       goals: versions:set
-      pom: ./solr-osgi-parent/pom.xml
+      pom: ./judo-tatami-parent/pom.xml
       maven_opts: -DnewVersion=${VERSION_FROM_POM_BASE_VERSION}_${VERSION_FROM_GIT_TAG_CURRENT_BRANCH_VALID_NAME}-${VERSION_FROM_GIT_TAG_COMMIT_COUNT}
       cache_repo: true
 
@@ -83,7 +83,7 @@ release:
              git branch wercker_$WERCKER_RUN_ID
 
     - blackbelttechnology/version-from-pom@1.0.2:
-       pom: solr-osgi-parent/pom.xml
+       pom: judo-tatami-parent/pom.xml
 
     - script:
         name: create release branch from current commit
@@ -106,7 +106,7 @@ release:
 # Set version and deploy with steps
     - wercker/maven:
       goals: versions:set
-      pom: ./solr-osgi-parent/pom.xml
+      pom: ./judo-tatami-parent/pom.xml
       maven_opts: -DnewVersion=${VERSION_FROM_POM_BASE_VERSION} -DgenerateBackupPoms=false
       settings: .maven.xml
       cache_repo: true
@@ -137,7 +137,7 @@ release:
 
     - script:
         name: increase version number (parent)
-        code: "mvn build-helper:parse-version versions:set -DnewVersion=\\${parsedVersion.majorVersion}.\\${parsedVersion.minorVersion}.\\${parsedVersion.nextIncrementalVersion}-SNAPSHOT -DgenerateBackupPoms=false -f ./solr-osgi-parent/pom.xml  -Dmaven.repo.local=$WERCKER_CACHE_DIR/.m2"
+        code: "mvn build-helper:parse-version versions:set -DnewVersion=\\${parsedVersion.majorVersion}.\\${parsedVersion.minorVersion}.\\${parsedVersion.nextIncrementalVersion}-SNAPSHOT -DgenerateBackupPoms=false -f ./judo-tatami-parent/pom.xml  -Dmaven.repo.local=$WERCKER_CACHE_DIR/.m2"
 
     - script:
         name: increase version number (reactor)
