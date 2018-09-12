@@ -1,0 +1,34 @@
+operation RDBMS!RdbmsField fillType(type : String) {
+	self.rdbmsTypeName = type.findMapping().Type;
+	if (type.findMapping().Size.isDefined() and type.findMapping().Size.trim() <> "") {
+		self.size = type.findMapping().Size.asFloat().asInteger();
+	} else {
+		self.size = -1;
+	}
+
+	if (type.findMapping().Precision.isDefined() and type.findMapping().Precision.trim() <> "") {
+		self.precision = new Integer(type.findMapping().Precision);
+	} else {
+		self.precision = -1;
+	}
+
+	if (type.findMapping().Scale.isDefined() and type.findMapping().Scale.trim() <> "") {
+		self.scale = new Integer(type.findMapping().Scale);
+	} else {
+		self.scale = -1;
+	}
+	self.storageByte = -1;
+}
+
+operation RDBMS!RdbmsField fillConstraintsFromAttribute(attribute : RUNTIME!EAttribute) {
+	if (attribute.hasAnnotation("maxLength")) {
+		self.size = attribute.getAnnotationValue("maxLength").asInteger();
+	}
+	if (attribute.hasAnnotation("precision")) {
+		self.precision = attribute.getAnnotationValue("precision").asInteger();
+	}
+	if (attribute.hasAnnotation("scale")) {
+		self.scale = attribute.getAnnotationValue("scale").asInteger();
+	}
+
+}

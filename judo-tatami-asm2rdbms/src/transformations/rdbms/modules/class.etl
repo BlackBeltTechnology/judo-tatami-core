@@ -1,0 +1,134 @@
+import "../../../operations/runtime/_importRuntime.eol";
+import "element.etl";
+
+/* Every table have an ID */
+rule EClassToTableIdField
+	transform s : RUNTIME!EClass
+	to t : RDBMS!RdbmsIdentifierField { 
+		guard : s.isEntity() or s.isStructure()
+		t.name = s.fqName() + "#id";
+	    t.uuid = s.fqName() + "#id";
+	    t.table = s.equivalent("EClassToRdbmsTable");
+	    t.table.fields.add(t);
+		t.table.primaryKey = t;
+		t.sqlName = "ID";
+		t.fillType("JUUID");
+}
+
+rule EClassToRdbmsTable 
+	transform s : RUNTIME!EClass
+	to t : RDBMS!RdbmsTable
+	extends ENamedElementToRdbmsElement {
+	guard : s.isEntity() or s.isStructure()
+	    targetModel.rdbmsTables.add(t);
+	    t.sqlName = s.tableSqlName();
+	    t.name = s.fqName();
+		if (s.hasSupertype()) {
+			t.parent = s.getPrimarySupertype().equivalent("EClassToRdbmsTable");
+		}
+
+		// Adding foreign key for all descandences classes
+		t.fields.addAll(s.allDescandences().collect(c | s.createForeginKey(c)));
+}
+
+/*
+rule EClassToRdbmsStructureIdentifier 
+	transform s : RUNTIME!EClass
+	to t : RDBMS!RdbmsIdentifierField
+	extends ENamedElementToRdbmsElement {
+	guard : s.getClass().isStructure()
+		t.table = s.getClass().equivalent("EClassToRdbmsTable");
+		t.table.primaryKey = t;
+		t.name = s.fqName() + "#id";
+	    t.uuid = s.fqName() + "#id";
+}
+*/
+
+rule EClassToRdbmsView 
+	transform s : RUNTIME!EClass
+	to v : RDBMS!RdbmsView
+	extends ENamedElementToRdbmsElement {
+	guard : s.isEntity()
+	    v.name = s.fqName();
+	    v.sqlName = s.viewSqlName();
+		v.uuid = v.uuid + "@view";
+		
+	    // Base alias is a reference for base table    
+	    var baseAlias : RDBMS!RdbmsTableAlias = v.createBaseAlias(s);
+
+		/*
+		var tid : RDBMS!RdbmsField  = s.equivalent("EClassToRdbmsTable").primaryKey;
+		
+		var vid : RDBMS!RdbmsViewIdentifierField = new RDBMS!RdbmsViewIdentifierField();
+		vid.view = v;
+		v.add(vid);
+		
+		vid.name = tid.name;
+		vid.sqlName = tid.name;
+		vid.uuid = tid.uuid + "@view";		
+		v.`alias` = tid.table;
+
+		v.name = s.getClass().fqName() + "#id";
+		v.tableField = s.equivalent("EAttributeToTableIdField");
+		v.sqlName = v.tableField.sqlName;
+		v.uuid = v.tableField.uuid + "@viewField";
+		v.view = s.getClass().equivalent("EClassToRdbmsView");
+		*/
+		
+		
+		// v.addPrimaryKeyField();
+		
+		
+		
+		/*
+		// Add primary key
+	    for (a : PSM!JAttribute in s.attributes.select(a | a.isPrimaryKey())) {
+	   		v.addPrimaryKeyField(a);	   		
+	    }
+		
+		// Iterate all roles contained in base table and add as a field.
+		for (r : PSM!JRole in s.roles.select(r | r.isForeign() and not r.ownerRelationship.isJunction())) {
+			// r.name.println("Role (owned) found: ");
+			v.addOwnedRelationField(r);
+		}
+
+
+        // Convert attributes to be able to clone supertypes
+	    for (a : PSM!JAttribute in s.attributes.select(a | not a.isPrimaryKey() and not a.derived)) {
+	   		v.addValueField(a);	   		
+	    }
+
+	    // Inherited aliases and attributes
+	    if (s.supertype.isDefined()) {
+		   	var baseView : RDBMS!RdbmsView = s.supertype.equivalent("JClassToRdbmsView");
+			// Clone super types aliases
+			var superAlias : RDBMS!RdbmsTableAlias = v.addSupertypeAliases(baseView);
+			
+	    	// Create relation to super type
+	    	v.findOrAddRelation(v.primaryTable, superAlias, v.primaryIdentifierField.tableField, baseView.primaryIdentifierField.tableField);    	    	
+	    
+	    	// Copy fields from supertype
+			v.addSupertypeViewFields(baseView);
+
+			// Copy relations from supertype
+	    	v.addSupertypeRelations(baseView);
+			
+	    	// Remap primary ID
+	    	v.primaryIdentifierField = v.fields.select(f | f.name = baseView.primaryIdentifierField.name).first();
+	    } 
+
+		// Iterate all roles contained in the other table and add as a field.
+		for (r : PSM!JRole in s.roles.select(r | not r.isForeign() and not r.ownerRelationship.derived and not r.ownerRelationship.isJunction())) {
+			// ssr.name.println("Role (foreign owned) found: ");
+			v.addForeignRelationField(r);
+		}
+
+		// Adding derived fields last, becaause the referenced fields have to be exists.
+	    for (a : PSM!JAttribute in s.attributes.select(a | a.derived)) {
+	   		v.addExpressionField(a);	   		
+	    }
+		*/
+
+        targetModel.rdbmsViews.add(v);
+}
+
