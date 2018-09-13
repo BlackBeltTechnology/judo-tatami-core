@@ -1,8 +1,8 @@
-import "../../../operations/runtime/_importRuntime.eol";
+import "../../../operations/asm/_importAsm.eol";
 
 @abstract
 rule ENamedElementToRdbmsElement 
-	transform s : RUNTIME!ENamedElement
+	transform s : ASM!ENamedElement
 	to t : RDBMS!RdbmsElement {
 		if (s.name.isUndefined() or s.name.trim().isEmpty()) {
 			t.name = "WAS__EMPTY__";

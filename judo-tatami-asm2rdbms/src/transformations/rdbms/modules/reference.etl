@@ -2,7 +2,7 @@ import "element.etl";
 
 
 rule EReferenceToPrint 
-	transform s : RUNTIME!EReference
+	transform s : ASM!EReference
 	to t : Map {
 	guard:  (s.eReferenceType.isEntity() or s.eReferenceType.isStructure() and s.eContainingClass.isEntity())
 
@@ -27,7 +27,7 @@ rule EReferenceToPrint
 	ref.println(";");
 }
 rule EReferenceToRdbmsTableForeignKey 
-	transform s : RUNTIME!EReference
+	transform s : ASM!EReference
 	to fk : RDBMS!RdbmsForeignKey {
 	    guard:  (s.eReferenceType.isEntity() or s.eReferenceType.isStructure() and s.eContainingClass.isEntity())
 	    
@@ -56,7 +56,7 @@ rule EReferenceToRdbmsTableForeignKey
 }
 
 rule EReferenceToRdbmsTableInverseForeignKey 
-	transform s : RUNTIME!EReference
+	transform s : ASM!EReference
 	to fk : RDBMS!RdbmsForeignKey {
 	    guard:  s.eReferenceType.isEntity() and s.isForeign() and not s.isManyToMany() and s.upperBound == -1
     	s.eReferenceType.equivalent("EClassToRdbmsTable").fields.add(fk);
@@ -76,7 +76,7 @@ rule EReferenceToRdbmsTableInverseForeignKey
 
 /*
 rule EReferenceToRdbmsTableForeignKey 
-	transform s : RUNTIME!EReference
+	transform s : ASM!EReference
 	to fk : RDBMS!RdbmsForeignKey {
 	    guard:  s.isEmbedded() // and s.isForeign() and not s.isManyToMany() and s.upperBound <> -1
     	s.eContainingClass.equivalent("EClassToRdbmsTable").fields.add(fk);
@@ -99,7 +99,7 @@ rule EReferenceToRdbmsTableForeignKey
 */
 
 rule EReferenceToRdbmsJunctionTable
-	transform s : RUNTIME!EReference
+	transform s : ASM!EReference
 	to t : RDBMS!RdbmsJunctionTable {
 	guard : s.eReferenceType.isEntity() and s.isManyToMany() and s.name.compareTo(s.eOpposite.name) < 0
 	    targetModel.rdbmsTables.add(t);
@@ -109,7 +109,7 @@ rule EReferenceToRdbmsJunctionTable
 }
 
 rule EReferenceToRdbmsJunctionTablePrimaryKey
-	transform s : RUNTIME!EReference
+	transform s : ASM!EReference
 	to p : RDBMS!RdbmsIdentifierField {
 	guard : s.eReferenceType.isEntity() and s.isManyToMany() and s.name.compareTo(s.eOpposite.name) < 0
 		p.table = s.equivalent("EReferenceToRdbmsJunctionTable");
@@ -121,7 +121,7 @@ rule EReferenceToRdbmsJunctionTablePrimaryKey
 }
 
 rule EReferenceToRdbmsJunctionTableForeignKey
-	transform s : RUNTIME!EReference
+	transform s : ASM!EReference
 	to fk : RDBMS!RdbmsForeignKey {
 	guard : s.eReferenceType.isEntity() and s.isManyToMany()
 	    var mainReference;
@@ -149,7 +149,7 @@ rule EReferenceToRdbmsJunctionTableForeignKey
 
 /*
 rule EReferenceToRdbmsJunctionTable
-	transform s : RUNTIME!EReference
+	transform s : ASM!EReference
 	to t : RDBMS!RdbmsJunctionTable, p : RDBMS!RdbmsIdentifierField, f1 : RDBMS!RdbmsForeignKey, f2 : RDBMS!RdbmsForeignKey, i1 : RDBMS!RdbmsIndex, i2 : RDBMS!RdbmsIndex, uq : RDBMS!RdbmsUniqueConstraint {
 	guard : s.eReferenceType.isEntity() and s.isManyToMany()
 		t.sqlName = s.relationSqlTableName(); // junctionTableSqlName(s);

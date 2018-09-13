@@ -1,0 +1,4 @@
+@cached
+operation ASM!EPackage packageSqlName() : String {
+    return self.sqlName();
+}

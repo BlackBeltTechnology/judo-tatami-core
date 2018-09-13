@@ -1,0 +1,16 @@
+import "modelElement.eol";
+
+@cached
+operation ASM!EAttribute isID() : Boolean {
+	return self.annotatedAsTrue("id");
+}
+
+@cached
+operation ASM!EAttribute getClass() : ASM!EClass {
+	return ASM!EClass.all.selectOne(c | c.eAllAttributes.includes(self));
+}
+
+@cached
+operation ASM!EAttribute fqName() : String {
+	return self.getClass().fqName() + "#" + self.name;
+}

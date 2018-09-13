@@ -20,7 +20,7 @@ operation RDBMS!RdbmsField fillType(type : String) {
 	self.storageByte = -1;
 }
 
-operation RDBMS!RdbmsField fillConstraintsFromAttribute(attribute : RUNTIME!EAttribute) {
+operation RDBMS!RdbmsField fillConstraintsFromAttribute(attribute : ASM!EAttribute) {
 	if (attribute.hasAnnotation("maxLength")) {
 		self.size = attribute.getAnnotationValue("maxLength").asInteger();
 	}

@@ -1,5 +1,5 @@
 
-operation RDBMS!RdbmsView createBaseAlias(class : RUNTIME!EClass) : RDBMS!RdbmsTableAlias {
+operation RDBMS!RdbmsView createBaseAlias(class : ASM!EClass) : RDBMS!RdbmsTableAlias {
     var baseAlias : RDBMS!RdbmsTableAlias = new RDBMS!RdbmsTableAlias();
     baseAlias.table = class.equivalent("EClassToRdbmsTable");
     baseAlias.name = baseAlias.table.name;
@@ -12,7 +12,7 @@ operation RDBMS!RdbmsView createBaseAlias(class : RUNTIME!EClass) : RDBMS!RdbmsT
     return baseAlias;
 }
 
-operation RDBMS!RdbmsView addPrimaryKeyField(attribute : RUNTIME!EAttribute) {
+operation RDBMS!RdbmsView addPrimaryKeyField(attribute : ASM!EAttribute) {
     var f : RDBMS!RdbmsViewField;
 	f = attribute.equivalent("EAttributeToViewIdField");
 	f.`alias` = self.primaryTable;

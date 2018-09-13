@@ -1,5 +1,5 @@
 @cached
-operation SRC!EAttribute getEdmType() {
+operation ASM!EAttribute getEdmType() {
 	if (not self.eType.isDefined()) {
 		return "Edm.String";
 	}

@@ -10,45 +10,38 @@
     </parent>
 
     <artifactId>judo-tatami-psm2asm</artifactId>
-    <packaging>jar</packaging>
+    <packaging>bundle</packaging>
 
     <properties>
-        <src.dir>src</src.dir>
         <test.model.groupId>hu.blackbelt.northwind</test.model.groupId>
         <test.model.artifactId>northwind-model</test.model.artifactId>
-        <test.model.version>1.0.0-10</test.model.version>
-        <judo-psm.version>1.0.0-20</judo-psm.version>
+        <test.model.version>1.0.0-11</test.model.version>
     </properties>
 
     <build>
-        <sourceDirectory>${src.dir}</sourceDirectory>
+        <sourceDirectory>src</sourceDirectory>
         <resources>
             <resource>
-                <directory>${src.dir}</directory>
+                <directory>src</directory>
             </resource>
         </resources>
 
         <plugins>
             <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>build-helper-maven-plugin</artifactId>
-                <version>3.0.0</version>
-                <executions>
-                    <execution>
-                        <id>add-resource</id>
-                        <goals>
-                            <goal>add-resource</goal>
-                        </goals>
-                        <configuration>
-                            <resources>
-                                <resource>
-                                    <directory>src</directory>
-                                </resource>
-                            </resources>
-                        </configuration>
-                    </execution>    
-                </executions>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <version>3.3.0</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <obrRepository>NONE</obrRepository>
+                    <instructions>
+                        <Export-Package>tatami/psm2asm;version=${project.version}</Export-Package>
+                        <Judo-Tatami-Meta-Model-Paths>meta/asm/types.ecore</Judo-Tatami-Meta-Model-Paths>
+                        <Include-Resource>{maven-resources},tatami/psm2asm=src</Include-Resource>
+                    </instructions>
+                </configuration>
             </plugin>
+
         </plugins>
     </build>
 
@@ -110,7 +103,7 @@
                 </plugin>
                 
                 <plugin>
-                    <groupId>hu.blackbelt.judo.generator</groupId>
+                    <groupId>hu.blackbelt.epsilon</groupId>
                     <artifactId>epsilon-maven-plugin</artifactId>
                     <executions>
                         <execution>
@@ -121,7 +114,7 @@
                             <configuration>
                                 <metaModels>
                                     <metaModel>
-                                        mvn:hu.blackbelt.judo.meta:judo-meta-psm:model:psm:${judo-psm.version}
+                                        mvn:hu.blackbelt.judo.meta:judo-meta-psm:model:psm:${judo-meta-psm.version}
                                     </metaModel>
                                 </metaModels>
                                 
@@ -143,8 +136,7 @@
                                         <expand>true</expand>
                                     </model>
                                     <model>
-                                        mvn:${test.model.groupId}:${test.model.artifactId}:model:psm:${test.model.version}
-
+                                        <artifact>mvn:hu.blackbelt.judo.meta:judo-meta-asm:ecore:types:${judo-meta-asm.version}</artifact>
                                         <name>TYPES</name>
                                         <metaModelUris>
                                             <param>http://www.eclipse.org/emf/2002/Ecore</param>
@@ -153,7 +145,7 @@
                                     </model>
                                     <model>
                                         <artifact>${project.build.directory}/asm.model</artifact>
-                                        <name>RUNTIME</name>
+                                        <name>ASM</name>
                                         <readOnLoad>false</readOnLoad>
                                         <storeOnDisposal>true</storeOnDisposal>
                                         <metaModelUris>
@@ -163,7 +155,7 @@
                                 </models>
                                 <eolPrograms>
                                     <Etl>
-                                        <source>src/transformations/runtime/psmToRuntime.etl</source>
+                                        <source>src/transformations/asm/psmToAsm.etl</source>
                                         <parameters>
                                             <parameter>
                                                 <name>modelName</name>
@@ -193,23 +185,7 @@
                     <groupId>org.codehaus.mojo</groupId>
                     <artifactId>build-helper-maven-plugin</artifactId>
                     <version>3.0.0</version>
-                    <executions>
-                        <execution>
-                            <id>add-resource</id>
-                            <goals>
-                                <goal>add-resource</goal>
-                            </goals>
-                            
-                            <configuration>
-                                <resources>
-                                    <resource>
-                                        <directory>src</directory>
-                                    </resource>
-                                </resources>
-                            </configuration>
-                            
-                        </execution>
-                        
+                    <executions>                        
                         <execution>
                             <id>attach-asm-model</id>
                             <phase>package</phase>

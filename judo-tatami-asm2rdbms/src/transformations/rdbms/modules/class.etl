@@ -1,9 +1,9 @@
-import "../../../operations/runtime/_importRuntime.eol";
+import "../../../operations/asm/_importAsm.eol";
 import "element.etl";
 
 /* Every table have an ID */
 rule EClassToTableIdField
-	transform s : RUNTIME!EClass
+	transform s : ASM!EClass
 	to t : RDBMS!RdbmsIdentifierField { 
 		guard : s.isEntity() or s.isStructure()
 		t.name = s.fqName() + "#id";
@@ -16,7 +16,7 @@ rule EClassToTableIdField
 }
 
 rule EClassToRdbmsTable 
-	transform s : RUNTIME!EClass
+	transform s : ASM!EClass
 	to t : RDBMS!RdbmsTable
 	extends ENamedElementToRdbmsElement {
 	guard : s.isEntity() or s.isStructure()
@@ -45,7 +45,7 @@ rule EClassToRdbmsStructureIdentifier
 */
 
 rule EClassToRdbmsView 
-	transform s : RUNTIME!EClass
+	transform s : ASM!EClass
 	to v : RDBMS!RdbmsView
 	extends ENamedElementToRdbmsElement {
 	guard : s.isEntity()

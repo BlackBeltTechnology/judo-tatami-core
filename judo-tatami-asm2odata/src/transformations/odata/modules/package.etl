@@ -1,7 +1,7 @@
-import "../../../operations/runtime/_importRuntime.eol";
+import "../../../operations/asm/_importAsm.eol";
 
 rule PackageToSchema
-	transform s : SRC!EPackage
+	transform s : ASM!EPackage
 	to t : ODATA!SchemaType {
 		t.Namespace = s.getFullName();
 

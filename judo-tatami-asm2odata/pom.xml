@@ -13,12 +13,7 @@
     <packaging>jar</packaging>
 
     <properties>
-        <meta.asm.version>1.0.0-SNAPSHOT</meta.asm.version>
-        <meta.psm.version>1.0.0-SNAPSHOT</meta.psm.version>
         <src.dir>src</src.dir>
-        <test.model.groupId>${project.groupId}</test.model.groupId>
-        <test.model.artifactId>judo-tatami-psm2asm</test.model.artifactId>
-        <test.model.version>${project.version}</test.model.version>
     </properties>
 
     <build>
@@ -32,11 +27,11 @@
 
     <profiles>
         <profile>
-            <id>odata-transformer-development</id>
+            <id>asm2odata-development</id>
             <build>
                 <plugins>
                     <plugin>
-                        <groupId>hu.blackbelt.judo.generator</groupId>
+                        <groupId>hu.blackbelt.epsilon</groupId>
                         <artifactId>epsilon-maven-plugin</artifactId>
                         <executions>
                             <execution>
@@ -46,24 +41,18 @@
                                 </goals>
                                 <configuration>
                                     <metaModels>
-                                        <metaModel>mvn:hu.blackbelt.judo.meta:judo-meta-odata:ecore:odata:${meta.odata.version}</metaModel>
-                                        <!-- TYPES model -->
-                                        <metaModel>mvn:hu.blackbelt.judo.meta:judo-meta-asm:model:types:${meta.asm.version}</metaModel>
+										<metaModel>mvn:hu.blackbelt.judo.meta:judo-meta-odata:ecore:odata:${judo-meta-odata.version}</metaModel>
+                                        <metaModel>mvn:hu.blackbelt.judo.meta:judo-meta-asm:ecore:types:${judo-meta-asm.version}</metaModel>
                                     </metaModels>
 
                                     <models>
                                         <model>
-                                            <artifact>
-                                                mvn:${test.model.groupId}:${test.model.artifactId}:model:asm:${test.model.version}
-                                            </artifact>
-                                            <name>SRC</name>
-                                            <aliases>
-                                                <alias>RUNTIME</alias>
-                                            </aliases>
+                                            <artifact>mvn:${test.asm.model.groupId}:${test.asm.model.artifactId}:model:asm:${test.asm.model.version}</artifact>
+                                            <name>ASM</name>
                                             <metaModelUris>
                                                 <param>http://www.eclipse.org/emf/2002/Ecore</param>
+                                                <param>http://blackbelt.hu/judo/runtime/types</param>
                                             </metaModelUris>
-                                            <expand>true</expand>
                                         </model>
                                         <model>
                                             <artifact>${project.build.directory}/odata-lsm.model</artifact>
@@ -78,7 +67,7 @@
                                     </models>
                                     <eolPrograms>
                                         <Etl>
-                                            <source>src/transformations/odata/runtimeToOData.etl</source>
+                                            <source>src/transformations/odata/asmToOData.etl</source>
                                             <parameters>
                                                 <parameter>
                                                     <name>domainModelName</name>

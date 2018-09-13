@@ -1,11 +1,11 @@
-import "../../../operations/runtime/_importRuntime.eol";
+import "../../../operations/asm/_importAsm.eol";
 import "../../../operations/typemapping/_importTypeMapping.eol";
 
 import "element.etl";
 
 @abstract
 rule EAttributeToRdbmsField
-	transform s : RUNTIME!EAttribute
+	transform s : ASM!EAttribute
 	to t : RDBMS!RdbmsField 
 	extends ENamedElementToRdbmsElement { 
 		guard : s.getClass().isEntity() or s.getClass().isStructure()
@@ -13,12 +13,17 @@ rule EAttributeToRdbmsField
 	    // t.name = s.fqName();
 		t.table = s.getClass().equivalent("EClassToRdbmsTable");
 		
-		if (s.eType.isKindOf(RUNTIME!EEnum)) {
+		if (s.eType.isKindOf(ASM!EEnum)) {
 			// TODO: Make value constraints
 			t.fillType("JString");
 	    } else {
-			t.fillType(s.eType.name);
-			t.fillConstraintsFromAttribute(s);
+	        if (s.eType.isUndefined()) {
+	        	(s.getClass().name + "#" + s.name).println("Could not determinate type (maybe enum?): "); 
+				t.fillType("JString");
+	        } else {
+				t.fillType(s.eType.name);
+				t.fillConstraintsFromAttribute(s);
+			}
 		}
 		t.sqlName = s.fieldSqlName();
 		if (s.isPrimaryKey()) {
@@ -42,7 +47,7 @@ rule EAttributeToRdbmsField
 }
 
 rule EAttributeToTableValueField
-	transform s : RUNTIME!EAttribute
+	transform s : ASM!EAttribute
 	to t : RDBMS!RdbmsValueField
 	extends EAttributeToRdbmsField { 
 		guard : (s.getClass().isEntity() or s.getClass().isStructure()) and not s.isPrimaryKey() and not s.derived
@@ -51,7 +56,7 @@ rule EAttributeToTableValueField
 
 
 rule EAttributeToViewIdField
-	transform s : RUNTIME!EAttribute
+	transform s : ASM!EAttribute
 	to v : RDBMS!RdbmsViewIdentifierField
 	extends ENamedElementToRdbmsElement { 
 		guard : (s.getClass().isEntity() or s.isStructure()) and s.isPrimaryKey()
@@ -65,7 +70,7 @@ rule EAttributeToViewIdField
 }
 
 rule EAttributeToViewIdField
-	transform s : RUNTIME!EAttribute
+	transform s : ASM!EAttribute
 	to v : RDBMS!RdbmsViewIdentifierField
 	extends ENamedElementToRdbmsElement { 
 		guard : s.getClass().isStructure() and s.isPrimaryKey()
@@ -82,7 +87,7 @@ rule EAttributeToViewIdField
 /*
 @lazy
 rule EAttributeToViewIdField
-	transform s : RUNTIME!EAttribute
+	transform s : EAttribute
 	to v : RDBMS!RdbmsViewIdentifierField 
 	extends EAttributeToViewIdFieldWithoutView {
 		guard : s.getClass().isEntity() and s.isPrimaryKey()
@@ -93,7 +98,7 @@ rule EAttributeToViewIdField
 /*
 @lazy
 rule EAttributeToViewValueFieldWithoutView
-	transform s : RUNTIME!EAttribute
+	transform s : EAttribute
 	to v : RDBMS!RdbmsViewValueField 
 	extends ENamedElementToRdbmsElement { 
 		guard : s.getClass().isEntity() and not s.isPrimaryKey()
@@ -104,7 +109,7 @@ rule EAttributeToViewValueFieldWithoutView
 */
 
 rule EAttributeToViewValueField
-	transform s : RUNTIME!EAttribute
+	transform s : ASM!EAttribute
 	to v : RDBMS!RdbmsViewValueField 
 	extends ENamedElementToRdbmsElement { 
 		guard : s.getClass().isEntity() and not s.isPrimaryKey()
@@ -123,7 +128,7 @@ rule EAttributeToViewValueField
 /*
 @lazy
 rule EAttributeToViewExpressionField
-	transform s : RUNTIME!EAttribute
+	transform s : EAttribute
 	to v : RDBMS!RdbmsViewExpressionField 
 	extends ENamedElementToRdbmsElement { 
 		guard : s.ownerClass().isEntity() and not s.isPrimaryKey()
@@ -135,7 +140,7 @@ rule EAttributeToViewExpressionField
 */
 
 rule EAttributeToUniqueKey
-	transform s : RUNTIME!EAttribute
+	transform s : ASM!EAttribute
 	to u : RDBMS!RdbmsUniqueConstraint 
 	extends ENamedElementToRdbmsElement { 
 		guard : s.getClass().isEntity() and s.ID and not s.isPrimaryKey() and not s.derived

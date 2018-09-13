@@ -1,4 +1,0 @@
-@cached
-operation RUNTIME!EPackage packageSqlName() : String {
-    return self.sqlName();
-}

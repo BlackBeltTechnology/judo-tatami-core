@@ -1,8 +1,8 @@
 import "../../../operations/odata/_importOData.eol";
-import "../../../operations/runtime/_importRuntime.eol";
+import "../../../operations/asm/_importAsm.eol";
 
 rule CreateComplexType
-    transform s : SRC!EClass
+    transform s : ASM!EClass
     to t : ODATA!TComplexType {
     	guard : s.isStructure()
     	
@@ -11,7 +11,7 @@ rule CreateComplexType
     	t.Name = s.name;
     	t.Abstract = false;
     	
-    	for (a in s.eStructuralFeatures.select(sf | sf.isKindOf(SRC!EAttribute))) {
+    	for (a in s.eStructuralFeatures.select(sf | sf.isKindOf(ASM!EAttribute))) {
 			a.name.println("  - attribute: ");
 		
 			var prop = new ODATA!TProperty;

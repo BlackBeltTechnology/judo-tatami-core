@@ -1,0 +1,13 @@
+@cached
+operation ASM!EPackage getPackage() : ASM!EPackage {
+	return ASM!EPackage.all.selectOne(p | p.eSubPackages.contains(self));
+}
+
+@cached
+operation ASM!EPackage fqName() : String {
+	var name = "";
+	if (self.getPackage().isDefined()) {
+		name = self.getPackage().fqName() + ".";
+	}
+	return name + self.name;
+}

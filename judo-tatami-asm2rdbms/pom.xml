@@ -14,10 +14,6 @@
 
     <properties>
         <src.dir>src</src.dir>
-        <test.model.groupId>hu.blackbelt.northwind</test.model.groupId>
-        <test.model.artifactId>northwind-model</test.model.artifactId>
-        <test.model.version>1.0.0-4</test.model.version>
-        <judo-psm.version>1.0.0-10</judo-psm.version>
     </properties>
 
 
@@ -36,7 +32,7 @@
 			<build>
 				<plugins>
 					<plugin>
-						<groupId>hu.blackbelt.judo.generator</groupId>
+						<groupId>hu.blackbelt.epsilon</groupId>
 						<artifactId>epsilon-maven-plugin</artifactId>
 						<executions>
 							<execution>
@@ -47,9 +43,8 @@
 								</goals>
 								<configuration>
 									<metaModels>
-                                        <metaModel>mvn:hu.blackbelt.judo.meta:judo-meta-psm:model:psm:${judo-psm.version}</metaModel>
-										<metaModel>mvn:${project.groupId}:hu.blackbelt.judo.generator.meta.rdbms:ecore:rdbms:${project.version}</metaModel>
-                                        <metaModel>mvn:${project.groupId}:hu.blackbelt.judo.generator.transformer.runtime:model:types:${project.version}</metaModel>
+										<metaModel>mvn:hu.blackbelt.judo.meta:judo-meta-rdbms:ecore:rdbms:${judo-meta-rdbms.version}</metaModel>
+                                        <metaModel>mvn:hu.blackbelt.judo.meta:judo-meta-asm:ecore:types:${judo-meta-asm.version}</metaModel>
 									</metaModels>
                                     <excelModels>
                                         <excelModel>
@@ -63,8 +58,8 @@
                                     </excelModels>		
 									<models>
                                         <model>
-                                            <artifact>mvn:${project.groupId}:hu.blackbelt.judo.generator.transformer.runtime:model:runtime:${project.version}</artifact>
-                                            <name>RUNTIME</name>
+                                            <artifact>mvn:${test.asm.model.groupId}:${test.asm.model.artifactId}:model:asm:${test.asm.model.version}</artifact>
+                                            <name>ASM</name>
                                             <metaModelUris>
                                                 <param>http://www.eclipse.org/emf/2002/Ecore</param>
                                                 <param>http://blackbelt.hu/judo/runtime/types</param>
@@ -83,10 +78,10 @@
 									</models>
 									<eolPrograms>
 										<Etl>
-											<source>src/transformations/runtimeToRdbms.etl</source>
+											<source>src/transformations/asmToRdbms.etl</source>
 											<parameters>
 												<parameter>
-													<name>runtimeVersion</name>
+													<name>asmVersion</name>
 													<value>${project.version}-${psmversion}</value>
 												</parameter>
                                                 <parameter>
@@ -135,7 +130,8 @@
 											<type>model</type>
 											<classifier>lsm-rdbmsHsqldb</classifier>
 										</artifact>
-										<artifact>
+										<!-- 
+                                        <artifact>
 											<file>${project.build.directory}/rdbmsPostgres.model</file>
 											<type>model</type>
 											<classifier>lsm-rdbmsPostgres</classifier>
@@ -145,6 +141,7 @@
 											<type>model</type>
 											<classifier>lsms-rdbmsOracle</classifier>
 										</artifact>
+                                        -->
 									</artifacts>
 								</configuration>
 							</execution>

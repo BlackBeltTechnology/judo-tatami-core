@@ -1,6 +1,7 @@
 import "../../../operations/_importAll.eol";
 import "element.etl";
 
+
 /*
 rule JEnumerationToRdbmsTable 
 	transform s : PSM!JEnumeration

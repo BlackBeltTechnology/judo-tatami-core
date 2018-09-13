@@ -1,8 +1,8 @@
 import "../../../operations/odata/_importOData.eol";
-import "../../../operations/runtime/_importRuntime.eol";
+import "../../../operations/asm/_importAsm.eol";
 
 rule CreateEntity
-	transform s : SRC!EClass
+	transform s : ASM!EClass
 	to t : ODATA!TEntityType {
 		guard : s.isFacade()
 		
@@ -20,7 +20,7 @@ rule CreateEntity
 		var key = new ODATA!TEntityKeyElement;
 		t.Key.add(key);
 		
-		for (a in s.eStructuralFeatures.select(sf | sf.isKindOf(SRC!EAttribute))) {
+		for (a in s.eStructuralFeatures.select(sf | sf.isKindOf(ASM!EAttribute))) {
 			a.name.println("  - attribute: ");
 		
 			var prop = new ODATA!TProperty;
@@ -37,7 +37,7 @@ rule CreateEntity
 			}
 		}
 		
-		for (r in s.eStructuralFeatures.select(sf | sf.isKindOf(SRC!EReference))) {
+		for (r in s.eStructuralFeatures.select(sf | sf.isKindOf(ASM!EReference))) {
 			if (r.isEmbedded()) {
 				// complex type!
 				r.name.println("  - embedded: ");
