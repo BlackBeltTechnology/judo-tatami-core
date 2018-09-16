@@ -10,19 +10,28 @@
         </parent>
 
     <artifactId>judo-tatami-asm2odata</artifactId>
-    <packaging>jar</packaging>
-
-    <properties>
-        <src.dir>src</src.dir>
-    </properties>
+    <packaging>bundle</packaging>
 
     <build>
-        <sourceDirectory>${src.dir}</sourceDirectory>
-        <resources>
-            <resource>
-                <directory>${src.dir}</directory>
-            </resource>
-        </resources>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <version>3.3.0</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <obrRepository>NONE</obrRepository>
+                    <instructions>
+                        <Export-Package>tatami/asm2odata;version=${project.version}</Export-Package>
+                        <Include-Resource>{maven-resources},tatami/asm2odata=src</Include-Resource>
+                        <Import-Package>
+                            meta/odata;version="${judo-meta-odata.import-range}",
+                            meta/asm;version="${judo-meta-asm.import-range}"
+                        </Import-Package>
+                    </instructions>
+                </configuration>
+            </plugin>
+        </plugins>
     </build>
 
     <profiles>
@@ -41,7 +50,7 @@
                                 </goals>
                                 <configuration>
                                     <metaModels>
-										<metaModel>mvn:hu.blackbelt.judo.meta:judo-meta-odata:ecore:odata:${judo-meta-odata.version}</metaModel>
+                                        <metaModel>mvn:hu.blackbelt.judo.meta:judo-meta-odata:ecore:odata:${judo-meta-odata.version}</metaModel>
                                         <metaModel>mvn:hu.blackbelt.judo.meta:judo-meta-asm:ecore:types:${judo-meta-asm.version}</metaModel>
                                     </metaModels>
 

@@ -47,7 +47,9 @@
         <timestamp>${maven.build.timestamp}</timestamp>
         <maven.build.timestamp.format>yyyyMMddHHmmss</maven.build.timestamp.format>
         <epsilon.maven.plugin.version>1.1.1</epsilon.maven.plugin.version>
+
         <judo-meta-rdbms.version>1.0.0-develop-3</judo-meta-rdbms.version>
+        <judo-meta-rdbms.import-range>[1.0,1.1)</judo-meta-rdbms.import-range>
 
         <judo-meta-psm.version>1.0.0-feature_JUDO_3094_JudoPSM-43</judo-meta-psm.version>
         <judo-meta-psm.import-range>[1.0,1.1)</judo-meta-psm.import-range>

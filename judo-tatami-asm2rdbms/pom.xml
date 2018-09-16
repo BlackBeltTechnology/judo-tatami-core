@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>hu.blackbelt.judo.tatami</groupId>
         <artifactId>judo-tatami-parent</artifactId>
@@ -9,43 +9,51 @@
         <relativePath>../judo-tatami-parent</relativePath>
     </parent>
 
-	<artifactId>judo-tatami-asm2rdbms</artifactId>
-	<packaging>jar</packaging>
-
-    <properties>
-        <src.dir>src</src.dir>
-    </properties>
-
+    <artifactId>judo-tatami-asm2rdbms</artifactId>
+    <packaging>bundle</packaging>
 
     <build>
-        <sourceDirectory>${src.dir}</sourceDirectory>
-        <resources>
-            <resource>
-                <directory>${src.dir}</directory>
-            </resource>
-        </resources>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <version>3.3.0</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <obrRepository>NONE</obrRepository>
+                    <instructions>
+                        <Export-Package>tatami/asm2rdbms;version=${project.version}</Export-Package>
+                        <Include-Resource>{maven-resources},tatami/asm2rdbms=src,tatami/asm2rdbms/model=model</Include-Resource>
+                        <Import-Package>
+                            meta/rdbms;version="${judo-meta-rdbms.import-range}",
+                            meta/asm;version="${judo-meta-asm.import-range}"
+                        </Import-Package>
+                    </instructions>
+                </configuration>
+            </plugin>
+        </plugins>
     </build>
     
     <profiles>
-    	<profile>
-    		<id>asm2rdbms-development</id>
-			<build>
-				<plugins>
-					<plugin>
-						<groupId>hu.blackbelt.epsilon</groupId>
-						<artifactId>epsilon-maven-plugin</artifactId>
-						<executions>
-							<execution>
-								<id>transform-hsqldb</id>
-								<phase>generate-resources</phase>
-								<goals>
-									<goal>execute</goal>
-								</goals>
-								<configuration>
-									<metaModels>
-										<metaModel>mvn:hu.blackbelt.judo.meta:judo-meta-rdbms:ecore:rdbms:${judo-meta-rdbms.version}</metaModel>
+        <profile>
+            <id>asm2rdbms-development</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>hu.blackbelt.epsilon</groupId>
+                        <artifactId>epsilon-maven-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>transform-hsqldb</id>
+                                <phase>generate-resources</phase>
+                                <goals>
+                                    <goal>execute</goal>
+                                </goals>
+                                <configuration>
+                                    <metaModels>
+                                        <metaModel>mvn:hu.blackbelt.judo.meta:judo-meta-rdbms:ecore:rdbms:${judo-meta-rdbms.version}</metaModel>
                                         <metaModel>mvn:hu.blackbelt.judo.meta:judo-meta-asm:ecore:types:${judo-meta-asm.version}</metaModel>
-									</metaModels>
+                                    </metaModels>
                                     <excelModels>
                                         <excelModel>
                                             <name>TYPEMAPPING</name>
@@ -56,7 +64,7 @@
                                             </aliases>
                                         </excelModel>
                                     </excelModels>		
-									<models>
+                                    <models>
                                         <model>
                                             <artifact>mvn:${test.asm.model.groupId}:${test.asm.model.artifactId}:model:asm:${test.asm.model.version}</artifact>
                                             <name>ASM</name>
@@ -66,90 +74,90 @@
                                             </metaModelUris>
                                         </model>
 
-										<model>
-											<artifact>${project.build.directory}/rdbmsHsqldb.model</artifact>
-											<name>RDBMS</name>
-											<readOnLoad>false</readOnLoad>
-											<storeOnDisposal>true</storeOnDisposal>
-											<metaModelUris>
-												<param>http://blackbelt.hu/judo/meta/psm/rdbms</param>
-											</metaModelUris>
-										</model>
-									</models>
-									<eolPrograms>
-										<Etl>
-											<source>src/transformations/asmToRdbms.etl</source>
-											<parameters>
-												<parameter>
-													<name>asmVersion</name>
-													<value>${project.version}-${psmversion}</value>
-												</parameter>
+                                        <model>
+                                            <artifact>${project.build.directory}/rdbmsHsqldb.model</artifact>
+                                            <name>RDBMS</name>
+                                            <readOnLoad>false</readOnLoad>
+                                            <storeOnDisposal>true</storeOnDisposal>
+                                            <metaModelUris>
+                                                <param>http://blackbelt.hu/judo/meta/psm/rdbms</param>
+                                            </metaModelUris>
+                                        </model>
+                                    </models>
+                                    <eolPrograms>
+                                        <Etl>
+                                            <source>src/transformations/asmToRdbms.etl</source>
+                                            <parameters>
+                                                <parameter>
+                                                    <name>asmVersion</name>
+                                                    <value>${project.version}</value>
+                                                </parameter>
                                                 <parameter>
                                                     <name>extendedMetadataURI</name>
                                                     <value>http://blackbelt.hu/judo/meta/ExtendedMetadata</value>
                                                 </parameter>
-											</parameters>
-										</Etl>
-									</eolPrograms>
-								</configuration>
-							</execution>
-						</executions>
-					</plugin>
-		
-					<plugin>
-						<groupId>org.codehaus.mojo</groupId>
-						<artifactId>build-helper-maven-plugin</artifactId>
-						<version>3.0.0</version>
-						<executions>
-							<execution>
-								<id>add-resource</id>
-								<goals>
-									<goal>add-resource</goal>
-								</goals>
-								
-								<configuration>
-									<resources>
-										<resource>
-											<directory>src</directory>
-										</resource>
-									</resources>
-								</configuration>
-								
-							</execution>
-		
-							<execution>
-								<id>attach-artifacts</id>
-								<phase>package</phase>
-								<goals>
-									<goal>attach-artifact</goal>
-								</goals>
-								<configuration>
-									<artifacts>
-										<artifact>
-											<file>${project.build.directory}/rdbmsHsqldb.model</file>
-											<type>model</type>
-											<classifier>lsm-rdbmsHsqldb</classifier>
-										</artifact>
-										<!-- 
+                                            </parameters>
+                                        </Etl>
+                                    </eolPrograms>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>build-helper-maven-plugin</artifactId>
+                        <version>3.0.0</version>
+                        <executions>
+                            <execution>
+                                <id>add-resource</id>
+                                <goals>
+                                    <goal>add-resource</goal>
+                                </goals>
+
+                                <configuration>
+                                    <resources>
+                                        <resource>
+                                            <directory>src</directory>
+                                        </resource>
+                                    </resources>
+                                </configuration>
+
+                            </execution>
+
+                            <execution>
+                                <id>attach-artifacts</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>attach-artifact</goal>
+                                </goals>
+                                <configuration>
+                                    <artifacts>
                                         <artifact>
-											<file>${project.build.directory}/rdbmsPostgres.model</file>
-											<type>model</type>
-											<classifier>lsm-rdbmsPostgres</classifier>
-										</artifact>
-										<artifact>
-											<file>${project.build.directory}/rdbmsOracle.model</file>
-											<type>model</type>
-											<classifier>lsms-rdbmsOracle</classifier>
-										</artifact>
+                                            <file>${project.build.directory}/rdbmsHsqldb.model</file>
+                                            <type>model</type>
+                                            <classifier>lsm-rdbmsHsqldb</classifier>
+                                        </artifact>
+                                        <!--
+                                        <artifact>
+                                            <file>${project.build.directory}/rdbmsPostgres.model</file>
+                                            <type>model</type>
+                                            <classifier>lsm-rdbmsPostgres</classifier>
+                                        </artifact>
+                                        <artifact>
+                                            <file>${project.build.directory}/rdbmsOracle.model</file>
+                                            <type>model</type>
+                                            <classifier>lsms-rdbmsOracle</classifier>
+                                        </artifact>
                                         -->
-									</artifacts>
-								</configuration>
-							</execution>
-						</executions>
-					</plugin>
-		
-				</plugins>
-			</build>
-    	</profile>
+                                    </artifacts>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+
+                </plugins>
+            </build>
+        </profile>
     </profiles>
 </project>
