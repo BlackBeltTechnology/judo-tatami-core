@@ -33,7 +33,7 @@ rule EClassToRdbmsTable
 
 /*
 rule EClassToRdbmsStructureIdentifier 
-	transform s : RUNTIME!EClass
+	transform s : ASM!EClass
 	to t : RDBMS!RdbmsIdentifierField
 	extends ENamedElementToRdbmsElement {
 	guard : s.getClass().isStructure()

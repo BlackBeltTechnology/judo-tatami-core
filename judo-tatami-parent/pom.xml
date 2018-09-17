@@ -57,7 +57,7 @@
         <judo-meta-odata.version>1.0.0-develop-3</judo-meta-odata.version>
         <judo-meta-odata.import-range>[1.0,1.1)</judo-meta-odata.import-range>
 
-        <judo-meta-asm.version>1.0.0-develop-6</judo-meta-asm.version>
+        <judo-meta-asm.version>1.0.0-develop-8</judo-meta-asm.version>
         <judo-meta-asm.import-range>[1.0,1.1)</judo-meta-asm.import-range>
 
         <test.asm.model.groupId>${project.groupId}</test.asm.model.groupId>

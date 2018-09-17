@@ -70,7 +70,7 @@
                                             <name>ASM</name>
                                             <metaModelUris>
                                                 <param>http://www.eclipse.org/emf/2002/Ecore</param>
-                                                <param>http://blackbelt.hu/judo/runtime/types</param>
+                                                <param>http://blackbelt.hu/judo/asm/types</param>
                                             </metaModelUris>
                                         </model>
 
@@ -86,7 +86,7 @@
                                     </models>
                                     <eolPrograms>
                                         <Etl>
-                                            <source>src/transformations/asmToRdbms.etl</source>
+                                            <source>${basedir}/src/transformations/asmToRdbms.etl</source>
                                             <parameters>
                                                 <parameter>
                                                     <name>asmVersion</name>

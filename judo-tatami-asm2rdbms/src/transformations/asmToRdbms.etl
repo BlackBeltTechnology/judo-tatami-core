@@ -25,13 +25,13 @@ pre {
 
 /*
 @cached
-operation RUNTIME!EAttribute getRdbmsType() : TYPEMAPPING!Mapping {
+operation ASM!EAttribute getRdbmsType() : TYPEMAPPING!Mapping {
 	return MAPPING!Mapping.all().select(m | m.Judo == self.eType.name);
 }
 */
 /*
 rule ClassToTable
-	transform s : RUNTIME!EClass
+	transform s : ASM!EClass
 	to t : RDBMS!RdbmsTable {
 		guard: s.isEntity()
 		s.name.println("Class:");
@@ -43,7 +43,7 @@ rule ClassToTable
 
 
 rule CreateEntity
-	transform s : RUNTIME!EClass
+	transform s : ASM!EClass
 	to t : ODATA!TEntityType {
 		guard : s.isEntity()
 		
@@ -58,7 +58,7 @@ rule CreateEntity
 			s.name.println("Multiple superTypes is not supported yet!");
 		}
 		
-		for (a in s.eStructuralFeatures.select(sf | sf.isKindOf(RUNTIME!EAttribute))) {
+		for (a in s.eStructuralFeatures.select(sf | sf.isKindOf(ASM!EAttribute))) {
 			a.name.println("  - attribute: ");
 		
 			var prop = new ODATA!TProperty;
@@ -69,7 +69,7 @@ rule CreateEntity
 			t.Property.add(prop);
 		}
 		
-		for (r in s.eStructuralFeatures.select(sf | sf.isKindOf(RUNTIME!EReference))) {
+		for (r in s.eStructuralFeatures.select(sf | sf.isKindOf(ASM!EReference))) {
 			if (r.isEmbedded()) {
 				// complex type!
 				r.name.println("  - embedded: ");

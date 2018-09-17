@@ -1,8 +1,8 @@
-@namespace(uri="http://blackbelt.hu/judo/meta/runtime/rdbms/mapping", prefix="runtimeToRdbms")
-package runtimeToRdbmsMapping;
+@namespace(uri="http://blackbelt.hu/judo/meta/asm/rdbms/mapping", prefix="asmToRdbms")
+package asmToRdbmsMapping;
 
 import "http://blackbelt.hu/judo/meta/psm/rdbms";
-import "http://blackbelt.hu/judo/runtime/types";
+import "http://blackbelt.hu/judo/asm/types";
 import "http://www.eclipse.org/emf/2002/Ecore";
 
 class Mappings {
@@ -11,7 +11,7 @@ class Mappings {
 
 class Mapping {
   ref rdbms.RdbmsFieldType[1] rdbmsType;
-  ref ecore.EDataType[1] runtimeType;
+  ref ecore.EDataType[1] asmType;
   attr String[1] name;
 }
 

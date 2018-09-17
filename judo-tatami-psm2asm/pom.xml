@@ -131,7 +131,7 @@
                                             <metaModelUris>
                                                 <param>http://www.eclipse.org/emf/2002/Ecore</param>
                                             </metaModelUris>
-                                            <platformAlias>http://blackbelt.hu/judo/runtime/types</platformAlias>
+                                            <platformAlias>http://blackbelt.hu/judo/asm/types</platformAlias>
                                         </model>
                                         <model>
                                             <artifact>${project.build.directory}/asm.model</artifact>
@@ -145,7 +145,7 @@
                                     </models>
                                     <eolPrograms>
                                         <Etl>
-                                            <source>src/transformations/asm/psmToAsm.etl</source>
+                                            <source>${basedir}/src/transformations/asm/psmToAsm.etl</source>
                                             <parameters>
                                                 <parameter>
                                                     <name>modelName</name>
@@ -153,7 +153,7 @@
                                                 </parameter>
                                                 <parameter>
                                                     <name>nsURI</name>
-                                                    <value>http://blackbelt.hu/judo/meta/runtime</value>
+                                                    <value>http://blackbelt.hu/judo/meta/asm</value>
                                                 </parameter>
                                                 <parameter>
                                                     <name>nsPrefix</name>
