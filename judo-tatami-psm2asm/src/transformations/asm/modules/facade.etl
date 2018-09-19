@@ -37,17 +37,15 @@ rule CreateViewClass
 		t.eAnnotations.add(annotation);
 	}
 
-rule CreatePrimitiveFacadeAttribute
+rule CreateFacadeAttribute
 	transform s : JUDOPSM!Property
 	to t : ASM!EAttribute {
-		guard : s.dataType.isKindOf(JUDOPSM!Primitive)
-
 		t.name = s.name;
 
 		// TODO: set lowerBound and upperBound attributes
-		t.eType = s.dataType.getEcoreType();
+		t.eType = s.type.getEcoreType();
 
-		var annotations = s.dataType.createASMAnnotations();
+		var annotations = s.type.createASMAnnotations();
 		if (not annotations.isEmpty()) {
 			var annotation = new ASM!EAnnotation;
 			annotation.source = extendedMetadataURI;
@@ -58,15 +56,15 @@ rule CreatePrimitiveFacadeAttribute
 		s.getFacade().equivalent().eStructuralFeatures.add(t);
 	}
 
-rule CreateComplexFacadeAttribute
+/*rule CreateComplexFacadeAttribute
 	transform s : JUDOPSM!Property
 	to t : ASM!EReference {
-		guard : s.dataType.isKindOf(JUDOPSM!Structure)
+		guard : s.type.isKindOf(JUDOPSM!Structure)
 
 		t.name = s.name;
 
 		// TODO: set lowerBound and upperBound attributes
-		t.eType = s.dataType.equivalent();
+		t.eType = s.type.equivalent();
 		t.containment = true;
 
 		var annotation = new ASM!EAnnotation;
@@ -78,9 +76,9 @@ rule CreateComplexFacadeAttribute
 		t.eAnnotations.add(annotation);
 
 		s.getFacade().equivalent().eStructuralFeatures.add(t);
-	}
+	} */
 
-rule CreateLinkReference
+rule CreateFacadeLink
 	transform s : JUDOPSM!Link
 	to t : ASM!EReference {
 		t.name = s.name;

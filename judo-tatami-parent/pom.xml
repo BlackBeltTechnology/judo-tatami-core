@@ -51,7 +51,7 @@
         <judo-meta-rdbms.version>1.0.0-develop-3</judo-meta-rdbms.version>
         <judo-meta-rdbms.import-range>[1.0,1.1)</judo-meta-rdbms.import-range>
 
-        <judo-meta-psm.version>1.0.0-feature_JUDO_3094_JudoPSM-43</judo-meta-psm.version>
+	<judo-meta-psm.version>1.0.0-feature_JUDO_3094_JudoPSM-52</judo-meta-psm.version>
         <judo-meta-psm.import-range>[1.0,1.1)</judo-meta-psm.import-range>
 
         <judo-meta-odata.version>1.0.0-develop-3</judo-meta-odata.version>
@@ -66,7 +66,7 @@
 
         <test.psm.model.groupId>hu.blackbelt.northwind</test.psm.model.groupId>
         <test.psm.model.artifactId>northwind-model</test.psm.model.artifactId>
-        <test.psm.model.version>1.0.0-11</test.psm.model.version>
+        <test.psm.model.version>1.0.0-feature_JUDO_3175_refactor_containments-48</test.psm.model.version>
 
     </properties>
 
