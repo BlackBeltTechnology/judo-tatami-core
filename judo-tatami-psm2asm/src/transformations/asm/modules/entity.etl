@@ -72,7 +72,7 @@ rule CreateReference
 		t.lowerBound = s.lower;
 		t.upperBound = s.upper;
 
-		var annotations = s.reference.createASMAnnotations();
+		var annotations = s.target.createASMAnnotations();
 		if (not annotations.isEmpty()) {
 			var annotation = new ASM!EAnnotation;
 			annotation.source = extendedMetadataURI;
@@ -83,7 +83,18 @@ rule CreateReference
 		s.getEntityType().equivalent().eStructuralFeatures.add(t);	
 	
 		t.eType = s.target.name.getEntityTypeReference();
-		t.eOpposite = s.partner.equivalent();
-
-		t.containment = s.composition;
 	}
+
+rule CreateEndpointReference
+	transform s : JUDOPSM!Endpoint
+	to t : ASM!EReference
+	extends CreateReference {
+		t.eOpposite = s.partner.equivalent();
+}
+
+rule CreateContainmentReference
+	transform s : JUDOPSM!Containment
+	to t : ASM!EReference
+	extends CreateReference {
+		t.containment = true;
+}
