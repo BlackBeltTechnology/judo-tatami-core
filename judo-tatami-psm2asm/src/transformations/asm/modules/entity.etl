@@ -37,11 +37,9 @@ rule CreateEntityClass
 		t.eAnnotations.add(annotation);
 	}
 
-rule CreateSimpleAttribute
+rule CreateAttribute
 	transform s : JUDOPSM!Attribute
 	to t : ASM!EAttribute {
-		guard : s.dataType.isKindOf(JUDOPSM!Primitive)
-
 		t.name = s.name;
 		if (s.required) {
 			t.lowerBound = 1;
@@ -53,9 +51,9 @@ rule CreateSimpleAttribute
 			t.iD = true;
 		}
 
-		t.eType = s.dataType.getEcoreType();
+		t.eType = s.primitive.getEcoreType();
 
-		var annotations = s.dataType.createASMAnnotations();
+		var annotations = s.primitive.createASMAnnotations();
 		if (not annotations.isEmpty()) {
 			var annotation = new ASM!EAnnotation;
 			annotation.source = extendedMetadataURI;
@@ -66,41 +64,15 @@ rule CreateSimpleAttribute
 		s.getEntityType().equivalent().eStructuralFeatures.add(t);
 	}
 
-rule CreateComplexAttribute
-	transform s : JUDOPSM!Attribute
-	to t : ASM!EReference {
-		guard : s.dataType.isKindOf(JUDOPSM!Structure)
-
-		t.name = s.name;
-		if (s.required) {
-			t.lowerBound = 1;
-		} else {
-			t.lowerBound = 0;
-		}
-
-		t.eType = s.dataType.equivalent();
-		t.containment = true;
-
-		var annotation = new ASM!EAnnotation;
-		annotation.source = extendedMetadataURI;
-		var aEmbedded = new ASM!EStringToStringMapEntry;
-		aEmbedded.key = "embedded";
-		aEmbedded.value = "true";
-		annotation.details.add(aEmbedded);
-		t.eAnnotations.add(annotation);
-
-		s.getEntityType().equivalent().eStructuralFeatures.add(t);
-	}
-
-rule CreateEndpointReference
-	transform s : JUDOPSM!Endpoint
+rule CreateReference
+	transform s : JUDOPSM!Reference
 	to t : ASM!EReference {
 		t.name = s.name;
 
 		t.lowerBound = s.lower;
 		t.upperBound = s.upper;
 
-		var annotations = s.reference.createASMAnnotations();
+		var annotations = s.target.createASMAnnotations();
 		if (not annotations.isEmpty()) {
 			var annotation = new ASM!EAnnotation;
 			annotation.source = extendedMetadataURI;
@@ -110,8 +82,19 @@ rule CreateEndpointReference
 
 		s.getEntityType().equivalent().eStructuralFeatures.add(t);	
 	
-		t.eType = s.reference.target.name.getEntityTypeReference();
-		t.eOpposite = s.partner.equivalent();
-
-		t.containment = s.composition;
+		t.eType = s.target.name.getEntityTypeReference();
 	}
+
+rule CreateEndpointReference
+	transform s : JUDOPSM!Endpoint
+	to t : ASM!EReference
+	extends CreateReference {
+		t.eOpposite = s.partner.equivalent();
+}
+
+rule CreateContainmentReference
+	transform s : JUDOPSM!Containment
+	to t : ASM!EReference
+	extends CreateReference {
+		t.containment = true;
+}
