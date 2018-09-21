@@ -22,17 +22,26 @@
                 <configuration>
                     <obrRepository>NONE</obrRepository>
                     <instructions>
-                        <Export-Package>tatami/asm2odata;version=${project.version}</Export-Package>
-                        <Include-Resource>{maven-resources},tatami/asm2odata=src</Include-Resource>
+                        <Export-Package>
+                            tatami/asm2odata;version=${project.version},
+                            hu.blackbelt.judo.tatami.asm2odata.*;version=${project.version}
+                        </Export-Package>
+                        <Include-Resource>
+                            tatami/asm2odata/transformations=src/transformations,
+                            tatami/asm2odata/transformations=src/operations
+                        </Include-Resource>
                         <Import-Package>
                             meta/odata;version="${judo-meta-odata.import-range}",
-                            meta/asm;version="${judo-meta-asm.import-range}"
+                            meta/asm;version="${judo-meta-asm.import-range}",
+                            hu.blackbelt.judo.meta.odata*;version="${judo-meta-odata.import-range}",
+                            hu.blackbelt.judo.meta.psm*;version="${judo-meta-psm.import-range}"
                         </Import-Package>
                     </instructions>
                 </configuration>
             </plugin>
         </plugins>
     </build>
+
 
     <profiles>
         <profile>
@@ -108,11 +117,13 @@
                                 <configuration>
                                     <resources>
                                         <resource>
-                                            <directory>src</directory>
+                                            <directory>src/operations</directory>
+                                        </resource>
+                                        <resource>
+                                            <directory>src/transformations</directory>
                                         </resource>
                                     </resources>
                                 </configuration>
-
                             </execution>
 
                             <execution>

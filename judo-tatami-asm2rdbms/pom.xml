@@ -26,14 +26,29 @@
                         <Include-Resource>{maven-resources},tatami/asm2rdbms=src,tatami/asm2rdbms/model=model</Include-Resource>
                         <Import-Package>
                             meta/rdbms;version="${judo-meta-rdbms.import-range}",
-                            meta/asm;version="${judo-meta-asm.import-range}"
+                            meta/asm;version="${judo-meta-asm.import-range}",
+                            hu.blackbelt.judo.meta.rdbms*;version="${judo-meta-rdbms.import-range}",
+                            hu.blackbelt.judo.meta.asm*;version="${judo-meta-asm.import-range}"
                         </Import-Package>
                     </instructions>
                 </configuration>
             </plugin>
         </plugins>
     </build>
-    
+
+    <dependencies>
+        <dependency>
+            <groupId>hu.blackbelt.judo.meta</groupId>
+            <artifactId>judo-meta-asm</artifactId>
+            <version>${judo-meta-asm.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>hu.blackbelt.judo.meta</groupId>
+            <artifactId>judo-meta-rdbms</artifactId>
+            <version>${judo-meta-rdbms.version}</version>
+        </dependency>
+    </dependencies>
+
     <profiles>
         <profile>
             <id>asm2rdbms-development</id>

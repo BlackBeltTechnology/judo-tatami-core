@@ -22,11 +22,19 @@
                 <configuration>
                     <obrRepository>NONE</obrRepository>
                     <instructions>
-                        <Export-Package>tatami/psm2asm;version=${project.version}</Export-Package>
-                        <Include-Resource>{maven-resources},tatami/psm2asm=src</Include-Resource>
+                        <Export-Package>
+                            tatami/psm2asm;version=${project.version},
+                            hu.blackbelt.judo.tatami.psm.asm.*;version=${project.version}
+                        </Export-Package>
+                        <Include-Resource>
+                            tatami/psm2asm/operations=src/operations,
+                            tatami/psm2asm/transformations=src/transformations
+                        </Include-Resource>
                         <Import-Package>
                             meta/psm;version="${judo-meta-psm.import-range}",
-                            meta/asm;version="${judo-meta-asm.import-range}"
+                            meta/asm;version="${judo-meta-asm.import-range}",
+                            hu.blackbelt.judo.meta.psm*;version="${judo-meta-psm.import-range}",
+                            hu.blackbelt.judo.meta.asm*;version="${judo-meta-asm.import-range}"
                         </Import-Package>
                     </instructions>
                 </configuration>
@@ -34,6 +42,55 @@
 
         </plugins>
     </build>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.eclipse.emf</groupId>
+            <artifactId>org.eclipse.emf.ecore</artifactId>
+            <version>${emf-version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.emf</groupId>
+            <artifactId>org.eclipse.emf.common</artifactId>
+            <version>${emf-version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.emf</groupId>
+            <artifactId>org.eclipse.emf.ecore.xmi</artifactId>
+            <version>${emf-version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.osgi</groupId>
+            <artifactId>org.osgi.core</artifactId>
+            <version>6.0.0</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.osgi</groupId>
+            <artifactId>osgi.cmpn</artifactId>
+            <version>6.0.0</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.osgi</groupId>
+            <artifactId>org.osgi.annotation</artifactId>
+            <version>6.0.0</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>hu.blackbelt.judo.meta</groupId>
+            <artifactId>judo-meta-psm</artifactId>
+            <version>${judo-meta-psm.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>hu.blackbelt.judo.meta</groupId>
+            <artifactId>judo-meta-asm</artifactId>
+            <version>${judo-meta-asm.version}</version>
+        </dependency>
+
+    </dependencies>
 
     <profiles>
         <profile>
@@ -184,6 +241,24 @@
                         <artifactId>build-helper-maven-plugin</artifactId>
                         <version>3.0.0</version>
                         <executions>
+                            <execution>
+                                <id>add-resource</id>
+                                <goals>
+                                    <goal>add-resource</goal>
+                                </goals>
+
+                                <configuration>
+                                    <resources>
+                                        <resource>
+                                            <directory>src/operations</directory>
+                                        </resource>
+                                        <resource>
+                                            <directory>src/transformations</directory>
+                                        </resource>
+                                    </resources>
+                                </configuration>
+                            </execution>
+
                             <execution>
                                 <id>attach-asm-model</id>
                                 <phase>package</phase>
