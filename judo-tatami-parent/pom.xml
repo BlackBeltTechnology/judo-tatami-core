@@ -66,7 +66,7 @@
 
         <test.psm.model.groupId>hu.blackbelt.northwind</test.psm.model.groupId>
         <test.psm.model.artifactId>northwind-model</test.psm.model.artifactId>
-	<test.psm.model.version>1.0.0-develop-53</test.psm.model.version>
+	<test.psm.model.version>1.0.0-develop-54</test.psm.model.version>
 
     </properties>
 
@@ -123,7 +123,7 @@
                 </plugin>
                 
                 <plugin>
-                    <groupId>hu.blackbelts.epsilon</groupId>
+                    <groupId>hu.blackbelt.epsilon</groupId>
                     <artifactId>epsilon-maven-plugin</artifactId>
                     <version>${epsilon.maven.plugin.version}</version>
                 </plugin>
