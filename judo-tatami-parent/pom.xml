@@ -51,13 +51,13 @@
         <judo-meta-rdbms.version>1.0.0-develop-3</judo-meta-rdbms.version>
         <judo-meta-rdbms.import-range>[1.0,1.1)</judo-meta-rdbms.import-range>
 
-	<judo-meta-psm.version>1.0.0-develop-57</judo-meta-psm.version>
+	<judo-meta-psm.version>1.0.0-develop-60</judo-meta-psm.version>
         <judo-meta-psm.import-range>[1.0,1.1)</judo-meta-psm.import-range>
 
         <judo-meta-odata.version>1.0.0-develop-3</judo-meta-odata.version>
         <judo-meta-odata.import-range>[1.0,1.1)</judo-meta-odata.import-range>
 
-        <judo-meta-asm.version>1.0.0-develop-8</judo-meta-asm.version>
+        <judo-meta-asm.version>1.0.0-develop-9</judo-meta-asm.version>
         <judo-meta-asm.import-range>[1.0,1.1)</judo-meta-asm.import-range>
 
         <test.asm.model.groupId>${project.groupId}</test.asm.model.groupId>
@@ -66,7 +66,7 @@
 
         <test.psm.model.groupId>hu.blackbelt.northwind</test.psm.model.groupId>
         <test.psm.model.artifactId>northwind-model</test.psm.model.artifactId>
-	<test.psm.model.version>1.0.0-develop-52</test.psm.model.version>
+	<test.psm.model.version>1.0.0-develop-53</test.psm.model.version>
 
     </properties>
 

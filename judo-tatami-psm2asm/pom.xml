@@ -134,6 +134,14 @@
                                             <platformAlias>http://blackbelt.hu/judo/asm/types</platformAlias>
                                         </model>
                                         <model>
+                                            <artifact>mvn:hu.blackbelt.judo.meta:judo-meta-asm:ecore:base:${judo-meta-asm.version}</artifact>
+                                            <name>BASE</name>
+                                            <metaModelUris>
+                                                <param>http://www.eclipse.org/emf/2002/Ecore</param>
+                                            </metaModelUris>
+                                            <platformAlias>http://blackbelt.hu/judo/asm/base</platformAlias>
+                                        </model>
+                                        <model>
                                             <artifact>${project.build.directory}/asm.model</artifact>
                                             <name>ASM</name>
                                             <readOnLoad>false</readOnLoad>
