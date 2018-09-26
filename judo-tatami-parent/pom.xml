@@ -48,16 +48,16 @@
         <maven.build.timestamp.format>yyyyMMddHHmmss</maven.build.timestamp.format>
         <epsilon.maven.plugin.version>1.1.1</epsilon.maven.plugin.version>
 
-        <judo-meta-rdbms.version>1.0.0-SNAPSHOT</judo-meta-rdbms.version>
+        <judo-meta-rdbms.version>1.0.0-feature_JUDO_3182_AddModelActivator-8</judo-meta-rdbms.version>
         <judo-meta-rdbms.import-range>[1.0,1.1)</judo-meta-rdbms.import-range>
 
-        <judo-meta-psm.version>1.0.0-SNAPSHOT</judo-meta-psm.version>
+        <judo-meta-psm.version>1.0.0-feature_JUDO_3182_AddModelActivator-63</judo-meta-psm.version>
         <judo-meta-psm.import-range>[1.0,1.1)</judo-meta-psm.import-range>
 
-        <judo-meta-odata.version>1.0.0-SNAPSHOT</judo-meta-odata.version>
+        <judo-meta-odata.version>1.0.0-feature_JUDO_3182_AddModelActivator-9</judo-meta-odata.version>
         <judo-meta-odata.import-range>[1.0,1.1)</judo-meta-odata.import-range>
 
-        <judo-meta-asm.version>1.0.0-SNAPSHOT</judo-meta-asm.version>
+        <judo-meta-asm.version>1.0.0-feature_JUDO_3182_AddModelActivator-12</judo-meta-asm.version>
         <judo-meta-asm.import-range>[1.0,1.1)</judo-meta-asm.import-range>
 
         <test.asm.model.groupId>${project.groupId}</test.asm.model.groupId>
