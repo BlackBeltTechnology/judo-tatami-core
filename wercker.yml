@@ -25,6 +25,7 @@ build:
     - wercker/maven:
       goals: clean deploy
       settings: .maven.xml
+      maven_opts: -Dorg.ops4j.pax.url.mvn.settings=.maven.xml
       profiles: release-github,release-blackbelt
       cache_repo: true
 
