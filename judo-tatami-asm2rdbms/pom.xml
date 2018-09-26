@@ -28,7 +28,8 @@
                             meta/rdbms;version="${judo-meta-rdbms.import-range}",
                             meta/asm;version="${judo-meta-asm.import-range}",
                             hu.blackbelt.judo.meta.rdbms*;version="${judo-meta-rdbms.import-range}",
-                            hu.blackbelt.judo.meta.asm*;version="${judo-meta-asm.import-range}"
+                            hu.blackbelt.judo.meta.asm*;version="${judo-meta-asm.import-range}",
+                            *
                         </Import-Package>
                     </instructions>
                 </configuration>

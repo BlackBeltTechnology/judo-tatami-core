@@ -34,7 +34,8 @@
                             meta/odata;version="${judo-meta-odata.import-range}",
                             meta/asm;version="${judo-meta-asm.import-range}",
                             hu.blackbelt.judo.meta.odata*;version="${judo-meta-odata.import-range}",
-                            hu.blackbelt.judo.meta.psm*;version="${judo-meta-psm.import-range}"
+                            hu.blackbelt.judo.meta.psm*;version="${judo-meta-psm.import-range}",
+                            *
                         </Import-Package>
                     </instructions>
                 </configuration>
