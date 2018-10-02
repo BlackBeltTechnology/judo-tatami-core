@@ -15,9 +15,13 @@
     <build>
         <plugins>
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+            </plugin>
+
+            <plugin>
                 <groupId>org.apache.felix</groupId>
                 <artifactId>maven-bundle-plugin</artifactId>
-                <version>3.3.0</version>
                 <extensions>true</extensions>
                 <configuration>
                     <obrRepository>NONE</obrRepository>
@@ -47,6 +51,7 @@
                             javax.annotation;version="[1.0,2)",
                             *
                         </Import-Package>
+                        <Asm-Meta-Version-Range>${judo-meta-psm.import-range}</Asm-Meta-Version-Range>
                     </instructions>
                 </configuration>
             </plugin>
@@ -56,51 +61,17 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.eclipse.emf</groupId>
-            <artifactId>org.eclipse.emf.ecore</artifactId>
-            <version>${emf-version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.emf</groupId>
-            <artifactId>org.eclipse.emf.common</artifactId>
-            <version>${emf-version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.emf</groupId>
-            <artifactId>org.eclipse.emf.ecore.xmi</artifactId>
-            <version>${emf-version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.osgi</groupId>
-            <artifactId>org.osgi.core</artifactId>
-            <version>6.0.0</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.osgi</groupId>
-            <artifactId>osgi.cmpn</artifactId>
-            <version>6.0.0</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.osgi</groupId>
-            <artifactId>org.osgi.annotation</artifactId>
-            <version>6.0.0</version>
-            <scope>provided</scope>
-        </dependency>
-
-        <dependency>
             <groupId>hu.blackbelt.judo.meta</groupId>
             <artifactId>judo-meta-psm</artifactId>
-            <version>${judo-meta-psm.version}</version>
         </dependency>
-
         <dependency>
             <groupId>hu.blackbelt.judo.meta</groupId>
             <artifactId>judo-meta-asm</artifactId>
-            <version>${judo-meta-asm.version}</version>
         </dependency>
-
+        <dependency>
+            <groupId>hu.blackbelt.judo.tatami</groupId>
+            <artifactId>judo-tatami-core</artifactId>
+        </dependency>
     </dependencies>
 
     <profiles>

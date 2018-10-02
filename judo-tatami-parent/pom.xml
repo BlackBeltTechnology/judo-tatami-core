@@ -48,16 +48,16 @@
         <maven.build.timestamp.format>yyyyMMddHHmmss</maven.build.timestamp.format>
         <epsilon.maven.plugin.version>1.1.1</epsilon.maven.plugin.version>
 
-        <judo-meta-rdbms.version>1.0.0-feature_JUDO_3182_AddModelActivator-8</judo-meta-rdbms.version>
+        <judo-meta-rdbms.version>1.0.0-SNAPSHOT</judo-meta-rdbms.version>
         <judo-meta-rdbms.import-range>[1.0,1.1)</judo-meta-rdbms.import-range>
 
         <judo-meta-psm.version>1.0.0-SNAPSHOT</judo-meta-psm.version>
         <judo-meta-psm.import-range>[1.0,1.1)</judo-meta-psm.import-range>
 
-        <judo-meta-odata.version>1.0.0-feature_JUDO_3182_AddModelActivator-9</judo-meta-odata.version>
+        <judo-meta-odata.version>1.0.0-SNAPSHOT</judo-meta-odata.version>
         <judo-meta-odata.import-range>[1.0,1.1)</judo-meta-odata.import-range>
 
-        <judo-meta-asm.version>1.0.0-feature_JUDO_3182_AddModelActivator-12</judo-meta-asm.version>
+        <judo-meta-asm.version>1.0.0-SNAPSHOT</judo-meta-asm.version>
         <judo-meta-asm.import-range>[1.0,1.1)</judo-meta-asm.import-range>
 
         <test.asm.model.groupId>${project.groupId}</test.asm.model.groupId>
@@ -71,6 +71,7 @@
     	<test.psm.model.version>1.0.0-develop-54</test.psm.model.version>
 
         <osgi-utils-version>1.0.4_develop-31</osgi-utils-version>
+        <epsilon-runtime-version>1.1.4_develop-42</epsilon-runtime-version>
 
     </properties>
 
@@ -86,7 +87,6 @@
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <version>1.16.16</version>
-            <scope>provided</scope>
         </dependency>
         
         <dependency>
@@ -99,19 +99,16 @@
             <groupId>org.osgi</groupId>
             <artifactId>org.osgi.core</artifactId>
             <version>6.0.0</version>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.osgi</groupId>
             <artifactId>osgi.cmpn</artifactId>
             <version>6.0.0</version>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.osgi</groupId>
             <artifactId>org.osgi.annotation</artifactId>
             <version>6.0.0</version>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.eclipse.emf</groupId>
@@ -131,9 +128,8 @@
         <dependency>
             <groupId>hu.blackbelt.epsilon</groupId>
             <artifactId>epsilon-runtime-execution</artifactId>
-            <version>1.1.4_develop-42</version>
+            <version>${epsilon-runtime-version}</version>
         </dependency>
-
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-simple</artifactId>
@@ -158,10 +154,55 @@
         </dependency>
         
     </dependencies>
-    
+
+    <dependencyManagement>
+        <dependencies>
+
+            <dependency>
+                <groupId>org.eclipse.emf</groupId>
+                <artifactId>org.eclipse.emf.ecore</artifactId>
+                <version>2.12.0</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.emf</groupId>
+                <artifactId>org.eclipse.emf.common</artifactId>
+                <version>2.12.0</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.emf</groupId>
+                <artifactId>org.eclipse.emf.ecore.xmi</artifactId>
+                <version>2.12.0</version>
+            </dependency>
+            <dependency>
+                <groupId>hu.blackbelt.judo.tatami</groupId>
+                <artifactId>judo-tatami-core</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>hu.blackbelt.judo.meta</groupId>
+                <artifactId>judo-meta-psm</artifactId>
+                <version>${judo-meta-psm.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>hu.blackbelt.judo.meta</groupId>
+                <artifactId>judo-meta-asm</artifactId>
+                <version>${judo-meta-asm.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>hu.blackbelt.judo.meta</groupId>
+                <artifactId>judo-meta-rdbms</artifactId>
+                <version>${judo-meta-rdbms.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
     <build>
         <pluginManagement>
             <plugins>
+                <plugin>
+                    <groupId>org.apache.felix</groupId>
+                    <artifactId>maven-bundle-plugin</artifactId>
+                    <version>3.3.0</version>
+                </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>

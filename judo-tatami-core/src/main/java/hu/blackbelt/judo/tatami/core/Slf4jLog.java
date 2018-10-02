@@ -1,10 +1,10 @@
-package hu.blackbelt.judo.tatami.psm2asm;
+package hu.blackbelt.judo.tatami.core;
 
 import hu.blackbelt.epsilon.runtime.execution.Log;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class Psm2AsmLog implements Log {
+public class Slf4jLog implements Log {
     public void debug(CharSequence charSequence) {
         log.debug(charSequence.toString());
     }
