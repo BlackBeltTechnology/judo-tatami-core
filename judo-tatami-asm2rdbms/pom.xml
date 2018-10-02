@@ -15,6 +15,11 @@
     <build>
         <plugins>
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+            </plugin>
+
+            <plugin>
                 <groupId>org.apache.felix</groupId>
                 <artifactId>maven-bundle-plugin</artifactId>
                 <version>3.3.0</version>
@@ -22,15 +27,31 @@
                 <configuration>
                     <obrRepository>NONE</obrRepository>
                     <instructions>
-                        <Export-Package>tatami/asm2rdbms;version=${project.version}</Export-Package>
-                        <Include-Resource>{maven-resources},tatami/asm2rdbms=src,tatami/asm2rdbms/model=model</Include-Resource>
+                        <Export-Package>
+                            tatami/asm2rdbms;version=${project.version},
+                            hu.blackbelt.judo.tatami.asm2rdbms.*;version=${project.version}
+                        </Export-Package>
+                        <Include-Resource>
+                            {maven-resources},
+                            tatami/asm2rdbms=src,
+                            tatami/asm2rdbms/model=model</Include-Resource>
                         <Import-Package>
+                            !lombok,
                             meta/rdbms;version="${judo-meta-rdbms.import-range}",
                             meta/asm;version="${judo-meta-asm.import-range}",
                             hu.blackbelt.judo.meta.rdbms*;version="${judo-meta-rdbms.import-range}",
                             hu.blackbelt.judo.meta.asm*;version="${judo-meta-asm.import-range}",
+                            com.google.common.base;version="[14.0,30)",
+                            com.google.common.cache;version="[14.0,30)",
+                            com.google.common.collect;version="[14.0,30)",
+                            com.google.common.io;version="[14.0,30)",
+                            com.google.common.primitives;version="[14.0,30)",
+                            com.google.common.hash;version="[14.0,30)",
+                            com.google.common.util.concurrent;version="[14.0,30)",
+                            javax.annotation;version="[1.0,2)",
                             *
                         </Import-Package>
+                        <Rdbms-Meta-Version-Range>${judo-meta-rdbms.import-range}</Rdbms-Meta-Version-Range>
                     </instructions>
                 </configuration>
             </plugin>
@@ -41,12 +62,14 @@
         <dependency>
             <groupId>hu.blackbelt.judo.meta</groupId>
             <artifactId>judo-meta-asm</artifactId>
-            <version>${judo-meta-asm.version}</version>
         </dependency>
         <dependency>
             <groupId>hu.blackbelt.judo.meta</groupId>
             <artifactId>judo-meta-rdbms</artifactId>
-            <version>${judo-meta-rdbms.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>hu.blackbelt.judo.tatami</groupId>
+            <artifactId>judo-tatami-core</artifactId>
         </dependency>
     </dependencies>
 
