@@ -193,6 +193,12 @@
                 <artifactId>judo-meta-rdbms</artifactId>
                 <version>${judo-meta-rdbms.version}</version>
             </dependency>
+            <dependency>
+                <groupId>hu.blackbelt.judo.meta</groupId>
+                <artifactId>judo-meta-odata</artifactId>
+                <version>${judo-meta-odata.version}</version>
+            </dependency>
+
         </dependencies>
     </dependencyManagement>
     <build>
