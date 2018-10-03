@@ -66,9 +66,9 @@
 
         <test.psm.model.groupId>hu.blackbelt.northwind</test.psm.model.groupId>
         <test.psm.model.artifactId>northwind-model</test.psm.model.artifactId>
-        <emf-version>2.12.0</emf-version>
+        <test.psm.model.version>1.0.0-SNAPSHOT</test.psm.model.version>
 
-    	<test.psm.model.version>1.0.0-develop-54</test.psm.model.version>
+        <emf-version>2.12.0</emf-version>
 
         <osgi-utils-version>1.0.4_develop-31</osgi-utils-version>
         <epsilon-runtime-version>1.1.4_develop-42</epsilon-runtime-version>

@@ -39,7 +39,7 @@ public class AsmModelInfoTracker extends AbstractModelInfoTracker<AsmModelInfo> 
 
     @Override
     public Class<AsmModelInfo> getModelInfoClass() {
-        return null;
+        return AsmModelInfo.class;
     }
 
 }

@@ -55,7 +55,7 @@ public class Psm2AsmTransformation {
 
 
     Map<String, ServiceRegistration<AsmModelInfo>> asmRegistrations = new ConcurrentHashMap<>();
-    Map<String, PsmModelInfo> asmModels = new HashMap<>();
+    Map<String, AsmModelInfo> asmModels = new HashMap<>();
 
     ComponentContext componentContext;
 
@@ -66,7 +66,7 @@ public class Psm2AsmTransformation {
 
     @Deactivate
     public void deativate() {
-        asmRegistrations.values().forEach(e -> e.unregister());
+        asmRegistrations.forEach((k, v) -> { v.unregister(); asmModels.get(k).getFile().delete(); });
     }
 
     public void install(PsmModelInfo psmModelInfo) {
@@ -74,6 +74,9 @@ public class Psm2AsmTransformation {
         String key = componentContext.getBundleContext().getBundle().getBundleId() + "-" + psmModelInfo.getName();
 
         File targetAsmModelFile = componentContext.getBundleContext().getBundle().getDataFile(key + ".model");
+        if (targetAsmModelFile.exists()) {
+            targetAsmModelFile.delete();
+        }
 
         AsmModelInfo asmModelInfo = new AsmModelInfo(
                 targetAsmModelFile,
@@ -88,42 +91,28 @@ public class Psm2AsmTransformation {
                 .name("SRC")
                 .aliases(ImmutableList.of("JUDOPSM"))
                 .artifacts(ImmutableMap.of("model", psmModelInfo.getFile().getAbsolutePath()))
-                .cached(true)
-                .expand(true)
                 .metaModelUris(ImmutableList.of(NamespacePackage.eNS_URI, FacadePackage.eNS_URI, DataPackage.eNS_URI, TypePackage.eNS_URI))
-                .readOnLoad(true)
-                .storeOnDisposal(false)
+                .expand(true)
                 .build());
 
         modelContexts.add(EmfModelContext.builder()
                 .name("TYPES")
                 .artifacts(ImmutableMap.of("model", asmResourceLoader.getTypesFile().getAbsolutePath()))
                 .platformAlias(HTTP_BLACKBELT_HU_JUDO_ASM_TYPES)
-                .cached(true)
-                .expand(true)
                 .metaModelUris(ImmutableList.of(EcorePackage.eNS_URI))
-                .readOnLoad(true)
-                .storeOnDisposal(false)
                 .build());
 
         modelContexts.add(EmfModelContext.builder()
                 .name("BASE")
                 .artifacts(ImmutableMap.of("model", asmResourceLoader.getBaseFile().getAbsolutePath()))
                 .platformAlias(HTTP_BLACKBELT_HU_JUDO_ASM_BASE)
-                .cached(true)
-                .expand(true)
                 .metaModelUris(ImmutableList.of(EcorePackage.eNS_URI))
-                .readOnLoad(true)
-                .storeOnDisposal(false)
                 .build());
 
 
         modelContexts.add(EmfModelContext.builder()
                 .name("ASM")
                 .artifacts(ImmutableMap.of("model", targetAsmModelFile.getAbsolutePath()))
-                .platformAlias(HTTP_BLACKBELT_HU_JUDO_ASM_BASE)
-                .cached(true)
-                .expand(false)
                 .metaModelUris(ImmutableList.of(EcorePackage.eNS_URI))
                 .readOnLoad(false)
                 .storeOnDisposal(true)
@@ -146,11 +135,6 @@ public class Psm2AsmTransformation {
             psmMetaModel.registerPsmMetamodel(executionContext.getResourceSet());
             executionContext.init();
 
-            log.info("Registering model: " + asmModelInfo);
-            ServiceRegistration<AsmModelInfo> modelServiceRegistration = componentContext.getBundleContext().registerService(AsmModelInfo.class, asmModelInfo, asmModelInfo.toDictionary());
-            asmModels.put(key, psmModelInfo);
-            asmRegistrations.put(key, modelServiceRegistration);
-
             EtlExecutionContext etlExecutionContext = EtlExecutionContext.etlExecutionContextBuilder()
                     .source("psm2asm/transformations/asm/psmToAsm.etl")
                     .parameters(ImmutableList.of(
@@ -163,8 +147,13 @@ public class Psm2AsmTransformation {
             executionContext.executeProgram(etlExecutionContext);
 
             executionContext.commit();
+
+            log.info("Registering model: " + asmModelInfo);
+            ServiceRegistration<AsmModelInfo> modelServiceRegistration = componentContext.getBundleContext().registerService(AsmModelInfo.class, asmModelInfo, asmModelInfo.toDictionary());
+            asmModels.put(key, asmModelInfo);
+            asmRegistrations.put(key, modelServiceRegistration);
         } catch (Exception e) {
-            log.error("Could not transform PSM model", e);
+            log.error("Could not transform PSM -> ASM model", e);
         }
     }
 
@@ -173,6 +162,7 @@ public class Psm2AsmTransformation {
         if (!asmRegistrations.containsKey(key)) {
             log.error("Model is not registered: " + psmModelInfo.getName());
         } else {
+            asmModels.get(key).getFile().delete();
             asmRegistrations.get(key).unregister();
             asmRegistrations.remove(key);
             asmModels.remove(key);
