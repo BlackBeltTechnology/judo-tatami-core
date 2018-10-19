@@ -25,6 +25,8 @@ rule CreateEntityClass
 rule CreateAttribute
 	transform s : JUDOPSM!Attribute
 	to t : ASM!EAttribute {
+		guard: s.isPrimitive()
+		
 		t.name = s.name;
 		if (s.required) {
 			t.lowerBound = 1;
@@ -36,9 +38,9 @@ rule CreateAttribute
 			t.iD = true;
 		}
 
-		t.eType = s.primitive.getEcoreType();
+		t.eType = s.dataType.getEcoreType();
 
-		var annotations = s.primitive.createASMAnnotations();
+		var annotations = s.dataType.createASMAnnotations();
 		if (not annotations.isEmpty()) {
 			var annotation = new ASM!EAnnotation;
 			annotation.source = extendedMetadataURI;
@@ -54,8 +56,8 @@ rule CreateReference
 	to t : ASM!EReference {
 		t.name = s.name;
 
-		t.lowerBound = s.lower;
-		t.upperBound = s.upper;
+		t.lowerBound = s.cardinality.lower;
+		t.upperBound = s.cardinality.upper;
 
 		var annotations = s.target.createASMAnnotations();
 		if (not annotations.isEmpty()) {
