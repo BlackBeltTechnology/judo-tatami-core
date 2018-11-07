@@ -46,6 +46,9 @@ operation JUDOPSM!Primitive getEcoreType() : TYPES!EDataType {
 		return "JBoolean".getJudoDataType();
 	} else if (self.isKindOf(JUDOPSM!Enumeration)) {
 		return self.equivalent();
+	} else if (self.isKindOf(JUDOPSM!ComplexType)) {
+		"Complex attributes are not supported yet".println();
+		return "JObject".getJudoDataType();
 	} else if (self.isKindOf(JUDOPSM!Custom)) {
 		switch (self.name) {
 			case "Date":

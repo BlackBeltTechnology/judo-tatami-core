@@ -1,7 +1,7 @@
 import "../../../operations/psm/facade/_importFacade.eol";
 import "../utils/_importUtils.eol";
 
-@abstract
+/*@abstract
 rule CreateFacadeClass
 	transform s : JUDOPSM!Facade
 	to t : ASM!EClass {
@@ -56,28 +56,6 @@ rule CreateFacadeAttribute
 		s.getFacade().equivalent().eStructuralFeatures.add(t);
 	}
 
-/*rule CreateComplexFacadeAttribute
-	transform s : JUDOPSM!Property
-	to t : ASM!EReference {
-		guard : s.type.isKindOf(JUDOPSM!Structure)
-
-		t.name = s.name;
-
-		// TODO: set lowerBound and upperBound attributes
-		t.eType = s.type.equivalent();
-		t.containment = true;
-
-		var annotation = new ASM!EAnnotation;
-		annotation.source = extendedMetadataURI;
-		var aEmbedded = new ASM!EStringToStringMapEntry;
-		aEmbedded.key = "embedded";
-		aEmbedded.value = "true";
-		annotation.details.add(aEmbedded);
-		t.eAnnotations.add(annotation);
-
-		s.getFacade().equivalent().eStructuralFeatures.add(t);
-	} */
-
 rule CreateFacadeLink
 	transform s : JUDOPSM!Link
 	to t : ASM!EReference {
@@ -87,4 +65,4 @@ rule CreateFacadeLink
 		t.eType = s.target.name.getFacadeReference();
 
 		s.getFacade().equivalent().eStructuralFeatures.add(t);
-	}
+	}*/
