@@ -1,4 +1,4 @@
 @cached
-operation String getFacadeReference() : ASM!EClass {
+operation String getFacadeRelation() : ASM!EClass {
 	return JUDOPSM!Facade.all.selectOne(et | et.name == self).equivalent();
 }

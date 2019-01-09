@@ -1,4 +1,4 @@
 @cached
-operation String getEntityTypeReference() : ASM!EClass {
+operation String getEntityTypeRelation() : ASM!EClass {
 	return JUDOPSM!EntityType.all.selectOne(et | et.name == self).equivalent();
 }

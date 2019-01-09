@@ -51,8 +51,8 @@ rule CreateAttribute
 		s.getEntityType().equivalent().eStructuralFeatures.add(t);
 	}
 
-rule CreateReference
-	transform s : JUDOPSM!Reference
+rule CreateRelation
+	transform s : JUDOPSM!Relation
 	to t : ASM!EReference {
 		t.name = s.name;
 
@@ -69,19 +69,19 @@ rule CreateReference
 
 		s.getEntityType().equivalent().eStructuralFeatures.add(t);	
 	
-		t.eType = s.target.name.getEntityTypeReference();
+		t.eType = s.target.name.getEntityTypeRelation();
 	}
 
-rule CreateEndpointReference
+rule CreateEndpointRelation
 	transform s : JUDOPSM!Endpoint
 	to t : ASM!EReference
-	extends CreateReference {
+	extends CreateRelation {
 		t.eOpposite = s.partner.equivalent();
 }
 
-rule CreateContainmentReference
+rule CreateContainmentRelation
 	transform s : JUDOPSM!Containment
 	to t : ASM!EReference
-	extends CreateReference {
+	extends CreateRelation {
 		t.containment = true;
 }
