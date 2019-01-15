@@ -5,6 +5,7 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import hu.blackbelt.epsilon.runtime.execution.ArtifactResolver;
 import hu.blackbelt.epsilon.runtime.execution.ExecutionContext;
+import hu.blackbelt.epsilon.runtime.execution.ModelContext;
 import hu.blackbelt.epsilon.runtime.execution.contexts.EtlExecutionContext;
 import hu.blackbelt.epsilon.runtime.execution.contexts.ProgramParameter;
 import hu.blackbelt.epsilon.runtime.execution.model.emf.EmfModelContext;
@@ -86,7 +87,7 @@ public class Psm2AsmTransformation {
                 psmModelInfo.getChecksum(),
                 new VersionRange(componentContext.getBundleContext().getBundle().getHeaders().get(ASM_META_VERSION_RANGE)));
 
-        List modelContexts = Lists.newArrayList();
+        List<ModelContext> modelContexts = Lists.newArrayList();
         modelContexts.add(EmfModelContext.builder()
                 .name("SRC")
                 .aliases(ImmutableList.of("JUDOPSM"))

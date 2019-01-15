@@ -2,16 +2,13 @@ package hu.blackbelt.judo.tatami.asm2rdbms;
 
 import hu.blackbelt.judo.meta.asm.AsmModelInfo;
 import hu.blackbelt.judo.tatami.core.AbstractModelInfoTracker;
-import lombok.extern.slf4j.Slf4j;
 import org.osgi.framework.BundleContext;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Reference;
 
-
 @Component(immediate = true)
-@Slf4j
 public class AsmModelInfoTracker extends AbstractModelInfoTracker<AsmModelInfo> {
 
     @Reference

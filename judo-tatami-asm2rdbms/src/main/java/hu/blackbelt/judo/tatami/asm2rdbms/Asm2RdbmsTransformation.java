@@ -5,6 +5,7 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import hu.blackbelt.epsilon.runtime.execution.ArtifactResolver;
 import hu.blackbelt.epsilon.runtime.execution.ExecutionContext;
+import hu.blackbelt.epsilon.runtime.execution.ModelContext;
 import hu.blackbelt.epsilon.runtime.execution.contexts.EtlExecutionContext;
 import hu.blackbelt.epsilon.runtime.execution.contexts.ProgramParameter;
 import hu.blackbelt.epsilon.runtime.execution.model.emf.EmfModelContext;
@@ -15,7 +16,6 @@ import hu.blackbelt.judo.meta.rdbms.RdbmsMetaModel;
 import hu.blackbelt.judo.meta.rdbms.RdbmsModelInfo;
 import hu.blackbelt.judo.meta.rdbms.RdbmsPackage;
 import hu.blackbelt.judo.tatami.core.Slf4jLog;
-import hu.blackbelt.osgi.utils.osgi.api.BundleUtil;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.emf.common.util.URI;
@@ -89,7 +89,7 @@ public class Asm2RdbmsTransformation {
                 asmModelInfo.getChecksum(),
                 new VersionRange(componentContext.getBundleContext().getBundle().getHeaders().get(RDBMS_META_VERSION_RANGE)));
 
-        List modelContexts = Lists.newArrayList();
+        List<ModelContext> modelContexts = Lists.newArrayList();
 
         modelContexts.add(EmfModelContext.builder()
                 .name("ASM")
