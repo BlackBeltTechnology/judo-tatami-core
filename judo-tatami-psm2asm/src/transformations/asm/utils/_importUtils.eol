@@ -1,3 +1,2 @@
 import "entity.eol";
-import "facade.eol";
 import "type.eol";

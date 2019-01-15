@@ -3,7 +3,7 @@ import "../../../operations/asm/_importAsm.eol";
 import "../utils/_importUtils.eol";
 
 rule CreateEnumeration
-	transform s : JUDOPSM!Enumeration
+	transform s : JUDOPSM!EnumerationType
 	to t : ASM!EEnum {
 		t.name = s.name;
 		s.getPackage().equivalent().eClassifiers.add(t);

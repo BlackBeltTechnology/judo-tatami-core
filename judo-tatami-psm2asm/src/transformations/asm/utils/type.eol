@@ -1,14 +1,14 @@
 operation JUDOPSM!Type createASMAnnotations() : Sequence {
 	var annotations = Sequence{};
 
-	if (self.isKindOf(JUDOPSM!String)) {
+	if (self.isKindOf(JUDOPSM!StringType)) {
 		if (self.maxLength.isDefined()) {
 			var aMaxLength = new ASM!EStringToStringMapEntry;
 			aMaxLength.key = "maxLength";
 			aMaxLength.value = self.maxLength.asString();
 			annotations.add(aMaxLength);
 		}
-	} else if (self.isKindOf(JUDOPSM!Custom)) {
+	} else if (self.isKindOf(JUDOPSM!CustomType)) {
 		switch (self.name) {
 			case "Date":
 			case "Timestamp":
@@ -26,9 +26,9 @@ operation JUDOPSM!Type createASMAnnotations() : Sequence {
 
 @cached
 operation JUDOPSM!Primitive getEcoreType() : TYPES!EDataType {
-	if (self.isKindOf(JUDOPSM!String)) {
+	if (self.isKindOf(JUDOPSM!StringType)) {
 		return "JString".getJudoDataType();
-	} else if (self.isKindOf(JUDOPSM!Numeric)) {
+	} else if (self.isKindOf(JUDOPSM!NumericType)) {
 		if (self.precision == 0 and self.scale <= 9) {
 			return "JInteger".getJudoDataType();
 		} else if (self.precision == 0 and self.scale > 9 and self.scale <= 18) {
@@ -42,11 +42,11 @@ operation JUDOPSM!Primitive getEcoreType() : TYPES!EDataType {
 		} else if (self.precision > 0 and self.scale > 15) {
 			return "JBigDecimal".getJudoDataType();
 		}
-	} else if (self.isKindOf(JUDOPSM!Boolean)) {
+	} else if (self.isKindOf(JUDOPSM!BooleanType)) {
 		return "JBoolean".getJudoDataType();
-	} else if (self.isKindOf(JUDOPSM!Enumeration)) {
+	} else if (self.isKindOf(JUDOPSM!EnumerationType)) {
 		return self.equivalent();
-	} else if (self.isKindOf(JUDOPSM!Custom)) {
+	} else if (self.isKindOf(JUDOPSM!CustomType)) {
 		switch (self.name) {
 			case "Date":
 				return "JDate".getJudoDataType();
