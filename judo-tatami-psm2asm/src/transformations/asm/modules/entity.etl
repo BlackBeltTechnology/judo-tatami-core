@@ -67,9 +67,8 @@ rule CreateRelation
 			t.eAnnotations.add(annotation);
 		}
 
-		s.getEntityType().equivalent().eStructuralFeatures.add(t);	
-	
-		t.eType = s.target.name.getEntityTypeRelation();
+		s.getEntityType().equivalent().eStructuralFeatures.add(t);
+		t.eType = s.target.equivalent();
 	}
 
 rule CreateEndpointRelation
