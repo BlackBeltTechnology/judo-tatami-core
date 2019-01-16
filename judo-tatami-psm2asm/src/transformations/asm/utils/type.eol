@@ -10,8 +10,6 @@ operation JUDOPSM!Type createASMAnnotations() : Sequence {
 		}
 	} else if (self.isKindOf(JUDOPSM!CustomType)) {
 		switch (self.name) {
-			case "Date":
-			case "Timestamp":
 			case "Binary":
 			default:
 				var aCustomType = new ASM!EStringToStringMapEntry;
@@ -46,12 +44,12 @@ operation JUDOPSM!Primitive getEcoreType() : TYPES!EDataType {
 		return "JBoolean".getJudoDataType();
 	} else if (self.isKindOf(JUDOPSM!EnumerationType)) {
 		return self.equivalent();
+    } else if (self.isKindOf(JUDOPSM!DateType)) {
+        return "JDate".getJudoDataType();
+    } else if (self.isKindOf(JUDOPSM!TimestampType)) {
+        return "JTimestamp".getJudoDataType();
 	} else if (self.isKindOf(JUDOPSM!CustomType)) {
 		switch (self.name) {
-			case "Date":
-				return "JDate".getJudoDataType();
-			case "Timestamp":
-				return "JTimestamp".getJudoDataType();
 			case "Binary":
 				return "JByteArray".getJudoDataType();
 			default:

@@ -6,7 +6,7 @@ rule CreateEnumeration
 	transform s : JUDOPSM!EnumerationType
 	to t : ASM!EEnum {
 		t.name = s.name;
-		s.getPackage().equivalent().eClassifiers.add(t);
+		s.getNamespace().equivalent().eClassifiers.add(t);
 		for (m in s.members) {
 			var l = new ASM!EEnumLiteral;
 			l.value = m.ordinal;

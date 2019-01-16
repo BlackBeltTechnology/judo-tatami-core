@@ -9,7 +9,7 @@ rule CreateEntityClass
 		for (super in s.superEntityTypes) {
 			t.eSuperTypes.add(super.equivalent());
 		}
-		s.getPackage().equivalent().eClassifiers.add(t);
+		s.getNamespace().equivalent().eClassifiers.add(t);
 		
 		t.eSuperTypes.add(BASE!EClass.all.selectOne(c | c.name = "Identifiable"));
 
