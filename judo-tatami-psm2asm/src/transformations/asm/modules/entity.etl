@@ -59,6 +59,7 @@ rule CreateRelation
 		t.lowerBound = s.cardinality.lower;
 		t.upperBound = s.cardinality.upper;
 
+		s.name.println("CreateASMAnnotations:");
 		var annotations = s.target.createASMAnnotations();
 		if (not annotations.isEmpty()) {
 			var annotation = new ASM!EAnnotation;

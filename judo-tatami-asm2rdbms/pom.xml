@@ -32,7 +32,8 @@
                         </Export-Package>
                         <Include-Resource>
                             {maven-resources},
-                            tatami/asm2rdbms=src,
+                            tatami/asm2rdbms/transformations=src/transformations,
+                            tatami/asm2rdbms/operations=src/operations,
                             tatami/asm2rdbms/model=model</Include-Resource>
                         <Import-Package>
                             !lombok,
@@ -93,16 +94,24 @@
                                         <metaModel>mvn:hu.blackbelt.judo.meta:judo-meta-asm:ecore:types:${judo-meta-asm.version}</metaModel>
                                         <metaModel>mvn:hu.blackbelt.judo.meta:judo-meta-asm:ecore:base:${judo-meta-asm.version}</metaModel>
                                     </metaModels>
-                                    <excelModels>
-                                        <excelModel>
-                                            <name>TYPEMAPPING</name>
-                                            <artifact>${basedir}/model/RDBMS Data Types Hsqldb.xlsx</artifact>
-                                            <configurationArtifact>file:${basedir}/model/mapping.xml</configurationArtifact>
-                                            <aliases>
-                                                <alias>TYPEMAPPING</alias>
-                                            </aliases>
-                                        </excelModel>
-                                    </excelModels>		
+                                        <excelModels>
+                                            <excelModel>
+                                                <name>TYPEMAPPING</name>
+                                                <artifact>${basedir}/model/RDBMS Data Types Hsqldb.xlsx</artifact>
+                                                <configurationArtifact>file:${basedir}/model/typemapping.xml</configurationArtifact>
+                                                <aliases>
+                                                    <alias>TYPEMAPPING</alias>
+                                                </aliases>
+                                            </excelModel>
+                                            <excelModel>
+                                                <name>RULEMAPPING</name>
+                                                <artifact>${basedir}/model/RDBMS Table Mapping Rules.xlsx</artifact>
+                                                <configurationArtifact>file:${basedir}/model/rulemapping.xml</configurationArtifact>
+                                                <aliases>
+                                                    <alias>RULEMAPPING</alias>
+                                                </aliases>
+                                            </excelModel>
+                                        </excelModels>		
                                     <models>
                                         <model>
                                             <artifact>mvn:${test.asm.model.groupId}:${test.asm.model.artifactId}:model:asm:${test.asm.model.version}</artifact>
@@ -112,7 +121,22 @@
                                                 <param>http://blackbelt.hu/judo/asm/types</param>
                                             </metaModelUris>
                                         </model>
-
+                                        <model>
+                                            <artifact>mvn:hu.blackbelt.judo.meta:judo-meta-asm:ecore:types:${judo-meta-asm.version}</artifact>
+                                            <name>TYPES</name>
+                                            <metaModelUris>
+                                                <param>http://www.eclipse.org/emf/2002/Ecore</param>
+                                            </metaModelUris>
+                                            <platformAlias>http://blackbelt.hu/judo/asm/types</platformAlias>
+                                        </model>
+                                        <model>
+                                            <artifact>mvn:hu.blackbelt.judo.meta:judo-meta-asm:ecore:base:${judo-meta-asm.version}</artifact>
+                                            <name>BASE</name>
+                                            <metaModelUris>
+                                                <param>http://www.eclipse.org/emf/2002/Ecore</param>
+                                            </metaModelUris>
+                                            <platformAlias>http://blackbelt.hu/judo/asm/base</platformAlias>
+                                        </model>
                                         <model>
                                             <artifact>${project.build.directory}/rdbmsHsqldb.model</artifact>
                                             <name>RDBMS</name>
@@ -140,6 +164,174 @@
                                     </eolPrograms>
                                 </configuration>
                             </execution>
+
+
+                            <execution>
+                                <id>transform-postgresql</id>
+                                <phase>generate-resources</phase>
+                                <goals>
+                                    <goal>execute</goal>
+                                </goals>
+                                <configuration>
+                                    <metaModels>
+                                        <metaModel>mvn:hu.blackbelt.judo.meta:judo-meta-rdbms:ecore:rdbms:${judo-meta-rdbms.version}</metaModel>
+                                        <metaModel>mvn:hu.blackbelt.judo.meta:judo-meta-asm:ecore:types:${judo-meta-asm.version}</metaModel>
+                                        <metaModel>mvn:hu.blackbelt.judo.meta:judo-meta-asm:ecore:base:${judo-meta-asm.version}</metaModel>
+                                    </metaModels>
+                                        <excelModels>
+                                            <excelModel>
+                                                <name>TYPEMAPPING</name>
+                                                <artifact>${basedir}/model/RDBMS Data Types Postgres.xlsx</artifact>
+                                                <configurationArtifact>file:${basedir}/model/typemapping.xml</configurationArtifact>
+                                                <aliases>
+                                                    <alias>TYPEMAPPING</alias>
+                                                </aliases>
+                                            </excelModel>
+                                            <excelModel>
+                                                <name>RULEMAPPING</name>
+                                                <artifact>${basedir}/model/RDBMS Table Mapping Rules.xlsx</artifact>
+                                                <configurationArtifact>file:${basedir}/model/rulemapping.xml</configurationArtifact>
+                                                <aliases>
+                                                    <alias>RULEMAPPING</alias>
+                                                </aliases>
+                                            </excelModel>
+                                        </excelModels>      
+                                    <models>
+                                        <model>
+                                            <artifact>mvn:${test.asm.model.groupId}:${test.asm.model.artifactId}:model:asm:${test.asm.model.version}</artifact>
+                                            <name>ASM</name>
+                                            <metaModelUris>
+                                                <param>http://www.eclipse.org/emf/2002/Ecore</param>
+                                                <param>http://blackbelt.hu/judo/asm/types</param>
+                                            </metaModelUris>
+                                        </model>
+                                        <model>
+                                            <artifact>mvn:hu.blackbelt.judo.meta:judo-meta-asm:ecore:types:${judo-meta-asm.version}</artifact>
+                                            <name>TYPES</name>
+                                            <metaModelUris>
+                                                <param>http://www.eclipse.org/emf/2002/Ecore</param>
+                                            </metaModelUris>
+                                            <platformAlias>http://blackbelt.hu/judo/asm/types</platformAlias>
+                                        </model>
+                                        <model>
+                                            <artifact>mvn:hu.blackbelt.judo.meta:judo-meta-asm:ecore:base:${judo-meta-asm.version}</artifact>
+                                            <name>BASE</name>
+                                            <metaModelUris>
+                                                <param>http://www.eclipse.org/emf/2002/Ecore</param>
+                                            </metaModelUris>
+                                            <platformAlias>http://blackbelt.hu/judo/asm/base</platformAlias>
+                                        </model>
+                                        <model>
+                                            <artifact>${project.build.directory}/rdbmsPostgres.model</artifact>
+                                            <name>RDBMS</name>
+                                            <readOnLoad>false</readOnLoad>
+                                            <storeOnDisposal>true</storeOnDisposal>
+                                            <metaModelUris>
+                                                <param>http://blackbelt.hu/judo/meta/psm/rdbms</param>
+                                            </metaModelUris>
+                                        </model>
+                                    </models>
+                                    <eolPrograms>
+                                        <Etl>
+                                            <source>${basedir}/src/transformations/asmToRdbms.etl</source>
+                                            <parameters>
+                                                <parameter>
+                                                    <name>asmVersion</name>
+                                                    <value>${project.version}</value>
+                                                </parameter>
+                                                <parameter>
+                                                    <name>extendedMetadataURI</name>
+                                                    <value>http://blackbelt.hu/judo/meta/ExtendedMetadata</value>
+                                                </parameter>
+                                            </parameters>
+                                        </Etl>
+                                    </eolPrograms>
+                                </configuration>
+                            </execution>
+
+                            <execution>
+                                <id>transform-oracle</id>
+                                <phase>generate-resources</phase>
+                                <goals>
+                                    <goal>execute</goal>
+                                </goals>
+                                <configuration>
+                                    <metaModels>
+                                        <metaModel>mvn:hu.blackbelt.judo.meta:judo-meta-rdbms:ecore:rdbms:${judo-meta-rdbms.version}</metaModel>
+                                        <metaModel>mvn:hu.blackbelt.judo.meta:judo-meta-asm:ecore:types:${judo-meta-asm.version}</metaModel>
+                                        <metaModel>mvn:hu.blackbelt.judo.meta:judo-meta-asm:ecore:base:${judo-meta-asm.version}</metaModel>
+                                    </metaModels>
+                                        <excelModels>
+                                            <excelModel>
+                                                <name>TYPEMAPPING</name>
+                                                <artifact>${basedir}/model/RDBMS Data Types Oracle.xlsx</artifact>
+                                                <configurationArtifact>file:${basedir}/model/typemapping.xml</configurationArtifact>
+                                                <aliases>
+                                                    <alias>TYPEMAPPING</alias>
+                                                </aliases>
+                                            </excelModel>
+                                            <excelModel>
+                                                <name>RULEMAPPING</name>
+                                                <artifact>${basedir}/model/RDBMS Table Mapping Rules.xlsx</artifact>
+                                                <configurationArtifact>file:${basedir}/model/rulemapping.xml</configurationArtifact>
+                                                <aliases>
+                                                    <alias>RULEMAPPING</alias>
+                                                </aliases>
+                                            </excelModel>
+                                        </excelModels>      
+                                    <models>
+                                        <model>
+                                            <artifact>mvn:${test.asm.model.groupId}:${test.asm.model.artifactId}:model:asm:${test.asm.model.version}</artifact>
+                                            <name>ASM</name>
+                                            <metaModelUris>
+                                                <param>http://www.eclipse.org/emf/2002/Ecore</param>
+                                                <param>http://blackbelt.hu/judo/asm/types</param>
+                                            </metaModelUris>
+                                        </model>
+                                        <model>
+                                            <artifact>mvn:hu.blackbelt.judo.meta:judo-meta-asm:ecore:types:${judo-meta-asm.version}</artifact>
+                                            <name>TYPES</name>
+                                            <metaModelUris>
+                                                <param>http://www.eclipse.org/emf/2002/Ecore</param>
+                                            </metaModelUris>
+                                            <platformAlias>http://blackbelt.hu/judo/asm/types</platformAlias>
+                                        </model>
+                                        <model>
+                                            <artifact>mvn:hu.blackbelt.judo.meta:judo-meta-asm:ecore:base:${judo-meta-asm.version}</artifact>
+                                            <name>BASE</name>
+                                            <metaModelUris>
+                                                <param>http://www.eclipse.org/emf/2002/Ecore</param>
+                                            </metaModelUris>
+                                            <platformAlias>http://blackbelt.hu/judo/asm/base</platformAlias>
+                                        </model>
+                                        <model>
+                                            <artifact>${project.build.directory}/rdbmsOracle.model</artifact>
+                                            <name>RDBMS</name>
+                                            <readOnLoad>false</readOnLoad>
+                                            <storeOnDisposal>true</storeOnDisposal>
+                                            <metaModelUris>
+                                                <param>http://blackbelt.hu/judo/meta/psm/rdbms</param>
+                                            </metaModelUris>
+                                        </model>
+                                    </models>
+                                    <eolPrograms>
+                                        <Etl>
+                                            <source>${basedir}/src/transformations/asmToRdbms.etl</source>
+                                            <parameters>
+                                                <parameter>
+                                                    <name>asmVersion</name>
+                                                    <value>${project.version}</value>
+                                                </parameter>
+                                                <parameter>
+                                                    <name>extendedMetadataURI</name>
+                                                    <value>http://blackbelt.hu/judo/meta/ExtendedMetadata</value>
+                                                </parameter>
+                                            </parameters>
+                                        </Etl>
+                                    </eolPrograms>
+                                </configuration>
+                            </execution>
+
                         </executions>
                     </plugin>
 
@@ -177,7 +369,6 @@
                                             <type>model</type>
                                             <classifier>lsm-rdbmsHsqldb</classifier>
                                         </artifact>
-                                        <!--
                                         <artifact>
                                             <file>${project.build.directory}/rdbmsPostgres.model</file>
                                             <type>model</type>
@@ -188,7 +379,6 @@
                                             <type>model</type>
                                             <classifier>lsms-rdbmsOracle</classifier>
                                         </artifact>
-                                        -->
                                     </artifacts>
                                 </configuration>
                             </execution>

@@ -54,6 +54,7 @@ operation PSM!JClass allRoles() : Collection {
 	return ret;
 }
 */
+/*
 operation ASM!EClass createForeginKey(otherClass : ASM!EClass) : RDBMS!RdbmsForeignKey {
 	var created : RDBMS!RdbmsForeignKey = new RDBMS!RdbmsForeignKey();
 	created.name = otherClass.getPackage().fqName() + "." + otherClass.name;
@@ -71,6 +72,8 @@ operation ASM!EClass createForeginKey(otherClass : ASM!EClass) : RDBMS!RdbmsFore
 	created.foreignKeySqlName = "FK_" + md5(created.uuid);
 	return created;
 }
+*/
+
 /*
 @cached
 operation PSM!JClass id() : PSM!JAttribute {
