@@ -11,6 +11,6 @@ operation ASM!EAttribute getClass() : ASM!EClass {
 }
 
 @cached
-operation ASM!EAttribute fqName() : String {
-	return self.getClass().fqName() + "#" + self.name;
+operation ASM!EAttribute getFQName() : String {
+	return self.getClass().getFQName() + "#" + self.name;
 }

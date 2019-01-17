@@ -4,6 +4,6 @@ operation ASM!ENamedElement sqlName() : String {
     if (self.hasAnnotation("shortName")) {
 	    return self.getAnnotationValue("shortName").toUpperSnakeCase();
     } else {
-    	return abbreviate(self.name, 6).toUpperCase();
+    	return abbreviate(self.name, shortNameSize()).toUpperCase();
 	}
 }

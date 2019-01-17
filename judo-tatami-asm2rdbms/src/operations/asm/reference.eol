@@ -1,61 +1,17 @@
 import "modelElement.eol";
 
 @cached
-operation EReference isEmbedded() : Boolean {
+operation ASM!EReference isEmbedded() : Boolean {
 	return self.annotatedAsTrue("embedded");
 }
 
 @cached
-operation ASM!EReference isManyToMany() : Boolean {
-	var ref1 : ASM!EReference = self;
-	var ref2 : ASM!EReference = self.eOpposite;
-	if (ref2.isDefined() and ref1.upperBound = -1 and ref2.upperBound = -1) {
-		return true;
-	}
-	return false;
+operation ASM!EReference getFQName() : String {
+	return self.eContainingClass.getFQName() + "#" + self.name;
 }
+
 
 @cached
-operation ASM!EReference ownerReference() : ASM!EReference {
-	var ref1 : ASM!EReference = self;
-	var ref2 : ASM!EReference = self.eOpposite;
-
-	if (ref2.isUndefined()) {
-		return ref1;
-	}
-
-	if (ref1.upperBound == 1 and ref2.upperBound == -1) {
-		return ref1;
-	} else if (ref1.upperBound == 1 and ref2.upperBound == 1) {
-		if (ref2.containment or ref1.lowerBound == 1) {
-			return ref1;
-		} else if (ref1.containment and ref1.lowerBound = 0 and ref2.lowerBound = 0 and ref1.name.compareTo(ref2.name)) {
-			return ref1;
-		}
-	} else if (self.isManyToMany()) {
-		return null;
-	}
-
-    return ref2;	
+operation ASM!EReference getReferenceFQName() : String {
+	return self.eReferenceType.getFQName() + "#" + self.name;
 }
-
-@cached
-operation ASM!EReference isForeign() : Boolean {
-	return self.ownerReference() == self;
-}
-
-@cached
-operation ASM!EReference fqName() : String {
-	return self.eContainingClass.fqName() + "#" + self.name;
-}
-
-@cached
-operation ASM!EReference invFqName() : String {
-	return self.eReferenceType.fqName() + "#" + self.name;
-}
-
-@cached
-operation ASM!EReference isMandatory() : Boolean {
-	return self.lowerBound == 1;
-}
-
