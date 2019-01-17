@@ -1,4 +1,14 @@
 @cached
+operation ASM!EReference isForeign() : Boolean {
+	return self.ownerReference() == self;
+}
+
+@cached
+operation ASM!EReference isMandatory() : Boolean {
+	return self.lowerBound == 1;
+}
+
+@cached
 operation ASM!EReference referenceIdentifierSqlName() : String {
     return "C_" +  self.sqlName() + "_ID";
 }
@@ -10,28 +20,31 @@ operation ASM!EReference referenceInverseIdentifierSqlName() : String {
 
 @cached
 operation ASM!EReference referenceFkSqlName() : String {
-	// return "FK_" + md5(self.fqName()).replaceAll("-","").substring(0,27);
 	return "FK_" + self.eContainingClass.classSqlName() + "_" + self.sqlName();
 }
 
 @cached
+operation ASM!EReference referenceUniFkSqlName() : String {
+	return "FK_" + self.eReferenceType.classSqlName() + "_" + self.sqlName();
+}
+
+
+@cached
 operation ASM!EReference referenceInvFkSqlName() : String {
-	// return "FK_" + md5(self.fqName()).replaceAll("-","").substring(0,27);
 	return "FK_INV_" + self.eContainingClass.classSqlName() + "_" + self.sqlName();
 }
 
 
 @cached
 operation ASM!EReference referenceManyToManyTableSqlName() : String {
-	// return "FK_" + md5(self.fqName()).replaceAll("-","").substring(0,27);
-	// return "FK_INV_" + self.eReferenceType.classSqlName() + "_" + self.eContainingClass.classSqlName();
 	var f1 = self;
-	var f2 = self.eOpposite;
-	/*if (f1.name > f2.name) {
-		f1 = f2;
-		f2 = self;
-	} */
-	return "T_" + abbreviate(f1.eReferenceType.classSqlName() + "_" + f2.sqlName() + "_" + f2.eReferenceType.classSqlName() + "_" + f1.sqlName(), 28).toUpperCase();
+	
+	if (self.eOpposite.isDefined()) {
+		var f2 = self.eOpposite;
+		return "T_" + abbreviate(f1.eReferenceType.classSqlName() + "_" + f1.sqlName() + "_" + f2.eReferenceType.classSqlName() + "_" + f1.sqlName(), sqlNameSize()).toUpperCase();
+	} else {
+		return "T_" + abbreviate(f1.eReferenceType.classSqlName() + "_" + f1.sqlName(), sqlNameSize()).toUpperCase();	
+	} 
 }
 
 @cached

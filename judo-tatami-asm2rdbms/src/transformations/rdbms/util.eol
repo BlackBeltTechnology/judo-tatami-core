@@ -10,6 +10,17 @@ operation md5short(name : String) : String {
 	return MD5Utils.md5(name);
 }
 
+@cached
+operation shortNameSize() : Integer {
+	return 6;
+}
+
+@cached
+operation sqlNameSize() : Integer {
+	return 28;
+}
+
+
 operation abbreviate(text : String, maxLength : Integer) : String {
 	return AbbreviateUtils.abbreviate(text, maxLength);
 }

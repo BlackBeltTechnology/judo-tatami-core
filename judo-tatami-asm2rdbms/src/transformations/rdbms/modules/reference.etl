@@ -4,8 +4,9 @@ import "element.etl";
 rule EReferenceToPrint 
 	transform s : ASM!EReference
 	to t : Map {
-	guard:  (s.eReferenceType.isEntity() or s.eReferenceType.isStructure() and s.eContainingClass.isEntity())
+	guard:  (s.eReferenceType.isEntity() and s.eContainingClass.isEntity())
 
+	/*
 	if (first) {
 		first = false;
 		"Owner;RelationName;OppositeOwner;OppositeRelationName;Structure;Lower;Upper;Container;Containment;Opposite;OppositeLower;OppositeUpper;OppositeContainer;OppositeContainment;First".println(";");
@@ -24,24 +25,22 @@ rule EReferenceToPrint
 		ref += ";;;;;";	
 	}
 	ref += ";" + s.isFirst();
-	ref.println(";");
+	ref.println(";"); */
+	
+	s.ruleMapping().toString().println( s.eContainingClass.name + "." + s.name + ": ");
+	
 }
 rule EReferenceToRdbmsTableForeignKey 
 	transform s : ASM!EReference
 	to fk : RDBMS!RdbmsForeignKey {
-	    guard:  (s.eReferenceType.isEntity() or s.eReferenceType.isStructure() and s.eContainingClass.isEntity())
-	    
-                 
-
-	    		//s.isForeign() and 
-	    		//not s.isManyToMany() and 
-	    		//s.upperBound <> -1
-
+	    guard:  s.eReferenceType.isEntity() and s.eContainingClass.isEntity() and s.ruleMapping().foreignKey.asBoolean()
+	     
     	s.eContainingClass.equivalent("EClassToRdbmsTable").fields.add(fk);
     	fk.name = s.name;
-    	fk.uuid = s.fqName();
+    	fk.uuid = s.getFQName();
     	fk.referenceKey = s.eReferenceType.equivalent("EClassToRdbmsTable").primaryKey;
-		fk.fillType("JUUID");
+		
+		fk.fromType(fk.referenceKey);
 		fk.mandatory = s.isMandatory();
 		fk.sqlName = s.referenceIdentifierSqlName();
 	    fk.foreignKeySqlName = s.referenceFkSqlName(); 
@@ -58,14 +57,14 @@ rule EReferenceToRdbmsTableForeignKey
 rule EReferenceToRdbmsTableInverseForeignKey 
 	transform s : ASM!EReference
 	to fk : RDBMS!RdbmsForeignKey {
-	    guard:  s.eReferenceType.isEntity() and s.isForeign() and not s.isManyToMany() and s.upperBound == -1
+	    guard:  s.eReferenceType.isEntity() and s.eContainingClass.isEntity() and s.ruleMapping().inverseForeignKey.asBoolean()
     	s.eReferenceType.equivalent("EClassToRdbmsTable").fields.add(fk);
 
     	fk.name = s.eContainingClass.name.firstToLowerCase() + s.name.firstToUpperCase();
-    	fk.uuid = s.invFqName();
+    	fk.uuid = s.getReferenceFQName();
     	
     	fk.referenceKey = s.eContainingClass.equivalent("EClassToRdbmsTable").primaryKey;
-		fk.fillType("JUUID");
+		fk.fromType(fk.referenceKey);
 		fk.mandatory = s.isMandatory();
 		fk.sqlName = s.referenceInverseIdentifierSqlName();
 	    fk.foreignKeySqlName = s.referenceInvFkSqlName(); 
@@ -74,44 +73,30 @@ rule EReferenceToRdbmsTableInverseForeignKey
 		fk.deleteOnCascade = false;			
 }
 
-/*
-rule EReferenceToRdbmsTableForeignKey 
-	transform s : ASM!EReference
-	to fk : RDBMS!RdbmsForeignKey {
-	    guard:  s.isEmbedded() // and s.isForeign() and not s.isManyToMany() and s.upperBound <> -1
-    	s.eContainingClass.equivalent("EClassToRdbmsTable").fields.add(fk);
-    	fk.name = s.name;
-    	fk.uuid = s.fqName();
-    	fk.referenceKey = s.eReferenceType.equivalent("EClassToRdbmsTable").primaryKey;
-		fk.fillType("JUUID");
-		fk.mandatory = s.isMandatory();
-		fk.sqlName = s.referenceIdentifierSqlName();
-	    fk.foreignKeySqlName = s.referenceFkSqlName(); 
-
-		if (s.container) {
-			fk.readOnly = true;
-			fk.deleteOnCascade = true;			
-		} else {
-			fk.readOnly = false;
-			fk.deleteOnCascade = false;						
-		} 
-}
-*/
-
+@lazy
 rule EReferenceToRdbmsJunctionTable
 	transform s : ASM!EReference
 	to t : RDBMS!RdbmsJunctionTable {
-	guard : s.eReferenceType.isEntity() and s.isManyToMany() and s.name.compareTo(s.eOpposite.name) < 0
+	    guard:  s.eReferenceType.isEntity() and s.eContainingClass.isEntity()
+
 	    targetModel.rdbmsTables.add(t);
 		t.sqlName = s.referenceManyToManyTableSqlName();
-	    t.name = s.fqName() + " to " + s.eOpposite.fqName();
-	    t.uuid = s.fqName() + "_" + s.eOpposite.fqName();
+		if (s.eOpposite.isDefined()) {
+		    t.name = s.getFQName() + " to " + s.eOpposite.getFQName();
+		    t.uuid = s.getFQName() + "_" + s.eOpposite.getFQName();
+	    } else {
+	    	t.name = s.getFQName() + " to " + s.eReferenceType.getFQName();
+	    	t.uuid = s.getFQName() + "_" + s.eReferenceType.getFQName();
+	    }
+
+		t.name.println("Junct ref");
+
 }
 
 rule EReferenceToRdbmsJunctionTablePrimaryKey
 	transform s : ASM!EReference
 	to p : RDBMS!RdbmsIdentifierField {
-	guard : s.eReferenceType.isEntity() and s.isManyToMany() and s.name.compareTo(s.eOpposite.name) < 0
+	guard : s.eReferenceType.isEntity() and s.eContainingClass.isEntity() and s.ruleMapping().joinTable.asBoolean() and s.ruleMapping().first.asBoolean()
 		p.table = s.equivalent("EReferenceToRdbmsJunctionTable");
 		p.table.primaryKey = p;
 	    p.name = p.table.name + "#id";
@@ -120,169 +105,67 @@ rule EReferenceToRdbmsJunctionTablePrimaryKey
 		p.fillType("JUUID");
 }
 
-rule EReferenceToRdbmsJunctionTableForeignKey
+
+rule EReferenceToRdbmsJunctionTableForeignKeyBidirectional
 	transform s : ASM!EReference
 	to fk : RDBMS!RdbmsForeignKey {
-	guard : s.eReferenceType.isEntity() and s.isManyToMany()
+	guard : s.eReferenceType.isEntity() and s.eContainingClass.isEntity() and s.ruleMapping().joinTable.asBoolean() and s.eOpposite.isDefined() 
 	    var mainReference;
-	    if (s.name.compareTo(s.eOpposite.name) < 0) {
+	    if (s.name.compareTo(s.eOpposite.name) <= 0) {
 	    	mainReference = s;
 			mainReference.equivalent("EReferenceToRdbmsJunctionTable").field1 = fk;
 	    } else {
-	    	mainReference = s.eOpposite;	    
+	    	mainReference = s.eOpposite;
 			mainReference.equivalent("EReferenceToRdbmsJunctionTable").field2 = fk;
 	    }
 	    mainReference.equivalent("EReferenceToRdbmsJunctionTable").fields.add(fk);
+		
         // 		
     	fk.name = s.name;
-    	fk.uuid = s.fqName();
+    	fk.uuid = s.getFQName();
     	fk.referenceKey = s.eReferenceType.equivalent("EClassToRdbmsTable").primaryKey;
-		fk.fillType("JUUID");
+		fk.fromType(fk.referenceKey);
 		fk.mandatory = s.isMandatory();
 		fk.sqlName = s.referenceIdentifierSqlName();
 	    fk.foreignKeySqlName = s.referenceFkSqlName(); 
 
 		fk.readOnly = true;
-		fk.deleteOnCascade = true;			
+		fk.deleteOnCascade = true;
 }
 
 
-/*
-rule EReferenceToRdbmsJunctionTable
+rule EReferenceToRdbmsJunctionTableForeignKeyUnidirectional
 	transform s : ASM!EReference
-	to t : RDBMS!RdbmsJunctionTable, p : RDBMS!RdbmsIdentifierField, f1 : RDBMS!RdbmsForeignKey, f2 : RDBMS!RdbmsForeignKey, i1 : RDBMS!RdbmsIndex, i2 : RDBMS!RdbmsIndex, uq : RDBMS!RdbmsUniqueConstraint {
-	guard : s.eReferenceType.isEntity() and s.isManyToMany()
-		t.sqlName = s.relationSqlTableName(); // junctionTableSqlName(s);
+	to fk1 : RDBMS!RdbmsForeignKey, fk2 : RDBMS!RdbmsForeignKey {
+	guard : s.eReferenceType.isEntity() and s.eContainingClass.isEntity() and s.ruleMapping().joinTable.asBoolean() and s.eOpposite.isUndefined()
+	    var junctionTable = s.equivalent("EReferenceToRdbmsJunctionTable");
+	    
+		junctionTable.field1 = fk1;
+		junctionTable.field2 = fk2;
+	    junctionTable.fields.add(fk1);
+	    junctionTable.fields.add(fk2);
+        	
+    	fk1.name = s.name;
+    	fk1.uuid = s.getFQName();
+    	fk1.referenceKey = s.eReferenceType.equivalent("EClassToRdbmsTable").primaryKey;
+		fk1.fromType(fk1.referenceKey);
+		fk1.mandatory = s.isMandatory();
+		fk1.sqlName = s.referenceIdentifierSqlName();
+	    fk1.foreignKeySqlName = s.referenceFkSqlName(); 
 
-		
-		// var primaryRole : PSM!JRole = s.primaryRole();
-		// var secondaryRole : PSM!JRole = s.secondaryRole();
-		
-	    t.name = primaryRole.ownerClass.package.fqName() + "." + primaryRole.ownerClass.name + " to " + secondaryRole.ownerClass.package.fqName() + "." + secondaryRole.ownerClass.name;
+		fk1.readOnly = true;
+		fk1.deleteOnCascade = true;
 
+		// The other side - not navigable
+    	fk2.name = s.eContainingClass.name + "#" + s.name;
+    	fk2.uuid = s.eContainingClass.getFQName() + "@" + s.getFQName();
+    	fk2.referenceKey = s.eContainingClass.equivalent("EClassToRdbmsTable").primaryKey;
+		fk2.fromType(fk2.referenceKey);
+		fk2.mandatory = false;
+		fk2.sqlName = s.sqlName() + "_" + s.eContainingClass.tableSqlName() + "_" + fk2.referenceKey.sqlName;
+	    fk2.foreignKeySqlName = s.referenceUniFkSqlName(); 
 
-		t.field1 = f1.fillFromRole(primaryRole);
-		t.field2 = f2.fillFromRole(secondaryRole);
+		fk2.readOnly = true;
+		fk2.deleteOnCascade = true;		
+}
 
-		t.field1.mandatory = true;
-		t.field2.mandatory = true;
-
-		i1.name = t.name + " " + primaryRole.name;
-		i1.uuid = generateUuid(t.uuid, "indexOne", "_");
-
-		-/-*var tempSqlName : String = ("IDX_" + generateUuid(s.uuid, s.relationSqlName() + "_" + primaryRole.sqlName(), ".").replaceAll("-",""));
-		if (tempSqlName.length > 30) {
-			i1.sqlName = tempSqlName.substring(0,30);
-		} else {
-			i1.sqlName = tempSqlName;
-		}-*-/
-		i1.sqlName = ("IDX_" + md5(generateUuid(s.uuid, s.relationSqlName() + "_" + primaryRole.sqlName(), ".").replaceAll("-","")));
-
-		i1.fields.add(t.field1);
-		i1.table = t;
-
-		i2.name = t.name + " " + secondaryRole.name;
-		i2.uuid = generateUuid(t.uuid, "indexTwo", "_");
-
-		-/=*tempSqlName = ("IDX_" + generateUuid(s.uuid, s.relationSqlName() + "_" + secondaryRole.sqlName(), ".").replaceAll("-",""));
-		if (tempSqlName.length > 30) {
-			i2.sqlName = tempSqlName.substring(0,30);
-		} else {
-			i2.sqlName = tempSqlName;
-		}-*-/
-		i2.sqlName = ("IDX_" + md5(generateUuid(s.uuid, s.relationSqlName() + "_" + secondaryRole.sqlName(), ".").replaceAll("-","")));
-
-		i2.fields.add(t.field2);
-		i2.table = t;
-
-		t.indexes.add(i1);
-		t.indexes.add(i2);
-
-		uq.name = t.name + " " + primaryRole.name + ", " + secondaryRole.name;
-		uq.uuid = generateUuid(t.uuid, "uniqueConstraint", "_");
-		// uq.sqlName = "UQ_" + s.relationSqlName();
-		uq.sqlName = ("UQ_" + md5(t.uuid.replaceAll("-","")));
-
-		uq.fields.add(t.field1);
-		uq.fields.add(t.field2);
-		uq.table = t;
-
-		t.uniqueConstraints.add(uq);
-
-		p.name = "id";
-		p.sqlName = "ID";
-		p.mandatory = true;
-		p.type = idType();
-		p.uuid =  generateUuid(t.uuid, "indentifierField", "_");
-
-		f1.deleteOnCascade = true;
-		f2.deleteOnCascade = true;
-
-		t.fields.add(f1);
-		t.fields.add(f2);
-		t.fields.add(p);
-
-		targetModel.rdbmsTables.add(t);
-	}
-*/
-
-/*
-rule JRoleToRdbmsTableForeignKey 
-	transform s : PSM!JRole
-	to fk : RDBMS!RdbmsForeignKey {
-		guard : s.ownerClass.participates(PSM!JLayer#PERSISTENCE) and s.isForeign() and not s.ownerRelationship.isJunction()
-	    fk.name = s.ownerClass.package.fqName() + "." + s.ownerClass.name + "." + s.name;
-	    if (s.opposite().isUndefined()) {
-	    	throw "Could not find opposite: " + s.name;
-	    }
-	    fk.referenceKey = s.opposite().ownerClass.equivalent().primaryKey;
-	    fk.sqlName = s.roleIdSqlName();    
-	    fk.foreignKeySqlName = s.roleFkSqlName(); 
-		fk.table =  s.ownerClass.equivalent("JClassToRdbmsTable");
-		fk.type = idType();
-		fk.description =  s.name + " (" + s.opposite().ownerClass.name + ")";
-		fk.uuid = s.uuid;
-		fk.mandatory = s.isMandatory();
-
-		var role1 : PSM!JRole = s;
-		var role2 : PSM!JRole = s.opposite();
-	
-		if (not s.ownerRelationship.derived) {
-			if (role1.upper = 1 and role2.upper = -1) {
-				fk.deleteOnCascade = (role2.kind == PSM!JAssociationKind#COMPOSITION or role2.kind == PSM!JAssociationKind#AGGREGATION);
-				fk.readOnly = (role2.kind == PSM!JAssociationKind#COMPOSITION);
-			} else if (role1.upper = 1 and role2.upper = 1) {
-				if (role2.kind = PSM!JAssociationKind#COMPOSITION or role2.kind = PSM!JAssociationKind#AGGREGATION or role1.lower = 1) {
-					fk.deleteOnCascade = (role2.kind == PSM!JAssociationKind#COMPOSITION or role2.kind == PSM!JAssociationKind#AGGREGATION);
-					fk.readOnly = (role2.kind == PSM!JAssociationKind#COMPOSITION);
-				} else if (role1.kind = PSM!JAssociationKind#ASSOCIATION and role2.kind = PSM!JAssociationKind#ASSOCIATION and role1.lower = 0 and role2.lower = 0 and role1.name < role2.name) {
-					fk.deleteOnCascade = false;
-					fk.readOnly = false;
-				}
-			}
-		}			
-	}
-
-rule JRoleToRdbmsuniqueConstraint 
-	transform s : PSM!JRole
-	to uq : RDBMS!RdbmsUniqueConstraint {
-		guard : s.ownerClass.participates(PSM!JLayer#PERSISTENCE) and s.isForeign() and not s.ownerRelationship.isJunction() and s.opposite().upper == 1
-		uq.name = s.equivalent("JRoleToRdbmsTableForeignKey").name;
-		uq.sqlName = s.roleUniqueSqlName();    
-		uq.table =  s.ownerClass.equivalent("JClassToRdbmsTable");
-		uq.fields.add(s.equivalent("JRoleToRdbmsTableForeignKey"));
-	}
-
-rule JRoleToRdbmsuniqueConstraint 
-	transform s : PSM!JRole
-	to idx : RDBMS!RdbmsIndex {
-		guard : s.ownerClass.participates(PSM!JLayer#PERSISTENCE) and s.isForeign() and not s.ownerRelationship.isJunction() and s.opposite().upper <> 1
-		
-		idx.name = s.equivalent("JRoleToRdbmsTableForeignKey").name;
-		idx.sqlName = s.roleIndexSqlName();    
-		idx.table =  s.ownerClass.equivalent("JClassToRdbmsTable");
-		idx.fields.add(s.equivalent("JRoleToRdbmsTableForeignKey"));
-		idx.uuid = generateUuid(s.uuid, "Index", "_");
-	
-	}
-*/	

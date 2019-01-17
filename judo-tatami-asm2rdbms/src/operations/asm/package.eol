@@ -1,13 +1,11 @@
 @cached
-operation ASM!EPackage getPackage() : ASM!EPackage {
-	return ASM!EPackage.all.selectOne(p | p.eSubPackages.contains(self));
-}
-
-@cached
-operation ASM!EPackage fqName() : String {
+operation ASM!EPackage getFullName() : String {
+	var package = ASM!EPackage.all.selectOne(p | p.eSubPackages.contains(self));
 	var name = "";
-	if (self.getPackage().isDefined()) {
-		name = self.getPackage().fqName() + ".";
+	while (package.isDefined()) {
+		name = package.name + "." + name;
+		package = ASM!EPackage.all.selectOne(p | p.eSubPackages.contains(package));
 	}
+
 	return name + self.name;
 }
