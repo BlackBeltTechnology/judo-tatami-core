@@ -1,0 +1,15 @@
+
+for (tr in transformationTrace.transformations) {
+	for (t in tr.targets) {
+		if (not t.isTypeOf(Map)) {
+			var row : TRACE!Trace = new TRACE!Trace();
+			row.asmType = tr.source.eClass;
+			row.asmIdentifier = tr.source.id;
+			row.rdbmsType = t.eClass;
+			row.rdbmsIdentifier = t.id;	
+			
+			ASM.getElementById(tr.source.id).println("ASM " + tr.source.id + ": ");			
+			RDBMS.getElementById(t.id).println("RDBMS " + t.id + ": ");
+		}
+	}
+}

@@ -93,6 +93,7 @@
                                         <metaModel>mvn:hu.blackbelt.judo.meta:judo-meta-rdbms:ecore:rdbms:${judo-meta-rdbms.version}</metaModel>
                                         <metaModel>mvn:hu.blackbelt.judo.meta:judo-meta-asm:ecore:types:${judo-meta-asm.version}</metaModel>
                                         <metaModel>mvn:hu.blackbelt.judo.meta:judo-meta-asm:ecore:base:${judo-meta-asm.version}</metaModel>
+                                        <metaModel>${basedir}/model/RDBMS-ASM-Trace.ecore</metaModel>
                                     </metaModels>
                                         <excelModels>
                                             <excelModel>
@@ -146,6 +147,15 @@
                                                 <param>http://blackbelt.hu/judo/meta/psm/rdbms</param>
                                             </metaModelUris>
                                         </model>
+                                        <model>
+                                            <artifact>${project.build.directory}/rdbmsHsqldb-Trace.model</artifact>
+                                            <name>TRACE</name>
+                                            <readOnLoad>false</readOnLoad>
+                                            <storeOnDisposal>true</storeOnDisposal>
+                                            <metaModelUris>
+                                                <param>http://blackbelt.hu/judo/meta/asm2rdbms/trace</param>
+                                            </metaModelUris>
+                                        </model>
                                     </models>
                                     <eolPrograms>
                                         <Etl>
@@ -160,7 +170,11 @@
                                                     <value>http://blackbelt.hu/judo/meta/ExtendedMetadata</value>
                                                 </parameter>
                                             </parameters>
+                                            <exportTransformationTrace>transformationTrace</exportTransformationTrace>
                                         </Etl>
+                                        <Eol>
+                                            <source>${basedir}/src/transformations/exportRdbmsTrace.eol</source>
+                                        </Eol>
                                     </eolPrograms>
                                 </configuration>
                             </execution>
@@ -177,6 +191,7 @@
                                         <metaModel>mvn:hu.blackbelt.judo.meta:judo-meta-rdbms:ecore:rdbms:${judo-meta-rdbms.version}</metaModel>
                                         <metaModel>mvn:hu.blackbelt.judo.meta:judo-meta-asm:ecore:types:${judo-meta-asm.version}</metaModel>
                                         <metaModel>mvn:hu.blackbelt.judo.meta:judo-meta-asm:ecore:base:${judo-meta-asm.version}</metaModel>
+                                        <metaModel>${basedir}/model/RDBMS-ASM-Trace.ecore</metaModel>
                                     </metaModels>
                                         <excelModels>
                                             <excelModel>
@@ -230,6 +245,15 @@
                                                 <param>http://blackbelt.hu/judo/meta/psm/rdbms</param>
                                             </metaModelUris>
                                         </model>
+                                        <model>
+                                            <artifact>${project.build.directory}/rdbmsPostgres-Trace.model</artifact>
+                                            <name>TRACE</name>
+                                            <readOnLoad>false</readOnLoad>
+                                            <storeOnDisposal>true</storeOnDisposal>
+                                            <metaModelUris>
+                                                <param>http://blackbelt.hu/judo/meta/asm2rdbms/trace</param>
+                                            </metaModelUris>
+                                        </model>
                                     </models>
                                     <eolPrograms>
                                         <Etl>
@@ -244,7 +268,11 @@
                                                     <value>http://blackbelt.hu/judo/meta/ExtendedMetadata</value>
                                                 </parameter>
                                             </parameters>
+                                            <exportTransformationTrace>transformationTrace</exportTransformationTrace>
                                         </Etl>
+                                        <Eol>
+                                            <source>${basedir}/src/transformations/exportRdbmsTrace.eol</source>
+                                        </Eol>
                                     </eolPrograms>
                                 </configuration>
                             </execution>
@@ -260,6 +288,7 @@
                                         <metaModel>mvn:hu.blackbelt.judo.meta:judo-meta-rdbms:ecore:rdbms:${judo-meta-rdbms.version}</metaModel>
                                         <metaModel>mvn:hu.blackbelt.judo.meta:judo-meta-asm:ecore:types:${judo-meta-asm.version}</metaModel>
                                         <metaModel>mvn:hu.blackbelt.judo.meta:judo-meta-asm:ecore:base:${judo-meta-asm.version}</metaModel>
+                                        <metaModel>${basedir}/model/RDBMS-ASM-Trace.ecore</metaModel>
                                     </metaModels>
                                         <excelModels>
                                             <excelModel>
@@ -313,6 +342,15 @@
                                                 <param>http://blackbelt.hu/judo/meta/psm/rdbms</param>
                                             </metaModelUris>
                                         </model>
+                                        <model>
+                                            <artifact>${project.build.directory}/rdbmsOracle-Trace.model</artifact>
+                                            <name>TRACE</name>
+                                            <readOnLoad>false</readOnLoad>
+                                            <storeOnDisposal>true</storeOnDisposal>
+                                            <metaModelUris>
+                                                <param>http://blackbelt.hu/judo/meta/asm2rdbms/trace</param>
+                                            </metaModelUris>
+                                        </model>
                                     </models>
                                     <eolPrograms>
                                         <Etl>
@@ -327,7 +365,11 @@
                                                     <value>http://blackbelt.hu/judo/meta/ExtendedMetadata</value>
                                                 </parameter>
                                             </parameters>
+                                            <exportTransformationTrace>transformationTrace</exportTransformationTrace>
                                         </Etl>
+                                        <Eol>
+                                            <source>${basedir}/src/transformations/exportRdbmsTrace.eol</source>
+                                        </Eol>
                                     </eolPrograms>
                                 </configuration>
                             </execution>
@@ -370,14 +412,29 @@
                                             <classifier>lsm-rdbmsHsqldb</classifier>
                                         </artifact>
                                         <artifact>
+                                            <file>${project.build.directory}/rdbmsHsqldb-Trace.model</file>
+                                            <type>model</type>
+                                            <classifier>lsm-rdbmsHsqldbTrace</classifier>
+                                        </artifact>
+                                        <artifact>
                                             <file>${project.build.directory}/rdbmsPostgres.model</file>
                                             <type>model</type>
                                             <classifier>lsm-rdbmsPostgres</classifier>
                                         </artifact>
                                         <artifact>
+                                            <file>${project.build.directory}/rdbmsPostgres-Trace.model</file>
+                                            <type>model</type>
+                                            <classifier>lsm-rdbmsPostgresTrace</classifier>
+                                        </artifact>
+                                        <artifact>
                                             <file>${project.build.directory}/rdbmsOracle.model</file>
                                             <type>model</type>
                                             <classifier>lsms-rdbmsOracle</classifier>
+                                        </artifact>
+                                          <artifact>
+                                            <file>${project.build.directory}/rdbmsOracle-Trace.model</file>
+                                            <type>model</type>
+                                            <classifier>lsm-rdbmsOracleTrace</classifier>
                                         </artifact>
                                     </artifacts>
                                 </configuration>
