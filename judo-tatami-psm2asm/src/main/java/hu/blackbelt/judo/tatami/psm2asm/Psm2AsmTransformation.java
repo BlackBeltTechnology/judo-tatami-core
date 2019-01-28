@@ -14,7 +14,6 @@ import hu.blackbelt.judo.meta.asm.AsmResourceLoader;
 import hu.blackbelt.judo.meta.psm.PsmMetaModel;
 import hu.blackbelt.judo.meta.psm.PsmModelInfo;
 import hu.blackbelt.judo.meta.psm.data.DataPackage;
-import hu.blackbelt.judo.meta.psm.facade.FacadePackage;
 import hu.blackbelt.judo.meta.psm.namespace.NamespacePackage;
 import hu.blackbelt.judo.meta.psm.type.TypePackage;
 import hu.blackbelt.judo.tatami.core.Slf4jLog;
@@ -92,7 +91,7 @@ public class Psm2AsmTransformation {
                 .name("SRC")
                 .aliases(ImmutableList.of("JUDOPSM"))
                 .artifacts(ImmutableMap.of("model", psmModelInfo.getFile().getAbsolutePath()))
-                .metaModelUris(ImmutableList.of(NamespacePackage.eNS_URI, FacadePackage.eNS_URI, DataPackage.eNS_URI, TypePackage.eNS_URI))
+                .metaModelUris(ImmutableList.of(NamespacePackage.eNS_URI, DataPackage.eNS_URI, TypePackage.eNS_URI))
                 .expand(true)
                 .build());
 
