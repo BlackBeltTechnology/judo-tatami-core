@@ -60,7 +60,7 @@
         <judo-meta-asm.version>1.0.0-develop-20</judo-meta-asm.version>
         <judo-meta-asm.import-range>[1.0,1.1)</judo-meta-asm.import-range>
 
-        <judo-meta-measure.version>1.0.0-develop-7</judo-meta-measure.version>
+        <judo-meta-measure.version>1.0.0-develop-8</judo-meta-measure.version>
         <judo-meta-measure.import-range>[1.0,1.1)</judo-meta-measure.import-range>
 
         <test.asm.model.groupId>${project.groupId}</test.asm.model.groupId>

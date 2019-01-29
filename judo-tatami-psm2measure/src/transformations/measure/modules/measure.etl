@@ -7,6 +7,7 @@ rule CreateMeasure
     to t : MEASURES!Measure {
         t.namespace = s.getNamespace().toString();
         t.name = s.name;
+        t.symbol = s.symbol;
     }
 
 rule CreateBaseMeasure

@@ -2,6 +2,7 @@ rule CreateUnit
     transform s : JUDOPSM!Unit
     to t : MEASURES!Unit {
         t.name = s.name;
+        t.symbol = s.symbol;
         t.rateDividend = new Native("java.math.BigDecimal")(s.rateDividend.toString());
         t.rateDivisor = new Native("java.math.BigDecimal")(s.rateDivisor.toString());
         
