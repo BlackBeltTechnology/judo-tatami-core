@@ -1,0 +1,24 @@
+rule CreateUnit
+    transform s : JUDOPSM!Unit
+    to t : MEASURES!Unit {
+        t.name = s.name;
+        t.rateDividend = new Native("java.math.BigDecimal")(s.rateDividend.toString());
+        t.rateDivisor = new Native("java.math.BigDecimal")(s.rateDivisor.toString());
+        
+        var m = JUDOPSM!Measure.all.selectOne(m | m.units.contains(s)).equivalent();
+        m.units.add(t);
+    }
+
+rule CreateDurationUnit
+    transform s : JUDOPSM!DurationUnit
+    to t : MEASURES!DurationUnit 
+    extends CreateUnit {
+        switch (s.unitType) {
+            case JUDOPSM!DurationType#millisecond: t.type = MEASURES!DurationType#millisecond;
+            case JUDOPSM!DurationType#second: t.type = MEASURES!DurationType#second;
+            case JUDOPSM!DurationType#minute: t.type = MEASURES!DurationType#minute;
+            case JUDOPSM!DurationType#hour: t.type = MEASURES!DurationType#hour;
+            case JUDOPSM!DurationType#day: t.type = MEASURES!DurationType#day;
+            case JUDOPSM!DurationType#week: t.type = MEASURES!DurationType#week;
+        }
+    }

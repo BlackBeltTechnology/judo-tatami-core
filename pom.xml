@@ -9,6 +9,7 @@
         <module>judo-tatami-parent</module>
         <module>judo-tatami-core</module>
         <module>judo-tatami-psm2asm</module>
+        <module>judo-tatami-psm2measure</module>
         <module>judo-tatami-asm2odata</module>
         <module>judo-tatami-asm2rdbms</module>
     </modules>
