@@ -20,6 +20,38 @@
             </plugin>
 
             <plugin>
+                <groupId>hu.blackbelt</groupId>
+                <artifactId>unpack-artifact-maven-plugin</artifactId>
+                <version>1.0.0</version>
+                <executions>
+                    <execution>
+                        <id>copy-expression-scripts</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>unpack</goal>
+                        </goals>
+
+                        <configuration>
+                            <outDirectory>${basedir}/src/main</outDirectory>
+                            <artifacts>
+                                <artifact>
+                                    <groupId>hu.blackbelt.judo.meta</groupId>
+                                    <artifactId>judo-meta-psm</artifactId>
+                                    <version>${judo-meta-psm.version}</version>
+                                    <resources>
+                                        <resource>
+                                            <source>judo/psm/operations</source>
+                                            <destination>operations/psm</destination>
+                                        </resource>
+                                    </resources>
+                                </artifact>
+                            </artifacts>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
                 <groupId>org.apache.felix</groupId>
                 <artifactId>maven-bundle-plugin</artifactId>
                 <extensions>true</extensions>
@@ -31,8 +63,8 @@
                             hu.blackbelt.judo.tatami.psm.asm.*;version=${project.version}
                         </Export-Package>
                         <Include-Resource>
-                            tatami/psm2asm/operations=src/operations,
-                            tatami/psm2asm/transformations=src/transformations
+                            tatami/psm2asm/operations=src/main/operations,
+                            tatami/psm2asm/transformations=src/main/transformations
                         </Include-Resource>
 
                         <Import-Package>
@@ -159,6 +191,7 @@
                                             <metaModelUris>
                                                 <param>http://blackbelt.hu/judo/meta/psm/namespace</param>
                                                 <param>http://blackbelt.hu/judo/meta/psm/type</param>
+                                                <param>http://blackbelt.hu/judo/meta/psm/measure</param>
                                                 <param>http://blackbelt.hu/judo/meta/psm/data</param>
                                             </metaModelUris>
                                             <expand>true</expand>
@@ -191,7 +224,7 @@
                                     </models>
                                     <eolPrograms>
                                         <Etl>
-                                            <source>${basedir}/src/transformations/asm/psmToAsm.etl</source>
+                                            <source>${basedir}/src/main/transformations/asm/psmToAsm.etl</source>
                                             <parameters>
                                                 <parameter>
                                                     <name>modelName</name>

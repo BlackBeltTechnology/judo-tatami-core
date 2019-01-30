@@ -1,3 +1,5 @@
+import "../../../operations/psm/namespace/_importNamespace.eol";
+
 operation JUDOPSM!Type createASMAnnotations() : Sequence {
 	var annotations = Sequence{};
 
@@ -8,6 +10,21 @@ operation JUDOPSM!Type createASMAnnotations() : Sequence {
 			aMaxLength.value = self.maxLength.asString();
 			annotations.add(aMaxLength);
 		}
+    } else if (self.isKindOf(JUDOPSM!MeasuredType)) {
+        var unitName = self.storeUnit.name;
+        var measure = self.storeUnit.getMeasure();
+        var measureNamespace = measure.getNamespace().toString();
+        var measureName = measure.name;
+        
+        var aMeasure = new ASM!EStringToStringMapEntry;
+        aMeasure.key = "measure";
+        aMeasure.value = measureNamespace + "::" + measureName;
+        var aUnit = new ASM!EStringToStringMapEntry;
+        aUnit.key = "unit";
+        aUnit.value = unitName;
+        
+        annotations.add(aMeasure);
+        annotations.add(aUnit);
 	} else if (self.isKindOf(JUDOPSM!CustomType)) {
 		switch (self.name) {
 			case "Binary":
