@@ -177,6 +177,9 @@
                                         <metaModel>
                                             mvn:hu.blackbelt.judo.meta:judo-meta-psm:model:psm:${judo-meta-psm.version}
                                         </metaModel>
+                                        <metaModel>
+                                            mvn:hu.blackbelt.judo.meta:judo-meta-expression:ecore:expression:${judo-meta-expression.version}
+                                        </metaModel>
                                     </metaModels>
 
                                     <models>
