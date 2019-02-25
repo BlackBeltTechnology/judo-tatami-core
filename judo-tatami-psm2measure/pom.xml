@@ -62,11 +62,11 @@
     <dependencies>
         <dependency>
             <groupId>hu.blackbelt.judo.meta</groupId>
-            <artifactId>judo-meta-psm</artifactId>
+            <artifactId>judo-meta-psm-runtime</artifactId>
         </dependency>
         <dependency>
             <groupId>hu.blackbelt.judo.meta</groupId>
-            <artifactId>judo-meta-measure</artifactId>
+            <artifactId>judo-meta-measure-runtime</artifactId>
         </dependency>
         <dependency>
             <groupId>hu.blackbelt.judo.tatami</groupId>
@@ -143,10 +143,13 @@
                                 <configuration>
                                     <metaModels>
                                         <metaModel>
-                                            mvn:hu.blackbelt.judo.meta:judo-meta-psm:model:psm:${judo-meta-psm.version}
+                                            mvn:hu.blackbelt.judo.meta:judo-meta-psm-model:ecore:psm:${judo-meta-psm.version}
                                         </metaModel>
                                         <metaModel>
-                                            mvn:hu.blackbelt.judo.meta:judo-meta-measure:ecore:measure:${judo-meta-measure.version}
+                                            mvn:hu.blackbelt.judo.meta:judo-meta-measure-model:ecore:measure:${judo-meta-measure.version}
+                                        </metaModel>
+                                        <metaModel>
+                                            mvn:hu.blackbelt.judo.meta:judo-meta-expression-model:ecore:expression:${judo-meta-expression.version}
                                         </metaModel>
                                     </metaModels>
 
@@ -161,7 +164,11 @@
                                             </aliases>
                                             <metaModelUris>
                                                 <param>http://blackbelt.hu/judo/meta/psm/namespace</param>
+                                                <param>http://blackbelt.hu/judo/meta/psm/type</param>
+                                                <param>http://blackbelt.hu/judo/meta/psm/data</param>
+                                                <param>http://blackbelt.hu/judo/meta/psm/derived</param>
                                                 <param>http://blackbelt.hu/judo/meta/psm/measure</param>
+                                                <param>http://blackbelt.hu/judo/meta/psm/service</param>
                                             </metaModelUris>
                                             <expand>true</expand>
                                         </model>

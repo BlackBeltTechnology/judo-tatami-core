@@ -46,24 +46,26 @@
     <properties>
         <timestamp>${maven.build.timestamp}</timestamp>
         <maven.build.timestamp.format>yyyyMMddHHmmss</maven.build.timestamp.format>
-        <epsilon.maven.plugin.version>1.1.3_feature__7_ExportTraceInEtl-47</epsilon.maven.plugin.version>
+        <epsilon.maven.plugin.version>1.1.3</epsilon.maven.plugin.version>
 
-        <judo-meta-rdbms.version>1.0.0-develop-14</judo-meta-rdbms.version>
+        <judo-meta-rdbms.version>1.0.1.develop_22</judo-meta-rdbms.version>
         <judo-meta-rdbms.import-range>[1.0,1.1)</judo-meta-rdbms.import-range>
 
-        <judo-meta-psm.version>1.0.0-develop-190</judo-meta-psm.version>
+        <judo-meta-psm.version>1.0.1.develop_206</judo-meta-psm.version>
         <judo-meta-psm.import-range>[1.0,1.1)</judo-meta-psm.import-range>
-        
+
+        <!--
         <judo-meta-odata.version>1.0.0-develop-12</judo-meta-odata.version>
         <judo-meta-odata.import-range>[1.0,1.1)</judo-meta-odata.import-range>
+        -->
 
         <judo-meta-asm.version>1.0.0-develop-20</judo-meta-asm.version>
         <judo-meta-asm.import-range>[1.0,1.1)</judo-meta-asm.import-range>
 
-        <judo-meta-expression.version>1.0.0-develop-80</judo-meta-expression.version>
+        <judo-meta-expression.version>1.0.1.develop_97</judo-meta-expression.version>
         <judo-meta-expression.import-range>[1.0,1.1)</judo-meta-expression.import-range>
 
-        <judo-meta-measure.version>1.0.0-develop-9</judo-meta-measure.version>
+        <judo-meta-measure.version>1.0.1.develop_15</judo-meta-measure.version>
         <judo-meta-measure.import-range>[1.0,1.1)</judo-meta-measure.import-range>
 
         <test.asm.model.groupId>${project.groupId}</test.asm.model.groupId>
@@ -71,8 +73,8 @@
         <test.asm.model.version>${project.version}</test.asm.model.version>
 
         <test.psm.model.groupId>hu.blackbelt.northwind</test.psm.model.groupId>
-        <test.psm.model.artifactId>northwind-model</test.psm.model.artifactId>
-        <test.psm.model.version>1.0.0-develop-75</test.psm.model.version>
+        <test.psm.model.artifactId>northwind-runtime</test.psm.model.artifactId>
+        <test.psm.model.version>1.0.1.develop_80</test.psm.model.version>
 
         <emf-version>2.12.0</emf-version>
 
@@ -183,7 +185,7 @@
             </dependency>
             <dependency>
                 <groupId>hu.blackbelt.judo.meta</groupId>
-                <artifactId>judo-meta-psm</artifactId>
+                <artifactId>judo-meta-psm-runtime</artifactId>
                 <version>${judo-meta-psm.version}</version>
             </dependency>
             <dependency>
@@ -193,17 +195,19 @@
             </dependency>
             <dependency>
                 <groupId>hu.blackbelt.judo.meta</groupId>
-                <artifactId>judo-meta-rdbms</artifactId>
+                <artifactId>judo-meta-rdbms-runtime</artifactId>
                 <version>${judo-meta-rdbms.version}</version>
             </dependency>
+            <!--
             <dependency>
                 <groupId>hu.blackbelt.judo.meta</groupId>
                 <artifactId>judo-meta-odata</artifactId>
                 <version>${judo-meta-odata.version}</version>
             </dependency>
+            -->
             <dependency>
                 <groupId>hu.blackbelt.judo.meta</groupId>
-                <artifactId>judo-meta-measure</artifactId>
+                <artifactId>judo-meta-measure-runtime</artifactId>
                 <version>${judo-meta-measure.version}</version>
             </dependency>
 
@@ -231,6 +235,35 @@
                     <groupId>hu.blackbelt.epsilon</groupId>
                     <artifactId>epsilon-maven-plugin</artifactId>
                     <version>${epsilon.maven.plugin.version}</version>
+                </plugin>
+                <!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
+                <plugin>
+                	<groupId>org.eclipse.m2e</groupId>
+                	<artifactId>lifecycle-mapping</artifactId>
+                	<version>1.0.0</version>
+                	<configuration>
+                		<lifecycleMappingMetadata>
+                			<pluginExecutions>
+                				<pluginExecution>
+                					<pluginExecutionFilter>
+                						<groupId>hu.blackbelt</groupId>
+                						<artifactId>
+                							unpack-artifact-maven-plugin
+                						</artifactId>
+                						<versionRange>
+                							[1.0.0,)
+                						</versionRange>
+                						<goals>
+                							<goal>unpack</goal>
+                						</goals>
+                					</pluginExecutionFilter>
+                					<action>
+                						<ignore></ignore>
+                					</action>
+                				</pluginExecution>
+                			</pluginExecutions>
+                		</lifecycleMappingMetadata>
+                	</configuration>
                 </plugin>
             </plugins>
         </pluginManagement>

@@ -36,7 +36,7 @@
                             <artifacts>
                                 <artifact>
                                     <groupId>hu.blackbelt.judo.meta</groupId>
-                                    <artifactId>judo-meta-psm</artifactId>
+                                    <artifactId>judo-meta-psm-runtime</artifactId>
                                     <version>${judo-meta-psm.version}</version>
                                     <resources>
                                         <resource>
@@ -94,7 +94,7 @@
     <dependencies>
         <dependency>
             <groupId>hu.blackbelt.judo.meta</groupId>
-            <artifactId>judo-meta-psm</artifactId>
+            <artifactId>judo-meta-psm-runtime</artifactId>
         </dependency>
         <dependency>
             <groupId>hu.blackbelt.judo.meta</groupId>
@@ -175,10 +175,10 @@
                                 <configuration>
                                     <metaModels>
                                         <metaModel>
-                                            mvn:hu.blackbelt.judo.meta:judo-meta-psm:model:psm:${judo-meta-psm.version}
+                                            mvn:hu.blackbelt.judo.meta:judo-meta-psm-model:ecore:psm:${judo-meta-psm.version}
                                         </metaModel>
                                         <metaModel>
-                                            mvn:hu.blackbelt.judo.meta:judo-meta-expression:ecore:expression:${judo-meta-expression.version}
+                                            mvn:hu.blackbelt.judo.meta:judo-meta-expression-model:ecore:expression:${judo-meta-expression.version}
                                         </metaModel>
                                     </metaModels>
 
