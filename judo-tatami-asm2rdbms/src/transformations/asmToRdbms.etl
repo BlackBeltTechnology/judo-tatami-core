@@ -1,6 +1,7 @@
 import "../operations/asm/_importAsm.eol";
 import "../operations/typemapping/_importTypeMapping.eol";
 import "../operations/rulemapping/_importRuleMapping.eol";
+import "../operations/namemapping/_importNameMapping.eol";
 
 import "rdbms/util.eol";
 import "rdbms/asm/namedElement.eol";
@@ -19,6 +20,11 @@ import "rdbms/modules/reference.etl";
 pre {
 	var targetModel : RDBMS!RdbmsModel = new RDBMS!RdbmsModel();	
 	var first : Boolean = true;
+	var allElement : new Sequence();
+	
+	var configuration : RDBMS!RdbmsConfiguration = new RDBMS!RdbmsConfiguration();
+	configuration.dialect = dialect;
+	targetModel.configuration = configuration;
 
     // Fixing types
 	for (v in RULEMAPPING!TableMappingRule.all.select(m | m.symbol.isDefined())) {
@@ -64,8 +70,10 @@ pre {
 }
 
 
-// All tables have to contain foreign key points to parent.
 post {
+
+	/*
+	// All tables have to contain foreign key points to parent. - Structural semantics
 	for (t in RDBMS!RdbmsTable.all) {
 		for (p in t.parents) {
 			var fk : RDBMS!RdbmsForeignKey = new RDBMS!RdbmsForeignKey();
@@ -80,6 +88,17 @@ post {
     		fk.readOnly = true;
     		fk.mandatory = true;
 			fk.foreignKeySqlName = "FK_" + md5(fk.uuid);
+		}
+	} */
+	
+	// Replacing name
+	for (e in allElement) {
+		// e.uuid.println("UUID: ");
+		var sqlNameMapping = e.uuid.findSqlNameMapping();
+		if (sqlNameMapping.isDefined()) {
+			e.println("Replace sqlName in: ");
+			sqlNameMapping.println("   To: ");
+			e.sqlName = sqlNameMapping.SqlName;
 		}
 	}
 }

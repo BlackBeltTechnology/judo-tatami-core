@@ -15,28 +15,6 @@ rule EClassToTableIdField
 		t.fillType("JUUID");
 }
 
-
-/*
-rule ESuperClassToForeignKey 
-	transform s : ASM!EClass
-	to t : RDBMS!RdbmsTable
-	extends ENamedElementToRdbmsElement {
-	guard : s.isEntity()
-	    targetModel.rdbmsTables.add(t);
-	    t.sqlName = s.tableSqlName();
-	    t.name = s.fqName();
-		
-		if (s.hasSuper)
-		
-		//if (s.hasSupertype()) {
-		//	t.parent = s.getPrimarySupertype().equivalent("EClassToRdbmsTable");
-		//}
-
-		// Adding foreign key for all descandences classes
-		// t.fields.addAll(s.allDescandences().collect(c | s.createForeginKey(c)));
-}
-*/
-
 rule EClassToRdbmsTable 
 	transform s : ASM!EClass
 	to t : RDBMS!RdbmsTable
@@ -45,19 +23,11 @@ rule EClassToRdbmsTable
 	    targetModel.rdbmsTables.add(t);
 	    t.sqlName = s.tableSqlName();
 	    t.name = s.getFQName();
-
+	    t.uuid = s.getFQName();
+	    
 		for (sup in s.eSuperTypes.select(s | s.isEntity())) {
 			t.parents.add(sup.equivalent("EClassToRdbmsTable"));
 		}
-		/*
-		if (s.hasSupertype()) {
-			t.parent = s.getPrimarySupertype().equivalent("EClassToRdbmsTable");
-			//t.parent.add()
-		}
-		*/
-
-		// Adding foreign key for all descandences classes
-		// t.fields.addAll(s.allDescandences().collect(c | s.createForeginKey(c)));
 }
 
 

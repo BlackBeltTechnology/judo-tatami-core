@@ -10,7 +10,6 @@ rule EAttributeToRdbmsField
 	extends ENamedElementToRdbmsElement { 
 		guard : s.getClass().isEntity()
 	    t.uuid = s.getFQName();
-	    // t.name = s.fqName();
 		t.table = s.getClass().equivalent("EClassToRdbmsTable");
 		
 		if (s.eType.isKindOf(ASM!EEnum)) {

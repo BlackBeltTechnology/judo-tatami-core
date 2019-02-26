@@ -9,13 +9,11 @@ rule ENamedElementToRdbmsElement
 		} else {
 			t.name = s.name;
 		}
-		//t.uuid = s.getPackage().getFullName() + "." + s.name;
+		allElement.add(t);
 		/*
-		t.uuid = s.uuid;
-		t.fullName = s.fullName;
-		t.description = s.description; */
 		if (s.hasAnnotation("shortName")) {
 			t.shortName = s.getAnnotationValue("shortName");
 		}
 		t.sqlName = s.sqlName();
+		*/
 }
