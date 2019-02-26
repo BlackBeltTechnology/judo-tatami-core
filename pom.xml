@@ -56,12 +56,14 @@
                                         <include>*.jar</include>
                                     </includes>
                                 </fileSet>
+                                <!--
                                 <fileSet>
                                     <directory>judo-tatami-asm2odata/target</directory>
                                     <includes>
                                         <include>*.jar</include>
                                     </includes>
                                 </fileSet>
+                                -->
                                 <fileSet>
                                     <directory>judo-tatami-asm2rdbms/target</directory>
                                     <includes>
