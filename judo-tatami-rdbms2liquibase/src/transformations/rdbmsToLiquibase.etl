@@ -1,0 +1,11 @@
+import "liquibase/modules/table.etl";
+import "liquibase/modules/field.etl";
+
+pre {
+	var targetModel : LIQUIBASE!databaseChangeLog = new LIQUIBASE!databaseChangeLog();
+//	targetModel.`xmlns:xsi` = "http://www.w3.org/2001/XMLSchema-instance";
+//	targetModel.`xsi:schemaLocation` = "http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd";
+}
+
+post {
+}

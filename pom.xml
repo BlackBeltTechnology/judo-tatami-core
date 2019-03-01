@@ -14,6 +14,7 @@
         <module>judo-tatami-asm2odata</module>
         -->
         <module>judo-tatami-asm2rdbms</module>
+        <module>judo-tatami-rdbms2liquibase</module>
     </modules>
     
     <scm>

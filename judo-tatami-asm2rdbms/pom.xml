@@ -220,7 +220,7 @@
 											<source>${basedir}/src/transformations/asmToRdbms.etl</source>
 											<parameters>
 												<parameter>
-													<name>asmVersion</name>
+													<name>modelVersion</name>
 													<value>${project.version}</value>
 												</parameter>
 												<parameter>
@@ -330,7 +330,7 @@
 											<source>${basedir}/src/transformations/asmToRdbms.etl</source>
 											<parameters>
 												<parameter>
-													<name>asmVersion</name>
+													<name>modelVersion</name>
 													<value>${project.version}</value>
 												</parameter>
 												<parameter>
@@ -439,7 +439,7 @@
 											<source>${basedir}/src/transformations/asmToRdbms.etl</source>
 											<parameters>
 												<parameter>
-													<name>asmVersion</name>
+													<name>modelVersion</name>
 													<value>${project.version}</value>
 												</parameter>
 												<parameter>

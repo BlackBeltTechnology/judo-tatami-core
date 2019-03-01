@@ -46,7 +46,8 @@
     <properties>
         <timestamp>${maven.build.timestamp}</timestamp>
         <maven.build.timestamp.format>yyyyMMddHHmmss</maven.build.timestamp.format>
-        <epsilon.maven.plugin.version>1.1.3</epsilon.maven.plugin.version>
+        <epsilon.maven.plugin.version>1.1.4-SNAPSHOT</epsilon.maven.plugin.version>
+        <epsilon-runtime-version>1.1.6-SNAPSHOT</epsilon-runtime-version>
 
         <judo-meta-rdbms.version>1.0.1.develop_22</judo-meta-rdbms.version>
         <judo-meta-rdbms.import-range>[1.0,1.1)</judo-meta-rdbms.import-range>
@@ -76,10 +77,13 @@
         <test.psm.model.artifactId>northwind-runtime</test.psm.model.artifactId>
         <test.psm.model.version>1.0.1.develop_80</test.psm.model.version>
 
+        <test.rdbms.model.groupId>${project.groupId}</test.rdbms.model.groupId>
+        <test.rdbms.model.artifactId>judo-tatami-asm2rdbms</test.rdbms.model.artifactId>
+        <test.rdbms.model.version>${project.version}</test.rdbms.model.version>
+
         <emf-version>2.12.0</emf-version>
 
         <osgi-utils-version>1.0.6</osgi-utils-version>
-        <epsilon-runtime-version>1.1.5</epsilon-runtime-version>
 
     </properties>
 
