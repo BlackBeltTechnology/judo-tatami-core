@@ -1,0 +1,112 @@
+import "../../../operations/psm/namespace/_importNamespace.eol";
+import "../../../operations/psm/data/_importData.eol";
+import "../../../operations/psm/derived/_importDerived.eol";
+
+@cached
+operation JUDOPSM!ExpressionType getReferenceTypedElement() : JUDOPSM!ReferenceTypedElement {
+	return JUDOPSM!ReferenceAccessor.all.selectOne(e | e.getterExpression == self or e.setterExpression == self);
+}
+
+@cached
+operation JUDOPSM!ExpressionType getPrimitiveTypedElement() : JUDOPSM!PrimitiveTypedElement {
+	return JUDOPSM!PrimitiveAccessor.all.selectOne(e | e.getterExpression == self or e.setterExpression == self);
+}
+
+@cached
+operation JUDOPSM!ReferenceTypedElement getEntityType() : JUDOPSM!EntityType {
+	return JUDOPSM!EntityType.all.selectOne(e | e.dataProperties.contains(self));
+}
+
+@cached
+operation JUDOPSM!PrimitiveTypedElement getEntityType() : JUDOPSM!EntityType {
+	return JUDOPSM!EntityType.all.selectOne(e | e.navigationProperties.contains(self));
+}
+
+@greedy
+rule ExtractExpression
+  transform s : JUDOPSM!ExpressionType
+  to t : JQLEXTRACT!ExtractedExpression {
+  	var ref = s.getReferenceTypedElement();
+  	var attr = s.getPrimitiveTypedElement();
+  	
+  	s.expression.println("Extracting expression: ");
+  	t.context = new JQLEXTRACT!Context;
+  	t.binding = new JQLEXTRACT!Binding;
+}
+
+@greedy
+rule AttachSourceToExtractedExpression
+  transform s : JUDOPSM!ExpressionType
+  to t : JQLEXTRACT!Binding {
+  	guard: s.getReferenceTypedElement().isDefined()
+  	
+  	var ref = s.getReferenceTypedElement();
+  	t.featureName = ref.name;
+  	
+  	var entityType = ref.getEntityType();
+  	if (entityType.isDefined()) {
+	  	if (entityType.getNamespace().isDefined()) {
+	  		t.packageName = entityType.getNamespace().toString();
+	  	}
+  		t.className = entityType.name;
+  	}
+  	//t.role = TODO
+  	
+  	s.equivalent().binding = t;
+}
+
+@greedy
+rule AttachSourceToExtractedExpression
+  transform s : JUDOPSM!ExpressionType
+  to t : JQLEXTRACT!Binding {
+  	guard: s.getPrimitiveTypedElement().isDefined()
+  	
+  	var attr = s.getPrimitiveTypedElement();
+  	t.featureName = attr.name;
+  	
+  	var entityType = attr.getEntityType();
+  	if (entityType.isDefined()) {
+	  	if (entityType.getNamespace().isDefined()) {
+	  		t.packageName = entityType.getNamespace().toString();
+	  	}
+  		t.className = entityType.name;
+  	}
+  	//t.role = TODO
+  	
+  	s.equivalent().binding = t;
+}
+
+@greedy
+rule AttachSelfVariableToExtractedExpression
+  transform s : JUDOPSM!ExpressionType
+  to t : JQLEXTRACT!Variable {
+  	guard: s.getReferenceTypedElement().isDefined() and s.getReferenceTypedElement().getEntityType().isDefined()
+  	
+  	var entityType = s.getReferenceTypedElement().getEntityType();
+  	
+  	t.name = "self";
+  	if (entityType.getNamespace().isDefined()) {
+  		t.typeNamespace = entityType.getNamespace().toString();
+  	}
+  	t.typeName = entityType.name;
+  	
+  	s.equivalent().context.variables.add(t);
+}
+
+@greedy
+rule AttachSelfVariableToExtractedExpression
+  transform s : JUDOPSM!ExpressionType
+  to t : JQLEXTRACT!Variable {
+    guard: s.getPrimitiveTypedElement().isDefined() and s.getPrimitiveTypedElement().getEntityType().isDefined()
+  	
+  	var entityType = s.getPrimitiveTypedElement().getEntityType();
+  	
+  	t.name = "self";
+  	if (entityType.getNamespace().isDefined()) {
+  		t.typeNamespace = entityType.getNamespace().toString();
+  	}
+  	t.typeName = entityType.name;
+  	
+  	s.equivalent().context.variables.add(t);
+}
+

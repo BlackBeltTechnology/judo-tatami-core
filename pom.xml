@@ -14,6 +14,8 @@
         <module>judo-tatami-asm2odata</module>
         -->
         <module>judo-tatami-asm2rdbms</module>
+        <module>judo-tatami-psm2jql</module>
+        <module>judo-tatami-jql2expression</module>
     </modules>
     
     <scm>

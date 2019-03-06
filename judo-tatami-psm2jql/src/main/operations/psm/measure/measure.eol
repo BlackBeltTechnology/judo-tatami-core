@@ -1,29 +1,36 @@
-@cached
-operation JUDOPSM!Primitive isMeasured() : Boolean {
-    return self.isKindOf(JUDOPSM!MeasuredType);
-}
-
-operation JUDOPSM!Measure getUnit(name : String) : JUDOPSM!Unit {
-    return self.units.selectOne(u | u.name = name or u.symbol = name);
-}
-
-@cached
-operation JUDOPSM!MeasuredType getUnit() : JUDOPSM!Unit {
-    return self.storeUnit;
-}
-
-@cached
-operation JUDOPSM!Unit toString() : String {
-    if (self.symbol.isDefined()) {
-        return self.symbol;
-    } else {
-        return self.name;
-    }
+operation JUDOPSM!DurationUnit getRates(durationType) : Sequence {
+    return JUDOPSM!DurationUnit.all
+        .select(u | u.unitType == durationType)
+        .collect(u | Map{'unitName' = u.name, 'divisor' = u.rateDividend * self.rateDivisor, 'dividend' = self.rateDividend * u.rateDivisor});
 }
 
 @cached
 operation JUDOPSM!Unit getMeasure() : JUDOPSM!Measure {
     return JUDOPSM!Measure.all.selectOne(m | m.units.contains(self));
+}
+
+@cached
+operation JUDOPSM!Measure getBaseUnit() : JUDOPSM!Unit {
+    return self.units.selectOne(u | u.rateDividend = u.rateDivisor);
+}
+
+@cached
+operation JUDOPSM!DerivedMeasure hasCircularReference() : Boolean {
+    return self.hasCircularReference(new Set);
+}
+
+operation JUDOPSM!DerivedMeasure hasCircularReference(visited : Collection) : Boolean {
+    if (visited.includes(self)) {
+        return true;
+    }
+
+    for (m in self.terms.collect(t | t.unit.getMeasure())) {
+        if (m.isDefined() and m.isKindOf(JUDOPSM!DerivedMeasure) and m.hasCircularReference(visited.including(self))) {
+            return true;
+        }
+    }
+
+    return false;
 }
 
 @cached
@@ -61,9 +68,4 @@ operation JUDOPSM!Measure getBaseMeasures() : Map {
     } else {
         return Map{self = 1};
     }
-}
-
-@cached
-operation getDurationMeasure() : JUDOPSM!Measure {
-    return JUDOPSM!Measure.all.selectOne(m | m.units.selectOne(u | u.isValidDurationUnit()).isDefined());
 }
