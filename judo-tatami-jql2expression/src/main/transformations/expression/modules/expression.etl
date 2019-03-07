@@ -1,0 +1,65 @@
+
+@cached
+operation JQLEXTRACT!NavigationExpression getVariable() : JQLEXTRACT!Variable {
+    var extractedExpression = JQLEXTRACT!ExtractedExpression.all.selectOne(e | e.jqlExpression == self);
+    if (extractedExpression.isDefined() and extractedExpression.context.isDefined()) {
+    	return extractedExpression.context.variables.selectOne(v | v.name = self.base);
+    } else {
+    	return null;
+    }
+}
+
+@cached
+operation JQLEXTRACT!Expression getOperands() : Collection {
+	return Set{};
+}
+
+@cached
+operation JQLEXTRACT!NavigationExpression getOperands() : Collection {
+	return Set{};
+}
+
+@cached
+operation JQLEXTRACT!BinaryOperation getOperands() : Collection {
+	return Set{self.leftOperand, self.rightOperand};
+}
+
+@cached
+operation JQLEXTRACT!UnaryOperation getOperands() : Collection {
+	return Set{self.operand};
+}
+
+@cached
+operation JQLEXTRACT!Expression getContainer() : JQLEXTRACT!Expression {
+	return JQLEXTRACT!Expression.all.selectOne(e | e.getOperands().contains(self));
+}
+
+@cached
+operation JQLEXTRACT!Expression isRoot() : Boolean {
+	return not self.getContainer().isDefined();
+}
+
+rule VariableToInstance
+  transform s : JQLEXTRACT!Variable
+  to t : EXPR!Instance {
+  	guard: s.name == "self"
+  	
+  	t.elementName = s.equivalent("VariableToTypeName");
+}
+
+rule VariableToTypeName
+  transform s : JQLEXTRACT!Variable
+  to t : EXPR!TypeName {
+  	t.name = s.typeName;
+  	t.namespace = s.typeNamespace;
+}
+
+/*rule NavigationExpressionToNavigationExpression
+  transform s : JQLEXTRACT!NavigationExpression
+  to t : EXPR!ObjectNavigationExpression {
+    guard: s.isRoot()
+  	
+  	var instance = s.getVariable().equivalent("VariableToInstance");
+  	t.objectExpression = instance;
+  	t.referenceName = s.features.first().name; // FIXME
+} */

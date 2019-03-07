@@ -130,6 +130,9 @@
                                             mvn:hu.blackbelt.judo.meta:judo-meta-psm-model:ecore:psm:${judo-meta-psm.version}
                                         </metaModel>
                                         <metaModel>
+                                            mvn:hu.blackbelt.judo.meta:judo-meta-psm-jql-model:ecore:jql:${judo-meta-psm-jql.version}
+                                        </metaModel>
+                                        <metaModel>
                                             mvn:hu.blackbelt.judo.meta:judo-meta-psm-jql-extract-model:ecore:extract:${judo-meta-psm-jql-extract.version}
                                         </metaModel>
                                     </metaModels>
@@ -159,6 +162,7 @@
                                             <storeOnDisposal>true</storeOnDisposal>
                                             <metaModelUris>
                                                 <param>http://blackbelt.hu/judo/meta/psm/jql/extract</param>
+                                                <param>http://www.blackbelt.hu/judo/meta/psm/jql/JqlDsl</param>
                                             </metaModelUris>
                                         </model>
                                     </models>

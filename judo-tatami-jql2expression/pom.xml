@@ -32,15 +32,17 @@
                         </Export-Package>
                         <Include-Resource>
                             {maven-resources},
-                            tatami/jql2expression/operations=src/operations,
-                            tatami/jql2expression/transformations=src/transformations
+                            tatami/jql2expression/operations=src/main/operations,
+                            tatami/jql2expression/transformations=src/main/transformations
                         </Include-Resource>
                         <Import-Package>
                             !lombok,
-                            meta/jql;version="${judo-meta-jql.import-range}",
+                            meta/psm/jql/extract;version="${judo-meta-psm-jql-extract.import-range}",
                             meta/asm;version="${judo-meta-asm.import-range}",
+                            meta/expression;version="${judo-meta-expression.import-range}",
                             hu.blackbelt.judo.meta.expression*;version="${judo-meta-expression.import-range}",
-                            hu.blackbelt.judo.meta.jql*;version="${judo-meta-jql.import-range}",
+                            hu.blackbelt.judo.meta.psm.jql.extract*;version="${judo-meta-psm-jql-extract.import-range}",
+                            hu.blackbelt.judo.meta.psm.jql.jqldsl*;version="${judo-meta-psm-jql.import-range}",
                             hu.blackbelt.judo.meta.asm*;version="${judo-meta-asm.import-range}",
                             com.google.common.base;version="[14.0,30)",
                             com.google.common.cache;version="[14.0,30)",
@@ -71,6 +73,10 @@
         </dependency>
         <dependency>
             <groupId>hu.blackbelt.judo.meta</groupId>
+            <artifactId>judo-meta-psm-jql-extract-runtime</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>hu.blackbelt.judo.meta</groupId>
             <artifactId>judo-meta-expression-runtime</artifactId>
         </dependency>
         <dependency>
@@ -96,18 +102,38 @@
                                 </goals>
                                 <configuration>
                                     <metaModels>
-                                        <metaModel>mvn:hu.blackbelt.judo.meta:judo-meta-psm-jql-model:ecore:jql:${judo-meta-psm-jql.version}</metaModel>
-                                        <metaModel>mvn:hu.blackbelt.judo.meta:judo-meta-asm:ecore:types:${judo-meta-asm.version}</metaModel>
-                                        <!--metaModel>mvn:hu.blackbelt.judo.meta:judo-meta-asm:ecore:base:${judo-meta-asm.version}</metaModel-->
-                                        <metaModel>mvn:hu.blackbelt.judo.meta:judo-meta-expression-model:ecore:expression:${judo-meta-expression.version}</metaModel>
+                                        <metaModel>
+                                            mvn:hu.blackbelt.judo.meta:judo-meta-psm-jql-model:ecore:jql:${judo-meta-psm-jql.version}
+                                        </metaModel>
+                                        <metaModel>
+                                            mvn:hu.blackbelt.judo.meta:judo-meta-psm-jql-extract-model:ecore:extract:${judo-meta-psm-jql-extract.version}
+                                        </metaModel>
+                                        <metaModel>
+                                            mvn:hu.blackbelt.judo.meta:judo-meta-asm:ecore:types:${judo-meta-asm.version}
+                                        </metaModel>
+                                        <metaModel>
+                                            mvn:hu.blackbelt.judo.meta:judo-meta-expression-model:ecore:expression:${judo-meta-expression.version}
+                                        </metaModel>
                                     </metaModels>
                                     <models>
                                         <model>
-                                            <artifact>mvn:${test.asm.model.groupId}:${test.asm.model.artifactId}:model:asm:${test.asm.model.version}</artifact>
+                                            <artifact>
+                                                mvn:${test.asm.model.groupId}:${test.asm.model.artifactId}:model:asm:${test.asm.model.version}
+                                            </artifact>
                                             <name>ASM</name>
                                             <metaModelUris>
                                                 <param>http://www.eclipse.org/emf/2002/Ecore</param>
                                                 <param>http://blackbelt.hu/judo/asm/types</param>
+                                            </metaModelUris>
+                                        </model>
+                                        <model>
+                                            <artifact>
+                                                mvn:${test.jqle.model.groupId}:${test.jqle.model.artifactId}:model:lsm-jqlExtracted:${test.jqle.model.version}
+                                            </artifact>
+                                            <name>JQLEXTRACT</name>
+                                            <metaModelUris>
+                                                <param>http://blackbelt.hu/judo/meta/psm/jql/extract</param>
+                                                <param>http://www.blackbelt.hu/judo/meta/psm/jql/JqlDsl</param>
                                             </metaModelUris>
                                         </model>
                                         <!--model>
@@ -138,7 +164,8 @@
                                     </models>
                                     <eolPrograms>
                                         <Etl>
-                                            <source>${basedir}/src/transformations/expression/jqlToExpression.etl</source>
+                                            <source>${basedir}/src/main/transformations/expression/jqlToExpression.etl
+                                            </source>
                                             <parameters>
                                                 <parameter>
                                                     <name>asmVersion</name>
@@ -155,6 +182,46 @@
                                             <source>${basedir}/src/transformations/exportRdbmsTrace.eol</source>
                                         </Eol-->
                                     </eolPrograms>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>build-helper-maven-plugin</artifactId>
+                        <version>3.0.0</version>
+                        <executions>
+                            <execution>
+                                <id>add-resource</id>
+                                <goals>
+                                    <goal>add-resource</goal>
+                                </goals>
+
+                                <configuration>
+                                    <resources>
+                                        <resource>
+                                            <directory>src</directory>
+                                        </resource>
+                                    </resources>
+                                </configuration>
+
+                            </execution>
+
+                            <execution>
+                                <id>attach-artifacts</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>attach-artifact</goal>
+                                </goals>
+                                <configuration>
+                                    <artifacts>
+                                        <artifact>
+                                            <file>${project.build.directory}/expression.model</file>
+                                            <type>model</type>
+                                            <classifier>expression</classifier>
+                                        </artifact>
+                                    </artifacts>
                                 </configuration>
                             </execution>
                         </executions>

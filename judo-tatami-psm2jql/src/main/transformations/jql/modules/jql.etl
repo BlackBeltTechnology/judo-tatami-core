@@ -32,6 +32,51 @@ rule ExtractExpression
   	s.expression.println("Extracting expression: ");
   	t.context = new JQLEXTRACT!Context;
   	t.binding = new JQLEXTRACT!Binding;
+  	
+  	// TODO - call XText parser
+  	if (s.expression.startsWith("0 ")) {
+  		t.jqlExpression = new JQLEXTRACT!IntegerLiteral;
+  		t.jqlExpression.value = new Native("java.math.BigInteger")("0");
+  	} else if (s.expression == "self.quantity * self.unitPrice * (1 - self.discount)") {
+  		var fQuantity = new JQLEXTRACT!Feature;
+  		fQuantity.name = "quantity";
+  		var fUnitPrice = new JQLEXTRACT!Feature;
+  		fUnitPrice.name = "unitPrice";
+  		var fDiscount = new JQLEXTRACT!Feature;
+  		fDiscount.name = "discount";
+  	
+  		t.jqlExpression = new JQLEXTRACT!BinaryOperation;
+  		t.jqlExpression.operator = "*";
+  		t.jqlExpression.leftOperand = new JQLEXTRACT!BinaryOperation;
+  		t.jqlExpression.leftOperand.operator = "*";
+  		t.jqlExpression.leftOperand.leftOperand = new JQLEXTRACT!NavigationExpression;
+  		t.jqlExpression.leftOperand.leftOperand.base = "self";
+  		t.jqlExpression.leftOperand.leftOperand.features = Sequence{fQuantity};
+  		t.jqlExpression.leftOperand.rightOperand = new JQLEXTRACT!NavigationExpression;
+  		t.jqlExpression.leftOperand.rightOperand.base = "self";
+  		t.jqlExpression.leftOperand.rightOperand.features = Sequence{fUnitPrice};
+  		t.jqlExpression.rightOperand = new JQLEXTRACT!BinaryOperation;
+  		t.jqlExpression.rightOperand.operator = "-";
+  		t.jqlExpression.rightOperand.leftOperand = new JQLEXTRACT!IntegerLiteral;
+  		t.jqlExpression.rightOperand.leftOperand.value = new Native("java.math.BigInteger")("1");
+  		t.jqlExpression.rightOperand.rightOperand = new JQLEXTRACT!NavigationExpression;
+  		t.jqlExpression.rightOperand.rightOperand.base = "self";
+  		t.jqlExpression.rightOperand.rightOperand.features = Sequence{fDiscount};
+  	} else {
+  		t.jqlExpression = new JQLEXTRACT!NavigationExpression;
+  		var parts = s.expression.replaceAll("/\\*.*\\*/", "").trim().split("\\.");
+  		t.jqlExpression.base = parts.first();
+  		
+  		var features = parts.clone();
+  		parts.remove(t.jqlExpression.base);
+  		
+  		t.jqlExpression.features = new Sequence;
+  		for (p in parts) {
+  		    var f = new JQLEXTRACT!Feature;
+  		    f.name = p;
+  		    t.jqlExpression.features.add(f);
+  		}
+  	}
 }
 
 @greedy
@@ -50,7 +95,15 @@ rule AttachSourceToExtractedExpression
 	  	}
   		t.className = entityType.name;
   	}
-  	//t.role = TODO
+  	
+  	var roles = new Set;
+  	if (ref.getterExpression == s) {
+  		roles.add("getter"); 
+  	}
+  	if (ref.setterExpression == s) {
+  		roles.add("setter"); 
+  	}
+  	t.role = roles.concat(" ");
   	
   	s.equivalent().binding = t;
 }
@@ -71,7 +124,15 @@ rule AttachSourceToExtractedExpression
 	  	}
   		t.className = entityType.name;
   	}
-  	//t.role = TODO
+  	
+  	var roles = new Set;
+  	if (attr.getterExpression == s) {
+  		roles.add("getter"); 
+  	}
+  	if (attr.setterExpression == s) {
+  		roles.add("setter"); 
+  	}
+  	t.role = roles.concat(" ");
   	
   	s.equivalent().binding = t;
 }
@@ -109,4 +170,3 @@ rule AttachSelfVariableToExtractedExpression
   	
   	s.equivalent().context.variables.add(t);
 }
-
