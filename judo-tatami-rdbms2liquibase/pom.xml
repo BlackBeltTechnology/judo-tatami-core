@@ -28,20 +28,17 @@
 					<obrRepository>NONE</obrRepository>
 					<instructions>
 						<Export-Package>
-							tatami/asm2rdbms;version=${project.version},
-							hu.blackbelt.judo.tatami.asm2rdbms.*;version=${project.version}
+							tatami/rdbms2liquibase;version=${project.version},
+							hu.blackbelt.judo.tatami.rdbms2liquibase.*;version=${project.version}
 						</Export-Package>
 						<Include-Resource>
 							{maven-resources},
-							tatami/asm2rdbms/transformations=src/transformations,
-							tatami/asm2rdbms/operations=src/operations,
-							tatami/asm2rdbms/model=model</Include-Resource>
+							tatami/rdbms2liquibase/transformations=src/transformations,
+							tatami/rdbms2liquibase/operations=src/operations,
+							tatami/rdbms2liquibase/model=model</Include-Resource>
 						<Import-Package>
 							!lombok,
 							meta/rdbms;version="${judo-meta-rdbms.import-range}",
-							meta/asm;version="${judo-meta-asm.import-range}",
-							hu.blackbelt.judo.meta.rdbms*;version="${judo-meta-rdbms.import-range}",
-							hu.blackbelt.judo.meta.asm*;version="${judo-meta-asm.import-range}",
 							com.google.common.base;version="[14.0,30)",
 							com.google.common.cache;version="[14.0,30)",
 							com.google.common.collect;version="[14.0,30)",

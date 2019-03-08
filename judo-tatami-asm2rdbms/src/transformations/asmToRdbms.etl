@@ -18,7 +18,7 @@ import "rdbms/modules/attribute.etl";
 import "rdbms/modules/reference.etl";
 
 pre {
-	var targetModel : RDBMS!RdbmsModel = new RDBMS!RdbmsModel();	
+	var targetModel : RDBMS!RdbmsModel = new RDBMS!RdbmsModel();
 	targetModel.version = modelVersion;
 	var first : Boolean = true;
 	var allElement : new Sequence();
@@ -29,6 +29,7 @@ pre {
 
     // Fixing types
 	for (v in RULEMAPPING!TableMappingRule.all.select(m | m.symbol.isDefined())) {
+
 		v.opposite = v.opposite.asBoolean();
 		v.lower = v.lower.asFloat().asInteger();
 		v.upper = v.upper.asFloat().asInteger();

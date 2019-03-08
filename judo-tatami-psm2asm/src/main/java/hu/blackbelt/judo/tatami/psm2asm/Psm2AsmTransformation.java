@@ -14,6 +14,7 @@ import hu.blackbelt.judo.meta.asm.AsmResourceLoader;
 import hu.blackbelt.judo.meta.psm.PsmMetaModel;
 import hu.blackbelt.judo.meta.psm.PsmModelInfo;
 import hu.blackbelt.judo.meta.psm.data.DataPackage;
+import hu.blackbelt.judo.meta.psm.measure.MeasurePackage;
 import hu.blackbelt.judo.meta.psm.namespace.NamespacePackage;
 import hu.blackbelt.judo.meta.psm.type.TypePackage;
 import hu.blackbelt.judo.tatami.core.Slf4jLog;
@@ -86,13 +87,14 @@ public class Psm2AsmTransformation {
                 psmModelInfo.getChecksum(),
                 new VersionRange(componentContext.getBundleContext().getBundle().getHeaders().get(ASM_META_VERSION_RANGE)));
 
+
+        // TODO: Using registered EMFResourceFacrtory
         List<ModelContext> modelContexts = Lists.newArrayList();
         modelContexts.add(EmfModelContext.builder()
                 .name("SRC")
                 .aliases(ImmutableList.of("JUDOPSM"))
                 .artifacts(ImmutableMap.of("model", psmModelInfo.getFile().getAbsolutePath()))
-                .metaModelUris(ImmutableList.of(NamespacePackage.eNS_URI, DataPackage.eNS_URI, TypePackage.eNS_URI))
-                .expand(true)
+                .metaModelUris(ImmutableList.of(NamespacePackage.eNS_URI, DataPackage.eNS_URI, TypePackage.eNS_URI, MeasurePackage.eNS_URI))
                 .build());
 
         modelContexts.add(EmfModelContext.builder()
@@ -133,7 +135,7 @@ public class Psm2AsmTransformation {
                 .build()) {
 
             psmMetaModel.registerPsmMetamodel(executionContext.getResourceSet());
-            executionContext.init();
+            executionContext.load();
 
             EtlExecutionContext etlExecutionContext = EtlExecutionContext.etlExecutionContextBuilder()
                     .source("psm2asm/transformations/asm/psmToAsm.etl")
