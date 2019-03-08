@@ -191,39 +191,22 @@
                                             <aliases>
                                                 <alias>JUDOPSM</alias>
                                             </aliases>
-                                            <metaModelUris>
-                                                <param>http://blackbelt.hu/judo/meta/psm/namespace</param>
-                                                <param>http://blackbelt.hu/judo/meta/psm/type</param>
-                                                <param>http://blackbelt.hu/judo/meta/psm/data</param>
-                                                <param>http://blackbelt.hu/judo/meta/psm/derived</param>
-                                                <param>http://blackbelt.hu/judo/meta/psm/measure</param>
-                                                <param>http://blackbelt.hu/judo/meta/psm/service</param>
-                                            </metaModelUris>
                                         </model>
                                         <model>
                                             <artifact>mvn:hu.blackbelt.judo.meta:judo-meta-asm:ecore:types:${judo-meta-asm.version}</artifact>
                                             <name>TYPES</name>
-                                            <metaModelUris>
-                                                <param>http://www.eclipse.org/emf/2002/Ecore</param>
-                                            </metaModelUris>
-                                            <platformAlias>http://blackbelt.hu/judo/asm/types</platformAlias>
+                                            <referenceUri>http://blackbelt.hu/judo/asm/types</referenceUri>
                                         </model>
                                         <model>
                                             <artifact>mvn:hu.blackbelt.judo.meta:judo-meta-asm:ecore:base:${judo-meta-asm.version}</artifact>
                                             <name>BASE</name>
-                                            <metaModelUris>
-                                                <param>http://www.eclipse.org/emf/2002/Ecore</param>
-                                            </metaModelUris>
-                                            <platformAlias>http://blackbelt.hu/judo/asm/base</platformAlias>
+                                            <referenceUri>http://blackbelt.hu/judo/asm/base</referenceUri>
                                         </model>
                                         <model>
                                             <artifact>${project.build.directory}/asm.model</artifact>
                                             <name>ASM</name>
                                             <readOnLoad>false</readOnLoad>
                                             <storeOnDisposal>true</storeOnDisposal>
-                                            <metaModelUris>
-                                                <param>http://www.eclipse.org/emf/2002/Ecore</param>
-                                            </metaModelUris>
                                         </model>
                                     </models>
                                     <eolPrograms>

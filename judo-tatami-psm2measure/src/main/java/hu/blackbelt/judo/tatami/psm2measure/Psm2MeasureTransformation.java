@@ -15,7 +15,6 @@ import hu.blackbelt.judo.meta.psm.PsmModelInfo;
 import hu.blackbelt.judo.meta.psm.data.DataPackage;
 import hu.blackbelt.judo.meta.psm.namespace.NamespacePackage;
 import hu.blackbelt.judo.meta.psm.type.TypePackage;
-import hu.blackbelt.judo.tatami.core.Slf4jLog;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.emf.common.util.URI;
 import org.osgi.framework.ServiceRegistration;

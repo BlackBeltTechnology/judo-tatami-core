@@ -1,26 +1,18 @@
 package hu.blackbelt.judo.tatami.psm2asm;
 
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
-import hu.blackbelt.epsilon.runtime.execution.ArtifactResolver;
 import hu.blackbelt.epsilon.runtime.execution.ExecutionContext;
-import hu.blackbelt.epsilon.runtime.execution.ModelContext;
+import hu.blackbelt.epsilon.runtime.execution.api.ModelContext;
 import hu.blackbelt.epsilon.runtime.execution.contexts.EtlExecutionContext;
 import hu.blackbelt.epsilon.runtime.execution.contexts.ProgramParameter;
-import hu.blackbelt.epsilon.runtime.execution.model.emf.EmfModelContext;
+import hu.blackbelt.epsilon.runtime.execution.impl.Slf4jLog;
 import hu.blackbelt.judo.meta.asm.AsmModelInfo;
 import hu.blackbelt.judo.meta.asm.AsmResourceLoader;
 import hu.blackbelt.judo.meta.psm.PsmMetaModel;
 import hu.blackbelt.judo.meta.psm.PsmModelInfo;
-import hu.blackbelt.judo.meta.psm.data.DataPackage;
-import hu.blackbelt.judo.meta.psm.measure.MeasurePackage;
-import hu.blackbelt.judo.meta.psm.namespace.NamespacePackage;
-import hu.blackbelt.judo.meta.psm.type.TypePackage;
-import hu.blackbelt.judo.tatami.core.Slf4jLog;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.emf.common.util.URI;
-import org.eclipse.emf.ecore.EcorePackage;
 import org.osgi.framework.ServiceRegistration;
 import org.osgi.framework.VersionRange;
 import org.osgi.service.component.ComponentContext;
@@ -34,6 +26,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+
+import static hu.blackbelt.epsilon.runtime.execution.ExecutionContext.executionContextBuilder;
+import static hu.blackbelt.epsilon.runtime.execution.model.emf.EmfModelContext.emfModelContextBuilder;
 
 
 @Component(immediate = true, service = Psm2AsmTransformation.class)
@@ -90,46 +85,35 @@ public class Psm2AsmTransformation {
 
         // TODO: Using registered EMFResourceFacrtory
         List<ModelContext> modelContexts = Lists.newArrayList();
-        modelContexts.add(EmfModelContext.builder()
+        modelContexts.add(emfModelContextBuilder()
                 .name("SRC")
                 .aliases(ImmutableList.of("JUDOPSM"))
-                .artifacts(ImmutableMap.of("model", psmModelInfo.getFile().getAbsolutePath()))
-                .metaModelUris(ImmutableList.of(NamespacePackage.eNS_URI, DataPackage.eNS_URI, TypePackage.eNS_URI, MeasurePackage.eNS_URI))
+                .model(psmModelInfo.getFile().getAbsolutePath())
                 .build());
 
-        modelContexts.add(EmfModelContext.builder()
+        modelContexts.add(emfModelContextBuilder()
                 .name("TYPES")
-                .artifacts(ImmutableMap.of("model", asmResourceLoader.getTypesFile().getAbsolutePath()))
-                .platformAlias(HTTP_BLACKBELT_HU_JUDO_ASM_TYPES)
-                .metaModelUris(ImmutableList.of(EcorePackage.eNS_URI))
+                .model(asmResourceLoader.getTypesFile().getAbsolutePath())
+                .referenceUri(HTTP_BLACKBELT_HU_JUDO_ASM_TYPES)
                 .build());
 
-        modelContexts.add(EmfModelContext.builder()
+        modelContexts.add(emfModelContextBuilder()
                 .name("BASE")
-                .artifacts(ImmutableMap.of("model", asmResourceLoader.getBaseFile().getAbsolutePath()))
-                .platformAlias(HTTP_BLACKBELT_HU_JUDO_ASM_BASE)
-                .metaModelUris(ImmutableList.of(EcorePackage.eNS_URI))
+                .model(asmResourceLoader.getBaseFile().getAbsolutePath())
+                .referenceUri(HTTP_BLACKBELT_HU_JUDO_ASM_BASE)
                 .build());
 
-
-        modelContexts.add(EmfModelContext.builder()
+        modelContexts.add(emfModelContextBuilder()
                 .name("ASM")
-                .artifacts(ImmutableMap.of("model", targetAsmModelFile.getAbsolutePath()))
-                .metaModelUris(ImmutableList.of(EcorePackage.eNS_URI))
+                .model(targetAsmModelFile.getAbsolutePath())
                 .readOnLoad(false)
                 .storeOnDisposal(true)
                 .build());
 
-
-        try (ExecutionContext executionContext = ExecutionContext.builder()
+        try (ExecutionContext executionContext = executionContextBuilder()
                 .sourceDirectory(psm2AsmResourceLoader.getSctiptRoot())
                 .modelContexts(modelContexts)
                 .metaModels(ImmutableList.of())
-                .artifactResolver(new ArtifactResolver() {
-                    public URI getArtifactAsEclipseURI(String s) {
-                        return URI.createURI(s);
-                    }
-                })
                 .profile(false)
                 .log(new Slf4jLog())
                 .build()) {

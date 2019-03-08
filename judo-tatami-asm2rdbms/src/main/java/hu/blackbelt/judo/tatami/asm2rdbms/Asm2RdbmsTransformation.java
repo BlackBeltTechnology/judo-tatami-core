@@ -16,7 +16,6 @@ import hu.blackbelt.judo.meta.asm.AsmResourceLoader;
 import hu.blackbelt.judo.meta.rdbms.RdbmsMetaModel;
 import hu.blackbelt.judo.meta.rdbms.RdbmsModelInfo;
 import hu.blackbelt.judo.meta.rdbms.RdbmsPackage;
-import hu.blackbelt.judo.tatami.core.Slf4jLog;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.emf.common.util.URI;

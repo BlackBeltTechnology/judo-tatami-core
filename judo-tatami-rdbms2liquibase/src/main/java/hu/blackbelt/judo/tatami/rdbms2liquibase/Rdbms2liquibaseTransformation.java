@@ -1,25 +1,12 @@
 package hu.blackbelt.judo.tatami.rdbms2liquibase;
 
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Lists;
 import hu.blackbelt.epsilon.runtime.execution.ArtifactResolver;
-import hu.blackbelt.epsilon.runtime.execution.ExecutionContext;
 import hu.blackbelt.epsilon.runtime.execution.ModelContext;
-import hu.blackbelt.epsilon.runtime.execution.contexts.EtlExecutionContext;
-import hu.blackbelt.epsilon.runtime.execution.contexts.ProgramParameter;
-import hu.blackbelt.epsilon.runtime.execution.model.emf.EmfModelContext;
-import hu.blackbelt.epsilon.runtime.execution.model.excel.ExcelModelContext;
 import hu.blackbelt.judo.meta.rdbms.RdbmsMetaModel;
 import hu.blackbelt.judo.meta.rdbms.RdbmsModelInfo;
-import hu.blackbelt.judo.meta.rdbms.RdbmsPackage;
-import hu.blackbelt.judo.tatami.core.Slf4jLog;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.eclipse.emf.common.util.URI;
-import org.eclipse.emf.ecore.EcorePackage;
 import org.osgi.framework.ServiceRegistration;
-import org.osgi.framework.VersionRange;
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
@@ -28,9 +15,7 @@ import org.osgi.service.component.annotations.Reference;
 
 import java.io.File;
 import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
