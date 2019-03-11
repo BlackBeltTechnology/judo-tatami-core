@@ -1,7 +1,7 @@
 @cached
 operation JQLEXTRACT!NavigationExpression transformToExpression() : EXPR!Expression {
     if (self.features.isEmpty()) {
-        return self.equivalent("NavigationExpressionBaseToExpression");
+        return self.equivalent("NavigationExpressionBaseToInstance");
     } else {
         return self.features.last().transformToExpression();
     }
@@ -9,16 +9,37 @@ operation JQLEXTRACT!NavigationExpression transformToExpression() : EXPR!Express
 
 @cached
 operation JQLEXTRACT!NavigationExpression transformBaseToExpression() : EXPR!Expression {
-    return self.equivalent("NavigationExpressionBaseToExpression");
+    return self.equivalent("NavigationExpressionBaseToInstance");
 }
 
-rule NavigationExpressionBaseToExpression
+
+rule NavigationExpressionBaseToInstance
   transform s : JQLEXTRACT!NavigationExpression
   to t : EXPR!Instance {
-  	//guard: s.isInstance() - TODO: create instance only if base is not a valid type
+  	guard: s.isBasedOnInstance()
   	
     var variable = s.getVariable();
     if (variable.isDefined()) {
     	t.elementName = variable.transformToExpression();
     }
+}
+
+rule NavigationExpressionBaseToImmutableCollection
+  transform s : JQLEXTRACT!NavigationExpression
+  to t : EXPR!ImmutableCollection {
+  	guard: s.isBasedOnStructuredType()
+  	
+  	t.elementName = s.equivalent("NavigationExpressionBaseToTypeName");
+}
+
+rule NavigationExpressionBaseToTypeName
+  transform s : JQLEXTRACT!NavigationExpression
+  to t : EXPR!TypeName {
+  	guard: s.isBasedOnStructuredType()
+  	
+  	var objectType = s.base.getStructuredTypeByName();
+  	t.name = objectType.name;
+  	if (objectType.ePackage.isDefined()) {
+  	    t.namespace = objectType.ePackage.asString();
+  	}
 }

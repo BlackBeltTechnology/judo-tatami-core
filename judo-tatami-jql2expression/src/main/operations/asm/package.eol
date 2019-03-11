@@ -12,3 +12,12 @@ operation String getNamespace() : ASM!EPackage {
     
     return ns;
 }
+
+@cached
+operation ASM!EPackage asString() : String {
+	if (not self.eSuperPackage.isDefined()) {
+		return self.name;
+	} else {
+		return self.eSuperPackage.asString() + "::" + self.name;
+	}
+}

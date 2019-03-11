@@ -1,0 +1,24 @@
+@cached
+operation String getStructuredTypeByName() : ASM!EClass {
+ 	var ns : ASM!EPackage;
+ 	
+ 	// TODO - check annotations (entity types and transfer object types are supported only!)
+
+	var parts = self.split("\\s*\\::\\s*");
+	var last = parts.last();
+	
+	var type : ASM!EClass;
+	
+	if (parts.size() > 1) {
+		var ns = ASM!EPackage.all.selectOne(p | p.name == parts.first());
+		for (i in Sequence{1..parts().size()-1}) {
+		    var n = parts.at(i);
+		    n.println("name: ");
+			ns = ns.eSubpackages.select(p | p.name = parts.at(i));
+		}
+		type = ns.eClassifiers.select(c | c.name = parts.last());
+	} else {
+		type = ASM!EClass.all.selectOne(c | c.name = parts.last());
+	}
+    return type;
+}

@@ -1,4 +1,14 @@
 @cached
+operation JQLEXTRACT!NavigationExpression isBasedOnInstance() : Boolean {
+    return not self.base.getStructuredTypeByName().isDefined();
+}
+
+@cached
+operation JQLEXTRACT!NavigationExpression isBasedOnStructuredType() : Boolean {
+    return self.base.getStructuredTypeByName().isDefined();
+}
+
+@cached
 operation JQLEXTRACT!NavigationExpression getVariable() : JQLEXTRACT!Variable {
     var root = self.getRoot();
     if (root.isDefined()) {
