@@ -1,0 +1,172 @@
+import "../../../operations/psm/namespace/_importNamespace.eol";
+import "../../../operations/psm/data/_importData.eol";
+import "../../../operations/psm/derived/_importDerived.eol";
+
+@cached
+operation JUDOPSM!ExpressionType getReferenceTypedElement() : JUDOPSM!ReferenceTypedElement {
+	return JUDOPSM!ReferenceAccessor.all.selectOne(e | e.getterExpression == self or e.setterExpression == self);
+}
+
+@cached
+operation JUDOPSM!ExpressionType getPrimitiveTypedElement() : JUDOPSM!PrimitiveTypedElement {
+	return JUDOPSM!PrimitiveAccessor.all.selectOne(e | e.getterExpression == self or e.setterExpression == self);
+}
+
+@cached
+operation JUDOPSM!ReferenceTypedElement getEntityType() : JUDOPSM!EntityType {
+	return JUDOPSM!EntityType.all.selectOne(e | e.dataProperties.contains(self));
+}
+
+@cached
+operation JUDOPSM!PrimitiveTypedElement getEntityType() : JUDOPSM!EntityType {
+	return JUDOPSM!EntityType.all.selectOne(e | e.navigationProperties.contains(self));
+}
+
+@greedy
+rule ExtractExpression
+  transform s : JUDOPSM!ExpressionType
+  to t : JQLEXTRACT!ExtractedExpression {
+  	var ref = s.getReferenceTypedElement();
+  	var attr = s.getPrimitiveTypedElement();
+  	
+  	s.expression.println("Extracting expression: ");
+  	t.context = new JQLEXTRACT!Context;
+  	t.binding = new JQLEXTRACT!Binding;
+  	
+  	// TODO - call XText parser
+  	if (s.expression.startsWith("0 ")) {
+  		t.jqlExpression = new JQLEXTRACT!IntegerLiteral;
+  		t.jqlExpression.value = new Native("java.math.BigInteger")("0");
+  	} else if (s.expression == "self.quantity * self.unitPrice * (1 - self.discount)") {
+  		var fQuantity = new JQLEXTRACT!Feature;
+  		fQuantity.name = "quantity";
+  		var fUnitPrice = new JQLEXTRACT!Feature;
+  		fUnitPrice.name = "unitPrice";
+  		var fDiscount = new JQLEXTRACT!Feature;
+  		fDiscount.name = "discount";
+  	
+  		t.jqlExpression = new JQLEXTRACT!BinaryOperation;
+  		t.jqlExpression.operator = "*";
+  		t.jqlExpression.leftOperand = new JQLEXTRACT!BinaryOperation;
+  		t.jqlExpression.leftOperand.operator = "*";
+  		t.jqlExpression.leftOperand.leftOperand = new JQLEXTRACT!NavigationExpression;
+  		t.jqlExpression.leftOperand.leftOperand.base = "self";
+  		t.jqlExpression.leftOperand.leftOperand.features = Sequence{fQuantity};
+  		t.jqlExpression.leftOperand.rightOperand = new JQLEXTRACT!NavigationExpression;
+  		t.jqlExpression.leftOperand.rightOperand.base = "self";
+  		t.jqlExpression.leftOperand.rightOperand.features = Sequence{fUnitPrice};
+  		t.jqlExpression.rightOperand = new JQLEXTRACT!BinaryOperation;
+  		t.jqlExpression.rightOperand.operator = "-";
+  		t.jqlExpression.rightOperand.leftOperand = new JQLEXTRACT!IntegerLiteral;
+  		t.jqlExpression.rightOperand.leftOperand.value = new Native("java.math.BigInteger")("1");
+  		t.jqlExpression.rightOperand.rightOperand = new JQLEXTRACT!NavigationExpression;
+  		t.jqlExpression.rightOperand.rightOperand.base = "self";
+  		t.jqlExpression.rightOperand.rightOperand.features = Sequence{fDiscount};
+  	} else {
+  		t.jqlExpression = new JQLEXTRACT!NavigationExpression;
+  		var parts = s.expression.replaceAll("/\\*.*\\*/", "").trim().split("\\.");
+  		t.jqlExpression.base = parts.first();
+  		
+  		var features = parts.clone();
+  		parts.remove(t.jqlExpression.base);
+  		
+  		t.jqlExpression.features = new Sequence;
+  		for (p in parts) {
+  		    var f = new JQLEXTRACT!Feature;
+  		    f.name = p;
+  		    t.jqlExpression.features.add(f);
+  		}
+  	}
+}
+
+@greedy
+rule AttachSourceToExtractedExpression
+  transform s : JUDOPSM!ExpressionType
+  to t : JQLEXTRACT!Binding {
+  	guard: s.getReferenceTypedElement().isDefined()
+  	
+  	var ref = s.getReferenceTypedElement();
+  	t.featureName = ref.name;
+  	
+  	var entityType = ref.getEntityType();
+  	if (entityType.isDefined()) {
+	  	if (entityType.getNamespace().isDefined()) {
+	  		t.packageName = entityType.getNamespace().toString();
+	  	}
+  		t.className = entityType.name;
+  	}
+  	
+  	var roles = new Set;
+  	if (ref.getterExpression == s) {
+  		roles.add("getter"); 
+  	}
+  	if (ref.setterExpression == s) {
+  		roles.add("setter"); 
+  	}
+  	t.role = roles.concat(" ");
+  	
+  	s.equivalent().binding = t;
+}
+
+@greedy
+rule AttachSourceToExtractedExpression
+  transform s : JUDOPSM!ExpressionType
+  to t : JQLEXTRACT!Binding {
+  	guard: s.getPrimitiveTypedElement().isDefined()
+  	
+  	var attr = s.getPrimitiveTypedElement();
+  	t.featureName = attr.name;
+  	
+  	var entityType = attr.getEntityType();
+  	if (entityType.isDefined()) {
+	  	if (entityType.getNamespace().isDefined()) {
+	  		t.packageName = entityType.getNamespace().toString();
+	  	}
+  		t.className = entityType.name;
+  	}
+  	
+  	var roles = new Set;
+  	if (attr.getterExpression == s) {
+  		roles.add("getter"); 
+  	}
+  	if (attr.setterExpression == s) {
+  		roles.add("setter"); 
+  	}
+  	t.role = roles.concat(" ");
+  	
+  	s.equivalent().binding = t;
+}
+
+@greedy
+rule AttachSelfVariableToExtractedExpression
+  transform s : JUDOPSM!ExpressionType
+  to t : JQLEXTRACT!Variable {
+  	guard: s.getReferenceTypedElement().isDefined() and s.getReferenceTypedElement().getEntityType().isDefined()
+  	
+  	var entityType = s.getReferenceTypedElement().getEntityType();
+  	
+  	t.name = "self";
+  	if (entityType.getNamespace().isDefined()) {
+  		t.typeNamespace = entityType.getNamespace().toString();
+  	}
+  	t.typeName = entityType.name;
+  	
+  	s.equivalent().context.variables.add(t);
+}
+
+@greedy
+rule AttachSelfVariableToExtractedExpression
+  transform s : JUDOPSM!ExpressionType
+  to t : JQLEXTRACT!Variable {
+    guard: s.getPrimitiveTypedElement().isDefined() and s.getPrimitiveTypedElement().getEntityType().isDefined()
+  	
+  	var entityType = s.getPrimitiveTypedElement().getEntityType();
+  	
+  	t.name = "self";
+  	if (entityType.getNamespace().isDefined()) {
+  		t.typeNamespace = entityType.getNamespace().toString();
+  	}
+  	t.typeName = entityType.name;
+  	
+  	s.equivalent().context.variables.add(t);
+}
