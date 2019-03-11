@@ -1,0 +1,66 @@
+@cached
+operation JQLEXTRACT!NavigationExpression getVariable() : JQLEXTRACT!Variable {
+    var root = self.getRoot();
+    if (root.isDefined()) {
+	    var extractedExpression = JQLEXTRACT!ExtractedExpression.all.selectOne(e | e.jqlExpression == root);
+	    if (extractedExpression.isDefined() and extractedExpression.context.isDefined()) {
+	    	return extractedExpression.context.variables.selectOne(v | v.name = self.base);
+	    } else {
+	        // no variable is defined in context
+	    	return null;
+	    }
+    } else {
+        // no context is defined
+    	return null;
+    }    
+}
+
+@cached
+operation JQLEXTRACT!NavigationExpression getOperands() : Collection {
+	return Set{};
+}
+
+@cached
+operation JQLEXTRACT!NavigationExpression isDecimal() : Boolean {
+	if (not self.features.isEmpty()) {
+		return self.features.last().isDecimal();
+	} else {
+		return self.base.isDecimal();
+	}
+}
+
+@cached
+operation JQLEXTRACT!NavigationExpression isInteger() : Boolean {
+	if (not self.features.isEmpty()) {
+		return self.features.last().isInteger();
+	} else {
+		return self.base.isInteger();
+	}
+}
+
+@cached
+operation JQLEXTRACT!NavigationExpression isString() : Boolean {
+	if (not self.features.isEmpty()) {
+		return self.features.last().isString();
+	} else {
+		return self.base.isString();
+	}
+}
+
+@cached
+operation JQLEXTRACT!NavigationExpression isBoolean() : Boolean {
+	if (not self.features.isEmpty()) {
+		return self.features.last().isBoolean();
+	} else {
+		return self.base.isBoolean();
+	}
+}
+
+@cached
+operation JQLEXTRACT!NavigationExpression isEnumeration() : Boolean {
+	if (not self.features.isEmpty()) {
+		return self.features.last().isEnumeration();
+	} else {
+		return self.base.isEnumeration();
+	}
+}

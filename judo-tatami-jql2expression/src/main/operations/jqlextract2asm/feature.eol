@@ -1,0 +1,76 @@
+@cached
+operation JQLEXTRACT!Feature getFeatureBaseObjectType() : ASM!EClass {
+	var featureBase = self.getFeatureBase();
+	if (not featureBase.isDefined()) {
+		// feature base is unknown
+		return null;
+	}
+	if (featureBase.isKindOf(JQLEXTRACT!NavigationExpression)) {
+		var variable = featureBase.getVariable();
+		if (variable.isDefined()) {
+			return variable.getObjectType();
+		} else {
+			// unknown variable
+			return null;
+		} 
+	} else if (featureBase.isKindOf(JQLEXTRACT!Feature)) {
+		return featureBase.getReferenceContainer();
+	}
+}
+
+@cached
+operation JQLEXTRACT!Feature getReferenceType() : ASM!EReference {
+	var featureBaseObjectType = self.getFeatureBaseObjectType();
+	if (featureBaseObjectType.isDefined()) {
+		return featureBaseObjectType.eAllReferences.selectOne(r | r.name == self.name);
+	} else {
+		return null;
+	}
+}
+
+@cached
+operation JQLEXTRACT!Feature getAttribute() : ASM!EAttribute {
+	var featureBaseObjectType = self.getFeatureBaseObjectType();
+	if (featureBaseObjectType.isDefined()) {
+		return featureBaseObjectType.eAllAttributes.selectOne(a | a.name == self.name);
+	} else {
+		return null;
+	}
+}
+
+@cached
+operation JQLEXTRACT!Feature getReferenceContainer() : ASM!EClass {
+	var featureBase = self.getFeatureBase();
+	var objectType;
+  	if (featureBase.isKindOf(JQLEXTRACT!NavigationExpression)) {
+  	    var variable = featureBase.getVariable();
+  	    if (variable.isDefined()) {
+			objectType = variable.getObjectType();
+		}
+  	} else if (featureBase.isKindOf(JQLEXTRACT!Feature)) {
+  		objectType = featureBase.getReferenceContainer();
+  	}
+  	
+  	if (objectType.isDefined()) {
+	  	var ref = objectType.eAllReferences.selectOne(r | r.name == self.name);
+	  	if (ref.isDefined()) {
+	  		return ref.eReferenceType;
+	  	} else {
+	  		// unknown target
+	  		return null;
+	  	}
+  	} else {
+  		// unknown kind of base
+  		return null;
+  	}
+}
+
+@cached
+operation JQLEXTRACT!Feature getAttributeType() : ASM!EDataType {
+	var attribute = self.getAttribute();
+	if (attribute.isDefined()) {
+		return attribute.eAttributeType;
+	} else {
+		return null;
+	}
+}

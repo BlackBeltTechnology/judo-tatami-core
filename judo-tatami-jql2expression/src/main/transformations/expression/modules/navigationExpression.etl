@@ -1,0 +1,24 @@
+@cached
+operation JQLEXTRACT!NavigationExpression transformToExpression() : EXPR!Expression {
+    if (self.features.isEmpty()) {
+        return self.equivalent("NavigationExpressionBaseToExpression");
+    } else {
+        return self.features.last().transformToExpression();
+    }
+}
+
+@cached
+operation JQLEXTRACT!NavigationExpression transformBaseToExpression() : EXPR!Expression {
+    return self.equivalent("NavigationExpressionBaseToExpression");
+}
+
+rule NavigationExpressionBaseToExpression
+  transform s : JQLEXTRACT!NavigationExpression
+  to t : EXPR!Instance {
+  	//guard: s.isInstance() - TODO: create instance only if base is not a valid type
+  	
+    var variable = s.getVariable();
+    if (variable.isDefined()) {
+    	t.elementName = variable.transformToExpression();
+    }
+}

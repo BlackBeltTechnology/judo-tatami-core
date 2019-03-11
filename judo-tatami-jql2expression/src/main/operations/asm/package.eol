@@ -1,0 +1,14 @@
+@cached
+operation String getNamespace() : ASM!EPackage {
+	var ns : ASM!EPackage;
+
+	for (nsName in self.split("\\s*\\::\\s*")) {
+        if (ns.isDefined()) {
+            ns = ns.eSubpackages.selectOne(p | p.name == nsName);
+        } else {
+            ns = ASM!EPackage.all.selectOne(p | p.name == nsName);
+        }
+    }
+    
+    return ns;
+}

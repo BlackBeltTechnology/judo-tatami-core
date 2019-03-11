@@ -1,0 +1,47 @@
+operation JQLEXTRACT!Expression isNumeric() : Boolean {
+    return self.isInteger() or self.isDecimal(); 
+}
+
+@cached
+@greedy
+operation JQLEXTRACT!Expression isInteger() : Boolean {
+    return false;
+}
+
+@cached
+@greedy
+operation JQLEXTRACT!Expression isDecimal() : Boolean {
+    return false;
+}
+
+@cached
+@greedy
+operation JQLEXTRACT!Expression isString() : Boolean {
+    return false;
+}
+
+@cached
+@greedy
+operation JQLEXTRACT!Expression isBoolean() : Boolean {
+    return false;
+}
+
+@cached
+operation JQLEXTRACT!IntegerLiteral isInteger() : Boolean {
+    return true;
+}
+
+@cached
+operation JQLEXTRACT!DecimalLiteral isDecimal() : Boolean {
+    return true;
+}
+
+@cached
+operation JQLEXTRACT!StringLiteral isString() : Boolean {
+    return true;
+}
+
+@cached
+operation JQLEXTRACT!BooleanLiteral isBoolean() : Boolean {
+    return true;
+}

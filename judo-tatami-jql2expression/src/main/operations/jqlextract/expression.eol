@@ -1,0 +1,23 @@
+@cached
+operation JQLEXTRACT!Expression getOperands() : Collection {
+	return Set{};
+}
+
+@cached
+operation JQLEXTRACT!Expression getContainer() : JQLEXTRACT!Expression {
+	return JQLEXTRACT!Expression.all.selectOne(e | e.getOperands().contains(self));
+}
+
+@cached
+operation JQLEXTRACT!Expression getRoot() : JQLEXTRACT!Expression {
+	if (self.isRoot()) {
+		return self;
+	} else {
+		return self.getContainer().getRoot();
+	}
+}
+
+@cached
+operation JQLEXTRACT!Expression isRoot() : Boolean {
+	return not self.getContainer().isDefined();
+}
