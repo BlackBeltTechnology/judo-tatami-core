@@ -36,7 +36,7 @@ operation JQLEXTRACT!Feature isReferenceFromObject() : Boolean {
 	}
 	if (featureBase.isKindOf(JQLEXTRACT!NavigationExpression)) {
 		// navigation base must be an onject
-		return true;
+		return featureBase.isBasedOnObject();
 	} else if (featureBase.isKindOf(JQLEXTRACT!Feature)) {
 		return featureBase.isReferenceToObject();
 	} else {
@@ -53,7 +53,7 @@ operation JQLEXTRACT!Feature isReferenceFromCollection() : Boolean {
 	}
 	if (featureBase.isKindOf(JQLEXTRACT!NavigationExpression)) {
 		// navigation base must be an object
-		return false;
+		return featureBase.isBasedOnStructuredType();
 	} else if (featureBase.isKindOf(JQLEXTRACT!Feature)) {
 		return featureBase.isReferenceToCollection();
 	} else {

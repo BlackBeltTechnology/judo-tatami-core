@@ -30,7 +30,7 @@ operation JQLEXTRACT!Feature transformToExpression() : EXPR!Expression {
 
 @abstract
 @greedy
-rule FeatureToExpression
+rule FeatureToExpressionFromObject
   transform s : JQLEXTRACT!Feature
   to t : EXPR!Expression {
    	var featureBase = s.getFeatureBase();
@@ -45,38 +45,63 @@ rule FeatureToExpression
 
 @abstract
 @greedy
-rule FeatureToNavigationExpression
+rule FeatureToExpressionFromCollection
+  transform s : JQLEXTRACT!Feature
+  to t : EXPR!Expression {
+   	var featureBase = s.getFeatureBase();
+   	featureBase.println("FEATURE BASE: ");
+   	if (featureBase.isDefined()) {
+	   	if (featureBase.isKindOf(JQLEXTRACT!NavigationExpression)) {
+	   		t.collectionExpression = featureBase.transformBaseToExpression();
+	   	} else {
+	   	    t.collectionExpression = featureBase.transformToExpression();
+	   	}
+   	}
+}
+
+@abstract
+@greedy
+rule FeatureToNavigationExpressionFromObject
   transform s : JQLEXTRACT!Feature
   to t : EXPR!NavigationExpression 
-  extends FeatureToExpression {
+  extends FeatureToExpressionFromObject {
+    t.referenceName = s.name;
+}
+
+@abstract
+@greedy
+rule FeatureToNavigationExpressionFromCollection
+  transform s : JQLEXTRACT!Feature
+  to t : EXPR!NavigationExpression 
+  extends FeatureToExpressionFromCollection {
     t.referenceName = s.name;
 }
 
 rule FeatureToObjectNavigationExpression
   transform s : JQLEXTRACT!Feature
   to t : EXPR!ObjectNavigationExpression 
-  extends FeatureToNavigationExpression {
+  extends FeatureToNavigationExpressionFromObject {
   	guard: s.isObjectToObject()
 }
 
 rule FeatureToCollectionNavigationFromObjectExpression
   transform s : JQLEXTRACT!Feature
   to t : EXPR!CollectionNavigationFromObjectExpression 
-  extends FeatureToNavigationExpression {
+  extends FeatureToNavigationExpressionFromObject {
   	guard: s.isObjectToCollection()
 }
 
 rule FeatureToCollectionNavigationFromCollectionExpression
   transform s : JQLEXTRACT!Feature
   to t : EXPR!CollectionNavigationFromCollectionExpression 
-  extends FeatureToNavigationExpression {
+  extends FeatureToNavigationExpressionFromCollection {
   	guard: s.isCollectionToCollection()
 }
 
 rule FeatureToObjectNavigationFromCollectionExpression
   transform s : JQLEXTRACT!Feature
   to t : EXPR!ObjectNavigationFromCollectionExpression 
-  extends FeatureToNavigationExpression {
+  extends FeatureToNavigationExpressionFromCollection {
   	guard: s.isCollectionToObject()
 }
 
@@ -85,7 +110,7 @@ rule FeatureToObjectNavigationFromCollectionExpression
 rule FeatureToAttributeSelector
   transform s : JQLEXTRACT!Feature
   to t : EXPR!AttributeSelector
-  extends FeatureToExpression {
+  extends FeatureToExpressionFromObject {
     t.attributeName = s.name;
 }
 

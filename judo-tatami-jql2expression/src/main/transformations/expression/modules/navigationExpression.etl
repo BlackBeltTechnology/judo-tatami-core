@@ -9,14 +9,17 @@ operation JQLEXTRACT!NavigationExpression transformToExpression() : EXPR!Express
 
 @cached
 operation JQLEXTRACT!NavigationExpression transformBaseToExpression() : EXPR!Expression {
-    return self.equivalent("NavigationExpressionBaseToInstance");
+    if (self.isBasedOnObject() and self.isBasedOnVariable()) {
+        return self.equivalent("NavigationExpressionBaseToInstance");
+    } else if (self.isBasedOnCollection()) {
+        return self.equivalent("NavigationExpressionBaseToImmutableCollection");
+    }
 }
-
 
 rule NavigationExpressionBaseToInstance
   transform s : JQLEXTRACT!NavigationExpression
   to t : EXPR!Instance {
-  	guard: s.isBasedOnInstance()
+  	guard: s.isBasedOnObject() and s.isBasedOnVariable()
   	
     var variable = s.getVariable();
     if (variable.isDefined()) {
@@ -27,9 +30,13 @@ rule NavigationExpressionBaseToInstance
 rule NavigationExpressionBaseToImmutableCollection
   transform s : JQLEXTRACT!NavigationExpression
   to t : EXPR!ImmutableCollection {
-  	guard: s.isBasedOnStructuredType()
+  	guard: s.isBasedOnCollection()
   	
-  	t.elementName = s.equivalent("NavigationExpressionBaseToTypeName");
+  	if (s.isBasedOnStructuredType()) {
+  	    t.elementName = s.equivalent("NavigationExpressionBaseToTypeName");
+  	} else if (s.isBasedOnObject()) {
+  	    // TODO: set element name (from variable definition)
+  	}
 }
 
 rule NavigationExpressionBaseToTypeName
