@@ -61,7 +61,7 @@
                 </configuration>
             </plugin>
 
-            <!-- plugin>
+            <plugin>
                 <groupId>hu.blackbelt</groupId>
                 <artifactId>unpack-artifact-maven-plugin</artifactId>
                 <version>1.0.0</version>
@@ -83,7 +83,15 @@
                                     <resources>
                                         <resource>
                                             <source>judo/expression/operations</source>
-                                            <destination>operations</destination>
+                                            <destination>operations/expression</destination>
+                                        </resource>
+                                        <resource>
+                                            <source>judo/expression/transformations</source>
+                                            <destination>transformations/expression</destination>
+                                        </resource>
+                                        <resource>
+                                            <source>judo/expression/validations</source>
+                                            <destination>validations/expression</destination>
                                         </resource>
                                     </resources>
                                 </artifact>
@@ -91,7 +99,7 @@
                         </configuration>
                     </execution>
                 </executions>
-            </plugin-->
+            </plugin>
         </plugins>
     </build>
 
@@ -185,22 +193,6 @@
                                                 <param>http://blackbelt.hu/judo/meta/measure</param>
                                             </metaModelUris>
                                         </model>
-                                        <!--model>
-                                            <artifact>mvn:hu.blackbelt.judo.meta:judo-meta-asm:ecore:types:${judo-meta-asm.version}</artifact>
-                                            <name>TYPES</name>
-                                            <metaModelUris>
-                                                <param>http://www.eclipse.org/emf/2002/Ecore</param>
-                                            </metaModelUris>
-                                            <platformAlias>http://blackbelt.hu/judo/asm/types</platformAlias>
-                                        </model>
-                                        <model>
-                                            <artifact>mvn:hu.blackbelt.judo.meta:judo-meta-asm:ecore:base:${judo-meta-asm.version}</artifact>
-                                            <name>BASE</name>
-                                            <metaModelUris>
-                                                <param>http://www.eclipse.org/emf/2002/Ecore</param>
-                                            </metaModelUris>
-                                            <platformAlias>http://blackbelt.hu/judo/asm/base</platformAlias>
-                                        </model-->
                                         <model>
                                             <artifact>${project.build.directory}/expression.model</artifact>
                                             <name>EXPR</name>
@@ -213,8 +205,7 @@
                                     </models>
                                     <eolPrograms>
                                         <Etl>
-                                            <source>${basedir}/src/main/transformations/expression/jqlToExpression.etl
-                                            </source>
+                                            <source>${basedir}/src/main/transformations/expression/jqlToExpression.etl</source>
                                             <parameters>
                                                 <parameter>
                                                     <name>asmVersion</name>
@@ -227,9 +218,9 @@
                                             </parameters>
                                             <!--exportTransformationTrace>transformationTrace</exportTransformationTrace-->
                                         </Etl>
-                                        <!--Eol>
-                                            <source>${basedir}/src/transformations/exportRdbmsTrace.eol</source>
-                                        </Eol-->
+                                        <!--Etl>
+                                            <source>${basedir}/src/main/transformations/expression/expression2evaluation.etl</source>
+                                        </Etl-->
                                     </eolPrograms>
                                 </configuration>
                             </execution>

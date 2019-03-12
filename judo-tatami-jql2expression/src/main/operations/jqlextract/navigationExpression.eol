@@ -21,7 +21,8 @@ operation JQLEXTRACT!NavigationExpression isBasedOnStructuredType() : Boolean {
 operation JQLEXTRACT!NavigationExpression isBasedOnObject() : Boolean {
     if (self.isBasedOnVariable()) {
         var variable = self.getVariable();
-        return true; // TODO: check multiplicity of variable
+        var b = not variable.collection;
+        return b;
     } else {
         return false;
     }

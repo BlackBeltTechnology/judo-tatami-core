@@ -49,7 +49,6 @@ rule FeatureToExpressionFromCollection
   transform s : JQLEXTRACT!Feature
   to t : EXPR!Expression {
    	var featureBase = s.getFeatureBase();
-   	featureBase.println("FEATURE BASE: ");
    	if (featureBase.isDefined()) {
 	   	if (featureBase.isKindOf(JQLEXTRACT!NavigationExpression)) {
 	   		t.collectionExpression = featureBase.transformBaseToExpression();

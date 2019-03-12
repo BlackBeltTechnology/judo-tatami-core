@@ -11,14 +11,21 @@ operation String getStructuredTypeByName() : ASM!EClass {
 	
 	if (parts.size() > 1) {
 		var ns = ASM!EPackage.all.selectOne(p | p.name == parts.first());
-		for (i in Sequence{1..parts().size()-1}) {
-		    var n = parts.at(i);
-		    n.println("name: ");
-			ns = ns.eSubpackages.select(p | p.name = parts.at(i));
+		for (i in Sequence{1..parts.size()-2}) {
+			if (ns.isDefined()) {
+				ns = ns.eSubpackages.selectOne(p | p.name = parts.at(i));
+			}
 		}
-		type = ns.eClassifiers.select(c | c.name = parts.last());
+		if (ns.isDefined()) {
+			type = ns.eClassifiers.selectOne(c | c.name = parts.last());
+		}
 	} else {
-		type = ASM!EClass.all.selectOne(c | c.name = parts.last());
+		var types = ASM!EClass.all.select(c | c.name = parts.last());
+		if (types.size() == 1) {
+		    type = types.first();
+		} else {
+		    // multiple types exist with the given name
+		}
 	}
     return type;
 }

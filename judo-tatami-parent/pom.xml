@@ -48,16 +48,16 @@
         <maven.build.timestamp.format>yyyyMMddHHmmss</maven.build.timestamp.format>
         <epsilon.maven.plugin.version>1.1.3</epsilon.maven.plugin.version>
 
-        <judo-meta-rdbms.version>1.0.1.develop_22</judo-meta-rdbms.version>
+        <judo-meta-rdbms.version>1.0.1.develop_23</judo-meta-rdbms.version>
         <judo-meta-rdbms.import-range>[1.0,1.1)</judo-meta-rdbms.import-range>
 
-        <judo-meta-psm.version>1.0.1.develop_219</judo-meta-psm.version>
+        <judo-meta-psm.version>1.0.1.develop_221</judo-meta-psm.version>
         <judo-meta-psm.import-range>[1.0,1.1)</judo-meta-psm.import-range>
 
         <judo-meta-psm-jql.version>1.0.0.develop_10</judo-meta-psm-jql.version>
         <judo-meta-psm-jql.import-range>[1.0,1.1)</judo-meta-psm-jql.import-range>
 
-        <judo-meta-psm-jql-extract.version>1.0.0.develop_5</judo-meta-psm-jql-extract.version>
+        <judo-meta-psm-jql-extract.version>1.0.0.develop_7</judo-meta-psm-jql-extract.version>
         <judo-meta-psm-jql-extract.import-range>[1.0,1.1)</judo-meta-psm-jql-extract.import-range>
 
         <!--
@@ -68,10 +68,10 @@
         <judo-meta-asm.version>1.0.0-develop-20</judo-meta-asm.version>
         <judo-meta-asm.import-range>[1.0,1.1)</judo-meta-asm.import-range>
 
-        <judo-meta-expression.version>1.0.1.develop_98</judo-meta-expression.version>
+        <judo-meta-expression.version>1.0.1.develop_99</judo-meta-expression.version>
         <judo-meta-expression.import-range>[1.0,1.1)</judo-meta-expression.import-range>
 
-        <judo-meta-measure.version>1.0.1.develop_15</judo-meta-measure.version>
+        <judo-meta-measure.version>1.0.1.develop_16</judo-meta-measure.version>
         <judo-meta-measure.import-range>[1.0,1.1)</judo-meta-measure.import-range>
 
         <test.asm.model.groupId>${project.groupId}</test.asm.model.groupId>
@@ -88,7 +88,7 @@
 
         <test.psm.model.groupId>hu.blackbelt.northwind</test.psm.model.groupId>
         <test.psm.model.artifactId>northwind-runtime</test.psm.model.artifactId>
-        <test.psm.model.version>1.0.1.develop_84</test.psm.model.version>
+        <test.psm.model.version>1.0.1.develop_87</test.psm.model.version>
 
         <emf-version>2.12.0</emf-version>
 

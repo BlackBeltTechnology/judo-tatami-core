@@ -25,7 +25,7 @@
                 <version>1.0.0</version>
                 <executions>
                     <execution>
-                        <id>copy-expression-scripts</id>
+                        <id>copy-psm-scripts</id>
                         <phase>generate-sources</phase>
                         <goals>
                             <goal>unpack</goal>
@@ -176,9 +176,6 @@
                                     <metaModels>
                                         <metaModel>
                                             mvn:hu.blackbelt.judo.meta:judo-meta-psm-model:ecore:psm:${judo-meta-psm.version}
-                                        </metaModel>
-                                        <metaModel>
-                                            mvn:hu.blackbelt.judo.meta:judo-meta-expression-model:ecore:expression:${judo-meta-expression.version}
                                         </metaModel>
                                     </metaModels>
 

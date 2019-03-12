@@ -21,10 +21,8 @@ rule NavigationExpressionBaseToInstance
   to t : EXPR!Instance {
   	guard: s.isBasedOnObject() and s.isBasedOnVariable()
   	
-    var variable = s.getVariable();
-    if (variable.isDefined()) {
-    	t.elementName = variable.transformToExpression();
-    }
+    // variable is always defined
+    t.elementName = s.getVariable().transformToExpression();
 }
 
 rule NavigationExpressionBaseToImmutableCollection
@@ -35,7 +33,7 @@ rule NavigationExpressionBaseToImmutableCollection
   	if (s.isBasedOnStructuredType()) {
   	    t.elementName = s.equivalent("NavigationExpressionBaseToTypeName");
   	} else if (s.isBasedOnObject()) {
-  	    // TODO: set element name (from variable definition)
+  	    t.elementName = s.getVariable().transformToExpression();
   	}
 }
 
