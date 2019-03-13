@@ -1,4 +1,5 @@
 import "modelElement.eol";
+import "package.eol";
 
 @cached
 operation ASM!EClass hasSupertype() : Boolean {
@@ -22,5 +23,5 @@ operation ASM!EClassifier getPackage() : ASM!EPackage {
 
 @cached
 operation ASM!EClass getFQName() : String {
-	return self.getPackage().getFullName() + "." + self.name;
+	return self.ePackage.getFullName() + "." + self.name;
 }

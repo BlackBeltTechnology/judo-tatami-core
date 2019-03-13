@@ -1,1 +1,4 @@
+import "entity.eol";
+import "package.eol";
+import "transferObject.eol";
 import "type.eol";

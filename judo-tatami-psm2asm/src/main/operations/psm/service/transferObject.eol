@@ -1,0 +1,4 @@
+@cached
+operation JUDOPSM!TransferObjectType getNamespace() : JUDOPSM!Namespace {
+	return JUDOPSM!Namespace.all.selectOne(p | p.elements.includes(self));
+}

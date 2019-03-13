@@ -1,0 +1,19 @@
+@cached
+operation JUDOPSM!TransferObjectContainment displayName() : String {
+	return self.getTransferObjectType().name + "." + self.name;
+}
+
+@cached
+operation JUDOPSM!TransferObjectContainment getTransferObjectType() : JUDOPSM!TransferObjectType {
+	return JUDOPSM!TransferObjectType.all.selectOne(et | et.containments.includes(self));
+}
+
+@cached
+operation JUDOPSM!TransferObjectContainment isRequired() : Boolean {
+	return self.cardinality.lower > 0;
+}
+
+@cached
+operation JUDOPSM!TransferObjectContainment isCollection() : Boolean {
+	return self.cardinality.upper > 1 or self.cardinality.upper == -1;
+}

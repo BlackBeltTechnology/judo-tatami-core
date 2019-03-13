@@ -1,0 +1,82 @@
+import "../../../operations/psm/service/_importService.eol";
+import "../../../operations/asm/_importAll.eol";
+import "../utils/_importUtils.eol";
+
+@abstract
+rule CreateTransferObject
+	transform s : JUDOPSM!TransferObjectType
+	to t : ASM!EClass {
+		t.name = s.name;
+		s.getNamespace().transformToAsm().eClassifiers.add(t);
+		
+		var annotation = new ASM!EAnnotation;
+		annotation.source = extendedMetadataURI;
+		var aTransferObject = new ASM!EStringToStringMapEntry;
+		aTransferObject.key = "transferObject";
+		aTransferObject.value = "true";
+		annotation.details.add(aTransferObject);
+		t.eAnnotations.add(annotation);
+	}
+
+rule CreateMappedTransferObject
+    transform s : JUDOPSM!MappedTransferObjectType
+    to t : ASM!EClass
+    extends CreateTransferObject {
+        var annotation = t.eAnnotations.selectOne(a | a.source = extendedMetadataURI);
+        var aMappedEntityType = new ASM!EStringToStringMapEntry;
+		aMappedEntityType.key = "mappedEntityType";
+		aMappedEntityType.value = s.entityType.transformToAsm().getFQName();
+		annotation.details.add(aMappedEntityType);
+    }
+
+rule CreateUnmappedTransferObject
+    transform s : JUDOPSM!UnmappedTransferObjectType
+    to t : ASM!EClass
+    extends CreateTransferObject {
+    }
+
+rule CreateTransferObjectAttribute
+	transform s : JUDOPSM!TransferAttribute
+	to t : ASM!EAttribute {
+		guard: s.isPrimitive()
+		
+		t.name = s.name;
+		if (s.required) {
+			t.lowerBound = 1;
+		} else {
+			t.lowerBound = 0;
+		}
+
+		t.eType = s.dataType.getEcoreType();
+
+		var annotations = s.dataType.createASMAnnotations();
+		if (not annotations.isEmpty()) {
+			var annotation = new ASM!EAnnotation;
+			annotation.source = extendedMetadataURI;
+			annotation.details.addAll(annotations);
+			t.eAnnotations.add(annotation);
+		}
+
+		s.getTransferObjectType().transformToAsm().eStructuralFeatures.add(t);
+	}
+
+rule CreateTransferObjectContainment
+	transform s : JUDOPSM!TransferObjectContainment
+	to t : ASM!EReference {
+		t.name = s.name;
+		t.containment = true;
+
+		t.lowerBound = s.cardinality.lower;
+		t.upperBound = s.cardinality.upper;
+
+		var annotations = s.target.createASMAnnotations();
+		if (not annotations.isEmpty()) {
+			var annotation = new ASM!EAnnotation;
+			annotation.source = extendedMetadataURI;
+			annotation.details.addAll(annotations);
+			t.eAnnotations.add(annotation);
+		}
+
+		s.getTransferObjectType().transformToAsm().eStructuralFeatures.add(t);
+		t.eType = s.target.transformToAsm();
+	}

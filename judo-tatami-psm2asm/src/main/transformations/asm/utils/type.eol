@@ -1,5 +1,11 @@
 import "../../../operations/psm/namespace/_importNamespace.eol";
 
+@cached
+operation JUDOPSM!EnumerationType transformToAsm() : ASM!EEnum {
+    return self.equivalent("CreateEnumeration");
+}
+
+// not cacheable!
 operation JUDOPSM!Type createASMAnnotations() : Sequence {
 	var annotations = Sequence{};
 
@@ -60,7 +66,7 @@ operation JUDOPSM!Primitive getEcoreType() : TYPES!EDataType {
 	} else if (self.isKindOf(JUDOPSM!BooleanType)) {
 		return "JBoolean".getJudoDataType();
 	} else if (self.isKindOf(JUDOPSM!EnumerationType)) {
-		return self.equivalent();
+		return self.transformToAsm();
     } else if (self.isKindOf(JUDOPSM!DateType)) {
         return "JDate".getJudoDataType();
     } else if (self.isKindOf(JUDOPSM!TimestampType)) {
@@ -77,6 +83,7 @@ operation JUDOPSM!Primitive getEcoreType() : TYPES!EDataType {
 	}
 }
 
+@cached
 operation JUDOPSM!Relation getEcoreType() : ASM!EClass {
-	return self.target.equivalent();
+	return self.target.transformToAsm();
 }

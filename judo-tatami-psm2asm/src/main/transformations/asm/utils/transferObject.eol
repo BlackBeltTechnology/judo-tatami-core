@@ -1,0 +1,19 @@
+@cached
+operation JUDOPSM!MappedTransferObjectType transformToAsm() : ASM!EClass {
+    return self.equivalent("CreateMappedTransferObject");
+}
+
+@cached
+operation JUDOPSM!UnmappedTransferObjectType transformToAsm() : ASM!EClass {
+    return self.equivalent("CreateUnmappedTransferObject");
+}
+
+@cached
+operation JUDOPSM!TransferAttribute transformToAsm() : ASM!EAttribute {
+    return self.equivalent("CreateTransferObjectAttribute");
+}
+
+@cached
+operation JUDOPSM!TransferObjectContainment transformToAsm() : ASM!EReference {
+    return self.equivalent("CreateTransferObjectContainment");
+}
