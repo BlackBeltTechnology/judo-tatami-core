@@ -1,3 +1,4 @@
+import "modules/derived.etl";
 import "modules/entity.etl";
 import "modules/package.etl";
 import "modules/transferObject.etl";
