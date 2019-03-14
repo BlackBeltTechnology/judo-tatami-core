@@ -67,7 +67,7 @@ rule CreateBoundOperation
     extends CreateOperation {
         t.name = s.name;
         
-        s.getEntityType().transformToAsm().eOperations.add(t);
+        s.getTransferObjectType().transformToAsm().eOperations.add(t);
 }
 
 rule CreateUnboundInterface

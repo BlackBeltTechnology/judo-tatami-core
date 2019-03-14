@@ -60,8 +60,8 @@ rule CreateTransferObjectAttribute
 		s.getTransferObjectType().transformToAsm().eStructuralFeatures.add(t);
 	}
 
-rule CreateTransferObjectContainment
-	transform s : JUDOPSM!TransferObjectContainment
+rule CreateTransferObjectRelation
+	transform s : JUDOPSM!TransferObjectRelation
 	to t : ASM!EReference {
 		t.name = s.name;
 		t.containment = true;

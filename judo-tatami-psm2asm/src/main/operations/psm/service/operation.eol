@@ -1,14 +1,9 @@
 @cached
 operation JUDOPSM!BoundOperation displayName() : String {
-	return self.getEntityType().name + "#" + self.name;
+	return self.getTransferObjectType().name + "#" + self.name;
 }
 
 @cached
-operation JUDOPSM!BoundOperation getEntityType() : JUDOPSM!EntityType {
-	return JUDOPSM!EntityType.all.selectOne(et | et.operations.includes(self));
-}
-
-@cached
-operation JUDOPSM!UnboundOperation getNamespace() : JUDOPSM!Namespace {
-	return JUDOPSM!Namespace.all.selectOne(p | p.elements.includes(self));
+operation JUDOPSM!BoundOperation getTransferObjectType() : JUDOPSM!TransferObjectType {
+	return JUDOPSM!TransferObjectType.all.selectOne(et | et.operations.includes(self));
 }
