@@ -1,0 +1,90 @@
+import "../../../operations/psm/service/_importService.eol";
+import "../utils/_importUtils.eol";
+
+@cached
+operation JUDOPSM!Parameter getOperation() : JUDOPSM!Operation {
+    return JUDOPSM!Operation.all.selectOne(o | o.input == self or o.output == self or o.faults.contains(self)); 
+}
+
+@cached
+operation JUDOPSM!Parameter isInput() : Boolean {
+    return JUDOPSM!Operation.all.selectOne(o | o.input == self).isDefined();
+}
+
+@cached
+operation JUDOPSM!Parameter isOutput() : Boolean {
+    return JUDOPSM!Operation.all.selectOne(o | o.output == self).isDefined();
+}
+
+@cached
+operation JUDOPSM!Parameter isFault() : Boolean {
+    return JUDOPSM!Operation.all.selectOne(o | o.faults.contains(self)).isDefined();
+}
+
+@abstract
+rule CreateParameter
+    transform s : JUDOPSM!Parameter
+    to t : ASM!ETypedElement {
+        t.lowerBound = s.cardinality.lower;
+        t.upperBound = s.cardinality.upper;
+        t.eType = s.type.transformToAsm();
+}
+
+rule CreateInputParameter
+    transform s : JUDOPSM!Parameter
+    to t : ASM!EParameter
+    extends CreateParameter {
+        guard: s.isInput()
+        
+        t.name = s.name;
+        s.getOperation().transformToAsm().eParameters.add(t);
+}
+
+rule CreateFaultParameter
+    transform s : JUDOPSM!Parameter
+    to t : ASM!EParameter
+    extends CreateParameter {
+        guard: s.isFault()
+        
+        t.name = s.name;
+        s.getOperation().transformToAsm().eParameters.add(t);
+}
+
+@abstract
+rule CreateOperation
+    transform s : JUDOPSM!Operation
+    to t : ASM!EOperation {
+        if (s.output.isDefined()) {
+        	t.lowerBound = s.output.cardinality.lower;
+	        t.upperBound = s.output.cardinality.upper;
+            t.eType = s.output.type.transformToAsm();
+        }
+}
+
+rule CreateBoundOperation
+    transform s : JUDOPSM!BoundOperation
+    to t : ASM!EOperation
+    extends CreateOperation {
+        t.name = s.name;
+        
+        s.getEntityType().transformToAsm().eOperations.add(t);
+}
+
+rule CreateUnboundInterface
+    transform s : JUDOPSM!UnboundOperation
+    to t : ASM!EClass {
+        t.name = s.name.firstToUpperCase();
+        t.abstract = true;
+        t.interface = true;
+        
+        s.getNamespace().transformToAsm().eClassifiers.add(t);
+}
+
+rule CreateUnboundOperation
+    transform s : JUDOPSM!UnboundOperation
+    to t : ASM!EOperation
+    extends CreateOperation {
+        t.name = s.name;
+        
+        s.equivalent("CreateUnboundInterface").eOperations.add(t);
+}
