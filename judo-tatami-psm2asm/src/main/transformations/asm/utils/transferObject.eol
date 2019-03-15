@@ -14,6 +14,6 @@ operation JUDOPSM!TransferAttribute transformToAsm() : ASM!EAttribute {
 }
 
 @cached
-operation JUDOPSM!TransferObjectContainment transformToAsm() : ASM!EReference {
-    return self.equivalent("CreateTransferObjectContainment");
+operation JUDOPSM!TransferObjectRelation transformToAsm() : ASM!EReference {
+    return self.equivalent("CreateTransferObjectRelation");
 }
