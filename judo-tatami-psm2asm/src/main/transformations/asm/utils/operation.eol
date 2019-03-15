@@ -1,0 +1,9 @@
+@cached
+operation JUDOPSM!BoundOperation transformToAsm() : ASM!EOperation {
+    return self.equivalent("CreateBoundOperation");
+}
+
+@cached
+operation JUDOPSM!UnboundOperation transformToAsm() : ASM!EOperation {
+    return self.equivalent("CreateUnboundOperation");
+}

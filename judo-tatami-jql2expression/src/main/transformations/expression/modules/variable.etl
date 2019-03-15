@@ -1,0 +1,15 @@
+import "../../../operations/asm/_importAll.eol";
+import "../../../operations/jqlextract/_importAll.eol";
+import "../../../operations/jqlextract2asm/_importAll.eol";
+
+@cached
+operation JQLEXTRACT!Variable transformToExpression() : EXPR!TypeName {
+	return self.equivalent("VariableToTypeName");
+}
+
+rule VariableToTypeName
+  transform s : JQLEXTRACT!Variable
+  to t : EXPR!TypeName {
+  	t.name = s.typeName;
+  	t.namespace = s.typeNamespace;
+}

@@ -1,0 +1,38 @@
+# judo-tatami
+
+Transformation pipeline of JUDO models.
+
+[[main-classes]]
+.Model processing pipeline
+[plantuml, mode-processing-pipeline-diagram, alt="Model processing diagram"]
+----
+start
+
+partition PSM {
+  :judo-meta-psm;
+}
+
+partition ASM {
+  fork
+    :judo-meta-asm;
+  fork again
+    :judo-meta-measure;
+  fork again
+    while (unprocessed expression?)
+      :judo-meta-jql;
+    endwhile
+    :judo-meta-jql-extract;
+  end fork
+  :judo-meta-expression;
+}
+
+partition LSM {
+  fork
+    :judo-meta-rdbms;
+    :judo-meta-liquibase;
+  fork again
+    :judo-meta-openapi;
+  end fork
+}
+
+stop

@@ -8,9 +8,9 @@ rule CreateEntityClass
 		t.name = s.name;
 		t.abstract = s.abstract;
 		for (super in s.superEntityTypes) {
-			t.eSuperTypes.add(super.equivalent());
+			t.eSuperTypes.add(super.transformToAsm());
 		}
-		s.getNamespace().equivalent().eClassifiers.add(t);
+		s.getNamespace().transformToAsm().eClassifiers.add(t);
 		
 		var identifierClass : ASM!EClass = ASM.resource.resourceSet.packageRegistry.get("http://blackbelt.hu/judo/asm/base")
 			.eClassifiers.selectOne(clazz | clazz.name = "Identifiable");
@@ -52,9 +52,10 @@ rule CreateAttribute
 			t.eAnnotations.add(annotation);
 		}
 
-		s.getEntityType().equivalent().eStructuralFeatures.add(t);
+		s.getEntityType().transformToAsm().eStructuralFeatures.add(t);
 	}
 
+@abstract
 rule CreateRelation
 	transform s : JUDOPSM!Relation
 	to t : ASM!EReference {
@@ -63,7 +64,6 @@ rule CreateRelation
 		t.lowerBound = s.cardinality.lower;
 		t.upperBound = s.cardinality.upper;
 
-		s.name.println("CreateASMAnnotations:");
 		var annotations = s.target.createASMAnnotations();
 		if (not annotations.isEmpty()) {
 			var annotation = new ASM!EAnnotation;
@@ -72,15 +72,17 @@ rule CreateRelation
 			t.eAnnotations.add(annotation);
 		}
 
-		s.getEntityType().equivalent().eStructuralFeatures.add(t);
-		t.eType = s.target.equivalent();
+		s.getEntityType().transformToAsm().eStructuralFeatures.add(t);
+		t.eType = s.target.transformToAsm();
 	}
 
 rule CreateEndpointRelation
 	transform s : JUDOPSM!Endpoint
 	to t : ASM!EReference
 	extends CreateRelation {
-		t.eOpposite = s.partner.equivalent();
+		if (s.partner.isDefined()) {
+			t.eOpposite = s.partner.transformToAsm();
+		}
 }
 
 rule CreateContainmentRelation

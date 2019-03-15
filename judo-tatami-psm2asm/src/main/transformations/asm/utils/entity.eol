@@ -1,0 +1,19 @@
+@cached
+operation JUDOPSM!EntityType transformToAsm() : ASM!EClass {
+    return self.equivalent("CreateEntityClass");
+}
+
+@cached
+operation JUDOPSM!Attribute transformToAsm() : ASM!EAttribute {
+    return self.equivalent("CreateAttribute");
+}
+
+@cached
+operation JUDOPSM!Endpoint transformToAsm() : ASM!EReference {
+    return self.equivalent("CreateEndpointRelation");
+}
+
+@cached
+operation JUDOPSM!Containment transformToAsm() : ASM!EReference {
+    return self.equivalent("CreateContainmentRelation");
+}

@@ -1,0 +1,122 @@
+/* Abstract operations:
+ - operation JQLEXTRACT!Feature getFeatureBaseObjectType() : ASM!EClass
+ - operation JQLEXTRACT!Feature getReferenceType() : ASM!EReference
+ - operation JQLEXTRACT!Feature getAttribute() : ASM!EAttribute
+ - operation JQLEXTRACT!Feature getReferenceContainer() : ASM!EClass
+ - operation JQLEXTRACT!Feature getAttributeType() : ASM!EDataType
+*/
+
+@cached
+operation JQLEXTRACT!Feature getNavigationExpression() : JQLEXTRACT!NavigationExpression {
+	return JQLEXTRACT!NavigationExpression.all.selectOne(e | e.features.contains(self));
+}
+
+@cached
+operation JQLEXTRACT!Feature getFeatureBase() {
+	var navigationExpression = self.getNavigationExpression();
+	if (navigationExpression.isDefined()) {
+		var index = navigationExpression.features.indexOf(self);
+		
+		if (index == 0) {
+			return navigationExpression;
+		} else {
+			return navigationExpression.features.at(index - 1);
+		}
+	} else {
+		return null;
+	}
+}
+
+@cached
+operation JQLEXTRACT!Feature isReferenceFromObject() : Boolean {
+	var featureBase = self.getFeatureBase();
+	if (not featureBase.isDefined()) {
+		// feature base is unknown
+		return false;
+	}
+	if (featureBase.isKindOf(JQLEXTRACT!NavigationExpression)) {
+		// navigation base must be an onject
+		return featureBase.isBasedOnObject();
+	} else if (featureBase.isKindOf(JQLEXTRACT!Feature)) {
+		return featureBase.isReferenceToObject();
+	} else {
+		return false;
+	}
+}
+
+@cached
+operation JQLEXTRACT!Feature isReferenceFromCollection() : Boolean {
+	var featureBase = self.getFeatureBase();
+	if (not featureBase.isDefined()) {
+		// feature base is unknown
+		return false;
+	}
+	if (featureBase.isKindOf(JQLEXTRACT!NavigationExpression)) {
+		// navigation base must be an object
+		return featureBase.isBasedOnStructuredType();
+	} else if (featureBase.isKindOf(JQLEXTRACT!Feature)) {
+		return featureBase.isReferenceToCollection();
+	} else {
+		return false;
+	}
+}
+
+@cached
+operation JQLEXTRACT!Feature isReferenceToObject() : Boolean {
+	return self.getReferenceType().isDefined() and not self.getReferenceType().isCollection();
+}
+
+@cached
+operation JQLEXTRACT!Feature isReferenceToCollection() : Boolean {
+	return self.getReferenceType().isDefined() and self.getReferenceType().isCollection();
+}
+
+@cached
+operation JQLEXTRACT!Feature isObjectToObject() : Boolean {
+	return self.isReferenceFromObject() and self.isReferenceToObject();
+}
+
+@cached
+operation JQLEXTRACT!Feature isObjectToCollection() : Boolean {
+	return self.isReferenceFromObject() and self.isReferenceToCollection();
+}
+
+@cached
+operation JQLEXTRACT!Feature isCollectionToObject() : Boolean {
+	return self.isReferenceFromCollection() and self.isReferenceToObject();
+}
+
+@cached
+operation JQLEXTRACT!Feature isCollectionToCollection() : Boolean {
+	return self.isReferenceFromCollection() and self.isReferenceToCollection();
+}
+
+@cached
+operation JQLEXTRACT!Feature isString() : Boolean {
+	return self.isReferenceFromObject() and self.getAttributeType().isDefined() and self.getAttributeType().isString();
+}
+
+@cached
+operation JQLEXTRACT!Feature isNumeric() : Boolean {
+	return self.isReferenceFromObject() and self.getAttributeType().isDefined() and self.getAttributeType().isNumeric();
+}
+
+@cached
+operation JQLEXTRACT!Feature isInteger() : Boolean {
+	return self.isReferenceFromObject() and self.getAttributeType().isDefined() and self.getAttributeType().isInteger();
+}
+
+@cached
+operation JQLEXTRACT!Feature isDecimal() : Boolean {
+	return self.isReferenceFromObject() and self.getAttributeType().isDefined() and self.getAttributeType().isDecimal();
+}
+
+@cached
+operation JQLEXTRACT!Feature isBoolean() : Boolean {
+	return self.isReferenceFromObject() and self.getAttributeType().isDefined() and self.getAttributeType().isBoolean();
+}
+
+@cached
+operation JQLEXTRACT!Feature isEnumeration() : Boolean {
+	return self.isReferenceFromObject() and self.getAttributeType().isDefined() and self.getAttributeType().isEnumeration();
+}

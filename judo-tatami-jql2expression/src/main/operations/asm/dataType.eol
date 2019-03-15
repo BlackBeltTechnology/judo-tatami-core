@@ -1,0 +1,39 @@
+@cached
+operation String getDataTypeByName() : ASM!EDataType {
+    return ASM!EDataType.all.selectOne(t | t.name == self);
+}
+
+@cached
+operation ASM!EDataType isNumeric() : Boolean {
+    return self.isInteger() or self.isDecimal();
+}
+
+@cached
+operation ASM!EDataType isInteger() : Boolean {
+	return Set{"java.lang.Integer", "java.lang.Long", "java.math.BigInteger", "int", "long"}.contains(self.instanceClassName);
+}
+
+@cached
+operation ASM!EDataType isDecimal() : Boolean {
+	return Set{"java.lang.Float", "java.lang.Double", "java.math.BigDecimal", "float", "double"}.contains(self.instanceClassName);
+}
+
+@cached
+operation ASM!EDataType isBoolean() : Boolean {
+	return self.instanceClassName == "java.lang.Boolean";
+}
+
+@cached
+operation ASM!EDataType isString() : Boolean {
+	return self.instanceClassName == "java.lang.String";
+}
+
+@cached
+operation ASM!EDataType isEnumeration() : Boolean {
+    return self.isKindOf(ASM!EEnum);
+}
+
+@cached
+operation ASM!EDataType isCustom() : Boolean {
+    return not self.isNumeric() and not self.isBoolean() and not self.isString() and not self.isEnumeration();
+}

@@ -1,0 +1,4 @@
+@cached
+operation JQLEXTRACT!Variable getObjectType() : ASM!EClass {
+	return self.typeNamespace.getNamespace().eClassifiers.selectOne(e | e.name == self.typeName);
+}

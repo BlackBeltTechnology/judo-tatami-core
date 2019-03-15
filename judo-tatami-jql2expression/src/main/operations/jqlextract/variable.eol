@@ -1,0 +1,44 @@
+/* Abstract operations:
+ - operation JQLEXTRACT!Variable getObjectType() : ASM!EClass
+*/
+
+/*@cached
+operation JQLEXTRACT!NavigationExpression getNavigationExpressions() : Collection {
+	return JQLEXTRACT!NavigationExpression.all.select(e | e.getVariable() == self);
+} */
+
+@cached
+operation JQLEXTRACT!Variable isNumeric() : Boolean {
+    // primitive variables are not supported
+	return false;
+}
+
+@cached
+operation JQLEXTRACT!Variable isInteger() : Boolean {
+    // primitive variables are not supported
+	return false;
+}
+
+@cached
+operation JQLEXTRACT!Variable isDecimal() : Boolean {
+    // primitive variables are not supported
+	return false;
+}
+
+@cached
+operation JQLEXTRACT!Variable isString() : Boolean {
+    // primitive variables are not supported
+	return false;
+}
+
+@cached
+operation JQLEXTRACT!Variable isBoolean() : Boolean {
+    // primitive variables are not supported
+	return false;
+}
+
+@cached
+operation JQLEXTRACT!Variable isEnumeration() : Boolean {
+    // primitive variables are not supported
+	return false;
+}

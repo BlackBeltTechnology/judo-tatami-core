@@ -1,2 +1,5 @@
-import "utils/_importUtils.eol";
-import "modules/expression.etl";
+import "modules/feature.etl";
+import "modules/literal.etl";
+import "modules/navigationExpression.etl";
+import "modules/numeric.etl";
+import "modules/variable.etl";

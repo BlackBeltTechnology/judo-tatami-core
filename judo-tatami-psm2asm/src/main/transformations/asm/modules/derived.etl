@@ -1,0 +1,78 @@
+import "../../../operations/psm/derived/_importDerived.eol";
+import "../utils/_importUtils.eol";
+
+rule CreateDataProperty
+	transform s : JUDOPSM!DataProperty
+	to t : ASM!EAttribute {
+		guard: s.isPrimitive()
+		
+		t.name = s.name;
+		t.derived = true;
+		t.volatile = true;
+		
+		if (s.required) {
+			t.lowerBound = 1;
+		} else {
+			t.lowerBound = 0;
+		}
+
+		t.eType = s.dataType.getEcoreType();
+
+		var annotations = s.dataType.createASMAnnotations();
+		
+		var aGetterExpression = new ASM!EStringToStringMapEntry;
+		aGetterExpression.key = "getterExpression";
+		aGetterExpression.value = s.getterExpression.expression;
+		annotations.add(aGetterExpression);
+		
+		if (s.setterExpression.isDefined()) {
+		    var aSetterExpression = new ASM!EStringToStringMapEntry;
+		    aSetterExpression.key = "setterExpression";
+		    aSetterExpression.value = s.setterExpression.expression;
+		    annotations.add(aSetterExpression);
+		} else {
+			t.unsettable = true;
+		}
+		
+		var annotation = new ASM!EAnnotation;
+		annotation.source = extendedMetadataURI;
+		annotation.details.addAll(annotations);
+		t.eAnnotations.add(annotation);
+
+		s.getEntityType().transformToAsm().eStructuralFeatures.add(t);
+	}
+
+rule CreateNavigationProperty
+	transform s : JUDOPSM!NavigationProperty
+	to t : ASM!EReference {
+		t.name = s.name;
+		t.derived = true;
+		t.volatile = true;
+
+		t.lowerBound = s.cardinality.lower;
+		t.upperBound = s.cardinality.upper;
+
+		var annotations = s.target.createASMAnnotations();
+		
+		var aGetterExpression = new ASM!EStringToStringMapEntry;
+		aGetterExpression.key = "getterExpression";
+		aGetterExpression.value = s.getterExpression.expression;
+		annotations.add(aGetterExpression);
+		
+		if (s.setterExpression.isDefined()) {
+		    var aSetterExpression = new ASM!EStringToStringMapEntry;
+		    aSetterExpression.key = "setterExpression";
+		    aSetterExpression.value = s.setterExpression.expression;
+		    annotations.add(aSetterExpression);
+		} else {
+			t.unsettable = true;
+		}
+		
+		var annotation = new ASM!EAnnotation;
+		annotation.source = extendedMetadataURI;
+		annotation.details.addAll(annotations);
+		t.eAnnotations.add(annotation);
+
+		s.getEntityType().transformToAsm().eStructuralFeatures.add(t);
+		t.eType = s.target.transformToAsm();
+	}

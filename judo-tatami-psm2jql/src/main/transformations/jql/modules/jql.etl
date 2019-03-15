@@ -146,6 +146,7 @@ rule AttachSelfVariableToExtractedExpression
   	var entityType = s.getReferenceTypedElement().getEntityType();
   	
   	t.name = "self";
+  	t.collection = false;
   	if (entityType.getNamespace().isDefined()) {
   		t.typeNamespace = entityType.getNamespace().toString();
   	}
@@ -163,6 +164,7 @@ rule AttachSelfVariableToExtractedExpression
   	var entityType = s.getPrimitiveTypedElement().getEntityType();
   	
   	t.name = "self";
+  	t.collection = false;
   	if (entityType.getNamespace().isDefined()) {
   		t.typeNamespace = entityType.getNamespace().toString();
   	}
