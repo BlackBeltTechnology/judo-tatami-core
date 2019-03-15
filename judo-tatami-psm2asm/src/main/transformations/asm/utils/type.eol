@@ -40,7 +40,7 @@ operation JUDOPSM!Type createASMAnnotations() : Sequence {
 }
 
 @cached
-operation JUDOPSM!Primitive getEcoreType() : TYPES!EDataType {
+operation JUDOPSM!Primitive getEcoreType() : ASM!EDataType {
 	if (self.isKindOf(JUDOPSM!StringType)) {
 		return "JString".getJudoDataType();
 	} else if (self.isKindOf(JUDOPSM!NumericType)) {

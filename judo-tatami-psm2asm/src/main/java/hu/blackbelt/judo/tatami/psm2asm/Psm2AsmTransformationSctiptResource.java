@@ -14,8 +14,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Comparator;
 
-@Component(immediate = true, service = Psm2AsmResourceLoader.class)
-public class Psm2AsmResourceLoader {
+@Component(immediate = true, service = Psm2AsmTransformationSctiptResource.class)
+public class Psm2AsmTransformationSctiptResource {
 
     Bundle bundle;
     File scriptRoot;

@@ -12,7 +12,10 @@ rule CreateEntityClass
 		}
 		s.getNamespace().equivalent().eClassifiers.add(t);
 		
-		t.eSuperTypes.add(BASE!EClass.all.selectOne(c | c.name = "Identifiable"));
+		var identifierClass : ASM!EClass = ASM.resource.resourceSet.packageRegistry.get("http://blackbelt.hu/judo/asm/base")
+			.eClassifiers.selectOne(clazz | clazz.name = "Identifiable");
+
+		t.eSuperTypes.add(identifierClass);
 
 		var annotation = new ASM!EAnnotation;
 		annotation.source = extendedMetadataURI;

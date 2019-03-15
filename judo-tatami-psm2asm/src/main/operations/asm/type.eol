@@ -1,4 +1,7 @@
 @cached
 operation String getJudoDataType() : ASM!EDataType {
-	return TYPES!EDataType.all.selectOne(dt | dt.name == self);
+	var dataType : ASM!EDataType = 
+			ASM.resource.resourceSet.packageRegistry.get("http://blackbelt.hu/judo/asm/types").eClassifiers
+				.selectOne(clazz | clazz.name = self);
+    return dataType;
 }
