@@ -32,20 +32,19 @@
                         </Export-Package>
                         <Include-Resource>
                             {maven-resources},
-                            tatami/jql2expression/operations=src/main/operations,
-                            tatami/jql2expression/transformations=src/main/transformations
+                            tatami/jql2expression=src/main/epsilon
                         </Include-Resource>
                         <Import-Package>
                             !lombok,
-                            meta/psm/jql/extract;version="${judo-meta-psm-jql-extract.import-range}",
-                            meta/asm;version="${judo-meta-asm.import-range}",
-                            meta/measure;version="${judo-meta-measure.import-range}",
-                            meta/expression;version="${judo-meta-expression.import-range}",
-                            hu.blackbelt.judo.meta.expression*;version="${judo-meta-expression.import-range}",
-                            hu.blackbelt.judo.meta.psm.jql.extract*;version="${judo-meta-psm-jql-extract.import-range}",
-                            hu.blackbelt.judo.meta.psm.jql.jqldsl*;version="${judo-meta-psm-jql.import-range}",
-                            hu.blackbelt.judo.meta.asm*;version="${judo-meta-asm.import-range}",
-                            hu.blackbelt.judo.meta.measure*;version="${judo-meta-measure.import-range}",
+                            meta/psm/jql/extract;version="${judo-meta-psm-jql-extract-import-range}",
+                            meta/asm;version="${judo-meta-asm-import-range}",
+                            meta/measure;version="${judo-meta-measure-import-range}",
+                            meta/expression;version="${judo-meta-expression-import-range}",
+                            hu.blackbelt.judo.meta.expression*;version="${judo-meta-expression-import-range}",
+                            hu.blackbelt.judo.meta.psm.jql.extract*;version="${judo-meta-psm-jql-extract-import-range}",
+                            hu.blackbelt.judo.meta.psm.jql.jqldsl*;version="${judo-meta-psm-jql-import-range}",
+                            hu.blackbelt.judo.meta.asm*;version="${judo-meta-asm-import-range}",
+                            hu.blackbelt.judo.meta.measure*;version="${judo-meta-measure-import-range}",
                             com.google.common.base;version="[14.0,30)",
                             com.google.common.cache;version="[14.0,30)",
                             com.google.common.collect;version="[14.0,30)",
@@ -56,7 +55,7 @@
                             javax.annotation;version="[1.0,2)",
                             *
                         </Import-Package>
-                        <Expression-Meta-Version-Range>${judo-meta-expression.import-range}</Expression-Meta-Version-Range>
+                        <Expression-Meta-Version-Range>${judo-meta-expression-import-range}</Expression-Meta-Version-Range>
                     </instructions>
                 </configuration>
             </plugin>
@@ -74,12 +73,12 @@
                         </goals>
 
                         <configuration>
-                            <outDirectory>${basedir}/src/main</outDirectory>
+                            <outDirectory>${basedir}/src/main/epsilon</outDirectory>
                             <artifacts>
                                 <artifact>
                                     <groupId>hu.blackbelt.judo.meta</groupId>
                                     <artifactId>judo-meta-expression-runtime</artifactId>
-                                    <version>${judo-meta-expression.version}</version>
+                                    <version>${judo-meta-expression-version}</version>
                                     <resources>
                                         <resource>
                                             <source>judo/expression/operations</source>
@@ -130,6 +129,7 @@
         </dependency>
     </dependencies>
 
+    <!--
     <profiles>
         <profile>
             <id>jql2expression-development</id>
@@ -216,11 +216,11 @@
                                                     <value>http://blackbelt.hu/judo/meta/ExtendedMetadata</value>
                                                 </parameter>
                                             </parameters>
-                                            <!--exportTransformationTrace>transformationTrace</exportTransformationTrace-->
+                                            @<@!@-@-exportTransformationTrace>transformationTrace</exportTransformationTrace@-@-@>
                                         </Etl>
-                                        <!--Etl>
+                                        @<@!@-@-@Etl>
                                             <source>${basedir}/src/main/transformations/expression/expression2evaluation.etl</source>
-                                        </Etl-->
+                                        @<@/@E@t@l-@-@>@
                                     </eolPrograms>
                                 </configuration>
                             </execution>
@@ -270,4 +270,5 @@
             </build>
         </profile>
     </profiles>
+    -->
 </project>

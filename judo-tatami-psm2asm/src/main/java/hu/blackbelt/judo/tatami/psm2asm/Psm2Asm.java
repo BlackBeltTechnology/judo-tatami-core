@@ -3,8 +3,8 @@ package hu.blackbelt.judo.tatami.psm2asm;
 import com.google.common.collect.ImmutableList;
 import hu.blackbelt.epsilon.runtime.execution.ExecutionContext;
 import hu.blackbelt.epsilon.runtime.execution.api.Log;
-import hu.blackbelt.judo.meta.asm.AsmModel;
-import hu.blackbelt.judo.meta.psm.PsmModel;
+import hu.blackbelt.judo.meta.asm.runtime.AsmModel;
+import hu.blackbelt.judo.meta.psm.runtime.PsmModel;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 
 import java.io.File;

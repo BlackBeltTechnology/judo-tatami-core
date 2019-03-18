@@ -32,15 +32,14 @@
                         </Export-Package>
                         <Include-Resource>
                             {maven-resources},
-                            tatami/psm2jql/operations=src/main/operations,
-                            tatami/psm2jql/transformations=src/main/transformations
+                            tatami/psm2jql=src/main/epsilon/operations,
                         </Include-Resource>
                         <Import-Package>
                             !lombok,
-                            meta/psm;version="${judo-meta-psm.import-range}",
-                            meta/psm/jql/extract;version="${judo-meta-psm-jql-extract.import-range}",
-                            hu.blackbelt.judo.meta.psm.jql.extract*;version="${judo-meta-psm-jql-extract.import-range}",
-                            hu.blackbelt.judo.meta.psm.jql.jqldsl*;version="${judo-meta-psm-jql.import-range}",
+                            meta/psm;version="${judo-meta-psm-import-range}",
+                            meta/psm/jql/extract;version="${judo-meta-psm-jql-extract-import-range}",
+                            hu.blackbelt.judo.meta.psm.jql.extract*;version="${judo-meta-psm-jql-extract-import-range}",
+                            hu.blackbelt.judo.meta.psm.jql.jqldsl*;version="${judo-meta-psm-jql-import-range}",
                             com.google.common.base;version="[14.0,30)",
                             com.google.common.cache;version="[14.0,30)",
                             com.google.common.collect;version="[14.0,30)",
@@ -51,7 +50,7 @@
                             javax.annotation;version="[1.0,2)",
                             *
                         </Import-Package>
-                        <Psm-Jql-Extract-Meta-Version-Range>${judo-meta-psm-jql-extract.import-range}</Psm-Jql-Extract-Meta-Version-Range>
+                        <Psm-Jql-Extract-Meta-Version-Range>${judo-meta-psm-jql-extract-import-range}</Psm-Jql-Extract-Meta-Version-Range>
                     </instructions>
                 </configuration>
             </plugin>
@@ -74,7 +73,7 @@
                                 <artifact>
                                     <groupId>hu.blackbelt.judo.meta</groupId>
                                     <artifactId>judo-meta-psm-runtime</artifactId>
-                                    <version>${judo-meta-psm.version}</version>
+                                    <version>${judo-meta-psm-version}</version>
                                     <resources>
                                         <resource>
                                             <source>judo/psm/operations</source>
@@ -109,6 +108,7 @@
         </dependency>
     </dependencies>
 
+    <!--
     <profiles>
         <profile>
             <id>psm2jql-development</id>
@@ -219,4 +219,5 @@
             </build>
         </profile>
     </profiles>
+    -->
 </project>

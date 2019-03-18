@@ -38,7 +38,7 @@ public abstract class AbstractModelInfoTracker<T> {
 
     @SneakyThrows(InvalidSyntaxException.class)
     public void openTracker(BundleContext bundleContext) {
-        psmModelInfoServiceTracker = new InfoServiceTracker(this, bundleContext, getModelInfoClass());
+        psmModelInfoServiceTracker = new InfoServiceTracker(this, bundleContext, getModelClass());
         psmModelInfoServiceTracker.open(true);
     }
 
@@ -50,7 +50,7 @@ public abstract class AbstractModelInfoTracker<T> {
 
     public abstract void uninstall(T instance);
 
-    public abstract Class<T> getModelInfoClass();
+    public abstract Class<T> getModelClass();
 
     public class InfoServiceTracker extends ServiceTracker<T, T> {
 
@@ -63,7 +63,7 @@ public abstract class AbstractModelInfoTracker<T> {
 
         @Override
         public T addingService(ServiceReference<T> serviceReference) {
-            if (serviceReference.isAssignableTo(super.context.getBundle(), getModelInfoClass().getName())) {
+            if (serviceReference.isAssignableTo(super.context.getBundle(), getModelClass().getName())) {
                 T instance = super.addingService(serviceReference);
                 abstractModelInfoTracker.bindService(serviceReference, instance);
                 return instance;

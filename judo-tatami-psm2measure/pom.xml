@@ -16,6 +16,30 @@
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>copy-models</id>
+                        <!-- here the phase you need -->
+                        <phase>process-test-resources</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${basedir}/target/test-classes/epsilon</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>src/main/epsilon</directory>
+                                    <filtering>false</filtering>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
             </plugin>
 
@@ -32,15 +56,15 @@
                         </Export-Package>
                         <Include-Resource>
                             {maven-resources},
-                            tatami/psm2measure/operations=src/operations,
-                            tatami/psm2measure/transformations=src/transformations
+                            tatami/psm2measure/operations=src/main/epsilon/operations,
+                            tatami/psm2measure/transformations=src/main/epsilon/transformations
                         </Include-Resource>
                         <Import-Package>
                             !lombok,
-                            meta/psm;version="${judo-meta-psm.import-range}",
-                            meta/measure;version="${judo-meta-measure.import-range}",
-                            hu.blackbelt.judo.meta.psm*;version="${judo-meta-psm.import-range}",
-                            hu.blackbelt.judo.meta.measure*;version="${judo-meta-measure.import-range}",
+                            meta/psm;version="${judo-meta-psm-import-range}",
+                            meta/measure;version="${judo-meta-measure-import-range}",
+                            hu.blackbelt.judo.meta.psm*;version="${judo-meta-psm-import-range}",
+                            hu.blackbelt.judo.meta.measure*;version="${judo-meta-measure-import-range}",
                             com.google.common.base;version="[14.0,30)",
                             com.google.common.cache;version="[14.0,30)",
                             com.google.common.collect;version="[14.0,30)",
@@ -51,7 +75,7 @@
                             javax.annotation;version="[1.0,2)",
                             *
                         </Import-Package>
-                        <Measure-Meta-Version-Range>${judo-meta-measure.import-range}</Measure-Meta-Version-Range>
+                        <Measure-Meta-Version-Range>${judo-meta-measure-import-range}</Measure-Meta-Version-Range>
                     </instructions>
                 </configuration>
             </plugin>
@@ -74,6 +98,8 @@
         </dependency>
     </dependencies>
 
+
+<!--
     <profiles>
         <profile>
             <id>psm2measure-development</id>
@@ -239,5 +265,5 @@
 
         </profile>
     </profiles>
-
+-->
 </project>

@@ -33,10 +33,10 @@
 
                         <Import-Package>
                             !lombok,
-                            meta/psm;version="${judo-meta-psm.import-range}",
-                            meta/asm;version="${judo-meta-asm.import-range}",
-                            hu.blackbelt.judo.meta.psm*;version="${judo-meta-psm.import-range}",
-                            hu.blackbelt.judo.meta.asm*;version="${judo-meta-asm.import-range}",
+                            meta/psm;version="${judo-meta-psm-import-range}",
+                            meta/asm;version="${judo-meta-asm-import-range}",
+                            hu.blackbelt.judo.meta.psm*;version="${judo-meta-psm-import-range}",
+                            hu.blackbelt.judo.meta.asm*;version="${judo-meta-asm-import-range}",
                             com.google.common.base;version="[14.0,30)",
                             com.google.common.cache;version="[14.0,30)",
                             com.google.common.collect;version="[14.0,30)",
