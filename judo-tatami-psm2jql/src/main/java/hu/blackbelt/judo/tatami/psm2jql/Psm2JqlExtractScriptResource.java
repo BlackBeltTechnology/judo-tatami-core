@@ -14,8 +14,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Comparator;
 
-@Component(immediate = true, service = Psm2JqlResourceLoader.class)
-public class Psm2JqlResourceLoader {
+@Component(immediate = true, service = Psm2JqlExtractScriptResource.class)
+public class Psm2JqlExtractScriptResource {
 
     Bundle bundle;
     File scriptRoot;

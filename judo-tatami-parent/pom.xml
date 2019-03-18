@@ -52,13 +52,13 @@
         <judo-meta-rdbms-version>1.0.1.develop_25</judo-meta-rdbms-version>
         <judo-meta-rdbms.import-range>[1.0,1.1)</judo-meta-rdbms.import-range>
 
-        <judo-meta-psm-version>1.0.1.develop_236</judo-meta-psm-version>
+        <judo-meta-psm-version>1.0.1.develop_237</judo-meta-psm-version>
         <judo-meta-psm-import-range>[1.0,1.1)</judo-meta-psm-import-range>
 
         <judo-meta-psm-jql-version>1.0.0.develop_12</judo-meta-psm-jql-version>
         <judo-meta-psm-jql-import-range>[1.0,1.1)</judo-meta-psm-jql-import-range>
 
-        <judo-meta-psm-jql-extract-version>1.0.0.develop_9</judo-meta-psm-jql-extract-version>
+        <judo-meta-psm-jql-extract-version>1.0.0.develop_10</judo-meta-psm-jql-extract-version>
         <judo-meta-psm-jql-extract-import-range>[1.0,1.1)</judo-meta-psm-jql-extract-import-range>
 
         <!--
