@@ -29,7 +29,6 @@ rule ExtractExpression
   	var ref = s.getReferenceTypedElement();
   	var attr = s.getPrimitiveTypedElement();
   	
-  	s.expression.println("Extracting expression: ");
   	t.context = new JQLEXTRACT!Context;
   	t.binding = new JQLEXTRACT!Binding;
   	

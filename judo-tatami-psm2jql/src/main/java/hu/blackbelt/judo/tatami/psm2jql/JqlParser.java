@@ -17,7 +17,7 @@ import java.util.Iterator;
 @Slf4j
 public class JqlParser {
 
-    //private final Injector injector = new JqlDslStandaloneSetupGenerated().createInjectorAndDoEMFRegistration();
+    private final Injector injector = new JqlDslStandaloneSetupGenerated().createInjectorAndDoEMFRegistration();
 
     public EObject parse(final String jqlExpression) {
         if (jqlExpression == null) {
@@ -35,11 +35,8 @@ public class JqlParser {
             fos.close();
             final URI uri = URI.createFileURI(tmpFile.getAbsolutePath());
 
-            //final XtextResourceSet resourceSet = injector.getInstance(XtextResourceSet.class);
-            //final Resource jqlResource = resourceSet.getResource(uri, true);
-
-            // TODO - replace with XText parser
-            final Resource jqlResource = DummyParser.parse(jqlExpression);
+            final XtextResourceSet resourceSet = injector.getInstance(XtextResourceSet.class);
+            final Resource jqlResource = resourceSet.getResource(uri, true);
 
             // get first entry of jqlResource (root expression)
             final Iterator<EObject> iterator = jqlResource.getContents().iterator();
