@@ -1,6 +1,7 @@
 package hu.blackbelt.judo.tatami.psm2jql;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
 import hu.blackbelt.epsilon.runtime.execution.ExecutionContext;
 import hu.blackbelt.epsilon.runtime.execution.api.Log;
 import hu.blackbelt.judo.meta.psm.jql.extract.runtime.PsmJqlExtractModel;
@@ -34,6 +35,9 @@ public class Psm2JqlExtract {
                                 .name("JQLEXTRACT")
                                 .resource(jqlExtractModel.getResource())
                                 .build()))
+                .injectContexts(ImmutableMap.of(
+                        "jqlParser", new JqlParser()
+                ))
                 .sourceDirectory(scriptDir)
                 .build();
 
