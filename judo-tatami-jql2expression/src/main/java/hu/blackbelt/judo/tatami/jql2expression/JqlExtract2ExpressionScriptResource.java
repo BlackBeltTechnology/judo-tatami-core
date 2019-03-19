@@ -14,8 +14,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Comparator;
 
-@Component(immediate = true, service = Jql2ExpressionScriptResource.class)
-public class Jql2ExpressionScriptResource {
+@Component(immediate = true, service = JqlExtract2ExpressionScriptResource.class)
+public class JqlExtract2ExpressionScriptResource {
 
     Bundle bundle;
     File scriptRoot;
