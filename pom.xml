@@ -17,6 +17,7 @@
         <module>judo-tatami-rdbms2liquibase</module>
         <module>judo-tatami-psm2jql</module>
         <module>judo-tatami-jql2expression</module>
+        <module>judo-tatami-itest</module>
     </modules>
     
     <scm>
