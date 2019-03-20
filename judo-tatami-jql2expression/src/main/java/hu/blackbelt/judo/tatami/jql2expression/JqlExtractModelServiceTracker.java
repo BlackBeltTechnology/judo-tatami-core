@@ -4,12 +4,7 @@ import com.google.common.collect.Maps;
 import hu.blackbelt.judo.meta.asm.runtime.AsmModel;
 import hu.blackbelt.judo.meta.expression.runtime.ExpressionModel;
 import hu.blackbelt.judo.meta.psm.jql.extract.runtime.PsmJqlExtractModel;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NonNull;
 import lombok.SneakyThrows;
-import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.InvalidSyntaxException;
@@ -35,14 +30,14 @@ public class JqlExtractModelServiceTracker {
     private final Map<ServiceReference, AsmModel> asmInstanceCache = Maps.newConcurrentMap();
     private final Map<ServiceReference, PsmJqlExtractModel> psmJqlExtractInstanceCache = Maps.newConcurrentMap();
 
-    private final Map<CorrelationId, AsmModel> registeredAsmModels = Maps.newConcurrentMap();
-    private final Map<CorrelationId, PsmJqlExtractModel> registeredPsmJqlExtractModels = Maps.newConcurrentMap();
+    private final Map<String, AsmModel> registeredAsmModels = Maps.newConcurrentMap();
+    private final Map<String, PsmJqlExtractModel> registeredPsmJqlExtractModels = Maps.newConcurrentMap();
 
 
     public void bindAsmService(ServiceReference serviceReference, AsmModel instance) {
         asmInstanceCache.put(serviceReference, instance);
         log.info("Preparing model for transformation: " + instance);
-        final CorrelationId key = getCorrelationId(instance);
+        final String key = instance.getName();
 
         registeredAsmModels.put(key, instance);
         final PsmJqlExtractModel psmJqlExtractModel = registeredPsmJqlExtractModels.get(key);
@@ -57,7 +52,7 @@ public class JqlExtractModelServiceTracker {
         if (instance == null) {
             return;
         }
-        final CorrelationId key = getCorrelationId(instance);
+        final String key = instance.getName();
         asmInstanceCache.remove(serviceReference);
         registeredAsmModels.remove(key, instance);
         log.info("Unbind transformation: " + instance);
@@ -67,7 +62,7 @@ public class JqlExtractModelServiceTracker {
     public void bindJqlExtractService(ServiceReference serviceReference, PsmJqlExtractModel instance) {
         psmJqlExtractInstanceCache.put(serviceReference, instance);
         log.info("Preparing model for transformation: " + instance);
-        final CorrelationId key = getCorrelationId(instance);
+        final String key = instance.getName();
 
         registeredPsmJqlExtractModels.put(key, instance);
         final AsmModel asmModel = registeredAsmModels.get(key);
@@ -82,7 +77,7 @@ public class JqlExtractModelServiceTracker {
         if (instance == null) {
             return;
         }
-        final CorrelationId key = getCorrelationId(instance);
+        final String key = instance.getName();
         psmJqlExtractInstanceCache.remove(serviceReference);
         registeredPsmJqlExtractModels.remove(key);
         log.info("Unbind transformation: " + instance);
@@ -176,8 +171,8 @@ public class JqlExtractModelServiceTracker {
     @Reference
     JqlExtract2ExpressionService jqlExtract2ExpressionSerivce;
 
-    Map<CorrelationId, ServiceRegistration<ExpressionModel>> registrations = new ConcurrentHashMap<>();
-    Map<CorrelationId, ExpressionModel> models = new HashMap<>();
+    Map<String, ServiceRegistration<ExpressionModel>> registrations = new ConcurrentHashMap<>();
+    Map<String, ExpressionModel> models = new HashMap<>();
 
 
     @Activate
@@ -194,7 +189,7 @@ public class JqlExtractModelServiceTracker {
 
     private ComponentContext componentContext;
 
-    public void install(CorrelationId key, AsmModel asmModel, PsmJqlExtractModel jqlExtractModel) {
+    public void install(String key, AsmModel asmModel, PsmJqlExtractModel jqlExtractModel) {
         ExpressionModel expressionModel;
         if (models.containsKey(key)) {
             log.error("Model already loaded: " + key);
@@ -216,7 +211,7 @@ public class JqlExtractModelServiceTracker {
     }
 
     public void uninstall(AsmModel asmModel) {
-        final CorrelationId key = getCorrelationId(asmModel);
+        final String key = asmModel.getName();
         if (!registrations.containsKey(key)) {
             log.error("Model is not registered: " + key);
         } else {
@@ -227,7 +222,7 @@ public class JqlExtractModelServiceTracker {
     }
 
     public void uninstall(PsmJqlExtractModel jqlExtractModel) {
-        final CorrelationId key = getCorrelationId(jqlExtractModel);
+        final String key = jqlExtractModel.getName();
         if (!registrations.containsKey(key)) {
             log.error("Model is not registered: " + key);
         } else {
@@ -235,35 +230,5 @@ public class JqlExtractModelServiceTracker {
             registrations.remove(key);
             models.remove(key);
         }
-    }
-
-    private static CorrelationId getCorrelationId(final AsmModel asmModel) {
-        return CorrelationId.correlationIdBuilder()
-                .name(asmModel.getName())
-                .version(asmModel.getVersion())
-                .checksum(asmModel.getChecksum()).build();
-    }
-
-    private static CorrelationId getCorrelationId(final PsmJqlExtractModel psmJqlExtractModel) {
-        return CorrelationId.correlationIdBuilder()
-                .name(psmJqlExtractModel.getName())
-                .version(psmJqlExtractModel.getVersion())
-                .checksum(psmJqlExtractModel.getChecksum()).build();
-    }
-
-    @AllArgsConstructor
-    @ToString
-    @Getter
-    @Builder(builderMethodName = "correlationIdBuilder")
-    private static class CorrelationId {
-        public static final String NAME = "name";
-        public static final String VERSION = "version";
-        public static final String CHECKSUM = "checksum";
-
-        @NonNull
-        String name;
-        @NonNull
-        String version;
-        String checksum;
     }
 }
