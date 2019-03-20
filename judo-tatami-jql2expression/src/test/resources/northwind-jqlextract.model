@@ -32,8 +32,10 @@
     <jqlExpression xsi:type="jqldsl:IntegerLiteral" value="0"/>
   </jqle:ExtractedExpression>
   <jqle:ExtractedExpression>
-    <context/>
-    <binding/>
+    <context>
+      <variables name="self" typeNamespace="northwind::entities" typeName="Order"/>
+    </context>
+    <binding packageName="northwind::entities" className="Order" featureName="itemsWithCategoryPicture" role="getter"/>
     <jqlExpression xsi:type="jqldsl:NavigationExpression" base="self">
       <features name="orderDetails"/>
     </jqlExpression>
@@ -82,8 +84,20 @@
     </jqlExpression>
   </jqle:ExtractedExpression>
   <jqle:ExtractedExpression>
-    <context/>
-    <binding/>
+    <context>
+      <variables name="self" typeNamespace="northwind::entities" typeName="OrderDetail"/>
+    </context>
+    <binding packageName="northwind::entities" className="OrderDetail" featureName="category" role="getter"/>
+    <jqlExpression xsi:type="jqldsl:NavigationExpression" base="self">
+      <features name="product"/>
+      <features name="category"/>
+    </jqlExpression>
+  </jqle:ExtractedExpression>
+  <jqle:ExtractedExpression>
+    <context>
+      <variables name="self" typeNamespace="northwind::entities" typeName="OrderDetail"/>
+    </context>
+    <binding packageName="northwind::entities" className="OrderDetail" featureName="category" role="setter"/>
     <jqlExpression xsi:type="jqldsl:NavigationExpression" base="self">
       <features name="product"/>
       <features name="category"/>
@@ -91,15 +105,7 @@
   </jqle:ExtractedExpression>
   <jqle:ExtractedExpression>
     <context/>
-    <binding/>
-    <jqlExpression xsi:type="jqldsl:NavigationExpression" base="self">
-      <features name="product"/>
-      <features name="category"/>
-    </jqlExpression>
-  </jqle:ExtractedExpression>
-  <jqle:ExtractedExpression>
-    <context/>
-    <binding/>
+    <binding featureName="OrdersAssignedToEmployee" role="getter"/>
     <jqlExpression xsi:type="jqldsl:NavigationExpression" base="northwind::entities::Employee">
       <features name="orders"/>
     </jqlExpression>

@@ -14,12 +14,20 @@ operation JUDOPSM!ExpressionType getPrimitiveTypedElement() : JUDOPSM!PrimitiveT
 
 @cached
 operation JUDOPSM!ReferenceTypedElement getEntityType() : JUDOPSM!EntityType {
-	return JUDOPSM!EntityType.all.selectOne(e | e.dataProperties.contains(self));
+    var entityType = JUDOPSM!EntityType.all.selectOne(e | e.relations.contains(self));
+    if (entityType.isDefined()) {
+        return entityType;
+    }
+	return JUDOPSM!EntityType.all.selectOne(e | e.navigationProperties.contains(self));
 }
 
 @cached
 operation JUDOPSM!PrimitiveTypedElement getEntityType() : JUDOPSM!EntityType {
-	return JUDOPSM!EntityType.all.selectOne(e | e.navigationProperties.contains(self));
+    var entityType = JUDOPSM!EntityType.all.selectOne(e | e.attributes.contains(self));
+    if (entityType.isDefined()) {
+        return entityType;
+    }
+	return JUDOPSM!EntityType.all.selectOne(e | e.dataProperties.contains(self));
 }
 
 @greedy
@@ -36,7 +44,7 @@ rule ExtractExpression
 }
 
 @greedy
-rule AttachSourceToExtractedExpression
+rule AttachSourceToExtractedReferenceExpression
   transform s : JUDOPSM!ExpressionType
   to t : JQLEXTRACT!Binding {
   	guard: s.getReferenceTypedElement().isDefined()
@@ -65,7 +73,7 @@ rule AttachSourceToExtractedExpression
 }
 
 @greedy
-rule AttachSourceToExtractedExpression
+rule AttachSourceToExtractedPrimitiveExpression
   transform s : JUDOPSM!ExpressionType
   to t : JQLEXTRACT!Binding {
   	guard: s.getPrimitiveTypedElement().isDefined()
@@ -94,7 +102,7 @@ rule AttachSourceToExtractedExpression
 }
 
 @greedy
-rule AttachSelfVariableToExtractedExpression
+rule AttachSelfVariableToExtractedReferenceExpression
   transform s : JUDOPSM!ExpressionType
   to t : JQLEXTRACT!Variable {
   	guard: s.getReferenceTypedElement().isDefined() and s.getReferenceTypedElement().getEntityType().isDefined()
@@ -112,7 +120,7 @@ rule AttachSelfVariableToExtractedExpression
 }
 
 @greedy
-rule AttachSelfVariableToExtractedExpression
+rule AttachSelfVariableToExtractedPrimitiveExpression
   transform s : JUDOPSM!ExpressionType
   to t : JQLEXTRACT!Variable {
     guard: s.getPrimitiveTypedElement().isDefined() and s.getPrimitiveTypedElement().getEntityType().isDefined()
