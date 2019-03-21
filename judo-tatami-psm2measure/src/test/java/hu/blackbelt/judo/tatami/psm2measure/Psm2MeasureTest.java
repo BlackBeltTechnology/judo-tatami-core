@@ -84,14 +84,14 @@ public class Psm2MeasureTest {
         TreeIterator<Notifier> iter = measureResourceSet.getAllContents();
         while (iter.hasNext()) {
             final Notifier obj = iter.next();
-            log.info(obj.toString());
+            log.debug(obj.toString());
         } */
 
 
         XMIResource xmiResource = new XMIResourceImpl(URI.createFileURI(srcDir().getAbsolutePath()+"/northwind-measure.model"));
         xmiResource.getContents().addAll(EcoreUtil.copyAll(measureResource.getContents()));
         for (EObject e : measureResource.getContents()) {
-            log.info(e.toString());
+            log.debug(e.toString());
         }
 
         final Map<Object, Object> saveOptions = xmiResource.getDefaultSaveOptions();
@@ -102,7 +102,7 @@ public class Psm2MeasureTest {
         saveOptions.put(XMIResource.OPTION_SKIP_ESCAPE_URI,Boolean.FALSE);
         saveOptions.put(XMIResource.OPTION_ENCODING,"UTF-8");
 
-        measureResource.save(saveOptions);
+        xmiResource.save(saveOptions);
     }
 
 

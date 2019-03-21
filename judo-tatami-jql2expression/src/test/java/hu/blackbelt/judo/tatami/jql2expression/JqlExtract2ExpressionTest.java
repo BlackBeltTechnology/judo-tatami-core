@@ -97,13 +97,13 @@ public class JqlExtract2ExpressionTest {
         TreeIterator<Notifier> iter = expressionResourceSet.getAllContents();
         while (iter.hasNext()) {
             final Notifier obj = iter.next();
-            log.info(obj.toString());
+            log.debug(obj.toString());
         }
 
         XMIResource xmiResource = new XMIResourceImpl(URI.createFileURI(srcDir().getAbsolutePath()+"/northwind-expression.model"));
         xmiResource.getContents().addAll(EcoreUtil.copyAll(expressionResource.getContents()));
         for (EObject e : expressionResource.getContents()) {
-            log.info(e.toString());
+            log.debug(e.toString());
         }
 
         final Map<Object, Object> saveOptions = xmiResource.getDefaultSaveOptions();
@@ -114,7 +114,7 @@ public class JqlExtract2ExpressionTest {
         saveOptions.put(XMIResource.OPTION_SKIP_ESCAPE_URI,Boolean.FALSE);
         saveOptions.put(XMIResource.OPTION_ENCODING,"UTF-8");
 
-        expressionResource.save(saveOptions);
+        xmiResource.save(saveOptions);
 
     }
 

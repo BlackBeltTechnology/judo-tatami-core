@@ -14,8 +14,10 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.URIHandler;
+import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.emf.ecore.xmi.XMIResource;
+import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
 import org.eclipse.emf.ecore.xmi.impl.XMIResourceImpl;
 import org.junit.After;
 import org.junit.Before;
@@ -85,13 +87,13 @@ public class Psm2AsmTest {
         TreeIterator<Notifier> iter = asmResourceSet.getAllContents();
         while (iter.hasNext()) {
             final Notifier obj = iter.next();
-            log.info(obj.toString());
+            log.debug(obj.toString());
         }
 
         XMIResource xmiResource = new XMIResourceImpl(URI.createFileURI(srcDir().getAbsolutePath()+"/northwind-asm.model"));
         xmiResource.getContents().addAll(EcoreUtil.copyAll(asmResource.getContents()));
         for (EObject e : asmResource.getContents()) {
-            log.info(e.toString());
+            log.debug(e.toString());
         }
 
         final Map<Object, Object> saveOptions = xmiResource.getDefaultSaveOptions();
@@ -102,7 +104,7 @@ public class Psm2AsmTest {
         saveOptions.put(XMIResource.OPTION_SKIP_ESCAPE_URI,Boolean.FALSE);
         saveOptions.put(XMIResource.OPTION_ENCODING,"UTF-8");
 
-        asmResource.save(saveOptions);
+        xmiResource.save(saveOptions);
 
     }
 

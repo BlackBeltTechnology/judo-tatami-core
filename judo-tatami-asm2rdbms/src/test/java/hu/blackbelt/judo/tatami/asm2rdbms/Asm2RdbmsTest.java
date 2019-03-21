@@ -86,14 +86,14 @@ public class Asm2RdbmsTest {
         TreeIterator<Notifier> iter = rdbmsResourceSet.getAllContents();
         while (iter.hasNext()) {
             final Notifier obj = iter.next();
-            log.info(obj.toString());
+            log.debug(obj.toString());
         } */
 
 
         XMIResource xmiResource = new XMIResourceImpl(URI.createFileURI(srcDir().getAbsolutePath()+"/northwind-rdbms.model"));
         xmiResource.getContents().addAll(EcoreUtil.copyAll(rdbmsResource.getContents()));
         for (EObject e : rdbmsResource.getContents()) {
-            log.info(e.toString());
+            log.debug(e.toString());
         }
 
         final Map<Object, Object> saveOptions = xmiResource.getDefaultSaveOptions();
@@ -104,7 +104,7 @@ public class Asm2RdbmsTest {
         saveOptions.put(XMIResource.OPTION_SKIP_ESCAPE_URI,Boolean.FALSE);
         saveOptions.put(XMIResource.OPTION_ENCODING,"UTF-8");
 
-        rdbmsResource.save(saveOptions);
+        xmiResource.save(saveOptions);
     }
 
 

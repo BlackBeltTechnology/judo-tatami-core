@@ -84,13 +84,13 @@ public class Psm2JqlExtractTest {
         TreeIterator<Notifier> iter = psmJqlExtractResourceSet.getAllContents();
         while (iter.hasNext()) {
             final Notifier obj = iter.next();
-            log.info(obj.toString());
+            log.debug(obj.toString());
         }
 
         XMIResource xmiResource = new XMIResourceImpl(URI.createFileURI(srcDir().getAbsolutePath()+"/northwind-jql.model"));
         xmiResource.getContents().addAll(EcoreUtil.copyAll(psmJqlExtractResource.getContents()));
         for (EObject e : psmJqlExtractResource.getContents()) {
-            log.info(e.toString());
+            log.debug(e.toString());
         }
 
         final Map<Object, Object> saveOptions = xmiResource.getDefaultSaveOptions();
@@ -101,7 +101,7 @@ public class Psm2JqlExtractTest {
         saveOptions.put(XMIResource.OPTION_SKIP_ESCAPE_URI,Boolean.FALSE);
         saveOptions.put(XMIResource.OPTION_ENCODING,"UTF-8");
 
-        psmJqlExtractResource.save(saveOptions);
+        xmiResource.save(saveOptions);
 
     }
 

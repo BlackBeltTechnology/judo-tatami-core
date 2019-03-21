@@ -1,12 +1,7 @@
 <?xml version="1.0" encoding="ASCII"?>
 <namespace:Model xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:accesspoint="http://blackbelt.hu/judo/meta/psm/accesspoint" xmlns:data="http://blackbelt.hu/judo/meta/psm/data" xmlns:derived="http://blackbelt.hu/judo/meta/psm/derived" xmlns:measure="http://blackbelt.hu/judo/meta/psm/measure" xmlns:namespace="http://blackbelt.hu/judo/meta/psm/namespace" xmlns:service="http://blackbelt.hu/judo/meta/psm/service" xmlns:type="http://blackbelt.hu/judo/meta/psm/type" xmi:id="_vbf8wINkEeiLE-B2bbL0fg" name="northwind">
-  <elements xsi:type="accesspoint:AccessPoint" xmi:id="_X9vDsEZlEemHs64O5EYsyQ" name="internal">
-    <exposedGraphs xmi:id="_hanN0EZlEemHs64O5EYsyQ" name="ordersAssignedToEmployee" mappedTransferObjectType="_ETGEYCVQEemLpvUY7MQgng" selector="_EuQ5MCYbEemLpvUY7MQgng"/>
-  </elements>
-  <elements xsi:type="accesspoint:AccessPoint" xmi:id="_ab0PsEZlEemHs64O5EYsyQ" name="external">
-    <exposedGraphs xmi:id="_lnxx0EZlEemHs64O5EYsyQ" name="products" mappedTransferObjectType="_o7IkkEWXEemHs64O5EYsyQ" selector="_vA7SgEZlEemHs64O5EYsyQ"/>
-    <exposedGraphs xmi:id="_ot-twEZlEemHs64O5EYsyQ" name="categories" mappedTransferObjectType="_xxeTIEWXEemHs64O5EYsyQ" selector="_xeUiAEZlEemHs64O5EYsyQ"/>
-  </elements>
+  <elements xsi:type="accesspoint:AccessPoint" xmi:id="_X9vDsEZlEemHs64O5EYsyQ" name="internal" exposedServices="_mr1P4EWhEemHs64O5EYsyQ" exposedGraphs="_hanN0EZlEemHs64O5EYsyQ"/>
+  <elements xsi:type="accesspoint:AccessPoint" xmi:id="_ab0PsEZlEemHs64O5EYsyQ" name="external" exposedGraphs="_ot-twEZlEemHs64O5EYsyQ _lnxx0EZlEemHs64O5EYsyQ"/>
   <packages xmi:id="_g0GS4B1REemwg4NgOjaKeA" name="measures">
     <elements xsi:type="measure:Measure" xmi:id="_oNT8IB1REemwg4NgOjaKeA" name="Mass">
       <units xmi:id="_2IFN4B1REemwg4NgOjaKeA" name="milligram" rateDividend="1.0E-6" symbol="mg"/>
@@ -439,13 +434,25 @@
         <cardinality xmi:id="_oRVjUOdVEeiJv53TEP0vvQ" upper="-1"/>
       </relations>
     </elements>
+    <elements xsi:type="derived:StaticNavigation" xmi:id="_EuQ5MCYbEemLpvUY7MQgng" name="OrdersAssignedToEmployee" target="_-H4RoINkEeiLE-B2bbL0fg">
+      <cardinality xmi:id="_KCnuwCYbEemLpvUY7MQgng" upper="-1"/>
+      <getterExpression xmi:id="_cFwiQDneEemsDIfvozHEKg" expression="northwind::entities::Employee.orders"/>
+    </elements>
+    <elements xsi:type="derived:StaticNavigation" xmi:id="_vA7SgEZlEemHs64O5EYsyQ" name="AllProducts" target="_6XH80INkEeiLE-B2bbL0fg">
+      <cardinality xmi:id="_WlEJsEvNEemBn-SJ5OPvtg" upper="-1"/>
+      <getterExpression xmi:id="_a_OA0EvNEemBn-SJ5OPvtg" expression="northwind::entities::Product"/>
+    </elements>
+    <elements xsi:type="derived:StaticNavigation" xmi:id="_xeUiAEZlEemHs64O5EYsyQ" name="AllCategories" target="_43ZPcINkEeiLE-B2bbL0fg">
+      <cardinality xmi:id="_Xu2cQEvNEemBn-SJ5OPvtg" upper="-1"/>
+      <getterExpression xmi:id="_dyTMcEvNEemBn-SJ5OPvtg" expression="northwind::entities::Category"/>
+    </elements>
   </packages>
   <packages xmi:id="__cC14CVPEemLpvUY7MQgng" name="services">
     <elements xsi:type="service:MappedTransferObjectType" xmi:id="_ETGEYCVQEemLpvUY7MQgng" name="OrderInfo" entityType="_-H4RoINkEeiLE-B2bbL0fg">
-      <relations xmi:id="_RQtOsCVuEemLpvUY7MQgng" name="itemsWithCategoryPicture" binding="_qsmPsCVtEemLpvUY7MQgng" target="_ZliLoCVuEemLpvUY7MQgng">
+      <relations xmi:id="_RQtOsCVuEemLpvUY7MQgng" name="itemsWithCategoryPicture" binding="_qsmPsCVtEemLpvUY7MQgng" target="_ZliLoCVuEemLpvUY7MQgng" containment="true">
         <cardinality xmi:id="_VeLUsCVuEemLpvUY7MQgng" upper="-1"/>
       </relations>
-      <relations xmi:id="_8M4aICVuEemLpvUY7MQgng" name="items" binding="_2CC44LwNEeiOuYiCo6IbXQ" target="_nao6QCVuEemLpvUY7MQgng">
+      <relations xmi:id="_8M4aICVuEemLpvUY7MQgng" name="items" binding="_2CC44LwNEeiOuYiCo6IbXQ" target="_nao6QCVuEemLpvUY7MQgng" containment="true">
         <cardinality xmi:id="_-kd8kCVuEemLpvUY7MQgng" upper="-1"/>
       </relations>
       <attributes xmi:id="_U4tLwCVQEemLpvUY7MQgng" name="orderDate" required="true" dataType="_Z9J8IIN1EeiLE-B2bbL0fg" binding="_WXvUoIN1EeiLE-B2bbL0fg"/>
@@ -463,7 +470,7 @@
         </input>
       </operations>
     </elements>
-    <elements xsi:type="service:MappedTransferObjectType" xmi:id="_ZliLoCVuEemLpvUY7MQgng" name="OrderItemProduct" entityType="__XzocINkEeiLE-B2bbL0fg">
+    <elements xsi:type="service:MappedTransferObjectType" xmi:id="_ZliLoCVuEemLpvUY7MQgng" name="OrderItemProduct" entityType="__XzocINkEeiLE-B2bbL0fg" entityReferencePresence="REQUIRED">
       <attributes xmi:id="_htQgsCVuEemLpvUY7MQgng" name="productName" required="true" dataType="_Nppx8IUcEeipmMyz9cMCRA" binding="_mr-oACVvEemLpvUY7MQgng"/>
     </elements>
     <elements xsi:type="service:MappedTransferObjectType" xmi:id="_nao6QCVuEemLpvUY7MQgng" name="OrderItem" entityType="__XzocINkEeiLE-B2bbL0fg">
@@ -478,10 +485,6 @@
       <attributes xmi:id="_w9fJgCVuEemLpvUY7MQgng" name="unitPrice" required="true" dataType="_VDVVQIUcEeipmMyz9cMCRA" binding="_bG7OUIN6EeiLE-B2bbL0fg"/>
       <attributes xmi:id="_xdLWMCVuEemLpvUY7MQgng" name="quantity" required="true" dataType="_TXtg8IUcEeipmMyz9cMCRA" binding="_d3obYIN6EeiLE-B2bbL0fg"/>
       <attributes xmi:id="_x6C4YCVuEemLpvUY7MQgng" name="discount" required="true" dataType="_VDVVQIUcEeipmMyz9cMCRA" binding="_jIROkIN6EeiLE-B2bbL0fg"/>
-    </elements>
-    <elements xsi:type="derived:StaticNavigation" xmi:id="_EuQ5MCYbEemLpvUY7MQgng" name="OrdersAssignedToEmployee" target="_-H4RoINkEeiLE-B2bbL0fg">
-      <cardinality xmi:id="_KCnuwCYbEemLpvUY7MQgng" upper="-1"/>
-      <getterExpression xmi:id="_cFwiQDneEemsDIfvozHEKg" expression="northwind::entities::Employee.orders"/>
     </elements>
     <elements xsi:type="service:MappedTransferObjectType" xmi:id="_o7IkkEWXEemHs64O5EYsyQ" name="ProductInfo" entityType="_6XH80INkEeiLE-B2bbL0fg">
       <relations xmi:id="_f1W8wEWgEemHs64O5EYsyQ" name="category" binding="_CkXK8LwDEeiOuYiCo6IbXQ" target="_ai3aUEWeEemHs64O5EYsyQ">
@@ -511,15 +514,16 @@
         </input>
       </operations>
     </elements>
-    <elements xsi:type="service:MappedTransferObjectType" xmi:id="_Z5o3IEWeEemHs64O5EYsyQ" name="ProductLink" entityType="_6XH80INkEeiLE-B2bbL0fg"/>
-    <elements xsi:type="service:MappedTransferObjectType" xmi:id="_ai3aUEWeEemHs64O5EYsyQ" name="CategoryLink" entityType="_43ZPcINkEeiLE-B2bbL0fg"/>
-    <elements xsi:type="service:MappedTransferObjectType" xmi:id="_nlfRMEWgEemHs64O5EYsyQ" name="OrderLink" entityType="_-H4RoINkEeiLE-B2bbL0fg"/>
+    <elements xsi:type="service:MappedTransferObjectType" xmi:id="_Z5o3IEWeEemHs64O5EYsyQ" name="ProductLink" entityType="_6XH80INkEeiLE-B2bbL0fg" entityReferencePresence="REQUIRED"/>
+    <elements xsi:type="service:MappedTransferObjectType" xmi:id="_ai3aUEWeEemHs64O5EYsyQ" name="CategoryLink" entityType="_43ZPcINkEeiLE-B2bbL0fg" entityReferencePresence="REQUIRED"/>
+    <elements xsi:type="service:MappedTransferObjectType" xmi:id="_nlfRMEWgEemHs64O5EYsyQ" name="OrderLink" entityType="_-H4RoINkEeiLE-B2bbL0fg" entityReferencePresence="REQUIRED"/>
     <elements xsi:type="service:UnboundOperation" xmi:id="_mr1P4EWhEemHs64O5EYsyQ" stateful="false" name="getAllOrders">
       <output xmi:id="_oxIvgEWhEemHs64O5EYsyQ" name="output" type="_ETGEYCVQEemLpvUY7MQgng">
         <cardinality xmi:id="_rFrlAEWhEemHs64O5EYsyQ" upper="-1"/>
       </output>
     </elements>
-    <elements xsi:type="derived:StaticNavigation" xmi:id="_vA7SgEZlEemHs64O5EYsyQ" name="AllProducts" target="_6XH80INkEeiLE-B2bbL0fg"/>
-    <elements xsi:type="derived:StaticNavigation" xmi:id="_xeUiAEZlEemHs64O5EYsyQ" name="AllCategories" target="_43ZPcINkEeiLE-B2bbL0fg"/>
+    <elements xsi:type="accesspoint:ExposedGraph" xmi:id="_hanN0EZlEemHs64O5EYsyQ" name="ordersAssignedToEmployee" mappedTransferObjectType="_ETGEYCVQEemLpvUY7MQgng" selector="_EuQ5MCYbEemLpvUY7MQgng"/>
+    <elements xsi:type="accesspoint:ExposedGraph" xmi:id="_lnxx0EZlEemHs64O5EYsyQ" name="products" mappedTransferObjectType="_o7IkkEWXEemHs64O5EYsyQ" selector="_vA7SgEZlEemHs64O5EYsyQ"/>
+    <elements xsi:type="accesspoint:ExposedGraph" xmi:id="_ot-twEZlEemHs64O5EYsyQ" name="categories" mappedTransferObjectType="_xxeTIEWXEemHs64O5EYsyQ" selector="_xeUiAEZlEemHs64O5EYsyQ"/>
   </packages>
 </namespace:Model>
