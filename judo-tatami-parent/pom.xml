@@ -57,7 +57,7 @@
         <judo-meta-rdbms-version>1.0.1.develop_25</judo-meta-rdbms-version>
         <judo-meta-rdbms.import-range>[1.0,1.1)</judo-meta-rdbms.import-range>
 
-        <judo-meta-psm-version>1.0.1.develop_237</judo-meta-psm-version>
+        <judo-meta-psm-version>1.0.1.develop_238</judo-meta-psm-version>
         <judo-meta-psm-import-range>[1.0,1.1)</judo-meta-psm-import-range>
 
         <judo-meta-psm-jql-version>1.0.0.develop_14</judo-meta-psm-jql-version>
@@ -100,7 +100,7 @@
 
         <test.psm.model.groupId>hu.blackbelt.northwind</test.psm.model.groupId>
         <test.psm.model.artifactId>northwind-runtime</test.psm.model.artifactId>
-        <test.psm.model.version>1.0.1.develop_92</test.psm.model.version>
+        <test.psm.model.version>1.0.1.develop_95</test.psm.model.version>
 
         <test.rdbms.model.groupId>${project.groupId}</test.rdbms.model.groupId>
         <test.rdbms.model.artifactId>judo-tatami-asm2rdbms</test.rdbms.model.artifactId>
@@ -129,7 +129,11 @@
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
-            <version>1.6.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-log4j12</artifactId>
+            <scope>test</scope>
         </dependency>
 
         <dependency>
