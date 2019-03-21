@@ -27,6 +27,11 @@ rule CreateMappedTransferObject
 		aMappedEntityType.key = "mappedEntityType";
 		aMappedEntityType.value = s.entityType.transformToAsm().getFQName();
 		annotation.details.add(aMappedEntityType);
+		
+		var aEntityIdPresence = new ASM!EStringToStringMapEntry;
+		aEntityIdPresence.key = "entityIdPresence";
+		aEntityIdPresence.value = s.entityReferencePresence.name;
+		annotation.details.add(aEntityIdPresence);
     }
 
 rule CreateUnmappedTransferObject
@@ -64,7 +69,7 @@ rule CreateTransferObjectRelation
 	transform s : JUDOPSM!TransferObjectRelation
 	to t : ASM!EReference {
 		t.name = s.name;
-		t.containment = true;
+		t.containment = s.containment;
 
 		t.lowerBound = s.cardinality.lower;
 		t.upperBound = s.cardinality.upper;
