@@ -60,6 +60,7 @@
                             tatami/psm2measure/transformations=src/main/epsilon/transformations
                         </Include-Resource>
                         <Import-Package>
+                            org.osgi.framework;version="[1.8,2.0)",
                             !lombok,
                             meta/psm;version="${judo-meta-psm-import-range}",
                             meta/measure;version="${judo-meta-measure-import-range}",

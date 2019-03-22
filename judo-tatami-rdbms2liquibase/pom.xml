@@ -62,6 +62,7 @@
 							tatami/rdbms2liquibase/model=model
 						</Include-Resource>
 						<Import-Package>
+							org.osgi.framework;version="[1.8,2.0)",
 							!lombok,
 							meta/rdbms;version="${judo-meta-rdbms.import-range}",
 							com.google.common.base;version="[14.0,30)",

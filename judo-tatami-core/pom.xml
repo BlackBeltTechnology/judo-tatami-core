@@ -32,6 +32,7 @@
                         </Export-Package>
 
                         <Import-Package>
+                            org.osgi.framework;version="[1.8,2.0)",
                             !lombok,
                             meta/psm;version="${judo-meta-psm-import-range}",
                             meta/asm;version="${judo-meta-asm-import-range}",

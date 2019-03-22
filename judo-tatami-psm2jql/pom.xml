@@ -59,6 +59,7 @@
                             tatami/psm2jql=src/main/epsilon/operations,
                         </Include-Resource>
                         <Import-Package>
+                            org.osgi.framework;version="[1.8,2.0)",
                             !lombok,
                             meta/psm;version="${judo-meta-psm-import-range}",
                             meta/psm/jql/extract;version="${judo-meta-psm-jql-extract-import-range}",
