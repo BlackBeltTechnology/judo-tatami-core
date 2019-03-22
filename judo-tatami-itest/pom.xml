@@ -70,6 +70,7 @@
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-log4j12</artifactId>
             <version>${slf4j-version}</version>
+            <scope>test</scope>
         </dependency>
 
         <dependency>
@@ -132,6 +133,15 @@
             <artifactId>judo-meta-openapi-runtime</artifactId>
             <version>${judo-meta-openapi-version}</version>
         </dependency>
+
+        <!-- https://mvnrepository.com/artifact/org.ops4j.pax.tinybundles/tinybundles -->
+        <dependency>
+            <groupId>org.ops4j.pax.tinybundles</groupId>
+            <artifactId>tinybundles</artifactId>
+            <version>3.0.0</version>
+            <scope>test</scope>
+        </dependency>
+
     </dependencies>
 
     <build>
