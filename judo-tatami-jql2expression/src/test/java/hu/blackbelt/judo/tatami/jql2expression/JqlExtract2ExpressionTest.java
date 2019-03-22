@@ -100,7 +100,13 @@ public class JqlExtract2ExpressionTest {
             log.debug(obj.toString());
         }
 
-        XMIResource xmiResource = new XMIResourceImpl(URI.createFileURI(srcDir().getAbsolutePath()+"/northwind-expression.model"));
+        XMIResource xmiResource = new XMIResourceImpl(URI.createFileURI(srcDir().getAbsolutePath()+"/northwind-expression.model")) {
+            @Override
+            protected boolean useUUIDs() {
+                return true;
+            }
+        };
+
         xmiResource.getContents().addAll(EcoreUtil.copyAll(expressionResource.getContents()));
         for (EObject e : expressionResource.getContents()) {
             log.debug(e.toString());

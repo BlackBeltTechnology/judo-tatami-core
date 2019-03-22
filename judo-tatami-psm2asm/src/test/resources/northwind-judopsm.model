@@ -449,10 +449,10 @@
   </packages>
   <packages xmi:id="__cC14CVPEemLpvUY7MQgng" name="services">
     <elements xsi:type="service:MappedTransferObjectType" xmi:id="_ETGEYCVQEemLpvUY7MQgng" name="OrderInfo" entityType="_-H4RoINkEeiLE-B2bbL0fg">
-      <relations xmi:id="_RQtOsCVuEemLpvUY7MQgng" name="itemsWithCategoryPicture" binding="_qsmPsCVtEemLpvUY7MQgng" target="_ZliLoCVuEemLpvUY7MQgng" containment="true">
+      <relations xmi:id="_RQtOsCVuEemLpvUY7MQgng" name="itemsWithCategoryPicture" binding="_qsmPsCVtEemLpvUY7MQgng" target="_ZliLoCVuEemLpvUY7MQgng" embedded="true">
         <cardinality xmi:id="_VeLUsCVuEemLpvUY7MQgng" upper="-1"/>
       </relations>
-      <relations xmi:id="_8M4aICVuEemLpvUY7MQgng" name="items" binding="_2CC44LwNEeiOuYiCo6IbXQ" target="_nao6QCVuEemLpvUY7MQgng" containment="true">
+      <relations xmi:id="_8M4aICVuEemLpvUY7MQgng" name="items" binding="_2CC44LwNEeiOuYiCo6IbXQ" target="_nao6QCVuEemLpvUY7MQgng" embedded="true">
         <cardinality xmi:id="_-kd8kCVuEemLpvUY7MQgng" upper="-1"/>
       </relations>
       <attributes xmi:id="_U4tLwCVQEemLpvUY7MQgng" name="orderDate" required="true" dataType="_Z9J8IIN1EeiLE-B2bbL0fg" binding="_WXvUoIN1EeiLE-B2bbL0fg"/>

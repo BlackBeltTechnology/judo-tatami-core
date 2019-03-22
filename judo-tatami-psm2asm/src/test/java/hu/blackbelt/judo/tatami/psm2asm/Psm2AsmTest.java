@@ -90,7 +90,12 @@ public class Psm2AsmTest {
             log.debug(obj.toString());
         }
 
-        XMIResource xmiResource = new XMIResourceImpl(URI.createFileURI(srcDir().getAbsolutePath()+"/northwind-asm.model"));
+        XMIResource xmiResource = new XMIResourceImpl(URI.createFileURI(srcDir().getAbsolutePath()+"/northwind-asm.model")) {
+            @Override
+            protected boolean useUUIDs() {
+                return true;
+            }
+        };
         xmiResource.getContents().addAll(EcoreUtil.copyAll(asmResource.getContents()));
         for (EObject e : asmResource.getContents()) {
             log.debug(e.toString());

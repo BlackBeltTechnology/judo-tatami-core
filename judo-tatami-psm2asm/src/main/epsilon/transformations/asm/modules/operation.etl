@@ -59,6 +59,14 @@ rule CreateOperation
 	        t.upperBound = s.output.cardinality.upper;
             t.eType = s.output.type.transformToAsm();
         }
+        var annotation = new ASM!EAnnotation;
+		annotation.source = extendedMetadataURI;
+		t.eAnnotations.add(annotation);
+		
+		var aStateful = new ASM!EStringToStringMapEntry;
+		aStateful.key = "stateful";
+		aStateful.value = s.stateful.toString();
+		annotation.details.add(aStateful);
 }
 
 rule CreateBoundOperation
@@ -73,11 +81,19 @@ rule CreateBoundOperation
 rule CreateUnboundInterface
     transform s : JUDOPSM!UnboundOperation
     to t : ASM!EClass {
-        t.name = s.name.firstToUpperCase();
+        t.name = s.name;
         t.abstract = true;
         t.interface = true;
         
         s.getNamespace().transformToAsm().eClassifiers.add(t);
+        
+        /*var annotation = new ASM!EAnnotation;
+		annotation.source = extendedMetadataURI;
+		
+		var aTransferObject = new ASM!EStringToStringMapEntry;
+		aTransferObject.key = "operation";
+		aTransferObject.value = "true";
+		t.eAnnotations.selectOne(a | a.source == extendedMetadataURI).details.add(aTransferObject); */
 }
 
 rule CreateUnboundOperation
@@ -87,4 +103,116 @@ rule CreateUnboundOperation
         t.name = s.name;
         
         s.equivalent("CreateUnboundInterface").eOperations.add(t);
+}
+
+rule CreateGraphOperation
+    transform s : JUDOPSM!TransferObjectRelation
+    to t : ASM!EClass {
+    	guard: s.isNavigable()
+    	
+        t.name = s.getTransferObjectType().name + "$" + s.name;
+        t.abstract = true;
+        t.interface = true;
+        
+        s.getTransferObjectType().getNamespace().transformToAsm().eClassifiers.add(t);
+}
+
+rule CreateGetterOperationForRelation
+    transform s : JUDOPSM!TransferObjectRelation
+    to t : ASM!EOperation {
+        guard: s.isNavigable()
+        
+        t.name = "get";
+        t.eType = s.target.transformToAsm();
+        t.lowerBound = s.cardinality.lower;
+        t.upperBound = s.cardinality.upper;
+
+        s.equivalent("CreateGraphOperation").eOperations.add(t);
+}
+
+rule CreateReferenceClassForRelation
+    transform s : JUDOPSM!TransferObjectRelation
+    to t : ASM!EClass {
+        guard: s.isNavigable() and s.isMutable()
+        
+        t.name = s.getTransferObjectType().name + "$" + s.name + "$Reference";
+        s.getTransferObjectType().getNamespace().transformToAsm().eClassifiers.add(t);
+        
+        var annotation = new ASM!EAnnotation;
+		annotation.source = extendedMetadataURI;
+		t.eAnnotations.add(annotation);
+		
+        var aMappedEntityType = new ASM!EStringToStringMapEntry;
+		aMappedEntityType.key = "mappedEntityType";
+		aMappedEntityType.value = s.target.entityType.transformToAsm().getFQName();
+		annotation.details.add(aMappedEntityType);
+		
+		var aEntityIdPresence = new ASM!EStringToStringMapEntry;
+		aEntityIdPresence.key = "entityIdPresence";
+		aEntityIdPresence.value = JUDOPSM!EntityReferenceType#REQUIRED.name;
+		annotation.details.add(aEntityIdPresence);
+}
+
+rule CreateSetterOperationForRelation
+    transform s : JUDOPSM!TransferObjectRelation
+    to t : ASM!EOperation {
+        guard: s.isNavigable() and s.isMutable()
+        
+        t.name = "set";
+        
+        var inputParameter = new ASM!EParameter();
+        inputParameter.name = "input";
+        inputParameter.lowerBound = s.cardinality.lower;
+        inputParameter.upperBound = s.cardinality.upper;
+        inputParameter.eType = s.equivalent("CreateReferenceClassForRelation");
+        
+        t.eParameters.add(inputParameter);
+        
+        s.equivalent("CreateGraphOperation").eOperations.add(t);
+}
+
+rule CreateSetterOperationForRelation
+    transform s : JUDOPSM!TransferObjectRelation
+    to t : ASM!EOperation {
+        guard: s.isNavigable() and s.isMutable() and not s.isCollection()
+        
+        t.name = "unset";
+        
+        s.equivalent("CreateGraphOperation").eOperations.add(t);
+}
+
+rule CreateAddAllOperationForRelation
+    transform s : JUDOPSM!TransferObjectRelation
+    to t : ASM!EOperation {
+        guard: s.isNavigable() and s.isMutable() and s.isCollection()
+        
+        t.name = "addAll";
+        
+        var inputParameter = new ASM!EParameter();
+        inputParameter.name = "input";
+        inputParameter.lowerBound = 1;
+        inputParameter.upperBound = s.cardinality.upper;
+        inputParameter.eType = s.equivalent("CreateReferenceClassForRelation");
+        
+        t.eParameters.add(inputParameter);
+        
+        s.equivalent("CreateGraphOperation").eOperations.add(t);
+}
+
+rule CreateRemoveAllOperationForRelation
+    transform s : JUDOPSM!TransferObjectRelation
+    to t : ASM!EOperation {
+        guard: s.isNavigable() and s.isMutable() and s.isCollection()
+        
+        t.name = "removeAll";
+        
+        var inputParameter = new ASM!EParameter();
+        inputParameter.name = "input";
+        inputParameter.lowerBound = 1;
+        inputParameter.upperBound = -1;
+        inputParameter.eType = s.equivalent("CreateReferenceClassForRelation");
+        
+        t.eParameters.add(inputParameter);
+        
+        s.equivalent("CreateGraphOperation").eOperations.add(t);
 }

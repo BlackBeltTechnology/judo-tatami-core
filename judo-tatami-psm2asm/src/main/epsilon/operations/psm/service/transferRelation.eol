@@ -17,3 +17,13 @@ operation JUDOPSM!TransferObjectRelation isRequired() : Boolean {
 operation JUDOPSM!TransferObjectRelation isCollection() : Boolean {
 	return self.cardinality.upper > 1 or self.cardinality.upper == -1;
 }
+
+@cached
+operation JUDOPSM!TransferObjectRelation isMutable() : Boolean {
+    return self.binding.isKindOf(JUDOPSM!Relation) or self.binding.setterExpression.isDefined();
+}
+
+@cached
+operation JUDOPSM!TransferObjectRelation isNavigable() : Boolean {
+    return self.target.isKindOf(JUDOPSM!MappedTransferObjectType);
+}

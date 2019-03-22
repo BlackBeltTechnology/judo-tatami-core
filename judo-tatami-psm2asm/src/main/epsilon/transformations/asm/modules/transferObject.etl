@@ -11,11 +11,12 @@ rule CreateTransferObject
 		
 		var annotation = new ASM!EAnnotation;
 		annotation.source = extendedMetadataURI;
-		var aTransferObject = new ASM!EStringToStringMapEntry;
+		t.eAnnotations.add(annotation);
+		
+		/*var aTransferObject = new ASM!EStringToStringMapEntry;
 		aTransferObject.key = "transferObject";
 		aTransferObject.value = "true";
-		annotation.details.add(aTransferObject);
-		t.eAnnotations.add(annotation);
+		annotation.details.add(aTransferObject); */
 	}
 
 rule CreateMappedTransferObject
@@ -69,7 +70,7 @@ rule CreateTransferObjectRelation
 	transform s : JUDOPSM!TransferObjectRelation
 	to t : ASM!EReference {
 		t.name = s.name;
-		t.containment = s.containment;
+		t.containment = s.embedded;
 
 		t.lowerBound = s.cardinality.lower;
 		t.upperBound = s.cardinality.upper;
