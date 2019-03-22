@@ -1,7 +1,23 @@
 <?xml version="1.0" encoding="ASCII"?>
 <namespace:Model xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:accesspoint="http://blackbelt.hu/judo/meta/psm/accesspoint" xmlns:data="http://blackbelt.hu/judo/meta/psm/data" xmlns:derived="http://blackbelt.hu/judo/meta/psm/derived" xmlns:measure="http://blackbelt.hu/judo/meta/psm/measure" xmlns:namespace="http://blackbelt.hu/judo/meta/psm/namespace" xmlns:service="http://blackbelt.hu/judo/meta/psm/service" xmlns:type="http://blackbelt.hu/judo/meta/psm/type" xmi:id="_vbf8wINkEeiLE-B2bbL0fg" name="northwind">
-  <elements xsi:type="accesspoint:AccessPoint" xmi:id="_X9vDsEZlEemHs64O5EYsyQ" name="internal" exposedServices="_mr1P4EWhEemHs64O5EYsyQ" exposedGraphs="_hanN0EZlEemHs64O5EYsyQ"/>
-  <elements xsi:type="accesspoint:AccessPoint" xmi:id="_ab0PsEZlEemHs64O5EYsyQ" name="external" exposedGraphs="_ot-twEZlEemHs64O5EYsyQ _lnxx0EZlEemHs64O5EYsyQ"/>
+  <elements xsi:type="accesspoint:AccessPoint" xmi:id="_X9vDsEZlEemHs64O5EYsyQ" name="internal">
+    <exposedGraphs xmi:id="_hanN0EZlEemHs64O5EYsyQ" name="ordersAssignedToEmployee" mappedTransferObjectType="_ETGEYCVQEemLpvUY7MQgng" selector="_EuQ5MCYbEemLpvUY7MQgng">
+      <exposedOperations operation="_ZXOmQEWhEemHs64O5EYsyQ"/>
+      <exposedOperations operation="_PwEewEWhEemHs64O5EYsyQ"/>
+      <exposedOperations operation="_adE0AEWhEemHs64O5EYsyQ"/>
+    </exposedGraphs>
+    <exposedServices xmi:id="_fvPm8EyhEemBn-SJ5OPvtg" name="allOrders" operation="_mr1P4EWhEemHs64O5EYsyQ"/>
+  </elements>
+  <elements xsi:type="accesspoint:AccessPoint" xmi:id="_ab0PsEZlEemHs64O5EYsyQ" name="external">
+    <exposedGraphs xmi:id="_lnxx0EZlEemHs64O5EYsyQ" name="products" mappedTransferObjectType="_o7IkkEWXEemHs64O5EYsyQ" selector="_vA7SgEZlEemHs64O5EYsyQ">
+      <exposedOperations operation="_ZXOmQEWhEemHs64O5EYsyQ"/>
+      <exposedOperations operation="_adE0AEWhEemHs64O5EYsyQ"/>
+    </exposedGraphs>
+    <exposedGraphs xmi:id="_ot-twEZlEemHs64O5EYsyQ" name="categories" mappedTransferObjectType="_xxeTIEWXEemHs64O5EYsyQ" selector="_xeUiAEZlEemHs64O5EYsyQ">
+      <exposedOperations operation="_ZXOmQEWhEemHs64O5EYsyQ"/>
+      <exposedOperations operation="_adE0AEWhEemHs64O5EYsyQ"/>
+    </exposedGraphs>
+  </elements>
   <packages xmi:id="_g0GS4B1REemwg4NgOjaKeA" name="measures">
     <elements xsi:type="measure:Measure" xmi:id="_oNT8IB1REemwg4NgOjaKeA" name="Mass">
       <units xmi:id="_2IFN4B1REemwg4NgOjaKeA" name="milligram" rateDividend="1.0E-6" symbol="mg"/>
@@ -522,8 +538,5 @@
         <cardinality xmi:id="_rFrlAEWhEemHs64O5EYsyQ" upper="-1"/>
       </output>
     </elements>
-    <elements xsi:type="accesspoint:ExposedGraph" xmi:id="_hanN0EZlEemHs64O5EYsyQ" name="ordersAssignedToEmployee" mappedTransferObjectType="_ETGEYCVQEemLpvUY7MQgng" selector="_EuQ5MCYbEemLpvUY7MQgng"/>
-    <elements xsi:type="accesspoint:ExposedGraph" xmi:id="_lnxx0EZlEemHs64O5EYsyQ" name="products" mappedTransferObjectType="_o7IkkEWXEemHs64O5EYsyQ" selector="_vA7SgEZlEemHs64O5EYsyQ"/>
-    <elements xsi:type="accesspoint:ExposedGraph" xmi:id="_ot-twEZlEemHs64O5EYsyQ" name="categories" mappedTransferObjectType="_xxeTIEWXEemHs64O5EYsyQ" selector="_xeUiAEZlEemHs64O5EYsyQ"/>
   </packages>
 </namespace:Model>
