@@ -12,11 +12,6 @@ rule CreateTransferObject
 		var annotation = new ASM!EAnnotation;
 		annotation.source = extendedMetadataURI;
 		t.eAnnotations.add(annotation);
-		
-		/*var aTransferObject = new ASM!EStringToStringMapEntry;
-		aTransferObject.key = "transferObject";
-		aTransferObject.value = "true";
-		annotation.details.add(aTransferObject); */
 	}
 
 rule CreateMappedTransferObject

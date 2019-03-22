@@ -25,5 +25,5 @@ operation JUDOPSM!TransferObjectRelation isMutable() : Boolean {
 
 @cached
 operation JUDOPSM!TransferObjectRelation isNavigable() : Boolean {
-    return self.target.isKindOf(JUDOPSM!MappedTransferObjectType);
+    return self.getTransferObjectType().isKindOf(JUDOPSM!MappedTransferObjectType);
 }

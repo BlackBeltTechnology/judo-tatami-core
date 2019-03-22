@@ -78,22 +78,17 @@ rule CreateBoundOperation
         s.getTransferObjectType().transformToAsm().eOperations.add(t);
 }
 
+@greedy
 rule CreateUnboundInterface
-    transform s : JUDOPSM!UnboundOperation
+    transform s : JUDOPSM!Namespace
     to t : ASM!EClass {
-        t.name = s.name;
+    	guard: s.elements.selectOne(e | e.isKindOf(JUDOPSM!UnboundOperation)).isDefined()
+    	
+        t.name = "$UnboundServices";
         t.abstract = true;
         t.interface = true;
         
-        s.getNamespace().transformToAsm().eClassifiers.add(t);
-        
-        /*var annotation = new ASM!EAnnotation;
-		annotation.source = extendedMetadataURI;
-		
-		var aTransferObject = new ASM!EStringToStringMapEntry;
-		aTransferObject.key = "operation";
-		aTransferObject.value = "true";
-		t.eAnnotations.selectOne(a | a.source == extendedMetadataURI).details.add(aTransferObject); */
+        s.transformToAsm().eClassifiers.add(t);
 }
 
 rule CreateUnboundOperation
@@ -102,7 +97,7 @@ rule CreateUnboundOperation
     extends CreateOperation {
         t.name = s.name;
         
-        s.equivalent("CreateUnboundInterface").eOperations.add(t);
+        s.getNamespace().equivalent("CreateUnboundInterface").eOperations.add(t);
 }
 
 rule CreateGraphOperation
