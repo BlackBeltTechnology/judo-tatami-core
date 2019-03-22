@@ -32,10 +32,12 @@ public class Asm2RdbmsScriptResource {
     public void deactivate(ComponentContext componentContext) throws IOException {
         bundle = componentContext.getBundleContext().getBundle();
 
-        Files.walk(Paths.get(scriptRoot.getAbsolutePath()))
-                .map(Path::toFile)
-                .sorted(Comparator.reverseOrder())
-                .forEach(File::delete);
+        if (Files.exists(Paths.get(scriptRoot.getAbsolutePath()))) {
+            Files.walk(Paths.get(scriptRoot.getAbsolutePath()))
+                    .map(Path::toFile)
+                    .sorted(Comparator.reverseOrder())
+                    .forEach(File::delete);
+        }
     }
 
 

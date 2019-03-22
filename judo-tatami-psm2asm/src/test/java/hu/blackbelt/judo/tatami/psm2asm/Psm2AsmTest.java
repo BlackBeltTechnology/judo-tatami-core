@@ -1,5 +1,6 @@
 package hu.blackbelt.judo.tatami.psm2asm;
 
+import com.google.common.collect.Maps;
 import hu.blackbelt.epsilon.runtime.execution.api.Log;
 import hu.blackbelt.epsilon.runtime.execution.impl.NioFilesystemnRelativePathURIHandlerImpl;
 import hu.blackbelt.epsilon.runtime.execution.impl.Slf4jLog;
@@ -7,18 +8,11 @@ import hu.blackbelt.judo.meta.asm.runtime.AsmModel;
 import hu.blackbelt.judo.meta.psm.runtime.PsmModel;
 import hu.blackbelt.judo.meta.psm.runtime.PsmModelLoader;
 import lombok.extern.slf4j.Slf4j;
-import org.eclipse.emf.common.notify.Notifier;
-import org.eclipse.emf.common.util.TreeIterator;
 import org.eclipse.emf.common.util.URI;
-import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.URIHandler;
-import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
-import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.emf.ecore.xmi.XMIResource;
-import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
-import org.eclipse.emf.ecore.xmi.impl.XMIResourceImpl;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -72,6 +66,8 @@ public class Psm2AsmTest {
         // Create wirtual URN
         URI asmUri = URI.createURI("urn:" + psmModel.getName() + ".asm");
         Resource  asmResource = asmResourceSet.createResource(asmUri);
+        //asmResourceSet.getURIConverter().getURIMap().put(asmUri, URI.createURI(""));
+        //asmResourceSet.getURIConverter().getURIMap().put(asmUri, URI.createURI(""));
 
         AsmModel asmModel = AsmModel.asmModelBuilder()
                 .name(psmModel.getName())
@@ -83,12 +79,14 @@ public class Psm2AsmTest {
         executePsm2AsmTransformation(asmResourceSet, psmModel, asmModel, new Slf4jLog(log),
                 new File(srcDir().getAbsolutePath(), "epsilon/transformations/asm"));
 
+        /*
 
         TreeIterator<Notifier> iter = asmResourceSet.getAllContents();
         while (iter.hasNext()) {
             final Notifier obj = iter.next();
-            log.debug(obj.toString());
+            log.info(obj.toString());
         }
+
 
         XMIResource xmiResource = new XMIResourceImpl(URI.createFileURI(srcDir().getAbsolutePath()+"/northwind-asm.model")) {
             @Override
@@ -98,18 +96,11 @@ public class Psm2AsmTest {
         };
         xmiResource.getContents().addAll(EcoreUtil.copyAll(asmResource.getContents()));
         for (EObject e : asmResource.getContents()) {
-            log.debug(e.toString());
+            log.info(e.toString());
         }
+        */
 
-        final Map<Object, Object> saveOptions = xmiResource.getDefaultSaveOptions();
-        saveOptions.put(XMIResource.OPTION_DECLARE_XML,Boolean.TRUE);
-        saveOptions.put(XMIResource.OPTION_PROCESS_DANGLING_HREF,XMIResource.OPTION_PROCESS_DANGLING_HREF_DISCARD);
-        saveOptions.put(XMIResource.OPTION_SCHEMA_LOCATION,Boolean.TRUE);
-        saveOptions.put(XMIResource.OPTION_DEFER_IDREF_RESOLUTION,Boolean.TRUE);
-        saveOptions.put(XMIResource.OPTION_SKIP_ESCAPE_URI,Boolean.FALSE);
-        saveOptions.put(XMIResource.OPTION_ENCODING,"UTF-8");
-
-        xmiResource.save(saveOptions);
+        saveAsmModel(asmModel);
 
     }
 
@@ -122,5 +113,6 @@ public class Psm2AsmTest {
         }
         return targetDir;
     }
+
 
 }
