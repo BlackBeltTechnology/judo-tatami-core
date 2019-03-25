@@ -1,1 +1,73 @@
 import "../utils/_importUtils.eol";
+
+rule CreateAccessPoint
+    transform s : JUDOPSM!AccessPoint
+    to t : ASM!EClass {
+        t.name = s.name;
+        t.abstract = true;
+        t.interface = true;
+        
+        // TODO - add platform specific attributes (protocol, message format, etc.)
+        
+        s.getNamespace().transformToAsm().eClassifiers.add(t);
+        
+	    var annotation = new ASM!EAnnotation;
+	    annotation.source = extendedMetadataURI;
+	    t.eAnnotations.add(annotation);
+	
+	    var aAccessPoint = new ASM!EStringToStringMapEntry;
+	    aAccessPoint.key = "accessPoint";
+	    aAccessPoint.value = "true";
+	    annotation.details.add(aAccessPoint);
+}
+
+@cached
+operation JUDOPSM!ExposedService getAccessPoint() : JUDOPSM!AccessPoint {
+    return JUDOPSM!AccessPoint.all.selectOne(ap | ap.exposedServices.contains(self));
+}
+
+@cached
+operation JUDOPSM!ExposedGraph getAccessPoint() : JUDOPSM!AccessPoint {
+    return JUDOPSM!AccessPoint.all.selectOne(ap | ap.exposedGraphs.contains(self));
+}
+
+rule CreateExposedAsAnnotationForUnboundOperation
+    transform s : JUDOPSM!ExposedService
+    to t : ASM!EStringToStringMapEntry {
+        var op = s.`operation`.equivalent("CreateUnboundOperation");
+        
+        var annotation = op.eAnnotations.selectOne(a | a.source = extendedMetadataURI);
+        if (not annotation.isDefined()) {
+            annotation = new ASM!EAnnotation;
+		    annotation.source = extendedMetadataURI;
+		    op.eAnnotations.add(annotation);
+        }
+        
+		t.key = "exposedAs";
+		t.value = s.getAccessPoint().equivalent("CreateAccessPoint").getFQName();
+		annotation.details.add(t);
+}
+
+rule CreateExposedGraph
+    transform s : JUDOPSM!ExposedGraph
+    to t : ASM!EClass {
+        t.name = s.getAccessPoint().name + "$" + s.name;
+        t.abstract = true;
+        t.interface = true;
+            
+        s.getAccessPoint().getNamespace().transformToAsm().eClassifiers.add(t);
+        
+        var annotation = new ASM!EAnnotation;
+		annotation.source = extendedMetadataURI;
+		t.eAnnotations.add(annotation);
+}
+
+rule CreateExposedGraphSelector
+    transform s : JUDOPSM!ExposedGraph
+    to t : ASM!EStringToStringMapEntry {
+        var annotation = s.equivalent("CreateExposedGraph").eAnnotations.selectOne(a | a.source = extendedMetadataURI);
+        
+		t.key = "selectorExpression";
+		t.value = "TODO:" + s.selector.name;
+		annotation.details.add(t);
+}
