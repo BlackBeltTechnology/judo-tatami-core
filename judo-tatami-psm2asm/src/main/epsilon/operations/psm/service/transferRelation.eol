@@ -20,7 +20,7 @@ operation JUDOPSM!TransferObjectRelation isCollection() : Boolean {
 
 @cached
 operation JUDOPSM!TransferObjectRelation isMutable() : Boolean {
-    return self.binding.isKindOf(JUDOPSM!Relation) or self.binding.setterExpression.isDefined();
+    return self.binding.isKindOf(JUDOPSM!Relation) or (self.binding.isKindOf(JUDOPSM!ReferenceAccessor) and self.binding.setterExpression.isDefined());
 }
 
 @cached

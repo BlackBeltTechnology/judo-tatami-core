@@ -31,7 +31,7 @@ operation JUDOPSM!ExposedGraph getAccessPoint() : JUDOPSM!AccessPoint {
     return JUDOPSM!AccessPoint.all.selectOne(ap | ap.exposedGraphs.contains(self));
 }
 
-rule CreateExposedAsAnnotationForUnboundOperation
+rule CreateExposedByAnnotationForUnboundOperation
     transform s : JUDOPSM!ExposedService
     to t : ASM!EStringToStringMapEntry {
         var op = s.`operation`.equivalent("CreateUnboundOperation");
@@ -43,7 +43,7 @@ rule CreateExposedAsAnnotationForUnboundOperation
 		    op.eAnnotations.add(annotation);
         }
         
-		t.key = "exposedAs";
+		t.key = "exposedBy";
 		t.value = s.getAccessPoint().equivalent("CreateAccessPoint").getFQName();
 		annotation.details.add(t);
 }
@@ -60,6 +60,11 @@ rule CreateExposedGraph
         var annotation = new ASM!EAnnotation;
 		annotation.source = extendedMetadataURI;
 		t.eAnnotations.add(annotation);
+		
+		var aExposedBy = new ASM!EStringToStringMapEntry;
+		aExposedBy.key = "exposedBy";
+		aExposedBy.value = s.getAccessPoint().equivalent("CreateAccessPoint").getFQName();
+		annotation.details.add(aExposedBy);
 }
 
 rule CreateExposedGraphSelector
@@ -67,7 +72,24 @@ rule CreateExposedGraphSelector
     to t : ASM!EStringToStringMapEntry {
         var annotation = s.equivalent("CreateExposedGraph").eAnnotations.selectOne(a | a.source = extendedMetadataURI);
         
-		t.key = "selectorExpression";
-		t.value = "TODO:" + s.selector.name;
+		t.key = "selector";
+		t.value = s.selector.name;
+		annotation.details.add(t);
+}
+
+rule CreateExposedByAnnotationForBoundOperation
+    transform s : JUDOPSM!ExposedGraph
+    to t : ASM!EStringToStringMapEntry {
+        var transferObject = s.mappedTransferObjectType.transformToAsm();
+        
+        var annotation = transferObject.eAnnotations.selectOne(a | a.source = extendedMetadataURI);
+        if (not annotation.isDefined()) {
+            annotation = new ASM!EAnnotation;
+		    annotation.source = extendedMetadataURI;
+		    transferObject.eAnnotations.add(annotation);
+        }
+        
+		t.key = "graph";
+		t.value = s.equivalent("CreateExposedGraph").getFQName();
 		annotation.details.add(t);
 }

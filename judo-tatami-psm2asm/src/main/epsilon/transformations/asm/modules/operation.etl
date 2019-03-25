@@ -211,3 +211,17 @@ rule CreateRemoveAllOperationForRelation
         
         s.equivalent("CreateGraphOperation").eOperations.add(t);
 }
+
+rule CreateRangeOperationForRelation
+    transform s : JUDOPSM!TransferObjectRelation
+    to t : ASM!EOperation {
+        guard: s.isNavigable() and s.range.isDefined()
+        
+        t.name = "getRange";
+        
+        t.lowerBound = 0;
+        t.upperBound = -1;
+        t.eType = s.target.transformToAsm();
+        
+        s.equivalent("CreateGraphOperation").eOperations.add(t);
+}

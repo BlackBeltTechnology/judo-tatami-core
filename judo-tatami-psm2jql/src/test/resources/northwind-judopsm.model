@@ -2,20 +2,20 @@
 <namespace:Model xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:accesspoint="http://blackbelt.hu/judo/meta/psm/accesspoint" xmlns:data="http://blackbelt.hu/judo/meta/psm/data" xmlns:derived="http://blackbelt.hu/judo/meta/psm/derived" xmlns:measure="http://blackbelt.hu/judo/meta/psm/measure" xmlns:namespace="http://blackbelt.hu/judo/meta/psm/namespace" xmlns:service="http://blackbelt.hu/judo/meta/psm/service" xmlns:type="http://blackbelt.hu/judo/meta/psm/type" xmi:id="_vbf8wINkEeiLE-B2bbL0fg" name="northwind">
   <elements xsi:type="accesspoint:AccessPoint" xmi:id="_X9vDsEZlEemHs64O5EYsyQ" name="internal">
     <exposedGraphs xmi:id="_hanN0EZlEemHs64O5EYsyQ" name="ordersAssignedToEmployee" mappedTransferObjectType="_ETGEYCVQEemLpvUY7MQgng" selector="_EuQ5MCYbEemLpvUY7MQgng">
-      <exposedOperations operation="_ZXOmQEWhEemHs64O5EYsyQ"/>
-      <exposedOperations operation="_PwEewEWhEemHs64O5EYsyQ"/>
-      <exposedOperations operation="_adE0AEWhEemHs64O5EYsyQ"/>
+      <exposedOperations xmi:id="_dx8U8E7fEemZHbZiENeSGg" operation="_ZXOmQEWhEemHs64O5EYsyQ"/>
+      <exposedOperations xmi:id="_dx8U8U7fEemZHbZiENeSGg" operation="_PwEewEWhEemHs64O5EYsyQ"/>
+      <exposedOperations xmi:id="_dx8U8k7fEemZHbZiENeSGg" operation="_adE0AEWhEemHs64O5EYsyQ"/>
     </exposedGraphs>
     <exposedServices xmi:id="_fvPm8EyhEemBn-SJ5OPvtg" operation="_mr1P4EWhEemHs64O5EYsyQ"/>
   </elements>
   <elements xsi:type="accesspoint:AccessPoint" xmi:id="_ab0PsEZlEemHs64O5EYsyQ" name="external">
     <exposedGraphs xmi:id="_lnxx0EZlEemHs64O5EYsyQ" name="products" mappedTransferObjectType="_o7IkkEWXEemHs64O5EYsyQ" selector="_vA7SgEZlEemHs64O5EYsyQ">
-      <exposedOperations operation="_ZXOmQEWhEemHs64O5EYsyQ"/>
-      <exposedOperations operation="_adE0AEWhEemHs64O5EYsyQ"/>
+      <exposedOperations xmi:id="_dx8U807fEemZHbZiENeSGg" operation="_ZXOmQEWhEemHs64O5EYsyQ"/>
+      <exposedOperations xmi:id="_dx8U9E7fEemZHbZiENeSGg" operation="_adE0AEWhEemHs64O5EYsyQ"/>
     </exposedGraphs>
     <exposedGraphs xmi:id="_ot-twEZlEemHs64O5EYsyQ" name="categories" mappedTransferObjectType="_xxeTIEWXEemHs64O5EYsyQ" selector="_xeUiAEZlEemHs64O5EYsyQ">
-      <exposedOperations operation="_ZXOmQEWhEemHs64O5EYsyQ"/>
-      <exposedOperations operation="_adE0AEWhEemHs64O5EYsyQ"/>
+      <exposedOperations xmi:id="_dx8U9U7fEemZHbZiENeSGg" operation="_ZXOmQEWhEemHs64O5EYsyQ"/>
+      <exposedOperations xmi:id="_dx8U9k7fEemZHbZiENeSGg" operation="_adE0AEWhEemHs64O5EYsyQ"/>
     </exposedGraphs>
   </elements>
   <packages xmi:id="_g0GS4B1REemwg4NgOjaKeA" name="measures">
@@ -450,17 +450,20 @@
         <cardinality xmi:id="_oRVjUOdVEeiJv53TEP0vvQ" upper="-1"/>
       </relations>
     </elements>
-    <elements xsi:type="derived:StaticNavigation" xmi:id="_EuQ5MCYbEemLpvUY7MQgng" name="OrdersAssignedToEmployee" target="_-H4RoINkEeiLE-B2bbL0fg">
+    <elements xsi:type="derived:StaticNavigation" xmi:id="_EuQ5MCYbEemLpvUY7MQgng" name="ordersAssignedToEmployee" target="_-H4RoINkEeiLE-B2bbL0fg">
       <cardinality xmi:id="_KCnuwCYbEemLpvUY7MQgng" upper="-1"/>
       <getterExpression xmi:id="_cFwiQDneEemsDIfvozHEKg" expression="northwind::entities::Employee.orders"/>
     </elements>
-    <elements xsi:type="derived:StaticNavigation" xmi:id="_vA7SgEZlEemHs64O5EYsyQ" name="AllProducts" target="_6XH80INkEeiLE-B2bbL0fg">
+    <elements xsi:type="derived:StaticNavigation" xmi:id="_vA7SgEZlEemHs64O5EYsyQ" name="allProducts" target="_6XH80INkEeiLE-B2bbL0fg">
       <cardinality xmi:id="_WlEJsEvNEemBn-SJ5OPvtg" upper="-1"/>
       <getterExpression xmi:id="_a_OA0EvNEemBn-SJ5OPvtg" expression="northwind::entities::Product"/>
     </elements>
-    <elements xsi:type="derived:StaticNavigation" xmi:id="_xeUiAEZlEemHs64O5EYsyQ" name="AllCategories" target="_43ZPcINkEeiLE-B2bbL0fg">
+    <elements xsi:type="derived:StaticNavigation" xmi:id="_xeUiAEZlEemHs64O5EYsyQ" name="allCategories" target="_43ZPcINkEeiLE-B2bbL0fg">
       <cardinality xmi:id="_Xu2cQEvNEemBn-SJ5OPvtg" upper="-1"/>
       <getterExpression xmi:id="_dyTMcEvNEemBn-SJ5OPvtg" expression="northwind::entities::Category"/>
+    </elements>
+    <elements xsi:type="derived:StaticData" xmi:id="_r7S1QE7fEemZHbZiENeSGg" name="totalNumberOfOrders" dataType="_SZ-GUIUcEeipmMyz9cMCRA" required="true">
+      <getterExpression xmi:id="_yldAIE7fEemZHbZiENeSGg" expression="0 // COUNT(northwind::entities::Order)"/>
     </elements>
   </packages>
   <packages xmi:id="__cC14CVPEemLpvUY7MQgng" name="services">
@@ -490,10 +493,10 @@
       <attributes xmi:id="_htQgsCVuEemLpvUY7MQgng" name="productName" required="true" dataType="_Nppx8IUcEeipmMyz9cMCRA" binding="_mr-oACVvEemLpvUY7MQgng"/>
     </elements>
     <elements xsi:type="service:MappedTransferObjectType" xmi:id="_nao6QCVuEemLpvUY7MQgng" name="OrderItem" entityType="__XzocINkEeiLE-B2bbL0fg">
-      <relations xmi:id="_eboboEWeEemHs64O5EYsyQ" name="product" binding="_6QtRsLwNEeiOuYiCo6IbXQ" target="_o7IkkEWXEemHs64O5EYsyQ">
+      <relations xmi:id="_eboboEWeEemHs64O5EYsyQ" name="product" binding="_6QtRsLwNEeiOuYiCo6IbXQ" range="_vA7SgEZlEemHs64O5EYsyQ" target="_o7IkkEWXEemHs64O5EYsyQ">
         <cardinality xmi:id="_ElBGIEWiEemHs64O5EYsyQ" lower="1"/>
       </relations>
-      <relations xmi:id="_ilDvIEWeEemHs64O5EYsyQ" name="category" binding="_rYlgkEZqEemHs64O5EYsyQ" target="_ai3aUEWeEemHs64O5EYsyQ">
+      <relations xmi:id="_ilDvIEWeEemHs64O5EYsyQ" name="category" binding="_rYlgkEZqEemHs64O5EYsyQ" target="_xxeTIEWXEemHs64O5EYsyQ">
         <cardinality xmi:id="_E5SF8EWiEemHs64O5EYsyQ" lower="1"/>
       </relations>
       <attributes xmi:id="_rmgdwCVuEemLpvUY7MQgng" name="productName" required="true" dataType="_Nppx8IUcEeipmMyz9cMCRA" binding="_mr-oACVvEemLpvUY7MQgng"/>
@@ -503,7 +506,7 @@
       <attributes xmi:id="_x6C4YCVuEemLpvUY7MQgng" name="discount" required="true" dataType="_VDVVQIUcEeipmMyz9cMCRA" binding="_jIROkIN6EeiLE-B2bbL0fg"/>
     </elements>
     <elements xsi:type="service:MappedTransferObjectType" xmi:id="_o7IkkEWXEemHs64O5EYsyQ" name="ProductInfo" entityType="_6XH80INkEeiLE-B2bbL0fg">
-      <relations xmi:id="_f1W8wEWgEemHs64O5EYsyQ" name="category" binding="_CkXK8LwDEeiOuYiCo6IbXQ" target="_ai3aUEWeEemHs64O5EYsyQ">
+      <relations xmi:id="_f1W8wEWgEemHs64O5EYsyQ" name="category" binding="_CkXK8LwDEeiOuYiCo6IbXQ" range="_xeUiAEZlEemHs64O5EYsyQ" target="_xxeTIEWXEemHs64O5EYsyQ">
         <cardinality xmi:id="_Gx_7EEWiEemHs64O5EYsyQ" lower="1"/>
       </relations>
       <attributes xmi:id="_s0y9wEWXEemHs64O5EYsyQ" name="productName" dataType="_Nppx8IUcEeipmMyz9cMCRA" binding="_LhnHUINvEeiLE-B2bbL0fg"/>
@@ -517,7 +520,7 @@
       </operations>
     </elements>
     <elements xsi:type="service:MappedTransferObjectType" xmi:id="_xxeTIEWXEemHs64O5EYsyQ" name="CategoryInfo" entityType="_43ZPcINkEeiLE-B2bbL0fg">
-      <relations xmi:id="_iy32wEWgEemHs64O5EYsyQ" name="products" binding="_892OYLwCEeiOuYiCo6IbXQ" target="_Z5o3IEWeEemHs64O5EYsyQ">
+      <relations xmi:id="_iy32wEWgEemHs64O5EYsyQ" name="products" binding="_892OYLwCEeiOuYiCo6IbXQ" range="_vA7SgEZlEemHs64O5EYsyQ" target="_o7IkkEWXEemHs64O5EYsyQ">
         <cardinality xmi:id="_Paez0EWiEemHs64O5EYsyQ" upper="-1"/>
       </relations>
       <attributes xmi:id="_zWg-UEWXEemHs64O5EYsyQ" name="categoryName" dataType="_Nppx8IUcEeipmMyz9cMCRA" binding="_v7k5EINmEeiLE-B2bbL0fg"/>

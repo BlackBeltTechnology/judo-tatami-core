@@ -1,11 +1,10 @@
 import "../../../operations/psm/derived/_importDerived.eol";
 import "../utils/_importUtils.eol";
 
-rule CreateDataProperty
-	transform s : JUDOPSM!DataProperty
+@abstract
+rule CreatePrimitiveAccessor
+	transform s : JUDOPSM!PrimitiveAccessor
 	to t : ASM!EAttribute {
-		guard: s.isPrimitive()
-		
 		t.name = s.name;
 		t.derived = true;
 		t.volatile = true;
@@ -38,13 +37,12 @@ rule CreateDataProperty
 		annotation.source = extendedMetadataURI;
 		annotation.details.addAll(annotations);
 		t.eAnnotations.add(annotation);
+}
 
-		s.getEntityType().transformToAsm().eStructuralFeatures.add(t);
-	}
-
-rule CreateNavigationProperty
-	transform s : JUDOPSM!NavigationProperty
-	to t : ASM!EReference {
+@abstract
+rule CreateReferenceAccessor
+    transform s : JUDOPSM!ReferenceAccessor
+    to t : ASM!EReference {
 		t.name = s.name;
 		t.derived = true;
 		t.volatile = true;
@@ -73,6 +71,47 @@ rule CreateNavigationProperty
 		annotation.details.addAll(annotations);
 		t.eAnnotations.add(annotation);
 
-		s.getEntityType().transformToAsm().eStructuralFeatures.add(t);
 		t.eType = s.target.transformToAsm();
+}
+
+rule CreateDataProperty
+	transform s : JUDOPSM!DataProperty
+	to t : ASM!EAttribute
+	extends CreatePrimitiveAccessor {
+		guard: s.isPrimitive()
+
+		s.getEntityType().transformToAsm().eStructuralFeatures.add(t);
 	}
+
+rule CreateNavigationProperty
+	transform s : JUDOPSM!NavigationProperty
+	to t : ASM!EReference
+	extends CreateReferenceAccessor {
+		s.getEntityType().transformToAsm().eStructuralFeatures.add(t);
+}
+
+@greedy
+rule CreateClassForStatics
+    transform s : JUDOPSM!Namespace
+    to t : ASM!EClass {
+        guard: s.elements.selectOne(e | e.isKindOf(JUDOPSM!StaticData) or e.isKindOf(JUDOPSM!StaticNavigation)).isDefined()
+
+        t.name = "$Static";
+        t.abstract = true;
+
+        s.transformToAsm().eClassifiers.add(t);
+}
+
+rule CreateStaticData
+	transform s : JUDOPSM!StaticData
+	to t : ASM!EAttribute
+	extends CreatePrimitiveAccessor {
+		s.getNamespace().equivalent("CreateClassForStatics").eStructuralFeatures.add(t);
+}
+
+rule CreateStaticNavigation
+	transform s : JUDOPSM!StaticNavigation
+	to t : ASM!EReference
+	extends CreateReferenceAccessor {
+		s.getNamespace().equivalent("CreateClassForStatics").eStructuralFeatures.add(t);
+}
