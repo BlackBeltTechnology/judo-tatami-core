@@ -5,6 +5,7 @@ import hu.blackbelt.epsilon.runtime.execution.impl.NioFilesystemnRelativePathURI
 import hu.blackbelt.epsilon.runtime.execution.impl.Slf4jLog;
 import hu.blackbelt.judo.meta.asm.runtime.AsmModel;
 import hu.blackbelt.judo.meta.asm.runtime.AsmModelLoader;
+import hu.blackbelt.judo.meta.asm.runtime.AsmModelLoader.LocalAsmPackageRegistration;
 import hu.blackbelt.judo.meta.expression.runtime.ExpressionModel;
 import hu.blackbelt.judo.meta.expression.runtime.ExpressionModelLoader;
 import hu.blackbelt.judo.meta.psm.jql.extract.runtime.PsmJqlExtractModel;
@@ -60,7 +61,7 @@ public class JqlExtract2ExpressionTest {
 
         // Loading ASM to isolated ResourceSet, because in Tatami
         // there is no new namespace registration made.
-        ResourceSet asmResourceSet = createAsmResourceSet(uriHandler);
+        ResourceSet asmResourceSet = createAsmResourceSet(uriHandler, new LocalAsmPackageRegistration());
         asmModel = AsmModelLoader.loadAsmModel(
                 asmResourceSet,
                 URI.createURI("urn:northwind-asm.model"),

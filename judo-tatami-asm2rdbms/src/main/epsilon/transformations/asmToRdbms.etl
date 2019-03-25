@@ -67,7 +67,7 @@ pre {
 		v.inverseRangeConstraint = v.inverseRangeConstraint.asBoolean();
 		v.joinTable = v.joinTable.asBoolean();
 		
-		v.toString().println("Rule: ");
+		log.debug("Rule: ");
 	}
 }
 
@@ -98,8 +98,8 @@ post {
 		// e.uuid.println("UUID: ");
 		var sqlNameMapping = e.uuid.findSqlNameMapping();
 		if (sqlNameMapping.isDefined()) {
-			e.println("Replace sqlName in: ");
-			sqlNameMapping.println("   To: ");
+			log.info("Replace sqlName in: " + e);
+			log.info("   To: " + sqlNameMapping);
 			e.sqlName = sqlNameMapping.SqlName;
 		}
 	}

@@ -8,8 +8,8 @@ for (tr in transformationTrace.transformations) {
 			row.rdbmsType = t.eClass;
 			row.rdbmsIdentifier = t.id;	
 			
-			ASM.getElementById(tr.source.id).println("ASM " + tr.source.id + ": ");			
-			RDBMS.getElementById(t.id).println("RDBMS " + t.id + ": ");
+			log.debug("ASM " + tr.source.id + ": " + ASM.getElementById(tr.source.id));
+			log.debug("RDBMS " + t.id + ": " + RDBMS.getElementById(t.id));
 		}
 	}
 }

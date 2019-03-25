@@ -25,7 +25,6 @@ rule TableToCreateForeignKeysChangeSet
 	transform s : RDBMS!RdbmsTable
 	to t : LIQUIBASE!ChangeSet {
 	    guard: s.fields.select(f | f.isTypeOf(RDBMS!RdbmsForeignKey)).size() > 0
-		s.fields.select(f | f.isTypeOf(RDBMS!RdbmsForeignKey)).size().println("Foreign key size for table " + s.sqlName + ": ");
 		targetModel.changeSet.add(t);
 	    t.id = "create-foreignkeys-" + s.sqlName;
 	    t.author = "tatami-rdbms2liquibase";
@@ -39,7 +38,6 @@ rule TableToAddNotNullChangeSet
 	transform s : RDBMS!RdbmsTable
 	to t : LIQUIBASE!ChangeSet {
 	    guard: s.fields.select(f | f.mandatory).size() > 0
-		s.fields.select(f | f.mandatory).size().println("Not Null fields size for table " + s.sqlName + ": ");
 		targetModel.changeSet.add(t);
 	    t.id = "add-not-null-" + s.sqlName;
 	    t.author = "tatami-rdbms2liquibase";

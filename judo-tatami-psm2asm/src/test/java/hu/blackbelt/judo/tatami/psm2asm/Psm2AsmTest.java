@@ -61,7 +61,7 @@ public class Psm2AsmTest {
     public void testPsm2AsmTransformation() throws Exception {
 
         // Creating ASM resource set.
-        ResourceSet asmResourceSet = createAsmResourceSet(uriHandler);
+        ResourceSet asmResourceSet = createAsmResourceSet(uriHandler, new LocalAsmPackageRegistration());
 
         // Create wirtual URN
         URI asmUri = URI.createURI("urn:" + psmModel.getName() + ".asm");

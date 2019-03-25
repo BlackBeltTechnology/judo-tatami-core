@@ -3,6 +3,7 @@ package hu.blackbelt.judo.tatami.asm2rdbms;
 import hu.blackbelt.epsilon.runtime.execution.api.Log;
 import hu.blackbelt.epsilon.runtime.execution.impl.NioFilesystemnRelativePathURIHandlerImpl;
 import hu.blackbelt.epsilon.runtime.execution.impl.Slf4jLog;
+import hu.blackbelt.judo.meta.asm.runtime.AsmModelLoader.LocalAsmPackageRegistration;
 import hu.blackbelt.judo.meta.rdbms.runtime.RdbmsModel;
 import hu.blackbelt.judo.meta.asm.runtime.AsmModel;
 import hu.blackbelt.judo.meta.asm.runtime.AsmModelLoader;
@@ -46,7 +47,7 @@ public class Asm2RdbmsTest {
 
         // Loading PSM to isolated ResourceSet, because in Tatami
         // there is no new namespace registration made.
-        ResourceSet asmResourceSet = createAsmResourceSet(uriHandler);
+        ResourceSet asmResourceSet = createAsmResourceSet(uriHandler, new LocalAsmPackageRegistration());
         asmModel = AsmModelLoader.loadAsmModel(
                 asmResourceSet,
                 URI.createURI("urn:northwind-asm.model"),

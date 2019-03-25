@@ -1,5 +1,6 @@
 package hu.blackbelt.judo.tatami.rdbms2liquibase;
 
+import hu.blackbelt.judo.meta.liquibase.runtime.LiquibaseModel;
 import hu.blackbelt.judo.meta.rdbms.runtime.RdbmsModel;
 import hu.blackbelt.judo.tatami.core.AbstractModelInfoTracker;
 import lombok.extern.slf4j.Slf4j;
@@ -53,9 +54,9 @@ public class RdbmsModelServiceTracker extends AbstractModelInfoTracker<RdbmsMode
             liquibaseModel = psm2LiquibaseSerivce
                     .install(psmModel, componentContext.getBundleContext());
             log.info("Registering model: " + liquibaseModel);
-            ServiceRegistration<hu.blackbelt.judo.meta.liquibase.runtime.LiquibaseModel> modelServiceRegistration =
+            ServiceRegistration<LiquibaseModel> modelServiceRegistration =
                     componentContext.getBundleContext()
-                            .registerService(hu.blackbelt.judo.meta.liquibase.runtime.LiquibaseModel.class, liquibaseModel, liquibaseModel.toDictionary());
+                            .registerService(LiquibaseModel.class, liquibaseModel, liquibaseModel.toDictionary());
             models.put(key, liquibaseModel);
             registrations.put(key, modelServiceRegistration);
         } catch (Exception e) {

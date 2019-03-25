@@ -75,7 +75,7 @@
 							javax.annotation;version="[1.0,2)",
 							*
 						</Import-Package>
-						<Rdbms-Meta-Version-Range>${judo-meta-rdbms.import-range}</Rdbms-Meta-Version-Range>
+						<Liquibase-Meta-Version-Range>${judo-meta-rdbms.import-range}</Liquibase-Meta-Version-Range>
 					</instructions>
 				</configuration>
 			</plugin>

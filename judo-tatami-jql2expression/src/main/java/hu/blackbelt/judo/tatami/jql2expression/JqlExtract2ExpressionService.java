@@ -7,6 +7,7 @@ import hu.blackbelt.judo.meta.expression.runtime.ExpressionModel;
 import hu.blackbelt.judo.meta.psm.jql.extract.runtime.PsmJqlExtractModel;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.emf.common.util.URI;
+import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.osgi.framework.BundleContext;
 import org.osgi.service.component.annotations.Component;
@@ -14,8 +15,8 @@ import org.osgi.service.component.annotations.Reference;
 
 import java.io.File;
 
-import static hu.blackbelt.judo.meta.expression.runtime.ExpressionModelLoader.loadExpressionModel;
 import static hu.blackbelt.judo.meta.asm.runtime.AsmModelLoader.registerAsmMetamodel;
+import static hu.blackbelt.judo.meta.expression.runtime.ExpressionModelLoader.*;
 import static hu.blackbelt.judo.meta.psm.jql.extract.runtime.PsmJqlExtractModelLoader.createPsmJqlExtractResourceSet;
 import static hu.blackbelt.judo.meta.psm.jql.extract.runtime.PsmJqlExtractModelLoader.registerPsmJqlMetamodel;
 
@@ -32,17 +33,23 @@ public class JqlExtract2ExpressionService {
         BundleURIHandler bundleURIHandler = new BundleURIHandler("urn", "",
                 bundleContext.getBundle());
 
-        ResourceSet resourceSet = createPsmJqlExtractResourceSet(bundleURIHandler);
+        ResourceSet resourceSet = createExpressionResourceSet(bundleURIHandler);
 
-        ExpressionModel expressionModel = loadExpressionModel(resourceSet, URI.createURI("urn:" + jqlExtractModel.getName()),
-                jqlExtractModel.getName(), jqlExtractModel.getVersion(), jqlExtractModel.getChecksum(),
-                bundleContext.getBundle().getHeaders().get(EXPRESSION_META_VERSION_RANGE));
+        URI expressionModelUri = URI.createURI("urn:" + jqlExtractModel.getName() + ".expression");
+        Resource expressionResource =  resourceSet.createResource(expressionModelUri);
 
-        registerPsmJqlMetamodel(resourceSet);
-        registerAsmMetamodel(resourceSet);
+        ExpressionModel expressionModel = ExpressionModel.buildExpressionModel()
+                .name(asmModel.getName())
+                .version(asmModel.getVersion())
+                .uri(expressionModelUri)
+                .resource(expressionResource)
+                .checksum(asmModel.getChecksum())
+                .metaVersionRange(bundleContext.getBundle().getHeaders().get(EXPRESSION_META_VERSION_RANGE))
+                .build();
+
 
         JqlExtract2Expression.executeJqlExtract2ExpressionTransformation(resourceSet, asmModel, jqlExtractModel, expressionModel, new Slf4jLog(log),
-                new File(jqlExtract2ExpressionScriptResource.getSctiptRoot().getAbsolutePath(), "jql2expression/transformations/resource/") );
+                new File(jqlExtract2ExpressionScriptResource.getSctiptRoot().getAbsolutePath(), "jql2expression/transformations/expression") );
 
         return expressionModel;
     }

@@ -56,7 +56,7 @@
                         </Export-Package>
                         <Include-Resource>
                             {maven-resources},
-                            tatami/psm2jql=src/main/epsilon/operations,
+                            tatami/psm2jql=src/main/epsilon,
                         </Include-Resource>
                         <Import-Package>
                             org.osgi.framework;version="[1.8,2.0)",

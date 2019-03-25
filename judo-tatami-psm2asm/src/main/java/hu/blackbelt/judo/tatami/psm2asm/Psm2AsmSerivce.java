@@ -1,14 +1,20 @@
 package hu.blackbelt.judo.tatami.psm2asm;
 
+import com.google.common.collect.ImmutableList;
+import hu.blackbelt.epsilon.runtime.execution.impl.CompositeURIHandlerImpl;
 import hu.blackbelt.epsilon.runtime.execution.impl.Slf4jLog;
 import hu.blackbelt.epsilon.runtime.osgi.BundleURIHandler;
 import hu.blackbelt.judo.meta.asm.runtime.AsmModel;
+import hu.blackbelt.judo.meta.asm.runtime.AsmModelLoader;
 import hu.blackbelt.judo.meta.asm.runtime.AsmPackageRegistration;
 import hu.blackbelt.judo.meta.psm.runtime.PsmModel;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.emf.common.util.URI;
+import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.FrameworkUtil;
+import org.osgi.framework.launch.Framework;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
@@ -33,19 +39,24 @@ public class Psm2AsmSerivce {
 
 
     public AsmModel install(PsmModel psmModel, BundleContext bundleContext) throws Exception {
-        BundleURIHandler bundleURIHandler = new BundleURIHandler("urn", "",
-                bundleContext.getBundle());
 
-        ResourceSet resourceSet = createAsmResourceSet(bundleURIHandler);
-
-        AsmModel asmModel = loadAsmModel(resourceSet, asmPackageRegistration, URI.createURI("urn:" + psmModel.getName()),
-                psmModel.getName(), psmModel.getVersion(), psmModel.getChecksum(),
-                bundleContext.getBundle().getHeaders().get(ASM_META_VERSION_RANGE));
-
+        ResourceSet resourceSet = createAsmResourceSet(new BundleURIHandler("urn", "", bundleContext.getBundle()));
+        AsmModelLoader.registerAsmPackages(resourceSet, asmPackageRegistration);
         registerPsmMetamodel(resourceSet);
 
+        URI asmUri = URI.createURI("urn:" + psmModel.getName() + ".asm");
+        Resource resource = resourceSet.createResource(asmUri);
+
+        AsmModel asmModel = AsmModel.asmModelBuilder()
+                .name(psmModel.getName())
+                .version(psmModel.getVersion())
+                .uri(asmUri)
+                .checksum(psmModel.getChecksum())
+                .resource(resource)
+                .metaVersionRange(bundleContext.getBundle().getHeaders().get(ASM_META_VERSION_RANGE)).build();
+
         executePsm2AsmTransformation(resourceSet, psmModel, asmModel, new Slf4jLog(log),
-                new File(psm2AsmScriptResource.getSctiptRoot().getAbsolutePath(), "psm2asm/transformations/resource/") );
+                new File(psm2AsmScriptResource.getSctiptRoot().getAbsolutePath(), "psm2asm/transformations/asm/") );
 
         return asmModel;
     }

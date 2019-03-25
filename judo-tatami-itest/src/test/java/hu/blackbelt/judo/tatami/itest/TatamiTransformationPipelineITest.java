@@ -10,7 +10,13 @@ import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.net.URL;
 
+import hu.blackbelt.judo.meta.asm.runtime.AsmModel;
+import hu.blackbelt.judo.meta.expression.runtime.ExpressionModel;
+import hu.blackbelt.judo.meta.liquibase.runtime.LiquibaseModel;
+import hu.blackbelt.judo.meta.measure.runtime.MeasureModel;
+import hu.blackbelt.judo.meta.psm.jql.extract.runtime.PsmJqlExtractModel;
 import hu.blackbelt.judo.meta.psm.runtime.PsmModel;
+import hu.blackbelt.judo.meta.rdbms.runtime.RdbmsModel;
 import hu.blackbelt.osgi.utils.osgi.api.BundleTrackerManager;
 import org.junit.Assert;
 import org.junit.Test;
@@ -60,6 +66,29 @@ public class TatamiTransformationPipelineITest {
 
     public static final String TATAMI_ASM2RDBMS = "judo-tatami-asm2rdbms";
     public static final String TATAMI_RDBMS2LIQUIBSE = "judo-tatami-rdbms2liquibase";
+    public static final String ORG_APACHE_KARAF = "org.apache.karaf";
+    public static final String APACHE_KARAF = "apache-karaf";
+    public static final String ORG_APACHE_KARAF_FEATURES = "org.apache.karaf.features";
+    public static final String STANDARD = "standard";
+    public static final String FEATURES = "features";
+    public static final String XML = "xml";
+    public static final String ZIP = "zip";
+    public static final String JUDO_KARAF = "hu.blackbelt.judo.karaf";
+    public static final String JUDO_KARAF_RUNTIME_FEATURES = "judo-karaf-runtime-features";
+    public static final String FEATURE_SCR = "scr";
+    public static final String FEATURE_OSGI_UTILS = "osgi-utils";
+    public static final String FEATURE_EPSILON_RUNTIME = "epsilon-runtime";
+    public static final String FEATURE_ECLIPSE_XTEXT = "eclipse-xtext";
+    public static final String TINYBUNDLES_GROUPID = "org.ops4j.pax.tinybundles";
+    public static final String TINYBUNDLES = "tinybundles";
+    public static final String TINYBUNDLES_VERSION = "3.0.0";
+    public static final String BNDLIB_GROUPID = "biz.aQute.bnd";
+    public static final String BNDLIB = "biz.aQute.bndlib";
+    public static final String BNDLIB_VERSION = "3.5.0";
+    public static final String PAX_EXAM_KARAF_VERSION_PROPERTY = "pax.exam.karaf.version";
+    public static final String KARAF_VERSION = "4.1.2";
+    public static final String JUDO_KARAF_RUNTIME_VERSION_PROPERTY = "judo.karaf.runtime.version";
+    public static final String JUDO_KARAF_RUNTIME_VERSION = "1.0.0";
 
 
     @Inject
@@ -68,27 +97,45 @@ public class TatamiTransformationPipelineITest {
     @Inject
     protected PsmModel psmModel;
 
+    @Inject
+    protected AsmModel asmModel;
+
+    @Inject
+    protected PsmJqlExtractModel psmJqlExtractModel;
+
+    @Inject
+    protected RdbmsModel rdbmsModel;
+
+    @Inject
+    protected MeasureModel measureModel;
+
+    @Inject
+    protected LiquibaseModel liquibaseModel;
+
+    @Inject
+    protected ExpressionModel expressionModel;
+
     @Configuration
     public Option[] config() throws FileNotFoundException {
         MavenArtifactUrlReference karafUrl = maven()
-                .groupId("org.apache.karaf")
-                .artifactId("apache-karaf")
+                .groupId(ORG_APACHE_KARAF)
+                .artifactId(APACHE_KARAF)
                 .version(karafVersion())
-                .type("zip");
+                .type(ZIP);
 
         MavenUrlReference karafStandardRepo = maven()
-                .groupId("org.apache.karaf.features")
-                .artifactId("standard")
+                .groupId(ORG_APACHE_KARAF_FEATURES)
+                .artifactId(STANDARD)
                 .version(karafVersion())
-                .classifier("features")
-                .type("xml");
+                .classifier(FEATURES)
+                .type(XML);
 
         MavenUrlReference judoKarafRuntimeRepo = maven()
-                .groupId("hu.blackbelt.judo.karaf")
-                .artifactId("judo-karaf-runtime-features")
+                .groupId(JUDO_KARAF)
+                .artifactId(JUDO_KARAF_RUNTIME_FEATURES)
                 .version(judoKarafRuntimeVersion())
-                .classifier("features")
-                .type("xml");
+                .classifier(FEATURES)
+                .type(XML);
 
 
         return new Option[] {
@@ -98,21 +145,29 @@ public class TatamiTransformationPipelineITest {
                         .unpackDirectory(new File("target", "exam"))
                         .useDeployFolder(false),
                 keepRuntimeFolder(),
-                logLevel(LogLevelOption.LogLevel.DEBUG),
+                logLevel(LogLevelOption.LogLevel.INFO),
+                // Debug
+                //vmOption("-Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=5005"),
+                //systemTimeout(30000),
+                //debugConfiguration("5005", true),
+
                 replaceConfigurationFile("etc/org.ops4j.pax.logging.cfg",
                         getConfigFile("/etc/org.ops4j.pax.logging.cfg")),
+
                 configureConsole().ignoreLocalConsole(),
+
                 //features(karafStandardRepo , "scr"),
-                features(judoKarafRuntimeRepo , "scr", "osgi-utils", "epsilon-runtime", "eclipse-xtext"),
-                mavenBundle()
-                        .groupId("org.ops4j.pax.tinybundles")
-                        .artifactId("tinybundles")
-                        .version("3.0.0").start(),
+                features(judoKarafRuntimeRepo , FEATURE_SCR, FEATURE_OSGI_UTILS, FEATURE_EPSILON_RUNTIME, FEATURE_ECLIPSE_XTEXT),
 
                 mavenBundle()
-                        .groupId("biz.aQute.bnd")
-                        .artifactId("biz.aQute.bndlib")
-                        .version("3.5.0").start(),
+                        .groupId(TINYBUNDLES_GROUPID)
+                        .artifactId(TINYBUNDLES)
+                        .version(TINYBUNDLES_VERSION).start(),
+
+                mavenBundle()
+                        .groupId(BNDLIB_GROUPID)
+                        .artifactId(BNDLIB)
+                        .version(BNDLIB_VERSION).start(),
                 
                 mavenBundle()
                         .groupId(JUDO_META_GROUPID)
@@ -204,13 +259,13 @@ public class TatamiTransformationPipelineITest {
 
     public static String karafVersion() {
         ConfigurationManager cm = new ConfigurationManager();
-        String karafVersion = cm.getProperty("pax.exam.karaf.version", "4.1.2");
+        String karafVersion = cm.getProperty(PAX_EXAM_KARAF_VERSION_PROPERTY, KARAF_VERSION);
         return karafVersion;
     }
 
     public static String judoKarafRuntimeVersion() {
         ConfigurationManager cm = new ConfigurationManager();
-        String judoKarafRuntimeVersion = cm.getProperty("judo.karaf.runtime.version", "1.0.0");
+        String judoKarafRuntimeVersion = cm.getProperty(JUDO_KARAF_RUNTIME_VERSION_PROPERTY, JUDO_KARAF_RUNTIME_VERSION);
         return judoKarafRuntimeVersion;
     }
 
@@ -222,23 +277,6 @@ public class TatamiTransformationPipelineITest {
 
 
     public InputStream testModelBundle() throws FileNotFoundException {
-        /*
-            <instructions>
-                <Export-Package>meta/asm;version=${project.version}</Export-Package>
-                <Import-Package>
-                    meta/psm;version="${judo-meta-psm.import-range}"
-                </Import-Package>
-                <Include-Resource>
-                    {maven-resources},
-                    model/northwind.judo-meta-psm=${basedir}/../model/model/northwind-judopsm.model,
-                    model/RDBMS Sql Name Mapping.xlsx=${basedir}/../model/model/RDBMS Sql Name Mapping.xlsx
-                </Include-Resource>
-                <Psm-Models>
-                    file=model/northwind.judo-meta-psm;version=${parsedVersion.majorVersion}.${parsedVersion.minorVersion}.${parsedVersion.incrementalVersion};name=Northwind;checksum=${northwind_md5};meta-version="${judo-meta-psm.import-range}"
-                </Psm-Models>
-            </instructions>
-         */
-
         return bundle()
                 .add( "model/northwind.judo-meta-psm",
                         new FileInputStream(new File(testTargetDir().getAbsolutePath(), "northwind-judopsm.model")))

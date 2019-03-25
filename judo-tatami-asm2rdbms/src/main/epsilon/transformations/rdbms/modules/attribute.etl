@@ -17,7 +17,7 @@ rule EAttributeToRdbmsField
 			t.fillType("JInteger");
 	    } else {
 	        if (s.eType.isUndefined()) {
-	        	(s.getClass().name + "#" + s.name).println("Could not determinate type (maybe enum?): "); 
+	        	log.warn("Could not determinate type (maybe enum?): " + s.getClass().name + "#" + s.name);
 				t.fillType("JInteger");
 	        } else {
 				t.fillType(s.eType.name);

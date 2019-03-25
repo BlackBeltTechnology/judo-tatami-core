@@ -6,6 +6,7 @@ import hu.blackbelt.judo.meta.psm.jql.extract.runtime.PsmJqlExtractModel;
 import hu.blackbelt.judo.meta.psm.runtime.PsmModel;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.emf.common.util.URI;
+import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.osgi.framework.BundleContext;
 import org.osgi.service.component.annotations.Component;
@@ -26,19 +27,25 @@ public class Psm2JqlExtractSerivce {
     Psm2JqlExtractScriptResource psm2JqlExtractScriptResource;
 
     public PsmJqlExtractModel install(PsmModel psmModel, BundleContext bundleContext) throws Exception {
+
         BundleURIHandler bundleURIHandler = new BundleURIHandler("urn", "",
                 bundleContext.getBundle());
 
         ResourceSet resourceSet = createPsmJqlExtractResourceSet(bundleURIHandler);
-
-        PsmJqlExtractModel psmJqlExtractModel = loadPsmJqlExtractModel(resourceSet, URI.createURI("urn:" + psmModel.getName()),
-                psmModel.getName(), psmModel.getVersion(), psmModel.getChecksum(),
-                bundleContext.getBundle().getHeaders().get(PSM_JQL_EXTRACT_META_VERSION_RANGE));
-
+        URI jqlExtractUri = URI.createURI("urn:" + psmModel.getName() + ".jqlextract");
+        Resource resource = resourceSet.createResource(jqlExtractUri);
         registerPsmMetamodel(resourceSet);
 
+        PsmJqlExtractModel psmJqlExtractModel = PsmJqlExtractModel.buildPsmJqlExtractModel()
+                .name(psmModel.getName())
+                .version(psmModel.getVersion())
+                .uri(jqlExtractUri)
+                .checksum(psmModel.getChecksum())
+                .resource(resource)
+                .metaVersionRange(bundleContext.getBundle().getHeaders().get(PSM_JQL_EXTRACT_META_VERSION_RANGE)).build();
+
         Psm2JqlExtract.executePsm2PsmJqlExtractTransformation(resourceSet, psmModel, psmJqlExtractModel, new Slf4jLog(log),
-                new File(psm2JqlExtractScriptResource.getSctiptRoot().getAbsolutePath(), "psm2jql/transformations/resource/") );
+                new File(psm2JqlExtractScriptResource.getSctiptRoot().getAbsolutePath(), "psm2jql/transformations/jql/") );
 
         return psmJqlExtractModel;
     }

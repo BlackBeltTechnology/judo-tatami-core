@@ -7,6 +7,7 @@ import hu.blackbelt.judo.meta.rdbms.runtime.RdbmsModel;
 import hu.blackbelt.judo.meta.rdbms.runtime.RdbmsModelLoader;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.emf.common.util.URI;
+import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.osgi.framework.BundleContext;
 import org.osgi.service.component.annotations.Activate;
@@ -52,19 +53,26 @@ public class Asm2RdbmsSerivce {
         BundleURIHandler bundleURIHandler = new BundleURIHandler("urn", "",
                 bundleContext.getBundle());
 
-
-
         ResourceSet resourceSet = createRdbmsResourceSet(bundleURIHandler);
-        RdbmsModel rdbmsModel = RdbmsModelLoader.loadRdbmsModel(resourceSet, URI.createURI("urn:" + asmModel.getName()),
-                asmModel.getName(), asmModel.getVersion(), asmModel.getChecksum(),
-                bundleContext.getBundle().getHeaders().get(RDBMS_META_VERSION_RANGE));
-
         registerRdbmsMetamodel(resourceSet);
 
+        URI rdbmsUri = URI.createURI("urn:" + asmModel.getName() + ".rdbmss");
+        Resource rdbmsResource = resourceSet.createResource(rdbmsUri);
+
+        RdbmsModel rdbmsModel = RdbmsModel.buildRdbmsModel()
+                .name(asmModel.getName())
+                .version(asmModel.getVersion())
+                .uri(rdbmsUri)
+                .checksum(asmModel.getChecksum())
+                .resource(rdbmsResource)
+                .checksum(asmModel.getChecksum())
+                .metaVersionRange(bundleContext.getBundle().getHeaders().get(RDBMS_META_VERSION_RANGE))
+                .build();
+
         // TODO: make configurable dialect
-        Asm2Rdbms.executeAsm2RdbmsTransformation(resourceSet, asmModel, rdbmsModel, new Slf4jLog(log),
+        executeAsm2RdbmsTransformation(resourceSet, asmModel, rdbmsModel, new Slf4jLog(log),
                 new File(asm2RdbmsScriptResource.getSctiptRoot().getAbsolutePath(), "asm2rdbms/transformations"),
-                asm2RdbmsModelResource.getModelRoot(),
+                new File(asm2RdbmsModelResource.getModelRoot().getAbsolutePath(), "asm2rdbms-model"),
                 "hsqldb");
 
         return rdbmsModel;

@@ -6,6 +6,7 @@ import hu.blackbelt.judo.meta.measure.runtime.MeasureModel;
 import hu.blackbelt.judo.meta.psm.runtime.PsmModel;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.emf.common.util.URI;
+import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.osgi.framework.BundleContext;
 import org.osgi.service.component.annotations.Component;
@@ -34,16 +35,23 @@ public class Psm2MeasureSerivce {
                 bundleContext.getBundle());
 
         ResourceSet resourceSet = createMeasureResourceSet(bundleURIHandler);
-
-        MeasureModel asmModel = loadMeasureModel(resourceSet, URI.createURI("urn:" + psmModel.getName()),
-                psmModel.getName(), psmModel.getVersion(), psmModel.getChecksum(),
-                bundleContext.getBundle().getHeaders().get(MEASURE_META_VERSION_RANGE));
-
         registerPsmMetamodel(resourceSet);
 
-        executePsm2MeasureTransformation(resourceSet, psmModel, asmModel, new Slf4jLog(log),
+        URI measureUri = URI.createURI("urn:" + psmModel.getName() + ".measure");
+        Resource measureResource = resourceSet.createResource(measureUri);
+
+        MeasureModel measureModel = MeasureModel.buildMeasureModel()
+                .name(psmModel.getName())
+                .resource(measureResource)
+                .uri(measureUri)
+                .version(psmModel.getVersion())
+                .metaVersionRange(bundleContext.getBundle().getHeaders().get(MEASURE_META_VERSION_RANGE))
+                .build();
+
+
+        executePsm2MeasureTransformation(resourceSet, psmModel, measureModel, new Slf4jLog(log),
                 new File(psm2MeasureScriptResource.getSctiptRoot().getAbsolutePath(), "psm2measure/transformations/measure") );
 
-        return asmModel;
+        return measureModel;
     }
 }

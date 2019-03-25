@@ -6,6 +6,7 @@ import hu.blackbelt.judo.meta.liquibase.runtime.LiquibaseModel;
 import hu.blackbelt.judo.meta.rdbms.runtime.RdbmsModel;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.emf.common.util.URI;
+import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.osgi.framework.BundleContext;
 import org.osgi.service.component.annotations.Component;
@@ -13,8 +14,7 @@ import org.osgi.service.component.annotations.Reference;
 
 import java.io.File;
 
-import static hu.blackbelt.judo.meta.liquibase.runtime.LiquibaseModelLoader.createLiquibaseResourceSet;
-import static hu.blackbelt.judo.meta.liquibase.runtime.LiquibaseModelLoader.loadLiquibaseModel;
+import static hu.blackbelt.judo.meta.liquibase.runtime.LiquibaseModelLoader.*;
 import static hu.blackbelt.judo.meta.rdbms.runtime.RdbmsModelLoader.registerRdbmsMetamodel;
 import static hu.blackbelt.judo.tatami.rdbms2liquibase.Rdbms2Liquibase.executeRdbms2LiquibaseTransformation;
 
@@ -34,12 +34,19 @@ public class Rdbms2LiquibaseSerivce {
                 bundleContext.getBundle());
 
         ResourceSet resourceSet = createLiquibaseResourceSet(bundleURIHandler);
+        registerLiquibaseMetamodel(resourceSet);
 
-        LiquibaseModel liquibaseModel = loadLiquibaseModel(resourceSet, URI.createURI("urn:" + rdbmsModel.getName()),
-                rdbmsModel.getName(), rdbmsModel.getVersion(), rdbmsModel.getChecksum(),
-                bundleContext.getBundle().getHeaders().get(LIQUIBASE_META_VERSION_RANGE));
+        URI liquibasUri = URI.createURI("urn:" + rdbmsModel.getName() + ".changlelog.xml");
+        Resource liquibaseResource = resourceSet.createResource(liquibasUri);
 
-        registerRdbmsMetamodel(resourceSet);
+        LiquibaseModel liquibaseModel = LiquibaseModel.buildLiquibaseModel()
+                .name(rdbmsModel.getName())
+                .resource(liquibaseResource)
+                .uri(liquibasUri)
+                .version(rdbmsModel.getVersion())
+                .metaVersionRange(bundleContext.getBundle().getHeaders().get(LIQUIBASE_META_VERSION_RANGE))
+                .build();
+
 
         executeRdbms2LiquibaseTransformation(resourceSet, rdbmsModel, liquibaseModel, new Slf4jLog(log),
                 new File(rdbms2LiquibaseScriptResource.getSctiptRoot().getAbsolutePath(), "rdbms2liquibase/transformations"),

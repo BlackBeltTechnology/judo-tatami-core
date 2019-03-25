@@ -27,7 +27,7 @@ rule EReferenceToPrint
 	ref += ";" + s.isFirst();
 	ref.println(";"); */
 	
-	s.ruleMapping().toString().println( s.eContainingClass.name + "." + s.name + ": ");	
+	log.debug(s.eContainingClass.name + "." + s.name + ": " + s.ruleMapping().toString());
 }
 
 rule EReferenceToRdbmsTableForeignKey 
@@ -93,7 +93,7 @@ rule EReferenceToRdbmsJunctionTable
 	    	t.uuid = s.getFQName() + "_" + s.eReferenceType.getFQName();
 	    }
 
-		t.name.println("Junct ref");
+		log.debug("Junct ref: " + t.name);
 		allElement.add(t);
 }
 
