@@ -1,5 +1,24 @@
 import "../utils/_importUtils.eol";
 
+@cached
+operation JUDOPSM!ExposedGraph getMappedTransferObjects() : Set {
+    return Set{self.mappedTransferObjectType}.includingAll(self.mappedTransferObjectType.getMappedTargets());
+}
+
+@cached
+operation JUDOPSM!TransferObjectType getMappedTargets() : Set {
+    return self.getNewMappedTargets(new Set);
+}
+
+operation JUDOPSM!TransferObjectType getNewMappedTargets(currentTargets : Set) : Set {
+    var newTargets = self.relations.select(r | r.target.isKindOf(JUDOPSM!MappedTransferObjectType)).collect(r | r.target).excludingAll(currentTargets);
+    currentTargets.addAll(newTargets);
+    for (t in newTargets) {
+        currentTargets.addAll(t.getNewMappedTargets(currentTargets));
+    }
+    return currentTargets;
+}
+
 rule CreateAccessPoint
     transform s : JUDOPSM!AccessPoint
     to t : ASM!EClass {
@@ -51,7 +70,7 @@ rule CreateExposedByAnnotationForUnboundOperation
 rule CreateExposedGraph
     transform s : JUDOPSM!ExposedGraph
     to t : ASM!EClass {
-        t.name = s.getAccessPoint().name + "$" + s.name;
+        t.name = s.getAccessPoint().name + "ʘ" + s.name;
         t.abstract = true;
         t.interface = true;
             
@@ -65,8 +84,32 @@ rule CreateExposedGraph
 		aExposedBy.key = "exposedBy";
 		aExposedBy.value = s.getAccessPoint().equivalent("CreateAccessPoint").getFQName();
 		annotation.details.add(aExposedBy);
+
+		for (mto in s.getMappedTransferObjects()) {
+		    var annotation = mto.transformToAsm().eAnnotations.selectOne(a | a.source = extendedMetadataURI);
+            if (not annotation.isDefined()) {
+                annotation = new ASM!EAnnotation;
+		        annotation.source = extendedMetadataURI;
+		        transferObject.eAnnotations.add(annotation);
+            }
+
+            var newGraphName = s.equivalent("CreateExposedGraph").getFQName();
+
+            var aGraph = annotation.details.selectOne(d | d.key = "graphs");
+            var graphs;
+            if (not aGraph.isDefined()) {
+		        aGraph = new ASM!EStringToStringMapEntry;
+		        aGraph.key = "graphs";
+		        graphs = Set{newGraphName};
+		        annotation.details.add(aGraph);
+            } else {
+                graphs = aGraph.value.split(",").including(newGraphName);
+            }
+            aGraph.value = graphs.concat(",");
+		}
 }
 
+// TODO - remove selector reference, it is added for debugging only
 rule CreateExposedGraphSelector
     transform s : JUDOPSM!ExposedGraph
     to t : ASM!EStringToStringMapEntry {
@@ -77,19 +120,12 @@ rule CreateExposedGraphSelector
 		annotation.details.add(t);
 }
 
-rule CreateExposedByAnnotationForBoundOperation
+rule CreateExposedGraphRoot
     transform s : JUDOPSM!ExposedGraph
     to t : ASM!EStringToStringMapEntry {
-        var transferObject = s.mappedTransferObjectType.transformToAsm();
+        var annotation = s.equivalent("CreateExposedGraph").eAnnotations.selectOne(a | a.source = extendedMetadataURI);
         
-        var annotation = transferObject.eAnnotations.selectOne(a | a.source = extendedMetadataURI);
-        if (not annotation.isDefined()) {
-            annotation = new ASM!EAnnotation;
-		    annotation.source = extendedMetadataURI;
-		    transferObject.eAnnotations.add(annotation);
-        }
-        
-		t.key = "graph";
-		t.value = s.equivalent("CreateExposedGraph").getFQName();
+		t.key = "root";
+		t.value = s.mappedTransferObjectType.transformToAsm().getFQName();
 		annotation.details.add(t);
 }

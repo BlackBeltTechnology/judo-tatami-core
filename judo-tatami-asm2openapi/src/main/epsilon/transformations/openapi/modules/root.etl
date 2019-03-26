@@ -1,0 +1,55 @@
+import "../../../operations/asm/_importAll.eol";
+
+rule CreateOpenAPIAccessPoint
+    transform s : ASM!EClass
+    to t : OPENAPI!Root {
+        guard: s.interface and s.annotatedAsTrue("accessPoint")
+
+        t.api = new OPENAPI!API;
+        t.api.swagger = "2.0";
+
+        t.api.info = new OPENAPI!Info;
+        t.api.info.version = "1.0.0"; // TODO
+        t.api.info.title = s.name;
+
+        t.api.host = "localhost:8080"; // TODO
+        t.api.basePath = "/" + s.name; // TODO
+}
+
+rule ExposeUnboundOperaion
+    transform s : ASM!EOperation
+    to t : OPENAPI!Path {
+        guard: s.eContainingClass.interface and s.hasAnnotation("exposedBy") and s.annotatedAsFalse("stateful")
+        
+        t.relativePath = "/" + s.eContainingClass.getFQName().replaceAll("\\.ʘUnboundServices", "").replaceAll("ʘ", "-").replaceAll("\\.", "/") + "/" + s.name;
+        
+        s.getAnnotationValue("exposedBy").resolve().equivalent("CreateOpenAPIAccessPoint").api.paths.add(t);
+}
+
+@cached
+operation getAllMappedTransferObjectTypes() : Collection {
+    var x = ASM!EClass.all.select(c | c.hasAnnotation("mappedEntityType"));
+    x.println("MAPPED: ");
+    return x;
+}
+
+@cached
+operation ASM!EClass getMappedTransferObjectTypeContainer() : ASM!EClass {
+    return getAllMappedTransferObjectTypes().selectOne(mto | self.name.startsWith(mto.name + "ʘ") and not "ʘ".isSubstringOf(self.name.replace(mto.name + "ʘ", "")));
+}
+
+// TODO!!!
+rule ExposeBuiltInBoundOperation
+    transform s : ASM!EOperation
+    to t : OPENAPI!Path {
+        guard: s.eContainingClass.interface
+        
+        var c = s.eContainingClass.getMappedTransferObjectTypeContainer();
+        
+        s.name.println("Operation: ");
+        c.println(" - container");
+        
+        t.relativePath = "/" + s.eContainingClass.getFQName().replaceAll("ʘ", "/").replaceAll("\\.", "/") + "/" + s.name;
+        
+        delete t;
+}
