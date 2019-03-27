@@ -22,6 +22,16 @@ operation ASM!EClassifier getPackage() : ASM!EPackage {
 }
 
 @cached
-operation ASM!EClass getFQName() : String {
+operation ASM!EClassifier getFQName() : String {
 	return self.ePackage.getFullName() + "." + self.name;
+}
+
+@cached
+operation ASM!EClass getNestedClasses() : Collection {
+    return ASM!EClass.all.select(c | c.name.startsWith(self.name + "ʘ") and not "ʘ".isSubstringOf(c.name.substring(self.name.length() + 1)));
+}
+
+@cached
+operation ASM!EClass getContainerClass() : ASM!EClass {
+    return ASM!EClass.all.selectOne(c | self.name.startsWith(c.name + "ʘ") and not "ʘ".isSubstringOf(self.name.substring(c.name.length() + 1)));
 }

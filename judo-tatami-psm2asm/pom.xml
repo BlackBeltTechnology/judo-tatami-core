@@ -72,6 +72,30 @@
                             </artifacts>
                         </configuration>
                     </execution>
+                    <execution>
+                        <id>copy-asm-scripts</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>unpack</goal>
+                        </goals>
+
+                        <configuration>
+                            <outDirectory>${basedir}/src/main/epsilon</outDirectory>
+                            <artifacts>
+                                <artifact>
+                                    <groupId>hu.blackbelt.judo.meta</groupId>
+                                    <artifactId>judo-meta-asm</artifactId>
+                                    <version>${judo-meta-asm-version}</version>
+                                    <resources>
+                                        <resource>
+                                            <source>judo/asm/operations</source>
+                                            <destination>operations/asm</destination>
+                                        </resource>
+                                    </resources>
+                                </artifact>
+                            </artifacts>
+                        </configuration>
+                    </execution>
                 </executions>
             </plugin>
 

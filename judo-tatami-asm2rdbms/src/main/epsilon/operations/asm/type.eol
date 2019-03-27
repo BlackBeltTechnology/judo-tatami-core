@@ -1,11 +1,10 @@
 @cached
 operation String getJudoDataType() : ASM!EDataType {
-	var dataType : ASM!EDataType =
+	var dataType : ASM!EDataType = 
 			ASM.resource.resourceSet.packageRegistry.get("http://blackbelt.hu/judo/asm/types").eClassifiers
 				.selectOne(clazz | clazz.name = self);
     return dataType;
 }
-
 
 @cached
 operation getIdentifierClass() : ASM!EClass {
