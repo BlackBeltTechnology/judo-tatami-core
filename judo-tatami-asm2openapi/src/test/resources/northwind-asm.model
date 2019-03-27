@@ -44,7 +44,7 @@
       <eAnnotations source="http://blackbelt.hu/judo/meta/ExtendedMetadata">
         <details key="mappedEntityType" value="northwind.entities.Order"/>
         <details key="entityIdPresence" value="OPTIONAL"/>
-        <details key="graphs" value="northwind.internalAPʘordersAssignedToEmployee"/>
+        <details key="graphs.0" value="northwind.internalAPʘordersAssignedToEmployee"/>
       </eAnnotations>
       <eOperations name="get" eType="//services/OrderInfo">
         <eAnnotations source="http://blackbelt.hu/judo/meta/ExtendedMetadata">
@@ -80,7 +80,7 @@
       <eAnnotations source="http://blackbelt.hu/judo/meta/ExtendedMetadata">
         <details key="mappedEntityType" value="northwind.entities.OrderDetail"/>
         <details key="entityIdPresence" value="REQUIRED"/>
-        <details key="graphs" value="northwind.internalAPʘordersAssignedToEmployee"/>
+        <details key="graphs.0" value="northwind.internalAPʘordersAssignedToEmployee"/>
       </eAnnotations>
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="productName" lowerBound="1">
         <eAnnotations source="http://blackbelt.hu/judo/meta/ExtendedMetadata">
@@ -93,7 +93,9 @@
       <eAnnotations source="http://blackbelt.hu/judo/meta/ExtendedMetadata">
         <details key="mappedEntityType" value="northwind.entities.Product"/>
         <details key="entityIdPresence" value="OPTIONAL"/>
-        <details key="graphs" value="northwind.internalAPʘordersAssignedToEmployee,northwind.externalAPʘproducts,northwind.externalAPʘcategories"/>
+        <details key="graphs.0" value="northwind.internalAPʘordersAssignedToEmployee"/>
+        <details key="graphs.1" value="northwind.externalAPʘproducts"/>
+        <details key="graphs.2" value="northwind.externalAPʘcategories"/>
       </eAnnotations>
       <eOperations name="get" eType="//services/ProductInfo">
         <eAnnotations source="http://blackbelt.hu/judo/meta/ExtendedMetadata">
@@ -113,7 +115,9 @@
       <eAnnotations source="http://blackbelt.hu/judo/meta/ExtendedMetadata">
         <details key="mappedEntityType" value="northwind.entities.Category"/>
         <details key="entityIdPresence" value="OPTIONAL"/>
-        <details key="graphs" value="northwind.internalAPʘordersAssignedToEmployee,northwind.externalAPʘproducts,northwind.externalAPʘcategories"/>
+        <details key="graphs.0" value="northwind.internalAPʘordersAssignedToEmployee"/>
+        <details key="graphs.1" value="northwind.externalAPʘproducts"/>
+        <details key="graphs.2" value="northwind.externalAPʘcategories"/>
       </eAnnotations>
       <eOperations name="get" eType="//services/CategoryInfo">
         <eAnnotations source="http://blackbelt.hu/judo/meta/ExtendedMetadata">
@@ -133,7 +137,7 @@
       <eAnnotations source="http://blackbelt.hu/judo/meta/ExtendedMetadata">
         <details key="mappedEntityType" value="northwind.entities.OrderDetail"/>
         <details key="entityIdPresence" value="OPTIONAL"/>
-        <details key="graphs" value="northwind.internalAPʘordersAssignedToEmployee"/>
+        <details key="graphs.0" value="northwind.internalAPʘordersAssignedToEmployee"/>
       </eAnnotations>
       <eStructuralFeatures xsi:type="ecore:EReference" name="product" lowerBound="1" eType="//services/ProductInfo"/>
       <eStructuralFeatures xsi:type="ecore:EReference" name="category" lowerBound="1" eType="//services/CategoryInfo"/>

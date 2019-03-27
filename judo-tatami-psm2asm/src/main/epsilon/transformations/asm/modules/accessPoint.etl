@@ -90,22 +90,14 @@ rule CreateExposedGraph
             if (not annotation.isDefined()) {
                 annotation = new ASM!EAnnotation;
 		        annotation.source = extendedMetadataURI;
-		        transferObject.eAnnotations.add(annotation);
+		        mto.transformToAsm().eAnnotations.add(annotation);
             }
 
-            var newGraphName = s.equivalent("CreateExposedGraph").getFQName();
-
-            var aGraph = annotation.details.selectOne(d | d.key = "graphs");
-            var graphs;
-            if (not aGraph.isDefined()) {
-		        aGraph = new ASM!EStringToStringMapEntry;
-		        aGraph.key = "graphs";
-		        graphs = Set{newGraphName};
-		        annotation.details.add(aGraph);
-            } else {
-                graphs = aGraph.value.split(",").including(newGraphName);
-            }
-            aGraph.value = graphs.concat(",");
+            var index = annotation.details.select(d | d.key.startsWith("graphs.")).size();
+		    var aGraph = new ASM!EStringToStringMapEntry;
+		    aGraph.key = "graphs." + index;
+		    aGraph.value = s.equivalent("CreateExposedGraph").getFQName();
+		    annotation.details.add(aGraph);
 		}
 }
 
