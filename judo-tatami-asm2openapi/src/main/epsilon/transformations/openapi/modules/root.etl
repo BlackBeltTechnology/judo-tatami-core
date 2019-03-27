@@ -5,6 +5,16 @@ operation String toOpenAPIPath() : String {
     return self.replace("\\.ʘUnboundServices", "").replace("ʘ", "/").replace("\\.", "/");
 }
 
+@cached
+operation ASM!EOperation getResolvedExposedBy() : ASM!EClass {
+    var exposedBy = self.getAnnotationValue("exposedBy", false);
+    if (exposedBy.isDefined()) {
+        return exposedBy.resolve();
+    } else {
+        return null;
+    }
+}
+
 pre {
     // add graphs annotations to transfer object relations and built-in operations
     for (g in getAllExposedGraphs()) {
@@ -44,6 +54,11 @@ rule CreateOpenAPIAccessPoint
 
         t.api.host = "localhost:8080"; // TODO
         t.api.basePath = "/" + s.getFQName().toOpenAPIPath();
+        
+        var internalServerError = new OPENAPI!Response;
+        internalServerError.description = "Internal server error";
+        internalServerError.code = "500";
+        t.api.responses.add(internalServerError);
 }
 
 rule ExposeUnboundOperaion
@@ -55,7 +70,7 @@ rule ExposeUnboundOperaion
         
         t.relativePath = "/" + s.eContainingClass.getFQName().toOpenAPIPath() + "/" + s.name;
         
-        s.getAnnotationValue("exposedBy").resolve().equivalent("CreateOpenAPIAccessPoint").api.paths.add(t);
+        s.getResolvedExposedBy().equivalent("CreateOpenAPIAccessPoint").api.paths.add(t);
 }
 
 rule CreatePath
@@ -72,9 +87,37 @@ rule CreatePath
             
             t.relativePath = "/" + graph.getExposedGraphName() + "/" + opGroup.getFQName().toOpenAPIPath() + "/" + op.name;
             
+            var apiOperation;
+            if (op.eParameters.isEmpty() and op.annotatedAsFalse("stateful")) {
+                t.`get` = new OPENAPI!Operation;
+                apiOperation = t.`get`;
+            } else {
+                t.`post` = new OPENAPI!Operation;
+                apiOperation = t.`post`;
+                if (not op.eParameters.isEmpty()) {
+                    apiOperation.consumes.add("application/json");
+                }
+            }
+            apiOperation.tagReferences.add(graph.equivalent("CreateTag").name);
+            if (op.eType.isDefined()) {
+                apiOperation.produces.add("application/json");
+            }
+            
+            apiOperation.responses.add(accessPoint.equivalent("CreateOpenAPIAccessPoint").api.responses.selectOne(r | r.code == "500"));
+            
             accessPoint.equivalent("CreateOpenAPIAccessPoint").api.paths.add(t);
         } else {
             // no annotation found
             delete t;
         }
+}
+
+rule CreateTag
+    transform s : ASM!EClass
+    to t : OPENAPI!Tag {
+        guard: s.isExposedGraph()
+        
+        t.name = s.getExposedGraphName();
+        
+        s.getResolvedExposedBy().equivalent("CreateOpenAPIAccessPoint").api.tags.add(t);
 }

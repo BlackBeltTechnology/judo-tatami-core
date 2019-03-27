@@ -121,6 +121,15 @@ rule CreateGetterOperationForRelation
         t.eType = s.target.transformToAsm();
         t.lowerBound = s.cardinality.lower;
         t.upperBound = s.cardinality.upper;
+        
+        var annotation = new ASM!EAnnotation;
+		annotation.source = extendedMetadataURI;
+		t.eAnnotations.add(annotation);
+		
+        var aStataful = new ASM!EStringToStringMapEntry;
+		aStataful.key = "stateful";
+		aStataful.value = "false";
+		annotation.details.add(aStataful);
 
         s.equivalent("CreateGraphOperation").eOperations.add(t);
 }
@@ -163,6 +172,15 @@ rule CreateSetterOperationForRelation
         
         t.eParameters.add(inputParameter);
         
+        var annotation = new ASM!EAnnotation;
+		annotation.source = extendedMetadataURI;
+		t.eAnnotations.add(annotation);
+		
+        var aStataful = new ASM!EStringToStringMapEntry;
+		aStataful.key = "stateful";
+		aStataful.value = "true";
+		annotation.details.add(aStataful);
+        
         s.equivalent("CreateGraphOperation").eOperations.add(t);
 }
 
@@ -172,6 +190,15 @@ rule CreateSetterOperationForRelation
         guard: s.isNavigable() and s.isMutable() and not s.isCollection()
         
         t.name = "unset";
+        
+        var annotation = new ASM!EAnnotation;
+		annotation.source = extendedMetadataURI;
+		t.eAnnotations.add(annotation);
+		
+        var aStataful = new ASM!EStringToStringMapEntry;
+		aStataful.key = "stateful";
+		aStataful.value = "true";
+		annotation.details.add(aStataful);
         
         s.equivalent("CreateGraphOperation").eOperations.add(t);
 }
@@ -191,6 +218,15 @@ rule CreateAddAllOperationForRelation
         
         t.eParameters.add(inputParameter);
         
+        var annotation = new ASM!EAnnotation;
+		annotation.source = extendedMetadataURI;
+		t.eAnnotations.add(annotation);
+		
+        var aStataful = new ASM!EStringToStringMapEntry;
+		aStataful.key = "stateful";
+		aStataful.value = "true";
+		annotation.details.add(aStataful);
+        
         s.equivalent("CreateGraphOperation").eOperations.add(t);
 }
 
@@ -209,6 +245,15 @@ rule CreateRemoveAllOperationForRelation
         
         t.eParameters.add(inputParameter);
         
+        var annotation = new ASM!EAnnotation;
+		annotation.source = extendedMetadataURI;
+		t.eAnnotations.add(annotation);
+		
+        var aStataful = new ASM!EStringToStringMapEntry;
+		aStataful.key = "stateful";
+		aStataful.value = "true";
+		annotation.details.add(aStataful);
+        
         s.equivalent("CreateGraphOperation").eOperations.add(t);
 }
 
@@ -222,6 +267,15 @@ rule CreateRangeOperationForRelation
         t.lowerBound = 0;
         t.upperBound = -1;
         t.eType = s.target.transformToAsm();
+        
+        var annotation = new ASM!EAnnotation;
+		annotation.source = extendedMetadataURI;
+		t.eAnnotations.add(annotation);
+		
+        var aStataful = new ASM!EStringToStringMapEntry;
+		aStataful.key = "stateful";
+		aStataful.value = "false";
+		annotation.details.add(aStataful);
         
         s.equivalent("CreateGraphOperation").eOperations.add(t);
 }

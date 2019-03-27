@@ -111,28 +111,6 @@
         <eType xsi:type="ecore:EDataType" href="http://blackbelt.hu/judo/asm/types#//JString"/>
       </eStructuralFeatures>
     </eClassifiers>
-    <eClassifiers xsi:type="ecore:EClass" name="CategoryInfo">
-      <eAnnotations source="http://blackbelt.hu/judo/meta/ExtendedMetadata">
-        <details key="mappedEntityType" value="northwind.entities.Category"/>
-        <details key="entityIdPresence" value="OPTIONAL"/>
-        <details key="graphs.0" value="northwind.internalAPʘordersAssignedToEmployee"/>
-        <details key="graphs.1" value="northwind.externalAPʘproducts"/>
-        <details key="graphs.2" value="northwind.externalAPʘcategories"/>
-      </eAnnotations>
-      <eOperations name="get" eType="//services/CategoryInfo">
-        <eAnnotations source="http://blackbelt.hu/judo/meta/ExtendedMetadata">
-          <details key="stateful" value="false"/>
-        </eAnnotations>
-        <eParameters name="input" lowerBound="1" eType="//services/CategoryLink"/>
-      </eOperations>
-      <eStructuralFeatures xsi:type="ecore:EReference" name="products" upperBound="-1" eType="//services/ProductInfo"/>
-      <eStructuralFeatures xsi:type="ecore:EAttribute" name="categoryName">
-        <eAnnotations source="http://blackbelt.hu/judo/meta/ExtendedMetadata">
-          <details key="maxLength" value="255"/>
-        </eAnnotations>
-        <eType xsi:type="ecore:EDataType" href="http://blackbelt.hu/judo/asm/types#//JString"/>
-      </eStructuralFeatures>
-    </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="OrderItem">
       <eAnnotations source="http://blackbelt.hu/judo/meta/ExtendedMetadata">
         <details key="mappedEntityType" value="northwind.entities.OrderDetail"/>
@@ -163,6 +141,28 @@
         <eType xsi:type="ecore:EDataType" href="http://blackbelt.hu/judo/asm/types#//JDouble"/>
       </eStructuralFeatures>
     </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="CategoryInfo">
+      <eAnnotations source="http://blackbelt.hu/judo/meta/ExtendedMetadata">
+        <details key="mappedEntityType" value="northwind.entities.Category"/>
+        <details key="entityIdPresence" value="OPTIONAL"/>
+        <details key="graphs.0" value="northwind.internalAPʘordersAssignedToEmployee"/>
+        <details key="graphs.1" value="northwind.externalAPʘproducts"/>
+        <details key="graphs.2" value="northwind.externalAPʘcategories"/>
+      </eAnnotations>
+      <eOperations name="get" eType="//services/CategoryInfo">
+        <eAnnotations source="http://blackbelt.hu/judo/meta/ExtendedMetadata">
+          <details key="stateful" value="false"/>
+        </eAnnotations>
+        <eParameters name="input" lowerBound="1" eType="//services/CategoryLink"/>
+      </eOperations>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="products" upperBound="-1" eType="//services/ProductInfo"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="categoryName">
+        <eAnnotations source="http://blackbelt.hu/judo/meta/ExtendedMetadata">
+          <details key="maxLength" value="255"/>
+        </eAnnotations>
+        <eType xsi:type="ecore:EDataType" href="http://blackbelt.hu/judo/asm/types#//JString"/>
+      </eStructuralFeatures>
+    </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="OrderLink">
       <eAnnotations source="http://blackbelt.hu/judo/meta/ExtendedMetadata">
         <details key="mappedEntityType" value="northwind.entities.Order"/>
@@ -182,40 +182,100 @@
       </eAnnotations>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="OrderInfoʘitemsWithCategoryPicture" abstract="true" interface="true">
-      <eOperations name="get" upperBound="-1" eType="//services/OrderItemProduct"/>
+      <eOperations name="get" upperBound="-1" eType="//services/OrderItemProduct">
+        <eAnnotations source="http://blackbelt.hu/judo/meta/ExtendedMetadata">
+          <details key="stateful" value="false"/>
+        </eAnnotations>
+      </eOperations>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="OrderInfoʘitems" abstract="true" interface="true">
       <eOperations name="addAll">
+        <eAnnotations source="http://blackbelt.hu/judo/meta/ExtendedMetadata">
+          <details key="stateful" value="true"/>
+        </eAnnotations>
         <eParameters name="input" lowerBound="1" upperBound="-1" eType="//services/OrderInfoʘitemsʘReference"/>
       </eOperations>
       <eOperations name="removeAll">
+        <eAnnotations source="http://blackbelt.hu/judo/meta/ExtendedMetadata">
+          <details key="stateful" value="true"/>
+        </eAnnotations>
         <eParameters name="input" lowerBound="1" upperBound="-1" eType="//services/OrderInfoʘitemsʘReference"/>
       </eOperations>
-      <eOperations name="get" upperBound="-1" eType="//services/OrderItem"/>
+      <eOperations name="get" upperBound="-1" eType="//services/OrderItem">
+        <eAnnotations source="http://blackbelt.hu/judo/meta/ExtendedMetadata">
+          <details key="stateful" value="false"/>
+        </eAnnotations>
+      </eOperations>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="OrderItemʘproduct" abstract="true" interface="true">
-      <eOperations name="unset"/>
-      <eOperations name="getRange" upperBound="-1" eType="//services/ProductInfo"/>
-      <eOperations name="get" lowerBound="1" eType="//services/ProductInfo"/>
+      <eOperations name="unset">
+        <eAnnotations source="http://blackbelt.hu/judo/meta/ExtendedMetadata">
+          <details key="stateful" value="true"/>
+        </eAnnotations>
+      </eOperations>
+      <eOperations name="getRange" upperBound="-1" eType="//services/ProductInfo">
+        <eAnnotations source="http://blackbelt.hu/judo/meta/ExtendedMetadata">
+          <details key="stateful" value="false"/>
+        </eAnnotations>
+      </eOperations>
+      <eOperations name="get" lowerBound="1" eType="//services/ProductInfo">
+        <eAnnotations source="http://blackbelt.hu/judo/meta/ExtendedMetadata">
+          <details key="stateful" value="false"/>
+        </eAnnotations>
+      </eOperations>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="OrderItemʘcategory" abstract="true" interface="true">
-      <eOperations name="unset"/>
-      <eOperations name="get" lowerBound="1" eType="//services/CategoryInfo"/>
+      <eOperations name="unset">
+        <eAnnotations source="http://blackbelt.hu/judo/meta/ExtendedMetadata">
+          <details key="stateful" value="true"/>
+        </eAnnotations>
+      </eOperations>
+      <eOperations name="get" lowerBound="1" eType="//services/CategoryInfo">
+        <eAnnotations source="http://blackbelt.hu/judo/meta/ExtendedMetadata">
+          <details key="stateful" value="false"/>
+        </eAnnotations>
+      </eOperations>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="ProductInfoʘcategory" abstract="true" interface="true">
-      <eOperations name="unset"/>
-      <eOperations name="getRange" upperBound="-1" eType="//services/CategoryInfo"/>
-      <eOperations name="get" lowerBound="1" eType="//services/CategoryInfo"/>
+      <eOperations name="unset">
+        <eAnnotations source="http://blackbelt.hu/judo/meta/ExtendedMetadata">
+          <details key="stateful" value="true"/>
+        </eAnnotations>
+      </eOperations>
+      <eOperations name="getRange" upperBound="-1" eType="//services/CategoryInfo">
+        <eAnnotations source="http://blackbelt.hu/judo/meta/ExtendedMetadata">
+          <details key="stateful" value="false"/>
+        </eAnnotations>
+      </eOperations>
+      <eOperations name="get" lowerBound="1" eType="//services/CategoryInfo">
+        <eAnnotations source="http://blackbelt.hu/judo/meta/ExtendedMetadata">
+          <details key="stateful" value="false"/>
+        </eAnnotations>
+      </eOperations>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="CategoryInfoʘproducts" abstract="true" interface="true">
       <eOperations name="addAll">
+        <eAnnotations source="http://blackbelt.hu/judo/meta/ExtendedMetadata">
+          <details key="stateful" value="true"/>
+        </eAnnotations>
         <eParameters name="input" lowerBound="1" upperBound="-1" eType="//services/CategoryInfoʘproductsʘReference"/>
       </eOperations>
       <eOperations name="removeAll">
+        <eAnnotations source="http://blackbelt.hu/judo/meta/ExtendedMetadata">
+          <details key="stateful" value="true"/>
+        </eAnnotations>
         <eParameters name="input" lowerBound="1" upperBound="-1" eType="//services/CategoryInfoʘproductsʘReference"/>
       </eOperations>
-      <eOperations name="getRange" upperBound="-1" eType="//services/ProductInfo"/>
-      <eOperations name="get" upperBound="-1" eType="//services/ProductInfo"/>
+      <eOperations name="getRange" upperBound="-1" eType="//services/ProductInfo">
+        <eAnnotations source="http://blackbelt.hu/judo/meta/ExtendedMetadata">
+          <details key="stateful" value="false"/>
+        </eAnnotations>
+      </eOperations>
+      <eOperations name="get" upperBound="-1" eType="//services/ProductInfo">
+        <eAnnotations source="http://blackbelt.hu/judo/meta/ExtendedMetadata">
+          <details key="stateful" value="false"/>
+        </eAnnotations>
+      </eOperations>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="OrderInfoʘitemsʘReference">
       <eAnnotations source="http://blackbelt.hu/judo/meta/ExtendedMetadata">
