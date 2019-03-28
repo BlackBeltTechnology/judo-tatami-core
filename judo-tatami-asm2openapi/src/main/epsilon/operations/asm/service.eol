@@ -23,5 +23,15 @@ operation ASM!EOperation isStateless() : Boolean {
 
 @cached
 operation ASM!EClass isMappedTransferObjectType() : Boolean {
-    return self.hasAnnotation("mappedEntityType");    
+    return self.getEntityType().isDefined();
+}
+
+@cached
+operation ASM!EClass getEntityType() : ASM!EClass {
+    var entityTypeName = self.getAnnotationValue("mappedEntityType", false);
+    if (entityTypeName.isDefined()) {
+        return entityTypeName.resolve();
+    } else {
+        return null;
+    }
 }

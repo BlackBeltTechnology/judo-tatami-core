@@ -25,17 +25,48 @@ pre {
         log.debug("  - operations: " + g.getExposedOperations().collect(o | o.eContainingClass.getFQName() + "#" + o.name));
         
         for (o in g.getExposedOperations()) {
-            var annotation = o.eAnnotations.selectOne(a | a.source = extendedMetadataURI);
-            if (not annotation.isDefined()) {
-                annotation = new ASM!EAnnotation;
-		        annotation.source = extendedMetadataURI;
-		        o.eAnnotations.add(annotation);
+            // get (and create is not exists) annotation on exposed operation
+            var annotation = o.getExtensionAnnotation(true);
+            
+            // add FQ name of exposed graph as annotation value (key: .graphs.*)
+            var index = annotation.details.select(d | d.key.startsWith(".graphs.")).size();
+            if (not annotation.details.selectOne(d | d.key.startsWith(".graphs.") and d.value == g.getFQName()).isDefined()) {
+                var aGraphs = new ASM!EStringToStringMapEntry;
+		        aGraphs.key = ".graphs." + index;
+		        aGraphs.value = g.getFQName();
+		        annotation.details.add(aGraphs);
             }
-            var index = annotation.details.select(d | d.key.startsWith("graphs.")).size();
-            var aGraph = new ASM!EStringToStringMapEntry;
-		    aGraph.key = "graphs." + index;
-		    aGraph.value = g.getFQName();
-		    annotation.details.add(aGraph);
+        }
+    }
+    
+    for (ap in getAllAccessPoints()) {
+        log.debug("Access point: ");
+        log.debug("  - mapped transfer object types: " + ap.getExposedMappedTransferObjectTypes().collect(t | t.getFQName()));
+        
+        for (transferObject in ap.getExposedMappedTransferObjectTypes()) {
+            // get (and create is not exists) annotation on exposed mapped transfer object type
+            var annotation = transferObject.getExtensionAnnotation(true);
+            
+            // add FQ name of access point as annotation value (key: .accessPoints.*)
+            var index = annotation.details.select(d | d.key.startsWith(".accessPoints.")).size();
+            if (not annotation.details.selectOne(d | d.key.startsWith(".accessPoints.") and d.value == ap.getFQName()).isDefined()) {
+                var aAccessPoints = new ASM!EStringToStringMapEntry;
+		        aAccessPoints.key = ".accessPoints." + index;
+		        aAccessPoints.value = ap.getFQName();
+		        annotation.details.add(aAccessPoints);
+            }
+            
+            // get (and create is not exists) annotation on entity type
+            var entityAnnotation = transferObject.getEntityType().getExtensionAnnotation(true);
+            
+            // add FQ name of access point as annotation value (key: .accessPoints.*)
+            var index = entityAnnotation.details.select(d | d.key.startsWith(".accessPoints.")).size();
+            if (not entityAnnotation.details.selectOne(d | d.key.startsWith(".accessPoints.") and d.value == ap.getFQName()).isDefined()) {
+                var aAccessPoints = new ASM!EStringToStringMapEntry;
+		        aAccessPoints.key = ".accessPoints." + index;
+		        aAccessPoints.value = ap.getFQName();
+		        entityAnnotation.details.add(aAccessPoints);
+            }
         }
     }
 }
@@ -55,6 +86,10 @@ rule CreateOpenAPIAccessPoint
         t.api.host = "localhost:8080"; // TODO
         t.api.basePath = "/" + s.getFQName().toOpenAPIPath();
         
+        t.api.schemes.add(OPENAPI!SchemeType#http);
+        t.api.schemes.add(OPENAPI!SchemeType#https);
+        t.api.produces.add("application/json");
+        
         var internalServerError = new OPENAPI!Response;
         internalServerError.description = "Internal server error";
         internalServerError.code = "500";
@@ -70,46 +105,105 @@ rule ExposeUnboundOperaion
         
         t.relativePath = "/" + s.eContainingClass.getFQName().toOpenAPIPath() + "/" + s.name;
         
+        var apiOperation;
+        if (s.eParameters.isEmpty() and s.annotatedAsFalse("stateful")) {
+            t.`get` = new OPENAPI!Operation;
+            apiOperation = t.`get`;
+        } else {
+            t.`post` = new OPENAPI!Operation;
+            apiOperation = t.`post`;
+            if (not s.eParameters.isEmpty()) {
+                apiOperation.consumes.add("application/json");
+            }
+        }
+
+        // TODO - produces property is defined globally (but not serilized)
+        if (s.eType.isDefined()) {
+            apiOperation.produces.add("application/json");
+        }
+
+        apiOperation.responses.add(accessPoint.equivalent("CreateOpenAPIAccessPoint").api.responses.selectOne(r | r.code == "500"));
+        
         s.getResolvedExposedBy().equivalent("CreateOpenAPIAccessPoint").api.paths.add(t);
+}
+
+@cached
+operation ASM!EStringToStringMapEntry getOperation() : ASM!EOperation {
+    var a = self.getAnnotation();
+    if (a.isDefined() and a.eModelElement.isKindOf(ASM!EOperation)) {
+        return a.eModelElement;
+    } else {
+        return null;
+    }
+}
+
+@cached
+operation ASM!EStringToStringMapEntry getClass() : ASM!EClass {
+    var a = self.getAnnotation();
+    if (a.isDefined() and a.eModelElement.isKindOf(ASM!EClass)) {
+        return a.eModelElement;
+    } else {
+        return null;
+    }
+}
+
+rule CreateEntityIdParameter
+    transform s : ASM!EStringToStringMapEntry
+    to t : OPENAPI!Parameter {
+        guard: s.key.startsWith(".accessPoints.") and s.getClass().isDefined() and s.getClass().isEntity()
+        
+        var accessPoint = getAllAccessPoints().selectOne(ap | ap.getFQName() == s.value);
+        
+        log.debug("Create parameter: " + s.getClass().name);
+        log.debug("Access point: " + accessPoint.name);
+        
+        t.name = s.getClass().name; // FIXME
+        t.location = OPENAPI!ParameterLocation#header;
+        t.type = OPENAPI!JSONDataType#string;
+        t.description = "ID of " + s.getClass().name + " instance";
+        t.required = true;
+        
+        accessPoint.equivalent("CreateOpenAPIAccessPoint").paramters.add(t);
 }
 
 rule CreatePath
     transform s : ASM!EStringToStringMapEntry
     to t : OPENAPI!Path {
-        guard: s.key.startsWith("graphs.")
-        
-        var a = s.getAnnotation();
-        if (a.isDefined() and a.eModelElement.isKindOf(ASM!EOperation)) {
-            var op = a.eModelElement;
-            var opGroup = op.eContainingClass;
-            var graph = opGroup.getContainerClass().getGraphs().selectOne(g | g.getFQName() == s.value);
-            var accessPoint = graph.getResolvedExposedBy();
-            
-            t.relativePath = "/" + graph.getExposedGraphName() + "/" + opGroup.getFQName().toOpenAPIPath() + "/" + op.name;
-            
-            var apiOperation;
-            if (op.eParameters.isEmpty() and op.annotatedAsFalse("stateful")) {
-                t.`get` = new OPENAPI!Operation;
-                apiOperation = t.`get`;
-            } else {
-                t.`post` = new OPENAPI!Operation;
-                apiOperation = t.`post`;
-                if (not op.eParameters.isEmpty()) {
-                    apiOperation.consumes.add("application/json");
-                }
-            }
-            apiOperation.tagReferences.add(graph.equivalent("CreateTag").name);
-            if (op.eType.isDefined()) {
-                apiOperation.produces.add("application/json");
-            }
-            
-            apiOperation.responses.add(accessPoint.equivalent("CreateOpenAPIAccessPoint").api.responses.selectOne(r | r.code == "500"));
-            
-            accessPoint.equivalent("CreateOpenAPIAccessPoint").api.paths.add(t);
+        guard: s.key.startsWith(".graphs.") and s.getOperation().isDefined()
+
+        var op = s.getOperation();
+        var opGroup = op.eContainingClass;
+        var graph = opGroup.getContainerClass().getGraphs().selectOne(g | g.getFQName() == s.value);
+        var accessPoint = graph.getResolvedExposedBy();
+
+        t.relativePath = "/" + graph.getExposedGraphName() + "/" + opGroup.getFQName().toOpenAPIPath() + "/" + op.name;
+
+        var apiOperation;
+        if (op.eParameters.isEmpty() and op.annotatedAsFalse("stateful")) {
+            t.`get` = new OPENAPI!Operation;
+            apiOperation = t.`get`;
         } else {
-            // no annotation found
-            delete t;
+            t.`post` = new OPENAPI!Operation;
+            apiOperation = t.`post`;
+            if (not op.eParameters.isEmpty()) {
+                apiOperation.consumes.add("application/json");
+            }
         }
+        apiOperation.tagReferences.add(graph.equivalent("CreateTag").name);
+        var entityAnnotation = opGroup.getContainerClass().getEntityType().getExtensionAnnotation(false);
+        if (not entityAnnotation.isDefined()) {
+            throw "Entity of operation is not prepared with annotation";
+        }
+        apiOperation.parameters.add(entityAnnotation.details.selectOne(d | d.value == accessPoint.getFQName()).equivalent("CreateEntityIdParameter"));
+
+        // TODO - produces property is defined globally (but not serilized)
+        if (op.eType.isDefined()) {
+            apiOperation.produces.add("application/json");
+        }
+
+        apiOperation.responses.add(accessPoint.equivalent("CreateOpenAPIAccessPoint").api.responses.selectOne(r | r.code == "500"));
+
+        accessPoint.equivalent("CreateOpenAPIAccessPoint").api.paths.add(t);
 }
 
 rule CreateTag
