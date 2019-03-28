@@ -68,5 +68,10 @@
             <groupId>org.eclipse.emf</groupId>
             <artifactId>org.eclipse.emf.ecore.xmi</artifactId>
         </dependency>
+
+        <dependency>
+            <groupId>hu.blackbelt.judo.meta</groupId>
+            <artifactId>judo-meta-asm</artifactId>
+        </dependency>
     </dependencies>
 </project>
