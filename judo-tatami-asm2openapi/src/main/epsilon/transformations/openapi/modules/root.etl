@@ -15,6 +15,11 @@ operation ASM!EOperation getResolvedExposedBy() : ASM!EClass {
     }
 }
 
+@cached
+operation String toOpenAPIName() : String {
+    return self.replaceAll("\\.", "\\$").replace("[^0-9a-zA-Z_\\$]", "");
+}
+
 pre {
     // add graphs annotations to transfer object relations and built-in operations
     for (g in getAllExposedGraphs()) {
@@ -93,6 +98,7 @@ rule CreateOpenAPIAccessPoint
         var internalServerError = new OPENAPI!Response;
         internalServerError.description = "Internal server error";
         internalServerError.code = "500";
+        internalServerError.referenceName = "$internalServerError";
         t.api.responses.add(internalServerError);
 }
 
@@ -154,16 +160,84 @@ rule CreateEntityIdParameter
         
         var accessPoint = getAllAccessPoints().selectOne(ap | ap.getFQName() == s.value);
         
-        log.debug("Create parameter: " + s.getClass().name);
-        log.debug("Access point: " + accessPoint.name);
-        
-        t.name = s.getClass().name; // FIXME
+        t.name = s.getClass().getFQName().toOpenAPIName();
         t.location = OPENAPI!ParameterLocation#header;
         t.type = OPENAPI!JSONDataType#string;
         t.description = "ID of " + s.getClass().name + " instance";
         t.required = true;
         
+        //t.referenceName = s.getClass().name; // FIXME
+        
         accessPoint.equivalent("CreateOpenAPIAccessPoint").paramters.add(t);
+}
+
+rule CreateSingleSchema
+    transform s : ASM!EStringToStringMapEntry
+    to t : OPENAPI!Schema {
+        guard: s.key.startsWith(".accessPoints.") and s.getClass().isDefined() and s.getClass().isMappedTransferObjectType()
+        
+        var accessPoint = getAllAccessPoints().selectOne(ap | ap.getFQName() == s.value);
+        
+        t.name = "$single$" + s.getClass().getFQName().toOpenAPIName();
+        t.type = OPENAPI!JSONDataType#object;
+        
+        var idProperty = new OPENAPI!Schema;
+        idProperty.name = s.getClass().getFQName().toOpenAPIName() + "$id";
+        idProperty.type = OPENAPI!JSONDataType#string;
+        
+        t.properties.add(idProperty);
+        t.required.add(idProperty);
+        
+        accessPoint.equivalent("CreateOpenAPIAccessPoint").schemas.addAll(Set{idProperty});
+        accessPoint.equivalent("CreateOpenAPIAccessPoint").schemas.add(t);
+        
+        accessPoint.equivalent("CreateOpenAPIAccessPoint").api.definitions.add(t);
+}
+
+rule CreateArraySchema
+    transform s : ASM!EStringToStringMapEntry
+    to t : OPENAPI!Schema {
+        guard: s.key.startsWith(".accessPoints.") and s.getClass().isDefined() and s.getClass().isMappedTransferObjectType()
+        
+        var accessPoint = getAllAccessPoints().selectOne(ap | ap.getFQName() == s.value);
+        
+        t.name = "$array$" + s.getClass().getFQName().toOpenAPIName();
+        t.type = OPENAPI!JSONDataType#array;
+        t.items = s.equivalent("CreateSingleSchema");
+        
+        accessPoint.equivalent("CreateOpenAPIAccessPoint").schemas.add(t);
+        
+        accessPoint.equivalent("CreateOpenAPIAccessPoint").api.definitions.add(t);
+}
+
+rule CreateSingleResponse
+    transform s : ASM!EStringToStringMapEntry
+    to t : OPENAPI!Response {
+        guard: s.key.startsWith(".accessPoints.") and s.getClass().isDefined() and s.getClass().isMappedTransferObjectType()
+        
+        var accessPoint = getAllAccessPoints().selectOne(ap | ap.getFQName() == s.value);
+        
+        t.code = "200";
+        t.description = "Single " + s.getClass().name + " object";
+        
+        t.schema = s.equivalent("CreateSingleSchema");
+        
+        accessPoint.equivalent("CreateOpenAPIAccessPoint").api.responses.add(t);
+}
+
+rule CreateArrayResponse
+    transform s : ASM!EStringToStringMapEntry
+    to t : OPENAPI!Response {
+        guard: s.key.startsWith(".accessPoints.") and s.getClass().isDefined() and s.getClass().isMappedTransferObjectType()
+        
+        var accessPoint = getAllAccessPoints().selectOne(ap | ap.getFQName() == s.value);
+        
+        t.code = "200";
+        t.description = "Array of " + s.getClass().name + " objects";
+        
+        t.schema = s.equivalent("CreateArraySchema");
+        
+        accessPoint.equivalent("CreateOpenAPIAccessPoint").api.responses.add(t);
 }
 
 rule CreatePath
@@ -190,6 +264,7 @@ rule CreatePath
             }
         }
         apiOperation.tagReferences.add(graph.equivalent("CreateTag").name);
+        // apiOperation.operationId = ... // TODO
         var entityAnnotation = opGroup.getContainerClass().getEntityType().getExtensionAnnotation(false);
         if (not entityAnnotation.isDefined()) {
             throw "Entity of operation is not prepared with annotation";
@@ -199,6 +274,19 @@ rule CreatePath
         // TODO - produces property is defined globally (but not serilized)
         if (op.eType.isDefined()) {
             apiOperation.produces.add("application/json");
+            
+            if (op.eType.isMappedTransferObjectType()) {
+                var transferObjectAnnotation = op.eType.getExtensionAnnotation(false);
+                if (not transferObjectAnnotation.isDefined()) {
+                    throw "Transfer object is not prepared with annotation";
+                }
+                
+                if (op.many) {
+                    apiOperation.responses.add(transferObjectAnnotation.details.selectOne(d | d.value == accessPoint.getFQName()).equivalent("CreateArrayResponse"));
+                } else {
+                    apiOperation.responses.add(transferObjectAnnotation.details.selectOne(d | d.value == accessPoint.getFQName()).equivalent("CreateSingleResponse"));
+                }
+            }
         }
 
         apiOperation.responses.add(accessPoint.equivalent("CreateOpenAPIAccessPoint").api.responses.selectOne(r | r.code == "500"));
@@ -211,7 +299,7 @@ rule CreateTag
     to t : OPENAPI!Tag {
         guard: s.isExposedGraph()
         
-        t.name = s.getExposedGraphName();
+        t.name = s.getExposedGraphName().toOpenAPIName();
         
         s.getResolvedExposedBy().equivalent("CreateOpenAPIAccessPoint").api.tags.add(t);
 }
