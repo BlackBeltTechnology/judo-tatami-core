@@ -71,7 +71,7 @@ public class Psm2MeasureTest {
 
         MeasureModel measureModel = MeasureModel.buildMeasureModel()
                 .name(psmModel.getName())
-                .resource(measureResource)
+                .resourceSet(measureResourceSet)
                 .uri(measureUri)
                 .version(psmModel.getVersion())
                 .build();

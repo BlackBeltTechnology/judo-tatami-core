@@ -31,20 +31,20 @@ public class Psm2JqlExtractSerivce {
         BundleURIHandler bundleURIHandler = new BundleURIHandler("urn", "",
                 bundleContext.getBundle());
 
-        ResourceSet resourceSet = createPsmJqlExtractResourceSet(bundleURIHandler);
+        ResourceSet psmJqlExtractResourceSet = createPsmJqlExtractResourceSet(bundleURIHandler);
         URI jqlExtractUri = URI.createURI("urn:" + psmModel.getName() + ".jqlextract");
-        Resource resource = resourceSet.createResource(jqlExtractUri);
-        registerPsmMetamodel(resourceSet);
+        Resource psmJqlExtractResource = psmJqlExtractResourceSet.createResource(jqlExtractUri);
+        registerPsmMetamodel(psmJqlExtractResourceSet);
 
         PsmJqlExtractModel psmJqlExtractModel = PsmJqlExtractModel.buildPsmJqlExtractModel()
                 .name(psmModel.getName())
                 .version(psmModel.getVersion())
                 .uri(jqlExtractUri)
                 .checksum(psmModel.getChecksum())
-                .resource(resource)
+                .resourceSet(psmJqlExtractResourceSet)
                 .metaVersionRange(bundleContext.getBundle().getHeaders().get(PSM_JQL_EXTRACT_META_VERSION_RANGE)).build();
 
-        Psm2JqlExtract.executePsm2PsmJqlExtractTransformation(resourceSet, psmModel, psmJqlExtractModel, new Slf4jLog(log),
+        Psm2JqlExtract.executePsm2PsmJqlExtractTransformation(psmJqlExtractResourceSet, psmModel, psmJqlExtractModel, new Slf4jLog(log),
                 new File(psm2JqlExtractScriptResource.getSctiptRoot().getAbsolutePath(), "psm2jql/transformations/jql/") );
 
         return psmJqlExtractModel;

@@ -34,22 +34,22 @@ public class Psm2MeasureSerivce {
         BundleURIHandler bundleURIHandler = new BundleURIHandler("urn", "",
                 bundleContext.getBundle());
 
-        ResourceSet resourceSet = createMeasureResourceSet(bundleURIHandler);
-        registerPsmMetamodel(resourceSet);
+        ResourceSet measureResourceSet = createMeasureResourceSet(bundleURIHandler);
+        registerPsmMetamodel(measureResourceSet);
 
         URI measureUri = URI.createURI("urn:" + psmModel.getName() + ".measure");
-        Resource measureResource = resourceSet.createResource(measureUri);
+        Resource measureResource = measureResourceSet.createResource(measureUri);
 
         MeasureModel measureModel = MeasureModel.buildMeasureModel()
                 .name(psmModel.getName())
-                .resource(measureResource)
+                .resourceSet(measureResourceSet)
                 .uri(measureUri)
                 .version(psmModel.getVersion())
                 .metaVersionRange(bundleContext.getBundle().getHeaders().get(MEASURE_META_VERSION_RANGE))
                 .build();
 
 
-        executePsm2MeasureTransformation(resourceSet, psmModel, measureModel, new Slf4jLog(log),
+        executePsm2MeasureTransformation(measureResourceSet, psmModel, measureModel, new Slf4jLog(log),
                 new File(psm2MeasureScriptResource.getSctiptRoot().getAbsolutePath(), "psm2measure/transformations/measure") );
 
         return measureModel;

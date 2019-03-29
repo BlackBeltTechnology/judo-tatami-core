@@ -31,23 +31,23 @@ public class Asm2OpenAPIService {
         BundleURIHandler bundleURIHandler = new BundleURIHandler("urn", "",
                 bundleContext.getBundle());
 
-        ResourceSet resourceSet = createOpenAPIResourceSet(bundleURIHandler);
-        registerOpenAPIMetamodel(resourceSet);
+        ResourceSet openAPIResourceSet = createOpenAPIResourceSet(bundleURIHandler);
+        registerOpenAPIMetamodel(openAPIResourceSet);
 
         URI openAPIUri = URI.createURI("urn:" + asmModel.getName() + ".openapi");
-        Resource openAPIResource = resourceSet.createResource(openAPIUri);
+        Resource openAPIResource = openAPIResourceSet.createResource(openAPIUri);
 
         OpenAPIModel openAPIModel = OpenAPIModel.buildOpenAPIModel()
                 .name(asmModel.getName())
                 .version(asmModel.getVersion())
                 .uri(openAPIUri)
                 .checksum(asmModel.getChecksum())
-                .resource(openAPIResource)
+                .resourceSet(openAPIResourceSet)
                 .checksum(asmModel.getChecksum())
                 .metaVersionRange(bundleContext.getBundle().getHeaders().get(OPENAPI_META_VERSION_RANGE))
                 .build();
 
-        executeAsm2OpenAPITransformation(resourceSet, asmModel, openAPIModel, new Slf4jLog(log),
+        executeAsm2OpenAPITransformation(openAPIResourceSet, asmModel, openAPIModel, new Slf4jLog(log),
                 new File(asm2OpenAPIScriptResource.getSctiptRoot().getAbsolutePath(), "asm2openapi/transformations"));
 
         return openAPIModel;

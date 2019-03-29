@@ -69,7 +69,7 @@ public class Rdbms2LiquibaseTest {
 
         LiquibaseModel liquibaseModel = LiquibaseModel.buildLiquibaseModel()
                 .name(this.rdbmsModel.getName())
-                .resource(liquibaseResource)
+                .resourceSet(liquibaseResourceSet)
                 .uri(liquibaseUri)
                 .version(this.rdbmsModel.getVersion())
                 .build();

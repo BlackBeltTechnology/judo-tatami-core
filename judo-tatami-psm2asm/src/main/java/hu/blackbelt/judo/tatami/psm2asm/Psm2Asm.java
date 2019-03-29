@@ -48,12 +48,12 @@ public class Psm2Asm {
                         wrappedEmfModelContextBuilder()
                                 .log(log)
                                 .name("JUDOPSM")
-                                .resource(psmModel.getResource())
+                                .resource(psmModel.getResourceSet().getResource(psmModel.getUri(), false))
                                 .build(),
                         wrappedEmfModelContextBuilder()
                                 .log(log)
                                 .name("ASM")
-                                .resource(asmModel.getResource())
+                                .resource(asmModel.getResourceSet().getResource(asmModel.getUri(), false))
                                 .build()))
                 .sourceDirectory(scriptDir)
                 .build();
@@ -92,7 +92,7 @@ public class Psm2Asm {
 
     public static Map<EObject, List<EObject>> resolvePsm2AsmTrace(List<EObject> trace, PsmModel psmModel, AsmModel asmModel) {
         return resolveTransformationTrace(trace,
-                ImmutableList.of(psmModel.getResource().getResourceSet(), asmModel.getResource().getResourceSet()));
+                ImmutableList.of(psmModel.getResourceSet(), asmModel.getResourceSet()));
     }
 
 }

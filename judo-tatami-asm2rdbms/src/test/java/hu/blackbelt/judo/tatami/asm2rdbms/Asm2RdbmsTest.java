@@ -72,7 +72,7 @@ public class Asm2RdbmsTest {
 
         RdbmsModel rdbmsModel = RdbmsModel.buildRdbmsModel()
                 .name(asmModel.getName())
-                .resource(rdbmsResource)
+                .resourceSet(rdbmsResourceSet)
                 .uri(rdbmsUri)
                 .version(asmModel.getVersion())
                 .build();

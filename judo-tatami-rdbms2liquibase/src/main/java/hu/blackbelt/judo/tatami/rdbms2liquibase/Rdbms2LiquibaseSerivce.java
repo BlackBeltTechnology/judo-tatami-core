@@ -33,22 +33,22 @@ public class Rdbms2LiquibaseSerivce {
         BundleURIHandler bundleURIHandler = new BundleURIHandler("urn", "",
                 bundleContext.getBundle());
 
-        ResourceSet resourceSet = createLiquibaseResourceSet(bundleURIHandler);
-        registerLiquibaseMetamodel(resourceSet);
+        ResourceSet liquibaseResourceSet = createLiquibaseResourceSet(bundleURIHandler);
+        registerLiquibaseMetamodel(liquibaseResourceSet);
 
         URI liquibasUri = URI.createURI("urn:" + rdbmsModel.getName() + ".changlelog.xml");
-        Resource liquibaseResource = resourceSet.createResource(liquibasUri);
+        Resource liquibaseResource = liquibaseResourceSet.createResource(liquibasUri);
 
         LiquibaseModel liquibaseModel = LiquibaseModel.buildLiquibaseModel()
                 .name(rdbmsModel.getName())
-                .resource(liquibaseResource)
+                .resourceSet(liquibaseResourceSet)
                 .uri(liquibasUri)
                 .version(rdbmsModel.getVersion())
                 .metaVersionRange(bundleContext.getBundle().getHeaders().get(LIQUIBASE_META_VERSION_RANGE))
                 .build();
 
 
-        executeRdbms2LiquibaseTransformation(resourceSet, rdbmsModel, liquibaseModel, new Slf4jLog(log),
+        executeRdbms2LiquibaseTransformation(liquibaseResourceSet, rdbmsModel, liquibaseModel, new Slf4jLog(log),
                 new File(rdbms2LiquibaseScriptResource.getSctiptRoot().getAbsolutePath(), "rdbms2liquibase/transformations"),
                 "hsqldb" );
 

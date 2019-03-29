@@ -81,7 +81,7 @@ public class Psm2AsmTest {
         // Creating AsmModel definition
         AsmModel asmModel = AsmModel.asmModelBuilder()
                 .name(psmModel.getName())
-                .resource(asmResource)
+                .resourceSet(asmResourceSet)
                 .uri(asmUri)
                 .version(psmModel.getVersion())
                 .build();

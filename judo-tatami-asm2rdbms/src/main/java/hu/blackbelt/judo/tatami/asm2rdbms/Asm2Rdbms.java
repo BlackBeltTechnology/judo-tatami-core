@@ -41,12 +41,12 @@ public class Asm2Rdbms {
                         wrappedEmfModelContextBuilder()
                                 .log(log)
                                 .name("ASM")
-                                .resource(asmModel.getResource())
+                                .resource(asmModel.getResourceSet().getResource(asmModel.getUri(), false))
                                 .build(),
                         wrappedEmfModelContextBuilder()
                                 .log(log)
                                 .name("RDBMS")
-                                .resource(rdbmsModel.getResource())
+                                .resource(rdbmsModel.getResourceSet().getResource(rdbmsModel.getUri(), false))
                                 .build(),
                         excelModelContextBuilder()
                                 .name("TYPEMAPPING")

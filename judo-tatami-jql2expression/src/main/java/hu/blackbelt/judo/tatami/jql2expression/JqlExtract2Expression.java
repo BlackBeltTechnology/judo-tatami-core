@@ -27,17 +27,17 @@ public class JqlExtract2Expression {
                         wrappedEmfModelContextBuilder()
                                 .log(log)
                                 .name("ASM")
-                                .resource(asmModel.getResource())
+                                .resource(asmModel.getResourceSet().getResource(asmModel.getUri(), false))
                                 .build(),
                         wrappedEmfModelContextBuilder()
                                 .log(log)
                                 .name("JQLEXTRACT")
-                                .resource(jqlExtractModel.getResource())
+                                .resource(jqlExtractModel.getResourceSet().getResource(jqlExtractModel.getUri(), false))
                                 .build(),
                         wrappedEmfModelContextBuilder()
                                 .log(log)
                                 .name("EXPR")
-                                .resource(expressionModel.getResource())
+                                .resource(expressionModel.getResourceSet().getResource(expressionModel.getUri(), false))
                                 .build()))
                 .sourceDirectory(scriptDir)
                 .build();

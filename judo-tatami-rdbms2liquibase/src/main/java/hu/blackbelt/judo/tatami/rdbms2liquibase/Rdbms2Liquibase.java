@@ -34,12 +34,12 @@ public class Rdbms2Liquibase {
                         wrappedEmfModelContextBuilder()
                                 .log(log)
                                 .name("RDBMS")
-                                .resource(rdbmsModel.getResource())
+                                .resource(rdbmsModel.getResourceSet().getResource(rdbmsModel.getUri(), false))
                                 .build(),
                         wrappedEmfModelContextBuilder()
                                 .log(log)
                                 .name("LIQUIBASE")
-                                .resource(liquibaseModel.getResource())
+                                .resource(liquibaseModel.getResourceSet().getResource(liquibaseModel.getUri(), false))
                                 .build()))
                 .sourceDirectory(scriptDir)
                 .build();

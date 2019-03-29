@@ -52,7 +52,7 @@ public class Psm2AsmSerivce {
                 .version(psmModel.getVersion())
                 .uri(asmUri)
                 .checksum(psmModel.getChecksum())
-                .resource(resource)
+                .resourceSet(resourceSet)
                 .metaVersionRange(bundleContext.getBundle().getHeaders().get(ASM_META_VERSION_RANGE)).build();
 
         executePsm2AsmTransformation(resourceSet, psmModel, asmModel, new Slf4jLog(log),

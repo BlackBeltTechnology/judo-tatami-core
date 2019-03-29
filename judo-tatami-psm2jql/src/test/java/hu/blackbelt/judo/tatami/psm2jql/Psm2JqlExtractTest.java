@@ -72,7 +72,7 @@ public class Psm2JqlExtractTest {
 
         PsmJqlExtractModel psmJqlExtractModel = PsmJqlExtractModel.buildPsmJqlExtractModel()
                 .name(psmModel.getName())
-                .resource(psmJqlExtractResource)
+                .resourceSet(psmJqlExtractResourceSet)
                 .uri(psmJqlExtractUri)
                 .version(psmModel.getVersion())
                 .build();

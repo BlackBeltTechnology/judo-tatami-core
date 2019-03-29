@@ -26,12 +26,12 @@ public class Psm2Measure {
                         wrappedEmfModelContextBuilder()
                                 .log(log)
                                 .name("JUDOPSM")
-                                .resource(psmModel.getResource())
+                                .resource(psmModel.getResourceSet().getResource(psmModel.getUri(), false))
                                 .build(),
                         wrappedEmfModelContextBuilder()
                                 .log(log)
                                 .name("MEASURES")
-                                .resource(measureModel.getResource())
+                                .resource(measureModel.getResourceSet().getResource(measureModel.getUri(), false))
                                 .build()))
                 .sourceDirectory(scriptDir)
                 .build();

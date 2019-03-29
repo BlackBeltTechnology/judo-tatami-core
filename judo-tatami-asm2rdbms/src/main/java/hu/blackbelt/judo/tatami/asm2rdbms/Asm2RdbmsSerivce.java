@@ -53,24 +53,24 @@ public class Asm2RdbmsSerivce {
         BundleURIHandler bundleURIHandler = new BundleURIHandler("urn", "",
                 bundleContext.getBundle());
 
-        ResourceSet resourceSet = createRdbmsResourceSet(bundleURIHandler);
-        registerRdbmsMetamodel(resourceSet);
+        ResourceSet rdbmsResourceSet = createRdbmsResourceSet(bundleURIHandler);
+        registerRdbmsMetamodel(rdbmsResourceSet);
 
         URI rdbmsUri = URI.createURI("urn:" + asmModel.getName() + ".rdbmss");
-        Resource rdbmsResource = resourceSet.createResource(rdbmsUri);
+        Resource rdbmsResource = rdbmsResourceSet.createResource(rdbmsUri);
 
         RdbmsModel rdbmsModel = RdbmsModel.buildRdbmsModel()
                 .name(asmModel.getName())
                 .version(asmModel.getVersion())
                 .uri(rdbmsUri)
                 .checksum(asmModel.getChecksum())
-                .resource(rdbmsResource)
+                .resourceSet(rdbmsResourceSet)
                 .checksum(asmModel.getChecksum())
                 .metaVersionRange(bundleContext.getBundle().getHeaders().get(RDBMS_META_VERSION_RANGE))
                 .build();
 
         // TODO: make configurable dialect
-        executeAsm2RdbmsTransformation(resourceSet, asmModel, rdbmsModel, new Slf4jLog(log),
+        executeAsm2RdbmsTransformation(rdbmsResourceSet, asmModel, rdbmsModel, new Slf4jLog(log),
                 new File(asm2RdbmsScriptResource.getSctiptRoot().getAbsolutePath(), "asm2rdbms/transformations"),
                 new File(asm2RdbmsModelResource.getModelRoot().getAbsolutePath(), "asm2rdbms-model"),
                 "hsqldb");

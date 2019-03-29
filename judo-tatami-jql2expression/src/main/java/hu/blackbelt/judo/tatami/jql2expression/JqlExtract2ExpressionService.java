@@ -33,22 +33,22 @@ public class JqlExtract2ExpressionService {
         BundleURIHandler bundleURIHandler = new BundleURIHandler("urn", "",
                 bundleContext.getBundle());
 
-        ResourceSet resourceSet = createExpressionResourceSet(bundleURIHandler);
+        ResourceSet expressionResourceSet = createExpressionResourceSet(bundleURIHandler);
 
         URI expressionModelUri = URI.createURI("urn:" + jqlExtractModel.getName() + ".expression");
-        Resource expressionResource =  resourceSet.createResource(expressionModelUri);
+        Resource expressionResource =  expressionResourceSet.createResource(expressionModelUri);
 
         ExpressionModel expressionModel = ExpressionModel.buildExpressionModel()
                 .name(asmModel.getName())
                 .version(asmModel.getVersion())
                 .uri(expressionModelUri)
-                .resource(expressionResource)
+                .resourceSet(expressionResourceSet)
                 .checksum(asmModel.getChecksum())
                 .metaVersionRange(bundleContext.getBundle().getHeaders().get(EXPRESSION_META_VERSION_RANGE))
                 .build();
 
 
-        JqlExtract2Expression.executeJqlExtract2ExpressionTransformation(resourceSet, asmModel, jqlExtractModel, expressionModel, new Slf4jLog(log),
+        JqlExtract2Expression.executeJqlExtract2ExpressionTransformation(expressionResourceSet, asmModel, jqlExtractModel, expressionModel, new Slf4jLog(log),
                 new File(jqlExtract2ExpressionScriptResource.getSctiptRoot().getAbsolutePath(), "jql2expression/transformations/expression") );
 
         return expressionModel;

@@ -86,7 +86,7 @@ public class JqlExtract2ExpressionTest {
 
         ExpressionModel expressionModel = ExpressionModel.buildExpressionModel()
                 .name(jqlExtractModel.getName())
-                .resource(expressionResource)
+                .resourceSet(expressionResourceSet)
                 .uri(expressionUri)
                 .version(jqlExtractModel.getVersion())
                 .build();

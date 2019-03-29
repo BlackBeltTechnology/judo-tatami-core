@@ -77,7 +77,7 @@ public class Asm2OpenAPITest {
 
         OpenAPIModel openAPIModel = OpenAPIModel.buildOpenAPIModel()
                 .name(asmModel.getName())
-                .resource(openAPIResource)
+                .resourceSet(openAPIResourceSet)
                 .uri(openAPIUri)
                 .version(asmModel.getVersion())
                 .build();
@@ -85,7 +85,7 @@ public class Asm2OpenAPITest {
         executeAsm2OpenAPITransformation(openAPIResourceSet, asmModel, openAPIModel, new Slf4jLog(log),
                 new File(srcDir().getAbsolutePath(), "epsilon/transformations/openapi"));
 
-        openAPIModel.getResource().getContents().forEach(m -> {
+        openAPIModel.getResourceSet().getResource(openAPIModel.getUri(), false).getContents().forEach(m -> {
             final String title = ((Root)m).getApi().getInfo().getTitle();
             final File targetFile = new File(srcDir().getAbsolutePath()+"/northwind-openapi-" + title + ".json");
             try (final Writer targetFileWriter = new FileWriter(targetFile)) {

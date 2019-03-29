@@ -28,12 +28,12 @@ public class Psm2JqlExtract {
                         wrappedEmfModelContextBuilder()
                                 .log(log)
                                 .name("JUDOPSM")
-                                .resource(psmModel.getResource())
+                                .resource(psmModel.getResourceSet().getResource(psmModel.getUri(), false))
                                 .build(),
                         wrappedEmfModelContextBuilder()
                                 .log(log)
                                 .name("JQLEXTRACT")
-                                .resource(jqlExtractModel.getResource())
+                                .resource(jqlExtractModel.getResourceSet().getResource(jqlExtractModel.getUri(), false))
                                 .build()))
                 .injectContexts(ImmutableMap.of(
                         "jqlParser", new JqlParser()
