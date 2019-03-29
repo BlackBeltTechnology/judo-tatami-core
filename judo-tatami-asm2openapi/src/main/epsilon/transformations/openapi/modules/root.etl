@@ -17,7 +17,8 @@ operation ASM!EOperation getResolvedExposedBy() : ASM!EClass {
 
 @cached
 operation String toOpenAPIName() : String {
-    return self.replaceAll("\\.", "\\$").replace("[^0-9a-zA-Z_\\$]", "");
+    //return self.replaceAll("\\.", "\\$").replace("[^0-9a-zA-Z_\\$]", "");
+    return self.replace("[^0-9a-zA-Z_]", "_");
 }
 
 pre {
@@ -98,7 +99,7 @@ rule CreateOpenAPIAccessPoint
         var internalServerError = new OPENAPI!Response;
         internalServerError.description = "Internal server error";
         internalServerError.code = "500";
-        internalServerError.referenceName = "$internalServerError";
+        internalServerError.referenceName = "_internalServerError";
         t.api.responses.add(internalServerError);
 }
 
@@ -160,7 +161,7 @@ rule CreateEntityIdParameter
         
         var accessPoint = getAllAccessPoints().selectOne(ap | ap.getFQName() == s.value);
         
-        t.name = s.getClass().getFQName().toOpenAPIName();
+        t.name = "__id"; // s.getClass().getFQName().toOpenAPIName();
         t.location = OPENAPI!ParameterLocation#header;
         t.type = OPENAPI!JSONDataType#string;
         t.description = "ID of " + s.getClass().name + " instance";
@@ -169,6 +170,7 @@ rule CreateEntityIdParameter
         //t.referenceName = s.getClass().name; // FIXME
         
         accessPoint.equivalent("CreateOpenAPIAccessPoint").paramters.add(t);
+        t.declaringContext = accessPoint.equivalent("CreateOpenAPIAccessPoint").api;
 }
 
 rule CreateSingleSchema
@@ -178,11 +180,11 @@ rule CreateSingleSchema
         
         var accessPoint = getAllAccessPoints().selectOne(ap | ap.getFQName() == s.value);
         
-        t.name = "$single$" + s.getClass().getFQName().toOpenAPIName();
+        t.name = "__single__" + s.getClass().getFQName().toOpenAPIName();
         t.type = OPENAPI!JSONDataType#object;
         
         var idProperty = new OPENAPI!Schema;
-        idProperty.name = s.getClass().getFQName().toOpenAPIName() + "$id";
+        idProperty.name = "__id";
         idProperty.type = OPENAPI!JSONDataType#string;
         
         t.properties.add(idProperty);
@@ -192,6 +194,7 @@ rule CreateSingleSchema
         accessPoint.equivalent("CreateOpenAPIAccessPoint").schemas.add(t);
         
         accessPoint.equivalent("CreateOpenAPIAccessPoint").api.definitions.add(t);
+        t.declaringContext = accessPoint.equivalent("CreateOpenAPIAccessPoint").api;
 }
 
 rule CreateArraySchema
@@ -201,13 +204,11 @@ rule CreateArraySchema
         
         var accessPoint = getAllAccessPoints().selectOne(ap | ap.getFQName() == s.value);
         
-        t.name = "$array$" + s.getClass().getFQName().toOpenAPIName();
+        t.name = "__array__" + s.getClass().getFQName().toOpenAPIName();
         t.type = OPENAPI!JSONDataType#array;
         t.items = s.equivalent("CreateSingleSchema");
         
         accessPoint.equivalent("CreateOpenAPIAccessPoint").schemas.add(t);
-        
-        accessPoint.equivalent("CreateOpenAPIAccessPoint").api.definitions.add(t);
 }
 
 rule CreateSingleResponse
@@ -240,6 +241,8 @@ rule CreateArrayResponse
         accessPoint.equivalent("CreateOpenAPIAccessPoint").api.responses.add(t);
 }
 
+// TODO - create GET method for graph (entry point)
+
 rule CreatePath
     transform s : ASM!EStringToStringMapEntry
     to t : OPENAPI!Path {
@@ -270,9 +273,9 @@ rule CreatePath
             throw "Entity of operation is not prepared with annotation";
         }
         apiOperation.parameters.add(entityAnnotation.details.selectOne(d | d.value == accessPoint.getFQName()).equivalent("CreateEntityIdParameter"));
-
-        // TODO - produces property is defined globally (but not serilized)
+        
         if (op.eType.isDefined()) {
+            // TODO - produces property is defined globally (but not serilized)
             apiOperation.produces.add("application/json");
             
             if (op.eType.isMappedTransferObjectType()) {
@@ -286,6 +289,51 @@ rule CreatePath
                 } else {
                     apiOperation.responses.add(transferObjectAnnotation.details.selectOne(d | d.value == accessPoint.getFQName()).equivalent("CreateSingleResponse"));
                 }
+            }
+        }
+            
+        for (p in op.eParameters) {
+            var p = op.eParameters.first();
+            
+            // TODO: check is p.eType is not null
+            if (p.eType.isDefined() and p.eType.isMappedTransferObjectType()) {
+                // create ID parameter (it is mandatory because path is related to bound operation)
+                
+                var input = new OPENAPI!Parameter;
+                
+                if (p.eType.eAttributes.isEmpty()) {
+	                input.name = "__id__" + p.name;
+	                // FIXME - add to body!
+	                input.location = OPENAPI!ParameterLocation#header;
+	                input.description = "ID of " + opGroup.getContainerClass().getEntityType().name + " instance";
+	                
+	                if (p.isMany) {
+	                    input.type = OPENAPI!JSONDataType#string;
+	                    
+	                    // TODO - create array, add 
+	                    //input.type = OPENAPI!JSONDataType#array;
+	                    //input.items = new OPENAPI!Schema;
+	                    //input.items.type = OPENAPI!JSONDataType#string;
+	                } else {
+	                    input.type = OPENAPI!JSONDataType#string;
+	                }
+                } else {
+	                //input.name = p.name;
+	                //input.location = OPENAPI!ParameterLocation#body;
+	                
+                    throw "Not supported yet";
+	                /*if (p.isMany) {
+	                } else {
+	                } */
+                }
+	            input.required = p.required;
+                
+                apiOperation.parameters.add(input);
+                
+                accessPoint.equivalent("CreateOpenAPIAccessPoint").paramters.add(input);
+                input.declaringContext = accessPoint.equivalent("CreateOpenAPIAccessPoint").api;
+            } else {
+                throw "Not supported yet";
             }
         }
 
