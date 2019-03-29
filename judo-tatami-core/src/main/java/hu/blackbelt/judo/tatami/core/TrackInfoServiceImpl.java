@@ -22,6 +22,7 @@ public class TrackInfoServiceImpl implements TrackInfoService {
     private final Map<String, List<TrackInfo>> modelNameCache = Maps.newConcurrentMap();
 
     private final Map<String, List<TrackInfoTreeElement>> dependencyGraph = Maps.newConcurrentMap();
+    //List<TrackInfoTreeElement root;
 
 
     private TrackInfoTracker trackInfoTracker;
@@ -52,6 +53,7 @@ public class TrackInfoServiceImpl implements TrackInfoService {
         }
         List<TrackInfo> trackInfoList = modelNameCache.get(instance.getModelName());
         trackInfoList.add(instance);
+        buildDependencyGraph(instance.getModelName());
     }
 
     public void remove(TrackInfo instance) {
@@ -60,6 +62,7 @@ public class TrackInfoServiceImpl implements TrackInfoService {
         if (trackInfoList.size() == 0) {
             modelNameCache.remove(instance.getModelName());
         }
+        buildDependencyGraph(instance.getModelName());
     }
 
     @Override
@@ -74,11 +77,12 @@ public class TrackInfoServiceImpl implements TrackInfoService {
 
     @Override
     public <T> Resource getSourceModelResource(String modelName, Class<T> sourceModelType) {
+        /*
         for (TrackInfo t : modelNameCache.get(modelName)) {
             if (t.getSourceModelTypes().contains(sourceModelType)) {
-                return t.getSourceResource(sourceModelType);
+                return t.getSourceResourceSet(sourceModelType);
             }
-        }
+        } */
         throw new IllegalArgumentException("Source model type not found " + sourceModelType.getTypeName() + " on " + modelName);
     }
 
@@ -112,8 +116,17 @@ public class TrackInfoServiceImpl implements TrackInfoService {
         // Get parent representations
         for (TrackInfoTreeElement ts : elements) {
             for (Class cl : ts.getDelegatee().getSourceModelTypes()) {
-                getTrackInfoTreeElementForTarget(elements, cl).addParent(ts);
+                TrackInfoTreeElement parent = getTrackInfoTreeElementForTarget(elements, cl);
+                if (parent != null) {
+                    ts.addParent(parent);
+                }
             }
+        }
+
+        if (elements.size() > 0) {
+            dependencyGraph.put(modelName, elements);
+        } else {
+            dependencyGraph.remove(modelName);
         }
     }
 
@@ -123,6 +136,7 @@ public class TrackInfoServiceImpl implements TrackInfoService {
                 return tt;
             }
         }
-        throw new RuntimeException("There is no TrackInfo for model type: " + target.getName());
+        return null;
+        // throw new RuntimeException("There is no TrackInfo for model type: " + target.getName());
     }
 }

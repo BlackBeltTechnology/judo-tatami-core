@@ -5,6 +5,10 @@ import org.eclipse.emf.ecore.resource.Resource;
 
 /**
  * The API represents the tracing of model conversion pipeline.
+ *
+ * The basic rules are:
+ *    - Only one root model is presented. All of elem extension can be made via Hooks. Means the models
+ *    cannot be composited from multiple sources.
  */
 public interface TrackInfoService {
 

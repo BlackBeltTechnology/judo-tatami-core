@@ -6,8 +6,10 @@ import hu.blackbelt.judo.meta.psm.runtime.PsmModel;
 import hu.blackbelt.judo.tatami.core.TrackInfo;
 import lombok.Builder;
 import lombok.Getter;
+import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
+import org.eclipse.emf.ecore.resource.ResourceSet;
 
 import java.util.List;
 import java.util.Map;
@@ -38,9 +40,17 @@ public class Psm2AsmTrackInfo implements TrackInfo {
     }
 
     @Override
-    public <T> Resource getSourceResource(Class<T> sourceModelType) {
+    public <T> ResourceSet getSourceResourceSet(Class<T> sourceModelType) {
         if (sourceModelType == PsmModel.class) {
-            return psmModel.getResource();
+            return psmModel.getResourceSet();
+        }
+        throw new IllegalArgumentException("Unknown source model type: " + sourceModelType.getName());
+    }
+
+    @Override
+    public <T> URI getSourceURI(Class<T> sourceModelType) {
+        if (sourceModelType == PsmModel.class) {
+            return psmModel.getUri();
         }
         throw new IllegalArgumentException("Unknown source model type: " + sourceModelType.getName());
     }
@@ -56,8 +66,13 @@ public class Psm2AsmTrackInfo implements TrackInfo {
     }
 
     @Override
-    public Resource getTargetResource() {
-        return asmModel.getResource();
+    public ResourceSet getTargetResourceSet() {
+        return asmModel.getResourceSet();
+    }
+
+    @Override
+    public URI getTargetURI() {
+        return asmModel.getUri();
     }
 
     @Override
