@@ -1,11 +1,13 @@
 package hu.blackbelt.judo.tatami.core;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
+import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.service.component.annotations.Activate;
@@ -20,10 +22,6 @@ import java.util.Map;
 public class TrackInfoServiceImpl implements TrackInfoService {
 
     private final Map<String, List<TrackInfo>> modelNameCache = Maps.newConcurrentMap();
-
-    private final Map<String, List<TrackInfoTreeElement>> dependencyGraph = Maps.newConcurrentMap();
-    //List<TrackInfoTreeElement root;
-
 
     private TrackInfoTracker trackInfoTracker;
 
@@ -53,7 +51,6 @@ public class TrackInfoServiceImpl implements TrackInfoService {
         }
         List<TrackInfo> trackInfoList = modelNameCache.get(instance.getModelName());
         trackInfoList.add(instance);
-        buildDependencyGraph(instance.getModelName());
     }
 
     public void remove(TrackInfo instance) {
@@ -62,81 +59,126 @@ public class TrackInfoServiceImpl implements TrackInfoService {
         if (trackInfoList.size() == 0) {
             modelNameCache.remove(instance.getModelName());
         }
-        buildDependencyGraph(instance.getModelName());
     }
 
     @Override
-    public <T> T getSourceModel(String modelName, Class<T> sourceModelType) {
+    public TrackInfo getParentTrackInfoByInstance(String modelName, EObject targetElement) {
+        // Find target element's model
+        EObject sourceRoot = EcoreUtil.getRootContainer(targetElement);
+
         for (TrackInfo t : modelNameCache.get(modelName)) {
-            if (t.getSourceModelTypes().contains(sourceModelType)) {
-                return t.getSourceModel(sourceModelType);
-            }
-        }
-        throw new IllegalArgumentException("Source model type not found " + sourceModelType.getTypeName() + " on " + modelName);
-    }
-
-    @Override
-    public <T> Resource getSourceModelResource(String modelName, Class<T> sourceModelType) {
-        /*
-        for (TrackInfo t : modelNameCache.get(modelName)) {
-            if (t.getSourceModelTypes().contains(sourceModelType)) {
-                return t.getSourceResourceSet(sourceModelType);
-            }
-        } */
-        throw new IllegalArgumentException("Source model type not found " + sourceModelType.getTypeName() + " on " + modelName);
-    }
-
-    @Override
-    public Class getOriginalSourceModelType(String modelName) {
-        return null;
-    }
-
-    @Override
-    public Class getOriginalSourceModelType(String modelName, EObject targetElement) {
-        return null;
-    }
-
-    @Override
-    public <T> EObject getSourceModelElement(String modelName, Class<T> sourceModelType, EObject targetElement) {
-        return null;
-    }
-
-    @Override
-    public EObject getOriginalModelElement(String modelName, EObject targetElement) {
-        return null;
-    }
-
-
-    private void buildDependencyGraph(String modelName) {
-        List<TrackInfoTreeElement> elements = Lists.newArrayList();
-
-        for (TrackInfo tr : modelNameCache.get(modelName)) {
-            elements.add(new TrackInfoTreeElement(tr));
-        }
-        // Get parent representations
-        for (TrackInfoTreeElement ts : elements) {
-            for (Class cl : ts.getDelegatee().getSourceModelTypes()) {
-                TrackInfoTreeElement parent = getTrackInfoTreeElementForTarget(elements, cl);
-                if (parent != null) {
-                    ts.addParent(parent);
+            for (Resource r : t.getTargetResourceSet().getResources()) {
+                if  (r.getContents().contains(sourceRoot)) {
+                    return t;
                 }
             }
         }
-
-        if (elements.size() > 0) {
-            dependencyGraph.put(modelName, elements);
-        } else {
-            dependencyGraph.remove(modelName);
-        }
+        return null;
     }
 
-    private TrackInfoTreeElement getTrackInfoTreeElementForTarget(List<TrackInfoTreeElement> elements, Class target) {
-        for (TrackInfoTreeElement tt : elements) {
-            if (tt.getDelegatee().getTargetModelType().equals(target)) {
-                return tt;
+    // @Override
+    public List<TrackInfo> getChildTrackInfosByInstance(String modelName, EObject instance) {
+        // Find target element's model
+        EObject sourceRoot = EcoreUtil.getRootContainer(instance);
+
+        List<TrackInfo> trackInfoList = Lists.newArrayList();
+        for (TrackInfo t : modelNameCache.get(modelName)) {
+            for (Class sourceModelClass : t.getSourceModelTypes()) {
+                for (Resource r : t.getSourceResourceSet(sourceModelClass).getResources()) {
+                    if  (r.getContents().contains(sourceRoot)) {
+                        trackInfoList.add(t);
+                    }
+                }
+
+            }
+        }
+        return trackInfoList;
+    }
+
+    @Override
+    public EObject getAscendantOfInstanceByModelType(String modelName, Class modelType, EObject instance) {
+        EObject current = instance;
+        while (current != null) {
+            TrackInfo constructor = getParentTrackInfoByInstance(modelName, current);
+            if (constructor != null) {
+                if (constructor.getTargetModelType().equals(modelType)) {
+                    return current;
+                }
+                current = getTraceSourceElementObjectByTargetElement(constructor, current);
+            } else {
+                if (modelType == null) {
+                    return current;
+                } else {
+                    return null;
+                }
             }
         }
         return null;
-        // throw new RuntimeException("There is no TrackInfo for model type: " + target.getName());
     }
+
+    @Override
+    public Map<TrackInfo, EObject> getAllAscendantOfInstance(String modelName, EObject instance) {
+        EObject current = instance;
+        Map<TrackInfo, EObject> trackInfoMap = Maps.newLinkedHashMap();
+        while (current != null) {
+            TrackInfo constructor = getParentTrackInfoByInstance(modelName, current);
+            if (constructor != null) {
+                current = getTraceSourceElementObjectByTargetElement(constructor, current);
+                trackInfoMap.put(constructor, current);
+            } else {
+                return trackInfoMap;
+            }
+        }
+        return null;
+    }
+
+    // @Override
+    public Map<TrackInfo, List<EObject>> getAllDescendantOfInstance(String modelName, EObject instance) {
+        List<EObject> currentList = ImmutableList.of(instance);
+        Map<TrackInfo, EObject> trackInfoMap = Maps.newLinkedHashMap();
+        while (currentList != null && currentList.size() > 0) {
+            for (EObject current : currentList) {
+                List<TrackInfo> trackInfoList = getChildTrackInfosByInstance(modelName, current);
+
+            }
+            /*
+            TrackInfo constructor = getParentTrackInfoByInstance(modelName, currentList);
+            if (constructor != null) {
+                currentList = getTraceSourceElementObjectByTargetElement(constructor, currentList);
+                trackInfoMap.put(constructor, currentList);
+            } else {
+                return trackInfoMap;
+            }
+            */
+        }
+        return null;
+    }
+
+
+    //    @Override
+    public <T> List getTrackInfoAscendantsByInstance(String modelName, EObject instance) {
+        return Lists.newArrayList(getAllAscendantOfInstance(modelName, instance).keySet());
+    }
+
+
+    @Override
+    public EObject getRootAscendantOfInstance(String modelName, EObject targetElement) {
+        return getAscendantOfInstanceByModelType(modelName, null, targetElement);
+    }
+
+    private EObject getTraceSourceElementObjectByTargetElement(TrackInfo constructor, EObject targetElement) {
+        for (Map.Entry<EObject, List<EObject>> e : constructor.getTransformationTrace().entrySet()) {
+            for (EObject eo : e.getValue()) {
+                if (eo.equals(targetElement)) {
+                    return e.getKey();
+                }
+            }
+        }
+        return null;
+    }
+
+    private List<EObject> getTraceTargetElementObjectBySourceElement(TrackInfo constructor, EObject sourceElement) {
+        return constructor.getTransformationTrace().get(sourceElement);
+    }
+
 }

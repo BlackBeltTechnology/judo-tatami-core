@@ -4,9 +4,11 @@ import com.google.common.collect.Lists;
 import lombok.Getter;
 import lombok.Setter;
 import org.eclipse.emf.common.util.URI;
+import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 
 import java.util.List;
+import java.util.Map;
 
 public class TrackInfoTreeElement implements TrackInfo {
 
@@ -88,5 +90,10 @@ public class TrackInfoTreeElement implements TrackInfo {
     @Override
     public String getModelVersion() {
         return delegatee.getModelVersion();
+    }
+
+    @Override
+    public Map<EObject, List<EObject>> getTransformationTrace() {
+        return delegatee.getTransformationTrace();
     }
 }

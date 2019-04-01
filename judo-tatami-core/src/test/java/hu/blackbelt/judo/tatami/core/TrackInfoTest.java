@@ -92,4 +92,9 @@ public class TrackInfoTest implements TrackInfo {
     public String getModelVersion() {
         return null;
     }
+
+    @Override
+    public Map<EObject, List<EObject>> getTransformationTrace() {
+        return trace;
+    }
 }

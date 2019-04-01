@@ -1,0 +1,27 @@
+# Test class diagram
+
+The name of the edge contains the TrackInfo which makes the conversation.
+
+[[main-classes]]
+.Conversion diagram
+[plantuml, sample-plantuml-diagram, alt="Class diagram"]
+----
+class RootModel
+class Level1Model1
+class Level1Model2
+class Level1Model2
+class Level2Model1
+class Level2Model2
+class Level3Model1
+
+
+RootModel -down-> Level1Model1 : root_to_level1model1
+RootModel -down-> Level1Model2 : root_to_level1model2
+RootModel -down-> Level1Model3 : root_to_level1model3
+RootModel -down-> Level2Model1 : root_to_level2model1
+
+Level1Model1 -down-> Level2Model2 : level1_to_level2model2
+Level2Model2 -down-> Level3Model1 : level2_to_level3model2
+Level2Model1 -down-> Level3Model1 : level2_to_level3model2
+----
+

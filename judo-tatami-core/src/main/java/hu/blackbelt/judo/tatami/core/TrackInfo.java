@@ -1,10 +1,12 @@
 package hu.blackbelt.judo.tatami.core;
 
 import org.eclipse.emf.common.util.URI;
+import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Represents a model conversion event.
@@ -34,13 +36,14 @@ public interface TrackInfo {
     <T> T getSourceModel(Class<T> sourceModelType);
 
     /**
-     * Get the EMF {@link Resource} instance of the given source model.
+     * Get the EMF {@link ResourceSet} instance of the given source model.
      *
      * @param sourceModelType
      * @param <T> The generic type of the selected source model.
      * @return EMF {@link ResourceSet}
      */
     <T> ResourceSet getSourceResourceSet(Class<T> sourceModelType);
+
 
     /**
      * Get the EMF {@link URI} of the given source model.
@@ -99,5 +102,11 @@ public interface TrackInfo {
      * @return
      */
     String getModelVersion();
+
+
+    /**
+     * Get transformed EObjects by sourcce EObject
+     */
+    Map<EObject, List<EObject>> getTransformationTrace();
 
 }

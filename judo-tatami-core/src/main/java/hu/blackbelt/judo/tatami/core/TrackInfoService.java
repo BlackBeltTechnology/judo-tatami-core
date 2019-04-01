@@ -1,7 +1,10 @@
 package hu.blackbelt.judo.tatami.core;
 
 import org.eclipse.emf.ecore.EObject;
-import org.eclipse.emf.ecore.resource.Resource;
+import org.eclipse.emf.ecore.resource.ResourceSet;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * The API represents the tracing of model conversion pipeline.
@@ -14,65 +17,66 @@ public interface TrackInfoService {
 
     /**
      * Install a {@link TrackInfo} instance.
+     *
      * @param instance
      */
     void add(TrackInfo instance);
 
     /**
      * Install a {@link TrackInfo} instance.
+     *
      * @param instance
      */
     void remove(TrackInfo instance);
 
     /**
-     * Get the source model itself from the given type.
+     * Get the TrackInfo of the given element which responsible for the creation of EObject.
+     *
      * @param modelName
-     * @param sourceModelType
-     * @param <T>
-     * @return
+     * @param targetElement
+     * @return the {@link TrackInfo} or null when the given element created directly (without trace info)
      */
-    <T> T getSourceModel(String modelName, Class<T> sourceModelType);
-
-    /**
-     * Get the source model contents from the given type.
-     * @param modelName
-     * @param sourceModelType
-     * @param <T>
-     * @return
-     */
-    <T> Resource getSourceModelResource(String modelName, Class<T> sourceModelType);
+    TrackInfo getParentTrackInfoByInstance(String modelName, EObject targetElement);
 
 
     /**
-     * Get the entry point model type of the given model instance.
+     * Get the original of EObject of the given EObject which is repsonsable of the creation of current element - the
+     * original one is the first ancestor.
+     *
      * @param modelName
-     * @return
+     * @param targetElement
+     * @return the first ascendant (ancesor) instance or null when the current element is first in chain.
      */
-    Class getOriginalSourceModelType(String modelName);
+    EObject getRootAscendantOfInstance(String modelName, EObject targetElement);
+
 
     /**
-     * Get the original model type of the given element. That the first occurence of element in a pipeline.
+     * Get the source of EObject on the given sourceModelType which is repsonsable of the creation of current element - the
+     * one is the ascendant (ancesor) of given source model.
+     *
+     * @param modelName
+     * @param sourceModelType the source model contains the source element.
+     * @param targetElement
+     * @return the ascendant (ancesor) instance or null when the sourceModelType is not on the creation chain.
+     */
+    EObject getAscendantOfInstanceByModelType(String modelName, Class sourceModelType, EObject targetElement);
+
+
+    /**
+     * Get all ascendant (ancesor) stack map by @{@link TrackInfo} of the given target element.
      * @param modelName
      * @param targetElement
      * @return
      */
-    Class getOriginalSourceModelType(String modelName, EObject targetElement);
+    Map<TrackInfo, EObject> getAllAscendantOfInstance(String modelName, EObject targetElement);
+
 
     /**
-     * Get the EMF element of the given model type..
-     * @param modelName
-     * @param sourceModelType
-     * @param targetElement
-     * @param <T>
-     * @return
-     */
-    <T> EObject getSourceModelElement(String modelName, Class<T> sourceModelType, EObject targetElement);
-
-    /**
-     * Get the original EMF element of the given element. That the first occurence of element in a pipeline.
+     * Get all descendant stack map by @{@link TrackInfo} of the given target element.
      * @param modelName
      * @param targetElement
      * @return
      */
-    EObject getOriginalModelElement(String modelName, EObject targetElement);
-}
+    Map<TrackInfo, List<EObject>> getAllDescendantOfInstance(String modelName, EObject targetElement);
+
+ }
