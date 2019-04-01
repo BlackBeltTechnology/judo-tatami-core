@@ -44,7 +44,7 @@ pre {
             }
         }
     }
-    
+
     for (ap in getAllAccessPoints()) {
         log.debug("Access point: ");
         log.debug("  - mapped transfer object types: " + ap.getExposedMappedTransferObjectTypes().collect(t | t.getFQName()));
@@ -291,50 +291,84 @@ rule CreatePath
                 }
             }
         }
-            
-        for (p in op.eParameters) {
-            var p = op.eParameters.first();
-            
-            // TODO: check is p.eType is not null
-            if (p.eType.isDefined() and p.eType.isMappedTransferObjectType()) {
-                // create ID parameter (it is mandatory because path is related to bound operation)
-                
-                var input = new OPENAPI!Parameter;
-                
-                if (p.eType.eAttributes.isEmpty()) {
-	                input.name = "__id__" + p.name;
-	                // FIXME - add to body!
-	                input.location = OPENAPI!ParameterLocation#header;
-	                input.description = "ID of " + opGroup.getContainerClass().getEntityType().name + " instance";
-	                
-	                if (p.isMany) {
-	                    input.type = OPENAPI!JSONDataType#string;
-	                    
-	                    // TODO - create array, add 
-	                    //input.type = OPENAPI!JSONDataType#array;
-	                    //input.items = new OPENAPI!Schema;
-	                    //input.items.type = OPENAPI!JSONDataType#string;
-	                } else {
-	                    input.type = OPENAPI!JSONDataType#string;
-	                }
-                } else {
-	                //input.name = p.name;
-	                //input.location = OPENAPI!ParameterLocation#body;
-	                
-                    throw "Not supported yet";
-	                /*if (p.isMany) {
-	                } else {
-	                } */
-                }
-	            input.required = p.required;
-                
-                apiOperation.parameters.add(input);
-                
-                accessPoint.equivalent("CreateOpenAPIAccessPoint").paramters.add(input);
-                input.declaringContext = accessPoint.equivalent("CreateOpenAPIAccessPoint").api;
-            } else {
-                throw "Not supported yet";
+
+        // parameters with unknown type are ignored
+        for (p in op.eParameters.select(p | p.eType.isDefined())) {
+            if (p.eType.eAttributes.isEmpty() and p.eType.eReferences.isEmpty() and not p.eType.isMappedTransferObjectType()) {
+                // ignore unmapped transfer object parameters that contains no attribute nor reference 
+                continue;
             }
+            
+            var input = new OPENAPI!Parameter;
+            input.name = p.name;
+            input.location = OPENAPI!ParameterLocation#body;
+            input.required = p.required;
+            
+            input.schema = new OPENAPI!Schema;
+		    input.schema.declaringContext = input;
+		    accessPoint.equivalent("CreateOpenAPIAccessPoint").schemas.add(input.schema);
+            
+            var parameterSchema;
+            
+            if (p.isMany) {
+                input.schema.type = OPENAPI!JSONDataType#array;
+                input.schema.items = new OPENAPI!Schema;
+
+                input.schema.items.declaringContext = input.schema;
+                accessPoint.equivalent("CreateOpenAPIAccessPoint").schemas.add(input.schema.items);
+
+                parameterSchema = input.schema.items;
+            } else {
+                input.schema.type = OPENAPI!JSONDataType#object;
+                parameterSchema = input.schema;
+            }
+            
+		     
+            if (p.eType.isMappedTransferObjectType()) {
+		        var idProperty = new OPENAPI!Schema;
+		        idProperty.name = "__idXX";
+		        idProperty.type = OPENAPI!JSONDataType#string;
+		        
+		        idProperty.declaringContext = parameterSchema;
+		        accessPoint.equivalent("CreateOpenAPIAccessPoint").schemas.add(idProperty);
+		        
+		        parameterSchema.properties.add(idProperty);
+		        //t.required.add(idProperty); // TODO
+            }
+            
+            /*
+            
+            if (p.eType.eAttributes.isEmpty() and p.eType.isMappedTransferObjectType()) {
+                // parameter is an ID reference (or array)
+                input = new OPENAPI!Parameter;
+                
+                input.name = "__id__" + p.name;
+                input.location = OPENAPI!ParameterLocation#header;
+                if (p.isMany) {
+                    input.type = OPENAPI!JSONDataType#string;
+                    
+                    // TODO - create array, add 
+                    input.type = OPENAPI!JSONDataType#array;
+                    //input.items = new OPENAPI!Schema;
+                    //input.items.type = OPENAPI!JSONDataType#string;
+                } else {
+                    input.type = OPENAPI!JSONDataType#string;
+                }
+            } else if (not p.eType.eAttributes.isEmpty()) {
+                // parameter is a real object
+                //input = new OPENAPI!Parameter;
+                
+                if (p.eType.isMappedTransferObjectType()) {
+                    //input.name = "__id__" + p.name;
+                    // add ID to parameter object
+                }
+            } */
+            
+            apiOperation.parameters.add(input);
+            
+            accessPoint.equivalent("CreateOpenAPIAccessPoint").paramters.add(input);
+            //input.declaringContext = accessPoint.equivalent("CreateOpenAPIAccessPoint").api;
+            input.declaringContext = apiOperation;
         }
 
         apiOperation.responses.add(accessPoint.equivalent("CreateOpenAPIAccessPoint").api.responses.selectOne(r | r.code == "500"));
