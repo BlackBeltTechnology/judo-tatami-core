@@ -64,19 +64,40 @@ public interface TrackInfoService {
 
     /**
      * Get all ascendant (ancesor) stack map by @{@link TrackInfo} of the given target element.
+     *
      * @param modelName
      * @param targetElement
      * @return
      */
     Map<TrackInfo, EObject> getAllAscendantOfInstance(String modelName, EObject targetElement);
 
+    /**
+     * Get all ascendant {@link TrackInfo} of the given element.
+     * @param modelName
+     * @param instance
+     * @return
+     */
+    List<TrackInfo> getTrackInfoAscendantsByInstance(String modelName, EObject instance);
+
 
     /**
-     * Get all descendant stack map by @{@link TrackInfo} of the given target element.
+     * Get all descendant stack map by {@link TrackInfo} of the given target element.  It traverse over all the trace
+     * maps and collect elements by {@link TrackInfo}.
+     *
      * @param modelName
      * @param targetElement
      * @return
      */
     Map<TrackInfo, List<EObject>> getAllDescendantOfInstance(String modelName, EObject targetElement);
 
- }
+
+    /**
+     * Get all decendant insrances of the given model type and  instances.
+     * @param modelName
+     * @param modelType
+     * @param instance
+     * @return
+     */
+    List<EObject> getDescendantOfInstanceByModelType(String modelName, Class modelType, EObject instance);
+
+}

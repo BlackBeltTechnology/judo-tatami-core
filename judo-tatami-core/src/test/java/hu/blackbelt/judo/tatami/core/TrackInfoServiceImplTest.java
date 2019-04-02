@@ -184,24 +184,28 @@ public class TrackInfoServiceImplTest {
         trackInfoService.add(level1_to_level2model2);
         trackInfoService.add(level2_to_level3model1);
 
-        // Test
-        assertEquals(1, 1);
+        assertEquals(rootModelO1, trackInfoService.getRootAscendantOfInstance(TEST_1, level3Model1O1));
+        assertEquals(null, trackInfoService.getAscendantOfInstanceByModelType(TEST_1, Level1Model1.class, level3Model1O1));
+        assertEquals(level1Model2O1, trackInfoService.getAscendantOfInstanceByModelType(TEST_1, Level1Model2.class, level3Model1O1));
+        assertEquals(level2Model1O1, trackInfoService.getAscendantOfInstanceByModelType(TEST_1, Level2Model1.class, level3Model1O2));
+        assertEquals(
+                ImmutableList.of(level2_to_level3model1, level1_to_level2model2, root_to_level1model2),
+                trackInfoService.getTrackInfoAscendantsByInstance(TEST_1, level3Model1O1)
+        );
 
-        assertEquals(trackInfoService.getRootAscendantOfInstance(TEST_1, level3Model1O1), rootModelO1);
-        assertEquals(trackInfoService.getAscendantOfInstanceByModelType(TEST_1, Level1Model1.class, level3Model1O1), null);
-        assertEquals(trackInfoService.getAscendantOfInstanceByModelType(TEST_1, Level1Model2.class, level3Model1O1), level1Model2O1);
-        assertEquals(trackInfoService.getAscendantOfInstanceByModelType(TEST_1, Level2Model1.class, level3Model1O2), level2Model1O1);
+        assertEquals(ImmutableMap.builder()
+                        .put(root_to_level1model1, ImmutableList.of(level1Model1O1))
+                        .put(root_to_level1model2, ImmutableList.of(level1Model2O1))
+                        .put(root_to_level1model3, ImmutableList.of(level1Model3O1))
+                        .put(root_to_level2model1, ImmutableList.of(level2Model1O1))
+                        .put(level1_to_level2model2, ImmutableList.of(level2Model2O1))
+                        .put(level2_to_level3model1, ImmutableList.of(level3Model1O1))
+                        .build(),
+                trackInfoService.getAllDescendantOfInstance(TEST_1, rootModelO1)
+        );
 
-        assertEquals(trackInfoService.getTrackInfoAscendantsByInstance(TEST_1, level3Model1O1), ImmutableList.of(level2_to_level3model1, level1_to_level2model2, root_to_level1model2));
 
-
-    }
-
-
-    private EClass createTestClass(String name) {
-        return newEClassBuilder()
-                .withName(name)
-                .build();
+        assertEquals(ImmutableList.of(level3Model1O1), trackInfoService.getDescendantOfInstanceByModelType(TEST_1, Level3Model1.class, rootModelO1));
     }
 
 
@@ -226,12 +230,5 @@ public class TrackInfoServiceImplTest {
         resourceSet.getPackageRegistry().put(ePackage.getNsURI(), ePackage);
         return resourceSet;
     }
-
-    /*
-            ResourceSet targetResourceSet = createTraceResourceSet(traceName);
-        EPackage tracePackage = targetResourceSet.getPackageRegistry().getEPackage(HTTP_WWW_BLACKBELT_HU_META_TRASFORMATION_TRACE + traceName);
-        EClassImpl traceClass = (EClassImpl) tracePackage.getEClassifier(TRACE_CLASS);
-
-     */
 
 }

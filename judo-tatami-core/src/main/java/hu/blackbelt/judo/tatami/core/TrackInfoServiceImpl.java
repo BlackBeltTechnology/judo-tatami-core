@@ -1,6 +1,7 @@
 package hu.blackbelt.judo.tatami.core;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import lombok.SneakyThrows;
@@ -132,31 +133,8 @@ public class TrackInfoServiceImpl implements TrackInfoService {
         return null;
     }
 
-    // @Override
-    public Map<TrackInfo, List<EObject>> getAllDescendantOfInstance(String modelName, EObject instance) {
-        List<EObject> currentList = ImmutableList.of(instance);
-        Map<TrackInfo, EObject> trackInfoMap = Maps.newLinkedHashMap();
-        while (currentList != null && currentList.size() > 0) {
-            for (EObject current : currentList) {
-                List<TrackInfo> trackInfoList = getChildTrackInfosByInstance(modelName, current);
-
-            }
-            /*
-            TrackInfo constructor = getParentTrackInfoByInstance(modelName, currentList);
-            if (constructor != null) {
-                currentList = getTraceSourceElementObjectByTargetElement(constructor, currentList);
-                trackInfoMap.put(constructor, currentList);
-            } else {
-                return trackInfoMap;
-            }
-            */
-        }
-        return null;
-    }
-
-
-    //    @Override
-    public <T> List getTrackInfoAscendantsByInstance(String modelName, EObject instance) {
+    @Override
+    public List<TrackInfo> getTrackInfoAscendantsByInstance(String modelName, EObject instance) {
         return Lists.newArrayList(getAllAscendantOfInstance(modelName, instance).keySet());
     }
 
@@ -164,6 +142,60 @@ public class TrackInfoServiceImpl implements TrackInfoService {
     @Override
     public EObject getRootAscendantOfInstance(String modelName, EObject targetElement) {
         return getAscendantOfInstanceByModelType(modelName, null, targetElement);
+    }
+
+    @Override
+    public Map<TrackInfo, List<EObject>> getAllDescendantOfInstance(String modelName, EObject instance) {
+        List<EObject> currentList = ImmutableList.of(instance);
+        Map<TrackInfo, List<EObject>> trackInfoMap = Maps.newLinkedHashMap();
+        while (currentList.size() > 0) {
+            List<EObject> childs = Lists.newArrayList();
+            for (EObject current : currentList) {
+                List<TrackInfo> trackInfoList = getChildTrackInfosByInstance(modelName, current);
+                for (TrackInfo tr : trackInfoList) {
+                    if (!trackInfoMap.containsKey(tr)) {
+                        trackInfoMap.put(tr, Lists.newArrayList());
+                    }
+                    List trackInfoInstanceList = trackInfoMap.get(tr);
+                    List elements = getTraceTargetElementObjectBySourceElement(tr, current);
+                    if (elements != null) {
+                        trackInfoInstanceList.addAll(elements);
+                        childs.addAll(elements);
+                    }
+                }
+            }
+            currentList = childs;
+        }
+
+        // Remove all elements which have empty list
+        for (TrackInfo k : ImmutableSet.copyOf(trackInfoMap.keySet())) {
+            if (trackInfoMap.get(k).size() == 0) {
+                trackInfoMap.remove(k);
+            }
+        }
+        return trackInfoMap;
+    }
+
+    @Override
+    public List<EObject> getDescendantOfInstanceByModelType(String modelName, Class modelType, EObject instance) {
+        List<EObject> currentList = ImmutableList.of(instance);
+        while (currentList.size() > 0) {
+            List<EObject> childs = Lists.newArrayList();
+            for (EObject current : currentList) {
+                List<TrackInfo> trackInfoList = getChildTrackInfosByInstance(modelName, current);
+                for (TrackInfo tr : trackInfoList) {
+                    List<EObject> elements = getTraceTargetElementObjectBySourceElement(tr, current);
+                    if (elements != null) {
+                        if (tr.getTargetModelType().equals(modelType)) {
+                            return elements;
+                        }
+                        childs.addAll(elements);
+                    }
+                }
+            }
+            currentList = childs;
+        }
+        return null;
     }
 
     private EObject getTraceSourceElementObjectByTargetElement(TrackInfo constructor, EObject targetElement) {
