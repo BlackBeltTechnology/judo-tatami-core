@@ -35,6 +35,12 @@ import static hu.blackbelt.judo.tatami.psm2asm.Psm2Asm.*;
 public class Psm2AsmTest {
 
 
+    public static final String PSM_2_ASM_MODEL = "psm2asm.model";
+    public static final String TRACE_PSM_2_ASM = "trace:psm2asm";
+    public static final String ASM_NORTHWIND = "asm:northwind";
+    public static final String PSM_NORTHWIND = "psm:northwind";
+    public static final String URN_NORTHWIND_JUDOPSM_MODEL = "urn:northwind-judopsm.model";
+    public static final String URN_NORTHWIND_ASM = "urn:northwind.asm";
     URIHandler uriHandler;
     Log slf4jlog;
     PsmModel psmModel;
@@ -46,8 +52,8 @@ public class Psm2AsmTest {
         uriHandler = new NameMappedURIHandlerImpl(
                 ImmutableList.of(new NioFilesystemnRelativePathURIHandlerImpl("urn", FileSystems.getDefault(), targetDir().getAbsolutePath())),
                 ImmutableMap.of(
-                        URI.createURI("psm:northwind"), URI.createURI("urn:northwind-judopsm.model"),
-                        URI.createURI("asm:northwind"), URI.createURI("urn:northwind.asm"))
+                        URI.createURI(PSM_NORTHWIND), URI.createURI(URN_NORTHWIND_JUDOPSM_MODEL),
+                        URI.createURI(ASM_NORTHWIND), URI.createURI(URN_NORTHWIND_ASM))
         );
 
         // Default logger
@@ -58,7 +64,7 @@ public class Psm2AsmTest {
         ResourceSet psmResourceSet = createPsmResourceSet(uriHandler);
         psmModel = PsmModelLoader.loadPsmModel(
                 psmResourceSet,
-                URI.createURI("psm:northwind"),
+                URI.createURI(PSM_NORTHWIND),
                 "northwind",
                 "1.0.0");
     }
@@ -78,7 +84,7 @@ public class Psm2AsmTest {
         AsmModel asmModel = AsmModel.asmModelBuilder()
                 .name(psmModel.getName())
                 .resourceSet(asmResourceSet)
-                .uri(URI.createURI("asm:northwind"))
+                .uri(URI.createURI(ASM_NORTHWIND))
                 .version(psmModel.getVersion())
                 .build();
 
@@ -90,12 +96,12 @@ public class Psm2AsmTest {
         // Saving trace map
         Resource traceResoureSaved = new XMIResourceImpl();
         traceResoureSaved.getContents().addAll(getPsm2AsmTrace(psm2AsmTrackInfo.getTrace()));
-        traceResoureSaved.save(new FileOutputStream(new File(targetDir().getAbsolutePath(), "psm2asm.model")), ImmutableMap.of());
+        traceResoureSaved.save(new FileOutputStream(new File(targetDir().getAbsolutePath(), PSM_2_ASM_MODEL)), ImmutableMap.of());
 
         // Loadeing trace map
         ResourceSet traceLoadedResourceSet = createPsm2AsmTraceResourceSet();
-        Resource traceResoureLoaded = traceLoadedResourceSet.createResource(URI.createURI("trace:psm2asm"));
-        traceResoureLoaded.load(new FileInputStream(new File(targetDir().getAbsolutePath(), "psm2asm.model")), ImmutableMap.of());
+        Resource traceResoureLoaded = traceLoadedResourceSet.createResource(URI.createURI(TRACE_PSM_2_ASM));
+        traceResoureLoaded.load(new FileInputStream(new File(targetDir().getAbsolutePath(), PSM_2_ASM_MODEL)), ImmutableMap.of());
 
         // Resolve serialized URI's as EObject map
         Map<EObject, List<EObject>> resolvedTrace = resolvePsm2AsmTrace(traceResoureLoaded, psmModel, asmModel);
