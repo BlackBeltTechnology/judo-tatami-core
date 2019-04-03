@@ -4,18 +4,21 @@ import hu.blackbelt.epsilon.runtime.execution.impl.Slf4jLog;
 import hu.blackbelt.epsilon.runtime.osgi.BundleURIHandler;
 import hu.blackbelt.judo.meta.psm.jql.extract.runtime.PsmJqlExtractModel;
 import hu.blackbelt.judo.meta.psm.runtime.PsmModel;
+import hu.blackbelt.judo.tatami.core.TrackInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.emf.common.util.URI;
-import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceRegistration;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
 import java.io.File;
+import java.util.Hashtable;
 
+import static hu.blackbelt.judo.meta.psm.jql.extract.runtime.PsmJqlExtractModelLoader.createPsmJqlExtractResourceSet;
 import static hu.blackbelt.judo.meta.psm.runtime.PsmModelLoader.registerPsmMetamodel;
-import static hu.blackbelt.judo.meta.psm.jql.extract.runtime.PsmJqlExtractModelLoader.*;
+import static hu.blackbelt.judo.tatami.psm2jql.Psm2JqlExtract.executePsm2PsmJqlExtractTransformation;
 
 @Component(immediate = true, service = Psm2JqlExtractSerivce.class)
 @Slf4j
@@ -26,27 +29,34 @@ public class Psm2JqlExtractSerivce {
     @Reference
     Psm2JqlExtractScriptResource psm2JqlExtractScriptResource;
 
+    ServiceRegistration<TrackInfo> psm2JqlExtractTrackInfoRegistration;
+
+
     public PsmJqlExtractModel install(PsmModel psmModel, BundleContext bundleContext) throws Exception {
 
         BundleURIHandler bundleURIHandler = new BundleURIHandler("urn", "",
                 bundleContext.getBundle());
 
         ResourceSet psmJqlExtractResourceSet = createPsmJqlExtractResourceSet(bundleURIHandler);
-        URI jqlExtractUri = URI.createURI("urn:" + psmModel.getName() + ".jqlextract");
-        Resource psmJqlExtractResource = psmJqlExtractResourceSet.createResource(jqlExtractUri);
         registerPsmMetamodel(psmJqlExtractResourceSet);
 
         PsmJqlExtractModel psmJqlExtractModel = PsmJqlExtractModel.buildPsmJqlExtractModel()
                 .name(psmModel.getName())
                 .version(psmModel.getVersion())
-                .uri(jqlExtractUri)
+                .uri(URI.createURI("urn:" + psmModel.getName() + ".jqlextract"))
                 .checksum(psmModel.getChecksum())
                 .resourceSet(psmJqlExtractResourceSet)
                 .metaVersionRange(bundleContext.getBundle().getHeaders().get(PSM_JQL_EXTRACT_META_VERSION_RANGE)).build();
 
-        Psm2JqlExtract.executePsm2PsmJqlExtractTransformation(psmJqlExtractResourceSet, psmModel, psmJqlExtractModel, new Slf4jLog(log),
+        Psm2JqlExtractTrackInfo psm2JqlExtractTrackInfo = executePsm2PsmJqlExtractTransformation(psmJqlExtractResourceSet, psmModel, psmJqlExtractModel, new Slf4jLog(log),
                 new File(psm2JqlExtractScriptResource.getSctiptRoot().getAbsolutePath(), "psm2jql/transformations/jql/") );
 
+        psm2JqlExtractTrackInfoRegistration = bundleContext.registerService(TrackInfo.class, psm2JqlExtractTrackInfo, new Hashtable<>());
         return psmJqlExtractModel;
+    }
+
+
+    public void uninstall() {
+        psm2JqlExtractTrackInfoRegistration.unregister();
     }
 }
