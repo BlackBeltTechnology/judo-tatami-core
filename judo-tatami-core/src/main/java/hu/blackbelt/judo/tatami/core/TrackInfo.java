@@ -31,7 +31,7 @@ public interface TrackInfo {
      *
      * @param sourceModelType
      * @param <T> The generic type of the selected source model.
-     * @return The source model instance
+     * @return The source model instance or null when instance of the given type does not exist
      */
     <T> T getSourceModel(Class<T> sourceModelType);
 
@@ -40,7 +40,7 @@ public interface TrackInfo {
      *
      * @param sourceModelType
      * @param <T> The generic type of the selected source model.
-     * @return EMF {@link ResourceSet}
+     * @return EMF {@link ResourceSet} or null when instance of the given type does not exist
      */
     <T> ResourceSet getSourceResourceSet(Class<T> sourceModelType);
 
@@ -50,7 +50,7 @@ public interface TrackInfo {
      *
      * @param sourceModelType
      * @param <T> The generic type of the selected source model.
-     * @return EMF {@link URI}
+     * @return EMF {@link URI} or null when instance of the given type does not exist
      */
     <T> URI getSourceURI(Class<T> sourceModelType);
 
@@ -105,7 +105,8 @@ public interface TrackInfo {
 
 
     /**
-     * Get transformed EObjects by sourcce EObject
+     * Get transformed EObjects by source EObject to target's EObject intances.
+     * Only the transformed instances are presented, not all of the source instances.
      */
     Map<EObject, List<EObject>> getTransformationTrace();
 

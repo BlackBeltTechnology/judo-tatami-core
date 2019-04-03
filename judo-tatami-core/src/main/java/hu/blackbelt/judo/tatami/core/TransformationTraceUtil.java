@@ -97,6 +97,28 @@ public class TransformationTraceUtil {
         return traceEntries;
     }
 
+    public static List<EObject> getTransformationTrace(String traceName, Map<EObject, List<EObject>> traceMap) throws ScriptExecutionException {
+        ResourceSet resourceSet = createTraceResourceSet(traceName);
+        EPackage tracePackage = resourceSet.getPackageRegistry().getEPackage(HTTP_WWW_BLACKBELT_HU_META_TRASFORMATION_TRACE + traceName);
+        EClassImpl traceClass = (EClassImpl) tracePackage.getEClassifier(TRACE_CLASS);
+        EAttribute srcUriAttribute = (EAttribute) traceClass.getEStructuralFeature(SOURCE_URI);
+        EAttribute targetUriAttributes = (EAttribute) traceClass.getEStructuralFeature(TARRGET_URIS);
+
+        List<EObject> traceEntries = Lists.newArrayList();
+        for (EObject source : traceMap.keySet()) {
+            EObject trace = tracePackage.getEFactoryInstance().create(traceClass);
+            trace.eSet(srcUriAttribute, EcoreUtil.getURI(source).toString());
+
+            List<String> targets = Lists.newArrayList();
+            for (Object t : traceMap.get(source)) {
+                targets.add(EcoreUtil.getURI((EObject) t).toString());
+            }
+            trace.eSet(targetUriAttributes, targets);
+            traceEntries.add(trace);
+        }
+        return traceEntries;
+    }
+
 
     public static ResourceSet createTraceResourceSet(String traceName) {
         final EcorePackage ecore = EcorePackage.eINSTANCE;

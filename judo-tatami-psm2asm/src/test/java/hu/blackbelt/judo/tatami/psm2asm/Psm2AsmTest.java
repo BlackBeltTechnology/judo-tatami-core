@@ -74,26 +74,22 @@ public class Psm2AsmTest {
         // Creating ASM resource set.
         ResourceSet asmResourceSet = createAsmResourceSet(uriHandler, new LocalAsmPackageRegistration());
 
-        // Create wirtual URN
-        URI asmUri = URI.createURI("asm:northwind");
-        Resource  asmResource = asmResourceSet.createResource(asmUri);
-
         // Creating AsmModel definition
         AsmModel asmModel = AsmModel.asmModelBuilder()
                 .name(psmModel.getName())
                 .resourceSet(asmResourceSet)
-                .uri(asmUri)
+                .uri(URI.createURI("asm:northwind"))
                 .version(psmModel.getVersion())
                 .build();
 
 
         // Make transformation which returns the tracr with the serialized URI's
-        List<EObject> trace = executePsm2AsmTransformation(asmResourceSet, psmModel, asmModel, new Slf4jLog(log),
+        Psm2AsmTrackInfo psm2AsmTrackInfo = executePsm2AsmTransformation(asmResourceSet, psmModel, asmModel, new Slf4jLog(log),
                 new File(targetDir().getAbsolutePath(), "epsilon/transformations/asm"));
 
         // Saving trace map
         Resource traceResoureSaved = new XMIResourceImpl();
-        traceResoureSaved.getContents().addAll(trace);
+        traceResoureSaved.getContents().addAll(getPsm2AsmTrace(psm2AsmTrackInfo.getTrace()));
         traceResoureSaved.save(new FileOutputStream(new File(targetDir().getAbsolutePath(), "psm2asm.model")), ImmutableMap.of());
 
         // Loadeing trace map

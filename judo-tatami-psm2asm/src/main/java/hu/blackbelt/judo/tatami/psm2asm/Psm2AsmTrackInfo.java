@@ -6,9 +6,9 @@ import hu.blackbelt.judo.meta.psm.runtime.PsmModel;
 import hu.blackbelt.judo.tatami.core.TrackInfo;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NonNull;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
-import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 
 import java.util.List;
@@ -18,10 +18,14 @@ import java.util.Map;
 @Builder(builderMethodName = "psm2AsmTrackInfoBuilder")
 @Getter
 public class Psm2AsmTrackInfo implements TrackInfo {
-    PsmModel psmModel;
-    AsmModel asmModel;
-    String modelName;
 
+    @NonNull
+    PsmModel psmModel;
+
+    @NonNull
+    AsmModel asmModel;
+
+    @NonNull
     Map<EObject, List<EObject>> trace;
 
     @Override
@@ -88,5 +92,15 @@ public class Psm2AsmTrackInfo implements TrackInfo {
     @Override
     public String getModelVersion() {
         return psmModel.getVersion();
+    }
+
+    @Override
+    public Map<EObject, List<EObject>> getTransformationTrace() {
+        return trace;
+    }
+
+    @Override
+    public String getModelName() {
+        return psmModel.getName();
     }
 }
