@@ -7,36 +7,43 @@ import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.util.EcoreUtil;
+import org.eclipse.xtext.resource.IResourceFactory;
 import org.eclipse.xtext.resource.XtextResourceSet;
 
-import java.io.File;
-import java.io.FileOutputStream;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Iterator;
 
 @Slf4j
 public class JqlParser {
 
-    private final Injector injector = new JqlDslStandaloneSetupGenerated().createInjectorAndDoEMFRegistration();
+    public static final String JQLSCRIPT_CONTENT_TYPE = "jqlscript";
+    private static Injector injectorInstance = null;  // = new JqlDslStandaloneSetupGenerated().createInjectorAndDoEMFRegistration();
+
+    private static Injector injector() {
+        if (injectorInstance == null) {
+            injectorInstance =  new JqlDslStandaloneSetupGenerated().createInjectorAndDoEMFRegistration();
+            Resource.Factory.Registry.INSTANCE.getContentTypeToFactoryMap().put(JQLSCRIPT_CONTENT_TYPE, (IResourceFactory) injectorInstance.getInstance(IResourceFactory.class));
+
+        }
+        return injectorInstance;
+    }
+
 
     public EObject parse(final String jqlExpression) {
         if (jqlExpression == null) {
             return null;
         }
 
-        log.info("Parsing expression: {}", jqlExpression);
+        if (log.isDebugEnabled()) {
+            log.info("Parsing expression: {}", jqlExpression);
+        }
 
         try {
-            // TODO - create valid EMF URI of input stream for XText parser
-            final File tmpFile = File.createTempFile("parsing-", ".jql");
-            tmpFile.deleteOnExit();
-            final FileOutputStream fos = new FileOutputStream(tmpFile);
-            fos.write(jqlExpression.getBytes());
-            fos.close();
-            final URI uri = URI.createFileURI(tmpFile.getAbsolutePath());
-
-            final XtextResourceSet resourceSet = injector.getInstance(XtextResourceSet.class);
-            final Resource jqlResource = resourceSet.getResource(uri, true);
+            Resource jqlResource = injector().getInstance(XtextResourceSet.class).createResource(URI.createURI(jqlExpression), JQLSCRIPT_CONTENT_TYPE);
+            InputStream in = new ByteArrayInputStream(jqlExpression.getBytes("UTF-8"));
+            jqlResource.load(in, injector().getInstance(XtextResourceSet.class).getLoadOptions());
 
             // get first entry of jqlResource (root expression)
             final Iterator<EObject> iterator = jqlResource.getContents().iterator();
