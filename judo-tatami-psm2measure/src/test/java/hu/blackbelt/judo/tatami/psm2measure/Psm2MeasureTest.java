@@ -1,5 +1,6 @@
 package hu.blackbelt.judo.tatami.psm2measure;
 
+import com.google.common.collect.ImmutableMap;
 import hu.blackbelt.epsilon.runtime.execution.api.Log;
 import hu.blackbelt.epsilon.runtime.execution.impl.NioFilesystemnRelativePathURIHandlerImpl;
 import hu.blackbelt.epsilon.runtime.execution.impl.Slf4jLog;
@@ -20,16 +21,21 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.nio.file.FileSystems;
 import java.util.Map;
+import java.util.List;
 
 import static hu.blackbelt.judo.meta.measure.runtime.MeasureModelLoader.*;
 import static hu.blackbelt.judo.meta.psm.runtime.PsmModelLoader.createPsmResourceSet;
-import static hu.blackbelt.judo.tatami.psm2measure.Psm2Measure.executePsm2MeasureTransformation;
+import static hu.blackbelt.judo.tatami.psm2measure.Psm2Measure.*;
 
 @Slf4j
 public class Psm2MeasureTest {
 
+    public final static String PSM_2_MEASURE_MODEL = "psm2measure.model";
+    public static final String TRACE_PSM_2_MEASURE = "trace:psm2measure";
 
     URIHandler uriHandler;
     Log slf4jlog;
@@ -39,7 +45,7 @@ public class Psm2MeasureTest {
     public void setUp() throws Exception {
         // Set our custom handler
         uriHandler = new NioFilesystemnRelativePathURIHandlerImpl("urn", FileSystems.getDefault(),
-                srcDir().getAbsolutePath());
+                targetDir().getAbsolutePath());
 
         // Default logger
         slf4jlog = new Slf4jLog(log);
@@ -76,19 +82,32 @@ public class Psm2MeasureTest {
                 .version(psmModel.getVersion())
                 .build();
 
-        executePsm2MeasureTransformation(measureResourceSet, psmModel, measureModel, new Slf4jLog(log),
-                new File(srcDir().getAbsolutePath(), "epsilon/transformations/measure"));
+        Psm2MeasureTrackInfo psm2MeasureTrackInfo = executePsm2MeasureTransformation(measureResourceSet, psmModel, measureModel, new Slf4jLog(log),
+                new File(targetDir().getAbsolutePath(), "epsilon/transformations/measure"));
 
 
-    /*
-        TreeIterator<Notifier> iter = measureResourceSet.getAllContents();
-        while (iter.hasNext()) {
-            final Notifier obj = iter.next();
-            log.debug(obj.toString());
-        } */
 
+        // Saving trace map
+        Resource traceResoureSaved = new XMIResourceImpl();
+        traceResoureSaved.getContents().addAll(getPsm2MeasureTrace(psm2MeasureTrackInfo.getTrace()));
+        traceResoureSaved.save(new FileOutputStream(new File(targetDir().getAbsolutePath(), PSM_2_MEASURE_MODEL)), ImmutableMap.of());
 
-        XMIResource xmiResource = new XMIResourceImpl(URI.createFileURI(srcDir().getAbsolutePath()+"/northwind-measure.model"));
+        // Loadeing trace map
+        ResourceSet traceLoadedResourceSet = createPsm2MeasureTraceResourceSet();
+        Resource traceResoureLoaded = traceLoadedResourceSet.createResource(URI.createURI(TRACE_PSM_2_MEASURE));
+        traceResoureLoaded.load(new FileInputStream(new File(targetDir().getAbsolutePath(), PSM_2_MEASURE_MODEL)), ImmutableMap.of());
+
+        // Resolve serialized URI's as EObject map
+        Map<EObject, List<EObject>> resolvedTrace = resolvePsm2MeasureTrace(traceResoureLoaded, psmModel, measureModel);
+
+        // Printing trace
+        for (EObject e : resolvedTrace.keySet()) {
+            for (EObject t : resolvedTrace.get(e)) {
+                log.info(e.toString() + " -> " + t.toString());
+            }
+        }
+
+        XMIResource xmiResource = new XMIResourceImpl(URI.createFileURI(targetDir().getAbsolutePath()+"/northwind-measure.model"));
         xmiResource.getContents().addAll(EcoreUtil.copyAll(measureResource.getContents()));
         for (EObject e : measureResource.getContents()) {
             log.debug(e.toString());
@@ -106,7 +125,7 @@ public class Psm2MeasureTest {
     }
 
 
-    public File srcDir(){
+    public File targetDir(){
         String relPath = getClass().getProtectionDomain().getCodeSource().getLocation().getFile();
         File targetDir = new File(relPath);
         if(!targetDir.exists()) {
