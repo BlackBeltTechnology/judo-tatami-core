@@ -73,7 +73,7 @@
         <judo-meta-odata.import-range>[1.0,1.1)</judo-meta-odata.import-range>
         -->
 
-        <judo-meta-asm-version>1.0.0-develop-31</judo-meta-asm-version>
+        <judo-meta-asm-version>1.0.0-develop-32</judo-meta-asm-version>
         <judo-meta-asm-import-range>[1.0,1.1)</judo-meta-asm-import-range>
 
         <judo-meta-expression-version>1.0.1.develop_110</judo-meta-expression-version>
@@ -132,9 +132,16 @@
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
         </dependency>
+
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-log4j12</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.hamcrest</groupId>
+            <artifactId>hamcrest-library</artifactId>
             <scope>test</scope>
         </dependency>
 
@@ -322,6 +329,12 @@
                 <groupId>hu.blackbelt.judo.meta</groupId>
                 <artifactId>judo-meta-openapi-runtime</artifactId>
                 <version>${judo-meta-openapi-version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.hamcrest</groupId>
+                <artifactId>hamcrest-library</artifactId>
+                <version>1.3</version>
             </dependency>
 
         </dependencies>

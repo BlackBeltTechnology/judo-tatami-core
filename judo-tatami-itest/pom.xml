@@ -73,6 +73,12 @@
         </dependency>
 
         <dependency>
+            <groupId>hu.blackbelt.judo.tatami</groupId>
+            <artifactId>judo-tatami-core</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
             <groupId>hu.blackbelt.judo.meta</groupId>
             <artifactId>judo-meta-psm-jql-runtime</artifactId>
             <version>${judo-meta-psm-jql-version}</version>

@@ -1,24 +1,20 @@
 package hu.blackbelt.judo.tatami.itest;
 
-import static org.ops4j.pax.exam.CoreOptions.*;
-import static org.ops4j.pax.exam.karaf.options.KarafDistributionOption.*;
-import static org.ops4j.pax.tinybundles.core.TinyBundles.*;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.InputStream;
-import java.net.URL;
-
 import hu.blackbelt.judo.meta.asm.runtime.AsmModel;
+import hu.blackbelt.judo.meta.asm.runtime.AsmUtils;
 import hu.blackbelt.judo.meta.expression.runtime.ExpressionModel;
 import hu.blackbelt.judo.meta.liquibase.runtime.LiquibaseModel;
 import hu.blackbelt.judo.meta.measure.runtime.MeasureModel;
 import hu.blackbelt.judo.meta.psm.jql.extract.runtime.PsmJqlExtractModel;
 import hu.blackbelt.judo.meta.psm.runtime.PsmModel;
+import hu.blackbelt.judo.meta.rdbms.RdbmsTable;
 import hu.blackbelt.judo.meta.rdbms.runtime.RdbmsModel;
+import hu.blackbelt.judo.tatami.core.TrackInfo;
+import hu.blackbelt.judo.tatami.core.TrackInfoService;
 import hu.blackbelt.osgi.utils.osgi.api.BundleTrackerManager;
-import org.junit.Assert;
+import lombok.extern.slf4j.Slf4j;
+import org.eclipse.emf.ecore.EClass;
+import org.eclipse.emf.ecore.EObject;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.ops4j.pax.exam.Configuration;
@@ -28,11 +24,31 @@ import org.ops4j.pax.exam.junit.PaxExam;
 import org.ops4j.pax.exam.karaf.options.LogLevelOption;
 import org.ops4j.pax.exam.options.MavenArtifactUrlReference;
 import org.ops4j.pax.exam.options.MavenUrlReference;
+import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
+import org.osgi.framework.InvalidSyntaxException;
+import org.osgi.framework.ServiceReference;
 
 import javax.inject.Inject;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
+import java.net.URL;
+import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.*;
+import static org.ops4j.pax.exam.CoreOptions.*;
+import static org.ops4j.pax.exam.karaf.options.KarafDistributionOption.*;
+import static org.ops4j.pax.tinybundles.core.TinyBundles.bundle;
+import static org.ops4j.pax.tinybundles.core.TinyBundles.withBnd;
 
 @RunWith(PaxExam.class)
+@Slf4j
 public class TatamiTransformationPipelineITest {
     public static final String JUDO_META_GROUPID = "hu.blackbelt.judo.meta";
     public static final String TATAMI_GROUPID = "hu.blackbelt.judo.tatami";
@@ -115,6 +131,13 @@ public class TatamiTransformationPipelineITest {
     @Inject
     protected ExpressionModel expressionModel;
 
+    @Inject
+    BundleContext context;
+
+    @Inject
+    TrackInfoService trackInfoService;
+
+
     @Configuration
     public Option[] config() throws FileNotFoundException {
         MavenArtifactUrlReference karafUrl = maven()
@@ -145,6 +168,7 @@ public class TatamiTransformationPipelineITest {
                         .unpackDirectory(new File("target", "exam"))
                         .useDeployFolder(false),
                 keepRuntimeFolder(),
+                cleanCaches(true),
                 logLevel(LogLevelOption.LogLevel.INFO),
                 // Debug
                 //vmOption("-Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=5005"),
@@ -158,6 +182,8 @@ public class TatamiTransformationPipelineITest {
 
                 //features(karafStandardRepo , "scr"),
                 features(judoKarafRuntimeRepo , FEATURE_SCR, FEATURE_OSGI_UTILS, FEATURE_EPSILON_RUNTIME, FEATURE_ECLIPSE_XTEXT),
+
+                mavenBundle("org.apache.servicemix.bundles", "org.apache.servicemix.bundles.hamcrest", "1.3_1"),
 
                 mavenBundle()
                         .groupId(TINYBUNDLES_GROUPID)
@@ -288,8 +314,26 @@ public class TatamiTransformationPipelineITest {
     }
 
     @Test
-    public void testMethod() {
-        Assert.assertEquals(3, 3);
+    public void testMethod() throws InvalidSyntaxException {
+        Collection<ServiceReference<TrackInfo>> trackInfos = context.getServiceReferences(TrackInfo.class, null);
+
+        assertThat(trackInfos.stream().map(r -> context.getService(r).getTrackInfoName()).collect(Collectors.toList()),
+                containsInAnyOrder("asm2rdbms", "psm2measure", "psm2jqlextract", "psm2asm", "jqlextract2expression"));
+
+
+        // Get Order entity
+        Optional<EClass> orderClass = AsmUtils.asStream(asmModel.getResourceSet().getAllContents())
+                .filter(e -> e instanceof EClass)
+                .map(e -> (EClass) e)
+                .filter(e -> AsmUtils.isEntity(e))
+                .filter(e -> AsmUtils.getFQName(e).equals("northwind.entities.Order")).findFirst();
+
+        List<EObject> orderRdbmsObjectList = trackInfoService.getDescendantOfInstanceByModelType("Northwind", RdbmsModel.class, orderClass.get());
+
+        assertThat(orderRdbmsObjectList, hasSize(1));
+        assertThat(orderRdbmsObjectList.get(0), is(instanceOf(RdbmsTable.class)));
+        assertThat(((RdbmsTable) orderRdbmsObjectList.get(0)).getSqlName(), equalTo("T_ENTTS_ORDER"));
+
     }
 
     public File getConfigFile(String path) {
