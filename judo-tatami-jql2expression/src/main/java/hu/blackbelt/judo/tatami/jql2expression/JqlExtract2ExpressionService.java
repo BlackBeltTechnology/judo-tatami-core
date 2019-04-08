@@ -1,5 +1,6 @@
 package hu.blackbelt.judo.tatami.jql2expression;
 
+import com.google.common.collect.Maps;
 import hu.blackbelt.epsilon.runtime.execution.impl.Slf4jLog;
 import hu.blackbelt.epsilon.runtime.osgi.BundleURIHandler;
 import hu.blackbelt.judo.meta.asm.runtime.AsmModel;
@@ -16,6 +17,7 @@ import org.osgi.service.component.annotations.Reference;
 
 import java.io.File;
 import java.util.Hashtable;
+import java.util.Map;
 
 import static hu.blackbelt.judo.meta.expression.runtime.ExpressionModelLoader.createExpressionResourceSet;
 import static hu.blackbelt.judo.tatami.jql2expression.JqlExtract2Expression.executeJqlExtract2ExpressionTransformation;
@@ -29,7 +31,7 @@ public class JqlExtract2ExpressionService {
     @Reference
     JqlExtract2ExpressionScriptResource jqlExtract2ExpressionScriptResource;
 
-    ServiceRegistration<TrackInfo> jqlextract2expressionTrackInfoRegistration;
+    Map<PsmJqlExtractModel, ServiceRegistration<TrackInfo>> jqlextract2expressionTrackInfoRegistration = Maps.newHashMap();
 
     public ExpressionModel install(AsmModel asmModel, PsmJqlExtractModel jqlExtractModel, BundleContext bundleContext) throws Exception {
         BundleURIHandler bundleURIHandler = new BundleURIHandler("urn", "",
@@ -50,12 +52,16 @@ public class JqlExtract2ExpressionService {
         executeJqlExtract2ExpressionTransformation(expressionResourceSet, asmModel, jqlExtractModel, expressionModel, new Slf4jLog(log),
                 new File(jqlExtract2ExpressionScriptResource.getSctiptRoot().getAbsolutePath(), "jql2expression/transformations/expression") );
 
-        jqlextract2expressionTrackInfoRegistration = bundleContext.registerService(TrackInfo.class, jqlExtract2ExpressionTrackInfo, new Hashtable<>());
+        jqlextract2expressionTrackInfoRegistration.put(jqlExtractModel, bundleContext.registerService(TrackInfo.class, jqlExtract2ExpressionTrackInfo, new Hashtable<>()));
 
         return expressionModel;
     }
 
-    public void uninstall() {
-        jqlextract2expressionTrackInfoRegistration.unregister();
+    public void uninstall(PsmJqlExtractModel psmJqlExtractModel) {
+        if (jqlextract2expressionTrackInfoRegistration.containsKey(psmJqlExtractModel)) {
+            jqlextract2expressionTrackInfoRegistration.get(psmJqlExtractModel).unregister();
+        } else {
+            log.error("JQLEXTRACT model is not installed: " + psmJqlExtractModel.toString());
+        }
     }
 }

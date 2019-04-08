@@ -1,5 +1,6 @@
 package hu.blackbelt.judo.tatami.psm2jql;
 
+import com.google.common.collect.Maps;
 import hu.blackbelt.epsilon.runtime.execution.impl.Slf4jLog;
 import hu.blackbelt.epsilon.runtime.osgi.BundleURIHandler;
 import hu.blackbelt.judo.meta.psm.jql.extract.runtime.PsmJqlExtractModel;
@@ -15,6 +16,7 @@ import org.osgi.service.component.annotations.Reference;
 
 import java.io.File;
 import java.util.Hashtable;
+import java.util.Map;
 
 import static hu.blackbelt.judo.meta.psm.jql.extract.runtime.PsmJqlExtractModelLoader.createPsmJqlExtractResourceSet;
 import static hu.blackbelt.judo.meta.psm.runtime.PsmModelLoader.registerPsmMetamodel;
@@ -29,7 +31,7 @@ public class Psm2JqlExtractSerivce {
     @Reference
     Psm2JqlExtractScriptResource psm2JqlExtractScriptResource;
 
-    ServiceRegistration<TrackInfo> psm2JqlExtractTrackInfoRegistration;
+    Map<PsmModel, ServiceRegistration<TrackInfo>> psm2JqlExtractTrackInfoRegistration = Maps.newHashMap();
 
 
     public PsmJqlExtractModel install(PsmModel psmModel, BundleContext bundleContext) throws Exception {
@@ -51,12 +53,16 @@ public class Psm2JqlExtractSerivce {
         Psm2JqlExtractTrackInfo psm2JqlExtractTrackInfo = executePsm2PsmJqlExtractTransformation(psmJqlExtractResourceSet, psmModel, psmJqlExtractModel, new Slf4jLog(log),
                 new File(psm2JqlExtractScriptResource.getSctiptRoot().getAbsolutePath(), "psm2jql/transformations/jql/") );
 
-        psm2JqlExtractTrackInfoRegistration = bundleContext.registerService(TrackInfo.class, psm2JqlExtractTrackInfo, new Hashtable<>());
+        psm2JqlExtractTrackInfoRegistration.put(psmModel, bundleContext.registerService(TrackInfo.class, psm2JqlExtractTrackInfo, new Hashtable<>()));
         return psmJqlExtractModel;
     }
 
-
-    public void uninstall() {
-        psm2JqlExtractTrackInfoRegistration.unregister();
+    public void uninstall(PsmModel psmModel) {
+        if (psm2JqlExtractTrackInfoRegistration.containsKey(psmModel)) {
+            psm2JqlExtractTrackInfoRegistration.get(psmModel).unregister();
+        } else {
+            log.error("PSM model is not installed: " + psmModel.toString());
+        }
     }
+
 }

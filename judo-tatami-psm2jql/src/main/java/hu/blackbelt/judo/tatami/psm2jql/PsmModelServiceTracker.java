@@ -70,7 +70,7 @@ public class PsmModelServiceTracker extends AbstractModelInfoTracker<PsmModel> {
         if (!registrations.containsKey(key)) {
             log.error("Model is not registered: " + psmModel.getName());
         } else {
-            psm2JqlExtractSerivce.uninstall();
+            psm2JqlExtractSerivce.uninstall(psmModel);
             registrations.get(key).unregister();
             registrations.remove(key);
             models.remove(key);
