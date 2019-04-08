@@ -5,6 +5,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import hu.blackbelt.epsilon.runtime.execution.contexts.EtlExecutionContext;
 import hu.blackbelt.epsilon.runtime.execution.exceptions.ScriptExecutionException;
+import lombok.extern.slf4j.Slf4j;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.*;
 import org.eclipse.emf.ecore.impl.EClassImpl;
@@ -23,6 +24,7 @@ import java.util.Map;
 
 import static org.eclipse.emf.ecore.util.builder.EcoreBuilders.*;
 
+@Slf4j
 public class TransformationTraceUtil {
 
     public static final String HTTP_WWW_BLACKBELT_HU_META_TRASFORMATION_TRACE = "http:///www.blackbelt.hu/meta/trasformation/trace/";
@@ -89,7 +91,11 @@ public class TransformationTraceUtil {
 
             List<String> targets = Lists.newArrayList();
             for (Object t : transformation.getTargets()) {
-                targets.add(EcoreUtil.getURI((EObject) t).toString());
+                if (t instanceof EObject) {
+                    targets.add(EcoreUtil.getURI((EObject) t).toString());
+                } else {
+                    log.warn("Target is not EObject: " + t.toString());
+                }
             }
             trace.eSet(targetUriAttributes, targets);
             traceEntries.add(trace);
