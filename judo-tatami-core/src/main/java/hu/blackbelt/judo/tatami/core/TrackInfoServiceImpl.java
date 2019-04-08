@@ -64,6 +64,10 @@ public class TrackInfoServiceImpl implements TrackInfoService {
 
     @Override
     public TrackInfo getParentTrackInfoByInstance(String modelName, EObject targetElement) {
+        if (!modelNameCache.containsKey(modelName)) {
+            throw new IllegalArgumentException("No model definied: " + modelName);
+        }
+
         // Find target element's model
         EObject sourceRoot = EcoreUtil.getRootContainer(targetElement);
 
@@ -79,6 +83,9 @@ public class TrackInfoServiceImpl implements TrackInfoService {
 
     // @Override
     public List<TrackInfo> getChildTrackInfosByInstance(String modelName, EObject instance) {
+        if (!modelNameCache.containsKey(modelName)) {
+            throw new IllegalArgumentException("No model definied: " + modelName);
+        }
         // Find target element's model
         EObject sourceRoot = EcoreUtil.getRootContainer(instance);
 
@@ -98,6 +105,10 @@ public class TrackInfoServiceImpl implements TrackInfoService {
 
     @Override
     public EObject getAscendantOfInstanceByModelType(String modelName, Class modelType, EObject instance) {
+        if (!modelNameCache.containsKey(modelName)) {
+            throw new IllegalArgumentException("No model definied: " + modelName);
+        }
+
         EObject current = instance;
         while (current != null) {
             TrackInfo constructor = getParentTrackInfoByInstance(modelName, current);
@@ -119,6 +130,10 @@ public class TrackInfoServiceImpl implements TrackInfoService {
 
     @Override
     public Map<TrackInfo, EObject> getAllAscendantOfInstance(String modelName, EObject instance) {
+        if (!modelNameCache.containsKey(modelName)) {
+            throw new IllegalArgumentException("No model definied: " + modelName);
+        }
+
         EObject current = instance;
         Map<TrackInfo, EObject> trackInfoMap = Maps.newLinkedHashMap();
         while (current != null) {
@@ -135,17 +150,29 @@ public class TrackInfoServiceImpl implements TrackInfoService {
 
     @Override
     public List<TrackInfo> getTrackInfoAscendantsByInstance(String modelName, EObject instance) {
+        if (!modelNameCache.containsKey(modelName)) {
+            throw new IllegalArgumentException("No model definied: " + modelName);
+        }
+
         return Lists.newArrayList(getAllAscendantOfInstance(modelName, instance).keySet());
     }
 
 
     @Override
     public EObject getRootAscendantOfInstance(String modelName, EObject targetElement) {
+        if (!modelNameCache.containsKey(modelName)) {
+            throw new IllegalArgumentException("No model definied: " + modelName);
+        }
+
         return getAscendantOfInstanceByModelType(modelName, null, targetElement);
     }
 
     @Override
     public Map<TrackInfo, List<EObject>> getAllDescendantOfInstance(String modelName, EObject instance) {
+        if (!modelNameCache.containsKey(modelName)) {
+            throw new IllegalArgumentException("No model definied: " + modelName);
+        }
+
         List<EObject> currentList = ImmutableList.of(instance);
         Map<TrackInfo, List<EObject>> trackInfoMap = Maps.newLinkedHashMap();
         while (currentList.size() > 0) {
@@ -178,6 +205,10 @@ public class TrackInfoServiceImpl implements TrackInfoService {
 
     @Override
     public List<EObject> getDescendantOfInstanceByModelType(String modelName, Class modelType, EObject instance) {
+        if (!modelNameCache.containsKey(modelName)) {
+            throw new IllegalArgumentException("No model definied: " + modelName);
+        }
+
         List<EObject> currentList = ImmutableList.of(instance);
         while (currentList.size() > 0) {
             List<EObject> childs = Lists.newArrayList();
