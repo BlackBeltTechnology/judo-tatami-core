@@ -215,6 +215,7 @@ public class JqlExtractModelServiceTracker {
         if (!registrations.containsKey(key)) {
             log.error("Model is not registered: " + key);
         } else {
+            jqlExtract2ExpressionSerivce.uninstall();
             registrations.get(key).unregister();
             registrations.remove(key);
             models.remove(key);
@@ -226,6 +227,7 @@ public class JqlExtractModelServiceTracker {
         if (!registrations.containsKey(key)) {
             log.error("Model is not registered: " + key);
         } else {
+            jqlExtract2ExpressionSerivce.uninstall();
             registrations.get(key).unregister();
             registrations.remove(key);
             models.remove(key);
