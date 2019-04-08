@@ -2,7 +2,6 @@ package hu.blackbelt.judo.tatami.jql2expression;
 
 import com.google.common.collect.ImmutableList;
 import hu.blackbelt.judo.meta.expression.runtime.ExpressionModel;
-import hu.blackbelt.judo.meta.measure.runtime.MeasureModel;
 import hu.blackbelt.judo.meta.psm.jql.extract.runtime.PsmJqlExtractModel;
 import hu.blackbelt.judo.tatami.core.TrackInfo;
 import lombok.Builder;
@@ -62,7 +61,7 @@ public class JqlExtract2ExpressionTrackInfo implements TrackInfo {
 
     @Override
     public Class getTargetModelType() {
-        return MeasureModel.class;
+        return ExpressionModel.class;
     }
 
     @Override
