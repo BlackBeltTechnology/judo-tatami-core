@@ -51,8 +51,9 @@ public class AsmModelServiceTracker extends AbstractModelInfoTracker<AsmModel> {
         }
 
         try {
+            // TODO: Handling dialect
             rdbmsModel = asm2RdbmsSerivce
-                    .install(asmModel, componentContext.getBundleContext());
+                    .install(asmModel, componentContext.getBundleContext(), "hsqldb");
             log.info("Registering model: " + rdbmsModel);
             ServiceRegistration<RdbmsModel> modelServiceRegistration =
                     componentContext.getBundleContext()
@@ -70,6 +71,7 @@ public class AsmModelServiceTracker extends AbstractModelInfoTracker<AsmModel> {
         if (!registrations.containsKey(key)) {
             log.error("Model is not registered: " + asmModel.getName());
         } else {
+            asm2RdbmsSerivce.uninstall(asmModel);
             registrations.get(key).unregister();
             registrations.remove(key);
             models.remove(key);

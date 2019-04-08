@@ -1,35 +1,6 @@
 import "element.etl";
 
 
-rule EReferenceToPrint 
-	transform s : ASM!EReference
-	to t : Map {
-	guard:  (s.eReferenceType.isEntity() and s.eContainingClass.isEntity())
-
-	/*
-	if (first) {
-		first = false;
-		"Owner;RelationName;OppositeOwner;OppositeRelationName;Structure;Lower;Upper;Container;Containment;Opposite;OppositeLower;OppositeUpper;OppositeContainer;OppositeContainment;First".println(";");
-	}
-
-	var ref = s.eContainingClass.name + ";" + s.name + ";";
-	if (s.eOpposite.isDefined()) {
-		ref += s.eOpposite.eContainingClass.name + ";" + s.eOpposite.name + ";";
-	} else {
-		ref += ";;";
-	}
-	ref += s.eReferenceType.isStructure() + ";" + s.lowerBound + ";" + s.upperBound + ";" + s.container + ";" + s.containment + ";" + s.eOpposite.isDefined();
-	if (s.eOpposite.isDefined()) {
-		ref += ";" + s.eOpposite.lowerBound + ";" + s.eOpposite.upperBound + ";" + s.eOpposite.container + ";" + s.eOpposite.containment + ";";
-	} else {
-		ref += ";;;;;";	
-	}
-	ref += ";" + s.isFirst();
-	ref.println(";"); */
-	
-	log.debug(s.eContainingClass.name + "." + s.name + ": " + s.ruleMapping().toString());
-}
-
 rule EReferenceToRdbmsTableForeignKey 
 	transform s : ASM!EReference
 	to fk : RDBMS!RdbmsForeignKey {
@@ -52,8 +23,6 @@ rule EReferenceToRdbmsTableForeignKey
 			fk.readOnly = false;
 			fk.deleteOnCascade = false;						
 		}
-		
-		allElement.add(fk);		
 }
 
 rule EReferenceToRdbmsTableInverseForeignKey 
@@ -73,8 +42,6 @@ rule EReferenceToRdbmsTableInverseForeignKey
 
 		fk.readOnly = false;
 		fk.deleteOnCascade = false;			
-
-		allElement.add(fk);
 }
 
 @lazy
@@ -94,7 +61,6 @@ rule EReferenceToRdbmsJunctionTable
 	    }
 
 		log.debug("Junct ref: " + t.name);
-		allElement.add(t);
 }
 
 rule EReferenceToRdbmsJunctionTablePrimaryKey
@@ -135,8 +101,6 @@ rule EReferenceToRdbmsJunctionTableForeignKeyBidirectional
 
 		fk.readOnly = true;
 		fk.deleteOnCascade = true;
-
-		allElement.add(fk);
 }
 
 
@@ -173,8 +137,5 @@ rule EReferenceToRdbmsJunctionTableForeignKeyUnidirectional
 
 		fk2.readOnly = true;
 		fk2.deleteOnCascade = true;
-		
-		allElement.add(fk1);
-		allElement.add(fk2);
 }
 

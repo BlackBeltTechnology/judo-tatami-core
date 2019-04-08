@@ -21,8 +21,7 @@ pre {
 	var targetModel : RDBMS!RdbmsModel = new RDBMS!RdbmsModel();
 	targetModel.version = modelVersion;
 	var first : Boolean = true;
-	var allElement : new Sequence();
-	
+
 	var configuration : RDBMS!RdbmsConfiguration = new RDBMS!RdbmsConfiguration();
 	configuration.dialect = dialect;
 	targetModel.configuration = configuration;
@@ -94,8 +93,8 @@ post {
 	} */
 	
 	// Replacing name
-	for (e in allElement) {
-		// e.uuid.println("UUID: ");
+	for (e in RDBMS!RdbmsElement.all) {
+		log.debug("UUID: " + e.uuid);
 		var sqlNameMapping = e.uuid.findSqlNameMapping();
 		if (sqlNameMapping.isDefined()) {
 			log.info("Replace sqlName in: " + e);

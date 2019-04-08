@@ -1,36 +1,28 @@
 package hu.blackbelt.judo.tatami.asm2rdbms;
 
+import com.google.common.collect.Maps;
 import hu.blackbelt.epsilon.runtime.execution.impl.Slf4jLog;
 import hu.blackbelt.epsilon.runtime.osgi.BundleURIHandler;
 import hu.blackbelt.judo.meta.asm.runtime.AsmModel;
 import hu.blackbelt.judo.meta.rdbms.runtime.RdbmsModel;
-import hu.blackbelt.judo.meta.rdbms.runtime.RdbmsModelLoader;
+import hu.blackbelt.judo.tatami.core.TrackInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.emf.common.util.URI;
-import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.osgi.framework.BundleContext;
-import org.osgi.service.component.annotations.Activate;
+import org.osgi.framework.ServiceRegistration;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
-import org.osgi.service.metatype.annotations.AttributeDefinition;
-import org.osgi.service.metatype.annotations.Designate;
-import org.osgi.service.metatype.annotations.ObjectClassDefinition;
 
 import java.io.File;
+import java.util.Hashtable;
+import java.util.Map;
 
 import static hu.blackbelt.judo.meta.rdbms.runtime.RdbmsModelLoader.createRdbmsResourceSet;
-import static hu.blackbelt.judo.meta.rdbms.runtime.RdbmsModelLoader.registerRdbmsMetamodel;
-import static hu.blackbelt.judo.tatami.asm2rdbms.Asm2Rdbms.*;
+import static hu.blackbelt.judo.tatami.asm2rdbms.Asm2Rdbms.executeAsm2RdbmsTransformation;
 
 
-@ObjectClassDefinition(name = "ASM2RDMS Transformation", description = "Judo Tatami ASM2RDMS Transformation")
-@interface Asm2RdbmsSerivceServiceConfiguration {
-    @AttributeDefinition(name = "dialects", description = "SQL Dialecst to transforms")
-    String[] dialects() default {DIALECT_HSQLDB, DIALECT_POSTGGRESSQL, DIALECT_ORACLE} ;
-}
 @Component(immediate = true, service = Asm2RdbmsSerivce.class)
-@Designate(ocd = Asm2RdbmsSerivceServiceConfiguration.class)
 @Slf4j
 public class Asm2RdbmsSerivce {
 
@@ -42,39 +34,38 @@ public class Asm2RdbmsSerivce {
     @Reference
     Asm2RdbmsModelResource asm2RdbmsModelResource;
 
-    Asm2RdbmsSerivceServiceConfiguration configuration;
+    Map<AsmModel, ServiceRegistration<TrackInfo>> asm2rdbmsTrackInfoRegistration = Maps.newHashMap();
 
-    @Activate
-    public void activate(Asm2RdbmsSerivceServiceConfiguration configuration) {
-        this.configuration = configuration;
-    }
-
-    public RdbmsModel install(AsmModel asmModel, BundleContext bundleContext) throws Exception {
+    public RdbmsModel install(AsmModel asmModel, BundleContext bundleContext, String dialect) throws Exception {
         BundleURIHandler bundleURIHandler = new BundleURIHandler("urn", "",
                 bundleContext.getBundle());
 
         ResourceSet rdbmsResourceSet = createRdbmsResourceSet(bundleURIHandler);
-        registerRdbmsMetamodel(rdbmsResourceSet);
-
-        URI rdbmsUri = URI.createURI("urn:" + asmModel.getName() + ".rdbmss");
-        Resource rdbmsResource = rdbmsResourceSet.createResource(rdbmsUri);
 
         RdbmsModel rdbmsModel = RdbmsModel.buildRdbmsModel()
                 .name(asmModel.getName())
                 .version(asmModel.getVersion())
-                .uri(rdbmsUri)
+                .uri(URI.createURI("urn:" + asmModel.getName() + ".rdbms"))
                 .checksum(asmModel.getChecksum())
                 .resourceSet(rdbmsResourceSet)
                 .checksum(asmModel.getChecksum())
                 .metaVersionRange(bundleContext.getBundle().getHeaders().get(RDBMS_META_VERSION_RANGE))
                 .build();
 
-        // TODO: make configurable dialect
-        executeAsm2RdbmsTransformation(rdbmsResourceSet, asmModel, rdbmsModel, new Slf4jLog(log),
+        Asm2RdbmsTrackInfo asm2RdbmsTrackInfo = executeAsm2RdbmsTransformation(rdbmsResourceSet, asmModel, rdbmsModel, new Slf4jLog(log),
                 new File(asm2RdbmsScriptResource.getSctiptRoot().getAbsolutePath(), "asm2rdbms/transformations"),
-                new File(asm2RdbmsModelResource.getModelRoot().getAbsolutePath(), "asm2rdbms-model"),
-                "hsqldb");
+                new File(asm2RdbmsModelResource.getModelRoot().getAbsolutePath(), "asm2rdbms-model"), dialect);
+
+        asm2rdbmsTrackInfoRegistration.put(asmModel, bundleContext.registerService(TrackInfo.class, asm2RdbmsTrackInfo, new Hashtable<>()));
 
         return rdbmsModel;
+    }
+
+    public void uninstall(AsmModel asmModel) {
+        if (asm2rdbmsTrackInfoRegistration.containsKey(asmModel)) {
+            asm2rdbmsTrackInfoRegistration.get(asmModel).unregister();
+        } else {
+            log.error("ASM model is not installed: " + asmModel.toString());
+        }
     }
 }

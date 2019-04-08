@@ -9,7 +9,6 @@ rule ENamedElementToRdbmsElement
 		} else {
 			t.name = s.name;
 		}
-		allElement.add(t);
 		/*
 		if (s.hasAnnotation("shortName")) {
 			t.shortName = s.getAnnotationValue("shortName");
