@@ -18,9 +18,9 @@ import org.eclipse.epsilon.etl.EtlModule;
 import org.eclipse.epsilon.etl.trace.Transformation;
 import org.eclipse.epsilon.etl.trace.TransformationTrace;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 import static org.eclipse.emf.ecore.util.builder.EcoreBuilders.*;
 
@@ -58,13 +58,14 @@ public class TransformationTraceUtil {
                 EObject target = null;
                 URI targetURI = URI.createURI(t);
                 for (ResourceSet rs : resourcesToResolve) {
+
                     target = rs.getEObject(targetURI, false);
                     if (target != null) {
                         break;
                     }
                 }
                 if (target == null) {
-                    throw new RuntimeException("Target entry not found on the given resources: " + targetURI);
+                    throw new RuntimeException("Target entry not found on the given resources: " + t);
                 }
 
                 targetList.add(target);
@@ -92,7 +93,12 @@ public class TransformationTraceUtil {
             List<String> targets = Lists.newArrayList();
             for (Object t : transformation.getTargets()) {
                 if (t instanceof EObject) {
-                    targets.add(EcoreUtil.getURI((EObject) t).toString());
+                    EObject eo = (EObject) t;
+                    if (eo.eResource() != null) {
+                        targets.add(EcoreUtil.getURI((EObject) t).toString());
+                    } else {
+                        log.warn("Target hasn't got resource: " + t.toString());
+                    }
                 } else {
                     log.warn("Target is not EObject: " + t.toString());
                 }
@@ -117,7 +123,16 @@ public class TransformationTraceUtil {
 
             List<String> targets = Lists.newArrayList();
             for (Object t : traceMap.get(source)) {
-                targets.add(EcoreUtil.getURI((EObject) t).toString());
+                if (t instanceof EObject) {
+                    EObject eo = (EObject) t;
+                    if (eo.eResource() != null) {
+                        targets.add(EcoreUtil.getURI((EObject) t).toString());
+                    } else {
+                        log.warn("Target hasn't got resource: " + t.toString());
+                    }
+                } else {
+                    log.warn("Target is not EObject: " + t.toString());
+                }
             }
             trace.eSet(targetUriAttributes, targets);
             traceEntries.add(trace);
@@ -159,4 +174,16 @@ public class TransformationTraceUtil {
         resourceSet.getPackageRegistry().put(ePackage.getNsURI(), ePackage);
         return resourceSet;
     }
+
+    public static <T> Stream<T> asStream(Iterator<T> sourceIterator) {
+        return asStream(sourceIterator, false);
+    }
+
+    public static <T> Stream<T> asStream(Iterator<T> sourceIterator, boolean parallel) {
+        Iterable<T> iterable = () -> {
+            return sourceIterator;
+        };
+        return StreamSupport.stream(iterable.spliterator(), parallel);
+    }
+
 }
