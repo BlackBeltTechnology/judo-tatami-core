@@ -25,7 +25,7 @@ import static hu.blackbelt.judo.tatami.core.TransformationTraceUtil.*;
 
 public class Asm2Rdbms {
 
-    public static final String ASM_2_RDBMS_URI_POSTFIX = "jqlextract2expression";
+    public static final String ASM_2_RDBMS_URI_POSTFIX = "asm2rdbms";
 
     public static final String DIALECT_HSQLDB = "hsqldb";
     public static final String DIALECT_POSTGGRESSQL = "postgressql";
