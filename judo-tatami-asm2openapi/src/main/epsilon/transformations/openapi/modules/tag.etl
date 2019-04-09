@@ -1,0 +1,15 @@
+import "../../../operations/asm/_importAll.eol";
+import "api.etl";
+
+rule CreateTag
+    transform s : ASM!EClass
+    to t : OPENAPI!Tag {
+        guard: s.isExposedGraph()
+        
+        var root = s.getResolvedRoot();
+        
+        t.name = s.getExposedGraphName().toOpenAPIName();
+        t.description = "Exposed graph with " + root.name + " instances as root"; // TODO: " selected by ...";
+        
+        s.getResolvedExposedBy().equivalent("CreateOpenAPIAccessPoint").tags.add(t);
+}

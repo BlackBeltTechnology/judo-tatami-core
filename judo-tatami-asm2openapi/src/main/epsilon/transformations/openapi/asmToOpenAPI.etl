@@ -1,1 +1,4 @@
-import "modules/root.etl";
+import "modules/api.etl";
+import "modules/exposedGraph.etl";
+import "modules/parameters.etl";
+import "modules/tag.etl";
