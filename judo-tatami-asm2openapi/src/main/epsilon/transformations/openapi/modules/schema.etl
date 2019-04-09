@@ -1,0 +1,58 @@
+import "../../../operations/asm/_importAll.eol";
+import "api.etl";
+
+rule CreateTransferObjectSingleSchemaDeclaration
+    transform s : ASM!EStringToStringMapEntry
+    to t : OPENAPI!SchemaDeclaration {
+        guard: s.key.startsWith(".accessPoints.") and s.getClass().isDefined() and s.getClass().isMappedTransferObjectType()
+        
+        var accessPoint = getAllAccessPoints().selectOne(ap | ap.getFQName() == s.value);
+        
+        t.name = "__single__" + s.getClass().getFQName().toOpenAPIName();
+        
+        accessPoint.equivalent("CreateOpenAPIAccessPoint").definitions.add(t);
+}
+
+rule CreateTransferObjectSingleSchemaDefinition
+    transform s : ASM!EStringToStringMapEntry
+    to t : OPENAPI!Schema {
+        guard: s.key.startsWith(".accessPoints.") and s.getClass().isDefined() and s.getClass().isMappedTransferObjectType()
+        
+        t.description = "Schema of " + s.getClass().name;
+        
+        s.equivalent("CreateTransferObjectSingleSchemaDeclaration").schema = t;
+}
+
+rule CreateTransferObjectArraySchemaDeclaration
+    transform s : ASM!EStringToStringMapEntry
+    to t : OPENAPI!SchemaDeclaration {
+        guard: s.key.startsWith(".accessPoints.") and s.getClass().isDefined() and s.getClass().isMappedTransferObjectType()
+        
+        var accessPoint = getAllAccessPoints().selectOne(ap | ap.getFQName() == s.value);
+        
+        t.name = "__array__" + s.getClass().getFQName().toOpenAPIName();
+        
+        accessPoint.equivalent("CreateOpenAPIAccessPoint").definitions.add(t);
+}
+
+rule CreateTransferObjectArraySchemaDefinition
+    transform s : ASM!EStringToStringMapEntry
+    to t : OPENAPI!Schema {
+        guard: s.key.startsWith(".accessPoints.") and s.getClass().isDefined() and s.getClass().isMappedTransferObjectType()
+        
+        t.description = "Arrays of " + s.getClass().name + "s";
+        t.type = OPENAPI!JSONDataType#array;
+        
+        s.equivalent("CreateTransferObjectArraySchemaDeclaration").schema = t;
+}
+
+rule CreateTransferObjectArrayItemsDefinition
+    transform s : ASM!EStringToStringMapEntry
+    to t : OPENAPI!Property {
+        guard: s.key.startsWith(".accessPoints.") and s.getClass().isDefined() and s.getClass().isMappedTransferObjectType()
+        
+        t.ref = new OPENAPI!SchemaReference;
+        t.ref.ref = s.equivalent("CreateTransferObjectSingleSchemaDeclaration").getReference();
+        
+        s.equivalent("CreateTransferObjectArraySchemaDefinition").items = t;
+}

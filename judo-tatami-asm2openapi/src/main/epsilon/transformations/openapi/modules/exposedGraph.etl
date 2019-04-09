@@ -1,6 +1,6 @@
 import "../../../operations/asm/_importAll.eol";
 import "api.etl";
-import "parameters.etl";
+import "parameter.etl";
 import "tag.etl";
 
 rule CreateExposedGraphEntryPointPath
@@ -23,6 +23,39 @@ rule CreateExposedGraphEntryPointOperation
         t.tags.add(s.equivalent("CreateTag").name);
         
         s.equivalent("CreateExposedGraphEntryPointPath").`get` = t;
+}
+
+rule CreateExposedGraphEntryPointOperationResponse
+    transform s : ASM!EClass
+    to t : OPENAPI!OperationResponse {
+        guard: s.isExposedGraph()
+        
+        t.code = "200";
+        
+        s.equivalent("CreateExposedGraphEntryPointOperation").responses.add(t);
+}
+
+rule CreateExposedGraphEntryPointOperationResponseDefinition
+    transform s : ASM!EClass
+    to t : OPENAPI!ResponseDefinition {
+        guard: s.isExposedGraph()
+        
+        var accessPoint = s.getResolvedExposedBy();
+        var root = s.getResolvedRoot();
+
+        t.schema = new OPENAPI!Schema;
+        
+        var rootAnnotation = root.getExtensionAnnotation(true);
+        if (rootAnnotation.isDefined()) {
+            var aAccessPoint = rootAnnotation.details.selectOne(d | d.key.startsWith(".accessPoints.") and d.value == accessPoint.getFQName());
+            if (aAccessPoint.isDefined()) {
+                // TODO - check if response is array or single object
+                t.schema.ref = new OPENAPI!SchemaReference;
+                t.schema.ref.ref = aAccessPoint.equivalent("CreateTransferObjectArraySchemaDeclaration").getReference();
+            }
+        }
+        
+        s.equivalent("CreateExposedGraphEntryPointOperationResponse").response = t;
 }
 
 rule CreateExposedGraphPath

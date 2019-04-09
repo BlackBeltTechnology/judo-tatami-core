@@ -123,6 +123,7 @@ public class Asm2OpenAPITest {
 
         OpenAPIModelLoader.saveOpenAPIModel(openAPIModel);
 
+        // Save JSON and YAML Swagger files
         openAPIModel.getResourceSet().getResource(openAPIModel.getUri(), false).getContents().forEach(m -> {
             final Swagger swagger = OpenAPIExporter.convertModelToOpenAPI((API) m);
 

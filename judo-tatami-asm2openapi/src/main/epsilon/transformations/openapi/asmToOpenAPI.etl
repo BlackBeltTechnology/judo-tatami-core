@@ -1,4 +1,5 @@
 import "modules/api.etl";
 import "modules/exposedGraph.etl";
-import "modules/parameters.etl";
+import "modules/parameter.etl";
+import "modules/schema.etl";
 import "modules/tag.etl";
