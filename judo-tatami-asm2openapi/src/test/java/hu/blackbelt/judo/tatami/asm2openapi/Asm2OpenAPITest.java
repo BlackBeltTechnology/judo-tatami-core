@@ -1,42 +1,50 @@
 package hu.blackbelt.judo.tatami.asm2openapi;
 
-import edu.uoc.som.openapi.Root;
-import edu.uoc.som.openapi.io.OpenAPIExporter;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
 import hu.blackbelt.epsilon.runtime.execution.api.Log;
+import hu.blackbelt.epsilon.runtime.execution.impl.NameMappedURIHandlerImpl;
 import hu.blackbelt.epsilon.runtime.execution.impl.NioFilesystemnRelativePathURIHandlerImpl;
 import hu.blackbelt.epsilon.runtime.execution.impl.Slf4jLog;
-import hu.blackbelt.judo.meta.asm.runtime.AsmModelLoader.LocalAsmPackageRegistration;
-import hu.blackbelt.judo.meta.openapi.runtime.OpenAPIModel;
 import hu.blackbelt.judo.meta.asm.runtime.AsmModel;
 import hu.blackbelt.judo.meta.asm.runtime.AsmModelLoader;
+import hu.blackbelt.judo.meta.asm.runtime.AsmModelLoader.LocalAsmPackageRegistration;
+import hu.blackbelt.judo.meta.openapi.runtime.OpenAPIModel;
+import hu.blackbelt.judo.meta.openapi.runtime.OpenAPIModelLoader;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.URIHandler;
-import org.eclipse.emf.ecore.util.EcoreUtil;
-import org.eclipse.emf.ecore.xmi.XMIResource;
 import org.eclipse.emf.ecore.xmi.impl.XMIResourceImpl;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.Writer;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.nio.file.FileSystems;
+import java.util.List;
 import java.util.Map;
 
-import static hu.blackbelt.judo.meta.openapi.runtime.OpenAPIModelLoader.*;
 import static hu.blackbelt.judo.meta.asm.runtime.AsmModelLoader.createAsmResourceSet;
-import static hu.blackbelt.judo.tatami.asm2openapi.Asm2OpenAPI.executeAsm2OpenAPITransformation;
+import static hu.blackbelt.judo.meta.openapi.runtime.OpenAPIModelLoader.createOpenAPIResourceSet;
+import static hu.blackbelt.judo.tatami.asm2openapi.Asm2OpenAPI.*;
 
 @Slf4j
 public class Asm2OpenAPITest {
 
-
+    public static final String ASM_2_OPENAPI_MODEL = "asm2openapi.model";
+    public static final String TRACE_JQLEXTRACT_2_EXPRESSION = "trace:asm2openapi";
+    public static final String ASM_NORTHWIND = "asm:northwind";
+    public static final String OPENAPI_NORTHWIND = "openapi:northwind";
+    public static final String URN_NORTHWIND_ASM = "urn:northwind-asm.model";
+    public static final String URN_NORTHWIND_OPENAPI = "urn:northwind-openapi.model";
+    public static final String NORTHWIND = "northwind";
+    public static final String VERSION = "1.0.0";
+    
     URIHandler uriHandler;
     Log slf4jlog;
     AsmModel asmModel;
@@ -44,9 +52,12 @@ public class Asm2OpenAPITest {
     @Before
     public void setUp() throws Exception {
         // Set our custom handler
-        uriHandler = new NioFilesystemnRelativePathURIHandlerImpl("urn", FileSystems.getDefault(),
-                srcDir().getAbsolutePath());
-
+        uriHandler = new NameMappedURIHandlerImpl(
+                ImmutableList.of(new NioFilesystemnRelativePathURIHandlerImpl("urn", FileSystems.getDefault(), targetDir().getAbsolutePath())),
+                ImmutableMap.of(
+                        URI.createURI(ASM_NORTHWIND), URI.createURI(URN_NORTHWIND_ASM),
+                        URI.createURI(OPENAPI_NORTHWIND), URI.createURI(URN_NORTHWIND_OPENAPI))
+        );
         // Default logger
         slf4jlog = new Slf4jLog(log);
 
@@ -55,9 +66,9 @@ public class Asm2OpenAPITest {
         ResourceSet asmResourceSet = createAsmResourceSet(uriHandler, new LocalAsmPackageRegistration());
         asmModel = AsmModelLoader.loadAsmModel(
                 asmResourceSet,
-                URI.createURI("urn:northwind-asm.model"),
-                "northwind",
-                "1.0.0");
+                URI.createURI(ASM_NORTHWIND),
+                NORTHWIND,
+                VERSION);
     }
 
     @After
@@ -71,50 +82,42 @@ public class Asm2OpenAPITest {
         // Creating ASM resource set.
         ResourceSet openAPIResourceSet = createOpenAPIResourceSet(uriHandler);
 
-        // Create wirtual URN
-        URI openAPIUri = URI.createURI("urn:" + asmModel.getName() + ".openapi");
-        Resource openAPIResource = openAPIResourceSet.createResource(openAPIUri);
 
         OpenAPIModel openAPIModel = OpenAPIModel.buildOpenAPIModel()
                 .name(asmModel.getName())
                 .resourceSet(openAPIResourceSet)
-                .uri(openAPIUri)
+                .uri(URI.createURI(OPENAPI_NORTHWIND))
                 .version(asmModel.getVersion())
                 .build();
 
-        executeAsm2OpenAPITransformation(openAPIResourceSet, asmModel, openAPIModel, new Slf4jLog(log),
-                new File(srcDir().getAbsolutePath(), "epsilon/transformations/openapi"));
+        Asm2OpenAPITrackInfo asm2OpenAPITrackInfo = executeAsm2OpenAPITransformation(openAPIResourceSet, asmModel, openAPIModel, new Slf4jLog(log),
+                new File(targetDir().getAbsolutePath(), "epsilon/transformations/openapi"));
 
-        openAPIModel.getResourceSet().getResource(openAPIModel.getUri(), false).getContents().forEach(m -> {
-            final String title = ((Root)m).getApi().getInfo().getTitle();
-            final File targetFile = new File(srcDir().getAbsolutePath()+"/northwind-openapi-" + title + ".json");
-            try (final Writer targetFileWriter = new FileWriter(targetFile)) {
-                final String json = OpenAPIExporter.getJsonFromSwaggerModel((Root) m).toString();
-                targetFileWriter.append(json);
-            } catch (IOException ex) {
-                log.error("Unable to create JSON output", ex);
+        // Saving trace map
+        Resource traceResoureSaved = new XMIResourceImpl();
+        traceResoureSaved.getContents().addAll(getAsm2OpenAPITrace(asm2OpenAPITrackInfo.getTrace()));
+        traceResoureSaved.save(new FileOutputStream(new File(targetDir().getAbsolutePath(), ASM_2_OPENAPI_MODEL)), ImmutableMap.of());
+
+        // Loading trace map
+        ResourceSet traceLoadedResourceSet = createAsm2OpenAPITraceResourceSet();
+        Resource traceResoureLoaded = traceLoadedResourceSet.createResource(URI.createURI(TRACE_JQLEXTRACT_2_EXPRESSION));
+        traceResoureLoaded.load(new FileInputStream(new File(targetDir().getAbsolutePath(), ASM_2_OPENAPI_MODEL)), ImmutableMap.of());
+
+        // Resolve serialized URI's as EObject map
+        Map<EObject, List<EObject>> resolvedTrace = resolveAsm2OpenAPITrace(traceResoureLoaded, asmModel, openAPIModel);
+
+        // Printing trace
+        for (EObject e : resolvedTrace.keySet()) {
+            for (EObject t : resolvedTrace.get(e)) {
+                log.info(e.toString() + " -> " + t.toString());
             }
-        });
-
-        XMIResource xmiResource = new XMIResourceImpl(URI.createFileURI(srcDir().getAbsolutePath()+"/northwind-openapi.model"));
-        xmiResource.getContents().addAll(EcoreUtil.copyAll(openAPIResource.getContents()));
-        for (EObject e : openAPIResource.getContents()) {
-            log.debug(e.toString());
         }
 
-        final Map<Object, Object> saveOptions = xmiResource.getDefaultSaveOptions();
-        saveOptions.put(XMIResource.OPTION_DECLARE_XML,Boolean.TRUE);
-        saveOptions.put(XMIResource.OPTION_PROCESS_DANGLING_HREF,XMIResource.OPTION_PROCESS_DANGLING_HREF_DISCARD);
-        saveOptions.put(XMIResource.OPTION_SCHEMA_LOCATION,Boolean.TRUE);
-        saveOptions.put(XMIResource.OPTION_DEFER_IDREF_RESOLUTION,Boolean.TRUE);
-        saveOptions.put(XMIResource.OPTION_SKIP_ESCAPE_URI,Boolean.FALSE);
-        saveOptions.put(XMIResource.OPTION_ENCODING,"UTF-8");
-
-        xmiResource.save(saveOptions);
+        OpenAPIModelLoader.saveOpenAPIModel(openAPIModel);
     }
 
 
-    public File srcDir(){
+    public File targetDir(){
         String relPath = getClass().getProtectionDomain().getCodeSource().getLocation().getFile();
         File targetDir = new File(relPath);
         if(!targetDir.exists()) {

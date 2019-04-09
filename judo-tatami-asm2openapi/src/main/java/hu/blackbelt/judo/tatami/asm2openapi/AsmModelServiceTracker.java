@@ -70,6 +70,7 @@ public class AsmModelServiceTracker extends AbstractModelInfoTracker<AsmModel> {
         if (!registrations.containsKey(key)) {
             log.error("Model is not registered: " + asmModel.getName());
         } else {
+            asm2OpenAPIService.uninstall(asmModel);
             registrations.get(key).unregister();
             registrations.remove(key);
             models.remove(key);

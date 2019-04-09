@@ -5,6 +5,7 @@ import hu.blackbelt.judo.meta.asm.runtime.AsmUtils;
 import hu.blackbelt.judo.meta.expression.runtime.ExpressionModel;
 import hu.blackbelt.judo.meta.liquibase.runtime.LiquibaseModel;
 import hu.blackbelt.judo.meta.measure.runtime.MeasureModel;
+import hu.blackbelt.judo.meta.openapi.runtime.OpenAPIModel;
 import hu.blackbelt.judo.meta.psm.jql.extract.runtime.PsmJqlExtractModel;
 import hu.blackbelt.judo.meta.psm.runtime.PsmModel;
 import hu.blackbelt.judo.meta.rdbms.RdbmsTable;
@@ -79,9 +80,10 @@ public class TatamiTransformationPipelineITest {
     public static final String TATAMI_PSM2JQL = "judo-tatami-psm2jql";
     public static final String TATAMI_PSM2MEASURE = "judo-tatami-psm2measure";
     public static final String TATAMI_JQL2EXPRESSION = "judo-tatami-jql2expression";
-
     public static final String TATAMI_ASM2RDBMS = "judo-tatami-asm2rdbms";
     public static final String TATAMI_RDBMS2LIQUIBSE = "judo-tatami-rdbms2liquibase";
+    public static final String TATAMI_ASM2OPENAPI = "judo-tatami-asm2openapi";
+
     public static final String ORG_APACHE_KARAF = "org.apache.karaf";
     public static final String APACHE_KARAF = "apache-karaf";
     public static final String ORG_APACHE_KARAF_FEATURES = "org.apache.karaf.features";
@@ -132,6 +134,9 @@ public class TatamiTransformationPipelineITest {
     protected ExpressionModel expressionModel;
 
     @Inject
+    protected OpenAPIModel openAPIModel;
+
+    @Inject
     BundleContext context;
 
     @Inject
@@ -174,7 +179,7 @@ public class TatamiTransformationPipelineITest {
                 //vmOption("-Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=5005"),
                 //systemTimeout(30000),
                 //debugConfiguration("5005", true),
-
+                vmOption("-Dfile.encoding=UTF-8"),
                 replaceConfigurationFile("etc/org.ops4j.pax.logging.cfg",
                         getConfigFile("/etc/org.ops4j.pax.logging.cfg")),
 
@@ -268,6 +273,11 @@ public class TatamiTransformationPipelineITest {
 
                 mavenBundle()
                         .groupId(TATAMI_GROUPID)
+                        .artifactId(TATAMI_ASM2OPENAPI)
+                        .version(getVersion(TATAMI_VERSION)).start(),
+
+                mavenBundle()
+                        .groupId(TATAMI_GROUPID)
                         .artifactId(TATAMI_ASM2RDBMS)
                         .version(getVersion(TATAMI_VERSION)).start(),
 
@@ -318,7 +328,7 @@ public class TatamiTransformationPipelineITest {
         Collection<ServiceReference<TrackInfo>> trackInfos = context.getServiceReferences(TrackInfo.class, null);
 
         assertThat(trackInfos.stream().map(r -> context.getService(r).getTrackInfoName()).collect(Collectors.toList()),
-                containsInAnyOrder("asm2rdbms", "psm2measure", "psm2jqlextract", "psm2asm", "jqlextract2expression"));
+                containsInAnyOrder("asm2openapi", "asm2rdbms", "psm2measure", "psm2jqlextract", "psm2asm", "jqlextract2expression"));
 
 
         // Get Order entity
