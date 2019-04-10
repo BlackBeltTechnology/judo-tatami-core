@@ -32,7 +32,7 @@ operation ASM!EClass getResolvedRoot() : ASM!EClass {
         return root.resolve();
     } else {
         return null;
-    } 
+    }
 }
 
 @cached

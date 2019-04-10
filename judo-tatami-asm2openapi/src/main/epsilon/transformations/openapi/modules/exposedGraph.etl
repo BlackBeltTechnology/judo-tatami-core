@@ -42,6 +42,12 @@ rule CreateExposedGraphEntryPointOperationResponseDefinition
         
         var accessPoint = s.getResolvedExposedBy();
         var root = s.getResolvedRoot();
+        
+        var collection = true;
+        var aCollection = s.getAnnotationValue("root.collection", false);
+        if (aCollection.isDefined()) {
+            collection = aCollection.asBoolean();
+        }
 
         t.schema = new OPENAPI!Schema;
         
@@ -49,9 +55,12 @@ rule CreateExposedGraphEntryPointOperationResponseDefinition
         if (rootAnnotation.isDefined()) {
             var aAccessPoint = rootAnnotation.details.selectOne(d | d.key.startsWith(".accessPoints.") and d.value == accessPoint.getFQName());
             if (aAccessPoint.isDefined()) {
-                // TODO - check if response is array or single object
                 t.schema.ref = new OPENAPI!SchemaReference;
-                t.schema.ref.ref = aAccessPoint.equivalent("CreateTransferObjectArraySchemaDeclaration").getReference();
+                if (collection) {
+                    t.schema.ref.ref = aAccessPoint.equivalent("CreateTransferObjectArraySchemaDeclaration").getReference();
+                } else {
+                    t.schema.ref.ref = aAccessPoint.equivalent("CreateTransferObjectSingleSchemaDeclaration").getReference();
+                }
             }
         }
         
@@ -71,26 +80,6 @@ rule CreateExposedGraphPath
         t.relativePath = "/" + graph.getExposedGraphName() + "/" + opGroup.getFQName().toOpenAPIPath() + "/" + op.name;
 
         /*
-        // apiOperation.operationId = ... // TODO
-        
-        if (op.eType.isDefined()) {
-            // TODO - produces property is defined globally (but not serilized)
-            apiOperation.produces.add("application/json");
-            
-            if (op.eType.isMappedTransferObjectType()) {
-                var transferObjectAnnotation = op.eType.getExtensionAnnotation(false);
-                if (not transferObjectAnnotation.isDefined()) {
-                    throw "Transfer object is not prepared with annotation";
-                }
-                
-                if (op.many) {
-                    apiOperation.responses.add(transferObjectAnnotation.details.selectOne(d | d.value == accessPoint.getFQName()).equivalent("CreateArrayResponse"));
-                } else {
-                    apiOperation.responses.add(transferObjectAnnotation.details.selectOne(d | d.value == accessPoint.getFQName()).equivalent("CreateSingleResponse"));
-                }
-            }
-        }
-
         // parameters with unknown type are ignored
         for (p in op.eParameters.select(p | p.eType.isDefined())) {
             if (p.eType.eAttributes.isEmpty() and p.eType.eReferences.isEmpty() and not p.eType.isMappedTransferObjectType()) {

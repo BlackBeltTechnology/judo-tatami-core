@@ -121,3 +121,13 @@ rule CreateExposedGraphRoot
 		t.value = s.mappedTransferObjectType.transformToAsm().getFQName();
 		annotation.details.add(t);
 }
+
+rule CreateExposedGraphRootCollectionFlag
+    transform s : JUDOPSM!ExposedGraph
+    to t : ASM!EStringToStringMapEntry {
+        var annotation = s.equivalent("CreateExposedGraph").eAnnotations.selectOne(a | a.source = extendedMetadataURI);
+        
+		t.key = "root.collection";
+		t.value = (s.selector.cardinality.upper > 1 or s.selector.cardinality.upper == -1).toString();
+		annotation.details.add(t);
+}
