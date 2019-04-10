@@ -97,6 +97,7 @@ public class TatamiTransformationPipelineITest {
     public static final String FEATURE_OSGI_UTILS = "osgi-utils";
     public static final String FEATURE_EPSILON_RUNTIME = "epsilon-runtime";
     public static final String FEATURE_ECLIPSE_XTEXT = "eclipse-xtext";
+    public static final String FEATURE_SWAGGER_CORE = "swagger-core";
     public static final String TINYBUNDLES_GROUPID = "org.ops4j.pax.tinybundles";
     public static final String TINYBUNDLES = "tinybundles";
     public static final String TINYBUNDLES_VERSION = "3.0.0";
@@ -186,7 +187,7 @@ public class TatamiTransformationPipelineITest {
                 configureConsole().ignoreLocalConsole(),
 
                 //features(karafStandardRepo , "scr"),
-                features(judoKarafRuntimeRepo , FEATURE_SCR, FEATURE_OSGI_UTILS, FEATURE_EPSILON_RUNTIME, FEATURE_ECLIPSE_XTEXT),
+                features(judoKarafRuntimeRepo , FEATURE_SCR, FEATURE_OSGI_UTILS, FEATURE_EPSILON_RUNTIME, FEATURE_ECLIPSE_XTEXT, FEATURE_SWAGGER_CORE),
 
                 mavenBundle("org.apache.servicemix.bundles", "org.apache.servicemix.bundles.hamcrest", "1.3_1"),
 

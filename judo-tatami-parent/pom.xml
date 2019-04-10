@@ -48,7 +48,7 @@
         <karaf-version>4.2.1</karaf-version>
         <pax-exam-version>4.13.1</pax-exam-version>
         <slf4j-version>1.6.6</slf4j-version>
-        <judo-karaf-runtime-version>1.0.1_feature_EpsilonUpdate-84</judo-karaf-runtime-version>
+        <judo-karaf-runtime-version>1.0.1_feature_EpsilonUpdate-86</judo-karaf-runtime-version>
 
         <timestamp>${maven.build.timestamp}</timestamp>
         <maven.build.timestamp.format>yyyyMMddHHmmss</maven.build.timestamp.format>
@@ -163,7 +163,7 @@
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
-            <version>18.0</version>
+            <version>27.1-jre</version>
         </dependency>
         <dependency>
             <groupId>org.eclipse.emf</groupId>
