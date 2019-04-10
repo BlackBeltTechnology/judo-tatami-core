@@ -40,6 +40,13 @@ operation ASM!EStringToStringMapEntry getClass() : ASM!EClass {
     }
 }
 
+operation ASM!EClass getAccessPointAnnotation(accessPointFQName : String) : ASM!EStringToStringMapEntry {
+    var annotation = self.getExtensionAnnotation(true);
+    if (annotation.isDefined()) {
+        return annotation.details.selectOne(d | d.key.startsWith(".accessPoints.") and d.value == accessPointFQName);
+    }
+}
+
 pre {
     // add graphs annotations to transfer object relations and built-in operations
     for (g in getAllExposedGraphs()) {
@@ -65,8 +72,9 @@ pre {
     }
 
     for (ap in getAllAccessPoints()) {
-        log.debug("Access point: ");
+        log.debug("Access point: " + ap.getFQName());
         log.debug("  - mapped transfer object types: " + ap.getExposedMappedTransferObjectTypes().collect(t | t.getFQName()));
+        log.debug("  - exposed services: " + ap.getExposedServices().collect(t | t.eContainer.getFQName() + "#" + t.name));
         
         for (transferObject in ap.getExposedMappedTransferObjectTypes()) {
             // get (and create is not exists) annotation on exposed mapped transfer object type

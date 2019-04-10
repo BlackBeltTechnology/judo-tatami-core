@@ -3,13 +3,6 @@ import "api.etl";
 import "parameter.etl";
 import "tag.etl";
 
-operation ASM!EClass getAccessPointAnnotation(accessPointFQName : String) : ASM!EStringToStringMapEntry {
-    var annotation = self.getExtensionAnnotation(true);
-    if (annotation.isDefined()) {
-        return annotation.details.selectOne(d | d.key.startsWith(".accessPoints.") and d.value == accessPointFQName);
-    }
-}
-
 rule CreateExposedGraphEntryPointPath
     transform s : ASM!EClass
     to t : OPENAPI!Path {
