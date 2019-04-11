@@ -1,0 +1,34 @@
+import "../../../operations/asm/_importAll.eol";
+import "api.etl";
+
+rule CreateDataPropertyDeclaration
+    transform s : ASM!EStringToStringMapEntry
+    to t : OPENAPI!PropertyDeclaration {
+        guard: s.key.startsWith(".accessPoints.") and s.getAttribute().isDefined()
+        
+        t.name = s.getAttribute().name;
+        
+        var annotation = s.getAttribute().eContainingClass.getExtensionAnnotation(false);
+        if (annotation.isDefined()) {
+	        var a = annotation.details.selectOne(d | d.key.startsWith(".accessPoints.") and d.value = s.value);
+	        a.equivalent("CreateTransferObjectSingleSchemaDefinition").properties.add(t);
+        } else {
+            throw "Container of attribute is not prepared with annotation";
+        }
+}
+
+rule CreateDataPropertyDefinition
+    transform s : ASM!EStringToStringMapEntry
+    to t : OPENAPI!Property {
+        guard: s.key.startsWith(".accessPoints.") and s.getAttribute().isDefined()
+        
+        t.type = OPENAPI!JSONDataType#string; // TODO - it is based on type of attribute
+        if (s.getAttribute().many) {
+            throw "Collection attributes are not supported";
+        }
+        //if (s.getAttribute().required) {
+        //    s.equivalent("CreateDataPropertyDeclaration")....required.add(s.getAttribute().name);
+        //}
+        
+        s.equivalent("CreateDataPropertyDeclaration").property = t;
+}

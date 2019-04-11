@@ -31,6 +31,26 @@ operation ASM!EStringToStringMapEntry getOperation() : ASM!EOperation {
 }
 
 @cached
+operation ASM!EStringToStringMapEntry getAttribute() : ASM!EAttribute {
+    var a = self.getAnnotation();
+    if (a.isDefined() and a.eModelElement.isKindOf(ASM!EAttribute)) {
+        return a.eModelElement;
+    } else {
+        return null;
+    }
+}
+
+@cached
+operation ASM!EStringToStringMapEntry getReference() : ASM!EReference {
+    var a = self.getAnnotation();
+    if (a.isDefined() and a.eModelElement.isKindOf(ASM!EReference)) {
+        return a.eModelElement;
+    } else {
+        return null;
+    }
+}
+
+@cached
 operation ASM!EStringToStringMapEntry getParameter() : ASM!EParameter {
     var a = self.getAnnotation();
     if (a.isDefined() and a.eModelElement.isKindOf(ASM!EParameter)) {
@@ -85,12 +105,29 @@ pre {
             if (o.eType.isDefined()) {
                 log.debug("    - return type: " + o.eType.getFQName());
                 o.addAnnotationIfNotExists(".accessPoints.", g.getResolvedExposedBy().getFQName());
+                for (a in o.eType.eAttributes) {
+                    log.debug("      - attribute: " + a.getFQName());
+                    a.addAnnotationIfNotExists(".accessPoints.", g.getResolvedExposedBy().getFQName());
+                }
+                for (r in o.eType.eReferences) {
+                    log.debug("      - reference: " + r.getFQName());
+                    r.addAnnotationIfNotExists(".accessPoints.", g.getResolvedExposedBy().getFQName());
+                }
             }
             
             for (p in o.eParameters.select(p | p.eType.isDefined())) {
                 log.debug("    - parameter: " + p.name + ", type: " + p.eType.getFQName());
                 p.addAnnotationIfNotExists(".accessPoints.", g.getResolvedExposedBy().getFQName());
                 p.eType.addAnnotationIfNotExists(".accessPoints.", g.getResolvedExposedBy().getFQName());
+                
+                for (a in p.eType.eAttributes) {
+                    log.debug("      - attribute: " + a.getFQName());
+                    a.addAnnotationIfNotExists(".accessPoints.", g.getResolvedExposedBy().getFQName());
+                }
+                for (r in p.eType.eReferences) {
+                    log.debug("      - reference: " + r.getFQName());
+                    r.addAnnotationIfNotExists(".accessPoints.", g.getResolvedExposedBy().getFQName());
+                }
             }
         }
     }
@@ -111,12 +148,28 @@ pre {
             if (exposedService.eType.isDefined()) {
                 log.debug("    - return type: " + exposedService.eType.getFQName());
                 exposedService.addAnnotationIfNotExists(".accessPoints.", ap.getFQName());
+                for (a in exposedService.eType.eAttributes) {
+                    log.debug("      - attribute: " + a.getFQName());
+                    a.addAnnotationIfNotExists(".accessPoints.", ap.getFQName());
+                }
+                for (r in exposedService.eType.eReferences) {
+                    log.debug("      - reference: " + r.getFQName());
+                    r.addAnnotationIfNotExists(".accessPoints.", ap.getFQName());
+                }
             }
             
             for (p in exposedService.eParameters.select(p | p.eType.isDefined())) {
                 log.debug("    - parameter: " + p.name + ",  type: " + p.eType.getFQName());
                 p.addAnnotationIfNotExists(".accessPoints.", ap.getFQName());
                 p.eType.addAnnotationIfNotExists(".accessPoints.", ap.getFQName());
+                for (a in p.eType.eAttributes) {
+                    log.debug("      - attribute: " + a.getFQName());
+                    a.addAnnotationIfNotExists(".accessPoints.", ap.getFQName());
+                }
+                for (r in p.eType.eReferences) {
+                    log.debug("      - reference: " + r.getFQName());
+                    r.addAnnotationIfNotExists(".accessPoints.", ap.getFQName());
+                }
             }
         }
     }
