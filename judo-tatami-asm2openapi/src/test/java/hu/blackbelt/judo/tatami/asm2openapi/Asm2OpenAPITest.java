@@ -2,6 +2,7 @@ package hu.blackbelt.judo.tatami.asm2openapi;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import edu.uoc.som.openapi.API;
 import hu.blackbelt.epsilon.runtime.execution.api.Log;
 import hu.blackbelt.epsilon.runtime.execution.impl.NameMappedURIHandlerImpl;
 import hu.blackbelt.epsilon.runtime.execution.impl.NioFilesystemnRelativePathURIHandlerImpl;
@@ -11,6 +12,10 @@ import hu.blackbelt.judo.meta.asm.runtime.AsmModelLoader;
 import hu.blackbelt.judo.meta.asm.runtime.AsmModelLoader.LocalAsmPackageRegistration;
 import hu.blackbelt.judo.meta.openapi.runtime.OpenAPIModel;
 import hu.blackbelt.judo.meta.openapi.runtime.OpenAPIModelLoader;
+import hu.blackbelt.judo.meta.openapi.runtime.exporter.OpenAPIExporter;
+import io.swagger.models.Swagger;
+import io.swagger.util.Json;
+import io.swagger.util.Yaml;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
@@ -25,6 +30,9 @@ import org.junit.Test;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.Writer;
 import java.nio.file.FileSystems;
 import java.util.List;
 import java.util.Map;
@@ -114,6 +122,25 @@ public class Asm2OpenAPITest {
         }
 
         OpenAPIModelLoader.saveOpenAPIModel(openAPIModel);
+
+        // Save JSON and YAML Swagger files
+        openAPIModel.getResourceSet().getResource(openAPIModel.getUri(), false).getContents().forEach(m -> {
+            final Swagger swagger = OpenAPIExporter.convertModelToOpenAPI((API) m);
+
+            final String title = ((API)m).getInfo().getTitle();
+            final File swaggerJsonFile = new File(targetDir().getAbsolutePath()+"/northwind-openapi-" + title + ".json");
+            try (final Writer targetFileWriter = new FileWriter(swaggerJsonFile)) {
+                targetFileWriter.append(Json.pretty().writeValueAsString(swagger));
+            } catch (IOException ex) {
+                log.error("Unable to create JSON output", ex);
+            }
+            final File swaggerYamlFile = new File(targetDir().getAbsolutePath()+"/northwind-openapi-" + title + ".yaml");
+            try (final Writer targetFileWriter = new FileWriter(swaggerYamlFile)) {
+                targetFileWriter.append(Yaml.pretty().writeValueAsString(swagger));
+            } catch (IOException ex) {
+                log.error("Unable to create YAML output", ex);
+            }
+        });
     }
 
 

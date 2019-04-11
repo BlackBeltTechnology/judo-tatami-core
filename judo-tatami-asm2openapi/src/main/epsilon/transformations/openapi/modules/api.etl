@@ -1,0 +1,201 @@
+import "../../../operations/asm/_importAll.eol";
+
+@cached
+operation String toOpenAPIPath() : String {
+    return self.replace("\\.ʘUnboundServices", "").replace("ʘ", "/").replace("\\.", "/");
+}
+
+@cached
+operation ASM!EOperation getResolvedExposedBy() : ASM!EClass {
+    var exposedBy = self.getAnnotationValue("exposedBy", false);
+    if (exposedBy.isDefined()) {
+        return exposedBy.resolve();
+    } else {
+        return null;
+    }
+}
+
+@cached
+operation String toOpenAPIName() : String {
+    return self.replace("[^0-9a-zA-Z_]", "_");
+}
+
+@cached
+operation ASM!EStringToStringMapEntry getOperation() : ASM!EOperation {
+    var a = self.getAnnotation();
+    if (a.isDefined() and a.eModelElement.isKindOf(ASM!EOperation)) {
+        return a.eModelElement;
+    } else {
+        return null;
+    }
+}
+
+@cached
+operation ASM!EStringToStringMapEntry getClass() : ASM!EClass {
+    var a = self.getAnnotation();
+    if (a.isDefined() and a.eModelElement.isKindOf(ASM!EClass)) {
+        return a.eModelElement;
+    } else {
+        return null;
+    }
+}
+
+operation ASM!EClass getAccessPointAnnotation(accessPointFQName : String) : ASM!EStringToStringMapEntry {
+    var annotation = self.getExtensionAnnotation(true);
+    if (annotation.isDefined()) {
+        return annotation.details.selectOne(d | d.key.startsWith(".accessPoints.") and d.value == accessPointFQName);
+    }
+}
+
+pre {
+    // add graphs annotations to transfer object relations and built-in operations
+    for (g in getAllExposedGraphs()) {
+        log.debug("Exposed graph: " + g.getFQName());
+        
+        log.debug("  - access point: " + g.getResolvedExposedBy().getFQName());
+        log.debug("  - mapped transfer object types: " + g.getExposedMappedTransferObjectTypes().collect(t | t.getFQName()));
+        log.debug("  - operations: " + g.getExposedOperations().collect(o | o.eContainingClass.getFQName() + "#" + o.name));
+        
+        for (o in g.getExposedOperations()) {
+            // get (and create is not exists) annotation on exposed operation
+            var annotation = o.getExtensionAnnotation(true);
+            
+            // add FQ name of exposed graph as annotation value (key: .graphs.*)
+            var index = annotation.details.select(d | d.key.startsWith(".graphs.")).size();
+            if (not annotation.details.selectOne(d | d.key.startsWith(".graphs.") and d.value == g.getFQName()).isDefined()) {
+                var aGraphs = new ASM!EStringToStringMapEntry;
+		        aGraphs.key = ".graphs." + index;
+		        aGraphs.value = g.getFQName();
+		        annotation.details.add(aGraphs);
+            }
+        }
+    }
+
+    for (ap in getAllAccessPoints()) {
+        log.debug("Access point: " + ap.getFQName());
+        log.debug("  - mapped transfer object types: " + ap.getExposedMappedTransferObjectTypes().collect(t | t.getFQName()));
+        log.debug("  - exposed services: " + ap.getExposedServices().collect(t | t.eContainer.getFQName() + "#" + t.name));
+        
+        for (transferObject in ap.getExposedMappedTransferObjectTypes()) {
+            // get (and create is not exists) annotation on exposed mapped transfer object type
+            var annotation = transferObject.getExtensionAnnotation(true);
+            
+            // add FQ name of access point as annotation value (key: .accessPoints.*)
+            var index = annotation.details.select(d | d.key.startsWith(".accessPoints.")).size();
+            if (not annotation.details.selectOne(d | d.key.startsWith(".accessPoints.") and d.value == ap.getFQName()).isDefined()) {
+                var aAccessPoints = new ASM!EStringToStringMapEntry;
+		        aAccessPoints.key = ".accessPoints." + index;
+		        aAccessPoints.value = ap.getFQName();
+		        annotation.details.add(aAccessPoints);
+            }
+            
+            // get (and create is not exists) annotation on entity type
+            var entityAnnotation = transferObject.getEntityType().getExtensionAnnotation(true);
+            
+            // add FQ name of access point as annotation value (key: .accessPoints.*)
+            var index = entityAnnotation.details.select(d | d.key.startsWith(".accessPoints.")).size();
+            if (not entityAnnotation.details.selectOne(d | d.key.startsWith(".accessPoints.") and d.value == ap.getFQName()).isDefined()) {
+                var aAccessPoints = new ASM!EStringToStringMapEntry;
+		        aAccessPoints.key = ".accessPoints." + index;
+		        aAccessPoints.value = ap.getFQName();
+		        entityAnnotation.details.add(aAccessPoints);
+            }
+        }
+    }
+}
+
+rule CreateOpenAPIAccessPoint
+    transform s : ASM!EClass
+    to t : OPENAPI!API {
+        guard: s.isAccessPoint()
+        
+        t.swagger = "2.0";
+
+        t.host = "localhost:8080"; // TODO
+        t.basePath = "/" + s.getFQName().toOpenAPIPath();
+        
+        t.schemes.add(OPENAPI!SchemeType#http);
+        t.schemes.add(OPENAPI!SchemeType#https);
+        t.produces.add("application/json");
+}
+
+rule CreateOpenAPIAccessPointInfo
+    transform s : ASM!EClass
+    to t : OPENAPI!Info {
+        guard: s.isAccessPoint()
+        
+        t.version = "1.0.0"; // TODO
+        t.title = s.name;
+        
+        s.equivalent("CreateOpenAPIAccessPoint").info = t;
+}
+
+rule CreateInternalServerErrorDeclaration
+    transform s : ASM!EClass
+    to t : OPENAPI!ResponseDeclaration {
+        guard: s.isAccessPoint()
+
+        t.name = "InternalServerError";
+        
+        s.equivalent("CreateOpenAPIAccessPoint").responses.add(t);
+}
+rule CreateInternalServerErrorDefinition
+    transform s : ASM!EClass
+    to t : OPENAPI!ResponseDefinition {
+        guard: s.isAccessPoint()
+
+        t.description = "Internal server error";
+        
+        s.equivalent("CreateInternalServerErrorDeclaration").response = t;
+}
+
+/*rule ExposeUnboundOperaionPath
+    transform s : ASM!EOperation
+    to t : OPENAPI!Path {
+        guard: s.isStateless()
+        
+        var accessPoint = s.getAnnotationValue("exposedBy").resolve();
+        
+        t.relativePath = "/" + s.eContainingClass.getFQName().toOpenAPIPath() + "/" + s.name;
+        
+        var apiOperation;
+        if (s.eParameters.isEmpty() and s.annotatedAsFalse("stateful")) {
+            t.`get` = new OPENAPI!Operation;
+            apiOperation = t.`get`;
+        } else {
+            t.`post` = new OPENAPI!Operation;
+            apiOperation = t.`post`;
+            if (not s.eParameters.isEmpty()) {
+                apiOperation.consumes.add("application/json");
+            }
+        }
+
+        // TODO - produces property is defined globally (but not serilized)
+        if (s.eType.isDefined()) {
+            apiOperation.produces.add("application/json");
+        }
+
+        apiOperation.responses.add(accessPoint.equivalent("CreateOpenAPIAccessPoint").api.responses.selectOne(r | r.code == "500"));
+        
+        s.getResolvedExposedBy().equivalent("CreateOpenAPIAccessPoint").paths.add(t);
+}
+
+rule ExposeUnboundGetOperaion
+    transform s : ASM!EOperation
+    to t : OPENAPI!Operation {
+        guard: not s.isBound()
+}
+
+rule ExposeUnboundGetOperaion
+    transform s : ASM!EOperation
+    to t : OPENAPI!Operation {
+        guard: not s.isBound() and s.isStateless() and s.eParameters.isEmpty()
+        
+        //s.equivalent("ExposeUnboundOperaionPath").
+}
+
+rule ExposeUnboundPostOperaion
+    transform s : ASM!EOperation
+    to t : OPENAPI!Operation {
+        guard: not s.isBound() and not (s.isStateless() and s.eParameters.isEmpty())
+} */

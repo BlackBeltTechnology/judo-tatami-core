@@ -1,0 +1,264 @@
+import "../../../operations/asm/_importAll.eol";
+import "api.etl";
+import "parameter.etl";
+import "tag.etl";
+
+rule CreateExposedGraphEntryPointPath
+    transform s : ASM!EClass
+    to t : OPENAPI!Path {
+        guard: s.isExposedGraph()
+        
+        var accessPoint = s.getResolvedExposedBy();
+        
+        t.relativePath = "/" + s.getExposedGraphName();
+        
+        accessPoint.equivalent("CreateOpenAPIAccessPoint").paths.add(t);
+}
+
+rule CreateExposedGraphEntryPointOperation
+    transform s : ASM!EClass
+    to t : OPENAPI!Operation {
+        guard: s.isExposedGraph()
+        
+        t.tags.add(s.equivalent("CreateTag").name);
+        
+        s.equivalent("CreateExposedGraphEntryPointPath").`get` = t;
+}
+
+rule CreateExposedGraphEntryPointOperationResponse
+    transform s : ASM!EClass
+    to t : OPENAPI!OperationResponse {
+        guard: s.isExposedGraph()
+        
+        t.code = "200";
+        
+        s.equivalent("CreateExposedGraphEntryPointOperation").responses.add(t);
+}
+
+rule CreateExposedGraphEntryPointOperationResponseDefinition
+    transform s : ASM!EClass
+    to t : OPENAPI!ResponseDefinition {
+        guard: s.isExposedGraph()
+        
+        var accessPoint = s.getResolvedExposedBy();
+        var root = s.getResolvedRoot();
+        
+        var collection = true;
+        var aCollection = s.getAnnotationValue("root.collection", false);
+        if (aCollection.isDefined()) {
+            collection = aCollection.asBoolean();
+        }
+
+        t.schema = new OPENAPI!Schema;
+        t.schema.ref = new OPENAPI!SchemaReference;
+        
+        var aAccessPoint = root.getAccessPointAnnotation(accessPoint.getFQName());
+        if (collection) {
+            t.schema.ref.ref = aAccessPoint.equivalent("CreateTransferObjectArraySchemaDeclaration").getReference();
+        } else {
+            t.schema.ref.ref = aAccessPoint.equivalent("CreateTransferObjectSingleSchemaDeclaration").getReference();
+        }
+        
+        s.equivalent("CreateExposedGraphEntryPointOperationResponse").response = t;
+}
+
+rule CreateExposedGraphPath
+    transform s : ASM!EStringToStringMapEntry
+    to t : OPENAPI!Path {
+        guard: s.key.startsWith(".graphs.") and s.getOperation().isDefined()
+
+        var op = s.getOperation();
+        var opGroup = op.eContainingClass;
+        var graph = opGroup.getContainerClass().getGraphs().selectOne(g | g.getFQName() == s.value);
+        var accessPoint = graph.getResolvedExposedBy();
+
+        t.relativePath = "/" + graph.getExposedGraphName() + "/" + opGroup.getFQName().toOpenAPIPath() + "/" + op.name;
+
+        /*
+        // parameters with unknown type are ignored
+        for (p in op.eParameters.select(p | p.eType.isDefined())) {
+            if (p.eType.eAttributes.isEmpty() and p.eType.eReferences.isEmpty() and not p.eType.isMappedTransferObjectType()) {
+                // ignore unmapped transfer object parameters that contains no attribute nor reference 
+                continue;
+            }
+            
+            var input = new OPENAPI!Parameter;
+            input.name = p.name;
+            input.location = OPENAPI!ParameterLocation#body;
+            input.required = p.required;
+            
+            input.schema = new OPENAPI!Schema;
+		    accessPoint.equivalent("CreateOpenAPIAccessPoint").schemas.add(input.schema);
+            
+            var parameterSchema;
+            
+            if (p.isMany) {
+                input.schema.type = OPENAPI!JSONDataType#array;
+                input.schema.items = new OPENAPI!Schema;
+
+                accessPoint.equivalent("CreateOpenAPIAccessPoint").schemas.add(input.schema.items);
+
+                parameterSchema = input.schema.items;
+            } else {
+                input.schema.type = OPENAPI!JSONDataType#object;
+                parameterSchema = input.schema;
+            }
+            
+		     
+            if (p.eType.isMappedTransferObjectType()) {
+		        var idProperty = new OPENAPI!Schema;
+		        idProperty.name = "__idXX";
+		        idProperty.type = OPENAPI!JSONDataType#string;
+		        
+		        accessPoint.equivalent("CreateOpenAPIAccessPoint").schemas.add(idProperty);
+		        
+		        parameterSchema.properties.add(idProperty);
+		        //t.required.add(idProperty); // TODO
+            }
+            
+            apiOperation.parameters.add(input);
+            
+            accessPoint.equivalent("CreateOpenAPIAccessPoint").parameters.add(input);
+        }
+
+        apiOperation.responses.add(accessPoint.equivalent("CreateOpenAPIAccessPoint").api.responses.selectOne(r | r.code == "500")); */
+
+        accessPoint.equivalent("CreateOpenAPIAccessPoint").paths.add(t);
+}
+
+@abstract
+rule CreateExposedGraphOperation
+    transform s : ASM!EStringToStringMapEntry
+    to t : OPENAPI!Operation {
+        var op = s.getOperation();
+        var opGroup = op.eContainingClass;
+        var graph = opGroup.getContainerClass().getGraphs().selectOne(g | g.getFQName() == s.value);
+        var accessPoint = graph.getResolvedExposedBy();
+        
+        t.tags.add(graph.equivalent("CreateTag").name);
+}
+
+rule CreateExposedGraphGetOperation
+    transform s : ASM!EStringToStringMapEntry
+    to t : OPENAPI!Operation
+    extends CreateExposedGraphOperation {
+        guard: s.key.startsWith(".graphs.") and s.getOperation().isDefined() and (s.getOperation().eParameters.isEmpty() and s.getOperation().annotatedAsFalse("stateful"))
+
+        s.equivalent("CreateExposedGraphPath").`get` = t;
+}
+
+rule CreateExposedGraphPostOperation
+    transform s : ASM!EStringToStringMapEntry
+    to t : OPENAPI!Operation
+    extends CreateExposedGraphOperation {
+        guard: s.key.startsWith(".graphs.") and s.getOperation().isDefined() and (not s.getOperation().eParameters.isEmpty() or s.getOperation().annotatedAsTrue("stateful"))
+
+        t.consumes.add("application/json");
+
+        s.equivalent("CreateExposedGraphPath").`post` = t;
+}
+
+@abstract
+rule CreateExposedGraphOperationEntityIdParameter
+    transform s : ASM!EStringToStringMapEntry
+    to t : OPENAPI!ParameterReference {
+        var op = s.getOperation();
+        var opGroup = op.eContainingClass;
+        var graph = opGroup.getContainerClass().getGraphs().selectOne(g | g.getFQName() == s.value);
+        var accessPoint = graph.getResolvedExposedBy();
+        
+        var entityAnnotation = opGroup.getContainerClass().getEntityType().getExtensionAnnotation(false);
+        if (not entityAnnotation.isDefined()) {
+            throw "Entity of operation is not prepared with annotation";
+        }
+        
+        var entityIdParameterDeclaration = entityAnnotation.details.selectOne(d | d.key.startsWith(".accessPoints.") and d.value == accessPoint.getFQName()).equivalent("CreateEntityIdParameterDeclaration");
+        t.ref = entityIdParameterDeclaration.getReference();
+}
+
+rule CreateExposedGraphGetOperationEntityIdParameter
+    transform s : ASM!EStringToStringMapEntry
+    to t : OPENAPI!ParameterReference
+    extends CreateExposedGraphOperationEntityIdParameter {
+        guard: s.key.startsWith(".graphs.") and s.getOperation().isDefined() and (s.getOperation().eParameters.isEmpty() and s.getOperation().annotatedAsFalse("stateful"))
+        
+        s.equivalent("CreateExposedGraphGetOperation").parameters.add(t);
+}
+
+rule CreateExposedGraphPostOperationEntityIdParameter
+    transform s : ASM!EStringToStringMapEntry
+    to t : OPENAPI!ParameterReference
+    extends CreateExposedGraphOperationEntityIdParameter {
+        guard: s.key.startsWith(".graphs.") and s.getOperation().isDefined() and (not s.getOperation().eParameters.isEmpty() or s.getOperation().annotatedAsTrue("stateful"))
+        
+        s.equivalent("CreateExposedGraphPostOperation").parameters.add(t);
+}
+
+@abstract
+rule CreateExposedGraphOperationResponse
+    transform s : ASM!EStringToStringMapEntry
+    to t : OPENAPI!OperationResponse {
+        var op = s.getOperation();
+
+        if (op.eType.isDefined()) {
+            t.code = "200";
+        } else {
+            t.code = "204";
+        }
+}
+
+rule CreateExposedGraphGetOperationResponse
+    transform s : ASM!EStringToStringMapEntry
+    to t : OPENAPI!OperationResponse
+    extends CreateExposedGraphOperationResponse {
+        guard: s.key.startsWith(".graphs.") and s.getOperation().isDefined() and (s.getOperation().eParameters.isEmpty() and s.getOperation().annotatedAsFalse("stateful"))
+        
+        s.equivalent("CreateExposedGraphGetOperation").responses.add(t);
+}
+
+rule CreateExposedGraphPostOperationResponse
+    transform s : ASM!EStringToStringMapEntry
+    to t : OPENAPI!OperationResponse
+    extends CreateExposedGraphOperationResponse {
+        guard: s.key.startsWith(".graphs.") and s.getOperation().isDefined() and (not s.getOperation().eParameters.isEmpty() or s.getOperation().annotatedAsTrue("stateful"))
+
+        s.equivalent("CreateExposedGraphPostOperation").responses.add(t);
+}
+
+@abstract
+rule CreateExposedGraphOperationResponseDefinition
+    transform s : ASM!EStringToStringMapEntry
+    to t : OPENAPI!OperationResponseDefinition {
+        var op = s.getOperation();
+        var opGroup = op.eContainingClass;
+        var graph = opGroup.getContainerClass().getGraphs().selectOne(g | g.getFQName() == s.value);
+        var accessPoint = graph.getResolvedExposedBy();
+
+        t.schema = new OPENAPI!Schema;
+        t.schema.ref = new OPENAPI!SchemaReference;
+
+        var aAccessPoint = op.eType.getAccessPointAnnotation(accessPoint.getFQName());
+        if (op.many) {
+            t.schema.ref.ref = aAccessPoint.equivalent("CreateTransferObjectArraySchemaDeclaration").getReference();
+        } else {
+            t.schema.ref.ref = aAccessPoint.equivalent("CreateTransferObjectSingleSchemaDeclaration").getReference();
+        }
+}
+
+rule CreateExposedGraphGetOperationResponseDefinition
+    transform s : ASM!EStringToStringMapEntry
+    to t : OPENAPI!ResponseDefinition
+    extends CreateExposedGraphOperationResponseDefinition {
+        guard: s.key.startsWith(".graphs.") and s.getOperation().isDefined() and (s.getOperation().eParameters.isEmpty() and s.getOperation().annotatedAsFalse("stateful")) and s.getOperation().eType.isDefined()
+
+        s.equivalent("CreateExposedGraphGetOperationResponse").response = t;
+}
+
+rule CreateExposedGraphPostOperationResponseDefinition
+    transform s : ASM!EStringToStringMapEntry
+    to t : OPENAPI!ResponseDefinition
+    extends CreateExposedGraphOperationResponseDefinition {
+        guard: s.key.startsWith(".graphs.") and s.getOperation().isDefined() and (not s.getOperation().eParameters.isEmpty() or s.getOperation().annotatedAsTrue("stateful")) and s.getOperation().eType.isDefined()
+
+        s.equivalent("CreateExposedGraphPostOperationResponse").response = t;
+}

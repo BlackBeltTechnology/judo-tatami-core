@@ -1,0 +1,28 @@
+import "../../../operations/asm/_importAll.eol";
+import "api.etl";
+
+rule CreateEntityIdParameterDeclaration
+    transform s : ASM!EStringToStringMapEntry
+    to t : OPENAPI!ParameterDeclaration {
+        guard: s.key.startsWith(".accessPoints.") and s.getClass().isDefined() and s.getClass().isEntity()
+        
+        var accessPoint = getAllAccessPoints().selectOne(ap | ap.getFQName() == s.value);
+        
+        t.name = "__id__" + s.getClass().getFQName().toOpenAPIName();
+        
+        accessPoint.equivalent("CreateOpenAPIAccessPoint").parameters.add(t);
+}
+
+rule CreateEntityIdParameterDefinition
+    transform s : ASM!EStringToStringMapEntry
+    to t : OPENAPI!ParameterDefinition {
+        guard: s.key.startsWith(".accessPoints.") and s.getClass().isDefined() and s.getClass().isEntity()
+        
+        t.name = "__id";
+        t.`in` = OPENAPI!ParameterLocation#header;
+        t.type = OPENAPI!JSONDataType#string;
+        t.description = "ID of " + s.getClass().name + " instance";
+        t.required = true;
+        
+        s.equivalent("CreateEntityIdParameterDeclaration").parameter = t;
+}
