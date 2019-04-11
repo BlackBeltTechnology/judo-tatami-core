@@ -74,55 +74,6 @@ rule CreateExposedGraphPath
 
         t.relativePath = "/" + graph.getExposedGraphName() + "/" + opGroup.getFQName().toOpenAPIPath() + "/" + op.name;
 
-        /*
-        // parameters with unknown type are ignored
-        for (p in op.eParameters.select(p | p.eType.isDefined())) {
-            if (p.eType.eAttributes.isEmpty() and p.eType.eReferences.isEmpty() and not p.eType.isMappedTransferObjectType()) {
-                // ignore unmapped transfer object parameters that contains no attribute nor reference 
-                continue;
-            }
-            
-            var input = new OPENAPI!Parameter;
-            input.name = p.name;
-            input.location = OPENAPI!ParameterLocation#body;
-            input.required = p.required;
-            
-            input.schema = new OPENAPI!Schema;
-		    accessPoint.equivalent("CreateOpenAPIAccessPoint").schemas.add(input.schema);
-            
-            var parameterSchema;
-            
-            if (p.isMany) {
-                input.schema.type = OPENAPI!JSONDataType#array;
-                input.schema.items = new OPENAPI!Schema;
-
-                accessPoint.equivalent("CreateOpenAPIAccessPoint").schemas.add(input.schema.items);
-
-                parameterSchema = input.schema.items;
-            } else {
-                input.schema.type = OPENAPI!JSONDataType#object;
-                parameterSchema = input.schema;
-            }
-            
-		     
-            if (p.eType.isMappedTransferObjectType()) {
-		        var idProperty = new OPENAPI!Schema;
-		        idProperty.name = "__idXX";
-		        idProperty.type = OPENAPI!JSONDataType#string;
-		        
-		        accessPoint.equivalent("CreateOpenAPIAccessPoint").schemas.add(idProperty);
-		        
-		        parameterSchema.properties.add(idProperty);
-		        //t.required.add(idProperty); // TODO
-            }
-            
-            apiOperation.parameters.add(input);
-            
-            accessPoint.equivalent("CreateOpenAPIAccessPoint").parameters.add(input);
-        }
-
-        apiOperation.responses.add(accessPoint.equivalent("CreateOpenAPIAccessPoint").api.responses.selectOne(r | r.code == "500")); */
-
         accessPoint.equivalent("CreateOpenAPIAccessPoint").paths.add(t);
 }
 
@@ -136,6 +87,14 @@ rule CreateExposedGraphOperation
         var accessPoint = graph.getResolvedExposedBy();
         
         t.tags.add(graph.equivalent("CreateTag").name);
+        
+        for (p in op.eParameters.select(p | p.eType.isDefined())) {
+            var parameterReference = new OPENAPI!ParameterReference;
+            
+            var aAccessPoint = p.getExtensionAnnotation(false).details.selectOne(d | d.key.startsWith(".accessPoints.") and d.value = accessPoint.getFQName());
+            parameterReference.ref = aAccessPoint.equivalent("CreateParameterDeclaration").getReference();
+            t.parameters.add(parameterReference);
+        }
 }
 
 rule CreateExposedGraphGetOperation

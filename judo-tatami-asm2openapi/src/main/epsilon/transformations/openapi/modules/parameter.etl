@@ -26,3 +26,42 @@ rule CreateEntityIdParameterDefinition
         
         s.equivalent("CreateEntityIdParameterDeclaration").parameter = t;
 }
+
+rule CreateParameterDeclaration
+    transform s : ASM!EStringToStringMapEntry
+    to t : OPENAPI!ParameterDeclaration {
+        guard: s.key.startsWith(".accessPoints.") and s.getParameter().isDefined()
+        
+        var accessPoint = s.value.resolve();
+        
+        t.name = (s.getParameter().eOperation.getFQName() + "__" + s.getParameter().name).toOpenAPIName();
+        
+        accessPoint.equivalent("CreateOpenAPIAccessPoint").parameters.add(t);
+}
+
+rule CreateParameterDefinition
+    transform s : ASM!EStringToStringMapEntry
+    to t : OPENAPI!ParameterDefinition {
+        guard: s.key.startsWith(".accessPoints.") and s.getParameter().isDefined()
+        
+        t.name = s.getParameter().name;
+        t.required = true;
+        t.`in` = OPENAPI!ParameterLocation#body;
+        t.schema = new OPENAPI!Schema;
+        t.schema.ref = new SchemaReference;
+        
+        var annotation = s.getParameter().eType.getExtensionAnnotation(false);
+        if (annotation.isDefined()) {
+            var a = annotation.details.selectOne(d | d.key.startsWith(".accessPoints.") and d.value = s.value);
+
+	        if (s.getParameter().many) {
+	            t.schema.ref.ref = a.equivalent("CreateTransferObjectSingleSchemaDeclaration").getReference();
+	        } else {
+	            t.schema.ref.ref = a.equivalent("CreateTransferObjectArraySchemaDeclaration").getReference();
+	        }
+        } else {
+            throw "Parameter is not prepared";
+        }
+        
+        s.equivalent("CreateParameterDeclaration").parameter = t;
+}

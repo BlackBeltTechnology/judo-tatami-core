@@ -31,6 +31,16 @@ operation ASM!EStringToStringMapEntry getOperation() : ASM!EOperation {
 }
 
 @cached
+operation ASM!EStringToStringMapEntry getParameter() : ASM!EParameter {
+    var a = self.getAnnotation();
+    if (a.isDefined() and a.eModelElement.isKindOf(ASM!EParameter)) {
+        return a.eModelElement;
+    } else {
+        return null;
+    }
+}
+
+@cached
 operation ASM!EStringToStringMapEntry getClass() : ASM!EClass {
     var a = self.getAnnotation();
     if (a.isDefined() and a.eModelElement.isKindOf(ASM!EClass)) {
@@ -47,72 +57,66 @@ operation ASM!EClass getAccessPointAnnotation(accessPointFQName : String) : ASM!
     }
 }
 
+operation ASM!EModelElement addAnnotationIfNotExists(prefix: String, value: String) {
+    // get (and create is not exists) annotation
+    var annotation = self.getExtensionAnnotation(true);
+    
+    // add values as annotation detail (key is prefixed)
+    var index = annotation.details.select(d | d.key.startsWith(prefix)).size();
+    if (not annotation.details.selectOne(d | d.key.startsWith(prefix) and d.value == value).isDefined()) {
+        var aDetail = new ASM!EStringToStringMapEntry;
+        aDetail.key = prefix + index;
+        aDetail.value = value;
+        annotation.details.add(aDetail);
+    }
+}
+
 pre {
-    // add graphs annotations to transfer object relations and built-in operations
+    // add graphs and access point annotations to transfer object relations and built-in operations
     for (g in getAllExposedGraphs()) {
         log.debug("Exposed graph: " + g.getFQName());
-        
         log.debug("  - access point: " + g.getResolvedExposedBy().getFQName());
         log.debug("  - mapped transfer object types: " + g.getExposedMappedTransferObjectTypes().collect(t | t.getFQName()));
-        log.debug("  - operations: " + g.getExposedOperations().collect(o | o.eContainingClass.getFQName() + "#" + o.name));
         
         for (o in g.getExposedOperations()) {
-            // get (and create is not exists) annotation on exposed operation
-            var annotation = o.getExtensionAnnotation(true);
+            log.debug("  - exposed operation: " + o.getFQName());
+            o.addAnnotationIfNotExists(".graphs.", g.getFQName());
             
-            // add FQ name of exposed graph as annotation value (key: .graphs.*)
-            var index = annotation.details.select(d | d.key.startsWith(".graphs.")).size();
-            if (not annotation.details.selectOne(d | d.key.startsWith(".graphs.") and d.value == g.getFQName()).isDefined()) {
-                var aGraphs = new ASM!EStringToStringMapEntry;
-		        aGraphs.key = ".graphs." + index;
-		        aGraphs.value = g.getFQName();
-		        annotation.details.add(aGraphs);
+            if (o.eType.isDefined()) {
+                log.debug("    - return type: " + o.eType.getFQName());
+                o.addAnnotationIfNotExists(".accessPoints.", g.getResolvedExposedBy().getFQName());
+            }
+            
+            for (p in o.eParameters.select(p | p.eType.isDefined())) {
+                log.debug("    - parameter: " + p.name + ", type: " + p.eType.getFQName());
+                p.addAnnotationIfNotExists(".accessPoints.", g.getResolvedExposedBy().getFQName());
+                p.eType.addAnnotationIfNotExists(".accessPoints.", g.getResolvedExposedBy().getFQName());
             }
         }
     }
 
     for (ap in getAllAccessPoints()) {
         log.debug("Access point: " + ap.getFQName());
-        log.debug("  - mapped transfer object types: " + ap.getExposedMappedTransferObjectTypes().collect(t | t.getFQName()));
-        log.debug("  - exposed services: " + ap.getExposedServices().collect(t | t.eContainer.getFQName() + "#" + t.name));
         
         for (transferObject in ap.getExposedMappedTransferObjectTypes()) {
-            // get (and create is not exists) annotation on exposed mapped transfer object type
-            var annotation = transferObject.getExtensionAnnotation(true);
-            
-            // add FQ name of access point as annotation value (key: .accessPoints.*)
-            var index = annotation.details.select(d | d.key.startsWith(".accessPoints.")).size();
-            if (not annotation.details.selectOne(d | d.key.startsWith(".accessPoints.") and d.value == ap.getFQName()).isDefined()) {
-                var aAccessPoints = new ASM!EStringToStringMapEntry;
-		        aAccessPoints.key = ".accessPoints." + index;
-		        aAccessPoints.value = ap.getFQName();
-		        annotation.details.add(aAccessPoints);
-            }
-            
-            // get (and create is not exists) annotation on entity type
-            var entityAnnotation = transferObject.getEntityType().getExtensionAnnotation(true);
-            
-            // add FQ name of access point as annotation value (key: .accessPoints.*)
-            var index = entityAnnotation.details.select(d | d.key.startsWith(".accessPoints.")).size();
-            if (not entityAnnotation.details.selectOne(d | d.key.startsWith(".accessPoints.") and d.value == ap.getFQName()).isDefined()) {
-                var aAccessPoints = new ASM!EStringToStringMapEntry;
-		        aAccessPoints.key = ".accessPoints." + index;
-		        aAccessPoints.value = ap.getFQName();
-		        entityAnnotation.details.add(aAccessPoints);
-            }
+            log.debug("  - transfer object type: " + transferObject.getFQName());
+            transferObject.addAnnotationIfNotExists(".accessPoints.", ap.getFQName());
+            transferObject.getEntityType().addAnnotationIfNotExists(".accessPoints.", ap.getFQName());
         }
 
         for (exposedService in ap.getExposedServices()) {
-            // get (and create is not exists) annotation on exposed mapped transfer object type
-            var annotation = exposedService.getExtensionAnnotation(true);
-
-            // add FQ name of access point as annotation value (key: .accessPoints.*)
-            var index = annotation.details.select(d | d.key.startsWith(".accessPoints.")).size();
-            if (not annotation.details.selectOne(d | d.key.startsWith(".accessPoints.") and d.value == ap.getFQName()).isDefined()) {
-                var aAccessPoints = new ASM!EStringToStringMapEntry;
-		        aAccessPoints.key = ".accessPoints." + index;
-		        aAccessPoints.value = ap.getFQName();
-		        annotation.details.add(aAccessPoints);
+            log.debug("  - exposed service: " + exposedService.getFQName());
+            exposedService.addAnnotationIfNotExists(".accessPoints.", ap.getFQName());
+            
+            if (exposedService.eType.isDefined()) {
+                log.debug("    - return type: " + exposedService.eType.getFQName());
+                exposedService.addAnnotationIfNotExists(".accessPoints.", ap.getFQName());
+            }
+            
+            for (p in exposedService.eParameters.select(p | p.eType.isDefined())) {
+                log.debug("    - parameter: " + p.name + ",  type: " + p.eType.getFQName());
+                p.addAnnotationIfNotExists(".accessPoints.", ap.getFQName());
+                p.eType.addAnnotationIfNotExists(".accessPoints.", ap.getFQName());
             }
         }
     }

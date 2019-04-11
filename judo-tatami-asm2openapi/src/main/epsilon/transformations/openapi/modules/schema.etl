@@ -19,6 +19,7 @@ rule CreateTransferObjectSingleSchemaDefinition
         guard: s.key.startsWith(".accessPoints.") and s.getClass().isDefined() and s.getClass().isMappedTransferObjectType()
         
         t.description = "Schema of " + s.getClass().name;
+        t.type = OPENAPI!JSONDataType#object;
         
         s.equivalent("CreateTransferObjectSingleSchemaDeclaration").schema = t;
 }

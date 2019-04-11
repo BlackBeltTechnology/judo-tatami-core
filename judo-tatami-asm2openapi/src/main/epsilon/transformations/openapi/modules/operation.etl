@@ -21,6 +21,14 @@ rule CreateExposedServiceOperation
     transform s : ASM!EStringToStringMapEntry
     to t : OPENAPI!Operation {
         var op = s.getOperation();
+        
+        for (p in op.eParameters.select(p | p.eType.isDefined())) {
+            var parameterReference = new OPENAPI!ParameterReference;
+            
+            var aAccessPoint = p.getExtensionAnnotation(false).details.selectOne(d | d.key.startsWith(".accessPoints.") and d.value = s.value);
+            parameterReference.ref = aAccessPoint.equivalent("CreateParameterDeclaration").getReference();
+            t.parameters.add(parameterReference);
+        }
 }
 
 rule CreateExposedServiceGetOperation

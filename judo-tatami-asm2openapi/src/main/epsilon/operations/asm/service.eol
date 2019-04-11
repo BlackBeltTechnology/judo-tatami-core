@@ -11,16 +11,6 @@ operation getAllMappedTransferObjectTypes() : Collection {
     return ASM!EClass.all.select(c | c.isMappedTransferObjectType());
 }
 
-/*@cached
-operation ASM!EOperation isExposed() : Boolean {
-    var exposedBy = self.getAnnotationValue("exposedBy", false);
-    if (exposedBy.isDefined()) {
-        return exposedBy.resolve().isAccessPoint();
-    } else {
-        return false;
-    }
-} */
-
 @cached
 operation ASM!EOperation isStateless() : Boolean {
     return self.annotatedAsFalse("stateful");
