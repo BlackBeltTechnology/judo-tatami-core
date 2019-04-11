@@ -85,7 +85,7 @@
         <judo-meta-liquibase-version>1.0.1.develop_8</judo-meta-liquibase-version>
         <judo-meta-liquibase-import-range>[1.0,1.1)</judo-meta-liquibase-import-range>
 
-        <judo-meta-openapi-version>1.0.0.develop_63</judo-meta-openapi-version>
+        <judo-meta-openapi-version>1.0.0.develop_67</judo-meta-openapi-version>
         <judo-meta-openapi-import-range>[1.0,1.1)</judo-meta-openapi-import-range>
 
         <test.asm.model.groupId>${project.groupId}</test.asm.model.groupId>
