@@ -2,7 +2,7 @@ import "../../../operations/asm/_importAll.eol";
 
 @cached
 operation String toOpenAPIPath() : String {
-    return self.replace("\\.ʘUnboundServices", "").replace("ʘ", "/").replace("\\.", "/");
+    return self.replace("\\.ʘUnboundServices", "").replace("[ʘ#\\.]", "/").replace("[^0-9a-zA-Z_/]", "_");
 }
 
 @cached
@@ -101,6 +101,20 @@ pre {
 		        entityAnnotation.details.add(aAccessPoints);
             }
         }
+
+        for (exposedService in ap.getExposedServices()) {
+            // get (and create is not exists) annotation on exposed mapped transfer object type
+            var annotation = exposedService.getExtensionAnnotation(true);
+
+            // add FQ name of access point as annotation value (key: .accessPoints.*)
+            var index = annotation.details.select(d | d.key.startsWith(".accessPoints.")).size();
+            if (not annotation.details.selectOne(d | d.key.startsWith(".accessPoints.") and d.value == ap.getFQName()).isDefined()) {
+                var aAccessPoints = new ASM!EStringToStringMapEntry;
+		        aAccessPoints.key = ".accessPoints." + index;
+		        aAccessPoints.value = ap.getFQName();
+		        annotation.details.add(aAccessPoints);
+            }
+        }
     }
 }
 
@@ -139,6 +153,7 @@ rule CreateInternalServerErrorDeclaration
         
         s.equivalent("CreateOpenAPIAccessPoint").responses.add(t);
 }
+
 rule CreateInternalServerErrorDefinition
     transform s : ASM!EClass
     to t : OPENAPI!ResponseDefinition {
@@ -148,54 +163,3 @@ rule CreateInternalServerErrorDefinition
         
         s.equivalent("CreateInternalServerErrorDeclaration").response = t;
 }
-
-/*rule ExposeUnboundOperaionPath
-    transform s : ASM!EOperation
-    to t : OPENAPI!Path {
-        guard: s.isStateless()
-        
-        var accessPoint = s.getAnnotationValue("exposedBy").resolve();
-        
-        t.relativePath = "/" + s.eContainingClass.getFQName().toOpenAPIPath() + "/" + s.name;
-        
-        var apiOperation;
-        if (s.eParameters.isEmpty() and s.annotatedAsFalse("stateful")) {
-            t.`get` = new OPENAPI!Operation;
-            apiOperation = t.`get`;
-        } else {
-            t.`post` = new OPENAPI!Operation;
-            apiOperation = t.`post`;
-            if (not s.eParameters.isEmpty()) {
-                apiOperation.consumes.add("application/json");
-            }
-        }
-
-        // TODO - produces property is defined globally (but not serilized)
-        if (s.eType.isDefined()) {
-            apiOperation.produces.add("application/json");
-        }
-
-        apiOperation.responses.add(accessPoint.equivalent("CreateOpenAPIAccessPoint").api.responses.selectOne(r | r.code == "500"));
-        
-        s.getResolvedExposedBy().equivalent("CreateOpenAPIAccessPoint").paths.add(t);
-}
-
-rule ExposeUnboundGetOperaion
-    transform s : ASM!EOperation
-    to t : OPENAPI!Operation {
-        guard: not s.isBound()
-}
-
-rule ExposeUnboundGetOperaion
-    transform s : ASM!EOperation
-    to t : OPENAPI!Operation {
-        guard: not s.isBound() and s.isStateless() and s.eParameters.isEmpty()
-        
-        //s.equivalent("ExposeUnboundOperaionPath").
-}
-
-rule ExposeUnboundPostOperaion
-    transform s : ASM!EOperation
-    to t : OPENAPI!Operation {
-        guard: not s.isBound() and not (s.isStateless() and s.eParameters.isEmpty())
-} */

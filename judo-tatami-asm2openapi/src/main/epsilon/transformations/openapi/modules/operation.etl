@@ -2,3 +2,108 @@ import "../../../operations/asm/_importAll.eol";
 import "api.etl";
 import "parameter.etl";
 import "tag.etl";
+
+rule CreateExposedServicePath
+    transform s : ASM!EStringToStringMapEntry
+    to t : OPENAPI!Path {
+        guard: s.key.startsWith(".accessPoints.") and s.getOperation().isDefined()
+
+        var op = s.getOperation();
+        var accessPoint = s.value.resolve();
+
+        t.relativePath = "/" + op.getFQName().toOpenAPIPath();
+
+        accessPoint.equivalent("CreateOpenAPIAccessPoint").paths.add(t);
+}
+
+@abstract
+rule CreateExposedServiceOperation
+    transform s : ASM!EStringToStringMapEntry
+    to t : OPENAPI!Operation {
+        var op = s.getOperation();
+}
+
+rule CreateExposedServiceGetOperation
+    transform s : ASM!EStringToStringMapEntry
+    to t : OPENAPI!Operation
+    extends CreateExposedServiceOperation {
+        guard: s.key.startsWith(".accessPoints.") and s.getOperation().isDefined() and s.getOperation().eContainingClass.interface and (s.getOperation().eParameters.isEmpty() and s.getOperation().annotatedAsFalse("stateful"))
+
+        s.equivalent("CreateExposedServicePath").`get` = t;
+}
+
+rule CreateExposedServicePostOperation
+    transform s : ASM!EStringToStringMapEntry
+    to t : OPENAPI!Operation
+    extends CreateExposedServiceOperation {
+        guard: s.key.startsWith(".accessPoints.") and s.getOperation().isDefined() and s.getOperation().eContainingClass.interface and (not s.getOperation().eParameters.isEmpty() or s.getOperation().annotatedAsTrue("stateful"))
+
+        s.equivalent("CreateExposedServicePath").`post` = t;
+}
+
+@abstract
+rule CreateExposedServiceOperationResponse
+    transform s : ASM!EStringToStringMapEntry
+    to t : OPENAPI!OperationResponse {
+        var op = s.getOperation();
+
+        if (op.eType.isDefined()) {
+            t.code = "200";
+        } else {
+            t.code = "204";
+        }
+}
+
+rule CreateExposedServiceGetOperationResponse
+    transform s : ASM!EStringToStringMapEntry
+    to t : OPENAPI!OperationResponse
+    extends CreateExposedServiceOperationResponse {
+        guard: s.key.startsWith(".accessPoints.") and s.getOperation().isDefined() and s.getOperation().eContainingClass.interface and (s.getOperation().eParameters.isEmpty() and s.getOperation().annotatedAsFalse("stateful"))
+
+        s.equivalent("CreateExposedServiceGetOperation").responses.add(t);
+}
+
+rule CreateExposedServicePostOperationResponse
+    transform s : ASM!EStringToStringMapEntry
+    to t : OPENAPI!OperationResponse
+    extends CreateExposedServiceOperationResponse {
+        guard: s.key.startsWith(".accessPoints.") and s.getOperation().isDefined() and s.getOperation().eContainingClass.interface and (not s.getOperation().eParameters.isEmpty() or s.getOperation().annotatedAsTrue("stateful"))
+
+        s.equivalent("CreateExposedServicePostOperation").responses.add(t);
+}
+
+@abstract
+rule CreateExposedServiceOperationResponseDefinition
+    transform s : ASM!EStringToStringMapEntry
+    to t : OPENAPI!ResponseDefinition {
+        var op = s.getOperation();
+        var accessPoint = s.value.resolve();
+
+        t.schema = new OPENAPI!Schema;
+        t.schema.ref = new OPENAPI!SchemaReference;
+
+        var aAccessPoint = op.eType.getAccessPointAnnotation(accessPoint.getFQName());
+        if (op.many) {
+            t.schema.ref.ref = aAccessPoint.equivalent("CreateTransferObjectArraySchemaDeclaration").getReference();
+        } else {
+            t.schema.ref.ref = aAccessPoint.equivalent("CreateTransferObjectSingleSchemaDeclaration").getReference();
+        }
+}
+
+rule CreateExposedServiceGetOperationResponseDefinition
+    transform s : ASM!EStringToStringMapEntry
+    to t : OPENAPI!ResponseDefinition
+    extends CreateExposedServiceOperationResponseDefinition {
+        guard: s.key.startsWith(".accessPoints.") and s.getOperation().isDefined() and s.getOperation().eContainingClass.interface and s.getOperation().eType.isDefined() and (s.getOperation().eParameters.isEmpty() and s.getOperation().annotatedAsFalse("stateful"))
+
+        s.equivalent("CreateExposedServiceGetOperationResponse").response = t;
+}
+
+rule CreateExposedServicePostOperationResponseDefinition
+    transform s : ASM!EStringToStringMapEntry
+    to t : OPENAPI!ResponseDefinition
+    extends CreateExposedServiceOperationResponseDefinition {
+        guard: s.key.startsWith(".accessPoints.") and s.getOperation().isDefined() and s.getOperation().eContainingClass.interface and s.getOperation().eType.isDefined() and (not s.getOperation().eParameters.isEmpty() or s.getOperation().annotatedAsTrue("stateful"))
+
+        s.equivalent("CreateExposedServicePostOperationResponse").response = t;
+}
