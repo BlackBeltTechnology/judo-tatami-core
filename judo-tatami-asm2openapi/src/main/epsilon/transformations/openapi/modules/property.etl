@@ -108,7 +108,7 @@ rule CreateReferencePropertyDefinition
     to t : OPENAPI!Property {
         guard: s.key.startsWith(".accessPoints.") and s.getReference().isDefined() and s.getReference().containment
 
-        var annotation = s.getReference().eType.getExtensionAnnotation(false);
+        var annotation = s.getReference().eReferenceType.getExtensionAnnotation(false);
         if (annotation.isDefined()) {
 	        var a = annotation.details.selectOne(d | d.key.startsWith(".accessPoints.") and d.value = s.value);
 

@@ -6,7 +6,7 @@ import "tag.etl";
 rule CreateExposedServicePath
     transform s : ASM!EStringToStringMapEntry
     to t : OPENAPI!Path {
-        guard: s.key.startsWith(".accessPoints.") and s.getOperation().isDefined()
+        guard: s.key.startsWith(".accessPoints.") and s.getOperation().isDefined() and s.getOperation().eContainingClass.interface
 
         var op = s.getOperation();
         var accessPoint = s.value.resolve();
