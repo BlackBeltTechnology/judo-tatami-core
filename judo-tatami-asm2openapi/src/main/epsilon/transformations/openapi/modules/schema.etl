@@ -4,7 +4,7 @@ import "api.etl";
 rule CreateTransferObjectSingleSchemaDeclaration
     transform s : ASM!EStringToStringMapEntry
     to t : OPENAPI!SchemaDeclaration {
-        guard: s.key.startsWith(".accessPoints.") and s.getClass().isDefined() and s.getClass().isMappedTransferObjectType()
+        guard: s.key.startsWith(".accessPoints.") and s.getClass().isDefined() and not s.getClass().isEntity()
         
         var accessPoint = getAllAccessPoints().selectOne(ap | ap.getFQName() == s.value);
         
@@ -16,10 +16,21 @@ rule CreateTransferObjectSingleSchemaDeclaration
 rule CreateTransferObjectSingleSchemaDefinition
     transform s : ASM!EStringToStringMapEntry
     to t : OPENAPI!Schema {
-        guard: s.key.startsWith(".accessPoints.") and s.getClass().isDefined() and s.getClass().isMappedTransferObjectType()
+        guard: s.key.startsWith(".accessPoints.") and s.getClass().isDefined() and not s.getClass().isEntity()
         
         t.description = "Schema of " + s.getClass().name;
         t.type = OPENAPI!JSONDataType#object;
+
+        if (s.getClass().isMappedTransferObjectType()) {
+            var id = new OPENAPI!PropertyDeclaration;
+            id.name = "__id";
+
+            id.property = new OPENAPI!Property;
+            id.property.description = "ID of " + s.getClass().getEntityType().name + " instance";
+            id.property.type = OPENAPI!JSONDataType#string;
+
+            t.properties.add(id);
+        }
         
         s.equivalent("CreateTransferObjectSingleSchemaDeclaration").schema = t;
 }
@@ -27,7 +38,7 @@ rule CreateTransferObjectSingleSchemaDefinition
 rule CreateTransferObjectArraySchemaDeclaration
     transform s : ASM!EStringToStringMapEntry
     to t : OPENAPI!SchemaDeclaration {
-        guard: s.key.startsWith(".accessPoints.") and s.getClass().isDefined() and s.getClass().isMappedTransferObjectType()
+        guard: s.key.startsWith(".accessPoints.") and s.getClass().isDefined() and not s.getClass().isEntity()
         
         var accessPoint = getAllAccessPoints().selectOne(ap | ap.getFQName() == s.value);
         
@@ -39,7 +50,7 @@ rule CreateTransferObjectArraySchemaDeclaration
 rule CreateTransferObjectArraySchemaDefinition
     transform s : ASM!EStringToStringMapEntry
     to t : OPENAPI!Schema {
-        guard: s.key.startsWith(".accessPoints.") and s.getClass().isDefined() and s.getClass().isMappedTransferObjectType()
+        guard: s.key.startsWith(".accessPoints.") and s.getClass().isDefined() and not s.getClass().isEntity()
         
         t.description = "Arrays of " + s.getClass().name + "s";
         t.type = OPENAPI!JSONDataType#array;
@@ -50,7 +61,7 @@ rule CreateTransferObjectArraySchemaDefinition
 rule CreateTransferObjectArrayItemsDefinition
     transform s : ASM!EStringToStringMapEntry
     to t : OPENAPI!Property {
-        guard: s.key.startsWith(".accessPoints.") and s.getClass().isDefined() and s.getClass().isMappedTransferObjectType()
+        guard: s.key.startsWith(".accessPoints.") and s.getClass().isDefined() and not s.getClass().isEntity()
         
         t.ref = new OPENAPI!SchemaReference;
         t.ref.ref = s.equivalent("CreateTransferObjectSingleSchemaDeclaration").getReference();
