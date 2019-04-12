@@ -474,6 +474,9 @@
       <relations xmi:id="_8M4aICVuEemLpvUY7MQgng" name="items" binding="_2CC44LwNEeiOuYiCo6IbXQ" target="_nao6QCVuEemLpvUY7MQgng" embedded="true">
         <cardinality xmi:id="_-kd8kCVuEemLpvUY7MQgng" upper="-1"/>
       </relations>
+      <relations xmi:id="_6KlAEF0lEemy96upLHyphg" name="comments" target="_qgZmMF0lEemy96upLHyphg" embedded="true">
+        <cardinality xmi:id="_8tOjAF0lEemy96upLHyphg" upper="-1"/>
+      </relations>
       <attributes xmi:id="_U4tLwCVQEemLpvUY7MQgng" name="orderDate" required="true" dataType="_Z9J8IIN1EeiLE-B2bbL0fg" binding="_WXvUoIN1EeiLE-B2bbL0fg"/>
       <attributes xmi:id="_rVzq8CVQEemLpvUY7MQgng" name="shippedDate" dataType="_Z9J8IIN1EeiLE-B2bbL0fg" binding="_huP54IN1EeiLE-B2bbL0fg"/>
       <attributes xmi:id="_u7NrYCVQEemLpvUY7MQgng" name="shipperName" required="true" dataType="_Nppx8IUcEeipmMyz9cMCRA" binding="_5i40sCVQEemLpvUY7MQgng"/>
@@ -486,6 +489,14 @@
         </output>
         <input xmi:id="_R3rEcEWhEemHs64O5EYsyQ" name="input" type="_nlfRMEWgEemHs64O5EYsyQ">
           <cardinality xmi:id="_vhr2QEWhEemHs64O5EYsyQ" lower="1"/>
+        </input>
+      </operations>
+      <operations xmi:id="_3cvWQF0kEemy96upLHyphg" body="" name="changeShipment">
+        <output xmi:id="_MgrqIF0lEemy96upLHyphg" name="output" type="_ETGEYCVQEemLpvUY7MQgng">
+          <cardinality xmi:id="_2jTh8F0mEemy96upLHyphg" lower="1"/>
+        </output>
+        <input xmi:id="_Llf0QF0lEemy96upLHyphg" name="input" type="_XvKUwF0lEemy96upLHyphg">
+          <cardinality xmi:id="_26UTwF0mEemy96upLHyphg" lower="1"/>
         </input>
       </operations>
     </elements>
@@ -540,6 +551,15 @@
       <output xmi:id="_oxIvgEWhEemHs64O5EYsyQ" name="output" type="_ETGEYCVQEemLpvUY7MQgng">
         <cardinality xmi:id="_rFrlAEWhEemHs64O5EYsyQ" upper="-1"/>
       </output>
+    </elements>
+    <elements xsi:type="service:UnmappedTransferObjectType" xmi:id="_XvKUwF0lEemy96upLHyphg" name="ShipmentChange">
+      <attributes xmi:id="_ayUjwF0lEemy96upLHyphg" name="shippperName" dataType="_Nppx8IUcEeipmMyz9cMCRA"/>
+      <attributes xmi:id="_dFOagF0lEemy96upLHyphg" name="shippedDate" dataType="_Z9J8IIN1EeiLE-B2bbL0fg"/>
+    </elements>
+    <elements xsi:type="service:UnmappedTransferObjectType" xmi:id="_qgZmMF0lEemy96upLHyphg" name="Comment">
+      <attributes xmi:id="_tK_kMF0lEemy96upLHyphg" name="note" dataType="_tXQUoIOGEeiLE-B2bbL0fg"/>
+      <attributes xmi:id="_yQk98F0lEemy96upLHyphg" name="author" dataType="_Nppx8IUcEeipmMyz9cMCRA"/>
+      <attributes xmi:id="_0BqhEF0lEemy96upLHyphg" name="timestamp" dataType="_Z9J8IIN1EeiLE-B2bbL0fg"/>
     </elements>
   </packages>
 </namespace:Model>
