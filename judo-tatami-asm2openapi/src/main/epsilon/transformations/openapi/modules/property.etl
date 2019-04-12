@@ -86,3 +86,41 @@ rule CreateDataPropertyDefinition
         
         s.equivalent("CreateDataPropertyDeclaration").property = t;
 }
+
+rule CreateReferencePropertyDeclaration
+    transform s : ASM!EStringToStringMapEntry
+    to t : OPENAPI!PropertyDeclaration {
+        guard: s.key.startsWith(".accessPoints.") and s.getReference().isDefined()
+
+        t.name = s.getReference().name;
+
+        var annotation = s.getReference().eContainingClass.getExtensionAnnotation(false);
+        if (annotation.isDefined()) {
+	        var a = annotation.details.selectOne(d | d.key.startsWith(".accessPoints.") and d.value = s.value);
+	        a.equivalent("CreateTransferObjectSingleSchemaDefinition").properties.add(t);
+        } else {
+            throw "Container of attribute is not prepared with annotation";
+        }
+}
+
+rule CreateReferencePropertyDefinition
+    transform s : ASM!EStringToStringMapEntry
+    to t : OPENAPI!Property {
+        guard: s.key.startsWith(".accessPoints.") and s.getReference().isDefined()
+
+        var annotation = s.getReference().eType.getExtensionAnnotation(false);
+        if (annotation.isDefined()) {
+	        var a = annotation.details.selectOne(d | d.key.startsWith(".accessPoints.") and d.value = s.value);
+
+            t.ref = new OPENAPI!SchemaReference;
+	        if (s.getReference().many) {
+	            t.ref.ref = a.equivalent("CreateTransferObjectArraySchemaDeclaration").getReference();
+	        } else {
+	            t.ref.ref = a.equivalent("CreateTransferObjectSingleSchemaDeclaration").getReference();
+	        }
+        } else {
+            throw "Container of reference is not prepared with annotation";
+        }
+
+        s.equivalent("CreateReferencePropertyDeclaration").property = t;
+}
