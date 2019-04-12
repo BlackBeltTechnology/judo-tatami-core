@@ -184,7 +184,7 @@ rule CreateSetterOperationForRelation
         s.equivalent("CreateGraphOperation").eOperations.add(t);
 }
 
-rule CreateSetterOperationForRelation
+rule CreateUnsetterOperationForRelation
     transform s : JUDOPSM!TransferObjectRelation
     to t : ASM!EOperation {
         guard: s.isNavigable() and s.isMutable() and not s.isCollection()
