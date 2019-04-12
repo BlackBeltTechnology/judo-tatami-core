@@ -90,7 +90,7 @@ rule CreateDataPropertyDefinition
 rule CreateReferencePropertyDeclaration
     transform s : ASM!EStringToStringMapEntry
     to t : OPENAPI!PropertyDeclaration {
-        guard: s.key.startsWith(".accessPoints.") and s.getReference().isDefined()
+        guard: s.key.startsWith(".accessPoints.") and s.getReference().isDefined() and s.getReference().containment
 
         t.name = s.getReference().name;
 
@@ -106,7 +106,7 @@ rule CreateReferencePropertyDeclaration
 rule CreateReferencePropertyDefinition
     transform s : ASM!EStringToStringMapEntry
     to t : OPENAPI!Property {
-        guard: s.key.startsWith(".accessPoints.") and s.getReference().isDefined()
+        guard: s.key.startsWith(".accessPoints.") and s.getReference().isDefined() and s.getReference().containment
 
         var annotation = s.getReference().eType.getExtensionAnnotation(false);
         if (annotation.isDefined()) {
