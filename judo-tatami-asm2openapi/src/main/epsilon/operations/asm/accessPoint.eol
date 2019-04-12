@@ -114,7 +114,9 @@ operation ASM!EClass getExposedMappedTransferObjectTypes() : Set {
 @cached
 operation ASM!EClass getExposedOperations() : Set {
     if (self.isExposedGraph()) {
-        return self.getExposedMappedTransferObjectTypes().collect(t | t.getNestedClasses()).flatten().select(og | og.interface).collect(og | og.eOperations).flatten().asSet();
+        return self.getExposedMappedTransferObjectTypes().collect(t | t.getNestedClasses()).flatten().select(og | og.interface).collect(og | og.eOperations).flatten()
+            .includingAll(self.getExposedMappedTransferObjectTypes().collect(t | t.eOperations).flatten())
+            .asSet();
     } else {
         return new Set;
     }

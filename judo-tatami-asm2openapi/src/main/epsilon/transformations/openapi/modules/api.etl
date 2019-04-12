@@ -96,7 +96,7 @@ operation ASM!EClass addAccessPointAnnotation(accessPointName : String) {
     
     for (r in self.eAllReferences.select(r | r.containment)) {
         var annotation = r.eType.getExtensionAnnotation(false);
-        if (annotation.isDefined() and not annotation.details.selectOne(d | d.key.startsWith(".accessPoints.") and d.value = accessPointName)) {
+        if (annotation.isDefined() and not annotation.details.selectOne(d | d.key.startsWith(".accessPoints.") and d.value = accessPointName).isDefined()) {
             r.eType.addAccessPointAnnotation(accessPointName);
         }
     }

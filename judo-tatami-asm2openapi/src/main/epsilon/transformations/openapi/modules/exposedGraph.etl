@@ -69,7 +69,7 @@ rule CreateExposedGraphPath
 
         var op = s.getOperation();
         var opGroup = op.eContainingClass;
-        var graph = opGroup.getContainerClass().getGraphs().selectOne(g | g.getFQName() == s.value);
+        var graph = s.value.resolve();
         var accessPoint = graph.getResolvedExposedBy();
 
         t.relativePath = "/" + graph.getExposedGraphName() + "/" + opGroup.getFQName().toOpenAPIPath() + "/" + op.name;
@@ -83,7 +83,7 @@ rule CreateExposedGraphOperation
     to t : OPENAPI!Operation {
         var op = s.getOperation();
         var opGroup = op.eContainingClass;
-        var graph = opGroup.getContainerClass().getGraphs().selectOne(g | g.getFQName() == s.value);
+        var graph = s.value.resolve();
         var accessPoint = graph.getResolvedExposedBy();
         
         t.tags.add(graph.equivalent("CreateTag").name);
@@ -122,17 +122,25 @@ rule CreateExposedGraphOperationEntityIdParameter
     transform s : ASM!EStringToStringMapEntry
     to t : OPENAPI!ParameterReference {
         var op = s.getOperation();
-        var opGroup = op.eContainingClass;
-        var graph = opGroup.getContainerClass().getGraphs().selectOne(g | g.getFQName() == s.value);
+        var interface = op.eContainingClass;
+        var graph = s.value.resolve();
         var accessPoint = graph.getResolvedExposedBy();
         
-        var entityAnnotation = opGroup.getContainerClass().getEntityType().getExtensionAnnotation(false);
-        if (not entityAnnotation.isDefined()) {
-            throw "Entity of operation is not prepared with annotation";
+        while (interface.isDefined() and not interface.isMappedTransferObjectType()) {
+            interface = interface.getContainerClass();
         }
         
-        var entityIdParameterDeclaration = entityAnnotation.details.selectOne(d | d.key.startsWith(".accessPoints.") and d.value == accessPoint.getFQName()).equivalent("CreateEntityIdParameterDeclaration");
-        t.ref = entityIdParameterDeclaration.getReference();
+        if (interface.isDefined()) {
+	        var entityAnnotation = interface.getEntityType().getExtensionAnnotation(false);
+	        if (not entityAnnotation.isDefined()) {
+	            throw "Entity of operation is not prepared with annotation";
+	        }
+
+	        var entityIdParameterDeclaration = entityAnnotation.details.selectOne(d | d.key.startsWith(".accessPoints.") and d.value == accessPoint.getFQName()).equivalent("CreateEntityIdParameterDeclaration");
+	        t.ref = entityIdParameterDeclaration.getReference();
+        } else {
+            throw "No binding found for operation: " + op.getFQName();
+        }
 }
 
 rule CreateExposedGraphGetOperationEntityIdParameter
@@ -190,7 +198,7 @@ rule CreateExposedGraphOperationResponseDefinition
     to t : OPENAPI!OperationResponseDefinition {
         var op = s.getOperation();
         var opGroup = op.eContainingClass;
-        var graph = opGroup.getContainerClass().getGraphs().selectOne(g | g.getFQName() == s.value);
+        var graph = s.value.resolve();
         var accessPoint = graph.getResolvedExposedBy();
 
         t.schema = new OPENAPI!Schema;
