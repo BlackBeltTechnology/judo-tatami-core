@@ -22,13 +22,67 @@ rule CreateDataPropertyDefinition
     to t : OPENAPI!Property {
         guard: s.key.startsWith(".accessPoints.") and s.getAttribute().isDefined()
         
-        t.type = OPENAPI!JSONDataType#string; // TODO - it is based on type of attribute
         if (s.getAttribute().many) {
             throw "Collection attributes are not supported";
         }
-        //if (s.getAttribute().required) {
-        //    s.equivalent("CreateDataPropertyDeclaration")....required.add(s.getAttribute().name);
-        //}
+
+        switch (s.getAttribute().eAttributeType.instanceClassName) {
+            case 'java.lang.Boolean': continue;
+            case 'boolean':
+                t.type = OPENAPI!JSONDataType#boolean;
+            case 'byte[]':
+                t.type = OPENAPI!JSONDataType#string;
+                t.format = "binary";
+            case 'java.lang.Double': continue;
+            case 'double':
+                t.type = OPENAPI!JSONDataType#number;
+                t.format = "double";
+            case 'java.lang.Integer': continue;
+            case 'int':
+                t.type = OPENAPI!JSONDataType#integer;
+                t.format = "int32";
+            case 'java.lang.Float': continue;
+            case 'float':
+                t.type = OPENAPI!JSONDataType#number;
+                t.format = "float";
+            case 'java.lang.Long': continue;
+            case 'long':
+                t.type = OPENAPI!JSONDataType#integer;
+                t.format = "int64";
+            case 'java.lang.String':
+                t.type = OPENAPI!JSONDataType#string;
+                // NOTE - byte format is used for base64 encoded characters, not supported yet
+                // NOTE - password format is not supported yet
+            case 'java.math.BigDecimal':
+                t.type = OPENAPI!JSONDataType#number;
+            case 'java.math.BigInteger':
+                t.type = OPENAPI!JSONDataType#integer;
+            case 'java.time.LocalDate': continue;
+            case 'java.util.Date': continue;
+            case 'org.joda.time.LocalDate':
+                t.type = OPENAPI!JSONDataType#string;
+                t.format = "date";
+            case 'java.time.LocalDateTime': continue;
+            case 'java.time.OffsetDateTime': continue;
+            case 'java.time.ZonedDateTime': continue;
+            case 'org.joda.time.DateTime': continue;
+            case 'org.joda.time.LocalDateTime': continue;
+            case 'org.joda.time.MutableDateTime':
+                t.type = OPENAPI!JSONDataType#string;
+                t.format = "date-time";
+            default:
+                log.error("Unknown attribute type: " + s.getAttribute().eAttributeType.instanceClassName);
+        }
+
+        if (s.getAttribute().required) {
+            var annotation = s.getAttribute().eContainingClass.getExtensionAnnotation(false);
+	        if (annotation.isDefined()) {
+		        var a = annotation.details.selectOne(d | d.key.startsWith(".accessPoints.") and d.value = s.value);
+		        a.equivalent("CreateTransferObjectSingleSchemaDefinition").required.add(s.getAttribute().name);
+	        } else {
+	            throw "Container of attribute is not prepared with annotation";
+	        }
+        }
         
         s.equivalent("CreateDataPropertyDeclaration").property = t;
 }
