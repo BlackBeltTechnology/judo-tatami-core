@@ -1,0 +1,201 @@
+@cached
+operation String toJAXRSPath() : String {
+    return self.replace("\\.ʘUnboundServices", "").replace("[ʘ#\\.]", "/").replace("[^0-9a-zA-Z_/]", "_");
+}
+
+@cached
+operation ASM!EAttribute getTypeDefinition() : String {	
+	if (self.upperBound == -1) {
+		return "List<" + self.eType.instanceClass.name + ">";
+	} else {
+		return self.eType.instanceClass.name;
+	}
+}
+
+@cached
+operation ASM!EReference getBareTypeDefinition() : String {	
+	return self.eReferenceType.getDtoPackageName() + "." + self.eReferenceType.name;
+}
+
+
+@cached
+operation ASM!EReference getTypeDefinition() : String {	
+	if (self.upperBound == -1) {
+		return "List<" + self.getBareTypeDefinition() + ">";
+	} else {
+		return self.getBareTypeDefinition();
+	}
+}
+
+
+@cached
+operation ASM!EClass collectAllReferenceType() : Set {	
+	var ret : new Set();	
+	for (r in self.eAllReferences) {
+		ret.add(r.eReferenceType);
+	}
+	return ret;
+}
+
+@cached
+operation Collection collectAllReferenceType() : Set {	
+	var ret : new Set();	
+	for (c : ASM!EClass in self) {
+		ret.add(c);
+		ret.addAll(c.collectAllReferenceType());
+	}
+	return ret;
+}
+
+
+@cached
+operation Collection collectAllReferenceTypeRecursively() : Set {	
+	var ret : new Set();	
+	ret.addAll(self);
+
+	var sizeDiffers = true;
+	while (sizeDiffers) {
+	    var curSize = ret.size();
+		ret = ret.collectAllReferenceType();
+		sizeDiffers = (curSize <> ret.size());
+	}
+	return ret;
+}
+
+
+/*
+ Application Config
+ */
+
+@cached
+operation ASM!EClass getApplicationPackageName() : String {
+	return "rest." + self.getFQName();
+}
+
+@cached
+operation ASM!EClass getApplicationConfigFileName() : String {
+	return self.getApplicationPackageName().replaceAll("\\.", "/") + "/ApplicationConfig.java";
+}
+
+operation genApplication(ap : ASM!EClass, serviceInstances : Map) {
+	var t = TemplateFactory.load("ApplicationConfig.java.egl");
+	t.populate("ap", ap);
+	t.populate("className", "ApplicationConfig");
+	t.populate("packageName", ap.getApplicationPackageName());
+	t.populate("restPath", ap.getFQName().toJAXRSPath());
+	t.populate("serviceInstances", serviceInstances);
+	t.generate(ap.getApplicationConfigFileName());
+	t.reset();
+}
+
+/*
+ Unbound Service
+ */
+operation ASM!EClass getUnboundServicePackageName() : String {
+	return "rest." + self.getFQName();
+}
+
+operation ASM!EClass getUnboundServiceClassName() : String {
+	return "UnboundServices"; 
+}
+
+operation ASM!EClass getUnboundServiceFileName() : String {
+	return self.getUnboundServicePackageName().replaceAll("\\.", "/") + "/" + self.getUnboundServiceClassName() + ".java";
+}
+
+operation genUnboundService(ap : ASM!EClass, operations : Collection) {
+	var t = TemplateFactory.load("RestService.java.egl");
+	t.populate("className", ap.getUnboundServiceClassName());
+	t.populate("packageName", ap.getUnboundServicePackageName());
+	t.populate("operations", operations);
+	t.populate("restPath", "/");
+	t.generate(ap.getUnboundServiceFileName());
+	t.reset();
+}
+
+/*
+ Exposed mapped transfer object
+ */
+operation ASM!EClass getExposedMappedTransferObjectPackageName(ap: ASM!EClass) : String {
+	return "rest." + ap.getFQName() + "." + self.ePackage.getFullName();
+}
+
+operation genExposedMappedTransferObject(ap : ASM!EClass, mto : ASM!EClass) {
+	var t = TemplateFactory.load("RestService.java.egl");
+	t.populate("className", mto.getExposedMappedTransferObjectClassName());
+	t.populate("packageName", mto.getExposedMappedTransferObjectPackageName(ap));
+	t.populate("operations", mto.eAllOperations);
+	t.populate("restPath", "/" + mto.ePackage.getFullName().toJAXRSPath() + "/" + mto.getExposedMappedTransferObjectClassName().replace("\\$", "/").toJAXRSPath());
+	t.generate(mto.getExposedMappedTransferObjectFileName(ap));
+	t.reset();
+}
+
+@cached
+operation ASM!EClass getExposedMappedTransferObjectClassName() : String {
+	/*
+	if (self.name.contains("ʘ")) {
+		return self.name.split("ʘ").first().firstToUpperCase() + "$" + self.name.split("ʘ").second();
+	} else {
+		return self.name;
+	}
+	*/
+	return self.name.replace("[ʘ]", "\\$");
+}
+
+operation ASM!EClass getExposedMappedTransferObjectFileName(ap: ASM!EClass) : String {
+	return self.getExposedMappedTransferObjectPackageName(ap).replaceAll("\\.", "/") + "/" + self.getExposedMappedTransferObjectClassName() + ".java";
+}
+
+/*
+ DTO
+ */
+@cached
+operation ASM!EClass getDtoPackageName() : String {
+	return "rest." + self.ePackage.getFullName();
+}
+
+@cached
+operation ASM!EClass getDtoTypeName() : String {
+	return self.getDtoPackageName() + "." + self.name;
+}
+
+@cached
+operation ASM!EClass getDtoFileName() : String {
+	return self.getDtoPackageName().replaceAll("\\.", "/") + "/" + self.name + ".java";
+}
+
+operation genDto(dto : ASM!EClass) {
+	var t = TemplateFactory.load("Dto.java.egl");
+	t.populate("dto", dto);
+	t.generate(dto.getDtoFileName());
+	t.reset();
+}
+
+operation String safeName() : String {
+	if (self == "class") {
+		return "clazz";
+	} else if (Set{
+		"abstract", "assert", "boolean", "break", "byte", "case", "catch", "char", 
+		"continue", "default", "do", "double", "else", "enum", "exports", "extends", 
+		"final", "finally", "float", "for", "if", "implements", "import", "instanceof",
+		 "long", "module", "native", "new", "package", "private", "protected",
+		 "public", "requires", "return", "short", "static", "strictfp", "super",
+		 "switch", "synchronized", "this", "throw", "throws", "transitent", "try",
+		 "void", "volatile", "while", "true", "null", "false", "var", "const", "goto" }.contains(self)) {
+		return self + "_";
+	} else if (self == "Class") {
+		return "Clazz";
+	} else {
+		return self;
+	}	
+}
+
+operation ASM!ENamedElement setterName() : String {
+	return "set" + self.name.firstToUpperCase().safeName();
+}
+
+operation ASM!ENamedElement getterName() : String {
+	return "set" + self.name.firstToUpperCase().safeName();
+}
+
+

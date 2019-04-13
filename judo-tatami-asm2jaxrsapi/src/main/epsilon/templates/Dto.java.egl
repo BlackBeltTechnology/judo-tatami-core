@@ -1,0 +1,84 @@
+[%
+  import "../operations/asm/_importAll.eol";
+  import "../operations/jaxrs.eol";
+  out.setContentType("Java");
+%]
+package [%= dto.getDtoPackageName() %];
+
+import java.util.List;
+import java.util.Map;
+import java.util.LinkedHashMap;
+import java.util.stream.Collectors;
+
+public class [%= dto.name %] {
+    [% for (attr in dto.eAllAttributes) { %]
+	private [%= attr.getTypeDefinition() %] [%= attr.name.firstToLowerCase().safeName() %];
+	[% } %]
+    [% for (ref in dto.eAllReferences) { %]
+	private [%= ref.getTypeDefinition() %] [%= ref.name.firstToLowerCase().safeName() %];
+	[% } %]
+
+	// Getters
+    [% for (attr in dto.eAllAttributes) { %]
+	public [%= attr.getTypeDefinition() %] [%= attr.getterName() %]() {
+		return this.[%= attr.name.firstToLowerCase().safeName() %];
+	}
+	[% } %]
+    [% for (ref in dto.eAllReferences) { %]
+	public [%= ref.getTypeDefinition() %] [%= ref.getterName() %]() {
+		return this.[%= ref.name.firstToLowerCase().safeName() %];
+	}
+	[% } %]
+
+	// Setters
+    [% for (attr in dto.eAllAttributes) { %]
+	public void [%= attr.setterName() %]([%= attr.getTypeDefinition() %] [%= attr.name.firstToLowerCase().safeName() %]) {
+		this.[%= attr.name.firstToLowerCase().safeName() %] = [%= attr.name.firstToLowerCase().safeName() %];
+	}
+	[% } %]
+    [% for (ref in dto.eAllReferences) { %]
+	public void [%= ref.setterName() %]([%= ref.getTypeDefinition() %] [%= ref.name.firstToLowerCase().safeName() %]) {
+		this.[%= ref.name.firstToLowerCase().safeName() %] = [%= ref.name.firstToLowerCase().safeName() %];
+	}
+	[% } %]
+
+	public Map<String, Object> toMap() {
+		Map ret = new LinkedHashMap(); 
+	    [% for (attr in dto.eAllAttributes) { %]
+	    if ([%= attr.getterName() %]() != null) {
+		    ret.put("[%= attr.name %]", this.[%= attr.name.firstToLowerCase().safeName() %]);
+	    }
+		[% } %]
+	    [% for (ref in dto.eAllReferences) { %]
+	    if ([%= ref.getterName() %]() != null) {
+	    	[% if (ref.upperBound == -1) { %]
+		    ret.put("[%= ref.name %]", [%= ref.getterName() %]().stream().map(i -> i.toMap()).collect(Collectors.toList()));
+	    	[% } else { %]
+		    ret.put("[%= ref.name %]", [%= ref.getterName() %]().toMap());
+			[% } %]
+		}
+		[% } %]
+		return ret;
+	}
+
+	public static [%= dto.name %] fromMap(Map<String, Object> map) {
+		[%= dto.name %] ret = new [%= dto.name %]();
+	    [% for (attr in dto.eAllAttributes) { %]
+	    if (map.containsKey("[%= attr.name %]")) {
+			ret.[%= attr.setterName() %](([%= attr.getTypeDefinition() %]) map.get("[%= attr.name %]"));
+		}
+		[% } %]
+	    [% for (ref in dto.eAllReferences) { %]
+	    if (map.containsKey("[%= ref.name %]")) {
+	    	[% if (ref.upperBound == -1) { %]
+		    ret.[%= ref.setterName() %](([%= ref.getTypeDefinition() %]) ((List) map.get("[%= ref.name %]")).stream().map(i -> [%= ref.getBareTypeDefinition() %].fromMap((Map<String, Object>) i)).collect(Collectors.toList()));
+	    	[% } else { %]
+		    ret.[%= ref.setterName() %]([%= ref.getTypeDefinition() %].fromMap((Map<String, Object>) map.get("[%= ref.name %]")));
+			[% } %]
+	    }
+		[% } %]
+
+	    return ret;		
+	}
+
+}

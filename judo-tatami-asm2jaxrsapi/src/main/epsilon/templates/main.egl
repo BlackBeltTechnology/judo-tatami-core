@@ -1,0 +1,35 @@
+[%
+import "../operations/asm/_importAll.eol";
+import "../operations/jaxrs.eol";
+
+
+for (dto in getAllMappedTransferObjectTypes().collectAllReferenceTypeRecursively()) {
+    genDto(dto);
+}
+
+for (ap in getAllAccessPoints()) {
+    
+    var apServiceInstances : Map = new Map();
+
+	// Unbound service
+    if (ap.getExposedServices().size() > 0) {
+		genUnboundService(ap, ap.getExposedServices());
+		apServiceInstances.put("unboundService", ap.getUnboundServicePackageName() + "." + ap.getUnboundServiceClassName());
+	}	
+	
+	// Get all exposed graph bound services
+	for (mto in ap.getExposedGraphs()
+		.collect(eg | eg.getExposedMappedTransferObjectTypes().collect(t | t.getNestedClasses()).flatten().select(og | og.interface).asSet())
+		.flatten().asSet()
+	) {
+		genExposedMappedTransferObject(ap, mto);
+		apServiceInstances.put((mto.getExposedMappedTransferObjectPackageName(ap) + "." + mto.getExposedMappedTransferObjectClassName()).replaceAll("\\.", "_"),
+			mto.getExposedMappedTransferObjectPackageName(ap) + "." + mto.getExposedMappedTransferObjectClassName());		
+    }
+
+    // Generate ApplicatoionConfigs
+    genApplication(ap, apServiceInstances);
+
+}
+
+%]
