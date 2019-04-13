@@ -48,7 +48,7 @@ rule CreateParameterDefinition
         t.required = true;
         t.`in` = OPENAPI!ParameterLocation#body;
         t.schema = new OPENAPI!Schema;
-        t.schema.ref = new SchemaReference;
+        t.schema.ref = new OPENAPI!SchemaReference();
         
         var annotation = s.getParameter().eType.getExtensionAnnotation(false);
         if (annotation.isDefined()) {
