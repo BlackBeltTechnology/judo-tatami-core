@@ -5,3 +5,9 @@ import "modules/parameter.etl";
 import "modules/property.etl";
 import "modules/schema.etl";
 import "modules/tag.etl";
+
+import "../../operations/asm/accesspoint/_importAll.eol";
+
+pre {
+    addGraphAndAccessPointAnnotations();
+}

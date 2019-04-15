@@ -1,14 +1,16 @@
 import "../../../operations/asm/_importAll.eol";
+import "../../../operations/asm/accesspoint/_importAll.eol";
+
 import "api.etl";
 
 rule CreateTransferObjectSingleSchemaDeclaration
     transform s : ASM!EStringToStringMapEntry
     to t : OPENAPI!SchemaDeclaration {
-        guard: s.key.startsWith(".accessPoints.") and s.getClass().isDefined() and not s.getClass().isEntity()
+        guard: s.key.startsWith(".accessPoints.") and s.getAnnotatedClass().isDefined() and not s.getAnnotatedClass().isEntity()
         
-        var accessPoint = getAllAccessPoints().selectOne(ap | ap.getFQName() == s.value);
+        var accessPoint =  s.value.resolve();
         
-        t.name = "__single__" + s.getClass().getFQName().toOpenAPIName();
+        t.name = "__single__" + s.getAnnotatedClass().getFQName().toOpenAPIName();
         
         accessPoint.equivalent("CreateOpenAPIAccessPoint").definitions.add(t);
 }
@@ -16,17 +18,17 @@ rule CreateTransferObjectSingleSchemaDeclaration
 rule CreateTransferObjectSingleSchemaDefinition
     transform s : ASM!EStringToStringMapEntry
     to t : OPENAPI!Schema {
-        guard: s.key.startsWith(".accessPoints.") and s.getClass().isDefined() and not s.getClass().isEntity()
+        guard: s.key.startsWith(".accessPoints.") and s.getAnnotatedClass().isDefined() and not s.getAnnotatedClass().isEntity()
         
-        t.description = "Schema of " + s.getClass().name;
+        t.description = "Schema of " + s.getAnnotatedClass().name;
         t.type = OPENAPI!JSONDataType#object;
 
-        if (s.getClass().isMappedTransferObjectType()) {
+        if (s.getAnnotatedClass().isMappedTransferObjectType()) {
             var id = new OPENAPI!PropertyDeclaration;
             id.name = "__id";
 
             id.property = new OPENAPI!Property;
-            id.property.description = "ID of " + s.getClass().getEntityType().name + " instance";
+            id.property.description = "ID of " + s.getAnnotatedClass().getEntityType().name + " instance";
             id.property.type = OPENAPI!JSONDataType#string;
 
             t.properties.add(id);
@@ -38,11 +40,11 @@ rule CreateTransferObjectSingleSchemaDefinition
 rule CreateTransferObjectArraySchemaDeclaration
     transform s : ASM!EStringToStringMapEntry
     to t : OPENAPI!SchemaDeclaration {
-        guard: s.key.startsWith(".accessPoints.") and s.getClass().isDefined() and not s.getClass().isEntity()
+        guard: s.key.startsWith(".accessPoints.") and s.getAnnotatedClass().isDefined() and not s.getAnnotatedClass().isEntity()
         
-        var accessPoint = getAllAccessPoints().selectOne(ap | ap.getFQName() == s.value);
+        var accessPoint = s.value.resolve();
         
-        t.name = "__array__" + s.getClass().getFQName().toOpenAPIName();
+        t.name = "__array__" + s.getAnnotatedClass().getFQName().toOpenAPIName();
         
         accessPoint.equivalent("CreateOpenAPIAccessPoint").definitions.add(t);
 }
@@ -50,9 +52,9 @@ rule CreateTransferObjectArraySchemaDeclaration
 rule CreateTransferObjectArraySchemaDefinition
     transform s : ASM!EStringToStringMapEntry
     to t : OPENAPI!Schema {
-        guard: s.key.startsWith(".accessPoints.") and s.getClass().isDefined() and not s.getClass().isEntity()
+        guard: s.key.startsWith(".accessPoints.") and s.getAnnotatedClass().isDefined() and not s.getAnnotatedClass().isEntity()
         
-        t.description = "Arrays of " + s.getClass().name + "s";
+        t.description = "Arrays of " + s.getAnnotatedClass().name + "s";
         t.type = OPENAPI!JSONDataType#array;
         
         s.equivalent("CreateTransferObjectArraySchemaDeclaration").schema = t;
@@ -61,7 +63,7 @@ rule CreateTransferObjectArraySchemaDefinition
 rule CreateTransferObjectArrayItemsDefinition
     transform s : ASM!EStringToStringMapEntry
     to t : OPENAPI!Property {
-        guard: s.key.startsWith(".accessPoints.") and s.getClass().isDefined() and not s.getClass().isEntity()
+        guard: s.key.startsWith(".accessPoints.") and s.getAnnotatedClass().isDefined() and not s.getAnnotatedClass().isEntity()
         
         t.ref = new OPENAPI!SchemaReference;
         t.ref.ref = s.equivalent("CreateTransferObjectSingleSchemaDeclaration").getReference();

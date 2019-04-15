@@ -1,6 +1,9 @@
 import "../../../operations/asm/_importAll.eol";
+import "../../../operations/asm/accesspoint/_importAll.eol";
+
 import "api.etl";
 import "parameter.etl";
+import "schema.etl";
 import "tag.etl";
 
 rule CreateExposedGraphEntryPointPath
@@ -65,9 +68,9 @@ rule CreateExposedGraphEntryPointOperationResponseDefinition
 rule CreateExposedGraphPath
     transform s : ASM!EStringToStringMapEntry
     to t : OPENAPI!Path {
-        guard: s.key.startsWith(".graphs.") and s.getOperation().isDefined()
+        guard: s.key.startsWith(".graphs.") and s.getAnnotatedOperation().isDefined()
 
-        var op = s.getOperation();
+        var op = s.getAnnotatedOperation();
         var opGroup = op.eContainingClass;
         var graph = s.value.resolve();
         var accessPoint = graph.getResolvedExposedBy();
@@ -81,7 +84,7 @@ rule CreateExposedGraphPath
 rule CreateExposedGraphOperation
     transform s : ASM!EStringToStringMapEntry
     to t : OPENAPI!Operation {
-        var op = s.getOperation();
+        var op = s.getAnnotatedOperation();
         var opGroup = op.eContainingClass;
         var graph = s.value.resolve();
         var accessPoint = graph.getResolvedExposedBy();
@@ -101,7 +104,7 @@ rule CreateExposedGraphGetOperation
     transform s : ASM!EStringToStringMapEntry
     to t : OPENAPI!Operation
     extends CreateExposedGraphOperation {
-        guard: s.key.startsWith(".graphs.") and s.getOperation().isDefined() and (s.getOperation().eParameters.isEmpty() and s.getOperation().annotatedAsFalse("stateful"))
+        guard: s.key.startsWith(".graphs.") and s.getAnnotatedOperation().isDefined() and (s.getAnnotatedOperation().eParameters.isEmpty() and s.getAnnotatedOperation().annotatedAsFalse("stateful"))
 
         s.equivalent("CreateExposedGraphPath").`get` = t;
 }
@@ -110,7 +113,7 @@ rule CreateExposedGraphPostOperation
     transform s : ASM!EStringToStringMapEntry
     to t : OPENAPI!Operation
     extends CreateExposedGraphOperation {
-        guard: s.key.startsWith(".graphs.") and s.getOperation().isDefined() and (not s.getOperation().eParameters.isEmpty() or s.getOperation().annotatedAsTrue("stateful"))
+        guard: s.key.startsWith(".graphs.") and s.getAnnotatedOperation().isDefined() and (not s.getAnnotatedOperation().eParameters.isEmpty() or s.getAnnotatedOperation().annotatedAsTrue("stateful"))
 
         t.consumes.add("application/json");
 
@@ -121,7 +124,7 @@ rule CreateExposedGraphPostOperation
 rule CreateExposedGraphOperationEntityIdParameter
     transform s : ASM!EStringToStringMapEntry
     to t : OPENAPI!ParameterReference {
-        var op = s.getOperation();
+        var op = s.getAnnotatedOperation();
         var interface = op.eContainingClass;
         var graph = s.value.resolve();
         var accessPoint = graph.getResolvedExposedBy();
@@ -147,7 +150,7 @@ rule CreateExposedGraphGetOperationEntityIdParameter
     transform s : ASM!EStringToStringMapEntry
     to t : OPENAPI!ParameterReference
     extends CreateExposedGraphOperationEntityIdParameter {
-        guard: s.key.startsWith(".graphs.") and s.getOperation().isDefined() and (s.getOperation().eParameters.isEmpty() and s.getOperation().annotatedAsFalse("stateful"))
+        guard: s.key.startsWith(".graphs.") and s.getAnnotatedOperation().isDefined() and (s.getAnnotatedOperation().eParameters.isEmpty() and s.getAnnotatedOperation().annotatedAsFalse("stateful"))
         
         s.equivalent("CreateExposedGraphGetOperation").parameters.add(t);
 }
@@ -156,7 +159,7 @@ rule CreateExposedGraphPostOperationEntityIdParameter
     transform s : ASM!EStringToStringMapEntry
     to t : OPENAPI!ParameterReference
     extends CreateExposedGraphOperationEntityIdParameter {
-        guard: s.key.startsWith(".graphs.") and s.getOperation().isDefined() and (not s.getOperation().eParameters.isEmpty() or s.getOperation().annotatedAsTrue("stateful"))
+        guard: s.key.startsWith(".graphs.") and s.getAnnotatedOperation().isDefined() and (not s.getAnnotatedOperation().eParameters.isEmpty() or s.getAnnotatedOperation().annotatedAsTrue("stateful"))
         
         s.equivalent("CreateExposedGraphPostOperation").parameters.add(t);
 }
@@ -165,7 +168,7 @@ rule CreateExposedGraphPostOperationEntityIdParameter
 rule CreateExposedGraphOperationResponse
     transform s : ASM!EStringToStringMapEntry
     to t : OPENAPI!OperationResponse {
-        var op = s.getOperation();
+        var op = s.getAnnotatedOperation();
 
         if (op.eType.isDefined()) {
             t.code = "200";
@@ -178,7 +181,7 @@ rule CreateExposedGraphGetOperationResponse
     transform s : ASM!EStringToStringMapEntry
     to t : OPENAPI!OperationResponse
     extends CreateExposedGraphOperationResponse {
-        guard: s.key.startsWith(".graphs.") and s.getOperation().isDefined() and (s.getOperation().eParameters.isEmpty() and s.getOperation().annotatedAsFalse("stateful"))
+        guard: s.key.startsWith(".graphs.") and s.getAnnotatedOperation().isDefined() and (s.getAnnotatedOperation().eParameters.isEmpty() and s.getAnnotatedOperation().annotatedAsFalse("stateful"))
         
         s.equivalent("CreateExposedGraphGetOperation").responses.add(t);
 }
@@ -187,7 +190,7 @@ rule CreateExposedGraphPostOperationResponse
     transform s : ASM!EStringToStringMapEntry
     to t : OPENAPI!OperationResponse
     extends CreateExposedGraphOperationResponse {
-        guard: s.key.startsWith(".graphs.") and s.getOperation().isDefined() and (not s.getOperation().eParameters.isEmpty() or s.getOperation().annotatedAsTrue("stateful"))
+        guard: s.key.startsWith(".graphs.") and s.getAnnotatedOperation().isDefined() and (not s.getAnnotatedOperation().eParameters.isEmpty() or s.getAnnotatedOperation().annotatedAsTrue("stateful"))
 
         s.equivalent("CreateExposedGraphPostOperation").responses.add(t);
 }
@@ -196,7 +199,7 @@ rule CreateExposedGraphPostOperationResponse
 rule CreateExposedGraphOperationResponseDefinition
     transform s : ASM!EStringToStringMapEntry
     to t : OPENAPI!OperationResponseDefinition {
-        var op = s.getOperation();
+        var op = s.getAnnotatedOperation();
         var opGroup = op.eContainingClass;
         var graph = s.value.resolve();
         var accessPoint = graph.getResolvedExposedBy();
@@ -216,7 +219,7 @@ rule CreateExposedGraphGetOperationResponseDefinition
     transform s : ASM!EStringToStringMapEntry
     to t : OPENAPI!ResponseDefinition
     extends CreateExposedGraphOperationResponseDefinition {
-        guard: s.key.startsWith(".graphs.") and s.getOperation().isDefined() and (s.getOperation().eParameters.isEmpty() and s.getOperation().annotatedAsFalse("stateful")) and s.getOperation().eType.isDefined()
+        guard: s.key.startsWith(".graphs.") and s.getAnnotatedOperation().isDefined() and (s.getAnnotatedOperation().eParameters.isEmpty() and s.getAnnotatedOperation().annotatedAsFalse("stateful")) and s.getAnnotatedOperation().eType.isDefined()
 
         s.equivalent("CreateExposedGraphGetOperationResponse").response = t;
 }
@@ -225,7 +228,7 @@ rule CreateExposedGraphPostOperationResponseDefinition
     transform s : ASM!EStringToStringMapEntry
     to t : OPENAPI!ResponseDefinition
     extends CreateExposedGraphOperationResponseDefinition {
-        guard: s.key.startsWith(".graphs.") and s.getOperation().isDefined() and (not s.getOperation().eParameters.isEmpty() or s.getOperation().annotatedAsTrue("stateful")) and s.getOperation().eType.isDefined()
+        guard: s.key.startsWith(".graphs.") and s.getAnnotatedOperation().isDefined() and (not s.getAnnotatedOperation().eParameters.isEmpty() or s.getAnnotatedOperation().annotatedAsTrue("stateful")) and s.getAnnotatedOperation().eType.isDefined()
 
         s.equivalent("CreateExposedGraphPostOperationResponse").response = t;
 }

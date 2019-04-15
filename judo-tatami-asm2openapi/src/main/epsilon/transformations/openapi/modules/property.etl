@@ -1,14 +1,16 @@
 import "../../../operations/asm/_importAll.eol";
-import "api.etl";
+import "../../../operations/asm/accesspoint/_importAll.eol";
+
+import "schema.etl";
 
 rule CreateDataPropertyDeclaration
     transform s : ASM!EStringToStringMapEntry
     to t : OPENAPI!PropertyDeclaration {
-        guard: s.key.startsWith(".accessPoints.") and s.getAttribute().isDefined()
+        guard: s.key.startsWith(".accessPoints.") and s.getAnnotatedAttribute().isDefined()
         
-        t.name = s.getAttribute().name;
+        t.name = s.getAnnotatedAttribute().name;
         
-        var annotation = s.getAttribute().eContainingClass.getExtensionAnnotation(false);
+        var annotation = s.getAnnotatedAttribute().eContainingClass.getExtensionAnnotation(false);
         if (annotation.isDefined()) {
 	        var a = annotation.details.selectOne(d | d.key.startsWith(".accessPoints.") and d.value = s.value);
 	        a.equivalent("CreateTransferObjectSingleSchemaDefinition").properties.add(t);
@@ -20,13 +22,13 @@ rule CreateDataPropertyDeclaration
 rule CreateDataPropertyDefinition
     transform s : ASM!EStringToStringMapEntry
     to t : OPENAPI!Property {
-        guard: s.key.startsWith(".accessPoints.") and s.getAttribute().isDefined()
+        guard: s.key.startsWith(".accessPoints.") and s.getAnnotatedAttribute().isDefined()
         
-        if (s.getAttribute().many) {
+        if (s.getAnnotatedAttribute().many) {
             throw "Collection attributes are not supported";
         }
 
-        switch (s.getAttribute().eAttributeType.instanceClassName) {
+        switch (s.getAnnotatedAttribute().eAttributeType.instanceClassName) {
             case 'java.lang.Boolean': continue;
             case 'boolean':
                 t.type = OPENAPI!JSONDataType#boolean;
@@ -71,14 +73,14 @@ rule CreateDataPropertyDefinition
                 t.type = OPENAPI!JSONDataType#string;
                 t.format = "date-time";
             default:
-                log.error("Unknown attribute type: " + s.getAttribute().eAttributeType.instanceClassName);
+                log.error("Unknown attribute type: " + s.getAnnotatedAttribute().eAttributeType.instanceClassName);
         }
 
-        if (s.getAttribute().required) {
-            var annotation = s.getAttribute().eContainingClass.getExtensionAnnotation(false);
+        if (s.getAnnotatedAttribute().required) {
+            var annotation = s.getAnnotatedAttribute().eContainingClass.getExtensionAnnotation(false);
 	        if (annotation.isDefined()) {
 		        var a = annotation.details.selectOne(d | d.key.startsWith(".accessPoints.") and d.value = s.value);
-		        a.equivalent("CreateTransferObjectSingleSchemaDefinition").required.add(s.getAttribute().name);
+		        a.equivalent("CreateTransferObjectSingleSchemaDefinition").required.add(s.getAnnotatedAttribute().name);
 	        } else {
 	            throw "Container of attribute is not prepared with annotation";
 	        }
@@ -90,11 +92,11 @@ rule CreateDataPropertyDefinition
 rule CreateReferencePropertyDeclaration
     transform s : ASM!EStringToStringMapEntry
     to t : OPENAPI!PropertyDeclaration {
-        guard: s.key.startsWith(".accessPoints.") and s.getReference().isDefined() and s.getReference().containment
+        guard: s.key.startsWith(".accessPoints.") and s.getAnnotatedReference().isDefined() and s.getAnnotatedReference().containment
 
-        t.name = s.getReference().name;
+        t.name = s.getAnnotatedReference().name;
 
-        var annotation = s.getReference().eContainingClass.getExtensionAnnotation(false);
+        var annotation = s.getAnnotatedReference().eContainingClass.getExtensionAnnotation(false);
         if (annotation.isDefined()) {
 	        var a = annotation.details.selectOne(d | d.key.startsWith(".accessPoints.") and d.value = s.value);
 	        a.equivalent("CreateTransferObjectSingleSchemaDefinition").properties.add(t);
@@ -106,14 +108,14 @@ rule CreateReferencePropertyDeclaration
 rule CreateReferencePropertyDefinition
     transform s : ASM!EStringToStringMapEntry
     to t : OPENAPI!Property {
-        guard: s.key.startsWith(".accessPoints.") and s.getReference().isDefined() and s.getReference().containment
+        guard: s.key.startsWith(".accessPoints.") and s.getAnnotatedReference().isDefined() and s.getAnnotatedReference().containment
 
-        var annotation = s.getReference().eReferenceType.getExtensionAnnotation(false);
+        var annotation = s.getAnnotatedReference().eReferenceType.getExtensionAnnotation(false);
         if (annotation.isDefined()) {
 	        var a = annotation.details.selectOne(d | d.key.startsWith(".accessPoints.") and d.value = s.value);
 
             t.ref = new OPENAPI!SchemaReference;
-	        if (s.getReference().many) {
+	        if (s.getAnnotatedReference().many) {
 	            t.ref.ref = a.equivalent("CreateTransferObjectArraySchemaDeclaration").getReference();
 	        } else {
 	            t.ref.ref = a.equivalent("CreateTransferObjectSingleSchemaDeclaration").getReference();
