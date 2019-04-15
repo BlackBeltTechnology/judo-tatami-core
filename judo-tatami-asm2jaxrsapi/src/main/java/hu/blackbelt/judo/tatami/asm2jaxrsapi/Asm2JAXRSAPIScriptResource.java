@@ -1,4 +1,4 @@
-package hu.blackbelt.judo.tatami.asm2openapi;
+package hu.blackbelt.judo.tatami.asm2jaxrsapi;
 
 import hu.blackbelt.osgi.utils.osgi.api.BundleUtil;
 import org.osgi.framework.Bundle;

@@ -2,9 +2,11 @@
 import "../operations/asm/_importAll.eol";
 import "../operations/jaxrs.eol";
 
+executionContext.getContext().put("outputJavaClasses", new Set());
 
 for (dto in getAllMappedTransferObjectTypes().collectAllReferenceTypeRecursively()) {
     genDto(dto);
+	executionContext.getContext().get("outputJavaClasses").add(dto.getDtoFileName());
 }
 
 for (ap in getAllAccessPoints()) {
@@ -14,6 +16,7 @@ for (ap in getAllAccessPoints()) {
 	// Unbound service
     if (ap.getExposedServices().size() > 0) {
 		genUnboundService(ap, ap.getExposedServices());
+		executionContext.getContext().get("outputJavaClasses").add(ap.getUnboundServiceFileName());
 		apServiceInstances.put("unboundService", ap.getUnboundServicePackageName() + "." + ap.getUnboundServiceClassName());
 	}	
 	
@@ -23,13 +26,14 @@ for (ap in getAllAccessPoints()) {
 		.flatten().asSet()
 	) {
 		genExposedMappedTransferObject(ap, mto);
+		executionContext.getContext().get("outputJavaClasses").add(mto.getExposedMappedTransferObjectFileName(ap));
 		apServiceInstances.put((mto.getExposedMappedTransferObjectPackageName(ap) + "." + mto.getExposedMappedTransferObjectClassName()).replaceAll("\\.", "_"),
 			mto.getExposedMappedTransferObjectPackageName(ap) + "." + mto.getExposedMappedTransferObjectClassName());		
     }
 
     // Generate ApplicatoionConfigs
     genApplication(ap, apServiceInstances);
+	executionContext.getContext().get("outputJavaClasses").add(ap.getApplicationConfigFileName());
 
 }
-
 %]

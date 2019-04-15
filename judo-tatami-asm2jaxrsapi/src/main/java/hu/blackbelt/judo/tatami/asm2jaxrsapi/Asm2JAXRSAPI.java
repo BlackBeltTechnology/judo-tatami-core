@@ -1,13 +1,18 @@
-package hu.blackbelt.judo.tatami.asm2openapi;
+package hu.blackbelt.judo.tatami.asm2jaxrsapi;
 
 import com.google.common.collect.ImmutableList;
 import hu.blackbelt.epsilon.runtime.execution.ExecutionContext;
 import hu.blackbelt.epsilon.runtime.execution.api.Log;
 import hu.blackbelt.epsilon.runtime.execution.contexts.EglExecutionContext;
+import hu.blackbelt.judo.framework.compiler.api.StaticCompiler;
 import hu.blackbelt.judo.meta.asm.runtime.AsmModel;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import static hu.blackbelt.epsilon.runtime.execution.ExecutionContext.executionContextBuilder;
 import static hu.blackbelt.epsilon.runtime.execution.contexts.EglExecutionContext.eglExecutionContextBuilder;
@@ -50,9 +55,39 @@ public class Asm2JAXRSAPI {
         // Transformation script
         executionContext.executeProgram(eglExecutionContext);
 
+        for (String src : (Set<String>)executionContext.getContext().get("outputJavaClasses")) {
+            log.info(src);
+        }
+
+        compile(outputDir, (Set<String>)executionContext.getContext().get("outputJavaClasses"));
         executionContext.commit();
         executionContext.close();
     }
 
+    /*
+    private static Set<Class> compileJanino(File sourceDir, Set<String> sourceFiles) throws Exception {
+        ClassLoader parentClassLoader = Asm2JAXRSAPI.class.getClassLoader();
+        JavaSourceClassLoader genSrcClassLoader = new JavaSourceClassLoader(parentClassLoader, new File[]{sourceDir}, "UTF-8");
 
+        Set<Class> compiled = new HashSet<>();
+        for (String fileName : sourceFiles) {
+            compiled.add(genSrcClassLoader.loadClass(fileName.substring(0, fileName.length() - 5).replaceAll("\\/", ".")));
+        }
+        return compiled;
+    }
+    */
+    private static List<File> compile(File sourceDir, Set<String> sourceCodeFiles) throws Exception {
+        Set<Class> compiled = new HashSet<>();
+
+        // JavaCompiler jacaCompiler = new EclipseCompiler();
+        // JavaCompiler.CompilationTask compile = javac.getTask(out, fileManager, dianosticListener, options, classes, compilationUnits);
+
+        List<File> sourceFiles = new ArrayList<>();
+        for (String fileName : sourceCodeFiles) {
+            //compiled.add(genSrcClassLoader.loadClass(fileName.substring(0, fileName.length() - 5).replaceAll("\\/", ".")));
+            sourceFiles.add(new File(sourceDir.getAbsolutePath(), fileName));
+        }
+
+        return StaticCompiler.compile(null, sourceFiles, sourceDir, true, false);
+    }
 }

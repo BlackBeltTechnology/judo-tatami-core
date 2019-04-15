@@ -1,4 +1,4 @@
-package hu.blackbelt.judo.tatami.asm2openapi;
+package hu.blackbelt.judo.tatami.asm2jaxrsapi;
 
 import com.google.common.collect.Maps;
 import hu.blackbelt.epsilon.runtime.execution.impl.Slf4jLog;
@@ -14,7 +14,7 @@ import org.osgi.service.component.annotations.Reference;
 import java.io.File;
 import java.util.Map;
 
-import static hu.blackbelt.judo.tatami.asm2openapi.Asm2JAXRSAPI.executeAsm2JAXRSAPIGeneration;
+import static hu.blackbelt.judo.tatami.asm2jaxrsapi.Asm2JAXRSAPI.executeAsm2JAXRSAPIGeneration;
 
 @Component(immediate = true, service = Asm2JAXRSAPIService.class)
 @Slf4j

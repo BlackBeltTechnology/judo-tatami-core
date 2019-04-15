@@ -1,4 +1,4 @@
-package hu.blackbelt.judo.tatami.asm2openapi;
+package hu.blackbelt.judo.tatami.asm2jaxrsapi;
 
 import hu.blackbelt.judo.meta.asm.runtime.AsmModel;
 import hu.blackbelt.judo.tatami.core.AbstractModelInfoTracker;

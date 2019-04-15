@@ -1,4 +1,4 @@
-package hu.blackbelt.judo.tatami.asm2openapi;
+package hu.blackbelt.judo.tatami.asm2jaxrsapi;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
@@ -22,7 +22,7 @@ import java.io.File;
 import java.nio.file.FileSystems;
 
 import static hu.blackbelt.judo.meta.asm.runtime.AsmModelLoader.createAsmResourceSet;
-import static hu.blackbelt.judo.tatami.asm2openapi.Asm2JAXRSAPI.executeAsm2JAXRSAPIGeneration;
+import static hu.blackbelt.judo.tatami.asm2jaxrsapi.Asm2JAXRSAPI.executeAsm2JAXRSAPIGeneration;
 
 @Slf4j
 public class Asm2JAXRSAPITest {
