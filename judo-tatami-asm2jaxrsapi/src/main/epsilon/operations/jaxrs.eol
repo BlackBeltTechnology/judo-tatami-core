@@ -27,10 +27,9 @@ operation ASM!EReference getTypeDefinition() : String {
 	}
 }
 
-
 @cached
 operation ASM!EClass collectAllReferenceType() : Set {	
-	var ret : new Set();	
+	var ret : new Set();
 	for (r in self.eAllReferences) {
 		ret.add(r.eReferenceType);
 	}
@@ -47,7 +46,6 @@ operation Collection collectAllReferenceType() : Set {
 	return ret;
 }
 
-
 @cached
 operation Collection collectAllReferenceTypeRecursively() : Set {	
 	var ret : new Set();	
@@ -61,7 +59,6 @@ operation Collection collectAllReferenceTypeRecursively() : Set {
 	}
 	return ret;
 }
-
 
 /*
  Application Config
@@ -82,7 +79,7 @@ operation genApplication(ap : ASM!EClass, serviceInstances : Map) {
 	t.populate("ap", ap);
 	t.populate("className", "ApplicationConfig");
 	t.populate("packageName", ap.getApplicationPackageName());
-	t.populate("restPath", ap.getFQName().toJAXRSPath());
+	t.populate("restPath", "/" + ap.getFQName().toJAXRSPath());
 	t.populate("serviceInstances", serviceInstances);
 	t.generate(ap.getApplicationConfigFileName());
 	t.reset();

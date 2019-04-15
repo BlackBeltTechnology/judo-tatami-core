@@ -75,7 +75,7 @@
         <judo-meta-odata.import-range>[1.0,1.1)</judo-meta-odata.import-range>
         -->
 
-        <judo-meta-asm-version>1.0.0-develop-33</judo-meta-asm-version>
+        <judo-meta-asm-version>1.0.0-develop-35</judo-meta-asm-version>
         <judo-meta-asm-import-range>[1.0,1.1)</judo-meta-asm-import-range>
 
         <judo-meta-expression-version>1.0.1.develop_110</judo-meta-expression-version>
@@ -104,7 +104,7 @@
 
         <test.psm.model.groupId>hu.blackbelt.northwind</test.psm.model.groupId>
         <test.psm.model.artifactId>northwind-runtime</test.psm.model.artifactId>
-        <test.psm.model.version>1.0.1.develop_97</test.psm.model.version>
+        <test.psm.model.version>1.0.1.develop_101</test.psm.model.version>
 
         <test.rdbms.model.groupId>${project.groupId}</test.rdbms.model.groupId>
         <test.rdbms.model.artifactId>judo-tatami-asm2rdbms</test.rdbms.model.artifactId>

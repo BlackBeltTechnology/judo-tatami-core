@@ -1,5 +1,6 @@
 import "../../../operations/asm/_importAll.eol";
 import "../../../operations/asm/accesspoint/_importAll.eol";
+import "../../../operations/openapi/_importAll.eol";
 
 import "api.etl";
 import "parameter.etl";
