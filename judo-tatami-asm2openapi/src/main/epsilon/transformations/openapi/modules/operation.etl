@@ -26,8 +26,7 @@ rule CreateExposedServiceOperation
         for (p in op.eParameters.select(p | p.eType.isDefined())) {
             var parameterReference = new OPENAPI!ParameterReference;
             
-            var aAccessPoint = p.getExtensionAnnotation(false).details.selectOne(d | d.key.startsWith(".accessPoints.") and d.value = s.value);
-            parameterReference.ref = aAccessPoint.equivalent("CreateParameterDeclaration").getReference();
+            parameterReference.ref = p.getAccessPointAnnotation(s.value).equivalent("CreateParameterDeclaration").getReference();
             t.parameters.add(parameterReference);
         }
 }

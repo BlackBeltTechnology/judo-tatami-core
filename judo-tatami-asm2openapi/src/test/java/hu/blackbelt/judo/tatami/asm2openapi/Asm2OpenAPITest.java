@@ -117,7 +117,7 @@ public class Asm2OpenAPITest {
         // Printing trace
         for (EObject e : resolvedTrace.keySet()) {
             for (EObject t : resolvedTrace.get(e)) {
-                log.info(e.toString() + " -> " + t.toString());
+                log.debug("{} -> {}", e, t);
             }
         }
 
@@ -130,13 +130,17 @@ public class Asm2OpenAPITest {
             final String title = ((API)m).getInfo().getTitle();
             final File swaggerJsonFile = new File(targetDir().getAbsolutePath()+"/northwind-openapi-" + title + ".json");
             try (final Writer targetFileWriter = new FileWriter(swaggerJsonFile)) {
-                targetFileWriter.append(Json.pretty().writeValueAsString(swagger));
+                final String json = Json.pretty().writeValueAsString(swagger);
+                targetFileWriter.append(json);
+                log.debug(json);
             } catch (IOException ex) {
                 log.error("Unable to create JSON output", ex);
             }
             final File swaggerYamlFile = new File(targetDir().getAbsolutePath()+"/northwind-openapi-" + title + ".yaml");
             try (final Writer targetFileWriter = new FileWriter(swaggerYamlFile)) {
-                targetFileWriter.append(Yaml.pretty().writeValueAsString(swagger));
+                final String yaml = Yaml.pretty().writeValueAsString(swagger);
+                targetFileWriter.append(yaml);
+                log.debug(yaml);
             } catch (IOException ex) {
                 log.error("Unable to create YAML output", ex);
             }

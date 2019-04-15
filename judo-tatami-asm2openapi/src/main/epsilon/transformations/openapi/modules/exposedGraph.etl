@@ -94,8 +94,7 @@ rule CreateExposedGraphOperation
         for (p in op.eParameters.select(p | p.eType.isDefined())) {
             var parameterReference = new OPENAPI!ParameterReference;
             
-            var aAccessPoint = p.getExtensionAnnotation(false).details.selectOne(d | d.key.startsWith(".accessPoints.") and d.value = accessPoint.getFQName());
-            parameterReference.ref = aAccessPoint.equivalent("CreateParameterDeclaration").getReference();
+            parameterReference.ref = p.getAccessPointAnnotation(accessPoint.getFQName()).equivalent("CreateParameterDeclaration").getReference();
             t.parameters.add(parameterReference);
         }
 }
@@ -134,12 +133,7 @@ rule CreateExposedGraphOperationEntityIdParameter
         }
         
         if (interface.isDefined()) {
-	        var entityAnnotation = interface.getEntityType().getExtensionAnnotation(false);
-	        if (not entityAnnotation.isDefined()) {
-	            throw "Entity of operation is not prepared with annotation";
-	        }
-
-	        var entityIdParameterDeclaration = entityAnnotation.details.selectOne(d | d.key.startsWith(".accessPoints.") and d.value == accessPoint.getFQName()).equivalent("CreateEntityIdParameterDeclaration");
+	        var entityIdParameterDeclaration = interface.getEntityType().getAccessPointAnnotation(accessPoint.getFQName()).equivalent("CreateEntityIdParameterDeclaration");
 	        t.ref = entityIdParameterDeclaration.getReference();
         } else {
             throw "No binding found for operation: " + op.getFQName();
