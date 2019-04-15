@@ -5,3 +5,38 @@ import "modules/operation.etl";
 import "modules/package.etl";
 import "modules/transferObject.etl";
 import "modules/type.etl";
+
+post {
+    for (graph in JUDOPSM!ExposedGraph.all) {
+        for (mto in graph.getMappedTransferObjects()) {
+		    var annotation = mto.transformToAsm().eAnnotations.selectOne(a | a.source = extendedMetadataURI);
+            if (not annotation.isDefined()) {
+                annotation = new ASM!EAnnotation;
+		        annotation.source = extendedMetadataURI;
+		        mto.transformToAsm().eAnnotations.add(annotation);
+            }
+
+            var index = annotation.details.select(d | d.key.startsWith("graphs.")).size();
+		    var aGraph = new ASM!EStringToStringMapEntry;
+		    aGraph.key = "graphs." + index;
+		    aGraph.value = graph.equivalent("CreateExposedGraph").getFQName();
+		    annotation.details.add(aGraph);
+		}
+
+		for (eo in graph.exposedOperations) {
+		    var o = eo.`operation`;
+		    var annotation = o.equivalent("CreateBoundOperation").eAnnotations.selectOne(a | a.source = extendedMetadataURI);
+            if (not annotation.isDefined()) {
+                annotation = new ASM!EAnnotation;
+		        annotation.source = extendedMetadataURI;
+		        o.equivalent("CreateBoundOperation").eAnnotations.add(annotation);
+            }
+
+            var index = annotation.details.select(d | d.key.startsWith("graphs.")).size();
+		    var aGraph = new ASM!EStringToStringMapEntry;
+		    aGraph.key = "graphs." + index;
+		    aGraph.value = graph.equivalent("CreateExposedGraph").getFQName();
+		    annotation.details.add(aGraph);
+		}
+    }
+}

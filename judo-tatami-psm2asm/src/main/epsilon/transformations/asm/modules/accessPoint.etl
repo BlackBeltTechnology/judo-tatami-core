@@ -84,21 +84,6 @@ rule CreateExposedGraph
 		aExposedBy.key = "exposedBy";
 		aExposedBy.value = s.getAccessPoint().equivalent("CreateAccessPoint").getFQName();
 		annotation.details.add(aExposedBy);
-
-		for (mto in s.getMappedTransferObjects()) {
-		    var annotation = mto.transformToAsm().eAnnotations.selectOne(a | a.source = extendedMetadataURI);
-            if (not annotation.isDefined()) {
-                annotation = new ASM!EAnnotation;
-		        annotation.source = extendedMetadataURI;
-		        mto.transformToAsm().eAnnotations.add(annotation);
-            }
-
-            var index = annotation.details.select(d | d.key.startsWith("graphs.")).size();
-		    var aGraph = new ASM!EStringToStringMapEntry;
-		    aGraph.key = "graphs." + index;
-		    aGraph.value = s.equivalent("CreateExposedGraph").getFQName();
-		    annotation.details.add(aGraph);
-		}
 }
 
 // TODO - remove selector reference, it is added for debugging only

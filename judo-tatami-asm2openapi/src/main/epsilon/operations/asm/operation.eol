@@ -4,3 +4,13 @@ import "modelElement.eol";
 operation ASM!EOperation getFQName() : String {
 	return self.eContainingClass.getFQName() + "#" + self.name;
 }
+
+@cached
+operation ASM!EOperation getResolvedExposedBy() : ASM!EClass {
+    var exposedBy = self.getAnnotationValue("exposedBy", false);
+    if (exposedBy.isDefined()) {
+        return exposedBy.resolve();
+    } else {
+        return null;
+    }
+}

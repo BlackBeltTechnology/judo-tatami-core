@@ -6,16 +6,6 @@ operation String toOpenAPIPath() : String {
 }
 
 @cached
-operation ASM!EOperation getResolvedExposedBy() : ASM!EClass {
-    var exposedBy = self.getAnnotationValue("exposedBy", false);
-    if (exposedBy.isDefined()) {
-        return exposedBy.resolve();
-    } else {
-        return null;
-    }
-}
-
-@cached
 operation String toOpenAPIName() : String {
     return self.replace("[^0-9a-zA-Z_]", "_");
 }

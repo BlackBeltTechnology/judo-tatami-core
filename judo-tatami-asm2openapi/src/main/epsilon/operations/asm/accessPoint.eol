@@ -93,6 +93,16 @@ operation ASM!EClass getExposedServices() : Set {
 @cached
 operation ASM!EClass getGraphs() : Set {
 	var annotation = self.getExtensionAnnotation(false);
+	if (self.isMappedTransferObjectType() and annotation.isDefined()) {
+		return annotation.details.select(d | d.key.startsWith("graphs.")).collect(d | d.value.resolve()).asSet();
+	} else {
+		return new Set;
+	}
+}
+
+@cached
+operation ASM!EOperation getGraphs() : Set {
+	var annotation = self.getExtensionAnnotation(false);
 	if (annotation.isDefined()) {
 		return annotation.details.select(d | d.key.startsWith("graphs.")).collect(d | d.value.resolve()).asSet();
 	} else {
@@ -115,7 +125,7 @@ operation ASM!EClass getExposedMappedTransferObjectTypes() : Set {
 operation ASM!EClass getExposedOperations() : Set {
     if (self.isExposedGraph()) {
         return self.getExposedMappedTransferObjectTypes().collect(t | t.getNestedClasses()).flatten().select(og | og.interface).collect(og | og.eOperations).flatten()
-            .includingAll(self.getExposedMappedTransferObjectTypes().collect(t | t.eOperations).flatten())
+            .includingAll(self.getExposedMappedTransferObjectTypes().collect(t | t.eOperations).flatten().select(o | o.getGraphs().contains(self)))
             .asSet();
     } else {
         return new Set;
