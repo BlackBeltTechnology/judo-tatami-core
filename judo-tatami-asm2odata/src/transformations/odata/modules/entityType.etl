@@ -1,5 +1,5 @@
 import "../../../operations/odata/_importOData.eol";
-import "../../../operations/asm/_importAsm.eol";
+import "../../../operations/asm/_importAll.eol";
 
 rule CreateEntity
 	transform s : ASM!EClass

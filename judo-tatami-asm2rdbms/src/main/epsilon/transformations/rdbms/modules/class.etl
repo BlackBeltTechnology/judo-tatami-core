@@ -1,4 +1,4 @@
-import "../../../operations/asm/_importAsm.eol";
+import "../../../operations/asm/_importAll.eol";
 import "element.etl";
 
 /* Every Identifiable table have an ID */
