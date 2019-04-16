@@ -13,7 +13,6 @@ import hu.blackbelt.judo.meta.rdbms.runtime.RdbmsModel;
 import hu.blackbelt.judo.tatami.core.TrackInfo;
 import hu.blackbelt.judo.tatami.core.TrackInfoService;
 import hu.blackbelt.osgi.utils.osgi.api.BundleTrackerManager;
-import lombok.extern.slf4j.Slf4j;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.junit.Test;
@@ -25,10 +24,13 @@ import org.ops4j.pax.exam.junit.PaxExam;
 import org.ops4j.pax.exam.karaf.options.LogLevelOption;
 import org.ops4j.pax.exam.options.MavenArtifactUrlReference;
 import org.ops4j.pax.exam.options.MavenUrlReference;
+import org.ops4j.pax.exam.spi.reactors.ExamReactorStrategy;
+import org.ops4j.pax.exam.spi.reactors.PerClass;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
+import org.osgi.service.log.LogService;
 
 import javax.inject.Inject;
 import java.io.File;
@@ -47,10 +49,12 @@ import static org.ops4j.pax.exam.CoreOptions.*;
 import static org.ops4j.pax.exam.karaf.options.KarafDistributionOption.*;
 import static org.ops4j.pax.tinybundles.core.TinyBundles.bundle;
 import static org.ops4j.pax.tinybundles.core.TinyBundles.withBnd;
+import static org.osgi.service.log.LogService.LOG_INFO;
 
 @RunWith(PaxExam.class)
-@Slf4j
+@ExamReactorStrategy(PerClass.class)
 public class TatamiTransformationPipelineITest {
+
     public static final String JUDO_META_GROUPID = "hu.blackbelt.judo.meta";
     public static final String TATAMI_GROUPID = "hu.blackbelt.judo.tatami";
 
@@ -99,6 +103,9 @@ public class TatamiTransformationPipelineITest {
 
 
     @Inject
+    LogService log;
+
+    @Inject
     protected BundleTrackerManager bundleTrackerManager;
 
     @Inject
@@ -126,10 +133,10 @@ public class TatamiTransformationPipelineITest {
     protected OpenAPIModel openAPIModel;
 
     @Inject
-    BundleContext context;
+    TrackInfoService trackInfoService;
 
     @Inject
-    TrackInfoService trackInfoService;
+    BundleContext bundleContext;
 
 
     @Configuration
@@ -162,13 +169,16 @@ public class TatamiTransformationPipelineITest {
                         .unpackDirectory(new File("target", "exam"))
                         .useDeployFolder(false),
                 keepRuntimeFolder(),
-                cleanCaches(true),
+                cleanCaches(false),
                 logLevel(LogLevelOption.LogLevel.INFO),
                 // Debug
-                //vmOption("-Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=5005"),
+                when( Boolean.getBoolean( "isDebugEnabled" ) ).useOptions(
+                    vmOption("-Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=5005")
+                ),
                 //systemTimeout(30000),
                 //debugConfiguration("5005", true),
                 vmOption("-Dfile.encoding=UTF-8"),
+                systemProperty("pax.exam.service.timeout").value("30000"),
                 replaceConfigurationFile("etc/org.ops4j.pax.logging.cfg",
                         getConfigFile("/etc/org.ops4j.pax.logging.cfg")),
 
@@ -176,6 +186,11 @@ public class TatamiTransformationPipelineITest {
 
                 //features(karafStandardRepo , "scr"),
                 features(judoKarafRuntimeRepo , FEATURE_SCR, FEATURE_OSGI_UTILS, FEATURE_EPSILON_RUNTIME, FEATURE_ECLIPSE_XTEXT, FEATURE_SWAGGER_CORE, FEATURE_TINYBUNDLES),
+
+                mavenBundle()
+                        .groupId("org.ops4j.pax.swissbox")
+                        .artifactId("pax-swissbox-tracker")
+                        .version("1.8.4_timeoutfix").start(),
 
                 mavenBundle()
                         .groupId(SERVICEMIX_BUNDLES_GROUPID)
@@ -317,9 +332,19 @@ public class TatamiTransformationPipelineITest {
 
     @Test
     public void testMethod() throws InvalidSyntaxException {
-        Collection<ServiceReference<TrackInfo>> trackInfos = context.getServiceReferences(TrackInfo.class, null);
+        log.log(LOG_INFO, "==============================================");
+        log.log(LOG_INFO, "== RUNNING TEST METHOD");
+        log.log(LOG_INFO, "==============================================");
 
-        assertThat(trackInfos.stream().map(r -> context.getService(r).getTrackInfoName()).collect(Collectors.toList()),
+        /*
+        TrackInfoService trackInfoService = getOsgiService(bundleContext, TrackInfoService.class, 30000);
+        AsmModel asmModel = getOsgiService(bundleContext, AsmModel.class, 30000);
+        RdbmsModel rdbmsModel = getOsgiService(bundleContext, RdbmsModel.class, 30000);
+        */
+
+        Collection<ServiceReference<TrackInfo>> trackInfos = bundleContext.getServiceReferences(TrackInfo.class, null);
+
+        assertThat(trackInfos.stream().map(r -> bundleContext.getService(r).getTrackInfoName()).collect(Collectors.toList()),
                 containsInAnyOrder("asm2openapi", "asm2rdbms", "psm2measure", "psm2jqlextract", "psm2asm", "jqlextract2expression"));
 
 
@@ -335,6 +360,10 @@ public class TatamiTransformationPipelineITest {
         assertThat(orderRdbmsObjectList, hasSize(1));
         assertThat(orderRdbmsObjectList.get(0), is(instanceOf(RdbmsTable.class)));
         assertThat(((RdbmsTable) orderRdbmsObjectList.get(0)).getSqlName(), equalTo("T_ENTTS_ORDER"));
+
+        log.log(LOG_INFO, "==============================================");
+        log.log(LOG_INFO, "== STOPPING TEST METHOD");
+        log.log(LOG_INFO, "==============================================");
 
     }
 
@@ -354,5 +383,4 @@ public class TatamiTransformationPipelineITest {
         }
         return targetDir;
     }
-
 }
