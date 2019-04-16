@@ -53,27 +53,17 @@ import static org.ops4j.pax.tinybundles.core.TinyBundles.withBnd;
 public class TatamiTransformationPipelineITest {
     public static final String JUDO_META_GROUPID = "hu.blackbelt.judo.meta";
     public static final String TATAMI_GROUPID = "hu.blackbelt.judo.tatami";
-    public static final String TATAMI_VERSION = "judo.tatami.version";
 
     public static final String META_ASM = "judo-meta-asm";
-    public static final String META_ASM_VERSION = "judo.meta.asm.version";
     public static final String META_RDBMS_RUNTIME = "judo-meta-rdbms-runtime";
-    public static final String META_RDBMS_VERSION = "judo.meta.rdbms.version";
     public static final String META_PSM_RUNTIME = "judo-meta-psm-runtime";
-    public static final String META_PSM_VERSION = "judo.meta.psm.version";
     public static final String META_PSM_IMPORT_RANGE = "judo.meta.psm.import.range";
     public static final String META_PSM_JQL_RUNTIME = "judo-meta-psm-jql-runtime";
-    public static final String META_PSM_JQL_VERSION = "judo.meta.psm.jql.version";
     public static final String META_PSM_JQL_EXTRACT_RUNTIME = "judo-meta-psm-jql-extract-runtime";
-    public static final String META_PSM_JQL_EXTRACT_VERSION = "judo.meta.psm.jql.extract.version";
     public static final String META_MEASURE_RUNTIME = "judo-meta-measure-runtime";
-    public static final String META_MEASURE_VERSION = "judo.meta.measure.version";
     public static final String META_EXPRESSION_RUNTIME = "judo-meta-expression-runtime";
-    public static final String META_EXPRESSION_VERSION = "judo.meta.expression.version";
     public static final String META_LIQUIBASE_RUNTIME = "judo-meta-liquibase-runtime";
-    public static final String META_LIQUIBASE_VERSION = "judo.meta.liquibase.version";
     public static final String META_OPENAPI_RUNTIME = "judo-meta-openapi-runtime";
-    public static final String META_OPENAPI_VERSION = "judo.meta.openapi.version";
 
     public static final String TATAMI_CORE = "judo-tatami-core";
     public static final String TATAMI_PSM2ASM = "judo-tatami-psm2asm";
@@ -98,16 +88,14 @@ public class TatamiTransformationPipelineITest {
     public static final String FEATURE_EPSILON_RUNTIME = "epsilon-runtime";
     public static final String FEATURE_ECLIPSE_XTEXT = "eclipse-xtext";
     public static final String FEATURE_SWAGGER_CORE = "cxf-rs-description-swagger2";
-    public static final String TINYBUNDLES_GROUPID = "org.ops4j.pax.tinybundles";
-    public static final String TINYBUNDLES = "tinybundles";
-    public static final String TINYBUNDLES_VERSION = "3.0.0";
-    public static final String BNDLIB_GROUPID = "biz.aQute.bnd";
-    public static final String BNDLIB = "biz.aQute.bndlib";
-    public static final String BNDLIB_VERSION = "3.5.0";
+    public static final String FEATURE_TINYBUNDLES = "tinybundles";
+
     public static final String PAX_EXAM_KARAF_VERSION_PROPERTY = "pax.exam.karaf.version";
     public static final String KARAF_VERSION = "4.1.2";
     public static final String JUDO_KARAF_RUNTIME_VERSION_PROPERTY = "judo.karaf.runtime.version";
     public static final String JUDO_KARAF_RUNTIME_VERSION = "1.0.0";
+    public static final String SERVICEMIX_BUNDLES_GROUPID = "org.apache.servicemix.bundles";
+    public static final String HAMCREST = "org.apache.servicemix.bundles.hamcrest";
 
 
     @Inject
@@ -187,105 +175,108 @@ public class TatamiTransformationPipelineITest {
                 configureConsole().ignoreLocalConsole(),
 
                 //features(karafStandardRepo , "scr"),
-                features(judoKarafRuntimeRepo , FEATURE_SCR, FEATURE_OSGI_UTILS, FEATURE_EPSILON_RUNTIME, FEATURE_ECLIPSE_XTEXT, FEATURE_SWAGGER_CORE),
+                features(judoKarafRuntimeRepo , FEATURE_SCR, FEATURE_OSGI_UTILS, FEATURE_EPSILON_RUNTIME, FEATURE_ECLIPSE_XTEXT, FEATURE_SWAGGER_CORE, FEATURE_TINYBUNDLES),
 
-                mavenBundle("org.apache.servicemix.bundles", "org.apache.servicemix.bundles.hamcrest", "1.3_1"),
+                mavenBundle()
+                        .groupId(SERVICEMIX_BUNDLES_GROUPID)
+                        .artifactId(HAMCREST)
+                        .versionAsInProject().start(),
 
+                /*
                 mavenBundle()
                         .groupId(TINYBUNDLES_GROUPID)
                         .artifactId(TINYBUNDLES)
                         .version(TINYBUNDLES_VERSION).start(),
-
                 mavenBundle()
                         .groupId(BNDLIB_GROUPID)
                         .artifactId(BNDLIB)
                         .version(BNDLIB_VERSION).start(),
-                
+                 */
                 mavenBundle()
                         .groupId(JUDO_META_GROUPID)
                         .artifactId(META_ASM)
-                        .version(getVersion(META_ASM_VERSION)).start(),
+                        .versionAsInProject().start(),
 
                 mavenBundle()
                         .groupId(JUDO_META_GROUPID)
                         .artifactId(META_RDBMS_RUNTIME)
-                        .version(getVersion(META_RDBMS_VERSION)).start(),
+                        .versionAsInProject().start(),
 
                 mavenBundle()
                         .groupId(JUDO_META_GROUPID)
                         .artifactId(META_PSM_RUNTIME)
-                        .version(getVersion(META_PSM_VERSION)).start(),
+                        .versionAsInProject().start(),
 
                 mavenBundle()
                         .groupId(JUDO_META_GROUPID)
                         .artifactId(META_PSM_JQL_RUNTIME)
-                        .version(getVersion(META_PSM_JQL_VERSION)).start(),
+                        .versionAsInProject().start(),
 
                 mavenBundle()
                         .groupId(JUDO_META_GROUPID)
                         .artifactId(META_PSM_JQL_EXTRACT_RUNTIME)
-                        .version(getVersion(META_PSM_JQL_EXTRACT_VERSION)).start(),
+                        .versionAsInProject().start(),
 
                 mavenBundle()
                         .groupId(JUDO_META_GROUPID)
                         .artifactId(META_MEASURE_RUNTIME)
-                        .version(getVersion(META_MEASURE_VERSION)).start(),
+                        .versionAsInProject().start(),
 
                 mavenBundle()
                         .groupId(JUDO_META_GROUPID)
                         .artifactId(META_EXPRESSION_RUNTIME)
-                        .version(getVersion(META_EXPRESSION_VERSION)).start(),
+                        .versionAsInProject().start(),
 
                 mavenBundle()
                         .groupId(JUDO_META_GROUPID)
                         .artifactId(META_LIQUIBASE_RUNTIME)
-                        .version(getVersion(META_LIQUIBASE_VERSION)).start(),
+                        .versionAsInProject().start(),
 
                 mavenBundle()
                         .groupId(JUDO_META_GROUPID)
                         .artifactId(META_OPENAPI_RUNTIME)
-                        .version(getVersion(META_OPENAPI_VERSION)).start(),
+                        .versionAsInProject().start(),
 
 
                 mavenBundle()
                         .groupId(TATAMI_GROUPID)
                         .artifactId(TATAMI_CORE)
-                        .version(getVersion(TATAMI_VERSION)).start(),
+                        .versionAsInProject().start(),
 
                 mavenBundle()
                         .groupId(TATAMI_GROUPID)
                         .artifactId(TATAMI_PSM2ASM)
-                        .version(getVersion(TATAMI_VERSION)).start(),
+                        .versionAsInProject().start(),
 
                 mavenBundle()
                         .groupId(TATAMI_GROUPID)
                         .artifactId(TATAMI_PSM2JQL)
-                        .version(getVersion(TATAMI_VERSION)).start(),
+                        .versionAsInProject().start(),
 
                 mavenBundle()
                         .groupId(TATAMI_GROUPID)
                         .artifactId(TATAMI_PSM2MEASURE)
-                        .version(getVersion(TATAMI_VERSION)).start(),
+                        .versionAsInProject().start(),
 
                 mavenBundle()
                         .groupId(TATAMI_GROUPID)
                         .artifactId(TATAMI_JQL2EXPRESSION)
-                        .version(getVersion(TATAMI_VERSION)).start(),
+                        .versionAsInProject().start(),
 
                 mavenBundle()
                         .groupId(TATAMI_GROUPID)
                         .artifactId(TATAMI_ASM2OPENAPI)
-                        .version(getVersion(TATAMI_VERSION)).start(),
+                        .versionAsInProject().start(),
 
                 mavenBundle()
                         .groupId(TATAMI_GROUPID)
                         .artifactId(TATAMI_ASM2RDBMS)
-                        .version(getVersion(TATAMI_VERSION)).start(),
+                        .versionAsInProject().start(),
 
                 mavenBundle()
                         .groupId(TATAMI_GROUPID)
                         .artifactId(TATAMI_RDBMS2LIQUIBSE)
-                        .version(getVersion(TATAMI_VERSION)).start(),
+                        .versionAsInProject().start(),
 
                 provision(
                         testModelBundle()

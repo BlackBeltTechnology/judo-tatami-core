@@ -46,6 +46,18 @@
             <scope>test</scope>
         </dependency>
         <dependency>
+            <groupId>org.ops4j.pax.exam</groupId>
+            <artifactId>pax-exam-link-mvn</artifactId>
+            <version>${pax-exam-version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.ops4j.pax.exam</groupId>
+            <artifactId>pax-exam-inject</artifactId>
+            <version>${pax-exam-version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
             <groupId>org.ops4j.pax.url</groupId>
             <artifactId>pax-url-aether</artifactId>
             <version>2.5.2</version>
@@ -81,37 +93,31 @@
         <dependency>
             <groupId>hu.blackbelt.judo.meta</groupId>
             <artifactId>judo-meta-psm-jql-runtime</artifactId>
-            <version>${judo-meta-psm-jql-version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>hu.blackbelt.judo.meta</groupId>
             <artifactId>judo-meta-psm-jql-extract-runtime</artifactId>
-            <version>${judo-meta-psm-jql-extract-version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>hu.blackbelt.judo.meta</groupId>
             <artifactId>judo-meta-psm-runtime</artifactId>
-            <version>${judo-meta-psm-version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>hu.blackbelt.judo.meta</groupId>
             <artifactId>judo-meta-asm</artifactId>
-            <version>${judo-meta-asm-version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>hu.blackbelt.judo.meta</groupId>
             <artifactId>judo-meta-expression-runtime</artifactId>
-            <version>${judo-meta-expression-version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>hu.blackbelt.judo.meta</groupId>
             <artifactId>judo-meta-rdbms-runtime</artifactId>
-            <version>${judo-meta-rdbms-version}</version>
             <scope>test</scope>
         </dependency>
         <!--
@@ -124,19 +130,80 @@
         <dependency>
             <groupId>hu.blackbelt.judo.meta</groupId>
             <artifactId>judo-meta-measure-runtime</artifactId>
-            <version>${judo-meta-measure-version}</version>
+            <scope>test</scope>
         </dependency>
 
         <dependency>
             <groupId>hu.blackbelt.judo.meta</groupId>
             <artifactId>judo-meta-liquibase-runtime</artifactId>
-            <version>${judo-meta-liquibase-version}</version>
+            <scope>test</scope>
         </dependency>
 
         <dependency>
             <groupId>hu.blackbelt.judo.meta</groupId>
             <artifactId>judo-meta-openapi-runtime</artifactId>
-            <version>${judo-meta-openapi-version}</version>
+            <scope>test</scope>
+        </dependency>
+
+
+        <dependency>
+            <groupId>hu.blackbelt.judo.tatami</groupId>
+            <artifactId>judo-tatami-core</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>hu.blackbelt.judo.tatami</groupId>
+            <artifactId>judo-tatami-asm2jaxrsapi</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>hu.blackbelt.judo.tatami</groupId>
+            <artifactId>judo-tatami-asm2odata</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>hu.blackbelt.judo.tatami</groupId>
+            <artifactId>judo-tatami-asm2openapi</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>hu.blackbelt.judo.tatami</groupId>
+            <artifactId>judo-tatami-asm2rdbms</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>hu.blackbelt.judo.tatami</groupId>
+            <artifactId>judo-tatami-jql2expression</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>hu.blackbelt.judo.tatami</groupId>
+            <artifactId>judo-tatami-psm2asm</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>hu.blackbelt.judo.tatami</groupId>
+            <artifactId>judo-tatami-psm2jql</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>hu.blackbelt.judo.tatami</groupId>
+            <artifactId>judo-tatami-psm2measure</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>hu.blackbelt.judo.tatami</groupId>
+            <artifactId>judo-tatami-rdbms2liquibase</artifactId>
+            <scope>test</scope>
         </dependency>
 
         <!-- https://mvnrepository.com/artifact/org.ops4j.pax.tinybundles/tinybundles -->
@@ -147,6 +214,12 @@
             <scope>test</scope>
         </dependency>
 
+        <dependency>
+            <groupId>org.apache.servicemix.bundles</groupId>
+            <artifactId>org.apache.servicemix.bundles.hamcrest</artifactId>
+            <version>1.3_1</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <build>
@@ -182,10 +255,24 @@
                 <configuration>
                     <systemPropertyVariables>
                         <pax.exam.karaf.version>${karaf-version}</pax.exam.karaf.version>
+                        <pax.exam.service.timeout>30000</pax.exam.service.timeout>
                     </systemPropertyVariables>
                 </configuration>
             </plugin>
         </plugins>
     </build>
 
+    <!--
+    <properties>
+        <pax-exam-version>5.0.0.M2-SNAPSHOT</pax-exam-version>
+    </properties>
+    <repositories>
+        <repository>
+            <id>ops4j-snapshots-repo</id>
+            <url>https://oss.sonatype.org/content/repositories/ops4j-snapshots</url>
+            <releases><enabled>false</enabled></releases>
+            <snapshots><enabled>true</enabled></snapshots>
+        </repository>
+    </repositories>
+    -->
 </project>
