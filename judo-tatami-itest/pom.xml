@@ -122,13 +122,6 @@
             <artifactId>judo-meta-rdbms-runtime</artifactId>
             <scope>test</scope>
         </dependency>
-        <!--
-        <dependency>
-            <groupId>hu.blackbelt.judo.meta</groupId>
-            <artifactId>judo-meta-odata</artifactId>
-            <version>${judo-meta-odata-version}</version>
-        </dependency>
-        -->
         <dependency>
             <groupId>hu.blackbelt.judo.meta</groupId>
             <artifactId>judo-meta-measure-runtime</artifactId>
@@ -159,12 +152,14 @@
             <artifactId>judo-tatami-asm2jaxrsapi</artifactId>
             <scope>test</scope>
         </dependency>
-
+        
+        <!--
         <dependency>
             <groupId>hu.blackbelt.judo.tatami</groupId>
             <artifactId>judo-tatami-asm2odata</artifactId>
             <scope>test</scope>
         </dependency>
+        -->
 
         <dependency>
             <groupId>hu.blackbelt.judo.tatami</groupId>

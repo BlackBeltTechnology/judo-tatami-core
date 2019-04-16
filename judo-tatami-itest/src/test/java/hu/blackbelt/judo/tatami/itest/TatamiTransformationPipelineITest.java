@@ -169,10 +169,10 @@ public class TatamiTransformationPipelineITest {
                         .unpackDirectory(new File("target", "exam"))
                         .useDeployFolder(false),
                 keepRuntimeFolder(),
-                cleanCaches(false),
+                cleanCaches(true),
                 logLevel(LogLevelOption.LogLevel.INFO),
                 // Debug
-                when( Boolean.getBoolean( "isDebugEnabled" ) ).useOptions(
+                when(Boolean.getBoolean( "isDebugEnabled" ) ).useOptions(
                     vmOption("-Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=5005")
                 ),
                 //systemTimeout(30000),
@@ -181,6 +181,11 @@ public class TatamiTransformationPipelineITest {
                 systemProperty("pax.exam.service.timeout").value("30000"),
                 replaceConfigurationFile("etc/org.ops4j.pax.logging.cfg",
                         getConfigFile("/etc/org.ops4j.pax.logging.cfg")),
+
+                when(Boolean.getBoolean( "useCustomSettings")).useOptions(
+                    replaceConfigurationFile("etc/org.ops4j.pax.url.mvn.cfg",
+                            getConfigFile("/etc/org.ops4j.pax.url.mvn.cfg"))
+                ),
 
                 configureConsole().ignoreLocalConsole(),
 

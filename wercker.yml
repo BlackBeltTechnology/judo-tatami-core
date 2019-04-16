@@ -13,19 +13,19 @@ build:
     - wercker/maven:
       goals: versions:set
       pom: ./judo-tatami-parent/pom.xml
-      maven_opts: -DnewVersion=${VERSION_FROM_POM_BASE_VERSION}_${VERSION_FROM_GIT_TAG_CURRENT_BRANCH_VALID_NAME}-${VERSION_FROM_GIT_TAG_COMMIT_COUNT}
+      maven_opts: -DnewVersion=${VERSION_FROM_POM_BASE_VERSION}_${VERSION_FROM_GIT_TAG_CURRENT_BRANCH_VALID_NAME}_${VERSION_FROM_GIT_TAG_COMMIT_COUNT}
       cache_repo: true
 
     - wercker/maven:
       goals: versions:set
       pom: ./pom.xml
-      maven_opts: -DnewVersion=${VERSION_FROM_POM_BASE_VERSION}_${VERSION_FROM_GIT_TAG_CURRENT_BRANCH_VALID_NAME}-${VERSION_FROM_GIT_TAG_COMMIT_COUNT}
+      maven_opts: -DnewVersion=${VERSION_FROM_POM_BASE_VERSION}_${VERSION_FROM_GIT_TAG_CURRENT_BRANCH_VALID_NAME}_${VERSION_FROM_GIT_TAG_COMMIT_COUNT}
       cache_repo: true
 
     - wercker/maven:
       goals: clean deploy
       settings: .maven.xml
-      maven_opts: -Dorg.ops4j.pax.url.mvn.settings=.maven.xml
+      maven_opts: -Dorg.ops4j.pax.url.mvn.settings=${WERCKER_ROOT}/.maven.xml -DuseCustomSettings=true
       profiles: release-github,release-blackbelt
       cache_repo: true
 
@@ -122,6 +122,7 @@ release:
     - wercker/maven:
       goals: clean deploy
       settings: .maven.xml
+      maven_opts: -Dorg.ops4j.pax.url.mvn.settings=${WERCKER_ROOT}/.maven.xml -DuseCustomSettings=true
       profiles: release-github,release-central
       cache_repo: true
 
