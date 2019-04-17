@@ -30,12 +30,8 @@ import static hu.blackbelt.judo.tatami.asm2jaxrsapi.Asm2JAXRSAPI.executeAsm2JAXR
 @Slf4j
 public class Asm2JAXRSAPITest {
 
-    public static final String ASM_2_OPENAPI_MODEL = "asm2openapi.model";
-    public static final String TRACE_JQLEXTRACT_2_EXPRESSION = "trace:asm2openapi";
     public static final String ASM_NORTHWIND = "asm:northwind";
-    public static final String OPENAPI_NORTHWIND = "openapi:northwind";
     public static final String URN_NORTHWIND_ASM = "urn:northwind-asm.model";
-    public static final String URN_NORTHWIND_OPENAPI = "urn:northwind-openapi.model";
     public static final String NORTHWIND = "northwind";
     public static final String VERSION = "1.0.0";
     
@@ -49,8 +45,7 @@ public class Asm2JAXRSAPITest {
         uriHandler = new NameMappedURIHandlerImpl(
                 ImmutableList.of(new NioFilesystemnRelativePathURIHandlerImpl("urn", FileSystems.getDefault(), targetDir().getAbsolutePath())),
                 ImmutableMap.of(
-                        URI.createURI(ASM_NORTHWIND), URI.createURI(URN_NORTHWIND_ASM),
-                        URI.createURI(OPENAPI_NORTHWIND), URI.createURI(URN_NORTHWIND_OPENAPI))
+                        URI.createURI(ASM_NORTHWIND), URI.createURI(URN_NORTHWIND_ASM))
         );
         // Default logger
         slf4jlog = new Slf4jLog(log);
