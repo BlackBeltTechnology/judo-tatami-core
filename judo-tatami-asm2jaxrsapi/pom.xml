@@ -84,19 +84,17 @@
 					<obrRepository>NONE</obrRepository>
 					<instructions>
 						<Export-Package>
-							tatami/asm2openapi;version=${project.version},
-							hu.blackbelt.judo.tatami.asm2openapi.*;version=${project.version}
+							tatami/asm2jaxrsapi;version=${project.version},
+							hu.blackbelt.judo.tatami.asm2jaxrsapi.*;version=${project.version}
 						</Export-Package>
 						<Include-Resource>
 							{maven-resources},
-							tatami/asm2openapi=src/main/epsilon
+							tatami/asm2jaxrsapi=src/main/epsilon
 						</Include-Resource>
 						<Import-Package>
 							org.osgi.framework;version="[1.8,2.0)",
 							!lombok,
-							meta/openapi;version="${judo-meta-openapi-import-range}",
 							meta/asm;version="${judo-meta-asm-import-range}",
-							hu.blackbelt.judo.meta.openapi*;version="${judo-meta-openapi-import-range}",
 							hu.blackbelt.judo.meta.asm*;version="${judo-meta-asm-import-range}",
 							com.google.common.base;version="[14.0,30)",
 							com.google.common.cache;version="[14.0,30)",
@@ -140,8 +138,13 @@
 		<dependency>
 			<groupId>hu.blackbelt.judo.framework</groupId>
 			<artifactId>compiler-api</artifactId>
-			<version>${judo-framework-version}</version>
 		</dependency>
+
+		<dependency>
+			<groupId>org.ops4j.pax.tinybundles</groupId>
+			<artifactId>tinybundles</artifactId>
+		</dependency>
+
 	</dependencies>
 </project>
 

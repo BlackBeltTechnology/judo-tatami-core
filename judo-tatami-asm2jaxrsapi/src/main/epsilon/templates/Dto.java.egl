@@ -11,34 +11,28 @@ import java.util.LinkedHashMap;
 import java.util.stream.Collectors;
 
 public class [%= dto.name %] {
-    [% for (attr in dto.eAllAttributes) { %]
-	private [%= attr.getTypeDefinition() %] [%= attr.name.firstToLowerCase().safeName() %];
-	[% } %]
-    [% for (ref in dto.eAllReferences) { %]
-	private [%= ref.getTypeDefinition() %] [%= ref.name.firstToLowerCase().safeName() %];
+    [% for (field in dto.eAllAttributes.includingAll(dto.eAllReferences)) { %]
+	private [%= field.getTypeDefinition() %] [%= field.name.firstToLowerCase().safeName() %];
 	[% } %]
 
+    @java.beans.ConstructorProperties({[% for (field in dto.eAllAttributes.includingAll(dto.eAllReferences)) { %]"[%= field.name.firstToLowerCase().safeName() %]"[% if (hasMore) { %], [% } %][% } %]})
+    [%= dto.name %]([% for (field in dto.eAllAttributes.includingAll(dto.eAllReferences)) { %][%= field.getTypeDefinition() %] [%= field.name.firstToLowerCase().safeName() %][% if (hasMore) { %], [% } %][% } %]) {
+        [% for (field in dto.eAllAttributes.includingAll(dto.eAllReferences)) { %]
+        this.[%= field.name.firstToLowerCase().safeName() %] = [%= field.name.firstToLowerCase().safeName() %];
+        [% } %]
+    }
+
 	// Getters
-    [% for (attr in dto.eAllAttributes) { %]
-	public [%= attr.getTypeDefinition() %] [%= attr.getterName() %]() {
-		return this.[%= attr.name.firstToLowerCase().safeName() %];
-	}
-	[% } %]
-    [% for (ref in dto.eAllReferences) { %]
-	public [%= ref.getTypeDefinition() %] [%= ref.getterName() %]() {
-		return this.[%= ref.name.firstToLowerCase().safeName() %];
+    [% for (field in dto.eAllAttributes.includingAll(dto.eAllReferences)) { %]
+	public [%= field.getTypeDefinition() %] [%= field.getterName() %]() {
+		return this.[%= field.name.firstToLowerCase().safeName() %];
 	}
 	[% } %]
 
 	// Setters
-    [% for (attr in dto.eAllAttributes) { %]
-	public void [%= attr.setterName() %]([%= attr.getTypeDefinition() %] [%= attr.name.firstToLowerCase().safeName() %]) {
-		this.[%= attr.name.firstToLowerCase().safeName() %] = [%= attr.name.firstToLowerCase().safeName() %];
-	}
-	[% } %]
-    [% for (ref in dto.eAllReferences) { %]
-	public void [%= ref.setterName() %]([%= ref.getTypeDefinition() %] [%= ref.name.firstToLowerCase().safeName() %]) {
-		this.[%= ref.name.firstToLowerCase().safeName() %] = [%= ref.name.firstToLowerCase().safeName() %];
+    [% for (field in dto.eAllAttributes.includingAll(dto.eAllReferences)) { %]
+	public void [%= field.setterName() %]([%= field.getTypeDefinition() %] [%= field.name.firstToLowerCase().safeName() %]) {
+		this.[%= field.name.firstToLowerCase().safeName() %] = [%= field.name.firstToLowerCase().safeName() %];
 	}
 	[% } %]
 
@@ -62,23 +56,55 @@ public class [%= dto.name %] {
 	}
 
 	public static [%= dto.name %] fromMap(Map<String, Object> map) {
-		[%= dto.name %] ret = new [%= dto.name %]();
+		[%= dto.name %]Builder builder = [%= dto.name.firstToLowerCase() %]Builder();
 	    [% for (attr in dto.eAllAttributes) { %]
 	    if (map.containsKey("[%= attr.name %]")) {
-			ret.[%= attr.setterName() %](([%= attr.getTypeDefinition() %]) map.get("[%= attr.name %]"));
+			builder.[%= attr.name.firstToLowerCase().safeName() %](([%= attr.getTypeDefinition() %]) map.get("[%= attr.name %]"));
 		}
 		[% } %]
 	    [% for (ref in dto.eAllReferences) { %]
 	    if (map.containsKey("[%= ref.name %]")) {
 	    	[% if (ref.upperBound == -1) { %]
-		    ret.[%= ref.setterName() %](([%= ref.getTypeDefinition() %]) ((List) map.get("[%= ref.name %]")).stream().map(i -> [%= ref.getBareTypeDefinition() %].fromMap((Map<String, Object>) i)).collect(Collectors.toList()));
+		    builder.[%= ref.name.firstToLowerCase().safeName() %](([%= ref.getTypeDefinition() %]) ((List) map.get("[%= ref.name %]")).stream().map(i -> [%= ref.getBareTypeDefinition() %].fromMap((Map<String, Object>) i)).collect(Collectors.toList()));
 	    	[% } else { %]
-		    ret.[%= ref.setterName() %]([%= ref.getTypeDefinition() %].fromMap((Map<String, Object>) map.get("[%= ref.name %]")));
+		    builder.[%= ref.name.firstToLowerCase().safeName() %]([%= ref.getTypeDefinition() %].fromMap((Map<String, Object>) map.get("[%= ref.name %]")));
 			[% } %]
 	    }
 		[% } %]
 
-	    return ret;		
+	    return builder.build();
 	}
 
+	public String toString() {
+	    return "[%= dto.name %]([% for (field in dto.eAllAttributes.includingAll(dto.eAllReferences)) { %][%= field.name.firstToLowerCase().safeName() %]=" + this.[%= field.name.firstToLowerCase().safeName() %] + [% if (hasMore) { %]", [% } else { %]"[% } %][% } %])";
+	}
+
+    // Builder
+	public static [%= dto.name %]Builder [%= dto.name.firstToLowerCase() %]Builder() {
+		return new [%= dto.name %]Builder();
+	}
+
+	public static class [%= dto.name %]Builder {
+        [% for (field in dto.eAllAttributes.includingAll(dto.eAllReferences)) { %]
+        private [%= field.getTypeDefinition() %] [%= field.name.firstToLowerCase().safeName() %];
+        [% } %]
+
+		[%= dto.name %]Builder() {
+		}
+
+        [% for (field in dto.eAllAttributes.includingAll(dto.eAllReferences)) { %]
+		public [%= dto.name %]Builder [%= field.name.firstToLowerCase().safeName() %]([%= field.getTypeDefinition() %] [%= field.name.firstToLowerCase().safeName() %]) {
+			this.[%= field.name.firstToLowerCase().safeName() %] = [%= field.name.firstToLowerCase().safeName() %];
+			return this;
+		}
+		[% } %]
+
+		public [%= dto.name %] build() {
+			return new [%= dto.name %]([% for (field in dto.eAllAttributes.includingAll(dto.eAllReferences)) { %]this.[%= field.name.firstToLowerCase().safeName() %][% if (hasMore) { %], [% } %][% } %]);
+		}
+
+		public String toString() {
+    	    return "[%= dto.name %]Builder.[%= dto.name %]([% for (field in dto.eAllAttributes.includingAll(dto.eAllReferences)) { %][%= field.name.firstToLowerCase().safeName() %]=" + this.[%= field.name.firstToLowerCase().safeName() %] + [% if (hasMore) { %]", [% } else { %]"[% } %][% } %])";
+		}
+	}
 }

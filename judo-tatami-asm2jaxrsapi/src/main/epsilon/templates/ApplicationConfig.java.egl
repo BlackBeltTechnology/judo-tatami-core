@@ -3,24 +3,18 @@
   import "../operations/jaxrs.eol";
   out.setContentType("Java");
 %]
-package [%= packageName %];
+package [%= packagePath %];
 
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
-import org.osgi.service.component.annotations.*;
 
-@Component(
-	immediate = true, 
-	service = Application.class
-)
 @ApplicationPath("[%= restPath %]")
 public class ApplicationConfig extends Application {
 	
 	[% for (name : String in serviceInstances.keySet()) { %]
-	@Reference
 	[%= serviceInstances.get(name) %] [%= name %];
 	[% } %]
 	

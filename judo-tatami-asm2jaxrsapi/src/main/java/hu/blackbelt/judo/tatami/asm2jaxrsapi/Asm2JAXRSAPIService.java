@@ -3,11 +3,11 @@ package hu.blackbelt.judo.tatami.asm2jaxrsapi;
 import com.google.common.collect.Maps;
 import hu.blackbelt.epsilon.runtime.execution.impl.Slf4jLog;
 import hu.blackbelt.judo.meta.asm.runtime.AsmModel;
-import hu.blackbelt.judo.tatami.core.TrackInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
+import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
-import org.osgi.framework.ServiceRegistration;
+import org.osgi.framework.BundleException;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
@@ -20,39 +20,23 @@ import static hu.blackbelt.judo.tatami.asm2jaxrsapi.Asm2JAXRSAPI.executeAsm2JAXR
 @Slf4j
 public class Asm2JAXRSAPIService {
 
-    public static final String OPENAPI_META_VERSION_RANGE = "OpenAPI-Meta-Version-Range";
-
     @Reference
     Asm2JAXRSAPIScriptResource asm2JAXRSAPIScriptResource;
 
-    Map<AsmModel, ServiceRegistration<TrackInfo>> asm2openAPITrackInfoRegistration = Maps.newHashMap();
+    Map<AsmModel, Bundle> asm2jaxrsAPIBundles = Maps.newHashMap();
 
     public void install(AsmModel asmModel, BundleContext bundleContext) throws Exception {
-        /*
-        BundleURIHandler bundleURIHandler = new BundleURIHandler("urn", "",
-                bundleContext.getBundle());
+        asm2jaxrsAPIBundles.put(asmModel,
+                bundleContext.installBundle("asm2jaxrsapi",
+                        executeAsm2JAXRSAPIGeneration(new ResourceSetImpl(), asmModel, new Slf4jLog(log),
+                                new File(asm2JAXRSAPIScriptResource.getSctiptRoot().getAbsolutePath(), "asm2jaxrsapi/templates"), new File(""))));
 
-        ResourceSet openAPIResourceSet = createOpenAPIResourceSet(bundleURIHandler);
-        registerOpenAPIMetamodel(openAPIResourceSet);
-
-        OpenAPIModel openAPIModel = OpenAPIModel.buildOpenAPIModel()
-                .name(asmModel.getName())
-                .version(asmModel.getVersion())
-                .uri(URI.createURI("urn:" + asmModel.getName() + ".openapi"))
-                .checksum(asmModel.getChecksum())
-                .resourceSet(openAPIResourceSet)
-                .checksum(asmModel.getChecksum())
-                .metaVersionRange(bundleContext.getBundle().getHeaders().get(OPENAPI_META_VERSION_RANGE))
-                .build();
-        */
-        executeAsm2JAXRSAPIGeneration(new ResourceSetImpl(), asmModel, new Slf4jLog(log),
-                new File(asm2JAXRSAPIScriptResource.getSctiptRoot().getAbsolutePath(), "asm2jaxrsapi/templates/asm2jaxrsapi"), new File(""));
-
+        asm2jaxrsAPIBundles.get(asmModel).start();
     }
 
-    public void uninstall(AsmModel asmModel) {
-        if (asm2openAPITrackInfoRegistration.containsKey(asmModel)) {
-            asm2openAPITrackInfoRegistration.get(asmModel).unregister();
+    public void uninstall(AsmModel asmModel) throws BundleException {
+        if (asm2jaxrsAPIBundles.containsKey(asmModel)) {
+            asm2jaxrsAPIBundles.get(asmModel).uninstall();
         } else {
             log.error("ASM model is not installed: " + asmModel.toString());
         }

@@ -70,18 +70,30 @@ operation ASM!EClass getApplicationPackageName() : String {
 }
 
 @cached
-operation ASM!EClass getApplicationConfigFileName() : String {
+operation ASM!EClass getApplicationConfigJavaFileName() : String {
 	return self.getApplicationPackageName().replaceAll("\\.", "/") + "/ApplicationConfig.java";
+}
+
+@cached
+operation ASM!EClass getApplicationConfigScrXmlFileName() : String {
+	return "OSGI-INF/" + self.getApplicationPackageName() + ".ApplicationConfig.xml";
 }
 
 operation genApplication(ap : ASM!EClass, serviceInstances : Map) {
 	var t = TemplateFactory.load("ApplicationConfig.java.egl");
 	t.populate("ap", ap);
 	t.populate("className", "ApplicationConfig");
-	t.populate("packageName", ap.getApplicationPackageName());
+	t.populate("packagePath", ap.getApplicationPackageName());
 	t.populate("restPath", "/" + ap.getFQName().toJAXRSPath());
 	t.populate("serviceInstances", serviceInstances);
-	t.generate(ap.getApplicationConfigFileName());
+	t.generate(ap.getApplicationConfigJavaFileName());
+	t.reset();
+
+	var t = TemplateFactory.load("ApplicationConfig.scr.xml.egl");
+	t.populate("className", "ApplicationConfig");
+	t.populate("packagePath", ap.getApplicationPackageName());
+	t.populate("serviceInstances", serviceInstances);
+	t.generate(ap.getApplicationConfigScrXmlFileName());
 	t.reset();
 }
 
@@ -96,17 +108,27 @@ operation ASM!EClass getUnboundServiceClassName() : String {
 	return "UnboundServices"; 
 }
 
-operation ASM!EClass getUnboundServiceFileName() : String {
+operation ASM!EClass getUnboundServiceJavaFileName() : String {
 	return self.getUnboundServicePackageName().replaceAll("\\.", "/") + "/" + self.getUnboundServiceClassName() + ".java";
+}
+
+operation ASM!EClass getUnboundServiceScrXmlFileName() : String {
+	return "OSGI-INF/" + self.getUnboundServicePackageName() + "." + self.getUnboundServiceClassName() + ".xml";
 }
 
 operation genUnboundService(ap : ASM!EClass, operations : Collection) {
 	var t = TemplateFactory.load("RestService.java.egl");
 	t.populate("className", ap.getUnboundServiceClassName());
-	t.populate("packageName", ap.getUnboundServicePackageName());
+	t.populate("packagePath", ap.getUnboundServicePackageName());
 	t.populate("operations", operations);
 	t.populate("restPath", "/");
-	t.generate(ap.getUnboundServiceFileName());
+	t.generate(ap.getUnboundServiceJavaFileName());
+	t.reset();
+
+	var t = TemplateFactory.load("RestService.scr.xml.egl");
+	t.populate("className", ap.getUnboundServiceClassName());
+	t.populate("packagePath", ap.getUnboundServicePackageName());
+	t.generate(ap.getUnboundServiceScrXmlFileName());
 	t.reset();
 }
 
@@ -115,16 +137,6 @@ operation genUnboundService(ap : ASM!EClass, operations : Collection) {
  */
 operation ASM!EClass getExposedMappedTransferObjectPackageName(ap: ASM!EClass) : String {
 	return "rest." + ap.getFQName() + "." + self.ePackage.getFullName();
-}
-
-operation genExposedMappedTransferObject(ap : ASM!EClass, mto : ASM!EClass) {
-	var t = TemplateFactory.load("RestService.java.egl");
-	t.populate("className", mto.getExposedMappedTransferObjectClassName());
-	t.populate("packageName", mto.getExposedMappedTransferObjectPackageName(ap));
-	t.populate("operations", mto.eAllOperations);
-	t.populate("restPath", "/" + mto.ePackage.getFullName().toJAXRSPath() + "/" + mto.getExposedMappedTransferObjectClassName().replace("\\$", "/").toJAXRSPath());
-	t.generate(mto.getExposedMappedTransferObjectFileName(ap));
-	t.reset();
 }
 
 @cached
@@ -139,9 +151,30 @@ operation ASM!EClass getExposedMappedTransferObjectClassName() : String {
 	return self.name.replace("[ʘ]", "\\$");
 }
 
-operation ASM!EClass getExposedMappedTransferObjectFileName(ap: ASM!EClass) : String {
+operation ASM!EClass getExposedMappedTransferObjectJavaFileName(ap: ASM!EClass) : String {
 	return self.getExposedMappedTransferObjectPackageName(ap).replaceAll("\\.", "/") + "/" + self.getExposedMappedTransferObjectClassName() + ".java";
 }
+
+operation ASM!EClass getExposedMappedTransferObjectScrXmlFileName(ap: ASM!EClass) : String {
+	return "OSGI-INF/" + self.getExposedMappedTransferObjectPackageName(ap) + "." + self.getExposedMappedTransferObjectClassName() + ".xml";
+}
+
+operation genExposedMappedTransferObject(ap : ASM!EClass, mto : ASM!EClass) {
+	var t = TemplateFactory.load("RestService.java.egl");
+	t.populate("className", mto.getExposedMappedTransferObjectClassName());
+	t.populate("packagePath", mto.getExposedMappedTransferObjectPackageName(ap));
+	t.populate("operations", mto.eAllOperations);
+	t.populate("restPath", "/" + mto.ePackage.getFullName().toJAXRSPath() + "/" + mto.getExposedMappedTransferObjectClassName().replace("\\$", "/").toJAXRSPath());
+	t.generate(mto.getExposedMappedTransferObjectJavaFileName(ap));
+	t.reset();
+
+	var t = TemplateFactory.load("RestService.scr.xml.egl");
+	t.populate("className", mto.getExposedMappedTransferObjectClassName());
+	t.populate("packagePath", mto.getExposedMappedTransferObjectPackageName(ap));
+	t.generate(mto.getExposedMappedTransferObjectScrXmlFileName(ap));
+	t.reset();
+}
+
 
 /*
  DTO
@@ -157,14 +190,14 @@ operation ASM!EClass getDtoTypeName() : String {
 }
 
 @cached
-operation ASM!EClass getDtoFileName() : String {
+operation ASM!EClass getDtoJavaFileName() : String {
 	return self.getDtoPackageName().replaceAll("\\.", "/") + "/" + self.name + ".java";
 }
 
 operation genDto(dto : ASM!EClass) {
 	var t = TemplateFactory.load("Dto.java.egl");
 	t.populate("dto", dto);
-	t.generate(dto.getDtoFileName());
+	t.generate(dto.getDtoJavaFileName());
 	t.reset();
 }
 
@@ -192,7 +225,7 @@ operation ASM!ENamedElement setterName() : String {
 }
 
 operation ASM!ENamedElement getterName() : String {
-	return "set" + self.name.firstToUpperCase().safeName();
+	return "get" + self.name.firstToUpperCase().safeName();
 }
 
 

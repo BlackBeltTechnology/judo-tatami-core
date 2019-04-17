@@ -3,11 +3,15 @@ import "../operations/asm/_importAll.eol";
 import "../operations/asm/accesspoint/_importAll.eol";
 import "../operations/jaxrs.eol";
 
-executionContext.getContext().put("outputJavaClasses", new Set());
+var outputJavaClasses = new Set();
+var outputScrXmls = new Set();
+
+executionContext.getContext().put("outputJavaClasses", outputJavaClasses);
+executionContext.getContext().put("outputScrXmls", outputScrXmls);
 
 for (dto in getAllMappedTransferObjectTypes().collectAllReferenceTypeRecursively()) {
     genDto(dto);
-	executionContext.getContext().get("outputJavaClasses").add(dto.getDtoFileName());
+	outputJavaClasses.add(dto.getDtoJavaFileName());
 }
 
 for (ap in getAllAccessPoints()) {
@@ -17,7 +21,8 @@ for (ap in getAllAccessPoints()) {
 	// Unbound service
     if (ap.getExposedServices().size() > 0) {
 		genUnboundService(ap, ap.getExposedServices());
-		executionContext.getContext().get("outputJavaClasses").add(ap.getUnboundServiceFileName());
+		outputJavaClasses.add(ap.getUnboundServiceJavaFileName());
+		outputScrXmls.add(ap.getUnboundServiceScrXmlFileName());
 		apServiceInstances.put("unboundService", ap.getUnboundServicePackageName() + "." + ap.getUnboundServiceClassName());
 	}	
 	
@@ -27,14 +32,16 @@ for (ap in getAllAccessPoints()) {
 		.flatten().asSet()
 	) {
 		genExposedMappedTransferObject(ap, mto);
-		executionContext.getContext().get("outputJavaClasses").add(mto.getExposedMappedTransferObjectFileName(ap));
+		outputJavaClasses.add(mto.getExposedMappedTransferObjectJavaFileName(ap));
+		outputScrXmls.add(mto.getExposedMappedTransferObjectScrXmlFileName(ap));
 		apServiceInstances.put((mto.getExposedMappedTransferObjectPackageName(ap) + "." + mto.getExposedMappedTransferObjectClassName()).replaceAll("\\.", "_"),
 			mto.getExposedMappedTransferObjectPackageName(ap) + "." + mto.getExposedMappedTransferObjectClassName());		
     }
 
     // Generate ApplicatoionConfigs
     genApplication(ap, apServiceInstances);
-	executionContext.getContext().get("outputJavaClasses").add(ap.getApplicationConfigFileName());
+	outputJavaClasses.add(ap.getApplicationConfigJavaFileName());
+	outputScrXmls.add(ap.getApplicationConfigScrXmlFileName());
 
 }
 %]

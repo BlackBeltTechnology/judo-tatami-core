@@ -3,19 +3,13 @@
   import "../operations/jaxrs.eol";
   out.setContentType("Java");
 %]
-package [%= packageName %];
+package [%= packagePath %];
 
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.core.Response;
 
-import org.osgi.service.component.annotations.*;
-
-@Component(
-	immediate = true, 
-	service = [%= className %].class
-)
 @Path("[%= restPath %]")
 public class [%= className %] {
 [% for (op in operations) { %]

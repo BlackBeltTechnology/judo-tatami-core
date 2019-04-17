@@ -2,6 +2,7 @@ package hu.blackbelt.judo.tatami.asm2jaxrsapi;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.io.ByteStreams;
 import hu.blackbelt.epsilon.runtime.execution.api.Log;
 import hu.blackbelt.epsilon.runtime.execution.impl.NameMappedURIHandlerImpl;
 import hu.blackbelt.epsilon.runtime.execution.impl.NioFilesystemnRelativePathURIHandlerImpl;
@@ -19,6 +20,8 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.OutputStream;
 import java.nio.file.FileSystems;
 
 import static hu.blackbelt.judo.meta.asm.runtime.AsmModelLoader.createAsmResourceSet;
@@ -69,11 +72,15 @@ public class Asm2JAXRSAPITest {
 
     @Test
     public void testExecuteAsm2JAXRSAPIGeneration() throws Exception {
-
-        executeAsm2JAXRSAPIGeneration(new ResourceSetImpl(), asmModel, new Slf4jLog(log),
-                new File(srcDir().getAbsolutePath(), "epsilon/templates"),
-                new File(targetDir().getAbsolutePath(), "generated/java"));
-
+        try (OutputStream outputStream =
+                     new FileOutputStream(new File(targetDir().getAbsolutePath(), NORTHWIND + "-rest.jar"))) {
+            ByteStreams.copy(
+                    executeAsm2JAXRSAPIGeneration(new ResourceSetImpl(), asmModel, new Slf4jLog(log),
+                            new File(srcDir().getAbsolutePath(), "epsilon/templates"),
+                            new File(targetDir().getAbsolutePath(), "generated/java")),
+                    outputStream
+            );
+        }
     }
 
 

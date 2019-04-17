@@ -1,0 +1,15 @@
+[%
+  import "../operations/asm/_importAll.eol";
+  import "../operations/jaxrs.eol";
+%]
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.3.0" name="[%= packagePath %].[%= className %]" immediate="true">
+    <implementation class="[%= packagePath %].ApplicationConfig"/>
+    <service>
+        <provide interface="javax.ws.rs.core.Application"/>
+    </service>
+
+    [% for (name : String in serviceInstances.keySet()) { %]
+    <reference name="[%= name %]" interface="[%= serviceInstances.get(name) %]" field="[%= name %]"/>
+    [% } %]
+</scr:component>

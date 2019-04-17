@@ -1,0 +1,11 @@
+[%
+  import "../operations/asm/_importAll.eol";
+  import "../operations/jaxrs.eol";
+%]
+<?xml version="1.0" encoding="UTF-8"?>
+<component name="[%= packagePath %].[%= className %]" immediate="true">
+  <implementation class="[%= packagePath %].[%= className %]"/>
+  <service>
+    <provide interface="[%= packagePath %].[%= className %]"/>
+  </service>
+</component>

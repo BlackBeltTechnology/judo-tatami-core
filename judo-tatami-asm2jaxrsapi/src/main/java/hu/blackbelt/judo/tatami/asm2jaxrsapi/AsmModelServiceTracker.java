@@ -3,6 +3,7 @@ package hu.blackbelt.judo.tatami.asm2jaxrsapi;
 import hu.blackbelt.judo.meta.asm.runtime.AsmModel;
 import hu.blackbelt.judo.tatami.core.AbstractModelInfoTracker;
 import lombok.extern.slf4j.Slf4j;
+import org.osgi.framework.BundleException;
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
@@ -17,7 +18,6 @@ public class AsmModelServiceTracker extends AbstractModelInfoTracker<AsmModel> {
     @Reference
     Asm2JAXRSAPIService asm2JAXRSAPIService;
 
-
     @Activate
     protected void activate(ComponentContext contextPar) {
         componentContext = contextPar;
@@ -27,57 +27,30 @@ public class AsmModelServiceTracker extends AbstractModelInfoTracker<AsmModel> {
     @Deactivate
     protected void deactivate() {
         closeTracker();
-        // registrations.forEach((k, v) -> { v.unregister(); });
     }
 
     private ComponentContext componentContext;
 
     @Override
     public void install(AsmModel asmModel) {
-        /*
-        String key = asmModel.getName();
-        OpenAPIModel openAPIModel = null;
-        if (models.containsKey(key)) {
-            log.error("Model already loaded: " + asmModel.getName());
-            return;
-        }
-
         try {
-            openAPIModel = asm2JAXRSAPIService
-                    .install(asmModel, componentContext.getBundleContext());
-            log.info("Registering model: " + openAPIModel);
-            ServiceRegistration<OpenAPIModel> modelServiceRegistration =
-                    componentContext.getBundleContext()
-                            .registerService(OpenAPIModel.class, openAPIModel, openAPIModel.toDictionary());
-            models.put(key, openAPIModel);
-            registrations.put(key, modelServiceRegistration);
+            asm2JAXRSAPIService.install(asmModel, componentContext.getBundleContext());
         } catch (Exception e) {
-            log.error("Could not register OpenAPI Model: " + asmModel.getName(), e);
+            log.error("Could not register JAX-RS Bundle: " + asmModel.getName(), e);
         }
-
-         */
     }
 
     @Override
     public void uninstall(AsmModel asmModel) {
-        /*
-        String key = asmModel.getName();
-        if (!registrations.containsKey(key)) {
-            log.error("Model is not registered: " + asmModel.getName());
-        } else {
+        try {
             asm2JAXRSAPIService.uninstall(asmModel);
-            registrations.get(key).unregister();
-            registrations.remove(key);
-            models.remove(key);
+        } catch (BundleException e) {
+            log.error("Could not unregister JAX-RS Bundle: " + asmModel.getName(), e);
         }
-
-         */
     }
 
     @Override
     public Class<AsmModel> getModelClass() {
         return AsmModel.class;
     }
-
-
 }
