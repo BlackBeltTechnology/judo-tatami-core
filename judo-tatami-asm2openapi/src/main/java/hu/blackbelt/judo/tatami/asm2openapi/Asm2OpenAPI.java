@@ -25,8 +25,8 @@ public class Asm2OpenAPI {
 
     public static final String ASM_2_OPENAPI_URI_POSTFIX = "asm2openapi";
 
-    public static Asm2OpenAPITrackInfo executeAsm2OpenAPITransformation(ResourceSet resourceSet, AsmModel asmModel, OpenAPIModel openAPIModel, Log log,
-                                                      File scriptDir) throws Exception {
+    public static Asm2OpenAPITransformationTrace executeAsm2OpenAPITransformation(ResourceSet resourceSet, AsmModel asmModel, OpenAPIModel openAPIModel, Log log,
+                                                                                  File scriptDir) throws Exception {
 
         // If resource was not created for target model before
         Resource openAPIResource = openAPIModel.getResourceSet().getResource(openAPIModel.getUri(), false);
@@ -74,7 +74,7 @@ public class Asm2OpenAPI {
 
         List<EObject> traceModel = getTransformationTrace(ASM_2_OPENAPI_URI_POSTFIX, etlExecutionContext);
 
-        return Asm2OpenAPITrackInfo.asm2OpenAPITrackInfoBuilder()
+        return Asm2OpenAPITransformationTrace.asm2OpenAPITransformationTraceBuilder()
                 .asmModel(asmModel)
                 .openAPIModel(openAPIModel)
                 .trace(resolveAsm2OpenAPITrace(traceModel, asmModel, openAPIModel)).build();

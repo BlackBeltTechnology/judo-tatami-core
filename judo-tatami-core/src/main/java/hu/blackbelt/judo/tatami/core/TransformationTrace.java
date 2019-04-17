@@ -13,7 +13,7 @@ import java.util.Map;
  * It contains all important information about transformation, which helps
  * tracking the elements life in the pipeline.
  */
-public interface TrackInfo {
+public interface TransformationTrace {
     /**
      * The types of source models which contains the required resources.
      * @return the class of source model types which tracked by transformation service.
@@ -79,16 +79,16 @@ public interface TrackInfo {
     URI getTargetURI();
 
     /**
-     * Get the {@link TrackInfo} specialized type
+     * Get the {@link TransformationTrace} specialized type
      * @return
      */
-    Class<? extends TrackInfo> getType();
+    Class<? extends TransformationTrace> getType();
 
     /**
      * The logical name of the transformation.
      * @return
      */
-    String getTrackInfoName();
+    String getTransformationTraceName();
 
 
     /**

@@ -24,8 +24,8 @@ public class Psm2Measure {
 
     public static final String PSM_2_MEASURE_URI_POSTFIX = "psm2measure";
 
-    public static Psm2MeasureTrackInfo executePsm2MeasureTransformation(ResourceSet resourceSet, PsmModel psmModel, MeasureModel measureModel, Log log,
-                                                        File scriptDir) throws Exception {
+    public static Psm2MeasureTransformationTrace executePsm2MeasureTransformation(ResourceSet resourceSet, PsmModel psmModel, MeasureModel measureModel, Log log,
+                                                                                  File scriptDir) throws Exception {
 
         // If resource not creared for target model
         Resource measureResource = measureModel.getResourceSet().getResource(measureModel.getUri(), false);
@@ -66,7 +66,7 @@ public class Psm2Measure {
         executionContext.close();
 
         List<EObject> traceModel = getTransformationTrace(PSM_2_MEASURE_URI_POSTFIX, etlExecutionContext);
-        return Psm2MeasureTrackInfo.psm2MeasureTrackInfoBuilder()
+        return Psm2MeasureTransformationTrace.psm2MeasureTransformationTraceBuilder()
                 .measureModel(measureModel)
                 .psmModel(psmModel)
                 .trace(resolvePsm2MeasureTrace(traceModel, psmModel, measureModel)).build();

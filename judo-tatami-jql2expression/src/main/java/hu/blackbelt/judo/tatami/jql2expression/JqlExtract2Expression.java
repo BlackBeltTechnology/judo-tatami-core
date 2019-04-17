@@ -25,8 +25,8 @@ public class JqlExtract2Expression {
 
     public static final String JQLEXTRACT_2_EXPRESSION_URI_POSTFIX = "jqlextract2expression";
 
-    public static JqlExtract2ExpressionTrackInfo executeJqlExtract2ExpressionTransformation(ResourceSet resourceSet, AsmModel asmModel, PsmJqlExtractModel jqlExtractModel, ExpressionModel expressionModel, Log log,
-                                                                  File scriptDir) throws Exception {
+    public static JqlExtract2ExpressionTransformationTrace executeJqlExtract2ExpressionTransformation(ResourceSet resourceSet, AsmModel asmModel, PsmJqlExtractModel jqlExtractModel, ExpressionModel expressionModel, Log log,
+                                                                                                      File scriptDir) throws Exception {
 
 
         // If resource was not created for target model before
@@ -77,7 +77,7 @@ public class JqlExtract2Expression {
 
         List<EObject> traceModel = getTransformationTrace(JQLEXTRACT_2_EXPRESSION_URI_POSTFIX, etlExecutionContext);
 
-        return JqlExtract2ExpressionTrackInfo.jqlExtract2ExpressionTrackInfoBuilder()
+        return JqlExtract2ExpressionTransformationTrace.jqlExtract2ExpressionTransformationTraceBuilder()
                 .psmJqlExtractModel(jqlExtractModel)
                 .expressionModel(expressionModel)
                 .trace(resolveJqlExtract2ExpressionTrace(traceModel, jqlExtractModel, expressionModel)).build();

@@ -1,9 +1,9 @@
-package hu.blackbelt.judo.tatami.asm2rdbms;
+package hu.blackbelt.judo.tatami.asm2openapi;
 
 import com.google.common.collect.ImmutableList;
 import hu.blackbelt.judo.meta.asm.runtime.AsmModel;
-import hu.blackbelt.judo.meta.rdbms.runtime.RdbmsModel;
-import hu.blackbelt.judo.tatami.core.TrackInfo;
+import hu.blackbelt.judo.meta.openapi.runtime.OpenAPIModel;
+import hu.blackbelt.judo.tatami.core.TransformationTrace;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NonNull;
@@ -15,15 +15,15 @@ import java.util.List;
 import java.util.Map;
 
 
-@Builder(builderMethodName = "asm2RdbmsTrackInfoBuilder")
+@Builder(builderMethodName = "asm2OpenAPITransformationTraceBuilder")
 @Getter
-public class Asm2RdbmsTrackInfo implements TrackInfo {
+public class Asm2OpenAPITransformationTrace implements TransformationTrace {
 
     @NonNull
     AsmModel asmModel;
 
     @NonNull
-    RdbmsModel rdbmsModel;
+    OpenAPIModel openAPIModel;
 
     @NonNull
     Map<EObject, List<EObject>> trace;
@@ -61,32 +61,32 @@ public class Asm2RdbmsTrackInfo implements TrackInfo {
 
     @Override
     public Class getTargetModelType() {
-        return RdbmsModel.class;
+        return OpenAPIModel.class;
     }
 
     @Override
     public Object getTargetModel() {
-        return rdbmsModel;
+        return openAPIModel;
     }
 
     @Override
     public ResourceSet getTargetResourceSet() {
-        return rdbmsModel.getResourceSet();
+        return openAPIModel.getResourceSet();
     }
 
     @Override
     public URI getTargetURI() {
-        return rdbmsModel.getUri();
+        return openAPIModel.getUri();
     }
 
     @Override
-    public Class<? extends TrackInfo> getType() {
-        return Asm2RdbmsTrackInfo.class;
+    public Class<? extends TransformationTrace> getType() {
+        return Asm2OpenAPITransformationTrace.class;
     }
 
     @Override
-    public String getTrackInfoName() {
-        return "asm2rdbms";
+    public String getTransformationTraceName() {
+        return "asm2openapi";
     }
 
     @Override

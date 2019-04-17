@@ -10,8 +10,8 @@ import hu.blackbelt.judo.meta.psm.jql.extract.runtime.PsmJqlExtractModel;
 import hu.blackbelt.judo.meta.psm.runtime.PsmModel;
 import hu.blackbelt.judo.meta.rdbms.RdbmsTable;
 import hu.blackbelt.judo.meta.rdbms.runtime.RdbmsModel;
-import hu.blackbelt.judo.tatami.core.TrackInfo;
-import hu.blackbelt.judo.tatami.core.TrackInfoService;
+import hu.blackbelt.judo.tatami.core.TransformationTrace;
+import hu.blackbelt.judo.tatami.core.TransformationTraceService;
 import hu.blackbelt.osgi.utils.osgi.api.BundleTrackerManager;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
@@ -101,7 +101,7 @@ public class TatamiTransformationPipelineITest {
     protected OpenAPIModel openAPIModel;
 
     @Inject
-    TrackInfoService trackInfoService;
+    TransformationTraceService transformationTraceService;
 
     @Inject
     BundleContext bundleContext;
@@ -157,14 +157,14 @@ public class TatamiTransformationPipelineITest {
         log.log(LOG_INFO, "==============================================");
 
         /*
-        TrackInfoService trackInfoService = getOsgiService(bundleContext, TrackInfoService.class, 30000);
+        TransformationTraceService transformationTraceService = getOsgiService(bundleContext, TransformationTraceService.class, 30000);
         AsmModel asmModel = getOsgiService(bundleContext, AsmModel.class, 30000);
         RdbmsModel rdbmsModel = getOsgiService(bundleContext, RdbmsModel.class, 30000);
         */
 
-        Collection<ServiceReference<TrackInfo>> trackInfos = bundleContext.getServiceReferences(TrackInfo.class, null);
+        Collection<ServiceReference<TransformationTrace>> transformationTraces = bundleContext.getServiceReferences(TransformationTrace.class, null);
 
-        assertThat(trackInfos.stream().map(r -> bundleContext.getService(r).getTrackInfoName()).collect(Collectors.toList()),
+        assertThat(transformationTraces.stream().map(r -> bundleContext.getService(r).getTransformationTraceName()).collect(Collectors.toList()),
                 containsInAnyOrder("asm2openapi", "asm2rdbms", "psm2measure", "psm2jqlextract", "psm2asm", "jqlextract2expression"));
 
 
@@ -175,7 +175,7 @@ public class TatamiTransformationPipelineITest {
                 .filter(e -> AsmUtils.isEntity(e))
                 .filter(e -> AsmUtils.getFQName(e).equals("northwind.entities.Order")).findFirst();
 
-        List<EObject> orderRdbmsObjectList = trackInfoService.getDescendantOfInstanceByModelType("Northwind", RdbmsModel.class, orderClass.get());
+        List<EObject> orderRdbmsObjectList = transformationTraceService.getDescendantOfInstanceByModelType("Northwind", RdbmsModel.class, orderClass.get());
 
         assertThat(orderRdbmsObjectList, hasSize(1));
         assertThat(orderRdbmsObjectList.get(0), is(instanceOf(RdbmsTable.class)));

@@ -2,11 +2,10 @@ package hu.blackbelt.judo.tatami.core;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-
-import java.util.Arrays;
-
 import org.eclipse.emf.common.util.URI;
-import org.eclipse.emf.ecore.*;
+import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.EPackage;
+import org.eclipse.emf.ecore.EcorePackage;
 import org.eclipse.emf.ecore.impl.EClassImpl;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
@@ -14,22 +13,24 @@ import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.emf.ecore.xmi.impl.EcoreResourceFactoryImpl;
 import org.junit.Test;
 
+import java.util.Arrays;
 import java.util.stream.Collectors;
 
-import static org.eclipse.emf.ecore.util.builder.EcoreBuilders.*;
-import static org.junit.Assert.*;
+import static org.eclipse.emf.ecore.util.builder.EcoreBuilders.newEClassBuilder;
+import static org.eclipse.emf.ecore.util.builder.EcoreBuilders.newEPackageBuilder;
+import static org.junit.Assert.assertEquals;
 
-public class TrackInfoServiceImplTest {
+public class TransformationTraceServiceImplTest {
 
 
     public static final String HTTP_TEST = "http://test/";
     public static final String TEST_1 = "test1";
 
-    TrackInfoServiceImpl trackInfoService;
+    TransformationTraceServiceImpl transformationTraceService;
 
     @Test
     public void testBuildGraph() {
-        trackInfoService = new TrackInfoServiceImpl();
+        transformationTraceService = new TransformationTraceServiceImpl();
 
 
         RootModel rootModel = new RootModel();
@@ -100,7 +101,7 @@ public class TrackInfoServiceImplTest {
         level3Model1R.getContents().add(level3Model1O2);
 
         //Map<EObject, List<EObject>> root_to_level1model1_map = ImmutableMap.of(rootModelO1, ImmutableList.of(level1Model1O1));
-        TrackInfoTest root_to_level1model1 = TrackInfoTest.builder()
+        TransformationTraceTest root_to_level1model1 = TransformationTraceTest.builder()
                 .modelName(TEST_1)
                 .name("root_to_level1model1")
                 .source(ImmutableList.of(rootModel))
@@ -112,7 +113,7 @@ public class TrackInfoServiceImplTest {
                 .trace(ImmutableMap.of(rootModelO1, ImmutableList.of(level1Model1O1)))
                 .build();
 
-        TrackInfoTest root_to_level1model2 = TrackInfoTest.builder()
+        TransformationTraceTest root_to_level1model2 = TransformationTraceTest.builder()
                 .modelName(TEST_1)
                 .name("root_to_level1model2")
                 .source(ImmutableList.of(rootModel))
@@ -124,7 +125,7 @@ public class TrackInfoServiceImplTest {
                 .trace(ImmutableMap.of(rootModelO1, ImmutableList.of(level1Model2O1)))
                 .build();
 
-        TrackInfoTest root_to_level1model3 = TrackInfoTest.builder()
+        TransformationTraceTest root_to_level1model3 = TransformationTraceTest.builder()
                 .modelName(TEST_1)
                 .name("root_to_level1model3")
                 .source(ImmutableList.of(rootModel))
@@ -136,7 +137,7 @@ public class TrackInfoServiceImplTest {
                 .trace(ImmutableMap.of(rootModelO1, ImmutableList.of(level1Model3O1)))
                 .build();
 
-        TrackInfoTest root_to_level2model1 = TrackInfoTest.builder()
+        TransformationTraceTest root_to_level2model1 = TransformationTraceTest.builder()
                 .modelName(TEST_1)
                 .name("root_to_level2model1")
                 .source(ImmutableList.of(rootModel))
@@ -148,7 +149,7 @@ public class TrackInfoServiceImplTest {
                 .trace(ImmutableMap.of(rootModelO1, ImmutableList.of(level2Model1O1)))
                 .build();
 
-        TrackInfoTest level1_to_level2model2 = TrackInfoTest.builder()
+        TransformationTraceTest level1_to_level2model2 = TransformationTraceTest.builder()
                 .modelName(TEST_1)
                 .name("level1_to_level2model2")
                 .source(ImmutableList.of(level1Model1, level1Model2))
@@ -160,7 +161,7 @@ public class TrackInfoServiceImplTest {
                 .trace(ImmutableMap.of(level1Model2O1, ImmutableList.of(level2Model2O1)))
                 .build();
 
-        TrackInfoTest level2_to_level3model1 = TrackInfoTest.builder()
+        TransformationTraceTest level2_to_level3model1 = TransformationTraceTest.builder()
                 .modelName(TEST_1)
                 .name("level2_to_level3model1")
                 .source(ImmutableList.of(level2Model1, level2Model2))
@@ -177,20 +178,20 @@ public class TrackInfoServiceImplTest {
 
 
 
-        trackInfoService.add(root_to_level1model1);
-        trackInfoService.add(root_to_level1model2);
-        trackInfoService.add(root_to_level1model3);
-        trackInfoService.add(root_to_level2model1);
-        trackInfoService.add(level1_to_level2model2);
-        trackInfoService.add(level2_to_level3model1);
+        transformationTraceService.add(root_to_level1model1);
+        transformationTraceService.add(root_to_level1model2);
+        transformationTraceService.add(root_to_level1model3);
+        transformationTraceService.add(root_to_level2model1);
+        transformationTraceService.add(level1_to_level2model2);
+        transformationTraceService.add(level2_to_level3model1);
 
-        assertEquals(rootModelO1, trackInfoService.getRootAscendantOfInstance(TEST_1, level3Model1O1));
-        assertEquals(null, trackInfoService.getAscendantOfInstanceByModelType(TEST_1, Level1Model1.class, level3Model1O1));
-        assertEquals(level1Model2O1, trackInfoService.getAscendantOfInstanceByModelType(TEST_1, Level1Model2.class, level3Model1O1));
-        assertEquals(level2Model1O1, trackInfoService.getAscendantOfInstanceByModelType(TEST_1, Level2Model1.class, level3Model1O2));
+        assertEquals(rootModelO1, transformationTraceService.getRootAscendantOfInstance(TEST_1, level3Model1O1));
+        assertEquals(null, transformationTraceService.getAscendantOfInstanceByModelType(TEST_1, Level1Model1.class, level3Model1O1));
+        assertEquals(level1Model2O1, transformationTraceService.getAscendantOfInstanceByModelType(TEST_1, Level1Model2.class, level3Model1O1));
+        assertEquals(level2Model1O1, transformationTraceService.getAscendantOfInstanceByModelType(TEST_1, Level2Model1.class, level3Model1O2));
         assertEquals(
                 ImmutableList.of(level2_to_level3model1, level1_to_level2model2, root_to_level1model2),
-                trackInfoService.getTrackInfoAscendantsByInstance(TEST_1, level3Model1O1)
+                transformationTraceService.getTransformationTraceAscendantsByInstance(TEST_1, level3Model1O1)
         );
 
         assertEquals(ImmutableMap.builder()
@@ -201,11 +202,11 @@ public class TrackInfoServiceImplTest {
                         .put(level1_to_level2model2, ImmutableList.of(level2Model2O1))
                         .put(level2_to_level3model1, ImmutableList.of(level3Model1O1))
                         .build(),
-                trackInfoService.getAllDescendantOfInstance(TEST_1, rootModelO1)
+                transformationTraceService.getAllDescendantOfInstance(TEST_1, rootModelO1)
         );
 
 
-        assertEquals(ImmutableList.of(level3Model1O1), trackInfoService.getDescendantOfInstanceByModelType(TEST_1, Level3Model1.class, rootModelO1));
+        assertEquals(ImmutableList.of(level3Model1O1), transformationTraceService.getDescendantOfInstanceByModelType(TEST_1, Level3Model1.class, rootModelO1));
     }
 
 

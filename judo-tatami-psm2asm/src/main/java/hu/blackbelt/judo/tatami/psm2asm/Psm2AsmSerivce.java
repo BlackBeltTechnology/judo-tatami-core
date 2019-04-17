@@ -7,7 +7,7 @@ import hu.blackbelt.judo.meta.asm.runtime.AsmModel;
 import hu.blackbelt.judo.meta.asm.runtime.AsmModelLoader;
 import hu.blackbelt.judo.meta.asm.runtime.AsmPackageRegistration;
 import hu.blackbelt.judo.meta.psm.runtime.PsmModel;
-import hu.blackbelt.judo.tatami.core.TrackInfo;
+import hu.blackbelt.judo.tatami.core.TransformationTrace;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.ResourceSet;
@@ -37,7 +37,7 @@ public class Psm2AsmSerivce {
     @Reference
     Psm2AsmScriptResource psm2AsmScriptResource;
 
-    Map<PsmModel, ServiceRegistration<TrackInfo>> psm2AsmTrackInfoRegistration = Maps.newHashMap();
+    Map<PsmModel, ServiceRegistration<TransformationTrace>> psm2AsmTransformationTraceRegistration = Maps.newHashMap();
 
 
     public AsmModel install(PsmModel psmModel, BundleContext bundleContext) throws Exception {
@@ -54,17 +54,17 @@ public class Psm2AsmSerivce {
                 .resourceSet(resourceSet)
                 .metaVersionRange(bundleContext.getBundle().getHeaders().get(ASM_META_VERSION_RANGE)).build();
 
-        Psm2AsmTrackInfo trackInfo = executePsm2AsmTransformation(resourceSet, psmModel, asmModel, new Slf4jLog(log),
+        Psm2AsmTransformationTrace transformationTrace = executePsm2AsmTransformation(resourceSet, psmModel, asmModel, new Slf4jLog(log),
                 new File(psm2AsmScriptResource.getSctiptRoot().getAbsolutePath(), "psm2asm/transformations/asm/"));
 
-        psm2AsmTrackInfoRegistration.put(psmModel, bundleContext.registerService(TrackInfo.class, trackInfo, new Hashtable<>()));
+        psm2AsmTransformationTraceRegistration.put(psmModel, bundleContext.registerService(TransformationTrace.class, transformationTrace, new Hashtable<>()));
         return asmModel;
     }
 
 
     public void uninstall(PsmModel psmModel) {
-        if (psm2AsmTrackInfoRegistration.containsKey(psmModel)) {
-            psm2AsmTrackInfoRegistration.get(psmModel).unregister();
+        if (psm2AsmTransformationTraceRegistration.containsKey(psmModel)) {
+            psm2AsmTransformationTraceRegistration.get(psmModel).unregister();
         } else {
             log.error("PSM model is not installed: " + psmModel.toString());
         }

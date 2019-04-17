@@ -37,8 +37,8 @@ public class Asm2Rdbms {
             DIALECT_ORACLE, "RDBMS Data Types Oracle.xlsx"
     );
 
-    public static Asm2RdbmsTrackInfo executeAsm2RdbmsTransformation(ResourceSet resourceSet, AsmModel asmModel, RdbmsModel rdbmsModel, Log log,
-                                                      File scriptDir, File excelModelDir, String dialect) throws Exception {
+    public static Asm2RdbmsTransformationTrace executeAsm2RdbmsTransformation(ResourceSet resourceSet, AsmModel asmModel, RdbmsModel rdbmsModel, Log log,
+                                                                              File scriptDir, File excelModelDir, String dialect) throws Exception {
 
         // If resource was not created for target model before
         Resource rdbmsResource = rdbmsModel.getResourceSet().getResource(rdbmsModel.getUri(), false);
@@ -106,7 +106,7 @@ public class Asm2Rdbms {
 
         List<EObject> traceModel = getTransformationTrace(ASM_2_RDBMS_URI_POSTFIX, etlExecutionContext);
 
-        return Asm2RdbmsTrackInfo.asm2RdbmsTrackInfoBuilder()
+        return Asm2RdbmsTransformationTrace.asm2RdbmsTransformationTraceBuilder()
                 .asmModel(asmModel)
                 .rdbmsModel(rdbmsModel)
                 .trace(resolveAsm2RdbmsTrace(traceModel, asmModel, rdbmsModel)).build();

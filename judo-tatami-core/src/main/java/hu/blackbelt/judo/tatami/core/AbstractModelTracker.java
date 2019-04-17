@@ -13,7 +13,7 @@ import java.util.Map;
 
 
 @Slf4j
-public abstract class AbstractModelInfoTracker<T> {
+public abstract class AbstractModelTracker<T> {
 
     private final Map<ServiceReference, T> instanceCache = Maps.newConcurrentMap();
 
@@ -34,16 +34,16 @@ public abstract class AbstractModelInfoTracker<T> {
         uninstall(instance);
     }
 
-    private InfoServiceTracker psmModelInfoServiceTracker;
+    private ModelServiceTracker psmModelServiceTracker;
 
     @SneakyThrows(InvalidSyntaxException.class)
     public void openTracker(BundleContext bundleContext) {
-        psmModelInfoServiceTracker = new InfoServiceTracker(this, bundleContext, getModelClass());
-        psmModelInfoServiceTracker.open(true);
+        psmModelServiceTracker = new ModelServiceTracker(this, bundleContext, getModelClass());
+        psmModelServiceTracker.open(true);
     }
 
     public void closeTracker() {
-        psmModelInfoServiceTracker.close();
+        psmModelServiceTracker.close();
     }
 
     public abstract void install(T instance);
@@ -52,20 +52,20 @@ public abstract class AbstractModelInfoTracker<T> {
 
     public abstract Class<T> getModelClass();
 
-    public class InfoServiceTracker extends ServiceTracker<T, T> {
+    public class ModelServiceTracker extends ServiceTracker<T, T> {
 
-        private AbstractModelInfoTracker abstractModelInfoTracker;
+        private AbstractModelTracker abstractModelTracker;
 
-        InfoServiceTracker(AbstractModelInfoTracker abstractModelInfoTracker, BundleContext bundleContext, Class<T> clazz) throws InvalidSyntaxException {
+        ModelServiceTracker(AbstractModelTracker abstractModelTracker, BundleContext bundleContext, Class<T> clazz) throws InvalidSyntaxException {
             super(bundleContext, clazz.getName(), (ServiceTrackerCustomizer) null);
-            this.abstractModelInfoTracker = abstractModelInfoTracker;
+            this.abstractModelTracker = abstractModelTracker;
         }
 
         @Override
         public T addingService(ServiceReference<T> serviceReference) {
             if (serviceReference.isAssignableTo(super.context.getBundle(), getModelClass().getName())) {
                 T instance = super.addingService(serviceReference);
-                abstractModelInfoTracker.bindService(serviceReference, instance);
+                abstractModelTracker.bindService(serviceReference, instance);
                 return instance;
             }
             return null;
@@ -73,7 +73,7 @@ public abstract class AbstractModelInfoTracker<T> {
 
         @Override
         public void removedService(ServiceReference<T> serviceReference, T service) {
-            abstractModelInfoTracker.unbindService(serviceReference);
+            abstractModelTracker.unbindService(serviceReference);
             super.removedService(serviceReference, service);
         }
 

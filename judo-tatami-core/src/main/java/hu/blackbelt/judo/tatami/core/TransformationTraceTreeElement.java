@@ -10,20 +10,20 @@ import org.eclipse.emf.ecore.resource.ResourceSet;
 import java.util.List;
 import java.util.Map;
 
-public class TrackInfoTreeElement implements TrackInfo {
+public class TransformationTraceTreeElement implements TransformationTrace {
 
     @Getter
-    TrackInfo delegatee;
+    TransformationTrace delegatee;
 
     @Setter
     @Getter
-    List<TrackInfoTreeElement> parent = Lists.newArrayList();
+    List<TransformationTraceTreeElement> parent = Lists.newArrayList();
 
-    TrackInfoTreeElement(TrackInfo delegatee) {
+    TransformationTraceTreeElement(TransformationTrace delegatee) {
         this.delegatee = delegatee;
     }
 
-    public void addParent(TrackInfoTreeElement p) {
+    public void addParent(TransformationTraceTreeElement p) {
         parent.add(p);
     }
 
@@ -73,13 +73,13 @@ public class TrackInfoTreeElement implements TrackInfo {
     }
 
     @Override
-    public Class<? extends TrackInfo> getType() {
+    public Class<? extends TransformationTrace> getType() {
         return delegatee.getType();
     }
 
     @Override
-    public String getTrackInfoName() {
-        return delegatee.getTrackInfoName();
+    public String getTransformationTraceName() {
+        return delegatee.getTransformationTraceName();
     }
 
     @Override

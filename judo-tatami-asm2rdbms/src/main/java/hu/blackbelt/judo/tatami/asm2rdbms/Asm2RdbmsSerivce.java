@@ -5,7 +5,7 @@ import hu.blackbelt.epsilon.runtime.execution.impl.Slf4jLog;
 import hu.blackbelt.epsilon.runtime.osgi.BundleURIHandler;
 import hu.blackbelt.judo.meta.asm.runtime.AsmModel;
 import hu.blackbelt.judo.meta.rdbms.runtime.RdbmsModel;
-import hu.blackbelt.judo.tatami.core.TrackInfo;
+import hu.blackbelt.judo.tatami.core.TransformationTrace;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.ResourceSet;
@@ -34,7 +34,7 @@ public class Asm2RdbmsSerivce {
     @Reference
     Asm2RdbmsModelResource asm2RdbmsModelResource;
 
-    Map<AsmModel, ServiceRegistration<TrackInfo>> asm2rdbmsTrackInfoRegistration = Maps.newHashMap();
+    Map<AsmModel, ServiceRegistration<TransformationTrace>> asm2rdbmsTransformationTraceRegistration = Maps.newHashMap();
 
     public RdbmsModel install(AsmModel asmModel, BundleContext bundleContext, String dialect) throws Exception {
         BundleURIHandler bundleURIHandler = new BundleURIHandler("urn", "",
@@ -52,18 +52,18 @@ public class Asm2RdbmsSerivce {
                 .metaVersionRange(bundleContext.getBundle().getHeaders().get(RDBMS_META_VERSION_RANGE))
                 .build();
 
-        Asm2RdbmsTrackInfo asm2RdbmsTrackInfo = executeAsm2RdbmsTransformation(rdbmsResourceSet, asmModel, rdbmsModel, new Slf4jLog(log),
+        Asm2RdbmsTransformationTrace asm2RdbmsTransformationTrace = executeAsm2RdbmsTransformation(rdbmsResourceSet, asmModel, rdbmsModel, new Slf4jLog(log),
                 new File(asm2RdbmsScriptResource.getSctiptRoot().getAbsolutePath(), "asm2rdbms/transformations"),
                 new File(asm2RdbmsModelResource.getModelRoot().getAbsolutePath(), "asm2rdbms-model"), dialect);
 
-        asm2rdbmsTrackInfoRegistration.put(asmModel, bundleContext.registerService(TrackInfo.class, asm2RdbmsTrackInfo, new Hashtable<>()));
+        asm2rdbmsTransformationTraceRegistration.put(asmModel, bundleContext.registerService(TransformationTrace.class, asm2RdbmsTransformationTrace, new Hashtable<>()));
 
         return rdbmsModel;
     }
 
     public void uninstall(AsmModel asmModel) {
-        if (asm2rdbmsTrackInfoRegistration.containsKey(asmModel)) {
-            asm2rdbmsTrackInfoRegistration.get(asmModel).unregister();
+        if (asm2rdbmsTransformationTraceRegistration.containsKey(asmModel)) {
+            asm2rdbmsTransformationTraceRegistration.get(asmModel).unregister();
         } else {
             log.error("ASM model is not installed: " + asmModel.toString());
         }

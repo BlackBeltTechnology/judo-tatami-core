@@ -1,9 +1,9 @@
-package hu.blackbelt.judo.tatami.asm2openapi;
+package hu.blackbelt.judo.tatami.psm2measure;
 
 import com.google.common.collect.ImmutableList;
-import hu.blackbelt.judo.meta.asm.runtime.AsmModel;
-import hu.blackbelt.judo.meta.openapi.runtime.OpenAPIModel;
-import hu.blackbelt.judo.tatami.core.TrackInfo;
+import hu.blackbelt.judo.meta.measure.runtime.MeasureModel;
+import hu.blackbelt.judo.meta.psm.runtime.PsmModel;
+import hu.blackbelt.judo.tatami.core.TransformationTrace;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NonNull;
@@ -15,27 +15,27 @@ import java.util.List;
 import java.util.Map;
 
 
-@Builder(builderMethodName = "asm2OpenAPITrackInfoBuilder")
+@Builder(builderMethodName = "psm2MeasureTransformationTraceBuilder")
 @Getter
-public class Asm2OpenAPITrackInfo implements TrackInfo {
+public class Psm2MeasureTransformationTrace implements TransformationTrace {
 
     @NonNull
-    AsmModel asmModel;
+    PsmModel psmModel;
 
     @NonNull
-    OpenAPIModel openAPIModel;
+    MeasureModel measureModel;
 
     @NonNull
     Map<EObject, List<EObject>> trace;
 
     @Override
     public List<Class> getSourceModelTypes() {
-        return ImmutableList.of(AsmModel.class);
+        return ImmutableList.of(PsmModel.class);
     }
 
     @Override
     public List<Object> getSourceModels() {
-        return ImmutableList.of(asmModel);
+        return ImmutableList.of(psmModel);
     }
 
     @Override
@@ -45,53 +45,53 @@ public class Asm2OpenAPITrackInfo implements TrackInfo {
 
     @Override
     public <T> ResourceSet getSourceResourceSet(Class<T> sourceModelType) {
-        if (sourceModelType == AsmModel.class) {
-            return asmModel.getResourceSet();
+        if (sourceModelType == PsmModel.class) {
+            return psmModel.getResourceSet();
         }
         throw new IllegalArgumentException("Unknown source model type: " + sourceModelType.getName());
     }
 
     @Override
     public <T> URI getSourceURI(Class<T> sourceModelType) {
-        if (sourceModelType == AsmModel.class) {
-            return asmModel.getUri();
+        if (sourceModelType == PsmModel.class) {
+            return psmModel.getUri();
         }
         throw new IllegalArgumentException("Unknown source model type: " + sourceModelType.getName());
     }
 
     @Override
     public Class getTargetModelType() {
-        return OpenAPIModel.class;
+        return MeasureModel.class;
     }
 
     @Override
     public Object getTargetModel() {
-        return openAPIModel;
+        return measureModel;
     }
 
     @Override
     public ResourceSet getTargetResourceSet() {
-        return openAPIModel.getResourceSet();
+        return measureModel.getResourceSet();
     }
 
     @Override
     public URI getTargetURI() {
-        return openAPIModel.getUri();
+        return measureModel.getUri();
     }
 
     @Override
-    public Class<? extends TrackInfo> getType() {
-        return Asm2OpenAPITrackInfo.class;
+    public Class<? extends TransformationTrace> getType() {
+        return Psm2MeasureTransformationTrace.class;
     }
 
     @Override
-    public String getTrackInfoName() {
-        return "asm2openapi";
+    public String getTransformationTraceName() {
+        return "psm2measure";
     }
 
     @Override
     public String getModelVersion() {
-        return asmModel.getVersion();
+        return psmModel.getVersion();
     }
 
     @Override
@@ -101,6 +101,6 @@ public class Asm2OpenAPITrackInfo implements TrackInfo {
 
     @Override
     public String getModelName() {
-        return asmModel.getName();
+        return psmModel.getName();
     }
 }

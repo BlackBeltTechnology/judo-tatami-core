@@ -1,7 +1,7 @@
 package hu.blackbelt.judo.tatami.asm2jaxrsapi;
 
 import hu.blackbelt.judo.meta.asm.runtime.AsmModel;
-import hu.blackbelt.judo.tatami.core.AbstractModelInfoTracker;
+import hu.blackbelt.judo.tatami.core.AbstractModelTracker;
 import lombok.extern.slf4j.Slf4j;
 import org.osgi.framework.BundleException;
 import org.osgi.service.component.ComponentContext;
@@ -13,7 +13,7 @@ import org.osgi.service.component.annotations.Reference;
 
 @Component(immediate = true)
 @Slf4j
-public class AsmModelServiceTracker extends AbstractModelInfoTracker<AsmModel> {
+public class AsmModelServiceTracker extends AbstractModelTracker<AsmModel> {
 
     @Reference
     Asm2JAXRSAPIService asm2JAXRSAPIService;

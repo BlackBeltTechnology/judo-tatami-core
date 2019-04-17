@@ -82,14 +82,14 @@ public class Psm2MeasureTest {
                 .version(psmModel.getVersion())
                 .build();
 
-        Psm2MeasureTrackInfo psm2MeasureTrackInfo = executePsm2MeasureTransformation(measureResourceSet, psmModel, measureModel, new Slf4jLog(log),
+        Psm2MeasureTransformationTrace psm2MeasureTransformationTrace = executePsm2MeasureTransformation(measureResourceSet, psmModel, measureModel, new Slf4jLog(log),
                 new File(targetDir().getAbsolutePath(), "epsilon/transformations/measure"));
 
 
 
         // Saving trace map
         Resource traceResoureSaved = new XMIResourceImpl();
-        traceResoureSaved.getContents().addAll(getPsm2MeasureTrace(psm2MeasureTrackInfo.getTrace()));
+        traceResoureSaved.getContents().addAll(getPsm2MeasureTrace(psm2MeasureTransformationTrace.getTrace()));
         traceResoureSaved.save(new FileOutputStream(new File(targetDir().getAbsolutePath(), PSM_2_MEASURE_MODEL)), ImmutableMap.of());
 
         // Loadeing trace map

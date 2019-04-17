@@ -5,7 +5,7 @@ import hu.blackbelt.epsilon.runtime.execution.impl.Slf4jLog;
 import hu.blackbelt.epsilon.runtime.osgi.BundleURIHandler;
 import hu.blackbelt.judo.meta.measure.runtime.MeasureModel;
 import hu.blackbelt.judo.meta.psm.runtime.PsmModel;
-import hu.blackbelt.judo.tatami.core.TrackInfo;
+import hu.blackbelt.judo.tatami.core.TransformationTrace;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.ResourceSet;
@@ -32,7 +32,7 @@ public class Psm2MeasureSerivce {
     @Reference
     hu.blackbelt.judo.tatami.psm2asm.Psm2MeasureScriptResource psm2MeasureScriptResource;
 
-    Map<PsmModel, ServiceRegistration<TrackInfo>> psm2MeasureTrackInfoRegistration = Maps.newHashMap();
+    Map<PsmModel, ServiceRegistration<TransformationTrace>> psm2MeasureTransformationTraceRegistration = Maps.newHashMap();
 
     public MeasureModel install(PsmModel psmModel, BundleContext bundleContext) throws Exception {
         BundleURIHandler bundleURIHandler = new BundleURIHandler("urn", "",
@@ -50,17 +50,17 @@ public class Psm2MeasureSerivce {
                 .build();
 
 
-        Psm2MeasureTrackInfo psm2MeasureTrackInfo = executePsm2MeasureTransformation(measureResourceSet, psmModel, measureModel, new Slf4jLog(log),
+        Psm2MeasureTransformationTrace psm2MeasureTransformationTrace = executePsm2MeasureTransformation(measureResourceSet, psmModel, measureModel, new Slf4jLog(log),
                 new File(psm2MeasureScriptResource.getSctiptRoot().getAbsolutePath(), "psm2measure/transformations/measure") );
 
-        psm2MeasureTrackInfoRegistration.put(psmModel, bundleContext.registerService(TrackInfo.class, psm2MeasureTrackInfo, new Hashtable<>()));
+        psm2MeasureTransformationTraceRegistration.put(psmModel, bundleContext.registerService(TransformationTrace.class, psm2MeasureTransformationTrace, new Hashtable<>()));
 
         return measureModel;
     }
 
     public void uninstall(PsmModel psmModel) {
-        if (psm2MeasureTrackInfoRegistration.containsKey(psmModel)) {
-            psm2MeasureTrackInfoRegistration.get(psmModel).unregister();
+        if (psm2MeasureTransformationTraceRegistration.containsKey(psmModel)) {
+            psm2MeasureTransformationTraceRegistration.get(psmModel).unregister();
         } else {
             log.error("PSM model is not installed: " + psmModel.toString());
         }

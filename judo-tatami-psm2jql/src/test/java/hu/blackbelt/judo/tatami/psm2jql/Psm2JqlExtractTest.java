@@ -92,13 +92,13 @@ public class Psm2JqlExtractTest {
                 .build();
 
         // Make transformation which returns the track with the serialized URI's
-        Psm2JqlExtractTrackInfo psm2JqlExtractTrackInfo = executePsm2PsmJqlExtractTransformation(psmJqlExtractResourceSet, psmModel, jqlExtractModel, new Slf4jLog(log),
+        Psm2JqlExtractTransformationTrace psm2JqlExtractTransformationTrace = executePsm2PsmJqlExtractTransformation(psmJqlExtractResourceSet, psmModel, jqlExtractModel, new Slf4jLog(log),
                 new File(targetDir().getAbsolutePath(), "epsilon/transformations/jql"));
 
 
         // Saving trace map
         Resource traceResoureSaved = new XMIResourceImpl();
-        traceResoureSaved.getContents().addAll(getPsm2JqlExtractTrace(psm2JqlExtractTrackInfo.getTrace()));
+        traceResoureSaved.getContents().addAll(getPsm2JqlExtractTrace(psm2JqlExtractTransformationTrace.getTrace()));
         traceResoureSaved.save(new FileOutputStream(new File(targetDir().getAbsolutePath(), PSM_2_JQLEXTRACT_MODEL)), ImmutableMap.of());
 
         // Loadeing trace map

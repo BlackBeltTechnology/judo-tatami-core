@@ -1,9 +1,9 @@
-package hu.blackbelt.judo.tatami.psm2jql;
+package hu.blackbelt.judo.tatami.psm2asm;
 
 import com.google.common.collect.ImmutableList;
-import hu.blackbelt.judo.meta.psm.jql.extract.runtime.PsmJqlExtractModel;
+import hu.blackbelt.judo.meta.asm.runtime.AsmModel;
 import hu.blackbelt.judo.meta.psm.runtime.PsmModel;
-import hu.blackbelt.judo.tatami.core.TrackInfo;
+import hu.blackbelt.judo.tatami.core.TransformationTrace;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NonNull;
@@ -15,15 +15,15 @@ import java.util.List;
 import java.util.Map;
 
 
-@Builder(builderMethodName = "psm2JqlExtractTrackInfoBuilder")
+@Builder(builderMethodName = "psm2AsmTransformationTraceBuilder")
 @Getter
-public class Psm2JqlExtractTrackInfo implements TrackInfo {
+public class Psm2AsmTransformationTrace implements TransformationTrace {
 
     @NonNull
     PsmModel psmModel;
 
     @NonNull
-    PsmJqlExtractModel psmJqlExtractModel;
+    AsmModel asmModel;
 
     @NonNull
     Map<EObject, List<EObject>> trace;
@@ -61,32 +61,32 @@ public class Psm2JqlExtractTrackInfo implements TrackInfo {
 
     @Override
     public Class getTargetModelType() {
-        return PsmJqlExtractModel.class;
+        return AsmModel.class;
     }
 
     @Override
     public Object getTargetModel() {
-        return psmJqlExtractModel;
+        return asmModel;
     }
 
     @Override
     public ResourceSet getTargetResourceSet() {
-        return psmJqlExtractModel.getResourceSet();
+        return asmModel.getResourceSet();
     }
 
     @Override
     public URI getTargetURI() {
-        return psmJqlExtractModel.getUri();
+        return asmModel.getUri();
     }
 
     @Override
-    public Class<? extends TrackInfo> getType() {
-        return Psm2JqlExtractTrackInfo.class;
+    public Class<? extends TransformationTrace> getType() {
+        return Psm2AsmTransformationTrace.class;
     }
 
     @Override
-    public String getTrackInfoName() {
-        return "psm2jqlextract";
+    public String getTransformationTraceName() {
+        return "psm2asm";
     }
 
     @Override

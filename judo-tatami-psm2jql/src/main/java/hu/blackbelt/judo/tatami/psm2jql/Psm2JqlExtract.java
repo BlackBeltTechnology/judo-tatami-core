@@ -26,8 +26,8 @@ public class Psm2JqlExtract {
 
     public static final String PSM_2_JQLEXTRACT_URI_POSTFIX = "psm2jqlextract";
 
-    public static Psm2JqlExtractTrackInfo executePsm2PsmJqlExtractTransformation(ResourceSet resourceSet, PsmModel psmModel, PsmJqlExtractModel jqlExtractModel, Log log,
-                                                    File scriptDir) throws Exception {
+    public static Psm2JqlExtractTransformationTrace executePsm2PsmJqlExtractTransformation(ResourceSet resourceSet, PsmModel psmModel, PsmJqlExtractModel jqlExtractModel, Log log,
+                                                                                           File scriptDir) throws Exception {
 
 
         // If resource not creared for target model
@@ -75,7 +75,7 @@ public class Psm2JqlExtract {
         executionContext.close();
 
         List<EObject> traceModel = getTransformationTrace(PSM_2_JQLEXTRACT_URI_POSTFIX, etlExecutionContext);
-        return Psm2JqlExtractTrackInfo.psm2JqlExtractTrackInfoBuilder()
+        return Psm2JqlExtractTransformationTrace.psm2JqlExtractTransformationTraceBuilder()
                 .psmJqlExtractModel(jqlExtractModel)
                 .psmModel(psmModel)
                 .trace(resolvePsm2JqlExtractTrace(traceModel, psmModel, jqlExtractModel)).build();

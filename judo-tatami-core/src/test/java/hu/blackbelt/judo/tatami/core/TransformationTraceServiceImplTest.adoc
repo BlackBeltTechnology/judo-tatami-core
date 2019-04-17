@@ -1,6 +1,6 @@
 # Test class diagram
 
-The name of the edge contains the TrackInfo which makes the conversation.
+The name of the edge contains the TransformationTrace which makes the conversation.
 
 [[main-classes]]
 .Conversion diagram

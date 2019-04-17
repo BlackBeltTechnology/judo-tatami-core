@@ -2,7 +2,7 @@ package hu.blackbelt.judo.tatami.psm2asm;
 
 import hu.blackbelt.judo.meta.asm.runtime.AsmModel;
 import hu.blackbelt.judo.meta.psm.runtime.PsmModel;
-import hu.blackbelt.judo.tatami.core.AbstractModelInfoTracker;
+import hu.blackbelt.judo.tatami.core.AbstractModelTracker;
 import lombok.extern.slf4j.Slf4j;
 import org.osgi.framework.ServiceRegistration;
 import org.osgi.service.component.ComponentContext;
@@ -18,7 +18,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 @Component(immediate = true)
 @Slf4j
-public class PsmModelServiceTracker extends AbstractModelInfoTracker<PsmModel> {
+public class PsmModelServiceTracker extends AbstractModelTracker<PsmModel> {
 
     @Reference
     Psm2AsmSerivce psm2AsmSerivce;

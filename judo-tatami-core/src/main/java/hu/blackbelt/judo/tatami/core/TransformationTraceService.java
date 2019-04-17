@@ -1,7 +1,6 @@
 package hu.blackbelt.judo.tatami.core;
 
 import org.eclipse.emf.ecore.EObject;
-import org.eclipse.emf.ecore.resource.ResourceSet;
 
 import java.util.List;
 import java.util.Map;
@@ -13,30 +12,30 @@ import java.util.Map;
  *    - Only one root model is presented. All of elem extension can be made via Hooks. Means the models
  *    cannot be composited from multiple sources.
  */
-public interface TrackInfoService {
+public interface TransformationTraceService {
 
     /**
-     * Install a {@link TrackInfo} instance.
+     * Install a {@link TransformationTrace} instance.
      *
      * @param instance
      */
-    void add(TrackInfo instance);
+    void add(TransformationTrace instance);
 
     /**
-     * Install a {@link TrackInfo} instance.
+     * Install a {@link TransformationTrace} instance.
      *
      * @param instance
      */
-    void remove(TrackInfo instance);
+    void remove(TransformationTrace instance);
 
     /**
-     * Get the TrackInfo of the given element which responsible for the creation of EObject.
+     * Get the TransformationTrace of the given element which responsible for the creation of EObject.
      *
      * @param modelName
      * @param targetElement
-     * @return the {@link TrackInfo} or null when the given element created directly (without trace info)
+     * @return the {@link TransformationTrace} or null when the given element created directly (without trace info)
      */
-    TrackInfo getParentTrackInfoByInstance(String modelName, EObject targetElement);
+    TransformationTrace getParentTransformationTraceByInstance(String modelName, EObject targetElement);
 
 
     /**
@@ -63,32 +62,32 @@ public interface TrackInfoService {
 
 
     /**
-     * Get all ascendant (ancesor) stack map by @{@link TrackInfo} of the given target element.
+     * Get all ascendant (ancesor) stack map by @{@link TransformationTrace} of the given target element.
      *
      * @param modelName
      * @param targetElement
      * @return
      */
-    Map<TrackInfo, EObject> getAllAscendantOfInstance(String modelName, EObject targetElement);
+    Map<TransformationTrace, EObject> getAllAscendantOfInstance(String modelName, EObject targetElement);
 
     /**
-     * Get all ascendant {@link TrackInfo} of the given element.
+     * Get all ascendant {@link TransformationTrace} of the given element.
      * @param modelName
      * @param instance
      * @return
      */
-    List<TrackInfo> getTrackInfoAscendantsByInstance(String modelName, EObject instance);
+    List<TransformationTrace> getTransformationTraceAscendantsByInstance(String modelName, EObject instance);
 
 
     /**
-     * Get all descendant stack map by {@link TrackInfo} of the given target element.  It traverse over all the trace
-     * maps and collect elements by {@link TrackInfo}.
+     * Get all descendant stack map by {@link TransformationTrace} of the given target element.  It traverse over all the trace
+     * maps and collect elements by {@link TransformationTrace}.
      *
      * @param modelName
      * @param targetElement
      * @return
      */
-    Map<TrackInfo, List<EObject>> getAllDescendantOfInstance(String modelName, EObject targetElement);
+    Map<TransformationTrace, List<EObject>> getAllDescendantOfInstance(String modelName, EObject targetElement);
 
 
     /**

@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 
 
 @Builder
-public class TrackInfoTest implements TrackInfo {
+public class TransformationTraceTest implements TransformationTrace {
 
     TestModel target;
     List<TestModel> source;
@@ -74,12 +74,12 @@ public class TrackInfoTest implements TrackInfo {
     }
 
     @Override
-    public Class<? extends TrackInfo> getType() {
+    public Class<? extends TransformationTrace> getType() {
         return null;
     }
 
     @Override
-    public String getTrackInfoName() {
+    public String getTransformationTraceName() {
         return name;
     }
 

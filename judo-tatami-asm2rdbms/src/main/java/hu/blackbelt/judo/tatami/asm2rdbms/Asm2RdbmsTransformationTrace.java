@@ -1,9 +1,9 @@
-package hu.blackbelt.judo.tatami.jql2expression;
+package hu.blackbelt.judo.tatami.asm2rdbms;
 
 import com.google.common.collect.ImmutableList;
-import hu.blackbelt.judo.meta.expression.runtime.ExpressionModel;
-import hu.blackbelt.judo.meta.psm.jql.extract.runtime.PsmJqlExtractModel;
-import hu.blackbelt.judo.tatami.core.TrackInfo;
+import hu.blackbelt.judo.meta.asm.runtime.AsmModel;
+import hu.blackbelt.judo.meta.rdbms.runtime.RdbmsModel;
+import hu.blackbelt.judo.tatami.core.TransformationTrace;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NonNull;
@@ -15,27 +15,27 @@ import java.util.List;
 import java.util.Map;
 
 
-@Builder(builderMethodName = "jqlExtract2ExpressionTrackInfoBuilder")
+@Builder(builderMethodName = "asm2RdbmsTransformationTraceBuilder")
 @Getter
-public class JqlExtract2ExpressionTrackInfo implements TrackInfo {
+public class Asm2RdbmsTransformationTrace implements TransformationTrace {
 
     @NonNull
-    PsmJqlExtractModel psmJqlExtractModel;
+    AsmModel asmModel;
 
     @NonNull
-    ExpressionModel expressionModel;
+    RdbmsModel rdbmsModel;
 
     @NonNull
     Map<EObject, List<EObject>> trace;
 
     @Override
     public List<Class> getSourceModelTypes() {
-        return ImmutableList.of(PsmJqlExtractModel.class);
+        return ImmutableList.of(AsmModel.class);
     }
 
     @Override
     public List<Object> getSourceModels() {
-        return ImmutableList.of(psmJqlExtractModel);
+        return ImmutableList.of(asmModel);
     }
 
     @Override
@@ -45,53 +45,53 @@ public class JqlExtract2ExpressionTrackInfo implements TrackInfo {
 
     @Override
     public <T> ResourceSet getSourceResourceSet(Class<T> sourceModelType) {
-        if (sourceModelType == PsmJqlExtractModel.class) {
-            return psmJqlExtractModel.getResourceSet();
+        if (sourceModelType == AsmModel.class) {
+            return asmModel.getResourceSet();
         }
         throw new IllegalArgumentException("Unknown source model type: " + sourceModelType.getName());
     }
 
     @Override
     public <T> URI getSourceURI(Class<T> sourceModelType) {
-        if (sourceModelType == PsmJqlExtractModel.class) {
-            return psmJqlExtractModel.getUri();
+        if (sourceModelType == AsmModel.class) {
+            return asmModel.getUri();
         }
         throw new IllegalArgumentException("Unknown source model type: " + sourceModelType.getName());
     }
 
     @Override
     public Class getTargetModelType() {
-        return ExpressionModel.class;
+        return RdbmsModel.class;
     }
 
     @Override
     public Object getTargetModel() {
-        return expressionModel;
+        return rdbmsModel;
     }
 
     @Override
     public ResourceSet getTargetResourceSet() {
-        return expressionModel.getResourceSet();
+        return rdbmsModel.getResourceSet();
     }
 
     @Override
     public URI getTargetURI() {
-        return expressionModel.getUri();
+        return rdbmsModel.getUri();
     }
 
     @Override
-    public Class<? extends TrackInfo> getType() {
-        return JqlExtract2ExpressionTrackInfo.class;
+    public Class<? extends TransformationTrace> getType() {
+        return Asm2RdbmsTransformationTrace.class;
     }
 
     @Override
-    public String getTrackInfoName() {
-        return "jqlextract2expression";
+    public String getTransformationTraceName() {
+        return "asm2rdbms";
     }
 
     @Override
     public String getModelVersion() {
-        return psmJqlExtractModel.getVersion();
+        return asmModel.getVersion();
     }
 
     @Override
@@ -101,6 +101,6 @@ public class JqlExtract2ExpressionTrackInfo implements TrackInfo {
 
     @Override
     public String getModelName() {
-        return psmJqlExtractModel.getName();
+        return asmModel.getName();
     }
 }

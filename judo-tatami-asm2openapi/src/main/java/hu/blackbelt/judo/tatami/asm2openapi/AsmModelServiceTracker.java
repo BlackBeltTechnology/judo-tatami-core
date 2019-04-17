@@ -2,7 +2,7 @@ package hu.blackbelt.judo.tatami.asm2openapi;
 
 import hu.blackbelt.judo.meta.asm.runtime.AsmModel;
 import hu.blackbelt.judo.meta.openapi.runtime.OpenAPIModel;
-import hu.blackbelt.judo.tatami.core.AbstractModelInfoTracker;
+import hu.blackbelt.judo.tatami.core.AbstractModelTracker;
 import lombok.extern.slf4j.Slf4j;
 import org.osgi.framework.ServiceRegistration;
 import org.osgi.service.component.ComponentContext;
@@ -18,7 +18,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 @Component(immediate = true)
 @Slf4j
-public class AsmModelServiceTracker extends AbstractModelInfoTracker<AsmModel> {
+public class AsmModelServiceTracker extends AbstractModelTracker<AsmModel> {
 
     @Reference
     Asm2OpenAPIService asm2OpenAPIService;

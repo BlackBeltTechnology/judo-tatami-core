@@ -5,7 +5,7 @@ import hu.blackbelt.epsilon.runtime.execution.impl.Slf4jLog;
 import hu.blackbelt.epsilon.runtime.osgi.BundleURIHandler;
 import hu.blackbelt.judo.meta.asm.runtime.AsmModel;
 import hu.blackbelt.judo.meta.openapi.runtime.OpenAPIModel;
-import hu.blackbelt.judo.tatami.core.TrackInfo;
+import hu.blackbelt.judo.tatami.core.TransformationTrace;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.ResourceSet;
@@ -31,7 +31,7 @@ public class Asm2OpenAPIService {
     @Reference
     Asm2OpenAPIScriptResource asm2OpenAPIScriptResource;
 
-    Map<AsmModel, ServiceRegistration<TrackInfo>> asm2openAPITrackInfoRegistration = Maps.newHashMap();
+    Map<AsmModel, ServiceRegistration<TransformationTrace>> asm2openAPITransformationTraceRegistration = Maps.newHashMap();
 
     public OpenAPIModel install(AsmModel asmModel, BundleContext bundleContext) throws Exception {
         BundleURIHandler bundleURIHandler = new BundleURIHandler("urn", "",
@@ -50,17 +50,17 @@ public class Asm2OpenAPIService {
                 .metaVersionRange(bundleContext.getBundle().getHeaders().get(OPENAPI_META_VERSION_RANGE))
                 .build();
 
-        Asm2OpenAPITrackInfo asm2OpenAPITrackInfo = executeAsm2OpenAPITransformation(openAPIResourceSet, asmModel, openAPIModel, new Slf4jLog(log),
+        Asm2OpenAPITransformationTrace asm2OpenAPITransformationTrace = executeAsm2OpenAPITransformation(openAPIResourceSet, asmModel, openAPIModel, new Slf4jLog(log),
                 new File(asm2OpenAPIScriptResource.getSctiptRoot().getAbsolutePath(), "asm2openapi/transformations/openapi"));
 
-        asm2openAPITrackInfoRegistration.put(asmModel, bundleContext.registerService(TrackInfo.class, asm2OpenAPITrackInfo, new Hashtable<>()));
+        asm2openAPITransformationTraceRegistration.put(asmModel, bundleContext.registerService(TransformationTrace.class, asm2OpenAPITransformationTrace, new Hashtable<>()));
 
         return openAPIModel;
     }
 
     public void uninstall(AsmModel asmModel) {
-        if (asm2openAPITrackInfoRegistration.containsKey(asmModel)) {
-            asm2openAPITrackInfoRegistration.get(asmModel).unregister();
+        if (asm2openAPITransformationTraceRegistration.containsKey(asmModel)) {
+            asm2openAPITransformationTraceRegistration.get(asmModel).unregister();
         } else {
             log.error("ASM model is not installed: " + asmModel.toString());
         }

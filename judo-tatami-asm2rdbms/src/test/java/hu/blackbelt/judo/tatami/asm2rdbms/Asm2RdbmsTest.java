@@ -90,14 +90,14 @@ public class Asm2RdbmsTest {
                 .version(asmModel.getVersion())
                 .build();
 
-        Asm2RdbmsTrackInfo asm2RdbmsTrackInfo = executeAsm2RdbmsTransformation(rdbmsResourceSet, asmModel, rdbmsModel, new Slf4jLog(log),
+        Asm2RdbmsTransformationTrace asm2RdbmsTransformationTrace = executeAsm2RdbmsTransformation(rdbmsResourceSet, asmModel, rdbmsModel, new Slf4jLog(log),
                 new File(targetDir().getAbsolutePath(), "epsilon/transformations"),
                 new File(targetDir(), "../../model"),
                 "hsqldb");
 
         // Saving trace map
         Resource traceResoureSaved = new XMIResourceImpl();
-        traceResoureSaved.getContents().addAll(getAsm2RdbmsTrace(asm2RdbmsTrackInfo.getTrace()));
+        traceResoureSaved.getContents().addAll(getAsm2RdbmsTrace(asm2RdbmsTransformationTrace.getTrace()));
         traceResoureSaved.save(new FileOutputStream(new File(targetDir().getAbsolutePath(), ASM_2_RDBMS_MODEL)), ImmutableMap.of());
 
         // Loading trace map

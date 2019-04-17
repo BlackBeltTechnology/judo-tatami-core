@@ -5,7 +5,7 @@ import hu.blackbelt.epsilon.runtime.execution.impl.Slf4jLog;
 import hu.blackbelt.epsilon.runtime.osgi.BundleURIHandler;
 import hu.blackbelt.judo.meta.psm.jql.extract.runtime.PsmJqlExtractModel;
 import hu.blackbelt.judo.meta.psm.runtime.PsmModel;
-import hu.blackbelt.judo.tatami.core.TrackInfo;
+import hu.blackbelt.judo.tatami.core.TransformationTrace;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.ResourceSet;
@@ -31,7 +31,7 @@ public class Psm2JqlExtractSerivce {
     @Reference
     Psm2JqlExtractScriptResource psm2JqlExtractScriptResource;
 
-    Map<PsmModel, ServiceRegistration<TrackInfo>> psm2JqlExtractTrackInfoRegistration = Maps.newHashMap();
+    Map<PsmModel, ServiceRegistration<TransformationTrace>> psm2JqlExtractTransformationTraceRegistration = Maps.newHashMap();
 
 
     public PsmJqlExtractModel install(PsmModel psmModel, BundleContext bundleContext) throws Exception {
@@ -50,16 +50,16 @@ public class Psm2JqlExtractSerivce {
                 .resourceSet(psmJqlExtractResourceSet)
                 .metaVersionRange(bundleContext.getBundle().getHeaders().get(PSM_JQL_EXTRACT_META_VERSION_RANGE)).build();
 
-        Psm2JqlExtractTrackInfo psm2JqlExtractTrackInfo = executePsm2PsmJqlExtractTransformation(psmJqlExtractResourceSet, psmModel, psmJqlExtractModel, new Slf4jLog(log),
+        Psm2JqlExtractTransformationTrace psm2JqlExtractTransformationTrace = executePsm2PsmJqlExtractTransformation(psmJqlExtractResourceSet, psmModel, psmJqlExtractModel, new Slf4jLog(log),
                 new File(psm2JqlExtractScriptResource.getSctiptRoot().getAbsolutePath(), "psm2jql/transformations/jql/") );
 
-        psm2JqlExtractTrackInfoRegistration.put(psmModel, bundleContext.registerService(TrackInfo.class, psm2JqlExtractTrackInfo, new Hashtable<>()));
+        psm2JqlExtractTransformationTraceRegistration.put(psmModel, bundleContext.registerService(TransformationTrace.class, psm2JqlExtractTransformationTrace, new Hashtable<>()));
         return psmJqlExtractModel;
     }
 
     public void uninstall(PsmModel psmModel) {
-        if (psm2JqlExtractTrackInfoRegistration.containsKey(psmModel)) {
-            psm2JqlExtractTrackInfoRegistration.get(psmModel).unregister();
+        if (psm2JqlExtractTransformationTraceRegistration.containsKey(psmModel)) {
+            psm2JqlExtractTransformationTraceRegistration.get(psmModel).unregister();
         } else {
             log.error("PSM model is not installed: " + psmModel.toString());
         }

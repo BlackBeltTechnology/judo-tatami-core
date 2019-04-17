@@ -2,7 +2,7 @@ package hu.blackbelt.judo.tatami.rdbms2liquibase;
 
 import hu.blackbelt.judo.meta.liquibase.runtime.LiquibaseModel;
 import hu.blackbelt.judo.meta.rdbms.runtime.RdbmsModel;
-import hu.blackbelt.judo.tatami.core.AbstractModelInfoTracker;
+import hu.blackbelt.judo.tatami.core.AbstractModelTracker;
 import lombok.extern.slf4j.Slf4j;
 import org.osgi.framework.ServiceRegistration;
 import org.osgi.service.component.ComponentContext;
@@ -18,7 +18,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 @Component(immediate = true)
 @Slf4j
-public class RdbmsModelServiceTracker extends AbstractModelInfoTracker<RdbmsModel> {
+public class RdbmsModelServiceTracker extends AbstractModelTracker<RdbmsModel> {
 
     @Reference
     Rdbms2LiquibaseSerivce psm2LiquibaseSerivce;

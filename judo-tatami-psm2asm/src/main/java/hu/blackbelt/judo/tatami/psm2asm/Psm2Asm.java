@@ -37,8 +37,8 @@ public class Psm2Asm {
      * @return The trace object list of the transformation conforms the meta model defined in {@link TransformationTraceUtil}.
      * @throws Exception
      */
-    public static Psm2AsmTrackInfo executePsm2AsmTransformation(ResourceSet resourceSet, PsmModel psmModel, AsmModel asmModel, Log log,
-                                                                   File scriptDir) throws Exception {
+    public static Psm2AsmTransformationTrace executePsm2AsmTransformation(ResourceSet resourceSet, PsmModel psmModel, AsmModel asmModel, Log log,
+                                                                          File scriptDir) throws Exception {
 
         // If resource not creared for target model
         Resource asmResource = asmModel.getResourceSet().getResource(asmModel.getUri(), false);
@@ -83,7 +83,7 @@ public class Psm2Asm {
         executionContext.close();
 
         List<EObject> traceModel = getTransformationTrace(PSM_2_ASM_URI_POSTFIX, etlExecutionContext);
-        return Psm2AsmTrackInfo.psm2AsmTrackInfoBuilder()
+        return Psm2AsmTransformationTrace.psm2AsmTransformationTraceBuilder()
                 .asmModel(asmModel)
                 .psmModel(psmModel)
                 .trace(resolvePsm2AsmTrace(traceModel, psmModel, asmModel)).build();

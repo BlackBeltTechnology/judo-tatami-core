@@ -1,9 +1,9 @@
-package hu.blackbelt.judo.tatami.psm2measure;
+package hu.blackbelt.judo.tatami.psm2jql;
 
 import com.google.common.collect.ImmutableList;
-import hu.blackbelt.judo.meta.measure.runtime.MeasureModel;
+import hu.blackbelt.judo.meta.psm.jql.extract.runtime.PsmJqlExtractModel;
 import hu.blackbelt.judo.meta.psm.runtime.PsmModel;
-import hu.blackbelt.judo.tatami.core.TrackInfo;
+import hu.blackbelt.judo.tatami.core.TransformationTrace;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NonNull;
@@ -15,15 +15,15 @@ import java.util.List;
 import java.util.Map;
 
 
-@Builder(builderMethodName = "psm2MeasureTrackInfoBuilder")
+@Builder(builderMethodName = "psm2JqlExtractTransformationTraceBuilder")
 @Getter
-public class Psm2MeasureTrackInfo implements TrackInfo {
+public class Psm2JqlExtractTransformationTrace implements TransformationTrace {
 
     @NonNull
     PsmModel psmModel;
 
     @NonNull
-    MeasureModel measureModel;
+    PsmJqlExtractModel psmJqlExtractModel;
 
     @NonNull
     Map<EObject, List<EObject>> trace;
@@ -61,32 +61,32 @@ public class Psm2MeasureTrackInfo implements TrackInfo {
 
     @Override
     public Class getTargetModelType() {
-        return MeasureModel.class;
+        return PsmJqlExtractModel.class;
     }
 
     @Override
     public Object getTargetModel() {
-        return measureModel;
+        return psmJqlExtractModel;
     }
 
     @Override
     public ResourceSet getTargetResourceSet() {
-        return measureModel.getResourceSet();
+        return psmJqlExtractModel.getResourceSet();
     }
 
     @Override
     public URI getTargetURI() {
-        return measureModel.getUri();
+        return psmJqlExtractModel.getUri();
     }
 
     @Override
-    public Class<? extends TrackInfo> getType() {
-        return Psm2MeasureTrackInfo.class;
+    public Class<? extends TransformationTrace> getType() {
+        return Psm2JqlExtractTransformationTrace.class;
     }
 
     @Override
-    public String getTrackInfoName() {
-        return "psm2measure";
+    public String getTransformationTraceName() {
+        return "psm2jqlextract";
     }
 
     @Override

@@ -111,13 +111,13 @@ public class JqlExtract2ExpressionTest {
                 .build();
 
 
-        JqlExtract2ExpressionTrackInfo jqlExtract2ExpressionTrackInfo = executeJqlExtract2ExpressionTransformation(expressionResourceSet, asmModel, jqlExtractModel, expressionModel,
+        JqlExtract2ExpressionTransformationTrace jqlExtract2ExpressionTransformationTrace = executeJqlExtract2ExpressionTransformation(expressionResourceSet, asmModel, jqlExtractModel, expressionModel,
                 new Slf4jLog(log), new File(targetDir().getAbsolutePath(), "epsilon/transformations/expression"));
 
 
         // Saving trace map
         Resource traceResoureSaved = new XMIResourceImpl();
-        traceResoureSaved.getContents().addAll(getJqlExtract2ExpressionTrace(jqlExtract2ExpressionTrackInfo.getTrace()));
+        traceResoureSaved.getContents().addAll(getJqlExtract2ExpressionTrace(jqlExtract2ExpressionTransformationTrace.getTrace()));
         traceResoureSaved.save(new FileOutputStream(new File(targetDir().getAbsolutePath(), JQLEXTRACT_2_EXPRESSION_MODEL)), ImmutableMap.of());
 
         // Loading trace map

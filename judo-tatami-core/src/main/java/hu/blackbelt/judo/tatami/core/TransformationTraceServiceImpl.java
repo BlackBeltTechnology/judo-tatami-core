@@ -19,12 +19,12 @@ import java.util.List;
 import java.util.Map;
 
 @Slf4j
-@Component(service = TrackInfoService.class)
-public class TrackInfoServiceImpl implements TrackInfoService {
+@Component(service = TransformationTraceService.class)
+public class TransformationTraceServiceImpl implements TransformationTraceService {
 
-    private final Map<String, List<TrackInfo>> modelNameCache = Maps.newConcurrentMap();
+    private final Map<String, List<TransformationTrace>> modelNameCache = Maps.newConcurrentMap();
 
-    private TrackInfoTracker trackInfoTracker;
+    private TransformationTraceTracker transformationTraceTracker;
 
     @Activate
     public void activate(BundleContext bundleContext) {
@@ -38,32 +38,32 @@ public class TrackInfoServiceImpl implements TrackInfoService {
 
     @SneakyThrows(InvalidSyntaxException.class)
     public void openTracker(BundleContext bundleContext) {
-        trackInfoTracker = new TrackInfoTracker(this, bundleContext, TrackInfo.class);
-        trackInfoTracker.open(true);
+        transformationTraceTracker = new TransformationTraceTracker(this, bundleContext, TransformationTrace.class);
+        transformationTraceTracker.open(true);
     }
 
     public void closeTracker() {
-        trackInfoTracker.close();
+        transformationTraceTracker.close();
     }
 
-    public void add(TrackInfo instance) {
+    public void add(TransformationTrace instance) {
         if (!modelNameCache.containsKey(instance.getModelName())) {
             modelNameCache.put(instance.getModelName(), Lists.newArrayList());
         }
-        List<TrackInfo> trackInfoList = modelNameCache.get(instance.getModelName());
-        trackInfoList.add(instance);
+        List<TransformationTrace> transformationTraceList = modelNameCache.get(instance.getModelName());
+        transformationTraceList.add(instance);
     }
 
-    public void remove(TrackInfo instance) {
-        List<TrackInfo> trackInfoList = modelNameCache.get(instance.getModelName());
-        trackInfoList.remove(instance);
-        if (trackInfoList.size() == 0) {
+    public void remove(TransformationTrace instance) {
+        List<TransformationTrace> transformationTraceList = modelNameCache.get(instance.getModelName());
+        transformationTraceList.remove(instance);
+        if (transformationTraceList.size() == 0) {
             modelNameCache.remove(instance.getModelName());
         }
     }
 
     @Override
-    public TrackInfo getParentTrackInfoByInstance(String modelName, EObject targetElement) {
+    public TransformationTrace getParentTransformationTraceByInstance(String modelName, EObject targetElement) {
         if (!modelNameCache.containsKey(modelName)) {
             throw new IllegalArgumentException("No model definied: " + modelName);
         }
@@ -71,7 +71,7 @@ public class TrackInfoServiceImpl implements TrackInfoService {
         // Find target element's model
         EObject sourceRoot = EcoreUtil.getRootContainer(targetElement);
 
-        for (TrackInfo t : modelNameCache.get(modelName)) {
+        for (TransformationTrace t : modelNameCache.get(modelName)) {
             for (Resource r : t.getTargetResourceSet().getResources()) {
                 if  (r.getContents().contains(sourceRoot)) {
                     return t;
@@ -82,25 +82,25 @@ public class TrackInfoServiceImpl implements TrackInfoService {
     }
 
     // @Override
-    public List<TrackInfo> getChildTrackInfosByInstance(String modelName, EObject instance) {
+    public List<TransformationTrace> getChildTransformationTracesByInstance(String modelName, EObject instance) {
         if (!modelNameCache.containsKey(modelName)) {
             throw new IllegalArgumentException("No model definied: " + modelName);
         }
         // Find target element's model
         EObject sourceRoot = EcoreUtil.getRootContainer(instance);
 
-        List<TrackInfo> trackInfoList = Lists.newArrayList();
-        for (TrackInfo t : modelNameCache.get(modelName)) {
+        List<TransformationTrace> transformationTraceList = Lists.newArrayList();
+        for (TransformationTrace t : modelNameCache.get(modelName)) {
             for (Class sourceModelClass : t.getSourceModelTypes()) {
                 for (Resource r : t.getSourceResourceSet(sourceModelClass).getResources()) {
                     if  (r.getContents().contains(sourceRoot)) {
-                        trackInfoList.add(t);
+                        transformationTraceList.add(t);
                     }
                 }
 
             }
         }
-        return trackInfoList;
+        return transformationTraceList;
     }
 
     @Override
@@ -111,7 +111,7 @@ public class TrackInfoServiceImpl implements TrackInfoService {
 
         EObject current = instance;
         while (current != null) {
-            TrackInfo constructor = getParentTrackInfoByInstance(modelName, current);
+            TransformationTrace constructor = getParentTransformationTraceByInstance(modelName, current);
             if (constructor != null) {
                 if (constructor.getTargetModelType().equals(modelType)) {
                     return current;
@@ -129,27 +129,27 @@ public class TrackInfoServiceImpl implements TrackInfoService {
     }
 
     @Override
-    public Map<TrackInfo, EObject> getAllAscendantOfInstance(String modelName, EObject instance) {
+    public Map<TransformationTrace, EObject> getAllAscendantOfInstance(String modelName, EObject instance) {
         if (!modelNameCache.containsKey(modelName)) {
             throw new IllegalArgumentException("No model definied: " + modelName);
         }
 
         EObject current = instance;
-        Map<TrackInfo, EObject> trackInfoMap = Maps.newLinkedHashMap();
+        Map<TransformationTrace, EObject> transformationTraceMap = Maps.newLinkedHashMap();
         while (current != null) {
-            TrackInfo constructor = getParentTrackInfoByInstance(modelName, current);
+            TransformationTrace constructor = getParentTransformationTraceByInstance(modelName, current);
             if (constructor != null) {
                 current = getTraceSourceElementObjectByTargetElement(constructor, current);
-                trackInfoMap.put(constructor, current);
+                transformationTraceMap.put(constructor, current);
             } else {
-                return trackInfoMap;
+                return transformationTraceMap;
             }
         }
         return null;
     }
 
     @Override
-    public List<TrackInfo> getTrackInfoAscendantsByInstance(String modelName, EObject instance) {
+    public List<TransformationTrace> getTransformationTraceAscendantsByInstance(String modelName, EObject instance) {
         if (!modelNameCache.containsKey(modelName)) {
             throw new IllegalArgumentException("No model definied: " + modelName);
         }
@@ -168,25 +168,25 @@ public class TrackInfoServiceImpl implements TrackInfoService {
     }
 
     @Override
-    public Map<TrackInfo, List<EObject>> getAllDescendantOfInstance(String modelName, EObject instance) {
+    public Map<TransformationTrace, List<EObject>> getAllDescendantOfInstance(String modelName, EObject instance) {
         if (!modelNameCache.containsKey(modelName)) {
             throw new IllegalArgumentException("No model definied: " + modelName);
         }
 
         List<EObject> currentList = ImmutableList.of(instance);
-        Map<TrackInfo, List<EObject>> trackInfoMap = Maps.newLinkedHashMap();
+        Map<TransformationTrace, List<EObject>> transformationTraceMap = Maps.newLinkedHashMap();
         while (currentList.size() > 0) {
             List<EObject> childs = Lists.newArrayList();
             for (EObject current : currentList) {
-                List<TrackInfo> trackInfoList = getChildTrackInfosByInstance(modelName, current);
-                for (TrackInfo tr : trackInfoList) {
-                    if (!trackInfoMap.containsKey(tr)) {
-                        trackInfoMap.put(tr, Lists.newArrayList());
+                List<TransformationTrace> transformationTraceList = getChildTransformationTracesByInstance(modelName, current);
+                for (TransformationTrace tr : transformationTraceList) {
+                    if (!transformationTraceMap.containsKey(tr)) {
+                        transformationTraceMap.put(tr, Lists.newArrayList());
                     }
-                    List trackInfoInstanceList = trackInfoMap.get(tr);
+                    List transformationTraceInstanceList = transformationTraceMap.get(tr);
                     List elements = getTraceTargetElementObjectBySourceElement(tr, current);
                     if (elements != null) {
-                        trackInfoInstanceList.addAll(elements);
+                        transformationTraceInstanceList.addAll(elements);
                         childs.addAll(elements);
                     }
                 }
@@ -195,12 +195,12 @@ public class TrackInfoServiceImpl implements TrackInfoService {
         }
 
         // Remove all elements which have empty list
-        for (TrackInfo k : ImmutableSet.copyOf(trackInfoMap.keySet())) {
-            if (trackInfoMap.get(k).size() == 0) {
-                trackInfoMap.remove(k);
+        for (TransformationTrace k : ImmutableSet.copyOf(transformationTraceMap.keySet())) {
+            if (transformationTraceMap.get(k).size() == 0) {
+                transformationTraceMap.remove(k);
             }
         }
-        return trackInfoMap;
+        return transformationTraceMap;
     }
 
     @Override
@@ -213,8 +213,8 @@ public class TrackInfoServiceImpl implements TrackInfoService {
         while (currentList.size() > 0) {
             List<EObject> childs = Lists.newArrayList();
             for (EObject current : currentList) {
-                List<TrackInfo> trackInfoList = getChildTrackInfosByInstance(modelName, current);
-                for (TrackInfo tr : trackInfoList) {
+                List<TransformationTrace> transformationTraceList = getChildTransformationTracesByInstance(modelName, current);
+                for (TransformationTrace tr : transformationTraceList) {
                     List<EObject> elements = getTraceTargetElementObjectBySourceElement(tr, current);
                     if (elements != null) {
                         if (tr.getTargetModelType().equals(modelType)) {
@@ -229,7 +229,7 @@ public class TrackInfoServiceImpl implements TrackInfoService {
         return null;
     }
 
-    private EObject getTraceSourceElementObjectByTargetElement(TrackInfo constructor, EObject targetElement) {
+    private EObject getTraceSourceElementObjectByTargetElement(TransformationTrace constructor, EObject targetElement) {
         for (Map.Entry<EObject, List<EObject>> e : constructor.getTransformationTrace().entrySet()) {
             for (EObject eo : e.getValue()) {
                 if (eo.equals(targetElement)) {
@@ -240,7 +240,7 @@ public class TrackInfoServiceImpl implements TrackInfoService {
         return null;
     }
 
-    private List<EObject> getTraceTargetElementObjectBySourceElement(TrackInfo constructor, EObject sourceElement) {
+    private List<EObject> getTraceTargetElementObjectBySourceElement(TransformationTrace constructor, EObject sourceElement) {
         return constructor.getTransformationTrace().get(sourceElement);
     }
 
