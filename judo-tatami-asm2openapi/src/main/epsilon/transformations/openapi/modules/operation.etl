@@ -60,6 +60,8 @@ rule CreateExposedServiceOperationResponse
             t.code = "200";
         } else {
             t.code = "204";
+            t.response = new OPENAPI!ResponseDefinition;
+            t.response.description = "No content";
         }
 }
 
@@ -89,6 +91,7 @@ rule CreateExposedServiceOperationResponseDefinition
         var accessPoint = s.value.resolve();
 
         t.schema = new OPENAPI!Schema;
+        t.description = "Operation completed successfully";
         t.schema.ref = new OPENAPI!SchemaReference;
 
         var aAccessPoint = op.eType.getAccessPointAnnotation(accessPoint.getFQName());
