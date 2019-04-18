@@ -1,5 +1,6 @@
 package hu.blackbelt.judo.tatami.itest;
 
+import com.fasterxml.jackson.jaxrs.json.JacksonJaxbJsonProvider;
 import hu.blackbelt.judo.meta.asm.runtime.AsmModel;
 import hu.blackbelt.judo.meta.asm.runtime.AsmUtils;
 import hu.blackbelt.judo.meta.expression.runtime.ExpressionModel;
@@ -12,6 +13,7 @@ import hu.blackbelt.judo.meta.rdbms.RdbmsTable;
 import hu.blackbelt.judo.meta.rdbms.runtime.RdbmsModel;
 import hu.blackbelt.judo.tatami.core.TransformationTrace;
 import hu.blackbelt.judo.tatami.core.TransformationTraceService;
+import hu.blackbelt.judo.tatami.itest.restbeans.OrderInfo;
 import hu.blackbelt.osgi.utils.osgi.api.BundleTrackerManager;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
@@ -20,20 +22,21 @@ import org.junit.runner.RunWith;
 import org.ops4j.pax.exam.Configuration;
 import org.ops4j.pax.exam.ConfigurationManager;
 import org.ops4j.pax.exam.Option;
+import org.ops4j.pax.exam.TimeoutException;
 import org.ops4j.pax.exam.junit.PaxExam;
 import org.ops4j.pax.exam.spi.reactors.ExamReactorStrategy;
 import org.ops4j.pax.exam.spi.reactors.PerClass;
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.Constants;
-import org.osgi.framework.InvalidSyntaxException;
-import org.osgi.framework.ServiceReference;
+import org.osgi.framework.*;
 import org.osgi.service.log.LogService;
 
 import javax.inject.Inject;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.InputStream;
+import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.client.WebTarget;
+import java.io.*;
+import java.net.ConnectException;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -43,11 +46,15 @@ import static hu.blackbelt.judo.framework.KarafTestUtil.judoKarafRuntimeRepo;
 import static hu.blackbelt.judo.framework.KarafTestUtil.karafConfig;
 import static hu.blackbelt.judo.tatami.itest.TatamiTestUtil.metaBundles;
 import static hu.blackbelt.judo.tatami.itest.TatamiTestUtil.tatamiBundles;
+import static junit.framework.TestCase.assertNotNull;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
+import static org.junit.Assert.assertEquals;
 import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
 import static org.ops4j.pax.exam.CoreOptions.provision;
 import static org.ops4j.pax.exam.OptionUtils.combine;
+import static org.ops4j.pax.exam.cm.ConfigurationAdminOptions.newConfiguration;
+import static org.ops4j.pax.exam.karaf.options.KarafDistributionOption.editConfigurationFilePut;
 import static org.ops4j.pax.exam.karaf.options.KarafDistributionOption.features;
 import static org.ops4j.pax.tinybundles.core.TinyBundles.bundle;
 import static org.ops4j.pax.tinybundles.core.TinyBundles.withBnd;
@@ -69,6 +76,13 @@ public class TatamiTransformationPipelineITest {
     public static final String FEATURE_SWAGGER_CORE = "cxf-rs-description-swagger2";
     public static final String FEATURE_TINYBUNDLES = "tinybundles";
 
+
+    private static final String BASE_URL = "http://localhost:8181/cxf/northwind/internalAP";
+    public static final String BLACKBELT_CXF_GROUPID = "hu.blackbelt.cxf";
+    public static final String JAXRS_APPLICATION_MANAGER = "cxf-jaxrs-application-manager";
+    public static final String JAXRS_APPLICATION_MANAGER_VERSION = "0.4.0";
+    public static final String FEATURE_CXF_JAXRS = "cxf-jaxrs";
+    public static final String FEATURE_CXF_JACKSON = "cxf-jackson";
 
     @Inject
     LogService log;
@@ -113,12 +127,18 @@ public class TatamiTransformationPipelineITest {
         return combine(combine(karafConfig(this.getClass()), combine(metaBundles(), tatamiBundles())),
 
                 features(judoKarafRuntimeRepo() , FEATURE_SCR, FEATURE_OSGI_UTILS, FEATURE_EPSILON_RUNTIME,
-                        FEATURE_ECLIPSE_XTEXT, FEATURE_SWAGGER_CORE, FEATURE_TINYBUNDLES, "cxf-jaxrs", "cxf-jackson"),
+                        FEATURE_ECLIPSE_XTEXT, FEATURE_SWAGGER_CORE, FEATURE_TINYBUNDLES, FEATURE_CXF_JAXRS, FEATURE_CXF_JACKSON),
+
+                newConfiguration("hu.blackbelt.jaxrs.providers.JacksonProvider")
+                        .put("JacksonProvider.SerializationFeature.INDENT_OUTPUT", "true").asOption(),
+
+                editConfigurationFilePut("etc/org.ops4j.pax.web.cfg",
+                        "org.osgi.service.http.port", "8181"),
 
                 mavenBundle()
-                        .groupId("hu.blackbelt.cxf")
-                        .artifactId("cxf-jaxrs-application-manager")
-                        .version("0.4.0").start(),
+                        .groupId(BLACKBELT_CXF_GROUPID)
+                        .artifactId(JAXRS_APPLICATION_MANAGER)
+                        .version(JAXRS_APPLICATION_MANAGER_VERSION).start(),
 
                 mavenBundle()
                         .groupId(FRAMEWORK_GROUPID)
@@ -151,23 +171,16 @@ public class TatamiTransformationPipelineITest {
     }
 
     @Test
-    public void testMethod() throws InvalidSyntaxException {
+    public void testTrace() throws InvalidSyntaxException {
         log.log(LOG_INFO, "==============================================");
-        log.log(LOG_INFO, "== RUNNING TEST METHOD");
+        log.log(LOG_INFO, "== RUNNING TEST TRACE METHOD");
         log.log(LOG_INFO, "==============================================");
-
-        /*
-        TransformationTraceService transformationTraceService = getOsgiService(bundleContext, TransformationTraceService.class, 30000);
-        AsmModel asmModel = getOsgiService(bundleContext, AsmModel.class, 30000);
-        RdbmsModel rdbmsModel = getOsgiService(bundleContext, RdbmsModel.class, 30000);
-        */
 
         Collection<ServiceReference<TransformationTrace>> transformationTraces = bundleContext.getServiceReferences(TransformationTrace.class, null);
 
         assertThat(transformationTraces.stream().map(r -> bundleContext.getService(r).getTransformationTraceName()).collect(Collectors.toList()),
                 containsInAnyOrder("asm2openapi", "asm2rdbms", "psm2measure", "psm2jqlextract", "psm2asm", "jqlextract2expression"));
-
-
+        
         // Get Order entity
         Optional<EClass> orderClass = AsmUtils.asStream(asmModel.getResourceSet().getAllContents())
                 .filter(e -> e instanceof EClass)
@@ -182,9 +195,30 @@ public class TatamiTransformationPipelineITest {
         assertThat(((RdbmsTable) orderRdbmsObjectList.get(0)).getSqlName(), equalTo("T_ENTTS_ORDER"));
 
         log.log(LOG_INFO, "==============================================");
-        log.log(LOG_INFO, "== STOPPING TEST METHOD");
+        log.log(LOG_INFO, "== STOPPING TEST TRACE METHOD");
         log.log(LOG_INFO, "==============================================");
 
+    }
+
+    @Test
+    public void testRest() throws Exception {
+        log.log(LOG_INFO, "==============================================");
+        log.log(LOG_INFO, "== RUNNING TEST REST METHOD");
+        log.log(LOG_INFO, "==============================================");
+
+        waitWebPage(BASE_URL +"/?_wadl");
+
+        WebTarget wt = ClientBuilder.newClient().register(new JacksonJaxbJsonProvider()).target(BASE_URL);
+
+        assertBundleStarted("Northwind-asm2jaxrsapi");
+
+        OrderInfo orderInfo = wt.path("/getAllOrders").request("application/json").get(OrderInfo.class);
+        assertNotNull(orderInfo);
+
+
+        log.log(LOG_INFO, "==============================================");
+        log.log(LOG_INFO, "== STOPPING TEST REST METHOD");
+        log.log(LOG_INFO, "==============================================");
     }
 
     public  File testTargetDir(){
@@ -195,4 +229,69 @@ public class TatamiTransformationPipelineITest {
         }
         return targetDir;
     }
+
+
+    protected void assertBundleStarted(String name) {
+        Bundle bundle = findBundleByName(name);
+        assertNotNull("Bundle " + name + " should be installed", bundle);
+        assertEquals("Bundle " + name + " should be started", Bundle.ACTIVE, bundle.getState());
+    }
+
+    protected Bundle findBundleByName(String symbolicName) {
+        for (Bundle bundle : bundleContext.getBundles()) {
+            if (bundle.getSymbolicName().equals(symbolicName)) {
+                return bundle;
+            }
+        }
+        return null;
+    }
+
+    protected void waitWebPage(String urlSt) throws InterruptedException, TimeoutException {
+        System.out.println("Waiting for url " + urlSt);
+        HttpURLConnection con = null;
+        long startTime = System.currentTimeMillis();
+        while (true) {
+            try {
+                URL url = new URL(urlSt);
+                con = (HttpURLConnection)url.openConnection();
+                int status = con.getResponseCode();
+                if (status == 200) {
+                    return;
+                }
+            } catch (ConnectException e) {
+                // Ignore connection refused
+            } catch (MalformedURLException e) {
+                throw new RuntimeException(e.getMessage(), e);
+            } catch (IOException e) {
+                throw new RuntimeException(e.getMessage(), e);
+            } finally {
+                if (con != null) {
+                    con.disconnect();
+                }
+            }
+            sleepOrTimeout(startTime, 20, "Timeout waiting for web page " + urlSt);
+        }
+    }
+
+    /**
+     * Sleeps for a short interval, throwing an exception if timeout has been reached. Used to facilitate a
+     * retry interval with timeout when used in a loop.
+     *
+     * @param startTime the start time of the entire operation in milliseconds
+     * @param timeout the timeout duration for the entire operation in seconds
+     * @param message the error message to use when timeout occurs
+     * @throws InterruptedException if interrupted while sleeping
+     */
+    private static void sleepOrTimeout(long startTime, long timeout, String message)
+            throws InterruptedException, TimeoutException {
+        timeout *= 1000; // seconds to millis
+        long elapsed = System.currentTimeMillis() - startTime;
+        long remaining = timeout - elapsed;
+        if (remaining <= 0) {
+            throw new TimeoutException(message);
+        }
+        long interval = Math.min(remaining, 1000);
+        Thread.sleep(interval);
+    }
+
 }
