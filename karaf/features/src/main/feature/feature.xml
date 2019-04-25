@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<features name="judo-platform-${project.version}"
+    xmlns="http://karaf.apache.org/xmlns/features/v1.5.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://karaf.apache.org/xmlns/features/v1.5.0 http://karaf.apache.org/xmlns/features/v1.5.0">
+    
+    <repository>mvn:hu.blackbelt.judo.framework/features/${judo-framework-version}/xml/features</repository>
+    
+    <feature name="judo-platform-minimal" version="${project.version}" description="JUDO platform, minimal" install="false">
+        <feature dependency="true">judo-framework-minimal</feature>
+        <bundle>mvn:hu.blackbelt.cxf/cxf-jaxrs-application-manager/0.4.0</bundle>
+
+    </feature>
+
+    <feature name="judo-platform-meta" version="${project.version}" description="JUDO platform, meta types" install="false">
+        <feature dependency="true">judo-framework-minimal</feature>
+        <bundle>mvn:hu.blackbelt.judo.meta/judo-meta-asm/${judo-meta-asm-version}</bundle>
+        <bundle>mvn:hu.blackbelt.judo.meta/judo-meta-psm-runtime/${judo-meta-psm-version}</bundle>
+        <bundle>mvn:hu.blackbelt.judo.meta/judo-meta-psm-jql-runtime/${judo-meta-psm-jql-version}</bundle>
+        <bundle>mvn:hu.blackbelt.judo.meta/judo-meta-psm-jql-extract-runtime/${judo-meta-psm-jql-extracr-version}</bundle>
+        <bundle>mvn:hu.blackbelt.judo.meta/judo-meta-expression-runtime/${judo-meta-expression-version}</bundle>
+        <bundle>mvn:hu.blackbelt.judo.meta/judo-meta-measure-runtime/${judo-meta-measure-version}</bundle>
+        <bundle>mvn:hu.blackbelt.judo.meta/judo-meta-openapi-runtime/${judo-meta-openapi-version}</bundle>
+        <bundle>mvn:hu.blackbelt.judo.meta/judo-meta-rdbms-runtime/${judo-meta-rdbms-version}</bundle>
+        <bundle>mvn:hu.blackbelt.judo.meta/judo-meta-liquibase-runtime/${judo-meta-liquibase-version}</bundle>
+    </feature>
+
+    <feature name="judo-platform-tatami" version="${judo-tatami-version}" description="JUDO platform, tatami" install="false">
+        <feature>judo-platform-meta</feature>
+        <bundle>mvn:hu.blackbelt.judo.tatami/judo-tatami-core/${judo-tatami-version}</bundle>
+
+        <bundle>mvn:hu.blackbelt.judo.tatami/judo-tatami-psm2asm/${judo-tatami-version}</bundle>
+        <bundle>mvn:hu.blackbelt.judo.tatami/judo-tatami-psm2jql/${judo-tatami-version}</bundle>
+        <bundle>mvn:hu.blackbelt.judo.tatami/judo-tatami-psm2measure/${judo-tatami-version}</bundle>
+
+        <bundle>mvn:hu.blackbelt.judo.tatami/judo-tatami-asm2jaxrsapi/${judo-tatami-version}</bundle>
+        <bundle>mvn:hu.blackbelt.judo.tatami/judo-tatami-asm2openapi/${judo-tatami-version}</bundle>
+        <bundle>mvn:hu.blackbelt.judo.tatami/judo-tatami-asm2rdbms/${judo-tatami-version}</bundle>
+
+        <bundle>mvn:hu.blackbelt.judo.tatami/judo-tatami-jql2expression/${judo-tatami-version}</bundle>
+        <bundle>mvn:hu.blackbelt.judo.tatami/judo-tatami-rdbms2liquibase/${judo-tatami-version}</bundle>
+
+    </feature>
+
+    <feature name="judo-platform-full" version="${project.version}" description="JUDO platform, full" install="false">
+        <feature dependency="true">judo-framework-full</feature>
+        <config name="hu.blackbelt.jaxrs.providers.JacksonProvider">
+            JacksonProvider.SerializationFeature.INDENT_OUTPUT = true
+        </config>
+        <feature>judo-platform-meta</feature>
+        <feature>judo-platform-tatami</feature>
+    </feature>
+    
+</features>

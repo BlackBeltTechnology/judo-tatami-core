@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    
+    <parent>
+        <groupId>hu.blackbelt.judo.platform</groupId>
+        <artifactId>parent</artifactId>
+        <version>2.0.0-SNAPSHOT</version>
+        <relativePath>../parent</relativePath>
+    </parent>
+    <artifactId>kar</artifactId>
+    <packaging>kar</packaging>
+    <name>JUDO platform karaf KAR assembly</name>
+
+    <build>
+        <plugins>
+            <plugin>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>copy-feature</id>
+                        <goals>
+                            <goal>copy</goal>
+                        </goals>
+                        <phase>process-resources</phase>
+                        <configuration>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>${project.groupId}</groupId>
+                                    <artifactId>features</artifactId>
+                                    <classifier>features</classifier>
+                                    <type>xml</type>
+                                    <version>${project.version}</version>
+                                    <overWrite>false</overWrite>
+                                    <outputDirectory>${project.build.directory}/unpacked-feature</outputDirectory>
+                                    <destFileName>feature.xml</destFileName>
+                                </artifactItem>
+                            </artifactItems>
+                        </configuration>
+                    </execution>
+                </executions>
+                
+            </plugin>
+            <plugin>
+                <groupId>org.apache.karaf.tooling</groupId>
+                <artifactId>karaf-maven-plugin</artifactId>
+                <extensions>true</extensions>
+                <configuration>
+                    <inputFile>${project.build.directory}/unpacked-feature/feature.xml</inputFile>
+                    <enableGeneration>false</enableGeneration>
+                    <aggregateFeatures>true</aggregateFeatures>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+    <dependencies>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>features</artifactId>
+            <classifier>features</classifier>
+            <type>xml</type>
+            <version>${project.version}</version>
+        </dependency>
+    </dependencies>
+</project>
