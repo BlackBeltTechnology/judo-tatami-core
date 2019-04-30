@@ -1,0 +1,12 @@
+@cached
+operation JUDOPSM!TransferObjectType getNamespace() : JUDOPSM!Namespace {
+	return JUDOPSM!Namespace.all.selectOne(p | p.elements.includes(self));
+}
+
+operation JUDOPSM!MappedTransferObjectType getOperation(name: String) : JUDOPSM!BoundOperation {
+    return self.operations.selectOne(o | o.name == name);
+}
+
+operation JUDOPSM!UnmappedTransferObjectType getOperation(name : String) : JUDOPSM!BoundOperation {
+    return null;
+}

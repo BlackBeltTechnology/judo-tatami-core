@@ -1,0 +1,9 @@
+@cached
+operation JUDOPSM!BoundOperation displayName() : String {
+	return self.getTransferObjectType().name + "#" + self.name;
+}
+
+@cached
+operation JUDOPSM!BoundOperation getTransferObjectType() : JUDOPSM!TransferObjectType {
+	return JUDOPSM!TransferObjectType.all.selectOne(et | et.operations.includes(self));
+}

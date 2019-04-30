@@ -61,7 +61,10 @@
         <judo-meta-rdbms-version>1.0.1.develop_28</judo-meta-rdbms-version>
         <judo-meta-rdbms.import-range>[1.0,1.1)</judo-meta-rdbms.import-range>
 
-        <judo-meta-psm-version>1.0.1.develop_244</judo-meta-psm-version>
+        <judo-meta-esm-version>1.0.0.develop_5</judo-meta-esm-version>
+        <judo-meta-esm-import-range>[1.0,1.1)</judo-meta-esm-import-range>
+
+        <judo-meta-psm-version>1.0.1.develop_257</judo-meta-psm-version>
         <judo-meta-psm-import-range>[1.0,1.1)</judo-meta-psm-import-range>
 
         <judo-meta-psm-jql-version>1.0.0.develop_19</judo-meta-psm-jql-version>
@@ -87,7 +90,7 @@
         <judo-meta-liquibase-version>1.0.1.develop_8</judo-meta-liquibase-version>
         <judo-meta-liquibase-import-range>[1.0,1.1)</judo-meta-liquibase-import-range>
 
-        <judo-meta-openapi-version>1.0.0.feature_complete_exporter_71</judo-meta-openapi-version>
+        <judo-meta-openapi-version>1.0.0.develop_76</judo-meta-openapi-version>
         <judo-meta-openapi-import-range>[1.0,1.1)</judo-meta-openapi-import-range>
 
         <test.asm.model.groupId>${project.groupId}</test.asm.model.groupId>
@@ -292,6 +295,11 @@
                 <groupId>hu.blackbelt.judo.meta</groupId>
                 <artifactId>judo-meta-psm-runtime</artifactId>
                 <version>${judo-meta-psm-version}</version>
+            </dependency>
+            <dependency>
+                <groupId>hu.blackbelt.judo.meta</groupId>
+                <artifactId>judo-meta-esm-runtime</artifactId>
+                <version>${judo-meta-esm-version}</version>
             </dependency>
             <dependency>
                 <groupId>hu.blackbelt.judo.meta</groupId>

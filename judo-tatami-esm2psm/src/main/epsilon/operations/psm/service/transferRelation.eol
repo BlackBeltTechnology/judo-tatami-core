@@ -1,0 +1,29 @@
+@cached
+operation JUDOPSM!TransferObjectRelation displayName() : String {
+	return self.getTransferObjectType().name + "." + self.name;
+}
+
+@cached
+operation JUDOPSM!TransferObjectRelation getTransferObjectType() : JUDOPSM!TransferObjectType {
+	return JUDOPSM!TransferObjectType.all.selectOne(et | et.relations.includes(self));
+}
+
+@cached
+operation JUDOPSM!TransferObjectRelation isRequired() : Boolean {
+	return self.cardinality.lower > 0;
+}
+
+@cached
+operation JUDOPSM!TransferObjectRelation isCollection() : Boolean {
+	return self.cardinality.upper > 1 or self.cardinality.upper == -1;
+}
+
+@cached
+operation JUDOPSM!TransferObjectRelation isMutable() : Boolean {
+    return self.binding.isKindOf(JUDOPSM!Relation) or (self.binding.isKindOf(JUDOPSM!ReferenceAccessor) and self.binding.setterExpression.isDefined());
+}
+
+@cached
+operation JUDOPSM!TransferObjectRelation isNavigable() : Boolean {
+    return self.getTransferObjectType().isKindOf(JUDOPSM!MappedTransferObjectType);
+}

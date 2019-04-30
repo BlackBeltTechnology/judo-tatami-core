@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>hu.blackbelt.judo.tatami</groupId>
+        <artifactId>judo-tatami-parent</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+        <relativePath>../judo-tatami-parent</relativePath>
+    </parent>
+
+    <artifactId>judo-tatami-esm2psm</artifactId>
+    <packaging>bundle</packaging>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>copy-scripts</id>
+                        <!-- here the phase you need -->
+                        <phase>process-test-resources</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${basedir}/target/test-classes/epsilon</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>src/main/epsilon</directory>
+                                    <filtering>false</filtering>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!--plugin>
+                <groupId>hu.blackbelt</groupId>
+                <artifactId>unpack-artifact-maven-plugin</artifactId>
+                <version>1.0.0</version>
+                <executions>
+                    <execution>
+                        <id>copy-psm-scripts</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>unpack</goal>
+                        </goals>
+
+                        <configuration>
+                            <outDirectory>${basedir}/src/main/epsilon</outDirectory>
+                            <artifacts>
+                                <artifact>
+                                    <groupId>hu.blackbelt.judo.meta</groupId>
+                                    <artifactId>judo-meta-psm</artifactId>
+                                    <version>${judo-meta-psm-version}</version>
+                                    <resources>
+                                        <resource>
+                                            <source>judo/psm/operations</source>
+                                            <destination>operations/psm</destination>
+                                        </resource>
+                                    </resources>
+                                </artifact>
+                            </artifacts>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin-->
+
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <extensions>true</extensions>
+                <configuration>
+                    <obrRepository>NONE</obrRepository>
+                    <instructions>
+                        <Export-Package>
+                            tatami/esm2psm;version=${project.version},
+                            hu.blackbelt.judo.tatami.esm2psm.*;version=${project.version}
+                        </Export-Package>
+                        <Include-Resource>
+                            tatami/esm2psm=src/main/epsilon
+                        </Include-Resource>
+
+                        <Import-Package>
+                            org.osgi.framework;version="[1.8,2.0)",
+                            !lombok,
+                            meta/esm;version="${judo-meta-esm-import-range}",
+                            meta/psm;version="${judo-meta-psm-import-range}",
+                            hu.blackbelt.judo.meta.esm*;version="${judo-meta-esm-import-range}",
+                            hu.blackbelt.judo.meta.psm*;version="${judo-meta-psm-import-range}",
+                            com.google.common.base;version="[14.0,30)",
+                            com.google.common.cache;version="[14.0,30)",
+                            com.google.common.collect;version="[14.0,30)",
+                            com.google.common.io;version="[14.0,30)",
+                            com.google.common.primitives;version="[14.0,30)",
+                            com.google.common.hash;version="[14.0,30)",
+                            com.google.common.util.concurrent;version="[14.0,30)",
+                            javax.annotation;version="[1.0,2)",
+                            *
+                        </Import-Package>
+                        <Psm-Meta-Version-Range>${judo-meta-psm-import-range}</Psm-Meta-Version-Range>
+                    </instructions>
+                </configuration>
+            </plugin>
+
+        </plugins>
+    </build>
+
+    <dependencies>
+        <dependency>
+            <groupId>hu.blackbelt.judo.meta</groupId>
+            <artifactId>judo-meta-esm-runtime</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>hu.blackbelt.judo.meta</groupId>
+            <artifactId>judo-meta-psm-runtime</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>hu.blackbelt.judo.tatami</groupId>
+            <artifactId>judo-tatami-core</artifactId>
+        </dependency>
+    </dependencies>
+</project>
