@@ -48,15 +48,15 @@
         <karaf-version>4.2.1</karaf-version>
         <pax-exam-version>4.13.1</pax-exam-version>
         <slf4j-version>1.6.6</slf4j-version>
-        <judo-karaf-runtime-version>1.0.1_feature_EpsilonUpdate-88</judo-karaf-runtime-version>
+        <epsilon-version>1.5.1</epsilon-version>
 
         <timestamp>${maven.build.timestamp}</timestamp>
         <maven.build.timestamp.format>yyyyMMddHHmmss</maven.build.timestamp.format>
 
-        <epsilon-runtime-version>1.2.0_develop-84</epsilon-runtime-version>
+        <epsilon-runtime-version>1.2.0.develop_93</epsilon-runtime-version>
         <epsilon-maven-plugin-version>1.2.0_develop-62</epsilon-maven-plugin-version>
 
-        <judo-framework-version>2.0.0_develop-120</judo-framework-version>
+        <judo-framework-version>2.0.0_develop-125</judo-framework-version>
 
         <judo-meta-rdbms-version>1.0.1.develop_28</judo-meta-rdbms-version>
         <judo-meta-rdbms.import-range>[1.0,1.1)</judo-meta-rdbms.import-range>
@@ -115,7 +115,20 @@
 
         <emf-version>2.12.0</emf-version>
 
-        <osgi-utils-version>1.0.6</osgi-utils-version>
+        <cxf-version>3.3.1</cxf-version>
+        <osgi-utils-version>1.0.7</osgi-utils-version>
+        <bouncycastle-karaf-features-version>1.61.2</bouncycastle-karaf-features-version>
+        <tinybundles-karaf-features-version>3.0.0_1</tinybundles-karaf-features-version>
+        <google-karaf-features-version>1.0.1</google-karaf-features-version>
+        <javax-karaf-features-version>1.0.1</javax-karaf-features-version>
+        <eclipse-emf-karaf-features-version>2.12.1</eclipse-emf-karaf-features-version>
+        <eclipse-epsilon-karaf-features-version>1.5.1_1</eclipse-epsilon-karaf-features-version>
+        <eclipse-xtext-karaf-features-version>2.16.0_1</eclipse-xtext-karaf-features-version>
+        <tinybundles-karaf-features-version>3.0.0_1</tinybundles-karaf-features-version>
+        <antlr-karaf-features-version>1.0.1</antlr-karaf-features-version>
+        <apache-commons-karaf-features-version>1.0.2</apache-commons-karaf-features-version>
+        <apache-poi-karaf-features-version>1.0.0</apache-poi-karaf-features-version>
+        <apache-httpclient-karaf-features-version>4.5.3_2</apache-httpclient-karaf-features-version>
 
     </properties>
 
@@ -124,81 +137,49 @@
         <dependency>
             <groupId>hu.blackbelt.osgi.utils</groupId>
             <artifactId>osgi-api</artifactId>
-            <version>1.0.4</version>
+            <version>${osgi-utils-version}</version>
+            <scope>provided</scope>
         </dependency>
 
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <version>1.16.16</version>
+            <scope>provided</scope>
         </dependency>
         
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-log4j12</artifactId>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.hamcrest</groupId>
-            <artifactId>hamcrest-library</artifactId>
-            <scope>test</scope>
+            <scope>provided</scope>
         </dependency>
 
         <dependency>
             <groupId>org.osgi</groupId>
             <artifactId>org.osgi.core</artifactId>
             <version>6.0.0</version>
+            <scope>provided</scope>
         </dependency>
+
         <dependency>
             <groupId>org.osgi</groupId>
             <artifactId>osgi.cmpn</artifactId>
             <version>6.0.0</version>
+            <scope>provided</scope>
         </dependency>
+        
         <dependency>
             <groupId>org.osgi</groupId>
             <artifactId>org.osgi.annotation</artifactId>
             <version>6.0.0</version>
+            <scope>provided</scope>
         </dependency>
+        
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
-            <version>27.1-jre</version>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.emf</groupId>
-            <artifactId>org.eclipse.emf.ecore</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.emf</groupId>
-            <artifactId>org.eclipse.emf.common</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.emf</groupId>
-            <artifactId>org.eclipse.emf.ecore.xmi</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.jdt</groupId>
-            <artifactId>org.eclipse.jdt.core</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.platform</groupId>
-            <artifactId>org.eclipse.equinox.common</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>hu.blackbelt.epsilon</groupId>
-            <artifactId>epsilon-runtime-execution</artifactId>
-            <version>${epsilon-runtime-version}</version>
-        </dependency>
-        <dependency>
-            <groupId>hu.blackbelt.epsilon</groupId>
-            <artifactId>epsilon-runtime-osgi</artifactId>
-            <version>${epsilon-runtime-version}</version>
+            <version>20.0</version>
+            <scope>provided</scope>
         </dependency>
 
         <!-- https://mvnrepository.com/artifact/junit/junit -->
@@ -217,6 +198,17 @@
             <scope>test</scope>
         </dependency>
         
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-log4j12</artifactId>
+            <scope>test</scope>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.hamcrest</groupId>
+            <artifactId>hamcrest-library</artifactId>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <dependencyManagement>
@@ -270,6 +262,22 @@
                 <groupId>org.eclipse.jdt</groupId>
                 <artifactId>org.eclipse.jdt.core</artifactId>
                 <version>3.13.102</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.eclipse.epsilon</groupId>
+                <artifactId>epsilon-core</artifactId>
+                <version>${epsilon-version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.epsilon</groupId>
+                <artifactId>epsilon-emf</artifactId>
+                <version>${epsilon-version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.epsilon</groupId>
+                <artifactId>epsilon-spreadsheets</artifactId>
+                <version>${epsilon-version}</version>
             </dependency>
             <dependency>
                 <groupId>org.eclipse.platform</groupId>
@@ -347,6 +355,18 @@
                 <version>${judo-framework-version}</version>
             </dependency>
 
+            <dependency>
+                <groupId>hu.blackbelt.epsilon</groupId>
+                <artifactId>epsilon-runtime-execution</artifactId>
+                <version>${epsilon-runtime-version}</version>
+            </dependency>
+            
+            <dependency>
+                <groupId>hu.blackbelt.epsilon</groupId>
+                <artifactId>epsilon-runtime-osgi</artifactId>
+                <version>${epsilon-runtime-version}</version>
+            </dependency>
+            
             <dependency>
                 <groupId>hu.blackbelt.judo.tatami</groupId>
                 <artifactId>judo-tatami-core</artifactId>
@@ -431,6 +451,63 @@
         <pluginManagement>
             <plugins>
                 <plugin>
+                    <groupId>org.apache.karaf.tooling</groupId>
+                    <artifactId>karaf-maven-plugin</artifactId>
+                    <version>${karaf-version}</version>
+                </plugin>
+                
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>3.7.0</version>
+                    <configuration>
+                        <source>1.8</source>
+                        <target>1.8</target>
+                    </configuration>
+                </plugin>
+                
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-install-plugin</artifactId>
+                    <version>2.5.2</version>
+                    <executions>
+                        <execution>
+                            <id>default-install</id>
+                            <configuration>
+                                <skip>${deployOnly}</skip>
+                            </configuration>
+                        </execution>
+                        <execution>
+                            <id>default-test</id>
+                            <configuration>
+                                <skip>${deployOnly}</skip>
+                            </configuration>
+                        </execution>
+                    </executions>
+                </plugin>
+                
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-deploy-plugin</artifactId>
+                    <version>2.8.2</version>
+                </plugin>
+                
+                
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>build-helper-maven-plugin</artifactId>
+                    <version>3.0.0</version>
+                </plugin>
+                
+                <plugin>
+                    <artifactId>maven-surefire-plugin</artifactId>
+                    <version>3.0.0-M3</version>
+                    <configuration>
+                        <argLine>-Dfile.encoding=UTF-8</argLine>
+                    </configuration>
+                </plugin>
+
+                <plugin>
                     <groupId>org.apache.felix</groupId>
                     <artifactId>maven-bundle-plugin</artifactId>
                     <version>3.3.0</version>
@@ -481,15 +558,6 @@
                 </plugin>
             </plugins>
         </pluginManagement>
-        <plugins>
-            <plugin>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <version>3.0.0-M3</version>
-                <configuration>
-                    <argLine>-Dfile.encoding=UTF-8</argLine>
-                </configuration>
-            </plugin>
-        </plugins>
     </build>
     
     <profiles>

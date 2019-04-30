@@ -26,7 +26,7 @@ build:
       goals: clean deploy
       settings: .maven.xml
       maven_opts: -Dorg.ops4j.pax.url.mvn.settings=${WERCKER_ROOT}/.maven.xml -DuseCustomSettings=true
-      profiles: release-github,release-blackbelt
+      profiles: verify-feature,release-github,release-blackbelt
       cache_repo: true
 
 #  after-steps:
@@ -123,7 +123,7 @@ release:
       goals: clean deploy
       settings: .maven.xml
       maven_opts: -Dorg.ops4j.pax.url.mvn.settings=${WERCKER_ROOT}/.maven.xml -DuseCustomSettings=true
-      profiles: release-github,release-central
+      profiles: verify-feature,release-github,release-central
       cache_repo: true
 
     - script:

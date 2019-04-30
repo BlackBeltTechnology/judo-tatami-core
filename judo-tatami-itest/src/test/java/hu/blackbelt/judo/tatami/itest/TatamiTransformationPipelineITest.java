@@ -42,10 +42,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static hu.blackbelt.judo.framework.KarafTestUtil.judoKarafRuntimeRepo;
-import static hu.blackbelt.judo.framework.KarafTestUtil.karafConfig;
-import static hu.blackbelt.judo.tatami.itest.TatamiTestUtil.metaBundles;
-import static hu.blackbelt.judo.tatami.itest.TatamiTestUtil.tatamiBundles;
+import static hu.blackbelt.judo.framework.KarafTestUtil.*;
+import static hu.blackbelt.judo.tatami.itest.TatamiTestUtil.*;
 import static hu.blackbelt.judo.tatami.itest.TestUtility.*;
 import static junit.framework.TestCase.assertNotNull;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -70,10 +68,6 @@ public class TatamiTransformationPipelineITest {
     public static final String FRAMEWORK_COMPILER_API = "compiler-api";
 
     public static final String FEATURE_SCR = "scr";
-    public static final String FEATURE_OSGI_UTILS = "osgi-utils";
-    public static final String FEATURE_EPSILON_RUNTIME = "epsilon-runtime";
-    public static final String FEATURE_ECLIPSE_XTEXT = "eclipse-xtext";
-    public static final String FEATURE_SWAGGER_CORE = "cxf-rs-description-swagger2";
     public static final String FEATURE_TINYBUNDLES = "tinybundles";
 
 
@@ -81,8 +75,6 @@ public class TatamiTransformationPipelineITest {
     public static final String BLACKBELT_CXF_GROUPID = "hu.blackbelt.cxf";
     public static final String JAXRS_APPLICATION_MANAGER = "cxf-jaxrs-application-manager";
     public static final String JAXRS_APPLICATION_MANAGER_VERSION = "0.4.0";
-    public static final String FEATURE_CXF_JAXRS = "cxf-jaxrs";
-    public static final String FEATURE_CXF_JACKSON = "cxf-jackson";
 
     @Inject
     LogService log;
@@ -126,8 +118,36 @@ public class TatamiTransformationPipelineITest {
 
         return combine(combine(karafConfig(this.getClass()), combine(metaBundles(), tatamiBundles())),
 
-                features(judoKarafRuntimeRepo() , FEATURE_SCR, FEATURE_OSGI_UTILS, FEATURE_EPSILON_RUNTIME,
-                        FEATURE_ECLIPSE_XTEXT, FEATURE_SWAGGER_CORE, FEATURE_TINYBUNDLES, FEATURE_CXF_JAXRS, FEATURE_CXF_JACKSON),
+                features(karafStandardRepo(), FEATURE_SCR),
+
+                features(blackbeltJavax()),
+
+                features(blackbeltBouncCastle()),
+
+                features(blackbeltApacheCommons()),
+
+                features(blackbeltApacheHttpClient()),
+
+                features(blackbeltApachePoi()),
+
+                features(blackbeltOsgiUtils() , FEATURE_OSGI_UTILS),
+
+                features(blackbeltGoogle()),
+
+                features(blackbeltTinybundles() , FEATURE_TINYBUNDLES),
+
+                features(blackbeltEclipseEmf()),
+
+                features(blackbeltAntlr()),
+
+                features(blackbeltEclipseEpsilon()),
+
+                features(blackbeltEpsilonRuntime(), FEATURE_EPSILON_RUNTIME),
+
+                features(blackbeltEclipseXtext() , FEATURE_ECLIPSE_XTEXT),
+
+                features(apacheCxf() , FEATURE_CXF_JACKSON, FEATURE_CXF_JAXRS, FEATURE_SWAGGER_CORE),
+
 
                 newConfiguration("hu.blackbelt.jaxrs.providers.JacksonProvider")
                         .put("JacksonProvider.SerializationFeature.INDENT_OUTPUT", "true").asOption(),

@@ -1,7 +1,9 @@
 package hu.blackbelt.judo.tatami.itest;
 
 import org.ops4j.pax.exam.Option;
+import org.ops4j.pax.exam.options.MavenArtifactUrlReference;
 
+import static org.ops4j.pax.exam.CoreOptions.maven;
 import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
 
 public class TatamiTestUtil {
@@ -30,6 +32,82 @@ public class TatamiTestUtil {
     public static final String TATAMI_ASM2OPENAPI = "judo-tatami-asm2openapi";
     public static final String TATAMI_ASM2JAXRSAPI = "judo-tatami-asm2jaxrsapi";
 
+
+    public static final String FEATURE_EPSILON_RUNTIME = "epsilon-runtime";
+    public static final String FEATURE_ECLIPSE_XTEXT = "eclipse-xtext";
+    public static final String FEATURE_OSGI_UTILS = "osgi-utils";
+    public static final String FEATURE_GOOGLE_GUAVA = "guava";
+    public static final String FEATURE_CXF_JAXRS = "cxf-jaxrs";
+    public static final String FEATURE_CXF_JACKSON = "cxf-jackson";
+    public static final String FEATURE_SWAGGER_CORE = "cxf-rs-description-swagger2";
+    public static final String FEATURE_ANTLR_3 = "antlr3";
+
+    public static MavenArtifactUrlReference apacheCxf() {
+        return maven().groupId("org.apache.cxf.karaf").artifactId("apache-cxf").versionAsInProject().classifier("features").type("xml");
+    }
+
+
+    public static MavenArtifactUrlReference blackbeltOsgiUtils() {
+        return maven().groupId("hu.blackbelt.osgi.utils").artifactId("features").versionAsInProject().classifier("features").type("xml");
+    }
+
+    public static MavenArtifactUrlReference blackbeltGoogle() {
+        return maven().groupId("hu.blackbelt.karaf.features").artifactId("google-features").versionAsInProject().classifier("features").type("xml");
+    }
+
+    public static MavenArtifactUrlReference blackbeltJavax() {
+        return maven().groupId("hu.blackbelt.karaf.features").artifactId("javax-features").versionAsInProject().classifier("features").type("xml");
+    }
+
+    public static MavenArtifactUrlReference blackbeltBouncCastle() {
+        return maven().groupId("hu.blackbelt.karaf.features").artifactId("bouncycastle-features").versionAsInProject().classifier("features").type("xml");
+    }
+
+    public static MavenArtifactUrlReference blackbeltApacheCommons() {
+        return maven().groupId("hu.blackbelt.karaf.features").artifactId("apache-commons-features").versionAsInProject().classifier("features").type("xml");
+    }
+
+    public static MavenArtifactUrlReference blackbeltApacheHttpClient() {
+        return maven().groupId("hu.blackbelt.karaf.features").artifactId("apache-httpclient-features").versionAsInProject().classifier("features").type("xml");
+    }
+
+    public static MavenArtifactUrlReference blackbeltApachePoi() {
+        return maven().groupId("hu.blackbelt.karaf.features").artifactId("apache-poi-features").versionAsInProject().classifier("features").type("xml");
+    }
+
+    public static MavenArtifactUrlReference blackbeltEclipseEmf() {
+        return maven().groupId("hu.blackbelt.karaf.features").artifactId("eclipse-emf-features").versionAsInProject().classifier("features").type("xml");
+    }
+
+    public static MavenArtifactUrlReference blackbeltEclipseEpsilon() {
+        return maven().groupId("hu.blackbelt.karaf.features").artifactId("eclipse-epsilon-features").versionAsInProject().classifier("features").type("xml");
+    }
+
+    public static MavenArtifactUrlReference blackbeltEclipseXtext() {
+        return maven().groupId("hu.blackbelt.karaf.features").artifactId("eclipse-xtext-features").versionAsInProject().classifier("features").type("xml");
+    }
+
+    public static MavenArtifactUrlReference blackbeltTinybundles() {
+        return maven().groupId("hu.blackbelt.karaf.features").artifactId("tinybundles-features").versionAsInProject().classifier("features").type("xml");
+    }
+
+    public static MavenArtifactUrlReference blackbeltAntlr() {
+        return maven().groupId("hu.blackbelt.karaf.features").artifactId("antlr-features").versionAsInProject().classifier("features").type("xml");
+    }
+
+    public static MavenArtifactUrlReference blackbeltEpsilonRuntime() {
+        return maven().groupId("hu.blackbelt.epsilon").artifactId("features").versionAsInProject().classifier("features").type("xml");
+    }
+
+    /*
+    public static MavenArtifactUrlReference judoKarafRuntimeRepo() {
+        return maven()
+                .groupId(JUDO_KARAF_GROUPID)
+                .artifactId(JUDO_KARAF_RUNTIME_FEATURES)
+                .versionAsInProject()
+                .classifier(FEATURES)
+                .type(XML);
+    } */
 
     public static Option[] metaBundles() {
         return new Option[]{
