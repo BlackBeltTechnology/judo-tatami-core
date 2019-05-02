@@ -1,0 +1,5 @@
+@Cached
+operation ESM!AttributeFeature getEntityType() : ESM!EntityType {
+	return ESM!EntityType.all.selectOne(p | p.elements.includes(self));
+}
+//TODO: check if being retard

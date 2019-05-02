@@ -1,0 +1,37 @@
+import "../namespace.etl";
+import "../type/cardinality.etl";
+
+@abstract
+rule CreateReferenceTypedElement
+	transform s: ESM!ReferenceTypedElement
+	to t: JUDOPSM!ReferenceTypedElement
+	extends CreateNamedElement {
+	  //TODO: check if ~isCollection(), cardinality needed
+	  t.`target` = s.`target`;
+	  
+	  log.debug("Created ReferenceTypedElement: " + t.name);
+}
+
+@abstract
+rule CreateRelation
+	transform s: ESM!RelationFeature
+	to t: JUDOPSM!Relation
+	extends CreateReferenceTypedElement {
+	//TODO: check if cascadeDelete needed
+	log.debug("Created Relation: " + t.name);
+}
+/*
+rule CreateContainment
+	transform s: ESM!Containment
+	to t: JUDOPSM!Containment
+	extends CreateRelation {
+	log.debug("Created Containment: " + t.name);
+}
+
+rule CreateEndpoint
+	transform s: ESM!Endpoint
+	to t: JUDOPSM!Endpoint
+	extends CreateRelation {
+	log.debug("Created Endpoint: " + t.name);
+}
+*/

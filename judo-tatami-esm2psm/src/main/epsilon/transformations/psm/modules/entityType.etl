@@ -1,8 +1,0 @@
-import "namespace.etl";
-
-rule CreateEntityType
-  transform s : ESM!EntityType
-  to t : JUDOPSM!EntityType
-  extends CreateNamespaceElement {
-    t.`abstract` = s.`abstract`;
-}
