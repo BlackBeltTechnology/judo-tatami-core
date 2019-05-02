@@ -75,6 +75,24 @@ public class TatamiTransformationPipelineITest {
     public static final String BLACKBELT_CXF_GROUPID = "hu.blackbelt.cxf";
     public static final String JAXRS_APPLICATION_MANAGER = "cxf-jaxrs-application-manager";
     public static final String JAXRS_APPLICATION_MANAGER_VERSION = "0.4.0";
+    public static final String FEATURE_JUDO_TATAMI_META_ASM = "judo-tatami-meta-asm";
+    public static final String FEATURE_JUDO_TATAMI_META_PSM = "judo-tatami-meta-psm";
+    public static final String FEATURE_JUDO_TATAMI_META_JQL = "judo-tatami-meta-jql";
+    public static final String FEATURE_JUDO_TATAMI_META_JQL_EXTRACT = "judo-tatami-meta-jql-extract";
+    public static final String FEATURE_JUDO_TATAMI_META_EXPRESSION = "judo-tatami-meta-expression";
+    public static final String FEATURE_JUDO_TATAMI_CORE = "judo-tatami-core";
+    public static final String FEATURE_JUDO_TATAMI_META_LIQUIBASE = "judo-tatami-meta-liquibase";
+    public static final String FEATURE_JUDO_TATAMI_META_RDBMS = "judo-tatami-meta-rdbms";
+    public static final String FEATURE_JUDO_TATAMI_META_OPENAPI = "judo-tatami-meta-openapi";
+    public static final String FEATURE_JUDO_TATAMI_META_MEASURE = "judo-tatami-meta-measure";
+    public static final String FEATURE_JUDO_TATAMI_PSM_2_ASM = "judo-tatami-psm2asm";
+    public static final String FEATURE_JUDO_TATAMI_PSM_2_JQL = "judo-tatami-psm2jql";
+    public static final String FEATURE_JUDO_TATAMI_PSM_2_MEASURE = "judo-tatami-psm2measure";
+    public static final String FEATURE_JUDO_TATAMI_ASM_2_JAXRSAPI = "judo-tatami-asm2jaxrsapi";
+    public static final String FEATURE_JUDO_TATAMI_ASM_2_OPENAPI = "judo-tatami-asm2openapi";
+    public static final String FEATURE_JUDO_TATAMI_RDBMS_2_LIQUIBASE = "judo-tatami-rdbms2liquibase";
+    public static final String FEATURE_JUDO_TATAMI_JQL_2_EXPRESSION = "judo-tatami-jql2expression";
+    public static final String FEATURE_JUDO_TATAMI_ASM_2_RDBMS = "judo-tatami-asm2rdbms";
 
     @Inject
     LogService log;
@@ -116,9 +134,12 @@ public class TatamiTransformationPipelineITest {
     @Configuration
     public Option[] config() throws FileNotFoundException {
 
-        return combine(combine(karafConfig(this.getClass()), combine(metaBundles(), tatamiBundles())),
 
-                features(karafStandardRepo(), FEATURE_SCR),
+
+
+        return combine(karafConfig(this.getClass()),
+
+                features(karafStandardRepo()),
 
                 features(blackbeltJavax()),
 
@@ -130,11 +151,11 @@ public class TatamiTransformationPipelineITest {
 
                 features(blackbeltApachePoi()),
 
-                features(blackbeltOsgiUtils() , FEATURE_OSGI_UTILS),
+                features(blackbeltOsgiUtils()),
 
                 features(blackbeltGoogle()),
 
-                features(blackbeltTinybundles() , FEATURE_TINYBUNDLES),
+                features(blackbeltTinybundles()),
 
                 features(blackbeltEclipseEmf()),
 
@@ -142,11 +163,16 @@ public class TatamiTransformationPipelineITest {
 
                 features(blackbeltEclipseEpsilon()),
 
-                features(blackbeltEpsilonRuntime(), FEATURE_EPSILON_RUNTIME),
+                features(blackbeltEpsilonRuntime()),
 
-                features(blackbeltEclipseXtext() , FEATURE_ECLIPSE_XTEXT),
+                features(blackbeltEclipseXtext()),
 
-                features(apacheCxf() , FEATURE_CXF_JACKSON, FEATURE_CXF_JAXRS, FEATURE_SWAGGER_CORE),
+                features(apacheCxf(), FEATURE_CXF_JAXRS),
+
+                features(blackbeltTatami(), FEATURE_JUDO_TATAMI_META_ASM, FEATURE_JUDO_TATAMI_META_PSM, FEATURE_JUDO_TATAMI_META_JQL, FEATURE_JUDO_TATAMI_META_JQL_EXTRACT, FEATURE_JUDO_TATAMI_META_EXPRESSION,
+                        FEATURE_JUDO_TATAMI_META_MEASURE, FEATURE_JUDO_TATAMI_META_OPENAPI, FEATURE_JUDO_TATAMI_META_RDBMS, FEATURE_JUDO_TATAMI_META_LIQUIBASE, FEATURE_JUDO_TATAMI_CORE,
+                        FEATURE_JUDO_TATAMI_PSM_2_ASM, FEATURE_JUDO_TATAMI_PSM_2_JQL, FEATURE_JUDO_TATAMI_PSM_2_MEASURE, FEATURE_JUDO_TATAMI_ASM_2_JAXRSAPI, FEATURE_JUDO_TATAMI_ASM_2_OPENAPI,
+                        FEATURE_JUDO_TATAMI_ASM_2_RDBMS, FEATURE_JUDO_TATAMI_JQL_2_EXPRESSION, FEATURE_JUDO_TATAMI_RDBMS_2_LIQUIBASE),
 
 
                 newConfiguration("hu.blackbelt.jaxrs.providers.JacksonProvider")
@@ -155,6 +181,7 @@ public class TatamiTransformationPipelineITest {
                 editConfigurationFilePut("etc/org.ops4j.pax.web.cfg",
                         "org.osgi.service.http.port", "8181"),
 
+                /* Added for test purposes only */
                 mavenBundle()
                         .groupId(BLACKBELT_CXF_GROUPID)
                         .artifactId(JAXRS_APPLICATION_MANAGER)

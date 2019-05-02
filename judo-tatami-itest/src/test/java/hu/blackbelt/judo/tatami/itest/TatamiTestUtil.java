@@ -1,10 +1,8 @@
 package hu.blackbelt.judo.tatami.itest;
 
-import org.ops4j.pax.exam.Option;
 import org.ops4j.pax.exam.options.MavenArtifactUrlReference;
 
 import static org.ops4j.pax.exam.CoreOptions.maven;
-import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
 
 public class TatamiTestUtil {
     public static final String META_GROUPID = "hu.blackbelt.judo.meta";
@@ -99,6 +97,10 @@ public class TatamiTestUtil {
         return maven().groupId("hu.blackbelt.epsilon").artifactId("features").versionAsInProject().classifier("features").type("xml");
     }
 
+    public static MavenArtifactUrlReference blackbeltTatami() {
+        return maven().groupId("hu.blackbelt.judo.tatami").artifactId("features").versionAsInProject().classifier("features").type("xml");
+    }
+
     /*
     public static MavenArtifactUrlReference judoKarafRuntimeRepo() {
         return maven()
@@ -109,6 +111,7 @@ public class TatamiTestUtil {
                 .type(XML);
     } */
 
+    /*
     public static Option[] metaBundles() {
         return new Option[]{
                 mavenBundle()
@@ -205,7 +208,8 @@ public class TatamiTestUtil {
                         .artifactId(TATAMI_RDBMS2LIQUIBSE)
                         .versionAsInProject().start(),
 
-
         };
     }
+
+     */
 }

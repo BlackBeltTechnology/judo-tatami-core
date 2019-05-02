@@ -27,17 +27,12 @@
                     <obrRepository>NONE</obrRepository>
                     <instructions>
                         <Export-Package>
-                            tatami/psm2asm;version=${project.version},
                             hu.blackbelt.judo.tatami.core.*;version=${project.version}
                         </Export-Package>
 
                         <Import-Package>
                             org.osgi.framework;version="[1.8,2.0)",
                             !lombok,
-                            meta/psm;version="${judo-meta-psm-import-range}",
-                            meta/asm;version="${judo-meta-asm-import-range}",
-                            hu.blackbelt.judo.meta.psm*;version="${judo-meta-psm-import-range}",
-                            hu.blackbelt.judo.meta.asm*;version="${judo-meta-asm-import-range}",
                             com.google.common.base;version="[14.0,30)",
                             com.google.common.cache;version="[14.0,30)",
                             com.google.common.collect;version="[14.0,30)",

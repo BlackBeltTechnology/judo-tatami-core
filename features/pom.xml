@@ -6,7 +6,7 @@
         <groupId>hu.blackbelt.judo.tatami</groupId>
         <artifactId>judo-tatami-parent</artifactId>
         <version>1.0.0-SNAPSHOT</version>
-        <relativePath>../../judo-tatami-parent</relativePath>
+        <relativePath>../judo-tatami-parent</relativePath>
     </parent>
     <artifactId>features</artifactId>
     <packaging>feature</packaging>
@@ -95,10 +95,24 @@
                                         <feature>shell-compat</feature>
                                     </framework>
                                     <features>
-                                        <feature>judo-tatami-minimal</feature>
-                                        <feature>judo-tatami-full</feature>
-                                        <feature>judo-tatami-meta</feature>
-                                        <feature>judo-tatami</feature>
+                                        <feature>judo-tatami-meta-asm</feature>
+                                        <feature>judo-tatami-meta-psm</feature>
+                                        <feature>judo-tatami-meta-jql</feature>
+                                        <feature>judo-tatami-meta-jql-extract</feature>
+                                        <feature>judo-tatami-meta-expression</feature>
+                                        <feature>judo-tatami-meta-measure</feature>
+                                        <feature>judo-tatami-meta-openapi</feature>
+                                        <feature>judo-tatami-meta-rdbms</feature>
+                                        <feature>judo-tatami-meta-liquibase</feature>
+                                        <feature>judo-tatami-core</feature>
+                                        <feature>judo-tatami-psm2asm</feature>
+                                        <feature>judo-tatami-psm2jql</feature>
+                                        <feature>judo-tatami-psm2measure</feature>
+                                        <feature>judo-tatami-asm2jaxrsapi</feature>
+                                        <feature>judo-tatami-asm2openapi</feature>
+                                        <feature>judo-tatami-asm2rdbms</feature>
+                                        <feature>judo-tatami-jql2expression</feature>
+                                        <feature>judo-tatami-rdbms2liquibase</feature>
                                     </features>
                                 </configuration>
                             </execution>

@@ -42,79 +42,79 @@
             <organizationUrl>http://www.blackbelt.hu</organizationUrl>
         </developer>
     </developers>
-
+    
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <karaf-version>4.2.1</karaf-version>
         <pax-exam-version>4.13.1</pax-exam-version>
         <slf4j-version>1.6.6</slf4j-version>
         <epsilon-version>1.5.1</epsilon-version>
-
+        
         <timestamp>${maven.build.timestamp}</timestamp>
         <maven.build.timestamp.format>yyyyMMddHHmmss</maven.build.timestamp.format>
-
+        
         <epsilon-runtime-version>1.2.0.develop_93</epsilon-runtime-version>
         <epsilon-maven-plugin-version>1.2.0_develop-62</epsilon-maven-plugin-version>
-
+        
         <judo-framework-version>2.0.0_develop-125</judo-framework-version>
-
+        
         <judo-meta-rdbms-version>1.0.1.develop_28</judo-meta-rdbms-version>
         <judo-meta-rdbms.import-range>[1.0,1.1)</judo-meta-rdbms.import-range>
-
+        
         <judo-meta-esm-version>1.0.0.develop_5</judo-meta-esm-version>
         <judo-meta-esm-import-range>[1.0,1.1)</judo-meta-esm-import-range>
-
+        
         <judo-meta-psm-version>1.0.1.develop_257</judo-meta-psm-version>
         <judo-meta-psm-import-range>[1.0,1.1)</judo-meta-psm-import-range>
-
+        
         <judo-meta-psm-jql-version>1.0.0.develop_19</judo-meta-psm-jql-version>
         <judo-meta-psm-jql-import-range>[1.0,1.1)</judo-meta-psm-jql-import-range>
-
+        
         <judo-meta-psm-jql-extract-version>1.0.0.develop_16</judo-meta-psm-jql-extract-version>
         <judo-meta-psm-jql-extract-import-range>[1.0,1.1)</judo-meta-psm-jql-extract-import-range>
-
+        
         <!--
-        <judo-meta-odata.version>1.0.0-develop-12</judo-meta-odata.version>
-        <judo-meta-odata.import-range>[1.0,1.1)</judo-meta-odata.import-range>
-        -->
-
+         <judo-meta-odata.version>1.0.0-develop-12</judo-meta-odata.version>
+         <judo-meta-odata.import-range>[1.0,1.1)</judo-meta-odata.import-range>
+         -->
+        
         <judo-meta-asm-version>1.0.0-develop-35</judo-meta-asm-version>
         <judo-meta-asm-import-range>[1.0,1.1)</judo-meta-asm-import-range>
-
+        
         <judo-meta-expression-version>1.0.1.develop_110</judo-meta-expression-version>
         <judo-meta-expression-import-range>[1.0,1.1)</judo-meta-expression-import-range>
-
+        
         <judo-meta-measure-version>1.0.1.develop_23</judo-meta-measure-version>
         <judo-meta-measure-import-range>[1.0,1.1)</judo-meta-measure-import-range>
-
+        
         <judo-meta-liquibase-version>1.0.1.develop_8</judo-meta-liquibase-version>
         <judo-meta-liquibase-import-range>[1.0,1.1)</judo-meta-liquibase-import-range>
-
+        
         <judo-meta-openapi-version>1.0.0.develop_76</judo-meta-openapi-version>
         <judo-meta-openapi-import-range>[1.0,1.1)</judo-meta-openapi-import-range>
-
+        
         <test.asm.model.groupId>${project.groupId}</test.asm.model.groupId>
         <test.asm.model.artifactId>judo-tatami-psm2asm</test.asm.model.artifactId>
         <test.asm.model.version>${project.version}</test.asm.model.version>
-
+        
         <test.jqle.model.groupId>${project.groupId}</test.jqle.model.groupId>
         <test.jqle.model.artifactId>judo-tatami-psm2jql</test.jqle.model.artifactId>
         <test.jqle.model.version>${project.version}</test.jqle.model.version>
-
+        
         <test.measure.model.groupId>${project.groupId}</test.measure.model.groupId>
         <test.measure.model.artifactId>judo-tatami-psm2measure</test.measure.model.artifactId>
         <test.measure.model.version>${project.version}</test.measure.model.version>
-
+        
         <test.psm.model.groupId>hu.blackbelt.northwind</test.psm.model.groupId>
         <test.psm.model.artifactId>northwind-runtime</test.psm.model.artifactId>
         <test.psm.model.version>1.0.1.develop_101</test.psm.model.version>
-
+        
         <test.rdbms.model.groupId>${project.groupId}</test.rdbms.model.groupId>
         <test.rdbms.model.artifactId>judo-tatami-asm2rdbms</test.rdbms.model.artifactId>
         <test.rdbms.model.version>${project.version}</test.rdbms.model.version>
-
+        
         <emf-version>2.12.0</emf-version>
-
+        
         <cxf-version>3.3.1</cxf-version>
         <osgi-utils-version>1.0.7</osgi-utils-version>
         <bouncycastle-karaf-features-version>1.61.2</bouncycastle-karaf-features-version>
@@ -129,10 +129,10 @@
         <apache-commons-karaf-features-version>1.0.2</apache-commons-karaf-features-version>
         <apache-poi-karaf-features-version>1.0.0</apache-poi-karaf-features-version>
         <apache-httpclient-karaf-features-version>4.5.3_2</apache-httpclient-karaf-features-version>
-
+        
     </properties>
-
-
+    
+    
     <dependencies>
         <dependency>
             <groupId>hu.blackbelt.osgi.utils</groupId>
@@ -140,7 +140,7 @@
             <version>${osgi-utils-version}</version>
             <scope>provided</scope>
         </dependency>
-
+        
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
@@ -153,14 +153,14 @@
             <artifactId>slf4j-api</artifactId>
             <scope>provided</scope>
         </dependency>
-
+        
         <dependency>
             <groupId>org.osgi</groupId>
             <artifactId>org.osgi.core</artifactId>
             <version>6.0.0</version>
             <scope>provided</scope>
         </dependency>
-
+        
         <dependency>
             <groupId>org.osgi</groupId>
             <artifactId>osgi.cmpn</artifactId>
@@ -181,7 +181,7 @@
             <version>20.0</version>
             <scope>provided</scope>
         </dependency>
-
+        
         <!-- https://mvnrepository.com/artifact/junit/junit -->
         <dependency>
             <groupId>junit</groupId>
@@ -210,7 +210,7 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
-
+    
     <dependencyManagement>
         <dependencies>
             <dependency>
@@ -263,7 +263,7 @@
                 <artifactId>org.eclipse.jdt.core</artifactId>
                 <version>3.13.102</version>
             </dependency>
-
+            
             <dependency>
                 <groupId>org.eclipse.epsilon</groupId>
                 <artifactId>epsilon-core</artifactId>
@@ -283,11 +283,6 @@
                 <groupId>org.eclipse.platform</groupId>
                 <artifactId>org.eclipse.equinox.common</artifactId>
                 <version>3.10.0</version>
-            </dependency>
-            <dependency>
-                <groupId>hu.blackbelt.judo.tatami</groupId>
-                <artifactId>judo-tatami-core</artifactId>
-                <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>hu.blackbelt.judo.meta</groupId>
@@ -325,36 +320,36 @@
                 <version>${judo-meta-rdbms-version}</version>
             </dependency>
             <!--
-            <dependency>
-                <groupId>hu.blackbelt.judo.meta</groupId>
-                <artifactId>judo-meta-odata</artifactId>
-                <version>${judo-meta-odata-version}</version>
-            </dependency>
-            -->
+             <dependency>
+             <groupId>hu.blackbelt.judo.meta</groupId>
+             <artifactId>judo-meta-odata</artifactId>
+             <version>${judo-meta-odata-version}</version>
+             </dependency>
+             -->
             <dependency>
                 <groupId>hu.blackbelt.judo.meta</groupId>
                 <artifactId>judo-meta-measure-runtime</artifactId>
                 <version>${judo-meta-measure-version}</version>
             </dependency>
-
+            
             <dependency>
                 <groupId>hu.blackbelt.judo.meta</groupId>
                 <artifactId>judo-meta-liquibase-runtime</artifactId>
                 <version>${judo-meta-liquibase-version}</version>
             </dependency>
-
+            
             <dependency>
                 <groupId>hu.blackbelt.judo.meta</groupId>
                 <artifactId>judo-meta-openapi-runtime</artifactId>
                 <version>${judo-meta-openapi-version}</version>
             </dependency>
-
+            
             <dependency>
                 <groupId>hu.blackbelt.judo.framework</groupId>
                 <artifactId>compiler-api</artifactId>
                 <version>${judo-framework-version}</version>
             </dependency>
-
+            
             <dependency>
                 <groupId>hu.blackbelt.epsilon</groupId>
                 <artifactId>epsilon-runtime-execution</artifactId>
@@ -372,79 +367,79 @@
                 <artifactId>judo-tatami-core</artifactId>
                 <version>1.0.0-SNAPSHOT</version>
             </dependency>
-
+            
             <dependency>
                 <groupId>hu.blackbelt.judo.tatami</groupId>
                 <artifactId>judo-tatami-asm2jaxrsapi</artifactId>
                 <version>1.0.0-SNAPSHOT</version>
             </dependency>
-
+            
             <dependency>
                 <groupId>hu.blackbelt.judo.tatami</groupId>
                 <artifactId>judo-tatami-asm2odata</artifactId>
                 <version>1.0.0-SNAPSHOT</version>
             </dependency>
-
+            
             <dependency>
                 <groupId>hu.blackbelt.judo.tatami</groupId>
                 <artifactId>judo-tatami-asm2openapi</artifactId>
                 <version>1.0.0-SNAPSHOT</version>
             </dependency>
-
+            
             <dependency>
                 <groupId>hu.blackbelt.judo.tatami</groupId>
                 <artifactId>judo-tatami-asm2rdbms</artifactId>
                 <version>1.0.0-SNAPSHOT</version>
             </dependency>
-
+            
             <dependency>
                 <groupId>hu.blackbelt.judo.tatami</groupId>
                 <artifactId>judo-tatami-jql2expression</artifactId>
                 <version>1.0.0-SNAPSHOT</version>
             </dependency>
-
+            
             <dependency>
                 <groupId>hu.blackbelt.judo.tatami</groupId>
                 <artifactId>judo-tatami-itest</artifactId>
                 <version>1.0.0-SNAPSHOT</version>
             </dependency>
-
+            
             <dependency>
                 <groupId>hu.blackbelt.judo.tatami</groupId>
                 <artifactId>judo-tatami-psm2asm</artifactId>
                 <version>1.0.0-SNAPSHOT</version>
             </dependency>
-
+            
             <dependency>
                 <groupId>hu.blackbelt.judo.tatami</groupId>
                 <artifactId>judo-tatami-psm2jql</artifactId>
                 <version>1.0.0-SNAPSHOT</version>
             </dependency>
-
+            
             <dependency>
                 <groupId>hu.blackbelt.judo.tatami</groupId>
                 <artifactId>judo-tatami-psm2measure</artifactId>
                 <version>1.0.0-SNAPSHOT</version>
             </dependency>
-
+            
             <dependency>
                 <groupId>hu.blackbelt.judo.tatami</groupId>
                 <artifactId>judo-tatami-rdbms2liquibase</artifactId>
                 <version>1.0.0-SNAPSHOT</version>
             </dependency>
-
+            
             <dependency>
                 <groupId>org.hamcrest</groupId>
                 <artifactId>hamcrest-library</artifactId>
                 <version>1.3</version>
             </dependency>
-
+            
             <dependency>
                 <groupId>org.ops4j.pax.tinybundles</groupId>
                 <artifactId>tinybundles</artifactId>
                 <version>3.0.0</version>
             </dependency>
-
+            
         </dependencies>
     </dependencyManagement>
     <build>
@@ -464,6 +459,12 @@
                         <source>1.8</source>
                         <target>1.8</target>
                     </configuration>
+                </plugin>
+                
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-resources-plugin</artifactId>
+                    <version>3.1.0</version>
                 </plugin>
                 
                 <plugin>
@@ -506,7 +507,7 @@
                         <argLine>-Dfile.encoding=UTF-8</argLine>
                     </configuration>
                 </plugin>
-
+                
                 <plugin>
                     <groupId>org.apache.felix</groupId>
                     <artifactId>maven-bundle-plugin</artifactId>
@@ -529,32 +530,32 @@
                 </plugin>
                 <!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
                 <plugin>
-                	<groupId>org.eclipse.m2e</groupId>
-                	<artifactId>lifecycle-mapping</artifactId>
-                	<version>1.0.0</version>
-                	<configuration>
-                		<lifecycleMappingMetadata>
-                			<pluginExecutions>
-                				<pluginExecution>
-                					<pluginExecutionFilter>
-                						<groupId>hu.blackbelt</groupId>
-                						<artifactId>
-                							unpack-artifact-maven-plugin
-                						</artifactId>
-                						<versionRange>
-                							[1.0.0,)
-                						</versionRange>
-                						<goals>
-                							<goal>unpack</goal>
-                						</goals>
-                					</pluginExecutionFilter>
-                					<action>
-                						<ignore></ignore>
-                					</action>
-                				</pluginExecution>
-                			</pluginExecutions>
-                		</lifecycleMappingMetadata>
-                	</configuration>
+                    <groupId>org.eclipse.m2e</groupId>
+                    <artifactId>lifecycle-mapping</artifactId>
+                    <version>1.0.0</version>
+                    <configuration>
+                        <lifecycleMappingMetadata>
+                            <pluginExecutions>
+                                <pluginExecution>
+                                    <pluginExecutionFilter>
+                                        <groupId>hu.blackbelt</groupId>
+                                        <artifactId>
+                                            unpack-artifact-maven-plugin
+                                        </artifactId>
+                                        <versionRange>
+                                            [1.0.0,)
+                                        </versionRange>
+                                        <goals>
+                                            <goal>unpack</goal>
+                                        </goals>
+                                    </pluginExecutionFilter>
+                                    <action>
+                                        <ignore></ignore>
+                                    </action>
+                                </pluginExecution>
+                            </pluginExecutions>
+                        </lifecycleMappingMetadata>
+                    </configuration>
                 </plugin>
             </plugins>
         </pluginManagement>
