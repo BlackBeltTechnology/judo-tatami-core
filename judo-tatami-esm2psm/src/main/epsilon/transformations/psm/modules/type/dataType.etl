@@ -1,124 +1,75 @@
 import "../namespace.etl";
 import "../../../../operations/esm/type/_importType.eol";
 
-//done?
-@abstract
-rule CreateType
-	transform s: ESM!Type
-	to t: JUDOPSM!Type
-	extends CreateNamespaceElement {
-	log.debug("Created Type: " + t.name);
-}
-
-//done?
-@abstract
-rule CreateDataType
-	transform s: ESM!DataType
-	to t: JUDOPSM!DataType 
-	extends CreateType {
-	log.debug("Created DataType: " + t.name);
-}
-
-@abstract
-rule CreatePrimitive
-	transform s: ESM!Primitive
-	to t: JUDOPSM!Primitive
-	extends CreateDataType {
-	//TODO: (is*() methods?)
-	log.debug("Created Primitive: " + t.name);
-}
-
-/* FLAT PRIMITIVE MOMMY */
-//done?
-@abstract
-rule CreateFlatPrimitiveType
-	transform s: ESM!FlatPrimitiveType
-	to t: JUDOPSM!FlatPrimitiveType
-	extends CreatePrimitive {
-	log.debug("Created FlatPrimitiveType: " + t.name);
-}
-
-/* FLAT PRIMITIVE CHILDREN */
-//done?
 rule CreateXMLType
 	transform s: ESM!XMLType
 	to t: JUDOPSM!XMLType
-	extends CreateFlatPrimitiveType {
+	extends CreateNamespaceElement {
 	t.`xmlNameSpace` = s.`xmlNameSpace`;
 	t.`xmlElement` = s.`xmlElement`;
 	log.debug("Created XMLType: " + t.name);
 }
 
-//done?
 rule CreateCustomType
 	transform s: ESM!CustomType
 	to t: JUDOPSM!CustomType
-	extends CreateFlatPrimitiveType {
+	extends CreateNamespaceElement {
 	log.debug("Created CustomType: " + t.name);
 }
 
-//done?
 rule CreatePasswordType
 	transform s: ESM!PasswordType
 	to t: JUDOPSM!PasswordType
-	extends CreateFlatPrimitiveType {
+	extends CreateNamespaceElement {
 	log.debug("Created PasswordType: " + t.name);
 }
 
-//done?
 rule CreateStringType
 	transform s: ESM!StringType
 	to t: JUDOPSM!StringType
-	extends CreateFlatPrimitiveType {
+	extends CreateNamespaceElement {
 	t.`maxLength` = s.`maxLength`;
 	//t.`regExp` = s.`regExp`; //pbbly not needed
 	log.debug("Created StringType: " + t.name);
 }
 
-//done?
 rule CreateNumericType
 	transform s: ESM!NumericType
 	to t: JUDOPSM!NumericType
-	extends CreateFlatPrimitiveType {
+	extends CreateNamespaceElement {
 	t.`precision` = s.`precision`;
 	t.`scale` = s.`scale`;
 	log.debug("Created NumericType: " + t.name);
 }
 
-//done?
 rule CreateBooleanType
 	transform s: ESM!BooleanType
 	to t: JUDOPSM!BooleanType
-	extends CreateFlatPrimitiveType {
+	extends CreateNamespaceElement {
 	log.debug("Created BooleanType: " + t.name);
 }
 
-//done?
 rule CreateDateType
 	transform s: ESM!DateType
 	to t: JUDOPSM!DateType
-	extends CreateFlatPrimitiveType {
+	extends CreateNamespaceElement {
 	log.debug("Created DateType: " + t.name);
 }
 
-//done?
 rule CreateTimestampType
 	transform s: ESM!TimestampType
 	to t: JUDOPSM!TimestampType
-	extends CreateFlatPrimitiveType {
+	extends CreateNamespaceElement {
 	log.debug("Created TimestampType: " + t.name);
 }
 
-/* ENUM STUFF */
 rule CreateEnumerationType
 	transform s: ESM!EnumerationType
 	to t: JUDOPSM!EnumerationType
-	extends CreatePrimitive {
-	//TODO: contains()
+	extends CreateNamespaceElement {
 	log.debug("Created EnumerationType: " + t.name);
 }
 
-//done
 rule CreateEnumerationMember
 	transform s: ESM!EnumerationMember
 	to t: JUDOPSM!EnumerationMember
