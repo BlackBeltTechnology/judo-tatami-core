@@ -9,7 +9,6 @@ rule CreateEntityType
     log.debug("Created EntityType: " + t.name);
 }
 
-
 @abstract
 rule CreatePrimitiveTypedElement
 	transform s: ESM!PrimitiveTypedElement
@@ -18,7 +17,6 @@ rule CreatePrimitiveTypedElement
 	  t.`dataType` = s.`dataType`;
 	  log.debug("Created PrimitiveTypedElement: " + t.name);
 }
-
 
 //TODO: check
 rule CreateAttribute
