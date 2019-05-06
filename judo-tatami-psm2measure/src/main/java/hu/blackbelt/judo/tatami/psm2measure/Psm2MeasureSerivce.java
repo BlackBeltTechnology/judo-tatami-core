@@ -30,7 +30,7 @@ public class Psm2MeasureSerivce {
     public static final String MEASURE_META_VERSION_RANGE = "Measure-Meta-Version-Range";
 
     @Reference
-    hu.blackbelt.judo.tatami.psm2asm.Psm2MeasureScriptResource psm2MeasureScriptResource;
+    Psm2MeasureScriptResource psm2MeasureScriptResource;
 
     Map<PsmModel, ServiceRegistration<TransformationTrace>> psm2MeasureTransformationTraceRegistration = Maps.newHashMap();
 

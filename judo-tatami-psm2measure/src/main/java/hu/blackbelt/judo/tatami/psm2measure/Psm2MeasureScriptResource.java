@@ -1,4 +1,4 @@
-package hu.blackbelt.judo.tatami.psm2asm;
+package hu.blackbelt.judo.tatami.psm2measure;
 
 import hu.blackbelt.osgi.utils.osgi.api.BundleUtil;
 import org.osgi.framework.Bundle;
