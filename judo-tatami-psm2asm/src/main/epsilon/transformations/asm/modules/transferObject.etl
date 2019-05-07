@@ -51,11 +51,21 @@ rule CreateTransferObjectAttribute
 		t.eType = s.dataType.getEcoreType();
 
 		var annotations = s.dataType.createASMAnnotations();
+		var annotation = new ASM!EAnnotation;
+		annotation.source = extendedMetadataURI;
+		t.eAnnotations.add(annotation);
+
+        if (s.binding.isDefined()) {
+			var aMappedAttribute = new ASM!EStringToStringMapEntry;
+			aMappedAttribute.key = "mappedAttribute";
+			aMappedAttribute.value = s.binding.name;
+			annotation.details.add(aMappedAttribute);
+			
+			t.derived = not s.binding.isKindOf(JUDOPSM!Attribute);
+        }
+		
 		if (not annotations.isEmpty()) {
-			var annotation = new ASM!EAnnotation;
-			annotation.source = extendedMetadataURI;
 			annotation.details.addAll(annotations);
-			t.eAnnotations.add(annotation);
 		}
 
 		s.getTransferObjectType().transformToAsm().eStructuralFeatures.add(t);
@@ -71,11 +81,21 @@ rule CreateTransferObjectRelation
 		t.upperBound = s.cardinality.upper;
 
 		var annotations = s.target.createASMAnnotations();
+		var annotation = new ASM!EAnnotation;
+		annotation.source = extendedMetadataURI;
+		t.eAnnotations.add(annotation);
+
+        if (s.binding.isDefined()) {
+			var aMappedReference = new ASM!EStringToStringMapEntry;
+			aMappedReference.key = "mappedReference";
+			aMappedReference.value = s.binding.name;
+			annotation.details.add(aMappedReference);
+			
+			t.derived = not s.binding.isKindOf(JUDOPSM!Relation);
+        }
+		
 		if (not annotations.isEmpty()) {
-			var annotation = new ASM!EAnnotation;
-			annotation.source = extendedMetadataURI;
-			annotation.details.addAll(annotations);
-			t.eAnnotations.add(annotation);
+		    annotation.details.addAll(annotations);
 		}
 
 		s.getTransferObjectType().transformToAsm().eStructuralFeatures.add(t);
