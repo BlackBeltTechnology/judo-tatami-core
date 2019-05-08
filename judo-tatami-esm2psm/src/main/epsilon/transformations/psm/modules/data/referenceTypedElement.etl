@@ -17,7 +17,7 @@ rule CreateReferenceTypedElement
 	  t.`target` = s.`target`.getPSMEquivalent();
 	  //t.`cardinality` = s.transformCardinality(); //remove after fixing The Below
 	  // TODO: fix!
-	  t.`cardinality` = s.equivalent("CreateCardinalityOfOneWayEndpoint");
+	  t.`cardinality` = s.equivalent("CreateCardinalityOfReferenceTypedElement");
 	  log.debug("ths: " + s);
 	  /*
 	  var tocard : JUDOPSM!Cardinality = s.equivalent("CreateCardinalityOfReferenceTypedElement");
@@ -27,8 +27,8 @@ rule CreateReferenceTypedElement
 	  */
 }
 
-// @lazy
-@abstract
+@lazy
+@greedy
 rule CreateCardinalityOfReferenceTypedElement
 	transform s: ESM!ReferenceTypedElement
 	to t: JUDOPSM!Cardinality {
@@ -38,22 +38,6 @@ rule CreateCardinalityOfReferenceTypedElement
 	  
 	  log.debug("cardto upper: " + t.`upper`);
 	  log.debug("cardto lower: " + t.`lower`);
-}
-
-@lazy
-rule CreateCardinalityOfOneWayEndpoint
-	transform s: ESM!OneWayEndpoint
-	to t: JUDOPSM!Cardinality
-	extends CreateCardinalityOfReferenceTypedElement {
-	  log.debug("cardebug: [WINWIN] CCof1wayEP");
-}
-
-@lazy
-rule CreateCardinalityOfTwoWayEndpoint
-	transform s: ESM!TwoWayEndpoint
-	to t: JUDOPSM!Cardinality
-	extends CreateCardinalityOfReferenceTypedElement {
-	  log.debug("cardebug: [WINWIN] CCof2wayEP");
 }
 
 rule CreateContainment

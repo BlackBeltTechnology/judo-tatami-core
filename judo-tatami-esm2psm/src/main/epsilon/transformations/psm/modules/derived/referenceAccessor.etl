@@ -23,15 +23,6 @@ rule CreateStaticNavigation
 	extends CreateReferenceAccessor {
 	  log.debug("Created StaticNavigation: " + t.name);
 }
-
-@lazy
-rule CreateCardinalityofStaticNavigation
-	transform s : ESM!StaticNavigation
-	to t : JUDOPSM!Cardinality
-	extends CreateCardinalityOfReferenceTypedElement {
-	  log.debug("cardebug: [WINWIN] CCofSN");
-}
-
 /* ~NavigationProperty + 's Cardinality
 */
 rule CreateNavigationProperty
@@ -42,12 +33,4 @@ rule CreateNavigationProperty
 	  entity.equivalent("CreateEntityType").navigationProperties.add(t);
 	  
 	  log.debug("Created NavigationProperty: " + t.name);
-}
-
-@lazy
-rule CreateCardinalityofNavigationProperty
-	transform s : ESM!NavigationProperty
-	to t : JUDOPSM!Cardinality
-	extends CreateCardinalityOfReferenceTypedElement {
-	  log.debug("cardebug: [WINWIN] CCofNP");
 }
