@@ -1,4 +1,4 @@
 @cached
 operation String findSqlNameMapping() : Any {
-	return NAMEMAPPING!NameMapping.all.selectOne(m | m.RdbmsUUID == self);
+	return NAMEMAPPING!NameMapping.all.selectOne(m | m.FullyQualifiedName == self);
 }

@@ -1,0 +1,16 @@
+import "../operations/asm/_importAll.eol";
+import "../operations/namemapping/_importNameMapping.eol";
+
+import "rdbms/util.eol";
+
+pre {
+	var targetModel : NAMEMAPPING!NameMappings = new NAMEMAPPING!NameMappings();
+}
+
+rule Excel2NameMapping
+	transform s : XLS_NAMEMAPPING!NameMapping
+	to t : NAMEMAPPING!RdbmsIdentifierField { 
+		t.fullyQualifiedName = s.FullyQualifiedName;
+		t.sqlName = s.SqlName;
+		targetModel.add(t);		
+}

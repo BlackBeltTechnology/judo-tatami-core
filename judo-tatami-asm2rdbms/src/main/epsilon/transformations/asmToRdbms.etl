@@ -16,9 +16,15 @@ import "rdbms/rdbms/table.eol";
 import "rdbms/modules/class.etl";
 import "rdbms/modules/attribute.etl";
 import "rdbms/modules/reference.etl";
+import "rdbms/modules/namemapping.etl";
+import "rdbms/modules/rulemapping.etl";
 
 pre {
 	var targetModel : RDBMS!RdbmsModel = new RDBMS!RdbmsModel();
+	var ruleModel : RDBMS!Rules = new RDBMS!Rules();
+	var nameMappingModel : RDBMS!NameMappings = new RDBMS!NameMappings();
+
+
 	targetModel.version = modelVersion;
 	var first : Boolean = true;
 

@@ -87,24 +87,26 @@ public class TransformationTraceUtil {
 
         List<EObject> traceEntries = Lists.newArrayList();
         for (Transformation transformation : transformationTrace.getTransformations()) {
-            EObject trace = tracePackage.getEFactoryInstance().create(traceClass);
-            trace.eSet(srcUriAttribute, EcoreUtil.getURI((EObject) transformation.getSource()).toString());
+            if (transformation.getSource() instanceof EObject) {
+                EObject trace = tracePackage.getEFactoryInstance().create(traceClass);
+                trace.eSet(srcUriAttribute, EcoreUtil.getURI((EObject) transformation.getSource()).toString());
 
-            List<String> targets = Lists.newArrayList();
-            for (Object t : transformation.getTargets()) {
-                if (t instanceof EObject) {
-                    EObject eo = (EObject) t;
-                    if (eo.eResource() != null) {
-                        targets.add(EcoreUtil.getURI((EObject) t).toString());
+                List<String> targets = Lists.newArrayList();
+                for (Object t : transformation.getTargets()) {
+                    if (t instanceof EObject) {
+                        EObject eo = (EObject) t;
+                        if (eo.eResource() != null) {
+                            targets.add(EcoreUtil.getURI((EObject) t).toString());
+                        } else {
+                            log.warn("Target hasn't got resource: " + t.toString());
+                        }
                     } else {
-                        log.warn("Target hasn't got resource: " + t.toString());
+                        log.warn("Target is not EObject: " + t.toString());
                     }
-                } else {
-                    log.warn("Target is not EObject: " + t.toString());
                 }
+                trace.eSet(targetUriAttributes, targets);
+                traceEntries.add(trace);
             }
-            trace.eSet(targetUriAttributes, targets);
-            traceEntries.add(trace);
         }
         return traceEntries;
     }
