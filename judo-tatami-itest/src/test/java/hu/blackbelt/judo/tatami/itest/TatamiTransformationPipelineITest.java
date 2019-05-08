@@ -2,6 +2,7 @@ package hu.blackbelt.judo.tatami.itest;
 
 import com.fasterxml.jackson.jaxrs.json.JacksonJaxbJsonProvider;
 import hu.blackbelt.judo.meta.asm.runtime.AsmModel;
+import hu.blackbelt.judo.meta.asm.runtime.AsmUtils;
 import hu.blackbelt.judo.meta.expression.runtime.ExpressionModel;
 import hu.blackbelt.judo.meta.liquibase.runtime.LiquibaseModel;
 import hu.blackbelt.judo.meta.measure.runtime.MeasureModel;
@@ -43,7 +44,6 @@ import java.util.stream.Collectors;
 
 import static hu.blackbelt.judo.framework.KarafTestUtil.karafConfig;
 import static hu.blackbelt.judo.framework.KarafTestUtil.karafStandardRepo;
-import static hu.blackbelt.judo.meta.asm.runtime.AsmUtils.getClassByFQName;
 import static hu.blackbelt.judo.tatami.itest.TatamiTestUtil.*;
 import static hu.blackbelt.judo.tatami.itest.TestUtility.*;
 import static junit.framework.TestCase.assertNotNull;
@@ -222,8 +222,10 @@ public class TatamiTransformationPipelineITest {
         assertThat(transformationTraces.stream().map(r -> bundleContext.getService(r).getTransformationTraceName()).collect(Collectors.toList()),
                 containsInAnyOrder("asm2openapi", "asm2rdbms", "psm2measure", "psm2jqlextract", "psm2asm", "jqlextract2expression"));
 
+
+        AsmUtils asmUtils = new AsmUtils(asmModel.getResourceSet());
         // Get Order entity
-        Optional<EClass> orderClass = getClassByFQName(asmModel.getResourceSet(), "northwind.entities.Order");
+        Optional<EClass> orderClass = asmUtils.getClassByFQName("northwind.entities.Order");
 
         List<EObject> orderRdbmsObjectList = transformationTraceService.getDescendantOfInstanceByModelType("Northwind", RdbmsModel.class, orderClass.get());
 

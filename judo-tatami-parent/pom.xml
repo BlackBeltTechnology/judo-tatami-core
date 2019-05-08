@@ -78,7 +78,7 @@
          <judo-meta-odata.import-range>[1.0,1.1)</judo-meta-odata.import-range>
          -->
         
-        <judo-meta-asm-version>1.0.0-develop-45</judo-meta-asm-version>
+        <judo-meta-asm-version>1.0.0-develop-46</judo-meta-asm-version>
         <judo-meta-asm-import-range>[1.0,1.1)</judo-meta-asm-import-range>
         
         <judo-meta-expression-version>1.0.1.develop_110</judo-meta-expression-version>
