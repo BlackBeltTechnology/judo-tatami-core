@@ -1,0 +1,12 @@
+//TODO: fix entityReferencePresence in transferObjectType.etl
+/*
+@cached
+operation ESM!EntityReferenceType getPSMEquivalent(): JUDOPSM!EntityReferenceType {
+	switch (self) {
+		case ESM!EntityReferenceType#REQUIRED : return JUDOPSM!EntityReferenceType#REQUIRED;
+		case ESM!EntityReferenceType#OPTIONAL : return JUDOPSM!EntityReferenceType#OPTIONAL;
+		case ESM!EntityReferenceType#NOT_SUPPORTED : return JUDOPSM!EntityReferenceType#NOT_SUPPORTED;
+		default: throw "Unsupported ESM!EntityReferenceType!";
+	}
+}
+*/

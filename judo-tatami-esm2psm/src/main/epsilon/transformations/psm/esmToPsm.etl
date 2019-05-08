@@ -1,5 +1,8 @@
 import "modules/data/entityType.etl";
 import "modules/data/referenceTypedElement.etl";
-import "modules/type/cardinality.etl";
-import "modules/type/dataType.etl";
+import "modules/derived/primitiveAccessor.etl";
+import "modules/derived/referenceAccessor.etl";
+import "modules/derived/expressionType.etl";
+import "modules/type/type.etl";
+import "modules/service/transferObjectType.etl";
 import "modules/namespace.etl";

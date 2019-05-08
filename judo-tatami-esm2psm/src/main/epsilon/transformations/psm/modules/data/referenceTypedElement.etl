@@ -1,37 +1,77 @@
 import "../namespace.etl";
-import "../type/cardinality.etl";
+
+rule CreateCardinality
+	transform s: ESM!Cardinality
+	to t: JUDOPSM!Cardinality {
+	  
+	  t.`lower` = s.`lower`;
+	  t.`upper` = s.`upper`;
+	  log.debug("cardebug: Inside CreateCardinality!");
+}
 
 @abstract
 rule CreateReferenceTypedElement
 	transform s: ESM!ReferenceTypedElement
 	to t: JUDOPSM!ReferenceTypedElement
 	extends CreateNamedElement {
-	  //TODO: check if ~isCollection(), cardinality needed
-	  t.`target` = s.`target`;
+	  t.`target` = s.`target`.getPSMEquivalent();
+	  //t.`cardinality` = s.transformCardinality(); //remove after fixing The Below
+	  // TODO: fix!
+	  t.`cardinality` = s.equivalent("CreateCardinalityOfOneWayEndpoint");
+	  log.debug("ths: " + s);
+	  /*
+	  var tocard : JUDOPSM!Cardinality = s.equivalent("CreateCardinalityOfReferenceTypedElement");
 	  
-	  log.debug("Created ReferenceTypedElement: " + t.name);
+	  log.debug("reftypel's carbonera: " + s.equivalent("CreateCardinalityOfReferenceTypedElement"));
+	  log.debug("cardebug: Inside CreateReferenceTypedElement!");
+	  */
 }
 
+// @lazy
 @abstract
-rule CreateRelation
-	transform s: ESM!RelationFeature
-	to t: JUDOPSM!Relation
-	extends CreateReferenceTypedElement {
-	//TODO: check if cascadeDelete needed
-	log.debug("Created Relation: " + t.name);
+rule CreateCardinalityOfReferenceTypedElement
+	transform s: ESM!ReferenceTypedElement
+	to t: JUDOPSM!Cardinality {
+	  t.`upper` = s.`upper`;
+	  t.`lower` = s.`lower`;
+	  log.debug("cardebug: [WIN] Inside CreateCardinalityOfReferenceTypedElement!");
+	  
+	  log.debug("cardto upper: " + t.`upper`);
+	  log.debug("cardto lower: " + t.`lower`);
 }
-/*
+
+@lazy
+rule CreateCardinalityOfOneWayEndpoint
+	transform s: ESM!OneWayEndpoint
+	to t: JUDOPSM!Cardinality
+	extends CreateCardinalityOfReferenceTypedElement {
+	  log.debug("cardebug: [WINWIN] CCof1wayEP");
+}
+
+@lazy
+rule CreateCardinalityOfTwoWayEndpoint
+	transform s: ESM!TwoWayEndpoint
+	to t: JUDOPSM!Cardinality
+	extends CreateCardinalityOfReferenceTypedElement {
+	  log.debug("cardebug: [WINWIN] CCof2wayEP");
+}
+
 rule CreateContainment
-	transform s: ESM!Containment
+	transform s: ESM!OneWayEndpoint
 	to t: JUDOPSM!Containment
-	extends CreateRelation {
-	log.debug("Created Containment: " + t.name);
+	extends CreateReferenceTypedElement {
+	  var entity : ESM!EntityType = s.getEntityType();
+	  entity.equivalent("CreateEntityType").relations.add(t);
+	  log.debug("Created Containment: " + t.name);
 }
 
 rule CreateEndpoint
-	transform s: ESM!Endpoint
+	transform s: ESM!TwoWayEndpoint
 	to t: JUDOPSM!Endpoint
-	extends CreateRelation {
-	log.debug("Created Endpoint: " + t.name);
+	extends CreateReferenceTypedElement {
+	  var entity : ESM!EntityType = s.getEntityType();
+	  entity.equivalent("CreateEntityType").relations.add(t);
+	  t.`partner` = s.`partner`.equivalent("CreateEndpoint");
+	  log.debug("Created Endpoint: " + t.name);
 }
-*/
+/**/

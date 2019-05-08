@@ -1,0 +1,45 @@
+@abstract
+rule CreateExpressionType
+	transform s : ESM!ExpressionType
+	to t : JUDOPSM!ExpressionType {
+	  t.`expression` = s.`expression`;
+	  /*TODO: later
+		("Type ESM!DialextExpression not found...")
+	  */
+	  t.`dialect` = JUDOPSM!ExpressionDialect#JQL; //s.`dialect`.getPSMEquivalent();
+}
+
+rule CreateDataExpressionType
+	transform s : ESM!DataExpressionType
+	to t : JUDOPSM!DataExpressionType
+	extends CreateExpressionType {
+	log.debug("Created DataExpressionType: ");
+}
+
+rule CreateLogicalExpressionType
+	transform s : ESM!LogicalExpressionType
+	to t : JUDOPSM!LogicalExpressionType
+	extends CreateDataExpressionType {
+	log.debug("Created LogicalExpressionType: ");
+}
+
+rule CreateAttributeSelectorType
+	transform s : ESM!AttributeSelectorType
+	to t : JUDOPSM!AttributeSelectorType
+	extends CreateDataExpressionType {
+	log.debug("Created AttributeSelectorType: ");
+}
+
+rule CreateReferenceExpressionType
+	transform s : ESM!ReferenceExpressionType
+	to t : JUDOPSM!ReferenceExpressionType
+	extends CreateExpressionType {
+	log.debug("Created ReferenceExpressionType: ");
+}
+
+rule CreateReferenceSelectorType
+	transform s : ESM!ReferenceSelectorType
+	to t : JUDOPSM!ReferenceSelectorType
+	extends CreateReferenceExpressionType {
+	log.debug("Created ReferenceSelectorType: ");
+}

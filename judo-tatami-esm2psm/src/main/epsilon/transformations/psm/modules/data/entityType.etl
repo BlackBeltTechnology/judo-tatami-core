@@ -6,25 +6,41 @@ rule CreateEntityType
   to t : JUDOPSM!EntityType
   extends CreateNamespaceElement {
     t.`abstract` = s.`abstract`;
+    //TODO: [postponed] ~ relationCountConstraints: RelationCountConstraint
+    for (super in s.superEntityTypes) {
+		t.superEntityTypes.add(super.getPSMEquivalent());    
+    }    
     log.debug("Created EntityType: " + t.name);
 }
 
 @abstract
 rule CreatePrimitiveTypedElement
-	transform s: ESM!PrimitiveTypedElement
+	transform s: ESM!AttributeFeature
 	to t: JUDOPSM!PrimitiveTypedElement
 	extends CreateNamedElement {
-	  t.`dataType` = s.`dataType`;
+	  t.`required` = s.`required`;
+	  t.`dataType` = s.`dataType`.getPSMEquivalent();
+	  
 	  log.debug("Created PrimitiveTypedElement: " + t.name);
 }
 
-//TODO: check
 rule CreateAttribute
-	transform s: ESM!AttributeFeature
+	transform s: ESM!Attribute
 	to t: JUDOPSM!Attribute
 	extends CreatePrimitiveTypedElement {
 	  t.`identifier` = s.`identifier`;
 	  var entityType : ESM!EntityType = s.getEntityType();
 	  entityType.equivalent("CreateEntityType").attributes.add(t);
+	  
 	  log.debug("Created Attribute: " + t.name);
+}
+
+/* ESM!RelCC.. missing
+rule CreateRelationCountConstraint
+	transform s: ESM!RelationCountConstraint //TODO yeah this one doesn't exist
+	to t: JUDOPSM!RelationCountConstraint
+	extends CreateNamedElement {
+	  var entityType : ESM!EntityType = s.getEntityType();
+	  entityType.equivalent("CreateEntityType").relationCountConstraints.add(t);
+	  log.debug("Created RelationCountConstraint" + t.name);
 }

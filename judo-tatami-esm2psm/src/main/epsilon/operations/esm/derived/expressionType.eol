@@ -1,0 +1,40 @@
+@cached
+operation ESM!DataExpressionType getPSMEquivalent(): JUDOPSM!DataExpressionType {
+	return self.equivalent("CreateDataExpressionType");
+}
+
+@cached
+operation ESM!AttributeSelectorType getPSMEquivalent(): JUDOPSM!AttributeSelectorType {
+	return self.equivalent("CreateAttributeSelectorType");
+}
+
+@cached
+operation ESM!ReferenceExpressionType getPSMEquivalent(): JUDOPSM!ReferenceExpressionType {
+	return self.equivalent("CreateReferenceExpressionType");
+}
+
+@cached
+operation ESM!ReferenceSelectorType getPSMEquivalent(): JUDOPSM!ReferenceSelectorType {
+	return self.equivalent("CreateReferenceSelectorType");
+}
+
+@cached
+operation ESM!DataProperty getEntityType(): ESM!EntityType {
+	return ESM!EntityType.all.selectOne(et | et.attributes.includes(self));
+}
+
+@cached
+operation ESM!NavigationProperty getEntityType(): ESM!EntityType {
+	return ESM!EntityType.all.selectOne(et | et.relations.includes(self));
+}
+
+/* TODO: 
+@cached
+operation ESM!ExpressionDialect getPSMEquivalent(): JUDOPSM!ExpressionDialect {
+	switch (self) {
+		case ESM!ExpressionDialect#JQL : return JUDOPSM!ExpressionDialect#JQL;
+		case ESM!ExpressionDialect#XML : return JUDOPSM!ExpressionDialect#XML;
+		default: throw "Unsupported dialect!";
+	}
+}
+*/

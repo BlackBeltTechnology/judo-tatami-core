@@ -1,8 +1,0 @@
-
-rule CreateCardinality
-	transform s: ESM!Cardinality
-	to t: JUDOPSM!Cardinality {
-	t.`lower` = s.`lower`;
-	t.`upper` = s.`upper`; 
-}
-	

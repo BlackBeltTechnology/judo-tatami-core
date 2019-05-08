@@ -1,0 +1,9 @@
+@cached
+operation ESM!Attribute isPrimitive() : Boolean {
+	return self.dataType.isKindOf(ESM!Primitive);
+}
+
+@cached
+operation ESM!Attribute getEntityType() : ESM!EntityType {
+	return ESM!EntityType.all.selectOne(et | et.attributes.includes(self));
+}

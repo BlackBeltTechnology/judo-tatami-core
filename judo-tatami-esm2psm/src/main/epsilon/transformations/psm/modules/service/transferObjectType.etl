@@ -1,0 +1,111 @@
+import "../namespace.etl";
+import "../../../../operations/esm/type/_importType.eol";
+import "../../../../operations/esm/service/transferObjectType.eol";
+
+//TODO later
+@abstract
+rule CreateTransferObjectType
+	transform s: ESM!TransferObjectType
+	to t: JUDOPSM!TransferObjectType {
+	  //t.`representation` = s.`representation`.equivalent("CreateTransferAttribute");
+	  //representation
+	  for ( attribute in s.attributes) {
+	  	t.attributes.add(attribute.equivalent("CreateTransferAttribute"));
+	  }
+	  for ( relation in s.relations) {
+	  	t.relations.add(relation.equivalent("CreateTransferObjectRelation"));
+	  }
+	  //+ESM:
+}
+
+rule CreateTransferAttribute
+	transform s: ESM!TransferAttribute
+	to t: JUDOPSM!TransferAttribute 
+	extends CreateNamedElement {
+	  t.`required` = s.`required`;
+	  t.`defaultValue` = s.`defaultValue`.equivalent("CreatePrimitiveTypedElement");
+	  t.`dataType` = s.`dataType`.getPSMEquivalent();
+	  
+	  log.debug("Created TransferAttribute: " + t.name);
+}
+
+rule CreateUnmappedTransferObjectType
+	transform s: ESM!TransferObjectType //TODO check s type 
+	to t: JUDOPSM!UnmappedTransferObjectType
+	extends CreateTransferObjectType {
+	  log.debug("Created UnmappedTransferObjectType: " + t.name);
+}
+
+rule CreateMappedTransferObjectType
+	transform s: ESM!TransferObjectType //TODO check s type 
+	to t: JUDOPSM!MappedTransferObjectType
+	extends CreateTransferObjectType {
+	  //TODO: fix entityReferencePresence
+	  t.`entityReferencePresence` = JUDOPSM!EntityReferenceType#NOT_SUPPORTED; //s.`entityReferencePresence`.getPSMEquivalent();
+	  t.`entityType` = s.`entityType`.equivalent("CreateEntityType");
+	  log.debug("Created MappedTransferObjectType.");
+}
+
+rule CreateTransferObjectRelation
+	transform s: ESM!TransferRelation
+	to t: JUDOPSM!TransferObjectRelation
+	extends CreateNamedElement {
+	//TODO: cardinality
+	//TODO: binding
+	t.`defaultValue` = s.`defaultValue`.equivalent("CreateReferencedTypeElement");
+	t.`range` = s.`range`.equivalent("CreateReferencedTypeElement");
+	t.`embedded` = s.`embedded`;
+	//if (s.`target`.isTypeOf()) {
+	//log.debug("s: " + s + " eRP: " + s.`target`.entityReferencePresence);
+	/*
+	if ( s.`target`.entityReferencePresence.isDefined() ) {
+	  log.debug("hi there");
+	  t.`target` = s.`target`.equivalent("CreateMappedTransferObjectType");
+	} else {
+	  t.`target` = s.`target`.equivalent("CreateUnmappedTransferObjectType");
+	}
+	*/
+	  
+	//}
+	t.`target` = s.`target`.equivalent("CreateTransferObjectType");
+	
+	log.debug("Created TransferObjectRelation: " + t.name);
+}
+
+@abstract
+rule CreateOperation
+	transform s: ESM!Operation
+	to t: JUDOPSM!Operation {
+	  for(fault in s.`faults`) {
+	    t.`faults`.add(s.`faults`.equivalent("CreateParameter"));
+	  }
+	  t.`body` = s.`body`; //hi im a Script
+	  t.`output` = s.`output`.equivalent("CreateParameter");
+	  t.`input` = s.`input`.equivalent("CreateParameter");
+	  t.`stateful` = true; //TODO: check
+	  t.`undefined` = s.`undefined`;
+	  log.debug("becky!");
+	  
+}
+
+rule CreateParameter
+	transform s : ESM!Parameter
+	to t : JUDOPSM!Parameter
+	extends CreateNamedElement {
+	  //TODO: cardinality
+	  t.`type` = s.`type`.equivalent("CreateTransferObjectType"); //TODO: that wont be enough uknow
+}
+
+rule CreateBoundOperation
+	transform s: ESM!BoundOperation
+	to t: JUDOPSM!BoundOperation
+	extends CreateOperation {
+	log.debug("you wanna smash? [bound]");
+}
+
+rule CreateUnboundOperation
+	transform s: ESM!UnboundOperation
+	to t: JUDOPSM!UnboundOperation
+	extends CreateOperation {
+	log.debug("you wanna smash? [bound]");
+}

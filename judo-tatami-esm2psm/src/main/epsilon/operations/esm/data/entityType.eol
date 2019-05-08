@@ -1,5 +1,4 @@
-@Cached
-operation ESM!AttributeFeature getEntityType() : ESM!EntityType {
-	return ESM!EntityType.all.selectOne(p | p.elements.includes(self));
+@cached
+operation ESM!EntityType getPSMEquivalent(): JUDOPSM!EntityType {
+	return self.equivalent("CreateEntityType");
 }
-//TODO: check if being retard

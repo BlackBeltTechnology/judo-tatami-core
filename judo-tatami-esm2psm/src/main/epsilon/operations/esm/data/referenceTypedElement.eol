@@ -1,0 +1,18 @@
+@cached
+operation ESM!TwoWayEndpoint getEntityType() : ESM!EntityType {
+	return ESM!EntityType.all.selectOne(et | et.relations.includes(self));
+}
+
+@cached
+operation ESM!OneWayEndpoint getEntityType() : ESM!EntityType {
+	return ESM!EntityType.all.selectOne(et | et.relations.includes(self));
+}
+
+// TODO: remove after debugging "rule CreateCardinalityOfReferenceTypedElement"
+@cached
+operation ESM!ReferenceTypedElement transformCardinality() : JUDOPSM!Cardinality {
+	var cardinality : JUDOPSM!Cardinality = new JUDOPSM!Cardinality; 
+	cardinality.lower = self.lower;
+	cardinality.upper = self.upper;
+	return cardinality;
+} 
