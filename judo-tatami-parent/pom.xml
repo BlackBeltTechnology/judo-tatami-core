@@ -58,7 +58,7 @@
         
         <judo-framework-version>2.0.0_develop_128</judo-framework-version>
         
-        <judo-meta-rdbms-version>1.0.1.develop_31</judo-meta-rdbms-version>
+        <judo-meta-rdbms-version>1.0.1.develop_34</judo-meta-rdbms-version>
         <judo-meta-rdbms.import-range>[1.0,1.1)</judo-meta-rdbms.import-range>
         
         <judo-meta-esm-version>1.0.0.develop_5</judo-meta-esm-version>

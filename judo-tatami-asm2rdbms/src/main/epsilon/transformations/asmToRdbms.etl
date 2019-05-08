@@ -1,7 +1,4 @@
 import "../operations/asm/_importAll.eol";
-import "../operations/typemapping/_importTypeMapping.eol";
-import "../operations/rulemapping/_importRuleMapping.eol";
-import "../operations/namemapping/_importNameMapping.eol";
 
 import "rdbms/util.eol";
 import "rdbms/asm/namedElement.eol";
@@ -16,64 +13,15 @@ import "rdbms/rdbms/table.eol";
 import "rdbms/modules/class.etl";
 import "rdbms/modules/attribute.etl";
 import "rdbms/modules/reference.etl";
-import "rdbms/modules/namemapping.etl";
-import "rdbms/modules/rulemapping.etl";
 
 pre {
 	var targetModel : RDBMS!RdbmsModel = new RDBMS!RdbmsModel();
-	var ruleModel : RDBMS!Rules = new RDBMS!Rules();
-	var nameMappingModel : RDBMS!NameMappings = new RDBMS!NameMappings();
-
-
 	targetModel.version = modelVersion;
 	var first : Boolean = true;
 
 	var configuration : RDBMS!RdbmsConfiguration = new RDBMS!RdbmsConfiguration();
 	configuration.dialect = dialect;
 	targetModel.configuration = configuration;
-
-    // Fixing types
-	for (v in RULEMAPPING!TableMappingRule.all.select(m | m.symbol.isDefined())) {
-
-		v.opposite = v.opposite.asBoolean();
-		v.lower = v.lower.asFloat().asInteger();
-		v.upper = v.upper.asFloat().asInteger();
-		if (v.opposite.asBoolean()) {
-			v.oppositeLower = v.oppositeLower.asFloat().asInteger();
-			v.oppositeUpper = v.oppositeUpper.asFloat().asInteger();
-		} else {
-			v.oppositeLower = -2;
-			v.oppositeUpper = -2;
-		}
-		v.container = v.container.asBoolean();
-		v.containment = v.containment.asBoolean();
-		v.first = v.first.asBoolean();
-		v.foreignKey = v.foreignKey.asBoolean();
-		v.inverseForeignKey = v.inverseForeignKey.asBoolean();
-
-		if (v.readOnly.isDefined()) {
-			v.readOnly = v.readOnly.asBoolean();
-		} else {
-			v.readOnly = false;
-		}
-
-		if (v.cascade.isDefined()) {
-			v.cascade = v.cascade.asBoolean();
-		} else {
-			v.cascade = false;
-		}
-
-		if (v.mandatory.isDefined()) {
-			v.mandatory = v.mandatory.asBoolean();
-		} else {
-			v.mandatory = false;
-		}
-		v.rangeConstraint = v.rangeConstraint.asBoolean();
-		v.inverseRangeConstraint = v.inverseRangeConstraint.asBoolean();
-		v.joinTable = v.joinTable.asBoolean();
-		
-		log.debug("Rule: ");
-	}
 }
 
 
@@ -97,15 +45,15 @@ post {
 			fk.foreignKeySqlName = "FK_" + md5(fk.uuid);
 		}
 	} */
-	
+
 	// Replacing name
 	for (e in RDBMS!RdbmsElement.all) {
 		log.debug("UUID: " + e.uuid);
-		var sqlNameMapping = e.uuid.findSqlNameMapping();
+		var sqlNameMapping = RDBMS!NameMapping.all.selectOne(m | m.fullyQualifiedName == e.uuid);
 		if (sqlNameMapping.isDefined()) {
 			log.info("Replace sqlName in: " + e);
 			log.info("   To: " + sqlNameMapping);
-			e.sqlName = sqlNameMapping.SqlName;
+			e.sqlName = sqlNameMapping.rdbmsName;
 		}
 	}
 }

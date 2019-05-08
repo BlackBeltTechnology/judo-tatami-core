@@ -1,0 +1,35 @@
+import "../operations/asm/_importAll.eol";
+import "rdbms/util.eol";
+
+pre {
+	var targetModel : RDBMS!TypeMappings = new RDBMS!TypeMappings();
+}
+
+rule Excel2TypeMapping
+	transform s : TYPEMAPPING!Mapping
+	to t : RDBMS!TypeMapping {
+	    guard: s.Judo.isDefined()
+
+        // Resolve JUDO ASM DataType
+        t.asmType = s.Judo.getJudoDataType();
+
+        t.rdbmsType = s.Type;
+        if (s.Size.isDefined() and s.Size.trim() <> "") {
+            t.rdbmsSize = s.Size.asFloat().asInteger();
+        } else {
+            t.rdbmsSize = -1;
+        }
+
+        if (s.Precision.isDefined() and s.Precision.trim() <> "") {
+            t.rdbmsPrecision = new Integer(s.Precision);
+        } else {
+            t.rdbmsPrecision = -1;
+        }
+
+        if (s.Scale.isDefined() and s.Scale.trim() <> "") {
+            t.rdbmsScale = new Integer(s.Scale);
+        } else {
+            t.rdbmsScale = -1;
+        }
+		targetModel.typeMappings.add(t);
+}

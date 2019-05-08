@@ -37,7 +37,7 @@ import static hu.blackbelt.judo.tatami.asm2rdbms.Asm2Rdbms.*;
 public class Asm2RdbmsTest {
 
     public static final String ASM_2_RDBMS_MODEL = "asm2rdbms.model";
-    public static final String TRACE_JQLEXTRACT_2_EXPRESSION = "trace:asm2rdbms";
+    public static final String TRACE_ASM_2_RDBMS = "trace:asm2rdbms";
     public static final String ASM_NORTHWIND = "asm:northwind";
     public static final String RDBMS_NORTHWIND = "rdbms:northwind";
     public static final String URN_NORTHWIND_ASM = "urn:northwind-asm.model";
@@ -102,7 +102,7 @@ public class Asm2RdbmsTest {
 
         // Loading trace map
         ResourceSet traceLoadedResourceSet = createAsm2RdbmsTraceResourceSet();
-        Resource traceResoureLoaded = traceLoadedResourceSet.createResource(URI.createURI(TRACE_JQLEXTRACT_2_EXPRESSION));
+        Resource traceResoureLoaded = traceLoadedResourceSet.createResource(URI.createURI(TRACE_ASM_2_RDBMS));
         traceResoureLoaded.load(new FileInputStream(new File(targetDir().getAbsolutePath(), ASM_2_RDBMS_MODEL)), ImmutableMap.of());
 
         // Resolve serialized URI's as EObject map

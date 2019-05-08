@@ -1,15 +1,27 @@
-rule Excel2NameMapping
+import "rdbms/util.eol";
+
+pre {
+	var targetModel : RDBMS!Rules = new RDBMS!Rules();
+}
+
+rule Excel2Rule
 	transform s : RULEMAPPING!TableMappingRule
-	to t : RDBMS!Rule { 
+	to t : RDBMS!Rule {
 		guard: s.symbol.isDefined()
+
+		t.lower = 0;
+		t.upper = 0;
+		t.oppositeLower = 0;
+		t.oppositeLower = 0;
+
 
 		t.symbol = s.symbol;
 		t.opposite = s.opposite.asBoolean();
 		t.lower = s.lower.asFloat().asInteger();
 		t.upper = s.upper.asFloat().asInteger();
 		if (s.opposite.asBoolean()) {
-			s.oppositeLower = s.oppositeLower.asFloat().asInteger();
-			s.oppositeUpper = s.oppositeUpper.asFloat().asInteger();
+			t.oppositeLower = s.oppositeLower.asFloat().asInteger();
+			t.oppositeUpper = s.oppositeUpper.asFloat().asInteger();
 		} else {
 			t.oppositeLower = -2;
 			t.oppositeUpper = -2;
@@ -41,5 +53,5 @@ rule Excel2NameMapping
 		t.inverseRangeConstraint = s.inverseRangeConstraint.asBoolean();
 		t.joinTable = s.joinTable.asBoolean();
 
-		ruleModel.rules.add(t);		
+		targetModel.rules.add(t);
 }

@@ -62,3 +62,54 @@ operation ASM!EReference isFirst() : Boolean {
    return false;
 }
 
+@cached
+operation ASM!EReference ruleMapping() : RDBMS!Rule {
+    var opposite : Boolean =  self.eOpposite.isDefined();
+
+    var lower : Integer = self.lowerBound;
+    if (lower > 1) {
+    	lower = 1;
+    }
+    var upper : Integer = self.upperBound;
+    if (upper > 1) {
+    	upper = -1;
+    }
+
+    var oppositeLower : Integer = null;
+    var oppositeUpper : Integer = null;
+    var first : Boolean = true;
+
+    if (opposite) {
+	    oppositeLower = self.eOpposite.lowerBound;
+	    if (oppositeLower > 1) {
+	    	oppositeLower = 1;
+	    }
+	    oppositeUpper = self.eOpposite.upperBound;
+	    if (oppositeUpper > 1) {
+	    	oppositeUpper = -1;
+	    }
+
+	    first = self.name.compareTo(self.eOpposite.name) < 0;
+    }
+
+
+    var ret : RDBMS!Rule = RDBMS!Rule.all.selectOne(m |
+    	first = m.first
+    	and self.container = m.container
+    	and self.containment = m.containment
+    	and lower = m.lower
+    	and upper = m.upper
+    	and ((not opposite and not m.opposite) or (
+    							opposite
+    							and m.opposite
+    							and oppositeLower = m.oppositeLower
+    							and oppositeUpper = m.oppositeUpper
+    						 )
+    		)
+    );
+
+    if (ret.isUndefined()) {
+    	throw "Could not find mapping for reference: " + self.name + " Parent: " + self.eReferenceType.name + " (Lower: " + lower + " Upper: " + upper + " Opposite lower: " + oppositeLower + " OppositeUpper: " + oppositeUpper  +" Container: " + self.container + " Containment: " + self.containment + ")" ;
+    }
+    return ret;
+}

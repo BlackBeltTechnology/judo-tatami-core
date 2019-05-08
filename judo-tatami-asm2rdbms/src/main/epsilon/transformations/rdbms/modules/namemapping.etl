@@ -1,8 +1,0 @@
-rule Excel2NameMapping
-	transform s : NAMEMAPPING!NameMapping
-	to t : RDBMS!NameMapping { 
-//		guard: s.FullyQualifiedName.isDefined()
-		t.fullyQualifiedName = s.FullyQualifiedName;
-		t.sqlName = s.SqlName;
-		nameMappingModel.nameMappings.add(t);
-}
