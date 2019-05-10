@@ -1,0 +1,15 @@
+import "../namespace.etl";
+
+rule CreateAuthorizationResource
+	transform s: ESM!AuthorizationResource
+	to t: JUDOPSM!AuthorizationResource
+	extends CreateNamespaceElement {
+	  //TODO: referenceTypedElements
+	  for (oper in s.operations) {
+	  	t.operations.add(oper.equivalent("CreateOperation"));
+	  }
+	  for (authresource in s.includedAuthorizationResources) {
+	    t.includedAuthorizationResources.add(authresource.equivalent("CreateAuthorizationResource"));
+	  }
+	  log.debug("Created AuthorizationResource: " + t.name);
+}

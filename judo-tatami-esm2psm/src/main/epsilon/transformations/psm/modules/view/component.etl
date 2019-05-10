@@ -1,0 +1,74 @@
+import "../namespace.etl";
+
+@abstract
+rule CreateComponent
+	transform s: ESM!Component
+	to t: JUDOPSM!Component
+	extends CreateNamedElement {
+	  t.`label` = s.`label`; 
+	  t.`parentView` = s.`parentView`.equivalent("CreateObjectView");
+	  log.debug("Created :" + t.name);
+}//done unchecked
+
+rule CreateWidget
+	transform s: ESM!Widget
+	to t: JUDOPSM!Widget
+	extends CreateComponent {
+	  t.`transferAttribute` = s.`transferAttribute`.equivalent("CreateTransferAttribute");
+	  for ( event in emittedEvents) {
+	  	t.emittedEvents.add(event.equivalent("CreateEvent"));
+	  }
+	log.debug("Created :" + t.name);
+}//done unchecked
+
+
+//rulo el groupboxo?
+
+rule CreatePlaceholder
+	transform s: ESM!Placeholder
+	to t: JUDOPSM!Placeholder
+	extends CreateComponent {
+	  t.`popup` = s.`popup`;
+	 log.debug("Created Component:" + t.name);
+}//done unchecked
+
+rule CreateNavigation
+	transform s: ESM!Navigation
+	to t: JUDOPSM!Navigation
+	extends CreateComponent {
+	  t.`navigationView` = s.`navigationView`.equivalent("CreateNavigationView");
+	  t.`rangeView` = s.`rangeView`.equivalent("CreateRangeView");
+	  t.`transferRelation` = s.`transferRelation`.equivalent("CreateTransferRelation");
+	log.debug("Created Navigation:" + t.name);
+}
+
+rule CreateLink
+	transform s: ESM!Link
+	to t: JUDOPSM!Link
+	extends CreateNavigation {
+	  t.`target` = s.`target`.equivalent("CreatePlaceholder");
+	  t.`text` = s.`text`;
+	log.debug("Created Link:" + t.name);
+}
+
+rule CreateEmbedded
+	transform s: ESM!Navigation
+	to t: JUDOPSM!Navigation
+	extends CreateNavigation {
+	  //done
+	  log.debug("Created Embedded:" + t.name);
+}
+
+rule CreateAction
+	transform s: ESM!Action
+	to t: JUDOPSM!Action
+	extends CreateComponent {
+	  t.`target` = s.`target`.equivalent("CreatePlaceholder");
+	  t.`operation` = s.`operation`.equivalent("CreateOperation");
+	  t.`resultView` = s.`resultView`.equivalent("CreateObjectView");
+	  for ( faultView in s.faultViews ) {
+	    t.faultViews.add(faultView.equivalent("CreateObjectView"));
+	  }
+	  log.debug("Created Action:" + t.name);
+} //done unchecked
+

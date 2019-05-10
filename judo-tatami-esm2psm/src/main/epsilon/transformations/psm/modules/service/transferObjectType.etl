@@ -2,74 +2,109 @@ import "../namespace.etl";
 import "../../../../operations/esm/type/_importType.eol";
 import "../../../../operations/esm/service/transferObjectType.eol";
 
-//TODO later
 @abstract
 rule CreateTransferObjectType
 	transform s: ESM!TransferObjectType
-	to t: JUDOPSM!TransferObjectType {
-	  //t.`representation` = s.`representation`.equivalent("CreateTransferAttribute");
-	  //representation
-	  for ( attribute in s.attributes) {
+	to t: JUDOPSM!TransferObjectType 
+	extends CreateNamedElement {
+	  t.`representation` = s.`representation`.equivalent("CreateTransferAttribute");
+	  //TODO: check
+	    //log.debug("sepr: " + s.`representation`);
+	    //log.debug("tepr: " + t.`representation`);
+	  
+	  log.debug("MIXIN: " + s.mixins);
+	  
+	  for ( attribute in s.attributes ) {
 	  	t.attributes.add(attribute.equivalent("CreateTransferAttribute"));
 	  }
-	  for ( relation in s.relations) {
+	  
+	  for ( relation in s.relations ) {
 	  	t.relations.add(relation.equivalent("CreateTransferObjectRelation"));
 	  }
 	  //+ESM:
+	  //mixins
 }
-
-rule CreateTransferAttribute
-	transform s: ESM!TransferAttribute
-	to t: JUDOPSM!TransferAttribute 
-	extends CreateNamedElement {
-	  t.`required` = s.`required`;
-	  t.`defaultValue` = s.`defaultValue`.equivalent("CreatePrimitiveTypedElement");
-	  t.`dataType` = s.`dataType`.getPSMEquivalent();
-	  
-	  log.debug("Created TransferAttribute: " + t.name);
-}
-
+//---
 rule CreateUnmappedTransferObjectType
 	transform s: ESM!TransferObjectType //TODO check s type 
 	to t: JUDOPSM!UnmappedTransferObjectType
 	extends CreateTransferObjectType {
-	  log.debug("Created UnmappedTransferObjectType: " + t.name);
+	  log.debug("Created UnmappedTransferObjectType.");
 }
 
 rule CreateMappedTransferObjectType
 	transform s: ESM!TransferObjectType //TODO check s type 
 	to t: JUDOPSM!MappedTransferObjectType
 	extends CreateTransferObjectType {
-	  //TODO: fix entityReferencePresence
-	  t.`entityReferencePresence` = JUDOPSM!EntityReferenceType#NOT_SUPPORTED; //s.`entityReferencePresence`.getPSMEquivalent();
+	  /*TODO: later: fix entityReferencePresence
+	   = s.`entityReferencePresence`.getPSMEquivalent();*/
+	  t.`entityReferencePresence` = JUDOPSM!EntityReferenceType#OPTIONAL; 
 	  t.`entityType` = s.`entityType`.equivalent("CreateEntityType");
 	  log.debug("Created MappedTransferObjectType.");
+}
+//-----------
+rule CreateTransferAttribute
+	transform s: ESM!TransferAttribute
+	to t: JUDOPSM!TransferAttribute 
+	extends CreateNamedElement {
+	  if (s.`required`.isDefined()) {
+	    t.`required` = s.`required`;
+	  } else {
+	    t.`required` = false;
+	  }
+	  t.`dataType` = s.`dataType`.getPSMEquivalent();
+	  t.`defaultValue` = s.`defaultValue`.equivalent("CreatePrimitiveTypedElement");	  
+	  t.`binding` = s.`primitiveTypedElement`.equivalent("CreateAttribute");
+	  log.debug("Created TransferAttribute: " + t.name);
 }
 
 rule CreateTransferObjectRelation
 	transform s: ESM!TransferRelation
 	to t: JUDOPSM!TransferObjectRelation
 	extends CreateNamedElement {
-	//TODO: cardinality
-	//TODO: binding
-	t.`defaultValue` = s.`defaultValue`.equivalent("CreateReferencedTypeElement");
-	t.`range` = s.`range`.equivalent("CreateReferencedTypeElement");
-	t.`embedded` = s.`embedded`;
-	//if (s.`target`.isTypeOf()) {
-	//log.debug("s: " + s + " eRP: " + s.`target`.entityReferencePresence);
-	/*
-	if ( s.`target`.entityReferencePresence.isDefined() ) {
-	  log.debug("hi there");
-	  t.`target` = s.`target`.equivalent("CreateMappedTransferObjectType");
-	} else {
-	  t.`target` = s.`target`.equivalent("CreateUnmappedTransferObjectType");
-	}
-	*/
+	  t.`cardinality` = s.equivalent("CreateCardinalityOfTransferObjectRelation");
+	  //TODO: binding
+	  log.debug("refTEl " + s.`referenceTypedElement`);
+	  if (s.`referenceTypedElement`.isKindOf(ESM!OneWayEndpoint)) {
+	    t.`binding` = s.`referenceTypedElement`.equivalent("CreateContainment");
+	  } else if (s.`referenceTypedElement`.isKindOf(ESM!TwoWayEndpoint)) {
+	    t.`binding` = s.`referenceTypedElement`.equivalent("CreateEndpoint");
+	  }
 	  
-	//}
-	t.`target` = s.`target`.equivalent("CreateTransferObjectType");
+	  log.debug("binding: " + t.`binding`);
+	  t.`defaultValue` = s.`defaultValue`.equivalent("CreateReferencedTypeElement");
+	  t.`range` = s.`range`.equivalent("CreateReferencedTypeElement");
+	  t.`embedded` = s.`embedded`;
+	  //t.`target` = s.`target`.equivalent("CreateTransferObjectType");
+	  //if (s.`target`.isTypeOf()) {
+	  //log.debug("s: " + s + " eRP: " + s.`target`.entityReferencePresence);
+	  log.debug("~~~~~~~~~~~~~~~~~~~");
+	  log.debug("Se: " + s);
+	  log.debug("Settar: " + s.`target`);
 	
-	log.debug("Created TransferObjectRelation: " + t.name);
+	  /*
+	  if (s.`target`.`entityType`.isDefined()) {
+	    log.debug("hi there");
+	    t.`target` = s.`target`.equivalent("CreateMappedTransferObjectType");
+	  } else {
+	    log.debug(" there hi");
+	    t.`target` = s.`target`.equivalent("CreateUnmappedTransferObjectType");
+	  }
+      */
+	
+	  log.debug("Gettar: " + t.`target`);
+	  log.debug("Created TransferObjectRelation: " + t.name);
+	  log.debug("~~~~~~~~~~~~~~~~~~~");
+	  
+}
+
+@lazy
+@greedy
+rule CreateCardinalityOfTransferObjectRelation
+	transform s: ESM!TransferRelation
+	to t: JUDOPSM!Cardinality {
+	  t.`upper` = s.`upper`;
+  	  t.`lower` = s.`lower`;
 }
 
 @abstract
@@ -88,14 +123,6 @@ rule CreateOperation
 	  
 }
 
-rule CreateParameter
-	transform s : ESM!Parameter
-	to t : JUDOPSM!Parameter
-	extends CreateNamedElement {
-	  //TODO: cardinality
-	  t.`type` = s.`type`.equivalent("CreateTransferObjectType"); //TODO: that wont be enough uknow
-}
-
 rule CreateBoundOperation
 	transform s: ESM!BoundOperation
 	to t: JUDOPSM!BoundOperation
@@ -108,4 +135,12 @@ rule CreateUnboundOperation
 	to t: JUDOPSM!UnboundOperation
 	extends CreateOperation {
 	log.debug("you wanna smash? [bound]");
+}
+
+rule CreateParameter
+	transform s : ESM!Parameter
+	to t : JUDOPSM!Parameter
+	extends CreateNamedElement {
+	  //TODO: cardinality
+	  t.`type` = s.`type`.equivalent("CreateTransferObjectType"); //TODO: that wont be enough uknow
 }

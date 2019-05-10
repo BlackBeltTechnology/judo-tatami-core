@@ -2,8 +2,6 @@ import "../data/entityType.etl";
 import "expressionType.etl";
 import "../../../../operations/esm/derived/expressionType.eol";
 
-/* ~PrimitiveAccessor mommy
-*/
 @abstract
 rule CreatePrimitiveAccessor
 	transform s : ESM!PrimitiveAccessor

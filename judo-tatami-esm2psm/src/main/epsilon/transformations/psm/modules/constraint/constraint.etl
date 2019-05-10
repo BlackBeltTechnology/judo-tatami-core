@@ -1,0 +1,10 @@
+import "../namespace.etl";
+
+/*
+rule CreateInvariantConstraint
+	transform s: ESM! 
+	to t:  JUDOPSM!InvariantConstraint
+	extends CreateNamedElement {
+	  //namizu
+}
+*/

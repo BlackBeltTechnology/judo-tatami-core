@@ -1,0 +1,42 @@
+import "../namespace.etl";
+
+rule CreateAccessPoint
+	transform s: ESM!AccessPoint
+	to t: JUDOPSM!AccessPoint
+	extends CreateNamespaceElement {
+	  log.debug("arribaaaa " + s.`exposedServices`);
+	  log.debug("arribaaaa " + s.`name`);
+	  for (exposedService in s.`exposedServices`) {
+	    //TODO: fix the frack out of this (J: "not null constraint")
+	    //t.exposedServices.add(exposedService.equivalent("CreateExposedService"));
+	  }
+	  
+	  for (exposedGraph in s.`exposedGraphs`) {
+	    log.debug("aaaabirra");
+	    t.exposedGraphs.add(exposedGraph.equivalent("CreateExposedGraph"));
+	  }
+	  
+	  log.debug("Created AccessPoint: " + t.name);
+}
+
+rule CreateExposedGraph
+	transform s: ESM!ExposedGraph
+	to t: JUDOPSM!ExposedGraph
+	extends CreateNamedElement {
+	  t.`mappedTransferObjectType` = s.`entryTransferObjectType`.equivalent("CreateMappedTransferObjectType");
+	  t.`selector` = s.`staticNavigation`.equivalent("CreateStaticNavigation");
+	  //TODO: exposedOperations?
+	  log.debug("Created ExposedGraph: " + t.name);
+	
+}
+
+rule CreateExposedService
+	transform s: ESM!ExposedService
+	to t: JUDOPSM!ExposedService
+	extends CreateNamedElement {
+	  t.`operation` = s.`operation`.equivalent("CreateUnboundOperation"); 
+	  log.debug("unboundop@expserv: " + t.`operation`);
+	  log.debug("Created ExposedService: " + t.name);
+}
+
+//TODO: rule CreateExposedOperation?

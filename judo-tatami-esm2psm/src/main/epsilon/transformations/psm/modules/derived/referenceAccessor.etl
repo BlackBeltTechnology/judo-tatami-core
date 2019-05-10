@@ -2,8 +2,6 @@ import "../data/referenceTypedElement.etl";
 import "expressionType.etl";
 import "../../../../operations/esm/derived/expressionType.eol";
 
-/* ~ReferenceAccessor momma
-*/
 @abstract
 rule CreateReferenceAccessor
 	transform s : ESM!ReferenceAccessor
@@ -15,16 +13,13 @@ rule CreateReferenceAccessor
 	  }
 }
 
-/* ~StaticNavigation + 's Cardinality
-*/
 rule CreateStaticNavigation
 	transform s : ESM!StaticNavigation
 	to t : JUDOPSM!StaticNavigation
 	extends CreateReferenceAccessor {
 	  log.debug("Created StaticNavigation: " + t.name);
 }
-/* ~NavigationProperty + 's Cardinality
-*/
+
 rule CreateNavigationProperty
 	transform s : ESM!NavigationProperty
 	to t : JUDOPSM!NavigationProperty

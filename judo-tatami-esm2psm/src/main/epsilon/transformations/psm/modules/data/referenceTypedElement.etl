@@ -3,7 +3,6 @@ import "../namespace.etl";
 rule CreateCardinality
 	transform s: ESM!Cardinality
 	to t: JUDOPSM!Cardinality {
-	  
 	  t.`lower` = s.`lower`;
 	  t.`upper` = s.`upper`;
 	  log.debug("cardebug: Inside CreateCardinality!");
@@ -15,16 +14,7 @@ rule CreateReferenceTypedElement
 	to t: JUDOPSM!ReferenceTypedElement
 	extends CreateNamedElement {
 	  t.`target` = s.`target`.getPSMEquivalent();
-	  //t.`cardinality` = s.transformCardinality(); //remove after fixing The Below
-	  // TODO: fix!
 	  t.`cardinality` = s.equivalent("CreateCardinalityOfReferenceTypedElement");
-	  log.debug("ths: " + s);
-	  /*
-	  var tocard : JUDOPSM!Cardinality = s.equivalent("CreateCardinalityOfReferenceTypedElement");
-	  
-	  log.debug("reftypel's carbonera: " + s.equivalent("CreateCardinalityOfReferenceTypedElement"));
-	  log.debug("cardebug: Inside CreateReferenceTypedElement!");
-	  */
 }
 
 @lazy
@@ -34,10 +24,6 @@ rule CreateCardinalityOfReferenceTypedElement
 	to t: JUDOPSM!Cardinality {
 	  t.`upper` = s.`upper`;
 	  t.`lower` = s.`lower`;
-	  log.debug("cardebug: [WIN] Inside CreateCardinalityOfReferenceTypedElement!");
-	  
-	  log.debug("cardto upper: " + t.`upper`);
-	  log.debug("cardto lower: " + t.`lower`);
 }
 
 rule CreateContainment
@@ -58,4 +44,3 @@ rule CreateEndpoint
 	  t.`partner` = s.`partner`.equivalent("CreateEndpoint");
 	  log.debug("Created Endpoint: " + t.name);
 }
-/**/

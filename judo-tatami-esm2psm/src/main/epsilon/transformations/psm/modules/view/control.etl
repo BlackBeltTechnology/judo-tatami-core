@@ -1,0 +1,42 @@
+import "component.etl";
+
+
+@abstract
+rule CreateControl 
+	transform s: ESM!Control
+	to t: JUDOPSM!Control {
+	  
+	  log.debug("Created :" + t.name);
+}
+
+rule CreateVisibleControl
+	transform s: ESM!VisibleControl
+	to t: JUDOPSM!VisibleControl
+	extends CreateControl {
+	  
+	  log.debug("Created :" + t.name);
+}
+
+rule CreateEnabledControl 
+	transform s: ESM!EnabledControl
+	to t: JUDOPSM!EnabledControl
+	extends CreateControl {
+	  
+	  log.debug("Created :" + t.name);
+}
+
+rule CreateViewControl
+	transform s: ESM!ViewControl
+	to t: JUDOPSM!ViewControl
+	extends CreateComponent {
+	  
+	  log.debug("Created :" + t.name);
+}
+
+rule Create
+	transform s: ESM!
+	to t: JUDOPSM!
+	extends Create {
+	  
+	  log.debug("Created :" + t.name);
+}
