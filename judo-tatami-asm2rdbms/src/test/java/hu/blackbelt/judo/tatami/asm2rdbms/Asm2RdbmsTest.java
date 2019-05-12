@@ -31,7 +31,6 @@ import static hu.blackbelt.judo.tatami.asm2rdbms.Asm2Rdbms.*;
 @Slf4j
 public class Asm2RdbmsTest {
 
-    // public static final String ASM_2_RDBMS_MODEL = "asm2rdbms.model";
     public static final String TRACE_ASM_2_RDBMS = "trace:asm2rdbms";
     public static final String ASM_NORTHWIND = "asm:northwind";
     public static final String RDBMS_NORTHWIND = "rdbms:northwind";
@@ -53,7 +52,7 @@ public class Asm2RdbmsTest {
                 ImmutableMap.of(
                         URI.createURI(ASM_NORTHWIND), URI.createURI(URN_NORTHWIND_ASM),
                         URI.createURI(RDBMS_NORTHWIND), URI.createURI(URN_NORTHWIND_RDBMS),
-                        URI.createURI(TRACE_ASM_2_RDBMS), URI.createURI(URN_NORTHWIND_RDBMS)
+                        URI.createURI(TRACE_ASM_2_RDBMS), URI.createURI(URN_ASM_2_RDBMS_MODEL)
                 )
         );
 
