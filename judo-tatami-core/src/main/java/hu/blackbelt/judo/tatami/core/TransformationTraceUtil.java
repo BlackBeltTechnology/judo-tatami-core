@@ -11,6 +11,7 @@ import org.eclipse.emf.ecore.*;
 import org.eclipse.emf.ecore.impl.EClassImpl;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
+import org.eclipse.emf.ecore.resource.URIHandler;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.emf.ecore.xmi.impl.EcoreResourceFactoryImpl;
@@ -18,7 +19,10 @@ import org.eclipse.epsilon.etl.EtlModule;
 import org.eclipse.epsilon.etl.trace.Transformation;
 import org.eclipse.epsilon.etl.trace.TransformationTrace;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
@@ -142,8 +146,11 @@ public class TransformationTraceUtil {
         return traceEntries;
     }
 
-
     public static ResourceSet createTraceResourceSet(String traceName) {
+        return createTraceResourceSet(traceName, null);
+    }
+
+    public static ResourceSet createTraceResourceSet(String traceName, URIHandler uriHandler) {
         final EcorePackage ecore = EcorePackage.eINSTANCE;
 
         final EClass trace = newEClassBuilder()
@@ -168,6 +175,9 @@ public class TransformationTraceUtil {
 
 
         final ResourceSet resourceSet = new ResourceSetImpl();
+        if (uriHandler != null) {
+            resourceSet.getURIConverter().getURIHandlers().add(0, uriHandler);
+        }
         resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put("*", new EcoreResourceFactoryImpl());
         final Resource resource = resourceSet.createResource(URI.createURI("trace:" + traceName));
         resource.getContents().add(ePackage);
