@@ -87,7 +87,7 @@
         <judo-meta-measure-version>1.0.1.develop_23</judo-meta-measure-version>
         <judo-meta-measure-import-range>[1.0,1.1)</judo-meta-measure-import-range>
         
-        <judo-meta-liquibase-version>1.0.1.develop_8</judo-meta-liquibase-version>
+        <judo-meta-liquibase-version>1.0.1.develop_10</judo-meta-liquibase-version>
         <judo-meta-liquibase-import-range>[1.0,1.1)</judo-meta-liquibase-import-range>
         
         <judo-meta-openapi-version>1.0.0.develop_76</judo-meta-openapi-version>
