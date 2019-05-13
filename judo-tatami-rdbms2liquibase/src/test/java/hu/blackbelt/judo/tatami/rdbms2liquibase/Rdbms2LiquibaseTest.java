@@ -1,6 +1,5 @@
 package hu.blackbelt.judo.tatami.rdbms2liquibase;
 
-import hu.blackbelt.epsilon.runtime.execution.api.Log;
 import hu.blackbelt.epsilon.runtime.execution.impl.NioFilesystemnRelativePathURIHandlerImpl;
 import hu.blackbelt.epsilon.runtime.execution.impl.Slf4jLog;
 import hu.blackbelt.judo.meta.liquibase.runtime.LiquibaseModel;
@@ -34,7 +33,6 @@ public class Rdbms2LiquibaseTest {
 
 
     URIHandler uriHandler;
-    Log slf4jlog;
     RdbmsModel rdbmsModel;
 
     @Before
@@ -42,9 +40,6 @@ public class Rdbms2LiquibaseTest {
         // Set our custom handler
         uriHandler = new NioFilesystemnRelativePathURIHandlerImpl("urn", FileSystems.getDefault(),
                 targetDir().getAbsolutePath());
-
-        // Default logger
-        slf4jlog = new Slf4jLog(log);
 
         // Loading PSM to isolated ResourceSet, because in Tatami
         // there is no new namespace registration made.
