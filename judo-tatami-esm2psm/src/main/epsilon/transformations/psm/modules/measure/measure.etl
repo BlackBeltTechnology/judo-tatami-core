@@ -1,55 +1,17 @@
 import "../namespace.etl";
 import "../type/type.etl";
+import "../../../../operations/esm/measure/measure.eol";
 
+@lazy
 rule CreateMeasure
 	transform s: ESM!Measure
-	to t: JUDOPSM!Measure
+	to t: JUDOPSM!Measure 
 	extends CreateNamespaceElement {
-	  for (unit in s.units) {
-	    t.units.add(unit.equivalent("CreateUnit"));
-	  }
 	  t.`symbol` = s.`symbol`;
 	  
-	  log.debug("Created Measure: " + t.name);
 }
 
-rule CreateMeasuredType
-	transform s: ESM!MeasuredType
-	to t: JUDOPSM!MeasuredType
-	extends CreateNumericType {
-	  t.`storeUnit` = s.`storeUnit`.equivalent("CreateUnit");
-}
-
-rule CreateUnit
-	transform s: ESM!Measure
-	to t: JUDOPSM!Measure
-	extends CreateNamedElement {
-	  t.`rateDividend` = s.`rateDividend`;
-	  t.`rateDivisor` = s.`rateDivisor`;
-	  t.`symbol` = s.`symbol`;
-	  
-	  log.debug("Created Unit: " + t.name);
-}
-
-//TODO
-rule CreateDurationUnit
-	transform s: ESM!DurationUnit
-	to t: JUDOPSM!DurationUnit
-	extends CreateUnit {
-	  t.`unitType` = JUDOPSM!DurationType#year; //TODO: yes.
-	  
-	  log.debug("Created DurationUnit: " + t.name);
-}
-
-rule CreateMeasureDefinitionTerm
-	transform s: ESM!MeasureDefinitionTerm
-	to t: JUDOPSM!MeasureDefinitionTerm {
-	  t.`exponent` = s.`exponent`;
-	  t.`unit` = s.`unit`.equivalent("CreateUnit");
-	  
-	  log.debug("Created MeasureDefinitionTerm: " + t.name);
-}
-
+@lazy
 rule CreateDerivedMeasure
 	transform s: ESM!Measure
 	to t: JUDOPSM!DerivedMeasure
@@ -57,6 +19,63 @@ rule CreateDerivedMeasure
 	  for(term in s.terms) {
 	    t.terms.add(term.equivalent("CreateMeasureDefinitionTerm"));
 	  }
+}
+
+rule CreateUnit
+	transform s: ESM!Unit
+	to t: JUDOPSM!Unit 
+	extends CreateNamedElement {
+	  t.`symbol` = s.`symbol`;
+	  if ( s.`rateDividend`.isDefined() ) { 
+	  	t.`rateDividend` = s.`rateDividend`;
+	  } else {
+	    t.`rateDividend` = 1.0;
+	  }
+	  if ( s.`rateDivisor`.isDefined() ) {
+	  	t.`rateDivisor` = s.`rateDivisor`;
+	  } else {
+	    t.`rateDivisor` = 1.0;
+	  }
 	  
-	  log.debug("Created DerivedMeasure: " + t.name);
+	  if(not s.isTypeOf(ESM!DurationUnit)) {
+	  	  var measure : ESM!Measure = s.getMeasure();
+		  if(measure.terms.isEmpty()) {
+		  	measure.equivalent("CreateMeasure").units.add(t);
+		  } else {
+		  	measure.equivalent("CreateDerivedMeasure").units.add(t);
+		  }
+	  }
+}
+
+rule CreateDurationUnit
+	transform s: ESM!DurationUnit
+	to t: JUDOPSM!DurationUnit
+	extends CreateUnit {
+	  t.`unitType` = JUDOPSM!DurationType#hour; //TODO
+	  var measure : ESM!Measure = s.getMeasure();
+	  if(measure.terms.isEmpty()) {
+	  	measure.equivalent("CreateMeasure").units.add(t);
+	  } else {
+	  	measure.equivalent("CreateDerivedMeasure").units.add(t);
+	  }
+}
+
+rule CreateMeasureDefinitionTerm
+	transform s: ESM!MeasureDefinitionTerm
+	to t: JUDOPSM!MeasureDefinitionTerm {
+	  t.`exponent` = s.`exponent`;
+	  t.`unit` = s.`unit`.equivalent("CreateUnit");
+}
+
+//missing "MassStoredInKilograms"
+@greedy
+rule CreateMeasuredType
+	transform s: ESM!MeasuredType
+	to t: JUDOPSM!MeasuredType
+	extends CreateNumericType {
+	  if (s.`storeUnit`.isTypeOf(ESM!DurationUnit)) {
+	    t.`storeUnit` = s.`storeUnit`.equivalent("CreateDurationUnit");
+	  } else {
+	    t.`storeUnit` = s.`storeUnit`.equivalent("CreateUnit");
+	  }
 }
