@@ -11,7 +11,7 @@ import "modules/accesspoint/accessPoint.etl";
 //done, uncheckable
 import "modules/authentication/authentication.etl";
 import "modules/constraint/constraint.etl";
-//		..., w/ missing sauce
+//		..., w/ missing sauce (and pbbly unneeded)
 import "modules/authorization/authorization.etl";
 
 //done, checked, w/ postpwnd
@@ -21,4 +21,4 @@ import "modules/derived/expressionType.etl";
 //~~~~~~~~~~~~~~~BIG~FAT~LINE~OF~RECKONING~~~~~~~~~~~~~~~
 
 //TODO w/ mindfuckeritis
-//import "modules/service/transferObjectType.etl";
+import "modules/service/transferObjectType.etl";

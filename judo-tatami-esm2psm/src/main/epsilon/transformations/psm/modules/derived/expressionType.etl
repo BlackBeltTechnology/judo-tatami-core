@@ -4,7 +4,7 @@ rule CreateExpressionType
 	to t : JUDOPSM!ExpressionType {
 	  t.`expression` = s.`expression`;
 	  /*TODO: later
-		("Type ESM!DialextExpression not found...")
+		("Type ESM!DialectExpression not found...")
 	  */
 	  t.`dialect` = JUDOPSM!ExpressionDialect#JQL; //s.`dialect`.getPSMEquivalent();
 }

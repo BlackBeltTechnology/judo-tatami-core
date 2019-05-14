@@ -10,3 +10,21 @@ operation ESM!EntityReferenceType getPSMEquivalent(): JUDOPSM!EntityReferenceTyp
 	}
 }
 */
+/* TODO: remove 
+operation ESM!Parameter getInput(): ESM!Operation {
+	return ESM!Operation.all.selectOne(p | p.input.includes(self));
+}
+
+operation ESM!Parameter getOutput(): ESM!Operation {
+	return ESM!Operation.all.selectOne(p | p.output.includes(self));
+}
+
+operation ESM!Parameter getFaults(): ESM!Operation {
+	return ESM!Operation.all.selectOne(p | p.faults.includes(self));
+}
+*/
+/*
+operation ESM!TransferObjectRelation getPSMEquivalent(): JUDOPSM!TransferObjectType {
+	switch(self)
+}
+*/
