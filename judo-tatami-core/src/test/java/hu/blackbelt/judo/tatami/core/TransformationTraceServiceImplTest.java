@@ -2,11 +2,15 @@ package hu.blackbelt.judo.tatami.core;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import lombok.Getter;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
+import org.eclipse.emf.common.util.ECollections;
 import org.eclipse.emf.common.util.URI;
+import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.EcorePackage;
-import org.eclipse.emf.ecore.impl.EClassImpl;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
@@ -14,10 +18,10 @@ import org.eclipse.emf.ecore.xmi.impl.EcoreResourceFactoryImpl;
 import org.junit.Test;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.stream.Collectors;
 
-import static org.eclipse.emf.ecore.util.builder.EcoreBuilders.newEClassBuilder;
-import static org.eclipse.emf.ecore.util.builder.EcoreBuilders.newEPackageBuilder;
+import static org.eclipse.emf.ecore.util.builder.EcoreBuilders.*;
 import static org.junit.Assert.assertEquals;
 
 public class TransformationTraceServiceImplTest {
@@ -34,145 +38,99 @@ public class TransformationTraceServiceImplTest {
 
 
         RootModel rootModel = new RootModel();
-        ResourceSet rootModelRs = createTestResourceSet("root", "RootC1");
-        EPackage rootModelP = rootModelRs.getPackageRegistry().getEPackage(HTTP_TEST + "root");
-        URI rootModelUri = URI.createURI("uri:root");
-        Resource rootR = rootModelRs.createResource(rootModelUri);
-        EClassImpl rootModelC1 = (EClassImpl) rootModelP.getEClassifier("RootC1");
-        EObject  rootModelO1 = rootModelP.getEFactoryInstance().create(rootModelC1);
-        rootR.getContents().add(rootModelO1);
-
+        ModelHolder rootModelHolder = createTestClassesAndInstances("root", "Root", 1, 1);
 
         Level1Model1 level1Model1 = new Level1Model1();
-        ResourceSet level1Model1Rs = createTestResourceSet("level1Model1", "Level1Model1C1");
-        EPackage level1Model1P = level1Model1Rs.getPackageRegistry().getEPackage(HTTP_TEST + "level1Model1");
-        URI level1Model1Uri = URI.createURI("uri:level1Model1");
-        Resource level1Model1R = level1Model1Rs.createResource(level1Model1Uri);
-        EClassImpl level1Model1C1 = (EClassImpl) level1Model1P.getEClassifier("Level1Model1C1");
-        EObject  level1Model1O1 = level1Model1P.getEFactoryInstance().create(level1Model1C1);
-        level1Model1R.getContents().add(level1Model1O1);
+        ModelHolder level1Model1Holder = createTestClassesAndInstances("level1model1", "Level1Model1", 1, 1);
 
         Level1Model2 level1Model2 = new Level1Model2();
-        ResourceSet level1Model2Rs = createTestResourceSet("level1Model2", "level1Model2C1");
-        EPackage level1Model2P = level1Model2Rs.getPackageRegistry().getEPackage(HTTP_TEST + "level1Model2");
-        URI level1Model2Uri = URI.createURI("uri:level1Model2");
-        Resource level1Model2R = level1Model2Rs.createResource(level1Model2Uri);
-        EClassImpl level1Model2C1 = (EClassImpl) level1Model2P.getEClassifier("level1Model2C1");
-        EObject  level1Model2O1 = level1Model2P.getEFactoryInstance().create(level1Model2C1);
-        level1Model2R.getContents().add(level1Model2O1);
+        ModelHolder level1Model2Holder = createTestClassesAndInstances("level1model2", "Level1Model2", 1, 1);
 
         Level1Model3 level1Model3 = new Level1Model3();
-        ResourceSet level1Model3Rs = createTestResourceSet("level1Model3", "level1Model3C1");
-        EPackage level1Model3P = level1Model3Rs.getPackageRegistry().getEPackage(HTTP_TEST + "level1Model3");
-        URI level1Model3Uri = URI.createURI("uri:level1Model3");
-        Resource level1Model3R = level1Model3Rs.createResource(level1Model3Uri);
-        EClassImpl level1Model3C1 = (EClassImpl) level1Model3P.getEClassifier("level1Model3C1");
-        EObject  level1Model3O1 = level1Model3P.getEFactoryInstance().create(level1Model3C1);
-        level1Model3R.getContents().add(level1Model3O1);
+        ModelHolder level1Model3Holder = createTestClassesAndInstances("level1model3", "Level1Model3", 1, 1);
 
         Level2Model1 level2Model1 = new Level2Model1();
-        ResourceSet level2Model1Rs = createTestResourceSet("level2Model1", "level2Model1C1");
-        EPackage level2Model1P = level2Model1Rs.getPackageRegistry().getEPackage(HTTP_TEST + "level2Model1");
-        URI level2Model1Uri = URI.createURI("uri:level2Model1");
-        Resource level2Model1R = level2Model1Rs.createResource(level2Model1Uri);
-        EClassImpl level2Model1C1 = (EClassImpl) level2Model1P.getEClassifier("level2Model1C1");
-        EObject  level2Model1O1 = level2Model1P.getEFactoryInstance().create(level2Model1C1);
-        level2Model1R.getContents().add(level2Model1O1);
+        ModelHolder level2Model1Holder = createTestClassesAndInstances("level2model1", "Level2Model1", 1, 1);
 
         Level2Model2 level2Model2 = new Level2Model2();
-        ResourceSet level2Model2Rs = createTestResourceSet("level2Model2", "level2Model2C1");
-        EPackage level2Model2P = level2Model2Rs.getPackageRegistry().getEPackage(HTTP_TEST + "level2Model2");
-        URI level2Model2Uri = URI.createURI("uri:level2Model2");
-        Resource level2Model2R = level2Model2Rs.createResource(level2Model2Uri);
-        EClassImpl level2Model2C1 = (EClassImpl) level2Model2P.getEClassifier("level2Model2C1");
-        EObject  level2Model2O1 = level2Model2P.getEFactoryInstance().create(level2Model2C1);
-        level2Model2R.getContents().add(level2Model2O1);
-
+        ModelHolder level2Model2Holder = createTestClassesAndInstances("level2model2", "Level2Model2", 1, 1);
 
         Level3Model1 level3Model1 = new Level3Model1();
-        ResourceSet level3Model1Rs = createTestResourceSet("level3Model1", "level3Model1C1");
-        EPackage level3Model1P = level3Model1Rs.getPackageRegistry().getEPackage(HTTP_TEST + "level3Model1");
-        URI level3Model1Uri = URI.createURI("uri:level3Model1");
-        Resource level3Model1R = level3Model1Rs.createResource(level3Model1Uri);
-        EClassImpl level3Model1C1 = (EClassImpl) level3Model1P.getEClassifier("level3Model1C1");
-        EObject  level3Model1O1 = level3Model1P.getEFactoryInstance().create(level3Model1C1);
-        level3Model1R.getContents().add(level3Model1O1);
-        EObject  level3Model1O2 = level3Model1P.getEFactoryInstance().create(level3Model1C1);
-        level3Model1R.getContents().add(level3Model1O2);
+        ModelHolder level3Model1Holder = createTestClassesAndInstances("level3model1", "Level3Model1", 1, 2);
 
         //Map<EObject, List<EObject>> root_to_level1model1_map = ImmutableMap.of(rootModelO1, ImmutableList.of(level1Model1O1));
         TransformationTraceTest root_to_level1model1 = TransformationTraceTest.builder()
                 .modelName(TEST_1)
                 .name("root_to_level1model1")
                 .source(ImmutableList.of(rootModel))
-                .sourceResourceSet(ImmutableMap.of(rootModel, rootModelRs))
-                .sourceURIS(ImmutableMap.of(rootModel, rootModelUri))
+                .sourceResourceSet(ImmutableMap.of(rootModel, rootModelHolder.getResourceSet()))
+                .sourceURIS(ImmutableMap.of(rootModel, rootModelHolder.getUri()))
                 .target(level1Model1)
-                .targetResourceSet(level1Model1Rs)
-                .targetURI(level1Model1Uri)
-                .trace(ImmutableMap.of(rootModelO1, ImmutableList.of(level1Model1O1)))
+                .targetResourceSet(level1Model1Holder.getResourceSet())
+                .targetURI(level1Model1Holder.getUri())
+                .trace(ImmutableMap.of(rootModelHolder.getFirstObject(), ImmutableList.of(level1Model1Holder.getFirstObject())))
                 .build();
 
         TransformationTraceTest root_to_level1model2 = TransformationTraceTest.builder()
                 .modelName(TEST_1)
                 .name("root_to_level1model2")
                 .source(ImmutableList.of(rootModel))
-                .sourceResourceSet(ImmutableMap.of(rootModel, rootModelRs))
-                .sourceURIS(ImmutableMap.of(rootModel, rootModelUri))
+                .sourceResourceSet(ImmutableMap.of(rootModel, rootModelHolder.getResourceSet()))
+                .sourceURIS(ImmutableMap.of(rootModel, rootModelHolder.getUri()))
                 .target(level1Model2)
-                .targetResourceSet(level1Model2Rs)
-                .targetURI(level1Model2Uri)
-                .trace(ImmutableMap.of(rootModelO1, ImmutableList.of(level1Model2O1)))
+                .targetResourceSet(level1Model2Holder.getResourceSet())
+                .targetURI(level1Model2Holder.getUri())
+                .trace(ImmutableMap.of(rootModelHolder.getFirstObject(), ImmutableList.of(level1Model2Holder.getFirstObject())))
                 .build();
 
         TransformationTraceTest root_to_level1model3 = TransformationTraceTest.builder()
                 .modelName(TEST_1)
                 .name("root_to_level1model3")
                 .source(ImmutableList.of(rootModel))
-                .sourceResourceSet(ImmutableMap.of(rootModel, rootModelRs))
-                .sourceURIS(ImmutableMap.of(rootModel, rootModelUri))
+                .sourceResourceSet(ImmutableMap.of(rootModel, rootModelHolder.getResourceSet()))
+                .sourceURIS(ImmutableMap.of(rootModel, rootModelHolder.getUri()))
                 .target(level1Model3)
-                .targetResourceSet(level1Model3Rs)
-                .targetURI(level1Model3Uri)
-                .trace(ImmutableMap.of(rootModelO1, ImmutableList.of(level1Model3O1)))
+                .targetResourceSet(level1Model3Holder.getResourceSet())
+                .targetURI(level1Model3Holder.getUri())
+                .trace(ImmutableMap.of(rootModelHolder.getFirstObject(), ImmutableList.of(level1Model3Holder.getFirstObject())))
                 .build();
 
         TransformationTraceTest root_to_level2model1 = TransformationTraceTest.builder()
                 .modelName(TEST_1)
                 .name("root_to_level2model1")
                 .source(ImmutableList.of(rootModel))
-                .sourceResourceSet(ImmutableMap.of(rootModel, rootModelRs))
-                .sourceURIS(ImmutableMap.of(rootModel, rootModelUri))
+                .sourceResourceSet(ImmutableMap.of(rootModel, rootModelHolder.getResourceSet()))
+                .sourceURIS(ImmutableMap.of(rootModel, rootModelHolder.getUri()))
                 .target(level2Model1)
-                .targetResourceSet(level2Model1Rs)
-                .targetURI(level2Model1Uri)
-                .trace(ImmutableMap.of(rootModelO1, ImmutableList.of(level2Model1O1)))
+                .targetResourceSet(level2Model1Holder.getResourceSet())
+                .targetURI(level2Model1Holder.getUri())
+                .trace(ImmutableMap.of(rootModelHolder.getFirstObject(), ImmutableList.of(level2Model1Holder.getFirstObject())))
                 .build();
 
         TransformationTraceTest level1_to_level2model2 = TransformationTraceTest.builder()
                 .modelName(TEST_1)
                 .name("level1_to_level2model2")
                 .source(ImmutableList.of(level1Model1, level1Model2))
-                .sourceResourceSet(ImmutableMap.of(level1Model1, level1Model1Rs, level1Model2, level1Model2Rs))
-                .sourceURIS(ImmutableMap.of(level1Model1, level1Model1Uri, level1Model2, level1Model2Uri))
+                .sourceResourceSet(ImmutableMap.of(level1Model1, level1Model1Holder.getResourceSet(), level1Model2, level1Model2Holder.getResourceSet()))
+                .sourceURIS(ImmutableMap.of(level1Model1, level1Model1Holder.getUri(), level1Model2, level1Model2Holder.getUri()))
                 .target(level2Model2)
-                .targetResourceSet(level2Model2Rs)
-                .targetURI(level2Model2Uri)
-                .trace(ImmutableMap.of(level1Model2O1, ImmutableList.of(level2Model2O1)))
+                .targetResourceSet(level2Model2Holder.getResourceSet())
+                .targetURI(level2Model2Holder.getUri())
+                .trace(ImmutableMap.of(level1Model2Holder.getFirstObject(), ImmutableList.of(level2Model2Holder.getFirstObject())))
                 .build();
 
         TransformationTraceTest level2_to_level3model1 = TransformationTraceTest.builder()
                 .modelName(TEST_1)
                 .name("level2_to_level3model1")
                 .source(ImmutableList.of(level2Model1, level2Model2))
-                .sourceResourceSet(ImmutableMap.of(level2Model1, level1Model2Rs, level2Model2, level2Model2Rs))
-                .sourceURIS(ImmutableMap.of(level2Model1, level2Model1Uri, level2Model2, level2Model2Uri))
+                .sourceResourceSet(ImmutableMap.of(level2Model1, level2Model1Holder.getResourceSet(), level2Model2, level2Model2Holder.getResourceSet()))
+                .sourceURIS(ImmutableMap.of(level2Model1, level2Model1Holder.getUri(), level2Model2, level2Model2Holder.getUri()))
                 .target(level3Model1)
-                .targetResourceSet(level3Model1Rs)
-                .targetURI(level3Model1Uri)
+                .targetResourceSet(level3Model1Holder.getResourceSet())
+                .targetURI(level3Model1Holder.getUri())
                 .trace(ImmutableMap.of(
-                        level2Model2O1, ImmutableList.of(level3Model1O1),
-                        level2Model1O1, ImmutableList.of(level3Model1O2)
+                        level2Model2Holder.getFirstObject(), ImmutableList.of(level3Model1Holder.getObjectByIndex(1)),
+                        level2Model1Holder.getFirstObject(), ImmutableList.of(level3Model1Holder.getObjectByIndex(2))
                 ))
                 .build();
 
@@ -185,28 +143,28 @@ public class TransformationTraceServiceImplTest {
         transformationTraceService.add(level1_to_level2model2);
         transformationTraceService.add(level2_to_level3model1);
 
-        assertEquals(rootModelO1, transformationTraceService.getRootAscendantOfInstance(TEST_1, level3Model1O1));
-        assertEquals(null, transformationTraceService.getAscendantOfInstanceByModelType(TEST_1, Level1Model1.class, level3Model1O1));
-        assertEquals(level1Model2O1, transformationTraceService.getAscendantOfInstanceByModelType(TEST_1, Level1Model2.class, level3Model1O1));
-        assertEquals(level2Model1O1, transformationTraceService.getAscendantOfInstanceByModelType(TEST_1, Level2Model1.class, level3Model1O2));
+        assertEquals(rootModelHolder.getFirstObject(), transformationTraceService.getRootAscendantOfInstance(TEST_1, level3Model1Holder.getFirstObject()));
+        assertEquals(null, transformationTraceService.getAscendantOfInstanceByModelType(TEST_1, Level1Model1.class, level3Model1Holder.getFirstObject()));
+        assertEquals(level1Model2Holder.getFirstObject(), transformationTraceService.getAscendantOfInstanceByModelType(TEST_1, Level1Model2.class, level3Model1Holder.getObjectByIndex(1)));
+        assertEquals(level2Model1Holder.getFirstObject(), transformationTraceService.getAscendantOfInstanceByModelType(TEST_1, Level2Model1.class, level3Model1Holder.getObjectByIndex(2)));
         assertEquals(
                 ImmutableList.of(level2_to_level3model1, level1_to_level2model2, root_to_level1model2),
-                transformationTraceService.getTransformationTraceAscendantsByInstance(TEST_1, level3Model1O1)
+                transformationTraceService.getTransformationTraceAscendantsByInstance(TEST_1, level3Model1Holder.getObjectByIndex(1))
         );
 
         assertEquals(ImmutableMap.builder()
-                        .put(root_to_level1model1, ImmutableList.of(level1Model1O1))
-                        .put(root_to_level1model2, ImmutableList.of(level1Model2O1))
-                        .put(root_to_level1model3, ImmutableList.of(level1Model3O1))
-                        .put(root_to_level2model1, ImmutableList.of(level2Model1O1))
-                        .put(level1_to_level2model2, ImmutableList.of(level2Model2O1))
-                        .put(level2_to_level3model1, ImmutableList.of(level3Model1O1))
+                        .put(root_to_level1model1, ImmutableList.of(level1Model1Holder.getFirstObject()))
+                        .put(root_to_level1model2, ImmutableList.of(level1Model2Holder.getFirstObject()))
+                        .put(root_to_level1model3, ImmutableList.of(level1Model3Holder.getFirstObject()))
+                        .put(root_to_level2model1, ImmutableList.of(level2Model1Holder.getFirstObject()))
+                        .put(level1_to_level2model2, ImmutableList.of(level2Model2Holder.getFirstObject()))
+                        .put(level2_to_level3model1, ImmutableList.of(level3Model1Holder.getObjectByIndex(2), level3Model1Holder.getObjectByIndex(1)))
                         .build(),
-                transformationTraceService.getAllDescendantOfInstance(TEST_1, rootModelO1)
+                transformationTraceService.getAllDescendantOfInstance(TEST_1, rootModelHolder.getFirstObject())
         );
 
 
-        assertEquals(ImmutableList.of(level3Model1O1), transformationTraceService.getDescendantOfInstanceByModelType(TEST_1, Level3Model1.class, rootModelO1));
+        assertEquals(ImmutableList.of(level3Model1Holder.getObjectByIndex(2), level3Model1Holder.getObjectByIndex(1)), transformationTraceService.getDescendantOfInstanceByModelType(TEST_1, Level3Model1.class, rootModelHolder.getFirstObject()));
     }
 
 
@@ -231,5 +189,88 @@ public class TransformationTraceServiceImplTest {
         resourceSet.getPackageRegistry().put(ePackage.getNsURI(), ePackage);
         return resourceSet;
     }
+
+
+    @RequiredArgsConstructor
+    @Getter
+    public class ModelHolder {
+        @NonNull
+        ResourceSet resourceSet;
+        @NonNull
+        Resource packageResource;
+        @NonNull
+        Resource dataResource;
+        @NonNull
+        EPackage epackage;
+        @NonNull
+        List<EClass> classes;
+        @NonNull
+        List<EObject> objects;
+        @NonNull
+        URI uri;
+
+        public EObject getObjectByIndex(int i) {
+            return objects.get(i - 1);
+        }
+
+        public EObject getFirstObject() {
+            return objects.get(0);
+        }
+    }
+
+    public ModelHolder createTestClassesAndInstances(String modelTypeName, String modelTypePrefix, int classNumber,  int instanceNumByClass) {
+        final EcorePackage ecore = EcorePackage.eINSTANCE;
+
+        final EPackage ePackage = newEPackageBuilder()
+                .withName(modelTypeName)
+                .withNsPrefix(modelTypeName)
+                ///.withEClassifiers(Arrays.stream(className).map(c -> newEClassBuilder().withName(c).build()).collect(Collectors.toList()))
+                .withNsURI(HTTP_TEST + modelTypeName)
+                .build();
+
+        final ResourceSet resourceSet = new ResourceSetImpl();
+
+        resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put("*", new EcoreResourceFactoryImpl());
+        final Resource resource = resourceSet.createResource(URI.createURI(HTTP_TEST + modelTypeName));
+
+        resource.getContents().add(ePackage);
+
+        // Register packages
+        resourceSet.getPackageRegistry().put(ePackage.getNsURI(), ePackage);
+
+        URI uri = URI.createURI("uri:" + modelTypeName);
+        Resource dataResource = resourceSet.createResource(uri);
+
+
+        //EClassImpl rootModelC1 = (EClassImpl) ePackage.getEClassifier(modelTypePrefix + "C1");
+        //rootModelC1.getEAllAttributes().add(newEClassBuilder().withName("name").withT)
+
+        List<EClass> classes = ECollections.newBasicEList();
+        List<EObject> instances = ECollections.newBasicEList();
+
+        int cnt = 1;
+        for (int j=1; j<=classNumber; j++) {
+            final EClass clazz = newEClassBuilder()
+                    .withName(modelTypePrefix + "C" + Integer.toString(j))
+                    .withEStructuralFeatures(
+                            newEAttributeBuilder()
+                                    .withName("name")
+                                    .withEType(ecore.getEString()))
+                    .build();
+
+            classes.add(clazz);
+            ePackage.getEClassifiers().add(clazz);
+            for (int i = 1; i <= instanceNumByClass; i++) {
+                EObject m = ePackage.getEFactoryInstance().create(clazz);
+                m.eSet(clazz.getEStructuralFeature("name"), modelTypePrefix + "O" + Integer.toString(cnt));
+                dataResource.getContents().add(m);
+                instances.add(m);
+                cnt++;
+            }
+        }
+
+        return new ModelHolder(resourceSet, resource, dataResource, ePackage, classes, instances, uri);
+    }
+
 
 }

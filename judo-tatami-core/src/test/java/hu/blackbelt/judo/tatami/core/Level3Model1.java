@@ -1,5 +1,8 @@
 package hu.blackbelt.judo.tatami.core;
 
+import lombok.ToString;
+
+@ToString
 public class Level3Model1 implements TestModel {
     @Override
     public String getName() {

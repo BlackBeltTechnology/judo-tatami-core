@@ -6,6 +6,8 @@ import com.google.common.collect.Maps;
 import hu.blackbelt.epsilon.runtime.execution.contexts.EtlExecutionContext;
 import hu.blackbelt.epsilon.runtime.execution.exceptions.ScriptExecutionException;
 import lombok.extern.slf4j.Slf4j;
+import org.eclipse.emf.common.util.ECollections;
+import org.eclipse.emf.common.util.EMap;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.*;
 import org.eclipse.emf.ecore.impl.EClassImpl;
@@ -19,10 +21,7 @@ import org.eclipse.epsilon.etl.EtlModule;
 import org.eclipse.epsilon.etl.trace.Transformation;
 import org.eclipse.epsilon.etl.trace.TransformationTrace;
 
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
@@ -38,7 +37,7 @@ public class TransformationTraceUtil {
 
     public static Map<EObject, List<EObject>> resolveTransformationTrace(List<EObject> traceEntries, List<ResourceSet> resourcesToResolve) {
 
-        Map<EObject, List<EObject>> ret = Maps.newHashMap();
+        EMap<EObject, List<EObject>> ret = ECollections.asEMap(Maps.newHashMap());
         for (EObject tr : traceEntries) {
 
             EClass traceClass = tr.eClass();
@@ -57,7 +56,7 @@ public class TransformationTraceUtil {
                 throw new RuntimeException("Source entry not found on the given resources: " + sourceURI);
             }
 
-            List<EObject> targetList = Lists.newArrayList();
+            List<EObject> targetList = ECollections.newBasicEList(); //Lists.newArrayList();
             for (String t : (Collection<String>) tr.eGet(targetUriAttributes, false)) {
                 EObject target = null;
                 URI targetURI = URI.createURI(t);
@@ -76,7 +75,7 @@ public class TransformationTraceUtil {
             }
             ret.put(source, targetList);
         }
-        return ret;
+        return new EMapWrapper<>(ret);
     }
 
     public static List<EObject> getTransformationTrace(String traceName, EtlExecutionContext etlExecutionContext) throws ScriptExecutionException {
@@ -89,7 +88,7 @@ public class TransformationTraceUtil {
         //EObject trace = tracePackage.getEFactoryInstance().create(traceClass);
         TransformationTrace transformationTrace = ((EtlModule) etlExecutionContext.getModule(ImmutableMap.of())).getContext().getTransformationTrace();
 
-        List<EObject> traceEntries = Lists.newArrayList();
+        List<EObject> traceEntries = ECollections.newBasicEList();  // Lists.newArrayList();
         for (Transformation transformation : transformationTrace.getTransformations()) {
             if (transformation.getSource() instanceof EObject) {
                 EObject trace = tracePackage.getEFactoryInstance().create(traceClass);
@@ -122,7 +121,7 @@ public class TransformationTraceUtil {
         EAttribute srcUriAttribute = (EAttribute) traceClass.getEStructuralFeature(SOURCE_URI);
         EAttribute targetUriAttributes = (EAttribute) traceClass.getEStructuralFeature(TARRGET_URIS);
 
-        List<EObject> traceEntries = Lists.newArrayList();
+        List<EObject> traceEntries = ECollections.newBasicEList(); // Lists.newArrayList();
         for (EObject source : traceMap.keySet()) {
             EObject trace = tracePackage.getEFactoryInstance().create(traceClass);
             trace.eSet(srcUriAttribute, EcoreUtil.getURI(source).toString());

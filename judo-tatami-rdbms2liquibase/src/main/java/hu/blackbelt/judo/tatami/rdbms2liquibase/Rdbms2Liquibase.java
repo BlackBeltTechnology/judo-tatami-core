@@ -8,15 +8,7 @@ import hu.blackbelt.judo.meta.rdbms.runtime.RdbmsModel;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.stream.StreamResult;
-import javax.xml.transform.stream.StreamSource;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.InputStream;
 
 import static hu.blackbelt.epsilon.runtime.execution.ExecutionContext.executionContextBuilder;
 import static hu.blackbelt.epsilon.runtime.execution.contexts.EtlExecutionContext.etlExecutionContextBuilder;
@@ -66,34 +58,5 @@ public class Rdbms2Liquibase {
 
         executionContext.commit();
         executionContext.close();
-    }
-
-    private static final String LIQUIBASE_FIX_NS_XSLT = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
-            "<xsl:stylesheet \n" +
-            "\txmlns:xsl=\"http://www.w3.org/1999/XSL/Transform\" \n" +
-            "\txmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n" +
-            "\tversion=\"1.0\">\n" +
-            "\t\n" +
-            "\t<xsl:output method=\"xml\" version=\"1.0\" encoding=\"UTF-8\" indent=\"yes\"/>\n" +
-            "\t<xsl:strip-space elements=\"*\"/>\n" +
-            "\t\n" +
-            "\t<xsl:template match=\"/\">\n" +
-            "\t    <databaseChangeLog \n" +
-            "\t    \txmlns=\"http://www.liquibase.org/xml/ns/dbchangelog\" \n" +
-            "\t    \txmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" \n" +
-            "\t    \txsi:schemaLocation=\"http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd\">\n" +
-            "\t        <xsl:copy-of select=\"node()/*\"/>\n" +
-            "\t    </databaseChangeLog>\n" +
-            "\t</xsl:template>\n" +
-            "</xsl:stylesheet>";
-
-    public static InputStream transformXmlDocumentWithXslt(InputStream xmlDocument) throws TransformerException {
-        TransformerFactory tFactory = TransformerFactory.newInstance();
-        Transformer transformer = null;
-        transformer = tFactory.newTransformer(new StreamSource(LIQUIBASE_FIX_NS_XSLT));
-        StreamSource xmlSource = new StreamSource(xmlDocument);
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        transformer.transform(xmlSource, new StreamResult(baos));
-        return new ByteArrayInputStream(baos.toByteArray());
     }
 }
