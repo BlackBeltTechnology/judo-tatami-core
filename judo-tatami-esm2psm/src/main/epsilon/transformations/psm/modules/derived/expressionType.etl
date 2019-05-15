@@ -9,6 +9,7 @@ rule CreateExpressionType
 	  t.`dialect` = JUDOPSM!ExpressionDialect#JQL; //s.`dialect`.getPSMEquivalent();
 }
 
+@lazy
 rule CreateDataExpressionType
 	transform s : ESM!DataExpressionType
 	to t : JUDOPSM!DataExpressionType
@@ -29,7 +30,7 @@ rule CreateAttributeSelectorType
 	extends CreateDataExpressionType {
 	log.debug("Created AttributeSelectorType: ");
 }
-
+@lazy
 rule CreateReferenceExpressionType
 	transform s : ESM!ReferenceExpressionType
 	to t : JUDOPSM!ReferenceExpressionType

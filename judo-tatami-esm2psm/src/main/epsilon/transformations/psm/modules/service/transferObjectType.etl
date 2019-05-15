@@ -20,7 +20,7 @@ rule CreateCardinalityOfParameter
   	  t.`lower` = s.`lower`;
 }
 
-
+//~~~~~~~~~~~~~~~~~~~~~~~~~~ BIG FAT LINE OF JUDGEMENT ~~~~~~~~~~~~~~~~~~~~~~~~~~ /**/
 @abstract
 rule CreateTransferObjectType
 	transform s: ESM!TransferObjectType
@@ -73,6 +73,7 @@ rule CreateMappedTransferObjectType
 }
 //-----------
 
+@greedy
 rule CreateTransferAttribute
 	transform s: ESM!TransferAttribute
 	to t: JUDOPSM!TransferAttribute 
@@ -97,6 +98,7 @@ rule CreateTransferAttribute
 	  log.debug("Created TransferAttribute: " + t.name);
 }
 
+//@greedy
 rule CreateTransferObjectRelation
 	transform s: ESM!TransferRelation
 	to t: JUDOPSM!TransferObjectRelation
@@ -114,22 +116,18 @@ rule CreateTransferObjectRelation
 	  log.debug("look at me mommy no handle bars: " + esmTOT);
 	  if (esmTOT.`operations`.isEmpty()) {
 	  	log.debug("esmTOT.operations: EMPTY!");
-	  	esmTOT.equivalent("CreateMappedTransferObjectType");
+	  	t.`target` = esmTOT.equivalent("CreateMappedTransferObjectType");
 	  } else {
 	    log.debug("esmTOT.operations: very much not empty!");
-	    esmTOT.equivalent("CreateUnmappedTransferObjectType");
+	    t.`target` = esmTOT.equivalent("CreateUnmappedTransferObjectType");
 	  }
-	  
-	  //if (s.`target`.`entityType`.isUndefined()) {t.`target` = s.`target`.equivalent("CreateUnmappedTransferObjectType");} else {t.`target` = s.`target`.equivalent("CreateMappedTransferObjectType");}
-	  
 }
 
 
 @abstract
 rule CreateOperation
 	transform s: ESM!Operation
-	to t: JUDOPSM!Operation 
-	extends CreateNamedElement {
+	to t: JUDOPSM!Operation {
 	  for(fault in s.`faults`) {
 	    t.`faults`.add(s.`faults`.equivalent("CreateParameter"));
 	  }
@@ -149,7 +147,7 @@ rule CreateOperation
 rule CreateBoundOperation
 	transform s: ESM!BoundOperation
 	to t: JUDOPSM!BoundOperation
-	extends CreateOperation {
+	extends CreateOperation, CreateNamedElement {
 		
 }
 
@@ -157,7 +155,7 @@ rule CreateBoundOperation
 rule CreateUnboundOperation
 	transform s: ESM!UnboundOperation
 	to t: JUDOPSM!UnboundOperation
-	extends CreateOperation {
+	extends CreateOperation, CreateNamespaceElement {
 	  
 }
 
@@ -169,3 +167,5 @@ rule CreateParameter
 	  t.`cardinality` = s.equivalent("CreateCardinalityOfParameter");
 	  t.`type` = s.`type`.equivalent("CreateTransferObjectType"); //TODO: that wont be enough uknow
 }
+
+/**/

@@ -13,14 +13,13 @@ rule CreateReferenceAccessor
 	  }
 }
 
-@lazy
 rule CreateStaticNavigation
 	transform s : ESM!StaticNavigation
 	to t : JUDOPSM!StaticNavigation
 	extends CreateReferenceAccessor {
-	  log.debug("sauceSN: " + s);
-	  log.debug("tarSN: " + s);
-	  log.debug("Created StaticNavigation: " + t.name);
+	  var namespace : ESM!Namespace = ESM!Namespace.all.selectOne(ns | ns.elements.includes(s));
+	  log.debug("ordog es pokol: " + namespace);
+	  namespace.equivalent("CreatePackage").`elements`.add(t);
 }
 
 rule CreateNavigationProperty

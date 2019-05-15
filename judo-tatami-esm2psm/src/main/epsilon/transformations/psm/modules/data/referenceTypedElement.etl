@@ -1,13 +1,6 @@
 import "../namespace.etl";
 
-rule CreateCardinality
-	transform s: ESM!Cardinality
-	to t: JUDOPSM!Cardinality {
-	  t.`lower` = s.`lower`;
-	  t.`upper` = s.`upper`;
-	  log.debug("cardebug: Inside CreateCardinality!");
-}
-
+//TODO: was "extends CreateNamedElement"
 @abstract
 rule CreateReferenceTypedElement
 	transform s: ESM!ReferenceTypedElement
