@@ -18,7 +18,6 @@ rule CreateStaticNavigation
 	to t : JUDOPSM!StaticNavigation
 	extends CreateReferenceAccessor {
 	  var namespace : ESM!Namespace = ESM!Namespace.all.selectOne(ns | ns.elements.includes(s));
-	  log.debug("ordog es pokol: " + namespace);
 	  namespace.equivalent("CreatePackage").`elements`.add(t);
 }
 

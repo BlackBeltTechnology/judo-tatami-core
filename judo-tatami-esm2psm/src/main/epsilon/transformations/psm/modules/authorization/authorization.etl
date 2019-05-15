@@ -4,7 +4,7 @@ rule CreateAuthorizationResource
 	transform s: ESM!AuthorizationResource
 	to t: JUDOPSM!AuthorizationResource
 	extends CreateNamespaceElement {
-	  //TODO: referenceTypedElements
+	  //TODO: referenceTypedElements? (s->)
 	  
 	  for (oper in s.operations) {
 	  	t.operations.add(oper.equivalent("CreateOperation"));

@@ -51,7 +51,7 @@ rule CreateTransferObjectType
 //---
 @lazy
 rule CreateUnmappedTransferObjectType
-	transform s: ESM!TransferObjectType //TODO check s type 
+	transform s: ESM!TransferObjectType 
 	to t: JUDOPSM!UnmappedTransferObjectType
 	extends CreateTransferObjectType {
 	  log.debug("Created UnmappedTransferObjectType.");
@@ -59,7 +59,7 @@ rule CreateUnmappedTransferObjectType
 
 @lazy
 rule CreateMappedTransferObjectType
-	transform s: ESM!TransferObjectType //TODO check s type 
+	transform s: ESM!TransferObjectType
 	to t: JUDOPSM!MappedTransferObjectType
 	extends CreateTransferObjectType {
 	  //TODO: later: fix entityReferencePresence //= s.`entityReferencePresence`.getPSMEquivalent();
@@ -87,12 +87,9 @@ rule CreateTransferAttribute
 	  t.`defaultValue` = s.`defaultValue`.equivalent("CreatePrimitiveTypedElement");	  
 	  t.`binding` = s.`primitiveTypedElement`.equivalent("CreateAttribute");
 	  var esmTOT : ESM!TransferObjectType = ESM!TransferObjectType.all.selectOne(tot | tot.attributes.includes(s));
-	  //log.debug("look at me mommy no handle bars: " + esmTOT);
 	  if (esmTOT.`operations`.isEmpty()) {
-	  	//log.debug("esmTOT.operations: EMPTY!");
 	  	esmTOT.equivalent("CreateMappedTransferObjectType");
 	  } else {
-	    //log.debug("esmTOT.operations: very much not empty!");
 	    esmTOT.equivalent("CreateUnmappedTransferObjectType");
 	  }
 	  log.debug("Created TransferAttribute: " + t.name);
@@ -113,12 +110,9 @@ rule CreateTransferObjectRelation
 	  t.`range` = s.`range`.equivalent("CreateReferencedTypedElement");
 	  t.`embedded` = s.`embedded`;
 	  var esmTOT : ESM!TransferObjectType = ESM!TransferObjectType.all.selectOne(tot | tot.relations.includes(s));
-	  log.debug("look at me mommy no handle bars: " + esmTOT);
 	  if (esmTOT.`operations`.isEmpty()) {
-	  	log.debug("esmTOT.operations: EMPTY!");
 	  	t.`target` = esmTOT.equivalent("CreateMappedTransferObjectType");
 	  } else {
-	    log.debug("esmTOT.operations: very much not empty!");
 	    t.`target` = esmTOT.equivalent("CreateUnmappedTransferObjectType");
 	  }
 }
@@ -168,4 +162,3 @@ rule CreateParameter
 	  t.`type` = s.`type`.equivalent("CreateTransferObjectType"); //TODO: that wont be enough uknow
 }
 
-/**/

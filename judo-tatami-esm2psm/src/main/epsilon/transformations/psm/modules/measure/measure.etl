@@ -8,7 +8,6 @@ rule CreateMeasure
 	to t: JUDOPSM!Measure 
 	extends CreateNamespaceElement {
 	  t.`symbol` = s.`symbol`;
-	  
 }
 
 @lazy
