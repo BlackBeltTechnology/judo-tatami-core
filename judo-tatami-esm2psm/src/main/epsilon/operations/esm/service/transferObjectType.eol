@@ -10,21 +10,28 @@ operation ESM!EntityReferenceType getPSMEquivalent(): JUDOPSM!EntityReferenceTyp
 	}
 }
 */
-/* TODO: remove 
-operation ESM!Parameter getInput(): ESM!Operation {
-	return ESM!Operation.all.selectOne(p | p.input.includes(self));
+
+operation ESM!TransferObjectType isMapped() : Boolean {
+	return self.entityType.isDefined();
+} 
+
+operation ESM!TransferObjectType getPSMEquivalent() : JUDOPSM!TransferObjectType {
+	if(self.isMapped()) {
+		return self.equivalent("CreateMappedTransferObjectType");
+	} else {
+		return self.equivalent("CreateUnmappedTransferObjectType");
+	}
 }
 
-operation ESM!Parameter getOutput(): ESM!Operation {
-	return ESM!Operation.all.selectOne(p | p.output.includes(self));
+operation ESM!Parameter isInput() : Boolean {
+	return ESM!Operation.all.selectOne(op | op.input = self);
 }
 
-operation ESM!Parameter getFaults(): ESM!Operation {
-	return ESM!Operation.all.selectOne(p | p.faults.includes(self));
+operation ESM!Parameter getOperation() : ESM!Operation {
+	var esmOP : ESM!Operation; 
+	//if (self.isInput()) {
+	esmOP = ESM!Operation.all.selectOne(op | op.faults.includes(s));
+	//} else {
+	return esmOP;
+	//}
 }
-*/
-/*
-operation ESM!TransferObjectRelation getPSMEquivalent(): JUDOPSM!TransferObjectType {
-	switch(self)
-}
-*/

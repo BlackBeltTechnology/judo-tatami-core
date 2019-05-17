@@ -5,7 +5,12 @@ rule CreateEntityType
   transform s : ESM!EntityType
   to t : JUDOPSM!EntityType
   extends CreateNamespaceElement {
-    t.`abstract` = s.`abstract`;
+    if (s.`abstract`.isDefined()) {
+    	t.`abstract` = s.`abstract`;
+    } else {
+		t.`abstract` = false;    
+    }
+    
     //TODO: [postponed] ~ relationCountConstraints: RelationCountConstraint
     for (super in s.superEntityTypes) {
 		t.superEntityTypes.add(super.getPSMEquivalent());    
@@ -18,7 +23,11 @@ rule CreatePrimitiveTypedElement
 	transform s: ESM!AttributeFeature
 	to t: JUDOPSM!PrimitiveTypedElement
 	extends CreateNamedElement {
-	  t.`required` = s.`required`;
+	  if (s.`required`.isDefined()) {
+		t.`required` = s.`required`;
+      } else {
+		t.`required` = false;
+	  }
 	  t.`dataType` = s.`dataType`.getPSMEquivalent();
 	  
 	  log.debug("Created PrimitiveTypedElement: " + t.name);
@@ -28,7 +37,11 @@ rule CreateAttribute
 	transform s: ESM!Attribute
 	to t: JUDOPSM!Attribute
 	extends CreatePrimitiveTypedElement {
-	  t.`identifier` = s.`identifier`;
+	  if (s.`identifier`.isDefined()) {
+		t.`identifier` = s.`identifier`;
+	  } else {
+		t.`identifier` = false;
+	  }
 	  var entityType : ESM!EntityType = s.getEntityType();
 	  entityType.equivalent("CreateEntityType").attributes.add(t);
 	  

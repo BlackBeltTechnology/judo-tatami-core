@@ -17,6 +17,7 @@ rule CreateDataExpressionType
 	log.debug("Created DataExpressionType: ");
 }
 
+@lazy
 rule CreateLogicalExpressionType
 	transform s : ESM!LogicalExpressionType
 	to t : JUDOPSM!LogicalExpressionType
@@ -24,12 +25,14 @@ rule CreateLogicalExpressionType
 	log.debug("Created LogicalExpressionType: ");
 }
 
+@lazy
 rule CreateAttributeSelectorType
 	transform s : ESM!AttributeSelectorType
 	to t : JUDOPSM!AttributeSelectorType
 	extends CreateDataExpressionType {
 	log.debug("Created AttributeSelectorType: ");
 }
+
 @lazy
 rule CreateReferenceExpressionType
 	transform s : ESM!ReferenceExpressionType
@@ -38,6 +41,7 @@ rule CreateReferenceExpressionType
 	log.debug("Created ReferenceExpressionType: ");
 }
 
+@lazy
 rule CreateReferenceSelectorType
 	transform s : ESM!ReferenceSelectorType
 	to t : JUDOPSM!ReferenceSelectorType

@@ -1,43 +1,40 @@
 import "../namespace.etl";
 import "../service/transferObjectType.etl";
+import "../../../../operations/esm/accesspoint/accessPoint.eol";
 
-@greedy
 rule CreateAccessPoint
 	transform s: ESM!AccessPoint
 	to t: JUDOPSM!AccessPoint
 	extends CreateNamespaceElement {
-	  for (exposedService in s.`exposedServices`) {
-	    t.exposedServices.add(exposedService.equivalent("CreateExposedService"));
-	  }
-	  for (exposedGraph in s.`exposedGraphs`) {
-	    t.exposedGraphs.add(exposedGraph.equivalent("CreateExposedGraph"));
-	  }
 	  log.debug("Created AccessPoint: " + t.name);
 }
 
-@lazy
 rule CreateExposedGraph
 	transform s: ESM!ExposedGraph
 	to t: JUDOPSM!ExposedGraph
 	extends CreateNamedElement {
 	  t.`mappedTransferObjectType` = s.`entryTransferObjectType`.equivalent("CreateMappedTransferObjectType");
 	  t.`selector` = s.`staticNavigation`.equivalent("CreateStaticNavigation");
+	  
+	  s.getPSMEquivalent().exposedGraphs.add(t);
+	  
 	  //TODO: exposedOperations? (->t))
 	  //TODO: cardinality? (s->)
 	  log.debug("Created ExposedGraph: " + t.name);
 }
 
-@lazy
 rule CreateExposedService
 	transform s: ESM!ExposedService
 	to t: JUDOPSM!ExposedService {
-	  t.`operation` = s.`operation`.equivalent("CreateUnboundOperation"); 
+	  t.`operation` = s.`operation`.equivalent("CreateUnboundOperation");
+	  
+	  s.getPSMEquivalent().exposedServices.add(t);
+	  
 	  log.debug("Created ExposedService.");
 }
 
 //TODO: rule CreateExposedOperation?
 /*
-@lazy
 rule CreateExposedOperation
 	transform s: ESM!BoundOperation
 	to t: JUDOPSM!ExposedOperation {

@@ -29,7 +29,7 @@ rule CreateStringType
 	to t: JUDOPSM!StringType
 	extends CreateNamespaceElement {
 	t.`maxLength` = s.`maxLength`;
-	//t.`regExp` = s.`regExp`; //pbbly not needed
+	t.`regExp` = s.`regExp`; //pbbly not needed
 	log.debug("Created StringType: " + t.name);
 }
 

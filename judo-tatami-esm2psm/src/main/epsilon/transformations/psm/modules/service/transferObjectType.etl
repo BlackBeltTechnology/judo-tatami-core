@@ -20,101 +20,77 @@ rule CreateCardinalityOfParameter
   	  t.`lower` = s.`lower`;
 }
 
-//~~~~~~~~~~~~~~~~~~~~~~~~~~ BIG FAT LINE OF JUDGEMENT ~~~~~~~~~~~~~~~~~~~~~~~~~~ /**/
 @abstract
 rule CreateTransferObjectType
 	transform s: ESM!TransferObjectType
 	to t: JUDOPSM!TransferObjectType 
 	extends CreateNamespaceElement {
 	  t.`representation` = s.`representation`.equivalent("CreateTransferAttribute");
-	  //TODO: check
-	    //log.debug("sepr: " + s.`representation`);
-	    //log.debug("tepr: " + t.`representation`);
 	  
-	  log.debug("MIXIN: " + s.mixins);
-	  if (t.isTypeOf(JUDOPSM!MappedTransferObjectType)) {
-	  	log.debug("mappedTOT: " + t.name);
-	  } else if(t.isTypeOf(JUDOPSM!UnmappedTransferObjectType)) {
-	  	log.debug("unmappedTOT: " + t.name);
-	  }
-	  
-	  for ( attribute in s.attributes ) {
-	  	t.attributes.add(attribute.equivalent("CreateTransferAttribute"));
-	  }
-	  
-	  for ( relation in s.relations ) {
-	  	t.relations.add(relation.equivalent("CreateTransferObjectRelation"));
-	  }
-	  //+ESM:
-	  //mixins
+	  //TODO: mixins (check sublime)
+	  //log.debug("MIXIN: " + s.mixins);
 }
-//---
-@lazy
+
 rule CreateUnmappedTransferObjectType
 	transform s: ESM!TransferObjectType 
 	to t: JUDOPSM!UnmappedTransferObjectType
 	extends CreateTransferObjectType {
+	  guard: not s.isMapped()
 	  log.debug("Created UnmappedTransferObjectType.");
 }
 
-@lazy
 rule CreateMappedTransferObjectType
 	transform s: ESM!TransferObjectType
 	to t: JUDOPSM!MappedTransferObjectType
 	extends CreateTransferObjectType {
+	  guard: s.isMapped()
 	  //TODO: later: fix entityReferencePresence //= s.`entityReferencePresence`.getPSMEquivalent();
 	  t.`entityReferencePresence` = JUDOPSM!EntityReferenceType#OPTIONAL; 
 	  t.`entityType` = s.`entityType`.equivalent("CreateEntityType");
-	  for (oper in s.`operations`) {
-	    t.`operations`.add(oper.equivalent("CreateBoundOperation"));
-	  }
 	  
 	  log.debug("Created MappedTransferObjectType.");
 }
-//-----------
 
-@greedy
 rule CreateTransferAttribute
 	transform s: ESM!TransferAttribute
 	to t: JUDOPSM!TransferAttribute 
 	extends CreateNamedElement {
-	  if (s.`required`.isDefined()) {
-	    t.`required` = s.`required`;
-	  } else {
-	    t.`required` = false;
-	  }
+	  t.`required` = s.`required`; //note: "lowerbound"
 	  t.`dataType` = s.`dataType`.getPSMEquivalent();
 	  t.`defaultValue` = s.`defaultValue`.equivalent("CreatePrimitiveTypedElement");	  
 	  t.`binding` = s.`primitiveTypedElement`.equivalent("CreateAttribute");
-	  var esmTOT : ESM!TransferObjectType = ESM!TransferObjectType.all.selectOne(tot | tot.attributes.includes(s));
-	  if (esmTOT.`operations`.isEmpty()) {
-	  	esmTOT.equivalent("CreateMappedTransferObjectType");
-	  } else {
-	    esmTOT.equivalent("CreateUnmappedTransferObjectType");
-	  }
+	  
+	  var esmTOT : ESM!TransferObjectType = ESM!TransferObjectType.all.selectOne(tot | tot.attributes.includes(s));	  
+	  esmTOT.getPSMEquivalent().attributes.add(t);
+	  
 	  log.debug("Created TransferAttribute: " + t.name);
 }
 
-//@greedy
 rule CreateTransferObjectRelation
 	transform s: ESM!TransferRelation
 	to t: JUDOPSM!TransferObjectRelation
 	extends CreateNamedElement {
-	  t.`cardinality` = s.equivalent("CreateCardinalityOfTransferObjectRelation");
+	  //TODO: backw
 	  if (s.`referenceTypedElement`.isKindOf(ESM!OneWayEndpoint)) {
 	    t.`binding` = s.`referenceTypedElement`.equivalent("CreateContainment");
 	  } else if (s.`referenceTypedElement`.isKindOf(ESM!TwoWayEndpoint)) {
 	    t.`binding` = s.`referenceTypedElement`.equivalent("CreateEndpoint");
 	  }
+	  
+	  
+	  t.`cardinality` = s.equivalent("CreateCardinalityOfTransferObjectRelation");
 	  t.`defaultValue` = s.`defaultValue`.equivalent("CreateReferencedTypedElement");
 	  t.`range` = s.`range`.equivalent("CreateReferencedTypedElement");
 	  t.`embedded` = s.`embedded`;
+	  
 	  var esmTOT : ESM!TransferObjectType = ESM!TransferObjectType.all.selectOne(tot | tot.relations.includes(s));
-	  if (esmTOT.`operations`.isEmpty()) {
-	  	t.`target` = esmTOT.equivalent("CreateMappedTransferObjectType");
-	  } else {
-	    t.`target` = esmTOT.equivalent("CreateUnmappedTransferObjectType");
+	  esmTOT.getPSMEquivalent().relations.add(t);
+	  
+	  if(s.target.isDefined()) { //no target of "product_DTO"
+	  	t.target = s.target.getPSMEquivalent();
 	  }
+	  
+	  log.debug("Created TransferObjectRelation: " + t.name);
 }
 
 
@@ -122,43 +98,38 @@ rule CreateTransferObjectRelation
 rule CreateOperation
 	transform s: ESM!Operation
 	to t: JUDOPSM!Operation {
-	  for(fault in s.`faults`) {
-	    t.`faults`.add(s.`faults`.equivalent("CreateParameter"));
-	  }
-	  
-	  t.`body` = s.`body`; //hi im a Script
+	  t.`body` = s.`body`;
 	  t.`output` = s.`output`.equivalent("CreateParameter");
 	  t.`input` = s.`input`.equivalent("CreateParameter");
-	  t.`stateful` = true; //TODO: check
-	  if (s.`undefined`.isDefined()) {
-	    t.`undefined` = s.`undefined`;
-	  } else {
-	  	t.`undefined` = false;
-	  }
+	  t.`stateful` = true;
+	  t.`undefined` = s.`undefined`; 
 }
 
-@lazy
+
 rule CreateBoundOperation
 	transform s: ESM!BoundOperation
 	to t: JUDOPSM!BoundOperation
 	extends CreateOperation, CreateNamedElement {
-		
+		var esmTOT : ESM!TransferObjectType = ESM!TransferObjectType.all.selectOne(tot | tot.operations.includes(s));
+		esmTOT.getPSMEquivalent().operations.add(t);
 }
 
-@lazy
 rule CreateUnboundOperation
 	transform s: ESM!UnboundOperation
 	to t: JUDOPSM!UnboundOperation
 	extends CreateOperation, CreateNamespaceElement {
-	  
 }
 
-@lazy
 rule CreateParameter
 	transform s : ESM!Parameter
 	to t : JUDOPSM!Parameter
 	extends CreateNamedElement {
+	  if ( s.isTypeOf(ESM!BoundOperation) ) {
+	  	s.getOperation().equivalent("CreateBoundOperation").faults.add(s);
+	  } else if ( s.isTypeOf(ESM!UnboundOperation) )  {
+	  	s.getOperation().equivalent("CreateUnboundOperation").faults.add(s);
+	  }
+	  
 	  t.`cardinality` = s.equivalent("CreateCardinalityOfParameter");
-	  t.`type` = s.`type`.equivalent("CreateTransferObjectType"); //TODO: that wont be enough uknow
+	  t.`type` = s.`type`.getPSMEquivalent();
 }
-

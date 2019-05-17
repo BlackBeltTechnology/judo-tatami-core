@@ -66,7 +66,6 @@ rule CreateMeasureDefinitionTerm
 	  t.`unit` = s.`unit`.equivalent("CreateUnit");
 }
 
-//missing "MassStoredInKilograms"
 @greedy
 rule CreateMeasuredType
 	transform s: ESM!MeasuredType

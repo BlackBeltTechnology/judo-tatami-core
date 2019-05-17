@@ -32,7 +32,7 @@ rule CreateEndpoint
 	to t: JUDOPSM!Endpoint
 	extends CreateReferenceTypedElement {
 	  var entity : ESM!EntityType = s.getEntityType();
-	  entity.equivalent("CreateEntityType").relations.add(t);
 	  t.`partner` = s.`partner`.equivalent("CreateEndpoint");
+	  entity.equivalent("CreateEntityType").relations.add(t);
 	  log.debug("Created Endpoint: " + t.name);
 }
