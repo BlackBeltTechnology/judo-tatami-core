@@ -228,7 +228,7 @@
         <cardinality xmi:id="_98qusOdSEeiJv53TEP0vvQ" upper="-1"/>
       </relations>
       <relations xsi:type="data:Endpoint" xmi:id="_NACAMOdTEeiJv53TEP0vvQ" name="owner" target="_ONN9gINlEeiLE-B2bbL0fg" partner="_Y1GwwOdTEeiJv53TEP0vvQ">
-        <cardinality xmi:id="_rzreIOdUEeiJv53TEP0vvQ" lower="1"/>
+        <cardinality xmi:id="_rzreIOdUEeiJv53TEP0vvQ"/>
       </relations>
     </elements>
     <elements xsi:type="data:EntityType" xmi:id="_6XH80INkEeiLE-B2bbL0fg" name="Product">
@@ -250,7 +250,7 @@
         <cardinality xmi:id="_-3AlIOdUEeiJv53TEP0vvQ" upper="-1"/>
       </relations>
       <relations xsi:type="data:Endpoint" xmi:id="_VnJ8IOdVEeiJv53TEP0vvQ" name="store" target="_c7JHIOdVEeiJv53TEP0vvQ" partner="_gqZAEOdVEeiJv53TEP0vvQ">
-        <cardinality xmi:id="_IVYuoOdWEeiJv53TEP0vvQ" lower="1"/>
+        <cardinality xmi:id="_IVYuoOdWEeiJv53TEP0vvQ"/>
       </relations>
     </elements>
     <elements xsi:type="data:EntityType" xmi:id="_86B-cINkEeiLE-B2bbL0fg" name="Customer">
@@ -456,7 +456,15 @@
         <cardinality xmi:id="_J1w0AHrJEemPuYxp6QV8dA" upper="-1"/>
       </relations>
       <attributes xmi:id="_U4tLwCVQEemLpvUY7MQgng" name="orderDate" required="true" dataType="_Z9J8IIN1EeiLE-B2bbL0fg" binding="_WXvUoIN1EeiLE-B2bbL0fg"/>
-      <attributes xmi:id="_u7NrYCVQEemLpvUY7MQgng" name="shipperName" required="true" dataType="_Nppx8IUcEeipmMyz9cMCRA" binding="_5i40sCVQEemLpvUY7MQgng"/>
+      <attributes xmi:id="_u7NrYCVQEemLpvUY7MQgng" name="shipperName" dataType="_Nppx8IUcEeipmMyz9cMCRA" binding="_5i40sCVQEemLpvUY7MQgng"/>
+      <operations xmi:id="_gg1UYHriEemPuYxp6QV8dA" name="create">
+        <output xmi:id="_j8VK4HriEemPuYxp6QV8dA" name="result" type="_ETGEYCVQEemLpvUY7MQgng">
+          <cardinality xmi:id="_NG-44HrkEemPuYxp6QV8dA" lower="1"/>
+        </output>
+        <input xmi:id="_h6jgYHriEemPuYxp6QV8dA" name="orderInfo" type="_ETGEYCVQEemLpvUY7MQgng">
+          <cardinality xmi:id="_NnkdcHrkEemPuYxp6QV8dA" lower="1"/>
+        </input>
+      </operations>
     </elements>
     <elements xsi:type="service:MappedTransferObjectType" xmi:id="_nao6QCVuEemLpvUY7MQgng" name="OrderItem" entityType="__XzocINkEeiLE-B2bbL0fg">
       <relations xmi:id="_eboboEWeEemHs64O5EYsyQ" name="product" binding="_6QtRsLwNEeiOuYiCo6IbXQ" range="_vA7SgEZlEemHs64O5EYsyQ" target="_o7IkkEWXEemHs64O5EYsyQ" embedded="true">
@@ -467,13 +475,29 @@
       <attributes xmi:id="_x6C4YCVuEemLpvUY7MQgng" name="discount" required="true" dataType="_VDVVQIUcEeipmMyz9cMCRA" binding="_jIROkIN6EeiLE-B2bbL0fg"/>
     </elements>
     <elements xsi:type="service:MappedTransferObjectType" xmi:id="_o7IkkEWXEemHs64O5EYsyQ" name="ProductInfo" entityType="_6XH80INkEeiLE-B2bbL0fg">
-      <attributes xmi:id="_s0y9wEWXEemHs64O5EYsyQ" name="productName" dataType="_Nppx8IUcEeipmMyz9cMCRA" binding="_LhnHUINvEeiLE-B2bbL0fg"/>
+      <attributes xmi:id="_s0y9wEWXEemHs64O5EYsyQ" name="productName" required="true" dataType="_Nppx8IUcEeipmMyz9cMCRA" binding="_LhnHUINvEeiLE-B2bbL0fg"/>
+      <operations xmi:id="_1Pzd0HriEemPuYxp6QV8dA" name="create">
+        <output xmi:id="_1Pzd0XriEemPuYxp6QV8dA" name="result" type="_o7IkkEWXEemHs64O5EYsyQ">
+          <cardinality xmi:id="_IsGpAHrkEemPuYxp6QV8dA" lower="1"/>
+        </output>
+        <input xmi:id="_1P0E4HriEemPuYxp6QV8dA" name="productInfo" type="_o7IkkEWXEemHs64O5EYsyQ">
+          <cardinality xmi:id="_JrqBgHrkEemPuYxp6QV8dA" lower="1"/>
+        </input>
+      </operations>
     </elements>
     <elements xsi:type="service:MappedTransferObjectType" xmi:id="_xxeTIEWXEemHs64O5EYsyQ" name="CategoryInfo" entityType="_43ZPcINkEeiLE-B2bbL0fg">
       <relations xmi:id="_iy32wEWgEemHs64O5EYsyQ" name="products" binding="_892OYLwCEeiOuYiCo6IbXQ" range="_vA7SgEZlEemHs64O5EYsyQ" target="_o7IkkEWXEemHs64O5EYsyQ">
         <cardinality xmi:id="_Paez0EWiEemHs64O5EYsyQ" upper="-1"/>
       </relations>
-      <attributes xmi:id="_zWg-UEWXEemHs64O5EYsyQ" name="categoryName" dataType="_Nppx8IUcEeipmMyz9cMCRA" binding="_v7k5EINmEeiLE-B2bbL0fg"/>
+      <attributes xmi:id="_zWg-UEWXEemHs64O5EYsyQ" name="categoryName" required="true" dataType="_Nppx8IUcEeipmMyz9cMCRA" binding="_v7k5EINmEeiLE-B2bbL0fg"/>
+      <operations xmi:id="_07mIYHriEemPuYxp6QV8dA" name="create">
+        <output xmi:id="_07mIYXriEemPuYxp6QV8dA" name="result" type="_xxeTIEWXEemHs64O5EYsyQ">
+          <cardinality xmi:id="_LO7LEHrkEemPuYxp6QV8dA" lower="1"/>
+        </output>
+        <input xmi:id="_07mIYnriEemPuYxp6QV8dA" name="orderInfo" type="_xxeTIEWXEemHs64O5EYsyQ">
+          <cardinality xmi:id="_L5l4sHrkEemPuYxp6QV8dA" lower="1"/>
+        </input>
+      </operations>
     </elements>
     <elements xsi:type="service:UnboundOperation" xmi:id="_mr1P4EWhEemHs64O5EYsyQ" stateful="false" name="getAllOrders">
       <output xmi:id="_oxIvgEWhEemHs64O5EYsyQ" name="output" type="_ETGEYCVQEemLpvUY7MQgng">
