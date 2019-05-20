@@ -457,14 +457,6 @@
       </relations>
       <attributes xmi:id="_U4tLwCVQEemLpvUY7MQgng" name="orderDate" required="true" dataType="_Z9J8IIN1EeiLE-B2bbL0fg" binding="_WXvUoIN1EeiLE-B2bbL0fg"/>
       <attributes xmi:id="_u7NrYCVQEemLpvUY7MQgng" name="shipperName" dataType="_Nppx8IUcEeipmMyz9cMCRA" binding="_5i40sCVQEemLpvUY7MQgng"/>
-      <operations xmi:id="_gg1UYHriEemPuYxp6QV8dA" name="create">
-        <output xmi:id="_j8VK4HriEemPuYxp6QV8dA" name="result" type="_ETGEYCVQEemLpvUY7MQgng">
-          <cardinality xmi:id="_NG-44HrkEemPuYxp6QV8dA" lower="1"/>
-        </output>
-        <input xmi:id="_h6jgYHriEemPuYxp6QV8dA" name="orderInfo" type="_ETGEYCVQEemLpvUY7MQgng">
-          <cardinality xmi:id="_NnkdcHrkEemPuYxp6QV8dA" lower="1"/>
-        </input>
-      </operations>
     </elements>
     <elements xsi:type="service:MappedTransferObjectType" xmi:id="_nao6QCVuEemLpvUY7MQgng" name="OrderItem" entityType="__XzocINkEeiLE-B2bbL0fg">
       <relations xmi:id="_eboboEWeEemHs64O5EYsyQ" name="product" binding="_6QtRsLwNEeiOuYiCo6IbXQ" range="_vA7SgEZlEemHs64O5EYsyQ" target="_o7IkkEWXEemHs64O5EYsyQ" embedded="true">
@@ -476,42 +468,25 @@
     </elements>
     <elements xsi:type="service:MappedTransferObjectType" xmi:id="_o7IkkEWXEemHs64O5EYsyQ" name="ProductInfo" entityType="_6XH80INkEeiLE-B2bbL0fg">
       <attributes xmi:id="_s0y9wEWXEemHs64O5EYsyQ" name="productName" required="true" dataType="_Nppx8IUcEeipmMyz9cMCRA" binding="_LhnHUINvEeiLE-B2bbL0fg"/>
-      <operations xmi:id="_1Pzd0HriEemPuYxp6QV8dA" name="create">
-        <output xmi:id="_1Pzd0XriEemPuYxp6QV8dA" name="result" type="_o7IkkEWXEemHs64O5EYsyQ">
-          <cardinality xmi:id="_IsGpAHrkEemPuYxp6QV8dA" lower="1"/>
-        </output>
-        <input xmi:id="_1P0E4HriEemPuYxp6QV8dA" name="productInfo" type="_o7IkkEWXEemHs64O5EYsyQ">
-          <cardinality xmi:id="_JrqBgHrkEemPuYxp6QV8dA" lower="1"/>
-        </input>
-      </operations>
     </elements>
     <elements xsi:type="service:MappedTransferObjectType" xmi:id="_xxeTIEWXEemHs64O5EYsyQ" name="CategoryInfo" entityType="_43ZPcINkEeiLE-B2bbL0fg">
       <relations xmi:id="_iy32wEWgEemHs64O5EYsyQ" name="products" binding="_892OYLwCEeiOuYiCo6IbXQ" range="_vA7SgEZlEemHs64O5EYsyQ" target="_o7IkkEWXEemHs64O5EYsyQ">
         <cardinality xmi:id="_Paez0EWiEemHs64O5EYsyQ" upper="-1"/>
       </relations>
       <attributes xmi:id="_zWg-UEWXEemHs64O5EYsyQ" name="categoryName" required="true" dataType="_Nppx8IUcEeipmMyz9cMCRA" binding="_v7k5EINmEeiLE-B2bbL0fg"/>
-      <operations xmi:id="_07mIYHriEemPuYxp6QV8dA" name="create">
-        <output xmi:id="_07mIYXriEemPuYxp6QV8dA" name="result" type="_xxeTIEWXEemHs64O5EYsyQ">
-          <cardinality xmi:id="_LO7LEHrkEemPuYxp6QV8dA" lower="1"/>
-        </output>
-        <input xmi:id="_07mIYnriEemPuYxp6QV8dA" name="orderInfo" type="_xxeTIEWXEemHs64O5EYsyQ">
-          <cardinality xmi:id="_L5l4sHrkEemPuYxp6QV8dA" lower="1"/>
-        </input>
-      </operations>
     </elements>
     <elements xsi:type="service:UnboundOperation" xmi:id="_mr1P4EWhEemHs64O5EYsyQ" stateful="false" name="getAllOrders">
       <output xmi:id="_oxIvgEWhEemHs64O5EYsyQ" name="output" type="_ETGEYCVQEemLpvUY7MQgng">
         <cardinality xmi:id="_rFrlAEWhEemHs64O5EYsyQ" upper="-1"/>
       </output>
     </elements>
-    <elements xsi:type="service:UnmappedTransferObjectType" xmi:id="_XvKUwF0lEemy96upLHyphg" name="ShipmentChange">
-      <attributes xmi:id="_ayUjwF0lEemy96upLHyphg" name="shippperName" dataType="_Nppx8IUcEeipmMyz9cMCRA"/>
-      <attributes xmi:id="_dFOagF0lEemy96upLHyphg" name="shippedDate" dataType="_Z9J8IIN1EeiLE-B2bbL0fg"/>
-    </elements>
-    <elements xsi:type="service:UnmappedTransferObjectType" xmi:id="_qgZmMF0lEemy96upLHyphg" name="Comment">
-      <attributes xmi:id="_tK_kMF0lEemy96upLHyphg" name="note" dataType="_tXQUoIOGEeiLE-B2bbL0fg"/>
-      <attributes xmi:id="_yQk98F0lEemy96upLHyphg" name="author" dataType="_Nppx8IUcEeipmMyz9cMCRA"/>
-      <attributes xmi:id="_0BqhEF0lEemy96upLHyphg" name="timestamp" dataType="_Z9J8IIN1EeiLE-B2bbL0fg"/>
+    <elements xsi:type="service:UnboundOperation" xmi:id="_nkcqoHruEemPuYxp6QV8dA" name="createOrder">
+      <output xmi:id="_rcO0gHruEemPuYxp6QV8dA" name="output" type="_ETGEYCVQEemLpvUY7MQgng">
+        <cardinality xmi:id="_EH3n0HrvEemPuYxp6QV8dA" lower="1"/>
+      </output>
+      <input xmi:id="_pwQa4HruEemPuYxp6QV8dA" name="input" type="_ETGEYCVQEemLpvUY7MQgng">
+        <cardinality xmi:id="_EfGcEHrvEemPuYxp6QV8dA" lower="1"/>
+      </input>
     </elements>
   </packages>
 </namespace:Model>
