@@ -11,30 +11,43 @@ operation JQLEXTRACT!NavigationExpression transformToExpression() : EXPR!Express
 operation JQLEXTRACT!NavigationExpression transformBaseToExpression() : EXPR!Expression {
     if (self.isBasedOnObject() and self.isBasedOnVariable()) {
         return self.equivalent("NavigationExpressionBaseToInstance");
-    } else if (self.isBasedOnCollection()) {
+    } else if (self.isBasedOnCollection() and self.isBasedOnStructuredType()) {
         return self.equivalent("NavigationExpressionBaseToImmutableCollection");
+    } else if (self.isBasedOnCollection() and not self.isBasedOnStructuredType()) {
+        return self.equivalent("NavigationExpressionBaseToCollection");
     }
 }
 
 rule NavigationExpressionBaseToInstance
   transform s : JQLEXTRACT!NavigationExpression
-  to t : EXPR!Instance {
+  to t : EXPR!ObjectVariableReference {
   	guard: s.isBasedOnObject() and s.isBasedOnVariable()
   	
-    // variable is always defined
-    t.elementName = s.getVariable().transformToExpression();
+  	var instance = transferObjectInstances.selectOne(i | s.getVariable().typeName == i.elementName.name and
+  	                                                     s.getVariable().typeNamespace == i.elementName.namespace and
+  	                                                     s.getVariable().name == i.`alias`);
+  	
+  	t.variable = instance;
 }
 
 rule NavigationExpressionBaseToImmutableCollection
   transform s : JQLEXTRACT!NavigationExpression
   to t : EXPR!ImmutableCollection {
-  	guard: s.isBasedOnCollection()
+  	guard: s.isBasedOnCollection() and s.isBasedOnStructuredType()
   	
-  	if (s.isBasedOnStructuredType()) {
-  	    t.elementName = s.equivalent("NavigationExpressionBaseToTypeName");
-  	} else if (s.isBasedOnObject()) {
-  	    t.elementName = s.getVariable().transformToExpression();
-  	}
+  	t.elementName = s.equivalent("NavigationExpressionBaseToTypeName");
+}
+
+rule NavigationExpressionBaseToCollection
+  transform s : JQLEXTRACT!NavigationExpression
+  to t : EXPR!ObjectVariableReference {
+  	guard: s.isBasedOnCollection() and not s.isBasedOnStructuredType()
+  	
+  	var instance = transferObjectInstances.selectOne(i | s.getVariable().typeName == i.elementName.name and
+  	                                                     s.getVariable().typeNamespace == i.elementName.namespace and
+  	                                                     s.getVariable().name == i.`alias`);
+  	                                                     
+  	t.variable = instance;
 }
 
 rule NavigationExpressionBaseToTypeName

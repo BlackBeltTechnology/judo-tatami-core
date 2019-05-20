@@ -128,29 +128,33 @@ public class JqlExtract2ExpressionTest {
         // Resolve serialized URI's as EObject map
         Map<EObject, List<EObject>> resolvedTrace = resolveJqlExtract2ExpressionTrace(traceResoureLoaded, jqlExtractModel, expressionModel);
 
-        // Printing trace
-        for (EObject e : resolvedTrace.keySet()) {
-            for (EObject t : resolvedTrace.get(e)) {
-                log.info(e.toString() + " -> " + t.toString());
+        try {
+            // Printing trace
+            for (EObject e : resolvedTrace.keySet()) {
+                for (EObject t : resolvedTrace.get(e)) {
+                    log.debug(e.toString() + " -> " + t.toString());
+                }
             }
+
+
+            // Print objects
+            TreeIterator<Notifier> iter = expressionResourceSet.getAllContents();
+            while (iter.hasNext()) {
+                final Notifier obj = iter.next();
+                log.debug(obj.toString());
+            }
+
+            saveExpressionModel(expressionModel);
+        } catch (RuntimeException ex) {
+            ex.printStackTrace();
         }
-
-
-        // Print objects
-        TreeIterator<Notifier> iter = expressionResourceSet.getAllContents();
-        while (iter.hasNext()) {
-            final Notifier obj = iter.next();
-            log.debug(obj.toString());
-        }
-
-        saveExpressionModel(expressionModel);
     }
 
 
-    public File targetDir(){
+    public File targetDir() {
         String relPath = getClass().getProtectionDomain().getCodeSource().getLocation().getFile();
         File targetDir = new File(relPath);
-        if(!targetDir.exists()) {
+        if (!targetDir.exists()) {
             targetDir.mkdir();
         }
         return targetDir;

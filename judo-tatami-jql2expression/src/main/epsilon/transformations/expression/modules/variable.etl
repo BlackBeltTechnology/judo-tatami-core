@@ -2,14 +2,24 @@ import "../../../operations/asm/_importAll.eol";
 import "../../../operations/jqlextract/_importAll.eol";
 import "../../../operations/jqlextract2asm/_importAll.eol";
 
-@cached
-operation JQLEXTRACT!Variable transformToExpression() : EXPR!TypeName {
-	return self.equivalent("VariableToTypeName");
+pre {
+    var transferObjectInstances = new List;
+    
+    for (b in JQLEXTRACT!Binding.all) {
+        if (b.className.isDefined()) {
+            var found = transferObjectInstances.selectOne(i | "self" == i.`alias` and b.packageName == i.elementName.namespace and b.className == i.elementName.name);
+            
+            if (not found.isDefined()) {
+		        var instance = new EXPR!Instance;
+		        instance.`alias` = "self";
+		        instance.elementName = new EXPR!TypeName;
+		        instance.elementName.namespace = b.packageName;
+		        instance.elementName.name = b.className;
+		        
+		        transferObjectInstances.add(instance);
+            }
+        }
+    }
 }
 
-rule VariableToTypeName
-  transform s : JQLEXTRACT!Variable
-  to t : EXPR!TypeName {
-  	t.name = s.typeName;
-  	t.namespace = s.typeNamespace;
-}
+// TODO - collection variables are not supported yet
