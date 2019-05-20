@@ -1,16 +1,20 @@
-package hu.blackbelt.judo.tatami.itest.restbeans;
+package sdk.northwind.services;
 
-import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.LinkedHashMap;
+import java.util.stream.Collectors;
 
 public class OrderItem {
+	private java.util.UUID identifier;
+
 	private java.lang.Double unitPrice;
 	private java.lang.Integer quantity;
 	private java.lang.Double discount;
-	private ProductInfo product;
+	private sdk.northwind.services.ProductInfo product;
 
-    @java.beans.ConstructorProperties({"unitPrice", "quantity", "discount", "product"})
-    OrderItem(java.lang.Double unitPrice, java.lang.Integer quantity, java.lang.Double discount, ProductInfo product) {
+    @java.beans.ConstructorProperties({"identifier", "unitPrice", "quantity", "discount", "product"})
+    OrderItem(java.util.UUID identifier, java.lang.Double unitPrice, java.lang.Integer quantity, java.lang.Double discount, sdk.northwind.services.ProductInfo product) {
         this.unitPrice = unitPrice;
         this.quantity = quantity;
         this.discount = discount;
@@ -18,6 +22,10 @@ public class OrderItem {
     }
 
 	// Getters
+	public java.util.UUID getIdentifier() {
+		return this.identifier;
+	}
+
 	public java.lang.Double getUnitPrice() {
 		return this.unitPrice;
 	}
@@ -27,11 +35,14 @@ public class OrderItem {
 	public java.lang.Double getDiscount() {
 		return this.discount;
 	}
-	public ProductInfo getProduct() {
+	public sdk.northwind.services.ProductInfo getProduct() {
 		return this.product;
 	}
 
 	// Setters
+	public void setIdentifier(java.util.UUID identifier) {
+		this.identifier = identifier;
+	}
 	public void setUnitPrice(java.lang.Double unitPrice) {
 		this.unitPrice = unitPrice;
 	}
@@ -41,12 +52,16 @@ public class OrderItem {
 	public void setDiscount(java.lang.Double discount) {
 		this.discount = discount;
 	}
-	public void setProduct(ProductInfo product) {
+	public void setProduct(sdk.northwind.services.ProductInfo product) {
 		this.product = product;
 	}
 
 	public Map<String, Object> toMap() {
-		Map ret = new LinkedHashMap(); 
+		Map ret = new LinkedHashMap();
+		if (getIdentifier() != null) {
+			ret.put("__identifier", this.identifier);
+		}
+
 	    if (getUnitPrice() != null) {
 		    ret.put("unitPrice", this.unitPrice);
 	    }
@@ -64,6 +79,9 @@ public class OrderItem {
 
 	public static OrderItem fromMap(Map<String, Object> map) {
 		OrderItemBuilder builder = orderItemBuilder();
+		if (map.containsKey("__identifier")) {
+			builder.identifier((java.util.UUID)map.get("identifier"));
+		}
 	    if (map.containsKey("unitPrice")) {
 			builder.unitPrice((java.lang.Double) map.get("unitPrice"));
 		}
@@ -74,14 +92,14 @@ public class OrderItem {
 			builder.discount((java.lang.Double) map.get("discount"));
 		}
 	    if (map.containsKey("product")) {
-		    builder.product(ProductInfo.fromMap((Map<String, Object>) map.get("product")));
+		    builder.product(sdk.northwind.services.ProductInfo.fromMap((Map<String, Object>) map.get("product")));
 	    }
 
 	    return builder.build();
 	}
 
 	public String toString() {
-	    return "OrderItem(unitPrice=" + this.unitPrice + ", quantity=" + this.quantity + ", discount=" + this.discount + ", product=" + this.product + ")";
+	    return "OrderItem(identifier=" + this.identifier + ", unitPrice=" + this.unitPrice + ", quantity=" + this.quantity + ", discount=" + this.discount + ", product=" + this.product + ")";
 	}
 
     // Builder
@@ -90,12 +108,17 @@ public class OrderItem {
 	}
 
 	public static class OrderItemBuilder {
+		private java.util.UUID identifier;
         private java.lang.Double unitPrice;
         private java.lang.Integer quantity;
         private java.lang.Double discount;
-        private ProductInfo product;
+        private sdk.northwind.services.ProductInfo product;
 
 		OrderItemBuilder() {
+		}
+		public OrderItemBuilder identifier(java.util.UUID identifier) {
+			this.identifier = identifier;
+			return this;
 		}
 
 		public OrderItemBuilder unitPrice(java.lang.Double unitPrice) {
@@ -110,17 +133,17 @@ public class OrderItem {
 			this.discount = discount;
 			return this;
 		}
-		public OrderItemBuilder product(ProductInfo product) {
+		public OrderItemBuilder product(sdk.northwind.services.ProductInfo product) {
 			this.product = product;
 			return this;
 		}
 
 		public OrderItem build() {
-			return new OrderItem(this.unitPrice, this.quantity, this.discount, this.product);
+			return new OrderItem(this.identifier, this.unitPrice, this.quantity, this.discount, this.product);
 		}
 
 		public String toString() {
-    	    return "OrderItemBuilder.OrderItem(unitPrice=" + this.unitPrice + ", quantity=" + this.quantity + ", discount=" + this.discount + ", product=" + this.product + ")";
+    	    return "OrderItemBuilder.OrderItem(identifier=" + identifier + ", unitPrice=" + this.unitPrice + ", quantity=" + this.quantity + ", discount=" + this.discount + ", product=" + this.product + ")";
 		}
 	}
 }

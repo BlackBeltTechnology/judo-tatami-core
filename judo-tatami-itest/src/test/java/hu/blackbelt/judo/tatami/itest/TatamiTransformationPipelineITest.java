@@ -13,7 +13,6 @@ import hu.blackbelt.judo.meta.rdbms.RdbmsTable;
 import hu.blackbelt.judo.meta.rdbms.runtime.RdbmsModel;
 import hu.blackbelt.judo.tatami.core.TransformationTrace;
 import hu.blackbelt.judo.tatami.core.TransformationTraceService;
-import hu.blackbelt.judo.tatami.itest.restbeans.OrderInfo;
 import hu.blackbelt.osgi.utils.osgi.api.BundleTrackerManager;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
@@ -29,6 +28,7 @@ import org.osgi.framework.Constants;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.log.LogService;
+import sdk.northwind.services.OrderInfo;
 
 import javax.inject.Inject;
 import javax.ws.rs.client.ClientBuilder;
