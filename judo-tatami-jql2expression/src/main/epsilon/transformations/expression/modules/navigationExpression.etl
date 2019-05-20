@@ -25,7 +25,7 @@ rule NavigationExpressionBaseToInstance
   	
   	var instance = transferObjectInstances.selectOne(i | s.getVariable().typeName == i.elementName.name and
   	                                                     s.getVariable().typeNamespace == i.elementName.namespace and
-  	                                                     s.getVariable().name == i.`alias`);
+  	                                                     s.getVariable().name == i.name);
   	
   	t.variable = instance;
 }
@@ -45,7 +45,7 @@ rule NavigationExpressionBaseToCollection
   	
   	var instance = transferObjectInstances.selectOne(i | s.getVariable().typeName == i.elementName.name and
   	                                                     s.getVariable().typeNamespace == i.elementName.namespace and
-  	                                                     s.getVariable().name == i.`alias`);
+  	                                                     s.getVariable().name == i.name);
   	                                                     
   	t.variable = instance;
 }

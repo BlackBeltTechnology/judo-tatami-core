@@ -9,6 +9,10 @@ import hu.blackbelt.epsilon.runtime.execution.impl.Slf4jLog;
 import hu.blackbelt.judo.meta.asm.runtime.AsmModel;
 import hu.blackbelt.judo.meta.asm.runtime.AsmModelLoader;
 import hu.blackbelt.judo.meta.asm.runtime.AsmModelLoader.LocalAsmPackageRegistration;
+import hu.blackbelt.judo.meta.expression.Expression;
+import hu.blackbelt.judo.meta.expression.constant.Instance;
+import hu.blackbelt.judo.meta.expression.runtime.EvaluationNode;
+import hu.blackbelt.judo.meta.expression.runtime.ExpressionEvaluator;
 import hu.blackbelt.judo.meta.expression.runtime.ExpressionModel;
 import hu.blackbelt.judo.meta.psm.jql.extract.runtime.PsmJqlExtractModel;
 import hu.blackbelt.judo.meta.psm.jql.extract.runtime.PsmJqlExtractModelLoader;
@@ -31,6 +35,8 @@ import java.io.FileOutputStream;
 import java.nio.file.FileSystems;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 import static hu.blackbelt.judo.meta.asm.runtime.AsmModelLoader.createAsmResourceSet;
 import static hu.blackbelt.judo.meta.expression.runtime.ExpressionModelLoader.createExpressionResourceSet;
@@ -136,7 +142,6 @@ public class JqlExtract2ExpressionTest {
                 }
             }
 
-
             // Print objects
             TreeIterator<Notifier> iter = expressionResourceSet.getAllContents();
             while (iter.hasNext()) {
@@ -148,6 +153,21 @@ public class JqlExtract2ExpressionTest {
         } catch (RuntimeException ex) {
             ex.printStackTrace();
         }
+
+        final Iterable<Notifier> asmContents = expressionResourceSet::getAllContents;
+        final List<Expression> expressions = StreamSupport.stream(asmContents.spliterator(), true)
+                .filter(e -> e instanceof Expression).map(e -> (Expression) e)
+                .collect(Collectors.toList());
+
+        final ExpressionEvaluator evaluator = new ExpressionEvaluator();
+        evaluator.init(expressions);
+
+        final Map<Expression, EvaluationNode> nodes = expressions.stream().filter(e -> (e instanceof Instance)).collect(Collectors.toMap(e -> e, e -> evaluator.getEvaluationNode(e)));
+
+        log.info("Root nodes: {}" + nodes);
+
+        //final QueryModelBuilder queryModelBuilder = new QueryModelBuilder(modelAdapter, evaluator);
+        //final Select queryModel = queryModelBuilder.createQueryModel(evaluationNode, (EClass) modelAdapter.get(orderInfoType).get());
     }
 
 
