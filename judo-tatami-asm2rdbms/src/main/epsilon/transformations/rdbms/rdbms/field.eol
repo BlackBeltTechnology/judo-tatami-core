@@ -1,22 +1,17 @@
 operation RDBMS!RdbmsField fillType(type : String) {
-	self.rdbmsTypeName = type.findMapping().Type;
-	if (type.findMapping().Size.isDefined() and type.findMapping().Size.trim() <> "") {
-		self.size = type.findMapping().Size.asFloat().asInteger();
-	} else {
-		self.size = -1;
-	}
+    if (type.getJudoDataType().isUndefined()) {
+        throw "Cannot resolve type: " + type;
+    }
 
-	if (type.findMapping().Precision.isDefined() and type.findMapping().Precision.trim() <> "") {
-		self.precision = new Integer(type.findMapping().Precision);
-	} else {
-		self.precision = -1;
-	}
+    var typeMapping : RDBMS!TypeMapping = RDBMS!TypeMapping.all.selectOne(m | m.asmType == type.getJudoDataType());
+    if (typeMapping.isUndefined()) {
+        throw "Cannot resolve typemapping: " + type;
+    }
 
-	if (type.findMapping().Scale.isDefined() and type.findMapping().Scale.trim() <> "") {
-		self.scale = new Integer(type.findMapping().Scale);
-	} else {
-		self.scale = -1;
-	}
+	self.rdbmsTypeName = typeMapping.rdbmsType;
+    self.size = typeMapping.rdbmsSize;
+    self.precision = typeMapping.rdbmsPrecision;
+    self.scale = typeMapping.rdbmsScale;
 	self.storageByte = -1;
 }
 

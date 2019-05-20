@@ -62,3 +62,7 @@ operation ASM!EReference isFirst() : Boolean {
    return false;
 }
 
+@cached
+operation ASM!EReference ruleMapping() : RDBMS!Rule {
+    return RDBMS!Rules.all.first.getRuleFromReference(self);
+}

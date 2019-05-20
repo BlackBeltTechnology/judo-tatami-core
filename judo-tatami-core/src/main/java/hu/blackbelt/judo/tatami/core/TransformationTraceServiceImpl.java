@@ -1,6 +1,5 @@
 package hu.blackbelt.judo.tatami.core;
 
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -17,6 +16,9 @@ import org.osgi.service.component.annotations.Deactivate;
 
 import java.util.List;
 import java.util.Map;
+
+import static org.eclipse.emf.common.util.ECollections.asEList;
+import static org.eclipse.emf.common.util.ECollections.newBasicEList;
 
 @Slf4j
 @Component(service = TransformationTraceService.class)
@@ -73,7 +75,8 @@ public class TransformationTraceServiceImpl implements TransformationTraceServic
 
         for (TransformationTrace t : modelNameCache.get(modelName)) {
             for (Resource r : t.getTargetResourceSet().getResources()) {
-                if  (r.getContents().contains(sourceRoot)) {
+                //if (r.getContents().contains(sourceRoot)) {
+                if (r.getContents().stream().filter(c -> EcoreUtil.equals(c, sourceRoot)).count() > 0) {
                     return t;
                 }
             }
@@ -93,7 +96,8 @@ public class TransformationTraceServiceImpl implements TransformationTraceServic
         for (TransformationTrace t : modelNameCache.get(modelName)) {
             for (Class sourceModelClass : t.getSourceModelTypes()) {
                 for (Resource r : t.getSourceResourceSet(sourceModelClass).getResources()) {
-                    if  (r.getContents().contains(sourceRoot)) {
+//                    if  (r.getContents().contains(sourceRoot)) {
+                    if (r.getContents().stream().filter(c -> EcoreUtil.equals(c, sourceRoot)).count() > 0) {
                         transformationTraceList.add(t);
                     }
                 }
@@ -173,10 +177,10 @@ public class TransformationTraceServiceImpl implements TransformationTraceServic
             throw new IllegalArgumentException("No model definied: " + modelName);
         }
 
-        List<EObject> currentList = ImmutableList.of(instance);
+        List<EObject> currentList = asEList(instance); // ImmutableList.of(instance);
         Map<TransformationTrace, List<EObject>> transformationTraceMap = Maps.newLinkedHashMap();
         while (currentList.size() > 0) {
-            List<EObject> childs = Lists.newArrayList();
+            List<EObject> childs = newBasicEList(); //Lists.newArrayList();
             for (EObject current : currentList) {
                 List<TransformationTrace> transformationTraceList = getChildTransformationTracesByInstance(modelName, current);
                 for (TransformationTrace tr : transformationTraceList) {
@@ -209,16 +213,17 @@ public class TransformationTraceServiceImpl implements TransformationTraceServic
             throw new IllegalArgumentException("No model definied: " + modelName);
         }
 
-        List<EObject> currentList = ImmutableList.of(instance);
+        List<EObject> currentList = asEList(instance); // ImmutableList.of(instance);
+        List<EObject> ret = newBasicEList(); // Lists.newArrayList();
         while (currentList.size() > 0) {
-            List<EObject> childs = Lists.newArrayList();
+            List<EObject> childs = newBasicEList(); // Lists.newArrayList();
             for (EObject current : currentList) {
                 List<TransformationTrace> transformationTraceList = getChildTransformationTracesByInstance(modelName, current);
                 for (TransformationTrace tr : transformationTraceList) {
                     List<EObject> elements = getTraceTargetElementObjectBySourceElement(tr, current);
                     if (elements != null) {
                         if (tr.getTargetModelType().equals(modelType)) {
-                            return elements;
+                            ret.addAll(elements);
                         }
                         childs.addAll(elements);
                     }
@@ -226,13 +231,17 @@ public class TransformationTraceServiceImpl implements TransformationTraceServic
             }
             currentList = childs;
         }
-        return null;
+        return ret;
     }
 
     private EObject getTraceSourceElementObjectByTargetElement(TransformationTrace constructor, EObject targetElement) {
         for (Map.Entry<EObject, List<EObject>> e : constructor.getTransformationTrace().entrySet()) {
             for (EObject eo : e.getValue()) {
-                if (eo.equals(targetElement)) {
+//                if (eo.equals(targetElement) != EcoreUtil.equals(eo, targetElement)) {
+//                    log.error("EEEEE");
+//                }
+//                if (eo.equals(targetElement)) {
+                if (EcoreUtil.equals(eo, targetElement)) {
                     return e.getKey();
                 }
             }
@@ -242,6 +251,8 @@ public class TransformationTraceServiceImpl implements TransformationTraceServic
 
     private List<EObject> getTraceTargetElementObjectBySourceElement(TransformationTrace constructor, EObject sourceElement) {
         return constructor.getTransformationTrace().get(sourceElement);
+        //return constructor.getTransformationTrace().get(
+        //        constructor.getTransformationTrace().keySet().stream().filter(se -> EcoreUtil.equals(sourceElement, se)).findFirst().get());
     }
 
 }

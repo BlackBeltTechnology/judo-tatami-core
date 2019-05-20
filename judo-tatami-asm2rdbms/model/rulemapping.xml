@@ -16,7 +16,7 @@
         <column name="Cascade" alias="cascade" dataType="boolean"/>
         <column name="Mandatory" alias="mandatory" dataType="boolean"/>
         <column name="RangeConstraint" alias="rangeConstraint" dataType="boolean"/>
-        <column name="InvRangeConstraint" alias="inverseRangeConstraint" dataType="boolean"/>
+        <column name="InverseRangeConstraint" alias="inverseRangeConstraint" dataType="boolean"/>
         <column name="JoinTable" alias="joinTable" dataType="boolean"/>
 
 	</worksheet>

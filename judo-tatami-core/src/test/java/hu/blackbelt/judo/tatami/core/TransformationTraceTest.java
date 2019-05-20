@@ -28,6 +28,10 @@ public class TransformationTraceTest implements TransformationTrace {
 
     Map<EObject, List<EObject>> trace;
 
+    public String toString() {
+        return name;
+    }
+
     @Override
     public List<Class> getSourceModelTypes() {
         return source.stream().map(e -> e.getClass()).collect(Collectors.toList());

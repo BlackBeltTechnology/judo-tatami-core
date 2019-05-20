@@ -16,17 +16,12 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.URIHandler;
-import org.eclipse.emf.ecore.xmi.impl.XMIResourceImpl;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.nio.file.FileSystems;
-import java.util.List;
-import java.util.Map;
 
 import static hu.blackbelt.judo.meta.asm.runtime.AsmModelLoader.createAsmResourceSet;
 import static hu.blackbelt.judo.meta.rdbms.runtime.RdbmsModelLoader.createRdbmsResourceSet;
@@ -36,12 +31,12 @@ import static hu.blackbelt.judo.tatami.asm2rdbms.Asm2Rdbms.*;
 @Slf4j
 public class Asm2RdbmsTest {
 
-    public static final String ASM_2_RDBMS_MODEL = "asm2rdbms.model";
-    public static final String TRACE_JQLEXTRACT_2_EXPRESSION = "trace:asm2rdbms";
+    public static final String TRACE_ASM_2_RDBMS = "trace:asm2rdbms";
     public static final String ASM_NORTHWIND = "asm:northwind";
     public static final String RDBMS_NORTHWIND = "rdbms:northwind";
     public static final String URN_NORTHWIND_ASM = "urn:northwind-asm.model";
     public static final String URN_NORTHWIND_RDBMS = "urn:northwind-rdbms.model";
+    public static final String URN_ASM_2_RDBMS_MODEL = "urn:asm2rdbms.model";
     public static final String NORTHWIND = "northwind";
     public static final String VERSION = "1.0.0";
 
@@ -56,7 +51,9 @@ public class Asm2RdbmsTest {
                 ImmutableList.of(new NioFilesystemnRelativePathURIHandlerImpl("urn", FileSystems.getDefault(), targetDir().getAbsolutePath())),
                 ImmutableMap.of(
                         URI.createURI(ASM_NORTHWIND), URI.createURI(URN_NORTHWIND_ASM),
-                        URI.createURI(RDBMS_NORTHWIND), URI.createURI(URN_NORTHWIND_RDBMS))
+                        URI.createURI(RDBMS_NORTHWIND), URI.createURI(URN_NORTHWIND_RDBMS),
+                        URI.createURI(TRACE_ASM_2_RDBMS), URI.createURI(URN_ASM_2_RDBMS_MODEL)
+                )
         );
 
         // Default logger
@@ -96,21 +93,17 @@ public class Asm2RdbmsTest {
                 "hsqldb");
 
         // Saving trace map
-        Resource traceResoureSaved = new XMIResourceImpl();
+        ResourceSet traceResourceSetSaved = createAsm2RdbmsTraceResourceSet(uriHandler);
+        Resource traceResoureSaved = traceResourceSetSaved.createResource(URI.createURI(TRACE_ASM_2_RDBMS));
         traceResoureSaved.getContents().addAll(getAsm2RdbmsTrace(asm2RdbmsTransformationTrace.getTrace()));
-        traceResoureSaved.save(new FileOutputStream(new File(targetDir().getAbsolutePath(), ASM_2_RDBMS_MODEL)), ImmutableMap.of());
+        traceResoureSaved.save(ImmutableMap.of());
 
         // Loading trace map
-        ResourceSet traceLoadedResourceSet = createAsm2RdbmsTraceResourceSet();
-        Resource traceResoureLoaded = traceLoadedResourceSet.createResource(URI.createURI(TRACE_JQLEXTRACT_2_EXPRESSION));
-        traceResoureLoaded.load(new FileInputStream(new File(targetDir().getAbsolutePath(), ASM_2_RDBMS_MODEL)), ImmutableMap.of());
-
-        // Resolve serialized URI's as EObject map
-        Map<EObject, List<EObject>> resolvedTrace = resolveAsm2RdbmsTrace(traceResoureLoaded, asmModel, rdbmsModel);
+        Asm2RdbmsTransformationTrace resolvedTraceModel = loadAsm2RdbmsTrace(URI.createURI(TRACE_ASM_2_RDBMS), uriHandler, asmModel, rdbmsModel);
 
         // Printing trace
-        for (EObject e : resolvedTrace.keySet()) {
-            for (EObject t : resolvedTrace.get(e)) {
+        for (EObject e : resolvedTraceModel.getTrace().keySet()) {
+            for (EObject t : resolvedTraceModel.getTrace().get(e)) {
                 log.info(e.toString() + " -> " + t.toString());
             }
         }
