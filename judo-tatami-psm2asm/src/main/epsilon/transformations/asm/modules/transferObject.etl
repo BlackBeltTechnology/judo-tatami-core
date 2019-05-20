@@ -47,6 +47,8 @@ rule CreateTransferObjectAttribute
 		} else {
 			t.lowerBound = 0;
 		}
+		
+		t.derived = s.binding.isDefined() and not s.binding.isKindOf(JUDOPSM!Attribute);
 
 		t.eType = s.dataType.getEcoreType();
 
@@ -79,6 +81,8 @@ rule CreateTransferObjectRelation
 
 		t.lowerBound = s.cardinality.lower;
 		t.upperBound = s.cardinality.upper;
+		
+		t.derived = s.binding.isDefined() and not s.binding.isKindOf(JUDOPSM!Relation);
 
 		var annotations = s.target.createASMAnnotations();
 		var annotation = new ASM!EAnnotation;

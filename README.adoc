@@ -22,8 +22,6 @@ partition ASM {
     :judo-meta-jql-extract;
   end fork
   :judo-meta-expression;
-  :judo-meta-evaluation;
-  :judo-meta-query;
 }
 
 partition LSM {

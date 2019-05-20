@@ -14,30 +14,11 @@
     <context>
       <variables name="self" typeNamespace="northwind::entities" typeName="Order"/>
     </context>
-    <binding packageName="northwind::entities" className="Order" featureName="totalPrice" role="getter"/>
-    <jqlExpression xsi:type="jqldsl:IntegerLiteral" value="0"/>
-  </jqle:ExtractedExpression>
-  <jqle:ExtractedExpression>
-    <context>
-      <variables name="self" typeNamespace="northwind::entities" typeName="Order"/>
-    </context>
-    <binding packageName="northwind::entities" className="Order" featureName="discount" role="getter"/>
-    <jqlExpression xsi:type="jqldsl:IntegerLiteral" value="0"/>
-  </jqle:ExtractedExpression>
-  <jqle:ExtractedExpression>
-    <context>
-      <variables name="self" typeNamespace="northwind::entities" typeName="Order"/>
-    </context>
-    <binding packageName="northwind::entities" className="Order" featureName="discountedItemsWithSingleManufacturer" role="getter"/>
-    <jqlExpression xsi:type="jqldsl:IntegerLiteral" value="0"/>
-  </jqle:ExtractedExpression>
-  <jqle:ExtractedExpression>
-    <context>
-      <variables name="self" typeNamespace="northwind::entities" typeName="Order"/>
-    </context>
-    <binding packageName="northwind::entities" className="Order" featureName="itemsWithCategoryPicture" role="getter"/>
+    <binding packageName="northwind::entities" className="Order" featureName="categories" role="getter"/>
     <jqlExpression xsi:type="jqldsl:NavigationExpression" base="self">
       <features name="orderDetails"/>
+      <features name="product"/>
+      <features name="category"/>
     </jqlExpression>
   </jqle:ExtractedExpression>
   <jqle:ExtractedExpression>
@@ -105,9 +86,24 @@
   </jqle:ExtractedExpression>
   <jqle:ExtractedExpression>
     <context/>
-    <binding featureName="OrdersAssignedToEmployee" role="getter"/>
+    <binding featureName="ordersAssignedToEmployee" role="getter"/>
     <jqlExpression xsi:type="jqldsl:NavigationExpression" base="northwind::entities::Employee">
       <features name="orders"/>
     </jqlExpression>
+  </jqle:ExtractedExpression>
+  <jqle:ExtractedExpression>
+    <context/>
+    <binding featureName="allProducts" role="getter"/>
+    <jqlExpression xsi:type="jqldsl:NavigationExpression" base="northwind::entities::Product"/>
+  </jqle:ExtractedExpression>
+  <jqle:ExtractedExpression>
+    <context/>
+    <binding featureName="allCategories" role="getter"/>
+    <jqlExpression xsi:type="jqldsl:NavigationExpression" base="northwind::entities::Category"/>
+  </jqle:ExtractedExpression>
+  <jqle:ExtractedExpression>
+    <context/>
+    <binding featureName="totalNumberOfOrders" role="getter"/>
+    <jqlExpression xsi:type="jqldsl:IntegerLiteral" value="0"/>
   </jqle:ExtractedExpression>
 </xmi:XMI>

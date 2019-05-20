@@ -1,22 +1,12 @@
 <?xml version="1.0" encoding="ASCII"?>
 <namespace:Model xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:accesspoint="http://blackbelt.hu/judo/meta/psm/accesspoint" xmlns:data="http://blackbelt.hu/judo/meta/psm/data" xmlns:derived="http://blackbelt.hu/judo/meta/psm/derived" xmlns:measure="http://blackbelt.hu/judo/meta/psm/measure" xmlns:namespace="http://blackbelt.hu/judo/meta/psm/namespace" xmlns:service="http://blackbelt.hu/judo/meta/psm/service" xmlns:type="http://blackbelt.hu/judo/meta/psm/type" xmi:id="_vbf8wINkEeiLE-B2bbL0fg" name="northwind">
-  <elements xsi:type="accesspoint:AccessPoint" xmi:id="_X9vDsEZlEemHs64O5EYsyQ" name="internal">
-    <exposedGraphs xmi:id="_hanN0EZlEemHs64O5EYsyQ" name="ordersAssignedToEmployee" mappedTransferObjectType="_ETGEYCVQEemLpvUY7MQgng" selector="_EuQ5MCYbEemLpvUY7MQgng">
-      <exposedOperations xmi:id="_dx8U8E7fEemZHbZiENeSGg" operation="_ZXOmQEWhEemHs64O5EYsyQ"/>
-      <exposedOperations xmi:id="_dx8U8U7fEemZHbZiENeSGg" operation="_PwEewEWhEemHs64O5EYsyQ"/>
-      <exposedOperations xmi:id="_dx8U8k7fEemZHbZiENeSGg" operation="_adE0AEWhEemHs64O5EYsyQ"/>
-    </exposedGraphs>
+  <elements xsi:type="accesspoint:AccessPoint" xmi:id="_X9vDsEZlEemHs64O5EYsyQ" name="internalAP">
+    <exposedGraphs xmi:id="_hanN0EZlEemHs64O5EYsyQ" name="ordersAssignedToEmployee" mappedTransferObjectType="_ETGEYCVQEemLpvUY7MQgng" selector="_EuQ5MCYbEemLpvUY7MQgng"/>
     <exposedServices xmi:id="_fvPm8EyhEemBn-SJ5OPvtg" operation="_mr1P4EWhEemHs64O5EYsyQ"/>
   </elements>
-  <elements xsi:type="accesspoint:AccessPoint" xmi:id="_ab0PsEZlEemHs64O5EYsyQ" name="external">
-    <exposedGraphs xmi:id="_lnxx0EZlEemHs64O5EYsyQ" name="products" mappedTransferObjectType="_o7IkkEWXEemHs64O5EYsyQ" selector="_vA7SgEZlEemHs64O5EYsyQ">
-      <exposedOperations xmi:id="_dx8U807fEemZHbZiENeSGg" operation="_ZXOmQEWhEemHs64O5EYsyQ"/>
-      <exposedOperations xmi:id="_dx8U9E7fEemZHbZiENeSGg" operation="_adE0AEWhEemHs64O5EYsyQ"/>
-    </exposedGraphs>
-    <exposedGraphs xmi:id="_ot-twEZlEemHs64O5EYsyQ" name="categories" mappedTransferObjectType="_xxeTIEWXEemHs64O5EYsyQ" selector="_xeUiAEZlEemHs64O5EYsyQ">
-      <exposedOperations xmi:id="_dx8U9U7fEemZHbZiENeSGg" operation="_ZXOmQEWhEemHs64O5EYsyQ"/>
-      <exposedOperations xmi:id="_dx8U9k7fEemZHbZiENeSGg" operation="_adE0AEWhEemHs64O5EYsyQ"/>
-    </exposedGraphs>
+  <elements xsi:type="accesspoint:AccessPoint" xmi:id="_ab0PsEZlEemHs64O5EYsyQ" name="externalAP">
+    <exposedGraphs xmi:id="_lnxx0EZlEemHs64O5EYsyQ" name="products" mappedTransferObjectType="_o7IkkEWXEemHs64O5EYsyQ" selector="_vA7SgEZlEemHs64O5EYsyQ"/>
+    <exposedGraphs xmi:id="_ot-twEZlEemHs64O5EYsyQ" name="categories" mappedTransferObjectType="_xxeTIEWXEemHs64O5EYsyQ" selector="_xeUiAEZlEemHs64O5EYsyQ"/>
   </elements>
   <packages xmi:id="_g0GS4B1REemwg4NgOjaKeA" name="measures">
     <elements xsi:type="measure:Measure" xmi:id="_oNT8IB1REemwg4NgOjaKeA" name="Mass">
@@ -295,18 +285,9 @@
       <dataProperties xmi:id="_5i40sCVQEemLpvUY7MQgng" name="shipperName" dataType="_Nppx8IUcEeipmMyz9cMCRA">
         <getterExpression xmi:id="_gs3QQDneEemsDIfvozHEKg" expression="self.shipper.companyName"/>
       </dataProperties>
-      <dataProperties xmi:id="_7cYp8CVxEemLpvUY7MQgng" name="totalPrice" dataType="_VDVVQIUcEeipmMyz9cMCRA" required="true">
-        <getterExpression xmi:id="_iA9VYDneEemsDIfvozHEKg" expression="0 /* self.orderDetails->sum(od | od.quantity * od.unitPrice * (1 - od.discount)) */"/>
-      </dataProperties>
-      <dataProperties xmi:id="_9jb2ACVxEemLpvUY7MQgng" name="discount" dataType="_VDVVQIUcEeipmMyz9cMCRA" required="true">
-        <getterExpression xmi:id="_jYUJ4DneEemsDIfvozHEKg" expression="0 /* self.orderDetails->sum(od | od.discount) */"/>
-      </dataProperties>
-      <dataProperties xmi:id="_LL8B4CYIEemLpvUY7MQgng" name="discountedItemsWithSingleManufacturer" dataType="_TXtg8IUcEeipmMyz9cMCRA">
-        <getterExpression xmi:id="_k0MSADneEemsDIfvozHEKg" expression="0 /* self.orderDetails[od | od.discount > 0].product[p | p.manufacturers->size() == 0]->size() */"/>
-      </dataProperties>
-      <navigationProperties xmi:id="_qsmPsCVtEemLpvUY7MQgng" name="itemsWithCategoryPicture" target="__XzocINkEeiLE-B2bbL0fg">
-        <cardinality xmi:id="_pmXY4DavEemNRNvTZis4Yw" upper="-1"/>
-        <getterExpression xmi:id="_mY2isDneEemsDIfvozHEKg" expression="self.orderDetails /* self.orderDetails[od | od.product.category.picture->isDefined()] */"/>
+      <navigationProperties xmi:id="_qMfVoHrHEemPuYxp6QV8dA" name="categories" target="_43ZPcINkEeiLE-B2bbL0fg">
+        <cardinality xmi:id="_sLQIYHrHEemPuYxp6QV8dA" upper="-1"/>
+        <getterExpression xmi:id="_uQwcUHrHEemPuYxp6QV8dA" expression="self.orderDetails.product.category"/>
       </navigationProperties>
     </elements>
     <elements xsi:type="data:EntityType" xmi:id="__XzocINkEeiLE-B2bbL0fg" name="OrderDetail">
@@ -468,78 +449,45 @@
   </packages>
   <packages xmi:id="__cC14CVPEemLpvUY7MQgng" name="services">
     <elements xsi:type="service:MappedTransferObjectType" xmi:id="_ETGEYCVQEemLpvUY7MQgng" name="OrderInfo" entityType="_-H4RoINkEeiLE-B2bbL0fg">
-      <relations xmi:id="_RQtOsCVuEemLpvUY7MQgng" name="itemsWithCategoryPicture" binding="_qsmPsCVtEemLpvUY7MQgng" target="_ZliLoCVuEemLpvUY7MQgng" embedded="true">
-        <cardinality xmi:id="_VeLUsCVuEemLpvUY7MQgng" upper="-1"/>
-      </relations>
       <relations xmi:id="_8M4aICVuEemLpvUY7MQgng" name="items" binding="_2CC44LwNEeiOuYiCo6IbXQ" target="_nao6QCVuEemLpvUY7MQgng" embedded="true">
         <cardinality xmi:id="_-kd8kCVuEemLpvUY7MQgng" upper="-1"/>
       </relations>
+      <relations xmi:id="_djRLUHrHEemPuYxp6QV8dA" name="categories" binding="_qMfVoHrHEemPuYxp6QV8dA" target="_xxeTIEWXEemHs64O5EYsyQ" embedded="true">
+        <cardinality xmi:id="_J1w0AHrJEemPuYxp6QV8dA" upper="-1"/>
+      </relations>
       <attributes xmi:id="_U4tLwCVQEemLpvUY7MQgng" name="orderDate" required="true" dataType="_Z9J8IIN1EeiLE-B2bbL0fg" binding="_WXvUoIN1EeiLE-B2bbL0fg"/>
-      <attributes xmi:id="_rVzq8CVQEemLpvUY7MQgng" name="shippedDate" dataType="_Z9J8IIN1EeiLE-B2bbL0fg" binding="_huP54IN1EeiLE-B2bbL0fg"/>
       <attributes xmi:id="_u7NrYCVQEemLpvUY7MQgng" name="shipperName" required="true" dataType="_Nppx8IUcEeipmMyz9cMCRA" binding="_5i40sCVQEemLpvUY7MQgng"/>
-      <attributes xmi:id="_v1uI0CVxEemLpvUY7MQgng" name="totalPrice" required="true" dataType="_VDVVQIUcEeipmMyz9cMCRA" binding="_7cYp8CVxEemLpvUY7MQgng"/>
-      <attributes xmi:id="_zGRTkCVxEemLpvUY7MQgng" name="discount" required="true" dataType="_VDVVQIUcEeipmMyz9cMCRA" binding="_9jb2ACVxEemLpvUY7MQgng"/>
-      <attributes xmi:id="_ACqnYCYIEemLpvUY7MQgng" name="discountedItemsWithSingleManufacturer" required="true" dataType="_TXtg8IUcEeipmMyz9cMCRA" binding="_LL8B4CYIEemLpvUY7MQgng"/>
-      <operations xmi:id="_PwEewEWhEemHs64O5EYsyQ" stateful="false" name="get">
-        <output xmi:id="_VNvBUEWhEemHs64O5EYsyQ" name="output" type="_ETGEYCVQEemLpvUY7MQgng">
-          <cardinality xmi:id="_uxAnQEWhEemHs64O5EYsyQ"/>
-        </output>
-        <input xmi:id="_R3rEcEWhEemHs64O5EYsyQ" name="input" type="_nlfRMEWgEemHs64O5EYsyQ">
-          <cardinality xmi:id="_vhr2QEWhEemHs64O5EYsyQ" lower="1"/>
-        </input>
-      </operations>
-    </elements>
-    <elements xsi:type="service:MappedTransferObjectType" xmi:id="_ZliLoCVuEemLpvUY7MQgng" name="OrderItemProduct" entityType="__XzocINkEeiLE-B2bbL0fg" entityReferencePresence="REQUIRED">
-      <attributes xmi:id="_htQgsCVuEemLpvUY7MQgng" name="productName" required="true" dataType="_Nppx8IUcEeipmMyz9cMCRA" binding="_mr-oACVvEemLpvUY7MQgng"/>
     </elements>
     <elements xsi:type="service:MappedTransferObjectType" xmi:id="_nao6QCVuEemLpvUY7MQgng" name="OrderItem" entityType="__XzocINkEeiLE-B2bbL0fg">
-      <relations xmi:id="_eboboEWeEemHs64O5EYsyQ" name="product" binding="_6QtRsLwNEeiOuYiCo6IbXQ" range="_vA7SgEZlEemHs64O5EYsyQ" target="_o7IkkEWXEemHs64O5EYsyQ">
+      <relations xmi:id="_eboboEWeEemHs64O5EYsyQ" name="product" binding="_6QtRsLwNEeiOuYiCo6IbXQ" range="_vA7SgEZlEemHs64O5EYsyQ" target="_o7IkkEWXEemHs64O5EYsyQ" embedded="true">
         <cardinality xmi:id="_ElBGIEWiEemHs64O5EYsyQ" lower="1"/>
       </relations>
-      <relations xmi:id="_ilDvIEWeEemHs64O5EYsyQ" name="category" binding="_rYlgkEZqEemHs64O5EYsyQ" target="_xxeTIEWXEemHs64O5EYsyQ">
-        <cardinality xmi:id="_E5SF8EWiEemHs64O5EYsyQ" lower="1"/>
-      </relations>
-      <attributes xmi:id="_rmgdwCVuEemLpvUY7MQgng" name="productName" required="true" dataType="_Nppx8IUcEeipmMyz9cMCRA" binding="_mr-oACVvEemLpvUY7MQgng"/>
-      <attributes xmi:id="_tZnaICVuEemLpvUY7MQgng" name="categoryName" required="true" dataType="_Nppx8IUcEeipmMyz9cMCRA" binding="_2MDDoCVvEemLpvUY7MQgng"/>
       <attributes xmi:id="_w9fJgCVuEemLpvUY7MQgng" name="unitPrice" required="true" dataType="_VDVVQIUcEeipmMyz9cMCRA" binding="_bG7OUIN6EeiLE-B2bbL0fg"/>
       <attributes xmi:id="_xdLWMCVuEemLpvUY7MQgng" name="quantity" required="true" dataType="_TXtg8IUcEeipmMyz9cMCRA" binding="_d3obYIN6EeiLE-B2bbL0fg"/>
       <attributes xmi:id="_x6C4YCVuEemLpvUY7MQgng" name="discount" required="true" dataType="_VDVVQIUcEeipmMyz9cMCRA" binding="_jIROkIN6EeiLE-B2bbL0fg"/>
     </elements>
     <elements xsi:type="service:MappedTransferObjectType" xmi:id="_o7IkkEWXEemHs64O5EYsyQ" name="ProductInfo" entityType="_6XH80INkEeiLE-B2bbL0fg">
-      <relations xmi:id="_f1W8wEWgEemHs64O5EYsyQ" name="category" binding="_CkXK8LwDEeiOuYiCo6IbXQ" range="_xeUiAEZlEemHs64O5EYsyQ" target="_xxeTIEWXEemHs64O5EYsyQ">
-        <cardinality xmi:id="_Gx_7EEWiEemHs64O5EYsyQ" lower="1"/>
-      </relations>
       <attributes xmi:id="_s0y9wEWXEemHs64O5EYsyQ" name="productName" dataType="_Nppx8IUcEeipmMyz9cMCRA" binding="_LhnHUINvEeiLE-B2bbL0fg"/>
-      <operations xmi:id="_adE0AEWhEemHs64O5EYsyQ" stateful="false" name="get">
-        <output xmi:id="_dvBF4EWhEemHs64O5EYsyQ" name="output" type="_o7IkkEWXEemHs64O5EYsyQ">
-          <cardinality xmi:id="_1nBc0EWhEemHs64O5EYsyQ"/>
-        </output>
-        <input xmi:id="_b3UkcEWhEemHs64O5EYsyQ" name="input" type="_Z5o3IEWeEemHs64O5EYsyQ">
-          <cardinality xmi:id="_2EOWMEWhEemHs64O5EYsyQ" lower="1"/>
-        </input>
-      </operations>
     </elements>
     <elements xsi:type="service:MappedTransferObjectType" xmi:id="_xxeTIEWXEemHs64O5EYsyQ" name="CategoryInfo" entityType="_43ZPcINkEeiLE-B2bbL0fg">
       <relations xmi:id="_iy32wEWgEemHs64O5EYsyQ" name="products" binding="_892OYLwCEeiOuYiCo6IbXQ" range="_vA7SgEZlEemHs64O5EYsyQ" target="_o7IkkEWXEemHs64O5EYsyQ">
         <cardinality xmi:id="_Paez0EWiEemHs64O5EYsyQ" upper="-1"/>
       </relations>
       <attributes xmi:id="_zWg-UEWXEemHs64O5EYsyQ" name="categoryName" dataType="_Nppx8IUcEeipmMyz9cMCRA" binding="_v7k5EINmEeiLE-B2bbL0fg"/>
-      <operations xmi:id="_ZXOmQEWhEemHs64O5EYsyQ" stateful="false" name="get">
-        <output xmi:id="_ifLpQEWhEemHs64O5EYsyQ" name="output" type="_xxeTIEWXEemHs64O5EYsyQ">
-          <cardinality xmi:id="_56mx4EWhEemHs64O5EYsyQ"/>
-        </output>
-        <input xmi:id="_g_di8EWhEemHs64O5EYsyQ" name="input" type="_ai3aUEWeEemHs64O5EYsyQ">
-          <cardinality xmi:id="_5Raq8EWhEemHs64O5EYsyQ" lower="1"/>
-        </input>
-      </operations>
     </elements>
-    <elements xsi:type="service:MappedTransferObjectType" xmi:id="_Z5o3IEWeEemHs64O5EYsyQ" name="ProductLink" entityType="_6XH80INkEeiLE-B2bbL0fg" entityReferencePresence="REQUIRED"/>
-    <elements xsi:type="service:MappedTransferObjectType" xmi:id="_ai3aUEWeEemHs64O5EYsyQ" name="CategoryLink" entityType="_43ZPcINkEeiLE-B2bbL0fg" entityReferencePresence="REQUIRED"/>
-    <elements xsi:type="service:MappedTransferObjectType" xmi:id="_nlfRMEWgEemHs64O5EYsyQ" name="OrderLink" entityType="_-H4RoINkEeiLE-B2bbL0fg" entityReferencePresence="REQUIRED"/>
     <elements xsi:type="service:UnboundOperation" xmi:id="_mr1P4EWhEemHs64O5EYsyQ" stateful="false" name="getAllOrders">
       <output xmi:id="_oxIvgEWhEemHs64O5EYsyQ" name="output" type="_ETGEYCVQEemLpvUY7MQgng">
         <cardinality xmi:id="_rFrlAEWhEemHs64O5EYsyQ" upper="-1"/>
       </output>
+    </elements>
+    <elements xsi:type="service:UnmappedTransferObjectType" xmi:id="_XvKUwF0lEemy96upLHyphg" name="ShipmentChange">
+      <attributes xmi:id="_ayUjwF0lEemy96upLHyphg" name="shippperName" dataType="_Nppx8IUcEeipmMyz9cMCRA"/>
+      <attributes xmi:id="_dFOagF0lEemy96upLHyphg" name="shippedDate" dataType="_Z9J8IIN1EeiLE-B2bbL0fg"/>
+    </elements>
+    <elements xsi:type="service:UnmappedTransferObjectType" xmi:id="_qgZmMF0lEemy96upLHyphg" name="Comment">
+      <attributes xmi:id="_tK_kMF0lEemy96upLHyphg" name="note" dataType="_tXQUoIOGEeiLE-B2bbL0fg"/>
+      <attributes xmi:id="_yQk98F0lEemy96upLHyphg" name="author" dataType="_Nppx8IUcEeipmMyz9cMCRA"/>
+      <attributes xmi:id="_0BqhEF0lEemy96upLHyphg" name="timestamp" dataType="_Z9J8IIN1EeiLE-B2bbL0fg"/>
     </elements>
   </packages>
 </namespace:Model>
