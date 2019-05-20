@@ -4,56 +4,42 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class ProductInfo {
-	private java.lang.String clazz;
-	private CategoryInfo category;
+	private java.lang.String productName;
 
-    @java.beans.ConstructorProperties({"clazz", "category"})
-    ProductInfo(java.lang.String clazz, CategoryInfo category) {
-        this.clazz = clazz;
-        this.category = category;
+    @java.beans.ConstructorProperties({"productName"})
+    ProductInfo(java.lang.String productName) {
+        this.productName = productName;
     }
 
 	// Getters
-	public java.lang.String getClazz() {
-		return this.clazz;
-	}
-	public CategoryInfo getCategory() {
-		return this.category;
+	public java.lang.String getProductName() {
+		return this.productName;
 	}
 
 	// Setters
-	public void setClazz(java.lang.String clazz) {
-		this.clazz = clazz;
-	}
-	public void setCategory(CategoryInfo category) {
-		this.category = category;
+	public void setProductName(java.lang.String productName) {
+		this.productName = productName;
 	}
 
 	public Map<String, Object> toMap() {
 		Map ret = new LinkedHashMap(); 
-	    if (getClazz() != null) {
-		    ret.put("class", this.clazz);
+	    if (getProductName() != null) {
+		    ret.put("productName", this.productName);
 	    }
-	    if (getCategory() != null) {
-		    ret.put("category", getCategory().toMap());
-		}
 		return ret;
 	}
 
 	public static ProductInfo fromMap(Map<String, Object> map) {
 		ProductInfoBuilder builder = productInfoBuilder();
-	    if (map.containsKey("class")) {
-			builder.clazz((java.lang.String) map.get("class"));
+	    if (map.containsKey("productName")) {
+			builder.productName((java.lang.String) map.get("productName"));
 		}
-	    if (map.containsKey("category")) {
-		    builder.category(CategoryInfo.fromMap((Map<String, Object>) map.get("category")));
-	    }
 
 	    return builder.build();
 	}
 
 	public String toString() {
-	    return "ProductInfo(clazz=" + this.clazz + ", category=" + this.category + ")";
+	    return "ProductInfo(productName=" + this.productName + ")";
 	}
 
     // Builder
@@ -62,27 +48,22 @@ public class ProductInfo {
 	}
 
 	public static class ProductInfoBuilder {
-        private java.lang.String clazz;
-        private CategoryInfo category;
+        private java.lang.String productName;
 
 		ProductInfoBuilder() {
 		}
 
-		public ProductInfoBuilder clazz(java.lang.String clazz) {
-			this.clazz = clazz;
-			return this;
-		}
-		public ProductInfoBuilder category(CategoryInfo category) {
-			this.category = category;
+		public ProductInfoBuilder productName(java.lang.String productName) {
+			this.productName = productName;
 			return this;
 		}
 
 		public ProductInfo build() {
-			return new ProductInfo(this.clazz, this.category);
+			return new ProductInfo(this.productName);
 		}
 
 		public String toString() {
-    	    return "ProductInfoBuilder.ProductInfo(clazz=" + this.clazz + ", category=" + this.category + ")";
+    	    return "ProductInfoBuilder.ProductInfo(productName=" + this.productName + ")";
 		}
 	}
 }

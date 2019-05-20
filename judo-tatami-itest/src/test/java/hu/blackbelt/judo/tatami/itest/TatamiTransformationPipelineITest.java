@@ -57,6 +57,7 @@ import static org.ops4j.pax.exam.karaf.options.KarafDistributionOption.editConfi
 import static org.ops4j.pax.exam.karaf.options.KarafDistributionOption.features;
 import static org.ops4j.pax.tinybundles.core.TinyBundles.bundle;
 import static org.ops4j.pax.tinybundles.core.TinyBundles.withBnd;
+import static org.osgi.service.log.LogService.LOG_ERROR;
 import static org.osgi.service.log.LogService.LOG_INFO;
 
 @RunWith(PaxExam.class)
@@ -168,7 +169,7 @@ public class TatamiTransformationPipelineITest {
 
                 features(blackbeltEclipseXtext()),
 
-                features(apacheCxf(), FEATURE_CXF_JAXRS),
+                features(apacheCxf(), FEATURE_SWAGGER_CORE, FEATURE_CXF_JACKSON, FEATURE_CXF_JAXRS),
 
                 features(blackbeltTatami(), FEATURE_JUDO_TATAMI_META_ASM, FEATURE_JUDO_TATAMI_META_PSM, FEATURE_JUDO_TATAMI_META_JQL, FEATURE_JUDO_TATAMI_META_JQL_EXTRACT, FEATURE_JUDO_TATAMI_META_EXPRESSION,
                         FEATURE_JUDO_TATAMI_META_MEASURE, FEATURE_JUDO_TATAMI_META_OPENAPI, FEATURE_JUDO_TATAMI_META_RDBMS, FEATURE_JUDO_TATAMI_META_LIQUIBASE, FEATURE_JUDO_TATAMI_CORE,
@@ -251,8 +252,14 @@ public class TatamiTransformationPipelineITest {
 
         assertBundleStarted(bundleContext, "Northwind-asm2jaxrsapi");
 
-        OrderInfo orderInfo = wt.path("/getAllOrders").request("application/json").get(OrderInfo.class);
+        OrderInfo orderInfo = null;
+        try {
+            orderInfo = wt.path("/getAllOrders").request("application/json").get(OrderInfo.class);
+        } catch (Exception e) {
+            log.log(LOG_ERROR, "EXCEPTION: ", e);
+        }
         assertNotNull(orderInfo);
+
 
 
         log.log(LOG_INFO, "==============================================");
