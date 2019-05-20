@@ -1,6 +1,11 @@
 @cached
+operation String normalizeName() : String {
+	return self.replace("[ʘ]", "\\$");
+}
+
+@cached
 operation String toJAXRSPath() : String {
-    return self.replace("\\.ʘUnboundServices", "").replace("[ʘ#\\.]", "/").replace("[^0-9a-zA-Z_/]", "_");
+    return self.replace("\\.ʘUnboundServices", "").replace("[ʘ#\\.]", "/").replace("[^0-9a-zA-Z_/]", "_").replace("\\$", "/");
 }
 
 @cached
@@ -148,11 +153,12 @@ operation ASM!EClass getExposedMappedTransferObjectClassName() : String {
 		return self.name;
 	}
 	*/
-	return self.name.replace("[ʘ]", "\\$");
+	return self.name.normalizeName(); // .name.replace("[ʘ]", "\\$");
 }
 
 operation ASM!EClass getExposedMappedTransferObjectJavaFileName(ap: ASM!EClass) : String {
-	return self.getExposedMappedTransferObjectPackageName(ap).replaceAll("\\.", "/") + "/" + self.getExposedMappedTransferObjectClassName() + ".java";
+	return self.getExposedMappedTransferObjectPackageName(ap)
+		.replaceAll("\\.", "/") + "/" + self.getExposedMappedTransferObjectClassName() + ".java";
 }
 
 operation ASM!EClass getExposedMappedTransferObjectScrXmlFileName(ap: ASM!EClass) : String {
@@ -164,7 +170,7 @@ operation genExposedMappedTransferObject(ap : ASM!EClass, mto : ASM!EClass) {
 	t.populate("className", mto.getExposedMappedTransferObjectClassName());
 	t.populate("packagePath", mto.getExposedMappedTransferObjectPackageName(ap));
 	t.populate("operations", mto.eAllOperations);
-	t.populate("restPath", "/" + mto.ePackage.getFullName().toJAXRSPath() + "/" + mto.getExposedMappedTransferObjectClassName().replace("\\$", "/").toJAXRSPath());
+	t.populate("restPath", "/" + mto.ePackage.getFullName().toJAXRSPath() + "/" + mto.getExposedMappedTransferObjectClassName().toJAXRSPath());
 	t.generate(mto.getExposedMappedTransferObjectJavaFileName(ap));
 	t.reset();
 
@@ -190,8 +196,14 @@ operation ASM!EClass getDtoTypeName() : String {
 }
 
 @cached
+operation ASM!EClass idType() : String {
+	return "java.util.UUID";
+}
+
+
+@cached
 operation ASM!EClass getDtoJavaFileName() : String {
-	return self.getDtoPackageName().replaceAll("\\.", "/") + "/" + self.name + ".java";
+	return self.getDtoPackageName().replaceAll("\\.", "/") + "/" + self.name.normalizeName() + ".java";
 }
 
 operation genDto(dto : ASM!EClass) {
@@ -205,6 +217,7 @@ operation String safeName() : String {
 	if (self == "class") {
 		return "clazz";
 	} else if (Set{
+	    "identifier",
 		"abstract", "assert", "boolean", "break", "byte", "case", "catch", "char", 
 		"continue", "default", "do", "double", "else", "enum", "exports", "extends", 
 		"final", "finally", "float", "for", "if", "implements", "import", "instanceof",
