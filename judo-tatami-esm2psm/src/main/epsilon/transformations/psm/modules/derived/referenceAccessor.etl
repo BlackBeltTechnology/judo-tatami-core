@@ -7,9 +7,9 @@ rule CreateReferenceAccessor
 	transform s : ESM!ReferenceAccessor
 	to t : JUDOPSM!ReferenceAccessor
 	extends CreateReferenceTypedElement {
-	  t.`getterExpression` = s.`getterExpression`.getPSMEquivalent();
-	  if (s.`setterExpression`.isDefined()) {
-	  	t.`setterExpression` = s.`setterExpression`.getPSMEquivalent();
+	  t.getterExpression = s.getterExpression.getPSMEquivalent();
+	  if (s.setterExpression.isDefined()) {
+	  	t.setterExpression = s.setterExpression.getPSMEquivalent();
 	  }
 }
 
@@ -18,7 +18,7 @@ rule CreateStaticNavigation
 	to t : JUDOPSM!StaticNavigation
 	extends CreateReferenceAccessor {
 	  var namespace : ESM!Namespace = ESM!Namespace.all.selectOne(ns | ns.elements.includes(s));
-	  namespace.equivalent("CreatePackage").`elements`.add(t);
+	  namespace.equivalent("CreatePackage").elements.add(t);
 }
 
 rule CreateNavigationProperty

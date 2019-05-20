@@ -28,7 +28,8 @@ operation ESM!Parameter isInput() : Boolean {
 }
 
 operation ESM!Parameter getOperation() : ESM!Operation {
-	var esmOP : ESM!Operation; 
+	var esmOP : ESM!Operation;
+	//TODO: finish (other operation fields)
 	//if (self.isInput()) {
 	esmOP = ESM!Operation.all.selectOne(op | op.faults.includes(s));
 	//} else {

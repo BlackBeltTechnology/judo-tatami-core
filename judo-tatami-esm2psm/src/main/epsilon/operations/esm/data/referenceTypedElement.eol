@@ -1,9 +1,15 @@
-@cached
 operation ESM!TwoWayEndpoint getEntityType() : ESM!EntityType {
 	return ESM!EntityType.all.selectOne(et | et.relations.includes(self));
 }
 
-@cached
 operation ESM!OneWayEndpoint getEntityType() : ESM!EntityType {
 	return ESM!EntityType.all.selectOne(et | et.relations.includes(self));
+}
+
+operation ESM!TwoWayEndpoint getTransferRelation() : ESM!TransferRelation {
+	return ESM!TransferRelation.all.selectOne(tr | tr.referenceTypedElement = self);
+}
+
+operation ESM!OneWayEndpoint getTransferRelation() : ESM!TransferRelation {
+	return ESM!TransferRelation.all.selectOne(tr | tr.referenceTypedElement = self);
 }

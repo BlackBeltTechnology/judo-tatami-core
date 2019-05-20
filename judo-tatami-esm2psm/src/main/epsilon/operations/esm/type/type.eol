@@ -43,4 +43,7 @@ operation ESM!EnumerationType getPSMEquivalent(): JUDOPSM!Primitive {
 	return self.equivalent("CreateEnumerationType");
 }
 
+operation ESM!MeasuredType getPSMEquivalent(): JUDOPSM!MeasuredType {
+	return self.equivalent("CreateMeasuredType");
+}
 

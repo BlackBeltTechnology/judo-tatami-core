@@ -5,16 +5,12 @@ rule CreateEntityType
   transform s : ESM!EntityType
   to t : JUDOPSM!EntityType
   extends CreateNamespaceElement {
-    if (s.`abstract`.isDefined()) {
-    	t.`abstract` = s.`abstract`;
-    } else {
-		t.`abstract` = false;    
-    }
-    
-    //TODO: [postponed] ~ relationCountConstraints: RelationCountConstraint
+    t.`abstract` = s.`abstract`;
+    //[postponed] relationCountConstraints: RelationCountConstraint
+    //TODO: backw?
     for (super in s.superEntityTypes) {
 		t.superEntityTypes.add(super.getPSMEquivalent());    
-    }    
+    }
     log.debug("Created EntityType: " + t.name);
 }
 
@@ -23,12 +19,8 @@ rule CreatePrimitiveTypedElement
 	transform s: ESM!AttributeFeature
 	to t: JUDOPSM!PrimitiveTypedElement
 	extends CreateNamedElement {
-	  if (s.`required`.isDefined()) {
-		t.`required` = s.`required`;
-      } else {
-		t.`required` = false;
-	  }
-	  t.`dataType` = s.`dataType`.getPSMEquivalent();
+	  t.required = s.required;
+	  t.dataType = s.dataType.getPSMEquivalent();
 	  
 	  log.debug("Created PrimitiveTypedElement: " + t.name);
 }
@@ -37,23 +29,14 @@ rule CreateAttribute
 	transform s: ESM!Attribute
 	to t: JUDOPSM!Attribute
 	extends CreatePrimitiveTypedElement {
-	  if (s.`identifier`.isDefined()) {
-		t.`identifier` = s.`identifier`;
-	  } else {
-		t.`identifier` = false;
-	  }
+	  t.identifier = s.identifier;
+	  
 	  var entityType : ESM!EntityType = s.getEntityType();
 	  entityType.equivalent("CreateEntityType").attributes.add(t);
+	  /* TODO: TransferAttribute... option_b */
+	  var transferAttribute : ESM!TransferAttribute = ESM!TransferAttribute.all.selectOne(ta | ta.primitiveTypedElement = s);
+	  transferAttribute.equivalent("CreateTransferAttribute").binding = t; 
+	  /**/
 	  
 	  log.debug("Created Attribute: " + t.name);
-}
-
-/* ESM!RelCC.. missing
-rule CreateRelationCountConstraint
-	transform s: ESM!RelationCountConstraint //TODO yeah this one doesn't exist
-	to t: JUDOPSM!RelationCountConstraint
-	extends CreateNamedElement {
-	  var entityType : ESM!EntityType = s.getEntityType();
-	  entityType.equivalent("CreateEntityType").relationCountConstraints.add(t);
-	  log.debug("Created RelationCountConstraint" + t.name);
 }

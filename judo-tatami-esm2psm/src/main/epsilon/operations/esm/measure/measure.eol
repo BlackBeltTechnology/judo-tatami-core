@@ -1,3 +1,28 @@
 operation ESM!Unit getMeasure(): ESM!Measure {
 	return ESM!Measure.all.selectOne(m | m.units.includes(self));
 }
+
+operation ESM!Measure getPSMEquivalent(): JUDOPSM!Measure {
+	if(not self.terms.isEmpty()) {
+	  	return self.equivalent("CreateDerivedMeasure");
+	  } else {
+	    return self.equivalent("CreateMeasure");	  
+	  }
+}
+
+operation ESM!Unit getContainingPSMEquivalent() : JUDOPSM!Measure {
+	return self.getMeasure().getPSMEquivalent();
+}
+
+operation ESM!MeasureDefinitionTerm getDerivedMeasure() : JUDOPSM!DerivedMeasure {
+	var esmMeasure : ESM!Measure = ESM!Measure.all.selectOne(m | (not m.terms.isEmpty()) and (m.terms.includes(self)));
+	return esmMeasure.equivalent("CreateDerivedMeasure");
+}
+
+operation ESM!Unit getPSMEquivalent() : JUDOPSM!Unit {
+      if (self.isTypeOf(ESM!DurationUnit)) {
+	    return self.equivalent("CreateDurationUnit");
+	  } else {
+	    return self.equivalent("CreateUnit");
+	  }
+}

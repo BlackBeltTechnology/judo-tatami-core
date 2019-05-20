@@ -7,9 +7,9 @@ rule CreatePrimitiveAccessor
 	transform s : ESM!PrimitiveAccessor
 	to t : JUDOPSM!PrimitiveAccessor
 	extends CreatePrimitiveTypedElement {
-	  t.`getterExpression` = s.`getterExpression`.getPSMEquivalent();
-	  if (s.`setterExpression`.isDefined()) {
-	  	t.`setterExpression` = s.`setterExpression`.getPSMEquivalent();
+	  t.getterExpression = s.getterExpression.getPSMEquivalent();
+	  if (s.setterExpression.isDefined()) {
+	  	t.setterExpression = s.setterExpression.getPSMEquivalent();
 	  }
 }
 
@@ -17,9 +17,12 @@ rule CreateDataProperty
 	transform s : ESM!DataProperty
 	to t : JUDOPSM!DataProperty
 	extends CreatePrimitiveAccessor {
-	  
 	  var entity : ESM!EntityType = s.getEntityType();
 	  entity.equivalent("CreateEntityType").dataProperties.add(t);
+	  /* TODO: TransferAttribute... option_b */ 
+	  var transferAttribute : ESM!TransferAttribute = ESM!TransferAttribute.all.selectOne(ta | ta.primitiveTypedElement = s);
+	  transferAttribute.equivalent("CreateTransferAttribute").binding = t; 
+	  /**/
 	  log.debug("Created DataProperty: " + t.name);
 }
 

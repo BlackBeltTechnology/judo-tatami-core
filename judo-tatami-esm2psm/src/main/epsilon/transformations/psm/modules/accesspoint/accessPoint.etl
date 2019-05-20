@@ -13,12 +13,12 @@ rule CreateExposedGraph
 	transform s: ESM!ExposedGraph
 	to t: JUDOPSM!ExposedGraph
 	extends CreateNamedElement {
-	  t.`mappedTransferObjectType` = s.`entryTransferObjectType`.equivalent("CreateMappedTransferObjectType");
-	  t.`selector` = s.`staticNavigation`.equivalent("CreateStaticNavigation");
+	  t.mappedTransferObjectType = s.target.equivalent("CreateMappedTransferObjectType");
+	  t.selector = s.staticNavigation.equivalent("CreateStaticNavigation");
 	  
 	  s.getPSMEquivalent().exposedGraphs.add(t);
 	  
-	  //TODO: exposedOperations? (->t))
+	  //TODO: exposed`operation`s? (->t))
 	  //TODO: cardinality? (s->)
 	  log.debug("Created ExposedGraph: " + t.name);
 }
@@ -33,12 +33,12 @@ rule CreateExposedService
 	  log.debug("Created ExposedService.");
 }
 
-//TODO: rule CreateExposedOperation?
+//TODO: rule CreateExposed`operation`?
 /*
-rule CreateExposedOperation
-	transform s: ESM!BoundOperation
-	to t: JUDOPSM!ExposedOperation {
+rule CreateExposed`operation`
+	transform s: ESM!Bound`operation`
+	to t: JUDOPSM!Exposed`operation` {
 	  t.`operation` = s.equivalent("CreateBoundOperation");
-	  log.debug("Created ExposedOperation.");
+	  log.debug("Created Exposed`operation`.");
 }
 */

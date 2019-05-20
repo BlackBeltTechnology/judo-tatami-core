@@ -5,77 +5,77 @@ rule CreateXMLType
 	transform s: ESM!XMLType
 	to t: JUDOPSM!XMLType
 	extends CreateNamespaceElement {
-	t.`xmlNameSpace` = s.`xmlNameSpace`;
-	t.`xmlElement` = s.`xmlElement`;
-	log.debug("Created XMLType: " + t.name);
+	  t.xmlNameSpace = s.xmlNameSpace;
+	  t.xmlElement = s.xmlElement;
+	  log.debug("Created XMLType: " + t.name);
 }
 
 rule CreateCustomType
 	transform s: ESM!CustomType
 	to t: JUDOPSM!CustomType
 	extends CreateNamespaceElement {
-	log.debug("Created CustomType: " + t.name);
+	  log.debug("Created CustomType: " + t.name);
 }
 
 rule CreatePasswordType
 	transform s: ESM!PasswordType
 	to t: JUDOPSM!PasswordType
 	extends CreateNamespaceElement {
-	log.debug("Created PasswordType: " + t.name);
+	  log.debug("Created PasswordType: " + t.name);
 }
 
 rule CreateStringType
 	transform s: ESM!StringType
 	to t: JUDOPSM!StringType
 	extends CreateNamespaceElement {
-	t.`maxLength` = s.`maxLength`;
-	t.`regExp` = s.`regExp`; //pbbly not needed
-	log.debug("Created StringType: " + t.name);
+	  t.maxLength = s.maxLength;
+	  t.regExp = s.regExp;
+	  log.debug("Created StringType: " + t.name);
 }
 
 rule CreateNumericType
 	transform s: ESM!NumericType
 	to t: JUDOPSM!NumericType
 	extends CreateNamespaceElement {
-	t.`precision` = s.`precision`;
-	t.`scale` = s.`scale`;
-	log.debug("Created NumericType: " + t.name);
+	  t.precision = s.precision;
+	  t.scale = s.scale;
+	  log.debug("Created NumericType: " + t.name);
 }
 
 rule CreateBooleanType
 	transform s: ESM!BooleanType
 	to t: JUDOPSM!BooleanType
 	extends CreateNamespaceElement {
-	log.debug("Created BooleanType: " + t.name);
+	  log.debug("Created BooleanType: " + t.name);
 }
 
 rule CreateDateType
 	transform s: ESM!DateType
 	to t: JUDOPSM!DateType
 	extends CreateNamespaceElement {
-	log.debug("Created DateType: " + t.name);
+	  log.debug("Created DateType: " + t.name);
 }
 
 rule CreateTimestampType
 	transform s: ESM!TimestampType
 	to t: JUDOPSM!TimestampType
 	extends CreateNamespaceElement {
-	log.debug("Created TimestampType: " + t.name);
+	  log.debug("Created TimestampType: " + t.name);
 }
 
 rule CreateEnumerationType
 	transform s: ESM!EnumerationType
 	to t: JUDOPSM!EnumerationType
 	extends CreateNamespaceElement {
-	log.debug("Created EnumerationType: " + t.name);
+	  log.debug("Created EnumerationType: " + t.name);
 }
 
 rule CreateEnumerationMember
 	transform s: ESM!EnumerationMember
 	to t: JUDOPSM!EnumerationMember
 	extends CreateNamedElement {
-	var enumType : ESM!EnumerationType = s.getEnumerationType();
-	enumType.equivalent("CreateEnumerationType").members.add(t);
-	t.`ordinal` = s.`ordinal`;
-	log.debug("Created EnumerationMember: " + t.name);
+	  var enumType : ESM!EnumerationType = s.getEnumerationType();
+	  enumType.equivalent("CreateEnumerationType").members.add(t);
+	  t.ordinal = s.ordinal;
+	  log.debug("Created EnumerationMember: " + t.name);
 }

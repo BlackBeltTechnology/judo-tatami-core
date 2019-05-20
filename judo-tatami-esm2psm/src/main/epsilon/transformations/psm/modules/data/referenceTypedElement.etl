@@ -5,8 +5,8 @@ rule CreateReferenceTypedElement
 	transform s: ESM!ReferenceTypedElement
 	to t: JUDOPSM!ReferenceTypedElement
 	extends CreateNamedElement {
-	  t.`target` = s.`target`.getPSMEquivalent();
-	  t.`cardinality` = s.equivalent("CreateCardinalityOfReferenceTypedElement");
+	  t.target = s.target.getPSMEquivalent();
+	  t.cardinality = s.equivalent("CreateCardinalityOfReferenceTypedElement");
 }
 
 @lazy
@@ -14,8 +14,8 @@ rule CreateReferenceTypedElement
 rule CreateCardinalityOfReferenceTypedElement
 	transform s: ESM!ReferenceTypedElement
 	to t: JUDOPSM!Cardinality {
-	  t.`upper` = s.`upper`;
-	  t.`lower` = s.`lower`;
+	  t.upper = s.upper;
+	  t.lower = s.lower;
 }
 
 rule CreateContainment
@@ -25,14 +25,20 @@ rule CreateContainment
 	  var entity : ESM!EntityType = s.getEntityType();
 	  entity.equivalent("CreateEntityType").relations.add(t);
 	  log.debug("Created Containment: " + t.name);
+	  
+	  var transferRelation : ESM!TransferRelation = s.getTransferRelation();
+	  transferRelation.equivalent("CreateTransferObjectRelation").binding = t;
 }
 
 rule CreateEndpoint
 	transform s: ESM!TwoWayEndpoint
 	to t: JUDOPSM!Endpoint
 	extends CreateReferenceTypedElement {
+	  t.partner = s.partner.equivalent("CreateEndpoint");
 	  var entity : ESM!EntityType = s.getEntityType();
-	  t.`partner` = s.`partner`.equivalent("CreateEndpoint");
 	  entity.equivalent("CreateEntityType").relations.add(t);
 	  log.debug("Created Endpoint: " + t.name);
+	  
+	  var transferRelation : ESM!TransferRelation = s.getTransferRelation();
+	  transferRelation.equivalent("CreateTransferObjectRelation").binding = t;
 }
