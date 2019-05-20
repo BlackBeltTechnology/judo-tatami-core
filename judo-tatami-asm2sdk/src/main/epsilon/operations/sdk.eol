@@ -1,0 +1,122 @@
+@cached
+operation String normalizeName() : String {
+	return self.replace("[ʘ]", "\\$");
+}
+
+
+@cached
+operation ASM!EAttribute getTypeDefinition() : String {	
+	if (self.upperBound == -1) {
+		return "List<" + self.eType.instanceClass.name + ">";
+	} else {
+		return self.eType.instanceClass.name;
+	}
+}
+
+@cached
+operation ASM!EReference getBareTypeDefinition() : String {	
+	return self.eReferenceType.getDtoPackageName() + "." + self.eReferenceType.name;
+}
+
+
+@cached
+operation ASM!EReference getTypeDefinition() : String {	
+	if (self.upperBound == -1) {
+		return "List<" + self.getBareTypeDefinition() + ">";
+	} else {
+		return self.getBareTypeDefinition();
+	}
+}
+
+@cached
+operation ASM!EClass collectAllReferenceType() : Set {	
+	var ret : new Set();
+	for (r in self.eAllReferences) {
+		ret.add(r.eReferenceType);
+	}
+	return ret;
+}
+
+@cached
+operation Collection collectAllReferenceType() : Set {	
+	var ret : new Set();	
+	for (c : ASM!EClass in self) {
+		ret.add(c);
+		ret.addAll(c.collectAllReferenceType());
+	}
+	return ret;
+}
+
+@cached
+operation Collection collectAllReferenceTypeRecursively() : Set {	
+	var ret : new Set();	
+	ret.addAll(self);
+
+	var sizeDiffers = true;
+	while (sizeDiffers) {
+	    var curSize = ret.size();
+		ret = ret.collectAllReferenceType();
+		sizeDiffers = (curSize <> ret.size());
+	}
+	return ret;
+}
+
+/*
+ DTO
+ */
+@cached
+operation ASM!EClass idType() : String {
+	return "java.util.UUID";
+}
+
+@cached
+operation ASM!EClass getDtoPackageName() : String {
+	return "sdk." + self.ePackage.getFullName();
+}
+
+@cached
+operation ASM!EClass getDtoTypeName() : String {
+	return self.getDtoPackageName() + "." + self.name;
+}
+
+@cached
+operation ASM!EClass getDtoJavaFileName() : String {
+	return self.getDtoPackageName().replaceAll("\\.", "/") + "/" + self.name.normalizeName() + ".java";
+}
+
+operation genDto(dto : ASM!EClass) {
+	var t = TemplateFactory.load("Dto.java.egl");
+	t.populate("dto", dto);
+	t.generate(dto.getDtoJavaFileName());
+	t.reset();
+}
+
+operation String safeName() : String {
+	if (self == "class") {
+		return "clazz";
+	} else if (Set{
+	    "identifier",
+		"abstract", "assert", "boolean", "break", "byte", "case", "catch", "char",
+		"continue", "default", "do", "double", "else", "enum", "exports", "extends", 
+		"final", "finally", "float", "for", "if", "implements", "import", "instanceof",
+		 "long", "module", "native", "new", "package", "private", "protected",
+		 "public", "requires", "return", "short", "static", "strictfp", "super",
+		 "switch", "synchronized", "this", "throw", "throws", "transitent", "try",
+		 "void", "volatile", "while", "true", "null", "false", "var", "const", "goto" }.contains(self)) {
+		return self + "_";
+	} else if (self == "Class") {
+		return "Clazz";
+	} else {
+		return self;
+	}	
+}
+
+operation ASM!ENamedElement setterName() : String {
+	return "set" + self.name.firstToUpperCase().safeName();
+}
+
+operation ASM!ENamedElement getterName() : String {
+	return "get" + self.name.firstToUpperCase().safeName();
+}
+
+
