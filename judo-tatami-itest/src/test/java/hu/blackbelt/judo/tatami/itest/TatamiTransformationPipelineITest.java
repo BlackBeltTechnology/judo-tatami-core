@@ -3,6 +3,7 @@ package hu.blackbelt.judo.tatami.itest;
 import com.fasterxml.jackson.jaxrs.json.JacksonJaxbJsonProvider;
 import hu.blackbelt.judo.meta.asm.runtime.AsmModel;
 import hu.blackbelt.judo.meta.asm.runtime.AsmUtils;
+import hu.blackbelt.judo.meta.esm.runtime.EsmModel;
 import hu.blackbelt.judo.meta.expression.runtime.ExpressionModel;
 import hu.blackbelt.judo.meta.liquibase.runtime.LiquibaseModel;
 import hu.blackbelt.judo.meta.measure.runtime.MeasureModel;
@@ -79,6 +80,7 @@ public class TatamiTransformationPipelineITest {
     public static final String JAXRS_APPLICATION_MANAGER_VERSION = "0.4.0";
     public static final String FEATURE_JUDO_TATAMI_META_ASM = "judo-tatami-meta-asm";
     public static final String FEATURE_JUDO_TATAMI_META_PSM = "judo-tatami-meta-psm";
+    public static final String FEATURE_JUDO_TATAMI_META_ESM = "judo-tatami-meta-esm";
     public static final String FEATURE_JUDO_TATAMI_META_JQL = "judo-tatami-meta-jql";
     public static final String FEATURE_JUDO_TATAMI_META_JQL_EXTRACT = "judo-tatami-meta-jql-extract";
     public static final String FEATURE_JUDO_TATAMI_META_EXPRESSION = "judo-tatami-meta-expression";
@@ -101,6 +103,9 @@ public class TatamiTransformationPipelineITest {
 
     @Inject
     protected BundleTrackerManager bundleTrackerManager;
+
+    @Inject
+    protected EsmModel esmModel;
 
     @Inject
     protected PsmModel psmModel;
@@ -171,7 +176,8 @@ public class TatamiTransformationPipelineITest {
 
                 features(apacheCxf(), FEATURE_SWAGGER_CORE, FEATURE_CXF_JACKSON, FEATURE_CXF_JAXRS),
 
-                features(blackbeltTatami(), FEATURE_JUDO_TATAMI_META_ASM, FEATURE_JUDO_TATAMI_META_PSM, FEATURE_JUDO_TATAMI_META_JQL, FEATURE_JUDO_TATAMI_META_JQL_EXTRACT, FEATURE_JUDO_TATAMI_META_EXPRESSION,
+                features(blackbeltTatami(), FEATURE_JUDO_TATAMI_META_ASM, FEATURE_JUDO_TATAMI_META_ESM, FEATURE_JUDO_TATAMI_META_PSM, FEATURE_JUDO_TATAMI_META_JQL,
+                        FEATURE_JUDO_TATAMI_META_JQL_EXTRACT, FEATURE_JUDO_TATAMI_META_EXPRESSION,
                         FEATURE_JUDO_TATAMI_META_MEASURE, FEATURE_JUDO_TATAMI_META_OPENAPI, FEATURE_JUDO_TATAMI_META_RDBMS, FEATURE_JUDO_TATAMI_META_LIQUIBASE, FEATURE_JUDO_TATAMI_CORE,
                         FEATURE_JUDO_TATAMI_PSM_2_ASM, FEATURE_JUDO_TATAMI_PSM_2_JQL, FEATURE_JUDO_TATAMI_PSM_2_MEASURE, FEATURE_JUDO_TATAMI_ASM_2_JAXRSAPI, FEATURE_JUDO_TATAMI_ASM_2_OPENAPI,
                         FEATURE_JUDO_TATAMI_ASM_2_RDBMS, FEATURE_JUDO_TATAMI_JQL_2_EXPRESSION, FEATURE_JUDO_TATAMI_RDBMS_2_LIQUIBASE),
@@ -195,13 +201,13 @@ public class TatamiTransformationPipelineITest {
                         .versionAsInProject().start(),
 
                 provision(
-                        testModelBundle()
+                        testEsmModelBundle()
                 )
         );
 
     }
 
-    public InputStream testModelBundle() throws FileNotFoundException {
+    public InputStream testPsmModelBundle() throws FileNotFoundException {
         return bundle()
                 .add( "model/northwind.judo-meta-psm",
                         new FileInputStream(new File(testTargetDir(getClass()).getAbsolutePath(), "northwind-judopsm.model")))
@@ -209,6 +215,17 @@ public class TatamiTransformationPipelineITest {
                 .set( Constants.BUNDLE_SYMBOLICNAME, "northwind-model" )
                 //set( Constants.IMPORT_PACKAGE, "meta/psm;version=\"" + getConfiguration(META_PSM_IMPORT_RANGE) +"\"")
                 .set( "Psm-Models", "file=model/northwind.judo-meta-psm;version=1.0.0;name=Northwind;checksum=notset;meta-version-range=\"[1.0.0,2)\"")
+                .build( withBnd());
+    }
+
+    public InputStream testEsmModelBundle() throws FileNotFoundException {
+        return bundle()
+                .add( "model/northwind.judo-meta-esm",
+                        new FileInputStream(new File(testTargetDir(getClass()).getAbsolutePath(), "northwind-esm.model")))
+                .set( Constants.BUNDLE_MANIFESTVERSION, "2")
+                .set( Constants.BUNDLE_SYMBOLICNAME, "northwind-model" )
+                //set( Constants.IMPORT_PACKAGE, "meta/psm;version=\"" + getConfiguration(META_PSM_IMPORT_RANGE) +"\"")
+                .set( "Esm-Models", "file=model/northwind.judo-meta-esm;version=1.0.0;name=Northwind;checksum=notset;meta-version-range=\"[1.0.0,2)\"")
                 .build( withBnd());
     }
 
@@ -221,7 +238,7 @@ public class TatamiTransformationPipelineITest {
         Collection<ServiceReference<TransformationTrace>> transformationTraces = bundleContext.getServiceReferences(TransformationTrace.class, null);
 
         assertThat(transformationTraces.stream().map(r -> bundleContext.getService(r).getTransformationTraceName()).collect(Collectors.toList()),
-                containsInAnyOrder("asm2openapi", "asm2rdbms", "psm2measure", "psm2jqlextract", "psm2asm", "jqlextract2expression"));
+                containsInAnyOrder("esm2psm", "asm2openapi", "asm2rdbms", "psm2measure", "psm2jqlextract", "psm2asm", "jqlextract2expression"));
 
 
         AsmUtils asmUtils = new AsmUtils(asmModel.getResourceSet());

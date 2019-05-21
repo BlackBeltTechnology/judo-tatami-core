@@ -96,6 +96,7 @@
                                     </framework>
                                     <features>
                                         <feature>judo-tatami-meta-asm</feature>
+                                        <feature>judo-tatami-meta-esm</feature>
                                         <feature>judo-tatami-meta-psm</feature>
                                         <feature>judo-tatami-meta-jql</feature>
                                         <feature>judo-tatami-meta-jql-extract</feature>

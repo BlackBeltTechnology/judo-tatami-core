@@ -358,6 +358,14 @@
         </dependency>
         -->
 
+
+        <dependency>
+            <groupId>hu.blackbelt.judo.tatami</groupId>
+            <artifactId>judo-tatami-esm2psm</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+
         <dependency>
             <groupId>hu.blackbelt.judo.tatami</groupId>
             <artifactId>judo-tatami-asm2openapi</artifactId>
