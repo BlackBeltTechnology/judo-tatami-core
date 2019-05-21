@@ -294,6 +294,11 @@
         </dependency>
         <dependency>
             <groupId>hu.blackbelt.judo.meta</groupId>
+            <artifactId>judo-meta-esm-runtime</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>hu.blackbelt.judo.meta</groupId>
             <artifactId>judo-meta-psm-runtime</artifactId>
             <scope>test</scope>
         </dependency>
@@ -441,6 +446,7 @@
             <plugin>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <configuration>
+                    <groups>hu.blackbelt.judo.tatami.itest.PSMTestSuite</groups>
                     <systemPropertyVariables>
                         <pax.exam.karaf.version>${karaf-version}</pax.exam.karaf.version>
                         <pax.exam.service.timeout>30000</pax.exam.service.timeout>
@@ -450,6 +456,25 @@
         </plugins>
     </build>
 
+    <profiles>
+        <profile>
+            <id>esm-itest</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <configuration>
+                            <groups>hu.blackbelt.judo.tatami.itest.ESMTestSuite</groups>
+                            <systemPropertyVariables>
+                                <pax.exam.karaf.version>${karaf-version}</pax.exam.karaf.version>
+                                <pax.exam.service.timeout>30000</pax.exam.service.timeout>
+                            </systemPropertyVariables>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
     <!--
     <properties>
         <pax-exam-version>5.0.0.M2-SNAPSHOT</pax-exam-version>

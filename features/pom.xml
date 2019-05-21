@@ -106,6 +106,7 @@
                                         <feature>judo-tatami-meta-rdbms</feature>
                                         <feature>judo-tatami-meta-liquibase</feature>
                                         <feature>judo-tatami-core</feature>
+                                        <feature>judo-tatami-esm2psm</feature>
                                         <feature>judo-tatami-psm2asm</feature>
                                         <feature>judo-tatami-psm2jql</feature>
                                         <feature>judo-tatami-psm2measure</feature>
