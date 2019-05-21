@@ -1,0 +1,4 @@
+@cached
+operation ESM!Attribute getEntityType() : ESM!EntityType {
+	return ESM!EntityType.all.selectOne(et | et.attributes.includes(self));
+}

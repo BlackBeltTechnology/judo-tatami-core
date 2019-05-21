@@ -1,0 +1,4 @@
+@cached
+operation ESM!EntityType getPSMEquivalent(): JUDOPSM!EntityType {
+	return self.equivalent("CreateEntityType");
+}

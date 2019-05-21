@@ -1,0 +1,15 @@
+
+rule AuthenticatedUser
+	transform s: ESM!AuthenticatedUser
+	to t: JUDOPSM!AuthenticatedUser {
+	  t.user = s.user.equivalent("CreateEntityType");
+}
+
+rule CreatePasswordAuthenticatedUser
+	transform s: ESM!PasswordAuthenticatedUser
+	to t: JUDOPSM!PasswordAuthenticatedUser
+	extends AuthenticatedUser {
+	  t.password = s.password.equivalent("CreateAttribute");
+	  t.login = s.login.equivalent("CreateAttribute");
+	  log.debug("Created PasswordAuthenticatedUser.");
+}

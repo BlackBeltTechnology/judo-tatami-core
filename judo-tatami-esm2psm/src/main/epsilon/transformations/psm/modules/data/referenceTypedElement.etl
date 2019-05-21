@@ -1,0 +1,38 @@
+import "../namespace.etl";
+
+@lazy
+@greedy
+rule CreateCardinalityOfReferenceTypedElement
+	transform s: ESM!ReferenceTypedElement
+	to t: JUDOPSM!Cardinality {
+	  t.upper = s.upper;
+	  t.lower = s.lower;
+}
+
+@abstract
+rule CreateReferenceTypedElement
+	transform s: ESM!ReferenceTypedElement
+	to t: JUDOPSM!ReferenceTypedElement
+	extends CreateNamedElement {
+	  t.target = s.target.getPSMEquivalent();
+	  t.cardinality = s.equivalent("CreateCardinalityOfReferenceTypedElement");
+}
+
+rule CreateContainment
+	transform s: ESM!OneWayEndpoint
+	to t: JUDOPSM!Containment
+	extends CreateReferenceTypedElement {
+	  s.getEntityType().equivalent("CreateEntityType").relations.add(t);
+	  s.getTransferRelation().equivalent("CreateTransferObjectRelation").binding = t;
+	  log.debug("Created Containment: " + t.name);
+}
+
+rule CreateEndpoint
+	transform s: ESM!TwoWayEndpoint
+	to t: JUDOPSM!Endpoint
+	extends CreateReferenceTypedElement {
+	  t.partner = s.partner.equivalent("CreateEndpoint");
+	  s.getEntityType().equivalent("CreateEntityType").relations.add(t);
+	  s.getTransferRelation().equivalent("CreateTransferObjectRelation").binding = t;
+	  log.debug("Created Endpoint: " + t.name);
+}

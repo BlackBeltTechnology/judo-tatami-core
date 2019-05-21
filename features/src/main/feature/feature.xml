@@ -10,7 +10,13 @@
         <bundle>mvn:hu.blackbelt.judo.meta/judo-meta-asm/${judo-meta-asm-version}</bundle>
     </feature>
 
-    <feature name="judo-tatami-meta-psm" version="${project.version}" description="JUDO Tatami, Platform Specific Model " install="false">
+    <feature name="judo-tatami-meta-esm" version="${project.version}" description="JUDO Tatami, Editor Model " install="false">
+        <feature dependency="true">epsilon-runtime</feature>
+        <feature dependency="true">osgi-utils</feature>
+        <bundle>mvn:hu.blackbelt.judo.meta/judo-meta-esm-runtime/${judo-meta-esm-version}</bundle>
+    </feature>
+
+   <feature name="judo-tatami-meta-psm" version="${project.version}" description="JUDO Tatami, Platform Specific Model " install="false">
         <feature dependency="true">epsilon-runtime</feature>
         <feature dependency="true">osgi-utils</feature>
         <bundle>mvn:hu.blackbelt.judo.meta/judo-meta-psm-runtime/${judo-meta-psm-version}</bundle>
@@ -83,7 +89,15 @@
         <bundle>mvn:hu.blackbelt.judo.tatami/judo-tatami-core/${project.version}</bundle>
     </feature>
 
-    <feature name="judo-tatami-psm2asm" version="${project.version}" description="JUDO Tatami, PSM to ADM Transformation" install="false">
+    <feature name="judo-tatami-esm2psm" version="${project.version}" description="JUDO Tatami, ESM to PSM Transformation" install="false">
+        <feature>judo-tatami-meta-esm</feature>
+        <feature>judo-tatami-meta-psm</feature>
+        <feature>judo-tatami-core</feature>
+        <bundle>mvn:hu.blackbelt.judo.tatami/judo-tatami-esm2psm/${project.version}</bundle>
+    </feature>
+
+
+    <feature name="judo-tatami-psm2asm" version="${project.version}" description="JUDO Tatami, PSM to ASM Transformation" install="false">
         <feature>judo-tatami-meta-asm</feature>
         <feature>judo-tatami-meta-psm</feature>
         <feature>judo-tatami-core</feature>

@@ -1,0 +1,40 @@
+import "../data/referenceTypedElement.etl";
+import "expressionType.etl";
+import "../../../../operations/esm/derived/expressionType.eol";
+
+@abstract
+rule CreateReferenceAccessor
+	transform s : ESM!ReferenceAccessor
+	to t : JUDOPSM!ReferenceAccessor
+	extends CreateReferenceTypedElement {
+	  t.getterExpression = s.getterExpression.getPSMEquivalent();
+	  if (s.setterExpression.isDefined()) {
+	  	t.setterExpression = s.setterExpression.getPSMEquivalent();
+	  }
+}
+
+//TODO: cleanup
+rule CreateStaticNavigation
+	transform s : ESM!StaticNavigation
+	to t : JUDOPSM!StaticNavigation
+	extends CreateReferenceAccessor {
+	  var namespace : ESM!Namespace = ESM!Namespace.all.selectOne(ns | ns.elements.includes(s));
+	  namespace.equivalent("CreatePackage").elements.add(t);
+	  var transferRelation : ESM!TransferRelation = s.getTransferRelation();
+	  if (transferRelation.isDefined()) {
+	  	transferRelation.equivalent("CreateTransferObjectRelation").binding = t;
+	  }
+}
+//TODO: cleanup
+rule CreateNavigationProperty
+	transform s : ESM!NavigationProperty
+	to t : JUDOPSM!NavigationProperty
+	extends CreateReferenceAccessor {
+	  var entity : ESM!EntityType = s.getEntityType();
+	  entity.equivalent("CreateEntityType").navigationProperties.add(t);
+	  log.debug("Created NavigationProperty: " + t.name);
+	  var transferRelation : ESM!TransferRelation = s.getTransferRelation();
+	  if (transferRelation.isDefined()) {
+	  	transferRelation.equivalent("CreateTransferObjectRelation").binding = t;
+	  }
+}

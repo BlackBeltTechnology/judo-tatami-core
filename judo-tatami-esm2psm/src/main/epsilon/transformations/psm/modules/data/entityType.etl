@@ -1,0 +1,42 @@
+import "../../../../operations/esm/data/_importData.eol";
+import "../namespace.etl";
+
+rule CreateEntityType
+  transform s : ESM!EntityType
+  to t : JUDOPSM!EntityType
+  extends CreateNamespaceElement {
+    t.`abstract` = s.`abstract`;
+    //[postponed] relationCountConstraints: RelationCountConstraint
+    //TODO: backw?
+    for (super in s.superEntityTypes) {
+		t.superEntityTypes.add(super.getPSMEquivalent());    
+    }
+    log.debug("Created EntityType: " + t.name);
+}
+
+@abstract
+rule CreatePrimitiveTypedElement
+	transform s: ESM!AttributeFeature
+	to t: JUDOPSM!PrimitiveTypedElement
+	extends CreateNamedElement {
+	  t.required = s.required;
+	  t.dataType = s.dataType.getPSMEquivalent();
+	  
+	  log.debug("Created PrimitiveTypedElement: " + t.name);
+}
+
+rule CreateAttribute
+	transform s: ESM!Attribute
+	to t: JUDOPSM!Attribute
+	extends CreatePrimitiveTypedElement {
+	  t.identifier = s.identifier;
+	  
+	  var entityType : ESM!EntityType = s.getEntityType();
+	  entityType.equivalent("CreateEntityType").attributes.add(t);
+	  /* TODO: TransferAttribute... option_b */
+	  var transferAttribute : ESM!TransferAttribute = ESM!TransferAttribute.all.selectOne(ta | ta.primitiveTypedElement = s);
+	  transferAttribute.equivalent("CreateTransferAttribute").binding = t; 
+	  /**/
+	  
+	  log.debug("Created Attribute: " + t.name);
+}

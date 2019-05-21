@@ -1,0 +1,140 @@
+import "../namespace.etl";
+import "../../../../operations/esm/type/_importType.eol";
+import "../../../../operations/esm/service/transferObjectType.eol";
+
+@lazy
+@greedy
+rule CreateCardinalityOfTransferObjectRelation
+	transform s: ESM!TransferRelation
+	to t: JUDOPSM!Cardinality {
+	  t.upper = s.upper;
+  	  t.lower = s.lower;
+}
+
+@lazy
+@greedy
+rule CreateCardinalityOfParameter
+	transform s: ESM!Parameter
+	to t: JUDOPSM!Cardinality {
+	  t.upper = s.upper;
+  	  t.lower = s.lower;
+}
+
+@abstract
+rule CreateTransferObjectType
+	transform s: ESM!TransferObjectType
+	to t: JUDOPSM!TransferObjectType 
+	extends CreateNamespaceElement {
+	  t.representation = s.representation.equivalent("CreateTransferAttribute");
+	  //TODO: mixins (check sublime: esm2psm notes)
+	  //log.debug("MIXIN: " + s.mixins);
+}
+
+rule CreateUnmappedTransferObjectType
+	transform s: ESM!TransferObjectType 
+	to t: JUDOPSM!UnmappedTransferObjectType
+	extends CreateTransferObjectType {
+	  guard: not s.isMapped()
+	  log.debug("Created UnmappedTransferObjectType.");
+}
+
+rule CreateMappedTransferObjectType
+	transform s: ESM!TransferObjectType
+	to t: JUDOPSM!MappedTransferObjectType
+	extends CreateTransferObjectType {
+	  guard: s.isMapped()
+	  t.entityReferencePresence = JUDOPSM!EntityReferenceType#OPTIONAL; //TODO: later: fix entityReferencePresence //= s.entityReferencePresence.getPSMEquivalent(); 
+	  t.entityType = s.entityType.equivalent("CreateEntityType");
+	  
+	  log.debug("Created MappedTransferObjectType.");
+}
+
+rule CreateTransferAttribute
+	transform s: ESM!TransferAttribute
+	to t: JUDOPSM!TransferAttribute 
+	extends CreateNamedElement {
+	  t.required = s.required;
+	  t.dataType = s.dataType.getPSMEquivalent();
+	  t.defaultValue = s.defaultValue.equivalent("CreatePrimitiveTypedElement"); //TODO: ask if needed
+	  /* TODO: TransferAttribute... option_a */
+	  if ( s.primitiveTypedElement.isTypeOf(ESM!DataProperty) ) {
+	  	t.binding = s.primitiveTypedElement.equivalent("CreateDataProperty");
+	  }	else {
+	  	t.binding = s.primitiveTypedElement.equivalent("CreateAttribute");
+	  }
+	  /**/
+	  var esmTOT : ESM!TransferObjectType = ESM!TransferObjectType.all.selectOne(tot | tot.attributes.includes(s));	  
+	  esmTOT.getPSMEquivalent().attributes.add(t);
+	  
+	  log.debug("Created TransferAttribute: " + t.name);
+}
+
+rule CreateTransferObjectRelation
+	transform s: ESM!TransferRelation
+	to t: JUDOPSM!TransferObjectRelation
+	extends CreateNamedElement {
+	  /* done: backw; TODO: remove after endcheck
+	  if (s.referenceTypedElement.isKindOf(ESM!OneWayEndpoint)) {
+	    t.binding = s.referenceTypedElement.equivalent("CreateContainment");
+	  } else if (s.referenceTypedElement.isKindOf(ESM!TwoWayEndpoint)) {
+	    t.binding = s.referenceTypedElement.equivalent("CreateEndpoint");
+	  }*/
+	  
+	  t.cardinality = s.equivalent("CreateCardinalityOfTransferObjectRelation");
+	  //t.defaultValue = s.defaultValue.equivalent("CreateReferencedTypedElement"); //TODO: unused?
+	  //t.range = s.range.equivalent("CreateReferencedTypedElement"); //TODO: unused?
+	  t.embedded = s.embedded;
+	  
+	  var esmTOT : ESM!TransferObjectType = ESM!TransferObjectType.all.selectOne(tot | tot.relations.includes(s));
+	  esmTOT.getPSMEquivalent().relations.add(t);
+	  
+	  t.target = s.target.getPSMEquivalent();
+	  
+	  log.debug("Created TransferObjectRelation: " + t.name);
+}
+
+
+@abstract
+rule CreateOperation
+	transform s: ESM!Operation
+	to t: JUDOPSM!Operation {
+	  t.body = s.body;
+	  t.output = s.output.equivalent("CreateParameter");
+	  t.input = s.input.equivalent("CreateParameter");
+	  t.stateful = true;
+	  t.undefined = s.undefined; 
+}
+
+//TODO: ask if used ? clean : evac
+rule CreateBoundOperation
+	transform s: ESM!BoundOperation
+	to t: JUDOPSM!BoundOperation
+	extends CreateOperation, CreateNamedElement {
+	  var esmTOT : ESM!TransferObjectType = ESM!TransferObjectType.all.selectOne(tot | tot.operations.includes(s));
+	  esmTOT.getPSMEquivalent().operations.add(t);
+	  log.debug("Created BoundOperation: " + t.name);
+}
+
+//TODO: ask if used ? clean : evac
+rule CreateUnboundOperation
+	transform s: ESM!UnboundOperation
+	to t: JUDOPSM!UnboundOperation
+	extends CreateOperation, CreateNamespaceElement {
+	  log.debug("Created UnboundOperation: " + t.name);
+}
+
+//TODO: ask if used ? clean : evac
+rule CreateParameter
+	transform s : ESM!Parameter
+	to t : JUDOPSM!Parameter
+	extends CreateNamedElement {
+	  if ( s.isTypeOf(ESM!BoundOperation) ) {
+	  	s.getOperation().equivalent("CreateBoundOperation").faults.add(s);
+	  } else if ( s.isTypeOf(ESM!UnboundOperation) )  {
+	  	s.getOperation().equivalent("CreateUnboundOperation").faults.add(s);
+	  }
+	  
+	  t.cardinality = s.equivalent("CreateCardinalityOfParameter");
+	  t.type = s.type.getPSMEquivalent();
+	  log.debug("Created Parameter: " + t.name);
+}

@@ -3,6 +3,7 @@ package hu.blackbelt.judo.tatami.itest;
 import com.fasterxml.jackson.jaxrs.json.JacksonJaxbJsonProvider;
 import hu.blackbelt.judo.meta.asm.runtime.AsmModel;
 import hu.blackbelt.judo.meta.asm.runtime.AsmUtils;
+import hu.blackbelt.judo.meta.esm.runtime.EsmModel;
 import hu.blackbelt.judo.meta.expression.runtime.ExpressionModel;
 import hu.blackbelt.judo.meta.liquibase.runtime.LiquibaseModel;
 import hu.blackbelt.judo.meta.measure.runtime.MeasureModel;
@@ -17,6 +18,7 @@ import hu.blackbelt.osgi.utils.osgi.api.BundleTrackerManager;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.ops4j.pax.exam.Configuration;
 import org.ops4j.pax.exam.Option;
@@ -33,10 +35,7 @@ import sdk.northwind.services.OrderInfo;
 import javax.inject.Inject;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.WebTarget;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.InputStream;
+import java.io.*;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -44,6 +43,15 @@ import java.util.stream.Collectors;
 
 import static hu.blackbelt.judo.framework.KarafTestUtil.karafConfig;
 import static hu.blackbelt.judo.framework.KarafTestUtil.karafStandardRepo;
+import static hu.blackbelt.judo.meta.asm.runtime.AsmModelLoader.getAsmDefaultSaveOptions;
+import static hu.blackbelt.judo.meta.esm.runtime.EsmModelLoader.getEsmModelDefaultSaveOptions;
+import static hu.blackbelt.judo.meta.expression.runtime.ExpressionModelLoader.getExpressionDefaultSaveOptions;
+import static hu.blackbelt.judo.meta.liquibase.runtime.LiquibaseModelLoader.getLiquibaseDefaultSaveOptions;
+import static hu.blackbelt.judo.meta.measure.runtime.MeasureModelLoader.getMeasureModelDefaultSaveOptions;
+import static hu.blackbelt.judo.meta.openapi.runtime.OpenAPIModelLoader.getOpenAPIModelDefaultSaveOptions;
+import static hu.blackbelt.judo.meta.psm.jql.extract.runtime.PsmJqlExtractModelLoader.getPsmJqlExtractDefaultSaveOptions;
+import static hu.blackbelt.judo.meta.psm.runtime.PsmModelLoader.getPsmDefaultSaveOptions;
+import static hu.blackbelt.judo.meta.rdbms.runtime.RdbmsModelLoader.getRdbmsModelDefaultSaveOptions;
 import static hu.blackbelt.judo.tatami.itest.TatamiTestUtil.*;
 import static hu.blackbelt.judo.tatami.itest.TestUtility.*;
 import static junit.framework.TestCase.assertNotNull;
@@ -60,9 +68,10 @@ import static org.ops4j.pax.tinybundles.core.TinyBundles.withBnd;
 import static org.osgi.service.log.LogService.LOG_ERROR;
 import static org.osgi.service.log.LogService.LOG_INFO;
 
+@Category(ESMTestSuite.class)
 @RunWith(PaxExam.class)
 @ExamReactorStrategy(PerClass.class)
-public class TatamiTransformationPipelineITest {
+public class TatamiESMTransformationPipelineITest {
 
     public static final String FRAMEWORK_GROUPID = "hu.blackbelt.judo.framework";
 
@@ -79,6 +88,7 @@ public class TatamiTransformationPipelineITest {
     public static final String JAXRS_APPLICATION_MANAGER_VERSION = "0.4.0";
     public static final String FEATURE_JUDO_TATAMI_META_ASM = "judo-tatami-meta-asm";
     public static final String FEATURE_JUDO_TATAMI_META_PSM = "judo-tatami-meta-psm";
+    public static final String FEATURE_JUDO_TATAMI_META_ESM = "judo-tatami-meta-esm";
     public static final String FEATURE_JUDO_TATAMI_META_JQL = "judo-tatami-meta-jql";
     public static final String FEATURE_JUDO_TATAMI_META_JQL_EXTRACT = "judo-tatami-meta-jql-extract";
     public static final String FEATURE_JUDO_TATAMI_META_EXPRESSION = "judo-tatami-meta-expression";
@@ -87,6 +97,7 @@ public class TatamiTransformationPipelineITest {
     public static final String FEATURE_JUDO_TATAMI_META_RDBMS = "judo-tatami-meta-rdbms";
     public static final String FEATURE_JUDO_TATAMI_META_OPENAPI = "judo-tatami-meta-openapi";
     public static final String FEATURE_JUDO_TATAMI_META_MEASURE = "judo-tatami-meta-measure";
+    public static final String FEATURE_JUDO_TATAMI_ESM_2_PSM = "judo-tatami-esm2psm";
     public static final String FEATURE_JUDO_TATAMI_PSM_2_ASM = "judo-tatami-psm2asm";
     public static final String FEATURE_JUDO_TATAMI_PSM_2_JQL = "judo-tatami-psm2jql";
     public static final String FEATURE_JUDO_TATAMI_PSM_2_MEASURE = "judo-tatami-psm2measure";
@@ -101,6 +112,9 @@ public class TatamiTransformationPipelineITest {
 
     @Inject
     protected BundleTrackerManager bundleTrackerManager;
+
+    @Inject
+    protected EsmModel esmModel;
 
     @Inject
     protected PsmModel psmModel;
@@ -171,9 +185,10 @@ public class TatamiTransformationPipelineITest {
 
                 features(apacheCxf(), FEATURE_SWAGGER_CORE, FEATURE_CXF_JACKSON, FEATURE_CXF_JAXRS),
 
-                features(blackbeltTatami(), FEATURE_JUDO_TATAMI_META_ASM, FEATURE_JUDO_TATAMI_META_PSM, FEATURE_JUDO_TATAMI_META_JQL, FEATURE_JUDO_TATAMI_META_JQL_EXTRACT, FEATURE_JUDO_TATAMI_META_EXPRESSION,
+                features(blackbeltTatami(), FEATURE_JUDO_TATAMI_META_ASM, FEATURE_JUDO_TATAMI_META_ESM, FEATURE_JUDO_TATAMI_META_PSM, FEATURE_JUDO_TATAMI_META_JQL,
+                        FEATURE_JUDO_TATAMI_META_JQL_EXTRACT, FEATURE_JUDO_TATAMI_META_EXPRESSION,
                         FEATURE_JUDO_TATAMI_META_MEASURE, FEATURE_JUDO_TATAMI_META_OPENAPI, FEATURE_JUDO_TATAMI_META_RDBMS, FEATURE_JUDO_TATAMI_META_LIQUIBASE, FEATURE_JUDO_TATAMI_CORE,
-                        FEATURE_JUDO_TATAMI_PSM_2_ASM, FEATURE_JUDO_TATAMI_PSM_2_JQL, FEATURE_JUDO_TATAMI_PSM_2_MEASURE, FEATURE_JUDO_TATAMI_ASM_2_JAXRSAPI, FEATURE_JUDO_TATAMI_ASM_2_OPENAPI,
+                        FEATURE_JUDO_TATAMI_ESM_2_PSM, FEATURE_JUDO_TATAMI_PSM_2_ASM, FEATURE_JUDO_TATAMI_PSM_2_JQL, FEATURE_JUDO_TATAMI_PSM_2_MEASURE, FEATURE_JUDO_TATAMI_ASM_2_JAXRSAPI, FEATURE_JUDO_TATAMI_ASM_2_OPENAPI,
                         FEATURE_JUDO_TATAMI_ASM_2_RDBMS, FEATURE_JUDO_TATAMI_JQL_2_EXPRESSION, FEATURE_JUDO_TATAMI_RDBMS_2_LIQUIBASE),
 
 
@@ -195,13 +210,13 @@ public class TatamiTransformationPipelineITest {
                         .versionAsInProject().start(),
 
                 provision(
-                        testModelBundle()
+                        testEsmModelBundle()
                 )
         );
 
     }
 
-    public InputStream testModelBundle() throws FileNotFoundException {
+    public InputStream testPsmModelBundle() throws FileNotFoundException {
         return bundle()
                 .add( "model/northwind.judo-meta-psm",
                         new FileInputStream(new File(testTargetDir(getClass()).getAbsolutePath(), "northwind-judopsm.model")))
@@ -212,7 +227,51 @@ public class TatamiTransformationPipelineITest {
                 .build( withBnd());
     }
 
+    public InputStream testEsmModelBundle() throws FileNotFoundException {
+        return bundle()
+                .add( "model/northwind.judo-meta-esm",
+                        new FileInputStream(new File(testTargetDir(getClass()).getAbsolutePath(), "northwind-esm.model")))
+                .set( Constants.BUNDLE_MANIFESTVERSION, "2")
+                .set( Constants.BUNDLE_SYMBOLICNAME, "northwind-esm" )
+                //set( Constants.IMPORT_PACKAGE, "meta/psm;version=\"" + getConfiguration(META_PSM_IMPORT_RANGE) +"\"")
+                .set( "Esm-Models", "file=model/northwind.judo-meta-esm;version=1.0.0;name=Northwind;checksum=notset;meta-version-range=\"[1.0.0,2)\"")
+                .build( withBnd());
+    }
+
+
     @Test
+    public void saveModels() throws InvalidSyntaxException, IOException {
+        esmModel.getResourceSet().getResource(esmModel.getUri(), false)
+                .save(new FileOutputStream(new File(testTargetDir(getClass()).getAbsolutePath(), "itest-northwind-esm.model")), getEsmModelDefaultSaveOptions());
+
+        asmModel.getResourceSet().getResource(asmModel.getUri(), false)
+                .save(new FileOutputStream(new File("itest-northwind-asm.model")), getAsmDefaultSaveOptions());
+
+        psmModel.getResourceSet().getResource(psmModel.getUri(), false)
+                .save(new FileOutputStream(new File("itest-northwind-psm.model")), getPsmDefaultSaveOptions());
+
+        expressionModel.getResourceSet().getResource(expressionModel.getUri(), false)
+                .save(new FileOutputStream(new File("itest-northwind-expression.model")), getExpressionDefaultSaveOptions());
+
+        psmJqlExtractModel.getResourceSet().getResource(psmJqlExtractModel.getUri(), false)
+                .save(new FileOutputStream(new File("itest-northwind-jqlextract.model")), getPsmJqlExtractDefaultSaveOptions());
+
+        rdbmsModel.getResourceSet().getResource(rdbmsModel.getUri(), false)
+                .save(new FileOutputStream(new File("itest-northwind-rdbms.model")), getRdbmsModelDefaultSaveOptions());
+
+        measureModel.getResourceSet().getResource(measureModel.getUri(), false)
+                .save(new FileOutputStream(new File("itest-northwind-measure.model")), getMeasureModelDefaultSaveOptions());
+
+        liquibaseModel.getResourceSet().getResource(liquibaseModel.getUri(), false)
+                .save(new FileOutputStream(new File("itest-northwind-liquibase.model")), getLiquibaseDefaultSaveOptions());
+
+        openAPIModel.getResourceSet().getResource(openAPIModel.getUri(), false)
+                .save(new FileOutputStream(new File("itest-northwind-openapi.model")), getOpenAPIModelDefaultSaveOptions());
+
+    }
+
+
+        @Test
     public void testTrace() throws InvalidSyntaxException {
         log.log(LOG_INFO, "==============================================");
         log.log(LOG_INFO, "== RUNNING TEST TRACE METHOD");
@@ -221,7 +280,7 @@ public class TatamiTransformationPipelineITest {
         Collection<ServiceReference<TransformationTrace>> transformationTraces = bundleContext.getServiceReferences(TransformationTrace.class, null);
 
         assertThat(transformationTraces.stream().map(r -> bundleContext.getService(r).getTransformationTraceName()).collect(Collectors.toList()),
-                containsInAnyOrder("asm2openapi", "asm2rdbms", "psm2measure", "psm2jqlextract", "psm2asm", "jqlextract2expression"));
+                containsInAnyOrder("esm2psm", "asm2openapi", "asm2rdbms", "psm2measure", "psm2jqlextract", "psm2asm", "jqlextract2expression"));
 
 
         AsmUtils asmUtils = new AsmUtils(asmModel.getResourceSet());
