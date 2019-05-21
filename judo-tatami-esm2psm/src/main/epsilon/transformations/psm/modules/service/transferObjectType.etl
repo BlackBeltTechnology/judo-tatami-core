@@ -73,17 +73,16 @@ rule CreateTransferObjectRelation
 	transform s: ESM!TransferRelation
 	to t: JUDOPSM!TransferObjectRelation
 	extends CreateNamedElement {
-	  /* done: backw
+	  /* done: backw; TODO: remove after endcheck
 	  if (s.referenceTypedElement.isKindOf(ESM!OneWayEndpoint)) {
 	    t.binding = s.referenceTypedElement.equivalent("CreateContainment");
 	  } else if (s.referenceTypedElement.isKindOf(ESM!TwoWayEndpoint)) {
 	    t.binding = s.referenceTypedElement.equivalent("CreateEndpoint");
-	  }
-	  */
+	  }*/
 	  
 	  t.cardinality = s.equivalent("CreateCardinalityOfTransferObjectRelation");
-	  t.defaultValue = s.defaultValue.equivalent("CreateReferencedTypedElement");
-	  t.range = s.range.equivalent("CreateReferencedTypedElement");
+	  //t.defaultValue = s.defaultValue.equivalent("CreateReferencedTypedElement"); //TODO: unused?
+	  //t.range = s.range.equivalent("CreateReferencedTypedElement"); //TODO: unused?
 	  t.embedded = s.embedded;
 	  
 	  var esmTOT : ESM!TransferObjectType = ESM!TransferObjectType.all.selectOne(tot | tot.relations.includes(s));
@@ -106,21 +105,25 @@ rule CreateOperation
 	  t.undefined = s.undefined; 
 }
 
-
+//TODO: ask if used ? clean : evac
 rule CreateBoundOperation
 	transform s: ESM!BoundOperation
 	to t: JUDOPSM!BoundOperation
 	extends CreateOperation, CreateNamedElement {
-		var esmTOT : ESM!TransferObjectType = ESM!TransferObjectType.all.selectOne(tot | tot.operations.includes(s));
-		esmTOT.getPSMEquivalent().operations.add(t);
+	  var esmTOT : ESM!TransferObjectType = ESM!TransferObjectType.all.selectOne(tot | tot.operations.includes(s));
+	  esmTOT.getPSMEquivalent().operations.add(t);
+	  log.debug("Created BoundOperation: " + t.name);
 }
 
+//TODO: ask if used ? clean : evac
 rule CreateUnboundOperation
 	transform s: ESM!UnboundOperation
 	to t: JUDOPSM!UnboundOperation
 	extends CreateOperation, CreateNamespaceElement {
+	  log.debug("Created UnboundOperation: " + t.name);
 }
 
+//TODO: ask if used ? clean : evac
 rule CreateParameter
 	transform s : ESM!Parameter
 	to t : JUDOPSM!Parameter
@@ -133,4 +136,5 @@ rule CreateParameter
 	  
 	  t.cardinality = s.equivalent("CreateCardinalityOfParameter");
 	  t.type = s.type.getPSMEquivalent();
+	  log.debug("Created Parameter: " + t.name);
 }

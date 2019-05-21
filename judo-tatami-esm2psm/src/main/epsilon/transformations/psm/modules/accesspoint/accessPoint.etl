@@ -33,12 +33,11 @@ rule CreateExposedService
 	  log.debug("Created ExposedService.");
 }
 
-//TODO: rule CreateExposed`operation`?
-/*
-rule CreateExposed`operation`
+/* TODO: rule CreateExposedOperation?
+rule CreateExposedOperation
 	transform s: ESM!Bound`operation`
 	to t: JUDOPSM!Exposed`operation` {
 	  t.`operation` = s.equivalent("CreateBoundOperation");
-	  log.debug("Created Exposed`operation`.");
+	  log.debug("Created ExposedOperation.");
 }
 */

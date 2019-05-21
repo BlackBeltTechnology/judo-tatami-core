@@ -22,6 +22,14 @@ operation ESM!NavigationProperty getEntityType(): ESM!EntityType {
 	return ESM!EntityType.all.selectOne(et | et.relations.includes(self));
 }
 
+operation ESM!StaticNavigation getTransferRelation(): ESM!TransferRelation {
+	return ESM!TransferRelation.all.selectOne(tr | tr.referenceTypedElement = self);
+}
+
+operation ESM!NavigationProperty getTransferRelation(): ESM!TransferRelation {
+	return ESM!TransferRelation.all.selectOne(tr | tr.referenceTypedElement = self);
+}
+
 /* TODO: 
 @cached
 operation ESM!ExpressionDialect getPSMEquivalent(): JUDOPSM!ExpressionDialect {

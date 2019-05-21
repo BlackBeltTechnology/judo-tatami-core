@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="ASCII"?>
-<namespace:Model xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:accesspoint="http://blackbelt.hu/judo/meta/esm/accesspoint" xmlns:data="http://blackbelt.hu/judo/meta/esm/data" xmlns:facade="http://blackbelt.hu/judo/meta/esm/facade" xmlns:measure="http://blackbelt.hu/judo/meta/esm/measure" xmlns:namespace="http://blackbelt.hu/judo/meta/esm/namespace" xmlns:type="http://blackbelt.hu/judo/meta/esm/type" xmi:id="_pueeYD_3Eemwg_GeS98ASA" packageDefaultTransferObjects="//@elements.4/@elements.0" name="testmodel" packageGenerated="//@elements.4">
-  <elements xsi:type="namespace:Package" xmi:id="_g0GS4B1REemwg4NgOjaKeA" packageDefaultTransferObjects="//@elements.4/@elements.0/@elements.0" name="measures">
+<namespace:Model xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:accesspoint="http://blackbelt.hu/judo/meta/esm/accesspoint" xmlns:data="http://blackbelt.hu/judo/meta/esm/data" xmlns:facade="http://blackbelt.hu/judo/meta/esm/facade" xmlns:measure="http://blackbelt.hu/judo/meta/esm/measure" xmlns:namespace="http://blackbelt.hu/judo/meta/esm/namespace" xmlns:type="http://blackbelt.hu/judo/meta/esm/type" xmi:id="_pueeYD_3Eemwg_GeS98ASA" name="testmodel">
+  <elements xsi:type="namespace:Package" xmi:id="_g0GS4B1REemwg4NgOjaKeA" name="measures">
     <elements xsi:type="measure:Measure" xmi:id="_oNT8IB1REemwg4NgOjaKeA" name="Mass">
       <units xmi:id="_2IFN4B1REemwg4NgOjaKeA" name="milligram" rateDividend="1.0E-6" symbol="mg"/>
       <units xmi:id="__1ZnwB1REemwg4NgOjaKeA" name="gram" rateDividend="0.001" symbol="g"/>
@@ -32,7 +32,6 @@
       <units xmi:id="_yH5cgB1-Eemwg4NgOjaKeA" name="inch" rateDividend="0.0254" symbol="&quot;"/>
       <units xmi:id="_9Dr0oB1-Eemwg4NgOjaKeA" name="foot" rateDividend="0.3048" symbol="ft"/>
       <units xmi:id="__nz-QB1-Eemwg4NgOjaKeA" name="mile" rateDividend="1609.344" symbol="mi"/>
-      <units xmi:id="_zrGu4EBgEem_LZQW6prRcw" name="unitXXXX" symbol="symbol"/>
     </elements>
     <elements xsi:type="measure:Measure" xmi:id="_x2bLcB1REemwg4NgOjaKeA" name="Temperature">
       <units xmi:id="_-9i9QB1SEemwg4NgOjaKeA" name="celsius" symbol="&#xb0;C"/>
@@ -178,7 +177,7 @@
       <terms xmi:id="_1cs3YB86EemH1tWVVVMmqg" exponent="-1" unit="_eD5KMB1TEemwg4NgOjaKeA"/>
     </elements>
   </elements>
-  <elements xsi:type="namespace:Package" xmi:id="_2QomgEA7Eem_LZQW6prRcw" packageDefaultTransferObjects="//@elements.4/@elements.0/@elements.1" name="types">
+  <elements xsi:type="namespace:Package" xmi:id="_2QomgEA7Eem_LZQW6prRcw" name="types">
     <elements xsi:type="type:StringType" xmi:id="_Nppx8IUcEeipmMyz9cMCRA" name="String" maxLength="255"/>
     <elements xsi:type="type:NumericType" xmi:id="_SZ-GUIUcEeipmMyz9cMCRA" name="Long" scale="18"/>
     <elements xsi:type="type:NumericType" xmi:id="_TXtg8IUcEeipmMyz9cMCRA" name="Integer" scale="9"/>
@@ -203,7 +202,7 @@
       <members xmi:id="_j3WXEI57EeioH6CUzUrG0Q" name="MR" ordinal="2"/>
       <members xmi:id="_kgvSUI57EeioH6CUzUrG0Q" name="DR" ordinal="3"/>
     </elements>
-    <elements xsi:type="namespace:Package" xmi:id="_zeDeUB1WEemwg4NgOjaKeA" packageDefaultTransferObjects="//@elements.4/@elements.0/@elements.1/@elements.0" name="measured">
+    <elements xsi:type="namespace:Package" xmi:id="_zeDeUB1WEemwg4NgOjaKeA" name="measured">
       <elements xsi:type="measure:MeasuredType" xmi:id="_h2iYkB1XEemwg4NgOjaKeA" name="MassStoredInKilograms" precision="4" scale="15" storeUnit="_C8XYsB1SEemwg4NgOjaKeA"/>
       <elements xsi:type="measure:MeasuredType" xmi:id="_PGtxgB1ZEemwg4NgOjaKeA" name="TimeStoredInSeconds" precision="4" scale="15" storeUnit="_SlUs8B2GEemwg4NgOjaKeA"/>
       <elements xsi:type="measure:MeasuredType" xmi:id="_WrULYB1ZEemwg4NgOjaKeA" name="TimeStoredInMonths" scale="9" storeUnit="_yX3RgB2GEemwg4NgOjaKeA"/>
@@ -212,54 +211,50 @@
       <elements xsi:type="measure:MeasuredType" xmi:id="_bfc2gB1eEemwg4NgOjaKeA" name="VelocityStoredInKmPerHour" precision="4" scale="15" storeUnit="_zR6KoB1UEemwg4NgOjaKeA"/>
     </elements>
   </elements>
-  <elements xsi:type="namespace:Package" xmi:id="_l025cNODEeim9MGHLpE1bQ" packageDefaultTransferObjects="//@elements.4/@elements.0/@elements.2" name="entities">
-    <elements xsi:type="data:EntityType" xmi:id="_43ZPcINkEeiLE-B2bbL0fg" name="Category" defaultTransferObjectType="//@elements.4/@elements.0/@elements.2/@elements.0">
+  <elements xsi:type="namespace:Package" xmi:id="_l025cNODEeim9MGHLpE1bQ" name="entities">
+    <elements xsi:type="data:EntityType" xmi:id="_43ZPcINkEeiLE-B2bbL0fg" name="Category">
       <attributes xsi:type="data:Attribute" xmi:id="_v7k5EINmEeiLE-B2bbL0fg" name="categoryName" dataType="_Nppx8IUcEeipmMyz9cMCRA" required="true"/>
       <attributes xsi:type="data:Attribute" xmi:id="_Vsjt0INuEeiLE-B2bbL0fg" name="description" dataType="_tXQUoIOGEeiLE-B2bbL0fg"/>
       <attributes xsi:type="data:Attribute" xmi:id="_cwpboINuEeiLE-B2bbL0fg" name="picture" dataType="_j-zrcINuEeiLE-B2bbL0fg"/>
-      <relations xsi:type="data:TwoWayEndpoint" upper="-1" name="products" target="//@elements.2/@elements.1" partner="//@elements.2/@elements.1/@relations.0"/>
+      <attributes xsi:type="data:Attribute" xmi:id="_PDqroHf9EemmIKzNkXirjQ" name="attribute1" dataType="_Nppx8IUcEeipmMyz9cMCRA"/>
+      <relations xsi:type="data:TwoWayEndpoint" xmi:id="_892OYLwCEeiOuYiCo6IbXQ" upper="-1" name="products" target="_6XH80INkEeiLE-B2bbL0fg" partner="_CkXK8LwDEeiOuYiCo6IbXQ"/>
       <relations xsi:type="data:TwoWayEndpoint" xmi:id="_NACAMOdTEeiJv53TEP0vvQ" lower="1" name="owner" target="_ONN9gINlEeiLE-B2bbL0fg" partner="_Y1GwwOdTEeiJv53TEP0vvQ"/>
-      <relations xsi:type="data:OneWayEndpoint" name="product" target="//@elements.2/@elements.1"/>
     </elements>
-    <elements xsi:type="data:EntityType" name="Product" defaultTransferObjectType="//@elements.4/@elements.0/@elements.2/@elements.1">
-      <attributes xsi:type="data:Attribute" name="productName" dataType="_Nppx8IUcEeipmMyz9cMCRA" required="true"/>
-      <attributes xsi:type="data:Attribute" name="quantityPerUnit" dataType="_TXtg8IUcEeipmMyz9cMCRA"/>
-      <attributes xsi:type="data:Attribute" name="unitPrice" dataType="_SZ-GUIUcEeipmMyz9cMCRA" required="true"/>
-      <attributes xsi:type="data:Attribute" name="unitsInStock" dataType="_TXtg8IUcEeipmMyz9cMCRA"/>
-      <attributes xsi:type="data:Attribute" name="unitsOnOrder" dataType="_TXtg8IUcEeipmMyz9cMCRA"/>
-      <attributes xsi:type="data:Attribute" name="discounted" dataType="_Xos1AIUcEeipmMyz9cMCRA" required="true"/>
-      <attributes xsi:type="data:Attribute" name="weight" dataType="_h2iYkB1XEemwg4NgOjaKeA"/>
-      <attributes xsi:type="data:DataProperty" name="dataProperty" dataType="_Nppx8IUcEeipmMyz9cMCRA">
-        <getterExpression/>
-        <setterExpression/>
-      </attributes>
-      <relations xsi:type="data:TwoWayEndpoint" upper="5" name="category" target="_43ZPcINkEeiLE-B2bbL0fg" partner="//@elements.2/@elements.0/@relations.0"/>
-      <relations xsi:type="data:TwoWayEndpoint" name="supplier" target="_FWhCkINlEeiLE-B2bbL0fg" partner="//@elements.2/@elements.6/@relations.0"/>
-      <relations xsi:type="data:TwoWayEndpoint" lower="1" name="store" target="_c7JHIOdVEeiJv53TEP0vvQ" partner="//@elements.2/@elements.16/@relations.0"/>
-      <relations xsi:type="data:TwoWayEndpoint" upper="-1" name="manufacturers" target="_DJ29wINlEeiLE-B2bbL0fg" partner="//@elements.2/@elements.5/@relations.0"/>
-      <relations xsi:type="data:OneWayEndpoint" name="company" target="_DJ29wINlEeiLE-B2bbL0fg"/>
+    <elements xsi:type="data:EntityType" xmi:id="_6XH80INkEeiLE-B2bbL0fg" name="Product">
+      <attributes xsi:type="data:Attribute" xmi:id="_LhnHUINvEeiLE-B2bbL0fg" name="productName" dataType="_Nppx8IUcEeipmMyz9cMCRA" required="true"/>
+      <attributes xsi:type="data:Attribute" xmi:id="_XoxtcINvEeiLE-B2bbL0fg" name="quantityPerUnit" dataType="_TXtg8IUcEeipmMyz9cMCRA"/>
+      <attributes xsi:type="data:Attribute" xmi:id="_bBDQ0INvEeiLE-B2bbL0fg" name="unitPrice" dataType="_VDVVQIUcEeipmMyz9cMCRA"/>
+      <attributes xsi:type="data:Attribute" xmi:id="_gZEMcINxEeiLE-B2bbL0fg" name="unitsInStock" dataType="_TXtg8IUcEeipmMyz9cMCRA"/>
+      <attributes xsi:type="data:Attribute" xmi:id="_oMaM8INxEeiLE-B2bbL0fg" name="unitsOnOrder" dataType="_TXtg8IUcEeipmMyz9cMCRA"/>
+      <attributes xsi:type="data:Attribute" xmi:id="_qvdYgINxEeiLE-B2bbL0fg" name="reorderLevel" dataType="_TXtg8IUcEeipmMyz9cMCRA"/>
+      <attributes xsi:type="data:Attribute" xmi:id="_tYB9QINxEeiLE-B2bbL0fg" name="discounted" dataType="_Xos1AIUcEeipmMyz9cMCRA"/>
+      <attributes xsi:type="data:Attribute" xmi:id="_cEwUYB5NEemwg4NgOjaKeA" name="weight" dataType="_h2iYkB1XEemwg4NgOjaKeA"/>
+      <relations xsi:type="data:TwoWayEndpoint" xmi:id="_CkXK8LwDEeiOuYiCo6IbXQ" name="category" target="_43ZPcINkEeiLE-B2bbL0fg" partner="_892OYLwCEeiOuYiCo6IbXQ"/>
+      <relations xsi:type="data:TwoWayEndpoint" xmi:id="_vfAfILwMEeiOuYiCo6IbXQ" name="supplier" target="_FWhCkINlEeiLE-B2bbL0fg" partner="_vr4UMOdTEeiJv53TEP0vvQ"/>
+      <relations xsi:type="data:TwoWayEndpoint" xmi:id="_NN_HMOdUEeiJv53TEP0vvQ" upper="-1" name="manufacturers" target="_DJ29wINlEeiLE-B2bbL0fg" partner="_WQzLgOdUEeiJv53TEP0vvQ"/>
+      <relations xsi:type="data:TwoWayEndpoint" xmi:id="_VnJ8IOdVEeiJv53TEP0vvQ" lower="1" name="store" target="_c7JHIOdVEeiJv53TEP0vvQ" partner="_gqZAEOdVEeiJv53TEP0vvQ"/>
     </elements>
-    <elements xsi:type="data:EntityType" xmi:id="_86B-cINkEeiLE-B2bbL0fg" name="Customer" defaultTransferObjectType="//@elements.4/@elements.0/@elements.2/@elements.2">
+    <elements xsi:type="data:EntityType" xmi:id="_86B-cINkEeiLE-B2bbL0fg" name="Customer">
       <relations xsi:type="data:TwoWayEndpoint" xmi:id="_KCBq0LwNEeiOuYiCo6IbXQ" upper="-1" name="orders" target="_-H4RoINkEeiLE-B2bbL0fg" partner="_OL6RULwNEeiOuYiCo6IbXQ"/>
       <relations xsi:type="data:OneWayEndpoint" xmi:id="_P60NsLwOEeiOuYiCo6IbXQ" upper="-1" name="addresses" target="_SDnggLv-EeiOuYiCo6IbXQ" containment="true"/>
     </elements>
-    <elements xsi:type="data:EntityType" xmi:id="_-H4RoINkEeiLE-B2bbL0fg" name="Order" defaultTransferObjectType="//@elements.4/@elements.0/@elements.2/@elements.3">
-      <attributes xsi:type="data:Attribute" xmi:id="_WXvUoIN1EeiLE-B2bbL0fg" name="orderDate" dataType="_Z9J8IIN1EeiLE-B2bbL0fg"/>
+    <elements xsi:type="data:EntityType" xmi:id="_-H4RoINkEeiLE-B2bbL0fg" name="Order">
+      <attributes xsi:type="data:Attribute" xmi:id="_WXvUoIN1EeiLE-B2bbL0fg" name="orderDate" dataType="_Z9J8IIN1EeiLE-B2bbL0fg" required="true"/>
       <attributes xsi:type="data:Attribute" xmi:id="_ebkoMIN1EeiLE-B2bbL0fg" name="requiredDate" dataType="_Z9J8IIN1EeiLE-B2bbL0fg"/>
       <attributes xsi:type="data:Attribute" xmi:id="_huP54IN1EeiLE-B2bbL0fg" name="shippedDate" dataType="_Z9J8IIN1EeiLE-B2bbL0fg"/>
       <attributes xsi:type="data:Attribute" xmi:id="_kUnfMIN1EeiLE-B2bbL0fg" name="freight" dataType="_VDVVQIUcEeipmMyz9cMCRA"/>
       <attributes xsi:type="data:Attribute" xmi:id="_muoDgIN1EeiLE-B2bbL0fg" name="shipName" dataType="_Nppx8IUcEeipmMyz9cMCRA"/>
-      <attributes xsi:type="data:DataProperty" xmi:id="_5i40sCVQEemLpvUY7MQgng" name="shipperName" dataType="_Nppx8IUcEeipmMyz9cMCRA">
+      <attributes xsi:type="data:DataProperty" xmi:id="_5i40sCVQEemLpvUY7MQgng" name="shipperName" dataType="_Nppx8IUcEeipmMyz9cMCRA" required="true">
         <getterExpression xmi:id="_gs3QQDneEemsDIfvozHEKg" expression="self.shipper.companyName"/>
       </attributes>
-      <attributes xsi:type="data:DataProperty" xmi:id="_7cYp8CVxEemLpvUY7MQgng" name="totalPrice" dataType="_VDVVQIUcEeipmMyz9cMCRA">
-        <getterExpression xmi:id="_iA9VYDneEemsDIfvozHEKg" expression="0 /*self.orderDetails->sum(od | od.quantity * od.unitPrice * (1 - od.discount))*/"/>
+      <attributes xsi:type="data:DataProperty" xmi:id="_7cYp8CVxEemLpvUY7MQgng" name="totalPrice" dataType="_VDVVQIUcEeipmMyz9cMCRA" required="true">
+        <getterExpression xmi:id="_iA9VYDneEemsDIfvozHEKg" expression="self.orderDetails->sum(od | od.quantity * od.unitPrice * (1 - od.discount))"/>
       </attributes>
-      <attributes xsi:type="data:DataProperty" xmi:id="_9jb2ACVxEemLpvUY7MQgng" name="discount" dataType="_VDVVQIUcEeipmMyz9cMCRA">
-        <getterExpression xmi:id="_jYUJ4DneEemsDIfvozHEKg" expression="0 /*self.orderDetails->sum(od | od.discount)*/"/>
+      <attributes xsi:type="data:DataProperty" xmi:id="_9jb2ACVxEemLpvUY7MQgng" name="discount" dataType="_VDVVQIUcEeipmMyz9cMCRA" required="true">
+        <getterExpression xmi:id="_jYUJ4DneEemsDIfvozHEKg" expression="self.orderDetails->sum(od | od.discount)"/>
       </attributes>
-      <attributes xsi:type="data:DataProperty" xmi:id="_LL8B4CYIEemLpvUY7MQgng" name="discountedItemsWithSingleManufacturer" dataType="_TXtg8IUcEeipmMyz9cMCRA">
-        <getterExpression xmi:id="_k0MSADneEemsDIfvozHEKg" expression="0 /*self.orderDetails[od | od.discount > 0].product[p | p.manufacturers->size() == 0]*/"/>
+      <attributes xsi:type="data:DataProperty" xmi:id="_LL8B4CYIEemLpvUY7MQgng" name="discountedItemsWithSingleManufacturer" dataType="_TXtg8IUcEeipmMyz9cMCRA" required="true">
+        <getterExpression xmi:id="_k0MSADneEemsDIfvozHEKg" expression="self.orderDetails[od | od.discount > 0].product[p | p.manufacturers->size() == 0]"/>
       </attributes>
       <relations xsi:type="data:TwoWayEndpoint" xmi:id="_OL6RULwNEeiOuYiCo6IbXQ" name="customer" target="_86B-cINkEeiLE-B2bbL0fg" partner="_KCBq0LwNEeiOuYiCo6IbXQ"/>
       <relations xsi:type="data:TwoWayEndpoint" xmi:id="_WVBGcLwNEeiOuYiCo6IbXQ" name="shipper" target="_GnEEcINlEeiLE-B2bbL0fg" partner="_Z9PKULwNEeiOuYiCo6IbXQ"/>
@@ -267,44 +262,44 @@
       <relations xsi:type="data:OneWayEndpoint" xmi:id="_spywELwNEeiOuYiCo6IbXQ" name="shipAddress" target="_vTNmEL2REeiOuYiCo6IbXQ" containment="true"/>
       <relations xsi:type="data:OneWayEndpoint" xmi:id="_2CC44LwNEeiOuYiCo6IbXQ" upper="-1" name="orderDetails" target="__XzocINkEeiLE-B2bbL0fg" containment="true"/>
       <relations xsi:type="data:NavigationProperty" xmi:id="_qsmPsCVtEemLpvUY7MQgng" upper="-1" name="itemsWithCategoryPicture" target="__XzocINkEeiLE-B2bbL0fg">
-        <getterExpression xmi:id="_mY2isDneEemsDIfvozHEKg" expression="self.oderDetails /*self.orderDetails[od | od.product.category.picture->isDefined()]*/"/>
+        <getterExpression xmi:id="_mY2isDneEemsDIfvozHEKg" expression="self.orderDetails[od | od.product.category.picture->isDefined()]"/>
       </relations>
     </elements>
-    <elements xsi:type="data:EntityType" xmi:id="__XzocINkEeiLE-B2bbL0fg" name="OrderDetail" defaultTransferObjectType="//@elements.4/@elements.0/@elements.2/@elements.4">
+    <elements xsi:type="data:EntityType" xmi:id="__XzocINkEeiLE-B2bbL0fg" name="OrderDetail">
       <attributes xsi:type="data:Attribute" xmi:id="_bG7OUIN6EeiLE-B2bbL0fg" name="unitPrice" dataType="_VDVVQIUcEeipmMyz9cMCRA" required="true"/>
       <attributes xsi:type="data:Attribute" xmi:id="_d3obYIN6EeiLE-B2bbL0fg" name="quantity" dataType="_TXtg8IUcEeipmMyz9cMCRA" required="true"/>
       <attributes xsi:type="data:Attribute" xmi:id="_jIROkIN6EeiLE-B2bbL0fg" name="discount" dataType="_VDVVQIUcEeipmMyz9cMCRA" required="true"/>
-      <attributes xsi:type="data:DataProperty" xmi:id="_mr-oACVvEemLpvUY7MQgng" name="productName" dataType="_Nppx8IUcEeipmMyz9cMCRA">
+      <attributes xsi:type="data:DataProperty" xmi:id="_mr-oACVvEemLpvUY7MQgng" name="productName" dataType="_Nppx8IUcEeipmMyz9cMCRA" required="true">
         <getterExpression xmi:id="_oHyJsDneEemsDIfvozHEKg" expression="self.product.productName"/>
       </attributes>
-      <attributes xsi:type="data:DataProperty" xmi:id="_2MDDoCVvEemLpvUY7MQgng" name="categoryName" dataType="_Nppx8IUcEeipmMyz9cMCRA">
+      <attributes xsi:type="data:DataProperty" xmi:id="_2MDDoCVvEemLpvUY7MQgng" name="categoryName" dataType="_Nppx8IUcEeipmMyz9cMCRA" required="true">
         <getterExpression xmi:id="_pXNKMDneEemsDIfvozHEKg" expression="self.product.category.categoryName"/>
       </attributes>
-      <relations xsi:type="data:OneWayEndpoint" lower="1" name="product" target="//@elements.2/@elements.1"/>
+      <relations xsi:type="data:OneWayEndpoint" xmi:id="_6QtRsLwNEeiOuYiCo6IbXQ" lower="1" name="product" target="_6XH80INkEeiLE-B2bbL0fg"/>
     </elements>
-    <elements xsi:type="data:EntityType" xmi:id="_DJ29wINlEeiLE-B2bbL0fg" name="Company" superEntityTypes="_86B-cINkEeiLE-B2bbL0fg //@elements.2/@elements.46" defaultTransferObjectType="//@elements.4/@elements.0/@elements.2/@elements.5">
+    <elements xsi:type="data:EntityType" xmi:id="_DJ29wINlEeiLE-B2bbL0fg" name="Company" superEntityTypes="_86B-cINkEeiLE-B2bbL0fg">
       <attributes xsi:type="data:Attribute" xmi:id="_Pki0cINzEeiLE-B2bbL0fg" name="companyName" dataType="_Nppx8IUcEeipmMyz9cMCRA" required="true"/>
       <attributes xsi:type="data:Attribute" xmi:id="_0N8k0IN0EeiLE-B2bbL0fg" name="contactName" dataType="_Nppx8IUcEeipmMyz9cMCRA"/>
       <attributes xsi:type="data:Attribute" xmi:id="_2IvdkIN0EeiLE-B2bbL0fg" name="contactTitle" dataType="_Nppx8IUcEeipmMyz9cMCRA"/>
       <attributes xsi:type="data:Attribute" xmi:id="_LGcmkIN1EeiLE-B2bbL0fg" name="phone" dataType="_Lw4a8IOGEeiLE-B2bbL0fg"/>
       <attributes xsi:type="data:Attribute" xmi:id="_L7hNYIN1EeiLE-B2bbL0fg" name="fax" dataType="_Lw4a8IOGEeiLE-B2bbL0fg"/>
-      <relations xsi:type="data:TwoWayEndpoint" upper="-1" name="manufacturedProducts" target="//@elements.2/@elements.1" partner="//@elements.2/@elements.1/@relations.3"/>
+      <relations xsi:type="data:TwoWayEndpoint" xmi:id="_WQzLgOdUEeiJv53TEP0vvQ" upper="-1" name="manufacturedProducts" target="_6XH80INkEeiLE-B2bbL0fg" partner="_NN_HMOdUEeiJv53TEP0vvQ"/>
     </elements>
-    <elements xsi:type="data:EntityType" xmi:id="_FWhCkINlEeiLE-B2bbL0fg" name="Supplier" superEntityTypes="_DJ29wINlEeiLE-B2bbL0fg" defaultTransferObjectType="//@elements.4/@elements.0/@elements.2/@elements.6">
+    <elements xsi:type="data:EntityType" xmi:id="_FWhCkINlEeiLE-B2bbL0fg" name="Supplier" superEntityTypes="_DJ29wINlEeiLE-B2bbL0fg">
       <attributes xsi:type="data:Attribute" xmi:id="_-x_D8IN3EeiLE-B2bbL0fg" name="homePage" dataType="_A5EFMIN4EeiLE-B2bbL0fg"/>
-      <relations xsi:type="data:TwoWayEndpoint" upper="-1" name="suppliedProducts" target="//@elements.2/@elements.1" partner="//@elements.2/@elements.1/@relations.1"/>
+      <relations xsi:type="data:TwoWayEndpoint" xmi:id="_vr4UMOdTEeiJv53TEP0vvQ" upper="-1" name="suppliedProducts" target="_6XH80INkEeiLE-B2bbL0fg" partner="_vfAfILwMEeiOuYiCo6IbXQ"/>
     </elements>
-    <elements xsi:type="data:EntityType" xmi:id="_GnEEcINlEeiLE-B2bbL0fg" name="Shipper" defaultTransferObjectType="//@elements.4/@elements.0/@elements.2/@elements.7">
+    <elements xsi:type="data:EntityType" xmi:id="_GnEEcINlEeiLE-B2bbL0fg" name="Shipper">
       <attributes xsi:type="data:Attribute" xmi:id="_bFyT8IN8EeiLE-B2bbL0fg" name="companyName" dataType="_Nppx8IUcEeipmMyz9cMCRA" required="true"/>
       <attributes xsi:type="data:Attribute" xmi:id="_da04sIN8EeiLE-B2bbL0fg" name="phone" dataType="_Lw4a8IOGEeiLE-B2bbL0fg"/>
       <relations xsi:type="data:TwoWayEndpoint" xmi:id="_Z9PKULwNEeiOuYiCo6IbXQ" upper="-1" name="orders" target="_-H4RoINkEeiLE-B2bbL0fg" partner="_WVBGcLwNEeiOuYiCo6IbXQ"/>
       <relations xsi:type="data:TwoWayEndpoint" xmi:id="_ll8CIOdXEeiJv53TEP0vvQ" name="territory" target="_QckxAINlEeiLE-B2bbL0fg" partner="_vb1JMOdXEeiJv53TEP0vvQ"/>
     </elements>
-    <elements xsi:type="data:EntityType" xmi:id="_MoVqYINlEeiLE-B2bbL0fg" name="InternationalOrder" superEntityTypes="_-H4RoINkEeiLE-B2bbL0fg" defaultTransferObjectType="//@elements.4/@elements.0/@elements.2/@elements.8">
+    <elements xsi:type="data:EntityType" xmi:id="_MoVqYINlEeiLE-B2bbL0fg" name="InternationalOrder" superEntityTypes="_-H4RoINkEeiLE-B2bbL0fg">
       <attributes xsi:type="data:Attribute" xmi:id="_FpOkYIN_EeiLE-B2bbL0fg" name="customsDescription" dataType="_Nppx8IUcEeipmMyz9cMCRA" required="true"/>
       <attributes xsi:type="data:Attribute" xmi:id="_It85oIN_EeiLE-B2bbL0fg" name="exciseTax" dataType="_VDVVQIUcEeipmMyz9cMCRA" required="true"/>
     </elements>
-    <elements xsi:type="data:EntityType" xmi:id="_ONN9gINlEeiLE-B2bbL0fg" name="Employee" superEntityTypes="_rIapkLzhEeiOuYiCo6IbXQ" defaultTransferObjectType="//@elements.4/@elements.0/@elements.2/@elements.9">
+    <elements xsi:type="data:EntityType" xmi:id="_ONN9gINlEeiLE-B2bbL0fg" name="Employee" superEntityTypes="_rIapkLzhEeiOuYiCo6IbXQ">
       <attributes xsi:type="data:Attribute" xmi:id="_DtM4YIOGEeiLE-B2bbL0fg" name="titleOfCourtesy" dataType="_Nppx8IUcEeipmMyz9cMCRA"/>
       <attributes xsi:type="data:Attribute" xmi:id="_GGZkYIOGEeiLE-B2bbL0fg" name="birthDate" dataType="_YoqOYIN1EeiLE-B2bbL0fg"/>
       <attributes xsi:type="data:Attribute" xmi:id="_ISSNIIOGEeiLE-B2bbL0fg" name="hireDate" dataType="_YoqOYIN1EeiLE-B2bbL0fg"/>
@@ -320,219 +315,69 @@
       <relations xsi:type="data:TwoWayEndpoint" xmi:id="_h-pmkLwOEeiOuYiCo6IbXQ" name="territory" target="_QckxAINlEeiLE-B2bbL0fg" partner="_klno0LwOEeiOuYiCo6IbXQ"/>
       <relations xsi:type="data:TwoWayEndpoint" xmi:id="_Y1GwwOdTEeiJv53TEP0vvQ" name="category" target="_43ZPcINkEeiLE-B2bbL0fg" partner="_NACAMOdTEeiJv53TEP0vvQ"/>
     </elements>
-    <elements xsi:type="data:EntityType" xmi:id="_QckxAINlEeiLE-B2bbL0fg" name="Territory" defaultTransferObjectType="//@elements.4/@elements.0/@elements.2/@elements.10">
+    <elements xsi:type="data:EntityType" xmi:id="_QckxAINlEeiLE-B2bbL0fg" name="Territory">
       <attributes xsi:type="data:Attribute" xmi:id="_XOCQMIOFEeiLE-B2bbL0fg" name="territoryDescription" dataType="_Nppx8IUcEeipmMyz9cMCRA" required="true"/>
       <relations xsi:type="data:TwoWayEndpoint" xmi:id="_klno0LwOEeiOuYiCo6IbXQ" upper="-1" name="employees" target="_ONN9gINlEeiLE-B2bbL0fg" partner="_h-pmkLwOEeiOuYiCo6IbXQ"/>
       <relations xsi:type="data:TwoWayEndpoint" xmi:id="__dS14LwOEeiOuYiCo6IbXQ" name="region" target="_RocuQINlEeiLE-B2bbL0fg" partner="_BEhSYLwPEeiOuYiCo6IbXQ"/>
       <relations xsi:type="data:TwoWayEndpoint" xmi:id="_vb1JMOdXEeiJv53TEP0vvQ" name="shipper" target="_GnEEcINlEeiLE-B2bbL0fg" partner="_ll8CIOdXEeiJv53TEP0vvQ"/>
     </elements>
-    <elements xsi:type="data:EntityType" xmi:id="_RocuQINlEeiLE-B2bbL0fg" name="Region" defaultTransferObjectType="//@elements.4/@elements.0/@elements.2/@elements.11">
+    <elements xsi:type="data:EntityType" xmi:id="_RocuQINlEeiLE-B2bbL0fg" name="Region">
       <attributes xsi:type="data:Attribute" xmi:id="_U_SgsIOFEeiLE-B2bbL0fg" name="regionDescription" dataType="_Nppx8IUcEeipmMyz9cMCRA" required="true"/>
       <relations xsi:type="data:TwoWayEndpoint" xmi:id="_BEhSYLwPEeiOuYiCo6IbXQ" upper="-1" name="territories" target="_QckxAINlEeiLE-B2bbL0fg" partner="__dS14LwOEeiOuYiCo6IbXQ"/>
     </elements>
-    <elements xsi:type="data:EntityType" xmi:id="_jUJwQJupEeidMOq99SGQ3A" name="OnlineOrder" superEntityTypes="_-H4RoINkEeiLE-B2bbL0fg" defaultTransferObjectType="//@elements.4/@elements.0/@elements.2/@elements.12">
+    <elements xsi:type="data:EntityType" xmi:id="_jUJwQJupEeidMOq99SGQ3A" name="OnlineOrder" superEntityTypes="_-H4RoINkEeiLE-B2bbL0fg">
       <attributes xsi:type="data:Attribute" xmi:id="_sG6mYJupEeidMOq99SGQ3A" name="webshopUrl" dataType="_A5EFMIN4EeiLE-B2bbL0fg" required="true"/>
     </elements>
-    <elements xsi:type="data:EntityType" xmi:id="_EhVb8JusEeidMOq99SGQ3A" name="OnlineInternationalOrder" superEntityTypes="_MoVqYINlEeiLE-B2bbL0fg _jUJwQJupEeidMOq99SGQ3A" defaultTransferObjectType="//@elements.4/@elements.0/@elements.2/@elements.13">
+    <elements xsi:type="data:EntityType" xmi:id="_EhVb8JusEeidMOq99SGQ3A" name="OnlineInternationalOrder" superEntityTypes="_MoVqYINlEeiLE-B2bbL0fg _jUJwQJupEeidMOq99SGQ3A">
       <attributes xsi:type="data:Attribute" xmi:id="_G10AAJusEeidMOq99SGQ3A" name="onlineTrackingNumber" dataType="_Nppx8IUcEeipmMyz9cMCRA"/>
     </elements>
-    <elements xsi:type="data:EntityType" xmi:id="_eKHIwJuzEeidMOq99SGQ3A" name="City" defaultTransferObjectType="//@elements.4/@elements.0/@elements.2/@elements.14">
+    <elements xsi:type="data:EntityType" xmi:id="_eKHIwJuzEeidMOq99SGQ3A" name="City">
       <attributes xsi:type="data:Attribute" xmi:id="_huAGQJuzEeidMOq99SGQ3A" name="name" dataType="_Nppx8IUcEeipmMyz9cMCRA"/>
     </elements>
-    <elements xsi:type="data:EntityType" xmi:id="_SDnggLv-EeiOuYiCo6IbXQ" name="Address" defaultTransferObjectType="//@elements.4/@elements.0/@elements.2/@elements.15">
+    <elements xsi:type="data:EntityType" xmi:id="_SDnggLv-EeiOuYiCo6IbXQ" name="Address">
       <attributes xsi:type="data:Attribute" xmi:id="_VByh0Lv-EeiOuYiCo6IbXQ" name="address" dataType="_Nppx8IUcEeipmMyz9cMCRA" required="true"/>
       <attributes xsi:type="data:Attribute" xmi:id="_X28KALv-EeiOuYiCo6IbXQ" name="region" dataType="_Nppx8IUcEeipmMyz9cMCRA"/>
       <attributes xsi:type="data:Attribute" xmi:id="_ZGwzILv-EeiOuYiCo6IbXQ" name="postalCode" dataType="_Nppx8IUcEeipmMyz9cMCRA" required="true"/>
       <relations xsi:type="data:OneWayEndpoint" xmi:id="_teSs8Lv-EeiOuYiCo6IbXQ" lower="1" name="city" target="_eKHIwJuzEeidMOq99SGQ3A"/>
     </elements>
-    <elements xsi:type="data:EntityType" xmi:id="_c7JHIOdVEeiJv53TEP0vvQ" name="Store" defaultTransferObjectType="//@elements.4/@elements.0/@elements.2/@elements.16">
-      <relations xsi:type="data:TwoWayEndpoint" upper="-1" name="products" target="//@elements.2/@elements.1" partner="//@elements.2/@elements.1/@relations.2"/>
+    <elements xsi:type="data:EntityType" xmi:id="_c7JHIOdVEeiJv53TEP0vvQ" name="Store">
+      <relations xsi:type="data:TwoWayEndpoint" xmi:id="_gqZAEOdVEeiJv53TEP0vvQ" upper="-1" name="products" target="_6XH80INkEeiLE-B2bbL0fg" partner="_VnJ8IOdVEeiJv53TEP0vvQ"/>
     </elements>
-    <elements xsi:type="data:EntityType" xmi:id="_rIapkLzhEeiOuYiCo6IbXQ" name="Person" defaultTransferObjectType="//@elements.4/@elements.0/@elements.2/@elements.17">
+    <elements xsi:type="data:EntityType" xmi:id="_rIapkLzhEeiOuYiCo6IbXQ" name="Person">
       <attributes xsi:type="data:Attribute" xmi:id="_5nWpwIOFEeiLE-B2bbL0fg" name="lastName" dataType="_Nppx8IUcEeipmMyz9cMCRA" required="true"/>
       <attributes xsi:type="data:Attribute" xmi:id="_9angAIOFEeiLE-B2bbL0fg" name="firstName" dataType="_Nppx8IUcEeipmMyz9cMCRA" required="true"/>
       <attributes xsi:type="data:Attribute" xmi:id="__dhy8IOFEeiLE-B2bbL0fg" name="title" dataType="_hJ-K0I57EeioH6CUzUrG0Q"/>
     </elements>
-    <elements xsi:type="data:EntityType" xmi:id="_cPlugL1tEeiOuYiCo6IbXQ" name="Individual" superEntityTypes="_rIapkLzhEeiOuYiCo6IbXQ _86B-cINkEeiLE-B2bbL0fg" defaultTransferObjectType="//@elements.4/@elements.0/@elements.2/@elements.18">
+    <elements xsi:type="data:EntityType" xmi:id="_cPlugL1tEeiOuYiCo6IbXQ" name="Individual" superEntityTypes="_rIapkLzhEeiOuYiCo6IbXQ _86B-cINkEeiLE-B2bbL0fg">
       <attributes xsi:type="data:Attribute" xmi:id="_hZhcwL1tEeiOuYiCo6IbXQ" name="phone" dataType="_Lw4a8IOGEeiLE-B2bbL0fg"/>
     </elements>
-    <elements xsi:type="data:EntityType" xmi:id="_vTNmEL2REeiOuYiCo6IbXQ" name="InternationalAddress" superEntityTypes="_SDnggLv-EeiOuYiCo6IbXQ" defaultTransferObjectType="//@elements.4/@elements.0/@elements.2/@elements.19">
+    <elements xsi:type="data:EntityType" xmi:id="_vTNmEL2REeiOuYiCo6IbXQ" name="InternationalAddress" superEntityTypes="_SDnggLv-EeiOuYiCo6IbXQ">
       <attributes xsi:type="data:Attribute" xmi:id="_bAzd8Lv-EeiOuYiCo6IbXQ" name="country" dataType="_G2wVsI57EeioH6CUzUrG0Q"/>
     </elements>
-    <elements xsi:type="data:EntityType" xmi:id="_ehrfwOdYEeiJv53TEP0vvQ" name="PaymentList" defaultTransferObjectType="//@elements.4/@elements.0/@elements.2/@elements.20">
+    <elements xsi:type="data:EntityType" xmi:id="_ehrfwOdYEeiJv53TEP0vvQ" name="PaymentList">
       <relations xsi:type="data:OneWayEndpoint" xmi:id="_nxkWwOdYEeiJv53TEP0vvQ" lower="1" upper="-1" name="employees" target="_ONN9gINlEeiLE-B2bbL0fg"/>
     </elements>
-    <elements xsi:type="data:EntityType" xmi:id="_jHvr8OdYEeiJv53TEP0vvQ" name="MailingList" defaultTransferObjectType="//@elements.4/@elements.0/@elements.2/@elements.21">
+    <elements xsi:type="data:EntityType" xmi:id="_jHvr8OdYEeiJv53TEP0vvQ" name="MailingList">
       <relations xsi:type="data:OneWayEndpoint" xmi:id="_y1GVoOdYEeiJv53TEP0vvQ" name="person" target="_rIapkLzhEeiOuYiCo6IbXQ"/>
     </elements>
-    <elements xsi:type="accesspoint:AccessPoint" xmi:id="_Scog0FrYEemsLeIIY3i_ZQ" name="accessPoint">
-      <exposedServices xmi:id="_XzYPEFu0EemtCd4YRdbzpg" operation="_XzYPIVu0EemtCd4YRdbzpg"/>
-      <exposedGraphs xmi:id="_XzYPEVu0EemtCd4YRdbzpg" name="exposedGraph" entryTransferObjectType="_XzYPElu0EemtCd4YRdbzpg" staticNavigation="//@elements.2/@elements.25"/>
-    </elements>
-    <elements xsi:type="facade:TransferObjectType" xmi:id="_XzYPElu0EemtCd4YRdbzpg" name="transferObjectType" entityType="//@elements.2/@elements.1">
-      <relations xmi:id="_XzYPE1u0EemtCd4YRdbzpg" name="category" upper="5" referenceTypedElement="//@elements.2/@elements.1/@relations.0" target="//@elements.4/@elements.0/@elements.2/@elements.0"/>
-      <relations xmi:id="_XzYPFFu0EemtCd4YRdbzpg" name="store" lower="1" referenceTypedElement="//@elements.2/@elements.1/@relations.2" target="//@elements.4/@elements.0/@elements.2/@elements.16"/>
-      <attributes xmi:id="_XzYPFVu0EemtCd4YRdbzpg" name="staticData_3x" primitiveTypedElement="_XzY2JVu0EemtCd4YRdbzpg" dataType="_Nppx8IUcEeipmMyz9cMCRA"/>
-      <attributes xmi:id="_mNyYMFx6EemPeNhnHeoYoQ" name="unitsOnOrder" primitiveTypedElement="//@elements.2/@elements.1/@attributes.4" dataType="_TXtg8IUcEeipmMyz9cMCRA"/>
-      <operations xmi:id="_XzYPFlu0EemtCd4YRdbzpg" name="boundOperation"/>
-      <operations xmi:id="_XzYPF1u0EemtCd4YRdbzpg" name="boundOperation_2"/>
-    </elements>
-    <elements xsi:type="data:StaticNavigation" name="StaticNavigation" target="//@elements.2/@elements.1">
-      <getterExpression/>
-      <setterExpression/>
-    </elements>
-    <elements xsi:type="data:StaticNavigation" name="StaticNavigation_2" upper="2" target="//@elements.2/@elements.1">
-      <getterExpression/>
-      <setterExpression/>
-    </elements>
-    <elements xsi:type="data:StaticNavigation" xmi:id="_XzYPHlu0EemtCd4YRdbzpg" name="StaticNavigation_3" target="_43ZPcINkEeiLE-B2bbL0fg">
-      <getterExpression xmi:id="_XzYPH1u0EemtCd4YRdbzpg"/>
-      <setterExpression xmi:id="_XzYPIFu0EemtCd4YRdbzpg"/>
-    </elements>
-    <elements xsi:type="facade:UnboundOperation" xmi:id="_XzYPIVu0EemtCd4YRdbzpg" name="unboundOperation"/>
-    <elements xsi:type="data:StaticNavigation" name="StaticNavigation_4" target="//@elements.2/@elements.1">
-      <getterExpression/>
-      <setterExpression/>
-    </elements>
-    <elements xsi:type="data:StaticData" xmi:id="_XzYPJVu0EemtCd4YRdbzpg" name="staticData_2" dataType="_SZ-GUIUcEeipmMyz9cMCRA">
-      <getterExpression xmi:id="_XzYPJlu0EemtCd4YRdbzpg"/>
-      <setterExpression xmi:id="_XzYPJ1u0EemtCd4YRdbzpg"/>
-    </elements>
-    <elements xsi:type="data:StaticNavigation" xmi:id="_XzYPKFu0EemtCd4YRdbzpg" name="StaticNavigation_5" target="_43ZPcINkEeiLE-B2bbL0fg">
-      <getterExpression xmi:id="_XzY2IFu0EemtCd4YRdbzpg"/>
-      <setterExpression xmi:id="_XzY2IVu0EemtCd4YRdbzpg"/>
-    </elements>
-    <elements xsi:type="data:StaticData" xmi:id="_XzY2Ilu0EemtCd4YRdbzpg" name="staticData" dataType="_Nppx8IUcEeipmMyz9cMCRA">
-      <getterExpression xmi:id="_XzY2I1u0EemtCd4YRdbzpg"/>
-      <setterExpression xmi:id="_XzY2JFu0EemtCd4YRdbzpg"/>
-    </elements>
-    <elements xsi:type="data:StaticData" xmi:id="_XzY2JVu0EemtCd4YRdbzpg" name="staticData_3x" dataType="_Nppx8IUcEeipmMyz9cMCRA">
-      <getterExpression xmi:id="_XzY2Jlu0EemtCd4YRdbzpg"/>
-      <setterExpression xmi:id="_XzY2J1u0EemtCd4YRdbzpg"/>
-    </elements>
-    <elements xsi:type="data:StaticNavigation" xmi:id="_XzY2KFu0EemtCd4YRdbzpg" name="StaticNavigation_6" target="_rIapkLzhEeiOuYiCo6IbXQ">
-      <getterExpression xmi:id="_XzY2KVu0EemtCd4YRdbzpg"/>
-      <setterExpression xmi:id="_XzY2Klu0EemtCd4YRdbzpg"/>
-    </elements>
-    <elements xsi:type="facade:UnboundOperation" xmi:id="_XzY2K1u0EemtCd4YRdbzpg" name="unboundOperation_2"/>
-    <elements xsi:type="facade:UnboundOperation" xmi:id="_XzY2LFu0EemtCd4YRdbzpg" name="unboundOperation_3"/>
-    <elements xsi:type="facade:TransferObjectType" xmi:id="_XzY2LVu0EemtCd4YRdbzpg" name="transferObjectType_2" entityType="//@elements.2/@elements.1">
-      <relations xmi:id="_mNy_QFx6EemPeNhnHeoYoQ" name="transferObjectType" target="_XzYPElu0EemtCd4YRdbzpg"/>
-      <relations xmi:id="_mNy_QVx6EemPeNhnHeoYoQ" name="product_DTO"/>
-      <relations xmi:id="_mNy_Qlx6EemPeNhnHeoYoQ" name="category" upper="5" referenceTypedElement="//@elements.2/@elements.1/@relations.0" target="//@elements.4/@elements.0/@elements.2/@elements.0"/>
-      <attributes xmi:id="_XzY2Llu0EemtCd4YRdbzpg" name="weight" primitiveTypedElement="//@elements.2/@elements.1/@attributes.6" dataType="_h2iYkB1XEemwg4NgOjaKeA"/>
-    </elements>
-    <elements xsi:type="facade:TransferObjectType" name="Product_TransferObject" entityType="//@elements.2/@elements.1">
-      <attributes name="productName" required="true" primitiveTypedElement="//@elements.2/@elements.1/@attributes.0" dataType="_Nppx8IUcEeipmMyz9cMCRA"/>
-      <attributes name="quantityPerUnit" primitiveTypedElement="//@elements.2/@elements.1/@attributes.1" dataType="_TXtg8IUcEeipmMyz9cMCRA"/>
-      <attributes name="unitPrice" required="true" primitiveTypedElement="//@elements.2/@elements.1/@attributes.2" dataType="_Xos1AIUcEeipmMyz9cMCRA"/>
-      <attributes name="unitsInStock" primitiveTypedElement="//@elements.2/@elements.1/@attributes.3" dataType="_TXtg8IUcEeipmMyz9cMCRA"/>
-      <attributes name="unitsOnOrder" primitiveTypedElement="//@elements.2/@elements.1/@attributes.4" dataType="_TXtg8IUcEeipmMyz9cMCRA"/>
-      <attributes name="discounted" required="true" primitiveTypedElement="//@elements.2/@elements.1/@attributes.5" dataType="_Xos1AIUcEeipmMyz9cMCRA"/>
-      <attributes name="weight" primitiveTypedElement="//@elements.2/@elements.1/@attributes.6" dataType="_h2iYkB1XEemwg4NgOjaKeA"/>
-      <attributes name="dataProperty" primitiveTypedElement="//@elements.2/@elements.1/@attributes.7" dataType="_Nppx8IUcEeipmMyz9cMCRA"/>
-    </elements>
-    <elements xsi:type="facade:TransferObjectType" name="Product_TransferObject_2" entityType="//@elements.2/@elements.1">
-      <relations name="manufacturers" upper="-1" referenceTypedElement="//@elements.2/@elements.1/@relations.3" target="//@elements.2/@elements.39"/>
-      <relations name="StaticNavigation_3" referenceTypedElement="//@elements.2/@elements.41/@elements.3" target="//@elements.2/@elements.39"/>
-      <relations name="manufacturers2" upper="-1" referenceTypedElement="//@elements.2/@elements.1/@relations.3" target="//@elements.2/@elements.39"/>
-      <attributes name="productName" required="true" primitiveTypedElement="//@elements.2/@elements.1/@attributes.0" dataType="_Nppx8IUcEeipmMyz9cMCRA"/>
-      <attributes name="quantityPerUnit" primitiveTypedElement="//@elements.2/@elements.1/@attributes.1" dataType="_TXtg8IUcEeipmMyz9cMCRA"/>
-      <attributes name="unitPrice" required="true" primitiveTypedElement="//@elements.2/@elements.1/@attributes.2" dataType="_SZ-GUIUcEeipmMyz9cMCRA"/>
-      <attributes name="unitsInStock" primitiveTypedElement="//@elements.2/@elements.1/@attributes.3" dataType="_TXtg8IUcEeipmMyz9cMCRA"/>
-      <attributes name="unitsOnOrder" primitiveTypedElement="//@elements.2/@elements.1/@attributes.4" dataType="_TXtg8IUcEeipmMyz9cMCRA"/>
-      <attributes name="discounted" required="true" primitiveTypedElement="//@elements.2/@elements.1/@attributes.5" dataType="_Xos1AIUcEeipmMyz9cMCRA"/>
-      <attributes name="weight" primitiveTypedElement="//@elements.2/@elements.1/@attributes.6" dataType="_h2iYkB1XEemwg4NgOjaKeA"/>
-      <attributes name="dataProperty" primitiveTypedElement="//@elements.2/@elements.1/@attributes.7" dataType="_Nppx8IUcEeipmMyz9cMCRA"/>
-    </elements>
-    <elements xsi:type="facade:TransferObjectType" name="Company_TransferObject" entityType="_DJ29wINlEeiLE-B2bbL0fg" mixins="//@elements.2/@elements.44 //@elements.2/@elements.45">
-      <relations name="manufacturedProducts" upper="-1" referenceTypedElement="//@elements.2/@elements.5/@relations.0" target="//@elements.2/@elements.38"/>
-      <attributes name="companyName" required="true" primitiveTypedElement="_Pki0cINzEeiLE-B2bbL0fg" dataType="_Nppx8IUcEeipmMyz9cMCRA"/>
-      <attributes name="contactName" primitiveTypedElement="_0N8k0IN0EeiLE-B2bbL0fg" dataType="_Nppx8IUcEeipmMyz9cMCRA"/>
-      <attributes name="contactTitle" primitiveTypedElement="_2IvdkIN0EeiLE-B2bbL0fg" dataType="_Nppx8IUcEeipmMyz9cMCRA"/>
-      <attributes name="phone" primitiveTypedElement="_LGcmkIN1EeiLE-B2bbL0fg" dataType="_Lw4a8IOGEeiLE-B2bbL0fg"/>
-      <attributes name="attribute" primitiveTypedElement="_L7hNYIN1EeiLE-B2bbL0fg" dataType="_Lw4a8IOGEeiLE-B2bbL0fg"/>
-      <attributes name="transferAttribute" dataType="_Nppx8IUcEeipmMyz9cMCRA"/>
-      <operations name="myop"/>
-    </elements>
-    <elements xsi:type="facade:TransferObjectType" name="Product_TransferObject_3" entityType="//@elements.2/@elements.1">
-      <attributes name="quantityPerUnit" primitiveTypedElement="//@elements.2/@elements.1/@attributes.1" dataType="_TXtg8IUcEeipmMyz9cMCRA"/>
-    </elements>
-    <elements xsi:type="namespace:Package" packageDefaultTransferObjects="//@elements.4/@elements.0/@elements.2/@elements.22" name="package">
-      <elements xsi:type="data:StaticData" name="staticData" dataType="_Nppx8IUcEeipmMyz9cMCRA">
-        <getterExpression/>
-        <setterExpression/>
-      </elements>
-      <elements xsi:type="data:StaticNavigation" name="StaticNavigation" target="_ONN9gINlEeiLE-B2bbL0fg">
-        <getterExpression/>
-        <setterExpression/>
-      </elements>
-      <elements xsi:type="facade:UnboundOperation" name="unboundOperation"/>
-      <elements xsi:type="data:StaticNavigation" name="StaticNavigation_3" target="_DJ29wINlEeiLE-B2bbL0fg">
-        <getterExpression/>
-        <setterExpression/>
-      </elements>
-      <elements xsi:type="facade:UnboundOperation" name="unboundOperation_2"/>
-    </elements>
-    <elements xsi:type="accesspoint:AccessPoint" name="accessPoint_2">
-      <exposedServices operation="//@elements.2/@elements.41/@elements.4"/>
-      <exposedGraphs name="exposedGraph" entryTransferObjectType="//@elements.2/@elements.38" staticNavigation="//@elements.2/@elements.25"/>
-      <exposedGraphs name="exposedGraph_2" entryTransferObjectType="//@elements.2/@elements.39" staticNavigation="//@elements.2/@elements.41/@elements.3"/>
-    </elements>
-    <elements xsi:type="facade:TransferObjectType" name="transferObjectType_3"/>
-    <elements xsi:type="facade:TransferObjectType" name="transferObjectType_4" entityType="_DJ29wINlEeiLE-B2bbL0fg">
-      <relations name="product_TransferObject_2" target="//@elements.2/@elements.38"/>
-      <attributes name="transferAttribute" dataType="_Nppx8IUcEeipmMyz9cMCRA"/>
-      <attributes name="transferAttribute_2" dataType="_Nppx8IUcEeipmMyz9cMCRA"/>
-      <operations name="myop"/>
-    </elements>
-    <elements xsi:type="facade:TransferObjectType" name="transferObjectType_5" entityType="//@elements.2/@elements.46">
-      <attributes name="transferAttribute_1" dataType="_Nppx8IUcEeipmMyz9cMCRA"/>
-      <attributes name="attribute" dataType="_YoqOYIN1EeiLE-B2bbL0fg"/>
-      <operations name="myop2"/>
-    </elements>
-    <elements xsi:type="data:EntityType" name="EntityType" superEntityTypes="//@elements.2/@elements.48 //@elements.2/@elements.47">
-      <relations xsi:type="data:NavigationProperty" lower="1" name="selfEntityType" target="//@elements.2/@elements.46" selfNavigation="true">
-        <getterExpression expression="self"/>
-        <setterExpression/>
-      </relations>
-    </elements>
-    <elements xsi:type="data:EntityType" name="EntityType_2">
-      <attributes xsi:type="data:Attribute" name="attribute" dataType="_j-zrcINuEeiLE-B2bbL0fg"/>
-      <relations xsi:type="data:NavigationProperty" lower="1" name="selfEntityType_2" target="//@elements.2/@elements.47" selfNavigation="true">
-        <getterExpression expression="self"/>
-        <setterExpression/>
-      </relations>
-    </elements>
-    <elements xsi:type="data:EntityType" name="EntityType_3">
-      <attributes xsi:type="data:Attribute" name="attribute_2" dataType="_YoqOYIN1EeiLE-B2bbL0fg"/>
-      <attributes xsi:type="data:Attribute" name="attribute_3" dataType="_j-zrcINuEeiLE-B2bbL0fg"/>
-      <relations xsi:type="data:NavigationProperty" lower="1" name="selfEntityType_3" target="//@elements.2/@elements.48" selfNavigation="true">
-        <getterExpression expression="self"/>
-        <setterExpression/>
-      </relations>
-    </elements>
-    <elements xsi:type="facade:TransferObjectType" name="transferObjectType_6" entityType="//@elements.2/@elements.46" mixins="//@elements.2/@elements.45">
-      <attributes name="attribute" dataType="_Nppx8IUcEeipmMyz9cMCRA"/>
-    </elements>
   </elements>
-  <elements xsi:type="namespace:Package" xmi:id="__cC14CVPEemLpvUY7MQgng" packageDefaultTransferObjects="//@elements.4/@elements.0/@elements.3" name="facades">
+  <elements xsi:type="namespace:Package" xmi:id="__cC14CVPEemLpvUY7MQgng" name="facades">
     <elements xsi:type="facade:TransferObjectType" xmi:id="_ETGEYCVQEemLpvUY7MQgng" name="Order" entityType="_-H4RoINkEeiLE-B2bbL0fg">
-      <relations xmi:id="_RQtOsCVuEemLpvUY7MQgng" name="itemsWithCategoryPicture" upper="-1" referenceTypedElement="_qsmPsCVtEemLpvUY7MQgng" target="_ZliLoCVuEemLpvUY7MQgng"/>
-      <relations xmi:id="_8M4aICVuEemLpvUY7MQgng" name="orderDetails" upper="-1" referenceTypedElement="_2CC44LwNEeiOuYiCo6IbXQ" target="_nao6QCVuEemLpvUY7MQgng" embedded="true"/>
+      <relations xmi:id="_RQtOsCVuEemLpvUY7MQgng" name="itemsWithCategoryPicture" upper="-1" referenceTypedElement="_qsmPsCVtEemLpvUY7MQgng" target="_ZliLoCVuEemLpvUY7MQgng" embedded="true"/>
+      <relations xmi:id="_8M4aICVuEemLpvUY7MQgng" name="items" upper="-1" referenceTypedElement="_2CC44LwNEeiOuYiCo6IbXQ" target="_nao6QCVuEemLpvUY7MQgng" embedded="true"/>
       <attributes xmi:id="_U4tLwCVQEemLpvUY7MQgng" name="orderDate" required="true" primitiveTypedElement="_WXvUoIN1EeiLE-B2bbL0fg" dataType="_Z9J8IIN1EeiLE-B2bbL0fg"/>
       <attributes xmi:id="_rVzq8CVQEemLpvUY7MQgng" name="shippedDate" primitiveTypedElement="_huP54IN1EeiLE-B2bbL0fg" dataType="_Z9J8IIN1EeiLE-B2bbL0fg"/>
-      <attributes xmi:id="_u7NrYCVQEemLpvUY7MQgng" name="shipperName" primitiveTypedElement="_5i40sCVQEemLpvUY7MQgng" dataType="_Nppx8IUcEeipmMyz9cMCRA"/>
-      <attributes xmi:id="_v1uI0CVxEemLpvUY7MQgng" name="totalPrice" primitiveTypedElement="_7cYp8CVxEemLpvUY7MQgng" dataType="_VDVVQIUcEeipmMyz9cMCRA"/>
-      <attributes xmi:id="_zGRTkCVxEemLpvUY7MQgng" name="discount" primitiveTypedElement="_9jb2ACVxEemLpvUY7MQgng" dataType="_VDVVQIUcEeipmMyz9cMCRA"/>
-      <attributes xmi:id="_ACqnYCYIEemLpvUY7MQgng" name="discountedItemsWithSingleManufacturer" primitiveTypedElement="_LL8B4CYIEemLpvUY7MQgng" dataType="_TXtg8IUcEeipmMyz9cMCRA"/>
+      <attributes xmi:id="_u7NrYCVQEemLpvUY7MQgng" name="shipperName" required="true" primitiveTypedElement="_5i40sCVQEemLpvUY7MQgng" dataType="_Nppx8IUcEeipmMyz9cMCRA"/>
+      <attributes xmi:id="_v1uI0CVxEemLpvUY7MQgng" name="totalPrice" required="true" primitiveTypedElement="_7cYp8CVxEemLpvUY7MQgng" dataType="_VDVVQIUcEeipmMyz9cMCRA"/>
+      <attributes xmi:id="_zGRTkCVxEemLpvUY7MQgng" name="discount" required="true" primitiveTypedElement="_9jb2ACVxEemLpvUY7MQgng" dataType="_VDVVQIUcEeipmMyz9cMCRA"/>
+      <attributes xmi:id="_ACqnYCYIEemLpvUY7MQgng" name="discountedItemsWithSingleManufacturer" required="true" primitiveTypedElement="_LL8B4CYIEemLpvUY7MQgng" dataType="_TXtg8IUcEeipmMyz9cMCRA"/>
     </elements>
     <elements xsi:type="facade:TransferObjectType" xmi:id="_ZliLoCVuEemLpvUY7MQgng" name="OrderItemProduct" entityType="__XzocINkEeiLE-B2bbL0fg">
-      <attributes xmi:id="_htQgsCVuEemLpvUY7MQgng" name="productName" primitiveTypedElement="_mr-oACVvEemLpvUY7MQgng" dataType="_Nppx8IUcEeipmMyz9cMCRA"/>
+      <attributes xmi:id="_htQgsCVuEemLpvUY7MQgng" name="productName" required="true" primitiveTypedElement="_mr-oACVvEemLpvUY7MQgng" dataType="_Nppx8IUcEeipmMyz9cMCRA"/>
     </elements>
     <elements xsi:type="facade:TransferObjectType" xmi:id="_nao6QCVuEemLpvUY7MQgng" name="OrderItem" entityType="__XzocINkEeiLE-B2bbL0fg">
-      <attributes xmi:id="_rmgdwCVuEemLpvUY7MQgng" name="productName" primitiveTypedElement="_mr-oACVvEemLpvUY7MQgng" dataType="_Nppx8IUcEeipmMyz9cMCRA"/>
-      <attributes xmi:id="_tZnaICVuEemLpvUY7MQgng" name="categoryName" primitiveTypedElement="_2MDDoCVvEemLpvUY7MQgng" dataType="_Nppx8IUcEeipmMyz9cMCRA"/>
+      <attributes xmi:id="_rmgdwCVuEemLpvUY7MQgng" name="productName" required="true" primitiveTypedElement="_mr-oACVvEemLpvUY7MQgng" dataType="_Nppx8IUcEeipmMyz9cMCRA"/>
+      <attributes xmi:id="_tZnaICVuEemLpvUY7MQgng" name="categoryName" required="true" primitiveTypedElement="_2MDDoCVvEemLpvUY7MQgng" dataType="_Nppx8IUcEeipmMyz9cMCRA"/>
       <attributes xmi:id="_w9fJgCVuEemLpvUY7MQgng" name="unitPrice" required="true" primitiveTypedElement="_bG7OUIN6EeiLE-B2bbL0fg" dataType="_VDVVQIUcEeipmMyz9cMCRA"/>
       <attributes xmi:id="_xdLWMCVuEemLpvUY7MQgng" name="quantity" required="true" primitiveTypedElement="_d3obYIN6EeiLE-B2bbL0fg" dataType="_TXtg8IUcEeipmMyz9cMCRA"/>
       <attributes xmi:id="_x6C4YCVuEemLpvUY7MQgng" name="discount" required="true" primitiveTypedElement="_jIROkIN6EeiLE-B2bbL0fg" dataType="_VDVVQIUcEeipmMyz9cMCRA"/>
@@ -540,221 +385,214 @@
     <elements xsi:type="data:StaticNavigation" xmi:id="_EuQ5MCYbEemLpvUY7MQgng" name="orders" upper="-1" target="_-H4RoINkEeiLE-B2bbL0fg">
       <getterExpression xmi:id="_cFwiQDneEemsDIfvozHEKg" expression="(head Employee[e | e.lastName == 'Gipsz' and e.firstName == 'Jakab']).orders{o | o.orderDate}"/>
     </elements>
+    <elements xsi:type="accesspoint:AccessPoint" name="accessPoint">
+      <exposedGraphs name="exposedGraph" upper="-1" target="_ETGEYCVQEemLpvUY7MQgng" staticNavigation="_EuQ5MCYbEemLpvUY7MQgng"/>
+    </elements>
   </elements>
-  <elements xsi:type="namespace:Package" generated="true" name="generated">
-    <elements xsi:type="namespace:Package" generated="true" name="transferObjects">
-      <elements xsi:type="namespace:Package" generated="true" name="measures"/>
-      <elements xsi:type="namespace:Package" generated="true" name="types">
-        <elements xsi:type="namespace:Package" generated="true" name="measured"/>
-      </elements>
-      <elements xsi:type="namespace:Package" generated="true" name="entities">
-        <elements xsi:type="facade:TransferObjectType" name="Category_DTO" entityType="_43ZPcINkEeiLE-B2bbL0fg">
-          <relations name="products" upper="-1" referenceTypedElement="//@elements.2/@elements.0/@relations.0" target="//@elements.4/@elements.0/@elements.2/@elements.1"/>
-          <relations name="owner" lower="1" referenceTypedElement="_NACAMOdTEeiJv53TEP0vvQ" target="//@elements.4/@elements.0/@elements.2/@elements.9"/>
-          <relations name="product" referenceTypedElement="//@elements.2/@elements.0/@relations.2" target="//@elements.4/@elements.0/@elements.2/@elements.1"/>
-          <attributes name="categoryName" required="true" primitiveTypedElement="_v7k5EINmEeiLE-B2bbL0fg" dataType="_Nppx8IUcEeipmMyz9cMCRA"/>
-          <attributes name="description" primitiveTypedElement="_Vsjt0INuEeiLE-B2bbL0fg" dataType="_tXQUoIOGEeiLE-B2bbL0fg"/>
-          <attributes name="picture" primitiveTypedElement="_cwpboINuEeiLE-B2bbL0fg" dataType="_j-zrcINuEeiLE-B2bbL0fg"/>
-        </elements>
-        <elements xsi:type="facade:TransferObjectType" name="Product_DTO" entityType="//@elements.2/@elements.1">
-          <relations name="category" upper="5" referenceTypedElement="//@elements.2/@elements.1/@relations.0" target="//@elements.4/@elements.0/@elements.2/@elements.0"/>
-          <relations name="supplier" referenceTypedElement="//@elements.2/@elements.1/@relations.1" target="//@elements.4/@elements.0/@elements.2/@elements.6"/>
-          <relations name="manufacturers" upper="-1" referenceTypedElement="//@elements.2/@elements.1/@relations.3" target="//@elements.4/@elements.0/@elements.2/@elements.5"/>
-          <relations name="store" lower="1" referenceTypedElement="//@elements.2/@elements.1/@relations.2" target="//@elements.4/@elements.0/@elements.2/@elements.16"/>
-          <attributes name="productName" required="true" primitiveTypedElement="//@elements.2/@elements.1/@attributes.0" dataType="_Nppx8IUcEeipmMyz9cMCRA"/>
-          <attributes name="quantityPerUnit" primitiveTypedElement="//@elements.2/@elements.1/@attributes.1" dataType="_TXtg8IUcEeipmMyz9cMCRA"/>
-          <attributes name="unitPrice" required="true" primitiveTypedElement="//@elements.2/@elements.1/@attributes.2" dataType="_Xos1AIUcEeipmMyz9cMCRA"/>
-          <attributes name="unitsInStock" primitiveTypedElement="//@elements.2/@elements.1/@attributes.3" dataType="_TXtg8IUcEeipmMyz9cMCRA"/>
-          <attributes name="unitsOnOrder" primitiveTypedElement="//@elements.2/@elements.1/@attributes.4" dataType="_TXtg8IUcEeipmMyz9cMCRA"/>
-          <attributes name="discounted" required="true" primitiveTypedElement="//@elements.2/@elements.1/@attributes.5" dataType="_Xos1AIUcEeipmMyz9cMCRA"/>
-          <attributes name="weight" primitiveTypedElement="//@elements.2/@elements.1/@attributes.6" dataType="_h2iYkB1XEemwg4NgOjaKeA"/>
-          <attributes name="dataProperty" primitiveTypedElement="//@elements.2/@elements.1/@attributes.7" dataType="_Nppx8IUcEeipmMyz9cMCRA"/>
-        </elements>
-        <elements xsi:type="facade:TransferObjectType" name="Customer_DTO" entityType="_86B-cINkEeiLE-B2bbL0fg">
-          <relations name="orders" upper="-1" referenceTypedElement="_KCBq0LwNEeiOuYiCo6IbXQ" target="//@elements.4/@elements.0/@elements.2/@elements.3"/>
-          <relations name="addresses" upper="-1" referenceTypedElement="_P60NsLwOEeiOuYiCo6IbXQ" target="//@elements.4/@elements.0/@elements.2/@elements.15" embedded="true"/>
-        </elements>
-        <elements xsi:type="facade:TransferObjectType" name="Order_DTO" entityType="_-H4RoINkEeiLE-B2bbL0fg">
-          <relations name="customer" referenceTypedElement="_OL6RULwNEeiOuYiCo6IbXQ" target="//@elements.4/@elements.0/@elements.2/@elements.2"/>
-          <relations name="shipper" referenceTypedElement="_WVBGcLwNEeiOuYiCo6IbXQ" target="//@elements.4/@elements.0/@elements.2/@elements.7"/>
-          <relations name="employee" referenceTypedElement="_gfRT8LwNEeiOuYiCo6IbXQ" target="//@elements.4/@elements.0/@elements.2/@elements.9"/>
-          <relations name="shipAddress" referenceTypedElement="_spywELwNEeiOuYiCo6IbXQ" target="//@elements.4/@elements.0/@elements.2/@elements.19" embedded="true"/>
-          <relations name="orderDetails" upper="-1" referenceTypedElement="_2CC44LwNEeiOuYiCo6IbXQ" target="//@elements.4/@elements.0/@elements.2/@elements.4" embedded="true"/>
-          <relations name="itemsWithCategoryPicture" upper="-1" referenceTypedElement="_qsmPsCVtEemLpvUY7MQgng" target="//@elements.4/@elements.0/@elements.2/@elements.4"/>
-          <attributes name="orderDate" primitiveTypedElement="_WXvUoIN1EeiLE-B2bbL0fg" dataType="_Z9J8IIN1EeiLE-B2bbL0fg"/>
-          <attributes name="requiredDate" primitiveTypedElement="_ebkoMIN1EeiLE-B2bbL0fg" dataType="_Z9J8IIN1EeiLE-B2bbL0fg"/>
-          <attributes name="shippedDate" primitiveTypedElement="_huP54IN1EeiLE-B2bbL0fg" dataType="_Z9J8IIN1EeiLE-B2bbL0fg"/>
-          <attributes name="freight" primitiveTypedElement="_kUnfMIN1EeiLE-B2bbL0fg" dataType="_VDVVQIUcEeipmMyz9cMCRA"/>
-          <attributes name="shipName" primitiveTypedElement="_muoDgIN1EeiLE-B2bbL0fg" dataType="_Nppx8IUcEeipmMyz9cMCRA"/>
-          <attributes name="shipperName" primitiveTypedElement="_5i40sCVQEemLpvUY7MQgng" dataType="_Nppx8IUcEeipmMyz9cMCRA"/>
-          <attributes name="totalPrice" primitiveTypedElement="_7cYp8CVxEemLpvUY7MQgng" dataType="_VDVVQIUcEeipmMyz9cMCRA"/>
-          <attributes name="discount" primitiveTypedElement="_9jb2ACVxEemLpvUY7MQgng" dataType="_VDVVQIUcEeipmMyz9cMCRA"/>
-          <attributes name="discountedItemsWithSingleManufacturer" primitiveTypedElement="_LL8B4CYIEemLpvUY7MQgng" dataType="_TXtg8IUcEeipmMyz9cMCRA"/>
-        </elements>
-        <elements xsi:type="facade:TransferObjectType" name="OrderDetail_DTO" entityType="__XzocINkEeiLE-B2bbL0fg">
-          <relations name="product" lower="1" referenceTypedElement="//@elements.2/@elements.4/@relations.0" target="//@elements.4/@elements.0/@elements.2/@elements.1"/>
-          <attributes name="unitPrice" required="true" primitiveTypedElement="_bG7OUIN6EeiLE-B2bbL0fg" dataType="_VDVVQIUcEeipmMyz9cMCRA"/>
-          <attributes name="quantity" required="true" primitiveTypedElement="_d3obYIN6EeiLE-B2bbL0fg" dataType="_TXtg8IUcEeipmMyz9cMCRA"/>
-          <attributes name="discount" required="true" primitiveTypedElement="_jIROkIN6EeiLE-B2bbL0fg" dataType="_VDVVQIUcEeipmMyz9cMCRA"/>
-          <attributes name="productName" primitiveTypedElement="_mr-oACVvEemLpvUY7MQgng" dataType="_Nppx8IUcEeipmMyz9cMCRA"/>
-          <attributes name="categoryName" primitiveTypedElement="_2MDDoCVvEemLpvUY7MQgng" dataType="_Nppx8IUcEeipmMyz9cMCRA"/>
-        </elements>
-        <elements xsi:type="facade:TransferObjectType" name="Company_DTO" entityType="_DJ29wINlEeiLE-B2bbL0fg">
-          <relations name="manufacturedProducts" upper="-1" referenceTypedElement="//@elements.2/@elements.5/@relations.0" target="//@elements.4/@elements.0/@elements.2/@elements.1"/>
-          <relations name="orders" upper="-1" referenceTypedElement="_KCBq0LwNEeiOuYiCo6IbXQ" target="//@elements.4/@elements.0/@elements.2/@elements.3"/>
-          <relations name="addresses" upper="-1" referenceTypedElement="_P60NsLwOEeiOuYiCo6IbXQ" target="//@elements.4/@elements.0/@elements.2/@elements.15" embedded="true"/>
-          <attributes name="companyName" required="true" primitiveTypedElement="_Pki0cINzEeiLE-B2bbL0fg" dataType="_Nppx8IUcEeipmMyz9cMCRA"/>
-          <attributes name="contactName" primitiveTypedElement="_0N8k0IN0EeiLE-B2bbL0fg" dataType="_Nppx8IUcEeipmMyz9cMCRA"/>
-          <attributes name="contactTitle" primitiveTypedElement="_2IvdkIN0EeiLE-B2bbL0fg" dataType="_Nppx8IUcEeipmMyz9cMCRA"/>
-          <attributes name="phone" primitiveTypedElement="_LGcmkIN1EeiLE-B2bbL0fg" dataType="_Lw4a8IOGEeiLE-B2bbL0fg"/>
-          <attributes name="fax" primitiveTypedElement="_L7hNYIN1EeiLE-B2bbL0fg" dataType="_Lw4a8IOGEeiLE-B2bbL0fg"/>
-        </elements>
-        <elements xsi:type="facade:TransferObjectType" name="Supplier_DTO" entityType="_FWhCkINlEeiLE-B2bbL0fg">
-          <relations name="suppliedProducts" upper="-1" referenceTypedElement="//@elements.2/@elements.6/@relations.0" target="//@elements.4/@elements.0/@elements.2/@elements.1"/>
-          <relations name="manufacturedProducts" upper="-1" referenceTypedElement="//@elements.2/@elements.5/@relations.0" target="//@elements.4/@elements.0/@elements.2/@elements.1"/>
-          <relations name="orders" upper="-1" referenceTypedElement="_KCBq0LwNEeiOuYiCo6IbXQ" target="//@elements.4/@elements.0/@elements.2/@elements.3"/>
-          <relations name="addresses" upper="-1" referenceTypedElement="_P60NsLwOEeiOuYiCo6IbXQ" target="//@elements.4/@elements.0/@elements.2/@elements.15" embedded="true"/>
-          <attributes name="homePage" primitiveTypedElement="_-x_D8IN3EeiLE-B2bbL0fg" dataType="_A5EFMIN4EeiLE-B2bbL0fg"/>
-          <attributes name="companyName" required="true" primitiveTypedElement="_Pki0cINzEeiLE-B2bbL0fg" dataType="_Nppx8IUcEeipmMyz9cMCRA"/>
-          <attributes name="contactName" primitiveTypedElement="_0N8k0IN0EeiLE-B2bbL0fg" dataType="_Nppx8IUcEeipmMyz9cMCRA"/>
-          <attributes name="contactTitle" primitiveTypedElement="_2IvdkIN0EeiLE-B2bbL0fg" dataType="_Nppx8IUcEeipmMyz9cMCRA"/>
-          <attributes name="phone" primitiveTypedElement="_LGcmkIN1EeiLE-B2bbL0fg" dataType="_Lw4a8IOGEeiLE-B2bbL0fg"/>
-          <attributes name="fax" primitiveTypedElement="_L7hNYIN1EeiLE-B2bbL0fg" dataType="_Lw4a8IOGEeiLE-B2bbL0fg"/>
-        </elements>
-        <elements xsi:type="facade:TransferObjectType" name="Shipper_DTO" entityType="_GnEEcINlEeiLE-B2bbL0fg">
-          <relations name="orders" upper="-1" referenceTypedElement="_Z9PKULwNEeiOuYiCo6IbXQ" target="//@elements.4/@elements.0/@elements.2/@elements.3"/>
-          <relations name="territory" referenceTypedElement="_ll8CIOdXEeiJv53TEP0vvQ" target="//@elements.4/@elements.0/@elements.2/@elements.10"/>
-          <attributes name="companyName" required="true" primitiveTypedElement="_bFyT8IN8EeiLE-B2bbL0fg" dataType="_Nppx8IUcEeipmMyz9cMCRA"/>
-          <attributes name="phone" primitiveTypedElement="_da04sIN8EeiLE-B2bbL0fg" dataType="_Lw4a8IOGEeiLE-B2bbL0fg"/>
-        </elements>
-        <elements xsi:type="facade:TransferObjectType" name="InternationalOrder_DTO" entityType="_MoVqYINlEeiLE-B2bbL0fg">
-          <relations name="customer" referenceTypedElement="_OL6RULwNEeiOuYiCo6IbXQ" target="//@elements.4/@elements.0/@elements.2/@elements.2"/>
-          <relations name="shipper" referenceTypedElement="_WVBGcLwNEeiOuYiCo6IbXQ" target="//@elements.4/@elements.0/@elements.2/@elements.7"/>
-          <relations name="employee" referenceTypedElement="_gfRT8LwNEeiOuYiCo6IbXQ" target="//@elements.4/@elements.0/@elements.2/@elements.9"/>
-          <relations name="shipAddress" referenceTypedElement="_spywELwNEeiOuYiCo6IbXQ" target="//@elements.4/@elements.0/@elements.2/@elements.19" embedded="true"/>
-          <relations name="orderDetails" upper="-1" referenceTypedElement="_2CC44LwNEeiOuYiCo6IbXQ" target="//@elements.4/@elements.0/@elements.2/@elements.4" embedded="true"/>
-          <relations name="itemsWithCategoryPicture" upper="-1" referenceTypedElement="_qsmPsCVtEemLpvUY7MQgng" target="//@elements.4/@elements.0/@elements.2/@elements.4"/>
-          <attributes name="customsDescription" required="true" primitiveTypedElement="_FpOkYIN_EeiLE-B2bbL0fg" dataType="_Nppx8IUcEeipmMyz9cMCRA"/>
-          <attributes name="exciseTax" required="true" primitiveTypedElement="_It85oIN_EeiLE-B2bbL0fg" dataType="_VDVVQIUcEeipmMyz9cMCRA"/>
-          <attributes name="orderDate" primitiveTypedElement="_WXvUoIN1EeiLE-B2bbL0fg" dataType="_Z9J8IIN1EeiLE-B2bbL0fg"/>
-          <attributes name="requiredDate" primitiveTypedElement="_ebkoMIN1EeiLE-B2bbL0fg" dataType="_Z9J8IIN1EeiLE-B2bbL0fg"/>
-          <attributes name="shippedDate" primitiveTypedElement="_huP54IN1EeiLE-B2bbL0fg" dataType="_Z9J8IIN1EeiLE-B2bbL0fg"/>
-          <attributes name="freight" primitiveTypedElement="_kUnfMIN1EeiLE-B2bbL0fg" dataType="_VDVVQIUcEeipmMyz9cMCRA"/>
-          <attributes name="shipName" primitiveTypedElement="_muoDgIN1EeiLE-B2bbL0fg" dataType="_Nppx8IUcEeipmMyz9cMCRA"/>
-          <attributes name="shipperName" primitiveTypedElement="_5i40sCVQEemLpvUY7MQgng" dataType="_Nppx8IUcEeipmMyz9cMCRA"/>
-          <attributes name="totalPrice" primitiveTypedElement="_7cYp8CVxEemLpvUY7MQgng" dataType="_VDVVQIUcEeipmMyz9cMCRA"/>
-          <attributes name="discount" primitiveTypedElement="_9jb2ACVxEemLpvUY7MQgng" dataType="_VDVVQIUcEeipmMyz9cMCRA"/>
-          <attributes name="discountedItemsWithSingleManufacturer" primitiveTypedElement="_LL8B4CYIEemLpvUY7MQgng" dataType="_TXtg8IUcEeipmMyz9cMCRA"/>
-        </elements>
-        <elements xsi:type="facade:TransferObjectType" name="Employee_DTO" entityType="_ONN9gINlEeiLE-B2bbL0fg">
-          <relations name="orders" upper="-1" referenceTypedElement="_jOFqoLwNEeiOuYiCo6IbXQ" target="//@elements.4/@elements.0/@elements.2/@elements.3"/>
-          <relations name="address" referenceTypedElement="_WyM8QLwOEeiOuYiCo6IbXQ" target="//@elements.4/@elements.0/@elements.2/@elements.15" embedded="true"/>
-          <relations name="reportsTo" referenceTypedElement="_Z6tlULwOEeiOuYiCo6IbXQ" target="//@elements.4/@elements.0/@elements.2/@elements.9"/>
-          <relations name="employees" upper="-1" referenceTypedElement="_cfMUQLwOEeiOuYiCo6IbXQ" target="//@elements.4/@elements.0/@elements.2/@elements.9"/>
-          <relations name="territory" referenceTypedElement="_h-pmkLwOEeiOuYiCo6IbXQ" target="//@elements.4/@elements.0/@elements.2/@elements.10"/>
-          <relations name="category" referenceTypedElement="_Y1GwwOdTEeiJv53TEP0vvQ" target="//@elements.4/@elements.0/@elements.2/@elements.0"/>
-          <attributes name="titleOfCourtesy" primitiveTypedElement="_DtM4YIOGEeiLE-B2bbL0fg" dataType="_Nppx8IUcEeipmMyz9cMCRA"/>
-          <attributes name="birthDate" primitiveTypedElement="_GGZkYIOGEeiLE-B2bbL0fg" dataType="_YoqOYIN1EeiLE-B2bbL0fg"/>
-          <attributes name="hireDate" primitiveTypedElement="_ISSNIIOGEeiLE-B2bbL0fg" dataType="_YoqOYIN1EeiLE-B2bbL0fg"/>
-          <attributes name="homePhone" primitiveTypedElement="_KMDLIIOGEeiLE-B2bbL0fg" dataType="_Lw4a8IOGEeiLE-B2bbL0fg"/>
-          <attributes name="extension" primitiveTypedElement="_k72OkIOGEeiLE-B2bbL0fg" dataType="_Nppx8IUcEeipmMyz9cMCRA"/>
-          <attributes name="photo" primitiveTypedElement="_mjzq4IOGEeiLE-B2bbL0fg" dataType="_j-zrcINuEeiLE-B2bbL0fg"/>
-          <attributes name="notes" primitiveTypedElement="_oo5IEIOGEeiLE-B2bbL0fg" dataType="_tXQUoIOGEeiLE-B2bbL0fg"/>
-          <attributes name="photoPath" primitiveTypedElement="_qg-EAIOGEeiLE-B2bbL0fg" dataType="_Nppx8IUcEeipmMyz9cMCRA"/>
-          <attributes name="lastName" required="true" primitiveTypedElement="_5nWpwIOFEeiLE-B2bbL0fg" dataType="_Nppx8IUcEeipmMyz9cMCRA"/>
-          <attributes name="firstName" required="true" primitiveTypedElement="_9angAIOFEeiLE-B2bbL0fg" dataType="_Nppx8IUcEeipmMyz9cMCRA"/>
-          <attributes name="title" primitiveTypedElement="__dhy8IOFEeiLE-B2bbL0fg" dataType="_hJ-K0I57EeioH6CUzUrG0Q"/>
-        </elements>
-        <elements xsi:type="facade:TransferObjectType" name="Territory_DTO" entityType="_QckxAINlEeiLE-B2bbL0fg">
-          <relations name="employees" upper="-1" referenceTypedElement="_klno0LwOEeiOuYiCo6IbXQ" target="//@elements.4/@elements.0/@elements.2/@elements.9"/>
-          <relations name="region" referenceTypedElement="__dS14LwOEeiOuYiCo6IbXQ" target="//@elements.4/@elements.0/@elements.2/@elements.11"/>
-          <relations name="shipper" referenceTypedElement="_vb1JMOdXEeiJv53TEP0vvQ" target="//@elements.4/@elements.0/@elements.2/@elements.7"/>
-          <attributes name="territoryDescription" required="true" primitiveTypedElement="_XOCQMIOFEeiLE-B2bbL0fg" dataType="_Nppx8IUcEeipmMyz9cMCRA"/>
-        </elements>
-        <elements xsi:type="facade:TransferObjectType" name="Region_DTO" entityType="_RocuQINlEeiLE-B2bbL0fg">
-          <relations name="territories" upper="-1" referenceTypedElement="_BEhSYLwPEeiOuYiCo6IbXQ" target="//@elements.4/@elements.0/@elements.2/@elements.10"/>
-          <attributes name="regionDescription" required="true" primitiveTypedElement="_U_SgsIOFEeiLE-B2bbL0fg" dataType="_Nppx8IUcEeipmMyz9cMCRA"/>
-        </elements>
-        <elements xsi:type="facade:TransferObjectType" name="OnlineOrder_DTO" entityType="_jUJwQJupEeidMOq99SGQ3A">
-          <relations name="customer" referenceTypedElement="_OL6RULwNEeiOuYiCo6IbXQ" target="//@elements.4/@elements.0/@elements.2/@elements.2"/>
-          <relations name="shipper" referenceTypedElement="_WVBGcLwNEeiOuYiCo6IbXQ" target="//@elements.4/@elements.0/@elements.2/@elements.7"/>
-          <relations name="employee" referenceTypedElement="_gfRT8LwNEeiOuYiCo6IbXQ" target="//@elements.4/@elements.0/@elements.2/@elements.9"/>
-          <relations name="shipAddress" referenceTypedElement="_spywELwNEeiOuYiCo6IbXQ" target="//@elements.4/@elements.0/@elements.2/@elements.19" embedded="true"/>
-          <relations name="orderDetails" upper="-1" referenceTypedElement="_2CC44LwNEeiOuYiCo6IbXQ" target="//@elements.4/@elements.0/@elements.2/@elements.4" embedded="true"/>
-          <relations name="itemsWithCategoryPicture" upper="-1" referenceTypedElement="_qsmPsCVtEemLpvUY7MQgng" target="//@elements.4/@elements.0/@elements.2/@elements.4"/>
-          <attributes name="webshopUrl" required="true" primitiveTypedElement="_sG6mYJupEeidMOq99SGQ3A" dataType="_A5EFMIN4EeiLE-B2bbL0fg"/>
-          <attributes name="orderDate" primitiveTypedElement="_WXvUoIN1EeiLE-B2bbL0fg" dataType="_Z9J8IIN1EeiLE-B2bbL0fg"/>
-          <attributes name="requiredDate" primitiveTypedElement="_ebkoMIN1EeiLE-B2bbL0fg" dataType="_Z9J8IIN1EeiLE-B2bbL0fg"/>
-          <attributes name="shippedDate" primitiveTypedElement="_huP54IN1EeiLE-B2bbL0fg" dataType="_Z9J8IIN1EeiLE-B2bbL0fg"/>
-          <attributes name="freight" primitiveTypedElement="_kUnfMIN1EeiLE-B2bbL0fg" dataType="_VDVVQIUcEeipmMyz9cMCRA"/>
-          <attributes name="shipName" primitiveTypedElement="_muoDgIN1EeiLE-B2bbL0fg" dataType="_Nppx8IUcEeipmMyz9cMCRA"/>
-          <attributes name="shipperName" primitiveTypedElement="_5i40sCVQEemLpvUY7MQgng" dataType="_Nppx8IUcEeipmMyz9cMCRA"/>
-          <attributes name="totalPrice" primitiveTypedElement="_7cYp8CVxEemLpvUY7MQgng" dataType="_VDVVQIUcEeipmMyz9cMCRA"/>
-          <attributes name="discount" primitiveTypedElement="_9jb2ACVxEemLpvUY7MQgng" dataType="_VDVVQIUcEeipmMyz9cMCRA"/>
-          <attributes name="discountedItemsWithSingleManufacturer" primitiveTypedElement="_LL8B4CYIEemLpvUY7MQgng" dataType="_TXtg8IUcEeipmMyz9cMCRA"/>
-        </elements>
-        <elements xsi:type="facade:TransferObjectType" name="OnlineInternationalOrder_DTO" entityType="_EhVb8JusEeidMOq99SGQ3A">
-          <relations name="customer" referenceTypedElement="_OL6RULwNEeiOuYiCo6IbXQ" target="//@elements.4/@elements.0/@elements.2/@elements.2"/>
-          <relations name="shipper" referenceTypedElement="_WVBGcLwNEeiOuYiCo6IbXQ" target="//@elements.4/@elements.0/@elements.2/@elements.7"/>
-          <relations name="employee" referenceTypedElement="_gfRT8LwNEeiOuYiCo6IbXQ" target="//@elements.4/@elements.0/@elements.2/@elements.9"/>
-          <relations name="shipAddress" referenceTypedElement="_spywELwNEeiOuYiCo6IbXQ" target="//@elements.4/@elements.0/@elements.2/@elements.19" embedded="true"/>
-          <relations name="orderDetails" upper="-1" referenceTypedElement="_2CC44LwNEeiOuYiCo6IbXQ" target="//@elements.4/@elements.0/@elements.2/@elements.4" embedded="true"/>
-          <relations name="itemsWithCategoryPicture" upper="-1" referenceTypedElement="_qsmPsCVtEemLpvUY7MQgng" target="//@elements.4/@elements.0/@elements.2/@elements.4"/>
-          <attributes name="onlineTrackingNumber" primitiveTypedElement="_G10AAJusEeidMOq99SGQ3A" dataType="_Nppx8IUcEeipmMyz9cMCRA"/>
-          <attributes name="customsDescription" required="true" primitiveTypedElement="_FpOkYIN_EeiLE-B2bbL0fg" dataType="_Nppx8IUcEeipmMyz9cMCRA"/>
-          <attributes name="exciseTax" required="true" primitiveTypedElement="_It85oIN_EeiLE-B2bbL0fg" dataType="_VDVVQIUcEeipmMyz9cMCRA"/>
-          <attributes name="orderDate" primitiveTypedElement="_WXvUoIN1EeiLE-B2bbL0fg" dataType="_Z9J8IIN1EeiLE-B2bbL0fg"/>
-          <attributes name="requiredDate" primitiveTypedElement="_ebkoMIN1EeiLE-B2bbL0fg" dataType="_Z9J8IIN1EeiLE-B2bbL0fg"/>
-          <attributes name="shippedDate" primitiveTypedElement="_huP54IN1EeiLE-B2bbL0fg" dataType="_Z9J8IIN1EeiLE-B2bbL0fg"/>
-          <attributes name="freight" primitiveTypedElement="_kUnfMIN1EeiLE-B2bbL0fg" dataType="_VDVVQIUcEeipmMyz9cMCRA"/>
-          <attributes name="shipName" primitiveTypedElement="_muoDgIN1EeiLE-B2bbL0fg" dataType="_Nppx8IUcEeipmMyz9cMCRA"/>
-          <attributes name="shipperName" primitiveTypedElement="_5i40sCVQEemLpvUY7MQgng" dataType="_Nppx8IUcEeipmMyz9cMCRA"/>
-          <attributes name="totalPrice" primitiveTypedElement="_7cYp8CVxEemLpvUY7MQgng" dataType="_VDVVQIUcEeipmMyz9cMCRA"/>
-          <attributes name="discount" primitiveTypedElement="_9jb2ACVxEemLpvUY7MQgng" dataType="_VDVVQIUcEeipmMyz9cMCRA"/>
-          <attributes name="discountedItemsWithSingleManufacturer" primitiveTypedElement="_LL8B4CYIEemLpvUY7MQgng" dataType="_TXtg8IUcEeipmMyz9cMCRA"/>
-          <attributes name="webshopUrl" required="true" primitiveTypedElement="_sG6mYJupEeidMOq99SGQ3A" dataType="_A5EFMIN4EeiLE-B2bbL0fg"/>
-        </elements>
-        <elements xsi:type="facade:TransferObjectType" name="City_DTO" entityType="_eKHIwJuzEeidMOq99SGQ3A">
-          <attributes name="name" primitiveTypedElement="_huAGQJuzEeidMOq99SGQ3A" dataType="_Nppx8IUcEeipmMyz9cMCRA"/>
-        </elements>
-        <elements xsi:type="facade:TransferObjectType" name="Address_DTO" entityType="_SDnggLv-EeiOuYiCo6IbXQ">
-          <relations name="city" lower="1" referenceTypedElement="_teSs8Lv-EeiOuYiCo6IbXQ" target="//@elements.4/@elements.0/@elements.2/@elements.14"/>
-          <attributes name="address" required="true" primitiveTypedElement="_VByh0Lv-EeiOuYiCo6IbXQ" dataType="_Nppx8IUcEeipmMyz9cMCRA"/>
-          <attributes name="region" primitiveTypedElement="_X28KALv-EeiOuYiCo6IbXQ" dataType="_Nppx8IUcEeipmMyz9cMCRA"/>
-          <attributes name="postalCode" required="true" primitiveTypedElement="_ZGwzILv-EeiOuYiCo6IbXQ" dataType="_Nppx8IUcEeipmMyz9cMCRA"/>
-        </elements>
-        <elements xsi:type="facade:TransferObjectType" name="Store_DTO" entityType="_c7JHIOdVEeiJv53TEP0vvQ">
-          <relations name="products" upper="-1" referenceTypedElement="//@elements.2/@elements.16/@relations.0" target="//@elements.4/@elements.0/@elements.2/@elements.1"/>
-        </elements>
-        <elements xsi:type="facade:TransferObjectType" name="Person_DTO" entityType="_rIapkLzhEeiOuYiCo6IbXQ">
-          <attributes name="lastName" required="true" primitiveTypedElement="_5nWpwIOFEeiLE-B2bbL0fg" dataType="_Nppx8IUcEeipmMyz9cMCRA"/>
-          <attributes name="firstName" required="true" primitiveTypedElement="_9angAIOFEeiLE-B2bbL0fg" dataType="_Nppx8IUcEeipmMyz9cMCRA"/>
-          <attributes name="title" primitiveTypedElement="__dhy8IOFEeiLE-B2bbL0fg" dataType="_hJ-K0I57EeioH6CUzUrG0Q"/>
-        </elements>
-        <elements xsi:type="facade:TransferObjectType" name="Individual_DTO" entityType="_cPlugL1tEeiOuYiCo6IbXQ">
-          <relations name="orders" upper="-1" referenceTypedElement="_KCBq0LwNEeiOuYiCo6IbXQ" target="//@elements.4/@elements.0/@elements.2/@elements.3"/>
-          <relations name="addresses" upper="-1" referenceTypedElement="_P60NsLwOEeiOuYiCo6IbXQ" target="//@elements.4/@elements.0/@elements.2/@elements.15" embedded="true"/>
-          <attributes name="phone" primitiveTypedElement="_hZhcwL1tEeiOuYiCo6IbXQ" dataType="_Lw4a8IOGEeiLE-B2bbL0fg"/>
-          <attributes name="lastName" required="true" primitiveTypedElement="_5nWpwIOFEeiLE-B2bbL0fg" dataType="_Nppx8IUcEeipmMyz9cMCRA"/>
-          <attributes name="firstName" required="true" primitiveTypedElement="_9angAIOFEeiLE-B2bbL0fg" dataType="_Nppx8IUcEeipmMyz9cMCRA"/>
-          <attributes name="title" primitiveTypedElement="__dhy8IOFEeiLE-B2bbL0fg" dataType="_hJ-K0I57EeioH6CUzUrG0Q"/>
-        </elements>
-        <elements xsi:type="facade:TransferObjectType" name="InternationalAddress_DTO" entityType="_vTNmEL2REeiOuYiCo6IbXQ">
-          <relations name="city" lower="1" referenceTypedElement="_teSs8Lv-EeiOuYiCo6IbXQ" target="//@elements.4/@elements.0/@elements.2/@elements.14"/>
-          <attributes name="country" primitiveTypedElement="_bAzd8Lv-EeiOuYiCo6IbXQ" dataType="_G2wVsI57EeioH6CUzUrG0Q"/>
-          <attributes name="address" required="true" primitiveTypedElement="_VByh0Lv-EeiOuYiCo6IbXQ" dataType="_Nppx8IUcEeipmMyz9cMCRA"/>
-          <attributes name="region" primitiveTypedElement="_X28KALv-EeiOuYiCo6IbXQ" dataType="_Nppx8IUcEeipmMyz9cMCRA"/>
-          <attributes name="postalCode" required="true" primitiveTypedElement="_ZGwzILv-EeiOuYiCo6IbXQ" dataType="_Nppx8IUcEeipmMyz9cMCRA"/>
-        </elements>
-        <elements xsi:type="facade:TransferObjectType" name="PaymentList_DTO" entityType="_ehrfwOdYEeiJv53TEP0vvQ">
-          <relations name="employees" lower="1" upper="-1" referenceTypedElement="_nxkWwOdYEeiJv53TEP0vvQ" target="//@elements.4/@elements.0/@elements.2/@elements.9"/>
-        </elements>
-        <elements xsi:type="facade:TransferObjectType" name="MailingList_DTO" entityType="_jHvr8OdYEeiJv53TEP0vvQ">
-          <relations name="person" referenceTypedElement="_y1GVoOdYEeiJv53TEP0vvQ" target="//@elements.4/@elements.0/@elements.2/@elements.17"/>
-        </elements>
-        <elements xsi:type="namespace:Package" generated="true" name="package"/>
-      </elements>
-      <elements xsi:type="namespace:Package" generated="true" name="facades"/>
+  <elements xsi:type="namespace:Package" name="facades_all">
+    <elements xsi:type="facade:TransferObjectType" name="Category_TransferObject" entityType="_43ZPcINkEeiLE-B2bbL0fg">
+      <relations name="products" upper="-1" referenceTypedElement="_892OYLwCEeiOuYiCo6IbXQ" target="//@elements.4/@elements.1"/>
+      <relations name="owner" lower="1" referenceTypedElement="_NACAMOdTEeiJv53TEP0vvQ" target="//@elements.4/@elements.9"/>
+      <attributes name="categoryName" required="true" primitiveTypedElement="_v7k5EINmEeiLE-B2bbL0fg" dataType="_Nppx8IUcEeipmMyz9cMCRA"/>
+      <attributes name="description" primitiveTypedElement="_Vsjt0INuEeiLE-B2bbL0fg" dataType="_tXQUoIOGEeiLE-B2bbL0fg"/>
+      <attributes name="picture" primitiveTypedElement="_cwpboINuEeiLE-B2bbL0fg" dataType="_j-zrcINuEeiLE-B2bbL0fg"/>
+      <attributes name="attribute1" primitiveTypedElement="_PDqroHf9EemmIKzNkXirjQ" dataType="_Nppx8IUcEeipmMyz9cMCRA"/>
+    </elements>
+    <elements xsi:type="facade:TransferObjectType" name="Product_TransferObject" entityType="_6XH80INkEeiLE-B2bbL0fg">
+      <relations name="category" referenceTypedElement="_CkXK8LwDEeiOuYiCo6IbXQ" target="//@elements.4/@elements.0"/>
+      <relations name="supplier" referenceTypedElement="_vfAfILwMEeiOuYiCo6IbXQ" target="//@elements.4/@elements.6"/>
+      <relations name="manufacturers" upper="-1" referenceTypedElement="_NN_HMOdUEeiJv53TEP0vvQ" target="//@elements.4/@elements.5"/>
+      <relations name="store" lower="1" referenceTypedElement="_VnJ8IOdVEeiJv53TEP0vvQ" target="//@elements.4/@elements.16"/>
+      <attributes name="productName" required="true" primitiveTypedElement="_LhnHUINvEeiLE-B2bbL0fg" dataType="_Nppx8IUcEeipmMyz9cMCRA"/>
+      <attributes name="quantityPerUnit" primitiveTypedElement="_XoxtcINvEeiLE-B2bbL0fg" dataType="_TXtg8IUcEeipmMyz9cMCRA"/>
+      <attributes name="unitPrice" primitiveTypedElement="_bBDQ0INvEeiLE-B2bbL0fg" dataType="_VDVVQIUcEeipmMyz9cMCRA"/>
+      <attributes name="unitsInStock" primitiveTypedElement="_gZEMcINxEeiLE-B2bbL0fg" dataType="_TXtg8IUcEeipmMyz9cMCRA"/>
+      <attributes name="unitsOnOrder" primitiveTypedElement="_oMaM8INxEeiLE-B2bbL0fg" dataType="_TXtg8IUcEeipmMyz9cMCRA"/>
+      <attributes name="reorderLevel" primitiveTypedElement="_qvdYgINxEeiLE-B2bbL0fg" dataType="_TXtg8IUcEeipmMyz9cMCRA"/>
+      <attributes name="discounted" primitiveTypedElement="_tYB9QINxEeiLE-B2bbL0fg" dataType="_Xos1AIUcEeipmMyz9cMCRA"/>
+      <attributes name="weight" primitiveTypedElement="_cEwUYB5NEemwg4NgOjaKeA" dataType="_h2iYkB1XEemwg4NgOjaKeA"/>
+    </elements>
+    <elements xsi:type="facade:TransferObjectType" name="Customer_TransferObject" entityType="_86B-cINkEeiLE-B2bbL0fg">
+      <relations name="orders" upper="-1" referenceTypedElement="_KCBq0LwNEeiOuYiCo6IbXQ" target="//@elements.4/@elements.3"/>
+      <relations name="addresses" upper="-1" referenceTypedElement="_P60NsLwOEeiOuYiCo6IbXQ" target="//@elements.4/@elements.15" embedded="true"/>
+    </elements>
+    <elements xsi:type="facade:TransferObjectType" name="Order_TransferObject" entityType="_-H4RoINkEeiLE-B2bbL0fg">
+      <relations name="customer" referenceTypedElement="_OL6RULwNEeiOuYiCo6IbXQ" target="//@elements.4/@elements.2"/>
+      <relations name="shipper" referenceTypedElement="_WVBGcLwNEeiOuYiCo6IbXQ" target="//@elements.4/@elements.7"/>
+      <relations name="employee" referenceTypedElement="_gfRT8LwNEeiOuYiCo6IbXQ" target="//@elements.4/@elements.9"/>
+      <relations name="shipAddress" referenceTypedElement="_spywELwNEeiOuYiCo6IbXQ" target="//@elements.4/@elements.19" embedded="true"/>
+      <relations name="orderDetails" upper="-1" referenceTypedElement="_2CC44LwNEeiOuYiCo6IbXQ" target="//@elements.4/@elements.4" embedded="true"/>
+      <relations name="itemsWithCategoryPicture" upper="-1" referenceTypedElement="_qsmPsCVtEemLpvUY7MQgng" target="//@elements.4/@elements.4"/>
+      <attributes name="orderDate" required="true" primitiveTypedElement="_WXvUoIN1EeiLE-B2bbL0fg" dataType="_Z9J8IIN1EeiLE-B2bbL0fg"/>
+      <attributes name="requiredDate" primitiveTypedElement="_ebkoMIN1EeiLE-B2bbL0fg" dataType="_Z9J8IIN1EeiLE-B2bbL0fg"/>
+      <attributes name="shippedDate" primitiveTypedElement="_huP54IN1EeiLE-B2bbL0fg" dataType="_Z9J8IIN1EeiLE-B2bbL0fg"/>
+      <attributes name="freight" primitiveTypedElement="_kUnfMIN1EeiLE-B2bbL0fg" dataType="_VDVVQIUcEeipmMyz9cMCRA"/>
+      <attributes name="shipName" primitiveTypedElement="_muoDgIN1EeiLE-B2bbL0fg" dataType="_Nppx8IUcEeipmMyz9cMCRA"/>
+      <attributes name="shipperName" required="true" primitiveTypedElement="_5i40sCVQEemLpvUY7MQgng" dataType="_Nppx8IUcEeipmMyz9cMCRA"/>
+      <attributes name="totalPrice" required="true" primitiveTypedElement="_7cYp8CVxEemLpvUY7MQgng" dataType="_VDVVQIUcEeipmMyz9cMCRA"/>
+      <attributes name="discount" required="true" primitiveTypedElement="_9jb2ACVxEemLpvUY7MQgng" dataType="_VDVVQIUcEeipmMyz9cMCRA"/>
+      <attributes name="discountedItemsWithSingleManufacturer" required="true" primitiveTypedElement="_LL8B4CYIEemLpvUY7MQgng" dataType="_TXtg8IUcEeipmMyz9cMCRA"/>
+    </elements>
+    <elements xsi:type="facade:TransferObjectType" name="OrderDetail_TransferObject" entityType="__XzocINkEeiLE-B2bbL0fg">
+      <relations name="product" lower="1" referenceTypedElement="_6QtRsLwNEeiOuYiCo6IbXQ" target="//@elements.4/@elements.1"/>
+      <attributes name="unitPrice" required="true" primitiveTypedElement="_bG7OUIN6EeiLE-B2bbL0fg" dataType="_VDVVQIUcEeipmMyz9cMCRA"/>
+      <attributes name="quantity" required="true" primitiveTypedElement="_d3obYIN6EeiLE-B2bbL0fg" dataType="_TXtg8IUcEeipmMyz9cMCRA"/>
+      <attributes name="discount" required="true" primitiveTypedElement="_jIROkIN6EeiLE-B2bbL0fg" dataType="_VDVVQIUcEeipmMyz9cMCRA"/>
+      <attributes name="productName" required="true" primitiveTypedElement="_mr-oACVvEemLpvUY7MQgng" dataType="_Nppx8IUcEeipmMyz9cMCRA"/>
+      <attributes name="categoryName" required="true" primitiveTypedElement="_2MDDoCVvEemLpvUY7MQgng" dataType="_Nppx8IUcEeipmMyz9cMCRA"/>
+    </elements>
+    <elements xsi:type="facade:TransferObjectType" name="Company_TransferObject" entityType="_DJ29wINlEeiLE-B2bbL0fg">
+      <relations name="manufacturedProducts" upper="-1" referenceTypedElement="_WQzLgOdUEeiJv53TEP0vvQ" target="//@elements.4/@elements.1"/>
+      <relations name="orders" upper="-1" referenceTypedElement="_KCBq0LwNEeiOuYiCo6IbXQ" target="//@elements.4/@elements.3"/>
+      <relations name="addresses" upper="-1" referenceTypedElement="_P60NsLwOEeiOuYiCo6IbXQ" target="//@elements.4/@elements.15" embedded="true"/>
+      <attributes name="companyName" required="true" primitiveTypedElement="_Pki0cINzEeiLE-B2bbL0fg" dataType="_Nppx8IUcEeipmMyz9cMCRA"/>
+      <attributes name="contactName" primitiveTypedElement="_0N8k0IN0EeiLE-B2bbL0fg" dataType="_Nppx8IUcEeipmMyz9cMCRA"/>
+      <attributes name="contactTitle" primitiveTypedElement="_2IvdkIN0EeiLE-B2bbL0fg" dataType="_Nppx8IUcEeipmMyz9cMCRA"/>
+      <attributes name="phone" primitiveTypedElement="_LGcmkIN1EeiLE-B2bbL0fg" dataType="_Lw4a8IOGEeiLE-B2bbL0fg"/>
+      <attributes name="fax" primitiveTypedElement="_L7hNYIN1EeiLE-B2bbL0fg" dataType="_Lw4a8IOGEeiLE-B2bbL0fg"/>
+    </elements>
+    <elements xsi:type="facade:TransferObjectType" name="Supplier_TransferObject" entityType="_FWhCkINlEeiLE-B2bbL0fg">
+      <relations name="suppliedProducts" upper="-1" referenceTypedElement="_vr4UMOdTEeiJv53TEP0vvQ" target="//@elements.4/@elements.1"/>
+      <relations name="manufacturedProducts" upper="-1" referenceTypedElement="_WQzLgOdUEeiJv53TEP0vvQ" target="//@elements.4/@elements.1"/>
+      <relations name="orders" upper="-1" referenceTypedElement="_KCBq0LwNEeiOuYiCo6IbXQ" target="//@elements.4/@elements.3"/>
+      <relations name="addresses" upper="-1" referenceTypedElement="_P60NsLwOEeiOuYiCo6IbXQ" target="//@elements.4/@elements.15" embedded="true"/>
+      <attributes name="homePage" primitiveTypedElement="_-x_D8IN3EeiLE-B2bbL0fg" dataType="_A5EFMIN4EeiLE-B2bbL0fg"/>
+      <attributes name="companyName" required="true" primitiveTypedElement="_Pki0cINzEeiLE-B2bbL0fg" dataType="_Nppx8IUcEeipmMyz9cMCRA"/>
+      <attributes name="contactName" primitiveTypedElement="_0N8k0IN0EeiLE-B2bbL0fg" dataType="_Nppx8IUcEeipmMyz9cMCRA"/>
+      <attributes name="contactTitle" primitiveTypedElement="_2IvdkIN0EeiLE-B2bbL0fg" dataType="_Nppx8IUcEeipmMyz9cMCRA"/>
+      <attributes name="phone" primitiveTypedElement="_LGcmkIN1EeiLE-B2bbL0fg" dataType="_Lw4a8IOGEeiLE-B2bbL0fg"/>
+      <attributes name="fax" primitiveTypedElement="_L7hNYIN1EeiLE-B2bbL0fg" dataType="_Lw4a8IOGEeiLE-B2bbL0fg"/>
+    </elements>
+    <elements xsi:type="facade:TransferObjectType" name="Shipper_TransferObject" entityType="_GnEEcINlEeiLE-B2bbL0fg">
+      <relations name="orders" upper="-1" referenceTypedElement="_Z9PKULwNEeiOuYiCo6IbXQ" target="//@elements.4/@elements.3"/>
+      <relations name="territory" referenceTypedElement="_ll8CIOdXEeiJv53TEP0vvQ" target="//@elements.4/@elements.10"/>
+      <attributes name="companyName" required="true" primitiveTypedElement="_bFyT8IN8EeiLE-B2bbL0fg" dataType="_Nppx8IUcEeipmMyz9cMCRA"/>
+      <attributes name="phone" primitiveTypedElement="_da04sIN8EeiLE-B2bbL0fg" dataType="_Lw4a8IOGEeiLE-B2bbL0fg"/>
+    </elements>
+    <elements xsi:type="facade:TransferObjectType" name="InternationalOrder_TransferObject" entityType="_MoVqYINlEeiLE-B2bbL0fg">
+      <relations name="customer" referenceTypedElement="_OL6RULwNEeiOuYiCo6IbXQ" target="//@elements.4/@elements.2"/>
+      <relations name="shipper" referenceTypedElement="_WVBGcLwNEeiOuYiCo6IbXQ" target="//@elements.4/@elements.7"/>
+      <relations name="employee" referenceTypedElement="_gfRT8LwNEeiOuYiCo6IbXQ" target="//@elements.4/@elements.9"/>
+      <relations name="shipAddress" referenceTypedElement="_spywELwNEeiOuYiCo6IbXQ" target="//@elements.4/@elements.19" embedded="true"/>
+      <relations name="orderDetails" upper="-1" referenceTypedElement="_2CC44LwNEeiOuYiCo6IbXQ" target="//@elements.4/@elements.4" embedded="true"/>
+      <relations name="itemsWithCategoryPicture" upper="-1" referenceTypedElement="_qsmPsCVtEemLpvUY7MQgng" target="//@elements.4/@elements.4"/>
+      <attributes name="customsDescription" required="true" primitiveTypedElement="_FpOkYIN_EeiLE-B2bbL0fg" dataType="_Nppx8IUcEeipmMyz9cMCRA"/>
+      <attributes name="exciseTax" required="true" primitiveTypedElement="_It85oIN_EeiLE-B2bbL0fg" dataType="_VDVVQIUcEeipmMyz9cMCRA"/>
+      <attributes name="orderDate" required="true" primitiveTypedElement="_WXvUoIN1EeiLE-B2bbL0fg" dataType="_Z9J8IIN1EeiLE-B2bbL0fg"/>
+      <attributes name="requiredDate" primitiveTypedElement="_ebkoMIN1EeiLE-B2bbL0fg" dataType="_Z9J8IIN1EeiLE-B2bbL0fg"/>
+      <attributes name="shippedDate" primitiveTypedElement="_huP54IN1EeiLE-B2bbL0fg" dataType="_Z9J8IIN1EeiLE-B2bbL0fg"/>
+      <attributes name="freight" primitiveTypedElement="_kUnfMIN1EeiLE-B2bbL0fg" dataType="_VDVVQIUcEeipmMyz9cMCRA"/>
+      <attributes name="shipName" primitiveTypedElement="_muoDgIN1EeiLE-B2bbL0fg" dataType="_Nppx8IUcEeipmMyz9cMCRA"/>
+      <attributes name="shipperName" required="true" primitiveTypedElement="_5i40sCVQEemLpvUY7MQgng" dataType="_Nppx8IUcEeipmMyz9cMCRA"/>
+      <attributes name="totalPrice" required="true" primitiveTypedElement="_7cYp8CVxEemLpvUY7MQgng" dataType="_VDVVQIUcEeipmMyz9cMCRA"/>
+      <attributes name="discount" required="true" primitiveTypedElement="_9jb2ACVxEemLpvUY7MQgng" dataType="_VDVVQIUcEeipmMyz9cMCRA"/>
+      <attributes name="discountedItemsWithSingleManufacturer" required="true" primitiveTypedElement="_LL8B4CYIEemLpvUY7MQgng" dataType="_TXtg8IUcEeipmMyz9cMCRA"/>
+    </elements>
+    <elements xsi:type="facade:TransferObjectType" name="Employee_TransferObject" entityType="_ONN9gINlEeiLE-B2bbL0fg">
+      <relations name="orders" upper="-1" referenceTypedElement="_jOFqoLwNEeiOuYiCo6IbXQ" target="//@elements.4/@elements.3"/>
+      <relations name="address" referenceTypedElement="_WyM8QLwOEeiOuYiCo6IbXQ" target="//@elements.4/@elements.15" embedded="true"/>
+      <relations name="reportsTo" referenceTypedElement="_Z6tlULwOEeiOuYiCo6IbXQ" target="//@elements.4/@elements.9"/>
+      <relations name="employees" upper="-1" referenceTypedElement="_cfMUQLwOEeiOuYiCo6IbXQ" target="//@elements.4/@elements.9"/>
+      <relations name="territory" referenceTypedElement="_h-pmkLwOEeiOuYiCo6IbXQ" target="//@elements.4/@elements.10"/>
+      <relations name="category" referenceTypedElement="_Y1GwwOdTEeiJv53TEP0vvQ" target="//@elements.4/@elements.0"/>
+      <attributes name="titleOfCourtesy" primitiveTypedElement="_DtM4YIOGEeiLE-B2bbL0fg" dataType="_Nppx8IUcEeipmMyz9cMCRA"/>
+      <attributes name="birthDate" primitiveTypedElement="_GGZkYIOGEeiLE-B2bbL0fg" dataType="_YoqOYIN1EeiLE-B2bbL0fg"/>
+      <attributes name="hireDate" primitiveTypedElement="_ISSNIIOGEeiLE-B2bbL0fg" dataType="_YoqOYIN1EeiLE-B2bbL0fg"/>
+      <attributes name="homePhone" primitiveTypedElement="_KMDLIIOGEeiLE-B2bbL0fg" dataType="_Lw4a8IOGEeiLE-B2bbL0fg"/>
+      <attributes name="extension" primitiveTypedElement="_k72OkIOGEeiLE-B2bbL0fg" dataType="_Nppx8IUcEeipmMyz9cMCRA"/>
+      <attributes name="photo" primitiveTypedElement="_mjzq4IOGEeiLE-B2bbL0fg" dataType="_j-zrcINuEeiLE-B2bbL0fg"/>
+      <attributes name="notes" primitiveTypedElement="_oo5IEIOGEeiLE-B2bbL0fg" dataType="_tXQUoIOGEeiLE-B2bbL0fg"/>
+      <attributes name="photoPath" primitiveTypedElement="_qg-EAIOGEeiLE-B2bbL0fg" dataType="_Nppx8IUcEeipmMyz9cMCRA"/>
+      <attributes name="lastName" required="true" primitiveTypedElement="_5nWpwIOFEeiLE-B2bbL0fg" dataType="_Nppx8IUcEeipmMyz9cMCRA"/>
+      <attributes name="firstName" required="true" primitiveTypedElement="_9angAIOFEeiLE-B2bbL0fg" dataType="_Nppx8IUcEeipmMyz9cMCRA"/>
+      <attributes name="title" primitiveTypedElement="__dhy8IOFEeiLE-B2bbL0fg" dataType="_hJ-K0I57EeioH6CUzUrG0Q"/>
+    </elements>
+    <elements xsi:type="facade:TransferObjectType" name="Territory_TransferObject" entityType="_QckxAINlEeiLE-B2bbL0fg">
+      <relations name="employees" upper="-1" referenceTypedElement="_klno0LwOEeiOuYiCo6IbXQ" target="//@elements.4/@elements.9"/>
+      <relations name="region" referenceTypedElement="__dS14LwOEeiOuYiCo6IbXQ" target="//@elements.4/@elements.11"/>
+      <relations name="shipper" referenceTypedElement="_vb1JMOdXEeiJv53TEP0vvQ" target="//@elements.4/@elements.7"/>
+      <attributes name="territoryDescription" required="true" primitiveTypedElement="_XOCQMIOFEeiLE-B2bbL0fg" dataType="_Nppx8IUcEeipmMyz9cMCRA"/>
+    </elements>
+    <elements xsi:type="facade:TransferObjectType" name="Region_TransferObject" entityType="_RocuQINlEeiLE-B2bbL0fg">
+      <relations name="territories" upper="-1" referenceTypedElement="_BEhSYLwPEeiOuYiCo6IbXQ" target="//@elements.4/@elements.10"/>
+      <attributes name="regionDescription" required="true" primitiveTypedElement="_U_SgsIOFEeiLE-B2bbL0fg" dataType="_Nppx8IUcEeipmMyz9cMCRA"/>
+    </elements>
+    <elements xsi:type="facade:TransferObjectType" name="OnlineOrder_TransferObject" entityType="_jUJwQJupEeidMOq99SGQ3A">
+      <relations name="customer" referenceTypedElement="_OL6RULwNEeiOuYiCo6IbXQ" target="//@elements.4/@elements.2"/>
+      <relations name="shipper" referenceTypedElement="_WVBGcLwNEeiOuYiCo6IbXQ" target="//@elements.4/@elements.7"/>
+      <relations name="employee" referenceTypedElement="_gfRT8LwNEeiOuYiCo6IbXQ" target="//@elements.4/@elements.9"/>
+      <relations name="shipAddress" referenceTypedElement="_spywELwNEeiOuYiCo6IbXQ" target="//@elements.4/@elements.19" embedded="true"/>
+      <relations name="orderDetails" upper="-1" referenceTypedElement="_2CC44LwNEeiOuYiCo6IbXQ" target="//@elements.4/@elements.4" embedded="true"/>
+      <relations name="itemsWithCategoryPicture" upper="-1" referenceTypedElement="_qsmPsCVtEemLpvUY7MQgng" target="//@elements.4/@elements.4"/>
+      <attributes name="webshopUrl" required="true" primitiveTypedElement="_sG6mYJupEeidMOq99SGQ3A" dataType="_A5EFMIN4EeiLE-B2bbL0fg"/>
+      <attributes name="orderDate" required="true" primitiveTypedElement="_WXvUoIN1EeiLE-B2bbL0fg" dataType="_Z9J8IIN1EeiLE-B2bbL0fg"/>
+      <attributes name="requiredDate" primitiveTypedElement="_ebkoMIN1EeiLE-B2bbL0fg" dataType="_Z9J8IIN1EeiLE-B2bbL0fg"/>
+      <attributes name="shippedDate" primitiveTypedElement="_huP54IN1EeiLE-B2bbL0fg" dataType="_Z9J8IIN1EeiLE-B2bbL0fg"/>
+      <attributes name="freight" primitiveTypedElement="_kUnfMIN1EeiLE-B2bbL0fg" dataType="_VDVVQIUcEeipmMyz9cMCRA"/>
+      <attributes name="shipName" primitiveTypedElement="_muoDgIN1EeiLE-B2bbL0fg" dataType="_Nppx8IUcEeipmMyz9cMCRA"/>
+      <attributes name="shipperName" required="true" primitiveTypedElement="_5i40sCVQEemLpvUY7MQgng" dataType="_Nppx8IUcEeipmMyz9cMCRA"/>
+      <attributes name="totalPrice" required="true" primitiveTypedElement="_7cYp8CVxEemLpvUY7MQgng" dataType="_VDVVQIUcEeipmMyz9cMCRA"/>
+      <attributes name="discount" required="true" primitiveTypedElement="_9jb2ACVxEemLpvUY7MQgng" dataType="_VDVVQIUcEeipmMyz9cMCRA"/>
+      <attributes name="discountedItemsWithSingleManufacturer" required="true" primitiveTypedElement="_LL8B4CYIEemLpvUY7MQgng" dataType="_TXtg8IUcEeipmMyz9cMCRA"/>
+    </elements>
+    <elements xsi:type="facade:TransferObjectType" name="OnlineInternationalOrder_TransferObject" entityType="_EhVb8JusEeidMOq99SGQ3A">
+      <relations name="customer" referenceTypedElement="_OL6RULwNEeiOuYiCo6IbXQ" target="//@elements.4/@elements.2"/>
+      <relations name="shipper" referenceTypedElement="_WVBGcLwNEeiOuYiCo6IbXQ" target="//@elements.4/@elements.7"/>
+      <relations name="employee" referenceTypedElement="_gfRT8LwNEeiOuYiCo6IbXQ" target="//@elements.4/@elements.9"/>
+      <relations name="shipAddress" referenceTypedElement="_spywELwNEeiOuYiCo6IbXQ" target="//@elements.4/@elements.19" embedded="true"/>
+      <relations name="orderDetails" upper="-1" referenceTypedElement="_2CC44LwNEeiOuYiCo6IbXQ" target="//@elements.4/@elements.4" embedded="true"/>
+      <relations name="itemsWithCategoryPicture" upper="-1" referenceTypedElement="_qsmPsCVtEemLpvUY7MQgng" target="//@elements.4/@elements.4"/>
+      <attributes name="onlineTrackingNumber" primitiveTypedElement="_G10AAJusEeidMOq99SGQ3A" dataType="_Nppx8IUcEeipmMyz9cMCRA"/>
+      <attributes name="customsDescription" required="true" primitiveTypedElement="_FpOkYIN_EeiLE-B2bbL0fg" dataType="_Nppx8IUcEeipmMyz9cMCRA"/>
+      <attributes name="exciseTax" required="true" primitiveTypedElement="_It85oIN_EeiLE-B2bbL0fg" dataType="_VDVVQIUcEeipmMyz9cMCRA"/>
+      <attributes name="orderDate" required="true" primitiveTypedElement="_WXvUoIN1EeiLE-B2bbL0fg" dataType="_Z9J8IIN1EeiLE-B2bbL0fg"/>
+      <attributes name="requiredDate" primitiveTypedElement="_ebkoMIN1EeiLE-B2bbL0fg" dataType="_Z9J8IIN1EeiLE-B2bbL0fg"/>
+      <attributes name="shippedDate" primitiveTypedElement="_huP54IN1EeiLE-B2bbL0fg" dataType="_Z9J8IIN1EeiLE-B2bbL0fg"/>
+      <attributes name="freight" primitiveTypedElement="_kUnfMIN1EeiLE-B2bbL0fg" dataType="_VDVVQIUcEeipmMyz9cMCRA"/>
+      <attributes name="shipName" primitiveTypedElement="_muoDgIN1EeiLE-B2bbL0fg" dataType="_Nppx8IUcEeipmMyz9cMCRA"/>
+      <attributes name="shipperName" required="true" primitiveTypedElement="_5i40sCVQEemLpvUY7MQgng" dataType="_Nppx8IUcEeipmMyz9cMCRA"/>
+      <attributes name="totalPrice" required="true" primitiveTypedElement="_7cYp8CVxEemLpvUY7MQgng" dataType="_VDVVQIUcEeipmMyz9cMCRA"/>
+      <attributes name="discount" required="true" primitiveTypedElement="_9jb2ACVxEemLpvUY7MQgng" dataType="_VDVVQIUcEeipmMyz9cMCRA"/>
+      <attributes name="discountedItemsWithSingleManufacturer" required="true" primitiveTypedElement="_LL8B4CYIEemLpvUY7MQgng" dataType="_TXtg8IUcEeipmMyz9cMCRA"/>
+      <attributes name="webshopUrl" required="true" primitiveTypedElement="_sG6mYJupEeidMOq99SGQ3A" dataType="_A5EFMIN4EeiLE-B2bbL0fg"/>
+    </elements>
+    <elements xsi:type="facade:TransferObjectType" name="City_TransferObject" entityType="_eKHIwJuzEeidMOq99SGQ3A">
+      <attributes name="name" primitiveTypedElement="_huAGQJuzEeidMOq99SGQ3A" dataType="_Nppx8IUcEeipmMyz9cMCRA"/>
+    </elements>
+    <elements xsi:type="facade:TransferObjectType" name="Address_TransferObject" entityType="_SDnggLv-EeiOuYiCo6IbXQ">
+      <relations name="city" lower="1" referenceTypedElement="_teSs8Lv-EeiOuYiCo6IbXQ" target="//@elements.4/@elements.14"/>
+      <attributes name="address" required="true" primitiveTypedElement="_VByh0Lv-EeiOuYiCo6IbXQ" dataType="_Nppx8IUcEeipmMyz9cMCRA"/>
+      <attributes name="region" primitiveTypedElement="_X28KALv-EeiOuYiCo6IbXQ" dataType="_Nppx8IUcEeipmMyz9cMCRA"/>
+      <attributes name="postalCode" required="true" primitiveTypedElement="_ZGwzILv-EeiOuYiCo6IbXQ" dataType="_Nppx8IUcEeipmMyz9cMCRA"/>
+    </elements>
+    <elements xsi:type="facade:TransferObjectType" name="Store_TransferObject" entityType="_c7JHIOdVEeiJv53TEP0vvQ">
+      <relations name="products" upper="-1" referenceTypedElement="_gqZAEOdVEeiJv53TEP0vvQ" target="//@elements.4/@elements.1"/>
+    </elements>
+    <elements xsi:type="facade:TransferObjectType" name="Person_TransferObject" entityType="_rIapkLzhEeiOuYiCo6IbXQ">
+      <attributes name="lastName" required="true" primitiveTypedElement="_5nWpwIOFEeiLE-B2bbL0fg" dataType="_Nppx8IUcEeipmMyz9cMCRA"/>
+      <attributes name="firstName" required="true" primitiveTypedElement="_9angAIOFEeiLE-B2bbL0fg" dataType="_Nppx8IUcEeipmMyz9cMCRA"/>
+      <attributes name="title" primitiveTypedElement="__dhy8IOFEeiLE-B2bbL0fg" dataType="_hJ-K0I57EeioH6CUzUrG0Q"/>
+    </elements>
+    <elements xsi:type="facade:TransferObjectType" name="Individual_TransferObject" entityType="_cPlugL1tEeiOuYiCo6IbXQ">
+      <relations name="orders" upper="-1" referenceTypedElement="_KCBq0LwNEeiOuYiCo6IbXQ" target="//@elements.4/@elements.3"/>
+      <relations name="addresses" upper="-1" referenceTypedElement="_P60NsLwOEeiOuYiCo6IbXQ" target="//@elements.4/@elements.15" embedded="true"/>
+      <attributes name="phone" primitiveTypedElement="_hZhcwL1tEeiOuYiCo6IbXQ" dataType="_Lw4a8IOGEeiLE-B2bbL0fg"/>
+      <attributes name="lastName" required="true" primitiveTypedElement="_5nWpwIOFEeiLE-B2bbL0fg" dataType="_Nppx8IUcEeipmMyz9cMCRA"/>
+      <attributes name="firstName" required="true" primitiveTypedElement="_9angAIOFEeiLE-B2bbL0fg" dataType="_Nppx8IUcEeipmMyz9cMCRA"/>
+      <attributes name="title" primitiveTypedElement="__dhy8IOFEeiLE-B2bbL0fg" dataType="_hJ-K0I57EeioH6CUzUrG0Q"/>
+    </elements>
+    <elements xsi:type="facade:TransferObjectType" name="InternationalAddress_TransferObject" entityType="_vTNmEL2REeiOuYiCo6IbXQ">
+      <relations name="city" lower="1" referenceTypedElement="_teSs8Lv-EeiOuYiCo6IbXQ" target="//@elements.4/@elements.14"/>
+      <attributes name="country" primitiveTypedElement="_bAzd8Lv-EeiOuYiCo6IbXQ" dataType="_G2wVsI57EeioH6CUzUrG0Q"/>
+      <attributes name="address" required="true" primitiveTypedElement="_VByh0Lv-EeiOuYiCo6IbXQ" dataType="_Nppx8IUcEeipmMyz9cMCRA"/>
+      <attributes name="region" primitiveTypedElement="_X28KALv-EeiOuYiCo6IbXQ" dataType="_Nppx8IUcEeipmMyz9cMCRA"/>
+      <attributes name="postalCode" required="true" primitiveTypedElement="_ZGwzILv-EeiOuYiCo6IbXQ" dataType="_Nppx8IUcEeipmMyz9cMCRA"/>
+    </elements>
+    <elements xsi:type="facade:TransferObjectType" name="PaymentList_TransferObject" entityType="_ehrfwOdYEeiJv53TEP0vvQ">
+      <relations name="employees" lower="1" upper="-1" referenceTypedElement="_nxkWwOdYEeiJv53TEP0vvQ" target="//@elements.4/@elements.9"/>
+    </elements>
+    <elements xsi:type="facade:TransferObjectType" name="MailingList_TransferObject" entityType="_jHvr8OdYEeiJv53TEP0vvQ">
+      <relations name="person" referenceTypedElement="_y1GVoOdYEeiJv53TEP0vvQ" target="//@elements.4/@elements.17"/>
     </elements>
   </elements>
 </namespace:Model>
