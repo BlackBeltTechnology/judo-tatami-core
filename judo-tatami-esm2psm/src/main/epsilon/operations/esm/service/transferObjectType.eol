@@ -1,0 +1,38 @@
+//TODO: fix entityReferencePresence in transferObjectType.etl
+/*
+@cached
+operation ESM!EntityReferenceType getPSMEquivalent(): JUDOPSM!EntityReferenceType {
+	switch (self) {
+		case ESM!EntityReferenceType#REQUIRED : return JUDOPSM!EntityReferenceType#REQUIRED;
+		case ESM!EntityReferenceType#OPTIONAL : return JUDOPSM!EntityReferenceType#OPTIONAL;
+		case ESM!EntityReferenceType#NOT_SUPPORTED : return JUDOPSM!EntityReferenceType#NOT_SUPPORTED;
+		default: throw "Unsupported ESM!EntityReferenceType!";
+	}
+}
+*/
+
+operation ESM!TransferObjectType isMapped() : Boolean {
+	return self.entityType.isDefined();
+} 
+
+operation ESM!TransferObjectType getPSMEquivalent() : JUDOPSM!TransferObjectType {
+	if(self.isMapped()) {
+		return self.equivalent("CreateMappedTransferObjectType");
+	} else {
+		return self.equivalent("CreateUnmappedTransferObjectType");
+	}
+}
+
+operation ESM!Parameter isInput() : Boolean {
+	return ESM!Operation.all.selectOne(op | op.input = self);
+}
+
+operation ESM!Parameter getOperation() : ESM!Operation {
+	var esmOP : ESM!Operation;
+	//TODO: finish (other operation fields)
+	//if (self.isInput()) {
+	esmOP = ESM!Operation.all.selectOne(op | op.faults.includes(s));
+	//} else {
+	return esmOP;
+	//}
+}
