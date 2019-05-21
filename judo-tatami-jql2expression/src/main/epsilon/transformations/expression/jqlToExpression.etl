@@ -10,13 +10,19 @@ pre {
         var selfName = "self";
         
         if (b.className.isDefined()) {
-            var found = transferObjectInstances.selectOne(i | selfName == i.name and b.packageName == i.elementName.namespace and b.className == i.elementName.name);
+            var packageName;
+            if (b.packageName.isDefined()) {
+                packageName = b.packageName.toExpressionNamespace();
+            } else {
+                packageName = "";
+            }
+            var found = transferObjectInstances.selectOne(i | selfName == i.name and packageName == i.elementName.namespace and b.className == i.elementName.name);
             
             if (not found.isDefined()) {
 		        var instance = new EXPR!Instance;
 		        instance.name = selfName;
 		        instance.elementName = new EXPR!TypeName;
-		        instance.elementName.namespace = b.packageName;
+		        instance.elementName.namespace = packageName;
 		        instance.elementName.name = b.className;
 		        
 		        transferObjectInstances.add(instance);

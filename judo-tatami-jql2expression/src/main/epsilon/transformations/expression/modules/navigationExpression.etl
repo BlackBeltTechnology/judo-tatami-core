@@ -24,7 +24,7 @@ rule NavigationExpressionBaseToInstance
   	guard: s.isBasedOnObject() and s.isBasedOnVariable()
   	
   	var instance = transferObjectInstances.selectOne(i | s.getVariable().typeName == i.elementName.name and
-  	                                                     s.getVariable().typeNamespace == i.elementName.namespace and
+  	                                                     s.getVariable().typeNamespace.toExpressionNamespace() == i.elementName.namespace and
   	                                                     s.getVariable().name == i.name);
   	
   	t.variable = instance;
@@ -44,7 +44,7 @@ rule NavigationExpressionBaseToCollection
   	guard: s.isBasedOnCollection() and not s.isBasedOnStructuredType()
   	
   	var instance = transferObjectInstances.selectOne(i | s.getVariable().typeName == i.elementName.name and
-  	                                                     s.getVariable().typeNamespace == i.elementName.namespace and
+  	                                                     s.getVariable().typeNamespace.toExpressionNamespace() == i.elementName.namespace and
   	                                                     s.getVariable().name == i.name);
   	                                                     
   	t.variable = instance;
@@ -57,7 +57,8 @@ rule NavigationExpressionBaseToTypeName
   	
   	var objectType = s.base.getStructuredTypeByName();
   	t.name = objectType.name;
+  	
   	if (objectType.ePackage.isDefined()) {
-  	    t.namespace = objectType.ePackage.asString();
+  	    t.namespace = objectType.ePackage.asString().toExpressionNamespace();
   	}
 }

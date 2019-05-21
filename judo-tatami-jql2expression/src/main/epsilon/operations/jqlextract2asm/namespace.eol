@@ -1,0 +1,4 @@
+@cached
+operation String toExpressionNamespace() : String {
+    return self.replaceAll("::", ".");
+}
