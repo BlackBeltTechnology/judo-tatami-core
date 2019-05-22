@@ -7,7 +7,6 @@ import hu.blackbelt.judo.meta.expression.runtime.ExpressionModel;
 import hu.blackbelt.judo.meta.liquibase.runtime.LiquibaseModel;
 import hu.blackbelt.judo.meta.measure.runtime.MeasureModel;
 import hu.blackbelt.judo.meta.openapi.runtime.OpenAPIModel;
-import hu.blackbelt.judo.meta.psm.jql.extract.runtime.PsmJqlExtractModel;
 import hu.blackbelt.judo.meta.psm.runtime.PsmModel;
 import hu.blackbelt.judo.meta.rdbms.RdbmsTable;
 import hu.blackbelt.judo.meta.rdbms.runtime.RdbmsModel;
@@ -43,11 +42,9 @@ import java.util.stream.Collectors;
 import static hu.blackbelt.judo.framework.KarafTestUtil.karafConfig;
 import static hu.blackbelt.judo.framework.KarafTestUtil.karafStandardRepo;
 import static hu.blackbelt.judo.meta.asm.runtime.AsmModelLoader.getAsmDefaultSaveOptions;
-import static hu.blackbelt.judo.meta.expression.runtime.ExpressionModelLoader.getExpressionDefaultSaveOptions;
 import static hu.blackbelt.judo.meta.liquibase.runtime.LiquibaseModelLoader.getLiquibaseDefaultSaveOptions;
 import static hu.blackbelt.judo.meta.measure.runtime.MeasureModelLoader.getMeasureModelDefaultSaveOptions;
 import static hu.blackbelt.judo.meta.openapi.runtime.OpenAPIModelLoader.getOpenAPIModelDefaultSaveOptions;
-import static hu.blackbelt.judo.meta.psm.jql.extract.runtime.PsmJqlExtractModelLoader.getPsmJqlExtractDefaultSaveOptions;
 import static hu.blackbelt.judo.meta.psm.runtime.PsmModelLoader.getPsmDefaultSaveOptions;
 import static hu.blackbelt.judo.meta.rdbms.runtime.RdbmsModelLoader.getRdbmsModelDefaultSaveOptions;
 import static hu.blackbelt.judo.tatami.itest.TatamiTestUtil.*;
@@ -87,7 +84,6 @@ public class TatamiPSMTransformationPipelineITest {
     public static final String FEATURE_JUDO_TATAMI_META_ASM = "judo-tatami-meta-asm";
     public static final String FEATURE_JUDO_TATAMI_META_PSM = "judo-tatami-meta-psm";
     public static final String FEATURE_JUDO_TATAMI_META_JQL = "judo-tatami-meta-jql";
-    public static final String FEATURE_JUDO_TATAMI_META_JQL_EXTRACT = "judo-tatami-meta-jql-extract";
     public static final String FEATURE_JUDO_TATAMI_META_EXPRESSION = "judo-tatami-meta-expression";
     public static final String FEATURE_JUDO_TATAMI_CORE = "judo-tatami-core";
     public static final String FEATURE_JUDO_TATAMI_META_LIQUIBASE = "judo-tatami-meta-liquibase";
@@ -95,12 +91,10 @@ public class TatamiPSMTransformationPipelineITest {
     public static final String FEATURE_JUDO_TATAMI_META_OPENAPI = "judo-tatami-meta-openapi";
     public static final String FEATURE_JUDO_TATAMI_META_MEASURE = "judo-tatami-meta-measure";
     public static final String FEATURE_JUDO_TATAMI_PSM_2_ASM = "judo-tatami-psm2asm";
-    public static final String FEATURE_JUDO_TATAMI_PSM_2_JQL = "judo-tatami-psm2jql";
     public static final String FEATURE_JUDO_TATAMI_PSM_2_MEASURE = "judo-tatami-psm2measure";
     public static final String FEATURE_JUDO_TATAMI_ASM_2_JAXRSAPI = "judo-tatami-asm2jaxrsapi";
     public static final String FEATURE_JUDO_TATAMI_ASM_2_OPENAPI = "judo-tatami-asm2openapi";
     public static final String FEATURE_JUDO_TATAMI_RDBMS_2_LIQUIBASE = "judo-tatami-rdbms2liquibase";
-    public static final String FEATURE_JUDO_TATAMI_JQL_2_EXPRESSION = "judo-tatami-jql2expression";
     public static final String FEATURE_JUDO_TATAMI_ASM_2_RDBMS = "judo-tatami-asm2rdbms";
 
     @Inject
@@ -116,9 +110,6 @@ public class TatamiPSMTransformationPipelineITest {
     protected AsmModel asmModel;
 
     @Inject
-    protected PsmJqlExtractModel psmJqlExtractModel;
-
-    @Inject
     protected RdbmsModel rdbmsModel;
 
     @Inject
@@ -126,9 +117,6 @@ public class TatamiPSMTransformationPipelineITest {
 
     @Inject
     protected LiquibaseModel liquibaseModel;
-
-    @Inject
-    protected ExpressionModel expressionModel;
 
     @Inject
     protected OpenAPIModel openAPIModel;
@@ -179,10 +167,10 @@ public class TatamiPSMTransformationPipelineITest {
                 features(apacheCxf(), FEATURE_SWAGGER_CORE, FEATURE_CXF_JACKSON, FEATURE_CXF_JAXRS),
 
                 features(blackbeltTatami(), FEATURE_JUDO_TATAMI_META_ASM, FEATURE_JUDO_TATAMI_META_PSM, FEATURE_JUDO_TATAMI_META_JQL,
-                        FEATURE_JUDO_TATAMI_META_JQL_EXTRACT, FEATURE_JUDO_TATAMI_META_EXPRESSION,
+                        FEATURE_JUDO_TATAMI_META_EXPRESSION,
                         FEATURE_JUDO_TATAMI_META_MEASURE, FEATURE_JUDO_TATAMI_META_OPENAPI, FEATURE_JUDO_TATAMI_META_RDBMS, FEATURE_JUDO_TATAMI_META_LIQUIBASE, FEATURE_JUDO_TATAMI_CORE,
-                        FEATURE_JUDO_TATAMI_PSM_2_ASM, FEATURE_JUDO_TATAMI_PSM_2_JQL, FEATURE_JUDO_TATAMI_PSM_2_MEASURE, FEATURE_JUDO_TATAMI_ASM_2_JAXRSAPI, FEATURE_JUDO_TATAMI_ASM_2_OPENAPI,
-                        FEATURE_JUDO_TATAMI_ASM_2_RDBMS, FEATURE_JUDO_TATAMI_JQL_2_EXPRESSION, FEATURE_JUDO_TATAMI_RDBMS_2_LIQUIBASE),
+                        FEATURE_JUDO_TATAMI_PSM_2_ASM, FEATURE_JUDO_TATAMI_PSM_2_MEASURE, FEATURE_JUDO_TATAMI_ASM_2_JAXRSAPI, FEATURE_JUDO_TATAMI_ASM_2_OPENAPI,
+                        FEATURE_JUDO_TATAMI_ASM_2_RDBMS, FEATURE_JUDO_TATAMI_RDBMS_2_LIQUIBASE),
 
 
                 newConfiguration("hu.blackbelt.jaxrs.providers.JacksonProvider")
@@ -230,12 +218,6 @@ public class TatamiPSMTransformationPipelineITest {
         psmModel.getResourceSet().getResource(psmModel.getUri(), false)
                 .save(new FileOutputStream(new File("itest-northwind-psm.model")), getPsmDefaultSaveOptions());
 
-        expressionModel.getResourceSet().getResource(expressionModel.getUri(), false)
-                .save(new FileOutputStream(new File("itest-northwind-expression.model")), getExpressionDefaultSaveOptions());
-
-        psmJqlExtractModel.getResourceSet().getResource(psmJqlExtractModel.getUri(), false)
-                .save(new FileOutputStream(new File("itest-northwind-jqlextract.model")), getPsmJqlExtractDefaultSaveOptions());
-
         rdbmsModel.getResourceSet().getResource(rdbmsModel.getUri(), false)
                 .save(new FileOutputStream(new File("itest-northwind-rdbms.model")), getRdbmsModelDefaultSaveOptions());
 
@@ -260,7 +242,7 @@ public class TatamiPSMTransformationPipelineITest {
         Collection<ServiceReference<TransformationTrace>> transformationTraces = bundleContext.getServiceReferences(TransformationTrace.class, null);
 
         assertThat(transformationTraces.stream().map(r -> bundleContext.getService(r).getTransformationTraceName()).collect(Collectors.toList()),
-                containsInAnyOrder( "asm2openapi", "asm2rdbms", "psm2measure", "psm2jqlextract", "psm2asm", "jqlextract2expression"));
+                containsInAnyOrder( "asm2openapi", "asm2rdbms", "psm2measure", "psm2asm"));
 
 
         AsmUtils asmUtils = new AsmUtils(asmModel.getResourceSet());

@@ -30,12 +30,12 @@
         <bundle>mvn:hu.blackbelt.judo.meta/judo-meta-psm-jql-runtime/${judo-meta-psm-jql-version}</bundle>
     </feature>
 
-    <feature name="judo-tatami-meta-jql-extract" version="${project.version}" description="JUDO Tatami, JUDO Query Language Scope Model" install="false">
+    <!--feature name="judo-tatami-meta-jql-extract" version="${project.version}" description="JUDO Tatami, JUDO Query Language Scope Model" install="false">
         <feature dependency="true">epsilon-runtime</feature>
         <feature dependency="true">osgi-utils</feature>
         <feature>judo-tatami-meta-jql</feature>
         <bundle>mvn:hu.blackbelt.judo.meta/judo-meta-psm-jql-extract-runtime/${judo-meta-psm-jql-extract-version}</bundle>
-    </feature>
+    </feature-->
 
     <feature name="judo-tatami-meta-expression" version="${project.version}" description="JUDO Tatami, Expression Model " install="false">
         <feature dependency="true">epsilon-runtime</feature>
@@ -72,7 +72,7 @@
         <feature>judo-tatami-meta-asm</feature>
         <feature>judo-tatami-meta-psm</feature>
         <feature>judo-tatami-meta-jql</feature>
-        <feature>judo-tatami-meta-jql-extract</feature>
+        <!--feature>judo-tatami-meta-jql-extract</feature-->
         <feature>judo-tatami-meta-expression</feature>
         <feature>judo-tatami-meta-measure</feature>
         <feature>judo-tatami-meta-openapi</feature>
@@ -104,13 +104,13 @@
         <bundle>mvn:hu.blackbelt.judo.tatami/judo-tatami-psm2asm/${project.version}</bundle>
     </feature>
 
-    <feature name="judo-tatami-psm2jql" version="${project.version}" description="JUDO Tatami, PSM to JQL Transformation" install="false">
+    <!--feature name="judo-tatami-psm2jql" version="${project.version}" description="JUDO Tatami, PSM to JQL Transformation" install="false">
         <feature>judo-tatami-meta-jql</feature>
         <feature>judo-tatami-meta-psm</feature>
         <feature>judo-tatami-meta-jql-extract</feature>
         <feature>judo-tatami-core</feature>
         <bundle>mvn:hu.blackbelt.judo.tatami/judo-tatami-psm2jql/${project.version}</bundle>
-    </feature>
+    </feature-->
 
     <feature name="judo-tatami-psm2measure" version="${project.version}" description="JUDO Tatami, PSM to Measure Transformation" install="false">
         <feature>judo-tatami-meta-measure</feature>
@@ -142,52 +142,19 @@
         <bundle>mvn:hu.blackbelt.judo.tatami/judo-tatami-asm2rdbms/${project.version}</bundle>
     </feature>
 
-    <feature name="judo-tatami-jql2expression" version="${project.version}" description="JUDO Tatami, JQL to Expression" install="false">
+    <!--feature name="judo-tatami-jql2expression" version="${project.version}" description="JUDO Tatami, JQL to Expression" install="false">
         <feature>judo-tatami-meta-jql</feature>
         <feature>judo-tatami-meta-jql-extract</feature>
         <feature>judo-tatami-meta-expression</feature>
         <feature>judo-tatami-meta-measure</feature>
         <feature>judo-tatami-core</feature>
         <bundle>mvn:hu.blackbelt.judo.tatami/judo-tatami-jql2expression/${project.version}</bundle>
-    </feature>
+    </feature-->
 
-    <feature name="judo-tatami-rdbms2liquibase" version="${project.version}" description="JUDO Tatami, JQL to Expression" install="false">
+    <feature name="judo-tatami-rdbms2liquibase" version="${project.version}" description="JUDO Tatami, RDBMS to Liquibase" install="false">
         <feature>judo-tatami-meta-rdbms</feature>
         <feature>judo-tatami-meta-liquibase</feature>
         <feature>judo-tatami-core</feature>
         <bundle>mvn:hu.blackbelt.judo.tatami/judo-tatami-rdbms2liquibase/${project.version}</bundle>
     </feature>
-
-<!--
-<feature name="judo-tatami" version="${project.version}" description="JUDO Tatami, tatami" install="false">
-    <bundle dependency="true">mvn:hu.blackbelt.judo.framework/compiler-api/${judo-framework-version}</bundle>
-
-    <feature>judo-tatami-meta</feature>
-    <feature dependency="true">tinybundles</feature>
-
-    <bundle>mvn:hu.blackbelt.judo.tatami/judo-tatami-core/${project.version}</bundle>
-
-    <bundle>mvn:hu.blackbelt.judo.tatami/judo-tatami-psm2asm/${project.version}</bundle>
-    <bundle>mvn:hu.blackbelt.judo.tatami/judo-tatami-psm2jql/${project.version}</bundle>
-    <bundle>mvn:hu.blackbelt.judo.tatami/judo-tatami-psm2measure/${project.version}</bundle>
-
-    <bundle>mvn:hu.blackbelt.judo.tatami/judo-tatami-asm2jaxrsapi/${project.version}</bundle>
-    <bundle>mvn:hu.blackbelt.judo.tatami/judo-tatami-asm2openapi/${project.version}</bundle>
-    <bundle>mvn:hu.blackbelt.judo.tatami/judo-tatami-asm2rdbms/${project.version}</bundle>
-
-    <bundle>mvn:hu.blackbelt.judo.tatami/judo-tatami-jql2expression/${project.version}</bundle>
-    <bundle>mvn:hu.blackbelt.judo.tatami/judo-tatami-rdbms2liquibase/${project.version}</bundle>
-
-</feature>
-
-<feature name="judo-tatami-full" version="${project.version}" description="JUDO platform, full" install="false">
-    <feature dependency="true">judo-framework-full</feature>
-    <config name="hu.blackbelt.jaxrs.providers.JacksonProvider">
-        JacksonProvider.SerializationFeature.INDENT_OUTPUT = true
-    </config>
-    <feature>judo-tatami-meta</feature>
-    <feature>judo-tatami</feature>
-</feature>
--->
-
 </features>
