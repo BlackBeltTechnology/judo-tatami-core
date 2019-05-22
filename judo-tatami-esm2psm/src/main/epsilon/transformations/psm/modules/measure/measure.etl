@@ -3,6 +3,7 @@ import "../type/type.etl";
 import "../../../../operations/esm/measure/measure.eol";
 
 @lazy
+@greedy
 rule CreateMeasure
 	transform s: ESM!Measure
 	to t: JUDOPSM!Measure 
