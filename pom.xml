@@ -16,8 +16,10 @@
         -->
         <module>judo-tatami-asm2rdbms</module>
         <module>judo-tatami-rdbms2liquibase</module>
+        <!--
         <module>judo-tatami-psm2jql</module>
         <module>judo-tatami-jql2expression</module>
+        -->
         <module>judo-tatami-asm2openapi</module>
         <module>judo-tatami-asm2jaxrsapi</module>
         <module>judo-tatami-asm2sdk</module>

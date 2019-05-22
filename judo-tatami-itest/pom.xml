@@ -287,11 +287,11 @@
             <artifactId>judo-meta-psm-jql-runtime</artifactId>
             <scope>test</scope>
         </dependency>
-        <dependency>
+        <!--dependency>
             <groupId>hu.blackbelt.judo.meta</groupId>
             <artifactId>judo-meta-psm-jql-extract-runtime</artifactId>
             <scope>test</scope>
-        </dependency>
+        </dependency-->
         <dependency>
             <groupId>hu.blackbelt.judo.meta</groupId>
             <artifactId>judo-meta-esm-runtime</artifactId>
@@ -383,11 +383,11 @@
             <scope>test</scope>
         </dependency>
 
-        <dependency>
+        <!--dependency>
             <groupId>hu.blackbelt.judo.tatami</groupId>
             <artifactId>judo-tatami-jql2expression</artifactId>
             <scope>test</scope>
-        </dependency>
+        </dependency-->
 
         <dependency>
             <groupId>hu.blackbelt.judo.tatami</groupId>
@@ -395,11 +395,11 @@
             <scope>test</scope>
         </dependency>
 
-        <dependency>
+        <!--dependency>
             <groupId>hu.blackbelt.judo.tatami</groupId>
             <artifactId>judo-tatami-psm2jql</artifactId>
             <scope>test</scope>
-        </dependency>
+        </dependency-->
 
         <dependency>
             <groupId>hu.blackbelt.judo.tatami</groupId>

@@ -99,7 +99,7 @@
                                         <feature>judo-tatami-meta-esm</feature>
                                         <feature>judo-tatami-meta-psm</feature>
                                         <feature>judo-tatami-meta-jql</feature>
-                                        <feature>judo-tatami-meta-jql-extract</feature>
+                                        <!--feature>judo-tatami-meta-jql-extract</feature-->
                                         <feature>judo-tatami-meta-expression</feature>
                                         <feature>judo-tatami-meta-measure</feature>
                                         <feature>judo-tatami-meta-openapi</feature>
@@ -108,12 +108,12 @@
                                         <feature>judo-tatami-core</feature>
                                         <feature>judo-tatami-esm2psm</feature>
                                         <feature>judo-tatami-psm2asm</feature>
-                                        <feature>judo-tatami-psm2jql</feature>
+                                        <!--feature>judo-tatami-psm2jql</feature-->
                                         <feature>judo-tatami-psm2measure</feature>
                                         <feature>judo-tatami-asm2jaxrsapi</feature>
                                         <feature>judo-tatami-asm2openapi</feature>
                                         <feature>judo-tatami-asm2rdbms</feature>
-                                        <feature>judo-tatami-jql2expression</feature>
+                                        <!--feature>judo-tatami-jql2expression</feature-->
                                         <feature>judo-tatami-rdbms2liquibase</feature>
                                     </features>
                                 </configuration>
