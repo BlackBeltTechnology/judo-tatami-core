@@ -23,7 +23,10 @@ rule CreateContainment
 	to t: JUDOPSM!Containment
 	extends CreateReferenceTypedElement {
 	  s.getEntityType().equivalent("CreateEntityType").relations.add(t);
-	  s.getTransferRelation().equivalent("CreateTransferObjectRelation").binding = t;
+	  var transferRelation : ESM!TransferRelation = s.getTransferRelation();
+	  if(transferRelation.isDefined()) {
+	  	transferRelation.equivalent("CreateTransferObjectRelation").binding = t;
+	  }
 	  log.debug("Created Containment: " + t.name);
 }
 
@@ -33,6 +36,9 @@ rule CreateEndpoint
 	extends CreateReferenceTypedElement {
 	  t.partner = s.partner.equivalent("CreateEndpoint");
 	  s.getEntityType().equivalent("CreateEntityType").relations.add(t);
-	  s.getTransferRelation().equivalent("CreateTransferObjectRelation").binding = t;
+	  var transferRelation : ESM!TransferRelation = s.getTransferRelation();
+	  if(transferRelation.isDefined()) {
+	  	transferRelation.equivalent("CreateTransferObjectRelation").binding = t;
+	  }
 	  log.debug("Created Endpoint: " + t.name);
 }

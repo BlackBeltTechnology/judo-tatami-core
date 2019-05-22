@@ -35,7 +35,10 @@ rule CreateAttribute
 	  entityType.equivalent("CreateEntityType").attributes.add(t);
 	  /* TODO: TransferAttribute... option_b */
 	  var transferAttribute : ESM!TransferAttribute = ESM!TransferAttribute.all.selectOne(ta | ta.primitiveTypedElement = s);
-	  transferAttribute.equivalent("CreateTransferAttribute").binding = t; 
+	  if(transferAttribute.isDefined()) {
+	  	transferAttribute.equivalent("CreateTransferAttribute").binding = t;
+	  }
+	   
 	  /**/
 	  
 	  log.debug("Created Attribute: " + t.name);

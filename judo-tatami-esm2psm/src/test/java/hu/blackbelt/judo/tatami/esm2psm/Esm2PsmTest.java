@@ -27,9 +27,9 @@ import java.nio.file.FileSystems;
 import java.util.List;
 import java.util.Map;
 
+import static hu.blackbelt.judo.meta.esm.runtime.EsmModelLoader.createEsmResourceSet;
 import static hu.blackbelt.judo.meta.psm.runtime.PsmModelLoader.createPsmResourceSet;
 import static hu.blackbelt.judo.meta.psm.runtime.PsmModelLoader.savePsmModel;
-import static hu.blackbelt.judo.meta.esm.runtime.EsmModelLoader.createEsmResourceSet;
 import static hu.blackbelt.judo.tatami.esm2psm.Esm2Psm.*;
 
 @Slf4j
@@ -39,7 +39,7 @@ public class Esm2PsmTest {
     public static final String TRACE_ESM_2_PSM = "trace:esm2esm";
     public static final String PSM_NORTHWIND = "psm:northwind";
     public static final String ESM_NORTHWIND = "esm:northwind";
-    public static final String URN_NORTHWIND_ESM = "urn:northwind-esm.model";
+    public static final String URN_NORTHWIND_ESM = "urn:northwind-demo-esm.model";
     public static final String URN_NORTHWIND_PSM = "urn:northwind.psm";
 
     URIHandler uriHandler;
