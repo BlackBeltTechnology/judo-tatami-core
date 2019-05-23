@@ -23,8 +23,8 @@ public class [%= className %] {
 	@Produces ( "application/json" )
 	@Consumes ( "application/json" )
 	[% } %]
-	@Path("/[%= op.name %]")
-    public [% if (op.eType.isUndefined()) {%]Response[% } else { %][%= op.eType.getDtoTypeName() %][% } %] [%= op.name %]() {
+	@Path("/[% if (fullyQualifiedOperation) { %][%= op.getFullOperationPath() %][% } else { %][%= op.name %][% } %]")
+    public [% if (op.eType.isUndefined()) {%]Response [% } else { %][%= op.eType.getDtoTypeName()+" " %][% } %] [% if (fullyQualifiedOperation) { %][%= op.getFullOperationMethodName() %][% } else { %][%= op.name %][% } %]() {
         [% if (op.eType.isUndefined()) {%]
         return Response.status(Response.Status.OK).build();
         [% } else { %]

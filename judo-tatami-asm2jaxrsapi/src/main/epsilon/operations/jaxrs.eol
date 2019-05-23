@@ -12,8 +12,10 @@ operation String toJAXRSPath() : String {
 operation ASM!EAttribute getTypeDefinition() : String {	
 	if (self.upperBound == -1) {
 		return "List<" + self.eType.instanceClass.name + ">";
-	} else {
+	} else if (self.eType.instanceClass.isDefined()) {
 		return self.eType.instanceClass.name;
+	} else {
+		return "Integer";
 	}
 }
 
@@ -63,6 +65,16 @@ operation Collection collectAllReferenceTypeRecursively() : Set {
 		sizeDiffers = (curSize <> ret.size());
 	}
 	return ret;
+}
+
+@cached
+operation ASM!EOperation getFullOperationMethodName() : String {
+	return (self.eContainingClass.ePackage.getFullName() + "." + self.name).replaceAll("\\.", "__");
+}
+
+@cached
+operation ASM!EOperation getFullOperationPath() : String {
+	return (self.eContainingClass.ePackage.getFullName() + "." + self.name).replaceAll("\\.", "/");
 }
 
 /*
@@ -127,6 +139,8 @@ operation genUnboundService(ap : ASM!EClass, operations : Collection) {
 	t.populate("packagePath", ap.getUnboundServicePackageName());
 	t.populate("operations", operations);
 	t.populate("restPath", "/");
+	t.populate("fullyQualifiedOperation", true);
+	
 	t.generate(ap.getUnboundServiceJavaFileName());
 	t.reset();
 
@@ -171,6 +185,7 @@ operation genExposedMappedTransferObject(ap : ASM!EClass, mto : ASM!EClass) {
 	t.populate("packagePath", mto.getExposedMappedTransferObjectPackageName(ap));
 	t.populate("operations", mto.eAllOperations);
 	t.populate("restPath", "/" + mto.ePackage.getFullName().toJAXRSPath() + "/" + mto.getExposedMappedTransferObjectClassName().toJAXRSPath());
+	t.populate("fullyQualifiedOperation", false);
 	t.generate(mto.getExposedMappedTransferObjectJavaFileName(ap));
 	t.reset();
 
