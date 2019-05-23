@@ -7,10 +7,10 @@ rule CreateEntityType
   extends CreateNamespaceElement {
     t.`abstract` = s.`abstract`;
     //[postponed] relationCountConstraints: RelationCountConstraint
-    //TODO: backw?
     for (super in s.superEntityTypes) {
 		t.superEntityTypes.add(super.getPSMEquivalent());    
     }
+    
     log.debug("Created EntityType: " + t.name);
 }
 
@@ -38,7 +38,6 @@ rule CreateAttribute
 	  if(transferAttribute.isDefined()) {
 	  	transferAttribute.equivalent("CreateTransferAttribute").binding = t;
 	  }
-	   
 	  /**/
 	  
 	  log.debug("Created Attribute: " + t.name);

@@ -55,7 +55,7 @@ rule CreateTransferAttribute
 	extends CreateNamedElement {
 	  t.required = s.required;
 	  t.dataType = s.dataType.getPSMEquivalent();
-	  t.defaultValue = s.defaultValue.equivalent("CreatePrimitiveTypedElement"); //TODO: ask if needed
+	  //t.defaultValue = s.defaultValue.equivalent("CreatePrimitiveTypedElement"); //TODO: ask if needed
 	  /* TODO: TransferAttribute... option_a */
 	  if ( s.primitiveTypedElement.isTypeOf(ESM!DataProperty) ) {
 	  	t.binding = s.primitiveTypedElement.equivalent("CreateDataProperty");
@@ -73,16 +73,7 @@ rule CreateTransferObjectRelation
 	transform s: ESM!TransferRelation
 	to t: JUDOPSM!TransferObjectRelation
 	extends CreateNamedElement {
-	  /* done: backw; TODO: remove after endcheck
-	  if (s.referenceTypedElement.isKindOf(ESM!OneWayEndpoint)) {
-	    t.binding = s.referenceTypedElement.equivalent("CreateContainment");
-	  } else if (s.referenceTypedElement.isKindOf(ESM!TwoWayEndpoint)) {
-	    t.binding = s.referenceTypedElement.equivalent("CreateEndpoint");
-	  }*/
-	  
 	  t.cardinality = s.equivalent("CreateCardinalityOfTransferObjectRelation");
-	  //t.defaultValue = s.defaultValue.equivalent("CreateReferencedTypedElement"); //TODO: unused?
-	  //t.range = s.range.equivalent("CreateReferencedTypedElement"); //TODO: unused?
 	  t.embedded = s.embedded;
 	  
 	  var esmTOT : ESM!TransferObjectType = ESM!TransferObjectType.all.selectOne(tot | tot.relations.includes(s));
@@ -124,15 +115,6 @@ rule CreateParameter
 	transform s : ESM!Parameter
 	to t : JUDOPSM!Parameter
 	extends CreateNamedElement {
-	/*
-	  if ( s.isTypeOf(ESM!BoundOperation) ) {
-	  	s.getOperation().equivalent("CreateBoundOperation").faults.add(s);
-	  } else if ( s.isTypeOf(ESM!UnboundOperation) )  {
-	  	s.getOperation().equivalent("CreateUnboundOperation").faults.add(s);
-	  }
-	*/
-	//TODO: dont even get yourself started
-	  	var esmOP : ESM!Operation;
 	  	/*
 		var fs : Boolean = (ESM!Operation.all.selectOne(op | op.faults.includes(s)) == null);
 		var op : Boolean = (ESM!Operation.all.selectOne(op | op.output = s) == null);
@@ -142,6 +124,8 @@ rule CreateParameter
 		log.debug("op: " + op );
 		log.debug("ip: " + ip );
 		*/
+		//TODO: dont even get yourself started
+		var esmOP : ESM!Operation;
 		if(s.isInput()) {
 			log.debug("isInput");
 			esmOP = ESM!Operation.all.selectOne(op | op.input = s);

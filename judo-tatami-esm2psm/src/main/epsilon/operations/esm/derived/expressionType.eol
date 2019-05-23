@@ -30,8 +30,7 @@ operation ESM!NavigationProperty getTransferRelation(): ESM!TransferRelation {
 	return ESM!TransferRelation.all.selectOne(tr | tr.referenceTypedElement = self);
 }
 
-/* TODO: 
-@cached
+/* [postponed]:
 operation ESM!ExpressionDialect getPSMEquivalent(): JUDOPSM!ExpressionDialect {
 	switch (self) {
 		case ESM!ExpressionDialect#JQL : return JUDOPSM!ExpressionDialect#JQL;

@@ -18,7 +18,7 @@ rule CreateExposedGraph
 	  
 	  s.getPSMEquivalent().exposedGraphs.add(t);
 	  
-	  //TODO: exposed`operation`s? (->t))
+	  //TODO: exposedoperations? (->t))
 	  //TODO: cardinality? (s->)
 	  log.debug("Created ExposedGraph: " + t.name);
 }
@@ -35,8 +35,8 @@ rule CreateExposedService
 
 /* TODO: rule CreateExposedOperation?
 rule CreateExposedOperation
-	transform s: ESM!Bound`operation`
-	to t: JUDOPSM!Exposed`operation` {
+	transform s: ESM!
+	to t: JUDOPSM!ExposedOperation` {
 	  t.`operation` = s.equivalent("CreateBoundOperation");
 	  log.debug("Created ExposedOperation.");
 }
