@@ -1,44 +1,35 @@
-@cached
 operation ESM!XMLType getPSMEquivalent(): JUDOPSM!Primitive {
 	return self.equivalent("CreateXMLType");
 }
 
-@cached
 operation ESM!CustomType getPSMEquivalent(): JUDOPSM!Primitive {
 	return self.equivalent("CreateCustomType");
 }
 
-@cached
 operation ESM!PasswordType getPSMEquivalent(): JUDOPSM!Primitive {
 	return self.equivalent("CreatePasswordType");
 }
 
-@cached
 operation ESM!StringType getPSMEquivalent(): JUDOPSM!Primitive {
 	return self.equivalent("CreateStringType");
 }
 
-@cached
 operation ESM!NumericType getPSMEquivalent(): JUDOPSM!Primitive {
 	return self.equivalent("CreateNumericType");
 }
 
-@cached
 operation ESM!BooleanType getPSMEquivalent(): JUDOPSM!Primitive {
 	return self.equivalent("CreateBooleanType");
 }
 
-@cached
 operation ESM!DateType getPSMEquivalent(): JUDOPSM!Primitive {
 	return self.equivalent("CreateDateType");
 }
 
-@cached
 operation ESM!TimestampType getPSMEquivalent(): JUDOPSM!Primitive {
 	return self.equivalent("CreateTimestampType");
 }
 
-@cached
 operation ESM!EnumerationType getPSMEquivalent(): JUDOPSM!Primitive {
 	return self.equivalent("CreateEnumerationType");
 }

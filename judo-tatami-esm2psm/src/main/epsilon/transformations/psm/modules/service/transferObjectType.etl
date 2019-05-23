@@ -105,7 +105,6 @@ rule CreateOperation
 	  t.undefined = s.undefined; 
 }
 
-//TODO: ask if used ? clean : evac
 rule CreateBoundOperation
 	transform s: ESM!BoundOperation
 	to t: JUDOPSM!BoundOperation
@@ -115,26 +114,71 @@ rule CreateBoundOperation
 	  log.debug("Created BoundOperation: " + t.name);
 }
 
-//TODO: ask if used ? clean : evac
 rule CreateUnboundOperation
 	transform s: ESM!UnboundOperation
 	to t: JUDOPSM!UnboundOperation
 	extends CreateOperation, CreateNamespaceElement {
-	  log.debug("Created UnboundOperation: " + t.name);
 }
 
-//TODO: ask if used ? clean : evac
 rule CreateParameter
 	transform s : ESM!Parameter
 	to t : JUDOPSM!Parameter
 	extends CreateNamedElement {
+	/*
 	  if ( s.isTypeOf(ESM!BoundOperation) ) {
 	  	s.getOperation().equivalent("CreateBoundOperation").faults.add(s);
 	  } else if ( s.isTypeOf(ESM!UnboundOperation) )  {
 	  	s.getOperation().equivalent("CreateUnboundOperation").faults.add(s);
 	  }
+	*/
+	//TODO: dont even get yourself started
+	  	var esmOP : ESM!Operation;
+	  	/*
+		var fs : Boolean = (ESM!Operation.all.selectOne(op | op.faults.includes(s)) == null);
+		var op : Boolean = (ESM!Operation.all.selectOne(op | op.output = s) == null);
+		var ip : Boolean = (ESM!Operation.all.selectOne(op | op.input = s) == null);
+		log.debug("s: " + s);
+		log.debug("fs: " + fs );
+		log.debug("op: " + op );
+		log.debug("ip: " + ip );
+		*/
+		if(s.isInput()) {
+			log.debug("isInput");
+			esmOP = ESM!Operation.all.selectOne(op | op.input = s);
+			if (esmOP.isTypeOf(ESM!BoundOperation)) {
+				log.debug("input bound");
+				esmOP.equivalent("CreateBoundOperation").input = t;
+			} else {
+				log.debug("input unbound");
+				esmOP.equivalent("CreateUnboundOperation").input = t;
+			}
+		} else if (s.isOutput()) {
+			log.debug("isOutput");
+			esmOP = ESM!Operation.all.selectOne(op | op.output = s);
+			if (esmOP.isTypeOf(ESM!BoundOperation)) {
+				log.debug("output bound");
+				esmOP.equivalent("CreateBoundOperation").output = t;
+			} else {
+				log.debug("output unbound");
+				esmOP.equivalent("CreateUnboundOperation").output = t;
+			}
+		}
+		
+		if(s.isFault()) {
+			log.debug("isFault");
+			esmOP = ESM!Operation.all.selectOne(op | op.faults.includes(s));
+			if (esmOP.isTypeOf(ESM!BoundOperation)) {
+				log.debug("fault bound");
+				esmOP.equivalent("CreateBoundOperation").faults.add(t);
+			} else {
+				log.debug("fault unbound");
+				esmOP.equivalent("CreateUnboundOperation").faults.add(t);
+			}
+		}
 	  
 	  t.cardinality = s.equivalent("CreateCardinalityOfParameter");
 	  t.type = s.type.getPSMEquivalent();
 	  log.debug("Created Parameter: " + t.name);
 }
+
+

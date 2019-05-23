@@ -22,17 +22,27 @@ operation ESM!TransferObjectType getPSMEquivalent() : JUDOPSM!TransferObjectType
 		return self.equivalent("CreateUnmappedTransferObjectType");
 	}
 }
-
 operation ESM!Parameter isInput() : Boolean {
-	return ESM!Operation.all.selectOne(op | op.input = self);
+	if ( ESM!Operation.all.selectOne(op | op.input = self) == null ) {
+		return false;
+	} else {
+		return true;
+	}
 }
 
-operation ESM!Parameter getOperation() : ESM!Operation {
-	var esmOP : ESM!Operation;
-	//TODO: finish (other operation fields)
-	//if (self.isInput()) {
-	esmOP = ESM!Operation.all.selectOne(op | op.faults.includes(s));
-	//} else {
-	return esmOP;
-	//}
+operation ESM!Parameter isOutput() : Boolean {
+	if ( ESM!Operation.all.selectOne(op | op.output = self) == null ) {
+		return false;
+	} else {
+		return true;
+	}
 }
+
+operation ESM!Parameter isFault() : Boolean {
+	if ( ESM!Operation.all.selectOne(op | op.faults.includes(self)) == null ) {
+		return false;
+	} else {
+		return true;
+	}
+}
+
