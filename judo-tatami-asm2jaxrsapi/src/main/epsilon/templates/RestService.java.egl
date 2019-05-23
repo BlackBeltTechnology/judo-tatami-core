@@ -49,10 +49,10 @@ public class [%= className %] {
         [% } %]
 
         [% if (op.eType.isUndefined()) {%]
-        __dispatcher.get().callOperation("[%= op.getFQName() %]", parameters);
+        __dispatcher.get().callOperation("simple", "[%= op.getFQName() %]", parameters);
         return Response.status(Response.Status.OK).build();
         [% } else { %]
-        return Response.ok([%= op.eType.getDtoTypeName() %].fromMap(__dispatcher.get().callOperation("[%= op.getFQName() %]", parameters))).build();
+        return Response.ok([%= op.eType.getDtoTypeName() %].fromMap(__dispatcher.get().callOperation("simple", "[%= op.getFQName() %]", parameters))).build();
         [% } %]
     }  	
 [% } %] 

@@ -291,8 +291,8 @@ public class TatamiESMTransformationPipelineITest {
 
         Dispatcher dispatcher = new Dispatcher() {
             @Override
-            public Map<String, Object> callOperation(String operationFullyQualifiedName, Map<String, Object> payload) {
-                log.log(LOG_INFO, "Dispatcher called - " + operationFullyQualifiedName + " Payload: " + payload.toString());
+            public Map<String, Object> callOperation(String target, String operationFullyQualifiedName, Map<String, Object> payload) {
+                log.log(LOG_INFO, "Dispatcher called - " + target + " " + operationFullyQualifiedName + " Payload: " + payload.toString());
                 return ImmutableMap.<String, Object>of();
             }
         };
