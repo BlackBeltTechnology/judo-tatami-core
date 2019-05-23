@@ -142,7 +142,9 @@ public class Asm2JAXRSAPI {
                 .set( Constants.IMPORT_PACKAGE,
                         "org.osgi.framework;version=\"[1.8,2.0)\"," +
                                 "javax.ws.rs;version=\"[2.0,3)\"," +
-                                "javax.ws.rs.core;version=\"[2.0,3)\""
+                                "javax.ws.rs.core;version=\"[2.0,3)\"," +
+                                "hu.blackbelt.judo.tatami.core"
+
                 )
                 .set("Service-Component", Joiner.on(",").join(scrXmlFiles));
         return bundle.build();

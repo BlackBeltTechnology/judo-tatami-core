@@ -5,15 +5,30 @@
 %]
 package [%= packagePath %];
 
+import java.util.Optional;
+import java.util.HashMap;
+import java.util.Map;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
+import hu.blackbelt.judo.tatami.core.Dispatcher;
 
 @Path("[%= restPath %]")
 public class [%= className %] {
+
+    Optional<Dispatcher> __dispatcher;
+
+    public void __bindDispatcher(Dispatcher dispatcher) {
+        this.__dispatcher = Optional.of(dispatcher);
+    }
+
+    public void __unbindDispatcher(Dispatcher dispatcher) {
+        this.__dispatcher = Optional.empty();
+    }
+
 [% for (op in operations) { %]
     [% if (op.isStateless()) { %]
 	@GET
@@ -24,11 +39,20 @@ public class [%= className %] {
 	@Consumes ( "application/json" )
 	[% } %]
 	@Path("/[% if (fullyQualifiedOperation) { %][%= op.getFullOperationPath() %][% } else { %][%= op.name %][% } %]")
-    public [% if (op.eType.isUndefined()) {%]Response [% } else { %][%= op.eType.getDtoTypeName()+" " %][% } %] [% if (fullyQualifiedOperation) { %][%= op.getFullOperationMethodName() %][% } else { %][%= op.name %][% } %]() {
+    public Response [% if (fullyQualifiedOperation) { %][%= op.getFullOperationMethodName() %][% } else { %][%= op.name %][% } %]([% for (p in op.eParameters) { %] [%= p.eType.getDtoTypeName() %] [%= p.name.firstToLowerCase().safeName() %] [% } %] [% if (hasMore) { %],[% } %] ) {
+		if (!__dispatcher.isPresent()) {
+        	return Response.status(Response.Status.SERVICE_UNAVAILABLE).build();
+    	}
+		Map<String, Object> parameters = new HashMap();		
+        [% for (p in op.eParameters) { %] 
+        parameters.put("[%= p.name %]", [%= p.name.firstToLowerCase().safeName() %]);
+        [% } %]
+
         [% if (op.eType.isUndefined()) {%]
+        __dispatcher.get().callOperation("[%= op.getFQName() %]", parameters);
         return Response.status(Response.Status.OK).build();
         [% } else { %]
-        return [%= op.eType.getDtoTypeName() %].fromMap(new java.util.HashMap()); 
+        return Response.ok([%= op.eType.getDtoTypeName() %].fromMap(__dispatcher.get().callOperation("[%= op.getFQName() %]", parameters))).build();
         [% } %]
     }  	
 [% } %] 

@@ -16,7 +16,6 @@ import hu.blackbelt.judo.tatami.core.TransformationTraceService;
 import hu.blackbelt.osgi.utils.osgi.api.BundleTrackerManager;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
-import org.eclipse.emf.ecore.EOperation;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
@@ -270,11 +269,10 @@ public class TatamiPSMTransformationPipelineITest {
         log.log(LOG_INFO, "== RUNNING TEST REST METHOD");
         log.log(LOG_INFO, "==============================================");
 
-
         Dispatcher dispatcher = new Dispatcher() {
             @Override
-            public Map<String, Object> callOperation(EOperation operation, Map<String, Object> payload) {
-                log.log(LOG_INFO, "Dispatcher called - " + operation.getName() + " Payload: " + payload.toString());
+            public Map<String, Object> callOperation(String operation, Map<String, Object> payload) {
+                log.log(LOG_INFO, "Dispatcher called - " + operation + " Payload: " + payload.toString());
                 return ImmutableMap.<String, Object>of();
             }
         };
