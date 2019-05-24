@@ -219,7 +219,7 @@ operation ASM!EClass getDtoPackageName() : String {
 
 @cached
 operation ASM!EClass getDtoTypeName() : String {
-	return self.getDtoPackageName() + "." + self.name;
+	return self.getDtoPackageName() + "." + self.name.normalizeName();
 }
 
 @cached
