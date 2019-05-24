@@ -19,7 +19,7 @@ import hu.blackbelt.judo.tatami.core.Dispatcher;
 @Path("[%= restPath %]")
 public class [%= className %] {
 
-    Optional<Dispatcher> __dispatcher;
+    Optional<Dispatcher> __dispatcher = Optional.empty();
 
     public void __bindDispatcher(Dispatcher dispatcher) {
         this.__dispatcher = Optional.of(dispatcher);
@@ -39,7 +39,7 @@ public class [%= className %] {
 	@Consumes ( "application/json" )
 	[% } %]
 	@Path("/[% if (fullyQualifiedOperation) { %][%= op.getFullOperationPath() %][% } else { %][%= op.name %][% } %]")
-    public Response [% if (fullyQualifiedOperation) { %][%= op.getFullOperationMethodName() %][% } else { %][%= op.name %][% } %]([% for (p in op.eParameters) { %] [%= p.eType.getDtoTypeName() %] [%= p.name.firstToLowerCase().safeName() %] [% } %] [% if (hasMore) { %],[% } %] ) {
+    public Response [% if (fullyQualifiedOperation) { %][%= op.getFullOperationMethodName() %][% } else { %][%= op.name %][% } %]([% for (p in op.eParameters) { %][%= p.eType.getDtoTypeName() %] [%= p.name.firstToLowerCase().safeName() %][% if (hasMore) { %], [% } %][% } %]) {
 		if (!__dispatcher.isPresent()) {
         	return Response.status(Response.Status.SERVICE_UNAVAILABLE).build();
     	}
