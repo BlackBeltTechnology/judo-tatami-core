@@ -77,6 +77,18 @@ operation ASM!EOperation getFullOperationPath() : String {
 	return (self.eContainingClass.ePackage.getFullName() + "." + self.name).replaceAll("\\.", "/");
 }
 
+
+@cached
+operation ASM!EParameter getTypeDefinition() : String {
+	if (self.upperBound == -1) {
+		return "List<" + self.eType.instanceClass.name + ">";
+	} else if (self.eType.instanceClass.isDefined()) {
+		return self.eType.instanceClass.name;
+	} else {
+		return "Integer";
+	}
+}
+
 /*
  Application Config
  */
@@ -207,7 +219,7 @@ operation ASM!EClass getDtoPackageName() : String {
 
 @cached
 operation ASM!EClass getDtoTypeName() : String {
-	return self.getDtoPackageName() + "." + self.name;
+	return self.getDtoPackageName() + "." + self.name.normalizeName();
 }
 
 @cached

@@ -1,16 +1,17 @@
 package hu.blackbelt.judo.tatami.itest;
 
 import com.fasterxml.jackson.jaxrs.json.JacksonJaxbJsonProvider;
+import com.google.common.collect.ImmutableMap;
 import hu.blackbelt.judo.meta.asm.runtime.AsmModel;
 import hu.blackbelt.judo.meta.asm.runtime.AsmUtils;
 import hu.blackbelt.judo.meta.esm.runtime.EsmModel;
-import hu.blackbelt.judo.meta.expression.runtime.ExpressionModel;
 import hu.blackbelt.judo.meta.liquibase.runtime.LiquibaseModel;
 import hu.blackbelt.judo.meta.measure.runtime.MeasureModel;
 import hu.blackbelt.judo.meta.openapi.runtime.OpenAPIModel;
 import hu.blackbelt.judo.meta.psm.runtime.PsmModel;
 import hu.blackbelt.judo.meta.rdbms.RdbmsTable;
 import hu.blackbelt.judo.meta.rdbms.runtime.RdbmsModel;
+import hu.blackbelt.judo.tatami.core.Dispatcher;
 import hu.blackbelt.judo.tatami.core.TransformationTrace;
 import hu.blackbelt.judo.tatami.core.TransformationTraceService;
 import hu.blackbelt.osgi.utils.osgi.api.BundleTrackerManager;
@@ -37,6 +38,7 @@ import javax.ws.rs.client.WebTarget;
 import java.io.*;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -253,7 +255,7 @@ public class TatamiESMTransformationPipelineITest {
     }
 
 
-        @Test
+    @Test
     public void testTrace() throws InvalidSyntaxException {
         log.log(LOG_INFO, "==============================================");
         log.log(LOG_INFO, "== RUNNING TEST TRACE METHOD");
@@ -286,6 +288,15 @@ public class TatamiESMTransformationPipelineITest {
         log.log(LOG_INFO, "==============================================");
         log.log(LOG_INFO, "== RUNNING TEST REST METHOD");
         log.log(LOG_INFO, "==============================================");
+
+        Dispatcher dispatcher = new Dispatcher() {
+            @Override
+            public Map<String, Object> callOperation(String target, String operationFullyQualifiedName, Map<String, Object> payload) {
+                log.log(LOG_INFO, "Dispatcher called - " + target + " " + operationFullyQualifiedName + " Payload: " + payload.toString());
+                return ImmutableMap.<String, Object>of();
+            }
+        };
+        bundleContext.registerService(Dispatcher.class, dispatcher, null);
 
         waitWebPage(BASE_URL +"/?_wadl");
 
