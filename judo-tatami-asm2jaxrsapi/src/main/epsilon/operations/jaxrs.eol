@@ -10,6 +10,9 @@ operation String toJAXRSPath() : String {
 
 @cached
 operation ASM!EAttribute getTypeDefinition() : String {	
+
+    log.info("Type: " + self.name + " - " + self.eType);
+
 	if (self.upperBound == -1) {
 		return "List<" + self.eType.instanceClass.name + ">";
 	} else if (self.eType.instanceClass.isDefined()) {
