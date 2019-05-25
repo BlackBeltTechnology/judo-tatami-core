@@ -12,7 +12,7 @@ rule CreateEntityIdParameterDeclaration
         
         var accessPoint = s.value.resolve();
         
-        t.name = "__id__" + s.getAnnotatedClass().getFQName().toOpenAPIName();
+        t.name = "__identifier__" + s.getAnnotatedClass().getFQName().toOpenAPIName();
         
         accessPoint.equivalent("CreateOpenAPIAccessPoint").parameters.add(t);
 }
@@ -22,7 +22,7 @@ rule CreateEntityIdParameterDefinition
     to t : OPENAPI!ParameterDefinition {
         guard: s.key.startsWith(".accessPoints.") and s.getAnnotatedClass().isDefined() and s.getAnnotatedClass().isEntity()
         
-        t.name = "__id";
+        t.name = "__identifier";
         t.`in` = OPENAPI!ParameterLocation#header;
         t.type = OPENAPI!JSONDataType#string;
         t.description = "ID of " + s.getAnnotatedClass().name + " instance";
@@ -59,9 +59,9 @@ rule CreateParameterDefinition
             var a = annotation.details.selectOne(d | d.key.startsWith(".accessPoints.") and d.value = s.value);
 
 	        if (s.getAnnotatedParameter().many) {
-	            t.schema.ref.ref = a.equivalent("CreateTransferObjectSingleSchemaDeclaration").getReference();
-	        } else {
 	            t.schema.ref.ref = a.equivalent("CreateTransferObjectArraySchemaDeclaration").getReference();
+	        } else {
+	            t.schema.ref.ref = a.equivalent("CreateTransferObjectSingleSchemaDeclaration").getReference();
 	        }
         } else {
             throw "Parameter is not prepared";

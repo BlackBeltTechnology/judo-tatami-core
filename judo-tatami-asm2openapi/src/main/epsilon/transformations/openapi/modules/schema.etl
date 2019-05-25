@@ -11,8 +11,9 @@ rule CreateTransferObjectSingleSchemaDeclaration
         
         var accessPoint =  s.value.resolve();
         
-        t.name = "__single__" + s.getAnnotatedClass().getFQName().toOpenAPIName();
-        
+        // t.name = "__single__" + s.getAnnotatedClass().getFQName().toOpenAPIName();
+        t.name = s.getAnnotatedClass().getFQName().toOpenAPIName();
+
         accessPoint.equivalent("CreateOpenAPIAccessPoint").definitions.add(t);
 }
 
@@ -26,7 +27,7 @@ rule CreateTransferObjectSingleSchemaDefinition
 
         if (s.getAnnotatedClass().isMappedTransferObjectType()) {
             var id = new OPENAPI!PropertyDeclaration;
-            id.name = "__id";
+            id.name = "__identifier";
 
             id.property = new OPENAPI!Property;
             id.property.description = "ID of " + s.getAnnotatedClass().getEntityType().name + " instance";
@@ -45,7 +46,7 @@ rule CreateTransferObjectArraySchemaDeclaration
         
         var accessPoint = s.value.resolve();
         
-        t.name = "__array__" + s.getAnnotatedClass().getFQName().toOpenAPIName();
+        t.name = "arrayOf__" + s.getAnnotatedClass().getFQName().toOpenAPIName();
         
         accessPoint.equivalent("CreateOpenAPIAccessPoint").definitions.add(t);
 }
