@@ -1,7 +1,9 @@
 package hu.blackbelt.judo.tatami.asm2openapi;
 
 import com.google.common.collect.Maps;
+import hu.blackbelt.epsilon.runtime.execution.api.Log;
 import hu.blackbelt.epsilon.runtime.execution.impl.Slf4jLog;
+import hu.blackbelt.epsilon.runtime.execution.impl.StringBuilderLogger;
 import hu.blackbelt.epsilon.runtime.osgi.BundleURIHandler;
 import hu.blackbelt.judo.meta.asm.runtime.AsmModel;
 import hu.blackbelt.judo.meta.openapi.runtime.OpenAPIModel;
@@ -50,11 +52,17 @@ public class Asm2OpenAPIService {
                 .metaVersionRange(bundleContext.getBundle().getHeaders().get(OPENAPI_META_VERSION_RANGE))
                 .build();
 
-        Asm2OpenAPITransformationTrace asm2OpenAPITransformationTrace = executeAsm2OpenAPITransformation(openAPIResourceSet, asmModel, openAPIModel, new Slf4jLog(log),
-                new File(asm2OpenAPIScriptResource.getSctiptRoot().getAbsolutePath(), "asm2openapi/transformations/openapi"));
+        Log logger = new StringBuilderLogger(Slf4jLog.determinateLogLevel(log));
+        try {
+            Asm2OpenAPITransformationTrace asm2OpenAPITransformationTrace = executeAsm2OpenAPITransformation(openAPIResourceSet, asmModel, openAPIModel, logger,
+                    new File(asm2OpenAPIScriptResource.getSctiptRoot().getAbsolutePath(), "asm2openapi/transformations/openapi"));
 
-        asm2openAPITransformationTraceRegistration.put(asmModel, bundleContext.registerService(TransformationTrace.class, asm2OpenAPITransformationTrace, new Hashtable<>()));
-
+            asm2openAPITransformationTraceRegistration.put(asmModel, bundleContext.registerService(TransformationTrace.class, asm2OpenAPITransformationTrace, new Hashtable<>()));
+            log.info(logger.getBuffer());
+        } catch (Exception e) {
+            log.error(logger.getBuffer());
+            throw e;
+        }
         return openAPIModel;
     }
 

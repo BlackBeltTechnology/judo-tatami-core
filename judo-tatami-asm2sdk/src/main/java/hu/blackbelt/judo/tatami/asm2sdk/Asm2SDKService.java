@@ -1,7 +1,9 @@
 package hu.blackbelt.judo.tatami.asm2sdk;
 
 import com.google.common.collect.Maps;
+import hu.blackbelt.epsilon.runtime.execution.api.Log;
 import hu.blackbelt.epsilon.runtime.execution.impl.Slf4jLog;
+import hu.blackbelt.epsilon.runtime.execution.impl.StringBuilderLogger;
 import hu.blackbelt.judo.meta.asm.runtime.AsmModel;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
@@ -24,11 +26,17 @@ public class Asm2SDKService {
     Map<AsmModel, Bundle> asm2jaxrsAPIBundles = Maps.newHashMap();
 
     public void install(AsmModel asmModel, BundleContext bundleContext) throws Exception {
-        asm2jaxrsAPIBundles.put(asmModel,
-                bundleContext.installBundle("asm2jaxrsapi",
-                        Asm2SDK.executeAsm2SDKGeneration(new ResourceSetImpl(), asmModel, new Slf4jLog(log),
-                                new File(asm2SDKScriptResource.getSctiptRoot().getAbsolutePath(), "asm2sdk/templates"), new File(""))));
-
+        Log logger = new StringBuilderLogger(Slf4jLog.determinateLogLevel(log));
+        try {
+            asm2jaxrsAPIBundles.put(asmModel,
+                    bundleContext.installBundle("asm2jaxrsapi",
+                            Asm2SDK.executeAsm2SDKGeneration(new ResourceSetImpl(), asmModel, logger,
+                                    new File(asm2SDKScriptResource.getSctiptRoot().getAbsolutePath(), "asm2sdk/templates"), new File(""))));
+            log.info(logger.getBuffer());
+        } catch (Exception e) {
+            log.error(logger.getBuffer());
+            throw e;
+        }
         asm2jaxrsAPIBundles.get(asmModel).start();
     }
 

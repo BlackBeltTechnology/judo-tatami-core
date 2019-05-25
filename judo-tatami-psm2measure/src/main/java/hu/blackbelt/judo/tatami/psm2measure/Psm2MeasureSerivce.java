@@ -1,7 +1,9 @@
 package hu.blackbelt.judo.tatami.psm2measure;
 
 import com.google.common.collect.Maps;
+import hu.blackbelt.epsilon.runtime.execution.api.Log;
 import hu.blackbelt.epsilon.runtime.execution.impl.Slf4jLog;
+import hu.blackbelt.epsilon.runtime.execution.impl.StringBuilderLogger;
 import hu.blackbelt.epsilon.runtime.osgi.BundleURIHandler;
 import hu.blackbelt.judo.meta.measure.runtime.MeasureModel;
 import hu.blackbelt.judo.meta.psm.runtime.PsmModel;
@@ -49,11 +51,17 @@ public class Psm2MeasureSerivce {
                 .metaVersionRange(bundleContext.getBundle().getHeaders().get(MEASURE_META_VERSION_RANGE))
                 .build();
 
+        Log logger = new StringBuilderLogger(Slf4jLog.determinateLogLevel(log));
+        try {
+            Psm2MeasureTransformationTrace psm2MeasureTransformationTrace = executePsm2MeasureTransformation(measureResourceSet, psmModel, measureModel, logger,
+                    new File(psm2MeasureScriptResource.getSctiptRoot().getAbsolutePath(), "psm2measure/transformations/measure") );
 
-        Psm2MeasureTransformationTrace psm2MeasureTransformationTrace = executePsm2MeasureTransformation(measureResourceSet, psmModel, measureModel, new Slf4jLog(log),
-                new File(psm2MeasureScriptResource.getSctiptRoot().getAbsolutePath(), "psm2measure/transformations/measure") );
-
-        psm2MeasureTransformationTraceRegistration.put(psmModel, bundleContext.registerService(TransformationTrace.class, psm2MeasureTransformationTrace, new Hashtable<>()));
+            psm2MeasureTransformationTraceRegistration.put(psmModel, bundleContext.registerService(TransformationTrace.class, psm2MeasureTransformationTrace, new Hashtable<>()));
+            log.info(logger.getBuffer());
+        } catch (Exception e) {
+            log.error(logger.getBuffer());
+            throw e;
+        }
 
         return measureModel;
     }
