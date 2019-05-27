@@ -1,4 +1,4 @@
-package sdk.northwind.services;
+package sdk.demo.service;
 
 import java.util.List;
 import java.util.Map;
@@ -8,14 +8,16 @@ import java.util.stream.Collectors;
 public class OrderItem {
 	private java.util.UUID __identifier;
 
+	private java.lang.String productName;
 	private java.lang.Double unitPrice;
 	private java.lang.Integer quantity;
 	private java.lang.Double discount;
-	private sdk.northwind.services.ProductInfo product;
+	private sdk.demo.service.ProductInfo product;
 
-    @java.beans.ConstructorProperties({"__identifier", "unitPrice", "quantity", "discount", "product"})
-    OrderItem(java.util.UUID __identifier, java.lang.Double unitPrice, java.lang.Integer quantity, java.lang.Double discount, sdk.northwind.services.ProductInfo product) {
+    @java.beans.ConstructorProperties({"__identifier", "productName", "unitPrice", "quantity", "discount", "product"})
+    OrderItem(java.util.UUID __identifier, java.lang.String productName, java.lang.Double unitPrice, java.lang.Integer quantity, java.lang.Double discount, sdk.demo.service.ProductInfo product) {
 		this.__identifier = __identifier;
+        this.productName = productName;
         this.unitPrice = unitPrice;
         this.quantity = quantity;
         this.discount = discount;
@@ -27,6 +29,9 @@ public class OrderItem {
 		return this.__identifier;
 	}
 
+	public java.lang.String getProductName() {
+		return this.productName;
+	}
 	public java.lang.Double getUnitPrice() {
 		return this.unitPrice;
 	}
@@ -36,7 +41,7 @@ public class OrderItem {
 	public java.lang.Double getDiscount() {
 		return this.discount;
 	}
-	public sdk.northwind.services.ProductInfo getProduct() {
+	public sdk.demo.service.ProductInfo getProduct() {
 		return this.product;
 	}
 
@@ -45,6 +50,9 @@ public class OrderItem {
 		this.__identifier = __identifier;
 	}
 
+	public void setProductName(java.lang.String productName) {
+		this.productName = productName;
+	}
 	public void setUnitPrice(java.lang.Double unitPrice) {
 		this.unitPrice = unitPrice;
 	}
@@ -54,7 +62,7 @@ public class OrderItem {
 	public void setDiscount(java.lang.Double discount) {
 		this.discount = discount;
 	}
-	public void setProduct(sdk.northwind.services.ProductInfo product) {
+	public void setProduct(sdk.demo.service.ProductInfo product) {
 		this.product = product;
 	}
 
@@ -64,6 +72,9 @@ public class OrderItem {
 			ret.put("__identifier", this.__identifier);
 		}
 
+	    if (productName != null) {
+		    ret.put("productName", this.productName);
+	    }
 	    if (unitPrice != null) {
 		    ret.put("unitPrice", this.unitPrice);
 	    }
@@ -84,6 +95,9 @@ public class OrderItem {
 		if (map.containsKey("__identifier")) {
 			builder.__identifier((java.util.UUID)map.get("__identifier"));
 		}
+	    if (map.containsKey("productName")) {
+			builder.productName((java.lang.String) map.get("productName"));
+		}
 	    if (map.containsKey("unitPrice")) {
 			builder.unitPrice((java.lang.Double) map.get("unitPrice"));
 		}
@@ -94,14 +108,14 @@ public class OrderItem {
 			builder.discount((java.lang.Double) map.get("discount"));
 		}
 	    if (map.containsKey("product")) {
-		    builder.product(sdk.northwind.services.ProductInfo.fromMap((Map<String, Object>) map.get("product")));
+		    builder.product(sdk.demo.service.ProductInfo.fromMap((Map<String, Object>) map.get("product")));
 	    }
 
 	    return builder.build();
 	}
 
 	public String toString() {
-	    return "OrderItem(identifier=" + this.__identifier + ", unitPrice=" + this.unitPrice + ", quantity=" + this.quantity + ", discount=" + this.discount + ", product=" + this.product + ")";
+	    return "OrderItem(identifier=" + this.__identifier + ", productName=" + this.productName + ", unitPrice=" + this.unitPrice + ", quantity=" + this.quantity + ", discount=" + this.discount + ", product=" + this.product + ")";
 	}
 
     // Builder
@@ -111,10 +125,11 @@ public class OrderItem {
 
 	public static class OrderItemBuilder {
 		private java.util.UUID __identifier;
+        private java.lang.String productName;
         private java.lang.Double unitPrice;
         private java.lang.Integer quantity;
         private java.lang.Double discount;
-        private sdk.northwind.services.ProductInfo product;
+        private sdk.demo.service.ProductInfo product;
 
 		OrderItemBuilder() {
 		}
@@ -123,6 +138,10 @@ public class OrderItem {
 			return this;
 		}
 
+		public OrderItemBuilder productName(java.lang.String productName) {
+			this.productName = productName;
+			return this;
+		}
 		public OrderItemBuilder unitPrice(java.lang.Double unitPrice) {
 			this.unitPrice = unitPrice;
 			return this;
@@ -135,17 +154,17 @@ public class OrderItem {
 			this.discount = discount;
 			return this;
 		}
-		public OrderItemBuilder product(sdk.northwind.services.ProductInfo product) {
+		public OrderItemBuilder product(sdk.demo.service.ProductInfo product) {
 			this.product = product;
 			return this;
 		}
 
 		public OrderItem build() {
-			return new OrderItem(this.__identifier, this.unitPrice, this.quantity, this.discount, this.product);
+			return new OrderItem(this.__identifier, this.productName, this.unitPrice, this.quantity, this.discount, this.product);
 		}
 
 		public String toString() {
-    	    return "OrderItemBuilder.OrderItem(identifier=" + __identifier + ", unitPrice=" + this.unitPrice + ", quantity=" + this.quantity + ", discount=" + this.discount + ", product=" + this.product + ")";
+    	    return "OrderItemBuilder.OrderItem(identifier=" + __identifier + ", productName=" + this.productName + ", unitPrice=" + this.unitPrice + ", quantity=" + this.quantity + ", discount=" + this.discount + ", product=" + this.product + ")";
 		}
 	}
 }

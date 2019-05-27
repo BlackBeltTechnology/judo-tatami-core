@@ -9,6 +9,7 @@ rule CreateCardinalityOfReferenceTypedElement
 	  t.lower = s.lower;
 }
 
+@abstract
 rule CreateReferenceTypedElement
 	transform s: ESM!ReferenceTypedElement
 	to t: JUDOPSM!ReferenceTypedElement

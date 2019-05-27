@@ -7,6 +7,7 @@
     <packaging>pom</packaging>
     <modules>
         <module>judo-tatami-parent</module>
+        <module>judo-tatami-maven-plugin</module>
         <module>judo-tatami-core</module>
         <module>judo-tatami-esm2psm</module>
         <module>judo-tatami-psm2asm</module>
