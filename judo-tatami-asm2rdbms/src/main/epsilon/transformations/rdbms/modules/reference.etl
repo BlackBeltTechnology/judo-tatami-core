@@ -4,7 +4,7 @@ import "element.etl";
 rule EReferenceToRdbmsTableForeignKey 
 	transform s : ASM!EReference
 	to fk : RDBMS!RdbmsForeignKey {
-	    guard:  s.eReferenceType.isEntity() and s.eContainingClass.isEntity() and s.ruleMapping().foreignKey.asBoolean()
+	    guard:  s.eReferenceType.isEntity() and s.eContainingClass.isEntity() and s.ruleMapping().foreignKey
 	     
     	s.eContainingClass.equivalent("EClassToRdbmsTable").fields.add(fk);
     	fk.name = s.name;
@@ -28,7 +28,7 @@ rule EReferenceToRdbmsTableForeignKey
 rule EReferenceToRdbmsTableInverseForeignKey 
 	transform s : ASM!EReference
 	to fk : RDBMS!RdbmsForeignKey {
-	    guard:  s.eReferenceType.isEntity() and s.eContainingClass.isEntity() and s.ruleMapping().inverseForeignKey.asBoolean()
+	    guard:  s.eReferenceType.isEntity() and s.eContainingClass.isEntity() and s.ruleMapping().inverseForeignKey
     	s.eReferenceType.equivalent("EClassToRdbmsTable").fields.add(fk);
 
     	fk.name = s.eContainingClass.name.firstToLowerCase() + s.name.firstToUpperCase();
@@ -66,7 +66,7 @@ rule EReferenceToRdbmsJunctionTable
 rule EReferenceToRdbmsJunctionTablePrimaryKey
 	transform s : ASM!EReference
 	to p : RDBMS!RdbmsIdentifierField {
-	guard : s.eReferenceType.isEntity() and s.eContainingClass.isEntity() and s.ruleMapping().joinTable.asBoolean() and s.ruleMapping().first.asBoolean()
+	guard : s.eReferenceType.isEntity() and s.eContainingClass.isEntity() and s.ruleMapping().joinTable and s.ruleMapping().first
 		p.table = s.equivalent("EReferenceToRdbmsJunctionTable");
 		p.table.primaryKey = p;
 	    p.name = p.table.name + "#id";
@@ -79,7 +79,7 @@ rule EReferenceToRdbmsJunctionTablePrimaryKey
 rule EReferenceToRdbmsJunctionTableForeignKeyBidirectional
 	transform s : ASM!EReference
 	to fk : RDBMS!RdbmsForeignKey {
-	guard : s.eReferenceType.isEntity() and s.eContainingClass.isEntity() and s.ruleMapping().joinTable.asBoolean() and s.eOpposite.isDefined() 
+	guard : s.eReferenceType.isEntity() and s.eContainingClass.isEntity() and s.ruleMapping().joinTable and s.eOpposite.isDefined() 
 	    var mainReference;
 	    if (s.name.compareTo(s.eOpposite.name) <= 0) {
 	    	mainReference = s;
@@ -107,7 +107,7 @@ rule EReferenceToRdbmsJunctionTableForeignKeyBidirectional
 rule EReferenceToRdbmsJunctionTableForeignKeyUnidirectional
 	transform s : ASM!EReference
 	to fk1 : RDBMS!RdbmsForeignKey, fk2 : RDBMS!RdbmsForeignKey {
-	guard : s.eReferenceType.isEntity() and s.eContainingClass.isEntity() and s.ruleMapping().joinTable.asBoolean() and s.eOpposite.isUndefined()
+	guard : s.eReferenceType.isEntity() and s.eContainingClass.isEntity() and s.ruleMapping().joinTable and s.eOpposite.isUndefined()
 	    var junctionTable = s.equivalent("EReferenceToRdbmsJunctionTable");
 	    
 		junctionTable.field1 = fk1;

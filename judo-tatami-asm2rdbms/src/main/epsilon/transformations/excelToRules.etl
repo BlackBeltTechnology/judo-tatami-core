@@ -12,7 +12,7 @@ rule Excel2Rule
 		t.lower = 0;
 		t.upper = 0;
 		t.oppositeLower = 0;
-		t.oppositeLower = 0;
+		t.oppositeUpper = 0;
 
 
 		t.symbol = s.symbol;

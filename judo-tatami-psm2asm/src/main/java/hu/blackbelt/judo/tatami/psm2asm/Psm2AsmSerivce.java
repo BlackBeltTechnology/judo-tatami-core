@@ -1,7 +1,9 @@
 package hu.blackbelt.judo.tatami.psm2asm;
 
 import com.google.common.collect.Maps;
+import hu.blackbelt.epsilon.runtime.execution.api.Log;
 import hu.blackbelt.epsilon.runtime.execution.impl.Slf4jLog;
+import hu.blackbelt.epsilon.runtime.execution.impl.StringBuilderLogger;
 import hu.blackbelt.epsilon.runtime.osgi.BundleURIHandler;
 import hu.blackbelt.judo.meta.asm.runtime.AsmModel;
 import hu.blackbelt.judo.meta.asm.runtime.AsmModelLoader;
@@ -54,10 +56,17 @@ public class Psm2AsmSerivce {
                 .resourceSet(resourceSet)
                 .metaVersionRange(bundleContext.getBundle().getHeaders().get(ASM_META_VERSION_RANGE)).build();
 
-        Psm2AsmTransformationTrace transformationTrace = executePsm2AsmTransformation(resourceSet, psmModel, asmModel, new Slf4jLog(log),
-                new File(psm2AsmScriptResource.getSctiptRoot().getAbsolutePath(), "psm2asm/transformations/asm/"));
+        Log logger = new StringBuilderLogger(Slf4jLog.determinateLogLevel(log));
+        try {
+            Psm2AsmTransformationTrace transformationTrace = executePsm2AsmTransformation(resourceSet, psmModel, asmModel, logger,
+                    new File(psm2AsmScriptResource.getSctiptRoot().getAbsolutePath(), "psm2asm/transformations/asm/"));
 
-        psm2AsmTransformationTraceRegistration.put(psmModel, bundleContext.registerService(TransformationTrace.class, transformationTrace, new Hashtable<>()));
+            psm2AsmTransformationTraceRegistration.put(psmModel, bundleContext.registerService(TransformationTrace.class, transformationTrace, new Hashtable<>()));
+            log.info(logger.getBuffer());
+        } catch (Exception e) {
+            log.error(logger.getBuffer());
+            throw e;
+        }
         return asmModel;
     }
 

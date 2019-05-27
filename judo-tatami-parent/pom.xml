@@ -53,10 +53,10 @@
         <timestamp>${maven.build.timestamp}</timestamp>
         <maven.build.timestamp.format>yyyyMMddHHmmss</maven.build.timestamp.format>
         
-        <epsilon-runtime-version>1.2.0.develop_93</epsilon-runtime-version>
+        <epsilon-runtime-version>1.2.0.develop_94</epsilon-runtime-version>
         <epsilon-maven-plugin-version>1.2.0_develop-62</epsilon-maven-plugin-version>
         
-        <judo-framework-version>2.0.0_develop_128</judo-framework-version>
+        <judo-framework-version>2.0.0_develop_130</judo-framework-version>
         
         <judo-meta-rdbms-version>1.0.1.develop_36</judo-meta-rdbms-version>
         <judo-meta-rdbms.import-range>[1.0,1.1)</judo-meta-rdbms.import-range>
@@ -78,7 +78,7 @@
          <judo-meta-odata.import-range>[1.0,1.1)</judo-meta-odata.import-range>
          -->
         
-        <judo-meta-asm-version>1.0.0-develop-48</judo-meta-asm-version>
+        <judo-meta-asm-version>1.0.0-develop-49</judo-meta-asm-version>
         <judo-meta-asm-import-range>[1.0,1.1)</judo-meta-asm-import-range>
         
         <judo-meta-expression-version>1.0.1.develop_202</judo-meta-expression-version>

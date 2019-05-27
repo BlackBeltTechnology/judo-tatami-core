@@ -1,7 +1,9 @@
 package hu.blackbelt.judo.tatami.asm2rdbms;
 
 import com.google.common.collect.Maps;
+import hu.blackbelt.epsilon.runtime.execution.api.Log;
 import hu.blackbelt.epsilon.runtime.execution.impl.Slf4jLog;
+import hu.blackbelt.epsilon.runtime.execution.impl.StringBuilderLogger;
 import hu.blackbelt.epsilon.runtime.osgi.BundleURIHandler;
 import hu.blackbelt.judo.meta.asm.runtime.AsmModel;
 import hu.blackbelt.judo.meta.rdbms.runtime.RdbmsModel;
@@ -52,12 +54,18 @@ public class Asm2RdbmsSerivce {
                 .metaVersionRange(bundleContext.getBundle().getHeaders().get(RDBMS_META_VERSION_RANGE))
                 .build();
 
-        Asm2RdbmsTransformationTrace asm2RdbmsTransformationTrace = executeAsm2RdbmsTransformation(rdbmsResourceSet, asmModel, rdbmsModel, new Slf4jLog(log),
-                new File(asm2RdbmsScriptResource.getSctiptRoot().getAbsolutePath(), "asm2rdbms/transformations"),
-                new File(asm2RdbmsModelResource.getModelRoot().getAbsolutePath(), "asm2rdbms-model"), dialect);
+        Log logger = new StringBuilderLogger(Slf4jLog.determinateLogLevel(log));
+        try {
+            Asm2RdbmsTransformationTrace asm2RdbmsTransformationTrace = executeAsm2RdbmsTransformation(rdbmsResourceSet, asmModel, rdbmsModel, logger,
+                    new File(asm2RdbmsScriptResource.getSctiptRoot().getAbsolutePath(), "asm2rdbms/transformations"),
+                    new File(asm2RdbmsModelResource.getModelRoot().getAbsolutePath(), "asm2rdbms-model"), dialect);
 
-        asm2rdbmsTransformationTraceRegistration.put(asmModel, bundleContext.registerService(TransformationTrace.class, asm2RdbmsTransformationTrace, new Hashtable<>()));
-
+            asm2rdbmsTransformationTraceRegistration.put(asmModel, bundleContext.registerService(TransformationTrace.class, asm2RdbmsTransformationTrace, new Hashtable<>()));
+            log.info(logger.getBuffer());
+        } catch (Exception e) {
+            log.error(logger.getBuffer());
+            throw e;
+        }
         return rdbmsModel;
     }
 

@@ -9,6 +9,7 @@ import "rdbms/asm/reference.eol";
 
 import "rdbms/rdbms/field.eol";
 import "rdbms/rdbms/table.eol";
+import "rdbms/rdbms/rule.eol";
 
 import "rdbms/modules/class.etl";
 import "rdbms/modules/attribute.etl";

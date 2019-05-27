@@ -1,7 +1,9 @@
 package hu.blackbelt.judo.tatami.esm2psm;
 
 import com.google.common.collect.Maps;
+import hu.blackbelt.epsilon.runtime.execution.api.Log;
 import hu.blackbelt.epsilon.runtime.execution.impl.Slf4jLog;
+import hu.blackbelt.epsilon.runtime.execution.impl.StringBuilderLogger;
 import hu.blackbelt.epsilon.runtime.osgi.BundleURIHandler;
 import hu.blackbelt.judo.meta.esm.runtime.EsmModel;
 import hu.blackbelt.judo.meta.psm.runtime.PsmModel;
@@ -48,10 +50,18 @@ public class Esm2PsmService {
                 .resourceSet(psmResourceSet)
                 .metaVersionRange(bundleContext.getBundle().getHeaders().get(PSM_META_VERSION_RANGE)).build();
 
-        Esm2PsmTransformationTrace transformationTrace = executeEsm2PsmTransformation(psmResourceSet, esmModel, psmModel, new Slf4jLog(log),
-                new File(esm2PsmScriptResource.getScriptRoot().getAbsolutePath(), "esm2psm/transformations/psm/"));
 
-        esm2PsmTransformationTraceRegistration.put(esmModel, bundleContext.registerService(TransformationTrace.class, transformationTrace, new Hashtable<>()));
+        Log logger = new StringBuilderLogger(Slf4jLog.determinateLogLevel(log));
+        try {
+            Esm2PsmTransformationTrace transformationTrace = executeEsm2PsmTransformation(psmResourceSet, esmModel, psmModel, logger,
+                    new File(esm2PsmScriptResource.getScriptRoot().getAbsolutePath(), "esm2psm/transformations/psm/"));
+
+            esm2PsmTransformationTraceRegistration.put(esmModel, bundleContext.registerService(TransformationTrace.class, transformationTrace, new Hashtable<>()));
+            log.info(logger.getBuffer());
+        } catch (Exception e) {
+            log.error(logger.getBuffer());
+            throw e;
+        }
         return psmModel;
     }
 

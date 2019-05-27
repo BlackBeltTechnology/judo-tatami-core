@@ -1,6 +1,8 @@
 package hu.blackbelt.judo.tatami.rdbms2liquibase;
 
+import hu.blackbelt.epsilon.runtime.execution.api.Log;
 import hu.blackbelt.epsilon.runtime.execution.impl.Slf4jLog;
+import hu.blackbelt.epsilon.runtime.execution.impl.StringBuilderLogger;
 import hu.blackbelt.epsilon.runtime.osgi.BundleURIHandler;
 import hu.blackbelt.judo.meta.liquibase.runtime.LiquibaseModel;
 import hu.blackbelt.judo.meta.rdbms.runtime.RdbmsModel;
@@ -14,8 +16,8 @@ import org.osgi.service.component.annotations.Reference;
 
 import java.io.File;
 
-import static hu.blackbelt.judo.meta.liquibase.runtime.LiquibaseModelLoader.*;
-import static hu.blackbelt.judo.meta.rdbms.runtime.RdbmsModelLoader.registerRdbmsMetamodel;
+import static hu.blackbelt.judo.meta.liquibase.runtime.LiquibaseModelLoader.createLiquibaseResourceSet;
+import static hu.blackbelt.judo.meta.liquibase.runtime.LiquibaseModelLoader.registerLiquibaseMetamodel;
 import static hu.blackbelt.judo.tatami.rdbms2liquibase.Rdbms2Liquibase.executeRdbms2LiquibaseTransformation;
 
 
@@ -48,9 +50,17 @@ public class Rdbms2LiquibaseSerivce {
                 .build();
 
 
-        executeRdbms2LiquibaseTransformation(liquibaseResourceSet, rdbmsModel, liquibaseModel, new Slf4jLog(log),
-                new File(rdbms2LiquibaseScriptResource.getSctiptRoot().getAbsolutePath(), "rdbms2liquibase/transformations"),
-                "hsqldb" );
+        Log logger = new StringBuilderLogger(Slf4jLog.determinateLogLevel(log));
+        try {
+            executeRdbms2LiquibaseTransformation(liquibaseResourceSet, rdbmsModel, liquibaseModel, logger,
+                    new File(rdbms2LiquibaseScriptResource.getSctiptRoot().getAbsolutePath(), "rdbms2liquibase/transformations"),
+                    "hsqldb" );
+
+            log.info(logger.getBuffer());
+        } catch (Exception e) {
+            log.error(logger.getBuffer());
+            throw e;
+        }
 
         return liquibaseModel;
     }

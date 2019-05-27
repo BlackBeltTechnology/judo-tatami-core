@@ -13,6 +13,13 @@
           <details key="exposedBy" value="northwind.internalAP"/>
         </eAnnotations>
       </eOperations>
+      <eOperations name="insertOrder" lowerBound="1" eType="//services/OrderInfo">
+        <eAnnotations source="http://blackbelt.hu/judo/meta/ExtendedMetadata">
+          <details key="stateful" value="true"/>
+          <details key="exposedBy" value="northwind.internalAP"/>
+        </eAnnotations>
+        <eParameters name="orderInfo" lowerBound="1" eType="//services/OrderInfo"/>
+      </eOperations>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="OrderInfo">
       <eAnnotations source="http://blackbelt.hu/judo/meta/ExtendedMetadata">
