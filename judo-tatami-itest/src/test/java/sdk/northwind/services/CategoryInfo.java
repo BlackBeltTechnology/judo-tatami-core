@@ -6,72 +6,60 @@ import java.util.LinkedHashMap;
 import java.util.stream.Collectors;
 
 public class CategoryInfo {
-	private java.util.UUID identifier;
+	private java.util.UUID __identifier;
 
 	private java.lang.String categoryName;
-	private List<sdk.northwind.services.ProductInfo> products;
 
-    @java.beans.ConstructorProperties({"identifier", "categoryName", "products"})
-    CategoryInfo(java.util.UUID identifier, java.lang.String categoryName, List<sdk.northwind.services.ProductInfo> products) {
+    @java.beans.ConstructorProperties({"__identifier", "categoryName"})
+    CategoryInfo(java.util.UUID __identifier, java.lang.String categoryName) {
+		this.__identifier = __identifier;
         this.categoryName = categoryName;
-        this.products = products;
     }
 
 	// Getters
-	public java.util.UUID getIdentifier() {
-		return this.identifier;
+	public java.util.UUID get__identifier() {
+		return this.__identifier;
 	}
 
 	public java.lang.String getCategoryName() {
 		return this.categoryName;
 	}
-	public List<sdk.northwind.services.ProductInfo> getProducts() {
-		return this.products;
-	}
 
 	// Setters
-	public void setIdentifier(java.util.UUID identifier) {
-		this.identifier = identifier;
+	public void set__identifier(java.util.UUID __identifier) {
+		this.__identifier = __identifier;
 	}
+
 	public void setCategoryName(java.lang.String categoryName) {
 		this.categoryName = categoryName;
 	}
-	public void setProducts(List<sdk.northwind.services.ProductInfo> products) {
-		this.products = products;
-	}
 
 	public Map<String, Object> toMap() {
-		Map ret = new LinkedHashMap();
-		if (getIdentifier() != null) {
-			ret.put("__identifier", this.identifier);
+		Map ret = new LinkedHashMap(); 
+		if (this.__identifier != null) {
+			ret.put("__identifier", this.__identifier);
 		}
 
-	    if (getCategoryName() != null) {
+	    if (categoryName != null) {
 		    ret.put("categoryName", this.categoryName);
 	    }
-	    if (getProducts() != null) {
-		    ret.put("products", getProducts().stream().map(i -> i.toMap()).collect(Collectors.toList()));
-		}
 		return ret;
 	}
 
 	public static CategoryInfo fromMap(Map<String, Object> map) {
 		CategoryInfoBuilder builder = categoryInfoBuilder();
 		if (map.containsKey("__identifier")) {
-			builder.identifier((java.util.UUID)map.get("identifier"));
+			builder.__identifier((java.util.UUID)map.get("__identifier"));
 		}
 	    if (map.containsKey("categoryName")) {
 			builder.categoryName((java.lang.String) map.get("categoryName"));
 		}
-	    if (map.containsKey("products")) {
-		    builder.products((List<sdk.northwind.services.ProductInfo>) ((List) map.get("products")).stream().map(i -> sdk.northwind.services.ProductInfo.fromMap((Map<String, Object>) i)).collect(Collectors.toList()));
-	    }
 
 	    return builder.build();
 	}
 
 	public String toString() {
-	    return "CategoryInfo(identifier=" + this.identifier + ", categoryName=" + this.categoryName + ", products=" + this.products + ")";
+	    return "CategoryInfo(identifier=" + this.__identifier + ", categoryName=" + this.categoryName + ")";
 	}
 
     // Builder
@@ -80,14 +68,13 @@ public class CategoryInfo {
 	}
 
 	public static class CategoryInfoBuilder {
-		private java.util.UUID identifier;
+		private java.util.UUID __identifier;
         private java.lang.String categoryName;
-        private List<sdk.northwind.services.ProductInfo> products;
 
 		CategoryInfoBuilder() {
 		}
-		public CategoryInfoBuilder identifier(java.util.UUID identifier) {
-			this.identifier = identifier;
+		public CategoryInfoBuilder __identifier(java.util.UUID __identifier) {
+			this.__identifier = __identifier;
 			return this;
 		}
 
@@ -95,17 +82,13 @@ public class CategoryInfo {
 			this.categoryName = categoryName;
 			return this;
 		}
-		public CategoryInfoBuilder products(List<sdk.northwind.services.ProductInfo> products) {
-			this.products = products;
-			return this;
-		}
 
 		public CategoryInfo build() {
-			return new CategoryInfo(this.identifier, this.categoryName, this.products);
+			return new CategoryInfo(this.__identifier, this.categoryName);
 		}
 
 		public String toString() {
-    	    return "CategoryInfoBuilder.CategoryInfo(identifier=" + identifier + ", categoryName=" + this.categoryName + ", products=" + this.products + ")";
+    	    return "CategoryInfoBuilder.CategoryInfo(identifier=" + __identifier + ", categoryName=" + this.categoryName + ")";
 		}
 	}
 }

@@ -11,22 +11,23 @@ import java.util.LinkedHashMap;
 import java.util.stream.Collectors;
 
 public class [%= dto.name.normalizeName() %] {
-	private [%= dto.idType() %] identifier;
+	private [%= dto.idType() %] __identifier;
 
     [% for (field in dto.eAllAttributes.includingAll(dto.eAllReferences)) { %]
 	private [%= field.getTypeDefinition() %] [%= field.name.firstToLowerCase().safeName() %];
 	[% } %]
 
-    @java.beans.ConstructorProperties({"identifier"[% for (field in dto.eAllAttributes.includingAll(dto.eAllReferences)) { %], "[%= field.name.firstToLowerCase().safeName() %]"[% } %]})
-    [%= dto.name.normalizeName() %](java.util.UUID identifier[% for (field in dto.eAllAttributes.includingAll(dto.eAllReferences)) { %], [%= field.getTypeDefinition() %] [%= field.name.firstToLowerCase().safeName() %][% } %]) {
+    @java.beans.ConstructorProperties({"__identifier"[% for (field in dto.eAllAttributes.includingAll(dto.eAllReferences)) { %], "[%= field.name.firstToLowerCase().safeName() %]"[% } %]})
+    [%= dto.name.normalizeName() %](java.util.UUID __identifier[% for (field in dto.eAllAttributes.includingAll(dto.eAllReferences)) { %], [%= field.getTypeDefinition() %] [%= field.name.firstToLowerCase().safeName() %][% } %]) {
+		this.__identifier = __identifier;
         [% for (field in dto.eAllAttributes.includingAll(dto.eAllReferences)) { %]
         this.[%= field.name.firstToLowerCase().safeName() %] = [%= field.name.firstToLowerCase().safeName() %];
         [% } %]
     }
 
 	// Getters
-	public [%= dto.idType() %] getIdentifier() {
-		return this.identifier;
+	public [%= dto.idType() %] get__identifier() {
+		return this.__identifier;
 	}
 
     [% for (field in dto.eAllAttributes.includingAll(dto.eAllReferences)) { %]
@@ -36,9 +37,10 @@ public class [%= dto.name.normalizeName() %] {
 	[% } %]
 
 	// Setters
-	public void setIdentifier([%= dto.idType() %] identifier) {
-		this.identifier = identifier;
+	public void set__identifier([%= dto.idType() %] __identifier) {
+		this.__identifier = __identifier;
 	}
+
     [% for (field in dto.eAllAttributes.includingAll(dto.eAllReferences)) { %]
 	public void [%= field.setterName() %]([%= field.getTypeDefinition() %] [%= field.name.firstToLowerCase().safeName() %]) {
 		this.[%= field.name.firstToLowerCase().safeName() %] = [%= field.name.firstToLowerCase().safeName() %];
@@ -46,22 +48,22 @@ public class [%= dto.name.normalizeName() %] {
 	[% } %]
 
 	public Map<String, Object> toMap() {
-		Map ret = new LinkedHashMap();
-		if (getIdentifier() != null) {
-			ret.put("__identifier", this.identifier);
+		Map ret = new LinkedHashMap(); 
+		if (this.__identifier != null) {
+			ret.put("__identifier", this.__identifier);
 		}
 
 	    [% for (attr in dto.eAllAttributes) { %]
-	    if ([%= attr.getterName() %]() != null) {
+	    if ([%= attr.name.firstToLowerCase().safeName() %] != null) {
 		    ret.put("[%= attr.name %]", this.[%= attr.name.firstToLowerCase().safeName() %]);
 	    }
 		[% } %]
 	    [% for (ref in dto.eAllReferences) { %]
-	    if ([%= ref.getterName() %]() != null) {
+	    if ([%= ref.name.firstToLowerCase().safeName() %] != null) {
 	    	[% if (ref.upperBound == -1) { %]
-		    ret.put("[%= ref.name %]", [%= ref.getterName() %]().stream().map(i -> i.toMap()).collect(Collectors.toList()));
+		    ret.put("[%= ref.name %]", this.[%= ref.name.firstToLowerCase().safeName() %].stream().map(i -> i.toMap()).collect(Collectors.toList()));
 	    	[% } else { %]
-		    ret.put("[%= ref.name %]", [%= ref.getterName() %]().toMap());
+		    ret.put("[%= ref.name %]", this.[%= ref.name.firstToLowerCase().safeName() %].toMap());
 			[% } %]
 		}
 		[% } %]
@@ -71,7 +73,7 @@ public class [%= dto.name.normalizeName() %] {
 	public static [%= dto.name.normalizeName() %] fromMap(Map<String, Object> map) {
 		[%= dto.name.normalizeName() %]Builder builder = [%= dto.name.normalizeName().firstToLowerCase() %]Builder();
 		if (map.containsKey("__identifier")) {
-			builder.identifier(([%= dto.idType() %])map.get("identifier"));
+			builder.__identifier(([%= dto.idType() %])map.get("__identifier"));
 		}
 	    [% for (attr in dto.eAllAttributes) { %]
 	    if (map.containsKey("[%= attr.name %]")) {
@@ -92,7 +94,7 @@ public class [%= dto.name.normalizeName() %] {
 	}
 
 	public String toString() {
-	    return "[%= dto.name.normalizeName() %](identifier=" + this.identifier + "[% for (field in dto.eAllAttributes.includingAll(dto.eAllReferences)) { %], [%= field.name.firstToLowerCase().safeName() %]=" + this.[%= field.name.firstToLowerCase().safeName() %] + "[% } %])";
+	    return "[%= dto.name.normalizeName() %](identifier=" + this.__identifier + "[% for (field in dto.eAllAttributes.includingAll(dto.eAllReferences)) { %], [%= field.name.firstToLowerCase().safeName() %]=" + this.[%= field.name.firstToLowerCase().safeName() %] + "[% } %])";
 	}
 
     // Builder
@@ -101,15 +103,15 @@ public class [%= dto.name.normalizeName() %] {
 	}
 
 	public static class [%= dto.name.normalizeName() %]Builder {
-		private [%= dto.idType() %] identifier;
+		private [%= dto.idType() %] __identifier;
         [% for (field in dto.eAllAttributes.includingAll(dto.eAllReferences)) { %]
         private [%= field.getTypeDefinition() %] [%= field.name.firstToLowerCase().safeName() %];
         [% } %]
 
 		[%= dto.name.normalizeName() %]Builder() {
 		}
-		public [%= dto.name.normalizeName() %]Builder identifier([%= dto.idType() %] identifier) {
-			this.identifier = identifier;
+		public [%= dto.name.normalizeName() %]Builder __identifier([%= dto.idType() %] __identifier) {
+			this.__identifier = __identifier;
 			return this;
 		}
 
@@ -121,11 +123,11 @@ public class [%= dto.name.normalizeName() %] {
 		[% } %]
 
 		public [%= dto.name.normalizeName() %] build() {
-			return new [%= dto.name.normalizeName() %](this.identifier[% for (field in dto.eAllAttributes.includingAll(dto.eAllReferences)) { %], this.[%= field.name.firstToLowerCase().safeName() %][% } %]);
+			return new [%= dto.name.normalizeName() %](this.__identifier[% for (field in dto.eAllAttributes.includingAll(dto.eAllReferences)) { %], this.[%= field.name.firstToLowerCase().safeName() %][% } %]);
 		}
 
 		public String toString() {
-    	    return "[%= dto.name.normalizeName() %]Builder.[%= dto.name.normalizeName() %](identifier=" + identifier + "[% for (field in dto.eAllAttributes.includingAll(dto.eAllReferences)) { %], [%= field.name.firstToLowerCase().safeName() %]=" + this.[%= field.name.firstToLowerCase().safeName() %] + "[% } %])";
+    	    return "[%= dto.name.normalizeName() %]Builder.[%= dto.name.normalizeName() %](identifier=" + __identifier + "[% for (field in dto.eAllAttributes.includingAll(dto.eAllReferences)) { %], [%= field.name.firstToLowerCase().safeName() %]=" + this.[%= field.name.firstToLowerCase().safeName() %] + "[% } %])";
 		}
 	}
 }

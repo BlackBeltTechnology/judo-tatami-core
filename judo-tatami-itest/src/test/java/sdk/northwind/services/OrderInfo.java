@@ -6,15 +6,16 @@ import java.util.LinkedHashMap;
 import java.util.stream.Collectors;
 
 public class OrderInfo {
-	private java.util.UUID identifier;
+	private java.util.UUID __identifier;
 
 	private java.time.ZonedDateTime orderDate;
 	private java.lang.String shipperName;
 	private List<sdk.northwind.services.OrderItem> items;
 	private List<sdk.northwind.services.CategoryInfo> categories;
 
-    @java.beans.ConstructorProperties({"identifier", "orderDate", "shipperName", "items", "categories"})
-    OrderInfo(java.util.UUID identifier, java.time.ZonedDateTime orderDate, java.lang.String shipperName, List<sdk.northwind.services.OrderItem> items, List<sdk.northwind.services.CategoryInfo> categories) {
+    @java.beans.ConstructorProperties({"__identifier", "orderDate", "shipperName", "items", "categories"})
+    OrderInfo(java.util.UUID __identifier, java.time.ZonedDateTime orderDate, java.lang.String shipperName, List<sdk.northwind.services.OrderItem> items, List<sdk.northwind.services.CategoryInfo> categories) {
+		this.__identifier = __identifier;
         this.orderDate = orderDate;
         this.shipperName = shipperName;
         this.items = items;
@@ -22,8 +23,8 @@ public class OrderInfo {
     }
 
 	// Getters
-	public java.util.UUID getIdentifier() {
-		return this.identifier;
+	public java.util.UUID get__identifier() {
+		return this.__identifier;
 	}
 
 	public java.time.ZonedDateTime getOrderDate() {
@@ -40,9 +41,10 @@ public class OrderInfo {
 	}
 
 	// Setters
-	public void setIdentifier(java.util.UUID identifier) {
-		this.identifier = identifier;
+	public void set__identifier(java.util.UUID __identifier) {
+		this.__identifier = __identifier;
 	}
+
 	public void setOrderDate(java.time.ZonedDateTime orderDate) {
 		this.orderDate = orderDate;
 	}
@@ -57,22 +59,22 @@ public class OrderInfo {
 	}
 
 	public Map<String, Object> toMap() {
-		Map ret = new LinkedHashMap();
-		if (getIdentifier() != null) {
-			ret.put("__identifier", this.identifier);
+		Map ret = new LinkedHashMap(); 
+		if (this.__identifier != null) {
+			ret.put("__identifier", this.__identifier);
 		}
 
-	    if (getOrderDate() != null) {
+	    if (orderDate != null) {
 		    ret.put("orderDate", this.orderDate);
 	    }
-	    if (getShipperName() != null) {
+	    if (shipperName != null) {
 		    ret.put("shipperName", this.shipperName);
 	    }
-	    if (getItems() != null) {
-		    ret.put("items", getItems().stream().map(i -> i.toMap()).collect(Collectors.toList()));
+	    if (items != null) {
+		    ret.put("items", this.items.stream().map(i -> i.toMap()).collect(Collectors.toList()));
 		}
-	    if (getCategories() != null) {
-		    ret.put("categories", getCategories().stream().map(i -> i.toMap()).collect(Collectors.toList()));
+	    if (categories != null) {
+		    ret.put("categories", this.categories.stream().map(i -> i.toMap()).collect(Collectors.toList()));
 		}
 		return ret;
 	}
@@ -80,7 +82,7 @@ public class OrderInfo {
 	public static OrderInfo fromMap(Map<String, Object> map) {
 		OrderInfoBuilder builder = orderInfoBuilder();
 		if (map.containsKey("__identifier")) {
-			builder.identifier((java.util.UUID)map.get("identifier"));
+			builder.__identifier((java.util.UUID)map.get("__identifier"));
 		}
 	    if (map.containsKey("orderDate")) {
 			builder.orderDate((java.time.ZonedDateTime) map.get("orderDate"));
@@ -99,7 +101,7 @@ public class OrderInfo {
 	}
 
 	public String toString() {
-	    return "OrderInfo(identifier=" + this.identifier + ", orderDate=" + this.orderDate + ", shipperName=" + this.shipperName + ", items=" + this.items + ", categories=" + this.categories + ")";
+	    return "OrderInfo(identifier=" + this.__identifier + ", orderDate=" + this.orderDate + ", shipperName=" + this.shipperName + ", items=" + this.items + ", categories=" + this.categories + ")";
 	}
 
     // Builder
@@ -108,7 +110,7 @@ public class OrderInfo {
 	}
 
 	public static class OrderInfoBuilder {
-		private java.util.UUID identifier;
+		private java.util.UUID __identifier;
         private java.time.ZonedDateTime orderDate;
         private java.lang.String shipperName;
         private List<sdk.northwind.services.OrderItem> items;
@@ -116,8 +118,8 @@ public class OrderInfo {
 
 		OrderInfoBuilder() {
 		}
-		public OrderInfoBuilder identifier(java.util.UUID identifier) {
-			this.identifier = identifier;
+		public OrderInfoBuilder __identifier(java.util.UUID __identifier) {
+			this.__identifier = __identifier;
 			return this;
 		}
 
@@ -139,11 +141,11 @@ public class OrderInfo {
 		}
 
 		public OrderInfo build() {
-			return new OrderInfo(this.identifier, this.orderDate, this.shipperName, this.items, this.categories);
+			return new OrderInfo(this.__identifier, this.orderDate, this.shipperName, this.items, this.categories);
 		}
 
 		public String toString() {
-    	    return "OrderInfoBuilder.OrderInfo(identifier=" + identifier + ", orderDate=" + this.orderDate + ", shipperName=" + this.shipperName + ", items=" + this.items + ", categories=" + this.categories + ")";
+    	    return "OrderInfoBuilder.OrderInfo(identifier=" + __identifier + ", orderDate=" + this.orderDate + ", shipperName=" + this.shipperName + ", items=" + this.items + ", categories=" + this.categories + ")";
 		}
 	}
 }

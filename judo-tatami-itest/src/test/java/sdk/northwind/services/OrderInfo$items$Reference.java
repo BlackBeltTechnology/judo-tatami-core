@@ -6,28 +6,30 @@ import java.util.LinkedHashMap;
 import java.util.stream.Collectors;
 
 public class OrderInfo$items$Reference {
-	private java.util.UUID identifier;
+	private java.util.UUID __identifier;
 
 
-    @java.beans.ConstructorProperties({"identifier"})
-    OrderInfo$items$Reference(java.util.UUID identifier) {
+    @java.beans.ConstructorProperties({"__identifier"})
+    OrderInfo$items$Reference(java.util.UUID __identifier) {
+		this.__identifier = __identifier;
     }
 
 	// Getters
-	public java.util.UUID getIdentifier() {
-		return this.identifier;
+	public java.util.UUID get__identifier() {
+		return this.__identifier;
 	}
 
 
 	// Setters
-	public void setIdentifier(java.util.UUID identifier) {
-		this.identifier = identifier;
+	public void set__identifier(java.util.UUID __identifier) {
+		this.__identifier = __identifier;
 	}
 
+
 	public Map<String, Object> toMap() {
-		Map ret = new LinkedHashMap();
-		if (getIdentifier() != null) {
-			ret.put("__identifier", this.identifier);
+		Map ret = new LinkedHashMap(); 
+		if (this.__identifier != null) {
+			ret.put("__identifier", this.__identifier);
 		}
 
 		return ret;
@@ -36,14 +38,14 @@ public class OrderInfo$items$Reference {
 	public static OrderInfo$items$Reference fromMap(Map<String, Object> map) {
 		OrderInfo$items$ReferenceBuilder builder = orderInfo$items$ReferenceBuilder();
 		if (map.containsKey("__identifier")) {
-			builder.identifier((java.util.UUID)map.get("identifier"));
+			builder.__identifier((java.util.UUID)map.get("__identifier"));
 		}
 
 	    return builder.build();
 	}
 
 	public String toString() {
-	    return "OrderInfo$items$Reference(identifier=" + this.identifier + ")";
+	    return "OrderInfo$items$Reference(identifier=" + this.__identifier + ")";
 	}
 
     // Builder
@@ -52,22 +54,22 @@ public class OrderInfo$items$Reference {
 	}
 
 	public static class OrderInfo$items$ReferenceBuilder {
-		private java.util.UUID identifier;
+		private java.util.UUID __identifier;
 
 		OrderInfo$items$ReferenceBuilder() {
 		}
-		public OrderInfo$items$ReferenceBuilder identifier(java.util.UUID identifier) {
-			this.identifier = identifier;
+		public OrderInfo$items$ReferenceBuilder __identifier(java.util.UUID __identifier) {
+			this.__identifier = __identifier;
 			return this;
 		}
 
 
 		public OrderInfo$items$Reference build() {
-			return new OrderInfo$items$Reference(this.identifier);
+			return new OrderInfo$items$Reference(this.__identifier);
 		}
 
 		public String toString() {
-    	    return "OrderInfo$items$ReferenceBuilder.OrderInfo$items$Reference(identifier=" + identifier + ")";
+    	    return "OrderInfo$items$ReferenceBuilder.OrderInfo$items$Reference(identifier=" + __identifier + ")";
 		}
 	}
 }

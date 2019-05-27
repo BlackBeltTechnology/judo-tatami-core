@@ -6,18 +6,19 @@ import java.util.LinkedHashMap;
 import java.util.stream.Collectors;
 
 public class ProductInfo {
-	private java.util.UUID identifier;
+	private java.util.UUID __identifier;
 
 	private java.lang.String productName;
 
-    @java.beans.ConstructorProperties({"identifier", "productName"})
-    ProductInfo(java.util.UUID identifier, java.lang.String productName) {
+    @java.beans.ConstructorProperties({"__identifier", "productName"})
+    ProductInfo(java.util.UUID __identifier, java.lang.String productName) {
+		this.__identifier = __identifier;
         this.productName = productName;
     }
 
 	// Getters
-	public java.util.UUID getIdentifier() {
-		return this.identifier;
+	public java.util.UUID get__identifier() {
+		return this.__identifier;
 	}
 
 	public java.lang.String getProductName() {
@@ -25,20 +26,21 @@ public class ProductInfo {
 	}
 
 	// Setters
-	public void setIdentifier(java.util.UUID identifier) {
-		this.identifier = identifier;
+	public void set__identifier(java.util.UUID __identifier) {
+		this.__identifier = __identifier;
 	}
+
 	public void setProductName(java.lang.String productName) {
 		this.productName = productName;
 	}
 
 	public Map<String, Object> toMap() {
-		Map ret = new LinkedHashMap();
-		if (getIdentifier() != null) {
-			ret.put("__identifier", this.identifier);
+		Map ret = new LinkedHashMap(); 
+		if (this.__identifier != null) {
+			ret.put("__identifier", this.__identifier);
 		}
 
-	    if (getProductName() != null) {
+	    if (productName != null) {
 		    ret.put("productName", this.productName);
 	    }
 		return ret;
@@ -47,7 +49,7 @@ public class ProductInfo {
 	public static ProductInfo fromMap(Map<String, Object> map) {
 		ProductInfoBuilder builder = productInfoBuilder();
 		if (map.containsKey("__identifier")) {
-			builder.identifier((java.util.UUID)map.get("identifier"));
+			builder.__identifier((java.util.UUID)map.get("__identifier"));
 		}
 	    if (map.containsKey("productName")) {
 			builder.productName((java.lang.String) map.get("productName"));
@@ -57,7 +59,7 @@ public class ProductInfo {
 	}
 
 	public String toString() {
-	    return "ProductInfo(identifier=" + this.identifier + ", productName=" + this.productName + ")";
+	    return "ProductInfo(identifier=" + this.__identifier + ", productName=" + this.productName + ")";
 	}
 
     // Builder
@@ -66,13 +68,13 @@ public class ProductInfo {
 	}
 
 	public static class ProductInfoBuilder {
-		private java.util.UUID identifier;
+		private java.util.UUID __identifier;
         private java.lang.String productName;
 
 		ProductInfoBuilder() {
 		}
-		public ProductInfoBuilder identifier(java.util.UUID identifier) {
-			this.identifier = identifier;
+		public ProductInfoBuilder __identifier(java.util.UUID __identifier) {
+			this.__identifier = __identifier;
 			return this;
 		}
 
@@ -82,11 +84,11 @@ public class ProductInfo {
 		}
 
 		public ProductInfo build() {
-			return new ProductInfo(this.identifier, this.productName);
+			return new ProductInfo(this.__identifier, this.productName);
 		}
 
 		public String toString() {
-    	    return "ProductInfoBuilder.ProductInfo(identifier=" + identifier + ", productName=" + this.productName + ")";
+    	    return "ProductInfoBuilder.ProductInfo(identifier=" + __identifier + ", productName=" + this.productName + ")";
 		}
 	}
 }
