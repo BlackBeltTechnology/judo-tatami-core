@@ -120,8 +120,18 @@ rule CreateReferencePropertyDefinition
 	        } else {
 	            t.ref.ref = a.equivalent("CreateTransferObjectSingleSchemaDeclaration").getReference();
 	        }
+
+	        if (s.getAnnotatedReference().required) {
+	            var containerAnnotation = s.getAnnotatedReference().eContainingClass.getExtensionAnnotation(false);
+	            if (containerAnnotation.isDefined()) {
+			        var containerA = containerAnnotation.details.selectOne(d | d.key.startsWith(".accessPoints.") and d.value = s.value);
+                    containerA.equivalent("CreateTransferObjectSingleSchemaDefinition").required.add(s.getAnnotatedReference().name);
+			    } else {
+			        throw "Container of reference is not prepared with annotation";
+			    }
+	        }
         } else {
-            throw "Container of reference is not prepared with annotation";
+            throw "Target type of reference is not prepared with annotation";
         }
 
         s.equivalent("CreateReferencePropertyDeclaration").property = t;
