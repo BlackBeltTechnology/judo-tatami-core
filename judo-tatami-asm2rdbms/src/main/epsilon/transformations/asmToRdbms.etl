@@ -14,16 +14,7 @@ import "rdbms/rdbms/rule.eol";
 import "rdbms/modules/class.etl";
 import "rdbms/modules/attribute.etl";
 import "rdbms/modules/reference.etl";
-
-pre {
-	var targetModel : RDBMS!RdbmsModel = new RDBMS!RdbmsModel();
-	targetModel.version = modelVersion;
-	var first : Boolean = true;
-
-	var configuration : RDBMS!RdbmsConfiguration = new RDBMS!RdbmsConfiguration();
-	configuration.dialect = dialect;
-	targetModel.configuration = configuration;
-}
+import "rdbms/modules/package.etl";
 
 
 post {

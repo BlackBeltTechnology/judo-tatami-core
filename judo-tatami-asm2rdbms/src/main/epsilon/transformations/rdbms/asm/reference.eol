@@ -78,3 +78,4 @@ operation ASM!EReference ruleMapping() : RDBMS!Rule {
 	log.info("Reference: " + self.toString() + " RULE: " + rule.toString());
     return rule;
 }
+

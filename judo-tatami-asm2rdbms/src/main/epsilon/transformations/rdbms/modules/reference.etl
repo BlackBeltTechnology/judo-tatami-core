@@ -1,10 +1,11 @@
-import "element.etl";
-
+import "../../../operations/asm/_importAll.eol";
 
 rule EReferenceToRdbmsTableForeignKey 
 	transform s : ASM!EReference
 	to fk : RDBMS!RdbmsForeignKey {
 	    guard:  s.eReferenceType.isEntity() and s.eContainingClass.isEntity() and s.ruleMapping().foreignKey
+
+        log.info("    Add foreign key: " + s.getFQName());
 	     
     	s.eContainingClass.equivalent("EClassToRdbmsTable").fields.add(fk);
     	fk.name = s.name;
@@ -29,6 +30,9 @@ rule EReferenceToRdbmsTableInverseForeignKey
 	transform s : ASM!EReference
 	to fk : RDBMS!RdbmsForeignKey {
 	    guard:  s.eReferenceType.isEntity() and s.eContainingClass.isEntity() and s.ruleMapping().inverseForeignKey
+
+        log.info("    Add inverse foreign key: " + s.getFQName());
+
     	s.eReferenceType.equivalent("EClassToRdbmsTable").fields.add(fk);
 
     	fk.name = s.eContainingClass.name.firstToLowerCase() + s.name.firstToUpperCase();
@@ -50,7 +54,7 @@ rule EReferenceToRdbmsJunctionTable
 	to t : RDBMS!RdbmsJunctionTable {
 	    guard:  s.eReferenceType.isEntity() and s.eContainingClass.isEntity()
 
-	    targetModel.rdbmsTables.add(t);
+		s.eReferenceType.root().equivalent("rootPackegeToModel").rdbmsTables.add(t);
 		t.sqlName = s.referenceManyToManyTableSqlName();
 		if (s.eOpposite.isDefined()) {
 		    t.name = s.getFQName() + " to " + s.eOpposite.getFQName();
@@ -67,10 +71,13 @@ rule EReferenceToRdbmsJunctionTablePrimaryKey
 	transform s : ASM!EReference
 	to p : RDBMS!RdbmsIdentifierField {
 	guard : s.eReferenceType.isEntity() and s.eContainingClass.isEntity() and s.ruleMapping().joinTable and s.ruleMapping().first
-		p.table = s.equivalent("EReferenceToRdbmsJunctionTable");
-		p.table.primaryKey = p;
-	    p.name = p.table.name + "#id";
-	    p.uuid = p.table.uuid + "#id";
+
+        log.info("    Add junction table: " + s.getFQName());
+		var table = s.equivalent("EReferenceToRdbmsJunctionTable");
+		table.fields.add(p);		
+		table.primaryKey = p;
+	    p.name = table.name + "#id";
+	    p.uuid = table.uuid + "#id";
 		p.sqlName = "ID";
 		p.fillType("JUUID");
 }
@@ -80,6 +87,9 @@ rule EReferenceToRdbmsJunctionTableForeignKeyBidirectional
 	transform s : ASM!EReference
 	to fk : RDBMS!RdbmsForeignKey {
 	guard : s.eReferenceType.isEntity() and s.eContainingClass.isEntity() and s.ruleMapping().joinTable and s.eOpposite.isDefined() 
+
+        log.info("    Add junction foreign bidirectional key: " + s.getFQName());
+
 	    var mainReference;
 	    if (s.name.compareTo(s.eOpposite.name) <= 0) {
 	    	mainReference = s;
@@ -108,8 +118,11 @@ rule EReferenceToRdbmsJunctionTableForeignKeyUnidirectional
 	transform s : ASM!EReference
 	to fk1 : RDBMS!RdbmsForeignKey, fk2 : RDBMS!RdbmsForeignKey {
 	guard : s.eReferenceType.isEntity() and s.eContainingClass.isEntity() and s.ruleMapping().joinTable and s.eOpposite.isUndefined()
+
+        log.info("    Add junction foreign unidirectional key: " + s.getFQName());
+
 	    var junctionTable = s.equivalent("EReferenceToRdbmsJunctionTable");
-	    
+	    	    
 		junctionTable.field1 = fk1;
 		junctionTable.field2 = fk2;
 	    junctionTable.fields.add(fk1);

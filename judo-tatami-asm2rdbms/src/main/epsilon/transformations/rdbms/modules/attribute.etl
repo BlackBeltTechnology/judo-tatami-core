@@ -1,22 +1,19 @@
 import "../../../operations/asm/_importAll.eol";
 
-import "element.etl";
-
 @abstract
 rule EAttributeToRdbmsField
 	transform s : ASM!EAttribute
-	to t : RDBMS!RdbmsField 
-	extends ENamedElementToRdbmsElement { 
-		guard : s.getClass().isEntity()
+	to t : RDBMS!RdbmsField {
+		guard : s.eContainingClass.isEntity()
 	    t.uuid = s.getFQName();
-		t.table = s.getClass().equivalent("EClassToRdbmsTable");
+	    log.info(" Class: " + s.eContainingClass.getFQName());
 		
 		if (s.eType.isKindOf(ASM!EEnum)) {
 			// TODO: Make value constraints
 			t.fillType("JInteger");
 	    } else {
 	        if (s.eType.isUndefined()) {
-	        	log.warn("Could not determinate type (maybe enum?): " + s.getClass().name + "#" + s.name);
+	        	log.warn("Could not determinate type (maybe enum?): " + s.eContainingClass.name + "#" + s.name);
 				t.fillType("JInteger");
 	        } else {
 				t.fillType(s.eType.name);
@@ -24,42 +21,27 @@ rule EAttributeToRdbmsField
 			}
 		}
 		t.sqlName = s.fieldSqlName();
-		if (s.isPrimaryKey()) {
-			t.mandatory = true;
-		} else {
-			t.mandatory = s.required;
-		}		
-}
-
-rule EAttributeToTableIdentifierField
-	transform s : ASM!EAttribute
-	to t : RDBMS!RdbmsIdentifierField
-	extends ENamedElementToRdbmsElement {
-		guard : s.getClass().isEntity() and s.isPrimaryKey()
-		t.table = s.getClass().equivalent("EClassToRdbmsTable");
-		t.name = s.getFQName();
-	    t.uuid = s.getFQName();
-	    t.table.fields.add(t);
-		t.table.primaryKey = t;
-		t.sqlName = "ID";
-		t.fillType(s.eType.name);
+		t.mandatory = s.required;
 }
 
 rule EAttributeToTableValueField
 	transform s : ASM!EAttribute
 	to t : RDBMS!RdbmsValueField
 	extends EAttributeToRdbmsField { 
-		guard : s.getClass().isEntity() and not s.isPrimaryKey() and not s.derived
+		guard : s.eContainingClass.isEntity() and not s.derived
+		s.eContainingClass.equivalent("EClassToRdbmsTable").fields.add(t);
+		log.info("    Add attribute: " + s.getFQName());
 }
 
 rule EAttributeToUniqueKey
 	transform s : ASM!EAttribute
-	to u : RDBMS!RdbmsUniqueConstraint 
-	extends ENamedElementToRdbmsElement { 
-		guard : s.getClass().isEntity() and s.ID and not s.isPrimaryKey() and not s.derived
+	to u : RDBMS!RdbmsUniqueConstraint {
+		guard : s.eContainingClass.isEntity() and s.ID and not s.derived
+		log.info("    Add uniquie constraint: " + s.getFQName());
 	    
 	    u.uuid = s.getFQName() + "@uniqueConstraint";
-		u.table = s.getClass().equivalent("EClassToRdbmsTable");
+		s.eContainingClass.equivalent("EClassToRdbmsTable").uniqueConstraints.add(t);
+		
 		u.sqlName = ("UQ_" + md5(u.uuid));
 		u.name = s.getFQName(); 
 		u.fields.add(s.equivalent("EAttributeToTableValueField"));
