@@ -3,7 +3,7 @@ import "../../../operations/asm/_importAll.eol";
 rule EReferenceToRdbmsTableForeignKey 
 	transform s : ASM!EReference
 	to fk : RDBMS!RdbmsForeignKey {
-	    guard:  s.eReferenceType.isEntity() and s.eContainingClass.isEntity() and s.ruleMapping().foreignKey
+	    guard:  s.eReferenceType.isEntity() and s.eContainingClass.isEntity() and s.ruleMapping().foreignKey and not s.derived
 
         log.info("    Add foreign key: " + s.getFQName());
 	     
@@ -29,7 +29,7 @@ rule EReferenceToRdbmsTableForeignKey
 rule EReferenceToRdbmsTableInverseForeignKey 
 	transform s : ASM!EReference
 	to fk : RDBMS!RdbmsForeignKey {
-	    guard:  s.eReferenceType.isEntity() and s.eContainingClass.isEntity() and s.ruleMapping().inverseForeignKey
+	    guard:  s.eReferenceType.isEntity() and s.eContainingClass.isEntity() and s.ruleMapping().inverseForeignKey and not s.derived
 
         log.info("    Add inverse foreign key: " + s.getFQName());
 
@@ -70,7 +70,7 @@ rule EReferenceToRdbmsJunctionTable
 rule EReferenceToRdbmsJunctionTablePrimaryKey
 	transform s : ASM!EReference
 	to p : RDBMS!RdbmsIdentifierField {
-	guard : s.eReferenceType.isEntity() and s.eContainingClass.isEntity() and s.ruleMapping().joinTable and s.ruleMapping().first
+	guard : s.eReferenceType.isEntity() and s.eContainingClass.isEntity() and s.ruleMapping().joinTable and s.ruleMapping().first and not s.derived
 
         log.info("    Add junction table: " + s.getFQName());
 		var table = s.equivalent("EReferenceToRdbmsJunctionTable");
@@ -86,7 +86,7 @@ rule EReferenceToRdbmsJunctionTablePrimaryKey
 rule EReferenceToRdbmsJunctionTableForeignKeyBidirectional
 	transform s : ASM!EReference
 	to fk : RDBMS!RdbmsForeignKey {
-	guard : s.eReferenceType.isEntity() and s.eContainingClass.isEntity() and s.ruleMapping().joinTable and s.eOpposite.isDefined() 
+	guard : s.eReferenceType.isEntity() and s.eContainingClass.isEntity() and s.ruleMapping().joinTable and s.eOpposite.isDefined() and not s.derived
 
         log.info("    Add junction foreign bidirectional key: " + s.getFQName());
 
@@ -117,7 +117,7 @@ rule EReferenceToRdbmsJunctionTableForeignKeyBidirectional
 rule EReferenceToRdbmsJunctionTableForeignKeyUnidirectional
 	transform s : ASM!EReference
 	to fk1 : RDBMS!RdbmsForeignKey, fk2 : RDBMS!RdbmsForeignKey {
-	guard : s.eReferenceType.isEntity() and s.eContainingClass.isEntity() and s.ruleMapping().joinTable and s.eOpposite.isUndefined()
+	guard : s.eReferenceType.isEntity() and s.eContainingClass.isEntity() and s.ruleMapping().joinTable and s.eOpposite.isUndefined() and not s.derived
 
         log.info("    Add junction foreign unidirectional key: " + s.getFQName());
 
