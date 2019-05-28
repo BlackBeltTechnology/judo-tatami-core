@@ -8,6 +8,7 @@ import hu.blackbelt.judo.meta.liquibase.runtime.LiquibaseModel;
 import hu.blackbelt.judo.meta.measure.runtime.MeasureModel;
 import hu.blackbelt.judo.meta.openapi.runtime.OpenAPIModel;
 import hu.blackbelt.judo.meta.psm.runtime.PsmModel;
+import hu.blackbelt.judo.meta.rdbms.RdbmsIdentifierField;
 import hu.blackbelt.judo.meta.rdbms.RdbmsTable;
 import hu.blackbelt.judo.meta.rdbms.runtime.RdbmsModel;
 import hu.blackbelt.judo.tatami.core.Dispatcher;
@@ -260,9 +261,12 @@ public class TatamiPSMTransformationPipelineITest {
 
         List<EObject> orderRdbmsObjectList = transformationTraceService.getDescendantOfInstanceByModelType(DEMO, RdbmsModel.class, orderClass.get());
 
-        assertThat(orderRdbmsObjectList, hasSize(1));
-        assertThat(orderRdbmsObjectList.get(0), is(instanceOf(RdbmsTable.class)));
-        assertThat(((RdbmsTable) orderRdbmsObjectList.get(0)).getSqlName(), equalTo("T_ENTTS_ORDER"));
+        assertThat(orderRdbmsObjectList, hasSize(2));
+        assertThat(orderRdbmsObjectList, hasItems(instanceOf(RdbmsTable.class), instanceOf(RdbmsIdentifierField.class) ));
+        assertThat(orderRdbmsObjectList.stream()
+                .filter(RdbmsTable.class::isInstance)
+                .map(RdbmsTable.class::cast)
+                .findFirst().get().getSqlName(), equalTo("T_ENTTS_ORDER"));
 
         log.log(LOG_INFO, "==============================================");
         log.log(LOG_INFO, "== STOPPING TEST TRACE METHOD");

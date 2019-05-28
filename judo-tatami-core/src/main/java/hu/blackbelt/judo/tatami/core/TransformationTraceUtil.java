@@ -18,10 +18,13 @@ import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.emf.ecore.xmi.impl.EcoreResourceFactoryImpl;
 import org.eclipse.epsilon.etl.EtlModule;
-import org.eclipse.epsilon.etl.trace.Transformation;
 import org.eclipse.epsilon.etl.trace.TransformationTrace;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
@@ -79,39 +82,22 @@ public class TransformationTraceUtil {
     }
 
     public static List<EObject> getTransformationTrace(String traceName, EtlExecutionContext etlExecutionContext) throws ScriptExecutionException {
-        ResourceSet resourceSet = createTraceResourceSet(traceName);
-        EPackage tracePackage = resourceSet.getPackageRegistry().getEPackage(HTTP_WWW_BLACKBELT_HU_META_TRASFORMATION_TRACE + traceName);
-        EClassImpl traceClass = (EClassImpl) tracePackage.getEClassifier(TRACE_CLASS);
-        EAttribute srcUriAttribute = (EAttribute) traceClass.getEStructuralFeature(SOURCE_URI);
-        EAttribute targetUriAttributes = (EAttribute) traceClass.getEStructuralFeature(TARRGET_URIS);
+        TransformationTrace transformationTrace = ((EtlModule) etlExecutionContext
+                .getModule(ImmutableMap.of()))
+                .getContext()
+                .getTransformationTrace();
 
-        //EObject trace = tracePackage.getEFactoryInstance().create(traceClass);
-        TransformationTrace transformationTrace = ((EtlModule) etlExecutionContext.getModule(ImmutableMap.of())).getContext().getTransformationTrace();
+        Map<EObject, List<EObject>> flattenedTraaceEntries =
+                transformationTrace.getTransformations().stream()
+                .filter(tr -> tr.getSource() instanceof EObject)
+                .collect(Collectors.toMap(
+                        tr -> (EObject) tr.getSource(),
+                        tr -> tr.getTargets().stream()
+                                .filter(EObject.class :: isInstance)
+                                .map(EObject.class :: cast).collect(Collectors.toList()),
+                        (ls1, ls2) -> Stream.concat(ls1.stream(), ls2.stream()).collect(Collectors.toList())));
 
-        List<EObject> traceEntries = ECollections.newBasicEList();  // Lists.newArrayList();
-        for (Transformation transformation : transformationTrace.getTransformations()) {
-            if (transformation.getSource() instanceof EObject) {
-                EObject trace = tracePackage.getEFactoryInstance().create(traceClass);
-                trace.eSet(srcUriAttribute, EcoreUtil.getURI((EObject) transformation.getSource()).toString());
-
-                List<String> targets = Lists.newArrayList();
-                for (Object t : transformation.getTargets()) {
-                    if (t instanceof EObject) {
-                        EObject eo = (EObject) t;
-                        if (eo.eResource() != null) {
-                            targets.add(EcoreUtil.getURI((EObject) t).toString());
-                        } else {
-                            log.warn("Target hasn't got resource: " + t.toString());
-                        }
-                    } else {
-                        log.warn("Target is not EObject: " + t.toString());
-                    }
-                }
-                trace.eSet(targetUriAttributes, targets);
-                traceEntries.add(trace);
-            }
-        }
-        return traceEntries;
+        return getTransformationTrace(traceName, flattenedTraaceEntries);
     }
 
     public static List<EObject> getTransformationTrace(String traceName, Map<EObject, List<EObject>> traceMap) throws ScriptExecutionException {
