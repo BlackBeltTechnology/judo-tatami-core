@@ -104,7 +104,8 @@ public class TatamiPSMTransformationPipelineITest {
 
     public static final String BASE_URL = "http://localhost:8181/cxf/demo/internalAP";
     public static final String DEMO_ENTITIES_ORDER = "demo.entities.Order";
-    public static final String DEMO = "Demo";
+    public static final String DEMO = "demo";
+    public static final String DEMO_SERVICE_GET_ALL_ORDERS = "/demo/service/getAllOrders";
 
     @Inject
     LogService log;
@@ -297,9 +298,10 @@ public class TatamiPSMTransformationPipelineITest {
 
         OrderInfo orderInfo = null;
         try {
-            orderInfo = wt.path("/demo/entities/getAllOrders")
+            orderInfo = wt.path(DEMO_SERVICE_GET_ALL_ORDERS)
                     .request("application/json")
-                    .post(null, OrderInfo.class);
+                    .get(OrderInfo.class);
+                    //.post(null, OrderInfo.class);
         } catch (Exception e) {
             log.log(LOG_ERROR, "EXCEPTION: ", e);
         }
