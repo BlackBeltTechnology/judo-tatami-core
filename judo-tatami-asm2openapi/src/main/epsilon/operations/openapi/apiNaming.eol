@@ -4,10 +4,10 @@ operation String toOpenAPIPath() : String {
     return self
             .replace("\\.ʘUnboundServices", "")
             .replace("[ʘ#\\.]", "/")
-            .replaceAll("//", "/")
-            .replaceAll("//", "/")
-            .replaceAll("//", "/")
-            .replaceAll("//", "/")
+//            .replaceAll("//", "/")
+//            .replaceAll("//", "/")
+//            .replaceAll("//", "/")
+//            .replaceAll("//", "/")
             .replace("[^0-9a-zA-Z_/]", "_");
 }
 
