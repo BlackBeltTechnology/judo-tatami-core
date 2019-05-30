@@ -458,10 +458,10 @@
       <attributes xmi:id="_-L7R5oFREemFzY3ZWApzVQ" name="shipperName" dataType="_Nppx8IUcEeipmMyz9cMCRA" binding="_5i40sCVQEemLpvUY7MQgng"/>
     </elements>
     <elements xsi:type="service:MappedTransferObjectType" xmi:id="_HebikIFTEemFzY3ZWApzVQ" name="InternationalOrderInfo" entityType="_MoVqYINlEeiLE-B2bbL0fg">
-      <relations xmi:id="_HebikYFTEemFzY3ZWApzVQ" name="items" binding="_2CC44LwNEeiOuYiCo6IbXQ" target="_-eoLcIFREemFzY3ZWApzVQ" embedded="true">
+      <relations xmi:id="_HebikYFTEemFzY3ZWApzVQ" name="items" binding="_2CC44LwNEeiOuYiCo6IbXQ" target="_-eoLcIFREemFzY3ZWApzVQ">
         <cardinality xmi:id="_HebikoFTEemFzY3ZWApzVQ" upper="-1"/>
       </relations>
-      <relations xmi:id="_Hebik4FTEemFzY3ZWApzVQ" name="shipper" binding="_WVBGcLwNEeiOuYiCo6IbXQ" target="_OUfQ4IFSEemFzY3ZWApzVQ" embedded="true">
+      <relations xmi:id="_Hebik4FTEemFzY3ZWApzVQ" name="shipper" binding="_WVBGcLwNEeiOuYiCo6IbXQ" target="_OUfQ4IFSEemFzY3ZWApzVQ">
         <cardinality xmi:id="_HebilIFTEemFzY3ZWApzVQ"/>
       </relations>
       <attributes xmi:id="_HebilYFTEemFzY3ZWApzVQ" name="orderDate" required="true" dataType="_Z9J8IIN1EeiLE-B2bbL0fg" binding="_WXvUoIN1EeiLE-B2bbL0fg"/>

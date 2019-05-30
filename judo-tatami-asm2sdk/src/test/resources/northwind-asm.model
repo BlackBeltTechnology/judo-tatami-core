@@ -173,12 +173,12 @@
         <details key="mappedEntityType" value="demo.entities.InternationalOrder"/>
         <details key="entityIdPresence" value="OPTIONAL"/>
       </eAnnotations>
-      <eStructuralFeatures xsi:type="ecore:EReference" name="items" upperBound="-1" eType="//service/OrderItem" containment="true">
+      <eStructuralFeatures xsi:type="ecore:EReference" name="items" upperBound="-1" eType="//service/OrderItem">
         <eAnnotations source="http://blackbelt.hu/judo/meta/ExtendedMetadata">
           <details key="mappedReference" value="orderDetails"/>
         </eAnnotations>
       </eStructuralFeatures>
-      <eStructuralFeatures xsi:type="ecore:EReference" name="shipper" eType="//service/ShipperInfo" containment="true">
+      <eStructuralFeatures xsi:type="ecore:EReference" name="shipper" eType="//service/ShipperInfo">
         <eAnnotations source="http://blackbelt.hu/judo/meta/ExtendedMetadata">
           <details key="mappedReference" value="shipper"/>
         </eAnnotations>
