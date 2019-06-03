@@ -252,25 +252,6 @@
       </attributes>
       <relations xsi:type="data:OneWayEndpoint" xmi:id="_6QtRsLwNEeiOuYiCo6IbXQ" lower="1" name="product" target="_6XH80INkEeiLE-B2bbL0fg"/>
     </elements>
-    <elements xsi:type="facade:UnboundOperation" xmi:id="_PiK8VH4uEemIB_ws1wEjMw" name="getAllOrders">
-      <output xmi:id="_PiK8VX4uEemIB_ws1wEjMw" upper="-1" name="output" type="_PiK8gX4uEemIB_ws1wEjMw"/>
-    </elements>
-    <elements xsi:type="facade:UnboundOperation" xmi:id="_PiK8Vn4uEemIB_ws1wEjMw" name="insertOrder">
-      <output xmi:id="_PiK8V34uEemIB_ws1wEjMw" lower="1" name="output" type="_PiK8a34uEemIB_ws1wEjMw"/>
-      <input xmi:id="_PiK8WH4uEemIB_ws1wEjMw" lower="1" name="input" type="_PiK8a34uEemIB_ws1wEjMw"/>
-    </elements>
-    <elements xsi:type="facade:UnboundOperation" xmi:id="_PiK8YH4uEemIB_ws1wEjMw" name="insertShipper">
-      <output xmi:id="_PiK8YX4uEemIB_ws1wEjMw" lower="1" name="output" type="_PiK8f34uEemIB_ws1wEjMw"/>
-      <input xmi:id="_PiK8Yn4uEemIB_ws1wEjMw" lower="1" name="input" type="_PiK8f34uEemIB_ws1wEjMw"/>
-    </elements>
-    <elements xsi:type="facade:UnboundOperation" xmi:id="_PiK8Y34uEemIB_ws1wEjMw" name="insertCategory">
-      <output xmi:id="_PiK8ZH4uEemIB_ws1wEjMw" lower="1" name="output" type="_PiK8aX4uEemIB_ws1wEjMw"/>
-      <input xmi:id="_PiK8ZX4uEemIB_ws1wEjMw" lower="1" name="input" type="_PiK8aX4uEemIB_ws1wEjMw"/>
-    </elements>
-    <elements xsi:type="facade:UnboundOperation" xmi:id="_PiK8Zn4uEemIB_ws1wEjMw" name="insertProduct">
-      <output xmi:id="_PiK8Z34uEemIB_ws1wEjMw" lower="1" name="output" type="_PiK8WX4uEemIB_ws1wEjMw"/>
-      <input xmi:id="_PiK8aH4uEemIB_ws1wEjMw" lower="1" name="input" type="_PiK8WX4uEemIB_ws1wEjMw"/>
-    </elements>
     <elements xsi:type="data:EntityType" xmi:id="_PiK8d34uEemIB_ws1wEjMw" name="Shipper">
       <attributes xsi:type="data:Attribute" xmi:id="_PiK8eH4uEemIB_ws1wEjMw" name="companyName" dataType="_Nppx8IUcEeipmMyz9cMCRA" required="true"/>
     </elements>
@@ -309,6 +290,25 @@
       <attributes xmi:id="_PiK8XX4uEemIB_ws1wEjMw" name="unitPrice" primitiveTypedElement="_bBDQ0INvEeiLE-B2bbL0fg" dataType="_VDVVQIUcEeipmMyz9cMCRA"/>
       <attributes xmi:id="_PiK8Xn4uEemIB_ws1wEjMw" name="discounted" primitiveTypedElement="_tYB9QINxEeiLE-B2bbL0fg" dataType="_Xos1AIUcEeipmMyz9cMCRA"/>
       <attributes xmi:id="_PiK8X34uEemIB_ws1wEjMw" name="weight" primitiveTypedElement="_cEwUYB5NEemwg4NgOjaKeA" dataType="_h2iYkB1XEemwg4NgOjaKeA"/>
+    </elements>
+    <elements xsi:type="facade:UnboundOperation" xmi:id="_PiK8VH4uEemIB_ws1wEjMw" name="getAllOrders">
+      <output xmi:id="_PiK8VX4uEemIB_ws1wEjMw" upper="-1" name="output" type="_PiK8gX4uEemIB_ws1wEjMw"/>
+    </elements>
+    <elements xsi:type="facade:UnboundOperation" xmi:id="_PiK8Vn4uEemIB_ws1wEjMw" name="insertOrder">
+      <output xmi:id="_PiK8V34uEemIB_ws1wEjMw" lower="1" name="output" type="_PiK8a34uEemIB_ws1wEjMw"/>
+      <input xmi:id="_PiK8WH4uEemIB_ws1wEjMw" lower="1" name="input" type="_PiK8a34uEemIB_ws1wEjMw"/>
+    </elements>
+    <elements xsi:type="facade:UnboundOperation" xmi:id="_PiK8YH4uEemIB_ws1wEjMw" name="insertShipper">
+      <output xmi:id="_PiK8YX4uEemIB_ws1wEjMw" lower="1" name="output" type="_PiK8f34uEemIB_ws1wEjMw"/>
+      <input xmi:id="_PiK8Yn4uEemIB_ws1wEjMw" lower="1" name="input" type="_PiK8f34uEemIB_ws1wEjMw"/>
+    </elements>
+    <elements xsi:type="facade:UnboundOperation" xmi:id="_PiK8Y34uEemIB_ws1wEjMw" name="insertCategory">
+      <output xmi:id="_PiK8ZH4uEemIB_ws1wEjMw" lower="1" name="output" type="_PiK8aX4uEemIB_ws1wEjMw"/>
+      <input xmi:id="_PiK8ZX4uEemIB_ws1wEjMw" lower="1" name="input" type="_PiK8aX4uEemIB_ws1wEjMw"/>
+    </elements>
+    <elements xsi:type="facade:UnboundOperation" xmi:id="_PiK8Zn4uEemIB_ws1wEjMw" name="insertProduct">
+      <output xmi:id="_PiK8Z34uEemIB_ws1wEjMw" lower="1" name="output" type="_PiK8WX4uEemIB_ws1wEjMw"/>
+      <input xmi:id="_PiK8aH4uEemIB_ws1wEjMw" lower="1" name="input" type="_PiK8WX4uEemIB_ws1wEjMw"/>
     </elements>
   </elements>
   <elements xsi:type="accesspoint:AccessPoint" xmi:id="_PiK8eX4uEemIB_ws1wEjMw" name="internalAP">

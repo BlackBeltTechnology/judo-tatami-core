@@ -108,7 +108,7 @@ rule CreateOperation
 	  t.body = s.body;
 	  t.output = s.output.equivalent("CreateParameter");
 	  t.input = s.input.equivalent("CreateParameter");
-	  t.stateful = true;
+	  t.stateful = s.name.startsWith("insert"); // FIXME
 	  t.undefined = s.undefined; 
 }
 

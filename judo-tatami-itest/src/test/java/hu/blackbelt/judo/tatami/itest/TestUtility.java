@@ -4,13 +4,16 @@ import org.ops4j.pax.exam.TimeoutException;
 import org.osgi.framework.*;
 import org.osgi.util.tracker.ServiceTracker;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.InputStreamReader;
 import java.io.IOException;
 import java.net.ConnectException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static junit.framework.TestCase.assertNotNull;
 import static org.junit.Assert.assertEquals;
@@ -133,6 +136,9 @@ public class TestUtility {
                 con = (HttpURLConnection)url.openConnection();
                 int status = con.getResponseCode();
                 if (status == 200) {
+                    final BufferedReader br = new BufferedReader(new InputStreamReader(con.getInputStream()));
+                    String responseBody = br.lines().collect(Collectors.joining());
+                    System.out.println("WADL returned:\n" + responseBody);
                     return;
                 }
             } catch (ConnectException e) {
