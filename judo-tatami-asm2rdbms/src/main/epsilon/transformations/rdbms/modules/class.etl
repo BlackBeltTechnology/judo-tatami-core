@@ -1,33 +1,34 @@
 import "../../../operations/asm/_importAll.eol";
-import "element.etl";
+
+
 
 /* Every Identifiable table have an ID */
 rule EClassToTableIdField
 	transform s : ASM!EClass
-	to t : RDBMS!RdbmsIdentifierField { 
-		guard : s.isEntity() and s.eAllSuperTypes.contains(getIdentifierClass())
+	to t : RDBMS!RdbmsIdentifierField {
+		guard : s.isEntity() and s.eSuperTypes.contains(getIdentifierClass())
 		t.name = s.getFQName() + "#id";
 	    t.uuid = s.getFQName() + "#id";
-	    t.table = s.equivalent("EClassToRdbmsTable");
-	    t.table.fields.add(t);
-		t.table.primaryKey = t;
+        log.info("    Add primary key: " + t.name);
+        var table = s.equivalent("EClassToRdbmsTable");
+	    table.fields.add(t);
+		table.primaryKey = t;
 		t.sqlName = "ID";
 		t.fillType("JUUID");
 }
 
-rule EClassToRdbmsTable 
+@primary
+rule EClassToRdbmsTable
 	transform s : ASM!EClass
-	to t : RDBMS!RdbmsTable
-	extends ENamedElementToRdbmsElement {
-	guard : s.isEntity()
-	    targetModel.rdbmsTables.add(t);
+	to t : RDBMS!RdbmsTable {
+		guard : s.isEntity()
+        log.info(" Add table: " + s.getFQName());
+		s.root().equivalent("rootPackegeToModel").rdbmsTables.add(t);
 	    t.sqlName = s.tableSqlName();
 	    t.name = s.getFQName();
 	    t.uuid = s.getFQName();
-	    
 		for (sup in s.eSuperTypes.select(s | s.isEntity())) {
 			t.parents.add(sup.equivalent("EClassToRdbmsTable"));
 		}
 }
-
 

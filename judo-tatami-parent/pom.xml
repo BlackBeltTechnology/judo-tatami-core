@@ -58,27 +58,27 @@
         
         <judo-framework-version>2.0.0_develop_130</judo-framework-version>
         
-        <judo-meta-rdbms-version>1.0.1.develop_36</judo-meta-rdbms-version>
+        <judo-meta-rdbms-version>1.0.1.develop_37</judo-meta-rdbms-version>
         <judo-meta-rdbms.import-range>[1.0,1.1)</judo-meta-rdbms.import-range>
 
-        <judo-meta-esm-version>1.0.0.develop_11</judo-meta-esm-version>
+        <judo-meta-esm-version>1.0.0.develop_16</judo-meta-esm-version>
         <judo-meta-esm-import-range>[1.0,1.1)</judo-meta-esm-import-range>
         
-        <judo-meta-psm-version>1.0.1.develop_257</judo-meta-psm-version>
+        <judo-meta-psm-version>1.0.1.develop_259</judo-meta-psm-version>
         <judo-meta-psm-import-range>[1.0,1.1)</judo-meta-psm-import-range>
         
         <judo-meta-psm-jql-version>1.0.0.develop_19</judo-meta-psm-jql-version>
         <judo-meta-psm-jql-import-range>[1.0,1.1)</judo-meta-psm-jql-import-range>
         
-        <judo-meta-psm-jql-extract-version>1.0.0.develop_16</judo-meta-psm-jql-extract-version>
-        <judo-meta-psm-jql-extract-import-range>[1.0,1.1)</judo-meta-psm-jql-extract-import-range>
+        <!--judo-meta-psm-jql-extract-version>1.0.0.develop_16</judo-meta-psm-jql-extract-version>
+        <judo-meta-psm-jql-extract-import-range>[1.0,1.1)</judo-meta-psm-jql-extract-import-range-->
         
         <!--
          <judo-meta-odata.version>1.0.0-develop-12</judo-meta-odata.version>
          <judo-meta-odata.import-range>[1.0,1.1)</judo-meta-odata.import-range>
          -->
         
-        <judo-meta-asm-version>1.0.0-develop-49</judo-meta-asm-version>
+        <judo-meta-asm-version>1.0.0-develop-50</judo-meta-asm-version>
         <judo-meta-asm-import-range>[1.0,1.1)</judo-meta-asm-import-range>
         
         <judo-meta-expression-version>1.0.1.develop_202</judo-meta-expression-version>
@@ -90,7 +90,7 @@
         <judo-meta-liquibase-version>1.0.1.develop_10</judo-meta-liquibase-version>
         <judo-meta-liquibase-import-range>[1.0,1.1)</judo-meta-liquibase-import-range>
 
-        <judo-meta-openapi-version>1.0.0.develop_76</judo-meta-openapi-version>
+        <judo-meta-openapi-version>1.0.0.develop_77</judo-meta-openapi-version>
         <judo-meta-openapi-import-range>[1.0,1.1)</judo-meta-openapi-import-range>
         
         <test.asm.model.groupId>${project.groupId}</test.asm.model.groupId>
@@ -107,7 +107,7 @@
         
         <test.psm.model.groupId>hu.blackbelt.northwind</test.psm.model.groupId>
         <test.psm.model.artifactId>northwind-runtime</test.psm.model.artifactId>
-        <test.psm.model.version>1.0.1.develop_101</test.psm.model.version>
+        <test.psm.model.version>1.0.1.develop_108</test.psm.model.version>
         
         <test.rdbms.model.groupId>${project.groupId}</test.rdbms.model.groupId>
         <test.rdbms.model.artifactId>judo-tatami-asm2rdbms</test.rdbms.model.artifactId>

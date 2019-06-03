@@ -2,3 +2,13 @@
 operation ASM!EPackage packageSqlName() : String {
     return self.sqlName();
 }
+
+
+@cached
+operation ASM!EPackage root() : ASM!EPackage {
+	var current = self;
+	while (current.eSuperPackage.isDefined()) {
+		current = current.eSuperPackage;
+	}
+	return current;
+}

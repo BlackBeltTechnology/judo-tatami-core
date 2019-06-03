@@ -12,7 +12,7 @@ rule FieldToColumn
 rule IdentifierFieldToAddPrimaryKey
 	transform s : RDBMS!RdbmsIdentifierField
 	to t : LIQUIBASE!AddPrimaryKey {
-		t.tableName = s.table.sqlName;
+		t.tableName = s.table().sqlName;
 		t.columnNames = s.sqlName;
 }
 
@@ -20,11 +20,11 @@ rule IdentifierFieldToAddPrimaryKey
 rule ForeignKeyFieldToAddForeignKeyConstraint
 	transform s : RDBMS!RdbmsForeignKey
 	to t : LIQUIBASE!AddForeignKeyConstraint {
-		t.baseTableName = s.table.sqlName;
+		t.baseTableName = s.table().sqlName;
 		t.baseColumnNames = s.sqlName;		
 		t.constraintName = s.foreignKeySqlName;
-		t.referencedColumnNames = s.referenceKey.table.primaryKey.sqlName;
-		t.referencedTableName = s.referenceKey.table.sqlName;
+		t.referencedColumnNames = s.referenceKey.table().primaryKey.sqlName;
+		t.referencedTableName = s.referenceKey.table().sqlName;
 }
 
 @abstract
@@ -34,7 +34,7 @@ rule FieldToAddNotNullConstraint
 	to t : LIQUIBASE!AddNotNullConstraint {
 		t.columnDataType = s.toFieldDefinition();
 		t.columnName = s.sqlName;
-		t.tableName = s.table.sqlName;
+		t.tableName = s.table().sqlName;
 }
 
 @greedy
@@ -42,28 +42,28 @@ rule IdentifierFieldToCreateTableColumn
 	transform s : RDBMS!RdbmsIdentifierField
 	to t : LIQUIBASE!Column 
 	extends FieldToColumn {
-		s.table.equivalent("TableToCreateTable").column.add(t);
+		s.table().equivalent("TableToCreateTable").column.add(t);
 }
 
 rule IdentifierFieldToCreateTableAddPrimaryKey
 	transform s : RDBMS!RdbmsIdentifierField
 	to t : LIQUIBASE!AddPrimaryKey 
 	extends IdentifierFieldToAddPrimaryKey {
-		s.table.equivalent("TableToCreateTableChangeSet").addPrimaryKey.add(t);
+		s.table().equivalent("TableToCreateTableChangeSet").addPrimaryKey.add(t);
 }
 
 rule ValueFieldToCreateTableColumn
 	transform s : RDBMS!RdbmsValueField
 	to t : LIQUIBASE!Column 
 	extends FieldToColumn {
-		s.table.equivalent("TableToCreateTable").column.add(t);
+		s.table().equivalent("TableToCreateTable").column.add(t);
 }
 
 rule ForeignKeyFieldToCreateTableAddForeignKeyConstraint
 	transform s : RDBMS!RdbmsForeignKey
 	to t : LIQUIBASE!AddForeignKeyConstraint 
 	extends ForeignKeyFieldToAddForeignKeyConstraint {
-		s.table.equivalent("TableToCreateForeignKeysChangeSet").addForeignKeyConstraint.add(t);
+		s.table().equivalent("TableToCreateForeignKeysChangeSet").addForeignKeyConstraint.add(t);
 }
 
 @greedy
@@ -72,10 +72,14 @@ rule FieldToCreateTableAddNotNullConstraint
 	to t : LIQUIBASE!AddNotNullConstraint 
 	extends FieldToAddNotNullConstraint {
 	    guard: s.mandatory
-		s.table.equivalent("TableToAddNotNullChangeSet").addNotNullConstraint.add(t);
+		s.table().equivalent("TableToAddNotNullChangeSet").addNotNullConstraint.add(t);
 }
 
 
+@cached
+operation RDBMS!RdbmsField table() : RDBMS!RdbmsTable {
+    return RDBMS!RdbmsTable.all.selectOne(ta | ta.fields.contains(self));
+}
 
 @cached
 operation RDBMS!RdbmsField toFieldDefinition () : String {

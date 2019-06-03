@@ -445,8 +445,9 @@
             </plugin>
             <plugin>
                 <artifactId>maven-surefire-plugin</artifactId>
+
                 <configuration>
-                    <groups>hu.blackbelt.judo.tatami.itest.PSMTestSuite</groups>
+                    <groups>none</groups>
                     <systemPropertyVariables>
                         <pax.exam.karaf.version>${karaf-version}</pax.exam.karaf.version>
                         <pax.exam.service.timeout>30000</pax.exam.service.timeout>
@@ -463,12 +464,31 @@
                 <plugins>
                     <plugin>
                         <artifactId>maven-surefire-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>esm-model-itest</id>
+                            </execution>
+                        </executions>
                         <configuration>
                             <groups>hu.blackbelt.judo.tatami.itest.ESMTestSuite</groups>
-                            <systemPropertyVariables>
-                                <pax.exam.karaf.version>${karaf-version}</pax.exam.karaf.version>
-                                <pax.exam.service.timeout>30000</pax.exam.service.timeout>
-                            </systemPropertyVariables>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>psm-itest</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>psm-model-itest</id>
+                            </execution>
+                        </executions>
+                        <configuration>
+                            <groups>hu.blackbelt.judo.tatami.itest.PSMTestSuite</groups>
                         </configuration>
                     </plugin>
                 </plugins>

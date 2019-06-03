@@ -32,3 +32,9 @@ operation ASM!EClass allDescandences() : Collection {
 	}
 	return ret;
 }
+
+@cached
+operation ASM!EClass root() : ASM!EPackage {
+	return self.ePackage.root();
+}
+

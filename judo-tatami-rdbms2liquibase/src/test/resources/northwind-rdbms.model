@@ -1,244 +1,242 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xmi:XMI xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:rdbms="http://blackbelt.hu/judo/meta/psm/rdbms" xmlns:rdbmsDataTypes="http://blackbelt.hu/judo/meta/rdbms/datatypes" xmlns:rdbmsNameMapping="http://blackbelt.hu/judo/meta/rdbms/namemapping" xmlns:rdbmsRules="http://blackbelt.hu/judo/meta/rdbms/rules">
-  <rdbmsNameMapping:NameMappings xmi:id="_VneFIHWzEemREbf8ziHyvA">
-    <nameMappings xmi:id="_VnmA8HWzEemREbf8ziHyvA" fullyQualifiedName="northwind.entities.City" rdbmsName="CITY"/>
-    <nameMappings xmi:id="_VnnPEHWzEemREbf8ziHyvA" fullyQualifiedName="northwind.entities.Territory#shipper" rdbmsName="ID_SHIPPER"/>
-    <nameMappings xmi:id="_VnnPEXWzEemREbf8ziHyvA" fullyQualifiedName="northwind.entities.Person#firstName" rdbmsName="FIRST_NAME"/>
+  <rdbmsNameMapping:NameMappings xmi:id="_JakUQIK1Eem-QqPUxJcc4A">
+    <nameMappings xmi:id="_JapMwIK1Eem-QqPUxJcc4A" fullyQualifiedName="northwind.entities.City" rdbmsName="CITY"/>
+    <nameMappings xmi:id="_Japz0IK1Eem-QqPUxJcc4A" fullyQualifiedName="northwind.entities.Territory#shipper" rdbmsName="ID_SHIPPER"/>
+    <nameMappings xmi:id="_Jaqa4IK1Eem-QqPUxJcc4A" fullyQualifiedName="northwind.entities.Person#firstName" rdbmsName="FIRST_NAME"/>
   </rdbmsNameMapping:NameMappings>
-  <rdbmsDataTypes:TypeMappings xmi:id="_Vpb0AHWzEemREbf8ziHyvA">
-    <typeMappings xmi:id="_VpdpMHWzEemREbf8ziHyvA" rdbmsType="DATE" rdbmsSize="-1" rdbmsPrecision="-1" rdbmsScale="-1">
+  <rdbmsDataTypes:TypeMappings xmi:id="_JbjywIK1Eem-QqPUxJcc4A">
+    <typeMappings xmi:id="_Jbm2EIK1Eem-QqPUxJcc4A" rdbmsType="DATE" rdbmsSize="-1" rdbmsPrecision="-1" rdbmsScale="-1">
       <asmType href="http://blackbelt.hu/judo/asm/types#//JDate"/>
     </typeMappings>
-    <typeMappings xmi:id="_VpeQQHWzEemREbf8ziHyvA" rdbmsType="TIMESTAMP" rdbmsSize="-1" rdbmsPrecision="-1" rdbmsScale="-1">
+    <typeMappings xmi:id="_JbndIIK1Eem-QqPUxJcc4A" rdbmsType="TIMESTAMP" rdbmsSize="-1" rdbmsPrecision="-1" rdbmsScale="-1">
       <asmType href="http://blackbelt.hu/judo/asm/types#//JTimestamp"/>
     </typeMappings>
-    <typeMappings xmi:id="_VpeQQXWzEemREbf8ziHyvA" rdbmsType="INTEGER" rdbmsSize="-1" rdbmsPrecision="-1" rdbmsScale="-1">
+    <typeMappings xmi:id="_JbndIYK1Eem-QqPUxJcc4A" rdbmsType="INTEGER" rdbmsSize="-1" rdbmsPrecision="-1" rdbmsScale="-1">
       <asmType href="http://blackbelt.hu/judo/asm/types#//JInteger"/>
     </typeMappings>
-    <typeMappings xmi:id="_VpeQQnWzEemREbf8ziHyvA" rdbmsType="BIGINT" rdbmsSize="-1" rdbmsPrecision="-1" rdbmsScale="-1">
+    <typeMappings xmi:id="_JbndIoK1Eem-QqPUxJcc4A" rdbmsType="BIGINT" rdbmsSize="-1" rdbmsPrecision="-1" rdbmsScale="-1">
       <asmType href="http://blackbelt.hu/judo/asm/types#//JLong"/>
     </typeMappings>
-    <typeMappings xmi:id="_VpeQQ3WzEemREbf8ziHyvA" rdbmsType="DECIMAL" rdbmsSize="-1" rdbmsPrecision="0" rdbmsScale="0">
+    <typeMappings xmi:id="_JbndI4K1Eem-QqPUxJcc4A" rdbmsType="DECIMAL" rdbmsSize="-1" rdbmsPrecision="0" rdbmsScale="0">
       <asmType href="http://blackbelt.hu/judo/asm/types#//JBigInteger"/>
     </typeMappings>
-    <typeMappings xmi:id="_Vpe3UHWzEemREbf8ziHyvA" rdbmsType="FLOAT" rdbmsSize="-1" rdbmsPrecision="-1" rdbmsScale="-1">
+    <typeMappings xmi:id="_JboEMIK1Eem-QqPUxJcc4A" rdbmsType="FLOAT" rdbmsSize="-1" rdbmsPrecision="-1" rdbmsScale="-1">
       <asmType href="http://blackbelt.hu/judo/asm/types#//JFloat"/>
     </typeMappings>
-    <typeMappings xmi:id="_Vpe3UXWzEemREbf8ziHyvA" rdbmsType="DOUBLE" rdbmsSize="-1" rdbmsPrecision="-1" rdbmsScale="-1">
+    <typeMappings xmi:id="_JboEMYK1Eem-QqPUxJcc4A" rdbmsType="DOUBLE" rdbmsSize="-1" rdbmsPrecision="-1" rdbmsScale="-1">
       <asmType href="http://blackbelt.hu/judo/asm/types#//JDouble"/>
     </typeMappings>
-    <typeMappings xmi:id="_Vpe3UnWzEemREbf8ziHyvA" rdbmsType="DECIMAL" rdbmsSize="-1" rdbmsPrecision="0" rdbmsScale="0">
+    <typeMappings xmi:id="_JboEMoK1Eem-QqPUxJcc4A" rdbmsType="DECIMAL" rdbmsSize="-1" rdbmsPrecision="0" rdbmsScale="0">
       <asmType href="http://blackbelt.hu/judo/asm/types#//JBigDecimal"/>
     </typeMappings>
-    <typeMappings xmi:id="_VpfeYHWzEemREbf8ziHyvA" rdbmsType="VARCHAR" rdbmsSize="255" rdbmsPrecision="-1" rdbmsScale="-1">
+    <typeMappings xmi:id="_JboEM4K1Eem-QqPUxJcc4A" rdbmsType="VARCHAR" rdbmsSize="255" rdbmsPrecision="-1" rdbmsScale="-1">
       <asmType href="http://blackbelt.hu/judo/asm/types#//JString"/>
     </typeMappings>
-    <typeMappings xmi:id="_VpfeYXWzEemREbf8ziHyvA" rdbmsType="BOOLEAN" rdbmsSize="-1" rdbmsPrecision="-1" rdbmsScale="-1">
+    <typeMappings xmi:id="_JborQIK1Eem-QqPUxJcc4A" rdbmsType="BOOLEAN" rdbmsSize="-1" rdbmsPrecision="-1" rdbmsScale="-1">
       <asmType href="http://blackbelt.hu/judo/asm/types#//JBoolean"/>
     </typeMappings>
-    <typeMappings xmi:id="_VpfeYnWzEemREbf8ziHyvA" rdbmsType="BLOB" rdbmsSize="64" rdbmsPrecision="-1" rdbmsScale="-1">
+    <typeMappings xmi:id="_JborQYK1Eem-QqPUxJcc4A" rdbmsType="BLOB" rdbmsSize="64" rdbmsPrecision="-1" rdbmsScale="-1">
       <asmType href="http://blackbelt.hu/judo/asm/types#//JByteArray"/>
     </typeMappings>
-    <typeMappings xmi:id="_VpfeY3WzEemREbf8ziHyvA" rdbmsType="CLOB" rdbmsSize="-1" rdbmsPrecision="-1" rdbmsScale="-1">
+    <typeMappings xmi:id="_JborQoK1Eem-QqPUxJcc4A" rdbmsType="CLOB" rdbmsSize="-1" rdbmsPrecision="-1" rdbmsScale="-1">
       <asmType href="http://blackbelt.hu/judo/asm/types#//JObject"/>
     </typeMappings>
-    <typeMappings xmi:id="_VpgFcHWzEemREbf8ziHyvA" rdbmsType="UUID" rdbmsSize="-1" rdbmsPrecision="-1" rdbmsScale="-1">
+    <typeMappings xmi:id="_JbpSUIK1Eem-QqPUxJcc4A" rdbmsType="UUID" rdbmsSize="-1" rdbmsPrecision="-1" rdbmsScale="-1">
       <asmType href="http://blackbelt.hu/judo/asm/types#//JUUID"/>
     </typeMappings>
   </rdbmsDataTypes:TypeMappings>
-  <rdbmsRules:Rules xmi:id="_VsoR8HWzEemREbf8ziHyvA">
-    <rules xmi:id="_VsqHIHWzEemREbf8ziHyvA" symbol="&lt;--0..*-----------" upper="-1" oppositeLower="-2" oppositeUpper="-2" first="true" joinTable="true"/>
-    <rules xmi:id="_VsquMHWzEemREbf8ziHyvA" symbol="&lt;--1..*-----------" lower="1" upper="-1" oppositeLower="-2" oppositeUpper="-2" first="true" rangeConstraint="true" joinTable="true"/>
-    <rules xmi:id="_VsquMXWzEemREbf8ziHyvA" symbol="&lt;--0..1-----------" upper="1" oppositeLower="-2" oppositeUpper="-2" first="true" foreignKey="true"/>
-    <rules xmi:id="_VsquMnWzEemREbf8ziHyvA" symbol="&lt;--1..1-----------" lower="1" upper="1" oppositeLower="-2" oppositeUpper="-2" first="true" foreignKey="true" mandatory="true"/>
-    <rules xmi:id="_VsquM3WzEemREbf8ziHyvA" symbol="&lt;--0..*----------@" upper="-1" oppositeLower="-2" oppositeUpper="-2" containment="true" first="true" inverseForeignKey="true" readOnly="true" mandatory="true"/>
-    <rules xmi:id="_VsquNHWzEemREbf8ziHyvA" symbol="&lt;--1..*----------@" lower="1" upper="-1" oppositeLower="-2" oppositeUpper="-2" containment="true" first="true" inverseForeignKey="true" readOnly="true" mandatory="true" rangeConstraint="true"/>
-    <rules xmi:id="_VsrVQHWzEemREbf8ziHyvA" symbol="&lt;--0..1----------@" upper="1" oppositeLower="-2" oppositeUpper="-2" containment="true" first="true" inverseForeignKey="true" readOnly="true" mandatory="true"/>
-    <rules xmi:id="_VsrVQXWzEemREbf8ziHyvA" symbol="&lt;--1..1----------@" lower="1" upper="1" oppositeLower="-2" oppositeUpper="-2" containment="true" first="true" inverseForeignKey="true" readOnly="true" mandatory="true"/>
-    <rules xmi:id="_VsrVQnWzEemREbf8ziHyvA" symbol="&lt;--0..*----0..*-->" upper="-1" opposite="true" oppositeUpper="-1" joinTable="true"/>
-    <rules xmi:id="_VsrVQ3WzEemREbf8ziHyvA" symbol="&lt;--0..*----0..*-->" upper="-1" opposite="true" oppositeUpper="-1" first="true" joinTable="true"/>
-    <rules xmi:id="_VsrVRHWzEemREbf8ziHyvA" symbol="&lt;--1..*----0..*-->" lower="1" upper="-1" opposite="true" oppositeUpper="-1" rangeConstraint="true" joinTable="true"/>
-    <rules xmi:id="_VsrVRXWzEemREbf8ziHyvA" symbol="&lt;--1..*----0..*-->" lower="1" upper="-1" opposite="true" oppositeUpper="-1" first="true" rangeConstraint="true" joinTable="true"/>
-    <rules xmi:id="_VsrVRnWzEemREbf8ziHyvA" symbol="&lt;--0..*----1..*-->" upper="-1" opposite="true" oppositeLower="1" oppositeUpper="-1" inverseRangeConstraint="true" joinTable="true"/>
-    <rules xmi:id="_Vsr8UHWzEemREbf8ziHyvA" symbol="&lt;--0..*----1..*-->" upper="-1" opposite="true" oppositeLower="1" oppositeUpper="-1" first="true" inverseRangeConstraint="true" joinTable="true"/>
-    <rules xmi:id="_Vsr8UXWzEemREbf8ziHyvA" symbol="&lt;--1..*----1..*-->" lower="1" upper="-1" opposite="true" oppositeLower="1" oppositeUpper="-1" rangeConstraint="true" inverseRangeConstraint="true" joinTable="true"/>
-    <rules xmi:id="_Vsr8UnWzEemREbf8ziHyvA" symbol="&lt;--1..*----1..*-->" lower="1" upper="-1" opposite="true" oppositeLower="1" oppositeUpper="-1" first="true" rangeConstraint="true" inverseRangeConstraint="true" joinTable="true"/>
-    <rules xmi:id="_Vsr8U3WzEemREbf8ziHyvA" symbol="&lt;--0..*----0..1-->" upper="-1" opposite="true" oppositeUpper="1"/>
-    <rules xmi:id="_Vsr8VHWzEemREbf8ziHyvA" symbol="&lt;--0..*----0..1-->" upper="-1" opposite="true" oppositeUpper="1" first="true"/>
-    <rules xmi:id="_Vsr8VXWzEemREbf8ziHyvA" symbol="&lt;--0..*----1..1-->" upper="-1" opposite="true" oppositeLower="1" oppositeUpper="1"/>
-    <rules xmi:id="_Vsr8VnWzEemREbf8ziHyvA" symbol="&lt;--0..*----1..1-->" upper="-1" opposite="true" oppositeLower="1" oppositeUpper="1" first="true"/>
-    <rules xmi:id="_VssjYHWzEemREbf8ziHyvA" symbol="&lt;--1..*----0..1-->" lower="1" upper="-1" opposite="true" oppositeUpper="1" rangeConstraint="true"/>
-    <rules xmi:id="_VssjYXWzEemREbf8ziHyvA" symbol="&lt;--1..*----0..1-->" lower="1" upper="-1" opposite="true" oppositeUpper="1" first="true" rangeConstraint="true"/>
-    <rules xmi:id="_VssjYnWzEemREbf8ziHyvA" symbol="&lt;--1..*----1..1-->" lower="1" upper="-1" opposite="true" oppositeLower="1" oppositeUpper="1" rangeConstraint="true"/>
-    <rules xmi:id="_VssjY3WzEemREbf8ziHyvA" symbol="&lt;--1..*----1..1-->" lower="1" upper="-1" opposite="true" oppositeLower="1" oppositeUpper="1" first="true" rangeConstraint="true"/>
-    <rules xmi:id="_VssjZHWzEemREbf8ziHyvA" symbol="&lt;--0..1----0..*-->" upper="1" opposite="true" oppositeUpper="-1" foreignKey="true"/>
-    <rules xmi:id="_VssjZXWzEemREbf8ziHyvA" symbol="&lt;--0..1----0..*-->" upper="1" opposite="true" oppositeUpper="-1" first="true" foreignKey="true"/>
-    <rules xmi:id="_VssjZnWzEemREbf8ziHyvA" symbol="&lt;--0..1----1..*-->" upper="1" opposite="true" oppositeLower="1" oppositeUpper="-1" foreignKey="true" inverseRangeConstraint="true"/>
-    <rules xmi:id="_VssjZ3WzEemREbf8ziHyvA" symbol="&lt;--0..1----1..*-->" upper="1" opposite="true" oppositeLower="1" oppositeUpper="-1" first="true" foreignKey="true" inverseRangeConstraint="true"/>
-    <rules xmi:id="_VssjaHWzEemREbf8ziHyvA" symbol="&lt;--0..1----0..1-->" upper="1" opposite="true" oppositeUpper="1"/>
-    <rules xmi:id="_VstKcHWzEemREbf8ziHyvA" symbol="&lt;--0..1----0..1-->" upper="1" opposite="true" oppositeUpper="1" first="true" foreignKey="true"/>
-    <rules xmi:id="_VstKcXWzEemREbf8ziHyvA" symbol="&lt;--0..1----1..1-->" upper="1" opposite="true" oppositeLower="1" oppositeUpper="1"/>
-    <rules xmi:id="_VstKcnWzEemREbf8ziHyvA" symbol="&lt;--0..1----1..1-->" upper="1" opposite="true" oppositeLower="1" oppositeUpper="1" first="true"/>
-    <rules xmi:id="_VstKc3WzEemREbf8ziHyvA" symbol="&lt;--1..1----0..*-->" lower="1" upper="1" opposite="true" oppositeUpper="-1" foreignKey="true" mandatory="true"/>
-    <rules xmi:id="_VstKdHWzEemREbf8ziHyvA" symbol="&lt;--1..1----0..*-->" lower="1" upper="1" opposite="true" oppositeUpper="-1" first="true" foreignKey="true" mandatory="true"/>
-    <rules xmi:id="_VstKdXWzEemREbf8ziHyvA" symbol="&lt;--1..1----1..*-->" lower="1" upper="1" opposite="true" oppositeLower="1" oppositeUpper="-1" foreignKey="true" mandatory="true" inverseRangeConstraint="true"/>
-    <rules xmi:id="_VstKdnWzEemREbf8ziHyvA" symbol="&lt;--1..1----1..*-->" lower="1" upper="1" opposite="true" oppositeLower="1" oppositeUpper="-1" first="true" foreignKey="true" mandatory="true" inverseRangeConstraint="true"/>
-    <rules xmi:id="_VstKd3WzEemREbf8ziHyvA" symbol="&lt;--1..1----0..1-->" lower="1" upper="1" opposite="true" oppositeUpper="1" foreignKey="true" mandatory="true"/>
-    <rules xmi:id="_VstKeHWzEemREbf8ziHyvA" symbol="&lt;--1..1----0..1-->" lower="1" upper="1" opposite="true" oppositeUpper="1" first="true" foreignKey="true" mandatory="true"/>
-    <rules xmi:id="_VstKeXWzEemREbf8ziHyvA" symbol="&lt;--1..1----1..1-->" lower="1" upper="1" opposite="true" oppositeLower="1" oppositeUpper="1" foreignKey="true" mandatory="true"/>
-    <rules xmi:id="_Vsu_oHWzEemREbf8ziHyvA" symbol="&lt;--1..1----1..1-->" lower="1" upper="1" opposite="true" oppositeLower="1" oppositeUpper="1" first="true"/>
+  <rdbmsRules:Rules xmi:id="_JeBQ4IK1Eem-QqPUxJcc4A">
+    <rules xmi:id="_JeCfAIK1Eem-QqPUxJcc4A" symbol="&lt;--0..*-----------" upper="-1" oppositeLower="-2" oppositeUpper="-2" first="true" joinTable="true"/>
+    <rules xmi:id="_JeCfAYK1Eem-QqPUxJcc4A" symbol="&lt;--1..*-----------" lower="1" upper="-1" oppositeLower="-2" oppositeUpper="-2" first="true" rangeConstraint="true" joinTable="true"/>
+    <rules xmi:id="_JeCfAoK1Eem-QqPUxJcc4A" symbol="&lt;--0..1-----------" upper="1" oppositeLower="-2" oppositeUpper="-2" first="true" foreignKey="true"/>
+    <rules xmi:id="_JeCfA4K1Eem-QqPUxJcc4A" symbol="&lt;--1..1-----------" lower="1" upper="1" oppositeLower="-2" oppositeUpper="-2" first="true" foreignKey="true" mandatory="true"/>
+    <rules xmi:id="_JeCfBIK1Eem-QqPUxJcc4A" symbol="&lt;--0..*----------@" upper="-1" oppositeLower="-2" oppositeUpper="-2" containment="true" first="true" inverseForeignKey="true" readOnly="true" mandatory="true"/>
+    <rules xmi:id="_JeCfBYK1Eem-QqPUxJcc4A" symbol="&lt;--1..*----------@" lower="1" upper="-1" oppositeLower="-2" oppositeUpper="-2" containment="true" first="true" inverseForeignKey="true" readOnly="true" mandatory="true" rangeConstraint="true"/>
+    <rules xmi:id="_JeDGEIK1Eem-QqPUxJcc4A" symbol="&lt;--0..1----------@" upper="1" oppositeLower="-2" oppositeUpper="-2" containment="true" first="true" inverseForeignKey="true" readOnly="true" mandatory="true"/>
+    <rules xmi:id="_JeDGEYK1Eem-QqPUxJcc4A" symbol="&lt;--1..1----------@" lower="1" upper="1" oppositeLower="-2" oppositeUpper="-2" containment="true" first="true" inverseForeignKey="true" readOnly="true" mandatory="true"/>
+    <rules xmi:id="_JeDGEoK1Eem-QqPUxJcc4A" symbol="&lt;--0..*----0..*-->" upper="-1" opposite="true" oppositeUpper="-1" joinTable="true"/>
+    <rules xmi:id="_JeDGE4K1Eem-QqPUxJcc4A" symbol="&lt;--0..*----0..*-->" upper="-1" opposite="true" oppositeUpper="-1" first="true" joinTable="true"/>
+    <rules xmi:id="_JeDGFIK1Eem-QqPUxJcc4A" symbol="&lt;--1..*----0..*-->" lower="1" upper="-1" opposite="true" oppositeUpper="-1" rangeConstraint="true" joinTable="true"/>
+    <rules xmi:id="_JeDGFYK1Eem-QqPUxJcc4A" symbol="&lt;--1..*----0..*-->" lower="1" upper="-1" opposite="true" oppositeUpper="-1" first="true" rangeConstraint="true" joinTable="true"/>
+    <rules xmi:id="_JeDGFoK1Eem-QqPUxJcc4A" symbol="&lt;--0..*----1..*-->" upper="-1" opposite="true" oppositeLower="1" oppositeUpper="-1" inverseRangeConstraint="true" joinTable="true"/>
+    <rules xmi:id="_JeDGF4K1Eem-QqPUxJcc4A" symbol="&lt;--0..*----1..*-->" upper="-1" opposite="true" oppositeLower="1" oppositeUpper="-1" first="true" inverseRangeConstraint="true" joinTable="true"/>
+    <rules xmi:id="_JeDGGIK1Eem-QqPUxJcc4A" symbol="&lt;--1..*----1..*-->" lower="1" upper="-1" opposite="true" oppositeLower="1" oppositeUpper="-1" rangeConstraint="true" inverseRangeConstraint="true" joinTable="true"/>
+    <rules xmi:id="_JeDGGYK1Eem-QqPUxJcc4A" symbol="&lt;--1..*----1..*-->" lower="1" upper="-1" opposite="true" oppositeLower="1" oppositeUpper="-1" first="true" rangeConstraint="true" inverseRangeConstraint="true" joinTable="true"/>
+    <rules xmi:id="_JeDGGoK1Eem-QqPUxJcc4A" symbol="&lt;--0..*----0..1-->" upper="-1" opposite="true" oppositeUpper="1"/>
+    <rules xmi:id="_JeDGG4K1Eem-QqPUxJcc4A" symbol="&lt;--0..*----0..1-->" upper="-1" opposite="true" oppositeUpper="1" first="true"/>
+    <rules xmi:id="_JeDGHIK1Eem-QqPUxJcc4A" symbol="&lt;--0..*----1..1-->" upper="-1" opposite="true" oppositeLower="1" oppositeUpper="1"/>
+    <rules xmi:id="_JeDtIIK1Eem-QqPUxJcc4A" symbol="&lt;--0..*----1..1-->" upper="-1" opposite="true" oppositeLower="1" oppositeUpper="1" first="true"/>
+    <rules xmi:id="_JeDtIYK1Eem-QqPUxJcc4A" symbol="&lt;--1..*----0..1-->" lower="1" upper="-1" opposite="true" oppositeUpper="1" rangeConstraint="true"/>
+    <rules xmi:id="_JeDtIoK1Eem-QqPUxJcc4A" symbol="&lt;--1..*----0..1-->" lower="1" upper="-1" opposite="true" oppositeUpper="1" first="true" rangeConstraint="true"/>
+    <rules xmi:id="_JeDtI4K1Eem-QqPUxJcc4A" symbol="&lt;--1..*----1..1-->" lower="1" upper="-1" opposite="true" oppositeLower="1" oppositeUpper="1" rangeConstraint="true"/>
+    <rules xmi:id="_JeDtJIK1Eem-QqPUxJcc4A" symbol="&lt;--1..*----1..1-->" lower="1" upper="-1" opposite="true" oppositeLower="1" oppositeUpper="1" first="true" rangeConstraint="true"/>
+    <rules xmi:id="_JeDtJYK1Eem-QqPUxJcc4A" symbol="&lt;--0..1----0..*-->" upper="1" opposite="true" oppositeUpper="-1" foreignKey="true"/>
+    <rules xmi:id="_JeDtJoK1Eem-QqPUxJcc4A" symbol="&lt;--0..1----0..*-->" upper="1" opposite="true" oppositeUpper="-1" first="true" foreignKey="true"/>
+    <rules xmi:id="_JeDtJ4K1Eem-QqPUxJcc4A" symbol="&lt;--0..1----1..*-->" upper="1" opposite="true" oppositeLower="1" oppositeUpper="-1" foreignKey="true" inverseRangeConstraint="true"/>
+    <rules xmi:id="_JeDtKIK1Eem-QqPUxJcc4A" symbol="&lt;--0..1----1..*-->" upper="1" opposite="true" oppositeLower="1" oppositeUpper="-1" first="true" foreignKey="true" inverseRangeConstraint="true"/>
+    <rules xmi:id="_JeDtKYK1Eem-QqPUxJcc4A" symbol="&lt;--0..1----0..1-->" upper="1" opposite="true" oppositeUpper="1"/>
+    <rules xmi:id="_JeDtKoK1Eem-QqPUxJcc4A" symbol="&lt;--0..1----0..1-->" upper="1" opposite="true" oppositeUpper="1" first="true" foreignKey="true"/>
+    <rules xmi:id="_JeDtK4K1Eem-QqPUxJcc4A" symbol="&lt;--0..1----1..1-->" upper="1" opposite="true" oppositeLower="1" oppositeUpper="1"/>
+    <rules xmi:id="_JeEUMIK1Eem-QqPUxJcc4A" symbol="&lt;--0..1----1..1-->" upper="1" opposite="true" oppositeLower="1" oppositeUpper="1" first="true"/>
+    <rules xmi:id="_JeEUMYK1Eem-QqPUxJcc4A" symbol="&lt;--1..1----0..*-->" lower="1" upper="1" opposite="true" oppositeUpper="-1" foreignKey="true" mandatory="true"/>
+    <rules xmi:id="_JeEUMoK1Eem-QqPUxJcc4A" symbol="&lt;--1..1----0..*-->" lower="1" upper="1" opposite="true" oppositeUpper="-1" first="true" foreignKey="true" mandatory="true"/>
+    <rules xmi:id="_JeEUM4K1Eem-QqPUxJcc4A" symbol="&lt;--1..1----1..*-->" lower="1" upper="1" opposite="true" oppositeLower="1" oppositeUpper="-1" foreignKey="true" mandatory="true" inverseRangeConstraint="true"/>
+    <rules xmi:id="_JeEUNIK1Eem-QqPUxJcc4A" symbol="&lt;--1..1----1..*-->" lower="1" upper="1" opposite="true" oppositeLower="1" oppositeUpper="-1" first="true" foreignKey="true" mandatory="true" inverseRangeConstraint="true"/>
+    <rules xmi:id="_JeEUNYK1Eem-QqPUxJcc4A" symbol="&lt;--1..1----0..1-->" lower="1" upper="1" opposite="true" oppositeUpper="1" foreignKey="true" mandatory="true"/>
+    <rules xmi:id="_JeEUNoK1Eem-QqPUxJcc4A" symbol="&lt;--1..1----0..1-->" lower="1" upper="1" opposite="true" oppositeUpper="1" first="true" foreignKey="true" mandatory="true"/>
+    <rules xmi:id="_JeEUN4K1Eem-QqPUxJcc4A" symbol="&lt;--1..1----1..1-->" lower="1" upper="1" opposite="true" oppositeLower="1" oppositeUpper="1" foreignKey="true" mandatory="true"/>
+    <rules xmi:id="_JeEUOIK1Eem-QqPUxJcc4A" symbol="&lt;--1..1----1..1-->" lower="1" upper="1" opposite="true" oppositeLower="1" oppositeUpper="1" first="true"/>
   </rdbmsRules:Rules>
-  <rdbms:RdbmsModel xmi:id="_VyfCUHWzEemREbf8ziHyvA" version="1.0.0">
-    <rdbmsTables xmi:id="_VyykUHWzEemREbf8ziHyvA" name="northwind.entities.Order" uuid="northwind.entities.Order" sqlName="T_ENTTS_ORDER" primaryKey="_VywvIHWzEemREbf8ziHyvA">
-      <fields xsi:type="rdbms:RdbmsIdentifierField" xmi:id="_VywvIHWzEemREbf8ziHyvA" name="northwind.entities.Order#id" uuid="northwind.entities.Order#id" sqlName="ID" rdbmsTypeName="UUID" size="-1" precision="-1" scale="-1" storageByte="-1" foreignKeys="_V4rw8HWzEemREbf8ziHyvA _V4sYAHWzEemREbf8ziHyvA _V5C9UHWzEemREbf8ziHyvA"/>
-      <fields xsi:type="rdbms:RdbmsValueField" xmi:id="_V2gmsHWzEemREbf8ziHyvA" name="orderDate" uuid="northwind.entities.Order#orderDate" sqlName="C_ORDRDT" rdbmsTypeName="TIMESTAMP" size="-1" precision="-1" scale="-1" storageByte="-1"/>
-      <fields xsi:type="rdbms:RdbmsValueField" xmi:id="_V2jC8HWzEemREbf8ziHyvA" name="requiredDate" uuid="northwind.entities.Order#requiredDate" sqlName="C_RERDDT" rdbmsTypeName="TIMESTAMP" size="-1" precision="-1" scale="-1" storageByte="-1"/>
-      <fields xsi:type="rdbms:RdbmsValueField" xmi:id="_V2lfMHWzEemREbf8ziHyvA" name="shippedDate" uuid="northwind.entities.Order#shippedDate" sqlName="C_SHPDDT" rdbmsTypeName="TIMESTAMP" size="-1" precision="-1" scale="-1" storageByte="-1"/>
-      <fields xsi:type="rdbms:RdbmsValueField" xmi:id="_V2n7cHWzEemREbf8ziHyvA" name="freight" uuid="northwind.entities.Order#freight" sqlName="C_FRGHT" rdbmsTypeName="DOUBLE" size="-1" precision="-1" scale="-1" storageByte="-1"/>
-      <fields xsi:type="rdbms:RdbmsValueField" xmi:id="_V2q-wHWzEemREbf8ziHyvA" name="shipName" uuid="northwind.entities.Order#shipName" sqlName="C_SHPNM" rdbmsTypeName="VARCHAR" size="255" precision="-1" scale="-1" storageByte="-1"/>
-      <fields xsi:type="rdbms:RdbmsForeignKey" xmi:id="_V4aEIHWzEemREbf8ziHyvA" name="customer" uuid="northwind.entities.Order#customer" sqlName="C_CUSTMR_ID" rdbmsTypeName="UUID" size="-1" precision="-1" scale="-1" storageByte="-1" referenceKey="_VzOpMHWzEemREbf8ziHyvA" foreignKeySqlName="FK_ENTTS_ORDER_CUSTMR"/>
-      <fields xsi:type="rdbms:RdbmsForeignKey" xmi:id="_V4cgYHWzEemREbf8ziHyvA" name="shipper" uuid="northwind.entities.Order#shipper" sqlName="C_SHPPR_ID" rdbmsTypeName="UUID" size="-1" precision="-1" scale="-1" storageByte="-1" referenceKey="_VzbdgHWzEemREbf8ziHyvA" foreignKeySqlName="FK_ENTTS_ORDER_SHPPR"/>
-      <fields xsi:type="rdbms:RdbmsForeignKey" xmi:id="_V4dugHWzEemREbf8ziHyvA" name="employee" uuid="northwind.entities.Order#employee" sqlName="C_EMPLY_ID" rdbmsTypeName="UUID" size="-1" precision="-1" scale="-1" storageByte="-1" referenceKey="_VzmcoHWzEemREbf8ziHyvA" foreignKeySqlName="FK_ENTTS_ORDER_EMPLY"/>
+  <rdbms:RdbmsModel xmi:id="_JhnXcIK1Eem-QqPUxJcc4A" version="1.0.0">
+    <rdbmsTables xmi:id="_JhliQIK1Eem-QqPUxJcc4A" name="demo.entities.Order" uuid="demo.entities.Order" sqlName="T_ENTTS_ORDER" primaryKey="_JhjGAIK1Eem-QqPUxJcc4A">
+      <fields xsi:type="rdbms:RdbmsIdentifierField" xmi:id="_JhjGAIK1Eem-QqPUxJcc4A" name="demo.entities.Order#id" uuid="demo.entities.Order#id" sqlName="ID" rdbmsTypeName="UUID" size="-1" precision="-1" scale="-1" storageByte="-1" foreignKeys="_JmeCQIK1Eem-QqPUxJcc4A _JmfQYIK1Eem-QqPUxJcc4A"/>
+      <fields xsi:type="rdbms:RdbmsValueField" xmi:id="_Ji6_AIK1Eem-QqPUxJcc4A" uuid="demo.entities.Order#orderDate" sqlName="C_ORDRDT" rdbmsTypeName="TIMESTAMP" size="-1" precision="-1" scale="-1" storageByte="-1"/>
+      <fields xsi:type="rdbms:RdbmsValueField" xmi:id="_JjBssIK1Eem-QqPUxJcc4A" uuid="demo.entities.Order#requiredDate" sqlName="C_RERDDT" rdbmsTypeName="TIMESTAMP" size="-1" precision="-1" scale="-1" storageByte="-1"/>
+      <fields xsi:type="rdbms:RdbmsValueField" xmi:id="_JjGlMIK1Eem-QqPUxJcc4A" uuid="demo.entities.Order#shippedDate" sqlName="C_SHPDDT" rdbmsTypeName="TIMESTAMP" size="-1" precision="-1" scale="-1" storageByte="-1"/>
+      <fields xsi:type="rdbms:RdbmsValueField" xmi:id="_JjOhAIK1Eem-QqPUxJcc4A" uuid="demo.entities.Order#freight" sqlName="C_FRGHT" rdbmsTypeName="DOUBLE" size="-1" precision="-1" scale="-1" storageByte="-1"/>
+      <fields xsi:type="rdbms:RdbmsValueField" xmi:id="_JjUnoIK1Eem-QqPUxJcc4A" uuid="demo.entities.Order#shipName" sqlName="C_SHPNM" rdbmsTypeName="VARCHAR" size="255" precision="-1" scale="-1" storageByte="-1"/>
+      <fields xsi:type="rdbms:RdbmsForeignKey" xmi:id="_Jl1wIIK1Eem-QqPUxJcc4A" name="customer" uuid="demo.entities.Order#customer" sqlName="C_CUSTMR_ID" rdbmsTypeName="UUID" size="-1" precision="-1" scale="-1" storageByte="-1" referenceKey="_Jh-j0IK1Eem-QqPUxJcc4A" foreignKeySqlName="FK_ENTTS_ORDER_CUSTMR"/>
+      <fields xsi:type="rdbms:RdbmsForeignKey" xmi:id="_Jl4MYIK1Eem-QqPUxJcc4A" name="shipper" uuid="demo.entities.Order#shipper" sqlName="C_SHPPR_ID" rdbmsTypeName="UUID" size="-1" precision="-1" scale="-1" storageByte="-1" referenceKey="_JiN0YIK1Eem-QqPUxJcc4A" foreignKeySqlName="FK_ENTTS_ORDER_SHPPR"/>
+      <fields xsi:type="rdbms:RdbmsForeignKey" xmi:id="_Jl6BkIK1Eem-QqPUxJcc4A" name="employee" uuid="demo.entities.Order#employee" sqlName="C_EMPLY_ID" rdbmsTypeName="UUID" size="-1" precision="-1" scale="-1" storageByte="-1" referenceKey="_JiYzgIK1Eem-QqPUxJcc4A" foreignKeySqlName="FK_ENTTS_ORDER_EMPLY"/>
     </rdbmsTables>
-    <rdbmsTables xmi:id="_Vy__sXWzEemREbf8ziHyvA" name="northwind.entities.Product" uuid="northwind.entities.Product" sqlName="T_ENTTS_PRDCT" primaryKey="_Vy__sHWzEemREbf8ziHyvA">
-      <fields xsi:type="rdbms:RdbmsIdentifierField" xmi:id="_Vy__sHWzEemREbf8ziHyvA" name="northwind.entities.Product#id" uuid="northwind.entities.Product#id" sqlName="ID" rdbmsTypeName="UUID" size="-1" precision="-1" scale="-1" storageByte="-1" foreignKeys="_V4j1IHWzEemREbf8ziHyvA _V4_6AHWzEemREbf8ziHyvA"/>
-      <fields xsi:type="rdbms:RdbmsValueField" xmi:id="_V2weUHWzEemREbf8ziHyvA" name="productName" uuid="northwind.entities.Product#productName" sqlName="C_PRCTNM" mandatory="true" rdbmsTypeName="VARCHAR" size="255" precision="-1" scale="-1" storageByte="-1"/>
-      <fields xsi:type="rdbms:RdbmsValueField" xmi:id="_V21W0HWzEemREbf8ziHyvA" name="quantityPerUnit" uuid="northwind.entities.Product#quantityPerUnit" sqlName="C_QUNPRT" rdbmsTypeName="INTEGER" size="-1" precision="-1" scale="-1" storageByte="-1"/>
-      <fields xsi:type="rdbms:RdbmsValueField" xmi:id="_V25BMHWzEemREbf8ziHyvA" name="unitPrice" uuid="northwind.entities.Product#unitPrice" sqlName="C_UNTPRC" rdbmsTypeName="DOUBLE" size="-1" precision="-1" scale="-1" storageByte="-1"/>
-      <fields xsi:type="rdbms:RdbmsValueField" xmi:id="_V28rkHWzEemREbf8ziHyvA" name="unitsInStock" uuid="northwind.entities.Product#unitsInStock" sqlName="C_UNSISK" rdbmsTypeName="INTEGER" size="-1" precision="-1" scale="-1" storageByte="-1"/>
-      <fields xsi:type="rdbms:RdbmsValueField" xmi:id="_V3AV8HWzEemREbf8ziHyvA" name="unitsOnOrder" uuid="northwind.entities.Product#unitsOnOrder" sqlName="C_UNSOOR" rdbmsTypeName="INTEGER" size="-1" precision="-1" scale="-1" storageByte="-1"/>
-      <fields xsi:type="rdbms:RdbmsValueField" xmi:id="_V3EAUHWzEemREbf8ziHyvA" name="reorderLevel" uuid="northwind.entities.Product#reorderLevel" sqlName="C_RERRLL" rdbmsTypeName="INTEGER" size="-1" precision="-1" scale="-1" storageByte="-1"/>
-      <fields xsi:type="rdbms:RdbmsValueField" xmi:id="_V3HDoHWzEemREbf8ziHyvA" name="discounted" uuid="northwind.entities.Product#discounted" sqlName="C_DISCND" rdbmsTypeName="BOOLEAN" size="-1" precision="-1" scale="-1" storageByte="-1"/>
-      <fields xsi:type="rdbms:RdbmsValueField" xmi:id="_V3KuAHWzEemREbf8ziHyvA" name="weight" uuid="northwind.entities.Product#weight" sqlName="C_WEIGHT" rdbmsTypeName="DOUBLE" size="-1" precision="-1" scale="-1" storageByte="-1"/>
-      <fields xsi:type="rdbms:RdbmsForeignKey" xmi:id="_V4e8oHWzEemREbf8ziHyvA" name="category" uuid="northwind.entities.Product#category" sqlName="C_CATGRY_ID" rdbmsTypeName="UUID" size="-1" precision="-1" scale="-1" storageByte="-1" referenceKey="_VzE4MHWzEemREbf8ziHyvA" foreignKeySqlName="FK_ENTTS_PRDCT_CATGRY"/>
-      <fields xsi:type="rdbms:RdbmsForeignKey" xmi:id="_V4fjsHWzEemREbf8ziHyvA" name="supplier" uuid="northwind.entities.Product#supplier" sqlName="C_SUPPLR_ID" rdbmsTypeName="UUID" size="-1" precision="-1" scale="-1" storageByte="-1" referenceKey="_VzXMEHWzEemREbf8ziHyvA" foreignKeySqlName="FK_ENTTS_PRDCT_SUPPLR"/>
-      <fields xsi:type="rdbms:RdbmsForeignKey" xmi:id="_V4gx0HWzEemREbf8ziHyvA" name="store" uuid="northwind.entities.Product#store" sqlName="C_STORE_ID" mandatory="true" rdbmsTypeName="UUID" size="-1" precision="-1" scale="-1" storageByte="-1" referenceKey="_V0J2QHWzEemREbf8ziHyvA" foreignKeySqlName="FK_ENTTS_PRDCT_STORE"/>
+    <rdbmsTables xmi:id="_Jhv6UIK1Eem-QqPUxJcc4A" name="demo.entities.Product" uuid="demo.entities.Product" sqlName="T_ENTTS_PRDCT" primaryKey="_JhvTQIK1Eem-QqPUxJcc4A">
+      <fields xsi:type="rdbms:RdbmsIdentifierField" xmi:id="_JhvTQIK1Eem-QqPUxJcc4A" name="demo.entities.Product#id" uuid="demo.entities.Product#id" sqlName="ID" rdbmsTypeName="UUID" size="-1" precision="-1" scale="-1" storageByte="-1" foreignKeys="_JmHc8IK1Eem-QqPUxJcc4A _JmpBYIK1Eem-QqPUxJcc4A"/>
+      <fields xsi:type="rdbms:RdbmsValueField" xmi:id="_JjbVUIK1Eem-QqPUxJcc4A" uuid="demo.entities.Product#productName" sqlName="C_PRCTNM" mandatory="true" rdbmsTypeName="VARCHAR" size="255" precision="-1" scale="-1" storageByte="-1"/>
+      <fields xsi:type="rdbms:RdbmsValueField" xmi:id="_Jjg04IK1Eem-QqPUxJcc4A" uuid="demo.entities.Product#quantityPerUnit" sqlName="C_QUNPRT" rdbmsTypeName="INTEGER" size="-1" precision="-1" scale="-1" storageByte="-1"/>
+      <fields xsi:type="rdbms:RdbmsValueField" xmi:id="_JjltYIK1Eem-QqPUxJcc4A" uuid="demo.entities.Product#unitPrice" sqlName="C_UNTPRC" rdbmsTypeName="DOUBLE" size="-1" precision="-1" scale="-1" storageByte="-1"/>
+      <fields xsi:type="rdbms:RdbmsValueField" xmi:id="_JjpXwIK1Eem-QqPUxJcc4A" uuid="demo.entities.Product#unitsInStock" sqlName="C_UNSISK" rdbmsTypeName="INTEGER" size="-1" precision="-1" scale="-1" storageByte="-1"/>
+      <fields xsi:type="rdbms:RdbmsValueField" xmi:id="_JjtpMIK1Eem-QqPUxJcc4A" uuid="demo.entities.Product#unitsOnOrder" sqlName="C_UNSOOR" rdbmsTypeName="INTEGER" size="-1" precision="-1" scale="-1" storageByte="-1"/>
+      <fields xsi:type="rdbms:RdbmsValueField" xmi:id="_JjzIwIK1Eem-QqPUxJcc4A" uuid="demo.entities.Product#reorderLevel" sqlName="C_RERRLL" rdbmsTypeName="INTEGER" size="-1" precision="-1" scale="-1" storageByte="-1"/>
+      <fields xsi:type="rdbms:RdbmsValueField" xmi:id="_Jj3aMIK1Eem-QqPUxJcc4A" uuid="demo.entities.Product#discounted" sqlName="C_DISCND" rdbmsTypeName="BOOLEAN" size="-1" precision="-1" scale="-1" storageByte="-1"/>
+      <fields xsi:type="rdbms:RdbmsValueField" xmi:id="_Jj8SsIK1Eem-QqPUxJcc4A" uuid="demo.entities.Product#weight" sqlName="C_WEIGHT" rdbmsTypeName="DOUBLE" size="-1" precision="-1" scale="-1" storageByte="-1"/>
+      <fields xsi:type="rdbms:RdbmsForeignKey" xmi:id="_Jl-TAIK1Eem-QqPUxJcc4A" name="category" uuid="demo.entities.Product#category" sqlName="C_CATGRY_ID" rdbmsTypeName="UUID" size="-1" precision="-1" scale="-1" storageByte="-1" referenceKey="_Jh0LwIK1Eem-QqPUxJcc4A" foreignKeySqlName="FK_ENTTS_PRDCT_CATGRY"/>
+      <fields xsi:type="rdbms:RdbmsForeignKey" xmi:id="_JmAIMIK1Eem-QqPUxJcc4A" name="supplier" uuid="demo.entities.Product#supplier" sqlName="C_SUPPLR_ID" rdbmsTypeName="UUID" size="-1" precision="-1" scale="-1" storageByte="-1" referenceKey="_JiKKAIK1Eem-QqPUxJcc4A" foreignKeySqlName="FK_ENTTS_PRDCT_SUPPLR"/>
+      <fields xsi:type="rdbms:RdbmsForeignKey" xmi:id="_JmDLgIK1Eem-QqPUxJcc4A" name="store" uuid="demo.entities.Product#store" sqlName="C_STORE_ID" rdbmsTypeName="UUID" size="-1" precision="-1" scale="-1" storageByte="-1" referenceKey="_Ji3UoIK1Eem-QqPUxJcc4A" foreignKeySqlName="FK_ENTTS_PRDCT_STORE"/>
     </rdbmsTables>
-    <rdbmsTables xmi:id="_VzE4MXWzEemREbf8ziHyvA" name="northwind.entities.Category" uuid="northwind.entities.Category" sqlName="T_ENTTS_CATGRY" primaryKey="_VzE4MHWzEemREbf8ziHyvA">
-      <fields xsi:type="rdbms:RdbmsIdentifierField" xmi:id="_VzE4MHWzEemREbf8ziHyvA" name="northwind.entities.Category#id" uuid="northwind.entities.Category#id" sqlName="ID" rdbmsTypeName="UUID" size="-1" precision="-1" scale="-1" storageByte="-1" foreignKeys="_V4e8oHWzEemREbf8ziHyvA _V4inAHWzEemREbf8ziHyvA"/>
-      <fields xsi:type="rdbms:RdbmsValueField" xmi:id="_V3O_cHWzEemREbf8ziHyvA" name="categoryName" uuid="northwind.entities.Category#categoryName" sqlName="C_CATRYM" mandatory="true" rdbmsTypeName="VARCHAR" size="255" precision="-1" scale="-1" storageByte="-1"/>
-      <fields xsi:type="rdbms:RdbmsValueField" xmi:id="_V3TQ4HWzEemREbf8ziHyvA" name="description" uuid="northwind.entities.Category#description" sqlName="C_DESRPN" rdbmsTypeName="VARCHAR" size="250" precision="-1" scale="-1" storageByte="-1"/>
-      <fields xsi:type="rdbms:RdbmsValueField" xmi:id="_V3YJYHWzEemREbf8ziHyvA" name="picture" uuid="northwind.entities.Category#picture" sqlName="C_PICTR" rdbmsTypeName="BLOB" size="64" precision="-1" scale="-1" storageByte="-1"/>
-      <fields xsi:type="rdbms:RdbmsForeignKey" xmi:id="_V4h_8HWzEemREbf8ziHyvA" name="owner" uuid="northwind.entities.Category#owner" sqlName="C_OWNER_ID" mandatory="true" rdbmsTypeName="UUID" size="-1" precision="-1" scale="-1" storageByte="-1" referenceKey="_VzmcoHWzEemREbf8ziHyvA" foreignKeySqlName="FK_ENTTS_CATGRY_OWNER"/>
+    <rdbmsTables xmi:id="_Jh0y0IK1Eem-QqPUxJcc4A" name="demo.entities.Category" uuid="demo.entities.Category" sqlName="T_ENTTS_CATGRY" primaryKey="_Jh0LwIK1Eem-QqPUxJcc4A">
+      <fields xsi:type="rdbms:RdbmsIdentifierField" xmi:id="_Jh0LwIK1Eem-QqPUxJcc4A" name="demo.entities.Category#id" uuid="demo.entities.Category#id" sqlName="ID" rdbmsTypeName="UUID" size="-1" precision="-1" scale="-1" storageByte="-1" foreignKeys="_Jl-TAIK1Eem-QqPUxJcc4A _JmOxsIK1Eem-QqPUxJcc4A"/>
+      <fields xsi:type="rdbms:RdbmsValueField" xmi:id="_JkAkIIK1Eem-QqPUxJcc4A" uuid="demo.entities.Category#categoryName" sqlName="C_CATRYM" mandatory="true" rdbmsTypeName="VARCHAR" size="255" precision="-1" scale="-1" storageByte="-1"/>
+      <fields xsi:type="rdbms:RdbmsValueField" xmi:id="_JkFcoIK1Eem-QqPUxJcc4A" uuid="demo.entities.Category#description" sqlName="C_DESRPN" rdbmsTypeName="VARCHAR" size="250" precision="-1" scale="-1" storageByte="-1"/>
+      <fields xsi:type="rdbms:RdbmsValueField" xmi:id="_JkJuEIK1Eem-QqPUxJcc4A" uuid="demo.entities.Category#picture" sqlName="C_PICTR" rdbmsTypeName="BLOB" size="64" precision="-1" scale="-1" storageByte="-1"/>
     </rdbmsTables>
-    <rdbmsTables xmi:id="_VzJwsHWzEemREbf8ziHyvA" name="northwind.entities.OrderDetail" uuid="northwind.entities.OrderDetail" sqlName="T_ENTTS_ORDRDL" primaryKey="_VzJJoHWzEemREbf8ziHyvA">
-      <fields xsi:type="rdbms:RdbmsIdentifierField" xmi:id="_VzJJoHWzEemREbf8ziHyvA" name="northwind.entities.OrderDetail#id" uuid="northwind.entities.OrderDetail#id" sqlName="ID" rdbmsTypeName="UUID" size="-1" precision="-1" scale="-1" storageByte="-1" foreignKeys="_V5CWQHWzEemREbf8ziHyvA"/>
-      <fields xsi:type="rdbms:RdbmsValueField" xmi:id="_V3bzwHWzEemREbf8ziHyvA" name="unitPrice" uuid="northwind.entities.OrderDetail#unitPrice" sqlName="C_UNTPRC" mandatory="true" rdbmsTypeName="DOUBLE" size="-1" precision="-1" scale="-1" storageByte="-1"/>
-      <fields xsi:type="rdbms:RdbmsValueField" xmi:id="_V3e3EHWzEemREbf8ziHyvA" name="quantity" uuid="northwind.entities.OrderDetail#quantity" sqlName="C_QUNTTY" mandatory="true" rdbmsTypeName="INTEGER" size="-1" precision="-1" scale="-1" storageByte="-1"/>
-      <fields xsi:type="rdbms:RdbmsValueField" xmi:id="_V3ihcHWzEemREbf8ziHyvA" name="discount" uuid="northwind.entities.OrderDetail#discount" sqlName="C_DISCNT" mandatory="true" rdbmsTypeName="DOUBLE" size="-1" precision="-1" scale="-1" storageByte="-1"/>
-      <fields xsi:type="rdbms:RdbmsForeignKey" xmi:id="_V4inAHWzEemREbf8ziHyvA" name="category" uuid="northwind.entities.OrderDetail#category" sqlName="C_CATGRY_ID" mandatory="true" rdbmsTypeName="UUID" size="-1" precision="-1" scale="-1" storageByte="-1" referenceKey="_VzE4MHWzEemREbf8ziHyvA" foreignKeySqlName="FK_ENTTS_ORDRDL_CATGRY"/>
-      <fields xsi:type="rdbms:RdbmsForeignKey" xmi:id="_V4j1IHWzEemREbf8ziHyvA" name="product" uuid="northwind.entities.OrderDetail#product" sqlName="C_PRDCT_ID" mandatory="true" rdbmsTypeName="UUID" size="-1" precision="-1" scale="-1" storageByte="-1" referenceKey="_Vy__sHWzEemREbf8ziHyvA" foreignKeySqlName="FK_ENTTS_ORDRDL_PRDCT"/>
-      <fields xsi:type="rdbms:RdbmsForeignKey" xmi:id="_V4sYAHWzEemREbf8ziHyvA" name="orderOrderDetails" uuid="northwind.entities.OrderDetail#orderDetails" sqlName="C_ENTTS_ORDER_ORDDTS_ID" mandatory="true" rdbmsTypeName="UUID" size="-1" precision="-1" scale="-1" storageByte="-1" referenceKey="_VywvIHWzEemREbf8ziHyvA" foreignKeySqlName="FK_INV_ENTTS_ORDER_ORDDTS"/>
+    <rdbmsTables xmi:id="_Jh5rUIK1Eem-QqPUxJcc4A" name="demo.entities.OrderDetail" uuid="demo.entities.OrderDetail" sqlName="T_ENTTS_ORDRDL" primaryKey="_Jh5EQIK1Eem-QqPUxJcc4A">
+      <fields xsi:type="rdbms:RdbmsIdentifierField" xmi:id="_Jh5EQIK1Eem-QqPUxJcc4A" name="demo.entities.OrderDetail#id" uuid="demo.entities.OrderDetail#id" sqlName="ID" rdbmsTypeName="UUID" size="-1" precision="-1" scale="-1" storageByte="-1"/>
+      <fields xsi:type="rdbms:RdbmsValueField" xmi:id="_JkN_gIK1Eem-QqPUxJcc4A" uuid="demo.entities.OrderDetail#unitPrice" sqlName="C_UNTPRC" mandatory="true" rdbmsTypeName="DOUBLE" size="-1" precision="-1" scale="-1" storageByte="-1"/>
+      <fields xsi:type="rdbms:RdbmsValueField" xmi:id="_JkRC0IK1Eem-QqPUxJcc4A" uuid="demo.entities.OrderDetail#quantity" sqlName="C_QUNTTY" mandatory="true" rdbmsTypeName="INTEGER" size="-1" precision="-1" scale="-1" storageByte="-1"/>
+      <fields xsi:type="rdbms:RdbmsValueField" xmi:id="_JkTfEIK1Eem-QqPUxJcc4A" uuid="demo.entities.OrderDetail#discount" sqlName="C_DISCNT" mandatory="true" rdbmsTypeName="DOUBLE" size="-1" precision="-1" scale="-1" storageByte="-1"/>
+      <fields xsi:type="rdbms:RdbmsForeignKey" xmi:id="_JmHc8IK1Eem-QqPUxJcc4A" name="product" uuid="demo.entities.OrderDetail#product" sqlName="C_PRDCT_ID" mandatory="true" rdbmsTypeName="UUID" size="-1" precision="-1" scale="-1" storageByte="-1" referenceKey="_JhvTQIK1Eem-QqPUxJcc4A" foreignKeySqlName="FK_ENTTS_ORDRDL_PRDCT"/>
+      <fields xsi:type="rdbms:RdbmsForeignKey" xmi:id="_JmfQYIK1Eem-QqPUxJcc4A" name="orderOrderDetails" uuid="demo.entities.OrderDetail#orderDetails" sqlName="C_ENTTS_ORDER_ORDDTS_ID" mandatory="true" rdbmsTypeName="UUID" size="-1" precision="-1" scale="-1" storageByte="-1" referenceKey="_JhjGAIK1Eem-QqPUxJcc4A" foreignKeySqlName="FK_INV_ENTTS_ORDER_ORDDTS"/>
     </rdbmsTables>
-    <rdbmsTables xmi:id="_VzOpMXWzEemREbf8ziHyvA" name="northwind.entities.Customer" uuid="northwind.entities.Customer" sqlName="T_ENTTS_CUSTMR" primaryKey="_VzOpMHWzEemREbf8ziHyvA">
-      <fields xsi:type="rdbms:RdbmsIdentifierField" xmi:id="_VzOpMHWzEemREbf8ziHyvA" name="northwind.entities.Customer#id" uuid="northwind.entities.Customer#id" sqlName="ID" rdbmsTypeName="UUID" size="-1" precision="-1" scale="-1" storageByte="-1" foreignKeys="_V4aEIHWzEemREbf8ziHyvA _V4tmIHWzEemREbf8ziHyvA"/>
+    <rdbmsTables xmi:id="_Jh_K4IK1Eem-QqPUxJcc4A" name="demo.entities.Customer" uuid="demo.entities.Customer" sqlName="T_ENTTS_CUSTMR" primaryKey="_Jh-j0IK1Eem-QqPUxJcc4A">
+      <fields xsi:type="rdbms:RdbmsIdentifierField" xmi:id="_Jh-j0IK1Eem-QqPUxJcc4A" name="demo.entities.Customer#id" uuid="demo.entities.Customer#id" sqlName="ID" rdbmsTypeName="UUID" size="-1" precision="-1" scale="-1" storageByte="-1" foreignKeys="_Jl1wIIK1Eem-QqPUxJcc4A _JmgegIK1Eem-QqPUxJcc4A"/>
     </rdbmsTables>
-    <rdbmsTables xmi:id="_VzS6oHWzEemREbf8ziHyvA" name="northwind.entities.Company" uuid="northwind.entities.Company" sqlName="T_ENTTS_COMPNY" primaryKey="_VzSTkHWzEemREbf8ziHyvA" parents="_VzOpMXWzEemREbf8ziHyvA">
-      <fields xsi:type="rdbms:RdbmsIdentifierField" xmi:id="_VzSTkHWzEemREbf8ziHyvA" name="northwind.entities.Company#id" uuid="northwind.entities.Company#id" sqlName="ID" rdbmsTypeName="UUID" size="-1" precision="-1" scale="-1" storageByte="-1" foreignKeys="_V4-E0HWzEemREbf8ziHyvA"/>
-      <fields xsi:type="rdbms:RdbmsValueField" xmi:id="_V3mL0HWzEemREbf8ziHyvA" name="companyName" uuid="northwind.entities.Company#companyName" sqlName="C_COMNYM" mandatory="true" rdbmsTypeName="VARCHAR" size="255" precision="-1" scale="-1" storageByte="-1"/>
-      <fields xsi:type="rdbms:RdbmsValueField" xmi:id="_V3qdQHWzEemREbf8ziHyvA" name="contactName" uuid="northwind.entities.Company#contactName" sqlName="C_CONCTM" rdbmsTypeName="VARCHAR" size="255" precision="-1" scale="-1" storageByte="-1"/>
-      <fields xsi:type="rdbms:RdbmsValueField" xmi:id="_V3sScHWzEemREbf8ziHyvA" name="contactTitle" uuid="northwind.entities.Company#contactTitle" sqlName="C_COTTTL" rdbmsTypeName="VARCHAR" size="255" precision="-1" scale="-1" storageByte="-1"/>
-      <fields xsi:type="rdbms:RdbmsValueField" xmi:id="_V3tgkHWzEemREbf8ziHyvA" name="phone" uuid="northwind.entities.Company#phone" sqlName="C_PHONE" rdbmsTypeName="VARCHAR" size="20" precision="-1" scale="-1" storageByte="-1"/>
-      <fields xsi:type="rdbms:RdbmsValueField" xmi:id="_V3vVwHWzEemREbf8ziHyvA" name="fax" uuid="northwind.entities.Company#fax" sqlName="C_FAX" rdbmsTypeName="VARCHAR" size="20" precision="-1" scale="-1" storageByte="-1"/>
+    <rdbmsTables xmi:id="_JiF4kIK1Eem-QqPUxJcc4A" name="demo.entities.Company" uuid="demo.entities.Company" sqlName="T_ENTTS_COMPNY" primaryKey="_JiFRgIK1Eem-QqPUxJcc4A" parents="_Jh_K4IK1Eem-QqPUxJcc4A">
+      <fields xsi:type="rdbms:RdbmsIdentifierField" xmi:id="_JiFRgIK1Eem-QqPUxJcc4A" name="demo.entities.Company#id" uuid="demo.entities.Company#id" sqlName="ID" rdbmsTypeName="UUID" size="-1" precision="-1" scale="-1" storageByte="-1" foreignKeys="_JmnzQIK1Eem-QqPUxJcc4A"/>
+      <fields xsi:type="rdbms:RdbmsValueField" xmi:id="_JkV7UIK1Eem-QqPUxJcc4A" uuid="demo.entities.Company#companyName" sqlName="C_COMNYM" mandatory="true" rdbmsTypeName="VARCHAR" size="255" precision="-1" scale="-1" storageByte="-1"/>
+      <fields xsi:type="rdbms:RdbmsValueField" xmi:id="_JkY-oIK1Eem-QqPUxJcc4A" uuid="demo.entities.Company#contactName" sqlName="C_CONCTM" rdbmsTypeName="VARCHAR" size="255" precision="-1" scale="-1" storageByte="-1"/>
+      <fields xsi:type="rdbms:RdbmsValueField" xmi:id="_JkcB8IK1Eem-QqPUxJcc4A" uuid="demo.entities.Company#contactTitle" sqlName="C_COTTTL" rdbmsTypeName="VARCHAR" size="255" precision="-1" scale="-1" storageByte="-1"/>
+      <fields xsi:type="rdbms:RdbmsValueField" xmi:id="_JkfsUIK1Eem-QqPUxJcc4A" uuid="demo.entities.Company#phone" sqlName="C_PHONE" rdbmsTypeName="VARCHAR" size="20" precision="-1" scale="-1" storageByte="-1"/>
+      <fields xsi:type="rdbms:RdbmsValueField" xmi:id="_JkjWsIK1Eem-QqPUxJcc4A" uuid="demo.entities.Company#fax" sqlName="C_FAX" rdbmsTypeName="VARCHAR" size="20" precision="-1" scale="-1" storageByte="-1"/>
     </rdbmsTables>
-    <rdbmsTables xmi:id="_VzXzIHWzEemREbf8ziHyvA" name="northwind.entities.Supplier" uuid="northwind.entities.Supplier" sqlName="T_ENTTS_SUPPLR" primaryKey="_VzXMEHWzEemREbf8ziHyvA" parents="_VzS6oHWzEemREbf8ziHyvA">
-      <fields xsi:type="rdbms:RdbmsIdentifierField" xmi:id="_VzXMEHWzEemREbf8ziHyvA" name="northwind.entities.Supplier#id" uuid="northwind.entities.Supplier#id" sqlName="ID" rdbmsTypeName="UUID" size="-1" precision="-1" scale="-1" storageByte="-1" foreignKeys="_V4fjsHWzEemREbf8ziHyvA"/>
-      <fields xsi:type="rdbms:RdbmsValueField" xmi:id="_V3wj4HWzEemREbf8ziHyvA" name="homePage" uuid="northwind.entities.Supplier#homePage" sqlName="C_HOMPG" rdbmsTypeName="VARCHAR" size="1024" precision="-1" scale="-1" storageByte="-1"/>
+    <rdbmsTables xmi:id="_JiKxEIK1Eem-QqPUxJcc4A" name="demo.entities.Supplier" uuid="demo.entities.Supplier" sqlName="T_ENTTS_SUPPLR" primaryKey="_JiKKAIK1Eem-QqPUxJcc4A" parents="_JiF4kIK1Eem-QqPUxJcc4A">
+      <fields xsi:type="rdbms:RdbmsIdentifierField" xmi:id="_JiKKAIK1Eem-QqPUxJcc4A" name="demo.entities.Supplier#id" uuid="demo.entities.Supplier#id" sqlName="ID" rdbmsTypeName="UUID" size="-1" precision="-1" scale="-1" storageByte="-1" foreignKeys="_JmAIMIK1Eem-QqPUxJcc4A"/>
+      <fields xsi:type="rdbms:RdbmsValueField" xmi:id="_JkmaAIK1Eem-QqPUxJcc4A" uuid="demo.entities.Supplier#homePage" sqlName="C_HOMPG" rdbmsTypeName="VARCHAR" size="1024" precision="-1" scale="-1" storageByte="-1"/>
     </rdbmsTables>
-    <rdbmsTables xmi:id="_VzbdgXWzEemREbf8ziHyvA" name="northwind.entities.Shipper" uuid="northwind.entities.Shipper" sqlName="T_ENTTS_SHPPR" primaryKey="_VzbdgHWzEemREbf8ziHyvA">
-      <fields xsi:type="rdbms:RdbmsIdentifierField" xmi:id="_VzbdgHWzEemREbf8ziHyvA" name="northwind.entities.Shipper#id" uuid="northwind.entities.Shipper#id" sqlName="ID" rdbmsTypeName="UUID" size="-1" precision="-1" scale="-1" storageByte="-1" foreignKeys="_V4cgYHWzEemREbf8ziHyvA _V4oGkHWzEemREbf8ziHyvA"/>
-      <fields xsi:type="rdbms:RdbmsValueField" xmi:id="_V3xyAHWzEemREbf8ziHyvA" name="companyName" uuid="northwind.entities.Shipper#companyName" sqlName="C_COMNYM" mandatory="true" rdbmsTypeName="VARCHAR" size="255" precision="-1" scale="-1" storageByte="-1"/>
-      <fields xsi:type="rdbms:RdbmsValueField" xmi:id="_V3zAIHWzEemREbf8ziHyvA" name="phone" uuid="northwind.entities.Shipper#phone" sqlName="C_PHONE" rdbmsTypeName="VARCHAR" size="20" precision="-1" scale="-1" storageByte="-1"/>
+    <rdbmsTables xmi:id="_JiObcIK1Eem-QqPUxJcc4A" name="demo.entities.Shipper" uuid="demo.entities.Shipper" sqlName="T_ENTTS_SHPPR" primaryKey="_JiN0YIK1Eem-QqPUxJcc4A" parents="_JiF4kIK1Eem-QqPUxJcc4A">
+      <fields xsi:type="rdbms:RdbmsIdentifierField" xmi:id="_JiN0YIK1Eem-QqPUxJcc4A" name="demo.entities.Shipper#id" uuid="demo.entities.Shipper#id" sqlName="ID" rdbmsTypeName="UUID" size="-1" precision="-1" scale="-1" storageByte="-1" foreignKeys="_Jl4MYIK1Eem-QqPUxJcc4A _JmU4UIK1Eem-QqPUxJcc4A"/>
     </rdbmsTables>
-    <rdbmsTables xmi:id="_VzfH4XWzEemREbf8ziHyvA" name="northwind.entities.InternationalOrder" uuid="northwind.entities.InternationalOrder" sqlName="T_ENTTS_INRNOR" primaryKey="_VzfH4HWzEemREbf8ziHyvA" parents="_VyykUHWzEemREbf8ziHyvA">
-      <fields xsi:type="rdbms:RdbmsIdentifierField" xmi:id="_VzfH4HWzEemREbf8ziHyvA" name="northwind.entities.InternationalOrder#id" uuid="northwind.entities.InternationalOrder#id" sqlName="ID" rdbmsTypeName="UUID" size="-1" precision="-1" scale="-1" storageByte="-1"/>
-      <fields xsi:type="rdbms:RdbmsValueField" xmi:id="_V30OQHWzEemREbf8ziHyvA" name="customsDescription" uuid="northwind.entities.InternationalOrder#customsDescription" sqlName="C_CUTDSN" mandatory="true" rdbmsTypeName="VARCHAR" size="255" precision="-1" scale="-1" storageByte="-1"/>
-      <fields xsi:type="rdbms:RdbmsValueField" xmi:id="_V32DcHWzEemREbf8ziHyvA" name="exciseTax" uuid="northwind.entities.InternationalOrder#exciseTax" sqlName="C_EXCSTX" mandatory="true" rdbmsTypeName="DOUBLE" size="-1" precision="-1" scale="-1" storageByte="-1"/>
+    <rdbmsTables xmi:id="_JiSs4IK1Eem-QqPUxJcc4A" name="demo.entities.InternationalOrder" uuid="demo.entities.InternationalOrder" sqlName="T_ENTTS_INRNOR" primaryKey="_JiSF0IK1Eem-QqPUxJcc4A" parents="_JhliQIK1Eem-QqPUxJcc4A">
+      <fields xsi:type="rdbms:RdbmsIdentifierField" xmi:id="_JiSF0IK1Eem-QqPUxJcc4A" name="demo.entities.InternationalOrder#id" uuid="demo.entities.InternationalOrder#id" sqlName="ID" rdbmsTypeName="UUID" size="-1" precision="-1" scale="-1" storageByte="-1"/>
+      <fields xsi:type="rdbms:RdbmsValueField" xmi:id="_JkpdUIK1Eem-QqPUxJcc4A" uuid="demo.entities.InternationalOrder#customsDescription" sqlName="C_CUTDSN" mandatory="true" rdbmsTypeName="VARCHAR" size="255" precision="-1" scale="-1" storageByte="-1"/>
+      <fields xsi:type="rdbms:RdbmsValueField" xmi:id="_JksgoIK1Eem-QqPUxJcc4A" uuid="demo.entities.InternationalOrder#exciseTax" sqlName="C_EXCSTX" mandatory="true" rdbmsTypeName="DOUBLE" size="-1" precision="-1" scale="-1" storageByte="-1"/>
     </rdbmsTables>
-    <rdbmsTables xmi:id="_VziyQXWzEemREbf8ziHyvA" name="northwind.entities.Person" uuid="northwind.entities.Person" sqlName="T_ENTTS_PERSON" primaryKey="_VziyQHWzEemREbf8ziHyvA">
-      <fields xsi:type="rdbms:RdbmsIdentifierField" xmi:id="_VziyQHWzEemREbf8ziHyvA" name="northwind.entities.Person#id" uuid="northwind.entities.Person#id" sqlName="ID" rdbmsTypeName="UUID" size="-1" precision="-1" scale="-1" storageByte="-1" foreignKeys="_V4qi0HWzEemREbf8ziHyvA"/>
-      <fields xsi:type="rdbms:RdbmsValueField" xmi:id="_V33RkHWzEemREbf8ziHyvA" name="lastName" uuid="northwind.entities.Person#lastName" sqlName="C_LASTNM" mandatory="true" rdbmsTypeName="VARCHAR" size="255" precision="-1" scale="-1" storageByte="-1"/>
-      <fields xsi:type="rdbms:RdbmsValueField" xmi:id="_V34fsHWzEemREbf8ziHyvA" name="firstName" uuid="northwind.entities.Person#firstName" sqlName="FIRST_NAME" mandatory="true" rdbmsTypeName="VARCHAR" size="255" precision="-1" scale="-1" storageByte="-1"/>
-      <fields xsi:type="rdbms:RdbmsValueField" xmi:id="_V35t0HWzEemREbf8ziHyvA" name="title" uuid="northwind.entities.Person#title" sqlName="C_TITLE" rdbmsTypeName="INTEGER" size="-1" precision="-1" scale="-1" storageByte="-1"/>
+    <rdbmsTables xmi:id="_JiWXQIK1Eem-QqPUxJcc4A" name="demo.entities.Person" uuid="demo.entities.Person" sqlName="T_ENTTS_PERSON" primaryKey="_JiVwMIK1Eem-QqPUxJcc4A">
+      <fields xsi:type="rdbms:RdbmsIdentifierField" xmi:id="_JiVwMIK1Eem-QqPUxJcc4A" name="demo.entities.Person#id" uuid="demo.entities.Person#id" sqlName="ID" rdbmsTypeName="UUID" size="-1" precision="-1" scale="-1" storageByte="-1" foreignKeys="_Jma-8IK1Eem-QqPUxJcc4A"/>
+      <fields xsi:type="rdbms:RdbmsValueField" xmi:id="_Jkvj8IK1Eem-QqPUxJcc4A" uuid="demo.entities.Person#lastName" sqlName="C_LASTNM" mandatory="true" rdbmsTypeName="VARCHAR" size="255" precision="-1" scale="-1" storageByte="-1"/>
+      <fields xsi:type="rdbms:RdbmsValueField" xmi:id="_Jk24sIK1Eem-QqPUxJcc4A" uuid="demo.entities.Person#firstName" sqlName="C_FISTNM" mandatory="true" rdbmsTypeName="VARCHAR" size="255" precision="-1" scale="-1" storageByte="-1"/>
+      <fields xsi:type="rdbms:RdbmsValueField" xmi:id="_Jk6jEIK1Eem-QqPUxJcc4A" uuid="demo.entities.Person#title" sqlName="C_TITLE" rdbmsTypeName="INTEGER" size="-1" precision="-1" scale="-1" storageByte="-1"/>
     </rdbmsTables>
-    <rdbmsTables xmi:id="_VzmcoXWzEemREbf8ziHyvA" name="northwind.entities.Employee" uuid="northwind.entities.Employee" sqlName="T_ENTTS_EMPLY" primaryKey="_VzmcoHWzEemREbf8ziHyvA" parents="_VziyQXWzEemREbf8ziHyvA">
-      <fields xsi:type="rdbms:RdbmsIdentifierField" xmi:id="_VzmcoHWzEemREbf8ziHyvA" name="northwind.entities.Employee#id" uuid="northwind.entities.Employee#id" sqlName="ID" rdbmsTypeName="UUID" size="-1" precision="-1" scale="-1" storageByte="-1" foreignKeys="_V4dugHWzEemREbf8ziHyvA _V4h_8HWzEemREbf8ziHyvA _V4mRYHWzEemREbf8ziHyvA _V4u0QHWzEemREbf8ziHyvA _V5GnsHWzEemREbf8ziHyvA"/>
-      <fields xsi:type="rdbms:RdbmsValueField" xmi:id="_V36U4HWzEemREbf8ziHyvA" name="titleOfCourtesy" uuid="northwind.entities.Employee#titleOfCourtesy" sqlName="C_TITOCY" rdbmsTypeName="VARCHAR" size="255" precision="-1" scale="-1" storageByte="-1"/>
-      <fields xsi:type="rdbms:RdbmsValueField" xmi:id="_V38xIHWzEemREbf8ziHyvA" name="birthDate" uuid="northwind.entities.Employee#birthDate" sqlName="C_BITHDT" rdbmsTypeName="DATE" size="-1" precision="-1" scale="-1" storageByte="-1"/>
-      <fields xsi:type="rdbms:RdbmsValueField" xmi:id="_V39YMHWzEemREbf8ziHyvA" name="hireDate" uuid="northwind.entities.Employee#hireDate" sqlName="C_HIRDT" rdbmsTypeName="DATE" size="-1" precision="-1" scale="-1" storageByte="-1"/>
-      <fields xsi:type="rdbms:RdbmsValueField" xmi:id="_V3-mUHWzEemREbf8ziHyvA" name="homePhone" uuid="northwind.entities.Employee#homePhone" sqlName="C_HOMPHN" rdbmsTypeName="VARCHAR" size="20" precision="-1" scale="-1" storageByte="-1"/>
-      <fields xsi:type="rdbms:RdbmsValueField" xmi:id="_V3_0cHWzEemREbf8ziHyvA" name="extension" uuid="northwind.entities.Employee#extension" sqlName="C_EXTNSN" rdbmsTypeName="VARCHAR" size="255" precision="-1" scale="-1" storageByte="-1"/>
-      <fields xsi:type="rdbms:RdbmsValueField" xmi:id="_V4BCkHWzEemREbf8ziHyvA" name="photo" uuid="northwind.entities.Employee#photo" sqlName="C_PHOTO" rdbmsTypeName="BLOB" size="64" precision="-1" scale="-1" storageByte="-1"/>
-      <fields xsi:type="rdbms:RdbmsValueField" xmi:id="_V4CQsHWzEemREbf8ziHyvA" name="notes" uuid="northwind.entities.Employee#notes" sqlName="C_NOTES" rdbmsTypeName="VARCHAR" size="250" precision="-1" scale="-1" storageByte="-1"/>
-      <fields xsi:type="rdbms:RdbmsValueField" xmi:id="_V4De0HWzEemREbf8ziHyvA" name="photoPath" uuid="northwind.entities.Employee#photoPath" sqlName="C_PHTPTH" rdbmsTypeName="VARCHAR" size="255" precision="-1" scale="-1" storageByte="-1"/>
-      <fields xsi:type="rdbms:RdbmsForeignKey" xmi:id="_V4mRYHWzEemREbf8ziHyvA" name="reportsTo" uuid="northwind.entities.Employee#reportsTo" sqlName="C_REPRTT_ID" rdbmsTypeName="UUID" size="-1" precision="-1" scale="-1" storageByte="-1" referenceKey="_VzmcoHWzEemREbf8ziHyvA" foreignKeySqlName="FK_ENTTS_EMPLY_REPRTT"/>
-      <fields xsi:type="rdbms:RdbmsForeignKey" xmi:id="_V4nfgHWzEemREbf8ziHyvA" name="territory" uuid="northwind.entities.Employee#territory" sqlName="C_TERRTY_ID" rdbmsTypeName="UUID" size="-1" precision="-1" scale="-1" storageByte="-1" referenceKey="_Vzo44HWzEemREbf8ziHyvA" foreignKeySqlName="FK_ENTTS_EMPLY_TERRTY"/>
+    <rdbmsTables xmi:id="_JiZakIK1Eem-QqPUxJcc4A" name="demo.entities.Employee" uuid="demo.entities.Employee" sqlName="T_ENTTS_EMPLY" primaryKey="_JiYzgIK1Eem-QqPUxJcc4A" parents="_JiWXQIK1Eem-QqPUxJcc4A">
+      <fields xsi:type="rdbms:RdbmsIdentifierField" xmi:id="_JiYzgIK1Eem-QqPUxJcc4A" name="demo.entities.Employee#id" uuid="demo.entities.Employee#id" sqlName="ID" rdbmsTypeName="UUID" size="-1" precision="-1" scale="-1" storageByte="-1" foreignKeys="_Jl6BkIK1Eem-QqPUxJcc4A _JmP_0IK1Eem-QqPUxJcc4A _JmhsoIK1Eem-QqPUxJcc4A _JmsEsIK1Eem-QqPUxJcc4A"/>
+      <fields xsi:type="rdbms:RdbmsValueField" xmi:id="_Jk9mYIK1Eem-QqPUxJcc4A" uuid="demo.entities.Employee#titleOfCourtesy" sqlName="C_TITOCY" rdbmsTypeName="VARCHAR" size="255" precision="-1" scale="-1" storageByte="-1"/>
+      <fields xsi:type="rdbms:RdbmsValueField" xmi:id="_JlBQwIK1Eem-QqPUxJcc4A" uuid="demo.entities.Employee#birthDate" sqlName="C_BITHDT" rdbmsTypeName="DATE" size="-1" precision="-1" scale="-1" storageByte="-1"/>
+      <fields xsi:type="rdbms:RdbmsValueField" xmi:id="_JlEUEIK1Eem-QqPUxJcc4A" uuid="demo.entities.Employee#hireDate" sqlName="C_HIRDT" rdbmsTypeName="DATE" size="-1" precision="-1" scale="-1" storageByte="-1"/>
+      <fields xsi:type="rdbms:RdbmsValueField" xmi:id="_JlGwUIK1Eem-QqPUxJcc4A" uuid="demo.entities.Employee#homePhone" sqlName="C_HOMPHN" rdbmsTypeName="VARCHAR" size="20" precision="-1" scale="-1" storageByte="-1"/>
+      <fields xsi:type="rdbms:RdbmsValueField" xmi:id="_JlJMkIK1Eem-QqPUxJcc4A" uuid="demo.entities.Employee#extension" sqlName="C_EXTNSN" rdbmsTypeName="VARCHAR" size="255" precision="-1" scale="-1" storageByte="-1"/>
+      <fields xsi:type="rdbms:RdbmsValueField" xmi:id="_JlMP4IK1Eem-QqPUxJcc4A" uuid="demo.entities.Employee#photo" sqlName="C_PHOTO" rdbmsTypeName="BLOB" size="64" precision="-1" scale="-1" storageByte="-1"/>
+      <fields xsi:type="rdbms:RdbmsValueField" xmi:id="_JlOsIIK1Eem-QqPUxJcc4A" uuid="demo.entities.Employee#notes" sqlName="C_NOTES" rdbmsTypeName="VARCHAR" size="250" precision="-1" scale="-1" storageByte="-1"/>
+      <fields xsi:type="rdbms:RdbmsValueField" xmi:id="_JlRIYIK1Eem-QqPUxJcc4A" uuid="demo.entities.Employee#photoPath" sqlName="C_PHTPTH" rdbmsTypeName="VARCHAR" size="255" precision="-1" scale="-1" storageByte="-1"/>
+      <fields xsi:type="rdbms:RdbmsForeignKey" xmi:id="_JmOxsIK1Eem-QqPUxJcc4A" name="category" uuid="demo.entities.Employee#category" sqlName="C_CATGRY_ID" rdbmsTypeName="UUID" size="-1" precision="-1" scale="-1" storageByte="-1" referenceKey="_Jh0LwIK1Eem-QqPUxJcc4A" foreignKeySqlName="FK_ENTTS_EMPLY_CATGRY"/>
+      <fields xsi:type="rdbms:RdbmsForeignKey" xmi:id="_JmP_0IK1Eem-QqPUxJcc4A" name="reportsTo" uuid="demo.entities.Employee#reportsTo" sqlName="C_REPRTT_ID" rdbmsTypeName="UUID" size="-1" precision="-1" scale="-1" storageByte="-1" referenceKey="_JiYzgIK1Eem-QqPUxJcc4A" foreignKeySqlName="FK_ENTTS_EMPLY_REPRTT"/>
+      <fields xsi:type="rdbms:RdbmsForeignKey" xmi:id="_JmTDIIK1Eem-QqPUxJcc4A" name="territory" uuid="demo.entities.Employee#territory" sqlName="C_TERRTY_ID" rdbmsTypeName="UUID" size="-1" precision="-1" scale="-1" storageByte="-1" referenceKey="_Jib20IK1Eem-QqPUxJcc4A" foreignKeySqlName="FK_ENTTS_EMPLY_TERRTY"/>
     </rdbmsTables>
-    <rdbmsTables xmi:id="_Vzpf8HWzEemREbf8ziHyvA" name="northwind.entities.Territory" uuid="northwind.entities.Territory" sqlName="T_ENTTS_TERRTY" primaryKey="_Vzo44HWzEemREbf8ziHyvA">
-      <fields xsi:type="rdbms:RdbmsIdentifierField" xmi:id="_Vzo44HWzEemREbf8ziHyvA" name="northwind.entities.Territory#id" uuid="northwind.entities.Territory#id" sqlName="ID" rdbmsTypeName="UUID" size="-1" precision="-1" scale="-1" storageByte="-1" foreignKeys="_V4nfgHWzEemREbf8ziHyvA"/>
-      <fields xsi:type="rdbms:RdbmsValueField" xmi:id="_V4Es8HWzEemREbf8ziHyvA" name="territoryDescription" uuid="northwind.entities.Territory#territoryDescription" sqlName="C_TETDSN" mandatory="true" rdbmsTypeName="VARCHAR" size="255" precision="-1" scale="-1" storageByte="-1"/>
-      <fields xsi:type="rdbms:RdbmsForeignKey" xmi:id="_V4oGkHWzEemREbf8ziHyvA" name="shipper" uuid="northwind.entities.Territory#shipper" sqlName="ID_SHIPPER" rdbmsTypeName="UUID" size="-1" precision="-1" scale="-1" storageByte="-1" referenceKey="_VzbdgHWzEemREbf8ziHyvA" foreignKeySqlName="FK_ENTTS_TERRTY_SHPPR"/>
-      <fields xsi:type="rdbms:RdbmsForeignKey" xmi:id="_V4otoHWzEemREbf8ziHyvA" name="region" uuid="northwind.entities.Territory#region" sqlName="C_REGION_ID" rdbmsTypeName="UUID" size="-1" precision="-1" scale="-1" storageByte="-1" referenceKey="_VzrVIHWzEemREbf8ziHyvA" foreignKeySqlName="FK_ENTTS_TERRTY_REGION"/>
+    <rdbmsTables xmi:id="_Jicd4IK1Eem-QqPUxJcc4A" name="demo.entities.Territory" uuid="demo.entities.Territory" sqlName="T_ENTTS_TERRTY" primaryKey="_Jib20IK1Eem-QqPUxJcc4A">
+      <fields xsi:type="rdbms:RdbmsIdentifierField" xmi:id="_Jib20IK1Eem-QqPUxJcc4A" name="demo.entities.Territory#id" uuid="demo.entities.Territory#id" sqlName="ID" rdbmsTypeName="UUID" size="-1" precision="-1" scale="-1" storageByte="-1" foreignKeys="_JmTDIIK1Eem-QqPUxJcc4A"/>
+      <fields xsi:type="rdbms:RdbmsValueField" xmi:id="_JlTkoIK1Eem-QqPUxJcc4A" uuid="demo.entities.Territory#territoryDescription" sqlName="C_TETDSN" mandatory="true" rdbmsTypeName="VARCHAR" size="255" precision="-1" scale="-1" storageByte="-1"/>
+      <fields xsi:type="rdbms:RdbmsForeignKey" xmi:id="_JmU4UIK1Eem-QqPUxJcc4A" name="shipper" uuid="demo.entities.Territory#shipper" sqlName="C_SHPPR_ID" rdbmsTypeName="UUID" size="-1" precision="-1" scale="-1" storageByte="-1" referenceKey="_JiN0YIK1Eem-QqPUxJcc4A" foreignKeySqlName="FK_ENTTS_TERRTY_SHPPR"/>
+      <fields xsi:type="rdbms:RdbmsForeignKey" xmi:id="_JmXUkIK1Eem-QqPUxJcc4A" name="region" uuid="demo.entities.Territory#region" sqlName="C_REGION_ID" rdbmsTypeName="UUID" size="-1" precision="-1" scale="-1" storageByte="-1" referenceKey="_Jie6IIK1Eem-QqPUxJcc4A" foreignKeySqlName="FK_ENTTS_TERRTY_REGION"/>
     </rdbmsTables>
-    <rdbmsTables xmi:id="_Vzr8MHWzEemREbf8ziHyvA" name="northwind.entities.Region" uuid="northwind.entities.Region" sqlName="T_ENTTS_REGION" primaryKey="_VzrVIHWzEemREbf8ziHyvA">
-      <fields xsi:type="rdbms:RdbmsIdentifierField" xmi:id="_VzrVIHWzEemREbf8ziHyvA" name="northwind.entities.Region#id" uuid="northwind.entities.Region#id" sqlName="ID" rdbmsTypeName="UUID" size="-1" precision="-1" scale="-1" storageByte="-1" foreignKeys="_V4otoHWzEemREbf8ziHyvA"/>
-      <fields xsi:type="rdbms:RdbmsValueField" xmi:id="_V4F7EHWzEemREbf8ziHyvA" name="regionDescription" uuid="northwind.entities.Region#regionDescription" sqlName="C_REGDSN" mandatory="true" rdbmsTypeName="VARCHAR" size="255" precision="-1" scale="-1" storageByte="-1"/>
+    <rdbmsTables xmi:id="_JifhMIK1Eem-QqPUxJcc4A" name="demo.entities.Region" uuid="demo.entities.Region" sqlName="T_ENTTS_REGION" primaryKey="_Jie6IIK1Eem-QqPUxJcc4A">
+      <fields xsi:type="rdbms:RdbmsIdentifierField" xmi:id="_Jie6IIK1Eem-QqPUxJcc4A" name="demo.entities.Region#id" uuid="demo.entities.Region#id" sqlName="ID" rdbmsTypeName="UUID" size="-1" precision="-1" scale="-1" storageByte="-1" foreignKeys="_JmXUkIK1Eem-QqPUxJcc4A"/>
+      <fields xsi:type="rdbms:RdbmsValueField" xmi:id="_JlWA4IK1Eem-QqPUxJcc4A" uuid="demo.entities.Region#regionDescription" sqlName="C_REGDSN" mandatory="true" rdbmsTypeName="VARCHAR" size="255" precision="-1" scale="-1" storageByte="-1"/>
     </rdbmsTables>
-    <rdbmsTables xmi:id="_Vzu_gXWzEemREbf8ziHyvA" name="northwind.entities.OnlineOrder" uuid="northwind.entities.OnlineOrder" sqlName="T_ENTTS_ONLORR" primaryKey="_Vzu_gHWzEemREbf8ziHyvA" parents="_VyykUHWzEemREbf8ziHyvA">
-      <fields xsi:type="rdbms:RdbmsIdentifierField" xmi:id="_Vzu_gHWzEemREbf8ziHyvA" name="northwind.entities.OnlineOrder#id" uuid="northwind.entities.OnlineOrder#id" sqlName="ID" rdbmsTypeName="UUID" size="-1" precision="-1" scale="-1" storageByte="-1"/>
-      <fields xsi:type="rdbms:RdbmsValueField" xmi:id="_V4HwQHWzEemREbf8ziHyvA" name="webshopUrl" uuid="northwind.entities.OnlineOrder#webshopUrl" sqlName="C_WESPUL" mandatory="true" rdbmsTypeName="VARCHAR" size="1024" precision="-1" scale="-1" storageByte="-1"/>
+    <rdbmsTables xmi:id="_JihWYYK1Eem-QqPUxJcc4A" name="demo.entities.OnlineOrder" uuid="demo.entities.OnlineOrder" sqlName="T_ENTTS_ONLORR" primaryKey="_JihWYIK1Eem-QqPUxJcc4A" parents="_JhliQIK1Eem-QqPUxJcc4A">
+      <fields xsi:type="rdbms:RdbmsIdentifierField" xmi:id="_JihWYIK1Eem-QqPUxJcc4A" name="demo.entities.OnlineOrder#id" uuid="demo.entities.OnlineOrder#id" sqlName="ID" rdbmsTypeName="UUID" size="-1" precision="-1" scale="-1" storageByte="-1"/>
+      <fields xsi:type="rdbms:RdbmsValueField" xmi:id="_JlZEMIK1Eem-QqPUxJcc4A" uuid="demo.entities.OnlineOrder#webshopUrl" sqlName="C_WESPUL" mandatory="true" rdbmsTypeName="VARCHAR" size="1024" precision="-1" scale="-1" storageByte="-1"/>
     </rdbmsTables>
-    <rdbmsTables xmi:id="_Vzyp4XWzEemREbf8ziHyvA" name="northwind.entities.OnlineInternationalOrder" uuid="northwind.entities.OnlineInternationalOrder" sqlName="T_ENTTS_ONNRNR" primaryKey="_Vzyp4HWzEemREbf8ziHyvA" parents="_VzfH4XWzEemREbf8ziHyvA _Vzu_gXWzEemREbf8ziHyvA">
-      <fields xsi:type="rdbms:RdbmsIdentifierField" xmi:id="_Vzyp4HWzEemREbf8ziHyvA" name="northwind.entities.OnlineInternationalOrder#id" uuid="northwind.entities.OnlineInternationalOrder#id" sqlName="ID" rdbmsTypeName="UUID" size="-1" precision="-1" scale="-1" storageByte="-1"/>
-      <fields xsi:type="rdbms:RdbmsValueField" xmi:id="_V4I-YHWzEemREbf8ziHyvA" name="onlineTrackingNumber" uuid="northwind.entities.OnlineInternationalOrder#onlineTrackingNumber" sqlName="C_ONTRNR" rdbmsTypeName="VARCHAR" size="255" precision="-1" scale="-1" storageByte="-1"/>
+    <rdbmsTables xmi:id="_JikZsIK1Eem-QqPUxJcc4A" name="demo.entities.OnlineInternationalOrder" uuid="demo.entities.OnlineInternationalOrder" sqlName="T_ENTTS_ONNRNR" primaryKey="_JijyoIK1Eem-QqPUxJcc4A" parents="_JiSs4IK1Eem-QqPUxJcc4A _JihWYYK1Eem-QqPUxJcc4A">
+      <fields xsi:type="rdbms:RdbmsIdentifierField" xmi:id="_JijyoIK1Eem-QqPUxJcc4A" name="demo.entities.OnlineInternationalOrder#id" uuid="demo.entities.OnlineInternationalOrder#id" sqlName="ID" rdbmsTypeName="UUID" size="-1" precision="-1" scale="-1" storageByte="-1"/>
+      <fields xsi:type="rdbms:RdbmsValueField" xmi:id="_JlbgcIK1Eem-QqPUxJcc4A" uuid="demo.entities.OnlineInternationalOrder#onlineTrackingNumber" sqlName="C_ONTRNR" rdbmsTypeName="VARCHAR" size="255" precision="-1" scale="-1" storageByte="-1"/>
     </rdbmsTables>
-    <rdbmsTables xmi:id="_Vz27UXWzEemREbf8ziHyvA" name="northwind.entities.City" uuid="northwind.entities.City" sqlName="CITY" primaryKey="_Vz27UHWzEemREbf8ziHyvA">
-      <fields xsi:type="rdbms:RdbmsIdentifierField" xmi:id="_Vz27UHWzEemREbf8ziHyvA" name="northwind.entities.City#id" uuid="northwind.entities.City#id" sqlName="ID" rdbmsTypeName="UUID" size="-1" precision="-1" scale="-1" storageByte="-1" foreignKeys="_V4p7wHWzEemREbf8ziHyvA"/>
-      <fields xsi:type="rdbms:RdbmsValueField" xmi:id="_V4KMgHWzEemREbf8ziHyvA" name="name" uuid="northwind.entities.City#name" sqlName="C_NAME" rdbmsTypeName="VARCHAR" size="255" precision="-1" scale="-1" storageByte="-1"/>
+    <rdbmsTables xmi:id="_JioEEIK1Eem-QqPUxJcc4A" name="demo.entities.City" uuid="demo.entities.City" sqlName="T_ENTTS_CITY" primaryKey="_JindAIK1Eem-QqPUxJcc4A">
+      <fields xsi:type="rdbms:RdbmsIdentifierField" xmi:id="_JindAIK1Eem-QqPUxJcc4A" name="demo.entities.City#id" uuid="demo.entities.City#id" sqlName="ID" rdbmsTypeName="UUID" size="-1" precision="-1" scale="-1" storageByte="-1" foreignKeys="_JmZJwIK1Eem-QqPUxJcc4A"/>
+      <fields xsi:type="rdbms:RdbmsValueField" xmi:id="_JlejwIK1Eem-QqPUxJcc4A" uuid="demo.entities.City#name" sqlName="C_NAME" rdbmsTypeName="VARCHAR" size="255" precision="-1" scale="-1" storageByte="-1"/>
     </rdbmsTables>
-    <rdbmsTables xmi:id="_Vz6lsXWzEemREbf8ziHyvA" name="northwind.entities.Address" uuid="northwind.entities.Address" sqlName="T_ENTTS_ADDRSS" primaryKey="_Vz6lsHWzEemREbf8ziHyvA">
-      <fields xsi:type="rdbms:RdbmsIdentifierField" xmi:id="_Vz6lsHWzEemREbf8ziHyvA" name="northwind.entities.Address#id" uuid="northwind.entities.Address#id" sqlName="ID" rdbmsTypeName="UUID" size="-1" precision="-1" scale="-1" storageByte="-1"/>
-      <fields xsi:type="rdbms:RdbmsValueField" xmi:id="_V4LaoHWzEemREbf8ziHyvA" name="address" uuid="northwind.entities.Address#address" sqlName="C_ADDRSS" mandatory="true" rdbmsTypeName="VARCHAR" size="255" precision="-1" scale="-1" storageByte="-1"/>
-      <fields xsi:type="rdbms:RdbmsValueField" xmi:id="_V4NP0HWzEemREbf8ziHyvA" name="region" uuid="northwind.entities.Address#region" sqlName="C_REGION" rdbmsTypeName="VARCHAR" size="255" precision="-1" scale="-1" storageByte="-1"/>
-      <fields xsi:type="rdbms:RdbmsValueField" xmi:id="_V4Od8HWzEemREbf8ziHyvA" name="postalCode" uuid="northwind.entities.Address#postalCode" sqlName="C_POTLCD" mandatory="true" rdbmsTypeName="VARCHAR" size="255" precision="-1" scale="-1" storageByte="-1"/>
-      <fields xsi:type="rdbms:RdbmsForeignKey" xmi:id="_V4p7wHWzEemREbf8ziHyvA" name="city" uuid="northwind.entities.Address#city" sqlName="C_CITY_ID" mandatory="true" rdbmsTypeName="UUID" size="-1" precision="-1" scale="-1" storageByte="-1" referenceKey="_Vz27UHWzEemREbf8ziHyvA" foreignKeySqlName="FK_ENTTS_ADDRSS_CITY"/>
-      <fields xsi:type="rdbms:RdbmsForeignKey" xmi:id="_V4tmIHWzEemREbf8ziHyvA" name="customerAddresses" uuid="northwind.entities.Address#addresses" sqlName="C_ENTTS_CUSTMR_ADDRSS_ID" rdbmsTypeName="UUID" size="-1" precision="-1" scale="-1" storageByte="-1" referenceKey="_VzOpMHWzEemREbf8ziHyvA" foreignKeySqlName="FK_INV_ENTTS_CUSTMR_ADDRSS"/>
-      <fields xsi:type="rdbms:RdbmsForeignKey" xmi:id="_V4u0QHWzEemREbf8ziHyvA" name="employeeAddress" uuid="northwind.entities.Address#address" sqlName="C_ENTTS_EMPLY_ADDRSS_ID" rdbmsTypeName="UUID" size="-1" precision="-1" scale="-1" storageByte="-1" referenceKey="_VzmcoHWzEemREbf8ziHyvA" foreignKeySqlName="FK_INV_ENTTS_EMPLY_ADDRSS"/>
+    <rdbmsTables xmi:id="_JirHYYK1Eem-QqPUxJcc4A" name="demo.entities.Address" uuid="demo.entities.Address" sqlName="T_ENTTS_ADDRSS" primaryKey="_JirHYIK1Eem-QqPUxJcc4A">
+      <fields xsi:type="rdbms:RdbmsIdentifierField" xmi:id="_JirHYIK1Eem-QqPUxJcc4A" name="demo.entities.Address#id" uuid="demo.entities.Address#id" sqlName="ID" rdbmsTypeName="UUID" size="-1" precision="-1" scale="-1" storageByte="-1"/>
+      <fields xsi:type="rdbms:RdbmsValueField" xmi:id="_JlhAAIK1Eem-QqPUxJcc4A" uuid="demo.entities.Address#address" sqlName="C_ADDRSS" mandatory="true" rdbmsTypeName="VARCHAR" size="255" precision="-1" scale="-1" storageByte="-1"/>
+      <fields xsi:type="rdbms:RdbmsValueField" xmi:id="_JlkDUIK1Eem-QqPUxJcc4A" uuid="demo.entities.Address#region" sqlName="C_REGION" rdbmsTypeName="VARCHAR" size="255" precision="-1" scale="-1" storageByte="-1"/>
+      <fields xsi:type="rdbms:RdbmsValueField" xmi:id="_JlntsIK1Eem-QqPUxJcc4A" uuid="demo.entities.Address#postalCode" sqlName="C_POTLCD" mandatory="true" rdbmsTypeName="VARCHAR" size="255" precision="-1" scale="-1" storageByte="-1"/>
+      <fields xsi:type="rdbms:RdbmsForeignKey" xmi:id="_JmZJwIK1Eem-QqPUxJcc4A" name="city" uuid="demo.entities.Address#city" sqlName="C_CITY_ID" mandatory="true" rdbmsTypeName="UUID" size="-1" precision="-1" scale="-1" storageByte="-1" referenceKey="_JindAIK1Eem-QqPUxJcc4A" foreignKeySqlName="FK_ENTTS_ADDRSS_CITY"/>
+      <fields xsi:type="rdbms:RdbmsForeignKey" xmi:id="_JmgegIK1Eem-QqPUxJcc4A" name="customerAddresses" uuid="demo.entities.Address#addresses" sqlName="C_ENTTS_CUSTMR_ADDRSS_ID" rdbmsTypeName="UUID" size="-1" precision="-1" scale="-1" storageByte="-1" referenceKey="_Jh-j0IK1Eem-QqPUxJcc4A" foreignKeySqlName="FK_INV_ENTTS_CUSTMR_ADDRSS"/>
+      <fields xsi:type="rdbms:RdbmsForeignKey" xmi:id="_JmhsoIK1Eem-QqPUxJcc4A" name="employeeAddress" uuid="demo.entities.Address#address" sqlName="C_ENTTS_EMPLY_ADDRSS_ID" rdbmsTypeName="UUID" size="-1" precision="-1" scale="-1" storageByte="-1" referenceKey="_JiYzgIK1Eem-QqPUxJcc4A" foreignKeySqlName="FK_INV_ENTTS_EMPLY_ADDRSS"/>
     </rdbmsTables>
-    <rdbmsTables xmi:id="_Vz9pAXWzEemREbf8ziHyvA" name="northwind.entities.Individual" uuid="northwind.entities.Individual" sqlName="T_ENTTS_INDVDL" primaryKey="_Vz9pAHWzEemREbf8ziHyvA" parents="_VziyQXWzEemREbf8ziHyvA _VzOpMXWzEemREbf8ziHyvA">
-      <fields xsi:type="rdbms:RdbmsIdentifierField" xmi:id="_Vz9pAHWzEemREbf8ziHyvA" name="northwind.entities.Individual#id" uuid="northwind.entities.Individual#id" sqlName="ID" rdbmsTypeName="UUID" size="-1" precision="-1" scale="-1" storageByte="-1"/>
-      <fields xsi:type="rdbms:RdbmsValueField" xmi:id="_V4QTIHWzEemREbf8ziHyvA" name="phone" uuid="northwind.entities.Individual#phone" sqlName="C_PHONE" rdbmsTypeName="VARCHAR" size="20" precision="-1" scale="-1" storageByte="-1"/>
+    <rdbmsTables xmi:id="_JiuKsYK1Eem-QqPUxJcc4A" name="demo.entities.Individual" uuid="demo.entities.Individual" sqlName="T_ENTTS_INDVDL" primaryKey="_JiuKsIK1Eem-QqPUxJcc4A" parents="_JiWXQIK1Eem-QqPUxJcc4A _Jh_K4IK1Eem-QqPUxJcc4A">
+      <fields xsi:type="rdbms:RdbmsIdentifierField" xmi:id="_JiuKsIK1Eem-QqPUxJcc4A" name="demo.entities.Individual#id" uuid="demo.entities.Individual#id" sqlName="ID" rdbmsTypeName="UUID" size="-1" precision="-1" scale="-1" storageByte="-1"/>
+      <fields xsi:type="rdbms:RdbmsValueField" xmi:id="_JlqJ8IK1Eem-QqPUxJcc4A" uuid="demo.entities.Individual#phone" sqlName="C_PHONE" rdbmsTypeName="VARCHAR" size="20" precision="-1" scale="-1" storageByte="-1"/>
     </rdbmsTables>
-    <rdbmsTables xmi:id="_V0BTYXWzEemREbf8ziHyvA" name="northwind.entities.InternationalAddress" uuid="northwind.entities.InternationalAddress" sqlName="T_ENTTS_INNTAS" primaryKey="_V0BTYHWzEemREbf8ziHyvA" parents="_Vz6lsXWzEemREbf8ziHyvA">
-      <fields xsi:type="rdbms:RdbmsIdentifierField" xmi:id="_V0BTYHWzEemREbf8ziHyvA" name="northwind.entities.InternationalAddress#id" uuid="northwind.entities.InternationalAddress#id" sqlName="ID" rdbmsTypeName="UUID" size="-1" precision="-1" scale="-1" storageByte="-1"/>
-      <fields xsi:type="rdbms:RdbmsValueField" xmi:id="_V4RhQHWzEemREbf8ziHyvA" name="country" uuid="northwind.entities.InternationalAddress#country" sqlName="C_CONTRY" rdbmsTypeName="INTEGER" size="-1" precision="-1" scale="-1" storageByte="-1"/>
-      <fields xsi:type="rdbms:RdbmsForeignKey" xmi:id="_V4rw8HWzEemREbf8ziHyvA" name="orderShipAddress" uuid="northwind.entities.InternationalAddress#shipAddress" sqlName="C_ENTTS_ORDER_SHPADS_ID" rdbmsTypeName="UUID" size="-1" precision="-1" scale="-1" storageByte="-1" referenceKey="_VywvIHWzEemREbf8ziHyvA" foreignKeySqlName="FK_INV_ENTTS_ORDER_SHPADS"/>
+    <rdbmsTables xmi:id="_Jiwm8YK1Eem-QqPUxJcc4A" name="demo.entities.InternationalAddress" uuid="demo.entities.InternationalAddress" sqlName="T_ENTTS_INNTAS" primaryKey="_Jiwm8IK1Eem-QqPUxJcc4A" parents="_JirHYYK1Eem-QqPUxJcc4A">
+      <fields xsi:type="rdbms:RdbmsIdentifierField" xmi:id="_Jiwm8IK1Eem-QqPUxJcc4A" name="demo.entities.InternationalAddress#id" uuid="demo.entities.InternationalAddress#id" sqlName="ID" rdbmsTypeName="UUID" size="-1" precision="-1" scale="-1" storageByte="-1"/>
+      <fields xsi:type="rdbms:RdbmsValueField" xmi:id="_JlsmMIK1Eem-QqPUxJcc4A" uuid="demo.entities.InternationalAddress#country" sqlName="C_CONTRY" rdbmsTypeName="INTEGER" size="-1" precision="-1" scale="-1" storageByte="-1"/>
+      <fields xsi:type="rdbms:RdbmsForeignKey" xmi:id="_JmeCQIK1Eem-QqPUxJcc4A" name="orderShipAddress" uuid="demo.entities.InternationalAddress#shipAddress" sqlName="C_ENTTS_ORDER_SHPADS_ID" rdbmsTypeName="UUID" size="-1" precision="-1" scale="-1" storageByte="-1" referenceKey="_JhjGAIK1Eem-QqPUxJcc4A" foreignKeySqlName="FK_INV_ENTTS_ORDER_SHPADS"/>
     </rdbmsTables>
-    <rdbmsTables xmi:id="_V0DvoXWzEemREbf8ziHyvA" name="northwind.entities.PaymentList" uuid="northwind.entities.PaymentList" sqlName="T_ENTTS_PAMTLT" primaryKey="_V0DvoHWzEemREbf8ziHyvA">
-      <fields xsi:type="rdbms:RdbmsIdentifierField" xmi:id="_V0DvoHWzEemREbf8ziHyvA" name="northwind.entities.PaymentList#id" uuid="northwind.entities.PaymentList#id" sqlName="ID" rdbmsTypeName="UUID" size="-1" precision="-1" scale="-1" storageByte="-1" foreignKeys="_V5GnsXWzEemREbf8ziHyvA"/>
+    <rdbmsTables xmi:id="_JizDMIK1Eem-QqPUxJcc4A" name="demo.entities.PaymentList" uuid="demo.entities.PaymentList" sqlName="T_ENTTS_PAMTLT" primaryKey="_JiycIIK1Eem-QqPUxJcc4A">
+      <fields xsi:type="rdbms:RdbmsIdentifierField" xmi:id="_JiycIIK1Eem-QqPUxJcc4A" name="demo.entities.PaymentList#id" uuid="demo.entities.PaymentList#id" sqlName="ID" rdbmsTypeName="UUID" size="-1" precision="-1" scale="-1" storageByte="-1" foreignKeys="_JmsEsYK1Eem-QqPUxJcc4A"/>
     </rdbmsTables>
-    <rdbmsTables xmi:id="_V0Gy8XWzEemREbf8ziHyvA" name="northwind.entities.MailingList" uuid="northwind.entities.MailingList" sqlName="T_ENTTS_MALGLT" primaryKey="_V0Gy8HWzEemREbf8ziHyvA">
-      <fields xsi:type="rdbms:RdbmsIdentifierField" xmi:id="_V0Gy8HWzEemREbf8ziHyvA" name="northwind.entities.MailingList#id" uuid="northwind.entities.MailingList#id" sqlName="ID" rdbmsTypeName="UUID" size="-1" precision="-1" scale="-1" storageByte="-1"/>
-      <fields xsi:type="rdbms:RdbmsForeignKey" xmi:id="_V4qi0HWzEemREbf8ziHyvA" name="person" uuid="northwind.entities.MailingList#person" sqlName="C_PERSON_ID" rdbmsTypeName="UUID" size="-1" precision="-1" scale="-1" storageByte="-1" referenceKey="_VziyQHWzEemREbf8ziHyvA" foreignKeySqlName="FK_ENTTS_MALGLT_PERSON"/>
+    <rdbmsTables xmi:id="_Ji04YYK1Eem-QqPUxJcc4A" name="demo.entities.MailingList" uuid="demo.entities.MailingList" sqlName="T_ENTTS_MALGLT" primaryKey="_Ji04YIK1Eem-QqPUxJcc4A">
+      <fields xsi:type="rdbms:RdbmsIdentifierField" xmi:id="_Ji04YIK1Eem-QqPUxJcc4A" name="demo.entities.MailingList#id" uuid="demo.entities.MailingList#id" sqlName="ID" rdbmsTypeName="UUID" size="-1" precision="-1" scale="-1" storageByte="-1"/>
+      <fields xsi:type="rdbms:RdbmsForeignKey" xmi:id="_Jma-8IK1Eem-QqPUxJcc4A" name="person" uuid="demo.entities.MailingList#person" sqlName="C_PERSON_ID" rdbmsTypeName="UUID" size="-1" precision="-1" scale="-1" storageByte="-1" referenceKey="_JiVwMIK1Eem-QqPUxJcc4A" foreignKeySqlName="FK_ENTTS_MALGLT_PERSON"/>
     </rdbmsTables>
-    <rdbmsTables xmi:id="_V0J2QXWzEemREbf8ziHyvA" name="northwind.entities.Store" uuid="northwind.entities.Store" sqlName="T_ENTTS_STORE" primaryKey="_V0J2QHWzEemREbf8ziHyvA">
-      <fields xsi:type="rdbms:RdbmsIdentifierField" xmi:id="_V0J2QHWzEemREbf8ziHyvA" name="northwind.entities.Store#id" uuid="northwind.entities.Store#id" sqlName="ID" rdbmsTypeName="UUID" size="-1" precision="-1" scale="-1" storageByte="-1" foreignKeys="_V4gx0HWzEemREbf8ziHyvA"/>
+    <rdbmsTables xmi:id="_Ji3UoYK1Eem-QqPUxJcc4A" name="demo.entities.Store" uuid="demo.entities.Store" sqlName="T_ENTTS_STORE" primaryKey="_Ji3UoIK1Eem-QqPUxJcc4A">
+      <fields xsi:type="rdbms:RdbmsIdentifierField" xmi:id="_Ji3UoIK1Eem-QqPUxJcc4A" name="demo.entities.Store#id" uuid="demo.entities.Store#id" sqlName="ID" rdbmsTypeName="UUID" size="-1" precision="-1" scale="-1" storageByte="-1" foreignKeys="_JmDLgIK1Eem-QqPUxJcc4A"/>
     </rdbmsTables>
-    <rdbmsTables xsi:type="rdbms:RdbmsJunctionTable" xmi:id="_V4yeoHWzEemREbf8ziHyvA" name="northwind.entities.Order#itemsWithCategoryPicture to northwind.entities.OrderDetail" uuid="northwind.entities.Order#itemsWithCategoryPicture_northwind.entities.OrderDetail" sqlName="T_ENTTS_ORDRDL_ITSCRR" primaryKey="_V4wpcHWzEemREbf8ziHyvA" field1="_V5CWQHWzEemREbf8ziHyvA" field2="_V5C9UHWzEemREbf8ziHyvA">
-      <fields xsi:type="rdbms:RdbmsIdentifierField" xmi:id="_V4wpcHWzEemREbf8ziHyvA" name="northwind.entities.Order#itemsWithCategoryPicture to northwind.entities.OrderDetail#id" uuid="northwind.entities.Order#itemsWithCategoryPicture_northwind.entities.OrderDetail#id" sqlName="ID" rdbmsTypeName="UUID" size="-1" precision="-1" scale="-1" storageByte="-1"/>
-      <fields xsi:type="rdbms:RdbmsForeignKey" xmi:id="_V5CWQHWzEemREbf8ziHyvA" name="itemsWithCategoryPicture" uuid="northwind.entities.Order#itemsWithCategoryPicture" sqlName="C_ITSCRR_ID" rdbmsTypeName="UUID" size="-1" precision="-1" scale="-1" storageByte="-1" referenceKey="_VzJJoHWzEemREbf8ziHyvA" foreignKeySqlName="FK_ENTTS_ORDER_ITSCRR" deleteOnCascade="true" readOnly="true"/>
-      <fields xsi:type="rdbms:RdbmsForeignKey" xmi:id="_V5C9UHWzEemREbf8ziHyvA" name="Order#itemsWithCategoryPicture" uuid="northwind.entities.Order@northwind.entities.Order#itemsWithCategoryPicture" sqlName="ITSCRR_T_ENTTS_ORDER_ID" rdbmsTypeName="UUID" size="-1" precision="-1" scale="-1" storageByte="-1" referenceKey="_VywvIHWzEemREbf8ziHyvA" foreignKeySqlName="FK_ENTTS_ORDRDL_ITSCRR" deleteOnCascade="true" readOnly="true"/>
+    <rdbmsTables xsi:type="rdbms:RdbmsJunctionTable" xmi:id="_Jmkv8IK1Eem-QqPUxJcc4A" name="demo.entities.Company#manufacturedProducts to demo.entities.Product#manufacturers" uuid="demo.entities.Company#manufacturedProducts_demo.entities.Product#manufacturers" sqlName="T_ENTS_RDT_ACPS_ENTS_COPN_MCTS" primaryKey="_Jmjh0IK1Eem-QqPUxJcc4A" field1="_JmpBYIK1Eem-QqPUxJcc4A" field2="_JmnzQIK1Eem-QqPUxJcc4A">
+      <fields xsi:type="rdbms:RdbmsIdentifierField" xmi:id="_Jmjh0IK1Eem-QqPUxJcc4A" name="demo.entities.Company#manufacturedProducts to demo.entities.Product#manufacturers#id" uuid="demo.entities.Company#manufacturedProducts_demo.entities.Product#manufacturers#id" sqlName="ID" rdbmsTypeName="UUID" size="-1" precision="-1" scale="-1" storageByte="-1"/>
+      <fields xsi:type="rdbms:RdbmsForeignKey" xmi:id="_JmnzQIK1Eem-QqPUxJcc4A" name="manufacturers" uuid="demo.entities.Product#manufacturers" sqlName="C_MANFTS_ID" rdbmsTypeName="UUID" size="-1" precision="-1" scale="-1" storageByte="-1" referenceKey="_JiFRgIK1Eem-QqPUxJcc4A" foreignKeySqlName="FK_ENTTS_PRDCT_MANFTS" deleteOnCascade="true" readOnly="true"/>
+      <fields xsi:type="rdbms:RdbmsForeignKey" xmi:id="_JmpBYIK1Eem-QqPUxJcc4A" name="manufacturedProducts" uuid="demo.entities.Company#manufacturedProducts" sqlName="C_MACTPS_ID" rdbmsTypeName="UUID" size="-1" precision="-1" scale="-1" storageByte="-1" referenceKey="_JhvTQIK1Eem-QqPUxJcc4A" foreignKeySqlName="FK_ENTTS_COMPNY_MACTPS" deleteOnCascade="true" readOnly="true"/>
     </rdbmsTables>
-    <rdbmsTables xsi:type="rdbms:RdbmsJunctionTable" xmi:id="_V43-MHWzEemREbf8ziHyvA" name="northwind.entities.Company#manufacturedProducts to northwind.entities.Product#manufacturers" uuid="northwind.entities.Company#manufacturedProducts_northwind.entities.Product#manufacturers" sqlName="T_ENTS_RDT_ACPS_ENTS_COPN_MCTS" primaryKey="_V43XIHWzEemREbf8ziHyvA" field1="_V4_6AHWzEemREbf8ziHyvA" field2="_V4-E0HWzEemREbf8ziHyvA">
-      <fields xsi:type="rdbms:RdbmsIdentifierField" xmi:id="_V43XIHWzEemREbf8ziHyvA" name="northwind.entities.Company#manufacturedProducts to northwind.entities.Product#manufacturers#id" uuid="northwind.entities.Company#manufacturedProducts_northwind.entities.Product#manufacturers#id" sqlName="ID" rdbmsTypeName="UUID" size="-1" precision="-1" scale="-1" storageByte="-1"/>
-      <fields xsi:type="rdbms:RdbmsForeignKey" xmi:id="_V4-E0HWzEemREbf8ziHyvA" name="manufacturers" uuid="northwind.entities.Product#manufacturers" sqlName="C_MANFTS_ID" rdbmsTypeName="UUID" size="-1" precision="-1" scale="-1" storageByte="-1" referenceKey="_VzSTkHWzEemREbf8ziHyvA" foreignKeySqlName="FK_ENTTS_PRDCT_MANFTS" deleteOnCascade="true" readOnly="true"/>
-      <fields xsi:type="rdbms:RdbmsForeignKey" xmi:id="_V4_6AHWzEemREbf8ziHyvA" name="manufacturedProducts" uuid="northwind.entities.Company#manufacturedProducts" sqlName="C_MACTPS_ID" rdbmsTypeName="UUID" size="-1" precision="-1" scale="-1" storageByte="-1" referenceKey="_Vy__sHWzEemREbf8ziHyvA" foreignKeySqlName="FK_ENTTS_COMPNY_MACTPS" deleteOnCascade="true" readOnly="true"/>
+    <rdbmsTables xsi:type="rdbms:RdbmsJunctionTable" xmi:id="_JmmlIIK1Eem-QqPUxJcc4A" name="demo.entities.PaymentList#employees to demo.entities.Employee" uuid="demo.entities.PaymentList#employees_demo.entities.Employee" sqlName="T_ENTTS_EMPLY_EMPLYS" primaryKey="_Jml-EIK1Eem-QqPUxJcc4A" field1="_JmsEsIK1Eem-QqPUxJcc4A" field2="_JmsEsYK1Eem-QqPUxJcc4A">
+      <fields xsi:type="rdbms:RdbmsIdentifierField" xmi:id="_Jml-EIK1Eem-QqPUxJcc4A" name="demo.entities.PaymentList#employees to demo.entities.Employee#id" uuid="demo.entities.PaymentList#employees_demo.entities.Employee#id" sqlName="ID" rdbmsTypeName="UUID" size="-1" precision="-1" scale="-1" storageByte="-1"/>
+      <fields xsi:type="rdbms:RdbmsForeignKey" xmi:id="_JmsEsIK1Eem-QqPUxJcc4A" name="employees" uuid="demo.entities.PaymentList#employees" sqlName="C_EMPLYS_ID" mandatory="true" rdbmsTypeName="UUID" size="-1" precision="-1" scale="-1" storageByte="-1" referenceKey="_JiYzgIK1Eem-QqPUxJcc4A" foreignKeySqlName="FK_ENTTS_PAMTLT_EMPLYS" deleteOnCascade="true" readOnly="true"/>
+      <fields xsi:type="rdbms:RdbmsForeignKey" xmi:id="_JmsEsYK1Eem-QqPUxJcc4A" name="PaymentList#employees" uuid="demo.entities.PaymentList@demo.entities.PaymentList#employees" sqlName="EMPLYS_T_ENTTS_PAMTLT_ID" rdbmsTypeName="UUID" size="-1" precision="-1" scale="-1" storageByte="-1" referenceKey="_JiycIIK1Eem-QqPUxJcc4A" foreignKeySqlName="FK_ENTTS_EMPLY_EMPLYS" deleteOnCascade="true" readOnly="true"/>
     </rdbmsTables>
-    <rdbmsTables xsi:type="rdbms:RdbmsJunctionTable" xmi:id="_V47BgXWzEemREbf8ziHyvA" name="northwind.entities.PaymentList#employees to northwind.entities.Employee" uuid="northwind.entities.PaymentList#employees_northwind.entities.Employee" sqlName="T_ENTTS_EMPLY_EMPLYS" primaryKey="_V47BgHWzEemREbf8ziHyvA" field1="_V5GnsHWzEemREbf8ziHyvA" field2="_V5GnsXWzEemREbf8ziHyvA">
-      <fields xsi:type="rdbms:RdbmsIdentifierField" xmi:id="_V47BgHWzEemREbf8ziHyvA" name="northwind.entities.PaymentList#employees to northwind.entities.Employee#id" uuid="northwind.entities.PaymentList#employees_northwind.entities.Employee#id" sqlName="ID" rdbmsTypeName="UUID" size="-1" precision="-1" scale="-1" storageByte="-1"/>
-      <fields xsi:type="rdbms:RdbmsForeignKey" xmi:id="_V5GnsHWzEemREbf8ziHyvA" name="employees" uuid="northwind.entities.PaymentList#employees" sqlName="C_EMPLYS_ID" mandatory="true" rdbmsTypeName="UUID" size="-1" precision="-1" scale="-1" storageByte="-1" referenceKey="_VzmcoHWzEemREbf8ziHyvA" foreignKeySqlName="FK_ENTTS_PAMTLT_EMPLYS" deleteOnCascade="true" readOnly="true"/>
-      <fields xsi:type="rdbms:RdbmsForeignKey" xmi:id="_V5GnsXWzEemREbf8ziHyvA" name="PaymentList#employees" uuid="northwind.entities.PaymentList@northwind.entities.PaymentList#employees" sqlName="EMPLYS_T_ENTTS_PAMTLT_ID" rdbmsTypeName="UUID" size="-1" precision="-1" scale="-1" storageByte="-1" referenceKey="_V0DvoHWzEemREbf8ziHyvA" foreignKeySqlName="FK_ENTTS_EMPLY_EMPLYS" deleteOnCascade="true" readOnly="true"/>
-    </rdbmsTables>
-    <configuration xmi:id="_VyhekHWzEemREbf8ziHyvA" dialect="hsqldb"/>
+    <configuration xmi:id="_JmvIAIK1Eem-QqPUxJcc4A" dialect="hsqldb"/>
+  </rdbms:RdbmsModel>
+  <rdbms:RdbmsModel xmi:id="_Jmt54IK1Eem-QqPUxJcc4A" version="1.0.0">
+    <configuration xmi:id="_Jmug8IK1Eem-QqPUxJcc4A" dialect="hsqldb"/>
+  </rdbms:RdbmsModel>
+  <rdbms:RdbmsModel xmi:id="_Jmt54YK1Eem-QqPUxJcc4A" version="1.0.0">
+    <configuration xmi:id="_Jmug8YK1Eem-QqPUxJcc4A" dialect="hsqldb"/>
   </rdbms:RdbmsModel>
 </xmi:XMI>

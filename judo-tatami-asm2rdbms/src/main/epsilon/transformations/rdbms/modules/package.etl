@@ -1,0 +1,16 @@
+import "../../../operations/asm/_importAll.eol";
+
+rule rootPackegeToModel
+	transform s : ASM!EPackage
+	to t : RDBMS!RdbmsModel {
+		guard : s.eSuperPackage.isUndefined()
+		t.version = modelVersion;
+}
+
+rule rootPackegeToConfiguration
+	transform s : ASM!EPackage
+	to t : RDBMS!RdbmsConfiguration {
+		guard : s.eSuperPackage.isUndefined()
+		t.dialect = dialect;
+		s.equivalent().configuration = t;
+}
