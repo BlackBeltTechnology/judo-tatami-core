@@ -13,3 +13,7 @@ operation ESM!TwoWayEndpoint getTransferRelation() : ESM!TransferRelation {
 operation ESM!OneWayEndpoint getTransferRelation() : ESM!TransferRelation {
 	return ESM!TransferRelation.all.selectOne(tr | tr.referenceTypedElement = self);
 }
+
+operation ESM!OneWayEndpoint getTransferObjectType() : ESM!TransferObjectType {
+	return ESM!TransferObjectType.all.selectOne(tot | (not tot.mixins.isEmpty()) and tot.mixins.first().relations.includes(self));
+}

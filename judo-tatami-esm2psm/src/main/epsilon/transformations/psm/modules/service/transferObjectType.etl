@@ -20,21 +20,30 @@ rule CreateCardinalityOfParameter
   	  t.lower = s.lower;
 }
 
+//[MixinStuff] (indirectly)
 @abstract
 rule CreateTransferObjectType
 	transform s: ESM!TransferObjectType
 	to t: JUDOPSM!TransferObjectType 
 	extends CreateNamespaceElement {
 	  t.representation = s.representation.equivalent("CreateTransferAttribute");
-	  //TODO: mixins (check sublime: esm2psm notes)
-	  //log.debug("MIXIN: " + s.mixins);
 }
 
+//[MixinStuff]
 rule CreateUnmappedTransferObjectType
 	transform s: ESM!TransferObjectType 
 	to t: JUDOPSM!UnmappedTransferObjectType
 	extends CreateTransferObjectType {
 	  guard: not s.isMapped()
+	  //[MixinStuff]
+	  if ((not s.mixins.isEmpty())) {
+	  	var parents : OrderedSet = s.resolveMixins(s);
+	  	log.debug("parents of " + s.name + ": " + parents);
+	  	for (parent in parents) {
+	  		t.relations.addAll(parent.getEquivalentRelations(s));
+	  		t.attributes.addAll(parent.getEquivalentAttributes(s));
+	  	}
+	  }
 	  log.debug("Created UnmappedTransferObjectType.");
 }
 
@@ -43,9 +52,18 @@ rule CreateMappedTransferObjectType
 	to t: JUDOPSM!MappedTransferObjectType
 	extends CreateTransferObjectType {
 	  guard: s.isMapped()
-	  t.entityReferencePresence = JUDOPSM!EntityReferenceType#OPTIONAL; //TODO: later: fix entityReferencePresence //= s.entityReferencePresence.getPSMEquivalent(); 
+	  t.entityReferencePresence = JUDOPSM!EntityReferenceType#OPTIONAL; //TODO: [postponed]: fix entityReferencePresence //= s.entityReferencePresence.getPSMEquivalent();
 	  t.entityType = s.entityType.equivalent("CreateEntityType");
-	  
+	  //[MixinStuff]	  
+	  if ((not s.mixins.isEmpty()) ) {
+	  	var parents : OrderedSet = s.resolveMixins(s);
+	  	log.debug("parents of " + s.name + ": " + parents);
+	  	for (parent in parents) {
+	  		t.relations.addAll(parent.getEquivalentRelations(s));
+	  		t.attributes.addAll(parent.getEquivalentAttributes(s));
+	  		t.operations.addAll(parent.getEquivalentOperations(s));
+	  	}
+	  }
 	  log.debug("Created MappedTransferObjectType.");
 }
 
@@ -55,14 +73,12 @@ rule CreateTransferAttribute
 	extends CreateNamedElement {
 	  t.required = s.required;
 	  t.dataType = s.dataType.getPSMEquivalent();
-	  //t.defaultValue = s.defaultValue.equivalent("CreatePrimitiveTypedElement"); //TODO: ask if needed
 	  /* TODO: TransferAttribute... option_a */
 	  if ( s.primitiveTypedElement.isTypeOf(ESM!DataProperty) ) {
 	  	t.binding = s.primitiveTypedElement.equivalent("CreateDataProperty");
 	  }	else {
 	  	t.binding = s.primitiveTypedElement.equivalent("CreateAttribute");
 	  }
-	  /**/
 	  var esmTOT : ESM!TransferObjectType = ESM!TransferObjectType.all.selectOne(tot | tot.attributes.includes(s));	  
 	  esmTOT.getPSMEquivalent().attributes.add(t);
 	  
@@ -73,6 +89,7 @@ rule CreateTransferObjectRelation
 	transform s: ESM!TransferRelation
 	to t: JUDOPSM!TransferObjectRelation
 	extends CreateNamedElement {
+
 	  t.cardinality = s.equivalent("CreateCardinalityOfTransferObjectRelation");
 	  t.embedded = s.embedded;
 	  
@@ -83,7 +100,6 @@ rule CreateTransferObjectRelation
 	  
 	  log.debug("Created TransferObjectRelation: " + t.name);
 }
-
 
 @abstract
 rule CreateOperation
@@ -109,53 +125,46 @@ rule CreateUnboundOperation
 	transform s: ESM!UnboundOperation
 	to t: JUDOPSM!UnboundOperation
 	extends CreateOperation, CreateNamespaceElement {
+	  ESM!ExposedService.all.selectOne(es | es.`operation` == s).equivalent("CreateExposedService").`operation` = t;
+	  log.debug("Created UnboundOperation: " + s.name);
 }
 
 rule CreateParameter
 	transform s : ESM!Parameter
 	to t : JUDOPSM!Parameter
 	extends CreateNamedElement {
-	  	/*
-		var fs : Boolean = (ESM!Operation.all.selectOne(op | op.faults.includes(s)) == null);
-		var op : Boolean = (ESM!Operation.all.selectOne(op | op.output = s) == null);
-		var ip : Boolean = (ESM!Operation.all.selectOne(op | op.input = s) == null);
-		log.debug("s: " + s);
-		log.debug("fs: " + fs );
-		log.debug("op: " + op );
-		log.debug("ip: " + ip );
-		*/
-		//TODO: dont even get yourself started
+	  	//TODO: dont even get yourself started
 		var esmOP : ESM!Operation;
 		if(s.isInput()) {
-			log.debug("isInput");
+			//log.debug("isInput");
 			esmOP = ESM!Operation.all.selectOne(op | op.input = s);
 			if (esmOP.isTypeOf(ESM!BoundOperation)) {
-				log.debug("input bound");
+				//log.debug("input bound");
 				esmOP.equivalent("CreateBoundOperation").input = t;
 			} else {
-				log.debug("input unbound");
+				//log.debug("input unbound");
 				esmOP.equivalent("CreateUnboundOperation").input = t;
 			}
 		} else if (s.isOutput()) {
-			log.debug("isOutput");
+			//log.debug("isOutput");
 			esmOP = ESM!Operation.all.selectOne(op | op.output = s);
 			if (esmOP.isTypeOf(ESM!BoundOperation)) {
-				log.debug("output bound");
+				//log.debug("output bound");
 				esmOP.equivalent("CreateBoundOperation").output = t;
 			} else {
-				log.debug("output unbound");
+				//log.debug("output unbound");
 				esmOP.equivalent("CreateUnboundOperation").output = t;
 			}
 		}
 		
 		if(s.isFault()) {
-			log.debug("isFault");
+			//log.debug("isFault");
 			esmOP = ESM!Operation.all.selectOne(op | op.faults.includes(s));
 			if (esmOP.isTypeOf(ESM!BoundOperation)) {
-				log.debug("fault bound");
+				//log.debug("fault bound");
 				esmOP.equivalent("CreateBoundOperation").faults.add(t);
 			} else {
-				log.debug("fault unbound");
+				//log.debug("fault unbound");
 				esmOP.equivalent("CreateUnboundOperation").faults.add(t);
 			}
 		}

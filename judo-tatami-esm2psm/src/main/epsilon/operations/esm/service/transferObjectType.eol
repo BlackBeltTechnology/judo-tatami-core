@@ -1,16 +1,121 @@
-//TODO: fix entityReferencePresence in transferObjectType.etl
-/*
-@cached
-operation ESM!EntityReferenceType getPSMEquivalent(): JUDOPSM!EntityReferenceType {
-	switch (self) {
-		case ESM!EntityReferenceType#REQUIRED : return JUDOPSM!EntityReferenceType#REQUIRED;
-		case ESM!EntityReferenceType#OPTIONAL : return JUDOPSM!EntityReferenceType#OPTIONAL;
-		case ESM!EntityReferenceType#NOT_SUPPORTED : return JUDOPSM!EntityReferenceType#NOT_SUPPORTED;
-		default: throw "Unsupported ESM!EntityReferenceType!";
+/* POORMAN'S MIXIN RESOLVE */
+operation ESM!TransferObjectType resolveMixins(target : ESM!TransferObjectType) : OrderedSet {
+	//log.debug("[resolving]: " + self.name + " (from " + target.name + ")" );
+	var allParents : OrderedSet;
+	if (not (self == target)) {
+		allParents.add(self);
 	}
+	
+	//log.debug("finding directParents of " + self.name + "...");
+	for ( directParent in self.mixins ) {
+		//log.debug("...found directParent:  " + directParent.name);
+		allParents.addAll(directParent.resolveMixins(target));
+	}
+	return allParents;
 }
-*/
 
+operation ESM!TransferObjectType getEquivalentRelations(target : ESM!TransferObjectType) : Sequence {
+	var psmRelations : Sequence;
+	for ( relation in self.relations ) {
+		if( not (target.relations.exists(rel | rel.name = relation.name)) ) {
+			//log.debug("new relation for: " + relation.name + " of " + self.name);
+			psmRelations.add(relation.newDumbTOR());
+		} else {
+			log.warn("Relation already present with the same name: [" + relation.name + "@" + self.name + "]->[" + relation.name + "@" + target.name + "]");
+		}
+	}
+	//log.debug("[getEqRels] returning with: " + psmRelations);
+	return psmRelations;
+}
+
+operation ESM!TransferRelation newDumbTOR() : JUDOPSM!TransferObjectRelation {
+	var newTOR : JUDOPSM!TransferObjectRelation = new JUDOPSM!TransferObjectRelation; 
+	newTOR.name = self.name;
+	newTOR.target = self.target.getPSMEquivalent();
+	newTOR.embedded = self.embedded;
+	
+	var dumbCardinality : JUDOPSM!Cardinality = new JUDOPSM!Cardinality;
+	dumbCardinality.lower = self.lower;
+	dumbCardinality.upper = self.upper;
+	newTOR.cardinality = dumbCardinality;
+	
+	if ((self.referenceTypedElement.isTypeOf(ESM!OneWayEndpoint)) and (self.referenceTypedElement.containment)) {
+		//log.debug("newTOR doing Containment");
+		newTOR.binding = self.referenceTypedElement.equivalent("CreateContainment");
+	} else if (self.referenceTypedElement.isTypeOf(ESM!OneWayEndpoint))  {
+		//log.debug("newTOR doing OneWayEndpoint");
+		newTOR.binding = self.referenceTypedElement.equivalent("CreateOneWayEndpoint");
+	} else if (self.referenceTypedElement.isTypeOf(ESM!TwoWayEndpoint)) {
+		//log.debug("newTOR doing TwoWayEndpoint");
+		newTOR.binding = self.referenceTypedElement.equivalent("CreateTwoWayEndpoint");
+	} else if (self.referenceTypedElement.isTypeOf(ESM!StaticNavigation)) {
+		//log.debug("newTOR doing StaticNavigation");
+		newTOR.binding = self.referenceTypedElement.equivalent("CreateStaticNavigation");
+	} else if (self.referenceTypedElement.isTypeOf(ESM!NavigationProperty)) {
+		//log.debug("newTOR doing NavigationProperty");
+		newTOR.binding = self.referenceTypedElement.equivalent("CreateNavigationProperty");
+	} else {
+		log.warn("[newDumbTOR()] Unrecognized referenceTypedElement: " + self.referenceTypedElement);
+	}
+	return newTOR;
+}
+
+operation ESM!TransferObjectType getEquivalentAttributes(target : ESM!TransferObjectType) : Sequence {
+	var psmAttributes : Sequence;
+	for ( attribute in self.attributes ) {
+		if( not (target.attributes.exists(attr | attr.name = attribute.name)) ) {
+			//log.debug("new relation for: " + attribute.name + " of " + self.name);
+			psmAttributes.add(attribute.newDumbTA());
+		} else {
+			log.warn("Attribute already present with the same name: [" + attribute.name + "@" + self.name + "]->[" + attribute.name + "@" + target.name + "]");
+		}
+	}
+	//log.debug("[getEqAttr] returning with: " + psmAttributes);
+	return psmAttributes;
+}
+
+operation ESM!TransferAttribute newDumbTA() : JUDOPSM!TransferAttribute {
+	var newTA : JUDOPSM!TransferAttribute = new JUDOPSM!TransferAttribute;
+	newTA.name = self.name;
+	newTA.required = self.required;
+	newTA.dataType = self.dataType.getPSMEquivalent();
+	if ( self.primitiveTypedElement.isTypeOf(ESM!DataProperty) ) {
+		newTA.binding = self.primitiveTypedElement.equivalent("CreateDataProperty");
+	} else {
+		newTA.binding = self.primitiveTypedElement.equivalent("CreateAttribute");
+	}
+	return newTA;
+}
+
+operation ESM!TransferObjectType getEquivalentOperations(target : ESM!TransferObjectType) : Sequence {
+	var psmOperations : Sequence;
+	log.debug("self.operations: " + self.operations);
+	for ( oper in self.operations ) {
+		if( not (target.operations.exists(op | op.name = oper.name)) ) {
+			//log.debug("new relation for: " + attribute.name + " of " + self.name);
+			log.debug("eqop");
+			psmOperations.add(oper.newDumbOper());
+		} else {
+			log.warn("Operation already present with the same name: [" + oper.name + "@" + self.name + "]->[" + op.name + "@" + target.name + "]");
+		}
+	}
+	//log.debug("[getEqOps] returning with: " + psmOperations);
+	return psmOperations;
+}
+
+operation ESM!BoundOperation newDumbOper() : JUDOPSM!BoundOperation {
+	var newOper : JUDOPSM!BoundOperation = new JUDOPSM!BoundOperation;
+	newOper.name = self.name;
+	newOper.body = self.body;
+	newOper.output = self.output.equivalent("CreateParameter");
+	newOper.input = self.input.equivalent("CreateParameter");
+	newOper.stateful = true;
+	newOper.undefined = self.undefined;
+	log.debug("say something");
+	return newOper;
+}
+
+/*------------ TOTs -----------------*/
 operation ESM!TransferObjectType isMapped() : Boolean {
 	return self.entityType.isDefined();
 } 
@@ -22,6 +127,8 @@ operation ESM!TransferObjectType getPSMEquivalent() : JUDOPSM!TransferObjectType
 		return self.equivalent("CreateUnmappedTransferObjectType");
 	}
 }
+
+/*------------ PARAMETER -----------------*/
 operation ESM!Parameter isInput() : Boolean {
 	if ( ESM!Operation.all.selectOne(op | op.input = self) == null ) {
 		return false;
@@ -45,4 +152,17 @@ operation ESM!Parameter isFault() : Boolean {
 		return true;
 	}
 }
+
+//TODO: fix entityReferencePresence in transferObjectType.etl
+/*
+@cached
+operation ESM!EntityReferenceType getPSMEquivalent(): JUDOPSM!EntityReferenceType {
+	switch (self) {
+		case ESM!EntityReferenceType#REQUIRED : return JUDOPSM!EntityReferenceType#REQUIRED;
+		case ESM!EntityReferenceType#OPTIONAL : return JUDOPSM!EntityReferenceType#OPTIONAL;
+		case ESM!EntityReferenceType#NOT_SUPPORTED : return JUDOPSM!EntityReferenceType#NOT_SUPPORTED;
+		default: throw "Unsupported ESM!EntityReferenceType!";
+	}
+}
+*/
 

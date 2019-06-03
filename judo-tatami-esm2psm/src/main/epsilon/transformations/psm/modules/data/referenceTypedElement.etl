@@ -1,4 +1,5 @@
 import "../namespace.etl";
+import "../../../../operations/esm/data/_importData.eol";
 
 @lazy
 @greedy
@@ -9,12 +10,20 @@ rule CreateCardinalityOfReferenceTypedElement
 	  t.lower = s.lower;
 }
 
+@abstract
 rule CreateReferenceTypedElement
 	transform s: ESM!ReferenceTypedElement
 	to t: JUDOPSM!ReferenceTypedElement
 	extends CreateNamedElement {
 	  t.target = s.target.getPSMEquivalent();
 	  t.cardinality = s.equivalent("CreateCardinalityOfReferenceTypedElement");
+	  /*
+	  s.getEntityType().equivalent("CreateEntityType").relations.add(t);
+	  var transferRelation : ESM!TransferRelation = s.getTransferRelation();
+	  if(transferRelation.isDefined()) {
+	  	transferRelation.equivalent("CreateTransferObjectRelation").binding = t;
+	  }
+	  */
 }
 
 rule CreateContainment

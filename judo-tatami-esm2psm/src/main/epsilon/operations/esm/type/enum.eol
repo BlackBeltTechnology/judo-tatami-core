@@ -1,4 +1,3 @@
-@cached
 operation ESM!EnumerationMember getEnumerationType() : ESM!EnumerationType {
 	return ESM!EnumerationType.all.selectOne(p | p.members.includes(self));
 }

@@ -1,4 +1,7 @@
-import "data/_importData.eol";
-import "derived/_importDerived.eol";
-import "type/_importType.eol";
 import "namespace/_importNamespace.eol";
+import "data/_importData.eol";
+import "type/_importType.eol";
+import "derived/_importDerived.eol";
+import "measure/measure.eol";
+import "accesspoint/accessPoint.eol";
+import "service/transferObjectType.eol";

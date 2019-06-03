@@ -5,9 +5,9 @@ operation ESM!Unit getMeasure(): ESM!Measure {
 operation ESM!Measure getPSMEquivalent(): JUDOPSM!Measure {
 	if(not self.terms.isEmpty()) {
 	  	return self.equivalent("CreateDerivedMeasure");
-	  } else {
-	    return self.equivalent("CreateMeasure");	  
-	  }
+	} else {
+		return self.equivalent("CreateMeasure");	  
+	}
 }
 
 operation ESM!Unit getContainingPSMEquivalent() : JUDOPSM!Measure {
@@ -20,9 +20,9 @@ operation ESM!MeasureDefinitionTerm getDerivedMeasure() : JUDOPSM!DerivedMeasure
 }
 
 operation ESM!Unit getPSMEquivalent() : JUDOPSM!Unit {
-      if (self.isTypeOf(ESM!DurationUnit)) {
-	    return self.equivalent("CreateDurationUnit");
-	  } else {
-	    return self.equivalent("CreateUnit");
-	  }
+	if (self.isTypeOf(ESM!DurationUnit)) {
+		return self.equivalent("CreateDurationUnit");
+	} else {
+		return self.equivalent("CreateUnit");
+	}
 }

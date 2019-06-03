@@ -24,8 +24,6 @@ rule CreateDataProperty
 	  if(transferAttribute.isDefined()) {
 	  	transferAttribute.equivalent("CreateTransferAttribute").binding = t;
 	  }
-	   
-	  /**/
 	  log.debug("Created DataProperty: " + t.name);
 }
 
