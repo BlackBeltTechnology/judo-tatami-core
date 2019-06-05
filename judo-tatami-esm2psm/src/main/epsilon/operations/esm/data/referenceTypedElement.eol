@@ -6,14 +6,10 @@ operation ESM!OneWayEndpoint getEntityType() : ESM!EntityType {
 	return ESM!EntityType.all.selectOne(et | et.relations.includes(self));
 }
 
-operation ESM!TwoWayEndpoint getTransferRelation() : ESM!TransferRelation {
-	return ESM!TransferRelation.all.selectOne(tr | tr.referenceTypedElement = self);
+operation ESM!TwoWayEndpoint getTransferRelations() : Sequence {
+	return ESM!TransferRelation.all.select(tr | tr.referenceTypedElement = self);
 }
 
-operation ESM!OneWayEndpoint getTransferRelation() : ESM!TransferRelation {
-	return ESM!TransferRelation.all.selectOne(tr | tr.referenceTypedElement = self);
-}
-
-operation ESM!OneWayEndpoint getTransferObjectType() : ESM!TransferObjectType {
-	return ESM!TransferObjectType.all.selectOne(tot | (not tot.mixins.isEmpty()) and tot.mixins.first().relations.includes(self));
+operation ESM!OneWayEndpoint getTransferRelations() : Sequence {
+	return ESM!TransferRelation.all.select(tr | tr.referenceTypedElement = self);
 }

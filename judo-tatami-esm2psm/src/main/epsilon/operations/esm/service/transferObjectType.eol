@@ -39,6 +39,10 @@ operation ESM!TransferRelation newDumbTOR() : JUDOPSM!TransferObjectRelation {
 	dumbCardinality.upper = self.upper;
 	newTOR.cardinality = dumbCardinality;
 	
+	if(self.name = "shipper") {
+		log.debug("rel of " + self.name + ": " + self.referenceTypedElement);
+	}
+	
 	if ((self.referenceTypedElement.isTypeOf(ESM!OneWayEndpoint)) and (self.referenceTypedElement.containment)) {
 		//log.debug("newTOR doing Containment");
 		newTOR.binding = self.referenceTypedElement.equivalent("CreateContainment");
@@ -111,7 +115,6 @@ operation ESM!BoundOperation newDumbOper() : JUDOPSM!BoundOperation {
 	newOper.input = self.input.equivalent("CreateParameter");
 	newOper.stateful = true;
 	newOper.undefined = self.undefined;
-	log.debug("say something");
 	return newOper;
 }
 

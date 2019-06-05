@@ -32,21 +32,21 @@ rule CreateContainment
 	extends CreateReferenceTypedElement {
 	  guard: s.containment
 	  s.getEntityType().equivalent("CreateEntityType").relations.add(t);
-	  var transferRelation : ESM!TransferRelation = s.getTransferRelation();
-	  if(transferRelation.isDefined()) {
+	  var transferRelations : Sequence = s.getTransferRelations();
+	  for (transferRelation in transferRelations) {
 	  	transferRelation.equivalent("CreateTransferObjectRelation").binding = t;
 	  }
 	  log.debug("Created Containment: " + t.name);
 }
 
-rule CreateOneWayEndoint
+rule CreateOneWayEndpoint
 	transform s: ESM!OneWayEndpoint
 	to t: JUDOPSM!Endpoint
 	extends CreateReferenceTypedElement {
 	  guard: not s.containment
 	  s.getEntityType().equivalent("CreateEntityType").relations.add(t);
-	  var transferRelation : ESM!TransferRelation = s.getTransferRelation();
-	  if(transferRelation.isDefined()) {
+	  var transferRelations : Sequence = s.getTransferRelations();
+	  for (transferRelation in transferRelations) {
 	  	transferRelation.equivalent("CreateTransferObjectRelation").binding = t;
 	  }
 	  log.debug("Created Endpoint: " + t.name);
@@ -58,8 +58,8 @@ rule CreateTwoWayEndpoint
 	extends CreateReferenceTypedElement {
 	  t.partner = s.partner.equivalent("CreateEndpoint");
 	  s.getEntityType().equivalent("CreateEntityType").relations.add(t);
-	  var transferRelation : ESM!TransferRelation = s.getTransferRelation();
-	  if(transferRelation.isDefined()) {
+	  var transferRelations : Sequence = s.getTransferRelations();
+	  for (transferRelation in transferRelations) {
 	  	transferRelation.equivalent("CreateTransferObjectRelation").binding = t;
 	  }
 	  log.debug("Created Endpoint: " + t.name);

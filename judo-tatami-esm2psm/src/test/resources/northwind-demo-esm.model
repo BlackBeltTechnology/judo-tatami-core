@@ -177,40 +177,6 @@
       <terms xmi:id="_1cs3YB86EemH1tWVVVMmqg" exponent="-1" unit="_eD5KMB1TEemwg4NgOjaKeA"/>
     </elements>
   </elements>
-  <elements xsi:type="namespace:Package" xmi:id="_2QomgEA7Eem_LZQW6prRcw" name="types">
-    <elements xsi:type="type:StringType" xmi:id="_Nppx8IUcEeipmMyz9cMCRA" name="String" maxLength="255"/>
-    <elements xsi:type="type:NumericType" xmi:id="_SZ-GUIUcEeipmMyz9cMCRA" name="Long" scale="18"/>
-    <elements xsi:type="type:NumericType" xmi:id="_TXtg8IUcEeipmMyz9cMCRA" name="Integer" scale="9"/>
-    <elements xsi:type="type:NumericType" xmi:id="_VDVVQIUcEeipmMyz9cMCRA" name="Double" precision="4" scale="15"/>
-    <elements xsi:type="type:NumericType" xmi:id="_WX24MIUcEeipmMyz9cMCRA" name="Float" precision="4" scale="7"/>
-    <elements xsi:type="type:BooleanType" xmi:id="_Xos1AIUcEeipmMyz9cMCRA" name="Boolean"/>
-    <elements xsi:type="type:CustomType" xmi:id="_j-zrcINuEeiLE-B2bbL0fg" name="Binary"/>
-    <elements xsi:type="type:DateType" xmi:id="_YoqOYIN1EeiLE-B2bbL0fg" name="Date"/>
-    <elements xsi:type="type:TimestampType" xmi:id="_Z9J8IIN1EeiLE-B2bbL0fg" name="Timestamp"/>
-    <elements xsi:type="type:StringType" xmi:id="_Lw4a8IOGEeiLE-B2bbL0fg" name="Phone" maxLength="20"/>
-    <elements xsi:type="type:StringType" xmi:id="_tXQUoIOGEeiLE-B2bbL0fg" name="Text" maxLength="250"/>
-    <elements xsi:type="type:StringType" xmi:id="_A5EFMIN4EeiLE-B2bbL0fg" name="URL" maxLength="1024"/>
-    <elements xsi:type="type:EnumerationType" xmi:id="_G2wVsI57EeioH6CUzUrG0Q" name="Countries">
-      <members xmi:id="_HUnWYI57EeioH6CUzUrG0Q" name="HU"/>
-      <members xmi:id="_KfjBUI57EeioH6CUzUrG0Q" name="AT" ordinal="1"/>
-      <members xmi:id="_KyxfUI57EeioH6CUzUrG0Q" name="RO" ordinal="2"/>
-      <members xmi:id="_LEloEI57EeioH6CUzUrG0Q" name="SK" ordinal="3"/>
-    </elements>
-    <elements xsi:type="type:EnumerationType" xmi:id="_hJ-K0I57EeioH6CUzUrG0Q" name="Titles">
-      <members xmi:id="_iHpUAI57EeioH6CUzUrG0Q" name="MS"/>
-      <members xmi:id="_jKZxgI57EeioH6CUzUrG0Q" name="MRS" ordinal="1"/>
-      <members xmi:id="_j3WXEI57EeioH6CUzUrG0Q" name="MR" ordinal="2"/>
-      <members xmi:id="_kgvSUI57EeioH6CUzUrG0Q" name="DR" ordinal="3"/>
-    </elements>
-    <elements xsi:type="namespace:Package" xmi:id="_zeDeUB1WEemwg4NgOjaKeA" name="measured">
-      <elements xsi:type="measure:MeasuredType" xmi:id="_h2iYkB1XEemwg4NgOjaKeA" name="MassStoredInKilograms" precision="4" scale="15" storeUnit="_C8XYsB1SEemwg4NgOjaKeA"/>
-      <elements xsi:type="measure:MeasuredType" xmi:id="_PGtxgB1ZEemwg4NgOjaKeA" name="TimeStoredInSeconds" precision="4" scale="15" storeUnit="_SlUs8B2GEemwg4NgOjaKeA"/>
-      <elements xsi:type="measure:MeasuredType" xmi:id="_WrULYB1ZEemwg4NgOjaKeA" name="TimeStoredInMonths" scale="9" storeUnit="_yX3RgB2GEemwg4NgOjaKeA"/>
-      <elements xsi:type="measure:MeasuredType" xmi:id="_fdkrMB1ZEemwg4NgOjaKeA" name="AreaStoredInSquareMetre" precision="4" scale="15" storeUnit="_eD5KMB1TEemwg4NgOjaKeA"/>
-      <elements xsi:type="measure:MeasuredType" xmi:id="_DTYUEB1eEemwg4NgOjaKeA" name="VolumeStoredInLitre" precision="4" scale="15" storeUnit="_CYY3AB1UEemwg4NgOjaKeA"/>
-      <elements xsi:type="measure:MeasuredType" xmi:id="_bfc2gB1eEemwg4NgOjaKeA" name="VelocityStoredInKmPerHour" precision="4" scale="15" storeUnit="_zR6KoB1UEemwg4NgOjaKeA"/>
-    </elements>
-  </elements>
   <elements xsi:type="namespace:Package" xmi:id="_l025cNODEeim9MGHLpE1bQ" name="entities">
     <elements xsi:type="data:EntityType" xmi:id="_43ZPcINkEeiLE-B2bbL0fg" name="Category">
       <attributes xsi:type="data:Attribute" xmi:id="_v7k5EINmEeiLE-B2bbL0fg" name="categoryName" dataType="_Nppx8IUcEeipmMyz9cMCRA" required="true"/>
@@ -252,6 +218,25 @@
       </attributes>
       <relations xsi:type="data:OneWayEndpoint" xmi:id="_6QtRsLwNEeiOuYiCo6IbXQ" lower="1" name="product" target="_6XH80INkEeiLE-B2bbL0fg"/>
     </elements>
+    <elements xsi:type="facade:UnboundOperation" xmi:id="_PiK8VH4uEemIB_ws1wEjMw" name="getAllOrders">
+      <output xmi:id="_PiK8VX4uEemIB_ws1wEjMw" upper="-1" name="output" type="_PiK8gX4uEemIB_ws1wEjMw"/>
+    </elements>
+    <elements xsi:type="facade:UnboundOperation" xmi:id="_PiK8Vn4uEemIB_ws1wEjMw" name="insertOrder">
+      <output xmi:id="_PiK8V34uEemIB_ws1wEjMw" lower="1" name="output" type="_PiK8a34uEemIB_ws1wEjMw"/>
+      <input xmi:id="_PiK8WH4uEemIB_ws1wEjMw" lower="1" name="input" type="_PiK8a34uEemIB_ws1wEjMw"/>
+    </elements>
+    <elements xsi:type="facade:UnboundOperation" xmi:id="_PiK8YH4uEemIB_ws1wEjMw" name="insertShipper">
+      <output xmi:id="_PiK8YX4uEemIB_ws1wEjMw" lower="1" name="output" type="_PiK8f34uEemIB_ws1wEjMw"/>
+      <input xmi:id="_PiK8Yn4uEemIB_ws1wEjMw" lower="1" name="input" type="_PiK8f34uEemIB_ws1wEjMw"/>
+    </elements>
+    <elements xsi:type="facade:UnboundOperation" xmi:id="_PiK8Y34uEemIB_ws1wEjMw" name="insertCategory">
+      <output xmi:id="_PiK8ZH4uEemIB_ws1wEjMw" lower="1" name="output" type="_PiK8aX4uEemIB_ws1wEjMw"/>
+      <input xmi:id="_PiK8ZX4uEemIB_ws1wEjMw" lower="1" name="input" type="_PiK8aX4uEemIB_ws1wEjMw"/>
+    </elements>
+    <elements xsi:type="facade:UnboundOperation" xmi:id="_PiK8Zn4uEemIB_ws1wEjMw" name="insertProduct">
+      <output xmi:id="_PiK8Z34uEemIB_ws1wEjMw" lower="1" name="output" type="_PiK8WX4uEemIB_ws1wEjMw"/>
+      <input xmi:id="_PiK8aH4uEemIB_ws1wEjMw" lower="1" name="input" type="_PiK8WX4uEemIB_ws1wEjMw"/>
+    </elements>
     <elements xsi:type="data:EntityType" xmi:id="_PiK8d34uEemIB_ws1wEjMw" name="Shipper">
       <attributes xsi:type="data:Attribute" xmi:id="_PiK8eH4uEemIB_ws1wEjMw" name="companyName" dataType="_Nppx8IUcEeipmMyz9cMCRA" required="true"/>
     </elements>
@@ -272,16 +257,16 @@
       <attributes xmi:id="_PiK8c34uEemIB_ws1wEjMw" name="unitPrice" required="true" primitiveTypedElement="_bG7OUIN6EeiLE-B2bbL0fg" dataType="_VDVVQIUcEeipmMyz9cMCRA"/>
       <attributes xmi:id="_PiK8dH4uEemIB_ws1wEjMw" name="quantity" required="true" primitiveTypedElement="_d3obYIN6EeiLE-B2bbL0fg" dataType="_TXtg8IUcEeipmMyz9cMCRA"/>
       <attributes xmi:id="_PiK8dX4uEemIB_ws1wEjMw" name="discount" required="true" primitiveTypedElement="_jIROkIN6EeiLE-B2bbL0fg" dataType="_VDVVQIUcEeipmMyz9cMCRA"/>
-      <attributes xmi:id="_PiK8dn4uEemIB_ws1wEjMw" name="productName" required="true" primitiveTypedElement="_mr-oACVvEemLpvUY7MQgng" dataType="_Nppx8IUcEeipmMyz9cMCRA"/>
     </elements>
     <elements xsi:type="facade:TransferObjectType" xmi:id="_PiK8f34uEemIB_ws1wEjMw" name="ShipperInfo" entityType="_PiK8d34uEemIB_ws1wEjMw">
       <attributes xmi:id="_PiK8gH4uEemIB_ws1wEjMw" name="companyName" required="true" primitiveTypedElement="_PiK8eH4uEemIB_ws1wEjMw" dataType="_Nppx8IUcEeipmMyz9cMCRA"/>
     </elements>
     <elements xsi:type="facade:TransferObjectType" xmi:id="_PiK8gX4uEemIB_ws1wEjMw" name="OrderInfoQuery" entityType="_-H4RoINkEeiLE-B2bbL0fg" mixins="_PiK8a34uEemIB_ws1wEjMw">
-      <relations xmi:id="_PiK8gn4uEemIB_ws1wEjMw" name="items" upper="-1" target="_PiK8g34uEemIB_ws1wEjMw" embedded="true"/>
+      <relations xmi:id="_PiK8gn4uEemIB_ws1wEjMw" name="items" upper="-1" referenceTypedElement="_2CC44LwNEeiOuYiCo6IbXQ" target="_PiK8g34uEemIB_ws1wEjMw" embedded="true"/>
     </elements>
     <elements xsi:type="facade:TransferObjectType" xmi:id="_PiK8g34uEemIB_ws1wEjMw" name="OrdermItemQuery" entityType="__XzocINkEeiLE-B2bbL0fg" mixins="_PiK8cX4uEemIB_ws1wEjMw">
-      <relations xmi:id="_PiK8hH4uEemIB_ws1wEjMw" name="product" lower="1" target="_PiK8WX4uEemIB_ws1wEjMw" embedded="true"/>
+      <relations xmi:id="_PiK8hH4uEemIB_ws1wEjMw" name="product" lower="1" referenceTypedElement="_6QtRsLwNEeiOuYiCo6IbXQ" target="_PiK8WX4uEemIB_ws1wEjMw" embedded="true"/>
+      <attributes xmi:id="_PiK8dn4uEemIB_ws1wEjMw" name="productName" required="true" primitiveTypedElement="_mr-oACVvEemLpvUY7MQgng" dataType="_Nppx8IUcEeipmMyz9cMCRA"/>
     </elements>
     <elements xsi:type="facade:TransferObjectType" xmi:id="_PiK8WX4uEemIB_ws1wEjMw" name="ProductInfo" entityType="_6XH80INkEeiLE-B2bbL0fg">
       <relations xmi:id="_PiK8Wn4uEemIB_ws1wEjMw" name="category" lower="1" referenceTypedElement="_CkXK8LwDEeiOuYiCo6IbXQ" target="_PiK8aX4uEemIB_ws1wEjMw"/>
@@ -291,25 +276,6 @@
       <attributes xmi:id="_PiK8Xn4uEemIB_ws1wEjMw" name="discounted" primitiveTypedElement="_tYB9QINxEeiLE-B2bbL0fg" dataType="_Xos1AIUcEeipmMyz9cMCRA"/>
       <attributes xmi:id="_PiK8X34uEemIB_ws1wEjMw" name="weight" primitiveTypedElement="_cEwUYB5NEemwg4NgOjaKeA" dataType="_h2iYkB1XEemwg4NgOjaKeA"/>
     </elements>
-    <elements xsi:type="facade:UnboundOperation" xmi:id="_PiK8VH4uEemIB_ws1wEjMw" name="getAllOrders">
-      <output xmi:id="_PiK8VX4uEemIB_ws1wEjMw" upper="-1" name="output" type="_PiK8gX4uEemIB_ws1wEjMw"/>
-    </elements>
-    <elements xsi:type="facade:UnboundOperation" xmi:id="_PiK8Vn4uEemIB_ws1wEjMw" name="insertOrder">
-      <output xmi:id="_PiK8V34uEemIB_ws1wEjMw" lower="1" name="output" type="_PiK8a34uEemIB_ws1wEjMw"/>
-      <input xmi:id="_PiK8WH4uEemIB_ws1wEjMw" lower="1" name="input" type="_PiK8a34uEemIB_ws1wEjMw"/>
-    </elements>
-    <elements xsi:type="facade:UnboundOperation" xmi:id="_PiK8YH4uEemIB_ws1wEjMw" name="insertShipper">
-      <output xmi:id="_PiK8YX4uEemIB_ws1wEjMw" lower="1" name="output" type="_PiK8f34uEemIB_ws1wEjMw"/>
-      <input xmi:id="_PiK8Yn4uEemIB_ws1wEjMw" lower="1" name="input" type="_PiK8f34uEemIB_ws1wEjMw"/>
-    </elements>
-    <elements xsi:type="facade:UnboundOperation" xmi:id="_PiK8Y34uEemIB_ws1wEjMw" name="insertCategory">
-      <output xmi:id="_PiK8ZH4uEemIB_ws1wEjMw" lower="1" name="output" type="_PiK8aX4uEemIB_ws1wEjMw"/>
-      <input xmi:id="_PiK8ZX4uEemIB_ws1wEjMw" lower="1" name="input" type="_PiK8aX4uEemIB_ws1wEjMw"/>
-    </elements>
-    <elements xsi:type="facade:UnboundOperation" xmi:id="_PiK8Zn4uEemIB_ws1wEjMw" name="insertProduct">
-      <output xmi:id="_PiK8Z34uEemIB_ws1wEjMw" lower="1" name="output" type="_PiK8WX4uEemIB_ws1wEjMw"/>
-      <input xmi:id="_PiK8aH4uEemIB_ws1wEjMw" lower="1" name="input" type="_PiK8WX4uEemIB_ws1wEjMw"/>
-    </elements>
   </elements>
   <elements xsi:type="accesspoint:AccessPoint" xmi:id="_PiK8eX4uEemIB_ws1wEjMw" name="internalAP">
     <exposedServices xmi:id="_PiK8en4uEemIB_ws1wEjMw" operation="_PiK8VH4uEemIB_ws1wEjMw"/>
@@ -317,5 +283,39 @@
     <exposedServices xmi:id="_PiK8fH4uEemIB_ws1wEjMw" operation="_PiK8YH4uEemIB_ws1wEjMw"/>
     <exposedServices xmi:id="_PiK8fX4uEemIB_ws1wEjMw" operation="_PiK8Y34uEemIB_ws1wEjMw"/>
     <exposedServices xmi:id="_PiK8fn4uEemIB_ws1wEjMw" operation="_PiK8Zn4uEemIB_ws1wEjMw"/>
+  </elements>
+  <elements xsi:type="namespace:Package" xmi:id="_2QomgEA7Eem_LZQW6prRcw" name="types">
+    <elements xsi:type="type:StringType" xmi:id="_Nppx8IUcEeipmMyz9cMCRA" name="String" maxLength="255"/>
+    <elements xsi:type="type:NumericType" xmi:id="_SZ-GUIUcEeipmMyz9cMCRA" name="Long" scale="18"/>
+    <elements xsi:type="type:NumericType" xmi:id="_TXtg8IUcEeipmMyz9cMCRA" name="Integer" scale="9"/>
+    <elements xsi:type="type:NumericType" xmi:id="_VDVVQIUcEeipmMyz9cMCRA" name="Double" precision="4" scale="15"/>
+    <elements xsi:type="type:NumericType" xmi:id="_WX24MIUcEeipmMyz9cMCRA" name="Float" precision="4" scale="7"/>
+    <elements xsi:type="type:BooleanType" xmi:id="_Xos1AIUcEeipmMyz9cMCRA" name="Boolean"/>
+    <elements xsi:type="type:CustomType" xmi:id="_j-zrcINuEeiLE-B2bbL0fg" name="Binary"/>
+    <elements xsi:type="type:DateType" xmi:id="_YoqOYIN1EeiLE-B2bbL0fg" name="Date"/>
+    <elements xsi:type="type:TimestampType" xmi:id="_Z9J8IIN1EeiLE-B2bbL0fg" name="Timestamp"/>
+    <elements xsi:type="type:StringType" xmi:id="_Lw4a8IOGEeiLE-B2bbL0fg" name="Phone" maxLength="20"/>
+    <elements xsi:type="type:StringType" xmi:id="_tXQUoIOGEeiLE-B2bbL0fg" name="Text" maxLength="250"/>
+    <elements xsi:type="type:StringType" xmi:id="_A5EFMIN4EeiLE-B2bbL0fg" name="URL" maxLength="1024"/>
+    <elements xsi:type="type:EnumerationType" xmi:id="_G2wVsI57EeioH6CUzUrG0Q" name="Countries">
+      <members xmi:id="_HUnWYI57EeioH6CUzUrG0Q" name="HU"/>
+      <members xmi:id="_KfjBUI57EeioH6CUzUrG0Q" name="AT" ordinal="1"/>
+      <members xmi:id="_KyxfUI57EeioH6CUzUrG0Q" name="RO" ordinal="2"/>
+      <members xmi:id="_LEloEI57EeioH6CUzUrG0Q" name="SK" ordinal="3"/>
+    </elements>
+    <elements xsi:type="type:EnumerationType" xmi:id="_hJ-K0I57EeioH6CUzUrG0Q" name="Titles">
+      <members xmi:id="_iHpUAI57EeioH6CUzUrG0Q" name="MS"/>
+      <members xmi:id="_jKZxgI57EeioH6CUzUrG0Q" name="MRS" ordinal="1"/>
+      <members xmi:id="_j3WXEI57EeioH6CUzUrG0Q" name="MR" ordinal="2"/>
+      <members xmi:id="_kgvSUI57EeioH6CUzUrG0Q" name="DR" ordinal="3"/>
+    </elements>
+    <elements xsi:type="namespace:Package" xmi:id="_zeDeUB1WEemwg4NgOjaKeA" name="measured">
+      <elements xsi:type="measure:MeasuredType" xmi:id="_h2iYkB1XEemwg4NgOjaKeA" name="MassStoredInKilograms" precision="4" scale="15" storeUnit="_C8XYsB1SEemwg4NgOjaKeA"/>
+      <elements xsi:type="measure:MeasuredType" xmi:id="_PGtxgB1ZEemwg4NgOjaKeA" name="TimeStoredInSeconds" precision="4" scale="15" storeUnit="_SlUs8B2GEemwg4NgOjaKeA"/>
+      <elements xsi:type="measure:MeasuredType" xmi:id="_WrULYB1ZEemwg4NgOjaKeA" name="TimeStoredInMonths" scale="9" storeUnit="_yX3RgB2GEemwg4NgOjaKeA"/>
+      <elements xsi:type="measure:MeasuredType" xmi:id="_fdkrMB1ZEemwg4NgOjaKeA" name="AreaStoredInSquareMetre" precision="4" scale="15" storeUnit="_eD5KMB1TEemwg4NgOjaKeA"/>
+      <elements xsi:type="measure:MeasuredType" xmi:id="_DTYUEB1eEemwg4NgOjaKeA" name="VolumeStoredInLitre" precision="4" scale="15" storeUnit="_CYY3AB1UEemwg4NgOjaKeA"/>
+      <elements xsi:type="measure:MeasuredType" xmi:id="_bfc2gB1eEemwg4NgOjaKeA" name="VelocityStoredInKmPerHour" precision="4" scale="15" storeUnit="_zR6KoB1UEemwg4NgOjaKeA"/>
+    </elements>
   </elements>
 </namespace:Model>

@@ -27,6 +27,18 @@ rule CreateTransferObjectType
 	to t: JUDOPSM!TransferObjectType 
 	extends CreateNamespaceElement {
 	  t.representation = s.representation.equivalent("CreateTransferAttribute");
+	  if ((not s.mixins.isEmpty()) ) {
+	  	var parents : OrderedSet = s.resolveMixins(s);
+	  	log.debug("parents of " + s.name + ": " + parents);
+	  	for (parent in parents) {
+	  		t.relations.addAll(parent.getEquivalentRelations(s));
+	  		t.attributes.addAll(parent.getEquivalentAttributes(s));
+	  		if(s.isMapped()) {
+	  			t.operations.addAll(parent.getEquivalentOperations(s));
+	  		}
+	  		
+	  	}
+	  }
 }
 
 //[MixinStuff]
@@ -35,15 +47,6 @@ rule CreateUnmappedTransferObjectType
 	to t: JUDOPSM!UnmappedTransferObjectType
 	extends CreateTransferObjectType {
 	  guard: not s.isMapped()
-	  //[MixinStuff]
-	  if ((not s.mixins.isEmpty())) {
-	  	var parents : OrderedSet = s.resolveMixins(s);
-	  	log.debug("parents of " + s.name + ": " + parents);
-	  	for (parent in parents) {
-	  		t.relations.addAll(parent.getEquivalentRelations(s));
-	  		t.attributes.addAll(parent.getEquivalentAttributes(s));
-	  	}
-	  }
 	  log.debug("Created UnmappedTransferObjectType.");
 }
 
@@ -54,16 +57,6 @@ rule CreateMappedTransferObjectType
 	  guard: s.isMapped()
 	  t.entityReferencePresence = JUDOPSM!EntityReferenceType#OPTIONAL; //TODO: [postponed]: fix entityReferencePresence //= s.entityReferencePresence.getPSMEquivalent();
 	  t.entityType = s.entityType.equivalent("CreateEntityType");
-	  //[MixinStuff]	  
-	  if ((not s.mixins.isEmpty()) ) {
-	  	var parents : OrderedSet = s.resolveMixins(s);
-	  	log.debug("parents of " + s.name + ": " + parents);
-	  	for (parent in parents) {
-	  		t.relations.addAll(parent.getEquivalentRelations(s));
-	  		t.attributes.addAll(parent.getEquivalentAttributes(s));
-	  		t.operations.addAll(parent.getEquivalentOperations(s));
-	  	}
-	  }
 	  log.debug("Created MappedTransferObjectType.");
 }
 
@@ -73,12 +66,12 @@ rule CreateTransferAttribute
 	extends CreateNamedElement {
 	  t.required = s.required;
 	  t.dataType = s.dataType.getPSMEquivalent();
-	  /* TODO: TransferAttribute... option_a */
+	  /* TODO: @endcheck: remove
 	  if ( s.primitiveTypedElement.isTypeOf(ESM!DataProperty) ) {
 	  	t.binding = s.primitiveTypedElement.equivalent("CreateDataProperty");
 	  }	else {
 	  	t.binding = s.primitiveTypedElement.equivalent("CreateAttribute");
-	  }
+	  }*/
 	  var esmTOT : ESM!TransferObjectType = ESM!TransferObjectType.all.selectOne(tot | tot.attributes.includes(s));	  
 	  esmTOT.getPSMEquivalent().attributes.add(t);
 	  
@@ -88,8 +81,7 @@ rule CreateTransferAttribute
 rule CreateTransferObjectRelation
 	transform s: ESM!TransferRelation
 	to t: JUDOPSM!TransferObjectRelation
-	extends CreateNamedElement {
-
+	extends CreateNamedElement {	  
 	  t.cardinality = s.equivalent("CreateCardinalityOfTransferObjectRelation");
 	  t.embedded = s.embedded;
 	  
