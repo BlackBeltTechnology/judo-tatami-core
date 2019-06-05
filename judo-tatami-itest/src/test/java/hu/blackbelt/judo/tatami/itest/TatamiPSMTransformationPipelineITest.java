@@ -2,11 +2,13 @@ package hu.blackbelt.judo.tatami.itest;
 
 import com.fasterxml.jackson.jaxrs.json.JacksonJaxbJsonProvider;
 import com.google.common.collect.ImmutableMap;
+import edu.uoc.som.openapi.API;
 import hu.blackbelt.judo.meta.asm.runtime.AsmModel;
 import hu.blackbelt.judo.meta.asm.runtime.AsmUtils;
 import hu.blackbelt.judo.meta.liquibase.runtime.LiquibaseModel;
 import hu.blackbelt.judo.meta.measure.runtime.MeasureModel;
 import hu.blackbelt.judo.meta.openapi.runtime.OpenAPIModel;
+import hu.blackbelt.judo.meta.openapi.runtime.exporter.OpenAPIExporter;
 import hu.blackbelt.judo.meta.psm.runtime.PsmModel;
 import hu.blackbelt.judo.meta.rdbms.RdbmsIdentifierField;
 import hu.blackbelt.judo.meta.rdbms.RdbmsTable;
@@ -15,6 +17,9 @@ import hu.blackbelt.judo.tatami.core.Dispatcher;
 import hu.blackbelt.judo.tatami.core.TransformationTrace;
 import hu.blackbelt.judo.tatami.core.TransformationTraceService;
 import hu.blackbelt.osgi.utils.osgi.api.BundleTrackerManager;
+import io.swagger.models.Swagger;
+import io.swagger.util.Json;
+import io.swagger.util.Yaml;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.junit.Test;
@@ -242,6 +247,19 @@ public class TatamiPSMTransformationPipelineITest {
         openAPIModel.getResourceSet().getResource(openAPIModel.getUri(), false)
                 .save(new FileOutputStream(new File("itest-" + DEMO + "-openapi.model")), getOpenAPIModelDefaultSaveOptions());
 
+        final Swagger swagger = OpenAPIExporter.convertModelToOpenAPI((API) openAPIModel.getResourceSet().getResource(openAPIModel.getUri(), false).getContents().get(0));
+        try (final Writer targetFileWriter = new FileWriter(new File("itest-" + DEMO + "-openapi.json"))) {
+            final String json = Json.pretty().writeValueAsString(swagger);
+            targetFileWriter.append(json);
+        } catch (IOException ex) {
+            log.log(LOG_ERROR, "Unable to create JSON output", ex);
+        }
+        try (final Writer targetFileWriter = new FileWriter(new File("itest-" + DEMO + "-openapi.yaml"))) {
+            final String yaml = Yaml.pretty().writeValueAsString(swagger);
+            targetFileWriter.append(yaml);
+        } catch (IOException ex) {
+            log.log(LOG_ERROR, "Unable to create YAML output", ex);
+        }
     }
 
 
