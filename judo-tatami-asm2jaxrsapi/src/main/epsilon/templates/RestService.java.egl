@@ -8,6 +8,9 @@ package [%= packagePath %];
 import java.util.Optional;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Collection;
+import java.util.Map;
+import java.util.stream.Collectors;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -51,9 +54,17 @@ public class [%= className %] {
         [% if (op.eType.isUndefined()) {%]
         __dispatcher.get().callOperation("simple", "[%= op.getFQName() %]", parameters);
         return Response.status(Response.Status.OK).build();
+        [% } else if (op.upperBound == -1) { %]
+        Object output = __dispatcher.get().callOperation("simple", "[%= op.getFQName() %]", parameters).get("output");
+    	return output == null ? Response.ok().build() : Response.ok(
+    			((Collection<Map<String, Object>>) output).stream()
+    			.map(p -> [%= op.eType.getDtoTypeName() %].fromMap(p))
+    			.collect(Collectors.toList()))
+    			.build();
         [% } else { %]
-        return Response.ok([%= op.eType.getDtoTypeName() %].fromMap(__dispatcher.get().callOperation("simple", "[%= op.getFQName() %]", parameters))).build();
+        return Response.ok([%= op.eType.getDtoTypeName() %].fromMap((Map<String, Object>) ((Map<String, Object>) __dispatcher.get().callOperation("simple", "[%= op.getFQName() %]", parameters)).get("output"))).build();
         [% } %]
+
     }  	
 [% } %] 
 }
