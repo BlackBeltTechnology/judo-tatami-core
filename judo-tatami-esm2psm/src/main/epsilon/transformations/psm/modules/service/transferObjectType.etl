@@ -27,7 +27,7 @@ rule CreateTransferObjectType
 	to t: JUDOPSM!TransferObjectType 
 	extends CreateNamespaceElement {
 	  t.representation = s.representation.equivalent("CreateTransferAttribute");
-	  if ((not s.mixins.isEmpty()) ) {
+	  /*if ((not s.mixins.isEmpty()) ) {
 	  	var parents : OrderedSet = s.resolveMixins(s);
 	  	log.debug("parents of " + s.name + ": " + parents);
 	  	for (parent in parents) {
@@ -35,10 +35,24 @@ rule CreateTransferObjectType
 	  		t.attributes.addAll(parent.getEquivalentAttributes(s));
 	  		if(s.isMapped()) {
 	  			t.operations.addAll(parent.getEquivalentOperations(s));
-	  		}
-	  		
+	  		}	  		
 	  	}
-	  }
+	  }*/
+	if( (s.mixins.isEmpty()) and (ESM!TransferObjectType.all.exists(tot | tot.mixins.includes(s)))) { 
+		s.reverse_resolveMixins(s);
+		/*var children : OrderedSet = 
+		log.debug("finall children: " + children);
+		for (child in children) {
+	  		child.equivalent("CreateTransferObjectType").relations.addAll(s.getEqRels());
+	  		/*t.attributes.addAll(child.getEquivalentAttributes(s));
+	  		if(s.isMapped()) {
+	  			t.operations.addAll(child.getEquivalentOperations(s));
+	  		}
+				  		
+			
+	  	}*/
+	}  
+	
 }
 
 //[MixinStuff]

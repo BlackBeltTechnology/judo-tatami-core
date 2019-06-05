@@ -1,3 +1,69 @@
+operation ESM!TransferObjectType reverse_resolveMixins(target : ESM!TransferObjectType) : null {
+	/*var allChildren : OrderedSet;
+	if (not (self == target)) {
+		allChildren.add(self);
+	}*/
+	var inheritable_relations : Sequence;
+	
+	
+	log.debug("finding directChildren of " + self.name + "...");
+	for ( directChild in ESM!TransferObjectType.all.select(tot | tot.mixins.includes(self)) ) {
+		log.debug("...found directChild:  " + directChild.name);
+		log.debug("adding " + self.name + "'s relations to " + directChild.name);
+		directChild.getPSMEquivalent().relations.addAll(self.getEqRels(directChild));
+		directChild.getPSMEquivalent().attributes.addAll(self.getEqAttrs(directChild));
+		if(directChild.isMapped()) {
+			directChild.getPSMEquivalent().operations.addAll(self.getEqOpers(directChild));
+		}
+		
+		
+		//allChildren.addAll(directChild.reverse_resolveMixins(target));
+	}
+	
+	//log.debug("reverse_resolveMixins() returning with: " + allChildren);
+	//return allChildren;	
+}
+
+operation ESM!TransferObjectType getEqRels(directChild : ESM!TransferObjectType) : Sequence {
+	var psmRelations : Sequence;
+	for( relation in self.relations) {
+		if(directChild.relations.exists(rel | rel.name = relation.name)) {
+			log.debug("utkozes van fonok! (" + relation.name + ")");
+			directChild.relations.remove(directChild.relations.selectOne(rel | rel.name = relation.name));
+		}
+		psmRelations.add(relation.newDumbTOR());
+		
+	}
+	
+	return psmRelations;
+}
+operation ESM!TransferObjectType getEqAttrs(directChild : ESM!TransferObjectType) : Sequence {
+	var psmAttributes : Sequence;
+	for( attribute in self.attributes) {
+		if(directChild.attributes.exists(attr | attr.name = attribute.name)) {
+			log.debug("utkozes van fonok! (" + attribute.name + ")");
+			directChild.attributes.remove(directChild.attributes.selectOne(attr | attr.name = attribute.name));
+		}
+		psmAttributes.add(attribute.newDumbTA());
+		
+	}
+	
+	return psmAttributes;
+}
+operation ESM!TransferObjectType getEqOpers(directChild : ESM!TransferObjectType) : Sequence {
+	var psmOperations : Sequence;
+	for( `operation` in self.operations) {
+		if(directChild.operations.exists(oper | oper.name = `operation`.name)) {
+			log.debug("utkozes van fonok! (" + `operation`.name + ")");
+			directChild.operations.remove(directChild.operations.selectOne(oper | oper.name = `operation`.name));
+		}
+		psmOperations.add(relation.newDumbOper());
+		
+	}
+	
+	return psmOperations;
+}
+
 /* POORMAN'S MIXIN RESOLVE */
 operation ESM!TransferObjectType resolveMixins(target : ESM!TransferObjectType) : OrderedSet {
 	//log.debug("[resolving]: " + self.name + " (from " + target.name + ")" );
@@ -22,6 +88,7 @@ operation ESM!TransferObjectType getEquivalentRelations(target : ESM!TransferObj
 			psmRelations.add(relation.newDumbTOR());
 		} else {
 			log.warn("Relation already present with the same name: [" + relation.name + "@" + self.name + "]->[" + relation.name + "@" + target.name + "]");
+			psmRelations.add(relation.newDumbTOR());
 		}
 	}
 	//log.debug("[getEqRels] returning with: " + psmRelations);
