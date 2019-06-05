@@ -35,6 +35,7 @@ import sdk.demo.service.OrderInfo;
 import javax.inject.Inject;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.Response;
 import java.io.*;
 import java.util.Collection;
 import java.util.List;
@@ -296,16 +297,16 @@ public class TatamiPSMTransformationPipelineITest {
 
         assertBundleStarted(bundleContext,  DEMO + "-asm2jaxrsapi");
 
-        OrderInfo orderInfo = null;
+        Response response = null;
         try {
-            orderInfo = wt.path(DEMO_SERVICE_GET_ALL_ORDERS)
+            response = wt.path(DEMO_SERVICE_GET_ALL_ORDERS)
                     .request("application/json")
-                    .get(OrderInfo.class);
+                    .get();
                     //.post(null, OrderInfo.class);
         } catch (Exception e) {
             log.log(LOG_ERROR, "EXCEPTION: ", e);
         }
-        assertNotNull(orderInfo);
+        assertNotNull(response);
 
         log.log(LOG_INFO, "==============================================");
         log.log(LOG_INFO, "== STOPPING TEST REST METHOD");
