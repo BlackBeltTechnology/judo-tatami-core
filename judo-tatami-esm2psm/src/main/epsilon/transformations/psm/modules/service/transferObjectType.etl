@@ -38,20 +38,9 @@ rule CreateTransferObjectType
 	  		}	  		
 	  	}
 	  }*/
-	if( (s.mixins.isEmpty()) and (ESM!TransferObjectType.all.exists(tot | tot.mixins.includes(s)))) { 
-		s.reverse_resolveMixins(s);
-		/*var children : OrderedSet = 
-		log.debug("finall children: " + children);
-		for (child in children) {
-	  		child.equivalent("CreateTransferObjectType").relations.addAll(s.getEqRels());
-	  		/*t.attributes.addAll(child.getEquivalentAttributes(s));
-	  		if(s.isMapped()) {
-	  			t.operations.addAll(child.getEquivalentOperations(s));
-	  		}
-				  		
-			
-	  	}*/
-	}  
+	/*if( (s.mixins.isEmpty()) and (ESM!TransferObjectType.all.exists(tot | tot.mixins.includes(s)))) { 
+		s.reverse_resolveMixins();
+	}*/
 	
 }
 
@@ -89,6 +78,30 @@ rule CreateTransferAttribute
 	  var esmTOT : ESM!TransferObjectType = ESM!TransferObjectType.all.selectOne(tot | tot.attributes.includes(s));	  
 	  esmTOT.getPSMEquivalent().attributes.add(t);
 	  
+	  //MIXIN...
+	  for (dependency in esmUtils.getMixin(s.eContainer).dependencies) {
+	      log.debug("[TA] Processing mixin dependency" + dependency);
+	      
+	      if (dependency.attributes.forAll(a | a.name <> s.name)) {
+	          log.debug("  - create attribute that is not defined in transfer object type");
+	          var depAttribute = new JUDOPSM!TransferAttribute;
+	          depAttribute.name = s.name;
+	          depAttribute.required = s.required;
+	          depAttribute.dataType = s.dataType.getPSMEquivalent();
+	          if ( s.primitiveTypedElement.isTypeOf(ESM!DataProperty) ) {
+				depAttribute.binding = s.primitiveTypedElement.equivalent("CreateDataProperty");
+			  } else {
+				depAttribute.binding = s.primitiveTypedElement.equivalent("CreateAttribute");
+			  }
+	          
+	          if (dependency.isMapped()) {
+	              dependency.equivalent("CreateMappedTransferObjectType").attributes.add(depAttribute);
+	          } else {
+	              dependency.equivalent("CreateUnmappedTransferObjectType").attributes.add(depAttribute);
+	          }
+	      }
+	  }
+	  
 	  log.debug("Created TransferAttribute: " + t.name);
 }
 
@@ -103,6 +116,43 @@ rule CreateTransferObjectRelation
 	  esmTOT.getPSMEquivalent().relations.add(t);
 	  
 	  t.target = s.target.getPSMEquivalent();
+	  //MIXIN...
+	  for (dependency in esmUtils.getMixin(s.eContainer).dependencies) {
+	  	log.debug("[TOR] Processing mixin dependency" + dependency);
+	  
+	  	if (dependency.relations.forAll(a | a.name <> s.name)) {
+	  		var depRelation = new JUDOPSM!TransferObjectRelation;
+			depRelation.name = s.name;
+			depRelation.target = s.target.getPSMEquivalent();
+			depRelation.embedded = s.embedded;
+			
+			var dumbCardinality : JUDOPSM!Cardinality = new JUDOPSM!Cardinality;
+			dumbCardinality.lower = s.lower;
+			dumbCardinality.upper = s.upper;
+			depRelation.cardinality = dumbCardinality;
+			if ((s.referenceTypedElement.isTypeOf(ESM!OneWayEndpoint)) and (s.referenceTypedElement.containment)) {
+				depRelation.binding = s.referenceTypedElement.equivalent("CreateContainment");
+			} else if (s.referenceTypedElement.isTypeOf(ESM!OneWayEndpoint))  {
+				depRelation.binding = s.referenceTypedElement.equivalent("CreateOneWayEndpoint");
+			} else if (s.referenceTypedElement.isTypeOf(ESM!TwoWayEndpoint)) {
+				depRelation.binding = s.referenceTypedElement.equivalent("CreateTwoWayEndpoint");
+			} else if (s.referenceTypedElement.isTypeOf(ESM!StaticNavigation)) {
+				depRelation.binding = s.referenceTypedElement.equivalent("CreateStaticNavigation");
+			} else if (s.referenceTypedElement.isTypeOf(ESM!NavigationProperty)) {
+				depRelation.binding = s.referenceTypedElement.equivalent("CreateNavigationProperty");
+			} else {
+				log.warn("[newDumbTOR()] Unrecognized referenceTypedElement: " + s.referenceTypedElement);
+			}	  		
+	  		
+	  		if (dependency.isMapped()) {
+              dependency.equivalent("CreateMappedTransferObjectType").relations.add(depRelation);
+            } else {
+              dependency.equivalent("CreateUnmappedTransferObjectType").relations.add(depRelation);
+            }
+	  		
+	    }
+	  }
+	  
 	  
 	  log.debug("Created TransferObjectRelation: " + t.name);
 }
@@ -139,7 +189,6 @@ rule CreateParameter
 	transform s : ESM!Parameter
 	to t : JUDOPSM!Parameter
 	extends CreateNamedElement {
-	  	//TODO: dont even get yourself started
 		var esmOP : ESM!Operation;
 		if(s.isInput()) {
 			//log.debug("isInput");

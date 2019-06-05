@@ -1,12 +1,14 @@
 package hu.blackbelt.judo.tatami.esm2psm;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
 import hu.blackbelt.epsilon.runtime.execution.ExecutionContext;
 import hu.blackbelt.epsilon.runtime.execution.api.Log;
 import hu.blackbelt.epsilon.runtime.execution.contexts.EtlExecutionContext;
 import hu.blackbelt.epsilon.runtime.execution.exceptions.ScriptExecutionException;
-import hu.blackbelt.judo.meta.psm.runtime.PsmModel;
 import hu.blackbelt.judo.meta.esm.runtime.EsmModel;
+import hu.blackbelt.judo.meta.esm.runtime.EsmUtils;
+import hu.blackbelt.judo.meta.psm.runtime.PsmModel;
 import hu.blackbelt.judo.tatami.core.TransformationTraceUtil;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
@@ -44,6 +46,10 @@ public class Esm2Psm {
             psmResource = resourceSet.createResource(psmModel.getUri());
         }
 
+        EsmUtils esmUtils = new EsmUtils(esmModel.getResourceSet(), false);
+        esmUtils.processAllEntities();
+        esmUtils.processAllMixins();
+
         // Execution context
         ExecutionContext executionContext = executionContextBuilder()
                 .log(log)
@@ -59,6 +65,7 @@ public class Esm2Psm {
                                 .name("JUDOPSM")
                                 .resource(psmResource)
                                 .build()))
+                .injectContexts(ImmutableMap.of("esmUtils", esmUtils))
                 .sourceDirectory(scriptDir)
                 .build();
 
