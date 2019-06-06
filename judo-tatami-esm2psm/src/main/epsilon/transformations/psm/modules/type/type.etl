@@ -74,8 +74,7 @@ rule CreateEnumerationMember
 	transform s: ESM!EnumerationMember
 	to t: JUDOPSM!EnumerationMember
 	extends CreateNamedElement {
-	  var enumType : ESM!EnumerationType = s.getEnumerationType();
-	  enumType.equivalent("CreateEnumerationType").members.add(t);
+	  s.getEnumerationType().equivalent("CreateEnumerationType").members.add(t);
 	  t.ordinal = s.ordinal;
 	  log.debug("Created EnumerationMember: " + t.name);
 }

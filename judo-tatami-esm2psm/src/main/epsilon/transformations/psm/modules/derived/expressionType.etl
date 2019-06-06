@@ -3,7 +3,7 @@ rule CreateExpressionType
 	transform s : ESM!ExpressionType
 	to t : JUDOPSM!ExpressionType {
 	  t.expression = s.expression;
-	  t.dialect = JUDOPSM!ExpressionDialect#JQL; //s.dialect.getPSMEquivalent();
+	  t.dialect = JUDOPSM!ExpressionDialect#JQL; //[postponed] //s.dialect.getPSMEquivalent();
 }
 
 @lazy

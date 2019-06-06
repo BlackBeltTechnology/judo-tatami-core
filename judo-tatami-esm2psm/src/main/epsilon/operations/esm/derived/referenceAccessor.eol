@@ -13,19 +13,17 @@ operation ESM!StaticNavigation getTransferRelation(): ESM!TransferRelation {
 operation ESM!NavigationProperty getTransferRelation(): ESM!TransferRelation {
 	return ESM!TransferRelation.all.selectOne(tr | tr.referenceTypedElement = self);
 }
-/*
+
 operation ESM!NavigationProperty setTransferRelationBinding(t : JUDOPSM!NavigationProperty) : null {
 	var transferRelation : ESM!TransferRelation = self.getTransferRelation();
 	if (transferRelation.isDefined()) {
 		transferRelation.equivalent("CreateTransferObjectRelation").binding = t;
 	}
 }
-*/
-/*
+
 operation ESM!StaticNavigation setTransferRelationBinding(t : JUDOPSM!StaticNavigation) : null {
 	var transferRelation : ESM!TransferRelation = self.getTransferRelation();
 	if (transferRelation.isDefined()) {
 		transferRelation.equivalent("CreateTransferObjectRelation").binding = t;
 	}
 }
-*/

@@ -19,8 +19,7 @@ rule CreateDataProperty
 	extends CreatePrimitiveAccessor {
 	  var entity : ESM!EntityType = s.getEntityType();
 	  entity.equivalent("CreateEntityType").dataProperties.add(t);
-	  var transferAttributes : Sequence = ESM!TransferAttribute.all.select(ta | ta.primitiveTypedElement = s);
-	  for(transferAttribute in transferAttributes) {
+	  for(transferAttribute in ESM!TransferAttribute.all.select(ta | ta.primitiveTypedElement = s)) {
 	  	transferAttribute.equivalent("CreateTransferAttribute").binding = t;
 	  }
 	  log.debug("Created DataProperty: " + t.name);

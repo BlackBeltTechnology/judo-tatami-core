@@ -7,9 +7,7 @@ rule CreateEntityType
   extends CreateNamespaceElement {
     t.`abstract` = s.`abstract`;
     //[postponed] relationCountConstraints: RelationCountConstraint
-    for (super in s.superEntityTypes) {
-		t.superEntityTypes.add(super.getPSMEquivalent());    
-    }
+    for (super in s.superEntityTypes) { t.superEntityTypes.add(super.getPSMEquivalent()); }
     
     log.debug("Created EntityType: " + t.name);
 }
@@ -30,11 +28,9 @@ rule CreateAttribute
 	to t: JUDOPSM!Attribute
 	extends CreatePrimitiveTypedElement {
 	  t.identifier = s.identifier;
+	  s.getEntityType().equivalent("CreateEntityType").attributes.add(t);
 	  
-	  var entityType : ESM!EntityType = s.getEntityType();
-	  entityType.equivalent("CreateEntityType").attributes.add(t);
-	  var transferAttributes : Sequence = ESM!TransferAttribute.all.select(ta | ta.primitiveTypedElement = s);
-	  for (transferAttribute in transferAttributes) {
+	  for (transferAttribute in ESM!TransferAttribute.all.select(ta | ta.primitiveTypedElement = s)) {
 	  	transferAttribute.equivalent("CreateTransferAttribute").binding = t;
 	  }
 	  

@@ -16,6 +16,7 @@ rule CreateExposedService
 	  log.debug("Created ExposedService.");
 }
 
+//[postponed]
 //TODO: exposedoperations? ([?]->t))
 //TODO: cardinality? (s->[?])
 rule CreateExposedGraph
@@ -29,6 +30,7 @@ rule CreateExposedGraph
 	  log.debug("Created ExposedGraph: " + t.name);
 }
 
+//[postponed]
 /* TODO: CreateExposedOperation? (for ExposedGraph)
 rule CreateExposedOperation
 	transform s: ESM!
