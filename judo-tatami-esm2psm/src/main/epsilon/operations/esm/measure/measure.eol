@@ -1,3 +1,4 @@
+//[non-equivalent()-function]
 operation ESM!Unit getMeasure(): ESM!Measure {
 	return ESM!Measure.all.selectOne(m | m.units.includes(self));
 }

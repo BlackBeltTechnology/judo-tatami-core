@@ -1,15 +1,19 @@
+//[non-equivalent()-function]
 operation ESM!DataProperty getEntityType(): ESM!EntityType {
 	return ESM!EntityType.all.selectOne(et | et.attributes.includes(self));
 }
 
+//[non-equivalent()-function]
 operation ESM!NavigationProperty getEntityType(): ESM!EntityType {
 	return ESM!EntityType.all.selectOne(et | et.relations.includes(self));
 }
 
+//[non-equivalent()-function]
 operation ESM!StaticNavigation getTransferRelation(): ESM!TransferRelation {
 	return ESM!TransferRelation.all.selectOne(tr | tr.referenceTypedElement = self);
 }
 
+//[non-equivalent()-function]
 operation ESM!NavigationProperty getTransferRelation(): ESM!TransferRelation {
 	return ESM!TransferRelation.all.selectOne(tr | tr.referenceTypedElement = self);
 }

@@ -8,6 +8,7 @@ operation ESM!Namespace toString() : String {
     }
 }
 
+//[non-equivalent()-function]
 @cached
 operation ESM!NamespaceElement getNamespace() : ESM!Namespace {
     return ESM!Namespace.all.selectOne(p | p.elements.includes(self));
