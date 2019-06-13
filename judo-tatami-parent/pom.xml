@@ -81,7 +81,7 @@
         <judo-meta-asm-version>1.0.0-develop-50</judo-meta-asm-version>
         <judo-meta-asm-import-range>[1.0,1.1)</judo-meta-asm-import-range>
 
-        <judo-meta-expression-version>1.0.1.develop_205</judo-meta-expression-version>
+        <judo-meta-expression-version>1.0.1.develop_207</judo-meta-expression-version>
         <judo-meta-expression-import-range>[1.0,1.1)</judo-meta-expression-import-range>
 
         <judo-meta-measure-version>1.0.1.develop_27</judo-meta-measure-version>
@@ -97,9 +97,9 @@
         <test.asm.model.artifactId>judo-tatami-psm2asm</test.asm.model.artifactId>
         <test.asm.model.version>${project.version}</test.asm.model.version>
 
-        <test.jqle.model.groupId>${project.groupId}</test.jqle.model.groupId>
+        <!--test.jqle.model.groupId>${project.groupId}</test.jqle.model.groupId>
         <test.jqle.model.artifactId>judo-tatami-psm2jql</test.jqle.model.artifactId>
-        <test.jqle.model.version>${project.version}</test.jqle.model.version>
+        <test.jqle.model.version>${project.version}</test.jqle.model.version-->
 
         <test.measure.model.groupId>${project.groupId}</test.measure.model.groupId>
         <test.measure.model.artifactId>judo-tatami-psm2measure</test.measure.model.artifactId>
@@ -289,11 +289,11 @@
                 <artifactId>judo-meta-psm-jql-runtime</artifactId>
                 <version>${judo-meta-psm-jql-version}</version>
             </dependency>
-            <dependency>
+            <!--dependency>
                 <groupId>hu.blackbelt.judo.meta</groupId>
                 <artifactId>judo-meta-psm-jql-extract-runtime</artifactId>
                 <version>${judo-meta-psm-jql-extract-version}</version>
-            </dependency>
+            </dependency-->
             <dependency>
                 <groupId>hu.blackbelt.judo.meta</groupId>
                 <artifactId>judo-meta-psm-runtime</artifactId>
@@ -394,12 +394,6 @@
 
             <dependency>
                 <groupId>hu.blackbelt.judo.tatami</groupId>
-                <artifactId>judo-tatami-jql2expression</artifactId>
-                <version>1.0.0-SNAPSHOT</version>
-            </dependency>
-
-            <dependency>
-                <groupId>hu.blackbelt.judo.tatami</groupId>
                 <artifactId>judo-tatami-itest</artifactId>
                 <version>1.0.0-SNAPSHOT</version>
             </dependency>
@@ -416,11 +410,11 @@
                 <version>1.0.0-SNAPSHOT</version>
             </dependency>
 
-            <dependency>
+            <!--dependency>
                 <groupId>hu.blackbelt.judo.tatami</groupId>
                 <artifactId>judo-tatami-psm2jql</artifactId>
                 <version>1.0.0-SNAPSHOT</version>
-            </dependency>
+            </dependency-->
 
             <dependency>
                 <groupId>hu.blackbelt.judo.tatami</groupId>

@@ -307,11 +307,11 @@
             <artifactId>judo-meta-asm</artifactId>
             <scope>test</scope>
         </dependency>
-        <dependency>
+        <!--dependency>
             <groupId>hu.blackbelt.judo.meta</groupId>
             <artifactId>judo-meta-expression-runtime</artifactId>
             <scope>test</scope>
-        </dependency>
+        </dependency-->
         <dependency>
             <groupId>hu.blackbelt.judo.meta</groupId>
             <artifactId>judo-meta-rdbms-runtime</artifactId>
