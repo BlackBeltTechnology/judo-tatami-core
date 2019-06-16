@@ -35,19 +35,11 @@
                             tatami/asm2odata/operations=src/operations
                         </Include-Resource>
                         <Import-Package>
-                            !lombok,
                             meta/odata;version="${judo-meta-odata.import-range}",
                             meta/asm;version="${judo-meta-asm.import-range}",
                             hu.blackbelt.judo.meta.odata*;version="${judo-meta-odata.import-range}",
                             hu.blackbelt.judo.meta.psm*;version="${judo-meta-psm.import-range}",
-                            com.google.common.base;version="[14.0,30)",
-                            com.google.common.cache;version="[14.0,30)",
-                            com.google.common.collect;version="[14.0,30)",
-                            com.google.common.io;version="[14.0,30)",
-                            com.google.common.primitives;version="[14.0,30)",
-                            com.google.common.hash;version="[14.0,30)",
-                            com.google.common.util.concurrent;version="[14.0,30)",
-                            javax.annotation;version="[1.0,2)",
+                            ${osgi-default-import},
                             *
                         </Import-Package>
                         <Odata-Meta-Version-Range>${judo-meta-rdbms.import-range}</Odata-Meta-Version-Range>

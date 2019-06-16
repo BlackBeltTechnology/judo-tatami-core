@@ -59,8 +59,6 @@
                             tatami/jql2expression=src/main/epsilon
                         </Include-Resource>
                         <Import-Package>
-                            org.osgi.framework;version="[1.8,2.0)",
-                            !lombok,
                             meta/psm/jql/extract;version="${judo-meta-psm-jql-extract-import-range}",
                             meta/asm;version="${judo-meta-asm-import-range}",
                             meta/measure;version="${judo-meta-measure-import-range}",
@@ -70,14 +68,7 @@
                             hu.blackbelt.judo.meta.psm.jql.jqldsl*;version="${judo-meta-psm-jql-import-range}",
                             hu.blackbelt.judo.meta.asm*;version="${judo-meta-asm-import-range}",
                             hu.blackbelt.judo.meta.measure*;version="${judo-meta-measure-import-range}",
-                            com.google.common.base;version="[14.0,30)",
-                            com.google.common.cache;version="[14.0,30)",
-                            com.google.common.collect;version="[14.0,30)",
-                            com.google.common.io;version="[14.0,30)",
-                            com.google.common.primitives;version="[14.0,30)",
-                            com.google.common.hash;version="[14.0,30)",
-                            com.google.common.util.concurrent;version="[14.0,30)",
-                            javax.annotation;version="[1.0,2)",
+                            ${osgi-default-import},
                             *
                         </Import-Package>
                         <Expression-Meta-Version-Range>${judo-meta-expression-import-range}</Expression-Meta-Version-Range>

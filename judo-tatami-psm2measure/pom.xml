@@ -60,20 +60,11 @@
                             tatami/psm2measure/transformations=src/main/epsilon/transformations
                         </Include-Resource>
                         <Import-Package>
-                            org.osgi.framework;version="[1.8,2.0)",
-                            !lombok,
                             meta/psm;version="${judo-meta-psm-import-range}",
                             meta/measure;version="${judo-meta-measure-import-range}",
                             hu.blackbelt.judo.meta.psm*;version="${judo-meta-psm-import-range}",
                             hu.blackbelt.judo.meta.measure*;version="${judo-meta-measure-import-range}",
-                            com.google.common.base;version="[14.0,30)",
-                            com.google.common.cache;version="[14.0,30)",
-                            com.google.common.collect;version="[14.0,30)",
-                            com.google.common.io;version="[14.0,30)",
-                            com.google.common.primitives;version="[14.0,30)",
-                            com.google.common.hash;version="[14.0,30)",
-                            com.google.common.util.concurrent;version="[14.0,30)",
-                            javax.annotation;version="[1.0,2)",
+                            ${osgi-default-import},
                             *
                         </Import-Package>
                         <Measure-Meta-Version-Range>${judo-meta-measure-import-range}</Measure-Meta-Version-Range>

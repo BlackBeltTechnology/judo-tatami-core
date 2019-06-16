@@ -93,21 +93,12 @@
 							tatami/asm2rdbms/model=model
 						</Include-Resource>
 						<Import-Package>
-							org.osgi.framework;version="[1.8,2.0)",
-							!lombok,
-							meta/rdbms;version="${judo-meta-rdbms.import-range}",
-							meta/asm;version="${judo-meta-asm-import-range}",
-							hu.blackbelt.judo.meta.rdbms*;version="${judo-meta-rdbms.import-range}",
-							hu.blackbelt.judo.meta.asm*;version="${judo-meta-asm-import-range}",
-							com.google.common.base;version="[14.0,30)",
-							com.google.common.cache;version="[14.0,30)",
-							com.google.common.collect;version="[14.0,30)",
-							com.google.common.io;version="[14.0,30)",
-							com.google.common.primitives;version="[14.0,30)",
-							com.google.common.hash;version="[14.0,30)",
-							com.google.common.util.concurrent;version="[14.0,30)",
-							javax.annotation;version="[1.0,2)",
-							*
+                            meta/rdbms;version="${judo-meta-rdbms.import-range}",
+                            meta/asm;version="${judo-meta-asm-import-range}",
+                            hu.blackbelt.judo.meta.rdbms*;version="${judo-meta-rdbms.import-range}",
+                            hu.blackbelt.judo.meta.asm*;version="${judo-meta-asm-import-range}",
+                            ${osgi-default-import},
+                            *
 						</Import-Package>
 						<Rdbms-Meta-Version-Range>${judo-meta-rdbms.import-range}</Rdbms-Meta-Version-Range>
 					</instructions>
