@@ -50,17 +50,17 @@ operation JUDOPSM!Primitive getEcoreType() : ASM!EDataType {
 	if (self.isKindOf(JUDOPSM!StringType)) {
 		return "JString".getJudoDataType();
 	} else if (self.isKindOf(JUDOPSM!NumericType)) {
-		if (self.precision == 0 and self.scale <= 9) {
+		if (self.scale == 0 and self.precision <= 9) {
 			return "JInteger".getJudoDataType();
-		} else if (self.precision == 0 and self.scale > 9 and self.scale <= 18) {
+		} else if (self.scale == 0 and self.precision > 9 and self.precision <= 18) {
 			return "JLong".getJudoDataType();
-		} else if (self.precision == 0 and self.scale > 18) {
+		} else if (self.scale == 0 and self.precision > 18) {
 			return "JBigInteger".getJudoDataType();
-		} else if (self.precision > 0 and self.scale <= 7) {
+		} else if (self.scale > 0 and self.precision <= 7) {
 			return "JFloat".getJudoDataType();
-		} else if (self.precision > 0 and self.scale > 7 and self.scale <= 15) {
+		} else if (self.scale > 0 and self.precision > 7 and self.precision <= 15) {
 			return "JDouble".getJudoDataType();
-		} else if (self.precision > 0 and self.scale > 15) {
+		} else if (self.scale > 0 and self.precision > 15) {
 			return "JBigDecimal".getJudoDataType();
 		}
 	} else if (self.isKindOf(JUDOPSM!BooleanType)) {

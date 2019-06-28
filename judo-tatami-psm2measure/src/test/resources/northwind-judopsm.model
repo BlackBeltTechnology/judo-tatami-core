@@ -13,10 +13,10 @@
     <elements xsi:type="type:StringType" name="Phone" maxLength="20"/>
     <elements xsi:type="type:StringType" name="Text" maxLength="250"/>
     <elements xsi:type="type:StringType" name="URL" maxLength="1024"/>
-    <elements xsi:type="type:NumericType" name="Long" scale="18"/>
-    <elements xsi:type="type:NumericType" name="Integer" scale="9"/>
-    <elements xsi:type="type:NumericType" name="Double" precision="4" scale="15"/>
-    <elements xsi:type="type:NumericType" name="Float" precision="4" scale="7"/>
+    <elements xsi:type="type:NumericType" name="Long" precision="18"/>
+    <elements xsi:type="type:NumericType" name="Integer" precision="9"/>
+    <elements xsi:type="type:NumericType" name="Double" scale="4" precision="15"/>
+    <elements xsi:type="type:NumericType" name="Float" scale="4" precision="7"/>
     <elements xsi:type="type:BooleanType" name="Boolean"/>
     <elements xsi:type="type:DateType" name="Date"/>
     <elements xsi:type="type:TimestampType" name="Timestamp"/>
@@ -33,12 +33,12 @@
       <members name="DR" ordinal="3"/>
     </elements>
     <packages name="measured">
-      <elements xsi:type="measure:MeasuredType" name="MassStoredInKilograms" precision="4" scale="15" storeUnit="//@packages.3/@elements.20/@units.3"/>
-      <elements xsi:type="measure:MeasuredType" name="TimeStoredInSeconds" precision="4" scale="15" storeUnit="//@packages.3/@elements.27/@units.1"/>
-      <elements xsi:type="measure:MeasuredType" name="TimeStoredInMonths" scale="9" storeUnit="//@packages.3/@elements.28/@units.0"/>
-      <elements xsi:type="measure:MeasuredType" name="AreaStoredInSquareMetre" precision="4" scale="15" storeUnit="//@packages.3/@elements.0/@units.3"/>
-      <elements xsi:type="measure:MeasuredType" name="VolumeStoredInLitre" precision="4" scale="15" storeUnit="//@packages.3/@elements.1/@units.7"/>
-      <elements xsi:type="measure:MeasuredType" name="VelocityStoredInKmPerHour" precision="4" scale="15" storeUnit="//@packages.3/@elements.2/@units.0"/>
+      <elements xsi:type="measure:MeasuredType" name="MassStoredInKilograms" scale="4" precision="15" storeUnit="//@packages.3/@elements.20/@units.3"/>
+      <elements xsi:type="measure:MeasuredType" name="TimeStoredInSeconds" scale="4" precision="15" storeUnit="//@packages.3/@elements.27/@units.1"/>
+      <elements xsi:type="measure:MeasuredType" name="TimeStoredInMonths" precision="9" storeUnit="//@packages.3/@elements.28/@units.0"/>
+      <elements xsi:type="measure:MeasuredType" name="AreaStoredInSquareMetre" scale="4" precision="15" storeUnit="//@packages.3/@elements.0/@units.3"/>
+      <elements xsi:type="measure:MeasuredType" name="VolumeStoredInLitre" scale="4" precision="15" storeUnit="//@packages.3/@elements.1/@units.7"/>
+      <elements xsi:type="measure:MeasuredType" name="VelocityStoredInKmPerHour" scale="4" precision="15" storeUnit="//@packages.3/@elements.2/@units.0"/>
     </packages>
   </packages>
   <packages name="entities">

@@ -76,7 +76,7 @@
         <judo-meta-esm-version>1.0.0.develop_36</judo-meta-esm-version>
         <judo-meta-esm-import-range>[1.0,1.1)</judo-meta-esm-import-range>
 
-        <judo-meta-psm-version>1.0.1.develop_262</judo-meta-psm-version>
+        <judo-meta-psm-version>1.0.1.develop_263</judo-meta-psm-version>
         <judo-meta-psm-import-range>[1.0,1.1)</judo-meta-psm-import-range>
 
         <judo-meta-psm-jql-version>1.0.0.develop_22</judo-meta-psm-jql-version>
@@ -517,6 +517,7 @@
                     <version>3.0.0-M3</version>
                     <configuration>
                         <argLine>-Dfile.encoding=UTF-8</argLine>
+                        <trimStackTrace>false</trimStackTrace>
                     </configuration>
                 </plugin>
 
