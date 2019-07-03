@@ -10,9 +10,9 @@ rule CreateEntityIdParameterDeclaration
     to t : OPENAPI!ParameterDeclaration {
         guard: s.key.startsWith(".accessPoints.") and s.getAnnotatedClass().isDefined() and s.getAnnotatedClass().isEntity()
         
-        var accessPoint = s.value.resolve();
+        var accessPoint = asmUtils.resolve(s.value).orElse(null);
         
-        t.name = "__identifier__" + s.getAnnotatedClass().getFQName().toOpenAPIName();
+        t.name = "__identifier__" + asmUtils.getClassifierFQName(s.getAnnotatedClass()).toOpenAPIName();
         
         accessPoint.equivalent("CreateOpenAPIAccessPoint").parameters.add(t);
 }
@@ -36,9 +36,9 @@ rule CreateParameterDeclaration
     to t : OPENAPI!ParameterDeclaration {
         guard: s.key.startsWith(".accessPoints.") and s.getAnnotatedParameter().isDefined()
         
-        var accessPoint = s.value.resolve();
+        var accessPoint = asmUtils.resolve(s.value).orElse(null);
         
-        t.name = (s.getAnnotatedParameter().eOperation.getFQName() + "__" + s.getAnnotatedParameter().name).toOpenAPIName();
+        t.name = (asmUtils.getOperationFQName(s.getAnnotatedParameter().eOperation) + "__" + s.getAnnotatedParameter().name).toOpenAPIName();
         
         accessPoint.equivalent("CreateOpenAPIAccessPoint").parameters.add(t);
 }

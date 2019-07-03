@@ -2,6 +2,7 @@ package hu.blackbelt.judo.tatami.asm2sdk;
 
 import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Sets;
 import hu.blackbelt.epsilon.runtime.execution.ExecutionContext;
 import hu.blackbelt.epsilon.runtime.execution.api.Log;
@@ -9,6 +10,7 @@ import hu.blackbelt.epsilon.runtime.execution.contexts.EglExecutionContext;
 import hu.blackbelt.judo.framework.compiler.api.CompilerUtil;
 import hu.blackbelt.judo.framework.compiler.api.FullyQualifiedName;
 import hu.blackbelt.judo.meta.asm.runtime.AsmModel;
+import hu.blackbelt.judo.meta.asm.runtime.AsmUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.ops4j.pax.tinybundles.core.TinyBundle;
@@ -50,6 +52,7 @@ public class Asm2SDK {
                         )
                 )
                 .sourceDirectory(scriptDir)
+                .injectContexts(ImmutableMap.of("asmUtils", new AsmUtils((asmModel.getResourceSet()))))
                 .build();
 
         // run the model / metadata loading

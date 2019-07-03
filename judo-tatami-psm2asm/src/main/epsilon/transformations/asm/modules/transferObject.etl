@@ -21,7 +21,7 @@ rule CreateMappedTransferObject
         var annotation = t.eAnnotations.selectOne(a | a.source = extendedMetadataURI);
         var aMappedEntityType = new ASM!EStringToStringMapEntry;
 		aMappedEntityType.key = "mappedEntityType";
-		aMappedEntityType.value = s.entityType.transformToAsm().getFQName();
+		aMappedEntityType.value = asmUtils.getClassifierFQName(s.entityType.transformToAsm());
 		annotation.details.add(aMappedEntityType);
 		
 		var aEntityIdPresence = new ASM!EStringToStringMapEntry;

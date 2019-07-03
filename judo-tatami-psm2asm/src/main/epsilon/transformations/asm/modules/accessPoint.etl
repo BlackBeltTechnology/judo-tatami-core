@@ -63,7 +63,7 @@ rule CreateExposedByAnnotationForUnboundOperation
         }
         
 		t.key = "exposedBy";
-		t.value = s.getAccessPoint().equivalent("CreateAccessPoint").getFQName();
+		t.value = asmUtils.getClassifierFQName(s.getAccessPoint().equivalent("CreateAccessPoint"));
 		annotation.details.add(t);
 }
 
@@ -82,7 +82,7 @@ rule CreateExposedGraph
 		
 		var aExposedBy = new ASM!EStringToStringMapEntry;
 		aExposedBy.key = "exposedBy";
-		aExposedBy.value = s.getAccessPoint().equivalent("CreateAccessPoint").getFQName();
+		aExposedBy.value = asmUtils.getClassifierFQName(s.getAccessPoint().equivalent("CreateAccessPoint"));
 		annotation.details.add(aExposedBy);
 }
 
@@ -103,7 +103,7 @@ rule CreateExposedGraphRoot
         var annotation = s.equivalent("CreateExposedGraph").eAnnotations.selectOne(a | a.source = extendedMetadataURI);
         
 		t.key = "root";
-		t.value = s.mappedTransferObjectType.transformToAsm().getFQName();
+		t.value = asmUtils.getClassifierFQName(s.mappedTransferObjectType.transformToAsm());
 		annotation.details.add(t);
 }
 

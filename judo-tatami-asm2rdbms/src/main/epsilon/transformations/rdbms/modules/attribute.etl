@@ -5,8 +5,8 @@ rule EAttributeToRdbmsField
 	transform s : ASM!EAttribute
 	to t : RDBMS!RdbmsField {
 		guard : s.eContainingClass.isEntity()
-	    t.uuid = s.getFQName();
-	    log.info(" Class: " + s.eContainingClass.getFQName());
+	    t.uuid = asmUtils.getAttributeFQName(s);
+	    log.info(" Class: " + asmUtils.getClassifierFQName(s.eContainingClass));
 		
 		if (s.eType.isKindOf(ASM!EEnum)) {
 			// TODO: Make value constraints
@@ -30,20 +30,20 @@ rule EAttributeToTableValueField
 	extends EAttributeToRdbmsField { 
 		guard : s.eContainingClass.isEntity() and not s.derived
 		s.eContainingClass.equivalent("EClassToRdbmsTable").fields.add(t);
-		log.info("    Add attribute: " + s.getFQName());
+		log.info("    Add attribute: " + asmUtils.getAttributeFQName(s));
 }
 
 rule EAttributeToUniqueKey
 	transform s : ASM!EAttribute
 	to u : RDBMS!RdbmsUniqueConstraint {
 		guard : s.eContainingClass.isEntity() and s.ID and not s.derived
-		log.info("    Add uniquie constraint: " + s.getFQName());
+		log.info("    Add uniquie constraint: " + asmUtils.getAttributeFQName(s));
 	    
-	    u.uuid = s.getFQName() + "@uniqueConstraint";
+	    u.uuid = asmUtils.getAttributeFQName(s) + "@uniqueConstraint";
 		s.eContainingClass.equivalent("EClassToRdbmsTable").uniqueConstraints.add(t);
 		
 		u.sqlName = ("UQ_" + md5(u.uuid));
-		u.name = s.getFQName(); 
+		u.name = asmUtils.getAttributeFQName(s); 
 		u.fields.add(s.equivalent("EAttributeToTableValueField"));
 }
 

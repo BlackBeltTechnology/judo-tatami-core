@@ -10,7 +10,7 @@ rule CreateOpenAPIAccessPoint
         t.swagger = "2.0";
 
         t.host = "localhost:8181"; // TODO
-        t.basePath = "/cxf/" + s.getFQName().toOpenAPIPath();
+        t.basePath = "/cxf/" + asmUtils.getClassifierFQName(s).toOpenAPIPath();
         
         t.schemes.add(OPENAPI!SchemeType#http);
         t.schemes.add(OPENAPI!SchemeType#https);

@@ -9,10 +9,9 @@ rule CreateTransferObjectSingleSchemaDeclaration
     to t : OPENAPI!SchemaDeclaration {
         guard: s.key.startsWith(".accessPoints.") and s.getAnnotatedClass().isDefined() and not s.getAnnotatedClass().isEntity()
         
-        var accessPoint =  s.value.resolve();
+        var accessPoint = asmUtils.resolve(s.value).orElse(null);
         
-        // t.name = "__single__" + s.getAnnotatedClass().getFQName().toOpenAPIName();
-        t.name = s.getAnnotatedClass().getFQName().toOpenAPIName();
+        t.name = asmUtils.getClassifierFQName(s.getAnnotatedClass()).toOpenAPIName();
 
         accessPoint.equivalent("CreateOpenAPIAccessPoint").definitions.add(t);
 }
@@ -44,9 +43,9 @@ rule CreateTransferObjectArraySchemaDeclaration
     to t : OPENAPI!SchemaDeclaration {
         guard: s.key.startsWith(".accessPoints.") and s.getAnnotatedClass().isDefined() and not s.getAnnotatedClass().isEntity()
         
-        var accessPoint = s.value.resolve();
+        var accessPoint = asmUtils.resolve(s.value).orElse(null);
         
-        t.name = "arrayOf__" + s.getAnnotatedClass().getFQName().toOpenAPIName();
+        t.name = "arrayOf__" + asmUtils.getClassifierFQName(s.getAnnotatedClass()).toOpenAPIName();
         
         accessPoint.equivalent("CreateOpenAPIAccessPoint").definitions.add(t);
 }

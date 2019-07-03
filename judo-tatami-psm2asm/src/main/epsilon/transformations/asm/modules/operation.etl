@@ -148,7 +148,7 @@ rule CreateReferenceClassForRelation
 		
         var aMappedEntityType = new ASM!EStringToStringMapEntry;
 		aMappedEntityType.key = "mappedEntityType";
-		aMappedEntityType.value = s.target.entityType.transformToAsm().getFQName();
+		aMappedEntityType.value = asmUtils.getClassifierFQName(s.target.entityType.transformToAsm());
 		annotation.details.add(aMappedEntityType);
 		
 		var aEntityIdPresence = new ASM!EStringToStringMapEntry;

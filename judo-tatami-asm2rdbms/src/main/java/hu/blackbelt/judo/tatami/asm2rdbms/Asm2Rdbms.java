@@ -7,6 +7,7 @@ import hu.blackbelt.epsilon.runtime.execution.api.Log;
 import hu.blackbelt.epsilon.runtime.execution.contexts.EtlExecutionContext;
 import hu.blackbelt.epsilon.runtime.execution.exceptions.ScriptExecutionException;
 import hu.blackbelt.judo.meta.asm.runtime.AsmModel;
+import hu.blackbelt.judo.meta.asm.runtime.AsmUtils;
 import hu.blackbelt.judo.meta.rdbms.runtime.RdbmsModel;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
@@ -104,7 +105,8 @@ public class Asm2Rdbms {
                         )
                 )
                 .injectContexts(ImmutableMap.of(
-                        "AbbreviateUtils", new AbbreviateUtils()
+                        "AbbreviateUtils", new AbbreviateUtils(),
+                        "asmUtils", new AsmUtils(asmModel.getResourceSet())
                 ))
                 .sourceDirectory(scriptDir)
                 .build();

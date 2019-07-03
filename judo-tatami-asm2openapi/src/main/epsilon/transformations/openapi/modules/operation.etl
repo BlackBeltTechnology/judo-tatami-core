@@ -11,9 +11,9 @@ rule CreateExposedServicePath
         guard: s.key.startsWith(".accessPoints.") and s.getAnnotatedOperation().isDefined() and s.getAnnotatedOperation().eContainingClass.interface
 
         var op = s.getAnnotatedOperation();
-        var accessPoint = s.value.resolve();
+        var accessPoint = asmUtils.resolve(s.value).orElse(null);
 
-        t.relativePath = "/" + op.getFQName().toOpenAPIPath();
+        t.relativePath = "/" + asmUtils.getOperationFQName(op).toOpenAPIPath();
 
         accessPoint.equivalent("CreateOpenAPIAccessPoint").paths.add(t);
 }
@@ -36,7 +36,7 @@ rule CreateExposedServiceGetOperation
     transform s : ASM!EStringToStringMapEntry
     to t : OPENAPI!Operation
     extends CreateExposedServiceOperation {
-        guard: s.key.startsWith(".accessPoints.") and s.getAnnotatedOperation().isDefined() and s.getAnnotatedOperation().eContainingClass.interface and (s.getAnnotatedOperation().eParameters.isEmpty() and s.getAnnotatedOperation().annotatedAsFalse("stateful"))
+        guard: s.key.startsWith(".accessPoints.") and s.getAnnotatedOperation().isDefined() and s.getAnnotatedOperation().eContainingClass.interface and (s.getAnnotatedOperation().eParameters.isEmpty() and asmUtils.annotatedAsFalse(s.getAnnotatedOperation(), "stateful"))
 
         s.equivalent("CreateExposedServicePath").`get` = t;
 }
@@ -45,7 +45,7 @@ rule CreateExposedServicePostOperation
     transform s : ASM!EStringToStringMapEntry
     to t : OPENAPI!Operation
     extends CreateExposedServiceOperation {
-        guard: s.key.startsWith(".accessPoints.") and s.getAnnotatedOperation().isDefined() and s.getAnnotatedOperation().eContainingClass.interface and (not s.getAnnotatedOperation().eParameters.isEmpty() or s.getAnnotatedOperation().annotatedAsTrue("stateful"))
+        guard: s.key.startsWith(".accessPoints.") and s.getAnnotatedOperation().isDefined() and s.getAnnotatedOperation().eContainingClass.interface and (not s.getAnnotatedOperation().eParameters.isEmpty() or asmUtils.annotatedAsTrue(s.getAnnotatedOperation(), "stateful"))
 
         s.equivalent("CreateExposedServicePath").`post` = t;
 }
@@ -69,7 +69,7 @@ rule CreateExposedServiceGetOperationResponse
     transform s : ASM!EStringToStringMapEntry
     to t : OPENAPI!OperationResponse
     extends CreateExposedServiceOperationResponse {
-        guard: s.key.startsWith(".accessPoints.") and s.getAnnotatedOperation().isDefined() and s.getAnnotatedOperation().eContainingClass.interface and (s.getAnnotatedOperation().eParameters.isEmpty() and s.getAnnotatedOperation().annotatedAsFalse("stateful"))
+        guard: s.key.startsWith(".accessPoints.") and s.getAnnotatedOperation().isDefined() and s.getAnnotatedOperation().eContainingClass.interface and (s.getAnnotatedOperation().eParameters.isEmpty() and asmUtils.annotatedAsFalse(s.getAnnotatedOperation(), "stateful"))
 
         s.equivalent("CreateExposedServiceGetOperation").responses.add(t);
 }
@@ -78,7 +78,7 @@ rule CreateExposedServicePostOperationResponse
     transform s : ASM!EStringToStringMapEntry
     to t : OPENAPI!OperationResponse
     extends CreateExposedServiceOperationResponse {
-        guard: s.key.startsWith(".accessPoints.") and s.getAnnotatedOperation().isDefined() and s.getAnnotatedOperation().eContainingClass.interface and (not s.getAnnotatedOperation().eParameters.isEmpty() or s.getAnnotatedOperation().annotatedAsTrue("stateful"))
+        guard: s.key.startsWith(".accessPoints.") and s.getAnnotatedOperation().isDefined() and s.getAnnotatedOperation().eContainingClass.interface and (not s.getAnnotatedOperation().eParameters.isEmpty() or asmUtils.annotatedAsTrue(s.getAnnotatedOperation(), "stateful"))
 
         s.equivalent("CreateExposedServicePostOperation").responses.add(t);
 }
@@ -88,13 +88,13 @@ rule CreateExposedServiceOperationResponseDefinition
     transform s : ASM!EStringToStringMapEntry
     to t : OPENAPI!ResponseDefinition {
         var op = s.getAnnotatedOperation();
-        var accessPoint = s.value.resolve();
+        var accessPoint = asmUtils.resolve(s.value).orElse(null);
 
         t.schema = new OPENAPI!Schema;
         t.description = "Operation completed successfully";
         t.schema.ref = new OPENAPI!SchemaReference;
 
-        var aAccessPoint = op.eType.getAccessPointAnnotation(accessPoint.getFQName());
+        var aAccessPoint = op.eType.getAccessPointAnnotation(asmUtils.getClassifierFQName(accessPoint));
         if (op.many) {
             t.schema.ref.ref = aAccessPoint.equivalent("CreateTransferObjectArraySchemaDeclaration").getReference();
         } else {
@@ -106,7 +106,7 @@ rule CreateExposedServiceGetOperationResponseDefinition
     transform s : ASM!EStringToStringMapEntry
     to t : OPENAPI!ResponseDefinition
     extends CreateExposedServiceOperationResponseDefinition {
-        guard: s.key.startsWith(".accessPoints.") and s.getAnnotatedOperation().isDefined() and s.getAnnotatedOperation().eContainingClass.interface and s.getAnnotatedOperation().eType.isDefined() and (s.getAnnotatedOperation().eParameters.isEmpty() and s.getAnnotatedOperation().annotatedAsFalse("stateful"))
+        guard: s.key.startsWith(".accessPoints.") and s.getAnnotatedOperation().isDefined() and s.getAnnotatedOperation().eContainingClass.interface and s.getAnnotatedOperation().eType.isDefined() and (s.getAnnotatedOperation().eParameters.isEmpty() and asmUtils.annotatedAsFalse(s.getAnnotatedOperation(), "stateful"))
 
         s.equivalent("CreateExposedServiceGetOperationResponse").response = t;
 }
@@ -115,7 +115,7 @@ rule CreateExposedServicePostOperationResponseDefinition
     transform s : ASM!EStringToStringMapEntry
     to t : OPENAPI!ResponseDefinition
     extends CreateExposedServiceOperationResponseDefinition {
-        guard: s.key.startsWith(".accessPoints.") and s.getAnnotatedOperation().isDefined() and s.getAnnotatedOperation().eContainingClass.interface and s.getAnnotatedOperation().eType.isDefined() and (not s.getAnnotatedOperation().eParameters.isEmpty() or s.getAnnotatedOperation().annotatedAsTrue("stateful"))
+        guard: s.key.startsWith(".accessPoints.") and s.getAnnotatedOperation().isDefined() and s.getAnnotatedOperation().eContainingClass.interface and s.getAnnotatedOperation().eType.isDefined() and (not s.getAnnotatedOperation().eParameters.isEmpty() or asmUtils.annotatedAsTrue(s.getAnnotatedOperation(), "stateful"))
 
         s.equivalent("CreateExposedServicePostOperationResponse").response = t;
 }

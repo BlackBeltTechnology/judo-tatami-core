@@ -7,8 +7,8 @@ rule EClassToTableIdField
 	transform s : ASM!EClass
 	to t : RDBMS!RdbmsIdentifierField {
 		guard : s.isEntity() and s.eSuperTypes.contains(getIdentifierClass())
-		t.name = s.getFQName() + "#id";
-	    t.uuid = s.getFQName() + "#id";
+		t.name = asmUtils.getClassifierFQName(s) + "#id";
+	    t.uuid = asmUtils.getClassifierFQName(s) + "#id";
         log.info("    Add primary key: " + t.name);
         var table = s.equivalent("EClassToRdbmsTable");
 	    table.fields.add(t);
@@ -22,11 +22,11 @@ rule EClassToRdbmsTable
 	transform s : ASM!EClass
 	to t : RDBMS!RdbmsTable {
 		guard : s.isEntity()
-        log.info(" Add table: " + s.getFQName());
+        log.info(" Add table: " + asmUtils.getClassifierFQName(s));
 		s.root().equivalent("rootPackegeToModel").rdbmsTables.add(t);
 	    t.sqlName = s.tableSqlName();
-	    t.name = s.getFQName();
-	    t.uuid = s.getFQName();
+	    t.name = asmUtils.getClassifierFQName(s);
+	    t.uuid = asmUtils.getClassifierFQName(s);
 		for (sup in s.eSuperTypes.select(s | s.isEntity())) {
 			t.parents.add(sup.equivalent("EClassToRdbmsTable"));
 		}
