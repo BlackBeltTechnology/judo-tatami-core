@@ -20,6 +20,7 @@ import org.osgi.framework.wiring.BundleWiring;
 
 import javax.tools.JavaFileObject;
 import java.io.*;
+import java.util.Collections;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -86,6 +87,10 @@ public class Asm2SDK {
     }
 
     private static Iterable<JavaFileObject> compile(File sourceDir, Set<String> sourceCodeFiles) throws Exception {
+        if (sourceCodeFiles.isEmpty()) {
+            return Collections.emptyList();
+        }
+
         // JaxRS classloader is used in OSGi
         Bundle bundle = FrameworkUtil.getBundle(Asm2SDK.class); // FrameworkUtil.getBundle(Application.class);
         ClassLoader classLoader = Asm2SDK.class.getClassLoader();
