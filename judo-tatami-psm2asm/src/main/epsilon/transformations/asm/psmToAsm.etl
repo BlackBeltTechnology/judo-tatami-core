@@ -23,7 +23,8 @@ post {
 		    annotation.details.add(aGraph);
 		}
 
-		for (eo in graph.exposedOperations) {
+        // TODO - all operations of transfer object types are exposed, create all bound operations
+		/*for (eo in graph.exposedOperations) {
 		    var o = eo.`operation`;
 		    var annotation = o.equivalent("CreateBoundOperation").eAnnotations.selectOne(a | a.source = extendedMetadataURI);
             if (not annotation.isDefined()) {
@@ -37,6 +38,6 @@ post {
 		    aGraph.key = "graphs." + index;
 		    aGraph.value = graph.equivalent("CreateExposedGraph").getFQName();
 		    annotation.details.add(aGraph);
-		}
+		} */
     }
 }

@@ -16,9 +16,6 @@ rule CreateExposedService
 	  log.debug("Created ExposedService.");
 }
 
-//[postponed]
-//TODO: exposedoperations? ([?]->t))
-//TODO: cardinality? (s->[?])
 rule CreateExposedGraph
 	transform s: ESM!ExposedGraph
 	to t: JUDOPSM!ExposedGraph
@@ -27,15 +24,16 @@ rule CreateExposedGraph
 	  t.selector = s.staticNavigation.equivalent("CreateStaticNavigation");
 	  s.getPSMEquivalent().exposedGraphs.add(t);
 	  
+	  t.cardinality = s.equivalent("CreateCardinalityOfExposedGraph");
+	  
 	  log.debug("Created ExposedGraph: " + t.name);
 }
 
-//[postponed]
-/* TODO: CreateExposedOperation? (for ExposedGraph)
-rule CreateExposedOperation
-	transform s: ESM!
-	to t: JUDOPSM!ExposedOperation` {
-	  t.`operation` = s.equivalent("CreateBoundOperation");
-	  log.debug("Created ExposedOperation.");
+@lazy
+@greedy
+rule CreateCardinalityOfExposedGraph
+	transform s: ESM!ExposedGraph
+	to t: JUDOPSM!Cardinality {
+	  t.upper = s.upper;
+  	  t.lower = s.lower;
 }
-*/
