@@ -33,7 +33,7 @@ public class [%= className %] {
     }
 
 [% for (op in operations) { %]
-    [% if (op.isStateless()) { %]
+    [% if (asmUtils.isStateless(op)) { %]
 	@GET
 	@Produces ( "application/json" )
     [% } else { %] 

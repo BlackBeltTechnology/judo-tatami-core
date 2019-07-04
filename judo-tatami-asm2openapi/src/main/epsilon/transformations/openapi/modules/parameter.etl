@@ -8,7 +8,7 @@ import "schema.etl";
 rule CreateEntityIdParameterDeclaration
     transform s : ASM!EStringToStringMapEntry
     to t : OPENAPI!ParameterDeclaration {
-        guard: s.key.startsWith(".accessPoints.") and s.getAnnotatedClass().isDefined() and s.getAnnotatedClass().isEntity()
+        guard: s.key.startsWith(".accessPoints.") and s.getAnnotatedClass().isDefined() and asmUtils.isEntityType(s.getAnnotatedClass())
         
         var accessPoint = asmUtils.resolve(s.value).orElse(null);
         
@@ -20,7 +20,7 @@ rule CreateEntityIdParameterDeclaration
 rule CreateEntityIdParameterDefinition
     transform s : ASM!EStringToStringMapEntry
     to t : OPENAPI!ParameterDefinition {
-        guard: s.key.startsWith(".accessPoints.") and s.getAnnotatedClass().isDefined() and s.getAnnotatedClass().isEntity()
+        guard: s.key.startsWith(".accessPoints.") and s.getAnnotatedClass().isDefined() and asmUtils.isEntityType(s.getAnnotatedClass())
         
         t.name = "__identifier";
         t.`in` = OPENAPI!ParameterLocation#header;
@@ -54,9 +54,9 @@ rule CreateParameterDefinition
         t.schema = new OPENAPI!Schema;
         t.schema.ref = new OPENAPI!SchemaReference();
         
-        var annotation = s.getAnnotatedParameter().eType.getExtensionAnnotation(false);
-        if (annotation.isDefined()) {
-            var a = annotation.details.selectOne(d | d.key.startsWith(".accessPoints.") and d.value = s.value);
+        var annotation = asmUtils.getExtensionAnnotation(s.getAnnotatedParameter().eType, false);
+        if (annotation.isPresent()) {
+            var a = annotation.get().details.selectOne(d | d.key.startsWith(".accessPoints.") and d.value = s.value);
 
 	        if (s.getAnnotatedParameter().many) {
 	            t.schema.ref.ref = a.equivalent("CreateTransferObjectArraySchemaDeclaration").getReference();

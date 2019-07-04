@@ -7,7 +7,7 @@ var outputJavaClasses = new Set();
 
 executionContext.getContext().put("outputJavaClasses", outputJavaClasses);
 
-for (dto in getAllMappedTransferObjectTypes().collectAllReferenceTypeRecursively()) {
+for (dto in asmUtils.getAllMappedTransferObjectTypes().collectAllReferenceTypeRecursively()) {
     genDto(dto);
 	outputJavaClasses.add(dto.getDtoJavaFileName());
 }

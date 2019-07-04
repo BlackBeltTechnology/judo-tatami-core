@@ -70,7 +70,7 @@
 
         <judo-framework-version>2.0.0_develop_130</judo-framework-version>
 
-        <judo-meta-rdbms-version>1.0.1.develop_39</judo-meta-rdbms-version>
+        <judo-meta-rdbms-version>1.0.1.feature_JNG_101_remove_dependency_of_ASM_data_type_instances_41</judo-meta-rdbms-version>
         <judo-meta-rdbms.import-range>[1.0,1.1)</judo-meta-rdbms.import-range>
 
         <judo-meta-esm-version>1.0.0.develop_36</judo-meta-esm-version>
@@ -90,7 +90,7 @@
          <judo-meta-odata.import-range>[1.0,1.1)</judo-meta-odata.import-range>
          -->
 
-	 <judo-meta-asm-version>1.0.0.feature_JNG_101_move_asm_eol_scripts_to_Java_53</judo-meta-asm-version>
+	<judo-meta-asm-version>1.0.0.feature_JNG_101_move_asm_eol_scripts_to_Java_54</judo-meta-asm-version>
         <judo-meta-asm-import-range>[1.0,1.1)</judo-meta-asm-import-range>
 
         <judo-meta-expression-version>1.0.1.develop_207</judo-meta-expression-version>

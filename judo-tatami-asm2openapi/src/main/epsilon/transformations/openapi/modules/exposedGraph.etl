@@ -130,12 +130,12 @@ rule CreateExposedGraphOperationEntityIdParameter
         var graph = asmUtils.resolve(s.value).orElse(null);
         var accessPoint = graph.getResolvedExposedBy();
         
-        while (interface.isDefined() and not interface.isMappedTransferObjectType()) {
-            interface = interface.getContainerClass();
+        while (interface.isDefined() and not asmUtils.isMappedTransferObjectType(interface)) {
+            interface = asmUtils.getContainerClass(interface);
         }
         
         if (interface.isDefined()) {
-	        var entityIdParameterDeclaration = interface.getEntityType().getAccessPointAnnotation(asmUtils.getClassifierFQName(accessPoint)).equivalent("CreateEntityIdParameterDeclaration");
+	        var entityIdParameterDeclaration = asmUtils.getEntityType(interface).get().getAccessPointAnnotation(asmUtils.getClassifierFQName(accessPoint)).equivalent("CreateEntityIdParameterDeclaration");
 	        t.ref = entityIdParameterDeclaration.getReference();
         } else {
             throw "No binding found for operation: " + asmUtils.getOperationFQName(op);

@@ -4,19 +4,19 @@ import "../../../operations/asm/_importAll.eol";
 rule EAttributeToRdbmsField
 	transform s : ASM!EAttribute
 	to t : RDBMS!RdbmsField {
-		guard : s.eContainingClass.isEntity()
+		guard : asmUtils.isEntityType(s.eContainingClass)
 	    t.uuid = asmUtils.getAttributeFQName(s);
 	    log.info(" Class: " + asmUtils.getClassifierFQName(s.eContainingClass));
 		
 		if (s.eType.isKindOf(ASM!EEnum)) {
 			// TODO: Make value constraints
-			t.fillType("JInteger");
+			t.fillType("java.lang.Integer");
 	    } else {
 	        if (s.eType.isUndefined()) {
 	        	log.warn("Could not determinate type (maybe enum?): " + s.eContainingClass.name + "#" + s.name);
-				t.fillType("JInteger");
+				t.fillType("java.lang.Integer");
 	        } else {
-				t.fillType(s.eType.name);
+				t.fillType(s.eType.instanceClassName);
 				t.fillConstraintsFromAttribute(s);
 			}
 		}
@@ -28,7 +28,7 @@ rule EAttributeToTableValueField
 	transform s : ASM!EAttribute
 	to t : RDBMS!RdbmsValueField
 	extends EAttributeToRdbmsField { 
-		guard : s.eContainingClass.isEntity() and not s.derived
+		guard : asmUtils.isEntityType(s.eContainingClass) and not s.derived
 		s.eContainingClass.equivalent("EClassToRdbmsTable").fields.add(t);
 		log.info("    Add attribute: " + asmUtils.getAttributeFQName(s));
 }
@@ -36,7 +36,7 @@ rule EAttributeToTableValueField
 rule EAttributeToUniqueKey
 	transform s : ASM!EAttribute
 	to u : RDBMS!RdbmsUniqueConstraint {
-		guard : s.eContainingClass.isEntity() and s.ID and not s.derived
+		guard : asmUtils.isEntityType(s.eContainingClass) and s.ID and not s.derived
 		log.info("    Add uniquie constraint: " + asmUtils.getAttributeFQName(s));
 	    
 	    u.uuid = asmUtils.getAttributeFQName(s) + "@uniqueConstraint";

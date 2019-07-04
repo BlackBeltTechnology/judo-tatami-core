@@ -46,6 +46,14 @@ operation JUDOPSM!Type createASMAnnotations() : Sequence {
 }
 
 @cached
+operation String getJudoDataType() : ASM!EDataType {
+	var dataType : ASM!EDataType = 
+			ASM.resource.resourceSet.packageRegistry.get("http://blackbelt.hu/judo/asm/types").eClassifiers
+				.selectOne(clazz | clazz.name = self);
+    return dataType;
+}
+
+@cached
 operation JUDOPSM!Primitive getEcoreType() : ASM!EDataType {
 	if (self.isKindOf(JUDOPSM!StringType)) {
 		return "JString".getJudoDataType();

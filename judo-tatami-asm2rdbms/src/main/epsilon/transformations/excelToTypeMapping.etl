@@ -11,7 +11,7 @@ rule Excel2TypeMapping
 	    guard: s.Judo.isDefined()
 
         // Resolve JUDO ASM DataType
-        t.asmType = s.Judo.getJudoDataType();
+        t.asmType = s.Judo;
 
         t.rdbmsType = s.Type;
         if (s.Size.isDefined() and s.Size.trim() <> "") {

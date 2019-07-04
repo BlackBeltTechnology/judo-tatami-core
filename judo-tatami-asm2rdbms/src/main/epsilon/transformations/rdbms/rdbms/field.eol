@@ -1,9 +1,5 @@
 operation RDBMS!RdbmsField fillType(type : String) {
-    if (type.getJudoDataType().isUndefined()) {
-        throw "Cannot resolve type: " + type;
-    }
-
-    var typeMapping : RDBMS!TypeMapping = RDBMS!TypeMapping.all.selectOne(m | m.asmType == type.getJudoDataType());
+    var typeMapping : RDBMS!TypeMapping = RDBMS!TypeMapping.all.selectOne(m | m.asmType == type);
     if (typeMapping.isUndefined()) {
         throw "Cannot resolve typemapping: " + type;
     }

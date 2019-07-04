@@ -1,12 +1,10 @@
 import "../../../operations/asm/_importAll.eol";
 
-
-
-/* Every Identifiable table have an ID */
+/* Every entity table have an ID */
 rule EClassToTableIdField
 	transform s : ASM!EClass
 	to t : RDBMS!RdbmsIdentifierField {
-		guard : s.isEntity() and s.eSuperTypes.contains(getIdentifierClass())
+		guard : asmUtils.isEntityType(s)
 		t.name = asmUtils.getClassifierFQName(s) + "#id";
 	    t.uuid = asmUtils.getClassifierFQName(s) + "#id";
         log.info("    Add primary key: " + t.name);
@@ -14,21 +12,20 @@ rule EClassToTableIdField
 	    table.fields.add(t);
 		table.primaryKey = t;
 		t.sqlName = "ID";
-		t.fillType("JUUID");
+		t.fillType("java.util.UUID");
 }
 
 @primary
 rule EClassToRdbmsTable
 	transform s : ASM!EClass
 	to t : RDBMS!RdbmsTable {
-		guard : s.isEntity()
+		guard : asmUtils.isEntityType(s)
         log.info(" Add table: " + asmUtils.getClassifierFQName(s));
 		s.root().equivalent("rootPackegeToModel").rdbmsTables.add(t);
 	    t.sqlName = s.tableSqlName();
 	    t.name = asmUtils.getClassifierFQName(s);
 	    t.uuid = asmUtils.getClassifierFQName(s);
-		for (sup in s.eSuperTypes.select(s | s.isEntity())) {
+		for (sup in s.eSuperTypes.select(sup | asmUtils.isEntityType(sup))) {
 			t.parents.add(sup.equivalent("EClassToRdbmsTable"));
 		}
 }
-
