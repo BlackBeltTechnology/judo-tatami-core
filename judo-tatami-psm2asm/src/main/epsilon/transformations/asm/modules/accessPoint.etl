@@ -70,11 +70,11 @@ rule CreateExposedByAnnotationForUnboundOperation
 rule CreateExposedByAnnotationForExposedGraph
     transform s : JUDOPSM!ExposedGraph
     to t : ASM!EAnnotation {
-        t.source = asmUtils.getAnnotationUri("exposedBy");
+        t.source = asmUtils.getAnnotationUri("graph");
         
         var exposedBy = new ASM!EStringToStringMapEntry;
         exposedBy.key = "value";
-        exposedBy.value = asmUtils.getClassifierFQName(s.getAccessPoint().equivalent("CreateAccessPoint"));
+        exposedBy.value = s.name;
         t.details.add(exposedBy);
         
         var root = new ASM!EStringToStringMapEntry;
@@ -97,15 +97,5 @@ rule CreateExposedByAnnotationForExposedGraph
         collection.value = (s.selector.cardinality.upper > 1 or s.selector.cardinality.upper == -1).asString();
         t.details.add(collection);
         
-        s.equivalent("CreateExposedGraph").eAnnotations.add(t);
-}
-
-rule CreateExposedGraph
-    transform s : JUDOPSM!ExposedGraph
-    to t : ASM!EClass {
-        t.name = s.getAccessPoint().name + "ʘ" + s.name;
-        t.abstract = true;
-        t.interface = true;
-            
-        s.getAccessPoint().getNamespace().asmEquivalent().eClassifiers.add(t);
+        s.getAccessPoint().equivalent("CreateAccessPoint").eAnnotations.add(t);
 }

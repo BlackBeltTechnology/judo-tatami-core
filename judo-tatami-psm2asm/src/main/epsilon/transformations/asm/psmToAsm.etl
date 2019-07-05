@@ -8,12 +8,12 @@ import "modules/type.etl";
 
 post {
     for (graph in JUDOPSM!ExposedGraph.all) {
-        var graphFqName = asmUtils.getClassifierFQName(graph.equivalent("CreateExposedGraph"));
+        var accessPointFQName = asmUtils.getClassifierFQName(graph.eContainer.equivalent("CreateAccessPoint"));
         for (mto in graph.getMappedTransferObjects()) {
-            asmUtils.addExtensionAnnotation(mto.equivalent("CreateMappedTransferObject"), "graph", graphFqName);
+            asmUtils.addExtensionAnnotation(mto.equivalent("CreateMappedTransferObject"), "graph", accessPointFQName + "/" + graph.name);
             
             for (o in mto.operations) {
-                asmUtils.addExtensionAnnotation(o.equivalent("CreateBoundOperation"), "graph", graphFqName);
+                asmUtils.addExtensionAnnotation(o.equivalent("CreateBoundOperation"), "graph", accessPointFQName + "/" + graph.name);
             }
 		}
     }

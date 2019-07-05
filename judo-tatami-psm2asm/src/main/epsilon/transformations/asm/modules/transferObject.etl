@@ -8,10 +8,6 @@ rule CreateTransferObject
 	to t : ASM!EClass {
 		t.name = s.name;
 		s.getNamespace().asmEquivalent().eClassifiers.add(t);
-		
-		var annotation = new ASM!EAnnotation;
-		annotation.source = extendedMetadataURI;
-		t.eAnnotations.add(annotation);
 	}
 
 rule CreateMappedEntityTypeAnnotationOnMappedTransferObject
