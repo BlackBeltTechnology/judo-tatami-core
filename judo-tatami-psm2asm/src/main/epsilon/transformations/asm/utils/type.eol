@@ -1,51 +1,6 @@
 import "../../../operations/psm/namespace/_importNamespace.eol";
 
 @cached
-operation JUDOPSM!EnumerationType transformToAsm() : ASM!EEnum {
-    return self.equivalent("CreateEnumeration");
-}
-
-// not cacheable!
-operation JUDOPSM!Type createASMAnnotations() : Sequence {
-	var annotations = Sequence{};
-
-	if (self.isKindOf(JUDOPSM!StringType)) {
-		if (self.maxLength.isDefined()) {
-			var aMaxLength = new ASM!EStringToStringMapEntry;
-			aMaxLength.key = "maxLength";
-			aMaxLength.value = self.maxLength.asString();
-			annotations.add(aMaxLength);
-		}
-    } else if (self.isKindOf(JUDOPSM!MeasuredType)) {
-        var unitName = self.storeUnit.name;
-        var measure = self.storeUnit.getMeasure();
-        var measureNamespace = measure.getNamespace().toString();
-        var measureName = measure.name;
-        
-        var aMeasure = new ASM!EStringToStringMapEntry;
-        aMeasure.key = "measure";
-        aMeasure.value = measureNamespace + "::" + measureName;
-        var aUnit = new ASM!EStringToStringMapEntry;
-        aUnit.key = "unit";
-        aUnit.value = unitName;
-        
-        annotations.add(aMeasure);
-        annotations.add(aUnit);
-	} else if (self.isKindOf(JUDOPSM!CustomType)) {
-		switch (self.name) {
-			case "Binary":
-			default:
-				var aCustomType = new ASM!EStringToStringMapEntry;
-				aCustomType.key = "customType";
-				aCustomType.value = self.name;
-				annotations.add(aCustomType);
-		}
-	}
-
-	return annotations;
-}
-
-@cached
 operation String getJudoDataType() : ASM!EDataType {
 	var dataType : ASM!EDataType = 
 			ASM.resource.resourceSet.packageRegistry.get("http://blackbelt.hu/judo/asm/types").eClassifiers
@@ -74,7 +29,7 @@ operation JUDOPSM!Primitive getEcoreType() : ASM!EDataType {
 	} else if (self.isKindOf(JUDOPSM!BooleanType)) {
 		return "JBoolean".getJudoDataType();
 	} else if (self.isKindOf(JUDOPSM!EnumerationType)) {
-		return self.transformToAsm();
+		return self.equivalent("CreateEnumeration");
     } else if (self.isKindOf(JUDOPSM!DateType)) {
         return "JDate".getJudoDataType();
     } else if (self.isKindOf(JUDOPSM!TimestampType)) {
@@ -89,9 +44,4 @@ operation JUDOPSM!Primitive getEcoreType() : ASM!EDataType {
 	} else {
 		return "JObject".getJudoDataType();
 	}
-}
-
-@cached
-operation JUDOPSM!Relation getEcoreType() : ASM!EClass {
-	return self.target.transformToAsm();
 }

@@ -7,33 +7,144 @@ rule CreateTransferObject
 	transform s : JUDOPSM!TransferObjectType
 	to t : ASM!EClass {
 		t.name = s.name;
-		s.getNamespace().transformToAsm().eClassifiers.add(t);
+		s.getNamespace().asmEquivalent().eClassifiers.add(t);
 		
 		var annotation = new ASM!EAnnotation;
 		annotation.source = extendedMetadataURI;
 		t.eAnnotations.add(annotation);
 	}
 
+rule CreateMappedEntityTypeAnnotationOnMappedTransferObject
+    transform s : JUDOPSM!MappedTransferObjectType
+    to t : ASM!EAnnotation {
+        t.source = asmUtils.getAnnotationUri("mappedEntityType");
+		
+		var mappedEntityType = new ASM!EStringToStringMapEntry;
+        mappedEntityType.key = "value";
+        mappedEntityType.value = asmUtils.getClassifierFQName(s.entityType.equivalent("CreateEntityClass"));
+        t.details.add(mappedEntityType);
+        
+        var entityIdPresence = new ASM!EStringToStringMapEntry;
+        entityIdPresence.key = "entityIdPresence";
+        entityIdPresence.value = s.entityReferencePresence.name;
+        t.details.add(entityIdPresence);
+        
+        s.equivalent("CreateMappedTransferObject").eAnnotations.add(t);
+    }
+
 rule CreateMappedTransferObject
     transform s : JUDOPSM!MappedTransferObjectType
     to t : ASM!EClass
     extends CreateTransferObject {
-        var annotation = t.eAnnotations.selectOne(a | a.source = extendedMetadataURI);
-        var aMappedEntityType = new ASM!EStringToStringMapEntry;
-		aMappedEntityType.key = "mappedEntityType";
-		aMappedEntityType.value = asmUtils.getClassifierFQName(s.entityType.transformToAsm());
-		annotation.details.add(aMappedEntityType);
-		
-		var aEntityIdPresence = new ASM!EStringToStringMapEntry;
-		aEntityIdPresence.key = "entityIdPresence";
-		aEntityIdPresence.value = s.entityReferencePresence.name;
-		annotation.details.add(aEntityIdPresence);
     }
 
 rule CreateUnmappedTransferObject
     transform s : JUDOPSM!UnmappedTransferObjectType
     to t : ASM!EClass
     extends CreateTransferObject {
+    }
+
+@abstract
+rule AddTransferAttributeConstraints
+	transform s : JUDOPSM!TransferAttribute
+    to t : ASM!EAnnotation {
+        t.source = asmUtils.getAnnotationUri("constraints");
+        
+        s.equivalent("CreateTransferObjectAttribute").eAnnotations.add(t);
+    }
+
+rule AddStringTransferAttributeConstraints
+	transform s : JUDOPSM!TransferAttribute
+    to t : ASM!EAnnotation
+    extends AddTransferAttributeConstraints {
+        guard: s.dataType.isKindOf(JUDOPSM!StringType)
+        
+        var maxLength = new ASM!EStringToStringMapEntry;
+        maxLength.key = "maxLength";
+        maxLength.value = s.dataType.maxLength.asString();
+        t.details.add(maxLength);
+    }
+
+rule AddCustomTransferAttributeConstraints
+	transform s : JUDOPSM!TransferAttribute
+    to t : ASM!EAnnotation
+    extends AddTransferAttributeConstraints {
+        guard: s.dataType.isKindOf(JUDOPSM!CustomType)
+        
+        var customType = new ASM!EStringToStringMapEntry;
+        customType.key = "customType";
+        customType.value = psmUtils.namespaceElementToString(s.dataType).replace("::", ".");
+        t.details.add(customType);
+    }
+
+@abstract
+rule AddAbstractNumericTransferAttributeConstraints
+	transform s : JUDOPSM!TransferAttribute
+    to t : ASM!EAnnotation
+    extends AddTransferAttributeConstraints {
+        var precision = new ASM!EStringToStringMapEntry;
+        precision.key = "precision";
+        precision.value = s.dataType.precision.asString();
+        t.details.add(precision);
+        
+        var scale = new ASM!EStringToStringMapEntry;
+        scale.key = "scale";
+        scale.value = s.dataType.scale.asString();
+        t.details.add(scale);
+    }
+
+rule AddNumericTransferAttributeConstraints
+	transform s : JUDOPSM!TransferAttribute
+    to t : ASM!EAnnotation
+    extends AddAbstractNumericTransferAttributeConstraints {
+        guard: s.dataType.isKindOf(JUDOPSM!NumericType) and not s.dataType.isKindOf(JUDOPSM!MeasuredType)
+    }
+
+rule AddMeasuredTransferAttributeConstraints
+    transform s : JUDOPSM!TransferAttribute
+    to t : ASM!EAnnotation
+    extends AddAbstractNumericTransferAttributeConstraints {
+        guard: s.dataType.isKindOf(JUDOPSM!MeasuredType)
+        
+        var measure = new ASM!EStringToStringMapEntry;
+        measure.key = "measure";
+        measure.value = psmUtils.namespaceElementToString(s.dataType.storeUnit.eContainer).replace("::", ".");
+        t.details.add(measure);
+        
+        var measure = new ASM!EStringToStringMapEntry;
+        measure.key = "unit";
+        measure.value = s.dataType.storeUnit.name;
+        t.details.add(measure);
+    }
+
+rule CreateTransferObjectAttributeBindingAnnotation
+	transform s : JUDOPSM!TransferAttribute
+	to t : ASM!EAnnotation {
+		guard: s.isPrimitive() and s.binding.isDefined()
+		
+		t.source = asmUtils.getAnnotationUri("binding");
+		
+		var binding = new ASM!EStringToStringMapEntry;
+        binding.key = "value";
+        binding.value = s.binding.name;
+        t.details.add(binding);
+        
+        s.equivalent("CreateTransferObjectAttribute").eAnnotations.add(t); 
+    }
+
+rule CreateTransferObjectRelationBindingAnnotation
+	transform s : JUDOPSM!TransferObjectRelation
+	to t : ASM!EAnnotation {
+		guard: s.binding.isDefined()
+		
+		t.source = asmUtils.getAnnotationUri("binding");
+		
+		var binding = new ASM!EStringToStringMapEntry;
+        binding.key = "value";
+        binding.value = s.binding.name;
+        t.details.add(binding);
+        
+        s.equivalent("CreateTransferObjectRelation").eAnnotations.add(t); 
     }
 
 rule CreateTransferObjectAttribute
@@ -48,29 +159,10 @@ rule CreateTransferObjectAttribute
 			t.lowerBound = 0;
 		}
 		
+		t.eType = s.dataType.getEcoreType();
 		t.derived = s.binding.isDefined() and not s.binding.isKindOf(JUDOPSM!Attribute);
 
-		t.eType = s.dataType.getEcoreType();
-
-		var annotations = s.dataType.createASMAnnotations();
-		var annotation = new ASM!EAnnotation;
-		annotation.source = extendedMetadataURI;
-		t.eAnnotations.add(annotation);
-
-        if (s.binding.isDefined()) {
-			var aMappedAttribute = new ASM!EStringToStringMapEntry;
-			aMappedAttribute.key = "mappedAttribute";
-			aMappedAttribute.value = s.binding.name;
-			annotation.details.add(aMappedAttribute);
-			
-			t.derived = not s.binding.isKindOf(JUDOPSM!Attribute);
-        }
-		
-		if (not annotations.isEmpty()) {
-			annotation.details.addAll(annotations);
-		}
-
-		s.getTransferObjectType().transformToAsm().eStructuralFeatures.add(t);
+		s.getTransferObjectType().asmEquivalent().eStructuralFeatures.add(t);
 	}
 
 rule CreateTransferObjectRelation
@@ -82,26 +174,9 @@ rule CreateTransferObjectRelation
 		t.lowerBound = s.cardinality.lower;
 		t.upperBound = s.cardinality.upper;
 		
+		t.eType = s.target.asmEquivalent();
 		t.derived = s.binding.isDefined() and not s.binding.isKindOf(JUDOPSM!Relation);
-
-		var annotations = s.target.createASMAnnotations();
-		var annotation = new ASM!EAnnotation;
-		annotation.source = extendedMetadataURI;
-		t.eAnnotations.add(annotation);
-
-        if (s.binding.isDefined()) {
-			var aMappedReference = new ASM!EStringToStringMapEntry;
-			aMappedReference.key = "mappedReference";
-			aMappedReference.value = s.binding.name;
-			annotation.details.add(aMappedReference);
-			
-			t.derived = not s.binding.isKindOf(JUDOPSM!Relation);
-        }
+		t.eType = s.target.asmEquivalent();
 		
-		if (not annotations.isEmpty()) {
-		    annotation.details.addAll(annotations);
-		}
-
-		s.getTransferObjectType().transformToAsm().eStructuralFeatures.add(t);
-		t.eType = s.target.transformToAsm();
+		s.getTransferObjectType().asmEquivalent().eStructuralFeatures.add(t);
 	}

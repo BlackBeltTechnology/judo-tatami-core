@@ -1,5 +1,4 @@
 import "derived.eol";
-import "entity.eol";
 import "operation.eol";
 import "package.eol";
 import "transferObject.eol";

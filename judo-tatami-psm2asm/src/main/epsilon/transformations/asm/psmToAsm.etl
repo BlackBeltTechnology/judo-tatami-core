@@ -8,36 +8,13 @@ import "modules/type.etl";
 
 post {
     for (graph in JUDOPSM!ExposedGraph.all) {
+        var graphFqName = asmUtils.getClassifierFQName(graph.equivalent("CreateExposedGraph"));
         for (mto in graph.getMappedTransferObjects()) {
-		    var annotation = mto.transformToAsm().eAnnotations.selectOne(a | a.source = extendedMetadataURI);
-            if (not annotation.isDefined()) {
-                annotation = new ASM!EAnnotation;
-		        annotation.source = extendedMetadataURI;
-		        mto.transformToAsm().eAnnotations.add(annotation);
+            asmUtils.addExtensionAnnotation(mto.equivalent("CreateMappedTransferObject"), "graph", graphFqName);
+            
+            for (o in mto.operations) {
+                asmUtils.addExtensionAnnotation(o.equivalent("CreateBoundOperation"), "graph", graphFqName);
             }
-
-            var index = annotation.details.select(d | d.key.startsWith("graphs.")).size();
-		    var aGraph = new ASM!EStringToStringMapEntry;
-		    aGraph.key = "graphs." + index;
-		    aGraph.value = asmUtils.getClassifierFQName(graph.equivalent("CreateExposedGraph"));
-		    annotation.details.add(aGraph);
 		}
-
-        // TODO - all operations of transfer object types are exposed, create all bound operations
-		/*for (eo in graph.exposedOperations) {
-		    var o = eo.`operation`;
-		    var annotation = o.equivalent("CreateBoundOperation").eAnnotations.selectOne(a | a.source = extendedMetadataURI);
-            if (not annotation.isDefined()) {
-                annotation = new ASM!EAnnotation;
-		        annotation.source = extendedMetadataURI;
-		        o.equivalent("CreateBoundOperation").eAnnotations.add(annotation);
-            }
-
-            var index = annotation.details.select(d | d.key.startsWith("graphs.")).size();
-		    var aGraph = new ASM!EStringToStringMapEntry;
-		    aGraph.key = "graphs." + index;
-		    aGraph.value = asmUtils.getClassifierFQName(graph.equivalent("CreateExposedGraph"));
-		    annotation.details.add(aGraph);
-		} */
     }
 }

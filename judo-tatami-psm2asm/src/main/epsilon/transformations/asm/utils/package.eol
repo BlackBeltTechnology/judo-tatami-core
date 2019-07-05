@@ -1,9 +1,9 @@
 @cached
-operation JUDOPSM!Model transformToAsm() : ASM!EPackage {
+operation JUDOPSM!Model asmEquivalent() : ASM!EPackage {
     return self.equivalent("ModelToPackage");
 }
 
 @cached
-operation JUDOPSM!Package transformToAsm() : ASM!EPackage {
+operation JUDOPSM!Package asmEquivalent() : ASM!EPackage {
     return self.equivalent("PackageToPackage");
 }

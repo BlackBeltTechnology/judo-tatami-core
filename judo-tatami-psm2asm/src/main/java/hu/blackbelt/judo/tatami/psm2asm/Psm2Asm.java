@@ -8,6 +8,7 @@ import hu.blackbelt.epsilon.runtime.execution.contexts.EtlExecutionContext;
 import hu.blackbelt.epsilon.runtime.execution.exceptions.ScriptExecutionException;
 import hu.blackbelt.judo.meta.asm.runtime.AsmModel;
 import hu.blackbelt.judo.meta.asm.runtime.AsmUtils;
+import hu.blackbelt.judo.meta.psm.PsmUtils;
 import hu.blackbelt.judo.meta.psm.runtime.PsmModel;
 import hu.blackbelt.judo.tatami.core.TransformationTraceUtil;
 import org.eclipse.emf.ecore.EObject;
@@ -64,8 +65,10 @@ public class Psm2Asm {
                                 .resource(asmResource)
                                 .build()))
                 .sourceDirectory(scriptDir)
-                .injectContexts(ImmutableMap.of("asmUtils", new AsmUtils((asmModel.getResourceSet()))))
-                .build();
+                .injectContexts(ImmutableMap.of(
+                        "asmUtils", new AsmUtils((asmModel.getResourceSet())),
+                        "psmUtils", new PsmUtils()
+                )).build();
 
         // run the model / metadata loading
         executionContext.load();

@@ -9,9 +9,9 @@ rule NamespaceToPackage
 
 		var parent = s.getParent();
 		if (parent.isDefined()) {
-		    t.nsURI = parent.transformToAsm().nsURI + "/" + s.name;
-		    t.nsPrefix = parent.transformToAsm().nsPrefix + s.name.firstToUpperCase();
-			parent.transformToAsm().eSubpackages.add(t);
+		    t.nsURI = parent.asmEquivalent().nsURI + "/" + s.name;
+		    t.nsPrefix = parent.asmEquivalent().nsPrefix + s.name.firstToUpperCase();
+			parent.asmEquivalent().eSubpackages.add(t);
 		} else {
             t.nsURI = nsURI + "/" + s.name;
             t.nsPrefix = nsPrefix + s.name.firstToUpperCase();
