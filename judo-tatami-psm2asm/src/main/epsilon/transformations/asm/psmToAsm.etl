@@ -10,10 +10,10 @@ post {
     for (graph in JUDOPSM!ExposedGraph.all) {
         var accessPointFQName = asmUtils.getClassifierFQName(graph.eContainer.equivalent("CreateAccessPoint"));
         for (mto in graph.getMappedTransferObjects()) {
-            asmUtils.addExtensionAnnotation(mto.equivalent("CreateMappedTransferObject"), "graph", accessPointFQName + "/" + graph.name);
+            asmUtils.addExtensionAnnotation(mto.equivalent("CreateMappedTransferObject"), "exposedGraph", accessPointFQName + "/" + graph.name);
             
             for (o in mto.operations) {
-                asmUtils.addExtensionAnnotation(o.equivalent("CreateBoundOperation"), "graph", accessPointFQName + "/" + graph.name);
+                asmUtils.addExtensionAnnotation(o.equivalent("CreateBoundOperation"), "exposedGraph", accessPointFQName + "/" + graph.name);
             }
 		}
     }
