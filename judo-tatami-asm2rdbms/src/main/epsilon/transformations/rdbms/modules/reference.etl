@@ -1,5 +1,3 @@
-import "../../../operations/asm/_importAll.eol";
-
 rule EReferenceToRdbmsTableForeignKey 
 	transform s : ASM!EReference
 	to fk : RDBMS!RdbmsForeignKey {

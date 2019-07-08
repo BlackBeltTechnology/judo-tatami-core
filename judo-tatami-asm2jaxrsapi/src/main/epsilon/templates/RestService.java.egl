@@ -1,5 +1,4 @@
 [%
-  import "../operations/asm/_importAll.eol";
   import "../operations/jaxrs.eol";
   out.setContentType("Java");
 %]

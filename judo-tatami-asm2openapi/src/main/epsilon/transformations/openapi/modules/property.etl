@@ -1,6 +1,3 @@
-import "../../../operations/asm/_importAll.eol";
-import "../../../operations/asm/accesspoint/_importAll.eol";
-
 import "schema.etl";
 
 rule CreateDataPropertyDeclaration

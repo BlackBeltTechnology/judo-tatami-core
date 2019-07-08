@@ -35,7 +35,7 @@ rule CreateAccessPointAnnotation
         t.source = asmUtils.getAnnotationUri("accessPoint");
         
         var accessPoint = new ASM!EStringToStringMapEntry;
-        accessPoint.key = "accessPoint";
+        accessPoint.key = "value";
         accessPoint.value = "true";
         t.details.add(accessPoint);
         
