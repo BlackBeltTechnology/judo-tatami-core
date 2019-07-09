@@ -3,31 +3,34 @@ import "../../../operations/openapi/_importAll.eol";
 import "api.etl";
 
 rule CreateTransferObjectSingleSchemaDeclaration
-    transform s : ASM!EStringToStringMapEntry
+    transform s : ASM!EAnnotation
     to t : OPENAPI!SchemaDeclaration {
-        guard: s.key.startsWith(".accessPoints.") and s.getAnnotatedClass().isDefined() and not asmUtils.isEntityType(s.getAnnotatedClass())
+        guard: s.eContainer.isKindOf(ASM!EClass) and s.source == asmUtils.getAnnotationUri("exposedBy") and (not asmUtils.isEntityType(s.eContainer) or asmUtils.isMappedTransferObjectType(s.eContainer))
         
-        var accessPoint = asmUtils.resolve(s.value).orElse(null);
+        t.name = asmUtils.getClassifierFQName(s.eContainer).toOpenAPIName();
         
-        t.name = asmUtils.getClassifierFQName(s.getAnnotatedClass()).toOpenAPIName();
-
-        accessPoint.equivalent("CreateOpenAPIAccessPoint").definitions.add(t);
+        var accessPoint = asmUtils.getResolvedExposedBy(s);
+        if (accessPoint.isPresent()) {
+		    accessPoint.get().equivalent("CreateOpenAPIAccessPoint").definitions.add(t);
+        } else {
+            delete t;
+        }
 }
 
 rule CreateTransferObjectSingleSchemaDefinition
-    transform s : ASM!EStringToStringMapEntry
+    transform s : ASM!EAnnotation
     to t : OPENAPI!Schema {
-        guard: s.key.startsWith(".accessPoints.") and s.getAnnotatedClass().isDefined() and not asmUtils.isEntityType(s.getAnnotatedClass())
+        guard: s.eContainer.isKindOf(ASM!EClass) and s.source == asmUtils.getAnnotationUri("exposedBy") and (not asmUtils.isEntityType(s.eContainer) or asmUtils.isMappedTransferObjectType(s.eContainer))
         
-        t.description = "Schema of " + s.getAnnotatedClass().name;
+        t.description = "Schema of " + s.eContainer.name;
         t.type = OPENAPI!JSONDataType#object;
 
-        if (asmUtils.isMappedTransferObjectType(s.getAnnotatedClass())) {
+        if (asmUtils.isMappedTransferObjectType(s.eContainer)) {
             var id = new OPENAPI!PropertyDeclaration;
             id.name = "__identifier";
 
             id.property = new OPENAPI!Property;
-            id.property.description = "ID of " + asmUtils.getEntityType(s.getAnnotatedClass()).get().name + " instance";
+            id.property.description = "ID of " + asmUtils.getMappedEntityType(s.eContainer).get().name + " instance";
             id.property.type = OPENAPI!JSONDataType#string;
 
             t.properties.add(id);
@@ -37,32 +40,35 @@ rule CreateTransferObjectSingleSchemaDefinition
 }
 
 rule CreateTransferObjectArraySchemaDeclaration
-    transform s : ASM!EStringToStringMapEntry
+    transform s : ASM!EAnnotation
     to t : OPENAPI!SchemaDeclaration {
-        guard: s.key.startsWith(".accessPoints.") and s.getAnnotatedClass().isDefined() and not asmUtils.isEntityType(s.getAnnotatedClass())
+        guard: s.eContainer.isKindOf(ASM!EClass) and s.source == asmUtils.getAnnotationUri("exposedBy") and (not asmUtils.isEntityType(s.eContainer) or asmUtils.isMappedTransferObjectType(s.eContainer))
         
-        var accessPoint = asmUtils.resolve(s.value).orElse(null);
+        t.name = "arrayOf__" + asmUtils.getClassifierFQName(s.eContainer).toOpenAPIName();
         
-        t.name = "arrayOf__" + asmUtils.getClassifierFQName(s.getAnnotatedClass()).toOpenAPIName();
-        
-        accessPoint.equivalent("CreateOpenAPIAccessPoint").definitions.add(t);
+        var accessPoint = asmUtils.getResolvedExposedBy(s);
+        if (accessPoint.isPresent()) {
+            accessPoint.get().equivalent("CreateOpenAPIAccessPoint").definitions.add(t);
+        } else {
+            delete t;
+        }
 }
 
 rule CreateTransferObjectArraySchemaDefinition
-    transform s : ASM!EStringToStringMapEntry
+    transform s : ASM!EAnnotation
     to t : OPENAPI!Schema {
-        guard: s.key.startsWith(".accessPoints.") and s.getAnnotatedClass().isDefined() and not asmUtils.isEntityType(s.getAnnotatedClass())
+        guard: s.eContainer.isKindOf(ASM!EClass) and s.source == asmUtils.getAnnotationUri("exposedBy") and (not asmUtils.isEntityType(s.eContainer) or asmUtils.isMappedTransferObjectType(s.eContainer))
         
-        t.description = "Arrays of " + s.getAnnotatedClass().name + "s";
+        t.description = "Arrays of " + s.eContainer.name + "s";
         t.type = OPENAPI!JSONDataType#array;
         
         s.equivalent("CreateTransferObjectArraySchemaDeclaration").schema = t;
 }
 
 rule CreateTransferObjectArrayItemsDefinition
-    transform s : ASM!EStringToStringMapEntry
+    transform s : ASM!EAnnotation
     to t : OPENAPI!Property {
-        guard: s.key.startsWith(".accessPoints.") and s.getAnnotatedClass().isDefined() and not asmUtils.isEntityType(s.getAnnotatedClass())
+        guard: s.eContainer.isKindOf(ASM!EClass) and s.source == asmUtils.getAnnotationUri("exposedBy") and (not asmUtils.isEntityType(s.eContainer) or asmUtils.isMappedTransferObjectType(s.eContainer))
         
         t.ref = new OPENAPI!SchemaReference;
         t.ref.ref = s.equivalent("CreateTransferObjectSingleSchemaDeclaration").getReference();

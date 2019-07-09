@@ -3,7 +3,7 @@ import "../../../operations/openapi/_importAll.eol";
 rule CreateOpenAPIAccessPoint
     transform s : ASM!EClass
     to t : OPENAPI!API {
-        guard: s.isAccessPoint()
+        guard: asmUtils.isAccessPoint(s)
         
         t.swagger = "2.0";
 
@@ -18,7 +18,7 @@ rule CreateOpenAPIAccessPoint
 rule CreateOpenAPIAccessPointInfo
     transform s : ASM!EClass
     to t : OPENAPI!Info {
-        guard: s.isAccessPoint()
+        guard: asmUtils.isAccessPoint(s)
         
         t.version = "1.0.0"; // TODO
         t.title = s.name;
@@ -29,7 +29,7 @@ rule CreateOpenAPIAccessPointInfo
 rule CreateInternalServerErrorDeclaration
     transform s : ASM!EClass
     to t : OPENAPI!ResponseDeclaration {
-        guard: s.isAccessPoint()
+        guard: asmUtils.isAccessPoint(s)
 
         t.name = "InternalServerError";
         
@@ -39,7 +39,7 @@ rule CreateInternalServerErrorDeclaration
 rule CreateInternalServerErrorDefinition
     transform s : ASM!EClass
     to t : OPENAPI!ResponseDefinition {
-        guard: s.isAccessPoint()
+        guard: asmUtils.isAccessPoint(s)
 
         t.description = "Internal server error";
         

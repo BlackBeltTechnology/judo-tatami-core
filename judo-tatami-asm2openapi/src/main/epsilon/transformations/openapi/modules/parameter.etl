@@ -1,58 +1,65 @@
-import "../../../operations/openapi/_importAll.eol";
-
 import "api.etl";
 import "schema.etl";
 
 rule CreateEntityIdParameterDeclaration
-    transform s : ASM!EStringToStringMapEntry
+    transform s : ASM!EAnnotation
     to t : OPENAPI!ParameterDeclaration {
-        guard: s.key.startsWith(".accessPoints.") and s.getAnnotatedClass().isDefined() and asmUtils.isEntityType(s.getAnnotatedClass())
+        guard: s.eContainer.isKindOf(ASM!EClass) and s.source == asmUtils.getAnnotationUri("exposedBy") and asmUtils.isEntityType(s.eContainer)
         
-        var accessPoint = asmUtils.resolve(s.value).orElse(null);
+        t.name = "__identifier__" + asmUtils.getClassifierFQName(s.eContainer).toOpenAPIName();
         
-        t.name = "__identifier__" + asmUtils.getClassifierFQName(s.getAnnotatedClass()).toOpenAPIName();
-        
-        accessPoint.equivalent("CreateOpenAPIAccessPoint").parameters.add(t);
+        var accessPoint = asmUtils.getResolvedExposedBy(s);
+        if (accessPoint.isPresent()) {
+            accessPoint.get().equivalent("CreateOpenAPIAccessPoint").parameters.add(t);
+        } else {
+            delete t;
+        }
 }
 
 rule CreateEntityIdParameterDefinition
-    transform s : ASM!EStringToStringMapEntry
+    transform s : ASM!EAnnotation
     to t : OPENAPI!ParameterDefinition {
-        guard: s.key.startsWith(".accessPoints.") and s.getAnnotatedClass().isDefined() and asmUtils.isEntityType(s.getAnnotatedClass())
+        guard: s.eContainer.isKindOf(ASM!EClass) and s.source == asmUtils.getAnnotationUri("exposedBy") and asmUtils.isEntityType(s.eContainer)
         
         t.name = "__identifier";
         t.`in` = OPENAPI!ParameterLocation#header;
         t.type = OPENAPI!JSONDataType#string;
-        t.description = "ID of " + s.getAnnotatedClass().name + " instance";
+        t.description = "ID of " + s.eContainer.name + " instance";
         t.required = true;
         
         s.equivalent("CreateEntityIdParameterDeclaration").parameter = t;
 }
 
 rule CreateParameterDeclaration
-    transform s : ASM!EStringToStringMapEntry
+    transform s : ASM!EAnnotation
     to t : OPENAPI!ParameterDeclaration {
-        guard: s.key.startsWith(".accessPoints.") and s.getAnnotatedParameter().isDefined()
+        guard: s.eContainer.isKindOf(ASM!EParameter) and s.source == asmUtils.getAnnotationUri("exposedBy")
         
-        var accessPoint = asmUtils.resolve(s.value).orElse(null);
+        t.name = (asmUtils.getOperationFQName(s.eContainer.eOperation) + "__" + s.eContainer.name).toOpenAPIName();
         
-        t.name = (asmUtils.getOperationFQName(s.getAnnotatedParameter().eOperation) + "__" + s.getAnnotatedParameter().name).toOpenAPIName();
-        
-        accessPoint.equivalent("CreateOpenAPIAccessPoint").parameters.add(t);
+        var accessPoint = asmUtils.getResolvedExposedBy(s);
+        if (accessPoint.isPresent()) {
+            accessPoint.get().equivalent("CreateOpenAPIAccessPoint").parameters.add(t);
+        } else {
+            delete t;
+        }
 }
 
 rule CreateParameterDefinition
-    transform s : ASM!EStringToStringMapEntry
+    transform s : ASM!EAnnotation
     to t : OPENAPI!ParameterDefinition {
-        guard: s.key.startsWith(".accessPoints.") and s.getAnnotatedParameter().isDefined()
+        guard: s.eContainer.isKindOf(ASM!EParameter) and s.source == asmUtils.getAnnotationUri("exposedBy")
         
-        t.name = s.getAnnotatedParameter().name;
+        t.name = s.eContainer.name;
         t.required = true;
         t.`in` = OPENAPI!ParameterLocation#body;
         t.schema = new OPENAPI!Schema;
         t.schema.ref = new OPENAPI!SchemaReference();
+        t.schema.ref.ref="TODO";
         
-        var annotation = asmUtils.getExtensionAnnotation(s.getAnnotatedParameter().eType, false);
+        // TODO
+        
+        /*var annotation = asmUtils.getExtensionAnnotation(s.getAnnotatedParameter().eType, false);
         if (annotation.isPresent()) {
             var a = annotation.get().details.selectOne(d | d.key.startsWith(".accessPoints.") and d.value = s.value);
 
@@ -63,7 +70,7 @@ rule CreateParameterDefinition
 	        }
         } else {
             throw "Parameter is not prepared";
-        }
+        } */
         
         s.equivalent("CreateParameterDeclaration").parameter = t;
 }

@@ -1,4 +1,4 @@
-import "../../../operations/openapi/_importAll.eol";
+/*import "../../../operations/openapi/_importAll.eol";
 
 import "api.etl";
 import "parameter.etl";
@@ -117,3 +117,4 @@ rule CreateExposedServicePostOperationResponseDefinition
 
         s.equivalent("CreateExposedServicePostOperationResponse").response = t;
 }
+*/

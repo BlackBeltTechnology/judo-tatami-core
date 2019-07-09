@@ -3,14 +3,16 @@ import "../../../operations/openapi/_importAll.eol";
 import "api.etl";
 
 rule CreateTag
-    transform s : ASM!EClass
+    transform s : ASM!EAnnotation
     to t : OPENAPI!Tag {
-        guard: s.isExposedGraph()
+        guard: asmUtils.isGraph(s)
         
-        var root = s.getResolvedRoot();
-        
-        t.name = s.getExposedGraphName().toOpenAPIName();
-        t.description = "Exposed graph with " + root.name + " instances as root";
-        
-        s.getResolvedExposedBy().equivalent("CreateOpenAPIAccessPoint").tags.add(t);
+		t.name = asmUtils.getGraphName(s).get().toOpenAPIName();
+		
+		var root = asmUtils.getResolvedRoot(s);
+        if (root.isPresent()) {
+		    t.description = "Exposed graph with " + root.get().name + " instances as root";
+		    
+		    asmUtils.getAccessPointOfGraph(s).get().equivalent("CreateOpenAPIAccessPoint").tags.add(t);
+        }
 }

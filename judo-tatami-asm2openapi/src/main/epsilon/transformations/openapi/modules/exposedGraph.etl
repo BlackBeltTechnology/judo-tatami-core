@@ -6,21 +6,20 @@ import "schema.etl";
 import "tag.etl";
 
 rule CreateExposedGraphEntryPointPath
-    transform s : ASM!EClass
+    transform s : ASM!EAnnotation
     to t : OPENAPI!Path {
-        guard: s.isExposedGraph()
+        guard: asmUtils.isGraph(s)
         
-        var accessPoint = s.getResolvedExposedBy();
-        
-        t.relativePath = "/" + s.getExposedGraphName();
+        var accessPoint = s.eContainer();
+        t.relativePath = "/" + asmUtils.getGraphName(s).get();
         
         accessPoint.equivalent("CreateOpenAPIAccessPoint").paths.add(t);
 }
 
 rule CreateExposedGraphEntryPointOperation
-    transform s : ASM!EClass
+    transform s : ASM!EAnnotation
     to t : OPENAPI!Operation {
-        guard: s.isExposedGraph()
+        guard: asmUtils.isGraph(s)
         
         t.tags.add(s.equivalent("CreateTag").name);
         
@@ -28,22 +27,22 @@ rule CreateExposedGraphEntryPointOperation
 }
 
 rule CreateExposedGraphEntryPointOperationResponse
-    transform s : ASM!EClass
+    transform s : ASM!EAnnotation
     to t : OPENAPI!OperationResponse {
-        guard: s.isExposedGraph()
+        guard: asmUtils.isGraph(s)
         
         t.code = "200";
         
         s.equivalent("CreateExposedGraphEntryPointOperation").responses.add(t);
 }
 
-rule CreateExposedGraphEntryPointOperationResponseDefinition
-    transform s : ASM!EClass
+/*rule CreateExposedGraphEntryPointOperationResponseDefinition
+    transform s : ASM!EAnnotation
     to t : OPENAPI!ResponseDefinition {
-        guard: s.isExposedGraph()
+        guard: asmUtils.isGraph(s)
         
-        var accessPoint = s.getResolvedExposedBy();
-        var root = s.getResolvedRoot();
+        var accessPoint = s.eContainer();
+        var root = asmUtils.getResolvedRoot(s);
         
         var collection = true;
         var aCollection = asmUtils.getExtensionAnnotationValue(s, "root.collection", false);
@@ -63,9 +62,9 @@ rule CreateExposedGraphEntryPointOperationResponseDefinition
         }
         
         s.equivalent("CreateExposedGraphEntryPointOperationResponse").response = t;
-}
+} */
 
-rule CreateExposedGraphPath
+/*rule CreateExposedGraphPath
     transform s : ASM!EStringToStringMapEntry
     to t : OPENAPI!Path {
         guard: s.key.startsWith(".graphs.") and s.getAnnotatedOperation().isDefined()
@@ -229,3 +228,4 @@ rule CreateExposedGraphPostOperationResponseDefinition
 
         s.equivalent("CreateExposedGraphPostOperationResponse").response = t;
 }
+*/

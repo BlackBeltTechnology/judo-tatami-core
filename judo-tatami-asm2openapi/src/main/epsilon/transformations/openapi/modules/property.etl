@@ -1,22 +1,41 @@
 import "schema.etl";
 
-rule CreateDataPropertyDeclaration
-    transform s : ASM!EStringToStringMapEntry
+/*rule CreateDataPropertyDeclaration
+    transform s : ASM!EAnnotation
     to t : OPENAPI!PropertyDeclaration {
-        guard: s.key.startsWith(".accessPoints.") and s.getAnnotatedAttribute().isDefined()
+        guard: s.eContainer.isKindOf(ASM!EAttribute) and s.source == asmUtils.getAnnotationUri("exposedBy")
         
-        t.name = s.getAnnotatedAttribute().name;
+        t.name = s.eContainer.name;
         
-        var annotation = asmUtils.getExtensionAnnotation(s.getAnnotatedAttribute().eContainingClass, false);
-        if (annotation.isPresent()) {
-	        var a = annotation.get().details.selectOne(d | d.key.startsWith(".accessPoints.") and d.value = s.value);
-	        a.equivalent("CreateTransferObjectSingleSchemaDefinition").properties.add(t);
+        var accessPoint = asmUtils.getResolvedExposedBy(s);
+        if (accessPoint.isPresent()) {
+		    //accessPoint.get().equivalent("CreateOpenAPIAccessPoint").definitions.add(t);
+		    
+		    log.info("AP: " + accessPoint.get.equivalent("CreateOpenAPIAccessPoint"));
+		    
+		    
+		    log.info("C: " + s.eContainer.eContainer);
+		    
+		    var transferObjectType = asmUtils.getExtensionAnnotationListByName(s.eContainer.eContainer, "exposedBy").selectOne(a | a.details.exists(d | d.key == "value" and d.value == s.value));
+		    log.info("T: " + transferObjectType);
+		    
+		    delete t;
         } else {
-            throw "Container of attribute is not prepared with annotation";
+            delete t;
         }
-}
+        
+        //log.info("C: " + s.eContainer.eContainingClass);
+        //
+        //var annotation = asmUtils.getExtensionAnnotation(s.getAnnotatedAttribute().eContainingClass, false);
+        //if (annotation.isPresent()) {
+	    //    var a = annotation.get().details.selectOne(d | d.key.startsWith(".accessPoints.") and d.value = s.value);
+	    //    a.equivalent("CreateTransferObjectSingleSchemaDefinition").properties.add(t);
+        //} else {
+        //    throw "Container of attribute is not prepared with annotation";
+        //}
+} */
 
-rule CreateDataPropertyDefinition
+/*rule CreateDataPropertyDefinition
     transform s : ASM!EStringToStringMapEntry
     to t : OPENAPI!Property {
         guard: s.key.startsWith(".accessPoints.") and s.getAnnotatedAttribute().isDefined()
@@ -84,9 +103,9 @@ rule CreateDataPropertyDefinition
         }
         
         s.equivalent("CreateDataPropertyDeclaration").property = t;
-}
+} */
 
-rule CreateReferencePropertyDeclaration
+/*rule CreateReferencePropertyDeclaration
     transform s : ASM!EStringToStringMapEntry
     to t : OPENAPI!PropertyDeclaration {
         guard: s.key.startsWith(".accessPoints.") and s.getAnnotatedReference().isDefined() and s.getAnnotatedReference().containment
@@ -133,3 +152,4 @@ rule CreateReferencePropertyDefinition
 
         s.equivalent("CreateReferencePropertyDeclaration").property = t;
 }
+*/
