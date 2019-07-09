@@ -1,5 +1,3 @@
-import "../../../operations/psm/namespace/_importNamespace.eol";
-
 @cached
 operation String getJudoDataType() : ASM!EDataType {
 	var dataType : ASM!EDataType = 

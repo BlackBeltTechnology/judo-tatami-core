@@ -1,5 +1,3 @@
-import "../../../operations/psm/measure/_importMeasure.eol";
-import "../../../operations/psm/data/_importData.eol";
 import "../utils/_importUtils.eol";
 
 rule CreateEntityAnnotationClass

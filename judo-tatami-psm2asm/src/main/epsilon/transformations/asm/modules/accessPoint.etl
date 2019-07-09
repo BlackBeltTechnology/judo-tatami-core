@@ -1,34 +1,5 @@
 import "../utils/_importUtils.eol";
 
-@cached
-operation JUDOPSM!ExposedGraph getMappedTransferObjects() : Set {
-    return Set{self.mappedTransferObjectType}.includingAll(self.mappedTransferObjectType.getMappedTargets());
-}
-
-@cached
-operation JUDOPSM!TransferObjectType getMappedTargets() : Set {
-    return self.getNewMappedTargets(new Set);
-}
-
-operation JUDOPSM!TransferObjectType getNewMappedTargets(currentTargets : Set) : Set {
-    var newTargets = self.relations.select(r | r.target.isKindOf(JUDOPSM!MappedTransferObjectType)).collect(r | r.target).excludingAll(currentTargets);
-    currentTargets.addAll(newTargets);
-    for (t in newTargets) {
-        currentTargets.addAll(t.getNewMappedTargets(currentTargets));
-    }
-    return currentTargets;
-}
-
-@cached
-operation JUDOPSM!ExposedService getAccessPoint() : JUDOPSM!AccessPoint {
-    return JUDOPSM!AccessPoint.all.selectOne(ap | ap.exposedServices.contains(self));
-}
-
-@cached
-operation JUDOPSM!ExposedGraph getAccessPoint() : JUDOPSM!AccessPoint {
-    return JUDOPSM!AccessPoint.all.selectOne(ap | ap.exposedGraphs.contains(self));
-}
-
 rule CreateAccessPointAnnotation
     transform s : JUDOPSM!AccessPoint
     to t : ASM!EAnnotation {
@@ -61,13 +32,13 @@ rule CreateExposedByAnnotationForUnboundOperation
         
         var exposedBy = new ASM!EStringToStringMapEntry;
         exposedBy.key = "value";
-        exposedBy.value = asmUtils.getClassifierFQName(s.getAccessPoint().equivalent("CreateAccessPoint"));
+        exposedBy.value = asmUtils.getClassifierFQName(s.eContainer.equivalent("CreateAccessPoint"));
         t.details.add(exposedBy);
         
         s.`operation`.equivalent("CreateUnboundOperation").eAnnotations.add(t);
 }
 
-rule CreateExposedByAnnotationForExposedGraph
+rule CreateAnnotationForExposedGraph
     transform s : JUDOPSM!ExposedGraph
     to t : ASM!EAnnotation {
         t.source = asmUtils.getAnnotationUri("graph");
@@ -97,5 +68,5 @@ rule CreateExposedByAnnotationForExposedGraph
         collection.value = (s.selector.cardinality.upper > 1 or s.selector.cardinality.upper == -1).asString();
         t.details.add(collection);
         
-        s.getAccessPoint().equivalent("CreateAccessPoint").eAnnotations.add(t);
+        s.eContainer.equivalent("CreateAccessPoint").eAnnotations.add(t);
 }

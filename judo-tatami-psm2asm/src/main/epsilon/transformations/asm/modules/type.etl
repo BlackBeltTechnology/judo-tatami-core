@@ -1,4 +1,3 @@
-import "../../../operations/psm/type/_importType.eol";
 import "../utils/_importUtils.eol";
 
 rule CreateEnumeration

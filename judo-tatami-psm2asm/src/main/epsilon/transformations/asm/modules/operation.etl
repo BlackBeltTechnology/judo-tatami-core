@@ -1,4 +1,3 @@
-import "../../../operations/psm/service/_importService.eol";
 import "../utils/_importUtils.eol";
 
 @cached
@@ -80,7 +79,7 @@ rule CreateBoundOperation
     extends CreateOperation {
         t.name = s.name;
         
-        s.getTransferObjectType().asmEquivalent().eOperations.add(t);
+        s.eContainer.asmEquivalent().eOperations.add(t);
 }
 
 @greedy
@@ -110,11 +109,11 @@ rule CreateGraphOperation
     to t : ASM!EClass {
     	guard: s.isNavigable()
     	
-        t.name = s.getTransferObjectType().name + "ʘ" + s.name;
+        t.name = s.eContainer.name + "ʘ" + s.name;
         t.abstract = true;
         t.interface = true;
         
-        s.getTransferObjectType().getNamespace().asmEquivalent().eClassifiers.add(t);
+        s.eContainer.eContainer.asmEquivalent().eClassifiers.add(t);
 }
 
 rule CreateStatefulAnnotationForGetterOperationForRelation
@@ -170,8 +169,8 @@ rule CreateReferenceClassForRelation
     to t : ASM!EClass {
         guard: s.isNavigable() and s.isMutable()
         
-        t.name = s.getTransferObjectType().name + "ʘ" + s.name + "ʘReference";
-        s.getTransferObjectType().getNamespace().asmEquivalent().eClassifiers.add(t);
+        t.name = s.eContainer.name + "ʘ" + s.name + "ʘReference";
+        s.eContainer.eContainer.asmEquivalent().eClassifiers.add(t);
 }
 
 rule CreateStatefulAnnotationForSetterOperationForRelation
