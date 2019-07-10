@@ -22,7 +22,7 @@ rule CreateTransferObjectSingleSchemaDefinition
     to t : OPENAPI!Schema {
         guard: s.eContainer.isKindOf(ASM!EClass) and s.source == asmUtils.getAnnotationUri("exposedBy") and (not asmUtils.isEntityType(s.eContainer) or asmUtils.isMappedTransferObjectType(s.eContainer))
         
-        t.description = "Schema of " + s.eContainer.name;
+        t.description = "Schema of " + s.eContainer.name + " instance";
         t.type = OPENAPI!JSONDataType#object;
 
         if (asmUtils.isMappedTransferObjectType(s.eContainer)) {
@@ -59,7 +59,7 @@ rule CreateTransferObjectArraySchemaDefinition
     to t : OPENAPI!Schema {
         guard: s.eContainer.isKindOf(ASM!EClass) and s.source == asmUtils.getAnnotationUri("exposedBy") and (not asmUtils.isEntityType(s.eContainer) or asmUtils.isMappedTransferObjectType(s.eContainer))
         
-        t.description = "Arrays of " + s.eContainer.name + "s";
+        t.description = "Array of " + s.eContainer.name + " instances";
         t.type = OPENAPI!JSONDataType#array;
         
         s.equivalent("CreateTransferObjectArraySchemaDeclaration").schema = t;

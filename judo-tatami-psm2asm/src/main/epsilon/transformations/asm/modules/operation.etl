@@ -1,11 +1,6 @@
 import "../utils/_importUtils.eol";
 
 @cached
-operation JUDOPSM!Parameter getOperation() : JUDOPSM!Operation {
-    return JUDOPSM!Operation.all.selectOne(o | o.input == self or o.output == self or o.faults.contains(self)); 
-}
-
-@cached
 operation JUDOPSM!Parameter isInput() : Boolean {
     return JUDOPSM!Operation.all.selectOne(o | o.input == self).isDefined();
 }
@@ -29,6 +24,7 @@ rule CreateParameter
         t.eType = s.type.asmEquivalent();
 }
 
+@greedy
 rule CreateInputParameter
     transform s : JUDOPSM!Parameter
     to t : ASM!EParameter
@@ -36,19 +32,22 @@ rule CreateInputParameter
         guard: s.isInput()
         
         t.name = s.name;
-        s.getOperation().asmEquivalent().eParameters.add(t);
+        
+        s.eContainer.asmEquivalent().eParameters.add(t);
 }
 
+@greedy
 rule CreateFaultParameter
     transform s : JUDOPSM!Parameter
-    to t : ASM!EParameter
-    extends CreateParameter {
+    to t : ASM!EClass {
         guard: s.isFault()
         
-        t.name = s.name;
-        s.getOperation().asmEquivalent().eParameters.add(t);
+        throw "Not implemented yet";
+        
+        //s.eContainer.asmEquivalent().eExceptions.add(t);
 }
 
+@greedy
 rule CreateStatefulAnnotationOnOperation
     transform s : JUDOPSM!Operation
     to t : ASM!EAnnotation {

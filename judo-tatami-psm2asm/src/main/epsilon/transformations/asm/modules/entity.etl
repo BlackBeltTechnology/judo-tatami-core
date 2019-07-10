@@ -22,11 +22,6 @@ rule CreateEntityClass
 			t.eSuperTypes.add(super.equivalent("CreateEntityClass"));
 		}
 		s.getNamespace().asmEquivalent().eClassifiers.add(t);
-		
-		/*var identifierClass : ASM!EClass = ASM.resource.resourceSet.packageRegistry.get("http://blackbelt.hu/judo/asm/base")
-			.eClassifiers.selectOne(clazz | clazz.name = "Identifiable");
-
-		t.eSuperTypes.add(identifierClass); */
 	}
 
 @abstract

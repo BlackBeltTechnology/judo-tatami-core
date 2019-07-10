@@ -53,24 +53,33 @@ rule CreateParameterDefinition
         t.name = s.eContainer.name;
         t.required = true;
         t.`in` = OPENAPI!ParameterLocation#body;
-        t.schema = new OPENAPI!Schema;
-        t.schema.ref = new OPENAPI!SchemaReference();
-        t.schema.ref.ref="TODO";
-        
-        // TODO
-        
-        /*var annotation = asmUtils.getExtensionAnnotation(s.getAnnotatedParameter().eType, false);
-        if (annotation.isPresent()) {
-            var a = annotation.get().details.selectOne(d | d.key.startsWith(".accessPoints.") and d.value = s.value);
-
-	        if (s.getAnnotatedParameter().many) {
-	            t.schema.ref.ref = a.equivalent("CreateTransferObjectArraySchemaDeclaration").getReference();
-	        } else {
-	            t.schema.ref.ref = a.equivalent("CreateTransferObjectSingleSchemaDeclaration").getReference();
-	        }
-        } else {
-            throw "Parameter is not prepared";
-        } */
         
         s.equivalent("CreateParameterDeclaration").parameter = t;
+}
+
+rule CreateParameterDefinitionSchema
+    transform s : ASM!EAnnotation
+    to t : OPENAPI!Schema {
+        guard: s.eContainer.isKindOf(ASM!EParameter) and s.source == asmUtils.getAnnotationUri("exposedBy")
+        
+        s.equivalent("CreateParameterDefinition").schema = t;
+}
+
+rule CreateParameterDefinitionSchemaReference
+    transform s : ASM!EAnnotation
+    to t : OPENAPI!SchemaReference {
+        guard: s.eContainer.isKindOf(ASM!EParameter) and s.source == asmUtils.getAnnotationUri("exposedBy")
+        
+        if (s.eContainer.eType.isKindOf(ASM!EClass)) {
+            var transferObjectTypeExposedByAnnotation = asmUtils.getExtensionAnnotationListByName(s.eContainer.eType, "exposedBy").selectOne(a | a.details.get("value") == s.details.get("value"));
+		    if (transferObjectTypeExposedByAnnotation.isDefined()) {
+		        if (s.eContainer.many) {
+		            t.ref = transferObjectTypeExposedByAnnotation.equivalent("CreateTransferObjectArraySchemaDeclaration").getReference();
+		        } else {
+		        	t.ref = transferObjectTypeExposedByAnnotation.equivalent("CreateTransferObjectSingleSchemaDeclaration").getReference();
+		        }
+		    }
+        }
+        
+        s.equivalent("CreateParameterDefinitionSchema").ref = t;
 }

@@ -52,7 +52,7 @@ public class Asm2OpenAPITest {
     public static final String URN_NORTHWIND_OPENAPI = "urn:northwind-openapi.model";
     public static final String NORTHWIND = "northwind";
     public static final String VERSION = "1.0.0";
-    
+
     URIHandler uriHandler;
     Log slf4jlog;
     AsmModel asmModel;
@@ -124,34 +124,36 @@ public class Asm2OpenAPITest {
         OpenAPIModelLoader.saveOpenAPIModel(openAPIModel);
 
         // Save JSON and YAML Swagger files
-        openAPIModel.getResourceSet().getResource(openAPIModel.getUri(), false).getContents().forEach(m -> {
-            final Swagger swagger = OpenAPIExporter.convertModelToOpenAPI((API) m);
+        openAPIModel.getResourceSet().getResource(openAPIModel.getUri(), false).getContents().stream()
+                .filter(m -> m instanceof API).map(m -> (API) m)
+                .forEach(m -> {
+                    final Swagger swagger = OpenAPIExporter.convertModelToOpenAPI((API) m);
 
-            final String title = ((API)m).getInfo().getTitle();
-            final File swaggerJsonFile = new File(targetDir().getAbsolutePath()+"/northwind-openapi-" + title + ".json");
-            try (final Writer targetFileWriter = new FileWriter(swaggerJsonFile)) {
-                final String json = Json.pretty().writeValueAsString(swagger);
-                targetFileWriter.append(json);
-                log.debug(json);
-            } catch (IOException ex) {
-                log.error("Unable to create JSON output", ex);
-            }
-            final File swaggerYamlFile = new File(targetDir().getAbsolutePath()+"/northwind-openapi-" + title + ".yaml");
-            try (final Writer targetFileWriter = new FileWriter(swaggerYamlFile)) {
-                final String yaml = Yaml.pretty().writeValueAsString(swagger);
-                targetFileWriter.append(yaml);
-                log.debug(yaml);
-            } catch (IOException ex) {
-                log.error("Unable to create YAML output", ex);
-            }
-        });
+                    final String title = ((API) m).getInfo().getTitle();
+                    final File swaggerJsonFile = new File(targetDir().getAbsolutePath() + "/northwind-openapi-" + title + ".json");
+                    try (final Writer targetFileWriter = new FileWriter(swaggerJsonFile)) {
+                        final String json = Json.pretty().writeValueAsString(swagger);
+                        targetFileWriter.append(json);
+                        log.debug(json);
+                    } catch (IOException ex) {
+                        log.error("Unable to create JSON output", ex);
+                    }
+                    final File swaggerYamlFile = new File(targetDir().getAbsolutePath() + "/northwind-openapi-" + title + ".yaml");
+                    try (final Writer targetFileWriter = new FileWriter(swaggerYamlFile)) {
+                        final String yaml = Yaml.pretty().writeValueAsString(swagger);
+                        targetFileWriter.append(yaml);
+                        log.debug(yaml);
+                    } catch (IOException ex) {
+                        log.error("Unable to create YAML output", ex);
+                    }
+                });
     }
 
 
-    public File targetDir(){
+    public File targetDir() {
         String relPath = getClass().getProtectionDomain().getCodeSource().getLocation().getFile();
         File targetDir = new File(relPath);
-        if(!targetDir.exists()) {
+        if (!targetDir.exists()) {
             targetDir.mkdir();
         }
         return targetDir;
