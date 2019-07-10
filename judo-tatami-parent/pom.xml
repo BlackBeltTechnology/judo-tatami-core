@@ -90,7 +90,7 @@
          <judo-meta-odata.import-range>[1.0,1.1)</judo-meta-odata.import-range>
          -->
 
-	<judo-meta-asm-version>1.0.0.feature_JNG_101_move_asm_eol_scripts_to_Java_62</judo-meta-asm-version>
+	<judo-meta-asm-version>1.0.0.feature_JNG_101_move_asm_eol_scripts_to_Java_63</judo-meta-asm-version>
         <judo-meta-asm-import-range>[1.0,1.1)</judo-meta-asm-import-range>
 
         <judo-meta-expression-version>1.0.1.develop_207</judo-meta-expression-version>
