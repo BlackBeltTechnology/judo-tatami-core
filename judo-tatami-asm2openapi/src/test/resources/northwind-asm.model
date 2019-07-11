@@ -644,6 +644,17 @@
       <eAnnotations source="http://blackbelt.hu/judo/meta/ExtendedMetadata/exposedBy">
         <details key="value" value="demo.internalAP"/>
       </eAnnotations>
+      <eOperations name="updateOrder" lowerBound="1" eType="//service/OrderInfo">
+        <eAnnotations source="http://blackbelt.hu/judo/meta/ExtendedMetadata/stateful">
+          <details key="value" value="true"/>
+        </eAnnotations>
+        <eParameters name="input" lowerBound="1" eType="//service/OrderInfo"/>
+      </eOperations>
+      <eOperations name="deleteOrder">
+        <eAnnotations source="http://blackbelt.hu/judo/meta/ExtendedMetadata/stateful">
+          <details key="value" value="true"/>
+        </eAnnotations>
+      </eOperations>
       <eStructuralFeatures xsi:type="ecore:EReference" name="items" upperBound="-1" eType="//service/OrderItem">
         <eAnnotations source="http://blackbelt.hu/judo/meta/ExtendedMetadata/binding">
           <details key="value" value="orderDetails"/>
