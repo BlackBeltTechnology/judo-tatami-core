@@ -1,12 +1,10 @@
-import "../../../operations/psm/type/_importType.eol";
-import "../../../operations/asm/_importAll.eol";
 import "../utils/_importUtils.eol";
 
 rule CreateEnumeration
 	transform s : JUDOPSM!EnumerationType
 	to t : ASM!EEnum {
 		t.name = s.name;
-		s.getNamespace().transformToAsm().eClassifiers.add(t);
+		s.getNamespace().asmEquivalent().eClassifiers.add(t);
 		for (m in s.members) {
 			var l = new ASM!EEnumLiteral;
 			l.value = m.ordinal;

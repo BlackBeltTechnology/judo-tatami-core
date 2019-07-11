@@ -190,8 +190,8 @@
     <elements xsi:type="type:StringType" xmi:id="_Nppx8IUcEeipmMyz9cMCRA" name="String" maxLength="255"/>
     <elements xsi:type="type:NumericType" xmi:id="_SZ-GUIUcEeipmMyz9cMCRA" name="Long" precision="18"/>
     <elements xsi:type="type:NumericType" xmi:id="_TXtg8IUcEeipmMyz9cMCRA" name="Integer" precision="9"/>
-    <elements xsi:type="type:NumericType" xmi:id="_VDVVQIUcEeipmMyz9cMCRA" name="Double" scale="4" precision="15"/>
-    <elements xsi:type="type:NumericType" xmi:id="_WX24MIUcEeipmMyz9cMCRA" name="Float" scale="4" precision="7"/>
+    <elements xsi:type="type:NumericType" xmi:id="_VDVVQIUcEeipmMyz9cMCRA" name="Double" precision="15" scale="4"/>
+    <elements xsi:type="type:NumericType" xmi:id="_WX24MIUcEeipmMyz9cMCRA" name="Float" precision="7" scale="4"/>
     <elements xsi:type="type:BooleanType" xmi:id="_Xos1AIUcEeipmMyz9cMCRA" name="Boolean"/>
     <elements xsi:type="type:CustomType" xmi:id="_j-zrcINuEeiLE-B2bbL0fg" name="Binary"/>
     <elements xsi:type="type:DateType" xmi:id="_YoqOYIN1EeiLE-B2bbL0fg" name="Date"/>
@@ -212,12 +212,12 @@
       <members xmi:id="_kgvSUI57EeioH6CUzUrG0Q" name="DR" ordinal="3"/>
     </elements>
     <packages xmi:id="_zeDeUB1WEemwg4NgOjaKeA" name="measured">
-      <elements xsi:type="measure:MeasuredType" xmi:id="_h2iYkB1XEemwg4NgOjaKeA" name="MassStoredInKilograms" scale="4" precision="15" storeUnit="_C8XYsB1SEemwg4NgOjaKeA"/>
-      <elements xsi:type="measure:MeasuredType" xmi:id="_PGtxgB1ZEemwg4NgOjaKeA" name="TimeStoredInSeconds" scale="4" precision="15" storeUnit="_SlUs8B2GEemwg4NgOjaKeA"/>
+      <elements xsi:type="measure:MeasuredType" xmi:id="_h2iYkB1XEemwg4NgOjaKeA" name="MassStoredInKilograms" precision="15" scale="4" storeUnit="_C8XYsB1SEemwg4NgOjaKeA"/>
+      <elements xsi:type="measure:MeasuredType" xmi:id="_PGtxgB1ZEemwg4NgOjaKeA" name="TimeStoredInSeconds" precision="15" scale="4" storeUnit="_SlUs8B2GEemwg4NgOjaKeA"/>
       <elements xsi:type="measure:MeasuredType" xmi:id="_WrULYB1ZEemwg4NgOjaKeA" name="TimeStoredInMonths" precision="9" storeUnit="_yX3RgB2GEemwg4NgOjaKeA"/>
-      <elements xsi:type="measure:MeasuredType" xmi:id="_fdkrMB1ZEemwg4NgOjaKeA" name="AreaStoredInSquareMetre" scale="4" precision="15" storeUnit="_eD5KMB1TEemwg4NgOjaKeA"/>
-      <elements xsi:type="measure:MeasuredType" xmi:id="_DTYUEB1eEemwg4NgOjaKeA" name="VolumeStoredInLitre" scale="4" precision="15" storeUnit="_CYY3AB1UEemwg4NgOjaKeA"/>
-      <elements xsi:type="measure:MeasuredType" xmi:id="_bfc2gB1eEemwg4NgOjaKeA" name="VelocityStoredInKmPerHour" scale="4" precision="15" storeUnit="_zR6KoB1UEemwg4NgOjaKeA"/>
+      <elements xsi:type="measure:MeasuredType" xmi:id="_fdkrMB1ZEemwg4NgOjaKeA" name="AreaStoredInSquareMetre" precision="15" scale="4" storeUnit="_eD5KMB1TEemwg4NgOjaKeA"/>
+      <elements xsi:type="measure:MeasuredType" xmi:id="_DTYUEB1eEemwg4NgOjaKeA" name="VolumeStoredInLitre" precision="15" scale="4" storeUnit="_CYY3AB1UEemwg4NgOjaKeA"/>
+      <elements xsi:type="measure:MeasuredType" xmi:id="_bfc2gB1eEemwg4NgOjaKeA" name="VelocityStoredInKmPerHour" precision="15" scale="4" storeUnit="_zR6KoB1UEemwg4NgOjaKeA"/>
     </packages>
   </packages>
   <packages xmi:id="_l025cNODEeim9MGHLpE1bQ" name="entities">
@@ -456,6 +456,15 @@
       </relations>
       <attributes xmi:id="_-L7R5YFREemFzY3ZWApzVQ" name="orderDate" required="true" dataType="_Z9J8IIN1EeiLE-B2bbL0fg" binding="_WXvUoIN1EeiLE-B2bbL0fg"/>
       <attributes xmi:id="_-L7R5oFREemFzY3ZWApzVQ" name="shipperName" dataType="_Nppx8IUcEeipmMyz9cMCRA" binding="_5i40sCVQEemLpvUY7MQgng"/>
+      <operations xmi:id="_jEaRYKPUEem4Sqe63wVljw" name="updateOrder">
+        <output xmi:id="_qVIF8KPUEem4Sqe63wVljw" name="output" type="_-L7R4IFREemFzY3ZWApzVQ">
+          <cardinality xmi:id="_MI6JgKPVEem4Sqe63wVljw" lower="1"/>
+        </output>
+        <input xmi:id="_ofHmkKPUEem4Sqe63wVljw" name="input" type="_-L7R4IFREemFzY3ZWApzVQ">
+          <cardinality xmi:id="_MeG9cKPVEem4Sqe63wVljw" lower="1"/>
+        </input>
+      </operations>
+      <operations xmi:id="_lrK4QKPUEem4Sqe63wVljw" name="deleteOrder"/>
     </elements>
     <elements xsi:type="service:MappedTransferObjectType" xmi:id="_HebikIFTEemFzY3ZWApzVQ" name="InternationalOrderInfo" entityType="_MoVqYINlEeiLE-B2bbL0fg">
       <relations xmi:id="_HebikYFTEemFzY3ZWApzVQ" name="items" binding="_2CC44LwNEeiOuYiCo6IbXQ" target="_-eoLcIFREemFzY3ZWApzVQ">

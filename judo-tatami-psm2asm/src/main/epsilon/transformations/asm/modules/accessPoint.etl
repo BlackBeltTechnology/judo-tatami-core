@@ -1,22 +1,16 @@
 import "../utils/_importUtils.eol";
 
-@cached
-operation JUDOPSM!ExposedGraph getMappedTransferObjects() : Set {
-    return Set{self.mappedTransferObjectType}.includingAll(self.mappedTransferObjectType.getMappedTargets());
-}
-
-@cached
-operation JUDOPSM!TransferObjectType getMappedTargets() : Set {
-    return self.getNewMappedTargets(new Set);
-}
-
-operation JUDOPSM!TransferObjectType getNewMappedTargets(currentTargets : Set) : Set {
-    var newTargets = self.relations.select(r | r.target.isKindOf(JUDOPSM!MappedTransferObjectType)).collect(r | r.target).excludingAll(currentTargets);
-    currentTargets.addAll(newTargets);
-    for (t in newTargets) {
-        currentTargets.addAll(t.getNewMappedTargets(currentTargets));
-    }
-    return currentTargets;
+rule CreateAccessPointAnnotation
+    transform s : JUDOPSM!AccessPoint
+    to t : ASM!EAnnotation {
+        t.source = asmUtils.getAnnotationUri("accessPoint");
+        
+        var accessPoint = new ASM!EStringToStringMapEntry;
+        accessPoint.key = "value";
+        accessPoint.value = "true";
+        t.details.add(accessPoint);
+        
+        s.equivalent("CreateAccessPoint").eAnnotations.add(t);
 }
 
 rule CreateAccessPoint
@@ -28,91 +22,51 @@ rule CreateAccessPoint
         
         // TODO - add platform specific attributes (protocol, message format, etc.)
         
-        s.getNamespace().transformToAsm().eClassifiers.add(t);
-        
-	    var annotation = new ASM!EAnnotation;
-	    annotation.source = extendedMetadataURI;
-	    t.eAnnotations.add(annotation);
-	
-	    var aAccessPoint = new ASM!EStringToStringMapEntry;
-	    aAccessPoint.key = "accessPoint";
-	    aAccessPoint.value = "true";
-	    annotation.details.add(aAccessPoint);
-}
-
-@cached
-operation JUDOPSM!ExposedService getAccessPoint() : JUDOPSM!AccessPoint {
-    return JUDOPSM!AccessPoint.all.selectOne(ap | ap.exposedServices.contains(self));
-}
-
-@cached
-operation JUDOPSM!ExposedGraph getAccessPoint() : JUDOPSM!AccessPoint {
-    return JUDOPSM!AccessPoint.all.selectOne(ap | ap.exposedGraphs.contains(self));
+        s.getNamespace().asmEquivalent().eClassifiers.add(t);
 }
 
 rule CreateExposedByAnnotationForUnboundOperation
     transform s : JUDOPSM!ExposedService
-    to t : ASM!EStringToStringMapEntry {
-        var op = s.`operation`.equivalent("CreateUnboundOperation");
+    to t : ASM!EAnnotation {
+        t.source = asmUtils.getAnnotationUri("exposedBy");
         
-        var annotation = op.eAnnotations.selectOne(a | a.source = extendedMetadataURI);
-        if (not annotation.isDefined()) {
-            annotation = new ASM!EAnnotation;
-		    annotation.source = extendedMetadataURI;
-		    op.eAnnotations.add(annotation);
-        }
+        var exposedBy = new ASM!EStringToStringMapEntry;
+        exposedBy.key = "value";
+        exposedBy.value = asmUtils.getClassifierFQName(s.eContainer.equivalent("CreateAccessPoint"));
+        t.details.add(exposedBy);
         
-		t.key = "exposedBy";
-		t.value = s.getAccessPoint().equivalent("CreateAccessPoint").getFQName();
-		annotation.details.add(t);
+        s.`operation`.equivalent("CreateUnboundOperation").eAnnotations.add(t);
 }
 
-rule CreateExposedGraph
+rule CreateAnnotationForExposedGraph
     transform s : JUDOPSM!ExposedGraph
-    to t : ASM!EClass {
-        t.name = s.getAccessPoint().name + "ʘ" + s.name;
-        t.abstract = true;
-        t.interface = true;
-            
-        s.getAccessPoint().getNamespace().transformToAsm().eClassifiers.add(t);
+    to t : ASM!EAnnotation {
+        t.source = asmUtils.getAnnotationUri("graph");
         
-        var annotation = new ASM!EAnnotation;
-		annotation.source = extendedMetadataURI;
-		t.eAnnotations.add(annotation);
-		
-		var aExposedBy = new ASM!EStringToStringMapEntry;
-		aExposedBy.key = "exposedBy";
-		aExposedBy.value = s.getAccessPoint().equivalent("CreateAccessPoint").getFQName();
-		annotation.details.add(aExposedBy);
-}
-
-// TODO - remove selector reference, it is added for debugging only
-rule CreateExposedGraphSelector
-    transform s : JUDOPSM!ExposedGraph
-    to t : ASM!EStringToStringMapEntry {
-        var annotation = s.equivalent("CreateExposedGraph").eAnnotations.selectOne(a | a.source = extendedMetadataURI);
+        var exposedBy = new ASM!EStringToStringMapEntry;
+        exposedBy.key = "value";
+        exposedBy.value = s.name;
+        t.details.add(exposedBy);
         
-		t.key = "selector";
-		t.value = s.selector.name;
-		annotation.details.add(t);
-}
-
-rule CreateExposedGraphRoot
-    transform s : JUDOPSM!ExposedGraph
-    to t : ASM!EStringToStringMapEntry {
-        var annotation = s.equivalent("CreateExposedGraph").eAnnotations.selectOne(a | a.source = extendedMetadataURI);
+        var root = new ASM!EStringToStringMapEntry;
+        root.key = "root";
+        root.value = asmUtils.getClassifierFQName(s.mappedTransferObjectType.equivalent("CreateMappedTransferObject"));
+        t.details.add(root);
         
-		t.key = "root";
-		t.value = s.mappedTransferObjectType.transformToAsm().getFQName();
-		annotation.details.add(t);
-}
-
-rule CreateExposedGraphRootCollectionFlag
-    transform s : JUDOPSM!ExposedGraph
-    to t : ASM!EStringToStringMapEntry {
-        var annotation = s.equivalent("CreateExposedGraph").eAnnotations.selectOne(a | a.source = extendedMetadataURI);
+        var selector = new ASM!EStringToStringMapEntry;
+        selector.key = "selector";
+        selector.value = s.selector.getterExpression.expression;
+        t.details.add(selector);
         
-		t.key = "root.collection";
-		t.value = (s.selector.cardinality.upper > 1 or s.selector.cardinality.upper == -1).toString();
-		annotation.details.add(t);
+        var selectorDialect = new ASM!EStringToStringMapEntry;
+        selectorDialect.key = "selector.dialect";
+        selectorDialect.value = s.selector.getterExpression.dialect.asString();
+        t.details.add(selectorDialect);
+        
+        var collection = new ASM!EStringToStringMapEntry;
+        collection.key = "collection";
+        collection.value = (s.selector.cardinality.upper > 1 or s.selector.cardinality.upper == -1).asString();
+        t.details.add(collection);
+        
+        s.eContainer.equivalent("CreateAccessPoint").eAnnotations.add(t);
 }

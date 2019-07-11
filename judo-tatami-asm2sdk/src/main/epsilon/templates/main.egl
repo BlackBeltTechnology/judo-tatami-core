@@ -1,13 +1,11 @@
 [%
-import "../operations/asm/_importAll.eol";
-import "../operations/asm/accesspoint/_importAll.eol";
 import "../operations/sdk.eol";
 
 var outputJavaClasses = new Set();
 
 executionContext.getContext().put("outputJavaClasses", outputJavaClasses);
 
-for (dto in getAllMappedTransferObjectTypes().collectAllReferenceTypeRecursively()) {
+for (dto in asmUtils.getAllMappedTransferObjectTypes().collectAllReferenceTypeRecursively()) {
     genDto(dto);
 	outputJavaClasses.add(dto.getDtoJavaFileName());
 }

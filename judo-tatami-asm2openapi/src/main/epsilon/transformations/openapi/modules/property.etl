@@ -1,34 +1,28 @@
-import "../../../operations/asm/_importAll.eol";
-import "../../../operations/asm/accesspoint/_importAll.eol";
-
 import "schema.etl";
 
 rule CreateDataPropertyDeclaration
-    transform s : ASM!EStringToStringMapEntry
+    transform s : ASM!EAnnotation
     to t : OPENAPI!PropertyDeclaration {
-        guard: s.key.startsWith(".accessPoints.") and s.getAnnotatedAttribute().isDefined()
+        guard: s.eContainer.isKindOf(ASM!EAttribute) and s.source == asmUtils.getAnnotationUri("exposedBy")
         
-        t.name = s.getAnnotatedAttribute().name;
+        t.name = s.eContainer.name;
         
-        var annotation = s.getAnnotatedAttribute().eContainingClass.getExtensionAnnotation(false);
-        if (annotation.isDefined()) {
-	        var a = annotation.details.selectOne(d | d.key.startsWith(".accessPoints.") and d.value = s.value);
-	        a.equivalent("CreateTransferObjectSingleSchemaDefinition").properties.add(t);
-        } else {
-            throw "Container of attribute is not prepared with annotation";
-        }
+	    var transferObjectTypeExposedByAnnotation = asmUtils.getExtensionAnnotationListByName(s.eContainer.eContainer, "exposedBy").selectOne(a | a.details.get("value") == s.details.get("value"));
+	    if (transferObjectTypeExposedByAnnotation.isDefined()) {
+	        transferObjectTypeExposedByAnnotation.equivalent("CreateTransferObjectSingleSchemaDefinition").properties.add(t);
+	    }
 }
 
 rule CreateDataPropertyDefinition
-    transform s : ASM!EStringToStringMapEntry
+    transform s : ASM!EAnnotation
     to t : OPENAPI!Property {
-        guard: s.key.startsWith(".accessPoints.") and s.getAnnotatedAttribute().isDefined()
-        
-        if (s.getAnnotatedAttribute().many) {
+        guard: s.eContainer.isKindOf(ASM!EAttribute) and s.source == asmUtils.getAnnotationUri("exposedBy")
+                
+        if (s.eContainer.many) {
             throw "Collection attributes are not supported";
         }
 
-        switch (s.getAnnotatedAttribute().eAttributeType.instanceClassName) {
+        switch (s.eContainer.eAttributeType.instanceClassName) {
             case 'java.lang.Boolean': continue;
             case 'boolean':
                 t.type = OPENAPI!JSONDataType#boolean;
@@ -73,66 +67,58 @@ rule CreateDataPropertyDefinition
                 t.type = OPENAPI!JSONDataType#string;
                 t.format = "date-time";
             default:
-                log.error("Unknown attribute type: " + s.getAnnotatedAttribute().eAttributeType.instanceClassName);
-        }
-
-        if (s.getAnnotatedAttribute().required) {
-            var annotation = s.getAnnotatedAttribute().eContainingClass.getExtensionAnnotation(false);
-	        if (annotation.isDefined()) {
-		        var a = annotation.details.selectOne(d | d.key.startsWith(".accessPoints.") and d.value = s.value);
-		        a.equivalent("CreateTransferObjectSingleSchemaDefinition").required.add(s.getAnnotatedAttribute().name);
-	        } else {
-	            throw "Container of attribute is not prepared with annotation";
-	        }
+                log.error("Unknown attribute type: " + s.eContainer.eAttributeType.instanceClassName);
         }
         
-        s.equivalent("CreateDataPropertyDeclaration").property = t;
+        if (s.eContainer.required) {
+		    var transferObjectTypeExposedByAnnotation = asmUtils.getExtensionAnnotationListByName(s.eContainer.eContainer, "exposedBy").selectOne(a | a.details.get("value") == s.details.get("value"));
+		    if (transferObjectTypeExposedByAnnotation.isDefined()) {
+			    transferObjectTypeExposedByAnnotation.equivalent("CreateTransferObjectSingleSchemaDefinition").required.add(s.eContainer.name);
+		    }
+        }
+	    s.equivalent("CreateDataPropertyDeclaration").property = t;
 }
 
 rule CreateReferencePropertyDeclaration
-    transform s : ASM!EStringToStringMapEntry
+    transform s : ASM!EAnnotation
     to t : OPENAPI!PropertyDeclaration {
-        guard: s.key.startsWith(".accessPoints.") and s.getAnnotatedReference().isDefined() and s.getAnnotatedReference().containment
+        guard: s.eContainer.isKindOf(ASM!EReference) and s.source == asmUtils.getAnnotationUri("exposedBy")
 
-        t.name = s.getAnnotatedReference().name;
-
-        var annotation = s.getAnnotatedReference().eContainingClass.getExtensionAnnotation(false);
-        if (annotation.isDefined()) {
-	        var a = annotation.details.selectOne(d | d.key.startsWith(".accessPoints.") and d.value = s.value);
-	        a.equivalent("CreateTransferObjectSingleSchemaDefinition").properties.add(t);
-        } else {
-            throw "Container of attribute is not prepared with annotation";
-        }
+        t.name = s.eContainer.name;
+        
+	    var transferObjectTypeExposedByAnnotation = asmUtils.getExtensionAnnotationListByName(s.eContainer.eContainer, "exposedBy").selectOne(a | a.details.get("value") == s.details.get("value"));
+	    if (transferObjectTypeExposedByAnnotation.isDefined()) {
+	    	transferObjectTypeExposedByAnnotation.equivalent("CreateTransferObjectSingleSchemaDefinition").properties.add(t);
+	    }
 }
 
 rule CreateReferencePropertyDefinition
-    transform s : ASM!EStringToStringMapEntry
+    transform s : ASM!EAnnotation
     to t : OPENAPI!Property {
-        guard: s.key.startsWith(".accessPoints.") and s.getAnnotatedReference().isDefined() and s.getAnnotatedReference().containment
-
-        var annotation = s.getAnnotatedReference().eReferenceType.getExtensionAnnotation(false);
-        if (annotation.isDefined()) {
-	        var a = annotation.details.selectOne(d | d.key.startsWith(".accessPoints.") and d.value = s.value);
-
-            t.ref = new OPENAPI!SchemaReference;
-	        if (s.getAnnotatedReference().many) {
-	            t.ref.ref = a.equivalent("CreateTransferObjectArraySchemaDeclaration").getReference();
-	        } else {
-	            t.ref.ref = a.equivalent("CreateTransferObjectSingleSchemaDeclaration").getReference();
-	        }
-
-	        if (s.getAnnotatedReference().required) {
-	            var containerAnnotation = s.getAnnotatedReference().eContainingClass.getExtensionAnnotation(false);
-	            if (containerAnnotation.isDefined()) {
-			        var containerA = containerAnnotation.details.selectOne(d | d.key.startsWith(".accessPoints.") and d.value = s.value);
-                    containerA.equivalent("CreateTransferObjectSingleSchemaDefinition").required.add(s.getAnnotatedReference().name);
-			    } else {
-			        throw "Container of reference is not prepared with annotation";
-			    }
-	        }
-        } else {
-            throw "Target type of reference is not prepared with annotation";
+        guard: s.eContainer.isKindOf(ASM!EReference) and s.source == asmUtils.getAnnotationUri("exposedBy")
+        
+        if (s.eContainer.required) {
+		    var transferObjectTypeExposedByAnnotation = asmUtils.getExtensionAnnotationListByName(s.eContainer.eContainer, "exposedBy").selectOne(a | a.details.get("value") == s.details.get("value"));
+		    if (transferObjectTypeExposedByAnnotation.isDefined()) {
+			    transferObjectTypeExposedByAnnotation.equivalent("CreateTransferObjectSingleSchemaDefinition").required.add(s.eContainer.name);
+		    }
         }
 
         s.equivalent("CreateReferencePropertyDeclaration").property = t;
+}
+
+rule CreateReferencePropertyDefinitionReference
+    transform s : ASM!EAnnotation
+    to t : OPENAPI!SchemaReference {
+        guard: s.eContainer.isKindOf(ASM!EReference) and s.source == asmUtils.getAnnotationUri("exposedBy")
+        
+        var targetTypeExposedByAnnotation = asmUtils.getExtensionAnnotationListByName(s.eContainer.eReferenceType, "exposedBy").selectOne(a | a.details.get("value") == s.details.get("value"));
+        
+		if (s.eContainer.many) {
+		    s.equivalent("CreateReferencePropertyDefinitionReference").ref = targetTypeExposedByAnnotation.equivalent("CreateTransferObjectArraySchemaDeclaration").getReference();
+		} else {
+		    s.equivalent("CreateReferencePropertyDefinitionReference").ref = targetTypeExposedByAnnotation.equivalent("CreateTransferObjectSingleSchemaDeclaration").getReference();
+		}
+		
+        s.equivalent("CreateReferencePropertyDefinition").ref = t;
 }

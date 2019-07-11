@@ -71,7 +71,7 @@ operation ASM!EClass idType() : String {
 
 @cached
 operation ASM!EClass getDtoPackageName() : String {
-	return "sdk." + self.ePackage.getFullName();
+	return "sdk." + asmUtils.getPackageFQName(self.ePackage);
 }
 
 @cached

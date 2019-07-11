@@ -1,8 +1,8 @@
 @cached
 operation ASM!EReference toString() : String {
-	var s = "Name: " + self.getFQName() + " Reference type: " + self.getReferenceFQName() + " Containment: " + self.containment + " Container: " + self.container + " " + " Lower: " + self.lowerBound + " Upper: " + self.upperBound;
+	var s = "Name: " + asmUtils.getReferenceFQName(self) + " Reference type: " + asmUtils.getClassifierFQName(self.eReferenceType) + " Containment: " + self.containment + " Container: " + self.container + " " + " Lower: " + self.lowerBound + " Upper: " + self.upperBound;
 	if (self.eOpposite.isDefined()) {
-		s = s + " Opposite: " + self.eOpposite.getFQName();
+		s = s + " Opposite: " + asmUtils.getReferenceFQName(self.eOpposite);
 	}
 	return s;
 }

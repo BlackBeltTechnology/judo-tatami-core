@@ -72,12 +72,12 @@ operation Collection collectAllReferenceTypeRecursively() : Set {
 
 @cached
 operation ASM!EOperation getFullOperationMethodName() : String {
-	return (self.eContainingClass.ePackage.getFullName() + "." + self.name).replaceAll("\\.", "__");
+	return (asmUtils.getPackageFQName(self.eContainingClass.ePackage) + "." + self.name).replaceAll("\\.", "__");
 }
 
 @cached
 operation ASM!EOperation getFullOperationPath() : String {
-	return (self.eContainingClass.ePackage.getFullName() + "." + self.name).replaceAll("\\.", "/");
+	return (asmUtils.getPackageFQName(self.eContainingClass.ePackage) + "." + self.name).replaceAll("\\.", "/");
 }
 
 
@@ -98,7 +98,7 @@ operation ASM!EParameter getTypeDefinition() : String {
 
 @cached
 operation ASM!EClass getApplicationPackageName() : String {
-	return "rest." + self.getFQName();
+	return "rest." + asmUtils.getClassifierFQName(self);
 }
 
 @cached
@@ -116,7 +116,7 @@ operation genApplication(ap : ASM!EClass, serviceInstances : Map) {
 	t.populate("ap", ap);
 	t.populate("className", "ApplicationConfig");
 	t.populate("packagePath", ap.getApplicationPackageName());
-	t.populate("restPath", "/" + ap.getFQName().toJAXRSPath());
+	t.populate("restPath", "/" + asmUtils.getClassifierFQName(ap).toJAXRSPath());
 	t.populate("serviceInstances", serviceInstances);
 	t.generate(ap.getApplicationConfigJavaFileName());
 	t.reset();
@@ -133,7 +133,7 @@ operation genApplication(ap : ASM!EClass, serviceInstances : Map) {
  Unbound Service
  */
 operation ASM!EClass getUnboundServicePackageName() : String {
-	return "rest." + self.getFQName();
+	return "rest." + asmUtils.getClassifierFQName(self);
 }
 
 operation ASM!EClass getUnboundServiceClassName() : String {
@@ -170,7 +170,7 @@ operation genUnboundService(ap : ASM!EClass, operations : Collection) {
  Exposed mapped transfer object
  */
 operation ASM!EClass getExposedMappedTransferObjectPackageName(ap: ASM!EClass) : String {
-	return "rest." + ap.getFQName() + "." + self.ePackage.getFullName();
+	return "rest." + asmUtils.getClassifierFQName(ap) + "." + asmUtils.getPackageFQName(self.ePackage);
 }
 
 @cached
@@ -199,7 +199,7 @@ operation genExposedMappedTransferObject(ap : ASM!EClass, mto : ASM!EClass) {
 	t.populate("className", mto.getExposedMappedTransferObjectClassName());
 	t.populate("packagePath", mto.getExposedMappedTransferObjectPackageName(ap));
 	t.populate("operations", mto.eAllOperations);
-	t.populate("restPath", "/" + mto.ePackage.getFullName().toJAXRSPath() + "/" + mto.getExposedMappedTransferObjectClassName().toJAXRSPath());
+	t.populate("restPath", "/" + asmUtils.getPackageFQName(mto.ePackage).toJAXRSPath() + "/" + mto.getExposedMappedTransferObjectClassName().toJAXRSPath());
 	t.populate("fullyQualifiedOperation", false);
 	t.generate(mto.getExposedMappedTransferObjectJavaFileName(ap));
 	t.reset();
@@ -217,7 +217,7 @@ operation genExposedMappedTransferObject(ap : ASM!EClass, mto : ASM!EClass) {
  */
 @cached
 operation ASM!EClass getDtoPackageName() : String {
-	return "rest." + self.ePackage.getFullName();
+	return "rest." + asmUtils.getPackageFQName(self.ePackage);
 }
 
 @cached

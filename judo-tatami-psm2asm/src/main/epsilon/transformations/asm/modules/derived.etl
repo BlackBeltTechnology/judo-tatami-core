@@ -1,5 +1,147 @@
-import "../../../operations/psm/derived/_importDerived.eol";
 import "../utils/_importUtils.eol";
+
+@abstract
+rule AddPrimitiveAccessorConstraints
+	transform s : JUDOPSM!PrimitiveAccessor
+    to t : ASM!EAnnotation {
+        t.source = asmUtils.getAnnotationUri("constraints");
+        
+        s.asmEquivalent().eAnnotations.add(t);
+    }
+
+@greedy
+rule AddStringPrimitiveAccessorConstraints
+	transform s : JUDOPSM!PrimitiveAccessor
+    to t : ASM!EAnnotation
+    extends AddPrimitiveAccessorConstraints {
+        guard: s.dataType.isKindOf(JUDOPSM!StringType)
+        
+        var maxLength = new ASM!EStringToStringMapEntry;
+        maxLength.key = "maxLength";
+        maxLength.value = s.dataType.maxLength.asString();
+        t.details.add(maxLength);
+    }
+
+@greedy
+rule AddCustomPrimitiveAccessorConstraints
+	transform s : JUDOPSM!PrimitiveAccessor
+    to t : ASM!EAnnotation
+    extends AddPrimitiveAccessorConstraints {
+        guard: s.dataType.isKindOf(JUDOPSM!CustomType)
+        
+        var customType = new ASM!EStringToStringMapEntry;
+        customType.key = "customType";
+        customType.value = psmUtils.namespaceElementToString(s.dataType).replace("::", ".");
+        t.details.add(customType);
+    }
+
+@abstract
+rule AddAbstractNumericPrimitiveAccessorConstraints
+	transform s : JUDOPSM!PrimitiveAccessor
+    to t : ASM!EAnnotation
+    extends AddPrimitiveAccessorConstraints {
+        var precision = new ASM!EStringToStringMapEntry;
+        precision.key = "precision";
+        precision.value = s.dataType.precision.asString();
+        t.details.add(precision);
+        
+        var scale = new ASM!EStringToStringMapEntry;
+        scale.key = "scale";
+        scale.value = s.dataType.scale.asString();
+        t.details.add(scale);
+    }
+
+@greedy
+rule AddNumericPrimitiveAccessorConstraints
+	transform s : JUDOPSM!PrimitiveAccessor
+    to t : ASM!EAnnotation
+    extends AddAbstractNumericPrimitiveAccessorConstraints {
+        guard: s.dataType.isKindOf(JUDOPSM!NumericType) and not s.dataType.isKindOf(JUDOPSM!MeasuredType)
+    }
+
+@greedy
+rule AddMeasuredPrimitiveAccessorConstraints
+    transform s : JUDOPSM!Attribute
+    to t : ASM!EAnnotation
+    extends AddAbstractNumericPrimitiveAccessorConstraints {
+        guard: s.dataType.isKindOf(JUDOPSM!MeasuredType)
+        
+        var measure = new ASM!EStringToStringMapEntry;
+        measure.key = "measure";
+        measure.value = psmUtils.namespaceElementToString(s.dataType.storeUnit.eContainer).replace("::", ".");
+        t.details.add(measure);
+        
+        var measure = new ASM!EStringToStringMapEntry;
+        measure.key = "unit";
+        measure.value = s.dataType.storeUnit.name;
+        t.details.add(measure);
+    }
+
+@greedy
+rule CreatePrimitiveAccessorExpressionAnnotation
+	transform s : JUDOPSM!PrimitiveAccessor
+	to t : ASM!EAnnotation {
+	    t.source = extendedMetadataURI + "/expression";
+	    
+	    var getter = new ASM!EStringToStringMapEntry;
+	    getter.key = "getter";
+	    getter.value = s.getterExpression.expression;
+	    
+	    var getterDialect = new ASM!EStringToStringMapEntry;
+	    getterDialect.key = "getter.dialect";
+	    getterDialect.value = s.getterExpression.dialect.asString();
+	    
+	    t.details.add(getter);
+	    t.details.add(getterDialect);
+	    
+	    if (s.setterExpression.isDefined()) {
+		    var setter = new ASM!EStringToStringMapEntry;
+		    setter.key = "setter";
+		    setter.value = s.setterExpression.expression;
+		    
+		    var setterDialect = new ASM!EStringToStringMapEntry;
+		    setterDialect.key = "setter.dialect";
+		    setterDialect.value = s.setterExpression.dialect.asString();
+		    
+		    t.details.add(setter);
+	        t.details.add(setterDialect);
+	    }
+        
+        s.asmEquivalent().eAnnotations.add(t);
+	}
+
+@greedy
+rule CreateReferenceAccessorExpressionAnnotation
+	transform s : JUDOPSM!ReferenceAccessor
+	to t : ASM!EAnnotation {
+	    t.source = asmUtils.getAnnotationUri("expression");
+	    
+	    var getter = new ASM!EStringToStringMapEntry;
+	    getter.key = "getter";
+	    getter.value = s.getterExpression.expression;
+	    
+	    var getterDialect = new ASM!EStringToStringMapEntry;
+	    getterDialect.key = "getter.dialect";
+	    getterDialect.value = s.getterExpression.dialect.asString();
+	    
+	    t.details.add(getter);
+	    t.details.add(getterDialect);
+	    
+	    if (s.setterExpression.isDefined()) {
+		    var setter = new ASM!EStringToStringMapEntry;
+		    setter.key = "setter";
+		    setter.value = s.setterExpression.expression;
+		    
+		    var setterDialect = new ASM!EStringToStringMapEntry;
+		    setterDialect.key = "setter.dialect";
+		    setterDialect.value = s.setterExpression.dialect.asString();
+		    
+		    t.details.add(setter);
+	        t.details.add(setterDialect);
+	    }
+        
+        s.asmEquivalent().eAnnotations.add(t);
+	}
 
 @abstract
 rule CreatePrimitiveAccessor
@@ -16,28 +158,10 @@ rule CreatePrimitiveAccessor
 		}
 
 		t.eType = s.dataType.getEcoreType();
-
-		var annotations = s.dataType.createASMAnnotations();
-		
-		var aGetterExpression = new ASM!EStringToStringMapEntry;
-		aGetterExpression.key = "getterExpression";
-		aGetterExpression.value = s.getterExpression.expression;
-		annotations.add(aGetterExpression);
-		
-		if (s.setterExpression.isDefined()) {
-		    var aSetterExpression = new ASM!EStringToStringMapEntry;
-		    aSetterExpression.key = "setterExpression";
-		    aSetterExpression.value = s.setterExpression.expression;
-		    annotations.add(aSetterExpression);
-		} else {
+		if (not s.setterExpression.isDefined()) {
 			t.unsettable = true;
 		}
-		
-		var annotation = new ASM!EAnnotation;
-		annotation.source = extendedMetadataURI;
-		annotation.details.addAll(annotations);
-		t.eAnnotations.add(annotation);
-}
+    }
 
 @abstract
 rule CreateReferenceAccessor
@@ -50,28 +174,7 @@ rule CreateReferenceAccessor
 		t.lowerBound = s.cardinality.lower;
 		t.upperBound = s.cardinality.upper;
 
-		var annotations = s.target.createASMAnnotations();
-		
-		var aGetterExpression = new ASM!EStringToStringMapEntry;
-		aGetterExpression.key = "getterExpression";
-		aGetterExpression.value = s.getterExpression.expression;
-		annotations.add(aGetterExpression);
-		
-		if (s.setterExpression.isDefined()) {
-		    var aSetterExpression = new ASM!EStringToStringMapEntry;
-		    aSetterExpression.key = "setterExpression";
-		    aSetterExpression.value = s.setterExpression.expression;
-		    annotations.add(aSetterExpression);
-		} else {
-			t.unsettable = true;
-		}
-		
-		var annotation = new ASM!EAnnotation;
-		annotation.source = extendedMetadataURI;
-		annotation.details.addAll(annotations);
-		t.eAnnotations.add(annotation);
-
-		t.eType = s.target.transformToAsm();
+		t.eType = s.target.equivalent("CreateEntityClass");
 }
 
 rule CreateDataProperty
@@ -80,14 +183,14 @@ rule CreateDataProperty
 	extends CreatePrimitiveAccessor {
 		guard: s.isPrimitive()
 
-		s.getEntityType().transformToAsm().eStructuralFeatures.add(t);
+		s.getEntityType().equivalent("CreateEntityClass").eStructuralFeatures.add(t);
 	}
 
 rule CreateNavigationProperty
 	transform s : JUDOPSM!NavigationProperty
 	to t : ASM!EReference
 	extends CreateReferenceAccessor {
-		s.getEntityType().transformToAsm().eStructuralFeatures.add(t);
+		s.getEntityType().equivalent("CreateEntityClass").eStructuralFeatures.add(t);
 }
 
 @greedy
@@ -99,7 +202,7 @@ rule CreateClassForStatics
         t.name = "ʘStatic";
         t.abstract = true;
 
-        s.transformToAsm().eClassifiers.add(t);
+        s.asmEquivalent().eClassifiers.add(t);
 }
 
 rule CreateStaticData

@@ -1,31 +1,29 @@
-import "../../../operations/psm/namespace/_importNamespace.eol";
-
 @abstract
 rule NamespaceToPackage
 	transform s : JUDOPSM!Namespace
 	to t : ASM!EPackage {
 		t.name = s.name;
 		t.nsPrefix = nsPrefix;
-
-		var parent = s.getParent();
-		if (parent.isDefined()) {
-		    t.nsURI = parent.transformToAsm().nsURI + "/" + s.name;
-		    t.nsPrefix = parent.transformToAsm().nsPrefix + s.name.firstToUpperCase();
-			parent.transformToAsm().eSubpackages.add(t);
-		} else {
-            t.nsURI = nsURI + "/" + s.name;
-            t.nsPrefix = nsPrefix + s.name.firstToUpperCase();
-		}
-	}
+}
 
 rule ModelToPackage
 	transform s : JUDOPSM!Model
 	to t : ASM!EPackage
 	extends NamespaceToPackage {
+	
+    t.nsURI = nsURI + "/" + s.name;
+    t.nsPrefix = nsPrefix + s.name.firstToUpperCase();
 }
 
 rule PackageToPackage
 	transform s : JUDOPSM!Package
 	to t : ASM!EPackage
 	extends NamespaceToPackage {
+	
+	var container = psmUtils.getNamespaceOfPackage(s);
+	if (container.isPresent()) {
+	    t.nsURI = container.get().asmEquivalent().nsURI + "/" + s.name;
+	    t.nsPrefix = container.get().asmEquivalent().nsPrefix + s.name.firstToUpperCase();
+		container.get().asmEquivalent().eSubpackages.add(t);
+	}
 }

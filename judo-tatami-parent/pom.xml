@@ -70,13 +70,13 @@
 
         <judo-framework-version>2.0.0_develop_130</judo-framework-version>
 
-        <judo-meta-rdbms-version>1.0.1.develop_39</judo-meta-rdbms-version>
+        <judo-meta-rdbms-version>1.0.1.feature_JNG_101_remove_dependency_of_ASM_data_type_instances_41</judo-meta-rdbms-version>
         <judo-meta-rdbms.import-range>[1.0,1.1)</judo-meta-rdbms.import-range>
 
         <judo-meta-esm-version>1.0.0.develop_36</judo-meta-esm-version>
         <judo-meta-esm-import-range>[1.0,1.1)</judo-meta-esm-import-range>
 
-        <judo-meta-psm-version>1.0.1.develop_276</judo-meta-psm-version>
+        <judo-meta-psm-version>1.0.1.develop_277</judo-meta-psm-version>
         <judo-meta-psm-import-range>[1.0,1.1)</judo-meta-psm-import-range>
 
         <judo-meta-psm-jql-version>1.0.0.develop_22</judo-meta-psm-jql-version>
@@ -90,7 +90,7 @@
          <judo-meta-odata.import-range>[1.0,1.1)</judo-meta-odata.import-range>
          -->
 
-        <judo-meta-asm-version>1.0.0.develop_52</judo-meta-asm-version>
+	<judo-meta-asm-version>1.0.0.develop_65</judo-meta-asm-version>
         <judo-meta-asm-import-range>[1.0,1.1)</judo-meta-asm-import-range>
 
         <judo-meta-expression-version>1.0.1.develop_207</judo-meta-expression-version>
@@ -102,7 +102,7 @@
         <judo-meta-liquibase-version>1.0.1.develop_12</judo-meta-liquibase-version>
         <judo-meta-liquibase-import-range>[1.0,1.1)</judo-meta-liquibase-import-range>
 
-        <judo-meta-openapi-version>1.0.0.develop_82</judo-meta-openapi-version>
+        <judo-meta-openapi-version>1.0.0.develop_83</judo-meta-openapi-version>
         <judo-meta-openapi-import-range>[1.0,1.1)</judo-meta-openapi-import-range>
 
         <test.asm.model.groupId>${project.groupId}</test.asm.model.groupId>
@@ -219,6 +219,13 @@
         <dependency>
             <groupId>org.hamcrest</groupId>
             <artifactId>hamcrest-library</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.jcabi</groupId>
+            <artifactId>jcabi-log</artifactId>
+            <version>0.18</version>
             <scope>test</scope>
         </dependency>
     </dependencies>

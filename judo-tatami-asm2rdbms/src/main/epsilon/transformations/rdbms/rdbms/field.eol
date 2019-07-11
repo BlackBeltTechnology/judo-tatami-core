@@ -1,9 +1,5 @@
 operation RDBMS!RdbmsField fillType(type : String) {
-    if (type.getJudoDataType().isUndefined()) {
-        throw "Cannot resolve type: " + type;
-    }
-
-    var typeMapping : RDBMS!TypeMapping = RDBMS!TypeMapping.all.selectOne(m | m.asmType == type.getJudoDataType());
+    var typeMapping : RDBMS!TypeMapping = RDBMS!TypeMapping.all.selectOne(m | m.asmType == type);
     if (typeMapping.isUndefined()) {
         throw "Cannot resolve typemapping: " + type;
     }
@@ -24,14 +20,16 @@ operation RDBMS!RdbmsField fromType(type : RDBMS!RdbmsField) {
 }
 
 operation RDBMS!RdbmsField fillConstraintsFromAttribute(attribute : ASM!EAttribute) {
-	if (attribute.hasAnnotation("maxLength")) {
-		self.size = attribute.getAnnotationValue("maxLength").asInteger();
-	}
-	if (attribute.hasAnnotation("precision")) {
-		self.precision = attribute.getAnnotationValue("precision").asInteger();
-	}
-	if (attribute.hasAnnotation("scale")) {
-		self.scale = attribute.getAnnotationValue("scale").asInteger();
-	}
-
+    var maxLength = asmUtils.getExtensionAnnotationValue(attribute, "maxLength", false);
+    var precision = asmUtils.getExtensionAnnotationValue(attribute, "precision", false);
+    var scale = asmUtils.getExtensionAnnotationValue(attribute, "scale", false);
+    if (maxLength.isPresent()) {
+        self.size = maxLength.get().asInteger();
+    }
+    if (precision.isPresent()) {
+        self.precision = precision.get().asInteger();
+    }
+    if (scale.isPresent()) {
+        self.scale = scale.get().asInteger();
+    }
 }

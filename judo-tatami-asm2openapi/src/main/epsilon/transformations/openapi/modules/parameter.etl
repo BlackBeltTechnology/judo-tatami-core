@@ -1,71 +1,85 @@
-import "../../../operations/asm/_importAll.eol";
-import "../../../operations/asm/accesspoint/_importAll.eol";
-import "../../../operations/openapi/_importAll.eol";
-
 import "api.etl";
 import "schema.etl";
 
 rule CreateEntityIdParameterDeclaration
-    transform s : ASM!EStringToStringMapEntry
+    transform s : ASM!EAnnotation
     to t : OPENAPI!ParameterDeclaration {
-        guard: s.key.startsWith(".accessPoints.") and s.getAnnotatedClass().isDefined() and s.getAnnotatedClass().isEntity()
+        guard: s.eContainer.isKindOf(ASM!EClass) and s.source == asmUtils.getAnnotationUri("exposedBy") and asmUtils.isEntityType(s.eContainer)
         
-        var accessPoint = s.value.resolve();
+        t.name = "__identifier__" + asmUtils.getClassifierFQName(s.eContainer).toOpenAPIName();
         
-        t.name = "__identifier__" + s.getAnnotatedClass().getFQName().toOpenAPIName();
-        
-        accessPoint.equivalent("CreateOpenAPIAccessPoint").parameters.add(t);
+        var accessPoint = asmUtils.getResolvedExposedBy(s);
+        if (accessPoint.isPresent()) {
+            accessPoint.get().equivalent("CreateOpenAPIAccessPoint").parameters.add(t);
+        } else {
+            delete t;
+        }
 }
 
 rule CreateEntityIdParameterDefinition
-    transform s : ASM!EStringToStringMapEntry
+    transform s : ASM!EAnnotation
     to t : OPENAPI!ParameterDefinition {
-        guard: s.key.startsWith(".accessPoints.") and s.getAnnotatedClass().isDefined() and s.getAnnotatedClass().isEntity()
+        guard: s.eContainer.isKindOf(ASM!EClass) and s.source == asmUtils.getAnnotationUri("exposedBy") and asmUtils.isEntityType(s.eContainer)
         
         t.name = "__identifier";
         t.`in` = OPENAPI!ParameterLocation#header;
         t.type = OPENAPI!JSONDataType#string;
-        t.description = "ID of " + s.getAnnotatedClass().name + " instance";
+        t.description = "ID of " + s.eContainer.name + " instance";
         t.required = true;
         
         s.equivalent("CreateEntityIdParameterDeclaration").parameter = t;
 }
 
 rule CreateParameterDeclaration
-    transform s : ASM!EStringToStringMapEntry
+    transform s : ASM!EAnnotation
     to t : OPENAPI!ParameterDeclaration {
-        guard: s.key.startsWith(".accessPoints.") and s.getAnnotatedParameter().isDefined()
+        guard: s.eContainer.isKindOf(ASM!EParameter) and s.source == asmUtils.getAnnotationUri("exposedBy")
         
-        var accessPoint = s.value.resolve();
+        t.name = (asmUtils.getOperationFQName(s.eContainer.eOperation) + "__" + s.eContainer.name).toOpenAPIName();
         
-        t.name = (s.getAnnotatedParameter().eOperation.getFQName() + "__" + s.getAnnotatedParameter().name).toOpenAPIName();
-        
-        accessPoint.equivalent("CreateOpenAPIAccessPoint").parameters.add(t);
+        var accessPoint = asmUtils.getResolvedExposedBy(s);
+        if (accessPoint.isPresent()) {
+            accessPoint.get().equivalent("CreateOpenAPIAccessPoint").parameters.add(t);
+        } else {
+            delete t;
+        }
 }
 
 rule CreateParameterDefinition
-    transform s : ASM!EStringToStringMapEntry
+    transform s : ASM!EAnnotation
     to t : OPENAPI!ParameterDefinition {
-        guard: s.key.startsWith(".accessPoints.") and s.getAnnotatedParameter().isDefined()
+        guard: s.eContainer.isKindOf(ASM!EParameter) and s.source == asmUtils.getAnnotationUri("exposedBy")
         
-        t.name = s.getAnnotatedParameter().name;
+        t.name = s.eContainer.name;
         t.required = true;
         t.`in` = OPENAPI!ParameterLocation#body;
-        t.schema = new OPENAPI!Schema;
-        t.schema.ref = new OPENAPI!SchemaReference();
-        
-        var annotation = s.getAnnotatedParameter().eType.getExtensionAnnotation(false);
-        if (annotation.isDefined()) {
-            var a = annotation.details.selectOne(d | d.key.startsWith(".accessPoints.") and d.value = s.value);
-
-	        if (s.getAnnotatedParameter().many) {
-	            t.schema.ref.ref = a.equivalent("CreateTransferObjectArraySchemaDeclaration").getReference();
-	        } else {
-	            t.schema.ref.ref = a.equivalent("CreateTransferObjectSingleSchemaDeclaration").getReference();
-	        }
-        } else {
-            throw "Parameter is not prepared";
-        }
         
         s.equivalent("CreateParameterDeclaration").parameter = t;
+}
+
+rule CreateParameterDefinitionSchema
+    transform s : ASM!EAnnotation
+    to t : OPENAPI!Schema {
+        guard: s.eContainer.isKindOf(ASM!EParameter) and s.source == asmUtils.getAnnotationUri("exposedBy")
+        
+        s.equivalent("CreateParameterDefinition").schema = t;
+}
+
+rule CreateParameterDefinitionSchemaReference
+    transform s : ASM!EAnnotation
+    to t : OPENAPI!SchemaReference {
+        guard: s.eContainer.isKindOf(ASM!EParameter) and s.source == asmUtils.getAnnotationUri("exposedBy")
+        
+        if (s.eContainer.eType.isKindOf(ASM!EClass)) {
+            var transferObjectTypeExposedByAnnotation = asmUtils.getExtensionAnnotationListByName(s.eContainer.eType, "exposedBy").selectOne(a | a.details.get("value") == s.details.get("value"));
+		    if (transferObjectTypeExposedByAnnotation.isDefined()) {
+		        if (s.eContainer.many) {
+		            t.ref = transferObjectTypeExposedByAnnotation.equivalent("CreateTransferObjectArraySchemaDeclaration").getReference();
+		        } else {
+		        	t.ref = transferObjectTypeExposedByAnnotation.equivalent("CreateTransferObjectSingleSchemaDeclaration").getReference();
+		        }
+		    }
+        }
+        
+        s.equivalent("CreateParameterDefinitionSchema").ref = t;
 }

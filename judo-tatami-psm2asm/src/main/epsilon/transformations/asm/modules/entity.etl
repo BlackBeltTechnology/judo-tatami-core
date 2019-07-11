@@ -1,6 +1,17 @@
-import "../../../operations/psm/measure/_importMeasure.eol";
-import "../../../operations/psm/data/_importData.eol";
 import "../utils/_importUtils.eol";
+
+rule CreateEntityAnnotationClass
+	transform s : JUDOPSM!EntityType
+	to t : ASM!EAnnotation {
+        t.source = asmUtils.getAnnotationUri("entity");
+        
+        var entity = new ASM!EStringToStringMapEntry;
+        entity.key = "value";
+        entity.value = "true";
+        t.details.add(entity);
+        
+        s.equivalent("CreateEntityClass").eAnnotations.add(t);
+	}
 
 rule CreateEntityClass
 	transform s : JUDOPSM!EntityType
@@ -8,23 +19,83 @@ rule CreateEntityClass
 		t.name = s.name;
 		t.abstract = s.abstract;
 		for (super in s.superEntityTypes) {
-			t.eSuperTypes.add(super.transformToAsm());
+			t.eSuperTypes.add(super.equivalent("CreateEntityClass"));
 		}
-		s.getNamespace().transformToAsm().eClassifiers.add(t);
-		
-		var identifierClass : ASM!EClass = ASM.resource.resourceSet.packageRegistry.get("http://blackbelt.hu/judo/asm/base")
-			.eClassifiers.selectOne(clazz | clazz.name = "Identifiable");
-
-		t.eSuperTypes.add(identifierClass);
-
-		var annotation = new ASM!EAnnotation;
-		annotation.source = extendedMetadataURI;
-		var aEntity = new ASM!EStringToStringMapEntry;
-		aEntity.key = "entity";
-		aEntity.value = "true";
-		annotation.details.add(aEntity);
-		t.eAnnotations.add(annotation);
+		s.getNamespace().asmEquivalent().eClassifiers.add(t);
 	}
+
+@abstract
+rule AddAttributeConstraints
+	transform s : JUDOPSM!Attribute
+    to t : ASM!EAnnotation {
+        t.source = asmUtils.getAnnotationUri("constraints");
+        
+        s.equivalent("CreateAttribute").eAnnotations.add(t);
+    }
+
+rule AddStringAttributeConstraints
+	transform s : JUDOPSM!Attribute
+    to t : ASM!EAnnotation
+    extends AddAttributeConstraints {
+        guard: s.dataType.isKindOf(JUDOPSM!StringType)
+        
+        var maxLength = new ASM!EStringToStringMapEntry;
+        maxLength.key = "maxLength";
+        maxLength.value = s.dataType.maxLength.asString();
+        t.details.add(maxLength);
+    }
+
+rule AddCustomAttributeConstraints
+	transform s : JUDOPSM!Attribute
+    to t : ASM!EAnnotation
+    extends AddAttributeConstraints {
+        guard: s.dataType.isKindOf(JUDOPSM!CustomType)
+        
+        var customType = new ASM!EStringToStringMapEntry;
+        customType.key = "customType";
+        customType.value = psmUtils.namespaceElementToString(s.dataType).replace("::", ".");
+        t.details.add(customType);
+    }
+
+@abstract
+rule AddAbstractNumericAttributeConstraints
+	transform s : JUDOPSM!Attribute
+    to t : ASM!EAnnotation
+    extends AddAttributeConstraints {
+        var precision = new ASM!EStringToStringMapEntry;
+        precision.key = "precision";
+        precision.value = s.dataType.precision.asString();
+        t.details.add(precision);
+        
+        var scale = new ASM!EStringToStringMapEntry;
+        scale.key = "scale";
+        scale.value = s.dataType.scale.asString();
+        t.details.add(scale);
+    }
+
+rule AddNumericAttributeConstraints
+	transform s : JUDOPSM!Attribute
+    to t : ASM!EAnnotation
+    extends AddAbstractNumericAttributeConstraints {
+        guard: s.dataType.isKindOf(JUDOPSM!NumericType) and not s.dataType.isKindOf(JUDOPSM!MeasuredType)
+    }
+
+rule AddMeasuredAttributeConstraints
+    transform s : JUDOPSM!Attribute
+    to t : ASM!EAnnotation
+    extends AddAbstractNumericAttributeConstraints {
+        guard: s.dataType.isKindOf(JUDOPSM!MeasuredType)
+        
+        var measure = new ASM!EStringToStringMapEntry;
+        measure.key = "measure";
+        measure.value = psmUtils.namespaceElementToString(s.dataType.storeUnit.eContainer).replace("::", ".");
+        t.details.add(measure);
+        
+        var measure = new ASM!EStringToStringMapEntry;
+        measure.key = "unit";
+        measure.value = s.dataType.storeUnit.name;
+        t.details.add(measure);
+    }
 
 rule CreateAttribute
 	transform s : JUDOPSM!Attribute
@@ -43,16 +114,7 @@ rule CreateAttribute
 		}
 
 		t.eType = s.dataType.getEcoreType();
-
-		var annotations = s.dataType.createASMAnnotations();
-		if (not annotations.isEmpty()) {
-			var annotation = new ASM!EAnnotation;
-			annotation.source = extendedMetadataURI;
-			annotation.details.addAll(annotations);
-			t.eAnnotations.add(annotation);
-		}
-
-		s.getEntityType().transformToAsm().eStructuralFeatures.add(t);
+		s.getEntityType().equivalent("CreateEntityClass").eStructuralFeatures.add(t);
 	}
 
 @abstract
@@ -63,17 +125,9 @@ rule CreateRelation
 
 		t.lowerBound = s.cardinality.lower;
 		t.upperBound = s.cardinality.upper;
+		t.eType = s.target.equivalent("CreateEntityClass");
 
-		var annotations = s.target.createASMAnnotations();
-		if (not annotations.isEmpty()) {
-			var annotation = new ASM!EAnnotation;
-			annotation.source = extendedMetadataURI;
-			annotation.details.addAll(annotations);
-			t.eAnnotations.add(annotation);
-		}
-
-		s.getEntityType().transformToAsm().eStructuralFeatures.add(t);
-		t.eType = s.target.transformToAsm();
+		s.getEntityType().equivalent("CreateEntityClass").eStructuralFeatures.add(t);
 	}
 
 rule CreateEndpointRelation
@@ -81,7 +135,7 @@ rule CreateEndpointRelation
 	to t : ASM!EReference
 	extends CreateRelation {
 		if (s.partner.isDefined()) {
-			t.eOpposite = s.partner.transformToAsm();
+			t.eOpposite = s.partner.equivalent("CreateEndpointRelation");
 		}
 }
 

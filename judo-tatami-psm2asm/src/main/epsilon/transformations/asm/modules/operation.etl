@@ -1,10 +1,4 @@
-import "../../../operations/psm/service/_importService.eol";
 import "../utils/_importUtils.eol";
-
-@cached
-operation JUDOPSM!Parameter getOperation() : JUDOPSM!Operation {
-    return JUDOPSM!Operation.all.selectOne(o | o.input == self or o.output == self or o.faults.contains(self)); 
-}
 
 @cached
 operation JUDOPSM!Parameter isInput() : Boolean {
@@ -27,9 +21,10 @@ rule CreateParameter
     to t : ASM!ETypedElement {
         t.lowerBound = s.cardinality.lower;
         t.upperBound = s.cardinality.upper;
-        t.eType = s.type.transformToAsm();
+        t.eType = s.type.asmEquivalent();
 }
 
+@greedy
 rule CreateInputParameter
     transform s : JUDOPSM!Parameter
     to t : ASM!EParameter
@@ -37,17 +32,33 @@ rule CreateInputParameter
         guard: s.isInput()
         
         t.name = s.name;
-        s.getOperation().transformToAsm().eParameters.add(t);
+        
+        s.eContainer.asmEquivalent().eParameters.add(t);
 }
 
+@greedy
 rule CreateFaultParameter
     transform s : JUDOPSM!Parameter
-    to t : ASM!EParameter
-    extends CreateParameter {
+    to t : ASM!EClass {
         guard: s.isFault()
         
-        t.name = s.name;
-        s.getOperation().transformToAsm().eParameters.add(t);
+        throw "Not implemented yet";
+        
+        //s.eContainer.asmEquivalent().eExceptions.add(t);
+}
+
+@greedy
+rule CreateStatefulAnnotationOnOperation
+    transform s : JUDOPSM!Operation
+    to t : ASM!EAnnotation {
+        t.source = asmUtils.getAnnotationUri("stateful");
+		
+		var stateful = new ASM!EStringToStringMapEntry;
+        stateful.key = "value";
+        stateful.value = s.stateful.asString();
+        t.details.add(stateful);
+        
+        s.asmEquivalent().eAnnotations.add(t);
 }
 
 @abstract
@@ -57,16 +68,8 @@ rule CreateOperation
         if (s.output.isDefined()) {
         	t.lowerBound = s.output.cardinality.lower;
 	        t.upperBound = s.output.cardinality.upper;
-            t.eType = s.output.type.transformToAsm();
+            t.eType = s.output.type.asmEquivalent();
         }
-        var annotation = new ASM!EAnnotation;
-		annotation.source = extendedMetadataURI;
-		t.eAnnotations.add(annotation);
-		
-		var aStateful = new ASM!EStringToStringMapEntry;
-		aStateful.key = "stateful";
-		aStateful.value = s.stateful.toString();
-		annotation.details.add(aStateful);
 }
 
 rule CreateBoundOperation
@@ -75,7 +78,7 @@ rule CreateBoundOperation
     extends CreateOperation {
         t.name = s.name;
         
-        s.getTransferObjectType().transformToAsm().eOperations.add(t);
+        s.eContainer.asmEquivalent().eOperations.add(t);
 }
 
 @greedy
@@ -88,7 +91,7 @@ rule CreateUnboundInterface
         t.abstract = true;
         t.interface = true;
         
-        s.transformToAsm().eClassifiers.add(t);
+        s.asmEquivalent().eClassifiers.add(t);
 }
 
 rule CreateUnboundOperation
@@ -105,11 +108,26 @@ rule CreateGraphOperation
     to t : ASM!EClass {
     	guard: s.isNavigable()
     	
-        t.name = s.getTransferObjectType().name + "ʘ" + s.name;
+        t.name = s.eContainer.name + "ʘ" + s.name;
         t.abstract = true;
         t.interface = true;
         
-        s.getTransferObjectType().getNamespace().transformToAsm().eClassifiers.add(t);
+        s.eContainer.eContainer.asmEquivalent().eClassifiers.add(t);
+}
+
+rule CreateStatefulAnnotationForGetterOperationForRelation
+    transform s : JUDOPSM!TransferObjectRelation
+    to t : ASM!EAnnotation {
+        guard: s.isNavigable()
+        
+        t.source = asmUtils.getAnnotationUri("stateful");
+		
+		var stateful = new ASM!EStringToStringMapEntry;
+        stateful.key = "value";
+        stateful.value = "false";
+        t.details.add(stateful);
+        
+        s.equivalent("CreateGetterOperationForRelation").eAnnotations.add(t);
 }
 
 rule CreateGetterOperationForRelation
@@ -118,20 +136,31 @@ rule CreateGetterOperationForRelation
         guard: s.isNavigable()
         
         t.name = "get";
-        t.eType = s.target.transformToAsm();
+        t.eType = s.target.asmEquivalent();
         t.lowerBound = s.cardinality.lower;
         t.upperBound = s.cardinality.upper;
-        
-        var annotation = new ASM!EAnnotation;
-		annotation.source = extendedMetadataURI;
-		t.eAnnotations.add(annotation);
-		
-        var aStataful = new ASM!EStringToStringMapEntry;
-		aStataful.key = "stateful";
-		aStataful.value = "false";
-		annotation.details.add(aStataful);
 
         s.equivalent("CreateGraphOperation").eOperations.add(t);
+}
+
+rule CreateMappedEntityTypeAnnotationOnReferenceClassForRelation
+    transform s : JUDOPSM!TransferObjectRelation
+    to t : ASM!EAnnotation {
+        guard: s.isNavigable() and s.isMutable()
+        
+        t.source = asmUtils.getAnnotationUri("mappedEntityType");
+		
+		var mappedEntityType = new ASM!EStringToStringMapEntry;
+        mappedEntityType.key = "value";
+        mappedEntityType.value = asmUtils.getClassifierFQName(s.target.entityType.equivalent("CreateEntityClass"));
+        t.details.add(mappedEntityType);
+        
+        var entityIdPresence = new ASM!EStringToStringMapEntry;
+        entityIdPresence.key = "entityIdPresence";
+        entityIdPresence.value = JUDOPSM!EntityReferenceType#REQUIRED.name;
+        t.details.add(entityIdPresence);
+        
+        s.equivalent("CreateReferenceClassForRelation").eAnnotations.add(t);
 }
 
 rule CreateReferenceClassForRelation
@@ -139,22 +168,23 @@ rule CreateReferenceClassForRelation
     to t : ASM!EClass {
         guard: s.isNavigable() and s.isMutable()
         
-        t.name = s.getTransferObjectType().name + "ʘ" + s.name + "ʘReference";
-        s.getTransferObjectType().getNamespace().transformToAsm().eClassifiers.add(t);
+        t.name = s.eContainer.name + "ʘ" + s.name + "ʘReference";
+        s.eContainer.eContainer.asmEquivalent().eClassifiers.add(t);
+}
+
+rule CreateStatefulAnnotationForSetterOperationForRelation
+    transform s : JUDOPSM!TransferObjectRelation
+    to t : ASM!EAnnotation {
+        guard: s.isNavigable() and s.isMutable()
         
-        var annotation = new ASM!EAnnotation;
-		annotation.source = extendedMetadataURI;
-		t.eAnnotations.add(annotation);
+        t.source = asmUtils.getAnnotationUri("stateful");
 		
-        var aMappedEntityType = new ASM!EStringToStringMapEntry;
-		aMappedEntityType.key = "mappedEntityType";
-		aMappedEntityType.value = s.target.entityType.transformToAsm().getFQName();
-		annotation.details.add(aMappedEntityType);
-		
-		var aEntityIdPresence = new ASM!EStringToStringMapEntry;
-		aEntityIdPresence.key = "entityIdPresence";
-		aEntityIdPresence.value = JUDOPSM!EntityReferenceType#REQUIRED.name;
-		annotation.details.add(aEntityIdPresence);
+		var stateful = new ASM!EStringToStringMapEntry;
+        stateful.key = "value";
+        stateful.value = "true";
+        t.details.add(stateful);
+        
+        s.equivalent("CreateSetterOperationForRelation").eAnnotations.add(t);
 }
 
 rule CreateSetterOperationForRelation
@@ -172,16 +202,22 @@ rule CreateSetterOperationForRelation
         
         t.eParameters.add(inputParameter);
         
-        var annotation = new ASM!EAnnotation;
-		annotation.source = extendedMetadataURI;
-		t.eAnnotations.add(annotation);
-		
-        var aStataful = new ASM!EStringToStringMapEntry;
-		aStataful.key = "stateful";
-		aStataful.value = "true";
-		annotation.details.add(aStataful);
-        
         s.equivalent("CreateGraphOperation").eOperations.add(t);
+}
+
+rule CreateStatefulAnnotationForUnsetterOperationForRelation
+    transform s : JUDOPSM!TransferObjectRelation
+    to t : ASM!EAnnotation {
+        guard: s.isNavigable() and s.isMutable() and not s.isCollection()
+        
+        t.source = asmUtils.getAnnotationUri("stateful");
+		
+		var stateful = new ASM!EStringToStringMapEntry;
+        stateful.key = "value";
+        stateful.value = "true";
+        t.details.add(stateful);
+        
+        s.equivalent("CreateUnsetterOperationForRelation").eAnnotations.add(t);
 }
 
 rule CreateUnsetterOperationForRelation
@@ -191,16 +227,22 @@ rule CreateUnsetterOperationForRelation
         
         t.name = "unset";
         
-        var annotation = new ASM!EAnnotation;
-		annotation.source = extendedMetadataURI;
-		t.eAnnotations.add(annotation);
-		
-        var aStataful = new ASM!EStringToStringMapEntry;
-		aStataful.key = "stateful";
-		aStataful.value = "true";
-		annotation.details.add(aStataful);
-        
         s.equivalent("CreateGraphOperation").eOperations.add(t);
+}
+
+rule CreateStatefulAnnotationForAddAllOperationForRelation
+    transform s : JUDOPSM!TransferObjectRelation
+    to t : ASM!EAnnotation {
+        guard: s.isNavigable() and s.isMutable() and s.isCollection()
+        
+        t.source = asmUtils.getAnnotationUri("stateful");
+		
+		var stateful = new ASM!EStringToStringMapEntry;
+        stateful.key = "value";
+        stateful.value = "true";
+        t.details.add(stateful);
+        
+        s.equivalent("CreateAddAllOperationForRelation").eAnnotations.add(t);
 }
 
 rule CreateAddAllOperationForRelation
@@ -218,16 +260,22 @@ rule CreateAddAllOperationForRelation
         
         t.eParameters.add(inputParameter);
         
-        var annotation = new ASM!EAnnotation;
-		annotation.source = extendedMetadataURI;
-		t.eAnnotations.add(annotation);
-		
-        var aStataful = new ASM!EStringToStringMapEntry;
-		aStataful.key = "stateful";
-		aStataful.value = "true";
-		annotation.details.add(aStataful);
-        
         s.equivalent("CreateGraphOperation").eOperations.add(t);
+}
+
+rule CreateStatefulAnnotationForRemoveAllOperationForRelation
+    transform s : JUDOPSM!TransferObjectRelation
+    to t : ASM!EAnnotation {
+        guard: s.isNavigable() and s.isMutable() and s.isCollection()
+        
+        t.source = asmUtils.getAnnotationUri("stateful");
+		
+		var stateful = new ASM!EStringToStringMapEntry;
+        stateful.key = "value";
+        stateful.value = "true";
+        t.details.add(stateful);
+        
+        s.equivalent("CreateRemoveAllOperationForRelation").eAnnotations.add(t);
 }
 
 rule CreateRemoveAllOperationForRelation
@@ -245,16 +293,22 @@ rule CreateRemoveAllOperationForRelation
         
         t.eParameters.add(inputParameter);
         
-        var annotation = new ASM!EAnnotation;
-		annotation.source = extendedMetadataURI;
-		t.eAnnotations.add(annotation);
-		
-        var aStataful = new ASM!EStringToStringMapEntry;
-		aStataful.key = "stateful";
-		aStataful.value = "true";
-		annotation.details.add(aStataful);
-        
         s.equivalent("CreateGraphOperation").eOperations.add(t);
+}
+
+rule CreateStatefulAnnotationForRangeOperationForRelation
+    transform s : JUDOPSM!TransferObjectRelation
+    to t : ASM!EAnnotation {
+        guard: s.isNavigable() and s.range.isDefined()
+        
+        t.source = asmUtils.getAnnotationUri("stateful");
+		
+		var stateful = new ASM!EStringToStringMapEntry;
+        stateful.key = "value";
+        stateful.value = "false";
+        t.details.add(stateful);
+        
+        s.equivalent("CreateRangeOperationForRelation").eAnnotations.add(t);
 }
 
 rule CreateRangeOperationForRelation
@@ -266,16 +320,7 @@ rule CreateRangeOperationForRelation
         
         t.lowerBound = 0;
         t.upperBound = -1;
-        t.eType = s.target.transformToAsm();
-        
-        var annotation = new ASM!EAnnotation;
-		annotation.source = extendedMetadataURI;
-		t.eAnnotations.add(annotation);
-		
-        var aStataful = new ASM!EStringToStringMapEntry;
-		aStataful.key = "stateful";
-		aStataful.value = "false";
-		annotation.details.add(aStataful);
+        t.eType = s.target.asmEquivalent();
         
         s.equivalent("CreateGraphOperation").eOperations.add(t);
 }

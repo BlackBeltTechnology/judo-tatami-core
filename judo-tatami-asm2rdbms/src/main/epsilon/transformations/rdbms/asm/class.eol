@@ -1,6 +1,6 @@
 @cached
 operation ASM!EClass classSqlName() : String {
-    return self.getPackage().packageSqlName() + "_" + self.sqlName();
+    return self.ePackage.packageSqlName() + "_" + self.sqlName();
 }
 
 @cached
@@ -15,7 +15,7 @@ operation ASM!EClass viewSqlName() : String {
 
 @cached
 operation ASM!EClass primaryKeyAttribute() : ASM!EAttribute {
-    return self.eAllAttributes.selectOne(a | a.isID());
+    return self.eAllAttributes.selectOne(a | asmUtils.annotatedAsTrue(a, "id"));
 }
 
 @cached

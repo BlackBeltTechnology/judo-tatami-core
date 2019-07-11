@@ -109,7 +109,7 @@ public class Psm2AsmTest {
         // Printing trace
         for (EObject e : resolvedTrace.keySet()) {
             for (EObject t : resolvedTrace.get(e)) {
-                log.info(e.toString() + " -> " + t.toString());
+                log.trace(e.toString() + " -> " + t.toString());
             }
         }
 
