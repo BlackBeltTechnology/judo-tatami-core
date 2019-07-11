@@ -17,6 +17,7 @@ import org.eclipse.emf.ecore.resource.URIHandler;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.File;
@@ -28,6 +29,7 @@ import static hu.blackbelt.judo.meta.asm.runtime.AsmModelLoader.createAsmResourc
 import static hu.blackbelt.judo.tatami.asm2jaxrsapi.Asm2JAXRSAPI.executeAsm2JAXRSAPIGeneration;
 
 @Slf4j
+@Ignore
 public class Asm2JAXRSAPITest {
 
     public static final String ASM_NORTHWIND = "asm:northwind";
