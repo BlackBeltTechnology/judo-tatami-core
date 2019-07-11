@@ -117,7 +117,7 @@ public class Asm2OpenAPITest {
         // Printing trace
         for (EObject e : resolvedTrace.keySet()) {
             for (EObject t : resolvedTrace.get(e)) {
-                log.debug("{} -> {}", e, t);
+                log.trace("{} -> {}", e, t);
             }
         }
 
@@ -134,7 +134,7 @@ public class Asm2OpenAPITest {
                     try (final Writer targetFileWriter = new FileWriter(swaggerJsonFile)) {
                         final String json = Json.pretty().writeValueAsString(swagger);
                         targetFileWriter.append(json);
-                        log.debug(json);
+                        log.trace(json);
                     } catch (IOException ex) {
                         log.error("Unable to create JSON output", ex);
                     }
@@ -142,7 +142,7 @@ public class Asm2OpenAPITest {
                     try (final Writer targetFileWriter = new FileWriter(swaggerYamlFile)) {
                         final String yaml = Yaml.pretty().writeValueAsString(swagger);
                         targetFileWriter.append(yaml);
-                        log.debug(yaml);
+                        log.trace(yaml);
                     } catch (IOException ex) {
                         log.error("Unable to create YAML output", ex);
                     }

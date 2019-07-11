@@ -1,10 +1,5 @@
 import "../../../operations/openapi/_importAll.eol";
 
-import "api.etl";
-import "parameter.etl";
-import "schema.etl";
-import "tag.etl";
-
 rule CreateExposedGraphEntryPointPath
     transform s : ASM!EAnnotation
     to t : OPENAPI!Path {
@@ -75,7 +70,7 @@ rule CreateExposedGraphEntryPointOperationResponseDefinitionSchemaReference
 rule CreateExposedGraphPath
     transform s : ASM!EAnnotation
     to t : OPENAPI!Path {
-        guard: s.eContainer.isKindOf(ASM!EOperation) and s.source == asmUtils.getAnnotationUri("exposedGraph") and asmUtils.isBuiltInOperation(s.eContainer)
+        guard: s.eContainer.isKindOf(ASM!EOperation) and s.source == asmUtils.getAnnotationUri("exposedGraph")
         
         var graph = asmUtils.getExposedGraphByFqName(s.details.get("value"));
         if (graph.isPresent) {
@@ -103,8 +98,8 @@ rule CreateExposedGraphGetOperation
     transform s : ASM!EAnnotation
     to t : OPENAPI!Operation
     extends CreateExposedGraphOperation {
-        guard: s.eContainer.isKindOf(ASM!EOperation) and s.source == asmUtils.getAnnotationUri("exposedGraph") and asmUtils.isBuiltInOperation(s.eContainer) and s.eContainer.eParameters.isEmpty and asmUtils.annotatedAsFalse(s.eContainer, "stateful")
-
+        guard: s.eContainer.isKindOf(ASM!EOperation) and s.source == asmUtils.getAnnotationUri("exposedGraph") and asmUtils.isBound(s.eContainer) and s.eContainer.eParameters.isEmpty and asmUtils.annotatedAsFalse(s.eContainer, "stateful")
+        
         s.equivalent("CreateExposedGraphPath").`get` = t;
 }
 
@@ -112,7 +107,7 @@ rule CreateExposedGraphPostOperation
     transform s : ASM!EAnnotation
     to t : OPENAPI!Operation
     extends CreateExposedGraphOperation {
-        guard: s.eContainer.isKindOf(ASM!EOperation) and s.source == asmUtils.getAnnotationUri("exposedGraph") and asmUtils.isBuiltInOperation(s.eContainer) and (not s.eContainer.eParameters.isEmpty or asmUtils.annotatedAsTrue(s.eContainer, "stateful"))
+        guard: s.eContainer.isKindOf(ASM!EOperation) and s.source == asmUtils.getAnnotationUri("exposedGraph") and asmUtils.isBound(s.eContainer) and (not s.eContainer.eParameters.isEmpty or asmUtils.annotatedAsTrue(s.eContainer, "stateful"))
         
         t.consumes.add("application/json");
 
@@ -122,7 +117,7 @@ rule CreateExposedGraphPostOperation
 rule CreateExposedGraphOperationParameter
     transform s : ASM!EAnnotation
     to t : OPENAPI!ParameterReference {
-        guard: s.eContainer.isKindOf(ASM!EParameter) and s.source == asmUtils.getAnnotationUri("exposedGraph") //and asmUtils.isBuiltInOperation(s.eContainer.eContainer)
+        guard: s.eContainer.isKindOf(ASM!EParameter) and s.source == asmUtils.getAnnotationUri("exposedGraph") and asmUtils.isBound(s.eContainer.eContainer)
         
         var graph = asmUtils.getExposedGraphByFqName(s.details.get("value"));
         var parameterExposedByAnnotation = asmUtils.getExtensionAnnotationListByName(s.eContainer, "exposedBy").selectOne(a | a.details.get("value") == asmUtils.getClassifierFqName(graph.get().eContainer));
@@ -134,29 +129,6 @@ rule CreateExposedGraphOperationParameter
         } else if (not s.eContainer.eContainer.eParameters.isEmpty or asmUtils.annotatedAsTrue(s.eContainer, "stateful")) {
             operationExposedGraphAnnotation.equivalent("CreateExposedGraphPostOperation").parameters.add(t);
         }
-}
-
-rule CreateExposedGraphOperationParameter
-    transform s : ASM!EAnnotation
-    to t : OPENAPI!ParameterReference {
-        guard: s.eContainer.isKindOf(ASM!EParameter) and s.source == asmUtils.getAnnotationUri("exposedGraph") and
-               s.eContainer.eContainer.isDefined() and s.eContainer.eContainer.isKindOf(ASM!EOperation) //and asmUtils.isBuiltInOperation(s.eContainer.eContainer)
-               
-        var graph = asmUtils.getExposedGraphByFqName(s.details.get("value"));
-        var parameterExposedByAnnotation = asmUtils.getExtensionAnnotationListByName(s.eContainer, "exposedBy").selectOne(a | a.details.get("value") == asmUtils.getClassifierFqName(graph.get().eContainer));
-               
-        t.ref = parameterExposedByAnnotation.equivalent("CreateParameterDeclaration").getReference();
-        
-        var operationExposedByAnnotation = asmUtils.getExtensionAnnotationListByName(s.eContainer.eContainer, "exposedBy").selectOne(a | a.details.get("value") == asmUtils.getClassifierFqName(graph.get().eContainer));
-	    if (operationExposedByAnnotation.isDefined()) {
-	        if (s.eContainer.eContainer.eParameters.isEmpty and asmUtils.annotatedAsFalse(s.eContainer.eContainer, "stateful")) {
-	            operationExposedByAnnotation.equivalent("CreateExposedServiceGetOperation").parameters.add(t);
-	        } else if (not s.eContainer.eContainer.eParameters.isEmpty or asmUtils.annotatedAsTrue(s.eContainer.eContainer, "stateful")) {
-	            operationExposedByAnnotation.equivalent("CreateExposedServicePostOperation").parameters.add(t);
-	        }
-	    } else {
-	    	delete t;
-	    }
 }
 
 @abstract
@@ -181,7 +153,7 @@ rule CreateExposedGraphGetOperationEntityIdParameter
     transform s : ASM!EAnnotation
     to t : OPENAPI!ParameterReference
     extends CreateExposedGraphOperationEntityIdParameter {
-         guard: s.eContainer.isKindOf(ASM!EOperation) and s.eContainer.eType.isDefined() and s.source == asmUtils.getAnnotationUri("exposedGraph") and s.eContainer.eParameters.isEmpty and asmUtils.annotatedAsFalse(s.eContainer, "stateful")
+         guard: s.eContainer.isKindOf(ASM!EOperation) and s.source == asmUtils.getAnnotationUri("exposedGraph") and asmUtils.isBound(s.eContainer) and s.eContainer.eParameters.isEmpty and asmUtils.annotatedAsFalse(s.eContainer, "stateful")
         
         s.equivalent("CreateExposedGraphGetOperation").parameters.add(t);
 }
@@ -190,7 +162,7 @@ rule CreateExposedGraphPostOperationEntityIdParameter
     transform s : ASM!EAnnotation
     to t : OPENAPI!ParameterReference
     extends CreateExposedGraphOperationEntityIdParameter {
-        guard: s.eContainer.isKindOf(ASM!EOperation) and s.eContainer.eType.isDefined() and s.source == asmUtils.getAnnotationUri("exposedGraph") and (not s.eContainer.eParameters.isEmpty or asmUtils.annotatedAsTrue(s.eContainer, "stateful"))
+        guard: s.eContainer.isKindOf(ASM!EOperation) and s.source == asmUtils.getAnnotationUri("exposedGraph") and asmUtils.isBound(s.eContainer) and (not s.eContainer.eParameters.isEmpty or asmUtils.annotatedAsTrue(s.eContainer, "stateful"))
         
         s.equivalent("CreateExposedGraphPostOperation").parameters.add(t);
 }
@@ -212,7 +184,7 @@ rule CreateExposedGraphGetOperationResponse
     transform s : ASM!EAnnotation
     to t : OPENAPI!OperationResponse
     extends CreateExposedGraphOperationResponse {
-        guard: s.eContainer.isKindOf(ASM!EOperation) and s.eContainer.eType.isDefined() and s.source == asmUtils.getAnnotationUri("exposedGraph") and asmUtils.isBuiltInOperation(s.eContainer) and s.eContainer.eParameters.isEmpty and asmUtils.annotatedAsFalse(s.eContainer, "stateful")
+        guard: s.eContainer.isKindOf(ASM!EOperation) and s.source == asmUtils.getAnnotationUri("exposedGraph") and asmUtils.isBound(s.eContainer) and s.eContainer.eParameters.isEmpty and asmUtils.annotatedAsFalse(s.eContainer, "stateful")
         
         s.equivalent("CreateExposedGraphGetOperation").responses.add(t);
 }
@@ -221,8 +193,8 @@ rule CreateExposedGraphPostOperationResponse
     transform s : ASM!EAnnotation
     to t : OPENAPI!OperationResponse
     extends CreateExposedGraphOperationResponse {
-        guard: s.eContainer.isKindOf(ASM!EOperation) and s.eContainer.eType.isDefined() and s.source == asmUtils.getAnnotationUri("exposedGraph") and asmUtils.isBuiltInOperation(s.eContainer) and (not s.eContainer.eParameters.isEmpty or asmUtils.annotatedAsTrue(s.eContainer, "stateful"))
-
+        guard: s.eContainer.isKindOf(ASM!EOperation) and s.source == asmUtils.getAnnotationUri("exposedGraph") and asmUtils.isBound(s.eContainer) and (not s.eContainer.eParameters.isEmpty or asmUtils.annotatedAsTrue(s.eContainer, "stateful"))
+        
         s.equivalent("CreateExposedGraphPostOperation").responses.add(t);
 }
 
@@ -238,8 +210,8 @@ rule CreateExposedGraphGetOperationResponseDefinition
     transform s : ASM!EAnnotation
     to t : OPENAPI!ResponseDefinition
     extends CreateExposedGraphOperationResponseDefinition {
-        guard: s.eContainer.isKindOf(ASM!EOperation) and s.eContainer.eType.isDefined() and s.source == asmUtils.getAnnotationUri("exposedGraph") and asmUtils.isBuiltInOperation(s.eContainer) and s.eContainer.eParameters.isEmpty and asmUtils.annotatedAsFalse(s.eContainer, "stateful")
-
+        guard: s.eContainer.isKindOf(ASM!EOperation) and s.source == asmUtils.getAnnotationUri("exposedGraph") and s.eContainer.eType.isDefined() and asmUtils.isBound(s.eContainer) and s.eContainer.eParameters.isEmpty and asmUtils.annotatedAsFalse(s.eContainer, "stateful")
+        
         s.equivalent("CreateExposedGraphGetOperationResponse").response = t;
 }
 
@@ -247,7 +219,7 @@ rule CreateExposedGraphPostOperationResponseDefinition
     transform s : ASM!EAnnotation
     to t : OPENAPI!ResponseDefinition
     extends CreateExposedGraphOperationResponseDefinition {
-        guard: s.eContainer.isKindOf(ASM!EOperation) and s.eContainer.eType.isDefined() and s.source == asmUtils.getAnnotationUri("exposedGraph") and asmUtils.isBuiltInOperation(s.eContainer) and (not s.eContainer.eParameters.isEmpty or asmUtils.annotatedAsTrue(s.eContainer, "stateful"))
+        guard: s.eContainer.isKindOf(ASM!EOperation) and s.source == asmUtils.getAnnotationUri("exposedGraph") and s.eContainer.eType.isDefined() and asmUtils.isBound(s.eContainer) and (not s.eContainer.eParameters.isEmpty or asmUtils.annotatedAsTrue(s.eContainer, "stateful"))
 
         s.equivalent("CreateExposedGraphPostOperationResponse").response = t;
 }
@@ -255,7 +227,7 @@ rule CreateExposedGraphPostOperationResponseDefinition
 rule CreateExposedGraphOperationResponseDefinitionSchema
     transform s : ASM!EAnnotation
     to t : OPENAPI!Schema {
-        guard: s.eContainer.isKindOf(ASM!EOperation) and s.eContainer.eType.isDefined() and s.source == asmUtils.getAnnotationUri("exposedGraph") and asmUtils.isBuiltInOperation(s.eContainer)
+        guard: s.eContainer.isKindOf(ASM!EOperation) and s.eContainer.eType.isDefined() and s.source == asmUtils.getAnnotationUri("exposedGraph") and asmUtils.isBound(s.eContainer)
         
         if (s.eContainer.eParameters.isEmpty and asmUtils.annotatedAsFalse(s.eContainer, "stateful")) {
             s.equivalent("CreateExposedGraphGetOperationResponseDefinition").schema = t;
@@ -267,7 +239,7 @@ rule CreateExposedGraphOperationResponseDefinitionSchema
 rule CreateExposedGraphOperationResponseDefinitionSchemaReference
     transform s : ASM!EAnnotation
     to t : OPENAPI!SchemaReference {
-        guard: s.eContainer.isKindOf(ASM!EOperation) and s.eContainer.eType.isDefined() and s.source == asmUtils.getAnnotationUri("exposedGraph") and asmUtils.isBuiltInOperation(s.eContainer)
+        guard: s.eContainer.isKindOf(ASM!EOperation) and s.eContainer.eType.isDefined() and s.source == asmUtils.getAnnotationUri("exposedGraph") and asmUtils.isBound(s.eContainer)
         
         var graph = asmUtils.getExposedGraphByFqName(s.details.get("value"));
 
