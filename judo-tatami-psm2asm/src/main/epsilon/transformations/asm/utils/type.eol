@@ -1,45 +1,20 @@
 @cached
-operation String getJudoDataType() : ASM!EDataType {
-	var dataType : ASM!EDataType = 
-			ASM.resource.resourceSet.packageRegistry.get("http://blackbelt.hu/judo/asm/types").eClassifiers
-				.selectOne(clazz | clazz.name = self);
-    return dataType;
-}
-
-@cached
-operation JUDOPSM!Primitive getEcoreType() : ASM!EDataType {
-	if (self.isKindOf(JUDOPSM!StringType)) {
-		return "JString".getJudoDataType();
-	} else if (self.isKindOf(JUDOPSM!NumericType)) {
-		if (self.scale == 0 and self.precision <= 9) {
-			return "JInteger".getJudoDataType();
-		} else if (self.scale == 0 and self.precision > 9 and self.precision <= 18) {
-			return "JLong".getJudoDataType();
-		} else if (self.scale == 0 and self.precision > 18) {
-			return "JBigInteger".getJudoDataType();
-		} else if (self.scale > 0 and self.precision <= 7) {
-			return "JFloat".getJudoDataType();
-		} else if (self.scale > 0 and self.precision > 7 and self.precision <= 15) {
-			return "JDouble".getJudoDataType();
-		} else if (self.scale > 0 and self.precision > 15) {
-			return "JBigDecimal".getJudoDataType();
-		}
-	} else if (self.isKindOf(JUDOPSM!BooleanType)) {
-		return "JBoolean".getJudoDataType();
+operation JUDOPSM!Primitive asmEquivalent() : ASM!EDataType {
+    if (self.isString()) {
+		return self.equivalent("CreateStringType");
+	} else if (self.isInteger()) {
+	    return self.equivalent("CreateIntegerType");
+	} else if (self.isDecimal()) {
+	    return self.equivalent("CreateDecimalType");
+	} else if (self.isBoolean()) {
+	    return self.equivalent("CreateBooleanType");
 	} else if (self.isKindOf(JUDOPSM!EnumerationType)) {
 		return self.equivalent("CreateEnumeration");
-    } else if (self.isKindOf(JUDOPSM!DateType)) {
-        return "JDate".getJudoDataType();
-    } else if (self.isKindOf(JUDOPSM!TimestampType)) {
-        return "JTimestamp".getJudoDataType();
-	} else if (self.isKindOf(JUDOPSM!CustomType)) {
-		switch (self.name) {
-			case "Binary":
-				return "JByteArray".getJudoDataType();
-			default:
-				return "JObject".getJudoDataType();
-		}
+    } else if (self.isDate()) {
+        return self.equivalent("CreateDateType");
+    } else if (self.isTimestamp()) {
+        return self.equivalent("CreateTimestampType");
 	} else {
-		return "JObject".getJudoDataType();
+	    return self.equivalent("CreateCustomType");
 	}
 }

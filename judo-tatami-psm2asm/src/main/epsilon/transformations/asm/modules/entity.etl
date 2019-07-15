@@ -113,7 +113,7 @@ rule CreateAttribute
 			t.iD = true;
 		}
 
-		t.eType = s.dataType.getEcoreType();
+		t.eType = s.dataType.asmEquivalent();
 		s.getEntityType().equivalent("CreateEntityClass").eStructuralFeatures.add(t);
 	}
 

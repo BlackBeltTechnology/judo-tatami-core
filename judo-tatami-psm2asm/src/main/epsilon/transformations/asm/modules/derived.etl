@@ -157,7 +157,7 @@ rule CreatePrimitiveAccessor
 			t.lowerBound = 0;
 		}
 
-		t.eType = s.dataType.getEcoreType();
+		t.eType = s.dataType.asmEquivalent();
 		if (not s.setterExpression.isDefined()) {
 			t.unsettable = true;
 		}
