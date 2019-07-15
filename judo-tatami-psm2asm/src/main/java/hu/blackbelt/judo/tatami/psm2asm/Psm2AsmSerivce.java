@@ -6,8 +6,6 @@ import hu.blackbelt.epsilon.runtime.execution.impl.Slf4jLog;
 import hu.blackbelt.epsilon.runtime.execution.impl.StringBuilderLogger;
 import hu.blackbelt.epsilon.runtime.osgi.BundleURIHandler;
 import hu.blackbelt.judo.meta.asm.runtime.AsmModel;
-import hu.blackbelt.judo.meta.asm.runtime.AsmModelLoader;
-import hu.blackbelt.judo.meta.asm.runtime.AsmPackageRegistration;
 import hu.blackbelt.judo.meta.psm.runtime.PsmModel;
 import hu.blackbelt.judo.tatami.core.TransformationTrace;
 import lombok.extern.slf4j.Slf4j;
@@ -34,9 +32,6 @@ public class Psm2AsmSerivce {
     public static final String ASM_META_VERSION_RANGE = "Asm-Meta-Version-Range";
 
     @Reference
-    AsmPackageRegistration asmPackageRegistration;
-
-    @Reference
     Psm2AsmScriptResource psm2AsmScriptResource;
 
     Map<PsmModel, ServiceRegistration<TransformationTrace>> psm2AsmTransformationTraceRegistration = Maps.newHashMap();
@@ -45,7 +40,6 @@ public class Psm2AsmSerivce {
     public AsmModel install(PsmModel psmModel, BundleContext bundleContext) throws Exception {
 
         ResourceSet resourceSet = createAsmResourceSet(new BundleURIHandler("urn", "", bundleContext.getBundle()));
-        AsmModelLoader.registerAsmPackages(resourceSet, asmPackageRegistration);
         registerPsmMetamodel(resourceSet);
 
         AsmModel asmModel = AsmModel.asmModelBuilder()

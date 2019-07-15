@@ -78,7 +78,7 @@ public class Psm2AsmTest {
     public void testPsm2AsmTransformation() throws Exception {
 
         // Creating ASM resource set.
-        ResourceSet asmResourceSet = createAsmResourceSet(uriHandler, new LocalAsmPackageRegistration());
+        ResourceSet asmResourceSet = createAsmResourceSet(uriHandler);
 
         // Creating AsmModel definition
         AsmModel asmModel = AsmModel.asmModelBuilder()

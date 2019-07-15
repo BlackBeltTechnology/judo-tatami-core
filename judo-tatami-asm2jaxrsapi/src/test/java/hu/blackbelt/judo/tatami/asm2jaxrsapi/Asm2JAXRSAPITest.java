@@ -9,7 +9,6 @@ import hu.blackbelt.epsilon.runtime.execution.impl.NioFilesystemnRelativePathURI
 import hu.blackbelt.epsilon.runtime.execution.impl.Slf4jLog;
 import hu.blackbelt.judo.meta.asm.runtime.AsmModel;
 import hu.blackbelt.judo.meta.asm.runtime.AsmModelLoader;
-import hu.blackbelt.judo.meta.asm.runtime.AsmModelLoader.LocalAsmPackageRegistration;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.ResourceSet;
@@ -52,7 +51,7 @@ public class Asm2JAXRSAPITest {
 
         // Loading PSM to isolated ResourceSet, because in Tatami
         // there is no new namespace registration made.
-        ResourceSet asmResourceSet = createAsmResourceSet(uriHandler, new LocalAsmPackageRegistration());
+        ResourceSet asmResourceSet = createAsmResourceSet(uriHandler);
         asmModel = AsmModelLoader.loadAsmModel(
                 asmResourceSet,
                 URI.createURI(ASM_NORTHWIND),

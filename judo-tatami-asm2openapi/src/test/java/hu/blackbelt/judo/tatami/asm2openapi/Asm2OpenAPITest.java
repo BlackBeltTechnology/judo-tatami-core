@@ -9,7 +9,6 @@ import hu.blackbelt.epsilon.runtime.execution.impl.NioFilesystemnRelativePathURI
 import hu.blackbelt.epsilon.runtime.execution.impl.Slf4jLog;
 import hu.blackbelt.judo.meta.asm.runtime.AsmModel;
 import hu.blackbelt.judo.meta.asm.runtime.AsmModelLoader;
-import hu.blackbelt.judo.meta.asm.runtime.AsmModelLoader.LocalAsmPackageRegistration;
 import hu.blackbelt.judo.meta.openapi.runtime.OpenAPIModel;
 import hu.blackbelt.judo.meta.openapi.runtime.OpenAPIModelLoader;
 import hu.blackbelt.judo.meta.openapi.runtime.exporter.OpenAPIExporter;
@@ -71,7 +70,7 @@ public class Asm2OpenAPITest {
 
         // Loading PSM to isolated ResourceSet, because in Tatami
         // there is no new namespace registration made.
-        ResourceSet asmResourceSet = createAsmResourceSet(uriHandler, new LocalAsmPackageRegistration());
+        ResourceSet asmResourceSet = createAsmResourceSet(uriHandler);
         asmModel = AsmModelLoader.loadAsmModel(
                 asmResourceSet,
                 URI.createURI(ASM_NORTHWIND),
