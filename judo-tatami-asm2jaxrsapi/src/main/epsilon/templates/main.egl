@@ -12,20 +12,22 @@ for (dto in asmUtils.getAllMappedTransferObjectTypes().collectAllReferenceTypeRe
 	outputJavaClasses.add(dto.getDtoJavaFileName());
 }
 
-for (ap in getAllAccessPoints()) {
+for (ap in asmUtils.getAllAccessPoints()) {
     
     var apServiceInstances : Map = new Map();
-
+    
+    var exposedServices = asmUtils.getExposedServicesOfAccessPoint(ap);
+    
 	// Unbound service
-    if (ap.getExposedServices().size() > 0) {
-		genUnboundService(ap, ap.getExposedServices());
+    if (exposedServices.size() > 0) {
+		genUnboundService(ap, exposedServices);
 		outputJavaClasses.add(ap.getUnboundServiceJavaFileName());
 		outputScrXmls.add(ap.getUnboundServiceScrXmlFileName());
 		apServiceInstances.put("unboundService", ap.getUnboundServicePackageName() + "." + ap.getUnboundServiceClassName());
-	}	
+    }
 	
-	// Get all exposed graph bound services
-	for (mto in ap.getExposedGraphs()
+	// Get all exposed graph bound services - TODO
+	/*for (mto in ap.getExposedGraphs()
 		.collect(eg | eg.getExposedMappedTransferObjectTypes().collect(t | asmUtils.getNestedClasses(t)).flatten().select(og | og.interface).asSet())
 		.flatten().asSet()
 	) {
@@ -34,7 +36,7 @@ for (ap in getAllAccessPoints()) {
 		outputScrXmls.add(mto.getExposedMappedTransferObjectScrXmlFileName(ap));
 		apServiceInstances.put((mto.getExposedMappedTransferObjectPackageName(ap) + "." + mto.getExposedMappedTransferObjectClassName()).replaceAll("\\.", "_"),
 			mto.getExposedMappedTransferObjectPackageName(ap) + "." + mto.getExposedMappedTransferObjectClassName());		
-    }
+    }*/
 
     // Generate ApplicatoionConfigs
     genApplication(ap, apServiceInstances);
