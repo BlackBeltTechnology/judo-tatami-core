@@ -330,7 +330,7 @@
       </relations>
     </elements>
     <elements xsi:type="data:EntityType" xmi:id="_GnEEcINlEeiLE-B2bbL0fg" name="Shipper" superEntityTypes="_DJ29wINlEeiLE-B2bbL0fg">
-      <relations xsi:type="data:Endpoint" xmi:id="_Z9PKULwNEeiOuYiCo6IbXQ" name="orders" target="_-H4RoINkEeiLE-B2bbL0fg" partner="_WVBGcLwNEeiOuYiCo6IbXQ">
+      <relations xsi:type="data:Endpoint" xmi:id="_Z9PKULwNEeiOuYiCo6IbXQ" name="shipperOrders" target="_-H4RoINkEeiLE-B2bbL0fg" partner="_WVBGcLwNEeiOuYiCo6IbXQ">
         <cardinality xmi:id="_98quvOdSEeiJv53TEP0vvQ" upper="-1"/>
       </relations>
       <relations xsi:type="data:Endpoint" xmi:id="_ll8CIOdXEeiJv53TEP0vvQ" name="territory" target="_QckxAINlEeiLE-B2bbL0fg" partner="_vb1JMOdXEeiJv53TEP0vvQ">
@@ -453,6 +453,9 @@
       </relations>
       <relations xmi:id="_csG2sIFSEemFzY3ZWApzVQ" name="shipper" binding="_WVBGcLwNEeiOuYiCo6IbXQ" target="_OUfQ4IFSEemFzY3ZWApzVQ">
         <cardinality xmi:id="_mBre8IFSEemFzY3ZWApzVQ"/>
+      </relations>
+      <relations xmi:id="_AJB7MKfHEemuF_XcMCHsqg" name="categories" binding="_qMfVoHrHEemPuYxp6QV8dA" target="_xxeTIEWXEemHs64O5EYsyQ">
+        <cardinality xmi:id="_Ig3v4KfHEemuF_XcMCHsqg" upper="-1"/>
       </relations>
       <attributes xmi:id="_-L7R5YFREemFzY3ZWApzVQ" name="orderDate" required="true" dataType="_Z9J8IIN1EeiLE-B2bbL0fg" binding="_WXvUoIN1EeiLE-B2bbL0fg"/>
       <attributes xmi:id="_-L7R5oFREemFzY3ZWApzVQ" name="shipperName" dataType="_Nppx8IUcEeipmMyz9cMCRA" binding="_5i40sCVQEemLpvUY7MQgng"/>

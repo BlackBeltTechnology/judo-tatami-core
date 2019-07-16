@@ -99,7 +99,7 @@
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="requiredDate" eType="//types/Timestamp"/>
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="shippedDate" eType="//types/Timestamp"/>
       <eStructuralFeatures xsi:type="ecore:EReference" name="customer" eType="//entities/Customer" eOpposite="//entities/Customer/orders"/>
-      <eStructuralFeatures xsi:type="ecore:EReference" name="shipper" eType="//entities/Shipper" eOpposite="//entities/Shipper/orders"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="shipper" eType="//entities/Shipper" eOpposite="//entities/Shipper/shipperOrders"/>
       <eStructuralFeatures xsi:type="ecore:EReference" name="employee" eType="//entities/Employee" eOpposite="//entities/Employee/orders"/>
       <eStructuralFeatures xsi:type="ecore:EReference" name="shipAddress" eType="//entities/InternationalAddress" containment="true"/>
       <eStructuralFeatures xsi:type="ecore:EReference" name="orderDetails" lowerBound="1" upperBound="-1" eType="//entities/OrderDetail" containment="true"/>
@@ -307,7 +307,7 @@
       <eAnnotations source="http://blackbelt.hu/judo/meta/ExtendedMetadata/entity">
         <details key="value" value="true"/>
       </eAnnotations>
-      <eStructuralFeatures xsi:type="ecore:EReference" name="orders" upperBound="-1" eType="//entities/Order" eOpposite="//entities/Order/shipper"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="shipperOrders" upperBound="-1" eType="//entities/Order" eOpposite="//entities/Order/shipper"/>
       <eStructuralFeatures xsi:type="ecore:EReference" name="territory" eType="//entities/Territory" eOpposite="//entities/Territory/shipper"/>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="InternationalOrder" eSuperTypes="//entities/Order">
@@ -612,6 +612,14 @@
           <details key="value" value="demo.internalAP"/>
         </eAnnotations>
       </eStructuralFeatures>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="categories" upperBound="-1" eType="//service/CategoryInfo" derived="true">
+        <eAnnotations source="http://blackbelt.hu/judo/meta/ExtendedMetadata/binding">
+          <details key="value" value="categories"/>
+        </eAnnotations>
+        <eAnnotations source="http://blackbelt.hu/judo/meta/ExtendedMetadata/exposedBy">
+          <details key="value" value="demo.internalAP"/>
+        </eAnnotations>
+      </eStructuralFeatures>
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="shipperName" eType="//types/String" derived="true">
         <eAnnotations source="http://blackbelt.hu/judo/meta/ExtendedMetadata/binding">
           <details key="value" value="shipperName"/>
@@ -839,6 +847,13 @@
       <eOperations name="unset">
         <eAnnotations source="http://blackbelt.hu/judo/meta/ExtendedMetadata/stateful">
           <details key="value" value="true"/>
+        </eAnnotations>
+      </eOperations>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="OrderInfoʘcategories" abstract="true" interface="true">
+      <eOperations name="get" upperBound="-1" eType="//service/CategoryInfo">
+        <eAnnotations source="http://blackbelt.hu/judo/meta/ExtendedMetadata/stateful">
+          <details key="value" value="false"/>
         </eAnnotations>
       </eOperations>
     </eClassifiers>
