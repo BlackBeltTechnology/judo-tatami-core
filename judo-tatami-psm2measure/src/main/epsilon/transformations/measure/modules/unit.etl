@@ -21,5 +21,8 @@ rule CreateDurationUnit
             case JUDOPSM!DurationType#hour: t.type = MEASURES!DurationType#hour;
             case JUDOPSM!DurationType#day: t.type = MEASURES!DurationType#day;
             case JUDOPSM!DurationType#week: t.type = MEASURES!DurationType#week;
+            case JUDOPSM!DurationType#month: t.type = MEASURES!DurationType#month;
+            case JUDOPSM!DurationType#year: t.type = MEASURES!DurationType#year;
+            default: throw "Missing or unsupported unit type";
         }
     }
