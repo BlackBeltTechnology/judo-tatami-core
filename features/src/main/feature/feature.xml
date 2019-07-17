@@ -41,6 +41,18 @@
         <feature dependency="true">epsilon-runtime</feature>
         <feature dependency="true">osgi-utils</feature>
         <bundle>mvn:hu.blackbelt.judo.meta/judo-meta-expression-runtime/${judo-meta-expression-version}</bundle>
+        <bundle>mvn:hu.blackbelt.judo.meta/judo-meta-expression-adapter-measure/${judo-meta-expression-version}</bundle>
+    </feature>
+
+    <feature name="judo-tatami-meta-expression-asm" version="${project.version}" description="JUDO Tatami, Expression Model for ASM" install="false">
+        <feature>judo-tatami-meta-expression</feature>
+        <feature dependency="true">judo-tatami-meta-measure</feature>
+        <bundle>mvn:hu.blackbelt.judo.meta/judo-meta-expression-adapter-asm/${judo-meta-expression-version}</bundle>
+    </feature>
+
+    <feature name="judo-tatami-meta-expression-psm" version="${project.version}" description="JUDO Tatami, Expression Model for PSM" install="false">
+        <feature>judo-tatami-meta-expression</feature>
+        <bundle>mvn:hu.blackbelt.judo.meta/judo-meta-expression-adapter-psm/${judo-meta-expression-version}</bundle>
     </feature>
 
     <feature name="judo-tatami-meta-measure" version="${project.version}" description="JUDO Tatami, Measure Model " install="false">
