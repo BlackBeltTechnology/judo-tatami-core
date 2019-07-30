@@ -91,7 +91,7 @@ public class Psm2AsmTest {
 
         // Make transformation which returns the tracr with the serialized URI's
         Psm2AsmTransformationTrace psm2AsmTransformationTrace = executePsm2AsmTransformation(asmResourceSet, psmModel, asmModel, new Slf4jLog(log),
-                new File(targetDir().getAbsolutePath(), "epsilon/transformations/asm"));
+                new File(targetDir().getAbsolutePath(), "epsilon/transformations/asm").toURI());
 
         // Saving trace map
         Resource traceResoureSaved = new XMIResourceImpl();

@@ -83,7 +83,7 @@ public class Psm2MeasureTest {
                 .build();
 
         Psm2MeasureTransformationTrace psm2MeasureTransformationTrace = executePsm2MeasureTransformation(measureResourceSet, psmModel, measureModel, new Slf4jLog(log),
-                new File(targetDir().getAbsolutePath(), "epsilon/transformations/measure"));
+                new File(targetDir().getAbsolutePath(), "epsilon/transformations/measure").toURI());
 
 
 

@@ -13,6 +13,7 @@ import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
+import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
@@ -31,10 +32,14 @@ public class Psm2MeasureSerivce {
 
     public static final String MEASURE_META_VERSION_RANGE = "Measure-Meta-Version-Range";
 
-    @Reference
-    Psm2MeasureScriptResource psm2MeasureScriptResource;
-
     Map<PsmModel, ServiceRegistration<TransformationTrace>> psm2MeasureTransformationTraceRegistration = Maps.newHashMap();
+
+    BundleContext scriptBundleContext;
+
+    @Activate
+    public void activate(BundleContext bundleContext) {
+        scriptBundleContext = bundleContext;
+    }
 
     public MeasureModel install(PsmModel psmModel, BundleContext bundleContext) throws Exception {
         BundleURIHandler bundleURIHandler = new BundleURIHandler("urn", "",
@@ -53,8 +58,14 @@ public class Psm2MeasureSerivce {
 
         Log logger = new StringBuilderLogger(Slf4jLog.determinateLogLevel(log));
         try {
+            java.net.URI scriptUri =
+                    scriptBundleContext.getBundle()
+                            .getEntry("/tatami/psm2measure/transformations/measure/psmToMeasure.etl")
+                            .toURI()
+                            .resolve(".");
+
             Psm2MeasureTransformationTrace psm2MeasureTransformationTrace = executePsm2MeasureTransformation(measureResourceSet, psmModel, measureModel, logger,
-                    new File(psm2MeasureScriptResource.getSctiptRoot().getAbsolutePath(), "psm2measure/transformations/measure") );
+                    scriptUri);
 
             psm2MeasureTransformationTraceRegistration.put(psmModel, bundleContext.registerService(TransformationTrace.class, psm2MeasureTransformationTrace, new Hashtable<>()));
             log.info(logger.getBuffer());

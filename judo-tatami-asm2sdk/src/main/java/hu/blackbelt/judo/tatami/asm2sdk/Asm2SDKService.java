@@ -10,6 +10,7 @@ import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
+import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
@@ -20,18 +21,30 @@ import java.util.Map;
 @Slf4j
 public class Asm2SDKService {
 
-    @Reference
-    Asm2SDKScriptResource asm2SDKScriptResource;
-
     Map<AsmModel, Bundle> asm2jaxrsAPIBundles = Maps.newHashMap();
+
+    BundleContext scriptBundleContext;
+
+    @Activate
+    public void activate(BundleContext bundleContext) {
+        scriptBundleContext = bundleContext;
+    }
+
 
     public void install(AsmModel asmModel, BundleContext bundleContext) throws Exception {
         Log logger = new StringBuilderLogger(Slf4jLog.determinateLogLevel(log));
         try {
+
+            java.net.URI scriptUri =
+                    scriptBundleContext.getBundle()
+                            .getEntry("/tatami/asm2sdk/templates/main.egl")
+                            .toURI()
+                            .resolve(".");
+
             asm2jaxrsAPIBundles.put(asmModel,
                     bundleContext.installBundle("asm2jaxrsapi",
                             Asm2SDK.executeAsm2SDKGeneration(new ResourceSetImpl(), asmModel, logger,
-                                    new File(asm2SDKScriptResource.getSctiptRoot().getAbsolutePath(), "asm2sdk/templates"), new File(""))));
+                                    scriptUri, new File(""))));
             log.info(logger.getBuffer());
         } catch (Exception e) {
             log.error(logger.getBuffer());

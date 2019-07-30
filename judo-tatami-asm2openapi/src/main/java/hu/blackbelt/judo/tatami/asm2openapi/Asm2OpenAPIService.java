@@ -13,6 +13,7 @@ import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
+import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
@@ -30,10 +31,15 @@ public class Asm2OpenAPIService {
 
     public static final String OPENAPI_META_VERSION_RANGE = "OpenAPI-Meta-Version-Range";
 
-    @Reference
-    Asm2OpenAPIScriptResource asm2OpenAPIScriptResource;
-
     Map<AsmModel, ServiceRegistration<TransformationTrace>> asm2openAPITransformationTraceRegistration = Maps.newHashMap();
+
+    BundleContext scriptBundleContext;
+
+    @Activate
+    public void activate(BundleContext bundleContext) {
+        scriptBundleContext = bundleContext;
+    }
+
 
     public OpenAPIModel install(AsmModel asmModel, BundleContext bundleContext) throws Exception {
         BundleURIHandler bundleURIHandler = new BundleURIHandler("urn", "",
@@ -54,8 +60,15 @@ public class Asm2OpenAPIService {
 
         Log logger = new StringBuilderLogger(Slf4jLog.determinateLogLevel(log));
         try {
+            java.net.URI scriptUri =
+                    scriptBundleContext.getBundle()
+                            .getEntry("/tatami/asm2openapi/transformations/openapi/asmToOpenAPI.etl")
+                            .toURI()
+                            .resolve(".");
+
+
             Asm2OpenAPITransformationTrace asm2OpenAPITransformationTrace = executeAsm2OpenAPITransformation(openAPIResourceSet, asmModel, openAPIModel, logger,
-                    new File(asm2OpenAPIScriptResource.getSctiptRoot().getAbsolutePath(), "asm2openapi/transformations/openapi"));
+                    scriptUri);
 
             asm2openAPITransformationTraceRegistration.put(asmModel, bundleContext.registerService(TransformationTrace.class, asm2OpenAPITransformationTrace, new Hashtable<>()));
             log.info(logger.getBuffer());

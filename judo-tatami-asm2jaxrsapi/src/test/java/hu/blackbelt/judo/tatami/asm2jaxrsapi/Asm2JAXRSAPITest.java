@@ -70,7 +70,7 @@ public class Asm2JAXRSAPITest {
                      new FileOutputStream(new File(targetDir().getAbsolutePath(), NORTHWIND + "-rest.jar"))) {
             ByteStreams.copy(
                     executeAsm2JAXRSAPIGeneration(new ResourceSetImpl(), asmModel, new Slf4jLog(log),
-                            new File(srcDir().getAbsolutePath(), "epsilon/templates"),
+                            new File(srcDir().getAbsolutePath(), "epsilon/templates").toURI(),
                             new File(targetDir().getAbsolutePath(), "generated/java")),
                     outputStream
             );

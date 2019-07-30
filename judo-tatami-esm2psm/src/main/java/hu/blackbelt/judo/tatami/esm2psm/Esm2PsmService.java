@@ -13,6 +13,7 @@ import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
+import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
@@ -29,11 +30,15 @@ public class Esm2PsmService {
 
     public static final String PSM_META_VERSION_RANGE = "Psm-Meta-Version-Range";
 
-    @Reference
-    Esm2PsmScriptResource esm2PsmScriptResource;
-
     Map<EsmModel, ServiceRegistration<TransformationTrace>> esm2PsmTransformationTraceRegistration = Maps.newHashMap();
 
+
+    BundleContext scriptBundleContext;
+
+    @Activate
+    public void activate(BundleContext bundleContext) {
+        scriptBundleContext = bundleContext;
+    }
 
     public PsmModel install(EsmModel esmModel, BundleContext bundleContext) throws Exception {
         BundleURIHandler bundleURIHandler = new BundleURIHandler("urn", "",
@@ -52,9 +57,18 @@ public class Esm2PsmService {
 
 
         Log logger = new StringBuilderLogger(Slf4jLog.determinateLogLevel(log));
+
+        java.net.URI scriptUri =
+                scriptBundleContext.getBundle()
+                        .getEntry("/tatami/esm2psm/transformations/psm/esmToPsm.etl")
+                        .toURI()
+                        .resolve(".");
         try {
-            Esm2PsmTransformationTrace transformationTrace = executeEsm2PsmTransformation(psmResourceSet, esmModel, psmModel, logger,
-                    new File(esm2PsmScriptResource.getScriptRoot().getAbsolutePath(), "esm2psm/transformations/psm/"));
+            Esm2PsmTransformationTrace transformationTrace = executeEsm2PsmTransformation(psmResourceSet,
+                    esmModel,
+                    psmModel,
+                    logger,
+                    scriptUri);
 
             esm2PsmTransformationTraceRegistration.put(esmModel, bundleContext.registerService(TransformationTrace.class, transformationTrace, new Hashtable<>()));
             log.info(logger.getBuffer());

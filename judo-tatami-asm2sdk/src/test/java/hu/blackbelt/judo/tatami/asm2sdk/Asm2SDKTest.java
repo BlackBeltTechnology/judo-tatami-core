@@ -69,7 +69,7 @@ public class Asm2SDKTest {
                      new FileOutputStream(new File(targetDir().getAbsolutePath(), NORTHWIND + "-sdk.jar"))) {
             ByteStreams.copy(
                     Asm2SDK.executeAsm2SDKGeneration(new ResourceSetImpl(), asmModel, new Slf4jLog(log),
-                            new File(srcDir().getAbsolutePath(), "epsilon/templates"),
+                            new File(srcDir().getAbsolutePath(), "epsilon/templates").toURI(),
                             new File(targetDir().getAbsolutePath(), "generated/java")),
                     outputStream
             );

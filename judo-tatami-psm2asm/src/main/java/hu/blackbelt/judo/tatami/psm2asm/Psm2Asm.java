@@ -16,6 +16,7 @@ import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 
 import java.io.File;
+import java.net.URI;
 import java.util.List;
 import java.util.Map;
 
@@ -36,12 +37,12 @@ public class Psm2Asm {
      * @param psmModel The PSM model definition and loaded resources
      * @param asmModel The asm model definition and loaded resources
      * @param log The log instance used in scripts
-     * @param scriptDir The physucal filesystem directory where the script root is
+     * @param scriptUri The physucal filesystem directory where the script root is
      * @return The trace object list of the transformation conforms the meta model defined in {@link TransformationTraceUtil}.
      * @throws Exception
      */
     public static Psm2AsmTransformationTrace executePsm2AsmTransformation(ResourceSet resourceSet, PsmModel psmModel, AsmModel asmModel, Log log,
-                                                                          File scriptDir) throws Exception {
+                                                                          URI scriptUri) throws Exception {
 
         // If resource not creared for target model
         Resource asmResource = asmModel.getResourceSet().getResource(asmModel.getUri(), false);
@@ -64,7 +65,6 @@ public class Psm2Asm {
                                 .name("ASM")
                                 .resource(asmResource)
                                 .build()))
-                .sourceDirectory(scriptDir)
                 .injectContexts(ImmutableMap.of(
                         "asmUtils", new AsmUtils((asmModel.getResourceSet())),
                         "psmUtils", new PsmUtils()
@@ -74,7 +74,7 @@ public class Psm2Asm {
         executionContext.load();
 
         EtlExecutionContext etlExecutionContext = etlExecutionContextBuilder()
-                .source("psmToAsm.etl")
+                .source(scriptUri.resolve("psmToAsm.etl"))
                 .parameters(ImmutableList.of(
                         programParameterBuilder().name("modelName").value(psmModel.getName()).build(),
                         programParameterBuilder().name("nsURI").value("http://blackbelt.hu/judo/" + psmModel.getName()).build(),

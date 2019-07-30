@@ -98,7 +98,7 @@ public class Asm2OpenAPITest {
                 .build();
 
         Asm2OpenAPITransformationTrace asm2OpenAPITransformationTrace = executeAsm2OpenAPITransformation(openAPIResourceSet, asmModel, openAPIModel, new Slf4jLog(log),
-                new File(targetDir().getAbsolutePath(), "epsilon/transformations/openapi"));
+                new File(targetDir().getAbsolutePath(), "epsilon/transformations/openapi").toURI());
 
         // Saving trace map
         Resource traceResoureSaved = new XMIResourceImpl();

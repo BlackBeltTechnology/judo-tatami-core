@@ -74,7 +74,7 @@ public class Rdbms2LiquibaseTest {
                 .build();
 
         executeRdbms2LiquibaseTransformation(liquibaseResourceSet, rdbmsModel, liquibaseModel, new Slf4jLog(log),
-                new File(targetDir().getAbsolutePath(), "epsilon/transformations"),
+                new File(targetDir().getAbsolutePath(), "epsilon/transformations").toURI(),
                 "hsqldb");
 
         saveLiquibaseModel(liquibaseModel);

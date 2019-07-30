@@ -17,6 +17,8 @@ import org.eclipse.emf.ecore.resource.URIHandler;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
 
@@ -36,35 +38,13 @@ public class Asm2Rdbms {
     public static final String DIALECT_ORACLE = "oracle";
 
     static Map<String, String> dialectTypeFileNames = ImmutableMap.of(
-            DIALECT_HSQLDB, "RDBMS Data Types Hsqldb.xlsx",
-            DIALECT_POSTGGRESSQL, "RDBMS Data Types Postgres.xlsx",
-            DIALECT_ORACLE, "RDBMS Data Types Oracle.xlsx"
+            DIALECT_HSQLDB, "RDBMS_Data_Types_Hsqldb.xlsx",
+            DIALECT_POSTGGRESSQL, "RDBMS_Data_Types_Postgres.xlsx",
+            DIALECT_ORACLE, "RDBMS_Data_Types_Oracle.xlsx"
     );
 
-    /*
-
-    public static ResourceSet convertTypeMappingExcelToModel(ResourceSet resourceSet, RdbmsModel rdbmsModel, Log log,
-                                                                              File scriptDir, File excelModelDir, String dialect) throws Exception {
-        ResourceSet nameMappingModelResourceSet = new ResourceSetImpl();
-        Resource nameMappingModelResource = nameMappingModelResourceSet.createResource()
-
-
-
-        Resource nameMappingModelResource = new XMLResourceImpl();
-
-        // Execution context
-        ExecutionContext executionContext = executionContextBuilder()
-                .log(log)
-                .resourceSet(nameMappingModelResourceSet)
-
-
-        return resourceSet;
-
-    }
-     */
-
     public static Asm2RdbmsTransformationTrace executeAsm2RdbmsTransformation(ResourceSet resourceSet, AsmModel asmModel, RdbmsModel rdbmsModel, Log log,
-                                                                              File scriptDir, File excelModelDir, String dialect) throws Exception {
+                                                                              java.net.URI scriptUri, java.net.URI excelModelUri, String dialect) throws Exception {
 
         // If resource was not created for target model before
         Resource rdbmsResource = rdbmsModel.getResourceSet().getResource(rdbmsModel.getUri(), false);
@@ -89,18 +69,18 @@ public class Asm2Rdbms {
                                 .build(),
                         excelModelContextBuilder()
                                 .name("TYPEMAPPING")
-                                .excel(new File(excelModelDir, dialectTypeFileNames.get(dialect)).getAbsolutePath())
-                                .excelConfiguration(new File(excelModelDir, "typemapping.xml").getAbsolutePath())
+                                .excel(excelModelUri.resolve(dialectTypeFileNames.get(dialect).replace(" ", "%20")).toString())
+                                .excelConfiguration(excelModelUri.resolve("typemapping.xml").toString())
                                 .build(),
                         excelModelContextBuilder()
                                 .name("RULEMAPPING")
-                                .excel(new File(excelModelDir, "RDBMS Table Mapping Rules.xlsx").getAbsolutePath())
-                                .excelConfiguration(new File(excelModelDir, "rulemapping.xml").getAbsolutePath())
+                                .excel(excelModelUri.resolve("RDBMS_Table_Mapping_Rules.xlsx".replace(" ", "%20")).toString())
+                                .excelConfiguration(excelModelUri.resolve("rulemapping.xml").toString())
                                 .build(),
                         excelModelContextBuilder()
                                 .name("NAMEMAPPING")
-                                .excel(new File(excelModelDir, "RDBMS Sql Name Mapping.xlsx").getAbsolutePath())
-                                .excelConfiguration(new File(excelModelDir, "namemapping.xml").getAbsolutePath())
+                                .excel(excelModelUri.resolve("RDBMS_Sql_Name_Mapping.xlsx".replace(" ", "%20")).toString())
+                                .excelConfiguration(excelModelUri.resolve("namemapping.xml").toString())
                                 .build()
                         )
                 )
@@ -108,7 +88,6 @@ public class Asm2Rdbms {
                         "AbbreviateUtils", new AbbreviateUtils(),
                         "asmUtils", new AsmUtils(asmModel.getResourceSet())
                 ))
-                .sourceDirectory(scriptDir)
                 .build();
 
         // run the model / metadata loading
@@ -116,20 +95,20 @@ public class Asm2Rdbms {
 
 
         EtlExecutionContext nameMappingExecutionContext = etlExecutionContextBuilder()
-                .source("excelToNameMapping.etl")
+                .source(scriptUri.resolve("excelToNameMapping.etl"))
                 .build();
 
         EtlExecutionContext typeMappingExecutionContext = etlExecutionContextBuilder()
-                .source("excelToTypeMapping.etl")
+                .source(scriptUri.resolve("excelToTypeMapping.etl"))
                 .build();
 
 
         EtlExecutionContext rulesExecutionContext = etlExecutionContextBuilder()
-                .source("excelToRules.etl")
+                .source(scriptUri.resolve("excelToRules.etl"))
                 .build();
 
         EtlExecutionContext asm2rdbmsExecutionContext = etlExecutionContextBuilder()
-                .source("asmToRdbms.etl")
+                .source(scriptUri.resolve("asmToRdbms.etl"))
                 .parameters(ImmutableList.of(
                         programParameterBuilder().name("modelVersion").value(asmModel.getVersion()).build(),
                         programParameterBuilder().name("dialect").value(dialect).build(),

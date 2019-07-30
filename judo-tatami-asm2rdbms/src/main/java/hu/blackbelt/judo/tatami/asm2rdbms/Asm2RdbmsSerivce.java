@@ -13,6 +13,7 @@ import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
+import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
@@ -30,13 +31,15 @@ public class Asm2RdbmsSerivce {
 
     public static final String RDBMS_META_VERSION_RANGE = "Rdbms-Meta-Version-Range";
 
-    @Reference
-    Asm2RdbmsScriptResource asm2RdbmsScriptResource;
-
-    @Reference
-    Asm2RdbmsModelResource asm2RdbmsModelResource;
-
     Map<AsmModel, ServiceRegistration<TransformationTrace>> asm2rdbmsTransformationTraceRegistration = Maps.newHashMap();
+
+    BundleContext scriptBundleContext;
+
+    @Activate
+    public void activate(BundleContext bundleContext) {
+        scriptBundleContext = bundleContext;
+    }
+
 
     public RdbmsModel install(AsmModel asmModel, BundleContext bundleContext, String dialect) throws Exception {
         BundleURIHandler bundleURIHandler = new BundleURIHandler("urn", "",
@@ -56,9 +59,23 @@ public class Asm2RdbmsSerivce {
 
         Log logger = new StringBuilderLogger(Slf4jLog.determinateLogLevel(log));
         try {
+            java.net.URI scriptUri =
+                    scriptBundleContext.getBundle()
+                            .getEntry("/tatami/asm2rdbms/transformations/asmToRdbms.etl")
+                            .toURI()
+                            .resolve(".");
+
+            java.net.URI excelModelUri =
+                    scriptBundleContext.getBundle()
+                            .getEntry("/tatami/asm2rdbms/model/typemapping.xml")
+                            .toURI()
+                            .resolve(".");
+
+
+
             Asm2RdbmsTransformationTrace asm2RdbmsTransformationTrace = executeAsm2RdbmsTransformation(rdbmsResourceSet, asmModel, rdbmsModel, logger,
-                    new File(asm2RdbmsScriptResource.getSctiptRoot().getAbsolutePath(), "asm2rdbms/transformations"),
-                    new File(asm2RdbmsModelResource.getModelRoot().getAbsolutePath(), "asm2rdbms-model"), dialect);
+                    scriptUri,
+                    excelModelUri, dialect);
 
             asm2rdbmsTransformationTraceRegistration.put(asmModel, bundleContext.registerService(TransformationTrace.class, asm2RdbmsTransformationTrace, new Hashtable<>()));
             log.info(logger.getBuffer());

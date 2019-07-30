@@ -22,6 +22,7 @@ import org.osgi.framework.wiring.BundleWiring;
 import javax.tools.JavaFileObject;
 import javax.ws.rs.core.Application;
 import java.io.*;
+import java.net.URI;
 import java.util.Collections;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -37,7 +38,7 @@ import static org.ops4j.pax.tinybundles.core.TinyBundles.bundle;
 public class Asm2JAXRSAPI {
 
     public static InputStream executeAsm2JAXRSAPIGeneration(ResourceSet resourceSet, AsmModel asmModel, Log log,
-                                                            File scriptDir, File sourceCodeOutputDir) throws Exception {
+                                                            URI scriptDir, File sourceCodeOutputDir) throws Exception {
 
         // Execution context
         ExecutionContext executionContext = executionContextBuilder()
@@ -51,7 +52,6 @@ public class Asm2JAXRSAPI {
                                 .build()
                         )
                 )
-                .sourceDirectory(scriptDir)
                 .injectContexts(ImmutableMap.of("asmUtils", new AsmUtils((asmModel.getResourceSet()))))
                 .build();
 
@@ -59,7 +59,7 @@ public class Asm2JAXRSAPI {
         executionContext.load();
 
         EglExecutionContext eglExecutionContext = eglExecutionContextBuilder()
-                .source("main.egl")
+                .source(scriptDir.resolve("main.egl"))
                 .outputRoot(sourceCodeOutputDir.getAbsolutePath())
                 .parameters(ImmutableList.of(
                         programParameterBuilder().name("modelVersion").value(asmModel.getVersion()).build(),

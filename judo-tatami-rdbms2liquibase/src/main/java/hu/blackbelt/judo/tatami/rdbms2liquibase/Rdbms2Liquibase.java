@@ -9,6 +9,7 @@ import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 
 import java.io.File;
+import java.net.URI;
 
 import static hu.blackbelt.epsilon.runtime.execution.ExecutionContext.executionContextBuilder;
 import static hu.blackbelt.epsilon.runtime.execution.contexts.EtlExecutionContext.etlExecutionContextBuilder;
@@ -17,7 +18,7 @@ import static hu.blackbelt.epsilon.runtime.execution.model.emf.WrappedEmfModelCo
 public class Rdbms2Liquibase {
 
     public static void executeRdbms2LiquibaseTransformation(ResourceSet resourceSet, RdbmsModel rdbmsModel, hu.blackbelt.judo.meta.liquibase.runtime.LiquibaseModel liquibaseModel, Log log,
-                                                            File scriptDir, String dialect) throws Exception {
+                                                            URI scriptUri, String dialect) throws Exception {
 
         // If resource was not created for target model before
         Resource liquibaseResource = liquibaseModel.getResourceSet().getResource(liquibaseModel.getUri(), false);
@@ -41,7 +42,6 @@ public class Rdbms2Liquibase {
                                 .name("LIQUIBASE")
                                 .resource(liquibaseResource)
                                 .build()))
-                .sourceDirectory(scriptDir)
                 .build();
 
         // run the model / metadata loading
@@ -50,7 +50,7 @@ public class Rdbms2Liquibase {
         // Transformation script
         executionContext.executeProgram(
                 etlExecutionContextBuilder()
-                        .source("rdbmsToLiquibase.etl")
+                        .source(scriptUri.resolve("rdbmsToLiquibase.etl"))
                         .parameters(ImmutableList.of(
                                 ProgramParameter.programParameterBuilder().name("dialect").value(dialect).build()
                         ))

@@ -14,6 +14,7 @@ import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 
 import java.io.File;
+import java.net.URI;
 import java.util.List;
 import java.util.Map;
 
@@ -28,7 +29,7 @@ public class Asm2OpenAPI {
     public static final String ASM_2_OPENAPI_URI_POSTFIX = "asm2openapi";
 
     public static Asm2OpenAPITransformationTrace executeAsm2OpenAPITransformation(ResourceSet resourceSet, AsmModel asmModel, OpenAPIModel openAPIModel, Log log,
-                                                                                  File scriptDir) throws Exception {
+                                                                                  URI scriptDir) throws Exception {
 
         // If resource was not created for target model before
         Resource openAPIResource = openAPIModel.getResourceSet().getResource(openAPIModel.getUri(), false);
@@ -53,7 +54,6 @@ public class Asm2OpenAPI {
                                 .build()
                         )
                 )
-                .sourceDirectory(scriptDir)
                 .injectContexts(ImmutableMap.of("asmUtils", new AsmUtils((asmModel.getResourceSet()))))
                 .build();
 
@@ -61,7 +61,7 @@ public class Asm2OpenAPI {
         executionContext.load();
 
         EtlExecutionContext etlExecutionContext = etlExecutionContextBuilder()
-                .source("asmToOpenAPI.etl")
+                .source(scriptDir.resolve("asmToOpenAPI.etl"))
                 .parameters(ImmutableList.of(
                         programParameterBuilder().name("modelVersion").value(asmModel.getVersion()).build(),
                         programParameterBuilder().name("extendedMetadataURI")

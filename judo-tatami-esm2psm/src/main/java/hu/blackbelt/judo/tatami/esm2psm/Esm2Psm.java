@@ -15,6 +15,7 @@ import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 
 import java.io.File;
+import java.net.URI;
 import java.util.List;
 import java.util.Map;
 
@@ -38,7 +39,7 @@ public class Esm2Psm {
      * @throws Exception
      */
     public static Esm2PsmTransformationTrace executeEsm2PsmTransformation(ResourceSet resourceSet, EsmModel esmModel, PsmModel psmModel, Log log,
-                                                                          File scriptDir) throws Exception {
+                                                                          URI scriptDir) throws Exception {
 
         // If resource not created for target model
         Resource psmResource = psmModel.getResourceSet().getResource(psmModel.getUri(), false);
@@ -66,14 +67,13 @@ public class Esm2Psm {
                                 .resource(psmResource)
                                 .build()))
                 .injectContexts(ImmutableMap.of("esmUtils", esmUtils))
-                .sourceDirectory(scriptDir)
                 .build();
 
         // run the model / metadata loading
         executionContext.load();
 
         EtlExecutionContext etlExecutionContext = etlExecutionContextBuilder()
-                .source("esmToPsm.etl")
+                .source(scriptDir.resolve("esmToPsm.etl"))
                 .build();
 
         // Transformation script

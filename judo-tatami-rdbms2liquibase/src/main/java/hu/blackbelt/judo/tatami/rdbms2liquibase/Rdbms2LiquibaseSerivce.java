@@ -11,6 +11,7 @@ import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.osgi.framework.BundleContext;
+import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
@@ -27,9 +28,12 @@ public class Rdbms2LiquibaseSerivce {
 
     public static final String LIQUIBASE_META_VERSION_RANGE = "Liquibase-Meta-Version-Range";
 
-    @Reference
-    Rdbms2LiquibaseScriptResource rdbms2LiquibaseScriptResource;
+    BundleContext scriptBundleContext;
 
+    @Activate
+    public void activate(BundleContext bundleContext) {
+        scriptBundleContext = bundleContext;
+    }
 
     public LiquibaseModel install(RdbmsModel rdbmsModel, BundleContext bundleContext) throws Exception {
         BundleURIHandler bundleURIHandler = new BundleURIHandler("urn", "",
@@ -52,8 +56,14 @@ public class Rdbms2LiquibaseSerivce {
 
         Log logger = new StringBuilderLogger(Slf4jLog.determinateLogLevel(log));
         try {
+            java.net.URI scriptUri =
+                    scriptBundleContext.getBundle()
+                            .getEntry("/tatami/rdbms2liquibase/transformations/rdbmsToLiquibase.etl")
+                            .toURI()
+                            .resolve(".");
+
             executeRdbms2LiquibaseTransformation(liquibaseResourceSet, rdbmsModel, liquibaseModel, logger,
-                    new File(rdbms2LiquibaseScriptResource.getSctiptRoot().getAbsolutePath(), "rdbms2liquibase/transformations"),
+                    scriptUri,
                     "hsqldb" );
 
             log.info(logger.getBuffer());

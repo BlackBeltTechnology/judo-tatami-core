@@ -92,7 +92,7 @@ public class Esm2PsmTest {
 
         // Make transformation which returns the tracr with the serialized URI's
         Esm2PsmTransformationTrace esm2PsmTransformationTrace = executeEsm2PsmTransformation(psmResourceSet, esmModel, psmModel, new Slf4jLog(log),
-                new File(targetDir().getAbsolutePath(), "epsilon/transformations/psm"));
+                new File(targetDir().getAbsolutePath(), "epsilon/transformations/psm").toURI());
 
         // Saving trace map
         Resource traceResoureSaved = new XMIResourceImpl();

@@ -87,8 +87,8 @@ public class Asm2RdbmsTest {
                 .build();
 
         Asm2RdbmsTransformationTrace asm2RdbmsTransformationTrace = executeAsm2RdbmsTransformation(rdbmsResourceSet, asmModel, rdbmsModel, new Slf4jLog(log),
-                new File(targetDir().getAbsolutePath(), "epsilon/transformations"),
-                new File(targetDir(), "../../model"),
+                new File(targetDir().getAbsolutePath(), "epsilon/transformations").toURI(),
+                new File(targetDir(), "../../model").toURI(),
                 "hsqldb");
 
         // Saving trace map

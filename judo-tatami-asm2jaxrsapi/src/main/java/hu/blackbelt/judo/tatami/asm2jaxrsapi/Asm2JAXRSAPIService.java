@@ -31,15 +31,15 @@ public class Asm2JAXRSAPIService {
 
     File tempDir;
 
-    @Reference
-    Asm2JAXRSAPIScriptResource asm2JAXRSAPIScriptResource;
-
     Map<AsmModel, Bundle> asm2jaxrsAPIBundles = Maps.newHashMap();
+
+    BundleContext scriptBundleContext;
 
     @Activate
     public void activate(BundleContext bundleContext) {
         tempDir = bundleContext.getBundle().getDataFile("generated");
         tempDir.mkdirs();
+        scriptBundleContext = bundleContext;
     }
 
     @Deactivate
@@ -56,10 +56,16 @@ public class Asm2JAXRSAPIService {
         Log logger = new StringBuilderLogger(Slf4jLog.determinateLogLevel(log));
         try {
 
+            java.net.URI scriptUri =
+                    scriptBundleContext.getBundle()
+                            .getEntry("/tatami/asm2jaxrsapi/templates/main.egl")
+                            .toURI()
+                            .resolve(".");
+
             asm2jaxrsAPIBundles.put(asmModel,
                     bundleContext.installBundle("asm2jaxrsapi",
                             executeAsm2JAXRSAPIGeneration(new ResourceSetImpl(), asmModel, logger,
-                                    new File(asm2JAXRSAPIScriptResource.getSctiptRoot().getAbsolutePath(), "asm2jaxrsapi/templates"),
+                                    scriptUri,
                                     new File(tempDir.getAbsolutePath(), asmModel.getName()))));
             log.info(logger.getBuffer());
         } catch (Exception e) {

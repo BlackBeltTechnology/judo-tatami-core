@@ -13,6 +13,7 @@ import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
+import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
@@ -31,11 +32,14 @@ public class Psm2AsmSerivce {
 
     public static final String ASM_META_VERSION_RANGE = "Asm-Meta-Version-Range";
 
-    @Reference
-    Psm2AsmScriptResource psm2AsmScriptResource;
-
     Map<PsmModel, ServiceRegistration<TransformationTrace>> psm2AsmTransformationTraceRegistration = Maps.newHashMap();
 
+    BundleContext scriptBundleContext;
+
+    @Activate
+    public void activate(BundleContext bundleContext) {
+        scriptBundleContext = bundleContext;
+    }
 
     public AsmModel install(PsmModel psmModel, BundleContext bundleContext) throws Exception {
 
@@ -52,8 +56,14 @@ public class Psm2AsmSerivce {
 
         Log logger = new StringBuilderLogger(Slf4jLog.determinateLogLevel(log));
         try {
+            java.net.URI scriptUri =
+                    scriptBundleContext.getBundle()
+                            .getEntry("/tatami/psm2asm/transformations/asm/psmToAsm.etl")
+                            .toURI()
+                            .resolve(".");
+
             Psm2AsmTransformationTrace transformationTrace = executePsm2AsmTransformation(resourceSet, psmModel, asmModel, logger,
-                    new File(psm2AsmScriptResource.getSctiptRoot().getAbsolutePath(), "psm2asm/transformations/asm/"));
+                    scriptUri);
 
             psm2AsmTransformationTraceRegistration.put(psmModel, bundleContext.registerService(TransformationTrace.class, transformationTrace, new Hashtable<>()));
             log.info(logger.getBuffer());

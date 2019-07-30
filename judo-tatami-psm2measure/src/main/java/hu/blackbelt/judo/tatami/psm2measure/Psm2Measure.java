@@ -12,6 +12,7 @@ import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 
 import java.io.File;
+import java.net.URI;
 import java.util.List;
 import java.util.Map;
 
@@ -25,7 +26,7 @@ public class Psm2Measure {
     public static final String PSM_2_MEASURE_URI_POSTFIX = "psm2measure";
 
     public static Psm2MeasureTransformationTrace executePsm2MeasureTransformation(ResourceSet resourceSet, PsmModel psmModel, MeasureModel measureModel, Log log,
-                                                                                  File scriptDir) throws Exception {
+                                                                                  URI scriptUri) throws Exception {
 
         // If resource not creared for target model
         Resource measureResource = measureModel.getResourceSet().getResource(measureModel.getUri(), false);
@@ -48,7 +49,6 @@ public class Psm2Measure {
                                 .name("MEASURES")
                                 .resource(measureResource)
                                 .build()))
-                .sourceDirectory(scriptDir)
                 .build();
 
         // run the model / metadata loading
@@ -56,7 +56,7 @@ public class Psm2Measure {
 
         EtlExecutionContext etlExecutionContext =
                 etlExecutionContextBuilder()
-                        .source("psmToMeasure.etl")
+                        .source(scriptUri.resolve("psmToMeasure.etl"))
                         .build();
 
         // Transformation script
