@@ -1,6 +1,0 @@
-import "modelElement.eol";
-
-@cached
-operation ASM!EAttribute isID() : Boolean {
-	return self.hasAnnotation("id");
-}

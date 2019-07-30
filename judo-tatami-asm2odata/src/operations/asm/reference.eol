@@ -1,6 +1,0 @@
-import "modelElement.eol";
-
-@cached
-operation ASM!EReference isEmbedded() : Boolean {
-	return self.hasAnnotation("embedded");
-}

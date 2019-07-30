@@ -65,65 +65,36 @@
         <timestamp>${maven.build.timestamp}</timestamp>
         <maven.build.timestamp.format>yyyyMMddHHmmss</maven.build.timestamp.format>
 
-        <epsilon-runtime-version>1.2.0-SNAPSHOT</epsilon-runtime-version>
-        <epsilon-maven-plugin-version>1.2.0_develop-62</epsilon-maven-plugin-version>
+        <epsilon-runtime-version>1.2.0.develop_100</epsilon-runtime-version>
 
         <judo-framework-version>2.0.0_develop_130</judo-framework-version>
 
-        <judo-meta-rdbms-version>1.0.1.feature_JNG_101_remove_dependency_of_ASM_data_type_instances_41</judo-meta-rdbms-version>
+        <judo-meta-rdbms-version>1.0.0.feature_JNG_83_Refactor_00034</judo-meta-rdbms-version>
         <judo-meta-rdbms.import-range>[1.0,1.1)</judo-meta-rdbms.import-range>
 
-        <judo-meta-esm-version>1.0.0.develop_36</judo-meta-esm-version>
+        <judo-meta-esm-version>1.0.0.feature_JNG_84_Refactor_00012</judo-meta-esm-version>
         <judo-meta-esm-import-range>[1.0,1.1)</judo-meta-esm-import-range>
 
-        <judo-meta-psm-version>1.0.1.develop_277</judo-meta-psm-version>
+        <judo-meta-psm-version>1.0.0.feature_JNG_85_Refactor_00017</judo-meta-psm-version>
         <judo-meta-psm-import-range>[1.0,1.1)</judo-meta-psm-import-range>
 
-        <judo-meta-psm-jql-version>1.0.0.develop_22</judo-meta-psm-jql-version>
-        <judo-meta-psm-jql-import-range>[1.0,1.1)</judo-meta-psm-jql-import-range>
+        <judo-meta-jql-version>1.0.0.feature_JNG_89_Refactor_00006</judo-meta-jql-version>
+        <judo-meta-jql-import-range>[1.0,1.1)</judo-meta-jql-import-range>
 
-        <!--judo-meta-psm-jql-extract-version>1.0.0.develop_16</judo-meta-psm-jql-extract-version>
-        <judo-meta-psm-jql-extract-import-range>[1.0,1.1)</judo-meta-psm-jql-extract-import-range-->
-
-        <!--
-         <judo-meta-odata.version>1.0.0-develop-12</judo-meta-odata.version>
-         <judo-meta-odata.import-range>[1.0,1.1)</judo-meta-odata.import-range>
-         -->
-
-	<judo-meta-asm-version>1.0.0.develop_72</judo-meta-asm-version>
+	    <judo-meta-asm-version>1.0.0.feature_JNG_86_Refactor_00009</judo-meta-asm-version>
         <judo-meta-asm-import-range>[1.0,1.1)</judo-meta-asm-import-range>
 
-        <judo-meta-expression-version>1.0.1.develop_245</judo-meta-expression-version>
+        <judo-meta-expression-version>1.0.0.feature_JNG_90_Refactor_00011</judo-meta-expression-version>
         <judo-meta-expression-import-range>[1.0,1.1)</judo-meta-expression-import-range>
 
-        <judo-meta-measure-version>1.0.1.develop_27</judo-meta-measure-version>
+        <judo-meta-measure-version>1.0.0.feature_JNG_87_Refactor_00005</judo-meta-measure-version>
         <judo-meta-measure-import-range>[1.0,1.1)</judo-meta-measure-import-range>
 
-        <judo-meta-liquibase-version>1.0.1.develop_12</judo-meta-liquibase-version>
+        <judo-meta-liquibase-version>1.0.0.feature_JNG_91_Refactor_00007</judo-meta-liquibase-version>
         <judo-meta-liquibase-import-range>[1.0,1.1)</judo-meta-liquibase-import-range>
 
-        <judo-meta-openapi-version>1.0.0.develop_83</judo-meta-openapi-version>
+        <judo-meta-openapi-version>1.0.0.feature_JNG_88_Refactor_00003</judo-meta-openapi-version>
         <judo-meta-openapi-import-range>[1.0,1.1)</judo-meta-openapi-import-range>
-
-        <test.asm.model.groupId>${project.groupId}</test.asm.model.groupId>
-        <test.asm.model.artifactId>judo-tatami-psm2asm</test.asm.model.artifactId>
-        <test.asm.model.version>${project.version}</test.asm.model.version>
-
-        <!--test.jqle.model.groupId>${project.groupId}</test.jqle.model.groupId>
-        <test.jqle.model.artifactId>judo-tatami-psm2jql</test.jqle.model.artifactId>
-        <test.jqle.model.version>${project.version}</test.jqle.model.version-->
-
-        <test.measure.model.groupId>${project.groupId}</test.measure.model.groupId>
-        <test.measure.model.artifactId>judo-tatami-psm2measure</test.measure.model.artifactId>
-        <test.measure.model.version>${project.version}</test.measure.model.version>
-
-        <test.psm.model.groupId>hu.blackbelt.northwind</test.psm.model.groupId>
-        <test.psm.model.artifactId>northwind-runtime</test.psm.model.artifactId>
-        <test.psm.model.version>1.0.1.develop_109</test.psm.model.version>
-
-        <test.rdbms.model.groupId>${project.groupId}</test.rdbms.model.groupId>
-        <test.rdbms.model.artifactId>judo-tatami-asm2rdbms</test.rdbms.model.artifactId>
-        <test.rdbms.model.version>${project.version}</test.rdbms.model.version>
 
         <emf-version>2.12.0</emf-version>
 
@@ -305,8 +276,8 @@
             </dependency>
             <dependency>
                 <groupId>hu.blackbelt.judo.meta</groupId>
-                <artifactId>judo-meta-psm-jql-runtime</artifactId>
-                <version>${judo-meta-psm-jql-version}</version>
+                <artifactId>hu.blackbelt.judo.meta.jql.model</artifactId>
+                <version>${judo-meta-jql-version}</version>
             </dependency>
             <!--dependency>
                 <groupId>hu.blackbelt.judo.meta</groupId>
@@ -315,27 +286,27 @@
             </dependency-->
             <dependency>
                 <groupId>hu.blackbelt.judo.meta</groupId>
-                <artifactId>judo-meta-psm-runtime</artifactId>
+                <artifactId>hu.blackbelt.judo.meta.psm.model</artifactId>
                 <version>${judo-meta-psm-version}</version>
             </dependency>
             <dependency>
                 <groupId>hu.blackbelt.judo.meta</groupId>
-                <artifactId>judo-meta-esm-runtime</artifactId>
+                <artifactId>hu.blackbelt.judo.meta.esm.model</artifactId>
                 <version>${judo-meta-esm-version}</version>
             </dependency>
             <dependency>
                 <groupId>hu.blackbelt.judo.meta</groupId>
-                <artifactId>judo-meta-asm</artifactId>
+                <artifactId>hu.blackbelt.judo.meta.asm.model</artifactId>
                 <version>${judo-meta-asm-version}</version>
             </dependency>
             <dependency>
                 <groupId>hu.blackbelt.judo.meta</groupId>
-                <artifactId>judo-meta-expression-runtime</artifactId>
+                <artifactId>hu.blackbelt.judo.meta.expression.model</artifactId>
                 <version>${judo-meta-expression-version}</version>
             </dependency>
             <dependency>
                 <groupId>hu.blackbelt.judo.meta</groupId>
-                <artifactId>judo-meta-rdbms-runtime</artifactId>
+                <artifactId>hu.blackbelt.judo.meta.rdbms.model</artifactId>
                 <version>${judo-meta-rdbms-version}</version>
             </dependency>
             <!--
@@ -347,19 +318,19 @@
              -->
             <dependency>
                 <groupId>hu.blackbelt.judo.meta</groupId>
-                <artifactId>judo-meta-measure-runtime</artifactId>
+                <artifactId>hu.blackbelt.judo.meta.measure.model</artifactId>
                 <version>${judo-meta-measure-version}</version>
             </dependency>
 
             <dependency>
                 <groupId>hu.blackbelt.judo.meta</groupId>
-                <artifactId>judo-meta-liquibase-runtime</artifactId>
+                <artifactId>hu.blackbelt.judo.meta.liquibase.model</artifactId>
                 <version>${judo-meta-liquibase-version}</version>
             </dependency>
 
             <dependency>
                 <groupId>hu.blackbelt.judo.meta</groupId>
-                <artifactId>judo-meta-openapi-runtime</artifactId>
+                <artifactId>hu.blackbelt.judo.meta.openapi.model</artifactId>
                 <version>${judo-meta-openapi-version}</version>
             </dependency>
 
@@ -543,11 +514,6 @@
                     </configuration>
                 </plugin>
 
-                <plugin>
-                    <groupId>hu.blackbelt.epsilon</groupId>
-                    <artifactId>epsilon-maven-plugin</artifactId>
-                    <version>${epsilon-maven-plugin-version}</version>
-                </plugin>
                 <!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
                 <plugin>
                     <groupId>org.eclipse.m2e</groupId>

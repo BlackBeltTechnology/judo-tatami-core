@@ -102,7 +102,7 @@
         </dependency>        
         <dependency>
 			<groupId>hu.blackbelt.judo.meta</groupId>
-			<artifactId>judo-meta-asm</artifactId>
+			<artifactId>hu.blackbelt.judo.meta.asm.model</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>hu.blackbelt.judo.tatami</groupId>

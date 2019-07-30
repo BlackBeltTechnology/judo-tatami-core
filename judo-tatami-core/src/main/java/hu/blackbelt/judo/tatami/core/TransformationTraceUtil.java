@@ -143,12 +143,12 @@ public class TransformationTraceUtil {
                 .withEStructuralFeatures(
                         newEAttributeBuilder()
                                 .withName(SOURCE_URI)
-                                .withEType(ecore.getEString()))
+                                .withEType(ecore.getEString()).build())
                 .withEStructuralFeatures(
                         newEAttributeBuilder()
                                 .withName(TARRGET_URIS)
                                 .withUpperBound(ETypedElement.UNBOUNDED_MULTIPLICITY)
-                                .withEType(ecore.getEString()))
+                                .withEType(ecore.getEString()).build())
                 .build();
 
         final EPackage ePackage = newEPackageBuilder()

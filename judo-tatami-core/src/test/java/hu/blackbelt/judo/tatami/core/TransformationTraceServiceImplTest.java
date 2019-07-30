@@ -255,7 +255,7 @@ public class TransformationTraceServiceImplTest {
                     .withEStructuralFeatures(
                             newEAttributeBuilder()
                                     .withName("name")
-                                    .withEType(ecore.getEString()))
+                                    .withEType(ecore.getEString()).build())
                     .build();
 
             classes.add(clazz);

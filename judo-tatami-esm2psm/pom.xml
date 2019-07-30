@@ -137,11 +137,11 @@
         </dependency>
         <dependency>
             <groupId>hu.blackbelt.judo.meta</groupId>
-            <artifactId>judo-meta-esm-runtime</artifactId>
+            <artifactId>hu.blackbelt.judo.meta.esm.model</artifactId>
         </dependency>
         <dependency>
             <groupId>hu.blackbelt.judo.meta</groupId>
-            <artifactId>judo-meta-psm-runtime</artifactId>
+            <artifactId>hu.blackbelt.judo.meta.psm.model</artifactId>
         </dependency>
         <dependency>
             <groupId>hu.blackbelt.judo.tatami</groupId>

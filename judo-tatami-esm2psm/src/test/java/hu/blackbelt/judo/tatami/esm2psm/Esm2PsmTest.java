@@ -7,8 +7,8 @@ import hu.blackbelt.epsilon.runtime.execution.impl.NameMappedURIHandlerImpl;
 import hu.blackbelt.epsilon.runtime.execution.impl.NioFilesystemnRelativePathURIHandlerImpl;
 import hu.blackbelt.epsilon.runtime.execution.impl.Slf4jLog;
 import hu.blackbelt.judo.meta.esm.runtime.EsmModel;
-import hu.blackbelt.judo.meta.esm.runtime.EsmModelLoader;
 import hu.blackbelt.judo.meta.psm.runtime.PsmModel;
+import hu.blackbelt.judo.meta.psm.support.PsmModelResourceSupport;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
@@ -26,10 +26,8 @@ import java.io.FileOutputStream;
 import java.nio.file.FileSystems;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
-import static hu.blackbelt.judo.meta.esm.runtime.EsmModelLoader.createEsmResourceSet;
-import static hu.blackbelt.judo.meta.psm.runtime.PsmModelLoader.createPsmResourceSet;
-import static hu.blackbelt.judo.meta.psm.runtime.PsmModelLoader.savePsmModel;
 import static hu.blackbelt.judo.tatami.esm2psm.Esm2Psm.*;
 
 @Slf4j
@@ -45,13 +43,14 @@ public class Esm2PsmTest {
     URIHandler uriHandler;
     Log slf4jlog;
     EsmModel esmModel;
+    PsmModel psmModel;
 
     @Before
     public void setUp() throws Exception {
 
         // Set our custom handler
         uriHandler = new NameMappedURIHandlerImpl(
-                ImmutableList.of(new NioFilesystemnRelativePathURIHandlerImpl("urn", FileSystems.getDefault(), targetDir().getAbsolutePath())),
+                ImmutableList.of(new NioFilesystemnRelativePathURIHandlerImpl("urn", FileSystems.getDefault(), new File("target/test-classes").getAbsolutePath())),
                 ImmutableMap.of(
                         URI.createURI(ESM_NORTHWIND), URI.createURI(URN_NORTHWIND_ESM),
                         URI.createURI(PSM_NORTHWIND), URI.createURI(URN_NORTHWIND_PSM))
@@ -62,12 +61,22 @@ public class Esm2PsmTest {
 
         // Loading ESM to isolated ResourceSet, because in Tatami
         // there is no new namespace registration made.
-        ResourceSet esmResourceSet = createEsmResourceSet(uriHandler);
-        esmModel = EsmModelLoader.loadEsmModel(
-                esmResourceSet,
-                URI.createURI(ESM_NORTHWIND),
-                "northwind",
-                "1.0.0");
+        esmModel = EsmModel.loadEsmModel(EsmModel.LoadArguments.loadArgumentsBuilder()
+                .uri(URI.createURI(ESM_NORTHWIND))
+                .uriHandler(Optional.of(uriHandler))
+                .name("northwind")
+                .build());
+
+        PsmModelResourceSupport psmModelResourceSupport = PsmModelResourceSupport.psmModelResourceSupportBuilder()
+                .uriHandler(Optional.of(uriHandler))
+                .build();
+
+        psmModel = PsmModel.buildPsmModel()
+                .psmModelResourceSupport(psmModelResourceSupport)
+                .name("northeind")
+                .uri(URI.createURI(PSM_NORTHWIND))
+                .build();
+
     }
 
     @After
@@ -78,20 +87,8 @@ public class Esm2PsmTest {
     @Test
     public void testEsm2PsmTransformation() throws Exception {
 
-        // Creating PSM resource set.
-        ResourceSet psmResourceSet = createPsmResourceSet(uriHandler);
-
-        // Creating PsmModel definition
-        PsmModel psmModel = PsmModel.buildPsmModel()
-                .name(esmModel.getName())
-                .resourceSet(psmResourceSet)
-                .uri(URI.createURI(PSM_NORTHWIND))
-                .version(esmModel.getVersion())
-                .build();
-
-
         // Make transformation which returns the tracr with the serialized URI's
-        Esm2PsmTransformationTrace esm2PsmTransformationTrace = executeEsm2PsmTransformation(psmResourceSet, esmModel, psmModel, new Slf4jLog(log),
+        Esm2PsmTransformationTrace esm2PsmTransformationTrace = executeEsm2PsmTransformation(psmModel.getResourceSet(), esmModel, psmModel, new Slf4jLog(log),
                 new File(targetDir().getAbsolutePath(), "epsilon/transformations/psm").toURI());
 
         // Saving trace map
@@ -113,8 +110,7 @@ public class Esm2PsmTest {
                 log.trace(e.toString() + " -> " + t.toString());
             }
         }
-
-        savePsmModel(psmModel);
+        psmModel.savePsmModel();
     }
 
 

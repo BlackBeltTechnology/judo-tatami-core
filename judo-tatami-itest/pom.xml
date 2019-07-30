@@ -284,7 +284,8 @@
 
         <dependency>
             <groupId>hu.blackbelt.judo.meta</groupId>
-            <artifactId>judo-meta-psm-jql-runtime</artifactId>
+            <artifactId>hu.blackbelt.judo.meta.jql.osgi</artifactId>
+            <version>${judo-meta-jql-version}</version>
             <scope>test</scope>
         </dependency>
         <!--dependency>
@@ -294,17 +295,20 @@
         </dependency-->
         <dependency>
             <groupId>hu.blackbelt.judo.meta</groupId>
-            <artifactId>judo-meta-esm-runtime</artifactId>
+            <artifactId>hu.blackbelt.judo.meta.esm.osgi</artifactId>
+            <version>${judo-meta-esm-version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>hu.blackbelt.judo.meta</groupId>
-            <artifactId>judo-meta-psm-runtime</artifactId>
+            <artifactId>hu.blackbelt.judo.meta.psm.osgi</artifactId>
+            <version>${judo-meta-psm-version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>hu.blackbelt.judo.meta</groupId>
-            <artifactId>judo-meta-asm</artifactId>
+            <artifactId>hu.blackbelt.judo.meta.asm.osgi</artifactId>
+            <version>${judo-meta-asm-version}</version>
             <scope>test</scope>
         </dependency>
         <!--dependency>
@@ -314,24 +318,28 @@
         </dependency-->
         <dependency>
             <groupId>hu.blackbelt.judo.meta</groupId>
-            <artifactId>judo-meta-rdbms-runtime</artifactId>
+            <artifactId>hu.blackbelt.judo.meta.rdbms.osgi</artifactId>
+            <version>${judo-meta-rdbms-version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>hu.blackbelt.judo.meta</groupId>
-            <artifactId>judo-meta-measure-runtime</artifactId>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>hu.blackbelt.judo.meta</groupId>
-            <artifactId>judo-meta-liquibase-runtime</artifactId>
+            <artifactId>hu.blackbelt.judo.meta.measure.osgi</artifactId>
+            <version>${judo-meta-measure-version}</version>
             <scope>test</scope>
         </dependency>
 
         <dependency>
             <groupId>hu.blackbelt.judo.meta</groupId>
-            <artifactId>judo-meta-openapi-runtime</artifactId>
+            <artifactId>hu.blackbelt.judo.meta.liquibase.osgi</artifactId>
+            <version>${judo-meta-liquibase-version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>hu.blackbelt.judo.meta</groupId>
+            <artifactId>hu.blackbelt.judo.meta.openapi.osgi</artifactId>
+            <version>${judo-meta-openapi-version}</version>
             <scope>test</scope>
         </dependency>
 

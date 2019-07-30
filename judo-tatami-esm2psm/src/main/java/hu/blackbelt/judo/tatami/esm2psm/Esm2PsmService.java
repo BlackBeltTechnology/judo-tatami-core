@@ -7,6 +7,7 @@ import hu.blackbelt.epsilon.runtime.execution.impl.StringBuilderLogger;
 import hu.blackbelt.epsilon.runtime.osgi.BundleURIHandler;
 import hu.blackbelt.judo.meta.esm.runtime.EsmModel;
 import hu.blackbelt.judo.meta.psm.runtime.PsmModel;
+import hu.blackbelt.judo.meta.psm.support.PsmModelResourceSupport;
 import hu.blackbelt.judo.tatami.core.TransformationTrace;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.emf.common.util.URI;
@@ -20,8 +21,9 @@ import org.osgi.service.component.annotations.Reference;
 import java.io.File;
 import java.util.Hashtable;
 import java.util.Map;
+import java.util.Optional;
 
-import static hu.blackbelt.judo.meta.psm.runtime.PsmModelLoader.createPsmResourceSet;
+import static hu.blackbelt.judo.meta.psm.support.PsmModelResourceSupport.psmModelResourceSupportBuilder;
 import static hu.blackbelt.judo.tatami.esm2psm.Esm2Psm.executeEsm2PsmTransformation;
 
 @Component(immediate = true, service = Esm2PsmService.class)
@@ -44,15 +46,15 @@ public class Esm2PsmService {
         BundleURIHandler bundleURIHandler = new BundleURIHandler("urn", "",
                 bundleContext.getBundle());
 
-        ResourceSet psmResourceSet = createPsmResourceSet(bundleURIHandler);
-        // registerEsmMetamodel(resourceSet);
-
         PsmModel psmModel = PsmModel.buildPsmModel()
                 .name(esmModel.getName())
                 .version(esmModel.getVersion())
                 .uri(URI.createURI("urn:" + esmModel.getName() + ".psm"))
                 .checksum(esmModel.getChecksum())
-                .resourceSet(psmResourceSet)
+                .psmModelResourceSupport(
+                        psmModelResourceSupportBuilder()
+                                .uriHandler(Optional.of(bundleURIHandler))
+                                .build())
                 .metaVersionRange(bundleContext.getBundle().getHeaders().get(PSM_META_VERSION_RANGE)).build();
 
 
@@ -64,7 +66,7 @@ public class Esm2PsmService {
                         .toURI()
                         .resolve(".");
         try {
-            Esm2PsmTransformationTrace transformationTrace = executeEsm2PsmTransformation(psmResourceSet,
+            Esm2PsmTransformationTrace transformationTrace = executeEsm2PsmTransformation(psmModel.getResourceSet(),
                     esmModel,
                     psmModel,
                     logger,
