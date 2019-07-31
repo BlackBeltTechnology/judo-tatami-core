@@ -7,18 +7,14 @@ import hu.blackbelt.epsilon.runtime.execution.impl.StringBuilderLogger;
 import hu.blackbelt.epsilon.runtime.osgi.BundleURIHandler;
 import hu.blackbelt.judo.meta.esm.runtime.EsmModel;
 import hu.blackbelt.judo.meta.psm.runtime.PsmModel;
-import hu.blackbelt.judo.meta.psm.support.PsmModelResourceSupport;
 import hu.blackbelt.judo.tatami.core.TransformationTrace;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.emf.common.util.URI;
-import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Reference;
 
-import java.io.File;
 import java.util.Hashtable;
 import java.util.Map;
 import java.util.Optional;
@@ -33,7 +29,6 @@ public class Esm2PsmService {
     public static final String PSM_META_VERSION_RANGE = "Psm-Meta-Version-Range";
 
     Map<EsmModel, ServiceRegistration<TransformationTrace>> esm2PsmTransformationTraceRegistration = Maps.newHashMap();
-
 
     BundleContext scriptBundleContext;
 
