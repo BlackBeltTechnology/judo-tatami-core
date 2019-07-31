@@ -10,21 +10,17 @@ import hu.blackbelt.judo.meta.psm.runtime.PsmModel;
 import hu.blackbelt.judo.tatami.core.TransformationTrace;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.emf.common.util.URI;
-import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Reference;
 
-import java.io.File;
 import java.util.Hashtable;
 import java.util.Map;
+import java.util.Optional;
 
-import static hu.blackbelt.judo.meta.asm.runtime.AsmModelLoader.createAsmResourceSet;
-import static hu.blackbelt.judo.meta.psm.runtime.PsmModelLoader.registerPsmMetamodel;
+import static hu.blackbelt.judo.meta.asm.support.AsmModelResourceSupport.asmModelResourceSupportBuilder;
 import static hu.blackbelt.judo.tatami.psm2asm.Psm2Asm.executePsm2AsmTransformation;
-
 
 @Component(immediate = true, service = Psm2AsmSerivce.class)
 @Slf4j
@@ -43,15 +39,17 @@ public class Psm2AsmSerivce {
 
     public AsmModel install(PsmModel psmModel, BundleContext bundleContext) throws Exception {
 
-        ResourceSet resourceSet = createAsmResourceSet(new BundleURIHandler("urn", "", bundleContext.getBundle()));
-        registerPsmMetamodel(resourceSet);
+        BundleURIHandler bundleURIHandler = new BundleURIHandler("urn", "", bundleContext.getBundle());
 
-        AsmModel asmModel = AsmModel.asmModelBuilder()
+        AsmModel asmModel = AsmModel.buildAsmModel()
                 .name(psmModel.getName())
                 .version(psmModel.getVersion())
                 .uri(URI.createURI("urn:" + psmModel.getName() + ".asm"))
                 .checksum(psmModel.getChecksum())
-                .resourceSet(resourceSet)
+                .asmModelResourceSupport(
+                        asmModelResourceSupportBuilder()
+                                .uriHandler(Optional.of(bundleURIHandler))
+                                .build())
                 .metaVersionRange(bundleContext.getBundle().getHeaders().get(ASM_META_VERSION_RANGE)).build();
 
         Log logger = new StringBuilderLogger(Slf4jLog.determinateLogLevel(log));
@@ -62,7 +60,7 @@ public class Psm2AsmSerivce {
                             .toURI()
                             .resolve(".");
 
-            Psm2AsmTransformationTrace transformationTrace = executePsm2AsmTransformation(resourceSet, psmModel, asmModel, logger,
+            Psm2AsmTransformationTrace transformationTrace = executePsm2AsmTransformation(asmModel.getResourceSet(), psmModel, asmModel, logger,
                     scriptUri);
 
             psm2AsmTransformationTraceRegistration.put(psmModel, bundleContext.registerService(TransformationTrace.class, transformationTrace, new Hashtable<>()));

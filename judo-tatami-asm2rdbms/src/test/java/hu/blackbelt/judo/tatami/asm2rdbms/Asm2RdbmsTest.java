@@ -7,8 +7,11 @@ import hu.blackbelt.epsilon.runtime.execution.impl.NameMappedURIHandlerImpl;
 import hu.blackbelt.epsilon.runtime.execution.impl.NioFilesystemnRelativePathURIHandlerImpl;
 import hu.blackbelt.epsilon.runtime.execution.impl.Slf4jLog;
 import hu.blackbelt.judo.meta.asm.runtime.AsmModel;
-import hu.blackbelt.judo.meta.asm.runtime.AsmModelLoader;
 import hu.blackbelt.judo.meta.rdbms.runtime.RdbmsModel;
+import hu.blackbelt.judo.meta.rdbms.support.RdbmsModelResourceSupport;
+import hu.blackbelt.judo.meta.rdbmsDataTypes.support.RdbmsDataTypesModelResourceSupport;
+import hu.blackbelt.judo.meta.rdbmsNameMapping.support.RdbmsNameMappingModelResourceSupport;
+import hu.blackbelt.judo.meta.rdbmsRules.support.RdbmsTableMappingRulesModelResourceSupport;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
@@ -21,10 +24,8 @@ import org.junit.Test;
 
 import java.io.File;
 import java.nio.file.FileSystems;
+import java.util.Optional;
 
-import static hu.blackbelt.judo.meta.asm.runtime.AsmModelLoader.createAsmResourceSet;
-import static hu.blackbelt.judo.meta.rdbms.runtime.RdbmsModelLoader.createRdbmsResourceSet;
-import static hu.blackbelt.judo.meta.rdbms.runtime.RdbmsModelLoader.saveRdbmssModel;
 import static hu.blackbelt.judo.tatami.asm2rdbms.Asm2Rdbms.*;
 
 @Slf4j
@@ -37,17 +38,19 @@ public class Asm2RdbmsTest {
     public static final String URN_NORTHWIND_RDBMS = "urn:northwind-rdbms.model";
     public static final String URN_ASM_2_RDBMS_MODEL = "urn:asm2rdbms.model";
     public static final String NORTHWIND = "northwind";
-    public static final String VERSION = "1.0.0";
+    public static final String TARGET_TEST_CLASSES = "target/test-classes";
+    public static final String MODEL = "model";
 
     URIHandler uriHandler;
     Log slf4jlog;
     AsmModel asmModel;
+    RdbmsModel rdbmsModel;
 
     @Before
     public void setUp() throws Exception {
         // Set our custom handler
         uriHandler = new NameMappedURIHandlerImpl(
-                ImmutableList.of(new NioFilesystemnRelativePathURIHandlerImpl("urn", FileSystems.getDefault(), targetDir().getAbsolutePath())),
+                ImmutableList.of(new NioFilesystemnRelativePathURIHandlerImpl("urn", FileSystems.getDefault(), TARGET_TEST_CLASSES)),
                 ImmutableMap.of(
                         URI.createURI(ASM_NORTHWIND), URI.createURI(URN_NORTHWIND_ASM),
                         URI.createURI(RDBMS_NORTHWIND), URI.createURI(URN_NORTHWIND_RDBMS),
@@ -58,14 +61,30 @@ public class Asm2RdbmsTest {
         // Default logger
         slf4jlog = new Slf4jLog(log);
 
-        // Loading PSM to isolated ResourceSet, because in Tatami
+        // Loading ASM to isolated ResourceSet, because in Tatami
         // there is no new namespace registration made.
-        ResourceSet asmResourceSet = createAsmResourceSet(uriHandler);
-        asmModel = AsmModelLoader.loadAsmModel(
-                asmResourceSet,
-                URI.createURI(ASM_NORTHWIND),
-                NORTHWIND,
-                VERSION);
+        asmModel = AsmModel.loadAsmModel(AsmModel.LoadArguments.loadArgumentsBuilder()
+                .uri(URI.createURI(ASM_NORTHWIND))
+                .uriHandler(Optional.of(uriHandler))
+                .name(NORTHWIND)
+                .build());
+
+        // Create empty RDBMS model
+        RdbmsModelResourceSupport rdbmsModelResourceSupport = RdbmsModelResourceSupport.rdbmsModelResourceSupportBuilder()
+                .uriHandler(Optional.of(uriHandler))
+                .build();
+
+        rdbmsModel = RdbmsModel.buildRdbmsModel()
+                .rdbmsModelResourceSupport(rdbmsModelResourceSupport)
+                .name(NORTHWIND)
+                .uri(URI.createURI(RDBMS_NORTHWIND))
+                .build();
+
+        // The RDBMS model resourceset have to know the mapping models
+        RdbmsNameMappingModelResourceSupport.registerRdbmsNameMappingMetamodel(rdbmsModel.getResourceSet());
+        RdbmsDataTypesModelResourceSupport.registerRdbmsDataTypesMetamodel(rdbmsModel.getResourceSet());
+        RdbmsTableMappingRulesModelResourceSupport.registerRdbmsTableMappingRulesMetamodel(rdbmsModel.getResourceSet());
+
     }
 
     @After
@@ -76,19 +95,9 @@ public class Asm2RdbmsTest {
     @Test
     public void testAsm2RdbmsTransformation() throws Exception {
 
-        // Creating ASM resource set.
-        ResourceSet rdbmsResourceSet = createRdbmsResourceSet(uriHandler);
-
-        RdbmsModel rdbmsModel = RdbmsModel.buildRdbmsModel()
-                .name(asmModel.getName())
-                .resourceSet(rdbmsResourceSet)
-                .uri(URI.createURI(RDBMS_NORTHWIND))
-                .version(asmModel.getVersion())
-                .build();
-
-        Asm2RdbmsTransformationTrace asm2RdbmsTransformationTrace = executeAsm2RdbmsTransformation(rdbmsResourceSet, asmModel, rdbmsModel, new Slf4jLog(log),
-                new File(targetDir().getAbsolutePath(), "epsilon/transformations").toURI(),
-                new File(targetDir(), "../../model").toURI(),
+        Asm2RdbmsTransformationTrace asm2RdbmsTransformationTrace = executeAsm2RdbmsTransformation(rdbmsModel.getResourceSet(), asmModel, rdbmsModel, new Slf4jLog(log),
+                new File(TARGET_TEST_CLASSES, "epsilon/transformations").toURI(),
+                new File(MODEL).toURI(),
                 "hsqldb");
 
         // Saving trace map
@@ -107,17 +116,6 @@ public class Asm2RdbmsTest {
             }
         }
 
-        saveRdbmssModel(rdbmsModel);
+        rdbmsModel.saveRdbmsModel();
     }
-
-
-    public File targetDir(){
-        String relPath = getClass().getProtectionDomain().getCodeSource().getLocation().getFile();
-        File targetDir = new File(relPath);
-        if(!targetDir.exists()) {
-            targetDir.mkdir();
-        }
-        return targetDir;
-    }
-
 }

@@ -38,7 +38,9 @@ public class Esm2PsmTest {
     public static final String PSM_NORTHWIND = "psm:northwind";
     public static final String ESM_NORTHWIND = "esm:northwind";
     public static final String URN_NORTHWIND_ESM = "urn:northwind-demo-esm.model";
-    public static final String URN_NORTHWIND_PSM = "urn:northwind.psm";
+    public static final String URN_NORTHWIND_PSM = "urn:northwind-psm.model";
+    public static final String NORTHWIND = "northwind";
+    public static final String TARGET_TEST_CLASSES = "target/test-classes";
 
     URIHandler uriHandler;
     Log slf4jlog;
@@ -50,7 +52,7 @@ public class Esm2PsmTest {
 
         // Set our custom handler
         uriHandler = new NameMappedURIHandlerImpl(
-                ImmutableList.of(new NioFilesystemnRelativePathURIHandlerImpl("urn", FileSystems.getDefault(), new File("target/test-classes").getAbsolutePath())),
+                ImmutableList.of(new NioFilesystemnRelativePathURIHandlerImpl("urn", FileSystems.getDefault(), new File(TARGET_TEST_CLASSES).getAbsolutePath())),
                 ImmutableMap.of(
                         URI.createURI(ESM_NORTHWIND), URI.createURI(URN_NORTHWIND_ESM),
                         URI.createURI(PSM_NORTHWIND), URI.createURI(URN_NORTHWIND_PSM))
@@ -64,16 +66,17 @@ public class Esm2PsmTest {
         esmModel = EsmModel.loadEsmModel(EsmModel.LoadArguments.loadArgumentsBuilder()
                 .uri(URI.createURI(ESM_NORTHWIND))
                 .uriHandler(Optional.of(uriHandler))
-                .name("northwind")
+                .name(NORTHWIND)
                 .build());
 
+        // Create empty PSM model
         PsmModelResourceSupport psmModelResourceSupport = PsmModelResourceSupport.psmModelResourceSupportBuilder()
                 .uriHandler(Optional.of(uriHandler))
                 .build();
 
         psmModel = PsmModel.buildPsmModel()
                 .psmModelResourceSupport(psmModelResourceSupport)
-                .name("northeind")
+                .name(NORTHWIND)
                 .uri(URI.createURI(PSM_NORTHWIND))
                 .build();
 
@@ -89,17 +92,17 @@ public class Esm2PsmTest {
 
         // Make transformation which returns the tracr with the serialized URI's
         Esm2PsmTransformationTrace esm2PsmTransformationTrace = executeEsm2PsmTransformation(psmModel.getResourceSet(), esmModel, psmModel, new Slf4jLog(log),
-                new File(targetDir().getAbsolutePath(), "epsilon/transformations/psm").toURI());
+                new File("target/test-classes/epsilon/transformations/psm").toURI());
 
         // Saving trace map
         Resource traceResoureSaved = new XMIResourceImpl();
         traceResoureSaved.getContents().addAll(getEsm2PsmTrace(esm2PsmTransformationTrace.getTrace()));
-        traceResoureSaved.save(new FileOutputStream(new File(targetDir().getAbsolutePath(), ESM_2_PSM_MODEL)), ImmutableMap.of());
+        traceResoureSaved.save(new FileOutputStream(new File(TARGET_TEST_CLASSES, ESM_2_PSM_MODEL)), ImmutableMap.of());
 
         // Loadeing trace map
         ResourceSet traceLoadedResourceSet = createEsm2PsmTraceResourceSet();
         Resource traceResoureLoaded = traceLoadedResourceSet.createResource(URI.createURI(TRACE_ESM_2_PSM));
-        traceResoureLoaded.load(new FileInputStream(new File(targetDir().getAbsolutePath(), ESM_2_PSM_MODEL)), ImmutableMap.of());
+        traceResoureLoaded.load(new FileInputStream(new File(TARGET_TEST_CLASSES, ESM_2_PSM_MODEL)), ImmutableMap.of());
 
         // Resolve serialized URI's as EObject map
         Map<EObject, List<EObject>> resolvedTrace = resolveEsm2PsmTrace(traceResoureLoaded, esmModel, psmModel);
@@ -111,15 +114,5 @@ public class Esm2PsmTest {
             }
         }
         psmModel.savePsmModel();
-    }
-
-
-    public File targetDir(){
-        String relPath = getClass().getProtectionDomain().getCodeSource().getLocation().getFile();
-        File targetDir = new File(relPath);
-        if(!targetDir.exists()) {
-            targetDir.mkdir();
-        }
-        return targetDir;
     }
 }

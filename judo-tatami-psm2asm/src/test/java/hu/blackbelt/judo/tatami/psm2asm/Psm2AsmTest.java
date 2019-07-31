@@ -7,8 +7,8 @@ import hu.blackbelt.epsilon.runtime.execution.impl.NameMappedURIHandlerImpl;
 import hu.blackbelt.epsilon.runtime.execution.impl.NioFilesystemnRelativePathURIHandlerImpl;
 import hu.blackbelt.epsilon.runtime.execution.impl.Slf4jLog;
 import hu.blackbelt.judo.meta.asm.runtime.AsmModel;
+import hu.blackbelt.judo.meta.asm.support.AsmModelResourceSupport;
 import hu.blackbelt.judo.meta.psm.runtime.PsmModel;
-import hu.blackbelt.judo.meta.psm.runtime.PsmModelLoader;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
@@ -26,9 +26,8 @@ import java.io.FileOutputStream;
 import java.nio.file.FileSystems;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
-import static hu.blackbelt.judo.meta.asm.runtime.AsmModelLoader.*;
-import static hu.blackbelt.judo.meta.psm.runtime.PsmModelLoader.createPsmResourceSet;
 import static hu.blackbelt.judo.tatami.psm2asm.Psm2Asm.*;
 
 @Slf4j
@@ -39,20 +38,24 @@ public class Psm2AsmTest {
     public static final String TRACE_PSM_2_ASM = "trace:psm2asm";
     public static final String ASM_NORTHWIND = "asm:northwind";
     public static final String PSM_NORTHWIND = "psm:northwind";
-    public static final String URN_NORTHWIND_JUDOPSM_MODEL = "urn:northwind-judopsm.model";
-    public static final String URN_NORTHWIND_ASM = "urn:northwind.asm";
+    public static final String URN_NORTHWIND_PSM_MODEL = "urn:northwind-psm.model";
+    public static final String URN_NORTHWIND_ASM = "urn:northwind-asm.model";
+    public static final String TARGET_TEST_CLASSES = "target/test-classes";
+    public static final String NORTHWIND = "northwind";
+
     URIHandler uriHandler;
     Log slf4jlog;
     PsmModel psmModel;
+    AsmModel asmModel;
 
     @Before
     public void setUp() throws Exception {
 
         // Set our custom handler
         uriHandler = new NameMappedURIHandlerImpl(
-                ImmutableList.of(new NioFilesystemnRelativePathURIHandlerImpl("urn", FileSystems.getDefault(), targetDir().getAbsolutePath())),
+                ImmutableList.of(new NioFilesystemnRelativePathURIHandlerImpl("urn", FileSystems.getDefault(), TARGET_TEST_CLASSES)),
                 ImmutableMap.of(
-                        URI.createURI(PSM_NORTHWIND), URI.createURI(URN_NORTHWIND_JUDOPSM_MODEL),
+                        URI.createURI(PSM_NORTHWIND), URI.createURI(URN_NORTHWIND_PSM_MODEL),
                         URI.createURI(ASM_NORTHWIND), URI.createURI(URN_NORTHWIND_ASM))
         );
 
@@ -61,12 +64,24 @@ public class Psm2AsmTest {
 
         // Loading PSM to isolated ResourceSet, because in Tatami
         // there is no new namespace registration made.
-        ResourceSet psmResourceSet = createPsmResourceSet(uriHandler);
-        psmModel = PsmModelLoader.loadPsmModel(
-                psmResourceSet,
-                URI.createURI(PSM_NORTHWIND),
-                "northwind",
-                "1.0.0");
+        psmModel = PsmModel.loadPsmModel(PsmModel.LoadArguments.loadArgumentsBuilder()
+                .uri(URI.createURI(PSM_NORTHWIND))
+                .uriHandler(Optional.of(uriHandler))
+                .name(NORTHWIND)
+                .build());
+
+
+        // Create empty ASM model
+        AsmModelResourceSupport asmModelResourceSupport = AsmModelResourceSupport.asmModelResourceSupportBuilder()
+                .uriHandler(Optional.of(uriHandler))
+                .build();
+
+        asmModel = AsmModel.buildAsmModel()
+                .asmModelResourceSupport(asmModelResourceSupport)
+                .name(NORTHWIND)
+                .uri(URI.createURI(PSM_NORTHWIND))
+                .build();
+
     }
 
     @After
@@ -77,31 +92,24 @@ public class Psm2AsmTest {
     @Test
     public void testPsm2AsmTransformation() throws Exception {
 
-        // Creating ASM resource set.
-        ResourceSet asmResourceSet = createAsmResourceSet(uriHandler);
 
-        // Creating AsmModel definition
-        AsmModel asmModel = AsmModel.asmModelBuilder()
-                .name(psmModel.getName())
-                .resourceSet(asmResourceSet)
-                .uri(URI.createURI(ASM_NORTHWIND))
-                .version(psmModel.getVersion())
-                .build();
-
-
-        // Make transformation which returns the tracr with the serialized URI's
-        Psm2AsmTransformationTrace psm2AsmTransformationTrace = executePsm2AsmTransformation(asmResourceSet, psmModel, asmModel, new Slf4jLog(log),
-                new File(targetDir().getAbsolutePath(), "epsilon/transformations/asm").toURI());
+        // Make transformation which returns the trace with the serialized URI's
+        Psm2AsmTransformationTrace psm2AsmTransformationTrace = executePsm2AsmTransformation(
+                asmModel.getResourceSet(),
+                psmModel,
+                asmModel,
+                new Slf4jLog(log),
+                new File("src/main/epsilon/transformations/asm").toURI());
 
         // Saving trace map
         Resource traceResoureSaved = new XMIResourceImpl();
         traceResoureSaved.getContents().addAll(getPsm2AsmTrace(psm2AsmTransformationTrace.getTrace()));
-        traceResoureSaved.save(new FileOutputStream(new File(targetDir().getAbsolutePath(), PSM_2_ASM_MODEL)), ImmutableMap.of());
+        traceResoureSaved.save(new FileOutputStream(new File(TARGET_TEST_CLASSES, PSM_2_ASM_MODEL)), ImmutableMap.of());
 
         // Loadeing trace map
         ResourceSet traceLoadedResourceSet = createPsm2AsmTraceResourceSet();
         Resource traceResoureLoaded = traceLoadedResourceSet.createResource(URI.createURI(TRACE_PSM_2_ASM));
-        traceResoureLoaded.load(new FileInputStream(new File(targetDir().getAbsolutePath(), PSM_2_ASM_MODEL)), ImmutableMap.of());
+        traceResoureLoaded.load(new FileInputStream(new File(TARGET_TEST_CLASSES, PSM_2_ASM_MODEL)), ImmutableMap.of());
 
         // Resolve serialized URI's as EObject map
         Map<EObject, List<EObject>> resolvedTrace = resolvePsm2AsmTrace(traceResoureLoaded, psmModel, asmModel);
@@ -113,17 +121,7 @@ public class Psm2AsmTest {
             }
         }
 
-        saveAsmModel(asmModel);
-    }
-
-
-    public File targetDir(){
-        String relPath = getClass().getProtectionDomain().getCodeSource().getLocation().getFile();
-        File targetDir = new File(relPath);
-        if(!targetDir.exists()) {
-            targetDir.mkdir();
-        }
-        return targetDir;
+        asmModel.saveAsmModel();
     }
 
 
