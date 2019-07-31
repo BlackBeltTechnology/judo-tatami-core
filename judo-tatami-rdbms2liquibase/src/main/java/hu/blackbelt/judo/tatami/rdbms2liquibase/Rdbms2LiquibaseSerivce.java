@@ -5,22 +5,19 @@ import hu.blackbelt.epsilon.runtime.execution.impl.Slf4jLog;
 import hu.blackbelt.epsilon.runtime.execution.impl.StringBuilderLogger;
 import hu.blackbelt.epsilon.runtime.osgi.BundleURIHandler;
 import hu.blackbelt.judo.meta.liquibase.runtime.LiquibaseModel;
+import hu.blackbelt.judo.meta.liquibase.runtime.LiquibaseNamespaceFixUriHandler;
 import hu.blackbelt.judo.meta.rdbms.runtime.RdbmsModel;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.emf.common.util.URI;
-import org.eclipse.emf.ecore.resource.Resource;
-import org.eclipse.emf.ecore.resource.ResourceSet;
+import org.eclipse.emf.ecore.resource.URIHandler;
 import org.osgi.framework.BundleContext;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Reference;
 
-import java.io.File;
+import java.util.Optional;
 
-import static hu.blackbelt.judo.meta.liquibase.runtime.LiquibaseModelLoader.createLiquibaseResourceSet;
-import static hu.blackbelt.judo.meta.liquibase.runtime.LiquibaseModelLoader.registerLiquibaseMetamodel;
+import static hu.blackbelt.judo.meta.liquibase.support.LiquibaseModelResourceSupport.liquibaseModelResourceSupportBuilder;
 import static hu.blackbelt.judo.tatami.rdbms2liquibase.Rdbms2Liquibase.executeRdbms2LiquibaseTransformation;
-
 
 @Component(immediate = true, service = Rdbms2LiquibaseSerivce.class)
 @Slf4j
@@ -36,22 +33,24 @@ public class Rdbms2LiquibaseSerivce {
     }
 
     public LiquibaseModel install(RdbmsModel rdbmsModel, BundleContext bundleContext) throws Exception {
-        BundleURIHandler bundleURIHandler = new BundleURIHandler("urn", "",
-                bundleContext.getBundle());
-
-        ResourceSet liquibaseResourceSet = createLiquibaseResourceSet(bundleURIHandler);
-        registerLiquibaseMetamodel(liquibaseResourceSet);
+        URIHandler liquibaseNamespaceFixUriHandlerFromBundle =
+                new LiquibaseNamespaceFixUriHandler(
+                        new BundleURIHandler("urn", "", bundleContext.getBundle())
+                );
 
         URI liquibasUri = URI.createURI("urn:" + rdbmsModel.getName() + ".changlelog.xml");
-        Resource liquibaseResource = liquibaseResourceSet.createResource(liquibasUri);
 
+        //new LiquibaseNamespaceFixUriHandler(
         LiquibaseModel liquibaseModel = LiquibaseModel.buildLiquibaseModel()
                 .name(rdbmsModel.getName())
-                .resourceSet(liquibaseResourceSet)
-                .uri(liquibasUri)
                 .version(rdbmsModel.getVersion())
-                .metaVersionRange(bundleContext.getBundle().getHeaders().get(LIQUIBASE_META_VERSION_RANGE))
-                .build();
+                .uri(liquibasUri)
+                .checksum(rdbmsModel.getChecksum())
+                .liquibaseModelResourceSupport(
+                        liquibaseModelResourceSupportBuilder()
+                                .uriHandler(Optional.of(liquibaseNamespaceFixUriHandlerFromBundle))
+                                .build())
+                .metaVersionRange(bundleContext.getBundle().getHeaders().get(LIQUIBASE_META_VERSION_RANGE)).build();
 
 
         Log logger = new StringBuilderLogger(Slf4jLog.determinateLogLevel(log));
@@ -62,7 +61,7 @@ public class Rdbms2LiquibaseSerivce {
                             .toURI()
                             .resolve(".");
 
-            executeRdbms2LiquibaseTransformation(liquibaseResourceSet, rdbmsModel, liquibaseModel, logger,
+            executeRdbms2LiquibaseTransformation(liquibaseModel.getResourceSet(), rdbmsModel, liquibaseModel, logger,
                     scriptUri,
                     "hsqldb" );
 

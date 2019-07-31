@@ -90,7 +90,7 @@
         <judo-meta-measure-version>1.0.0.feature_JNG_87_Refactor_00005</judo-meta-measure-version>
         <judo-meta-measure-import-range>[1.0,1.1)</judo-meta-measure-import-range>
 
-        <judo-meta-liquibase-version>1.0.0.feature_JNG_91_Refactor_00007</judo-meta-liquibase-version>
+        <judo-meta-liquibase-version>1.0.0.feature_JNG_91_Refactor_00008</judo-meta-liquibase-version>
         <judo-meta-liquibase-import-range>[1.0,1.1)</judo-meta-liquibase-import-range>
 
         <judo-meta-openapi-version>1.0.0.feature_JNG_88_Refactor_00003</judo-meta-openapi-version>
