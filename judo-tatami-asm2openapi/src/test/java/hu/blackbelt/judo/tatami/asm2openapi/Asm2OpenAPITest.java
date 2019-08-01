@@ -2,16 +2,15 @@ package hu.blackbelt.judo.tatami.asm2openapi;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import edu.uoc.som.openapi.API;
 import hu.blackbelt.epsilon.runtime.execution.api.Log;
 import hu.blackbelt.epsilon.runtime.execution.impl.NameMappedURIHandlerImpl;
 import hu.blackbelt.epsilon.runtime.execution.impl.NioFilesystemnRelativePathURIHandlerImpl;
 import hu.blackbelt.epsilon.runtime.execution.impl.Slf4jLog;
 import hu.blackbelt.judo.meta.asm.runtime.AsmModel;
-import hu.blackbelt.judo.meta.asm.runtime.AsmModelLoader;
-import hu.blackbelt.judo.meta.openapi.runtime.OpenAPIModel;
-import hu.blackbelt.judo.meta.openapi.runtime.OpenAPIModelLoader;
+import hu.blackbelt.judo.meta.openapi.API;
+import hu.blackbelt.judo.meta.openapi.runtime.OpenapiModel;
 import hu.blackbelt.judo.meta.openapi.runtime.exporter.OpenAPIExporter;
+import hu.blackbelt.judo.meta.openapi.support.OpenapiModelResourceSupport;
 import io.swagger.models.Swagger;
 import io.swagger.util.Json;
 import io.swagger.util.Yaml;
@@ -35,9 +34,8 @@ import java.io.Writer;
 import java.nio.file.FileSystems;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
-import static hu.blackbelt.judo.meta.asm.runtime.AsmModelLoader.createAsmResourceSet;
-import static hu.blackbelt.judo.meta.openapi.runtime.OpenAPIModelLoader.createOpenAPIResourceSet;
 import static hu.blackbelt.judo.tatami.asm2openapi.Asm2OpenAPI.*;
 
 @Slf4j
@@ -50,17 +48,19 @@ public class Asm2OpenAPITest {
     public static final String URN_NORTHWIND_ASM = "urn:northwind-asm.model";
     public static final String URN_NORTHWIND_OPENAPI = "urn:northwind-openapi.model";
     public static final String NORTHWIND = "northwind";
-    public static final String VERSION = "1.0.0";
+    public static final String TARGET_TEST_CLASSES = "target/test-classes";
+
 
     URIHandler uriHandler;
     Log slf4jlog;
     AsmModel asmModel;
+    OpenapiModel openapiModel;
 
     @Before
     public void setUp() throws Exception {
         // Set our custom handler
         uriHandler = new NameMappedURIHandlerImpl(
-                ImmutableList.of(new NioFilesystemnRelativePathURIHandlerImpl("urn", FileSystems.getDefault(), targetDir().getAbsolutePath())),
+                ImmutableList.of(new NioFilesystemnRelativePathURIHandlerImpl("urn", FileSystems.getDefault(), TARGET_TEST_CLASSES)),
                 ImmutableMap.of(
                         URI.createURI(ASM_NORTHWIND), URI.createURI(URN_NORTHWIND_ASM),
                         URI.createURI(OPENAPI_NORTHWIND), URI.createURI(URN_NORTHWIND_OPENAPI))
@@ -68,14 +68,24 @@ public class Asm2OpenAPITest {
         // Default logger
         slf4jlog = new Slf4jLog(log);
 
-        // Loading PSM to isolated ResourceSet, because in Tatami
+        // Loading ASM to isolated ResourceSet, because in Tatami
         // there is no new namespace registration made.
-        ResourceSet asmResourceSet = createAsmResourceSet(uriHandler);
-        asmModel = AsmModelLoader.loadAsmModel(
-                asmResourceSet,
-                URI.createURI(ASM_NORTHWIND),
-                NORTHWIND,
-                VERSION);
+        asmModel = AsmModel.loadAsmModel(AsmModel.LoadArguments.loadArgumentsBuilder()
+                .uri(URI.createURI(ASM_NORTHWIND))
+                .uriHandler(Optional.of(uriHandler))
+                .name(NORTHWIND)
+                .build());
+
+        // Create empty OPENAPI model
+        OpenapiModelResourceSupport openapiModelResourceSupport = OpenapiModelResourceSupport.openapiModelResourceSupportBuilder()
+                .uriHandler(Optional.of(uriHandler))
+                .build();
+
+        openapiModel = OpenapiModel.buildOpenapiModel()
+                .openapiModelResourceSupport(openapiModelResourceSupport)
+                .name(NORTHWIND)
+                .uri(URI.createURI(OPENAPI_NORTHWIND))
+                .build();
     }
 
     @After
@@ -86,32 +96,25 @@ public class Asm2OpenAPITest {
     @Test
     public void testAsm2OpenAPITransformation() throws Exception {
 
-        // Creating ASM resource set.
-        ResourceSet openAPIResourceSet = createOpenAPIResourceSet(uriHandler);
-
-
-        OpenAPIModel openAPIModel = OpenAPIModel.buildOpenAPIModel()
-                .name(asmModel.getName())
-                .resourceSet(openAPIResourceSet)
-                .uri(URI.createURI(OPENAPI_NORTHWIND))
-                .version(asmModel.getVersion())
-                .build();
-
-        Asm2OpenAPITransformationTrace asm2OpenAPITransformationTrace = executeAsm2OpenAPITransformation(openAPIResourceSet, asmModel, openAPIModel, new Slf4jLog(log),
-                new File(targetDir().getAbsolutePath(), "epsilon/transformations/openapi").toURI());
+        Asm2OpenAPITransformationTrace asm2OpenAPITransformationTrace = executeAsm2OpenAPITransformation(
+                openapiModel.getResourceSet(),
+                asmModel,
+                openapiModel,
+                new Slf4jLog(log),
+                new File(TARGET_TEST_CLASSES, "epsilon/transformations/openapi").toURI());
 
         // Saving trace map
         Resource traceResoureSaved = new XMIResourceImpl();
         traceResoureSaved.getContents().addAll(getAsm2OpenAPITrace(asm2OpenAPITransformationTrace.getTrace()));
-        traceResoureSaved.save(new FileOutputStream(new File(targetDir().getAbsolutePath(), ASM_2_OPENAPI_MODEL)), ImmutableMap.of());
+        traceResoureSaved.save(new FileOutputStream(new File(TARGET_TEST_CLASSES, ASM_2_OPENAPI_MODEL)), ImmutableMap.of());
 
         // Loading trace map
         ResourceSet traceLoadedResourceSet = createAsm2OpenAPITraceResourceSet();
         Resource traceResoureLoaded = traceLoadedResourceSet.createResource(URI.createURI(TRACE_JQLEXTRACT_2_EXPRESSION));
-        traceResoureLoaded.load(new FileInputStream(new File(targetDir().getAbsolutePath(), ASM_2_OPENAPI_MODEL)), ImmutableMap.of());
+        traceResoureLoaded.load(new FileInputStream(new File(TARGET_TEST_CLASSES, ASM_2_OPENAPI_MODEL)), ImmutableMap.of());
 
         // Resolve serialized URI's as EObject map
-        Map<EObject, List<EObject>> resolvedTrace = resolveAsm2OpenAPITrace(traceResoureLoaded, asmModel, openAPIModel);
+        Map<EObject, List<EObject>> resolvedTrace = resolveAsm2OpenAPITrace(traceResoureLoaded, asmModel, openapiModel);
 
         // Printing trace
         for (EObject e : resolvedTrace.keySet()) {
@@ -120,16 +123,16 @@ public class Asm2OpenAPITest {
             }
         }
 
-        OpenAPIModelLoader.saveOpenAPIModel(openAPIModel);
+        openapiModel.saveOpenapiModel();
 
         // Save JSON and YAML Swagger files
-        openAPIModel.getResourceSet().getResource(openAPIModel.getUri(), false).getContents().stream()
+        openapiModel.getResourceSet().getResource(openapiModel.getUri(), false).getContents().stream()
                 .filter(m -> m instanceof API).map(m -> (API) m)
                 .forEach(m -> {
                     final Swagger swagger = OpenAPIExporter.convertModelToOpenAPI((API) m);
 
                     final String title = ((API) m).getInfo().getTitle();
-                    final File swaggerJsonFile = new File(targetDir().getAbsolutePath() + "/northwind-openapi-" + title + ".json");
+                    final File swaggerJsonFile = new File(TARGET_TEST_CLASSES, "northwind-openapi-" + title + ".json");
                     try (final Writer targetFileWriter = new FileWriter(swaggerJsonFile)) {
                         final String json = Json.pretty().writeValueAsString(swagger);
                         targetFileWriter.append(json);
@@ -137,7 +140,7 @@ public class Asm2OpenAPITest {
                     } catch (IOException ex) {
                         log.error("Unable to create JSON output", ex);
                     }
-                    final File swaggerYamlFile = new File(targetDir().getAbsolutePath() + "/northwind-openapi-" + title + ".yaml");
+                    final File swaggerYamlFile = new File(TARGET_TEST_CLASSES,"northwind-openapi-" + title + ".yaml");
                     try (final Writer targetFileWriter = new FileWriter(swaggerYamlFile)) {
                         final String yaml = Yaml.pretty().writeValueAsString(swagger);
                         targetFileWriter.append(yaml);
@@ -147,15 +150,4 @@ public class Asm2OpenAPITest {
                     }
                 });
     }
-
-
-    public File targetDir() {
-        String relPath = getClass().getProtectionDomain().getCodeSource().getLocation().getFile();
-        File targetDir = new File(relPath);
-        if (!targetDir.exists()) {
-            targetDir.mkdir();
-        }
-        return targetDir;
-    }
-
 }

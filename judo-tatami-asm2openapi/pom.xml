@@ -115,6 +115,11 @@
 			<groupId>hu.blackbelt.judo.tatami</groupId>
 			<artifactId>judo-tatami-core</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>io.swagger</groupId>
+			<artifactId>swagger-core</artifactId>
+			<version>1.5.21</version>
+		</dependency>
 	</dependencies>
 </project>
 

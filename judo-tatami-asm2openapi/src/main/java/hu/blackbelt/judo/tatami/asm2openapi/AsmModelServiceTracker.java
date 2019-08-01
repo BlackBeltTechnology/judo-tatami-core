@@ -1,7 +1,8 @@
 package hu.blackbelt.judo.tatami.asm2openapi;
 
 import hu.blackbelt.judo.meta.asm.runtime.AsmModel;
-import hu.blackbelt.judo.meta.openapi.runtime.OpenAPIModel;
+import hu.blackbelt.judo.meta.openapi.runtime.OpenapiModel;
+import hu.blackbelt.judo.meta.openapi.runtime.OpenapiModel;
 import hu.blackbelt.judo.tatami.core.AbstractModelTracker;
 import lombok.extern.slf4j.Slf4j;
 import org.osgi.framework.ServiceRegistration;
@@ -23,8 +24,8 @@ public class AsmModelServiceTracker extends AbstractModelTracker<AsmModel> {
     @Reference
     Asm2OpenAPIService asm2OpenAPIService;
 
-    Map<String, ServiceRegistration<OpenAPIModel>> registrations = new ConcurrentHashMap<>();
-    Map<String, OpenAPIModel> models = new HashMap<>();
+    Map<String, ServiceRegistration<OpenapiModel>> registrations = new ConcurrentHashMap<>();
+    Map<String, OpenapiModel> models = new HashMap<>();
 
 
     @Activate
@@ -44,7 +45,7 @@ public class AsmModelServiceTracker extends AbstractModelTracker<AsmModel> {
     @Override
     public void install(AsmModel asmModel) {
         String key = asmModel.getName();
-        OpenAPIModel openAPIModel = null;
+        OpenapiModel openAPIModel = null;
         if (models.containsKey(key)) {
             log.error("Model already loaded: " + asmModel.getName());
             return;
@@ -54,9 +55,9 @@ public class AsmModelServiceTracker extends AbstractModelTracker<AsmModel> {
             openAPIModel = asm2OpenAPIService
                     .install(asmModel, componentContext.getBundleContext());
             log.info("Registering model: " + openAPIModel);
-            ServiceRegistration<OpenAPIModel> modelServiceRegistration =
+            ServiceRegistration<OpenapiModel> modelServiceRegistration =
                     componentContext.getBundleContext()
-                            .registerService(OpenAPIModel.class, openAPIModel, openAPIModel.toDictionary());
+                            .registerService(OpenapiModel.class, openAPIModel, openAPIModel.toDictionary());
             models.put(key, openAPIModel);
             registrations.put(key, modelServiceRegistration);
         } catch (Exception e) {

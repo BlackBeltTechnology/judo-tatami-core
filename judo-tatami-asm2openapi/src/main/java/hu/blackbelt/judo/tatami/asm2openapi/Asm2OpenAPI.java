@@ -8,12 +8,11 @@ import hu.blackbelt.epsilon.runtime.execution.contexts.EtlExecutionContext;
 import hu.blackbelt.epsilon.runtime.execution.exceptions.ScriptExecutionException;
 import hu.blackbelt.judo.meta.asm.runtime.AsmModel;
 import hu.blackbelt.judo.meta.asm.runtime.AsmUtils;
-import hu.blackbelt.judo.meta.openapi.runtime.OpenAPIModel;
+import hu.blackbelt.judo.meta.openapi.runtime.OpenapiModel;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 
-import java.io.File;
 import java.net.URI;
 import java.util.List;
 import java.util.Map;
@@ -28,7 +27,7 @@ public class Asm2OpenAPI {
 
     public static final String ASM_2_OPENAPI_URI_POSTFIX = "asm2openapi";
 
-    public static Asm2OpenAPITransformationTrace executeAsm2OpenAPITransformation(ResourceSet resourceSet, AsmModel asmModel, OpenAPIModel openAPIModel, Log log,
+    public static Asm2OpenAPITransformationTrace executeAsm2OpenAPITransformation(ResourceSet resourceSet, AsmModel asmModel, OpenapiModel openAPIModel, Log log,
                                                                                   URI scriptDir) throws Exception {
 
         // If resource was not created for target model before
@@ -88,11 +87,11 @@ public class Asm2OpenAPI {
         return createTraceResourceSet(ASM_2_OPENAPI_URI_POSTFIX);
     }
 
-    public static Map<EObject, List<EObject>> resolveAsm2OpenAPITrace(Resource traceResource, AsmModel asmModel, OpenAPIModel openAPIModel) {
+    public static Map<EObject, List<EObject>> resolveAsm2OpenAPITrace(Resource traceResource, AsmModel asmModel, OpenapiModel openAPIModel) {
         return resolveAsm2OpenAPITrace(traceResource.getContents(), asmModel, openAPIModel);
     }
 
-    public static Map<EObject, List<EObject>> resolveAsm2OpenAPITrace(List<EObject> trace, AsmModel asmModel, OpenAPIModel openAPIModel) {
+    public static Map<EObject, List<EObject>> resolveAsm2OpenAPITrace(List<EObject> trace, AsmModel asmModel, OpenapiModel openAPIModel) {
         return resolveTransformationTrace(trace,
                 ImmutableList.of(asmModel.getResourceSet(), openAPIModel.getResourceSet()));
     }
