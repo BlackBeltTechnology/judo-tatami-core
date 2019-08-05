@@ -2,7 +2,7 @@ package hu.blackbelt.judo.tatami.asm2openapi;
 
 import com.google.common.collect.ImmutableList;
 import hu.blackbelt.judo.meta.asm.runtime.AsmModel;
-import hu.blackbelt.judo.meta.openapi.runtime.OpenAPIModel;
+import hu.blackbelt.judo.meta.openapi.runtime.OpenapiModel;
 import hu.blackbelt.judo.tatami.core.TransformationTrace;
 import lombok.Builder;
 import lombok.Getter;
@@ -23,7 +23,7 @@ public class Asm2OpenAPITransformationTrace implements TransformationTrace {
     AsmModel asmModel;
 
     @NonNull
-    OpenAPIModel openAPIModel;
+    OpenapiModel openAPIModel;
 
     @NonNull
     Map<EObject, List<EObject>> trace;
@@ -61,7 +61,7 @@ public class Asm2OpenAPITransformationTrace implements TransformationTrace {
 
     @Override
     public Class getTargetModelType() {
-        return OpenAPIModel.class;
+        return OpenapiModel.class;
     }
 
     @Override

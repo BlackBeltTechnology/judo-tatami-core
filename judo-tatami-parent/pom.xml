@@ -57,7 +57,7 @@
             javax.annotation;version="[1.0,2)"
         </osgi-default-import>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <karaf-version>4.2.1</karaf-version>
+        <karaf-version>4.2.6</karaf-version>
         <pax-exam-version>4.13.1</pax-exam-version>
         <slf4j-version>1.6.6</slf4j-version>
         <epsilon-version>1.5.1</epsilon-version>
@@ -65,82 +65,66 @@
         <timestamp>${maven.build.timestamp}</timestamp>
         <maven.build.timestamp.format>yyyyMMddHHmmss</maven.build.timestamp.format>
 
-        <epsilon-runtime-version>1.2.0.develop_94</epsilon-runtime-version>
-        <epsilon-maven-plugin-version>1.2.0_develop-62</epsilon-maven-plugin-version>
+        <epsilon-runtime-version>1.2.0.develop_101</epsilon-runtime-version>
 
         <judo-framework-version>2.0.0_develop_130</judo-framework-version>
 
-        <judo-meta-rdbms-version>1.0.1.feature_JNG_101_remove_dependency_of_ASM_data_type_instances_41</judo-meta-rdbms-version>
+        <judo-meta-rdbms-version>1.0.0.develop_00077</judo-meta-rdbms-version>
         <judo-meta-rdbms.import-range>[1.0,1.1)</judo-meta-rdbms.import-range>
 
-        <judo-meta-esm-version>1.0.0.develop_36</judo-meta-esm-version>
+        <judo-meta-esm-version>1.0.0.develop_00053</judo-meta-esm-version>
         <judo-meta-esm-import-range>[1.0,1.1)</judo-meta-esm-import-range>
 
-        <judo-meta-psm-version>1.0.1.develop_277</judo-meta-psm-version>
+        <judo-meta-psm-version>1.0.0.develop_00297</judo-meta-psm-version>
         <judo-meta-psm-import-range>[1.0,1.1)</judo-meta-psm-import-range>
 
-        <judo-meta-psm-jql-version>1.0.0.develop_22</judo-meta-psm-jql-version>
-        <judo-meta-psm-jql-import-range>[1.0,1.1)</judo-meta-psm-jql-import-range>
+        <judo-meta-jql-version>1.0.0.develop_00032</judo-meta-jql-version>
+        <judo-meta-jql-import-range>[1.0,1.1)</judo-meta-jql-import-range>
 
-        <!--judo-meta-psm-jql-extract-version>1.0.0.develop_16</judo-meta-psm-jql-extract-version>
-        <judo-meta-psm-jql-extract-import-range>[1.0,1.1)</judo-meta-psm-jql-extract-import-range-->
-
-        <!--
-         <judo-meta-odata.version>1.0.0-develop-12</judo-meta-odata.version>
-         <judo-meta-odata.import-range>[1.0,1.1)</judo-meta-odata.import-range>
-         -->
-
-	<judo-meta-asm-version>1.0.0.develop_72</judo-meta-asm-version>
+	    <judo-meta-asm-version>1.0.0.develop_00089</judo-meta-asm-version>
         <judo-meta-asm-import-range>[1.0,1.1)</judo-meta-asm-import-range>
 
-        <judo-meta-expression-version>1.0.1.develop_245</judo-meta-expression-version>
+        <judo-meta-expression-version>1.0.0.develop_00259</judo-meta-expression-version>
         <judo-meta-expression-import-range>[1.0,1.1)</judo-meta-expression-import-range>
 
-        <judo-meta-measure-version>1.0.1.develop_27</judo-meta-measure-version>
+        <judo-meta-measure-version>1.0.0.develop_00035</judo-meta-measure-version>
         <judo-meta-measure-import-range>[1.0,1.1)</judo-meta-measure-import-range>
 
-        <judo-meta-liquibase-version>1.0.1.develop_12</judo-meta-liquibase-version>
+        <judo-meta-liquibase-version>1.0.0.develop_00023</judo-meta-liquibase-version>
         <judo-meta-liquibase-import-range>[1.0,1.1)</judo-meta-liquibase-import-range>
 
-        <judo-meta-openapi-version>1.0.0.develop_83</judo-meta-openapi-version>
+        <judo-meta-openapi-version>1.0.0.develop_00089</judo-meta-openapi-version>
         <judo-meta-openapi-import-range>[1.0,1.1)</judo-meta-openapi-import-range>
 
-        <test.asm.model.groupId>${project.groupId}</test.asm.model.groupId>
-        <test.asm.model.artifactId>judo-tatami-psm2asm</test.asm.model.artifactId>
-        <test.asm.model.version>${project.version}</test.asm.model.version>
-
-        <!--test.jqle.model.groupId>${project.groupId}</test.jqle.model.groupId>
-        <test.jqle.model.artifactId>judo-tatami-psm2jql</test.jqle.model.artifactId>
-        <test.jqle.model.version>${project.version}</test.jqle.model.version-->
-
-        <test.measure.model.groupId>${project.groupId}</test.measure.model.groupId>
-        <test.measure.model.artifactId>judo-tatami-psm2measure</test.measure.model.artifactId>
-        <test.measure.model.version>${project.version}</test.measure.model.version>
-
-        <test.psm.model.groupId>hu.blackbelt.northwind</test.psm.model.groupId>
-        <test.psm.model.artifactId>northwind-runtime</test.psm.model.artifactId>
-        <test.psm.model.version>1.0.1.develop_109</test.psm.model.version>
-
-        <test.rdbms.model.groupId>${project.groupId}</test.rdbms.model.groupId>
-        <test.rdbms.model.artifactId>judo-tatami-asm2rdbms</test.rdbms.model.artifactId>
-        <test.rdbms.model.version>${project.version}</test.rdbms.model.version>
-
-        <emf-version>2.12.0</emf-version>
+        <!-- Xtend / Xcore -->
+        <emf-version>2.18.0</emf-version>
+        <emf-common-version>2.16.0</emf-common-version>
+        <core-resources-version>3.12.0</core-resources-version>
+        <eclipse-text-version>3.5.101</eclipse-text-version>
+        <emf-codegen-version>2.16.0</emf-codegen-version>
+        <emf-codegen-ecore-version>2.18.0</emf-codegen-ecore-version>
+        <emf-ecore-xmi-version>2.16.0</emf-ecore-xmi-version>
+        <xtext-version>2.17.0</xtext-version>
+        <ecore-xtext-version>1.2.0</ecore-xtext-version>
+        <ecore-xcore-version>1.3.1</ecore-xcore-version>
+        <ecore-xcore-lib-version>1.3.0</ecore-xcore-lib-version>
+        <emf-mwe2-launch-version>2.10.0</emf-mwe2-launch-version>
+        <emf-mwe-utils-version>1.4.0</emf-mwe-utils-version>
+        <xpand-version>2.0.0</xpand-version>
+        <emf-mapping-ecore2xml>2.11.0</emf-mapping-ecore2xml>
 
         <cxf-version>3.3.1</cxf-version>
         <osgi-utils-version>1.0.7</osgi-utils-version>
         <bouncycastle-karaf-features-version>1.61.2</bouncycastle-karaf-features-version>
         <tinybundles-karaf-features-version>3.0.0_1</tinybundles-karaf-features-version>
-        <google-karaf-features-version>1.0.1</google-karaf-features-version>
-        <javax-karaf-features-version>1.0.1</javax-karaf-features-version>
-        <eclipse-emf-karaf-features-version>2.12.1</eclipse-emf-karaf-features-version>
-        <eclipse-epsilon-karaf-features-version>1.5.1_1</eclipse-epsilon-karaf-features-version>
-        <eclipse-xtext-karaf-features-version>2.16.0_1</eclipse-xtext-karaf-features-version>
-        <tinybundles-karaf-features-version>3.0.0_1</tinybundles-karaf-features-version>
+        <google-karaf-features-version>1.0.3</google-karaf-features-version>
+        <eclipse-emf-karaf-features-version>1.0.0.develop_10</eclipse-emf-karaf-features-version>
+        <eclipse-epsilon-karaf-features-version>1.0.0.develop_5</eclipse-epsilon-karaf-features-version>
+        <eclipse-xtext-karaf-features-version>1.0.0.develop_6</eclipse-xtext-karaf-features-version>
         <antlr-karaf-features-version>1.0.1</antlr-karaf-features-version>
-        <apache-commons-karaf-features-version>1.0.2</apache-commons-karaf-features-version>
-        <apache-poi-karaf-features-version>1.0.0</apache-poi-karaf-features-version>
-        <apache-httpclient-karaf-features-version>4.5.3_2</apache-httpclient-karaf-features-version>
+        <apache-commons-karaf-features-version>1.0.5</apache-commons-karaf-features-version>
+        <apache-poi-karaf-features-version>1.0.2</apache-poi-karaf-features-version>
+        <apache-httpclient-karaf-features-version>1.0.1.develop_15</apache-httpclient-karaf-features-version>
 
     </properties>
 
@@ -262,20 +246,21 @@
                 <artifactId>jcl-over-slf4j</artifactId>
                 <version>${slf4j-version}</version>
             </dependency>
+
             <dependency>
                 <groupId>org.eclipse.emf</groupId>
                 <artifactId>org.eclipse.emf.ecore</artifactId>
-                <version>2.12.0</version>
+                <version>${emf-version}</version>
             </dependency>
             <dependency>
                 <groupId>org.eclipse.emf</groupId>
                 <artifactId>org.eclipse.emf.common</artifactId>
-                <version>2.12.0</version>
+                <version>${emf-common-version}</version>
             </dependency>
             <dependency>
                 <groupId>org.eclipse.emf</groupId>
                 <artifactId>org.eclipse.emf.ecore.xmi</artifactId>
-                <version>2.12.0</version>
+                <version>${emf-ecore-xmi-version}</version>
             </dependency>
             <dependency>
                 <groupId>org.eclipse.jdt</groupId>
@@ -305,8 +290,8 @@
             </dependency>
             <dependency>
                 <groupId>hu.blackbelt.judo.meta</groupId>
-                <artifactId>judo-meta-psm-jql-runtime</artifactId>
-                <version>${judo-meta-psm-jql-version}</version>
+                <artifactId>hu.blackbelt.judo.meta.jql.model</artifactId>
+                <version>${judo-meta-jql-version}</version>
             </dependency>
             <!--dependency>
                 <groupId>hu.blackbelt.judo.meta</groupId>
@@ -315,27 +300,27 @@
             </dependency-->
             <dependency>
                 <groupId>hu.blackbelt.judo.meta</groupId>
-                <artifactId>judo-meta-psm-runtime</artifactId>
+                <artifactId>hu.blackbelt.judo.meta.psm.model</artifactId>
                 <version>${judo-meta-psm-version}</version>
             </dependency>
             <dependency>
                 <groupId>hu.blackbelt.judo.meta</groupId>
-                <artifactId>judo-meta-esm-runtime</artifactId>
+                <artifactId>hu.blackbelt.judo.meta.esm.model</artifactId>
                 <version>${judo-meta-esm-version}</version>
             </dependency>
             <dependency>
                 <groupId>hu.blackbelt.judo.meta</groupId>
-                <artifactId>judo-meta-asm</artifactId>
+                <artifactId>hu.blackbelt.judo.meta.asm.model</artifactId>
                 <version>${judo-meta-asm-version}</version>
             </dependency>
             <dependency>
                 <groupId>hu.blackbelt.judo.meta</groupId>
-                <artifactId>judo-meta-expression-runtime</artifactId>
+                <artifactId>hu.blackbelt.judo.meta.expression.model</artifactId>
                 <version>${judo-meta-expression-version}</version>
             </dependency>
             <dependency>
                 <groupId>hu.blackbelt.judo.meta</groupId>
-                <artifactId>judo-meta-rdbms-runtime</artifactId>
+                <artifactId>hu.blackbelt.judo.meta.rdbms.model</artifactId>
                 <version>${judo-meta-rdbms-version}</version>
             </dependency>
             <!--
@@ -347,19 +332,19 @@
              -->
             <dependency>
                 <groupId>hu.blackbelt.judo.meta</groupId>
-                <artifactId>judo-meta-measure-runtime</artifactId>
+                <artifactId>hu.blackbelt.judo.meta.measure.model</artifactId>
                 <version>${judo-meta-measure-version}</version>
             </dependency>
 
             <dependency>
                 <groupId>hu.blackbelt.judo.meta</groupId>
-                <artifactId>judo-meta-liquibase-runtime</artifactId>
+                <artifactId>hu.blackbelt.judo.meta.liquibase.model</artifactId>
                 <version>${judo-meta-liquibase-version}</version>
             </dependency>
 
             <dependency>
                 <groupId>hu.blackbelt.judo.meta</groupId>
-                <artifactId>judo-meta-openapi-runtime</artifactId>
+                <artifactId>hu.blackbelt.judo.meta.openapi.model</artifactId>
                 <version>${judo-meta-openapi-version}</version>
             </dependency>
 
@@ -543,11 +528,6 @@
                     </configuration>
                 </plugin>
 
-                <plugin>
-                    <groupId>hu.blackbelt.epsilon</groupId>
-                    <artifactId>epsilon-maven-plugin</artifactId>
-                    <version>${epsilon-maven-plugin-version}</version>
-                </plugin>
                 <!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
                 <plugin>
                     <groupId>org.eclipse.m2e</groupId>

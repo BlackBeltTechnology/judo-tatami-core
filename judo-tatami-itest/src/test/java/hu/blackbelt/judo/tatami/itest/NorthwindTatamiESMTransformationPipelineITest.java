@@ -75,7 +75,7 @@ public class NorthwindTatamiESMTransformationPipelineITest extends TatamiESMTran
     }
 
     @Test
-    public void saveModels() throws InvalidSyntaxException, IOException {
+    public void saveModels() throws Exception {
         log.log(LOG_INFO, "==============================================");
         log.log(LOG_INFO, "== RUNNING TEST SAVE MODELS");
         log.log(LOG_INFO, "==============================================");

@@ -51,8 +51,7 @@ public class RdbmsModelServiceTracker extends AbstractModelTracker<RdbmsModel> {
         }
 
         try {
-            liquibaseModel = psm2LiquibaseSerivce
-                    .install(psmModel, componentContext.getBundleContext());
+            liquibaseModel = psm2LiquibaseSerivce.install(psmModel);
             log.info("Registering model: " + liquibaseModel);
             ServiceRegistration<LiquibaseModel> modelServiceRegistration =
                     componentContext.getBundleContext()

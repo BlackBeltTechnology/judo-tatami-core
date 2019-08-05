@@ -52,8 +52,7 @@ public class AsmModelServiceTracker extends AbstractModelTracker<AsmModel> {
 
         try {
             // TODO: Handling dialect
-            rdbmsModel = asm2RdbmsSerivce
-                    .install(asmModel, componentContext.getBundleContext(), "hsqldb");
+            rdbmsModel = asm2RdbmsSerivce.install(asmModel, "hsqldb");
             log.info("Registering model: " + rdbmsModel);
             ServiceRegistration<RdbmsModel> modelServiceRegistration =
                     componentContext.getBundleContext()

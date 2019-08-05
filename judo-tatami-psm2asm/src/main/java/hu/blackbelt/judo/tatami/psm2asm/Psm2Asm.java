@@ -14,8 +14,10 @@ import hu.blackbelt.judo.tatami.core.TransformationTraceUtil;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
+import org.eclipse.emf.ecore.resource.URIHandler;
+import org.eclipse.epsilon.common.util.UriUtil;
 
-import java.io.File;
+import java.net.URI;
 import java.util.List;
 import java.util.Map;
 
@@ -24,6 +26,7 @@ import static hu.blackbelt.epsilon.runtime.execution.contexts.EtlExecutionContex
 import static hu.blackbelt.epsilon.runtime.execution.contexts.ProgramParameter.programParameterBuilder;
 import static hu.blackbelt.epsilon.runtime.execution.model.emf.WrappedEmfModelContext.wrappedEmfModelContextBuilder;
 import static hu.blackbelt.judo.tatami.core.TransformationTraceUtil.*;
+import static org.eclipse.emf.common.util.URI.createURI;
 
 public class Psm2Asm {
 
@@ -32,41 +35,32 @@ public class Psm2Asm {
 
     /**
      * Execute PSM to ASM model transformation,
-     * @param resourceSet {@link ResourceSet} the Epsilon transformation resource context.
      * @param psmModel The PSM model definition and loaded resources
-     * @param asmModel The asm model definition and loaded resources
+     * @param asmModel The asm model definition (target)
      * @param log The log instance used in scripts
-     * @param scriptDir The physucal filesystem directory where the script root is
+     * @param scriptUri The URI base where the script root is
      * @return The trace object list of the transformation conforms the meta model defined in {@link TransformationTraceUtil}.
      * @throws Exception
      */
-    public static Psm2AsmTransformationTrace executePsm2AsmTransformation(ResourceSet resourceSet, PsmModel psmModel, AsmModel asmModel, Log log,
-                                                                          File scriptDir) throws Exception {
-
-        // If resource not creared for target model
-        Resource asmResource = asmModel.getResourceSet().getResource(asmModel.getUri(), false);
-        if (asmResource == null) {
-            asmResource = resourceSet.createResource(asmModel.getUri());
-        }
+    public static Psm2AsmTransformationTrace executePsm2AsmTransformation(PsmModel psmModel, AsmModel asmModel, Log log,
+                                                                          URI scriptUri) throws Exception {
 
         // Executrion context
         ExecutionContext executionContext = executionContextBuilder()
                 .log(log)
-                .resourceSet(resourceSet)
                 .modelContexts(ImmutableList.of(
                         wrappedEmfModelContextBuilder()
                                 .log(log)
                                 .name("JUDOPSM")
-                                .resource(psmModel.getResourceSet().getResource(psmModel.getUri(), false))
+                                .resource(psmModel.getResource())
                                 .build(),
                         wrappedEmfModelContextBuilder()
                                 .log(log)
                                 .name("ASM")
-                                .resource(asmResource)
+                                .resource(asmModel.getResource())
                                 .build()))
-                .sourceDirectory(scriptDir)
                 .injectContexts(ImmutableMap.of(
-                        "asmUtils", new AsmUtils((asmModel.getResourceSet())),
+                        "asmUtils", new AsmUtils(asmModel.getResourceSet()),
                         "psmUtils", new PsmUtils()
                 )).build();
 
@@ -74,7 +68,7 @@ public class Psm2Asm {
         executionContext.load();
 
         EtlExecutionContext etlExecutionContext = etlExecutionContextBuilder()
-                .source("psmToAsm.etl")
+                .source(UriUtil.resolve("psmToAsm.etl", scriptUri))
                 .parameters(ImmutableList.of(
                         programParameterBuilder().name("modelName").value(psmModel.getName()).build(),
                         programParameterBuilder().name("nsURI").value("http://blackbelt.hu/judo/" + psmModel.getName()).build(),
@@ -88,27 +82,63 @@ public class Psm2Asm {
         executionContext.commit();
         executionContext.close();
 
-        List<EObject> traceModel = getTransformationTrace(PSM_2_ASM_URI_POSTFIX, etlExecutionContext);
+        List<EObject> traceModel = getTransformationTraceFromEtlExecutionContext(PSM_2_ASM_URI_POSTFIX, etlExecutionContext);
         return Psm2AsmTransformationTrace.psm2AsmTransformationTraceBuilder()
                 .asmModel(asmModel)
                 .psmModel(psmModel)
                 .trace(resolvePsm2AsmTrace(traceModel, psmModel, asmModel)).build();
     }
 
-    public static ResourceSet createPsm2AsmTraceResourceSet() {
-        return createTraceResourceSet(PSM_2_ASM_URI_POSTFIX);
+    /**
+     * Create PSM 2 ASM Trace model {@link Resource} wth isolated {@link ResourceSet}
+     *
+     * @return the trace {@link Resource} with the registered namespace.
+     */
+    public static Resource createPsm2AsmTraceResource(org.eclipse.emf.common.util.URI uri,
+                                                      URIHandler uriHandler) {
+        return createTraceModelResource(PSM_2_ASM_URI_POSTFIX, uri, uriHandler);
     }
 
-    public static Map<EObject, List<EObject>> resolvePsm2AsmTrace(Resource traceResource, PsmModel psmModel, AsmModel asmModel) {
+    /**
+     * Resolves PSM 2 ASM Trace model {@link Resource} and resturns the trace {@link EObject } map
+     *
+     * @return the trace {@link EObject} map between PSM source and ASM target.
+     */
+    public static Map<EObject, List<EObject>> resolvePsm2AsmTrace(Resource traceResource,
+                                                                  PsmModel psmModel,
+                                                                  AsmModel asmModel) {
         return resolvePsm2AsmTrace(traceResource.getContents(), psmModel, asmModel);
     }
 
-    public static Map<EObject, List<EObject>> resolvePsm2AsmTrace(List<EObject> trace, PsmModel psmModel, AsmModel asmModel) {
-        return resolveTransformationTrace(trace,
+    /**
+     * Resolves PSM 2 ASM trace:Trace model entries returns the trace {@link EObject } map
+     *
+     * @return the trace {@link EObject} map between PSM source and ASM target.
+     */
+    public static Map<EObject, List<EObject>> resolvePsm2AsmTrace(List<EObject> trace,
+                                                                  PsmModel psmModel,
+                                                                  AsmModel asmModel) {
+        return resolveTransformationTraceAsEObjectMap(trace,
                 ImmutableList.of(psmModel.getResourceSet(), asmModel.getResourceSet()));
     }
 
-    public static List<EObject> getPsm2AsmTrace(Map<EObject, List<EObject>> trace) throws ScriptExecutionException {
-        return getTransformationTrace(PSM_2_ASM_URI_POSTFIX, trace);
+    /**
+     * Convert race {@link EObject } map to trace:Trace model entrie.
+     *
+     * @return the trace trace:Trace entries
+     */
+    public static List<EObject> getPsm2AsmTrace(Map<EObject, List<EObject>> trace) {
+        return getTransformationTraceFromEtlExecutionContext(PSM_2_ASM_URI_POSTFIX, trace);
+    }
+
+    /**
+     * Convert race {@link EObject } map to trace:Trace model {@link Resource} with isolated {@link ResourceSet}.
+     *
+     * @return the trace trace:Trace entries
+     */
+    public static Resource getPsm2AsmTraceResource(Map<EObject, List<EObject>> trace,
+                                                   org.eclipse.emf.common.util.URI modelUri,
+                                                   URIHandler uriHandler) {
+        return createTraceModelResourceFromEObjectMap(trace, PSM_2_ASM_URI_POSTFIX, modelUri, uriHandler);
     }
 }

@@ -60,8 +60,6 @@
 							tatami/asm2sdk=src/main/epsilon
 						</Include-Resource>
 						<Import-Package>
-                            meta/asm;version="${judo-meta-asm-import-range}",
-                            hu.blackbelt.judo.meta.asm*;version="${judo-meta-asm-import-range}",
                             ${osgi-default-import},
                             *
 						</Import-Package>
@@ -102,7 +100,7 @@
         </dependency>        
         <dependency>
 			<groupId>hu.blackbelt.judo.meta</groupId>
-			<artifactId>judo-meta-asm</artifactId>
+			<artifactId>hu.blackbelt.judo.meta.asm.model</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>hu.blackbelt.judo.tatami</groupId>

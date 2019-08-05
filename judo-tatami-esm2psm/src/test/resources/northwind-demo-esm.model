@@ -212,9 +212,11 @@
       <attributes xsi:type="data:Attribute" xmi:id="_jIROkIN6EeiLE-B2bbL0fg" name="discount" dataType="_VDVVQIUcEeipmMyz9cMCRA" required="true"/>
       <attributes xsi:type="data:DataProperty" xmi:id="_mr-oACVvEemLpvUY7MQgng" name="productName" dataType="_Nppx8IUcEeipmMyz9cMCRA" required="true">
         <getterExpression xmi:id="_oHyJsDneEemsDIfvozHEKg" expression="self.product.productName"/>
+        <setterExpression xmi:id="_gs31QDneEemsDIfvozHEKg" expression="dummy"/>
       </attributes>
       <attributes xsi:type="data:DataProperty" xmi:id="_2MDDoCVvEemLpvUY7MQgng" name="categoryName" dataType="_Nppx8IUcEeipmMyz9cMCRA" required="true">
         <getterExpression xmi:id="_pXNKMDneEemsDIfvozHEKg" expression="self.product.category.categoryName"/>
+        <setterExpression xmi:id="_gs32QDneEemsDIfvozHEKg" expression="dummy"/>
       </attributes>
       <relations xsi:type="data:OneWayEndpoint" xmi:id="_6QtRsLwNEeiOuYiCo6IbXQ" lower="1" name="product" target="_6XH80INkEeiLE-B2bbL0fg"/>
     </elements>

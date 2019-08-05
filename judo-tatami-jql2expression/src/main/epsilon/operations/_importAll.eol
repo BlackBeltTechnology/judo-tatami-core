@@ -1,3 +1,0 @@
-import "asm/_importAll.eol";
-import "jqlextract/_importAll.eol";
-import "jqlextract2asm/_importAll.eol";

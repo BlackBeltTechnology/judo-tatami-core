@@ -1,4 +1,0 @@
-import "dataType.eol";
-import "entityType.eol";
-import "package.eol";
-import "reference.eol";

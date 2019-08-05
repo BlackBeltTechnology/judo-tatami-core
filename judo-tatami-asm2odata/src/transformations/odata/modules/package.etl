@@ -1,9 +1,0 @@
-import "../../../operations/asm/_importAll.eol";
-
-rule PackageToSchema
-	transform s : ASM!EPackage
-	to t : ODATA!SchemaType {
-		t.Namespace = s.getFullName();
-
-		root.DataServices.Schema.add(t);
-	}

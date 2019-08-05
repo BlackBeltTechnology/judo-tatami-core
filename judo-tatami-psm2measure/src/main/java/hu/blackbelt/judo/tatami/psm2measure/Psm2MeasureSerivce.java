@@ -4,24 +4,19 @@ import com.google.common.collect.Maps;
 import hu.blackbelt.epsilon.runtime.execution.api.Log;
 import hu.blackbelt.epsilon.runtime.execution.impl.Slf4jLog;
 import hu.blackbelt.epsilon.runtime.execution.impl.StringBuilderLogger;
-import hu.blackbelt.epsilon.runtime.osgi.BundleURIHandler;
 import hu.blackbelt.judo.meta.measure.runtime.MeasureModel;
 import hu.blackbelt.judo.meta.psm.runtime.PsmModel;
 import hu.blackbelt.judo.tatami.core.TransformationTrace;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.emf.common.util.URI;
-import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
+import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Reference;
 
-import java.io.File;
 import java.util.Hashtable;
 import java.util.Map;
 
-import static hu.blackbelt.judo.meta.measure.runtime.MeasureModelLoader.createMeasureResourceSet;
-import static hu.blackbelt.judo.meta.psm.runtime.PsmModelLoader.registerPsmMetamodel;
 import static hu.blackbelt.judo.tatami.psm2measure.Psm2Measure.executePsm2MeasureTransformation;
 
 
@@ -31,35 +26,41 @@ public class Psm2MeasureSerivce {
 
     public static final String MEASURE_META_VERSION_RANGE = "Measure-Meta-Version-Range";
 
-    @Reference
-    Psm2MeasureScriptResource psm2MeasureScriptResource;
-
     Map<PsmModel, ServiceRegistration<TransformationTrace>> psm2MeasureTransformationTraceRegistration = Maps.newHashMap();
 
-    public MeasureModel install(PsmModel psmModel, BundleContext bundleContext) throws Exception {
-        BundleURIHandler bundleURIHandler = new BundleURIHandler("urn", "",
-                bundleContext.getBundle());
+    BundleContext bundleContext;
 
-        ResourceSet measureResourceSet = createMeasureResourceSet(bundleURIHandler);
-        registerPsmMetamodel(measureResourceSet);
+    @Activate
+    public void activate(BundleContext bundleContext) {
+        this.bundleContext = bundleContext;
+    }
+
+    public MeasureModel install(PsmModel psmModel) throws Exception {
 
         MeasureModel measureModel = MeasureModel.buildMeasureModel()
                 .name(psmModel.getName())
-                .resourceSet(measureResourceSet)
-                .uri(URI.createURI("urn:" + psmModel.getName() + ".measure"))
                 .version(psmModel.getVersion())
-                .metaVersionRange(bundleContext.getBundle().getHeaders().get(MEASURE_META_VERSION_RANGE))
+                .uri(URI.createURI("measure:" + psmModel.getName() + ".measure"))
+                .checksum(psmModel.getChecksum())
                 .build();
 
         Log logger = new StringBuilderLogger(Slf4jLog.determinateLogLevel(log));
         try {
-            Psm2MeasureTransformationTrace psm2MeasureTransformationTrace = executePsm2MeasureTransformation(measureResourceSet, psmModel, measureModel, logger,
-                    new File(psm2MeasureScriptResource.getSctiptRoot().getAbsolutePath(), "psm2measure/transformations/measure") );
+            java.net.URI scriptUri =
+                    bundleContext.getBundle()
+                            .getEntry("/tatami/psm2measure/transformations/measure/psmToMeasure.etl")
+                            .toURI()
+                            .resolve(".");
 
-            psm2MeasureTransformationTraceRegistration.put(psmModel, bundleContext.registerService(TransformationTrace.class, psm2MeasureTransformationTrace, new Hashtable<>()));
-            log.info(logger.getBuffer());
+            Psm2MeasureTransformationTrace psm2MeasureTransformationTrace =
+                    executePsm2MeasureTransformation(psmModel, measureModel, logger, scriptUri);
+
+            psm2MeasureTransformationTraceRegistration.put(psmModel,
+                    bundleContext.registerService(TransformationTrace.class, psm2MeasureTransformationTrace, new Hashtable<>()));
+
+            log.info("\u001B[33m {}\u001B[0m", logger.getBuffer());
         } catch (Exception e) {
-            log.error(logger.getBuffer());
+            log.info("\u001B[31m {}\u001B[0m", logger.getBuffer());
             throw e;
         }
 

@@ -5,21 +5,16 @@ import hu.blackbelt.epsilon.runtime.execution.impl.Slf4jLog;
 import hu.blackbelt.epsilon.runtime.execution.impl.StringBuilderLogger;
 import hu.blackbelt.epsilon.runtime.osgi.BundleURIHandler;
 import hu.blackbelt.judo.meta.liquibase.runtime.LiquibaseModel;
+import hu.blackbelt.judo.meta.liquibase.runtime.LiquibaseNamespaceFixUriHandler;
 import hu.blackbelt.judo.meta.rdbms.runtime.RdbmsModel;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.emf.common.util.URI;
-import org.eclipse.emf.ecore.resource.Resource;
-import org.eclipse.emf.ecore.resource.ResourceSet;
+import org.eclipse.emf.ecore.resource.URIHandler;
 import org.osgi.framework.BundleContext;
+import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Reference;
 
-import java.io.File;
-
-import static hu.blackbelt.judo.meta.liquibase.runtime.LiquibaseModelLoader.createLiquibaseResourceSet;
-import static hu.blackbelt.judo.meta.liquibase.runtime.LiquibaseModelLoader.registerLiquibaseMetamodel;
 import static hu.blackbelt.judo.tatami.rdbms2liquibase.Rdbms2Liquibase.executeRdbms2LiquibaseTransformation;
-
 
 @Component(immediate = true, service = Rdbms2LiquibaseSerivce.class)
 @Slf4j
@@ -27,38 +22,44 @@ public class Rdbms2LiquibaseSerivce {
 
     public static final String LIQUIBASE_META_VERSION_RANGE = "Liquibase-Meta-Version-Range";
 
-    @Reference
-    Rdbms2LiquibaseScriptResource rdbms2LiquibaseScriptResource;
+    BundleContext bundleContext;
 
+    @Activate
+    public void activate(BundleContext bundleContext) {
+        this.bundleContext = bundleContext;
+    }
 
-    public LiquibaseModel install(RdbmsModel rdbmsModel, BundleContext bundleContext) throws Exception {
-        BundleURIHandler bundleURIHandler = new BundleURIHandler("urn", "",
-                bundleContext.getBundle());
+    public LiquibaseModel install(RdbmsModel rdbmsModel) throws Exception {
+        URIHandler liquibaseNamespaceFixUriHandlerFromBundle =
+                new LiquibaseNamespaceFixUriHandler(
+                        new BundleURIHandler("liquibase", "", bundleContext.getBundle())
+                );
 
-        ResourceSet liquibaseResourceSet = createLiquibaseResourceSet(bundleURIHandler);
-        registerLiquibaseMetamodel(liquibaseResourceSet);
-
-        URI liquibasUri = URI.createURI("urn:" + rdbmsModel.getName() + ".changlelog.xml");
-        Resource liquibaseResource = liquibaseResourceSet.createResource(liquibasUri);
+        URI liquibasUri = URI.createURI("liquibase:" + rdbmsModel.getName() + ".changlelog.xml");
 
         LiquibaseModel liquibaseModel = LiquibaseModel.buildLiquibaseModel()
                 .name(rdbmsModel.getName())
-                .resourceSet(liquibaseResourceSet)
-                .uri(liquibasUri)
                 .version(rdbmsModel.getVersion())
-                .metaVersionRange(bundleContext.getBundle().getHeaders().get(LIQUIBASE_META_VERSION_RANGE))
+                .uri(liquibasUri)
+                .checksum(rdbmsModel.getChecksum())
+                .uriHandler(liquibaseNamespaceFixUriHandlerFromBundle)
                 .build();
-
 
         Log logger = new StringBuilderLogger(Slf4jLog.determinateLogLevel(log));
         try {
-            executeRdbms2LiquibaseTransformation(liquibaseResourceSet, rdbmsModel, liquibaseModel, logger,
-                    new File(rdbms2LiquibaseScriptResource.getSctiptRoot().getAbsolutePath(), "rdbms2liquibase/transformations"),
+            java.net.URI scriptUri =
+                    bundleContext.getBundle()
+                            .getEntry("/tatami/rdbms2liquibase/transformations/rdbmsToLiquibase.etl")
+                            .toURI()
+                            .resolve(".");
+
+            executeRdbms2LiquibaseTransformation(rdbmsModel, liquibaseModel, logger,
+                    scriptUri,
                     "hsqldb" );
 
-            log.info(logger.getBuffer());
+            log.info("\u001B[33m {}\u001B[0m", logger.getBuffer());
         } catch (Exception e) {
-            log.error(logger.getBuffer());
+            log.info("\u001B[31m {}\u001B[0m", logger.getBuffer());
             throw e;
         }
 

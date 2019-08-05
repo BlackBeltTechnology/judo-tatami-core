@@ -1,4 +1,0 @@
-@cached
-operation JQLEXTRACT!UnaryOperation getOperands() : Collection {
-	return Set{self.operand};
-}

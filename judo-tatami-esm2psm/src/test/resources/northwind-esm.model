@@ -245,15 +245,19 @@
       <attributes xsi:type="data:Attribute" xmi:id="_muoDgIN1EeiLE-B2bbL0fg" name="shipName" dataType="_Nppx8IUcEeipmMyz9cMCRA"/>
       <attributes xsi:type="data:DataProperty" xmi:id="_5i40sCVQEemLpvUY7MQgng" name="shipperName" dataType="_Nppx8IUcEeipmMyz9cMCRA" required="true">
         <getterExpression xmi:id="_gs3QQDneEemsDIfvozHEKg" expression="self.shipper.companyName"/>
+        <setterExpression xmi:id="_gs31QDneEemsDIfvozHEKg" expression="dummy"/>
       </attributes>
       <attributes xsi:type="data:DataProperty" xmi:id="_7cYp8CVxEemLpvUY7MQgng" name="totalPrice" dataType="_VDVVQIUcEeipmMyz9cMCRA" required="true">
         <getterExpression xmi:id="_iA9VYDneEemsDIfvozHEKg" expression="self.orderDetails->sum(od | od.quantity * od.unitPrice * (1 - od.discount))"/>
+        <setterExpression xmi:id="_gs32QDneEemsDIfvozHEKg" expression="dummy"/>
       </attributes>
       <attributes xsi:type="data:DataProperty" xmi:id="_9jb2ACVxEemLpvUY7MQgng" name="discount" dataType="_VDVVQIUcEeipmMyz9cMCRA" required="true">
         <getterExpression xmi:id="_jYUJ4DneEemsDIfvozHEKg" expression="self.orderDetails->sum(od | od.discount)"/>
+        <setterExpression xmi:id="_gs33QDneEemsDIfvozHEKg" expression="dummy"/>
       </attributes>
       <attributes xsi:type="data:DataProperty" xmi:id="_LL8B4CYIEemLpvUY7MQgng" name="discountedItemsWithSingleManufacturer" dataType="_TXtg8IUcEeipmMyz9cMCRA" required="true">
         <getterExpression xmi:id="_k0MSADneEemsDIfvozHEKg" expression="self.orderDetails[od | od.discount > 0].product[p | p.manufacturers->size() == 0]"/>
+        <setterExpression xmi:id="_gs34QDneEemsDIfvozHEKg" expression="dummy"/>
       </attributes>
       <relations xsi:type="data:TwoWayEndpoint" xmi:id="_OL6RULwNEeiOuYiCo6IbXQ" name="customer" target="_86B-cINkEeiLE-B2bbL0fg" partner="_KCBq0LwNEeiOuYiCo6IbXQ"/>
       <relations xsi:type="data:TwoWayEndpoint" xmi:id="_WVBGcLwNEeiOuYiCo6IbXQ" name="shipper" target="_GnEEcINlEeiLE-B2bbL0fg" partner="_Z9PKULwNEeiOuYiCo6IbXQ" primary="true"/>
@@ -262,6 +266,7 @@
       <relations xsi:type="data:OneWayEndpoint" xmi:id="_2CC44LwNEeiOuYiCo6IbXQ" upper="-1" name="orderDetails" target="__XzocINkEeiLE-B2bbL0fg" containment="true"/>
       <relations xsi:type="data:NavigationProperty" xmi:id="_qsmPsCVtEemLpvUY7MQgng" upper="-1" name="itemsWithCategoryPicture" target="__XzocINkEeiLE-B2bbL0fg">
         <getterExpression xmi:id="_mY2isDneEemsDIfvozHEKg" expression="self.orderDetails[od | od.product.category.picture->isDefined()]"/>
+        <setterExpression xmi:id="_gs35QDneEemsDIfvozHEKg" expression="dummy"/>
       </relations>
     </elements>
     <elements xsi:type="data:EntityType" xmi:id="__XzocINkEeiLE-B2bbL0fg" name="OrderDetail">
@@ -270,9 +275,11 @@
       <attributes xsi:type="data:Attribute" xmi:id="_jIROkIN6EeiLE-B2bbL0fg" name="discount" dataType="_VDVVQIUcEeipmMyz9cMCRA" required="true"/>
       <attributes xsi:type="data:DataProperty" xmi:id="_mr-oACVvEemLpvUY7MQgng" name="productName" dataType="_Nppx8IUcEeipmMyz9cMCRA" required="true">
         <getterExpression xmi:id="_oHyJsDneEemsDIfvozHEKg" expression="self.product.productName"/>
+        <setterExpression xmi:id="_gs36QDneEemsDIfvozHEKg" expression="dummy"/>
       </attributes>
       <attributes xsi:type="data:DataProperty" xmi:id="_2MDDoCVvEemLpvUY7MQgng" name="categoryName" dataType="_Nppx8IUcEeipmMyz9cMCRA" required="true">
         <getterExpression xmi:id="_pXNKMDneEemsDIfvozHEKg" expression="self.product.category.categoryName"/>
+        <setterExpression xmi:id="_gs37QDneEemsDIfvozHEKg" expression="dummy"/>
       </attributes>
       <relations xsi:type="data:OneWayEndpoint" xmi:id="_6QtRsLwNEeiOuYiCo6IbXQ" lower="1" name="product" target="_6XH80INkEeiLE-B2bbL0fg"/>
       <relations xsi:type="data:NavigationProperty" xmi:id="_Ris8gHx0Eemehqnkuyqrzw" lower="1" name="category" target="_43ZPcINkEeiLE-B2bbL0fg">

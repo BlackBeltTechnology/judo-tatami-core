@@ -62,7 +62,6 @@
 							tatami/rdbms2liquibase/model=model
 						</Include-Resource>
 						<Import-Package>
-                            meta/rdbms;version="${judo-meta-rdbms.import-range}",
                             ${osgi-default-import},
                             *
 						</Import-Package>
@@ -105,11 +104,11 @@
 
         <dependency>
 			<groupId>hu.blackbelt.judo.meta</groupId>
-			<artifactId>judo-meta-rdbms-runtime</artifactId>
+			<artifactId>hu.blackbelt.judo.meta.rdbms.model</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>hu.blackbelt.judo.meta</groupId>
-			<artifactId>judo-meta-liquibase-runtime</artifactId>
+			<artifactId>hu.blackbelt.judo.meta.liquibase.model</artifactId>
 		</dependency>
 
 		<dependency>

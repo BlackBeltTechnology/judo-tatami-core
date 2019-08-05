@@ -13,6 +13,7 @@ import hu.blackbelt.judo.meta.asm.runtime.AsmModel;
 import hu.blackbelt.judo.meta.asm.runtime.AsmUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.emf.ecore.resource.ResourceSet;
+import org.eclipse.epsilon.common.util.UriUtil;
 import org.ops4j.pax.tinybundles.core.TinyBundle;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
@@ -22,6 +23,7 @@ import org.osgi.framework.wiring.BundleWiring;
 
 import javax.tools.JavaFileObject;
 import java.io.*;
+import java.net.URI;
 import java.util.Collections;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -36,13 +38,12 @@ import static org.ops4j.pax.tinybundles.core.TinyBundles.bundle;
 @Slf4j
 public class Asm2SDK {
 
-    public static InputStream executeAsm2SDKGeneration(ResourceSet resourceSet, AsmModel asmModel, Log log,
-                                                       File scriptDir, File sourceCodeOutputDir) throws Exception {
+    public static InputStream executeAsm2SDKGeneration(AsmModel asmModel, Log log,
+                                                       URI scriptUri, File sourceCodeOutputDir) throws Exception {
 
         // Execution context
         ExecutionContext executionContext = executionContextBuilder()
                 .log(log)
-                .resourceSet(resourceSet)
                 .modelContexts(ImmutableList.of(
                         wrappedEmfModelContextBuilder()
                                 .log(log)
@@ -51,7 +52,6 @@ public class Asm2SDK {
                                 .build()
                         )
                 )
-                .sourceDirectory(scriptDir)
                 .injectContexts(ImmutableMap.of("asmUtils", new AsmUtils((asmModel.getResourceSet()))))
                 .build();
 
@@ -59,7 +59,7 @@ public class Asm2SDK {
         executionContext.load();
 
         EglExecutionContext eglExecutionContext = eglExecutionContextBuilder()
-                .source("main.egl")
+                .source(UriUtil.resolve("main.egl", scriptUri))
                 .outputRoot(sourceCodeOutputDir.getAbsolutePath())
                 .parameters(ImmutableList.of(
                         programParameterBuilder().name("modelVersion").value(asmModel.getVersion()).build(),

@@ -20,6 +20,7 @@ rule EAttributeToRdbmsField
 		}
 		t.sqlName = s.fieldSqlName();
 		t.mandatory = s.required;
+		t.name = asmUtils.getAttributeFQName(s);
 }
 
 rule EAttributeToTableValueField
