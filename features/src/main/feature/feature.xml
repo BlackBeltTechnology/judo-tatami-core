@@ -20,13 +20,12 @@
         <feature dependency="true">epsilon-runtime</feature>
         <feature dependency="true">osgi-utils</feature>
         <bundle>mvn:hu.blackbelt.judo.meta/hu.blackbelt.judo.meta.psm.osgi/${judo-meta-psm-version}</bundle>
-    </feature>
+   </feature>
 
     <feature name="judo-tatami-meta-jql" version="${project.version}" description="JUDO Tatami, JUDO Query Language Model" install="false">
         <feature dependency="true">guice</feature>
-        <feature dependency="true">epsilon-runtime</feature>
-        <feature dependency="true">osgi-utils</feature>
         <feature dependency="true">eclipse-xtext</feature>
+        <feature dependency="true">epsilon-runtime</feature>
         <feature dependency="true">osgi-utils</feature>
         <bundle>mvn:hu.blackbelt.judo.meta/hu.blackbelt.judo.meta.jql.osgi/${judo-meta-jql-version}</bundle>
     </feature>
