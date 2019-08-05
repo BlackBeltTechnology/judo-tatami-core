@@ -91,10 +91,6 @@
                         </Include-Resource>
 
                         <Import-Package>
-                            meta/esm;version="${judo-meta-esm-import-range}",
-                            meta/psm;version="${judo-meta-psm-import-range}",
-                            hu.blackbelt.judo.meta.esm*;version="${judo-meta-esm-import-range}",
-                            hu.blackbelt.judo.meta.psm*;version="${judo-meta-psm-import-range}",
                             ${osgi-default-import},
                             *
                         </Import-Package>

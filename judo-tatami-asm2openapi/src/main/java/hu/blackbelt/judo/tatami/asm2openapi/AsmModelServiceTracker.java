@@ -52,8 +52,7 @@ public class AsmModelServiceTracker extends AbstractModelTracker<AsmModel> {
         }
 
         try {
-            openAPIModel = asm2OpenAPIService
-                    .install(asmModel, componentContext.getBundleContext());
+            openAPIModel = asm2OpenAPIService.install(asmModel);
             log.info("Registering model: " + openAPIModel);
             ServiceRegistration<OpenapiModel> modelServiceRegistration =
                     componentContext.getBundleContext()

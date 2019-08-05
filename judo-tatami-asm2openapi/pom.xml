@@ -60,10 +60,6 @@
 							tatami/asm2openapi=src/main/epsilon
 						</Include-Resource>
 						<Import-Package>
-                            meta/openapi;version="${judo-meta-openapi-import-range}",
-                            meta/asm;version="${judo-meta-asm-import-range}",
-                            hu.blackbelt.judo.meta.openapi*;version="${judo-meta-openapi-import-range}",
-                            hu.blackbelt.judo.meta.asm*;version="${judo-meta-asm-import-range}",
                             ${osgi-default-import},
                             *
 						</Import-Package>

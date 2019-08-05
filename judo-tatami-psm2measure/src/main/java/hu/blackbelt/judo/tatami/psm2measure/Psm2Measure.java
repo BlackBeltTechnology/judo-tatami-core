@@ -10,8 +10,8 @@ import hu.blackbelt.judo.meta.psm.runtime.PsmModel;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
+import org.eclipse.epsilon.common.util.UriUtil;
 
-import java.io.File;
 import java.net.URI;
 import java.util.List;
 import java.util.Map;
@@ -25,29 +25,22 @@ public class Psm2Measure {
 
     public static final String PSM_2_MEASURE_URI_POSTFIX = "psm2measure";
 
-    public static Psm2MeasureTransformationTrace executePsm2MeasureTransformation(ResourceSet resourceSet, PsmModel psmModel, MeasureModel measureModel, Log log,
+    public static Psm2MeasureTransformationTrace executePsm2MeasureTransformation(PsmModel psmModel, MeasureModel measureModel, Log log,
                                                                                   URI scriptUri) throws Exception {
-
-        // If resource not creared for target model
-        Resource measureResource = measureModel.getResourceSet().getResource(measureModel.getUri(), false);
-        if (measureResource == null) {
-            measureResource = resourceSet.createResource(measureModel.getUri());
-        }
-
         // Execution context
         ExecutionContext executionContext = executionContextBuilder()
                 .log(log)
-                .resourceSet(resourceSet)
+                .resourceSet(measureModel.getResourceSet())
                 .modelContexts(ImmutableList.of(
                         wrappedEmfModelContextBuilder()
                                 .log(log)
                                 .name("JUDOPSM")
-                                .resource(psmModel.getResourceSet().getResource(psmModel.getUri(), false))
+                                .resource(psmModel.getResource())
                                 .build(),
                         wrappedEmfModelContextBuilder()
                                 .log(log)
                                 .name("MEASURES")
-                                .resource(measureResource)
+                                .resource(measureModel.getResource())
                                 .build()))
                 .build();
 
@@ -56,7 +49,7 @@ public class Psm2Measure {
 
         EtlExecutionContext etlExecutionContext =
                 etlExecutionContextBuilder()
-                        .source(scriptUri.resolve("psmToMeasure.etl"))
+                        .source(UriUtil.resolve("psmToMeasure.etl", scriptUri))
                         .build();
 
         // Transformation script
@@ -65,7 +58,7 @@ public class Psm2Measure {
         executionContext.commit();
         executionContext.close();
 
-        List<EObject> traceModel = getTransformationTrace(PSM_2_MEASURE_URI_POSTFIX, etlExecutionContext);
+        List<EObject> traceModel = getTransformationTraceFromEtlExecutionContext(PSM_2_MEASURE_URI_POSTFIX, etlExecutionContext);
         return Psm2MeasureTransformationTrace.psm2MeasureTransformationTraceBuilder()
                 .measureModel(measureModel)
                 .psmModel(psmModel)
@@ -82,12 +75,12 @@ public class Psm2Measure {
     }
 
     public static Map<EObject, List<EObject>> resolvePsm2MeasureTrace(List<EObject> trace, PsmModel psmModel, MeasureModel measureModel) {
-        return resolveTransformationTrace(trace,
+        return resolveTransformationTraceAsEObjectMap(trace,
                 ImmutableList.of(psmModel.getResourceSet(), measureModel.getResourceSet()));
     }
 
     public static List<EObject> getPsm2MeasureTrace(Map<EObject, List<EObject>> trace) throws ScriptExecutionException {
-        return getTransformationTrace(PSM_2_MEASURE_URI_POSTFIX, trace);
+        return getTransformationTraceFromEtlExecutionContext(PSM_2_MEASURE_URI_POSTFIX, trace);
     }
 
 }

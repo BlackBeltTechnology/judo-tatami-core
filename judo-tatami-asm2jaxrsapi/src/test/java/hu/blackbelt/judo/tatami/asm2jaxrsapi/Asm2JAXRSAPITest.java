@@ -22,38 +22,29 @@ import java.io.OutputStream;
 import java.nio.file.FileSystems;
 import java.util.Optional;
 
+import static hu.blackbelt.judo.meta.asm.runtime.AsmModel.LoadArguments.asmLoadArgumentsBuilder;
+import static hu.blackbelt.judo.meta.asm.runtime.AsmModel.loadAsmModel;
 import static hu.blackbelt.judo.tatami.asm2jaxrsapi.Asm2JAXRSAPI.executeAsm2JAXRSAPIGeneration;
 
 @Slf4j
 public class Asm2JAXRSAPITest {
 
-    public static final String ASM_NORTHWIND = "asm:northwind";
-    public static final String URN_NORTHWIND_ASM = "urn:northwind-asm.model";
     public static final String NORTHWIND = "northwind";
     public static final String TARGET_TEST_CLASSES = "target/test-classes";
     
-    URIHandler uriHandler;
     Log slf4jlog;
     AsmModel asmModel;
 
     @Before
     public void setUp() throws Exception {
-        // Set our custom handler
-        uriHandler = new NameMappedURIHandlerImpl(
-                ImmutableList.of(new NioFilesystemnRelativePathURIHandlerImpl("urn", FileSystems.getDefault(), TARGET_TEST_CLASSES)),
-                ImmutableMap.of(
-                        URI.createURI(ASM_NORTHWIND), URI.createURI(URN_NORTHWIND_ASM))
-        );
         // Default logger
         slf4jlog = new Slf4jLog(log);
 
         // Loading ASM to isolated ResourceSet, because in Tatami
         // there is no new namespace registration made.
-        asmModel = AsmModel.loadAsmModel(AsmModel.LoadArguments.loadArgumentsBuilder()
-                .uri(URI.createURI(ASM_NORTHWIND))
-                .uriHandler(Optional.of(uriHandler))
-                .name(NORTHWIND)
-                .build());
+        asmModel = loadAsmModel(asmLoadArgumentsBuilder()
+                .uri(URI.createFileURI(new File(TARGET_TEST_CLASSES, "northwind-asm.model").getAbsolutePath()))
+                .name(NORTHWIND));
     }
 
     @After
@@ -63,13 +54,13 @@ public class Asm2JAXRSAPITest {
 
     @Test
     public void testExecuteAsm2JAXRSAPIGeneration() throws Exception {
-        try (OutputStream outputStream =
+        try (OutputStream bundleOutputStream =
                      new FileOutputStream(new File(TARGET_TEST_CLASSES, NORTHWIND + "-rest.jar"))) {
             ByteStreams.copy(
-                    executeAsm2JAXRSAPIGeneration(new ResourceSetImpl(), asmModel, new Slf4jLog(log),
+                    executeAsm2JAXRSAPIGeneration(asmModel, new Slf4jLog(log),
                             new File(TARGET_TEST_CLASSES, "epsilon/templates").toURI(),
                             new File(TARGET_TEST_CLASSES, "generated/java")),
-                    outputStream
+                    bundleOutputStream
             );
         }
     }

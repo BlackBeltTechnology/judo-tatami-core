@@ -26,51 +26,42 @@ import static hu.blackbelt.judo.tatami.esm2psm.Esm2Psm.executeEsm2PsmTransformat
 @Slf4j
 public class Esm2PsmService {
 
-    public static final String PSM_META_VERSION_RANGE = "Psm-Meta-Version-Range";
-
     Map<EsmModel, ServiceRegistration<TransformationTrace>> esm2PsmTransformationTraceRegistration = Maps.newHashMap();
 
-    BundleContext scriptBundleContext;
+    BundleContext bundleContext;
 
     @Activate
     public void activate(BundleContext bundleContext) {
-        scriptBundleContext = bundleContext;
+        this.bundleContext = bundleContext;
     }
 
-    public PsmModel install(EsmModel esmModel, BundleContext bundleContext) throws Exception {
-        BundleURIHandler bundleURIHandler = new BundleURIHandler("urn", "",
-                bundleContext.getBundle());
-
+    public PsmModel install(EsmModel esmModel) throws Exception {
         PsmModel psmModel = PsmModel.buildPsmModel()
                 .name(esmModel.getName())
                 .version(esmModel.getVersion())
-                .uri(URI.createURI("urn:" + esmModel.getName() + ".psm"))
+                .uri(URI.createURI("psm:" + esmModel.getName() + ".model"))
                 .checksum(esmModel.getChecksum())
-                .psmModelResourceSupport(
-                        psmModelResourceSupportBuilder()
-                                .uriHandler(Optional.of(bundleURIHandler))
-                                .build())
-                .metaVersionRange(bundleContext.getBundle().getHeaders().get(PSM_META_VERSION_RANGE)).build();
-
+                .build();
 
         Log logger = new StringBuilderLogger(Slf4jLog.determinateLogLevel(log));
 
         java.net.URI scriptUri =
-                scriptBundleContext.getBundle()
+                bundleContext.getBundle()
                         .getEntry("/tatami/esm2psm/transformations/psm/esmToPsm.etl")
                         .toURI()
                         .resolve(".");
         try {
-            Esm2PsmTransformationTrace transformationTrace = executeEsm2PsmTransformation(psmModel.getResourceSet(),
+            Esm2PsmTransformationTrace transformationTrace = executeEsm2PsmTransformation(
                     esmModel,
                     psmModel,
                     logger,
                     scriptUri);
 
-            esm2PsmTransformationTraceRegistration.put(esmModel, bundleContext.registerService(TransformationTrace.class, transformationTrace, new Hashtable<>()));
-            log.info(logger.getBuffer());
+            esm2PsmTransformationTraceRegistration.put(esmModel,
+                    bundleContext.registerService(TransformationTrace.class, transformationTrace, new Hashtable<>()));
+            log.info("\u001B[33m {}\u001B[0m", logger.getBuffer());
         } catch (Exception e) {
-            log.error(logger.getBuffer());
+            log.info("\u001B[31m {}\u001B[0m", logger.getBuffer());
             throw e;
         }
         return psmModel;

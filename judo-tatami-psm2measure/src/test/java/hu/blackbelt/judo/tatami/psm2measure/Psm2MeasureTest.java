@@ -28,6 +28,10 @@ import java.util.Map;
 import java.util.List;
 import java.util.Optional;
 
+import static hu.blackbelt.judo.meta.measure.runtime.MeasureModel.buildMeasureModel;
+import static hu.blackbelt.judo.meta.measure.support.MeasureModelResourceSupport.measureModelResourceSupportBuilder;
+import static hu.blackbelt.judo.meta.psm.runtime.PsmModel.LoadArguments.psmLoadArgumentsBuilder;
+import static hu.blackbelt.judo.meta.psm.runtime.PsmModel.loadPsmModel;
 import static hu.blackbelt.judo.tatami.psm2measure.Psm2Measure.*;
 
 @Slf4j
@@ -62,20 +66,15 @@ public class Psm2MeasureTest {
 
         // Loading PSM to isolated ResourceSet, because in Tatami
         // there is no new namespace registration made.
-        psmModel = PsmModel.loadPsmModel(PsmModel.LoadArguments.loadArgumentsBuilder()
+        psmModel = loadPsmModel(psmLoadArgumentsBuilder()
                 .uri(URI.createURI(PSM_NORTHWIND))
-                .uriHandler(Optional.of(uriHandler))
-                .name(NORTHWIND)
-                .build());
+                .uriHandler(uriHandler)
+                .name(NORTHWIND));
 
         // Create empty MEASURE model
-        MeasureModelResourceSupport measureModelResourceSupport = MeasureModelResourceSupport.measureModelResourceSupportBuilder()
-                .uriHandler(Optional.of(uriHandler))
-                .build();
-
-        measureModel = MeasureModel.buildMeasureModel()
-                .measureModelResourceSupport(measureModelResourceSupport)
+        measureModel = buildMeasureModel()
                 .name(NORTHWIND)
+                .uriHandler(uriHandler)
                 .uri(URI.createURI(PSM_NORTHWIND))
                 .build();
     }
@@ -87,15 +86,16 @@ public class Psm2MeasureTest {
 
     @Test
     public void testPsm2MeasureTransformation() throws Exception {
-        Psm2MeasureTransformationTrace psm2MeasureTransformationTrace = executePsm2MeasureTransformation(measureModel.getResourceSet(), psmModel, measureModel, new Slf4jLog(log),
-                new File(TARGET_TEST_CLASSES, "epsilon/transformations/measure").toURI());
+        Psm2MeasureTransformationTrace psm2MeasureTransformationTrace =
+                executePsm2MeasureTransformation(psmModel, measureModel, new Slf4jLog(log),
+                        new File(TARGET_TEST_CLASSES, "epsilon/transformations/measure").toURI());
 
         // Saving trace map
         Resource traceResoureSaved = new XMIResourceImpl();
         traceResoureSaved.getContents().addAll(getPsm2MeasureTrace(psm2MeasureTransformationTrace.getTrace()));
         traceResoureSaved.save(new FileOutputStream(new File(TARGET_TEST_CLASSES, PSM_2_MEASURE_MODEL)), ImmutableMap.of());
 
-        // Loadeing trace map
+        // Loading trace map
         ResourceSet traceLoadedResourceSet = createPsm2MeasureTraceResourceSet();
         Resource traceResoureLoaded = traceLoadedResourceSet.createResource(URI.createURI(TRACE_PSM_2_MEASURE));
         traceResoureLoaded.load(new FileInputStream(new File(TARGET_TEST_CLASSES, PSM_2_MEASURE_MODEL)), ImmutableMap.of());

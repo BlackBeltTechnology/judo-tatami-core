@@ -61,7 +61,7 @@ public class NorthwindTatamiPSMTransformationPipelineITest extends TatamiPSMTran
     private InputStream getPsmModelBundle() throws FileNotFoundException {
         return bundle()
                 .add( "model/" + DEMO + ".judo-meta-psm",
-                        new FileInputStream(new File(testTargetDir(getClass()).getAbsolutePath(),  "northwind-judopsm.model")))
+                        new FileInputStream(new File(testTargetDir(getClass()).getAbsolutePath(),  "northwind-psm.model")))
                 .set( Constants.BUNDLE_MANIFESTVERSION, "2")
                 .set( Constants.BUNDLE_SYMBOLICNAME,  DEMO + "-model" )
                 //set( Constants.IMPORT_PACKAGE, "meta/psm;version=\"" + getConfiguration(META_PSM_IMPORT_RANGE) +"\"")
@@ -75,7 +75,7 @@ public class NorthwindTatamiPSMTransformationPipelineITest extends TatamiPSMTran
     }
 
     @Test
-    public void saveModels() throws InvalidSyntaxException, IOException {
+    public void saveModels() throws Exception {
         log.log(LOG_INFO, "==============================================");
         log.log(LOG_INFO, "== RUNNING TEST SAVE MODELS");
         log.log(LOG_INFO, "==============================================");

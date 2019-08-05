@@ -7,6 +7,7 @@ import hu.blackbelt.epsilon.runtime.execution.contexts.ProgramParameter;
 import hu.blackbelt.judo.meta.rdbms.runtime.RdbmsModel;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
+import org.eclipse.epsilon.common.util.UriUtil;
 
 import java.io.File;
 import java.net.URI;
@@ -17,20 +18,13 @@ import static hu.blackbelt.epsilon.runtime.execution.model.emf.WrappedEmfModelCo
 
 public class Rdbms2Liquibase {
 
-    public static void executeRdbms2LiquibaseTransformation(ResourceSet resourceSet, RdbmsModel rdbmsModel, hu.blackbelt.judo.meta.liquibase.runtime.LiquibaseModel liquibaseModel, Log log,
+    public static void executeRdbms2LiquibaseTransformation(RdbmsModel rdbmsModel, hu.blackbelt.judo.meta.liquibase.runtime.LiquibaseModel liquibaseModel, Log log,
                                                             URI scriptUri, String dialect) throws Exception {
-
-        // If resource was not created for target model before
-        Resource liquibaseResource = liquibaseModel.getResourceSet().getResource(liquibaseModel.getUri(), false);
-        if (liquibaseResource == null) {
-            liquibaseResource = resourceSet.createResource(liquibaseModel.getUri());
-        }
-
 
         // Execution context
         ExecutionContext executionContext = executionContextBuilder()
                 .log(log)
-                .resourceSet(resourceSet)
+                .resourceSet(liquibaseModel.getResourceSet())
                 .modelContexts(ImmutableList.of(
                         wrappedEmfModelContextBuilder()
                                 .log(log)
@@ -40,7 +34,7 @@ public class Rdbms2Liquibase {
                         wrappedEmfModelContextBuilder()
                                 .log(log)
                                 .name("LIQUIBASE")
-                                .resource(liquibaseResource)
+                                .resource(liquibaseModel.getResource())
                                 .build()))
                 .build();
 
@@ -50,7 +44,7 @@ public class Rdbms2Liquibase {
         // Transformation script
         executionContext.executeProgram(
                 etlExecutionContextBuilder()
-                        .source(scriptUri.resolve("rdbmsToLiquibase.etl"))
+                        .source(UriUtil.resolve("rdbmsToLiquibase.etl", scriptUri))
                         .parameters(ImmutableList.of(
                                 ProgramParameter.programParameterBuilder().name("dialect").value(dialect).build()
                         ))

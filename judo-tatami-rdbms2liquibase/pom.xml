@@ -62,7 +62,6 @@
 							tatami/rdbms2liquibase/model=model
 						</Include-Resource>
 						<Import-Package>
-                            meta/rdbms;version="${judo-meta-rdbms.import-range}",
                             ${osgi-default-import},
                             *
 						</Import-Package>

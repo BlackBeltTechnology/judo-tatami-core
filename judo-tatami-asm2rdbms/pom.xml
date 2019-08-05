@@ -61,10 +61,6 @@
 							tatami/asm2rdbms/model=model
 						</Include-Resource>
 						<Import-Package>
-                            meta/rdbms;version="${judo-meta-rdbms.import-range}",
-                            meta/asm;version="${judo-meta-asm-import-range}",
-                            hu.blackbelt.judo.meta.rdbms*;version="${judo-meta-rdbms.import-range}",
-                            hu.blackbelt.judo.meta.asm*;version="${judo-meta-asm-import-range}",
                             ${osgi-default-import},
                             *
 						</Import-Package>

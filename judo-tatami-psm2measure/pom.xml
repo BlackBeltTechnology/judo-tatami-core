@@ -60,10 +60,6 @@
                             tatami/psm2measure/transformations=src/main/epsilon/transformations
                         </Include-Resource>
                         <Import-Package>
-                            meta/psm;version="${judo-meta-psm-import-range}",
-                            meta/measure;version="${judo-meta-measure-import-range}",
-                            hu.blackbelt.judo.meta.psm*;version="${judo-meta-psm-import-range}",
-                            hu.blackbelt.judo.meta.measure*;version="${judo-meta-measure-import-range}",
                             ${osgi-default-import},
                             *
                         </Import-Package>

@@ -13,8 +13,8 @@ import hu.blackbelt.judo.tatami.core.TransformationTraceUtil;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
+import org.eclipse.epsilon.common.util.UriUtil;
 
-import java.io.File;
 import java.net.URI;
 import java.util.List;
 import java.util.Map;
@@ -30,22 +30,15 @@ public class Esm2Psm {
 
     /**
      * Execute ESM to PSM model transformation,
-     * @param resourceSet {@link ResourceSet} the Epsilon transformation resource context.
      * @param esmModel The ESM model definition and loaded resources
-     * @param psmModel The PSM model definition and loaded resources
+     * @param psmModel The PSM model definition transformed to
      * @param log The log instance used in scripts
      * @param scriptDir The physical filesystem directory where the script root is
      * @return The trace object list of the transformation conforms the meta model defined in {@link TransformationTraceUtil}.
      * @throws Exception
      */
-    public static Esm2PsmTransformationTrace executeEsm2PsmTransformation(ResourceSet resourceSet, EsmModel esmModel, PsmModel psmModel, Log log,
+    public static Esm2PsmTransformationTrace executeEsm2PsmTransformation(EsmModel esmModel, PsmModel psmModel, Log log,
                                                                           URI scriptDir) throws Exception {
-
-        // If resource not created for target model
-        Resource psmResource = psmModel.getResourceSet().getResource(psmModel.getUri(), false);
-        if (psmResource == null) {
-            psmResource = resourceSet.createResource(psmModel.getUri());
-        }
 
         EsmUtils esmUtils = new EsmUtils(esmModel.getResourceSet(), false);
         esmUtils.processAllEntities();
@@ -54,17 +47,16 @@ public class Esm2Psm {
         // Execution context
         ExecutionContext executionContext = executionContextBuilder()
                 .log(log)
-                .resourceSet(resourceSet)
                 .modelContexts(ImmutableList.of(
                         wrappedEmfModelContextBuilder()
                                 .log(log)
                                 .name("ESM")
-                                .resource(esmModel.getResourceSet().getResource(esmModel.getUri(), false))
+                                .resource(esmModel.getResource())
                                 .build(),
                         wrappedEmfModelContextBuilder()
                                 .log(log)
                                 .name("JUDOPSM")
-                                .resource(psmResource)
+                                .resource(psmModel.getResource())
                                 .build()))
                 .injectContexts(ImmutableMap.of("esmUtils", esmUtils))
                 .build();
@@ -73,7 +65,7 @@ public class Esm2Psm {
         executionContext.load();
 
         EtlExecutionContext etlExecutionContext = etlExecutionContextBuilder()
-                .source(scriptDir.resolve("esmToPsm.etl"))
+                .source(UriUtil.resolve("esmToPsm.etl", scriptDir))
                 .build();
 
         // Transformation script
@@ -81,7 +73,7 @@ public class Esm2Psm {
         executionContext.commit();
         executionContext.close();
 
-        List<EObject> traceModel = getTransformationTrace(ESM_2_PSM_URI_POSTFIX, etlExecutionContext);
+        List<EObject> traceModel = getTransformationTraceFromEtlExecutionContext(ESM_2_PSM_URI_POSTFIX, etlExecutionContext);
         return Esm2PsmTransformationTrace.esm2PsmTransformationTraceBuilder()
                 .esmModel(esmModel)
                 .psmModel(psmModel)
@@ -97,11 +89,11 @@ public class Esm2Psm {
     }
 
     public static Map<EObject, List<EObject>> resolveEsm2PsmTrace(List<EObject> trace, EsmModel esmModel, PsmModel psmModel) {
-        return resolveTransformationTrace(trace,
+        return resolveTransformationTraceAsEObjectMap(trace,
                 ImmutableList.of(esmModel.getResourceSet(), psmModel.getResourceSet()));
     }
 
     public static List<EObject> getEsm2PsmTrace(Map<EObject, List<EObject>> trace) throws ScriptExecutionException {
-        return getTransformationTrace(ESM_2_PSM_URI_POSTFIX, trace);
+        return getTransformationTraceFromEtlExecutionContext(ESM_2_PSM_URI_POSTFIX, trace);
     }
 }

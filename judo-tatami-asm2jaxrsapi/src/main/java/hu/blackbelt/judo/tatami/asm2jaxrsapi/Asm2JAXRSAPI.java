@@ -12,6 +12,7 @@ import hu.blackbelt.judo.meta.asm.runtime.AsmModel;
 import hu.blackbelt.judo.meta.asm.runtime.AsmUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.emf.ecore.resource.ResourceSet;
+import org.eclipse.epsilon.common.util.UriUtil;
 import org.ops4j.pax.tinybundles.core.TinyBundle;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
@@ -37,13 +38,12 @@ import static org.ops4j.pax.tinybundles.core.TinyBundles.bundle;
 @Slf4j
 public class Asm2JAXRSAPI {
 
-    public static InputStream executeAsm2JAXRSAPIGeneration(ResourceSet resourceSet, AsmModel asmModel, Log log,
+    public static InputStream executeAsm2JAXRSAPIGeneration(AsmModel asmModel, Log log,
                                                             URI scriptDir, File sourceCodeOutputDir) throws Exception {
 
         // Execution context
         ExecutionContext executionContext = executionContextBuilder()
                 .log(log)
-                .resourceSet(resourceSet)
                 .modelContexts(ImmutableList.of(
                         wrappedEmfModelContextBuilder()
                                 .log(log)
@@ -59,7 +59,7 @@ public class Asm2JAXRSAPI {
         executionContext.load();
 
         EglExecutionContext eglExecutionContext = eglExecutionContextBuilder()
-                .source(scriptDir.resolve("main.egl"))
+                .source(UriUtil.resolve("main.egl", scriptDir))
                 .outputRoot(sourceCodeOutputDir.getAbsolutePath())
                 .parameters(ImmutableList.of(
                         programParameterBuilder().name("modelVersion").value(asmModel.getVersion()).build(),

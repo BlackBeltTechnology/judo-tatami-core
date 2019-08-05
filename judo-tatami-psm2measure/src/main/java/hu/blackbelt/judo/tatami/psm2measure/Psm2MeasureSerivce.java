@@ -4,7 +4,6 @@ import com.google.common.collect.Maps;
 import hu.blackbelt.epsilon.runtime.execution.api.Log;
 import hu.blackbelt.epsilon.runtime.execution.impl.Slf4jLog;
 import hu.blackbelt.epsilon.runtime.execution.impl.StringBuilderLogger;
-import hu.blackbelt.epsilon.runtime.osgi.BundleURIHandler;
 import hu.blackbelt.judo.meta.measure.runtime.MeasureModel;
 import hu.blackbelt.judo.meta.psm.runtime.PsmModel;
 import hu.blackbelt.judo.tatami.core.TransformationTrace;
@@ -17,9 +16,7 @@ import org.osgi.service.component.annotations.Component;
 
 import java.util.Hashtable;
 import java.util.Map;
-import java.util.Optional;
 
-import static hu.blackbelt.judo.meta.measure.support.MeasureModelResourceSupport.measureModelResourceSupportBuilder;
 import static hu.blackbelt.judo.tatami.psm2measure.Psm2Measure.executePsm2MeasureTransformation;
 
 
@@ -31,43 +28,39 @@ public class Psm2MeasureSerivce {
 
     Map<PsmModel, ServiceRegistration<TransformationTrace>> psm2MeasureTransformationTraceRegistration = Maps.newHashMap();
 
-    BundleContext scriptBundleContext;
+    BundleContext bundleContext;
 
     @Activate
     public void activate(BundleContext bundleContext) {
-        scriptBundleContext = bundleContext;
+        this.bundleContext = bundleContext;
     }
 
-    public MeasureModel install(PsmModel psmModel, BundleContext bundleContext) throws Exception {
-
-        BundleURIHandler bundleURIHandler = new BundleURIHandler("urn", "", bundleContext.getBundle());
+    public MeasureModel install(PsmModel psmModel) throws Exception {
 
         MeasureModel measureModel = MeasureModel.buildMeasureModel()
                 .name(psmModel.getName())
                 .version(psmModel.getVersion())
-                .uri(URI.createURI("urn:" + psmModel.getName() + ".measure"))
+                .uri(URI.createURI("measure:" + psmModel.getName() + ".measure"))
                 .checksum(psmModel.getChecksum())
-                .measureModelResourceSupport(
-                        measureModelResourceSupportBuilder()
-                                .uriHandler(Optional.of(bundleURIHandler))
-                                .build())
-                .metaVersionRange(bundleContext.getBundle().getHeaders().get(MEASURE_META_VERSION_RANGE)).build();
+                .build();
 
         Log logger = new StringBuilderLogger(Slf4jLog.determinateLogLevel(log));
         try {
             java.net.URI scriptUri =
-                    scriptBundleContext.getBundle()
+                    bundleContext.getBundle()
                             .getEntry("/tatami/psm2measure/transformations/measure/psmToMeasure.etl")
                             .toURI()
                             .resolve(".");
 
-            Psm2MeasureTransformationTrace psm2MeasureTransformationTrace = executePsm2MeasureTransformation(measureModel.getResourceSet(), psmModel, measureModel, logger,
-                    scriptUri);
+            Psm2MeasureTransformationTrace psm2MeasureTransformationTrace =
+                    executePsm2MeasureTransformation(psmModel, measureModel, logger, scriptUri);
 
-            psm2MeasureTransformationTraceRegistration.put(psmModel, bundleContext.registerService(TransformationTrace.class, psm2MeasureTransformationTrace, new Hashtable<>()));
-            log.info(logger.getBuffer());
+            psm2MeasureTransformationTraceRegistration.put(psmModel,
+                    bundleContext.registerService(TransformationTrace.class, psm2MeasureTransformationTrace, new Hashtable<>()));
+
+            log.info("\u001B[33m {}\u001B[0m", logger.getBuffer());
         } catch (Exception e) {
-            log.error(logger.getBuffer());
+            log.info("\u001B[31m {}\u001B[0m", logger.getBuffer());
             throw e;
         }
 

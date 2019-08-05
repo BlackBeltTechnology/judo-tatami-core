@@ -51,8 +51,7 @@ public class PsmModelServiceTracker extends AbstractModelTracker<PsmModel> {
         }
 
         try {
-            measureModel = psm2MeasureSerivce
-                    .install(psmModel, componentContext.getBundleContext());
+            measureModel = psm2MeasureSerivce.install(psmModel);
             log.info("Registering model: " + measureModel);
             ServiceRegistration<MeasureModel> modelServiceRegistration =
                     componentContext.getBundleContext()

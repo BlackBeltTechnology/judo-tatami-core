@@ -9,16 +9,11 @@ import hu.blackbelt.epsilon.runtime.execution.exceptions.ScriptExecutionExceptio
 import hu.blackbelt.judo.meta.asm.runtime.AsmModel;
 import hu.blackbelt.judo.meta.asm.runtime.AsmUtils;
 import hu.blackbelt.judo.meta.rdbms.runtime.RdbmsModel;
-import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
-import org.eclipse.emf.ecore.resource.URIHandler;
+import org.eclipse.epsilon.common.util.UriUtil;
 
-import java.io.File;
-import java.io.IOException;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
 
@@ -43,44 +38,37 @@ public class Asm2Rdbms {
             DIALECT_ORACLE, "RDBMS_Data_Types_Oracle.xlsx"
     );
 
-    public static Asm2RdbmsTransformationTrace executeAsm2RdbmsTransformation(ResourceSet resourceSet, AsmModel asmModel, RdbmsModel rdbmsModel, Log log,
+    public static Asm2RdbmsTransformationTrace executeAsm2RdbmsTransformation(AsmModel asmModel, RdbmsModel rdbmsModel, Log log,
                                                                               java.net.URI scriptUri, java.net.URI excelModelUri, String dialect) throws Exception {
-
-        // If resource was not created for target model before
-        Resource rdbmsResource = rdbmsModel.getResourceSet().getResource(rdbmsModel.getUri(), false);
-        if (rdbmsResource == null) {
-            rdbmsResource = resourceSet.createResource(rdbmsModel.getUri());
-        }
 
         // Execution context
         ExecutionContext executionContext = executionContextBuilder()
                 .log(log)
-                .resourceSet(resourceSet)
                 .modelContexts(ImmutableList.of(
                         wrappedEmfModelContextBuilder()
                                 .log(log)
                                 .name("ASM")
-                                .resource(asmModel.getResourceSet().getResource(asmModel.getUri(), false))
+                                .resource(asmModel.getResource())
                                 .build(),
                         wrappedEmfModelContextBuilder()
                                 .log(log)
                                 .name("RDBMS")
-                                .resource(rdbmsResource)
+                                .resource(rdbmsModel.getResource())
                                 .build(),
                         excelModelContextBuilder()
                                 .name("TYPEMAPPING")
-                                .excel(excelModelUri.resolve(dialectTypeFileNames.get(dialect).replace(" ", "%20")).toString())
-                                .excelConfiguration(excelModelUri.resolve("typemapping.xml").toString())
+                                .excel(UriUtil.resolve(dialectTypeFileNames.get(dialect), excelModelUri).toString())
+                                .excelConfiguration(UriUtil.resolve("typemapping.xml", excelModelUri).toString())
                                 .build(),
                         excelModelContextBuilder()
                                 .name("RULEMAPPING")
-                                .excel(excelModelUri.resolve("RDBMS_Table_Mapping_Rules.xlsx".replace(" ", "%20")).toString())
-                                .excelConfiguration(excelModelUri.resolve("rulemapping.xml").toString())
+                                .excel(UriUtil.resolve("RDBMS_Table_Mapping_Rules.xlsx", excelModelUri).toString())
+                                .excelConfiguration(UriUtil.resolve("rulemapping.xml", excelModelUri).toString())
                                 .build(),
                         excelModelContextBuilder()
                                 .name("NAMEMAPPING")
-                                .excel(excelModelUri.resolve("RDBMS_Sql_Name_Mapping.xlsx".replace(" ", "%20")).toString())
-                                .excelConfiguration(excelModelUri.resolve("namemapping.xml").toString())
+                                .excel(UriUtil.resolve("RDBMS_Sql_Name_Mapping.xlsx", excelModelUri).toString())
+                                .excelConfiguration(UriUtil.resolve("namemapping.xml", excelModelUri).toString())
                                 .build()
                         )
                 )
@@ -95,20 +83,20 @@ public class Asm2Rdbms {
 
 
         EtlExecutionContext nameMappingExecutionContext = etlExecutionContextBuilder()
-                .source(scriptUri.resolve("excelToNameMapping.etl"))
+                .source(UriUtil.resolve("excelToNameMapping.etl", scriptUri))
                 .build();
 
         EtlExecutionContext typeMappingExecutionContext = etlExecutionContextBuilder()
-                .source(scriptUri.resolve("excelToTypeMapping.etl"))
+                .source(UriUtil.resolve("excelToTypeMapping.etl", scriptUri))
                 .build();
 
 
         EtlExecutionContext rulesExecutionContext = etlExecutionContextBuilder()
-                .source(scriptUri.resolve("excelToRules.etl"))
+                .source(UriUtil.resolve("excelToRules.etl", scriptUri))
                 .build();
 
         EtlExecutionContext asm2rdbmsExecutionContext = etlExecutionContextBuilder()
-                .source(scriptUri.resolve("asmToRdbms.etl"))
+                .source(UriUtil.resolve("asmToRdbms.etl", scriptUri))
                 .parameters(ImmutableList.of(
                         programParameterBuilder().name("modelVersion").value(asmModel.getVersion()).build(),
                         programParameterBuilder().name("dialect").value(dialect).build(),
@@ -126,7 +114,7 @@ public class Asm2Rdbms {
         executionContext.commit();
         executionContext.close();
 
-        List<EObject> traceModel = getTransformationTrace(ASM_2_RDBMS_URI_POSTFIX, asm2rdbmsExecutionContext);
+        List<EObject> traceModel = getTransformationTraceFromEtlExecutionContext(ASM_2_RDBMS_URI_POSTFIX, asm2rdbmsExecutionContext);
 
         return Asm2RdbmsTransformationTrace.asm2RdbmsTransformationTraceBuilder()
                 .asmModel(asmModel)
@@ -139,33 +127,16 @@ public class Asm2Rdbms {
         return createTraceResourceSet(ASM_2_RDBMS_URI_POSTFIX);
     }
 
-    public static ResourceSet createAsm2RdbmsTraceResourceSet(URIHandler uriHandler) {
-        return createTraceResourceSet(ASM_2_RDBMS_URI_POSTFIX, uriHandler);
-    }
-
-    public static Asm2RdbmsTransformationTrace loadAsm2RdbmsTrace(URI uri, URIHandler uriHandler, AsmModel asmModel, RdbmsModel rdbmsModel) throws IOException {
-        ResourceSet traceLoadedResourceSet = createAsm2RdbmsTraceResourceSet(uriHandler);
-        Resource traceResoureLoaded = traceLoadedResourceSet.createResource(uri);
-        traceResoureLoaded.load(ImmutableMap.of());
-
-        Asm2RdbmsTransformationTrace trace = Asm2RdbmsTransformationTrace.asm2RdbmsTransformationTraceBuilder()
-                .asmModel(asmModel)
-                .rdbmsModel(rdbmsModel)
-                .trace(resolveAsm2RdbmsTrace(traceResoureLoaded, asmModel, rdbmsModel)).build();
-
-        return trace;
-    }
-
     public static Map<EObject, List<EObject>> resolveAsm2RdbmsTrace(Resource traceResource, AsmModel asmModel, RdbmsModel rdbmsModel) {
         return resolveAsm2RdbmsTrace(traceResource.getContents(), asmModel, rdbmsModel);
     }
 
     public static Map<EObject, List<EObject>> resolveAsm2RdbmsTrace(List<EObject> trace, AsmModel asmModel, RdbmsModel rdbmsModel) {
-        return resolveTransformationTrace(trace,
+        return resolveTransformationTraceAsEObjectMap(trace,
                 ImmutableList.of(asmModel.getResourceSet(), rdbmsModel.getResourceSet()));
     }
 
     public static List<EObject> getAsm2RdbmsTrace(Map<EObject, List<EObject>> trace) throws ScriptExecutionException {
-        return getTransformationTrace(ASM_2_RDBMS_URI_POSTFIX, trace);
+        return getTransformationTraceFromEtlExecutionContext(ASM_2_RDBMS_URI_POSTFIX, trace);
     }
 }

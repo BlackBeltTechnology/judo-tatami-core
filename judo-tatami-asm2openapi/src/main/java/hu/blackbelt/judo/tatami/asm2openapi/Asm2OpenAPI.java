@@ -12,6 +12,7 @@ import hu.blackbelt.judo.meta.openapi.runtime.OpenapiModel;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
+import org.eclipse.epsilon.common.util.UriUtil;
 
 import java.net.URI;
 import java.util.List;
@@ -27,29 +28,22 @@ public class Asm2OpenAPI {
 
     public static final String ASM_2_OPENAPI_URI_POSTFIX = "asm2openapi";
 
-    public static Asm2OpenAPITransformationTrace executeAsm2OpenAPITransformation(ResourceSet resourceSet, AsmModel asmModel, OpenapiModel openAPIModel, Log log,
+    public static Asm2OpenAPITransformationTrace executeAsm2OpenAPITransformation(AsmModel asmModel, OpenapiModel openAPIModel, Log log,
                                                                                   URI scriptDir) throws Exception {
-
-        // If resource was not created for target model before
-        Resource openAPIResource = openAPIModel.getResourceSet().getResource(openAPIModel.getUri(), false);
-        if (openAPIResource == null) {
-            openAPIResource = resourceSet.createResource(openAPIModel.getUri());
-        }
 
         // Execution context
         ExecutionContext executionContext = executionContextBuilder()
                 .log(log)
-                .resourceSet(resourceSet)
                 .modelContexts(ImmutableList.of(
                         wrappedEmfModelContextBuilder()
                                 .log(log)
                                 .name("ASM")
-                                .resource(asmModel.getResourceSet().getResource(asmModel.getUri(), false))
+                                .resource(asmModel.getResource())
                                 .build(),
                         wrappedEmfModelContextBuilder()
                                 .log(log)
                                 .name("OPENAPI")
-                                .resource(openAPIResource)
+                                .resource(openAPIModel.getResource())
                                 .build()
                         )
                 )
@@ -60,7 +54,7 @@ public class Asm2OpenAPI {
         executionContext.load();
 
         EtlExecutionContext etlExecutionContext = etlExecutionContextBuilder()
-                .source(scriptDir.resolve("asmToOpenAPI.etl"))
+                .source(UriUtil.resolve("asmToOpenAPI.etl", scriptDir))
                 .parameters(ImmutableList.of(
                         programParameterBuilder().name("modelVersion").value(asmModel.getVersion()).build(),
                         programParameterBuilder().name("extendedMetadataURI")
@@ -74,7 +68,7 @@ public class Asm2OpenAPI {
         executionContext.commit();
         executionContext.close();
 
-        List<EObject> traceModel = getTransformationTrace(ASM_2_OPENAPI_URI_POSTFIX, etlExecutionContext);
+        List<EObject> traceModel = getTransformationTraceFromEtlExecutionContext(ASM_2_OPENAPI_URI_POSTFIX, etlExecutionContext);
 
         return Asm2OpenAPITransformationTrace.asm2OpenAPITransformationTraceBuilder()
                 .asmModel(asmModel)
@@ -92,11 +86,11 @@ public class Asm2OpenAPI {
     }
 
     public static Map<EObject, List<EObject>> resolveAsm2OpenAPITrace(List<EObject> trace, AsmModel asmModel, OpenapiModel openAPIModel) {
-        return resolveTransformationTrace(trace,
+        return resolveTransformationTraceAsEObjectMap(trace,
                 ImmutableList.of(asmModel.getResourceSet(), openAPIModel.getResourceSet()));
     }
 
     public static List<EObject> getAsm2OpenAPITrace(Map<EObject, List<EObject>> trace) throws ScriptExecutionException {
-        return getTransformationTrace(ASM_2_OPENAPI_URI_POSTFIX, trace);
+        return getTransformationTraceFromEtlExecutionContext(ASM_2_OPENAPI_URI_POSTFIX, trace);
     }
 }

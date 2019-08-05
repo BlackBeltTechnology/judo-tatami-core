@@ -4,7 +4,6 @@ import com.google.common.collect.Maps;
 import hu.blackbelt.epsilon.runtime.execution.api.Log;
 import hu.blackbelt.epsilon.runtime.execution.impl.Slf4jLog;
 import hu.blackbelt.epsilon.runtime.execution.impl.StringBuilderLogger;
-import hu.blackbelt.epsilon.runtime.osgi.BundleURIHandler;
 import hu.blackbelt.judo.meta.asm.runtime.AsmModel;
 import hu.blackbelt.judo.meta.psm.runtime.PsmModel;
 import hu.blackbelt.judo.tatami.core.TransformationTrace;
@@ -17,9 +16,7 @@ import org.osgi.service.component.annotations.Component;
 
 import java.util.Hashtable;
 import java.util.Map;
-import java.util.Optional;
 
-import static hu.blackbelt.judo.meta.asm.support.AsmModelResourceSupport.asmModelResourceSupportBuilder;
 import static hu.blackbelt.judo.tatami.psm2asm.Psm2Asm.executePsm2AsmTransformation;
 
 @Component(immediate = true, service = Psm2AsmSerivce.class)
@@ -30,43 +27,38 @@ public class Psm2AsmSerivce {
 
     Map<PsmModel, ServiceRegistration<TransformationTrace>> psm2AsmTransformationTraceRegistration = Maps.newHashMap();
 
-    BundleContext scriptBundleContext;
+    BundleContext bundleContext;
 
     @Activate
     public void activate(BundleContext bundleContext) {
-        scriptBundleContext = bundleContext;
+        this.bundleContext = bundleContext;
     }
 
-    public AsmModel install(PsmModel psmModel, BundleContext bundleContext) throws Exception {
-
-        BundleURIHandler bundleURIHandler = new BundleURIHandler("urn", "", bundleContext.getBundle());
+    public AsmModel install(PsmModel psmModel) throws Exception {
 
         AsmModel asmModel = AsmModel.buildAsmModel()
                 .name(psmModel.getName())
                 .version(psmModel.getVersion())
-                .uri(URI.createURI("urn:" + psmModel.getName() + ".asm"))
+                .uri(URI.createURI("asm:" + psmModel.getName() + ".asm"))
                 .checksum(psmModel.getChecksum())
-                .asmModelResourceSupport(
-                        asmModelResourceSupportBuilder()
-                                .uriHandler(Optional.of(bundleURIHandler))
-                                .build())
-                .metaVersionRange(bundleContext.getBundle().getHeaders().get(ASM_META_VERSION_RANGE)).build();
+                .build();
 
         Log logger = new StringBuilderLogger(Slf4jLog.determinateLogLevel(log));
         try {
             java.net.URI scriptUri =
-                    scriptBundleContext.getBundle()
+                    bundleContext.getBundle()
                             .getEntry("/tatami/psm2asm/transformations/asm/psmToAsm.etl")
                             .toURI()
                             .resolve(".");
 
-            Psm2AsmTransformationTrace transformationTrace = executePsm2AsmTransformation(asmModel.getResourceSet(), psmModel, asmModel, logger,
+            Psm2AsmTransformationTrace transformationTrace = executePsm2AsmTransformation(psmModel, asmModel, logger,
                     scriptUri);
 
-            psm2AsmTransformationTraceRegistration.put(psmModel, bundleContext.registerService(TransformationTrace.class, transformationTrace, new Hashtable<>()));
-            log.info(logger.getBuffer());
+            psm2AsmTransformationTraceRegistration.put(psmModel,
+                    bundleContext.registerService(TransformationTrace.class, transformationTrace, new Hashtable<>()));
+            log.info("\u001B[33m {}\u001B[0m", logger.getBuffer());
         } catch (Exception e) {
-            log.error(logger.getBuffer());
+            log.info("\u001B[31m {}\u001B[0m", logger.getBuffer());
             throw e;
         }
         return asmModel;

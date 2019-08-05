@@ -51,8 +51,7 @@ public class EsmModelServiceTracker extends AbstractModelTracker<EsmModel> {
         }
 
         try {
-            psmModel = esm2PsmService
-                    .install(esmModel, componentContext.getBundleContext());
+            psmModel = esm2PsmService.install(esmModel);
             log.info("Registering model: " + psmModel);
             ServiceRegistration<PsmModel> modelServiceRegistration =
                     componentContext.getBundleContext()

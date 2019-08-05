@@ -28,21 +28,22 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import static hu.blackbelt.judo.meta.esm.runtime.EsmModel.LoadArguments.esmLoadArgumentsBuilder;
+import static hu.blackbelt.judo.meta.esm.runtime.EsmModel.loadEsmModel;
+import static hu.blackbelt.judo.meta.psm.runtime.PsmModel.buildPsmModel;
+import static hu.blackbelt.judo.meta.psm.support.PsmModelResourceSupport.psmModelResourceSupportBuilder;
 import static hu.blackbelt.judo.tatami.esm2psm.Esm2Psm.*;
 
 @Slf4j
 public class Esm2PsmTest {
 
     public static final String ESM_2_PSM_MODEL = "esm2psm.model";
-    public static final String TRACE_ESM_2_PSM = "trace:esm2esm";
-    public static final String PSM_NORTHWIND = "psm:northwind";
-    public static final String ESM_NORTHWIND = "esm:northwind";
-    public static final String URN_NORTHWIND_ESM = "urn:northwind-demo-esm.model";
-    public static final String URN_NORTHWIND_PSM = "urn:northwind-psm.model";
+    public static final String TRACE_ESM_2_PSM = "esm2esm:northwind";
+    public static final String NORTHWIND_ESM_MODEL = "northwind-demo-esm.model";
+    public static final String NORTHWIND_PSM_MODEL = "northwind-psm.model";
     public static final String NORTHWIND = "northwind";
     public static final String TARGET_TEST_CLASSES = "target/test-classes";
 
-    URIHandler uriHandler;
     Log slf4jlog;
     EsmModel esmModel;
     PsmModel psmModel;
@@ -50,48 +51,31 @@ public class Esm2PsmTest {
     @Before
     public void setUp() throws Exception {
 
-        // Set our custom handler
-        uriHandler = new NameMappedURIHandlerImpl(
-                ImmutableList.of(new NioFilesystemnRelativePathURIHandlerImpl("urn", FileSystems.getDefault(), new File(TARGET_TEST_CLASSES).getAbsolutePath())),
-                ImmutableMap.of(
-                        URI.createURI(ESM_NORTHWIND), URI.createURI(URN_NORTHWIND_ESM),
-                        URI.createURI(PSM_NORTHWIND), URI.createURI(URN_NORTHWIND_PSM))
-        );
-
         // Default logger
         slf4jlog = new Slf4jLog(log);
 
         // Loading ESM to isolated ResourceSet, because in Tatami
         // there is no new namespace registration made.
-        esmModel = EsmModel.loadEsmModel(EsmModel.LoadArguments.loadArgumentsBuilder()
-                .uri(URI.createURI(ESM_NORTHWIND))
-                .uriHandler(Optional.of(uriHandler))
-                .name(NORTHWIND)
-                .build());
+        esmModel = loadEsmModel(esmLoadArgumentsBuilder()
+                .uri(URI.createFileURI(new File(TARGET_TEST_CLASSES, NORTHWIND_ESM_MODEL).getAbsolutePath()))
+                .name(NORTHWIND));
 
         // Create empty PSM model
-        PsmModelResourceSupport psmModelResourceSupport = PsmModelResourceSupport.psmModelResourceSupportBuilder()
-                .uriHandler(Optional.of(uriHandler))
-                .build();
-
-        psmModel = PsmModel.buildPsmModel()
-                .psmModelResourceSupport(psmModelResourceSupport)
+        psmModel = buildPsmModel()
+                .uri(URI.createFileURI(new File(TARGET_TEST_CLASSES, NORTHWIND_PSM_MODEL).getAbsolutePath()))
                 .name(NORTHWIND)
-                .uri(URI.createURI(PSM_NORTHWIND))
                 .build();
 
     }
-
-    @After
-    public void tearDown() throws Exception {
-    }
-
 
     @Test
     public void testEsm2PsmTransformation() throws Exception {
 
         // Make transformation which returns the tracr with the serialized URI's
-        Esm2PsmTransformationTrace esm2PsmTransformationTrace = executeEsm2PsmTransformation(psmModel.getResourceSet(), esmModel, psmModel, new Slf4jLog(log),
+        Esm2PsmTransformationTrace esm2PsmTransformationTrace = executeEsm2PsmTransformation(
+                esmModel,
+                psmModel,
+                new Slf4jLog(log),
                 new File("target/test-classes/epsilon/transformations/psm").toURI());
 
         // Saving trace map

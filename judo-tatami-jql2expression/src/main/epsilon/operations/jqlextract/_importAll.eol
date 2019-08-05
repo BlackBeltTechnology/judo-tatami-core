@@ -1,7 +1,0 @@
-import "binaryOperation.eol";
-import "expression.eol";
-import "feature.eol";
-import "literal.eol";
-import "navigationExpression.eol";
-import "unaryOperation.eol";
-import "variable.eol";

@@ -1,4 +1,0 @@
-@cached
-operation ASM!EReference isCollection() : Boolean {
-    return self.upperBound > 1 or self.upperBound == -1;
-}

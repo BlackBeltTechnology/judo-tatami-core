@@ -63,13 +63,13 @@ public class Asm2JAXRSAPIService {
                             .resolve(".");
 
             asm2jaxrsAPIBundles.put(asmModel,
-                    bundleContext.installBundle("asm2jaxrsapi",
-                            executeAsm2JAXRSAPIGeneration(new ResourceSetImpl(), asmModel, logger,
+                    bundleContext.installBundle(this.getClass().getName(),
+                            executeAsm2JAXRSAPIGeneration(asmModel, logger,
                                     scriptUri,
                                     new File(tempDir.getAbsolutePath(), asmModel.getName()))));
-            log.info(logger.getBuffer());
+            log.info("\u001B[33m {}\u001B[0m", logger.getBuffer());
         } catch (Exception e) {
-            log.error(logger.getBuffer());
+            log.info("\u001B[31m {}\u001B[0m", logger.getBuffer());
             throw e;
         }
         asm2jaxrsAPIBundles.get(asmModel).start();
