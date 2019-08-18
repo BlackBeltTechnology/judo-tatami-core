@@ -39,6 +39,13 @@
     
     <profiles>
         <profile>
+           <id>eclipse-update-site</id>
+		 <modules>
+             <module>judo-tatami-eclipse-site</module>
+           </modules>
+        </profile>
+        
+        <profile>
             <id>release-github</id>
             <build>
                 <plugins>

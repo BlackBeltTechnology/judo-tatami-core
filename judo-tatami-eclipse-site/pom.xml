@@ -1,0 +1,306 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>hu.blackbelt.judo.tatami</groupId>
+        <artifactId>judo-tatami-parent</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+        <relativePath>../judo-tatami-parent</relativePath>
+    </parent>
+    
+    <artifactId>hu.blackbelt.judo.tatami.eclipse.site</artifactId>
+    <packaging>eclipse-repository</packaging>
+    
+    <repositories>
+        <repository>
+            <id>eclipse</id>
+            <url>http://download.eclipse.org/releases/2019-03</url>
+            <layout>p2</layout>
+        </repository>
+        <repository>
+            <id>epsilon</id>
+            <url>http://download.eclipse.org/epsilon/updates</url>
+            <layout>p2</layout>
+        </repository>
+        
+        <repository>
+            <id>emf-genmodel-generatpr</id>
+            <url>https://nexus.blackbelt.cloud/repository/p2-judo/emf-genmodel-generator/${emf-genmodel-generator-version}</url>
+            <layout>p2</layout>
+        </repository>
+        
+        <repository>
+            <id>judo-genmodel-generatpr</id>
+            <url>https://nexus.blackbelt.cloud/repository/p2-judo/judo-genmodel-generator/${judo-genmodel-generator-version}</url>
+            <layout>p2</layout>
+        </repository>
+        
+        <repository>
+            <id>epsilon-runtime</id>
+            <url>https://nexus.blackbelt.cloud/repository/p2-judo/epsilon-runtime-eclipse/${epsilon-runtime-eclipse-version}</url>
+            <layout>p2</layout>
+        </repository>
+        
+        <repository>
+            <id>judo-meta-esm</id>
+            <url>https://nexus.blackbelt.cloud/repository/p2-judo/judo-meta-esm/${judo-meta-esm-version}</url>
+            <layout>p2</layout>
+        </repository>
+        
+        <repository>
+            <id>judo-meta-psm</id>
+            <url>https://nexus.blackbelt.cloud/repository/p2-judo/judo-meta-psm/${judo-meta-psm-version}</url>
+            <layout>p2</layout>
+        </repository>
+        
+        <repository>
+            <id>judo-meta-asm</id>
+            <url>https://nexus.blackbelt.cloud/repository/p2-judo/judo-meta-asm/${judo-meta-asm-version}</url>
+            <layout>p2</layout>
+        </repository>
+        
+        <repository>
+            <id>judo-meta-expression</id>
+            <url>https://nexus.blackbelt.cloud/repository/p2-judo/judo-meta-expression/${judo-meta-expression-version}</url>
+            <layout>p2</layout>
+        </repository>
+        
+        <repository>
+            <id>judo-meta-jql</id>
+            <url>https://nexus.blackbelt.cloud/repository/p2-judo/judo-meta-jql/${judo-meta-jql-version}</url>
+            <layout>p2</layout>
+        </repository>
+        
+        <repository>
+            <id>judo-meta-measure</id>
+            <url>https://nexus.blackbelt.cloud/repository/p2-judo/judo-meta-measure/${judo-meta-measure-version}</url>
+            <layout>p2</layout>
+        </repository>
+        
+        <repository>
+            <id>swagger</id>
+            <url>https://nexus.blackbelt.cloud/repository/p2-judo/p2-swagger/1.0.0</url>
+            <layout>p2</layout>
+        </repository>
+        <repository>
+            <id>judo-meta-openapi</id>
+            <url>https://nexus.blackbelt.cloud/repository/p2-judo/judo-meta-openapi/${judo-meta-openapi-version}</url>
+            <layout>p2</layout>
+        </repository>
+        <repository>
+            <id>judo-meta-rdbms</id>
+            <url>https://nexus.blackbelt.cloud/repository/p2-judo/judo-meta-rdbms/${judo-meta-rdbms-version}</url>
+            <layout>p2</layout>
+        </repository>
+        <repository>
+            <id>judo-meta-liquibase</id>
+            <url>https://nexus.blackbelt.cloud/repository/p2-judo/judo-meta-liquibase/${judo-meta-liquibase-version}</url>
+            <layout>p2</layout>
+        </repository>
+    </repositories>
+    
+    <build>
+        <pluginManagement>
+            <plugins>
+                <!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
+                <plugin>
+                    <groupId>org.eclipse.m2e</groupId>
+                    <artifactId>lifecycle-mapping</artifactId>
+                    <version>1.0.0</version>
+                    <configuration>
+                        <lifecycleMappingMetadata>
+                            <pluginExecutions>
+                                <pluginExecution>
+                                    <pluginExecutionFilter>
+                                        <groupId>
+                                            com.google.code.maven-replacer-plugin
+                                        </groupId>
+                                        <artifactId>
+                                            replacer
+                                        </artifactId>
+                                        <versionRange>
+                                            [1.5.3,)
+                                        </versionRange>
+                                        <goals>
+                                            <goal>replace</goal>
+                                        </goals>
+                                    </pluginExecutionFilter>
+                                    <action>
+                                        <ignore></ignore>
+                                    </action>
+                                </pluginExecution>
+                            </pluginExecutions>
+                        </lifecycleMappingMetadata>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+
+        <plugins>
+            <plugin>
+                <groupId>org.eclipse.tycho</groupId>
+                <artifactId>tycho-maven-plugin</artifactId>
+                <version>${tycho-version}</version>
+                <extensions>true</extensions>
+            </plugin>
+            
+            <plugin>
+                <groupId>org.eclipse.tycho</groupId>
+                <artifactId>target-platform-configuration</artifactId>
+                <version>${tycho-version}</version>
+                <configuration>
+                    <environments>
+                        <environment>
+                            <os>linux</os>
+                            <ws>gtk</ws>
+                            <arch>x86</arch>
+                        </environment>
+                        <environment>
+                            <os>linux</os>
+                            <ws>gtk</ws>
+                            <arch>x86_64</arch>
+                        </environment>
+                        <environment>
+                            <os>win32</os>
+                            <ws>win32</ws>
+                            <arch>x86</arch>
+                        </environment>
+                        <environment>
+                            <os>win32</os>
+                            <ws>win32</ws>
+                            <arch>x86_64</arch>
+                        </environment>
+                        <environment>
+                            <os>macosx</os>
+                            <ws>cocoa</ws>
+                            <arch>x86_64</arch>
+                        </environment>
+                    </environments>
+                </configuration>
+            </plugin>
+            
+            <plugin>
+                <groupId>org.eclipse.tycho</groupId>
+                <artifactId>tycho-versions-plugin</artifactId>
+            </plugin>
+            
+            <plugin>
+                <groupId>org.eclipse.tycho</groupId>
+                <artifactId>tycho-p2-repository-plugin</artifactId>
+                <version>${tycho-version}</version>
+                <configuration>
+                    <includeAllDependencies>true</includeAllDependencies>
+                </configuration>
+            </plugin>
+            
+        </plugins>
+    </build>
+
+    <profiles>
+        <profile>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <id>update-category-versions</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>com.google.code.maven-replacer-plugin</groupId>
+                        <artifactId>replacer</artifactId>
+                        <version>1.5.3</version>
+                        <executions>
+                            <execution>
+                                <phase>validate</phase>
+                                <goals>
+                                    <goal>replace</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                        <configuration>
+                            <file>${project.basedir}/category.xml</file>
+                            <replacements>
+                                <!-- EMF genmodel -->
+                                <replacement>
+                                    <token>(repository-reference\ location\=\")(.*?)(emf-genmodel-generator\/)(.*?)(\")</token>
+                                    <value>repository-reference location="$2$3${emf-genmodel-generator-version}"</value>
+                                </replacement>
+
+                                <!-- JUDO genmodel -->
+                                <replacement>
+                                    <token>(repository-reference\ location\=\")(.*?)(judo-genmodel-generator\/)(.*?)(\")</token>
+                                    <value>repository-reference location="$2$3${judo-genmodel-generator-version}"</value>
+                                </replacement>
+
+
+                                <!-- Epsilon Runtime -->
+                                <replacement>
+                                    <token>(repository-reference\ location\=\")(.*?)(epsilon-runtime-eclipse\/)(.*?)(\")</token>
+                                    <value>repository-reference location="$2$3${epsilon-runtime-eclipse-version}"</value>
+                                </replacement>
+
+                                <!-- ESM -->
+                                <replacement>
+                                    <token>(repository-reference\ location\=\")(.*?)(judo-meta-esm\/)(.*?)(\")</token>
+                                    <value>repository-reference location="$2$3${judo-meta-esm-version}"</value>
+                                </replacement>
+
+                                <!-- ASM -->
+                                <replacement>
+                                    <token>(repository-reference\ location\=\")(.*?)(judo-meta-asm\/)(.*?)(\")</token>
+                                    <value>repository-reference location="$2$3${judo-meta-asm-version}"</value>
+                                </replacement>
+
+                                <!-- PSM -->
+                                <replacement>
+                                    <token>(repository-reference\ location\=\")(.*?)(judo-meta-psm\/)(.*?)(\")</token>
+                                    <value>repository-reference location="$2$3${judo-meta-psm-version}"</value>
+                                </replacement>
+
+                                <!-- MEASURE -->
+                                <replacement>
+                                    <token>(repository-reference\ location\=\")(.*?)(judo-meta-measure\/)(.*?)(\")</token>
+                                    <value>repository-reference location="$2$3${judo-meta-measure-version}"</value>
+                                </replacement>
+
+                                <!-- Expression -->
+                                <replacement>
+                                    <token>(repository-reference\ location\=\")(.*?)(judo-meta-expression\/)(.*?)(\")</token>
+                                    <value>repository-reference location="$2$3${judo-meta-expression-version}"</value>
+                                </replacement>
+
+                                <!-- JQL -->
+                                <replacement>
+                                    <token>(repository-reference\ location\=\")(.*?)(judo-meta-jql\/)(.*?)(\")</token>
+                                    <value>repository-reference location="$2$3${judo-meta-jql-version}"</value>
+                                </replacement>
+
+                                <!-- OpenAPI -->
+                                <replacement>
+                                    <token>(repository-reference\ location\=\")(.*?)(judo-meta-openapi\/)(.*?)(\")</token>
+                                    <value>repository-reference location="$2$3${judo-meta-openapi-version}"</value>
+                                </replacement>
+
+                                <!-- RDBMS -->
+                                <replacement>
+                                    <token>(repository-reference\ location\=\")(.*?)(judo-meta-rdbms\/)(.*?)(\")</token>
+                                    <value>repository-reference location="$2$3${judo-meta-rdbms-version}"</value>
+                                </replacement>
+
+                                <!-- Liquibase -->
+                                <replacement>
+                                    <token>(repository-reference\ location\=\")(.*?)(judo-meta-liquibase\/)(.*?)(\")</token>
+                                    <value>repository-reference location="$2$3${judo-meta-liquibase-version}"</value>
+                                </replacement>
+
+                            </replacements>
+                            <regex>true</regex>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+
+</project>
