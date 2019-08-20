@@ -5,10 +5,9 @@ import hu.blackbelt.epsilon.runtime.execution.impl.Slf4jLog;
 import hu.blackbelt.judo.meta.measure.runtime.MeasureModel;
 import hu.blackbelt.judo.meta.psm.runtime.PsmModel;
 import lombok.extern.slf4j.Slf4j;
-import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.util.Map;
@@ -20,7 +19,6 @@ import static hu.blackbelt.judo.meta.psm.runtime.PsmModel.LoadArguments.psmLoadA
 import static hu.blackbelt.judo.meta.psm.runtime.PsmModel.loadPsmModel;
 import static hu.blackbelt.judo.tatami.psm2measure.Psm2Measure.*;
 import static hu.blackbelt.judo.tatami.psm2measure.Psm2MeasureTransformationTrace.fromModelsAndTrace;
-import static hu.blackbelt.judo.tatami.psm2measure.Psm2MeasureTransformationTrace.resolvePsm2MeasureTrace;
 
 @Slf4j
 public class Psm2MeasureTest {
@@ -34,7 +32,7 @@ public class Psm2MeasureTest {
     PsmModel psmModel;
     MeasureModel measureModel;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         // Default logger
         slf4jlog = new Slf4jLog(log);

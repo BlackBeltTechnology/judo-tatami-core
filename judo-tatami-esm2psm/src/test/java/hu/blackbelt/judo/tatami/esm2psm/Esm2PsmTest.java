@@ -6,8 +6,8 @@ import hu.blackbelt.judo.meta.esm.runtime.EsmModel;
 import hu.blackbelt.judo.meta.psm.runtime.PsmModel;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.emf.ecore.EObject;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.util.List;
@@ -32,7 +32,7 @@ public class Esm2PsmTest {
     EsmModel esmModel;
     PsmModel psmModel;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
 
         // Default logger

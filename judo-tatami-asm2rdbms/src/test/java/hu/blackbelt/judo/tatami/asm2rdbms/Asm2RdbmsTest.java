@@ -5,11 +5,9 @@ import hu.blackbelt.epsilon.runtime.execution.impl.Slf4jLog;
 import hu.blackbelt.judo.meta.asm.runtime.AsmModel;
 import hu.blackbelt.judo.meta.rdbms.runtime.RdbmsModel;
 import lombok.extern.slf4j.Slf4j;
-import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.util.List;
@@ -37,7 +35,7 @@ public class Asm2RdbmsTest {
     AsmModel asmModel;
     RdbmsModel rdbmsModel;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         // Default logger
         slf4jlog = new Slf4jLog(log);
@@ -58,11 +56,6 @@ public class Asm2RdbmsTest {
         registerRdbmsDataTypesMetamodel(rdbmsModel.getResourceSet());
         registerRdbmsTableMappingRulesMetamodel(rdbmsModel.getResourceSet());
     }
-
-    @After
-    public void tearDown() throws Exception {
-    }
-
 
     @Test
     public void testAsm2RdbmsTransformation() throws Exception {

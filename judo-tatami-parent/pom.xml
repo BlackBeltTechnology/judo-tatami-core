@@ -67,37 +67,37 @@
         <maven.build.timestamp.format>yyyyMMddHHmmss</maven.build.timestamp.format>
 
         <epsilon-runtime-version>1.2.0.develop_101</epsilon-runtime-version>
-        <epsilon-runtime-eclipse-version>1.2.0.develop_00009</epsilon-runtime-eclipse-version>
-        <emf-genmodel-generator-version>1.0.0.develop_00017</emf-genmodel-generator-version>
-        <judo-genmodel-generator-version>1.0.0.develop_00009</judo-genmodel-generator-version>
+        <epsilon-runtime-eclipse-version>1.2.0.develop_00010</epsilon-runtime-eclipse-version>
+        <emf-genmodel-generator-version>1.0.0.develop_00021</emf-genmodel-generator-version>
+        <judo-genmodel-generator-version>1.0.0.develop_00015</judo-genmodel-generator-version>
 
         <judo-framework-version>2.0.0_develop_130</judo-framework-version>
 
-        <judo-meta-rdbms-version>1.0.0.develop_00079</judo-meta-rdbms-version>
+        <judo-meta-rdbms-version>1.0.0.develop_00085</judo-meta-rdbms-version>
         <judo-meta-rdbms.import-range>[1.0,1.1)</judo-meta-rdbms.import-range>
 
-        <judo-meta-esm-version>1.0.0.develop_00055</judo-meta-esm-version>
+        <judo-meta-esm-version>1.0.0.develop_00062</judo-meta-esm-version>
         <judo-meta-esm-import-range>[1.0,1.1)</judo-meta-esm-import-range>
 
-        <judo-meta-psm-version>1.0.0.develop_00306</judo-meta-psm-version>
+        <judo-meta-psm-version>1.0.0.develop_00313</judo-meta-psm-version>
         <judo-meta-psm-import-range>[1.0,1.1)</judo-meta-psm-import-range>
 
-        <judo-meta-jql-version>1.0.0.develop_00034</judo-meta-jql-version>
+        <judo-meta-jql-version>1.0.0.develop_00040</judo-meta-jql-version>
         <judo-meta-jql-import-range>[1.0,1.1)</judo-meta-jql-import-range>
 
-	    <judo-meta-asm-version>1.0.0.develop_00090</judo-meta-asm-version>
+	    <judo-meta-asm-version>1.0.0.develop_00099</judo-meta-asm-version>
         <judo-meta-asm-import-range>[1.0,1.1)</judo-meta-asm-import-range>
 
-        <judo-meta-expression-version>1.0.0.develop_00262</judo-meta-expression-version>
+        <judo-meta-expression-version>1.0.0.develop_00267</judo-meta-expression-version>
         <judo-meta-expression-import-range>[1.0,1.1)</judo-meta-expression-import-range>
 
-        <judo-meta-measure-version>1.0.0.develop_00037</judo-meta-measure-version>
+        <judo-meta-measure-version>1.0.0.develop_00044</judo-meta-measure-version>
         <judo-meta-measure-import-range>[1.0,1.1)</judo-meta-measure-import-range>
 
-        <judo-meta-liquibase-version>1.0.0.develop_00025</judo-meta-liquibase-version>
+        <judo-meta-liquibase-version>1.0.0.develop_00031</judo-meta-liquibase-version>
         <judo-meta-liquibase-import-range>[1.0,1.1)</judo-meta-liquibase-import-range>
 
-        <judo-meta-openapi-version>1.0.0.develop_00091</judo-meta-openapi-version>
+        <judo-meta-openapi-version>1.0.0.develop_00097</judo-meta-openapi-version>
         <judo-meta-openapi-import-range>[1.0,1.1)</judo-meta-openapi-import-range>
 
         <!-- Xtend / Xcore -->
@@ -181,23 +181,24 @@
             <version>20.0</version>
             <scope>provided</scope>
         </dependency>
-
-        <!-- https://mvnrepository.com/artifact/junit/junit -->
         <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.12</version>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <version>5.5.1</version>
             <scope>test</scope>
         </dependency>
-
-        <!-- https://mvnrepository.com/artifact/org.hamcrest/hamcrest-junit -->
         <dependency>
             <groupId>org.hamcrest</groupId>
-            <artifactId>hamcrest-junit</artifactId>
-            <version>2.0.0.0</version>
+            <artifactId>hamcrest</artifactId>
+            <version>2.1</version>
             <scope>test</scope>
         </dependency>
-
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <version>3.0.0</version>
+            <scope>test</scope>
+        </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-log4j12</artifactId>

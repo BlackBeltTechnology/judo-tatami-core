@@ -10,10 +10,9 @@ import io.swagger.models.Swagger;
 import io.swagger.util.Json;
 import io.swagger.util.Yaml;
 import lombok.extern.slf4j.Slf4j;
-import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -42,7 +41,7 @@ public class Asm2OpenAPITest {
     AsmModel asmModel;
     OpenapiModel openapiModel;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         // Default logger
         slf4jlog = new Slf4jLog(log);

@@ -2,7 +2,7 @@ package hu.blackbelt.judo.tatami.core.workflow.flow;
 
 import hu.blackbelt.judo.tatami.core.workflow.work.Work;
 import hu.blackbelt.judo.tatami.core.workflow.work.WorkReportPredicate;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 public class ConditionalFlowTest {

@@ -6,8 +6,8 @@ import hu.blackbelt.epsilon.runtime.execution.impl.Slf4jLog;
 import hu.blackbelt.judo.meta.asm.runtime.AsmModel;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.emf.common.util.URI;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -29,7 +29,7 @@ public class Asm2SDKTest {
     Log slf4jlog;
     AsmModel asmModel;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         // Default logger
         slf4jlog = new Slf4jLog(log);

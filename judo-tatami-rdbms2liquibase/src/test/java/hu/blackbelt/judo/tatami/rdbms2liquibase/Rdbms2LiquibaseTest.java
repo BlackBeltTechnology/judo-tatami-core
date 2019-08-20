@@ -1,12 +1,7 @@
 package hu.blackbelt.judo.tatami.rdbms2liquibase;
 
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
-import hu.blackbelt.epsilon.runtime.execution.impl.NameMappedURIHandlerImpl;
-import hu.blackbelt.epsilon.runtime.execution.impl.NioFilesystemnRelativePathURIHandlerImpl;
 import hu.blackbelt.epsilon.runtime.execution.impl.Slf4jLog;
 import hu.blackbelt.judo.meta.liquibase.runtime.LiquibaseModel;
-import hu.blackbelt.judo.meta.liquibase.runtime.LiquibaseNamespaceFixUriHandler;
 import hu.blackbelt.judo.meta.rdbms.runtime.RdbmsModel;
 import liquibase.Liquibase;
 import liquibase.database.Database;
@@ -14,11 +9,8 @@ import liquibase.database.core.HsqlDatabase;
 import liquibase.database.jvm.HsqlConnection;
 import liquibase.resource.FileSystemResourceAccessor;
 import lombok.extern.slf4j.Slf4j;
-import org.eclipse.emf.common.util.URI;
-import org.eclipse.emf.ecore.resource.impl.URIHandlerImpl;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -45,7 +37,7 @@ public class Rdbms2LiquibaseTest {
     RdbmsModel rdbmsModel;
     LiquibaseModel liquibaseModel;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
 
         // Create RDBMS to isolated ResourceSet, because in Tatami
@@ -68,11 +60,6 @@ public class Rdbms2LiquibaseTest {
                 .name(NORTHWIND)
                 .build();
     }
-
-    @After
-    public void tearDown() throws Exception {
-    }
-
 
     @Test
     public void testRdbms2LiquibaseTransformation() throws Exception {

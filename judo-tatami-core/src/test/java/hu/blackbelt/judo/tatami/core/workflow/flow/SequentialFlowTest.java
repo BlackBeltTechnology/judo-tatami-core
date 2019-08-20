@@ -1,7 +1,7 @@
 package hu.blackbelt.judo.tatami.core.workflow.flow;
 
 import hu.blackbelt.judo.tatami.core.workflow.work.Work;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.mockito.InOrder;
 import org.mockito.Mockito;
 

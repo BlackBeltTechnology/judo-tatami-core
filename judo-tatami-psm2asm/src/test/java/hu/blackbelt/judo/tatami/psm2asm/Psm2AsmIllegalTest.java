@@ -12,20 +12,25 @@ import lombok.extern.slf4j.Slf4j;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.URIHandler;
 import org.eclipse.epsilon.common.util.UriUtil;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.hamcrest.CoreMatchers;
+import org.hamcrest.MatcherAssert;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.nio.file.FileSystems;
 
 import static hu.blackbelt.judo.meta.psm.PsmEpsilonValidator.validatePsm;
 import static hu.blackbelt.judo.tatami.psm2asm.Psm2Asm.executePsm2AsmTransformation;
-import static org.junit.Assert.assertTrue;
+import static org.hamcrest.CoreMatchers.containsString;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @Slf4j
 public class Psm2AsmIllegalTest {
-
 
     public static final String ASM_NORTHWIND = "asm:northwind";
     public static final String PSM_NORTHWIND = "psm:northwind";
@@ -39,7 +44,7 @@ public class Psm2AsmIllegalTest {
     PsmModel psmModel;
     AsmModel asmModel;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
 
         // Set our custom handler
@@ -75,12 +80,7 @@ public class Psm2AsmIllegalTest {
                 .build();
     }
 
-    @After
-    public void tearDown() throws Exception {
-    }
-
-
-    @Test(expected = AsmModel.AsmValidationException.class)
+    @Test
     public void testPsm2AsmTransformation() throws Exception {
         // Make transformation which returns the trace with the serialized URI's
         Psm2AsmTransformationTrace psm2AsmTransformationTrace = executePsm2AsmTransformation(
@@ -89,7 +89,11 @@ public class Psm2AsmIllegalTest {
                 new Slf4jLog(log),
                 new File("src/main/epsilon/transformations/asm").toURI());
 
-        asmModel.saveAsmModel();
+        AsmModel.AsmValidationException exception = assertThrows(AsmModel.AsmValidationException.class, () -> {
+            asmModel.saveAsmModel();
+        });
+
+        assertThat(exception.getMessage(), containsString("Invalid model"));
     }
 
 
