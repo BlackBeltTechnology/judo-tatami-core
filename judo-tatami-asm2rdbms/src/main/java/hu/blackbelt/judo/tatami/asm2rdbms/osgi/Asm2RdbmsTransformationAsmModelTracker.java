@@ -1,4 +1,4 @@
-package hu.blackbelt.judo.tatami.asm2rdbms;
+package hu.blackbelt.judo.tatami.asm2rdbms.osgi;
 
 import hu.blackbelt.judo.meta.asm.runtime.AsmModel;
 import hu.blackbelt.judo.meta.rdbms.runtime.RdbmsModel;
@@ -18,10 +18,10 @@ import java.util.concurrent.ConcurrentHashMap;
 
 @Component(immediate = true)
 @Slf4j
-public class AsmModelServiceTracker extends AbstractModelTracker<AsmModel> {
+public class Asm2RdbmsTransformationAsmModelTracker extends AbstractModelTracker<AsmModel> {
 
     @Reference
-    Asm2RdbmsSerivce asm2RdbmsSerivce;
+    Asm2RdbmsTransformationSerivce asm2RdbmsTransformationSerivce;
 
     Map<String, ServiceRegistration<RdbmsModel>> registrations = new ConcurrentHashMap<>();
     Map<String, RdbmsModel> models = new HashMap<>();
@@ -52,7 +52,7 @@ public class AsmModelServiceTracker extends AbstractModelTracker<AsmModel> {
 
         try {
             // TODO: Handling dialect
-            rdbmsModel = asm2RdbmsSerivce.install(asmModel, "hsqldb");
+            rdbmsModel = asm2RdbmsTransformationSerivce.install(asmModel, "hsqldb");
             log.info("Registering model: " + rdbmsModel);
             ServiceRegistration<RdbmsModel> modelServiceRegistration =
                     componentContext.getBundleContext()
@@ -70,7 +70,7 @@ public class AsmModelServiceTracker extends AbstractModelTracker<AsmModel> {
         if (!registrations.containsKey(key)) {
             log.error("Model is not registered: " + asmModel.getName());
         } else {
-            asm2RdbmsSerivce.uninstall(asmModel);
+            asm2RdbmsTransformationSerivce.uninstall(asmModel);
             registrations.get(key).unregister();
             registrations.remove(key);
             models.remove(key);

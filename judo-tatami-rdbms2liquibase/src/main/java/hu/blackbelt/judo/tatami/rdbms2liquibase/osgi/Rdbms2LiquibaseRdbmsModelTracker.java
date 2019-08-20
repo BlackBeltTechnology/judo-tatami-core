@@ -1,4 +1,4 @@
-package hu.blackbelt.judo.tatami.rdbms2liquibase;
+package hu.blackbelt.judo.tatami.rdbms2liquibase.osgi;
 
 import hu.blackbelt.judo.meta.liquibase.runtime.LiquibaseModel;
 import hu.blackbelt.judo.meta.rdbms.runtime.RdbmsModel;
@@ -18,10 +18,10 @@ import java.util.concurrent.ConcurrentHashMap;
 
 @Component(immediate = true)
 @Slf4j
-public class RdbmsModelServiceTracker extends AbstractModelTracker<RdbmsModel> {
+public class Rdbms2LiquibaseRdbmsModelTracker extends AbstractModelTracker<RdbmsModel> {
 
     @Reference
-    Rdbms2LiquibaseSerivce psm2LiquibaseSerivce;
+    Rdbms2LiquibaseTranformationSerivce psm2LiquibaseSerivce;
 
     Map<String, ServiceRegistration<hu.blackbelt.judo.meta.liquibase.runtime.LiquibaseModel>> registrations = new ConcurrentHashMap<>();
     Map<String, hu.blackbelt.judo.meta.liquibase.runtime.LiquibaseModel> models = new HashMap<>();

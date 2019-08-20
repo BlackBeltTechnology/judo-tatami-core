@@ -1,4 +1,4 @@
-package hu.blackbelt.judo.tatami.asm2rdbms;
+package hu.blackbelt.judo.tatami.asm2rdbms.osgi;
 
 import com.google.common.collect.Maps;
 import hu.blackbelt.epsilon.runtime.execution.api.Log;
@@ -6,9 +6,7 @@ import hu.blackbelt.epsilon.runtime.execution.impl.Slf4jLog;
 import hu.blackbelt.epsilon.runtime.execution.impl.StringBuilderLogger;
 import hu.blackbelt.judo.meta.asm.runtime.AsmModel;
 import hu.blackbelt.judo.meta.rdbms.runtime.RdbmsModel;
-import hu.blackbelt.judo.meta.rdbmsDataTypes.support.RdbmsDataTypesModelResourceSupport;
-import hu.blackbelt.judo.meta.rdbmsNameMapping.support.RdbmsNameMappingModelResourceSupport;
-import hu.blackbelt.judo.meta.rdbmsRules.support.RdbmsTableMappingRulesModelResourceSupport;
+import hu.blackbelt.judo.tatami.asm2rdbms.Asm2RdbmsTransformationTrace;
 import hu.blackbelt.judo.tatami.core.TransformationTrace;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.emf.common.util.URI;
@@ -26,9 +24,9 @@ import static hu.blackbelt.judo.meta.rdbmsRules.support.RdbmsTableMappingRulesMo
 import static hu.blackbelt.judo.tatami.asm2rdbms.Asm2Rdbms.executeAsm2RdbmsTransformation;
 
 
-@Component(immediate = true, service = Asm2RdbmsSerivce.class)
+@Component(immediate = true, service = Asm2RdbmsTransformationSerivce.class)
 @Slf4j
-public class Asm2RdbmsSerivce {
+public class Asm2RdbmsTransformationSerivce {
 
     Map<AsmModel, ServiceRegistration<TransformationTrace>> asm2rdbmsTransformationTraceRegistration = Maps.newHashMap();
     BundleContext bundleContext;
@@ -46,6 +44,7 @@ public class Asm2RdbmsSerivce {
                 .version(asmModel.getVersion())
                 .uri(URI.createURI("rdbms:" + asmModel.getName() + ".model"))
                 .checksum(asmModel.getChecksum())
+                .tags(asmModel.getTags())
                 .build();
 
         // The RDBMS model resourceset have to know the mapping models

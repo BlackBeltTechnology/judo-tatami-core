@@ -1,6 +1,6 @@
-package hu.blackbelt.judo.tatami.esm2psm;
+package hu.blackbelt.judo.tatami.psm2measure.osgi;
 
-import hu.blackbelt.judo.meta.esm.runtime.EsmModel;
+import hu.blackbelt.judo.meta.measure.runtime.MeasureModel;
 import hu.blackbelt.judo.meta.psm.runtime.PsmModel;
 import hu.blackbelt.judo.tatami.core.AbstractModelTracker;
 import lombok.extern.slf4j.Slf4j;
@@ -18,13 +18,13 @@ import java.util.concurrent.ConcurrentHashMap;
 
 @Component(immediate = true)
 @Slf4j
-public class EsmModelServiceTracker extends AbstractModelTracker<EsmModel> {
+public class Psm2MeasureTransformationPsmModelTracker extends AbstractModelTracker<PsmModel> {
 
     @Reference
-    Esm2PsmService esm2PsmService;
+    Psm2MeasureTransformationService psm2MeasureTransformationService;
 
-    Map<String, ServiceRegistration<PsmModel>> registrations = new ConcurrentHashMap<>();
-    Map<String, PsmModel> models = new HashMap<>();
+    Map<String, ServiceRegistration<MeasureModel>> registrations = new ConcurrentHashMap<>();
+    Map<String, MeasureModel> models = new HashMap<>();
 
 
     @Activate
@@ -42,34 +42,34 @@ public class EsmModelServiceTracker extends AbstractModelTracker<EsmModel> {
     private ComponentContext componentContext;
 
     @Override
-    public void install(EsmModel esmModel) {
-        String key = esmModel.getName();
-        PsmModel psmModel = null;
+    public void install(PsmModel psmModel) {
+        String key = psmModel.getName();
+        MeasureModel measureModel = null;
         if (models.containsKey(key)) {
-            log.error("Model already loaded: " + esmModel.getName());
+            log.error("Model already loaded: " + psmModel.getName());
             return;
         }
 
         try {
-            psmModel = esm2PsmService.install(esmModel);
-            log.info("Registering model: " + psmModel);
-            ServiceRegistration<PsmModel> modelServiceRegistration =
+            measureModel = psm2MeasureTransformationService.install(psmModel);
+            log.info("Registering model: " + measureModel);
+            ServiceRegistration<MeasureModel> modelServiceRegistration =
                     componentContext.getBundleContext()
-                            .registerService(PsmModel.class, psmModel, psmModel.toDictionary());
-            models.put(key, psmModel);
+                            .registerService(MeasureModel.class, measureModel, measureModel.toDictionary());
+            models.put(key, measureModel);
             registrations.put(key, modelServiceRegistration);
         } catch (Exception e) {
-            log.error("Could not register PSM Model: " + esmModel.getName(), e);
+            log.error("Could not register PSM Model: " + psmModel.getName(), e);
         }
     }
 
     @Override
-    public void uninstall(EsmModel esmModel) {
-        String key = esmModel.getName();
+    public void uninstall(PsmModel psmModel) {
+        String key = psmModel.getName();
         if (!registrations.containsKey(key)) {
-            log.error("Model is not registered: " + esmModel.getName());
+            log.error("Model is not registered: " + psmModel.getName());
         } else {
-            esm2PsmService.uninstall(esmModel);
+            psm2MeasureTransformationService.uninstall(psmModel);
             registrations.get(key).unregister();
             registrations.remove(key);
             models.remove(key);
@@ -77,8 +77,8 @@ public class EsmModelServiceTracker extends AbstractModelTracker<EsmModel> {
     }
 
     @Override
-    public Class<EsmModel> getModelClass() {
-        return EsmModel.class;
+    public Class<PsmModel> getModelClass() {
+        return PsmModel.class;
     }
 
 

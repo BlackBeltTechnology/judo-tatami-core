@@ -1,13 +1,13 @@
-package hu.blackbelt.judo.tatami.esm2psm;
+package hu.blackbelt.judo.tatami.esm2psm.osgi;
 
 import com.google.common.collect.Maps;
 import hu.blackbelt.epsilon.runtime.execution.api.Log;
 import hu.blackbelt.epsilon.runtime.execution.impl.Slf4jLog;
 import hu.blackbelt.epsilon.runtime.execution.impl.StringBuilderLogger;
-import hu.blackbelt.epsilon.runtime.osgi.BundleURIHandler;
 import hu.blackbelt.judo.meta.esm.runtime.EsmModel;
 import hu.blackbelt.judo.meta.psm.runtime.PsmModel;
 import hu.blackbelt.judo.tatami.core.TransformationTrace;
+import hu.blackbelt.judo.tatami.esm2psm.Esm2PsmTransformationTrace;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.emf.common.util.URI;
 import org.osgi.framework.BundleContext;
@@ -17,14 +17,12 @@ import org.osgi.service.component.annotations.Component;
 
 import java.util.Hashtable;
 import java.util.Map;
-import java.util.Optional;
 
-import static hu.blackbelt.judo.meta.psm.support.PsmModelResourceSupport.psmModelResourceSupportBuilder;
 import static hu.blackbelt.judo.tatami.esm2psm.Esm2Psm.executeEsm2PsmTransformation;
 
-@Component(immediate = true, service = Esm2PsmService.class)
+@Component(immediate = true, service = Esm2PsmTransformationService.class)
 @Slf4j
-public class Esm2PsmService {
+public class Esm2PsmTransformationService {
 
     Map<EsmModel, ServiceRegistration<TransformationTrace>> esm2PsmTransformationTraceRegistration = Maps.newHashMap();
 
@@ -41,6 +39,7 @@ public class Esm2PsmService {
                 .version(esmModel.getVersion())
                 .uri(URI.createURI("psm:" + esmModel.getName() + ".model"))
                 .checksum(esmModel.getChecksum())
+                .tags(esmModel.getTags())
                 .build();
 
         Log logger = new StringBuilderLogger(Slf4jLog.determinateLogLevel(log));

@@ -1,12 +1,13 @@
-package hu.blackbelt.judo.tatami.psm2asm;
+package hu.blackbelt.judo.tatami.psm2measure.osgi;
 
 import com.google.common.collect.Maps;
 import hu.blackbelt.epsilon.runtime.execution.api.Log;
 import hu.blackbelt.epsilon.runtime.execution.impl.Slf4jLog;
 import hu.blackbelt.epsilon.runtime.execution.impl.StringBuilderLogger;
-import hu.blackbelt.judo.meta.asm.runtime.AsmModel;
+import hu.blackbelt.judo.meta.measure.runtime.MeasureModel;
 import hu.blackbelt.judo.meta.psm.runtime.PsmModel;
 import hu.blackbelt.judo.tatami.core.TransformationTrace;
+import hu.blackbelt.judo.tatami.psm2measure.Psm2MeasureTransformationTrace;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.emf.common.util.URI;
 import org.osgi.framework.BundleContext;
@@ -17,15 +18,16 @@ import org.osgi.service.component.annotations.Component;
 import java.util.Hashtable;
 import java.util.Map;
 
-import static hu.blackbelt.judo.tatami.psm2asm.Psm2Asm.executePsm2AsmTransformation;
+import static hu.blackbelt.judo.tatami.psm2measure.Psm2Measure.executePsm2MeasureTransformation;
 
-@Component(immediate = true, service = Psm2AsmSerivce.class)
+
+@Component(immediate = true, service = Psm2MeasureTransformationService.class)
 @Slf4j
-public class Psm2AsmSerivce {
+public class Psm2MeasureTransformationService {
 
-    public static final String ASM_META_VERSION_RANGE = "Asm-Meta-Version-Range";
+    public static final String MEASURE_META_VERSION_RANGE = "Measure-Meta-Version-Range";
 
-    Map<PsmModel, ServiceRegistration<TransformationTrace>> psm2AsmTransformationTraceRegistration = Maps.newHashMap();
+    Map<PsmModel, ServiceRegistration<TransformationTrace>> psm2MeasureTransformationTraceRegistration = Maps.newHashMap();
 
     BundleContext bundleContext;
 
@@ -34,43 +36,44 @@ public class Psm2AsmSerivce {
         this.bundleContext = bundleContext;
     }
 
-    public AsmModel install(PsmModel psmModel) throws Exception {
+    public MeasureModel install(PsmModel psmModel) throws Exception {
 
-        AsmModel asmModel = AsmModel.buildAsmModel()
+        MeasureModel measureModel = MeasureModel.buildMeasureModel()
                 .name(psmModel.getName())
                 .version(psmModel.getVersion())
-                .uri(URI.createURI("asm:" + psmModel.getName() + ".asm"))
+                .uri(URI.createURI("measure:" + psmModel.getName() + ".measure"))
                 .checksum(psmModel.getChecksum())
+                .tags(psmModel.getTags())
                 .build();
 
         Log logger = new StringBuilderLogger(Slf4jLog.determinateLogLevel(log));
         try {
             java.net.URI scriptUri =
                     bundleContext.getBundle()
-                            .getEntry("/tatami/psm2asm/transformations/asm/psmToAsm.etl")
+                            .getEntry("/tatami/psm2measure/transformations/measure/psmToMeasure.etl")
                             .toURI()
                             .resolve(".");
 
-            Psm2AsmTransformationTrace transformationTrace = executePsm2AsmTransformation(psmModel, asmModel, logger,
-                    scriptUri);
+            Psm2MeasureTransformationTrace psm2MeasureTransformationTrace =
+                    executePsm2MeasureTransformation(psmModel, measureModel, logger, scriptUri);
 
-            psm2AsmTransformationTraceRegistration.put(psmModel,
-                    bundleContext.registerService(TransformationTrace.class, transformationTrace, new Hashtable<>()));
+            psm2MeasureTransformationTraceRegistration.put(psmModel,
+                    bundleContext.registerService(TransformationTrace.class, psm2MeasureTransformationTrace, new Hashtable<>()));
+
             log.info("\u001B[33m {}\u001B[0m", logger.getBuffer());
         } catch (Exception e) {
             log.info("\u001B[31m {}\u001B[0m", logger.getBuffer());
             throw e;
         }
-        return asmModel;
+
+        return measureModel;
     }
 
-
     public void uninstall(PsmModel psmModel) {
-        if (psm2AsmTransformationTraceRegistration.containsKey(psmModel)) {
-            psm2AsmTransformationTraceRegistration.get(psmModel).unregister();
+        if (psm2MeasureTransformationTraceRegistration.containsKey(psmModel)) {
+            psm2MeasureTransformationTraceRegistration.get(psmModel).unregister();
         } else {
             log.error("PSM model is not installed: " + psmModel.toString());
         }
     }
-
 }

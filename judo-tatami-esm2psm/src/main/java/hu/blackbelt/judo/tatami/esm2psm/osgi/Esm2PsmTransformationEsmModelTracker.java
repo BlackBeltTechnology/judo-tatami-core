@@ -1,8 +1,7 @@
-package hu.blackbelt.judo.tatami.asm2openapi;
+package hu.blackbelt.judo.tatami.esm2psm.osgi;
 
-import hu.blackbelt.judo.meta.asm.runtime.AsmModel;
-import hu.blackbelt.judo.meta.openapi.runtime.OpenapiModel;
-import hu.blackbelt.judo.meta.openapi.runtime.OpenapiModel;
+import hu.blackbelt.judo.meta.esm.runtime.EsmModel;
+import hu.blackbelt.judo.meta.psm.runtime.PsmModel;
 import hu.blackbelt.judo.tatami.core.AbstractModelTracker;
 import lombok.extern.slf4j.Slf4j;
 import org.osgi.framework.ServiceRegistration;
@@ -19,13 +18,13 @@ import java.util.concurrent.ConcurrentHashMap;
 
 @Component(immediate = true)
 @Slf4j
-public class AsmModelServiceTracker extends AbstractModelTracker<AsmModel> {
+public class Esm2PsmTransformationEsmModelTracker extends AbstractModelTracker<EsmModel> {
 
     @Reference
-    Asm2OpenAPIService asm2OpenAPIService;
+    Esm2PsmTransformationService esm2PsmTransformationService;
 
-    Map<String, ServiceRegistration<OpenapiModel>> registrations = new ConcurrentHashMap<>();
-    Map<String, OpenapiModel> models = new HashMap<>();
+    Map<String, ServiceRegistration<PsmModel>> registrations = new ConcurrentHashMap<>();
+    Map<String, PsmModel> models = new HashMap<>();
 
 
     @Activate
@@ -43,34 +42,34 @@ public class AsmModelServiceTracker extends AbstractModelTracker<AsmModel> {
     private ComponentContext componentContext;
 
     @Override
-    public void install(AsmModel asmModel) {
-        String key = asmModel.getName();
-        OpenapiModel openAPIModel = null;
+    public void install(EsmModel esmModel) {
+        String key = esmModel.getName();
+        PsmModel psmModel = null;
         if (models.containsKey(key)) {
-            log.error("Model already loaded: " + asmModel.getName());
+            log.error("Model already loaded: " + esmModel.getName());
             return;
         }
 
         try {
-            openAPIModel = asm2OpenAPIService.install(asmModel);
-            log.info("Registering model: " + openAPIModel);
-            ServiceRegistration<OpenapiModel> modelServiceRegistration =
+            psmModel = esm2PsmTransformationService.install(esmModel);
+            log.info("Registering model: " + psmModel);
+            ServiceRegistration<PsmModel> modelServiceRegistration =
                     componentContext.getBundleContext()
-                            .registerService(OpenapiModel.class, openAPIModel, openAPIModel.toDictionary());
-            models.put(key, openAPIModel);
+                            .registerService(PsmModel.class, psmModel, psmModel.toDictionary());
+            models.put(key, psmModel);
             registrations.put(key, modelServiceRegistration);
         } catch (Exception e) {
-            log.error("Could not register OpenAPI Model: " + asmModel.getName(), e);
+            log.error("Could not register PSM Model: " + esmModel.getName(), e);
         }
     }
 
     @Override
-    public void uninstall(AsmModel asmModel) {
-        String key = asmModel.getName();
+    public void uninstall(EsmModel esmModel) {
+        String key = esmModel.getName();
         if (!registrations.containsKey(key)) {
-            log.error("Model is not registered: " + asmModel.getName());
+            log.error("Model is not registered: " + esmModel.getName());
         } else {
-            asm2OpenAPIService.uninstall(asmModel);
+            esm2PsmTransformationService.uninstall(esmModel);
             registrations.get(key).unregister();
             registrations.remove(key);
             models.remove(key);
@@ -78,8 +77,8 @@ public class AsmModelServiceTracker extends AbstractModelTracker<AsmModel> {
     }
 
     @Override
-    public Class<AsmModel> getModelClass() {
-        return AsmModel.class;
+    public Class<EsmModel> getModelClass() {
+        return EsmModel.class;
     }
 
 

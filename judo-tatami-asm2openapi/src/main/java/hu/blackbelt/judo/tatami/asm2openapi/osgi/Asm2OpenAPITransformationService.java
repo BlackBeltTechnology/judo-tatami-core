@@ -1,4 +1,4 @@
-package hu.blackbelt.judo.tatami.asm2openapi;
+package hu.blackbelt.judo.tatami.asm2openapi.osgi;
 
 import com.google.common.collect.Maps;
 import hu.blackbelt.epsilon.runtime.execution.api.Log;
@@ -6,6 +6,7 @@ import hu.blackbelt.epsilon.runtime.execution.impl.Slf4jLog;
 import hu.blackbelt.epsilon.runtime.execution.impl.StringBuilderLogger;
 import hu.blackbelt.judo.meta.asm.runtime.AsmModel;
 import hu.blackbelt.judo.meta.openapi.runtime.OpenapiModel;
+import hu.blackbelt.judo.tatami.asm2openapi.Asm2OpenAPITransformationTrace;
 import hu.blackbelt.judo.tatami.core.TransformationTrace;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.emf.common.util.URI;
@@ -20,9 +21,9 @@ import java.util.Map;
 import static hu.blackbelt.judo.meta.openapi.runtime.OpenapiModel.buildOpenapiModel;
 import static hu.blackbelt.judo.tatami.asm2openapi.Asm2OpenAPI.executeAsm2OpenAPITransformation;
 
-@Component(immediate = true, service = Asm2OpenAPIService.class)
+@Component(immediate = true, service = Asm2OpenAPITransformationService.class)
 @Slf4j
-public class Asm2OpenAPIService {
+public class Asm2OpenAPITransformationService {
 
     Map<AsmModel, ServiceRegistration<TransformationTrace>> asm2openAPITransformationTraceRegistration = Maps.newHashMap();
 
@@ -40,6 +41,7 @@ public class Asm2OpenAPIService {
                 .version(asmModel.getVersion())
                 .uri(URI.createURI("openapi:" + asmModel.getName() + ".model"))
                 .checksum(asmModel.getChecksum())
+                .tags(asmModel.getTags())
                 .build();
 
         Log logger = new StringBuilderLogger(Slf4jLog.determinateLogLevel(log));

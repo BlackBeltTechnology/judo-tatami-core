@@ -1,4 +1,4 @@
-package hu.blackbelt.judo.tatami.psm2asm;
+package hu.blackbelt.judo.tatami.psm2asm.osgi;
 
 import hu.blackbelt.judo.meta.asm.runtime.AsmModel;
 import hu.blackbelt.judo.meta.psm.runtime.PsmModel;
@@ -18,10 +18,10 @@ import java.util.concurrent.ConcurrentHashMap;
 
 @Component(immediate = true)
 @Slf4j
-public class PsmModelServiceTracker extends AbstractModelTracker<PsmModel> {
+public class Psm2AsmTransformationPsmModelTracker extends AbstractModelTracker<PsmModel> {
 
     @Reference
-    Psm2AsmSerivce psm2AsmSerivce;
+    Psm2AsmTransformationSerivce psm2AsmTransformationSerivce;
 
     Map<String, ServiceRegistration<AsmModel>> registrations = new ConcurrentHashMap<>();
     Map<String, AsmModel> models = new HashMap<>();
@@ -44,6 +44,9 @@ public class PsmModelServiceTracker extends AbstractModelTracker<PsmModel> {
     @Override
     public void install(PsmModel psmModel) {
         String key = psmModel.getName();
+        if (!needToTransform(psmModel)) {
+            return;
+        }
         AsmModel asmModel = null;
         if (models.containsKey(key)) {
             log.error("Model already loaded: " + psmModel.getName());
@@ -51,7 +54,7 @@ public class PsmModelServiceTracker extends AbstractModelTracker<PsmModel> {
         }
 
         try {
-            asmModel = psm2AsmSerivce.install(psmModel);
+            asmModel = psm2AsmTransformationSerivce.install(psmModel);
             log.info("Registering model: " + asmModel);
             ServiceRegistration<AsmModel> modelServiceRegistration =
                     componentContext.getBundleContext()
@@ -66,10 +69,13 @@ public class PsmModelServiceTracker extends AbstractModelTracker<PsmModel> {
     @Override
     public void uninstall(PsmModel psmModel) {
         String key = psmModel.getName();
+        if (!needToTransform(psmModel)) {
+            return;
+        }
         if (!registrations.containsKey(key)) {
             log.error("Model is not registered: " + psmModel.getName());
         } else {
-            psm2AsmSerivce.uninstall(psmModel);
+            psm2AsmTransformationSerivce.uninstall(psmModel);
             registrations.get(key).unregister();
             registrations.remove(key);
             models.remove(key);
@@ -81,5 +87,14 @@ public class PsmModelServiceTracker extends AbstractModelTracker<PsmModel> {
         return PsmModel.class;
     }
 
+    private boolean needToTransform(PsmModel psmModel) {
+        if (psmModel.getTags().isEmpty()
+                || (!psmModel.getTags().contains("!transform-psm2asm"))
+                || (psmModel.getTags().contains("transform-psm2asm"))
+        ) {
+            return true;
+        }
+        return false;
+    }
 
 }

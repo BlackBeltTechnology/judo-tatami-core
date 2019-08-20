@@ -1,4 +1,4 @@
-package hu.blackbelt.judo.tatami.rdbms2liquibase;
+package hu.blackbelt.judo.tatami.rdbms2liquibase.osgi;
 
 import hu.blackbelt.epsilon.runtime.execution.api.Log;
 import hu.blackbelt.epsilon.runtime.execution.impl.Slf4jLog;
@@ -16,9 +16,9 @@ import org.osgi.service.component.annotations.Component;
 
 import static hu.blackbelt.judo.tatami.rdbms2liquibase.Rdbms2Liquibase.executeRdbms2LiquibaseTransformation;
 
-@Component(immediate = true, service = Rdbms2LiquibaseSerivce.class)
+@Component(immediate = true, service = Rdbms2LiquibaseTranformationSerivce.class)
 @Slf4j
-public class Rdbms2LiquibaseSerivce {
+public class Rdbms2LiquibaseTranformationSerivce {
 
     public static final String LIQUIBASE_META_VERSION_RANGE = "Liquibase-Meta-Version-Range";
 
@@ -42,6 +42,7 @@ public class Rdbms2LiquibaseSerivce {
                 .version(rdbmsModel.getVersion())
                 .uri(liquibasUri)
                 .checksum(rdbmsModel.getChecksum())
+                .tags(rdbmsModel.getTags())
                 .uriHandler(liquibaseNamespaceFixUriHandlerFromBundle)
                 .build();
 

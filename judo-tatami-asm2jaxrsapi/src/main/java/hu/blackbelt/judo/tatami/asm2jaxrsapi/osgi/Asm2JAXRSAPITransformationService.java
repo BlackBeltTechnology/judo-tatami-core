@@ -1,4 +1,4 @@
-package hu.blackbelt.judo.tatami.asm2jaxrsapi;
+package hu.blackbelt.judo.tatami.asm2jaxrsapi.osgi;
 
 import com.google.common.collect.Maps;
 import hu.blackbelt.epsilon.runtime.execution.api.Log;
@@ -6,14 +6,12 @@ import hu.blackbelt.epsilon.runtime.execution.impl.Slf4jLog;
 import hu.blackbelt.epsilon.runtime.execution.impl.StringBuilderLogger;
 import hu.blackbelt.judo.meta.asm.runtime.AsmModel;
 import lombok.extern.slf4j.Slf4j;
-import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
-import org.osgi.service.component.annotations.Reference;
 
 import java.io.File;
 import java.io.IOException;
@@ -25,9 +23,9 @@ import java.util.Map;
 
 import static hu.blackbelt.judo.tatami.asm2jaxrsapi.Asm2JAXRSAPI.executeAsm2JAXRSAPIGeneration;
 
-@Component(immediate = true, service = Asm2JAXRSAPIService.class)
+@Component(immediate = true, service = Asm2JAXRSAPITransformationService.class)
 @Slf4j
-public class Asm2JAXRSAPIService {
+public class Asm2JAXRSAPITransformationService {
 
     File tempDir;
 

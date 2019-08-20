@@ -1,4 +1,4 @@
-package hu.blackbelt.judo.tatami.asm2jaxrsapi;
+package hu.blackbelt.judo.tatami.asm2jaxrsapi.osgi;
 
 import hu.blackbelt.judo.meta.asm.runtime.AsmModel;
 import hu.blackbelt.judo.tatami.core.AbstractModelTracker;
@@ -13,10 +13,10 @@ import org.osgi.service.component.annotations.Reference;
 
 @Component(immediate = true)
 @Slf4j
-public class AsmModelServiceTracker extends AbstractModelTracker<AsmModel> {
+public class Asm2JAXRSAPITransformationAsmModelTracker extends AbstractModelTracker<AsmModel> {
 
     @Reference
-    Asm2JAXRSAPIService asm2JAXRSAPIService;
+    Asm2JAXRSAPITransformationService asm2JAXRSAPITransformationService;
 
     @Activate
     protected void activate(ComponentContext contextPar) {
@@ -34,7 +34,7 @@ public class AsmModelServiceTracker extends AbstractModelTracker<AsmModel> {
     @Override
     public void install(AsmModel asmModel) {
         try {
-            asm2JAXRSAPIService.install(asmModel, componentContext.getBundleContext());
+            asm2JAXRSAPITransformationService.install(asmModel, componentContext.getBundleContext());
         } catch (Exception e) {
             log.error("Could not register JAX-RS Bundle: " + asmModel.getName(), e);
         }
@@ -43,7 +43,7 @@ public class AsmModelServiceTracker extends AbstractModelTracker<AsmModel> {
     @Override
     public void uninstall(AsmModel asmModel) {
         try {
-            asm2JAXRSAPIService.uninstall(asmModel);
+            asm2JAXRSAPITransformationService.uninstall(asmModel);
         } catch (BundleException e) {
             log.error("Could not unregister JAX-RS Bundle: " + asmModel.getName(), e);
         }
