@@ -22,11 +22,11 @@ import static hu.blackbelt.epsilon.runtime.execution.ExecutionContext.executionC
 import static hu.blackbelt.epsilon.runtime.execution.contexts.EtlExecutionContext.etlExecutionContextBuilder;
 import static hu.blackbelt.epsilon.runtime.execution.contexts.ProgramParameter.programParameterBuilder;
 import static hu.blackbelt.epsilon.runtime.execution.model.emf.WrappedEmfModelContext.wrappedEmfModelContextBuilder;
+import static hu.blackbelt.judo.tatami.asm2openapi.Asm2OpenAPITransformationTrace.ASM_2_OPENAPI_URI_POSTFIX;
+import static hu.blackbelt.judo.tatami.asm2openapi.Asm2OpenAPITransformationTrace.resolveAsm2OpenAPITrace;
 import static hu.blackbelt.judo.tatami.core.TransformationTraceUtil.*;
 
 public class Asm2OpenAPI {
-
-    public static final String ASM_2_OPENAPI_URI_POSTFIX = "asm2openapi";
 
     public static Asm2OpenAPITransformationTrace executeAsm2OpenAPITransformation(AsmModel asmModel, OpenapiModel openAPIModel, Log log,
                                                                                   URI scriptDir) throws Exception {
@@ -76,21 +76,4 @@ public class Asm2OpenAPI {
                 .trace(resolveAsm2OpenAPITrace(traceModel, asmModel, openAPIModel)).build();
     }
 
-
-    public static ResourceSet createAsm2OpenAPITraceResourceSet() {
-        return createTraceResourceSet(ASM_2_OPENAPI_URI_POSTFIX);
-    }
-
-    public static Map<EObject, List<EObject>> resolveAsm2OpenAPITrace(Resource traceResource, AsmModel asmModel, OpenapiModel openAPIModel) {
-        return resolveAsm2OpenAPITrace(traceResource.getContents(), asmModel, openAPIModel);
-    }
-
-    public static Map<EObject, List<EObject>> resolveAsm2OpenAPITrace(List<EObject> trace, AsmModel asmModel, OpenapiModel openAPIModel) {
-        return resolveTransformationTraceAsEObjectMap(trace,
-                ImmutableList.of(asmModel.getResourceSet(), openAPIModel.getResourceSet()));
-    }
-
-    public static List<EObject> getAsm2OpenAPITrace(Map<EObject, List<EObject>> trace) throws ScriptExecutionException {
-        return getTransformationTraceFromEtlExecutionContext(ASM_2_OPENAPI_URI_POSTFIX, trace);
-    }
 }

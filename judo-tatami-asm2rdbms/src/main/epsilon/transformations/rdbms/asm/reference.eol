@@ -75,7 +75,7 @@ operation ASM!EReference isFirst() : Boolean {
 @cached
 operation ASM!EReference ruleMapping() : RDBMS!Rule {
 	var rule : RDBMS!Rule = RDBMS!Rules.all.first.getRuleFromReference(self);
-	log.info("Reference: " + self.toString() + " RULE: " + rule.toString());
+	log.debug("Reference: " + self.toString() + " RULE: " + rule.toString());
     return rule;
 }
 

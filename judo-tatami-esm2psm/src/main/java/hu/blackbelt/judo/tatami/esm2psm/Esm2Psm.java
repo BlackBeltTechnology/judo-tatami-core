@@ -23,10 +23,10 @@ import static hu.blackbelt.epsilon.runtime.execution.ExecutionContext.executionC
 import static hu.blackbelt.epsilon.runtime.execution.contexts.EtlExecutionContext.etlExecutionContextBuilder;
 import static hu.blackbelt.epsilon.runtime.execution.model.emf.WrappedEmfModelContext.wrappedEmfModelContextBuilder;
 import static hu.blackbelt.judo.tatami.core.TransformationTraceUtil.*;
+import static hu.blackbelt.judo.tatami.esm2psm.Esm2PsmTransformationTrace.ESM_2_PSM_URI_POSTFIX;
+import static hu.blackbelt.judo.tatami.esm2psm.Esm2PsmTransformationTrace.resolveEsm2PsmTrace;
 
 public class Esm2Psm {
-
-    public static final String ESM_2_PSM_URI_POSTFIX = "esm2psm";
 
     /**
      * Execute ESM to PSM model transformation,
@@ -78,22 +78,5 @@ public class Esm2Psm {
                 .esmModel(esmModel)
                 .psmModel(psmModel)
                 .trace(resolveEsm2PsmTrace(traceModel, esmModel, psmModel)).build();
-    }
-
-    public static ResourceSet createEsm2PsmTraceResourceSet() {
-        return createTraceResourceSet(ESM_2_PSM_URI_POSTFIX);
-    }
-
-    public static Map<EObject, List<EObject>> resolveEsm2PsmTrace(Resource traceResource, EsmModel esmModel, PsmModel psmModel) {
-        return resolveEsm2PsmTrace(traceResource.getContents(), esmModel, psmModel);
-    }
-
-    public static Map<EObject, List<EObject>> resolveEsm2PsmTrace(List<EObject> trace, EsmModel esmModel, PsmModel psmModel) {
-        return resolveTransformationTraceAsEObjectMap(trace,
-                ImmutableList.of(esmModel.getResourceSet(), psmModel.getResourceSet()));
-    }
-
-    public static List<EObject> getEsm2PsmTrace(Map<EObject, List<EObject>> trace) throws ScriptExecutionException {
-        return getTransformationTraceFromEtlExecutionContext(ESM_2_PSM_URI_POSTFIX, trace);
     }
 }

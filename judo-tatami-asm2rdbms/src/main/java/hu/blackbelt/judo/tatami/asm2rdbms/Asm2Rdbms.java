@@ -22,6 +22,7 @@ import static hu.blackbelt.epsilon.runtime.execution.contexts.EtlExecutionContex
 import static hu.blackbelt.epsilon.runtime.execution.contexts.ProgramParameter.programParameterBuilder;
 import static hu.blackbelt.epsilon.runtime.execution.model.emf.WrappedEmfModelContext.wrappedEmfModelContextBuilder;
 import static hu.blackbelt.epsilon.runtime.execution.model.excel.ExcelModelContext.excelModelContextBuilder;
+import static hu.blackbelt.judo.tatami.asm2rdbms.Asm2RdbmsTransformationTrace.resolveAsm2RdbmsTrace;
 import static hu.blackbelt.judo.tatami.core.TransformationTraceUtil.*;
 
 public class Asm2Rdbms {
@@ -120,23 +121,5 @@ public class Asm2Rdbms {
                 .asmModel(asmModel)
                 .rdbmsModel(rdbmsModel)
                 .trace(resolveAsm2RdbmsTrace(traceModel, asmModel, rdbmsModel)).build();
-    }
-
-
-    public static ResourceSet createAsm2RdbmsTraceResourceSet() {
-        return createTraceResourceSet(ASM_2_RDBMS_URI_POSTFIX);
-    }
-
-    public static Map<EObject, List<EObject>> resolveAsm2RdbmsTrace(Resource traceResource, AsmModel asmModel, RdbmsModel rdbmsModel) {
-        return resolveAsm2RdbmsTrace(traceResource.getContents(), asmModel, rdbmsModel);
-    }
-
-    public static Map<EObject, List<EObject>> resolveAsm2RdbmsTrace(List<EObject> trace, AsmModel asmModel, RdbmsModel rdbmsModel) {
-        return resolveTransformationTraceAsEObjectMap(trace,
-                ImmutableList.of(asmModel.getResourceSet(), rdbmsModel.getResourceSet()));
-    }
-
-    public static List<EObject> getAsm2RdbmsTrace(Map<EObject, List<EObject>> trace) throws ScriptExecutionException {
-        return getTransformationTraceFromEtlExecutionContext(ASM_2_RDBMS_URI_POSTFIX, trace);
     }
 }

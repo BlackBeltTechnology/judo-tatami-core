@@ -15,17 +15,19 @@ import liquibase.database.jvm.HsqlConnection;
 import liquibase.resource.FileSystemResourceAccessor;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.emf.common.util.URI;
-import org.eclipse.emf.ecore.resource.URIHandler;
+import org.eclipse.emf.ecore.resource.impl.URIHandlerImpl;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.io.File;
-import java.nio.file.FileSystems;
+import java.io.FileOutputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
 
+import static hu.blackbelt.judo.meta.liquibase.runtime.LiquibaseModel.SaveArguments.liquibaseSaveArgumentsBuilder;
 import static hu.blackbelt.judo.meta.liquibase.runtime.LiquibaseModel.buildLiquibaseModel;
+import static hu.blackbelt.judo.meta.liquibase.runtime.LiquibaseNamespaceFixUriHandler.fixUriOutputStream;
 import static hu.blackbelt.judo.meta.rdbms.runtime.RdbmsModel.LoadArguments.rdbmsLoadArgumentsBuilder;
 import static hu.blackbelt.judo.meta.rdbmsDataTypes.support.RdbmsDataTypesModelResourceSupport.registerRdbmsDataTypesMetamodel;
 import static hu.blackbelt.judo.meta.rdbmsNameMapping.support.RdbmsNameMappingModelResourceSupport.registerRdbmsNameMappingMetamodel;
@@ -35,35 +37,20 @@ import static hu.blackbelt.judo.tatami.rdbms2liquibase.Rdbms2Liquibase.executeRd
 @Slf4j
 public class Rdbms2LiquibaseTest {
 
-    public static final String LIQUIBASE_NORTHWIND = "liquibase:northwind";
-    public static final String RDBMS_NORTHWIND = "rdbms:northwind";
-    public static final String URN_NORTHWIND_RDBMS = "urn:northwind-rdbms.model";
-    public static final String URN_NORTHWIND_LIQUIBASE = "urn:northwind.changelog.xml";
     public static final String NORTHWIND = "northwind";
+    public static final String NORTHWIND_RDBMS_MODEL = "northwind-rdbms.model";
+    public static final String NORTHWIND_LIQUIBASE_MODEL = "northwind.changelog.xml";
     public static final String TARGET_TEST_CLASSES = "target/test-classes";
 
-    URIHandler uriHandler;
     RdbmsModel rdbmsModel;
     LiquibaseModel liquibaseModel;
 
     @Before
     public void setUp() throws Exception {
 
-        // Set our custom handler
-        uriHandler = new NameMappedURIHandlerImpl(
-                ImmutableList.of(new NioFilesystemnRelativePathURIHandlerImpl("urn",
-                        FileSystems.getDefault(), new File(TARGET_TEST_CLASSES).getAbsolutePath())),
-                ImmutableMap.of(
-                        URI.createURI(RDBMS_NORTHWIND), URI.createURI(URN_NORTHWIND_RDBMS),
-                        URI.createURI(LIQUIBASE_NORTHWIND), URI.createURI(URN_NORTHWIND_LIQUIBASE))
-        );
-
-
         // Create RDBMS to isolated ResourceSet, because in Tatami
         // there is no new namespace registration made.
         rdbmsModel = RdbmsModel.buildRdbmsModel()
-                .uriHandler(uriHandler)
-                .uri(URI.createURI(RDBMS_NORTHWIND))
                 .name(NORTHWIND)
                 .build();
 
@@ -73,12 +60,11 @@ public class Rdbms2LiquibaseTest {
         registerRdbmsTableMappingRulesMetamodel(rdbmsModel.getResourceSet());
 
         // Load default data
-        rdbmsModel.loadResource(rdbmsLoadArgumentsBuilder().build());
+        rdbmsModel.loadResource(rdbmsLoadArgumentsBuilder()
+                .file(new File(TARGET_TEST_CLASSES, NORTHWIND_RDBMS_MODEL)));
 
         // Create empty LIQUIBASE model
         liquibaseModel = buildLiquibaseModel()
-                .uriHandler(new LiquibaseNamespaceFixUriHandler(uriHandler))
-                .uri(URI.createURI(LIQUIBASE_NORTHWIND))
                 .name(NORTHWIND)
                 .build();
     }
@@ -95,15 +81,17 @@ public class Rdbms2LiquibaseTest {
                 new File(TARGET_TEST_CLASSES, "epsilon/transformations").toURI(),
                 "hsqldb");
 
-        liquibaseModel.saveLiquibaseModel();
+        liquibaseModel.saveLiquibaseModel(liquibaseSaveArgumentsBuilder()
+                .outputStream(fixUriOutputStream(
+                        new FileOutputStream(new File(TARGET_TEST_CLASSES, NORTHWIND_LIQUIBASE_MODEL)))));
 
         // Executing on HSQLDB
         Connection connection = DriverManager.getConnection("jdbc:hsqldb:mem:mymemdb", "SA", "");
 
         Database liquibaseDb = new HsqlDatabase();
         liquibaseDb.setConnection(new HsqlConnection(connection));
-        Liquibase liquibase = new Liquibase(new File(TARGET_TEST_CLASSES,
-                this.rdbmsModel.getName() + ".changelog.xml").getAbsolutePath(),
+        Liquibase liquibase = new Liquibase(
+                new File(TARGET_TEST_CLASSES, NORTHWIND_LIQUIBASE_MODEL).getAbsolutePath(),
                 new FileSystemResourceAccessor(),
                 liquibaseDb);
 

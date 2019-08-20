@@ -4,7 +4,7 @@ rule EAttributeToRdbmsField
 	to t : RDBMS!RdbmsField {
 		guard : asmUtils.isEntityType(s.eContainingClass)
 	    t.uuid = asmUtils.getAttributeFQName(s);
-	    log.info(" Class: " + asmUtils.getClassifierFQName(s.eContainingClass));
+	    log.debug(" Class: " + asmUtils.getClassifierFQName(s.eContainingClass));
 		
 		if (s.eType.isKindOf(ASM!EEnum)) {
 			// TODO: Make value constraints
@@ -29,14 +29,14 @@ rule EAttributeToTableValueField
 	extends EAttributeToRdbmsField { 
 		guard : asmUtils.isEntityType(s.eContainingClass) and not s.derived
 		s.eContainingClass.equivalent("EClassToRdbmsTable").fields.add(t);
-		log.info("    Add attribute: " + asmUtils.getAttributeFQName(s));
+		log.debug("    Add attribute: " + asmUtils.getAttributeFQName(s));
 }
 
 rule EAttributeToUniqueKey
 	transform s : ASM!EAttribute
 	to u : RDBMS!RdbmsUniqueConstraint {
 		guard : asmUtils.isEntityType(s.eContainingClass) and s.ID and not s.derived
-		log.info("    Add uniquie constraint: " + asmUtils.getAttributeFQName(s));
+		log.debug("    Add uniquie constraint: " + asmUtils.getAttributeFQName(s));
 	    
 	    u.uuid = asmUtils.getAttributeFQName(s) + "@uniqueConstraint";
 		s.eContainingClass.equivalent("EClassToRdbmsTable").uniqueConstraints.add(t);

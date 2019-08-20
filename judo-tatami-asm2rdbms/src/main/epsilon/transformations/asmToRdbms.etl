@@ -41,8 +41,8 @@ post {
 		log.debug("UUID: " + e.uuid);
 		var sqlNameMapping = RDBMS!NameMapping.all.selectOne(m | m.fullyQualifiedName == e.uuid);
 		if (sqlNameMapping.isDefined()) {
-			log.info("Replace sqlName in: " + e);
-			log.info("   To: " + sqlNameMapping);
+			log.debug("Replace sqlName in: " + e);
+			log.debug("   To: " + sqlNameMapping);
 			e.sqlName = sqlNameMapping.rdbmsName;
 		}
 	}

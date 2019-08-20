@@ -26,12 +26,12 @@ import static hu.blackbelt.epsilon.runtime.execution.contexts.EtlExecutionContex
 import static hu.blackbelt.epsilon.runtime.execution.contexts.ProgramParameter.programParameterBuilder;
 import static hu.blackbelt.epsilon.runtime.execution.model.emf.WrappedEmfModelContext.wrappedEmfModelContextBuilder;
 import static hu.blackbelt.judo.tatami.core.TransformationTraceUtil.*;
+import static hu.blackbelt.judo.tatami.psm2asm.Psm2AsmTransformationTrace.resolvePsm2AsmTrace;
 import static org.eclipse.emf.common.util.URI.createURI;
 
 public class Psm2Asm {
 
     public static final String HTTP_BLACKBELT_HU_JUDO_META_EXTENDED_METADATA = "http://blackbelt.hu/judo/meta/ExtendedMetadata";
-    public static final String PSM_2_ASM_URI_POSTFIX = "psm2asm";
 
     /**
      * Execute PSM to ASM model transformation,
@@ -82,63 +82,12 @@ public class Psm2Asm {
         executionContext.commit();
         executionContext.close();
 
-        List<EObject> traceModel = getTransformationTraceFromEtlExecutionContext(PSM_2_ASM_URI_POSTFIX, etlExecutionContext);
+        List<EObject> traceModel = getTransformationTraceFromEtlExecutionContext(
+                Psm2AsmTransformationTrace.PSM_2_ASM_URI_POSTFIX, etlExecutionContext);
         return Psm2AsmTransformationTrace.psm2AsmTransformationTraceBuilder()
                 .asmModel(asmModel)
                 .psmModel(psmModel)
                 .trace(resolvePsm2AsmTrace(traceModel, psmModel, asmModel)).build();
     }
 
-    /**
-     * Create PSM 2 ASM Trace model {@link Resource} wth isolated {@link ResourceSet}
-     *
-     * @return the trace {@link Resource} with the registered namespace.
-     */
-    public static Resource createPsm2AsmTraceResource(org.eclipse.emf.common.util.URI uri,
-                                                      URIHandler uriHandler) {
-        return createTraceModelResource(PSM_2_ASM_URI_POSTFIX, uri, uriHandler);
-    }
-
-    /**
-     * Resolves PSM 2 ASM Trace model {@link Resource} and resturns the trace {@link EObject } map
-     *
-     * @return the trace {@link EObject} map between PSM source and ASM target.
-     */
-    public static Map<EObject, List<EObject>> resolvePsm2AsmTrace(Resource traceResource,
-                                                                  PsmModel psmModel,
-                                                                  AsmModel asmModel) {
-        return resolvePsm2AsmTrace(traceResource.getContents(), psmModel, asmModel);
-    }
-
-    /**
-     * Resolves PSM 2 ASM trace:Trace model entries returns the trace {@link EObject } map
-     *
-     * @return the trace {@link EObject} map between PSM source and ASM target.
-     */
-    public static Map<EObject, List<EObject>> resolvePsm2AsmTrace(List<EObject> trace,
-                                                                  PsmModel psmModel,
-                                                                  AsmModel asmModel) {
-        return resolveTransformationTraceAsEObjectMap(trace,
-                ImmutableList.of(psmModel.getResourceSet(), asmModel.getResourceSet()));
-    }
-
-    /**
-     * Convert race {@link EObject } map to trace:Trace model entrie.
-     *
-     * @return the trace trace:Trace entries
-     */
-    public static List<EObject> getPsm2AsmTrace(Map<EObject, List<EObject>> trace) {
-        return getTransformationTraceFromEtlExecutionContext(PSM_2_ASM_URI_POSTFIX, trace);
-    }
-
-    /**
-     * Convert race {@link EObject } map to trace:Trace model {@link Resource} with isolated {@link ResourceSet}.
-     *
-     * @return the trace trace:Trace entries
-     */
-    public static Resource getPsm2AsmTraceResource(Map<EObject, List<EObject>> trace,
-                                                   org.eclipse.emf.common.util.URI modelUri,
-                                                   URIHandler uriHandler) {
-        return createTraceModelResourceFromEObjectMap(trace, PSM_2_ASM_URI_POSTFIX, modelUri, uriHandler);
-    }
 }

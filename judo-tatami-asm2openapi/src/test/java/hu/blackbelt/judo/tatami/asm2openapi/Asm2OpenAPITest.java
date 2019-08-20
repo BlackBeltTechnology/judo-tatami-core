@@ -1,6 +1,5 @@
 package hu.blackbelt.judo.tatami.asm2openapi;
 
-import com.google.common.collect.ImmutableMap;
 import hu.blackbelt.epsilon.runtime.execution.api.Log;
 import hu.blackbelt.epsilon.runtime.execution.impl.Slf4jLog;
 import hu.blackbelt.judo.meta.asm.runtime.AsmModel;
@@ -13,15 +12,10 @@ import io.swagger.util.Yaml;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
-import org.eclipse.emf.ecore.resource.Resource;
-import org.eclipse.emf.ecore.resource.ResourceSet;
-import org.eclipse.emf.ecore.xmi.impl.XMIResourceImpl;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
@@ -32,21 +26,17 @@ import static hu.blackbelt.judo.meta.asm.runtime.AsmModel.LoadArguments.asmLoadA
 import static hu.blackbelt.judo.meta.asm.runtime.AsmModel.loadAsmModel;
 import static hu.blackbelt.judo.meta.openapi.runtime.OpenapiModel.SaveArguments.openapiSaveArgumentsBuilder;
 import static hu.blackbelt.judo.tatami.asm2openapi.Asm2OpenAPI.*;
+import static hu.blackbelt.judo.tatami.asm2openapi.Asm2OpenAPITransformationTrace.fromModelsAndTrace;
 
 @Slf4j
 public class Asm2OpenAPITest {
 
-    public static final String ASM_NORTHWIND = "asm:northwind";
-    public static final String OPENAPI_NORTHWIND = "openapi:northwind";
     public static final String NORTHWIND = "northwind";
     public static final String NORTHWIND_ASM_MODEL = "northwind-asm.model";
     public static final String NORTHWIND_OPENAPI_MODEL = "northwind-openapi.model";
     public static final String NORTHWIND_ASM_2_OPENAPI_MODEL = "northwind-asm2openapi.model";
     public static final String EPSILON_TRANSFORMATIONS_OPENAPI = "epsilon/transformations/openapi";
     public static final String TARGET_TEST_CLASSES = "target/test-classes";
-
-    public static final URI NORTHWIND_ASM_2_OPENAPI_URI =
-            URI.createFileURI(new File(TARGET_TEST_CLASSES, NORTHWIND_ASM_2_OPENAPI_MODEL).getAbsolutePath());
 
     Log slf4jlog;
     AsmModel asmModel;
@@ -60,14 +50,12 @@ public class Asm2OpenAPITest {
         // Loading ASM to isolated ResourceSet, because in Tatami
         // there is no new namespace registration made.
         asmModel = loadAsmModel(asmLoadArgumentsBuilder()
-                .uri(URI.createURI(ASM_NORTHWIND))
                 .file(new File(TARGET_TEST_CLASSES, NORTHWIND_ASM_MODEL))
                 .name(NORTHWIND));
 
         // Create empty OPENAPI model
         openapiModel = OpenapiModel.buildOpenapiModel()
                 .name(NORTHWIND)
-                .uri(URI.createURI(OPENAPI_NORTHWIND))
                 .build();
     }
 
@@ -81,18 +69,16 @@ public class Asm2OpenAPITest {
                 new File(TARGET_TEST_CLASSES, EPSILON_TRANSFORMATIONS_OPENAPI).toURI());
 
         // Saving trace map
-        ResourceSet traceSavedResourceSet = createAsm2OpenAPITraceResourceSet();
-        Resource traceResoureSaved = traceSavedResourceSet.createResource(NORTHWIND_ASM_2_OPENAPI_URI);
-        traceResoureSaved.getContents().addAll(getAsm2OpenAPITrace(asm2OpenAPITransformationTrace.getTrace()));
-        traceResoureSaved.save(ImmutableMap.of());
+        asm2OpenAPITransformationTrace.save(new File(TARGET_TEST_CLASSES, NORTHWIND_ASM_2_OPENAPI_MODEL));
+
 
         // Loading trace map
-        ResourceSet traceLoadedResourceSet = createAsm2OpenAPITraceResourceSet();
-        Resource traceResoureLoaded = traceLoadedResourceSet.createResource(NORTHWIND_ASM_2_OPENAPI_URI);
-        traceResoureLoaded.load(ImmutableMap.of());
+        Asm2OpenAPITransformationTrace asm2OpenAPITransformationTraceLoaded =
+                fromModelsAndTrace(NORTHWIND, asmModel, openapiModel, new File(TARGET_TEST_CLASSES, NORTHWIND_ASM_2_OPENAPI_MODEL));
 
-        // Resolve serialized URI's as EObject map
-        Map<EObject, List<EObject>> resolvedTrace = resolveAsm2OpenAPITrace(traceResoureLoaded, asmModel, openapiModel);
+
+        Map<EObject, List<EObject>> resolvedTrace =
+                asm2OpenAPITransformationTraceLoaded.getTransformationTrace();
 
         // Printing trace
         for (EObject e : resolvedTrace.keySet()) {

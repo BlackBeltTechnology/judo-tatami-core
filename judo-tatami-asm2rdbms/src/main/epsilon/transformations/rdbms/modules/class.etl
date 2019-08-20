@@ -5,7 +5,7 @@ rule EClassToTableIdField
 		guard : asmUtils.isEntityType(s)
 		t.name = asmUtils.getClassifierFQName(s) + "#id";
 	    t.uuid = asmUtils.getClassifierFQName(s) + "#id";
-        log.info("    Add primary key: " + t.name);
+        log.debug("    Add primary key: " + t.name);
         var table = s.equivalent("EClassToRdbmsTable");
 	    table.fields.add(t);
 		table.primaryKey = t;
@@ -18,7 +18,7 @@ rule EClassToRdbmsTable
 	transform s : ASM!EClass
 	to t : RDBMS!RdbmsTable {
 		guard : asmUtils.isEntityType(s)
-        log.info(" Add table: " + asmUtils.getClassifierFQName(s));
+        log.debug(" Add table: " + asmUtils.getClassifierFQName(s));
 		s.root().equivalent("rootPackegeToModel").rdbmsTables.add(t);
 	    t.sqlName = s.tableSqlName();
 	    t.name = asmUtils.getClassifierFQName(s);
