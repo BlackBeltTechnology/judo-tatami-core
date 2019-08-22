@@ -73,31 +73,31 @@
 
         <judo-framework-version>2.0.0_develop_130</judo-framework-version>
 
-        <judo-meta-rdbms-version>1.0.0.develop_00085</judo-meta-rdbms-version>
+        <judo-meta-rdbms-version>1.0.0.develop_00086</judo-meta-rdbms-version>
         <judo-meta-rdbms.import-range>[1.0,1.1)</judo-meta-rdbms.import-range>
 
-        <judo-meta-esm-version>1.0.0.develop_00062</judo-meta-esm-version>
+        <judo-meta-esm-version>1.0.0.develop_00064</judo-meta-esm-version>
         <judo-meta-esm-import-range>[1.0,1.1)</judo-meta-esm-import-range>
 
-        <judo-meta-psm-version>1.0.0.develop_00313</judo-meta-psm-version>
+        <judo-meta-psm-version>1.0.0.develop_00317</judo-meta-psm-version>
         <judo-meta-psm-import-range>[1.0,1.1)</judo-meta-psm-import-range>
 
-        <judo-meta-jql-version>1.0.0.develop_00040</judo-meta-jql-version>
+        <judo-meta-jql-version>1.0.0.develop_00044</judo-meta-jql-version>
         <judo-meta-jql-import-range>[1.0,1.1)</judo-meta-jql-import-range>
 
-	    <judo-meta-asm-version>1.0.0.develop_00099</judo-meta-asm-version>
+	    <judo-meta-asm-version>1.0.0.develop_00102</judo-meta-asm-version>
         <judo-meta-asm-import-range>[1.0,1.1)</judo-meta-asm-import-range>
 
-        <judo-meta-expression-version>1.0.0.develop_00267</judo-meta-expression-version>
+        <judo-meta-expression-version>1.0.0.develop_00270</judo-meta-expression-version>
         <judo-meta-expression-import-range>[1.0,1.1)</judo-meta-expression-import-range>
 
-        <judo-meta-measure-version>1.0.0.develop_00044</judo-meta-measure-version>
+        <judo-meta-measure-version>1.0.0.develop_00047</judo-meta-measure-version>
         <judo-meta-measure-import-range>[1.0,1.1)</judo-meta-measure-import-range>
 
-        <judo-meta-liquibase-version>1.0.0.develop_00031</judo-meta-liquibase-version>
+        <judo-meta-liquibase-version>1.0.0.develop_00033</judo-meta-liquibase-version>
         <judo-meta-liquibase-import-range>[1.0,1.1)</judo-meta-liquibase-import-range>
 
-        <judo-meta-openapi-version>1.0.0.develop_00097</judo-meta-openapi-version>
+        <judo-meta-openapi-version>1.0.0.develop_00099</judo-meta-openapi-version>
         <judo-meta-openapi-import-range>[1.0,1.1)</judo-meta-openapi-import-range>
 
         <!-- Xtend / Xcore -->
@@ -117,7 +117,7 @@
         <xpand-version>2.0.0</xpand-version>
         <emf-mapping-ecore2xml>2.11.0</emf-mapping-ecore2xml>
 
-        <cxf-version>3.3.1</cxf-version>
+        <cxf-version>3.3.3</cxf-version>
         <osgi-utils-version>1.0.7</osgi-utils-version>
         <bouncycastle-karaf-features-version>1.61.2</bouncycastle-karaf-features-version>
         <tinybundles-karaf-features-version>3.0.0_1</tinybundles-karaf-features-version>
