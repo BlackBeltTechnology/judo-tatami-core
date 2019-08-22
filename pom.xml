@@ -27,6 +27,7 @@
         <module>judo-tatami-asm2jaxrsapi</module>
         <module>judo-tatami-asm2sdk</module>
         <module>judo-tatami-itest</module>
+        <!--module>judo-tatami-maven-plugin</module-->
         <module>features</module>
         <module>kar</module>
     </modules>
