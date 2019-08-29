@@ -13,6 +13,7 @@ import java.net.URI;
 import static hu.blackbelt.judo.meta.psm.PsmEpsilonValidator.validatePsm;
 import static hu.blackbelt.judo.tatami.psm2asm.Psm2Asm.executePsm2AsmTransformation;
 import static java.util.Optional.ofNullable;
+import static hu.blackbelt.judo.meta.asm.runtime.AsmModel.buildAsmModel;
 
 @Slf4j
 public class Psm2AsmWork extends AbstractTransformationWork {
@@ -40,7 +41,7 @@ public class Psm2AsmWork extends AbstractTransformationWork {
 
         AsmModel asmModel = getTransformationContext().getByClass(AsmModel.class);
         if (asmModel == null) {
-            asmModel = AsmModel.buildAsmModel().name(psmModel.getName()).build();
+            asmModel = buildAsmModel().name(psmModel.getName()).build();
             getTransformationContext().put(asmModel);
         }
 
