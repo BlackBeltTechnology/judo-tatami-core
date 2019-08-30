@@ -2,7 +2,10 @@ package hu.blackbelt.judo.tatami.core.workflow.work;
 
 import com.google.common.collect.Maps;
 
+import static java.util.Optional.ofNullable;
+
 import java.util.Map;
+import java.util.Optional;
 
 public class TransformationContext {
 
@@ -21,12 +24,18 @@ public class TransformationContext {
         variables.put(value.getClass(), value);
     }
 
-    public Object get(Object key) {
-        return variables.get(key);
+    public Optional<Object> get(Object key) {
+        return ofNullable(variables.get(key));
     }
 
-    public <T> T getByClass(Class<T> key) {
-        return (T) variables.get(key);
+    public <T> Optional<T> get(Class<T> valueType, Object key) {
+        return ofNullable((T) variables.get(key));
+    }
+
+    
+    public <T> Optional<T> getByClass(Class<T> key) {
+    	ofNullable(key).orElseThrow(() -> new IllegalAccessError("Key is null"));
+    	return ofNullable((T) variables.get(key));
     }
 
 
