@@ -9,6 +9,7 @@ import hu.blackbelt.judo.tatami.core.workflow.work.TransformationContext;
 import lombok.extern.slf4j.Slf4j;
 
 import java.net.URI;
+import java.util.Optional;
 
 //import static hu.blackbelt.judo.meta.asm.AsmEpsilonValidator.validateAsm;
 import static hu.blackbelt.judo.tatami.asm2openapi.Asm2OpenAPI.executeAsm2OpenAPITransformation;
@@ -18,7 +19,7 @@ import static hu.blackbelt.judo.meta.openapi.runtime.OpenapiModel.buildOpenapiMo
 @Slf4j
 public class Asm2OpenAPIWork extends AbstractTransformationWork {
 
-    public static final String ASM_VALIDATON_SCRIPT_URI = "AsmValidationScriptUri";
+    public static final String ASM_VALIDATION_SCRIPT_URI = "AsmValidationScriptUri";
 
     final URI transformationScriptRoot;
 
@@ -29,26 +30,35 @@ public class Asm2OpenAPIWork extends AbstractTransformationWork {
 
     @Override
     public void execute() throws Exception {
-        AsmModel asmModel = getTransformationContext().getByClass(AsmModel.class);
-        if (asmModel == null) {
-            throw new IllegalArgumentException("ASM Model does not found in transformation context");
-        }
-        /*
-        if (getTransformationContext().get(ASM_VALIDATON_SCRIPT_URI) != null) {
-            validateAsm(ofNullable((Log) getTransformationContext().get(Log.class)).orElseGet(() -> new Slf4jLog(log)),
-                    asmModel, (URI) getTransformationContext().get(ASM_VALIDATON_SCRIPT_URI));
-        }
-		*/
-        OpenapiModel openapiModel = getTransformationContext().getByClass(OpenapiModel.class);
+        Optional<AsmModel> asmModel = getTransformationContext().getByClass(AsmModel.class);
+        asmModel.orElseThrow(() -> new IllegalArgumentException("ASM Model does not found in transformation context"));
+        /*getTransformationContext().get(URI.class, ASM_VALIDATION_SCRIPT_URI)
+        	.ifPresent(validationScriptUri -> {
+        		try {
+					validateAsm(
+							getTransformationContext().getByClass(Log.class).orElseGet(() -> new Slf4jLog(log)),
+						    asmModel.get(), 
+						    validationScriptUri);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+        	});*/
+        
+        
+        OpenapiModel openapiModel = getTransformationContext().getByClass(OpenapiModel.class)
+        		.orElseGet( () -> buildOpenapiModel().name(asmModel.get().getName()).build());
+            getTransformationContext().put(openapiModel);
+        
+        /*OpenapiModel openapiModel = getTransformationContext().getByClass(OpenapiModel.class);
         if (openapiModel == null) {
             openapiModel = buildOpenapiModel().name(asmModel.getName()).build();
             getTransformationContext().put(openapiModel);
-        }
+        }*/
 		
         Asm2OpenAPITransformationTrace asm2OpenapiTransformationTrace = executeAsm2OpenAPITransformation(
-                asmModel,
+                asmModel.get(),
                 openapiModel,
-                ofNullable((Log) getTransformationContext().get(Log.class)).orElseGet(() -> new Slf4jLog(log)),
+                getTransformationContext().getByClass(Log.class).orElseGet(() -> new Slf4jLog(log)),
                 transformationScriptRoot);
 
         getTransformationContext().put(asm2OpenapiTransformationTrace);
