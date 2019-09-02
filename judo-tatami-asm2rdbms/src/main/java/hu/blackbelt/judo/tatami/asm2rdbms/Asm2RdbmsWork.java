@@ -53,20 +53,21 @@ public class Asm2RdbmsWork extends AbstractTransformationWork {
 		
 		RdbmsModel rdbmsModel = getTransformationContext().getByClass(RdbmsModel.class)
         		.orElseGet(() -> buildRdbmsModel().name(asmModel.get().getName()).build());
-        getTransformationContext().put(rdbmsModel);
-        
+
      // The RDBMS model resources have to know the mapping models
         registerRdbmsNameMappingMetamodel(rdbmsModel.getResourceSet());
         registerRdbmsDataTypesMetamodel(rdbmsModel.getResourceSet());
         registerRdbmsTableMappingRulesMetamodel(rdbmsModel.getResourceSet());
-		
+        
+        getTransformationContext().put(rdbmsModel);
+     
 		 Asm2RdbmsTransformationTrace asm2RdbmsTransformationTrace = executeAsm2RdbmsTransformation(
 	                asmModel.get(),
 	                rdbmsModel,
 	                getTransformationContext().getByClass(Log.class).orElseGet(() -> new Slf4jLog(log)),
 	                transformationScriptRoot,
 	                getTransformationContext().get(URI.class,RDBMS_EXCELMODEURI).get(),
-					getTransformationContext().get(RDBMS_DIALECT).toString());
+					getTransformationContext().get(RDBMS_DIALECT).get().toString());
 
 		
 		getTransformationContext().put(asm2RdbmsTransformationTrace);
