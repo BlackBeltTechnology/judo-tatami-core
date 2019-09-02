@@ -3,7 +3,6 @@ package org.judo.tatami.workflow;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-import java.io.File;
 import java.io.IOException;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -20,7 +19,7 @@ public class DefaultWorkflowTest {
 	
 	@BeforeEach
 	void setUp() throws IOException, PsmValidationException {
-		defaultWorkflow.setUp(new File("src/main/epsilon/defaultworkflow").toURI());
+		defaultWorkflow.setUp();
 	}
 	
 	@Test

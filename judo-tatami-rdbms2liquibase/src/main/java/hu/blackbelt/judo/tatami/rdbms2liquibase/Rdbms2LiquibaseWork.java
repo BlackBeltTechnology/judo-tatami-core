@@ -40,6 +40,10 @@ public class Rdbms2LiquibaseWork extends AbstractTransformationWork {
 		Optional<RdbmsModel> rdbmsModel = getTransformationContext().getByClass(RdbmsModel.class);
 		rdbmsModel.orElseThrow(() -> new IllegalArgumentException("RDBMS Model does not found in transformation context"));
 		
+		registerRdbmsNameMappingMetamodel(rdbmsModel.get().getResourceSet());
+        registerRdbmsDataTypesMetamodel(rdbmsModel.get().getResourceSet());
+        registerRdbmsTableMappingRulesMetamodel(rdbmsModel.get().getResourceSet());
+        
 		getTransformationContext().get(URI.class, RDBMS_VALIDATON_SCRIPT_URI)
     	.ifPresent(validationScriptUri -> {
     		try {
@@ -60,7 +64,7 @@ public class Rdbms2LiquibaseWork extends AbstractTransformationWork {
 		Rdbms2Liquibase.executeRdbms2LiquibaseTransformation(rdbmsModel.get(), liquibaseModel,
 				(Log) getTransformationContext().get(Log.class).orElseGet(() -> new Slf4jLog(log)),
 				transformationScriptRoot, 
-				getTransformationContext().get(LIQUIBASE_DIALECT).toString());
+				getTransformationContext().get(LIQUIBASE_DIALECT).get().toString());
 	}
 
 }

@@ -27,7 +27,6 @@ public class Rdbms2LiquibaseWorkTest {
 	
 	public static final String NORTHWIND = "northwind";
 	public static final String NORTHWIND_RDBMS_MODEL = "northwind-rdbms.model";
-    public static final String TARGET_TEST_CLASSES = "target/test-classes";
     
     Rdbms2LiquibaseWork rdbms2LiquibaseWork;
     TransformationContext transformationContext;
@@ -38,10 +37,6 @@ public class Rdbms2LiquibaseWorkTest {
     	RdbmsModel rdbmsModel = RdbmsModel.buildRdbmsModel()
                 .name(NORTHWIND)
                 .build();
-    	
-    	registerRdbmsNameMappingMetamodel(rdbmsModel.getResourceSet());
-        registerRdbmsDataTypesMetamodel(rdbmsModel.getResourceSet());
-        registerRdbmsTableMappingRulesMetamodel(rdbmsModel.getResourceSet());
     	
     	transformationContext = new TransformationContext(NORTHWIND);
     	transformationContext.put(rdbmsModel);

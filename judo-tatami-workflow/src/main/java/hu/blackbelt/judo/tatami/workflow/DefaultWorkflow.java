@@ -28,12 +28,16 @@ public class DefaultWorkflow {
 	
 	TransformationContext transformationContext;
 	public static final String MODEL_NAME = "northwind";
-    //public static final String DIALECT = "";
+    public static final String DIALECT = "hsqldb";
+    public static final String MODEL_DIRECTORY = "model";
 	
-	public void setUp(URI transformationScriptRoot)
+	public void setUp()
 	{
 		transformationContext = new TransformationContext(MODEL_NAME);
-		transformationContext.put(buildPsmModel().name("TEST_MODEL").build());
+		transformationContext.put(buildPsmModel().name(MODEL_NAME).build());
+		transformationContext.put(Asm2RdbmsWork.RDBMS_DIALECT,DIALECT);
+		transformationContext.put(Rdbms2LiquibaseWork.LIQUIBASE_DIALECT,DIALECT);
+		transformationContext.put(Asm2RdbmsWork.RDBMS_EXCELMODEURI,new File(MODEL_DIRECTORY).toURI());
 	}
 	
 	public WorkReport startDefaultWorkflow()
@@ -43,7 +47,7 @@ public class DefaultWorkflow {
 		Psm2MeasureWork psm2MeasureWork = new Psm2MeasureWork(transformationContext, new File("src/main/epsilon/transformations/measure").toURI());
 		Asm2RdbmsWork asm2RdbmsWork = new Asm2RdbmsWork(transformationContext, new File("src/main/epsilon/transformations/rdbms").toURI());
 	    Asm2OpenAPIWork asm2OpenapiWork = new Asm2OpenAPIWork(transformationContext, new File("src/main/epsilon/transformations/openapi").toURI());
-		Rdbms2LiquibaseWork rdbms2LiquibaseWork = new Rdbms2LiquibaseWork(transformationContext, new File("src/main/epsilon/transformations/liquibase").toURI());
+		Rdbms2LiquibaseWork rdbms2LiquibaseWork = new Rdbms2LiquibaseWork(transformationContext, new File("src/main/epsilon/transformations").toURI());
 			
 		WorkFlow workflow = SequentialFlow.Builder.aNewSequentialFlow()
 				.named("psm2asm&psm2measure, asm2dbms&measure, rdbms2liquibase")
@@ -55,14 +59,11 @@ public class DefaultWorkflow {
 		        		.named("asm2rdbms, asm2openapi")
 		        		.execute(asm2RdbmsWork, asm2OpenapiWork)
 		        		.build())
-		        .then(SequentialFlow.Builder.aNewSequentialFlow()
-		        		.named("rdbms2liquibase")
-		        		.execute(rdbms2LiquibaseWork)
-		        		.build())
+		        .then(rdbms2LiquibaseWork)
 		        .build();
 		
 		WorkFlowEngine workFlowEngine = aNewWorkFlowEngine().build();
-		workFlowEngine.run(workflow);
+		WorkReport workReport = workFlowEngine.run(workflow);
 		
 	     transformationContext.getByClass(AsmModel.class)
 	     	.orElseThrow(() -> new IllegalStateException("Missing transformated AsmModel"));
@@ -75,6 +76,6 @@ public class DefaultWorkflow {
 	     transformationContext.getByClass(LiquibaseModel.class)
 	     	.orElseThrow(() -> new IllegalStateException("Missing transformated LiquibaseModel"));
 	     
-	     return new DefaultWorkReport(WorkStatus.COMPLETED);
+	     return workReport;
 	}	
 }
