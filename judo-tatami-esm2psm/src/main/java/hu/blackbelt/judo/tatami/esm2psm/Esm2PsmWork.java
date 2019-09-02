@@ -10,9 +10,10 @@ import hu.blackbelt.judo.meta.esm.runtime.EsmModel;
 
 //import static hu.blackbelt.judo.meta.esm.EsmEpsilonValidator.validateEsm;
 import static hu.blackbelt.judo.tatami.esm2psm.Esm2Psm.executeEsm2PsmTransformation;
-import static java.util.Optional.ofNullable;
+import static hu.blackbelt.judo.meta.psm.runtime.PsmModel.buildPsmModel;
 
 import java.net.URI;
+import java.util.Optional;
 
 @Slf4j
 public class Esm2PsmWork extends AbstractTransformationWork {
@@ -28,28 +29,30 @@ public class Esm2PsmWork extends AbstractTransformationWork {
 
 	@Override
 	public void execute() throws Exception {
-		EsmModel esmModel = getTransformationContext().getByClass(EsmModel.class);
+		Optional<EsmModel> esmModel = getTransformationContext().getByClass(EsmModel.class);
+		esmModel.orElseThrow(() -> new IllegalArgumentException("ESM Model does not found in transformation context"));
 		
-		if(esmModel == null) throw new IllegalArgumentException("ESM Model not found in the transformation context");
+		getTransformationContext().get(URI.class, ESM_VALIDATION_SCRIPT_URI)
+    	.ifPresent(validationScriptUri -> {
+    		try {
+				/*validateEsm(
+					getTransformationContext().getByClass(Log.class).orElseGet(() -> new Slf4jLog(log)),
+				    esmModel.get(), 
+				    validationScriptUri);*/
+			} catch (Exception e) {
+				e.printStackTrace();  
+			}
+    });
 		
-		//Esm Validator is missing
-		if(getTransformationContext().get(ESM_VALIDATION_SCRIPT_URI) != null)
-		{
-			/*validateEsm(ofNullable((Log) getTransformationContext().get(Log.class)).orElseGet(() -> new Slf4jLog(log)),
-                    esmModel, (URI) getTransformationContext().get(ESM_VALIDATION_SCRIPT_URI));*/
-		}
+		 PsmModel psmModel = getTransformationContext().getByClass(PsmModel.class)
+	        		.orElseGet(() -> buildPsmModel().name(esmModel.get().getName()).build());
+	        getTransformationContext().put(psmModel);
 		
-		PsmModel psmModel = getTransformationContext().getByClass(PsmModel.class);
-		
-		if(psmModel == null)
-		{
-			psmModel = PsmModel.buildPsmModel().name(esmModel.getName()).build();
-			getTransformationContext().put(psmModel);
-		}
-		
-		Esm2PsmTransformationTrace esm2PsmTransformationTrace = executeEsm2PsmTransformation(esmModel,psmModel,
-				ofNullable((Log) getTransformationContext().get(Log.class)).orElseGet(() -> new Slf4jLog(log)),
-				transformationScriptRoot);
+	        Esm2PsmTransformationTrace esm2PsmTransformationTrace = executeEsm2PsmTransformation(
+	                esmModel.get(),
+	                psmModel,
+	                getTransformationContext().getByClass(Log.class).orElseGet(() -> new Slf4jLog(log)),
+	                transformationScriptRoot);
 		
 		getTransformationContext().put(esm2PsmTransformationTrace);
 	}
