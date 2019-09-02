@@ -1,13 +1,15 @@
 package hu.blackbelt.judo.tatami.asm2rdbms;
 
+import static hu.blackbelt.judo.meta.rdbms.runtime.RdbmsModel.buildRdbmsModel;
+//import static hu.blackbelt.judo.meta.asm.AsmEpsilonValidator.validateAsm;
 import static hu.blackbelt.judo.meta.rdbmsDataTypes.support.RdbmsDataTypesModelResourceSupport.registerRdbmsDataTypesMetamodel;
 import static hu.blackbelt.judo.meta.rdbmsNameMapping.support.RdbmsNameMappingModelResourceSupport.registerRdbmsNameMappingMetamodel;
 import static hu.blackbelt.judo.meta.rdbmsRules.support.RdbmsTableMappingRulesModelResourceSupport.registerRdbmsTableMappingRulesMetamodel;
 //import static hu.blackbelt.judo.meta.asm.AsmEpsilonValidator.validateAsm;
 import static hu.blackbelt.judo.tatami.asm2rdbms.Asm2Rdbms.executeAsm2RdbmsTransformation;
-import static java.util.Optional.ofNullable;
 
 import java.net.URI;
+import java.util.Optional;
 
 import hu.blackbelt.epsilon.runtime.execution.api.Log;
 import hu.blackbelt.epsilon.runtime.execution.impl.Slf4jLog;
@@ -34,32 +36,38 @@ public class Asm2RdbmsWork extends AbstractTransformationWork {
 
 	@Override
 	public void execute() throws Exception {
-		AsmModel asmModel = getTransformationContext().getByClass(AsmModel.class);
+		Optional<AsmModel> asmModel = getTransformationContext().getByClass(AsmModel.class);
+		asmModel.orElseThrow(() -> new IllegalArgumentException("ASM Model does not found in transformation context"));
+		
+		getTransformationContext().get(URI.class, ASM_VALIDATION_SCRIPT_URI)
+    	.ifPresent(validationScriptUri -> {
+    		try {
+				/*validateAsm(
+					getTransformationContext().getByClass(Log.class).orElseGet(() -> new Slf4jLog(log)),
+				    asmModel.get(), 
+				    validationScriptUri);*/
+			} catch (Exception e) {
+				e.printStackTrace();    
+			}
+    });
+		
+		RdbmsModel rdbmsModel = getTransformationContext().getByClass(RdbmsModel.class)
+        		.orElseGet(() -> buildRdbmsModel().name(asmModel.get().getName()).build());
+        getTransformationContext().put(rdbmsModel);
+        
+     // The RDBMS model resources have to know the mapping models
+        registerRdbmsNameMappingMetamodel(rdbmsModel.getResourceSet());
+        registerRdbmsDataTypesMetamodel(rdbmsModel.getResourceSet());
+        registerRdbmsTableMappingRulesMetamodel(rdbmsModel.getResourceSet());
+		
+		 Asm2RdbmsTransformationTrace asm2RdbmsTransformationTrace = executeAsm2RdbmsTransformation(
+	                asmModel.get(),
+	                rdbmsModel,
+	                getTransformationContext().getByClass(Log.class).orElseGet(() -> new Slf4jLog(log)),
+	                transformationScriptRoot,
+	                getTransformationContext().get(URI.class,RDBMS_EXCELMODEURI).get(),
+					getTransformationContext().get(RDBMS_DIALECT).toString());
 
-		if(asmModel == null) throw new IllegalArgumentException("ASM Model does not found in transformation context");
-	
-		//Asm validator not yet implemented
-		if (getTransformationContext().get(ASM_VALIDATION_SCRIPT_URI) != null) {
-            /*validateAsm(ofNullable((Log) getTransformationContext().get(Log.class)).orElseGet(() -> new Slf4jLog(log)),
-                    asmModel, (URI) getTransformationContext().get(ASM_VALIDATON_SCRIPT_URI));*/
-        }
-		
-		RdbmsModel rdbmsModel = getTransformationContext().getByClass(RdbmsModel.class);
-		
-		if (rdbmsModel == null) {
-            rdbmsModel = RdbmsModel.buildRdbmsModel().name(asmModel.getName()).build();
-            // The RDBMS model resources have to know the mapping models
-            registerRdbmsNameMappingMetamodel(rdbmsModel.getResourceSet());
-            registerRdbmsDataTypesMetamodel(rdbmsModel.getResourceSet());
-            registerRdbmsTableMappingRulesMetamodel(rdbmsModel.getResourceSet());
-            getTransformationContext().put(rdbmsModel);
-        }
-		
-		Asm2RdbmsTransformationTrace asm2RdbmsTransformationTrace = executeAsm2RdbmsTransformation(asmModel,rdbmsModel,
-				ofNullable((Log) getTransformationContext().get(Log.class)).orElseGet(() -> new Slf4jLog(log)),
-				transformationScriptRoot,
-				(URI)getTransformationContext().get(RDBMS_EXCELMODEURI),
-				getTransformationContext().get(RDBMS_DIALECT).toString());
 		
 		getTransformationContext().put(asm2RdbmsTransformationTrace);
 	}
