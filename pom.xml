@@ -30,7 +30,8 @@
         <!--module>judo-tatami-maven-plugin</module-->
         <module>features</module>
         <module>kar</module>
-    </modules>
+    <module>judo-tatami-workflowplugin</module>
+  </modules>
     
     <scm>
         <connection>scm:git:git://github.com/BlackBeltTechnology/judo-tatami.git</connection>
