@@ -33,7 +33,7 @@ rule CreateContainment
 
 rule CreateOneWayEndpoint
 	transform s: ESM!OneWayEndpoint
-	to t: JUDOPSM!Endpoint
+	to t: JUDOPSM!AssociationEnd
 	extends CreateReferenceTypedElement {
 	  guard: not s.containment
 	  s.getEntityType().equivalent("CreateEntityType").relations.add(t);
@@ -45,7 +45,7 @@ rule CreateOneWayEndpoint
 
 rule CreateTwoWayEndpoint
 	transform s: ESM!TwoWayEndpoint
-	to t: JUDOPSM!Endpoint
+	to t: JUDOPSM!AssociationEnd
 	extends CreateReferenceTypedElement {
 	  t.partner = s.partner.equivalent("CreateEndpoint");
 	  s.getEntityType().equivalent("CreateEntityType").relations.add(t);

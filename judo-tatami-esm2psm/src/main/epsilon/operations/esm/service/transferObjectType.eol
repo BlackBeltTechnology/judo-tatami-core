@@ -111,22 +111,22 @@ operation ESM!Parameter isFault() : Boolean {
 }
 
 
-operation ESM!Parameter getInputPSMEquivalent() : JUDOPSM!Operation {
+operation ESM!Parameter getInputPSMEquivalent() : JUDOPSM!OperationDeclaration {
 	var esmOP : ESM!Operation = ESM!Operation.all.selectOne(op | op.input = self);
 	return esmOP.getPSMEquivalent();
 }
 
-operation ESM!Parameter getOutputPSMEquivalent() : JUDOPSM!Operation {
+operation ESM!Parameter getOutputPSMEquivalent() : JUDOPSM!OperationDeclaration {
 	var esmOP : ESM!Operation = ESM!Operation.all.selectOne(op | op.output = self);
 	return esmOP.getPSMEquivalent();
 }  
 
-operation ESM!Parameter getFaultPSMEquivalent() : JUDOPSM!Operation {
+operation ESM!Parameter getFaultPSMEquivalent() : JUDOPSM!OperationDeclaration {
 	var esmOP : ESM!Operation = ESM!Operation.all.selectOne(op | op.faults.includes(self));
 	return esmOP.getPSMEquivalent();
 }
 
-operation ESM!Operation getPSMEquivalent(): JUDOPSM!Operation {
+operation ESM!Operation getPSMEquivalent(): JUDOPSM!OperationDeclaration {
 	if (self.isTypeOf(ESM!BoundOperation)) {
 		return self.equivalent("CreateBoundOperation");
 	} else {
