@@ -118,7 +118,11 @@ public class DefaultWorkflow {
 			throw new IllegalStateException("Transformation not yet executed");
 		}
 		
-		// AsmModel saving ///////////////
+		
+		
+		//////////////////////////////////////////////////////////////////////////////////////////
+		////////////////////////////////// AsmModel saving ///////////////////////////////////////
+		//////////////////////////////////////////////////////////////////////////////////////////
 		AsmModel asmModel = transformationContext.getByClass(AsmModel.class)
 				.orElseThrow(() -> new IllegalStateException("Missing transformated AsmModel"));
 		File asmModelDest = new File(dest.toString().replace("file:", ""),"asm.model");
@@ -129,7 +133,10 @@ public class DefaultWorkflow {
 				.outputStream(new FileOutputStream(asmModelDest)));
 		
 		
-		// MeasureModel saving /////////////////
+		
+		////////////////////////////////////////////////////////////////////////////////////////////
+		/////////////////////////////// MeasureModel saving ////////////////////////////////////////
+		////////////////////////////////////////////////////////////////////////////////////////////
 		MeasureModel measureModel = transformationContext.getByClass(MeasureModel.class)
 				.orElseThrow(() -> new IllegalStateException("Missing transformated MeasureModel"));
 		File measureModelDest = new File(dest.toString().replace("file:", ""),"measure.model");
@@ -138,9 +145,12 @@ public class DefaultWorkflow {
 				.measureSaveArgumentsBuilder()
 				.file(measureModelDest)
 				.outputStream(new FileOutputStream(measureModelDest)));
-				
 		
-		// RdbmsModel saving //////////////
+		
+				
+		//////////////////////////////////////////////////////////////////////////////////////////
+		/////////////////////////////////// RdbmsModel saving ////////////////////////////////////
+		//////////////////////////////////////////////////////////////////////////////////////////
 		RdbmsModel rdbmsModel = transformationContext.getByClass(RdbmsModel.class)
 				.orElseThrow(() -> new IllegalStateException("Missing transformated RdbmsModel"));
 		File rdbmsModelDest = new File(dest.toString().replace("file:", ""),"rdbms.model");
@@ -151,7 +161,10 @@ public class DefaultWorkflow {
 				.outputStream(new FileOutputStream(rdbmsModelDest)));
 		
 		
-		// OpenapiModel saving ///////////////
+		
+		//////////////////////////////////////////////////////////////////////////////////////////
+		/////////////////////////////////// OpenapiModel saving //////////////////////////////////
+		//////////////////////////////////////////////////////////////////////////////////////////
 		OpenapiModel openapiModel = transformationContext.getByClass(OpenapiModel.class)
 				.orElseThrow(() -> new IllegalStateException("Missing transformated OpenapiModel"));
 		File openapiModelDest = new File(dest.toString().replace("file:", ""),"openapi.model");
@@ -162,7 +175,10 @@ public class DefaultWorkflow {
 				.outputStream(new FileOutputStream(openapiModelDest)));
 
 		
-		// LiquibaseModel saving ///////////////
+		
+		//////////////////////////////////////////////////////////////////////////////////////////
+		/////////////////////////////////// LiquibaseModel saving //////////////////////////////////
+		//////////////////////////////////////////////////////////////////////////////////////////
 		LiquibaseModel liquibaseModel = transformationContext.getByClass(LiquibaseModel.class)
 				.orElseThrow(() -> new IllegalStateException("Missing transformated LiquibaseModel"));	
 		File liquibaseModelDest = new File(dest.toString().replace("file:", ""),"liquibase.changelog.xml");
