@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+>
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<artifactId>judo-tatami</artifactId>
+		<groupId>hu.blackbelt.judo.tatami</groupId>
+		<version>1.0.0-SNAPSHOT</version>
+	</parent>
+
+	<groupId>hu.blackbelt.judo.tatami</groupId>
+	<artifactId>workflow-maven-plugin-test</artifactId>
+	<version>1.0.0-SNAPSHOT</version>
+	<packaging>jar</packaging>
+
+	<name>workflow-maven-plugin-test</name>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<maven.compiler.source>1.8</maven.compiler.source>
+		<maven.compiler.target>1.8</maven.compiler.target>
+	</properties>
+
+	<dependencies>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.11</version>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>hu.blackbelt.judo.tatami</groupId>
+				<artifactId>workflow-maven-plugin</artifactId>
+				<version>1.0.0-SNAPSHOT</version>
+				<executions>
+					<execution>
+						<phase>compile</phase>
+						<goals>
+							<goal>defaultworkflow</goal>
+						</goals>
+						<configuration>
+							<psmModelDest>${basedir}/../judo-tatami-workflow/target/test-classes/northwind-psm.model</psmModelDest>
+							<asmModelPath>${basedir}/../judo-tatami-psm2asm/src/main/epsilon/transformations/asm</asmModelPath>
+							<measureModelPath>${basedir}/../judo-tatami-psm2measure/src/main/epsilon/transformations/measure</measureModelPath>
+							<openApiModelPath>${basedir}/../judo-tatami-asm2openapi/src/main/epsilon/transformations/openapi</openApiModelPath>
+							<rdbmsModelPath>${basedir}/../judo-tatami-asm2rdbms/src/main/epsilon/transformations/rdbms</rdbmsModelPath>
+							<liquibaseModelPath>${basedir}/../judo-tatami-rdbms2liquibase/src/main/epsilon/transformations</liquibaseModelPath>
+							<destination>${basedir}/../workflow-maven-plugin-test/target/test-classes</destination>
+							<modelName>northwind</modelName>
+							<dialect>hsqldb</dialect>
+							<excelModelURI>${basedir}/../workflow-maven-plugin-test/model</excelModelURI>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+		<pluginManagement>
+			<plugins>
+				<!--This plugin's configuration is used to store Eclipse m2e settings 
+					only. It has no influence on the Maven build itself. -->
+				<plugin>
+					<groupId>org.eclipse.m2e</groupId>
+					<artifactId>lifecycle-mapping</artifactId>
+					<version>1.0.0</version>
+					<configuration>
+						<lifecycleMappingMetadata>
+							<pluginExecutions>
+								<pluginExecution>
+									<pluginExecutionFilter>
+										<groupId>
+											hu.blackbelt.judo.tatami
+										</groupId>
+										<artifactId>
+											workflow-maven-plugin
+										</artifactId>
+										<versionRange>
+											[1.0.0-SNAPSHOT,)
+										</versionRange>
+										<goals>
+											<goal>defaultworkflow</goal>
+										</goals>
+									</pluginExecutionFilter>
+									<action>
+										<ignore></ignore>
+									</action>
+								</pluginExecution>
+							</pluginExecutions>
+						</lifecycleMappingMetadata>
+					</configuration>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+	</build>
+</project>

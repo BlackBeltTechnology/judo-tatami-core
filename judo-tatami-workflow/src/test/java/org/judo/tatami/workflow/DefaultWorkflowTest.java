@@ -20,6 +20,7 @@ import hu.blackbelt.judo.meta.rdbms.runtime.RdbmsModel.RdbmsValidationException;
 import hu.blackbelt.judo.tatami.core.workflow.work.WorkReport;
 import hu.blackbelt.judo.tatami.core.workflow.work.WorkStatus;
 import hu.blackbelt.judo.tatami.workflow.DefaultWorkflow;
+import hu.blackbelt.judo.tatami.workflow.DefaultWorkflowSetupParameters;
 
 public class DefaultWorkflowTest {
 	
@@ -36,6 +37,11 @@ public class DefaultWorkflowTest {
     public static final URI TARGET_TEST_CLASSES = new File("target/test-classes").toURI();
 
     public static final String TARGET_CLASSES = "target/test-classes";
+    
+    public static final String MODEL_NAME = "northwind";
+    public static final String DIALECT = "hsqldb";
+    public static final String EXCELMODELURI = "model";
+    
 
     private WorkReport workReport;
     
@@ -59,7 +65,16 @@ public class DefaultWorkflowTest {
 		liquibaseModel = new File(TARGET_CLASSES, "liquibase.changelog.xml");
 		liquibaseModel.delete();
 		
-		defaultWorkflow.setUp(new File(FILE_LOCATION),ASM_URI,OPENAPI_URI,MEASURE_URI,RDBMS_URI,LIQUIBASE_URI);
+		defaultWorkflow.setUp(DefaultWorkflowSetupParameters.defaultWorkflowSetupParameters()
+				.psmModeldest(new File(FILE_LOCATION))
+				.asmModelURI(ASM_URI)
+				.measureModelURI(MEASURE_URI)
+				.rdbmsModelURI(RDBMS_URI)
+				.openapiModelURI(OPENAPI_URI)
+				.liquibaseModelURI(LIQUIBASE_URI)
+				.modelName(MODEL_NAME)
+				.dialect(DIALECT)
+				.excelModelUri(EXCELMODELURI));
 		workReport = defaultWorkflow.startDefaultWorkflow();
 		
 	}

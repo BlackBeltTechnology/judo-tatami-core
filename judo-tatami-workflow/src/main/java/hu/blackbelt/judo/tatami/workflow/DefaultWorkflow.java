@@ -33,9 +33,6 @@ import java.net.URI;
 public class DefaultWorkflow {
 	
 	TransformationContext transformationContext;
-	public static final String MODEL_NAME = "northwind";
-    public static final String DIALECT = "hsqldb";
-    public static final String MODEL_DIRECTORY = "model";
     
     URI asmModelURI;
     URI openapiModelURI;
@@ -44,31 +41,29 @@ public class DefaultWorkflow {
     URI liquibaseModelURI;
     
     private WorkReport workReport;
-	
-	public void setUp(File psmModeldest,
-					  URI asmModelURI,
-					  URI openapiModelURI,
-					  URI measureModelURI,
-					  URI rdbmsModelURI,
-					  URI liquibaseModelURI) throws IOException, PsmModel.PsmValidationException
-	{
-		transformationContext = new TransformationContext(MODEL_NAME);
+
+	public void setUp(DefaultWorkflowSetupParameters.DefaultWorkflowSetupParametersBuilder builder) 
+			throws IOException, PsmModel.PsmValidationException {
+		setUp(builder.build());
+	}
+
+	public void setUp(DefaultWorkflowSetupParameters params) throws IOException, PsmModel.PsmValidationException {
+		transformationContext = new TransformationContext(params.getModelName());
 		transformationContext.put(PsmModel.loadPsmModel(PsmModel.LoadArguments.psmLoadArgumentsBuilder()
-				.file(psmModeldest)
-				.name(MODEL_NAME)));
-		transformationContext.put(Asm2RdbmsWork.RDBMS_DIALECT,DIALECT);
-		transformationContext.put(Rdbms2LiquibaseWork.LIQUIBASE_DIALECT,DIALECT);
-		transformationContext.put(Asm2RdbmsWork.RDBMS_EXCELMODEURI,new File(MODEL_DIRECTORY).toURI());
+				.file(params.getPsmModeldest())
+				.name(params.getModelName())));
+		transformationContext.put(Asm2RdbmsWork.RDBMS_DIALECT, params.getDialect());
+		transformationContext.put(Rdbms2LiquibaseWork.LIQUIBASE_DIALECT, params.getDialect());
+		transformationContext.put(Asm2RdbmsWork.RDBMS_EXCELMODEL_URI, new File(params.getExcelModelUri()).toURI());
 		
-		this.asmModelURI = asmModelURI;
-	    this.openapiModelURI = openapiModelURI;
-	    this.measureModelURI = measureModelURI;
-	    this.rdbmsModelURI = rdbmsModelURI;
-	    this.liquibaseModelURI = liquibaseModelURI;
+		this.asmModelURI = params.getAsmModelURI();
+	    this.openapiModelURI = params.getOpenapiModelURI();
+	    this.measureModelURI = params.getMeasureModelURI();
+	    this.rdbmsModelURI = params.getRdbmsModelURI();
+	    this.liquibaseModelURI = params.getLiquibaseModelURI();
 	}
 	
-	public WorkReport startDefaultWorkflow()
-	{
+	public WorkReport startDefaultWorkflow() {
 		
 		Psm2AsmWork psm2AsmWork = new Psm2AsmWork(transformationContext, asmModelURI);
 		Psm2MeasureWork psm2MeasureWork = new Psm2MeasureWork(transformationContext, measureModelURI);
@@ -115,7 +110,7 @@ public class DefaultWorkflow {
 				   LiquibaseValidationException {
 		
 		if(workReport.getStatus() == WorkStatus.FAILED) {
-			throw new IllegalStateException("Transformation not yet executed");
+			throw new IllegalStateException("Transformation failed or not yet executed");
 		}
 		
 		
@@ -124,7 +119,7 @@ public class DefaultWorkflow {
 		////////////////////////////////// AsmModel saving ///////////////////////////////////////
 		//////////////////////////////////////////////////////////////////////////////////////////
 		AsmModel asmModel = transformationContext.getByClass(AsmModel.class)
-				.orElseThrow(() -> new IllegalStateException("Missing transformated AsmModel"));
+				.orElseThrow(() -> new IllegalStateException("Cannot save model: Missing transformated AsmModel"));
 		File asmModelDest = new File(dest.toString().replace("file:", ""),"asm.model");
 		asmModelDest.createNewFile();
 		asmModel.saveAsmModel(AsmModel.SaveArguments
@@ -138,7 +133,7 @@ public class DefaultWorkflow {
 		/////////////////////////////// MeasureModel saving ////////////////////////////////////////
 		////////////////////////////////////////////////////////////////////////////////////////////
 		MeasureModel measureModel = transformationContext.getByClass(MeasureModel.class)
-				.orElseThrow(() -> new IllegalStateException("Missing transformated MeasureModel"));
+				.orElseThrow(() -> new IllegalStateException("Cannot save model: Missing transformated MeasureModel"));
 		File measureModelDest = new File(dest.toString().replace("file:", ""),"measure.model");
 		measureModelDest.createNewFile();
 		measureModel.saveMeasureModel(MeasureModel.SaveArguments
@@ -152,7 +147,7 @@ public class DefaultWorkflow {
 		/////////////////////////////////// RdbmsModel saving ////////////////////////////////////
 		//////////////////////////////////////////////////////////////////////////////////////////
 		RdbmsModel rdbmsModel = transformationContext.getByClass(RdbmsModel.class)
-				.orElseThrow(() -> new IllegalStateException("Missing transformated RdbmsModel"));
+				.orElseThrow(() -> new IllegalStateException("Cannot save model: Missing transformated RdbmsModel"));
 		File rdbmsModelDest = new File(dest.toString().replace("file:", ""),"rdbms.model");
 		rdbmsModelDest.createNewFile();
 		rdbmsModel.saveRdbmsModel(RdbmsModel.SaveArguments
@@ -166,7 +161,7 @@ public class DefaultWorkflow {
 		/////////////////////////////////// OpenapiModel saving //////////////////////////////////
 		//////////////////////////////////////////////////////////////////////////////////////////
 		OpenapiModel openapiModel = transformationContext.getByClass(OpenapiModel.class)
-				.orElseThrow(() -> new IllegalStateException("Missing transformated OpenapiModel"));
+				.orElseThrow(() -> new IllegalStateException("Cannot save model: Missing transformated OpenapiModel"));
 		File openapiModelDest = new File(dest.toString().replace("file:", ""),"openapi.model");
 		openapiModelDest.createNewFile();
 		openapiModel.saveOpenapiModel(OpenapiModel.SaveArguments
@@ -176,11 +171,11 @@ public class DefaultWorkflow {
 
 		
 		
-		//////////////////////////////////////////////////////////////////////////////////////////
+		////////////////////////////////////////////////////////////////////////////////////////////
 		/////////////////////////////////// LiquibaseModel saving //////////////////////////////////
-		//////////////////////////////////////////////////////////////////////////////////////////
+		////////////////////////////////////////////////////////////////////////////////////////////
 		LiquibaseModel liquibaseModel = transformationContext.getByClass(LiquibaseModel.class)
-				.orElseThrow(() -> new IllegalStateException("Missing transformated LiquibaseModel"));	
+				.orElseThrow(() -> new IllegalStateException("Cannot save model: Missing transformated LiquibaseModel"));	
 		File liquibaseModelDest = new File(dest.toString().replace("file:", ""),"liquibase.changelog.xml");
 		liquibaseModelDest.createNewFile();
 		liquibaseModel.saveLiquibaseModel(LiquibaseModel.SaveArguments
