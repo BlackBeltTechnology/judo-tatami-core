@@ -42,7 +42,7 @@ public class Asm2RdbmsWorkTest {
 
         transformationContext = new TransformationContext(NORTHWIND);
         transformationContext.put(asmModel);
-        transformationContext.put(Asm2RdbmsWork.RDBMS_EXCELMODEURI, new File(MODEL_DIRECTORY).toURI());
+        transformationContext.put(Asm2RdbmsWork.RDBMS_EXCELMODEL_URI, new File(MODEL_DIRECTORY).toURI());
         transformationContext.put(Asm2RdbmsWork.RDBMS_DIALECT, "hsqldb");
         
         asm2RdbmsWork = new Asm2RdbmsWork(transformationContext, new File("src/main/epsilon/transformations").toURI());
