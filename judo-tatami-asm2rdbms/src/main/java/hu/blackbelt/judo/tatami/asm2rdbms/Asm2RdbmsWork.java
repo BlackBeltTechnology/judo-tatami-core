@@ -24,7 +24,7 @@ public class Asm2RdbmsWork extends AbstractTransformationWork {
 	
 	public static final String ASM_VALIDATION_SCRIPT_URI = "asmValidationScriptUri";
 	
-	public static final String RDBMS_EXCELMODEURI = "asm2Rdbms.excelModeUri";
+	public static final String RDBMS_EXCELMODEL_URI = "asm2Rdbms.excelModelUri";
 	public static final String RDBMS_DIALECT = "asm2Rdbms.dialect";
 
     final URI transformationScriptRoot;
@@ -54,7 +54,7 @@ public class Asm2RdbmsWork extends AbstractTransformationWork {
 		RdbmsModel rdbmsModel = getTransformationContext().getByClass(RdbmsModel.class)
         		.orElseGet(() -> buildRdbmsModel().name(asmModel.get().getName()).build());
 
-     // The RDBMS model resources have to know the mapping models
+        // The RDBMS model resources have to know the mapping models
         registerRdbmsNameMappingMetamodel(rdbmsModel.getResourceSet());
         registerRdbmsDataTypesMetamodel(rdbmsModel.getResourceSet());
         registerRdbmsTableMappingRulesMetamodel(rdbmsModel.getResourceSet());
@@ -66,7 +66,7 @@ public class Asm2RdbmsWork extends AbstractTransformationWork {
 	                rdbmsModel,
 	                getTransformationContext().getByClass(Log.class).orElseGet(() -> new Slf4jLog(log)),
 	                transformationScriptRoot,
-	                getTransformationContext().get(URI.class,RDBMS_EXCELMODEURI).get(),
+	                getTransformationContext().get(URI.class,RDBMS_EXCELMODEL_URI).get(),
 					getTransformationContext().get(RDBMS_DIALECT).get().toString());
 
 		
