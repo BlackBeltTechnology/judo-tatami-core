@@ -68,36 +68,36 @@
 
         <epsilon-runtime-version>1.2.0.develop_101</epsilon-runtime-version>
         <epsilon-runtime-eclipse-version>1.2.0.develop_00010</epsilon-runtime-eclipse-version>
-        <emf-genmodel-generator-version>1.0.0.develop_00021</emf-genmodel-generator-version>
-        <judo-genmodel-generator-version>1.0.0.develop_00015</judo-genmodel-generator-version>
+        <emf-genmodel-generator-version>1.0.0.develop_00023</emf-genmodel-generator-version>
+        <judo-genmodel-generator-version>1.0.0.develop_00017</judo-genmodel-generator-version>
 
         <judo-framework-version>2.0.0_develop_130</judo-framework-version>
 
-        <judo-meta-rdbms-version>1.0.0.develop_00086</judo-meta-rdbms-version>
+        <judo-meta-rdbms-version>1.0.0.develop_00089</judo-meta-rdbms-version>
         <judo-meta-rdbms.import-range>[1.0,1.1)</judo-meta-rdbms.import-range>
 
-        <judo-meta-esm-version>1.0.0.develop_00064</judo-meta-esm-version>
+        <judo-meta-esm-version>1.0.0.develop_00068</judo-meta-esm-version>
         <judo-meta-esm-import-range>[1.0,1.1)</judo-meta-esm-import-range>
 
-        <judo-meta-psm-version>1.0.0.develop_00323</judo-meta-psm-version>
+        <judo-meta-psm-version>1.0.0.develop_00325</judo-meta-psm-version>
         <judo-meta-psm-import-range>[1.0,1.1)</judo-meta-psm-import-range>
 
-        <judo-meta-jql-version>1.0.0.develop_00044</judo-meta-jql-version>
+        <judo-meta-jql-version>1.0.0.develop_00046</judo-meta-jql-version>
         <judo-meta-jql-import-range>[1.0,1.1)</judo-meta-jql-import-range>
 
-	    <judo-meta-asm-version>1.0.0.develop_00102</judo-meta-asm-version>
+	    <judo-meta-asm-version>1.0.0.develop_00104</judo-meta-asm-version>
         <judo-meta-asm-import-range>[1.0,1.1)</judo-meta-asm-import-range>
 
-        <judo-meta-expression-version>1.0.0.develop_00270</judo-meta-expression-version>
+        <judo-meta-expression-version>1.0.0.develop_00273</judo-meta-expression-version>
         <judo-meta-expression-import-range>[1.0,1.1)</judo-meta-expression-import-range>
 
-        <judo-meta-measure-version>1.0.0.develop_00047</judo-meta-measure-version>
+        <judo-meta-measure-version>1.0.0.develop_00050</judo-meta-measure-version>
         <judo-meta-measure-import-range>[1.0,1.1)</judo-meta-measure-import-range>
 
-        <judo-meta-liquibase-version>1.0.0.develop_00033</judo-meta-liquibase-version>
+        <judo-meta-liquibase-version>1.0.0.develop_00035</judo-meta-liquibase-version>
         <judo-meta-liquibase-import-range>[1.0,1.1)</judo-meta-liquibase-import-range>
 
-        <judo-meta-openapi-version>1.0.0.develop_00099</judo-meta-openapi-version>
+        <judo-meta-openapi-version>1.0.0.develop_00101</judo-meta-openapi-version>
         <judo-meta-openapi-import-range>[1.0,1.1)</judo-meta-openapi-import-range>
 
         <!-- Xtend / Xcore -->
