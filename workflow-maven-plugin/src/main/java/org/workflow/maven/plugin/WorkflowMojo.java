@@ -1,4 +1,9 @@
-package org.judo.tatami.workflowplugin;
+package org.workflow.maven.plugin;
+
+import java.io.File;
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.net.URL;
 
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -14,17 +19,12 @@ import hu.blackbelt.judo.meta.psm.runtime.PsmModel.PsmValidationException;
 import hu.blackbelt.judo.meta.rdbms.runtime.RdbmsModel.RdbmsValidationException;
 import hu.blackbelt.judo.tatami.workflow.DefaultWorkflow;
 
-import java.io.File;
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.net.URL;
-
-@Mojo( name= "defaultworkflow")
+@Mojo(name = "defaultworkflow")
 public class WorkflowMojo extends AbstractMojo {
-	
+
 	@Parameter(property = "defaultworkflow.psmModelDest")
 	private File psmModelDest;
-	
+
 	@Parameter(property = "defaultWorkflow.asmModelUrl")
 	private URL asmModelUrl;
 	@Parameter(property = "defaultWorkflow.measureModelUrl")
@@ -35,21 +35,16 @@ public class WorkflowMojo extends AbstractMojo {
 	private URL rdbmsModelUrl;
 	@Parameter(property = "defaultWorkflow.liquibaseModelUrl")
 	private URL liquibaseModelUrl;
-	
+
 	@Parameter(property = "defaultWorkflow.destination")
 	private URL destination;
-	
+
 	@Override
-	public void execute() throws MojoExecutionException, MojoFailureException
-	{
+	public void execute() throws MojoExecutionException, MojoFailureException {
 		DefaultWorkflow defaultWorkflow = new DefaultWorkflow();
 		try {
-			defaultWorkflow.setUp(psmModelDest,
-					              asmModelUrl.toURI(),
-					              openApiModelUrl.toURI(),
-					              measureModelUrl.toURI(),
-					              rdbmsModelUrl.toURI(),
-					              liquibaseModelUrl.toURI());
+			defaultWorkflow.setUp(psmModelDest, asmModelUrl.toURI(), openApiModelUrl.toURI(), measureModelUrl.toURI(),
+					rdbmsModelUrl.toURI(), liquibaseModelUrl.toURI());
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -60,7 +55,7 @@ public class WorkflowMojo extends AbstractMojo {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 		defaultWorkflow.startDefaultWorkflow();
 		try {
 			defaultWorkflow.saveModels(destination.toURI());
@@ -87,5 +82,4 @@ public class WorkflowMojo extends AbstractMojo {
 			e.printStackTrace();
 		}
 	}
-
 }
