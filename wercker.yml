@@ -15,13 +15,6 @@ build:
 
     - wercker/maven:
       goals: versions:set
-      pom: ./judo-tatami-parent/pom.xml
-      maven_opts: -DnewVersion=${VERSION_FROM_POM_BASE_VERSION}.${VERSION_FROM_GIT_TAG_CURRENT_BRANCH_VALID_NAME}_${VERSION_FROM_GIT_TAG_FOR_GITFLOW}
-      settings: .maven.xml
-      cache_repo: true
-
-    - wercker/maven:
-      goals: versions:set
       maven_opts: -DnewVersion=${VERSION_FROM_POM_BASE_VERSION}.${VERSION_FROM_GIT_TAG_CURRENT_BRANCH_VALID_NAME}_${VERSION_FROM_GIT_TAG_FOR_GITFLOW}
       settings: .maven.xml
       cache_repo: true
@@ -122,13 +115,6 @@ release:
 #      cache_repo: true
 
 # Set version and deploy with steps
-
-    - wercker/maven:
-      goals: versions:set
-      pom: ./judo-tatami-parent/pom.xml
-      maven_opts: -DnewVersion=${VERSION_FROM_POM_BASE_VERSION} -DgenerateBackupPoms=false
-      settings: .maven.xml
-      cache_repo: true
 
     - wercker/maven:
       goals: versions:set
