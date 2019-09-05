@@ -8,7 +8,7 @@ import hu.blackbelt.epsilon.runtime.execution.api.Log;
 import hu.blackbelt.epsilon.runtime.execution.impl.Slf4jLog;
 import hu.blackbelt.judo.meta.esm.runtime.EsmModel;
 
-//import static hu.blackbelt.judo.meta.esm.EsmEpsilonValidator.validateEsm;
+//import static hu.blackbelt.judo.meta.esm.runtime.EsmEpsilonValidator.validateEsm;
 import static hu.blackbelt.judo.tatami.esm2psm.Esm2Psm.executeEsm2PsmTransformation;
 import static hu.blackbelt.judo.meta.psm.runtime.PsmModel.buildPsmModel;
 

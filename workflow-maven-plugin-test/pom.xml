@@ -21,6 +21,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
+		<judo-tatami-version>${project.version}</judo-tatami-version>
 	</properties>
 
 	<dependencies>
@@ -51,10 +52,10 @@
 							<openApiModelPath>${basedir}/../judo-tatami-asm2openapi/src/main/epsilon/transformations/openapi</openApiModelPath>
 							<rdbmsModelPath>${basedir}/../judo-tatami-asm2rdbms/src/main/epsilon/transformations/rdbms</rdbmsModelPath>
 							<liquibaseModelPath>${basedir}/../judo-tatami-rdbms2liquibase/src/main/epsilon/transformations</liquibaseModelPath>
-							<destination>${basedir}/../workflow-maven-plugin-test/target/test-classes</destination>
+							<destination>${basedir}/target/test-classes</destination>
 							<modelName>northwind</modelName>
 							<dialect>hsqldb</dialect>
-							<excelModelURI>${basedir}/../workflow-maven-plugin-test/model</excelModelURI>
+							<excelModelURI>${basedir}/model</excelModelURI>
 						</configuration>
 					</execution>
 				</executions>

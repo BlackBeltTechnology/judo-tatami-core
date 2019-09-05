@@ -34,7 +34,7 @@ public class DefaultWorkflowTest {
     
     public static final String FILE_LOCATION = "target/test-classes/northwind-psm.model";
     
-    public static final URI TARGET_TEST_CLASSES = new File("target/test-classes").toURI();
+    public static final File TARGET_TEST_CLASSES = new File("target/test-classes");
 
     public static final String TARGET_CLASSES = "target/test-classes";
     

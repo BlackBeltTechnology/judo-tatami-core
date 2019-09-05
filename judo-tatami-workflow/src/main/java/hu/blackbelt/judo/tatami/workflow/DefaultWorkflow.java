@@ -23,6 +23,7 @@ import hu.blackbelt.judo.tatami.core.workflow.work.WorkStatus;
 import hu.blackbelt.judo.tatami.psm2asm.Psm2AsmWork;
 import hu.blackbelt.judo.tatami.psm2measure.Psm2MeasureWork;
 import hu.blackbelt.judo.tatami.rdbms2liquibase.Rdbms2LiquibaseWork;
+import lombok.extern.slf4j.Slf4j;
 
 import static hu.blackbelt.judo.tatami.core.workflow.engine.WorkFlowEngineBuilder.aNewWorkFlowEngine;
 import java.io.File;
@@ -30,6 +31,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URI;
 
+@Slf4j
 public class DefaultWorkflow {
 	
 	TransformationContext transformationContext;
@@ -101,7 +103,7 @@ public class DefaultWorkflow {
 	     return workReport;
 	}
 	
-	public void saveModels(URI dest) 
+	public void saveModels(File dest) 
 			throws IOException,
 				   AsmValidationException,
 				   MeasureValidationException,
@@ -113,15 +115,15 @@ public class DefaultWorkflow {
 			throw new IllegalStateException("Transformation failed or not yet executed");
 		}
 		
-		
+		if(!dest.exists()) { throw new IllegalArgumentException("Destination doesn't exists!"); }
+		if(!dest.isDirectory()) { throw new IllegalArgumentException("Destination is not a directory!"); }
 		
 		//////////////////////////////////////////////////////////////////////////////////////////
 		////////////////////////////////// AsmModel saving ///////////////////////////////////////
 		//////////////////////////////////////////////////////////////////////////////////////////
 		AsmModel asmModel = transformationContext.getByClass(AsmModel.class)
 				.orElseThrow(() -> new IllegalStateException("Cannot save model: Missing transformated AsmModel"));
-		File asmModelDest = new File(dest.toString().replace("file:", ""),"asm.model");
-		asmModelDest.createNewFile();
+		File asmModelDest = new File(dest,"asm.model");
 		asmModel.saveAsmModel(AsmModel.SaveArguments
 				.asmSaveArgumentsBuilder()
 				.file(asmModelDest)
@@ -134,8 +136,7 @@ public class DefaultWorkflow {
 		////////////////////////////////////////////////////////////////////////////////////////////
 		MeasureModel measureModel = transformationContext.getByClass(MeasureModel.class)
 				.orElseThrow(() -> new IllegalStateException("Cannot save model: Missing transformated MeasureModel"));
-		File measureModelDest = new File(dest.toString().replace("file:", ""),"measure.model");
-		measureModelDest.createNewFile();
+		File measureModelDest = new File(dest,"measure.model");
 		measureModel.saveMeasureModel(MeasureModel.SaveArguments
 				.measureSaveArgumentsBuilder()
 				.file(measureModelDest)
@@ -148,8 +149,7 @@ public class DefaultWorkflow {
 		//////////////////////////////////////////////////////////////////////////////////////////
 		RdbmsModel rdbmsModel = transformationContext.getByClass(RdbmsModel.class)
 				.orElseThrow(() -> new IllegalStateException("Cannot save model: Missing transformated RdbmsModel"));
-		File rdbmsModelDest = new File(dest.toString().replace("file:", ""),"rdbms.model");
-		rdbmsModelDest.createNewFile();
+		File rdbmsModelDest = new File(dest,"rdbms.model");
 		rdbmsModel.saveRdbmsModel(RdbmsModel.SaveArguments
 				.rdbmsSaveArgumentsBuilder()
 				.file(rdbmsModelDest)
@@ -162,8 +162,7 @@ public class DefaultWorkflow {
 		//////////////////////////////////////////////////////////////////////////////////////////
 		OpenapiModel openapiModel = transformationContext.getByClass(OpenapiModel.class)
 				.orElseThrow(() -> new IllegalStateException("Cannot save model: Missing transformated OpenapiModel"));
-		File openapiModelDest = new File(dest.toString().replace("file:", ""),"openapi.model");
-		openapiModelDest.createNewFile();
+		File openapiModelDest = new File(dest,"openapi.model");
 		openapiModel.saveOpenapiModel(OpenapiModel.SaveArguments
 				.openapiSaveArgumentsBuilder()
 				.file(openapiModelDest)
@@ -176,8 +175,7 @@ public class DefaultWorkflow {
 		////////////////////////////////////////////////////////////////////////////////////////////
 		LiquibaseModel liquibaseModel = transformationContext.getByClass(LiquibaseModel.class)
 				.orElseThrow(() -> new IllegalStateException("Cannot save model: Missing transformated LiquibaseModel"));	
-		File liquibaseModelDest = new File(dest.toString().replace("file:", ""),"liquibase.changelog.xml");
-		liquibaseModelDest.createNewFile();
+		File liquibaseModelDest = new File(dest,"liquibase.changelog.xml");
 		liquibaseModel.saveLiquibaseModel(LiquibaseModel.SaveArguments
 				.liquibaseSaveArgumentsBuilder()
 				.file(liquibaseModelDest)

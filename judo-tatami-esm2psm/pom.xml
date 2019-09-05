@@ -95,6 +95,7 @@
                             *
                         </Import-Package>
                         <Psm-Meta-Version-Range>${judo-meta-psm-import-range}</Psm-Meta-Version-Range>
+                        <Esm2PsmTransformation-ScriptRoot>tatami/esm2psm/transformations/psm</Esm2PsmTransformation-ScriptRoot>
                     </instructions>
                 </configuration>
             </plugin>

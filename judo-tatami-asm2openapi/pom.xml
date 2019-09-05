@@ -64,6 +64,7 @@
                             *
 						</Import-Package>
 						<OpenAPI-Meta-Version-Range>${judo-meta-openapi-import-range}</OpenAPI-Meta-Version-Range>
+						<Asm2OpenapiTransformation-ScriptRoot>tatami/asm2openapi/transformations/openapi</Asm2OpenapiTransformation-ScriptRoot>
 					</instructions>
 				</configuration>
 			</plugin>
