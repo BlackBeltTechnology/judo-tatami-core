@@ -613,8 +613,8 @@
                 <module>judo-tatami-asm2jaxrsapi</module>
                 <module>judo-tatami-asm2sdk</module>
                 <module>judo-tatami-itest</module>
-                <module>features</module>
-                <module>kar</module>
+                <module>judo-tatami-karaf-features</module>
+                <module>judo-tatami-karaf-kar</module>
             </modules>
         </profile>
 
@@ -746,6 +746,7 @@
                                     <includes>
                                         <include>**/target/*.jar</include>
                                         <include>**/target/*.kar</include>
+                                        <include>*-feature/target/feature/feature.xml</include>
                                     </includes>
                                 </fileSet>
                             </fileSets>

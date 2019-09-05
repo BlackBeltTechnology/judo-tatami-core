@@ -8,7 +8,7 @@
         <version>1.0.0-SNAPSHOT</version>
         <relativePath>..</relativePath>
     </parent>
-    <artifactId>features</artifactId>
+    <artifactId>judo-tatami-karaf-features</artifactId>
     <packaging>feature</packaging>
     <name>JUDO platform karaf features</name>
 
