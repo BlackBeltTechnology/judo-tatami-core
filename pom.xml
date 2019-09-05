@@ -126,6 +126,8 @@
 
     </properties>
 
+    <url>http://github.com/${project-repositoryId}</url>
+
     <issueManagement>
         <url>https://github.com/${project-repositoryId}/issues</url>
         <system>GitHub Issues</system>
@@ -746,7 +748,7 @@
                                     <includes>
                                         <include>**/target/*.jar</include>
                                         <include>**/target/*.kar</include>
-                                        <include>*-feature/target/feature/feature.xml</include>
+                                        <include>${project-shortname}/target/feature/feature.xml</include>
                                     </includes>
                                 </fileSet>
                             </fileSets>
