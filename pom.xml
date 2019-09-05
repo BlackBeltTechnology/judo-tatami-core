@@ -748,7 +748,7 @@
                                     <includes>
                                         <include>**/target/*.jar</include>
                                         <include>**/target/*.kar</include>
-                                        <include>${project-shortname}/target/feature/feature.xml</include>
+                                        <include>${project-shortname}-karaf-features/target/feature/feature.xml</include>
                                     </includes>
                                 </fileSet>
                             </fileSets>
