@@ -40,8 +40,8 @@ public class [%= className %] {
 	@Produces ( "application/json" )
 	@Consumes ( "application/json" )
 	[% } %]
-	@Path("/[% if (fullyQualifiedOperation) { %][%= op.getFullOperationPath() %][% } else { %][%= op.name %][% } %]")
-    public Response [% if (fullyQualifiedOperation) { %][%= op.getFullOperationMethodName() %][% } else { %][%= op.name %][% } %]([% for (p in op.eParameters) { %][%= p.eType.getDtoTypeName() %] [%= p.name.firstToLowerCase().safeName() %][% if (hasMore) { %], [% } %][% } %]) {
+	@Path("/[% if (fullyQualifiedOperation) { %][%= op.getFullOperationPath() %][% } else { %][%= op.getShortOperationPath() %][% } %]")
+    public Response [% if (fullyQualifiedOperation) { %][%= op.getFullOperationMethodName() %][% } else { %][%= op.getShortOperationMethodName() %][% } %]([% for (p in op.eParameters) { %][%= p.eType.getDtoTypeName() %] [%= p.name.firstToLowerCase().safeName() %][% if (hasMore) { %], [% } %][% } %]) {
 		if (!__dispatcher.isPresent()) {
         	return Response.status(Response.Status.SERVICE_UNAVAILABLE).build();
     	}
@@ -63,7 +63,7 @@ public class [%= className %] {
         [% } else { %]
         return Response.ok([%= op.eType.getDtoTypeName() %].fromMap((Map<String, Object>) ((Map<String, Object>) __dispatcher.get().callOperation("simple", "[%= asmUtils.getOperationFQName(op) %]", parameters)).get("output"))).build();
         [% } %]
-
-    }  	
+    }
+    
 [% } %] 
 }
