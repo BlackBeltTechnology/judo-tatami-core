@@ -39,17 +39,17 @@ public class Asm2RdbmsWork extends AbstractTransformationWork {
 		Optional<AsmModel> asmModel = getTransformationContext().getByClass(AsmModel.class);
 		asmModel.orElseThrow(() -> new IllegalArgumentException("ASM Model does not found in transformation context"));
 		
-		getTransformationContext().get(URI.class, ASM_VALIDATION_SCRIPT_URI)
+		/*getTransformationContext().get(URI.class, ASM_VALIDATION_SCRIPT_URI)
     	.ifPresent(validationScriptUri -> {
     		try {
-				/*validateAsm(
+				validateAsm(
 					getTransformationContext().getByClass(Log.class).orElseGet(() -> new Slf4jLog(log)),
 				    asmModel.get(), 
-				    validationScriptUri);*/
+				    validationScriptUri);
 			} catch (Exception e) {
 				e.printStackTrace();    
 			}
-    });
+    	});*/
 		
 		RdbmsModel rdbmsModel = getTransformationContext().getByClass(RdbmsModel.class)
         		.orElseGet(() -> buildRdbmsModel().name(asmModel.get().getName()).build());

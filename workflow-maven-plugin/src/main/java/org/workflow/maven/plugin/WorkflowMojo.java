@@ -2,6 +2,8 @@ package org.workflow.maven.plugin;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.List;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -13,12 +15,7 @@ import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
 import org.eclipse.aether.RepositorySystem;
 import org.eclipse.aether.RepositorySystemSession;
-import org.eclipse.aether.artifact.Artifact;
-import org.eclipse.aether.artifact.DefaultArtifact;
 import org.eclipse.aether.repository.RemoteRepository;
-import org.eclipse.aether.resolution.ArtifactRequest;
-import org.eclipse.aether.resolution.ArtifactResolutionException;
-import org.eclipse.aether.resolution.ArtifactResult;
 import hu.blackbelt.judo.meta.asm.runtime.AsmModel.AsmValidationException;
 import hu.blackbelt.judo.meta.liquibase.runtime.LiquibaseModel.LiquibaseValidationException;
 import hu.blackbelt.judo.meta.measure.runtime.MeasureModel.MeasureValidationException;
@@ -27,7 +24,7 @@ import hu.blackbelt.judo.meta.psm.runtime.PsmModel.PsmValidationException;
 import hu.blackbelt.judo.meta.rdbms.runtime.RdbmsModel.RdbmsValidationException;
 import hu.blackbelt.judo.tatami.workflow.DefaultWorkflow;
 import hu.blackbelt.judo.tatami.workflow.DefaultWorkflowSetupParameters;
-import lombok.SneakyThrows;
+import lombok.Getter;
 
 @Mojo(name = "defaultworkflow", defaultPhase = LifecyclePhase.COMPILE)
 public class WorkflowMojo extends AbstractMojo {
@@ -47,16 +44,16 @@ public class WorkflowMojo extends AbstractMojo {
 	@Parameter(property = "psmModelDest")
 	private String psmModelDest;
 
-	@Parameter(property = "asmModelPath")
-	private String asmModelPath;
-	@Parameter(property = "measureModelPath")
-	private String measureModelPath;
-	@Parameter(property = "openApiModelPath")
-	private String openApiModelPath;
-	@Parameter(property = "rdbmsModelPath")
-	private String rdbmsModelPath;
-	@Parameter(property = "liquibaseModelPath")
-	private String liquibaseModelPath;
+	@Parameter(property = "asmModelScriptRoot")
+	private String asmModelScriptRoot;
+	@Parameter(property = "measureModelScriptRoot")
+	private String measureModelScriptRoot;
+	@Parameter(property = "openApiModelScriptRoot")
+	private String openApiModelScriptRoot;
+	@Parameter(property = "rdbmsModelScriptRoot")
+	private String rdbmsModelScriptRoot;
+	@Parameter(property = "liquibaseModelScriptRoot")
+	private String liquibaseModelScriptRoot;
 
 	@Parameter(property = "destination")
 	private File destination;
@@ -70,36 +67,52 @@ public class WorkflowMojo extends AbstractMojo {
 	@Parameter(property = "excelModelURI")
 	private String excelModelURI;
 
+	@Getter
 	@Parameter(property = "transformationArtifacts", 
 			defaultValue = "hu.blackbelt.judo.tatami:judo-tatami-asm2rdbms:${judo-tatami-version},"
-					+ "hu.blackbelt.judo.tatami:judo-tatami-esm2psm:${judo-tatami-version}")
-	List<String> trasformationArtifacts;
+					+ "hu.blackbelt.judo.tatami:judo-tatami-psm2asm:${judo-tatami-version},"
+					+ "hu.blackbelt.judo.tatami:judo-tatami-psm2measure:${judo-tatami-version},"
+					+ "hu.blackbelt.judo.tatami:judo-tatami-asm2openapi:${judo-tatami-version},"
+					+ "hu.blackbelt.judo.tatami:judo-tatami-rdbms2liquibase:${judo-tatami-version}")
+	private List<String> transformationArtifacts;
 	
 	@Override
 	public void execute() throws MojoExecutionException, MojoFailureException {
 		
-		
-		for(String s : trasformationArtifacts) {
-			getLog().warn(s);
-			getLog().info(getArtifactFile(s).getAbsolutePath());
-		}
+		//----------------------------------------------------//
+		// Fetching transformation script roots from manifest //
+		//----------------------------------------------------//
+		WorkflowUtil workflowUtil = new WorkflowUtil(this);
+		try {
+			workflowUtil.extract();
+			measureModelScriptRoot = workflowUtil.getMeasureModelScriptRoot();
+			asmModelScriptRoot = workflowUtil.getAsmModelScriptRoot();
+			rdbmsModelScriptRoot = workflowUtil.getRdbmsModelScriptRoot();
+			openApiModelScriptRoot = workflowUtil.getOpenApiModelScriptRoot();
+			liquibaseModelScriptRoot = workflowUtil.getLiquibaseModelScriptRoot();
+			excelModelURI = workflowUtil.getExcelModelURI();
 			
-		WorkflowUtil workflowUtil = new WorkflowUtil();
+		} catch (IOException e1) {
+			throw new MojoFailureException("An error occurred during the extraction of the script roots",e1);
+		}
+		
+		//------------------//
+		// Running workflow //
+		//------------------//
 		DefaultWorkflow defaultWorkflow = new DefaultWorkflow();
 		try {
 			defaultWorkflow.setUp(DefaultWorkflowSetupParameters.defaultWorkflowSetupParameters()
 					.psmModeldest(new File(psmModelDest))
-					.asmModelURI(new File(asmModelPath).toURI())
-					.measureModelURI(new File(measureModelPath).toURI())
-					.rdbmsModelURI(new File(rdbmsModelPath).toURI())
-					.openapiModelURI(new File(openApiModelPath).toURI())
-					.liquibaseModelURI(new File(liquibaseModelPath).toURI())
+					.asmModelURI(new URI(asmModelScriptRoot))
+					.measureModelURI(new URI(measureModelScriptRoot))
+					.rdbmsModelURI(new URI(rdbmsModelScriptRoot))
+					.openapiModelURI(new URI(openApiModelScriptRoot))
+					.liquibaseModelURI(new URI(liquibaseModelScriptRoot))
 					.modelName(modelName)
 					.dialect(dialect)
-					.excelModelUri(excelModelURI)
+					.excelModelUri(new URI(excelModelURI))
 					.build());
-		} catch (IOException | PsmValidationException e) {
-			// log.error("An error occurred during the setup phase of the workflow. \n" + e.toString());
+		} catch (IOException | PsmValidationException | URISyntaxException e) {
 			throw new MojoFailureException("An error occurred during the setup phase of the workflow.", e);
 		}
 
@@ -108,7 +121,6 @@ public class WorkflowMojo extends AbstractMojo {
 		}
 		catch(IllegalStateException e)
 		{
-			//log.error("An error occurred during the execution phase of the workflow. \n" + e.toString());
 			throw new MojoFailureException("An error occurred during the execution phase of the workflow.", e);
 		}
 		
@@ -123,19 +135,8 @@ public class WorkflowMojo extends AbstractMojo {
 				 OpenapiValidationException |
 				 LiquibaseValidationException |
 				 IllegalStateException e) {
-			//log.error("An error occurred during the saving of the models. \n" + e.toString());
 			throw new MojoFailureException("An error occurred during the saving phase of the workflow.", e);
 		}
 	}
-	
-	
-    @SneakyThrows(ArtifactResolutionException.class)
-    public File getArtifactFile(String uri) {
-        Artifact artifact = new DefaultArtifact(uri);
-        ArtifactRequest req = new ArtifactRequest().setRepositories(this.repositories).setArtifact(artifact);
-        ArtifactResult resolutionResult;
-        resolutionResult = this.repoSystem.resolveArtifact(this.repoSession, req);
-        return resolutionResult.getArtifact().getFile();
-    }
 
 }

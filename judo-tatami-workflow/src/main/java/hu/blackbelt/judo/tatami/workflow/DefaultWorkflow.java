@@ -56,7 +56,7 @@ public class DefaultWorkflow {
 				.name(params.getModelName())));
 		transformationContext.put(Asm2RdbmsWork.RDBMS_DIALECT, params.getDialect());
 		transformationContext.put(Rdbms2LiquibaseWork.LIQUIBASE_DIALECT, params.getDialect());
-		transformationContext.put(Asm2RdbmsWork.RDBMS_EXCELMODEL_URI, new File(params.getExcelModelUri()).toURI());
+		transformationContext.put(Asm2RdbmsWork.RDBMS_EXCELMODEL_URI, params.getExcelModelUri());
 		
 		this.asmModelURI = params.getAsmModelURI();
 	    this.openapiModelURI = params.getOpenapiModelURI();
@@ -115,8 +115,8 @@ public class DefaultWorkflow {
 			throw new IllegalStateException("Transformation failed or not yet executed");
 		}
 		
-		if(!dest.exists()) { throw new IllegalArgumentException("Destination doesn't exists!"); }
-		if(!dest.isDirectory()) { throw new IllegalArgumentException("Destination is not a directory!"); }
+		if(!dest.exists()) { throw new IllegalArgumentException("Destination doesn't exist!"); }
+		if(!dest.isDirectory()) { throw new IllegalArgumentException("Destination is not a direhu.blackbelt.judo.tatami:judoctory!"); }
 		
 		//////////////////////////////////////////////////////////////////////////////////////////
 		////////////////////////////////// AsmModel saving ///////////////////////////////////////

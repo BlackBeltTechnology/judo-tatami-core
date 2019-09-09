@@ -8,6 +8,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 
+import org.apache.xmlbeans.impl.xb.xsdschema.impl.FacetImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -40,7 +41,7 @@ public class DefaultWorkflowTest {
     
     public static final String MODEL_NAME = "northwind";
     public static final String DIALECT = "hsqldb";
-    public static final String EXCELMODELURI = "model";
+    public static final URI EXCELMODELURI = new File("model").toURI();
     
 
     private WorkReport workReport;

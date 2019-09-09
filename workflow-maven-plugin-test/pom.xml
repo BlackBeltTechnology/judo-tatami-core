@@ -46,16 +46,16 @@
 							<goal>defaultworkflow</goal>
 						</goals>
 						<configuration>
-							<psmModelDest>${basedir}/../judo-tatami-workflow/target/test-classes/northwind-psm.model</psmModelDest>
-							<asmModelPath>${basedir}/../judo-tatami-psm2asm/src/main/epsilon/transformations/asm</asmModelPath>
-							<measureModelPath>${basedir}/../judo-tatami-psm2measure/src/main/epsilon/transformations/measure</measureModelPath>
-							<openApiModelPath>${basedir}/../judo-tatami-asm2openapi/src/main/epsilon/transformations/openapi</openApiModelPath>
-							<rdbmsModelPath>${basedir}/../judo-tatami-asm2rdbms/src/main/epsilon/transformations/rdbms</rdbmsModelPath>
-							<liquibaseModelPath>${basedir}/../judo-tatami-rdbms2liquibase/src/main/epsilon/transformations</liquibaseModelPath>
+							<psmModelDest>${basedir}/../judo-tatami-workflow/target/test-classes/northwind-psm.model</psmModelDest> 
+							<asmModelScriptRoot>file:${basedir}/../judo-tatami-psm2asm/src/main/epsilon/transformations/asm</asmModelScriptRoot>
+							<measureModelScriptRoot>file:${basedir}/../judo-tatami-psm2measure/src/main/epsilon/transformations/measure</measureModelScriptRoot>
+							<openApiModelScriptRoot>file:${basedir}/../judo-tatami-asm2openapi/src/main/epsilon/transformations/openapi</openApiModelScriptRoot>
+							<rdbmsModelScriptRoot>file:${basedir}/../judo-tatami-asm2rdbms/src/main/epsilon/transformations/rdbms</rdbmsModelScriptRoot>
+							<liquibaseModelScriptRoot>file:${basedir}/../judo-tatami-rdbms2liquibase/src/main/epsilon/transformations</liquibaseModelScriptRoot>
 							<destination>${basedir}/target/test-classes</destination>
 							<modelName>northwind</modelName>
 							<dialect>hsqldb</dialect>
-							<excelModelURI>${basedir}/model</excelModelURI>
+							<excelModelURI>file:/${basedir}/model</excelModelURI>
 						</configuration>
 					</execution>
 				</executions>

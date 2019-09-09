@@ -36,5 +36,5 @@ public class DefaultWorkflowSetupParameters {
 	private String dialect;
 	
 	@NonNull
-	private String excelModelUri;
+	private URI excelModelUri;
 }
