@@ -77,10 +77,9 @@ public class DefaultWorkflow {
 	    Asm2OpenAPIWork asm2OpenapiWork = new Asm2OpenAPIWork(transformationContext, openapiModelURI);
 		Rdbms2LiquibaseWork rdbms2LiquibaseWork = new Rdbms2LiquibaseWork(transformationContext, liquibaseModelURI);
 			
-		// ----------------- //
-        // Workflow execution//
-		// ----------------- //
-		
+		// ------------------ //
+        // Workflow execution //
+		// ------------------ //
 		WorkFlow workflow = SequentialFlow.Builder.aNewSequentialFlow()
 		        .execute(ParallelFlow.Builder.aNewParallelFlow()
 		        		.execute(psm2AsmWork, psm2MeasureWork)
@@ -98,56 +97,25 @@ public class DefaultWorkflow {
 			throw new IllegalStateException("Transformation failed", workReport.getError());
 		}
 		
-		boolean missingModel;
+		boolean missingModel = new TransformationContextVerifier(transformationContext)
+				.isClassExists(AsmModel.class)
+				.isClassExists(MeasureModel.class)
+				.isClassExists(RdbmsModel.class)
+				.isClassExists(OpenapiModel.class)
+				.isClassExists(LiquibaseModel.class)
+				.isClassExists(Psm2AsmTransformationTrace.class)
+				.isClassExists(Psm2MeasureTransformationTrace.class)
+				.isClassExists(Asm2RdbmsTransformationTrace.class)
+				.isClassExists(Asm2OpenAPITransformationTrace.class)
+				.eval();
 		
-		missingModel = verifyModelPresent(AsmModel.class);
-		missingModel = verifyModelPresent(MeasureModel.class);
-		missingModel = verifyModelPresent(RdbmsModel.class);
-		missingModel = verifyModelPresent(OpenapiModel.class);
-		missingModel = verifyModelPresent(LiquibaseModel.class);
-		
-		missingModel = verifyModelPresent(Psm2AsmTransformationTrace.class);
-		missingModel = verifyModelPresent(Psm2MeasureTransformationTrace.class);
-		missingModel = verifyModelPresent(Asm2RdbmsTransformationTrace.class);
-		missingModel = verifyModelPresent(Asm2OpenAPITransformationTrace.class);
-		
-		if(!missingModel)
-		{
+		if(!missingModel) {
 			throw new IllegalStateException("One or more models are missing for the transformation context.");
 		}
-		
-		/*transformationContext.getByClass(AsmModel.class)
-     	    .orElseThrow(() -> new IllegalStateException("Missing transformated AsmModel"));
-        transformationContext.getByClass(MeasureModel.class)
-     	    .orElseThrow(() -> new IllegalStateException("Missing transformated MeasureModel"));
-        transformationContext.getByClass(RdbmsModel.class)
-     	    .orElseThrow(() -> new IllegalStateException("Missing transformated RdbmsModel"));
-        transformationContext.getByClass(OpenapiModel.class)
-     	    .orElseThrow(() -> new IllegalStateException("Missing transformated OpenAPIModel"));
-        transformationContext.getByClass(LiquibaseModel.class)
-     	    .orElseThrow(() -> new IllegalStateException("Missing transformated LiquibaseModel"));
-        transformationContext.getByClass(Psm2AsmTransformationTrace.class)
-		    .orElseThrow(() -> new IllegalStateException("Missing Psm2AsmTransformationTrace"));
-        transformationContext.getByClass(Psm2AsmTransformationTrace.class)
-		    .orElseThrow(() -> new IllegalStateException("Missing Psm2MeasureTransformationTrace"));
-        transformationContext.getByClass(Psm2AsmTransformationTrace.class)
-		    .orElseThrow(() -> new IllegalStateException("Missing Asm2RdbmsTransformationTrace"));
-        transformationContext.getByClass(Psm2AsmTransformationTrace.class)
-		    .orElseThrow(() -> new IllegalStateException("Missing Asm2OpenAPITransformationTrace"));*/
-     
-		
+	
 	    return workReport;
 	}
 	
-	private boolean verifyModelPresent(Class c)
-	{
-		if(!transformationContext.getByClass(c).isPresent())
-		{
-			log.error("Missing from transformation context: " + String.valueOf(c).replace("class", ""));
-			return false;
-		}
-		else return true;
-	}
 	
 	public void saveModels(File dest) 
 			throws IOException,
@@ -259,5 +227,31 @@ public class DefaultWorkflow {
 		transformationContext.getByClass(Asm2OpenAPITransformationTrace.class)
 			.orElseThrow(() -> new IllegalStateException("Cannot save transformation trace: Missing Asm2OpenAPITransformationTrace"))
 			.save(new File(dest, "asm2openapi.transformationtrace"));
+	}
+	
+	private class TransformationContextVerifier {
+		boolean missingModel = true;
+		TransformationContext transformationContext;
+		
+		public TransformationContextVerifier(TransformationContext transformationContext) {
+			this.transformationContext = transformationContext;
+		}
+		
+		private boolean verifyModelPresent(Class c) {
+			if(!transformationContext.getByClass(c).isPresent()) {
+				log.error("Missing from transformation context: " + String.valueOf(c).replace("class", ""));
+				return false;
+			}
+			return true;
+		}
+
+		public TransformationContextVerifier isClassExists(Class c) {
+			missingModel = missingModel && verifyModelPresent(c);
+			return this;
+		}
+		
+		public boolean eval() {
+			return missingModel;
+		}
 	}
 }

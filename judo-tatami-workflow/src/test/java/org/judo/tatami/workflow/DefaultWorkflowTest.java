@@ -89,7 +89,6 @@ public class DefaultWorkflowTest {
 				.dialect(DIALECT)
 				.excelModelURI(EXCELMODEL_URI));
 		workReport = defaultWorkflow.startDefaultWorkflow();
-		
 	}
 	
 	@Test
