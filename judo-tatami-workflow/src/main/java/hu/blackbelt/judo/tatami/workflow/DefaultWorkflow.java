@@ -33,6 +33,9 @@ import java.io.IOException;
 import java.net.URI;
 import static hu.blackbelt.judo.tatami.core.workflow.engine.WorkFlowEngineBuilder.aNewWorkFlowEngine;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 public class DefaultWorkflow {
 	
 	TransformationContext transformationContext;
@@ -44,7 +47,7 @@ public class DefaultWorkflow {
     URI liquibaseModelURI;
     
     private WorkReport workReport;
-
+    
 	public void setUp(DefaultWorkflowSetupParameters.DefaultWorkflowSetupParametersBuilder builder) 
 			throws IOException, PsmModel.PsmValidationException {
 		setUp(builder.build());
@@ -57,7 +60,7 @@ public class DefaultWorkflow {
 				.name(params.getModelName())));
 		transformationContext.put(Asm2RdbmsWork.RDBMS_DIALECT, params.getDialect());
 		transformationContext.put(Rdbms2LiquibaseWork.LIQUIBASE_DIALECT, params.getDialect());
-		transformationContext.put(Asm2RdbmsWork.RDBMS_EXCELMODEL_URI, params.getExcelModelUri());
+		transformationContext.put(Asm2RdbmsWork.RDBMS_EXCELMODEL_URI, params.getExcelModelURI());
 		
 		this.asmModelURI = params.getAsmModelURI();
 	    this.openapiModelURI = params.getOpenapiModelURI();
@@ -74,14 +77,15 @@ public class DefaultWorkflow {
 	    Asm2OpenAPIWork asm2OpenapiWork = new Asm2OpenAPIWork(transformationContext, openapiModelURI);
 		Rdbms2LiquibaseWork rdbms2LiquibaseWork = new Rdbms2LiquibaseWork(transformationContext, liquibaseModelURI);
 			
+		// ----------------- //
+        // Workflow execution//
+		// ----------------- //
+		
 		WorkFlow workflow = SequentialFlow.Builder.aNewSequentialFlow()
-				.named("psm2asm&psm2measure, asm2dbms&asm2openapi, rdbms2liquibase")
 		        .execute(ParallelFlow.Builder.aNewParallelFlow()
-		        		.named("ps2asm, psm2measure")
 		        		.execute(psm2AsmWork, psm2MeasureWork)
 		        		.build())
 		        .then(ParallelFlow.Builder.aNewParallelFlow()
-		        		.named("asm2rdbms, asm2openapi")
 		        		.execute(asm2RdbmsWork, asm2OpenapiWork)
 		        		.build())
 		        .then(rdbms2LiquibaseWork)
@@ -89,30 +93,60 @@ public class DefaultWorkflow {
 		
 		WorkFlowEngine workFlowEngine = aNewWorkFlowEngine().build();
 		workReport = workFlowEngine.run(workflow);
+		
 		if(workReport.getStatus() == WorkStatus.FAILED) {
 			throw new IllegalStateException("Transformation failed", workReport.getError());
 		}
 		
-	     transformationContext.getByClass(AsmModel.class)
-	     	.orElseThrow(() -> new IllegalStateException("Missing transformated AsmModel"));
-	     transformationContext.getByClass(MeasureModel.class)
-	     	.orElseThrow(() -> new IllegalStateException("Missing transformated MeasureModel"));
-	     transformationContext.getByClass(RdbmsModel.class)
-	     	.orElseThrow(() -> new IllegalStateException("Missing transformated RdbmsModel"));
-	     transformationContext.getByClass(OpenapiModel.class)
-	     	.orElseThrow(() -> new IllegalStateException("Missing transformated OpenAPIModel"));
-	     transformationContext.getByClass(LiquibaseModel.class)
-	     	.orElseThrow(() -> new IllegalStateException("Missing transformated LiquibaseModel"));
-	     transformationContext.getByClass(Psm2AsmTransformationTrace.class)
-			.orElseThrow(() -> new IllegalStateException("Missing Psm2AsmTransformationTrace"));
-	     transformationContext.getByClass(Psm2AsmTransformationTrace.class)
-			.orElseThrow(() -> new IllegalStateException("Missing Psm2MeasureTransformationTrace"));
-	     transformationContext.getByClass(Psm2AsmTransformationTrace.class)
-			.orElseThrow(() -> new IllegalStateException("Missing Asm2RdbmsTransformationTrace"));
-	     transformationContext.getByClass(Psm2AsmTransformationTrace.class)
-			.orElseThrow(() -> new IllegalStateException("Missing Asm2OpenAPITransformationTrace"));
-	     
-	     return workReport;
+		boolean missingModel;
+		
+		missingModel = verifyModelPresent(AsmModel.class);
+		missingModel = verifyModelPresent(MeasureModel.class);
+		missingModel = verifyModelPresent(RdbmsModel.class);
+		missingModel = verifyModelPresent(OpenapiModel.class);
+		missingModel = verifyModelPresent(LiquibaseModel.class);
+		
+		missingModel = verifyModelPresent(Psm2AsmTransformationTrace.class);
+		missingModel = verifyModelPresent(Psm2MeasureTransformationTrace.class);
+		missingModel = verifyModelPresent(Asm2RdbmsTransformationTrace.class);
+		missingModel = verifyModelPresent(Asm2OpenAPITransformationTrace.class);
+		
+		if(!missingModel)
+		{
+			throw new IllegalStateException("One or more models are missing for the transformation context.");
+		}
+		
+		/*transformationContext.getByClass(AsmModel.class)
+     	    .orElseThrow(() -> new IllegalStateException("Missing transformated AsmModel"));
+        transformationContext.getByClass(MeasureModel.class)
+     	    .orElseThrow(() -> new IllegalStateException("Missing transformated MeasureModel"));
+        transformationContext.getByClass(RdbmsModel.class)
+     	    .orElseThrow(() -> new IllegalStateException("Missing transformated RdbmsModel"));
+        transformationContext.getByClass(OpenapiModel.class)
+     	    .orElseThrow(() -> new IllegalStateException("Missing transformated OpenAPIModel"));
+        transformationContext.getByClass(LiquibaseModel.class)
+     	    .orElseThrow(() -> new IllegalStateException("Missing transformated LiquibaseModel"));
+        transformationContext.getByClass(Psm2AsmTransformationTrace.class)
+		    .orElseThrow(() -> new IllegalStateException("Missing Psm2AsmTransformationTrace"));
+        transformationContext.getByClass(Psm2AsmTransformationTrace.class)
+		    .orElseThrow(() -> new IllegalStateException("Missing Psm2MeasureTransformationTrace"));
+        transformationContext.getByClass(Psm2AsmTransformationTrace.class)
+		    .orElseThrow(() -> new IllegalStateException("Missing Asm2RdbmsTransformationTrace"));
+        transformationContext.getByClass(Psm2AsmTransformationTrace.class)
+		    .orElseThrow(() -> new IllegalStateException("Missing Asm2OpenAPITransformationTrace"));*/
+     
+		
+	    return workReport;
+	}
+	
+	private boolean verifyModelPresent(Class c)
+	{
+		if(!transformationContext.getByClass(c).isPresent())
+		{
+			log.error("Missing from transformation context: " + String.valueOf(c).replace("class", ""));
+			return false;
+		}
+		else return true;
 	}
 	
 	public void saveModels(File dest) 
@@ -124,7 +158,7 @@ public class DefaultWorkflow {
 				   LiquibaseValidationException {
 		
 		if(!dest.exists()) { throw new IllegalArgumentException("Destination doesn't exist!"); }
-		if(!dest.isDirectory()) { throw new IllegalArgumentException("Destination is not a direhu.blackbelt.judo.tatami:judoctory!"); }
+		if(!dest.isDirectory()) { throw new IllegalArgumentException("Destination is not a directory!"); }
 		
 		////////////////////////////////////////////////////////////////////////////////////////////////////////
 		///////////////////////////////////////////// Model saving /////////////////////////////////////////////

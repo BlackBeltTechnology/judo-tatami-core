@@ -41,7 +41,6 @@ public class WorkflowUtil {
 	public void extract() throws IOException {
 		for (String s : workflowMojo.getTransformationArtifacts()) {
 			JarFile j = new JarFile(getArtifactFile(s).getAbsoluteFile());
-			// extractJarFile(j, getArtifactFile(s).getAbsoluteFile());
 			Manifest m = j.getManifest();
 			j.close();
 			String tempName = s.split(":")[1].split("-")[2];

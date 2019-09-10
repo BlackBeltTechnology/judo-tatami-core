@@ -32,17 +32,12 @@ public class Psm2MeasureWork extends AbstractTransformationWork {
 		
 		Optional<PsmModel> psmModel = getTransformationContext().getByClass(PsmModel.class);
 		psmModel.orElseThrow(() -> new IllegalArgumentException("PSM Model does not found in transformation context"));
+		
 		getTransformationContext().get(URI.class, PSM_VALIDATION_SCRIPT_URI)
-			.ifPresent(validationScriptUri -> {
-				try {
-					validatePsm(
-						getTransformationContext().getByClass(Log.class).orElseGet(() -> new Slf4jLog(log)),
-					    psmModel.get(), 
-					    validationScriptUri);
-				} catch (Exception e) {
-                    e.printStackTrace();
-                }
-			});
+		.ifPresent(ThrowingConsumer.throwingConsumerWrapper(validationScriptUri -> validatePsm(
+				getTransformationContext().getByClass(Log.class).orElseGet(() -> new Slf4jLog(log)),
+			    psmModel.get(), 
+			    validationScriptUri)));
 		
 		MeasureModel measureModel = getTransformationContext().getByClass(MeasureModel.class)
 				.orElseGet(() -> buildMeasureModel().name(psmModel.get().getName()).build());

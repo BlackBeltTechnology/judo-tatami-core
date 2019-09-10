@@ -8,7 +8,6 @@ import hu.blackbelt.epsilon.runtime.execution.api.Log;
 import hu.blackbelt.epsilon.runtime.execution.impl.Slf4jLog;
 import hu.blackbelt.judo.meta.esm.runtime.EsmModel;
 
-//import static hu.blackbelt.judo.meta.esm.runtime.EsmEpsilonValidator.validateEsm;
 import static hu.blackbelt.judo.tatami.esm2psm.Esm2Psm.executeEsm2PsmTransformation;
 import static hu.blackbelt.judo.meta.psm.runtime.PsmModel.buildPsmModel;
 
@@ -32,17 +31,12 @@ public class Esm2PsmWork extends AbstractTransformationWork {
 		Optional<EsmModel> esmModel = getTransformationContext().getByClass(EsmModel.class);
 		esmModel.orElseThrow(() -> new IllegalArgumentException("ESM Model does not found in transformation context"));
 		
-		getTransformationContext().get(URI.class, ESM_VALIDATION_SCRIPT_URI)
-    	.ifPresent(validationScriptUri -> {
-    		try {
-				/*validateEsm(
-					getTransformationContext().getByClass(Log.class).orElseGet(() -> new Slf4jLog(log)),
-				    esmModel.get(), 
-				    validationScriptUri);*/
-			} catch (Exception e) {
-				e.printStackTrace();  
-			}
-    });
+		//Does ESM model require validation?
+		/*getTransformationContext().get(URI.class, ESM_VALIDATION_SCRIPT_URI)
+		.ifPresent(ThrowingConsumer.throwingConsumerWrapper(validationScriptUri -> validateEsm(
+				getTransformationContext().getByClass(Log.class).orElseGet(() -> new Slf4jLog(log)),
+			    esmModel.get(), 
+			    validationScriptUri)));*/
 		
 		 PsmModel psmModel = getTransformationContext().getByClass(PsmModel.class)
 	        		.orElseGet(() -> buildPsmModel().name(esmModel.get().getName()).build());

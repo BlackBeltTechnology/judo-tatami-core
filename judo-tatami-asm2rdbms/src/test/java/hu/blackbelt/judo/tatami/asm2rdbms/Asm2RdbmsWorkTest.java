@@ -2,9 +2,6 @@ package hu.blackbelt.judo.tatami.asm2rdbms;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -45,7 +42,7 @@ public class Asm2RdbmsWorkTest {
         transformationContext.put(Asm2RdbmsWork.RDBMS_EXCELMODEL_URI, new File(MODEL_DIRECTORY).toURI());
         transformationContext.put(Asm2RdbmsWork.RDBMS_DIALECT, "hsqldb");
         
-        asm2RdbmsWork = new Asm2RdbmsWork(transformationContext, new File("src/main/epsilon/transformations").toURI());
+        asm2RdbmsWork = new Asm2RdbmsWork(transformationContext, new File(TARGET_TEST_CLASSES,"epsilon/transformations").toURI());
     }
    
     @Test

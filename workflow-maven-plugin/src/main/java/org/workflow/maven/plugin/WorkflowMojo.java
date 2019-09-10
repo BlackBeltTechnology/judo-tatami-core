@@ -88,8 +88,8 @@ public class WorkflowMojo extends AbstractMojo {
 			openApiModelScriptRoot = workflowUtil.getOpenApiModelScriptRoot();
 			liquibaseModelScriptRoot = workflowUtil.getLiquibaseModelScriptRoot();
 			excelModelURI = workflowUtil.getExcelModelURI();
-		} catch (IOException e1) {
-			throw new MojoFailureException("An error occurred during the extraction of the script roots", e1);
+		} catch (IOException e) {
+			throw new MojoFailureException("An error occurred during the extraction of the script roots.", e);
 		}
 
 		// -------------- //
@@ -102,7 +102,7 @@ public class WorkflowMojo extends AbstractMojo {
 					.measureModelURI(new URI(measureModelScriptRoot)).rdbmsModelURI(new URI(rdbmsModelScriptRoot))
 					.openapiModelURI(new URI(openApiModelScriptRoot))
 					.liquibaseModelURI(new URI(liquibaseModelScriptRoot)).modelName(modelName).dialect(dialect)
-					.excelModelUri(new URI(excelModelURI)).build());
+					.excelModelURI(new URI(excelModelURI)).build());
 		} catch (IOException | PsmValidationException | URISyntaxException e) {
 			throw new MojoFailureException("An error occurred during the setup phase of the workflow.", e);
 		}

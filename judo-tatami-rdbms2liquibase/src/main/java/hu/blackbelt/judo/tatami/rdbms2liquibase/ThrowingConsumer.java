@@ -1,4 +1,4 @@
-package hu.blackbelt.judo.tatami.workflow;
+package hu.blackbelt.judo.tatami.rdbms2liquibase;
 
 import java.util.function.Consumer;
 
@@ -11,7 +11,7 @@ public interface ThrowingConsumer<T, E extends Exception> {
 			try {
 				throwingConsumer.accept(i);
 			} catch (Exception ex) {
-				throw new RuntimeException("Cannot save transformation trace: Missing TransformationTrace",ex);
+				throw new RuntimeException(ex);
 			}
 		};
 	}

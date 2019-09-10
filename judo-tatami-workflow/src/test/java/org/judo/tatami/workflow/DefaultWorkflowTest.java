@@ -28,11 +28,12 @@ public class DefaultWorkflowTest {
 	
 	DefaultWorkflow defaultWorkflow = new DefaultWorkflow();
 	
-    public static final String ASM_URI = "../judo-tatami-psm2asm/src/main/epsilon/transformations/asm";
-    public static final String MEASURE_URI = "../judo-tatami-psm2measure/src/main/epsilon/transformations/measure";
-    public static final String RDBMS_URI = "../judo-tatami-asm2rdbms/src/main/epsilon/transformations/rdbms";
-    public static final String OPENAPI_URI = "../judo-tatami-asm2openapi/src/main/epsilon/transformations/openapi";
-    public static final String LIQUIBASE_URI = "../judo-tatami-rdbms2liquibase/src/main/epsilon/transformations";
+    public static final URI ASM_URI = new File("../judo-tatami-psm2asm/src/main/epsilon/transformations/asm/").toURI();
+    public static final URI MEASURE_URI = new File("../judo-tatami-psm2measure/src/main/epsilon/transformations/measure/").toURI();
+    public static final URI RDBMS_URI = new File("../judo-tatami-asm2rdbms/src/main/epsilon/transformations/").toURI();
+    public static final URI OPENAPI_URI = new File("../judo-tatami-asm2openapi/src/main/epsilon/transformations/openapi/").toURI();
+    public static final URI LIQUIBASE_URI = new File("../judo-tatami-rdbms2liquibase/src/main/epsilon/transformations/").toURI();
+    public static final URI EXCELMODEL_URI = new File("../judo-tatami-asm2rdbms/model/").toURI();
     
     public static final String FILE_LOCATION = "target/test-classes/northwind-psm.model";
     
@@ -42,8 +43,6 @@ public class DefaultWorkflowTest {
     
     public static final String MODEL_NAME = "northwind";
     public static final String DIALECT = "hsqldb";
-    public static final URI EXCELMODELURI = new File("../judo-tatami-asm2rdbms/model").toURI();
-    
 
     private WorkReport workReport;
     
@@ -81,14 +80,14 @@ public class DefaultWorkflowTest {
 		
 		defaultWorkflow.setUp(DefaultWorkflowSetupParameters.defaultWorkflowSetupParameters()
 				.psmModeldest(new File(FILE_LOCATION))
-				.asmModelURI(new URI(ASM_URI))
-				.measureModelURI(new URI(MEASURE_URI))
-				.rdbmsModelURI(new URI(RDBMS_URI))
-				.openapiModelURI(new URI(OPENAPI_URI))
-				.liquibaseModelURI(new URI(LIQUIBASE_URI))
+				.asmModelURI(ASM_URI)
+				.measureModelURI(MEASURE_URI)
+				.rdbmsModelURI(RDBMS_URI)
+				.openapiModelURI(OPENAPI_URI)
+				.liquibaseModelURI(LIQUIBASE_URI)
 				.modelName(MODEL_NAME)
 				.dialect(DIALECT)
-				.excelModelUri(EXCELMODELURI));
+				.excelModelURI(EXCELMODEL_URI));
 		workReport = defaultWorkflow.startDefaultWorkflow();
 		
 	}
