@@ -44,17 +44,17 @@ public class Rdbms2LiquibaseWork extends AbstractTransformationWork {
         registerRdbmsDataTypesMetamodel(rdbmsModel.get().getResourceSet());
         registerRdbmsTableMappingRulesMetamodel(rdbmsModel.get().getResourceSet());
         
-		getTransformationContext().get(URI.class, RDBMS_VALIDATON_SCRIPT_URI)
+		/*getTransformationContext().get(URI.class, RDBMS_VALIDATON_SCRIPT_URI)
     	.ifPresent(validationScriptUri -> {
     		try {
-				/*validateRdbms(
+				validateRdbms(
 					getTransformationContext().getByClass(Log.class).orElseGet(() -> new Slf4jLog(log)),
 				    rdbmsModel.get(), 
-				    validationScriptUri);*/
+				    validationScriptUri);
 			} catch (Exception e) {
 				e.printStackTrace();    
 			}
-        });
+        });*/
 		
 		
 		LiquibaseModel liquibaseModel = getTransformationContext().getByClass(LiquibaseModel.class)

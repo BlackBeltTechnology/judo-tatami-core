@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
->
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<artifactId>judo-tatami</artifactId>
@@ -46,7 +45,7 @@
 							<goal>defaultworkflow</goal>
 						</goals>
 						<configuration>
-							<psmModelDest>${basedir}/../judo-tatami-workflow/target/test-classes/northwind-psm.model</psmModelDest> 
+							<psmModelDest>${basedir}/../judo-tatami-workflow/target/test-classes/northwind-psm.model</psmModelDest>
 							<asmModelScriptRoot>file:${basedir}/../judo-tatami-psm2asm/src/main/epsilon/transformations/asm</asmModelScriptRoot>
 							<measureModelScriptRoot>file:${basedir}/../judo-tatami-psm2measure/src/main/epsilon/transformations/measure</measureModelScriptRoot>
 							<openApiModelScriptRoot>file:${basedir}/../judo-tatami-asm2openapi/src/main/epsilon/transformations/openapi</openApiModelScriptRoot>

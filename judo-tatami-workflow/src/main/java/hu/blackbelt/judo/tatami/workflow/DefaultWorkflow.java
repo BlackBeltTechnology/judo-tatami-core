@@ -11,7 +11,9 @@ import hu.blackbelt.judo.meta.openapi.runtime.OpenapiModel.OpenapiValidationExce
 import hu.blackbelt.judo.meta.psm.runtime.PsmModel;
 import hu.blackbelt.judo.meta.rdbms.runtime.RdbmsModel;
 import hu.blackbelt.judo.meta.rdbms.runtime.RdbmsModel.RdbmsValidationException;
+import hu.blackbelt.judo.tatami.asm2openapi.Asm2OpenAPITransformationTrace;
 import hu.blackbelt.judo.tatami.asm2openapi.Asm2OpenAPIWork;
+import hu.blackbelt.judo.tatami.asm2rdbms.Asm2RdbmsTransformationTrace;
 import hu.blackbelt.judo.tatami.asm2rdbms.Asm2RdbmsWork;
 import hu.blackbelt.judo.tatami.core.workflow.engine.WorkFlowEngine;
 import hu.blackbelt.judo.tatami.core.workflow.flow.ParallelFlow;
@@ -20,7 +22,9 @@ import hu.blackbelt.judo.tatami.core.workflow.flow.WorkFlow;
 import hu.blackbelt.judo.tatami.core.workflow.work.TransformationContext;
 import hu.blackbelt.judo.tatami.core.workflow.work.WorkReport;
 import hu.blackbelt.judo.tatami.core.workflow.work.WorkStatus;
+import hu.blackbelt.judo.tatami.psm2asm.Psm2AsmTransformationTrace;
 import hu.blackbelt.judo.tatami.psm2asm.Psm2AsmWork;
+import hu.blackbelt.judo.tatami.psm2measure.Psm2MeasureTransformationTrace;
 import hu.blackbelt.judo.tatami.psm2measure.Psm2MeasureWork;
 import hu.blackbelt.judo.tatami.rdbms2liquibase.Rdbms2LiquibaseWork;
 import lombok.extern.slf4j.Slf4j;
@@ -118,9 +122,13 @@ public class DefaultWorkflow {
 		if(!dest.exists()) { throw new IllegalArgumentException("Destination doesn't exist!"); }
 		if(!dest.isDirectory()) { throw new IllegalArgumentException("Destination is not a direhu.blackbelt.judo.tatami:judoctory!"); }
 		
-		//////////////////////////////////////////////////////////////////////////////////////////
-		////////////////////////////////// AsmModel saving ///////////////////////////////////////
-		//////////////////////////////////////////////////////////////////////////////////////////
+		////////////////////////////////////////////////////////////////////////////////////////////////////////
+		///////////////////////////////////////////// Model saving /////////////////////////////////////////////
+		////////////////////////////////////////////////////////////////////////////////////////////////////////
+		
+		// --------------- //
+		// AsmModel saving //
+		// --------------- //
 		AsmModel asmModel = transformationContext.getByClass(AsmModel.class)
 				.orElseThrow(() -> new IllegalStateException("Cannot save model: Missing transformated AsmModel"));
 		File asmModelDest = new File(dest,"asm.model");
@@ -131,9 +139,9 @@ public class DefaultWorkflow {
 		
 		
 		
-		////////////////////////////////////////////////////////////////////////////////////////////
-		/////////////////////////////// MeasureModel saving ////////////////////////////////////////
-		////////////////////////////////////////////////////////////////////////////////////////////
+		// ------------------- //
+		// MeasureModel saving //
+		// ------------------- //
 		MeasureModel measureModel = transformationContext.getByClass(MeasureModel.class)
 				.orElseThrow(() -> new IllegalStateException("Cannot save model: Missing transformated MeasureModel"));
 		File measureModelDest = new File(dest,"measure.model");
@@ -143,10 +151,10 @@ public class DefaultWorkflow {
 				.outputStream(new FileOutputStream(measureModelDest)));
 		
 		
-				
-		//////////////////////////////////////////////////////////////////////////////////////////
-		/////////////////////////////////// RdbmsModel saving ////////////////////////////////////
-		//////////////////////////////////////////////////////////////////////////////////////////
+
+		// ----------------- //
+		// RdbmsModel saving //
+		// ----------------- //
 		RdbmsModel rdbmsModel = transformationContext.getByClass(RdbmsModel.class)
 				.orElseThrow(() -> new IllegalStateException("Cannot save model: Missing transformated RdbmsModel"));
 		File rdbmsModelDest = new File(dest,"rdbms.model");
@@ -156,10 +164,10 @@ public class DefaultWorkflow {
 				.outputStream(new FileOutputStream(rdbmsModelDest)));
 		
 		
-		
-		//////////////////////////////////////////////////////////////////////////////////////////
-		/////////////////////////////////// OpenapiModel saving //////////////////////////////////
-		//////////////////////////////////////////////////////////////////////////////////////////
+
+		// ------------------- //
+		// OpenapiModel saving //
+		// ------------------- //
 		OpenapiModel openapiModel = transformationContext.getByClass(OpenapiModel.class)
 				.orElseThrow(() -> new IllegalStateException("Cannot save model: Missing transformated OpenapiModel"));
 		File openapiModelDest = new File(dest,"openapi.model");
@@ -168,11 +176,10 @@ public class DefaultWorkflow {
 				.file(openapiModelDest)
 				.outputStream(new FileOutputStream(openapiModelDest)));
 
-		
-		
-		////////////////////////////////////////////////////////////////////////////////////////////
-		/////////////////////////////////// LiquibaseModel saving //////////////////////////////////
-		////////////////////////////////////////////////////////////////////////////////////////////
+
+		// --------------------- //
+		// LiquibaseModel saving //
+		// --------------------- //
 		LiquibaseModel liquibaseModel = transformationContext.getByClass(LiquibaseModel.class)
 				.orElseThrow(() -> new IllegalStateException("Cannot save model: Missing transformated LiquibaseModel"));	
 		File liquibaseModelDest = new File(dest,"liquibase.changelog.xml");
@@ -180,6 +187,61 @@ public class DefaultWorkflow {
 				.liquibaseSaveArgumentsBuilder()
 				.file(liquibaseModelDest)
 				.outputStream(new FileOutputStream(liquibaseModelDest)));
+		
+		
+		
+		////////////////////////////////////////////////////////////////////////////////////////////////////////
+		////////////////////////////////////// TransformationTrace saving //////////////////////////////////////
+		////////////////////////////////////////////////////////////////////////////////////////////////////////
+		
+		// --------------------------------- //
+		// Psm2AsmTransformationTrace saving //
+		// --------------------------------- //
+		transformationContext.getByClass(Psm2AsmTransformationTrace.class)
+			.ifPresent(psm2AsmTransformationTrace -> {
+				try {
+					psm2AsmTransformationTrace.save(new File(dest, "psm2Asm.transformationtrace"));
+				} catch (IOException e) {
+					log.error("Cannot save transformation trace: Missing Psm2AsmTransformationTrace");
+					//throw new IOException("Cannot save transformation trace: Missing Psm2AsmTransformationTrace", e);
+				}
+			});
+		
+		// ------------------------------------- //
+		// Psm2MeasureTransformationTrace saving //
+		// ------------------------------------- //
+		transformationContext.getByClass(Psm2MeasureTransformationTrace.class)
+		.ifPresent(psm2MeasureTransformationTrace -> {
+			try {
+				psm2MeasureTransformationTrace.save(new File(dest, "psm2measure.transformationtrace"));
+			} catch (IOException e) {
+				log.error("Cannot save transformation trace: Missing Psm2MeasureTransformationTrace");
+			}
+		});
+		
+		// ----------------------------------- //
+		// Asm2RdbmsTransformationTrace saving //
+		// ----------------------------------- //
+		transformationContext.getByClass(Asm2RdbmsTransformationTrace.class)
+		.ifPresent(asm2RdbmsTransformationTrace -> {
+			try {
+				asm2RdbmsTransformationTrace.save(new File(dest, "asm2Rdbms.transformationtrace"));
+			} catch (IOException e) {
+				log.error("Cannot save transformation trace: Missing Asm2RdbmsTransformationTrace");
+			}
+		});
+		
+		// ------------------------------------- //
+		// Asm2OpenapiTransformationTrace saving //
+		// ------------------------------------- //
+		transformationContext.getByClass(Asm2OpenAPITransformationTrace.class)
+		.ifPresent(asm2OpenapiTransformationTrace -> {
+			try {
+				asm2OpenapiTransformationTrace.save(new File(dest, "asm2Openapi.transformationtrace"));
+			} catch (IOException e) {
+				log.error("Cannot save transformation trace: Missing Asm2OpenAPITransformationTrace");
+			}
+		});
 		
 	}
 }
