@@ -32,7 +32,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URI;
 import static hu.blackbelt.judo.tatami.core.workflow.engine.WorkFlowEngineBuilder.aNewWorkFlowEngine;
-import static hu.blackbelt.judo.tatami.workflow.ThrowingConsumer.throwingConsumerWrapper;
 
 public class DefaultWorkflow {
 	
@@ -101,6 +100,14 @@ public class DefaultWorkflow {
 	     	.orElseThrow(() -> new IllegalStateException("Missing transformated OpenAPIModel"));
 	     transformationContext.getByClass(LiquibaseModel.class)
 	     	.orElseThrow(() -> new IllegalStateException("Missing transformated LiquibaseModel"));
+	     transformationContext.getByClass(Psm2AsmTransformationTrace.class)
+			.orElseThrow(() -> new IllegalStateException("Missing Psm2AsmTransformationTrace"));
+	     transformationContext.getByClass(Psm2AsmTransformationTrace.class)
+			.orElseThrow(() -> new IllegalStateException("Missing Psm2MeasureTransformationTrace"));
+	     transformationContext.getByClass(Psm2AsmTransformationTrace.class)
+			.orElseThrow(() -> new IllegalStateException("Missing Asm2RdbmsTransformationTrace"));
+	     transformationContext.getByClass(Psm2AsmTransformationTrace.class)
+			.orElseThrow(() -> new IllegalStateException("Missing Asm2OpenAPITransformationTrace"));
 	     
 	     return workReport;
 	}
@@ -196,28 +203,28 @@ public class DefaultWorkflow {
 		// Psm2AsmTransformationTrace saving //
 		// --------------------------------- //
 		transformationContext.getByClass(Psm2AsmTransformationTrace.class)
-			.ifPresent(throwingConsumerWrapper(psm2AsmTransformationTrace -> 
-				psm2AsmTransformationTrace.save(new File(dest, "psm2asm.transformationtrace"))));
+			.orElseThrow(() -> new IllegalStateException("Cannot save transformation trace: Missing Psm2AsmTransformationTrace"))
+			.save(new File(dest, "psm2asm.transformationtrace"));
 		
 		// ------------------------------------- //
 		// Psm2MeasureTransformationTrace saving //
 		// ------------------------------------- //
 		transformationContext.getByClass(Psm2MeasureTransformationTrace.class)
-			.ifPresent(throwingConsumerWrapper(psm2MeasureTransformationTrace -> 
-				psm2MeasureTransformationTrace.save(new File(dest, "psm2measure.transformationtrace"))));
+			.orElseThrow(() -> new IllegalStateException("Cannot save transformation trace: Missing Psm2MeasureTransformationTrace"))
+			.save(new File(dest, "psm2measure.transformationtrace"));
 		
 		// ----------------------------------- //
 		// Asm2RdbmsTransformationTrace saving //
 		// ----------------------------------- //
 		transformationContext.getByClass(Asm2RdbmsTransformationTrace.class)
-			.ifPresent(throwingConsumerWrapper(asm2RdbmsTransformationTrace -> 
-				asm2RdbmsTransformationTrace.save(new File(dest, "asm2rdbms.transformationtrace"))));
+			.orElseThrow(() -> new IllegalStateException("Cannot save transformation trace: Missing Asm2RdbmsTransformationTrace"))
+			.save(new File(dest, "asm2rdbms.transformationtrace"));
 		
 		// ------------------------------------- //
 		// Asm2OpenapiTransformationTrace saving //
 		// ------------------------------------- //
 		transformationContext.getByClass(Asm2OpenAPITransformationTrace.class)
-			.ifPresent(throwingConsumerWrapper(asm2OpenAPITransformationTrace -> 
-				asm2OpenAPITransformationTrace.save(new File(dest, "asm2openapi.transformationtrace"))));
+			.orElseThrow(() -> new IllegalStateException("Cannot save transformation trace: Missing Asm2OpenAPITransformationTrace"))
+			.save(new File(dest, "asm2openapi.transformationtrace"));
 	}
 }
