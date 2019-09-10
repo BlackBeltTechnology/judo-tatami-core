@@ -89,6 +89,9 @@ public class DefaultWorkflow {
 		
 		WorkFlowEngine workFlowEngine = aNewWorkFlowEngine().build();
 		workReport = workFlowEngine.run(workflow);
+		if(workReport.getStatus() == WorkStatus.FAILED) {
+			throw new IllegalStateException("Transformation failed", workReport.getError());
+		}
 		
 	     transformationContext.getByClass(AsmModel.class)
 	     	.orElseThrow(() -> new IllegalStateException("Missing transformated AsmModel"));
@@ -119,10 +122,6 @@ public class DefaultWorkflow {
 				   RdbmsValidationException,
 				   OpenapiValidationException,
 				   LiquibaseValidationException {
-		
-		if(workReport.getStatus() == WorkStatus.FAILED) {
-			throw new IllegalStateException("Transformation failed or not yet executed");
-		}
 		
 		if(!dest.exists()) { throw new IllegalArgumentException("Destination doesn't exist!"); }
 		if(!dest.isDirectory()) { throw new IllegalArgumentException("Destination is not a direhu.blackbelt.judo.tatami:judoctory!"); }
