@@ -7,6 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
+import java.net.URISyntaxException;
 
 import org.apache.xmlbeans.impl.xb.xsdschema.impl.FacetImpl;
 import org.junit.jupiter.api.BeforeEach;
@@ -27,11 +28,11 @@ public class DefaultWorkflowTest {
 	
 	DefaultWorkflow defaultWorkflow = new DefaultWorkflow();
 	
-    public static final URI ASM_URI = new File("src/main/epsilon/transformations/asm").toURI();
-    public static final URI MEASURE_URI = new File("src/main/epsilon/transformations/measure").toURI();
-    public static final URI RDBMS_URI = new File("src/main/epsilon/transformations/rdbms").toURI();
-    public static final URI OPENAPI_URI = new File("src/main/epsilon/transformations/openapi").toURI();
-    public static final URI LIQUIBASE_URI = new File("src/main/epsilon/transformations").toURI();
+    public static final String ASM_URI = "../judo-tatami-psm2asm/src/main/epsilon/transformations/asm";
+    public static final String MEASURE_URI = "../judo-tatami-psm2measure/src/main/epsilon/transformations/measure";
+    public static final String RDBMS_URI = "../judo-tatami-asm2rdbms/src/main/epsilon/transformations/rdbms";
+    public static final String OPENAPI_URI = "../judo-tatami-asm2openapi/src/main/epsilon/transformations/openapi";
+    public static final String LIQUIBASE_URI = "../judo-tatami-rdbms2liquibase/src/main/epsilon/transformations";
     
     public static final String FILE_LOCATION = "target/test-classes/northwind-psm.model";
     
@@ -41,7 +42,7 @@ public class DefaultWorkflowTest {
     
     public static final String MODEL_NAME = "northwind";
     public static final String DIALECT = "hsqldb";
-    public static final URI EXCELMODELURI = new File("model").toURI();
+    public static final URI EXCELMODELURI = new File("../judo-tatami-asm2rdbms/model").toURI();
     
 
     private WorkReport workReport;
@@ -51,9 +52,13 @@ public class DefaultWorkflowTest {
     private File rdbmsModel;
     private File openapiModel;
     private File liquibaseModel;
+    private File psm2asmTransformationTrace;
+    private File psm2measureTransformationTrace;
+    private File asm2rdbmsTransformationTrace;
+    private File asm2openapiTransformationTrace;
     
 	@BeforeEach
-	void setUp() throws IOException, PsmValidationException {
+	void setUp() throws IOException, PsmValidationException, URISyntaxException {
 		
 		asmModel = new File(TARGET_CLASSES, "asm.model");
 		asmModel.delete();
@@ -65,14 +70,22 @@ public class DefaultWorkflowTest {
 		openapiModel.delete();
 		liquibaseModel = new File(TARGET_CLASSES, "liquibase.changelog.xml");
 		liquibaseModel.delete();
+		psm2asmTransformationTrace = new File(TARGET_CLASSES, "psm2asm.transformationtrace");
+		psm2asmTransformationTrace.delete();
+		psm2measureTransformationTrace = new File(TARGET_CLASSES, "psm2measure.transformationtrace");
+		psm2measureTransformationTrace.delete();
+		asm2rdbmsTransformationTrace = new File(TARGET_CLASSES, "asm2rdbms.transformationtrace");
+		asm2rdbmsTransformationTrace.delete();
+		asm2openapiTransformationTrace = new File(TARGET_CLASSES, "asm2openapi.transformationtrace");
+		asm2openapiTransformationTrace.delete();
 		
 		defaultWorkflow.setUp(DefaultWorkflowSetupParameters.defaultWorkflowSetupParameters()
 				.psmModeldest(new File(FILE_LOCATION))
-				.asmModelURI(ASM_URI)
-				.measureModelURI(MEASURE_URI)
-				.rdbmsModelURI(RDBMS_URI)
-				.openapiModelURI(OPENAPI_URI)
-				.liquibaseModelURI(LIQUIBASE_URI)
+				.asmModelURI(new URI(ASM_URI))
+				.measureModelURI(new URI(MEASURE_URI))
+				.rdbmsModelURI(new URI(RDBMS_URI))
+				.openapiModelURI(new URI(OPENAPI_URI))
+				.liquibaseModelURI(new URI(LIQUIBASE_URI))
 				.modelName(MODEL_NAME)
 				.dialect(DIALECT)
 				.excelModelUri(EXCELMODELURI));
@@ -96,6 +109,11 @@ public class DefaultWorkflowTest {
 		assertTrue(rdbmsModel.exists());
 		assertTrue(openapiModel.exists());
 		assertTrue(liquibaseModel.exists());
+		
+		assertTrue(psm2asmTransformationTrace.exists());
+		assertTrue(psm2measureTransformationTrace.exists());
+		assertTrue(asm2rdbmsTransformationTrace.exists());
+		assertTrue(asm2openapiTransformationTrace.exists());
 		
 	}
 }
