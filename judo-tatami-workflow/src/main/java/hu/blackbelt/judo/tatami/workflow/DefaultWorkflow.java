@@ -27,15 +27,13 @@ import hu.blackbelt.judo.tatami.psm2asm.Psm2AsmWork;
 import hu.blackbelt.judo.tatami.psm2measure.Psm2MeasureTransformationTrace;
 import hu.blackbelt.judo.tatami.psm2measure.Psm2MeasureWork;
 import hu.blackbelt.judo.tatami.rdbms2liquibase.Rdbms2LiquibaseWork;
-import lombok.extern.slf4j.Slf4j;
-
-import static hu.blackbelt.judo.tatami.core.workflow.engine.WorkFlowEngineBuilder.aNewWorkFlowEngine;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URI;
+import static hu.blackbelt.judo.tatami.core.workflow.engine.WorkFlowEngineBuilder.aNewWorkFlowEngine;
+import static hu.blackbelt.judo.tatami.workflow.ThrowingConsumer.throwingConsumerWrapper;
 
-@Slf4j
 public class DefaultWorkflow {
 	
 	TransformationContext transformationContext;
@@ -198,50 +196,28 @@ public class DefaultWorkflow {
 		// Psm2AsmTransformationTrace saving //
 		// --------------------------------- //
 		transformationContext.getByClass(Psm2AsmTransformationTrace.class)
-			.ifPresent(psm2AsmTransformationTrace -> {
-				try {
-					psm2AsmTransformationTrace.save(new File(dest, "psm2Asm.transformationtrace"));
-				} catch (IOException e) {
-					log.error("Cannot save transformation trace: Missing Psm2AsmTransformationTrace");
-					//throw new IOException("Cannot save transformation trace: Missing Psm2AsmTransformationTrace", e);
-				}
-			});
+			.ifPresent(throwingConsumerWrapper(psm2AsmTransformationTrace -> 
+				psm2AsmTransformationTrace.save(new File(dest, "psm2asm.transformationtrace"))));
 		
 		// ------------------------------------- //
 		// Psm2MeasureTransformationTrace saving //
 		// ------------------------------------- //
 		transformationContext.getByClass(Psm2MeasureTransformationTrace.class)
-		.ifPresent(psm2MeasureTransformationTrace -> {
-			try {
-				psm2MeasureTransformationTrace.save(new File(dest, "psm2measure.transformationtrace"));
-			} catch (IOException e) {
-				log.error("Cannot save transformation trace: Missing Psm2MeasureTransformationTrace");
-			}
-		});
+			.ifPresent(throwingConsumerWrapper(psm2MeasureTransformationTrace -> 
+				psm2MeasureTransformationTrace.save(new File(dest, "psm2measure.transformationtrace"))));
 		
 		// ----------------------------------- //
 		// Asm2RdbmsTransformationTrace saving //
 		// ----------------------------------- //
 		transformationContext.getByClass(Asm2RdbmsTransformationTrace.class)
-		.ifPresent(asm2RdbmsTransformationTrace -> {
-			try {
-				asm2RdbmsTransformationTrace.save(new File(dest, "asm2Rdbms.transformationtrace"));
-			} catch (IOException e) {
-				log.error("Cannot save transformation trace: Missing Asm2RdbmsTransformationTrace");
-			}
-		});
+			.ifPresent(throwingConsumerWrapper(asm2RdbmsTransformationTrace -> 
+				asm2RdbmsTransformationTrace.save(new File(dest, "asm2rdbms.transformationtrace"))));
 		
 		// ------------------------------------- //
 		// Asm2OpenapiTransformationTrace saving //
 		// ------------------------------------- //
 		transformationContext.getByClass(Asm2OpenAPITransformationTrace.class)
-		.ifPresent(asm2OpenapiTransformationTrace -> {
-			try {
-				asm2OpenapiTransformationTrace.save(new File(dest, "asm2Openapi.transformationtrace"));
-			} catch (IOException e) {
-				log.error("Cannot save transformation trace: Missing Asm2OpenAPITransformationTrace");
-			}
-		});
-		
+			.ifPresent(throwingConsumerWrapper(asm2OpenAPITransformationTrace -> 
+				asm2OpenAPITransformationTrace.save(new File(dest, "asm2openapi.transformationtrace"))));
 	}
 }
