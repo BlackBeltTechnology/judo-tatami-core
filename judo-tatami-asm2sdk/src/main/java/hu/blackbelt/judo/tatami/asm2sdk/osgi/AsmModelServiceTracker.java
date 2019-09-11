@@ -1,17 +1,15 @@
-package hu.blackbelt.judo.tatami.asm2sdk;
+package hu.blackbelt.judo.tatami.asm2sdk.osgi;
 
 import hu.blackbelt.judo.meta.asm.runtime.AsmModel;
+import hu.blackbelt.judo.tatami.asm2sdk.Asm2SDKService;
 import hu.blackbelt.judo.tatami.core.AbstractModelTracker;
 import lombok.extern.slf4j.Slf4j;
 import org.osgi.framework.BundleException;
 import org.osgi.service.component.ComponentContext;
-import org.osgi.service.component.annotations.Activate;
-import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Deactivate;
-import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.component.annotations.*;
 
 
-@Component(immediate = true)
+@Component(immediate = true, configurationPolicy = ConfigurationPolicy.REQUIRE)
 @Slf4j
 public class AsmModelServiceTracker extends AbstractModelTracker<AsmModel> {
 
