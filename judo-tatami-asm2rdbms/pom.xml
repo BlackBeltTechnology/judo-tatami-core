@@ -7,7 +7,7 @@
 		<groupId>hu.blackbelt.judo.tatami</groupId>
 		<artifactId>judo-tatami-parent</artifactId>
 		<version>1.0.0-SNAPSHOT</version>
-		<relativePath>../judo-tatami-parent</relativePath>
+		<relativePath>..</relativePath>
 	</parent>
 
 	<artifactId>judo-tatami-asm2rdbms</artifactId>

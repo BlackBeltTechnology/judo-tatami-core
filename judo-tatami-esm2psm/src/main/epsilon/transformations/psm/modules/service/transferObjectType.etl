@@ -74,12 +74,19 @@ rule CreateTransferObjectRelation
 @abstract
 rule CreateOperation
 	transform s: ESM!Operation
-	to t: JUDOPSM!Operation {
-	  t.body = s.body;
+	to t: JUDOPSM!OperationDeclaration {
 	  t.output = s.output.equivalent("CreateParameter");
 	  t.input = s.input.equivalent("CreateParameter");
+      t.implementation = s.equivalent("CreateOperationBody");
+}
+
+@greedy
+rule CreateOperationBody
+	transform s: ESM!Operation
+	to t: JUDOPSM!OperationBody {
+	  t.body = s.body;
 	  t.stateful = s.name.startsWith("insert"); //TODO: FIXME
-	  t.undefined = s.undefined; 
+	  t.customImplementation = s.undefined;
 }
 
 rule CreateBoundOperation

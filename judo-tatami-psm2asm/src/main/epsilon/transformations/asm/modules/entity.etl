@@ -130,12 +130,12 @@ rule CreateRelation
 		s.getEntityType().equivalent("CreateEntityClass").eStructuralFeatures.add(t);
 	}
 
-rule CreateEndpointRelation
-	transform s : JUDOPSM!Endpoint
+rule CreateAssociationEndRelation
+	transform s : JUDOPSM!AssociationEnd
 	to t : ASM!EReference
 	extends CreateRelation {
 		if (s.partner.isDefined()) {
-			t.eOpposite = s.partner.equivalent("CreateEndpointRelation");
+			t.eOpposite = s.partner.equivalent("CreateAssociationEndRelation");
 		}
 }
 

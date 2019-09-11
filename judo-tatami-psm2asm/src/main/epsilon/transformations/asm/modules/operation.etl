@@ -2,17 +2,17 @@ import "../utils/_importUtils.eol";
 
 @cached
 operation JUDOPSM!Parameter isInput() : Boolean {
-    return JUDOPSM!Operation.all.selectOne(o | o.input == self).isDefined();
+    return JUDOPSM!OperationDeclaration.all.selectOne(o | o.input == self).isDefined();
 }
 
 @cached
 operation JUDOPSM!Parameter isOutput() : Boolean {
-    return JUDOPSM!Operation.all.selectOne(o | o.output == self).isDefined();
+    return JUDOPSM!OperationDeclaration.all.selectOne(o | o.output == self).isDefined();
 }
 
 @cached
 operation JUDOPSM!Parameter isFault() : Boolean {
-    return JUDOPSM!Operation.all.selectOne(o | o.faults.contains(self)).isDefined();
+    return JUDOPSM!OperationDeclaration.all.selectOne(o | o.faults.contains(self)).isDefined();
 }
 
 @abstract
@@ -49,13 +49,15 @@ rule CreateFaultParameter
 
 @greedy
 rule CreateStatefulAnnotationOnOperation
-    transform s : JUDOPSM!Operation
+    transform s : JUDOPSM!OperationDeclaration
     to t : ASM!EAnnotation {
+        guard: s.implementation.isDefined()
+
         t.source = asmUtils.getAnnotationUri("stateful");
 		
 		var stateful = new ASM!EStringToStringMapEntry;
         stateful.key = "value";
-        stateful.value = s.stateful.asString();
+        stateful.value = s.implementation.stateful.asString();
         t.details.add(stateful);
         
         s.asmEquivalent().eAnnotations.add(t);
@@ -63,7 +65,7 @@ rule CreateStatefulAnnotationOnOperation
 
 @abstract
 rule CreateOperation
-    transform s : JUDOPSM!Operation
+    transform s : JUDOPSM!OperationDeclaration
     to t : ASM!EOperation {
         if (s.output.isDefined()) {
         	t.lowerBound = s.output.cardinality.lower;

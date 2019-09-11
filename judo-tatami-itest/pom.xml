@@ -6,7 +6,7 @@
         <groupId>hu.blackbelt.judo.tatami</groupId>
         <artifactId>judo-tatami-parent</artifactId>
         <version>1.0.0-SNAPSHOT</version>
-        <relativePath>../judo-tatami-parent</relativePath>
+        <relativePath>..</relativePath>
     </parent>
 
     <artifactId>judo-tatami-itest</artifactId>
@@ -276,7 +276,7 @@
 
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>features</artifactId>
+            <artifactId>judo-tatami-karaf-features</artifactId>
             <version>${project.version}</version>
             <classifier>features</classifier>
             <type>xml</type>
@@ -429,6 +429,15 @@
             <scope>test</scope>
         </dependency>
 
+        <dependency>
+            <groupId>hu.blackbelt.judo.tatami</groupId>
+            <artifactId>judo-tatami-asm2jaxrsapi</artifactId>
+            <version>${project.version}</version>
+            <classifier>test-bundle</classifier>
+            <type>jar</type>
+            <scope>test</scope>
+        </dependency>
+
     </dependencies>
 
     <build>
@@ -517,6 +526,25 @@
                 </plugins>
             </build>
         </profile>
+        <profile>
+            <id>jaxrs-itest</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>jaxrs-model-itest</id>
+                            </execution>
+                        </executions>
+                        <configuration>
+                            <groups>hu.blackbelt.judo.tatami.itest.JaxRSTestSuite</groups>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
     </profiles>
     <!--
     <properties>

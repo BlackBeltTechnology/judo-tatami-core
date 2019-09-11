@@ -76,10 +76,19 @@ operation ASM!EOperation getFullOperationMethodName() : String {
 }
 
 @cached
+operation ASM!EOperation getShortOperationMethodName() : String {
+	return self.eContainingClass.name.split("ʘ").last() + "__" + self.name;
+}
+
+@cached
 operation ASM!EOperation getFullOperationPath() : String {
 	return (asmUtils.getPackageFQName(self.eContainingClass.ePackage) + "." + self.name).replaceAll("\\.", "/");
 }
 
+@cached
+operation ASM!EOperation getShortOperationPath() : String {
+	return self.eContainingClass.name.split("ʘ").last() + "/" + self.name;
+}
 
 @cached
 operation ASM!EParameter getTypeDefinition() : String {
@@ -198,9 +207,10 @@ operation genExposedMappedTransferObject(ap : ASM!EClass, mto : ASM!EClass) {
 	var t = TemplateFactory.load("RestService.java.egl");
 	t.populate("className", mto.getExposedMappedTransferObjectClassName());
 	t.populate("packagePath", mto.getExposedMappedTransferObjectPackageName(ap));
-	t.populate("operations", mto.eAllOperations);
+	t.populate("operations", mto.getEAllOperations());
 	t.populate("restPath", "/" + asmUtils.getPackageFQName(mto.ePackage).toJAXRSPath() + "/" + mto.getExposedMappedTransferObjectClassName().toJAXRSPath());
 	t.populate("fullyQualifiedOperation", false);
+	
 	t.generate(mto.getExposedMappedTransferObjectJavaFileName(ap));
 	t.reset();
 
@@ -211,6 +221,16 @@ operation genExposedMappedTransferObject(ap : ASM!EClass, mto : ASM!EClass) {
 	t.reset();
 }
 
+//TODO-ask: should be in AsmUtils?
+operation ASM!EClass getBuiltInOperationGroupOfAccessPoint(): Collection {
+	return ASM!EClass.all
+		.select(eclass | asmUtils.isBuiltInOperationGroup(eclass) 
+						and eclass.getEAllOperations()
+			 				.exists(op | asmUtils.getExtensionAnnotationListByName(op, "exposedGraph")
+			 							.exists(annot | asmUtils.getAccessPointOfGraph(asmUtils.getResolvedExposedGraph(annot).get()).get().equals(self))
+			 				)
+		);
+}
 
 /*
  DTO
