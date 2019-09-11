@@ -147,11 +147,36 @@ public abstract class TatamiPSMTransformationPipelineITest {
                         FEATURE_JUDO_TATAMI_ESM_2_PSM, FEATURE_JUDO_TATAMI_PSM_2_ASM, FEATURE_JUDO_TATAMI_PSM_2_MEASURE, FEATURE_JUDO_TATAMI_ASM_2_JAXRSAPI, FEATURE_JUDO_TATAMI_ASM_2_OPENAPI,
                         FEATURE_JUDO_TATAMI_ASM_2_RDBMS, FEATURE_JUDO_TATAMI_RDBMS_2_LIQUIBASE),
 
-                newConfiguration("hu.blackbelt.jaxrs.providers.JacksonProvider")
-                        .put("JacksonProvider.SerializationFeature.INDENT_OUTPUT", "true").asOption(),
+                newConfiguration("hu.blackbelt.judo.tatami.asm2jaxrsapi.osgi.Asm2JAXRSAPITransformationAsmModelTracker")
+                        .put("placeholder", "true").asOption(),
+
+                newConfiguration("hu.blackbelt.judo.tatami.asm2openapi.osgi.Asm2OpenAPITransformationAsmModelTracker")
+                        .put("placeholder", "true").asOption(),
+
+                newConfiguration("hu.blackbelt.judo.tatami.asm2rdbms.osgi.Asm2RdbmsTransformationAsmModelTracker")
+                        .put("placeholder", "true").asOption(),
+
+                newConfiguration("hu.blackbelt.judo.tatami.asm2sdk.osgi.AsmModelServiceTracker")
+                        .put("placeholder", "true").asOption(),
+
+                newConfiguration("hu.blackbelt.judo.tatami.esm2psm.osgi.Esm2PsmTransformationEsmModelTracker")
+                        .put("placeholder", "true").asOption(),
+
+                newConfiguration("hu.blackbelt.judo.tatami.psm2asm.osgi.Psm2AsmTransformationPsmModelTracker")
+                        .put("placeholder", "true").asOption(),
+
+                newConfiguration("hu.blackbelt.judo.tatami.psm2measure.osgi.Psm2MeasureTransformationPsmModelTracker")
+                        .put("placeholder", "true").asOption(),
+
+                newConfiguration("hu.blackbelt.judo.tatami.rdbms2liquibase.osgi.Rdbms2LiquibaseRdbmsModelTracker")
+                        .put("placeholder", "true").asOption(),
 
                 editConfigurationFilePut("etc/org.ops4j.pax.web.cfg",
                         "org.osgi.service.http.port", "8181"),
+
+                newConfiguration("hu.blackbelt.jaxrs.providers.JacksonProvider")
+                        .put("JacksonProvider.SerializationFeature.INDENT_OUTPUT", "true").asOption(),
+
 
                 /* Added for test purposes only */
                 mavenBundle()
