@@ -7,6 +7,7 @@
 		<artifactId>judo-tatami</artifactId>
 		<groupId>hu.blackbelt.judo.tatami</groupId>
 		<version>1.0.0-SNAPSHOT</version>
+		<relativePath>..</relativePath>
 	</parent>
 
 	<groupId>hu.blackbelt.judo.tatami</groupId>

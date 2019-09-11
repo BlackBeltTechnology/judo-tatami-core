@@ -9,6 +9,7 @@
 		<groupId>hu.blackbelt.judo.tatami</groupId>
 		<artifactId>judo-tatami</artifactId>
 		<version>1.0.0-SNAPSHOT</version>
+		<relativePath>..</relativePath>
 	</parent>
 	<groupId>hu.blackbelt.judo.tatami</groupId>
 	<artifactId>workflow-maven-plugin</artifactId>
