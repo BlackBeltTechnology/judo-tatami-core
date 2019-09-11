@@ -30,30 +30,30 @@ public class [%= className %] {
     public void __unbindDispatcher(Dispatcher dispatcher) {
         this.__dispatcher = Optional.empty();
     }
-
 [% for (op in operations) { %]
+
     [% if (asmUtils.isStateless(op)) { %]
 	@GET
 	@Produces ( "application/json" )
-    [% } else { %] 
+    [% } else { %]
 	@POST
 	@Produces ( "application/json" )
 	@Consumes ( "application/json" )
 	[% } %]
-	@Path("/[% if (fullyQualifiedOperation) { %][%= op.getFullOperationPath() %][% } else { %][%= op.getShortOperationPath() %][% } %]")
-    public Response [% if (fullyQualifiedOperation) { %][%= op.getFullOperationMethodName() %][% } else { %][%= op.getShortOperationMethodName() %][% } %]([% for (p in op.eParameters) { %][%= p.eType.getDtoTypeName() %] [%= p.name.firstToLowerCase().safeName() %][% if (hasMore) { %], [% } %][% } %]) {
+	@Path("/[% if (fullyQualifiedOperation) { %][%= op.getFullOperationPath() %][% } else { %][%= op.name %][% } %]")
+    public Response [% if (fullyQualifiedOperation) { %][%= op.getFullOperationMethodName() %][% } else { %][%= op.name %][% } %]([% for (p in op.eParameters) { %][%= p.eType.getDtoTypeName() %] [%= p.name.firstToLowerCase().safeName() %][% if (hasMore) { %], [% } %][% } %]) {
 		if (!__dispatcher.isPresent()) {
         	return Response.status(Response.Status.SERVICE_UNAVAILABLE).build();
     	}
-		Map<String, Object> parameters = new HashMap();		
-        [% for (p in op.eParameters) { %] 
+		Map<String, Object> parameters = new HashMap();
+        [% for (p in op.eParameters) { %]
         parameters.put("[%= p.name %]", [%= p.name.firstToLowerCase().safeName() %]);
         [% } %]
 
         [% if (op.eType.isUndefined()) {%]
         __dispatcher.get().callOperation("simple", "[%= asmUtils.getOperationFQName(op) %]", parameters);
         return Response.status(Response.Status.OK).build();
-        [% } else if (op.upperBound == -1) { %]
+        [% } else if (op.many) { %]
         Object output = __dispatcher.get().callOperation("simple", "[%= asmUtils.getOperationFQName(op) %]", parameters).get("output");
     	return output == null ? Response.ok().build() : Response.ok(
     			((Collection<Map<String, Object>>) output).stream()
@@ -64,6 +64,6 @@ public class [%= className %] {
         return Response.ok([%= op.eType.getDtoTypeName() %].fromMap((Map<String, Object>) ((Map<String, Object>) __dispatcher.get().callOperation("simple", "[%= asmUtils.getOperationFQName(op) %]", parameters)).get("output"))).build();
         [% } %]
     }
-    
-[% } %] 
+[% } %]
 }
+

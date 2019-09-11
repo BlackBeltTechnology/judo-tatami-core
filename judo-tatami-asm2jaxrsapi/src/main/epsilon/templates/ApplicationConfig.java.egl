@@ -21,8 +21,10 @@ public class ApplicationConfig extends Application {
     public Set getSingletons() {
         return new HashSet(Arrays.asList(
 			[% for (name : String in serviceInstances.keySet()) { %]
-				[%= name %][% if (hasMore) { %],[% } %]
+				[%= name %][% if (hasMore) { %],
+				[% } %]
 			[% } %]
+
         ));
     }
 }

@@ -79,7 +79,7 @@
         <judo-meta-jql-version>1.0.0.develop_00046</judo-meta-jql-version>
         <judo-meta-jql-import-range>[1.0,1.1)</judo-meta-jql-import-range>
 
-        <judo-meta-asm-version>1.0.0.develop_00104</judo-meta-asm-version>
+        <judo-meta-asm-version>1.0.0-SNAPSHOT</judo-meta-asm-version>
         <judo-meta-asm-import-range>[1.0,1.1)</judo-meta-asm-import-range>
 
         <judo-meta-expression-version>1.0.0.develop_00273</judo-meta-expression-version>
