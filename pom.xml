@@ -619,7 +619,7 @@
                 <module>judo-tatami-karaf-features</module>
                 <module>judo-tatami-karaf-kar</module>
 		        <module>judo-tatami-workflow-maven-plugin</module>
-		        <module>workflow-maven-plugin-test</module>
+		        <module>judo-tatami-workflow-maven-plugin-test</module>
             </modules>
         </profile>
 

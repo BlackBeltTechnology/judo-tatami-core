@@ -34,14 +34,12 @@ public class Rdbms2LiquibaseWork extends AbstractTransformationWork {
 	public void execute() throws Exception {
 
 		Optional<RdbmsModel> rdbmsModel = getTransformationContext().getByClass(RdbmsModel.class);
-		rdbmsModel.orElseThrow(
-				() -> new IllegalArgumentException("RDBMS Model does not found in transformation context"));
+		rdbmsModel.orElseThrow(() -> new IllegalArgumentException("RDBMS Model does not found in transformation context"));
 
 		registerRdbmsNameMappingMetamodel(rdbmsModel.get().getResourceSet());
 		registerRdbmsDataTypesMetamodel(rdbmsModel.get().getResourceSet());
 		registerRdbmsTableMappingRulesMetamodel(rdbmsModel.get().getResourceSet());
 
-		// Does RDBMS require validation?
 		/*
 		 * getTransformationContext().get(URI.class, RDBMS_VALIDATION_SCRIPT_URI)
 		 * .ifPresent(ThrowingConsumer.throwingConsumerWrapper(validationScriptUri ->

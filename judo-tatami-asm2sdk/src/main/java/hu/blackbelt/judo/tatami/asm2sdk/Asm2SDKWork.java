@@ -9,7 +9,6 @@ import java.util.Optional;
 import hu.blackbelt.judo.tatami.core.workflow.work.TransformationContext;
 import hu.blackbelt.epsilon.runtime.execution.api.Log;
 import hu.blackbelt.epsilon.runtime.execution.impl.Slf4jLog;
-//import static hu.blackbelt.judo.meta.asm.AsmEpsilonValidator.validateAsm;
 import static hu.blackbelt.judo.tatami.asm2sdk.Asm2SDK.executeAsm2SDKGeneration;
 
 import java.io.File;

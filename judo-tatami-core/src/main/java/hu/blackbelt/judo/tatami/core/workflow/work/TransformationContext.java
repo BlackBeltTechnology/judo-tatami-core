@@ -32,12 +32,14 @@ public class TransformationContext {
         return ofNullable(variables.get(key));
     }
 
-    public <T> Optional<T> get(Class<T> valueType, Object key) {
+    @SuppressWarnings("unchecked")
+	public <T> Optional<T> get(Class<T> valueType, Object key) {
         return ofNullable((T) variables.get(key));
     }
 
     
-    public <T> Optional<T> getByClass(Class<T> key) {
+    @SuppressWarnings("unchecked")
+	public <T> Optional<T> getByClass(Class<T> key) {
     	ofNullable(key).orElseThrow(() -> new IllegalAccessError("Key is null"));
     	return ofNullable((T) variables.get(key));
     }
@@ -55,7 +57,7 @@ public class TransformationContext {
 			this.transformationContext = transformationContext;
 		}
 
-		private boolean verifyClassPresent(Class c) {
+		private <T> boolean verifyClassPresent(Class<T> c) {
 			if (!transformationContext.getByClass(c).isPresent()) {
 				log.error("Missing from transformation context: " + String.valueOf(c).replace("class", ""));
 				return false;
@@ -63,7 +65,7 @@ public class TransformationContext {
 			return true;
 		}
 
-		public TransformationContextVerifier isClassExists(Class c) {
+		public <T> TransformationContextVerifier isClassExists(Class<T> c) {
 			allClassExists = allClassExists && verifyClassPresent(c);
 			return this;
 		}

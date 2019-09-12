@@ -54,5 +54,4 @@ public class Asm2RdbmsWork extends AbstractTransformationWork {
 
 		getTransformationContext().put(asm2RdbmsTransformationTrace);
 	}
-
 }

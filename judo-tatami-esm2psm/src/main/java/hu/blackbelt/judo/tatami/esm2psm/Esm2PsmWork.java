@@ -31,7 +31,6 @@ public class Esm2PsmWork extends AbstractTransformationWork {
 		Optional<EsmModel> esmModel = getTransformationContext().getByClass(EsmModel.class);
 		esmModel.orElseThrow(() -> new IllegalArgumentException("ESM Model does not found in transformation context"));
 
-		// Does ESM model require validation?
 		/*
 		 * getTransformationContext().get(URI.class, ESM_VALIDATION_SCRIPT_URI)
 		 * .ifPresent(ThrowingConsumer.throwingConsumerWrapper(validationScriptUri ->

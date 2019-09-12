@@ -52,5 +52,4 @@ public class Asm2RdbmsWorkTest {
 
 		assertThat(workReport.getStatus(), equalTo(WorkStatus.COMPLETED));
 	}
-
 }

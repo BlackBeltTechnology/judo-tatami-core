@@ -33,7 +33,7 @@ public class Asm2OpenAPIWork extends AbstractTransformationWork {
         
         OpenapiModel openapiModel = getTransformationContext().getByClass(OpenapiModel.class)
         		.orElseGet( () -> buildOpenapiModel().name(asmModel.get().getName()).build());
-            getTransformationContext().put(openapiModel);
+        getTransformationContext().put(openapiModel);
 
         Asm2OpenAPITransformationTrace asm2OpenapiTransformationTrace = executeAsm2OpenAPITransformation(
                 asmModel.get(),

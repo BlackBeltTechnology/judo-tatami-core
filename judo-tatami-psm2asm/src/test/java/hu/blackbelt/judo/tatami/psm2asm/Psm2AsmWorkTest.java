@@ -40,7 +40,7 @@ class Psm2AsmWorkTest {
 	}
 
 	@Test
-	void testSimpleWokflow() {
+	void testSimpleWorkflow() {
 		WorkFlow workflow = aNewSequentialFlow().execute(psm2AsmWork).build();
 
 		WorkFlowEngine workFlowEngine = aNewWorkFlowEngine().build();

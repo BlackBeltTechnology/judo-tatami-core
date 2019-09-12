@@ -8,9 +8,6 @@ import java.util.jar.Attributes;
 import java.util.jar.JarFile;
 import java.util.jar.Manifest;
 
-import org.apache.maven.execution.MavenSession;
-import org.apache.maven.plugins.annotations.Component;
-import org.apache.maven.plugins.annotations.Parameter;
 import org.eclipse.aether.RepositorySystem;
 import org.eclipse.aether.RepositorySystemSession;
 import org.eclipse.aether.artifact.Artifact;
@@ -51,11 +48,6 @@ public class WorkflowHelper {
 		repositories = workflowMojo.repositories;
 		transformationArtifacts = workflowMojo.getTransformationArtifacts();
 	}
-	
-	public WorkflowHelper(MavenSession s)
-	{
-		
-	}
 
 	public void extract() throws IOException {
 		for (String artifactString : transformationArtifacts) {
@@ -73,7 +65,7 @@ public class WorkflowHelper {
 		rdbmsModelScriptRoot = produceValidScriptRootPath("Asm2Rdbms");
 		liquibaseModelScriptRoot = produceValidScriptRootPath("Rdbms2Liquibase");
 		excelModelURI = "jar:file://" + pathMap.get("asm2rdbms") + "!/"
-				+ manifestMap.get("asm2rdbms").getValue("RdbmsExcelModelURI") + "/";
+				+ manifestMap.get("asm2rdbms").getValue("RdbmsModelURI") + "/";
 	}
 
 	private String produceValidScriptRootPath(String name) {
