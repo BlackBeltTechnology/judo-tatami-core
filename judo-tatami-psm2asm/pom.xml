@@ -11,6 +11,7 @@
 
     <artifactId>judo-tatami-psm2asm</artifactId>
     <packaging>bundle</packaging>
+    <name>Judo :: Tatami :: Psm2Asm</name>
 
     <build>
         <plugins>
@@ -63,7 +64,7 @@
                             *
                         </Import-Package>
                         <Asm-Meta-Version-Range>${judo-meta-psm-import-range}</Asm-Meta-Version-Range>
-                        <Psm2AsmTransformation-ScriptRoot>tatami/psm2asm/transformations/asm</Psm2AsmTransformation-ScriptRoot>
+                        <Psm2Asm-Transformation-ModelRoot>tatami/psm2asm/transformations/asm</Psm2Asm-Transformation-ModelRoot>
                     </instructions>
                 </configuration>
             </plugin>

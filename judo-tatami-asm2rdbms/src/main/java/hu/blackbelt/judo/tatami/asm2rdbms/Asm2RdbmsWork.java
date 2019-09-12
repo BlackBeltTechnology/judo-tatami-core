@@ -19,13 +19,13 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class Asm2RdbmsWork extends AbstractTransformationWork {
-	
+
 	public static final String ASM_VALIDATION_SCRIPT_URI = "asmValidationScriptUri";
-	
-	public static final String RDBMS_EXCELMODEL_URI = "asm2Rdbms.excelModelUri";
+
+	public static final String MODEL_URI = "asm2Rdbms.ModelUri";
 	public static final String RDBMS_DIALECT = "asm2Rdbms.dialect";
 
-    final URI transformationScriptRoot;
+	final URI transformationScriptRoot;
 
 	public Asm2RdbmsWork(TransformationContext transformationContext, URI transformationScriptRoot) {
 		super(transformationContext);
@@ -36,26 +36,22 @@ public class Asm2RdbmsWork extends AbstractTransformationWork {
 	public void execute() throws Exception {
 		Optional<AsmModel> asmModel = getTransformationContext().getByClass(AsmModel.class);
 		asmModel.orElseThrow(() -> new IllegalArgumentException("ASM Model does not found in transformation context"));
-		
+
 		RdbmsModel rdbmsModel = getTransformationContext().getByClass(RdbmsModel.class)
-        		.orElseGet(() -> buildRdbmsModel().name(asmModel.get().getName()).build());
+				.orElseGet(() -> buildRdbmsModel().name(asmModel.get().getName()).build());
 
-        // The RDBMS model resources have to know the mapping models
-        registerRdbmsNameMappingMetamodel(rdbmsModel.getResourceSet());
-        registerRdbmsDataTypesMetamodel(rdbmsModel.getResourceSet());
-        registerRdbmsTableMappingRulesMetamodel(rdbmsModel.getResourceSet());
-        
-        getTransformationContext().put(rdbmsModel);
-     
-		Asm2RdbmsTransformationTrace asm2RdbmsTransformationTrace = executeAsm2RdbmsTransformation(
-	                asmModel.get(),
-	                rdbmsModel,
-	                getTransformationContext().getByClass(Log.class).orElseGet(() -> new Slf4jLog(log)),
-	                transformationScriptRoot,
-	                getTransformationContext().get(URI.class,RDBMS_EXCELMODEL_URI).get(),
-					getTransformationContext().get(String.class,RDBMS_DIALECT).get());
+		// The RDBMS model resources have to know the mapping models
+		registerRdbmsNameMappingMetamodel(rdbmsModel.getResourceSet());
+		registerRdbmsDataTypesMetamodel(rdbmsModel.getResourceSet());
+		registerRdbmsTableMappingRulesMetamodel(rdbmsModel.getResourceSet());
 
-		
+		getTransformationContext().put(rdbmsModel);
+
+		Asm2RdbmsTransformationTrace asm2RdbmsTransformationTrace = executeAsm2RdbmsTransformation(asmModel.get(),
+				rdbmsModel, getTransformationContext().getByClass(Log.class).orElseGet(() -> new Slf4jLog(log)),
+				transformationScriptRoot, getTransformationContext().get(URI.class, MODEL_URI).get(),
+				getTransformationContext().get(String.class, RDBMS_DIALECT).get());
+
 		getTransformationContext().put(asm2RdbmsTransformationTrace);
 	}
 

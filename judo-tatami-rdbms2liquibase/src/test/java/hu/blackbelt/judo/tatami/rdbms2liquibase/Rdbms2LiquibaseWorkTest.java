@@ -28,34 +28,29 @@ public class Rdbms2LiquibaseWorkTest {
 	public static final String NORTHWIND = "northwind";
 	public static final String NORTHWIND_RDBMS_MODEL = "northwind-rdbms.model";
     
-    Rdbms2LiquibaseWork rdbms2LiquibaseWork;
-    TransformationContext transformationContext;
-    
-    @BeforeEach
-    void setUp() throws IOException, RdbmsModel.RdbmsValidationException
-    {
-    	RdbmsModel rdbmsModel = RdbmsModel.buildRdbmsModel()
-                .name(NORTHWIND)
-                .build();
-    	
-    	transformationContext = new TransformationContext(NORTHWIND);
-    	transformationContext.put(rdbmsModel);
-    	transformationContext.put(Rdbms2LiquibaseWork.LIQUIBASE_DIALECT,"hsqldb");
-    	
-    	rdbms2LiquibaseWork = new Rdbms2LiquibaseWork(transformationContext,new File("src/main/epsilon/transformations").toURI());
-    }
-    
-    @Test
-    void testSimpleWorkflow()
-    {
-    	WorkFlow workflow = aNewSequentialFlow()
-                .execute(rdbms2LiquibaseWork)
-                .build();
+	Rdbms2LiquibaseWork rdbms2LiquibaseWork;
+	TransformationContext transformationContext;
 
-        WorkFlowEngine workFlowEngine = aNewWorkFlowEngine().build();
-        WorkReport workReport = workFlowEngine.run(workflow);
+	@BeforeEach
+	void setUp() throws IOException, RdbmsModel.RdbmsValidationException {
+		RdbmsModel rdbmsModel = RdbmsModel.buildRdbmsModel().name(NORTHWIND).build();
 
-        assertThat(workReport.getStatus(), equalTo(WorkStatus.COMPLETED));
-    }
+		transformationContext = new TransformationContext(NORTHWIND);
+		transformationContext.put(rdbmsModel);
+		transformationContext.put(Rdbms2LiquibaseWork.LIQUIBASE_DIALECT, "hsqldb");
+
+		rdbms2LiquibaseWork = new Rdbms2LiquibaseWork(transformationContext,
+				new File("src/main/epsilon/transformations").toURI());
+	}
+
+	@Test
+	void testSimpleWorkflow() {
+		WorkFlow workflow = aNewSequentialFlow().execute(rdbms2LiquibaseWork).build();
+
+		WorkFlowEngine workFlowEngine = aNewWorkFlowEngine().build();
+		WorkReport workReport = workFlowEngine.run(workflow);
+
+		assertThat(workReport.getStatus(), equalTo(WorkStatus.COMPLETED));
+	}
 
 }

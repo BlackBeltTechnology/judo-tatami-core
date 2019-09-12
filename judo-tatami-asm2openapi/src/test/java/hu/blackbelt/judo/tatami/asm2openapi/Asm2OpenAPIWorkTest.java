@@ -30,8 +30,6 @@ class Asm2OpenAPIWorkTest {
 
     @BeforeEach
     void setUp() throws IOException, AsmModel.AsmValidationException {
-        // Loading ASM to isolated ResourceSet, because in Tatami
-        // there is no new namespace registration made.
         AsmModel asmModel = loadAsmModel(asmLoadArgumentsBuilder()
                 .file(new File(TARGET_TEST_CLASSES, NORTHWIND_ASM_MODEL))
                 .name(NORTHWIND));
@@ -53,6 +51,4 @@ class Asm2OpenAPIWorkTest {
 
         assertThat(workReport.getStatus(), equalTo(WorkStatus.COMPLETED));
     }
-
-
 }

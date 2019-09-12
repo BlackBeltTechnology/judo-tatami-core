@@ -11,24 +11,13 @@
 		<version>1.0.0-SNAPSHOT</version>
 		<relativePath>..</relativePath>
 	</parent>
-	<groupId>hu.blackbelt.judo.tatami</groupId>
-	<artifactId>workflow-maven-plugin</artifactId>
-	<version>1.0.0-SNAPSHOT</version>
+	<artifactId>judo-tatami-workflow-maven-plugin</artifactId>
 	<packaging>maven-plugin</packaging>
-	<name>Workflow Maven Plugin</name>
+	<name>Judo :: Tatami :: WorkflowMavenPlugin</name>
 	<url>http://maven.apache.org</url>
 
 	<build>
 		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.7.0</version>
-				<configuration>
-					<source>1.8</source>
-					<target>1.8</target>
-				</configuration>
-			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-plugin-plugin</artifactId>

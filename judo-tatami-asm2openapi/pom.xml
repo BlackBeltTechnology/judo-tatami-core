@@ -12,6 +12,7 @@
 
 	<artifactId>judo-tatami-asm2openapi</artifactId>
 	<packaging>bundle</packaging>
+	<name>Judo :: Tatami :: Asm2OpenApi</name>
 
 	<build>
 		<plugins>
@@ -64,7 +65,7 @@
                             *
 						</Import-Package>
 						<OpenAPI-Meta-Version-Range>${judo-meta-openapi-import-range}</OpenAPI-Meta-Version-Range>
-						<Asm2OpenapiTransformation-ScriptRoot>tatami/asm2openapi/transformations/openapi</Asm2OpenapiTransformation-ScriptRoot>
+						<Asm2Openapi-Transformation-ModelRoot>tatami/asm2openapi/transformations/openapi</Asm2Openapi-Transformation-ModelRoot>
 					</instructions>
 				</configuration>
 			</plugin>

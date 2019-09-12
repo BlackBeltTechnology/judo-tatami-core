@@ -11,6 +11,7 @@
 
     <artifactId>judo-tatami-psm2measure</artifactId>
     <packaging>bundle</packaging>
+    <name>Judo :: Tatami :: Psm2Measure</name>
 
     <build>
         <plugins>
@@ -64,7 +65,7 @@
                             *
                         </Import-Package>
                         <Measure-Meta-Version-Range>${judo-meta-measure-import-range}</Measure-Meta-Version-Range>
-                        <Psm2MeasureTransformation-ScriptRoot>tatami/psm2measure/transformations/measure</Psm2MeasureTransformation-ScriptRoot>
+                        <Psm2Measure-Transformation-ModelRoot>tatami/psm2measure/transformations/measure</Psm2Measure-Transformation-ModelRoot>
                     </instructions>
                 </configuration>
             </plugin>

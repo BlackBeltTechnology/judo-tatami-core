@@ -10,52 +10,40 @@
 		<relativePath>..</relativePath>
 	</parent>
 
-	<groupId>hu.blackbelt.judo.tatami</groupId>
 	<artifactId>workflow-maven-plugin-test</artifactId>
-	<version>1.0.0-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
-	<name>workflow-maven-plugin-test</name>
+	<name>Judo :: Tatami :: WorkflowMavenPlugin :: TEST</name>
 
 	<properties>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
 		<judo-tatami-version>${project.version}</judo-tatami-version>
 	</properties>
 
-	<dependencies>
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<version>4.11</version>
-			<scope>test</scope>
-		</dependency>
-	</dependencies>
-
 	<build>
 		<plugins>
 			<plugin>
 				<groupId>hu.blackbelt.judo.tatami</groupId>
-				<artifactId>workflow-maven-plugin</artifactId>
+				<artifactId>judo-tatami-workflow-maven-plugin</artifactId>
 				<version>1.0.0-SNAPSHOT</version>
 				<executions>
 					<execution>
 						<phase>compile</phase>
 						<goals>
-							<goal>defaultworkflow</goal>
+							<goal>psm-default-workflow</goal>
 						</goals>
 						<configuration>
-							<psmModelDest>${basedir}/../judo-tatami-workflow/target/test-classes/northwind-psm.model</psmModelDest>
-							<asmModelScriptRoot>file:${basedir}/../judo-tatami-psm2asm/src/main/epsilon/transformations/asm</asmModelScriptRoot>
-							<measureModelScriptRoot>file:${basedir}/../judo-tatami-psm2measure/src/main/epsilon/transformations/measure</measureModelScriptRoot>
-							<openApiModelScriptRoot>file:${basedir}/../judo-tatami-asm2openapi/src/main/epsilon/transformations/openapi</openApiModelScriptRoot>
-							<rdbmsModelScriptRoot>file:${basedir}/../judo-tatami-asm2rdbms/src/main/epsilon/transformations/rdbms</rdbmsModelScriptRoot>
-							<liquibaseModelScriptRoot>file:${basedir}/../judo-tatami-rdbms2liquibase/src/main/epsilon/transformations</liquibaseModelScriptRoot>
-							<destination>${basedir}/target/test-classes</destination>
+						    <psmModelDest>${basedir}/../judo-tatami-workflow/target/test-classes/northwind-psm.model/</psmModelDest>
+							<!--  <asmModelScriptRoot>file:${basedir}/../judo-tatami-psm2asm/src/main/epsilon/transformations/asm/</asmModelScriptRoot>
+							<measureModelScriptRoot>file:${basedir}/../judo-tatami-psm2measure/src/main/epsilon/transformations/measure/</measureModelScriptRoot>
+							<openApiModelScriptRoot>file:${basedir}/../judo-tatami-asm2openapi/src/main/epsilon/transformations/openapi/</openApiModelScriptRoot>
+							<rdbmsModelScriptRoot>file:${basedir}/../judo-tatami-asm2rdbms/src/main/epsilon/transformations/</rdbmsModelScriptRoot>
+							<liquibaseModelScriptRoot>file:${basedir}/../judo-tatami-rdbms2liquibase/src/main/epsilon/transformations/</liquibaseModelScriptRoot>
+							<excelModelURI>file:${basedir}/../judo-tatami-asm2rdbms/model/</excelModelURI> -->
+							<destination>${basedir}/target/test-classes/</destination>
 							<modelName>northwind</modelName>
 							<dialect>hsqldb</dialect>
-							<excelModelURI>file:/${basedir}/model</excelModelURI>
 						</configuration>
 					</execution>
 				</executions>
@@ -78,13 +66,13 @@
 											hu.blackbelt.judo.tatami
 										</groupId>
 										<artifactId>
-											workflow-maven-plugin
+											judo-tatami-workflow-maven-plugin
 										</artifactId>
 										<versionRange>
 											[1.0.0-SNAPSHOT,)
 										</versionRange>
 										<goals>
-											<goal>defaultworkflow</goal>
+											<goal>psm-default-workflow</goal>
 										</goals>
 									</pluginExecutionFilter>
 									<action>

@@ -28,29 +28,25 @@ public class Psm2MeasureWorkTest {
 	
 	Psm2MeasureWork psm2measureWork;
 	TransformationContext transformationContext;
-	
+
 	@BeforeEach
 	void setUp() throws IOException, PsmValidationException {
-        // Loading PSM to isolated ResourceSet, because in Tatami
-        // there is no new namespace registration made.
-		PsmModel psmModel = loadPsmModel(psmLoadArgumentsBuilder()
-				.file(new File(TARGET_TEST_CLASSES, NORTHWIND_PSM_MODEL))
-				.name(NORTHWIND));
+		PsmModel psmModel = loadPsmModel(
+				psmLoadArgumentsBuilder().file(new File(TARGET_TEST_CLASSES, NORTHWIND_PSM_MODEL)).name(NORTHWIND));
 		transformationContext = new TransformationContext(NORTHWIND);
 		transformationContext.put(psmModel);
-		
-		psm2measureWork = new Psm2MeasureWork(transformationContext, new File("src/main/epsilon/transformations/measure").toURI());
+
+		psm2measureWork = new Psm2MeasureWork(transformationContext,
+				new File("src/main/epsilon/transformations/measure").toURI());
 	}
-	
+
 	@Test
 	void testSimpleWorkFlow() {
-		WorkFlow workFlow = aNewSequentialFlow()
-				.execute(psm2measureWork)
-				.build();
-		
+		WorkFlow workFlow = aNewSequentialFlow().execute(psm2measureWork).build();
+
 		WorkFlowEngine workFlowEngine = aNewWorkFlowEngine().build();
 		WorkReport workReport = workFlowEngine.run(workFlow);
-		
+
 		assertThat(workReport.getStatus(), equalTo(WorkStatus.COMPLETED));
 	}
 }

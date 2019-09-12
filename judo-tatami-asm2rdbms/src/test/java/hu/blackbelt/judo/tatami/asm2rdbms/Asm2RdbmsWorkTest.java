@@ -19,43 +19,38 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static hu.blackbelt.judo.meta.asm.runtime.AsmModel.loadAsmModel;
 
-
 public class Asm2RdbmsWorkTest {
-	
+
 	public static final String NORTHWIND = "northwind";
-    public static final String NORTHWIND_ASM_MODEL = "northwind-asm.model";
-    public static final String TARGET_TEST_CLASSES = "target/test-classes";
-    public static final String MODEL_DIRECTORY = "model";
-    
-    Asm2RdbmsWork asm2RdbmsWork;
-    TransformationContext transformationContext;
-    
-    @BeforeEach
-    void setUp() throws IOException, AsmModel.AsmValidationException
-    {
-    	AsmModel asmModel = loadAsmModel(asmLoadArgumentsBuilder()
-                .file(new File(TARGET_TEST_CLASSES, NORTHWIND_ASM_MODEL))
-                .name(NORTHWIND));
+	public static final String NORTHWIND_ASM_MODEL = "northwind-asm.model";
+	public static final String TARGET_TEST_CLASSES = "target/test-classes";
+	public static final String MODEL_DIRECTORY = "model";
 
-        transformationContext = new TransformationContext(NORTHWIND);
-        transformationContext.put(asmModel);
-        transformationContext.put(Asm2RdbmsWork.RDBMS_EXCELMODEL_URI, new File(MODEL_DIRECTORY).toURI());
-        transformationContext.put(Asm2RdbmsWork.RDBMS_DIALECT, "hsqldb");
-        
-        asm2RdbmsWork = new Asm2RdbmsWork(transformationContext, new File(TARGET_TEST_CLASSES,"epsilon/transformations").toURI());
-    }
-   
-    @Test
-    void testSimpleWorkflow()
-    {
-    	WorkFlow workflow = aNewSequentialFlow()
-                .execute(asm2RdbmsWork)
-                .build();
+	Asm2RdbmsWork asm2RdbmsWork;
+	TransformationContext transformationContext;
 
-        WorkFlowEngine workFlowEngine = aNewWorkFlowEngine().build();
-        WorkReport workReport = workFlowEngine.run(workflow);
+	@BeforeEach
+	void setUp() throws IOException, AsmModel.AsmValidationException {
+		AsmModel asmModel = loadAsmModel(
+				asmLoadArgumentsBuilder().file(new File(TARGET_TEST_CLASSES, NORTHWIND_ASM_MODEL)).name(NORTHWIND));
 
-        assertThat(workReport.getStatus(), equalTo(WorkStatus.COMPLETED));
-    }
+		transformationContext = new TransformationContext(NORTHWIND);
+		transformationContext.put(asmModel);
+		transformationContext.put(Asm2RdbmsWork.MODEL_URI, new File(MODEL_DIRECTORY).toURI());
+		transformationContext.put(Asm2RdbmsWork.RDBMS_DIALECT, "hsqldb");
+
+		asm2RdbmsWork = new Asm2RdbmsWork(transformationContext,
+				new File(TARGET_TEST_CLASSES, "epsilon/transformations").toURI());
+	}
+
+	@Test
+	void testSimpleWorkflow() {
+		WorkFlow workflow = aNewSequentialFlow().execute(asm2RdbmsWork).build();
+
+		WorkFlowEngine workFlowEngine = aNewWorkFlowEngine().build();
+		WorkReport workReport = workFlowEngine.run(workflow);
+
+		assertThat(workReport.getStatus(), equalTo(WorkStatus.COMPLETED));
+	}
 
 }

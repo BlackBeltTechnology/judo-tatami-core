@@ -24,31 +24,28 @@ public class Asm2SDKWorkTest {
 	public static final String NORTHWIND = "northwind";
 	public static final String NORTHWIND_ASM_MODEL = "northwind-asm.model";
 	public static final String TARGET_TEST_CLASSES = "target/test-classes";
-	
+
 	Asm2SDKWork asm2SDKWork;
 	TransformationContext transformationContext;
-	
+
 	@BeforeEach
 	void setUp() throws IOException, AsmModel.AsmValidationException {
-		AsmModel asmModel = loadAsmModel(asmLoadArgumentsBuilder()
-				.file(new File(TARGET_TEST_CLASSES, NORTHWIND_ASM_MODEL))
-				.name(NORTHWIND));
-		
+		AsmModel asmModel = loadAsmModel(
+				asmLoadArgumentsBuilder().file(new File(TARGET_TEST_CLASSES, NORTHWIND_ASM_MODEL)).name(NORTHWIND));
+
 		transformationContext = new TransformationContext(NORTHWIND);
 		transformationContext.put(asmModel);
-		
-		asm2SDKWork =  new Asm2SDKWork(transformationContext, new File("src/main/epsilon/templates/sdk").toURI());
+
+		asm2SDKWork = new Asm2SDKWork(transformationContext, new File("src/main/epsilon/templates/sdk").toURI());
 	}
-	
+
 	@Test
-    void testSimpleWokflow() {
-        WorkFlow workflow = aNewSequentialFlow()
-        		.execute(asm2SDKWork)
-        		.build();
+	void testSimpleWorkflow() {
+		WorkFlow workflow = aNewSequentialFlow().execute(asm2SDKWork).build();
 
-        WorkFlowEngine workFlowEngine = aNewWorkFlowEngine().build();
-        WorkReport workReport = workFlowEngine.run(workflow);
+		WorkFlowEngine workFlowEngine = aNewWorkFlowEngine().build();
+		WorkReport workReport = workFlowEngine.run(workflow);
 
-        assertThat(workReport.getStatus(), equalTo(WorkStatus.COMPLETED));
-    }
+		assertThat(workReport.getStatus(), equalTo(WorkStatus.COMPLETED));
+	}
 }

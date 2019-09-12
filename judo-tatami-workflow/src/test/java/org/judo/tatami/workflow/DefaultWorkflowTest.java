@@ -19,21 +19,23 @@ import hu.blackbelt.judo.meta.measure.runtime.MeasureModel.MeasureValidationExce
 import hu.blackbelt.judo.meta.openapi.runtime.OpenapiModel.OpenapiValidationException;
 import hu.blackbelt.judo.meta.psm.runtime.PsmModel.PsmValidationException;
 import hu.blackbelt.judo.meta.rdbms.runtime.RdbmsModel.RdbmsValidationException;
+import hu.blackbelt.judo.tatami.core.workflow.work.TransformationContext;
 import hu.blackbelt.judo.tatami.core.workflow.work.WorkReport;
 import hu.blackbelt.judo.tatami.core.workflow.work.WorkStatus;
 import hu.blackbelt.judo.tatami.workflow.DefaultWorkflow;
+import hu.blackbelt.judo.tatami.workflow.DefaultWorkflowSave;
 import hu.blackbelt.judo.tatami.workflow.DefaultWorkflowSetupParameters;
 
 public class DefaultWorkflowTest {
 	
 	DefaultWorkflow defaultWorkflow = new DefaultWorkflow();
 	
-    public static final URI ASM_URI = new File("../judo-tatami-psm2asm/src/main/epsilon/transformations/asm/").toURI();
-    public static final URI MEASURE_URI = new File("../judo-tatami-psm2measure/src/main/epsilon/transformations/measure/").toURI();
-    public static final URI RDBMS_URI = new File("../judo-tatami-asm2rdbms/src/main/epsilon/transformations/").toURI();
-    public static final URI OPENAPI_URI = new File("../judo-tatami-asm2openapi/src/main/epsilon/transformations/openapi/").toURI();
-    public static final URI LIQUIBASE_URI = new File("../judo-tatami-rdbms2liquibase/src/main/epsilon/transformations/").toURI();
-    public static final URI EXCELMODEL_URI = new File("../judo-tatami-asm2rdbms/model/").toURI();
+    public static final URI ASM_SCRIPTROOT = new File("../judo-tatami-psm2asm/src/main/epsilon/transformations/asm/").toURI();
+    public static final URI MEASURE_SCRIPTROOT = new File("../judo-tatami-psm2measure/src/main/epsilon/transformations/measure/").toURI();
+    public static final URI RDBMS_SCRIPTROOT = new File("../judo-tatami-asm2rdbms/src/main/epsilon/transformations/").toURI();
+    public static final URI OPENAPI_SCRIPTROOT = new File("../judo-tatami-asm2openapi/src/main/epsilon/transformations/openapi/").toURI();
+    public static final URI LIQUIBASE_SCRIPTROOT = new File("../judo-tatami-rdbms2liquibase/src/main/epsilon/transformations/").toURI();
+    public static final URI EXCELMODEL_SCRIPTROOT = new File("../judo-tatami-asm2rdbms/model/").toURI();
     
     public static final String FILE_LOCATION = "target/test-classes/northwind-psm.model";
     
@@ -55,10 +57,10 @@ public class DefaultWorkflowTest {
     private File psm2measureTransformationTrace;
     private File asm2rdbmsTransformationTrace;
     private File asm2openapiTransformationTrace;
-    
+
 	@BeforeEach
 	void setUp() throws IOException, PsmValidationException, URISyntaxException {
-		
+
 		asmModel = new File(TARGET_CLASSES, "asm.model");
 		asmModel.delete();
 		measureModel = new File(TARGET_CLASSES, "measure.model");
@@ -69,49 +71,44 @@ public class DefaultWorkflowTest {
 		openapiModel.delete();
 		liquibaseModel = new File(TARGET_CLASSES, "liquibase.changelog.xml");
 		liquibaseModel.delete();
-		psm2asmTransformationTrace = new File(TARGET_CLASSES, "psm2asm.transformationtrace");
+		psm2asmTransformationTrace = new File(TARGET_CLASSES, "psm2asm.model");
 		psm2asmTransformationTrace.delete();
-		psm2measureTransformationTrace = new File(TARGET_CLASSES, "psm2measure.transformationtrace");
+		psm2measureTransformationTrace = new File(TARGET_CLASSES, "psm2measure.model");
 		psm2measureTransformationTrace.delete();
-		asm2rdbmsTransformationTrace = new File(TARGET_CLASSES, "asm2rdbms.transformationtrace");
+		asm2rdbmsTransformationTrace = new File(TARGET_CLASSES, "asm2rdbms.model");
 		asm2rdbmsTransformationTrace.delete();
-		asm2openapiTransformationTrace = new File(TARGET_CLASSES, "asm2openapi.transformationtrace");
+		asm2openapiTransformationTrace = new File(TARGET_CLASSES, "asm2openapi.model");
 		asm2openapiTransformationTrace.delete();
-		
+
 		defaultWorkflow.setUp(DefaultWorkflowSetupParameters.defaultWorkflowSetupParameters()
-				.psmModeldest(new File(FILE_LOCATION))
-				.asmModelURI(ASM_URI)
-				.measureModelURI(MEASURE_URI)
-				.rdbmsModelURI(RDBMS_URI)
-				.openapiModelURI(OPENAPI_URI)
-				.liquibaseModelURI(LIQUIBASE_URI)
+				.psmModelSourceURI(new File(FILE_LOCATION))
+				.asmModelTransformationScriptRoot(ASM_SCRIPTROOT)
+				.measureModelTransformationScriptRoot(MEASURE_SCRIPTROOT)
+				.rdbmsModelTransformationScriptRoot(RDBMS_SCRIPTROOT)
+				.openapiModelTransformationScriptRoot(OPENAPI_SCRIPTROOT)
+				.liquibaseModelTransformationScriptRoot(LIQUIBASE_SCRIPTROOT)
 				.modelName(MODEL_NAME)
 				.dialect(DIALECT)
-				.excelModelURI(EXCELMODEL_URI));
+				.modelURI(EXCELMODEL_SCRIPTROOT));
 		workReport = defaultWorkflow.startDefaultWorkflow();
 	}
-	
+
 	@Test
-	void testDefaultWorkflow() 
-			throws IOException,
-				   AsmValidationException,
-				   MeasureValidationException,
-				   RdbmsValidationException,
-				   OpenapiValidationException,
-				   LiquibaseValidationException {
-		
+	void testDefaultWorkflow() throws IOException, AsmValidationException, MeasureValidationException,
+			RdbmsValidationException, OpenapiValidationException, LiquibaseValidationException {
+
 		assertThat(workReport.getStatus(), equalTo(WorkStatus.COMPLETED));
-		defaultWorkflow.saveModels(TARGET_TEST_CLASSES);
+		DefaultWorkflowSave.saveModels(defaultWorkflow.getTransformationContext(), TARGET_TEST_CLASSES);
 		assertTrue(asmModel.exists());
 		assertTrue(measureModel.exists());
 		assertTrue(rdbmsModel.exists());
 		assertTrue(openapiModel.exists());
 		assertTrue(liquibaseModel.exists());
-		
+
 		assertTrue(psm2asmTransformationTrace.exists());
 		assertTrue(psm2measureTransformationTrace.exists());
 		assertTrue(asm2rdbmsTransformationTrace.exists());
 		assertTrue(asm2openapiTransformationTrace.exists());
-		
+
 	}
 }

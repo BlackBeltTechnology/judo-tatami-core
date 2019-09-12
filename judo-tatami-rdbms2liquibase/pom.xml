@@ -12,6 +12,7 @@
 
 	<artifactId>judo-tatami-rdbms2liquibase</artifactId>
 	<packaging>bundle</packaging>
+	<name>Judo :: Tatami :: Rdbms2Liquibase</name>
 
 	<build>
 		<plugins>
@@ -66,7 +67,7 @@
                             *
 						</Import-Package>
 						<Liquibase-Meta-Version-Range>${judo-meta-rdbms.import-range}</Liquibase-Meta-Version-Range>
-						<Rdbms2LiquibaseTransformation-ScriptRoot>tatami/rdbms2liquibase/transformations</Rdbms2LiquibaseTransformation-ScriptRoot>
+						<Rdbms2Liquibase-Transformation-ModelRoot>tatami/rdbms2liquibase/transformations</Rdbms2Liquibase-Transformation-ModelRoot>
 					</instructions>
 				</configuration>
 			</plugin>

@@ -1,4 +1,4 @@
-package hu.blackbelt.judo.tatami.rdbms2liquibase;
+package hu.blackbelt.judo.tatami.core;
 
 import java.util.function.Consumer;
 

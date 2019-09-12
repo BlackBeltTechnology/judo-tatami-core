@@ -1,14 +1,21 @@
-package org.workflow.maven.plugin;
+package hu.blackbelt.judo.tatami.workflow.maven.plugin;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.jar.Attributes;
 import java.util.jar.JarFile;
 import java.util.jar.Manifest;
 
+import org.apache.maven.execution.MavenSession;
+import org.apache.maven.plugins.annotations.Component;
+import org.apache.maven.plugins.annotations.Parameter;
+import org.eclipse.aether.RepositorySystem;
+import org.eclipse.aether.RepositorySystemSession;
 import org.eclipse.aether.artifact.Artifact;
 import org.eclipse.aether.artifact.DefaultArtifact;
+import org.eclipse.aether.repository.RemoteRepository;
 import org.eclipse.aether.resolution.ArtifactRequest;
 import org.eclipse.aether.resolution.ArtifactResolutionException;
 import org.eclipse.aether.resolution.ArtifactResult;
@@ -16,8 +23,7 @@ import org.eclipse.aether.resolution.ArtifactResult;
 import lombok.Getter;
 import lombok.SneakyThrows;
 
-public class WorkflowUtil {
-	WorkflowMojo workflowMojo;
+public class WorkflowHelper {
 	private HashMap<String, Attributes> manifestMap = new HashMap<>();
 	private HashMap<String, String> pathMap = new HashMap<>();
 
@@ -33,19 +39,32 @@ public class WorkflowUtil {
 	private String openApiModelScriptRoot;
 	@Getter
 	private String excelModelURI;
+	
+	private RepositorySystem repoSystem;
+	private RepositorySystemSession repoSession;
+	private List<RemoteRepository> repositories;
+	private List<String> transformationArtifacts;
 
-	public WorkflowUtil(WorkflowMojo workflowMojo) {
-		this.workflowMojo = workflowMojo;
+	public WorkflowHelper(PsmDefaultWorkflowMojo workflowMojo) {
+		repoSystem = workflowMojo.repoSystem;
+		repoSession = workflowMojo.repoSession;
+		repositories = workflowMojo.repositories;
+		transformationArtifacts = workflowMojo.getTransformationArtifacts();
+	}
+	
+	public WorkflowHelper(MavenSession s)
+	{
+		
 	}
 
 	public void extract() throws IOException {
-		for (String s : workflowMojo.getTransformationArtifacts()) {
-			JarFile j = new JarFile(getArtifactFile(s).getAbsoluteFile());
+		for (String artifactString : transformationArtifacts) {
+			JarFile j = new JarFile(getArtifactFile(artifactString).getAbsoluteFile());
 			Manifest m = j.getManifest();
 			j.close();
-			String tempName = s.split(":")[1].split("-")[2];
+			String tempName = artifactString.split(":")[1].split("-")[2];
 			manifestMap.put(tempName, m.getMainAttributes());
-			pathMap.put(tempName, getArtifactFile(s).getAbsolutePath());
+			pathMap.put(tempName, getArtifactFile(artifactString).getAbsolutePath());
 		}
 
 		asmModelScriptRoot = produceValidScriptRootPath("Psm2Asm");
@@ -59,15 +78,15 @@ public class WorkflowUtil {
 
 	private String produceValidScriptRootPath(String name) {
 		return "jar:file://" + pathMap.get(name.toLowerCase()) + "!/"
-				+ manifestMap.get(name.toLowerCase()).getValue(name + "Transformation-ScriptRoot") + "/";
+				+ manifestMap.get(name.toLowerCase()).getValue(name + "-Transformation-ModelRoot") + "/";
 	}
 
 	@SneakyThrows(ArtifactResolutionException.class)
 	private File getArtifactFile(String uri) {
 		Artifact artifact = new DefaultArtifact(uri);
-		ArtifactRequest req = new ArtifactRequest().setRepositories(workflowMojo.repositories).setArtifact(artifact);
+		ArtifactRequest req = new ArtifactRequest().setRepositories(repositories).setArtifact(artifact);
 		ArtifactResult resolutionResult;
-		resolutionResult = workflowMojo.repoSystem.resolveArtifact(workflowMojo.repoSession, req);
+		resolutionResult = repoSystem.resolveArtifact(repoSession, req);
 		return resolutionResult.getArtifact().getFile();
 	}
 }

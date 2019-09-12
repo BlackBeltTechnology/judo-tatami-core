@@ -28,31 +28,25 @@ class Psm2AsmWorkTest {
     Psm2AsmWork psm2AsmWork;
     TransformationContext transformationContext;
 
-    @BeforeEach
-    void setUp() throws IOException, PsmModel.PsmValidationException {
-        // Loading PSM to isolated ResourceSet, because in Tatami
-        // there is no new namespace registration made.
-        PsmModel psmModel = loadPsmModel(psmLoadArgumentsBuilder()
-                .file(new File(TARGET_TEST_CLASSES, NORTHWIND_PSM_MODEL))
-                .name(NORTHWIND));
+	@BeforeEach
+	void setUp() throws IOException, PsmModel.PsmValidationException {
+		PsmModel psmModel = loadPsmModel(
+				psmLoadArgumentsBuilder().file(new File(TARGET_TEST_CLASSES, NORTHWIND_PSM_MODEL)).name(NORTHWIND));
 
-        transformationContext = new TransformationContext(NORTHWIND);
-        transformationContext.put(psmModel);
+		transformationContext = new TransformationContext(NORTHWIND);
+		transformationContext.put(psmModel);
 
-        psm2AsmWork = new Psm2AsmWork(transformationContext, new File("src/main/epsilon/transformations/asm").toURI());
-    }
+		psm2AsmWork = new Psm2AsmWork(transformationContext, new File("src/main/epsilon/transformations/asm").toURI());
+	}
 
-    @Test
-    void testSimpleWokflow() {
-        WorkFlow workflow = aNewSequentialFlow()
-                .execute(psm2AsmWork)
-                .build();
+	@Test
+	void testSimpleWokflow() {
+		WorkFlow workflow = aNewSequentialFlow().execute(psm2AsmWork).build();
 
-        WorkFlowEngine workFlowEngine = aNewWorkFlowEngine().build();
-        WorkReport workReport = workFlowEngine.run(workflow);
+		WorkFlowEngine workFlowEngine = aNewWorkFlowEngine().build();
+		WorkReport workReport = workFlowEngine.run(workflow);
 
-        assertThat(workReport.getStatus(), equalTo(WorkStatus.COMPLETED));
-    }
-
+		assertThat(workReport.getStatus(), equalTo(WorkStatus.COMPLETED));
+	}
 
 }

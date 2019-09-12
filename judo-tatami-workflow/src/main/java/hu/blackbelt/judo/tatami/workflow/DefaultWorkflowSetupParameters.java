@@ -12,29 +12,29 @@ import lombok.NonNull;
 public class DefaultWorkflowSetupParameters {
 
 	@NonNull
-	private File psmModeldest;
+	private File psmModelSourceURI;
 
 	@NonNull
-	private URI asmModelURI;
+	private URI asmModelTransformationScriptRoot;
 
 	@NonNull
-	private URI openapiModelURI;
-	
+	private URI openapiModelTransformationScriptRoot;
+
 	@NonNull
-	private URI measureModelURI;
-	
+	private URI measureModelTransformationScriptRoot;
+
 	@NonNull
-	private URI rdbmsModelURI;
-	
+	private URI rdbmsModelTransformationScriptRoot;
+
 	@NonNull
-	private URI liquibaseModelURI;
-	
+	private URI liquibaseModelTransformationScriptRoot;
+
 	@NonNull
 	private String modelName;
-	
+
 	@NonNull
 	private String dialect;
-	
+
 	@NonNull
-	private URI excelModelURI;
+	private URI modelURI;
 }

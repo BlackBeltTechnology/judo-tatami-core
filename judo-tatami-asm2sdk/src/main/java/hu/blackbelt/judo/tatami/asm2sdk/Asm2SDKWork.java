@@ -18,46 +18,33 @@ import java.io.InputStream;
 @Slf4j
 public class Asm2SDKWork extends AbstractTransformationWork {
 
-	public static final String ASM_VALIDATON_SCRIPT_URI = "asmValidationScriptUri";
-	
+	public static final String OUTPUT = "asm2SDK:output";
+
 	final URI transformationScriptRoot;
-	
+
 	public Asm2SDKWork(TransformationContext transformationContext, URI transformationScriptRoot) {
 		super(transformationContext);
-        this.transformationScriptRoot = transformationScriptRoot;
+		this.transformationScriptRoot = transformationScriptRoot;
 	}
-	
+
 	@Override
 	public void execute() throws Exception {
-		
+
 		Optional<AsmModel> asmModel = getTransformationContext().getByClass(AsmModel.class);
 		asmModel.orElseThrow(() -> new IllegalArgumentException("ASM Model does not found in transformation context"));
-		/*getTransformationContext().get(URI.class, ASM_VALIDATON_SCRIPT_URI)
-			.ifPresent(validationScriptUri -> {
-				try {
-					validateAsm(
-						getTransformationContext().getByClass(Log.class).orElseGet(() -> new Slf4jLog(log)),
-					    asmModel.get(), 
-					    validationScriptUri);
-				} catch (Exception e) {
-                    e.printStackTrace();
-                }
-			});*/
-		
+
 		File temporaryDirectory = File.createTempFile(Asm2SDK.class.getName(), asmModel.get().getName());
 		if (temporaryDirectory.exists()) {
 			temporaryDirectory.delete();
 		}
 		temporaryDirectory.deleteOnExit();
 		temporaryDirectory.mkdir();
-		
-		InputStream asm2SDKBundle = executeAsm2SDKGeneration(
-				asmModel.get(),
+
+		InputStream asm2SDKBundle = executeAsm2SDKGeneration(asmModel.get(),
 				getTransformationContext().getByClass(Log.class).orElseGet(() -> new Slf4jLog(log)),
-				transformationScriptRoot,
-				temporaryDirectory);
-		
-		getTransformationContext().put(asm2SDKBundle);
-		
+				transformationScriptRoot, temporaryDirectory);
+
+		getTransformationContext().put(OUTPUT, asm2SDKBundle);
+
 	}
 }
