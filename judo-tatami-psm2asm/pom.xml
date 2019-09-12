@@ -64,7 +64,7 @@
                             *
                         </Import-Package>
                         <Asm-Meta-Version-Range>${judo-meta-psm-import-range}</Asm-Meta-Version-Range>
-                        <Psm2Asm-Transformation-ModelRoot>tatami/psm2asm/transformations/asm</Psm2Asm-Transformation-ModelRoot>
+                        <Psm2Asm-Transformation-ScriptRoot>tatami/psm2asm/transformations/asm</Psm2Asm-Transformation-ScriptRoot>
                     </instructions>
                 </configuration>
             </plugin>

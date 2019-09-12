@@ -67,7 +67,7 @@
                             *
 						</Import-Package>
 						<Liquibase-Meta-Version-Range>${judo-meta-rdbms.import-range}</Liquibase-Meta-Version-Range>
-						<Rdbms2Liquibase-Transformation-ModelRoot>tatami/rdbms2liquibase/transformations</Rdbms2Liquibase-Transformation-ModelRoot>
+						<Rdbms2Liquibase-Transformation-ScriptRoot>tatami/rdbms2liquibase/transformations</Rdbms2Liquibase-Transformation-ScriptRoot>
 					</instructions>
 				</configuration>
 			</plugin>

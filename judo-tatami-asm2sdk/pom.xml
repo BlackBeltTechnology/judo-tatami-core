@@ -64,7 +64,7 @@
                             ${osgi-default-import},
                             *
 						</Import-Package>
-						<Asm2SDK-Transformation-ModelRoot>tatami/esm2psm/transformations/psm</Asm2SDK-Transformation-ModelRoot>
+						<Asm2SDK-Transformation-ScriptRoot>tatami/esm2psm/transformations/psm</Asm2SDK-Transformation-ScriptRoot>
 					</instructions>
 				</configuration>
 			</plugin>

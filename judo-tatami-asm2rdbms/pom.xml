@@ -66,8 +66,8 @@
                             *
 						</Import-Package>
 						<Rdbms-Meta-Version-Range>${judo-meta-rdbms.import-range}</Rdbms-Meta-Version-Range>
-						<Asm2Rdbms-Transformation-ModelRoot>tatami/asm2rdbms/transformations</Asm2Rdbms-Transformation-ModelRoot>
-						<RdbmsModelURI>tatami/asm2rdbms/model</RdbmsModelURI>
+						<Asm2Rdbms-Transformation-ModelRoot>tatami/asm2rdbms/model</Asm2Rdbms-Transformation-ModelRoot>
+						<Asm2Rdbms-Transformation-ScriptRoot>tatami/asm2rdbms/transformations</Asm2Rdbms-Transformation-ScriptRoot>
 					</instructions>
 				</configuration>
 			</plugin>

@@ -16,3 +16,4 @@ public interface ThrowingConsumer<T, E extends Exception> {
 		};
 	}
 }
+

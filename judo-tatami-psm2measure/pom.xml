@@ -65,7 +65,7 @@
                             *
                         </Import-Package>
                         <Measure-Meta-Version-Range>${judo-meta-measure-import-range}</Measure-Meta-Version-Range>
-                        <Psm2Measure-Transformation-ModelRoot>tatami/psm2measure/transformations/measure</Psm2Measure-Transformation-ModelRoot>
+                        <Psm2Measure-Transformation-ScriptRoot>tatami/psm2measure/transformations/measure</Psm2Measure-Transformation-ScriptRoot>
                     </instructions>
                 </configuration>
             </plugin>

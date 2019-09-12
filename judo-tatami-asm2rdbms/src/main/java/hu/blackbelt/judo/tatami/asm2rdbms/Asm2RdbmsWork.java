@@ -22,14 +22,15 @@ public class Asm2RdbmsWork extends AbstractTransformationWork {
 
 	public static final String ASM_VALIDATION_SCRIPT_URI = "asmValidationScriptUri";
 
-	public static final String MODEL_URI = "asm2Rdbms.ModelUri";
-	public static final String RDBMS_DIALECT = "asm2Rdbms.dialect";
-
 	final URI transformationScriptRoot;
+	final URI modelRoot;
+	final String dialect;
 
-	public Asm2RdbmsWork(TransformationContext transformationContext, URI transformationScriptRoot) {
+	public Asm2RdbmsWork(TransformationContext transformationContext, URI transformationScriptRoot, URI modelRoot, String dialect) {
 		super(transformationContext);
 		this.transformationScriptRoot = transformationScriptRoot;
+		this.modelRoot = modelRoot;
+		this.dialect = dialect;
 	}
 
 	@Override
@@ -49,8 +50,8 @@ public class Asm2RdbmsWork extends AbstractTransformationWork {
 
 		Asm2RdbmsTransformationTrace asm2RdbmsTransformationTrace = executeAsm2RdbmsTransformation(asmModel.get(),
 				rdbmsModel, getTransformationContext().getByClass(Log.class).orElseGet(() -> new Slf4jLog(log)),
-				transformationScriptRoot, getTransformationContext().get(URI.class, MODEL_URI).get(),
-				getTransformationContext().get(String.class, RDBMS_DIALECT).get());
+				transformationScriptRoot, modelRoot,
+				dialect);
 
 		getTransformationContext().put(asm2RdbmsTransformationTrace);
 	}

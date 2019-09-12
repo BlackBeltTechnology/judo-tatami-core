@@ -19,22 +19,24 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class Rdbms2LiquibaseWork extends AbstractTransformationWork {
 	
-	public static final String RDBMS_VALIDATION_SCRIPT_URI = "rdbmsValidationScriptUri";
-	public static final String LIQUIBASE_DIALECT = "liquibase:dialect";
-	
 	final URI transformationScriptRoot;
+	final String dialect;
 
-	public Rdbms2LiquibaseWork(TransformationContext transformationContext, URI transformationScriptRoot) {
+	public Rdbms2LiquibaseWork(TransformationContext transformationContext,
+							   URI transformationScriptRoot,
+							   String dialect) {
 
 		super(transformationContext);
 		this.transformationScriptRoot = transformationScriptRoot;
+		this.dialect = dialect;
 	}
 
 	@Override
 	public void execute() throws Exception {
 
 		Optional<RdbmsModel> rdbmsModel = getTransformationContext().getByClass(RdbmsModel.class);
-		rdbmsModel.orElseThrow(() -> new IllegalArgumentException("RDBMS Model does not found in transformation context"));
+		rdbmsModel.orElseThrow(() ->
+				new IllegalArgumentException("RDBMS Model does not found in transformation context"));
 
 		registerRdbmsNameMappingMetamodel(rdbmsModel.get().getResourceSet());
 		registerRdbmsDataTypesMetamodel(rdbmsModel.get().getResourceSet());
@@ -54,7 +56,7 @@ public class Rdbms2LiquibaseWork extends AbstractTransformationWork {
 
 		Rdbms2Liquibase.executeRdbms2LiquibaseTransformation(rdbmsModel.get(), liquibaseModel,
 				(Log) getTransformationContext().get(Log.class).orElseGet(() -> new Slf4jLog(log)),
-				transformationScriptRoot, getTransformationContext().get(LIQUIBASE_DIALECT).get().toString());
+				transformationScriptRoot, dialect);
 	}
 
 }

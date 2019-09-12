@@ -36,11 +36,12 @@ public class Asm2RdbmsWorkTest {
 
 		transformationContext = new TransformationContext(NORTHWIND);
 		transformationContext.put(asmModel);
-		transformationContext.put(Asm2RdbmsWork.MODEL_URI, new File(MODEL_DIRECTORY).toURI());
-		transformationContext.put(Asm2RdbmsWork.RDBMS_DIALECT, "hsqldb");
 
 		asm2RdbmsWork = new Asm2RdbmsWork(transformationContext,
-				new File(TARGET_TEST_CLASSES, "epsilon/transformations").toURI());
+				new File(TARGET_TEST_CLASSES, "epsilon/transformations").toURI(),
+				new File(MODEL_DIRECTORY).toURI(),
+				"hsqldb"
+		);
 	}
 
 	@Test

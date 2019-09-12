@@ -37,10 +37,10 @@ public class Rdbms2LiquibaseWorkTest {
 
 		transformationContext = new TransformationContext(NORTHWIND);
 		transformationContext.put(rdbmsModel);
-		transformationContext.put(Rdbms2LiquibaseWork.LIQUIBASE_DIALECT, "hsqldb");
 
 		rdbms2LiquibaseWork = new Rdbms2LiquibaseWork(transformationContext,
-				new File("src/main/epsilon/transformations").toURI());
+				new File("src/main/epsilon/transformations").toURI(),
+				"hsqldb");
 	}
 
 	@Test
