@@ -25,28 +25,28 @@ public class WorkflowHelper {
 	private HashMap<String, String> pathMap = new HashMap<>();
 
 	@Getter
-	private String asmModelScriptRoot;
+	private String psm2asmModelScriptRoot;
 	@Getter
-	private String measureModelScriptRoot;
+	private String psm2measureModelScriptRoot;
 	@Getter
-	private String rdbmsModelScriptRoot;
+	private String asm2rdbmsModelScriptRoot;
 	@Getter
-	private String liquibaseModelScriptRoot;
+	private String rdbms2liquibaseModelScriptRoot;
 	@Getter
-	private String openApiModelScriptRoot;
+	private String asm2openApiModelScriptRoot;
 	@Getter
-	private String excelModelURI;
+	private String asm2rdbmsExcelModelURI;
 	
 	private RepositorySystem repoSystem;
 	private RepositorySystemSession repoSession;
 	private List<RemoteRepository> repositories;
 	private List<String> transformationArtifacts;
 
-	public WorkflowHelper(PsmDefaultWorkflowMojo workflowMojo) {
-		repoSystem = workflowMojo.repoSystem;
-		repoSession = workflowMojo.repoSession;
-		repositories = workflowMojo.repositories;
-		transformationArtifacts = workflowMojo.getTransformationArtifacts();
+	public WorkflowHelper(RepositorySystem repoSystem, RepositorySystemSession repoSession, List<RemoteRepository> repositories, List<String> transformationArtifacts) {
+		this.repoSystem = repoSystem;
+		this.repoSession = repoSession;
+		this.repositories = repositories;
+		this.transformationArtifacts = transformationArtifacts;
 	}
 
 	public void extract() throws IOException {
@@ -59,12 +59,12 @@ public class WorkflowHelper {
 			pathMap.put(tempName, getArtifactFile(artifactString).getAbsolutePath());
 		}
 
-		asmModelScriptRoot = produceValidScriptRootPath("Psm2Asm");
-		measureModelScriptRoot = produceValidScriptRootPath("Psm2Measure");
-		openApiModelScriptRoot = produceValidScriptRootPath("Asm2OpenApi");
-		rdbmsModelScriptRoot = produceValidScriptRootPath("Asm2Rdbms");
-		liquibaseModelScriptRoot = produceValidScriptRootPath("Rdbms2Liquibase");
-		excelModelURI = "jar:file://" + pathMap.get("asm2rdbms") + "!/"
+		psm2asmModelScriptRoot = produceValidScriptRootPath("Psm2Asm");
+		psm2measureModelScriptRoot = produceValidScriptRootPath("Psm2Measure");
+		asm2openApiModelScriptRoot = produceValidScriptRootPath("Asm2OpenApi");
+		asm2rdbmsModelScriptRoot = produceValidScriptRootPath("Asm2Rdbms");
+		rdbms2liquibaseModelScriptRoot = produceValidScriptRootPath("Rdbms2Liquibase");
+		asm2rdbmsExcelModelURI = "jar:file://" + pathMap.get("asm2rdbms") + "!/"
 				+ manifestMap.get("asm2rdbms").getValue("RdbmsModelURI") + "/";
 	}
 

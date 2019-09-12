@@ -20,19 +20,19 @@ import hu.blackbelt.judo.meta.psm.runtime.PsmModel.PsmValidationException;
 import hu.blackbelt.judo.meta.rdbms.runtime.RdbmsModel.RdbmsValidationException;
 import hu.blackbelt.judo.tatami.core.workflow.work.WorkReport;
 import hu.blackbelt.judo.tatami.core.workflow.work.WorkStatus;
-import hu.blackbelt.judo.tatami.workflow.DefaultWorkflow;
+import hu.blackbelt.judo.tatami.workflow.PsmDefaultWorkflow;
 import hu.blackbelt.judo.tatami.workflow.DefaultWorkflowSave;
 import hu.blackbelt.judo.tatami.workflow.DefaultWorkflowSetupParameters;
 
 public class DefaultWorkflowTest {
 	
-	DefaultWorkflow defaultWorkflow = new DefaultWorkflow();
+	PsmDefaultWorkflow defaultWorkflow = new PsmDefaultWorkflow();
 	
-    public static final URI ASM_SCRIPTROOT = new File("../judo-tatami-psm2asm/src/main/epsilon/transformations/asm/").toURI();
-    public static final URI MEASURE_SCRIPTROOT = new File("../judo-tatami-psm2measure/src/main/epsilon/transformations/measure/").toURI();
-    public static final URI RDBMS_SCRIPTROOT = new File("../judo-tatami-asm2rdbms/src/main/epsilon/transformations/").toURI();
-    public static final URI OPENAPI_SCRIPTROOT = new File("../judo-tatami-asm2openapi/src/main/epsilon/transformations/openapi/").toURI();
-    public static final URI LIQUIBASE_SCRIPTROOT = new File("../judo-tatami-rdbms2liquibase/src/main/epsilon/transformations/").toURI();
+    public static final URI PSM2ASM_SCRIPTROOT = new File("../judo-tatami-psm2asm/src/main/epsilon/transformations/asm/").toURI();
+    public static final URI PSM2MEASURE_SCRIPTROOT = new File("../judo-tatami-psm2measure/src/main/epsilon/transformations/measure/").toURI();
+    public static final URI ASM2RDBMS_SCRIPTROOT = new File("../judo-tatami-asm2rdbms/src/main/epsilon/transformations/").toURI();
+    public static final URI ASM2OPENAPI_SCRIPTROOT = new File("../judo-tatami-asm2openapi/src/main/epsilon/transformations/openapi/").toURI();
+    public static final URI RDMBS2LIQUIBASE_SCRIPTROOT = new File("../judo-tatami-rdbms2liquibase/src/main/epsilon/transformations/").toURI();
     public static final URI EXCELMODEL_SCRIPTROOT = new File("../judo-tatami-asm2rdbms/model/").toURI();
     
     public static final String FILE_LOCATION = "target/test-classes/northwind-psm.model";
@@ -80,11 +80,11 @@ public class DefaultWorkflowTest {
 
 		defaultWorkflow.setUp(DefaultWorkflowSetupParameters.defaultWorkflowSetupParameters()
 				.psmModelSourceURI(new File(FILE_LOCATION))
-				.asmModelTransformationScriptRoot(ASM_SCRIPTROOT)
-				.measureModelTransformationScriptRoot(MEASURE_SCRIPTROOT)
-				.rdbmsModelTransformationScriptRoot(RDBMS_SCRIPTROOT)
-				.openapiModelTransformationScriptRoot(OPENAPI_SCRIPTROOT)
-				.liquibaseModelTransformationScriptRoot(LIQUIBASE_SCRIPTROOT)
+				.psm2asmModelTransformationScriptRoot(PSM2ASM_SCRIPTROOT)
+				.psm2measureModelTransformationScriptRoot(PSM2MEASURE_SCRIPTROOT)
+				.asm2rdbmsModelTransformationScriptRoot(ASM2RDBMS_SCRIPTROOT)
+				.asm2openapiModelTransformationScriptRoot(ASM2OPENAPI_SCRIPTROOT)
+				.rdbms2liquibaseModelTransformationScriptRoot(RDMBS2LIQUIBASE_SCRIPTROOT)
 				.modelName(MODEL_NAME)
 				.dialect(DIALECT)
 				.modelURI(EXCELMODEL_SCRIPTROOT));

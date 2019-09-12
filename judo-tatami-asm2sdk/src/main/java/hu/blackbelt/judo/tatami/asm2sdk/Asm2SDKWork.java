@@ -17,7 +17,7 @@ import java.io.InputStream;
 @Slf4j
 public class Asm2SDKWork extends AbstractTransformationWork {
 
-	public static final String OUTPUT = "asm2SDK:output";
+	public static final String SDK_OUTPUT = "asm2SDK:output";
 
 	final URI transformationScriptRoot;
 
@@ -43,7 +43,7 @@ public class Asm2SDKWork extends AbstractTransformationWork {
 				getTransformationContext().getByClass(Log.class).orElseGet(() -> new Slf4jLog(log)),
 				transformationScriptRoot, temporaryDirectory);
 
-		getTransformationContext().put(OUTPUT, asm2SDKBundle);
+		getTransformationContext().put(SDK_OUTPUT, asm2SDKBundle);
 
 	}
 }

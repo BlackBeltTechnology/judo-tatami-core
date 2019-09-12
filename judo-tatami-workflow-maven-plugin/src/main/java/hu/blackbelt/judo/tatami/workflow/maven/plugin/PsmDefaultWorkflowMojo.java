@@ -22,7 +22,7 @@ import hu.blackbelt.judo.meta.measure.runtime.MeasureModel.MeasureValidationExce
 import hu.blackbelt.judo.meta.openapi.runtime.OpenapiModel.OpenapiValidationException;
 import hu.blackbelt.judo.meta.psm.runtime.PsmModel.PsmValidationException;
 import hu.blackbelt.judo.meta.rdbms.runtime.RdbmsModel.RdbmsValidationException;
-import hu.blackbelt.judo.tatami.workflow.DefaultWorkflow;
+import hu.blackbelt.judo.tatami.workflow.PsmDefaultWorkflow;
 import hu.blackbelt.judo.tatami.workflow.DefaultWorkflowSave;
 import hu.blackbelt.judo.tatami.workflow.DefaultWorkflowSetupParameters;
 import lombok.Getter;
@@ -44,16 +44,16 @@ public class PsmDefaultWorkflowMojo extends AbstractMojo {
 	@Parameter(property = "psmModelDest")
 	private String psmModelDest;
 
-	@Parameter(property = "asmModelScriptRoot")
-	private String asmModelScriptRoot;
-	@Parameter(property = "measureModelScriptRoot")
-	private String measureModelScriptRoot;
-	@Parameter(property = "openApiModelScriptRoot")
-	private String openApiModelScriptRoot;
-	@Parameter(property = "rdbmsModelScriptRoot")
-	private String rdbmsModelScriptRoot;
-	@Parameter(property = "liquibaseModelScriptRoot")
-	private String liquibaseModelScriptRoot;
+	@Parameter(property = "psm2asmModelScriptRoot")
+	private String psm2asmModelScriptRoot;
+	@Parameter(property = "psm2measureModelScriptRoot")
+	private String psm2measureModelScriptRoot;
+	@Parameter(property = "asm2openApiModelScriptRoot")
+	private String asm2openApiModelScriptRoot;
+	@Parameter(property = "asm2rdbmsModelScriptRoot")
+	private String asm2rdbmsModelScriptRoot;
+	@Parameter(property = "rdbms2liquibaseModelScriptRoot")
+	private String rdbms2liquibaseModelScriptRoot;
 
 	@Parameter(property = "destination")
 	private File destination;
@@ -63,7 +63,7 @@ public class PsmDefaultWorkflowMojo extends AbstractMojo {
 	private String dialect;
 
 	@Parameter(property = "excelModelURI")
-	private String excelModelURI;
+	private String asm2rdbmsExcelModelURI;
 
 	@Getter
 	@Parameter(property = "transformationArtifacts", defaultValue = "hu.blackbelt.judo.tatami:judo-tatami-asm2rdbms:${judo-tatami-version},"
@@ -79,15 +79,27 @@ public class PsmDefaultWorkflowMojo extends AbstractMojo {
 		// -------------------------------------------------- //
 		// Fetching transformation script roots from manifest //
 		// -------------------------------------------------- //
-		WorkflowHelper workflowUtil = new WorkflowHelper(this);
+		WorkflowHelper workflowHelper = new WorkflowHelper(repoSystem, repoSession, repositories, transformationArtifacts);
 		try {
-			workflowUtil.extract();
-			if(measureModelScriptRoot == null) measureModelScriptRoot =  workflowUtil.getMeasureModelScriptRoot();
-			if(asmModelScriptRoot == null) asmModelScriptRoot = workflowUtil.getAsmModelScriptRoot();
-			if(rdbmsModelScriptRoot == null) rdbmsModelScriptRoot = workflowUtil.getRdbmsModelScriptRoot();
-			if(openApiModelScriptRoot == null) openApiModelScriptRoot = workflowUtil.getOpenApiModelScriptRoot();
-			if(liquibaseModelScriptRoot == null) liquibaseModelScriptRoot = workflowUtil.getLiquibaseModelScriptRoot();
-			if(excelModelURI == null) excelModelURI = workflowUtil.getExcelModelURI();
+			workflowHelper.extract();
+			psm2measureModelScriptRoot = (psm2measureModelScriptRoot == null)
+					? workflowHelper.getPsm2measureModelScriptRoot()
+					: psm2measureModelScriptRoot;
+			psm2asmModelScriptRoot = (psm2asmModelScriptRoot == null) 
+					? workflowHelper.getPsm2asmModelScriptRoot()
+					: psm2asmModelScriptRoot;
+			asm2rdbmsModelScriptRoot = (asm2rdbmsModelScriptRoot == null) 
+					? workflowHelper.getAsm2rdbmsModelScriptRoot()
+					: asm2rdbmsModelScriptRoot;
+			asm2openApiModelScriptRoot = (asm2openApiModelScriptRoot == null)
+					? workflowHelper.getAsm2openApiModelScriptRoot()
+					: asm2openApiModelScriptRoot;
+			rdbms2liquibaseModelScriptRoot = (rdbms2liquibaseModelScriptRoot == null)
+					? workflowHelper.getRdbms2liquibaseModelScriptRoot()
+					: rdbms2liquibaseModelScriptRoot;
+			asm2rdbmsExcelModelURI = (asm2rdbmsExcelModelURI == null) 
+					? workflowHelper.getAsm2rdbmsExcelModelURI() 
+					: asm2rdbmsExcelModelURI;
 		} catch (IOException e) {
 			throw new MojoFailureException("An error occurred during the extraction of the script roots.", e);
 		}
@@ -95,14 +107,14 @@ public class PsmDefaultWorkflowMojo extends AbstractMojo {
 		// -------------- //
 		// Setup workflow //
 		// -------------- //
-		DefaultWorkflow defaultWorkflow = new DefaultWorkflow();
+		PsmDefaultWorkflow defaultWorkflow = new PsmDefaultWorkflow();
 		try {
 			defaultWorkflow.setUp(DefaultWorkflowSetupParameters.defaultWorkflowSetupParameters()
-					.psmModelSourceURI(new File(psmModelDest)).asmModelTransformationScriptRoot(new URI(asmModelScriptRoot))
-					.measureModelTransformationScriptRoot(new URI(measureModelScriptRoot)).rdbmsModelTransformationScriptRoot(new URI(rdbmsModelScriptRoot))
-					.openapiModelTransformationScriptRoot(new URI(openApiModelScriptRoot))
-					.liquibaseModelTransformationScriptRoot(new URI(liquibaseModelScriptRoot)).modelName(modelName).dialect(dialect)
-					.modelURI(new URI(excelModelURI)).build());
+					.psmModelSourceURI(new File(psmModelDest)).psm2asmModelTransformationScriptRoot(new URI(psm2asmModelScriptRoot))
+					.psm2measureModelTransformationScriptRoot(new URI(psm2measureModelScriptRoot)).asm2rdbmsModelTransformationScriptRoot(new URI(asm2rdbmsModelScriptRoot))
+					.asm2openapiModelTransformationScriptRoot(new URI(asm2openApiModelScriptRoot))
+					.rdbms2liquibaseModelTransformationScriptRoot(new URI(rdbms2liquibaseModelScriptRoot)).modelName(modelName).dialect(dialect)
+					.modelURI(new URI(asm2rdbmsExcelModelURI)).build());
 		} catch (IOException | PsmValidationException | URISyntaxException e) {
 			throw new MojoFailureException("An error occurred during the setup phase of the workflow.", e);
 		}

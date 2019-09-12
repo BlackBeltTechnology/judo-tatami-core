@@ -28,16 +28,16 @@ import static hu.blackbelt.judo.tatami.core.workflow.engine.WorkFlowEngineBuilde
 
 import lombok.Getter;
 
-public class DefaultWorkflow {
+public class PsmDefaultWorkflow {
 
 	@Getter
 	private TransformationContext transformationContext;
 
-	private URI asmModelTransformationScriptRoot;
-	private URI openapiTransformationScriptRoot;
-	private URI measureTransformationScriptRoot;
-	private URI rdbmsTransformationScriptRoot;
-	private URI liquibaseTransformationScriptRoot;
+	private URI psm2asmModelTransformationScriptRoot;
+	private URI asm2openapiTransformationScriptRoot;
+	private URI psm2measureTransformationScriptRoot;
+	private URI asm2rdbmsTransformationScriptRoot;
+	private URI rdbms2liquibaseTransformationScriptRoot;
 
 	private WorkReport workReport;
 
@@ -54,20 +54,20 @@ public class DefaultWorkflow {
 		transformationContext.put(Rdbms2LiquibaseWork.LIQUIBASE_DIALECT, params.getDialect());
 		transformationContext.put(Asm2RdbmsWork.MODEL_URI, params.getModelURI());
 
-		this.asmModelTransformationScriptRoot = params.getAsmModelTransformationScriptRoot();
-		this.openapiTransformationScriptRoot = params.getOpenapiModelTransformationScriptRoot();
-		this.measureTransformationScriptRoot = params.getMeasureModelTransformationScriptRoot();
-		this.rdbmsTransformationScriptRoot = params.getRdbmsModelTransformationScriptRoot();
-		this.liquibaseTransformationScriptRoot = params.getLiquibaseModelTransformationScriptRoot();
+		this.psm2asmModelTransformationScriptRoot = params.getPsm2asmModelTransformationScriptRoot();
+		this.asm2openapiTransformationScriptRoot = params.getAsm2openapiModelTransformationScriptRoot();
+		this.psm2measureTransformationScriptRoot = params.getPsm2measureModelTransformationScriptRoot();
+		this.asm2rdbmsTransformationScriptRoot = params.getAsm2rdbmsModelTransformationScriptRoot();
+		this.rdbms2liquibaseTransformationScriptRoot = params.getRdbms2liquibaseModelTransformationScriptRoot();
 	}
 
 	public WorkReport startDefaultWorkflow() {
 
-		Psm2AsmWork psm2AsmWork = new Psm2AsmWork(transformationContext, asmModelTransformationScriptRoot);
-		Psm2MeasureWork psm2MeasureWork = new Psm2MeasureWork(transformationContext, measureTransformationScriptRoot);
-		Asm2RdbmsWork asm2RdbmsWork = new Asm2RdbmsWork(transformationContext, rdbmsTransformationScriptRoot);
-		Asm2OpenAPIWork asm2OpenapiWork = new Asm2OpenAPIWork(transformationContext, openapiTransformationScriptRoot);
-		Rdbms2LiquibaseWork rdbms2LiquibaseWork = new Rdbms2LiquibaseWork(transformationContext, liquibaseTransformationScriptRoot);
+		Psm2AsmWork psm2AsmWork = new Psm2AsmWork(transformationContext, psm2asmModelTransformationScriptRoot);
+		Psm2MeasureWork psm2MeasureWork = new Psm2MeasureWork(transformationContext, psm2measureTransformationScriptRoot);
+		Asm2RdbmsWork asm2RdbmsWork = new Asm2RdbmsWork(transformationContext, asm2rdbmsTransformationScriptRoot);
+		Asm2OpenAPIWork asm2OpenapiWork = new Asm2OpenAPIWork(transformationContext, asm2openapiTransformationScriptRoot);
+		Rdbms2LiquibaseWork rdbms2LiquibaseWork = new Rdbms2LiquibaseWork(transformationContext, rdbms2liquibaseTransformationScriptRoot);
 
 		// ------------------ //
 		// Workflow execution //

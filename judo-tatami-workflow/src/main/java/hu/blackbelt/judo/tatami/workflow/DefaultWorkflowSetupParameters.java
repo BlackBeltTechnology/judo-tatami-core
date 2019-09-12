@@ -15,19 +15,19 @@ public class DefaultWorkflowSetupParameters {
 	private File psmModelSourceURI;
 
 	@NonNull
-	private URI asmModelTransformationScriptRoot;
+	private URI psm2asmModelTransformationScriptRoot;
 
 	@NonNull
-	private URI openapiModelTransformationScriptRoot;
+	private URI asm2openapiModelTransformationScriptRoot;
 
 	@NonNull
-	private URI measureModelTransformationScriptRoot;
+	private URI psm2measureModelTransformationScriptRoot;
 
 	@NonNull
-	private URI rdbmsModelTransformationScriptRoot;
+	private URI asm2rdbmsModelTransformationScriptRoot;
 
 	@NonNull
-	private URI liquibaseModelTransformationScriptRoot;
+	private URI rdbms2liquibaseModelTransformationScriptRoot;
 
 	@NonNull
 	private String modelName;
