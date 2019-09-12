@@ -79,15 +79,15 @@ public class DefaultWorkflowTest {
 		asm2openapiTransformationTrace.delete();
 
 		defaultWorkflow.setUp(DefaultWorkflowSetupParameters.defaultWorkflowSetupParameters()
-				.psmModelSourceURI(new File(FILE_LOCATION))
-				.psm2asmModelTransformationScriptRoot(PSM2ASM_SCRIPTROOT)
-				.psm2measureModelTransformationScriptRoot(PSM2MEASURE_SCRIPTROOT)
-				.asm2rdbmsModelTransformationScriptRoot(ASM2RDBMS_SCRIPTROOT)
-				.asm2openapiModelTransformationScriptRoot(ASM2OPENAPI_SCRIPTROOT)
-				.rdbms2liquibaseModelTransformationScriptRoot(RDMBS2LIQUIBASE_SCRIPTROOT)
+				.psmModelSourceURI(new File(FILE_LOCATION).toURI())
+				.psm2AsmModelTransformationScriptURI(PSM2ASM_SCRIPTROOT)
+				.psm2MeasureModelTransformationScriptURI(PSM2MEASURE_SCRIPTROOT)
+				.asm2RdbmsModelTransformationScriptURI(ASM2RDBMS_SCRIPTROOT)
+				.asm2OpenapiModelTransformationScriptURI(ASM2OPENAPI_SCRIPTROOT)
+				.rdbms2LiquibaseModelTransformationScriptURI(RDMBS2LIQUIBASE_SCRIPTROOT)
 				.modelName(MODEL_NAME)
 				.dialect(DIALECT)
-				.modelURI(EXCELMODEL_SCRIPTROOT));
+				.asm2RdbmsModelTransformationModelURI(EXCELMODEL_SCRIPTROOT));
 		workReport = defaultWorkflow.startDefaultWorkflow();
 	}
 

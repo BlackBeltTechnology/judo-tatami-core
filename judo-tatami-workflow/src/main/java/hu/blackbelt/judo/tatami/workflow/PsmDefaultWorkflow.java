@@ -23,8 +23,13 @@ import hu.blackbelt.judo.tatami.psm2measure.Psm2MeasureTransformationTrace;
 import hu.blackbelt.judo.tatami.psm2measure.Psm2MeasureWork;
 import hu.blackbelt.judo.tatami.rdbms2liquibase.Rdbms2LiquibaseWork;
 import java.io.IOException;
-import java.net.URI;
+
+import static hu.blackbelt.judo.meta.psm.runtime.PsmModel.LoadArguments.psmLoadArgumentsBuilder;
+import static hu.blackbelt.judo.meta.psm.runtime.PsmModel.loadPsmModel;
+import static hu.blackbelt.judo.tatami.core.ThrowingSupplier.sneakyThrows;
 import static hu.blackbelt.judo.tatami.core.workflow.engine.WorkFlowEngineBuilder.aNewWorkFlowEngine;
+import static java.util.Optional.of;
+import static java.util.Optional.ofNullable;
 
 import lombok.Getter;
 
@@ -33,11 +38,7 @@ public class PsmDefaultWorkflow {
 	@Getter
 	private TransformationContext transformationContext;
 
-	private URI psm2asmModelTransformationScriptRoot;
-	private URI asm2openapiTransformationScriptRoot;
-	private URI psm2measureTransformationScriptRoot;
-	private URI asm2rdbmsTransformationScriptRoot;
-	private URI rdbms2liquibaseTransformationScriptRoot;
+	private DefaultWorkflowSetupParameters parameters;
 
 	private WorkReport workReport;
 
@@ -47,27 +48,37 @@ public class PsmDefaultWorkflow {
 	}
 
 	public void setUp(DefaultWorkflowSetupParameters params) throws IOException, PsmModel.PsmValidationException {
-		transformationContext = new TransformationContext(params.getModelName());
-		transformationContext.put(PsmModel.loadPsmModel(PsmModel.LoadArguments.psmLoadArgumentsBuilder()
-				.file(params.getPsmModelSourceURI()).name(params.getModelName())));
-		transformationContext.put(Asm2RdbmsWork.RDBMS_DIALECT, params.getDialect());
-		transformationContext.put(Rdbms2LiquibaseWork.LIQUIBASE_DIALECT, params.getDialect());
-		transformationContext.put(Asm2RdbmsWork.MODEL_URI, params.getModelURI());
 
-		this.psm2asmModelTransformationScriptRoot = params.getPsm2asmModelTransformationScriptRoot();
-		this.asm2openapiTransformationScriptRoot = params.getAsm2openapiModelTransformationScriptRoot();
-		this.psm2measureTransformationScriptRoot = params.getPsm2measureModelTransformationScriptRoot();
-		this.asm2rdbmsTransformationScriptRoot = params.getAsm2rdbmsModelTransformationScriptRoot();
-		this.rdbms2liquibaseTransformationScriptRoot = params.getRdbms2liquibaseModelTransformationScriptRoot();
+		// Looading Psm model here if it is not presented.
+		PsmModel psmModel = ofNullable(params.getPsmModel()).orElseGet(() ->
+				sneakyThrows(() -> loadPsmModel(psmLoadArgumentsBuilder()
+					.inputStream(
+						of(params.getPsmModelSourceURI()).orElseThrow(() ->
+							new IllegalArgumentException("One psmModel and psmModelSourceUri have to be deifined"))
+							.toURL().openStream())
+					.name(params.getModelName()))));
+
+		transformationContext = new TransformationContext(params.getModelName());
+		transformationContext.put(psmModel);
+		this.parameters = params;
 	}
+
 
 	public WorkReport startDefaultWorkflow() {
 
-		Psm2AsmWork psm2AsmWork = new Psm2AsmWork(transformationContext, psm2asmModelTransformationScriptRoot);
-		Psm2MeasureWork psm2MeasureWork = new Psm2MeasureWork(transformationContext, psm2measureTransformationScriptRoot);
-		Asm2RdbmsWork asm2RdbmsWork = new Asm2RdbmsWork(transformationContext, asm2rdbmsTransformationScriptRoot);
-		Asm2OpenAPIWork asm2OpenapiWork = new Asm2OpenAPIWork(transformationContext, asm2openapiTransformationScriptRoot);
-		Rdbms2LiquibaseWork rdbms2LiquibaseWork = new Rdbms2LiquibaseWork(transformationContext, rdbms2liquibaseTransformationScriptRoot);
+		Psm2AsmWork psm2AsmWork = new Psm2AsmWork(transformationContext,
+				parameters.getPsm2AsmModelTransformationScriptURI());
+		Psm2MeasureWork psm2MeasureWork = new Psm2MeasureWork(transformationContext,
+				parameters.getPsm2MeasureModelTransformationScriptURI());
+		Asm2RdbmsWork asm2RdbmsWork = new Asm2RdbmsWork(transformationContext,
+				parameters.getAsm2RdbmsModelTransformationScriptURI(),
+				parameters.getAsm2RdbmsModelTransformationModelURI(),
+				parameters.getDialect());
+		Asm2OpenAPIWork asm2OpenapiWork = new Asm2OpenAPIWork(transformationContext,
+				parameters.getAsm2OpenapiModelTransformationScriptURI());
+		Rdbms2LiquibaseWork rdbms2LiquibaseWork = new Rdbms2LiquibaseWork(transformationContext,
+				parameters.getRdbms2LiquibaseModelTransformationScriptURI(),
+				parameters.getDialect());
 
 		// ------------------ //
 		// Workflow execution //

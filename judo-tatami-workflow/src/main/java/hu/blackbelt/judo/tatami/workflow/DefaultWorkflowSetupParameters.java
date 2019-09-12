@@ -3,6 +3,7 @@ package hu.blackbelt.judo.tatami.workflow;
 import java.io.File;
 import java.net.URI;
 
+import hu.blackbelt.judo.meta.psm.runtime.PsmModel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NonNull;
@@ -11,23 +12,30 @@ import lombok.NonNull;
 @Getter
 public class DefaultWorkflowSetupParameters {
 
-	@NonNull
-	private File psmModelSourceURI;
+	/**
+	 * When PsmModel is defined psmModelURI is ignored.
+	 */
+	private PsmModel psmModel;
+	
+	private URI psmModelSourceURI;
 
 	@NonNull
-	private URI psm2asmModelTransformationScriptRoot;
+	private URI psm2AsmModelTransformationScriptURI;
 
 	@NonNull
-	private URI asm2openapiModelTransformationScriptRoot;
+	private URI asm2OpenapiModelTransformationScriptURI;
 
 	@NonNull
-	private URI psm2measureModelTransformationScriptRoot;
+	private URI psm2MeasureModelTransformationScriptURI;
 
 	@NonNull
-	private URI asm2rdbmsModelTransformationScriptRoot;
+	private URI asm2RdbmsModelTransformationScriptURI;
 
 	@NonNull
-	private URI rdbms2liquibaseModelTransformationScriptRoot;
+	private URI asm2RdbmsModelTransformationModelURI;
+
+	@NonNull
+	private URI rdbms2LiquibaseModelTransformationScriptURI;
 
 	@NonNull
 	private String modelName;
@@ -35,6 +43,4 @@ public class DefaultWorkflowSetupParameters {
 	@NonNull
 	private String dialect;
 
-	@NonNull
-	private URI modelURI;
 }

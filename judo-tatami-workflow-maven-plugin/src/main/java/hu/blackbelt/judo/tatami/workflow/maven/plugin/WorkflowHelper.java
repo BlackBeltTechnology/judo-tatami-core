@@ -59,18 +59,18 @@ public class WorkflowHelper {
 			pathMap.put(tempName, getArtifactFile(artifactString).getAbsolutePath());
 		}
 
-		psm2asmModelScriptRoot = produceValidScriptRootPath("Psm2Asm");
-		psm2measureModelScriptRoot = produceValidScriptRootPath("Psm2Measure");
-		asm2openApiModelScriptRoot = produceValidScriptRootPath("Asm2OpenApi");
-		asm2rdbmsModelScriptRoot = produceValidScriptRootPath("Asm2Rdbms");
-		rdbms2liquibaseModelScriptRoot = produceValidScriptRootPath("Rdbms2Liquibase");
+		psm2asmModelScriptRoot = produceValidationScriptRootPath("Psm2Asm");
+		psm2measureModelScriptRoot = produceValidationScriptRootPath("Psm2Measure");
+		asm2openApiModelScriptRoot = produceValidationScriptRootPath("Asm2OpenApi");
+		asm2rdbmsModelScriptRoot = produceValidationScriptRootPath("Asm2Rdbms");
+		rdbms2liquibaseModelScriptRoot = produceValidationScriptRootPath("Rdbms2Liquibase");
 		asm2rdbmsExcelModelURI = "jar:file://" + pathMap.get("asm2rdbms") + "!/"
-				+ manifestMap.get("asm2rdbms").getValue("RdbmsModelURI") + "/";
+				+ manifestMap.get("asm2rdbms").getValue("Asm2Rdbms-Transformation-ModelRoot") + "/";
 	}
 
-	private String produceValidScriptRootPath(String name) {
+	private String produceValidationScriptRootPath(String name) {
 		return "jar:file://" + pathMap.get(name.toLowerCase()) + "!/"
-				+ manifestMap.get(name.toLowerCase()).getValue(name + "-Transformation-ModelRoot") + "/";
+				+ manifestMap.get(name.toLowerCase()).getValue(name + "-Transformation-ScriptRoot") + "/";
 	}
 
 	@SneakyThrows(ArtifactResolutionException.class)
