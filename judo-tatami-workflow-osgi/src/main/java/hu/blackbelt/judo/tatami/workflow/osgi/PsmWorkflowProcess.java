@@ -1,6 +1,7 @@
 package hu.blackbelt.judo.tatami.workflow.osgi;
 
 import hu.blackbelt.judo.meta.psm.runtime.PsmModel;
+import hu.blackbelt.judo.tatami.core.workflow.work.TransformationContext;
 import hu.blackbelt.judo.tatami.core.workflow.work.WorkReport;
 import hu.blackbelt.judo.tatami.core.workflow.work.WorkStatus;
 import hu.blackbelt.judo.tatami.workflow.DefaultWorkflowSetupParameters;
@@ -17,12 +18,18 @@ import java.net.URISyntaxException;
  * This process represents a {@link PsmDefaultWorkflow} process for a {@link PsmModel} instances.
  * It referencing all the required transformation bundles over a {@link TransformationBundleHolder} which is
  * managed by {@link TransformationBundleTracker}.
+ * After the transformation workflow executed the {@link TransformationContext} are registering the models / bundles / traces
+ * via {@link TransformationContextRegistrationService}. By default the {@link DefaultTransformationContextRegistrationService}
+ * is used, but it is configurable in {@link PsmWorkflowDefaultPsmModelTracker}'s configuration.
  */
 @Component(immediate = true, configurationPolicy = ConfigurationPolicy.REQUIRE)
 @Slf4j
 @Designate(ocd = PsmWorkflowProcessConfiguration.class)
 public class PsmWorkflowProcess {
     PsmWorkflowProcessConfiguration psmWorkflowProcessConfiguration;
+
+    @Reference(name = "transformationContextRegistrationService")
+    TransformationContextRegistrationService transformationContextRegistrationService;
 
     @Reference(name = "psmModel")
     PsmModel psmModel;
@@ -47,6 +54,8 @@ public class PsmWorkflowProcess {
 
     @Reference(name = "asm2sdk")
     TransformationBundleHolder asm2sdk;
+
+    private TransformationContext transformationContext;
 
     @Activate
     public void activate(ComponentContext componentContextContext, PsmWorkflowProcessConfiguration config)
@@ -73,13 +82,18 @@ public class PsmWorkflowProcess {
 
         WorkReport workReport = defaultWorkflow.startDefaultWorkflow();
 
-        // Get transformation context and registering all services which are presented
+        if (workReport.getStatus() != WorkStatus.COMPLETED) {
+            throw new IllegalStateException(workReport.getError());
+        }
 
+        // Get transformation context and registering all services which are presented
+        transformationContext = defaultWorkflow.getTransformationContext();
+        transformationContextRegistrationService.registerTramsformationContext(transformationContext);
     }
 
     @Deactivate
     public void deactivate() {
-        // Unregister all registered services
+        transformationContextRegistrationService.unregisterTramsformationContext(transformationContext);
     }
 
 }

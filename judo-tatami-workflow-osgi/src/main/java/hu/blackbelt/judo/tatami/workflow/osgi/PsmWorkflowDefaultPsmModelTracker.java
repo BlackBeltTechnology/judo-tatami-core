@@ -21,17 +21,26 @@ import java.util.Hashtable;
  * is managed by Declarative Service.
  *
  */
-@Component(immediate = true, configurationPolicy = ConfigurationPolicy.REQUIRE)
+@Component(immediate = true, configurationPolicy = ConfigurationPolicy.REQUIRE,
+        property = PsmWorkflowDefaultPsmModelTracker.TRANSFORMATION_CONTEXT_REGISTRATION_SERVICE_FILTER + "=" +
+                PsmWorkflowDefaultPsmModelTracker.IMPLEMENTATION_DEFAULT)
 @Slf4j
 public class PsmWorkflowDefaultPsmModelTracker extends AbstractModelTracker<PsmModel> {
 
     public static final String MODEL_NAME_PROPERTY = "modelName";
     public static final String PSM_MODEL_PROPERTY = "psmModel";
+    public static final String TRANSFORMATION_CONTEXT_REGISTRATION_SERVICE_FILTER = "TransformationContextRegistrationServiceFilter";
+    public static final String TRANSFORMATION_CONTEXT_REGISTRATION_SERVICE_TARGET = "transformationContextRegistrationService.target";
+    public static final String IMPLEMENTATION_DEFAULT = "(implementation=default)";
+
     @Reference
     ConfigurationAdmin configurationAdmin;
 
+    ComponentContext componentContext;
+
     @Activate
     public void activate(ComponentContext componentContextContext) {
+        this.componentContext = componentContextContext;
         openTracker(componentContextContext.getBundleContext());
     }
 
@@ -72,6 +81,8 @@ public class PsmWorkflowDefaultPsmModelTracker extends AbstractModelTracker<PsmM
         String modelName = psmModel.getName();
 
         final Dictionary<String, Object> psmWorkflowProcessProperties = new Hashtable<>();
+        psmWorkflowProcessProperties.put(TRANSFORMATION_CONTEXT_REGISTRATION_SERVICE_TARGET,
+                componentContext.getProperties().get(TRANSFORMATION_CONTEXT_REGISTRATION_SERVICE_FILTER));
         psmWorkflowProcessProperties.put(MODEL_NAME_PROPERTY, psmModel.getName());
         psmWorkflowProcessProperties.put(PSM_MODEL_PROPERTY, psmModel);
         psmWorkflowProcessProperties.put(this.getClass().getName(), "true");
