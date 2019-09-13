@@ -127,6 +127,9 @@ A conditional flow is defined by 4 artifacts:
 * The work to execute if the predicate is satisfied
 * The work to execute if the predicate is not satisfied (optional)
 
+When the `WorkReportPredicate` not satisfied and the not satisfied
+artifact is not defined the flow execution become failed.
+
 To create a `ConditionalFlow`, you can use the `ConditionalFlow.Builder` :
 
 [source,java]

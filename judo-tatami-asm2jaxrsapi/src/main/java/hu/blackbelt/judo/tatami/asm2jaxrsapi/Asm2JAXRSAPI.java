@@ -91,18 +91,11 @@ public class Asm2JAXRSAPI {
             return Collections.emptyList();
         }
 
-        // JaxRS classloader is used in OSGi
-        Bundle bundle = FrameworkUtil.getBundle(Application.class);
-        ClassLoader classLoader = Asm2JAXRSAPI.class.getClassLoader();
-        BundleContext bundleContext = null;
-        if (bundle != null) {
-            bundleContext = bundle.getBundleContext();
-            classLoader = bundle.adapt(BundleWiring.class).getClassLoader();
-        }
+        // Force to import
+        Application.class.getName();
 
         Iterable<JavaFileObject> compiled = CompilerUtil.compile(compilerContextBuilder()
-                .classLoader(classLoader)
-                .bundleContext(bundleContext)
+                .sameClassLoaderAs(Asm2JAXRSAPI.class)
                 .compilationFiles(fileNamesToFile(sourceDir, sourceCodeFiles))
                 .build());
         return compiled;

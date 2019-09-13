@@ -91,18 +91,8 @@ public class Asm2SDK {
             return Collections.emptyList();
         }
 
-        // JaxRS classloader is used in OSGi
-        Bundle bundle = FrameworkUtil.getBundle(Asm2SDK.class); // FrameworkUtil.getBundle(Application.class);
-        ClassLoader classLoader = Asm2SDK.class.getClassLoader();
-        BundleContext bundleContext = null;
-        if (bundle != null) {
-            bundleContext = bundle.getBundleContext();
-            classLoader = bundle.adapt(BundleWiring.class).getClassLoader();
-        }
-
         Iterable<JavaFileObject> compiled = CompilerUtil.compile(compilerContextBuilder()
-                .classLoader(classLoader)
-                .bundleContext(bundleContext)
+                .sameClassLoaderAs(Asm2SDK.class)
                 .compilationFiles(fileNamesToFile(sourceDir, sourceCodeFiles))
                 .build());
         return compiled;

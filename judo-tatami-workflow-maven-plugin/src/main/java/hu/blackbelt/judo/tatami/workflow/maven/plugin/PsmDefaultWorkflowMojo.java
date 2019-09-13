@@ -2,16 +2,17 @@ package hu.blackbelt.judo.tatami.workflow.maven.plugin;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
+import java.net.*;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+
+import org.apache.maven.artifact.DependencyResolutionRequiredException;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
-import org.apache.maven.plugins.annotations.Component;
-import org.apache.maven.plugins.annotations.LifecyclePhase;
-import org.apache.maven.plugins.annotations.Mojo;
-import org.apache.maven.plugins.annotations.Parameter;
+import org.apache.maven.plugin.descriptor.PluginDescriptor;
+import org.apache.maven.plugins.annotations.*;
 import org.apache.maven.project.MavenProject;
 import org.eclipse.aether.RepositorySystem;
 import org.eclipse.aether.RepositorySystemSession;
@@ -27,7 +28,9 @@ import hu.blackbelt.judo.tatami.workflow.DefaultWorkflowSave;
 import hu.blackbelt.judo.tatami.workflow.DefaultWorkflowSetupParameters;
 import lombok.Getter;
 
-@Mojo(name = "psm-default-workflow", defaultPhase = LifecyclePhase.COMPILE)
+@Mojo(name = "psm-default-workflow",
+		defaultPhase = LifecyclePhase.COMPILE,
+		requiresDependencyResolution = ResolutionScope.COMPILE)
 public class PsmDefaultWorkflowMojo extends AbstractMojo {
 
 	@Parameter(defaultValue = "${project}", readonly = true, required = true)
@@ -40,6 +43,9 @@ public class PsmDefaultWorkflowMojo extends AbstractMojo {
 	public RepositorySystemSession repoSession;
 	@Parameter(defaultValue = "${project.remoteProjectRepositories}", readonly = true, required = true)
 	public List<RemoteRepository> repositories;
+
+	@Parameter( defaultValue = "${plugin}", readonly = true )
+	private PluginDescriptor pluginDescriptor;
 
 	@Parameter(property = "psmModelDest")
 	private String psmModelDest;
@@ -81,12 +87,38 @@ public class PsmDefaultWorkflowMojo extends AbstractMojo {
 			"hu.blackbelt.judo.tatami:judo-tatami-asm2jaxrsapi:${judo-tatami-version}")
 	private List<String> transformationArtifacts;
 
+
+	private void setContextClassLoader() throws DependencyResolutionRequiredException, MalformedURLException {
+		List<URL> pathUrls = new ArrayList<>();
+		for (Object mavenCompilePath : project.getCompileClasspathElements()) {
+			String currentPathProcessed = (String) mavenCompilePath;
+			pathUrls.add(new File(currentPathProcessed).toURI().toURL());
+		}
+
+		URL[] urlsForClassLoader = pathUrls.toArray(new URL[pathUrls.size()]);
+		getLog().info("Set urls for URLClassLoader: " + Arrays.asList(urlsForClassLoader));
+
+		// need to define parent classloader which knows all dependencies of the plugin
+		ClassLoader classLoader = new URLClassLoader(urlsForClassLoader, PsmDefaultWorkflowMojo.class.getClassLoader());
+		Thread.currentThread().setContextClassLoader(classLoader);
+	}
+
 	@Override
 	public void execute() throws MojoExecutionException, MojoFailureException {
 
 		// -------------------------------------------------- //
 		// Fetching transformation script roots from manifest //
 		// -------------------------------------------------- //
+
+		// Needed for to access project's dependencies.
+		// Info: http://blog.chalda.cz/2018/02/17/Maven-plugin-and-fight-with-classloading.html
+		try {
+			setContextClassLoader();
+		} catch (Exception e) {
+			throw new MojoExecutionException("Failed to set classloader", e);
+		}
+
+
 		WorkflowHelper workflowHelper = new WorkflowHelper(repoSystem, repoSession, repositories, transformationArtifacts);
 		try {
 			workflowHelper.extract();

@@ -100,27 +100,22 @@ public class PsmDefaultWorkflow {
 		// ------------------ //
 		// Workflow execution //
 		// ------------------ //
-		WorkFlow workflow = 
-		aNewConditionalFlow().execute(		
-			aNewConditionalFlow().execute(aNewParallelFlow().execute(psm2AsmWork, psm2MeasureWork).build())
-			.when(WorkReportPredicate.COMPLETED)
-					.then(aNewParallelFlow()
-							.execute(asm2RdbmsWork, asm2OpenapiWork, asm2sdkWork, asm2jaxrsapiWork).build())
-					.build()
-					)
-		.when(WorkReportPredicate.COMPLETED)
-		.then(rdbms2LiquibaseWork)
-		.build();
-		
-		
-		/*
-		WorkFlow workflow = aNewSequentialFlow()
-				.execute(aNewParallelFlow()
-						.execute(psm2AsmWork, psm2MeasureWork).build())
-				.then(aNewParallelFlow()
-						.execute(asm2RdbmsWork, asm2OpenapiWork, asm2sdkWork, asm2jaxrsapiWork).build())
-				.then(rdbms2LiquibaseWork).build();
-		*/
+		WorkFlow workflow =
+				aNewConditionalFlow().execute(
+						aNewParallelFlow().execute(
+								psm2AsmWork, psm2MeasureWork
+						).build()
+				).when(WorkReportPredicate.COMPLETED).then(
+						aNewConditionalFlow().execute(
+								aNewParallelFlow().execute(
+										asm2RdbmsWork, asm2OpenapiWork, asm2sdkWork, asm2jaxrsapiWork
+								).build()
+						).when(WorkReportPredicate.COMPLETED).then(
+								rdbms2LiquibaseWork
+						).build()
+				).build();
+
+
 		WorkFlowEngine workFlowEngine = aNewWorkFlowEngine().build();
 		workReport = workFlowEngine.run(workflow);
 
