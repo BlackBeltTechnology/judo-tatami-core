@@ -1,8 +1,19 @@
 package hu.blackbelt.judo.tatami.workflow;
 
+import static hu.blackbelt.judo.meta.asm.runtime.AsmModel.SaveArguments.asmSaveArgumentsBuilder;
+import static hu.blackbelt.judo.meta.liquibase.runtime.LiquibaseModel.SaveArguments.liquibaseSaveArgumentsBuilder;
+import static hu.blackbelt.judo.meta.measure.runtime.MeasureModel.SaveArguments.measureSaveArgumentsBuilder;
+import static hu.blackbelt.judo.meta.openapi.runtime.OpenapiModel.SaveArguments.openapiSaveArgumentsBuilder;
+import static hu.blackbelt.judo.meta.rdbms.runtime.RdbmsModel.SaveArguments.rdbmsSaveArgumentsBuilder;
+import static hu.blackbelt.judo.tatami.asm2jaxrsapi.Asm2JAXRSAPIWork.JAXRSAPI_OUTPUT;
+import static hu.blackbelt.judo.tatami.asm2sdk.Asm2SDKWork.SDK_OUTPUT;
+import static hu.blackbelt.judo.tatami.core.ThrowingConsumer.throwingConsumerWrapper;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
 
 import hu.blackbelt.judo.meta.asm.runtime.AsmModel;
 import hu.blackbelt.judo.meta.asm.runtime.AsmModel.AsmValidationException;
@@ -14,6 +25,7 @@ import hu.blackbelt.judo.meta.openapi.runtime.OpenapiModel;
 import hu.blackbelt.judo.meta.openapi.runtime.OpenapiModel.OpenapiValidationException;
 import hu.blackbelt.judo.meta.rdbms.runtime.RdbmsModel;
 import hu.blackbelt.judo.meta.rdbms.runtime.RdbmsModel.RdbmsValidationException;
+import hu.blackbelt.judo.tatami.asm2jaxrsapi.Asm2JAXRSAPIWork;
 import hu.blackbelt.judo.tatami.asm2openapi.Asm2OpenAPITransformationTrace;
 import hu.blackbelt.judo.tatami.asm2rdbms.Asm2RdbmsTransformationTrace;
 import hu.blackbelt.judo.tatami.core.workflow.work.TransformationContext;
@@ -32,39 +44,34 @@ public class DefaultWorkflowSave {
 			throw new IllegalArgumentException("Destination is not a directory!");
 		}
 
-
-		AsmModel asmModel = transformationContext.getByClass(AsmModel.class)
-				.orElseThrow(() -> new IllegalStateException("Cannot save model: Missing transformated AsmModel"));
-		File asmModelDest = new File(dest, "asm.model");
-		asmModel.saveAsmModel(AsmModel.SaveArguments.asmSaveArgumentsBuilder().file(asmModelDest)
-				.outputStream(new FileOutputStream(asmModelDest)));
-
+		transformationContext.getByClass(AsmModel.class).ifPresent(throwingConsumerWrapper((m) ->  
+			m.saveAsmModel(asmSaveArgumentsBuilder().file(new File(dest, "asm.model")))));
 
 		MeasureModel measureModel = transformationContext.getByClass(MeasureModel.class)
 				.orElseThrow(() -> new IllegalStateException("Cannot save model: Missing transformated MeasureModel"));
 		File measureModelDest = new File(dest, "measure.model");
-		measureModel.saveMeasureModel(MeasureModel.SaveArguments.measureSaveArgumentsBuilder().file(measureModelDest)
+		measureModel.saveMeasureModel(measureSaveArgumentsBuilder().file(measureModelDest)
 				.outputStream(new FileOutputStream(measureModelDest)));
 
 
 		RdbmsModel rdbmsModel = transformationContext.getByClass(RdbmsModel.class)
 				.orElseThrow(() -> new IllegalStateException("Cannot save model: Missing transformated RdbmsModel"));
 		File rdbmsModelDest = new File(dest, "rdbms.model");
-		rdbmsModel.saveRdbmsModel(RdbmsModel.SaveArguments.rdbmsSaveArgumentsBuilder().file(rdbmsModelDest)
+		rdbmsModel.saveRdbmsModel(rdbmsSaveArgumentsBuilder().file(rdbmsModelDest)
 				.outputStream(new FileOutputStream(rdbmsModelDest)));
 
 
 		OpenapiModel openapiModel = transformationContext.getByClass(OpenapiModel.class)
 				.orElseThrow(() -> new IllegalStateException("Cannot save model: Missing transformated OpenapiModel"));
 		File openapiModelDest = new File(dest, "openapi.model");
-		openapiModel.saveOpenapiModel(OpenapiModel.SaveArguments.openapiSaveArgumentsBuilder().file(openapiModelDest)
+		openapiModel.saveOpenapiModel(openapiSaveArgumentsBuilder().file(openapiModelDest)
 				.outputStream(new FileOutputStream(openapiModelDest)));
 
 
 		LiquibaseModel liquibaseModel = transformationContext.getByClass(LiquibaseModel.class).orElseThrow(
 				() -> new IllegalStateException("Cannot save model: Missing transformated LiquibaseModel"));
 		File liquibaseModelDest = new File(dest, "liquibase.changelog.xml");
-		liquibaseModel.saveLiquibaseModel(LiquibaseModel.SaveArguments.liquibaseSaveArgumentsBuilder()
+		liquibaseModel.saveLiquibaseModel(liquibaseSaveArgumentsBuilder()
 				.file(liquibaseModelDest).outputStream(new FileOutputStream(liquibaseModelDest)));
 
 
@@ -88,6 +95,18 @@ public class DefaultWorkflowSave {
 				.orElseThrow(() -> new IllegalStateException(
 						"Cannot save transformation trace: Missing Asm2OpenAPITransformationTrace"))
 				.save(new File(dest, "asm2openapi.model"));
+		
+		try (InputStream asm2sdkBundle = transformationContext.get(InputStream.class, SDK_OUTPUT)
+				.orElseThrow(() -> new IllegalStateException(
+						"Cannot save bundle: Missing Asm2SdkBundle"))) {
+			Files.copy(asm2sdkBundle, new File(dest, "asm2sdk.jar").toPath());    			
+		};
+		
+		try (InputStream asm2jaxrsapiBundle = transformationContext.get(InputStream.class, JAXRSAPI_OUTPUT)
+				.orElseThrow(() -> new IllegalStateException(
+						"Cannot save bundle: Missing Asm2JaxrsapiBundle"))) {
+			Files.copy(asm2jaxrsapiBundle, new File(dest, "asm2jaxrsapi.jar").toPath());    			
+		};
 	}
 
 }

@@ -20,9 +20,9 @@ import hu.blackbelt.judo.meta.psm.runtime.PsmModel.PsmValidationException;
 import hu.blackbelt.judo.meta.rdbms.runtime.RdbmsModel.RdbmsValidationException;
 import hu.blackbelt.judo.tatami.core.workflow.work.WorkReport;
 import hu.blackbelt.judo.tatami.core.workflow.work.WorkStatus;
-import hu.blackbelt.judo.tatami.workflow.PsmDefaultWorkflow;
 import hu.blackbelt.judo.tatami.workflow.DefaultWorkflowSave;
 import hu.blackbelt.judo.tatami.workflow.DefaultWorkflowSetupParameters;
+import hu.blackbelt.judo.tatami.workflow.PsmDefaultWorkflow;
 
 public class DefaultWorkflowTest {
 	
@@ -34,6 +34,8 @@ public class DefaultWorkflowTest {
     public static final URI ASM2OPENAPI_SCRIPTROOT = new File("../judo-tatami-asm2openapi/src/main/epsilon/transformations/openapi/").toURI();
     public static final URI RDMBS2LIQUIBASE_SCRIPTROOT = new File("../judo-tatami-rdbms2liquibase/src/main/epsilon/transformations/").toURI();
     public static final URI EXCELMODEL_SCRIPTROOT = new File("../judo-tatami-asm2rdbms/model/").toURI();
+    public static final URI ASM2SDK_SCRIPTROOT = new File("../judo-tatami-asm2sdk/src/main/epsilon/templates/").toURI();
+    public static final URI ASM2JAXRSAPI_SCRIPTROOT = new File("../judo-tatami-asm2jaxrsapi/src/main/epsilon/templates/").toURI();
     
     public static final String FILE_LOCATION = "target/test-classes/northwind-psm.model";
     
@@ -55,6 +57,8 @@ public class DefaultWorkflowTest {
     private File psm2measureTransformationTrace;
     private File asm2rdbmsTransformationTrace;
     private File asm2openapiTransformationTrace;
+    private File asm2sdkBundle;
+    private File asm2jaxrsapiBundle;
 
 	@BeforeEach
 	void setUp() throws IOException, PsmValidationException, URISyntaxException {
@@ -77,6 +81,10 @@ public class DefaultWorkflowTest {
 		asm2rdbmsTransformationTrace.delete();
 		asm2openapiTransformationTrace = new File(TARGET_CLASSES, "asm2openapi.model");
 		asm2openapiTransformationTrace.delete();
+		asm2sdkBundle = new File(TARGET_CLASSES, "asm2sdk.jar");
+		asm2sdkBundle.delete();
+		asm2jaxrsapiBundle = new File(TARGET_CLASSES, "asm2jaxrsapi.jar");
+		asm2jaxrsapiBundle.delete();
 
 		defaultWorkflow.setUp(DefaultWorkflowSetupParameters.defaultWorkflowSetupParameters()
 				.psmModelSourceURI(new File(FILE_LOCATION).toURI())
@@ -87,7 +95,9 @@ public class DefaultWorkflowTest {
 				.rdbms2LiquibaseModelTransformationScriptURI(RDMBS2LIQUIBASE_SCRIPTROOT)
 				.modelName(MODEL_NAME)
 				.dialect(DIALECT)
-				.asm2RdbmsModelTransformationModelURI(EXCELMODEL_SCRIPTROOT));
+				.asm2RdbmsModelTransformationModelURI(EXCELMODEL_SCRIPTROOT)
+				.asm2sdkModelTransformationScriptURI(ASM2SDK_SCRIPTROOT)
+				.asm2jaxrsapiModelTransformationScriptURI(ASM2JAXRSAPI_SCRIPTROOT));
 		workReport = defaultWorkflow.startDefaultWorkflow();
 	}
 
@@ -107,6 +117,9 @@ public class DefaultWorkflowTest {
 		assertTrue(psm2measureTransformationTrace.exists());
 		assertTrue(asm2rdbmsTransformationTrace.exists());
 		assertTrue(asm2openapiTransformationTrace.exists());
+		
+		assertTrue(asm2sdkBundle.exists());
+		assertTrue(asm2jaxrsapiBundle.exists());
 
 	}
 }

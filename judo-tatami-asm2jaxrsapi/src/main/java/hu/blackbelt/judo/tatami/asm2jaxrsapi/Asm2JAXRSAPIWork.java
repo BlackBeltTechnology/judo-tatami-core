@@ -1,5 +1,6 @@
 package hu.blackbelt.judo.tatami.asm2jaxrsapi;
 
+import static com.google.common.base.Preconditions.checkState;
 import static hu.blackbelt.judo.tatami.asm2jaxrsapi.Asm2JAXRSAPI.executeAsm2JAXRSAPIGeneration;
 
 import java.io.File;
@@ -42,7 +43,10 @@ public class Asm2JAXRSAPIWork extends AbstractTransformationWork {
 
 		InputStream asm2JAXRSBundle = executeAsm2JAXRSAPIGeneration(asmModel.get(),
 				getTransformationContext().getByClass(Log.class).orElseGet(() -> new Slf4jLog(log)),
-				transformationScriptRoot, temporaryDirectory);
+				transformationScriptRoot,
+				temporaryDirectory);
+		
+		checkState(asm2JAXRSBundle != null, "No InputStream created");
 
 		getTransformationContext().put(JAXRSAPI_OUTPUT, asm2JAXRSBundle);
 

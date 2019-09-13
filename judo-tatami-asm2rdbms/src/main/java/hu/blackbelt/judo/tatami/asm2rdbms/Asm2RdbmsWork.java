@@ -49,8 +49,10 @@ public class Asm2RdbmsWork extends AbstractTransformationWork {
 		getTransformationContext().put(rdbmsModel);
 
 		Asm2RdbmsTransformationTrace asm2RdbmsTransformationTrace = executeAsm2RdbmsTransformation(asmModel.get(),
-				rdbmsModel, getTransformationContext().getByClass(Log.class).orElseGet(() -> new Slf4jLog(log)),
-				transformationScriptRoot, modelRoot,
+				rdbmsModel,
+				getTransformationContext().getByClass(Log.class).orElseGet(() -> new Slf4jLog(log)),
+				transformationScriptRoot,
+				modelRoot,
 				dialect);
 
 		getTransformationContext().put(asm2RdbmsTransformationTrace);

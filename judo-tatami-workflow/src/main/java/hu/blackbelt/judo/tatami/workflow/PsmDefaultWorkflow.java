@@ -1,38 +1,51 @@
 package hu.blackbelt.judo.tatami.workflow;
 
+import static hu.blackbelt.judo.meta.psm.runtime.PsmModel.loadPsmModel;
+import static hu.blackbelt.judo.meta.psm.runtime.PsmModel.LoadArguments.psmLoadArgumentsBuilder;
+import static hu.blackbelt.judo.tatami.asm2jaxrsapi.Asm2JAXRSAPIWork.JAXRSAPI_OUTPUT;
+import static hu.blackbelt.judo.tatami.asm2sdk.Asm2SDKWork.SDK_OUTPUT;
+import static hu.blackbelt.judo.tatami.core.ThrowingSupplier.sneakyThrows;
+import static hu.blackbelt.judo.tatami.core.workflow.engine.WorkFlowEngineBuilder.aNewWorkFlowEngine;
+import static hu.blackbelt.judo.tatami.core.workflow.flow.ConditionalFlow.Builder.aNewConditionalFlow;
+import static hu.blackbelt.judo.tatami.core.workflow.flow.ParallelFlow.Builder.aNewParallelFlow;
+import static hu.blackbelt.judo.tatami.core.workflow.flow.SequentialFlow.Builder.aNewSequentialFlow;
+import static java.util.Optional.of;
+import static java.util.Optional.ofNullable;
+
+import java.io.IOException;
+import java.io.InputStream;
+
 import hu.blackbelt.judo.meta.asm.runtime.AsmModel;
 import hu.blackbelt.judo.meta.liquibase.runtime.LiquibaseModel;
 import hu.blackbelt.judo.meta.measure.runtime.MeasureModel;
 import hu.blackbelt.judo.meta.openapi.runtime.OpenapiModel;
 import hu.blackbelt.judo.meta.psm.runtime.PsmModel;
 import hu.blackbelt.judo.meta.rdbms.runtime.RdbmsModel;
+import hu.blackbelt.judo.tatami.asm2jaxrsapi.Asm2JAXRSAPI;
+import hu.blackbelt.judo.tatami.asm2jaxrsapi.Asm2JAXRSAPIWork;
 import hu.blackbelt.judo.tatami.asm2openapi.Asm2OpenAPITransformationTrace;
 import hu.blackbelt.judo.tatami.asm2openapi.Asm2OpenAPIWork;
 import hu.blackbelt.judo.tatami.asm2rdbms.Asm2RdbmsTransformationTrace;
 import hu.blackbelt.judo.tatami.asm2rdbms.Asm2RdbmsWork;
+import hu.blackbelt.judo.tatami.asm2sdk.Asm2SDKWork;
 import hu.blackbelt.judo.tatami.core.workflow.engine.WorkFlowEngine;
-import hu.blackbelt.judo.tatami.core.workflow.flow.ParallelFlow;
-import hu.blackbelt.judo.tatami.core.workflow.flow.SequentialFlow;
+import hu.blackbelt.judo.tatami.core.workflow.flow.ConditionalFlow;
 import hu.blackbelt.judo.tatami.core.workflow.flow.WorkFlow;
+import hu.blackbelt.judo.tatami.core.workflow.work.FailedWork;
 import hu.blackbelt.judo.tatami.core.workflow.work.TransformationContext;
 import hu.blackbelt.judo.tatami.core.workflow.work.WorkReport;
+import hu.blackbelt.judo.tatami.core.workflow.work.WorkReportPredicate;
 import hu.blackbelt.judo.tatami.core.workflow.work.WorkStatus;
 import hu.blackbelt.judo.tatami.psm2asm.Psm2AsmTransformationTrace;
 import hu.blackbelt.judo.tatami.psm2asm.Psm2AsmWork;
 import hu.blackbelt.judo.tatami.psm2measure.Psm2MeasureTransformationTrace;
 import hu.blackbelt.judo.tatami.psm2measure.Psm2MeasureWork;
 import hu.blackbelt.judo.tatami.rdbms2liquibase.Rdbms2LiquibaseWork;
-import java.io.IOException;
-
-import static hu.blackbelt.judo.meta.psm.runtime.PsmModel.LoadArguments.psmLoadArgumentsBuilder;
-import static hu.blackbelt.judo.meta.psm.runtime.PsmModel.loadPsmModel;
-import static hu.blackbelt.judo.tatami.core.ThrowingSupplier.sneakyThrows;
-import static hu.blackbelt.judo.tatami.core.workflow.engine.WorkFlowEngineBuilder.aNewWorkFlowEngine;
-import static java.util.Optional.of;
-import static java.util.Optional.ofNullable;
-
+import io.swagger.models.auth.In;
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public class PsmDefaultWorkflow {
 
 	@Getter
@@ -64,7 +77,7 @@ public class PsmDefaultWorkflow {
 	}
 
 
-	public WorkReport startDefaultWorkflow() {
+	public WorkReport startDefaultWorkflow() {		
 
 		Psm2AsmWork psm2AsmWork = new Psm2AsmWork(transformationContext,
 				parameters.getPsm2AsmModelTransformationScriptURI());
@@ -79,15 +92,35 @@ public class PsmDefaultWorkflow {
 		Rdbms2LiquibaseWork rdbms2LiquibaseWork = new Rdbms2LiquibaseWork(transformationContext,
 				parameters.getRdbms2LiquibaseModelTransformationScriptURI(),
 				parameters.getDialect());
+		Asm2SDKWork asm2sdkWork = new Asm2SDKWork(transformationContext, 
+				parameters.getAsm2sdkModelTransformationScriptURI());
+		Asm2JAXRSAPIWork asm2jaxrsapiWork = new Asm2JAXRSAPIWork(transformationContext,
+				parameters.getAsm2jaxrsapiModelTransformationScriptURI());
 
 		// ------------------ //
 		// Workflow execution //
 		// ------------------ //
-		WorkFlow workflow = SequentialFlow.Builder.aNewSequentialFlow()
-				.execute(ParallelFlow.Builder.aNewParallelFlow().execute(psm2AsmWork, psm2MeasureWork).build())
-				.then(ParallelFlow.Builder.aNewParallelFlow().execute(asm2RdbmsWork, asm2OpenapiWork).build())
+		WorkFlow workflow = 
+		aNewConditionalFlow().execute(		
+			aNewConditionalFlow().execute(aNewParallelFlow().execute(psm2AsmWork, psm2MeasureWork).build())
+			.when(WorkReportPredicate.COMPLETED)
+					.then(aNewParallelFlow()
+							.execute(asm2RdbmsWork, asm2OpenapiWork, asm2sdkWork, asm2jaxrsapiWork).build())
+					.build()
+					)
+		.when(WorkReportPredicate.COMPLETED)
+		.then(rdbms2LiquibaseWork)
+		.build();
+		
+		
+		/*
+		WorkFlow workflow = aNewSequentialFlow()
+				.execute(aNewParallelFlow()
+						.execute(psm2AsmWork, psm2MeasureWork).build())
+				.then(aNewParallelFlow()
+						.execute(asm2RdbmsWork, asm2OpenapiWork, asm2sdkWork, asm2jaxrsapiWork).build())
 				.then(rdbms2LiquibaseWork).build();
-
+		*/
 		WorkFlowEngine workFlowEngine = aNewWorkFlowEngine().build();
 		workReport = workFlowEngine.run(workflow);
 
@@ -105,6 +138,8 @@ public class PsmDefaultWorkflow {
 				.isClassExists(Psm2MeasureTransformationTrace.class)
 				.isClassExists(Asm2RdbmsTransformationTrace.class)
 				.isClassExists(Asm2OpenAPITransformationTrace.class)
+				.isKeyExists(InputStream.class, SDK_OUTPUT)
+				.isKeyExists(InputStream.class, JAXRSAPI_OUTPUT)
 				.isAllExists();
 
 		if (!allExists) {

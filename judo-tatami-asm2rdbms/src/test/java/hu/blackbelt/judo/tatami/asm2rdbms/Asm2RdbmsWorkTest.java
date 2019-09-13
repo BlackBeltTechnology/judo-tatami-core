@@ -40,8 +40,7 @@ public class Asm2RdbmsWorkTest {
 		asm2RdbmsWork = new Asm2RdbmsWork(transformationContext,
 				new File(TARGET_TEST_CLASSES, "epsilon/transformations").toURI(),
 				new File(MODEL_DIRECTORY).toURI(),
-				"hsqldb"
-		);
+				"hsqldb");
 	}
 
 	@Test

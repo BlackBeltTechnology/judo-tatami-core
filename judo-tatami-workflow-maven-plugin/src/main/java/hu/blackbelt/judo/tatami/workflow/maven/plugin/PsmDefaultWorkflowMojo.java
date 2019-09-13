@@ -54,7 +54,12 @@ public class PsmDefaultWorkflowMojo extends AbstractMojo {
 	private String asm2rdbmsModelScriptRoot;
 	@Parameter(property = "rdbms2liquibaseModelScriptRoot")
 	private String rdbms2liquibaseModelScriptRoot;
-
+	@Parameter(property = "asm2sdkModelScriptRoot")
+	private String asm2sdkModelScriptRoot;
+	@Parameter(property = "asm2jaxrsapiModelScriptRoot")
+	private String asm2jaxrsapiModelScriptRoot;
+	
+	
 	@Parameter(property = "destination")
 	private File destination;
 	@Parameter(property = "modelName")
@@ -71,9 +76,9 @@ public class PsmDefaultWorkflowMojo extends AbstractMojo {
 			"hu.blackbelt.judo.tatami:judo-tatami-psm2asm:${judo-tatami-version}," +
 			"hu.blackbelt.judo.tatami:judo-tatami-psm2measure:${judo-tatami-version}," +
 			"hu.blackbelt.judo.tatami:judo-tatami-asm2openapi:${judo-tatami-version}," +
-			"hu.blackbelt.judo.tatami:judo-tatami-rdbms2liquibase:${judo-tatami-version}"
-	)
-
+			"hu.blackbelt.judo.tatami:judo-tatami-rdbms2liquibase:${judo-tatami-version}," +
+			"hu.blackbelt.judo.tatami:judo-tatami-asm2sdk:${judo-tatami-version}," +
+			"hu.blackbelt.judo.tatami:judo-tatami-asm2jaxrsapi:${judo-tatami-version}")
 	private List<String> transformationArtifacts;
 
 	@Override
@@ -103,6 +108,13 @@ public class PsmDefaultWorkflowMojo extends AbstractMojo {
 			asm2rdbmsModelModelRoot = (asm2rdbmsModelModelRoot == null)
 					? workflowHelper.getAsm2rdbmsExcelModelURI() 
 					: asm2rdbmsModelModelRoot;
+			asm2sdkModelScriptRoot = (asm2sdkModelScriptRoot == null)
+					? workflowHelper.getAsm2sdkModelScriptRoot()
+					: asm2sdkModelScriptRoot;
+			asm2jaxrsapiModelScriptRoot = (asm2jaxrsapiModelScriptRoot == null)
+					? workflowHelper.getAsm2jaxrsapiModelScriptRoot()
+					: asm2jaxrsapiModelScriptRoot;
+					
 		} catch (IOException e) {
 			throw new MojoFailureException("An error occurred during the extraction of the script roots.", e);
 		}
@@ -122,7 +134,9 @@ public class PsmDefaultWorkflowMojo extends AbstractMojo {
 					.rdbms2LiquibaseModelTransformationScriptURI(new URI(rdbms2liquibaseModelScriptRoot))
 					.modelName(modelName)
 					.dialect(dialect)
-					.asm2RdbmsModelTransformationModelURI(new URI(asm2rdbmsModelModelRoot)));
+					.asm2RdbmsModelTransformationModelURI(new URI(asm2rdbmsModelModelRoot))
+					.asm2sdkModelTransformationScriptURI(new URI(asm2sdkModelScriptRoot))
+					.asm2jaxrsapiModelTransformationScriptURI(new URI(asm2jaxrsapiModelScriptRoot)));
 		} catch (IOException | PsmValidationException | URISyntaxException e) {
 			throw new MojoFailureException("An error occurred during the setup phase of the workflow.", e);
 		}

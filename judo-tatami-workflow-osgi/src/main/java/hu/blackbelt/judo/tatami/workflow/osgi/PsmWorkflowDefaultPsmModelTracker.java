@@ -15,7 +15,7 @@ import java.util.Hashtable;
 
 /**
  * Tracking {@link PsmModel} instances. When a {@link PsmModel} instance registered this service
- * creates a {@link PsmWorkflowProcess} instances with the coresponding settings.
+ * creates a {@link PsmWorkflowProcess} instances with the corresponding settings.
  * To create the {@link PsmWorkflowProcess}  o configuration created / deleted over
  * {@link org.osgi.service.cm.ConfigurationAdmin} serive, so the lifecycle of the {@link PsmWorkflowProcess}
  * is managed by Declarative Service.
@@ -76,7 +76,7 @@ public class PsmWorkflowDefaultPsmModelTracker extends AbstractModelTracker<PsmM
         psmWorkflowProcessProperties.put(PSM_MODEL_PROPERTY, psmModel);
         psmWorkflowProcessProperties.put(this.getClass().getName(), "true");
 
-        // TODO: Registering all the configurqtion parameters for PsmWorkflowProcess.
+        // TODO: Registering all the configuration parameters for PsmWorkflowProcess.
 
         final Configuration psmWorkflowProcessConfiguration;
         try {
@@ -89,7 +89,7 @@ public class PsmWorkflowDefaultPsmModelTracker extends AbstractModelTracker<PsmM
     }
 
     /**
-     * Remove the OSGi {@link ConfigurationAdmin} configiratrion for the given {@link PsmModel}. The container
+     * Remove the OSGi {@link ConfigurationAdmin} configuration for the given {@link PsmModel}. The container
      * will destroy the related {@link PsmWorkflowProcess}.
      * @param psmModel
      */

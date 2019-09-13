@@ -36,6 +36,10 @@ public class WorkflowHelper {
 	private String asm2openApiModelScriptRoot;
 	@Getter
 	private String asm2rdbmsExcelModelURI;
+	@Getter
+	private String asm2sdkModelScriptRoot;
+	@Getter
+	private String asm2jaxrsapiModelScriptRoot;
 	
 	private RepositorySystem repoSystem;
 	private RepositorySystemSession repoSession;
@@ -66,6 +70,8 @@ public class WorkflowHelper {
 		rdbms2liquibaseModelScriptRoot = produceValidationScriptRootPath("Rdbms2Liquibase");
 		asm2rdbmsExcelModelURI = "jar:file://" + pathMap.get("asm2rdbms") + "!/"
 				+ manifestMap.get("asm2rdbms").getValue("Asm2Rdbms-Transformation-ModelRoot") + "/";
+		asm2sdkModelScriptRoot = produceValidationScriptRootPath("Asm2SDK");
+		asm2jaxrsapiModelScriptRoot = produceValidationScriptRootPath("Asm2Jaxrsapi");
 	}
 
 	private String produceValidationScriptRootPath(String name) {

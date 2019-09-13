@@ -2,6 +2,7 @@ package hu.blackbelt.judo.tatami.workflow.osgi;
 
 import hu.blackbelt.judo.meta.psm.runtime.PsmModel;
 import hu.blackbelt.judo.tatami.core.workflow.work.WorkReport;
+import hu.blackbelt.judo.tatami.core.workflow.work.WorkStatus;
 import hu.blackbelt.judo.tatami.workflow.DefaultWorkflowSetupParameters;
 import hu.blackbelt.judo.tatami.workflow.PsmDefaultWorkflow;
 import lombok.extern.slf4j.Slf4j;
@@ -13,7 +14,7 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 
 /**
- * This process repsresents a {@link PsmDefaultWorkflow} process for a {@link PsmModel} instances.
+ * This process represents a {@link PsmDefaultWorkflow} process for a {@link PsmModel} instances.
  * It referencing all the required transformation bundles over a {@link TransformationBundleHolder} which is
  * managed by {@link TransformationBundleTracker}.
  */

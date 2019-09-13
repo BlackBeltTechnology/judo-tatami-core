@@ -37,14 +37,17 @@ public class Psm2MeasureWork extends AbstractTransformationWork {
 		getTransformationContext().get(URI.class, PSM_VALIDATION_SCRIPT_URI)
 				.ifPresent(ThrowingConsumer.throwingConsumerWrapper(validationScriptUri -> validatePsm(
 						getTransformationContext().getByClass(Log.class).orElseGet(() -> new Slf4jLog(log)),
-						psmModel.get(), validationScriptUri)));
+						psmModel.get(),
+						validationScriptUri)));
 
 		MeasureModel measureModel = getTransformationContext().getByClass(MeasureModel.class)
 				.orElseGet(() -> buildMeasureModel().name(psmModel.get().getName()).build());
 		getTransformationContext().put(measureModel);
 
-		Psm2MeasureTransformationTrace psm2measureTransformationTrace = executePsm2MeasureTransformation(psmModel.get(),
-				measureModel, getTransformationContext().getByClass(Log.class).orElseGet(() -> new Slf4jLog(log)),
+		Psm2MeasureTransformationTrace psm2measureTransformationTrace = executePsm2MeasureTransformation(
+				psmModel.get(),
+				measureModel,
+				getTransformationContext().getByClass(Log.class).orElseGet(() -> new Slf4jLog(log)),
 				transformationScriptRoot);
 
 		getTransformationContext().put(psm2measureTransformationTrace);

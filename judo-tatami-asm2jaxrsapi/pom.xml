@@ -64,6 +64,7 @@
                             ${osgi-default-import},
 							*
 						</Import-Package>
+						<Asm2Jaxrsapi-Transformation-ScriptRoot>tatami/asm2jaxrsapi/templates</Asm2Jaxrsapi-Transformation-ScriptRoot>
 					</instructions>
 				</configuration>
 			</plugin>

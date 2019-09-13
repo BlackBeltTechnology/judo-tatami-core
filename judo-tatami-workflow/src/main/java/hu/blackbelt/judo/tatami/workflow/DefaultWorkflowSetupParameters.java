@@ -1,6 +1,5 @@
 package hu.blackbelt.judo.tatami.workflow;
 
-import java.io.File;
 import java.net.URI;
 
 import hu.blackbelt.judo.meta.psm.runtime.PsmModel;
@@ -36,6 +35,12 @@ public class DefaultWorkflowSetupParameters {
 
 	@NonNull
 	private URI rdbms2LiquibaseModelTransformationScriptURI;
+	
+	@NonNull
+	private URI asm2sdkModelTransformationScriptURI;
+	
+	@NonNull
+	private URI asm2jaxrsapiModelTransformationScriptURI;
 
 	@NonNull
 	private String modelName;

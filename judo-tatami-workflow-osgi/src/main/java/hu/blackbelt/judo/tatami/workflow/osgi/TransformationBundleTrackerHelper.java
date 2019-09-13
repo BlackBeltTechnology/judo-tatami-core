@@ -16,7 +16,7 @@ import static hu.blackbelt.judo.tatami.workflow.osgi.TransformationConstants.BUN
 import static hu.blackbelt.judo.tatami.workflow.osgi.TransformationConstants.TRANSFORMATION_NAME;
 
 /**
- * Helper class for transformation budle tracking.
+ * Helper class for transformation bundle tracking.
  */
 public class TransformationBundleTrackerHelper{
 

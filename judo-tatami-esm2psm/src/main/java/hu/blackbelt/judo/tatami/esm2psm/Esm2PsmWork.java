@@ -32,10 +32,10 @@ public class Esm2PsmWork extends AbstractTransformationWork {
 		esmModel.orElseThrow(() -> new IllegalArgumentException("ESM Model does not found in transformation context"));
 
 		/*
-		 * getTransformationContext().get(URI.class, ESM_VALIDATION_SCRIPT_URI)
-		 * .ifPresent(ThrowingConsumer.throwingConsumerWrapper(validationScriptUri ->
-		 * validateEsm( getTransformationContext().getByClass(Log.class).orElseGet(() ->
-		 * new Slf4jLog(log)), esmModel.get(), validationScriptUri)));
+		getTransformationContext().get(URI.class, ESM_VALIDATION_SCRIPT_URI)
+			.ifPresent(ThrowingConsumer.throwingConsumerWrapper(validationScriptUri ->
+				validateEsm( getTransformationContext().getByClass(Log.class).orElseGet(() ->
+					new Slf4jLog(log)), esmModel.get(), validationScriptUri)));
 		 */
 
 		PsmModel psmModel = getTransformationContext().getByClass(PsmModel.class)

@@ -35,18 +35,26 @@
 						</goals>
 						<configuration>
 						    <psmModelDest>${basedir}/../judo-tatami-workflow/target/test-classes/northwind-psm.model/</psmModelDest>
-							<!--  <asmModelScriptRoot>file:${basedir}/../judo-tatami-psm2asm/src/main/epsilon/transformations/asm/</asmModelScriptRoot>
-							<measureModelScriptRoot>file:${basedir}/../judo-tatami-psm2measure/src/main/epsilon/transformations/measure/</measureModelScriptRoot>
-							<openApiModelScriptRoot>file:${basedir}/../judo-tatami-asm2openapi/src/main/epsilon/transformations/openapi/</openApiModelScriptRoot>
-							<rdbmsModelScriptRoot>file:${basedir}/../judo-tatami-asm2rdbms/src/main/epsilon/transformations/</rdbmsModelScriptRoot>
-							<liquibaseModelScriptRoot>file:${basedir}/../judo-tatami-rdbms2liquibase/src/main/epsilon/transformations/</liquibaseModelScriptRoot>
-							<excelModelURI>file:${basedir}/../judo-tatami-asm2rdbms/model/</excelModelURI> -->
 							<destination>${basedir}/target/test-classes/</destination>
 							<modelName>northwind</modelName>
 							<dialect>hsqldb</dialect>
 						</configuration>
 					</execution>
 				</executions>
+	<dependencies>
+		<dependency>
+		    <groupId>hu.blackbelt.judo.tatami</groupId>
+		    <artifactId>judo-tatami-core</artifactId>
+		    <version>1.0.0-SNAPSHOT</version>
+		</dependency>	
+
+		<dependency>
+		    <groupId>javax.ws.rs</groupId>
+		    <artifactId>javax.ws.rs-api</artifactId>
+		    <version>2.1</version>
+		</dependency>	
+	</dependencies>
+
 			</plugin>
 		</plugins>
 		<pluginManagement>
@@ -83,5 +91,5 @@
 				</plugin>
 			</plugins>
 		</pluginManagement>
-	</build>
+	</build>	
 </project>

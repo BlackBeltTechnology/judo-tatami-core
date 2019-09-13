@@ -2,10 +2,15 @@ package hu.blackbelt.judo.tatami.core.workflow.work;
 
 import com.google.common.collect.Maps;
 
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Predicates.instanceOf;
+import static com.google.common.base.Predicates.not;
 import static java.util.Optional.ofNullable;
 
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Predicate;
+
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -34,7 +39,9 @@ public class TransformationContext {
 
     @SuppressWarnings("unchecked")
 	public <T> Optional<T> get(Class<T> valueType, Object key) {
-        return ofNullable((T) variables.get(key));
+        Optional<T> ret = (Optional<T>) ofNullable(variables.get(key));
+        checkArgument(!ret.filter(o -> !valueType.isAssignableFrom(o.getClass())).isPresent(), "Required type and value is not match");
+        return ret;
     }
 
     
@@ -50,7 +57,7 @@ public class TransformationContext {
     }
     
     public class TransformationContextVerifier {
-		boolean allClassExists = true;
+		boolean allExists = true;
 		TransformationContext transformationContext;
 
 		public TransformationContextVerifier(TransformationContext transformationContext) {
@@ -59,19 +66,47 @@ public class TransformationContext {
 
 		private <T> boolean verifyClassPresent(Class<T> c) {
 			if (!transformationContext.getByClass(c).isPresent()) {
-				log.error("Missing from transformation context: " + String.valueOf(c).replace("class", ""));
+				log.error("Missing from transformation context: " + c.getName());
+				return false;
+			}
+			return true;
+		}
+		
+		private <T> boolean verifyKeyPresent(Object key) {
+			if (!transformationContext.get(key).isPresent()) {
+				log.error("Missing from transformation context: " + String.valueOf(key));
+				return false;
+			}
+			return true;
+		}
+		
+		private <T> boolean verifyKeyPresent(Class<T> valueType, Object key) {
+			if (!transformationContext.get(valueType, key).isPresent()) {
+				log.error("Missing from transformation context: " + valueType.getName()+ " " + String.valueOf(key));
 				return false;
 			}
 			return true;
 		}
 
 		public <T> TransformationContextVerifier isClassExists(Class<T> c) {
-			allClassExists = allClassExists && verifyClassPresent(c);
+			allExists = allExists && verifyClassPresent(c);
 			return this;
 		}
+		
+		public <T> TransformationContextVerifier isKeyExists(Object key) {
+			allExists = allExists && verifyKeyPresent(key);
+			return this;
+		}
+		
+		public <T> TransformationContextVerifier isKeyExists(Class<T> valueType, Object key)  {
+			allExists = allExists && verifyKeyPresent(valueType, key);
+			return this;
+		}
+		
+		
 
 		public boolean isAllExists() {
-			return allClassExists;
+			return allExists;
 		}
 	}
 }

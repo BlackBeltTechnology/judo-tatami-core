@@ -9,6 +9,8 @@ import java.util.Optional;
 import hu.blackbelt.judo.tatami.core.workflow.work.TransformationContext;
 import hu.blackbelt.epsilon.runtime.execution.api.Log;
 import hu.blackbelt.epsilon.runtime.execution.impl.Slf4jLog;
+
+import static com.google.common.base.Preconditions.checkState;
 import static hu.blackbelt.judo.tatami.asm2sdk.Asm2SDK.executeAsm2SDKGeneration;
 
 import java.io.File;
@@ -41,7 +43,10 @@ public class Asm2SDKWork extends AbstractTransformationWork {
 
 		InputStream asm2SDKBundle = executeAsm2SDKGeneration(asmModel.get(),
 				getTransformationContext().getByClass(Log.class).orElseGet(() -> new Slf4jLog(log)),
-				transformationScriptRoot, temporaryDirectory);
+				transformationScriptRoot,
+				temporaryDirectory);
+
+		checkState(asm2SDKBundle != null, "No InputStream created");
 
 		getTransformationContext().put(SDK_OUTPUT, asm2SDKBundle);
 

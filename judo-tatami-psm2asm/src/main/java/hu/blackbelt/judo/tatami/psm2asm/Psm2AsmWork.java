@@ -36,13 +36,15 @@ public class Psm2AsmWork extends AbstractTransformationWork {
 		getTransformationContext().get(URI.class, PSM_VALIDATON_SCRIPT_URI)
 				.ifPresent(ThrowingConsumer.throwingConsumerWrapper(validationScriptUri -> validatePsm(
 						getTransformationContext().getByClass(Log.class).orElseGet(() -> new Slf4jLog(log)),
-						psmModel.get(), validationScriptUri)));
+						psmModel.get(),
+						validationScriptUri)));
 
 		AsmModel asmModel = getTransformationContext().getByClass(AsmModel.class)
 				.orElseGet(() -> buildAsmModel().name(psmModel.get().getName()).build());
 		getTransformationContext().put(asmModel);
 
-		Psm2AsmTransformationTrace psm2AsmTransformationTrace = executePsm2AsmTransformation(psmModel.get(), asmModel,
+		Psm2AsmTransformationTrace psm2AsmTransformationTrace = executePsm2AsmTransformation(psmModel.get(),
+				asmModel,
 				getTransformationContext().getByClass(Log.class).orElseGet(() -> new Slf4jLog(log)),
 				transformationScriptRoot);
 
