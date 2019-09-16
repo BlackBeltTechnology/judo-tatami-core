@@ -3,14 +3,10 @@ package hu.blackbelt.judo.tatami.core.workflow.work;
 import com.google.common.collect.Maps;
 
 import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Predicates.instanceOf;
-import static com.google.common.base.Predicates.not;
 import static java.util.Optional.ofNullable;
 
 import java.util.Map;
 import java.util.Optional;
-import java.util.function.Predicate;
-
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j

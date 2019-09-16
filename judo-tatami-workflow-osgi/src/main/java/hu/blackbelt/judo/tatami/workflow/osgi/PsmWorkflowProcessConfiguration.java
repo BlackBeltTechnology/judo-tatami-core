@@ -4,7 +4,6 @@ import org.osgi.service.metatype.annotations.AttributeDefinition;
 import org.osgi.service.metatype.annotations.ObjectClassDefinition;
 
 import static hu.blackbelt.judo.tatami.workflow.osgi.TransformationConstants.*;
-import static hu.blackbelt.judo.tatami.workflow.osgi.TransformationBundleTrackerHelper.*;
 
 /**
  * This configuration respresents with default bundles all of the transformation budnles are usable with Tatami.

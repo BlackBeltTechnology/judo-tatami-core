@@ -1,26 +1,6 @@
 package hu.blackbelt.judo.tatami.workflow.osgi;
 
-import com.google.common.collect.Maps;
-import hu.blackbelt.judo.meta.asm.runtime.AsmModel;
-import hu.blackbelt.judo.meta.esm.runtime.EsmModel;
-import hu.blackbelt.judo.meta.liquibase.runtime.LiquibaseModel;
-import hu.blackbelt.judo.meta.measure.runtime.MeasureModel;
-import hu.blackbelt.judo.meta.openapi.runtime.OpenapiModel;
-import hu.blackbelt.judo.meta.psm.runtime.PsmModel;
-import hu.blackbelt.judo.meta.rdbms.runtime.RdbmsModel;
-import hu.blackbelt.judo.tatami.asm2openapi.Asm2OpenAPITransformationTrace;
-import hu.blackbelt.judo.tatami.asm2rdbms.Asm2RdbmsTransformationTrace;
-import hu.blackbelt.judo.tatami.core.TransformationTrace;
-import hu.blackbelt.judo.tatami.core.workflow.work.TransformationContext;
-import hu.blackbelt.judo.tatami.esm2psm.Esm2PsmTransformationTrace;
-import hu.blackbelt.judo.tatami.psm2asm.Psm2AsmTransformationTrace;
-import hu.blackbelt.judo.tatami.psm2measure.Psm2MeasureTransformationTrace;
-import lombok.extern.slf4j.Slf4j;
-import org.osgi.framework.Bundle;
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.BundleException;
-import org.osgi.framework.ServiceRegistration;
-import org.osgi.service.component.annotations.Component;
+import static com.google.common.base.Preconditions.checkState;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -28,8 +8,16 @@ import java.util.Dictionary;
 import java.util.Hashtable;
 import java.util.Map;
 
-import static com.google.common.base.Preconditions.checkState;
-import static hu.blackbelt.judo.tatami.core.ThrowingConsumer.throwingConsumerWrapper;
+import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.BundleException;
+import org.osgi.framework.ServiceRegistration;
+
+import com.google.common.collect.Maps;
+
+import hu.blackbelt.judo.tatami.core.TransformationTrace;
+import hu.blackbelt.judo.tatami.core.workflow.work.TransformationContext;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * This class add abstract methods to handle the OSGi lifecycle of transformed models / traces / bundles

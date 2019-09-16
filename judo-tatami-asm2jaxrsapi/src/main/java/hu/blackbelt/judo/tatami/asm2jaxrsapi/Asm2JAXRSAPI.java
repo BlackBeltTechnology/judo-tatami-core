@@ -12,12 +12,7 @@ import hu.blackbelt.judo.meta.asm.runtime.AsmModel;
 import hu.blackbelt.judo.meta.asm.runtime.AsmUtils;
 import org.eclipse.epsilon.common.util.UriUtil;
 import org.ops4j.pax.tinybundles.core.TinyBundle;
-import org.osgi.framework.Bundle;
-import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
-import org.osgi.framework.FrameworkUtil;
-import org.osgi.framework.wiring.BundleWiring;
-
 import javax.tools.JavaFileObject;
 import javax.ws.rs.core.Application;
 import java.io.*;

@@ -1,19 +1,23 @@
 package hu.blackbelt.judo.tatami.workflow.osgi;
 
-import hu.blackbelt.osgi.utils.osgi.api.BundleTrackerManager;
-import lombok.extern.slf4j.Slf4j;
-import org.osgi.framework.ServiceRegistration;
-import org.osgi.service.component.ComponentContext;
-import org.osgi.service.component.annotations.*;
-import org.osgi.service.metatype.annotations.Designate;
-
-import java.util.Map;
-
 import static com.google.common.collect.Maps.newConcurrentMap;
 import static hu.blackbelt.judo.tatami.workflow.osgi.TransformationBundleTrackerHelper.parseTransformationBundleConfigurations;
 import static hu.blackbelt.judo.tatami.workflow.osgi.TransformationBundleTrackerHelper.registerTranformationBundleTracker;
 import static hu.blackbelt.judo.tatami.workflow.osgi.TransformationConstants.BUNDLE_SYMBOLIC_NAME;
 import static java.util.stream.Collectors.toSet;
+
+import java.util.Map;
+
+import org.osgi.framework.ServiceRegistration;
+import org.osgi.service.component.ComponentContext;
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.ConfigurationPolicy;
+import org.osgi.service.component.annotations.Deactivate;
+import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.metatype.annotations.Designate;
+
+import hu.blackbelt.osgi.utils.osgi.api.BundleTrackerManager;
 
 
 /**
@@ -25,7 +29,6 @@ import static java.util.stream.Collectors.toSet;
  * This tracker bundles used by all of the transformation steps system wide.
  */
 @Component(immediate = true, configurationPolicy = ConfigurationPolicy.REQUIRE)
-@Slf4j
 @Designate(ocd = TransformationBundleTrackerConfig.class)
 public class TransformationBundleTracker {
 

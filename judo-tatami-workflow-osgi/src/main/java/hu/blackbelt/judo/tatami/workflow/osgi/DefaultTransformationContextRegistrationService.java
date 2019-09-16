@@ -1,5 +1,13 @@
 package hu.blackbelt.judo.tatami.workflow.osgi;
 
+import static hu.blackbelt.judo.tatami.core.ThrowingConsumer.throwingConsumerWrapper;
+
+import java.io.IOException;
+import java.io.InputStream;
+
+import org.osgi.framework.BundleException;
+import org.osgi.service.component.annotations.Component;
+
 import hu.blackbelt.judo.meta.asm.runtime.AsmModel;
 import hu.blackbelt.judo.meta.esm.runtime.EsmModel;
 import hu.blackbelt.judo.meta.liquibase.runtime.LiquibaseModel;
@@ -13,19 +21,11 @@ import hu.blackbelt.judo.tatami.core.workflow.work.TransformationContext;
 import hu.blackbelt.judo.tatami.esm2psm.Esm2PsmTransformationTrace;
 import hu.blackbelt.judo.tatami.psm2asm.Psm2AsmTransformationTrace;
 import hu.blackbelt.judo.tatami.psm2measure.Psm2MeasureTransformationTrace;
-import lombok.extern.slf4j.Slf4j;
-import org.osgi.framework.BundleException;
-import org.osgi.service.component.annotations.Component;
-
-import java.io.IOException;
-import java.io.InputStream;
-import static hu.blackbelt.judo.tatami.core.ThrowingConsumer.throwingConsumerWrapper;
 
 /**
  * This class manages the OSGi lifecycle of transformed models / bundles
  */
 @Component(property = "implementation=default", service = TransformationContextRegistrationService.class)
-@Slf4j
 public class DefaultTransformationContextRegistrationService extends AbstractTransformationContextRegistrationService
         implements TransformationContextRegistrationService {
 

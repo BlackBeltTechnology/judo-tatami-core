@@ -1,5 +1,7 @@
 package hu.blackbelt.judo.tatami.workflow.maven.plugin;
 
+import static java.lang.Thread.currentThread;
+
 import java.io.File;
 import java.io.IOException;
 import java.net.*;
@@ -100,7 +102,7 @@ public class PsmDefaultWorkflowMojo extends AbstractMojo {
 
 		// need to define parent classloader which knows all dependencies of the plugin
 		ClassLoader classLoader = new URLClassLoader(urlsForClassLoader, PsmDefaultWorkflowMojo.class.getClassLoader());
-		Thread.currentThread().setContextClassLoader(classLoader);
+		currentThread().setContextClassLoader(classLoader);
 	}
 
 	@Override

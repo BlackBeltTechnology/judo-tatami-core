@@ -1,5 +1,6 @@
 package org.judo.tatami.workflow;
 
+import static hu.blackbelt.judo.tatami.workflow.DefaultWorkflowSave.saveModels;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -20,7 +21,6 @@ import hu.blackbelt.judo.meta.psm.runtime.PsmModel.PsmValidationException;
 import hu.blackbelt.judo.meta.rdbms.runtime.RdbmsModel.RdbmsValidationException;
 import hu.blackbelt.judo.tatami.core.workflow.work.WorkReport;
 import hu.blackbelt.judo.tatami.core.workflow.work.WorkStatus;
-import hu.blackbelt.judo.tatami.workflow.DefaultWorkflowSave;
 import hu.blackbelt.judo.tatami.workflow.DefaultWorkflowSetupParameters;
 import hu.blackbelt.judo.tatami.workflow.PsmDefaultWorkflow;
 
@@ -106,7 +106,9 @@ public class DefaultWorkflowTest {
 			RdbmsValidationException, OpenapiValidationException, LiquibaseValidationException {
 
 		assertThat(workReport.getStatus(), equalTo(WorkStatus.COMPLETED));
-		DefaultWorkflowSave.saveModels(defaultWorkflow.getTransformationContext(), TARGET_TEST_CLASSES);
+		
+		saveModels(defaultWorkflow.getTransformationContext(), TARGET_TEST_CLASSES);
+		
 		assertTrue(asmModel.exists());
 		assertTrue(measureModel.exists());
 		assertTrue(rdbmsModel.exists());

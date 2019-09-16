@@ -10,7 +10,6 @@ import static hu.blackbelt.judo.tatami.asm2sdk.Asm2SDKWork.SDK_OUTPUT;
 import static hu.blackbelt.judo.tatami.core.ThrowingConsumer.throwingConsumerWrapper;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
@@ -25,7 +24,6 @@ import hu.blackbelt.judo.meta.openapi.runtime.OpenapiModel;
 import hu.blackbelt.judo.meta.openapi.runtime.OpenapiModel.OpenapiValidationException;
 import hu.blackbelt.judo.meta.rdbms.runtime.RdbmsModel;
 import hu.blackbelt.judo.meta.rdbms.runtime.RdbmsModel.RdbmsValidationException;
-import hu.blackbelt.judo.tatami.asm2jaxrsapi.Asm2JAXRSAPIWork;
 import hu.blackbelt.judo.tatami.asm2openapi.Asm2OpenAPITransformationTrace;
 import hu.blackbelt.judo.tatami.asm2rdbms.Asm2RdbmsTransformationTrace;
 import hu.blackbelt.judo.tatami.core.workflow.work.TransformationContext;

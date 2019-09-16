@@ -1,18 +1,22 @@
 package hu.blackbelt.judo.tatami.workflow.osgi;
 
+import java.io.IOException;
+import java.net.URISyntaxException;
+
+import org.osgi.service.component.ComponentContext;
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.ConfigurationPolicy;
+import org.osgi.service.component.annotations.Deactivate;
+import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.metatype.annotations.Designate;
+
 import hu.blackbelt.judo.meta.psm.runtime.PsmModel;
 import hu.blackbelt.judo.tatami.core.workflow.work.TransformationContext;
 import hu.blackbelt.judo.tatami.core.workflow.work.WorkReport;
 import hu.blackbelt.judo.tatami.core.workflow.work.WorkStatus;
 import hu.blackbelt.judo.tatami.workflow.DefaultWorkflowSetupParameters;
 import hu.blackbelt.judo.tatami.workflow.PsmDefaultWorkflow;
-import lombok.extern.slf4j.Slf4j;
-import org.osgi.service.component.ComponentContext;
-import org.osgi.service.component.annotations.*;
-import org.osgi.service.metatype.annotations.Designate;
-
-import java.io.IOException;
-import java.net.URISyntaxException;
 
 /**
  * This process represents a {@link PsmDefaultWorkflow} process for a {@link PsmModel} instances.
@@ -23,7 +27,6 @@ import java.net.URISyntaxException;
  * is used, but it is configurable in {@link PsmWorkflowDefaultPsmModelTracker}'s configuration.
  */
 @Component(immediate = true, configurationPolicy = ConfigurationPolicy.REQUIRE)
-@Slf4j
 @Designate(ocd = PsmWorkflowProcessConfiguration.class)
 public class PsmWorkflowProcess {
     PsmWorkflowProcessConfiguration psmWorkflowProcessConfiguration;
