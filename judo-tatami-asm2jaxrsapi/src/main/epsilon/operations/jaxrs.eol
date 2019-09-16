@@ -1,11 +1,11 @@
 @cached
 operation String normalizeName() : String {
-	return self.replace("[ʘ]", "\\$");
+	return self.replace("[__]", "\\$");
 }
 
 @cached
 operation String toJAXRSPath() : String {
-    return self.replace("\\.ʘUnboundServices", "").replace("[ʘ#\\.]", "/").replace("[^0-9a-zA-Z_/]", "_").replace("\\$", "/");
+    return self.replace("\\.__UnboundServices", "").replace("[__#\\.]", "/").replace("[^0-9a-zA-Z_/]", "_").replace("\\$", "/");
 }
 
 @cached
@@ -77,7 +77,7 @@ operation ASM!EOperation getFullOperationMethodName() : String {
 
 @cached
 operation ASM!EOperation getShortOperationMethodName() : String {
-	return self.eContainingClass.name.split("ʘ").last() + "__" + self.name;
+	return self.eContainingClass.name.split("__").last() + "__" + self.name;
 }
 
 @cached
@@ -87,7 +87,7 @@ operation ASM!EOperation getFullOperationPath() : String {
 
 @cached
 operation ASM!EOperation getShortOperationPath() : String {
-	return self.eContainingClass.name.split("ʘ").last() + "/" + self.name;
+	return self.eContainingClass.name.split("__").last() + "/" + self.name;
 }
 
 @cached
@@ -185,13 +185,13 @@ operation ASM!EClass getExposedMappedTransferObjectPackageName(ap: ASM!EClass) :
 @cached
 operation ASM!EClass getExposedMappedTransferObjectClassName() : String {
 	/*
-	if (self.name.contains("ʘ")) {
-		return self.name.split("ʘ").first().firstToUpperCase() + "$" + self.name.split("ʘ").second();
+	if (self.name.contains("__")) {
+		return self.name.split("__").first().firstToUpperCase() + "$" + self.name.split("__").second();
 	} else {
 		return self.name;
 	}
 	*/
-	return self.name.normalizeName(); // .name.replace("[ʘ]", "\\$");
+	return self.name.normalizeName(); // .name.replace("[__]", "\\$");
 }
 
 operation ASM!EClass getExposedMappedTransferObjectJavaFileName(ap: ASM!EClass) : String {

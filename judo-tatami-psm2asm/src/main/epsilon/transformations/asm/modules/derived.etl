@@ -199,7 +199,7 @@ rule CreateClassForStatics
     to t : ASM!EClass {
         guard: s.elements.selectOne(e | e.isKindOf(JUDOPSM!StaticData) or e.isKindOf(JUDOPSM!StaticNavigation)).isDefined()
 
-        t.name = "ʘStatic";
+        t.name = "__Static";
         t.abstract = true;
 
         s.asmEquivalent().eClassifiers.add(t);
