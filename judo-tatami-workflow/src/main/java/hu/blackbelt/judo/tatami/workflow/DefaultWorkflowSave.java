@@ -47,54 +47,31 @@ public class DefaultWorkflowSave {
 		transformationContext.getByClass(AsmModel.class).ifPresent(throwingConsumerWrapper((m) ->  
 			m.saveAsmModel(asmSaveArgumentsBuilder().file(new File(dest, "asm.model")))));
 
-		MeasureModel measureModel = transformationContext.getByClass(MeasureModel.class)
-				.orElseThrow(() -> new IllegalStateException("Cannot save model: Missing transformated MeasureModel"));
-		File measureModelDest = new File(dest, "measure.model");
-		measureModel.saveMeasureModel(measureSaveArgumentsBuilder().file(measureModelDest)
-				.outputStream(new FileOutputStream(measureModelDest)));
-
-
-		RdbmsModel rdbmsModel = transformationContext.getByClass(RdbmsModel.class)
-				.orElseThrow(() -> new IllegalStateException("Cannot save model: Missing transformated RdbmsModel"));
-		File rdbmsModelDest = new File(dest, "rdbms.model");
-		rdbmsModel.saveRdbmsModel(rdbmsSaveArgumentsBuilder().file(rdbmsModelDest)
-				.outputStream(new FileOutputStream(rdbmsModelDest)));
-
-
-		OpenapiModel openapiModel = transformationContext.getByClass(OpenapiModel.class)
-				.orElseThrow(() -> new IllegalStateException("Cannot save model: Missing transformated OpenapiModel"));
-		File openapiModelDest = new File(dest, "openapi.model");
-		openapiModel.saveOpenapiModel(openapiSaveArgumentsBuilder().file(openapiModelDest)
-				.outputStream(new FileOutputStream(openapiModelDest)));
-
-
-		LiquibaseModel liquibaseModel = transformationContext.getByClass(LiquibaseModel.class).orElseThrow(
-				() -> new IllegalStateException("Cannot save model: Missing transformated LiquibaseModel"));
-		File liquibaseModelDest = new File(dest, "liquibase.changelog.xml");
-		liquibaseModel.saveLiquibaseModel(liquibaseSaveArgumentsBuilder()
-				.file(liquibaseModelDest).outputStream(new FileOutputStream(liquibaseModelDest)));
-
-
-		transformationContext.getByClass(Psm2AsmTransformationTrace.class).orElseThrow(
-				() -> new IllegalStateException("Cannot save transformation trace: Missing Psm2AsmTransformationTrace"))
-				.save(new File(dest, "psm2asm.model"));
-
-		transformationContext.getByClass(Psm2MeasureTransformationTrace.class)
-				.orElseThrow(() -> new IllegalStateException(
-						"Cannot save transformation trace: Missing Psm2MeasureTransformationTrace"))
-				.save(new File(dest, "psm2measure.model"));
-
-
-		transformationContext.getByClass(Asm2RdbmsTransformationTrace.class)
-				.orElseThrow(() -> new IllegalStateException(
-						"Cannot save transformation trace: Missing Asm2RdbmsTransformationTrace"))
-				.save(new File(dest, "asm2rdbms.model"));
+		transformationContext.getByClass(MeasureModel.class).ifPresent(throwingConsumerWrapper((m) ->  
+			m.saveMeasureModel(measureSaveArgumentsBuilder().file(new File(dest, "measure.model")))));
 
 		
-		transformationContext.getByClass(Asm2OpenAPITransformationTrace.class)
-				.orElseThrow(() -> new IllegalStateException(
-						"Cannot save transformation trace: Missing Asm2OpenAPITransformationTrace"))
-				.save(new File(dest, "asm2openapi.model"));
+		transformationContext.getByClass(RdbmsModel.class).ifPresent(throwingConsumerWrapper((m) ->  
+			m.saveRdbmsModel(rdbmsSaveArgumentsBuilder().file(new File(dest, "rdbms.model")))));
+
+		transformationContext.getByClass(OpenapiModel.class).ifPresent(throwingConsumerWrapper((m) ->
+			m.saveOpenapiModel(openapiSaveArgumentsBuilder().file(new File(dest, "openapi.model")))));
+		
+		transformationContext.getByClass(LiquibaseModel.class).ifPresent(throwingConsumerWrapper((m) ->
+			m.saveLiquibaseModel(liquibaseSaveArgumentsBuilder().file(new File(dest, "liquibase.changelog.xml")))));
+
+		transformationContext.getByClass(Psm2AsmTransformationTrace.class).ifPresent(throwingConsumerWrapper((m) ->
+			m.save(new File(dest, "psm2asm.model"))));
+
+		transformationContext.getByClass(Psm2MeasureTransformationTrace.class).ifPresent(throwingConsumerWrapper((m) ->
+			m.save(new File(dest, "psm2measure.model"))));
+
+
+		transformationContext.getByClass(Asm2RdbmsTransformationTrace.class).ifPresent(throwingConsumerWrapper((m) ->
+			m.save(new File(dest, "asm2rdbms.model"))));
+		
+		transformationContext.getByClass(Asm2OpenAPITransformationTrace.class).ifPresent(throwingConsumerWrapper((m) ->
+			m.save(new File(dest, "asm2openapi.model"))));
 		
 		try (InputStream asm2sdkBundle = transformationContext.get(InputStream.class, SDK_OUTPUT)
 				.orElseThrow(() -> new IllegalStateException(
