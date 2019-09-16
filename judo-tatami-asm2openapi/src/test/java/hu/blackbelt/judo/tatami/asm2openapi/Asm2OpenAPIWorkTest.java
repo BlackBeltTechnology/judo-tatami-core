@@ -41,7 +41,7 @@ class Asm2OpenAPIWorkTest {
     }
 
     @Test
-    void testSimpleWokflow() {
+    void testSimpleWorkflow() {
         WorkFlow workflow = aNewSequentialFlow()
                 .execute(asm2OpenAPIWork)
                 .build();

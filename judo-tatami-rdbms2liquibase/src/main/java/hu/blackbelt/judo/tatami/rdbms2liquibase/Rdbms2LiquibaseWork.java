@@ -19,15 +19,14 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class Rdbms2LiquibaseWork extends AbstractTransformationWork {
-	
+
 	final URI transformationScriptRoot;
 	private String currentDialect;
-	
+
 	private List<String> dialectList;
 
-	public Rdbms2LiquibaseWork(TransformationContext transformationContext,
-							   URI transformationScriptRoot,
-							   List<String> dialectList) {
+	public Rdbms2LiquibaseWork(TransformationContext transformationContext, URI transformationScriptRoot,
+			List<String> dialectList) {
 
 		super(transformationContext);
 		this.transformationScriptRoot = transformationScriptRoot;
@@ -38,33 +37,31 @@ public class Rdbms2LiquibaseWork extends AbstractTransformationWork {
 	public void execute() throws Exception {
 
 		currentDialect = dialectList.get(0);
-		
-		Optional<RdbmsModel> rdbmsModel = getTransformationContext().get(RdbmsModel.class,"rdbms:" + currentDialect);
-		rdbmsModel.orElseThrow(() ->
-				new IllegalArgumentException("RDBMS Model of the specific dialect does not found in transformation context"));
+
+		Optional<RdbmsModel> rdbmsModel = getTransformationContext().get(RdbmsModel.class, "rdbms:" + currentDialect);
+		rdbmsModel.orElseThrow(() -> new IllegalArgumentException(
+				"RDBMS Model of the specific dialect does not found in transformation context"));
 
 		registerRdbmsNameMappingMetamodel(rdbmsModel.get().getResourceSet());
 		registerRdbmsDataTypesMetamodel(rdbmsModel.get().getResourceSet());
 		registerRdbmsTableMappingRulesMetamodel(rdbmsModel.get().getResourceSet());
 
 		/*
-		getTransformationContext().get(URI.class, RDBMS_VALIDATION_SCRIPT_URI)
-			.ifPresent(ThrowingConsumer.throwingConsumerWrapper(validationScriptUri ->
-				validateRdbms( getTransformationContext().getByClass(Log.class).orElseGet(()
-					-> new Slf4jLog(log)), rdbmsModel.get(), validationScriptUri)));
+		 * getTransformationContext().get(URI.class, RDBMS_VALIDATION_SCRIPT_URI)
+		 * .ifPresent(ThrowingConsumer.throwingConsumerWrapper(validationScriptUri ->
+		 * validateRdbms( getTransformationContext().getByClass(Log.class).orElseGet(()
+		 * -> new Slf4jLog(log)), rdbmsModel.get(), validationScriptUri)));
 		 */
 
 		LiquibaseModel liquibaseModel = getTransformationContext().getByClass(LiquibaseModel.class)
 				.orElseGet(() -> buildLiquibaseModel().name(rdbmsModel.get().getName()).build());
 
-		getTransformationContext().put("liquibase:" + currentDialect,liquibaseModel);
+		getTransformationContext().put("liquibase:" + currentDialect, liquibaseModel);
 
-		Rdbms2Liquibase.executeRdbms2LiquibaseTransformation(rdbmsModel.get(),
-				liquibaseModel,
+		Rdbms2Liquibase.executeRdbms2LiquibaseTransformation(rdbmsModel.get(), liquibaseModel,
 				(Log) getTransformationContext().get(Log.class).orElseGet(() -> new Slf4jLog(log)),
-				transformationScriptRoot,
-				currentDialect);
-		
+				transformationScriptRoot, currentDialect);
+
 		dialectList.remove(0);
 	}
 

@@ -43,8 +43,7 @@ public class Asm2RdbmsWorkTest {
 		transformationContext.put(asmModel);
 
 		asm2RdbmsWork = new Asm2RdbmsWork(transformationContext,
-				new File(TARGET_TEST_CLASSES, "epsilon/transformations").toURI(),
-				new File(MODEL_DIRECTORY).toURI(),
+				new File(TARGET_TEST_CLASSES, "epsilon/transformations").toURI(), new File(MODEL_DIRECTORY).toURI(),
 				DIALECT_LIST);
 	}
 

@@ -39,7 +39,7 @@ public class Asm2RdbmsWork extends AbstractTransformationWork {
 	@Override
 	public void execute() throws Exception {
 		currentDialect = dialectList.get(0);
-		
+
 		Optional<AsmModel> asmModel = getTransformationContext().getByClass(AsmModel.class);
 		asmModel.orElseThrow(() -> new IllegalArgumentException("ASM Model does not found in transformation context"));
 
@@ -51,17 +51,14 @@ public class Asm2RdbmsWork extends AbstractTransformationWork {
 		registerRdbmsDataTypesMetamodel(rdbmsModel.getResourceSet());
 		registerRdbmsTableMappingRulesMetamodel(rdbmsModel.getResourceSet());
 
-		getTransformationContext().put("rdbms:" + currentDialect,rdbmsModel);
+		getTransformationContext().put("rdbms:" + currentDialect, rdbmsModel);
 
 		Asm2RdbmsTransformationTrace asm2RdbmsTransformationTrace = executeAsm2RdbmsTransformation(asmModel.get(),
-				rdbmsModel,
-				getTransformationContext().getByClass(Log.class).orElseGet(() -> new Slf4jLog(log)),
-				transformationScriptRoot,
-				modelRoot,
-				currentDialect);
+				rdbmsModel, getTransformationContext().getByClass(Log.class).orElseGet(() -> new Slf4jLog(log)),
+				transformationScriptRoot, modelRoot, currentDialect);
 
 		getTransformationContext().put("asm2rdbmstrace:" + currentDialect, asm2RdbmsTransformationTrace);
-		
+
 		dialectList.remove(0);
 	}
 }
