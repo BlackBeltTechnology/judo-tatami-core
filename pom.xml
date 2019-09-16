@@ -73,7 +73,7 @@
         <judo-meta-jql-version>1.0.0.develop_00046</judo-meta-jql-version>
         <judo-meta-jql-import-range>[1.0,1.1)</judo-meta-jql-import-range>
 
-        <judo-meta-asm-version>1.0.0.develop_00104</judo-meta-asm-version>
+        <judo-meta-asm-version>1.0.0.feature_JNG_247_ReplaceBullseye_00001</judo-meta-asm-version>
         <judo-meta-asm-import-range>[1.0,1.1)</judo-meta-asm-import-range>
 
         <judo-meta-expression-version>1.0.0.develop_00273</judo-meta-expression-version>
@@ -85,7 +85,7 @@
         <judo-meta-liquibase-version>1.0.0.develop_00035</judo-meta-liquibase-version>
         <judo-meta-liquibase-import-range>[1.0,1.1)</judo-meta-liquibase-import-range>
 
-        <judo-meta-openapi-version>1.0.0.develop_00101</judo-meta-openapi-version>
+        <judo-meta-openapi-version>1.0.0.feature_JNG_247_ReplaceBullseye_00001</judo-meta-openapi-version>
         <judo-meta-openapi-import-range>[1.0,1.1)</judo-meta-openapi-import-range>
 
         <!-- Xtend / Xcore -->
