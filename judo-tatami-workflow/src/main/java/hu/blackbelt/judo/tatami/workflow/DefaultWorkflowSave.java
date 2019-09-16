@@ -34,8 +34,8 @@ import hu.blackbelt.judo.tatami.psm2measure.Psm2MeasureTransformationTrace;
 
 public class DefaultWorkflowSave {
 	
-	public static void saveModels(TransformationContext transformationContext, File dest) throws IOException, AsmValidationException, MeasureValidationException,
-			RdbmsValidationException, OpenapiValidationException, LiquibaseValidationException {
+	public static void saveModels(TransformationContext transformationContext, File dest) throws IOException, AsmValidationException, 
+		MeasureValidationException, RdbmsValidationException, OpenapiValidationException, LiquibaseValidationException {
 
 		if (!dest.exists()) {
 			throw new IllegalArgumentException("Destination doesn't exist!");
@@ -73,17 +73,12 @@ public class DefaultWorkflowSave {
 		transformationContext.getByClass(Asm2OpenAPITransformationTrace.class).ifPresent(throwingConsumerWrapper((m) ->
 			m.save(new File(dest, "asm2openapi.model"))));
 		
-		try (InputStream asm2sdkBundle = transformationContext.get(InputStream.class, SDK_OUTPUT)
-				.orElseThrow(() -> new IllegalStateException(
-						"Cannot save bundle: Missing Asm2SdkBundle"))) {
-			Files.copy(asm2sdkBundle, new File(dest, "asm2sdk.jar").toPath());    			
-		};
+		transformationContext.get(InputStream.class, SDK_OUTPUT).ifPresent(throwingConsumerWrapper((m) ->
+			Files.copy(m, new File(dest, "asm2sdk.jar").toPath())));
 		
-		try (InputStream asm2jaxrsapiBundle = transformationContext.get(InputStream.class, JAXRSAPI_OUTPUT)
-				.orElseThrow(() -> new IllegalStateException(
-						"Cannot save bundle: Missing Asm2JaxrsapiBundle"))) {
-			Files.copy(asm2jaxrsapiBundle, new File(dest, "asm2jaxrsapi.jar").toPath());    			
-		};
+		transformationContext.get(InputStream.class, JAXRSAPI_OUTPUT).ifPresent(throwingConsumerWrapper((m)->
+			Files.copy(m, new File(dest, "asm2jaxrsapi.jar").toPath())));
+			
 	}
 
 }
