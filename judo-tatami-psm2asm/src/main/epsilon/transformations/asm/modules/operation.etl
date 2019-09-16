@@ -89,7 +89,7 @@ rule CreateUnboundInterface
     to t : ASM!EClass {
     	guard: s.elements.selectOne(e | e.isKindOf(JUDOPSM!UnboundOperation)).isDefined()
     	
-        t.name = "__UnboundServices";
+        t.name = "ʘUnboundServices";
         t.abstract = true;
         t.interface = true;
         
@@ -110,7 +110,7 @@ rule CreateGraphOperation
     to t : ASM!EClass {
     	guard: s.isNavigable()
     	
-        t.name = s.eContainer.name + "__" + s.name;
+        t.name = s.eContainer.name + "ʘ" + s.name;
         t.abstract = true;
         t.interface = true;
         
@@ -170,7 +170,7 @@ rule CreateReferenceClassForRelation
     to t : ASM!EClass {
         guard: s.isNavigable() and s.isMutable()
         
-        t.name = s.eContainer.name + "__" + s.name + "__Reference";
+        t.name = s.eContainer.name + "ʘ" + s.name + "ʘReference";
         s.eContainer.eContainer.asmEquivalent().eClassifiers.add(t);
 }
 

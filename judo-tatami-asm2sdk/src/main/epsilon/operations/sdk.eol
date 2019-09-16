@@ -1,6 +1,6 @@
 @cached
 operation String normalizeName() : String {
-	return self.replace("[__]", "\\$");
+	return self.replace("[ʘ]", "\\$");
 }
 
 

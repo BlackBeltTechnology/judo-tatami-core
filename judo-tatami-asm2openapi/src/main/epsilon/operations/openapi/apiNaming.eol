@@ -2,8 +2,8 @@
 @cached
 operation String toOpenAPIPath() : String {
     var result = self
-            .replace("\\.__UnboundServices", "")
-            .replace("[__#\\.]", "/")
+            .replace("\\.ʘUnboundServices", "")
+            .replace("[ʘ#\\.]", "/")
 //            .replaceAll("//", "/")
 //            .replaceAll("//", "/")
 //            .replaceAll("//", "/")
