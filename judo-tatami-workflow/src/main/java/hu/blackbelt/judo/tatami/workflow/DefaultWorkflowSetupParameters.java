@@ -1,6 +1,7 @@
 package hu.blackbelt.judo.tatami.workflow;
 
 import java.net.URI;
+import java.util.List;
 
 import hu.blackbelt.judo.meta.psm.runtime.PsmModel;
 import lombok.Builder;
@@ -46,6 +47,6 @@ public class DefaultWorkflowSetupParameters {
 	private String modelName;
 
 	@NonNull
-	private String dialect;
+	private List<String> dialectList;
 
 }

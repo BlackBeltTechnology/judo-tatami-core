@@ -9,6 +9,9 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -21,10 +24,11 @@ import hu.blackbelt.judo.meta.psm.runtime.PsmModel.PsmValidationException;
 import hu.blackbelt.judo.meta.rdbms.runtime.RdbmsModel.RdbmsValidationException;
 import hu.blackbelt.judo.tatami.core.workflow.work.WorkReport;
 import hu.blackbelt.judo.tatami.core.workflow.work.WorkStatus;
+import hu.blackbelt.judo.tatami.workflow.DefaultWorkflowSave;
 import hu.blackbelt.judo.tatami.workflow.DefaultWorkflowSetupParameters;
 import hu.blackbelt.judo.tatami.workflow.PsmDefaultWorkflow;
 
-public class DefaultWorkflowTest {
+public class PsmDefaultWorkflowTest {
 	
 	PsmDefaultWorkflow defaultWorkflow = new PsmDefaultWorkflow();
 	
@@ -44,41 +48,43 @@ public class DefaultWorkflowTest {
     public static final String TARGET_CLASSES = "target/test-classes";
     
     public static final String MODEL_NAME = "northwind";
-    public static final String DIALECT = "hsqldb";
+    public static final List<String> DIALECT_LIST = new LinkedList<>(Arrays.asList("hsqldb", "oracle"));
 
     private WorkReport workReport;
     
     private File asmModel;
     private File measureModel;
-    private File rdbmsModel;
+    private List<File> rdbmsModels = new LinkedList<>();
     private File openapiModel;
-    private File liquibaseModel;
+    private List<File> liquibaseModels = new LinkedList<>();
     private File psm2asmTransformationTrace;
     private File psm2measureTransformationTrace;
-    private File asm2rdbmsTransformationTrace;
+    private List<File> asm2rdbmsTransformationTraces = new LinkedList<>();
     private File asm2openapiTransformationTrace;
     private File asm2sdkBundle;
     private File asm2jaxrsapiBundle;
 
 	@BeforeEach
-	void setUp() throws IOException, PsmValidationException, URISyntaxException {
+	void setUp() throws IOException, PsmValidationException, URISyntaxException, AsmValidationException,
+			MeasureValidationException, RdbmsValidationException, OpenapiValidationException,
+			LiquibaseValidationException {
 
 		asmModel = new File(TARGET_CLASSES, "asm.model");
 		asmModel.delete();
 		measureModel = new File(TARGET_CLASSES, "measure.model");
 		measureModel.delete();
-		rdbmsModel = new File(TARGET_CLASSES, "rdbms.model");
-		rdbmsModel.delete();
+		DIALECT_LIST.forEach(dialect -> rdbmsModels.add(new File(TARGET_CLASSES, "rdbms_" + dialect + ".model")));
+		rdbmsModels.forEach(rdbmsModel -> rdbmsModel.delete());
 		openapiModel = new File(TARGET_CLASSES, "openapi.model");
 		openapiModel.delete();
-		liquibaseModel = new File(TARGET_CLASSES, "liquibase.changelog.xml");
-		liquibaseModel.delete();
+		DIALECT_LIST.forEach(dialect -> liquibaseModels.add(new File(TARGET_CLASSES, "liquibase_" + dialect + ".changelog.xml")));
+		liquibaseModels.forEach(liquibaseModel -> liquibaseModel.delete());
 		psm2asmTransformationTrace = new File(TARGET_CLASSES, "psm2asm.model");
 		psm2asmTransformationTrace.delete();
 		psm2measureTransformationTrace = new File(TARGET_CLASSES, "psm2measure.model");
 		psm2measureTransformationTrace.delete();
-		asm2rdbmsTransformationTrace = new File(TARGET_CLASSES, "asm2rdbms.model");
-		asm2rdbmsTransformationTrace.delete();
+		DIALECT_LIST.forEach(dialect -> asm2rdbmsTransformationTraces.add(new File(TARGET_CLASSES, "asm2rdbms_" + dialect + ".model")));
+		asm2rdbmsTransformationTraces.forEach(asm2rdbmsTransformationTrace -> asm2rdbmsTransformationTrace.delete());
 		asm2openapiTransformationTrace = new File(TARGET_CLASSES, "asm2openapi.model");
 		asm2openapiTransformationTrace.delete();
 		asm2sdkBundle = new File(TARGET_CLASSES, "asm2sdk.jar");
@@ -94,11 +100,12 @@ public class DefaultWorkflowTest {
 				.asm2OpenapiModelTransformationScriptURI(ASM2OPENAPI_SCRIPTROOT)
 				.rdbms2LiquibaseModelTransformationScriptURI(RDMBS2LIQUIBASE_SCRIPTROOT)
 				.modelName(MODEL_NAME)
-				.dialect(DIALECT)
+				.dialectList(DIALECT_LIST)
 				.asm2RdbmsModelTransformationModelURI(EXCELMODEL_SCRIPTROOT)
 				.asm2sdkModelTransformationScriptURI(ASM2SDK_SCRIPTROOT)
 				.asm2jaxrsapiModelTransformationScriptURI(ASM2JAXRSAPI_SCRIPTROOT));
 		workReport = defaultWorkflow.startDefaultWorkflow();
+		saveModels(defaultWorkflow.getTransformationContext(), TARGET_TEST_CLASSES, DIALECT_LIST);
 	}
 
 	@Test
@@ -107,17 +114,16 @@ public class DefaultWorkflowTest {
 
 		assertThat(workReport.getStatus(), equalTo(WorkStatus.COMPLETED));
 		
-		saveModels(defaultWorkflow.getTransformationContext(), TARGET_TEST_CLASSES);
-		
 		assertTrue(asmModel.exists());
 		assertTrue(measureModel.exists());
-		assertTrue(rdbmsModel.exists());
+		rdbmsModels.forEach(rdbmsModel -> assertTrue(rdbmsModel.exists()));
 		assertTrue(openapiModel.exists());
-		assertTrue(liquibaseModel.exists());
+		liquibaseModels.forEach(liquibaseModel -> assertTrue(liquibaseModel.exists()));
 
 		assertTrue(psm2asmTransformationTrace.exists());
 		assertTrue(psm2measureTransformationTrace.exists());
-		assertTrue(asm2rdbmsTransformationTrace.exists());
+		asm2rdbmsTransformationTraces
+				.forEach(asm2rdbmsTransformationTrace -> assertTrue(asm2rdbmsTransformationTrace.exists()));
 		assertTrue(asm2openapiTransformationTrace.exists());
 		
 		assertTrue(asm2sdkBundle.exists());

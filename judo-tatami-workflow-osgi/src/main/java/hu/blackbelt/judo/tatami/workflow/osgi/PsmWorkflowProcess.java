@@ -2,6 +2,8 @@ package hu.blackbelt.judo.tatami.workflow.osgi;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.util.Arrays;
+import java.util.LinkedList;
 
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Activate;
@@ -69,7 +71,7 @@ public class PsmWorkflowProcess {
         defaultWorkflow.setUp(DefaultWorkflowSetupParameters.defaultWorkflowSetupParameters()
                 .modelName(psmModel.getName())
                 .psmModel(psmModel)
-                .dialect(config.sqlDialect())
+                .dialectList(new LinkedList<>(Arrays.asList(config.sqlDialect())))
                 // Psm2Asm
                 .psm2AsmModelTransformationScriptURI(psm2asm.resolveURIByManifestName(config.psm2AsmTransformationScriptUriHeaderName()))
                 // Psm2Measure

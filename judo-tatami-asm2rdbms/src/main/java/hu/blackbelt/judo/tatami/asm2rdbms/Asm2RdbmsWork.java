@@ -7,6 +7,7 @@ import static hu.blackbelt.judo.meta.rdbmsRules.support.RdbmsTableMappingRulesMo
 import static hu.blackbelt.judo.tatami.asm2rdbms.Asm2Rdbms.executeAsm2RdbmsTransformation;
 
 import java.net.URI;
+import java.util.List;
 import java.util.Optional;
 
 import hu.blackbelt.epsilon.runtime.execution.api.Log;
@@ -24,17 +25,21 @@ public class Asm2RdbmsWork extends AbstractTransformationWork {
 
 	final URI transformationScriptRoot;
 	final URI modelRoot;
-	final String dialect;
+	private String currentDialect;
+	
+	private List<String> dialectList;
 
-	public Asm2RdbmsWork(TransformationContext transformationContext, URI transformationScriptRoot, URI modelRoot, String dialect) {
+	public Asm2RdbmsWork(TransformationContext transformationContext, URI transformationScriptRoot, URI modelRoot, List<String> dialectList) {
 		super(transformationContext);
 		this.transformationScriptRoot = transformationScriptRoot;
 		this.modelRoot = modelRoot;
-		this.dialect = dialect;
+		this.dialectList = dialectList;
 	}
 
 	@Override
 	public void execute() throws Exception {
+		currentDialect = dialectList.get(0);
+		
 		Optional<AsmModel> asmModel = getTransformationContext().getByClass(AsmModel.class);
 		asmModel.orElseThrow(() -> new IllegalArgumentException("ASM Model does not found in transformation context"));
 
@@ -46,15 +51,17 @@ public class Asm2RdbmsWork extends AbstractTransformationWork {
 		registerRdbmsDataTypesMetamodel(rdbmsModel.getResourceSet());
 		registerRdbmsTableMappingRulesMetamodel(rdbmsModel.getResourceSet());
 
-		getTransformationContext().put(rdbmsModel);
+		getTransformationContext().put("rdbms:" + currentDialect,rdbmsModel);
 
 		Asm2RdbmsTransformationTrace asm2RdbmsTransformationTrace = executeAsm2RdbmsTransformation(asmModel.get(),
 				rdbmsModel,
 				getTransformationContext().getByClass(Log.class).orElseGet(() -> new Slf4jLog(log)),
 				transformationScriptRoot,
 				modelRoot,
-				dialect);
+				currentDialect);
 
-		getTransformationContext().put(asm2RdbmsTransformationTrace);
+		getTransformationContext().put("asm2rdbmstrace:" + currentDialect, asm2RdbmsTransformationTrace);
+		
+		dialectList.remove(0);
 	}
 }

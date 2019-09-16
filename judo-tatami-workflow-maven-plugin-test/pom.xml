@@ -37,7 +37,7 @@
 						    <psmModelDest>${basedir}/../judo-tatami-workflow/target/test-classes/northwind-psm.model/</psmModelDest>
 							<destination>${basedir}/target/test-classes/</destination>
 							<modelName>northwind</modelName>
-							<dialect>hsqldb</dialect>
+							<dialectList>hsqldb, oracle</dialectList>
 						</configuration>
 					</execution>
 				</executions>

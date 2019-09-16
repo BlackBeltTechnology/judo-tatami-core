@@ -7,6 +7,7 @@ import static hu.blackbelt.judo.meta.rdbmsRules.support.RdbmsTableMappingRulesMo
 import hu.blackbelt.judo.meta.rdbms.runtime.RdbmsModel;
 
 import java.net.URI;
+import java.util.List;
 import java.util.Optional;
 
 import hu.blackbelt.epsilon.runtime.execution.api.Log;
@@ -20,23 +21,27 @@ import lombok.extern.slf4j.Slf4j;
 public class Rdbms2LiquibaseWork extends AbstractTransformationWork {
 	
 	final URI transformationScriptRoot;
-	final String dialect;
+	private String currentDialect;
+	
+	private List<String> dialectList;
 
 	public Rdbms2LiquibaseWork(TransformationContext transformationContext,
 							   URI transformationScriptRoot,
-							   String dialect) {
+							   List<String> dialectList) {
 
 		super(transformationContext);
 		this.transformationScriptRoot = transformationScriptRoot;
-		this.dialect = dialect;
+		this.dialectList = dialectList;
 	}
 
 	@Override
 	public void execute() throws Exception {
 
-		Optional<RdbmsModel> rdbmsModel = getTransformationContext().getByClass(RdbmsModel.class);
+		currentDialect = dialectList.get(0);
+		
+		Optional<RdbmsModel> rdbmsModel = getTransformationContext().get(RdbmsModel.class,"rdbms:" + currentDialect);
 		rdbmsModel.orElseThrow(() ->
-				new IllegalArgumentException("RDBMS Model does not found in transformation context"));
+				new IllegalArgumentException("RDBMS Model of the specific dialect does not found in transformation context"));
 
 		registerRdbmsNameMappingMetamodel(rdbmsModel.get().getResourceSet());
 		registerRdbmsDataTypesMetamodel(rdbmsModel.get().getResourceSet());
@@ -52,13 +57,15 @@ public class Rdbms2LiquibaseWork extends AbstractTransformationWork {
 		LiquibaseModel liquibaseModel = getTransformationContext().getByClass(LiquibaseModel.class)
 				.orElseGet(() -> buildLiquibaseModel().name(rdbmsModel.get().getName()).build());
 
-		getTransformationContext().put(liquibaseModel);
+		getTransformationContext().put("liquibase:" + currentDialect,liquibaseModel);
 
 		Rdbms2Liquibase.executeRdbms2LiquibaseTransformation(rdbmsModel.get(),
 				liquibaseModel,
 				(Log) getTransformationContext().get(Log.class).orElseGet(() -> new Slf4jLog(log)),
 				transformationScriptRoot,
-				dialect);
+				currentDialect);
+		
+		dialectList.remove(0);
 	}
 
 }

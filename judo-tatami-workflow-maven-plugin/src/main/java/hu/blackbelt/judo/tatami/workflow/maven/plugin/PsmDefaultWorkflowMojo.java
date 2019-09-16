@@ -72,8 +72,8 @@ public class PsmDefaultWorkflowMojo extends AbstractMojo {
 	private File destination;
 	@Parameter(property = "modelName")
 	private String modelName;
-	@Parameter(property = "dialect")
-	private String dialect;
+	@Parameter(property = "dialectList")
+	private List<String> dialectList;
 
 	@Parameter(property = "asm2rdbmsModelModelRoot")
 	private String asm2rdbmsModelModelRoot;
@@ -167,7 +167,7 @@ public class PsmDefaultWorkflowMojo extends AbstractMojo {
 					.asm2OpenapiModelTransformationScriptURI(new URI(asm2openApiModelScriptRoot))
 					.rdbms2LiquibaseModelTransformationScriptURI(new URI(rdbms2liquibaseModelScriptRoot))
 					.modelName(modelName)
-					.dialect(dialect)
+					.dialectList(dialectList)
 					.asm2RdbmsModelTransformationModelURI(new URI(asm2rdbmsModelModelRoot))
 					.asm2sdkModelTransformationScriptURI(new URI(asm2sdkModelScriptRoot))
 					.asm2jaxrsapiModelTransformationScriptURI(new URI(asm2jaxrsapiModelScriptRoot)));
@@ -189,7 +189,7 @@ public class PsmDefaultWorkflowMojo extends AbstractMojo {
 		// ------------------ //
 		destination.mkdirs();
 		try {
-			DefaultWorkflowSave.saveModels(defaultWorkflow.getTransformationContext(), destination);
+			DefaultWorkflowSave.saveModels(defaultWorkflow.getTransformationContext(), destination, dialectList);
 		} catch (AsmValidationException | IOException | MeasureValidationException | RdbmsValidationException
 				| OpenapiValidationException | LiquibaseValidationException | IllegalStateException e) {
 			throw new MojoFailureException("An error occurred during the saving phase of the workflow.", e);

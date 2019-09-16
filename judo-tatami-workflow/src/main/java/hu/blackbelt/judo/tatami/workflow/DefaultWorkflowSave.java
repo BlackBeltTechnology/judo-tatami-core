@@ -13,6 +13,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
+import java.util.List;
 
 import hu.blackbelt.judo.meta.asm.runtime.AsmModel;
 import hu.blackbelt.judo.meta.asm.runtime.AsmModel.AsmValidationException;
@@ -32,7 +33,7 @@ import hu.blackbelt.judo.tatami.psm2measure.Psm2MeasureTransformationTrace;
 
 public class DefaultWorkflowSave {
 	
-	public static void saveModels(TransformationContext transformationContext, File dest) throws IOException, AsmValidationException, 
+	public static void saveModels(TransformationContext transformationContext, File dest, List<String> dialectList) throws IOException, AsmValidationException, 
 		MeasureValidationException, RdbmsValidationException, OpenapiValidationException, LiquibaseValidationException {
 
 		if (!dest.exists()) {
@@ -48,15 +49,16 @@ public class DefaultWorkflowSave {
 		transformationContext.getByClass(MeasureModel.class).ifPresent(throwingConsumerWrapper((m) ->  
 			m.saveMeasureModel(measureSaveArgumentsBuilder().file(new File(dest, "measure.model")))));
 
-		
-		transformationContext.getByClass(RdbmsModel.class).ifPresent(throwingConsumerWrapper((m) ->  
-			m.saveRdbmsModel(rdbmsSaveArgumentsBuilder().file(new File(dest, "rdbms.model")))));
+		dialectList.forEach(dialect -> transformationContext.get(RdbmsModel.class, "rdbms:" + dialect)
+				.ifPresent(throwingConsumerWrapper((m) -> m.saveRdbmsModel(
+						rdbmsSaveArgumentsBuilder().file(new File(dest, "rdbms_" + dialect + ".model"))))));
 
 		transformationContext.getByClass(OpenapiModel.class).ifPresent(throwingConsumerWrapper((m) ->
 			m.saveOpenapiModel(openapiSaveArgumentsBuilder().file(new File(dest, "openapi.model")))));
 		
-		transformationContext.getByClass(LiquibaseModel.class).ifPresent(throwingConsumerWrapper((m) ->
-			m.saveLiquibaseModel(liquibaseSaveArgumentsBuilder().file(new File(dest, "liquibase.changelog.xml")))));
+		dialectList.forEach(dialect -> transformationContext.get(LiquibaseModel.class, "liquibase:" + dialect)
+				.ifPresent(throwingConsumerWrapper((m) -> m.saveLiquibaseModel(liquibaseSaveArgumentsBuilder()
+						.file(new File(dest, "liquibase_" + dialect + ".changelog.xml"))))));
 
 		transformationContext.getByClass(Psm2AsmTransformationTrace.class).ifPresent(throwingConsumerWrapper((m) ->
 			m.save(new File(dest, "psm2asm.model"))));
@@ -64,9 +66,10 @@ public class DefaultWorkflowSave {
 		transformationContext.getByClass(Psm2MeasureTransformationTrace.class).ifPresent(throwingConsumerWrapper((m) ->
 			m.save(new File(dest, "psm2measure.model"))));
 
-
-		transformationContext.getByClass(Asm2RdbmsTransformationTrace.class).ifPresent(throwingConsumerWrapper((m) ->
-			m.save(new File(dest, "asm2rdbms.model"))));
+		dialectList.forEach(dialect -> transformationContext
+				.get(Asm2RdbmsTransformationTrace.class, "asm2rdbmstrace:" + dialect)
+				.ifPresent(throwingConsumerWrapper((m) -> m.save(new File(dest, "asm2rdbms_" + dialect + ".model")))));
+		
 		
 		transformationContext.getByClass(Asm2OpenAPITransformationTrace.class).ifPresent(throwingConsumerWrapper((m) ->
 			m.save(new File(dest, "asm2openapi.model"))));
