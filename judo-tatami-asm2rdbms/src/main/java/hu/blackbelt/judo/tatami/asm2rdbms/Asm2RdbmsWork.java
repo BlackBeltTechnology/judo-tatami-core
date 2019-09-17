@@ -25,21 +25,18 @@ public class Asm2RdbmsWork extends AbstractTransformationWork {
 
 	final URI transformationScriptRoot;
 	final URI modelRoot;
-	private String currentDialect;
 	
-	private List<String> dialectList;
+	private String dialect;
 
-	public Asm2RdbmsWork(TransformationContext transformationContext, URI transformationScriptRoot, URI modelRoot, List<String> dialectList) {
+	public Asm2RdbmsWork(TransformationContext transformationContext, URI transformationScriptRoot, URI modelRoot, String dialect) {
 		super(transformationContext);
 		this.transformationScriptRoot = transformationScriptRoot;
 		this.modelRoot = modelRoot;
-		this.dialectList = dialectList;
+		this.dialect = dialect;
 	}
 
 	@Override
 	public void execute() throws Exception {
-		currentDialect = dialectList.get(0);
-
 		Optional<AsmModel> asmModel = getTransformationContext().getByClass(AsmModel.class);
 		asmModel.orElseThrow(() -> new IllegalArgumentException("ASM Model does not found in transformation context"));
 
@@ -51,14 +48,12 @@ public class Asm2RdbmsWork extends AbstractTransformationWork {
 		registerRdbmsDataTypesMetamodel(rdbmsModel.getResourceSet());
 		registerRdbmsTableMappingRulesMetamodel(rdbmsModel.getResourceSet());
 
-		getTransformationContext().put("rdbms:" + currentDialect, rdbmsModel);
+		getTransformationContext().put("rdbms:" + dialect, rdbmsModel);
 
 		Asm2RdbmsTransformationTrace asm2RdbmsTransformationTrace = executeAsm2RdbmsTransformation(asmModel.get(),
 				rdbmsModel, getTransformationContext().getByClass(Log.class).orElseGet(() -> new Slf4jLog(log)),
-				transformationScriptRoot, modelRoot, currentDialect);
+				transformationScriptRoot, modelRoot, dialect);
 
-		getTransformationContext().put("asm2rdbmstrace:" + currentDialect, asm2RdbmsTransformationTrace);
-
-		dialectList.remove(0);
+		getTransformationContext().put("asm2rdbmstrace:" + dialect, asm2RdbmsTransformationTrace);
 	}
 }

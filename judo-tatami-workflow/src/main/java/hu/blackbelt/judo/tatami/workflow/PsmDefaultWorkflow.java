@@ -8,7 +8,6 @@ import static hu.blackbelt.judo.tatami.core.ThrowingSupplier.sneakyThrows;
 import static hu.blackbelt.judo.tatami.core.workflow.engine.WorkFlowEngineBuilder.aNewWorkFlowEngine;
 import static hu.blackbelt.judo.tatami.core.workflow.flow.ConditionalFlow.Builder.aNewConditionalFlow;
 import static hu.blackbelt.judo.tatami.core.workflow.flow.ParallelFlow.Builder.aNewParallelFlow;
-import static hu.blackbelt.judo.tatami.core.workflow.flow.RepeatFlow.Builder.aNewRepeatFlow;
 import static java.util.Optional.of;
 import static java.util.Optional.ofNullable;
 
@@ -16,6 +15,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.LinkedList;
 import java.util.List;
+
+import com.google.common.collect.Lists;
 
 import hu.blackbelt.judo.meta.asm.runtime.AsmModel;
 import hu.blackbelt.judo.meta.liquibase.runtime.LiquibaseModel;
@@ -31,6 +32,7 @@ import hu.blackbelt.judo.tatami.asm2rdbms.Asm2RdbmsWork;
 import hu.blackbelt.judo.tatami.asm2sdk.Asm2SDKWork;
 import hu.blackbelt.judo.tatami.core.workflow.engine.WorkFlowEngine;
 import hu.blackbelt.judo.tatami.core.workflow.flow.WorkFlow;
+import hu.blackbelt.judo.tatami.core.workflow.work.AbstractTransformationWork;
 import hu.blackbelt.judo.tatami.core.workflow.work.TransformationContext;
 import hu.blackbelt.judo.tatami.core.workflow.work.WorkReport;
 import hu.blackbelt.judo.tatami.core.workflow.work.WorkReportPredicate;
@@ -80,41 +82,46 @@ public class PsmDefaultWorkflow {
 		Psm2MeasureWork psm2MeasureWork = new Psm2MeasureWork(transformationContext,
 				parameters.getPsm2MeasureModelTransformationScriptURI());
 		
-		List<String> asm2RdbmsDialectList = new LinkedList<>(parameters.getDialectList());
-		Asm2RdbmsWork asm2RdbmsWork = new Asm2RdbmsWork(transformationContext,
+		List<Asm2RdbmsWork> asm2RdbmsWorks = new LinkedList<>();
+		parameters.getDialectList().forEach(dialect -> asm2RdbmsWorks.add(new Asm2RdbmsWork(transformationContext,
 				parameters.getAsm2RdbmsModelTransformationScriptURI(),
 				parameters.getAsm2RdbmsModelTransformationModelURI(),
-				asm2RdbmsDialectList);
+				dialect)));
 		
 		Asm2OpenAPIWork asm2OpenapiWork = new Asm2OpenAPIWork(transformationContext,
 				parameters.getAsm2OpenapiModelTransformationScriptURI());
 		
 		Asm2SDKWork asm2sdkWork = new Asm2SDKWork(transformationContext, 
 				parameters.getAsm2sdkModelTransformationScriptURI());
+
 		Asm2JAXRSAPIWork asm2jaxrsapiWork = new Asm2JAXRSAPIWork(transformationContext,
 				parameters.getAsm2jaxrsapiModelTransformationScriptURI());
 		
-		List<String> rdbms2LiquibaseDialectList = new LinkedList<>(parameters.getDialectList());
-		Rdbms2LiquibaseWork rdbms2LiquibaseWork = new Rdbms2LiquibaseWork(transformationContext,
-				parameters.getRdbms2LiquibaseModelTransformationScriptURI(),
-				rdbms2LiquibaseDialectList);
+		List<Rdbms2LiquibaseWork> rdbms2LiquibaseWorks = new LinkedList<>();
+		parameters.getDialectList()
+				.forEach(dialect -> rdbms2LiquibaseWorks.add(new Rdbms2LiquibaseWork(transformationContext,
+						parameters.getRdbms2LiquibaseModelTransformationScriptURI(), dialect)));
 
 		// ------------------ //
 		// Workflow execution //
 		// ------------------ //
+		List<AbstractTransformationWork> asmWorks = Lists.newArrayList();
+		asmWorks.addAll(asm2RdbmsWorks);
+		asmWorks.add(asm2OpenapiWork);
+		asmWorks.add(asm2jaxrsapiWork);
+		asmWorks.add(asm2sdkWork);
+
 		WorkFlow workflow = aNewConditionalFlow()
 				.execute(
 						aNewParallelFlow().execute(psm2AsmWork, psm2MeasureWork).build())
-				.when(WorkReportPredicate.COMPLETED).then(
-						aNewConditionalFlow()
-								.execute(
-										aNewParallelFlow().execute(
-												aNewRepeatFlow().repeat(asm2RdbmsWork)
-														.times(parameters.getDialectList().size()).build(),
-												asm2OpenapiWork, asm2sdkWork, asm2jaxrsapiWork).build())
-								.when(WorkReportPredicate.COMPLETED).then(aNewRepeatFlow().repeat(rdbms2LiquibaseWork)
-										.times(parameters.getDialectList().size()).build())
-								.build())
+				.when(WorkReportPredicate.COMPLETED)
+				.then(aNewConditionalFlow()
+						.execute(aNewParallelFlow()
+								.execute(asmWorks.toArray(new AbstractTransformationWork[asmWorks.size()])).build())
+						.when(WorkReportPredicate.COMPLETED)
+						.then(aNewParallelFlow().execute(rdbms2LiquibaseWorks
+								.toArray(new AbstractTransformationWork[rdbms2LiquibaseWorks.size()])).build())
+						.build())
 				.build();
 
 		WorkFlowEngine workFlowEngine = aNewWorkFlowEngine().build();
@@ -123,25 +130,28 @@ public class PsmDefaultWorkflow {
 		if (workReport.getStatus() == WorkStatus.FAILED) {
 			throw new IllegalStateException("Transformation failed", workReport.getError());
 		}
+		
+		List<String> rdbmsContexts = Lists.newArrayList();
+		List<String> liquibaseContexts = Lists.newArrayList();
+		List<String> asm2rdbmsTraceContexts = Lists.newArrayList();
+		
+		parameters.getDialectList().forEach(dialect -> rdbmsContexts.add("rdbms:" + dialect));
+		parameters.getDialectList().forEach(dialect -> liquibaseContexts.add("liquibase:" + dialect));
+		parameters.getDialectList().forEach(dialect -> asm2rdbmsTraceContexts.add("asm2rdbmstrace:" + dialect));
 
 		boolean allExists = transformationContext.transformationContextVerifier
 				.isClassExists(AsmModel.class)
 				.isClassExists(MeasureModel.class)
+				.isMultipleKeyExists(RdbmsModel.class,rdbmsContexts.toArray())
+				.isMultipleKeyExists(LiquibaseModel.class,liquibaseContexts.toArray())
 				.isClassExists(OpenapiModel.class)
 				.isClassExists(Psm2AsmTransformationTrace.class)
 				.isClassExists(Psm2MeasureTransformationTrace.class)
 				.isClassExists(Asm2OpenAPITransformationTrace.class)
+				.isMultipleKeyExists(Asm2RdbmsTransformationTrace.class, asm2rdbmsTraceContexts.toArray())
 				.isKeyExists(InputStream.class, SDK_OUTPUT)
 				.isKeyExists(InputStream.class, JAXRSAPI_OUTPUT)
 				.isAllExists();
-		
-		
-		parameters.getDialectList().forEach(dialect -> transformationContext.transformationContextVerifier
-				.isKeyExists(RdbmsModel.class, "rdbms:" + dialect));
-		parameters.getDialectList().forEach(dialect -> transformationContext.transformationContextVerifier
-				.isKeyExists(LiquibaseModel.class, "liquibase:" + dialect));
-		parameters.getDialectList().forEach(dialect -> transformationContext.transformationContextVerifier
-				.isKeyExists(Asm2RdbmsTransformationTrace.class, "asm2rdbmstrace:" + dialect));
 
 		if (!allExists) {
 			throw new IllegalStateException("One or more models are missing for the transformation context.");
