@@ -5,6 +5,7 @@ import java.net.URISyntaxException;
 import java.util.Arrays;
 import java.util.LinkedList;
 
+import com.google.common.collect.ImmutableList;
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
@@ -71,7 +72,7 @@ public class PsmWorkflowProcess {
         defaultWorkflow.setUp(DefaultWorkflowSetupParameters.defaultWorkflowSetupParameters()
                 .modelName(psmModel.getName())
                 .psmModel(psmModel)
-                .dialectList(new LinkedList<>(Arrays.asList(config.sqlDialect())))
+                .dialectList(ImmutableList.of(config.sqlDialect()))
                 // Psm2Asm
                 .psm2AsmModelTransformationScriptURI(psm2asm.resolveURIByManifestName(config.psm2AsmTransformationScriptUriHeaderName()))
                 // Psm2Measure
@@ -83,6 +84,10 @@ public class PsmWorkflowProcess {
                 .asm2OpenapiModelTransformationScriptURI(asm2openapi.resolveURIByManifestName(config.asm2OpenapiTransformationScriptUriHeaderName()))
                 // Rdbms2Liquibase
                 .rdbms2LiquibaseModelTransformationScriptURI(rdbms2liquibase.resolveURIByManifestName(config.rdbms2LiquibaseTransformationScriptUriHeaderName()))
+                // Asm2JaxrsApi
+                .asm2jaxrsapiModelTransformationScriptURI(asm2jaxrsapi.resolveURIByManifestName(config.asm2JaxrsapiTransformationScriptUriHeaderName()))
+                // Asm2SDK
+                .asm2sdkModelTransformationScriptURI(asm2sdk.resolveURIByManifestName(config.asm2SdkTransformationScriptUriHeaderName()))
         );
 
         WorkReport workReport = defaultWorkflow.startDefaultWorkflow();
