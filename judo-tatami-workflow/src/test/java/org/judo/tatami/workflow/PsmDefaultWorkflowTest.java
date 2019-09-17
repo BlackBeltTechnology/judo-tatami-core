@@ -9,8 +9,8 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.LinkedList;
 import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -47,18 +47,18 @@ public class PsmDefaultWorkflowTest {
     public static final String TARGET_CLASSES = "target/test-classes";
     
     public static final String MODEL_NAME = "northwind";
-    public static final List<String> DIALECT_LIST = new LinkedList<>(Arrays.asList("hsqldb", "oracle"));
+    public static final List<String> DIALECT_LIST = new ArrayList<>(Arrays.asList("hsqldb", "oracle"));
 
     private WorkReport workReport;
     
     private File asmModel;
     private File measureModel;
-    private List<File> rdbmsModels = new LinkedList<>();
+    private List<File> rdbmsModels = new ArrayList<>();
     private File openapiModel;
-    private List<File> liquibaseModels = new LinkedList<>();
+    private List<File> liquibaseModels = new ArrayList<>();
     private File psm2asmTransformationTrace;
     private File psm2measureTransformationTrace;
-    private List<File> asm2rdbmsTransformationTraces = new LinkedList<>();
+    private List<File> asm2rdbmsTransformationTraces = new ArrayList<>();
     private File asm2openapiTransformationTrace;
     private File asm2sdkBundle;
     private File asm2jaxrsapiBundle;

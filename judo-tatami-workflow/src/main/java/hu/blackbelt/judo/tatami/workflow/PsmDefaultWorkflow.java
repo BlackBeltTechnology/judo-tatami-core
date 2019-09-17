@@ -13,7 +13,7 @@ import static java.util.Optional.ofNullable;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.google.common.collect.Lists;
@@ -82,7 +82,7 @@ public class PsmDefaultWorkflow {
 		Psm2MeasureWork psm2MeasureWork = new Psm2MeasureWork(transformationContext,
 				parameters.getPsm2MeasureModelTransformationScriptURI());
 		
-		List<Asm2RdbmsWork> asm2RdbmsWorks = new LinkedList<>();
+		List<Asm2RdbmsWork> asm2RdbmsWorks = new ArrayList<>();
 		parameters.getDialectList().forEach(dialect -> asm2RdbmsWorks.add(new Asm2RdbmsWork(transformationContext,
 				parameters.getAsm2RdbmsModelTransformationScriptURI(),
 				parameters.getAsm2RdbmsModelTransformationModelURI(),
@@ -97,7 +97,7 @@ public class PsmDefaultWorkflow {
 		Asm2JAXRSAPIWork asm2jaxrsapiWork = new Asm2JAXRSAPIWork(transformationContext,
 				parameters.getAsm2jaxrsapiModelTransformationScriptURI());
 		
-		List<Rdbms2LiquibaseWork> rdbms2LiquibaseWorks = new LinkedList<>();
+		List<Rdbms2LiquibaseWork> rdbms2LiquibaseWorks = new ArrayList<>();
 		parameters.getDialectList()
 				.forEach(dialect -> rdbms2LiquibaseWorks.add(new Rdbms2LiquibaseWork(transformationContext,
 						parameters.getRdbms2LiquibaseModelTransformationScriptURI(), dialect)));

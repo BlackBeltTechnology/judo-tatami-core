@@ -7,7 +7,6 @@ import static hu.blackbelt.judo.meta.rdbmsRules.support.RdbmsTableMappingRulesMo
 import static hu.blackbelt.judo.tatami.asm2rdbms.Asm2Rdbms.executeAsm2RdbmsTransformation;
 
 import java.net.URI;
-import java.util.List;
 import java.util.Optional;
 
 import hu.blackbelt.epsilon.runtime.execution.api.Log;
