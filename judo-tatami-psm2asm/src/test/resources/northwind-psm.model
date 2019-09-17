@@ -483,6 +483,7 @@
       </operations>
       <operations xmi:id="_lrK4QKPUEem4Sqe63wVljw" name="deleteOrder"/>
       <operations xmi:id="_Agu9kKiYEemuF_XcMCHsqg" name="changeShipment">
+        <implementation stateful="true"/>
         <output xmi:id="_F72icKiYEemuF_XcMCHsqg" name="output" type="_-L7R4IFREemFzY3ZWApzVQ">
           <cardinality xmi:id="_iziC8KiZEemuF_XcMCHsqg" lower="1"/>
         </output>

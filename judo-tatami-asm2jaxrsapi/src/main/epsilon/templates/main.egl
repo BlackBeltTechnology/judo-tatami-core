@@ -7,17 +7,17 @@ var outputScrXmls = new Set();
 executionContext.getContext().put("outputJavaClasses", outputJavaClasses);
 executionContext.getContext().put("outputScrXmls", outputScrXmls);
 
-for (dto in asmUtils.getAllMappedTransferObjectTypes().collectAllReferenceTypeRecursively()) {
-    genDto(dto);
+for (dto in getAllDTOs()) {
+	genDto(dto);
 	outputJavaClasses.add(dto.getDtoJavaFileName());
 }
 
 for (ap in asmUtils.getAllAccessPoints()) {
-    
+
     var apServiceInstances : Map = new Map();
-    
+
     var exposedServices = asmUtils.getExposedServicesOfAccessPoint(ap);
-    
+
 	// Unbound service
     if (exposedServices.size() > 0) {
 		genUnboundService(ap, exposedServices);
@@ -25,14 +25,12 @@ for (ap in asmUtils.getAllAccessPoints()) {
 		outputScrXmls.add(ap.getUnboundServiceScrXmlFileName());
 		apServiceInstances.put("unboundService", ap.getUnboundServicePackageName() + "." + ap.getUnboundServiceClassName());
     }
-    
-    
+
     // Bound service
-    // 
     for (
-    	biog in ap.getBuiltInOperationGroupOfAccessPoint() 
+    	biog in asmUtils.getBuiltInOperationGroupsOfAccessPoint(ap)
     	) {
-		genExposedMappedTransferObject(ap, biog);
+		genExposedMappedTransferObject(biog, ap);
 		outputJavaClasses.add(biog.getExposedMappedTransferObjectJavaFileName(ap));
 		outputScrXmls.add(biog.getExposedMappedTransferObjectScrXmlFileName(ap));
 		apServiceInstances.put((biog.getExposedMappedTransferObjectPackageName(ap) + "." + biog.getExposedMappedTransferObjectClassName()).replaceAll("\\.", "_"),
