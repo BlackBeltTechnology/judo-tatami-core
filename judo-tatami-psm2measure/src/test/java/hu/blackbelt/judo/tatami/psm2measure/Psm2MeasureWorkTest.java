@@ -1,0 +1,52 @@
+package hu.blackbelt.judo.tatami.psm2measure;
+
+import hu.blackbelt.judo.meta.psm.runtime.PsmModel;
+import hu.blackbelt.judo.tatami.core.workflow.engine.WorkFlowEngine;
+import hu.blackbelt.judo.tatami.core.workflow.flow.WorkFlow;
+import hu.blackbelt.judo.tatami.core.workflow.work.TransformationContext;
+import hu.blackbelt.judo.tatami.core.workflow.work.WorkReport;
+import hu.blackbelt.judo.tatami.core.workflow.work.WorkStatus;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import java.io.File;
+import java.io.IOException;
+
+import static hu.blackbelt.judo.meta.psm.runtime.PsmModel.LoadArguments.psmLoadArgumentsBuilder;
+import static hu.blackbelt.judo.meta.psm.runtime.PsmModel.loadPsmModel;
+import static hu.blackbelt.judo.tatami.core.workflow.engine.WorkFlowEngineBuilder.aNewWorkFlowEngine;
+import static hu.blackbelt.judo.tatami.core.workflow.flow.SequentialFlow.Builder.aNewSequentialFlow;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static hu.blackbelt.judo.meta.psm.runtime.PsmModel.PsmValidationException;
+
+public class Psm2MeasureWorkTest {
+	
+	public static final String NORTHWIND = "northwind";
+	public static final String NORTHWIND_PSM_MODEL = "northwind-psm.model";
+	public static final String TARGET_TEST_CLASSES = "target/test-classes";
+	
+	Psm2MeasureWork psm2measureWork;
+	TransformationContext transformationContext;
+
+	@BeforeEach
+	void setUp() throws IOException, PsmValidationException {
+		PsmModel psmModel = loadPsmModel(
+				psmLoadArgumentsBuilder().file(new File(TARGET_TEST_CLASSES, NORTHWIND_PSM_MODEL)).name(NORTHWIND));
+		transformationContext = new TransformationContext(NORTHWIND);
+		transformationContext.put(psmModel);
+
+		psm2measureWork = new Psm2MeasureWork(transformationContext,
+				new File("src/main/epsilon/transformations/measure").toURI());
+	}
+
+	@Test
+	void testSimpleWorkFlow() {
+		WorkFlow workFlow = aNewSequentialFlow().execute(psm2measureWork).build();
+
+		WorkFlowEngine workFlowEngine = aNewWorkFlowEngine().build();
+		WorkReport workReport = workFlowEngine.run(workFlow);
+
+		assertThat(workReport.getStatus(), equalTo(WorkStatus.COMPLETED));
+	}
+}

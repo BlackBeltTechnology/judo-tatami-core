@@ -12,6 +12,7 @@
 
 	<artifactId>judo-tatami-asm2rdbms</artifactId>
 	<packaging>bundle</packaging>
+	<name>Judo :: Tatami :: Asm2Rdbms</name>
 
 	<build>
 		<plugins>
@@ -65,6 +66,8 @@
                             *
 						</Import-Package>
 						<Rdbms-Meta-Version-Range>${judo-meta-rdbms.import-range}</Rdbms-Meta-Version-Range>
+						<Asm2Rdbms-Transformation-ModelRoot>tatami/asm2rdbms/model</Asm2Rdbms-Transformation-ModelRoot>
+						<Asm2Rdbms-Transformation-ScriptRoot>tatami/asm2rdbms/transformations</Asm2Rdbms-Transformation-ScriptRoot>
 					</instructions>
 				</configuration>
 			</plugin>

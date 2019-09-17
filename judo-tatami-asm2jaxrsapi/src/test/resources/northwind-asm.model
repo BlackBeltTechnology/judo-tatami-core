@@ -32,7 +32,7 @@
     </eAnnotations>
   </eClassifiers>
   <eSubpackages xmi:id="_bo5-k9SnEemaSPsR1Dp-RA" name="entities" nsURI="http://blackbelt.hu/judo/northwind/demo/entities" nsPrefix="runtimenorthwindDemoEntities">
-    <eClassifiers xsi:type="ecore:EClass" xmi:id="_boRscNSnEemaSPsR1Dp-RA" name="ʘStatic" abstract="true">
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_boRscNSnEemaSPsR1Dp-RA" name="__Static" abstract="true">
       <eStructuralFeatures xsi:type="ecore:EAttribute" xmi:id="_boS6kNSnEemaSPsR1Dp-RA" name="totalNumberOfOrders" lowerBound="1" eType="_bpBTVNSnEemaSPsR1Dp-RA" volatile="true" unsettable="true" derived="true">
         <eAnnotations xmi:id="_boK-xNSnEemaSPsR1Dp-RA" source="http://blackbelt.hu/judo/meta/ExtendedMetadata/expression">
           <details xmi:id="_bphCk9SnEemaSPsR1Dp-RA" key="getter" value="0 // COUNT(northwind::entities::Order)"/>
@@ -496,7 +496,7 @@
     </eClassifiers>
   </eSubpackages>
   <eSubpackages xmi:id="_bo5-lNSnEemaSPsR1Dp-RA" name="service" nsURI="http://blackbelt.hu/judo/northwind/demo/service" nsPrefix="runtimenorthwindDemoService">
-    <eClassifiers xsi:type="ecore:EClass" xmi:id="_bor8INSnEemaSPsR1Dp-RA" name="ʘUnboundServices" abstract="true" interface="true">
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_bor8INSnEemaSPsR1Dp-RA" name="__UnboundServices" abstract="true" interface="true">
       <eOperations xmi:id="_bor8IdSnEemaSPsR1Dp-RA" name="getAllOrders" upperBound="-1" eType="_bo6lpNSnEemaSPsR1Dp-RA">
         <eAnnotations xmi:id="_boqG8NSnEemaSPsR1Dp-RA" source="http://blackbelt.hu/judo/meta/ExtendedMetadata/stateful">
           <details xmi:id="_bpHZ8dSnEemaSPsR1Dp-RA" key="value" value="false"/>
@@ -952,7 +952,7 @@
         </eAnnotations>
       </eStructuralFeatures>
     </eClassifiers>
-    <eClassifiers xsi:type="ecore:EClass" xmi:id="_bosjNdSnEemaSPsR1Dp-RA" name="OrderInfoʘitems" abstract="true" interface="true">
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_bosjNdSnEemaSPsR1Dp-RA" name="OrderInfo__items" abstract="true" interface="true">
       <eOperations xmi:id="_bou_cNSnEemaSPsR1Dp-RA" name="get" upperBound="-1" eType="_bo6lotSnEemaSPsR1Dp-RA">
         <eAnnotations xmi:id="_botxUtSnEemaSPsR1Dp-RA" source="http://blackbelt.hu/judo/meta/ExtendedMetadata/stateful">
           <details xmi:id="_bqLJ4NSnEemaSPsR1Dp-RA" key="value" value="false"/>
@@ -1001,7 +1001,7 @@
         </eParameters>
       </eOperations>
     </eClassifiers>
-    <eClassifiers xsi:type="ecore:EClass" xmi:id="_bosjNtSnEemaSPsR1Dp-RA" name="OrderInfoʘshipper" abstract="true" interface="true">
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_bosjNtSnEemaSPsR1Dp-RA" name="OrderInfo__shipper" abstract="true" interface="true">
       <eOperations xmi:id="_bou_cdSnEemaSPsR1Dp-RA" name="get" eType="_bo6lo9SnEemaSPsR1Dp-RA">
         <eAnnotations xmi:id="_botxU9SnEemaSPsR1Dp-RA" source="http://blackbelt.hu/judo/meta/ExtendedMetadata/stateful">
           <details xmi:id="_bqM_FdSnEemaSPsR1Dp-RA" key="value" value="false"/>
@@ -1032,7 +1032,7 @@
         </eAnnotations>
       </eOperations>
     </eClassifiers>
-    <eClassifiers xsi:type="ecore:EClass" xmi:id="_bosjN9SnEemaSPsR1Dp-RA" name="OrderInfoʘcategories" abstract="true" interface="true">
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_bosjN9SnEemaSPsR1Dp-RA" name="OrderInfo__categories" abstract="true" interface="true">
       <eOperations xmi:id="_bou_ctSnEemaSPsR1Dp-RA" name="get" upperBound="-1" eType="_bo6lqdSnEemaSPsR1Dp-RA">
         <eAnnotations xmi:id="_botxVNSnEemaSPsR1Dp-RA" source="http://blackbelt.hu/judo/meta/ExtendedMetadata/stateful">
           <details xmi:id="_bqONMNSnEemaSPsR1Dp-RA" key="value" value="false"/>
@@ -1042,7 +1042,7 @@
         </eAnnotations>
       </eOperations>
     </eClassifiers>
-    <eClassifiers xsi:type="ecore:EClass" xmi:id="_bosjONSnEemaSPsR1Dp-RA" name="OrderInfoʘcomments" abstract="true" interface="true">
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_bosjONSnEemaSPsR1Dp-RA" name="OrderInfo__comments" abstract="true" interface="true">
       <eOperations xmi:id="_bou_c9SnEemaSPsR1Dp-RA" name="get" upperBound="-1" eType="_bo6lq9SnEemaSPsR1Dp-RA">
         <eAnnotations xmi:id="_botxVdSnEemaSPsR1Dp-RA" source="http://blackbelt.hu/judo/meta/ExtendedMetadata/stateful">
           <details xmi:id="_bqONNdSnEemaSPsR1Dp-RA" key="value" value="false"/>
@@ -1052,7 +1052,7 @@
         </eAnnotations>
       </eOperations>
     </eClassifiers>
-    <eClassifiers xsi:type="ecore:EClass" xmi:id="_botKQNSnEemaSPsR1Dp-RA" name="InternationalOrderInfoʘitems" abstract="true" interface="true">
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_botKQNSnEemaSPsR1Dp-RA" name="InternationalOrderInfo__items" abstract="true" interface="true">
       <eOperations xmi:id="_bou_dNSnEemaSPsR1Dp-RA" name="get" upperBound="-1" eType="_bo6lotSnEemaSPsR1Dp-RA">
         <eAnnotations xmi:id="_bouYYNSnEemaSPsR1Dp-RA" source="http://blackbelt.hu/judo/meta/ExtendedMetadata/stateful">
           <details xmi:id="_bqO0Q9SnEemaSPsR1Dp-RA" key="value" value="false"/>
@@ -1101,7 +1101,7 @@
         </eParameters>
       </eOperations>
     </eClassifiers>
-    <eClassifiers xsi:type="ecore:EClass" xmi:id="_botKQdSnEemaSPsR1Dp-RA" name="InternationalOrderInfoʘshipper" abstract="true" interface="true">
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_botKQdSnEemaSPsR1Dp-RA" name="InternationalOrderInfo__shipper" abstract="true" interface="true">
       <eOperations xmi:id="_bou_ddSnEemaSPsR1Dp-RA" name="get" eType="_bo6lo9SnEemaSPsR1Dp-RA">
         <eAnnotations xmi:id="_bouYYdSnEemaSPsR1Dp-RA" source="http://blackbelt.hu/judo/meta/ExtendedMetadata/stateful">
           <details xmi:id="_bqQCY9SnEemaSPsR1Dp-RA" key="value" value="false"/>
@@ -1132,7 +1132,7 @@
         </eAnnotations>
       </eOperations>
     </eClassifiers>
-    <eClassifiers xsi:type="ecore:EClass" xmi:id="_botKQtSnEemaSPsR1Dp-RA" name="OrderItemʘproduct" abstract="true" interface="true">
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_botKQtSnEemaSPsR1Dp-RA" name="OrderItem__product" abstract="true" interface="true">
       <eOperations xmi:id="_bou_dtSnEemaSPsR1Dp-RA" name="get" lowerBound="1" eType="_bo6lp9SnEemaSPsR1Dp-RA">
         <eAnnotations xmi:id="_bouYYtSnEemaSPsR1Dp-RA" source="http://blackbelt.hu/judo/meta/ExtendedMetadata/stateful">
           <details xmi:id="_bqRQg9SnEemaSPsR1Dp-RA" key="value" value="false"/>
@@ -1171,7 +1171,7 @@
         </eAnnotations>
       </eOperations>
     </eClassifiers>
-    <eClassifiers xsi:type="ecore:EClass" xmi:id="_botKQ9SnEemaSPsR1Dp-RA" name="OrderItemʘcategory" abstract="true" interface="true">
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_botKQ9SnEemaSPsR1Dp-RA" name="OrderItem__category" abstract="true" interface="true">
       <eOperations xmi:id="_bou_d9SnEemaSPsR1Dp-RA" name="get" lowerBound="1" eType="_bo6lqdSnEemaSPsR1Dp-RA">
         <eAnnotations xmi:id="_bouYY9SnEemaSPsR1Dp-RA" source="http://blackbelt.hu/judo/meta/ExtendedMetadata/stateful">
           <details xmi:id="_bqSepNSnEemaSPsR1Dp-RA" key="value" value="false"/>
@@ -1210,7 +1210,7 @@
         </eAnnotations>
       </eOperations>
     </eClassifiers>
-    <eClassifiers xsi:type="ecore:EClass" xmi:id="_botKRNSnEemaSPsR1Dp-RA" name="OrderInfoQueryʘitems" abstract="true" interface="true">
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_botKRNSnEemaSPsR1Dp-RA" name="OrderInfoQuery__items" abstract="true" interface="true">
       <eOperations xmi:id="_bou_eNSnEemaSPsR1Dp-RA" name="get" upperBound="-1" eType="_bo6lptSnEemaSPsR1Dp-RA">
         <eAnnotations xmi:id="_bouYZNSnEemaSPsR1Dp-RA" source="http://blackbelt.hu/judo/meta/ExtendedMetadata/stateful">
           <details xmi:id="_bqTsxdSnEemaSPsR1Dp-RA" key="value" value="false"/>
@@ -1280,7 +1280,7 @@
         </eParameters>
       </eOperations>
     </eClassifiers>
-    <eClassifiers xsi:type="ecore:EClass" xmi:id="_botKRdSnEemaSPsR1Dp-RA" name="OrderInfoQueryʘcategories" abstract="true" interface="true">
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_botKRdSnEemaSPsR1Dp-RA" name="OrderInfoQuery__categories" abstract="true" interface="true">
       <eOperations xmi:id="_bou_edSnEemaSPsR1Dp-RA" name="get" upperBound="-1" eType="_bo6lqdSnEemaSPsR1Dp-RA">
         <eAnnotations xmi:id="_bouYZdSnEemaSPsR1Dp-RA" source="http://blackbelt.hu/judo/meta/ExtendedMetadata/stateful">
           <details xmi:id="_bqWJA9SnEemaSPsR1Dp-RA" key="value" value="false"/>
@@ -1293,7 +1293,7 @@
         </eAnnotations>
       </eOperations>
     </eClassifiers>
-    <eClassifiers xsi:type="ecore:EClass" xmi:id="_botKRtSnEemaSPsR1Dp-RA" name="InternationalOrderInfoQueryʘitems" abstract="true" interface="true">
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_botKRtSnEemaSPsR1Dp-RA" name="InternationalOrderInfoQuery__items" abstract="true" interface="true">
       <eOperations xmi:id="_bou_etSnEemaSPsR1Dp-RA" name="get" upperBound="-1" eType="_bo6lptSnEemaSPsR1Dp-RA">
         <eAnnotations xmi:id="_bouYZtSnEemaSPsR1Dp-RA" source="http://blackbelt.hu/judo/meta/ExtendedMetadata/stateful">
           <details xmi:id="_bqWwEtSnEemaSPsR1Dp-RA" key="value" value="false"/>
@@ -1342,7 +1342,7 @@
         </eParameters>
       </eOperations>
     </eClassifiers>
-    <eClassifiers xsi:type="ecore:EClass" xmi:id="_botKR9SnEemaSPsR1Dp-RA" name="InternationalOrderInfoQueryʘcategories" abstract="true" interface="true">
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_botKR9SnEemaSPsR1Dp-RA" name="InternationalOrderInfoQuery__categories" abstract="true" interface="true">
       <eOperations xmi:id="_bou_e9SnEemaSPsR1Dp-RA" name="get" upperBound="-1" eType="_bo6lqdSnEemaSPsR1Dp-RA">
         <eAnnotations xmi:id="_bouYZ9SnEemaSPsR1Dp-RA" source="http://blackbelt.hu/judo/meta/ExtendedMetadata/stateful">
           <details xmi:id="_bqYlQtSnEemaSPsR1Dp-RA" key="value" value="false"/>
@@ -1352,7 +1352,7 @@
         </eAnnotations>
       </eOperations>
     </eClassifiers>
-    <eClassifiers xsi:type="ecore:EClass" xmi:id="_botKSNSnEemaSPsR1Dp-RA" name="OrderItemQueryʘproduct" abstract="true" interface="true">
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_botKSNSnEemaSPsR1Dp-RA" name="OrderItemQuery__product" abstract="true" interface="true">
       <eOperations xmi:id="_bou_fNSnEemaSPsR1Dp-RA" name="get" lowerBound="1" eType="_bo6lqNSnEemaSPsR1Dp-RA">
         <eAnnotations xmi:id="_bouYaNSnEemaSPsR1Dp-RA" source="http://blackbelt.hu/judo/meta/ExtendedMetadata/stateful">
           <details xmi:id="_bqZMUNSnEemaSPsR1Dp-RA" key="value" value="false"/>
@@ -1406,7 +1406,7 @@
         </eAnnotations>
       </eOperations>
     </eClassifiers>
-    <eClassifiers xsi:type="ecore:EClass" xmi:id="_botKSdSnEemaSPsR1Dp-RA" name="OrderItemQueryʘcategory" abstract="true" interface="true">
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_botKSdSnEemaSPsR1Dp-RA" name="OrderItemQuery__category" abstract="true" interface="true">
       <eOperations xmi:id="_bou_fdSnEemaSPsR1Dp-RA" name="get" lowerBound="1" eType="_bo6lqdSnEemaSPsR1Dp-RA">
         <eAnnotations xmi:id="_bouYadSnEemaSPsR1Dp-RA" source="http://blackbelt.hu/judo/meta/ExtendedMetadata/stateful">
           <details xmi:id="_bqaad9SnEemaSPsR1Dp-RA" key="value" value="false"/>
@@ -1460,7 +1460,7 @@
         </eAnnotations>
       </eOperations>
     </eClassifiers>
-    <eClassifiers xsi:type="ecore:EClass" xmi:id="_botKStSnEemaSPsR1Dp-RA" name="ProductInfoʘcategory" abstract="true" interface="true">
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_botKStSnEemaSPsR1Dp-RA" name="ProductInfo__category" abstract="true" interface="true">
       <eOperations xmi:id="_bou_ftSnEemaSPsR1Dp-RA" name="get" lowerBound="1" eType="_bo6lqdSnEemaSPsR1Dp-RA">
         <eAnnotations xmi:id="_bouYatSnEemaSPsR1Dp-RA" source="http://blackbelt.hu/judo/meta/ExtendedMetadata/stateful">
           <details xmi:id="_bqbolNSnEemaSPsR1Dp-RA" key="value" value="false"/>
@@ -1559,7 +1559,7 @@
         </eAnnotations>
       </eOperations>
     </eClassifiers>
-    <eClassifiers xsi:type="ecore:EClass" xmi:id="_botxUNSnEemaSPsR1Dp-RA" name="ProductInfoQueryʘcategory" abstract="true" interface="true">
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_botxUNSnEemaSPsR1Dp-RA" name="ProductInfoQuery__category" abstract="true" interface="true">
       <eOperations xmi:id="_bou_f9SnEemaSPsR1Dp-RA" name="get" lowerBound="1" eType="_bo6lqdSnEemaSPsR1Dp-RA">
         <eAnnotations xmi:id="_bouYa9SnEemaSPsR1Dp-RA" source="http://blackbelt.hu/judo/meta/ExtendedMetadata/stateful">
           <details xmi:id="_bqc2s9SnEemaSPsR1Dp-RA" key="value" value="false"/>
@@ -1613,7 +1613,7 @@
         </eAnnotations>
       </eOperations>
     </eClassifiers>
-    <eClassifiers xsi:type="ecore:EClass" xmi:id="_botxUdSnEemaSPsR1Dp-RA" name="CategoryInfoʘproducts" abstract="true" interface="true">
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_botxUdSnEemaSPsR1Dp-RA" name="CategoryInfo__products" abstract="true" interface="true">
       <eOperations xmi:id="_bou_gNSnEemaSPsR1Dp-RA" name="get" upperBound="-1" eType="_bo6lp9SnEemaSPsR1Dp-RA">
         <eAnnotations xmi:id="_bouYbNSnEemaSPsR1Dp-RA" source="http://blackbelt.hu/judo/meta/ExtendedMetadata/stateful">
           <details xmi:id="_bqddydSnEemaSPsR1Dp-RA" key="value" value="false"/>
@@ -1838,7 +1838,7 @@
         </eAnnotations>
       </eStructuralFeatures>
     </eClassifiers>
-    <eClassifiers xsi:type="ecore:EClass" xmi:id="_bowNktSnEemaSPsR1Dp-RA" name="OrderInfoʘitemsʘReference">
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_bowNktSnEemaSPsR1Dp-RA" name="OrderInfo__items__Reference">
       <eAnnotations xmi:id="_bovmgNSnEemaSPsR1Dp-RA" source="http://blackbelt.hu/judo/meta/ExtendedMetadata/mappedEntityType">
         <details xmi:id="_bqMYANSnEemaSPsR1Dp-RA" key="value" value="demo.entities.OrderDetail"/>
         <details xmi:id="_bqMYAdSnEemaSPsR1Dp-RA" key="entityIdPresence" value="REQUIRED"/>
@@ -1847,7 +1847,7 @@
         <details xmi:id="_brk4F9SnEemaSPsR1Dp-RA" key="value" value="demo.internalAP"/>
       </eAnnotations>
     </eClassifiers>
-    <eClassifiers xsi:type="ecore:EClass" xmi:id="_bowNk9SnEemaSPsR1Dp-RA" name="OrderInfoʘshipperʘReference">
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_bowNk9SnEemaSPsR1Dp-RA" name="OrderInfo__shipper__Reference">
       <eAnnotations xmi:id="_bovmgdSnEemaSPsR1Dp-RA" source="http://blackbelt.hu/judo/meta/ExtendedMetadata/mappedEntityType">
         <details xmi:id="_bqM_F9SnEemaSPsR1Dp-RA" key="value" value="demo.entities.Shipper"/>
         <details xmi:id="_bqM_GNSnEemaSPsR1Dp-RA" key="entityIdPresence" value="REQUIRED"/>
@@ -1882,7 +1882,7 @@
         </eAnnotations>
       </eStructuralFeatures>
     </eClassifiers>
-    <eClassifiers xsi:type="ecore:EClass" xmi:id="_bowNlNSnEemaSPsR1Dp-RA" name="InternationalOrderInfoʘitemsʘReference">
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_bowNlNSnEemaSPsR1Dp-RA" name="InternationalOrderInfo__items__Reference">
       <eAnnotations xmi:id="_bovmgtSnEemaSPsR1Dp-RA" source="http://blackbelt.hu/judo/meta/ExtendedMetadata/mappedEntityType">
         <details xmi:id="_bqO0RdSnEemaSPsR1Dp-RA" key="value" value="demo.entities.OrderDetail"/>
         <details xmi:id="_bqO0RtSnEemaSPsR1Dp-RA" key="entityIdPresence" value="REQUIRED"/>
@@ -1891,7 +1891,7 @@
         <details xmi:id="_brpJh9SnEemaSPsR1Dp-RA" key="value" value="demo.internalAP"/>
       </eAnnotations>
     </eClassifiers>
-    <eClassifiers xsi:type="ecore:EClass" xmi:id="_bowNldSnEemaSPsR1Dp-RA" name="InternationalOrderInfoʘshipperʘReference">
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_bowNldSnEemaSPsR1Dp-RA" name="InternationalOrderInfo__shipper__Reference">
       <eAnnotations xmi:id="_bovmg9SnEemaSPsR1Dp-RA" source="http://blackbelt.hu/judo/meta/ExtendedMetadata/mappedEntityType">
         <details xmi:id="_bqQCZdSnEemaSPsR1Dp-RA" key="value" value="demo.entities.Shipper"/>
         <details xmi:id="_bqQpcNSnEemaSPsR1Dp-RA" key="entityIdPresence" value="REQUIRED"/>
@@ -1900,7 +1900,7 @@
         <details xmi:id="_brqXr9SnEemaSPsR1Dp-RA" key="value" value="demo.internalAP"/>
       </eAnnotations>
     </eClassifiers>
-    <eClassifiers xsi:type="ecore:EClass" xmi:id="_bowNltSnEemaSPsR1Dp-RA" name="OrderItemʘproductʘReference">
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_bowNltSnEemaSPsR1Dp-RA" name="OrderItem__product__Reference">
       <eAnnotations xmi:id="_bovmhNSnEemaSPsR1Dp-RA" source="http://blackbelt.hu/judo/meta/ExtendedMetadata/mappedEntityType">
         <details xmi:id="_bqRQhdSnEemaSPsR1Dp-RA" key="value" value="demo.entities.Product"/>
         <details xmi:id="_bqR3kNSnEemaSPsR1Dp-RA" key="entityIdPresence" value="REQUIRED"/>
@@ -1909,7 +1909,7 @@
         <details xmi:id="_brgmp9SnEemaSPsR1Dp-RA" key="value" value="demo.internalAP"/>
       </eAnnotations>
     </eClassifiers>
-    <eClassifiers xsi:type="ecore:EClass" xmi:id="_bowNl9SnEemaSPsR1Dp-RA" name="OrderItemʘcategoryʘReference">
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_bowNl9SnEemaSPsR1Dp-RA" name="OrderItem__category__Reference">
       <eAnnotations xmi:id="_bovmhdSnEemaSPsR1Dp-RA" source="http://blackbelt.hu/judo/meta/ExtendedMetadata/mappedEntityType">
         <details xmi:id="_bqSeptSnEemaSPsR1Dp-RA" key="value" value="demo.entities.Category"/>
         <details xmi:id="_bqSep9SnEemaSPsR1Dp-RA" key="entityIdPresence" value="REQUIRED"/>
@@ -1993,7 +1993,7 @@
         </eAnnotations>
       </eStructuralFeatures>
     </eClassifiers>
-    <eClassifiers xsi:type="ecore:EClass" xmi:id="_bow0oNSnEemaSPsR1Dp-RA" name="OrderInfoQueryʘitemsʘReference">
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_bow0oNSnEemaSPsR1Dp-RA" name="OrderInfoQuery__items__Reference">
       <eAnnotations xmi:id="_bovmhtSnEemaSPsR1Dp-RA" source="http://blackbelt.hu/judo/meta/ExtendedMetadata/mappedEntityType">
         <details xmi:id="_bqUT09SnEemaSPsR1Dp-RA" key="value" value="demo.entities.OrderDetail"/>
         <details xmi:id="_bqU64NSnEemaSPsR1Dp-RA" key="entityIdPresence" value="REQUIRED"/>
@@ -2005,7 +2005,7 @@
         <details xmi:id="_br5oM9SnEemaSPsR1Dp-RA" key="value" value="demo.internalAP/ordersAssignedToEmployee"/>
       </eAnnotations>
     </eClassifiers>
-    <eClassifiers xsi:type="ecore:EClass" xmi:id="_bow0odSnEemaSPsR1Dp-RA" name="InternationalOrderInfoQueryʘitemsʘReference">
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_bow0odSnEemaSPsR1Dp-RA" name="InternationalOrderInfoQuery__items__Reference">
       <eAnnotations xmi:id="_bovmh9SnEemaSPsR1Dp-RA" source="http://blackbelt.hu/judo/meta/ExtendedMetadata/mappedEntityType">
         <details xmi:id="_bqWwFNSnEemaSPsR1Dp-RA" key="value" value="demo.entities.OrderDetail"/>
         <details xmi:id="_bqWwFdSnEemaSPsR1Dp-RA" key="entityIdPresence" value="REQUIRED"/>
@@ -2057,7 +2057,7 @@
         </eAnnotations>
       </eStructuralFeatures>
     </eClassifiers>
-    <eClassifiers xsi:type="ecore:EClass" xmi:id="_bow0otSnEemaSPsR1Dp-RA" name="OrderItemQueryʘproductʘReference">
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_bow0otSnEemaSPsR1Dp-RA" name="OrderItemQuery__product__Reference">
       <eAnnotations xmi:id="_bovmiNSnEemaSPsR1Dp-RA" source="http://blackbelt.hu/judo/meta/ExtendedMetadata/mappedEntityType">
         <details xmi:id="_bqZzYdSnEemaSPsR1Dp-RA" key="value" value="demo.entities.Product"/>
         <details xmi:id="_bqZzYtSnEemaSPsR1Dp-RA" key="entityIdPresence" value="REQUIRED"/>
@@ -2069,7 +2069,7 @@
         <details xmi:id="_br3zBdSnEemaSPsR1Dp-RA" key="value" value="demo.internalAP/ordersAssignedToEmployee"/>
       </eAnnotations>
     </eClassifiers>
-    <eClassifiers xsi:type="ecore:EClass" xmi:id="_bow0o9SnEemaSPsR1Dp-RA" name="OrderItemQueryʘcategoryʘReference">
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_bow0o9SnEemaSPsR1Dp-RA" name="OrderItemQuery__category__Reference">
       <eAnnotations xmi:id="_bovmidSnEemaSPsR1Dp-RA" source="http://blackbelt.hu/judo/meta/ExtendedMetadata/mappedEntityType">
         <details xmi:id="_bqaaedSnEemaSPsR1Dp-RA" key="value" value="demo.entities.Category"/>
         <details xmi:id="_bqbBgNSnEemaSPsR1Dp-RA" key="entityIdPresence" value="REQUIRED"/>
@@ -2081,7 +2081,7 @@
         <details xmi:id="_br4aG9SnEemaSPsR1Dp-RA" key="value" value="demo.internalAP/ordersAssignedToEmployee"/>
       </eAnnotations>
     </eClassifiers>
-    <eClassifiers xsi:type="ecore:EClass" xmi:id="_bow0pNSnEemaSPsR1Dp-RA" name="ProductInfoʘcategoryʘReference">
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_bow0pNSnEemaSPsR1Dp-RA" name="ProductInfo__category__Reference">
       <eAnnotations xmi:id="_bovmitSnEemaSPsR1Dp-RA" source="http://blackbelt.hu/judo/meta/ExtendedMetadata/mappedEntityType">
         <details xmi:id="_bqboltSnEemaSPsR1Dp-RA" key="value" value="demo.entities.Category"/>
         <details xmi:id="_bqcPoNSnEemaSPsR1Dp-RA" key="entityIdPresence" value="REQUIRED"/>
@@ -2102,7 +2102,7 @@
         <details xmi:id="_bsXiR9SnEemaSPsR1Dp-RA" key="value" value="demo.externalAP/categories"/>
       </eAnnotations>
     </eClassifiers>
-    <eClassifiers xsi:type="ecore:EClass" xmi:id="_bow0pdSnEemaSPsR1Dp-RA" name="ProductInfoQueryʘcategoryʘReference">
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_bow0pdSnEemaSPsR1Dp-RA" name="ProductInfoQuery__category__Reference">
       <eAnnotations xmi:id="_bowNkNSnEemaSPsR1Dp-RA" source="http://blackbelt.hu/judo/meta/ExtendedMetadata/mappedEntityType">
         <details xmi:id="_bqc2tdSnEemaSPsR1Dp-RA" key="value" value="demo.entities.Category"/>
         <details xmi:id="_bqc2ttSnEemaSPsR1Dp-RA" key="entityIdPresence" value="REQUIRED"/>
@@ -2114,7 +2114,7 @@
         <details xmi:id="_br2k59SnEemaSPsR1Dp-RA" key="value" value="demo.internalAP/ordersAssignedToEmployee"/>
       </eAnnotations>
     </eClassifiers>
-    <eClassifiers xsi:type="ecore:EClass" xmi:id="_bow0ptSnEemaSPsR1Dp-RA" name="CategoryInfoʘproductsʘReference">
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_bow0ptSnEemaSPsR1Dp-RA" name="CategoryInfo__products__Reference">
       <eAnnotations xmi:id="_bowNkdSnEemaSPsR1Dp-RA" source="http://blackbelt.hu/judo/meta/ExtendedMetadata/mappedEntityType">
         <details xmi:id="_bqeE0NSnEemaSPsR1Dp-RA" key="value" value="demo.entities.Product"/>
         <details xmi:id="_bqeE0dSnEemaSPsR1Dp-RA" key="entityIdPresence" value="REQUIRED"/>

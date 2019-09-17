@@ -12,7 +12,8 @@
 
 	<artifactId>judo-tatami-asm2jaxrsapi</artifactId>
 	<packaging>bundle</packaging>
-
+	<name>Judo :: Tatami :: Asm2JAXRSApi</name>
+	<description>ASM 2 JAXRS API Epsilon based Transformer</description>
 	<build>
 		<plugins>
 			<plugin>
@@ -63,6 +64,7 @@
                             ${osgi-default-import},
 							*
 						</Import-Package>
+						<Asm2Jaxrsapi-Transformation-ScriptRoot>tatami/asm2jaxrsapi/templates</Asm2Jaxrsapi-Transformation-ScriptRoot>
 					</instructions>
 				</configuration>
 			</plugin>

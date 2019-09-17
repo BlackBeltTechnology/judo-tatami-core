@@ -12,6 +12,7 @@
 
 	<artifactId>judo-tatami-asm2sdk</artifactId>
 	<packaging>bundle</packaging>
+	<name>Judo :: Tatami :: Asm2SDK</name>
 
 	<build>
 		<plugins>
@@ -63,6 +64,7 @@
                             ${osgi-default-import},
                             *
 						</Import-Package>
+						<Asm2SDK-Transformation-ScriptRoot>tatami/asm2sdk/templates</Asm2SDK-Transformation-ScriptRoot>
 					</instructions>
 				</configuration>
 			</plugin>

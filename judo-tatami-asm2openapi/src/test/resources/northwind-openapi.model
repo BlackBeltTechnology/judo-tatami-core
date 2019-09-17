@@ -771,84 +771,84 @@
       </schema>
     </definitions>
     <definitions xmi:id="_hI7VwKPMEemwMokMCsqGWQ" name="demo_service_OrderInfoQuery_items_Reference">
-      <schema xmi:id="_hJIKEKPMEemwMokMCsqGWQ" type="object" description="Schema of OrderInfoQueryʘitemsʘReference instance">
+      <schema xmi:id="_hJIKEKPMEemwMokMCsqGWQ" type="object" description="Schema of OrderInfoQuery__items__Reference instance">
         <properties xmi:id="_hPvvcaPMEemwMokMCsqGWQ" name="__identifier">
           <property xmi:id="_hPvvcqPMEemwMokMCsqGWQ" type="string" description="ID of OrderDetail instance"/>
         </properties>
       </schema>
     </definitions>
     <definitions xmi:id="_hI780aPMEemwMokMCsqGWQ" name="demo_service_OrderItemQuery_product_Reference">
-      <schema xmi:id="_hJIxIKPMEemwMokMCsqGWQ" type="object" description="Schema of OrderItemQueryʘproductʘReference instance">
+      <schema xmi:id="_hJIxIKPMEemwMokMCsqGWQ" type="object" description="Schema of OrderItemQuery__product__Reference instance">
         <properties xmi:id="_hPw9kKPMEemwMokMCsqGWQ" name="__identifier">
           <property xmi:id="_hPw9kaPMEemwMokMCsqGWQ" type="string" description="ID of Product instance"/>
         </properties>
       </schema>
     </definitions>
     <definitions xmi:id="_hI8j4KPMEemwMokMCsqGWQ" name="demo_service_OrderItemQuery_category_Reference">
-      <schema xmi:id="_hJIxIaPMEemwMokMCsqGWQ" type="object" description="Schema of OrderItemQueryʘcategoryʘReference instance">
+      <schema xmi:id="_hJIxIaPMEemwMokMCsqGWQ" type="object" description="Schema of OrderItemQuery__category__Reference instance">
         <properties xmi:id="_hPyLsaPMEemwMokMCsqGWQ" name="__identifier">
           <property xmi:id="_hPyywKPMEemwMokMCsqGWQ" type="string" description="ID of Category instance"/>
         </properties>
       </schema>
     </definitions>
     <definitions xmi:id="_hI8j4aPMEemwMokMCsqGWQ" name="demo_service_ProductInfo_category_Reference">
-      <schema xmi:id="_hJIxIqPMEemwMokMCsqGWQ" type="object" description="Schema of ProductInfoʘcategoryʘReference instance">
+      <schema xmi:id="_hJIxIqPMEemwMokMCsqGWQ" type="object" description="Schema of ProductInfo__category__Reference instance">
         <properties xmi:id="_hPzZ0KPMEemwMokMCsqGWQ" name="__identifier">
           <property xmi:id="_hPzZ0aPMEemwMokMCsqGWQ" type="string" description="ID of Category instance"/>
         </properties>
       </schema>
     </definitions>
     <definitions xmi:id="_hI9K8KPMEemwMokMCsqGWQ" name="demo_service_ProductInfoQuery_category_Reference">
-      <schema xmi:id="_hJIxJKPMEemwMokMCsqGWQ" type="object" description="Schema of ProductInfoQueryʘcategoryʘReference instance">
+      <schema xmi:id="_hJIxJKPMEemwMokMCsqGWQ" type="object" description="Schema of ProductInfoQuery__category__Reference instance">
         <properties xmi:id="_hP0n8aPMEemwMokMCsqGWQ" name="__identifier">
           <property xmi:id="_hP0n8qPMEemwMokMCsqGWQ" type="string" description="ID of Category instance"/>
         </properties>
       </schema>
     </definitions>
     <definitions xmi:id="_hI9K8aPMEemwMokMCsqGWQ" name="demo_service_CategoryInfo_products_Reference">
-      <schema xmi:id="_hJJYMKPMEemwMokMCsqGWQ" type="object" description="Schema of CategoryInfoʘproductsʘReference instance">
+      <schema xmi:id="_hJJYMKPMEemwMokMCsqGWQ" type="object" description="Schema of CategoryInfo__products__Reference instance">
         <properties xmi:id="_hP12EKPMEemwMokMCsqGWQ" name="__identifier">
           <property xmi:id="_hP12EaPMEemwMokMCsqGWQ" type="string" description="ID of Product instance"/>
         </properties>
       </schema>
     </definitions>
     <definitions xmi:id="_hJSiIKPMEemwMokMCsqGWQ" name="arrayOf__demo_service_OrderInfoQuery_items_Reference">
-      <schema xmi:id="_hJeIUKPMEemwMokMCsqGWQ" type="array" description="Array of OrderInfoQueryʘitemsʘReference instances">
+      <schema xmi:id="_hJeIUKPMEemwMokMCsqGWQ" type="array" description="Array of OrderInfoQuery__items__Reference instances">
         <items xmi:id="_hJsKwKPMEemwMokMCsqGWQ">
           <ref xmi:id="_hPwWgKPMEemwMokMCsqGWQ" ref="#/definitions/demo_service_OrderInfoQuery_items_Reference"/>
         </items>
       </schema>
     </definitions>
     <definitions xmi:id="_hJTJMKPMEemwMokMCsqGWQ" name="arrayOf__demo_service_OrderItemQuery_product_Reference">
-      <schema xmi:id="_hJevYaPMEemwMokMCsqGWQ" type="array" description="Array of OrderItemQueryʘproductʘReference instances">
+      <schema xmi:id="_hJevYaPMEemwMokMCsqGWQ" type="array" description="Array of OrderItemQuery__product__Reference instances">
         <items xmi:id="_hJtY4KPMEemwMokMCsqGWQ">
           <ref xmi:id="_hPyLsKPMEemwMokMCsqGWQ" ref="#/definitions/demo_service_OrderItemQuery_product_Reference"/>
         </items>
       </schema>
     </definitions>
     <definitions xmi:id="_hJTJMaPMEemwMokMCsqGWQ" name="arrayOf__demo_service_OrderItemQuery_category_Reference">
-      <schema xmi:id="_hJevYqPMEemwMokMCsqGWQ" type="array" description="Array of OrderItemQueryʘcategoryʘReference instances">
+      <schema xmi:id="_hJevYqPMEemwMokMCsqGWQ" type="array" description="Array of OrderItemQuery__category__Reference instances">
         <items xmi:id="_hJtY4aPMEemwMokMCsqGWQ">
           <ref xmi:id="_hPyywaPMEemwMokMCsqGWQ" ref="#/definitions/demo_service_OrderItemQuery_category_Reference"/>
         </items>
       </schema>
     </definitions>
     <definitions xmi:id="_hJTJMqPMEemwMokMCsqGWQ" name="arrayOf__demo_service_ProductInfo_category_Reference">
-      <schema xmi:id="_hJfWcKPMEemwMokMCsqGWQ" type="array" description="Array of ProductInfoʘcategoryʘReference instances">
+      <schema xmi:id="_hJfWcKPMEemwMokMCsqGWQ" type="array" description="Array of ProductInfo__category__Reference instances">
         <items xmi:id="_hJtY4qPMEemwMokMCsqGWQ">
           <ref xmi:id="_hPzZ0qPMEemwMokMCsqGWQ" ref="#/definitions/demo_service_ProductInfo_category_Reference"/>
         </items>
       </schema>
     </definitions>
     <definitions xmi:id="_hJTJNKPMEemwMokMCsqGWQ" name="arrayOf__demo_service_ProductInfoQuery_category_Reference">
-      <schema xmi:id="_hJfWcqPMEemwMokMCsqGWQ" type="array" description="Array of ProductInfoQueryʘcategoryʘReference instances">
+      <schema xmi:id="_hJfWcqPMEemwMokMCsqGWQ" type="array" description="Array of ProductInfoQuery__category__Reference instances">
         <items xmi:id="_hJt_8aPMEemwMokMCsqGWQ">
           <ref xmi:id="_hP1PAKPMEemwMokMCsqGWQ" ref="#/definitions/demo_service_ProductInfoQuery_category_Reference"/>
         </items>
       </schema>
     </definitions>
     <definitions xmi:id="_hJTwQKPMEemwMokMCsqGWQ" name="arrayOf__demo_service_CategoryInfo_products_Reference">
-      <schema xmi:id="_hJfWc6PMEemwMokMCsqGWQ" type="array" description="Array of CategoryInfoʘproductsʘReference instances">
+      <schema xmi:id="_hJfWc6PMEemwMokMCsqGWQ" type="array" description="Array of CategoryInfo__products__Reference instances">
         <items xmi:id="_hJt_8qPMEemwMokMCsqGWQ">
           <ref xmi:id="_hP12EqPMEemwMokMCsqGWQ" ref="#/definitions/demo_service_CategoryInfo_products_Reference"/>
         </items>
@@ -1271,14 +1271,14 @@
       </schema>
     </definitions>
     <definitions xmi:id="_hI8j4qPMEemwMokMCsqGWQ" name="demo_service_ProductInfo_category_Reference">
-      <schema xmi:id="_hJIxI6PMEemwMokMCsqGWQ" type="object" description="Schema of ProductInfoʘcategoryʘReference instance">
+      <schema xmi:id="_hJIxI6PMEemwMokMCsqGWQ" type="object" description="Schema of ProductInfo__category__Reference instance">
         <properties xmi:id="_hP0A4KPMEemwMokMCsqGWQ" name="__identifier">
           <property xmi:id="_hP0A4aPMEemwMokMCsqGWQ" type="string" description="ID of Category instance"/>
         </properties>
       </schema>
     </definitions>
     <definitions xmi:id="_hI9K8qPMEemwMokMCsqGWQ" name="demo_service_CategoryInfo_products_Reference">
-      <schema xmi:id="_hJJYMaPMEemwMokMCsqGWQ" type="object" description="Schema of CategoryInfoʘproductsʘReference instance">
+      <schema xmi:id="_hJJYMaPMEemwMokMCsqGWQ" type="object" description="Schema of CategoryInfo__products__Reference instance">
         <properties xmi:id="_hP2dIKPMEemwMokMCsqGWQ" name="__identifier">
           <property xmi:id="_hP2dIaPMEemwMokMCsqGWQ" type="string" description="ID of Product instance"/>
         </properties>
@@ -1299,14 +1299,14 @@
       </schema>
     </definitions>
     <definitions xmi:id="_hJTJM6PMEemwMokMCsqGWQ" name="arrayOf__demo_service_ProductInfo_category_Reference">
-      <schema xmi:id="_hJfWcaPMEemwMokMCsqGWQ" type="array" description="Array of ProductInfoʘcategoryʘReference instances">
+      <schema xmi:id="_hJfWcaPMEemwMokMCsqGWQ" type="array" description="Array of ProductInfo__category__Reference instances">
         <items xmi:id="_hJt_8KPMEemwMokMCsqGWQ">
           <ref xmi:id="_hP0n8KPMEemwMokMCsqGWQ" ref="#/definitions/demo_service_ProductInfo_category_Reference"/>
         </items>
       </schema>
     </definitions>
     <definitions xmi:id="_hJTwQaPMEemwMokMCsqGWQ" name="arrayOf__demo_service_CategoryInfo_products_Reference">
-      <schema xmi:id="_hJfWdKPMEemwMokMCsqGWQ" type="array" description="Array of CategoryInfoʘproductsʘReference instances">
+      <schema xmi:id="_hJfWdKPMEemwMokMCsqGWQ" type="array" description="Array of CategoryInfo__products__Reference instances">
         <items xmi:id="_hJunAKPMEemwMokMCsqGWQ">
           <ref xmi:id="_hP2dIqPMEemwMokMCsqGWQ" ref="#/definitions/demo_service_CategoryInfo_products_Reference"/>
         </items>
