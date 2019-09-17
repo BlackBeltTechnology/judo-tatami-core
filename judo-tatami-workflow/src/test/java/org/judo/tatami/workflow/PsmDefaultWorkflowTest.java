@@ -68,27 +68,27 @@ public class PsmDefaultWorkflowTest {
 			MeasureValidationException, RdbmsValidationException, OpenapiValidationException,
 			LiquibaseValidationException {
 
-		asmModel = new File(TARGET_CLASSES, "asm.model");
+		asmModel = new File(TARGET_CLASSES, MODEL_NAME + "-asm.model");
 		asmModel.delete();
-		measureModel = new File(TARGET_CLASSES, "measure.model");
+		measureModel = new File(TARGET_CLASSES, MODEL_NAME + "-measure.model");
 		measureModel.delete();
-		DIALECT_LIST.forEach(dialect -> rdbmsModels.add(new File(TARGET_CLASSES, "rdbms_" + dialect + ".model")));
+		DIALECT_LIST.forEach(dialect -> rdbmsModels.add(new File(TARGET_CLASSES, MODEL_NAME + "-rdbms_" + dialect + ".model")));
 		rdbmsModels.forEach(rdbmsModel -> rdbmsModel.delete());
-		openapiModel = new File(TARGET_CLASSES, "openapi.model");
+		openapiModel = new File(TARGET_CLASSES, MODEL_NAME + "-openapi.model");
 		openapiModel.delete();
-		DIALECT_LIST.forEach(dialect -> liquibaseModels.add(new File(TARGET_CLASSES, "liquibase_" + dialect + ".changelog.xml")));
+		DIALECT_LIST.forEach(dialect -> liquibaseModels.add(new File(TARGET_CLASSES, MODEL_NAME + "-liquibase_" + dialect + ".changelog.xml")));
 		liquibaseModels.forEach(liquibaseModel -> liquibaseModel.delete());
-		psm2asmTransformationTrace = new File(TARGET_CLASSES, "psm2asm.model");
+		psm2asmTransformationTrace = new File(TARGET_CLASSES, MODEL_NAME + "-psm2asm.model");
 		psm2asmTransformationTrace.delete();
-		psm2measureTransformationTrace = new File(TARGET_CLASSES, "psm2measure.model");
+		psm2measureTransformationTrace = new File(TARGET_CLASSES, MODEL_NAME + "-psm2measure.model");
 		psm2measureTransformationTrace.delete();
-		DIALECT_LIST.forEach(dialect -> asm2rdbmsTransformationTraces.add(new File(TARGET_CLASSES, "asm2rdbms_" + dialect + ".model")));
+		DIALECT_LIST.forEach(dialect -> asm2rdbmsTransformationTraces.add(new File(TARGET_CLASSES, MODEL_NAME + "-asm2rdbms_" + dialect + ".model")));
 		asm2rdbmsTransformationTraces.forEach(asm2rdbmsTransformationTrace -> asm2rdbmsTransformationTrace.delete());
-		asm2openapiTransformationTrace = new File(TARGET_CLASSES, "asm2openapi.model");
+		asm2openapiTransformationTrace = new File(TARGET_CLASSES, MODEL_NAME + "-asm2openapi.model");
 		asm2openapiTransformationTrace.delete();
-		asm2sdkBundle = new File(TARGET_CLASSES, "asm2sdk.jar");
+		asm2sdkBundle = new File(TARGET_CLASSES, MODEL_NAME + "-asm2sdk.jar");
 		asm2sdkBundle.delete();
-		asm2jaxrsapiBundle = new File(TARGET_CLASSES, "asm2jaxrsapi.jar");
+		asm2jaxrsapiBundle = new File(TARGET_CLASSES, MODEL_NAME + "-asm2jaxrsapi.jar");
 		asm2jaxrsapiBundle.delete();
 
 		defaultWorkflow.setUp(DefaultWorkflowSetupParameters.defaultWorkflowSetupParameters()

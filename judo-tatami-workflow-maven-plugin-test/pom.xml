@@ -34,8 +34,8 @@
 							<goal>psm-default-workflow</goal>
 						</goals>
 						<configuration>
-						    <psmModelDest>${basedir}/../judo-tatami-workflow/target/test-classes/northwind-psm.model/</psmModelDest>
-							<destination>${basedir}/target/test-classes/</destination>
+						    <psmModelDest>${basedir}/target/classes/northwind-psm.model/</psmModelDest>
+							<destination>${basedir}/target/classes/</destination>
 							<modelName>northwind</modelName>
 							<dialectList>hsqldb,oracle</dialectList>
 						</configuration>
@@ -86,15 +86,46 @@
 			<version>1.0.0-SNAPSHOT</version>
 		</dependency>
 		<dependency>
-			<groupId>hu.blackbelt.judo.tatami</groupId>
-			<artifactId>judo-tatami-asm2jaxrsapi</artifactId>
-			<version>1.0.0-SNAPSHOT</version>
-		</dependency>
-		<dependency>
 			<groupId>javax.ws.rs</groupId>
 			<artifactId>javax.ws.rs-api</artifactId>
 			<version>2.1</version>
 		</dependency>
+
+		<dependency>
+			<groupId>hu.blackbelt.judo.tatami</groupId>
+			<artifactId>judo-tatami-psm2asm</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>hu.blackbelt.judo.tatami</groupId>
+			<artifactId>judo-tatami-psm2measure</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>hu.blackbelt.judo.tatami</groupId>
+			<artifactId>judo-tatami-asm2rdbms</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>hu.blackbelt.judo.tatami</groupId>
+			<artifactId>judo-tatami-asm2jaxrsapi</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>hu.blackbelt.judo.tatami</groupId>
+			<artifactId>judo-tatami-asm2openapi</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>hu.blackbelt.judo.tatami</groupId>
+			<artifactId>judo-tatami-asm2sdk</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>hu.blackbelt.judo.tatami</groupId>
+			<artifactId>judo-tatami-rdbms2liquibase</artifactId>
+		</dependency>
+
 	</dependencies>
 
 </project>

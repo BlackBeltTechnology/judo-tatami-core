@@ -1,7 +1,5 @@
 package hu.blackbelt.judo.tatami.workflow.maven.plugin;
 
-import static java.lang.Thread.currentThread;
-
 import java.io.File;
 import java.io.IOException;
 import java.net.*;
@@ -9,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import lombok.Getter;
 import org.apache.maven.artifact.DependencyResolutionRequiredException;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -28,12 +27,20 @@ import hu.blackbelt.judo.meta.rdbms.runtime.RdbmsModel.RdbmsValidationException;
 import hu.blackbelt.judo.tatami.workflow.PsmDefaultWorkflow;
 import hu.blackbelt.judo.tatami.workflow.DefaultWorkflowSave;
 import hu.blackbelt.judo.tatami.workflow.DefaultWorkflowSetupParameters;
-import lombok.Getter;
 
 @Mojo(name = "psm-default-workflow",
 		defaultPhase = LifecyclePhase.COMPILE,
 		requiresDependencyResolution = ResolutionScope.COMPILE)
 public class PsmDefaultWorkflowMojo extends AbstractMojo {
+
+	public static final String PSM_2_ASM_TRANSFORMATION_SCRIPT_ROOT = "Psm2Asm-Transformation-ScriptRoot";
+	public static final String PSM_2_MEASURE_TRANSFORMATION_SCRIPT_ROOT = "Psm2Measure-Transformation-ScriptRoot";
+	public static final String ASM_2_OPEN_API_TRANSFORMATION_SCRIPT_ROOT = "Asm2Openapi-Transformation-ScriptRoot";
+	public static final String ASM_2_RDBMS_TRANSFORMATION_SCRIPT_ROOT = "Asm2Rdbms-Transformation-ScriptRoot";
+	public static final String ASM_2_RDBMS_TRANSFORMATION_MODEL_ROOT = "Asm2Rdbms-Transformation-ModelRoot";
+	public static final String RDBMS_2_LIQUIBASE_TRANSFORMATION_SCRIPT_ROOT = "Rdbms2Liquibase-Transformation-ScriptRoot";
+	public static final String ASM_2_SDK_TRANSFORMATION_SCRIPT_ROOT = "Asm2SDK-Transformation-ScriptRoot";
+	public static final String ASM_2_JAXRSAPI_TRANSFORMATION_SCRIPT_ROOT = "Asm2Jaxrsapi-Transformation-ScriptRoot";
 
 	@Parameter(defaultValue = "${project}", readonly = true, required = true)
 	private MavenProject project;
@@ -43,6 +50,7 @@ public class PsmDefaultWorkflowMojo extends AbstractMojo {
 
 	@Parameter(defaultValue = "${repositorySystemSession}", readonly = true, required = true)
 	public RepositorySystemSession repoSession;
+
 	@Parameter(defaultValue = "${project.remoteProjectRepositories}", readonly = true, required = true)
 	public List<RemoteRepository> repositories;
 
@@ -50,59 +58,67 @@ public class PsmDefaultWorkflowMojo extends AbstractMojo {
 	private PluginDescriptor pluginDescriptor;
 
 	@Parameter(property = "psmModelDest")
-	private String psmModelDest;
+	private File psmModelDest;
 
-	@Parameter(property = "psm2asmModelScriptRoot")
-	private String psm2asmModelScriptRoot;
-	@Parameter(property = "psm2measureModelScriptRoot")
-	private String psm2measureModelScriptRoot;
-	@Parameter(property = "asm2openApiModelScriptRoot")
-	private String asm2openApiModelScriptRoot;
-	@Parameter(property = "asm2rdbmsModelScriptRoot")
-	private String asm2rdbmsModelScriptRoot;
-	@Parameter(property = "rdbms2liquibaseModelScriptRoot")
-	private String rdbms2liquibaseModelScriptRoot;
-	@Parameter(property = "asm2sdkModelScriptRoot")
-	private String asm2sdkModelScriptRoot;
-	@Parameter(property = "asm2jaxrsapiModelScriptRoot")
-	private String asm2jaxrsapiModelScriptRoot;
+	@Parameter(property = "psm2asmTransformationScriptRoot")
+	private File psm2asmTransformationScriptRoot;
+
+	@Parameter(property = "psm2measureTransformationScriptRoot")
+	private File psm2measureTransformationScriptRoot;
+
+	@Parameter(property = "asm2openApiTransformationScriptRoot")
+	private File asm2openApiTransformationScriptRoot;
+
+	@Parameter(property = "asm2rdbmsTransformationScriptRoot")
+	private File asm2rdbmsTransformationScriptRoot;
+
+	@Parameter(property = "asm2rdbmsTransformationModelRoot")
+	private File asm2rdbmsTransformationModelRoot;
+
+	@Parameter(property = "rdbms2liquibaseTransformationScriptRoot")
+	private File rdbms2liquibaseTransformationScriptRoot;
+
+	@Parameter(property = "asm2sdkTransformationScriptRoot")
+	private File asm2sdkTransformationScriptRoot;
+
+	@Parameter(property = "asm2jaxrsapiTransformationScriptRoot")
+	private File asm2jaxrsapiTransformationScriptRoot;
 	
 	
 	@Parameter(property = "destination")
 	private File destination;
 	@Parameter(property = "modelName")
 	private String modelName;
+	
 	@Parameter(property = "dialectList")
 	private List<String> dialectList;
 
-	@Parameter(property = "asm2rdbmsModelModelRoot")
-	private String asm2rdbmsModelModelRoot;
-
 	@Getter
-	@Parameter(property = "transformationArtifacts", defaultValue =
-			"hu.blackbelt.judo.tatami:judo-tatami-asm2rdbms:${judo-tatami-version}," +
-			"hu.blackbelt.judo.tatami:judo-tatami-psm2asm:${judo-tatami-version}," +
-			"hu.blackbelt.judo.tatami:judo-tatami-psm2measure:${judo-tatami-version}," +
-			"hu.blackbelt.judo.tatami:judo-tatami-asm2openapi:${judo-tatami-version}," +
-			"hu.blackbelt.judo.tatami:judo-tatami-rdbms2liquibase:${judo-tatami-version}," +
-			"hu.blackbelt.judo.tatami:judo-tatami-asm2sdk:${judo-tatami-version}," +
-			"hu.blackbelt.judo.tatami:judo-tatami-asm2jaxrsapi:${judo-tatami-version}")
-	private List<String> transformationArtifacts;
+	@Parameter(property = "tagsForSearch", defaultValue =
+			PSM_2_ASM_TRANSFORMATION_SCRIPT_ROOT + "," +
+			PSM_2_MEASURE_TRANSFORMATION_SCRIPT_ROOT + "," +
+			ASM_2_OPEN_API_TRANSFORMATION_SCRIPT_ROOT + "," +
+			ASM_2_RDBMS_TRANSFORMATION_SCRIPT_ROOT + "," +
+			ASM_2_RDBMS_TRANSFORMATION_MODEL_ROOT + "," +
+			RDBMS_2_LIQUIBASE_TRANSFORMATION_SCRIPT_ROOT + "," +
+			ASM_2_SDK_TRANSFORMATION_SCRIPT_ROOT + "," +
+			ASM_2_JAXRSAPI_TRANSFORMATION_SCRIPT_ROOT)
+	private List<String> tagsForSearch;
 
+	List<URL> compileClasspathFiles = new ArrayList<>();
 
 	private void setContextClassLoader() throws DependencyResolutionRequiredException, MalformedURLException {
-		List<URL> pathUrls = new ArrayList<>();
 		for (Object mavenCompilePath : project.getCompileClasspathElements()) {
 			String currentPathProcessed = (String) mavenCompilePath;
-			pathUrls.add(new File(currentPathProcessed).toURI().toURL());
+			compileClasspathFiles.add(new File(currentPathProcessed).toURI().toURL());
 		}
 
-		URL[] urlsForClassLoader = pathUrls.toArray(new URL[pathUrls.size()]);
+		URL[] urlsForClassLoader = compileClasspathFiles.toArray(new URL[compileClasspathFiles.size()]);
 		getLog().info("Set urls for URLClassLoader: " + Arrays.asList(urlsForClassLoader));
 
 		// need to define parent classloader which knows all dependencies of the plugin
 		ClassLoader classLoader = new URLClassLoader(urlsForClassLoader, PsmDefaultWorkflowMojo.class.getClassLoader());
-		currentThread().setContextClassLoader(classLoader);
+		Thread.currentThread().setContextClassLoader(classLoader);
 	}
 
 	@Override
@@ -120,57 +136,58 @@ public class PsmDefaultWorkflowMojo extends AbstractMojo {
 			throw new MojoExecutionException("Failed to set classloader", e);
 		}
 
+		WorkflowHelper workflowHelper = new WorkflowHelper(getLog(), compileClasspathFiles, tagsForSearch);
 
-		WorkflowHelper workflowHelper = new WorkflowHelper(repoSystem, repoSession, repositories, transformationArtifacts);
+		PsmDefaultWorkflow defaultWorkflow = new PsmDefaultWorkflow();
+
 		try {
 			workflowHelper.extract();
-			psm2measureModelScriptRoot = (psm2measureModelScriptRoot == null)
-					? workflowHelper.getPsm2measureModelScriptRoot()
-					: psm2measureModelScriptRoot;
-			psm2asmModelScriptRoot = (psm2asmModelScriptRoot == null) 
-					? workflowHelper.getPsm2asmModelScriptRoot()
-					: psm2asmModelScriptRoot;
-			asm2rdbmsModelScriptRoot = (asm2rdbmsModelScriptRoot == null) 
-					? workflowHelper.getAsm2rdbmsModelScriptRoot()
-					: asm2rdbmsModelScriptRoot;
-			asm2openApiModelScriptRoot = (asm2openApiModelScriptRoot == null)
-					? workflowHelper.getAsm2openApiModelScriptRoot()
-					: asm2openApiModelScriptRoot;
-			rdbms2liquibaseModelScriptRoot = (rdbms2liquibaseModelScriptRoot == null)
-					? workflowHelper.getRdbms2liquibaseModelScriptRoot()
-					: rdbms2liquibaseModelScriptRoot;
-			asm2rdbmsModelModelRoot = (asm2rdbmsModelModelRoot == null)
-					? workflowHelper.getAsm2rdbmsExcelModelURI() 
-					: asm2rdbmsModelModelRoot;
-			asm2sdkModelScriptRoot = (asm2sdkModelScriptRoot == null)
-					? workflowHelper.getAsm2sdkModelScriptRoot()
-					: asm2sdkModelScriptRoot;
-			asm2jaxrsapiModelScriptRoot = (asm2jaxrsapiModelScriptRoot == null)
-					? workflowHelper.getAsm2jaxrsapiModelScriptRoot()
-					: asm2jaxrsapiModelScriptRoot;
-					
-		} catch (IOException e) {
-			throw new MojoFailureException("An error occurred during the extraction of the script roots.", e);
-		}
+			URI psm2measureModelScriptRootResolved = (psm2measureTransformationScriptRoot == null)
+					? workflowHelper.getUrlPathForTag(PSM_2_MEASURE_TRANSFORMATION_SCRIPT_ROOT).toURI()
+					: psm2measureTransformationScriptRoot.toURI();
 
-		// -------------- //
-		// Setup workflow //
-		// -------------- //
-		PsmDefaultWorkflow defaultWorkflow = new PsmDefaultWorkflow();
-		try {
+			URI psm2asmModelScriptRootResolved = (psm2asmTransformationScriptRoot == null)
+					? workflowHelper.getUrlPathForTag(PSM_2_ASM_TRANSFORMATION_SCRIPT_ROOT).toURI()
+					: psm2asmTransformationScriptRoot.toURI();
+
+			URI asm2rdbmsModelScriptRootResolved = (asm2rdbmsTransformationScriptRoot == null)
+					? workflowHelper.getUrlPathForTag(ASM_2_RDBMS_TRANSFORMATION_SCRIPT_ROOT).toURI()
+					: asm2rdbmsTransformationScriptRoot.toURI();
+
+			URI asm2rdbmsModelModelRootResolved = (asm2rdbmsTransformationModelRoot == null)
+					? workflowHelper.getUrlPathForTag(ASM_2_RDBMS_TRANSFORMATION_MODEL_ROOT).toURI()
+					: asm2rdbmsTransformationModelRoot.toURI();
+
+			URI asm2openApiModelScriptRootResolved = (asm2openApiTransformationScriptRoot == null)
+					? workflowHelper.getUrlPathForTag(ASM_2_OPEN_API_TRANSFORMATION_SCRIPT_ROOT).toURI()
+					: asm2openApiTransformationScriptRoot.toURI();
+
+			URI rdbms2liquibaseModelScriptRootResolved = (rdbms2liquibaseTransformationScriptRoot == null)
+					? workflowHelper.getUrlPathForTag(RDBMS_2_LIQUIBASE_TRANSFORMATION_SCRIPT_ROOT).toURI()
+					: rdbms2liquibaseTransformationScriptRoot.toURI();
+
+			URI asm2sdkModelScriptRootResolved = (asm2sdkTransformationScriptRoot == null)
+					? workflowHelper.getUrlPathForTag(ASM_2_SDK_TRANSFORMATION_SCRIPT_ROOT).toURI()
+					: asm2sdkTransformationScriptRoot.toURI();
+
+			URI asm2jaxrsapiModelScriptRootResolved = (asm2jaxrsapiTransformationScriptRoot == null)
+					? workflowHelper.getUrlPathForTag(ASM_2_JAXRSAPI_TRANSFORMATION_SCRIPT_ROOT).toURI()
+					: asm2jaxrsapiTransformationScriptRoot.toURI();
+
 			defaultWorkflow.setUp(DefaultWorkflowSetupParameters
 					.defaultWorkflowSetupParameters()
-					.psmModelSourceURI(new File(psmModelDest).toURI())
-					.psm2AsmModelTransformationScriptURI(new URI(psm2asmModelScriptRoot))
-					.psm2MeasureModelTransformationScriptURI(new URI(psm2measureModelScriptRoot))
-					.asm2RdbmsModelTransformationScriptURI(new URI(asm2rdbmsModelScriptRoot))
-					.asm2OpenapiModelTransformationScriptURI(new URI(asm2openApiModelScriptRoot))
-					.rdbms2LiquibaseModelTransformationScriptURI(new URI(rdbms2liquibaseModelScriptRoot))
+					.psmModelSourceURI(psmModelDest.toURI())
+					.psm2AsmModelTransformationScriptURI(psm2asmModelScriptRootResolved)
+					.psm2MeasureModelTransformationScriptURI(psm2measureModelScriptRootResolved)
+					.asm2RdbmsModelTransformationScriptURI(asm2rdbmsModelScriptRootResolved)
+					.asm2OpenapiModelTransformationScriptURI(asm2openApiModelScriptRootResolved)
+					.rdbms2LiquibaseModelTransformationScriptURI(rdbms2liquibaseModelScriptRootResolved)
 					.modelName(modelName)
 					.dialectList(dialectList)
-					.asm2RdbmsModelTransformationModelURI(new URI(asm2rdbmsModelModelRoot))
-					.asm2sdkModelTransformationScriptURI(new URI(asm2sdkModelScriptRoot))
-					.asm2jaxrsapiModelTransformationScriptURI(new URI(asm2jaxrsapiModelScriptRoot)));
+					.asm2RdbmsModelTransformationModelURI(asm2rdbmsModelModelRootResolved)
+					.asm2sdkModelTransformationScriptURI(asm2sdkModelScriptRootResolved)
+					.asm2jaxrsapiModelTransformationScriptURI(asm2jaxrsapiModelScriptRootResolved));
+
 		} catch (IOException | PsmValidationException | URISyntaxException e) {
 			throw new MojoFailureException("An error occurred during the setup phase of the workflow.", e);
 		}

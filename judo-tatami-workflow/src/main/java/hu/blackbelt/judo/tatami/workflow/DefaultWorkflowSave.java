@@ -44,41 +44,41 @@ public class DefaultWorkflowSave {
 		}
 
 		transformationContext.getByClass(AsmModel.class).ifPresent(throwingConsumerWrapper((m) ->  
-			m.saveAsmModel(asmSaveArgumentsBuilder().file(new File(dest, "asm.model")))));
+			m.saveAsmModel(asmSaveArgumentsBuilder().file(new File(dest, transformationContext.getModelName() + "-" + "asm.model")))));
 
 		transformationContext.getByClass(MeasureModel.class).ifPresent(throwingConsumerWrapper((m) ->  
-			m.saveMeasureModel(measureSaveArgumentsBuilder().file(new File(dest, "measure.model")))));
+			m.saveMeasureModel(measureSaveArgumentsBuilder().file(new File(dest, transformationContext.getModelName() + "-" + "measure.model")))));
 
 		dialectList.forEach(dialect -> transformationContext.get(RdbmsModel.class, "rdbms:" + dialect)
 				.ifPresent(throwingConsumerWrapper((m) -> m.saveRdbmsModel(
-						rdbmsSaveArgumentsBuilder().file(new File(dest, "rdbms_" + dialect + ".model"))))));
+						rdbmsSaveArgumentsBuilder().file(new File(dest, transformationContext.getModelName() + "-" + "rdbms_" + dialect + ".model"))))));
 
 		transformationContext.getByClass(OpenapiModel.class).ifPresent(throwingConsumerWrapper((m) ->
-			m.saveOpenapiModel(openapiSaveArgumentsBuilder().file(new File(dest, "openapi.model")))));
+			m.saveOpenapiModel(openapiSaveArgumentsBuilder().file(new File(dest, transformationContext.getModelName() + "-" + "openapi.model")))));
 		
 		dialectList.forEach(dialect -> transformationContext.get(LiquibaseModel.class, "liquibase:" + dialect)
 				.ifPresent(throwingConsumerWrapper((m) -> m.saveLiquibaseModel(liquibaseSaveArgumentsBuilder()
-						.file(new File(dest, "liquibase_" + dialect + ".changelog.xml"))))));
+						.file(new File(dest, transformationContext.getModelName() + "-" + "liquibase_" + dialect + ".changelog.xml"))))));
 
 		transformationContext.getByClass(Psm2AsmTransformationTrace.class).ifPresent(throwingConsumerWrapper((m) ->
-			m.save(new File(dest, "psm2asm.model"))));
+			m.save(new File(dest, transformationContext.getModelName() + "-" + "psm2asm.model"))));
 
 		transformationContext.getByClass(Psm2MeasureTransformationTrace.class).ifPresent(throwingConsumerWrapper((m) ->
-			m.save(new File(dest, "psm2measure.model"))));
+			m.save(new File(dest, transformationContext.getModelName() + "-" + "psm2measure.model"))));
 
 		dialectList.forEach(dialect -> transformationContext
 				.get(Asm2RdbmsTransformationTrace.class, "asm2rdbmstrace:" + dialect)
-				.ifPresent(throwingConsumerWrapper((m) -> m.save(new File(dest, "asm2rdbms_" + dialect + ".model")))));
+				.ifPresent(throwingConsumerWrapper((m) -> m.save(new File(dest, transformationContext.getModelName() + "-" + "asm2rdbms_" + dialect + ".model")))));
 		
 		
 		transformationContext.getByClass(Asm2OpenAPITransformationTrace.class).ifPresent(throwingConsumerWrapper((m) ->
-			m.save(new File(dest, "asm2openapi.model"))));
+			m.save(new File(dest, transformationContext.getModelName() + "-" + "asm2openapi.model"))));
 		
 		transformationContext.get(InputStream.class, SDK_OUTPUT).ifPresent(throwingConsumerWrapper((m) ->
-			Files.copy(m, new File(dest, "asm2sdk.jar").toPath())));
+			Files.copy(m, new File(dest, transformationContext.getModelName() + "-" + "asm2sdk.jar").toPath())));
 		
 		transformationContext.get(InputStream.class, JAXRSAPI_OUTPUT).ifPresent(throwingConsumerWrapper((m)->
-			Files.copy(m, new File(dest, "asm2jaxrsapi.jar").toPath())));
+			Files.copy(m, new File(dest, transformationContext.getModelName() + "-" + "asm2jaxrsapi.jar").toPath())));
 			
 	}
 

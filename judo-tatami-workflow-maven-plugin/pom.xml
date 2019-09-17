@@ -64,7 +64,7 @@
 		<dependency>
 			<groupId>hu.blackbelt.judo.tatami</groupId>
 			<artifactId>judo-tatami-workflow</artifactId>
-			<version>1.0.0-SNAPSHOT</version>
 		</dependency>
+
 	</dependencies>
 </project>

@@ -1,90 +1,75 @@
 package hu.blackbelt.judo.tatami.workflow.maven.plugin;
 
-import java.io.File;
 import java.io.IOException;
-import java.util.HashMap;
+import java.net.JarURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Function;
 import java.util.jar.Attributes;
-import java.util.jar.JarFile;
 import java.util.jar.Manifest;
+import java.util.stream.Collectors;
 
-import org.eclipse.aether.RepositorySystem;
-import org.eclipse.aether.RepositorySystemSession;
-import org.eclipse.aether.artifact.Artifact;
-import org.eclipse.aether.artifact.DefaultArtifact;
-import org.eclipse.aether.repository.RemoteRepository;
-import org.eclipse.aether.resolution.ArtifactRequest;
-import org.eclipse.aether.resolution.ArtifactResolutionException;
-import org.eclipse.aether.resolution.ArtifactResult;
-
-import lombok.Getter;
-import lombok.SneakyThrows;
+import com.google.common.base.Preconditions;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import org.apache.maven.plugin.logging.Log;
 
 public class WorkflowHelper {
-	private HashMap<String, Attributes> manifestMap = new HashMap<>();
-	private HashMap<String, String> pathMap = new HashMap<>();
+	private final  Map<String, UrlAndPath> urlAndPathForTag = new ConcurrentHashMap();
+	private final List<URL> jarsForSearch;
+	private final List<String> tags;
+	private final Log log;
 
-	@Getter
-	private String psm2asmModelScriptRoot;
-	@Getter
-	private String psm2measureModelScriptRoot;
-	@Getter
-	private String asm2rdbmsModelScriptRoot;
-	@Getter
-	private String rdbms2liquibaseModelScriptRoot;
-	@Getter
-	private String asm2openApiModelScriptRoot;
-	@Getter
-	private String asm2rdbmsExcelModelURI;
-	@Getter
-	private String asm2sdkModelScriptRoot;
-	@Getter
-	private String asm2jaxrsapiModelScriptRoot;
-	
-	private RepositorySystem repoSystem;
-	private RepositorySystemSession repoSession;
-	private List<RemoteRepository> repositories;
-	private List<String> transformationArtifacts;
-
-	public WorkflowHelper(RepositorySystem repoSystem, RepositorySystemSession repoSession, List<RemoteRepository> repositories, List<String> transformationArtifacts) {
-		this.repoSystem = repoSystem;
-		this.repoSession = repoSession;
-		this.repositories = repositories;
-		this.transformationArtifacts = transformationArtifacts;
+	public WorkflowHelper(Log log, List<URL> jarsForSearch, List<String> tags) {
+		this.jarsForSearch = jarsForSearch;
+		this.tags = tags;
+		this.log = log;
 	}
 
 	public void extract() throws IOException {
-		for (String artifactString : transformationArtifacts) {
-			JarFile j = new JarFile(getArtifactFile(artifactString).getAbsoluteFile());
-			Manifest m = j.getManifest();
-			j.close();
-			String tempName = artifactString.split(":")[1].split("-")[2];
-			manifestMap.put(tempName, m.getMainAttributes());
-			pathMap.put(tempName, getArtifactFile(artifactString).getAbsolutePath());
+		for (URL originalUrl : jarsForSearch.stream().filter(u -> u.toString().endsWith(".jar")).collect(Collectors.toList())) {
+			log.info("Workflow helper - Proceessing URL: " + originalUrl);
+
+			URL url;
+			if (originalUrl.toString().startsWith("jar:")) {
+				url = originalUrl;
+ 			} else {
+				url = new URL("jar:" + originalUrl.toString() + "!/");
+			}
+			JarURLConnection jarConnection = (JarURLConnection) url.openConnection();
+			Manifest manifest = jarConnection.getManifest();
+			Map<String, String> manifestEntries = manifest.getMainAttributes().entrySet().stream()
+					.collect(Collectors.toMap(e -> e.getKey().toString(), e -> e.getValue().toString()));
+//			for (Object key : manifestEntries.keySet()) {
+//				log.info("    Key: " + key + " Val: " + manifestEntries.get(key.toString()));
+//			}
+
+			for (String tag : tags) {
+				// log.info("   Search for tag: " + tag);
+				if (manifestEntries.get(tag) != null) {
+					log.info("     - Tag " + tag + " found");
+					urlAndPathForTag.put(tag, new UrlAndPath(url, (String) manifestEntries.get(tag)));
+				}
+			}
 		}
-
-		psm2asmModelScriptRoot = produceValidationScriptRootPath("Psm2Asm");
-		psm2measureModelScriptRoot = produceValidationScriptRootPath("Psm2Measure");
-		asm2openApiModelScriptRoot = produceValidationScriptRootPath("Asm2OpenApi");
-		asm2rdbmsModelScriptRoot = produceValidationScriptRootPath("Asm2Rdbms");
-		rdbms2liquibaseModelScriptRoot = produceValidationScriptRootPath("Rdbms2Liquibase");
-		asm2rdbmsExcelModelURI = "jar:file://" + pathMap.get("asm2rdbms") + "!/"
-				+ manifestMap.get("asm2rdbms").getValue("Asm2Rdbms-Transformation-ModelRoot") + "/";
-		asm2sdkModelScriptRoot = produceValidationScriptRootPath("Asm2SDK");
-		asm2jaxrsapiModelScriptRoot = produceValidationScriptRootPath("Asm2Jaxrsapi");
 	}
 
-	private String produceValidationScriptRootPath(String name) {
-		return "jar:file://" + pathMap.get(name.toLowerCase()) + "!/"
-				+ manifestMap.get(name.toLowerCase()).getValue(name + "-Transformation-ScriptRoot") + "/";
+	public URL getUrlPathForTag(String tag) throws MalformedURLException {
+		Preconditions.checkState(urlAndPathForTag.containsKey(tag), "No JAR file found with MANIFEST tag: " + tag + " in classpath.");
+		return new URL(urlAndPathForTag.get(tag).getUrl() + urlAndPathForTag.get(tag).getPath() + "/");
 	}
 
-	@SneakyThrows(ArtifactResolutionException.class)
-	private File getArtifactFile(String uri) {
-		Artifact artifact = new DefaultArtifact(uri);
-		ArtifactRequest req = new ArtifactRequest().setRepositories(repositories).setArtifact(artifact);
-		ArtifactResult resolutionResult;
-		resolutionResult = repoSystem.resolveArtifact(repoSession, req);
-		return resolutionResult.getArtifact().getFile();
+	@Data
+	@AllArgsConstructor
+	public static class UrlAndPath {
+		URL url;
+		String path;
+
+		public String getFullURL() {
+			return getUrl() + getPath() + "/";
+		}
 	}
 }
