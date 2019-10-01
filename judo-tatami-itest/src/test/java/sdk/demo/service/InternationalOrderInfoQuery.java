@@ -5,7 +5,7 @@ import java.util.Map;
 import java.util.LinkedHashMap;
 import java.util.stream.Collectors;
 
-public class OrderInfoQuery {
+public class InternationalOrderInfoQuery {
 	private java.util.UUID __identifier;
 	private String shipperName;
 	private java.time.ZonedDateTime orderDate;
@@ -13,7 +13,7 @@ public class OrderInfoQuery {
 	private List<sdk.demo.service.CategoryInfo> categories;
 
     @java.beans.ConstructorProperties({"__identifier", "shipperName", "orderDate", "items", "categories"})
-    OrderInfoQuery(java.util.UUID __identifier, String shipperName, java.time.ZonedDateTime orderDate, List<sdk.demo.service.OrderItemQuery> items, List<sdk.demo.service.CategoryInfo> categories) {
+    InternationalOrderInfoQuery(java.util.UUID __identifier, String shipperName, java.time.ZonedDateTime orderDate, List<sdk.demo.service.OrderItemQuery> items, List<sdk.demo.service.CategoryInfo> categories) {
 		this.__identifier = __identifier;
         this.shipperName = shipperName;
         this.orderDate = orderDate;
@@ -76,8 +76,8 @@ public class OrderInfoQuery {
 		return ret;
 	}
 
-	public static OrderInfoQuery fromMap(Map<String, Object> map) {
-		OrderInfoQueryBuilder builder = orderInfoQueryBuilder();
+	public static InternationalOrderInfoQuery fromMap(Map<String, Object> map) {
+		InternationalOrderInfoQueryBuilder builder = internationalOrderInfoQueryBuilder();
 		if (map.containsKey("__identifier")) {
 			builder.__identifier((java.util.UUID)map.get("__identifier"));
 		}
@@ -97,54 +97,54 @@ public class OrderInfoQuery {
 	}
 
 	public String toString() {
-	    return "OrderInfoQuery(identifier=" + this.__identifier + ", shipperName=" + this.shipperName + ", orderDate=" + this.orderDate + ", items=" + this.items + ", categories=" + this.categories + ")";
+	    return "InternationalOrderInfoQuery(identifier=" + this.__identifier + ", shipperName=" + this.shipperName + ", orderDate=" + this.orderDate + ", items=" + this.items + ", categories=" + this.categories + ")";
 	}
 
     // Builder
-	public static OrderInfoQueryBuilder orderInfoQueryBuilder() {
-		return new OrderInfoQueryBuilder();
+	public static InternationalOrderInfoQueryBuilder internationalOrderInfoQueryBuilder() {
+		return new InternationalOrderInfoQueryBuilder();
 	}
 
-	public static class OrderInfoQueryBuilder {
+	public static class InternationalOrderInfoQueryBuilder {
 		private java.util.UUID __identifier;
         private String shipperName;
         private java.time.ZonedDateTime orderDate;
         private List<sdk.demo.service.OrderItemQuery> items;
         private List<sdk.demo.service.CategoryInfo> categories;
 
-		OrderInfoQueryBuilder() {
+		InternationalOrderInfoQueryBuilder() {
 		}
 
-		public OrderInfoQueryBuilder __identifier(java.util.UUID __identifier) {
+		public InternationalOrderInfoQueryBuilder __identifier(java.util.UUID __identifier) {
 			this.__identifier = __identifier;
 			return this;
 		}
-		public OrderInfoQueryBuilder shipperName(String shipperName) {
+		public InternationalOrderInfoQueryBuilder shipperName(String shipperName) {
 			this.shipperName = shipperName;
 			return this;
 		}
 
-		public OrderInfoQueryBuilder orderDate(java.time.ZonedDateTime orderDate) {
+		public InternationalOrderInfoQueryBuilder orderDate(java.time.ZonedDateTime orderDate) {
 			this.orderDate = orderDate;
 			return this;
 		}
 
-		public OrderInfoQueryBuilder items(List<sdk.demo.service.OrderItemQuery> items) {
+		public InternationalOrderInfoQueryBuilder items(List<sdk.demo.service.OrderItemQuery> items) {
 			this.items = items;
 			return this;
 		}
 
-		public OrderInfoQueryBuilder categories(List<sdk.demo.service.CategoryInfo> categories) {
+		public InternationalOrderInfoQueryBuilder categories(List<sdk.demo.service.CategoryInfo> categories) {
 			this.categories = categories;
 			return this;
 		}
 
-		public OrderInfoQuery build() {
-			return new OrderInfoQuery(this.__identifier, this.shipperName, this.orderDate, this.items, this.categories);
+		public InternationalOrderInfoQuery build() {
+			return new InternationalOrderInfoQuery(this.__identifier, this.shipperName, this.orderDate, this.items, this.categories);
 		}
 
 		public String toString() {
-    	    return "OrderInfoQueryBuilder.OrderInfoQuery(identifier=" + __identifier + ", shipperName=" + this.shipperName + ", orderDate=" + this.orderDate + ", items=" + this.items + ", categories=" + this.categories + ")";
+    	    return "InternationalOrderInfoQueryBuilder.InternationalOrderInfoQuery(identifier=" + __identifier + ", shipperName=" + this.shipperName + ", orderDate=" + this.orderDate + ", items=" + this.items + ", categories=" + this.categories + ")";
 		}
 	}
 }

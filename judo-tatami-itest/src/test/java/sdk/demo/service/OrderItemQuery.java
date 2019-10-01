@@ -5,17 +5,17 @@ import java.util.Map;
 import java.util.LinkedHashMap;
 import java.util.stream.Collectors;
 
-public class OrderItem {
+public class OrderItemQuery {
 	private java.util.UUID __identifier;
 	private String productName;
 	private Double unitPrice;
 	private Integer quantity;
 	private Double discount;
-	private sdk.demo.service.ProductInfo product;
+	private sdk.demo.service.ProductInfoQuery product;
 	private sdk.demo.service.CategoryInfo category;
 
     @java.beans.ConstructorProperties({"__identifier", "productName", "unitPrice", "quantity", "discount", "product", "category"})
-    OrderItem(java.util.UUID __identifier, String productName, Double unitPrice, Integer quantity, Double discount, sdk.demo.service.ProductInfo product, sdk.demo.service.CategoryInfo category) {
+    OrderItemQuery(java.util.UUID __identifier, String productName, Double unitPrice, Integer quantity, Double discount, sdk.demo.service.ProductInfoQuery product, sdk.demo.service.CategoryInfo category) {
 		this.__identifier = __identifier;
         this.productName = productName;
         this.unitPrice = unitPrice;
@@ -41,7 +41,7 @@ public class OrderItem {
 	public Double getDiscount() {
 		return this.discount;
 	}
-	public sdk.demo.service.ProductInfo getProduct() {
+	public sdk.demo.service.ProductInfoQuery getProduct() {
 		return this.product;
 	}
 	public sdk.demo.service.CategoryInfo getCategory() {
@@ -64,7 +64,7 @@ public class OrderItem {
 	public void setDiscount(Double discount) {
 		this.discount = discount;
 	}
-	public void setProduct(sdk.demo.service.ProductInfo product) {
+	public void setProduct(sdk.demo.service.ProductInfoQuery product) {
 		this.product = product;
 	}
 	public void setCategory(sdk.demo.service.CategoryInfo category) {
@@ -98,8 +98,8 @@ public class OrderItem {
 		return ret;
 	}
 
-	public static OrderItem fromMap(Map<String, Object> map) {
-		OrderItemBuilder builder = orderItemBuilder();
+	public static OrderItemQuery fromMap(Map<String, Object> map) {
+		OrderItemQueryBuilder builder = orderItemQueryBuilder();
 		if (map.containsKey("__identifier")) {
 			builder.__identifier((java.util.UUID)map.get("__identifier"));
 		}
@@ -116,7 +116,7 @@ public class OrderItem {
 			builder.discount((Double) map.get("discount"));
 		}
 	    if (map.containsKey("product")) {
-		    builder.product(sdk.demo.service.ProductInfo.fromMap((Map<String, Object>) map.get("product")));
+		    builder.product(sdk.demo.service.ProductInfoQuery.fromMap((Map<String, Object>) map.get("product")));
 	    }
 	    if (map.containsKey("category")) {
 		    builder.category(sdk.demo.service.CategoryInfo.fromMap((Map<String, Object>) map.get("category")));
@@ -125,66 +125,66 @@ public class OrderItem {
 	}
 
 	public String toString() {
-	    return "OrderItem(identifier=" + this.__identifier + ", productName=" + this.productName + ", unitPrice=" + this.unitPrice + ", quantity=" + this.quantity + ", discount=" + this.discount + ", product=" + this.product + ", category=" + this.category + ")";
+	    return "OrderItemQuery(identifier=" + this.__identifier + ", productName=" + this.productName + ", unitPrice=" + this.unitPrice + ", quantity=" + this.quantity + ", discount=" + this.discount + ", product=" + this.product + ", category=" + this.category + ")";
 	}
 
     // Builder
-	public static OrderItemBuilder orderItemBuilder() {
-		return new OrderItemBuilder();
+	public static OrderItemQueryBuilder orderItemQueryBuilder() {
+		return new OrderItemQueryBuilder();
 	}
 
-	public static class OrderItemBuilder {
+	public static class OrderItemQueryBuilder {
 		private java.util.UUID __identifier;
         private String productName;
         private Double unitPrice;
         private Integer quantity;
         private Double discount;
-        private sdk.demo.service.ProductInfo product;
+        private sdk.demo.service.ProductInfoQuery product;
         private sdk.demo.service.CategoryInfo category;
 
-		OrderItemBuilder() {
+		OrderItemQueryBuilder() {
 		}
 
-		public OrderItemBuilder __identifier(java.util.UUID __identifier) {
+		public OrderItemQueryBuilder __identifier(java.util.UUID __identifier) {
 			this.__identifier = __identifier;
 			return this;
 		}
-		public OrderItemBuilder productName(String productName) {
+		public OrderItemQueryBuilder productName(String productName) {
 			this.productName = productName;
 			return this;
 		}
 
-		public OrderItemBuilder unitPrice(Double unitPrice) {
+		public OrderItemQueryBuilder unitPrice(Double unitPrice) {
 			this.unitPrice = unitPrice;
 			return this;
 		}
 
-		public OrderItemBuilder quantity(Integer quantity) {
+		public OrderItemQueryBuilder quantity(Integer quantity) {
 			this.quantity = quantity;
 			return this;
 		}
 
-		public OrderItemBuilder discount(Double discount) {
+		public OrderItemQueryBuilder discount(Double discount) {
 			this.discount = discount;
 			return this;
 		}
 
-		public OrderItemBuilder product(sdk.demo.service.ProductInfo product) {
+		public OrderItemQueryBuilder product(sdk.demo.service.ProductInfoQuery product) {
 			this.product = product;
 			return this;
 		}
 
-		public OrderItemBuilder category(sdk.demo.service.CategoryInfo category) {
+		public OrderItemQueryBuilder category(sdk.demo.service.CategoryInfo category) {
 			this.category = category;
 			return this;
 		}
 
-		public OrderItem build() {
-			return new OrderItem(this.__identifier, this.productName, this.unitPrice, this.quantity, this.discount, this.product, this.category);
+		public OrderItemQuery build() {
+			return new OrderItemQuery(this.__identifier, this.productName, this.unitPrice, this.quantity, this.discount, this.product, this.category);
 		}
 
 		public String toString() {
-    	    return "OrderItemBuilder.OrderItem(identifier=" + __identifier + ", productName=" + this.productName + ", unitPrice=" + this.unitPrice + ", quantity=" + this.quantity + ", discount=" + this.discount + ", product=" + this.product + ", category=" + this.category + ")";
+    	    return "OrderItemQueryBuilder.OrderItemQuery(identifier=" + __identifier + ", productName=" + this.productName + ", unitPrice=" + this.unitPrice + ", quantity=" + this.quantity + ", discount=" + this.discount + ", product=" + this.product + ", category=" + this.category + ")";
 		}
 	}
 }

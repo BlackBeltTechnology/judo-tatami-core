@@ -8,7 +8,6 @@ import java.util.stream.Collectors;
 public class OrderItem$product$Reference {
 	private java.util.UUID __identifier;
 
-
     @java.beans.ConstructorProperties({"__identifier"})
     OrderItem$product$Reference(java.util.UUID __identifier) {
 		this.__identifier = __identifier;
@@ -19,15 +18,13 @@ public class OrderItem$product$Reference {
 		return this.__identifier;
 	}
 
-
 	// Setters
 	public void set__identifier(java.util.UUID __identifier) {
 		this.__identifier = __identifier;
 	}
 
-
 	public Map<String, Object> toMap() {
-		Map ret = new LinkedHashMap(); 
+		Map ret = new LinkedHashMap();
 		if (this.__identifier != null) {
 			ret.put("__identifier", this.__identifier);
 		}
@@ -40,7 +37,6 @@ public class OrderItem$product$Reference {
 		if (map.containsKey("__identifier")) {
 			builder.__identifier((java.util.UUID)map.get("__identifier"));
 		}
-
 	    return builder.build();
 	}
 
@@ -58,12 +54,11 @@ public class OrderItem$product$Reference {
 
 		OrderItem$product$ReferenceBuilder() {
 		}
+
 		public OrderItem$product$ReferenceBuilder __identifier(java.util.UUID __identifier) {
 			this.__identifier = __identifier;
 			return this;
 		}
-
-
 		public OrderItem$product$Reference build() {
 			return new OrderItem$product$Reference(this.__identifier);
 		}

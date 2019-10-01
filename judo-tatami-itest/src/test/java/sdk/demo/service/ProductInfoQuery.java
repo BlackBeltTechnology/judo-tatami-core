@@ -5,14 +5,14 @@ import java.util.Map;
 import java.util.LinkedHashMap;
 import java.util.stream.Collectors;
 
-public class ProductInfo {
+public class ProductInfoQuery {
 	private java.util.UUID __identifier;
 	private String productName;
 	private Double unitPrice;
 	private sdk.demo.service.CategoryInfo category;
 
     @java.beans.ConstructorProperties({"__identifier", "productName", "unitPrice", "category"})
-    ProductInfo(java.util.UUID __identifier, String productName, Double unitPrice, sdk.demo.service.CategoryInfo category) {
+    ProductInfoQuery(java.util.UUID __identifier, String productName, Double unitPrice, sdk.demo.service.CategoryInfo category) {
 		this.__identifier = __identifier;
         this.productName = productName;
         this.unitPrice = unitPrice;
@@ -65,8 +65,8 @@ public class ProductInfo {
 		return ret;
 	}
 
-	public static ProductInfo fromMap(Map<String, Object> map) {
-		ProductInfoBuilder builder = productInfoBuilder();
+	public static ProductInfoQuery fromMap(Map<String, Object> map) {
+		ProductInfoQueryBuilder builder = productInfoQueryBuilder();
 		if (map.containsKey("__identifier")) {
 			builder.__identifier((java.util.UUID)map.get("__identifier"));
 		}
@@ -83,48 +83,48 @@ public class ProductInfo {
 	}
 
 	public String toString() {
-	    return "ProductInfo(identifier=" + this.__identifier + ", productName=" + this.productName + ", unitPrice=" + this.unitPrice + ", category=" + this.category + ")";
+	    return "ProductInfoQuery(identifier=" + this.__identifier + ", productName=" + this.productName + ", unitPrice=" + this.unitPrice + ", category=" + this.category + ")";
 	}
 
     // Builder
-	public static ProductInfoBuilder productInfoBuilder() {
-		return new ProductInfoBuilder();
+	public static ProductInfoQueryBuilder productInfoQueryBuilder() {
+		return new ProductInfoQueryBuilder();
 	}
 
-	public static class ProductInfoBuilder {
+	public static class ProductInfoQueryBuilder {
 		private java.util.UUID __identifier;
         private String productName;
         private Double unitPrice;
         private sdk.demo.service.CategoryInfo category;
 
-		ProductInfoBuilder() {
+		ProductInfoQueryBuilder() {
 		}
 
-		public ProductInfoBuilder __identifier(java.util.UUID __identifier) {
+		public ProductInfoQueryBuilder __identifier(java.util.UUID __identifier) {
 			this.__identifier = __identifier;
 			return this;
 		}
-		public ProductInfoBuilder productName(String productName) {
+		public ProductInfoQueryBuilder productName(String productName) {
 			this.productName = productName;
 			return this;
 		}
 
-		public ProductInfoBuilder unitPrice(Double unitPrice) {
+		public ProductInfoQueryBuilder unitPrice(Double unitPrice) {
 			this.unitPrice = unitPrice;
 			return this;
 		}
 
-		public ProductInfoBuilder category(sdk.demo.service.CategoryInfo category) {
+		public ProductInfoQueryBuilder category(sdk.demo.service.CategoryInfo category) {
 			this.category = category;
 			return this;
 		}
 
-		public ProductInfo build() {
-			return new ProductInfo(this.__identifier, this.productName, this.unitPrice, this.category);
+		public ProductInfoQuery build() {
+			return new ProductInfoQuery(this.__identifier, this.productName, this.unitPrice, this.category);
 		}
 
 		public String toString() {
-    	    return "ProductInfoBuilder.ProductInfo(identifier=" + __identifier + ", productName=" + this.productName + ", unitPrice=" + this.unitPrice + ", category=" + this.category + ")";
+    	    return "ProductInfoQueryBuilder.ProductInfoQuery(identifier=" + __identifier + ", productName=" + this.productName + ", unitPrice=" + this.unitPrice + ", category=" + this.category + ")";
 		}
 	}
 }
