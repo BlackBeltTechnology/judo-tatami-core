@@ -196,7 +196,7 @@ operation ASM!EClass getApplicationConfigScrXmlFileName() : String {
  Unbound Service
  */
 operation genUnboundService(ap : ASM!EClass, operations : Collection) {
-	var t = TemplateFactory.load("RestService.java.egl");
+	var t = TemplateFactory.load("UnboundRestService.java.egl");
 	t.populate("className", ap.getUnboundServiceClassName());
 	t.populate("packagePath", ap.getUnboundServicePackageName());
 	t.populate("operations", operations);
@@ -233,7 +233,7 @@ operation ASM!EClass getUnboundServiceScrXmlFileName() : String {
  Exposed mapped transfer object
  */
 operation genExposedMappedTransferObject(biog : ASM!EClass, ap : ASM!EClass) {
-	var t = TemplateFactory.load("RestService.java.egl");
+	var t = TemplateFactory.load("BoundRestService.java.egl");
 	t.populate("className", biog.getExposedMappedTransferObjectClassName());
 	t.populate("packagePath", biog.getExposedMappedTransferObjectPackageName(ap));
 	t.populate("operations", asmUtils.getAllOperationsOfBuiltInOperationGroupExposedByAccessPoint(biog, ap));
