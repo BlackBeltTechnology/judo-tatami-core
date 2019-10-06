@@ -2,6 +2,7 @@ package hu.blackbelt.judo.tatami.rdbms2liquibase;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
@@ -13,6 +14,7 @@ import com.google.common.collect.Lists;
 
 import static hu.blackbelt.judo.tatami.core.workflow.engine.WorkFlowEngineBuilder.aNewWorkFlowEngine;
 import static hu.blackbelt.judo.tatami.core.workflow.flow.ParallelFlow.Builder.aNewParallelFlow;
+import static hu.blackbelt.judo.tatami.rdbms2liquibase.Rdbms2Liquibase.calculateRdbms2LiquibaseTransformationScriptURI;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 import hu.blackbelt.judo.meta.rdbms.runtime.RdbmsModel;
@@ -40,9 +42,15 @@ public class Rdbms2LiquibaseWorkTest {
 		transformationContext.put("rdbms:hsqldb",rdbmsModel);
 		transformationContext.put("rdbms:oracle",rdbmsModel);
 
-		DIALECT_LIST.forEach(dialect -> new Rdbms2LiquibaseWork(transformationContext,
-				new File("src/main/epsilon/transformations").toURI(),
-				dialect));
+		DIALECT_LIST.forEach(dialect -> {
+			try {
+				new Rdbms2LiquibaseWork(transformationContext,
+						calculateRdbms2LiquibaseTransformationScriptURI(),
+						dialect);
+			} catch (URISyntaxException e) {
+				throw new RuntimeException(e);
+			}
+		});
 	}
 
 	@Test

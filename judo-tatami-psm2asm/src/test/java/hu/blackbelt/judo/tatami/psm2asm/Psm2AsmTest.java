@@ -73,7 +73,7 @@ public class Psm2AsmTest {
                 psmModel,
                 asmModel,
                 new Slf4jLog(log),
-                new File("src/main/epsilon/transformations/asm").toURI());
+                calculatePsm2AsmTransformationScriptURI());
 
         psm2AsmTransformationTrace.save(new File(TARGET_TEST_CLASSES, NORTHWIND_PSM_2_ASM_MODEL));
 

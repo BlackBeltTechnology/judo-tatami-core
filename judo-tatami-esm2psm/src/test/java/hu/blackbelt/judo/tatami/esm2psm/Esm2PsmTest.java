@@ -59,7 +59,7 @@ public class Esm2PsmTest {
                 esmModel,
                 psmModel,
                 new Slf4jLog(log),
-                new File("target/test-classes/epsilon/transformations/psm").toURI());
+                calculateEsm2PsmTransformationScriptURI());
 
         // Saving trace map
         esm2PsmTransformationTrace.save(new File(TARGET_TEST_CLASSES, NORTHWIND_ESM_2_PSM_MODEL));

@@ -54,7 +54,7 @@ public class Psm2MeasureTest {
     public void testPsm2MeasureTransformation() throws Exception {
         Psm2MeasureTransformationTrace psm2MeasureTransformationTrace =
                 executePsm2MeasureTransformation(psmModel, measureModel, new Slf4jLog(log),
-                        new File(TARGET_TEST_CLASSES, "epsilon/transformations/measure").toURI());
+                        calculatePsm2MeasureTransformationScriptURI());
 
         // Saving trace map
         psm2MeasureTransformationTrace.save(new File(TARGET_TEST_CLASSES, NORTHWIND_PSM_2_MEASURE_MODEL));

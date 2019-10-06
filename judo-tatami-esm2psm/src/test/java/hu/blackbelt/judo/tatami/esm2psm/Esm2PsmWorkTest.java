@@ -3,11 +3,13 @@ package hu.blackbelt.judo.tatami.esm2psm;
 import hu.blackbelt.judo.meta.esm.runtime.EsmModel;
 
 import static hu.blackbelt.judo.tatami.core.workflow.engine.WorkFlowEngineBuilder.aNewWorkFlowEngine;
+import static hu.blackbelt.judo.tatami.esm2psm.Esm2Psm.calculateEsm2PsmTransformationScriptURI;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -30,14 +32,14 @@ class Esm2PsmWorkTest {
 	TransformationContext transformationContext;
 
 	@BeforeEach
-	void setUp() throws IOException, EsmModel.EsmValidationException {
+	void setUp() throws IOException, EsmModel.EsmValidationException, URISyntaxException {
 		EsmModel esmModel = EsmModel.loadEsmModel(
 				esmLoadArgumentsBuilder().file(new File(TARGET_TEST_CLASSES, NORTHWIND_ESM_MODEL)).name(NORTHWIND));
 
 		transformationContext = new TransformationContext(NORTHWIND);
 		transformationContext.put(esmModel);
 
-		esm2PsmWork = new Esm2PsmWork(transformationContext, new File("src/main/epsilon/transformations/psm").toURI());
+		esm2PsmWork = new Esm2PsmWork(transformationContext, calculateEsm2PsmTransformationScriptURI());
 	}
 
 	@Test

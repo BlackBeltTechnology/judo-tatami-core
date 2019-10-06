@@ -11,9 +11,11 @@ import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
 
 import static hu.blackbelt.judo.meta.asm.runtime.AsmModel.LoadArguments.asmLoadArgumentsBuilder;
 import static hu.blackbelt.judo.meta.asm.runtime.AsmModel.loadAsmModel;
+import static hu.blackbelt.judo.tatami.asm2openapi.Asm2OpenAPI.calculateAsm2OpenapiTransformationScriptURI;
 import static hu.blackbelt.judo.tatami.core.workflow.engine.WorkFlowEngineBuilder.aNewWorkFlowEngine;
 import static hu.blackbelt.judo.tatami.core.workflow.flow.SequentialFlow.Builder.aNewSequentialFlow;
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -29,7 +31,7 @@ class Asm2OpenAPIWorkTest {
     TransformationContext transformationContext;
 
     @BeforeEach
-    void setUp() throws IOException, AsmModel.AsmValidationException {
+    void setUp() throws IOException, AsmModel.AsmValidationException, URISyntaxException {
         AsmModel asmModel = loadAsmModel(asmLoadArgumentsBuilder()
                 .file(new File(TARGET_TEST_CLASSES, NORTHWIND_ASM_MODEL))
                 .name(NORTHWIND));
@@ -37,7 +39,7 @@ class Asm2OpenAPIWorkTest {
         transformationContext = new TransformationContext(NORTHWIND);
         transformationContext.put(asmModel);
 
-        asm2OpenAPIWork = new Asm2OpenAPIWork(transformationContext, new File("src/main/epsilon/transformations/openapi").toURI());
+        asm2OpenAPIWork = new Asm2OpenAPIWork(transformationContext, calculateAsm2OpenapiTransformationScriptURI());
     }
 
     @Test
