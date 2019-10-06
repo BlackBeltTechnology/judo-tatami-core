@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import lombok.Builder;
 import lombok.Getter;
 import org.apache.maven.artifact.DependencyResolutionRequiredException;
 import org.apache.maven.plugin.AbstractMojo;
@@ -93,6 +94,28 @@ public class PsmDefaultWorkflowMojo extends AbstractMojo {
 	@Parameter(property = "dialectList")
 	private List<String> dialectList;
 
+	@Parameter(property = "ignorePsm2Asm", defaultValue = "false")
+	private Boolean ignorePsm2Asm = false;
+
+	@Parameter(property = "ignorePsm2Measure", defaultValue = "false")
+	private Boolean ignorePsm2Measure = false;
+
+	@Parameter(property = "ignoreAsm2Openapi", defaultValue = "false")
+	private Boolean ignoreAsm2Openapi = false;
+
+	@Parameter(property = "ignoreAsm2Rdbms", defaultValue = "false")
+	private Boolean ignoreAsm2Rdbms = false;
+
+	@Parameter(property = "ignoreRdbms2Liquibase", defaultValue = "false")
+	private Boolean ignoreRdbms2Liquibase = false;
+
+	@Parameter(property = "ignoreAsm2sdk", defaultValue = "false")
+	private Boolean ignoreAsm2sdk = false;
+
+	@Parameter(property = "ignoreAsm2jaxrsapi", defaultValue = "false")
+	private Boolean ignoreAsm2jaxrsapi = false;
+
+
 	@Getter
 	@Parameter(property = "tagsForSearch", defaultValue =
 			PSM_2_ASM_TRANSFORMATION_SCRIPT_ROOT + "," +
@@ -138,8 +161,7 @@ public class PsmDefaultWorkflowMojo extends AbstractMojo {
 
 		WorkflowHelper workflowHelper = new WorkflowHelper(getLog(), compileClasspathFiles, tagsForSearch);
 
-		PsmDefaultWorkflow defaultWorkflow = new PsmDefaultWorkflow();
-
+		PsmDefaultWorkflow defaultWorkflow;
 		try {
 			workflowHelper.extract();
 			URI psm2measureModelScriptRootResolved = (psm2measureTransformationScriptRoot == null)
@@ -174,7 +196,7 @@ public class PsmDefaultWorkflowMojo extends AbstractMojo {
 					? workflowHelper.getUrlPathForTag(ASM_2_JAXRSAPI_TRANSFORMATION_SCRIPT_ROOT).toURI()
 					: asm2jaxrsapiTransformationScriptRoot.toURI();
 
-			defaultWorkflow.setUp(DefaultWorkflowSetupParameters
+			defaultWorkflow = new PsmDefaultWorkflow(DefaultWorkflowSetupParameters
 					.defaultWorkflowSetupParameters()
 					.psmModelSourceURI(psmModelDest.toURI())
 					.psm2AsmModelTransformationScriptURI(psm2asmModelScriptRootResolved)
