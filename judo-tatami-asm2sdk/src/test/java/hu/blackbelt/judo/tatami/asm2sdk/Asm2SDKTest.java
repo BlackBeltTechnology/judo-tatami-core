@@ -42,7 +42,7 @@ public class Asm2SDKTest {
     }
 
     @Test
-    public void testExecuteAsm2JAXRSAPIGeneration() throws Exception {
+    public void testExecuteAsm2SDKGeneration() throws Exception {
         try (OutputStream outputStream =
                      new FileOutputStream(new File(TARGET_TEST_CLASSES, NORTHWIND + "-sdk.jar"))) {
             ByteStreams.copy(

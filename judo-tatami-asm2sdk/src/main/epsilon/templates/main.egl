@@ -2,11 +2,51 @@
 import "../operations/sdk.eol";
 
 var outputJavaClasses = new Set();
+var outputScrXmls = new Set();
 
 executionContext.getContext().put("outputJavaClasses", outputJavaClasses);
 
 for (dto in asmUtils.getAllMappedTransferObjectTypes().collectAllReferenceTypeRecursively()) {
+    //DTO
     genDto(dto);
 	outputJavaClasses.add(dto.getDtoJavaFileName());
+	//DTO interface
+	genDtoInterface(dto);
+	outputJavaClasses.add(dto.getDtoInterfaceJavaFileName());
+	//DTO factory
+	genDtoFactory(dto);
+	outputJavaClasses.add(dto.getDtoFactoryJavaFileName());
 }
+
+for (ap in asmUtils.getAllAccessPoints()) {
+
+    var apServiceInstances : Map = new Map();
+
+    var exposedServices = asmUtils.getExposedServicesOfAccessPoint(ap);
+
+	// Generating bound and unbound service interfaces
+    if (exposedServices.size() > 0) {
+		genUnboundServiceInterface(ap, exposedServices);
+		for(op in exposedServices) {
+		   outputJavaClasses.add(ap.getUnboundServiceJavaFileName(op.name));  
+		}
+		outputScrXmls.add(ap.getUnboundServiceScrXmlFileName());
+		apServiceInstances.put("unboundService", ap.getUnboundServicePackageName() + "." + ap.getUnboundServiceClassName());
+    }
+    
+    for (
+    	biog in asmUtils.getBuiltInOperationGroupsOfAccessPoint(ap)
+    	) {
+    	genExposedMappedTransferObjectInterface(biog,ap);
+    	for(op in asmUtils.getAllOperationsOfBuiltInOperationGroupExposedByAccessPoint(biog, ap)) {
+		   outputJavaClasses.add(biog.getExposedMappedTransferObjectJavaFileName(ap,op.name));  
+		}
+		outputScrXmls.add(biog.getExposedMappedTransferObjectScrXmlFileName(ap));
+		apServiceInstances.put((biog.getExposedMappedTransferObjectPackageName(ap) + "." + biog.getExposedMappedTransferObjectClassName()).replaceAll("\\.", "_"),
+			biog.getExposedMappedTransferObjectPackageName(ap) + "." + biog.getExposedMappedTransferObjectClassName());		
+    }
+}
+
 %]
+
+

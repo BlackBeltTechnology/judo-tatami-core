@@ -1,0 +1,13 @@
+[%
+  import "../operations/sdk.eol";
+  out.setContentType("Java");
+%]
+
+package [%= packagePath %];
+
+[% if(op.many) { %] import java.util.Collection; [% } %]
+
+public interface [%= op.name.startWithUpper() %] {
+
+    public [% if(op.eType.isUndefined()) { %]void[% } else if(op.many) { %]Collection<[%= op.eType.getDtoTypeName()%]>[% } else { %][%= op.eType.getDtoTypeName() %][% } %] [%= op.name %]([% for (p in op.eParameters) { %][%= p.eType.getDtoPackageName() + p.eType.getClassPackage().toLowerCase() + "." + p.eType.getClassName() %] [%= p.name.firstToLowerCase().safeName() %][% if (hasMore) { %], [% } %][% } %]);
+}
