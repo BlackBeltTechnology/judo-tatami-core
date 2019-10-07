@@ -164,40 +164,70 @@ public class PsmDefaultWorkflowMojo extends AbstractMojo {
 		PsmDefaultWorkflow defaultWorkflow;
 		try {
 			workflowHelper.extract();
-			URI psm2measureModelScriptRootResolved = (psm2measureTransformationScriptRoot == null)
-					? workflowHelper.getUrlPathForTag(PSM_2_MEASURE_TRANSFORMATION_SCRIPT_ROOT).toURI()
-					: psm2measureTransformationScriptRoot.toURI();
 
-			URI psm2asmModelScriptRootResolved = (psm2asmTransformationScriptRoot == null)
-					? workflowHelper.getUrlPathForTag(PSM_2_ASM_TRANSFORMATION_SCRIPT_ROOT).toURI()
-					: psm2asmTransformationScriptRoot.toURI();
+			URI psm2measureModelScriptRootResolved = new URI("notset");
+			URI psm2asmModelScriptRootResolved = new URI("notset");
+			URI asm2rdbmsModelScriptRootResolved = new URI("notset");
+			URI asm2rdbmsModelModelRootResolved = new URI("notset");
+			URI asm2openApiModelScriptRootResolved = new URI("notset");
+			URI rdbms2liquibaseModelScriptRootResolved = new URI("notset");
+			URI asm2sdkModelScriptRootResolved = new URI("notset");
+			URI asm2jaxrsapiModelScriptRootResolved = new URI("notset");
 
-			URI asm2rdbmsModelScriptRootResolved = (asm2rdbmsTransformationScriptRoot == null)
-					? workflowHelper.getUrlPathForTag(ASM_2_RDBMS_TRANSFORMATION_SCRIPT_ROOT).toURI()
-					: asm2rdbmsTransformationScriptRoot.toURI();
+			if (!ignorePsm2Measure) {
+				psm2measureModelScriptRootResolved = (psm2measureTransformationScriptRoot == null)
+						? workflowHelper.getUrlPathForTag(PSM_2_MEASURE_TRANSFORMATION_SCRIPT_ROOT).toURI()
+						: psm2measureTransformationScriptRoot.toURI();
+			}
 
-			URI asm2rdbmsModelModelRootResolved = (asm2rdbmsTransformationModelRoot == null)
-					? workflowHelper.getUrlPathForTag(ASM_2_RDBMS_TRANSFORMATION_MODEL_ROOT).toURI()
-					: asm2rdbmsTransformationModelRoot.toURI();
+			if (!ignorePsm2Asm) {
+				psm2asmModelScriptRootResolved = (psm2asmTransformationScriptRoot == null)
+						? workflowHelper.getUrlPathForTag(PSM_2_ASM_TRANSFORMATION_SCRIPT_ROOT).toURI()
+						: psm2asmTransformationScriptRoot.toURI();
+			}
 
-			URI asm2openApiModelScriptRootResolved = (asm2openApiTransformationScriptRoot == null)
-					? workflowHelper.getUrlPathForTag(ASM_2_OPEN_API_TRANSFORMATION_SCRIPT_ROOT).toURI()
-					: asm2openApiTransformationScriptRoot.toURI();
+			if (!ignorePsm2Asm && !ignoreAsm2Rdbms) {
+				asm2rdbmsModelScriptRootResolved = (asm2rdbmsTransformationScriptRoot == null)
+						? workflowHelper.getUrlPathForTag(ASM_2_RDBMS_TRANSFORMATION_SCRIPT_ROOT).toURI()
+						: asm2rdbmsTransformationScriptRoot.toURI();
+				asm2rdbmsModelModelRootResolved = (asm2rdbmsTransformationModelRoot == null)
+						? workflowHelper.getUrlPathForTag(ASM_2_RDBMS_TRANSFORMATION_MODEL_ROOT).toURI()
+						: asm2rdbmsTransformationModelRoot.toURI();
+			}
 
-			URI rdbms2liquibaseModelScriptRootResolved = (rdbms2liquibaseTransformationScriptRoot == null)
-					? workflowHelper.getUrlPathForTag(RDBMS_2_LIQUIBASE_TRANSFORMATION_SCRIPT_ROOT).toURI()
-					: rdbms2liquibaseTransformationScriptRoot.toURI();
+			if (!ignorePsm2Asm && !ignoreAsm2Openapi) {
+				asm2openApiModelScriptRootResolved = (asm2openApiTransformationScriptRoot == null)
+						? workflowHelper.getUrlPathForTag(ASM_2_OPEN_API_TRANSFORMATION_SCRIPT_ROOT).toURI()
+						: asm2openApiTransformationScriptRoot.toURI();
+			}
 
-			URI asm2sdkModelScriptRootResolved = (asm2sdkTransformationScriptRoot == null)
-					? workflowHelper.getUrlPathForTag(ASM_2_SDK_TRANSFORMATION_SCRIPT_ROOT).toURI()
-					: asm2sdkTransformationScriptRoot.toURI();
+			if (!ignorePsm2Asm && !ignoreAsm2Rdbms && !ignoreRdbms2Liquibase) {
+				rdbms2liquibaseModelScriptRootResolved = (rdbms2liquibaseTransformationScriptRoot == null)
+						? workflowHelper.getUrlPathForTag(RDBMS_2_LIQUIBASE_TRANSFORMATION_SCRIPT_ROOT).toURI()
+						: rdbms2liquibaseTransformationScriptRoot.toURI();
+			}
 
-			URI asm2jaxrsapiModelScriptRootResolved = (asm2jaxrsapiTransformationScriptRoot == null)
-					? workflowHelper.getUrlPathForTag(ASM_2_JAXRSAPI_TRANSFORMATION_SCRIPT_ROOT).toURI()
-					: asm2jaxrsapiTransformationScriptRoot.toURI();
+			if (!ignorePsm2Asm && !ignoreAsm2sdk) {
+				asm2sdkModelScriptRootResolved = (asm2sdkTransformationScriptRoot == null)
+						? workflowHelper.getUrlPathForTag(ASM_2_SDK_TRANSFORMATION_SCRIPT_ROOT).toURI()
+						: asm2sdkTransformationScriptRoot.toURI();
+			}
+
+			if (!ignorePsm2Asm && !ignoreAsm2jaxrsapi) {
+				asm2jaxrsapiModelScriptRootResolved = (asm2jaxrsapiTransformationScriptRoot == null)
+						? workflowHelper.getUrlPathForTag(ASM_2_JAXRSAPI_TRANSFORMATION_SCRIPT_ROOT).toURI()
+						: asm2jaxrsapiTransformationScriptRoot.toURI();
+			}
 
 			defaultWorkflow = new PsmDefaultWorkflow(DefaultWorkflowSetupParameters
 					.defaultWorkflowSetupParameters()
+					.ignorePsm2Asm(ignorePsm2Asm)
+					.ignoreAsm2jaxrsapi(ignoreAsm2jaxrsapi)
+					.ignoreAsm2Openapi(ignoreAsm2Openapi)
+					.ignoreAsm2Rdbms(ignoreAsm2Rdbms)
+					.ignoreAsm2sdk(ignoreAsm2sdk)
+					.ignorePsm2Measure(ignorePsm2Measure)
+					.ignoreRdbms2Liquibase(ignoreRdbms2Liquibase)
 					.psmModelSourceURI(psmModelDest.toURI())
 					.psm2AsmModelTransformationScriptURI(psm2asmModelScriptRootResolved)
 					.psm2MeasureModelTransformationScriptURI(psm2measureModelScriptRootResolved)
