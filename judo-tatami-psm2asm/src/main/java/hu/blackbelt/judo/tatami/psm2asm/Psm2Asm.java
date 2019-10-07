@@ -14,6 +14,7 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.epsilon.common.util.UriUtil;
 
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.List;
 import static hu.blackbelt.epsilon.runtime.execution.ExecutionContext.executionContextBuilder;
 import static hu.blackbelt.epsilon.runtime.execution.contexts.EtlExecutionContext.etlExecutionContextBuilder;
@@ -25,6 +26,7 @@ import static hu.blackbelt.judo.tatami.psm2asm.Psm2AsmTransformationTrace.resolv
 public class Psm2Asm {
 
     public static final String HTTP_BLACKBELT_HU_JUDO_META_EXTENDED_METADATA = "http://blackbelt.hu/judo/meta/ExtendedMetadata";
+    public static final String SCRIPT_ROOT_TATAMI_PSM_2_ASM = "tatami/psm2asm/transformations/asm/";
 
     /**
      * Execute PSM to ASM model transformation,
@@ -81,6 +83,18 @@ public class Psm2Asm {
                 .asmModel(asmModel)
                 .psmModel(psmModel)
                 .trace(resolvePsm2AsmTrace(traceModel, psmModel, asmModel)).build();
+    }
+
+    public static URI calculatePsm2AsmTransformationScriptURI() throws URISyntaxException {
+        URI psmRoot = Psm2Asm.class.getProtectionDomain().getCodeSource().getLocation().toURI();
+        if (psmRoot.toString().endsWith(".jar")) {
+            psmRoot = new URI("jar:" + psmRoot.toString() + "!/" + SCRIPT_ROOT_TATAMI_PSM_2_ASM);
+        } else if (psmRoot.toString().startsWith("jar:bundle:")) {
+            psmRoot = new URI(psmRoot.toString().substring(4, psmRoot.toString().indexOf("!")) + SCRIPT_ROOT_TATAMI_PSM_2_ASM);
+        } else {
+            psmRoot = new URI(psmRoot.toString() + "/" + SCRIPT_ROOT_TATAMI_PSM_2_ASM);
+        }
+        return psmRoot;
     }
 
 }
