@@ -68,8 +68,7 @@ public class PsmWorkflowProcess {
             throws URISyntaxException, IOException, PsmModel.PsmValidationException {
 
         this.psmWorkflowProcessConfiguration = config;
-        PsmDefaultWorkflow defaultWorkflow = new PsmDefaultWorkflow();
-        defaultWorkflow.setUp(DefaultWorkflowSetupParameters.defaultWorkflowSetupParameters()
+        PsmDefaultWorkflow defaultWorkflow = new PsmDefaultWorkflow(DefaultWorkflowSetupParameters.defaultWorkflowSetupParameters()
                 .modelName(psmModel.getName())
                 .psmModel(psmModel)
                 .dialectList(ImmutableList.of(config.sqlDialect()))
