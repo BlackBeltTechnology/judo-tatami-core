@@ -22,12 +22,12 @@
                     <execution>
                         <id>copy-models</id>
                         <!-- here the phase you need -->
-                        <phase>process-test-resources</phase>
+                        <phase>process-resources</phase>
                         <goals>
                             <goal>copy-resources</goal>
                         </goals>
                         <configuration>
-                            <outputDirectory>${basedir}/target/test-classes/epsilon</outputDirectory>
+                            <outputDirectory>${basedir}/target/classes/tatami/psm2measure</outputDirectory>
                             <resources>
                                 <resource>
                                     <directory>src/main/epsilon</directory>
@@ -52,13 +52,11 @@
                     <obrRepository>NONE</obrRepository>
                     <instructions>
                         <Export-Package>
-                            tatami/psm2measure;version=${project.version},
                             hu.blackbelt.judo.tatami.psm.measure.*;version=${project.version}
                         </Export-Package>
                         <Include-Resource>
                             {maven-resources},
-                            tatami/psm2measure/operations=src/main/epsilon/operations,
-                            tatami/psm2measure/transformations=src/main/epsilon/transformations
+                            tatami=target/classes/tatami
                         </Include-Resource>
                         <Import-Package>
                             ${osgi-default-import},

@@ -11,11 +11,13 @@ import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
 
 import static hu.blackbelt.judo.meta.psm.runtime.PsmModel.LoadArguments.psmLoadArgumentsBuilder;
 import static hu.blackbelt.judo.meta.psm.runtime.PsmModel.loadPsmModel;
 import static hu.blackbelt.judo.tatami.core.workflow.engine.WorkFlowEngineBuilder.aNewWorkFlowEngine;
 import static hu.blackbelt.judo.tatami.core.workflow.flow.SequentialFlow.Builder.aNewSequentialFlow;
+import static hu.blackbelt.judo.tatami.psm2measure.Psm2Measure.calculatePsm2MeasureTransformationScriptURI;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static hu.blackbelt.judo.meta.psm.runtime.PsmModel.PsmValidationException;
@@ -30,14 +32,14 @@ public class Psm2MeasureWorkTest {
 	TransformationContext transformationContext;
 
 	@BeforeEach
-	void setUp() throws IOException, PsmValidationException {
+	void setUp() throws IOException, PsmValidationException, URISyntaxException {
 		PsmModel psmModel = loadPsmModel(
 				psmLoadArgumentsBuilder().file(new File(TARGET_TEST_CLASSES, NORTHWIND_PSM_MODEL)).name(NORTHWIND));
 		transformationContext = new TransformationContext(NORTHWIND);
 		transformationContext.put(psmModel);
 
 		psm2measureWork = new Psm2MeasureWork(transformationContext,
-				new File("src/main/epsilon/transformations/measure").toURI());
+				calculatePsm2MeasureTransformationScriptURI());
 	}
 
 	@Test

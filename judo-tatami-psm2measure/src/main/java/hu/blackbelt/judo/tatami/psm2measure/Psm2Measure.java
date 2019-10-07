@@ -10,6 +10,7 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.epsilon.common.util.UriUtil;
 
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.List;
 
 import static hu.blackbelt.epsilon.runtime.execution.ExecutionContext.executionContextBuilder;
@@ -20,6 +21,8 @@ import static hu.blackbelt.judo.tatami.psm2measure.Psm2MeasureTransformationTrac
 import static hu.blackbelt.judo.tatami.psm2measure.Psm2MeasureTransformationTrace.resolvePsm2MeasureTrace;
 
 public class Psm2Measure {
+
+    public static final String SCRIPT_ROOT_TATAMI_PSM_2_MEASURE = "tatami/psm2measure/transformations/measure/";
 
     public static Psm2MeasureTransformationTrace executePsm2MeasureTransformation(PsmModel psmModel, MeasureModel measureModel, Log log,
                                                                                   URI scriptUri) throws Exception {
@@ -60,4 +63,17 @@ public class Psm2Measure {
                 .psmModel(psmModel)
                 .trace(resolvePsm2MeasureTrace(traceModel, psmModel, measureModel)).build();
     }
+
+    public static URI calculatePsm2MeasureTransformationScriptURI() throws URISyntaxException {
+        URI psmRoot = Psm2Measure.class.getProtectionDomain().getCodeSource().getLocation().toURI();
+        if (psmRoot.toString().endsWith(".jar")) {
+            psmRoot = new URI("jar:" + psmRoot.toString() + "!/" + SCRIPT_ROOT_TATAMI_PSM_2_MEASURE);
+        } else if (psmRoot.toString().startsWith("jar:bundle:")) {
+            psmRoot = new URI(psmRoot.toString().substring(4, psmRoot.toString().indexOf("!")) + SCRIPT_ROOT_TATAMI_PSM_2_MEASURE);
+        } else {
+            psmRoot = new URI(psmRoot.toString() + "/" + SCRIPT_ROOT_TATAMI_PSM_2_MEASURE);
+        }
+        return psmRoot;
+    }
+
 }

@@ -11,6 +11,8 @@ import hu.blackbelt.judo.meta.rdbms.runtime.RdbmsModel;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.epsilon.common.util.UriUtil;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Map;
 
@@ -23,6 +25,9 @@ import static hu.blackbelt.judo.tatami.asm2rdbms.Asm2RdbmsTransformationTrace.re
 import static hu.blackbelt.judo.tatami.core.TransformationTraceUtil.*;
 
 public class Asm2Rdbms {
+
+    public static final String SCRIPT_ROOT_TATAMI_ASM_2_RDBMS = "tatami/asm2rdbms/transformations/";
+    public static final String MODEL_ROOT_TATAMI_ASM_2_RDBMS = "tatami/asm2rdbms/model/";
 
     public static final String ASM_2_RDBMS_URI_POSTFIX = "asm2rdbms";
 
@@ -119,4 +124,26 @@ public class Asm2Rdbms {
                 .rdbmsModel(rdbmsModel)
                 .trace(resolveAsm2RdbmsTrace(traceModel, asmModel, rdbmsModel)).build();
     }
+
+    public static URI calculateAsm2RdbmsTransformationScriptURI() throws URISyntaxException {
+        return calculateURI(SCRIPT_ROOT_TATAMI_ASM_2_RDBMS);
+    }
+
+    public static URI calculateAsm2RdbmsModelURI() throws URISyntaxException {
+        return calculateURI(MODEL_ROOT_TATAMI_ASM_2_RDBMS);
+    }
+
+    public static URI calculateURI(String path) throws URISyntaxException {
+        URI psmRoot = Asm2Rdbms.class.getProtectionDomain().getCodeSource().getLocation().toURI();
+        if (psmRoot.toString().endsWith(".jar")) {
+            psmRoot = new URI("jar:" + psmRoot.toString() + "!/" + path);
+        } else if (psmRoot.toString().startsWith("jar:bundle:")) {
+            psmRoot = new URI(psmRoot.toString().substring(4, psmRoot.toString().indexOf("!")) + path);
+        } else {
+            psmRoot = new URI(psmRoot.toString() + "/" + path);
+        }
+        return psmRoot;
+    }
+
+
 }

@@ -17,6 +17,7 @@ import org.osgi.framework.Constants;
 import javax.tools.JavaFileObject;
 import java.io.*;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Collections;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -29,6 +30,8 @@ import static hu.blackbelt.judo.framework.compiler.api.CompilerContext.compilerC
 import static org.ops4j.pax.tinybundles.core.TinyBundles.bundle;
 
 public class Asm2SDK {
+
+    public static final String SCRIPT_ROOT_TATAMI_ASM_2_SDK = "tatami/asm2sdk/templates/";
 
     public static InputStream executeAsm2SDKGeneration(AsmModel asmModel, Log log,
                                                        URI scriptUri, File sourceCodeOutputDir) throws Exception {
@@ -134,6 +137,18 @@ public class Asm2SDK {
                 )
                 .set("Service-Component", Joiner.on(",").join(scrXmlFiles));
         return bundle.build();
+    }
+
+    public static URI calculateAsm2SDKTemplateScriptURI() throws URISyntaxException {
+        URI psmRoot = Asm2SDK.class.getProtectionDomain().getCodeSource().getLocation().toURI();
+        if (psmRoot.toString().endsWith(".jar")) {
+            psmRoot = new URI("jar:" + psmRoot.toString() + "!/" + SCRIPT_ROOT_TATAMI_ASM_2_SDK);
+        } else if (psmRoot.toString().startsWith("jar:bundle:")) {
+            psmRoot = new URI(psmRoot.toString().substring(4, psmRoot.toString().indexOf("!")) + SCRIPT_ROOT_TATAMI_ASM_2_SDK);
+        } else {
+            psmRoot = new URI(psmRoot.toString() + "/" + SCRIPT_ROOT_TATAMI_ASM_2_SDK);
+        }
+        return psmRoot;
     }
 
 }
