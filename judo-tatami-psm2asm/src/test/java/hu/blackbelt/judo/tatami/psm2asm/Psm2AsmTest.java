@@ -17,6 +17,7 @@ import java.util.Map;
 
 import static hu.blackbelt.judo.meta.asm.runtime.AsmModel.SaveArguments.asmSaveArgumentsBuilder;
 import static hu.blackbelt.judo.meta.asm.runtime.AsmModel.buildAsmModel;
+import static hu.blackbelt.judo.meta.psm.PsmEpsilonValidator.calculatePsmValidationScriptURI;
 import static hu.blackbelt.judo.meta.psm.PsmEpsilonValidator.validatePsm;
 import static hu.blackbelt.judo.meta.psm.runtime.PsmModel.LoadArguments.psmLoadArgumentsBuilder;
 import static hu.blackbelt.judo.meta.psm.runtime.PsmModel.loadPsmModel;
@@ -55,8 +56,7 @@ public class Psm2AsmTest {
         assertTrue(psmModel.isValid());
 
         validatePsm(new Slf4jLog(log), psmModel,
-                UriUtil.resolve(".",
-                        PsmModel.class.getClassLoader().getResource("validations/psm.evl").toURI()));
+                calculatePsmValidationScriptURI());
 
         // Create empty ASM model
         asmModel = buildAsmModel()
