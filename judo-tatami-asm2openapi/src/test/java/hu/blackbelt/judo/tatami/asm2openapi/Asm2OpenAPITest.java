@@ -34,7 +34,6 @@ public class Asm2OpenAPITest {
     public static final String NORTHWIND_ASM_MODEL = "northwind-asm.model";
     public static final String NORTHWIND_OPENAPI_MODEL = "northwind-openapi.model";
     public static final String NORTHWIND_ASM_2_OPENAPI_MODEL = "northwind-asm2openapi.model";
-    public static final String EPSILON_TRANSFORMATIONS_OPENAPI = "epsilon/transformations/openapi";
     public static final String TARGET_TEST_CLASSES = "target/test-classes";
 
     Log slf4jlog;
@@ -65,7 +64,7 @@ public class Asm2OpenAPITest {
                 asmModel,
                 openapiModel,
                 new Slf4jLog(log),
-                new File(TARGET_TEST_CLASSES, EPSILON_TRANSFORMATIONS_OPENAPI).toURI());
+                calculateAsm2OpenapiTransformationScriptURI());
 
         // Saving trace map
         asm2OpenAPITransformationTrace.save(new File(TARGET_TEST_CLASSES, NORTHWIND_ASM_2_OPENAPI_MODEL));

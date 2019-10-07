@@ -15,6 +15,7 @@ import java.io.OutputStream;
 
 import static hu.blackbelt.judo.meta.asm.runtime.AsmModel.LoadArguments.asmLoadArgumentsBuilder;
 import static hu.blackbelt.judo.meta.asm.runtime.AsmModel.loadAsmModel;
+import static hu.blackbelt.judo.tatami.asm2jaxrsapi.Asm2JAXRSAPI.calculateAsm2JaxrsapiTemplateScriptURI;
 import static hu.blackbelt.judo.tatami.asm2jaxrsapi.Asm2JAXRSAPI.executeAsm2JAXRSAPIGeneration;
 
 @Slf4j
@@ -45,7 +46,7 @@ public class Asm2JAXRSAPITest {
                      new FileOutputStream(new File(TARGET_TEST_CLASSES, NORTHWIND + "-rest.jar"))) {
             ByteStreams.copy(
                     executeAsm2JAXRSAPIGeneration(asmModel, new Slf4jLog(log),
-                            new File(TARGET_TEST_CLASSES, "epsilon/templates").toURI(),
+                            calculateAsm2JaxrsapiTemplateScriptURI(),
                             new File(TARGET_TEST_CLASSES, "generated/java")),
                     bundleOutputStream
             );

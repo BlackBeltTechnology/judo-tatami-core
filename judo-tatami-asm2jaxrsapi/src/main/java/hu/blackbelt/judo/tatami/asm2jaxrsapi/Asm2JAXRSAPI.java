@@ -17,6 +17,7 @@ import javax.tools.JavaFileObject;
 import javax.ws.rs.core.Application;
 import java.io.*;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Collections;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -29,6 +30,8 @@ import static hu.blackbelt.judo.framework.compiler.api.CompilerContext.compilerC
 import static org.ops4j.pax.tinybundles.core.TinyBundles.bundle;
 
 public class Asm2JAXRSAPI {
+
+    public static final String SCRIPT_ROOT_TATAMI_ASM_2_JAXRSAPI = "tatami/asm2jaxrsapi/templates/";
 
     public static InputStream executeAsm2JAXRSAPIGeneration(AsmModel asmModel, Log log,
                                                             URI scriptDir, File sourceCodeOutputDir) throws Exception {
@@ -143,4 +146,15 @@ public class Asm2JAXRSAPI {
         return bundle.build();
     }
 
+    public static URI calculateAsm2JaxrsapiTemplateScriptURI() throws URISyntaxException {
+        URI psmRoot = Asm2JAXRSAPI.class.getProtectionDomain().getCodeSource().getLocation().toURI();
+        if (psmRoot.toString().endsWith(".jar")) {
+            psmRoot = new URI("jar:" + psmRoot.toString() + "!/" + SCRIPT_ROOT_TATAMI_ASM_2_JAXRSAPI);
+        } else if (psmRoot.toString().startsWith("jar:bundle:")) {
+            psmRoot = new URI(psmRoot.toString().substring(4, psmRoot.toString().indexOf("!")) + SCRIPT_ROOT_TATAMI_ASM_2_JAXRSAPI);
+        } else {
+            psmRoot = new URI(psmRoot.toString() + "/" + SCRIPT_ROOT_TATAMI_ASM_2_JAXRSAPI);
+        }
+        return psmRoot;
+    }
 }

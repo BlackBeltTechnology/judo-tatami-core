@@ -1,640 +1,619 @@
 <?xml version="1.0" encoding="ASCII"?>
-<namespace:Model xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:accesspoint="http://blackbelt.hu/judo/meta/psm/accesspoint" xmlns:data="http://blackbelt.hu/judo/meta/psm/data" xmlns:derived="http://blackbelt.hu/judo/meta/psm/derived" xmlns:measure="http://blackbelt.hu/judo/meta/psm/measure" xmlns:namespace="http://blackbelt.hu/judo/meta/psm/namespace" xmlns:service="http://blackbelt.hu/judo/meta/psm/service" xmlns:type="http://blackbelt.hu/judo/meta/psm/type" xmi:id="_vbf8wINkEeiLE-B2bbL0fg" name="demo">
-  <elements xsi:type="accesspoint:AccessPoint" xmi:id="_X9vDsEZlEemHs64O5EYsyQ" name="internalAP">
-    <exposedGraphs xmi:id="_hanN0EZlEemHs64O5EYsyQ" name="ordersAssignedToEmployee" mappedTransferObjectType="_ETGEYCVQEemLpvUY7MQgng" selector="_EuQ5MCYbEemLpvUY7MQgng">
-      <cardinality xmi:id="_ApEPoKiXEemuF_XcMCHsqg" upper="-1"/>
+<namespace:Model xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:accesspoint="http://blackbelt.hu/judo/meta/psm/accesspoint" xmlns:data="http://blackbelt.hu/judo/meta/psm/data" xmlns:derived="http://blackbelt.hu/judo/meta/psm/derived" xmlns:measure="http://blackbelt.hu/judo/meta/psm/measure" xmlns:namespace="http://blackbelt.hu/judo/meta/psm/namespace" xmlns:service="http://blackbelt.hu/judo/meta/psm/service" xmlns:type="http://blackbelt.hu/judo/meta/psm/type" xmi:id="_-asEYOiQEempM99-shER5g" name="demo">
+  <elements xsi:type="accesspoint:AccessPoint" xmi:id="_-ayLAOiQEempM99-shER5g" name="internalAP">
+    <exposedGraphs xmi:id="_-ayLAeiQEempM99-shER5g" name="ordersAssignedToEmployee" mappedTransferObjectType="_-a5f1eiQEempM99-shER5g" selector="_-a6t5uiQEempM99-shER5g">
+      <cardinality xmi:id="_-ayLAuiQEempM99-shER5g" upper="-1"/>
     </exposedGraphs>
-    <exposedServices xmi:id="_fvPm8EyhEemBn-SJ5OPvtg" operation="_mr1P4EWhEemHs64O5EYsyQ"/>
-    <exposedServices xmi:id="_R0KCoKiXEemuF_XcMCHsqg" operation="_Yp23UIFUEemFzY3ZWApzVQ"/>
-    <exposedServices xmi:id="_ErUCYHsLEemPuYxp6QV8dA" operation="_nkcqoHruEemPuYxp6QV8dA"/>
-    <exposedServices xmi:id="_GskDIKiXEemuF_XcMCHsqg" operation="_SZmaMIFUEemFzY3ZWApzVQ"/>
-    <exposedServices xmi:id="_G94coKiXEemuF_XcMCHsqg" operation="_99BAcKiTEemuF_XcMCHsqg"/>
-    <exposedServices xmi:id="_HEroMKiXEemuF_XcMCHsqg" operation="_5fazwKiTEemuF_XcMCHsqg"/>
-    <exposedServices xmi:id="_MVcXMKiXEemuF_XcMCHsqg" operation="__nxSEKiTEemuF_XcMCHsqg"/>
+    <exposedServices xmi:id="_-ayyEOiQEempM99-shER5g" operation="_-a6G7OiQEempM99-shER5g"/>
+    <exposedServices xmi:id="_-ayyEeiQEempM99-shER5g" operation="_-a6G8OiQEempM99-shER5g"/>
+    <exposedServices xmi:id="_-ayyEuiQEempM99-shER5g" operation="_-a6G2uiQEempM99-shER5g"/>
+    <exposedServices xmi:id="_-ayyE-iQEempM99-shER5g" operation="_-a6G1OiQEempM99-shER5g"/>
+    <exposedServices xmi:id="_-ayyFOiQEempM99-shER5g" operation="_-a6G5uiQEempM99-shER5g"/>
+    <exposedServices xmi:id="_-ayyFeiQEempM99-shER5g" operation="_-a6G4OiQEempM99-shER5g"/>
+    <exposedServices xmi:id="_-ayyFuiQEempM99-shER5g" operation="_-a5f3OiQEempM99-shER5g"/>
   </elements>
-  <elements xsi:type="accesspoint:AccessPoint" xmi:id="_ab0PsEZlEemHs64O5EYsyQ" name="externalAP">
-    <exposedGraphs xmi:id="_lnxx0EZlEemHs64O5EYsyQ" name="products" mappedTransferObjectType="_o7IkkEWXEemHs64O5EYsyQ" selector="_vA7SgEZlEemHs64O5EYsyQ">
-      <cardinality xmi:id="_CjriMKiXEemuF_XcMCHsqg" upper="-1"/>
+  <elements xsi:type="accesspoint:AccessPoint" xmi:id="_-ayyF-iQEempM99-shER5g" name="externalAP">
+    <exposedGraphs xmi:id="_-ayyGOiQEempM99-shER5g" name="products" mappedTransferObjectType="_-a44wuiQEempM99-shER5g" selector="_-a6t4-iQEempM99-shER5g">
+      <cardinality xmi:id="_-ayyGeiQEempM99-shER5g" upper="-1"/>
     </exposedGraphs>
-    <exposedGraphs xmi:id="_ot-twEZlEemHs64O5EYsyQ" name="categories" mappedTransferObjectType="_xxeTIEWXEemHs64O5EYsyQ" selector="_xeUiAEZlEemHs64O5EYsyQ">
-      <cardinality xmi:id="_C5CuMKiXEemuF_XcMCHsqg" upper="-1"/>
+    <exposedGraphs xmi:id="_-ayyGuiQEempM99-shER5g" name="categories" mappedTransferObjectType="_-a4Rx-iQEempM99-shER5g" selector="_-a6t4OiQEempM99-shER5g">
+      <cardinality xmi:id="_-ayyG-iQEempM99-shER5g" upper="-1"/>
     </exposedGraphs>
   </elements>
-  <packages xmi:id="_g0GS4B1REemwg4NgOjaKeA" name="measures">
-    <elements xsi:type="measure:Measure" xmi:id="_oNT8IB1REemwg4NgOjaKeA" name="Mass">
-      <units xmi:id="_2IFN4B1REemwg4NgOjaKeA" name="milligram" rateDividend="1.0E-6" symbol="mg"/>
-      <units xmi:id="__1ZnwB1REemwg4NgOjaKeA" name="gram" rateDividend="0.001" symbol="g"/>
-      <units xmi:id="_BY6o8B1SEemwg4NgOjaKeA" name="dekagram" rateDividend="0.01" symbol="dkg"/>
-      <units xmi:id="_C8XYsB1SEemwg4NgOjaKeA" name="kilogram" symbol="kg"/>
-      <units xmi:id="_EqUvUB1SEemwg4NgOjaKeA" name="quintal" rateDividend="100.0" symbol="q"/>
-      <units xmi:id="_HM9EIB1SEemwg4NgOjaKeA" name="tonne" rateDividend="1000.0" symbol="t"/>
+  <packages xmi:id="_-ayyHOiQEempM99-shER5g" name="measures">
+    <elements xsi:type="measure:DerivedMeasure" xmi:id="_-ayyHeiQEempM99-shER5g" name="Acceleration">
+      <units xmi:id="_-ayyHuiQEempM99-shER5g" name="metrePerSecondSquared" symbol="m/s&#xb2;"/>
+      <terms xmi:id="_-ayyH-iQEempM99-shER5g" unit="_-a1OhOiQEempM99-shER5g"/>
+      <terms xmi:id="_-ayyIOiQEempM99-shER5g" exponent="-1" unit="_-a1OguiQEempM99-shER5g"/>
     </elements>
-    <elements xsi:type="measure:Measure" xmi:id="_qJUV0B1REemwg4NgOjaKeA" name="Time">
-      <units xsi:type="measure:DurationUnit" xmi:id="_PCQ14B2GEemwg4NgOjaKeA" name="millisecond" rateDividend="0.001" symbol="ms"/>
-      <units xsi:type="measure:DurationUnit" xmi:id="_SlUs8B2GEemwg4NgOjaKeA" name="second" symbol="s" unitType="second"/>
-      <units xsi:type="measure:DurationUnit" xmi:id="_S5zvMB2GEemwg4NgOjaKeA" name="minute" rateDividend="60.0" symbol="min" unitType="minute"/>
-      <units xsi:type="measure:DurationUnit" xmi:id="_TRAHMB2GEemwg4NgOjaKeA" name="hour" rateDividend="3600.0" symbol="h" unitType="hour"/>
-      <units xsi:type="measure:DurationUnit" xmi:id="_TjC5cB2GEemwg4NgOjaKeA" name="day" rateDividend="86400.0" symbol="" unitType="day"/>
-      <units xsi:type="measure:DurationUnit" xmi:id="_ezprAB2GEemwg4NgOjaKeA" name="week" rateDividend="604800.0" symbol="" unitType="week"/>
+    <elements xsi:type="measure:Measure" xmi:id="_-ayyIeiQEempM99-shER5g" name="AmountOfSubstance">
+      <units xmi:id="_-ayyIuiQEempM99-shER5g" name="mol" symbol="mol"/>
     </elements>
-    <elements xsi:type="measure:Measure" xmi:id="_tTcIcB1REemwg4NgOjaKeA" name="MonthBasedTime">
-      <units xsi:type="measure:DurationUnit" xmi:id="_yX3RgB2GEemwg4NgOjaKeA" name="month" unitType="month"/>
-      <units xsi:type="measure:DurationUnit" xmi:id="_zDfocB2GEemwg4NgOjaKeA" name="year" rateDividend="12.0" unitType="year"/>
+    <elements xsi:type="measure:DerivedMeasure" xmi:id="_-ayyI-iQEempM99-shER5g" name="Area">
+      <units xmi:id="_-ayyJOiQEempM99-shER5g" name="squareMillimetre" rateDividend="1.0E-6" symbol="mm&#xb2;"/>
+      <units xmi:id="_-ayyJeiQEempM99-shER5g" name="squareCentimetre" rateDividend="1.0E-4" symbol="cm&#xb2;"/>
+      <units xmi:id="_-ayyJuiQEempM99-shER5g" name="squareDecimetre" rateDividend="0.01" symbol="dm&#xb2;"/>
+      <units xmi:id="_-ayyJ-iQEempM99-shER5g" name="squareMetre" symbol="m&#xb2;"/>
+      <units xmi:id="_-ayyKOiQEempM99-shER5g" name="hectare" rateDividend="10000.0" symbol="ha"/>
+      <units xmi:id="_-ayyKeiQEempM99-shER5g" name="squareKilometre" rateDividend="1000000.0" symbol="km&#xb2;"/>
+      <terms xmi:id="_-ayyKuiQEempM99-shER5g" exponent="2" unit="_-a1OXuiQEempM99-shER5g"/>
     </elements>
-    <elements xsi:type="measure:Measure" xmi:id="_vrNREB1REemwg4NgOjaKeA" name="Length">
-      <units xmi:id="_nzyzcB1SEemwg4NgOjaKeA" name="nanometre" rateDividend="1.0E-9" symbol="nm"/>
-      <units xmi:id="_tSZxMB1SEemwg4NgOjaKeA" name="micrometre" rateDividend="1.0E-6" symbol="&#x3bc;m"/>
-      <units xmi:id="_yhwK8B1SEemwg4NgOjaKeA" name="millimetre" rateDividend="0.001" symbol="mm"/>
-      <units xmi:id="_2Z1PwB1SEemwg4NgOjaKeA" name="centimetre" rateDividend="0.01" symbol="cm"/>
-      <units xmi:id="_4EKDkB1SEemwg4NgOjaKeA" name="decimetre" rateDividend="0.1" symbol="dm"/>
-      <units xmi:id="_5oYPYB1SEemwg4NgOjaKeA" name="metre" symbol="m"/>
-      <units xmi:id="_7eDXkB1SEemwg4NgOjaKeA" name="kilometre" rateDividend="1000.0" symbol="km"/>
-      <units xmi:id="_yH5cgB1-Eemwg4NgOjaKeA" name="inch" rateDividend="0.0254" symbol="&quot;"/>
-      <units xmi:id="_9Dr0oB1-Eemwg4NgOjaKeA" name="foot" rateDividend="0.3048" symbol="ft"/>
-      <units xmi:id="__nz-QB1-Eemwg4NgOjaKeA" name="mile" rateDividend="1609.344" symbol="mi"/>
+    <elements xsi:type="measure:DerivedMeasure" xmi:id="_-ayyK-iQEempM99-shER5g" name="Capacitance">
+      <units xmi:id="_-ayyLOiQEempM99-shER5g" name="pikofarad" rateDividend="1.0E-12" symbol="pF"/>
+      <units xmi:id="_-ayyLeiQEempM99-shER5g" name="nanofarad" rateDividend="1.0E-9" symbol="nF"/>
+      <units xmi:id="_-ayyLuiQEempM99-shER5g" name="microfarad" rateDividend="1.0E-6" symbol="&#x3bc;F"/>
+      <units xmi:id="_-ayyL-iQEempM99-shER5g" name="farad" symbol="F"/>
+      <terms xmi:id="_-azZIOiQEempM99-shER5g" unit="_-a11bOiQEempM99-shER5g"/>
+      <terms xmi:id="_-azZIeiQEempM99-shER5g" exponent="-1" unit="_-azZN-iQEempM99-shER5g"/>
     </elements>
-    <elements xsi:type="measure:Measure" xmi:id="_x2bLcB1REemwg4NgOjaKeA" name="Temperature">
-      <units xmi:id="_-9i9QB1SEemwg4NgOjaKeA" name="celsius" symbol="&#xb0;C"/>
+    <elements xsi:type="measure:DerivedMeasure" xmi:id="_-azZIuiQEempM99-shER5g" name="Density">
+      <units xmi:id="_-azZI-iQEempM99-shER5g" name="kilogramPerCubicMetre" symbol="kg/m&#xb3;"/>
+      <units xmi:id="_-azZJOiQEempM99-shER5g" name="gramPerCubicCentimetre" rateDividend="1000.0" symbol="g/m&#xb3;"/>
+      <terms xmi:id="_-azZJeiQEempM99-shER5g" unit="_-a1OauiQEempM99-shER5g"/>
+      <terms xmi:id="_-azZJuiQEempM99-shER5g" exponent="-1" unit="_-a11ZOiQEempM99-shER5g"/>
     </elements>
-    <elements xsi:type="measure:DerivedMeasure" xmi:id="_SGwCwB1TEemwg4NgOjaKeA" name="Area">
-      <units xmi:id="_TfYCkB1TEemwg4NgOjaKeA" name="squareMillimetre" rateDividend="1.0E-6" symbol="mm&#xb2;"/>
-      <units xmi:id="_bXi4sB1TEemwg4NgOjaKeA" name="squareCentimetre" rateDividend="1.0E-4" symbol="cm&#xb2;"/>
-      <units xmi:id="_cz3FsB1TEemwg4NgOjaKeA" name="squareDecimetre" rateDividend="0.01" symbol="dm&#xb2;"/>
-      <units xmi:id="_eD5KMB1TEemwg4NgOjaKeA" name="squareMetre" symbol="m&#xb2;"/>
-      <units xmi:id="_fIEkAB1TEemwg4NgOjaKeA" name="hectare" rateDividend="10000.0" symbol="ha"/>
-      <units xmi:id="_f9o6EB1TEemwg4NgOjaKeA" name="squareKilometre" rateDividend="1000000.0" symbol="km&#xb2;"/>
-      <terms xmi:id="_fxALgB8wEemH1tWVVVMmqg" exponent="2" unit="_5oYPYB1SEemwg4NgOjaKeA"/>
+    <elements xsi:type="measure:DerivedMeasure" xmi:id="_-azZJ-iQEempM99-shER5g" name="ElectricalConductance">
+      <units xmi:id="_-azZKOiQEempM99-shER5g" name="siemens" symbol="S"/>
+      <terms xmi:id="_-azZKeiQEempM99-shER5g" exponent="-1" unit="_-azZLeiQEempM99-shER5g"/>
     </elements>
-    <elements xsi:type="measure:DerivedMeasure" xmi:id="_vk8mIB1TEemwg4NgOjaKeA" name="Volume">
-      <units xmi:id="_wqf48B1TEemwg4NgOjaKeA" name="cubicMillimetre" rateDividend="1.0E-9" symbol="mm&#xb3;"/>
-      <units xmi:id="_0vv3EB1TEemwg4NgOjaKeA" name="cubicCentimetre" rateDividend="1.0E-6" symbol="cm&#xb3;"/>
-      <units xmi:id="_1outgB1TEemwg4NgOjaKeA" name="cubicDecimetre" rateDividend="0.001" symbol="dm&#xb3;"/>
-      <units xmi:id="_2zAIQB1TEemwg4NgOjaKeA" name="cubicMetre" symbol="m&#xb3;"/>
-      <units xmi:id="_97AswB1TEemwg4NgOjaKeA" name="millilitre" rateDividend="1.0E-6" symbol="ml"/>
-      <units xmi:id="_-4Dj0B1TEemwg4NgOjaKeA" name="centilitre" rateDividend="1.0E-5" symbol="cl"/>
-      <units xmi:id="_BJsPQB1UEemwg4NgOjaKeA" name="decilitre" rateDividend="1.0E-4" symbol="dl"/>
-      <units xmi:id="_CYY3AB1UEemwg4NgOjaKeA" name="litre" rateDividend="0.001" symbol="l"/>
-      <units xmi:id="_HAfDgB1UEemwg4NgOjaKeA" name="hectolitre" rateDividend="0.1" symbol="hl"/>
-      <terms xmi:id="_kLbIYB8wEemH1tWVVVMmqg" exponent="3" unit="_5oYPYB1SEemwg4NgOjaKeA"/>
+    <elements xsi:type="measure:DerivedMeasure" xmi:id="_-azZKuiQEempM99-shER5g" name="ElectricalResistance">
+      <units xmi:id="_-azZK-iQEempM99-shER5g" name="microohm" rateDividend="1.0E-6" symbol="&#x3bc;&#x3a9;"/>
+      <units xmi:id="_-azZLOiQEempM99-shER5g" name="milliohm" rateDividend="0.01" symbol="m&#x3a9;"/>
+      <units xmi:id="_-azZLeiQEempM99-shER5g" name="ohm" symbol="&#x3a9;"/>
+      <terms xmi:id="_-azZLuiQEempM99-shER5g" unit="_-azZN-iQEempM99-shER5g"/>
+      <terms xmi:id="_-azZL-iQEempM99-shER5g" exponent="-1" unit="_-azZNeiQEempM99-shER5g"/>
     </elements>
-    <elements xsi:type="measure:DerivedMeasure" xmi:id="_xiATQB1UEemwg4NgOjaKeA" name="Velocity">
-      <units xmi:id="_zR6KoB1UEemwg4NgOjaKeA" name="kilometrePerHour" rateDivisor="3.6" symbol="km/h"/>
-      <units xmi:id="_0T0TkB1UEemwg4NgOjaKeA" name="metrePerSecond" symbol="m/s"/>
-      <terms xmi:id="_FNbJsB8xEemH1tWVVVMmqg" unit="_5oYPYB1SEemwg4NgOjaKeA"/>
-      <terms xmi:id="_FhD3YB8xEemH1tWVVVMmqg" exponent="-1" unit="_SlUs8B2GEemwg4NgOjaKeA"/>
+    <elements xsi:type="measure:DerivedMeasure" xmi:id="_-azZMOiQEempM99-shER5g" name="ElectricCharge">
+      <units xmi:id="_-azZMeiQEempM99-shER5g" name="coulomb" symbol="C"/>
+      <terms xmi:id="_-azZMuiQEempM99-shER5g" unit="_-azZNeiQEempM99-shER5g"/>
+      <terms xmi:id="_-azZM-iQEempM99-shER5g" unit="_-a1OguiQEempM99-shER5g"/>
     </elements>
-    <elements xsi:type="measure:DerivedMeasure" xmi:id="_M00kMB1VEemwg4NgOjaKeA" name="Acceleration">
-      <units xmi:id="_RelkoB1VEemwg4NgOjaKeA" name="metrePerSecondSquared" symbol="m/s&#xb2;"/>
-      <terms xmi:id="_LD3_sB8xEemH1tWVVVMmqg" unit="_0T0TkB1UEemwg4NgOjaKeA"/>
-      <terms xmi:id="_Lcc3wB8xEemH1tWVVVMmqg" exponent="-1" unit="_SlUs8B2GEemwg4NgOjaKeA"/>
+    <elements xsi:type="measure:Measure" xmi:id="_-azZNOiQEempM99-shER5g" name="ElectricCurrent">
+      <units xmi:id="_-azZNeiQEempM99-shER5g" name="ampere" symbol="A"/>
     </elements>
-    <elements xsi:type="measure:DerivedMeasure" xmi:id="_ZFoOgB1VEemwg4NgOjaKeA" name="Momentum">
-      <units xmi:id="_GFfI8B1WEemwg4NgOjaKeA" name="kilogramMetrePerSecond" symbol="kg*m/s"/>
-      <terms xmi:id="_XBiEgB8xEemH1tWVVVMmqg" unit="_C8XYsB1SEemwg4NgOjaKeA"/>
-      <terms xmi:id="_XWqnAB8xEemH1tWVVVMmqg" unit="_0T0TkB1UEemwg4NgOjaKeA"/>
+    <elements xsi:type="measure:DerivedMeasure" xmi:id="_-azZNuiQEempM99-shER5g" name="ElectricPotential">
+      <units xmi:id="_-azZN-iQEempM99-shER5g" name="volt" symbol="V"/>
+      <units xmi:id="_-a0nQOiQEempM99-shER5g" name="kilovolt" rateDividend="1000.0" symbol="kV"/>
+      <terms xmi:id="_-a0nQeiQEempM99-shER5g" unit="_-a11bOiQEempM99-shER5g"/>
+      <terms xmi:id="_-a0nQuiQEempM99-shER5g" exponent="-1" unit="_-azZMeiQEempM99-shER5g"/>
     </elements>
-    <elements xsi:type="measure:DerivedMeasure" xmi:id="_mq7mkB1VEemwg4NgOjaKeA" name="Force">
-      <units xmi:id="_oibTsB1VEemwg4NgOjaKeA" name="newton" symbol="N"/>
-      <terms xmi:id="_nzfl0B8xEemH1tWVVVMmqg" unit="_C8XYsB1SEemwg4NgOjaKeA"/>
-      <terms xmi:id="_oRnFMB8xEemH1tWVVVMmqg" unit="_RelkoB1VEemwg4NgOjaKeA"/>
+    <elements xsi:type="measure:DerivedMeasure" xmi:id="_-a0nQ-iQEempM99-shER5g" name="Force">
+      <units xmi:id="_-a0nROiQEempM99-shER5g" name="newton" symbol="N"/>
+      <terms xmi:id="_-a0nReiQEempM99-shER5g" unit="_-a1OauiQEempM99-shER5g"/>
+      <terms xmi:id="_-a0nRuiQEempM99-shER5g" unit="_-ayyHuiQEempM99-shER5g"/>
     </elements>
-    <elements xsi:type="measure:DerivedMeasure" xmi:id="_9__osB16Eemwg4NgOjaKeA" name="Work">
-      <units xmi:id="_CbRhMB17Eemwg4NgOjaKeA" name="joule" symbol="J"/>
-      <units xmi:id="_3ab0gB17Eemwg4NgOjaKeA" name="kilojoule" rateDividend="1000.0" symbol="kJ"/>
-      <units xmi:id="_7IsO8B17Eemwg4NgOjaKeA" name="megajoule" rateDividend="1000000.0" symbol="MJ"/>
-      <units xmi:id="_hdUngB18Eemwg4NgOjaKeA" name="watthour" rateDividend="3600.0"/>
-      <units xmi:id="_lhQXAB18Eemwg4NgOjaKeA" name="kilowatthour" rateDividend="3600000.0" symbol="kWh"/>
-      <terms xmi:id="_tFj8YB8xEemH1tWVVVMmqg" unit="_oibTsB1VEemwg4NgOjaKeA"/>
-      <terms xmi:id="_3S5TEB8xEemH1tWVVVMmqg" unit="_5oYPYB1SEemwg4NgOjaKeA"/>
+    <elements xsi:type="measure:DerivedMeasure" xmi:id="_-a0nR-iQEempM99-shER5g" name="Frequency">
+      <units xmi:id="_-a1OUOiQEempM99-shER5g" name="hertz" symbol="Hz"/>
+      <units xmi:id="_-a1OUeiQEempM99-shER5g" name="kilohertz" rateDividend="1000.0" symbol="kHz"/>
+      <units xmi:id="_-a1OUuiQEempM99-shER5g" name="megahertz" rateDividend="1000000.0" symbol="MHz"/>
+      <units xmi:id="_-a1OU-iQEempM99-shER5g" name="gigahertz" rateDividend="1.0E9" symbol="GHz"/>
+      <terms xmi:id="_-a1OVOiQEempM99-shER5g" exponent="-1" unit="_-a1OguiQEempM99-shER5g"/>
     </elements>
-    <elements xsi:type="measure:DerivedMeasure" xmi:id="_JySLAB17Eemwg4NgOjaKeA" name="Power">
-      <units xmi:id="_aIb6EB17Eemwg4NgOjaKeA" name="watt" symbol="W"/>
-      <units xmi:id="_DGLC4B18Eemwg4NgOjaKeA" name="kilowatt" rateDividend="1000.0" symbol="kW"/>
-      <units xmi:id="_D6JdgB18Eemwg4NgOjaKeA" name="megawatt" rateDividend="1000000.0" symbol="MW"/>
-      <terms xmi:id="_DfGKMB8yEemH1tWVVVMmqg" unit="_CbRhMB17Eemwg4NgOjaKeA"/>
-      <terms xmi:id="_OngpEB8yEemH1tWVVVMmqg" exponent="-1" unit="_SlUs8B2GEemwg4NgOjaKeA"/>
+    <elements xsi:type="measure:DerivedMeasure" xmi:id="_-a1OVeiQEempM99-shER5g" name="Illuminance">
+      <units xmi:id="_-a1OVuiQEempM99-shER5g" name="lux" symbol="lx"/>
+      <terms xmi:id="_-a1OV-iQEempM99-shER5g" unit="_-a1OYOiQEempM99-shER5g"/>
+      <terms xmi:id="_-a1OWOiQEempM99-shER5g" exponent="-1" unit="_-ayyJ-iQEempM99-shER5g"/>
     </elements>
-    <elements xsi:type="measure:DerivedMeasure" xmi:id="_LI-4MB17Eemwg4NgOjaKeA" name="Frequency">
-      <units xmi:id="_NGpewB17Eemwg4NgOjaKeA" name="hertz" symbol="Hz"/>
-      <units xmi:id="_QHuDEB17Eemwg4NgOjaKeA" name="kilohertz" rateDividend="1000.0" symbol="kHz"/>
-      <units xmi:id="_RefBsB17Eemwg4NgOjaKeA" name="megahertz" rateDividend="1000000.0" symbol="Mhz"/>
-      <units xmi:id="_TAni0B17Eemwg4NgOjaKeA" name="gigahertz" rateDividend="1.0E9" symbol="Ghz"/>
-      <terms xmi:id="_VasNEB8yEemH1tWVVVMmqg" exponent="-1" unit="_SlUs8B2GEemwg4NgOjaKeA"/>
+    <elements xsi:type="measure:DerivedMeasure" xmi:id="_-a1OWeiQEempM99-shER5g" name="Inductance">
+      <units xmi:id="_-a1OWuiQEempM99-shER5g" name="henry" symbol="H"/>
+      <terms xmi:id="_-a1OW-iQEempM99-shER5g" unit="_-a1OYuiQEempM99-shER5g"/>
+      <terms xmi:id="_-a1OXOiQEempM99-shER5g" exponent="-1" unit="_-azZNeiQEempM99-shER5g"/>
     </elements>
-    <elements xsi:type="measure:DerivedMeasure" xmi:id="_4TREgB18Eemwg4NgOjaKeA" name="Pressure">
-      <units xmi:id="_8oFIoB18Eemwg4NgOjaKeA" name="pascal" symbol="Pa"/>
-      <units xmi:id="__unbwB18Eemwg4NgOjaKeA" name="hectopascal" rateDividend="100.0" symbol="hPa"/>
-      <terms xmi:id="_ZaOkwB8yEemH1tWVVVMmqg" unit="_oibTsB1VEemwg4NgOjaKeA"/>
-      <terms xmi:id="_cHZVoB8yEemH1tWVVVMmqg" exponent="-1" unit="_eD5KMB1TEemwg4NgOjaKeA"/>
+    <elements xsi:type="measure:Measure" xmi:id="_-a1OXeiQEempM99-shER5g" name="Length">
+      <units xmi:id="_-a1OXuiQEempM99-shER5g" name="metre" symbol="m"/>
     </elements>
-    <elements xsi:type="measure:DerivedMeasure" xmi:id="_khxagB19Eemwg4NgOjaKeA" name="Density">
-      <units xmi:id="_lgklEB19Eemwg4NgOjaKeA" name="kilogramPerCubicMetre" symbol="kg/m&#xb3;"/>
-      <units xmi:id="_rOuasB19Eemwg4NgOjaKeA" name="gramPerCubicCentimetre" rateDividend="1000.0" symbol="g/cm&#xb3;"/>
-      <terms xmi:id="_rlYGkB8yEemH1tWVVVMmqg" unit="_C8XYsB1SEemwg4NgOjaKeA"/>
-      <terms xmi:id="_r53v4B8yEemH1tWVVVMmqg" exponent="-1" unit="_2zAIQB1TEemwg4NgOjaKeA"/>
+    <elements xsi:type="measure:Measure" xmi:id="_-a1OX-iQEempM99-shER5g" name="LuminousIntensity">
+      <units xmi:id="_-a1OYOiQEempM99-shER5g" name="candela" symbol="cd"/>
     </elements>
-    <elements xsi:type="measure:Measure" xmi:id="_Vtka4B80EemH1tWVVVMmqg" name="ElectricCurrent">
-      <units xmi:id="_wsXjoB80EemH1tWVVVMmqg" name="milliampere" rateDividend="0.001" symbol="mA"/>
-      <units xmi:id="_O-NKcB81EemH1tWVVVMmqg" name="ampere" symbol="A"/>
+    <elements xsi:type="measure:DerivedMeasure" xmi:id="_-a1OYeiQEempM99-shER5g" name="MagneticFlux">
+      <units xmi:id="_-a1OYuiQEempM99-shER5g" name="weber" symbol="Wb"/>
+      <terms xmi:id="_-a1OY-iQEempM99-shER5g" unit="_-azZN-iQEempM99-shER5g"/>
+      <terms xmi:id="_-a1OZOiQEempM99-shER5g" unit="_-a1OguiQEempM99-shER5g"/>
     </elements>
-    <elements xsi:type="measure:Measure" xmi:id="_K9bcoB81EemH1tWVVVMmqg" name="ThermodynamicTemperature">
-      <units xmi:id="_NFjmwB81EemH1tWVVVMmqg" name="kelvin" symbol="K"/>
+    <elements xsi:type="measure:DerivedMeasure" xmi:id="_-a1OZeiQEempM99-shER5g" name="MagneticFluxDensity">
+      <units xmi:id="_-a1OZuiQEempM99-shER5g" name="tesla" symbol="T"/>
+      <terms xmi:id="_-a1OZ-iQEempM99-shER5g" unit="_-a1OYuiQEempM99-shER5g"/>
+      <terms xmi:id="_-a1OaOiQEempM99-shER5g" exponent="-1" unit="_-ayyJ-iQEempM99-shER5g"/>
     </elements>
-    <elements xsi:type="measure:Measure" xmi:id="_X4EHEB81EemH1tWVVVMmqg" name="AmountOfSubstance">
-      <units xmi:id="_Zd74sB81EemH1tWVVVMmqg" name="mol" symbol="mol"/>
+    <elements xsi:type="measure:Measure" xmi:id="_-a1OaeiQEempM99-shER5g" name="Mass">
+      <units xmi:id="_-a1OauiQEempM99-shER5g" name="kilogram" symbol="kg"/>
     </elements>
-    <elements xsi:type="measure:Measure" xmi:id="_eFbBMB81EemH1tWVVVMmqg" name="LuminousIntensity">
-      <units xmi:id="_flGEMB81EemH1tWVVVMmqg" name="candela" symbol="cd"/>
+    <elements xsi:type="measure:DerivedMeasure" xmi:id="_-a1Oa-iQEempM99-shER5g" name="Momentum">
+      <units xmi:id="_-a1ObOiQEempM99-shER5g" name="kilogramMetrePerSecond" symbol="kg*m/s"/>
+      <terms xmi:id="_-a1ObeiQEempM99-shER5g" unit="_-a1OauiQEempM99-shER5g"/>
+      <terms xmi:id="_-a1ObuiQEempM99-shER5g" unit="_-a1OhOiQEempM99-shER5g"/>
     </elements>
-    <elements xsi:type="measure:DerivedMeasure" xmi:id="_1MUEQB81EemH1tWVVVMmqg" name="ElectricCharge">
-      <units xmi:id="_32iO0B81EemH1tWVVVMmqg" name="coulomb" symbol="C"/>
-      <terms xmi:id="_7OzyMB81EemH1tWVVVMmqg" unit="_O-NKcB81EemH1tWVVVMmqg"/>
-      <terms xmi:id="_6tAFoB81EemH1tWVVVMmqg" unit="_SlUs8B2GEemwg4NgOjaKeA"/>
+    <elements xsi:type="measure:Measure" xmi:id="_-a1Ob-iQEempM99-shER5g" name="MonthBasedTime">
+      <units xsi:type="measure:DurationUnit" xmi:id="_-a1OcOiQEempM99-shER5g" name="month" unitType="month"/>
+      <units xsi:type="measure:DurationUnit" xmi:id="_-a1OceiQEempM99-shER5g" name="year" rateDividend="12.0" unitType="year"/>
     </elements>
-    <elements xsi:type="measure:DerivedMeasure" xmi:id="_kXwsgB82EemH1tWVVVMmqg" name="ElectricPotential">
-      <units xmi:id="_ly8REB82EemH1tWVVVMmqg" name="volt" symbol="V"/>
-      <units xmi:id="_XbIhMB86EemH1tWVVVMmqg" name="kilovolt" rateDividend="1000.0" symbol="kV"/>
-      <terms xmi:id="_EgRhEB83EemH1tWVVVMmqg" unit="_CbRhMB17Eemwg4NgOjaKeA"/>
-      <terms xmi:id="_E5IF8B83EemH1tWVVVMmqg" exponent="-1" unit="_32iO0B81EemH1tWVVVMmqg"/>
+    <elements xsi:type="measure:DerivedMeasure" xmi:id="_-a1OcuiQEempM99-shER5g" name="Power">
+      <units xmi:id="_-a1Oc-iQEempM99-shER5g" name="watt" symbol="W"/>
+      <units xmi:id="_-a1OdOiQEempM99-shER5g" name="kilowatt" rateDividend="1000.0" symbol="kW"/>
+      <units xmi:id="_-a1OdeiQEempM99-shER5g" name="megawatt" rateDividend="1000000.0" symbol="MW"/>
+      <terms xmi:id="_-a1OduiQEempM99-shER5g" unit="_-a11bOiQEempM99-shER5g"/>
+      <terms xmi:id="_-a1Od-iQEempM99-shER5g" exponent="-1" unit="_-a1OguiQEempM99-shER5g"/>
     </elements>
-    <elements xsi:type="measure:DerivedMeasure" xmi:id="_MeJWkB83EemH1tWVVVMmqg" name="Capacitance">
-      <units xmi:id="_QoAH4B83EemH1tWVVVMmqg" name="pikofarad" rateDividend="1.0E-12" symbol="pF"/>
-      <units xmi:id="_TlB5sB83EemH1tWVVVMmqg" name="nanofarad" rateDividend="1.0E-9" symbol="nF"/>
-      <units xmi:id="_T90NIB83EemH1tWVVVMmqg" name="microfarad" rateDividend="1.0E-6" symbol="&#x3bc;F"/>
-      <units xmi:id="_UXM9gB83EemH1tWVVVMmqg" name="farad" symbol="F"/>
-      <terms xmi:id="_hRg30B83EemH1tWVVVMmqg" unit="_32iO0B81EemH1tWVVVMmqg"/>
-      <terms xmi:id="_k2TNMB83EemH1tWVVVMmqg" exponent="-1" unit="_ly8REB82EemH1tWVVVMmqg"/>
+    <elements xsi:type="measure:DerivedMeasure" xmi:id="_-a1OeOiQEempM99-shER5g" name="Pressure">
+      <units xmi:id="_-a1OeeiQEempM99-shER5g" name="pascal" symbol="Pa"/>
+      <units xmi:id="_-a1OeuiQEempM99-shER5g" name="hectopascal" rateDividend="100.0" symbol="hPa"/>
+      <terms xmi:id="_-a1Oe-iQEempM99-shER5g" unit="_-a0nROiQEempM99-shER5g"/>
+      <terms xmi:id="_-a1OfOiQEempM99-shER5g" exponent="-1" unit="_-ayyJ-iQEempM99-shER5g"/>
     </elements>
-    <elements xsi:type="measure:DerivedMeasure" xmi:id="_C2EXIB85EemH1tWVVVMmqg" name="ElectricalResistance">
-      <units xmi:id="_GsrcUB85EemH1tWVVVMmqg" name="microohm" rateDividend="1.0E-6" symbol="&#x3bc;&#x3a9;"/>
-      <units xmi:id="_LK-MkB85EemH1tWVVVMmqg" name="milliohm" rateDividend="0.001" symbol="m&#x3a9;"/>
-      <units xmi:id="_MpgAEB85EemH1tWVVVMmqg" name="ohm" symbol="&#x3a9;"/>
-      <terms xmi:id="_QXQrQB85EemH1tWVVVMmqg" unit="_ly8REB82EemH1tWVVVMmqg"/>
-      <terms xmi:id="_Q07esB85EemH1tWVVVMmqg" exponent="-1" unit="_O-NKcB81EemH1tWVVVMmqg"/>
+    <elements xsi:type="measure:Measure" xmi:id="_-a1OfeiQEempM99-shER5g" name="Temperature">
+      <units xmi:id="_-a1OfuiQEempM99-shER5g" name="celsius" symbol="&#xb0;C"/>
     </elements>
-    <elements xsi:type="measure:DerivedMeasure" xmi:id="_eENjcB85EemH1tWVVVMmqg" name="ElectricalConductance">
-      <units xmi:id="_fn_qYB85EemH1tWVVVMmqg" name="siemens" symbol="S"/>
-      <terms xmi:id="_hssGAB85EemH1tWVVVMmqg" exponent="-1" unit="_MpgAEB85EemH1tWVVVMmqg"/>
+    <elements xsi:type="measure:Measure" xmi:id="_-a1Of-iQEempM99-shER5g" name="ThermodynamicTemperature">
+      <units xmi:id="_-a1OgOiQEempM99-shER5g" name="kelvin" symbol="K"/>
     </elements>
-    <elements xsi:type="measure:DerivedMeasure" xmi:id="_qhYOwB85EemH1tWVVVMmqg" name="MagneticFlux">
-      <units xmi:id="_tCx0gB85EemH1tWVVVMmqg" name="weber" symbol="Wb"/>
-      <terms xmi:id="_zfxGEB85EemH1tWVVVMmqg" unit="_ly8REB82EemH1tWVVVMmqg"/>
-      <terms xmi:id="_z3IdMB85EemH1tWVVVMmqg" unit="_SlUs8B2GEemwg4NgOjaKeA"/>
+    <elements xsi:type="measure:Measure" xmi:id="_-a1OgeiQEempM99-shER5g" name="Time">
+      <units xsi:type="measure:DurationUnit" xmi:id="_-a1OguiQEempM99-shER5g" name="second" symbol="s" unitType="second"/>
     </elements>
-    <elements xsi:type="measure:DerivedMeasure" xmi:id="_5RraUB85EemH1tWVVVMmqg" name="MagneticFluxDensity">
-      <units xmi:id="_7U6dYB85EemH1tWVVVMmqg" name="tesla" symbol="T"/>
-      <terms xmi:id="_IqxrQB86EemH1tWVVVMmqg" unit="_tCx0gB85EemH1tWVVVMmqg"/>
-      <terms xmi:id="_JEhoAB86EemH1tWVVVMmqg" exponent="-1" unit="_eD5KMB1TEemwg4NgOjaKeA"/>
+    <elements xsi:type="measure:DerivedMeasure" xmi:id="_-a1Og-iQEempM99-shER5g" name="Velocity">
+      <units xmi:id="_-a1OhOiQEempM99-shER5g" name="metrePerSecond" symbol="m/s"/>
+      <units xmi:id="_-a1OheiQEempM99-shER5g" name="kilometrePerHour" rateDivisor="3.6" symbol="km/h"/>
+      <terms xmi:id="_-a1OhuiQEempM99-shER5g" unit="_-a1OXuiQEempM99-shER5g"/>
+      <terms xmi:id="_-a1Oh-iQEempM99-shER5g" unit="_-a1OguiQEempM99-shER5g"/>
     </elements>
-    <elements xsi:type="measure:DerivedMeasure" xmi:id="_fFXB8B86EemH1tWVVVMmqg" name="Inductance">
-      <units xmi:id="_gz8qsB86EemH1tWVVVMmqg" name="henry" symbol="H"/>
-      <terms xmi:id="_jClsgB86EemH1tWVVVMmqg" unit="_tCx0gB85EemH1tWVVVMmqg"/>
-      <terms xmi:id="_jXkeAB86EemH1tWVVVMmqg" exponent="-1" unit="_O-NKcB81EemH1tWVVVMmqg"/>
+    <elements xsi:type="measure:DerivedMeasure" xmi:id="_-a11YOiQEempM99-shER5g" name="Volume">
+      <units xmi:id="_-a11YeiQEempM99-shER5g" name="cubicMillimetre" rateDividend="1.0E-9" symbol="mm&#xb3;"/>
+      <units xmi:id="_-a11YuiQEempM99-shER5g" name="cubicCentimetre" rateDividend="1.0E-6" symbol="cm&#xb3;"/>
+      <units xmi:id="_-a11Y-iQEempM99-shER5g" name="cubicDecimetre" rateDividend="0.001" symbol="dm&#xb3;"/>
+      <units xmi:id="_-a11ZOiQEempM99-shER5g" name="cubicMetre" symbol="m&#xb3;"/>
+      <units xmi:id="_-a11ZeiQEempM99-shER5g" name="millilitre" rateDividend="1.0E-6" symbol="ml"/>
+      <units xmi:id="_-a11ZuiQEempM99-shER5g" name="centilitre" rateDividend="1.0E-5" symbol="cl"/>
+      <units xmi:id="_-a11Z-iQEempM99-shER5g" name="decilitre" rateDividend="1.0E-4" symbol="dl"/>
+      <units xmi:id="_-a11aOiQEempM99-shER5g" name="litre" rateDividend="0.001" symbol="l"/>
+      <units xmi:id="_-a11aeiQEempM99-shER5g" name="hectolitre" rateDividend="0.1" symbol="hl"/>
+      <terms xmi:id="_-a11auiQEempM99-shER5g" exponent="3" unit="_-a1OXuiQEempM99-shER5g"/>
     </elements>
-    <elements xsi:type="measure:DerivedMeasure" xmi:id="_wsFoEB86EemH1tWVVVMmqg" name="Illuminance">
-      <units xmi:id="_x8b1oB86EemH1tWVVVMmqg" name="lux" symbol="lx"/>
-      <terms xmi:id="_1I2HQB86EemH1tWVVVMmqg" unit="_flGEMB81EemH1tWVVVMmqg"/>
-      <terms xmi:id="_1cs3YB86EemH1tWVVVMmqg" exponent="-1" unit="_eD5KMB1TEemwg4NgOjaKeA"/>
+    <elements xsi:type="measure:DerivedMeasure" xmi:id="_-a11a-iQEempM99-shER5g" name="Work">
+      <units xmi:id="_-a11bOiQEempM99-shER5g" name="joule" symbol="J"/>
+      <units xmi:id="_-a11beiQEempM99-shER5g" name="kilojoule" rateDividend="1000.0" symbol="KJ"/>
+      <units xmi:id="_-a11buiQEempM99-shER5g" name="megajoule" rateDividend="1000000.0" symbol="MJ"/>
+      <units xmi:id="_-a11b-iQEempM99-shER5g" name="watthour" rateDividend="3600.0" symbol="Wh"/>
+      <units xmi:id="_-a11cOiQEempM99-shER5g" name="kilowatthour" rateDividend="3600000.0" symbol="kWh"/>
+      <terms xmi:id="_-a11ceiQEempM99-shER5g" unit="_-a0nROiQEempM99-shER5g"/>
+      <terms xmi:id="_-a11cuiQEempM99-shER5g" unit="_-a1OXuiQEempM99-shER5g"/>
     </elements>
   </packages>
-  <packages xmi:id="_w6IJAB1WEemwg4NgOjaKeA" name="types">
-    <elements xsi:type="type:StringType" xmi:id="_Nppx8IUcEeipmMyz9cMCRA" name="String" maxLength="255"/>
-    <elements xsi:type="type:NumericType" xmi:id="_SZ-GUIUcEeipmMyz9cMCRA" name="Long" precision="18"/>
-    <elements xsi:type="type:NumericType" xmi:id="_TXtg8IUcEeipmMyz9cMCRA" name="Integer" precision="9"/>
-    <elements xsi:type="type:NumericType" xmi:id="_VDVVQIUcEeipmMyz9cMCRA" name="Double" precision="15" scale="4"/>
-    <elements xsi:type="type:NumericType" xmi:id="_WX24MIUcEeipmMyz9cMCRA" name="Float" precision="7" scale="4"/>
-    <elements xsi:type="type:BooleanType" xmi:id="_Xos1AIUcEeipmMyz9cMCRA" name="Boolean"/>
-    <elements xsi:type="type:CustomType" xmi:id="_j-zrcINuEeiLE-B2bbL0fg" name="Binary"/>
-    <elements xsi:type="type:DateType" xmi:id="_YoqOYIN1EeiLE-B2bbL0fg" name="Date"/>
-    <elements xsi:type="type:TimestampType" xmi:id="_Z9J8IIN1EeiLE-B2bbL0fg" name="Timestamp"/>
-    <elements xsi:type="type:StringType" xmi:id="_Lw4a8IOGEeiLE-B2bbL0fg" name="Phone" maxLength="20"/>
-    <elements xsi:type="type:StringType" xmi:id="_tXQUoIOGEeiLE-B2bbL0fg" name="Text" maxLength="250"/>
-    <elements xsi:type="type:StringType" xmi:id="_A5EFMIN4EeiLE-B2bbL0fg" name="URL" maxLength="1024"/>
-    <elements xsi:type="type:EnumerationType" xmi:id="_G2wVsI57EeioH6CUzUrG0Q" name="Countries">
-      <members xmi:id="_HUnWYI57EeioH6CUzUrG0Q" name="HU"/>
-      <members xmi:id="_KfjBUI57EeioH6CUzUrG0Q" name="AT" ordinal="1"/>
-      <members xmi:id="_KyxfUI57EeioH6CUzUrG0Q" name="RO" ordinal="2"/>
-      <members xmi:id="_LEloEI57EeioH6CUzUrG0Q" name="SK" ordinal="3"/>
+  <packages xmi:id="_-a11c-iQEempM99-shER5g" name="entities">
+    <elements xsi:type="data:EntityType" xmi:id="_-a11dOiQEempM99-shER5g" name="Address">
+      <attributes xmi:id="_-a11deiQEempM99-shER5g" name="address" dataType="_-a4Rr-iQEempM99-shER5g" required="true"/>
+      <attributes xmi:id="_-a11duiQEempM99-shER5g" name="region" dataType="_-a4Rr-iQEempM99-shER5g"/>
+      <attributes xmi:id="_-a11d-iQEempM99-shER5g" name="postalCode" dataType="_-a4Rr-iQEempM99-shER5g" required="true"/>
+      <relations xsi:type="data:AssociationEnd" xmi:id="_-a11eOiQEempM99-shER5g" name="city" target="_-a11guiQEempM99-shER5g">
+        <cardinality xmi:id="_-a11eeiQEempM99-shER5g" lower="1"/>
+      </relations>
     </elements>
-    <elements xsi:type="type:EnumerationType" xmi:id="_hJ-K0I57EeioH6CUzUrG0Q" name="Titles">
-      <members xmi:id="_iHpUAI57EeioH6CUzUrG0Q" name="MS"/>
-      <members xmi:id="_jKZxgI57EeioH6CUzUrG0Q" name="MRS" ordinal="1"/>
-      <members xmi:id="_j3WXEI57EeioH6CUzUrG0Q" name="MR" ordinal="2"/>
-      <members xmi:id="_kgvSUI57EeioH6CUzUrG0Q" name="DR" ordinal="3"/>
+    <elements xsi:type="data:EntityType" xmi:id="_-a11euiQEempM99-shER5g" name="Category">
+      <attributes xmi:id="_-a11e-iQEempM99-shER5g" name="categoryName" dataType="_-a4Rr-iQEempM99-shER5g" required="true"/>
+      <attributes xmi:id="_-a11fOiQEempM99-shER5g" name="description" dataType="_-a4RsOiQEempM99-shER5g"/>
+      <attributes xmi:id="_-a11feiQEempM99-shER5g" name="picture" dataType="_-a4RouiQEempM99-shER5g"/>
+      <relations xsi:type="data:AssociationEnd" xmi:id="_-a11fuiQEempM99-shER5g" name="products" target="_-a3qm-iQEempM99-shER5g" partner="_-a3qo-iQEempM99-shER5g">
+        <cardinality xmi:id="_-a11f-iQEempM99-shER5g" upper="-1"/>
+      </relations>
+      <relations xsi:type="data:AssociationEnd" xmi:id="_-a11gOiQEempM99-shER5g" name="owner" target="_-a2cfOiQEempM99-shER5g" partner="_-a2cj-iQEempM99-shER5g">
+        <cardinality xmi:id="_-a11geiQEempM99-shER5g"/>
+      </relations>
     </elements>
-    <packages xmi:id="_zeDeUB1WEemwg4NgOjaKeA" name="measured">
-      <elements xsi:type="measure:MeasuredType" xmi:id="_h2iYkB1XEemwg4NgOjaKeA" name="MassStoredInKilograms" precision="15" scale="4" storeUnit="_C8XYsB1SEemwg4NgOjaKeA"/>
-      <elements xsi:type="measure:MeasuredType" xmi:id="_PGtxgB1ZEemwg4NgOjaKeA" name="TimeStoredInSeconds" precision="15" scale="4" storeUnit="_SlUs8B2GEemwg4NgOjaKeA"/>
-      <elements xsi:type="measure:MeasuredType" xmi:id="_WrULYB1ZEemwg4NgOjaKeA" name="TimeStoredInMonths" precision="9" storeUnit="_yX3RgB2GEemwg4NgOjaKeA"/>
-      <elements xsi:type="measure:MeasuredType" xmi:id="_fdkrMB1ZEemwg4NgOjaKeA" name="AreaStoredInSquareMetre" precision="15" scale="4" storeUnit="_eD5KMB1TEemwg4NgOjaKeA"/>
-      <elements xsi:type="measure:MeasuredType" xmi:id="_DTYUEB1eEemwg4NgOjaKeA" name="VolumeStoredInLitre" precision="15" scale="4" storeUnit="_CYY3AB1UEemwg4NgOjaKeA"/>
-      <elements xsi:type="measure:MeasuredType" xmi:id="_bfc2gB1eEemwg4NgOjaKeA" name="VelocityStoredInKmPerHour" precision="15" scale="4" storeUnit="_zR6KoB1UEemwg4NgOjaKeA"/>
+    <elements xsi:type="data:EntityType" xmi:id="_-a11guiQEempM99-shER5g" name="City">
+      <attributes xmi:id="_-a11g-iQEempM99-shER5g" name="name" dataType="_-a4Rr-iQEempM99-shER5g"/>
+    </elements>
+    <elements xsi:type="data:EntityType" xmi:id="_-a11hOiQEempM99-shER5g" name="Company" superEntityTypes="_-a2cd-iQEempM99-shER5g">
+      <attributes xmi:id="_-a2ccOiQEempM99-shER5g" name="companyName" dataType="_-a4Rr-iQEempM99-shER5g" required="true"/>
+      <attributes xmi:id="_-a2cceiQEempM99-shER5g" name="contactName" dataType="_-a4Rr-iQEempM99-shER5g"/>
+      <attributes xmi:id="_-a2ccuiQEempM99-shER5g" name="contactTitle" dataType="_-a4Rr-iQEempM99-shER5g"/>
+      <attributes xmi:id="_-a2cc-iQEempM99-shER5g" name="phone" dataType="_-a4RruiQEempM99-shER5g"/>
+      <attributes xmi:id="_-a2cdOiQEempM99-shER5g" name="fax" dataType="_-a4RruiQEempM99-shER5g"/>
+      <relations xsi:type="data:AssociationEnd" xmi:id="_-a2cdeiQEempM99-shER5g" name="manufacturedProducts" target="_-a3qm-iQEempM99-shER5g" partner="_-a3qp-iQEempM99-shER5g">
+        <cardinality xmi:id="_-a2cduiQEempM99-shER5g" upper="-1"/>
+      </relations>
+    </elements>
+    <elements xsi:type="data:EntityType" xmi:id="_-a2cd-iQEempM99-shER5g" name="Customer">
+      <relations xsi:type="data:AssociationEnd" xmi:id="_-a2ceOiQEempM99-shER5g" name="orders" target="_-a3DgeiQEempM99-shER5g" partner="_-a3Dh-iQEempM99-shER5g">
+        <cardinality xmi:id="_-a2ceeiQEempM99-shER5g" upper="-1"/>
+      </relations>
+      <relations xsi:type="data:Containment" xmi:id="_-a2ceuiQEempM99-shER5g" name="addresses" target="_-a11dOiQEempM99-shER5g">
+        <cardinality xmi:id="_-a2ce-iQEempM99-shER5g" upper="-1"/>
+      </relations>
+    </elements>
+    <elements xsi:type="data:EntityType" xmi:id="_-a2cfOiQEempM99-shER5g" name="Employee" superEntityTypes="_-a3ql-iQEempM99-shER5g">
+      <attributes xmi:id="_-a2cfeiQEempM99-shER5g" name="titleOfCourtesy" dataType="_-a4Rr-iQEempM99-shER5g"/>
+      <attributes xmi:id="_-a2cfuiQEempM99-shER5g" name="birthDate" dataType="_-a4RqeiQEempM99-shER5g"/>
+      <attributes xmi:id="_-a2cf-iQEempM99-shER5g" name="hireDate" dataType="_-a4RqeiQEempM99-shER5g"/>
+      <attributes xmi:id="_-a2cgOiQEempM99-shER5g" name="homePhone" dataType="_-a4RruiQEempM99-shER5g"/>
+      <attributes xmi:id="_-a2cgeiQEempM99-shER5g" name="extension" dataType="_-a4Rr-iQEempM99-shER5g"/>
+      <attributes xmi:id="_-a2cguiQEempM99-shER5g" name="photo" dataType="_-a4RouiQEempM99-shER5g"/>
+      <attributes xmi:id="_-a2cg-iQEempM99-shER5g" name="notes" dataType="_-a4RsOiQEempM99-shER5g"/>
+      <attributes xmi:id="_-a2chOiQEempM99-shER5g" name="photoPath" dataType="_-a4RsOiQEempM99-shER5g"/>
+      <relations xsi:type="data:AssociationEnd" xmi:id="_-a2cheiQEempM99-shER5g" name="orders" target="_-a3DgeiQEempM99-shER5g" partner="_-a3Di-iQEempM99-shER5g">
+        <cardinality xmi:id="_-a2chuiQEempM99-shER5g" upper="-1"/>
+      </relations>
+      <relations xsi:type="data:Containment" xmi:id="_-a2ch-iQEempM99-shER5g" name="address" target="_-a11dOiQEempM99-shER5g">
+        <cardinality xmi:id="_-a2ciOiQEempM99-shER5g"/>
+      </relations>
+      <relations xsi:type="data:AssociationEnd" xmi:id="_-a2cieiQEempM99-shER5g" name="reportsTo" target="_-a2cfOiQEempM99-shER5g" partner="_-a2ci-iQEempM99-shER5g">
+        <cardinality xmi:id="_-a2ciuiQEempM99-shER5g"/>
+      </relations>
+      <relations xsi:type="data:AssociationEnd" xmi:id="_-a2ci-iQEempM99-shER5g" name="employees" target="_-a2cfOiQEempM99-shER5g" partner="_-a2cieiQEempM99-shER5g">
+        <cardinality xmi:id="_-a2cjOiQEempM99-shER5g" upper="-1"/>
+      </relations>
+      <relations xsi:type="data:AssociationEnd" xmi:id="_-a2cjeiQEempM99-shER5g" name="territory" target="_-a3qu-iQEempM99-shER5g" partner="_-a3qveiQEempM99-shER5g">
+        <cardinality xmi:id="_-a2cjuiQEempM99-shER5g"/>
+      </relations>
+      <relations xsi:type="data:AssociationEnd" xmi:id="_-a2cj-iQEempM99-shER5g" name="category" target="_-a11euiQEempM99-shER5g" partner="_-a11gOiQEempM99-shER5g">
+        <cardinality xmi:id="_-a2ckOiQEempM99-shER5g"/>
+      </relations>
+    </elements>
+    <elements xsi:type="data:EntityType" xmi:id="_-a2ckeiQEempM99-shER5g" name="Individual" superEntityTypes="_-a3ql-iQEempM99-shER5g _-a2cd-iQEempM99-shER5g">
+      <attributes xmi:id="_-a2ckuiQEempM99-shER5g" name="phone" dataType="_-a4RruiQEempM99-shER5g"/>
+    </elements>
+    <elements xsi:type="data:EntityType" xmi:id="_-a2ck-iQEempM99-shER5g" name="InternationalAddress" superEntityTypes="_-a11dOiQEempM99-shER5g">
+      <attributes xmi:id="_-a2clOiQEempM99-shER5g" name="country" dataType="_-a4RpOiQEempM99-shER5g"/>
+    </elements>
+    <elements xsi:type="data:EntityType" xmi:id="_-a2cleiQEempM99-shER5g" name="InternationalOrder" superEntityTypes="_-a3DgeiQEempM99-shER5g">
+      <attributes xmi:id="_-a2cluiQEempM99-shER5g" name="customsDescription" dataType="_-a4Rr-iQEempM99-shER5g" required="true"/>
+      <attributes xmi:id="_-a2cl-iQEempM99-shER5g" name="exciseTax" dataType="_-a4RquiQEempM99-shER5g" required="true"/>
+    </elements>
+    <elements xsi:type="data:EntityType" xmi:id="_-a2cmOiQEempM99-shER5g" name="MailingList">
+      <relations xsi:type="data:AssociationEnd" xmi:id="_-a2cmeiQEempM99-shER5g" name="person" target="_-a3ql-iQEempM99-shER5g">
+        <cardinality xmi:id="_-a2cmuiQEempM99-shER5g"/>
+      </relations>
+    </elements>
+    <elements xsi:type="data:EntityType" xmi:id="_-a2cm-iQEempM99-shER5g" name="OnlineInternationalOrder" superEntityTypes="_-a2cleiQEempM99-shER5g _-a2cneiQEempM99-shER5g">
+      <attributes xmi:id="_-a2cnOiQEempM99-shER5g" name="onlineTrackingNumber" dataType="_-a4Rr-iQEempM99-shER5g"/>
+    </elements>
+    <elements xsi:type="data:EntityType" xmi:id="_-a2cneiQEempM99-shER5g" name="OnlineOrder" superEntityTypes="_-a3DgeiQEempM99-shER5g">
+      <attributes xmi:id="_-a3DgOiQEempM99-shER5g" name="webshopUrl" dataType="_-a4Rt-iQEempM99-shER5g" required="true"/>
+    </elements>
+    <elements xsi:type="data:EntityType" xmi:id="_-a3DgeiQEempM99-shER5g" name="Order">
+      <attributes xmi:id="_-a3DguiQEempM99-shER5g" name="orderDate" dataType="_-a4RseiQEempM99-shER5g" required="true"/>
+      <attributes xmi:id="_-a3Dg-iQEempM99-shER5g" name="requiredDate" dataType="_-a4RseiQEempM99-shER5g"/>
+      <attributes xmi:id="_-a3DhOiQEempM99-shER5g" name="shippedDate" dataType="_-a4RseiQEempM99-shER5g"/>
+      <attributes xmi:id="_-a3DheiQEempM99-shER5g" name="freight" dataType="_-a4RquiQEempM99-shER5g"/>
+      <attributes xmi:id="_-a3DhuiQEempM99-shER5g" name="shipName" dataType="_-a4Rr-iQEempM99-shER5g"/>
+      <relations xsi:type="data:AssociationEnd" xmi:id="_-a3Dh-iQEempM99-shER5g" name="customer" target="_-a2cd-iQEempM99-shER5g" partner="_-a2ceOiQEempM99-shER5g">
+        <cardinality xmi:id="_-a3DiOiQEempM99-shER5g"/>
+      </relations>
+      <relations xsi:type="data:AssociationEnd" xmi:id="_-a3DieiQEempM99-shER5g" name="shipper" target="_-a3qr-iQEempM99-shER5g" partner="_-a3qsOiQEempM99-shER5g">
+        <cardinality xmi:id="_-a3DiuiQEempM99-shER5g"/>
+      </relations>
+      <relations xsi:type="data:AssociationEnd" xmi:id="_-a3Di-iQEempM99-shER5g" name="employee" target="_-a2cfOiQEempM99-shER5g" partner="_-a2cheiQEempM99-shER5g">
+        <cardinality xmi:id="_-a3DjOiQEempM99-shER5g"/>
+      </relations>
+      <relations xsi:type="data:Containment" xmi:id="_-a3DjeiQEempM99-shER5g" name="shipAddress" target="_-a2ck-iQEempM99-shER5g">
+        <cardinality xmi:id="_-a3DjuiQEempM99-shER5g"/>
+      </relations>
+      <relations xsi:type="data:Containment" xmi:id="_-a3Dj-iQEempM99-shER5g" name="orderDetails" target="_-a3DluiQEempM99-shER5g">
+        <cardinality xmi:id="_-a3DkOiQEempM99-shER5g" lower="1" upper="-1"/>
+      </relations>
+      <dataProperties xmi:id="_-a3DkeiQEempM99-shER5g" name="shipperName" dataType="_-a4Rr-iQEempM99-shER5g">
+        <getterExpression xmi:id="_-a3DkuiQEempM99-shER5g" expression="self.shipper.companyName"/>
+      </dataProperties>
+      <navigationProperties xmi:id="_-a3Dk-iQEempM99-shER5g" name="categories" target="_-a11euiQEempM99-shER5g">
+        <cardinality xmi:id="_-a3DlOiQEempM99-shER5g" upper="-1"/>
+        <getterExpression xmi:id="_-a3DleiQEempM99-shER5g" expression="self.orderDetails.product.category"/>
+      </navigationProperties>
+    </elements>
+    <elements xsi:type="data:EntityType" xmi:id="_-a3DluiQEempM99-shER5g" name="OrderDetail">
+      <attributes xmi:id="_-a3Dl-iQEempM99-shER5g" name="unitPrice" dataType="_-a4RquiQEempM99-shER5g" required="true"/>
+      <attributes xmi:id="_-a3DmOiQEempM99-shER5g" name="quantity" dataType="_-a4RrOiQEempM99-shER5g" required="true"/>
+      <attributes xmi:id="_-a3DmeiQEempM99-shER5g" name="discount" dataType="_-a4RquiQEempM99-shER5g" required="true"/>
+      <relations xsi:type="data:AssociationEnd" xmi:id="_-a3DmuiQEempM99-shER5g" name="product" target="_-a3qm-iQEempM99-shER5g">
+        <cardinality xmi:id="_-a3Dm-iQEempM99-shER5g" lower="1"/>
+      </relations>
+      <dataProperties xmi:id="_-a3DnOiQEempM99-shER5g" name="productName" dataType="_-a4Rr-iQEempM99-shER5g" required="true">
+        <getterExpression xmi:id="_-a3DneiQEempM99-shER5g" expression="self.product.productName"/>
+      </dataProperties>
+      <dataProperties xmi:id="_-a3DnuiQEempM99-shER5g" name="categoryName" dataType="_-a4Rr-iQEempM99-shER5g" required="true">
+        <getterExpression xmi:id="_-a3Dn-iQEempM99-shER5g" expression="self.product.category.categoryName"/>
+      </dataProperties>
+      <dataProperties xmi:id="_-a3DoOiQEempM99-shER5g" name="price" dataType="_-a4RquiQEempM99-shER5g">
+        <getterExpression xmi:id="_-a3DoeiQEempM99-shER5g" expression="self.quantity * self.unitPrice * (1 - self.discount)"/>
+      </dataProperties>
+      <navigationProperties xmi:id="_-a3qkOiQEempM99-shER5g" name="category" target="_-a11euiQEempM99-shER5g">
+        <cardinality xmi:id="_-a3qkeiQEempM99-shER5g" lower="1"/>
+        <getterExpression xsi:type="derived:ReferenceSelectorType" xmi:id="_-a3qkuiQEempM99-shER5g" expression="self.product.category"/>
+        <setterExpression xmi:id="_-a3qk-iQEempM99-shER5g" expression="self.product.category"/>
+      </navigationProperties>
+    </elements>
+    <elements xsi:type="data:EntityType" xmi:id="_-a3qlOiQEempM99-shER5g" name="PaymentList">
+      <relations xsi:type="data:AssociationEnd" xmi:id="_-a3qleiQEempM99-shER5g" name="employees" target="_-a2cfOiQEempM99-shER5g">
+        <cardinality xmi:id="_-a3qluiQEempM99-shER5g" lower="1" upper="-1"/>
+      </relations>
+    </elements>
+    <elements xsi:type="data:EntityType" xmi:id="_-a3ql-iQEempM99-shER5g" name="Person">
+      <attributes xmi:id="_-a3qmOiQEempM99-shER5g" name="lastName" dataType="_-a4Rr-iQEempM99-shER5g" required="true"/>
+      <attributes xmi:id="_-a3qmeiQEempM99-shER5g" name="firstName" dataType="_-a4Rr-iQEempM99-shER5g" required="true"/>
+      <attributes xmi:id="_-a3qmuiQEempM99-shER5g" name="title" dataType="_-a4RsuiQEempM99-shER5g"/>
+    </elements>
+    <elements xsi:type="data:EntityType" xmi:id="_-a3qm-iQEempM99-shER5g" name="Product">
+      <attributes xmi:id="_-a3qnOiQEempM99-shER5g" name="productName" dataType="_-a4Rr-iQEempM99-shER5g" required="true"/>
+      <attributes xmi:id="_-a3qneiQEempM99-shER5g" name="quantityPerUnit" dataType="_-a4RrOiQEempM99-shER5g"/>
+      <attributes xmi:id="_-a3qnuiQEempM99-shER5g" name="unitPrice" dataType="_-a4RquiQEempM99-shER5g" required="true"/>
+      <attributes xmi:id="_-a3qn-iQEempM99-shER5g" name="unitsInStock" dataType="_-a4RrOiQEempM99-shER5g"/>
+      <attributes xmi:id="_-a3qoOiQEempM99-shER5g" name="unitsOnOrder" dataType="_-a4RrOiQEempM99-shER5g"/>
+      <attributes xmi:id="_-a3qoeiQEempM99-shER5g" name="reorderLevel" dataType="_-a4RrOiQEempM99-shER5g"/>
+      <attributes xmi:id="_-a3qouiQEempM99-shER5g" name="discounted" dataType="_-a4Ro-iQEempM99-shER5g"/>
+      <relations xsi:type="data:AssociationEnd" xmi:id="_-a3qo-iQEempM99-shER5g" name="category" target="_-a11euiQEempM99-shER5g" partner="_-a11fuiQEempM99-shER5g">
+        <cardinality xmi:id="_-a3qpOiQEempM99-shER5g" lower="1"/>
+      </relations>
+      <relations xsi:type="data:AssociationEnd" xmi:id="_-a3qpeiQEempM99-shER5g" name="supplier" target="_-a3qt-iQEempM99-shER5g" partner="_-a3queiQEempM99-shER5g">
+        <cardinality xmi:id="_-a3qpuiQEempM99-shER5g"/>
+      </relations>
+      <relations xsi:type="data:AssociationEnd" xmi:id="_-a3qp-iQEempM99-shER5g" name="manufacturers" target="_-a11hOiQEempM99-shER5g" partner="_-a2cdeiQEempM99-shER5g">
+        <cardinality xmi:id="_-a3qqOiQEempM99-shER5g" upper="-1"/>
+      </relations>
+      <relations xsi:type="data:AssociationEnd" xmi:id="_-a3qqeiQEempM99-shER5g" name="store" target="_-a3qtOiQEempM99-shER5g" partner="_-a3qteiQEempM99-shER5g">
+        <cardinality xmi:id="_-a3qquiQEempM99-shER5g"/>
+      </relations>
+    </elements>
+    <elements xsi:type="data:EntityType" xmi:id="_-a3qq-iQEempM99-shER5g" name="Region">
+      <attributes xmi:id="_-a3qrOiQEempM99-shER5g" name="regionDescription" dataType="_-a4Rr-iQEempM99-shER5g" required="true"/>
+      <relations xsi:type="data:AssociationEnd" xmi:id="_-a3qreiQEempM99-shER5g" name="territories" target="_-a3qu-iQEempM99-shER5g" partner="_-a3qv-iQEempM99-shER5g">
+        <cardinality xmi:id="_-a3qruiQEempM99-shER5g" upper="-1"/>
+      </relations>
+    </elements>
+    <elements xsi:type="data:EntityType" xmi:id="_-a3qr-iQEempM99-shER5g" name="Shipper" superEntityTypes="_-a11hOiQEempM99-shER5g">
+      <relations xsi:type="data:AssociationEnd" xmi:id="_-a3qsOiQEempM99-shER5g" name="shipperOrders" target="_-a3DgeiQEempM99-shER5g" partner="_-a3DieiQEempM99-shER5g">
+        <cardinality xmi:id="_-a3qseiQEempM99-shER5g" upper="-1"/>
+      </relations>
+      <relations xsi:type="data:AssociationEnd" xmi:id="_-a3qsuiQEempM99-shER5g" name="territory" target="_-a3qu-iQEempM99-shER5g" partner="_-a3qweiQEempM99-shER5g">
+        <cardinality xmi:id="_-a3qs-iQEempM99-shER5g"/>
+      </relations>
+    </elements>
+    <elements xsi:type="data:EntityType" xmi:id="_-a3qtOiQEempM99-shER5g" name="Store">
+      <relations xsi:type="data:AssociationEnd" xmi:id="_-a3qteiQEempM99-shER5g" name="products" target="_-a3qm-iQEempM99-shER5g" partner="_-a3qqeiQEempM99-shER5g">
+        <cardinality xmi:id="_-a3qtuiQEempM99-shER5g" upper="-1"/>
+      </relations>
+    </elements>
+    <elements xsi:type="data:EntityType" xmi:id="_-a3qt-iQEempM99-shER5g" name="Supplier" superEntityTypes="_-a11hOiQEempM99-shER5g">
+      <attributes xmi:id="_-a3quOiQEempM99-shER5g" name="homePage" dataType="_-a4Rt-iQEempM99-shER5g"/>
+      <relations xsi:type="data:AssociationEnd" xmi:id="_-a3queiQEempM99-shER5g" name="suppliedProducts" target="_-a3qm-iQEempM99-shER5g" partner="_-a3qpeiQEempM99-shER5g">
+        <cardinality xmi:id="_-a3quuiQEempM99-shER5g" upper="-1"/>
+      </relations>
+    </elements>
+    <elements xsi:type="data:EntityType" xmi:id="_-a3qu-iQEempM99-shER5g" name="Territory">
+      <attributes xmi:id="_-a3qvOiQEempM99-shER5g" name="territoryDescription" dataType="_-a4Rr-iQEempM99-shER5g" required="true"/>
+      <relations xsi:type="data:AssociationEnd" xmi:id="_-a3qveiQEempM99-shER5g" name="territory" target="_-a2cfOiQEempM99-shER5g" partner="_-a2cjeiQEempM99-shER5g">
+        <cardinality xmi:id="_-a3qvuiQEempM99-shER5g" upper="-1"/>
+      </relations>
+      <relations xsi:type="data:AssociationEnd" xmi:id="_-a3qv-iQEempM99-shER5g" name="region" target="_-a3qq-iQEempM99-shER5g" partner="_-a3qreiQEempM99-shER5g">
+        <cardinality xmi:id="_-a3qwOiQEempM99-shER5g"/>
+      </relations>
+      <relations xsi:type="data:AssociationEnd" xmi:id="_-a3qweiQEempM99-shER5g" name="shipper" target="_-a3qr-iQEempM99-shER5g" partner="_-a3qsuiQEempM99-shER5g">
+        <cardinality xmi:id="_-a4RoOiQEempM99-shER5g"/>
+      </relations>
+    </elements>
+  </packages>
+  <packages xmi:id="_-a4RoeiQEempM99-shER5g" name="types">
+    <elements xsi:type="type:CustomType" xmi:id="_-a4RouiQEempM99-shER5g" name="Binary"/>
+    <elements xsi:type="type:BooleanType" xmi:id="_-a4Ro-iQEempM99-shER5g" name="Boolean"/>
+    <elements xsi:type="type:EnumerationType" xmi:id="_-a4RpOiQEempM99-shER5g" name="Countries">
+      <members xmi:id="_-a4RpeiQEempM99-shER5g" name="HU"/>
+      <members xmi:id="_-a4RpuiQEempM99-shER5g" name="AT" ordinal="1"/>
+      <members xmi:id="_-a4Rp-iQEempM99-shER5g" name="RO" ordinal="2"/>
+      <members xmi:id="_-a4RqOiQEempM99-shER5g" name="SK" ordinal="3"/>
+    </elements>
+    <elements xsi:type="type:DateType" xmi:id="_-a4RqeiQEempM99-shER5g" name="Date"/>
+    <elements xsi:type="type:NumericType" xmi:id="_-a4RquiQEempM99-shER5g" name="Double" precision="15" scale="4"/>
+    <elements xsi:type="type:NumericType" xmi:id="_-a4Rq-iQEempM99-shER5g" name="Float" precision="7" scale="4"/>
+    <elements xsi:type="type:NumericType" xmi:id="_-a4RrOiQEempM99-shER5g" name="Integer" precision="9"/>
+    <elements xsi:type="type:NumericType" xmi:id="_-a4RreiQEempM99-shER5g" name="Long" precision="18"/>
+    <elements xsi:type="type:StringType" xmi:id="_-a4RruiQEempM99-shER5g" name="Phone" maxLength="20"/>
+    <elements xsi:type="type:StringType" xmi:id="_-a4Rr-iQEempM99-shER5g" name="String" maxLength="255"/>
+    <elements xsi:type="type:StringType" xmi:id="_-a4RsOiQEempM99-shER5g" name="Text" maxLength="250"/>
+    <elements xsi:type="type:TimestampType" xmi:id="_-a4RseiQEempM99-shER5g" name="TimeStamp"/>
+    <elements xsi:type="type:EnumerationType" xmi:id="_-a4RsuiQEempM99-shER5g" name="Titles">
+      <members xmi:id="_-a4Rs-iQEempM99-shER5g" name="MS"/>
+      <members xmi:id="_-a4RtOiQEempM99-shER5g" name="MRS" ordinal="1"/>
+      <members xmi:id="_-a4RteiQEempM99-shER5g" name="MR" ordinal="2"/>
+      <members xmi:id="_-a4RtuiQEempM99-shER5g" name="DR" ordinal="3"/>
+    </elements>
+    <elements xsi:type="type:StringType" xmi:id="_-a4Rt-iQEempM99-shER5g" name="URL" maxLength="1024"/>
+    <packages xmi:id="_-a4RuOiQEempM99-shER5g" name="measured">
+      <elements xsi:type="measure:MeasuredType" xmi:id="_-a4RueiQEempM99-shER5g" name="AreaStoredInSquareMetre" precision="15" scale="4" storeUnit="_-ayyJ-iQEempM99-shER5g"/>
+      <elements xsi:type="measure:MeasuredType" xmi:id="_-a4RuuiQEempM99-shER5g" name="MassStoredInKilograms" precision="15" scale="4" storeUnit="_-a1OauiQEempM99-shER5g"/>
+      <elements xsi:type="measure:MeasuredType" xmi:id="_-a4Ru-iQEempM99-shER5g" name="TimeStoredInMonths" precision="9" storeUnit="_-a1OcOiQEempM99-shER5g"/>
+      <elements xsi:type="measure:MeasuredType" xmi:id="_-a4RvOiQEempM99-shER5g" name="TimeStoredInSeconds" precision="15" scale="4" storeUnit="_-a1OguiQEempM99-shER5g"/>
+      <elements xsi:type="measure:MeasuredType" xmi:id="_-a4RveiQEempM99-shER5g" name="VelocityStoredInKmPerHour" precision="15" scale="4" storeUnit="_-a1OheiQEempM99-shER5g"/>
+      <elements xsi:type="measure:MeasuredType" xmi:id="_-a4RvuiQEempM99-shER5g" name="VolumeStoredInLitre" precision="15" scale="4" storeUnit="_-a11aOiQEempM99-shER5g"/>
     </packages>
   </packages>
-  <packages xmi:id="_l025cNODEeim9MGHLpE1bQ" name="entities">
-    <elements xsi:type="data:EntityType" xmi:id="_43ZPcINkEeiLE-B2bbL0fg" name="Category">
-      <attributes xmi:id="_v7k5EINmEeiLE-B2bbL0fg" name="categoryName" dataType="_Nppx8IUcEeipmMyz9cMCRA" required="true"/>
-      <attributes xmi:id="_Vsjt0INuEeiLE-B2bbL0fg" name="description" dataType="_tXQUoIOGEeiLE-B2bbL0fg"/>
-      <attributes xmi:id="_cwpboINuEeiLE-B2bbL0fg" name="picture" dataType="_j-zrcINuEeiLE-B2bbL0fg"/>
-      <relations xsi:type="data:AssociationEnd" xmi:id="_892OYLwCEeiOuYiCo6IbXQ" name="products" target="_6XH80INkEeiLE-B2bbL0fg" partner="_CkXK8LwDEeiOuYiCo6IbXQ">
-        <cardinality xmi:id="_98qusOdSEeiJv53TEP0vvQ" upper="-1"/>
-      </relations>
-      <relations xsi:type="data:AssociationEnd" xmi:id="_NACAMOdTEeiJv53TEP0vvQ" name="owner" target="_ONN9gINlEeiLE-B2bbL0fg" partner="_Y1GwwOdTEeiJv53TEP0vvQ">
-        <cardinality xmi:id="_rzreIOdUEeiJv53TEP0vvQ"/>
-      </relations>
+  <packages xmi:id="_-a4Rv-iQEempM99-shER5g" name="service">
+    <elements xsi:type="service:UnmappedTransferObjectType" xmi:id="_-a4RwOiQEempM99-shER5g" name="ShipmentChange">
+      <attributes xmi:id="_-a4RweiQEempM99-shER5g" name="shipperName" required="true" dataType="_-a4Rr-iQEempM99-shER5g"/>
+      <attributes xmi:id="_-a4RwuiQEempM99-shER5g" name="orderDate" dataType="_-a4RqeiQEempM99-shER5g"/>
     </elements>
-    <elements xsi:type="data:EntityType" xmi:id="_6XH80INkEeiLE-B2bbL0fg" name="Product">
-      <attributes xmi:id="_LhnHUINvEeiLE-B2bbL0fg" name="productName" dataType="_Nppx8IUcEeipmMyz9cMCRA" required="true"/>
-      <attributes xmi:id="_XoxtcINvEeiLE-B2bbL0fg" name="quantityPerUnit" dataType="_TXtg8IUcEeipmMyz9cMCRA"/>
-      <attributes xmi:id="_bBDQ0INvEeiLE-B2bbL0fg" name="unitPrice" dataType="_VDVVQIUcEeipmMyz9cMCRA"/>
-      <attributes xmi:id="_gZEMcINxEeiLE-B2bbL0fg" name="unitsInStock" dataType="_TXtg8IUcEeipmMyz9cMCRA"/>
-      <attributes xmi:id="_oMaM8INxEeiLE-B2bbL0fg" name="unitsOnOrder" dataType="_TXtg8IUcEeipmMyz9cMCRA"/>
-      <attributes xmi:id="_qvdYgINxEeiLE-B2bbL0fg" name="reorderLevel" dataType="_TXtg8IUcEeipmMyz9cMCRA"/>
-      <attributes xmi:id="_tYB9QINxEeiLE-B2bbL0fg" name="discounted" dataType="_Xos1AIUcEeipmMyz9cMCRA"/>
-      <attributes xmi:id="_cEwUYB5NEemwg4NgOjaKeA" name="weight" dataType="_h2iYkB1XEemwg4NgOjaKeA"/>
-      <relations xsi:type="data:AssociationEnd" xmi:id="_CkXK8LwDEeiOuYiCo6IbXQ" name="category" target="_43ZPcINkEeiLE-B2bbL0fg" partner="_892OYLwCEeiOuYiCo6IbXQ">
-        <cardinality xmi:id="_98qusedSEeiJv53TEP0vvQ"/>
-      </relations>
-      <relations xsi:type="data:AssociationEnd" xmi:id="_vfAfILwMEeiOuYiCo6IbXQ" name="supplier" target="_FWhCkINlEeiLE-B2bbL0fg" partner="_vr4UMOdTEeiJv53TEP0vvQ">
-        <cardinality xmi:id="_98qusudSEeiJv53TEP0vvQ"/>
-      </relations>
-      <relations xsi:type="data:AssociationEnd" xmi:id="_NN_HMOdUEeiJv53TEP0vvQ" name="manufacturers" target="_DJ29wINlEeiLE-B2bbL0fg" partner="_WQzLgOdUEeiJv53TEP0vvQ">
-        <cardinality xmi:id="_-3AlIOdUEeiJv53TEP0vvQ" upper="-1"/>
-      </relations>
-      <relations xsi:type="data:AssociationEnd" xmi:id="_VnJ8IOdVEeiJv53TEP0vvQ" name="store" target="_c7JHIOdVEeiJv53TEP0vvQ" partner="_gqZAEOdVEeiJv53TEP0vvQ">
-        <cardinality xmi:id="_IVYuoOdWEeiJv53TEP0vvQ"/>
-      </relations>
+    <elements xsi:type="service:UnmappedTransferObjectType" xmi:id="_-a4Rw-iQEempM99-shER5g" name="Comment">
+      <attributes xmi:id="_-a4RxOiQEempM99-shER5g" name="note" required="true" dataType="_-a4RsOiQEempM99-shER5g"/>
+      <attributes xmi:id="_-a4RxeiQEempM99-shER5g" name="author" dataType="_-a4Rr-iQEempM99-shER5g"/>
+      <attributes xmi:id="_-a4RxuiQEempM99-shER5g" name="timestamp" dataType="_-a4RseiQEempM99-shER5g"/>
     </elements>
-    <elements xsi:type="data:EntityType" xmi:id="_86B-cINkEeiLE-B2bbL0fg" name="Customer">
-      <relations xsi:type="data:AssociationEnd" xmi:id="_KCBq0LwNEeiOuYiCo6IbXQ" name="orders" target="_-H4RoINkEeiLE-B2bbL0fg" partner="_OL6RULwNEeiOuYiCo6IbXQ">
-        <cardinality xmi:id="_98qus-dSEeiJv53TEP0vvQ" upper="-1"/>
+    <elements xsi:type="service:MappedTransferObjectType" xmi:id="_-a4Rx-iQEempM99-shER5g" name="CategoryInfo" entityType="_-a11euiQEempM99-shER5g">
+      <relations xmi:id="_-a4RyOiQEempM99-shER5g" name="products" binding="_-a11fuiQEempM99-shER5g" range="_-a6t4-iQEempM99-shER5g" target="_-a44wuiQEempM99-shER5g">
+        <cardinality xmi:id="_-a4RyeiQEempM99-shER5g" upper="-1"/>
       </relations>
-      <relations xsi:type="data:Containment" xmi:id="_P60NsLwOEeiOuYiCo6IbXQ" name="addresses" target="_SDnggLv-EeiOuYiCo6IbXQ">
-        <cardinality xmi:id="_98qutOdSEeiJv53TEP0vvQ" upper="-1"/>
-      </relations>
+      <attributes xmi:id="_-a4RyuiQEempM99-shER5g" name="categoryName" required="true" dataType="_-a4Rr-iQEempM99-shER5g" binding="_-a11e-iQEempM99-shER5g"/>
     </elements>
-    <elements xsi:type="data:EntityType" xmi:id="_-H4RoINkEeiLE-B2bbL0fg" name="Order">
-      <attributes xmi:id="_WXvUoIN1EeiLE-B2bbL0fg" name="orderDate" dataType="_Z9J8IIN1EeiLE-B2bbL0fg"/>
-      <attributes xmi:id="_ebkoMIN1EeiLE-B2bbL0fg" name="requiredDate" dataType="_Z9J8IIN1EeiLE-B2bbL0fg"/>
-      <attributes xmi:id="_huP54IN1EeiLE-B2bbL0fg" name="shippedDate" dataType="_Z9J8IIN1EeiLE-B2bbL0fg"/>
-      <attributes xmi:id="_kUnfMIN1EeiLE-B2bbL0fg" name="freight" dataType="_VDVVQIUcEeipmMyz9cMCRA"/>
-      <attributes xmi:id="_muoDgIN1EeiLE-B2bbL0fg" name="shipName" dataType="_Nppx8IUcEeipmMyz9cMCRA"/>
-      <relations xsi:type="data:AssociationEnd" xmi:id="_OL6RULwNEeiOuYiCo6IbXQ" name="customer" target="_86B-cINkEeiLE-B2bbL0fg" partner="_KCBq0LwNEeiOuYiCo6IbXQ">
-        <cardinality xmi:id="_98qutedSEeiJv53TEP0vvQ"/>
+    <elements xsi:type="service:MappedTransferObjectType" xmi:id="_-a44sOiQEempM99-shER5g" name="InternationalOrderInfo" entityType="_-a2cleiQEempM99-shER5g">
+      <relations xmi:id="_-a44seiQEempM99-shER5g" name="items" binding="_-a3Dj-iQEempM99-shER5g" target="_-a441eiQEempM99-shER5g">
+        <cardinality xmi:id="_-a44suiQEempM99-shER5g" lower="1" upper="-1"/>
       </relations>
-      <relations xsi:type="data:AssociationEnd" xmi:id="_WVBGcLwNEeiOuYiCo6IbXQ" name="shipper" target="_GnEEcINlEeiLE-B2bbL0fg" partner="_Z9PKULwNEeiOuYiCo6IbXQ">
-        <cardinality xmi:id="_98qutudSEeiJv53TEP0vvQ"/>
+      <relations xmi:id="_-a44s-iQEempM99-shER5g" name="shipper" binding="_-a3DieiQEempM99-shER5g" target="_-a44wOiQEempM99-shER5g">
+        <cardinality xmi:id="_-a44tOiQEempM99-shER5g"/>
       </relations>
-      <relations xsi:type="data:AssociationEnd" xmi:id="_gfRT8LwNEeiOuYiCo6IbXQ" name="employee" target="_ONN9gINlEeiLE-B2bbL0fg" partner="_jOFqoLwNEeiOuYiCo6IbXQ">
-        <cardinality xmi:id="_98qut-dSEeiJv53TEP0vvQ"/>
-      </relations>
-      <relations xsi:type="data:Containment" xmi:id="_spywELwNEeiOuYiCo6IbXQ" name="shipAddress" target="_vTNmEL2REeiOuYiCo6IbXQ">
-        <cardinality xmi:id="_98quuOdSEeiJv53TEP0vvQ"/>
-      </relations>
-      <relations xsi:type="data:Containment" xmi:id="_2CC44LwNEeiOuYiCo6IbXQ" name="orderDetails" target="__XzocINkEeiLE-B2bbL0fg">
-        <cardinality xmi:id="_98quuedSEeiJv53TEP0vvQ" lower="1" upper="-1"/>
-      </relations>
-      <dataProperties xmi:id="_5i40sCVQEemLpvUY7MQgng" name="shipperName" dataType="_Nppx8IUcEeipmMyz9cMCRA">
-        <getterExpression xmi:id="_gs3QQDneEemsDIfvozHEKg" expression="self.shipper.companyName"/>
-      </dataProperties>
-      <navigationProperties xmi:id="_qMfVoHrHEemPuYxp6QV8dA" name="categories" target="_43ZPcINkEeiLE-B2bbL0fg">
-        <cardinality xmi:id="_sLQIYHrHEemPuYxp6QV8dA" upper="-1"/>
-        <getterExpression xmi:id="_uQwcUHrHEemPuYxp6QV8dA" expression="self.orderDetails.product.category"/>
-      </navigationProperties>
+      <attributes xmi:id="_-a44teiQEempM99-shER5g" name="orderDate" required="true" dataType="_-a4RseiQEempM99-shER5g" binding="_-a3DguiQEempM99-shER5g"/>
+      <attributes xmi:id="_-a44tuiQEempM99-shER5g" name="shipperName" dataType="_-a4Rr-iQEempM99-shER5g" binding="_-a3DkeiQEempM99-shER5g"/>
+      <attributes xmi:id="_-a44t-iQEempM99-shER5g" name="categoryName" required="true" dataType="_-a4Rr-iQEempM99-shER5g" binding="_-a2cluiQEempM99-shER5g"/>
+      <attributes xmi:id="_-a44uOiQEempM99-shER5g" name="exciseTax" required="true" dataType="_-a4RquiQEempM99-shER5g" binding="_-a2cl-iQEempM99-shER5g"/>
     </elements>
-    <elements xsi:type="data:EntityType" xmi:id="__XzocINkEeiLE-B2bbL0fg" name="OrderDetail">
-      <attributes xmi:id="_bG7OUIN6EeiLE-B2bbL0fg" name="unitPrice" dataType="_VDVVQIUcEeipmMyz9cMCRA" required="true"/>
-      <attributes xmi:id="_d3obYIN6EeiLE-B2bbL0fg" name="quantity" dataType="_TXtg8IUcEeipmMyz9cMCRA" required="true"/>
-      <attributes xmi:id="_jIROkIN6EeiLE-B2bbL0fg" name="discount" dataType="_VDVVQIUcEeipmMyz9cMCRA" required="true"/>
-      <relations xsi:type="data:AssociationEnd" xmi:id="_6QtRsLwNEeiOuYiCo6IbXQ" name="product" target="_6XH80INkEeiLE-B2bbL0fg">
-        <cardinality xmi:id="_98quuudSEeiJv53TEP0vvQ" lower="1"/>
+    <elements xsi:type="service:MappedTransferObjectType" xmi:id="_-a44ueiQEempM99-shER5g" name="InternationalOrderInfoQuery" entityType="_-a2cleiQEempM99-shER5g" entityReferencePresence="REQUIRED">
+      <relations xmi:id="_-a44uuiQEempM99-shER5g" name="items" binding="_-a3Dj-iQEempM99-shER5g" target="_-a441eiQEempM99-shER5g" embedded="true">
+        <cardinality xmi:id="_-a44u-iQEempM99-shER5g" lower="1" upper="-1"/>
       </relations>
-      <dataProperties xmi:id="_mr-oACVvEemLpvUY7MQgng" name="productName" dataType="_Nppx8IUcEeipmMyz9cMCRA">
-        <getterExpression xmi:id="_oHyJsDneEemsDIfvozHEKg" expression="self.product.productName"/>
-      </dataProperties>
-      <dataProperties xmi:id="_2MDDoCVvEemLpvUY7MQgng" name="categoryName" dataType="_Nppx8IUcEeipmMyz9cMCRA">
-        <getterExpression xmi:id="_pXNKMDneEemsDIfvozHEKg" expression="self.product.category.categoryName"/>
-      </dataProperties>
-      <dataProperties xmi:id="__vG3MECrEemcEMUWkvDcXg" name="price" dataType="_VDVVQIUcEeipmMyz9cMCRA">
-        <getterExpression xmi:id="_ECYDMECsEemcEMUWkvDcXg" expression="self.quantity * self.unitPrice * (1 - self.discount)"/>
-      </dataProperties>
-      <navigationProperties xmi:id="_rYlgkEZqEemHs64O5EYsyQ" name="category" target="_43ZPcINkEeiLE-B2bbL0fg">
-        <cardinality xmi:id="_sAcx0EZqEemHs64O5EYsyQ" lower="1"/>
-        <getterExpression xsi:type="derived:ReferenceSelectorType" xmi:id="_vLkC8EZqEemHs64O5EYsyQ" expression="self.product.category"/>
-        <setterExpression xmi:id="_xMOTIEZqEemHs64O5EYsyQ" expression="self.product.category"/>
-      </navigationProperties>
+      <relations xmi:id="_-a44vOiQEempM99-shER5g" name="categories" binding="_-a3Dk-iQEempM99-shER5g" target="_-a4Rx-iQEempM99-shER5g" embedded="true">
+        <cardinality xmi:id="_-a44veiQEempM99-shER5g" upper="-1"/>
+      </relations>
+      <attributes xmi:id="_-a44vuiQEempM99-shER5g" name="orderDate" required="true" dataType="_-a4RseiQEempM99-shER5g" binding="_-a3DguiQEempM99-shER5g"/>
+      <attributes xmi:id="_-a44v-iQEempM99-shER5g" name="shipperName" dataType="_-a4Rr-iQEempM99-shER5g" binding="_-a3DkeiQEempM99-shER5g"/>
     </elements>
-    <elements xsi:type="data:EntityType" xmi:id="_DJ29wINlEeiLE-B2bbL0fg" name="Company" superEntityTypes="_86B-cINkEeiLE-B2bbL0fg">
-      <attributes xmi:id="_Pki0cINzEeiLE-B2bbL0fg" name="companyName" dataType="_Nppx8IUcEeipmMyz9cMCRA" required="true"/>
-      <attributes xmi:id="_0N8k0IN0EeiLE-B2bbL0fg" name="contactName" dataType="_Nppx8IUcEeipmMyz9cMCRA"/>
-      <attributes xmi:id="_2IvdkIN0EeiLE-B2bbL0fg" name="contactTitle" dataType="_Nppx8IUcEeipmMyz9cMCRA"/>
-      <attributes xmi:id="_LGcmkIN1EeiLE-B2bbL0fg" name="phone" dataType="_Lw4a8IOGEeiLE-B2bbL0fg"/>
-      <attributes xmi:id="_L7hNYIN1EeiLE-B2bbL0fg" name="fax" dataType="_Lw4a8IOGEeiLE-B2bbL0fg"/>
-      <relations xsi:type="data:AssociationEnd" xmi:id="_WQzLgOdUEeiJv53TEP0vvQ" name="manufacturedProducts" target="_6XH80INkEeiLE-B2bbL0fg" partner="_NN_HMOdUEeiJv53TEP0vvQ">
-        <cardinality xmi:id="_ee84sOdUEeiJv53TEP0vvQ" upper="-1"/>
-      </relations>
+    <elements xsi:type="service:MappedTransferObjectType" xmi:id="_-a44wOiQEempM99-shER5g" name="ShipperInfo" entityType="_-a3qr-iQEempM99-shER5g">
+      <attributes xmi:id="_-a44weiQEempM99-shER5g" name="companyName" required="true" dataType="_-a4Rr-iQEempM99-shER5g" binding="_-a2ccOiQEempM99-shER5g"/>
     </elements>
-    <elements xsi:type="data:EntityType" xmi:id="_FWhCkINlEeiLE-B2bbL0fg" name="Supplier" superEntityTypes="_DJ29wINlEeiLE-B2bbL0fg">
-      <attributes xmi:id="_-x_D8IN3EeiLE-B2bbL0fg" name="homePage" dataType="_A5EFMIN4EeiLE-B2bbL0fg"/>
-      <relations xsi:type="data:AssociationEnd" xmi:id="_vr4UMOdTEeiJv53TEP0vvQ" name="suppliedProducts" target="_6XH80INkEeiLE-B2bbL0fg" partner="_vfAfILwMEeiOuYiCo6IbXQ">
-        <cardinality xmi:id="_glmp4OdZEeiJv53TEP0vvQ" upper="-1"/>
+    <elements xsi:type="service:MappedTransferObjectType" xmi:id="_-a44wuiQEempM99-shER5g" name="ProductInfo" entityType="_-a3qm-iQEempM99-shER5g">
+      <relations xmi:id="_-a44w-iQEempM99-shER5g" name="category" binding="_-a3qo-iQEempM99-shER5g" range="_-a6t4OiQEempM99-shER5g" target="_-a4Rx-iQEempM99-shER5g">
+        <cardinality xmi:id="_-a44xOiQEempM99-shER5g" lower="1"/>
       </relations>
+      <attributes xmi:id="_-a44xeiQEempM99-shER5g" name="unitPrice" required="true" dataType="_-a4RquiQEempM99-shER5g" binding="_-a3qnuiQEempM99-shER5g"/>
+      <attributes xmi:id="_-a44xuiQEempM99-shER5g" name="productName" required="true" dataType="_-a4Rr-iQEempM99-shER5g" binding="_-a3qnOiQEempM99-shER5g"/>
     </elements>
-    <elements xsi:type="data:EntityType" xmi:id="_GnEEcINlEeiLE-B2bbL0fg" name="Shipper" superEntityTypes="_DJ29wINlEeiLE-B2bbL0fg">
-      <relations xsi:type="data:AssociationEnd" xmi:id="_Z9PKULwNEeiOuYiCo6IbXQ" name="shipperOrders" target="_-H4RoINkEeiLE-B2bbL0fg" partner="_WVBGcLwNEeiOuYiCo6IbXQ">
-        <cardinality xmi:id="_98quvOdSEeiJv53TEP0vvQ" upper="-1"/>
+    <elements xsi:type="service:MappedTransferObjectType" xmi:id="_-a44x-iQEempM99-shER5g" name="ProductInfoQuery" entityType="_-a3qm-iQEempM99-shER5g">
+      <relations xmi:id="_-a44yOiQEempM99-shER5g" name="category" binding="_-a3qo-iQEempM99-shER5g" range="_-a6t4OiQEempM99-shER5g" target="_-a4Rx-iQEempM99-shER5g" embedded="true">
+        <cardinality xmi:id="_-a44yeiQEempM99-shER5g" lower="1"/>
       </relations>
-      <relations xsi:type="data:AssociationEnd" xmi:id="_ll8CIOdXEeiJv53TEP0vvQ" name="territory" target="_QckxAINlEeiLE-B2bbL0fg" partner="_vb1JMOdXEeiJv53TEP0vvQ">
-        <cardinality xmi:id="_EeeckOdYEeiJv53TEP0vvQ"/>
-      </relations>
+      <attributes xmi:id="_-a44yuiQEempM99-shER5g" name="unitPrice" required="true" dataType="_-a4RquiQEempM99-shER5g" binding="_-a3qnuiQEempM99-shER5g"/>
+      <attributes xmi:id="_-a44y-iQEempM99-shER5g" name="productName" required="true" dataType="_-a4Rr-iQEempM99-shER5g" binding="_-a3qnOiQEempM99-shER5g"/>
     </elements>
-    <elements xsi:type="data:EntityType" xmi:id="_MoVqYINlEeiLE-B2bbL0fg" name="InternationalOrder" superEntityTypes="_-H4RoINkEeiLE-B2bbL0fg">
-      <attributes xmi:id="_FpOkYIN_EeiLE-B2bbL0fg" name="customsDescription" dataType="_Nppx8IUcEeipmMyz9cMCRA" required="true"/>
-      <attributes xmi:id="_It85oIN_EeiLE-B2bbL0fg" name="exciseTax" dataType="_VDVVQIUcEeipmMyz9cMCRA" required="true"/>
-    </elements>
-    <elements xsi:type="data:EntityType" xmi:id="_ONN9gINlEeiLE-B2bbL0fg" name="Employee" superEntityTypes="_rIapkLzhEeiOuYiCo6IbXQ">
-      <attributes xmi:id="_DtM4YIOGEeiLE-B2bbL0fg" name="titleOfCourtesy" dataType="_Nppx8IUcEeipmMyz9cMCRA"/>
-      <attributes xmi:id="_GGZkYIOGEeiLE-B2bbL0fg" name="birthDate" dataType="_YoqOYIN1EeiLE-B2bbL0fg"/>
-      <attributes xmi:id="_ISSNIIOGEeiLE-B2bbL0fg" name="hireDate" dataType="_YoqOYIN1EeiLE-B2bbL0fg"/>
-      <attributes xmi:id="_KMDLIIOGEeiLE-B2bbL0fg" name="homePhone" dataType="_Lw4a8IOGEeiLE-B2bbL0fg"/>
-      <attributes xmi:id="_k72OkIOGEeiLE-B2bbL0fg" name="extension" dataType="_Nppx8IUcEeipmMyz9cMCRA"/>
-      <attributes xmi:id="_mjzq4IOGEeiLE-B2bbL0fg" name="photo" dataType="_j-zrcINuEeiLE-B2bbL0fg"/>
-      <attributes xmi:id="_oo5IEIOGEeiLE-B2bbL0fg" name="notes" dataType="_tXQUoIOGEeiLE-B2bbL0fg"/>
-      <attributes xmi:id="_qg-EAIOGEeiLE-B2bbL0fg" name="photoPath" dataType="_Nppx8IUcEeipmMyz9cMCRA"/>
-      <relations xsi:type="data:AssociationEnd" xmi:id="_jOFqoLwNEeiOuYiCo6IbXQ" name="orders" target="_-H4RoINkEeiLE-B2bbL0fg" partner="_gfRT8LwNEeiOuYiCo6IbXQ">
-        <cardinality xmi:id="_98quvedSEeiJv53TEP0vvQ" upper="-1"/>
+    <elements xsi:type="service:MappedTransferObjectType" xmi:id="_-a44zOiQEempM99-shER5g" name="OrderItem" entityType="_-a3DluiQEempM99-shER5g">
+      <relations xmi:id="_-a44zeiQEempM99-shER5g" name="product" binding="_-a3DmuiQEempM99-shER5g" range="_-a6t4-iQEempM99-shER5g" target="_-a44wuiQEempM99-shER5g">
+        <cardinality xmi:id="_-a44zuiQEempM99-shER5g" lower="1"/>
       </relations>
-      <relations xsi:type="data:Containment" xmi:id="_WyM8QLwOEeiOuYiCo6IbXQ" name="address" target="_SDnggLv-EeiOuYiCo6IbXQ">
-        <cardinality xmi:id="_98quvudSEeiJv53TEP0vvQ"/>
+      <relations xmi:id="_-a44z-iQEempM99-shER5g" name="category" binding="_-a3qkOiQEempM99-shER5g" range="_-a6t4OiQEempM99-shER5g" target="_-a4Rx-iQEempM99-shER5g">
+        <cardinality xmi:id="_-a440OiQEempM99-shER5g" lower="1"/>
       </relations>
-      <relations xsi:type="data:AssociationEnd" xmi:id="_Z6tlULwOEeiOuYiCo6IbXQ" name="reportsTo" target="_ONN9gINlEeiLE-B2bbL0fg" partner="_cfMUQLwOEeiOuYiCo6IbXQ">
-        <cardinality xmi:id="_98quv-dSEeiJv53TEP0vvQ"/>
+      <attributes xmi:id="_-a440eiQEempM99-shER5g" name="unitPrice" required="true" dataType="_-a4RquiQEempM99-shER5g" binding="_-a3Dl-iQEempM99-shER5g"/>
+      <attributes xmi:id="_-a440uiQEempM99-shER5g" name="quantity" required="true" dataType="_-a4RrOiQEempM99-shER5g" binding="_-a3DmOiQEempM99-shER5g"/>
+      <attributes xmi:id="_-a440-iQEempM99-shER5g" name="discount" required="true" dataType="_-a4RquiQEempM99-shER5g" binding="_-a3DmeiQEempM99-shER5g"/>
+      <attributes xmi:id="_-a441OiQEempM99-shER5g" name="productName" required="true" dataType="_-a4Rr-iQEempM99-shER5g" binding="_-a3DnOiQEempM99-shER5g"/>
+    </elements>
+    <elements xsi:type="service:MappedTransferObjectType" xmi:id="_-a441eiQEempM99-shER5g" name="OrderItemQuery" entityType="_-a3DluiQEempM99-shER5g" entityReferencePresence="REQUIRED">
+      <relations xmi:id="_-a441uiQEempM99-shER5g" name="product" binding="_-a3DmuiQEempM99-shER5g" range="_-a6t4-iQEempM99-shER5g" target="_-a44wuiQEempM99-shER5g" embedded="true">
+        <cardinality xmi:id="_-a441-iQEempM99-shER5g" lower="1"/>
       </relations>
-      <relations xsi:type="data:AssociationEnd" xmi:id="_cfMUQLwOEeiOuYiCo6IbXQ" name="employees" target="_ONN9gINlEeiLE-B2bbL0fg" partner="_Z6tlULwOEeiOuYiCo6IbXQ">
-        <cardinality xmi:id="_98quwOdSEeiJv53TEP0vvQ" upper="-1"/>
+      <relations xmi:id="_-a442OiQEempM99-shER5g" name="category" binding="_-a3qkOiQEempM99-shER5g" range="_-a6t4OiQEempM99-shER5g" target="_-a4Rx-iQEempM99-shER5g" embedded="true">
+        <cardinality xmi:id="_-a442eiQEempM99-shER5g" lower="1"/>
       </relations>
-      <relations xsi:type="data:AssociationEnd" xmi:id="_h-pmkLwOEeiOuYiCo6IbXQ" name="territory" target="_QckxAINlEeiLE-B2bbL0fg" partner="_klno0LwOEeiOuYiCo6IbXQ">
-        <cardinality xmi:id="_98quwedSEeiJv53TEP0vvQ"/>
+      <attributes xmi:id="_-a442uiQEempM99-shER5g" name="unitPrice" required="true" dataType="_-a4RquiQEempM99-shER5g" binding="_-a3Dl-iQEempM99-shER5g"/>
+      <attributes xmi:id="_-a442-iQEempM99-shER5g" name="quantity" required="true" dataType="_-a4RrOiQEempM99-shER5g" binding="_-a3DmOiQEempM99-shER5g"/>
+      <attributes xmi:id="_-a443OiQEempM99-shER5g" name="discount" required="true" dataType="_-a4RquiQEempM99-shER5g" binding="_-a3DmeiQEempM99-shER5g"/>
+      <attributes xmi:id="_-a443eiQEempM99-shER5g" name="productName" required="true" dataType="_-a4Rr-iQEempM99-shER5g" binding="_-a3DnOiQEempM99-shER5g"/>
+    </elements>
+    <elements xsi:type="service:MappedTransferObjectType" xmi:id="_-a443uiQEempM99-shER5g" name="OrderInfo" entityType="_-a3DgeiQEempM99-shER5g">
+      <relations xmi:id="_-a5fwOiQEempM99-shER5g" name="items" binding="_-a3Dj-iQEempM99-shER5g" target="_-a44zOiQEempM99-shER5g">
+        <cardinality xmi:id="_-a5fweiQEempM99-shER5g" lower="1" upper="-1"/>
       </relations>
-      <relations xsi:type="data:AssociationEnd" xmi:id="_Y1GwwOdTEeiJv53TEP0vvQ" name="category" target="_43ZPcINkEeiLE-B2bbL0fg" partner="_NACAMOdTEeiJv53TEP0vvQ">
-        <cardinality xmi:id="_QmhMcOdYEeiJv53TEP0vvQ"/>
+      <relations xmi:id="_-a5fwuiQEempM99-shER5g" name="shipper" binding="_-a3DieiQEempM99-shER5g" target="_-a44wOiQEempM99-shER5g">
+        <cardinality xmi:id="_-a5fw-iQEempM99-shER5g"/>
       </relations>
-    </elements>
-    <elements xsi:type="data:EntityType" xmi:id="_QckxAINlEeiLE-B2bbL0fg" name="Territory">
-      <attributes xmi:id="_XOCQMIOFEeiLE-B2bbL0fg" name="territoryDescription" dataType="_Nppx8IUcEeipmMyz9cMCRA" required="true"/>
-      <relations xsi:type="data:AssociationEnd" xmi:id="_klno0LwOEeiOuYiCo6IbXQ" name="employees" target="_ONN9gINlEeiLE-B2bbL0fg" partner="_h-pmkLwOEeiOuYiCo6IbXQ">
-        <cardinality xmi:id="_98quwudSEeiJv53TEP0vvQ" upper="-1"/>
+      <relations xmi:id="_-a5fxOiQEempM99-shER5g" name="categories" binding="_-a3Dk-iQEempM99-shER5g" target="_-a4Rx-iQEempM99-shER5g">
+        <cardinality xmi:id="_-a5fxeiQEempM99-shER5g" upper="-1"/>
       </relations>
-      <relations xsi:type="data:AssociationEnd" xmi:id="__dS14LwOEeiOuYiCo6IbXQ" name="region" target="_RocuQINlEeiLE-B2bbL0fg" partner="_BEhSYLwPEeiOuYiCo6IbXQ">
-        <cardinality xmi:id="_98rVwOdSEeiJv53TEP0vvQ"/>
+      <relations xmi:id="_-a5fxuiQEempM99-shER5g" name="comments" target="_-a4Rw-iQEempM99-shER5g" embedded="true">
+        <cardinality xmi:id="_-a5fx-iQEempM99-shER5g" upper="-1"/>
       </relations>
-      <relations xsi:type="data:AssociationEnd" xmi:id="_vb1JMOdXEeiJv53TEP0vvQ" name="shipper" target="_GnEEcINlEeiLE-B2bbL0fg" partner="_ll8CIOdXEeiJv53TEP0vvQ">
-        <cardinality xmi:id="_JiLnAOdYEeiJv53TEP0vvQ"/>
-      </relations>
-    </elements>
-    <elements xsi:type="data:EntityType" xmi:id="_RocuQINlEeiLE-B2bbL0fg" name="Region">
-      <attributes xmi:id="_U_SgsIOFEeiLE-B2bbL0fg" name="regionDescription" dataType="_Nppx8IUcEeipmMyz9cMCRA" required="true"/>
-      <relations xsi:type="data:AssociationEnd" xmi:id="_BEhSYLwPEeiOuYiCo6IbXQ" name="territories" target="_QckxAINlEeiLE-B2bbL0fg" partner="__dS14LwOEeiOuYiCo6IbXQ">
-        <cardinality xmi:id="_98rVwedSEeiJv53TEP0vvQ" upper="-1"/>
-      </relations>
-    </elements>
-    <elements xsi:type="data:EntityType" xmi:id="_jUJwQJupEeidMOq99SGQ3A" name="OnlineOrder" superEntityTypes="_-H4RoINkEeiLE-B2bbL0fg">
-      <attributes xmi:id="_sG6mYJupEeidMOq99SGQ3A" name="webshopUrl" dataType="_A5EFMIN4EeiLE-B2bbL0fg" required="true"/>
-    </elements>
-    <elements xsi:type="data:EntityType" xmi:id="_EhVb8JusEeidMOq99SGQ3A" name="OnlineInternationalOrder" superEntityTypes="_MoVqYINlEeiLE-B2bbL0fg _jUJwQJupEeidMOq99SGQ3A">
-      <attributes xmi:id="_G10AAJusEeidMOq99SGQ3A" name="onlineTrackingNumber" dataType="_Nppx8IUcEeipmMyz9cMCRA"/>
-    </elements>
-    <elements xsi:type="data:EntityType" xmi:id="_eKHIwJuzEeidMOq99SGQ3A" name="City">
-      <attributes xmi:id="_huAGQJuzEeidMOq99SGQ3A" name="name" dataType="_Nppx8IUcEeipmMyz9cMCRA"/>
-    </elements>
-    <elements xsi:type="data:EntityType" xmi:id="_SDnggLv-EeiOuYiCo6IbXQ" name="Address">
-      <attributes xmi:id="_VByh0Lv-EeiOuYiCo6IbXQ" name="address" dataType="_Nppx8IUcEeipmMyz9cMCRA" required="true"/>
-      <attributes xmi:id="_X28KALv-EeiOuYiCo6IbXQ" name="region" dataType="_Nppx8IUcEeipmMyz9cMCRA"/>
-      <attributes xmi:id="_ZGwzILv-EeiOuYiCo6IbXQ" name="postalCode" dataType="_Nppx8IUcEeipmMyz9cMCRA" required="true"/>
-      <relations xsi:type="data:AssociationEnd" xmi:id="_teSs8Lv-EeiOuYiCo6IbXQ" name="city" target="_eKHIwJuzEeidMOq99SGQ3A">
-        <cardinality xmi:id="_98rVwudSEeiJv53TEP0vvQ" lower="1"/>
-      </relations>
-    </elements>
-    <elements xsi:type="data:EntityType" xmi:id="_rIapkLzhEeiOuYiCo6IbXQ" name="Person">
-      <attributes xmi:id="_5nWpwIOFEeiLE-B2bbL0fg" name="lastName" dataType="_Nppx8IUcEeipmMyz9cMCRA" required="true"/>
-      <attributes xmi:id="_9angAIOFEeiLE-B2bbL0fg" name="firstName" dataType="_Nppx8IUcEeipmMyz9cMCRA" required="true"/>
-      <attributes xmi:id="__dhy8IOFEeiLE-B2bbL0fg" name="title" dataType="_hJ-K0I57EeioH6CUzUrG0Q"/>
-    </elements>
-    <elements xsi:type="data:EntityType" xmi:id="_cPlugL1tEeiOuYiCo6IbXQ" name="Individual" superEntityTypes="_rIapkLzhEeiOuYiCo6IbXQ _86B-cINkEeiLE-B2bbL0fg">
-      <attributes xmi:id="_hZhcwL1tEeiOuYiCo6IbXQ" name="phone" dataType="_Lw4a8IOGEeiLE-B2bbL0fg"/>
-    </elements>
-    <elements xsi:type="data:EntityType" xmi:id="_vTNmEL2REeiOuYiCo6IbXQ" name="InternationalAddress" superEntityTypes="_SDnggLv-EeiOuYiCo6IbXQ">
-      <attributes xmi:id="_bAzd8Lv-EeiOuYiCo6IbXQ" name="country" dataType="_G2wVsI57EeioH6CUzUrG0Q"/>
-    </elements>
-    <elements xsi:type="data:EntityType" xmi:id="_ehrfwOdYEeiJv53TEP0vvQ" name="PaymentList">
-      <relations xsi:type="data:AssociationEnd" xmi:id="_nxkWwOdYEeiJv53TEP0vvQ" name="employees" target="_ONN9gINlEeiLE-B2bbL0fg">
-        <cardinality xmi:id="_tO5iIOdYEeiJv53TEP0vvQ" lower="1" upper="-1"/>
-      </relations>
-    </elements>
-    <elements xsi:type="data:EntityType" xmi:id="_jHvr8OdYEeiJv53TEP0vvQ" name="MailingList">
-      <relations xsi:type="data:AssociationEnd" xmi:id="_y1GVoOdYEeiJv53TEP0vvQ" name="person" target="_rIapkLzhEeiOuYiCo6IbXQ">
-        <cardinality xmi:id="_64Hw4OdYEeiJv53TEP0vvQ"/>
-      </relations>
-    </elements>
-    <elements xsi:type="data:EntityType" xmi:id="_c7JHIOdVEeiJv53TEP0vvQ" name="Store">
-      <relations xsi:type="data:AssociationEnd" xmi:id="_gqZAEOdVEeiJv53TEP0vvQ" name="products" target="_6XH80INkEeiLE-B2bbL0fg" partner="_VnJ8IOdVEeiJv53TEP0vvQ">
-        <cardinality xmi:id="_oRVjUOdVEeiJv53TEP0vvQ" upper="-1"/>
-      </relations>
-    </elements>
-    <elements xsi:type="derived:StaticNavigation" xmi:id="_EuQ5MCYbEemLpvUY7MQgng" name="ordersAssignedToEmployee" target="_-H4RoINkEeiLE-B2bbL0fg">
-      <cardinality xmi:id="_KCnuwCYbEemLpvUY7MQgng" upper="-1"/>
-      <getterExpression xmi:id="_cFwiQDneEemsDIfvozHEKg" expression="northwind::entities::Employee.orders"/>
-    </elements>
-    <elements xsi:type="derived:StaticNavigation" xmi:id="_vA7SgEZlEemHs64O5EYsyQ" name="allProducts" target="_6XH80INkEeiLE-B2bbL0fg">
-      <cardinality xmi:id="_WlEJsEvNEemBn-SJ5OPvtg" upper="-1"/>
-      <getterExpression xmi:id="_a_OA0EvNEemBn-SJ5OPvtg" expression="northwind::entities::Product"/>
-    </elements>
-    <elements xsi:type="derived:StaticNavigation" xmi:id="_xeUiAEZlEemHs64O5EYsyQ" name="allCategories" target="_43ZPcINkEeiLE-B2bbL0fg">
-      <cardinality xmi:id="_Xu2cQEvNEemBn-SJ5OPvtg" upper="-1"/>
-      <getterExpression xmi:id="_dyTMcEvNEemBn-SJ5OPvtg" expression="northwind::entities::Category"/>
-    </elements>
-    <elements xsi:type="derived:StaticData" xmi:id="_r7S1QE7fEemZHbZiENeSGg" name="totalNumberOfOrders" dataType="_SZ-GUIUcEeipmMyz9cMCRA" required="true">
-      <getterExpression xmi:id="_yldAIE7fEemZHbZiENeSGg" expression="0 // COUNT(northwind::entities::Order)"/>
-    </elements>
-  </packages>
-  <packages xmi:id="__cC14CVPEemLpvUY7MQgng" name="service">
-    <elements xsi:type="service:MappedTransferObjectType" xmi:id="_-L7R4IFREemFzY3ZWApzVQ" name="OrderInfo" entityType="_-H4RoINkEeiLE-B2bbL0fg">
-      <relations xmi:id="_-L7R4YFREemFzY3ZWApzVQ" name="items" binding="_2CC44LwNEeiOuYiCo6IbXQ" target="_-eoLcIFREemFzY3ZWApzVQ">
-        <cardinality xmi:id="_-L7R4oFREemFzY3ZWApzVQ" upper="-1"/>
-      </relations>
-      <relations xmi:id="_csG2sIFSEemFzY3ZWApzVQ" name="shipper" binding="_WVBGcLwNEeiOuYiCo6IbXQ" target="_OUfQ4IFSEemFzY3ZWApzVQ">
-        <cardinality xmi:id="_mBre8IFSEemFzY3ZWApzVQ"/>
-      </relations>
-      <relations xmi:id="_AJB7MKfHEemuF_XcMCHsqg" name="categories" binding="_qMfVoHrHEemPuYxp6QV8dA" target="_xxeTIEWXEemHs64O5EYsyQ">
-        <cardinality xmi:id="_Ig3v4KfHEemuF_XcMCHsqg" upper="-1"/>
-      </relations>
-      <relations xmi:id="_hkJUIKiYEemuF_XcMCHsqg" name="comments" target="_wNexgKiXEemuF_XcMCHsqg" embedded="true">
-        <cardinality xmi:id="_lw-g8KiYEemuF_XcMCHsqg" upper="-1"/>
-      </relations>
-      <attributes xmi:id="_-L7R5YFREemFzY3ZWApzVQ" name="orderDate" required="true" dataType="_Z9J8IIN1EeiLE-B2bbL0fg" binding="_WXvUoIN1EeiLE-B2bbL0fg"/>
-      <attributes xmi:id="_-L7R5oFREemFzY3ZWApzVQ" name="shipperName" dataType="_Nppx8IUcEeipmMyz9cMCRA" binding="_5i40sCVQEemLpvUY7MQgng"/>
-      <operations xmi:id="_jEaRYKPUEem4Sqe63wVljw" name="updateOrder">
-        <output xmi:id="_qVIF8KPUEem4Sqe63wVljw" name="output" type="_-L7R4IFREemFzY3ZWApzVQ">
-          <cardinality xmi:id="_MI6JgKPVEem4Sqe63wVljw" lower="1"/>
+      <attributes xmi:id="_-a5fyOiQEempM99-shER5g" name="orderDate" required="true" dataType="_-a4RseiQEempM99-shER5g" binding="_-a3DguiQEempM99-shER5g"/>
+      <attributes xmi:id="_-a5fyeiQEempM99-shER5g" name="shipperName" dataType="_-a4Rr-iQEempM99-shER5g" binding="_-a3DhuiQEempM99-shER5g"/>
+      <operations xmi:id="_-a5fyuiQEempM99-shER5g" name="updateOrder">
+        <output xmi:id="_-a5fy-iQEempM99-shER5g" name="output" type="_-a443uiQEempM99-shER5g">
+          <cardinality xmi:id="_-a5fzOiQEempM99-shER5g" lower="1"/>
         </output>
-        <input xmi:id="_ofHmkKPUEem4Sqe63wVljw" name="input" type="_-L7R4IFREemFzY3ZWApzVQ">
-          <cardinality xmi:id="_MeG9cKPVEem4Sqe63wVljw" lower="1"/>
+        <input xmi:id="_-a5fzeiQEempM99-shER5g" name="input" type="_-a443uiQEempM99-shER5g">
+          <cardinality xmi:id="_-a5fzuiQEempM99-shER5g" lower="1"/>
         </input>
       </operations>
-      <operations xmi:id="_lrK4QKPUEem4Sqe63wVljw" name="deleteOrder"/>
-      <operations xmi:id="_Agu9kKiYEemuF_XcMCHsqg" name="changeShipment">
-        <output xmi:id="_F72icKiYEemuF_XcMCHsqg" name="output" type="_-L7R4IFREemFzY3ZWApzVQ">
-          <cardinality xmi:id="_iziC8KiZEemuF_XcMCHsqg" lower="1"/>
+      <operations xmi:id="_-a5fz-iQEempM99-shER5g" name="deleteOrder"/>
+      <operations xmi:id="_-a5f0OiQEempM99-shER5g" name="changeShipment">
+        <output xmi:id="_-a5f0eiQEempM99-shER5g" name="output" type="_-a443uiQEempM99-shER5g">
+          <cardinality xmi:id="_-a5f0uiQEempM99-shER5g" lower="1"/>
         </output>
-        <input xmi:id="_EPFeoKiYEemuF_XcMCHsqg" name="input" type="_gw4goKiXEemuF_XcMCHsqg">
-          <cardinality xmi:id="_jG31sKiZEemuF_XcMCHsqg" lower="1"/>
+        <input xmi:id="_-a5f0-iQEempM99-shER5g" name="input" type="_-a4RwOiQEempM99-shER5g">
+          <cardinality xmi:id="_-a5f1OiQEempM99-shER5g" lower="1"/>
         </input>
       </operations>
     </elements>
-    <elements xsi:type="service:MappedTransferObjectType" xmi:id="_HebikIFTEemFzY3ZWApzVQ" name="InternationalOrderInfo" entityType="_MoVqYINlEeiLE-B2bbL0fg">
-      <relations xmi:id="_HebikYFTEemFzY3ZWApzVQ" name="items" binding="_2CC44LwNEeiOuYiCo6IbXQ" target="_-eoLcIFREemFzY3ZWApzVQ">
-        <cardinality xmi:id="_HebikoFTEemFzY3ZWApzVQ" upper="-1"/>
+    <elements xsi:type="service:MappedTransferObjectType" xmi:id="_-a5f1eiQEempM99-shER5g" name="OrderInfoQuery" entityType="_-a3DgeiQEempM99-shER5g" entityReferencePresence="REQUIRED">
+      <relations xmi:id="_-a5f1uiQEempM99-shER5g" name="items" binding="_-a3Dj-iQEempM99-shER5g" target="_-a441eiQEempM99-shER5g" embedded="true">
+        <cardinality xmi:id="_-a5f1-iQEempM99-shER5g" lower="1" upper="-1"/>
       </relations>
-      <relations xmi:id="_Hebik4FTEemFzY3ZWApzVQ" name="shipper" binding="_WVBGcLwNEeiOuYiCo6IbXQ" target="_OUfQ4IFSEemFzY3ZWApzVQ">
-        <cardinality xmi:id="_HebilIFTEemFzY3ZWApzVQ"/>
+      <relations xmi:id="_-a5f2OiQEempM99-shER5g" name="categories" binding="_-a3Dk-iQEempM99-shER5g" target="_-a4Rx-iQEempM99-shER5g" embedded="true">
+        <cardinality xmi:id="_-a5f2eiQEempM99-shER5g" upper="-1"/>
       </relations>
-      <attributes xmi:id="_HebilYFTEemFzY3ZWApzVQ" name="orderDate" required="true" dataType="_Z9J8IIN1EeiLE-B2bbL0fg" binding="_WXvUoIN1EeiLE-B2bbL0fg"/>
-      <attributes xmi:id="_HebiloFTEemFzY3ZWApzVQ" name="shipperName" dataType="_Nppx8IUcEeipmMyz9cMCRA" binding="_5i40sCVQEemLpvUY7MQgng"/>
-      <attributes xmi:id="_jh3_MIFTEemFzY3ZWApzVQ" name="customsDescription" required="true" dataType="_Nppx8IUcEeipmMyz9cMCRA" binding="_FpOkYIN_EeiLE-B2bbL0fg"/>
-      <attributes xmi:id="_kGaPoIFTEemFzY3ZWApzVQ" name="exciseTax" required="true" dataType="_VDVVQIUcEeipmMyz9cMCRA" binding="_It85oIN_EeiLE-B2bbL0fg"/>
+      <attributes xmi:id="_-a5f2uiQEempM99-shER5g" name="orderDate" required="true" dataType="_-a4RseiQEempM99-shER5g" binding="_-a3DguiQEempM99-shER5g"/>
+      <attributes xmi:id="_-a5f2-iQEempM99-shER5g" name="shipperName" dataType="_-a4Rr-iQEempM99-shER5g" binding="_-a3DhuiQEempM99-shER5g"/>
     </elements>
-    <elements xsi:type="service:MappedTransferObjectType" xmi:id="_-eoLcIFREemFzY3ZWApzVQ" name="OrderItem" entityType="__XzocINkEeiLE-B2bbL0fg">
-      <relations xmi:id="_-eoLcYFREemFzY3ZWApzVQ" name="product" binding="_6QtRsLwNEeiOuYiCo6IbXQ" range="_vA7SgEZlEemHs64O5EYsyQ" target="_o7IkkEWXEemHs64O5EYsyQ">
-        <cardinality xmi:id="_-eoLcoFREemFzY3ZWApzVQ" lower="1"/>
-      </relations>
-      <relations xmi:id="_-eoLc4FREemFzY3ZWApzVQ" name="category" binding="_rYlgkEZqEemHs64O5EYsyQ" range="_xeUiAEZlEemHs64O5EYsyQ" target="_xxeTIEWXEemHs64O5EYsyQ">
-        <cardinality xmi:id="_-eoLdIFREemFzY3ZWApzVQ" lower="1"/>
-      </relations>
-      <attributes xmi:id="_-eoLdYFREemFzY3ZWApzVQ" name="unitPrice" required="true" dataType="_VDVVQIUcEeipmMyz9cMCRA" binding="_bG7OUIN6EeiLE-B2bbL0fg"/>
-      <attributes xmi:id="_-eoLdoFREemFzY3ZWApzVQ" name="quantity" required="true" dataType="_TXtg8IUcEeipmMyz9cMCRA" binding="_d3obYIN6EeiLE-B2bbL0fg"/>
-      <attributes xmi:id="_-eoLd4FREemFzY3ZWApzVQ" name="discount" required="true" dataType="_VDVVQIUcEeipmMyz9cMCRA" binding="_jIROkIN6EeiLE-B2bbL0fg"/>
-      <attributes xmi:id="_-eoLeIFREemFzY3ZWApzVQ" name="productName" required="true" dataType="_Nppx8IUcEeipmMyz9cMCRA" binding="_mr-oACVvEemLpvUY7MQgng"/>
-    </elements>
-    <elements xsi:type="service:MappedTransferObjectType" xmi:id="_OUfQ4IFSEemFzY3ZWApzVQ" name="ShipperInfo" entityType="_GnEEcINlEeiLE-B2bbL0fg">
-      <attributes xmi:id="_QqGdYIFSEemFzY3ZWApzVQ" name="companyName" dataType="_Nppx8IUcEeipmMyz9cMCRA" binding="_Pki0cINzEeiLE-B2bbL0fg"/>
-    </elements>
-    <elements xsi:type="service:MappedTransferObjectType" xmi:id="_ETGEYCVQEemLpvUY7MQgng" name="OrderInfoQuery" entityType="_-H4RoINkEeiLE-B2bbL0fg" entityReferencePresence="REQUIRED">
-      <relations xmi:id="_8M4aICVuEemLpvUY7MQgng" name="items" binding="_2CC44LwNEeiOuYiCo6IbXQ" target="_nao6QCVuEemLpvUY7MQgng" embedded="true">
-        <cardinality xmi:id="_-kd8kCVuEemLpvUY7MQgng" upper="-1"/>
-      </relations>
-      <relations xmi:id="_djRLUHrHEemPuYxp6QV8dA" name="categories" binding="_qMfVoHrHEemPuYxp6QV8dA" target="_xxeTIEWXEemHs64O5EYsyQ" embedded="true">
-        <cardinality xmi:id="_J1w0AHrJEemPuYxp6QV8dA" upper="-1"/>
-      </relations>
-      <attributes xmi:id="_U4tLwCVQEemLpvUY7MQgng" name="orderDate" required="true" dataType="_Z9J8IIN1EeiLE-B2bbL0fg" binding="_WXvUoIN1EeiLE-B2bbL0fg"/>
-      <attributes xmi:id="_u7NrYCVQEemLpvUY7MQgng" name="shipperName" dataType="_Nppx8IUcEeipmMyz9cMCRA" binding="_5i40sCVQEemLpvUY7MQgng"/>
-    </elements>
-    <elements xsi:type="service:MappedTransferObjectType" xmi:id="_8y7MsIFTEemFzY3ZWApzVQ" name="InternationalOrderInfoQuery" entityType="_MoVqYINlEeiLE-B2bbL0fg" entityReferencePresence="REQUIRED">
-      <relations xmi:id="_8y7MsYFTEemFzY3ZWApzVQ" name="items" binding="_2CC44LwNEeiOuYiCo6IbXQ" target="_nao6QCVuEemLpvUY7MQgng" embedded="true">
-        <cardinality xmi:id="_8y7MsoFTEemFzY3ZWApzVQ" upper="-1"/>
-      </relations>
-      <relations xmi:id="_8y7Ms4FTEemFzY3ZWApzVQ" name="categories" binding="_qMfVoHrHEemPuYxp6QV8dA" target="_xxeTIEWXEemHs64O5EYsyQ" embedded="true">
-        <cardinality xmi:id="_8y7MtIFTEemFzY3ZWApzVQ" upper="-1"/>
-      </relations>
-      <attributes xmi:id="_8y7MtYFTEemFzY3ZWApzVQ" name="orderDate" required="true" dataType="_Z9J8IIN1EeiLE-B2bbL0fg" binding="_WXvUoIN1EeiLE-B2bbL0fg"/>
-      <attributes xmi:id="_8y7MtoFTEemFzY3ZWApzVQ" name="shipperName" dataType="_Nppx8IUcEeipmMyz9cMCRA" binding="_5i40sCVQEemLpvUY7MQgng"/>
-    </elements>
-    <elements xsi:type="service:MappedTransferObjectType" xmi:id="_nao6QCVuEemLpvUY7MQgng" name="OrderItemQuery" entityType="__XzocINkEeiLE-B2bbL0fg" entityReferencePresence="REQUIRED">
-      <relations xmi:id="_eboboEWeEemHs64O5EYsyQ" name="product" binding="_6QtRsLwNEeiOuYiCo6IbXQ" range="_vA7SgEZlEemHs64O5EYsyQ" target="_PL79YIHuEemFzY3ZWApzVQ" embedded="true">
-        <cardinality xmi:id="_ElBGIEWiEemHs64O5EYsyQ" lower="1"/>
-      </relations>
-      <relations xmi:id="_cg0_UIFIEemFzY3ZWApzVQ" name="category" binding="_rYlgkEZqEemHs64O5EYsyQ" range="_xeUiAEZlEemHs64O5EYsyQ" target="_xxeTIEWXEemHs64O5EYsyQ" embedded="true">
-        <cardinality xmi:id="_cg0_UYFIEemFzY3ZWApzVQ" lower="1"/>
-      </relations>
-      <attributes xmi:id="_w9fJgCVuEemLpvUY7MQgng" name="unitPrice" required="true" dataType="_VDVVQIUcEeipmMyz9cMCRA" binding="_bG7OUIN6EeiLE-B2bbL0fg"/>
-      <attributes xmi:id="_xdLWMCVuEemLpvUY7MQgng" name="quantity" required="true" dataType="_TXtg8IUcEeipmMyz9cMCRA" binding="_d3obYIN6EeiLE-B2bbL0fg"/>
-      <attributes xmi:id="_x6C4YCVuEemLpvUY7MQgng" name="discount" required="true" dataType="_VDVVQIUcEeipmMyz9cMCRA" binding="_jIROkIN6EeiLE-B2bbL0fg"/>
-      <attributes xmi:id="_LxWxUIFIEemFzY3ZWApzVQ" name="productName" required="true" dataType="_Nppx8IUcEeipmMyz9cMCRA" binding="_mr-oACVvEemLpvUY7MQgng"/>
-    </elements>
-    <elements xsi:type="service:MappedTransferObjectType" xmi:id="_o7IkkEWXEemHs64O5EYsyQ" name="ProductInfo" entityType="_6XH80INkEeiLE-B2bbL0fg">
-      <relations xmi:id="_liE9YIFIEemFzY3ZWApzVQ" name="category" binding="_CkXK8LwDEeiOuYiCo6IbXQ" range="_xeUiAEZlEemHs64O5EYsyQ" target="_xxeTIEWXEemHs64O5EYsyQ">
-        <cardinality xmi:id="_liE9YYFIEemFzY3ZWApzVQ" lower="1"/>
-      </relations>
-      <attributes xmi:id="_s0y9wEWXEemHs64O5EYsyQ" name="productName" required="true" dataType="_Nppx8IUcEeipmMyz9cMCRA" binding="_LhnHUINvEeiLE-B2bbL0fg"/>
-      <attributes xmi:id="_02GVgIFSEemFzY3ZWApzVQ" name="unitPrice" required="true" dataType="_VDVVQIUcEeipmMyz9cMCRA" binding="_bBDQ0INvEeiLE-B2bbL0fg"/>
-    </elements>
-    <elements xsi:type="service:MappedTransferObjectType" xmi:id="_PL79YIHuEemFzY3ZWApzVQ" name="ProductInfoQuery" entityType="_6XH80INkEeiLE-B2bbL0fg" entityReferencePresence="REQUIRED">
-      <relations xmi:id="_PL79YYHuEemFzY3ZWApzVQ" name="category" binding="_CkXK8LwDEeiOuYiCo6IbXQ" range="_xeUiAEZlEemHs64O5EYsyQ" target="_xxeTIEWXEemHs64O5EYsyQ" embedded="true">
-        <cardinality xmi:id="_PL79YoHuEemFzY3ZWApzVQ" lower="1"/>
-      </relations>
-      <attributes xmi:id="_PL79Y4HuEemFzY3ZWApzVQ" name="productName" required="true" dataType="_Nppx8IUcEeipmMyz9cMCRA" binding="_LhnHUINvEeiLE-B2bbL0fg"/>
-      <attributes xmi:id="_PL79ZIHuEemFzY3ZWApzVQ" name="unitPrice" required="true" dataType="_VDVVQIUcEeipmMyz9cMCRA" binding="_bBDQ0INvEeiLE-B2bbL0fg"/>
-    </elements>
-    <elements xsi:type="service:MappedTransferObjectType" xmi:id="_xxeTIEWXEemHs64O5EYsyQ" name="CategoryInfo" entityType="_43ZPcINkEeiLE-B2bbL0fg">
-      <relations xmi:id="_iy32wEWgEemHs64O5EYsyQ" name="products" binding="_892OYLwCEeiOuYiCo6IbXQ" range="_vA7SgEZlEemHs64O5EYsyQ" target="_o7IkkEWXEemHs64O5EYsyQ">
-        <cardinality xmi:id="_Paez0EWiEemHs64O5EYsyQ" upper="-1"/>
-      </relations>
-      <attributes xmi:id="_zWg-UEWXEemHs64O5EYsyQ" name="categoryName" required="true" dataType="_Nppx8IUcEeipmMyz9cMCRA" binding="_v7k5EINmEeiLE-B2bbL0fg"/>
-    </elements>
-    <elements xsi:type="service:UnboundOperation" xmi:id="_mr1P4EWhEemHs64O5EYsyQ" name="getAllOrders">
-      <implementation stateful="false"/>
-      <output xmi:id="_oxIvgEWhEemHs64O5EYsyQ" name="output" type="_ETGEYCVQEemLpvUY7MQgng">
-        <cardinality xmi:id="_rFrlAEWhEemHs64O5EYsyQ" upper="-1"/>
+    <elements xsi:type="service:UnboundOperation" xmi:id="_-a5f3OiQEempM99-shER5g" name="createCategory">
+      <output xmi:id="_-a5f3eiQEempM99-shER5g" name="output" type="_-a4Rx-iQEempM99-shER5g">
+        <cardinality xmi:id="_-a6G0OiQEempM99-shER5g" lower="1"/>
       </output>
-    </elements>
-    <elements xsi:type="service:UnboundOperation" xmi:id="_Yp23UIFUEemFzY3ZWApzVQ" name="getAllInternationalOrders">
-      <implementation stateful="false"/>
-      <output xmi:id="_Yp23UYFUEemFzY3ZWApzVQ" name="output" type="_8y7MsIFTEemFzY3ZWApzVQ">
-        <cardinality xmi:id="_Yp23UoFUEemFzY3ZWApzVQ" upper="-1"/>
-      </output>
-    </elements>
-    <elements xsi:type="service:UnboundOperation" xmi:id="_nkcqoHruEemPuYxp6QV8dA" name="createOrder">
-      <implementation stateful="true"/>
-      <output xmi:id="_rcO0gHruEemPuYxp6QV8dA" name="output" type="_-L7R4IFREemFzY3ZWApzVQ">
-        <cardinality xmi:id="_EH3n0HrvEemPuYxp6QV8dA" lower="1"/>
-      </output>
-      <input xmi:id="_pwQa4HruEemPuYxp6QV8dA" name="input" type="_-L7R4IFREemFzY3ZWApzVQ">
-        <cardinality xmi:id="_EfGcEHrvEemPuYxp6QV8dA" lower="1"/>
+      <input xmi:id="_-a6G0eiQEempM99-shER5g" name="input" type="_-a4Rx-iQEempM99-shER5g">
+        <cardinality xmi:id="_-a6G0uiQEempM99-shER5g" lower="1"/>
       </input>
+      <implementation xmi:id="_-a6G0-iQEempM99-shER5g" customImplementation="true"/>
     </elements>
-    <elements xsi:type="service:UnboundOperation" xmi:id="_SZmaMIFUEemFzY3ZWApzVQ" name="createInternationalOrder">
-      <implementation stateful="true"/>
-      <output xmi:id="_SZmaMYFUEemFzY3ZWApzVQ" name="output" type="_HebikIFTEemFzY3ZWApzVQ">
-        <cardinality xmi:id="_SZmaMoFUEemFzY3ZWApzVQ" lower="1"/>
+    <elements xsi:type="service:UnboundOperation" xmi:id="_-a6G1OiQEempM99-shER5g" name="createInternationalOrder">
+      <output xmi:id="_-a6G1eiQEempM99-shER5g" name="output" type="_-a44sOiQEempM99-shER5g">
+        <cardinality xmi:id="_-a6G1uiQEempM99-shER5g" lower="1"/>
       </output>
-      <input xmi:id="_SZmaM4FUEemFzY3ZWApzVQ" name="input" type="_HebikIFTEemFzY3ZWApzVQ">
-        <cardinality xmi:id="_SZmaNIFUEemFzY3ZWApzVQ" lower="1"/>
+      <input xmi:id="_-a6G1-iQEempM99-shER5g" name="input" type="_-a44sOiQEempM99-shER5g">
+        <cardinality xmi:id="_-a6G2OiQEempM99-shER5g" lower="1"/>
       </input>
+      <implementation xmi:id="_-a6G2eiQEempM99-shER5g" customImplementation="true"/>
     </elements>
-    <elements xsi:type="service:UnboundOperation" xmi:id="_5fazwKiTEemuF_XcMCHsqg" name="createShipper">
-      <implementation stateful="true"/>
-      <output xmi:id="_EE-dMKiUEemuF_XcMCHsqg" name="output" type="_OUfQ4IFSEemFzY3ZWApzVQ">
-        <cardinality xmi:id="_EE-dMaiUEemuF_XcMCHsqg" lower="1"/>
+    <elements xsi:type="service:UnboundOperation" xmi:id="_-a6G2uiQEempM99-shER5g" name="createOrder">
+      <output xmi:id="_-a6G2-iQEempM99-shER5g" name="output" type="_-a443uiQEempM99-shER5g">
+        <cardinality xmi:id="_-a6G3OiQEempM99-shER5g" lower="1"/>
       </output>
-      <input xmi:id="_EE-dMqiUEemuF_XcMCHsqg" name="input" type="_OUfQ4IFSEemFzY3ZWApzVQ">
-        <cardinality xmi:id="_EE-dM6iUEemuF_XcMCHsqg" lower="1"/>
+      <input xmi:id="_-a6G3eiQEempM99-shER5g" name="input" type="_-a443uiQEempM99-shER5g">
+        <cardinality xmi:id="_-a6G3uiQEempM99-shER5g" lower="1"/>
       </input>
+      <implementation xmi:id="_-a6G3-iQEempM99-shER5g" customImplementation="true"/>
     </elements>
-    <elements xsi:type="service:UnboundOperation" xmi:id="_99BAcKiTEemuF_XcMCHsqg" name="createProduct">
-      <implementation stateful="true"/>
-      <output xmi:id="_D-kTMKiUEemuF_XcMCHsqg" name="output" type="_o7IkkEWXEemHs64O5EYsyQ">
-        <cardinality xmi:id="_D-kTMaiUEemuF_XcMCHsqg" lower="1"/>
+    <elements xsi:type="service:UnboundOperation" xmi:id="_-a6G4OiQEempM99-shER5g" name="createProduct">
+      <output xmi:id="_-a6G4eiQEempM99-shER5g" name="output" type="_-a44wuiQEempM99-shER5g">
+        <cardinality xmi:id="_-a6G4uiQEempM99-shER5g" lower="1"/>
       </output>
-      <input xmi:id="_D-kTMqiUEemuF_XcMCHsqg" name="input" type="_o7IkkEWXEemHs64O5EYsyQ">
-        <cardinality xmi:id="_D-kTM6iUEemuF_XcMCHsqg" lower="1"/>
+      <input xmi:id="_-a6G4-iQEempM99-shER5g" name="input" type="_-a44wuiQEempM99-shER5g">
+        <cardinality xmi:id="_-a6G5OiQEempM99-shER5g" lower="1"/>
       </input>
+      <implementation xmi:id="_-a6G5eiQEempM99-shER5g" customImplementation="true"/>
     </elements>
-    <elements xsi:type="service:UnboundOperation" xmi:id="__nxSEKiTEemuF_XcMCHsqg" name="createCategory">
-      <implementation stateful="true"/>
-      <output xmi:id="_D1RNQKiUEemuF_XcMCHsqg" name="output" type="_xxeTIEWXEemHs64O5EYsyQ">
-        <cardinality xmi:id="_D1RNQaiUEemuF_XcMCHsqg" lower="1"/>
+    <elements xsi:type="service:UnboundOperation" xmi:id="_-a6G5uiQEempM99-shER5g" name="createShipper">
+      <output xmi:id="_-a6G5-iQEempM99-shER5g" name="output" type="_-a44wOiQEempM99-shER5g">
+        <cardinality xmi:id="_-a6G6OiQEempM99-shER5g" lower="1"/>
       </output>
-      <input xmi:id="_D1RNQqiUEemuF_XcMCHsqg" name="input" type="_xxeTIEWXEemHs64O5EYsyQ">
-        <cardinality xmi:id="_D1RNQ6iUEemuF_XcMCHsqg" lower="1"/>
+      <input xmi:id="_-a6G6eiQEempM99-shER5g" name="input" type="_-a44wOiQEempM99-shER5g">
+        <cardinality xmi:id="_-a6G6uiQEempM99-shER5g" lower="1"/>
       </input>
+      <implementation xmi:id="_-a6G6-iQEempM99-shER5g" customImplementation="true"/>
     </elements>
-    <elements xsi:type="service:UnmappedTransferObjectType" xmi:id="_gw4goKiXEemuF_XcMCHsqg" name="ShipmentChange">
-      <attributes xmi:id="_k8gzkKiXEemuF_XcMCHsqg" name="shipperName" required="true" dataType="_Nppx8IUcEeipmMyz9cMCRA"/>
-      <attributes xmi:id="_lWG_UKiXEemuF_XcMCHsqg" name="orderDate" dataType="_Z9J8IIN1EeiLE-B2bbL0fg"/>
+    <elements xsi:type="service:UnboundOperation" xmi:id="_-a6G7OiQEempM99-shER5g" name="getAllOrders">
+      <output xmi:id="_-a6G7eiQEempM99-shER5g" name="output" type="_-a5f1eiQEempM99-shER5g">
+        <cardinality xmi:id="_-a6G7uiQEempM99-shER5g" upper="-1"/>
+      </output>
+      <implementation xmi:id="_-a6G7-iQEempM99-shER5g"/>
     </elements>
-    <elements xsi:type="service:UnmappedTransferObjectType" xmi:id="_wNexgKiXEemuF_XcMCHsqg" name="Comment">
-      <attributes xmi:id="_yNTUMKiXEemuF_XcMCHsqg" name="note" required="true" dataType="_tXQUoIOGEeiLE-B2bbL0fg"/>
-      <attributes xmi:id="_zE1ZIKiXEemuF_XcMCHsqg" name="author" dataType="_Nppx8IUcEeipmMyz9cMCRA"/>
-      <attributes xmi:id="_ziXpsKiXEemuF_XcMCHsqg" name="timestamp" dataType="_Z9J8IIN1EeiLE-B2bbL0fg"/>
+    <elements xsi:type="service:UnboundOperation" xmi:id="_-a6G8OiQEempM99-shER5g" name="getAllInternationalOrders">
+      <output xmi:id="_-a6G8eiQEempM99-shER5g" name="output" type="_-a44ueiQEempM99-shER5g">
+        <cardinality xmi:id="_-a6G8uiQEempM99-shER5g" upper="-1"/>
+      </output>
+      <implementation xmi:id="_-a6G8-iQEempM99-shER5g"/>
+    </elements>
+    <elements xsi:type="derived:StaticNavigation" xmi:id="_-a6t4OiQEempM99-shER5g" name="allCategories" target="_-a11euiQEempM99-shER5g">
+      <cardinality xmi:id="_-a6t4eiQEempM99-shER5g" upper="-1"/>
+      <getterExpression xmi:id="_-a6t4uiQEempM99-shER5g" expression="northwind::entities::Category"/>
+    </elements>
+    <elements xsi:type="derived:StaticNavigation" xmi:id="_-a6t4-iQEempM99-shER5g" name="allProducts" target="_-a3qm-iQEempM99-shER5g">
+      <cardinality xmi:id="_-a6t5OiQEempM99-shER5g" upper="-1"/>
+      <getterExpression xmi:id="_-a6t5eiQEempM99-shER5g" expression="northwind::entities::Product"/>
+    </elements>
+    <elements xsi:type="derived:StaticNavigation" xmi:id="_-a6t5uiQEempM99-shER5g" name="ordersAssignedToEmployee" target="_-a3DgeiQEempM99-shER5g">
+      <cardinality xmi:id="_-a6t5-iQEempM99-shER5g" upper="-1"/>
+      <getterExpression xmi:id="_-a6t6OiQEempM99-shER5g" expression="northwind::entities::Employee.orders"/>
+    </elements>
+    <elements xsi:type="derived:StaticData" xmi:id="_-a6t6eiQEempM99-shER5g" name="totalNumberOfOrders" dataType="_-a4RrOiQEempM99-shER5g" required="true">
+      <getterExpression xmi:id="_-a6t6uiQEempM99-shER5g" expression="0 // COUNT(northwind::entities::Order)"/>
     </elements>
   </packages>
 </namespace:Model>

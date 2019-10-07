@@ -28,12 +28,12 @@
 					<execution>
 						<id>copy-scripts</id>
 						<!-- here the phase you need -->
-						<phase>process-test-resources</phase>
+						<phase>process-resources</phase>
 						<goals>
 							<goal>copy-resources</goal>
 						</goals>
 						<configuration>
-							<outputDirectory>${basedir}/target/test-classes/epsilon</outputDirectory>
+							<outputDirectory>${basedir}/target/classes/tatami/asm2jaxrsapi</outputDirectory>
 							<resources>
 								<resource>
 									<directory>src/main/epsilon</directory>
@@ -53,12 +53,11 @@
 					<obrRepository>NONE</obrRepository>
 					<instructions>
 						<Export-Package>
-							tatami/asm2jaxrsapi;version=${project.version},
 							hu.blackbelt.judo.tatami.asm2jaxrsapi.*;version=${project.version}
 						</Export-Package>
 						<Include-Resource>
 							{maven-resources},
-							tatami/asm2jaxrsapi=src/main/epsilon
+							tatami=target/classes/tatami
 						</Include-Resource>
 						<Import-Package>
                             ${osgi-default-import},
