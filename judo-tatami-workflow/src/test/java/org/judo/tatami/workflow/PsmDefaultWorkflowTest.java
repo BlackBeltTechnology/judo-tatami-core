@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import hu.blackbelt.judo.meta.psm.runtime.PsmModel;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -29,8 +30,8 @@ import hu.blackbelt.judo.tatami.workflow.PsmDefaultWorkflow;
 
 public class PsmDefaultWorkflowTest {
 	
-	PsmDefaultWorkflow defaultWorkflow = new PsmDefaultWorkflow();
-	
+	PsmDefaultWorkflow defaultWorkflow;
+
     public static final URI PSM2ASM_SCRIPTROOT = new File("../judo-tatami-psm2asm/src/main/epsilon/transformations/asm/").toURI();
     public static final URI PSM2MEASURE_SCRIPTROOT = new File("../judo-tatami-psm2measure/src/main/epsilon/transformations/measure/").toURI();
     public static final URI ASM2RDBMS_SCRIPTROOT = new File("../judo-tatami-asm2rdbms/src/main/epsilon/transformations/").toURI();
@@ -91,7 +92,7 @@ public class PsmDefaultWorkflowTest {
 		asm2jaxrsapiBundle = new File(TARGET_CLASSES, MODEL_NAME + "-asm2jaxrsapi.jar");
 		asm2jaxrsapiBundle.delete();
 
-		defaultWorkflow.setUp(DefaultWorkflowSetupParameters.defaultWorkflowSetupParameters()
+		defaultWorkflow = new PsmDefaultWorkflow(DefaultWorkflowSetupParameters.defaultWorkflowSetupParameters()
 				.psmModelSourceURI(new File(FILE_LOCATION).toURI())
 				.psm2AsmModelTransformationScriptURI(PSM2ASM_SCRIPTROOT)
 				.psm2MeasureModelTransformationScriptURI(PSM2MEASURE_SCRIPTROOT)
@@ -108,8 +109,7 @@ public class PsmDefaultWorkflowTest {
 	}
 
 	@Test
-	void testDefaultWorkflow() throws IOException, AsmValidationException, MeasureValidationException,
-			RdbmsValidationException, OpenapiValidationException, LiquibaseValidationException {
+	void testDefaultWorkflow() {
 
 		assertThat(workReport.getStatus(), equalTo(WorkStatus.COMPLETED));
 		
@@ -127,6 +127,5 @@ public class PsmDefaultWorkflowTest {
 		
 		assertTrue(asm2sdkBundle.exists());
 		assertTrue(asm2jaxrsapiBundle.exists());
-
 	}
 }

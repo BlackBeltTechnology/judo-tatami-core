@@ -1,5 +1,6 @@
 package hu.blackbelt.judo.tatami.itest;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.jaxrs.json.JacksonJaxbJsonProvider;
 import com.google.common.collect.ImmutableMap;
 import hu.blackbelt.judo.tatami.core.Dispatcher;
@@ -62,6 +63,9 @@ public class JaxRSITest {
     @Inject
     BundleContext bundleContext;
 
+    @Inject
+    ObjectMapper objectMapper;
+
 
     @Configuration
     public Option[] config() throws FileNotFoundException {
@@ -101,7 +105,11 @@ public class JaxRSITest {
                 features(blackbeltTatami(), FEATURE_JUDO_TATAMI_CORE),
 
                 newConfiguration("hu.blackbelt.jaxrs.providers.JacksonProvider")
-                        .put("JacksonProvider.SerializationFeature.INDENT_OUTPUT", "true").asOption(),
+                        .put("JacksonProvider.SerializationFeature.INDENT_OUTPUT", "true")
+                        .asOption(),
+
+                newConfiguration("hu.blackbelt.jaxrs.providers.ExtendedObjectMapperProvider")
+                        .put("placeholder", "true").asOption(),
 
                 editConfigurationFilePut("etc/org.ops4j.pax.web.cfg",
                         "org.osgi.service.http.port", "8181"),

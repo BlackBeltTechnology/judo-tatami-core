@@ -5,6 +5,7 @@ import hu.blackbelt.judo.tatami.core.workflow.work.WorkReport;
 import hu.blackbelt.judo.tatami.core.workflow.work.WorkReportPredicate;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 import java.util.logging.Level;
@@ -64,6 +65,11 @@ public class SequentialFlow extends AbstractWorkFlow {
 
         public SequentialFlow.Builder execute(Work work) {
             this.works.add(work);
+            return this;
+        }
+        
+        public SequentialFlow.Builder execute(Work... works) {
+            this.works.addAll(Arrays.asList(works));
             return this;
         }
 

@@ -49,4 +49,25 @@ public class DefaultWorkflowSetupParameters {
 	@NonNull
 	private List<String> dialectList;
 
+	@Builder.Default
+	private Boolean ignorePsm2Asm = false;
+
+	@Builder.Default
+	private Boolean ignorePsm2Measure = false;
+
+	@Builder.Default
+	private Boolean ignoreAsm2Openapi = false;
+
+	@Builder.Default
+	private Boolean ignoreAsm2Rdbms = false;
+
+	@Builder.Default
+	private Boolean ignoreRdbms2Liquibase = false;
+
+	@Builder.Default
+	private Boolean ignoreAsm2sdk = false;
+
+	@Builder.Default
+	private Boolean ignoreAsm2jaxrsapi = false;
+
 }
