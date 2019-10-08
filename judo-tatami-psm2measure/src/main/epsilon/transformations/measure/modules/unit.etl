@@ -15,6 +15,7 @@ rule CreateDurationUnit
     to t : MEASURES!DurationUnit 
     extends CreateUnit {
         switch (s.unitType) {
+            case JUDOPSM!DurationType#nanosecond: t.type = MEASURES!DurationType#nanosecond;
             case JUDOPSM!DurationType#millisecond: t.type = MEASURES!DurationType#millisecond;
             case JUDOPSM!DurationType#second: t.type = MEASURES!DurationType#second;
             case JUDOPSM!DurationType#minute: t.type = MEASURES!DurationType#minute;
