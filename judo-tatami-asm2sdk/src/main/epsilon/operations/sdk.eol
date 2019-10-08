@@ -110,13 +110,6 @@ operation ASM!EClass getClassPackage() : String {
     return str.replace("." + self.getClassName(),"");
 }
 
-/*operation genDto(dto : ASM!EClass) {
-	var t = TemplateFactory.load("Dto.java.egl");
-	t.populate("dto", dto);
-	t.generate(dto.getDtoJavaFileName());
-	t.reset();
-}*/
-
 @cached
 operation getAllDTOs(): Collection {
 	return ASM!EClass.all.select(class | asmUtils.getExtensionAnnotationListByName(class, "exposedBy").notEmpty() and (not asmUtils.isEntityType(class) or asmUtils.isMappedTransferObjectType(class)));
@@ -134,10 +127,6 @@ operation genDtoFactory(dto : ASM!EClass) {
 	template.populate("dto", dto);
 	template.generate(dto.getDtoFactoryJavaFileName());
 	template.reset();
-}
-
-operation String startWithUpper() {
-    return self.substring(0,1).toUpperCase() + self.substring(1);
 }
 
 operation genUnboundServiceInterface(ap : ASM!EClass, operations : Collection) {
@@ -185,7 +174,7 @@ operation ASM!EClass getUnboundServiceClassName() : String {
 }
 
 operation ASM!EClass getUnboundServiceJavaFileName(opname: String) : String {
-	return self.getUnboundServicePackageName().replaceAll("\\.", "/") + "/" + opname.startWithUpper() + ".java";
+	return self.getUnboundServicePackageName().replaceAll("\\.", "/") + "/" + opname.firstToUpperCase() + ".java";
 }
 
 operation ASM!EClass getUnboundServiceScrXmlFileName() : String {
@@ -198,19 +187,13 @@ operation ASM!EClass getExposedMappedTransferObjectPackageName(ap: ASM!EClass) :
 
 @cached
 operation ASM!EClass getExposedMappedTransferObjectClassName() : String {
-	/*
-	if (self.name.contains("__")) {
-		return self.name.split("__").first().firstToUpperCase() + "$" + self.name.split("__").second();
-	} else {
-		return self.name;
-	}
-	*/
+
 	return self.name.replace("__","\\.");
 }
 
 operation ASM!EClass getExposedMappedTransferObjectJavaFileName(ap: ASM!EClass, opname: String) : String {
 	return self.getExposedMappedTransferObjectPackageName(ap)
-		.replaceAll("\\.", "/") + "/" + opname.startWithUpper() + ".java";
+		.replaceAll("\\.", "/") + "/" + opname.firstToUpperCase() + ".java";
 }
 
 operation ASM!EClass getExposedMappedTransferObjectScrXmlFileName(ap: ASM!EClass) : String {
