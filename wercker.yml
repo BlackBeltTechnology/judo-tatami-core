@@ -3,7 +3,12 @@ no-response-timeout: 15
 command-timeout: 60
 
 build:
-  steps:	
+  steps:
+    - script:
+        name: Get rev list
+        code: |-
+               git rev-list HEAD
+
     - blackbelttechnology/import-gpg-keys@1.0.4:
       secretkeys: $GPG_SECRET_KEYS 
       ownertrust: $GPG_OWNERTRUST
