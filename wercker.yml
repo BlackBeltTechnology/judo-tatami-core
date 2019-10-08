@@ -1,9 +1,11 @@
 box: maven:3.5.4-jdk-8
 no-response-timeout: 15
 command-timeout: 60
+ignore-file: .gitignore
 
 build:
   steps:
+
     - blackbelttechnology/import-gpg-keys@1.0.4:
       secretkeys: $GPG_SECRET_KEYS 
       ownertrust: $GPG_OWNERTRUST
@@ -13,9 +15,15 @@ build:
     - blackbelttechnology/version-from-pom@1.0.2:
       pom: ./pom.xml
 
+    - script:
+      name: calculate version number
+      code: |-
+        export VERSION_NUMBER=${VERSION_FROM_POM_BASE_VERSION}.$(date +%Y%m%d_%H%M%S)_${WERCKER_GIT_COMMIT}_${VERSION_FROM_GIT_TAG_CURRENT_BRANCH_VALID_NAME}
+        echo "Building version: ${VERSION_NUMBER}"
+
     - wercker/maven:
       goals: versions:set
-      maven_opts: -DnewVersion=${VERSION_FROM_POM_BASE_VERSION}.${WERCKER_MAIN_PIPELINE_STARTED}_${WERCKER_GIT_COMMIT}_${VERSION_FROM_GIT_TAG_CURRENT_BRANCH_VALID_NAME}
+      maven_opts: -DnewVersion=${VERSION_NUMBER}
       settings: .maven.xml
       cache_repo: true
 
