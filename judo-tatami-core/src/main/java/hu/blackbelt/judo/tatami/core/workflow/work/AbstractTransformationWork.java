@@ -1,6 +1,9 @@
 package hu.blackbelt.judo.tatami.core.workflow.work;
 
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 public abstract class AbstractTransformationWork implements Work {
 
     TransformationContext transformationContext;
@@ -22,9 +25,9 @@ public abstract class AbstractTransformationWork implements Work {
     public WorkReport call() {
         try {
             execute();
+            return new DefaultWorkReport(WorkStatus.COMPLETED);
         } catch (Exception e) {
             return new DefaultWorkReport(WorkStatus.FAILED, e);
         }
-        return new DefaultWorkReport(WorkStatus.COMPLETED);
     }
 }

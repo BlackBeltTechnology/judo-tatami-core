@@ -4,6 +4,7 @@ import hu.blackbelt.judo.tatami.core.workflow.work.NoOpWork;
 import hu.blackbelt.judo.tatami.core.workflow.work.Work;
 import hu.blackbelt.judo.tatami.core.workflow.work.WorkReport;
 import hu.blackbelt.judo.tatami.core.workflow.work.WorkReportPredicate;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.UUID;
 
@@ -20,6 +21,7 @@ import java.util.UUID;
  * @see ConditionalFlow.Builder
  *
  */
+@Slf4j
 public class ConditionalFlow extends AbstractWorkFlow {
 
     private Work toExecute, nextOnPredicateSuccess, nextOnPredicateFailure;
@@ -37,14 +39,20 @@ public class ConditionalFlow extends AbstractWorkFlow {
      * {@inheritDoc}
      */
     public WorkReport call() {
+        log.info("Call work '{}' - Call work: '{}'", new String[] {getName(), toExecute.getName()});
         WorkReport jobReport = toExecute.call();
+
         if (predicate.apply(jobReport)) {
             jobReport = nextOnPredicateSuccess.call();
         } else {
+            //log.info("Call work {} - Predicate {} unmatched, and  '{}' FAILED", new String[] {getName(), jobReport.getStatus().name()});
             if (nextOnPredicateFailure != null && !(nextOnPredicateFailure instanceof NoOpWork)) { // else is optional
+                //log.info("Call work {} - Predicate {} unmatched, and  '{}' - Call work: {}", new String[] {getName(), jobReport.getStatus().name(),
+                //        toExecute.getName(), nextOnPredicateFailure.getName()});
                 jobReport = nextOnPredicateFailure.call();
             }
         }
+        log.info("Work {} Returns: {} ", getName(), jobReport);
         return jobReport;
     }
 
