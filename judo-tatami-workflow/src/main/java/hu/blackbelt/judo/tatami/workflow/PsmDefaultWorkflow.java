@@ -7,7 +7,7 @@ import static hu.blackbelt.judo.tatami.asm2sdk.Asm2SDKWork.SDK_OUTPUT;
 import static hu.blackbelt.judo.tatami.core.ThrowingSupplier.sneakyThrows;
 import static hu.blackbelt.judo.tatami.core.workflow.engine.WorkFlowEngineBuilder.aNewWorkFlowEngine;
 import static hu.blackbelt.judo.tatami.core.workflow.flow.ConditionalFlow.Builder.aNewConditionalFlow;
-import static hu.blackbelt.judo.tatami.core.workflow.flow.ParallelFlow.Builder.aNewParallelFlow;
+import static hu.blackbelt.judo.tatami.core.workflow.flow.SequentialFlow.Builder.aNewSequentialFlow;
 import static java.util.Optional.of;
 import static java.util.Optional.ofNullable;
 
@@ -132,15 +132,18 @@ public class PsmDefaultWorkflow {
 		}
 
 		WorkFlow workflow = aNewConditionalFlow()
-				.execute(
-						aNewParallelFlow().execute(psmWorks.toArray(new AbstractTransformationWork[psmWorks.size()])).build())
+				.execute(aNewSequentialFlow()
+						.execute(psmWorks.toArray(new AbstractTransformationWork[psmWorks.size()]))
+						.build())
 				.when(WorkReportPredicate.COMPLETED)
 				.then(aNewConditionalFlow()
-						.execute(aNewParallelFlow()
-								.execute(asmWorks.toArray(new AbstractTransformationWork[asmWorks.size()])).build())
+						.execute(aNewSequentialFlow()
+								.execute(asmWorks.toArray(new AbstractTransformationWork[asmWorks.size()]))
+								.build())
 						.when(WorkReportPredicate.COMPLETED)
-						.then(aNewParallelFlow().execute(rdbms2LiquibaseWorks
-								.toArray(new AbstractTransformationWork[rdbms2LiquibaseWorks.size()])).build())
+						.then(aNewSequentialFlow()
+								.execute(rdbms2LiquibaseWorks.toArray(new AbstractTransformationWork[rdbms2LiquibaseWorks.size()]))
+								.build())
 						.build())
 				.build();
 
