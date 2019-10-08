@@ -117,7 +117,7 @@
         <apache-commons-karaf-features-version>1.0.5</apache-commons-karaf-features-version>
         <apache-poi-karaf-features-version>1.0.2</apache-poi-karaf-features-version>
         <apache-httpclient-karaf-features-version>1.0.1.develop_15</apache-httpclient-karaf-features-version>
-
+	<log4j.configuration>log4j.properties</log4j.configuration>
     </properties>
 
     <url>http://github.com/${project-repositoryId}</url>
@@ -535,6 +535,9 @@
                     <configuration>
                         <argLine>-Dfile.encoding=UTF-8</argLine>
                         <trimStackTrace>false</trimStackTrace>
+                        <systemPropertyVariables>
+                            <log4j.configuration>${log4j.configuration}</log4j.configuration>
+                        </systemPropertyVariables>
                     </configuration>
                 </plugin>
 
