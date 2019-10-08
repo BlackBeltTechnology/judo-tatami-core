@@ -6,13 +6,10 @@ var outputScrXmls = new Set();
 
 executionContext.getContext().put("outputJavaClasses", outputJavaClasses);
 
-for (dto in asmUtils.getAllMappedTransferObjectTypes().collectAllReferenceTypeRecursively()) {
-    //DTO
-    genDto(dto);
-	outputJavaClasses.add(dto.getDtoJavaFileName());
+for (dto in getAllDTOs()) {
 	//DTO interface
 	genDtoInterface(dto);
-	outputJavaClasses.add(dto.getDtoInterfaceJavaFileName());
+	outputJavaClasses.add(dto.getDtoJavaFileName());
 	//DTO factory
 	genDtoFactory(dto);
 	outputJavaClasses.add(dto.getDtoFactoryJavaFileName());

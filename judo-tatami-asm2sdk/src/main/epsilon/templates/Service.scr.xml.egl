@@ -6,7 +6,7 @@
   <implementation class="[%= packagePath %].[%= className %]"/>
   <service>
     [% for(op in operations) { %]
-    <provide interface="[%= packagePath %].[%= className + "_" + op.name %]"/>
+    <provide interface="[%= packagePath %].[%= op.name %]"/>
     [% } %]
   </service>
 </component>

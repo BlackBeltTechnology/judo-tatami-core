@@ -110,17 +110,22 @@ operation ASM!EClass getClassPackage() : String {
     return str.replace("." + self.getClassName(),"");
 }
 
-operation genDto(dto : ASM!EClass) {
+/*operation genDto(dto : ASM!EClass) {
 	var t = TemplateFactory.load("Dto.java.egl");
 	t.populate("dto", dto);
 	t.generate(dto.getDtoJavaFileName());
 	t.reset();
+}*/
+
+@cached
+operation getAllDTOs(): Collection {
+	return ASM!EClass.all.select(class | asmUtils.getExtensionAnnotationListByName(class, "exposedBy").notEmpty() and (not asmUtils.isEntityType(class) or asmUtils.isMappedTransferObjectType(class)));
 }
 
 operation genDtoInterface(dto : ASM!EClass) {
 	var template = TemplateFactory.load("DtoInterface.java.egl");
 	template.populate("dto", dto);
-	template.generate(dto.getDtoInterfaceJavaFileName());
+	template.generate(dto.getDtoJavaFileName());
 	template.reset();
 }
 
