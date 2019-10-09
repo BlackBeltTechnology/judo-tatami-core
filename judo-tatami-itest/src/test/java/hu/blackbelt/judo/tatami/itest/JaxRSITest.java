@@ -220,7 +220,7 @@ public class JaxRSITest {
                 mavenBundle()
                         .groupId("org.glassfish")
                         .artifactId("javax.json")
-                        .versionAsInProject().start(), //TODO-ask: wasnt started
+                        .versionAsInProject().start(),
 
                 mavenBundle()
                         .groupId("com.fasterxml.jackson.datatype")
@@ -415,8 +415,6 @@ public class JaxRSITest {
         List<OrderInfoQuery> output = response.readEntity(new GenericType<List<OrderInfoQuery>>() {
         });
 
-        log.log(LOG_INFO, output.toString()); //todo: remove before commit
-
         assertTrue("shipperNameInOrderInfoQuery0".equals(output.get(0).getShipperName()));
         assertTrue("shipperNameInOrderInfoQuery1".equals(output.get(1).getShipperName()));
     }
@@ -466,8 +464,6 @@ public class JaxRSITest {
 
         Response response = getResponse(DEMO_SERVICE_CREATE_PRODUCT,
                 productInfoBuilder().productName("productNameInNewProductInfo").category(categoryInfoBuilder().categoryName("categoryInfoInCreateProduct").build()).unitPrice(3.14).build());
-
-        log.log(LOG_INFO, response.readEntity(ProductInfo.class).toString()); //todo: remove before commit
 
         assertNotNull(response);
         assertTrue(response.getStatusInfo().getFamily().equals(Response.Status.Family.SUCCESSFUL));
@@ -525,8 +521,6 @@ public class JaxRSITest {
         logTest(DEMO_SERVICE_ORDERINFO_CHANGE_SHIPMENT);
 
         Response response = getResponse(DEMO_SERVICE_ORDERINFO_CHANGE_SHIPMENT, orderInfoBuilder().orderDate(ZonedDateTime.now()).build());
-
-        log.log(LOG_INFO, response.readEntity(ShipmentChange.class).toString()); //todo: remove before commit
 
         assertNotNull(response);
         assertTrue(response.getStatusInfo().getFamily().equals(Response.Status.Family.SUCCESSFUL));

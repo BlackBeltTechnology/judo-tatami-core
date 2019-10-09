@@ -457,22 +457,6 @@
         </dependency>
 
         <!-- Tatami -->
-        <!-- todo check if needed (was here)
-        <dependency>
-            <groupId>hu.blackbelt.judo.tatami</groupId>
-            <artifactId>judo-tatami-core</artifactId>
-            <scope>test</scope>
-        </dependency>
-        -->
-        <!-- todo check if needed (was here)
-        <dependency>
-            <groupId>hu.blackbelt.judo.tatami</groupId>
-            <artifactId>judo-tatami-asm2jaxrsapi</artifactId>
-            <scope>test</scope>
-        </dependency>
-        -->
-
-
         <!-- dependency>
             <groupId>hu.blackbelt.judo.tatami</groupId>
             <artifactId>judo-tatami-asm2odata</artifactId>
@@ -484,7 +468,6 @@
             <artifactId>judo-tatami-esm2psm</artifactId>
             <scope>test</scope>
         </dependency>
-
 
         <dependency>
             <groupId>hu.blackbelt.judo.tatami</groupId>
