@@ -10,6 +10,7 @@
     </parent>
 
     <artifactId>judo-tatami-itest</artifactId>
+    <name>Judo :: Tatami :: Itest</name>
         
     <build>
         <testResources>

@@ -1,10 +1,11 @@
 package hu.blackbelt.judo.tatami.core;
 
-import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
-import lombok.SneakyThrows;
-import lombok.extern.slf4j.Slf4j;
+import static org.eclipse.emf.common.util.ECollections.asEList;
+import static org.eclipse.emf.common.util.ECollections.newBasicEList;
+
+import java.util.List;
+import java.util.Map;
+
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.util.EcoreUtil;
@@ -14,13 +15,12 @@ import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
 
-import java.util.List;
-import java.util.Map;
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 
-import static org.eclipse.emf.common.util.ECollections.asEList;
-import static org.eclipse.emf.common.util.ECollections.newBasicEList;
+import lombok.SneakyThrows;
 
-@Slf4j
 @Component(service = TransformationTraceService.class)
 public class TransformationTraceServiceImpl implements TransformationTraceService {
 

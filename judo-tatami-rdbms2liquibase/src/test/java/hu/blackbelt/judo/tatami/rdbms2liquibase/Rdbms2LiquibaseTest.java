@@ -24,6 +24,7 @@ import static hu.blackbelt.judo.meta.rdbms.runtime.RdbmsModel.LoadArguments.rdbm
 import static hu.blackbelt.judo.meta.rdbmsDataTypes.support.RdbmsDataTypesModelResourceSupport.registerRdbmsDataTypesMetamodel;
 import static hu.blackbelt.judo.meta.rdbmsNameMapping.support.RdbmsNameMappingModelResourceSupport.registerRdbmsNameMappingMetamodel;
 import static hu.blackbelt.judo.meta.rdbmsRules.support.RdbmsTableMappingRulesModelResourceSupport.registerRdbmsTableMappingRulesMetamodel;
+import static hu.blackbelt.judo.tatami.rdbms2liquibase.Rdbms2Liquibase.calculateRdbms2LiquibaseTransformationScriptURI;
 import static hu.blackbelt.judo.tatami.rdbms2liquibase.Rdbms2Liquibase.executeRdbms2LiquibaseTransformation;
 
 @Slf4j
@@ -65,7 +66,7 @@ public class Rdbms2LiquibaseTest {
     public void testRdbms2LiquibaseTransformation() throws Exception {
 
         executeRdbms2LiquibaseTransformation(rdbmsModel, liquibaseModel, new Slf4jLog(log),
-                new File(TARGET_TEST_CLASSES, "epsilon/transformations").toURI(),
+                calculateRdbms2LiquibaseTransformationScriptURI(),
                 "hsqldb");
 
         liquibaseModel.saveLiquibaseModel(liquibaseSaveArgumentsBuilder()

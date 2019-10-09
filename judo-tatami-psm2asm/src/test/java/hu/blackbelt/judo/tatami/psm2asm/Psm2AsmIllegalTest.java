@@ -17,6 +17,7 @@ import static hu.blackbelt.judo.meta.asm.runtime.AsmModel.SaveArguments.asmSaveA
 import static hu.blackbelt.judo.meta.psm.PsmEpsilonValidator.validatePsm;
 import static hu.blackbelt.judo.meta.psm.runtime.PsmModel.LoadArguments.psmLoadArgumentsBuilder;
 import static hu.blackbelt.judo.meta.psm.runtime.PsmModel.loadPsmModel;
+import static hu.blackbelt.judo.tatami.psm2asm.Psm2Asm.calculatePsm2AsmTransformationScriptURI;
 import static hu.blackbelt.judo.tatami.psm2asm.Psm2Asm.executePsm2AsmTransformation;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -51,10 +52,11 @@ public class Psm2AsmIllegalTest {
         // TODO: Check it is valid or not as metamodel?
         assertTrue(psmModel.isValid());
 
+        /*
         // TODO: Check semantic check is Okay?
         validatePsm(new Slf4jLog(log), psmModel,
                 UriUtil.resolve(".", PsmModel.class.getClassLoader().getResource("validations/psm.evl").toURI()));
-
+        */
         asmModel = AsmModel.buildAsmModel()
                 .name(NORTHWIND)
                 .build();
@@ -63,11 +65,12 @@ public class Psm2AsmIllegalTest {
     @Test
     public void testPsm2AsmTransformation() throws Exception {
         // Make transformation which returns the trace with the serialized URI's
-        Psm2AsmTransformationTrace psm2AsmTransformationTrace = executePsm2AsmTransformation(
+        /*Psm2AsmTransformationTrace psm2AsmTransformationTrace = */
+    	executePsm2AsmTransformation(
                 psmModel,
                 asmModel,
                 new Slf4jLog(log),
-                new File("src/main/epsilon/transformations/asm").toURI());
+                calculatePsm2AsmTransformationScriptURI());
 
         assertFalse(asmModel.isValid());
 

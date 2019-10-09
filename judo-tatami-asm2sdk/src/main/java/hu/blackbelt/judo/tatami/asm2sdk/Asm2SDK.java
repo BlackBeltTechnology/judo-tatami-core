@@ -11,19 +11,13 @@ import hu.blackbelt.judo.framework.compiler.api.CompilerUtil;
 import hu.blackbelt.judo.framework.compiler.api.FullyQualifiedName;
 import hu.blackbelt.judo.meta.asm.runtime.AsmModel;
 import hu.blackbelt.judo.meta.asm.runtime.AsmUtils;
-import lombok.extern.slf4j.Slf4j;
-import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.epsilon.common.util.UriUtil;
 import org.ops4j.pax.tinybundles.core.TinyBundle;
-import org.osgi.framework.Bundle;
-import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
-import org.osgi.framework.FrameworkUtil;
-import org.osgi.framework.wiring.BundleWiring;
-
 import javax.tools.JavaFileObject;
 import java.io.*;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Collections;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -35,8 +29,9 @@ import static hu.blackbelt.epsilon.runtime.execution.model.emf.WrappedEmfModelCo
 import static hu.blackbelt.judo.framework.compiler.api.CompilerContext.compilerContextBuilder;
 import static org.ops4j.pax.tinybundles.core.TinyBundles.bundle;
 
-@Slf4j
 public class Asm2SDK {
+
+    public static final String SCRIPT_ROOT_TATAMI_ASM_2_SDK = "tatami/asm2sdk/templates/";
 
     public static InputStream executeAsm2SDKGeneration(AsmModel asmModel, Log log,
                                                        URI scriptUri, File sourceCodeOutputDir) throws Exception {
@@ -94,18 +89,8 @@ public class Asm2SDK {
             return Collections.emptyList();
         }
 
-        // JaxRS classloader is used in OSGi
-        Bundle bundle = FrameworkUtil.getBundle(Asm2SDK.class); // FrameworkUtil.getBundle(Application.class);
-        ClassLoader classLoader = Asm2SDK.class.getClassLoader();
-        BundleContext bundleContext = null;
-        if (bundle != null) {
-            bundleContext = bundle.getBundleContext();
-            classLoader = bundle.adapt(BundleWiring.class).getClassLoader();
-        }
-
         Iterable<JavaFileObject> compiled = CompilerUtil.compile(compilerContextBuilder()
-                .classLoader(classLoader)
-                .bundleContext(bundleContext)
+                .sameClassLoaderAs(Asm2SDK.class)
                 .compilationFiles(fileNamesToFile(sourceDir, sourceCodeFiles))
                 .build());
         return compiled;
@@ -152,6 +137,18 @@ public class Asm2SDK {
                 )
                 .set("Service-Component", Joiner.on(",").join(scrXmlFiles));
         return bundle.build();
+    }
+
+    public static URI calculateAsm2SDKTemplateScriptURI() throws URISyntaxException {
+        URI psmRoot = Asm2SDK.class.getProtectionDomain().getCodeSource().getLocation().toURI();
+        if (psmRoot.toString().endsWith(".jar")) {
+            psmRoot = new URI("jar:" + psmRoot.toString() + "!/" + SCRIPT_ROOT_TATAMI_ASM_2_SDK);
+        } else if (psmRoot.toString().startsWith("jar:bundle:")) {
+            psmRoot = new URI(psmRoot.toString().substring(4, psmRoot.toString().indexOf("!")) + SCRIPT_ROOT_TATAMI_ASM_2_SDK);
+        } else {
+            psmRoot = new URI(psmRoot.toString() + "/" + SCRIPT_ROOT_TATAMI_ASM_2_SDK);
+        }
+        return psmRoot;
     }
 
 }

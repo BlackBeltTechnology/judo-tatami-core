@@ -12,6 +12,7 @@
 
 	<artifactId>judo-tatami-rdbms2liquibase</artifactId>
 	<packaging>bundle</packaging>
+	<name>Judo :: Tatami :: Rdbms2Liquibase</name>
 
 	<build>
 		<plugins>
@@ -28,12 +29,12 @@
 					<execution>
 						<id>copy-scripts</id>
 						<!-- here the phase you need -->
-						<phase>process-test-resources</phase>
+						<phase>process-resources</phase>
 						<goals>
 							<goal>copy-resources</goal>
 						</goals>
 						<configuration>
-							<outputDirectory>${basedir}/target/test-classes/epsilon</outputDirectory>
+							<outputDirectory>${basedir}/target/classes/tatami/rdbms2liquibase</outputDirectory>
 							<resources>
 								<resource>
 									<directory>src/main/epsilon</directory>
@@ -53,19 +54,18 @@
 					<obrRepository>NONE</obrRepository>
 					<instructions>
 						<Export-Package>
-							tatami/rdbms2liquibase;version=${project.version},
 							hu.blackbelt.judo.tatami.rdbms2liquibase.*;version=${project.version}
 						</Export-Package>
 						<Include-Resource>
 							{maven-resources},
-							tatami/rdbms2liquibase=src/main/epsilon,
-							tatami/rdbms2liquibase/model=model
+							tatami=target/classes/tatami
 						</Include-Resource>
 						<Import-Package>
                             ${osgi-default-import},
                             *
 						</Import-Package>
 						<Liquibase-Meta-Version-Range>${judo-meta-rdbms.import-range}</Liquibase-Meta-Version-Range>
+						<Rdbms2Liquibase-Transformation-ScriptRoot>tatami/rdbms2liquibase/transformations</Rdbms2Liquibase-Transformation-ScriptRoot>
 					</instructions>
 				</configuration>
 			</plugin>

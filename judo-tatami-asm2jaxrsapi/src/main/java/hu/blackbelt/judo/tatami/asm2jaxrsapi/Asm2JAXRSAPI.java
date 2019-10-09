@@ -11,20 +11,14 @@ import hu.blackbelt.judo.framework.compiler.api.CompilerUtil;
 import hu.blackbelt.judo.framework.compiler.api.FullyQualifiedName;
 import hu.blackbelt.judo.meta.asm.runtime.AsmModel;
 import hu.blackbelt.judo.meta.asm.runtime.AsmUtils;
-import lombok.extern.slf4j.Slf4j;
-import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.epsilon.common.util.UriUtil;
 import org.ops4j.pax.tinybundles.core.TinyBundle;
-import org.osgi.framework.Bundle;
-import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
-import org.osgi.framework.FrameworkUtil;
-import org.osgi.framework.wiring.BundleWiring;
-
 import javax.tools.JavaFileObject;
 import javax.ws.rs.core.Application;
 import java.io.*;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Collections;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -36,8 +30,9 @@ import static hu.blackbelt.epsilon.runtime.execution.model.emf.WrappedEmfModelCo
 import static hu.blackbelt.judo.framework.compiler.api.CompilerContext.compilerContextBuilder;
 import static org.ops4j.pax.tinybundles.core.TinyBundles.bundle;
 
-@Slf4j
 public class Asm2JAXRSAPI {
+
+    public static final String SCRIPT_ROOT_TATAMI_ASM_2_JAXRSAPI = "tatami/asm2jaxrsapi/templates/";
 
     public static InputStream executeAsm2JAXRSAPIGeneration(AsmModel asmModel, Log log,
                                                             URI scriptDir, File sourceCodeOutputDir) throws Exception {
@@ -95,18 +90,11 @@ public class Asm2JAXRSAPI {
             return Collections.emptyList();
         }
 
-        // JaxRS classloader is used in OSGi
-        Bundle bundle = FrameworkUtil.getBundle(Application.class);
-        ClassLoader classLoader = Asm2JAXRSAPI.class.getClassLoader();
-        BundleContext bundleContext = null;
-        if (bundle != null) {
-            bundleContext = bundle.getBundleContext();
-            classLoader = bundle.adapt(BundleWiring.class).getClassLoader();
-        }
+        // Force to import
+        Application.class.getName();
 
         Iterable<JavaFileObject> compiled = CompilerUtil.compile(compilerContextBuilder()
-                .classLoader(classLoader)
-                .bundleContext(bundleContext)
+                .sameClassLoaderAs(Asm2JAXRSAPI.class)
                 .compilationFiles(fileNamesToFile(sourceDir, sourceCodeFiles))
                 .build());
         return compiled;
@@ -167,4 +155,15 @@ public class Asm2JAXRSAPI {
         return bundle.build();
     }
 
+    public static URI calculateAsm2JaxrsapiTemplateScriptURI() throws URISyntaxException {
+        URI psmRoot = Asm2JAXRSAPI.class.getProtectionDomain().getCodeSource().getLocation().toURI();
+        if (psmRoot.toString().endsWith(".jar")) {
+            psmRoot = new URI("jar:" + psmRoot.toString() + "!/" + SCRIPT_ROOT_TATAMI_ASM_2_JAXRSAPI);
+        } else if (psmRoot.toString().startsWith("jar:bundle:")) {
+            psmRoot = new URI(psmRoot.toString().substring(4, psmRoot.toString().indexOf("!")) + SCRIPT_ROOT_TATAMI_ASM_2_JAXRSAPI);
+        } else {
+            psmRoot = new URI(psmRoot.toString() + "/" + SCRIPT_ROOT_TATAMI_ASM_2_JAXRSAPI);
+        }
+        return psmRoot;
+    }
 }

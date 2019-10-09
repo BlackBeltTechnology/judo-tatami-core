@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>hu.blackbelt.judo.tatami</groupId>
     <artifactId>judo-tatami-parent</artifactId>
@@ -36,13 +37,6 @@
         <osgi-default-import>
             org.osgi.framework;version="[1.8,2.0)",
             !lombok,
-            com.google.common.base;version="[14.0,30)",
-            com.google.common.cache;version="[14.0,30)",
-            com.google.common.collect;version="[14.0,30)",
-            com.google.common.io;version="[14.0,30)",
-            com.google.common.primitives;version="[14.0,30)",
-            com.google.common.hash;version="[14.0,30)",
-            com.google.common.util.concurrent;version="[14.0,30)",
             javax.annotation;version="[1.0,2)"
         </osgi-default-import>
 
@@ -65,7 +59,7 @@
         <emf-genmodel-generator-version>1.0.0.develop_00023</emf-genmodel-generator-version>
         <judo-genmodel-generator-version>1.0.0.develop_00017</judo-genmodel-generator-version>
 
-        <judo-framework-version>2.0.0_develop_130</judo-framework-version>
+        <judo-framework-version>2.0.0_develop_135</judo-framework-version>
 
         <judo-meta-rdbms-version>1.0.0.develop_00089</judo-meta-rdbms-version>
         <judo-meta-rdbms.import-range>[1.0,1.1)</judo-meta-rdbms.import-range>
@@ -73,25 +67,25 @@
         <judo-meta-esm-version>1.0.0.develop_00068</judo-meta-esm-version>
         <judo-meta-esm-import-range>[1.0,1.1)</judo-meta-esm-import-range>
 
-        <judo-meta-psm-version>1.0.0.develop_00325</judo-meta-psm-version>
+        <judo-meta-psm-version>1.0.0.develop_00387</judo-meta-psm-version>
         <judo-meta-psm-import-range>[1.0,1.1)</judo-meta-psm-import-range>
 
         <judo-meta-jql-version>1.0.0.develop_00046</judo-meta-jql-version>
         <judo-meta-jql-import-range>[1.0,1.1)</judo-meta-jql-import-range>
 
-        <judo-meta-asm-version>1.0.0-SNAPSHOT</judo-meta-asm-version>
+        <judo-meta-asm-version>1.0.0.feature_JNG_247_ReplaceBullseye_00001</judo-meta-asm-version>
         <judo-meta-asm-import-range>[1.0,1.1)</judo-meta-asm-import-range>
 
         <judo-meta-expression-version>1.0.0.develop_00273</judo-meta-expression-version>
         <judo-meta-expression-import-range>[1.0,1.1)</judo-meta-expression-import-range>
 
-        <judo-meta-measure-version>1.0.0.develop_00050</judo-meta-measure-version>
+        <judo-meta-measure-version>1.0.0.develop_00055</judo-meta-measure-version>
         <judo-meta-measure-import-range>[1.0,1.1)</judo-meta-measure-import-range>
 
         <judo-meta-liquibase-version>1.0.0.develop_00035</judo-meta-liquibase-version>
         <judo-meta-liquibase-import-range>[1.0,1.1)</judo-meta-liquibase-import-range>
 
-        <judo-meta-openapi-version>1.0.0.develop_00101</judo-meta-openapi-version>
+        <judo-meta-openapi-version>1.0.0.feature_JNG_247_ReplaceBullseye_00001</judo-meta-openapi-version>
         <judo-meta-openapi-import-range>[1.0,1.1)</judo-meta-openapi-import-range>
 
         <!-- Xtend / Xcore -->
@@ -123,7 +117,7 @@
         <apache-commons-karaf-features-version>1.0.5</apache-commons-karaf-features-version>
         <apache-poi-karaf-features-version>1.0.2</apache-poi-karaf-features-version>
         <apache-httpclient-karaf-features-version>1.0.1.develop_15</apache-httpclient-karaf-features-version>
-
+	<log4j.configuration>log4j.properties</log4j.configuration>
     </properties>
 
     <url>http://github.com/${project-repositoryId}</url>
@@ -186,7 +180,6 @@
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
             <version>20.0</version>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
@@ -386,6 +379,12 @@
 
             <dependency>
                 <groupId>hu.blackbelt.judo.tatami</groupId>
+                <artifactId>judo-tatami-workflow</artifactId>
+                <version>1.0.0-SNAPSHOT</version>
+            </dependency>
+
+            <dependency>
+                <groupId>hu.blackbelt.judo.tatami</groupId>
                 <artifactId>judo-tatami-asm2jaxrsapi</artifactId>
                 <version>1.0.0-SNAPSHOT</version>
             </dependency>
@@ -405,6 +404,20 @@
             <dependency>
                 <groupId>hu.blackbelt.judo.tatami</groupId>
                 <artifactId>judo-tatami-asm2rdbms</artifactId>
+                <version>1.0.0-SNAPSHOT</version>
+            </dependency>
+
+
+            <dependency>
+                <groupId>hu.blackbelt.judo.tatami</groupId>
+                <artifactId>judo-tatami-asm2sdk</artifactId>
+                <version>1.0.0-SNAPSHOT</version>
+            </dependency>
+
+
+            <dependency>
+                <groupId>hu.blackbelt.judo.tatami</groupId>
+                <artifactId>judo-tatami-asm2jaxrsapi</artifactId>
                 <version>1.0.0-SNAPSHOT</version>
             </dependency>
 
@@ -522,6 +535,9 @@
                     <configuration>
                         <argLine>-Dfile.encoding=UTF-8</argLine>
                         <trimStackTrace>false</trimStackTrace>
+                        <systemPropertyVariables>
+                            <log4j.configuration>${log4j.configuration}</log4j.configuration>
+                        </systemPropertyVariables>
                     </configuration>
                 </plugin>
 
@@ -614,9 +630,13 @@
                 <module>judo-tatami-asm2openapi</module>
                 <module>judo-tatami-asm2jaxrsapi</module>
                 <module>judo-tatami-asm2sdk</module>
+                <module>judo-tatami-workflow</module>
+                <module>judo-tatami-workflow-osgi</module>
                 <module>judo-tatami-itest</module>
                 <module>judo-tatami-karaf-features</module>
                 <module>judo-tatami-karaf-kar</module>
+		        <module>judo-tatami-workflow-maven-plugin</module>
+		        <module>judo-tatami-workflow-maven-plugin-test</module>
             </modules>
         </profile>
 

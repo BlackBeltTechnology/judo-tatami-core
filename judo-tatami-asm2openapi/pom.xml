@@ -12,6 +12,7 @@
 
 	<artifactId>judo-tatami-asm2openapi</artifactId>
 	<packaging>bundle</packaging>
+	<name>Judo :: Tatami :: Asm2OpenApi</name>
 
 	<build>
 		<plugins>
@@ -27,12 +28,12 @@
 					<execution>
 						<id>copy-scripts</id>
 						<!-- here the phase you need -->
-						<phase>process-test-resources</phase>
+						<phase>process-resources</phase>
 						<goals>
 							<goal>copy-resources</goal>
 						</goals>
 						<configuration>
-							<outputDirectory>${basedir}/target/test-classes/epsilon</outputDirectory>
+							<outputDirectory>${basedir}/target/classes/tatami/asm2openapi</outputDirectory>
 							<resources>
 								<resource>
 									<directory>src/main/epsilon</directory>
@@ -52,18 +53,18 @@
 					<obrRepository>NONE</obrRepository>
 					<instructions>
 						<Export-Package>
-							tatami/asm2openapi;version=${project.version},
 							hu.blackbelt.judo.tatami.asm2openapi.*;version=${project.version}
 						</Export-Package>
 						<Include-Resource>
 							{maven-resources},
-							tatami/asm2openapi=src/main/epsilon
+							tatami=target/classes/tatami
 						</Include-Resource>
 						<Import-Package>
                             ${osgi-default-import},
                             *
 						</Import-Package>
 						<OpenAPI-Meta-Version-Range>${judo-meta-openapi-import-range}</OpenAPI-Meta-Version-Range>
+						<Asm2Openapi-Transformation-ScriptRoot>tatami/asm2openapi/transformations/openapi</Asm2Openapi-Transformation-ScriptRoot>
 					</instructions>
 				</configuration>
 			</plugin>

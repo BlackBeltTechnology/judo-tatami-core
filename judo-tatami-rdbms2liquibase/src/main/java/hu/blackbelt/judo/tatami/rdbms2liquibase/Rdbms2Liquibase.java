@@ -5,18 +5,18 @@ import hu.blackbelt.epsilon.runtime.execution.ExecutionContext;
 import hu.blackbelt.epsilon.runtime.execution.api.Log;
 import hu.blackbelt.epsilon.runtime.execution.contexts.ProgramParameter;
 import hu.blackbelt.judo.meta.rdbms.runtime.RdbmsModel;
-import org.eclipse.emf.ecore.resource.Resource;
-import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.epsilon.common.util.UriUtil;
 
-import java.io.File;
 import java.net.URI;
+import java.net.URISyntaxException;
 
 import static hu.blackbelt.epsilon.runtime.execution.ExecutionContext.executionContextBuilder;
 import static hu.blackbelt.epsilon.runtime.execution.contexts.EtlExecutionContext.etlExecutionContextBuilder;
 import static hu.blackbelt.epsilon.runtime.execution.model.emf.WrappedEmfModelContext.wrappedEmfModelContextBuilder;
 
 public class Rdbms2Liquibase {
+
+    public static final String SCRIPT_ROOT_TATAMI_RDBMS_2_LIQUIBASE = "tatami/rdbms2liquibase/transformations/";
 
     public static void executeRdbms2LiquibaseTransformation(RdbmsModel rdbmsModel, hu.blackbelt.judo.meta.liquibase.runtime.LiquibaseModel liquibaseModel, Log log,
                                                             URI scriptUri, String dialect) throws Exception {
@@ -53,4 +53,17 @@ public class Rdbms2Liquibase {
         executionContext.commit();
         executionContext.close();
     }
+
+    public static URI calculateRdbms2LiquibaseTransformationScriptURI() throws URISyntaxException {
+        URI psmRoot = Rdbms2Liquibase.class.getProtectionDomain().getCodeSource().getLocation().toURI();
+        if (psmRoot.toString().endsWith(".jar")) {
+            psmRoot = new URI("jar:" + psmRoot.toString() + "!/" + SCRIPT_ROOT_TATAMI_RDBMS_2_LIQUIBASE);
+        } else if (psmRoot.toString().startsWith("jar:bundle:")) {
+            psmRoot = new URI(psmRoot.toString().substring(4, psmRoot.toString().indexOf("!")) + SCRIPT_ROOT_TATAMI_RDBMS_2_LIQUIBASE);
+        } else {
+            psmRoot = new URI(psmRoot.toString() + "/" + SCRIPT_ROOT_TATAMI_RDBMS_2_LIQUIBASE);
+        }
+        return psmRoot;
+    }
+
 }

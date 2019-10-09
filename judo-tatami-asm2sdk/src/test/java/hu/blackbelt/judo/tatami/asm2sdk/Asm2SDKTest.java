@@ -15,6 +15,7 @@ import java.io.OutputStream;
 
 import static hu.blackbelt.judo.meta.asm.runtime.AsmModel.LoadArguments.asmLoadArgumentsBuilder;
 import static hu.blackbelt.judo.meta.asm.runtime.AsmModel.loadAsmModel;
+import static hu.blackbelt.judo.tatami.asm2sdk.Asm2SDK.calculateAsm2SDKTemplateScriptURI;
 import static hu.blackbelt.judo.tatami.asm2sdk.Asm2SDK.executeAsm2SDKGeneration;
 
 @Slf4j
@@ -23,7 +24,6 @@ public class Asm2SDKTest {
     public static final String NORTHWIND = "northwind";
     public static final String TARGET_TEST_CLASSES = "target/test-classes";
     public static final String NORTHWIND_ASM_MODEL = "northwind-asm.model";
-    public static final String EPSILON_TEMPLATES = "epsilon/templates";
     public static final String GENERATED_JAVA = "generated/java";
 
     Log slf4jlog;
@@ -47,7 +47,7 @@ public class Asm2SDKTest {
                      new FileOutputStream(new File(TARGET_TEST_CLASSES, NORTHWIND + "-sdk.jar"))) {
             ByteStreams.copy(
                     executeAsm2SDKGeneration(asmModel, new Slf4jLog(log),
-                            new File(TARGET_TEST_CLASSES, EPSILON_TEMPLATES).toURI(),
+                            calculateAsm2SDKTemplateScriptURI(),
                             new File(TARGET_TEST_CLASSES, GENERATED_JAVA)),
                     outputStream
             );

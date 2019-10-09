@@ -12,6 +12,7 @@
 
 	<artifactId>judo-tatami-asm2sdk</artifactId>
 	<packaging>bundle</packaging>
+	<name>Judo :: Tatami :: Asm2SDK</name>
 
 	<build>
 		<plugins>
@@ -27,12 +28,12 @@
 					<execution>
 						<id>copy-scripts</id>
 						<!-- here the phase you need -->
-						<phase>process-test-resources</phase>
+						<phase>process-resources</phase>
 						<goals>
 							<goal>copy-resources</goal>
 						</goals>
 						<configuration>
-							<outputDirectory>${basedir}/target/test-classes/epsilon</outputDirectory>
+							<outputDirectory>${basedir}/target/classes/tatami/asm2sdk</outputDirectory>
 							<resources>
 								<resource>
 									<directory>src/main/epsilon</directory>
@@ -57,12 +58,13 @@
 						</Export-Package>
 						<Include-Resource>
 							{maven-resources},
-							tatami/asm2sdk=src/main/epsilon
+							tatami=target/classes/tatami
 						</Include-Resource>
 						<Import-Package>
                             ${osgi-default-import},
                             *
 						</Import-Package>
+						<Asm2SDK-Transformation-ScriptRoot>tatami/asm2sdk/templates</Asm2SDK-Transformation-ScriptRoot>
 					</instructions>
 				</configuration>
 			</plugin>

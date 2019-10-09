@@ -5,33 +5,28 @@ import com.google.common.collect.ImmutableMap;
 import hu.blackbelt.epsilon.runtime.execution.ExecutionContext;
 import hu.blackbelt.epsilon.runtime.execution.api.Log;
 import hu.blackbelt.epsilon.runtime.execution.contexts.EtlExecutionContext;
-import hu.blackbelt.epsilon.runtime.execution.exceptions.ScriptExecutionException;
 import hu.blackbelt.judo.meta.asm.runtime.AsmModel;
 import hu.blackbelt.judo.meta.asm.runtime.AsmUtils;
 import hu.blackbelt.judo.meta.psm.PsmUtils;
 import hu.blackbelt.judo.meta.psm.runtime.PsmModel;
 import hu.blackbelt.judo.tatami.core.TransformationTraceUtil;
 import org.eclipse.emf.ecore.EObject;
-import org.eclipse.emf.ecore.resource.Resource;
-import org.eclipse.emf.ecore.resource.ResourceSet;
-import org.eclipse.emf.ecore.resource.URIHandler;
 import org.eclipse.epsilon.common.util.UriUtil;
 
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.List;
-import java.util.Map;
-
 import static hu.blackbelt.epsilon.runtime.execution.ExecutionContext.executionContextBuilder;
 import static hu.blackbelt.epsilon.runtime.execution.contexts.EtlExecutionContext.etlExecutionContextBuilder;
 import static hu.blackbelt.epsilon.runtime.execution.contexts.ProgramParameter.programParameterBuilder;
 import static hu.blackbelt.epsilon.runtime.execution.model.emf.WrappedEmfModelContext.wrappedEmfModelContextBuilder;
 import static hu.blackbelt.judo.tatami.core.TransformationTraceUtil.*;
 import static hu.blackbelt.judo.tatami.psm2asm.Psm2AsmTransformationTrace.resolvePsm2AsmTrace;
-import static org.eclipse.emf.common.util.URI.createURI;
 
 public class Psm2Asm {
 
     public static final String HTTP_BLACKBELT_HU_JUDO_META_EXTENDED_METADATA = "http://blackbelt.hu/judo/meta/ExtendedMetadata";
+    public static final String SCRIPT_ROOT_TATAMI_PSM_2_ASM = "tatami/psm2asm/transformations/asm/";
 
     /**
      * Execute PSM to ASM model transformation,
@@ -88,6 +83,18 @@ public class Psm2Asm {
                 .asmModel(asmModel)
                 .psmModel(psmModel)
                 .trace(resolvePsm2AsmTrace(traceModel, psmModel, asmModel)).build();
+    }
+
+    public static URI calculatePsm2AsmTransformationScriptURI() throws URISyntaxException {
+        URI psmRoot = Psm2Asm.class.getProtectionDomain().getCodeSource().getLocation().toURI();
+        if (psmRoot.toString().endsWith(".jar")) {
+            psmRoot = new URI("jar:" + psmRoot.toString() + "!/" + SCRIPT_ROOT_TATAMI_PSM_2_ASM);
+        } else if (psmRoot.toString().startsWith("jar:bundle:")) {
+            psmRoot = new URI(psmRoot.toString().substring(4, psmRoot.toString().indexOf("!")) + SCRIPT_ROOT_TATAMI_PSM_2_ASM);
+        } else {
+            psmRoot = new URI(psmRoot.toString() + "/" + SCRIPT_ROOT_TATAMI_PSM_2_ASM);
+        }
+        return psmRoot;
     }
 
 }

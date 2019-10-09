@@ -5,19 +5,15 @@ import com.google.common.collect.ImmutableMap;
 import hu.blackbelt.epsilon.runtime.execution.ExecutionContext;
 import hu.blackbelt.epsilon.runtime.execution.api.Log;
 import hu.blackbelt.epsilon.runtime.execution.contexts.EtlExecutionContext;
-import hu.blackbelt.epsilon.runtime.execution.exceptions.ScriptExecutionException;
 import hu.blackbelt.judo.meta.asm.runtime.AsmModel;
 import hu.blackbelt.judo.meta.asm.runtime.AsmUtils;
 import hu.blackbelt.judo.meta.openapi.runtime.OpenapiModel;
 import org.eclipse.emf.ecore.EObject;
-import org.eclipse.emf.ecore.resource.Resource;
-import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.epsilon.common.util.UriUtil;
 
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.List;
-import java.util.Map;
-
 import static hu.blackbelt.epsilon.runtime.execution.ExecutionContext.executionContextBuilder;
 import static hu.blackbelt.epsilon.runtime.execution.contexts.EtlExecutionContext.etlExecutionContextBuilder;
 import static hu.blackbelt.epsilon.runtime.execution.contexts.ProgramParameter.programParameterBuilder;
@@ -27,6 +23,8 @@ import static hu.blackbelt.judo.tatami.asm2openapi.Asm2OpenAPITransformationTrac
 import static hu.blackbelt.judo.tatami.core.TransformationTraceUtil.*;
 
 public class Asm2OpenAPI {
+
+    public static final String SCRIPT_ROOT_TATAMI_ASM_2_OPENAPI = "tatami/asm2openapi/transformations/openapi/";
 
     public static Asm2OpenAPITransformationTrace executeAsm2OpenAPITransformation(AsmModel asmModel, OpenapiModel openAPIModel, Log log,
                                                                                   URI scriptDir) throws Exception {
@@ -74,6 +72,18 @@ public class Asm2OpenAPI {
                 .asmModel(asmModel)
                 .openAPIModel(openAPIModel)
                 .trace(resolveAsm2OpenAPITrace(traceModel, asmModel, openAPIModel)).build();
+    }
+
+    public static URI calculateAsm2OpenapiTransformationScriptURI() throws URISyntaxException {
+        URI psmRoot = Asm2OpenAPI.class.getProtectionDomain().getCodeSource().getLocation().toURI();
+        if (psmRoot.toString().endsWith(".jar")) {
+            psmRoot = new URI("jar:" + psmRoot.toString() + "!/" + SCRIPT_ROOT_TATAMI_ASM_2_OPENAPI);
+        } else if (psmRoot.toString().startsWith("jar:bundle:")) {
+            psmRoot = new URI(psmRoot.toString().substring(4, psmRoot.toString().indexOf("!")) + SCRIPT_ROOT_TATAMI_ASM_2_OPENAPI);
+        } else {
+            psmRoot = new URI(psmRoot.toString() + "/" + SCRIPT_ROOT_TATAMI_ASM_2_OPENAPI);
+        }
+        return psmRoot;
     }
 
 }

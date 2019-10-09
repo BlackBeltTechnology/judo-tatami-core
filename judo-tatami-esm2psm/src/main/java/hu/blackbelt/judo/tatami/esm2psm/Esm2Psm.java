@@ -5,20 +5,16 @@ import com.google.common.collect.ImmutableMap;
 import hu.blackbelt.epsilon.runtime.execution.ExecutionContext;
 import hu.blackbelt.epsilon.runtime.execution.api.Log;
 import hu.blackbelt.epsilon.runtime.execution.contexts.EtlExecutionContext;
-import hu.blackbelt.epsilon.runtime.execution.exceptions.ScriptExecutionException;
 import hu.blackbelt.judo.meta.esm.runtime.EsmModel;
 import hu.blackbelt.judo.meta.esm.runtime.EsmUtils;
 import hu.blackbelt.judo.meta.psm.runtime.PsmModel;
 import hu.blackbelt.judo.tatami.core.TransformationTraceUtil;
 import org.eclipse.emf.ecore.EObject;
-import org.eclipse.emf.ecore.resource.Resource;
-import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.epsilon.common.util.UriUtil;
 
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.List;
-import java.util.Map;
-
 import static hu.blackbelt.epsilon.runtime.execution.ExecutionContext.executionContextBuilder;
 import static hu.blackbelt.epsilon.runtime.execution.contexts.EtlExecutionContext.etlExecutionContextBuilder;
 import static hu.blackbelt.epsilon.runtime.execution.model.emf.WrappedEmfModelContext.wrappedEmfModelContextBuilder;
@@ -27,6 +23,8 @@ import static hu.blackbelt.judo.tatami.esm2psm.Esm2PsmTransformationTrace.ESM_2_
 import static hu.blackbelt.judo.tatami.esm2psm.Esm2PsmTransformationTrace.resolveEsm2PsmTrace;
 
 public class Esm2Psm {
+
+    public static final String SCRIPT_ROOT_TATAMI_ESM_2_PSM = "tatami/esm2psm/transformations/psm/";
 
     /**
      * Execute ESM to PSM model transformation,
@@ -79,4 +77,17 @@ public class Esm2Psm {
                 .psmModel(psmModel)
                 .trace(resolveEsm2PsmTrace(traceModel, esmModel, psmModel)).build();
     }
+
+    public static URI calculateEsm2PsmTransformationScriptURI() throws URISyntaxException {
+        URI psmRoot = Esm2Psm.class.getProtectionDomain().getCodeSource().getLocation().toURI();
+        if (psmRoot.toString().endsWith(".jar")) {
+            psmRoot = new URI("jar:" + psmRoot.toString() + "!/" + SCRIPT_ROOT_TATAMI_ESM_2_PSM);
+        } else if (psmRoot.toString().startsWith("jar:bundle:")) {
+            psmRoot = new URI(psmRoot.toString().substring(4, psmRoot.toString().indexOf("!")) + SCRIPT_ROOT_TATAMI_ESM_2_PSM);
+        } else {
+            psmRoot = new URI(psmRoot.toString() + "/" + SCRIPT_ROOT_TATAMI_ESM_2_PSM);
+        }
+        return psmRoot;
+    }
+
 }

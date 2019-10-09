@@ -7,7 +7,6 @@ import hu.blackbelt.judo.meta.psm.runtime.PsmModel;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.epsilon.common.util.UriUtil;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -18,6 +17,7 @@ import java.util.Map;
 
 import static hu.blackbelt.judo.meta.asm.runtime.AsmModel.SaveArguments.asmSaveArgumentsBuilder;
 import static hu.blackbelt.judo.meta.asm.runtime.AsmModel.buildAsmModel;
+import static hu.blackbelt.judo.meta.psm.PsmEpsilonValidator.calculatePsmValidationScriptURI;
 import static hu.blackbelt.judo.meta.psm.PsmEpsilonValidator.validatePsm;
 import static hu.blackbelt.judo.meta.psm.runtime.PsmModel.LoadArguments.psmLoadArgumentsBuilder;
 import static hu.blackbelt.judo.meta.psm.runtime.PsmModel.loadPsmModel;
@@ -56,8 +56,7 @@ public class Psm2AsmTest {
         assertTrue(psmModel.isValid());
 
         validatePsm(new Slf4jLog(log), psmModel,
-                UriUtil.resolve(".",
-                        PsmModel.class.getClassLoader().getResource("validations/psm.evl").toURI()));
+                calculatePsmValidationScriptURI());
 
         // Create empty ASM model
         asmModel = buildAsmModel()
@@ -74,7 +73,7 @@ public class Psm2AsmTest {
                 psmModel,
                 asmModel,
                 new Slf4jLog(log),
-                new File("src/main/epsilon/transformations/asm").toURI());
+                calculatePsm2AsmTransformationScriptURI());
 
         psm2AsmTransformationTrace.save(new File(TARGET_TEST_CLASSES, NORTHWIND_PSM_2_ASM_MODEL));
 

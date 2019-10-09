@@ -29,7 +29,6 @@ public class Asm2RdbmsTest {
     public static final String NORTHWIND_RDBMS_MODEL = "northwind-rdbms.model";
     public static final String NORTHWIND_ASM_2_RDBMS_MODEL = "northwind-asm2rdbms.model";
     public static final String TARGET_TEST_CLASSES = "target/test-classes";
-    public static final String MODEL_DIRECTORY = "model";
 
     Log slf4jlog;
     AsmModel asmModel;
@@ -62,8 +61,8 @@ public class Asm2RdbmsTest {
 
         Asm2RdbmsTransformationTrace asm2RdbmsTransformationTrace =
                 executeAsm2RdbmsTransformation(asmModel, rdbmsModel, new Slf4jLog(log),
-                        new File(TARGET_TEST_CLASSES, "epsilon/transformations").toURI(),
-                        new File(MODEL_DIRECTORY).toURI(),
+                        calculateAsm2RdbmsTransformationScriptURI(),
+                        calculateAsm2RdbmsModelURI(),
                         "hsqldb");
 
         // Saving trace map

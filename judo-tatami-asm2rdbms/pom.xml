@@ -12,6 +12,7 @@
 
 	<artifactId>judo-tatami-asm2rdbms</artifactId>
 	<packaging>bundle</packaging>
+	<name>Judo :: Tatami :: Asm2Rdbms</name>
 
 	<build>
 		<plugins>
@@ -26,13 +27,12 @@
 				<executions>
 					<execution>
 						<id>copy-scripts</id>
-						<!-- here the phase you need -->
-						<phase>process-test-resources</phase>
+						<phase>process-resources</phase>
 						<goals>
 							<goal>copy-resources</goal>
 						</goals>
 						<configuration>
-							<outputDirectory>${basedir}/target/test-classes/epsilon</outputDirectory>
+							<outputDirectory>${basedir}/target/classes/tatami/asm2rdbms</outputDirectory>
 							<resources>
 								<resource>
 									<directory>src/main/epsilon</directory>
@@ -41,6 +41,24 @@
 							</resources>
 						</configuration>
 					</execution>
+
+					<execution>
+						<id>copy-models</id>
+						<phase>process-resources</phase>
+						<goals>
+							<goal>copy-resources</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>${basedir}/target/classes/tatami/asm2rdbms/model</outputDirectory>
+							<resources>
+								<resource>
+									<directory>model</directory>
+									<filtering>false</filtering>
+								</resource>
+							</resources>
+						</configuration>
+					</execution>
+
 				</executions>
 			</plugin>
 
@@ -57,14 +75,15 @@
 						</Export-Package>
 						<Include-Resource>
 							{maven-resources},
-							tatami/asm2rdbms=src/main/epsilon,
-							tatami/asm2rdbms/model=model
+							tatami=target/classes/tatami
 						</Include-Resource>
 						<Import-Package>
                             ${osgi-default-import},
                             *
 						</Import-Package>
 						<Rdbms-Meta-Version-Range>${judo-meta-rdbms.import-range}</Rdbms-Meta-Version-Range>
+						<Asm2Rdbms-Transformation-ModelRoot>tatami/asm2rdbms/model</Asm2Rdbms-Transformation-ModelRoot>
+						<Asm2Rdbms-Transformation-ScriptRoot>tatami/asm2rdbms/transformations</Asm2Rdbms-Transformation-ScriptRoot>
 					</instructions>
 				</configuration>
 			</plugin>
