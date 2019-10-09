@@ -79,7 +79,7 @@
         <judo-meta-expression-version>1.0.0.develop_00273</judo-meta-expression-version>
         <judo-meta-expression-import-range>[1.0,1.1)</judo-meta-expression-import-range>
 
-        <judo-meta-measure-version>1.0.0.develop_00050</judo-meta-measure-version>
+        <judo-meta-measure-version>1.0.0.develop_00055</judo-meta-measure-version>
         <judo-meta-measure-import-range>[1.0,1.1)</judo-meta-measure-import-range>
 
         <judo-meta-liquibase-version>1.0.0.develop_00035</judo-meta-liquibase-version>
