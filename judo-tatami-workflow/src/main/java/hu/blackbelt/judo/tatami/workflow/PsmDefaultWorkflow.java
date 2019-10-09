@@ -82,8 +82,8 @@ public class PsmDefaultWorkflow {
 		// ------------------ //
 		List<AbstractTransformationWork> psmWorks = Lists.newArrayList();
 		List<AbstractTransformationWork> asmWorks = Lists.newArrayList();
-		List<Rdbms2LiquibaseWork> rdbms2LiquibaseWorks = new ArrayList<>();
-		List<Asm2RdbmsWork> asm2RdbmsWorks = new ArrayList<>();
+		List<AbstractTransformationWork> rdbmsWorks = new ArrayList<>();
+		List<AbstractTransformationWork> asm2RdbmsWorks = new ArrayList<>();
 
 
 		if (parameters.getIgnorePsm2Asm() && parameters.getIgnorePsm2Measure()) {
@@ -110,7 +110,7 @@ public class PsmDefaultWorkflow {
 
 				if (!parameters.getIgnoreRdbms2Liquibase()) {
 					parameters.getDialectList()
-							.forEach(dialect -> rdbms2LiquibaseWorks.add(new Rdbms2LiquibaseWork(transformationContext,
+							.forEach(dialect -> rdbmsWorks.add(new Rdbms2LiquibaseWork(transformationContext,
 									parameters.getRdbms2LiquibaseModelTransformationScriptURI(), dialect)));
 				}
 			}
@@ -132,17 +132,22 @@ public class PsmDefaultWorkflow {
 		}
 
 		WorkFlow workflow = aNewConditionalFlow()
+				.named("Conditional when all PSM Transformations COMPLETED Run All ASM Transformations")
 				.execute(aNewSequentialFlow()
+						.named("PSM Transformations")
 						.execute(psmWorks.toArray(new AbstractTransformationWork[psmWorks.size()]))
 						.build())
 				.when(WorkReportPredicate.COMPLETED)
 				.then(aNewConditionalFlow()
+						.named("Conditional when all ASM Transformations COMPLETED Run All RDBMS Transformations")
 						.execute(aNewSequentialFlow()
+								.named("Sequential ASM Transformations")
 								.execute(asmWorks.toArray(new AbstractTransformationWork[asmWorks.size()]))
 								.build())
 						.when(WorkReportPredicate.COMPLETED)
 						.then(aNewSequentialFlow()
-								.execute(rdbms2LiquibaseWorks.toArray(new AbstractTransformationWork[rdbms2LiquibaseWorks.size()]))
+								.named("Sequential RDBMS Transformations")
+								.execute(rdbmsWorks.toArray(new AbstractTransformationWork[rdbmsWorks.size()]))
 								.build())
 						.build())
 				.build();
