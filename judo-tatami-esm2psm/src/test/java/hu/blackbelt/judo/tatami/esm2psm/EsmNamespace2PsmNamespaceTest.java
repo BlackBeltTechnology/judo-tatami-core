@@ -3,6 +3,7 @@ package hu.blackbelt.judo.tatami.esm2psm;
 import hu.blackbelt.epsilon.runtime.execution.api.Log;
 import hu.blackbelt.epsilon.runtime.execution.impl.Slf4jLog;
 import hu.blackbelt.judo.meta.esm.namespace.Model;
+import hu.blackbelt.judo.meta.esm.namespace.Package;
 import hu.blackbelt.judo.meta.esm.runtime.EsmModel;
 import hu.blackbelt.judo.meta.psm.runtime.PsmModel;
 import lombok.extern.slf4j.Slf4j;
@@ -22,6 +23,7 @@ import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 import static hu.blackbelt.judo.meta.esm.namespace.util.builder.NamespaceBuilders.newModelBuilder;
+import static hu.blackbelt.judo.meta.esm.namespace.util.builder.NamespaceBuilders.newPackageBuilder;
 import static hu.blackbelt.judo.meta.esm.runtime.EsmModel.buildEsmModel;
 import static hu.blackbelt.judo.meta.psm.runtime.PsmModel.SaveArguments.psmSaveArgumentsBuilder;
 import static hu.blackbelt.judo.meta.psm.runtime.PsmModel.buildPsmModel;
@@ -113,6 +115,28 @@ public class EsmNamespace2PsmNamespaceTest {
 
         assertTrue(psmModel.isPresent());
         assertThat(psmModel.get().getName(), IsEqual.equalTo(model.getName()));
+    }
+    
+    @Test
+    void testCreatePackage() throws Exception {
+        testName = "CreateModel";
+        
+        Package p1 = newPackageBuilder().withName("package1").build();
+
+        final Model model = newModelBuilder()
+                .withName("TestModel")
+                .withElements(p1)
+                .build();
+
+        esmModel.addContent(model);
+        transform();
+
+        final Optional<hu.blackbelt.judo.meta.psm.namespace.Package> psmPackage = allPsm(hu.blackbelt.judo.meta.psm.namespace.Package.class)
+                .findAny();
+        
+        assertTrue(psmPackage.isPresent());
+        assertThat(psmPackage.get().getName(), IsEqual.equalTo(p1.getName()));
+        assertThat(psmPackage.get().getNamespace().getName(), IsEqual.equalTo(model.getName()));
     }
 
     static <T> Stream<T> asStream(Iterator<T> sourceIterator, boolean parallel) {

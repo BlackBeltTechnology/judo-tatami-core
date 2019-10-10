@@ -1,5 +1,5 @@
-import "modules/namespace.etl";
-import "modules/type/type.etl";
+import "modules/namespace/namespace.etl";
+// import "modules/type/type.etl";
 // import "modules/derived/primitiveAccessor.etl";
 // import "modules/derived/referenceAccessor.etl";
 // import "modules/data/referenceTypedElement.etl";
