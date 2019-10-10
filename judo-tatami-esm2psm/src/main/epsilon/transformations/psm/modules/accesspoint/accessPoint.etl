@@ -1,4 +1,4 @@
-import "../namespace.etl";
+import "../namespace/namespace.etl";
 import "../../../../operations/esm/accesspoint/accessPoint.eol";
 
 rule CreateAccessPoint
