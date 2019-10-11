@@ -72,7 +72,7 @@ public class EsmNamespace2PsmNamespaceTest {
         // Saving trace map
         esm2PsmTransformationTrace.save(new File(TARGET_TEST_CLASSES, traceFileName));
 
-        // Loadeing trace map
+        // Loading trace map
         Esm2PsmTransformationTrace esm2PsmTransformationTraceLoaded = Esm2PsmTransformationTrace.fromModelsAndTrace(
                 TEST, esmModel, psmModel, new File(TARGET_TEST_CLASSES, traceFileName));
 
