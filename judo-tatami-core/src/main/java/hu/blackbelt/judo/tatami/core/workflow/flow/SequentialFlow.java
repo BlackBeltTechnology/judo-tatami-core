@@ -1,14 +1,19 @@
 package hu.blackbelt.judo.tatami.core.workflow.flow;
 
+import hu.blackbelt.judo.tatami.core.workflow.work.DefaultWorkReport;
 import hu.blackbelt.judo.tatami.core.workflow.work.Work;
 import hu.blackbelt.judo.tatami.core.workflow.work.WorkReport;
 import hu.blackbelt.judo.tatami.core.workflow.work.WorkReportPredicate;
+import hu.blackbelt.judo.tatami.core.workflow.work.WorkStatus;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 
 /**
@@ -17,6 +22,7 @@ import java.util.logging.Logger;
  * If a work fails, next works in the pipeline will be skipped.
  *
  */
+@Slf4j
 public class SequentialFlow extends AbstractWorkFlow {
 
     private static final Logger LOGGER = Logger.getLogger(SequentialFlow.class.getName());
@@ -33,13 +39,21 @@ public class SequentialFlow extends AbstractWorkFlow {
      */
     public WorkReport call() {
         WorkReport workReport = null;
+
+        log.info("Call work '{}' - Call work:  '{}' ", new String[] {getName(),
+                works.stream().map(w -> w.getName()).collect(Collectors.joining(", "))});
+
+        if (works.size() == 0) {
+            return new DefaultWorkReport(WorkStatus.COMPLETED);
+        }
         for (Work work : works) {
             workReport = work.call();
-            if (workReport != null && WorkReportPredicate.FAILED.equals(workReport.getStatus())) {
-                LOGGER.log(Level.INFO, "Work ''{0}'' has failed, skipping subsequent works", work.getName());
+            if (workReport != null && WorkReportPredicate.FAILED.apply(workReport)) {
+                log.warn("Work '{}' has failed, skipping subsequent works", work.getName());
                 break;
             }
         }
+        log.info("Work {} Returns: {} ", getName(), workReport);
         return workReport;
     }
 
@@ -64,6 +78,11 @@ public class SequentialFlow extends AbstractWorkFlow {
 
         public SequentialFlow.Builder execute(Work work) {
             this.works.add(work);
+            return this;
+        }
+        
+        public SequentialFlow.Builder execute(Work... works) {
+            this.works.addAll(Arrays.asList(works));
             return this;
         }
 

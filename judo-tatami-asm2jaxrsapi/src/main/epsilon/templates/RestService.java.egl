@@ -17,6 +17,8 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
 import hu.blackbelt.judo.tatami.core.Dispatcher;
+[% if(boundService) { %]import javax.ws.rs.HeaderParam;
+[% } %]
 
 @Path("[%= restPath %]")
 public class [%= className %] {
@@ -41,14 +43,14 @@ public class [%= className %] {
 	@Consumes ( "application/json" )
 	[% } %]
 	@Path("/[% if (fullyQualifiedOperation) { %][%= op.getFullOperationPath() %][% } else { %][%= op.name %][% } %]")
-    public Response [% if (fullyQualifiedOperation) { %][%= op.getFullOperationMethodName() %][% } else { %][%= op.name %][% } %]([% for (p in op.eParameters) { %][%= p.eType.getDtoTypeName() %] [%= p.name.firstToLowerCase().safeName() %][% if (hasMore) { %], [% } %][% } %]) {
+    public Response [% if (fullyQualifiedOperation) { %][%= op.getFullOperationMethodName() %][% } else { %][%= op.name %][% } %]([% if(boundService) { %]@HeaderParam("__identifier") java.util.UUID __identifier[% if(not op.eParameters.isEmpty()) { %], [% } %][% } %] [% for (p in op.eParameters) { if (p.many) { %]Collection<[%= p.eType.getDtoTypeName() %]>[% } else { %][%= p.eType.getDtoTypeName() %][% } %] [%= p.name.firstToLowerCase().safeName() %][% if (hasMore) { %], [% } %][% } %]) {
 		if (!__dispatcher.isPresent()) {
         	return Response.status(Response.Status.SERVICE_UNAVAILABLE).build();
     	}
 		Map<String, Object> parameters = new HashMap();
+		[% if(boundService) { %] parameters.put("__identifier", __identifier); [% } %]
         [% for (p in op.eParameters) { %]
-        parameters.put("[%= p.name %]", [%= p.name.firstToLowerCase().safeName() %]);
-        [% } %]
+		parameters.put("[%= p.name %]", [%= p.name.firstToLowerCase().safeName() %][% if (p.many) { %].stream().map(e -> e[% } %].toMap()[% if (p.many) { %])[% } %]);[% } %]
 
         [% if (op.eType.isUndefined()) {%]
         __dispatcher.get().callOperation("simple", "[%= asmUtils.getOperationFQName(op) %]", parameters);

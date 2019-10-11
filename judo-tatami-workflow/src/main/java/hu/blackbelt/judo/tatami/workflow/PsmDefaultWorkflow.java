@@ -7,7 +7,7 @@ import static hu.blackbelt.judo.tatami.asm2sdk.Asm2SDKWork.SDK_OUTPUT;
 import static hu.blackbelt.judo.tatami.core.ThrowingSupplier.sneakyThrows;
 import static hu.blackbelt.judo.tatami.core.workflow.engine.WorkFlowEngineBuilder.aNewWorkFlowEngine;
 import static hu.blackbelt.judo.tatami.core.workflow.flow.ConditionalFlow.Builder.aNewConditionalFlow;
-import static hu.blackbelt.judo.tatami.core.workflow.flow.ParallelFlow.Builder.aNewParallelFlow;
+import static hu.blackbelt.judo.tatami.core.workflow.flow.SequentialFlow.Builder.aNewSequentialFlow;
 import static java.util.Optional.of;
 import static java.util.Optional.ofNullable;
 
@@ -82,8 +82,8 @@ public class PsmDefaultWorkflow {
 		// ------------------ //
 		List<AbstractTransformationWork> psmWorks = Lists.newArrayList();
 		List<AbstractTransformationWork> asmWorks = Lists.newArrayList();
-		List<Rdbms2LiquibaseWork> rdbms2LiquibaseWorks = new ArrayList<>();
-		List<Asm2RdbmsWork> asm2RdbmsWorks = new ArrayList<>();
+		List<AbstractTransformationWork> rdbmsWorks = new ArrayList<>();
+		List<AbstractTransformationWork> asm2RdbmsWorks = new ArrayList<>();
 
 
 		if (parameters.getIgnorePsm2Asm() && parameters.getIgnorePsm2Measure()) {
@@ -110,7 +110,7 @@ public class PsmDefaultWorkflow {
 
 				if (!parameters.getIgnoreRdbms2Liquibase()) {
 					parameters.getDialectList()
-							.forEach(dialect -> rdbms2LiquibaseWorks.add(new Rdbms2LiquibaseWork(transformationContext,
+							.forEach(dialect -> rdbmsWorks.add(new Rdbms2LiquibaseWork(transformationContext,
 									parameters.getRdbms2LiquibaseModelTransformationScriptURI(), dialect)));
 				}
 			}
@@ -132,15 +132,23 @@ public class PsmDefaultWorkflow {
 		}
 
 		WorkFlow workflow = aNewConditionalFlow()
-				.execute(
-						aNewParallelFlow().execute(psmWorks.toArray(new AbstractTransformationWork[psmWorks.size()])).build())
+				.named("Conditional when all PSM Transformations COMPLETED Run All ASM Transformations")
+				.execute(aNewSequentialFlow()
+						.named("PSM Transformations")
+						.execute(psmWorks.toArray(new AbstractTransformationWork[psmWorks.size()]))
+						.build())
 				.when(WorkReportPredicate.COMPLETED)
 				.then(aNewConditionalFlow()
-						.execute(aNewParallelFlow()
-								.execute(asmWorks.toArray(new AbstractTransformationWork[asmWorks.size()])).build())
+						.named("Conditional when all ASM Transformations COMPLETED Run All RDBMS Transformations")
+						.execute(aNewSequentialFlow()
+								.named("Sequential ASM Transformations")
+								.execute(asmWorks.toArray(new AbstractTransformationWork[asmWorks.size()]))
+								.build())
 						.when(WorkReportPredicate.COMPLETED)
-						.then(aNewParallelFlow().execute(rdbms2LiquibaseWorks
-								.toArray(new AbstractTransformationWork[rdbms2LiquibaseWorks.size()])).build())
+						.then(aNewSequentialFlow()
+								.named("Sequential RDBMS Transformations")
+								.execute(rdbmsWorks.toArray(new AbstractTransformationWork[rdbmsWorks.size()]))
+								.build())
 						.build())
 				.build();
 

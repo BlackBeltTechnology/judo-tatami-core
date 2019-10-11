@@ -1,54 +1,60 @@
-import "../namespace.etl";
+import "../namespace/namespace.etl";
 import "../type/type.etl";
 import "../../../../operations/esm/measure/measure.eol";
 
-@lazy
-@greedy
 rule CreateMeasure
-	transform s: ESM!Measure
-	to t: JUDOPSM!Measure 
-	extends CreateNamespaceElement {
-	  t.symbol = s.symbol;
+    transform s: ESM!Measure
+    to t: JUDOPSM!Measure 
+    extends CreateNamespaceElement {
+        guard: s.terms.isEmpty()
+        t.symbol = s.symbol;
 }
 
 rule CreateDerivedMeasure
-	transform s: ESM!Measure
-	to t: JUDOPSM!DerivedMeasure
-	extends CreateMeasure {
-	guard: not s.terms.isEmpty()
+    transform s: ESM!Measure
+    to t: JUDOPSM!DerivedMeasure
+    extends CreateNamespaceElement {
+        guard: not s.terms.isEmpty()
+        t.symbol = s.symbol;
 }
 
 rule CreateUnit
-	transform s: ESM!Unit
-	to t: JUDOPSM!Unit 
-	extends CreateNamedElement {
-	  t.symbol = s.symbol;
-	  t.rateDividend = s.rateDividend;
-	  t.rateDivisor = s.rateDivisor;
-	  if(not s.isTypeOf(ESM!DurationUnit)) {
-	  	  s.getContainingPSMEquivalent().units.add(t);
-	  }
+    transform s: ESM!Unit
+    to t: JUDOPSM!Unit 
+    extends CreateNamedElement {
+      t.symbol = s.symbol;
+      t.rateDividend = s.rateDividend;
+      t.rateDivisor = s.rateDivisor;
+      s.eContainer.getPSMEquivalent().units.add(t);
 }
 
 rule CreateDurationUnit
-	transform s: ESM!DurationUnit
-	to t: JUDOPSM!DurationUnit 
-	extends CreateUnit {
-	  t.unitType = JUDOPSM!DurationType#hour; //[postponed]
-	  s.getContainingPSMEquivalent().units.add(t);
+    transform s: ESM!DurationUnit
+    to t: JUDOPSM!DurationUnit 
+    extends CreateUnit {
+        switch (s.unitType) {
+	        case ESM!DurationType#millisecond: t.unitType = JUDOPSM!DurationType#millisecond;
+	        case ESM!DurationType#second: t.unitType = JUDOPSM!DurationType#second;
+	        case ESM!DurationType#minute: t.unitType = JUDOPSM!DurationType#minute;
+	        case ESM!DurationType#hour: t.unitType = JUDOPSM!DurationType#hour;
+	        case ESM!DurationType#day: t.unitType = JUDOPSM!DurationType#day;
+	        case ESM!DurationType#week: t.unitType = JUDOPSM!DurationType#week;
+	        case ESM!DurationType#month: t.unitType = JUDOPSM!DurationType#month;
+	        case ESM!DurationType#year: t.unitType = JUDOPSM!DurationType#year;
+    }
 }
 
 rule CreateMeasureDefinitionTerm
-	transform s: ESM!MeasureDefinitionTerm
-	to t: JUDOPSM!MeasureDefinitionTerm {
-	  t.exponent = s.exponent;
-	  t.unit = s.unit.getPSMEquivalent();
-	  s.getDerivedMeasure().terms.add(t);
+    transform s: ESM!MeasureDefinitionTerm
+    to t: JUDOPSM!MeasureDefinitionTerm {
+      t.exponent = s.exponent;
+      t.unit = s.unit.getPSMEquivalent();
+      s.eContainer.getPSMEquivalent().terms.add(t);
 }
 
 rule CreateMeasuredType
-	transform s: ESM!MeasuredType
-	to t: JUDOPSM!MeasuredType
-	extends CreateNumericType {
-	  t.storeUnit = s.storeUnit.getPSMEquivalent();
+    transform s: ESM!MeasuredType
+    to t: JUDOPSM!MeasuredType
+    extends CreateNumericType {
+      t.storeUnit = s.storeUnit.getPSMEquivalent();
 }

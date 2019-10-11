@@ -39,8 +39,8 @@ public class Esm2Psm {
                                                                           URI scriptDir) throws Exception {
 
         EsmUtils esmUtils = new EsmUtils(esmModel.getResourceSet(), false);
-        esmUtils.processAllEntities();
-        esmUtils.processAllMixins();
+        //esmUtils.processAllEntities();
+        //esmUtils.processAllMixins();
 
         // Execution context
         ExecutionContext executionContext = executionContextBuilder()

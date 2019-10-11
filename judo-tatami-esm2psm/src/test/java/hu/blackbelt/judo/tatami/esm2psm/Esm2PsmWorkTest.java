@@ -25,7 +25,7 @@ import static hu.blackbelt.judo.meta.esm.runtime.EsmModel.LoadArguments.esmLoadA
 class Esm2PsmWorkTest {
 
 	public static final String NORTHWIND = "northwind";
-	public static final String NORTHWIND_ESM_MODEL = "northwind-esm.model";
+	public static final String NORTHWIND_ESM_MODEL = "northwind-esm-measures.model";
 	public static final String TARGET_TEST_CLASSES = "target/test-classes";
 
 	Esm2PsmWork esm2PsmWork;

@@ -3,6 +3,7 @@ package hu.blackbelt.judo.tatami.asm2jaxrsapi;
 import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Sets;
 import hu.blackbelt.epsilon.runtime.execution.ExecutionContext;
 import hu.blackbelt.epsilon.runtime.execution.api.Log;
 import hu.blackbelt.epsilon.runtime.execution.contexts.EglExecutionContext;
@@ -106,10 +107,17 @@ public class Asm2JAXRSAPI {
     private static InputStream generateBundle(String modelName, String version, Iterable<JavaFileObject> compiled, File sourceDir,
                                               Set<String> sourceCodeFiles, Set<String> scrXmlFiles) throws FileNotFoundException {
         TinyBundle bundle = bundle();
+
+        Set<String> exportedPackages = Sets.newHashSet();
+
         compiled.forEach(c -> {
             FullyQualifiedName fullyQualifiedName = (FullyQualifiedName) c;
             try {
                 bundle.add(fullyQualifiedName.getFullyQualifiedName().replace('.', '/') + ".class", c.openInputStream());
+                String fc = fullyQualifiedName.getFullyQualifiedName();
+                String packageName = fullyQualifiedName.getFullyQualifiedName()
+                        .substring(0 , fullyQualifiedName.getFullyQualifiedName().lastIndexOf("."));
+                exportedPackages.add(packageName);
             } catch (IOException e) {
                 throw new RuntimeException("File not found: "+ c.getName(), e);
             }
@@ -142,6 +150,7 @@ public class Asm2JAXRSAPI {
                                 "hu.blackbelt.judo.tatami.core"
 
                 )
+                .set( Constants.EXPORT_PACKAGE, exportedPackages.stream().collect(Collectors.joining(",")))
                 .set("Service-Component", Joiner.on(",").join(scrXmlFiles));
         return bundle.build();
     }

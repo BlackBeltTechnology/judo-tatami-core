@@ -3,11 +3,13 @@ package hu.blackbelt.judo.tatami.core.workflow.flow;
 
 import hu.blackbelt.judo.tatami.core.workflow.work.Work;
 import hu.blackbelt.judo.tatami.core.workflow.work.WorkReport;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 /**
  * A parallel flow executes a set of works in parallel.
@@ -20,6 +22,7 @@ import java.util.UUID;
  * </ul>
  *
  */
+@Slf4j
 public class ParallelFlow extends AbstractWorkFlow {
 
     private List<Work> works = new ArrayList<>();
@@ -35,9 +38,13 @@ public class ParallelFlow extends AbstractWorkFlow {
      * {@inheritDoc}
      */
     public ParallelFlowReport call() {
+        log.info("Call work '{}' - Call work:  '{}' ", new String[] {getName(),
+                works.stream().map(w -> w.getName()).collect(Collectors.joining(", "))});
+
         ParallelFlowReport workFlowReport = new ParallelFlowReport();
         List<WorkReport> workReports = workExecutor.executeInParallel(works);
         workFlowReport.addAll(workReports);
+        log.info("Work {} Returns: {} ", getName(), workReports.stream().map(wr -> wr.toString()).collect(Collectors.joining(", ")));
         return workFlowReport;
     }
 

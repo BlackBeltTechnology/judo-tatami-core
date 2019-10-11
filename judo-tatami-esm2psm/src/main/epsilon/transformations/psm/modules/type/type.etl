@@ -1,4 +1,4 @@
-import "../namespace.etl";
+import "../namespace/namespace.etl";
 import "../../../../operations/esm/type/_importType.eol";
 
 rule CreateXMLType
@@ -60,6 +60,7 @@ rule CreateTimestampType
 	transform s: ESM!TimestampType
 	to t: JUDOPSM!TimestampType
 	extends CreateNamespaceElement {
+      // t.baseUnit = s.baseUnit;
 	  log.debug("Created TimestampType: " + t.name);
 }
 
@@ -74,7 +75,7 @@ rule CreateEnumerationMember
 	transform s: ESM!EnumerationMember
 	to t: JUDOPSM!EnumerationMember
 	extends CreateNamedElement {
-	  s.getEnumerationType().equivalent("CreateEnumerationType").members.add(t);
+	  s.eContainer.equivalent("CreateEnumerationType").members.add(t);
 	  t.ordinal = s.ordinal;
 	  log.debug("Created EnumerationMember: " + t.name);
 }

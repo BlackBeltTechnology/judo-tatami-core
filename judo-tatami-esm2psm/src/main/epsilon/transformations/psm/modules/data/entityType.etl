@@ -1,5 +1,5 @@
 import "../../../../operations/esm/data/_importData.eol";
-import "../namespace.etl";
+import "../namespace/namespace.etl";
 
 rule CreateEntityType
   transform s : ESM!EntityType
