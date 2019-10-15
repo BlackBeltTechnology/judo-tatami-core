@@ -36,8 +36,8 @@
 						</goals>
 						<configuration>
 						    <!--psmModelDest>${basedir}/target/classes/northwind-psm.model/</psmModelDest -->
-							<psmGeneratorClassName>hu.blackbelt.judo.tatami.workflow.maven.plugin.TestPsmModel</psmGeneratorClassName>
-							<psmGeneratorMethodName>create</psmGeneratorMethodName>
+							<psmGeneratorClassName>hu.blackbelt.model.northwind.Demo</psmGeneratorClassName>
+							<psmGeneratorMethodName>fullDemo</psmGeneratorMethodName>
 							<destination>${basedir}/target/classes/method</destination>
 							<modelName>northwind</modelName>
 							<dialectList>hsqldb,oracle</dialectList>
@@ -60,6 +60,13 @@
 
 				</executions>
 				<dependencies>
+
+					<dependency>
+						<groupId>hu.blackbelt.model</groupId>
+						<artifactId>hu.blackbelt.model.northwind.model</artifactId>
+						<version>${northwind-model-version}</version>
+					</dependency>
+
 					<dependency>
 						<groupId>hu.blackbelt.judo.tatami</groupId>
 						<artifactId>judo-tatami-psm2asm</artifactId>
