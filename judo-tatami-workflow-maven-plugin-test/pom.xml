@@ -29,19 +29,44 @@
 				<version>1.0.0-SNAPSHOT</version>
 				<executions>
 					<execution>
+						<id>execute-test-model-from-method</id>
 						<phase>compile</phase>
 						<goals>
 							<goal>psm-default-workflow</goal>
 						</goals>
 						<configuration>
-						    <psmModelDest>${basedir}/target/classes/northwind-psm.model/</psmModelDest>
-							<destination>${basedir}/target/classes/</destination>
+						    <!--psmModelDest>${basedir}/target/classes/northwind-psm.model/</psmModelDest -->
+							<psmGeneratorClassName>hu.blackbelt.model.northwind.Demo</psmGeneratorClassName>
+							<psmGeneratorMethodName>fullDemo</psmGeneratorMethodName>
+							<destination>${basedir}/target/classes/method</destination>
 							<modelName>northwind</modelName>
 							<dialectList>hsqldb,oracle</dialectList>
 						</configuration>
 					</execution>
+
+					<execution>
+						<id>execute-test-model-from-file</id>
+						<phase>compile</phase>
+						<goals>
+							<goal>psm-default-workflow</goal>
+						</goals>
+						<configuration>
+							<psmModelFile>${basedir}/target/classes/northwind-psm.model/</psmModelFile>
+							<destination>${basedir}/target/classes/file</destination>
+							<modelName>northwind</modelName>
+							<dialectList>hsqldb,oracle</dialectList>
+						</configuration>
+					</execution>
+
 				</executions>
 				<dependencies>
+
+					<dependency>
+						<groupId>hu.blackbelt.model</groupId>
+						<artifactId>hu.blackbelt.model.northwind.model</artifactId>
+						<version>${northwind-model-version}</version>
+					</dependency>
+
 					<dependency>
 						<groupId>hu.blackbelt.judo.tatami</groupId>
 						<artifactId>judo-tatami-psm2asm</artifactId>
