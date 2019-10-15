@@ -2,12 +2,15 @@ package hu.blackbelt.judo.tatami.workflow.maven.plugin;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.net.*;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import hu.blackbelt.judo.meta.psm.runtime.PsmModel;
 import lombok.Getter;
 import org.apache.maven.artifact.DependencyResolutionRequiredException;
 import org.apache.maven.plugin.AbstractMojo;
@@ -29,6 +32,8 @@ import hu.blackbelt.judo.meta.rdbms.runtime.RdbmsModel.RdbmsValidationException;
 import hu.blackbelt.judo.tatami.workflow.PsmDefaultWorkflow;
 import hu.blackbelt.judo.tatami.workflow.DefaultWorkflowSave;
 import hu.blackbelt.judo.tatami.workflow.DefaultWorkflowSetupParameters;
+
+import static com.google.common.base.Strings.isNullOrEmpty;
 
 @Mojo(name = "psm-default-workflow",
 		defaultPhase = LifecyclePhase.COMPILE,
@@ -59,8 +64,8 @@ public class PsmDefaultWorkflowMojo extends AbstractMojo {
 	@Parameter( defaultValue = "${plugin}", readonly = true )
 	private PluginDescriptor pluginDescriptor;
 
-	@Parameter(property = "psmModelDest")
-	private File psmModelDest;
+	@Parameter(property = "psmModelFile")
+	private File psmModelFile;
 
 	@Parameter(property = "psm2asmTransformationScriptRoot")
 	private File psm2asmTransformationScriptRoot;
@@ -116,6 +121,11 @@ public class PsmDefaultWorkflowMojo extends AbstractMojo {
 	@Parameter(property = "ignoreAsm2jaxrsapi", defaultValue = "false")
 	private Boolean ignoreAsm2jaxrsapi = false;
 
+	@Parameter(property = "psmGeneratorClassName")
+	private String psmGeneratorClassName;
+
+	@Parameter(property = "psmGeneratorMethodName")
+	private String psmGeneratorMethodName;
 
 	@Getter
 	@Parameter(property = "tagsForSearch", defaultValue =
@@ -227,7 +237,8 @@ public class PsmDefaultWorkflowMojo extends AbstractMojo {
 						: asm2jaxrsapiTransformationScriptRoot.toURI();
 			}
 
-			defaultWorkflow = new PsmDefaultWorkflow(DefaultWorkflowSetupParameters
+			DefaultWorkflowSetupParameters.DefaultWorkflowSetupParametersBuilder parameters =
+					DefaultWorkflowSetupParameters
 					.defaultWorkflowSetupParameters()
 					.ignorePsm2Asm(ignorePsm2Asm)
 					.ignoreAsm2jaxrsapi(ignoreAsm2jaxrsapi)
@@ -236,7 +247,6 @@ public class PsmDefaultWorkflowMojo extends AbstractMojo {
 					.ignoreAsm2sdk(ignoreAsm2sdk)
 					.ignorePsm2Measure(ignorePsm2Measure)
 					.ignoreRdbms2Liquibase(ignoreRdbms2Liquibase)
-					.psmModelSourceURI(psmModelDest.toURI())
 					.psm2AsmModelTransformationScriptURI(psm2asmModelScriptRootResolved)
 					.psm2MeasureModelTransformationScriptURI(psm2measureModelScriptRootResolved)
 					.asm2RdbmsModelTransformationScriptURI(asm2rdbmsModelScriptRootResolved)
@@ -246,9 +256,19 @@ public class PsmDefaultWorkflowMojo extends AbstractMojo {
 					.dialectList(dialectList)
 					.asm2RdbmsModelTransformationModelURI(asm2rdbmsModelModelRootResolved)
 					.asm2sdkModelTransformationScriptURI(asm2sdkModelScriptRootResolved)
-					.asm2jaxrsapiModelTransformationScriptURI(asm2jaxrsapiModelScriptRootResolved));
+					.asm2jaxrsapiModelTransformationScriptURI(asm2jaxrsapiModelScriptRootResolved);
 
-		} catch (IOException | PsmValidationException | URISyntaxException e) {
+			if (!isNullOrEmpty(psmGeneratorClassName) && !isNullOrEmpty(psmGeneratorMethodName)) {
+				Class generatorClass = Thread.currentThread().getContextClassLoader().loadClass(psmGeneratorClassName);
+				Method generatorMethid = generatorClass.getMethod(psmGeneratorMethodName);
+				PsmModel psmModel = (PsmModel) generatorMethid.invoke(generatorClass.newInstance());
+				parameters.psmModel(psmModel);
+			} else {
+				parameters.psmModelSourceURI(psmModelFile.toURI());
+			}
+			defaultWorkflow = new PsmDefaultWorkflow(parameters);
+		} catch (IOException | PsmValidationException | URISyntaxException | ClassNotFoundException |
+				NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
 			throw new MojoFailureException("An error occurred during the setup phase of the workflow.", e);
 		}
 
