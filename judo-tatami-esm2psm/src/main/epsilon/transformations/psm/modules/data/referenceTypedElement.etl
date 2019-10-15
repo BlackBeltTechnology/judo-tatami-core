@@ -20,37 +20,29 @@ rule CreateReferenceTypedElement
 }
 
 rule CreateContainment
-	transform s: ESM!OneWayEndpoint
+	transform s: ESM!OneWayRelationMember
 	to t: JUDOPSM!Containment
 	extends CreateReferenceTypedElement {
-	  guard: s.containment
-	  s.getEntityType().equivalent("CreateEntityType").relations.add(t);
-	  for (transferRelation in s.getTransferRelations()) {
-	  	transferRelation.equivalent("CreateTransferObjectRelation").binding = t;
-	  }
+	  guard: s.containment and not s.property and s.eContainer.isKindOf(ESM!EntityType)
+	  s.eContainer.getPSMEquivalent().getRelations().add(t);
 	  log.debug("Created Containment: " + t.name);
 }
 
-rule CreateOneWayEndpoint
-	transform s: ESM!OneWayEndpoint
+rule CreateAssociationEndWithoutPartner
+	transform s: ESM!OneWayRelationMember
 	to t: JUDOPSM!AssociationEnd
 	extends CreateReferenceTypedElement {
-	  guard: not s.containment
-	  s.getEntityType().equivalent("CreateEntityType").relations.add(t);
-	  for (transferRelation in s.getTransferRelations()) {
-	  	transferRelation.equivalent("CreateTransferObjectRelation").binding = t;
-	  }
-	  log.debug("Created Endpoint: " + t.name);
+	  guard: not s.containment and not s.property and s.eContainer.isKindOf(ESM!EntityType)
+	  s.eContainer.getPSMEquivalent().relations.add(t);
+	  log.debug("Created AssociationEnd: " + t.name);
 }
 
-rule CreateTwoWayEndpoint
-	transform s: ESM!TwoWayEndpoint
+rule CreateAssociationEndWithPartner
+	transform s: ESM!TwoWayRelationMember
 	to t: JUDOPSM!AssociationEnd
 	extends CreateReferenceTypedElement {
-	  t.partner = s.partner.equivalent("CreateEndpoint");
-	  s.getEntityType().equivalent("CreateEntityType").relations.add(t);
-	  for (transferRelation in s.getTransferRelations()) {
-	  	transferRelation.equivalent("CreateTransferObjectRelation").binding = t;
-	  }
-	  log.debug("Created Endpoint: " + t.name);
+	  guard: s.eContainer.isKindOf(ESM!EntityType)
+	  t.partner = s.partner.getPSMEquivalent();
+	  s.eContainer.getPSMEquivalent().relations.add(t);
+	  log.debug("Created AssociationEnd: " + t.name);
 }

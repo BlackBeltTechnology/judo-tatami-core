@@ -1,5 +1,41 @@
 package hu.blackbelt.judo.tatami.esm2psm;
 
+import static hu.blackbelt.judo.meta.esm.namespace.util.builder.NamespaceBuilders.newModelBuilder;
+import static hu.blackbelt.judo.meta.esm.runtime.EsmModel.buildEsmModel;
+import static hu.blackbelt.judo.meta.esm.type.util.builder.TypeBuilders.newBooleanTypeBuilder;
+import static hu.blackbelt.judo.meta.esm.type.util.builder.TypeBuilders.newCustomTypeBuilder;
+import static hu.blackbelt.judo.meta.esm.type.util.builder.TypeBuilders.newDateTypeBuilder;
+import static hu.blackbelt.judo.meta.esm.type.util.builder.TypeBuilders.newEnumerationMemberBuilder;
+import static hu.blackbelt.judo.meta.esm.type.util.builder.TypeBuilders.newEnumerationTypeBuilder;
+import static hu.blackbelt.judo.meta.esm.type.util.builder.TypeBuilders.newNumericTypeBuilder;
+import static hu.blackbelt.judo.meta.esm.type.util.builder.TypeBuilders.newPasswordTypeBuilder;
+import static hu.blackbelt.judo.meta.esm.type.util.builder.TypeBuilders.newStringTypeBuilder;
+import static hu.blackbelt.judo.meta.esm.type.util.builder.TypeBuilders.newTimestampTypeBuilder;
+import static hu.blackbelt.judo.meta.esm.type.util.builder.TypeBuilders.newXMLTypeBuilder;
+import static hu.blackbelt.judo.meta.psm.runtime.PsmModel.buildPsmModel;
+import static hu.blackbelt.judo.meta.psm.runtime.PsmModel.SaveArguments.psmSaveArgumentsBuilder;
+import static hu.blackbelt.judo.tatami.esm2psm.Esm2Psm.calculateEsm2PsmTransformationScriptURI;
+import static hu.blackbelt.judo.tatami.esm2psm.Esm2Psm.executeEsm2PsmTransformation;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.io.File;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
+
+import org.eclipse.emf.common.util.URI;
+import org.eclipse.emf.ecore.EObject;
+import org.hamcrest.core.IsEqual;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import com.google.common.collect.ImmutableList;
+
 import hu.blackbelt.epsilon.runtime.execution.api.Log;
 import hu.blackbelt.epsilon.runtime.execution.impl.Slf4jLog;
 import hu.blackbelt.judo.meta.esm.namespace.Model;
@@ -15,32 +51,6 @@ import hu.blackbelt.judo.meta.esm.type.TimestampType;
 import hu.blackbelt.judo.meta.esm.type.XMLType;
 import hu.blackbelt.judo.meta.psm.runtime.PsmModel;
 import lombok.extern.slf4j.Slf4j;
-import org.eclipse.emf.common.util.URI;
-import org.eclipse.emf.ecore.EObject;
-import org.hamcrest.core.IsEqual;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
-import com.google.common.collect.ImmutableList;
-
-import java.io.File;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.stream.Stream;
-import java.util.stream.StreamSupport;
-
-import static hu.blackbelt.judo.meta.esm.namespace.util.builder.NamespaceBuilders.newModelBuilder;
-import static hu.blackbelt.judo.meta.esm.type.util.builder.TypeBuilders.*;
-import static hu.blackbelt.judo.meta.esm.runtime.EsmModel.buildEsmModel;
-import static hu.blackbelt.judo.meta.psm.runtime.PsmModel.SaveArguments.psmSaveArgumentsBuilder;
-import static hu.blackbelt.judo.meta.psm.runtime.PsmModel.buildPsmModel;
-import static hu.blackbelt.judo.tatami.esm2psm.Esm2Psm.calculateEsm2PsmTransformationScriptURI;
-import static hu.blackbelt.judo.tatami.esm2psm.Esm2Psm.executeEsm2PsmTransformation;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @Slf4j
 public class EsmType2PsmTypeTest {
@@ -302,14 +312,14 @@ public class EsmType2PsmTypeTest {
         esmModel.addContent(model);
         transform();
 
-        final Optional<hu.blackbelt.judo.meta.psm.type.TimestampType> psmStringType = allPsm(hu.blackbelt.judo.meta.psm.type.TimestampType.class)
+        final Optional<hu.blackbelt.judo.meta.psm.type.TimestampType> psmTimestampType = allPsm(hu.blackbelt.judo.meta.psm.type.TimestampType.class)
                 .findAny();
         final Optional<hu.blackbelt.judo.meta.psm.namespace.Model> psmModel = allPsm(hu.blackbelt.judo.meta.psm.namespace.Model.class)
                 .findAny();
 
-        assertTrue(psmStringType.isPresent());
-        assertThat(psmModel.get().getName(), IsEqual.equalTo(psmStringType.get().getNamespace().getName()));
-        assertThat(psmStringType.get().getName(), IsEqual.equalTo(timestamp.getName()));
+        assertTrue(psmTimestampType.isPresent());
+        assertThat(psmModel.get().getName(), IsEqual.equalTo(psmTimestampType.get().getNamespace().getName()));
+        assertThat(psmTimestampType.get().getName(), IsEqual.equalTo(timestamp.getName()));
     }
     
     @Test

@@ -1,4 +1,4 @@
-import "../data/entityType.etl";
+import "../data/primitiveTypedElement.etl";
 import "expressionType.etl";
 import "../../../../operations/esm/derived/expressionType.eol";
 
@@ -17,7 +17,7 @@ rule CreateDataProperty
 	transform s : ESM!DataProperty
 	to t : JUDOPSM!DataProperty
 	extends CreatePrimitiveAccessor {
-	  var entity : ESM!EntityType = s.getEntityType();
+	  var entity : ESM!EntityType = s.eContainer;
 	  entity.equivalent("CreateEntityType").dataProperties.add(t);
 	  for(transferAttribute in ESM!TransferAttribute.all.select(ta | ta.primitiveTypedElement = s)) {
 	  	transferAttribute.equivalent("CreateTransferAttribute").binding = t;

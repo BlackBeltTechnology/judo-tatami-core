@@ -1,5 +1,3 @@
-import "../../../../operations/esm/namespace/_importNamespace.eol";
-
 @abstract
 rule CreateNamedElement
   transform s : ESM!NamedElement
