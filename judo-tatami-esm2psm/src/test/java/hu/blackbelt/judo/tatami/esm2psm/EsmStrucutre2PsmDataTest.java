@@ -135,32 +135,22 @@ public class EsmStrucutre2PsmDataTest {
         Generalization generalisation2 = newGeneralizationBuilder().withTarget(entityType2).build();
         EntityType entityType3 = newEntityTypeBuilder().withName("entityType3").withDefaultAccesspoint(false)
         		.withGeneralizations(generalisation2).withFilter(newLogicalExpressionTypeBuilder().build()).build();
-        Generalization generalization3 = newGeneralizationBuilder().withTarget(entityType3).build();
-        EntityType entityType4 = newEntityTypeBuilder().withName("entityType4").withDefaultAccesspoint(false)
-        		.withGeneralizations(generalization3).withFilter(newLogicalExpressionTypeBuilder().build()).build();
         
         final Model model = newModelBuilder()
                 .withName("TestModel")
-                .withElements(ImmutableList.of(entityType1,entityType2,entityType3,entityType4))
+                .withElements(ImmutableList.of(entityType1,entityType2,entityType3))
                 .build();
 
         esmModel.addContent(model);
         transform();
 
         final Set<hu.blackbelt.judo.meta.psm.data.EntityType> psmEntityTypes = allPsm(hu.blackbelt.judo.meta.psm.data.EntityType.class).collect(Collectors.toSet());
-        assertTrue(psmEntityTypes.size() == 4);
+        assertTrue(psmEntityTypes.size() == 3);
         assertTrue(psmEntityTypes.stream().allMatch(e -> !e.isAbstract()));
         
         final Set<String> psmEntityTypeNames = psmEntityTypes.stream().map(e -> e.getName()).collect(Collectors.toSet());
-        final Set<String> esmEntityTypeNames = ImmutableSet.of(entityType1.getName(),entityType2.getName(),entityType3.getName(),entityType4.getName());
+        final Set<String> esmEntityTypeNames = ImmutableSet.of(entityType1.getName(),entityType2.getName(),entityType3.getName());
         assertThat(psmEntityTypeNames, IsEqual.equalTo(esmEntityTypeNames));
-        
-        final Optional<hu.blackbelt.judo.meta.psm.data.EntityType> psmEntityType4 = psmEntityTypes.stream().filter(e -> e.getName().equals(entityType4.getName())).findAny();
-        assertTrue(psmEntityType4.isPresent());
-        
-        final Set<String> psmEntityType4SuperTypeNames = psmEntityType4.get().getSuperEntityTypes().stream().map(s -> s.getName()).collect(Collectors.toSet());
-        final Set<String> esmEntityType4SuperTypeNames = ImmutableSet.of(entityType3.getName());
-        assertThat(psmEntityType4SuperTypeNames, IsEqual.equalTo(esmEntityType4SuperTypeNames));
         
         final Optional<hu.blackbelt.judo.meta.psm.data.EntityType> psmEntityType3 = psmEntityTypes.stream().filter(e -> e.getName().equals(entityType3.getName())).findAny();
         assertTrue(psmEntityType3.isPresent());

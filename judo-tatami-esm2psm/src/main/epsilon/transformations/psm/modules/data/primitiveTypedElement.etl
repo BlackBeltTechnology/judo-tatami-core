@@ -6,7 +6,6 @@ rule CreatePrimitiveTypedElement
     transform s: ESM!PrimitiveTypedElement
     to t: JUDOPSM!PrimitiveTypedElement
     extends CreateNamedElement {
-      guard: s.eContainer.isTypeOf(ESM!EntityType) 
       t.required = s.required;
       t.dataType = s.dataType.getPSMEquivalent();
 }
@@ -15,6 +14,7 @@ rule CreateAttribute
     transform s: ESM!DataMember
     to t: JUDOPSM!Attribute
     extends CreatePrimitiveTypedElement {
+      guard: s.eContainer.isTypeOf(ESM!EntityType)
       t.identifier = s.identifier;
       s.eContainer.getPSMEquivalent().attributes.add(t);
       log.debug("Created Attribute: " + t.name);

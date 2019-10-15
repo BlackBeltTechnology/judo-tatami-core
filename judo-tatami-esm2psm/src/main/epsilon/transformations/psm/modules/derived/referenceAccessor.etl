@@ -26,7 +26,7 @@ rule CreateNavigationProperty
 	transform s : ESM!NavigationProperty
 	to t : JUDOPSM!NavigationProperty
 	extends CreateReferenceAccessor {
-	  s.getEntityType().equivalent("CreateEntityType").navigationProperties.add(t);
+	  s.eContainer.equivalent("CreateEntityType").navigationProperties.add(t);
 	  s.setTransferRelationBinding(t);
 
 	  log.debug("Created NavigationProperty: " + t.name);

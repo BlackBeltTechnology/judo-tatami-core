@@ -6,9 +6,8 @@ rule CreateEntityType
   to t : JUDOPSM!EntityType
   extends CreateNamespaceElement {
     t.`abstract` = s.`abstract`;
-    for (super in s.generalizations) t.superEntityTypes.add(super.target.getPSMEquivalent());
-    if (s.defaultAccessPoint) {
-        //create access point containing an exposed graph with a mapped transfer object with the target entity type ??
+    for (super in s.generalizations) {
+        t.superEntityTypes.add(super.target.getPSMEquivalent());
     }
     log.debug("Created EntityType: " + t.name);
 }
