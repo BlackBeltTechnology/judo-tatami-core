@@ -17,7 +17,8 @@ for (ap in asmUtils.getAllAccessPoints()) {
     var apServiceInstances : Map = new Map();
 
     var exposedServices = asmUtils.getExposedServicesOfAccessPoint(ap);
-
+	log.debug("exposedServices: " + exposedServices.collect(exposedService | "op: " + exposedService.getName() + " in " + exposedService.getEContainingClass().getName()));
+	
 	// Unbound service
     if (exposedServices.size() > 0) {
 		genUnboundService(ap, exposedServices);
@@ -25,16 +26,19 @@ for (ap in asmUtils.getAllAccessPoints()) {
 		outputScrXmls.add(ap.getUnboundServiceScrXmlFileName());
 		apServiceInstances.put("unboundService", ap.getUnboundServicePackageName() + "." + ap.getUnboundServiceClassName());
     }
-
+	
+    var boundOperations = ASM!EOperation.all.select(op | asmUtils.isBound(op) and asmUtils.getAccessPointsOfOperation(op).contains(ap));
+	var boundOperationClasses = boundOperations.collect(op | op.eContainer).asSet();
+	log.debug("boundOperations: " + boundOperations.collect(boundOperation | boundOperation.getName()));
+	log.debug("boundOperationClasses: " + boundOperationClasses.collect(boundOperationClass | boundOperationClass.getName()));
+	
     // Bound service
-    for (
-    	biog in asmUtils.getBuiltInOperationGroupsOfAccessPoint(ap)
-    	) {
-		genExposedMappedTransferObject(biog, ap);
-		outputJavaClasses.add(biog.getExposedMappedTransferObjectJavaFileName(ap));
-		outputScrXmls.add(biog.getExposedMappedTransferObjectScrXmlFileName(ap));
-		apServiceInstances.put((biog.getExposedMappedTransferObjectPackageName(ap) + "." + biog.getExposedMappedTransferObjectClassName()).replaceAll("\\.", "_"),
-			biog.getExposedMappedTransferObjectPackageName(ap) + "." + biog.getExposedMappedTransferObjectClassName());		
+    for (boundOperationClass in boundOperationClasses) {
+		genExposedMappedTransferObject(boundOperationClass, ap, boundOperations.select(op | op.eContainer == boundOperationClass));
+		outputJavaClasses.add(boundOperationClass.getExposedMappedTransferObjectJavaFileName(ap));
+		outputScrXmls.add(boundOperationClass.getExposedMappedTransferObjectScrXmlFileName(ap));
+		apServiceInstances.put((boundOperationClass.getExposedMappedTransferObjectPackageName(ap) + "." + boundOperationClass.getExposedMappedTransferObjectClassName()).replaceAll("\\.", "_"),
+			boundOperationClass.getExposedMappedTransferObjectPackageName(ap) + "." + boundOperationClass.getExposedMappedTransferObjectClassName());		
     }
     
     // Generate ApplicationConfigs

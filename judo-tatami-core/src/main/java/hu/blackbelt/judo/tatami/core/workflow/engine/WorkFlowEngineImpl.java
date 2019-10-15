@@ -8,7 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 class WorkFlowEngineImpl implements WorkFlowEngine {
 
     public WorkReport run(WorkFlow workFlow) {
-        log.info("Running workflow ''{0}''", workFlow.getName());
+        log.info("Running workflow '{}'", workFlow.getName());
         return workFlow.call();
     }
 

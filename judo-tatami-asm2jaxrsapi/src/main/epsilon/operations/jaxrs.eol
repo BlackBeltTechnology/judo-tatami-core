@@ -1,6 +1,6 @@
 @cached
 operation String normalizeName() : String {
-	return self.replace("[__]", "\\$");
+	return self.replace("__", "\\$");
 }
 
 @cached
@@ -21,7 +21,6 @@ operation ASM!EOperation getFullOperationPath() : String {
 /*
  DTO
  */
-// new DtoCollector
 @cached
 operation getAllDTOs(): Collection {
 	return ASM!EClass.all.select(class | asmUtils.getExtensionAnnotationListByName(class, "exposedBy").notEmpty() and (not asmUtils.isEntityType(class) or asmUtils.isMappedTransferObjectType(class)));
@@ -33,41 +32,6 @@ operation genDto(dto : ASM!EClass) {
 	t.generate(dto.getDtoJavaFileName());
 	t.reset();
 }
-
-/* old DtoCollector
-@cached
-operation ASM!EClass collectAllReferenceType() : Set {
-	var ret : new Set();
-	for (r in self.eAllReferences) {
-		ret.add(r.eReferenceType);
-	}
-	return ret;
-}
-
-@cached
-operation Collection collectAllReferenceType() : Set {
-	var ret : new Set();
-	for (c : ASM!EClass in self) {
-		ret.add(c);
-		ret.addAll(c.collectAllReferenceType());
-	}
-	return ret;
-}
-
-@cached
-operation Collection collectAllReferenceTypeRecursively() : Set {
-	var ret : new Set();
-	ret.addAll(self);
-
-	var sizeDiffers = true;
-	while (sizeDiffers) {
-	    var curSize = ret.size();
-		ret = ret.collectAllReferenceType();
-		sizeDiffers = (curSize <> ret.size());
-	}
-	return ret;
-}
-*/
 
 @cached
 operation ASM!EClass getDtoPackageName() : String {
@@ -130,8 +94,6 @@ operation ASM!EParameter getTypeDefinition() : String {
 
 @cached
 operation ASM!EAttribute getTypeDefinition() : String {
-
-    log.info("Type: " + self.name + " - " + self.eType);
 
 	if (self.upperBound == -1) {
 		return "List<" + self.eType.instanceClass.name + ">";
@@ -197,6 +159,7 @@ operation ASM!EClass getApplicationConfigScrXmlFileName() : String {
  */
 operation genUnboundService(ap : ASM!EClass, operations : Collection) {
 	var t = TemplateFactory.load("RestService.java.egl");
+	t.populate("boundService", false);
 	t.populate("className", ap.getUnboundServiceClassName());
 	t.populate("packagePath", ap.getUnboundServicePackageName());
 	t.populate("operations", operations);
@@ -232,38 +195,24 @@ operation ASM!EClass getUnboundServiceScrXmlFileName() : String {
 /*
  Exposed mapped transfer object
  */
-operation genExposedMappedTransferObject(biog : ASM!EClass, ap : ASM!EClass) {
+operation genExposedMappedTransferObject(class : ASM!EClass, ap : ASM!EClass, operations: Collection) {
 	var t = TemplateFactory.load("RestService.java.egl");
-	t.populate("className", biog.getExposedMappedTransferObjectClassName());
-	t.populate("packagePath", biog.getExposedMappedTransferObjectPackageName(ap));
-	t.populate("operations", asmUtils.getAllOperationsOfBuiltInOperationGroupExposedByAccessPoint(biog, ap));
-	t.populate("restPath", "/" + asmUtils.getPackageFQName(biog.ePackage).toJAXRSPath() + "/" + biog.getExposedMappedTransferObjectClassName().toJAXRSPath());
+	t.populate("boundService", true);
+	t.populate("className", class.getExposedMappedTransferObjectClassName());
+	t.populate("packagePath", class.getExposedMappedTransferObjectPackageName(ap));
+	t.populate("operations", operations);
+	t.populate("restPath", "/" + asmUtils.getPackageFQName(class.ePackage).toJAXRSPath() + "/" + class.getExposedMappedTransferObjectClassName().toJAXRSPath());
 	t.populate("fullyQualifiedOperation", false);
 
-	t.generate(biog.getExposedMappedTransferObjectJavaFileName(ap));
+	t.generate(class.getExposedMappedTransferObjectJavaFileName(ap));
 	t.reset();
 
 	var t = TemplateFactory.load("RestService.scr.xml.egl");
-	t.populate("className", biog.getExposedMappedTransferObjectClassName());
-	t.populate("packagePath", biog.getExposedMappedTransferObjectPackageName(ap));
-	t.generate(biog.getExposedMappedTransferObjectScrXmlFileName(ap));
+	t.populate("className", class.getExposedMappedTransferObjectClassName());
+	t.populate("packagePath", class.getExposedMappedTransferObjectPackageName(ap));
+	t.generate(class.getExposedMappedTransferObjectScrXmlFileName(ap));
 	t.reset();
 }
-
-/* moved into AsmUtils
-operation ASM!EClass getAllOperationsOfBuiltInOperationGroupExposedByAccessPoint(): Collection {
-	return ASM!EClass.all.select(eclass | asmUtils.isBuiltInOperationGroup(eclass) and eclass.getEAllOperations()
- 				.exists(op | asmUtils.getExtensionAnnotationListByName(op, "exposedGraph")
- 							.exists(annot | asmUtils.getAccessPointOfGraph(asmUtils.getResolvedExposedGraph(annot).get()).get().equals(self))
- 				)
-		);
-}
-*/
-
-/* moved into AsmUtils
-operation ASM!EClass getAllExposedOperationsOfMappedTransferObjectType(ap : ASM!EClass): Collection {
- return self.getEAllOperations().select(op | asmUtils.getExtensionAnnotationListByName(op, "exposedBy").exists(annot | asmUtils.getResolvedExposedBy(annot).get().equals(ap)));
-}*/
 
 operation ASM!EClass getExposedMappedTransferObjectPackageName(ap: ASM!EClass) : String {
 	return "rest." + asmUtils.getClassifierFQName(ap) + "." + asmUtils.getPackageFQName(self.ePackage);
@@ -271,14 +220,7 @@ operation ASM!EClass getExposedMappedTransferObjectPackageName(ap: ASM!EClass) :
 
 @cached
 operation ASM!EClass getExposedMappedTransferObjectClassName() : String {
-	/*
-	if (self.name.contains("__")) {
-		return self.name.split("__").first().firstToUpperCase() + "$" + self.name.split("__").second();
-	} else {
-		return self.name;
-	}
-	*/
-	return self.name.normalizeName(); // .name.replace("[__]", "\\$");
+	return self.name.normalizeName(); // .name.replace("__", "\\$");
 }
 
 operation ASM!EClass getExposedMappedTransferObjectJavaFileName(ap: ASM!EClass) : String {

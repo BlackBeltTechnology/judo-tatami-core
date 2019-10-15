@@ -4,12 +4,15 @@ import hu.blackbelt.judo.tatami.core.workflow.work.NoOpWork;
 import hu.blackbelt.judo.tatami.core.workflow.work.Work;
 import hu.blackbelt.judo.tatami.core.workflow.work.WorkReport;
 import hu.blackbelt.judo.tatami.core.workflow.work.WorkReportPredicate;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 /**
  * A repeat flow executes a work repeatedly until its report is satisfied by a given predicate.
  */
+@Slf4j
 public class RepeatFlow extends AbstractWorkFlow {
 
     private Work work;
@@ -26,9 +29,11 @@ public class RepeatFlow extends AbstractWorkFlow {
      */
     public WorkReport call() {
         WorkReport workReport;
+        log.info("Call work '{}' - Call work:  '{}'", new String[] {getName(), work.getName()});
         do {
             workReport = work.call();
         } while (predicate.apply(workReport));
+        log.info("Work {} Returns: {} ", getName(), workReport);
         return workReport;
     }
 
