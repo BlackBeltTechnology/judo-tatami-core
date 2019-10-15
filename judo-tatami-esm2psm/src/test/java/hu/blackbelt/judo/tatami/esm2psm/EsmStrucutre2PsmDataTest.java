@@ -183,7 +183,6 @@ public class EsmStrucutre2PsmDataTest {
 
         final hu.blackbelt.judo.meta.psm.data.EntityType psmEntityType = allPsm(hu.blackbelt.judo.meta.psm.data.EntityType.class)
         		.filter(e -> e.getName().equals(entityType.getName())).findAny().get();
-
         assertTrue(psmEntityType.getAttributes().size() == 1);
         
         final Attribute psmAttribute = psmEntityType.getAttributes().get(0);
@@ -226,11 +225,9 @@ public class EsmStrucutre2PsmDataTest {
         		.filter(e -> e.getName().equals(entityType.getName())).findAny().get();
         final hu.blackbelt.judo.meta.psm.data.EntityType psmTarget = allPsm(hu.blackbelt.judo.meta.psm.data.EntityType.class)
         		.filter(e -> e.getName().equals(target.getName())).findAny().get();
-
         assertTrue(psmEntityType.getRelations().size() == 1);
         
         final hu.blackbelt.judo.meta.psm.data.Relation psmContainment = psmEntityType.getRelations().get(0);
-        
         assertTrue(psmContainment.getName().equals(containment.getName()));
         assertTrue(psmContainment.getCardinality().getLower() == containment.getLower());
         assertTrue(psmContainment.getCardinality().getUpper() == containment.getUpper());
@@ -268,11 +265,9 @@ public class EsmStrucutre2PsmDataTest {
         		.filter(e -> e.getName().equals(entityType.getName())).findAny().get();
         final hu.blackbelt.judo.meta.psm.data.EntityType psmTarget = allPsm(hu.blackbelt.judo.meta.psm.data.EntityType.class)
         		.filter(e -> e.getName().equals(target.getName())).findAny().get();
-
         assertTrue(psmEntityType.getRelations().size() == 1);
         
         final hu.blackbelt.judo.meta.psm.data.Relation psmAssociationEnd = psmEntityType.getRelations().get(0);
-        
         assertTrue(psmAssociationEnd.getName().equals(associationEnd.getName()));
         assertTrue(psmAssociationEnd.getCardinality().getLower() == associationEnd.getLower());
         assertTrue(psmAssociationEnd.getCardinality().getUpper() == associationEnd.getUpper());
@@ -317,7 +312,6 @@ public class EsmStrucutre2PsmDataTest {
         		.filter(e -> e.getName().equals(entityType.getName())).findAny().get();
         final hu.blackbelt.judo.meta.psm.data.EntityType psmTarget = allPsm(hu.blackbelt.judo.meta.psm.data.EntityType.class)
         		.filter(e -> e.getName().equals(target.getName())).findAny().get();
-
         assertTrue(psmEntityType.getRelations().size() == 1);
         assertTrue(target.getRelations().size() == 1);
         
