@@ -145,7 +145,7 @@ public class PsmDefaultWorkflowMojo extends AbstractMojo {
 		}
 
 		URL[] urlsForClassLoader = classPathUrls.toArray(new URL[classPathUrls.size()]);
-		getLog().info("Set urls for URLClassLoader: " + Arrays.asList(urlsForClassLoader));
+		getLog().debug("Set urls for URLClassLoader: " + Arrays.asList(urlsForClassLoader));
 
 		// need to define parent classloader which knows all dependencies of the plugin
 		ClassLoader classLoader = new URLClassLoader(urlsForClassLoader, PsmDefaultWorkflowMojo.class.getClassLoader());

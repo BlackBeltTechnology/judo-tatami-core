@@ -6,6 +6,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 import java.util.jar.Attributes;
@@ -19,11 +20,11 @@ import org.apache.maven.plugin.logging.Log;
 
 public class WorkflowHelper {
 	private final  Map<String, UrlAndPath> urlAndPathForTag = new ConcurrentHashMap();
-	private final List<URL> jarsForSearch;
+	private final Set<URL> jarsForSearch;
 	private final List<String> tags;
 	private final Log log;
 
-	public WorkflowHelper(Log log, List<URL> jarsForSearch, List<String> tags) {
+	public WorkflowHelper(Log log, Set<URL> jarsForSearch, List<String> tags) {
 		this.jarsForSearch = jarsForSearch;
 		this.tags = tags;
 		this.log = log;
@@ -31,7 +32,7 @@ public class WorkflowHelper {
 
 	public void extract() throws IOException {
 		for (URL originalUrl : jarsForSearch.stream().filter(u -> u.toString().endsWith(".jar")).collect(Collectors.toList())) {
-			log.info("Workflow helper - Proceessing URL: " + originalUrl);
+			log.debug("Workflow helper - Proceessing URL: " + originalUrl);
 
 			URL url;
 			if (originalUrl.toString().startsWith("jar:")) {
@@ -50,7 +51,7 @@ public class WorkflowHelper {
 			for (String tag : tags) {
 				// log.info("   Search for tag: " + tag);
 				if (manifestEntries.get(tag) != null) {
-					log.info("     - Tag " + tag + " found");
+					log.debug("     - Tag " + tag + " found");
 					urlAndPathForTag.put(tag, new UrlAndPath(url, (String) manifestEntries.get(tag)));
 				}
 			}
