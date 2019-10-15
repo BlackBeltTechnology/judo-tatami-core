@@ -2,11 +2,14 @@ package hu.blackbelt.judo.tatami.itest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.jaxrs.json.JacksonJaxbJsonProvider;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import hu.blackbelt.judo.tatami.core.Dispatcher;
 import hu.blackbelt.osgi.utils.osgi.api.BundleTrackerManager;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.runner.RunWith;
 import org.ops4j.pax.exam.Configuration;
 import org.ops4j.pax.exam.Option;
@@ -14,21 +17,56 @@ import org.ops4j.pax.exam.junit.PaxExam;
 import org.ops4j.pax.exam.spi.reactors.ExamReactorStrategy;
 import org.ops4j.pax.exam.spi.reactors.PerClass;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceReference;
 import org.osgi.service.log.LogService;
+import rest.demo.service.CategoryInfo;
+import rest.demo.service.InternationalOrderInfo;
+import rest.demo.service.InternationalOrderInfoQuery;
+import rest.demo.service.OrderInfo;
+import rest.demo.service.OrderInfoQuery;
+import rest.demo.service.OrderItemQuery;
+import rest.demo.service.ProductInfo;
+import rest.demo.service.ShipmentChange;
+import rest.demo.service.ShipperInfo;
 
 import javax.inject.Inject;
 import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.GenericType;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.io.*;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.time.ZonedDateTime;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import static hu.blackbelt.judo.framework.KarafTestUtil.karafConfig;
 import static hu.blackbelt.judo.framework.KarafTestUtil.karafStandardRepo;
-import static hu.blackbelt.judo.tatami.itest.TatamiTestUtil.*;
+import static hu.blackbelt.judo.tatami.itest.TatamiTestUtil.FEATURE_CXF_JACKSON;
+import static hu.blackbelt.judo.tatami.itest.TatamiTestUtil.FEATURE_CXF_JAXRS;
+import static hu.blackbelt.judo.tatami.itest.TatamiTestUtil.FEATURE_SWAGGER_CORE;
+import static hu.blackbelt.judo.tatami.itest.TatamiTestUtil.apacheCxf;
+import static hu.blackbelt.judo.tatami.itest.TatamiTestUtil.blackbeltAntlr;
+import static hu.blackbelt.judo.tatami.itest.TatamiTestUtil.blackbeltApacheCommons;
+import static hu.blackbelt.judo.tatami.itest.TatamiTestUtil.blackbeltApacheHttpClient;
+import static hu.blackbelt.judo.tatami.itest.TatamiTestUtil.blackbeltApachePoi;
+import static hu.blackbelt.judo.tatami.itest.TatamiTestUtil.blackbeltBouncCastle;
+import static hu.blackbelt.judo.tatami.itest.TatamiTestUtil.blackbeltEclipseEmf;
+import static hu.blackbelt.judo.tatami.itest.TatamiTestUtil.blackbeltEclipseEpsilon;
+import static hu.blackbelt.judo.tatami.itest.TatamiTestUtil.blackbeltEclipseXtext;
+import static hu.blackbelt.judo.tatami.itest.TatamiTestUtil.blackbeltEpsilonRuntime;
+import static hu.blackbelt.judo.tatami.itest.TatamiTestUtil.blackbeltGoogle;
+import static hu.blackbelt.judo.tatami.itest.TatamiTestUtil.blackbeltOsgiUtils;
+import static hu.blackbelt.judo.tatami.itest.TatamiTestUtil.blackbeltTatami;
+import static hu.blackbelt.judo.tatami.itest.TatamiTestUtil.blackbeltTinybundles;
 import static hu.blackbelt.judo.tatami.itest.TestUtility.assertBundleStarted;
 import static hu.blackbelt.judo.tatami.itest.TestUtility.waitWebPage;
 import static junit.framework.TestCase.assertNotNull;
+import static junit.framework.TestCase.assertTrue;
 import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
 import static org.ops4j.pax.exam.OptionUtils.combine;
 import static org.ops4j.pax.exam.cm.ConfigurationAdminOptions.newConfiguration;
@@ -36,23 +74,57 @@ import static org.ops4j.pax.exam.karaf.options.KarafDistributionOption.editConfi
 import static org.ops4j.pax.exam.karaf.options.KarafDistributionOption.features;
 import static org.osgi.service.log.LogService.LOG_ERROR;
 import static org.osgi.service.log.LogService.LOG_INFO;
+import static rest.demo.service.CategoryInfo.categoryInfoBuilder;
+import static rest.demo.service.InternationalOrderInfo.internationalOrderInfoBuilder;
+import static rest.demo.service.InternationalOrderInfoQuery.internationalOrderInfoQueryBuilder;
+import static rest.demo.service.OrderInfo.orderInfoBuilder;
+import static rest.demo.service.OrderInfoQuery$items$Reference.orderInfoQuery$items$ReferenceBuilder;
+import static rest.demo.service.OrderInfoQuery.orderInfoQueryBuilder;
+import static rest.demo.service.OrderItemQuery.orderItemQueryBuilder;
+import static rest.demo.service.ProductInfo.productInfoBuilder;
+import static rest.demo.service.ProductInfoQuery.productInfoQueryBuilder;
+import static rest.demo.service.ShipperInfo.shipperInfoBuilder;
 
 @Category(JaxRSTestSuite.class)
 @RunWith(PaxExam.class)
 @ExamReactorStrategy(PerClass.class)
 public class JaxRSITest {
     private static final String BASE_URL = "http://localhost:8181/cxf/demo/internalAP";
-    private static final String DEMO = "northwind-esm";
+
     private static final String DEMO_SERVICE_GET_ALL_ORDERS = "/demo/service/getAllOrders";
+    private static final String DEMO_SERVICE_GET_ALL_INTERNATIONAL_ORDERS = "/demo/service/getAllInternationalOrders";
+    private static final String DEMO_SERVICE_CREATE_ORDER = "/demo/service/createOrder";
+    private static final String DEMO_SERVICE_CREATE_INTERNATIONAL_ORDER = "/demo/service/createInternationalOrder";
+    private static final String DEMO_SERVICE_CREATE_PRODUCT = "/demo/service/createProduct";
+    private static final String DEMO_SERVICE_CREATE_SHIPPER = "/demo/service/createShipper";
+    private static final String DEMO_SERVICE_CREATE_CATEGORY = "/demo/service/createCategory";
 
-    public static final String FRAMEWORK_GROUPID = "hu.blackbelt.judo.framework";
+    private static final String DEMO_SERVICE_ORDERINFO_DELETE_ORDER = "/demo/service/OrderInfo/deleteOrder";
+    private static final String DEMO_SERVICE_ORDERINFO_CHANGE_SHIPMENT = "/demo/service/OrderInfo/changeShipment";
+    private static final String DEMO_SERVICE_ORDERINFO_UPDATE_ORDER = "/demo/service/OrderInfo/updateOrder";
 
-    public static final String FRAMEWORK_COMPILER_API = "compiler-api";
+    private static final String DEMO_SERVICE_ORDERINFOQUERY_CATEGORIES_GET = "/demo/service/OrderInfoQuery/categories/get";
 
-    public static final String BLACKBELT_CXF_GROUPID = "hu.blackbelt.cxf";
-    public static final String JAXRS_APPLICATION_MANAGER = "cxf-jaxrs-application-manager";
-    public static final String JAXRS_APPLICATION_MANAGER_VERSION = "0.4.0";
+    private static final String DEMO_SERVICE_ORDERINFOQUERY_ITEMS_GET = "/demo/service/OrderInfoQuery/items/get";
+    private static final String DEMO_SERVICE_ORDERINFOQUERY_ITEMS_SET = "/demo/service/OrderInfoQuery/items/set";
+    private static final String DEMO_SERVICE_ORDERINFOQUERY_ITEMS_ADD_ALL = "/demo/service/OrderInfoQuery/items/addAll";
+    private static final String DEMO_SERVICE_ORDERINFOQUERY_ITEMS_REMOVE_ALL = "/demo/service/OrderInfoQuery/items/removeAll";
+
+    private static final String DEMO_SERVICE_PRODUCTINFOQUERY_CATEGORY_GET_RANGE = "/demo/service/ProductInfoQuery/category/getRange";
+    private static final String DEMO_SERVICE_PRODUCTINFOQUERY_CATEGORY_UNSET = "/demo/service/ProductInfoQuery/category/unset";
+
+    //TODO-check&clean: moved to pom
+    //public static final String FRAMEWORK_COMPILER_API = "compiler-api";
+    //public static final String FRAMEWORK_GROUPID = "hu.blackbelt.judo.framework";
+
+    //public static final String BLACKBELT_CXF_GROUPID = "hu.blackbelt.cxf";
+    //public static final String JAXRS_APPLICATION_MANAGER = "cxf-jaxrs-application-manager";
+    //public static final String JAXRS_APPLICATION_MANAGER_VERSION = "0.5.0.develop_00081";
+
     public static final String FEATURE_JUDO_TATAMI_CORE = "judo-tatami-core";
+
+    private Dispatcher dispatcher;
+    private Response testResponse;
 
     @Inject
     LogService log;
@@ -66,13 +138,9 @@ public class JaxRSITest {
     @Inject
     ObjectMapper objectMapper;
 
-
     @Configuration
-    public Option[] config() throws FileNotFoundException {
-
+    public Option[] config () throws FileNotFoundException {
         return combine(karafConfig(this.getClass()),
-
-                features(karafStandardRepo()),
 
                 features(karafStandardRepo()),
 
@@ -106,23 +174,25 @@ public class JaxRSITest {
 
                 newConfiguration("hu.blackbelt.jaxrs.providers.JacksonProvider")
                         .put("JacksonProvider.SerializationFeature.INDENT_OUTPUT", "true")
+                        .put("JacksonProvider.SerializationFeature.WRITE_DATES_AS_TIMESTAMPS", "false")
                         .asOption(),
 
                 newConfiguration("hu.blackbelt.jaxrs.providers.ExtendedObjectMapperProvider")
-                        .put("placeholder", "true").asOption(),
+                        .put("placeholder", "true")
+                        .asOption(),
 
                 editConfigurationFilePut("etc/org.ops4j.pax.web.cfg",
                         "org.osgi.service.http.port", "8181"),
 
                 /* Added for test purposes only */
                 mavenBundle()
-                        .groupId(BLACKBELT_CXF_GROUPID)
-                        .artifactId(JAXRS_APPLICATION_MANAGER)
-                        .version(JAXRS_APPLICATION_MANAGER_VERSION).start(),
+                        .groupId("hu.blackbelt.cxf")
+                        .artifactId("cxf-jaxrs-application-manager")
+                        .versionAsInProject().start(),
 
                 mavenBundle()
-                        .groupId(FRAMEWORK_GROUPID)
-                        .artifactId(FRAMEWORK_COMPILER_API)
+                        .groupId("hu.blackbelt.judo.framework")
+                        .artifactId("compiler-api")
                         .versionAsInProject().start(),
 
                 mavenBundle()
@@ -130,48 +200,418 @@ public class JaxRSITest {
                         .artifactId("judo-tatami-asm2jaxrsapi")
                         .classifier("test-bundle")
                         .type("jar")
-                        .versionAsInProject().start()
-        );
+                        .versionAsInProject().start(),
 
+                mavenBundle()
+                        .groupId("org.json")
+                        .artifactId("json")
+                        .versionAsInProject().start(),
+
+                mavenBundle()
+                        .groupId("com.fasterxml.jackson.datatype")
+                        .artifactId("jackson-datatype-jdk8")
+                        .versionAsInProject().start(),
+
+                mavenBundle()
+                        .groupId("com.fasterxml.jackson.datatype")
+                        .artifactId("jackson-datatype-jsr310")
+                        .versionAsInProject().start(),
+
+                mavenBundle()
+                        .groupId("org.glassfish")
+                        .artifactId("javax.json")
+                        .versionAsInProject().start(),
+
+                mavenBundle()
+                        .groupId("com.fasterxml.jackson.datatype")
+                        .artifactId("jackson-datatype-jsr353")
+                        .versionAsInProject().start(),
+
+                mavenBundle()
+                        .groupId("com.fasterxml.jackson.module")
+                        .artifactId("jackson-module-parameter-names")
+                        .versionAsInProject().start(),
+
+                mavenBundle()
+                        .groupId("com.fasterxml.jackson.datatype")
+                        .artifactId("jackson-datatype-guava")
+                        .versionAsInProject().start()
+
+        );
     }
 
+    private Map<String, Object> fillTestMap () {
+        //key: path to endpoint method, value: object to return from dispatcher
+        Map<String, Object> testMap = new HashMap<>();
+        //UnboundServices
+        //getAllOrders (input: none, output: collection<OrderInfoQuery>), required (OrderInfoQuery): orderDate
+        testMap.put("demo.service.__UnboundServices#getAllOrders", ImmutableList.of(
+                        orderInfoQueryBuilder().shipperName("shipperNameInOrderInfoQuery0").orderDate(ZonedDateTime.now()).build().toMap(),
+                        orderInfoQueryBuilder().shipperName("shipperNameInOrderInfoQuery1").orderDate(ZonedDateTime.now()).build().toMap()));
 
-    @Test
-    public void testRest() throws Exception {
-        log.log(LOG_INFO, "==============================================");
-        log.log(LOG_INFO, "== RUNNING TEST REST METHOD");
-        log.log(LOG_INFO, "==============================================");
+        //getAllInternationalOrders (input: none, output: collection<InternationalOrderInfoQuery>), required (InternationalOrderInfoQuery): orderDate
+        testMap.put("demo.service.__UnboundServices#getAllInternationalOrders", ImmutableList.of(
+                        internationalOrderInfoQueryBuilder().shipperName("shipperNameInInternationalOrderInfoQuery0").orderDate(ZonedDateTime.now()).build().toMap(),
+                        internationalOrderInfoQueryBuilder().shipperName("shipperNameInInternationalOrderInfoQuery1").orderDate(ZonedDateTime.now()).build().toMap()));
 
-        assertBundleStarted(bundleContext,  "northwind-asm2jaxrsapi");
+        //createOrder (input: OrderInfo, output: OrderInfo), required (OrderInfo): orderDate
+        testMap.put("demo.service.__UnboundServices#createOrder", orderInfoBuilder().shipperName("shipperNameInNewOrderInfo").orderDate(ZonedDateTime.now()).build().toMap());
 
-        Dispatcher dispatcher = new Dispatcher() {
-            @Override
-            public Map<String, Object> callOperation(String target, String operation, Map<String, Object> payload) {
-                log.log(LOG_INFO, "Dispatcher called - " + target + " " + operation + " Payload: " + payload.toString());
-                return ImmutableMap.<String, Object>of();
-            }
-        };
-        bundleContext.registerService(Dispatcher.class, dispatcher, null);
+        //createInternationalOrder (input: InternationalOrderInfo, output: InternationalOrderInfo), req: excisetax, orderdate, customsdescr
+        testMap.put("demo.service.__UnboundServices#createInternationalOrder",
+                internationalOrderInfoBuilder().shipperName("shipperNameInNewInternationalOrderInfo").orderDate(ZonedDateTime.now()).exciseTax(3.14).customsDescription("customsDescription").build().toMap());
 
-        waitWebPage(BASE_URL +"/?_wadl");
+        //createProduct (input: ProductInfo, output: ProductInfo), req: unitprice, category, productname
+        testMap.put("demo.service.__UnboundServices#createProduct",
+                productInfoBuilder().productName("productNameInNewProductInfo").category(categoryInfoBuilder().categoryName("categoryInfoInCreateProduct").build()).unitPrice(3.14).build().toMap());
 
-        WebTarget wt = ClientBuilder.newClient().register(new JacksonJaxbJsonProvider()).target(BASE_URL);
+        //createShipper (input: ShipperInfo, output: ShipperInfo)
+        testMap.put("demo.service.__UnboundServices#createShipper", shipperInfoBuilder().companyName("companyNameInNewShipperInfo").build().toMap());
 
+        //createCategory (input: CategoryInfo output: CategoryInfo), req: categoryName
+        testMap.put("demo.service.__UnboundServices#createCategory", categoryInfoBuilder().categoryName("categoryNameInNewCategoryInfo").build().toMap());
 
-        Response response = null;
+        //updateOrder (input: OrderInfo, output: OrderInfo)
+        testMap.put("demo.service.OrderInfo#updateOrder", orderInfoBuilder().shipperName("newShipperNameInNewOrderInfo").orderDate(ZonedDateTime.now()).build().toMap());
+
+        //changeShipment (input: ShipmentChange, output: OrderInfo)
+        testMap.put("demo.service.OrderInfo#changeShipment", orderInfoBuilder().shipperName("shipperNameInNewShipmentChange").orderDate(ZonedDateTime.now()).build().toMap());
+
+        //OrderInfoQuery-categories (input: identifier only, output: collection<CategoryInfo>)
+        testMap.put("demo.service.OrderInfoQuery__categories#get", ImmutableList.of(
+                        categoryInfoBuilder().categoryName("categoryName0").build().toMap(),
+                        categoryInfoBuilder().categoryName("categoryName1").build().toMap()));
+
+        //OrderInfoQuery-items (input: identifier only, output: collection<OrderItemQuery>)
+        testMap.put("demo.service.OrderInfoQuery__items#get", ImmutableList.of(
+                        orderItemQueryBuilder().productName("productName0").quantity(42).discount(2.71).product(
+                                productInfoQueryBuilder().productName("productName").unitPrice(3.14).category(
+                                        categoryInfoBuilder().categoryName("categoryNameInProductInfoQuery").build()
+                                ).build()
+                        ).category(
+                                categoryInfoBuilder().categoryName("categoryNameInOrderItemQuery").build()
+                        ).build().toMap(),
+                        orderItemQueryBuilder().productName("productName1").quantity(42).discount(2.71).product(
+                                productInfoQueryBuilder().productName("productName").unitPrice(3.14).category(
+                                        categoryInfoBuilder().categoryName("categoryNameInProductInfoQuery").build()
+                                ).build()
+                        ).category(
+                                categoryInfoBuilder().categoryName("categoryNameInOrderItemQuery").build()
+                        ).build().toMap()));
+
+        //ProductInfoQuery-category (input: identifier only, output: collection<CategoryInfo>)
+        testMap.put("demo.service.ProductInfoQuery__category#getRange", ImmutableList.of(
+                        categoryInfoBuilder().categoryName("categoryName0").build().toMap(),
+                        categoryInfoBuilder().categoryName("categoryName1").build().toMap()));
+        return testMap;
+    }
+
+    @Before
+    public void init () throws Exception {
+        class Semaphore {
+        }
+
+        Map<String, Object> testMap = fillTestMap();
+
+        ServiceReference reference = bundleContext.getServiceReference(Semaphore.class);
+        if (reference == null) {
+
+            assertBundleStarted(bundleContext, "northwind-asm2jaxrsapi");
+
+            dispatcher = new Dispatcher() {
+                @Override
+                public Map<String, Object> callOperation (String target, String operationFqName, Map<String, Object> payload) {
+                    log.log(LOG_INFO, "Dispatcher called - " + target + " " + operationFqName + " Payload: " + payload.toString());
+                    if (!testMap.containsKey(operationFqName)) {
+                        switch (operationFqName) {
+                            case "demo.service.OrderInfo#deleteOrder": //(input: none)
+                            case "demo.service.OrderInfoQuery__items#set": //(input: identifier & collection<rest.demo.service.OrderInfoQuery$items$Reference>)
+                            case "demo.service.OrderInfoQuery__items#addAll": //(input: identifier & collection<rest.demo.service.OrderInfoQuery$items$Reference>)
+                            case "demo.service.OrderInfoQuery__items#removeAll": //(input: identifier & collection<rest.demo.service.OrderInfoQuery$items$Reference>)
+                            case "demo.service.ProductInfoQuery__category#unset": //(input: identifier only)
+                                return ImmutableMap.of();
+                            default:
+                                log.log(LOG_ERROR, "Operation not found by operationFqName! Given operationFqName was \"" + operationFqName + "\"");
+                                return ImmutableMap.of();
+                        }
+                    } else {
+                        return ImmutableMap.of("output", testMap.get(operationFqName));
+                    }
+                }
+            };
+            bundleContext.registerService(Dispatcher.class, dispatcher, null);
+
+            waitWebPage(BASE_URL + "/?_wadl");
+            bundleContext.registerService(Semaphore.class, new Semaphore(), null);
+        }
+    }
+
+    public WebTarget getWebTarget (String pathToMethod) {
+        return ClientBuilder.newClient().register(
+                new JacksonJaxbJsonProvider(objectMapper, JacksonJaxbJsonProvider.DEFAULT_ANNOTATIONS))
+                .target(BASE_URL).path(pathToMethod);
+    }
+
+    //GET
+    public Response getResponse (String pathToMethod) {
         try {
-            response = wt.path(DEMO_SERVICE_GET_ALL_ORDERS)
+            testResponse = getWebTarget(pathToMethod)
                     .request("application/json")
+                    .header("__identifier", UUID.randomUUID())
                     .get();
-            //.post(null, OrderInfo.class);
         } catch (Exception e) {
             log.log(LOG_ERROR, "EXCEPTION: ", e);
         }
-        assertNotNull(response);
-
-        log.log(LOG_INFO, "==============================================");
-        log.log(LOG_INFO, "== STOPPING TEST REST METHOD");
-        log.log(LOG_INFO, "==============================================");
+        return testResponse;
     }
 
+    //POST with input
+    public Response getResponse (String pathToMethod, Object input) {
+        try {
+            testResponse = getWebTarget(pathToMethod)
+                    .request("application/json")
+                    .header("__identifier", UUID.randomUUID())
+                    .post(Entity.entity(input, MediaType.APPLICATION_JSON));
+        } catch (Exception e) {
+            log.log(LOG_ERROR, "EXCEPTION: ", e);
+        }
+        return testResponse;
+    }
+
+    //POST with class type
+    public Response getResponseWithEmptyPost (String pathToMethod) {
+        try {
+            testResponse = getWebTarget(pathToMethod)
+                    .request("application/json")
+                    .header("__identifier", UUID.randomUUID())
+                    .post(Entity.entity("", MediaType.APPLICATION_JSON));
+        } catch (Exception e) {
+            log.log(LOG_ERROR, "EXCEPTION: ", e);
+        }
+        return testResponse;
+    }
+
+    @AfterEach
+    public void clearTestResponse () {
+        testResponse.close();
+    }
+
+    private void logTest (String path) {
+        log.log(LOG_INFO, "==============================================\nTesting " + path + "...\n==============================================");
+    }
+
+    //Unbound Services
+    @Test
+    public void testGetAllOrders () throws IOException {
+        logTest(DEMO_SERVICE_GET_ALL_ORDERS);
+
+        Response response = getResponse(DEMO_SERVICE_GET_ALL_ORDERS);
+
+        assertNotNull(response);
+        assertTrue(response.getStatusInfo().getFamily().equals(Response.Status.Family.SUCCESSFUL));
+
+
+        //serializing the response containing collection
+        List<OrderInfoQuery> output = response.readEntity(new GenericType<List<OrderInfoQuery>>() {
+        });
+
+        assertTrue("shipperNameInOrderInfoQuery0".equals(output.get(0).getShipperName()));
+        assertTrue("shipperNameInOrderInfoQuery1".equals(output.get(1).getShipperName()));
+    }
+
+    @Test
+    public void testGetAllInternationalOrders () {
+        logTest(DEMO_SERVICE_GET_ALL_INTERNATIONAL_ORDERS);
+
+        Response response = getResponse(DEMO_SERVICE_GET_ALL_INTERNATIONAL_ORDERS);
+
+        assertNotNull(response);
+        assertTrue(response.getStatusInfo().getFamily().equals(Response.Status.Family.SUCCESSFUL));
+
+        List<InternationalOrderInfoQuery> output = response.readEntity(new GenericType<List<InternationalOrderInfoQuery>>() {
+        });
+
+        assertTrue("shipperNameInInternationalOrderInfoQuery0".equals(output.get(0).getShipperName()));
+        assertTrue("shipperNameInInternationalOrderInfoQuery1".equals(output.get(1).getShipperName()));
+    }
+
+    @Test
+    public void testCreateOrder () {
+        logTest(DEMO_SERVICE_CREATE_ORDER);
+
+        Response response = getResponse(DEMO_SERVICE_CREATE_ORDER, orderInfoBuilder().orderDate(ZonedDateTime.now()).build());
+
+        assertNotNull(response);
+        assertTrue(response.getStatusInfo().getFamily().equals(Response.Status.Family.SUCCESSFUL));
+        assertTrue("shipperNameInNewOrderInfo".equals(response.readEntity(OrderInfo.class).getShipperName()));
+    }
+
+    @Test
+    public void testCreateInternationalOrder () {
+        logTest(DEMO_SERVICE_CREATE_INTERNATIONAL_ORDER);
+
+        Response response = getResponse(DEMO_SERVICE_CREATE_INTERNATIONAL_ORDER,
+                internationalOrderInfoBuilder().exciseTax(3.14).orderDate(ZonedDateTime.now()).customsDescription("customsDescription").build());
+
+        assertNotNull(response);
+        assertTrue(response.getStatusInfo().getFamily().equals(Response.Status.Family.SUCCESSFUL));
+        assertTrue("shipperNameInNewInternationalOrderInfo".equals(response.readEntity(InternationalOrderInfo.class).getShipperName()));
+    }
+
+    @Test
+    public void testCreateProduct () {
+        logTest(DEMO_SERVICE_CREATE_PRODUCT);
+
+        Response response = getResponse(DEMO_SERVICE_CREATE_PRODUCT,
+                productInfoBuilder().productName("productNameInNewProductInfo").category(categoryInfoBuilder().categoryName("categoryInfoInCreateProduct").build()).unitPrice(3.14).build());
+
+        assertNotNull(response);
+        assertTrue(response.getStatusInfo().getFamily().equals(Response.Status.Family.SUCCESSFUL));
+        assertTrue("productNameInNewProductInfo".equals(response.readEntity(ProductInfo.class).getProductName()));
+    }
+
+    @Test
+    public void testCreateShipper () {
+        logTest(DEMO_SERVICE_CREATE_SHIPPER);
+
+        Response response = getResponse(DEMO_SERVICE_CREATE_SHIPPER, shipperInfoBuilder().build());
+
+        assertNotNull(response);
+        assertTrue(response.getStatusInfo().getFamily().equals(Response.Status.Family.SUCCESSFUL));
+        assertTrue("companyNameInNewShipperInfo".equals(response.readEntity(ShipperInfo.class).getCompanyName()));
+    }
+
+    //Bound Services
+    @Test
+    public void testOrderInfoDeleteOrder () {
+        logTest(DEMO_SERVICE_ORDERINFO_DELETE_ORDER);
+
+        Response response = getResponseWithEmptyPost(DEMO_SERVICE_ORDERINFO_DELETE_ORDER);
+
+        assertNotNull(response);
+        assertTrue(response.getStatusInfo().getFamily().equals(Response.Status.Family.SUCCESSFUL));
+    }
+
+    @Test
+    public void testCreateCategory () {
+        logTest(DEMO_SERVICE_CREATE_CATEGORY);
+
+        Response response = getResponse(DEMO_SERVICE_CREATE_CATEGORY, categoryInfoBuilder().categoryName("categoryNameInNewCategoryInfo").build());
+
+        assertNotNull(response);
+        assertTrue(response.getStatusInfo().getFamily().equals(Response.Status.Family.SUCCESSFUL));
+        assertTrue("categoryNameInNewCategoryInfo".equals(response.readEntity(CategoryInfo.class).getCategoryName()));
+    }
+
+    @Test
+    public void testOrderInfoUpdateOrder () {
+        logTest(DEMO_SERVICE_ORDERINFO_UPDATE_ORDER);
+
+        Response response = getResponse(DEMO_SERVICE_ORDERINFO_UPDATE_ORDER,
+                internationalOrderInfoBuilder().orderDate(ZonedDateTime.now()).exciseTax(3.14).customsDescription("customsDescription").build());
+
+        assertNotNull(response);
+        assertTrue(response.getStatusInfo().getFamily().equals(Response.Status.Family.SUCCESSFUL));
+
+        assertTrue("newShipperNameInNewOrderInfo".equals(response.readEntity(OrderInfo.class).getShipperName()));
+    }
+
+    @Test
+    public void testOrderInfoChangeShipment () {
+        logTest(DEMO_SERVICE_ORDERINFO_CHANGE_SHIPMENT);
+
+        Response response = getResponse(DEMO_SERVICE_ORDERINFO_CHANGE_SHIPMENT, orderInfoBuilder().orderDate(ZonedDateTime.now()).build());
+
+        assertNotNull(response);
+        assertTrue(response.getStatusInfo().getFamily().equals(Response.Status.Family.SUCCESSFUL));
+        assertTrue("shipperNameInNewShipmentChange".equals(response.readEntity(ShipmentChange.class).getShipperName()));
+    }
+
+    @Test
+    public void testOrderInfoQueryCategoriesGet () {
+        logTest(DEMO_SERVICE_ORDERINFOQUERY_CATEGORIES_GET);
+
+        Response response = getResponse(DEMO_SERVICE_ORDERINFOQUERY_CATEGORIES_GET);
+
+        assertNotNull(response);
+        assertTrue(response.getStatusInfo().getFamily().equals(Response.Status.Family.SUCCESSFUL));
+
+        List<CategoryInfo> output = response.readEntity(new GenericType<List<CategoryInfo>>() {
+        });
+
+        assertTrue("categoryName0".equals(output.get(0).getCategoryName()));
+        assertTrue("categoryName1".equals(output.get(1).getCategoryName()));
+    }
+
+    @Test
+    public void testOrderInfoQueryItemsGet () {
+        logTest(DEMO_SERVICE_ORDERINFOQUERY_ITEMS_GET);
+
+        Response response = getResponse(DEMO_SERVICE_ORDERINFOQUERY_ITEMS_GET);
+
+        assertNotNull(response);
+        assertTrue(response.getStatusInfo().getFamily().equals(Response.Status.Family.SUCCESSFUL));
+
+        List<OrderItemQuery> output = response.readEntity(new GenericType<List<OrderItemQuery>>() {
+        });
+
+        assertTrue("productName0".equals(output.get(0).getProductName()));
+        assertTrue("productName1".equals(output.get(1).getProductName()));
+
+    }
+
+    @Test
+    public void testProductInfoQueryCategoryGetRange () {
+        logTest(DEMO_SERVICE_PRODUCTINFOQUERY_CATEGORY_GET_RANGE);
+
+        Response response = getResponse(DEMO_SERVICE_PRODUCTINFOQUERY_CATEGORY_GET_RANGE);
+
+        assertNotNull(response);
+        assertTrue(response.getStatusInfo().getFamily().equals(Response.Status.Family.SUCCESSFUL));
+
+        List<CategoryInfo> output = response.readEntity(new GenericType<List<CategoryInfo>>() {
+        });
+
+        assertTrue("categoryName0".equals(output.get(0).getCategoryName()));
+        assertTrue("categoryName1".equals(output.get(1).getCategoryName()));
+    }
+
+    @Test
+    public void testProductInfoQueryCategoryUnset () throws Exception {
+        logTest(DEMO_SERVICE_PRODUCTINFOQUERY_CATEGORY_UNSET);
+
+        Response response = getResponseWithEmptyPost(DEMO_SERVICE_PRODUCTINFOQUERY_CATEGORY_UNSET);
+
+        assertNotNull(response);
+        assertTrue(response.getStatusInfo().getFamily().equals(Response.Status.Family.SUCCESSFUL));
+    }
+
+    @Test
+    public void testOrderInfoQueryItemsSet () {
+        logTest(DEMO_SERVICE_ORDERINFOQUERY_ITEMS_SET);
+
+        Response response = getResponse(DEMO_SERVICE_ORDERINFOQUERY_ITEMS_SET, ImmutableList.of(orderInfoQuery$items$ReferenceBuilder().build()));
+
+        assertNotNull(response);
+        assertTrue(response.getStatusInfo().getFamily().equals(Response.Status.Family.SUCCESSFUL));
+    }
+
+    @Test
+    public void testOrderInfoQueryItemsAddAll () {
+        logTest(DEMO_SERVICE_ORDERINFOQUERY_ITEMS_ADD_ALL);
+
+        Response response = getResponse(DEMO_SERVICE_ORDERINFOQUERY_ITEMS_ADD_ALL, ImmutableList.of(orderInfoQuery$items$ReferenceBuilder().build()));
+        assertNotNull(response);
+        assertTrue(response.getStatusInfo().getFamily().equals(Response.Status.Family.SUCCESSFUL));
+    }
+
+    @Test
+    public void testOrderInfoQueryItemsRemoveAll () {
+        logTest(DEMO_SERVICE_ORDERINFOQUERY_ITEMS_REMOVE_ALL);
+
+        Response response = getResponse(DEMO_SERVICE_ORDERINFOQUERY_ITEMS_REMOVE_ALL, ImmutableList.of(orderInfoQuery$items$ReferenceBuilder().build()));
+
+        assertNotNull(response);
+        assertTrue(response.getStatusInfo().getFamily().equals(Response.Status.Family.SUCCESSFUL));
+    }
 }
