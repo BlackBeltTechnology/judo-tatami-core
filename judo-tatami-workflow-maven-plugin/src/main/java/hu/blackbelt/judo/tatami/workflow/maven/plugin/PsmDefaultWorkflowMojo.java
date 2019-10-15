@@ -3,11 +3,11 @@ package hu.blackbelt.judo.tatami.workflow.maven.plugin;
 import java.io.File;
 import java.io.IOException;
 import java.net.*;
-import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
-import lombok.Builder;
 import lombok.Getter;
 import org.apache.maven.artifact.DependencyResolutionRequiredException;
 import org.apache.maven.plugin.AbstractMojo;
@@ -16,6 +16,7 @@ import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugin.descriptor.PluginDescriptor;
 import org.apache.maven.plugins.annotations.*;
 import org.apache.maven.project.MavenProject;
+import org.codehaus.plexus.classworlds.realm.ClassRealm;
 import org.eclipse.aether.RepositorySystem;
 import org.eclipse.aether.RepositorySystemSession;
 import org.eclipse.aether.repository.RemoteRepository;
@@ -128,16 +129,23 @@ public class PsmDefaultWorkflowMojo extends AbstractMojo {
 			ASM_2_JAXRSAPI_TRANSFORMATION_SCRIPT_ROOT)
 	private List<String> tagsForSearch;
 
-	List<URL> compileClasspathFiles = new ArrayList<>();
+	Set<URL> classPathUrls = new HashSet<>();
 
 	private void setContextClassLoader() throws DependencyResolutionRequiredException, MalformedURLException {
+		// Project dependencies
 		for (Object mavenCompilePath : project.getCompileClasspathElements()) {
 			String currentPathProcessed = (String) mavenCompilePath;
-			compileClasspathFiles.add(new File(currentPathProcessed).toURI().toURL());
+			classPathUrls.add(new File(currentPathProcessed).toURI().toURL());
 		}
 
-		URL[] urlsForClassLoader = compileClasspathFiles.toArray(new URL[compileClasspathFiles.size()]);
-		getLog().info("Set urls for URLClassLoader: " + Arrays.asList(urlsForClassLoader));
+		// Plugin dependencies
+		final ClassRealm classRealm = pluginDescriptor.getClassRealm();
+		for (URL url: classRealm.getURLs()) {
+			classPathUrls.add(url);
+		}
+
+		URL[] urlsForClassLoader = classPathUrls.toArray(new URL[classPathUrls.size()]);
+		getLog().debug("Set urls for URLClassLoader: " + Arrays.asList(urlsForClassLoader));
 
 		// need to define parent classloader which knows all dependencies of the plugin
 		ClassLoader classLoader = new URLClassLoader(urlsForClassLoader, PsmDefaultWorkflowMojo.class.getClassLoader());
@@ -159,7 +167,7 @@ public class PsmDefaultWorkflowMojo extends AbstractMojo {
 			throw new MojoExecutionException("Failed to set classloader", e);
 		}
 
-		WorkflowHelper workflowHelper = new WorkflowHelper(getLog(), compileClasspathFiles, tagsForSearch);
+		WorkflowHelper workflowHelper = new WorkflowHelper(getLog(), classPathUrls, tagsForSearch);
 
 		PsmDefaultWorkflow defaultWorkflow;
 		try {
