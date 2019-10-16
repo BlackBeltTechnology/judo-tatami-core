@@ -157,11 +157,6 @@ rule CreateMappedEntityTypeAnnotationOnReferenceClassForRelation
         mappedEntityType.value = asmUtils.getClassifierFQName(s.target.entityType.equivalent("CreateEntityClass"));
         t.details.add(mappedEntityType);
         
-        var entityIdPresence = new ASM!EStringToStringMapEntry;
-        entityIdPresence.key = "entityIdPresence";
-        entityIdPresence.value = JUDOPSM!EntityReferenceType#REQUIRED.name;
-        t.details.add(entityIdPresence);
-        
         s.equivalent("CreateReferenceClassForRelation").eAnnotations.add(t);
 }
 

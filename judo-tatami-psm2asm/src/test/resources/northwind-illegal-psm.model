@@ -492,7 +492,7 @@
     <elements xsi:type="service:MappedTransferObjectType" xmi:id="_OUfQ4IFSEemFzY3ZWApzVQ" name="ShipperInfo" entityType="_GnEEcINlEeiLE-B2bbL0fg">
       <attributes xmi:id="_QqGdYIFSEemFzY3ZWApzVQ" name="companyName" dataType="_Nppx8IUcEeipmMyz9cMCRA" binding="_Pki0cINzEeiLE-B2bbL0fg"/>
     </elements>
-    <elements xsi:type="service:MappedTransferObjectType" xmi:id="_ETGEYCVQEemLpvUY7MQgng" name="OrderInfoQuery" entityType="_-H4RoINkEeiLE-B2bbL0fg" entityReferencePresence="REQUIRED">
+    <elements xsi:type="service:MappedTransferObjectType" xmi:id="_ETGEYCVQEemLpvUY7MQgng" name="OrderInfoQuery" entityType="_-H4RoINkEeiLE-B2bbL0fg">
       <relations xmi:id="_8M4aICVuEemLpvUY7MQgng" name="items" binding="_2CC44LwNEeiOuYiCo6IbXQ" target="_nao6QCVuEemLpvUY7MQgng" embedded="true">
         <cardinality xmi:id="_-kd8kCVuEemLpvUY7MQgng" upper="-1"/>
       </relations>
@@ -502,7 +502,7 @@
       <attributes xmi:id="_U4tLwCVQEemLpvUY7MQgng" name="orderDate" required="true" dataType="_Z9J8IIN1EeiLE-B2bbL0fg" binding="_WXvUoIN1EeiLE-B2bbL0fg"/>
       <attributes xmi:id="_u7NrYCVQEemLpvUY7MQgng" name="shipperName" dataType="_Nppx8IUcEeipmMyz9cMCRA" binding="_5i40sCVQEemLpvUY7MQgng"/>
     </elements>
-    <elements xsi:type="service:MappedTransferObjectType" xmi:id="_8y7MsIFTEemFzY3ZWApzVQ" name="InternationalOrderInfoQuery" entityType="_MoVqYINlEeiLE-B2bbL0fg" entityReferencePresence="REQUIRED">
+    <elements xsi:type="service:MappedTransferObjectType" xmi:id="_8y7MsIFTEemFzY3ZWApzVQ" name="InternationalOrderInfoQuery" entityType="_MoVqYINlEeiLE-B2bbL0fg">
       <relations xmi:id="_8y7MsYFTEemFzY3ZWApzVQ" name="items" binding="_2CC44LwNEeiOuYiCo6IbXQ" target="_nao6QCVuEemLpvUY7MQgng" embedded="true">
         <cardinality xmi:id="_8y7MsoFTEemFzY3ZWApzVQ" upper="-1"/>
       </relations>
@@ -512,7 +512,7 @@
       <attributes xmi:id="_8y7MtYFTEemFzY3ZWApzVQ" name="orderDate" required="true" dataType="_Z9J8IIN1EeiLE-B2bbL0fg" binding="_WXvUoIN1EeiLE-B2bbL0fg"/>
       <attributes xmi:id="_8y7MtoFTEemFzY3ZWApzVQ" name="shipperName" dataType="_Nppx8IUcEeipmMyz9cMCRA" binding="_5i40sCVQEemLpvUY7MQgng"/>
     </elements>
-    <elements xsi:type="service:MappedTransferObjectType" xmi:id="_nao6QCVuEemLpvUY7MQgng" name="OrderItemQuery" entityType="__XzocINkEeiLE-B2bbL0fg" entityReferencePresence="REQUIRED">
+    <elements xsi:type="service:MappedTransferObjectType" xmi:id="_nao6QCVuEemLpvUY7MQgng" name="OrderItemQuery" entityType="__XzocINkEeiLE-B2bbL0fg">
       <relations xmi:id="_eboboEWeEemHs64O5EYsyQ" name="product" binding="_6QtRsLwNEeiOuYiCo6IbXQ" range="_vA7SgEZlEemHs64O5EYsyQ" target="_PL79YIHuEemFzY3ZWApzVQ" embedded="true">
         <cardinality xmi:id="_ElBGIEWiEemHs64O5EYsyQ" lower="1"/>
       </relations>
@@ -531,7 +531,7 @@
       <attributes xmi:id="_s0y9wEWXEemHs64O5EYsyQ" name="productName" required="true" dataType="_Nppx8IUcEeipmMyz9cMCRA" binding="_LhnHUINvEeiLE-B2bbL0fg"/>
       <attributes xmi:id="_02GVgIFSEemFzY3ZWApzVQ" name="unitPrice" required="true" dataType="_VDVVQIUcEeipmMyz9cMCRA" binding="_bBDQ0INvEeiLE-B2bbL0fg"/>
     </elements>
-    <elements xsi:type="service:MappedTransferObjectType" xmi:id="_PL79YIHuEemFzY3ZWApzVQ" name="ProductInfoQuery" entityType="_6XH80INkEeiLE-B2bbL0fg" entityReferencePresence="REQUIRED">
+    <elements xsi:type="service:MappedTransferObjectType" xmi:id="_PL79YIHuEemFzY3ZWApzVQ" name="ProductInfoQuery" entityType="_6XH80INkEeiLE-B2bbL0fg">
       <relations xmi:id="_PL79YYHuEemFzY3ZWApzVQ" name="category" binding="_CkXK8LwDEeiOuYiCo6IbXQ" range="_xeUiAEZlEemHs64O5EYsyQ" target="_xxeTIEWXEemHs64O5EYsyQ" embedded="true">
         <cardinality xmi:id="_PL79YoHuEemFzY3ZWApzVQ" lower="1"/>
       </relations>
