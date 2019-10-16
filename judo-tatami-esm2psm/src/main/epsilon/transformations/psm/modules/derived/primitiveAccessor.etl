@@ -1,4 +1,5 @@
 import "../data/primitiveTypedElement.etl";
+import "../../../../operations/esm/data/entityType.eol";
 import "expressionType.etl";
 import "../../../../operations/esm/derived/expressionType.eol";
 
@@ -8,20 +9,15 @@ rule CreatePrimitiveAccessor
 	to t : JUDOPSM!PrimitiveAccessor
 	extends CreatePrimitiveTypedElement {
 	  t.getterExpression = s.getterExpression.getPSMEquivalent();
-	  if (s.setterExpression.isDefined()) {
-	  	t.setterExpression = s.setterExpression.getPSMEquivalent();
-	  }
+	  t.setterExpression = s.setterExpression.getPSMEquivalent();
 }
 
 rule CreateDataProperty
-	transform s : ESM!DataProperty
+	transform s : ESM!DataMember
 	to t : JUDOPSM!DataProperty
 	extends CreatePrimitiveAccessor {
-	  var entity : ESM!EntityType = s.eContainer;
-	  entity.equivalent("CreateEntityType").dataProperties.add(t);
-	  for(transferAttribute in ESM!TransferAttribute.all.select(ta | ta.primitiveTypedElement = s)) {
-	  	transferAttribute.equivalent("CreateTransferAttribute").binding = t;
-	  }
+	  guard: s.property and s.eContainer.isKindOf(ESM!EntityType)
+	  s.eContainer.getPSMEquivalent().dataProperties.add(t);
 	  log.debug("Created DataProperty: " + t.name);
 }
 
@@ -29,5 +25,11 @@ rule CreateStaticData
 	transform s : ESM!StaticData
 	to t : JUDOPSM!StaticData
 	extends CreatePrimitiveAccessor {
+	   var namespace : ESM!Namespace = s.eContainer;
+       if (namespace.isKindOf(ESM!Model)) {
+            namespace.equivalent("CreateModel").elements.add(t);
+       } else if (namespace.isKindOf(ESM!Package)) {
+            namespace.equivalent("CreatePackage").elements.add(t);
+       }
 	  log.debug("Created StaticData: " + t.name);
 }

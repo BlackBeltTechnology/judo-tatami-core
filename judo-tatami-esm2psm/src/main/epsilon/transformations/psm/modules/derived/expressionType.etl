@@ -1,9 +1,13 @@
 @abstract
+@greedy
 rule CreateExpressionType
 	transform s : ESM!ExpressionType
 	to t : JUDOPSM!ExpressionType {
-	  t.expression = s.expression;
-	  t.dialect = JUDOPSM!ExpressionDialect#JQL; //[postponed] //s.dialect.getPSMEquivalent();
+	   t.expression = s.expression;
+	  switch (s.dialect) {
+            case ESM!ExpressionDialect#JQL: t.dialect = JUDOPSM!ExpressionDialect#JQL;
+            case ESM!ExpressionDialect#XML: t.dialect = JUDOPSM!ExpressionDialect#XML;
+    }
 }
 
 @lazy
@@ -18,7 +22,7 @@ rule CreateDataExpressionType
 rule CreateLogicalExpressionType
 	transform s : ESM!LogicalExpressionType
 	to t : JUDOPSM!LogicalExpressionType
-	extends CreateDataExpressionType {
+	extends CreateExpressionType {
 	  log.debug("Created LogicalExpressionType: ");
 }
 
@@ -26,7 +30,7 @@ rule CreateLogicalExpressionType
 rule CreateAttributeSelectorType
 	transform s : ESM!AttributeSelectorType
 	to t : JUDOPSM!AttributeSelectorType
-	extends CreateDataExpressionType {
+	extends CreateExpressionType {
 	  log.debug("Created AttributeSelectorType: ");
 }
 
@@ -42,6 +46,6 @@ rule CreateReferenceExpressionType
 rule CreateReferenceSelectorType
 	transform s : ESM!ReferenceSelectorType
 	to t : JUDOPSM!ReferenceSelectorType
-	extends CreateReferenceExpressionType {
+	extends CreateExpressionType {
 	  log.debug("Created ReferenceSelectorType: ");
 }
