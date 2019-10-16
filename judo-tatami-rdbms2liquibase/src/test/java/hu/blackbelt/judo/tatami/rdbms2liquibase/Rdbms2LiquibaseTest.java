@@ -31,7 +31,7 @@ import static hu.blackbelt.judo.tatami.rdbms2liquibase.Rdbms2Liquibase.executeRd
 public class Rdbms2LiquibaseTest {
 
     public static final String NORTHWIND = "northwind";
-    public static final String NORTHWIND_RDBMS_MODEL = "northwind-rdbms.model";
+    public static final String NORTHWIND_RDBMS_MODEL = "northwind-rdbms_hsqldb.model";
     public static final String NORTHWIND_LIQUIBASE_MODEL = "northwind.changelog.xml";
     public static final String TARGET_TEST_CLASSES = "target/test-classes";
 

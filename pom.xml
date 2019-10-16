@@ -67,7 +67,7 @@
         <judo-meta-esm-version>1.1.0.develop_00143</judo-meta-esm-version>
         <judo-meta-esm-import-range>[1.0,1.1)</judo-meta-esm-import-range>
 
-        <judo-meta-psm-version>1.0.0.develop_00400</judo-meta-psm-version>
+        <judo-meta-psm-version>1.0.0.20191016_111430_2790de1_develop</judo-meta-psm-version>
         <judo-meta-psm-import-range>[1.0,1.1)</judo-meta-psm-import-range>
 
         <judo-meta-jql-version>1.0.0.develop_00050</judo-meta-jql-version>
@@ -88,7 +88,9 @@
         <judo-meta-openapi-version>1.0.0.develop_00113</judo-meta-openapi-version>
         <judo-meta-openapi-import-range>[1.0,1.1)</judo-meta-openapi-import-range>
 
-        <northwind-model-version>1.0.0.develop_00145</northwind-model-version>
+        <!-- <northwind-model-version>1.0.0.develop_00145</northwind-model-version> -->
+        <!-- We use older version of plugin to avoid chicked egg problem -->
+        <judo-tatami-workflow-maven-plugin-version>1.0.0.20191015_161412_49fc277_develop</judo-tatami-workflow-maven-plugin-version>
 
         <!-- Xtend / Xcore -->
         <emf-version>2.18.0</emf-version>
@@ -476,6 +478,12 @@
     <build>
         <pluginManagement>
             <plugins>
+                <plugin>
+                    <groupId>hu.blackbelt.judo.tatami</groupId>
+                    <artifactId>judo-tatami-workflow-maven-plugin</artifactId>
+                    <version>${judo-tatami-workflow-maven-plugin-version}</version>
+                </plugin>
+
                 <plugin>
                     <groupId>org.apache.karaf.tooling</groupId>
                     <artifactId>karaf-maven-plugin</artifactId>
