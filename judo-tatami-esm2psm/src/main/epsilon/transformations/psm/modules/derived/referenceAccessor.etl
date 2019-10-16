@@ -7,8 +7,12 @@ rule CreateReferenceAccessor
 	transform s : ESM!ReferenceAccessor
 	to t : JUDOPSM!ReferenceAccessor
 	extends CreateReferenceTypedElement {
-	  t.getterExpression = s.getterExpression.getPSMEquivalent();
-	  t.setterExpression = s.setterExpression.getPSMEquivalent();
+	   if (s.getterExpression.expression <> "") {
+	       t.getterExpression = s.getterExpression.getPSMEquivalent();
+	   }
+	   if (s.setterExpression.expression <> "") {
+	       t.setterExpression = s.setterExpression.getPSMEquivalent();
+	   }
 }
 
 rule CreateNavigationProperty

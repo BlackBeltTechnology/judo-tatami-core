@@ -125,7 +125,7 @@ public class EsmStrucutre2PsmDerivedTest {
         
         DataMember member = newDataMemberBuilder().withName("dataProperty")
         		.withDataType(string)
-        		.withGetterExpression(newDataExpressionTypeBuilder().withExpression("").withDialect(ExpressionDialect.XML).build())
+        		.withGetterExpression(newDataExpressionTypeBuilder().withExpression("exp").withDialect(ExpressionDialect.XML).build())
         		.withSetterExpression(newAttributeSelectorTypeBuilder().withExpression("").withDialect(ExpressionDialect.XML).build())
         		.withProperty(true)
         		.build();
@@ -152,10 +152,10 @@ public class EsmStrucutre2PsmDerivedTest {
         assertTrue(psmDataProperties.get(0).getDataType().equals(psmStringType));
         
         assertThat(psmDataProperties.get(0).getGetterExpression().getExpression(), IsEqual.equalTo(member.getGetterExpression().getExpression()));
-        assertThat(psmDataProperties.get(0).getSetterExpression().getExpression(), IsEqual.equalTo(member.getSetterExpression().getExpression()));
+        assertTrue(psmDataProperties.get(0).getSetterExpression() == null);
         
         assertThat(psmDataProperties.get(0).getGetterExpression().getDialect(), IsEqual.equalTo(hu.blackbelt.judo.meta.psm.derived.ExpressionDialect.XML));
-        assertThat(psmDataProperties.get(0).getSetterExpression().getDialect(), IsEqual.equalTo(hu.blackbelt.judo.meta.psm.derived.ExpressionDialect.XML));
+        assertTrue(psmDataProperties.get(0).getSetterExpression() == null);
         
     }
     
@@ -167,8 +167,8 @@ public class EsmStrucutre2PsmDerivedTest {
         
         StaticData staticData = newStaticDataBuilder().withName("StaticData")
         		.withDataType(string)
-        		.withGetterExpression(newDataExpressionTypeBuilder().withExpression("").build())
-        		.withSetterExpression(newAttributeSelectorTypeBuilder().withExpression("").build())
+        		.withGetterExpression(newDataExpressionTypeBuilder().withExpression("exp").build())
+        		.withSetterExpression(newAttributeSelectorTypeBuilder().withExpression("exp").build())
         		.build();
         
         final Model model = newModelBuilder()
@@ -199,8 +199,8 @@ public class EsmStrucutre2PsmDerivedTest {
         
         OneWayRelationMember navigationProperty = newOneWayRelationMemberBuilder().withName("navigationProperty").withContainment(false)
         		.withProperty(true)
-        		.withGetterExpression(newReferenceExpressionTypeBuilder().withExpression("").build())
-        		.withSetterExpression(newReferenceSelectorTypeBuilder().withExpression("").build())
+        		.withGetterExpression(newReferenceExpressionTypeBuilder().withExpression("exp").build())
+        		.withSetterExpression(newReferenceSelectorTypeBuilder().withExpression("exp").build())
         		.withLower(1)
         		.withUpper(3)
         		.withTarget(target)
@@ -242,7 +242,7 @@ public class EsmStrucutre2PsmDerivedTest {
         		.withFilter(newLogicalExpressionTypeBuilder().build()).build();
         
         StaticNavigation staticNavigation = newStaticNavigationBuilder().withName("staticNavigation")
-        		.withGetterExpression(newReferenceExpressionTypeBuilder().withExpression("").build())
+        		.withGetterExpression(newReferenceExpressionTypeBuilder().withExpression("exp").build())
         		.withSetterExpression(newReferenceSelectorTypeBuilder().withExpression("").build())
         		.withTarget(target)
         		.build();
@@ -261,7 +261,7 @@ public class EsmStrucutre2PsmDerivedTest {
         assertTrue(psmStaticNavigation.isPresent());
         assertThat(psmStaticNavigation.get().getName(), IsEqual.equalTo(staticNavigation.getName()));
         assertThat(psmStaticNavigation.get().getGetterExpression().getExpression(), IsEqual.equalTo(staticNavigation.getGetterExpression().getExpression()));
-        assertThat(psmStaticNavigation.get().getSetterExpression().getExpression(), IsEqual.equalTo(staticNavigation.getSetterExpression().getExpression()));
+        assertTrue(psmStaticNavigation.get().getSetterExpression() == null);
         assertThat(psmStaticNavigation.get().getTarget(), IsEqual.equalTo(psmEntityType));
     }
 
