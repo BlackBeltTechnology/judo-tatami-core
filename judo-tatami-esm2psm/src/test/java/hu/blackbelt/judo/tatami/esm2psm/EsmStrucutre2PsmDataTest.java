@@ -8,11 +8,7 @@ import static hu.blackbelt.judo.meta.esm.expression.util.builder.ExpressionBuild
 import static hu.blackbelt.judo.meta.esm.namespace.util.builder.NamespaceBuilders.newModelBuilder;
 import static hu.blackbelt.judo.meta.esm.namespace.util.builder.NamespaceBuilders.newPackageBuilder;
 import static hu.blackbelt.judo.meta.esm.runtime.EsmModel.buildEsmModel;
-import static hu.blackbelt.judo.meta.esm.structure.util.builder.StructureBuilders.newDataMemberBuilder;
-import static hu.blackbelt.judo.meta.esm.structure.util.builder.StructureBuilders.newEntityTypeBuilder;
-import static hu.blackbelt.judo.meta.esm.structure.util.builder.StructureBuilders.newGeneralizationBuilder;
-import static hu.blackbelt.judo.meta.esm.structure.util.builder.StructureBuilders.newOneWayRelationMemberBuilder;
-import static hu.blackbelt.judo.meta.esm.structure.util.builder.StructureBuilders.newTwoWayRelationMemberBuilder;
+import static hu.blackbelt.judo.meta.esm.structure.util.builder.StructureBuilders.*;
 import static hu.blackbelt.judo.meta.esm.type.util.builder.TypeBuilders.newStringTypeBuilder;
 import static hu.blackbelt.judo.meta.psm.runtime.PsmModel.buildPsmModel;
 import static hu.blackbelt.judo.meta.psm.runtime.PsmModel.SaveArguments.psmSaveArgumentsBuilder;
@@ -31,6 +27,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
+import hu.blackbelt.judo.meta.esm.expression.ExpressionDialect;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
 import org.hamcrest.core.IsEqual;
@@ -126,19 +123,37 @@ public class EsmStrucutre2PsmDataTest {
     @Test
     void testCreateEntityType() throws Exception {
         testName = "CreateEntityType";
-        
-        EntityType entityType1 = newEntityTypeBuilder().withName("entityType1").withDefaultAccesspoint(false)
-        		.withFilter(newLogicalExpressionTypeBuilder().build()).build();
-        
-        EntityType entityType2 = newEntityTypeBuilder().withName("entityType2").withDefaultAccesspoint(false)
-        		.withFilter(newLogicalExpressionTypeBuilder().build()).build();
+
+        EntityType entityType1 = newEntityTypeBuilder().withName("entityType1").build();
+        entityType1.setMapping(newMappingBuilder()
+                .withTarget(entityType1)
+                .withFilter(newLogicalExpressionTypeBuilder()
+                        .withDialect(ExpressionDialect.JQL)
+                        .withExpression("")
+                        .build())
+                .build());
+
+        EntityType entityType2 = newEntityTypeBuilder().withName("entityType2").build();
+        entityType2.setMapping(newMappingBuilder()
+                .withTarget(entityType2)
+                .withFilter(newLogicalExpressionTypeBuilder()
+                        .withDialect(ExpressionDialect.JQL)
+                        .withExpression("")
+                        .build())
+                .build());
         Generalization generalisation2 = newGeneralizationBuilder().withTarget(entityType2).build();
-        EntityType entityType3 = newEntityTypeBuilder().withName("entityType3").withDefaultAccesspoint(false)
-        		.withGeneralizations(generalisation2).withFilter(newLogicalExpressionTypeBuilder().build()).build();
-        
+        EntityType entityType3 = newEntityTypeBuilder().withName("entityType3").withGeneralizations(generalisation2).build();
+        entityType3.setMapping(newMappingBuilder()
+                .withTarget(entityType3)
+                .withFilter(newLogicalExpressionTypeBuilder()
+                        .withDialect(ExpressionDialect.JQL)
+                        .withExpression("")
+                        .build())
+                .build());
+
         final Model model = newModelBuilder()
                 .withName("TestModel")
-                .withElements(ImmutableList.of(entityType1,entityType2,entityType3))
+                .withElements(ImmutableList.of(entityType1, entityType2, entityType3))
                 .build();
 
         esmModel.addContent(model);
@@ -147,154 +162,205 @@ public class EsmStrucutre2PsmDataTest {
         final Set<hu.blackbelt.judo.meta.psm.data.EntityType> psmEntityTypes = allPsm(hu.blackbelt.judo.meta.psm.data.EntityType.class).collect(Collectors.toSet());
         assertTrue(psmEntityTypes.size() == 3);
         assertTrue(psmEntityTypes.stream().allMatch(e -> !e.isAbstract()));
-        
+
         final Set<String> psmEntityTypeNames = psmEntityTypes.stream().map(e -> e.getName()).collect(Collectors.toSet());
-        final Set<String> esmEntityTypeNames = ImmutableSet.of(entityType1.getName(),entityType2.getName(),entityType3.getName());
+        final Set<String> esmEntityTypeNames = ImmutableSet.of(entityType1.getName(), entityType2.getName(), entityType3.getName());
         assertThat(psmEntityTypeNames, IsEqual.equalTo(esmEntityTypeNames));
-        
+
         final Optional<hu.blackbelt.judo.meta.psm.data.EntityType> psmEntityType3 = psmEntityTypes.stream().filter(e -> e.getName().equals(entityType3.getName())).findAny();
         assertTrue(psmEntityType3.isPresent());
-        
+
         final Set<String> psmEntityType3SuperTypeNames = psmEntityType3.get().getSuperEntityTypes().stream().map(s -> s.getName()).collect(Collectors.toSet());
         final Set<String> esmEntityType3SuperTypeNames = ImmutableSet.of(entityType2.getName());
         assertThat(psmEntityType3SuperTypeNames, IsEqual.equalTo(esmEntityType3SuperTypeNames));
     }
-    
+
     @Test
     void testCreateAttribute() throws Exception {
         testName = "CreateAttribute";
-        
+
         StringType string = newStringTypeBuilder().withName("string").withMaxLength(256).build();
         DataMember attribute = newDataMemberBuilder().withName("attribute").withDataType(string)
-        		.withGetterExpression(newDataExpressionTypeBuilder().build())
-        		.withSetterExpression(newAttributeSelectorTypeBuilder().build())
-        		.build();
-        
-        EntityType entityType = newEntityTypeBuilder().withName("entityType").withDefaultAccesspoint(false)
-        		.withFilter(newLogicalExpressionTypeBuilder().build()).withAttributes(attribute).build();
+                .withGetterExpression(newDataExpressionTypeBuilder().withDialect(ExpressionDialect.JQL).withExpression("").build())
+                .withSetterExpression(newAttributeSelectorTypeBuilder().withDialect(ExpressionDialect.JQL).withExpression("").build())
+                .withDefaultExpression(newDataExpressionTypeBuilder().withDialect(ExpressionDialect.JQL).withExpression("").build())
+                .build();
+
+        EntityType entityType = newEntityTypeBuilder().withName("entityType").withAttributes(attribute).build();
+        entityType.setMapping(newMappingBuilder()
+                .withTarget(entityType)
+                .withFilter(newLogicalExpressionTypeBuilder()
+                        .withDialect(ExpressionDialect.JQL)
+                        .withExpression("")
+                        .build())
+                .build());
 
         final Model model = newModelBuilder()
                 .withName("TestModel")
-                .withElements(ImmutableList.of(entityType,string))
+                .withElements(ImmutableList.of(entityType, string))
                 .build();
 
         esmModel.addContent(model);
         transform();
 
         final hu.blackbelt.judo.meta.psm.data.EntityType psmEntityType = allPsm(hu.blackbelt.judo.meta.psm.data.EntityType.class)
-        		.filter(e -> e.getName().equals(entityType.getName())).findAny().get();
+                .filter(e -> e.getName().equals(entityType.getName())).findAny().get();
         assertTrue(psmEntityType.getAttributes().size() == 1);
-        
+
         final Attribute psmAttribute = psmEntityType.getAttributes().get(0);
         assertTrue(psmAttribute.getName().equals(attribute.getName()));
         assertTrue(psmAttribute.isRequired() == attribute.isRequired());
         assertTrue(psmAttribute.isIdentifier() == attribute.isIdentifier());
-        
+
         final hu.blackbelt.judo.meta.psm.type.StringType psmStringType = allPsm(hu.blackbelt.judo.meta.psm.type.StringType.class).findAny().get();
         assertTrue(psmAttribute.getDataType().equals(psmStringType));
-        
+
     }
-    
+
     @Test
     void testCreateContainment() throws Exception {
         testName = "CreateContainment";
-        
-        EntityType target = newEntityTypeBuilder().withName("target").withDefaultAccesspoint(false)
-        		.withFilter(newLogicalExpressionTypeBuilder().build()).build();
-        
+
+        EntityType target = newEntityTypeBuilder().withName("target").build();
+        target.setMapping(newMappingBuilder()
+                .withTarget(target)
+                .withFilter(newLogicalExpressionTypeBuilder()
+                        .withDialect(ExpressionDialect.JQL)
+                        .withExpression("")
+                        .build())
+                .build());
+
         OneWayRelationMember containment = newOneWayRelationMemberBuilder().withName("containment").withContainment(true)
-        		.withGetterExpression(newReferenceExpressionTypeBuilder().build())
-        		.withSetterExpression(newReferenceSelectorTypeBuilder().build())
-        		.withLower(1)
-        		.withUpper(3)
-        		.withTarget(target)
-        		.build();
-        
-        EntityType entityType = newEntityTypeBuilder().withName("entityType").withDefaultAccesspoint(false)
-        		.withFilter(newLogicalExpressionTypeBuilder().build()).withRelations(containment).build();
+                .withGetterExpression(newReferenceExpressionTypeBuilder().withDialect(ExpressionDialect.JQL).withExpression("").build())
+                .withSetterExpression(newReferenceSelectorTypeBuilder().withDialect(ExpressionDialect.JQL).withExpression("").build())
+                .withDefaultExpression(newReferenceExpressionTypeBuilder().withDialect(ExpressionDialect.JQL).withExpression("").build())
+                .withRangeExpression(newReferenceExpressionTypeBuilder().withDialect(ExpressionDialect.JQL).withExpression("").build())
+                .withLower(1)
+                .withUpper(3)
+                .withTarget(target)
+                .build();
+
+        EntityType entityType = newEntityTypeBuilder().withName("entityType").withRelations(containment).build();
+        entityType.setMapping(newMappingBuilder()
+                .withTarget(entityType)
+                .withFilter(newLogicalExpressionTypeBuilder()
+                        .withDialect(ExpressionDialect.JQL)
+                        .withExpression("")
+                        .build())
+                .build());
 
         final Model model = newModelBuilder()
                 .withName("TestModel")
-                .withElements(ImmutableList.of(entityType,target))
+                .withElements(ImmutableList.of(entityType, target))
                 .build();
 
         esmModel.addContent(model);
         transform();
-        
+
         final hu.blackbelt.judo.meta.psm.data.EntityType psmEntityType = allPsm(hu.blackbelt.judo.meta.psm.data.EntityType.class)
-        		.filter(e -> e.getName().equals(entityType.getName())).findAny().get();
+                .filter(e -> e.getName().equals(entityType.getName())).findAny().get();
         final hu.blackbelt.judo.meta.psm.data.EntityType psmTarget = allPsm(hu.blackbelt.judo.meta.psm.data.EntityType.class)
-        		.filter(e -> e.getName().equals(target.getName())).findAny().get();
+                .filter(e -> e.getName().equals(target.getName())).findAny().get();
         assertTrue(psmEntityType.getRelations().size() == 1);
-        
+
         final hu.blackbelt.judo.meta.psm.data.Relation psmContainment = psmEntityType.getRelations().get(0);
         assertTrue(psmContainment.getName().equals(containment.getName()));
         assertTrue(psmContainment.getCardinality().getLower() == containment.getLower());
         assertTrue(psmContainment.getCardinality().getUpper() == containment.getUpper());
         assertTrue(psmContainment.getTarget().equals(psmTarget));
-        
+
     }
-    
+
     @Test
     void testCreateAssociationEndWithoutPartner() throws Exception {
         testName = "CreateAssociationEndWithoutPartner";
-        
-        EntityType target = newEntityTypeBuilder().withName("target").withDefaultAccesspoint(false)
-        		.withFilter(newLogicalExpressionTypeBuilder().build()).build();
-        
+
+        EntityType target = newEntityTypeBuilder().withName("target").build();
+        target.setMapping(newMappingBuilder()
+                .withTarget(target)
+                .withFilter(newLogicalExpressionTypeBuilder()
+                        .withDialect(ExpressionDialect.JQL)
+                        .withExpression("")
+                        .build())
+                .build());
+
         OneWayRelationMember associationEnd = newOneWayRelationMemberBuilder().withName("associationEnd").withContainment(false)
-        		.withGetterExpression(newReferenceExpressionTypeBuilder().build())
-        		.withSetterExpression(newReferenceSelectorTypeBuilder().build())
-        		.withLower(1)
-        		.withUpper(3)
-        		.withTarget(target)
-        		.build();
-        
-        EntityType entityType = newEntityTypeBuilder().withName("entityType").withDefaultAccesspoint(false)
-        		.withFilter(newLogicalExpressionTypeBuilder().build()).withRelations(associationEnd).build();
+                .withGetterExpression(newReferenceExpressionTypeBuilder().withDialect(ExpressionDialect.JQL).withExpression("").build())
+                .withSetterExpression(newReferenceSelectorTypeBuilder().withDialect(ExpressionDialect.JQL).withExpression("").build())
+                .withDefaultExpression(newReferenceExpressionTypeBuilder().withDialect(ExpressionDialect.JQL).withExpression("").build())
+                .withRangeExpression(newReferenceExpressionTypeBuilder().withDialect(ExpressionDialect.JQL).withExpression("").build())
+                .withLower(1)
+                .withUpper(3)
+                .withTarget(target)
+                .build();
+
+        EntityType entityType = newEntityTypeBuilder().withName("entityType").withRelations(associationEnd).build();
+        entityType.setMapping(newMappingBuilder()
+                .withTarget(entityType)
+                .withFilter(newLogicalExpressionTypeBuilder()
+                        .withDialect(ExpressionDialect.JQL)
+                        .withExpression("")
+                        .build())
+                .build());
 
         final Model model = newModelBuilder()
                 .withName("TestModel")
-                .withElements(ImmutableList.of(entityType,target))
+                .withElements(ImmutableList.of(entityType, target))
                 .build();
 
         esmModel.addContent(model);
         transform();
-        
+
         final hu.blackbelt.judo.meta.psm.data.EntityType psmEntityType = allPsm(hu.blackbelt.judo.meta.psm.data.EntityType.class)
-        		.filter(e -> e.getName().equals(entityType.getName())).findAny().get();
+                .filter(e -> e.getName().equals(entityType.getName())).findAny().get();
         final hu.blackbelt.judo.meta.psm.data.EntityType psmTarget = allPsm(hu.blackbelt.judo.meta.psm.data.EntityType.class)
-        		.filter(e -> e.getName().equals(target.getName())).findAny().get();
+                .filter(e -> e.getName().equals(target.getName())).findAny().get();
         assertTrue(psmEntityType.getRelations().size() == 1);
-        
+
         final hu.blackbelt.judo.meta.psm.data.Relation psmAssociationEnd = psmEntityType.getRelations().get(0);
         assertTrue(psmAssociationEnd.getName().equals(associationEnd.getName()));
         assertTrue(psmAssociationEnd.getCardinality().getLower() == associationEnd.getLower());
         assertTrue(psmAssociationEnd.getCardinality().getUpper() == associationEnd.getUpper());
         assertTrue(psmAssociationEnd.getTarget().equals(psmTarget));
     }
-    
+
     @Test
     void testCreateAssociationEndWithPartner() throws Exception {
         testName = "CreateAssociationEndWithPartner";
-        
-        EntityType target = newEntityTypeBuilder().withName("target").withDefaultAccesspoint(false)
-        		.withFilter(newLogicalExpressionTypeBuilder().build()).build();
-        EntityType entityType = newEntityTypeBuilder().withName("entityType").withDefaultAccesspoint(false)
-        		.withFilter(newLogicalExpressionTypeBuilder().build()).build();
-        
+
+        EntityType target = newEntityTypeBuilder().withName("target").build();
+        target.setMapping(newMappingBuilder()
+                .withTarget(target)
+                .withFilter(newLogicalExpressionTypeBuilder()
+                        .withDialect(ExpressionDialect.JQL)
+                        .withExpression("")
+                        .build())
+                .build());
+        EntityType entityType = newEntityTypeBuilder().withName("entityType").build();
+        entityType.setMapping(newMappingBuilder()
+                .withTarget(entityType)
+                .withFilter(newLogicalExpressionTypeBuilder()
+                        .withDialect(ExpressionDialect.JQL)
+                        .withExpression("")
+                        .build())
+                .build());
+
         TwoWayRelationMember associationEnd1 = newTwoWayRelationMemberBuilder().withName("associationEnd1")
-        		.withLower(1)
-        		.withUpper(1)
-        		.withTarget(target)
-        		.build();
-        
+                .withLower(1)
+                .withUpper(1)
+                .withTarget(target)
+                .withDefaultExpression(newReferenceExpressionTypeBuilder().withDialect(ExpressionDialect.JQL).withExpression("").build())
+                .withRangeExpression(newReferenceExpressionTypeBuilder().withDialect(ExpressionDialect.JQL).withExpression("").build())
+                .build();
+
         TwoWayRelationMember associationEnd2 = newTwoWayRelationMemberBuilder().withName("associationEnd2")
-        		.withLower(1)
-        		.withUpper(1)
-        		.withTarget(entityType)
-        		.build();
-        
+                .withLower(1)
+                .withUpper(1)
+                .withTarget(entityType)
+                .withDefaultExpression(newReferenceExpressionTypeBuilder().withDialect(ExpressionDialect.JQL).withExpression("").build())
+                .withRangeExpression(newReferenceExpressionTypeBuilder().withDialect(ExpressionDialect.JQL).withExpression("").build())
+                .build();
+
         entityType.getRelations().add(associationEnd1);
         target.getRelations().add(associationEnd2);
         associationEnd1.setPartner(associationEnd2);
@@ -302,36 +368,36 @@ public class EsmStrucutre2PsmDataTest {
 
         final Model model = newModelBuilder()
                 .withName("TestModel")
-                .withElements(ImmutableList.of(entityType,target))
+                .withElements(ImmutableList.of(entityType, target))
                 .build();
 
         esmModel.addContent(model);
         transform();
-        
+
         final hu.blackbelt.judo.meta.psm.data.EntityType psmEntityType = allPsm(hu.blackbelt.judo.meta.psm.data.EntityType.class)
-        		.filter(e -> e.getName().equals(entityType.getName())).findAny().get();
+                .filter(e -> e.getName().equals(entityType.getName())).findAny().get();
         final hu.blackbelt.judo.meta.psm.data.EntityType psmTarget = allPsm(hu.blackbelt.judo.meta.psm.data.EntityType.class)
-        		.filter(e -> e.getName().equals(target.getName())).findAny().get();
+                .filter(e -> e.getName().equals(target.getName())).findAny().get();
         assertTrue(psmEntityType.getRelations().size() == 1);
         assertTrue(target.getRelations().size() == 1);
-        
+
         final hu.blackbelt.judo.meta.psm.data.Relation psmAssociationEnd1 = psmEntityType.getRelations().get(0);
         assertTrue(psmAssociationEnd1.getName().equals(associationEnd1.getName()));
         assertTrue(psmAssociationEnd1.getCardinality().getLower() == associationEnd1.getLower());
         assertTrue(psmAssociationEnd1.getCardinality().getUpper() == associationEnd1.getUpper());
         assertTrue(psmAssociationEnd1.getTarget().equals(psmTarget));
-        
+
         final hu.blackbelt.judo.meta.psm.data.Relation psmAssociationEnd2 = psmTarget.getRelations().get(0);
         assertTrue(psmAssociationEnd2.getName().equals(associationEnd2.getName()));
         assertTrue(psmAssociationEnd2.getCardinality().getLower() == associationEnd2.getLower());
         assertTrue(psmAssociationEnd2.getCardinality().getUpper() == associationEnd2.getUpper());
         assertTrue(psmAssociationEnd2.getTarget().equals(psmEntityType));
     }
-    
+
     @Test
     void testCreatePackage() throws Exception {
         testName = "CreateModel";
-        
+
         Package p1 = newPackageBuilder().withName("package1").build();
 
         final Model model = newModelBuilder()
@@ -344,7 +410,7 @@ public class EsmStrucutre2PsmDataTest {
 
         final Optional<hu.blackbelt.judo.meta.psm.namespace.Package> psmPackage = allPsm(hu.blackbelt.judo.meta.psm.namespace.Package.class)
                 .findAny();
-        
+
         assertTrue(psmPackage.isPresent());
         assertThat(psmPackage.get().getName(), IsEqual.equalTo(p1.getName()));
         assertThat(psmPackage.get().getNamespace().getName(), IsEqual.equalTo(model.getName()));
