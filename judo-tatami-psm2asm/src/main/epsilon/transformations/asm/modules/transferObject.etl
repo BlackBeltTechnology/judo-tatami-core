@@ -17,12 +17,7 @@ rule CreateMappedEntityTypeAnnotationOnMappedTransferObject
         mappedEntityType.key = "value";
         mappedEntityType.value = asmUtils.getClassifierFQName(s.entityType.equivalent("CreateEntityClass"));
         t.details.add(mappedEntityType);
-        
-        var entityIdPresence = new ASM!EStringToStringMapEntry;
-        entityIdPresence.key = "entityIdPresence";
-        entityIdPresence.value = s.entityReferencePresence.name;
-        t.details.add(entityIdPresence);
-        
+
         s.equivalent("CreateMappedTransferObject").eAnnotations.add(t);
     }
 

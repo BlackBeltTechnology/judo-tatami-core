@@ -19,15 +19,16 @@ import org.ops4j.pax.exam.spi.reactors.PerClass;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.log.LogService;
-import rest.demo.service.CategoryInfo;
-import rest.demo.service.InternationalOrderInfo;
-import rest.demo.service.InternationalOrderInfoQuery;
-import rest.demo.service.OrderInfo;
-import rest.demo.service.OrderInfoQuery;
-import rest.demo.service.OrderItemQuery;
-import rest.demo.service.ProductInfo;
-import rest.demo.service.ShipmentChange;
-import rest.demo.service.ShipperInfo;
+import rest.demo.services.CategoryInfo;
+import rest.demo.services.InternationalOrderInfo;
+import rest.demo.services.InternationalOrderInfoQuery;
+import rest.demo.services.OrderInfo;
+import rest.demo.services.OrderInfoQuery;
+import rest.demo.services.OrderItemQuery;
+import rest.demo.services.ProductInfo;
+
+import rest.demo.services.ShipmentChange;
+import rest.demo.services.ShipperInfo;
 
 import javax.inject.Inject;
 import javax.ws.rs.client.ClientBuilder;
@@ -74,16 +75,16 @@ import static org.ops4j.pax.exam.karaf.options.KarafDistributionOption.editConfi
 import static org.ops4j.pax.exam.karaf.options.KarafDistributionOption.features;
 import static org.osgi.service.log.LogService.LOG_ERROR;
 import static org.osgi.service.log.LogService.LOG_INFO;
-import static rest.demo.service.CategoryInfo.categoryInfoBuilder;
-import static rest.demo.service.InternationalOrderInfo.internationalOrderInfoBuilder;
-import static rest.demo.service.InternationalOrderInfoQuery.internationalOrderInfoQueryBuilder;
-import static rest.demo.service.OrderInfo.orderInfoBuilder;
-import static rest.demo.service.OrderInfoQuery$items$Reference.orderInfoQuery$items$ReferenceBuilder;
-import static rest.demo.service.OrderInfoQuery.orderInfoQueryBuilder;
-import static rest.demo.service.OrderItemQuery.orderItemQueryBuilder;
-import static rest.demo.service.ProductInfo.productInfoBuilder;
-import static rest.demo.service.ProductInfoQuery.productInfoQueryBuilder;
-import static rest.demo.service.ShipperInfo.shipperInfoBuilder;
+import static rest.demo.services.CategoryInfo.categoryInfoBuilder;
+import static rest.demo.services.InternationalOrderInfo.internationalOrderInfoBuilder;
+import static rest.demo.services.InternationalOrderInfoQuery.internationalOrderInfoQueryBuilder;
+import static rest.demo.services.OrderInfo.orderInfoBuilder;
+import static rest.demo.services.OrderInfoQuery$items$Reference.orderInfoQuery$items$ReferenceBuilder;
+import static rest.demo.services.OrderInfoQuery.orderInfoQueryBuilder;
+import static rest.demo.services.OrderItemQuery.orderItemQueryBuilder;
+import static rest.demo.services.ProductInfo.productInfoBuilder;
+import static rest.demo.services.ProductInfoQuery.productInfoQueryBuilder;
+import static rest.demo.services.ShipperInfo.shipperInfoBuilder;
 
 @Category(JaxRSTestSuite.class)
 @RunWith(PaxExam.class)
@@ -91,27 +92,27 @@ import static rest.demo.service.ShipperInfo.shipperInfoBuilder;
 public class JaxRSITest {
     private static final String BASE_URL = "http://localhost:8181/cxf/demo/internalAP";
 
-    private static final String DEMO_SERVICE_GET_ALL_ORDERS = "/demo/service/getAllOrders";
-    private static final String DEMO_SERVICE_GET_ALL_INTERNATIONAL_ORDERS = "/demo/service/getAllInternationalOrders";
-    private static final String DEMO_SERVICE_CREATE_ORDER = "/demo/service/createOrder";
-    private static final String DEMO_SERVICE_CREATE_INTERNATIONAL_ORDER = "/demo/service/createInternationalOrder";
-    private static final String DEMO_SERVICE_CREATE_PRODUCT = "/demo/service/createProduct";
-    private static final String DEMO_SERVICE_CREATE_SHIPPER = "/demo/service/createShipper";
-    private static final String DEMO_SERVICE_CREATE_CATEGORY = "/demo/service/createCategory";
+    private static final String DEMO_SERVICE_GET_ALL_ORDERS = "/demo/services/getAllOrders";
+    private static final String DEMO_SERVICE_GET_ALL_INTERNATIONAL_ORDERS = "/demo/services/getAllInternationalOrders";
+    private static final String DEMO_SERVICE_CREATE_ORDER = "/demo/services/createOrder";
+    private static final String DEMO_SERVICE_CREATE_INTERNATIONAL_ORDER = "/demo/services/createInternationalOrder";
+    private static final String DEMO_SERVICE_CREATE_PRODUCT = "/demo/services/createProduct";
+    private static final String DEMO_SERVICE_CREATE_SHIPPER = "/demo/services/createShipper";
+    private static final String DEMO_SERVICE_CREATE_CATEGORY = "/demo/services/createCategory";
 
-    private static final String DEMO_SERVICE_ORDERINFO_DELETE_ORDER = "/demo/service/OrderInfo/deleteOrder";
-    private static final String DEMO_SERVICE_ORDERINFO_CHANGE_SHIPMENT = "/demo/service/OrderInfo/changeShipment";
-    private static final String DEMO_SERVICE_ORDERINFO_UPDATE_ORDER = "/demo/service/OrderInfo/updateOrder";
+    private static final String DEMO_SERVICE_ORDERINFO_DELETE_ORDER = "/demo/services/OrderInfo/deleteOrder";
+    private static final String DEMO_SERVICE_ORDERINFO_CHANGE_SHIPMENT = "/demo/services/OrderInfo/changeShipment";
+    private static final String DEMO_SERVICE_ORDERINFO_UPDATE_ORDER = "/demo/services/OrderInfo/updateOrder";
 
-    private static final String DEMO_SERVICE_ORDERINFOQUERY_CATEGORIES_GET = "/demo/service/OrderInfoQuery/categories/get";
+    private static final String DEMO_SERVICE_ORDERINFOQUERY_CATEGORIES_GET = "/demo/services/OrderInfoQuery/categories/get";
 
-    private static final String DEMO_SERVICE_ORDERINFOQUERY_ITEMS_GET = "/demo/service/OrderInfoQuery/items/get";
-    private static final String DEMO_SERVICE_ORDERINFOQUERY_ITEMS_SET = "/demo/service/OrderInfoQuery/items/set";
-    private static final String DEMO_SERVICE_ORDERINFOQUERY_ITEMS_ADD_ALL = "/demo/service/OrderInfoQuery/items/addAll";
-    private static final String DEMO_SERVICE_ORDERINFOQUERY_ITEMS_REMOVE_ALL = "/demo/service/OrderInfoQuery/items/removeAll";
+    private static final String DEMO_SERVICE_ORDERINFOQUERY_ITEMS_GET = "/demo/services/OrderInfoQuery/items/get";
+    private static final String DEMO_SERVICE_ORDERINFOQUERY_ITEMS_SET = "/demo/services/OrderInfoQuery/items/set";
+    private static final String DEMO_SERVICE_ORDERINFOQUERY_ITEMS_ADD_ALL = "/demo/services/OrderInfoQuery/items/addAll";
+    private static final String DEMO_SERVICE_ORDERINFOQUERY_ITEMS_REMOVE_ALL = "/demo/services/OrderInfoQuery/items/removeAll";
 
-    private static final String DEMO_SERVICE_PRODUCTINFOQUERY_CATEGORY_GET_RANGE = "/demo/service/ProductInfoQuery/category/getRange";
-    private static final String DEMO_SERVICE_PRODUCTINFOQUERY_CATEGORY_UNSET = "/demo/service/ProductInfoQuery/category/unset";
+    private static final String DEMO_SERVICE_PRODUCTINFOQUERY_CATEGORY_GET_RANGE = "/demo/services/ProductInfoQuery/category/getRange";
+    private static final String DEMO_SERVICE_PRODUCTINFOQUERY_CATEGORY_UNSET = "/demo/services/ProductInfoQuery/category/unset";
 
     //TODO-check&clean: moved to pom
     //public static final String FRAMEWORK_COMPILER_API = "compiler-api";
@@ -245,45 +246,45 @@ public class JaxRSITest {
         Map<String, Object> testMap = new HashMap<>();
         //UnboundServices
         //getAllOrders (input: none, output: collection<OrderInfoQuery>), required (OrderInfoQuery): orderDate
-        testMap.put("demo.service.__UnboundServices#getAllOrders", ImmutableList.of(
+        testMap.put("demo.services.__UnboundServices#getAllOrders", ImmutableList.of(
                         orderInfoQueryBuilder().shipperName("shipperNameInOrderInfoQuery0").orderDate(ZonedDateTime.now()).build().toMap(),
                         orderInfoQueryBuilder().shipperName("shipperNameInOrderInfoQuery1").orderDate(ZonedDateTime.now()).build().toMap()));
 
         //getAllInternationalOrders (input: none, output: collection<InternationalOrderInfoQuery>), required (InternationalOrderInfoQuery): orderDate
-        testMap.put("demo.service.__UnboundServices#getAllInternationalOrders", ImmutableList.of(
+        testMap.put("demo.services.__UnboundServices#getAllInternationalOrders", ImmutableList.of(
                         internationalOrderInfoQueryBuilder().shipperName("shipperNameInInternationalOrderInfoQuery0").orderDate(ZonedDateTime.now()).build().toMap(),
                         internationalOrderInfoQueryBuilder().shipperName("shipperNameInInternationalOrderInfoQuery1").orderDate(ZonedDateTime.now()).build().toMap()));
 
         //createOrder (input: OrderInfo, output: OrderInfo), required (OrderInfo): orderDate
-        testMap.put("demo.service.__UnboundServices#createOrder", orderInfoBuilder().shipperName("shipperNameInNewOrderInfo").orderDate(ZonedDateTime.now()).build().toMap());
+        testMap.put("demo.services.__UnboundServices#createOrder", orderInfoBuilder().shipperName("shipperNameInNewOrderInfo").orderDate(ZonedDateTime.now()).build().toMap());
 
         //createInternationalOrder (input: InternationalOrderInfo, output: InternationalOrderInfo), req: excisetax, orderdate, customsdescr
-        testMap.put("demo.service.__UnboundServices#createInternationalOrder",
+        testMap.put("demo.services.__UnboundServices#createInternationalOrder",
                 internationalOrderInfoBuilder().shipperName("shipperNameInNewInternationalOrderInfo").orderDate(ZonedDateTime.now()).exciseTax(3.14).customsDescription("customsDescription").build().toMap());
 
         //createProduct (input: ProductInfo, output: ProductInfo), req: unitprice, category, productname
-        testMap.put("demo.service.__UnboundServices#createProduct",
+        testMap.put("demo.services.__UnboundServices#createProduct",
                 productInfoBuilder().productName("productNameInNewProductInfo").category(categoryInfoBuilder().categoryName("categoryInfoInCreateProduct").build()).unitPrice(3.14).build().toMap());
 
         //createShipper (input: ShipperInfo, output: ShipperInfo)
-        testMap.put("demo.service.__UnboundServices#createShipper", shipperInfoBuilder().companyName("companyNameInNewShipperInfo").build().toMap());
+        testMap.put("demo.services.__UnboundServices#createShipper", shipperInfoBuilder().companyName("companyNameInNewShipperInfo").build().toMap());
 
         //createCategory (input: CategoryInfo output: CategoryInfo), req: categoryName
-        testMap.put("demo.service.__UnboundServices#createCategory", categoryInfoBuilder().categoryName("categoryNameInNewCategoryInfo").build().toMap());
+        testMap.put("demo.services.__UnboundServices#createCategory", categoryInfoBuilder().categoryName("categoryNameInNewCategoryInfo").build().toMap());
 
         //updateOrder (input: OrderInfo, output: OrderInfo)
-        testMap.put("demo.service.OrderInfo#updateOrder", orderInfoBuilder().shipperName("newShipperNameInNewOrderInfo").orderDate(ZonedDateTime.now()).build().toMap());
+        testMap.put("demo.services.OrderInfo#updateOrder", orderInfoBuilder().shipperName("newShipperNameInNewOrderInfo").orderDate(ZonedDateTime.now()).build().toMap());
 
         //changeShipment (input: ShipmentChange, output: OrderInfo)
-        testMap.put("demo.service.OrderInfo#changeShipment", orderInfoBuilder().shipperName("shipperNameInNewShipmentChange").orderDate(ZonedDateTime.now()).build().toMap());
+        testMap.put("demo.services.OrderInfo#changeShipment", orderInfoBuilder().shipperName("shipperNameInNewShipmentChange").orderDate(ZonedDateTime.now()).build().toMap());
 
         //OrderInfoQuery-categories (input: identifier only, output: collection<CategoryInfo>)
-        testMap.put("demo.service.OrderInfoQuery__categories#get", ImmutableList.of(
+        testMap.put("demo.services.OrderInfoQuery__categories#get", ImmutableList.of(
                         categoryInfoBuilder().categoryName("categoryName0").build().toMap(),
                         categoryInfoBuilder().categoryName("categoryName1").build().toMap()));
 
         //OrderInfoQuery-items (input: identifier only, output: collection<OrderItemQuery>)
-        testMap.put("demo.service.OrderInfoQuery__items#get", ImmutableList.of(
+        testMap.put("demo.services.OrderInfoQuery__items#get", ImmutableList.of(
                         orderItemQueryBuilder().productName("productName0").quantity(42).discount(2.71).product(
                                 productInfoQueryBuilder().productName("productName").unitPrice(3.14).category(
                                         categoryInfoBuilder().categoryName("categoryNameInProductInfoQuery").build()
@@ -300,7 +301,7 @@ public class JaxRSITest {
                         ).build().toMap()));
 
         //ProductInfoQuery-category (input: identifier only, output: collection<CategoryInfo>)
-        testMap.put("demo.service.ProductInfoQuery__category#getRange", ImmutableList.of(
+        testMap.put("demo.services.ProductInfoQuery__category#getRange", ImmutableList.of(
                         categoryInfoBuilder().categoryName("categoryName0").build().toMap(),
                         categoryInfoBuilder().categoryName("categoryName1").build().toMap()));
         return testMap;
@@ -324,11 +325,11 @@ public class JaxRSITest {
                     log.log(LOG_INFO, "Dispatcher called - " + target + " " + operationFqName + " Payload: " + payload.toString());
                     if (!testMap.containsKey(operationFqName)) {
                         switch (operationFqName) {
-                            case "demo.service.OrderInfo#deleteOrder": //(input: none)
-                            case "demo.service.OrderInfoQuery__items#set": //(input: identifier & collection<rest.demo.service.OrderInfoQuery$items$Reference>)
-                            case "demo.service.OrderInfoQuery__items#addAll": //(input: identifier & collection<rest.demo.service.OrderInfoQuery$items$Reference>)
-                            case "demo.service.OrderInfoQuery__items#removeAll": //(input: identifier & collection<rest.demo.service.OrderInfoQuery$items$Reference>)
-                            case "demo.service.ProductInfoQuery__category#unset": //(input: identifier only)
+                            case "demo.services.OrderInfo#deleteOrder": //(input: none)
+                            case "demo.services.OrderInfoQuery__items#set": //(input: identifier & collection<rest.demo.services.OrderInfoQuery$items$Reference>)
+                            case "demo.services.OrderInfoQuery__items#addAll": //(input: identifier & collection<rest.demo.services.OrderInfoQuery$items$Reference>)
+                            case "demo.services.OrderInfoQuery__items#removeAll": //(input: identifier & collection<rest.demo.services.OrderInfoQuery$items$Reference>)
+                            case "demo.services.ProductInfoQuery__category#unset": //(input: identifier only)
                                 return ImmutableMap.of();
                             default:
                                 log.log(LOG_ERROR, "Operation not found by operationFqName! Given operationFqName was \"" + operationFqName + "\"");
