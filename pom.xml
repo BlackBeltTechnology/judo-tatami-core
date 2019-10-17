@@ -70,16 +70,16 @@
         <judo-meta-psm-version>1.0.0.20191016_111430_2790de1_develop</judo-meta-psm-version>
         <judo-meta-psm-import-range>[1.0,1.1)</judo-meta-psm-import-range>
 
-        <judo-meta-jql-version>1.0.0.develop_00050</judo-meta-jql-version>
+        <judo-meta-jql-version>1.0.0.20191016_092449_edf1d62_develop</judo-meta-jql-version>
         <judo-meta-jql-import-range>[1.0,1.1)</judo-meta-jql-import-range>
 
-        <judo-meta-asm-version>1.0.0.develop_00128</judo-meta-asm-version>
+        <judo-meta-asm-version>1.0.0.20191016_093454_c59b20d_develop</judo-meta-asm-version>
         <judo-meta-asm-import-range>[1.0,1.1)</judo-meta-asm-import-range>
 
         <judo-meta-expression-version>1.0.0.develop_00299</judo-meta-expression-version>
         <judo-meta-expression-import-range>[1.0,1.1)</judo-meta-expression-import-range>
 
-        <judo-meta-measure-version>1.0.0.develop_00058</judo-meta-measure-version>
+        <judo-meta-measure-version>1.0.0.20191016_091615_ac02ddf_develop</judo-meta-measure-version>
         <judo-meta-measure-import-range>[1.0,1.1)</judo-meta-measure-import-range>
 
         <judo-meta-liquibase-version>1.0.0.develop_00041</judo-meta-liquibase-version>
@@ -88,7 +88,6 @@
         <judo-meta-openapi-version>1.0.0.develop_00113</judo-meta-openapi-version>
         <judo-meta-openapi-import-range>[1.0,1.1)</judo-meta-openapi-import-range>
 
-        <!-- <northwind-model-version>1.0.0.develop_00145</northwind-model-version> -->
         <!-- We use older version of plugin to avoid chicked egg problem -->
         <judo-tatami-workflow-maven-plugin-version>1.0.0.20191015_161412_49fc277_develop</judo-tatami-workflow-maven-plugin-version>
 
