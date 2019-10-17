@@ -251,6 +251,7 @@ public class EsmMeasure2PsmMeasureTest {
         assertThat(psmDurationUnit.get().getRateDividend(), IsEqual.equalTo(unit.getRateDividend()));
         assertThat(psmDurationUnit.get().getRateDivisor(), IsEqual.equalTo(unit.getRateDivisor()));
         assertThat(psmDurationUnit.get().getMeasure().getName(), IsEqual.equalTo(measure.getName()));
+        assertThat(psmDurationUnit.get().getUnitType(), IsEqual.equalTo(hu.blackbelt.judo.meta.psm.measure.DurationType.DAY));
     }
     
     @Test
