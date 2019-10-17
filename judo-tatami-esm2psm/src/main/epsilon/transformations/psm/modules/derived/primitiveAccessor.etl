@@ -8,10 +8,12 @@ rule CreatePrimitiveAccessor
 	transform s : ESM!PrimitiveAccessor
 	to t : JUDOPSM!PrimitiveAccessor
 	extends CreatePrimitiveTypedElement {
-	   if (s.getterExpression.expression <> "") {
+	   if (s.getterExpression.expression.isDefined() and
+           s.getterExpression.expression.trim().length() > 0) {
            t.getterExpression = s.getterExpression.getPSMEquivalent();
        }
-       if (s.setterExpression.expression <> "") {
+       if (s.setterExpression.expression.isDefined() and
+           s.setterExpression.expression.trim().length() > 0) {
            t.setterExpression = s.setterExpression.getPSMEquivalent();
        }
 }
@@ -20,6 +22,7 @@ rule CreateDataProperty
 	transform s : ESM!DataMember
 	to t : JUDOPSM!DataProperty
 	extends CreatePrimitiveAccessor {
+	//defaultExpression inherited from DataFeature hava no equivalent in PSM
 	  guard: s.property and s.eContainer.isKindOf(ESM!EntityType)
 	  s.eContainer.getPSMEquivalent().dataProperties.add(t);
 	  log.debug("Created DataProperty: " + t.name);

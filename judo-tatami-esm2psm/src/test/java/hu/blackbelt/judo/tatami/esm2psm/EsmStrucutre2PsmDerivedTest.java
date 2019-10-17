@@ -1,23 +1,16 @@
 package hu.blackbelt.judo.tatami.esm2psm;
 
-import static hu.blackbelt.judo.meta.esm.expression.util.builder.ExpressionBuilders.newAttributeSelectorTypeBuilder;
-import static hu.blackbelt.judo.meta.esm.expression.util.builder.ExpressionBuilders.newDataExpressionTypeBuilder;
-import static hu.blackbelt.judo.meta.esm.expression.util.builder.ExpressionBuilders.newLogicalExpressionTypeBuilder;
-import static hu.blackbelt.judo.meta.esm.expression.util.builder.ExpressionBuilders.newReferenceExpressionTypeBuilder;
-import static hu.blackbelt.judo.meta.esm.expression.util.builder.ExpressionBuilders.newReferenceSelectorTypeBuilder;
+import static hu.blackbelt.judo.meta.esm.expression.util.builder.ExpressionBuilders.*;
 import static hu.blackbelt.judo.meta.esm.namespace.util.builder.NamespaceBuilders.newModelBuilder;
 import static hu.blackbelt.judo.meta.esm.runtime.EsmModel.buildEsmModel;
-import static hu.blackbelt.judo.meta.esm.structure.util.builder.StructureBuilders.newDataMemberBuilder;
-import static hu.blackbelt.judo.meta.esm.structure.util.builder.StructureBuilders.newEntityTypeBuilder;
-import static hu.blackbelt.judo.meta.esm.structure.util.builder.StructureBuilders.newOneWayRelationMemberBuilder;
-import static hu.blackbelt.judo.meta.esm.structure.util.builder.StructureBuilders.newStaticDataBuilder;
-import static hu.blackbelt.judo.meta.esm.structure.util.builder.StructureBuilders.newStaticNavigationBuilder;
+import static hu.blackbelt.judo.meta.esm.structure.util.builder.StructureBuilders.*;
 import static hu.blackbelt.judo.meta.esm.type.util.builder.TypeBuilders.newStringTypeBuilder;
 import static hu.blackbelt.judo.meta.psm.runtime.PsmModel.buildPsmModel;
 import static hu.blackbelt.judo.meta.psm.runtime.PsmModel.SaveArguments.psmSaveArgumentsBuilder;
 import static hu.blackbelt.judo.tatami.esm2psm.Esm2Psm.calculateEsm2PsmTransformationScriptURI;
 import static hu.blackbelt.judo.tatami.esm2psm.Esm2Psm.executeEsm2PsmTransformation;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
@@ -127,11 +120,11 @@ public class EsmStrucutre2PsmDerivedTest {
         		.withDataType(string)
         		.withGetterExpression(newDataExpressionTypeBuilder().withExpression("exp").withDialect(ExpressionDialect.XML).build())
         		.withSetterExpression(newAttributeSelectorTypeBuilder().withExpression("").withDialect(ExpressionDialect.XML).build())
+        		.withDefaultExpression(newDataExpressionTypeBuilder().withDialect(ExpressionDialect.JQL).build())
         		.withProperty(true)
         		.build();
                 
-        EntityType entityType = newEntityTypeBuilder().withName("entityType").withDefaultAccesspoint(false)
-        		.withFilter(newLogicalExpressionTypeBuilder().build())
+        EntityType entityType = newEntityTypeBuilder().withName("entityType")
         		.withAttributes(member).build();
         
         final Model model = newModelBuilder()
@@ -152,10 +145,10 @@ public class EsmStrucutre2PsmDerivedTest {
         assertTrue(psmDataProperties.get(0).getDataType().equals(psmStringType));
         
         assertThat(psmDataProperties.get(0).getGetterExpression().getExpression(), IsEqual.equalTo(member.getGetterExpression().getExpression()));
-        assertTrue(psmDataProperties.get(0).getSetterExpression() == null);
+        assertNull(psmDataProperties.get(0).getSetterExpression());
         
         assertThat(psmDataProperties.get(0).getGetterExpression().getDialect(), IsEqual.equalTo(hu.blackbelt.judo.meta.psm.derived.ExpressionDialect.XML));
-        assertTrue(psmDataProperties.get(0).getSetterExpression() == null);
+        assertNull(psmDataProperties.get(0).getSetterExpression());
         
     }
     
@@ -194,20 +187,21 @@ public class EsmStrucutre2PsmDerivedTest {
     void testCreateNavigationProperty() throws Exception {
         testName = "CreateNavigationProperty";
         
-        EntityType target = newEntityTypeBuilder().withName("target").withDefaultAccesspoint(false)
-        		.withFilter(newLogicalExpressionTypeBuilder().build()).build();
+        EntityType target = newEntityTypeBuilder().withName("target").build();
         
         OneWayRelationMember navigationProperty = newOneWayRelationMemberBuilder().withName("navigationProperty").withContainment(false)
         		.withProperty(true)
         		.withGetterExpression(newReferenceExpressionTypeBuilder().withExpression("exp").build())
         		.withSetterExpression(newReferenceSelectorTypeBuilder().withExpression("exp").build())
+        		.withDefaultExpression(newReferenceExpressionTypeBuilder().withDialect(ExpressionDialect.JQL).build())
+        		.withRangeExpression(newReferenceExpressionTypeBuilder().withDialect(ExpressionDialect.JQL).build())
         		.withLower(1)
         		.withUpper(3)
         		.withTarget(target)
         		.build();
         
-        EntityType entityType = newEntityTypeBuilder().withName("entityType").withDefaultAccesspoint(false)
-        		.withFilter(newLogicalExpressionTypeBuilder().build()).withRelations(navigationProperty).build();
+        EntityType entityType = newEntityTypeBuilder().withName("entityType")
+        		.withRelations(navigationProperty).build();
 
         final Model model = newModelBuilder()
                 .withName("TestModel")
@@ -238,8 +232,7 @@ public class EsmStrucutre2PsmDerivedTest {
     void testCreateStaticNavigation() throws Exception {
         testName = "CreateStaticNavigation";
         
-        EntityType target = newEntityTypeBuilder().withName("target").withDefaultAccesspoint(false)
-        		.withFilter(newLogicalExpressionTypeBuilder().build()).build();
+        EntityType target = newEntityTypeBuilder().withName("target").build();
         
         StaticNavigation staticNavigation = newStaticNavigationBuilder().withName("staticNavigation")
         		.withGetterExpression(newReferenceExpressionTypeBuilder().withExpression("exp").build())
@@ -261,7 +254,7 @@ public class EsmStrucutre2PsmDerivedTest {
         assertTrue(psmStaticNavigation.isPresent());
         assertThat(psmStaticNavigation.get().getName(), IsEqual.equalTo(staticNavigation.getName()));
         assertThat(psmStaticNavigation.get().getGetterExpression().getExpression(), IsEqual.equalTo(staticNavigation.getGetterExpression().getExpression()));
-        assertTrue(psmStaticNavigation.get().getSetterExpression() == null);
+        assertNull(psmStaticNavigation.get().getSetterExpression());
         assertThat(psmStaticNavigation.get().getTarget(), IsEqual.equalTo(psmEntityType));
     }
 

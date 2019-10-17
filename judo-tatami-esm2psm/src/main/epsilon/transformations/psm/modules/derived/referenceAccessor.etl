@@ -7,10 +7,12 @@ rule CreateReferenceAccessor
 	transform s : ESM!ReferenceAccessor
 	to t : JUDOPSM!ReferenceAccessor
 	extends CreateReferenceTypedElement {
-	   if (s.getterExpression.expression <> "") {
+	   if (s.getterExpression.expression.isDefined() and
+	       s.getterExpression.expression.trim().length() > 0) {
 	       t.getterExpression = s.getterExpression.getPSMEquivalent();
 	   }
-	   if (s.setterExpression.expression <> "") {
+	   if (s.setterExpression.expression.isDefined() and
+           s.setterExpression.expression.trim().length() > 0) {
 	       t.setterExpression = s.setterExpression.getPSMEquivalent();
 	   }
 }
@@ -19,6 +21,7 @@ rule CreateNavigationProperty
     transform s : ESM!OneWayRelationMember
     to t : JUDOPSM!NavigationProperty
     extends CreateReferenceAccessor {
+    // reverseCascadeDelete, defaultExpression, rangeExpression inherited from RelationFeature hava no equivalent in PSM  
       guard: not s.containment and s.property and s.eContainer.isKindOf(ESM!EntityType)
       s.eContainer.getPSMEquivalent().navigationProperties.add(t);
       log.debug("Created NavigationProperty: " + t.name);
