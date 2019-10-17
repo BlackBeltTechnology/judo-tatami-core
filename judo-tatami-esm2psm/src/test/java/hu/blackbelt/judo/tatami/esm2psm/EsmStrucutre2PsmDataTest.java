@@ -394,28 +394,6 @@ public class EsmStrucutre2PsmDataTest {
         assertTrue(psmAssociationEnd2.getTarget().equals(psmEntityType));
     }
 
-    @Test
-    void testCreatePackage() throws Exception {
-        testName = "CreateModel";
-
-        Package p1 = newPackageBuilder().withName("package1").build();
-
-        final Model model = newModelBuilder()
-                .withName("TestModel")
-                .withElements(p1)
-                .build();
-
-        esmModel.addContent(model);
-        transform();
-
-        final Optional<hu.blackbelt.judo.meta.psm.namespace.Package> psmPackage = allPsm(hu.blackbelt.judo.meta.psm.namespace.Package.class)
-                .findAny();
-
-        assertTrue(psmPackage.isPresent());
-        assertThat(psmPackage.get().getName(), IsEqual.equalTo(p1.getName()));
-        assertThat(psmPackage.get().getNamespace().getName(), IsEqual.equalTo(model.getName()));
-    }
-
     static <T> Stream<T> asStream(Iterator<T> sourceIterator, boolean parallel) {
         Iterable<T> iterable = () -> sourceIterator;
         return StreamSupport.stream(iterable.spliterator(), parallel);

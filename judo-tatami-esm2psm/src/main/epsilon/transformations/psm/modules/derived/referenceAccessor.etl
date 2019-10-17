@@ -1,33 +1,39 @@
 import "../data/referenceTypedElement.etl";
 import "expressionType.etl";
 import "../../../../operations/esm/derived/expressionType.eol";
-import "../../../../operations/esm/derived/referenceAccessor.eol";
 
 @abstract
 rule CreateReferenceAccessor
 	transform s : ESM!ReferenceAccessor
 	to t : JUDOPSM!ReferenceAccessor
 	extends CreateReferenceTypedElement {
-	  t.getterExpression = s.getterExpression.getPSMEquivalent();
-	  if (s.setterExpression.isDefined()) {
-	  	t.setterExpression = s.setterExpression.getPSMEquivalent();
-	  }
+	   if (s.getterExpression.expression.isDefined() and
+	       s.getterExpression.expression.trim().length() > 0) {
+	       t.getterExpression = s.getterExpression.getPSMEquivalent();
+	   }
+	   if (s.setterExpression.expression.isDefined() and
+           s.setterExpression.expression.trim().length() > 0) {
+	       t.setterExpression = s.setterExpression.getPSMEquivalent();
+	   }
+}
+
+rule CreateNavigationProperty
+    transform s : ESM!OneWayRelationMember
+    to t : JUDOPSM!NavigationProperty
+    extends CreateReferenceAccessor {
+      guard: not s.containment and s.property and s.eContainer.isKindOf(ESM!EntityType)
+      s.eContainer.getPSMEquivalent().navigationProperties.add(t);
+      log.debug("Created NavigationProperty: " + t.name);
 }
 
 rule CreateStaticNavigation
 	transform s : ESM!StaticNavigation
 	to t : JUDOPSM!StaticNavigation
 	extends CreateReferenceAccessor {
-	  ESM!Namespace.all.selectOne(ns | ns.elements.includes(s)).equivalent("CreatePackage").elements.add(t);
-	  s.setTransferRelationBinding(t);
-}
-
-rule CreateNavigationProperty
-	transform s : ESM!NavigationProperty
-	to t : JUDOPSM!NavigationProperty
-	extends CreateReferenceAccessor {
-	  s.eContainer.equivalent("CreateEntityType").navigationProperties.add(t);
-	  s.setTransferRelationBinding(t);
-
-	  log.debug("Created NavigationProperty: " + t.name);
+	  if (s.eContainer.isKindOf(ESM!Model)) {
+          s.eContainer.equivalent("CreateModel").elements.add(t);
+      } else if (s.eContainer.isKindOf(ESM!Package)) {
+          s.eContainer.equivalent("CreatePackage").elements.add(t);
+      }
+	  log.debug("Created Static Navigation: " + t.name);
 }
