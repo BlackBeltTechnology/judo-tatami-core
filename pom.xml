@@ -75,7 +75,7 @@
         <judo-meta-asm-version>1.0.0.20191017_065843_5c67fc0_develop</judo-meta-asm-version>
         <judo-meta-asm-import-range>[1.0,1.1)</judo-meta-asm-import-range>
 
-        <judo-meta-expression-version>1.0.0.20191016_092940_f411390_develop</judo-meta-expression-version>
+        <judo-meta-expression-version>1.0.0.20191017_141322_1e3c6de_develop</judo-meta-expression-version>
         <judo-meta-expression-import-range>[1.0,1.1)</judo-meta-expression-import-range>
 
         <judo-meta-measure-version>1.0.0.20191017_065900_9a9a2cc_develop</judo-meta-measure-version>
