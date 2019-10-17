@@ -14,7 +14,6 @@ rule CreateAttribute
     transform s: ESM!DataMember
     to t: JUDOPSM!Attribute
     extends CreatePrimitiveTypedElement {
-    //defaultExpression inherited from DataFeature hava no equivalent in PSM
       guard: s.eContainer.isTypeOf(ESM!EntityType)
       t.identifier = s.identifier;
       s.eContainer.getPSMEquivalent().attributes.add(t);

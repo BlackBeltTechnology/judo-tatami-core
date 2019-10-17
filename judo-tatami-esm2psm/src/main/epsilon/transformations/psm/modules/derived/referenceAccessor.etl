@@ -21,7 +21,6 @@ rule CreateNavigationProperty
     transform s : ESM!OneWayRelationMember
     to t : JUDOPSM!NavigationProperty
     extends CreateReferenceAccessor {
-    // reverseCascadeDelete, defaultExpression, rangeExpression inherited from RelationFeature hava no equivalent in PSM  
       guard: not s.containment and s.property and s.eContainer.isKindOf(ESM!EntityType)
       s.eContainer.getPSMEquivalent().navigationProperties.add(t);
       log.debug("Created NavigationProperty: " + t.name);

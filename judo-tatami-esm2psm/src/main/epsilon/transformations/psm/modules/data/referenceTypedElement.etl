@@ -23,7 +23,6 @@ rule CreateContainment
 	transform s: ESM!OneWayRelationMember
 	to t: JUDOPSM!Containment
 	extends CreateReferenceTypedElement {
-	// reverseCascadeDelete, defaultExpression, rangeExpression inherited from RelationFeature hava no equivalent in PSM
 	  guard: s.containment and not s.property and s.eContainer.isKindOf(ESM!EntityType)
 	  s.eContainer.getPSMEquivalent().getRelations().add(t);
 	  log.debug("Created Containment: " + t.name);
@@ -33,7 +32,6 @@ rule CreateAssociationEndWithoutPartner
 	transform s: ESM!OneWayRelationMember
 	to t: JUDOPSM!AssociationEnd
 	extends CreateReferenceTypedElement {
-	// reverseCascadeDelete, defaultExpression, rangeExpression inherited from RelationFeature hava no equivalent in PSM  
 	  guard: not s.containment and not s.property and s.eContainer.isKindOf(ESM!EntityType)
 	  s.eContainer.getPSMEquivalent().relations.add(t);
 	  log.debug("Created AssociationEnd: " + t.name);
@@ -43,7 +41,6 @@ rule CreateAssociationEndWithPartner
 	transform s: ESM!TwoWayRelationMember
 	to t: JUDOPSM!AssociationEnd
 	extends CreateReferenceTypedElement {
-	// reverseCascadeDelete, defaultExpression, rangeExpression inherited from RelationFeature hava no equivalent in PSM  
 	  guard: s.eContainer.isKindOf(ESM!EntityType)
 	  t.partner = s.partner.getPSMEquivalent();
 	  s.eContainer.getPSMEquivalent().relations.add(t);

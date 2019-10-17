@@ -22,7 +22,6 @@ rule CreateDataProperty
 	transform s : ESM!DataMember
 	to t : JUDOPSM!DataProperty
 	extends CreatePrimitiveAccessor {
-	//defaultExpression inherited from DataFeature hava no equivalent in PSM
 	  guard: s.property and s.eContainer.isKindOf(ESM!EntityType)
 	  s.eContainer.getPSMEquivalent().dataProperties.add(t);
 	  log.debug("Created DataProperty: " + t.name);
