@@ -103,10 +103,25 @@ public class Asm2SDK {
     private static InputStream generateBundle(String modelName, String version, Iterable<JavaFileObject> compiled, File sourceDir,
                                               Set<String> sourceCodeFiles, Set<String> scrXmlFiles) throws FileNotFoundException {
         TinyBundle bundle = bundle();
+
+        Set<String> exportedPackages = Sets.newHashSet();
+
+        // Add helper classes
+        /*
+        bundle.add(getClassFileName(CompositeClassLoader.class), getClassByteCode(CompositeClassLoader.class));
+        bundle.add(getClassFileName(ReflectionUtil.class), getClassByteCode(ReflectionUtil.class));
+        bundle.add(getClassFileName(MapBuilderProxy.class), getClassByteCode(MapBuilderProxy.class));
+        bundle.add(getClassFileName(MapHolder.class), getClassByteCode(MapHolder.class));
+        bundle.add(getClassFileName(MapProxy.class), getClassByteCode(MapProxy.class));
+        */
+
         compiled.forEach(c -> {
             FullyQualifiedName fullyQualifiedName = (FullyQualifiedName) c;
             try {
                 bundle.add(fullyQualifiedName.getFullyQualifiedName().replace('.', '/') + ".class", c.openInputStream());
+                String packageName = fullyQualifiedName.getFullyQualifiedName()
+                        .substring(0 , fullyQualifiedName.getFullyQualifiedName().lastIndexOf("."));
+                exportedPackages.add(packageName);
             } catch (IOException e) {
                 throw new RuntimeException("File not found: "+ c.getName(), e);
             }
@@ -135,6 +150,7 @@ public class Asm2SDK {
                 .set( Constants.IMPORT_PACKAGE,
                         "org.osgi.framework;version=\"[1.8,2.0)\""
                 )
+                .set( Constants.EXPORT_PACKAGE, exportedPackages.stream().collect(Collectors.joining(",")))
                 .set("Service-Component", Joiner.on(",").join(scrXmlFiles));
         return bundle.build();
     }
@@ -151,4 +167,14 @@ public class Asm2SDK {
         return psmRoot;
     }
 
+    private static InputStream getClassByteCode(Class clazz) {
+        return clazz.getClassLoader().getResourceAsStream(getClassFileName(clazz));
+    }
+
+    private static String getClassFileName(Class clazz) {
+        return clazz.getName().replace(".", "/") + ".class";
+    }
+
 }
+
+
