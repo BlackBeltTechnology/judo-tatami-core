@@ -60,8 +60,19 @@ rule CreateTimestampType
 	transform s: ESM!TimestampType
 	to t: JUDOPSM!TimestampType
 	extends CreateNamespaceElement {
-      // t.baseUnit = s.baseUnit;
-	  log.debug("Created TimestampType: " + t.name);
+      switch (s.baseUnit) {
+            case ESM!DurationType#millisecond: t.baseUnit = JUDOPSM!DurationType#millisecond;
+            case ESM!DurationType#second: t.baseUnit = JUDOPSM!DurationType#second;
+            case ESM!DurationType#minute: t.baseUnit = JUDOPSM!DurationType#minute;
+            case ESM!DurationType#hour: t.baseUnit = JUDOPSM!DurationType#hour;
+            case ESM!DurationType#day: t.baseUnit = JUDOPSM!DurationType#day;
+            case ESM!DurationType#week: t.baseUnit = JUDOPSM!DurationType#week;
+            case ESM!DurationType#month: t.baseUnit = JUDOPSM!DurationType#month;
+            case ESM!DurationType#year: t.baseUnit = JUDOPSM!DurationType#year;
+            case ESM!DurationType#microsecond: t.baseUnit = JUDOPSM!DurationType#microsecond;
+            case ESM!DurationType#nanosecond: t.baseUnit = JUDOPSM!DurationType#nanosecond;
+     }
+	 log.debug("Created TimestampType: " + t.name);
 }
 
 rule CreateEnumerationType
