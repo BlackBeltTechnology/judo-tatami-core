@@ -1,0 +1,13 @@
+operation ESM!Primitive getPSMEquivalent(): JUDOPSM!PrimitiveTypedElement {
+    switch (self.type()) {
+            case ESM!NumericType: return self.equivalent("CreateNumericType");
+            case ESM!PasswordType: return self.equivalent("CreatePasswordType");
+            case ESM!TimestampType: return self.equivalent("CreateTimestampType");
+            case ESM!StringType: return self.equivalent("CreateStringType");
+            case ESM!DateType: return self.equivalent("CreateDateType");
+            case ESM!BooleanType: return self.equivalent("CreateBooleanType");
+            case ESM!XMLType: return self.equivalent("CreateXMLType");
+            case ESM!CustomType: return self.equivalent("CreateCustomType");
+            case ESM!EnumerationType: return self.equivalent("CreateEnumerationType");
+    }
+}

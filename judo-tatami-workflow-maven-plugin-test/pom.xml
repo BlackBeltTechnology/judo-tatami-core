@@ -24,23 +24,122 @@
 	<build>
 		<plugins>
 			<plugin>
-				<groupId>hu.blackbelt.judo.tatami</groupId>
-				<artifactId>judo-tatami-workflow-maven-plugin</artifactId>
-				<version>1.0.0-SNAPSHOT</version>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>exec-maven-plugin</artifactId>
+				<version>1.6.0</version>
 				<executions>
 					<execution>
+						<id>generate-full-demo</id>
+						<phase>generate-resources</phase>
+						<goals>
+							<goal>java</goal>
+						</goals>
+						<configuration>
+							<mainClass>hu.blackbelt.model.northwind.Demo</mainClass>
+							<arguments>
+								<argument>${basedir}/target/classes/northwind-psm.model</argument>
+							</arguments>
+							<includeProjectDependencies>true</includeProjectDependencies>
+							<includePluginDependencies>true</includePluginDependencies>
+						</configuration>
+					</execution>
+				</executions>
+				<dependencies>
+					<dependency>
+						<groupId>hu.blackbelt.judo.meta</groupId>
+						<artifactId>hu.blackbelt.judo.meta.psm.model.northwind</artifactId>
+						<version>${judo-meta-psm-version}</version>
+					</dependency>
+				</dependencies>
+			</plugin>
+
+
+			<plugin>
+				<groupId>hu.blackbelt.judo.tatami</groupId>
+				<artifactId>judo-tatami-workflow-maven-plugin</artifactId>
+				<version>${project.version}</version>
+				<executions>
+					<execution>
+						<id>execute-test-model-from-method</id>
 						<phase>compile</phase>
 						<goals>
 							<goal>psm-default-workflow</goal>
 						</goals>
 						<configuration>
-						    <psmModelDest>${basedir}/target/classes/northwind-psm.model/</psmModelDest>
-							<destination>${basedir}/target/classes/</destination>
+							<psmGeneratorClassName>hu.blackbelt.model.northwind.Demo</psmGeneratorClassName>
+							<psmGeneratorMethodName>fullDemo</psmGeneratorMethodName>
+							<destination>${basedir}/target/classes/method</destination>
 							<modelName>northwind</modelName>
 							<dialectList>hsqldb,oracle</dialectList>
 						</configuration>
 					</execution>
+
+					<execution>
+						<id>execute-test-model-from-file</id>
+						<phase>compile</phase>
+						<goals>
+							<goal>psm-default-workflow</goal>
+						</goals>
+						<configuration>
+							<psmModelFile>${basedir}/target/classes/northwind-psm.model/</psmModelFile>
+							<destination>${basedir}/target/classes/file</destination>
+							<modelName>northwind</modelName>
+							<dialectList>hsqldb,oracle</dialectList>
+						</configuration>
+					</execution>
+
 				</executions>
+				<dependencies>
+
+					<dependency>
+						<groupId>hu.blackbelt.judo.meta</groupId>
+						<artifactId>hu.blackbelt.judo.meta.psm.model.northwind</artifactId>
+						<version>${judo-meta-psm-version}</version>
+					</dependency>
+
+					<dependency>
+						<groupId>hu.blackbelt.judo.tatami</groupId>
+						<artifactId>judo-tatami-psm2asm</artifactId>
+						<version>${project.version}</version>
+					</dependency>
+
+					<dependency>
+						<groupId>hu.blackbelt.judo.tatami</groupId>
+						<artifactId>judo-tatami-psm2measure</artifactId>
+						<version>${project.version}</version>
+					</dependency>
+
+					<dependency>
+						<groupId>hu.blackbelt.judo.tatami</groupId>
+						<artifactId>judo-tatami-asm2rdbms</artifactId>
+						<version>${project.version}</version>
+					</dependency>
+
+					<dependency>
+						<groupId>hu.blackbelt.judo.tatami</groupId>
+						<artifactId>judo-tatami-asm2jaxrsapi</artifactId>
+						<version>${project.version}</version>
+					</dependency>
+
+					<dependency>
+						<groupId>hu.blackbelt.judo.tatami</groupId>
+						<artifactId>judo-tatami-asm2openapi</artifactId>
+						<version>${project.version}</version>
+					</dependency>
+
+					<dependency>
+						<groupId>hu.blackbelt.judo.tatami</groupId>
+						<artifactId>judo-tatami-asm2sdk</artifactId>
+						<version>${project.version}</version>
+					</dependency>
+
+					<dependency>
+						<groupId>hu.blackbelt.judo.tatami</groupId>
+						<artifactId>judo-tatami-rdbms2liquibase</artifactId>
+						<version>${project.version}</version>
+					</dependency>
+
+				</dependencies>
 			</plugin>
 		</plugins>
 		<pluginManagement>
@@ -90,42 +189,6 @@
 			<artifactId>javax.ws.rs-api</artifactId>
 			<version>2.1</version>
 		</dependency>
-
-		<dependency>
-			<groupId>hu.blackbelt.judo.tatami</groupId>
-			<artifactId>judo-tatami-psm2asm</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>hu.blackbelt.judo.tatami</groupId>
-			<artifactId>judo-tatami-psm2measure</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>hu.blackbelt.judo.tatami</groupId>
-			<artifactId>judo-tatami-asm2rdbms</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>hu.blackbelt.judo.tatami</groupId>
-			<artifactId>judo-tatami-asm2jaxrsapi</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>hu.blackbelt.judo.tatami</groupId>
-			<artifactId>judo-tatami-asm2openapi</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>hu.blackbelt.judo.tatami</groupId>
-			<artifactId>judo-tatami-asm2sdk</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>hu.blackbelt.judo.tatami</groupId>
-			<artifactId>judo-tatami-rdbms2liquibase</artifactId>
-		</dependency>
-
 	</dependencies>
 
 </project>

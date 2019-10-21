@@ -38,6 +38,36 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
                 </configuration>
             </plugin>
 
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>1.6.0</version>
+                <executions>
+                    <execution>
+                        <id>generate-full-demo</id>
+                        <phase>generate-test-resources</phase>
+                        <goals>
+                            <goal>java</goal>
+                        </goals>
+                        <configuration>
+                            <mainClass>hu.blackbelt.model.northwind.Demo</mainClass>
+                            <arguments>
+                                <argument>${basedir}/target/test-classes/northwind-psm.model</argument>
+                            </arguments>
+                            <includeProjectDependencies>true</includeProjectDependencies>
+                            <includePluginDependencies>true</includePluginDependencies>
+                        </configuration>
+                    </execution>
+                </executions>
+                <dependencies>
+                    <dependency>
+                        <groupId>hu.blackbelt.judo.meta</groupId>
+                        <artifactId>hu.blackbelt.judo.meta.psm.model.northwind</artifactId>
+                        <version>${judo-meta-psm-version}</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
+
         </plugins>
     </build>
     
@@ -87,5 +117,12 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
         	<groupId>hu.blackbelt.judo.tatami</groupId>
         	<artifactId>judo-tatami-asm2jaxrsapi</artifactId>
         </dependency>
+
+        <dependency>
+            <groupId>hu.blackbelt.judo.meta</groupId>
+            <artifactId>hu.blackbelt.judo.meta.psm.model.northwind</artifactId>
+            <version>${judo-meta-psm-version}</version>
+        </dependency>
+
     </dependencies>
 </project>

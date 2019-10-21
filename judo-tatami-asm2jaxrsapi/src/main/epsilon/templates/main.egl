@@ -17,7 +17,7 @@ for (ap in asmUtils.getAllAccessPoints()) {
     var apServiceInstances : Map = new Map();
 
     var exposedServices = asmUtils.getExposedServicesOfAccessPoint(ap);
-	log.info("exposedServices: " + exposedServices.collect(exposedService | "op: " + exposedService.getName() + " in " + exposedService.getEContainingClass().getName()));
+	log.debug("exposedServices: " + exposedServices.collect(exposedService | "op: " + exposedService.getName() + " in " + exposedService.getEContainingClass().getName()));
 	
 	// Unbound service
     if (exposedServices.size() > 0) {
@@ -29,8 +29,8 @@ for (ap in asmUtils.getAllAccessPoints()) {
 	
     var boundOperations = ASM!EOperation.all.select(op | asmUtils.isBound(op) and asmUtils.getAccessPointsOfOperation(op).contains(ap));
 	var boundOperationClasses = boundOperations.collect(op | op.eContainer).asSet();
-	log.info("boundOperations: " + boundOperations.collect(boundOperation | boundOperation.getName()));
-	log.info("boundOperationClasses: " + boundOperationClasses.collect(boundOperationClass | boundOperationClass.getName()));
+	log.debug("boundOperations: " + boundOperations.collect(boundOperation | boundOperation.getName()));
+	log.debug("boundOperationClasses: " + boundOperationClasses.collect(boundOperationClass | boundOperationClass.getName()));
 	
     // Bound service
     for (boundOperationClass in boundOperationClasses) {

@@ -1,9 +1,0 @@
-@cached
-operation ESM!Namespace toString() : String {
-    var p : ESM!Namespace = self.getNamespace();
-    if (p.isDefined()) {
-        return p.toString() + "::" + self.name;
-    } else {
-        return self.name;
-    }
-}

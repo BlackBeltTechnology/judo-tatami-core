@@ -1,4 +1,0 @@
-@cached
-operation JUDOPSM!AssociationEnd getOpposites() : JUDOPSM!AssociationEnd {
-	return self.target.relations.select(e | e.target = self.getEntityType());
-}
