@@ -41,6 +41,8 @@ rule CreateDurationUnit
 	        case ESM!DurationType#week: t.unitType = JUDOPSM!DurationType#week;
 	        case ESM!DurationType#month: t.unitType = JUDOPSM!DurationType#month;
 	        case ESM!DurationType#year: t.unitType = JUDOPSM!DurationType#year;
+	        case ESM!DurationType#microsecond: t.unitType = JUDOPSM!DurationType#microsecond;
+	        case ESM!DurationType#nanosecond: t.unitType = JUDOPSM!DurationType#nanosecond;
     }
 }
 
