@@ -11,3 +11,15 @@ rule CreateEntityType
     }
     log.debug("Created EntityType: " + t.name);
 }
+
+//Can be tested after "JNG-539: Invariant Constraint doesn't derive from NamedElement" is done
+/*
+rule CreateInvariantConstraint
+    transform s : ESM!InvariantConstraint
+    to t : JUDOPSM!InvariantConstraint
+    extends CreateNamedElement
+    {
+        t.expression = s.logicalExpressionType.getPSMEquivalent();
+        t.constrained = s.eContainer.getPSMEquivalent();
+    }
+*/
