@@ -33,6 +33,7 @@ rule CreateAssociationEndWithoutPartner
 	to t: JUDOPSM!AssociationEnd
 	extends CreateReferenceTypedElement {
 	  guard: not s.containment and not s.property and s.eContainer.isKindOf(ESM!EntityType)
+	  t.reverseCascadeDelete = s.reverseCascadeDelete;
 	  s.eContainer.getPSMEquivalent().relations.add(t);
 	  log.debug("Created AssociationEnd: " + t.name);
 }
@@ -42,6 +43,7 @@ rule CreateAssociationEndWithPartner
 	to t: JUDOPSM!AssociationEnd
 	extends CreateReferenceTypedElement {
 	  guard: s.eContainer.isKindOf(ESM!EntityType)
+	  t.reverseCascadeDelete = s.reverseCascadeDelete;
 	  t.partner = s.partner.getPSMEquivalent();
 	  s.eContainer.getPSMEquivalent().relations.add(t);
 	  log.debug("Created AssociationEnd: " + t.name);
