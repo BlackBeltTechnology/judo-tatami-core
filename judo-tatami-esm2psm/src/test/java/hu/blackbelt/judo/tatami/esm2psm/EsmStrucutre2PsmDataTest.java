@@ -15,6 +15,7 @@ import static hu.blackbelt.judo.meta.psm.runtime.PsmModel.SaveArguments.psmSaveA
 import static hu.blackbelt.judo.tatami.esm2psm.Esm2Psm.calculateEsm2PsmTransformationScriptURI;
 import static hu.blackbelt.judo.tatami.esm2psm.Esm2Psm.executeEsm2PsmTransformation;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
@@ -289,6 +290,7 @@ public class EsmStrucutre2PsmDataTest {
                 .withSetterExpression(newReferenceSelectorTypeBuilder().withDialect(ExpressionDialect.JQL).withExpression("").build())
                 .withDefaultExpression(newReferenceExpressionTypeBuilder().withDialect(ExpressionDialect.JQL).withExpression("").build())
                 .withRangeExpression(newReferenceExpressionTypeBuilder().withDialect(ExpressionDialect.JQL).withExpression("").build())
+                .withReverseCascadeDelete(true)
                 .withLower(1)
                 .withUpper(3)
                 .withTarget(target)
@@ -318,10 +320,12 @@ public class EsmStrucutre2PsmDataTest {
         assertTrue(psmEntityType.getRelations().size() == 1);
 
         final hu.blackbelt.judo.meta.psm.data.Relation psmAssociationEnd = psmEntityType.getRelations().get(0);
+        
         assertTrue(psmAssociationEnd.getName().equals(associationEnd.getName()));
         assertTrue(psmAssociationEnd.getCardinality().getLower() == associationEnd.getLower());
         assertTrue(psmAssociationEnd.getCardinality().getUpper() == associationEnd.getUpper());
         assertTrue(psmAssociationEnd.getTarget().equals(psmTarget));
+        assertTrue(((hu.blackbelt.judo.meta.psm.data.AssociationEnd)psmAssociationEnd).isReverseCascadeDelete());
     }
 
     @Test
@@ -386,12 +390,14 @@ public class EsmStrucutre2PsmDataTest {
         assertTrue(psmAssociationEnd1.getCardinality().getLower() == associationEnd1.getLower());
         assertTrue(psmAssociationEnd1.getCardinality().getUpper() == associationEnd1.getUpper());
         assertTrue(psmAssociationEnd1.getTarget().equals(psmTarget));
+        assertFalse(((hu.blackbelt.judo.meta.psm.data.AssociationEnd)psmAssociationEnd1).isReverseCascadeDelete());
 
         final hu.blackbelt.judo.meta.psm.data.Relation psmAssociationEnd2 = psmTarget.getRelations().get(0);
         assertTrue(psmAssociationEnd2.getName().equals(associationEnd2.getName()));
         assertTrue(psmAssociationEnd2.getCardinality().getLower() == associationEnd2.getLower());
         assertTrue(psmAssociationEnd2.getCardinality().getUpper() == associationEnd2.getUpper());
         assertTrue(psmAssociationEnd2.getTarget().equals(psmEntityType));
+        assertFalse(((hu.blackbelt.judo.meta.psm.data.AssociationEnd)psmAssociationEnd2).isReverseCascadeDelete());
     }
 
     static <T> Stream<T> asStream(Iterator<T> sourceIterator, boolean parallel) {
