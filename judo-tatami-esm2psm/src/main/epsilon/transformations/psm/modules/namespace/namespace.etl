@@ -1,3 +1,5 @@
+import "../../../../operations/esm/namespace/namespace.eol";
+
 @abstract
 rule CreateNamedElement
   transform s : ESM!NamedElement
@@ -10,12 +12,7 @@ rule CreateNamespaceElement
   transform s : ESM!NamespaceElement
   to t : JUDOPSM!NamespaceElement
   extends CreateNamedElement {
-    var namespace : ESM!Namespace = s.eContainer;
-    if (namespace.isKindOf(ESM!Model)) {
-        namespace.equivalent("CreateModel").elements.add(t);
-    } else if (namespace.isKindOf(ESM!Package)) {
-        namespace.equivalent("CreatePackage").elements.add(t);
-    }
+    s.eContainer.getPSMEquivalent().elements.add(t);
     log.debug("Created namespace element: " + t.name);
 }
 
@@ -30,11 +27,6 @@ rule CreatePackage
   transform s : ESM!Package
   to t : JUDOPSM!Package
   extends CreateNamedElement {
-    var namespace : ESM!Namespace = s.eContainer;
-    if (namespace.isKindOf(ESM!Model)) {
-        namespace.equivalent("CreateModel").packages.add(t);
-    } else if (namespace.isKindOf(ESM!Package)) {
-        namespace.equivalent("CreatePackage").packages.add(t);
-    }
+    s.eContainer.getPSMEquivalent().packages.add(t);
     log.debug("Created namespace: " + t.name);
 }

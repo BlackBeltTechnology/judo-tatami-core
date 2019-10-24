@@ -1,0 +1,7 @@
+operation ESM!Namespace getPSMEquivalent(): JUDOPSM!Namespace {
+    if (self.isKindOf(ESM!Model)) {
+        return self.equivalent("CreateModel");
+    } else if (self.isKindOf(ESM!Package)) {
+        return self.equivalent("CreatePackage");
+    }
+}

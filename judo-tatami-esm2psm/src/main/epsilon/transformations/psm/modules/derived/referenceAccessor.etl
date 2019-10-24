@@ -1,39 +1,206 @@
 import "../data/referenceTypedElement.etl";
 import "expressionType.etl";
 import "../../../../operations/esm/derived/expressionType.eol";
+import "../../../../operations/esm/namespace/namespace.eol";
+
+@lazy
+@greedy
+rule CreateCardinalityOfStaticNavigation
+    transform s: ESM!ReferenceTypedElement
+    to t: JUDOPSM!Cardinality
+    extends CreateCardinalityOfReferenceTypedElement {
+}
+
+@lazy
+@greedy
+rule CreateCardinalityOfNavigationProperty
+    transform s: ESM!ReferenceTypedElement
+    to t: JUDOPSM!Cardinality
+    extends CreateCardinalityOfReferenceTypedElement {
+}
+
+@lazy
+@greedy
+rule CreateCardinalityOfTransferObjectRelation
+    transform s: ESM!ReferenceTypedElement
+    to t: JUDOPSM!Cardinality
+    extends CreateCardinalityOfReferenceTypedElement {
+}
+
+@lazy
+@greedy
+rule CreateCardinalityOfTransferObjectRelationBinding
+    transform s: ESM!ReferenceTypedElement
+    to t: JUDOPSM!Cardinality
+    extends CreateCardinalityOfReferenceTypedElement {
+}
+
+@lazy
+@greedy
+rule CreateCardinalityOfTransferObjectRelationDefault
+    transform s: ESM!ReferenceTypedElement
+    to t: JUDOPSM!Cardinality
+    extends CreateCardinalityOfReferenceTypedElement {
+}
+
+@lazy
+@greedy
+rule CreateCardinalityOfTransferObjectRelationRange
+    transform s: ESM!ReferenceTypedElement
+    to t: JUDOPSM!Cardinality
+    extends CreateCardinalityOfReferenceTypedElement {
+}
 
 @abstract
 rule CreateReferenceAccessor
-	transform s : ESM!ReferenceAccessor
-	to t : JUDOPSM!ReferenceAccessor
-	extends CreateReferenceTypedElement {
-	   if (s.getterExpression.expression.isDefined() and
-	       s.getterExpression.expression.trim().length() > 0) {
-	       t.getterExpression = s.getterExpression.getPSMEquivalent();
-	   }
-	   if (s.setterExpression.expression.isDefined() and
+    transform s : ESM!ReferenceAccessor
+    to t : JUDOPSM!ReferenceAccessor {
+       if (s.getterExpression.expression.isDefined() and
+           s.getterExpression.expression.trim().length() > 0) {
+           t.getterExpression = s.getterExpression.getPSMEquivalent();
+       }
+       if (s.setterExpression.expression.isDefined() and
            s.setterExpression.expression.trim().length() > 0) {
-	       t.setterExpression = s.setterExpression.getPSMEquivalent();
-	   }
+           t.setterExpression = s.setterExpression.getPSMEquivalent();
+       }
 }
 
 rule CreateNavigationProperty
     transform s : ESM!OneWayRelationMember
     to t : JUDOPSM!NavigationProperty
-    extends CreateReferenceAccessor {
+    extends CreateReferenceTypedElement, CreateReferenceAccessor {
       guard: not s.containment and s.property and s.eContainer.isKindOf(ESM!EntityType)
-      s.eContainer.getPSMEquivalent().navigationProperties.add(t);
-      log.debug("Created NavigationProperty: " + t.name);
+      
+       t.cardinality = s.equivalent("CreateCardinalityOfNavigationProperty");
+       s.eContainer.getPSMEquivalent().navigationProperties.add(t);
+       
+       log.debug("Created Navigation Property: " + t.name);
+}
+
+rule CreateNavigationPropertyForTransferObjectRelationBinding
+    transform s : ESM!OneWayRelationMember
+    to t : JUDOPSM!NavigationProperty
+    extends CreateReferenceTypedElement, CreateReferenceAccessor {
+        guard:  s.eContainer.isKindOf(ESM!TransferObjectType)
+                and not s.eContainer.isKindOf(ESM!EntityType)
+                and not s.containment and not s.reverseCascadeDelete
+                and s.property
+                and s.eContainer.mapping.isDefined()
+        
+         t.cardinality = s.equivalent("CreateCardinalityOfTransferObjectRelationBinding");
+         t.name = "_" + s.name + "_" + esmUtils.getNamespaceElementFQName(s.eContainer).replace("::","_");
+         s.eContainer.mapping.target.getPSMEquivalent().navigationProperties.add(t);
+        
+         log.debug("Created Navigation Property for transfer object relation binding: " + t.name);
+}
+
+rule CreateNavigationPropertyForTransferObjectRelationDefault 
+    transform s : ESM!OneWayRelationMember
+    to t : JUDOPSM!NavigationProperty
+    extends CreateReferenceTypedElement {
+        guard:  s.eContainer.isKindOf(ESM!TransferObjectType)
+                and not s.eContainer.isKindOf(ESM!EntityType)
+                and not s.containment and not s.reverseCascadeDelete
+                and (not s.property
+                       or (s.setterExpression.expression.isDefined() and
+                           s.setterExpression.expression.trim().length() > 0))
+                and s.eContainer.mapping.isDefined()
+                and s.defaultExpression.expression.isDefined() and
+                    s.defaultExpression.expression.trim().length() > 0
+            
+            t.cardinality = s.equivalent("CreateCardinalityOfTransferObjectRelationDefault");
+            t.getterExpression = s.defaultExpression.getPSMEquivalent();
+            t.name = "_" + s.name + "_default_" + esmUtils.getNamespaceElementFQName(s.eContainer).replace("::","_");
+            s.eContainer.mapping.target.getPSMEquivalent().navigationProperties.add(t);
+            
+            log.debug("Created Navigation Property for transfer object relation default: " + t.name);
+}
+
+rule CreateNavigationPropertyForTransferObjectRelationRange 
+    transform s : ESM!OneWayRelationMember
+    to t : JUDOPSM!NavigationProperty
+    extends CreateReferenceTypedElement {
+        guard:  s.eContainer.isKindOf(ESM!TransferObjectType)
+                and not s.eContainer.isKindOf(ESM!EntityType)
+                and not s.containment and not s.reverseCascadeDelete
+                and (not s.property
+                        or (s.setterExpression.expression.isDefined() and
+                            s.setterExpression.expression.trim().length() > 0))
+                and s.eContainer.mapping.isDefined()
+                and s.rangeExpression.expression.isDefined() and
+                    s.rangeExpression.expression.trim().length() > 0
+            
+            t.cardinality = s.equivalent("CreateCardinalityOfTransferObjectRelationRange");
+            t.getterExpression = s.rangeExpression.getPSMEquivalent();
+            t.name = "_" + s.name + "_range_" + esmUtils.getNamespaceElementFQName(s.eContainer).replace("::","_");
+            s.eContainer.mapping.target.getPSMEquivalent().navigationProperties.add(t);
+            
+            log.debug("Created Navigation Property for transfer object relation range: " + t.name);
 }
 
 rule CreateStaticNavigation
 	transform s : ESM!StaticNavigation
 	to t : JUDOPSM!StaticNavigation
-	extends CreateReferenceAccessor {
-	  if (s.eContainer.isKindOf(ESM!Model)) {
-          s.eContainer.equivalent("CreateModel").elements.add(t);
-      } else if (s.eContainer.isKindOf(ESM!Package)) {
-          s.eContainer.equivalent("CreatePackage").elements.add(t);
-      }
-	  log.debug("Created Static Navigation: " + t.name);
+	extends CreateReferenceTypedElement, CreateReferenceAccessor {
+
+	    t.cardinality = s.equivalent("CreateCardinalityOfStaticNavigation");
+	    s.eContainer.getPSMEquivalent().elements.add(t);
+	
+        log.debug("Created Static Navigation: " + t.name);
+}
+
+rule CreateStaticNavigationForTransferObjectRelationBinding
+    transform s : ESM!OneWayRelationMember
+    to t : JUDOPSM!StaticNavigation
+    extends CreateReferenceTypedElement, CreateReferenceAccessor {
+        guard:  s.eContainer.isKindOf(ESM!TransferObjectType)
+                and not s.eContainer.isKindOf(ESM!EntityType)
+                and s.property and not s.containment and not s.reverseCascadeDelete
+                and not s.eContainer.mapping.isDefined()
+	    
+	     t.cardinality = s.equivalent("CreateCardinalityOfTransferObjectRelationBinding");
+         t.name = "_" + s.name + "_" + s.eContainer.name;
+         (s.eContainer).eContainer.getPSMEquivalent().elements.add(t);
+         
+         log.debug("Created Static Navigation for transfer object relation binding: " + t.name);
+}
+
+rule CreateStaticNavigationForTransferObjectRelationDefault 
+    transform s : ESM!OneWayRelationMember
+    to t : JUDOPSM!StaticNavigation
+    extends CreateReferenceTypedElement {
+        guard:  s.eContainer.isKindOf(ESM!TransferObjectType)
+                and not s.eContainer.isKindOf(ESM!EntityType)
+                and not s.containment and not s.reverseCascadeDelete
+                and not s.property
+                and not s.eContainer.mapping.isDefined()
+                and s.defaultExpression.expression.isDefined() and
+                    s.defaultExpression.expression.trim().length() > 0
+            
+            t.cardinality = s.equivalent("CreateCardinalityOfTransferObjectRelationDefault");
+            t.getterExpression = s.defaultExpression.getPSMEquivalent();
+            t.name = "_" + s.name + "_default_" + s.eContainer.name;
+            (s.eContainer).eContainer.getPSMEquivalent().elements.add(t);
+            
+            log.debug("Created Static Navigation for transfer object relation default: " + t.name);
+}
+
+rule CreateStaticNavigationForTransferObjectRelationRange 
+    transform s : ESM!OneWayRelationMember
+    to t : JUDOPSM!StaticNavigation
+    extends CreateReferenceTypedElement {
+        guard:  s.eContainer.isKindOf(ESM!TransferObjectType)
+                and not s.eContainer.isKindOf(ESM!EntityType)
+                and not s.containment and not s.reverseCascadeDelete
+                and not s.property
+                and not s.eContainer.mapping.isDefined()
+                and s.rangeExpression.expression.isDefined() and
+                    s.rangeExpression.expression.trim().length() > 0
+            
+            t.cardinality = s.equivalent("CreateCardinalityOfTransferObjectRelationRange");
+            t.getterExpression = s.rangeExpression.getPSMEquivalent();
+            t.name = "_" + s.name + "_range_" + s.eContainer.name;
+            (s.eContainer).eContainer.getPSMEquivalent().elements.add(t);
+            
+            log.debug("Created Static Navigation for transfer object relation range: " + t.name);
 }
