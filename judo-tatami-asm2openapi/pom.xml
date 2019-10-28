@@ -84,7 +84,6 @@
 							<psmGeneratorMethodName>fullDemo</psmGeneratorMethodName>
 							<destination>${basedir}/target/test-classes</destination>
 							<modelName>northwind</modelName>
-							<modelName>northwind</modelName>
 							<ignorePsm2Measure>true</ignorePsm2Measure>
 							<ignoreAsm2Rdbms>true</ignoreAsm2Rdbms>
 							<ignoreAsm2sdk>true</ignoreAsm2sdk>
@@ -95,6 +94,11 @@
 					</execution>
 				</executions>
 				<dependencies>
+					<dependency>
+						<groupId>hu.blackbelt.judo.meta</groupId>
+						<artifactId>hu.blackbelt.judo.meta.psm.model</artifactId>
+						<version>${judo-meta-psm-version}</version>
+					</dependency>
 
 					<dependency>
 						<groupId>hu.blackbelt.judo.meta</groupId>
