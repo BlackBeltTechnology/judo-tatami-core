@@ -4,3 +4,4 @@ import "derived/_importDerived.eol";
 import "measure/_importMeasure.eol";
 import "accesspoint/accessPoint.eol";
 import "service/transferObjectType.eol";
+import "namespace/namespace.eol";
