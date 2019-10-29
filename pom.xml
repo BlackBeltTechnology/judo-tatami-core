@@ -53,6 +53,7 @@
         <epsilon-version>1.5.1</epsilon-version>
         <tycho-version>1.4.0</tycho-version>
 
+        <structured-map-proxy-version>1.0.0.20191028_124108_c62da28_develop</structured-map-proxy-version>
         <epsilon-runtime-version>1.2.0.develop_101</epsilon-runtime-version>
         <epsilon-runtime-eclipse-version>1.2.0.develop_00010</epsilon-runtime-eclipse-version>
         <emf-genmodel-generator-version>1.0.0.develop_00023</emf-genmodel-generator-version>
@@ -88,7 +89,7 @@
         <judo-meta-openapi-import-range>[1.0,1.1)</judo-meta-openapi-import-range>
 
         <!-- We use older version of plugin to avoid chicked egg problem -->
-        <judo-tatami-workflow-maven-plugin-version>1.0.0.20191015_161412_49fc277_develop</judo-tatami-workflow-maven-plugin-version>
+        <judo-tatami-workflow-maven-plugin-version>1.0.0-SNAPSHOT</judo-tatami-workflow-maven-plugin-version>
 
         <!-- Xtend / Xcore -->
         <emf-version>2.18.0</emf-version>
@@ -610,6 +611,25 @@
                                     <action>
                                         <ignore />
                                     </action>
+                                </pluginExecution>
+                                <pluginExecution>
+                                	<pluginExecutionFilter>
+                                		<groupId>
+                                			org.codehaus.mojo
+                                		</groupId>
+                                		<artifactId>
+                                			exec-maven-plugin
+                                		</artifactId>
+                                		<versionRange>
+                                			[1.6.0,)
+                                		</versionRange>
+                                		<goals>
+                                			<goal>java</goal>
+                                		</goals>
+                                	</pluginExecutionFilter>
+                                	<action>
+                                		<ignore></ignore>
+                                	</action>
                                 </pluginExecution>
                             </pluginExecutions>
                         </lifecycleMappingMetadata>

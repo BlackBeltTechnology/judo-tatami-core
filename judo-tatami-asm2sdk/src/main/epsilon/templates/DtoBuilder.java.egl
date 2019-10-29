@@ -1,0 +1,19 @@
+[%
+  import "../operations/sdk.eol";
+  out.setContentType("Java");
+%]
+
+package [%= dto.getDtoPackageName() + dto.getClassPackage().toLowerCase() %];
+
+import java.util.List;
+import java.util.stream.Collectors;
+
+public interface [%= dto.getClassName() %]Builder {
+	
+	[% for (field in dto.eAllAttributes.includingAll(dto.eAllReferences)) { %]
+	public [%= dto.getClassName() %]Builder [%= field.builderName() %]([%= field.getTypeDefinition() %] [%= field.name.firstToLowerCase().safeName() %]);
+	[% } %]
+	
+	public [%= dto.getClassName() %]Builder with__identifier([%= dto.idType() %] __identifier);
+
+}

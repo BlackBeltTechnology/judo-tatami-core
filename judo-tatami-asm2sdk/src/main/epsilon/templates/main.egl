@@ -13,6 +13,9 @@ for (dto in getAllDTOs()) {
 	//DTO factory
 	genDtoFactory(dto);
 	outputJavaClasses.add(dto.getDtoFactoryJavaFileName());
+	//DTO builder
+	genDtoBuilder(dto);
+	outputJavaClasses.add(dto.getDtoBuilderJavaFileName());
 }
 
 for (ap in asmUtils.getAllAccessPoints()) {
