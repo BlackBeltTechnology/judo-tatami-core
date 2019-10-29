@@ -67,25 +67,25 @@ public class DefaultWorkflowSetupParameters {
 	private List<String> dialectList;
 
 	@Builder.Default
-	private Boolean ignorePsm2Asm = false;
+	private Boolean ignorePsm2Asm = true;
 
 	@Builder.Default
-	private Boolean ignorePsm2Measure = false;
+	private Boolean ignorePsm2Measure = true;
 
 	@Builder.Default
-	private Boolean ignoreAsm2Openapi = false;
+	private Boolean ignoreAsm2Openapi = true;
 
 	@Builder.Default
-	private Boolean ignoreAsm2Rdbms = false;
+	private Boolean ignoreAsm2Rdbms = true;
 
 	@Builder.Default
-	private Boolean ignoreRdbms2Liquibase = false;
+	private Boolean ignoreRdbms2Liquibase = true;
 
 	@Builder.Default
-	private Boolean ignoreAsm2sdk = false;
+	private Boolean ignoreAsm2sdk = true;
 
 	@Builder.Default
-	private Boolean ignoreAsm2jaxrsapi = false;
+	private Boolean ignoreAsm2jaxrsapi = true;
 
 
 	public static DefaultWorkflowSetupParametersBuilder addTransformerCalculatedUris(DefaultWorkflowSetupParametersBuilder builder) throws URISyntaxException {

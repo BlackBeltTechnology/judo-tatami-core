@@ -480,6 +480,81 @@
                     <groupId>hu.blackbelt.judo.tatami</groupId>
                     <artifactId>judo-tatami-workflow-maven-plugin</artifactId>
                     <version>${judo-tatami-workflow-maven-plugin-version}</version>
+                    <dependencies>
+                        <!-- //////////////////////// Models \\\\\\\\\\\\\\\\\\\\\\\ -->
+                        <dependency>
+                            <groupId>hu.blackbelt.judo.meta</groupId>
+                            <artifactId>hu.blackbelt.judo.meta.psm.model.northwind</artifactId>
+                            <version>${judo-meta-psm-version}</version>
+                        </dependency>
+                        <dependency>
+                            <groupId>hu.blackbelt.judo.meta</groupId>
+                            <artifactId>hu.blackbelt.judo.meta.psm.model</artifactId>
+                            <version>${judo-meta-psm-version}</version>
+                        </dependency>
+                        <dependency>
+                            <groupId>hu.blackbelt.judo.meta</groupId>
+                            <artifactId>hu.blackbelt.judo.meta.rdbms.model</artifactId>
+                            <version>${judo-meta-rdbms-version}</version>
+                        </dependency>
+                        <dependency>
+                            <groupId>hu.blackbelt.judo.meta</groupId>
+                            <artifactId>hu.blackbelt.judo.meta.liquibase.model</artifactId>
+                            <version>${judo-meta-liquibase-version}</version>
+                        </dependency>
+                        <dependency>
+                            <groupId>hu.blackbelt.judo.meta</groupId>
+                            <artifactId>hu.blackbelt.judo.meta.asm.model</artifactId>
+                            <version>${judo-meta-asm-version}</version>
+                        </dependency>
+                        <dependency>
+                            <groupId>hu.blackbelt.judo.meta</groupId>
+                            <artifactId>hu.blackbelt.judo.meta.openapi.model</artifactId>
+                            <version>${judo-meta-openapi-version}</version>
+                        </dependency>
+                        <dependency>
+                            <groupId>hu.blackbelt.judo.meta</groupId>
+                            <artifactId>hu.blackbelt.judo.meta.measure.model</artifactId>
+                            <version>${judo-meta-measure-version}</version>
+                        </dependency>
+
+                        <!-- ///////////////////// Works \\\\\\\\\\\\\\\\\\\\\ -->
+                        <dependency>
+                            <groupId>hu.blackbelt.judo.tatami</groupId>
+                            <artifactId>judo-tatami-psm2asm</artifactId>
+                            <version>${project.version}</version>
+                        </dependency>
+                        <dependency>
+                            <groupId>hu.blackbelt.judo.tatami</groupId>
+                            <artifactId>judo-tatami-asm2rdbms</artifactId>
+                            <version>${project.version}</version>
+                        </dependency>
+                        <dependency>
+                            <groupId>hu.blackbelt.judo.tatami</groupId>
+                            <artifactId>judo-tatami-psm2measure</artifactId>
+                            <version>${project.version}</version>
+                        </dependency>
+                        <dependency>
+                            <groupId>hu.blackbelt.judo.tatami</groupId>
+                            <artifactId>judo-tatami-asm2jaxrsapi</artifactId>
+                            <version>${project.version}</version>
+                        </dependency>
+                        <dependency>
+                            <groupId>hu.blackbelt.judo.tatami</groupId>
+                            <artifactId>judo-tatami-asm2openapi</artifactId>
+                            <version>${project.version}</version>
+                        </dependency>
+                        <dependency>
+                            <groupId>hu.blackbelt.judo.tatami</groupId>
+                            <artifactId>judo-tatami-asm2sdk</artifactId>
+                            <version>${project.version}</version>
+                        </dependency>
+                        <dependency>
+                            <groupId>hu.blackbelt.judo.tatami</groupId>
+                            <artifactId>judo-tatami-rdbms2liquibase</artifactId>
+                            <version>${project.version}</version>
+                        </dependency>
+                    </dependencies>
                 </plugin>
 
                 <plugin>

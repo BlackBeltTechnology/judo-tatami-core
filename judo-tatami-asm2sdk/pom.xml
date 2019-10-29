@@ -84,31 +84,12 @@
 							<psmGeneratorMethodName>fullDemo</psmGeneratorMethodName>
 							<destination>${basedir}/target/test-classes</destination>
 							<modelName>northwind</modelName>
-							<modelName>northwind</modelName>
-							<ignorePsm2Measure>true</ignorePsm2Measure>
-							<ignoreAsm2Rdbms>true</ignoreAsm2Rdbms>
-							<ignoreAsm2sdk>true</ignoreAsm2sdk>
-							<ignoreAsm2jaxrsapi>true</ignoreAsm2jaxrsapi>
-							<ignoreAsm2Openapi>true</ignoreAsm2Openapi>
+							<ignorePsm2Asm>false</ignorePsm2Asm>
+							<ignoreRdbms2Liquibase>false</ignoreRdbms2Liquibase>
 							<dialectList>hsqldb,oracle</dialectList>
 						</configuration>
 					</execution>
 				</executions>
-				<dependencies>
-
-					<dependency>
-						<groupId>hu.blackbelt.judo.meta</groupId>
-						<artifactId>hu.blackbelt.judo.meta.psm.model.northwind</artifactId>
-						<version>${judo-meta-psm-version}</version>
-					</dependency>
-
-					<dependency>
-						<groupId>hu.blackbelt.judo.tatami</groupId>
-						<artifactId>judo-tatami-psm2asm</artifactId>
-						<version>${project.version}</version>
-					</dependency>
-
-				</dependencies>
 			</plugin>
 
 		</plugins>
