@@ -60,7 +60,7 @@
 				<version>${project.version}</version>
 				<executions>
 					<execution>
-						<id>execute-test-model-from-method</id>
+						<id>execute-northwind-test-model-from-general</id>
 						<phase>compile</phase>
 						<goals>
 							<goal>psm-default-workflow</goal>

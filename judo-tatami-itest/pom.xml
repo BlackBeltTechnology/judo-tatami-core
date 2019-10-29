@@ -56,19 +56,10 @@
                 <version>${project.version}</version>
                 <executions>
                     <execution>
-                        <id>execute-test-model-from-method</id>
-                        <phase>process-test-resources</phase>
-                        <goals>
-                            <goal>psm-default-workflow</goal>
-                        </goals>
+                        <id>execute-northwind-test-model-from-general</id>
                         <configuration>
-                            <psmGeneratorClassName>hu.blackbelt.model.northwind.Demo</psmGeneratorClassName>
-                            <psmGeneratorMethodName>fullDemo</psmGeneratorMethodName>
-                            <destination>${basedir}/target/test-classes</destination>
-                            <modelName>northwind</modelName>
                             <ignorePsm2Asm>false</ignorePsm2Asm>
                             <ignoreRdbms2Liquibase>false</ignoreRdbms2Liquibase>
-                            <dialectList>hsqldb,oracle</dialectList>
                         </configuration>
                     </execution>
                 </executions>

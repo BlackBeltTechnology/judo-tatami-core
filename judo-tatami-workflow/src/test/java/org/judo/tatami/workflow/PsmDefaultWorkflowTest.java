@@ -94,13 +94,6 @@ public class PsmDefaultWorkflowTest {
 
 		defaultWorkflow = new PsmDefaultWorkflow(DefaultWorkflowSetupParameters.defaultWorkflowSetupParameters()
 				.psmModelSourceURI(new File(FILE_LOCATION).toURI())
-				.ignorePsm2Asm(false)
-				.ignorePsm2Measure(false)
-				.ignoreAsm2Rdbms(false)
-				.ignoreAsm2Openapi(false)
-				.ignoreRdbms2Liquibase(false)
-				.ignoreAsm2jaxrsapi(false)
-				.ignoreAsm2sdk(false)
 				.psm2AsmModelTransformationScriptURI(PSM2ASM_SCRIPTROOT)
 				.psm2MeasureModelTransformationScriptURI(PSM2MEASURE_SCRIPTROOT)
 				.asm2jaxrsapiModelTransformationScriptURI(ASM2JAXRSAPI_SCRIPTROOT)

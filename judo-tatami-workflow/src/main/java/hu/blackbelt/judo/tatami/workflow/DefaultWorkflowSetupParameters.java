@@ -67,36 +67,29 @@ public class DefaultWorkflowSetupParameters {
 	private List<String> dialectList;
 
 	@Builder.Default
-	private Boolean ignorePsm2Asm = true;
+	private Boolean ignorePsm2Asm = false;
 
 	@Builder.Default
-	private Boolean ignorePsm2Measure = true;
+	private Boolean ignorePsm2Measure = false;
 
 	@Builder.Default
-	private Boolean ignoreAsm2Openapi = true;
+	private Boolean ignoreAsm2Openapi = false;
 
 	@Builder.Default
-	private Boolean ignoreAsm2Rdbms = true;
+	private Boolean ignoreAsm2Rdbms = false;
 
 	@Builder.Default
-	private Boolean ignoreRdbms2Liquibase = true;
+	private Boolean ignoreRdbms2Liquibase = false;
 
 	@Builder.Default
-	private Boolean ignoreAsm2sdk = true;
+	private Boolean ignoreAsm2sdk = false;
 
 	@Builder.Default
-	private Boolean ignoreAsm2jaxrsapi = true;
+	private Boolean ignoreAsm2jaxrsapi = false;
 
 
 	public static DefaultWorkflowSetupParametersBuilder addTransformerCalculatedUris(DefaultWorkflowSetupParametersBuilder builder) throws URISyntaxException {
 		return builder
-				.ignorePsm2Asm(false)
-				.ignorePsm2Measure(false)
-				.ignoreAsm2Rdbms(false)
-				.ignoreAsm2Openapi(false)
-				.ignoreRdbms2Liquibase(false)
-				.ignoreAsm2jaxrsapi(false)
-				.ignoreAsm2sdk(false)
 				.psm2AsmModelTransformationScriptURI(calculatePsm2AsmTransformationScriptURI())
 				.psm2MeasureModelTransformationScriptURI(calculatePsm2MeasureTransformationScriptURI())
 				.asm2jaxrsapiModelTransformationScriptURI(calculateAsm2JaxrsapiTemplateScriptURI())
