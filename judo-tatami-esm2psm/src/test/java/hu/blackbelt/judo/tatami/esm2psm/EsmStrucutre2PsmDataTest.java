@@ -6,9 +6,15 @@ import static hu.blackbelt.judo.meta.esm.expression.util.builder.ExpressionBuild
 import static hu.blackbelt.judo.meta.esm.expression.util.builder.ExpressionBuilders.newReferenceExpressionTypeBuilder;
 import static hu.blackbelt.judo.meta.esm.expression.util.builder.ExpressionBuilders.newReferenceSelectorTypeBuilder;
 import static hu.blackbelt.judo.meta.esm.namespace.util.builder.NamespaceBuilders.newModelBuilder;
-import static hu.blackbelt.judo.meta.esm.namespace.util.builder.NamespaceBuilders.newPackageBuilder;
 import static hu.blackbelt.judo.meta.esm.runtime.EsmModel.buildEsmModel;
-import static hu.blackbelt.judo.meta.esm.structure.util.builder.StructureBuilders.*;
+import static hu.blackbelt.judo.meta.esm.structure.util.builder.StructureBuilders.newDataMemberBuilder;
+import static hu.blackbelt.judo.meta.esm.structure.util.builder.StructureBuilders.newEntitySequenceBuilder;
+import static hu.blackbelt.judo.meta.esm.structure.util.builder.StructureBuilders.newEntityTypeBuilder;
+import static hu.blackbelt.judo.meta.esm.structure.util.builder.StructureBuilders.newGeneralizationBuilder;
+import static hu.blackbelt.judo.meta.esm.structure.util.builder.StructureBuilders.newMappingBuilder;
+import static hu.blackbelt.judo.meta.esm.structure.util.builder.StructureBuilders.newNamespaceSequenceBuilder;
+import static hu.blackbelt.judo.meta.esm.structure.util.builder.StructureBuilders.newOneWayRelationMemberBuilder;
+import static hu.blackbelt.judo.meta.esm.structure.util.builder.StructureBuilders.newTwoWayRelationMemberBuilder;
 import static hu.blackbelt.judo.meta.esm.type.util.builder.TypeBuilders.newStringTypeBuilder;
 import static hu.blackbelt.judo.meta.psm.runtime.PsmModel.buildPsmModel;
 import static hu.blackbelt.judo.meta.psm.runtime.PsmModel.SaveArguments.psmSaveArgumentsBuilder;
@@ -28,7 +34,6 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
-import hu.blackbelt.judo.meta.esm.expression.ExpressionDialect;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
 import org.hamcrest.core.IsEqual;
@@ -41,12 +46,14 @@ import com.google.common.collect.ImmutableSet;
 
 import hu.blackbelt.epsilon.runtime.execution.api.Log;
 import hu.blackbelt.epsilon.runtime.execution.impl.Slf4jLog;
+import hu.blackbelt.judo.meta.esm.expression.ExpressionDialect;
 import hu.blackbelt.judo.meta.esm.namespace.Model;
-import hu.blackbelt.judo.meta.esm.namespace.Package;
 import hu.blackbelt.judo.meta.esm.runtime.EsmModel;
 import hu.blackbelt.judo.meta.esm.structure.DataMember;
+import hu.blackbelt.judo.meta.esm.structure.EntitySequence;
 import hu.blackbelt.judo.meta.esm.structure.EntityType;
 import hu.blackbelt.judo.meta.esm.structure.Generalization;
+import hu.blackbelt.judo.meta.esm.structure.NamespaceSequence;
 import hu.blackbelt.judo.meta.esm.structure.OneWayRelationMember;
 import hu.blackbelt.judo.meta.esm.structure.TwoWayRelationMember;
 import hu.blackbelt.judo.meta.esm.type.StringType;
@@ -398,6 +405,57 @@ public class EsmStrucutre2PsmDataTest {
         assertTrue(psmAssociationEnd2.getCardinality().getUpper() == associationEnd2.getUpper());
         assertTrue(psmAssociationEnd2.getTarget().equals(psmEntityType));
         assertFalse(((hu.blackbelt.judo.meta.psm.data.AssociationEnd)psmAssociationEnd2).isReverseCascadeDelete());
+    }
+    
+    @Test
+    void testCreateEntitySequence() throws Exception {
+        testName = "CreateEntitySequence";
+
+        EntitySequence entitySequence = newEntitySequenceBuilder().withName("eSequence").withInitialValue(1).withIncrement(2).build();
+
+        EntityType entityType = newEntityTypeBuilder().withName("entityType").withSequences(entitySequence).build();
+
+        final Model model = newModelBuilder()
+                .withName("TestModel")
+                .withElements(ImmutableList.of(entityType))
+                .build();
+
+        esmModel.addContent(model);
+        transform();
+
+        final hu.blackbelt.judo.meta.psm.data.EntityType psmEntityType = allPsm(hu.blackbelt.judo.meta.psm.data.EntityType.class)
+                .filter(e -> e.getName().equals(entityType.getName())).findAny().get();
+        
+        assertTrue(psmEntityType.getSequences().size() == 1);
+
+        final hu.blackbelt.judo.meta.psm.data.EntitySequence psmSequence = psmEntityType.getSequences().get(0);
+        assertThat(psmSequence.getName(), IsEqual.equalTo(entitySequence.getName()));
+        assertThat(psmSequence.getInitialValue(), IsEqual.equalTo(Long.valueOf(entitySequence.getInitialValue())));
+        assertThat(psmSequence.getIncrement(), IsEqual.equalTo(Long.valueOf(entitySequence.getIncrement())));
+        assertThat(psmSequence.getIncrement(), IsEqual.equalTo(Long.valueOf(entitySequence.getIncrement())));
+    }
+    
+    @Test
+    void testCreateNamespaceSequence() throws Exception {
+        testName = "CreateNamespaceSequence";
+
+        NamespaceSequence namespaceSequence = newNamespaceSequenceBuilder().withName("eSequence").withInitialValue(1).withIncrement(2).build();
+
+        final Model model = newModelBuilder()
+                .withName("TestModel")
+                .withElements(ImmutableList.of(namespaceSequence))
+                .build();
+
+        esmModel.addContent(model);
+        transform();
+
+        final Optional<hu.blackbelt.judo.meta.psm.data.NamespaceSequence> psmNamespaceSequence = allPsm(hu.blackbelt.judo.meta.psm.data.NamespaceSequence.class)
+                .filter(s -> s.getName().equals(namespaceSequence.getName())).findAny();
+        
+        assertThat(psmNamespaceSequence.get().getName(), IsEqual.equalTo(namespaceSequence.getName()));
+        assertThat(psmNamespaceSequence.get().getInitialValue(), IsEqual.equalTo(Long.valueOf(namespaceSequence.getInitialValue())));
+        assertThat(psmNamespaceSequence.get().getIncrement(), IsEqual.equalTo(Long.valueOf(namespaceSequence.getIncrement())));
+        assertThat(psmNamespaceSequence.get().getIncrement(), IsEqual.equalTo(Long.valueOf(namespaceSequence.getIncrement())));
     }
 
     static <T> Stream<T> asStream(Iterator<T> sourceIterator, boolean parallel) {
