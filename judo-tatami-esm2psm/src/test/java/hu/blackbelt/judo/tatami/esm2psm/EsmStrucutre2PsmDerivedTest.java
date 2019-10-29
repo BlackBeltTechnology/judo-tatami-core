@@ -519,19 +519,19 @@ public class EsmStrucutre2PsmDerivedTest {
         String psmName2 = "_" + navigationProperty2.getName() + "_default_TestModel_container";
         String psmBindingName = "_" + navigationProperty1.getName() + "_TestModel_container";
         
-        final Optional<hu.blackbelt.judo.meta.psm.derived.NavigationProperty> psmNavigationProperty1 = psmNavigationProperties.stream().filter(p -> p.getName().equals(psmName1)).findAny();
-        final Optional<hu.blackbelt.judo.meta.psm.derived.NavigationProperty> psmNavigationProperty2 = psmNavigationProperties.stream().filter(p -> p.getName().equals(psmName2)).findAny();
+        final Optional<hu.blackbelt.judo.meta.psm.derived.NavigationProperty> psmNavigationPropertyAsDefault1 = psmNavigationProperties.stream().filter(p -> p.getName().equals(psmName1)).findAny();
+        final Optional<hu.blackbelt.judo.meta.psm.derived.NavigationProperty> psmNavigationPropertyAsDefault2 = psmNavigationProperties.stream().filter(p -> p.getName().equals(psmName2)).findAny();
         final Optional<hu.blackbelt.judo.meta.psm.derived.NavigationProperty> psmNavigationPropertyBinding = psmNavigationProperties.stream().filter(p -> p.getName().equals(psmBindingName)).findAny();
         
-        assertTrue(psmNavigationProperty1.isPresent());
-        assertThat(psmNavigationProperty1.get().getGetterExpression().getExpression(), IsEqual.equalTo(navigationProperty1.getDefaultExpression().getExpression()));
-        assertNull(psmNavigationProperty1.get().getSetterExpression());
-        assertThat(psmNavigationProperty1.get().getTarget(), IsEqual.equalTo(psmNavigationTarget));
+        assertTrue(psmNavigationPropertyAsDefault1.isPresent());
+        assertThat(psmNavigationPropertyAsDefault1.get().getGetterExpression().getExpression(), IsEqual.equalTo(navigationProperty1.getDefaultExpression().getExpression()));
+        assertNull(psmNavigationPropertyAsDefault1.get().getSetterExpression());
+        assertThat(psmNavigationPropertyAsDefault1.get().getTarget(), IsEqual.equalTo(psmNavigationTarget));
         
-        assertTrue(psmNavigationProperty2.isPresent());
-        assertThat(psmNavigationProperty2.get().getGetterExpression().getExpression(), IsEqual.equalTo(navigationProperty2.getDefaultExpression().getExpression()));
-        assertNull(psmNavigationProperty2.get().getSetterExpression());
-        assertThat(psmNavigationProperty2.get().getTarget(), IsEqual.equalTo(psmNavigationTarget));
+        assertTrue(psmNavigationPropertyAsDefault2.isPresent());
+        assertThat(psmNavigationPropertyAsDefault2.get().getGetterExpression().getExpression(), IsEqual.equalTo(navigationProperty2.getDefaultExpression().getExpression()));
+        assertNull(psmNavigationPropertyAsDefault2.get().getSetterExpression());
+        assertThat(psmNavigationPropertyAsDefault2.get().getTarget(), IsEqual.equalTo(psmNavigationTarget));
         
         assertTrue(psmNavigationPropertyBinding.isPresent());
         assertThat(psmNavigationPropertyBinding.get().getGetterExpression().getExpression(), IsEqual.equalTo(navigationProperty1.getGetterExpression().getExpression()));
@@ -594,19 +594,23 @@ public class EsmStrucutre2PsmDerivedTest {
         String psmName2 = "_" + navigationProperty2.getName() + "_range_TestModel_container";
         String psmBindingName = "_" + navigationProperty1.getName() + "_TestModel_container";
         
-        final Optional<hu.blackbelt.judo.meta.psm.derived.NavigationProperty> psmNavigationProperty1 = psmNavigationProperties.stream().filter(p -> p.getName().equals(psmName1)).findAny();
-        final Optional<hu.blackbelt.judo.meta.psm.derived.NavigationProperty> psmNavigationProperty2 = psmNavigationProperties.stream().filter(p -> p.getName().equals(psmName2)).findAny();
+        final Optional<hu.blackbelt.judo.meta.psm.derived.NavigationProperty> psmNavigationPropertyAsRange1 = psmNavigationProperties.stream().filter(p -> p.getName().equals(psmName1)).findAny();
+        final Optional<hu.blackbelt.judo.meta.psm.derived.NavigationProperty> psmNavigationPropertyAsRange2 = psmNavigationProperties.stream().filter(p -> p.getName().equals(psmName2)).findAny();
         final Optional<hu.blackbelt.judo.meta.psm.derived.NavigationProperty> psmNavigationPropertyBinding = psmNavigationProperties.stream().filter(p -> p.getName().equals(psmBindingName)).findAny();
         
-        assertTrue(psmNavigationProperty1.isPresent());
-        assertThat(psmNavigationProperty1.get().getGetterExpression().getExpression(), IsEqual.equalTo(navigationProperty1.getRangeExpression().getExpression()));
-        assertNull(psmNavigationProperty1.get().getSetterExpression());
-        assertThat(psmNavigationProperty1.get().getTarget(), IsEqual.equalTo(psmNavigationTarget));
+        assertTrue(psmNavigationPropertyAsRange1.isPresent());
+        assertThat(psmNavigationPropertyAsRange1.get().getGetterExpression().getExpression(), IsEqual.equalTo(navigationProperty1.getRangeExpression().getExpression()));
+        assertNull(psmNavigationPropertyAsRange1.get().getSetterExpression());
+        assertThat(psmNavigationPropertyAsRange1.get().getTarget(), IsEqual.equalTo(psmNavigationTarget));
+        assertTrue(psmNavigationPropertyAsRange1.get().getCardinality().getLower() == 0);
+        assertTrue(psmNavigationPropertyAsRange1.get().getCardinality().getUpper() == -1);
 
-        assertTrue(psmNavigationProperty2.isPresent());
-        assertThat(psmNavigationProperty2.get().getGetterExpression().getExpression(), IsEqual.equalTo(navigationProperty2.getRangeExpression().getExpression()));
-        assertNull(psmNavigationProperty2.get().getSetterExpression());
-        assertThat(psmNavigationProperty2.get().getTarget(), IsEqual.equalTo(psmNavigationTarget));
+        assertTrue(psmNavigationPropertyAsRange2.isPresent());
+        assertThat(psmNavigationPropertyAsRange2.get().getGetterExpression().getExpression(), IsEqual.equalTo(navigationProperty2.getRangeExpression().getExpression()));
+        assertNull(psmNavigationPropertyAsRange2.get().getSetterExpression());
+        assertThat(psmNavigationPropertyAsRange2.get().getTarget(), IsEqual.equalTo(psmNavigationTarget));
+        assertTrue(psmNavigationPropertyAsRange2.get().getCardinality().getLower() == 0);
+        assertTrue(psmNavigationPropertyAsRange2.get().getCardinality().getUpper() == -1);
 
         assertTrue(psmNavigationPropertyBinding.isPresent());
         assertThat(psmNavigationPropertyBinding.get().getGetterExpression().getExpression(), IsEqual.equalTo(navigationProperty1.getGetterExpression().getExpression()));
@@ -672,18 +676,18 @@ public class EsmStrucutre2PsmDerivedTest {
         esmModel.addContent(model);
         transform();
         
-        final Optional<hu.blackbelt.judo.meta.psm.derived.StaticNavigation> psmStaticNavigation = allPsm(hu.blackbelt.judo.meta.psm.derived.StaticNavigation.class).findAny();
+        final Optional<hu.blackbelt.judo.meta.psm.derived.StaticNavigation> psmStaticNavigationAsBinding = allPsm(hu.blackbelt.judo.meta.psm.derived.StaticNavigation.class).findAny();
         final hu.blackbelt.judo.meta.psm.data.EntityType psmNavigationTarget = allPsm(hu.blackbelt.judo.meta.psm.data.EntityType.class)
         		.filter(e -> e.getName().equals(navigationTarget.getName())).findAny().get();
         final hu.blackbelt.judo.meta.psm.namespace.Model psmModel = allPsm(hu.blackbelt.judo.meta.psm.namespace.Model.class).findAny().get();
         
-        assertTrue(psmStaticNavigation.isPresent());
+        assertTrue(psmStaticNavigationAsBinding.isPresent());
         
         String psmName = "_" + navigationProperty.getName() + "_container";
-        assertThat(psmStaticNavigation.get().getName(), IsEqual.equalTo(psmName));
+        assertThat(psmStaticNavigationAsBinding.get().getName(), IsEqual.equalTo(psmName));
         
-        assertThat(psmStaticNavigation.get().eContainer(), IsEqual.equalTo(psmModel));
-        assertThat(psmStaticNavigation.get().getTarget(), IsEqual.equalTo(psmNavigationTarget));
+        assertThat(psmStaticNavigationAsBinding.get().eContainer(), IsEqual.equalTo(psmModel));
+        assertThat(psmStaticNavigationAsBinding.get().getTarget(), IsEqual.equalTo(psmNavigationTarget));
     }
     
     @Test
@@ -714,21 +718,21 @@ public class EsmStrucutre2PsmDerivedTest {
         esmModel.addContent(model);
         transform();
         
-        final Optional<hu.blackbelt.judo.meta.psm.derived.StaticNavigation> psmStaticNavigation = allPsm(hu.blackbelt.judo.meta.psm.derived.StaticNavigation.class).findAny();
+        final Optional<hu.blackbelt.judo.meta.psm.derived.StaticNavigation> psmStaticNavigationAsDefault = allPsm(hu.blackbelt.judo.meta.psm.derived.StaticNavigation.class).findAny();
         final hu.blackbelt.judo.meta.psm.data.EntityType psmNavigationTarget = allPsm(hu.blackbelt.judo.meta.psm.data.EntityType.class)
         		.filter(e -> e.getName().equals(navigationTarget.getName())).findAny().get();
         final hu.blackbelt.judo.meta.psm.namespace.Model psmModel = allPsm(hu.blackbelt.judo.meta.psm.namespace.Model.class).findAny().get();
         
-        assertTrue(psmStaticNavigation.isPresent());
+        assertTrue(psmStaticNavigationAsDefault.isPresent());
         
         String psmName = "_" + navigationProperty.getName() + "_default_container";
-        assertThat(psmStaticNavigation.get().getName(), IsEqual.equalTo(psmName));
+        assertThat(psmStaticNavigationAsDefault.get().getName(), IsEqual.equalTo(psmName));
         
-        assertThat(psmStaticNavigation.get().eContainer(), IsEqual.equalTo(psmModel));
-        assertThat(psmStaticNavigation.get().getTarget(), IsEqual.equalTo(psmNavigationTarget));
+        assertThat(psmStaticNavigationAsDefault.get().eContainer(), IsEqual.equalTo(psmModel));
+        assertThat(psmStaticNavigationAsDefault.get().getTarget(), IsEqual.equalTo(psmNavigationTarget));
         
-        assertThat(psmStaticNavigation.get().getGetterExpression().getExpression(), IsEqual.equalTo(navigationProperty.getDefaultExpression().getExpression()));
-        assertNull(psmStaticNavigation.get().getSetterExpression());
+        assertThat(psmStaticNavigationAsDefault.get().getGetterExpression().getExpression(), IsEqual.equalTo(navigationProperty.getDefaultExpression().getExpression()));
+        assertNull(psmStaticNavigationAsDefault.get().getSetterExpression());
     }
     
     @Test
@@ -759,21 +763,24 @@ public class EsmStrucutre2PsmDerivedTest {
         esmModel.addContent(model);
         transform();
         
-        final Optional<hu.blackbelt.judo.meta.psm.derived.StaticNavigation> psmStaticNavigation = allPsm(hu.blackbelt.judo.meta.psm.derived.StaticNavigation.class).findAny();
+        final Optional<hu.blackbelt.judo.meta.psm.derived.StaticNavigation> psmStaticNavigationAsRange = allPsm(hu.blackbelt.judo.meta.psm.derived.StaticNavigation.class).findAny();
         final hu.blackbelt.judo.meta.psm.data.EntityType psmNavigationTarget = allPsm(hu.blackbelt.judo.meta.psm.data.EntityType.class)
         		.filter(e -> e.getName().equals(navigationTarget.getName())).findAny().get();
         final hu.blackbelt.judo.meta.psm.namespace.Model psmModel = allPsm(hu.blackbelt.judo.meta.psm.namespace.Model.class).findAny().get();
         
-        assertTrue(psmStaticNavigation.isPresent());
+        assertTrue(psmStaticNavigationAsRange.isPresent());
         
         String psmName = "_" + navigationProperty.getName() + "_range_container";
-        assertThat(psmStaticNavigation.get().getName(), IsEqual.equalTo(psmName));
+        assertThat(psmStaticNavigationAsRange.get().getName(), IsEqual.equalTo(psmName));
         
-        assertThat(psmStaticNavigation.get().eContainer(), IsEqual.equalTo(psmModel));
-        assertThat(psmStaticNavigation.get().getTarget(), IsEqual.equalTo(psmNavigationTarget));
+        assertThat(psmStaticNavigationAsRange.get().eContainer(), IsEqual.equalTo(psmModel));
+        assertThat(psmStaticNavigationAsRange.get().getTarget(), IsEqual.equalTo(psmNavigationTarget));
         
-        assertThat(psmStaticNavigation.get().getGetterExpression().getExpression(), IsEqual.equalTo(navigationProperty.getRangeExpression().getExpression()));
-        assertNull(psmStaticNavigation.get().getSetterExpression());
+        assertThat(psmStaticNavigationAsRange.get().getGetterExpression().getExpression(), IsEqual.equalTo(navigationProperty.getRangeExpression().getExpression()));
+        assertNull(psmStaticNavigationAsRange.get().getSetterExpression());
+        
+        assertTrue(psmStaticNavigationAsRange.get().getCardinality().getLower() == 0);
+        assertTrue(psmStaticNavigationAsRange.get().getCardinality().getUpper() == -1);
     }
 
     static <T> Stream<T> asStream(Iterator<T> sourceIterator, boolean parallel) {
