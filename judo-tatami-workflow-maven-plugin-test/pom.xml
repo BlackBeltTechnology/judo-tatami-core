@@ -69,6 +69,13 @@
 							<psmGeneratorClassName>hu.blackbelt.model.northwind.Demo</psmGeneratorClassName>
 							<psmGeneratorMethodName>fullDemo</psmGeneratorMethodName>
 							<destination>${basedir}/target/classes/method</destination>
+							<ignorePsm2Asm>false</ignorePsm2Asm>
+							<ignorePsm2Measure>false</ignorePsm2Measure>
+							<ignoreAsm2Rdbms>false</ignoreAsm2Rdbms>
+							<ignoreAsm2Openapi>false</ignoreAsm2Openapi>
+							<ignoreRdbms2Liquibase>false</ignoreRdbms2Liquibase>
+							<ignoreAsm2jaxrsapi>false</ignoreAsm2jaxrsapi>
+							<ignoreAsm2sdk>false</ignoreAsm2sdk>
 							<modelName>northwind</modelName>
 							<dialectList>hsqldb,oracle</dialectList>
 						</configuration>

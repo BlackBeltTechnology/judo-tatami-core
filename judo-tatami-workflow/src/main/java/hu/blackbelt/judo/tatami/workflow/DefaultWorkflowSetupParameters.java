@@ -90,6 +90,13 @@ public class DefaultWorkflowSetupParameters {
 
 	public static DefaultWorkflowSetupParametersBuilder addTransformerCalculatedUris(DefaultWorkflowSetupParametersBuilder builder) throws URISyntaxException {
 		return builder
+				.ignorePsm2Asm(false)
+				.ignorePsm2Measure(false)
+				.ignoreAsm2Rdbms(false)
+				.ignoreAsm2Openapi(false)
+				.ignoreRdbms2Liquibase(false)
+				.ignoreAsm2jaxrsapi(false)
+				.ignoreAsm2sdk(false)
 				.psm2AsmModelTransformationScriptURI(calculatePsm2AsmTransformationScriptURI())
 				.psm2MeasureModelTransformationScriptURI(calculatePsm2MeasureTransformationScriptURI())
 				.asm2jaxrsapiModelTransformationScriptURI(calculateAsm2JaxrsapiTemplateScriptURI())
