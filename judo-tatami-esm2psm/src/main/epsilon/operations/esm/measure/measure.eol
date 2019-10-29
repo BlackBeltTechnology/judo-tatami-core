@@ -7,9 +7,9 @@ operation ESM!Measure getPSMEquivalent(): JUDOPSM!Measure {
 }
 
 operation ESM!Unit getPSMEquivalent() : JUDOPSM!Unit {
-	if (self.isTypeOf(ESM!DurationUnit)) {
-		return self.equivalent("CreateDurationUnit");
-	} else {
-		return self.equivalent("CreateUnit");
-	}
+    return self.equivalent("CreateUnit");
+}
+
+operation ESM!DurationUnit getPSMEquivalent() : JUDOPSM!DurationUnit {
+    return self.equivalent("CreateDurationUnit");
 }
