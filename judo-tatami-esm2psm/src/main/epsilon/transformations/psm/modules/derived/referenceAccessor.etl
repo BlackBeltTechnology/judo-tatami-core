@@ -47,8 +47,9 @@ rule CreateCardinalityOfTransferObjectRelationDefault
 @greedy
 rule CreateCardinalityOfTransferObjectRelationRange
     transform s: ESM!ReferenceTypedElement
-    to t: JUDOPSM!Cardinality
-    extends CreateCardinalityOfReferenceTypedElement {
+    to t: JUDOPSM!Cardinality {
+	    t.lower = 0;
+	    t.upper = -1;
 }
 
 @abstract
