@@ -1,0 +1,7 @@
+operation ESM!Model getPSMEquivalent(): JUDOPSM!Model {
+        return self.equivalent("CreateModel");
+}
+
+operation ESM!Package getPSMEquivalent(): JUDOPSM!Package {
+        return self.equivalent("CreatePackage");    
+}

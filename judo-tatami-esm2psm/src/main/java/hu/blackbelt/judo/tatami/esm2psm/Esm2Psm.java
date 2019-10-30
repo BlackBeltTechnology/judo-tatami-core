@@ -7,6 +7,7 @@ import hu.blackbelt.epsilon.runtime.execution.api.Log;
 import hu.blackbelt.epsilon.runtime.execution.contexts.EtlExecutionContext;
 import hu.blackbelt.judo.meta.esm.runtime.EsmModel;
 import hu.blackbelt.judo.meta.esm.runtime.EsmUtils;
+import hu.blackbelt.judo.meta.psm.PsmUtils;
 import hu.blackbelt.judo.meta.psm.runtime.PsmModel;
 import hu.blackbelt.judo.tatami.core.TransformationTraceUtil;
 import org.eclipse.emf.ecore.EObject;
@@ -56,7 +57,10 @@ public class Esm2Psm {
                                 .name("JUDOPSM")
                                 .resource(psmModel.getResource())
                                 .build()))
-                .injectContexts(ImmutableMap.of("esmUtils", esmUtils))
+                .injectContexts(ImmutableMap.of(
+                        "esmUtils", new EsmUtils(esmModel.getResourceSet()),
+                        "psmUtils", new PsmUtils()
+                ))
                 .build();
 
         // run the model / metadata loading
