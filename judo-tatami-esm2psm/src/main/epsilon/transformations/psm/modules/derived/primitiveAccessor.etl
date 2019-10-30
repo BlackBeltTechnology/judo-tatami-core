@@ -75,7 +75,7 @@ rule CreateStaticData
 	   log.debug("Created StaticData: " + t.name);
 }
 
-rule CreateStaticDataForTransferAttributeBinding
+/*rule CreateStaticDataForTransferAttributeBinding
     transform s : ESM!DataMember
     to t : JUDOPSM!StaticData
     extends CreatePrimitiveAccessor, CreatePrimitiveTypedElement {
@@ -88,7 +88,7 @@ rule CreateStaticDataForTransferAttributeBinding
        (s.eContainer).eContainer.getPSMEquivalent().elements.add(t);
        
        log.debug("Created Static Data for transfer attribute binding: " + t.name);
-}
+}*/
 
 rule CreateStaticDataForTransferAttributeDefault 
     transform s : ESM!DataMember
@@ -107,3 +107,19 @@ rule CreateStaticDataForTransferAttributeDefault
             
             log.debug("Created Static Data for transfer attribute default: " + t.name);
 }
+
+rule CreateDataPropertyForEntityTypeDefaultTransferObjectTypeTransferAttributeDefault
+    transform s : ESM!DataMember
+    to t : JUDOPSM!DataProperty
+    extends CreatePrimitiveTypedElement {
+        guard:  s.eContainer.isKindOf(ESM!EntityType)
+                and s.defaultExpression.expression.isDefined() and
+                    s.defaultExpression.expression.trim().length() > 0
+            
+        t.getterExpression = s.defaultExpression.getPSMEquivalent();
+        t.name = "_" + s.name + "_default_" + esmUtils.getNamespaceElementFQName(s.eContainer).replace("::","_");
+        s.eContainer.getPSMEquivalent().dataProperties.add(t);
+        
+        log.debug("Created Data Property for entity type's own mapped transfer object type's transfer attribute default: " + t.name);
+}
+

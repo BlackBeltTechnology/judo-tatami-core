@@ -10,6 +10,7 @@ import static hu.blackbelt.judo.meta.psm.runtime.PsmModel.SaveArguments.psmSaveA
 import static hu.blackbelt.judo.tatami.esm2psm.Esm2Psm.calculateEsm2PsmTransformationScriptURI;
 import static hu.blackbelt.judo.tatami.esm2psm.Esm2Psm.executeEsm2PsmTransformation;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -42,7 +43,11 @@ import hu.blackbelt.judo.meta.esm.structure.OneWayRelationMember;
 import hu.blackbelt.judo.meta.esm.structure.StaticData;
 import hu.blackbelt.judo.meta.esm.structure.StaticNavigation;
 import hu.blackbelt.judo.meta.esm.structure.TransferObjectType;
+import hu.blackbelt.judo.meta.esm.structure.TwoWayRelationMember;
 import hu.blackbelt.judo.meta.esm.type.StringType;
+import hu.blackbelt.judo.meta.psm.data.Attribute;
+import hu.blackbelt.judo.meta.psm.derived.DataProperty;
+import hu.blackbelt.judo.meta.psm.derived.NavigationProperty;
 import hu.blackbelt.judo.meta.psm.runtime.PsmModel;
 import lombok.extern.slf4j.Slf4j;
 
@@ -287,7 +292,7 @@ public class EsmStrucutre2PsmDerivedTest {
         assertTrue(psmStaticData.get().getDataType().equals(psmStringType));
     }
     
-    @Test
+   /* @Test
     void testCreateStaticDataForTransferAttributeBinding() throws Exception {
         testName = "CreateStaticDataForTransferAttributeBinding";
 
@@ -326,7 +331,7 @@ public class EsmStrucutre2PsmDerivedTest {
         
         String psmName = "_" + member.getName() + "_container";
         assertThat(psmStaticData.get().getName(), IsEqual.equalTo(psmName));
-    }
+    }*/
     
     @Test
     void testCreateStaticDataForTransferAttributeDefault () throws Exception {
@@ -648,7 +653,7 @@ public class EsmStrucutre2PsmDerivedTest {
         assertThat(psmStaticNavigation.get().getTarget(), IsEqual.equalTo(psmEntityType));
     }
     
-    @Test
+   /* @Test
     void testCreateStaticNavigationForTransferObjectRelationBinding() throws Exception {
         testName = "CreateStaticNavigationForTransferObjectRelationBinding";
         
@@ -688,7 +693,7 @@ public class EsmStrucutre2PsmDerivedTest {
         
         assertThat(psmStaticNavigationAsBinding.get().eContainer(), IsEqual.equalTo(psmModel));
         assertThat(psmStaticNavigationAsBinding.get().getTarget(), IsEqual.equalTo(psmNavigationTarget));
-    }
+    }*/
     
     @Test
     void testCreateStaticNavigationForTransferObjectRelationDefault() throws Exception {
@@ -781,6 +786,569 @@ public class EsmStrucutre2PsmDerivedTest {
         
         assertTrue(psmStaticNavigationAsRange.get().getCardinality().getLower() == 0);
         assertTrue(psmStaticNavigationAsRange.get().getCardinality().getUpper() == -1);
+    }
+    
+    @Test
+    void testCreateDataPropertyForEntityTypeDefaultTransferObjectTypeTransferAttributeDefaultAttribute() throws Exception {
+        testName = "CreateDataPropertyForEntityTypeDefaultTransferObjectTypeTransferAttributeDefault";
+
+        StringType string = newStringTypeBuilder().withName("string").withMaxLength(256).build();
+        DataMember attribute = newDataMemberBuilder().withName("attribute").withDataType(string)
+                .withGetterExpression(newDataExpressionTypeBuilder().withDialect(ExpressionDialect.JQL).withExpression("").build())
+                .withSetterExpression(newAttributeSelectorTypeBuilder().withDialect(ExpressionDialect.JQL).withExpression("").build())
+                .withDefaultExpression(newDataExpressionTypeBuilder().withDialect(ExpressionDialect.JQL).withExpression("defaultExpression").build())
+                .build();
+
+        EntityType entityType = newEntityTypeBuilder().withName("entityType").withAttributes(attribute).build();
+        entityType.setMapping(newMappingBuilder()
+                .withTarget(entityType)
+                .withFilter(newLogicalExpressionTypeBuilder()
+                        .withDialect(ExpressionDialect.JQL)
+                        .withExpression("")
+                        .build())
+                .build());
+
+        final Model model = newModelBuilder()
+                .withName("TestModel")
+                .withElements(ImmutableList.of(entityType, string))
+                .build();
+
+        esmModel.addContent(model);
+        transform();
+
+        final hu.blackbelt.judo.meta.psm.data.EntityType psmEntityType = allPsm(hu.blackbelt.judo.meta.psm.data.EntityType.class)
+                .filter(e -> e.getName().equals(entityType.getName())).findAny().get();
+        assertTrue(psmEntityType.getAttributes().size() == 1);
+        assertTrue(psmEntityType.getDataProperties().size() == 1);
+
+        final DataProperty psmDataProperty = psmEntityType.getDataProperties().get(0);
+        
+        String psmDataPropertyName = "_" + attribute.getName() + "_default_TestModel_entityType";
+        
+        assertTrue(psmDataProperty.getName().equals(psmDataPropertyName));
+        assertThat(psmDataProperty.getGetterExpression().getExpression(), IsEqual.equalTo(attribute.getDefaultExpression().getExpression()));
+        assertNull(psmDataProperty.getSetterExpression());
+    }
+    
+    @Test
+    void testCreateDataPropertyForEntityTypeDefaultTransferObjectTypeTransferAttributeDefaultDataProperty() throws Exception {
+        testName = "CreateDataPropertyForEntityTypeDefaultTransferObjectTypeTransferAttributeDefault";
+
+        StringType string = newStringTypeBuilder().withName("string").withMaxLength(256).build();
+        DataMember dataProperty = newDataMemberBuilder().withName("attribute").withDataType(string).withProperty(true)
+                .withGetterExpression(newDataExpressionTypeBuilder().withDialect(ExpressionDialect.JQL).withExpression("getterExpression").build())
+                .withSetterExpression(newAttributeSelectorTypeBuilder().withDialect(ExpressionDialect.JQL).withExpression("").build())
+                .withDefaultExpression(newDataExpressionTypeBuilder().withDialect(ExpressionDialect.JQL).withExpression("defaultExpression").build())
+                .build();
+
+        EntityType entityType = newEntityTypeBuilder().withName("entityType").withAttributes(dataProperty).build();
+        entityType.setMapping(newMappingBuilder()
+                .withTarget(entityType)
+                .withFilter(newLogicalExpressionTypeBuilder()
+                        .withDialect(ExpressionDialect.JQL)
+                        .withExpression("")
+                        .build())
+                .build());
+
+        final Model model = newModelBuilder()
+                .withName("TestModel")
+                .withElements(ImmutableList.of(entityType, string))
+                .build();
+
+        esmModel.addContent(model);
+        transform();
+
+        final hu.blackbelt.judo.meta.psm.data.EntityType psmEntityType = allPsm(hu.blackbelt.judo.meta.psm.data.EntityType.class)
+                .filter(e -> e.getName().equals(entityType.getName())).findAny().get();
+        assertTrue(psmEntityType.getDataProperties().size() == 2);
+
+        final Optional<DataProperty> psmDataProperty = psmEntityType.getDataProperties().stream()
+        		.filter(p -> p.getName().equals("_" + dataProperty.getName() + "_default_TestModel_entityType")).findAny();
+        
+        assertTrue(psmDataProperty.isPresent());
+        
+        assertThat(psmDataProperty.get().getGetterExpression().getExpression(), IsEqual.equalTo(dataProperty.getDefaultExpression().getExpression()));
+        assertNull(psmDataProperty.get().getSetterExpression());
+    }
+
+    @Test
+    void testCreateNavigationPropertyFromOneWayRelationMemberForEntityTypeDefaultTransferObjectTypeTransferObjectRelationDefaultContainment() throws Exception {
+        testName = "CreateNavigationPropertyFromOneWayRelationMemberForEntityTypeDefaultTransferObjectTypeTransferObjectRelationDefault";
+
+        EntityType target = newEntityTypeBuilder().withName("target").build();
+        target.setMapping(newMappingBuilder()
+                .withTarget(target)
+                .withFilter(newLogicalExpressionTypeBuilder()
+                        .withDialect(ExpressionDialect.JQL)
+                        .withExpression("")
+                        .build())
+                .build());
+
+        OneWayRelationMember containment = newOneWayRelationMemberBuilder().withName("containment").withContainment(true)
+                .withGetterExpression(newReferenceExpressionTypeBuilder().withDialect(ExpressionDialect.JQL).withExpression("").build())
+                .withSetterExpression(newReferenceSelectorTypeBuilder().withDialect(ExpressionDialect.JQL).withExpression("").build())
+                .withDefaultExpression(newReferenceExpressionTypeBuilder().withDialect(ExpressionDialect.JQL).withExpression("defaultExpression").build())
+                .withRangeExpression(newReferenceExpressionTypeBuilder().withDialect(ExpressionDialect.JQL).withExpression("").build())
+                .withLower(1)
+                .withUpper(3)
+                .withTarget(target)
+                .build();
+
+        EntityType entityType = newEntityTypeBuilder().withName("entityType").withRelations(containment).build();
+        entityType.setMapping(newMappingBuilder()
+                .withTarget(entityType)
+                .withFilter(newLogicalExpressionTypeBuilder()
+                        .withDialect(ExpressionDialect.JQL)
+                        .withExpression("")
+                        .build())
+                .build());
+
+        final Model model = newModelBuilder()
+                .withName("TestModel")
+                .withElements(ImmutableList.of(entityType, target))
+                .build();
+
+        esmModel.addContent(model);
+        transform();
+
+        final hu.blackbelt.judo.meta.psm.data.EntityType psmEntityType = allPsm(hu.blackbelt.judo.meta.psm.data.EntityType.class)
+                .filter(e -> e.getName().equals(entityType.getName())).findAny().get();
+        
+        assertTrue(psmEntityType.getRelations().size() == 1);
+        assertTrue(psmEntityType.getNavigationProperties().size() == 1);
+
+        final NavigationProperty psmNavigationProperty = psmEntityType.getNavigationProperties().get(0);
+        
+        String psmNavigationPropertyName = "_" + containment.getName() + "_default_TestModel_entityType";
+        
+        assertTrue(psmNavigationProperty.getName().equals(psmNavigationPropertyName));
+        assertThat(psmNavigationProperty.getGetterExpression().getExpression(), IsEqual.equalTo(containment.getDefaultExpression().getExpression()));
+        assertNull(psmNavigationProperty.getSetterExpression());
+    }
+
+    @Test
+    void testCreateNavigationPropertyFromOneWayRelationMemberForEntityTypeDefaultTransferObjectTypeTransferObjectRelationDefaultAssociationEndWithoutPartner() throws Exception {
+        testName = "CreateNavigationPropertyFromOneWayRelationMemberForEntityTypeDefaultTransferObjectTypeTransferObjectRelationDefault";
+
+        EntityType target = newEntityTypeBuilder().withName("target").build();
+        target.setMapping(newMappingBuilder()
+                .withTarget(target)
+                .withFilter(newLogicalExpressionTypeBuilder()
+                        .withDialect(ExpressionDialect.JQL)
+                        .withExpression("")
+                        .build())
+                .build());
+
+        OneWayRelationMember associationEnd = newOneWayRelationMemberBuilder().withName("associationEnd").withContainment(false)
+                .withGetterExpression(newReferenceExpressionTypeBuilder().withDialect(ExpressionDialect.JQL).withExpression("").build())
+                .withSetterExpression(newReferenceSelectorTypeBuilder().withDialect(ExpressionDialect.JQL).withExpression("").build())
+                .withDefaultExpression(newReferenceExpressionTypeBuilder().withDialect(ExpressionDialect.JQL).withExpression("defaultExpression").build())
+                .withRangeExpression(newReferenceExpressionTypeBuilder().withDialect(ExpressionDialect.JQL).withExpression("").build())
+                .withReverseCascadeDelete(true)
+                .withLower(1)
+                .withUpper(3)
+                .withTarget(target)
+                .build();
+
+        EntityType entityType = newEntityTypeBuilder().withName("entityType").withRelations(associationEnd).build();
+        entityType.setMapping(newMappingBuilder()
+                .withTarget(entityType)
+                .withFilter(newLogicalExpressionTypeBuilder()
+                        .withDialect(ExpressionDialect.JQL)
+                        .withExpression("")
+                        .build())
+                .build());
+
+        final Model model = newModelBuilder()
+                .withName("TestModel")
+                .withElements(ImmutableList.of(entityType, target))
+                .build();
+
+        esmModel.addContent(model);
+        transform();
+
+        final hu.blackbelt.judo.meta.psm.data.EntityType psmEntityType = allPsm(hu.blackbelt.judo.meta.psm.data.EntityType.class)
+                .filter(e -> e.getName().equals(entityType.getName())).findAny().get();
+        
+        assertTrue(psmEntityType.getRelations().size() == 1);
+        assertTrue(psmEntityType.getNavigationProperties().size() == 1);
+        
+        final NavigationProperty psmNavigationProperty = psmEntityType.getNavigationProperties().get(0);
+        
+        String psmNavigationPropertyName = "_" + associationEnd.getName() + "_default_TestModel_entityType";
+        
+        assertTrue(psmNavigationProperty.getName().equals(psmNavigationPropertyName));
+        assertThat(psmNavigationProperty.getGetterExpression().getExpression(), IsEqual.equalTo(associationEnd.getDefaultExpression().getExpression()));
+        assertNull(psmNavigationProperty.getSetterExpression());
+    }
+    
+    @Test
+    void testCreateNavigationPropertyFromOneWayRelationMemberForEntityTypeDefaultTransferObjectTypeTransferObjectRelationDefaultNavigationProperty() throws Exception {
+        testName = "CreateNavigationPropertyFromOneWayRelationMemberForEntityTypeDefaultTransferObjectTypeTransferObjectRelationDefault";
+
+        EntityType target = newEntityTypeBuilder().withName("target").build();
+        target.setMapping(newMappingBuilder()
+                .withTarget(target)
+                .withFilter(newLogicalExpressionTypeBuilder()
+                        .withDialect(ExpressionDialect.JQL)
+                        .withExpression("")
+                        .build())
+                .build());
+
+        OneWayRelationMember associationEnd = newOneWayRelationMemberBuilder().withName("associationEnd").withContainment(false).withProperty(true)
+                .withGetterExpression(newReferenceExpressionTypeBuilder().withDialect(ExpressionDialect.JQL).withExpression("getterExpression").build())
+                .withSetterExpression(newReferenceSelectorTypeBuilder().withDialect(ExpressionDialect.JQL).withExpression("").build())
+                .withDefaultExpression(newReferenceExpressionTypeBuilder().withDialect(ExpressionDialect.JQL).withExpression("defaultExpression").build())
+                .withRangeExpression(newReferenceExpressionTypeBuilder().withDialect(ExpressionDialect.JQL).withExpression("").build())
+                .withLower(1)
+                .withUpper(3)
+                .withTarget(target)
+                .build();
+
+        EntityType entityType = newEntityTypeBuilder().withName("entityType").withRelations(associationEnd).build();
+        entityType.setMapping(newMappingBuilder()
+                .withTarget(entityType)
+                .withFilter(newLogicalExpressionTypeBuilder()
+                        .withDialect(ExpressionDialect.JQL)
+                        .withExpression("")
+                        .build())
+                .build());
+
+        final Model model = newModelBuilder()
+                .withName("TestModel")
+                .withElements(ImmutableList.of(entityType, target))
+                .build();
+
+        esmModel.addContent(model);
+        transform();
+
+        final hu.blackbelt.judo.meta.psm.data.EntityType psmEntityType = allPsm(hu.blackbelt.judo.meta.psm.data.EntityType.class)
+                .filter(e -> e.getName().equals(entityType.getName())).findAny().get();
+
+        assertTrue(psmEntityType.getNavigationProperties().size() == 2);
+        
+        final Optional<NavigationProperty> psmNavigationProperty = psmEntityType.getNavigationProperties().stream()
+        		.filter(p -> p.getName().equals("_" + associationEnd.getName() + "_default_TestModel_entityType")).findAny();
+        
+        assertTrue(psmNavigationProperty.isPresent());
+        
+        assertThat(psmNavigationProperty.get().getGetterExpression().getExpression(), IsEqual.equalTo(associationEnd.getDefaultExpression().getExpression()));
+        assertNull(psmNavigationProperty.get().getSetterExpression());
+    }
+
+    @Test
+    void testCreateNavigationPropertyFromTwoWayRelationMemberForEntityTypeDefaultTransferObjectTypeTransferObjectRelationDefaultAssociationEndWithPartner() throws Exception {
+        testName = "CreateNavigationPropertyFromTwoWayRelationMemberForEntityTypeDefaultTransferObjectTypeTransferObjectRelationDefault";
+
+        EntityType target = newEntityTypeBuilder().withName("target").build();
+        target.setMapping(newMappingBuilder()
+                .withTarget(target)
+                .withFilter(newLogicalExpressionTypeBuilder()
+                        .withDialect(ExpressionDialect.JQL)
+                        .withExpression("")
+                        .build())
+                .build());
+        EntityType entityType = newEntityTypeBuilder().withName("entityType").build();
+        entityType.setMapping(newMappingBuilder()
+                .withTarget(entityType)
+                .withFilter(newLogicalExpressionTypeBuilder()
+                        .withDialect(ExpressionDialect.JQL)
+                        .withExpression("")
+                        .build())
+                .build());
+
+        TwoWayRelationMember associationEnd1 = newTwoWayRelationMemberBuilder().withName("associationEnd1")
+                .withLower(1)
+                .withUpper(1)
+                .withTarget(target)
+                .withDefaultExpression(newReferenceExpressionTypeBuilder().withDialect(ExpressionDialect.JQL).withExpression("defaultExpression").build())
+                .withRangeExpression(newReferenceExpressionTypeBuilder().withDialect(ExpressionDialect.JQL).withExpression("").build())
+                .build();
+
+        TwoWayRelationMember associationEnd2 = newTwoWayRelationMemberBuilder().withName("associationEnd2")
+                .withLower(1)
+                .withUpper(1)
+                .withTarget(entityType)
+                .withDefaultExpression(newReferenceExpressionTypeBuilder().withDialect(ExpressionDialect.JQL).withExpression("defaultExpression").build())
+                .withRangeExpression(newReferenceExpressionTypeBuilder().withDialect(ExpressionDialect.JQL).withExpression("").build())
+                .build();
+
+        entityType.getRelations().add(associationEnd1);
+        target.getRelations().add(associationEnd2);
+        associationEnd1.setPartner(associationEnd2);
+        associationEnd2.setPartner(associationEnd1);
+
+        final Model model = newModelBuilder()
+                .withName("TestModel")
+                .withElements(ImmutableList.of(entityType, target))
+                .build();
+
+        esmModel.addContent(model);
+        transform();
+
+        final hu.blackbelt.judo.meta.psm.data.EntityType psmEntityType = allPsm(hu.blackbelt.judo.meta.psm.data.EntityType.class)
+                .filter(e -> e.getName().equals(entityType.getName())).findAny().get();
+        final hu.blackbelt.judo.meta.psm.data.EntityType psmTarget = allPsm(hu.blackbelt.judo.meta.psm.data.EntityType.class)
+                .filter(e -> e.getName().equals(target.getName())).findAny().get();
+        assertTrue(psmEntityType.getRelations().size() == 1);
+        assertTrue(psmTarget.getRelations().size() == 1);
+        assertTrue(psmEntityType.getNavigationProperties().size() == 1);
+        assertTrue(psmTarget.getNavigationProperties().size() == 1);
+
+        final NavigationProperty psmNavigationProperty1 = psmEntityType.getNavigationProperties().get(0);
+        final NavigationProperty psmNavigationProperty2 = psmTarget.getNavigationProperties().get(0);
+        
+        String psmNavigationPropertyName1 = "_" + associationEnd1.getName() + "_default_TestModel_entityType";
+        
+        assertTrue(psmNavigationProperty1.getName().equals(psmNavigationPropertyName1));
+        assertThat(psmNavigationProperty1.getGetterExpression().getExpression(), IsEqual.equalTo(associationEnd1.getDefaultExpression().getExpression()));
+        assertNull(psmNavigationProperty1.getSetterExpression());
+
+        String psmNavigationPropertyName2 = "_" + associationEnd2.getName() + "_default_TestModel_target";
+        
+        assertTrue(psmNavigationProperty2.getName().equals(psmNavigationPropertyName2));
+        assertThat(psmNavigationProperty2.getGetterExpression().getExpression(), IsEqual.equalTo(associationEnd2.getDefaultExpression().getExpression()));
+        assertNull(psmNavigationProperty2.getSetterExpression());
+    }
+
+    @Test
+    void testCreateNavigationPropertyFromOneWayRelationMemberForEntityTypeDefaultTransferObjectTypeTransferObjectRelationRangeContainment() throws Exception {
+        testName = "CreateNavigationPropertyFromOneWayRelationMemberForEntityTypeDefaultTransferObjectTypeTransferObjectRelationRange";
+
+        EntityType target = newEntityTypeBuilder().withName("target").build();
+        target.setMapping(newMappingBuilder()
+                .withTarget(target)
+                .withFilter(newLogicalExpressionTypeBuilder()
+                        .withDialect(ExpressionDialect.JQL)
+                        .withExpression("")
+                        .build())
+                .build());
+
+        OneWayRelationMember containment = newOneWayRelationMemberBuilder().withName("containment").withContainment(true)
+                .withGetterExpression(newReferenceExpressionTypeBuilder().withDialect(ExpressionDialect.JQL).withExpression("").build())
+                .withSetterExpression(newReferenceSelectorTypeBuilder().withDialect(ExpressionDialect.JQL).withExpression("").build())
+                .withDefaultExpression(newReferenceExpressionTypeBuilder().withDialect(ExpressionDialect.JQL).withExpression("").build())
+                .withRangeExpression(newReferenceExpressionTypeBuilder().withDialect(ExpressionDialect.JQL).withExpression("rangeExpression").build())
+                .withLower(1)
+                .withUpper(3)
+                .withTarget(target)
+                .build();
+
+        EntityType entityType = newEntityTypeBuilder().withName("entityType").withRelations(containment).build();
+        entityType.setMapping(newMappingBuilder()
+                .withTarget(entityType)
+                .withFilter(newLogicalExpressionTypeBuilder()
+                        .withDialect(ExpressionDialect.JQL)
+                        .withExpression("")
+                        .build())
+                .build());
+
+        final Model model = newModelBuilder()
+                .withName("TestModel")
+                .withElements(ImmutableList.of(entityType, target))
+                .build();
+
+        esmModel.addContent(model);
+        transform();
+
+        final hu.blackbelt.judo.meta.psm.data.EntityType psmEntityType = allPsm(hu.blackbelt.judo.meta.psm.data.EntityType.class)
+                .filter(e -> e.getName().equals(entityType.getName())).findAny().get();
+        
+        assertTrue(psmEntityType.getRelations().size() == 1);
+        assertTrue(psmEntityType.getNavigationProperties().size() == 1);
+
+        final NavigationProperty psmNavigationProperty = psmEntityType.getNavigationProperties().get(0);
+        
+        String psmNavigationPropertyName = "_" + containment.getName() + "_range_TestModel_entityType";
+        
+        assertTrue(psmNavigationProperty.getName().equals(psmNavigationPropertyName));
+        assertThat(psmNavigationProperty.getGetterExpression().getExpression(), IsEqual.equalTo(containment.getRangeExpression().getExpression()));
+        assertNull(psmNavigationProperty.getSetterExpression());
+    }
+
+    @Test
+    void testCreateNavigationPropertyFromOneWayRelationMemberForEntityTypeDefaultTransferObjectTypeTransferObjectRelationRangeAssociationEndWithoutPartner() throws Exception {
+        testName = "CreateNavigationPropertyFromOneWayRelationMemberForEntityTypeDefaultTransferObjectTypeTransferObjectRelationRange";
+
+        EntityType target = newEntityTypeBuilder().withName("target").build();
+        target.setMapping(newMappingBuilder()
+                .withTarget(target)
+                .withFilter(newLogicalExpressionTypeBuilder()
+                        .withDialect(ExpressionDialect.JQL)
+                        .withExpression("")
+                        .build())
+                .build());
+
+        OneWayRelationMember associationEnd = newOneWayRelationMemberBuilder().withName("associationEnd").withContainment(false)
+                .withGetterExpression(newReferenceExpressionTypeBuilder().withDialect(ExpressionDialect.JQL).withExpression("").build())
+                .withSetterExpression(newReferenceSelectorTypeBuilder().withDialect(ExpressionDialect.JQL).withExpression("").build())
+                .withDefaultExpression(newReferenceExpressionTypeBuilder().withDialect(ExpressionDialect.JQL).withExpression("").build())
+                .withRangeExpression(newReferenceExpressionTypeBuilder().withDialect(ExpressionDialect.JQL).withExpression("rangeExpression").build())
+                .withReverseCascadeDelete(true)
+                .withLower(1)
+                .withUpper(3)
+                .withTarget(target)
+                .build();
+
+        EntityType entityType = newEntityTypeBuilder().withName("entityType").withRelations(associationEnd).build();
+        entityType.setMapping(newMappingBuilder()
+                .withTarget(entityType)
+                .withFilter(newLogicalExpressionTypeBuilder()
+                        .withDialect(ExpressionDialect.JQL)
+                        .withExpression("")
+                        .build())
+                .build());
+
+        final Model model = newModelBuilder()
+                .withName("TestModel")
+                .withElements(ImmutableList.of(entityType, target))
+                .build();
+
+        esmModel.addContent(model);
+        transform();
+
+        final hu.blackbelt.judo.meta.psm.data.EntityType psmEntityType = allPsm(hu.blackbelt.judo.meta.psm.data.EntityType.class)
+                .filter(e -> e.getName().equals(entityType.getName())).findAny().get();
+        
+        assertTrue(psmEntityType.getRelations().size() == 1);
+        assertTrue(psmEntityType.getNavigationProperties().size() == 1);
+        
+        final NavigationProperty psmNavigationProperty = psmEntityType.getNavigationProperties().get(0);
+        
+        String psmNavigationPropertyName = "_" + associationEnd.getName() + "_range_TestModel_entityType";
+        
+        assertTrue(psmNavigationProperty.getName().equals(psmNavigationPropertyName));
+        assertThat(psmNavigationProperty.getGetterExpression().getExpression(), IsEqual.equalTo(associationEnd.getRangeExpression().getExpression()));
+        assertNull(psmNavigationProperty.getSetterExpression());
+    }
+    
+    @Test
+    void testCreateNavigationPropertyFromOneWayRelationMemberForEntityTypeDefaultTransferObjectTypeTransferObjectRelationRangeNavigationProperty() throws Exception {
+        testName = "CreateNavigationPropertyFromOneWayRelationMemberForEntityTypeDefaultTransferObjectTypeTransferObjectRelationRange";
+
+        EntityType target = newEntityTypeBuilder().withName("target").build();
+        target.setMapping(newMappingBuilder()
+                .withTarget(target)
+                .withFilter(newLogicalExpressionTypeBuilder()
+                        .withDialect(ExpressionDialect.JQL)
+                        .withExpression("")
+                        .build())
+                .build());
+
+        OneWayRelationMember associationEnd = newOneWayRelationMemberBuilder().withName("associationEnd").withContainment(false).withProperty(true)
+                .withGetterExpression(newReferenceExpressionTypeBuilder().withDialect(ExpressionDialect.JQL).withExpression("getterExpresssion").build())
+                .withSetterExpression(newReferenceSelectorTypeBuilder().withDialect(ExpressionDialect.JQL).withExpression("").build())
+                .withDefaultExpression(newReferenceExpressionTypeBuilder().withDialect(ExpressionDialect.JQL).withExpression("").build())
+                .withRangeExpression(newReferenceExpressionTypeBuilder().withDialect(ExpressionDialect.JQL).withExpression("rangeExpression").build())
+                .withReverseCascadeDelete(true)
+                .withLower(1)
+                .withUpper(3)
+                .withTarget(target)
+                .build();
+
+        EntityType entityType = newEntityTypeBuilder().withName("entityType").withRelations(associationEnd).build();
+        entityType.setMapping(newMappingBuilder()
+                .withTarget(entityType)
+                .withFilter(newLogicalExpressionTypeBuilder()
+                        .withDialect(ExpressionDialect.JQL)
+                        .withExpression("")
+                        .build())
+                .build());
+
+        final Model model = newModelBuilder()
+                .withName("TestModel")
+                .withElements(ImmutableList.of(entityType, target))
+                .build();
+
+        esmModel.addContent(model);
+        transform();
+
+        final hu.blackbelt.judo.meta.psm.data.EntityType psmEntityType = allPsm(hu.blackbelt.judo.meta.psm.data.EntityType.class)
+                .filter(e -> e.getName().equals(entityType.getName())).findAny().get();
+
+        assertTrue(psmEntityType.getNavigationProperties().size() == 2);
+        
+        final Optional<NavigationProperty> psmNavigationProperty = psmEntityType.getNavigationProperties().stream()
+        		.filter(p -> p.getName().equals("_" + associationEnd.getName() + "_range_TestModel_entityType")).findAny();
+        
+        assertTrue(psmNavigationProperty.isPresent());
+        assertThat(psmNavigationProperty.get().getGetterExpression().getExpression(), IsEqual.equalTo(associationEnd.getRangeExpression().getExpression()));
+        assertNull(psmNavigationProperty.get().getSetterExpression());
+    }
+
+    @Test
+    void testCreateNavigationPropertyFromTwoWayRelationMemberForEntityTypeDefaultTransferObjectTypeTransferObjectRelationRangeAssociationEndWithPartner() throws Exception {
+        testName = "CreateNavigationPropertyFromTwoWayRelationMemberForEntityTypeDefaultTransferObjectTypeTransferObjectRelationRange";
+
+        EntityType target = newEntityTypeBuilder().withName("target").build();
+        target.setMapping(newMappingBuilder()
+                .withTarget(target)
+                .withFilter(newLogicalExpressionTypeBuilder()
+                        .withDialect(ExpressionDialect.JQL)
+                        .withExpression("")
+                        .build())
+                .build());
+        EntityType entityType = newEntityTypeBuilder().withName("entityType").build();
+        entityType.setMapping(newMappingBuilder()
+                .withTarget(entityType)
+                .withFilter(newLogicalExpressionTypeBuilder()
+                        .withDialect(ExpressionDialect.JQL)
+                        .withExpression("")
+                        .build())
+                .build());
+
+        TwoWayRelationMember associationEnd1 = newTwoWayRelationMemberBuilder().withName("associationEnd1")
+                .withLower(1)
+                .withUpper(1)
+                .withTarget(target)
+                .withDefaultExpression(newReferenceExpressionTypeBuilder().withDialect(ExpressionDialect.JQL).withExpression("").build())
+                .withRangeExpression(newReferenceExpressionTypeBuilder().withDialect(ExpressionDialect.JQL).withExpression("rangeExpression").build())
+                .build();
+
+        TwoWayRelationMember associationEnd2 = newTwoWayRelationMemberBuilder().withName("associationEnd2")
+                .withLower(1)
+                .withUpper(1)
+                .withTarget(entityType)
+                .withDefaultExpression(newReferenceExpressionTypeBuilder().withDialect(ExpressionDialect.JQL).withExpression("").build())
+                .withRangeExpression(newReferenceExpressionTypeBuilder().withDialect(ExpressionDialect.JQL).withExpression("rangeExpression").build())
+                .build();
+
+        entityType.getRelations().add(associationEnd1);
+        target.getRelations().add(associationEnd2);
+        associationEnd1.setPartner(associationEnd2);
+        associationEnd2.setPartner(associationEnd1);
+
+        final Model model = newModelBuilder()
+                .withName("TestModel")
+                .withElements(ImmutableList.of(entityType, target))
+                .build();
+
+        esmModel.addContent(model);
+        transform();
+
+        final hu.blackbelt.judo.meta.psm.data.EntityType psmEntityType = allPsm(hu.blackbelt.judo.meta.psm.data.EntityType.class)
+                .filter(e -> e.getName().equals(entityType.getName())).findAny().get();
+        final hu.blackbelt.judo.meta.psm.data.EntityType psmTarget = allPsm(hu.blackbelt.judo.meta.psm.data.EntityType.class)
+                .filter(e -> e.getName().equals(target.getName())).findAny().get();
+        assertTrue(psmEntityType.getRelations().size() == 1);
+        assertTrue(psmTarget.getRelations().size() == 1);
+        assertTrue(psmEntityType.getNavigationProperties().size() == 1);
+        assertTrue(psmTarget.getNavigationProperties().size() == 1);
+
+        final NavigationProperty psmNavigationProperty1 = psmEntityType.getNavigationProperties().get(0);
+        final NavigationProperty psmNavigationProperty2 = psmTarget.getNavigationProperties().get(0);
+        
+        String psmNavigationPropertyName1 = "_" + associationEnd1.getName() + "_range_TestModel_entityType";
+        
+        assertTrue(psmNavigationProperty1.getName().equals(psmNavigationPropertyName1));
+        assertThat(psmNavigationProperty1.getGetterExpression().getExpression(), IsEqual.equalTo(associationEnd1.getRangeExpression().getExpression()));
+        assertNull(psmNavigationProperty1.getSetterExpression());
+
+        String psmNavigationPropertyName2 = "_" + associationEnd2.getName() + "_range_TestModel_target";
+        
+        assertTrue(psmNavigationProperty2.getName().equals(psmNavigationPropertyName2));
+        assertThat(psmNavigationProperty2.getGetterExpression().getExpression(), IsEqual.equalTo(associationEnd2.getRangeExpression().getExpression()));
+        assertNull(psmNavigationProperty2.getSetterExpression());
     }
 
     static <T> Stream<T> asStream(Iterator<T> sourceIterator, boolean parallel) {
