@@ -480,6 +480,66 @@
                     <groupId>hu.blackbelt.judo.tatami</groupId>
                     <artifactId>judo-tatami-workflow-maven-plugin</artifactId>
                     <version>${judo-tatami-workflow-maven-plugin-version}</version>
+                    <executions>
+                        <execution>
+                            <id>execute-northwind-test-model-from-general</id>
+                            <phase>process-test-resources</phase>
+                            <goals>
+                                <goal>psm-default-workflow</goal>
+                            </goals>
+                            <configuration>
+                                <psmGeneratorClassName>hu.blackbelt.model.northwind.Demo</psmGeneratorClassName>
+                                <psmGeneratorMethodName>fullDemo</psmGeneratorMethodName>
+                                <destination>${basedir}/target/test-classes</destination>
+                                <modelName>northwind</modelName>
+                                <dialectList>hsqldb,oracle</dialectList>
+                                <ignorePsm2Asm>true</ignorePsm2Asm>
+                                <ignorePsm2Measure>true</ignorePsm2Measure>
+                                <ignoreAsm2Rdbms>true</ignoreAsm2Rdbms>
+                                <ignoreAsm2Openapi>true</ignoreAsm2Openapi>
+                                <ignoreAsm2sdk>true</ignoreAsm2sdk>
+                                <ignoreAsm2jaxrsapi>true</ignoreAsm2jaxrsapi>
+                                <ignoreRdbms2Liquibase>true</ignoreRdbms2Liquibase>
+                            </configuration>
+                        </execution>
+                    </executions>
+                    <dependencies>
+                        <dependency>
+                            <groupId>hu.blackbelt.judo.meta</groupId>
+                            <artifactId>hu.blackbelt.judo.meta.psm.model.northwind</artifactId>
+                            <version>${judo-meta-psm-version}</version>
+                        </dependency>
+                        <dependency>
+                            <groupId>hu.blackbelt.judo.meta</groupId>
+                            <artifactId>hu.blackbelt.judo.meta.psm.model</artifactId>
+                            <version>${judo-meta-psm-version}</version>
+                        </dependency>
+                        <dependency>
+                            <groupId>hu.blackbelt.judo.meta</groupId>
+                            <artifactId>hu.blackbelt.judo.meta.rdbms.model</artifactId>
+                            <version>${judo-meta-rdbms-version}</version>
+                        </dependency>
+                        <dependency>
+                            <groupId>hu.blackbelt.judo.meta</groupId>
+                            <artifactId>hu.blackbelt.judo.meta.liquibase.model</artifactId>
+                            <version>${judo-meta-liquibase-version}</version>
+                        </dependency>
+                        <dependency>
+                            <groupId>hu.blackbelt.judo.meta</groupId>
+                            <artifactId>hu.blackbelt.judo.meta.asm.model</artifactId>
+                            <version>${judo-meta-asm-version}</version>
+                        </dependency>
+                        <dependency>
+                            <groupId>hu.blackbelt.judo.meta</groupId>
+                            <artifactId>hu.blackbelt.judo.meta.openapi.model</artifactId>
+                            <version>${judo-meta-openapi-version}</version>
+                        </dependency>
+                        <dependency>
+                            <groupId>hu.blackbelt.judo.meta</groupId>
+                            <artifactId>hu.blackbelt.judo.meta.measure.model</artifactId>
+                            <version>${judo-meta-measure-version}</version>
+                        </dependency>
+                    </dependencies>
                 </plugin>
 
                 <plugin>

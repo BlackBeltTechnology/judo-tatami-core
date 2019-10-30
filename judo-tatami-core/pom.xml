@@ -28,13 +28,15 @@
                     <obrRepository>NONE</obrRepository>
                     <instructions>
                         <Export-Package>
-                            hu.blackbelt.judo.tatami.core.*;version=${project.version}
+                            hu.blackbelt.judo.tatami.core.*;version=${project.version},
+                            com.pivovarit.function;version:=1.5.0
                         </Export-Package>
 
                         <Import-Package>
                             ${osgi-default-import},
                             *
                         </Import-Package>
+                        <Embed-Dependency>throwing-function;inline=true</Embed-Dependency>
                     </instructions>
                 </configuration>
             </plugin>
@@ -69,6 +71,11 @@
         <dependency>
             <groupId>hu.blackbelt.epsilon</groupId>
             <artifactId>epsilon-runtime-execution</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.pivovarit</groupId>
+            <artifactId>throwing-function</artifactId>
+            <version>1.5.0</version>
         </dependency>
     </dependencies>
 </project>

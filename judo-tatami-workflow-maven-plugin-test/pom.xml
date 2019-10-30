@@ -60,7 +60,7 @@
 				<version>${project.version}</version>
 				<executions>
 					<execution>
-						<id>execute-test-model-from-method</id>
+						<id>execute-northwind-test-model-from-general</id>
 						<phase>compile</phase>
 						<goals>
 							<goal>psm-default-workflow</goal>
@@ -69,6 +69,13 @@
 							<psmGeneratorClassName>hu.blackbelt.model.northwind.Demo</psmGeneratorClassName>
 							<psmGeneratorMethodName>fullDemo</psmGeneratorMethodName>
 							<destination>${basedir}/target/classes/method</destination>
+							<ignorePsm2Asm>false</ignorePsm2Asm>
+							<ignorePsm2Measure>false</ignorePsm2Measure>
+							<ignoreAsm2Rdbms>false</ignoreAsm2Rdbms>
+							<ignoreAsm2Openapi>false</ignoreAsm2Openapi>
+							<ignoreRdbms2Liquibase>false</ignoreRdbms2Liquibase>
+							<ignoreAsm2jaxrsapi>false</ignoreAsm2jaxrsapi>
+							<ignoreAsm2sdk>false</ignoreAsm2sdk>
 							<modelName>northwind</modelName>
 							<dialectList>hsqldb,oracle</dialectList>
 						</configuration>
@@ -87,59 +94,7 @@
 							<dialectList>hsqldb,oracle</dialectList>
 						</configuration>
 					</execution>
-
 				</executions>
-				<dependencies>
-
-					<dependency>
-						<groupId>hu.blackbelt.judo.meta</groupId>
-						<artifactId>hu.blackbelt.judo.meta.psm.model.northwind</artifactId>
-						<version>${judo-meta-psm-version}</version>
-					</dependency>
-
-					<dependency>
-						<groupId>hu.blackbelt.judo.tatami</groupId>
-						<artifactId>judo-tatami-psm2asm</artifactId>
-						<version>${project.version}</version>
-					</dependency>
-
-					<dependency>
-						<groupId>hu.blackbelt.judo.tatami</groupId>
-						<artifactId>judo-tatami-psm2measure</artifactId>
-						<version>${project.version}</version>
-					</dependency>
-
-					<dependency>
-						<groupId>hu.blackbelt.judo.tatami</groupId>
-						<artifactId>judo-tatami-asm2rdbms</artifactId>
-						<version>${project.version}</version>
-					</dependency>
-
-					<dependency>
-						<groupId>hu.blackbelt.judo.tatami</groupId>
-						<artifactId>judo-tatami-asm2jaxrsapi</artifactId>
-						<version>${project.version}</version>
-					</dependency>
-
-					<dependency>
-						<groupId>hu.blackbelt.judo.tatami</groupId>
-						<artifactId>judo-tatami-asm2openapi</artifactId>
-						<version>${project.version}</version>
-					</dependency>
-
-					<dependency>
-						<groupId>hu.blackbelt.judo.tatami</groupId>
-						<artifactId>judo-tatami-asm2sdk</artifactId>
-						<version>${project.version}</version>
-					</dependency>
-
-					<dependency>
-						<groupId>hu.blackbelt.judo.tatami</groupId>
-						<artifactId>judo-tatami-rdbms2liquibase</artifactId>
-						<version>${project.version}</version>
-					</dependency>
-
-				</dependencies>
 			</plugin>
 		</plugins>
 		<pluginManagement>
