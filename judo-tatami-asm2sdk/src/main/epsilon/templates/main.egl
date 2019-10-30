@@ -5,7 +5,7 @@ var outputJavaClasses = new Set();
 
 executionContext.getContext().put("outputJavaClasses", outputJavaClasses);
 
-for (dto in asmUtils.getAllMappedTransferObjectTypes().collectAllReferenceTypeRecursively()) {
+for (dto in ASM!EClass.all.select(c | c.eAnnotations.exists(a | asmUtils.getResolvedExposedBy(a).isPresent()) and (asmUtils.getMappedEntityType(c).isPresent() or (not asmUtils.getMappedEntityType(c).isPresent() and not asmUtils.isEntityType(c))))) {
     genDto(dto);
 	outputJavaClasses.add(dto.getDtoJavaFileName());
 }

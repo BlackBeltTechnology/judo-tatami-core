@@ -8,23 +8,9 @@ operation String toJAXRSPath() : String {
     return self.replace("\\.__UnboundServices", "").replace("[__#\\.]", "/").replace("[^0-9a-zA-Z_/]", "/").replace("\\$", "/");
 }
 
-@cached
-operation ASM!EOperation getFullOperationMethodName() : String {
-	return (asmUtils.getPackageFQName(self.eContainingClass.ePackage) + "." + self.name).replaceAll("\\.", "__");
-}
-
-@cached
-operation ASM!EOperation getFullOperationPath() : String {
-	return (asmUtils.getPackageFQName(self.eContainingClass.ePackage) + "." + self.name).replaceAll("\\.", "/");
-}
-
 /*
  DTO
  */
-@cached
-operation getAllDTOs(): Collection {
-	return ASM!EClass.all.select(class | asmUtils.getExtensionAnnotationListByName(class, "exposedBy").notEmpty() and (not asmUtils.isEntityType(class) or asmUtils.isMappedTransferObjectType(class)));
-}
 
 operation genDto(dto : ASM!EClass) {
 	var t = TemplateFactory.load("Dto.java.egl");
@@ -34,8 +20,13 @@ operation genDto(dto : ASM!EClass) {
 }
 
 @cached
+operation ASM!EClass getPackagePrefix() : String {
+    return "rest.";
+}
+
+@cached
 operation ASM!EClass getDtoPackageName() : String {
-	return "rest." + asmUtils.getPackageFQName(self.ePackage);
+	return self.getPackagePrefix() + asmUtils.getPackageFQName(self.ePackage);
 }
 
 @cached
@@ -44,52 +35,8 @@ operation ASM!EClass getDtoTypeName() : String {
 }
 
 @cached
-operation ASM!EClass idType() : String {
-	return "java.util.UUID";
-}
-
-@cached
 operation ASM!EClass getDtoJavaFileName() : String {
 	return self.getDtoPackageName().replaceAll("\\.", "/") + "/" + self.name.normalizeName() + ".java";
-}
-
-operation String safeName() : String {
-	if (self == "class") {
-		return "clazz";
-	} else if (Set{
-	    "identifier",
-		"abstract", "assert", "boolean", "break", "byte", "case", "catch", "char",
-		"continue", "default", "do", "double", "else", "enum", "exports", "extends",
-		"final", "finally", "float", "for", "if", "implements", "import", "instanceof",
-		 "long", "module", "native", "new", "package", "private", "protected",
-		 "public", "requires", "return", "short", "static", "strictfp", "super",
-		 "switch", "synchronized", "this", "throw", "throws", "transitent", "try",
-		 "void", "volatile", "while", "true", "null", "false", "var", "const", "goto" }.contains(self)) {
-		return self + "_";
-	} else if (self == "Class") {
-		return "Clazz";
-	} else {
-		return self;
-	}
-}
-
-operation ASM!ENamedElement setterName() : String {
-	return "set" + self.name.firstToUpperCase().safeName();
-}
-
-operation ASM!ENamedElement getterName() : String {
-	return "get" + self.name.firstToUpperCase().safeName();
-}
-
-@cached
-operation ASM!EParameter getTypeDefinition() : String {
-	if (self.many) {
-		return "List<" + self.eType.instanceClass.name + ">";
-	} else if (self.eType.instanceClass.isDefined()) {
-		return self.eType.instanceClass.name;
-	} else {
-		return "Integer";
-	}
 }
 
 @cached
@@ -118,6 +65,21 @@ operation ASM!EReference getBareTypeDefinition() : String {
 	return self.eReferenceType.getDtoPackageName() + "." + self.eReferenceType.name;
 }
 
+@cached
+operation ASM!EClass getApplicationPackageName() : String {
+	return self.getPackagePrefix() + asmUtils.getClassifierFQName(self);
+}
+
+@cached
+operation ASM!EClass getApplicationConfigJavaFileName() : String {
+	return self.getApplicationPackageName().replaceAll("\\.", "/") + "/ApplicationConfig.java";
+}
+
+@cached
+operation ASM!EClass getApplicationConfigScrXmlFileName() : String {
+	return "OSGI-INF/" + self.getApplicationPackageName() + ".ApplicationConfig.xml";
+}
+
 /*
  Application Config
  */
@@ -137,21 +99,6 @@ operation genApplication(ap : ASM!EClass, serviceInstances : Map) {
 	t.populate("serviceInstances", serviceInstances);
 	t.generate(ap.getApplicationConfigScrXmlFileName());
 	t.reset();
-}
-
-@cached
-operation ASM!EClass getApplicationPackageName() : String {
-	return "rest." + asmUtils.getClassifierFQName(self);
-}
-
-@cached
-operation ASM!EClass getApplicationConfigJavaFileName() : String {
-	return self.getApplicationPackageName().replaceAll("\\.", "/") + "/ApplicationConfig.java";
-}
-
-@cached
-operation ASM!EClass getApplicationConfigScrXmlFileName() : String {
-	return "OSGI-INF/" + self.getApplicationPackageName() + ".ApplicationConfig.xml";
 }
 
 /*
@@ -177,7 +124,7 @@ operation genUnboundService(ap : ASM!EClass, operations : Collection) {
 }
 
 operation ASM!EClass getUnboundServicePackageName() : String {
-	return "rest." + asmUtils.getClassifierFQName(self);
+	return self.getPackagePrefix() + asmUtils.getClassifierFQName(self);
 }
 
 operation ASM!EClass getUnboundServiceClassName() : String {
@@ -198,36 +145,31 @@ operation ASM!EClass getUnboundServiceScrXmlFileName() : String {
 operation genExposedMappedTransferObject(class : ASM!EClass, ap : ASM!EClass, operations: Collection) {
 	var t = TemplateFactory.load("RestService.java.egl");
 	t.populate("boundService", true);
-	t.populate("className", class.getExposedMappedTransferObjectClassName());
+	t.populate("className", class.name.normalizeName());
 	t.populate("packagePath", class.getExposedMappedTransferObjectPackageName(ap));
 	t.populate("operations", operations);
-	t.populate("restPath", "/" + asmUtils.getPackageFQName(class.ePackage).toJAXRSPath() + "/" + class.getExposedMappedTransferObjectClassName().toJAXRSPath());
+	t.populate("restPath", "/" + asmUtils.getPackageFQName(class.ePackage).toJAXRSPath() + "/" + class.name.normalizeName().toJAXRSPath());
 	t.populate("fullyQualifiedOperation", false);
 
 	t.generate(class.getExposedMappedTransferObjectJavaFileName(ap));
 	t.reset();
 
 	var t = TemplateFactory.load("RestService.scr.xml.egl");
-	t.populate("className", class.getExposedMappedTransferObjectClassName());
+	t.populate("className", class.name.normalizeName());
 	t.populate("packagePath", class.getExposedMappedTransferObjectPackageName(ap));
 	t.generate(class.getExposedMappedTransferObjectScrXmlFileName(ap));
 	t.reset();
 }
 
 operation ASM!EClass getExposedMappedTransferObjectPackageName(ap: ASM!EClass) : String {
-	return "rest." + asmUtils.getClassifierFQName(ap) + "." + asmUtils.getPackageFQName(self.ePackage);
+	return self.getPackagePrefix() + asmUtils.getClassifierFQName(ap) + "." + asmUtils.getPackageFQName(self.ePackage);
 }
 
-@cached
-operation ASM!EClass getExposedMappedTransferObjectClassName() : String {
-	return self.name.normalizeName(); // .name.replace("__", "\\$");
+operation ASM!EClass getExposedMappedTransferObjectScrXmlFileName(ap: ASM!EClass) : String {
+	return "OSGI-INF/" + self.getExposedMappedTransferObjectPackageName(ap) + "." + self.name.normalizeName() + ".xml";
 }
 
 operation ASM!EClass getExposedMappedTransferObjectJavaFileName(ap: ASM!EClass) : String {
 	return self.getExposedMappedTransferObjectPackageName(ap)
-		.replaceAll("\\.", "/") + "/" + self.getExposedMappedTransferObjectClassName() + ".java";
-}
-
-operation ASM!EClass getExposedMappedTransferObjectScrXmlFileName(ap: ASM!EClass) : String {
-	return "OSGI-INF/" + self.getExposedMappedTransferObjectPackageName(ap) + "." + self.getExposedMappedTransferObjectClassName() + ".xml";
+		.replaceAll("\\.", "/") + "/" + self.name.normalizeName() + ".java";
 }
