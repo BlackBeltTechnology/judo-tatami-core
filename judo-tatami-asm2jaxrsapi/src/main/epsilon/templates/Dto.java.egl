@@ -10,13 +10,13 @@ import java.util.LinkedHashMap;
 import java.util.stream.Collectors;
 
 public class [%= dto.name.normalizeName() %] {
-	private java.util.UUID __identifier;
+	private [%= dto.getIdTypeName() %] __identifier;
     [% for (field in dto.eAllAttributes.includingAll(dto.eAllReferences)) { %]
 	private [%= field.getTypeDefinition() %] [%= asmUtils.safeName(field.name.firstToLowerCase()) %];
 	[% } %]
 
     @java.beans.ConstructorProperties({"__identifier"[% for (field in dto.eAllAttributes.includingAll(dto.eAllReferences)) { %], "[%= asmUtils.safeName(field.name.firstToLowerCase()) %]"[% } %]})
-    [%= dto.name.normalizeName() %](java.util.UUID __identifier[% for (field in dto.eAllAttributes.includingAll(dto.eAllReferences)) { %], [%= field.getTypeDefinition() %] [%= asmUtils.safeName(field.name.firstToLowerCase()) %][% } %]) {
+    [%= dto.name.normalizeName() %]([%= dto.getIdTypeName() %] __identifier[% for (field in dto.eAllAttributes.includingAll(dto.eAllReferences)) { %], [%= field.getTypeDefinition() %] [%= asmUtils.safeName(field.name.firstToLowerCase()) %][% } %]) {
 		this.__identifier = __identifier;
         [% for (field in dto.eAllAttributes.includingAll(dto.eAllReferences)) { %]
         this.[%= asmUtils.safeName(field.name.firstToLowerCase()) %] = [%= asmUtils.safeName(field.name.firstToLowerCase()) %];
@@ -24,7 +24,7 @@ public class [%= dto.name.normalizeName() %] {
     }
 
 	// Getters
-	public java.util.UUID get__identifier() {
+	public [%= dto.getIdTypeName() %] get__identifier() {
 		return this.__identifier;
 	}
     [% for (field in dto.eAllAttributes.includingAll(dto.eAllReferences)) { %]
@@ -34,7 +34,7 @@ public class [%= dto.name.normalizeName() %] {
 	[% } %]
 
 	// Setters
-	public void set__identifier(java.util.UUID __identifier) {
+	public void set__identifier([%= dto.getIdTypeName() %] __identifier) {
 		this.__identifier = __identifier;
 	}
     [% for (field in dto.eAllAttributes.includingAll(dto.eAllReferences)) { %]
@@ -69,7 +69,7 @@ public class [%= dto.name.normalizeName() %] {
 	public static [%= dto.name.normalizeName() %] fromMap(Map<String, Object> map) {
 		[%= dto.name.normalizeName() %]Builder builder = [%= dto.name.normalizeName().firstToLowerCase() %]Builder();
 		if (map.containsKey("__identifier")) {
-			builder.__identifier((java.util.UUID)map.get("__identifier"));
+			builder.__identifier(([%= dto.getIdTypeName() %])map.get("__identifier"));
 		}
 	    [% for (attr in dto.eAllAttributes) { %]
 	    if (map.containsKey("[%= attr.name %]")) {
@@ -98,7 +98,7 @@ public class [%= dto.name.normalizeName() %] {
 	}
 
 	public static class [%= dto.name.normalizeName() %]Builder {
-		private java.util.UUID __identifier;
+		private [%= dto.getIdTypeName() %] __identifier;
         [% for (field in dto.eAllAttributes.includingAll(dto.eAllReferences)) { %]
         private [%= field.getTypeDefinition() %] [%= asmUtils.safeName(field.name.firstToLowerCase()) %];
         [% } %]
@@ -106,7 +106,7 @@ public class [%= dto.name.normalizeName() %] {
 		[%= dto.name.normalizeName() %]Builder() {
 		}
 
-		public [%= dto.name.normalizeName() %]Builder __identifier(java.util.UUID __identifier) {
+		public [%= dto.name.normalizeName() %]Builder __identifier([%= dto.getIdTypeName() %] __identifier) {
 			this.__identifier = __identifier;
 			return this;
 		}

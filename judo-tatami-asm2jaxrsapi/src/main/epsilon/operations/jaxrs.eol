@@ -19,6 +19,11 @@ operation genDto(dto : ASM!EClass) {
 	t.reset();
 }
 
+@cached 
+operation ASM!EClass getIdTypeName() : String { 
+    return "java.util.UUID"; 
+}
+
 @cached
 operation ASM!EClass getPackagePrefix() : String {
     return "rest.";

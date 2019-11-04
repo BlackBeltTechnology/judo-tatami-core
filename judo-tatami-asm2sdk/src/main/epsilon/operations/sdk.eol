@@ -13,6 +13,11 @@ operation ASM!EAttribute getTypeDefinition() : String {
 	}
 }
 
+@cached 
+operation ASM!EClass getIdTypeName() : String { 
+    return "java.util.UUID"; 
+}
+
 @cached
 operation ASM!EReference getBareTypeDefinition() : String {	
 	return self.eReferenceType.getDtoPackageName() + "." + self.eReferenceType.name;
