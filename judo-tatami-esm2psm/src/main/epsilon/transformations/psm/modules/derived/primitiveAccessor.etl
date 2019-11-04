@@ -108,8 +108,9 @@ rule CreateStaticDataForTransferAttributeDefault
             log.debug("Created Static Data for transfer attribute default: " + t.name);
 }
 
+@greedy
 rule CreateDataPropertyForEntityTypeDefaultTransferObjectTypeTransferAttributeDefault
-    transform s : ESM!DataMember
+    transform s : ESM!DataFeature
     to t : JUDOPSM!DataProperty
     extends CreatePrimitiveTypedElement {
         guard:  s.eContainer.isKindOf(ESM!EntityType)
