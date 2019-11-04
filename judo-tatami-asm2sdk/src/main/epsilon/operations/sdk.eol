@@ -13,6 +13,11 @@ operation ASM!EAttribute getTypeDefinition() : String {
 	}
 }
 
+@cached 
+operation getIdTypeName() : String { 
+    return "java.util.UUID"; 
+}
+
 @cached
 operation ASM!EReference getBareTypeDefinition() : String {	
 	return self.eReferenceType.getDtoPackageName() + "." + self.eReferenceType.name;
@@ -28,50 +33,18 @@ operation ASM!EReference getTypeDefinition() : String {
 	}
 }
 
-@cached
-operation ASM!EClass collectAllReferenceType() : Set {	
-	var ret : new Set();
-	for (r in self.eAllReferences) {
-		ret.add(r.eReferenceType);
-	}
-	return ret;
-}
-
-@cached
-operation Collection collectAllReferenceType() : Set {	
-	var ret : new Set();	
-	for (c : ASM!EClass in self) {
-		ret.add(c);
-		ret.addAll(c.collectAllReferenceType());
-	}
-	return ret;
-}
-
-@cached
-operation Collection collectAllReferenceTypeRecursively() : Set {	
-	var ret : new Set();	
-	ret.addAll(self);
-
-	var sizeDiffers = true;
-	while (sizeDiffers) {
-	    var curSize = ret.size();
-		ret = ret.collectAllReferenceType();
-		sizeDiffers = (curSize <> ret.size());
-	}
-	return ret;
-}
-
 /*
  DTO
  */
+ 
 @cached
-operation ASM!EClass idType() : String {
-	return "java.util.UUID";
+operation ASM!EClass getPackagePrefix() : String {
+    return "sdk.";
 }
 
 @cached
 operation ASM!EClass getDtoPackageName() : String {
-	return "sdk." + asmUtils.getPackageFQName(self.ePackage);
+	return self.getPackagePrefix() + asmUtils.getPackageFQName(self.ePackage);
 }
 
 @cached
@@ -90,33 +63,3 @@ operation genDto(dto : ASM!EClass) {
 	t.generate(dto.getDtoJavaFileName());
 	t.reset();
 }
-
-operation String safeName() : String {
-	if (self == "class") {
-		return "clazz";
-	} else if (Set{
-	    "identifier",
-		"abstract", "assert", "boolean", "break", "byte", "case", "catch", "char",
-		"continue", "default", "do", "double", "else", "enum", "exports", "extends", 
-		"final", "finally", "float", "for", "if", "implements", "import", "instanceof",
-		 "long", "module", "native", "new", "package", "private", "protected",
-		 "public", "requires", "return", "short", "static", "strictfp", "super",
-		 "switch", "synchronized", "this", "throw", "throws", "transitent", "try",
-		 "void", "volatile", "while", "true", "null", "false", "var", "const", "goto" }.contains(self)) {
-		return self + "_";
-	} else if (self == "Class") {
-		return "Clazz";
-	} else {
-		return self;
-	}	
-}
-
-operation ASM!ENamedElement setterName() : String {
-	return "set" + self.name.firstToUpperCase().safeName();
-}
-
-operation ASM!ENamedElement getterName() : String {
-	return "get" + self.name.firstToUpperCase().safeName();
-}
-
-
