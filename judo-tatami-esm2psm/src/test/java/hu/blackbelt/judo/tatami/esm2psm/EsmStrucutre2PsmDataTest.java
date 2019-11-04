@@ -390,7 +390,7 @@ public class EsmStrucutre2PsmDataTest {
         final hu.blackbelt.judo.meta.psm.data.EntityType psmTarget = allPsm(hu.blackbelt.judo.meta.psm.data.EntityType.class)
                 .filter(e -> e.getName().equals(target.getName())).findAny().get();
         assertTrue(psmEntityType.getRelations().size() == 1);
-        assertTrue(target.getRelations().size() == 1);
+        assertTrue(psmTarget.getRelations().size() == 1);
 
         final hu.blackbelt.judo.meta.psm.data.Relation psmAssociationEnd1 = psmEntityType.getRelations().get(0);
         assertTrue(psmAssociationEnd1.getName().equals(associationEnd1.getName()));
