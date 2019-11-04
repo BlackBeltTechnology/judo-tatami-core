@@ -14,7 +14,7 @@ operation ASM!EAttribute getTypeDefinition() : String {
 }
 
 @cached 
-operation ASM!EClass getIdTypeName() : String { 
+operation getIdTypeName() : String { 
     return "java.util.UUID"; 
 }
 

@@ -20,7 +20,7 @@ operation genDto(dto : ASM!EClass) {
 }
 
 @cached 
-operation ASM!EClass getIdTypeName() : String { 
+operation getIdTypeName() : String { 
     return "java.util.UUID"; 
 }
 
