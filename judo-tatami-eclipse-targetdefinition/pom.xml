@@ -9,12 +9,14 @@
         <relativePath>../</relativePath>
     </parent>
     <artifactId>hu.blackbelt.judo.tatami.eclipse.targetdefinition</artifactId>
+    <packaging>eclipse-target-definition</packaging>
+    
     <name>Judo :: Tatami :: Eclipse :: Targetdefinition</name>
 
     <profiles>
 	    <profile>
 	    	<activation>
-	    		<activeByDefault>true</activeByDefault>
+	    		<activeByDefault>false</activeByDefault>
 	    	</activation>
 	    	<id>update-target-versions</id>
 	    	<build>
