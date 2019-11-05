@@ -11,7 +11,8 @@
     </parent>
     
     <artifactId>hu.blackbelt.judo.tatami.eclipse.site</artifactId>
-    <packaging>eclipse-repository</packaging>
+    <name>Judo :: Tatami :: Eclipse :: Site</name>
+    <!-- <packaging>eclipse-repository</packaging> -->
     
     <repositories>
         <repository>
@@ -24,71 +25,61 @@
             <url>http://download.eclipse.org/epsilon/updates</url>
             <layout>p2</layout>
         </repository>
-        
         <repository>
             <id>emf-genmodel-generatpr</id>
             <url>https://nexus.blackbelt.cloud/repository/p2-judo/emf-genmodel-generator/${emf-genmodel-generator-version}</url>
             <layout>p2</layout>
         </repository>
-        
         <repository>
             <id>judo-genmodel-generatpr</id>
             <url>https://nexus.blackbelt.cloud/repository/p2-judo/judo-genmodel-generator/${judo-genmodel-generator-version}</url>
             <layout>p2</layout>
         </repository>
-        
         <repository>
             <id>epsilon-runtime</id>
             <url>https://nexus.blackbelt.cloud/repository/p2-judo/epsilon-runtime-eclipse/${epsilon-runtime-eclipse-version}</url>
             <layout>p2</layout>
         </repository>
-        
         <repository>
             <id>judo-meta-esm</id>
             <url>https://nexus.blackbelt.cloud/repository/p2-judo/judo-meta-esm/${judo-meta-esm-version}</url>
             <layout>p2</layout>
         </repository>
-        
         <repository>
             <id>judo-meta-psm</id>
             <url>https://nexus.blackbelt.cloud/repository/p2-judo/judo-meta-psm/${judo-meta-psm-version}</url>
             <layout>p2</layout>
         </repository>
-        
         <repository>
             <id>judo-meta-asm</id>
             <url>https://nexus.blackbelt.cloud/repository/p2-judo/judo-meta-asm/${judo-meta-asm-version}</url>
             <layout>p2</layout>
         </repository>
-        
         <repository>
             <id>judo-meta-expression</id>
             <url>https://nexus.blackbelt.cloud/repository/p2-judo/judo-meta-expression/${judo-meta-expression-version}</url>
             <layout>p2</layout>
         </repository>
-        
         <repository>
             <id>judo-meta-jql</id>
             <url>https://nexus.blackbelt.cloud/repository/p2-judo/judo-meta-jql/${judo-meta-jql-version}</url>
             <layout>p2</layout>
         </repository>
-        
         <repository>
             <id>judo-meta-measure</id>
             <url>https://nexus.blackbelt.cloud/repository/p2-judo/judo-meta-measure/${judo-meta-measure-version}</url>
             <layout>p2</layout>
         </repository>
-        
         <repository>
             <id>swagger</id>
             <url>https://nexus.blackbelt.cloud/repository/p2-judo/p2-swagger/1.0.0</url>
             <layout>p2</layout>
         </repository>
-        <repository>
+        <!--<repository>
             <id>judo-meta-openapi</id>
             <url>https://nexus.blackbelt.cloud/repository/p2-judo/judo-meta-openapi/${judo-meta-openapi-version}</url>
             <layout>p2</layout>
-        </repository>
+        </repository> -->
         <repository>
             <id>judo-meta-rdbms</id>
             <url>https://nexus.blackbelt.cloud/repository/p2-judo/judo-meta-rdbms/${judo-meta-rdbms-version}</url>
@@ -151,6 +142,53 @@
                 <artifactId>target-platform-configuration</artifactId>
                 <version>${tycho-version}</version>
                 <configuration>
+                	<target>
+                        <artifact>
+                            <groupId>hu.blackbelt.judo.meta</groupId>
+                            <artifactId>hu.blackbelt.judo.meta.psm.targetdefinition</artifactId>
+                            <version>${project.version}</version>
+                        </artifact>
+                        <artifact>
+                            <groupId>hu.blackbelt.judo.meta</groupId>
+                            <artifactId>hu.blackbelt.judo.meta.esm.targetdefinition</artifactId>
+                            <version>${project.version}</version>
+                        </artifact>
+                        <artifact>
+                            <groupId>hu.blackbelt.judo.meta</groupId>
+                            <artifactId>hu.blackbelt.judo.meta.asm.targetdefinition</artifactId>
+                            <version>${project.version}</version>
+                        </artifact>
+                        <artifact>
+                            <groupId>hu.blackbelt.judo.meta</groupId>
+                            <artifactId>hu.blackbelt.judo.meta.liquibase.targetdefinition</artifactId>
+                            <version>${project.version}</version>
+                        </artifact>
+                        <artifact>
+                            <groupId>hu.blackbelt.judo.meta</groupId>
+                            <artifactId>hu.blackbelt.judo.meta.rdbms.targetdefinition</artifactId>
+                            <version>${project.version}</version>
+                        </artifact>
+                        <artifact>
+                            <groupId>hu.blackbelt.judo.meta</groupId>
+                            <artifactId>hu.blackbelt.judo.meta.jql.targetdefinition</artifactId>
+                            <version>${project.version}</version>
+                        </artifact>
+                        <artifact>
+                            <groupId>hu.blackbelt.judo.meta</groupId>
+                            <artifactId>hu.blackbelt.judo.meta.expression.targetdefinition</artifactId>
+                            <version>${project.version}</version>
+                        </artifact>
+                        <!--<artifact>
+                            <groupId>hu.blackbelt.judo.meta</groupId>
+                            <artifactId>hu.blackbelt.judo.meta.openapi.targetdefinition</artifactId>
+                            <version>${project.version}</version>
+                        </artifact> -->
+                        <artifact>
+                            <groupId>hu.blackbelt.judo.meta</groupId>
+                            <artifactId>hu.blackbelt.judo.meta.measure.targetdefinition</artifactId>
+                            <version>${project.version}</version>
+                        </artifact>
+                    </target>
                     <environments>
                         <environment>
                             <os>linux</os>
@@ -184,6 +222,7 @@
             <plugin>
                 <groupId>org.eclipse.tycho</groupId>
                 <artifactId>tycho-versions-plugin</artifactId>
+                <version>${tycho-version}</version>
             </plugin>
             
             <plugin>
@@ -276,11 +315,11 @@
                                     <value>repository-reference location="$2$3${judo-meta-jql-version}"</value>
                                 </replacement>
 
-                                <!-- OpenAPI -->
+                                <!-- OpenAPI
                                 <replacement>
                                     <token>(repository-reference\ location\=\")(.*?)(judo-meta-openapi\/)(.*?)(\")</token>
                                     <value>repository-reference location="$2$3${judo-meta-openapi-version}"</value>
-                                </replacement>
+                                </replacement> -->
 
                                 <!-- RDBMS -->
                                 <replacement>
