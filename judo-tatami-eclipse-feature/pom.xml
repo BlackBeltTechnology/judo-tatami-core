@@ -12,6 +12,7 @@
     </parent>
     
     <artifactId>hu.blackbelt.judo.tatami.eclipse.feature</artifactId>
+    <packaging>eclipse-feature</packaging>
 
     <name>Judo :: Tatami :: Eclipse :: Feature</name>
     
