@@ -60,7 +60,7 @@
 
         <judo-framework-version>2.0.0_develop_135</judo-framework-version>
 
-        <judo-meta-rdbms-version>1.0.0.20191106_082413_6e13697_feature_JNG_435_add_JdbcType</judo-meta-rdbms-version>
+        <judo-meta-rdbms-version>1.0.0.20191106_101147_6aa5f09_develop</judo-meta-rdbms-version>
         <judo-meta-rdbms.import-range>[1.0,1.1)</judo-meta-rdbms.import-range>
 
         <judo-meta-esm-version>1.1.0.20191025_201354_0da09c6_develop</judo-meta-esm-version>
