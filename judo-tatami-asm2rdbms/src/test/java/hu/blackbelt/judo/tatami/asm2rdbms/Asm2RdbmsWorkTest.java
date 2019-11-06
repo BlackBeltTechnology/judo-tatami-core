@@ -7,6 +7,8 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
+import hu.blackbelt.epsilon.runtime.execution.api.Log;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -29,6 +31,7 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static hu.blackbelt.judo.meta.asm.runtime.AsmModel.loadAsmModel;
 
+@Slf4j
 public class Asm2RdbmsWorkTest {
 
 	public static final String NORTHWIND = "northwind";
@@ -66,6 +69,10 @@ public class Asm2RdbmsWorkTest {
 
 		WorkFlowEngine workFlowEngine = aNewWorkFlowEngine().build();
 		WorkReport workReport = workFlowEngine.run(workflow);
+
+		if (workReport.getError() != null) {
+			log.error("Error found, ", workReport.getError());
+		}
 
 		assertThat(workReport.getStatus(), equalTo(WorkStatus.COMPLETED));
 	}
