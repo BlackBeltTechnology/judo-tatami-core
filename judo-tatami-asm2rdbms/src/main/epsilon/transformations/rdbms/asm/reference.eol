@@ -53,7 +53,7 @@ operation ASM!EReference referenceManyToManyTableSqlName() : String {
 		var f2 = self.eOpposite;
 		return "T_" + abbreviate(f1.eReferenceType.classSqlName() + "_" + f1.sqlName() + "_" + f2.eReferenceType.classSqlName() + "_" + f2.sqlName(), sqlNameSize()).toUpperCase();
 	} else {
-		return "T_" + abbreviate(f1.eReferenceType.classSqlName() + f1.eContainingClass.classSqlName() + "_" + f1.sqlName(), sqlNameSize()).toUpperCase();
+		return "T_" + abbreviate(f1.eContainingClass.classSqlName() + "_" + f1.sqlName(), sqlNameSize()).toUpperCase();
 	}
 }
 
