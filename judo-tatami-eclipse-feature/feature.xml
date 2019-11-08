@@ -217,14 +217,14 @@
    </license>
 
    <requires>
-      <import plugin="hu.blackbelt.judo.meta.psm.model"/>
-      <import plugin="hu.blackbelt.judo.meta.esm.model"/>
-      <import plugin="hu.blackbelt.judo.meta.asm.model"/>
-      <import plugin="hu.blackbelt.judo.meta.jql.model"/>
-      <import plugin="hu.blackbelt.judo.meta.rdbms.model"/>
-      <!--<import plugin="hu.blackbelt.judo.meta.openapi.model"/>-->
-      <import plugin="hu.blackbelt.judo.meta.liquibase.model"/>
-      <import plugin="hu.blackbelt.judo.meta.expression.model"/>
+      <import feature="hu.blackbelt.judo.meta.psm.feature"/>
+      <import feature="hu.blackbelt.judo.meta.esm.feature"/>
+      <import feature="hu.blackbelt.judo.meta.asm.feature"/>
+      <import feature="hu.blackbelt.judo.meta.jql.feature"/>
+      <import feature="hu.blackbelt.judo.meta.rdbms.feature"/>
+      <!--<import feature="hu.blackbelt.judo.meta.openapi.feature"/>-->
+      <import feature="hu.blackbelt.judo.meta.liquibase.feature"/>
+      <import feature="hu.blackbelt.judo.meta.expression.feature"/>
    </requires>
 
 </feature>
