@@ -730,51 +730,11 @@
 		                <version>${tycho-version}</version>
 		                <configuration>
 		                	<target>
-		                        <artifact>
-		                            <groupId>hu.blackbelt.judo.meta</groupId>
-		                            <artifactId>hu.blackbelt.judo.meta.psm.targetdefinition</artifactId>
-		                            <version>${judo-meta-psm-version}</version>
-		                        </artifact>
-		                        <artifact>
-		                            <groupId>hu.blackbelt.judo.meta</groupId>
-		                            <artifactId>hu.blackbelt.judo.meta.esm.targetdefinition</artifactId>
-		                            <version>${judo-meta-esm-version}</version>
-		                        </artifact>
-		                        <artifact>
-		                            <groupId>hu.blackbelt.judo.meta</groupId>
-		                            <artifactId>hu.blackbelt.judo.meta.asm.targetdefinition</artifactId>
-		                            <version>${judo-meta-asm-version}</version>
-		                        </artifact>
-		                        <artifact>
-		                            <groupId>hu.blackbelt.judo.meta</groupId>
-		                            <artifactId>hu.blackbelt.judo.meta.liquibase.targetdefinition</artifactId>
-		                            <version>${judo-meta-liquibase-version}</version>
-		                        </artifact>
-		                        <artifact>
-		                            <groupId>hu.blackbelt.judo.meta</groupId>
-		                            <artifactId>hu.blackbelt.judo.meta.rdbms.targetdefinition</artifactId>
-		                            <version>${judo-meta-rdbms-version}</version>
-		                        </artifact>
-		                        <artifact>
-		                            <groupId>hu.blackbelt.judo.meta</groupId>
-		                            <artifactId>hu.blackbelt.judo.meta.jql.targetdefinition</artifactId>
-		                            <version>${judo-meta-jql-version}</version>
-		                        </artifact>
-		                        <artifact>
-		                            <groupId>hu.blackbelt.judo.meta</groupId>
-		                            <artifactId>hu.blackbelt.judo.meta.expression.targetdefinition</artifactId>
-		                            <version>${judo-meta-expression-version}</version>
-		                        </artifact>
-		                        <!--<artifact>
-		                            <groupId>hu.blackbelt.judo.meta</groupId>
-		                            <artifactId>hu.blackbelt.judo.meta.openapi.targetdefinition</artifactId>
-		                            <version>${judo-meta-openapi-version}</version>
-		                        </artifact> -->
-		                        <artifact>
-		                            <groupId>hu.blackbelt.judo.meta</groupId>
-		                            <artifactId>hu.blackbelt.judo.meta.measure.targetdefinition</artifactId>
-		                            <version>${judo-meta-measure-version}</version>
-		                        </artifact>
+                                <artifact>
+                                    <groupId>hu.blackbelt.judo.tatami</groupId>
+                                    <artifactId>hu.blackbelt.judo.tatami.eclipse.targetdefinition</artifactId>
+                                    <version>${project.version}</version>
+                                </artifact>
 		                    </target>
 		                    <environments>
 		                        <environment>

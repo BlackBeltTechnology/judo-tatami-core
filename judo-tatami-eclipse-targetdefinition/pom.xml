@@ -136,7 +136,7 @@
 		                            <value>$1${judo-meta-jql-version}"/&gt;</value>
 		                        </replacement>
 		                        
-		                        <!-- openapi 
+		                        <!-- openapi -->
 		                        <replacement>
 		                            <token>(hu.blackbelt.judo.meta.openapi.feature.feature.group\"\ version\=\")(.*)(\"\/&gt;)</token>
 		                            <value>$1${judo-meta-openapi-version}"/&gt;</value>
@@ -144,7 +144,7 @@
 		                        <replacement>
 		                            <token>(judo-meta-openapi\/)(.*)(\"\/&gt;)</token>
 		                            <value>$1${judo-meta-openapi-version}"/&gt;</value>
-		                        </replacement>-->
+		                        </replacement>
 		                        
 		                    </replacements>
 		                    <regex>true</regex>

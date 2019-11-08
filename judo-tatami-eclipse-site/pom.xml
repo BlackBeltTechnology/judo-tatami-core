@@ -14,8 +14,7 @@
     <packaging>eclipse-repository</packaging>
     
     <name>Judo :: Tatami :: Eclipse :: Site</name>
-    <!-- <packaging>eclipse-repository</packaging> -->
-    
+
     <repositories>
         <repository>
             <id>eclipse</id>
@@ -77,11 +76,11 @@
             <url>https://nexus.judo.technology/repository/p2/p2-swagger/1.0.0</url>
             <layout>p2</layout>
         </repository>
-        <!--<repository>
+        <repository>
             <id>judo-meta-openapi</id>
             <url>https://nexus.judo.technology/repository/p2/judo-meta-openapi/${judo-meta-openapi-version}</url>
             <layout>p2</layout>
-        </repository> -->
+        </repository>
         <repository>
             <id>judo-meta-rdbms</id>
             <url>https://nexus.judo.technology/repository/p2/judo-meta-rdbms/${judo-meta-rdbms-version}</url>

@@ -18,13 +18,13 @@
         </server>
         
         <server>
-            <id>blackbelt-nexus-distribution</id>
+            <id>judo-ng-distribution</id>
             <username>${env.BLACKBELT_NEXUS_USERNAME}</username>
             <password>${env.BLACKBELT_NEXUS_PASSWORD}</password>
         </server>
         
         <server>
-            <id>blackbelt-nexus-mirror</id>
+            <id>judo-ng-mirror</id>
             <username>${env.BLACKBELT_NEXUS_USERNAME}</username>
             <password>${env.BLACKBELT_NEXUS_PASSWORD}</password>
         </server>
@@ -33,9 +33,9 @@
     
     <mirrors>
         <mirror>
-            <id>blackbelt-nexus-mirror</id>
+            <id>judo-ng</id>
             <name>blackbelt-nexus-mirror</name>
-            <url>https://nexus.blackbelt.cloud/repository/maven</url>
+            <url>https://nexus.judo.technology/repository/maven</url>
             <mirrorOf>central</mirrorOf>
         </mirror>
     </mirrors>
