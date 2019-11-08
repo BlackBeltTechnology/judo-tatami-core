@@ -217,7 +217,6 @@
    </license>
 
    <requires>
-      <import plugin="hu.blackbelt.epsilon.runtime.execution"/>
       <import plugin="hu.blackbelt.judo.meta.psm.model"/>
       <import plugin="hu.blackbelt.judo.meta.esm.model"/>
       <import plugin="hu.blackbelt.judo.meta.asm.model"/>
@@ -226,13 +225,6 @@
       <!--<import plugin="hu.blackbelt.judo.meta.openapi.model"/>-->
       <import plugin="hu.blackbelt.judo.meta.liquibase.model"/>
       <import plugin="hu.blackbelt.judo.meta.expression.model"/>
-      <import plugin="org.eclipse.ui.ide"/>
-      <import plugin="org.eclipse.ui"/>
-      <import plugin="org.eclipse.epsilon.evl.emf.validation"/>
-      <import plugin="org.eclipse.epsilon.common"/>
-      <import plugin="org.eclipse.emf.ecore.xmi"/>
-      <import plugin="org.eclipse.emf.ecore"/>
-      <import plugin="org.eclipse.core.runtime"/>
    </requires>
 
 </feature>
