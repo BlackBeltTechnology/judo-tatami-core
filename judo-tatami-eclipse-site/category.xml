@@ -54,22 +54,22 @@
    <!-- The tycho plugin 1.5.0 will fix it -->
    <repository-reference location="http://download.eclipse.org/epsilon/updates/" enabled="true" />
 
-   <repository-reference location="https://nexus.blackbelt.cloud/repository/p2-judo/emf-genmodel-generator/1.0.0.develop_00017" enabled="true" />
-   <repository-reference location="https://nexus.blackbelt.cloud/repository/p2-judo/judo-genmodel-generator/1.0.0.develop_00009" enabled="true" />
+   <repository-reference location="https://nexus.judo.technology/repository/p2/emf-genmodel-generator/1.0.0.develop_00017" enabled="true" />
+   <repository-reference location="https://nexus.judo.technology/repository/p2/judo-genmodel-generator/1.0.0.develop_00009" enabled="true" />
 
-   <repository-reference location="https://nexus.blackbelt.cloud/repository/p2-judo/epsilon-runtime-eclipse/1.2.0.develop_00009" enabled="true" />
+   <repository-reference location="https://nexus.judo.technology/repository/p2/epsilon-runtime-eclipse/1.2.0.develop_00009" enabled="true" />
 
-   <repository-reference location="https://nexus.blackbelt.cloud/repository/p2-judo/judo-meta-esm/1.0.0.develop_00055" enabled="true" />
-   <repository-reference location="https://nexus.blackbelt.cloud/repository/p2-judo/judo-meta-psm/1.0.0.develop_00306" enabled="true" />
-   <repository-reference location="https://nexus.blackbelt.cloud/repository/p2-judo/judo-meta-asm/1.0.0.develop_00090" enabled="true" />
-   <repository-reference location="https://nexus.blackbelt.cloud/repository/p2-judo/judo-meta-expression/1.0.0.develop_00262" enabled="true" />
-   <repository-reference location="https://nexus.blackbelt.cloud/repository/p2-judo/judo-meta-jql/1.0.0.develop_00034" enabled="true" />
-   <repository-reference location="https://nexus.blackbelt.cloud/repository/p2-judo/judo-meta-measure/1.0.0.develop_00037" enabled="true" />
+   <repository-reference location="https://nexus.judo.technology/repository/p2/judo-meta-esm/1.0.0.develop_00055" enabled="true" />
+   <repository-reference location="https://nexus.judo.technology/repository/p2/judo-meta-psm/1.0.0.develop_00306" enabled="true" />
+   <repository-reference location="https://nexus.judo.technology/repository/p2/judo-meta-asm/1.0.0.develop_00090" enabled="true" />
+   <repository-reference location="https://nexus.judo.technology/repository/p2/judo-meta-expression/1.0.0.develop_00262" enabled="true" />
+   <repository-reference location="https://nexus.judo.technology/repository/p2/judo-meta-jql/1.0.0.develop_00034" enabled="true" />
+   <repository-reference location="https://nexus.judo.technology/repository/p2/judo-meta-measure/1.0.0.develop_00037" enabled="true" />
 
-   <repository-reference location="https://nexus.blackbelt.cloud/repository/p2-judo/p2-swagger/1.0.0" enabled="true" />
-   <repository-reference location="https://nexus.blackbelt.cloud/repository/p2-judo/judo-meta-openapi/1.0.0.develop_00091" enabled="true" />
+   <repository-reference location="https://nexus.judo.technology/repository/p2/p2-swagger/1.0.0" enabled="true" />
+   <repository-reference location="https://nexus.judo.technology/repository/p2/judo-meta-openapi/1.0.0.develop_00091" enabled="true" />
 
-   <repository-reference location="https://nexus.blackbelt.cloud/repository/p2-judo/judo-meta-rdbms/1.0.0.develop_00079" enabled="true" />
-   <repository-reference location="https://nexus.blackbelt.cloud/repository/p2-judo/judo-meta-liquibase/1.0.0.develop_00025" enabled="true" />
+   <repository-reference location="https://nexus.judo.technology/repository/p2/judo-meta-rdbms/1.0.0.develop_00079" enabled="true" />
+   <repository-reference location="https://nexus.judo.technology/repository/p2/judo-meta-liquibase/1.0.0.develop_00025" enabled="true" />
 
 </site>
