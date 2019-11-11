@@ -51,7 +51,7 @@
         <pax-exam-version>4.13.1</pax-exam-version>
         <slf4j-version>1.6.6</slf4j-version>
         <epsilon-version>1.5.1</epsilon-version>
-        <tycho-version>1.4.0</tycho-version>
+        <tycho-version>1.3.0</tycho-version>
 
         <epsilon-runtime-version>1.2.0.develop_101</epsilon-runtime-version>
         <epsilon-runtime-eclipse-version>1.2.0.develop_00010</epsilon-runtime-eclipse-version>
