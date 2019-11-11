@@ -77,11 +77,6 @@
             <layout>p2</layout>
         </repository>
         <repository>
-            <id>judo-meta-openapi</id>
-            <url>https://nexus.judo.technology/repository/p2/judo-meta-openapi/${judo-meta-openapi-version}</url>
-            <layout>p2</layout>
-        </repository>
-        <repository>
             <id>judo-meta-rdbms</id>
             <url>https://nexus.judo.technology/repository/p2/judo-meta-rdbms/${judo-meta-rdbms-version}</url>
             <layout>p2</layout>
