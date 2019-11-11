@@ -6,7 +6,7 @@
         <artifactId>tycho-pomless</artifactId>
         <version>1.3.0</version>
     </extension>
-    -->
+
     <extension>
         <groupId>org.apache.maven.wagon</groupId>
         <artifactId>wagon-file</artifactId>
@@ -18,5 +18,5 @@
         <artifactId>wagon-webdav-jackrabbit</artifactId>
         <version>3.2.0</version>
     </extension>
-
+-->
 </extensions>
