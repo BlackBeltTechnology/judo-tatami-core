@@ -34,8 +34,8 @@
     <mirrors>
         <mirror>
             <id>judo-ng</id>
-            <name>blackbelt-nexus-mirror</name>
-            <url>https://nexus.judo.technology/repository/maven</url>
+            <name>judo-ng-mirror</name>
+            <url>https://nexus.judo.technology/repository/maven-judong</url>
             <mirrorOf>central</mirrorOf>
         </mirror>
     </mirrors>
