@@ -25,7 +25,7 @@ build:
       goals: versions:set
       maven_opts: -DnewVersion=${VERSION_NUMBER}
       settings: .maven.xml
-      cache_repo: true
+    #      cache_repo: true
 
 # No tycho used in this project yet
 #    - wercker/maven:
@@ -38,14 +38,14 @@ build:
       profiles: ${BUILD_PROFILES}
       settings: .maven.xml
       maven_opts: -Dorg.ops4j.pax.url.mvn.settings=${WERCKER_ROOT}/.maven.xml -DuseCustomSettings=true
-      cache_repo: true
+    # cache_repo: true
 
     - wercker/maven:
       goals: deploy
       settings: .maven.xml
       maven_opts: -DdeployOnly -Dgithub_release=true -Dgithub.prerelease=true -Dgithub.commitish=${WERCKER_GIT_COMMIT}
       profiles: ${DEPLOY_PROFILES}
-      cache_repo: true
+    # cache_repo: true
 
 #  after-steps:
 #    - mbrevda/github-status:
