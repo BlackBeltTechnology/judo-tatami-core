@@ -19,14 +19,14 @@
         
         <server>
             <id>judo-ng-distribution</id>
-            <username>${env.BLACKBELT_NEXUS_USERNAME}</username>
-            <password>${env.BLACKBELT_NEXUS_PASSWORD}</password>
+            <username>${env.JUDONG_NEXUS_USERNAME}</username>
+            <password>${env.JUDONG_NEXUS_PASSWORD}</password>
         </server>
         
         <server>
             <id>judo-ng-mirror</id>
-            <username>${env.BLACKBELT_NEXUS_USERNAME}</username>
-            <password>${env.BLACKBELT_NEXUS_PASSWORD}</password>
+            <username>${env.JUDONG_NEXUS_USERNAME}</username>
+            <password>${env.JUDONG_NEXUS_PASSWORD}</password>
         </server>
 
     </servers>
