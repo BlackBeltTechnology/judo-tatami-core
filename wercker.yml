@@ -110,16 +110,16 @@ release:
              git checkout -b release/v$VERSION_FROM_POM_BASE_VERSION wercker_$WERCKER_RUN_ID
 
 ## Deploy using release plugin
-#    - wercker/maven:
-#      goals: release:prepare
-#      settings: .maven.xml
-#      profiles: release-blackbelt
+    - wercker/maven:
+      goals: release:prepare
+      settings: .maven.xml
+      profiles: release-blackbelt
 #      cache_repo: true
 #
-#    - wercker/maven:
-#      goals: release:perform
-#      settings: .maven.xml
-#      profiles: release-blackbelt
+    - wercker/maven:
+      goals: release:perform
+      settings: .maven.xml
+      profiles: release-blackbelt
 #      cache_repo: true
 
 # Set version and deploy with steps
