@@ -6,16 +6,13 @@
    
    <feature id="hu.blackbelt.epsilon.runtime.feature">
       <category name="site"/>
-   </feature>   
-   
+   </feature>
    <feature id="hu.blackbelt.judo.eclipse.emf.genmodel.generator.feature">
       <category name="site"/>
-   </feature>   
-
+   </feature>
    <feature id="hu.blackbelt.eclipse.emf.genmodel.generator.feature">
       <category name="site"/>
-   </feature>   
-   
+   </feature>
    <feature id="hu.blackbelt.judo.meta.esm.feature">
       <category name="site"/>
    </feature>
