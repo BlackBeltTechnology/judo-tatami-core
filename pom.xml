@@ -53,10 +53,11 @@
         <epsilon-version>1.5.1</epsilon-version>
         <tycho-version>1.4.0</tycho-version>
 
-        <epsilon-runtime-version>1.2.0.develop_101</epsilon-runtime-version>
-        <epsilon-runtime-eclipse-version>1.2.0.develop_00010</epsilon-runtime-eclipse-version>
-        <emf-genmodel-generator-version>1.0.0.develop_00023</emf-genmodel-generator-version>
-        <judo-genmodel-generator-version>1.0.0.develop_00017</judo-genmodel-generator-version>
+        <epsilon-runtime-version>1.2.0.20191018_105940_dc9d257_develop</epsilon-runtime-version>
+	<epsilon-runtime-eclipse-version>1.2.0.20191105_183445_4b0b2da_develop</epsilon-runtime-eclipse-version>
+
+        <emf-genmodel-generator-version>1.0.0.20191105_182930_676cf43_develop</emf-genmodel-generator-version>
+        <judo-genmodel-generator-version>1.0.0.20191105_183255_7673428_develop</judo-genmodel-generator-version>
 
         <judo-framework-version>2.0.0_develop_135</judo-framework-version>
 
@@ -754,15 +755,15 @@
         </profile>
 
         <profile>
-            <id>release-blackbelt</id>
+            <id>release-judong</id>
             <distributionManagement>
                 <snapshotRepository>
-                    <id>blackbelt-nexus-distribution</id>
-                    <url>https://nexus.blackbelt.cloud/repository/maven-judo-release/</url>
+                    <id>judong-nexus-distribution</id>
+                    <url>${env.JUDONG_MAVEN_UPSTREAM_SNAPSHOT}</url>
                 </snapshotRepository>
                 <repository>
-                    <id>blackbelt-nexus-distribution</id>
-                    <url>https://nexus.blackbelt.cloud/repository/maven-judo-release/</url>
+                    <id>judong-nexus-distribution</id>
+                    <url>${env.JUDONG_MAVEN_UPSTREAM_RELEASE}</url>
                 </repository>
             </distributionManagement>
         </profile>
@@ -821,8 +822,8 @@
                             <repositoryId>${project-repositoryId}</repositoryId>
                             <description>
                                 **Branch:** ${env.WERCKER_GIT_BRANCH}
-                                **P2 Update Site:** https://nexus.blackbelt.cloud/repository/p2-judo/${project-shortname}/${project.version}
-                                **Maven repository:** https://nexus.blackbelt.cloud/#browse/browse:maven-judo-release:hu%2Fblackbelt%2Feclipse%2F${project-shortname}
+                                **P2 Update Site:** ${env.JUDONG_P2_UPSTREAM}/repository/p2/${project-shortname}/${project.version}
+                                **Maven repository:** ${env.JUDONG_MAVEN_UPSTREAM_SNAPSHOT}/#browse/browse:maven-judo-release:hu%2Fblackbelt%2Feclipse%2F${project-shortname}
                                 **Wercker:** https://app.wercker.com/${project-repositoryId}/runs/build/${env.WERCKER_RUN_ID}
                             </description>
                             <releaseName>${project.version}</releaseName>
@@ -856,7 +857,7 @@
         </profile>
 
         <profile>
-            <id>release-p2-blackbelt</id>
+            <id>release-p2-judong</id>
             <build>
                 <plugins>
                     <plugin>
@@ -865,16 +866,16 @@
                         <version>2.0.0</version>
                         <executions>
                             <execution>
-                                <id>upload-respoitory</id>
+                                <id>upload-repository</id>
                                 <phase>deploy</phase>
                                 <goals>
                                     <goal>upload</goal>
                                 </goals>
                                 <configuration>
-                                    <serverId>blackbelt-nexus-distribution</serverId>
+                                    <serverId>judong-nexus-distribution</serverId>
                                     <fromDir>${basedir}/site/target/repository</fromDir>
                                     <includes>*/**</includes>
-                                    <url>dav:https://nexus.blackbelt.cloud/repository/p2-judo</url>
+                                    <url>dav:${env.JUDONG_P2_UPSTREAM}</url>
                                     <toDir>${project-shortname}/${project.version}</toDir>
                                 </configuration>
                             </execution>
