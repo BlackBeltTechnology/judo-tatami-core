@@ -6,13 +6,16 @@
    
    <feature id="hu.blackbelt.epsilon.runtime.feature">
       <category name="site"/>
-   </feature>
+   </feature>   
+   
    <feature id="hu.blackbelt.judo.eclipse.emf.genmodel.generator.feature">
       <category name="site"/>
-   </feature>
+   </feature>   
+
    <feature id="hu.blackbelt.eclipse.emf.genmodel.generator.feature">
       <category name="site"/>
-   </feature>
+   </feature>   
+   
    <feature id="hu.blackbelt.judo.meta.esm.feature">
       <category name="site"/>
    </feature>
@@ -29,6 +32,9 @@
       <category name="site"/>
    </feature>
    <feature id="hu.blackbelt.judo.meta.measure.feature">
+      <category name="site"/>
+   </feature>
+   <feature id="hu.blackbelt.judo.meta.openapi.feature">
       <category name="site"/>
    </feature>
    <feature id="hu.blackbelt.judo.meta.rdbms.feature">
@@ -61,6 +67,7 @@
    <repository-reference location="https://nexus.judo.technology/repository/p2/judo-meta-measure/1.0.0.develop_00037" enabled="true" />
 
    <repository-reference location="https://nexus.judo.technology/repository/p2/p2-swagger/1.0.0" enabled="true" />
+   <repository-reference location="https://nexus.judo.technology/repository/p2/judo-meta-openapi/1.0.0.develop_00091" enabled="true" />
 
    <repository-reference location="https://nexus.judo.technology/repository/p2/judo-meta-rdbms/1.0.0.develop_00079" enabled="true" />
    <repository-reference location="https://nexus.judo.technology/repository/p2/judo-meta-liquibase/1.0.0.develop_00025" enabled="true" />

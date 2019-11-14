@@ -1,5 +1,5 @@
 <settings xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/SETTINGS/1.0.0" xsi:schemalocation="http://maven.apache.org/SETTINGS/1.0.0
-   http://maven.apache.org/xsd/settings-1.0.0.xsd">
+    http://maven.apache.org/xsd/settings-1.0.0.xsd">
     <servers>
         <server>
             <!-- Maven Central Deployment -->
@@ -11,21 +11,26 @@
             <id>${env.GPG_KEYNAME}</id>
             <passphrase>${env.GPG_PASSPHRASE}</passphrase>
         </server>
+        
         <server>
             <id>github</id>
             <privateKey>${env.GITHUB_ACCESS_TOKEN}</privateKey>
         </server>
+        
         <server>
             <id>judong-nexus-distribution</id>
             <username>${env.JUDONG_NEXUS_USERNAME}</username>
             <password>${env.JUDONG_NEXUS_PASSWORD}</password>
         </server>
+        
         <server>
             <id>judong-nexus-mirror</id>
             <username>${env.JUDONG_NEXUS_USERNAME}</username>
             <password>${env.JUDONG_NEXUS_PASSWORD}</password>
         </server>
+
     </servers>
+    
     <mirrors>
         <mirror>
             <id>judong-nexus-mirror</id>
@@ -34,9 +39,10 @@
             <mirrorOf>*</mirrorOf>
         </mirror>
     </mirrors>
+    
     <profiles>
         <profile>
-            <id>ossrh</id>
+            <id>gpg</id>
             <activation>
                 <activeByDefault>true</activeByDefault>
             </activation>
@@ -45,6 +51,23 @@
                 <gpg.executable>${env.GPG_EXECUTABLE}</gpg.executable>
                 <gpg.passphrase>${env.GPG_PASSPHRASE}</gpg.passphrase>
             </properties>
+        </profile>
+        <profile>
+            <id>ossrh</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <repositories>
+                <repository>
+                    <id>ossrh-snapshots</id>
+                    <url>http://oss.sonatype.org/content/repositories/snapshots</url>
+                    <snapshots>
+                        <enabled>false</enabled>
+                        <updatePolicy>never</updatePolicy>
+                        <checksumPolicy>fail</checksumPolicy>
+                    </snapshots>
+                </repository>
+            </repositories>
         </profile>
     </profiles>
 </settings>
