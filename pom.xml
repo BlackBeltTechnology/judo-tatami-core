@@ -963,7 +963,7 @@
                                     <serverId>judong-nexus-distribution</serverId>
                                     <fromDir>${basedir}/judo-tatami-eclipse-site/target/repository</fromDir>
                                     <includes>*/**</includes>
-                                    <url>dav:${env.JUDONG_P2_UPSTREAM}/repository/p2-judong</url>
+                                    <url>dav:${env.JUDONG_P2_UPSTREAM}</url>
                                     <toDir>${project-shortname}/${project.version}</toDir>
                                 </configuration>
                             </execution>
