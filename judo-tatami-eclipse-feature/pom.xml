@@ -15,5 +15,6 @@
     <packaging>eclipse-feature</packaging>
 
     <name>Judo :: Tatami :: Eclipse :: Feature</name>
+    <description>Judo Tatami Eclipse Site</description>
     
 </project>
