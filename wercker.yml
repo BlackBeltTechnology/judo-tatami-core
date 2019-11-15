@@ -35,7 +35,7 @@ build:
 
     - wercker/maven:
       goals: validate
-      pom: ./juto-tatami-eclipse-targetdefinition/pom.xml
+      pom: ./judo-tatami-eclipse-targetdefinition/pom.xml
       profiles: update-target-versions
       maven_opts: -Dtycho.mode=maven
       settings: .maven.xml
@@ -147,7 +147,7 @@ release:
 
     - wercker/maven:
       goals: validate
-      pom: ./juto-tatami-eclipse-targetdefinition/pom.xml
+      pom: ./judo-tatami-eclipse-targetdefinition/pom.xml
       profiles: update-target-versions
       maven_opts: -Dtycho.mode=maven
       settings: .maven.xml
