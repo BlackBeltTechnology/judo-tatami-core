@@ -1,0 +1,131 @@
+import "transferObjectType.etl";
+
+//------------- DefaultTransferObjectType ~ TransferObjectRelation
+@lazy
+@greedy
+rule CreateCardinalityOfTransferObjectRelationForDefaultTransferObjectType
+	transform s: ESM!ReferenceTypedElement
+	to t: JUDOPSM!Cardinality
+	extends CreateCardinalityOfReferenceTypedElement {
+}
+
+@abstract
+rule CreateTransferObjectRelationForDefaultTransferObjectType
+	transform s: ESM!ReferenceTypedElement
+	to t: JUDOPSM!TransferObjectRelation
+	extends CreateNamedElement {
+	  guard: s.eContainer.isTypeOf(ESM!EntityType)
+	  t.target = s.target.equivalent("CreateDefaultMappedTransferObjectTypeForEntity");
+	  t.cardinality = s.equivalent("CreateCardinalityOfTransferObjectRelationForDefaultTransferObjectType");
+}
+
+
+//!property, !default, !range
+rule CreateTransferObjectRelationForDefaultTransferObjectTypeBasic
+	transform s: ESM!OneWayRelationMember
+	to t: JUDOPSM!TransferObjectRelation
+	extends CreateTransferObjectRelationForDefaultTransferObjectType {
+	  guard: not s.property
+	    and not s.containment
+	    and (not s.defaultExpression.expression.isDefined() or not (s.defaultExpression.expression.trim().length() > 0))
+	    and (not s.rangeExpression.expression.isDefined() or not (s.rangeExpression.expression.trim().length() > 0))
+
+	    s.eContainer.equivalent("CreateDefaultMappedTransferObjectTypeForEntity").relations.add(t);
+
+	    log.debug("Created TransferObjectRelation for DefaultTransferObjectType without Binding (basic): [" + t.name + "] into [" + t.eContainer.name + "]");
+}
+
+//!property, !default, !range, embedded
+rule CreateTransferObjectRelationForDefaultTransferObjectTypeBasicEmbedded
+	transform s: ESM!OneWayRelationMember
+	to t: JUDOPSM!TransferObjectRelation
+	extends CreateTransferObjectRelationForDefaultTransferObjectType {
+	  guard: not s.property
+	    and s.containment
+	    and (not s.defaultExpression.expression.isDefined() or not (s.defaultExpression.expression.trim().length() > 0))
+	    and (not s.rangeExpression.expression.isDefined() or not (s.rangeExpression.expression.trim().length() > 0))
+
+	    s.eContainer.equivalent("CreateDefaultMappedTransferObjectTypeForEntity").relations.add(t);
+
+	    t.embedded = true;
+
+	    log.debug("Created TransferObjectRelation for DefaultTransferObjectType without Binding (With: Embedded good wishes): [" + t.name + "] into [" + t.eContainer.name + "]");
+}
+
+//------------- defaultTransferObjectType-TransferObjectRelation - with Binding
+//property, default, range
+rule CreateTransferObjectRelationForDefaultTransferObjectTypeWithBindingWithDefaultWithRange
+	transform s: ESM!OneWayRelationMember
+	to t: JUDOPSM!TransferObjectRelation
+	extends CreateTransferObjectRelationForDefaultTransferObjectType {
+	  guard: s.property
+	  	and (s.defaultExpression.expression.isDefined() and (s.defaultExpression.expression.trim().length() > 0))
+	  	and (s.rangeExpression.expression.isDefined() and (s.rangeExpression.expression.trim().length() > 0))
+
+	  	t.defaultValue = s.equivalent("CreateNavigationPropertyFromRelationFeatureForEntityTypeDefaultTransferObjectTypeTransferObjectRelationDefault");
+	  	t.range = s.equivalent("CreateNavigationPropertyFromRelationFeatureForEntityTypeDefaultTransferObjectTypeTransferObjectRelationRange");
+		t.binding = s.equivalent("CreateNavigationProperty");
+
+	  	s.eContainer.equivalent("CreateDefaultMappedTransferObjectTypeForEntity").relations.add(t);
+
+	  	log.debug("Created TransferObjectRelation for DefaultTransferObjectType with Binding (With: Default, Range): [" + t.name + "] into [" + t.eContainer.name + "]");
+}
+
+//property, default, !range
+rule CreateTransferObjectRelationForDefaultTransferObjectTypeWithBindingWithDefault
+	transform s: ESM!OneWayRelationMember
+	to t: JUDOPSM!TransferObjectRelation
+	extends CreateTransferObjectRelationForDefaultTransferObjectType {
+	  guard: s.property
+	  	and (s.defaultExpression.expression.isDefined() and (s.defaultExpression.expression.trim().length() > 0))
+	  	and (not s.rangeExpression.expression.isDefined() or not (s.rangeExpression.expression.trim().length() > 0))
+
+	  	t.defaultValue = s.equivalent("CreateNavigationPropertyFromRelationFeatureForEntityTypeDefaultTransferObjectTypeTransferObjectRelationDefault");
+	  	t.binding = s.equivalent("CreateNavigationProperty");
+	  	s.eContainer.equivalent("CreateDefaultMappedTransferObjectTypeForEntity").relations.add(t);
+
+	  	log.debug("Created TransferObjectRelation for DefaultTransferObjectType with Binding (With: Default): [" + t.name + "] into [" + t.eContainer.name + "]");
+}
+
+//property, !default, range
+rule CreateTransferObjectRelationForDefaultTransferObjectTypeWithBindingWithRange
+	transform s: ESM!OneWayRelationMember
+	to t: JUDOPSM!TransferObjectRelation
+	extends CreateTransferObjectRelationForDefaultTransferObjectType {
+	  guard: s.property
+	  	and (not s.defaultExpression.expression.isDefined() or not (s.defaultExpression.expression.trim().length() > 0))
+	  	and (s.rangeExpression.expression.isDefined() and (s.rangeExpression.expression.trim().length() > 0))
+
+	  	t.range = s.equivalent("CreateNavigationPropertyFromRelationFeatureForEntityTypeDefaultTransferObjectTypeTransferObjectRelationRange");
+	  	t.binding = s.equivalent("CreateNavigationProperty");
+	  	s.eContainer.equivalent("CreateDefaultMappedTransferObjectTypeForEntity").relations.add(t);
+
+	  	log.debug("Created TransferObjectRelation for DefaultTransferObjectType with Binding (With: Range): [" + t.name + "] into [" + t.eContainer.name + "]");
+}
+
+//property, !default, !range
+rule CreateTransferObjectRelationForDefaultTransferObjectTypeWithBinding
+	transform s: ESM!OneWayRelationMember
+	to t: JUDOPSM!TransferObjectRelation
+	extends CreateTransferObjectRelationForDefaultTransferObjectType {
+	  guard: s.property
+	  	and (not s.defaultExpression.expression.isDefined() or not (s.defaultExpression.expression.trim().length() > 0))
+	  	and (not s.rangeExpression.expression.isDefined() or not (s.rangeExpression.expression.trim().length() > 0))
+
+	  	t.binding = s.equivalent("CreateNavigationProperty");
+	  	s.eContainer.equivalent("CreateDefaultMappedTransferObjectTypeForEntity").relations.add(t);
+	  	log.debug("Created TransferObjectRelation for DefaultTransferObject with Binding (With: getterExpression only): [" + t.name + "] into [" + t.eContainer.name + "]");
+}
+
+//------------- TransferObjectRelation / TwoWayRelationMember
+rule CreateTransferObjectRelationFromTwoWayRelationMemberForDefaultTransferObjectType
+	transform s: ESM!TwoWayRelationMember
+	to t: JUDOPSM!TransferObjectRelation
+	extends CreateTransferObjectRelationForDefaultTransferObjectType {
+	  guard: (not s.defaultExpression.expression.isDefined() or not (s.defaultExpression.expression.trim().length() > 0))
+	    and (not s.rangeExpression.expression.isDefined() or not (s.rangeExpression.expression.trim().length() > 0))
+	  s.eContainer.equivalent("CreateDefaultMappedTransferObjectTypeForEntity").relations.add(t);
+	  t.target = s.target.equivalent("CreateDefaultMappedTransferObjectTypeForEntity");
+
+	  log.debug("Created TransferObjectRelationFromTwoWayRelationMember (simple): [" + t.name + "] into [" + t.eContainer.name + "]");
+}

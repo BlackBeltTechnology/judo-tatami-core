@@ -10,6 +10,7 @@ import hu.blackbelt.judo.tatami.core.Dispatcher;
 import hu.blackbelt.judo.tatami.core.TransformationTrace;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
@@ -74,6 +75,8 @@ public class NorthwindTatamiESMTransformationPipelineITest extends TatamiESMTran
         return DEMO;
     }
 
+    //TODO: reintroduce with 'JNG-396: Transform ESM access point to PSM access point' merge
+    @Ignore
     @Test
     public void saveModels() throws Exception {
         log.log(LOG_INFO, "==============================================");
@@ -87,6 +90,8 @@ public class NorthwindTatamiESMTransformationPipelineITest extends TatamiESMTran
         log.log(LOG_INFO, "==============================================");
     }
 
+    //TODO: reintroduce with 'JNG-396: Transform ESM access point to PSM access point' merge
+    @Ignore
     @Test
     public void testTrace() throws InvalidSyntaxException {
         log.log(LOG_INFO, "==============================================");
@@ -118,6 +123,8 @@ public class NorthwindTatamiESMTransformationPipelineITest extends TatamiESMTran
 
     }
 
+    //TODO: reintroduce & update with 'JNG-396: Transform ESM access point to PSM access point' merge
+    @Ignore
     @Test
     public void testRest() throws Exception {
         log.log(LOG_INFO, "==============================================");
