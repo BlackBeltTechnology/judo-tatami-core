@@ -27,76 +27,76 @@
         
         <repository>
             <id>emf-genmodel-generatpr</id>
-            <url>https://nexus.blackbelt.cloud/repository/p2-judo/emf-genmodel-generator/${emf-genmodel-generator-version}</url>
+            <url>https://nexus.judo.technology/repository/p2/emf-genmodel-generator/${emf-genmodel-generator-version}</url>
             <layout>p2</layout>
         </repository>
         
         <repository>
             <id>judo-genmodel-generatpr</id>
-            <url>https://nexus.blackbelt.cloud/repository/p2-judo/judo-genmodel-generator/${judo-genmodel-generator-version}</url>
+            <url>https://nexus.judo.technology/repository/p2/judo-genmodel-generator/${judo-genmodel-generator-version}</url>
             <layout>p2</layout>
         </repository>
         
         <repository>
             <id>epsilon-runtime</id>
-            <url>https://nexus.blackbelt.cloud/repository/p2-judo/epsilon-runtime-eclipse/${epsilon-runtime-eclipse-version}</url>
+            <url>https://nexus.judo.technology/repository/p2/epsilon-runtime-eclipse/${epsilon-runtime-eclipse-version}</url>
             <layout>p2</layout>
         </repository>
         
         <repository>
             <id>judo-meta-esm</id>
-            <url>https://nexus.blackbelt.cloud/repository/p2-judo/judo-meta-esm/${judo-meta-esm-version}</url>
+            <url>https://nexus.judo.technology/repository/p2/judo-meta-esm/${judo-meta-esm-version}</url>
             <layout>p2</layout>
         </repository>
         
         <repository>
             <id>judo-meta-psm</id>
-            <url>https://nexus.blackbelt.cloud/repository/p2-judo/judo-meta-psm/${judo-meta-psm-version}</url>
+            <url>https://nexus.judo.technology/repository/p2/judo-meta-psm/${judo-meta-psm-version}</url>
             <layout>p2</layout>
         </repository>
         
         <repository>
             <id>judo-meta-asm</id>
-            <url>https://nexus.blackbelt.cloud/repository/p2-judo/judo-meta-asm/${judo-meta-asm-version}</url>
+            <url>https://nexus.judo.technology/repository/p2/judo-meta-asm/${judo-meta-asm-version}</url>
             <layout>p2</layout>
         </repository>
         
         <repository>
             <id>judo-meta-expression</id>
-            <url>https://nexus.blackbelt.cloud/repository/p2-judo/judo-meta-expression/${judo-meta-expression-version}</url>
+            <url>https://nexus.judo.technology/repository/p2/judo-meta-expression/${judo-meta-expression-version}</url>
             <layout>p2</layout>
         </repository>
         
         <repository>
             <id>judo-meta-jql</id>
-            <url>https://nexus.blackbelt.cloud/repository/p2-judo/judo-meta-jql/${judo-meta-jql-version}</url>
+            <url>https://nexus.judo.technology/repository/p2/judo-meta-jql/${judo-meta-jql-version}</url>
             <layout>p2</layout>
         </repository>
         
         <repository>
             <id>judo-meta-measure</id>
-            <url>https://nexus.blackbelt.cloud/repository/p2-judo/judo-meta-measure/${judo-meta-measure-version}</url>
+            <url>https://nexus.judo.technology/repository/p2/judo-meta-measure/${judo-meta-measure-version}</url>
             <layout>p2</layout>
         </repository>
         
         <repository>
             <id>swagger</id>
-            <url>https://nexus.blackbelt.cloud/repository/p2-judo/p2-swagger/1.0.0</url>
+            <url>https://nexus.judo.technology/repository/p2/p2-swagger/1.0.0</url>
             <layout>p2</layout>
         </repository>
         <repository>
             <id>judo-meta-openapi</id>
-            <url>https://nexus.blackbelt.cloud/repository/p2-judo/judo-meta-openapi/${judo-meta-openapi-version}</url>
+            <url>https://nexus.judo.technology/repository/p2/judo-meta-openapi/${judo-meta-openapi-version}</url>
             <layout>p2</layout>
         </repository>
         <repository>
             <id>judo-meta-rdbms</id>
-            <url>https://nexus.blackbelt.cloud/repository/p2-judo/judo-meta-rdbms/${judo-meta-rdbms-version}</url>
+            <url>https://nexus.judo.technology/repository/p2/judo-meta-rdbms/${judo-meta-rdbms-version}</url>
             <layout>p2</layout>
         </repository>
         <repository>
             <id>judo-meta-liquibase</id>
-            <url>https://nexus.blackbelt.cloud/repository/p2-judo/judo-meta-liquibase/${judo-meta-liquibase-version}</url>
+            <url>https://nexus.judo.technology/repository/p2/judo-meta-liquibase/${judo-meta-liquibase-version}</url>
             <layout>p2</layout>
         </repository>
     </repositories>
