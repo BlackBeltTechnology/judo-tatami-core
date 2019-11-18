@@ -16,6 +16,7 @@ rule CreateDurationUnit
     extends CreateUnit {
         switch (s.unitType) {
             case JUDOPSM!DurationType#nanosecond: t.type = MEASURES!DurationType#nanosecond;
+            case JUDOPSM!DurationType#microsecond: t.type = MEASURES!DurationType#microsecond;
             case JUDOPSM!DurationType#millisecond: t.type = MEASURES!DurationType#millisecond;
             case JUDOPSM!DurationType#second: t.type = MEASURES!DurationType#second;
             case JUDOPSM!DurationType#minute: t.type = MEASURES!DurationType#minute;
@@ -24,6 +25,6 @@ rule CreateDurationUnit
             case JUDOPSM!DurationType#week: t.type = MEASURES!DurationType#week;
             case JUDOPSM!DurationType#month: t.type = MEASURES!DurationType#month;
             case JUDOPSM!DurationType#year: t.type = MEASURES!DurationType#year;
-            default: throw "Missing or unsupported unit type";
+            default: throw "Missing or unsupported unit type: " + s.unitType;
         }
     }
