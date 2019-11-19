@@ -25,7 +25,7 @@ rule CreateMappedTransferObjectType
 	  guard: s.isMapped()
 	  t.entityType = s.mapping.target.equivalent("CreateEntityType");
 	  if (s.mapping.filter.expression.isDefined() and (s.mapping.filter.expression.trim().length() > 0)) {
-	  	t.filter = s.mapping.filter.equivalent("CreateLogicalExpressionType");//t.filter.expression = ""; //TODO: hacked, repair
+	  	t.filter = s.mapping.filter.equivalent("CreateLogicalExpressionType");
 	  }
 	  log.debug("Created MappedTransferObjectType: " + t.name);
 }

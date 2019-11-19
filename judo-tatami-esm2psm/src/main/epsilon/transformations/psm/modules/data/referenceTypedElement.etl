@@ -30,8 +30,8 @@ rule CreateReferenceTypedElement
 	transform s: ESM!ReferenceTypedElement
 	to t: JUDOPSM!ReferenceTypedElement
 	extends CreateNamedElement {
-	  if(s.target.isTypeOf(ESM!TransferObjectType) and s.target.mapping.isDefined() and  not s.target.isTypeOf(ESM!EntityType)) {
-	  	t.target = s.target.mapping.target.getPSMEquivalent(); //TODO: recheck/finish
+	  if(s.target.isTypeOf(ESM!TransferObjectType) and s.target.mapping.isDefined() and not s.target.isTypeOf(ESM!EntityType)) {
+	  	t.target = s.target.mapping.target.getPSMEquivalent();
 	  } else {
 	  	t.target = s.target.getPSMEquivalent();
 	  }
