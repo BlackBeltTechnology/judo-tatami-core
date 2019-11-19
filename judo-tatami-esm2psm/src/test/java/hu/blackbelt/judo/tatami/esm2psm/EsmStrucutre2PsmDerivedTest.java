@@ -127,7 +127,7 @@ public class EsmStrucutre2PsmDerivedTest {
         		.withDataType(string)
         		.withGetterExpression(newDataExpressionTypeBuilder().withExpression("exp").withDialect(ExpressionDialect.XML).build())
         		.withSetterExpression(newAttributeSelectorTypeBuilder().withExpression("").withDialect(ExpressionDialect.XML).build())
-        		.withDefaultExpression(newDataExpressionTypeBuilder().withDialect(ExpressionDialect.JQL).build())
+        		.withDefaultExpression(newDataExpressionTypeBuilder().withExpression("").withDialect(ExpressionDialect.JQL).build())
         		.withProperty(true)
         		.build();
                 
@@ -387,8 +387,8 @@ public class EsmStrucutre2PsmDerivedTest {
         		.withProperty(true)
         		.withGetterExpression(newReferenceExpressionTypeBuilder().withExpression("exp").build())
         		.withSetterExpression(newReferenceSelectorTypeBuilder().withExpression("exp").build())
-        		.withDefaultExpression(newReferenceExpressionTypeBuilder().withDialect(ExpressionDialect.JQL).build())
-        		.withRangeExpression(newReferenceExpressionTypeBuilder().withDialect(ExpressionDialect.JQL).build())
+        		.withDefaultExpression(newReferenceExpressionTypeBuilder().withExpression("").withDialect(ExpressionDialect.JQL).build())
+        		.withRangeExpression(newReferenceExpressionTypeBuilder().withExpression("").withDialect(ExpressionDialect.JQL).build())
         		.withLower(1)
         		.withUpper(3)
         		.withTarget(target)
@@ -432,8 +432,8 @@ public class EsmStrucutre2PsmDerivedTest {
         		.withProperty(true)
         		.withGetterExpression(newReferenceExpressionTypeBuilder().withExpression("exp").build())
         		.withSetterExpression(newReferenceSelectorTypeBuilder().withExpression("exp").build())
-        		.withDefaultExpression(newReferenceExpressionTypeBuilder().build())
-        		.withRangeExpression(newReferenceExpressionTypeBuilder().build())
+        		.withDefaultExpression(newReferenceExpressionTypeBuilder().withExpression("").build())
+        		.withRangeExpression(newReferenceExpressionTypeBuilder().withExpression("").build())
         		.withLower(1)
         		.withUpper(3)
         		.withTarget(navigationTarget)
@@ -443,7 +443,7 @@ public class EsmStrucutre2PsmDerivedTest {
         		.build();
         
         TransferObjectType container = newTransferObjectTypeBuilder().withName("container")
-        		.withMapping(newMappingBuilder().withTarget(target).withFilter(newLogicalExpressionTypeBuilder().build()))
+        		.withMapping(newMappingBuilder().withTarget(target).withFilter(newLogicalExpressionTypeBuilder().withExpression("").build()))
         		.withRelations(navigationProperty).build();
 
         final Model model = newModelBuilder()
@@ -480,18 +480,18 @@ public class EsmStrucutre2PsmDerivedTest {
         		.withGetterExpression(newReferenceExpressionTypeBuilder().withExpression("self.navigationProperty.target").build())
         		.withSetterExpression(newReferenceSelectorTypeBuilder().withExpression("self.navigationProperty.target").build())
         		.withDefaultExpression(newReferenceExpressionTypeBuilder().withExpression("self.navigationProperty.target").build())
-        		.withRangeExpression(newReferenceExpressionTypeBuilder().build())
+        		.withRangeExpression(newReferenceExpressionTypeBuilder().withExpression("").build())
         		.withLower(1)
         		.withUpper(3)
         		.withTarget(navigationTarget)
         		.build();
-        
+
         OneWayRelationMember navigationProperty2 = newOneWayRelationMemberBuilder().withName("navigationProperty2")
         		.withProperty(false)
         		.withGetterExpression(newReferenceExpressionTypeBuilder().withExpression("self.navigationProperty.target").build())
-        		.withSetterExpression(newReferenceSelectorTypeBuilder().build())
+        		.withSetterExpression(newReferenceSelectorTypeBuilder().withExpression("").build())
         		.withDefaultExpression(newReferenceExpressionTypeBuilder().withExpression("self.navigationProperty.target").build())
-        		.withRangeExpression(newReferenceExpressionTypeBuilder().build())
+        		.withRangeExpression(newReferenceExpressionTypeBuilder().withExpression("").build())
         		.withLower(1)
         		.withUpper(3)
         		.withTarget(navigationTarget)
@@ -501,7 +501,7 @@ public class EsmStrucutre2PsmDerivedTest {
         		.build();
         
         TransferObjectType container = newTransferObjectTypeBuilder().withName("container")
-        		.withMapping(newMappingBuilder().withTarget(target).withFilter(newLogicalExpressionTypeBuilder().build()))
+        		.withMapping(newMappingBuilder().withTarget(target).withFilter(newLogicalExpressionTypeBuilder().withExpression("").build()))
         		.withRelations(ImmutableList.of(navigationProperty1,navigationProperty2)).build();
 
         final Model model = newModelBuilder()
@@ -554,7 +554,7 @@ public class EsmStrucutre2PsmDerivedTest {
         		.withProperty(true)
         		.withGetterExpression(newReferenceExpressionTypeBuilder().withExpression("self.navigationProperty.target").build())
         		.withSetterExpression(newReferenceSelectorTypeBuilder().withExpression("self.navigationProperty.target").build())
-        		.withDefaultExpression(newReferenceExpressionTypeBuilder().build())
+        		.withDefaultExpression(newReferenceExpressionTypeBuilder().withExpression("").build())
         		.withRangeExpression(newReferenceExpressionTypeBuilder().withExpression("self.navigationProperty.target").build())
         		.withLower(1)
         		.withUpper(3)
@@ -564,8 +564,8 @@ public class EsmStrucutre2PsmDerivedTest {
         OneWayRelationMember navigationProperty2 = newOneWayRelationMemberBuilder().withName("navigationProperty2")
         		.withProperty(false)
         		.withGetterExpression(newReferenceExpressionTypeBuilder().withExpression("self.navigationProperty.target").build())
-        		.withSetterExpression(newReferenceSelectorTypeBuilder().build())
-        		.withDefaultExpression(newReferenceExpressionTypeBuilder().build())
+        		.withSetterExpression(newReferenceSelectorTypeBuilder().withExpression("").build())
+        		.withDefaultExpression(newReferenceExpressionTypeBuilder().withExpression("").build())
         		.withRangeExpression(newReferenceExpressionTypeBuilder().withExpression("self.navigationProperty.target").build())
         		.withLower(1)
         		.withUpper(3)
@@ -576,7 +576,7 @@ public class EsmStrucutre2PsmDerivedTest {
         		.build();
         
         TransferObjectType container = newTransferObjectTypeBuilder().withName("container")
-        		.withMapping(newMappingBuilder().withTarget(target).withFilter(newLogicalExpressionTypeBuilder().build()))
+        		.withMapping(newMappingBuilder().withTarget(target).withFilter(newLogicalExpressionTypeBuilder().withExpression("").build()))
         		.withRelations(ImmutableList.of(navigationProperty1,navigationProperty2)).build();
 
         final Model model = newModelBuilder()
@@ -706,7 +706,7 @@ public class EsmStrucutre2PsmDerivedTest {
         		.withGetterExpression(newReferenceExpressionTypeBuilder().withExpression("self.navigationProperty.target").build())
         		.withSetterExpression(newReferenceSelectorTypeBuilder().withExpression("self.navigationProperty.target").build())
         		.withDefaultExpression(newReferenceExpressionTypeBuilder().withExpression("self.navigationProperty.target").build())
-        		.withRangeExpression(newReferenceExpressionTypeBuilder().build())
+        		.withRangeExpression(newReferenceExpressionTypeBuilder().withExpression("").build())
         		.withLower(1)
         		.withUpper(3)
         		.withTarget(navigationTarget)
@@ -750,7 +750,7 @@ public class EsmStrucutre2PsmDerivedTest {
         		.withProperty(false)
         		.withGetterExpression(newReferenceExpressionTypeBuilder().withExpression("self.navigationProperty.target").build())
         		.withSetterExpression(newReferenceSelectorTypeBuilder().withExpression("self.navigationProperty.target").build())
-        		.withDefaultExpression(newReferenceExpressionTypeBuilder().build())
+        		.withDefaultExpression(newReferenceExpressionTypeBuilder().withExpression("").build())
         		.withRangeExpression(newReferenceExpressionTypeBuilder().withExpression("self.navigationProperty.target").build())
         		.withLower(1)
         		.withUpper(3)

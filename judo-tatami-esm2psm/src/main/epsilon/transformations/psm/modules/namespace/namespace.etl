@@ -23,6 +23,15 @@ rule CreateModel
     log.debug("Created model: " + t.name);
 }
 
+@lazy
+rule CreateDefaultTransferObjectTypePackage
+  transform s : ESM!Model
+  to t: JUDOPSM!Package {
+    t.name = "_default_transferobjecttypes";
+    s.equivalent("CreateModel").packages.add(t);
+    log.debug("Created DefaultTransferObjectTypePackage: " + t.name);
+}
+
 rule CreatePackage
   transform s : ESM!Package
   to t : JUDOPSM!Package
