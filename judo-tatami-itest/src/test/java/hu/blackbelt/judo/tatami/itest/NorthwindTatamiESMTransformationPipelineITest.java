@@ -47,10 +47,10 @@ import static org.osgi.service.log.LogService.LOG_INFO;
 @ExamReactorStrategy(PerClass.class)
 public class NorthwindTatamiESMTransformationPipelineITest extends TatamiESMTransformationPipelineITest {
 
-    private static final String BASE_URL = "http://localhost:8181/cxf/demo/internalAP";
-    private static final String DEMO_ENTITIES_ORDER = "demo.entities.Order";
-    private static final String DEMO = "northwind-esm";
-    private static final String DEMO_SERVICE_GET_ALL_ORDERS = "/demo/service/getAllOrders";
+    private static final String BASE_URL = "http://localhost:8181/cxf/northwind/internalAP";
+    private static final String NORTHWIND_ENTITIES_ORDER = "northwind.entities.Order";
+    private static final String NORTHWIND = "northwind-esm";
+    private static final String NORTHWIND_SERVICE_GET_ALL_ORDERS = "/northwind/service/getAllOrders";
 
     @Override
     public Option getProvisonModelBundle() throws FileNotFoundException {
@@ -61,18 +61,18 @@ public class NorthwindTatamiESMTransformationPipelineITest extends TatamiESMTran
 
     private InputStream getEsmModelBundle() throws FileNotFoundException {
         return bundle()
-                .add( "model/" + DEMO + ".judo-meta-esm",
+                .add( "model/" + NORTHWIND + ".judo-meta-esm",
                         new FileInputStream(new File(testTargetDir(getClass()).getAbsolutePath(),  "northwind-esm.model")))
                 .set( Constants.BUNDLE_MANIFESTVERSION, "2")
-                .set( Constants.BUNDLE_SYMBOLICNAME, DEMO + "-esm" )
+                .set( Constants.BUNDLE_SYMBOLICNAME, NORTHWIND + "-esm" )
                 //set( Constants.IMPORT_PACKAGE, "meta/psm;version=\"" + getConfiguration(META_PSM_IMPORT_RANGE) +"\"")
-                .set( "Esm-Models", "file=model/" + DEMO + ".judo-meta-esm;version=1.0.0;name=" + DEMO + ";checksum=notset;meta-version-range=\"[1.0.0,2)\"")
+                .set( "Esm-Models", "file=model/" + NORTHWIND + ".judo-meta-esm;version=1.0.0;name=" + NORTHWIND + ";checksum=notset;meta-version-range=\"[1.0.0,2)\"")
                 .build( withBnd());
     }
 
     @Override
     public String getAppName() {
-        return DEMO;
+        return NORTHWIND;
     }
 
     //TODO: reintroduce with 'JNG-396: Transform ESM access point to PSM access point' merge
@@ -106,9 +106,9 @@ public class NorthwindTatamiESMTransformationPipelineITest extends TatamiESMTran
 
         AsmUtils asmUtils = new AsmUtils(asmModel.getResourceSet());
         // Get Order entity
-        Optional<EClass> orderClass = asmUtils.getClassByFQName(DEMO_ENTITIES_ORDER);
+        Optional<EClass> orderClass = asmUtils.getClassByFQName(NORTHWIND_ENTITIES_ORDER);
 
-        List<EObject> orderRdbmsObjectList = transformationTraceService.getDescendantOfInstanceByModelType(DEMO, RdbmsModel.class, orderClass.get());
+        List<EObject> orderRdbmsObjectList = transformationTraceService.getDescendantOfInstanceByModelType(NORTHWIND, RdbmsModel.class, orderClass.get());
 
         assertThat(orderRdbmsObjectList, hasSize(2));
         assertThat(orderRdbmsObjectList, hasItems(instanceOf(RdbmsTable.class), instanceOf(RdbmsIdentifierField.class) ));
@@ -144,11 +144,11 @@ public class NorthwindTatamiESMTransformationPipelineITest extends TatamiESMTran
 
         WebTarget wt = ClientBuilder.newClient().register(new JacksonJaxbJsonProvider()).target(BASE_URL);
 
-        assertBundleStarted(bundleContext,  DEMO + "-asm2jaxrsapi");
+        assertBundleStarted(bundleContext,  NORTHWIND + "-asm2jaxrsapi");
 
         Response response = null;
         try {
-            response = wt.path(DEMO_SERVICE_GET_ALL_ORDERS)
+            response = wt.path(NORTHWIND_SERVICE_GET_ALL_ORDERS)
                     .request("application/json")
                     .get();
             //.post(null, OrderInfo.class);

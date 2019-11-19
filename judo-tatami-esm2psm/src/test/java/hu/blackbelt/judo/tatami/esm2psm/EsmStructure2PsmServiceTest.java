@@ -136,7 +136,7 @@ public class EsmStructure2PsmServiceTest {
         EntityType targetEntityType = newEntityTypeBuilder().withName("targetEntityType")
                 .withAbstract_(false)
                 .build();
-        targetEntityType.setMapping(newMappingBuilder().withTarget(targetEntityType).withFilter(newLogicalExpressionTypeBuilder().withExpression("").withDialect(ExpressionDialect.JQL)).build());
+        targetEntityType.setMapping(newMappingBuilder().withTarget(targetEntityType).withFilter(newLogicalExpressionTypeBuilder().withDialect(ExpressionDialect.JQL)).build());
 
         TransferObjectType targetUnmappedTransferObjectType = newTransferObjectTypeBuilder().withName("targetUnmappedTransferObjectType")
                 .build();
@@ -523,7 +523,7 @@ public class EsmStructure2PsmServiceTest {
         targetEntityType.setMapping(newMappingBuilder().withTarget(targetEntityType).withFilter(newLogicalExpressionTypeBuilder().withExpression("").withDialect(ExpressionDialect.JQL)).build());
 
         TransferObjectType targetMappedTransferObjectType = newTransferObjectTypeBuilder().withName("targetMappedTransferObjectType")
-                .withMapping(newMappingBuilder().withTarget(entityType).withFilter(newLogicalExpressionTypeBuilder().withExpression("").withDialect(ExpressionDialect.JQL).build()).build())
+                .withMapping(newMappingBuilder().withTarget(entityType).withFilter(newLogicalExpressionTypeBuilder().withExpression("expr").withDialect(ExpressionDialect.JQL).build()).build())
                 .build();
 
         //!property
