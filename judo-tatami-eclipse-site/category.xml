@@ -40,6 +40,9 @@
    <feature id="hu.blackbelt.judo.meta.liquibase.feature">
       <category name="site"/>
    </feature>
+   <feature id="hu.blackbelt.judo.meta.openapi.feature">
+      <category name="site"/>
+   </feature>
 
    <category-def name="site" label="Judo Tatami Update Site">
       <description>
@@ -63,6 +66,7 @@
    <repository-reference location="https://nexus.judo.technology/repository/p2/judo-meta-jql/1.0.0.develop_00034" enabled="true" />
    <repository-reference location="https://nexus.judo.technology/repository/p2/judo-meta-measure/1.0.0.develop_00037" enabled="true" />
 
+   <repository-reference location="https://nexus.judo.technology/repository/p2/judo-meta-openapi/1.0.0.develop_00091" enabled="true" />
    <repository-reference location="https://nexus.judo.technology/repository/p2/p2-swagger/1.0.0" enabled="true" />
 
    <repository-reference location="https://nexus.judo.technology/repository/p2/judo-meta-rdbms/1.0.0.develop_00079" enabled="true" />

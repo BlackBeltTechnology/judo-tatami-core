@@ -92,6 +92,15 @@
 	  </location>
 	  
 	  <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
+      	  <repository location="https://nexus.judo.technology/repository/p2/judo-meta-openapi/1.0.0.20191017_070736_46e2d6a_develop"/>
+      	  <unit id="hu.blackbelt.judo.meta.openapi.feature.feature.group" version="1.0.0.20191017_070736_46e2d6a_develop"/>
+      	  <repository location="https://nexus.judo.technology/repository/p2/p2-swagger/1.0.0"/>
+		  <unit id="io.swagger.annotations" version="1.5.21"/>
+		  <unit id="io.swagger.core" version="1.5.21"/>
+		  <unit id="io.swagger.models" version="1.5.21"/>
+      </location>
+	  
+	  <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
 		  <unit id="com.google.gson" version="2.8.2.v20180104-1110"/>
 		  <unit id="org.eclipse.acceleo.query.feature.group" version="6.0.8.201902261618"/>
 		  <unit id="org.eclipse.acceleo.query.source.feature.group" version="6.0.8.201902261618"/>

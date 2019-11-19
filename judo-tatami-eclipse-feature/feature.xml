@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
       id="hu.blackbelt.judo.tatami.eclipse.feature"
-      label="Model Version Collector"
+      label="Judo Tatami Eclipse Feature"
       version="1.0.0.qualifier"
       provider-name="BlackBelt Technology">
 
@@ -224,6 +224,7 @@
       <import feature="hu.blackbelt.judo.meta.rdbms.feature"/>
       <import feature="hu.blackbelt.judo.meta.liquibase.feature"/>
       <import feature="hu.blackbelt.judo.meta.expression.feature"/>
+      <import feature="hu.blackbelt.judo.meta.openapi.feature"/>
       <import feature="hu.blackbelt.judo.meta.measure.feature"/>
    </requires>
 
