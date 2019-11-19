@@ -23,7 +23,7 @@ import "modules/service/transferAttributeOfDefaultTransferObjectType.etl";
 
 import "modules/service/operation.etl";
 
-//import "modules/accesspoint/accessPoint.etl";
+import "modules/accesspoint/accesspoint.etl";
 
 //[postponed]
 //import "modules/authentication/authentication.etl";

@@ -1,5 +1,7 @@
 import "../namespace/namespace.etl";
-import "../../../../operations/esm/accesspoint/accessPoint.eol";
+import "../derived/referenceAccessor.etl";
+import "../../../../operations/esm/accesspoint/accesspoint.eol";
+import "../../../../operations/esm/service/operation.eol";
 
 rule CreateAccessPoint
 	transform s: ESM!AccessPoint
@@ -10,9 +12,9 @@ rule CreateAccessPoint
 
 rule CreateExposedService
 	transform s: ESM!ExposedService
-	to t: JUDOPSM!ExposedService {	  
-	  s.getPSMEquivalent().exposedServices.add(t);
-	  
+	to t: JUDOPSM!ExposedService {
+	  s.eContainer.equivalent("CreateAccessPoint").exposedServices.add(t);
+
 	  log.debug("Created ExposedService.");
 }
 
@@ -21,11 +23,10 @@ rule CreateExposedGraph
 	to t: JUDOPSM!ExposedGraph
 	extends CreateNamedElement {
 	  t.mappedTransferObjectType = s.target.equivalent("CreateMappedTransferObjectType");
-	  t.selector = s.staticNavigation.equivalent("CreateStaticNavigation");
-	  s.getPSMEquivalent().exposedGraphs.add(t);
-	  
+	  t.selector = s.equivalent("CreateStaticNavigationForExposedGraph");
 	  t.cardinality = s.equivalent("CreateCardinalityOfExposedGraph");
-	  
+	  s.eContainer.equivalent("CreateAccessPoint").exposedGraphs.add(t);
+
 	  log.debug("Created ExposedGraph: " + t.name);
 }
 

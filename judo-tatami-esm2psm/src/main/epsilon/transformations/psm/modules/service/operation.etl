@@ -21,7 +21,6 @@ rule CreateBoundOperation
 	  log.debug("Created BoundOperation: " + t.name);
 }
 
-/*
 rule CreateUnboundOperation
 	transform s: ESM!UnboundOperation
 	to t: JUDOPSM!UnboundOperation
@@ -30,7 +29,6 @@ rule CreateUnboundOperation
 	  t.implementation = s.equivalent("CreateOperationBody");
 	  log.debug("Created UnboundOperation: " + s.name);
 }
-*/
 
 @lazy
 @greedy

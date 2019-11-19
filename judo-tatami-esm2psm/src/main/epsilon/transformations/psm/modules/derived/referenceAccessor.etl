@@ -239,3 +239,18 @@ rule CreateNavigationPropertyFromRelationFeatureForEntityTypeDefaultTransferObje
             
             log.debug("Created Navigation Property for entity type's own mapped transfer object type's transfer object relation range: " + t.name);
 }
+
+@greedy
+rule CreateStaticNavigationForExposedGraph
+	transform s : ESM!StaticNavigation
+	to t : JUDOPSM!StaticNavigation
+	extends CreateReferenceTypedElement, CreateReferenceAccessor {
+	  guard: s.isTypeOf(ESM!ExposedGraph)
+	  var ecoreUtil = new Native("org.eclipse.emf.ecore.util.EcoreUtil");
+	  ecoreUtil.getRootContainer(s).equivalent("CreateGeneratedNavigationPackage").elements.add(t);
+	  t.name = "_" + s.name + "_selector_" + s.eContainer.name;
+	  t.cardinality = s.equivalent("CreateCardinalityOfStaticNavigation");
+	  t.target = s.target.mapping.target.equivalent("CreateEntityType");
+
+	  log.debug("Created StaticNavigation for ExposedGraph: " + t.name);
+}
