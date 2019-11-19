@@ -47,12 +47,12 @@ rule CreateParameter
 	extends CreateNamedElement {
 	  t.cardinality = s.equivalent("CreateCardinalityOfParameter");
 	  t.type = s.target.getPSMEquivalent();
-	  if(s.isInput()) {
-		s.getInputPSMEquivalent().input = t;
-	  } else if (s.isOutput()) {
-		s.getOutputPSMEquivalent().output = t;
-	  } else if (s.isFault()) {
-		s.getFaultPSMEquivalent().faults.add(t);
+	  if (s.eContainer.input == s) {
+	  	s.eContainer.getPSMEquivalent().input = t;
+	  } else if (s.eContainer.output == s) {
+	  	s.eContainer.getPSMEquivalent().output = t;
+	  } else if (s.eContainer.faults.contains(s)) {
+	  	s.eContainer.getPSMEquivalent().faults.add(t);
 	  }
 	  log.debug("Created Parameter: " + t.name);
 }
