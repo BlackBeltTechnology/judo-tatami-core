@@ -109,8 +109,8 @@ public class EsmOperation2PsmOperationTest {
     }
 
     @Test
-    void CreateBoundOperationTest() throws Exception {
-        testName = "CreateMappedTransferObject";
+    void testCreateBoundOperation() throws Exception {
+        testName = "CreateBoundOperation";
 
         EntityType entityType = newEntityTypeBuilder().withName("entityType")
                 .withAbstract_(false)
