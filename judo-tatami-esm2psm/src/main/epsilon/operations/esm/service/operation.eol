@@ -1,0 +1,41 @@
+//[non-equivalent()-function]
+operation ESM!Parameter isInput() : Boolean {
+	return ( not (ESM!Operation.all.selectOne(op | op.input = self) == null) );
+}    
+
+//[non-equivalent()-function]
+operation ESM!Parameter isOutput() : Boolean {
+	return ( not (ESM!Operation.all.selectOne(op | op.output = self) == null) );
+}
+
+//[non-equivalent()-function]
+operation ESM!Parameter isFault() : Boolean {
+	return ( not (ESM!Operation.all.selectOne(op | op.faults.includes(self)) == null) );
+}
+
+
+operation ESM!Parameter getInputPSMEquivalent() : JUDOPSM!OperationDeclaration {
+	var esmOP : ESM!Operation = ESM!Operation.all.selectOne(op | op.input = self);
+	return esmOP.getPSMEquivalent();
+}
+
+operation ESM!Parameter getOutputPSMEquivalent() : JUDOPSM!OperationDeclaration {
+	var esmOP : ESM!Operation = ESM!Operation.all.selectOne(op | op.output = self);
+	return esmOP.getPSMEquivalent();
+}  
+
+operation ESM!Parameter getFaultPSMEquivalent() : JUDOPSM!OperationDeclaration {
+	var esmOP : ESM!Operation = ESM!Operation.all.selectOne(op | op.faults.includes(self));
+	return esmOP.getPSMEquivalent();
+}
+
+operation ESM!Operation getPSMEquivalent(): JUDOPSM!OperationDeclaration {
+	if (self.isTypeOf(ESM!BoundOperation)) {
+		return self.equivalent("CreateBoundOperation");
+	} else if (self.isTypeOf(ESM!UnboundOperation)) {
+		return self.equivalent("CreateUnboundOperation");
+	} else {
+		log.debug("Error: Operation " + self.name + " in ESM is neither Bound nor Unbound!");
+		return null;
+	}
+}
