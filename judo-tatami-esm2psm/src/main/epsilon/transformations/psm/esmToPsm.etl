@@ -21,7 +21,7 @@ import "modules/service/transferRelationOfUnmappedTransferObjectType.etl";
 import "modules/service/transferRelationOfDefaultTransferObjectType.etl";
 import "modules/service/transferAttributeOfDefaultTransferObjectType.etl";
 
-//import "modules/service/operation.etl";
+import "modules/service/operation.etl";
 
 //import "modules/accesspoint/accessPoint.etl";
 

@@ -1,0 +1,68 @@
+import "../namespace/namespace.etl";
+import "../../../../operations/esm/service/operation.eol";
+import "../../../../operations/esm/data/entityType.eol";
+import "../../../../operations/esm/service/transferObjectType.eol";
+
+@abstract
+rule CreateOperation
+	transform s: ESM!Operation
+	to t: JUDOPSM!OperationDeclaration {
+	  log.debug("creating op: " + s.name);
+}
+
+rule CreateBoundOperation
+	transform s: ESM!BoundOperation
+	to t: JUDOPSM!BoundOperation
+	extends CreateOperation, CreateNamedElement {
+	  ESM!TransferObjectType.all.selectOne(tot | tot.operations.includes(s)).equivalent("CreateMappedTransferObjectType").operations.add(t);
+	  if(not s.`abstract`) {
+	  	t.implementation = s.equivalent("CreateOperationBody");
+	  }
+	  log.debug("Created BoundOperation: " + t.name);
+}
+
+/*
+rule CreateUnboundOperation
+	transform s: ESM!UnboundOperation
+	to t: JUDOPSM!UnboundOperation
+	extends CreateOperation, CreateNamespaceElement {
+	  ESM!ExposedService.all.selectOne(es | es.`operation` == s).equivalent("CreateExposedService").`operation` = t;
+	  t.implementation = s.equivalent("CreateOperationBody");
+	  log.debug("Created UnboundOperation: " + s.name);
+}
+*/
+
+@lazy
+@greedy
+rule CreateCardinalityOfParameter
+	transform s: ESM!Parameter
+	to t: JUDOPSM!Cardinality {
+	  t.upper = s.upper;
+  	  t.lower = s.lower;
+}
+
+rule CreateParameter
+	transform s : ESM!Parameter
+	to t : JUDOPSM!Parameter
+	extends CreateNamedElement {
+	  t.cardinality = s.equivalent("CreateCardinalityOfParameter");
+	  t.type = s.target.getPSMEquivalent();
+	  if (s.eContainer.input == s) {
+	  	s.eContainer.getPSMEquivalent().input = t;
+	  } else if (s.eContainer.output == s) {
+	  	s.eContainer.getPSMEquivalent().output = t;
+	  } else if (s.eContainer.faults.contains(s)) {
+	  	s.eContainer.getPSMEquivalent().faults.add(t);
+	  }
+	  log.debug("Created Parameter: " + t.name);
+}
+
+@greedy
+rule CreateOperationBody
+	transform s: ESM!Operation
+	to t: JUDOPSM!OperationBody {
+	  guard: s.isTypeOf(ESM!UnboundOperation) or (s.isTypeOf(ESM!BoundOperation) and not s.`abstract`)
+	  t.body = s.body;
+	  t.stateful = true;
+	  t.customImplementation = s.customImplementation;
+}
