@@ -10,7 +10,6 @@ import hu.blackbelt.judo.tatami.core.Dispatcher;
 import hu.blackbelt.judo.tatami.core.TransformationTrace;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
@@ -47,10 +46,11 @@ import static org.osgi.service.log.LogService.LOG_INFO;
 @ExamReactorStrategy(PerClass.class)
 public class NorthwindTatamiESMTransformationPipelineITest extends TatamiESMTransformationPipelineITest {
 
-    private static final String BASE_URL = "http://localhost:8181/cxf/northwind/internalAP";
+    private static final String BASE_URL = "http://localhost:8181/cxf/northwind/InternalAP";
     private static final String NORTHWIND_ENTITIES_ORDER = "northwind.entities.Order";
     private static final String NORTHWIND = "northwind-esm";
     private static final String NORTHWIND_SERVICE_GET_ALL_ORDERS = "/northwind/service/getAllOrders";
+    private static final String NORTHWIND_SERVICE_GET_ALL_INTERNATIONAL_ORDERS = "/northwind/service/getAllInternationalOrders";
 
     @Override
     public Option getProvisonModelBundle() throws FileNotFoundException {
@@ -62,9 +62,9 @@ public class NorthwindTatamiESMTransformationPipelineITest extends TatamiESMTran
     private InputStream getEsmModelBundle() throws FileNotFoundException {
         return bundle()
                 .add( "model/" + NORTHWIND + ".judo-meta-esm",
-                        new FileInputStream(new File(testTargetDir(getClass()).getAbsolutePath(),  "northwind-esm.model")))
+                        new FileInputStream(new File(testTargetDir(getClass()).getAbsolutePath(), "northwind-esm.model")))
                 .set( Constants.BUNDLE_MANIFESTVERSION, "2")
-                .set( Constants.BUNDLE_SYMBOLICNAME, NORTHWIND + "-esm" )
+                .set( Constants.BUNDLE_SYMBOLICNAME, NORTHWIND + "-model" )
                 //set( Constants.IMPORT_PACKAGE, "meta/psm;version=\"" + getConfiguration(META_PSM_IMPORT_RANGE) +"\"")
                 .set( "Esm-Models", "file=model/" + NORTHWIND + ".judo-meta-esm;version=1.0.0;name=" + NORTHWIND + ";checksum=notset;meta-version-range=\"[1.0.0,2)\"")
                 .build( withBnd());
@@ -75,8 +75,6 @@ public class NorthwindTatamiESMTransformationPipelineITest extends TatamiESMTran
         return NORTHWIND;
     }
 
-    //TODO: reintroduce with 'JNG-396: Transform ESM access point to PSM access point' merge
-    @Ignore
     @Test
     public void saveModels() throws Exception {
         log.log(LOG_INFO, "==============================================");
@@ -90,8 +88,6 @@ public class NorthwindTatamiESMTransformationPipelineITest extends TatamiESMTran
         log.log(LOG_INFO, "==============================================");
     }
 
-    //TODO: reintroduce with 'JNG-396: Transform ESM access point to PSM access point' merge
-    @Ignore
     @Test
     public void testTrace() throws InvalidSyntaxException {
         log.log(LOG_INFO, "==============================================");
@@ -123,8 +119,6 @@ public class NorthwindTatamiESMTransformationPipelineITest extends TatamiESMTran
 
     }
 
-    //TODO: reintroduce & update with 'JNG-396: Transform ESM access point to PSM access point' merge
-    @Ignore
     @Test
     public void testRest() throws Exception {
         log.log(LOG_INFO, "==============================================");
@@ -142,23 +136,29 @@ public class NorthwindTatamiESMTransformationPipelineITest extends TatamiESMTran
 
         waitWebPage(BASE_URL +"/?_wadl");
 
-        WebTarget wt = ClientBuilder.newClient().register(new JacksonJaxbJsonProvider()).target(BASE_URL);
+
 
         assertBundleStarted(bundleContext,  NORTHWIND + "-asm2jaxrsapi");
 
-        Response response = null;
-        try {
-            response = wt.path(NORTHWIND_SERVICE_GET_ALL_ORDERS)
-                    .request("application/json")
-                    .get();
-            //.post(null, OrderInfo.class);
-        } catch (Exception e) {
-            log.log(LOG_ERROR, "EXCEPTION: ", e);
-        }
-        assertNotNull(response);
+
+        assertNotNull(getResponse(NORTHWIND_SERVICE_GET_ALL_ORDERS));
+        assertNotNull(getResponse(NORTHWIND_SERVICE_GET_ALL_INTERNATIONAL_ORDERS));
 
         log.log(LOG_INFO, "==============================================");
         log.log(LOG_INFO, "== STOPPING TEST REST METHOD");
         log.log(LOG_INFO, "==============================================");
+    }
+
+    private Response getResponse(String path) throws Exception {
+        WebTarget wt = ClientBuilder.newClient().register(new JacksonJaxbJsonProvider()).target(BASE_URL);
+        Response response = null;
+        try {
+            response = wt.path(path)
+                    .request("application/json")
+                    .get();
+        } catch (Exception e) {
+            log.log(LOG_ERROR, "EXCEPTION: ", e);
+        }
+        return response;
     }
 }

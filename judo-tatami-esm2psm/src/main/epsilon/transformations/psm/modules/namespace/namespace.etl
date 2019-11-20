@@ -24,6 +24,15 @@ rule CreateModel
 }
 
 @lazy
+rule CreateGeneratedNavigationPackage
+  transform s : ESM!Model
+  to t: JUDOPSM!Package {
+    t.name = "_generated_navigations";
+    s.equivalent("CreateModel").packages.add(t);
+    log.debug("Created GeneratedNavigationPackage: " + t.name);
+}
+
+@lazy
 rule CreateDefaultTransferObjectTypePackage
   transform s : ESM!Model
   to t: JUDOPSM!Package {
