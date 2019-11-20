@@ -114,14 +114,15 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
         </dependency>
 
         <dependency>
-        	<groupId>hu.blackbelt.judo.tatami</groupId>
-        	<artifactId>judo-tatami-asm2jaxrsapi</artifactId>
+            <groupId>hu.blackbelt.judo.tatami</groupId>
+            <artifactId>judo-tatami-asm2jaxrsapi</artifactId>
         </dependency>
 
         <dependency>
             <groupId>hu.blackbelt.judo.meta</groupId>
             <artifactId>hu.blackbelt.judo.meta.psm.model.northwind</artifactId>
             <version>${judo-meta-psm-version}</version>
+            <scope>test</scope>
         </dependency>
 
     </dependencies>
