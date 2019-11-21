@@ -1,0 +1,29 @@
+import "../../../../operations/esm/namespace/_importNamespace.eol";
+
+@abstract
+rule CreateSequence
+  transform s : ESM!`Sequence`
+  to t : JUDOPSM!`Sequence` {
+    t.initialValue = s.initialValue.longValue();
+    t.increment = s.increment.longValue();
+    t.maximumValue = s.maximumValue.longValue();
+    t.cyclic = s.cyclic;
+}
+
+rule CreateEntitySequence 
+    transform s : ESM!EntitySequence
+    to t : JUDOPSM!EntitySequence
+    extends CreateSequence {
+        t.name = s.name;
+        s.eContainer.getPSMEquivalent().sequences.add(t);
+        log.debug("Created entity sequence: " + t.name);
+}
+
+rule CreateNamespaceSequence 
+    transform s : ESM!NamespaceSequence
+    to t : JUDOPSM!NamespaceSequence
+    extends CreateSequence {
+        t.name = s.name;
+        s.eContainer.getPSMEquivalent().elements.add(t);
+        log.debug("Created namespace sequence: " + t.name);
+}

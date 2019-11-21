@@ -7,8 +7,8 @@ var outputScrXmls = new Set();
 executionContext.getContext().put("outputJavaClasses", outputJavaClasses);
 executionContext.getContext().put("outputScrXmls", outputScrXmls);
 
-for (dto in getAllDTOs()) {
-	genDto(dto);
+for (dto in ASM!EClass.all.select(c | c.eAnnotations.exists(a | asmUtils.getResolvedExposedBy(a).isPresent()) and (asmUtils.getMappedEntityType(c).isPresent() or (not asmUtils.getMappedEntityType(c).isPresent() and not asmUtils.isEntityType(c))))) {
+    genDto(dto);
 	outputJavaClasses.add(dto.getDtoJavaFileName());
 }
 
@@ -19,7 +19,7 @@ for (ap in asmUtils.getAllAccessPoints()) {
     var exposedServices = asmUtils.getExposedServicesOfAccessPoint(ap);
 	log.debug("exposedServices: " + exposedServices.collect(exposedService | "op: " + exposedService.getName() + " in " + exposedService.getEContainingClass().getName()));
 	
-	// Unbound service
+    // Unbound service
     if (exposedServices.size() > 0) {
 		genUnboundService(ap, exposedServices);
 		outputJavaClasses.add(ap.getUnboundServiceJavaFileName());
@@ -37,8 +37,8 @@ for (ap in asmUtils.getAllAccessPoints()) {
 		genExposedMappedTransferObject(boundOperationClass, ap, boundOperations.select(op | op.eContainer == boundOperationClass));
 		outputJavaClasses.add(boundOperationClass.getExposedMappedTransferObjectJavaFileName(ap));
 		outputScrXmls.add(boundOperationClass.getExposedMappedTransferObjectScrXmlFileName(ap));
-		apServiceInstances.put((boundOperationClass.getExposedMappedTransferObjectPackageName(ap) + "." + boundOperationClass.getExposedMappedTransferObjectClassName()).replaceAll("\\.", "_"),
-			boundOperationClass.getExposedMappedTransferObjectPackageName(ap) + "." + boundOperationClass.getExposedMappedTransferObjectClassName());		
+		apServiceInstances.put((boundOperationClass.getExposedMappedTransferObjectPackageName(ap) + "." + boundOperationClass.name.normalizeName()).replaceAll("\\.", "_"),
+			boundOperationClass.getExposedMappedTransferObjectPackageName(ap) + "." + boundOperationClass.name.normalizeName());		
     }
     
     // Generate ApplicationConfigs

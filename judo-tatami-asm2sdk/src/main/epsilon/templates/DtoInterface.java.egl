@@ -19,7 +19,7 @@ public interface [%= dto.getClassName() %] {
 	public void set__identifier([%= dto.idType() %] __identifier);
 	
 	[% for (field in dto.eAllAttributes.includingAll(dto.eAllReferences)) { %]
-	public void [%= field.setterName() %]([%= field.getTypeDefinition() %] [%= field.name.firstToLowerCase().safeName() %]);
+	public void [%= field.setterName() %]([%= field.getTypeDefinition() %] [%= asmUtils.safeName(field.name.firstToLowerCase()) %]);
 	[% } %]
 		
 }

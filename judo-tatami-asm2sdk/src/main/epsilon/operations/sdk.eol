@@ -1,6 +1,6 @@
 @cached
 operation String normalizeName() : String {
-	return self.replace("__", "\\$");
+	return self.replace("[__]", "\\$");
 }
 
 @cached
@@ -15,6 +15,11 @@ operation ASM!EAttribute getTypeDefinition() : String {
 	} else {
 		return self.eType.instanceClass.name;
 	}
+}
+
+@cached 
+operation getIdTypeName() : String { 
+    return "java.util.UUID"; 
 }
 
 @cached
@@ -67,9 +72,15 @@ operation ASM!EClass idType() : String {
 	return "java.util.UUID";
 }
 
+ 
+@cached
+operation ASM!EClass getPackagePrefix() : String {
+    return "sdk.";
+}
+
 @cached
 operation ASM!EClass getDtoPackageName() : String {
-	return "sdk." + asmUtils.getPackageFQName(self.ePackage);
+	return self.getPackagePrefix() + asmUtils.getPackageFQName(self.ePackage);
 }
 
 @cached
@@ -79,22 +90,22 @@ operation ASM!EClass getDtoTypeName() : String {
 
 @cached
 operation ASM!EClass getDtoJavaFileName() : String {
-	return self.getDtoPackageName().replaceAll("\\.", "/") + "/" + self.getClassPackage().toLowerCase().replaceAll("\\.", "/") + "/" + self.getClassName() + ".java";
+	return self.getDtoPackageName().replaceAll("\\.", "/") + "/" + self.getClassPackage().toLowerCase().replaceAll("\\.", "/") + "/" + self.getClassName()  + ".java";
 }
 
 @cached
 operation ASM!EClass getDtoInterfaceJavaFileName() : String {
-	return self.getDtoPackageName().replaceAll("\\.", "/") + "/" + self.getClassPackage().toLowerCase().replaceAll("\\.", "/") + "/" + self.getClassName() + "Interface" + ".java";
+	return self.getDtoPackageName().replaceAll("\\.", "/") + "/" + self.getClassPackage().toLowerCase().replaceAll("\\.", "/") + "/" + self.getClassName()  + "Interface" + ".java";
 }
 
 @cached
 operation ASM!EClass getDtoFactoryJavaFileName() : String {
-	return self.getDtoPackageName().replaceAll("\\.", "/") + "/" + self.getClassPackage().toLowerCase().replaceAll("\\.", "/") + "/" + self.getClassName() + "Factory" + ".java";
+	return self.getDtoPackageName().replaceAll("\\.", "/") + "/" + self.getClassPackage().toLowerCase().replaceAll("\\.", "/") + "/" + self.getClassName()  + "Factory" + ".java";
 }
 
 @cached
 operation ASM!EClass getDtoBuilderJavaFileName() : String {
-	return self.getDtoPackageName().replaceAll("\\.", "/") + "/" + self.getClassPackage().toLowerCase().replaceAll("\\.", "/") + "/" + self.getClassName() + "Builder" + ".java";
+	return self.getDtoPackageName().replaceAll("\\.", "/") + "/" + self.getClassPackage().toLowerCase().replaceAll("\\.", "/") + "/" + self.getClassName()  + "Builder" + ".java";
 }
 
 operation ASM!EClass getClassName() : String {
@@ -111,15 +122,15 @@ operation ASM!EClass getClassPackage() : String {
 }
 
 operation ASM!ENamedElement setterName() : String {
-	return "set" + self.name.firstToUpperCase().safeName();
+	return "set" + asmUtils.safeName(self.name.firstToUpperCase());
 }
 
 operation ASM!ENamedElement getterName() : String {
-	return "get" + self.name.firstToUpperCase().safeName();
+	return "get" + asmUtils.safeName(self.name.firstToUpperCase());
 }
 
 operation ASM!ENamedElement builderName() : String {
-	return "with" + self.name.firstToUpperCase().safeName();
+	return "with" + asmUtils.safeName(self.name.firstToUpperCase());
 }
 
 //Unbound Services
@@ -172,24 +183,4 @@ operation ASM!EClass getExposedMappedTransferObjectJavaFileName(ap: ASM!EClass, 
 
 operation ASM!EClass getExposedMappedTransferObjectScrXmlFileName(ap: ASM!EClass) : String {
 	return "OSGI-INF/" + self.getExposedMappedTransferObjectPackageName(ap) + "." + self.getExposedMappedTransferObjectClassName() + ".xml";
-}
-
-operation String safeName() : String {
-	if (self == "class") {
-		return "clazz";
-	} else if (Set{
-	    "identifier",
-		"abstract", "assert", "boolean", "break", "byte", "case", "catch", "char",
-		"continue", "default", "do", "double", "else", "enum", "exports", "extends", 
-		"final", "finally", "float", "for", "if", "implements", "import", "instanceof",
-		 "long", "module", "native", "new", "package", "private", "protected",
-		 "public", "requires", "return", "short", "static", "strictfp", "super",
-		 "switch", "synchronized", "this", "throw", "throws", "transitent", "try",
-		 "void", "volatile", "while", "true", "null", "false", "var", "const", "goto" }.contains(self)) {
-		return self + "_";
-	} else if (self == "Class") {
-		return "Clazz";
-	} else {
-		return self;
-	}	
 }

@@ -42,15 +42,15 @@ public class [%= className %] {
 	@Produces ( "application/json" )
 	@Consumes ( "application/json" )
 	[% } %]
-	@Path("/[% if (fullyQualifiedOperation) { %][%= op.getFullOperationPath() %][% } else { %][%= op.name %][% } %]")
-    public Response [% if (fullyQualifiedOperation) { %][%= op.getFullOperationMethodName() %][% } else { %][%= op.name %][% } %]([% if(boundService) { %]@HeaderParam("__identifier") java.util.UUID __identifier[% if(not op.eParameters.isEmpty()) { %], [% } %][% } %] [% for (p in op.eParameters) { if (p.many) { %]Collection<[%= p.eType.getDtoTypeName() %]>[% } else { %][%= p.eType.getDtoTypeName() %][% } %] [%= p.name.firstToLowerCase().safeName() %][% if (hasMore) { %], [% } %][% } %]) {
+	@Path("/[% if (fullyQualifiedOperation) { %][%= (asmUtils.getPackageFQName(op.eContainingClass.ePackage) + "." + op.name).replaceAll("\\.", "/") %][% } else { %][%= op.name %][% } %]")
+    public Response [% if (fullyQualifiedOperation) { %][%= (asmUtils.getPackageFQName(op.eContainingClass.ePackage) + "." + op.name).replaceAll("\\.", "__") %][% } else { %][%= op.name %][% } %]([% if(boundService) { %]@HeaderParam("__identifier") java.util.UUID __identifier[% if(not op.eParameters.isEmpty()) { %], [% } %][% } %] [% for (p in op.eParameters) { if (p.many) { %]Collection<[%= p.eType.getDtoTypeName() %]>[% } else { %][%= p.eType.getDtoTypeName() %][% } %] [%= asmUtils.safeName(p.name.firstToLowerCase()) %][% if (hasMore) { %], [% } %][% } %]) {
 		if (!__dispatcher.isPresent()) {
         	return Response.status(Response.Status.SERVICE_UNAVAILABLE).build();
     	}
 		Map<String, Object> parameters = new HashMap();
 		[% if(boundService) { %] parameters.put("__identifier", __identifier); [% } %]
         [% for (p in op.eParameters) { %]
-		parameters.put("[%= p.name %]", [%= p.name.firstToLowerCase().safeName() %][% if (p.many) { %].stream().map(e -> e[% } %].toMap()[% if (p.many) { %])[% } %]);[% } %]
+		parameters.put("[%= p.name %]", [%= asmUtils.safeName(p.name.firstToLowerCase()) %][% if (p.many) { %].stream().map(e -> e[% } %].toMap()[% if (p.many) { %])[% } %]);[% } %]
 
         [% if (op.eType.isUndefined()) {%]
         __dispatcher.get().callOperation("simple", "[%= asmUtils.getOperationFQName(op) %]", parameters);
@@ -68,4 +68,3 @@ public class [%= className %] {
     }
 [% } %]
 }
-

@@ -1,15 +1,29 @@
 import "modules/namespace/namespace.etl";
+
 import "modules/type/type.etl";
-import "modules/derived/primitiveAccessor.etl";
-import "modules/derived/referenceAccessor.etl";
+
+import "modules/constraint/invariantConstraint.etl";
+
+import "modules/data/entityType.etl";
 import "modules/data/primitiveTypedElement.etl";
 import "modules/data/referenceTypedElement.etl";
-import "modules/data/entityType.etl";
-import "modules/measure/measure.etl";
-// import "modules/accesspoint/accessPoint.etl";
-import "modules/derived/expressionType.etl";
-// import "modules/service/transferObjectType.etl";
+import "modules/data/sequence.etl";
 
+import "modules/measure/measure.etl";
+
+import "modules/derived/expressionType.etl";
+import "modules/derived/primitiveAccessor.etl";
+import "modules/derived/referenceAccessor.etl";
+
+import "modules/service/transferObjectType.etl";
+import "modules/service/transferRelationOfMappedTransferObjectType.etl";
+import "modules/service/transferRelationOfUnmappedTransferObjectType.etl";
+import "modules/service/transferRelationOfDefaultTransferObjectType.etl";
+import "modules/service/transferAttributeOfDefaultTransferObjectType.etl";
+
+import "modules/service/operation.etl";
+
+import "modules/accesspoint/accesspoint.etl";
 
 //[postponed]
 //import "modules/authentication/authentication.etl";

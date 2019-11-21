@@ -96,14 +96,14 @@ public class PsmDefaultWorkflowTest {
 				.psmModelSourceURI(new File(FILE_LOCATION).toURI())
 				.psm2AsmModelTransformationScriptURI(PSM2ASM_SCRIPTROOT)
 				.psm2MeasureModelTransformationScriptURI(PSM2MEASURE_SCRIPTROOT)
+				.asm2jaxrsapiModelTransformationScriptURI(ASM2JAXRSAPI_SCRIPTROOT)
 				.asm2RdbmsModelTransformationScriptURI(ASM2RDBMS_SCRIPTROOT)
+				.asm2RdbmsModelTransformationModelURI(EXCELMODEL_SCRIPTROOT)
 				.asm2OpenapiModelTransformationScriptURI(ASM2OPENAPI_SCRIPTROOT)
+				.asm2sdkModelTransformationScriptURI(ASM2SDK_SCRIPTROOT)
 				.rdbms2LiquibaseModelTransformationScriptURI(RDMBS2LIQUIBASE_SCRIPTROOT)
 				.modelName(MODEL_NAME)
-				.dialectList(DIALECT_LIST)
-				.asm2RdbmsModelTransformationModelURI(EXCELMODEL_SCRIPTROOT)
-				.asm2sdkModelTransformationScriptURI(ASM2SDK_SCRIPTROOT)
-				.asm2jaxrsapiModelTransformationScriptURI(ASM2JAXRSAPI_SCRIPTROOT));
+				.dialectList(DIALECT_LIST));
 		workReport = defaultWorkflow.startDefaultWorkflow();
 		saveModels(defaultWorkflow.getTransformationContext(), TARGET_TEST_CLASSES, DIALECT_LIST);
 	}

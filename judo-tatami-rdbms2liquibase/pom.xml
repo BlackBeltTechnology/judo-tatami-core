@@ -75,50 +75,26 @@
 				<artifactId>judo-tatami-workflow-maven-plugin</artifactId>
 				<executions>
 					<execution>
-						<id>execute-test-model-from-method</id>
-						<phase>process-test-resources</phase>
-						<goals>
-							<goal>psm-default-workflow</goal>
-						</goals>
+						<id>execute-northwind-test-model-from-general</id>
 						<configuration>
-							<psmGeneratorClassName>hu.blackbelt.model.northwind.Demo</psmGeneratorClassName>
-							<psmGeneratorMethodName>fullDemo</psmGeneratorMethodName>
-							<destination>${basedir}/target/test-classes</destination>
-							<modelName>northwind</modelName>
-							<modelName>northwind</modelName>
-							<ignorePsm2Measure>true</ignorePsm2Measure>
+							<ignorePsm2Asm>false</ignorePsm2Asm>
 							<ignoreAsm2Rdbms>false</ignoreAsm2Rdbms>
-							<ignoreRdbms2Liquibase>true</ignoreRdbms2Liquibase>
-							<ignoreAsm2sdk>true</ignoreAsm2sdk>
-							<ignoreAsm2jaxrsapi>true</ignoreAsm2jaxrsapi>
-							<ignoreAsm2Openapi>true</ignoreAsm2Openapi>
-							<dialectList>hsqldb,oracle</dialectList>
 						</configuration>
 					</execution>
 				</executions>
 				<dependencies>
-
-					<dependency>
-						<groupId>hu.blackbelt.judo.meta</groupId>
-						<artifactId>hu.blackbelt.judo.meta.psm.model.northwind</artifactId>
-						<version>${judo-meta-psm-version}</version>
-					</dependency>
-
 					<dependency>
 						<groupId>hu.blackbelt.judo.tatami</groupId>
 						<artifactId>judo-tatami-psm2asm</artifactId>
 						<version>${project.version}</version>
 					</dependency>
-
 					<dependency>
 						<groupId>hu.blackbelt.judo.tatami</groupId>
 						<artifactId>judo-tatami-asm2rdbms</artifactId>
 						<version>${project.version}</version>
 					</dependency>
-
 				</dependencies>
 			</plugin>
-
 		</plugins>
 	</build>
 
@@ -181,196 +157,4 @@
 		</dependency>
 
 	</dependencies>
-
-	<!--
-	<profiles>
-		<profile>
-			<id>rdbms2liquibase-development</id>
-			<build>
-				<plugins>
-					<plugin>
-						<groupId>hu.blackbelt.epsilon</groupId>
-						<artifactId>epsilon-maven-plugin</artifactId>
-						<executions>
-							<execution>
-								<id>transform-hsqldb</id>
-								<phase>generate-resources</phase>
-								<goals>
-									<goal>execute</goal>
-								</goals>
-								<configuration>
-									<metaModels>
-										<metaModel>mvn:hu.blackbelt.judo.meta:judo-meta-rdbms-model:ecore:rdbms:${judo-meta-rdbms.version}</metaModel>
-									</metaModels>
-									<models>
-										<model>
-											<artifact>mvn:${test.rdbms.model.groupId}:${test.rdbms.model.artifactId}:model:lsm-rdbmsHsqldb:${test.rdbms.model.version}</artifact>
-											<name>RDBMS</name>
-											<readOnLoad>true</readOnLoad>
-											<storeOnDisposal>false</storeOnDisposal>
-											<metaModelUris>
-												<param>http://blackbelt.hu/judo/meta/psm/rdbms</param>
-											</metaModelUris>
-										</model>
-									</models>
-									<xmlModels>
-										<xmlModel>
-                                            <artifact>file:${project.build.directory}/liquibase-hsqldb-changelog.xml</artifact>
-											<name>LIQUIBASE</name>
-											<readOnLoad>false</readOnLoad>
-											<storeOnDisposal>true</storeOnDisposal>
-											<xsd>${basedir}/model/liquibase.xsd</xsd>
-										</xmlModel>
-									</xmlModels>
-									<eolPrograms>
-										<Etl>
-											<source>${basedir}/src/transformations/rdbmsToLiquibase.etl</source>
-											<parameters>
-												<parameter>
-													<name>extendedMetadataURI</name>
-													<value>http://blackbelt.hu/judo/meta/ExtendedMetadata</value>
-												</parameter>
-												<parameter>
-													<name>dialect</name>
-													<value>hsqldb</value>
-												</parameter>
-											</parameters>
-										</Etl>
-									</eolPrograms>
-								</configuration>
-							</execution>
-						</executions>
-					</plugin>
-
-					<plugin>
-						<groupId>org.codehaus.mojo</groupId>
-						<artifactId>xml-maven-plugin</artifactId>
-						<version>1.0.2</version>
-						<executions>
-							<execution>
-								<id>fixing-namespace</id>
-								<phase>compile</phase>
-								<goals>
-									<goal>transform</goal>
-								</goals>
-							</execution>
-						</executions>
-						<configuration>
-							<transformationSets>
-								<transformationSet>
-									<dir>${project.build.directory}</dir>
-									<includes>*.xml</includes>
-									<stylesheet>model/fixnamespace.xsl</stylesheet>
-								</transformationSet>
-							</transformationSets>
-						</configuration>
-						<dependencies>
-							<dependency>
-							    <groupId>net.sf.saxon</groupId>
-							    <artifactId>Saxon-HE</artifactId>
-							    <version>9.9.0-1</version>
-							</dependency>
-						</dependencies>
-					</plugin>
-
-					<plugin>
-						<groupId>org.liquibase</groupId>
-						<artifactId>liquibase-maven-plugin</artifactId>
-						<version>3.6.3</version>
-						<executions>
-							<execution>
-								<id>test-hsqldb</id>
-								<phase>compile</phase>
-								<goals><goal>update</goal></goals>								
-								<configuration>
-									<changeLogFile>
-										${project.build.directory}/generated-resources/xml/xslt/liquibase-hsqldb-changelog.xml
-									</changeLogFile>
-									<driver>org.hsqldb.jdbc.JDBCDriver</driver>
-									<url>jdbc:hsqldb:mem:mymemdb</url>
-									<username>sa</username>
-									<password></password>
-								</configuration>
-							</execution>
-						</executions>						
-						<dependencies>
-							<dependency>
-							    <groupId>org.hsqldb</groupId>
-							    <artifactId>hsqldb</artifactId>
-							    <version>2.3.2</version>
-							</dependency>						
-						</dependencies>
-					</plugin>
-
-					<plugin>
-						<groupId>org.codehaus.mojo</groupId>
-						<artifactId>build-helper-maven-plugin</artifactId>
-						<version>3.0.0</version>
-						<executions>
-							<execution>
-								<id>add-resource</id>
-								<goals>
-									<goal>add-resource</goal>
-								</goals>
-
-								<configuration>
-									<resources>
-										<resource>
-											<directory>src</directory>
-										</resource>
-									</resources>
-								</configuration>
-
-							</execution>
-@<@!@-@-
-							<execution>
-								<id>attach-artifacts</id>
-								<phase>package</phase>
-								<goals>
-									<goal>attach-artifact</goal>
-								</goals>
-								<configuration>
-									<artifacts>
-										<artifact>
-											<file>${project.build.directory}/rdbmsHsqldb.model</file>
-											<type>model</type>
-											<classifier>lsm-rdbmsHsqldb</classifier>
-										</artifact>
-										<artifact>
-											<file>${project.build.directory}/rdbmsHsqldb-Trace.model</file>
-											<type>model</type>
-											<classifier>lsm-rdbmsHsqldbTrace</classifier>
-										</artifact>
-										<artifact>
-											<file>${project.build.directory}/rdbmsPostgres.model</file>
-											<type>model</type>
-											<classifier>lsm-rdbmsPostgres</classifier>
-										</artifact>
-										<artifact>
-											<file>${project.build.directory}/rdbmsPostgres-Trace.model</file>
-											<type>model</type>
-											<classifier>lsm-rdbmsPostgresTrace</classifier>
-										</artifact>
-										<artifact>
-											<file>${project.build.directory}/rdbmsOracle.model</file>
-											<type>model</type>
-											<classifier>lsms-rdbmsOracle</classifier>
-										</artifact>
-										<artifact>
-											<file>${project.build.directory}/rdbmsOracle-Trace.model</file>
-											<type>model</type>
-											<classifier>lsm-rdbmsOracleTrace</classifier>
-										</artifact>
-									</artifacts>
-								</configuration>
-							</execution>
-@-@-@>
-						</executions>
-					</plugin>
-
-				</plugins>
-			</build>
-		</profile>
-	</profiles>
--->
 </project>

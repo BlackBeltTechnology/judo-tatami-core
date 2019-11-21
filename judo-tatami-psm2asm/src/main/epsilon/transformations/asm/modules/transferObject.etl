@@ -6,6 +6,10 @@ rule CreateTransferObject
 	to t : ASM!EClass {
 		t.name = s.name;
 		s.getNamespace().asmEquivalent().eClassifiers.add(t);
+
+		for (super in s.superTransferObjectTypes) {
+		    t.eSuperTypes.add(super.asmEquivalent());
+		}
 	}
 
 rule CreateMappedEntityTypeAnnotationOnMappedTransferObject
@@ -150,6 +154,7 @@ rule CreateTransferObjectAttribute
 		
 		t.eType = s.dataType.asmEquivalent();
 		t.derived = s.binding.isDefined() and not s.binding.isKindOf(JUDOPSM!Attribute);
+		t.changeable = s.binding.isDefined() and (s.binding.isKindOf(JUDOPSM!Attribute) or (s.binding.isKindOf(JUDOPSM!PrimitiveAccessor) and s.binding.setterExpression.isDefined()));
 
 		s.eContainer.asmEquivalent().eStructuralFeatures.add(t);
 	}
@@ -165,6 +170,7 @@ rule CreateTransferObjectRelation
 		
 		t.eType = s.target.asmEquivalent();
 		t.derived = s.binding.isDefined() and not s.binding.isKindOf(JUDOPSM!Relation);
+		t.changeable = s.binding.isDefined() and (s.binding.isKindOf(JUDOPSM!Relation) or (s.binding.isKindOf(JUDOPSM!ReferenceAccessor) and s.binding.setterExpression.isDefined()));
 		t.eType = s.target.asmEquivalent();
 		
 		s.eContainer.asmEquivalent().eStructuralFeatures.add(t);

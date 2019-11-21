@@ -53,30 +53,30 @@
         <epsilon-version>1.5.1</epsilon-version>
         <tycho-version>1.4.0</tycho-version>
 
-        <structured-map-proxy-version>1.0.0.20191028_124108_c62da28_develop</structured-map-proxy-version>
-        <epsilon-runtime-version>1.2.0.develop_101</epsilon-runtime-version>
-        <epsilon-runtime-eclipse-version>1.2.0.develop_00010</epsilon-runtime-eclipse-version>
-        <emf-genmodel-generator-version>1.0.0.develop_00023</emf-genmodel-generator-version>
-        <judo-genmodel-generator-version>1.0.0.develop_00017</judo-genmodel-generator-version>
+        <epsilon-runtime-version>1.2.0.20191018_105940_dc9d257_develop</epsilon-runtime-version>
+	    <epsilon-runtime-eclipse-version>1.2.0.20191105_183445_4b0b2da_develop</epsilon-runtime-eclipse-version>
+
+        <emf-genmodel-generator-version>1.0.0.20191105_182930_676cf43_develop</emf-genmodel-generator-version>
+        <judo-genmodel-generator-version>1.0.0.20191105_183255_7673428_develop</judo-genmodel-generator-version>
 
         <judo-framework-version>2.0.0_develop_135</judo-framework-version>
 
-        <judo-meta-rdbms-version>1.0.0.develop_00104</judo-meta-rdbms-version>
+        <judo-meta-rdbms-version>1.0.0.20191106_101147_6aa5f09_develop</judo-meta-rdbms-version>
         <judo-meta-rdbms.import-range>[1.0,1.1)</judo-meta-rdbms.import-range>
 
-        <judo-meta-esm-version>1.1.0.develop_00180</judo-meta-esm-version>
+        <judo-meta-esm-version>1.1.0.20191118_165027_2170ebe_develop</judo-meta-esm-version>
         <judo-meta-esm-import-range>[1.0,1.1)</judo-meta-esm-import-range>
 
-        <judo-meta-psm-version>1.0.0.20191018_135350_491e1a9_develop</judo-meta-psm-version>
+        <judo-meta-psm-version>1.0.0.20191118_163810_7b48b45_develop</judo-meta-psm-version>
         <judo-meta-psm-import-range>[1.0,1.1)</judo-meta-psm-import-range>
 
         <judo-meta-jql-version>1.0.0.20191016_092449_edf1d62_develop</judo-meta-jql-version>
         <judo-meta-jql-import-range>[1.0,1.1)</judo-meta-jql-import-range>
 
-        <judo-meta-asm-version>1.0.0.20191017_065843_5c67fc0_develop</judo-meta-asm-version>
+        <judo-meta-asm-version>1.0.0.20191111_144525_493cf21_develop</judo-meta-asm-version>
         <judo-meta-asm-import-range>[1.0,1.1)</judo-meta-asm-import-range>
 
-        <judo-meta-expression-version>1.0.0.20191018_141100_7e4e99f_develop</judo-meta-expression-version>
+        <judo-meta-expression-version>1.0.0.20191029_152727_8a176e4_develop</judo-meta-expression-version>
         <judo-meta-expression-import-range>[1.0,1.1)</judo-meta-expression-import-range>
 
         <judo-meta-measure-version>1.0.0.20191017_065900_9a9a2cc_develop</judo-meta-measure-version>
@@ -85,11 +85,13 @@
         <judo-meta-liquibase-version>1.0.0.20191016_092051_292c815_develop</judo-meta-liquibase-version>
         <judo-meta-liquibase-import-range>[1.0,1.1)</judo-meta-liquibase-import-range>
 
-        <judo-meta-openapi-version>1.0.0.20191017_070736_46e2d6a_develop</judo-meta-openapi-version>
+        <judo-meta-openapi-version>1.0.0.20191112_162616_9c652f9_develop</judo-meta-openapi-version>
         <judo-meta-openapi-import-range>[1.0,1.1)</judo-meta-openapi-import-range>
 
+        <structured-map-proxy-version>1.0.0.20191028_124108_c62da28_develop</structured-map-proxy-version>
+
         <!-- We use older version of plugin to avoid chicked egg problem -->
-        <judo-tatami-workflow-maven-plugin-version>1.0.0-SNAPSHOT</judo-tatami-workflow-maven-plugin-version>
+        <judo-tatami-workflow-maven-plugin-version>1.0.0.20191118_140529_b96ae2e_develop</judo-tatami-workflow-maven-plugin-version>
 
         <!-- Xtend / Xcore -->
         <emf-version>2.18.0</emf-version>
@@ -481,6 +483,66 @@
                     <groupId>hu.blackbelt.judo.tatami</groupId>
                     <artifactId>judo-tatami-workflow-maven-plugin</artifactId>
                     <version>${judo-tatami-workflow-maven-plugin-version}</version>
+                    <executions>
+                        <execution>
+                            <id>execute-northwind-test-model-from-general</id>
+                            <phase>process-test-resources</phase>
+                            <goals>
+                                <goal>psm-default-workflow</goal>
+                            </goals>
+                            <configuration>
+                                <psmGeneratorClassName>hu.blackbelt.model.northwind.Demo</psmGeneratorClassName>
+                                <psmGeneratorMethodName>fullDemo</psmGeneratorMethodName>
+                                <destination>${basedir}/target/test-classes</destination>
+                                <modelName>northwind</modelName>
+                                <dialectList>hsqldb,oracle</dialectList>
+                                <ignorePsm2Asm>true</ignorePsm2Asm>
+                                <ignorePsm2Measure>true</ignorePsm2Measure>
+                                <ignoreAsm2Rdbms>true</ignoreAsm2Rdbms>
+                                <ignoreAsm2Openapi>true</ignoreAsm2Openapi>
+                                <ignoreAsm2sdk>true</ignoreAsm2sdk>
+                                <ignoreAsm2jaxrsapi>true</ignoreAsm2jaxrsapi>
+                                <ignoreRdbms2Liquibase>true</ignoreRdbms2Liquibase>
+                            </configuration>
+                        </execution>
+                    </executions>
+                    <dependencies>
+                        <dependency>
+                            <groupId>hu.blackbelt.judo.meta</groupId>
+                            <artifactId>hu.blackbelt.judo.meta.psm.model.northwind</artifactId>
+                            <version>${judo-meta-psm-version}</version>
+                        </dependency>
+                        <dependency>
+                            <groupId>hu.blackbelt.judo.meta</groupId>
+                            <artifactId>hu.blackbelt.judo.meta.psm.model</artifactId>
+                            <version>${judo-meta-psm-version}</version>
+                        </dependency>
+                        <dependency>
+                            <groupId>hu.blackbelt.judo.meta</groupId>
+                            <artifactId>hu.blackbelt.judo.meta.rdbms.model</artifactId>
+                            <version>${judo-meta-rdbms-version}</version>
+                        </dependency>
+                        <dependency>
+                            <groupId>hu.blackbelt.judo.meta</groupId>
+                            <artifactId>hu.blackbelt.judo.meta.liquibase.model</artifactId>
+                            <version>${judo-meta-liquibase-version}</version>
+                        </dependency>
+                        <dependency>
+                            <groupId>hu.blackbelt.judo.meta</groupId>
+                            <artifactId>hu.blackbelt.judo.meta.asm.model</artifactId>
+                            <version>${judo-meta-asm-version}</version>
+                        </dependency>
+                        <dependency>
+                            <groupId>hu.blackbelt.judo.meta</groupId>
+                            <artifactId>hu.blackbelt.judo.meta.openapi.model</artifactId>
+                            <version>${judo-meta-openapi-version}</version>
+                        </dependency>
+                        <dependency>
+                            <groupId>hu.blackbelt.judo.meta</groupId>
+                            <artifactId>hu.blackbelt.judo.meta.measure.model</artifactId>
+                            <version>${judo-meta-measure-version}</version>
+                        </dependency>
+                    </dependencies>
                 </plugin>
 
                 <plugin>
@@ -612,25 +674,6 @@
                                         <ignore />
                                     </action>
                                 </pluginExecution>
-                                <pluginExecution>
-                                	<pluginExecutionFilter>
-                                		<groupId>
-                                			org.codehaus.mojo
-                                		</groupId>
-                                		<artifactId>
-                                			exec-maven-plugin
-                                		</artifactId>
-                                		<versionRange>
-                                			[1.6.0,)
-                                		</versionRange>
-                                		<goals>
-                                			<goal>java</goal>
-                                		</goals>
-                                	</pluginExecutionFilter>
-                                	<action>
-                                		<ignore></ignore>
-                                	</action>
-                                </pluginExecution>
                             </pluginExecutions>
                         </lifecycleMappingMetadata>
                     </configuration>
@@ -714,15 +757,15 @@
         </profile>
 
         <profile>
-            <id>release-blackbelt</id>
+            <id>release-judong</id>
             <distributionManagement>
                 <snapshotRepository>
-                    <id>blackbelt-nexus-distribution</id>
-                    <url>https://nexus.blackbelt.cloud/repository/maven-judo-release/</url>
+                    <id>judong-nexus-distribution</id>
+                    <url>${env.JUDONG_MAVEN_UPSTREAM_SNAPSHOT}</url>
                 </snapshotRepository>
                 <repository>
-                    <id>blackbelt-nexus-distribution</id>
-                    <url>https://nexus.blackbelt.cloud/repository/maven-judo-release/</url>
+                    <id>judong-nexus-distribution</id>
+                    <url>${env.JUDONG_MAVEN_UPSTREAM_RELEASE}</url>
                 </repository>
             </distributionManagement>
         </profile>
@@ -781,8 +824,8 @@
                             <repositoryId>${project-repositoryId}</repositoryId>
                             <description>
                                 **Branch:** ${env.WERCKER_GIT_BRANCH}
-                                **P2 Update Site:** https://nexus.blackbelt.cloud/repository/p2-judo/${project-shortname}/${project.version}
-                                **Maven repository:** https://nexus.blackbelt.cloud/#browse/browse:maven-judo-release:hu%2Fblackbelt%2Feclipse%2F${project-shortname}
+                                **P2 Update Site:** ${env.JUDONG_P2_UPSTREAM}/repository/p2/${project-shortname}/${project.version}
+                                **Maven repository:** ${env.JUDONG_MAVEN_UPSTREAM_SNAPSHOT}/#browse/browse:maven-judo-release:hu%2Fblackbelt%2Feclipse%2F${project-shortname}
                                 **Wercker:** https://app.wercker.com/${project-repositoryId}/runs/build/${env.WERCKER_RUN_ID}
                             </description>
                             <releaseName>${project.version}</releaseName>
@@ -816,7 +859,7 @@
         </profile>
 
         <profile>
-            <id>release-p2-blackbelt</id>
+            <id>release-p2-judong</id>
             <build>
                 <plugins>
                     <plugin>
@@ -825,16 +868,16 @@
                         <version>2.0.0</version>
                         <executions>
                             <execution>
-                                <id>upload-respoitory</id>
+                                <id>upload-repository</id>
                                 <phase>deploy</phase>
                                 <goals>
                                     <goal>upload</goal>
                                 </goals>
                                 <configuration>
-                                    <serverId>blackbelt-nexus-distribution</serverId>
+                                    <serverId>judong-nexus-distribution</serverId>
                                     <fromDir>${basedir}/site/target/repository</fromDir>
                                     <includes>*/**</includes>
-                                    <url>dav:https://nexus.blackbelt.cloud/repository/p2-judo</url>
+                                    <url>dav:${env.JUDONG_P2_UPSTREAM}</url>
                                     <toDir>${project-shortname}/${project.version}</toDir>
                                 </configuration>
                             </execution>

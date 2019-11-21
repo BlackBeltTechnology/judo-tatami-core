@@ -38,6 +38,7 @@ import com.google.common.collect.ImmutableList;
 
 import hu.blackbelt.epsilon.runtime.execution.api.Log;
 import hu.blackbelt.epsilon.runtime.execution.impl.Slf4jLog;
+import hu.blackbelt.judo.meta.esm.measure.DurationType;
 import hu.blackbelt.judo.meta.esm.namespace.Model;
 import hu.blackbelt.judo.meta.esm.runtime.EsmModel;
 import hu.blackbelt.judo.meta.esm.type.BooleanType;
@@ -301,7 +302,7 @@ public class EsmType2PsmTypeTest {
     void testCreateTimestampType() throws Exception {
         testName = "CreateTimestampType";
 
-        TimestampType timestamp = newTimestampTypeBuilder().withName("timestamp")
+        TimestampType timestamp = newTimestampTypeBuilder().withName("timestamp").withBaseUnit(DurationType.HOUR)
         		.build();
         
         final Model model = newModelBuilder()
@@ -320,6 +321,7 @@ public class EsmType2PsmTypeTest {
         assertTrue(psmTimestampType.isPresent());
         assertThat(psmModel.get().getName(), IsEqual.equalTo(psmTimestampType.get().getNamespace().getName()));
         assertThat(psmTimestampType.get().getName(), IsEqual.equalTo(timestamp.getName()));
+        assertThat(psmTimestampType.get().getBaseUnit(), IsEqual.equalTo(hu.blackbelt.judo.meta.psm.measure.DurationType.HOUR));
     }
     
     @Test

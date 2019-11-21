@@ -1,0 +1,47 @@
+import "transferObjectType.etl";
+
+//------------- TransferObjectRelation / OneWayRelationMember - UnmappedTransferObject (!default,!range)
+rule CreateTransferObjectRelationFromOneWayRelationMemberOfUnmappedTransferObjectTypeTargetingUnmapped
+	transform s: ESM!OneWayRelationMember
+	to t: JUDOPSM!TransferObjectRelation
+	extends CreateTransferObjectRelationTargetingUnmappedTransferObjectType {
+	  guard: s.eContainer.isKindOf(ESM!TransferObjectType)
+	  			and not s.eContainer.isTypeOf(ESM!EntityType)
+	  			and not s.eContainer.mapping.isDefined()
+	  			and (not s.defaultExpression.expression.isDefined() or not (s.defaultExpression.expression.trim().length() > 0))
+	  			and (not s.rangeExpression.expression.isDefined() or not (s.rangeExpression.expression.trim().length() > 0))
+	  			and s.target.isKindOf(ESM!TransferObjectType) and not s.target.mapping.isDefined()
+	  			and s.containment
+	  s.eContainer.equivalent("CreateUnmappedTransferObjectType").relations.add(t);
+	  log.debug("Created TransferObjectRelation (OneWayRelationMember - UnmappedTransferObject - containment - Target: UnmappedTransferObjectType): [" + t.name + "] into [" + t.eContainer.name + "]");
+}
+
+rule CreateTransferObjectRelationFromOneWayRelationMemberOfUnmappedTransferObjectTypeTargetingMapped
+	transform s: ESM!OneWayRelationMember
+	to t: JUDOPSM!TransferObjectRelation
+	extends CreateTransferObjectRelationTargetingMappedTransferObjectType {
+	  guard: s.eContainer.isKindOf(ESM!TransferObjectType)
+	  			and not s.eContainer.isTypeOf(ESM!EntityType)
+	  			and not s.eContainer.mapping.isDefined()
+	  			and (not s.defaultExpression.expression.isDefined() or not (s.defaultExpression.expression.trim().length() > 0))
+	  			and (not s.rangeExpression.expression.isDefined() or not (s.rangeExpression.expression.trim().length() > 0))
+	  			and s.target.isTypeOf(ESM!TransferObjectType) and s.target.mapping.isDefined()
+	  			and s.containment
+	  s.eContainer.getPSMEquivalent().relations.add(t);
+	  log.debug("Created TransferObjectRelation (OneWayRelationMember - UnmappedTransferObject - containment - Target: MappedTransferObjectType): [" + t.name + "] into [" + t.eContainer.name + "]");
+}
+
+rule CreateTransferObjectRelationFromOneWayRelationMemberOfUnmappedTransferObjectTypeTargetingEntity
+	transform s: ESM!OneWayRelationMember
+	to t: JUDOPSM!TransferObjectRelation
+	extends CreateTransferObjectRelationTargetingDefaultTransferObjectType {
+	  guard: s.eContainer.isKindOf(ESM!TransferObjectType)
+	  			and not s.eContainer.isTypeOf(ESM!EntityType)
+	  			and not s.eContainer.mapping.isDefined()
+	  			and (not s.defaultExpression.expression.isDefined() or not (s.defaultExpression.expression.trim().length() > 0))
+	  			and (not s.rangeExpression.expression.isDefined() or not (s.rangeExpression.expression.trim().length() > 0))
+	  			and s.target.isTypeOf(ESM!EntityType)
+	  			and not s.containment
+	  s.eContainer.getPSMEquivalent().relations.add(t);
+	  log.debug("Created TransferObjectRelation (OneWayRelationMember - UnmappedTransferObject - containment - Target: DefaultTransferObjectType): [" + t.name + "] into [" + t.eContainer.name + "]");
+}

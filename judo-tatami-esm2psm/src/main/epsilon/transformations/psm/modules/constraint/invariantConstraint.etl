@@ -1,0 +1,11 @@
+import "../../../../operations/esm/data/_importData.eol";
+import "../namespace/namespace.etl";
+
+rule CreateInvariantConstraint
+    transform s : ESM!InvariantConstraint
+    to t : JUDOPSM!InvariantConstraint
+    extends CreateNamedElement {
+        t.expression = s.expression.getPSMEquivalent();
+        t.constrained = s.eContainer.getPSMEquivalent();
+        log.debug("Created invariant constraint: " + t.name);
+}

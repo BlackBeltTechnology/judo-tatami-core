@@ -1,3 +1,2 @@
-import "primitiveTypedElement.eol";
 import "entityType.eol";
 import "referenceTypedElement.eol";
