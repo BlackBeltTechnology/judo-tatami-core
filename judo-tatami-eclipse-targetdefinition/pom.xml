@@ -6,10 +6,12 @@
         <groupId>hu.blackbelt.judo.tatami</groupId>
         <artifactId>judo-tatami-parent</artifactId>
         <version>1.0.0-SNAPSHOT</version>
-        <relativePath>../judo-tatami-parent</relativePath>
+        <relativePath>../</relativePath>
     </parent>
     <artifactId>hu.blackbelt.judo.tatami.eclipse.targetdefinition</artifactId>
     <packaging>eclipse-target-definition</packaging>
+    
+    <name>Judo :: Tatami :: Eclipse :: Targetdefinition</name>
 
     <profiles>
 	    <profile>
@@ -62,7 +64,87 @@
 		                        <replacement>
 		                            <token>(epsilon-runtime-eclipse\/)(.*)(\"\/&gt;)</token>
 		                            <value>$1${epsilon-runtime-eclipse-version}"/&gt;</value>
-		                        </replacement>		
+		                        </replacement>
+		                        
+		                        <!-- asm -->
+		                        <replacement>
+		                            <token>(hu.blackbelt.judo.meta.asm.feature.feature.group\"\ version\=\")(.*)(\"\/&gt;)</token>
+		                            <value>$1${judo-meta-asm-version}"/&gt;</value>
+		                        </replacement>
+		                        <replacement>
+		                            <token>(judo-meta-asm\/)(.*)(\"\/&gt;)</token>
+		                            <value>$1${judo-meta-asm-version}"/&gt;</value>
+		                        </replacement>
+		                        
+		                        <!-- psm -->
+		                        <replacement>
+		                            <token>(hu.blackbelt.judo.meta.psm.feature.feature.group\"\ version\=\")(.*)(\"\/&gt;)</token>
+		                            <value>$1${judo-meta-psm-version}"/&gt;</value>
+		                        </replacement>
+		                        <replacement>
+		                            <token>(judo-meta-psm\/)(.*)(\"\/&gt;)</token>
+		                            <value>$1${judo-meta-psm-version}"/&gt;</value>
+		                        </replacement>
+		                        
+		                        <!-- esm -->
+		                        <replacement>
+		                            <token>(hu.blackbelt.judo.meta.esm.feature.feature.group\"\ version\=\")(.*)(\"\/&gt;)</token>
+		                            <value>$1${judo-meta-esm-version}"/&gt;</value>
+		                        </replacement>
+		                        <replacement>
+		                            <token>(judo-meta-esm\/)(.*)(\"\/&gt;)</token>
+		                            <value>$1${judo-meta-esm-version}"/&gt;</value>
+		                        </replacement>
+		                        
+		                        <!-- rdbms -->
+		                        <replacement>
+		                            <token>(hu.blackbelt.judo.meta.rdbms.feature.feature.group\"\ version\=\")(.*)(\"\/&gt;)</token>
+		                            <value>$1${judo-meta-rdbms-version}"/&gt;</value>
+		                        </replacement>
+		                        <replacement>
+		                            <token>(judo-meta-rdbms\/)(.*)(\"\/&gt;)</token>
+		                            <value>$1${judo-meta-rdbms-version}"/&gt;</value>
+		                        </replacement>
+		                        
+		                        <!-- liquibase -->
+		                        <replacement>
+		                            <token>(hu.blackbelt.judo.meta.liquibase.feature.feature.group\"\ version\=\")(.*)(\"\/&gt;)</token>
+		                            <value>$1${judo-meta-liquibase-version}"/&gt;</value>
+		                        </replacement>
+		                        <replacement>
+		                            <token>(judo-meta-liquibase\/)(.*)(\"\/&gt;)</token>
+		                            <value>$1${judo-meta-liquibase-version}"/&gt;</value>
+		                        </replacement>
+		                        
+		                        <!-- expression -->
+		                        <replacement>
+		                            <token>(hu.blackbelt.judo.meta.expression.feature.feature.group\"\ version\=\")(.*)(\"\/&gt;)</token>
+		                            <value>$1${judo-meta-expression-version}"/&gt;</value>
+		                        </replacement>
+		                        <replacement>
+		                            <token>(judo-meta-expression\/)(.*)(\"\/&gt;)</token>
+		                            <value>$1${judo-meta-expression-version}"/&gt;</value>
+		                        </replacement>
+		                        
+		                        <!-- jql -->
+		                        <replacement>
+		                            <token>(hu.blackbelt.judo.meta.jql.feature.feature.group\"\ version\=\")(.*)(\"\/&gt;)</token>
+		                            <value>$1${judo-meta-jql-version}"/&gt;</value>
+		                        </replacement>
+		                        <replacement>
+		                            <token>(judo-meta-jql\/)(.*)(\"\/&gt;)</token>
+		                            <value>$1${judo-meta-jql-version}"/&gt;</value>
+		                        </replacement>
+
+								<!-- openapi -->
+								<replacement>
+									<token>(hu.blackbelt.judo.meta.openapi.feature.feature.group\"\ version\=\")(.*)(\"\/&gt;)</token>
+									<value>$1${judo-meta-openapi-version}"/&gt;</value>
+								</replacement>
+								<replacement>
+									<token>(judo-meta-openapi\/)(.*)(\"\/&gt;)</token>
+									<value>$1${judo-meta-openapi-version}"/&gt;</value>
+								</replacement>
 		                    </replacements>
 		                    <regex>true</regex>
 		                </configuration>
