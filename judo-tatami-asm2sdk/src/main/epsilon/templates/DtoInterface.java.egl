@@ -5,21 +5,31 @@
 
 package [%= dto.getDtoPackageName() + dto.getClassPackage().toLowerCase() %];
 
-import java.util.List;
-import java.util.stream.Collectors;
+import hu.blackbelt.structured.map.proxy.MapProxy;
+import hu.blackbelt.structured.map.proxy.MapBuilderProxy;
+
+import java.util.Collection;
 
 public interface [%= dto.getClassName() %] {
-	
-	public [%= dto.idType() %] get__identifier();
-	
-	[% for (field in dto.eAllAttributes.includingAll(dto.eAllReferences)) { %]
-	public [%= field.getTypeDefinition() %] [%= field.getterName() %]();
-	[% } %]
-	
-	public void set__identifier([%= dto.idType() %] __identifier);
-	
-	[% for (field in dto.eAllAttributes.includingAll(dto.eAllReferences)) { %]
-	public void [%= field.setterName() %]([%= field.getTypeDefinition() %] [%= asmUtils.safeName(field.name.firstToLowerCase()) %]);
-	[% } %]
-		
+
+    static [%= dto.getClassName() %] create[%= dto.getClassName() %]() {
+        return MapProxy.newInstance([%= dto.getClassName() %].class);
+    }
+
+    static [%= dto.getClassName() %]Builder [%= dto.getClassName() %]Builder() {
+        return MapBuilderProxy.newInstance([%= dto.getClassName() %]Builder.class, [%= dto.getClassName() %].class);
+    }
+
+    public [%= dto.idType() %] get__identifier();
+
+    [% for (field in dto.eAllAttributes.includingAll(dto.eAllReferences)) { %]
+    public [%= field.getTypeDefinition() %] [%= field.getterName() %]();
+    [% } %]
+
+    public void set__identifier([%= dto.idType() %] __identifier);
+
+    [% for (field in dto.eAllAttributes.includingAll(dto.eAllReferences)) { %]
+    public void [%= field.setterName() %]([%= field.getTypeDefinition() %] [%= asmUtils.safeName(field.name.firstToLowerCase()) %]);
+    [% } %]
+
 }

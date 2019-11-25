@@ -11,7 +11,7 @@ operation ASM!EOperation getFullOperationPath() : String {
 @cached
 operation ASM!EAttribute getTypeDefinition() : String {	
 	if (self.upperBound == -1) {
-		return "List<" + self.eType.instanceClass.name + ">";
+		return "Collection<" + self.eType.instanceClass.name + ">";
 	} else {
 		return self.eType.instanceClass.name;
 	}
@@ -31,7 +31,7 @@ operation ASM!EReference getBareTypeDefinition() : String {
 @cached
 operation ASM!EReference getTypeDefinition() : String {	
 	if (self.upperBound == -1) {
-		return "List<" + self.getBareTypeDefinition() + ">";
+		return "Collection<" + self.getBareTypeDefinition() + ">";
 	} else {
 		return self.getBareTypeDefinition();
 	}
@@ -49,13 +49,6 @@ operation genDtoInterface(dto : ASM!EClass) {
     var template = TemplateFactory.load("DtoInterface.java.egl");
     template.populate("dto", dto);
     template.generate(dto.getDtoJavaFileName());
-    template.reset();
-}
-
-operation genDtoFactory(dto : ASM!EClass) {
-    var template = TemplateFactory.load("DtoFactory.java.egl");
-    template.populate("dto", dto);
-    template.generate(dto.getDtoFactoryJavaFileName());
     template.reset();
 }
 
@@ -96,11 +89,6 @@ operation ASM!EClass getDtoJavaFileName() : String {
 @cached
 operation ASM!EClass getDtoInterfaceJavaFileName() : String {
 	return self.getDtoPackageName().replaceAll("\\.", "/") + "/" + self.getClassPackage().toLowerCase().replaceAll("\\.", "/") + "/" + self.getClassName()  + "Interface" + ".java";
-}
-
-@cached
-operation ASM!EClass getDtoFactoryJavaFileName() : String {
-	return self.getDtoPackageName().replaceAll("\\.", "/") + "/" + self.getClassPackage().toLowerCase().replaceAll("\\.", "/") + "/" + self.getClassName()  + "Factory" + ".java";
 }
 
 @cached
