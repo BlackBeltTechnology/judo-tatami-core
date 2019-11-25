@@ -54,7 +54,7 @@
         <tycho-version>1.4.0</tycho-version>
 
         <epsilon-runtime-version>1.2.0.20191018_105940_dc9d257_develop</epsilon-runtime-version>
-	<epsilon-runtime-eclipse-version>1.2.0.20191105_183445_4b0b2da_develop</epsilon-runtime-eclipse-version>
+	    <epsilon-runtime-eclipse-version>1.2.0.20191105_183445_4b0b2da_develop</epsilon-runtime-eclipse-version>
 
         <emf-genmodel-generator-version>1.0.0.20191105_182930_676cf43_develop</emf-genmodel-generator-version>
         <judo-genmodel-generator-version>1.0.0.20191105_183255_7673428_develop</judo-genmodel-generator-version>
@@ -417,13 +417,6 @@
                 <version>1.0.0-SNAPSHOT</version>
             </dependency>
 
-
-            <dependency>
-                <groupId>hu.blackbelt.judo.tatami</groupId>
-                <artifactId>judo-tatami-asm2jaxrsapi</artifactId>
-                <version>1.0.0-SNAPSHOT</version>
-            </dependency>
-
             <dependency>
                 <groupId>hu.blackbelt.judo.tatami</groupId>
                 <artifactId>judo-tatami-itest</artifactId>
@@ -613,16 +606,7 @@
                 <plugin>
                     <groupId>org.apache.felix</groupId>
                     <artifactId>maven-bundle-plugin</artifactId>
-                    <version>3.3.0</version>
-                </plugin>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-compiler-plugin</artifactId>
-                    <version>3.7.0</version>
-                    <configuration>
-                        <source>1.8</source>
-                        <target>1.8</target>
-                    </configuration>
+                    <version>4.2.1</version>
                 </plugin>
 
                 <!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
@@ -701,13 +685,117 @@
                 <module>judo-tatami-asm2sdk</module>
                 <module>judo-tatami-workflow</module>
                 <module>judo-tatami-workflow-osgi</module>
+		        <module>judo-tatami-workflow-maven-plugin</module>
+		        <module>judo-tatami-workflow-maven-plugin-test</module>
                 <module>judo-tatami-itest</module>
                 <module>judo-tatami-karaf-features</module>
                 <module>judo-tatami-karaf-kar</module>
-		        <module>judo-tatami-workflow-maven-plugin</module>
-		        <module>judo-tatami-workflow-maven-plugin-test</module>
             </modules>
         </profile>
+
+		<profile>
+            <id>modules-eclipse</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <modules>
+                <module>judo-tatami-eclipse-site</module>
+                <module>judo-tatami-eclipse-targetdefinition</module>
+                <module>judo-tatami-eclipse-feature</module>
+            </modules>
+
+            <build>
+      			<plugins>
+                    <plugin>
+                        <groupId>org.eclipse.tycho</groupId>
+                        <artifactId>tycho-maven-plugin</artifactId>
+                        <version>${tycho-version}</version>
+                        <extensions>true</extensions>
+                    </plugin>
+
+                    <plugin>
+                        <groupId>org.eclipse.tycho</groupId>
+                        <artifactId>target-platform-configuration</artifactId>
+                        <version>${tycho-version}</version>
+                        <configuration>
+                            <target>
+                                <artifact>
+                                    <groupId>hu.blackbelt.judo.tatami</groupId>
+                                    <artifactId>hu.blackbelt.judo.tatami.eclipse.targetdefinition</artifactId>
+                                    <version>${project.version}</version>
+                                </artifact>
+                            </target>
+                            <environments>
+                                <environment>
+                                    <os>linux</os>
+                                    <ws>gtk</ws>
+                                    <arch>x86</arch>
+                                </environment>
+                                <environment>
+                                    <os>linux</os>
+                                    <ws>gtk</ws>
+                                    <arch>x86_64</arch>
+                                </environment>
+                                <environment>
+                                    <os>win32</os>
+                                    <ws>win32</ws>
+                                    <arch>x86</arch>
+                                </environment>
+                                <environment>
+                                    <os>win32</os>
+                                    <ws>win32</ws>
+                                    <arch>x86_64</arch>
+                                </environment>
+                                <environment>
+                                    <os>macosx</os>
+                                    <ws>cocoa</ws>
+                                    <arch>x86_64</arch>
+                                </environment>
+                            </environments>
+                        </configuration>
+                    </plugin>
+
+                    <plugin>
+                        <groupId>org.eclipse.tycho</groupId>
+                        <artifactId>tycho-versions-plugin</artifactId>
+                        <version>${tycho-version}</version>
+                    </plugin>
+
+                    <plugin>
+                        <groupId>org.eclipse.tycho</groupId>
+                        <artifactId>tycho-surefire-plugin</artifactId>
+                        <version>${tycho-version}</version>
+                    </plugin>
+
+                    <plugin>
+                        <groupId>org.eclipse.tycho.extras</groupId>
+                        <artifactId>tycho-source-feature-plugin</artifactId>
+                        <version>${tycho-version}</version>
+                    </plugin>
+
+                    <plugin>
+                        <groupId>org.eclipse.tycho</groupId>
+                        <artifactId>tycho-source-plugin</artifactId>
+                        <version>${tycho-version}</version>
+                    </plugin>
+
+                    <plugin>
+                        <groupId>org.eclipse.tycho</groupId>
+                        <artifactId>tycho-p2-plugin</artifactId>
+                        <version>${tycho-version}</version>
+                        <executions>
+                            <execution>
+                                <id>attach-p2-metadata</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>p2-metadata</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+		        </plugins>
+      		</build>
+    	</profile>
 
         <profile>
             <id>sign-artifacts</id>
@@ -822,7 +910,7 @@
                             <repositoryId>${project-repositoryId}</repositoryId>
                             <description>
                                 **Branch:** ${env.WERCKER_GIT_BRANCH}
-                                **P2 Update Site:** ${env.JUDONG_P2_UPSTREAM}/repository/p2/${project-shortname}/${project.version}
+                                **P2 Update Site:** ${env.JUDONG_P2_UPSTREAM}/${project-shortname}/${project.version}
                                 **Maven repository:** ${env.JUDONG_MAVEN_UPSTREAM_SNAPSHOT}/#browse/browse:maven-judo-release:hu%2Fblackbelt%2Feclipse%2F${project-shortname}
                                 **Wercker:** https://app.wercker.com/${project-repositoryId}/runs/build/${env.WERCKER_RUN_ID}
                             </description>
@@ -873,7 +961,7 @@
                                 </goals>
                                 <configuration>
                                     <serverId>judong-nexus-distribution</serverId>
-                                    <fromDir>${basedir}/site/target/repository</fromDir>
+                                    <fromDir>${basedir}/judo-tatami-eclipse-site/target/repository</fromDir>
                                     <includes>*/**</includes>
                                     <url>dav:${env.JUDONG_P2_UPSTREAM}</url>
                                     <toDir>${project-shortname}/${project.version}</toDir>

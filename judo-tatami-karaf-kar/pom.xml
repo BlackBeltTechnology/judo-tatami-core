@@ -10,7 +10,7 @@
     </parent>
     <artifactId>judo-tatami-karaf-kar</artifactId>
     <packaging>kar</packaging>
-    <name>JUDO tatami karaf KAR assembly</name>
+    <name>JUDO :: Tatami :: Karaf :: KAR assembly</name>
 
     <build>
         <plugins>
