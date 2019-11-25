@@ -3,11 +3,15 @@ operation String normalizeName() : String {
 	return self.replace("[__]", "\\$");
 }
 
+@cached
+operation ASM!EOperation getFullOperationPath() : String {
+	return (asmUtils.getPackageFQName(self.eContainingClass.ePackage) + "." + self.name).replaceAll("\\.", "/");
+}
 
 @cached
 operation ASM!EAttribute getTypeDefinition() : String {	
 	if (self.upperBound == -1) {
-		return "List<" + self.eType.instanceClass.name + ">";
+		return "Collection<" + self.eType.instanceClass.name + ">";
 	} else {
 		return self.eType.instanceClass.name;
 	}
@@ -27,7 +31,7 @@ operation ASM!EReference getBareTypeDefinition() : String {
 @cached
 operation ASM!EReference getTypeDefinition() : String {	
 	if (self.upperBound == -1) {
-		return "List<" + self.getBareTypeDefinition() + ">";
+		return "Collection<" + self.getBareTypeDefinition() + ">";
 	} else {
 		return self.getBareTypeDefinition();
 	}
@@ -36,6 +40,31 @@ operation ASM!EReference getTypeDefinition() : String {
 /*
  DTO
  */
+@cached
+operation getAllDTOs(): Collection {
+    return ASM!EClass.all.select(class | asmUtils.getExtensionAnnotationListByName(class, "exposedBy").notEmpty() and (not asmUtils.isEntityType(class) or asmUtils.isMappedTransferObjectType(class)));
+}
+
+operation genDtoInterface(dto : ASM!EClass) {
+    var template = TemplateFactory.load("DtoInterface.java.egl");
+    template.populate("dto", dto);
+    template.generate(dto.getDtoJavaFileName());
+    template.reset();
+}
+
+operation genDtoBuilder(dto : ASM!EClass) {
+    var template = TemplateFactory.load("DtoBuilder.java.egl");
+    template.populate("dto", dto);
+    template.generate(dto.getDtoBuilderJavaFileName());
+    template.reset();
+}
+
+
+@cached
+operation ASM!EClass idType() : String {
+	return "java.util.UUID";
+}
+
  
 @cached
 operation ASM!EClass getPackagePrefix() : String {
@@ -54,12 +83,92 @@ operation ASM!EClass getDtoTypeName() : String {
 
 @cached
 operation ASM!EClass getDtoJavaFileName() : String {
-	return self.getDtoPackageName().replaceAll("\\.", "/") + "/" + self.name.normalizeName() + ".java";
+	return self.getDtoPackageName().replaceAll("\\.", "/") + "/" + self.getClassPackage().toLowerCase().replaceAll("\\.", "/") + "/" + self.getClassName()  + ".java";
 }
 
-operation genDto(dto : ASM!EClass) {
-	var t = TemplateFactory.load("Dto.java.egl");
-	t.populate("dto", dto);
-	t.generate(dto.getDtoJavaFileName());
-	t.reset();
+@cached
+operation ASM!EClass getDtoInterfaceJavaFileName() : String {
+	return self.getDtoPackageName().replaceAll("\\.", "/") + "/" + self.getClassPackage().toLowerCase().replaceAll("\\.", "/") + "/" + self.getClassName()  + "Interface" + ".java";
+}
+
+@cached
+operation ASM!EClass getDtoBuilderJavaFileName() : String {
+	return self.getDtoPackageName().replaceAll("\\.", "/") + "/" + self.getClassPackage().toLowerCase().replaceAll("\\.", "/") + "/" + self.getClassName()  + "Builder" + ".java";
+}
+
+operation ASM!EClass getClassName() : String {
+    return self.name.split("__")[self.name.split("__").size() - 1];
+}
+
+operation ASM!EClass getClassPackage() : String {
+    /*var str : String;
+    for(s : String in self.name.split("__")) {
+       str += "." + s;
+    }
+    return str.replace("." + self.getClassName(),"");*/
+    return ("." + self.name.replaceAll("__",".")).replace("." + self.getClassName(),"");
+}
+
+operation ASM!ENamedElement setterName() : String {
+	return "set" + asmUtils.safeName(self.name.firstToUpperCase());
+}
+
+operation ASM!ENamedElement getterName() : String {
+	return "get" + asmUtils.safeName(self.name.firstToUpperCase());
+}
+
+operation ASM!ENamedElement builderName() : String {
+	return "with" + asmUtils.safeName(self.name.firstToUpperCase());
+}
+
+//Unbound Services
+operation genUnboundServiceInterface(ap : ASM!EClass, op : ASM!EOperation) {
+	var t = TemplateFactory.load("Service.java.egl");
+    t.populate("packagePath", ap.getUnboundServicePackageName());
+    t.populate("operation", op.getName());
+    t.generate(ap.getUnboundServiceJavaFileName(op.getName()));
+    t.reset();
+}
+
+operation ASM!EClass getUnboundServicePackageName() : String {
+	return "sdk." + asmUtils.getClassifierFQName(self) + "." + self.getUnboundServiceClassName().toLowerCase();
+}
+
+operation ASM!EClass getUnboundServiceClassName() : String {
+	return "UnboundServices";
+}
+
+operation ASM!EClass getUnboundServiceJavaFileName(opname: String) : String {
+	return self.getUnboundServicePackageName().replaceAll("\\.", "/") + "/" + opname.firstToUpperCase() + ".java";
+}
+
+operation ASM!EClass getUnboundServiceScrXmlFileName() : String {
+	return "OSGI-INF/" + self.getUnboundServicePackageName() + "." + self.getUnboundServiceClassName() + ".xml";
+}
+
+//Bound Services
+operation genExposedMappedTransferObjectInterface(boundOperationClass : ASM!EClass, ap : ASM!EClass, op : ASM!EOperation) {
+	var t = TemplateFactory.load("Service.java.egl");
+    t.populate("packagePath", boundOperationClass.getExposedMappedTransferObjectPackageName(ap));
+    t.populate("operation", op.getName());
+    t.generate(boundOperationClass.getExposedMappedTransferObjectJavaFileName(ap,op.getName()));
+    t.reset();
+}
+
+operation ASM!EClass getExposedMappedTransferObjectPackageName(ap: ASM!EClass) : String {
+	return "sdk." + asmUtils.getClassifierFQName(ap) + "." + asmUtils.getPackageFQName(self.ePackage) + "." + self.getExposedMappedTransferObjectClassName().toLowerCase();
+}
+
+@cached
+operation ASM!EClass getExposedMappedTransferObjectClassName() : String {
+	return self.name.replace("__","\\.");
+}
+
+operation ASM!EClass getExposedMappedTransferObjectJavaFileName(ap: ASM!EClass, opname: String) : String {
+	return self.getExposedMappedTransferObjectPackageName(ap)
+		.replaceAll("\\.", "/") + "/" + opname.firstToUpperCase() + ".java";
+}
+
+operation ASM!EClass getExposedMappedTransferObjectScrXmlFileName(ap: ASM!EClass) : String {
+	return "OSGI-INF/" + self.getExposedMappedTransferObjectPackageName(ap) + "." + self.getExposedMappedTransferObjectClassName() + ".xml";
 }
