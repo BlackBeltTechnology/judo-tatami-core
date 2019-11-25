@@ -42,7 +42,12 @@ operation ASM!EReference getTypeDefinition() : String {
  */
 @cached
 operation getAllDTOs(): Collection {
-    return ASM!EClass.all.select(class | asmUtils.getExtensionAnnotationListByName(class, "exposedBy").notEmpty() and (not asmUtils.isEntityType(class) or asmUtils.isMappedTransferObjectType(class)));
+    return ASM!EClass.all.select(class | class.name <> "__UnboundServices" and
+                                         class.name <> "__Static" and
+                                         not asmUtils.isBuiltInOperationGroup(class) and
+                                         (asmUtils.isMappedTransferObjectType(class) or
+                                         not asmUtils.isEntityType(class)) and
+                                         not asmUtils.isAccessPoint(class));
 }
 
 operation genDtoInterface(dto : ASM!EClass) {
