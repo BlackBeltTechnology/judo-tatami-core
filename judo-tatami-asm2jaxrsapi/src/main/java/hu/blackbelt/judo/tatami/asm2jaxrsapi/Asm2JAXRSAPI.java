@@ -114,7 +114,6 @@ public class Asm2JAXRSAPI {
             FullyQualifiedName fullyQualifiedName = (FullyQualifiedName) c;
             try {
                 bundle.add(fullyQualifiedName.getFullyQualifiedName().replace('.', '/') + ".class", c.openInputStream());
-                String fc = fullyQualifiedName.getFullyQualifiedName();
                 String packageName = fullyQualifiedName.getFullyQualifiedName()
                         .substring(0 , fullyQualifiedName.getFullyQualifiedName().lastIndexOf("."));
                 exportedPackages.add(packageName);

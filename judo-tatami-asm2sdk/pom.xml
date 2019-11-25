@@ -139,6 +139,12 @@
 			<artifactId>tinybundles</artifactId>
 		</dependency>
 
+		<dependency>
+			<groupId>hu.blackbelt</groupId>
+			<artifactId>structured-map-proxy</artifactId>
+			<version>${structured-map-proxy-version}</version>
+		</dependency>
+
 	</dependencies>
 </project>
 

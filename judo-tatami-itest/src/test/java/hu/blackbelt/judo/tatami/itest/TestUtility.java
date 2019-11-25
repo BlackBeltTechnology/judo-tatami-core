@@ -113,6 +113,16 @@ public class TestUtility {
 
     public static void assertBundleStarted(BundleContext bundleContext, String name) {
         Bundle bundle = findBundleByName(bundleContext, name);
+        int retryNum = 5;
+        boolean started = false;
+        while (retryNum != 0 && !started) {
+            started = (bundle.getState() == Bundle.ACTIVE);
+            retryNum--;
+            try {
+                Thread.sleep(2000);
+            } catch (InterruptedException e) {
+            }
+        }
         assertNotNull("Bundle " + name + " should be installed", bundle);
         assertEquals("Bundle " + name + " should be started", Bundle.ACTIVE, bundle.getState());
     }

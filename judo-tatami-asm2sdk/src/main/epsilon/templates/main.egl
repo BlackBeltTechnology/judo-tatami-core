@@ -2,11 +2,55 @@
 import "../operations/sdk.eol";
 
 var outputJavaClasses = new Set();
+var outputScrXmls = new Set();
 
 executionContext.getContext().put("outputJavaClasses", outputJavaClasses);
 
-for (dto in ASM!EClass.all.select(c | c.eAnnotations.exists(a | asmUtils.getResolvedExposedBy(a).isPresent()) and (asmUtils.getMappedEntityType(c).isPresent() or (not asmUtils.getMappedEntityType(c).isPresent() and not asmUtils.isEntityType(c))))) {
-    genDto(dto);
-	outputJavaClasses.add(dto.getDtoJavaFileName());
+for (dto in getAllDTOs()) {
+    //DTO interface
+    genDtoInterface(dto);
+    outputJavaClasses.add(dto.getDtoJavaFileName());
+    //DTO builder
+    genDtoBuilder(dto);
+    outputJavaClasses.add(dto.getDtoBuilderJavaFileName());
 }
+
+for (ap in asmUtils.getAllAccessPoints()) {
+
+    var apServiceInstances : Map = new Map();
+
+    //Unbound Services
+    var exposedServices = asmUtils.getExposedServicesOfAccessPoint(ap);
+    log.info("exposedServices: " + exposedServices.collect(exposedService | "op: " + exposedService.getName() + " in " + exposedService.getEContainingClass().getName()));
+
+    if (exposedServices.size() > 0) {
+
+        for(op in exposedServices) {
+           outputJavaClasses.add(ap.getUnboundServiceJavaFileName(op.getName()));
+           genUnboundServiceInterface(ap, op);
+        }
+        outputScrXmls.add(ap.getUnboundServiceScrXmlFileName());
+        apServiceInstances.put("unboundService", ap.getUnboundServicePackageName() + "." + ap.getUnboundServiceClassName());
+    }
+
+    //Unbound Services
+    var boundOperations = ASM!EOperation.all.select(op | asmUtils.isBound(op) and asmUtils.getAccessPointsOfOperation(op).contains(ap));
+    var boundOperationClasses = boundOperations.collect(op | op.eContainer).asSet();
+    log.info("boundOperations: " + boundOperations.collect(boundOperation | boundOperation.getName()));
+    log.info("boundOperationClasses: " + boundOperationClasses.collect(boundOperationClass | boundOperationClass.getName()));
+    
+    for (boundOperationClass in boundOperationClasses) {
+        //genExposedMappedTransferObjectInterface(boundOperationClass,ap);
+        for(op in boundOperations.select(op | op.eContainer == boundOperationClass)) {
+           outputJavaClasses.add(boundOperationClass.getExposedMappedTransferObjectJavaFileName(ap, op.name));
+           genExposedMappedTransferObjectInterface(boundOperationClass, ap, op);
+        }
+        outputScrXmls.add(boundOperationClass.getExposedMappedTransferObjectScrXmlFileName(ap));
+        apServiceInstances.put((boundOperationClass.getExposedMappedTransferObjectPackageName(ap) + "." + boundOperationClass.getExposedMappedTransferObjectClassName()).replaceAll("\\.", "_"),
+            boundOperationClass.getExposedMappedTransferObjectPackageName(ap) + "." + boundOperationClass.getExposedMappedTransferObjectClassName());
+    }
+}
+
 %]
+
+
