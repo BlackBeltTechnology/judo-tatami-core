@@ -10,45 +10,7 @@ rule CreateDataPropertyDeclaration
 	    var transferObjectTypeExposedByAnnotation = asmUtils.getExtensionAnnotationListByName(s.eContainer.eContainer, "exposedBy").selectOne(a | a.details.get("value") == s.details.get("value"));
 	    if (transferObjectTypeExposedByAnnotation.isDefined()) {
 	    	transferObjectTypeExposedByAnnotation.equivalent("CreateTransferObjectSingleSchemaDefinition").properties.add(t);
-	    } else {
-	    	s.eContainer.eContainer.equivalent("CreateTransferObjectSingleSchemaDefinitionForSuperType").properties.add(t);
-	    	var sub = ASM!EClass.all.selectOne(eClazz | eClazz.eSuperTypes.contains(s.eContainer.eContainer));
-	    	asmUtils.getExtensionAnnotationListByName(sub, "exposedBy").selectOne(a | a.details.get("value") == s.details.get("value")).equivalent("CreateTransferObjectSingleSchemaDefinition").allOf.add(s.eContainer.eContainer.equivalent("CreateTransferObjectSingleSchemaDefinitionForSuperType"));
-	    	var accessPoint = asmUtils.getResolvedExposedBy(s);
-        	if (accessPoint.isPresent()) {
-		    	accessPoint.get().equivalent("CreateOpenAPIAccessPoint").definitions.add(s.eContainer.eContainer.equivalent("CreateTransferObjectSingleSchemaDeclarationForSuperType"));
-        	} else {
-            	delete t;
-        	}
 	    }
-}
-
-@lazy
-rule CreateTransferObjectSingleSchemaDefinitionForSuperType
-	transform s : ASM!EClass
-	to t: OPENAPI!Schema {
-		t.type = OPENAPI!JSONDataType#object;
-
-        if (asmUtils.isMappedTransferObjectType(s)) {
-            var id = new OPENAPI!PropertyDeclaration;
-            id.name = "__identifier";
-
-            id.property = new OPENAPI!Property;
-            id.property.description = "ID of " + asmUtils.getMappedEntityType(s).get().name + " instance";
-            id.property.type = OPENAPI!JSONDataType#string;
-
-            t.properties.add(id);
-        }
-        
-        s.equivalent("CreateTransferObjectSingleSchemaDeclarationForSuperType").schema = t;
-}
-
-@lazy
-rule CreateTransferObjectSingleSchemaDeclarationForSuperType
-    transform s : ASM!EClass
-    to t : OPENAPI!SchemaDeclaration {
-        
-        t.name = asmUtils.getClassifierFQName(s).toOpenAPIName();
 }
 
 rule CreateDataPropertyDefinition
