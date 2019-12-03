@@ -21,7 +21,8 @@ rule CreateTransferObjectSingleSchemaDefinition
     transform s : ASM!EAnnotation
     to t : OPENAPI!Schema {
         guard: s.eContainer.isKindOf(ASM!EClass) and s.source == asmUtils.getAnnotationUri("exposedBy") and (not asmUtils.isEntityType(s.eContainer) or asmUtils.isMappedTransferObjectType(s.eContainer))
-        
+        s.eContainer.getEAllSuperTypes().collect(superType | t.allOf.add(asmUtils.getExtensionAnnotationByName(superType, "exposedBy", false).get().equivalent("CreateTransferObjectSingleSchemaDefinition")));
+             
         t.description = "Schema of " + s.eContainer.name + " instance";
         t.type = OPENAPI!JSONDataType#object;
 
