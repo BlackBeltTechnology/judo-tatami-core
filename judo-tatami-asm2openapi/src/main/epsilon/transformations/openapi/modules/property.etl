@@ -84,7 +84,7 @@ rule CreateReferencePropertyDeclaration
     to t : OPENAPI!PropertyDeclaration {
         guard: s.eContainer.isKindOf(ASM!EReference) and s.source == asmUtils.getAnnotationUri("exposedBy")
 
-        t.name = s.eContainer.name;        
+        t.name = s.eContainer.name;
 	    var transferObjectTypeExposedByAnnotation = asmUtils.getExtensionAnnotationListByName(s.eContainer.eContainer, "exposedBy").selectOne(a | a.details.get("value") == s.details.get("value"));
 	    if (transferObjectTypeExposedByAnnotation.isDefined()) {
 	    	transferObjectTypeExposedByAnnotation.equivalent("CreateTransferObjectSingleSchemaDefinition").properties.add(t);
