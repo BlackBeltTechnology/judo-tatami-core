@@ -12,6 +12,8 @@ rule CreateTransferObjectSingleSchemaDeclaration
         var accessPoint = asmUtils.getResolvedExposedBy(s);
         if (accessPoint.isPresent()) {
 		    accessPoint.get().equivalent("CreateOpenAPIAccessPoint").definitions.add(t);
+        } else {
+            delete t;
         }
 }
 
