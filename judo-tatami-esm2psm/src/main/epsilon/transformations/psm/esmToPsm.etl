@@ -20,7 +20,3 @@ import "modules/service/transferObjectType.etl";
 import "modules/service/operation.etl";
 
 import "modules/accesspoint/accesspoint.etl";
-
-//[postponed]
-//import "modules/authentication/authentication.etl";
-//import "modules/authorization/authorization.etl";

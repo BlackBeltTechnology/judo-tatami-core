@@ -261,7 +261,6 @@ public class EsmStructure2PsmServiceTest {
                 .build();
         targetEntityType.setMapping(newMappingBuilder().withTarget(targetEntityType).withFilter(newLogicalExpressionTypeBuilder().withExpression("").withDialect(ExpressionDialect.JQL)).build());
 
-        //...containment
         OneWayRelationMember oneWayRelationContainment = newOneWayRelationMemberBuilder().withName("transferRelationContainment")
                 .withContainment(true).withLower(1).withUpper(1).withProperty(false)
                 .withGetterExpression(newReferenceExpressionTypeBuilder().withExpression("").withDialect(ExpressionDialect.JQL).build())
@@ -270,7 +269,7 @@ public class EsmStructure2PsmServiceTest {
                 .withDefaultExpression(newReferenceExpressionTypeBuilder().withExpression("").withDialect(ExpressionDialect.JQL).build())
                 .withRangeExpression(newReferenceExpressionTypeBuilder().withExpression("").withDialect(ExpressionDialect.JQL).build())
                 .build();
-        //...!property
+
         OneWayRelationMember oneWayRelationBasic = newOneWayRelationMemberBuilder().withName("transferRelationBasic")
                 .withContainment(false).withLower(1).withUpper(1).withProperty(false)
                 .withGetterExpression(newReferenceExpressionTypeBuilder().withExpression("").withDialect(ExpressionDialect.JQL).build())
@@ -280,7 +279,6 @@ public class EsmStructure2PsmServiceTest {
                 .withRangeExpression(newReferenceExpressionTypeBuilder().withExpression("").withDialect(ExpressionDialect.JQL).build())
                 .build();
 
-        //...property
         OneWayRelationMember oneWayRelationWithProperty = newOneWayRelationMemberBuilder().withName("transferRelationWithBinding")
                 .withContainment(false).withLower(1).withUpper(1).withProperty(true)
                 .withGetterExpression(newReferenceExpressionTypeBuilder().withExpression("self.transferRelationWithBinding.target").withDialect(ExpressionDialect.JQL).build())
@@ -357,7 +355,7 @@ public class EsmStructure2PsmServiceTest {
         assertTrue(psmDefaultTransferObject.isPresent());
 
         assertThat(psmDefaultTransferObject.get().getName(), IsEqual.equalTo(DEFAULT_TRANSFEROBJECTTYPE_PREFIX + entityWithMapping.getName() + DEFAULT_TRANSFEROBJECTTYPE_SUFFIX));
-        assertThat(psmDefaultTransferObject.get().getNamespace().getName(), IsEqual.equalTo(DEFAULT_TRANSFEROBJECTTYPES_PACKAGENAME)); //here
+        assertThat(psmDefaultTransferObject.get().getNamespace().getName(), IsEqual.equalTo(DEFAULT_TRANSFEROBJECTTYPES_PACKAGENAME + "_" + servicePackage.getName()));
 
         final Optional<hu.blackbelt.judo.meta.psm.data.EntityType> psmTargetEntityType = allPsm(hu.blackbelt.judo.meta.psm.data.EntityType.class).filter(entity -> targetEntityType.getName().equals(entity.getName())).findAny();
         assertTrue(psmTargetEntityType.isPresent());
@@ -417,7 +415,6 @@ public class EsmStructure2PsmServiceTest {
         //attributes
         StringType stringType = newStringTypeBuilder().withName("stringType").withMaxLength(255).build();
 
-        //...!property
         DataMember dataMemberBasic = newDataMemberBuilder().withName("transferAttributeBasic")
                 .withRequired(false).withProperty(false).withIdentifier(false)
                 .withDataType(stringType)
@@ -426,7 +423,6 @@ public class EsmStructure2PsmServiceTest {
                 .withDefaultExpression(newDataExpressionTypeBuilder().withExpression("").withDialect(ExpressionDialect.JQL).build())
                 .build();
 
-        //...property
         DataMember dataMemberWithProperty = newDataMemberBuilder().withName("transferAttributeWithBinding")
                 .withRequired(false).withProperty(true).withIdentifier(false)
                 .withDataType(stringType)
@@ -486,7 +482,7 @@ public class EsmStructure2PsmServiceTest {
         assertTrue(psmDefaultTransferObject.isPresent());
 
         assertThat(psmDefaultTransferObject.get().getName(), IsEqual.equalTo(DEFAULT_TRANSFEROBJECTTYPE_PREFIX + entityWithMapping.getName() + DEFAULT_TRANSFEROBJECTTYPE_SUFFIX));
-        assertThat(psmDefaultTransferObject.get().getNamespace().getName(), IsEqual.equalTo(DEFAULT_TRANSFEROBJECTTYPES_PACKAGENAME));
+        assertThat(psmDefaultTransferObject.get().getNamespace().getName(), IsEqual.equalTo(DEFAULT_TRANSFEROBJECTTYPES_PACKAGENAME + "_" + servicePackage.getName()));
 
         //attributes
         final Optional<TransferAttribute> transferAttributeBasic = allPsm(TransferAttribute.class).filter(transferAttr -> dataMemberBasic.getName().equals(transferAttr.getName())).findAny();
@@ -526,7 +522,6 @@ public class EsmStructure2PsmServiceTest {
                 .withMapping(newMappingBuilder().withTarget(entityType).withFilter(newLogicalExpressionTypeBuilder().withExpression("expr").withDialect(ExpressionDialect.JQL).build()).build())
                 .build();
 
-        //!property
         OneWayRelationMember oneWayRelationBasic = newOneWayRelationMemberBuilder().withName("transferRelationBasic")
                 .withContainment(false).withLower(1).withUpper(1).withProperty(false)
                 .withGetterExpression(newReferenceExpressionTypeBuilder().withExpression("").withDialect(ExpressionDialect.JQL).build())
@@ -545,7 +540,6 @@ public class EsmStructure2PsmServiceTest {
                 .withRangeExpression(newReferenceExpressionTypeBuilder().withExpression("").withDialect(ExpressionDialect.JQL).build())
                 .build();
 
-        //property
         OneWayRelationMember oneWayRelationWithProperty = newOneWayRelationMemberBuilder().withName("transferRelationWithBinding")
                 .withContainment(false).withLower(1).withUpper(1).withProperty(true)
                 .withGetterExpression(newReferenceExpressionTypeBuilder().withExpression("self.oneWayRelationWithProperty.target").withDialect(ExpressionDialect.JQL).build())
@@ -701,7 +695,7 @@ public class EsmStructure2PsmServiceTest {
 
         //attributes
         StringType stringType = newStringTypeBuilder().withName("stringType").withMaxLength(255).build();
-        //!property
+
         DataMember dataMemberBasic = newDataMemberBuilder().withName("transferAttributeBasic")
                 .withRequired(false).withProperty(false).withIdentifier(false)
                 .withDataType(stringType)

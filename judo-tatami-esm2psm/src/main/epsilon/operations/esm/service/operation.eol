@@ -1,10 +1,7 @@
-operation ESM!Operation getPSMEquivalent(): JUDOPSM!OperationDeclaration {
-	if (self.isTypeOf(ESM!BoundOperation)) {
-		return self.equivalent("CreateBoundOperation");
-	} else if (self.isTypeOf(ESM!UnboundOperation)) {
-		return self.equivalent("CreateUnboundOperation");
-	} else {
-		log.debug("Error: Operation " + self.name + " in ESM is neither Bound nor Unbound!");
-		return null;
-	}
+operation ESM!BoundOperation getPSMEquivalent(): JUDOPSM!OperationDeclaration {
+    return self.equivalent("CreateBoundOperation");
+}
+
+operation ESM!UnboundOperation getPSMEquivalent(): JUDOPSM!OperationDeclaration {
+    return self.equivalent("CreateUnboundOperation");
 }

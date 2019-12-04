@@ -3,21 +3,13 @@ import "../../../../operations/esm/service/operation.eol";
 import "../../../../operations/esm/data/entityType.eol";
 import "../../../../operations/esm/service/transferObjectType.eol";
 
-@abstract
-rule CreateOperation
-    transform s: ESM!Operation
-    to t: JUDOPSM!OperationDeclaration
-    extends CreateNamedElement {
-      log.debug("creating op: " + s.name);
-}
-
 rule CreateBoundOperation
     transform s: ESM!BoundOperation
     to t: JUDOPSM!BoundOperation
-    extends CreateOperation {
+    extends CreateNamedElement {
       s.eContainer.equivalent("CreateMappedTransferObjectType").operations.add(t);
       if(not s.`abstract`) {
-        t.implementation = s.equivalent("CreateBoundOperationBody");
+        t.implementation = s.equivalent("CreateOperationBody");
       }
       log.debug("Created BoundOperation: " + t.name);
 }
@@ -26,8 +18,7 @@ rule CreateUnboundOperation
 	transform s: ESM!UnboundOperation
 	to t: JUDOPSM!UnboundOperation
 	extends CreateNamespaceElement {
-	  ESM!ExposedService.all.selectOne(es | es.`operation` == s).equivalent("CreateExposedService").`operation` = t;
-	  t.implementation = s.equivalent("CreateUnboundOperationBody");
+	  t.implementation = s.equivalent("CreateOperationBody");
 	  log.debug("Created UnboundOperation: " + s.name);
 }
 
@@ -56,25 +47,12 @@ rule CreateParameter
 	  log.debug("Created Parameter: " + t.name);
 }
 
-@abstract
+@lazy
+@greedy
 rule CreateOperationBody
     transform s: ESM!Operation
     to t: JUDOPSM!OperationBody {
       t.body = s.body;
       t.stateful = true;
       t.customImplementation = s.customImplementation;
-}
-
-rule CreateUnboundOperationBody
-    transform s: ESM!UnboundOperation
-    to t: JUDOPSM!OperationBody 
-    extends CreateOperationBody {
-        guard: s.isTypeOf(ESM!UnboundOperation)
-}
-
-rule CreateBoundOperationBody
-    transform s: ESM!BoundOperation
-    to t: JUDOPSM!OperationBody 
-    extends CreateOperationBody {
-        guard: s.isTypeOf(ESM!BoundOperation) and not s.`abstract`
 }
