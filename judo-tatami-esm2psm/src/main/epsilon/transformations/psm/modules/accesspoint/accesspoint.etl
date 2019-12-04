@@ -13,6 +13,7 @@ rule CreateAccessPoint
 rule CreateExposedService
 	transform s: ESM!ExposedService
 	to t: JUDOPSM!ExposedService {
+	  t.`operation` = s.`operation`.equivalent("CreateUnboundOperation");
 	  s.eContainer.equivalent("CreateAccessPoint").exposedServices.add(t);
 
 	  log.debug("Created ExposedService.");

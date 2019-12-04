@@ -3,26 +3,24 @@ import "../data/primitiveTypedElement.etl";
 import "../data/referenceTypedElement.etl";
 import "../../../../operations/esm/type/_importType.eol";
 import "../../../../operations/esm/service/transferObjectType.eol";
+import "../../../../operations/esm/namespace/namespace.eol";
 import "../derived/expressionType.etl";
 
-//------------- TransferObjectType (abstract) -------------
 @abstract
 rule CreateTransferObjectType
 	transform s: ESM!TransferObjectType
 	to t: JUDOPSM!TransferObjectType 
 	extends CreateNamespaceElement {
-	  guard: not s.isTypeOf(ESM!EntityType)
 	  for (super in s.generalizations) {
         t.superTransferObjectTypes.add(super.target.getPSMEquivalent());
       }
 }
 
-//------------- Mapped TransferObjectType
 rule CreateMappedTransferObjectType
 	transform s: ESM!TransferObjectType
 	to t: JUDOPSM!MappedTransferObjectType
 	extends CreateTransferObjectType {
-	  guard: s.isMapped()
+	  guard: not s.isTypeOf(ESM!EntityType) and s.mapping.isDefined()
 	  t.entityType = s.mapping.target.equivalent("CreateEntityType");
 	  if (s.mapping.filter.expression.isDefined() and (s.mapping.filter.expression.trim().length() > 0)) {
 	  	t.filter = s.mapping.filter.equivalent("CreateLogicalExpressionType");
@@ -30,146 +28,115 @@ rule CreateMappedTransferObjectType
 	  log.debug("Created MappedTransferObjectType: " + t.name);
 }
 
-//------------- Unmapped TransferObjectType
 rule CreateUnmappedTransferObjectType
 	transform s: ESM!TransferObjectType 
 	to t: JUDOPSM!UnmappedTransferObjectType
 	extends CreateTransferObjectType {
-	  guard: not s.isMapped()
+	  guard: not s.isTypeOf(ESM!EntityType) and not s.mapping.isDefined()
 	  log.debug("Created UnmappedTransferObjectType: " + t.name);
 }
 
-//------------- Default (Mapped) TransferObjectType -------------
 rule CreateDefaultMappedTransferObjectTypeForEntity
 	transform s: ESM!EntityType
-	to t: JUDOPSM!MappedTransferObjectType
-	extends CreateNamespaceElement {
+	to t: JUDOPSM!MappedTransferObjectType {
 	  t.name = "_" + s.name + "_defaulttransferobjecttype";
 	  for (super in s.generalizations) {
         t.superTransferObjectTypes.add(super.target.equivalent("CreateDefaultMappedTransferObjectTypeForEntity"));
       }
-	  
-	  var ecoreUtil = new Native("org.eclipse.emf.ecore.util.EcoreUtil");
-	  ecoreUtil.getRootContainer(s).equivalent("CreateDefaultTransferObjectTypePackage").elements.add(t);
+
+      s.eContainer.getPSMGeneratedDefaultTransferObjectNamespaceEquivalent().elements.add(t);      
 	  
 	  t.entityType = s.equivalent("CreateEntityType");
-	  log.debug("Created MappedTransferObjectType for EntityType: " + t.name);
+	  log.debug("Created Default MappedTransferObjectType for EntityType: " + t.name);
 }
 
-//------------- TransferObjectRelation -------------
+@abstract
+rule CreateTransferObjectRelation
+    transform s: ESM!ReferenceTypedElement
+    to t: JUDOPSM!TransferObjectRelation
+    extends CreateNamedElement {
+      t.target = s.target.getPSMTransferObjectTypeEquivalent();
+      t.embedded = s.containment;
+      t.cardinality = s.equivalent("CreateCardinalityOfReferenceTypedElement");
+}
+
+rule CreateTransferObjectRelationFromOneWayRelationMember
+    transform s: ESM!OneWayRelationMember
+    to t: JUDOPSM!TransferObjectRelation
+    extends CreateTransferObjectRelation {
+      guard: s.eContainer.isKindOf(ESM!TransferObjectType) 
+            and not s.eContainer.isTypeOf(ESM!EntityType)
+                
+      t.defaultValue = s.equivalent("CreateNavigationPropertyForTransferObjectRelationDefault");
+      t.range = s.equivalent("CreateNavigationPropertyForTransferObjectRelationRange");
+      t.binding = s.equivalent("CreateNavigationPropertyForTransferObjectRelationBinding");
+      s.eContainer.getPSMEquivalent().relations.add(t);
+      log.debug("Created TransferObjectRelation (from OneWayRelationMember): [" + t.name + "] into [" + t.eContainer.name + "]");
+}
+
 @lazy
 @greedy
-rule CreateCardinalityOfTransferObjectRelation
-	transform s: ESM!ReferenceTypedElement
-	to t: JUDOPSM!Cardinality 
-	extends CreateCardinalityOfReferenceTypedElement {
+rule CreateCardinalityOfTransferObjectRelationForDefaultTransferObjectType
+    transform s: ESM!ReferenceTypedElement
+    to t: JUDOPSM!Cardinality {
+      t.upper = s.upper;
+      t.lower = s.lower;
 }
 
 @abstract
-rule CreateTransferObjectRelationTargetingMappedTransferObjectType
-	transform s: ESM!ReferenceTypedElement
-	to t: JUDOPSM!TransferObjectRelation
-	extends CreateNamedElement {
-	  guard: s.eContainer.isKindOf(ESM!TransferObjectType) 
-		  		and not s.eContainer.isTypeOf(ESM!EntityType)
-		  		and s.target.isKindOf(ESM!TransferObjectType) and s.target.mapping.isDefined()
-	  t.target = s.target.equivalent("CreateMappedTransferObjectType");
-	  t.embedded = s.containment;
-	  t.cardinality = s.equivalent("CreateCardinalityOfTransferObjectRelation");
+rule CreateTransferObjectRelationForDefaultTransferObjectType
+    transform s: ESM!ReferenceTypedElement
+    to t: JUDOPSM!TransferObjectRelation
+    extends CreateNamedElement {
+      t.cardinality = s.equivalent("CreateCardinalityOfTransferObjectRelationForDefaultTransferObjectType");
+      t.target = s.target.equivalent("CreateDefaultMappedTransferObjectTypeForEntity");
+      
+      s.eContainer.equivalent("CreateDefaultMappedTransferObjectTypeForEntity").relations.add(t);
+      log.debug("Created TransferObjectRelation for DefaultTransferObjectType: [" + t.name + "] into [" + t.eContainer.name + "]");
 }
 
-@abstract
-rule CreateTransferObjectRelationTargetingUnmappedTransferObjectType
-	transform s: ESM!ReferenceTypedElement
-	to t: JUDOPSM!TransferObjectRelation
-	extends CreateNamedElement {
-	  guard: s.eContainer.isKindOf(ESM!TransferObjectType) 
-		  		and not s.eContainer.isTypeOf(ESM!EntityType)
-		  		and s.target.isKindOf(ESM!TransferObjectType) and not s.target.mapping.isDefined()
-	  t.target = s.target.equivalent("CreateUnmappedTransferObjectType");
-	  t.embedded = s.containment;
-	  t.cardinality = s.equivalent("CreateCardinalityOfTransferObjectRelation");
+rule CreateTransferObjectRelationFromOneWayRelationMemberForDefaultTransferObjectType
+    transform s: ESM!OneWayRelationMember
+    to t: JUDOPSM!TransferObjectRelation
+    extends CreateTransferObjectRelationForDefaultTransferObjectType {
+      guard: s.eContainer.isTypeOf(ESM!EntityType)
+      t.defaultValue = s.equivalent("CreateNavigationPropertyFromRelationFeatureForEntityTypeDefaultTransferObjectTypeTransferObjectRelationDefault");
+      t.range = s.equivalent("CreateNavigationPropertyFromRelationFeatureForEntityTypeDefaultTransferObjectTypeTransferObjectRelationRange");
+      t.binding = s.equivalent("CreateNavigationProperty");
+      t.embedded = s.containment;
+      
+      log.debug("Created TransferObjectRelation for DefaultTransferObjectType: [" + t.name + "] into [" + t.eContainer.name + "]");
 }
 
-@abstract
-rule CreateTransferObjectRelationTargetingDefaultTransferObjectType
-	transform s: ESM!ReferenceTypedElement
-	to t: JUDOPSM!TransferObjectRelation
-	extends CreateNamedElement {
-	  guard: s.eContainer.isKindOf(ESM!TransferObjectType) 
-		  		and not s.eContainer.isTypeOf(ESM!EntityType)
-		  		and s.target.isKindOf(ESM!EntityType)
-	  t.target = s.target.equivalent("CreateDefaultMappedTransferObjectTypeForEntity");
-	  t.embedded = s.containment;
-	  t.cardinality = s.equivalent("CreateCardinalityOfTransferObjectRelation");
+rule CreateTransferObjectRelationFromTwoWayRelationMemberForDefaultTransferObjectType
+    transform s: ESM!TwoWayRelationMember
+    to t: JUDOPSM!TransferObjectRelation
+    extends CreateTransferObjectRelationForDefaultTransferObjectType {
+      guard: s.eContainer.isTypeOf(ESM!EntityType)
+      
+      log.debug("Created TransferObjectRelationFromTwoWayRelationMember: [" + t.name + "] into [" + t.eContainer.name + "]");
 }
 
-//------------- TransferAttribute -------------
-@abstract
 rule CreateTransferAttribute
     transform s: ESM!DataMember
-    to t: JUDOPSM!TransferAttribute
+    to t: JUDOPSM!TransferAttribute 
     extends CreatePrimitiveTypedElement {
-      guard: s.eContainer.isTypeOf(ESM!TransferObjectType)
-      s.eContainer.getPSMEquivalent().attributes.add(t);
-}
-
-//------------- TransferAttribute For MappedTransferObjectType
-//binding, default
-rule CreateTransferAttributeForMappedTransferObjectTypeWithBindingWithDefault
-    transform s: ESM!DataMember
-    to t: JUDOPSM!TransferAttribute
-    extends CreateTransferAttribute {
-  	  guard: not s.eContainer.isTypeOf(ESM!EntityType)
-  			and s.eContainer.isKindOf(ESM!TransferObjectType)
-  			and s.eContainer.mapping.isDefined()
-  			and s.property
-  			and s.defaultExpression.expression.isDefined() and (s.defaultExpression.expression.trim().length() > 0)
-  			
+      guard: not s.eContainer.isTypeOf(ESM!EntityType) and s.eContainer.isKindOf(ESM!TransferObjectType)
       t.defaultValue = s.equivalent("CreateDataPropertyForTransferAttributeDefault");
-	  t.binding = s.equivalent("CreateDataPropertyForTransferAttributeBinding");
-      log.debug("Created TransferAttribute for MappedTransferObjectType with Binding (With: Default): [" + t.name + "] into [" + t.eContainer.name + "]");
+      t.binding = s.equivalent("CreateDataPropertyForTransferAttributeBinding");
+      s.eContainer.getPSMEquivalent().attributes.add(t);
+      log.debug("Created TransferAttribute: [" + t.name + "] into [" + t.eContainer.name + "]");
 }
 
-//binding, !default
-rule CreateTransferAttributeForMappedTransferObjectTypeWithBinding
+rule CreateTransferAttributeForDefaultTransferObjectType
     transform s: ESM!DataMember
-    to t: JUDOPSM!TransferAttribute
-    extends CreateTransferAttribute {
-  	  guard: s.eContainer.isKindOf(ESM!TransferObjectType)
-  			and not s.eContainer.isTypeOf(ESM!EntityType)
-  			and s.eContainer.mapping.isDefined()
-  			and s.property
-  			and (not s.defaultExpression.expression.isDefined() or not (s.defaultExpression.expression.trim().length() > 0))
-  	
-	  t.binding = s.equivalent("CreateDataPropertyForTransferAttributeBinding");
-      log.debug("Created TransferAttribute for MappedTransferObjectType with Binding (basic): [" + t.name + "] into [" + t.eContainer.name + "]");
-}
+    to t: JUDOPSM!TransferAttribute 
+    extends CreatePrimitiveTypedElement {
+      guard: s.eContainer.isTypeOf(ESM!EntityType)
 
-//!binding, !default
-rule CreateTransferAttributeForMappedTransferObjectTypeBasic
-    transform s: ESM!DataMember
-    to t: JUDOPSM!TransferAttribute
-    extends CreateTransferAttribute {
-  	  guard: s.eContainer.isKindOf(ESM!TransferObjectType)
-  			and not s.eContainer.isTypeOf(ESM!EntityType)
-  			and s.eContainer.mapping.isDefined()
-  			and not s.property
-  			and (not s.defaultExpression.expression.isDefined() or not (s.defaultExpression.expression.trim().length() > 0))
-  			
-      log.debug("Created TransferAttribute for MappedTransferObjectType without Binding (basic): [" + t.name + "] into [" + t.eContainer.name + "]");
-}
+      t.defaultValue = s.equivalent("CreateDataPropertyForEntityTypeDefaultTransferObjectTypeTransferAttributeDefault");
+      t.binding = s.equivalent("CreateDataProperty");
 
-//------------- TransferAttribute For UnmappedTransferObjectType
-//!default
-rule CreateTransferAttributeForUnmappedTransferObjectType
-    transform s: ESM!DataMember
-    to t: JUDOPSM!TransferAttribute
-    extends CreateTransferAttribute {
-  	  guard: s.eContainer.isKindOf(ESM!TransferObjectType)
-  			and not s.eContainer.isTypeOf(ESM!EntityType)
-  			and not s.eContainer.mapping.isDefined()
-  			and (not s.defaultExpression.expression.isDefined() or not (s.defaultExpression.expression.trim().length() > 0))
-      
-      log.debug("Created TransferAttribute for UnmappedTransferObjectType (basic): [" + t.name + "] into [" + t.eContainer.name + "]");
+      s.eContainer.equivalent("CreateDefaultMappedTransferObjectTypeForEntity").attributes.add(t);
+      log.debug("Created TransferAttribute for DefaultTransferObjectType: [" + t.name + "] into [" + t.eContainer.name + "]");
 }

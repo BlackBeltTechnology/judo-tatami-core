@@ -5,42 +5,20 @@ import "../../../../operations/esm/namespace/namespace.eol";
 
 @lazy
 @greedy
-rule CreateCardinalityOfStaticNavigation
-    transform s: ESM!ReferenceTypedElement
-    to t: JUDOPSM!Cardinality
-    extends CreateCardinalityOfReferenceTypedElement {
-}
-
-@lazy
-@greedy
-rule CreateCardinalityOfNavigationProperty
-    transform s: ESM!ReferenceTypedElement
-    to t: JUDOPSM!Cardinality
-    extends CreateCardinalityOfReferenceTypedElement {
-}
-
-@lazy
-@greedy
-rule CreateCardinalityOfTransferObjectRelation
-    transform s: ESM!ReferenceTypedElement
-    to t: JUDOPSM!Cardinality
-    extends CreateCardinalityOfReferenceTypedElement {
-}
-
-@lazy
-@greedy
 rule CreateCardinalityOfTransferObjectRelationBinding
     transform s: ESM!ReferenceTypedElement
-    to t: JUDOPSM!Cardinality
-    extends CreateCardinalityOfReferenceTypedElement {
+    to t: JUDOPSM!Cardinality {
+      t.upper = s.upper;
+      t.lower = s.lower;
 }
 
 @lazy
 @greedy
 rule CreateCardinalityOfTransferObjectRelationDefault
     transform s: ESM!ReferenceTypedElement
-    to t: JUDOPSM!Cardinality
-    extends CreateCardinalityOfReferenceTypedElement {
+    to t: JUDOPSM!Cardinality {
+      t.upper = s.upper;
+      t.lower = s.lower;
 }
 
 @lazy
@@ -72,7 +50,7 @@ rule CreateNavigationProperty
     extends CreateReferenceTypedElement, CreateReferenceAccessor {
       guard: not s.containment and s.property and s.eContainer.isKindOf(ESM!EntityType)
       
-       t.cardinality = s.equivalent("CreateCardinalityOfNavigationProperty");
+       t.cardinality = s.equivalent("CreateCardinalityOfReferenceTypedElement");
        s.eContainer.getPSMEquivalent().navigationProperties.add(t);
        
        log.debug("Created Navigation Property: " + t.name);
@@ -144,27 +122,11 @@ rule CreateStaticNavigation
 	to t : JUDOPSM!StaticNavigation
 	extends CreateReferenceTypedElement, CreateReferenceAccessor {
 
-	    t.cardinality = s.equivalent("CreateCardinalityOfStaticNavigation");
+	    t.cardinality = s.equivalent("CreateCardinalityOfReferenceTypedElement");
 	    s.eContainer.getPSMEquivalent().elements.add(t);
 	
         log.debug("Created Static Navigation: " + t.name);
 }
-
-/*rule CreateStaticNavigationForTransferObjectRelationBinding
-    transform s : ESM!OneWayRelationMember
-    to t : JUDOPSM!StaticNavigation
-    extends CreateReferenceTypedElement, CreateReferenceAccessor {
-        guard:  s.eContainer.isKindOf(ESM!TransferObjectType)
-                and not s.eContainer.isKindOf(ESM!EntityType)
-                and s.property and not s.containment and not s.reverseCascadeDelete
-                and not s.eContainer.mapping.isDefined()
-	    
-	     t.cardinality = s.equivalent("CreateCardinalityOfTransferObjectRelationBinding");
-         t.name = "_" + s.name + "_" + s.eContainer.name;
-         (s.eContainer).eContainer.getPSMEquivalent().elements.add(t);
-         
-         log.debug("Created Static Navigation for transfer object relation binding: " + t.name);
-}*/
 
 rule CreateStaticNavigationForTransferObjectRelationDefault 
     transform s : ESM!OneWayRelationMember
@@ -247,9 +209,9 @@ rule CreateStaticNavigationForExposedGraph
 	extends CreateReferenceTypedElement, CreateReferenceAccessor {
 	  guard: s.isTypeOf(ESM!ExposedGraph)
 	  var ecoreUtil = new Native("org.eclipse.emf.ecore.util.EcoreUtil");
-	  ecoreUtil.getRootContainer(s).equivalent("CreateGeneratedNavigationPackage").elements.add(t);
+	  ecoreUtil.getRootContainer(s).equivalent("CreateGeneratedNavigationRootPackage").elements.add(t);
 	  t.name = "_" + s.name + "_selector_" + s.eContainer.name;
-	  t.cardinality = s.equivalent("CreateCardinalityOfStaticNavigation");
+	  t.cardinality = s.equivalent("CreateCardinalityOfReferenceTypedElement");
 	  t.target = s.target.mapping.target.equivalent("CreateEntityType");
 
 	  log.debug("Created StaticNavigation for ExposedGraph: " + t.name);

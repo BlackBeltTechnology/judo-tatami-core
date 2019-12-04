@@ -181,8 +181,8 @@ public class EsmAccesspoint2PsmAccesspointTest {
         BoundOperation boundOperation = newBoundOperationBuilder().withName("boundOperation")
                 .withBody("body")
                 .withAbstract_(false)
-                .withInput(newParameterBuilder().withName("inputParameter").withLower(1).withUpper(1).withTarget(targetMappedTransferObjectType).build()) //repr?
-                .withOutput(newParameterBuilder().withName("outputParameter").withLower(1).withUpper(1).withTarget(targetMappedTransferObjectType).build()) //repr?
+                .withInput(newParameterBuilder().withName("inputParameter").withLower(1).withUpper(1).withTarget(targetMappedTransferObjectType).build())
+                .withOutput(newParameterBuilder().withName("outputParameter").withLower(1).withUpper(1).withTarget(targetMappedTransferObjectType).build())
                 .withCustomImplementation(false)
                 .build();
 

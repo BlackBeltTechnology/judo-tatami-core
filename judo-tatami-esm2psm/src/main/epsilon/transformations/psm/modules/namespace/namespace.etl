@@ -24,7 +24,7 @@ rule CreateModel
 }
 
 @lazy
-rule CreateGeneratedNavigationPackage
+rule CreateGeneratedNavigationRootPackage
   transform s : ESM!Model
   to t: JUDOPSM!Package {
     t.name = "_generated_navigations";
@@ -33,12 +33,22 @@ rule CreateGeneratedNavigationPackage
 }
 
 @lazy
-rule CreateDefaultTransferObjectTypePackage
+rule CreateGeneratedDefaultTransferObjectTypeRootPackage
   transform s : ESM!Model
   to t: JUDOPSM!Package {
     t.name = "_default_transferobjecttypes";
     s.equivalent("CreateModel").packages.add(t);
     log.debug("Created DefaultTransferObjectTypePackage: " + t.name);
+}
+
+@lazy
+rule CreateGeneratedDefaultTransferObjectTypePackage
+  transform s : ESM!Package
+  to t: JUDOPSM!Package {
+    t.name = "_default_transferobjecttypes_" + s.name;
+    s.eContainer.getPSMGeneratedDefaultTransferObjectNamespaceEquivalent().packages.add(t);
+    
+    log.debug("Created Generated Package for DefaultTransferObjectType: " + t.name);
 }
 
 rule CreatePackage

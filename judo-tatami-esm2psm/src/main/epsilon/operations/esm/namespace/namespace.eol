@@ -5,3 +5,11 @@ operation ESM!Model getPSMEquivalent(): JUDOPSM!Model {
 operation ESM!Package getPSMEquivalent(): JUDOPSM!Package {
         return self.equivalent("CreatePackage");    
 }
+
+operation ESM!Model getPSMGeneratedDefaultTransferObjectNamespaceEquivalent(): JUDOPSM!Package {
+    return self.equivalent("CreateGeneratedDefaultTransferObjectTypeRootPackage");
+}
+
+operation ESM!Package getPSMGeneratedDefaultTransferObjectNamespaceEquivalent(): JUDOPSM!Package {
+    return self.equivalent("CreateGeneratedDefaultTransferObjectTypePackage");
+}
