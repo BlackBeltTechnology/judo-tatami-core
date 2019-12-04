@@ -5,28 +5,29 @@ import "../../../../operations/esm/service/transferObjectType.eol";
 
 @abstract
 rule CreateOperation
-	transform s: ESM!Operation
-	to t: JUDOPSM!OperationDeclaration {
-	  log.debug("creating op: " + s.name);
+    transform s: ESM!Operation
+    to t: JUDOPSM!OperationDeclaration
+    extends CreateNamedElement {
+      log.debug("creating op: " + s.name);
 }
 
 rule CreateBoundOperation
-	transform s: ESM!BoundOperation
-	to t: JUDOPSM!BoundOperation
-	extends CreateOperation, CreateNamedElement {
-	  ESM!TransferObjectType.all.selectOne(tot | tot.operations.includes(s)).equivalent("CreateMappedTransferObjectType").operations.add(t);
-	  if(not s.`abstract`) {
-	  	t.implementation = s.equivalent("CreateOperationBody");
-	  }
-	  log.debug("Created BoundOperation: " + t.name);
+    transform s: ESM!BoundOperation
+    to t: JUDOPSM!BoundOperation
+    extends CreateOperation {
+      s.eContainer.equivalent("CreateMappedTransferObjectType").operations.add(t);
+      if(not s.`abstract`) {
+        t.implementation = s.equivalent("CreateBoundOperationBody");
+      }
+      log.debug("Created BoundOperation: " + t.name);
 }
 
 rule CreateUnboundOperation
 	transform s: ESM!UnboundOperation
 	to t: JUDOPSM!UnboundOperation
-	extends CreateOperation, CreateNamespaceElement {
+	extends CreateNamespaceElement {
 	  ESM!ExposedService.all.selectOne(es | es.`operation` == s).equivalent("CreateExposedService").`operation` = t;
-	  t.implementation = s.equivalent("CreateOperationBody");
+	  t.implementation = s.equivalent("CreateUnboundOperationBody");
 	  log.debug("Created UnboundOperation: " + s.name);
 }
 
@@ -55,12 +56,25 @@ rule CreateParameter
 	  log.debug("Created Parameter: " + t.name);
 }
 
-@greedy
+@abstract
 rule CreateOperationBody
-	transform s: ESM!Operation
-	to t: JUDOPSM!OperationBody {
-	  guard: s.isTypeOf(ESM!UnboundOperation) or (s.isTypeOf(ESM!BoundOperation) and not s.`abstract`)
-	  t.body = s.body;
-	  t.stateful = true;
-	  t.customImplementation = s.customImplementation;
+    transform s: ESM!Operation
+    to t: JUDOPSM!OperationBody {
+      t.body = s.body;
+      t.stateful = true;
+      t.customImplementation = s.customImplementation;
+}
+
+rule CreateUnboundOperationBody
+    transform s: ESM!UnboundOperation
+    to t: JUDOPSM!OperationBody 
+    extends CreateOperationBody {
+        guard: s.isTypeOf(ESM!UnboundOperation)
+}
+
+rule CreateBoundOperationBody
+    transform s: ESM!BoundOperation
+    to t: JUDOPSM!OperationBody 
+    extends CreateOperationBody {
+        guard: s.isTypeOf(ESM!BoundOperation) and not s.`abstract`
 }

@@ -16,10 +16,6 @@ import "modules/derived/primitiveAccessor.etl";
 import "modules/derived/referenceAccessor.etl";
 
 import "modules/service/transferObjectType.etl";
-import "modules/service/transferRelationOfMappedTransferObjectType.etl";
-import "modules/service/transferRelationOfUnmappedTransferObjectType.etl";
-import "modules/service/transferRelationOfDefaultTransferObjectType.etl";
-import "modules/service/transferAttributeOfDefaultTransferObjectType.etl";
 
 import "modules/service/operation.etl";
 

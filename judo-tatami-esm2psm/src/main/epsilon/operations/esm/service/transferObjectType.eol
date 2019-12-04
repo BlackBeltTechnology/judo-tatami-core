@@ -1,12 +1,15 @@
-/*------------ TransferObjectTypes -----------------*/
-operation ESM!TransferObjectType isMapped() : Boolean {
-	return self.mapping.isDefined();
-}
-
 operation ESM!TransferObjectType getPSMEquivalent() : JUDOPSM!TransferObjectType {
-	if(self.isMapped()) {
+	if(self.mapping.isDefined()) {
 		return self.equivalent("CreateMappedTransferObjectType");
 	} else {
 		return self.equivalent("CreateUnmappedTransferObjectType");
 	}
+}
+
+operation ESM!TransferObjectType getPSMTransferObjectTypeEquivalent() : JUDOPSM!TransferObjectType {
+    if (self.isKindOf(ESM!TransferObjectType) and not self.isTypeOf(ESM!EntityType)) {
+	    return self.getPSMEquivalent();
+    } else if (self.isTypeOf(ESM!EntityType)) {
+        return self.equivalent("CreateDefaultMappedTransferObjectTypeForEntity");
+    }
 }
