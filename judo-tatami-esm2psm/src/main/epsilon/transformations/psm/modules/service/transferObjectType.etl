@@ -67,7 +67,7 @@ rule CreateTransferObjectRelationFromOneWayRelationMember
       guard: s.eContainer.isKindOf(ESM!TransferObjectType) 
             and not s.eContainer.isTypeOf(ESM!EntityType)
                 
-      t.defaultValue = s.equivalent("CreateNavigationPropertyForTransferObjectRelationDefault");
+      //FIXME t.defaultValue = s.equivalent("CreateNavigationPropertyForTransferObjectRelationDefault");
       t.range = s.equivalent("CreateNavigationPropertyForTransferObjectRelationRange");
       t.binding = s.equivalent("CreateNavigationPropertyForTransferObjectRelationBinding");
       s.eContainer.getPSMEquivalent().relations.add(t);
@@ -100,8 +100,8 @@ rule CreateTransferObjectRelationFromOneWayRelationMemberForDefaultTransferObjec
     to t: JUDOPSM!TransferObjectRelation
     extends CreateTransferObjectRelationForDefaultTransferObjectType {
       guard: s.eContainer.isTypeOf(ESM!EntityType)
-      t.defaultValue = s.equivalent("CreateNavigationPropertyFromRelationFeatureForEntityTypeDefaultTransferObjectTypeTransferObjectRelationDefault");
-      t.range = s.equivalent("CreateNavigationPropertyFromRelationFeatureForEntityTypeDefaultTransferObjectTypeTransferObjectRelationRange");
+      //FIXME t.defaultValue = s.equivalent("CreateNavigationPropertyFromRelationFeatureForEntityTypeDefaultTransferObjectTypeTransferObjectRelationDefault");
+      //FIXME t.range = s.equivalent("CreateNavigationPropertyFromRelationFeatureForEntityTypeDefaultTransferObjectTypeTransferObjectRelationRange");
       t.binding = s.equivalent("CreateNavigationProperty");
       t.embedded = s.containment;
       
@@ -122,7 +122,7 @@ rule CreateTransferAttribute
     to t: JUDOPSM!TransferAttribute 
     extends CreatePrimitiveTypedElement {
       guard: not s.eContainer.isTypeOf(ESM!EntityType) and s.eContainer.isKindOf(ESM!TransferObjectType)
-      t.defaultValue = s.equivalent("CreateDataPropertyForTransferAttributeDefault");
+      //FIXME t.defaultValue = s.equivalent("CreateDataPropertyForTransferAttributeDefault");
       t.binding = s.equivalent("CreateDataPropertyForTransferAttributeBinding");
       s.eContainer.getPSMEquivalent().attributes.add(t);
       log.debug("Created TransferAttribute: [" + t.name + "] into [" + t.eContainer.name + "]");
@@ -134,7 +134,7 @@ rule CreateTransferAttributeForDefaultTransferObjectType
     extends CreatePrimitiveTypedElement {
       guard: s.eContainer.isTypeOf(ESM!EntityType)
 
-      t.defaultValue = s.equivalent("CreateDataPropertyForEntityTypeDefaultTransferObjectTypeTransferAttributeDefault");
+      //FIXME t.defaultValue = s.equivalent("CreateDataPropertyForEntityTypeDefaultTransferObjectTypeTransferAttributeDefault");
       t.binding = s.equivalent("CreateDataProperty");
 
       s.eContainer.equivalent("CreateDefaultMappedTransferObjectTypeForEntity").attributes.add(t);

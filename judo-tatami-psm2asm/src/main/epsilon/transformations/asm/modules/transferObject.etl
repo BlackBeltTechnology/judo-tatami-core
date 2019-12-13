@@ -175,3 +175,28 @@ rule CreateTransferObjectRelation
 		
 		s.eContainer.asmEquivalent().eStructuralFeatures.add(t);
 	}
+
+rule CreateTransferObjectRelationEmbeddedFlags
+	transform s : JUDOPSM!TransferObjectRelation
+	to t : ASM!EAnnotation {
+		guard: s.embedded
+
+		t.source = asmUtils.getAnnotationUri("embedded");
+
+		var createEntry = new ASM!EStringToStringMapEntry;
+        createEntry.key = "create";
+        createEntry.value = s.embeddedCreate.asString();
+        t.details.add(createEntry);
+
+		var updateEntry = new ASM!EStringToStringMapEntry;
+        updateEntry.key = "update";
+        updateEntry.value = s.embeddedUpdate.asString();
+        t.details.add(updateEntry);
+
+		var deleteEntry = new ASM!EStringToStringMapEntry;
+        deleteEntry.key = "delete";
+        deleteEntry.value = s.embeddedDelete.asString();
+        t.details.add(deleteEntry);
+
+        s.equivalent("CreateTransferObjectRelation").eAnnotations.add(t);
+    }
