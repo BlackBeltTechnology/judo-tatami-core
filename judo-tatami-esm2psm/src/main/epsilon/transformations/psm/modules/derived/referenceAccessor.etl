@@ -75,7 +75,7 @@ rule CreateNavigationPropertyForTransferObjectRelationBinding
 
 rule CreateNavigationPropertyForTransferObjectRelationDefault 
     transform s : ESM!OneWayRelationMember
-    to t : JUDOPSM!NavigationProperty
+    to t : JUDOPSM!StaticNavigation
     extends CreateReferenceTypedElement {
         guard:  s.eContainer.isKindOf(ESM!TransferObjectType)
                 and not s.eContainer.isKindOf(ESM!EntityType)
@@ -90,7 +90,7 @@ rule CreateNavigationPropertyForTransferObjectRelationDefault
             t.cardinality = s.equivalent("CreateCardinalityOfTransferObjectRelationDefault");
             t.getterExpression = s.defaultExpression.getPSMEquivalent();
             t.name = "_" + s.name + "_default_" + esmUtils.getNamespaceElementFQName(s.eContainer).replace("::","_");
-            s.eContainer.mapping.target.getPSMEquivalent().navigationProperties.add(t);
+            s.eContainer.eContainer.getPSMEquivalent().elements.add(t);
             
             log.debug("Created Navigation Property for transfer object relation default: " + t.name);
 }
@@ -171,7 +171,7 @@ rule CreateStaticNavigationForTransferObjectRelationRange
 @greedy
 rule CreateNavigationPropertyFromRelationFeatureForEntityTypeDefaultTransferObjectTypeTransferObjectRelationDefault 
     transform s : ESM!RelationFeature
-    to t : JUDOPSM!NavigationProperty
+    to t : JUDOPSM!StaticNavigation
     extends CreateReferenceTypedElement {
         guard:  s.eContainer.isKindOf(ESM!EntityType)
                 and s.defaultExpression.expression.isDefined() and
@@ -180,7 +180,7 @@ rule CreateNavigationPropertyFromRelationFeatureForEntityTypeDefaultTransferObje
             t.cardinality = s.equivalent("CreateCardinalityOfTransferObjectRelationDefault");
             t.getterExpression = s.defaultExpression.getPSMEquivalent();
             t.name = "_" + s.name + "_default_" + esmUtils.getNamespaceElementFQName(s.eContainer).replace("::","_");
-            s.eContainer.getPSMEquivalent().navigationProperties.add(t);
+            s.eContainer.eContainer.getPSMEquivalent().elements.add(t);
             
             log.debug("Created Navigation Property for entity type's own mapped transfer object type's transfer object relation default: " + t.name);
 }
