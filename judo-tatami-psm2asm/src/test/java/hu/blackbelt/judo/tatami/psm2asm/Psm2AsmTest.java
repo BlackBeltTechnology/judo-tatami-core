@@ -3,10 +3,12 @@ package hu.blackbelt.judo.tatami.psm2asm;
 import hu.blackbelt.epsilon.runtime.execution.api.Log;
 import hu.blackbelt.epsilon.runtime.execution.impl.Slf4jLog;
 import hu.blackbelt.judo.meta.asm.runtime.AsmModel;
+import hu.blackbelt.judo.meta.asm.runtime.AsmUtils;
 import hu.blackbelt.judo.meta.psm.runtime.PsmModel;
 import lombok.extern.slf4j.Slf4j;
+import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
-import org.eclipse.epsilon.common.util.UriUtil;
+import org.eclipse.emf.ecore.EReference;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -14,6 +16,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import static hu.blackbelt.judo.meta.asm.runtime.AsmModel.SaveArguments.asmSaveArgumentsBuilder;
 import static hu.blackbelt.judo.meta.asm.runtime.AsmModel.buildAsmModel;
@@ -21,8 +24,10 @@ import static hu.blackbelt.judo.meta.psm.PsmEpsilonValidator.calculatePsmValidat
 import static hu.blackbelt.judo.meta.psm.PsmEpsilonValidator.validatePsm;
 import static hu.blackbelt.judo.meta.psm.runtime.PsmModel.LoadArguments.psmLoadArgumentsBuilder;
 import static hu.blackbelt.judo.meta.psm.runtime.PsmModel.loadPsmModel;
-import static hu.blackbelt.judo.tatami.psm2asm.Psm2Asm.*;
+import static hu.blackbelt.judo.tatami.psm2asm.Psm2Asm.calculatePsm2AsmTransformationScriptURI;
+import static hu.blackbelt.judo.tatami.psm2asm.Psm2Asm.executePsm2AsmTransformation;
 import static hu.blackbelt.judo.tatami.psm2asm.Psm2AsmTransformationTrace.fromModelsAndTrace;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @Slf4j
@@ -95,7 +100,28 @@ public class Psm2AsmTest {
 
         asmModel.saveAsmModel(asmSaveArgumentsBuilder()
                         .outputStream(new FileOutputStream(new File(TARGET_TEST_CLASSES, NORTHWIND_ASM_MODEL))));
-    }
 
+        AsmUtils asmUtils = new AsmUtils(asmModel.getResourceSet());
+        Optional<EClass> orderInfo = asmUtils.getClassByFQName("demo.services.OrderInfo");
+        assertTrue(orderInfo.isPresent());
+
+        final Optional<EReference> itemsOfOrderInfo = orderInfo.get().getEAllReferences().stream().filter(r -> "items".equals(r.getName())).findAny();
+        assertTrue(itemsOfOrderInfo.isPresent());
+
+        // TODO - enable if released next version of Northwind model with allowed flags
+//        assertTrue(AsmUtils.isAllowedToCreateEmbeddedObject(itemsOfOrderInfo.get()));
+//        assertTrue(AsmUtils.isAllowedToUpdateEmbeddedObject(itemsOfOrderInfo.get()));
+//        assertTrue(AsmUtils.isAllowedToDeleteEmbeddedObject(itemsOfOrderInfo.get()));
+
+        Optional<EClass> orderInfoQuery = asmUtils.getClassByFQName("demo.services.OrderInfoQuery");
+        assertTrue(orderInfoQuery.isPresent());
+
+        final Optional<EReference> itemsOfOrderInfoQuery = orderInfoQuery.get().getEAllReferences().stream().filter(r -> "items".equals(r.getName())).findAny();
+        assertTrue(itemsOfOrderInfoQuery.isPresent());
+
+        assertFalse(AsmUtils.isAllowedToCreateEmbeddedObject(itemsOfOrderInfoQuery.get()));
+        assertFalse(AsmUtils.isAllowedToUpdateEmbeddedObject(itemsOfOrderInfoQuery.get()));
+        assertFalse(AsmUtils.isAllowedToDeleteEmbeddedObject(itemsOfOrderInfoQuery.get()));
+    }
 
 }

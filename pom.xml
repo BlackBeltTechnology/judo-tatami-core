@@ -54,7 +54,7 @@
         <tycho-version>1.4.0</tycho-version>
 
         <epsilon-runtime-version>1.2.0.20191018_105940_dc9d257_develop</epsilon-runtime-version>
-	    <epsilon-runtime-eclipse-version>1.2.0.20191105_183445_4b0b2da_develop</epsilon-runtime-eclipse-version>
+        <epsilon-runtime-eclipse-version>1.2.0.20191105_183445_4b0b2da_develop</epsilon-runtime-eclipse-version>
 
         <emf-genmodel-generator-version>1.0.0.20191105_182930_676cf43_develop</emf-genmodel-generator-version>
         <judo-genmodel-generator-version>1.0.0.20191105_183255_7673428_develop</judo-genmodel-generator-version>
@@ -68,15 +68,13 @@
         <judo-meta-esm-version>1.1.0.20191118_165027_2170ebe_develop</judo-meta-esm-version>
         <judo-meta-esm-import-range>[1.0,1.1)</judo-meta-esm-import-range>
 
-        <!-- There are test failures with the newest version of PSM
-        <judo-meta-psm-version>1.0.0.20191122_135940_760cd02_develop</judo-meta-psm-version>-->
-        <judo-meta-psm-version>1.0.0.20191118_163810_7b48b45_develop</judo-meta-psm-version>
+        <judo-meta-psm-version>1.0.0.20191126_150608_bdee275_develop</judo-meta-psm-version>
         <judo-meta-psm-import-range>[1.0,1.1)</judo-meta-psm-import-range>
 
         <judo-meta-jql-version>1.0.0.20191112_164935_2d7c4d3_develop</judo-meta-jql-version>
         <judo-meta-jql-import-range>[1.0,1.1)</judo-meta-jql-import-range>
 
-        <judo-meta-asm-version>1.0.0.20191203_141736_3b4cb1c_develop</judo-meta-asm-version>
+        <judo-meta-asm-version>1.0.0.20191213_181505_1db2f61_develop</judo-meta-asm-version>
         <judo-meta-asm-import-range>[1.0,1.1)</judo-meta-asm-import-range>
 
         <judo-meta-expression-version>1.0.0.20191119_181630_6c88b5e_develop</judo-meta-expression-version>
