@@ -3,7 +3,7 @@ import "../../../operations/openapi/_importAll.eol";
 import "api.etl";
 
 rule CreateTag
-    transform s : ASM!EAnnotation
+    transform s : ASM!EReference
     to t : OPENAPI!Tag {
         guard: asmUtils.isGraph(s)
         
@@ -12,7 +12,6 @@ rule CreateTag
 		var root = asmUtils.getResolvedRoot(s);
         if (root.isPresent()) {
 		    t.description = "Exposed graph with " + root.get().name + " instances as root";
-		    
 		    asmUtils.getAccessPointOfGraph(s).get().equivalent("CreateOpenAPIAccessPoint").tags.add(t);
         }
 }
