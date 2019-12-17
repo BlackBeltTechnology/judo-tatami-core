@@ -74,7 +74,7 @@
         <judo-meta-jql-version>1.0.0.20191112_164935_2d7c4d3_develop</judo-meta-jql-version>
         <judo-meta-jql-import-range>[1.0,1.1)</judo-meta-jql-import-range>
 
-        <judo-meta-asm-version>1.0.0.20191217_060509_595c364_feature_JNG_883_Update_annotation_of_exposedgraphs_using_EReferences</judo-meta-asm-version>
+        <judo-meta-asm-version>1.0.0.20191217_134006_a431fce_develop</judo-meta-asm-version>
         <judo-meta-asm-import-range>[1.0,1.1)</judo-meta-asm-import-range>
 
         <judo-meta-expression-version>1.0.0.20191119_181630_6c88b5e_develop</judo-meta-expression-version>
