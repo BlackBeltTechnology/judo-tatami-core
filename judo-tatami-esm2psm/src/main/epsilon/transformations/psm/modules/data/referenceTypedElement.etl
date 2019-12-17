@@ -3,33 +3,24 @@ import "../../../../operations/esm/data/_importData.eol";
 
 @lazy
 @greedy
-rule CreateCardinalityOfReferenceTypedElement
+rule CreateCardinalityForReferenceTypedElement
     transform s: ESM!ReferenceTypedElement
     to t: JUDOPSM!Cardinality {
       t.upper = s.upper;
       t.lower = s.lower;
 }
 
-@abstract
-rule CreateReferenceTypedElement
-	transform s: ESM!ReferenceTypedElement
-	to t: JUDOPSM!ReferenceTypedElement
-	extends CreateNamedElement {
-	  if(s.target.isTypeOf(ESM!TransferObjectType) and s.target.mapping.isDefined()) {
-	  	t.target = s.target.mapping.target.getPSMEquivalent();
-	  } else {
-	  	t.target = s.target.getPSMEquivalent();
-	  }
-}
-
 rule CreateContainment
 	transform s: ESM!OneWayRelationMember
 	to t: JUDOPSM!Containment
-	extends CreateReferenceTypedElement {
-	  guard: s.containment and not s.property and s.eContainer.isKindOf(ESM!EntityType)
+	extends CreateNamedElement {
+	  guard: s.eContainer.isKindOf(ESM!EntityType)
+	       and s.relationMemberType = ESM!RelationMemberType#RELATION
+           and s.containment
 	  
-	  t.cardinality = s.equivalent("CreateCardinalityOfReferenceTypedElement");
+	  t.cardinality = s.equivalent("CreateCardinalityForReferenceTypedElement");
 	  s.eContainer.getPSMEquivalent().getRelations().add(t);
+	  t.target = s.target.getPSMEquivalent();
 	  
 	  log.debug("Created Containment: " + t.name);
 }
@@ -37,12 +28,15 @@ rule CreateContainment
 rule CreateAssociationEndWithoutPartner
 	transform s: ESM!OneWayRelationMember
 	to t: JUDOPSM!AssociationEnd
-	extends CreateReferenceTypedElement {
-	  guard: not s.containment and not s.property and s.eContainer.isKindOf(ESM!EntityType)
+	extends CreateNamedElement {
+	  guard: s.eContainer.isKindOf(ESM!EntityType) 
+           and s.relationMemberType = ESM!RelationMemberType#RELATION
+           and not s.containment
 	  
-	  t.cardinality = s.equivalent("CreateCardinalityOfReferenceTypedElement");
+	  t.cardinality = s.equivalent("CreateCardinalityForReferenceTypedElement");
 	  t.reverseCascadeDelete = s.reverseCascadeDelete;
 	  s.eContainer.getPSMEquivalent().relations.add(t);
+	  t.target = s.target.getPSMEquivalent();
 	  
 	  log.debug("Created AssociationEnd: " + t.name);
 }
@@ -50,13 +44,14 @@ rule CreateAssociationEndWithoutPartner
 rule CreateAssociationEndWithPartner
 	transform s: ESM!TwoWayRelationMember
 	to t: JUDOPSM!AssociationEnd
-	extends CreateReferenceTypedElement {
-	  guard: s.eContainer.isKindOf(ESM!EntityType)
+	extends CreateNamedElement {
+	  //guard: s.eContainer.isKindOf(ESM!EntityType)
 	  
-	  t.cardinality = s.equivalent("CreateCardinalityOfReferenceTypedElement");
+	  t.cardinality = s.equivalent("CreateCardinalityForReferenceTypedElement");
 	  t.reverseCascadeDelete = s.reverseCascadeDelete;
 	  t.partner = s.partner.getPSMEquivalent();
 	  s.eContainer.getPSMEquivalent().relations.add(t);
+	  t.target = s.target.getPSMEquivalent();
 	  
 	  log.debug("Created AssociationEnd: " + t.name);
 }

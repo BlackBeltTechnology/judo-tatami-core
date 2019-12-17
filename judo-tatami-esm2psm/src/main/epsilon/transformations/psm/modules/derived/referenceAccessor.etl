@@ -5,7 +5,7 @@ import "../../../../operations/esm/namespace/namespace.eol";
 
 @lazy
 @greedy
-rule CreateCardinalityOfTransferObjectRelationBinding
+rule CreateCardinalityForTransferObjectRelationBinding
     transform s: ESM!ReferenceTypedElement
     to t: JUDOPSM!Cardinality {
       t.upper = s.upper;
@@ -14,7 +14,7 @@ rule CreateCardinalityOfTransferObjectRelationBinding
 
 @lazy
 @greedy
-rule CreateCardinalityOfTransferObjectRelationDefault
+rule CreateCardinalityForTransferObjectRelationDefault
     transform s: ESM!ReferenceTypedElement
     to t: JUDOPSM!Cardinality {
       t.upper = s.upper;
@@ -23,196 +23,128 @@ rule CreateCardinalityOfTransferObjectRelationDefault
 
 @lazy
 @greedy
-rule CreateCardinalityOfTransferObjectRelationRange
+rule CreateCardinalityForTransferObjectRelationRange
     transform s: ESM!ReferenceTypedElement
     to t: JUDOPSM!Cardinality {
 	    t.lower = 0;
 	    t.upper = -1;
 }
 
-@abstract
-rule CreateReferenceAccessor
-    transform s : ESM!ReferenceAccessor
-    to t : JUDOPSM!ReferenceAccessor {
-       if (s.getterExpression.expression.isDefined() and
-           s.getterExpression.expression.trim().length() > 0) {
-           t.getterExpression = s.getterExpression.getPSMEquivalent();
-       }
-       if (s.setterExpression.expression.isDefined() and
-           s.setterExpression.expression.trim().length() > 0) {
-           t.setterExpression = s.setterExpression.getPSMEquivalent();
-       }
-}
-
 rule CreateNavigationProperty
     transform s : ESM!OneWayRelationMember
     to t : JUDOPSM!NavigationProperty
-    extends CreateReferenceTypedElement, CreateReferenceAccessor {
-      guard: not s.containment and s.property and s.eContainer.isKindOf(ESM!EntityType)
+    extends CreateNamedElement {
+      guard: s.eContainer.isKindOf(ESM!EntityType)
+            and s.relationMemberType = ESM!RelationMemberType#PROPERTY
       
-       t.cardinality = s.equivalent("CreateCardinalityOfReferenceTypedElement");
+       t.cardinality = s.equivalent("CreateCardinalityForReferenceTypedElement");
        s.eContainer.getPSMEquivalent().navigationProperties.add(t);
+       t.getterExpression = s.equivalent("CreateGetterExpressionForNavigationProperty");
+       t.target = s.target.getPSMEquivalent();
        
        log.debug("Created Navigation Property: " + t.name);
 }
 
+rule CreateStaticNavigation
+    transform s : ESM!StaticNavigation
+    to t : JUDOPSM!StaticNavigation
+    extends CreateNamedElement {
+
+        t.cardinality = s.equivalent("CreateCardinalityForReferenceTypedElement");
+        t.getterExpression = s.equivalent("CreateGetterExpressionForStaticNavigation");
+        s.eContainer.getPSMEquivalent().elements.add(t);
+        t.target = s.target.getPSMEquivalent();
+        
+        log.debug("Created Static Navigation: " + t.name);
+}
+
+//owner is transfer object type
+
 rule CreateNavigationPropertyForTransferObjectRelationBinding
     transform s : ESM!OneWayRelationMember
     to t : JUDOPSM!NavigationProperty
-    extends CreateReferenceTypedElement, CreateReferenceAccessor {
-        guard:  s.eContainer.isKindOf(ESM!TransferObjectType)
-                and not s.eContainer.isKindOf(ESM!EntityType)
-                and not s.containment and not s.reverseCascadeDelete
-                and s.property
-                and s.eContainer.mapping.isDefined()
+    extends CreateNamedElement {
+        guard:  s.eContainer.mapping.isDefined()
+                and s.target.mapping.isDefined()
+                and s.getterExpression.isDefined() and
+                    s.getterExpression.trim().length() > 0
+
+        t.target = s.target.mapping.target.getPSMEquivalent();
+        t.cardinality = s.equivalent("CreateCardinalityForTransferObjectRelationBinding");
+        t.getterExpression = s.equivalent("CreateGetterExpressionForTransferObjectRelationBinding");
+        t.name = "_" + s.name + "_" + esmUtils.getNamespaceElementFQName(s.eContainer).replace("::","_");
+        s.eContainer.mapping.target.getPSMEquivalent().navigationProperties.add(t);
         
-         t.cardinality = s.equivalent("CreateCardinalityOfTransferObjectRelationBinding");
-         t.name = "_" + s.name + "_" + esmUtils.getNamespaceElementFQName(s.eContainer).replace("::","_");
-         s.eContainer.mapping.target.getPSMEquivalent().navigationProperties.add(t);
-        
-         log.debug("Created Navigation Property for transfer object relation binding: " + t.name);
+        log.debug("Created Navigation Property for transfer object relation binding: " + t.name);
 }
 
-rule CreateNavigationPropertyForTransferObjectRelationDefault 
+@lazy
+rule CreateStaticNavigationForTransferObjectRelationDefaultValue 
     transform s : ESM!OneWayRelationMember
     to t : JUDOPSM!StaticNavigation
-    extends CreateReferenceTypedElement {
-        guard:  s.eContainer.isKindOf(ESM!TransferObjectType)
-                and not s.eContainer.isKindOf(ESM!EntityType)
-                and not s.containment and not s.reverseCascadeDelete
-                and (not s.property
-                       or (s.setterExpression.expression.isDefined() and
-                           s.setterExpression.expression.trim().length() > 0))
-                and s.eContainer.mapping.isDefined()
-                and s.defaultExpression.expression.isDefined() and
-                    s.defaultExpression.expression.trim().length() > 0
-            
+    extends CreateNamedElement {
+        guard:  s.defaultExpression.isDefined()
+                and s.defaultExpression.trim().length() > 0
+                and s.target.mapping.isDefined()
+                
+            t.target = s.target.mapping.target.getPSMEquivalent();
             t.cardinality = s.equivalent("CreateCardinalityOfTransferObjectRelationDefault");
-            t.getterExpression = s.defaultExpression.getPSMEquivalent();
+            t.getterExpression = s.equivalent("CreateGetterExpressionForTransferObjectRelationDefault");
             t.name = "_" + s.name + "_default_" + esmUtils.getNamespaceElementFQName(s.eContainer).replace("::","_");
-            s.eContainer.eContainer.getPSMEquivalent().elements.add(t);
+            (s.eContainer).eContainer.getPSMEquivalent().elements.add(t);
             
-            log.debug("Created Navigation Property for transfer object relation default: " + t.name);
+            log.debug("Created Static Navigation for transfer object relation default: " + t.name);
 }
 
+@lazy
 rule CreateNavigationPropertyForTransferObjectRelationRange 
     transform s : ESM!OneWayRelationMember
     to t : JUDOPSM!NavigationProperty
-    extends CreateReferenceTypedElement {
-        guard:  s.eContainer.isKindOf(ESM!TransferObjectType)
-                and not s.eContainer.isKindOf(ESM!EntityType)
-                and not s.containment and not s.reverseCascadeDelete
-                and (not s.property
-                        or (s.setterExpression.expression.isDefined() and
-                            s.setterExpression.expression.trim().length() > 0))
-                and s.eContainer.mapping.isDefined()
-                and s.rangeExpression.expression.isDefined() and
-                    s.rangeExpression.expression.trim().length() > 0
+    extends CreateNamedElement {
+        guard: s.eContainer.mapping.isDefined()
+                and s.target.mapping.isDefined()
+                and s.rangeExpression.isDefined() and
+                    s.rangeExpression.trim().length() > 0
             
+            t.target = s.target.mapping.target.getPSMEquivalent();
             t.cardinality = s.equivalent("CreateCardinalityOfTransferObjectRelationRange");
-            t.getterExpression = s.rangeExpression.getPSMEquivalent();
+            t.getterExpression = s.equivalent("CreateGetterExpressionForTransferObjectRelationRange");
             t.name = "_" + s.name + "_range_" + esmUtils.getNamespaceElementFQName(s.eContainer).replace("::","_");
             s.eContainer.mapping.target.getPSMEquivalent().navigationProperties.add(t);
             
             log.debug("Created Navigation Property for transfer object relation range: " + t.name);
 }
 
-rule CreateStaticNavigation
-	transform s : ESM!StaticNavigation
-	to t : JUDOPSM!StaticNavigation
-	extends CreateReferenceTypedElement, CreateReferenceAccessor {
-
-	    t.cardinality = s.equivalent("CreateCardinalityOfReferenceTypedElement");
-	    s.eContainer.getPSMEquivalent().elements.add(t);
-	
-        log.debug("Created Static Navigation: " + t.name);
-}
-
-rule CreateStaticNavigationForTransferObjectRelationDefault 
-    transform s : ESM!OneWayRelationMember
-    to t : JUDOPSM!StaticNavigation
-    extends CreateReferenceTypedElement {
-        guard:  s.eContainer.isKindOf(ESM!TransferObjectType)
-                and not s.eContainer.isKindOf(ESM!EntityType)
-                and not s.containment and not s.reverseCascadeDelete
-                and not s.property
-                and not s.eContainer.mapping.isDefined()
-                and s.defaultExpression.expression.isDefined() and
-                    s.defaultExpression.expression.trim().length() > 0
-            
-            t.cardinality = s.equivalent("CreateCardinalityOfTransferObjectRelationDefault");
-            t.getterExpression = s.defaultExpression.getPSMEquivalent();
-            t.name = "_" + s.name + "_default_" + s.eContainer.name;
-            (s.eContainer).eContainer.getPSMEquivalent().elements.add(t);
-            
-            log.debug("Created Static Navigation for transfer object relation default: " + t.name);
-}
-
-rule CreateStaticNavigationForTransferObjectRelationRange 
-    transform s : ESM!OneWayRelationMember
-    to t : JUDOPSM!StaticNavigation
-    extends CreateReferenceTypedElement {
-        guard:  s.eContainer.isKindOf(ESM!TransferObjectType)
-                and not s.eContainer.isKindOf(ESM!EntityType)
-                and not s.containment and not s.reverseCascadeDelete
-                and not s.property
-                and not s.eContainer.mapping.isDefined()
-                and s.rangeExpression.expression.isDefined() and
-                    s.rangeExpression.expression.trim().length() > 0
-            
-            t.cardinality = s.equivalent("CreateCardinalityOfTransferObjectRelationRange");
-            t.getterExpression = s.rangeExpression.getPSMEquivalent();
-            t.name = "_" + s.name + "_range_" + s.eContainer.name;
-            (s.eContainer).eContainer.getPSMEquivalent().elements.add(t);
-            
-            log.debug("Created Static Navigation for transfer object relation range: " + t.name);
-}
-
+@lazy
 @greedy
-rule CreateNavigationPropertyFromRelationFeatureForEntityTypeDefaultTransferObjectTypeTransferObjectRelationDefault 
-    transform s : ESM!RelationFeature
-    to t : JUDOPSM!StaticNavigation
-    extends CreateReferenceTypedElement {
-        guard:  s.eContainer.isKindOf(ESM!EntityType)
-                and s.defaultExpression.expression.isDefined() and
-                    s.defaultExpression.expression.trim().length() > 0
-            
-            t.cardinality = s.equivalent("CreateCardinalityOfTransferObjectRelationDefault");
-            t.getterExpression = s.defaultExpression.getPSMEquivalent();
-            t.name = "_" + s.name + "_default_" + esmUtils.getNamespaceElementFQName(s.eContainer).replace("::","_");
-            s.eContainer.eContainer.getPSMEquivalent().elements.add(t);
-            
-            log.debug("Created Navigation Property for entity type's own mapped transfer object type's transfer object relation default: " + t.name);
+rule CreateCardinalityForExposedGraphSelector
+    transform s: ESM!ReferenceTypedElement
+    to t: JUDOPSM!Cardinality {
+      t.upper = s.upper;
+      t.lower = s.lower;
 }
 
+@lazy
 @greedy
-rule CreateNavigationPropertyFromRelationFeatureForEntityTypeDefaultTransferObjectTypeTransferObjectRelationRange 
-    transform s : ESM!RelationFeature
-    to t : JUDOPSM!NavigationProperty
-    extends CreateReferenceTypedElement {
-        guard:  s.eContainer.isKindOf(ESM!EntityType)
-                and s.rangeExpression.expression.isDefined() and
-                    s.rangeExpression.expression.trim().length() > 0
-            
-            t.cardinality = s.equivalent("CreateCardinalityOfTransferObjectRelationRange");
-            t.getterExpression = s.rangeExpression.getPSMEquivalent();
-            t.name = "_" + s.name + "_range_" + esmUtils.getNamespaceElementFQName(s.eContainer).replace("::","_");
-            s.eContainer.getPSMEquivalent().navigationProperties.add(t);
-            
-            log.debug("Created Navigation Property for entity type's own mapped transfer object type's transfer object relation range: " + t.name);
+rule CreateGetterExpressionForExposedGraphSelector
+    transform s : ESM!StaticNavigation
+    to t : JUDOPSM!ReferenceExpressionType {
+        t.expression = s.getterExpression;    
 }
 
 @greedy
 rule CreateStaticNavigationForExposedGraph
 	transform s : ESM!StaticNavigation
 	to t : JUDOPSM!StaticNavigation
-	extends CreateReferenceTypedElement, CreateReferenceAccessor {
+	extends CreateNamedElement {
 	  guard: s.isTypeOf(ESM!ExposedGraph)
 	  var ecoreUtil = new Native("org.eclipse.emf.ecore.util.EcoreUtil");
 	  ecoreUtil.getRootContainer(s).equivalent("CreateGeneratedNavigationRootPackage").elements.add(t);
 	  t.name = "_" + s.name + "_selector_" + s.eContainer.name;
-	  t.cardinality = s.equivalent("CreateCardinalityOfReferenceTypedElement");
+	  t.cardinality = s.equivalent("CreateCardinalityForExposedGraphSelector");
+	  t.getterExpression = s.equivalent("CreateGetterExpressionForExposedGraphSelector");
 	  t.target = s.target.mapping.target.equivalent("CreateEntityType");
+	 // t.getter = 
 
 	  log.debug("Created StaticNavigation for ExposedGraph: " + t.name);
 }

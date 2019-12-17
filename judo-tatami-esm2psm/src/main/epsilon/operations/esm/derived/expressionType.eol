@@ -1,4 +1,4 @@
-operation ESM!DataExpressionType getPSMEquivalent(): JUDOPSM!DataExpressionType {
+/*operation ESM!DataExpressionType getPSMEquivalent(): JUDOPSM!DataExpressionType {
 	return self.equivalent("CreateDataExpressionType");
 }
 
@@ -17,3 +17,4 @@ operation ESM!ReferenceExpressionType getPSMEquivalent(): JUDOPSM!ReferenceExpre
 operation ESM!ReferenceSelectorType getPSMEquivalent(): JUDOPSM!ReferenceSelectorType {
 	return self.equivalent("CreateReferenceSelectorType");
 }
+*/

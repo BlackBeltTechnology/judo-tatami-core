@@ -13,6 +13,7 @@ rule CreateAccessPoint
 rule CreateExposedService
 	transform s: ESM!ExposedService
 	to t: JUDOPSM!ExposedService {
+	
 	  t.`operation` = s.`operation`.equivalent("CreateUnboundOperation");
 	  s.eContainer.equivalent("CreateAccessPoint").exposedServices.add(t);
 
@@ -20,15 +21,23 @@ rule CreateExposedService
 }
 
 rule CreateExposedGraph
-	transform s: ESM!ExposedGraph
-	to t: JUDOPSM!ExposedGraph
-	extends CreateNamedElement {
-	  t.mappedTransferObjectType = s.target.equivalent("CreateMappedTransferObjectType");
-	  t.selector = s.equivalent("CreateStaticNavigationForExposedGraph");
-	  t.cardinality = s.equivalent("CreateCardinalityOfExposedGraph");
-	  s.eContainer.equivalent("CreateAccessPoint").exposedGraphs.add(t);
+    transform s: ESM!ExposedGraph
+    to t: JUDOPSM!ExposedGraph
+    extends CreateNamedElement {
+    
+      //exposed graph targetje nem lehet entity type is? és ekkor a default t.o lesz a mappedTransferObject
+      t.mappedTransferObjectType = s.target.getPSMTransferObjectTypeEquivalent();
+     
+      t.selector = s.equivalent("CreateStaticNavigationForExposedGraph"); 
+      t.cardinality = s.equivalent("CreateCardinalityOfExposedGraph");
+      s.eContainer.equivalent("CreateAccessPoint").exposedGraphs.add(t);
+      
+      t.get = s.equivalent("CreateGetOperationForExposedGraph");
+      t.create = s.equivalent("CreateCreateOperationForExposedGraph");
+      t.update = s.equivalent("CreateUpdateOperationForExposedGraph");
+      t.`delete` = s.equivalent("CreateDeleteOperationForExposedGraph"); 
 
-	  log.debug("Created ExposedGraph: " + t.name);
+      log.debug("Created ExposedGraph: " + t.name);
 }
 
 @lazy

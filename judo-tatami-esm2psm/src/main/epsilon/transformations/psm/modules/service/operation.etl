@@ -7,13 +7,17 @@ rule CreateBoundOperation
     transform s: ESM!BoundOperation
     to t: JUDOPSM!BoundOperation
     extends CreateNamedElement {
-      s.eContainer.equivalent("CreateMappedTransferObjectType").operations.add(t);
+
+    //ha esm-beli entity type-ban van, a defaultba kell tenni, ugye?
+      s.eContainer.getPSMTransferObjectTypeEquivalent().operations.add(t);
+      
       if(not s.`abstract`) {
         t.implementation = s.equivalent("CreateOperationBody");
       }
       log.debug("Created BoundOperation: " + t.name);
 }
 
+@greedy
 rule CreateUnboundOperation
 	transform s: ESM!UnboundOperation
 	to t: JUDOPSM!UnboundOperation
@@ -22,9 +26,25 @@ rule CreateUnboundOperation
 	  log.debug("Created UnboundOperation: " + s.name);
 }
 
+/*
+rule CreateUnboundOperationWithRelation
+    transform s : ESM!RelationFeature
+    to t: JUDOPSM!UnboundOperationWithRelation
+   {
+        log.debug("Created UnboundOperationWithRelation: " + s.name);
+}*/
+
+/*
+rule CreateBoundOperationWithRelation
+    transform s : ESM!RelationFeature
+    to t: JUDOPSM!UnboundOperationWithRelation
+   {
+        log.debug("Created BoundOperationWithRelation: " + s.name);
+}*/
+
 @lazy
 @greedy
-rule CreateCardinalityOfParameter
+rule CreateCardinalityForParameter
 	transform s: ESM!Parameter
 	to t: JUDOPSM!Cardinality {
 	  t.upper = s.upper;
@@ -35,8 +55,12 @@ rule CreateParameter
 	transform s : ESM!Parameter
 	to t : JUDOPSM!Parameter
 	extends CreateNamedElement {
-	  t.cardinality = s.equivalent("CreateCardinalityOfParameter");
-	  t.type = s.target.getPSMEquivalent();
+	
+	  t.cardinality = s.equivalent("CreateCardinalityForParameter");
+	  
+	  //ha entity type-ra mutat, PSM-ben a transfer object megfelelőre kell mutatnia, ugye?
+	  t.type = s.target.getPSMTransferObjectTypeEquivalent();
+	  
 	  if (s.eContainer.input == s) {
 	  	s.eContainer.getPSMEquivalent().input = t;
 	  } else if (s.eContainer.output == s) {
@@ -53,6 +77,167 @@ rule CreateOperationBody
     transform s: ESM!Operation
     to t: JUDOPSM!OperationBody {
       t.body = s.body;
+      
+      //ez direkt van?
       t.stateful = true;
+      
       t.customImplementation = s.customImplementation;
 }
+
+//for exposed graph
+
+//get operation
+@lazy
+rule CreateGetOperationForExposedGraph
+    transform s : ESM!ExposedGraph
+    to t : JUDOPSM!UnboundOperation {
+        t.name = "get";
+        //no input
+        t.output = s.equivalent("CreateOutputForGetOperationForExposedGraph");
+        
+        //??
+        t.implementation = s.equivalent("CreateGetImplementationFromExposedGraph");
+        (s.eContainer).eContainer.getPSMEquivalent().elements.add(t);
+}
+
+@lazy
+rule CreateGetImplementationFromExposedGraph
+    transform s : ESM!ExposedGraph
+    to t : JUDOPSM!OperationBody {
+        
+}
+
+@lazy
+rule CreateCreateImplementationFromExposedGraph
+    transform s : ESM!ExposedGraph
+    to t : JUDOPSM!OperationBody {
+        
+}
+
+@lazy
+rule CreateOutputForGetOperationForExposedGraph
+    transform s : ESM!ExposedGraph
+    to t : JUDOPSM!Parameter {
+        t.name = "output";
+        t.cardinality = s.equivalent("CreateCardinalityForOutputForGetOperation");
+        t.type = s.target.getPSMTransferObjectTypeEquivalent();
+    }
+    
+@lazy
+rule CreateCardinalityForOutputForGetOperation
+    transform s : ESM!ExposedGraph
+    to t : JUDOPSM!Cardinality {
+        t.lower = s.lower;
+        t.upper = s.upper;
+}
+
+// create operation
+@lazy
+rule CreateCreateOperationForExposedGraph
+    transform s : ESM!ExposedGraph
+    to t : JUDOPSM!UnboundOperation {
+    guard: s.createable
+    
+        t.name = "create";
+        t.input = s.equivalent("CreateInputForCreateOperationForExposedGraph");
+        t.output = s.equivalent("CreateOutputForCreateOperationForExposedGraph");
+        
+        //??
+        t.implementation = s.equivalent("CreateCreateImplementationFromExposedGraph");
+        (s.eContainer).eContainer.getPSMEquivalent().elements.add(t);
+    }
+
+@lazy
+rule CreateInputForCreateOperationForExposedGraph
+    transform s : ESM!ExposedGraph
+    to t : JUDOPSM!Parameter {
+        t.name = "input";
+        t.cardinality = s.equivalent("CreateCardinalityForInputForCreateOperation");
+        t.type = s.target.getPSMTransferObjectTypeEquivalent();
+    }
+    
+@lazy
+rule CreateCardinalityForInputForCreateOperation
+    transform s : ESM!ExposedGraph
+    to t : JUDOPSM!Cardinality {
+        t.lower = 1;
+        t.upper = 1;
+}
+
+@lazy
+rule CreateOutputForCreateOperationForExposedGraph
+    transform s : ESM!ExposedGraph
+    to t : JUDOPSM!Parameter {
+        t.name = "output";
+        t.cardinality = s.equivalent("CreateCardinalityForOutputForCreateOperation");
+        t.type = s.target.getPSMTransferObjectTypeEquivalent();
+    }
+    
+@lazy
+rule CreateCardinalityForOutputForCreateOperation
+    transform s : ESM!ExposedGraph
+    to t : JUDOPSM!Cardinality {
+        t.lower = 1;
+        t.upper = 1;
+}
+
+// update operation
+@lazy
+rule CreateUpdateOperationForExposedGraph
+    transform s : ESM!ExposedGraph
+    to t : JUDOPSM!BoundOperation {
+    guard: s.updateable
+        t.name = "update";
+        t.input = s.equivalent("CreateInputForUpdateOperationForExposedGraph");
+        t.output = s.equivalent("CreateOutputForUpdateOperationForExposedGraph");
+        s.target.getPSMTransferObjectTypeEquivalent().operations.add(t);
+    }
+
+@lazy
+rule CreateInputForUpdateOperationForExposedGraph
+    transform s : ESM!ExposedGraph
+    to t : JUDOPSM!Parameter {
+        t.name = "input";
+        t.cardinality = s.equivalent("CreateCardinalityForInputForUpdateOperation");
+        t.type = s.target.getPSMTransferObjectTypeEquivalent();
+        //t.implementation = ?
+    }
+    
+@lazy
+rule CreateCardinalityForInputForUpdateOperation
+    transform s : ESM!ExposedGraph
+    to t : JUDOPSM!Cardinality {
+        t.lower = 1;
+        t.upper = 1;
+}
+
+@lazy
+rule CreateOutputForUpdateOperationForExposedGraph
+    transform s : ESM!ExposedGraph
+    to t : JUDOPSM!Parameter {
+        t.name = "output";
+        t.cardinality = s.equivalent("CreateCardinalityForOutputForUpdateOperation");
+        t.type = s.target.getPSMTransferObjectTypeEquivalent();
+    }
+    
+@lazy
+rule CreateCardinalityForOutputForUpdateOperation
+    transform s : ESM!ExposedGraph
+    to t : JUDOPSM!Cardinality {
+        t.lower = 1;
+        t.upper = 1;
+}
+
+// delete operation
+@lazy
+rule CreateDeleteOperationForExposedGraph
+    transform s : ESM!ExposedGraph
+    to t : JUDOPSM!BoundOperation {
+    guard: s.deleteable
+        //no input
+        //np output    
+        t.name = "delete";
+        s.target.getPSMTransferObjectTypeEquivalent().operations.add(t);
+        //t.implementation = ?
+    }
+

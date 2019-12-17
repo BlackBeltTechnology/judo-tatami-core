@@ -1,51 +1,74 @@
-@abstract
+
+@lazy
+rule CreateLogicalExpressionTypeForInvariantConstraint
+    transform s : ESM!InvariantConstraint
+    to t : JUDOPSM!LogicalExpressionType {
+        t.expression = s.expression;
+}
+
+@lazy
+rule CreateGetterExpressionForDataProperty
+    transform s : ESM!DataMember
+    to t: JUDOPSM!DataExpressionType {
+    guard: s.getterExpression.isDefined()
+            and s.getterExpression.trim().length() > 0   
+        t.expression = s.getterExpression;
+}
+
+@lazy
+rule CreateGetterExpressionForStaticData
+    transform s : ESM!StaticData
+    to t : JUDOPSM!DataExpressionType {
+     guard: s.getterExpression.isDefined()
+            and s.getterExpression.trim().length() > 0
+         t.expression = s.getterExpression;
+}
+
+@lazy
+rule CreateGetterExpressionForStaticDataAsTransferAttributeDefaultValue
+    transform s : ESM!DataMember
+       to t: JUDOPSM!DataExpressionType {
+     t.expression = s.defaultExpression;
+}
+
+@lazy
+rule CreateGetterExpressionForNavigationProperty
+    transform s : ESM!OneWayRelationMember
+    to t : JUDOPSM!ReferenceExpressionType {
+        t.expression = s.getterExpression;    
+}
+
+@lazy
+rule CreateGetterExpressionForStaticNavigation
+    transform s : ESM!StaticNavigation
+    to t : JUDOPSM!ReferenceExpressionType {
+        t.expression = s.getterExpression;    
+}
+
+@lazy
+rule CreateGetterExpressionForTransferObjectRelationDefault
+    transform s : ESM!OneWayRelationMember
+    to t : JUDOPSM!ReferenceExpressionType {
+        t.expression = s.defaultExpression;
+}
+
+@lazy
+rule CreateGetterExpressionForTransferObjectRelationRange
+    transform s : ESM!OneWayRelationMember
+    to t : JUDOPSM!ReferenceExpressionType {
+        t.expression = s.rangeExpression;
+}
+
+@lazy
+rule CreateGetterExpressionForTransferObjectRelationBinding
+    transform s : ESM!OneWayRelationMember
+    to t : JUDOPSM!ReferenceExpressionType {
+        t.expression = s.getterExpression;
+}
+
 @greedy
-rule CreateExpressionType
-	transform s : ESM!ExpressionType
-	to t : JUDOPSM!ExpressionType {
-	   t.expression = s.expression;
-	  switch (s.dialect) {
-            case ESM!ExpressionDialect#JQL: t.dialect = JUDOPSM!ExpressionDialect#JQL;
-            case ESM!ExpressionDialect#XML: t.dialect = JUDOPSM!ExpressionDialect#XML;
-    }
-}
-
-@lazy
-rule CreateDataExpressionType
-	transform s : ESM!DataExpressionType
-	to t : JUDOPSM!DataExpressionType
-	extends CreateExpressionType {
-	  log.debug("Created DataExpressionType: ");
-}
-
-@lazy
-rule CreateLogicalExpressionType
-	transform s : ESM!LogicalExpressionType
-	to t : JUDOPSM!LogicalExpressionType
-	extends CreateExpressionType {
-	  log.debug("Created LogicalExpressionType: ");
-}
-
-@lazy
-rule CreateAttributeSelectorType
-	transform s : ESM!AttributeSelectorType
-	to t : JUDOPSM!AttributeSelectorType
-	extends CreateExpressionType {
-	  log.debug("Created AttributeSelectorType: ");
-}
-
-@lazy
-rule CreateReferenceExpressionType
-	transform s : ESM!ReferenceExpressionType
-	to t : JUDOPSM!ReferenceExpressionType
-	extends CreateExpressionType {
-	  log.debug("Created ReferenceExpressionType: ");
-}
-
-@lazy
-rule CreateReferenceSelectorType
-	transform s : ESM!ReferenceSelectorType
-	to t : JUDOPSM!ReferenceSelectorType
-	extends CreateExpressionType {
-	  log.debug("Created ReferenceSelectorType: ");
+rule CreateGetterExpressionForStaticNavigationForExposedGraph
+    transform s : ESM!StaticNavigation
+    to t : JUDOPSM!ReferenceExpressionType {
+        t.expression = s.getterExpression;    
 }
