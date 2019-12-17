@@ -20,6 +20,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import com.google.common.collect.ImmutableList;
+import com.jcabi.aspects.Immutable;
 
 import java.io.File;
 import java.util.Iterator;
@@ -110,8 +111,9 @@ public class EsmMeasure2PsmMeasureTest {
     void testCreateMeasure() throws Exception {
         testName = "CreateMeasure";
 
-        Measure measure = newMeasureBuilder().withName("measure").withSymbol("m").build();
-        
+        Unit unit = newUnitBuilder().withName("base").withSymbol("b").build();
+        Measure measure = newMeasureBuilder().withName("measure").withSymbol("m").withUnits(unit).build();
+       
         final Model model = newModelBuilder()
                 .withName("TestModel")
                 .withElements(measure)
@@ -132,7 +134,7 @@ public class EsmMeasure2PsmMeasureTest {
     void testCreateDerivedMeasure() throws Exception {
         testName = "CreateDerivedMeasure";
         
-        Unit unit = newUnitBuilder().withName("unit").withSymbol("u").build();
+        Unit unit = newUnitBuilder().withName("base").withSymbol("b").build();
         MeasureDefinitionTerm term = newMeasureDefinitionTermBuilder().withExponent(5).withUnit(unit).build();
         
         Measure measure = newMeasureBuilder().withName("measure").withSymbol("m")
@@ -161,8 +163,8 @@ public class EsmMeasure2PsmMeasureTest {
         testName = "CreateUnit";
         
         Unit unit = newUnitBuilder().withName("unit").withSymbol("u")
-        			.withRateDivisor(1.2)
-        			.withRateDividend(1.3)
+        			.withRateDivisor(2)
+        			.withRateDividend(2)
         			.build();
         Measure measure = newMeasureBuilder().withName("measure").withSymbol("m")
         		.withUnits(unit)
@@ -192,8 +194,8 @@ public class EsmMeasure2PsmMeasureTest {
         testName = "CreateUnit";
         
         Unit unit = newUnitBuilder().withName("unit").withSymbol("u")
-    			.withRateDivisor(1.2)
-    			.withRateDividend(1.3)
+    			.withRateDivisor(2)
+    			.withRateDividend(2)
         		.build();
         MeasureDefinitionTerm term = newMeasureDefinitionTermBuilder().withExponent(5).withUnit(unit).build();
         
@@ -226,8 +228,8 @@ public class EsmMeasure2PsmMeasureTest {
         testName = "CreateDurationUnit";
         
         DurationUnit unit = newDurationUnitBuilder().withName("unit").withSymbol("u")
-        			.withRateDivisor(1.2)
-        			.withRateDividend(1.3)
+        			.withRateDivisor(2)
+        			.withRateDividend(2)
         			.withUnitType(DurationType.DAY)
         			.build();
         Measure measure = newMeasureBuilder().withName("measure").withSymbol("m")
@@ -259,8 +261,8 @@ public class EsmMeasure2PsmMeasureTest {
         testName = "CreateDurationUnit";
         
         DurationUnit unit = newDurationUnitBuilder().withName("unit").withSymbol("u")
-    			.withRateDivisor(1.2)
-    			.withRateDividend(1.3)
+    			.withRateDivisor(2)
+    			.withRateDividend(2)
     			.withUnitType(DurationType.MILLISECOND)
         		.build();
         MeasureDefinitionTerm term = newMeasureDefinitionTermBuilder().withExponent(5).withUnit(unit).build();

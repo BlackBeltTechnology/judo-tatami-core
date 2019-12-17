@@ -1,10 +1,10 @@
 package hu.blackbelt.judo.tatami.esm2psm;
 
-import static hu.blackbelt.judo.meta.esm.expression.util.builder.ExpressionBuilders.newLogicalExpressionTypeBuilder;
 import static hu.blackbelt.judo.meta.esm.namespace.util.builder.NamespaceBuilders.newModelBuilder;
 import static hu.blackbelt.judo.meta.esm.runtime.EsmModel.buildEsmModel;
 import static hu.blackbelt.judo.meta.esm.structure.util.builder.StructureBuilders.newEntityTypeBuilder;
 import static hu.blackbelt.judo.meta.esm.structure.util.builder.StructureBuilders.newInvariantConstraintBuilder;
+import static hu.blackbelt.judo.meta.esm.structure.util.builder.StructureBuilders.newMappingBuilder;
 import static hu.blackbelt.judo.meta.psm.runtime.PsmModel.buildPsmModel;
 import static hu.blackbelt.judo.meta.psm.runtime.PsmModel.SaveArguments.psmSaveArgumentsBuilder;
 import static hu.blackbelt.judo.tatami.esm2psm.Esm2Psm.calculateEsm2PsmTransformationScriptURI;
@@ -109,9 +109,10 @@ public class EsmStructure2PsmConstraintTest {
         testName = "CreateInvariantConstraint";
         
         InvariantConstraint constraint = newInvariantConstraintBuilder().withName("constraint")
-        		.withExpression(newLogicalExpressionTypeBuilder().withExpression("exp").build()).build();
+        		.withExpression("exp").build();
         
         EntityType entityType = newEntityTypeBuilder().withName("entityType").withConstraints(constraint).build();
+        entityType.setMapping(newMappingBuilder().withTarget(entityType).build());
        
         final Model model = newModelBuilder()
                 .withName("TestModel")
@@ -129,7 +130,7 @@ public class EsmStructure2PsmConstraintTest {
         
         assertThat(psmConstraint.get().getName(), IsEqual.equalTo(constraint.getName()));
         assertThat(psmConstraint.get().getConstrained(), IsEqual.equalTo(psmEntityType.get()));
-        assertThat(psmConstraint.get().getExpression().getExpression(), IsEqual.equalTo(constraint.getExpression().getExpression()));
+        assertThat(psmConstraint.get().getExpression().getExpression(), IsEqual.equalTo(constraint.getExpression()));
     }
 
     static <T> Stream<T> asStream(Iterator<T> sourceIterator, boolean parallel) {
