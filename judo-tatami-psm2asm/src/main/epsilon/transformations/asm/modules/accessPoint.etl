@@ -38,47 +38,35 @@ rule CreateExposedByAnnotationForUnboundOperation
         s.`operation`.equivalent("CreateUnboundOperation").eAnnotations.add(t);
 }
 
-rule CreateExposedGraphReference
-    transform s : JUDOPSM!ExposedGraph
-    to t : ASM!EReference {
-        t.name = s.name;
-
-        t.lowerBound = s.cardinality.lower;
-        t.upperBound = s.cardinality.upper;
-        t.eType = s.mappedTransferObjectType.equivalent("CreateMappedTransferObject");
-        t.derived = true;
-
-        s.eContainer.equivalent("CreateAccessPoint").eStructuralFeatures.add(t);
-}
-
-rule CreateExposedGraphReferenceBinding
+rule CreateAnnotationForExposedGraph
     transform s : JUDOPSM!ExposedGraph
     to t : ASM!EAnnotation {
-        t.source = extendedMetadataURI + "/expression";
-
-        var getter = new ASM!EStringToStringMapEntry;
-        getter.key = "getter";
-        getter.value = s.selector.getterExpression.expression;
-
-        var getterDialect = new ASM!EStringToStringMapEntry;
-        getterDialect.key = "getter.dialect";
-        getterDialect.value = s.selector.getterExpression.dialect.asString();
-
-        t.details.add(getter);
-        t.details.add(getterDialect);
-
-        if (s.selector.setterExpression.isDefined()) {
-            var setter = new ASM!EStringToStringMapEntry;
-            setter.key = "setter";
-            setter.value = s.selector.setterExpression.expression;
-
-            var setterDialect = new ASM!EStringToStringMapEntry;
-            setterDialect.key = "setter.dialect";
-            setterDialect.value = s.selector.setterExpression.dialect.asString();
-
-            t.details.add(setter);
-            t.details.add(setterDialect);
-        }
-
-        s.equivalent("CreateExposedGraphReference").eAnnotations.add(t);
+        t.source = asmUtils.getAnnotationUri("graph");
+        
+        var exposedBy = new ASM!EStringToStringMapEntry;
+        exposedBy.key = "value";
+        exposedBy.value = s.name;
+        t.details.add(exposedBy);
+        
+        var root = new ASM!EStringToStringMapEntry;
+        root.key = "root";
+        root.value = asmUtils.getClassifierFQName(s.mappedTransferObjectType.equivalent("CreateMappedTransferObject"));
+        t.details.add(root);
+        
+        var selector = new ASM!EStringToStringMapEntry;
+        selector.key = "selector";
+        selector.value = s.selector.getterExpression.expression;
+        t.details.add(selector);
+        
+        var selectorDialect = new ASM!EStringToStringMapEntry;
+        selectorDialect.key = "selector.dialect";
+        selectorDialect.value = s.selector.getterExpression.dialect.asString();
+        t.details.add(selectorDialect);
+        
+        var collection = new ASM!EStringToStringMapEntry;
+        collection.key = "collection";
+        collection.value = (s.selector.cardinality.upper > 1 or s.selector.cardinality.upper == -1).asString();
+        t.details.add(collection);
+        
+        s.eContainer.equivalent("CreateAccessPoint").eAnnotations.add(t);
 }
