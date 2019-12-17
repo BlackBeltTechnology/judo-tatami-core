@@ -17,7 +17,7 @@ public interface [%= dto.getClassName() %] {
     }
 
     static [%= dto.getClassName() %]Builder [%= dto.getClassName() %]Builder() {
-        return MapBuilderProxy.newInstance([%= dto.getClassName() %]Builder.class, [%= dto.getClassName() %].class);
+        return MapBuilderProxy.newInstance([%= dto.getClassName() %]Builder.class, [%= dto.getClassName() %].class, "with");
     }
 
     public [%= dto.idType() %] get__identifier();
