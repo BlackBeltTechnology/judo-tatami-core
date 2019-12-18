@@ -59,7 +59,7 @@ rule CreateStaticNavigation
 }
 
 //owner is transfer object type
-
+@lazy
 rule CreateNavigationPropertyForTransferObjectRelationBinding
     transform s : ESM!OneWayRelationMember
     to t : JUDOPSM!NavigationProperty
@@ -88,7 +88,7 @@ rule CreateStaticNavigationForTransferObjectRelationDefaultValue
                 and s.target.mapping.isDefined()
                 
             t.target = s.target.mapping.target.getPSMEquivalent();
-            t.cardinality = s.equivalent("CreateCardinalityOfTransferObjectRelationDefault");
+            t.cardinality = s.equivalent("CreateCardinalityForTransferObjectRelationDefault");
             t.getterExpression = s.equivalent("CreateGetterExpressionForTransferObjectRelationDefault");
             t.name = "_" + s.name + "_default_" + esmUtils.getNamespaceElementFQName(s.eContainer).replace("::","_");
             (s.eContainer).eContainer.getPSMEquivalent().elements.add(t);
@@ -97,8 +97,9 @@ rule CreateStaticNavigationForTransferObjectRelationDefaultValue
 }
 
 @lazy
+@greedy
 rule CreateNavigationPropertyForTransferObjectRelationRange 
-    transform s : ESM!OneWayRelationMember
+    transform s : ESM!RelationFeature
     to t : JUDOPSM!NavigationProperty
     extends CreateNamedElement {
         guard: s.eContainer.mapping.isDefined()
@@ -107,7 +108,7 @@ rule CreateNavigationPropertyForTransferObjectRelationRange
                     s.rangeExpression.trim().length() > 0
             
             t.target = s.target.mapping.target.getPSMEquivalent();
-            t.cardinality = s.equivalent("CreateCardinalityOfTransferObjectRelationRange");
+            t.cardinality = s.equivalent("CreateCardinalityForTransferObjectRelationRange");
             t.getterExpression = s.equivalent("CreateGetterExpressionForTransferObjectRelationRange");
             t.name = "_" + s.name + "_range_" + esmUtils.getNamespaceElementFQName(s.eContainer).replace("::","_");
             s.eContainer.mapping.target.getPSMEquivalent().navigationProperties.add(t);

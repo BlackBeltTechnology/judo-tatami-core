@@ -517,7 +517,8 @@ public class EsmStructure2PsmServiceTest {
 				.withMapping(newMappingBuilder().withTarget(entityType).withFilter("expr").build()).build();
 
 		OneWayRelationMember oneWayRelationBasic = newOneWayRelationMemberBuilder().withName("transferRelationBasic")
-				.withContainment(false).withLower(1).withUpper(1)
+				.withContainment(false).withAggregation(false).withLower(1).withUpper(1)
+				.withRelationMemberType(RelationMemberType.RELATION)
 				.withTarget(targetEntityType)
 				.build();
 
@@ -615,6 +616,7 @@ public class EsmStructure2PsmServiceTest {
 								+ DEFAULT_TRANSFEROBJECTTYPE_SUFFIX).equals(mappedTOT.getName()))
 						.findAny();
 		assertTrue(psmTargetDefaultMappedTransferObjectType.isPresent());
+		
 
 		final Optional<TransferObjectRelation> psmTransferObjectRelation = allPsm(TransferObjectRelation.class)
 				.filter(transferObjectRel -> oneWayRelationBasic.getName().equals(transferObjectRel.getName()))

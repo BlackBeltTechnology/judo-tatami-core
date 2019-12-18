@@ -25,7 +25,6 @@ rule CreateExposedGraph
     to t: JUDOPSM!ExposedGraph
     extends CreateNamedElement {
     
-      //exposed graph targetje nem lehet entity type is? és ekkor a default t.o lesz a mappedTransferObject
       t.mappedTransferObjectType = s.target.getPSMTransferObjectTypeEquivalent();
      
       t.selector = s.equivalent("CreateStaticNavigationForExposedGraph"); 

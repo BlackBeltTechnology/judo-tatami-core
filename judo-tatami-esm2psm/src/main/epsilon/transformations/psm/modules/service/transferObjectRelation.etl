@@ -29,7 +29,7 @@ rule CreateTransferObjectRelationFromRelationOrProperty
             and s.relationMemberType <> ESM!RelationMemberType#BOUND
 
       t.binding = s.equivalent("CreateNavigationPropertyForTransferObjectRelationBinding");
-
+        
       log.debug("Created TransferObjectRelation (from OneWayRelationMember): [" + t.name + "] into [" + t.eContainer.name + "]");
 }
 
@@ -113,6 +113,19 @@ rule CreateTransferObjectRelationForDefaultTransferObjectTypeFromOneWayRelationM
            
       t.embedded = s.containment;
       t.binding = s.equivalent("CreateAssociationEndWithoutPartner");
+      
+      log.debug("Created TransferObjectRelationFromTwoWayRelationMember: [" + t.name + "] into [" + t.eContainer.name + "]");
+}
+
+rule CreateTransferObjectRelationForDefaultTransferObjectTypeFromOneWayRelationMemberProperty
+    transform s: ESM!OneWayRelationMember
+    to t: JUDOPSM!TransferObjectRelation
+    extends CreateTransferObjectRelationForDefaultTransferObjectType {
+      guard: s.eContainer.isKindOf(ESM!EntityType)
+           and s.relationMemberType = ESM!RelationMemberType#PROPERTY
+           
+      t.embedded = s.containment;
+      t.binding = s.equivalent("CreateNavigationProperty");
       
       log.debug("Created TransferObjectRelationFromTwoWayRelationMember: [" + t.name + "] into [" + t.eContainer.name + "]");
 }

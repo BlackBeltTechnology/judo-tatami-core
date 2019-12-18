@@ -374,7 +374,7 @@ public class EsmStrucutre2PsmDerivedTest {
         final hu.blackbelt.judo.meta.psm.data.EntityType psmNavigationTarget = allPsm(hu.blackbelt.judo.meta.psm.data.EntityType.class)
                 .filter(e -> e.getName().equals(navigationTarget.getName())).findAny().get();
 
-        assertTrue(psmNavigationProperties.size() == 3);
+        assertTrue(psmNavigationProperties.size() == 2);
 
         String psmName1 = "_" + navigationProperty1.getName() + "_range_TestModel_container";
         String psmBindingName = "_" + navigationProperty1.getName() + "_TestModel_container";
@@ -459,7 +459,7 @@ public class EsmStrucutre2PsmDerivedTest {
 
         assertTrue(psmStaticNavigationAsDefault.isPresent());
 
-        String psmName = "_" + navigationProperty.getName() + "_default_container";
+        String psmName = "_" + navigationProperty.getName() + "_default_TestModel_container";
         assertThat(psmStaticNavigationAsDefault.get().getName(), IsEqual.equalTo(psmName));
 
         assertThat(psmStaticNavigationAsDefault.get().eContainer(), IsEqual.equalTo(psmModel));
@@ -684,75 +684,6 @@ public class EsmStrucutre2PsmDerivedTest {
     }
 
     @Test
-    void testCreateNavigationPropertyFromTwoWayRelationMemberForEntityTypeDefaultTransferObjectTypeTransferObjectRelationDefaultAssociationEndWithPartner() throws Exception {
-        testName = "CreateNavigationPropertyFromTwoWayRelationMemberForEntityTypeDefaultTransferObjectTypeTransferObjectRelationDefault";
-
-        EntityType target = newEntityTypeBuilder().withName("target").build();
-        target.setMapping(newMappingBuilder().withTarget(target).build());
-        
-        EntityType entityType = newEntityTypeBuilder().withName("entityType").build();
-        entityType.setMapping(newMappingBuilder().withTarget(entityType).build());
-
-        TwoWayRelationMember associationEnd1 = newTwoWayRelationMemberBuilder().withName("associationEnd1")
-                .withLower(1)
-                .withUpper(1)
-                .withTarget(target)
-                .withDefaultExpression("defaultExpression")
-                .build();
-
-        TwoWayRelationMember associationEnd2 = newTwoWayRelationMemberBuilder().withName("associationEnd2")
-                .withLower(1)
-                .withUpper(1)
-                .withTarget(entityType)
-                .withDefaultExpression("defaultExpression")
-                .build();
-
-        entityType.getRelations().add(associationEnd1);
-        target.getRelations().add(associationEnd2);
-        associationEnd1.setPartner(associationEnd2);
-        associationEnd2.setPartner(associationEnd1);
-
-        final Model model = newModelBuilder()
-                .withName("TestModel")
-                .withElements(ImmutableList.of(entityType, target))
-                .build();
-
-        esmModel.addContent(model);
-        transform();
-
-        final hu.blackbelt.judo.meta.psm.data.EntityType psmEntityType = allPsm(hu.blackbelt.judo.meta.psm.data.EntityType.class)
-                .filter(e -> e.getName().equals(entityType.getName())).findAny().get();
-        final hu.blackbelt.judo.meta.psm.data.EntityType psmTarget = allPsm(hu.blackbelt.judo.meta.psm.data.EntityType.class)
-                .filter(e -> e.getName().equals(target.getName())).findAny().get();
-        assertTrue(psmEntityType.getRelations().size() == 1);
-        assertTrue(psmTarget.getRelations().size() == 1);
-
-        String psmNavigationPropertyName1 = "_" + associationEnd1.getName() + "_default_TestModel_entityType";
-        String psmNavigationPropertyName2 = "_" + associationEnd2.getName() + "_default_TestModel_target";
-
-        final Namespace namespaceOfPsmEntityType = (Namespace) psmEntityType.eContainer();
-        final Namespace namespaceOfPsmTarget = (Namespace) psmTarget.eContainer();
-        final Optional<hu.blackbelt.judo.meta.psm.derived.StaticNavigation> psmNavigationProperty1 = namespaceOfPsmEntityType.getElements().stream()
-                .filter(e -> psmNavigationPropertyName1.equals(e.getName()))
-                .map(e -> (hu.blackbelt.judo.meta.psm.derived.StaticNavigation) e)
-                .findAny();
-        final Optional<hu.blackbelt.judo.meta.psm.derived.StaticNavigation> psmNavigationProperty2 = namespaceOfPsmTarget.getElements().stream()
-                .filter(e -> psmNavigationPropertyName2.equals(e.getName()))
-                .map(e -> (hu.blackbelt.judo.meta.psm.derived.StaticNavigation) e)
-                .findAny();
-
-        assertTrue(psmNavigationProperty1.isPresent());
-        assertTrue(psmNavigationProperty1.get().getName().equals(psmNavigationPropertyName1));
-        assertThat(psmNavigationProperty1.get().getGetterExpression().getExpression(), IsEqual.equalTo(associationEnd1.getDefaultExpression()));
-        assertNull(psmNavigationProperty1.get().getSetterExpression());
-
-        assertTrue(psmNavigationProperty2.isPresent());
-        assertTrue(psmNavigationProperty2.get().getName().equals(psmNavigationPropertyName2));
-        assertThat(psmNavigationProperty2.get().getGetterExpression().getExpression(), IsEqual.equalTo(associationEnd2.getDefaultExpression()));
-        assertNull(psmNavigationProperty2.get().getSetterExpression());
-    }
-
-    @Test
     void testCreateNavigationPropertyFromOneWayRelationMemberForEntityTypeDefaultTransferObjectTypeTransferObjectRelationRangeContainment() throws Exception {
         testName = "CreateNavigationPropertyFromOneWayRelationMemberForEntityTypeDefaultTransferObjectTypeTransferObjectRelationRange";
 
@@ -842,7 +773,8 @@ public class EsmStrucutre2PsmDerivedTest {
         EntityType target = newEntityTypeBuilder().withName("target").build();
         target.setMapping(newMappingBuilder().withTarget(target).build());
 
-        OneWayRelationMember associationEnd = newOneWayRelationMemberBuilder().withName("associationEnd").withContainment(false).withRelationMemberType(RelationMemberType.PROPERTY)
+        OneWayRelationMember associationEnd = newOneWayRelationMemberBuilder().withName("associationEnd").withContainment(false)
+        		.withRelationMemberType(RelationMemberType.PROPERTY)
                 .withGetterExpression("getterExpresssion")
                 .withRangeExpression("rangeExpression")
                 .withReverseCascadeDelete(true)

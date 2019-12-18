@@ -53,8 +53,9 @@ rule CreateGetterExpressionForTransferObjectRelationDefault
 }
 
 @lazy
+@greedy
 rule CreateGetterExpressionForTransferObjectRelationRange
-    transform s : ESM!OneWayRelationMember
+    transform s : ESM!RelationFeature
     to t : JUDOPSM!ReferenceExpressionType {
         t.expression = s.rangeExpression;
 }

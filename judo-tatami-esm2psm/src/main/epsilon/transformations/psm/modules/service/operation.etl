@@ -7,17 +7,13 @@ rule CreateBoundOperation
     transform s: ESM!BoundOperation
     to t: JUDOPSM!BoundOperation
     extends CreateNamedElement {
-
-    //ha esm-beli entity type-ban van, a defaultba kell tenni, ugye?
       s.eContainer.getPSMTransferObjectTypeEquivalent().operations.add(t);
-      
       if(not s.`abstract`) {
         t.implementation = s.equivalent("CreateOperationBody");
       }
       log.debug("Created BoundOperation: " + t.name);
 }
 
-@greedy
 rule CreateUnboundOperation
 	transform s: ESM!UnboundOperation
 	to t: JUDOPSM!UnboundOperation
@@ -58,7 +54,6 @@ rule CreateParameter
 	
 	  t.cardinality = s.equivalent("CreateCardinalityForParameter");
 	  
-	  //ha entity type-ra mutat, PSM-ben a transfer object megfelelőre kell mutatnia, ugye?
 	  t.type = s.target.getPSMTransferObjectTypeEquivalent();
 	  
 	  if (s.eContainer.input == s) {
@@ -77,10 +72,8 @@ rule CreateOperationBody
     transform s: ESM!Operation
     to t: JUDOPSM!OperationBody {
       t.body = s.body;
-      
-      //ez direkt van?
+      //miért true? miért nem t.stateful = s.stateful;
       t.stateful = true;
-      
       t.customImplementation = s.customImplementation;
 }
 
@@ -94,7 +87,6 @@ rule CreateGetOperationForExposedGraph
         t.name = "get";
         //no input
         t.output = s.equivalent("CreateOutputForGetOperationForExposedGraph");
-        
         //??
         t.implementation = s.equivalent("CreateGetImplementationFromExposedGraph");
         (s.eContainer).eContainer.getPSMEquivalent().elements.add(t);
@@ -102,13 +94,6 @@ rule CreateGetOperationForExposedGraph
 
 @lazy
 rule CreateGetImplementationFromExposedGraph
-    transform s : ESM!ExposedGraph
-    to t : JUDOPSM!OperationBody {
-        
-}
-
-@lazy
-rule CreateCreateImplementationFromExposedGraph
     transform s : ESM!ExposedGraph
     to t : JUDOPSM!OperationBody {
         
@@ -146,6 +131,13 @@ rule CreateCreateOperationForExposedGraph
         t.implementation = s.equivalent("CreateCreateImplementationFromExposedGraph");
         (s.eContainer).eContainer.getPSMEquivalent().elements.add(t);
     }
+
+@lazy
+rule CreateCreateImplementationFromExposedGraph
+    transform s : ESM!ExposedGraph
+    to t : JUDOPSM!OperationBody {
+        
+}
 
 @lazy
 rule CreateInputForCreateOperationForExposedGraph
