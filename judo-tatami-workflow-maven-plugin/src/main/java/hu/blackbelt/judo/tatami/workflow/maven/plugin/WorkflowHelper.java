@@ -41,19 +41,23 @@ public class WorkflowHelper {
 				url = new URL("jar:" + originalUrl.toString() + "!/");
 			}
 			JarURLConnection jarConnection = (JarURLConnection) url.openConnection();
-			Manifest manifest = jarConnection.getManifest();
-			Map<String, String> manifestEntries = manifest.getMainAttributes().entrySet().stream()
-					.collect(Collectors.toMap(e -> e.getKey().toString(), e -> e.getValue().toString()));
-//			for (Object key : manifestEntries.keySet()) {
-//				log.info("    Key: " + key + " Val: " + manifestEntries.get(key.toString()));
-//			}
+			try {
+				Manifest manifest = jarConnection.getManifest();
+				Map<String, String> manifestEntries = manifest.getMainAttributes().entrySet().stream()
+						.collect(Collectors.toMap(e -> e.getKey().toString(), e -> e.getValue().toString()));
+				//			for (Object key : manifestEntries.keySet()) {
+				//				log.info("    Key: " + key + " Val: " + manifestEntries.get(key.toString()));
+				//			}
 
-			for (String tag : tags) {
-				// log.info("   Search for tag: " + tag);
-				if (manifestEntries.get(tag) != null) {
-					log.debug("     - Tag " + tag + " found");
-					urlAndPathForTag.put(tag, new UrlAndPath(url, (String) manifestEntries.get(tag)));
+				for (String tag : tags) {
+					// log.info("   Search for tag: " + tag);
+					if (manifestEntries.get(tag) != null) {
+						log.debug("     - Tag " + tag + " found");
+						urlAndPathForTag.put(tag, new UrlAndPath(url, (String) manifestEntries.get(tag)));
+					}
 				}
+			} catch (Exception e) {
+				log.warn("Error on extraction: ", e);
 			}
 		}
 	}
