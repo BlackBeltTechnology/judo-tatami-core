@@ -46,4 +46,5 @@ rule CreateCardinalityOfExposedGraph
 	to t: JUDOPSM!Cardinality {
 	  t.upper = s.upper;
   	  t.lower = s.lower;
+  	  log.debug("Created Cardinality for exposed graph: " + s.name);
 }

@@ -25,7 +25,7 @@ rule CreateMappedTransferObjectType
 	  t.entityType = s.mapping.target.equivalent("CreateEntityType");
 	  t.filter = s.mapping.equivalent("CreateFilterExpressionForMappedTransferObjectType");
       
-	  log.debug("Created MappedTransferObjectType: " + t.name);
+	  log.debug("Created Mapped TransferObject Type: " + t.name);
 }
 
 @lazy
@@ -36,7 +36,6 @@ rule CreateFilterExpressionForMappedTransferObjectType
             and s.filter.trim().length() > 0
          t.expression = s.filter;
 }
-
 
 rule CreateUnmappedTransferObjectType
 	transform s: ESM!TransferObjectType 

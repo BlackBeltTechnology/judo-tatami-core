@@ -1,6 +1,5 @@
 import "../data/referenceTypedElement.etl";
 import "expressionType.etl";
-import "../../../../operations/esm/derived/expressionType.eol";
 import "../../../../operations/esm/namespace/namespace.eol";
 
 @lazy
@@ -123,14 +122,8 @@ rule CreateCardinalityForExposedGraphSelector
     to t: JUDOPSM!Cardinality {
       t.upper = s.upper;
       t.lower = s.lower;
-}
-
-@lazy
-@greedy
-rule CreateGetterExpressionForExposedGraphSelector
-    transform s : ESM!StaticNavigation
-    to t : JUDOPSM!ReferenceExpressionType {
-        t.expression = s.getterExpression;    
+      
+      log.debug("Created Cardinality for Exposed Graph Selector: " + t.name);
 }
 
 @greedy
@@ -145,7 +138,6 @@ rule CreateStaticNavigationForExposedGraph
 	  t.cardinality = s.equivalent("CreateCardinalityForExposedGraphSelector");
 	  t.getterExpression = s.equivalent("CreateGetterExpressionForExposedGraphSelector");
 	  t.target = s.target.mapping.target.equivalent("CreateEntityType");
-	 // t.getter = 
 
 	  log.debug("Created StaticNavigation for ExposedGraph: " + t.name);
 }

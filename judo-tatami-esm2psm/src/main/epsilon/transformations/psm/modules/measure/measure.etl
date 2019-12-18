@@ -8,6 +8,8 @@ rule CreateMeasure
     extends CreateNamespaceElement {
         guard: s.terms.isEmpty()
         t.symbol = s.symbol;
+        
+        log.debug("Created Measure: " + t.name);
 }
 
 rule CreateDerivedMeasure
@@ -16,6 +18,8 @@ rule CreateDerivedMeasure
     extends CreateNamespaceElement {
         guard: not s.terms.isEmpty()
         t.symbol = s.symbol;
+        
+        log.debug("Created Derived Measure: " + t.name);
 }
 
 rule CreateUnit
@@ -26,6 +30,8 @@ rule CreateUnit
       t.rateDividend = s.rateDividend;
       t.rateDivisor = s.rateDivisor;
       s.eContainer.getPSMEquivalent().units.add(t);
+      
+      log.debug("Created Unit: " + t.name);
 }
 
 rule CreateDurationUnit
@@ -44,6 +50,8 @@ rule CreateDurationUnit
 	        case ESM!DurationType#microsecond: t.unitType = JUDOPSM!DurationType#microsecond;
 	        case ESM!DurationType#nanosecond: t.unitType = JUDOPSM!DurationType#nanosecond;
     }
+    
+    log.debug("Created Duration Unit: " + t.name);
 }
 
 rule CreateMeasureDefinitionTerm
@@ -59,4 +67,6 @@ rule CreateMeasuredType
     to t: JUDOPSM!MeasuredType
     extends CreateNumericType {
       t.storeUnit = s.storeUnit.getPSMEquivalent();
+      
+      log.debug("Created Measured Type: " + t.name);
 }

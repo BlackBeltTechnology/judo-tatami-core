@@ -1,7 +1,8 @@
 import "data/_importData.eol";
 import "type/_importType.eol";
-import "derived/_importDerived.eol";
 import "measure/_importMeasure.eol";
-import "accesspoint/accessPoint.eol";
+import "accesspoint/accesspoint.eol";
 import "service/transferObjectType.eol";
+import "service/transferObjectRelation.eol";
+import "namespace/namespace.eol";
 import "namespace/namespace.eol";

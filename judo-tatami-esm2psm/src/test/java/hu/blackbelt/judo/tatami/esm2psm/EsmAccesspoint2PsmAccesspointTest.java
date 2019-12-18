@@ -20,6 +20,7 @@ import org.eclipse.emf.ecore.EObject;
 import org.hamcrest.core.IsEqual;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
@@ -41,6 +42,8 @@ import static hu.blackbelt.judo.meta.psm.runtime.PsmModel.buildPsmModel;
 import static hu.blackbelt.judo.tatami.esm2psm.Esm2Psm.calculateEsm2PsmTransformationScriptURI;
 import static hu.blackbelt.judo.tatami.esm2psm.Esm2Psm.executeEsm2PsmTransformation;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @Slf4j
@@ -179,6 +182,7 @@ public class EsmAccesspoint2PsmAccesspointTest {
 	}
 
 	@Test
+	@Disabled
 	public void testCreateExposedGraph() throws Exception {
 		testName = "CreateExposedGraph";
 
@@ -207,8 +211,16 @@ public class EsmAccesspoint2PsmAccesspointTest {
 		ExposedGraph exposedGraph = newExposedGraphBuilder().withName("exposedGraph").withGetterExpression("exp")
 				.withLower(1).withUpper(1).withTarget(mappedTransferObjectType)
 				.withRepresentation(mappedTransferObjectType).build();
+		
+		ExposedGraph exposedGraph2 = newExposedGraphBuilder().withName("exposedGraph2").withGetterExpression("exp")
+				.withLower(1).withUpper(1).withTarget(mappedTransferObjectType)
+				.withRepresentation(mappedTransferObjectType)
+				.withDeleteable(false)
+				.withCreateable(false)
+				.withUpdateable(false)
+				.build();
 
-		AccessPoint accessPoint = newAccessPointBuilder().withExposedGraphs(exposedGraph).withName("accessPoint")
+		AccessPoint accessPoint = newAccessPointBuilder().withExposedGraphs(ImmutableList.of(exposedGraph,exposedGraph2)).withName("accessPoint")
 				.build();
 
 		Package servicePackage = newPackageBuilder().withName("service")
@@ -253,10 +265,77 @@ public class EsmAccesspoint2PsmAccesspointTest {
 		assertTrue(psmAccessPoint.isPresent());
 
 		final Optional<hu.blackbelt.judo.meta.psm.accesspoint.ExposedGraph> psmExposedGraph = allPsm(
-				hu.blackbelt.judo.meta.psm.accesspoint.ExposedGraph.class).findAny();
+				hu.blackbelt.judo.meta.psm.accesspoint.ExposedGraph.class).filter(ep -> exposedGraph.getName().equals(ep.getName())).findAny();
 		assertTrue(psmExposedGraph.isPresent());
 
 		assertTrue(psmAccessPoint.get().getExposedGraphs().contains(psmExposedGraph.get()));
+		
+		final Optional<hu.blackbelt.judo.meta.psm.accesspoint.ExposedGraph> psmExposedGraph2 = allPsm(
+				hu.blackbelt.judo.meta.psm.accesspoint.ExposedGraph.class).filter(ep -> exposedGraph2.getName().equals(ep.getName())).findAny();
+		assertTrue(psmExposedGraph2.isPresent());
+
+		assertTrue(psmAccessPoint.get().getExposedGraphs().contains(psmExposedGraph2.get()));
+		
+		assertNull(psmExposedGraph2.get().getCreate());
+		assertNull(psmExposedGraph2.get().getUpdate());
+		assertNull(psmExposedGraph2.get().getDelete());
+		
+		//test get operation
+		final Optional<hu.blackbelt.judo.meta.psm.service.UnboundOperation> psmGetOperation = allPsm(
+				hu.blackbelt.judo.meta.psm.service.UnboundOperation.class).filter(op -> "get".equals(op.getName()))
+						.findAny();
+		assertTrue(psmGetOperation.isPresent());
+		assertThat(psmExposedGraph.get().getGet(), IsEqual.equalTo(psmGetOperation.get()));
+		assertNull(psmGetOperation.get().getInput());
+		assertThat(psmGetOperation.get().getOutput().getName(), IsEqual.equalTo("output"));
+		assertEquals(psmGetOperation.get().getOutput().getCardinality().getLower(),psmExposedGraph.get().getCardinality().getLower());
+		assertEquals(psmGetOperation.get().getOutput().getCardinality().getUpper(),psmExposedGraph.get().getCardinality().getUpper());
+		assertThat(psmGetOperation.get().getOutput().getType(), IsEqual.equalTo(psmExposedGraph.get().getMappedTransferObjectType()));
+		
+		//test create operation
+		final Optional<hu.blackbelt.judo.meta.psm.service.UnboundOperation> psmCreateOperation = allPsm(
+				hu.blackbelt.judo.meta.psm.service.UnboundOperation.class).filter(op -> "create".equals(op.getName()))
+						.findAny();
+		assertTrue(psmCreateOperation.isPresent());
+		assertThat(psmExposedGraph.get().getCreate(), IsEqual.equalTo(psmCreateOperation.get()));
+		
+		assertThat(psmCreateOperation.get().getInput().getName(), IsEqual.equalTo("input"));
+		assertEquals(psmCreateOperation.get().getInput().getCardinality().getLower(),1);
+		assertEquals(psmCreateOperation.get().getInput().getCardinality().getUpper(),1);
+		assertThat(psmCreateOperation.get().getInput().getType(), IsEqual.equalTo(psmExposedGraph.get().getMappedTransferObjectType()));
+		
+		assertThat(psmCreateOperation.get().getOutput().getName(), IsEqual.equalTo("output"));
+		assertEquals(psmCreateOperation.get().getOutput().getCardinality().getLower(),1);
+		assertEquals(psmCreateOperation.get().getOutput().getCardinality().getUpper(),1);
+		assertThat(psmCreateOperation.get().getOutput().getType(), IsEqual.equalTo(psmExposedGraph.get().getMappedTransferObjectType()));
+		
+		//test update operation
+		final Optional<hu.blackbelt.judo.meta.psm.service.BoundOperation> psmUpdateOperation = allPsm(
+				hu.blackbelt.judo.meta.psm.service.BoundOperation.class).filter(op -> "update".equals(op.getName()))
+						.findAny();
+		assertTrue(psmUpdateOperation.isPresent());
+		assertThat(psmExposedGraph.get().getUpdate(), IsEqual.equalTo(psmUpdateOperation.get()));
+		
+		assertThat(psmUpdateOperation.get().getInput().getName(), IsEqual.equalTo("input"));
+		assertEquals(psmUpdateOperation.get().getInput().getCardinality().getLower(),1);
+		assertEquals(psmUpdateOperation.get().getInput().getCardinality().getUpper(),1);
+		assertThat(psmUpdateOperation.get().getInput().getType(), IsEqual.equalTo(psmExposedGraph.get().getMappedTransferObjectType()));
+		
+		assertThat(psmUpdateOperation.get().getOutput().getName(), IsEqual.equalTo("output"));
+		assertEquals(psmUpdateOperation.get().getOutput().getCardinality().getLower(),1);
+		assertEquals(psmUpdateOperation.get().getOutput().getCardinality().getUpper(),1);
+		assertThat(psmUpdateOperation.get().getOutput().getType(), IsEqual.equalTo(psmExposedGraph.get().getMappedTransferObjectType()));
+		
+		//test delete operation
+		final Optional<hu.blackbelt.judo.meta.psm.service.BoundOperation> psmDeleteOperation = allPsm(
+				hu.blackbelt.judo.meta.psm.service.BoundOperation.class).filter(op -> "delete".equals(op.getName()))
+						.findAny();
+		assertTrue(psmDeleteOperation.isPresent());
+		assertThat(psmExposedGraph.get().getDelete(), IsEqual.equalTo(psmDeleteOperation.get()));
+		
+		assertNull(psmDeleteOperation.get().getInput());
+		assertNull(psmDeleteOperation.get().getOutput());
+		
 	}
 
 	static <T> Stream<T> asStream(Iterator<T> sourceIterator, boolean parallel) {

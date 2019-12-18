@@ -8,6 +8,7 @@ rule CreateCardinalityForReferenceTypedElement
     to t: JUDOPSM!Cardinality {
       t.upper = s.upper;
       t.lower = s.lower;
+      log.debug("Created Cardinality for Reference Typed Element: " + s.name);
 }
 
 rule CreateContainment
@@ -45,7 +46,6 @@ rule CreateAssociationEndWithPartner
 	transform s: ESM!TwoWayRelationMember
 	to t: JUDOPSM!AssociationEnd
 	extends CreateNamedElement {
-	  //guard: s.eContainer.isKindOf(ESM!EntityType)
 	  
 	  t.cardinality = s.equivalent("CreateCardinalityForReferenceTypedElement");
 	  t.reverseCascadeDelete = s.reverseCascadeDelete;
