@@ -1,7 +1,7 @@
 import "../../../operations/openapi/_importAll.eol";
 
 rule CreateExposedGraphEntryPointPath
-    transform s : ASM!EAnnotation
+    transform s : ASM!EReference
     to t : OPENAPI!Path {
         guard: asmUtils.isGraph(s)
         
@@ -11,7 +11,7 @@ rule CreateExposedGraphEntryPointPath
 }
 
 rule CreateExposedGraphEntryPointOperation
-    transform s : ASM!EAnnotation
+    transform s : ASM!EReference
     to t : OPENAPI!Operation {
         guard: asmUtils.isGraph(s)
         
@@ -21,7 +21,7 @@ rule CreateExposedGraphEntryPointOperation
 }
 
 rule CreateExposedGraphEntryPointOperationResponse
-    transform s : ASM!EAnnotation
+    transform s : ASM!EReference
     to t : OPENAPI!OperationResponse {
         guard: asmUtils.isGraph(s)
         
@@ -31,7 +31,7 @@ rule CreateExposedGraphEntryPointOperationResponse
 }
 
 rule CreateExposedGraphEntryPointOperationResponseDefinition
-    transform s : ASM!EAnnotation
+    transform s : ASM!EReference
     to t : OPENAPI!ResponseDefinition {
         guard: asmUtils.isGraph(s)
         
@@ -41,7 +41,7 @@ rule CreateExposedGraphEntryPointOperationResponseDefinition
 }
 
 rule CreateExposedGraphEntryPointOperationResponseDefinitionSchema
-    transform s : ASM!EAnnotation
+    transform s : ASM!EReference
     to t : OPENAPI!Schema {
         guard: asmUtils.isGraph(s)
         
@@ -49,7 +49,7 @@ rule CreateExposedGraphEntryPointOperationResponseDefinitionSchema
 }
 
 rule CreateExposedGraphEntryPointOperationResponseDefinitionSchemaReference
-    transform s : ASM!EAnnotation
+    transform s : ASM!EReference
     to t : OPENAPI!SchemaReference {
         guard: asmUtils.isGraph(s)
         
@@ -57,7 +57,7 @@ rule CreateExposedGraphEntryPointOperationResponseDefinitionSchemaReference
         
         if (root.isPresent()) {
             var rootExposedByAnnotation = asmUtils.getExtensionAnnotationListByName(root.get(), "exposedBy").selectOne(a | a.details.get("value") == asmUtils.getClassifierFqName(s.eContainer));
-            if (s.details.get("collection").isDefined() and s.details.get("collection").asBoolean()) {
+            if (s.many) {
 	            t.ref = rootExposedByAnnotation.equivalent("CreateTransferObjectArraySchemaDeclaration").getReference();
 	        } else {
 	            t.ref = rootExposedByAnnotation.equivalent("CreateTransferObjectSingleSchemaDeclaration").getReference();
@@ -74,7 +74,7 @@ rule CreateExposedGraphPath
         
         var graph = asmUtils.getExposedGraphByFqName(s.details.get("value"));
         if (graph.isPresent) {
-	        t.relativePath = "/" + graph.get().details.get("value") + "/" + asmUtils.getOperationFqName(s.eContainer).toOpenAPIPath();
+	        t.relativePath = "/" + graph.get().getName() + "/" + asmUtils.getOperationFqName(s.eContainer).toOpenAPIPath();
         
             if (graph.get().eContainer.isDefined()) {
             	graph.get().eContainer.equivalent("CreateOpenAPIAccessPoint").paths.add(t);
@@ -142,7 +142,7 @@ rule CreateExposedGraphOperationEntityIdParameter
         }
         if (cl.isDefined()) {
             var graph = asmUtils.getExposedGraphByFqName(s.details.get("value"));
-            var entityTypeExposedByAnnotation = asmUtils.getExtensionAnnotationListByName(asmUtils.getMappedEntityType(cl).get(), "exposedBy").selectOne(a | a.details.get("value") == asmUtils.getClassifierFqName(graph.get().eContainer));
+            var entityTypeExposedByAnnotation = asmUtils.getExtensionAnnotationListByName(asmUtils.getMappedEntityType(cl).get(), "exposedBy").selectOne(a | a.details.get("value") == asmUtils.getClassifierFQName(graph.get().eContainer));
 	        t.ref = entityTypeExposedByAnnotation.equivalent("CreateEntityIdParameterDeclaration").getReference();
         } else {
             delete t;

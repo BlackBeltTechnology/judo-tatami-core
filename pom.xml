@@ -74,7 +74,7 @@
         <judo-meta-jql-version>1.0.0.20191112_164935_2d7c4d3_develop</judo-meta-jql-version>
         <judo-meta-jql-import-range>[1.0,1.1)</judo-meta-jql-import-range>
 
-        <judo-meta-asm-version>1.0.0.20191213_181505_1db2f61_develop</judo-meta-asm-version>
+        <judo-meta-asm-version>1.0.0.20191217_134006_a431fce_develop</judo-meta-asm-version>
         <judo-meta-asm-import-range>[1.0,1.1)</judo-meta-asm-import-range>
 
         <judo-meta-expression-version>1.0.0.20191119_181630_6c88b5e_develop</judo-meta-expression-version>
@@ -89,7 +89,7 @@
         <judo-meta-openapi-version>1.0.0.20191112_162616_9c652f9_develop</judo-meta-openapi-version>
         <judo-meta-openapi-import-range>[1.0,1.1)</judo-meta-openapi-import-range>
 
-        <structured-map-proxy-version>1.0.0.20191028_124108_c62da28_develop</structured-map-proxy-version>
+        <structured-map-proxy-version>1.0.0.20191217_122241_77813e8_develop</structured-map-proxy-version>
 
         <!-- We use older version of plugin to avoid chicked egg problem -->
         <judo-tatami-workflow-maven-plugin-version>1.0.0.20191118_140529_b96ae2e_develop</judo-tatami-workflow-maven-plugin-version>

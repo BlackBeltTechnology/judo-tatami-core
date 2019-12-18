@@ -10,7 +10,7 @@ import java.util.Collection;
 
 public interface [%= dto.getClassName() %]Builder {
     static [%= dto.getClassName() %]Builder create[%= dto.getClassName() %]Builder() {
-        return MapBuilderProxy.newInstance([%= dto.getClassName() %]Builder.class, [%= dto.getClassName() %].class);
+        return MapBuilderProxy.newInstance([%= dto.getClassName() %]Builder.class, [%= dto.getClassName() %].class, "with");
     }
 
     [% for (field in dto.eAllAttributes.includingAll(dto.eAllReferences)) { %]
