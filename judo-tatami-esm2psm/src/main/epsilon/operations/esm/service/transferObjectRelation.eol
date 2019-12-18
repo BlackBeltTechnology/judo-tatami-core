@@ -1,0 +1,32 @@
+operation ESM!OneWayRelationMember getPSMTransferObjectRelationEquivalent() : JUDOPSM!TransferObjectRelation {
+
+    if (self.eContainer.isKindOf(ESM!EntityType)) {
+        
+        if(self.relationMemberType == ESM!RelationMemberType#RELATION and self.containment) {
+            return self.equivalent("CreateTransferObjectRelationForDefaultTransferObjectTypeFromOneWayRelationMemberContainment");
+        
+        } else if (self.relationMemberType == ESM!RelationMemberType#RELATION and not self.containment) {
+            return self.equivalent("CreateTransferObjectRelationForDefaultTransferObjectTypeFromOneWayRelationMemberNotContainment");
+        
+        } else {
+            return self.equivalent("CreateTransferObjectRelationForDefaultTransferObjectTypeFromOneWayRelationMemberProperty");
+        }        
+
+    } else if (self.eContainer.isKindOf(ESM!TransferObjectType) and not self.eContainer.isKindOf(ESM!EntityType)){
+        
+        if (self.relationMemberType <> ESM!RelationMemberType#BOUND) {
+            return self.equivalent("CreateTransferObjectRelationFromRelationOrProperty");
+        
+        } else if (self.relationMemberType == ESM!RelationMemberType#BOUND and self.binding.isKindOf(ESM!OneWayRelationMember)) {
+             return self.equivalent("CreateTransferObjectRelationFromBoundToOneWayRelationMember");
+        
+        } else if (self.relationMemberType == ESM!RelationMemberType#BOUND and self.binding.isKindOf(ESM!TwoWayRelationMember)) {
+              return self.equivalent("CreateTransferObjectRelationFromBoundToTwoWayRelationMember");
+        
+        }
+    }
+}
+
+operation ESM!TwoWayRelationMember getPSMTransferObjectRelationEquivalent() : JUDOPSM!TransferObjectRelation {
+    return self.equivalent("CreateTransferObjectRelationForDefaultTransferObjectTypeFromTwoWayRelationMember");
+}

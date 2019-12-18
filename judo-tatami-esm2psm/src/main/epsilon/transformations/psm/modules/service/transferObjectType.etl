@@ -20,19 +20,28 @@ rule CreateMappedTransferObjectType
 	transform s: ESM!TransferObjectType
 	to t: JUDOPSM!MappedTransferObjectType
 	extends CreateTransferObjectType {
-	  guard: not s.isTypeOf(ESM!EntityType) and s.mapping.isDefined()
+	  guard: s.isKindOf(ESM!TransferObjectType)  and not s.isKindOf(ESM!EntityType) and s.mapping.isDefined()
+	  
 	  t.entityType = s.mapping.target.equivalent("CreateEntityType");
-	  if (s.mapping.filter.expression.isDefined() and (s.mapping.filter.expression.trim().length() > 0)) {
-	  	t.filter = s.mapping.filter.equivalent("CreateLogicalExpressionType");
-	  }
-	  log.debug("Created MappedTransferObjectType: " + t.name);
+	  t.filter = s.mapping.equivalent("CreateFilterExpressionForMappedTransferObjectType");
+      
+	  log.debug("Created Mapped TransferObject Type: " + t.name);
+}
+
+@lazy
+rule CreateFilterExpressionForMappedTransferObjectType
+    transform s : ESM!Mapping
+    to t : JUDOPSM!LogicalExpressionType {
+     guard: s.filter.isDefined()
+            and s.filter.trim().length() > 0
+         t.expression = s.filter;
 }
 
 rule CreateUnmappedTransferObjectType
 	transform s: ESM!TransferObjectType 
 	to t: JUDOPSM!UnmappedTransferObjectType
 	extends CreateTransferObjectType {
-	  guard: not s.isTypeOf(ESM!EntityType) and not s.mapping.isDefined()
+	  guard: s.isKindOf(ESM!TransferObjectType)  and not s.isKindOf(ESM!EntityType) and not s.mapping.isDefined()
 	  log.debug("Created UnmappedTransferObjectType: " + t.name);
 }
 
@@ -48,95 +57,4 @@ rule CreateDefaultMappedTransferObjectTypeForEntity
 	  
 	  t.entityType = s.equivalent("CreateEntityType");
 	  log.debug("Created Default MappedTransferObjectType for EntityType: " + t.name);
-}
-
-@abstract
-rule CreateTransferObjectRelation
-    transform s: ESM!ReferenceTypedElement
-    to t: JUDOPSM!TransferObjectRelation
-    extends CreateNamedElement {
-      t.target = s.target.getPSMTransferObjectTypeEquivalent();
-      t.embedded = s.containment;
-      t.cardinality = s.equivalent("CreateCardinalityOfReferenceTypedElement");
-}
-
-rule CreateTransferObjectRelationFromOneWayRelationMember
-    transform s: ESM!OneWayRelationMember
-    to t: JUDOPSM!TransferObjectRelation
-    extends CreateTransferObjectRelation {
-      guard: s.eContainer.isKindOf(ESM!TransferObjectType) 
-            and not s.eContainer.isTypeOf(ESM!EntityType)
-                
-      t.defaultValue = s.equivalent("CreateNavigationPropertyForTransferObjectRelationDefault");
-      t.range = s.equivalent("CreateNavigationPropertyForTransferObjectRelationRange");
-      t.binding = s.equivalent("CreateNavigationPropertyForTransferObjectRelationBinding");
-      s.eContainer.getPSMEquivalent().relations.add(t);
-      log.debug("Created TransferObjectRelation (from OneWayRelationMember): [" + t.name + "] into [" + t.eContainer.name + "]");
-}
-
-@lazy
-@greedy
-rule CreateCardinalityOfTransferObjectRelationForDefaultTransferObjectType
-    transform s: ESM!ReferenceTypedElement
-    to t: JUDOPSM!Cardinality {
-      t.upper = s.upper;
-      t.lower = s.lower;
-}
-
-@abstract
-rule CreateTransferObjectRelationForDefaultTransferObjectType
-    transform s: ESM!ReferenceTypedElement
-    to t: JUDOPSM!TransferObjectRelation
-    extends CreateNamedElement {
-      t.cardinality = s.equivalent("CreateCardinalityOfTransferObjectRelationForDefaultTransferObjectType");
-      t.target = s.target.equivalent("CreateDefaultMappedTransferObjectTypeForEntity");
-      
-      s.eContainer.equivalent("CreateDefaultMappedTransferObjectTypeForEntity").relations.add(t);
-      log.debug("Created TransferObjectRelation for DefaultTransferObjectType: [" + t.name + "] into [" + t.eContainer.name + "]");
-}
-
-rule CreateTransferObjectRelationFromOneWayRelationMemberForDefaultTransferObjectType
-    transform s: ESM!OneWayRelationMember
-    to t: JUDOPSM!TransferObjectRelation
-    extends CreateTransferObjectRelationForDefaultTransferObjectType {
-      guard: s.eContainer.isTypeOf(ESM!EntityType)
-      t.defaultValue = s.equivalent("CreateNavigationPropertyFromRelationFeatureForEntityTypeDefaultTransferObjectTypeTransferObjectRelationDefault");
-      t.range = s.equivalent("CreateNavigationPropertyFromRelationFeatureForEntityTypeDefaultTransferObjectTypeTransferObjectRelationRange");
-      t.binding = s.equivalent("CreateNavigationProperty");
-      t.embedded = s.containment;
-      
-      log.debug("Created TransferObjectRelation for DefaultTransferObjectType: [" + t.name + "] into [" + t.eContainer.name + "]");
-}
-
-rule CreateTransferObjectRelationFromTwoWayRelationMemberForDefaultTransferObjectType
-    transform s: ESM!TwoWayRelationMember
-    to t: JUDOPSM!TransferObjectRelation
-    extends CreateTransferObjectRelationForDefaultTransferObjectType {
-      guard: s.eContainer.isTypeOf(ESM!EntityType)
-      
-      log.debug("Created TransferObjectRelationFromTwoWayRelationMember: [" + t.name + "] into [" + t.eContainer.name + "]");
-}
-
-rule CreateTransferAttribute
-    transform s: ESM!DataMember
-    to t: JUDOPSM!TransferAttribute 
-    extends CreatePrimitiveTypedElement {
-      guard: not s.eContainer.isTypeOf(ESM!EntityType) and s.eContainer.isKindOf(ESM!TransferObjectType)
-      t.defaultValue = s.equivalent("CreateDataPropertyForTransferAttributeDefault");
-      t.binding = s.equivalent("CreateDataPropertyForTransferAttributeBinding");
-      s.eContainer.getPSMEquivalent().attributes.add(t);
-      log.debug("Created TransferAttribute: [" + t.name + "] into [" + t.eContainer.name + "]");
-}
-
-rule CreateTransferAttributeForDefaultTransferObjectType
-    transform s: ESM!DataMember
-    to t: JUDOPSM!TransferAttribute 
-    extends CreatePrimitiveTypedElement {
-      guard: s.eContainer.isTypeOf(ESM!EntityType)
-
-      t.defaultValue = s.equivalent("CreateDataPropertyForEntityTypeDefaultTransferObjectTypeTransferAttributeDefault");
-      t.binding = s.equivalent("CreateDataProperty");
-
-      s.eContainer.equivalent("CreateDefaultMappedTransferObjectTypeForEntity").attributes.add(t);
-      log.debug("Created TransferAttribute for DefaultTransferObjectType: [" + t.name + "] into [" + t.eContainer.name + "]");
 }

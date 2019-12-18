@@ -1,10 +1,5 @@
 package hu.blackbelt.judo.tatami.esm2psm;
 
-import static hu.blackbelt.judo.meta.esm.expression.util.builder.ExpressionBuilders.newAttributeSelectorTypeBuilder;
-import static hu.blackbelt.judo.meta.esm.expression.util.builder.ExpressionBuilders.newDataExpressionTypeBuilder;
-import static hu.blackbelt.judo.meta.esm.expression.util.builder.ExpressionBuilders.newLogicalExpressionTypeBuilder;
-import static hu.blackbelt.judo.meta.esm.expression.util.builder.ExpressionBuilders.newReferenceExpressionTypeBuilder;
-import static hu.blackbelt.judo.meta.esm.expression.util.builder.ExpressionBuilders.newReferenceSelectorTypeBuilder;
 import static hu.blackbelt.judo.meta.esm.namespace.util.builder.NamespaceBuilders.newModelBuilder;
 import static hu.blackbelt.judo.meta.esm.runtime.EsmModel.buildEsmModel;
 import static hu.blackbelt.judo.meta.esm.structure.util.builder.StructureBuilders.newDataMemberBuilder;
@@ -46,15 +41,16 @@ import com.google.common.collect.ImmutableSet;
 
 import hu.blackbelt.epsilon.runtime.execution.api.Log;
 import hu.blackbelt.epsilon.runtime.execution.impl.Slf4jLog;
-import hu.blackbelt.judo.meta.esm.expression.ExpressionDialect;
 import hu.blackbelt.judo.meta.esm.namespace.Model;
 import hu.blackbelt.judo.meta.esm.runtime.EsmModel;
 import hu.blackbelt.judo.meta.esm.structure.DataMember;
+import hu.blackbelt.judo.meta.esm.structure.DataMemberType;
 import hu.blackbelt.judo.meta.esm.structure.EntitySequence;
 import hu.blackbelt.judo.meta.esm.structure.EntityType;
 import hu.blackbelt.judo.meta.esm.structure.Generalization;
 import hu.blackbelt.judo.meta.esm.structure.NamespaceSequence;
 import hu.blackbelt.judo.meta.esm.structure.OneWayRelationMember;
+import hu.blackbelt.judo.meta.esm.structure.RelationMemberType;
 import hu.blackbelt.judo.meta.esm.structure.TwoWayRelationMember;
 import hu.blackbelt.judo.meta.esm.type.StringType;
 import hu.blackbelt.judo.meta.psm.data.Attribute;
@@ -135,28 +131,16 @@ public class EsmStrucutre2PsmDataTest {
         EntityType entityType1 = newEntityTypeBuilder().withName("entityType1").build();
         entityType1.setMapping(newMappingBuilder()
                 .withTarget(entityType1)
-                .withFilter(newLogicalExpressionTypeBuilder()
-                        .withDialect(ExpressionDialect.JQL)
-                        .withExpression("")
-                        .build())
                 .build());
 
         EntityType entityType2 = newEntityTypeBuilder().withName("entityType2").build();
         entityType2.setMapping(newMappingBuilder()
                 .withTarget(entityType2)
-                .withFilter(newLogicalExpressionTypeBuilder()
-                        .withDialect(ExpressionDialect.JQL)
-                        .withExpression("")
-                        .build())
                 .build());
         Generalization generalisation2 = newGeneralizationBuilder().withTarget(entityType2).build();
         EntityType entityType3 = newEntityTypeBuilder().withName("entityType3").withGeneralizations(generalisation2).build();
         entityType3.setMapping(newMappingBuilder()
                 .withTarget(entityType3)
-                .withFilter(newLogicalExpressionTypeBuilder()
-                        .withDialect(ExpressionDialect.JQL)
-                        .withExpression("")
-                        .build())
                 .build());
 
         final Model model = newModelBuilder()
@@ -188,19 +172,13 @@ public class EsmStrucutre2PsmDataTest {
         testName = "CreateAttribute";
 
         StringType string = newStringTypeBuilder().withName("string").withMaxLength(256).build();
-        DataMember attribute = newDataMemberBuilder().withName("attribute").withDataType(string)
-                .withGetterExpression(newDataExpressionTypeBuilder().withDialect(ExpressionDialect.JQL).withExpression("").build())
-                .withSetterExpression(newAttributeSelectorTypeBuilder().withDialect(ExpressionDialect.JQL).withExpression("").build())
-                .withDefaultExpression(newDataExpressionTypeBuilder().withDialect(ExpressionDialect.JQL).withExpression("").build())
+        DataMember attribute = newDataMemberBuilder().withName("attribute").withDataMemberType(DataMemberType.ATTRIBUTE).withDataType(string)
                 .build();
+        attribute.setBinding(attribute);
 
         EntityType entityType = newEntityTypeBuilder().withName("entityType").withAttributes(attribute).build();
         entityType.setMapping(newMappingBuilder()
                 .withTarget(entityType)
-                .withFilter(newLogicalExpressionTypeBuilder()
-                        .withDialect(ExpressionDialect.JQL)
-                        .withExpression("")
-                        .build())
                 .build());
 
         final Model model = newModelBuilder()
@@ -232,29 +210,17 @@ public class EsmStrucutre2PsmDataTest {
         EntityType target = newEntityTypeBuilder().withName("target").build();
         target.setMapping(newMappingBuilder()
                 .withTarget(target)
-                .withFilter(newLogicalExpressionTypeBuilder()
-                        .withDialect(ExpressionDialect.JQL)
-                        .withExpression("")
-                        .build())
                 .build());
 
-        OneWayRelationMember containment = newOneWayRelationMemberBuilder().withName("containment").withContainment(true)
-                .withGetterExpression(newReferenceExpressionTypeBuilder().withDialect(ExpressionDialect.JQL).withExpression("").build())
-                .withSetterExpression(newReferenceSelectorTypeBuilder().withDialect(ExpressionDialect.JQL).withExpression("").build())
-                .withDefaultExpression(newReferenceExpressionTypeBuilder().withDialect(ExpressionDialect.JQL).withExpression("").build())
-                .withRangeExpression(newReferenceExpressionTypeBuilder().withDialect(ExpressionDialect.JQL).withExpression("").build())
-                .withLower(1)
-                .withUpper(3)
-                .withTarget(target)
+        OneWayRelationMember containment = newOneWayRelationMemberBuilder().withName("containment").withRelationMemberType(RelationMemberType.RELATION)
+        		.withContainment(true).withAggregation(true)
+                .withLower(1).withUpper(3).withTarget(target)
                 .build();
+        containment.setBinding(containment);
 
         EntityType entityType = newEntityTypeBuilder().withName("entityType").withRelations(containment).build();
         entityType.setMapping(newMappingBuilder()
                 .withTarget(entityType)
-                .withFilter(newLogicalExpressionTypeBuilder()
-                        .withDialect(ExpressionDialect.JQL)
-                        .withExpression("")
-                        .build())
                 .build());
 
         final Model model = newModelBuilder()
@@ -286,30 +252,18 @@ public class EsmStrucutre2PsmDataTest {
         EntityType target = newEntityTypeBuilder().withName("target").build();
         target.setMapping(newMappingBuilder()
                 .withTarget(target)
-                .withFilter(newLogicalExpressionTypeBuilder()
-                        .withDialect(ExpressionDialect.JQL)
-                        .withExpression("")
-                        .build())
                 .build());
 
-        OneWayRelationMember associationEnd = newOneWayRelationMemberBuilder().withName("associationEnd").withContainment(false)
-                .withGetterExpression(newReferenceExpressionTypeBuilder().withDialect(ExpressionDialect.JQL).withExpression("").build())
-                .withSetterExpression(newReferenceSelectorTypeBuilder().withDialect(ExpressionDialect.JQL).withExpression("").build())
-                .withDefaultExpression(newReferenceExpressionTypeBuilder().withDialect(ExpressionDialect.JQL).withExpression("").build())
-                .withRangeExpression(newReferenceExpressionTypeBuilder().withDialect(ExpressionDialect.JQL).withExpression("").build())
-                .withReverseCascadeDelete(true)
-                .withLower(1)
-                .withUpper(3)
+        OneWayRelationMember associationEnd = newOneWayRelationMemberBuilder().withName("associationEnd").withRelationMemberType(RelationMemberType.RELATION)
+        		.withContainment(false).withReverseCascadeDelete(true)
+                .withLower(1).withUpper(3)
                 .withTarget(target)
                 .build();
+        associationEnd.setBinding(associationEnd);
 
         EntityType entityType = newEntityTypeBuilder().withName("entityType").withRelations(associationEnd).build();
         entityType.setMapping(newMappingBuilder()
                 .withTarget(entityType)
-                .withFilter(newLogicalExpressionTypeBuilder()
-                        .withDialect(ExpressionDialect.JQL)
-                        .withExpression("")
-                        .build())
                 .build());
 
         final Model model = newModelBuilder()
@@ -342,34 +296,22 @@ public class EsmStrucutre2PsmDataTest {
         EntityType target = newEntityTypeBuilder().withName("target").build();
         target.setMapping(newMappingBuilder()
                 .withTarget(target)
-                .withFilter(newLogicalExpressionTypeBuilder()
-                        .withDialect(ExpressionDialect.JQL)
-                        .withExpression("")
-                        .build())
                 .build());
         EntityType entityType = newEntityTypeBuilder().withName("entityType").build();
         entityType.setMapping(newMappingBuilder()
                 .withTarget(entityType)
-                .withFilter(newLogicalExpressionTypeBuilder()
-                        .withDialect(ExpressionDialect.JQL)
-                        .withExpression("")
-                        .build())
                 .build());
 
         TwoWayRelationMember associationEnd1 = newTwoWayRelationMemberBuilder().withName("associationEnd1")
                 .withLower(1)
                 .withUpper(1)
                 .withTarget(target)
-                .withDefaultExpression(newReferenceExpressionTypeBuilder().withDialect(ExpressionDialect.JQL).withExpression("").build())
-                .withRangeExpression(newReferenceExpressionTypeBuilder().withDialect(ExpressionDialect.JQL).withExpression("").build())
                 .build();
 
         TwoWayRelationMember associationEnd2 = newTwoWayRelationMemberBuilder().withName("associationEnd2")
                 .withLower(1)
                 .withUpper(1)
                 .withTarget(entityType)
-                .withDefaultExpression(newReferenceExpressionTypeBuilder().withDialect(ExpressionDialect.JQL).withExpression("").build())
-                .withRangeExpression(newReferenceExpressionTypeBuilder().withDialect(ExpressionDialect.JQL).withExpression("").build())
                 .build();
 
         entityType.getRelations().add(associationEnd1);
