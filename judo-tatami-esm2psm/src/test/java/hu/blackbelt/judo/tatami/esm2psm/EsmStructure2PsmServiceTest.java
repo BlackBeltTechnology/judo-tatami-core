@@ -40,6 +40,7 @@ import static hu.blackbelt.judo.meta.psm.runtime.PsmModel.buildPsmModel;
 import static hu.blackbelt.judo.tatami.esm2psm.Esm2Psm.calculateEsm2PsmTransformationScriptURI;
 import static hu.blackbelt.judo.tatami.esm2psm.Esm2Psm.executeEsm2PsmTransformation;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -106,6 +107,93 @@ public class EsmStructure2PsmServiceTest {
 		// Make transformation which returns the trace with the serialized URI's
 		esm2PsmTransformationTrace = executeEsm2PsmTransformation(esmModel, psmModel, new Slf4jLog(log),
 				calculateEsm2PsmTransformationScriptURI());
+	}
+	
+	@Test
+	void testCreateUpdateOperationForTransferObjectRelation() throws Exception {
+		testName = "CreateUpdateOperationForTransferObjectRelation";
+		
+		EntityType order = newEntityTypeBuilder().withName("order").build();
+		order.setMapping(newMappingBuilder().withTarget(order).build());
+		
+		TransferObjectType orderInfo = newTransferObjectTypeBuilder()
+				.withName("orderInfo").withMapping(newMappingBuilder().withTarget(order).build()).build();
+		
+		EntityType orderItem = newEntityTypeBuilder().withName("orderItem").build();
+		orderItem.setMapping(newMappingBuilder().withTarget(orderItem).build());
+		
+		TransferObjectType orderItemInfo = newTransferObjectTypeBuilder().withName("orderItemInfo")
+				.withMapping(newMappingBuilder().withTarget(orderItem).build()).build();
+		
+		OneWayRelationMember items = newOneWayRelationMemberBuilder().withName("items")
+				.withUpdateable(true)
+				.withRelationMemberType(RelationMemberType.RELATION).withTarget(orderItemInfo).build();
+		
+		EntityType product = newEntityTypeBuilder().withName("product").build();
+		product.setMapping(newMappingBuilder().withTarget(product).build());
+		
+		TransferObjectType productInfo = newTransferObjectTypeBuilder().withName("productInfo")
+				.withMapping(newMappingBuilder().withTarget(product).build()).build();
+		
+		OneWayRelationMember prod = newOneWayRelationMemberBuilder().withName("prod")
+				.withTarget(product).build();
+		orderItem.getRelations().add(prod);
+				
+		OneWayRelationMember products = newOneWayRelationMemberBuilder().withName("products")
+				.withRelationMemberType(RelationMemberType.BOUND)
+				.withLower(0).withUpper(1)
+				.withBinding(prod)
+				.withTarget(productInfo).build();
+		
+		orderItemInfo.getRelations().add(products);
+		orderInfo.getRelations().add(items);
+		
+		Model model = newModelBuilder().withName("Model")
+				.withElements(ImmutableList.of(order, orderInfo, orderItem, orderItemInfo, product, productInfo)).build();
+
+		esmModel.addContent(model);
+		
+		transform();
+		
+		final Optional<hu.blackbelt.judo.meta.psm.service.BoundOperationWithRelation> psmSetOp = allPsm(
+				hu.blackbelt.judo.meta.psm.service.BoundOperationWithRelation.class)
+				.filter(o -> o.getName().equals("set_" + items.getName() + "_" + products.getName()))
+				.findAny();
+		
+		final Optional<hu.blackbelt.judo.meta.psm.service.TransferObjectRelation> psmProductsTransferObjectRelation = allPsm(
+				hu.blackbelt.judo.meta.psm.service.TransferObjectRelation.class)
+				.filter(r -> r.getName().equals(products.getName()))
+				.findAny();
+		assertTrue(psmProductsTransferObjectRelation.isPresent());
+		
+		final Optional<hu.blackbelt.judo.meta.psm.service.TransferObjectRelation> psmItemsTransferObjectRelation = allPsm(
+				hu.blackbelt.judo.meta.psm.service.TransferObjectRelation.class)
+				.filter(r -> r.getName().equals(items.getName()))
+				.findAny();
+		assertTrue(psmItemsTransferObjectRelation.isPresent());
+		
+		assertTrue(psmSetOp.isPresent());
+		assertThat(psmSetOp.get().getInput().getName(), IsEqual.equalTo("input"));
+		assertEquals(psmSetOp.get().getInput().getCardinality().getLower(),1);
+		assertEquals(psmSetOp.get().getInput().getCardinality().getUpper(),1);
+		assertNull(psmSetOp.get().getOutput());
+		assertThat(psmSetOp.get().getRelation(), IsEqual.equalTo(psmProductsTransferObjectRelation.get()));
+		
+		
+		final Optional<hu.blackbelt.judo.meta.psm.service.BoundOperationWithRelation> psmUnsetOp = allPsm(
+				hu.blackbelt.judo.meta.psm.service.BoundOperationWithRelation.class)
+				.filter(o -> o.getName().equals("unset_" + items.getName() + "_" + products.getName()))
+				.findAny();
+		
+		assertTrue(psmUnsetOp.isPresent());
+		assertThat(psmUnsetOp.get().getInput().getName(), IsEqual.equalTo("input"));
+		assertEquals(psmUnsetOp.get().getInput().getCardinality().getLower(),1);
+		assertEquals(psmUnsetOp.get().getInput().getCardinality().getUpper(),1);
+		assertNull(psmUnsetOp.get().getOutput());
+		assertThat(psmUnsetOp.get().getRelation(), IsEqual.equalTo(psmProductsTransferObjectRelation.get()));
+		
+		assertThat(psmItemsTransferObjectRelation.get().getSet().get(0), IsEqual.equalTo(psmSetOp.get()));
+		
 	}
 
 	@Test

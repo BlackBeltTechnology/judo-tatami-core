@@ -1,4 +1,3 @@
-
 @lazy
 rule CreateLogicalExpressionTypeForInvariantConstraint
     transform s : ESM!InvariantConstraint
@@ -92,4 +91,3 @@ rule CreateGetterExpressionForExposedGraphSelector
         t.expression = s.getterExpression;
         log.debug("Created Reference Expression Type for Exposed Graph Selector: " + s.name);    
 }
-
