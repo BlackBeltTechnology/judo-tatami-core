@@ -122,8 +122,6 @@ rule CreateCardinalityForExposedGraphSelector
     to t: JUDOPSM!Cardinality {
       t.upper = s.upper;
       t.lower = s.lower;
-      
-      log.debug("Created Cardinality for Exposed Graph Selector: " + t.name);
 }
 
 @greedy

@@ -68,7 +68,7 @@ rule CreateParameterDefinitionSchema
 rule CreateParameterDefinitionSchemaReference
     transform s : ASM!EAnnotation
     to t : OPENAPI!SchemaReference {
-        guard: s.eContainer.isKindOf(ASM!EParameter) and s.source == asmUtils.getAnnotationUri("exposedBy")
+        guard: s.eContainer.isKindOf(ASM!EParameter) and s.source == asmUtils.getAnnotationUri("exposedBy") and s.eContainer.eType.isDefined()
         
         if (s.eContainer.eType.isKindOf(ASM!EClass)) {
             var transferObjectTypeExposedByAnnotation = asmUtils.getExtensionAnnotationListByName(s.eContainer.eType, "exposedBy").selectOne(a | a.details.get("value") == s.details.get("value"));
