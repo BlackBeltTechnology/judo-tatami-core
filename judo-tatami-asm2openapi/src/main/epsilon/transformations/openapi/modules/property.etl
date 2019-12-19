@@ -22,54 +22,60 @@ rule CreateDataPropertyDefinition
             throw "Collection attributes are not supported";
         }
 
-        switch (s.eContainer.eAttributeType.instanceClassName) {
-            case 'java.lang.Boolean': continue;
-            case 'boolean':
-                t.type = OPENAPI!JSONDataType#boolean;
-            case 'byte[]':
-                t.type = OPENAPI!JSONDataType#string;
-                t.format = "binary";
-            case 'java.lang.Double': continue;
-            case 'double':
-                t.type = OPENAPI!JSONDataType#number;
-                t.format = "double";
-            case 'java.lang.Integer': continue;
-            case 'int':
-                t.type = OPENAPI!JSONDataType#integer;
-                t.format = "int32";
-            case 'java.lang.Float': continue;
-            case 'float':
-                t.type = OPENAPI!JSONDataType#number;
-                t.format = "float";
-            case 'java.lang.Long': continue;
-            case 'long':
-                t.type = OPENAPI!JSONDataType#integer;
-                t.format = "int64";
-            case 'java.lang.String':
-                t.type = OPENAPI!JSONDataType#string;
-                // NOTE - byte format is used for base64 encoded characters, not supported yet
-                // NOTE - password format is not supported yet
-            case 'java.math.BigDecimal':
-                t.type = OPENAPI!JSONDataType#number;
-            case 'java.math.BigInteger':
-                t.type = OPENAPI!JSONDataType#integer;
-            case 'java.time.LocalDate': continue;
-            case 'java.util.Date': continue;
-            case 'org.joda.time.LocalDate':
-                t.type = OPENAPI!JSONDataType#string;
-                t.format = "date";
-            case 'java.time.LocalDateTime': continue;
-            case 'java.time.OffsetDateTime': continue;
-            case 'java.time.ZonedDateTime': continue;
-            case 'org.joda.time.DateTime': continue;
-            case 'org.joda.time.LocalDateTime': continue;
-            case 'org.joda.time.MutableDateTime':
-                t.type = OPENAPI!JSONDataType#string;
-                t.format = "date-time";
-            default:
-                log.error("Unknown attribute type: " + s.eContainer.eAttributeType.instanceClassName);
+        if (s.eContainer.eAttributeType.isKindOf(ASM!EEnum)) {
+            // TODO - set literals in t.enum
+            t.type = OPENAPI!JSONDataType#integer;
+        } else {
+            switch (s.eContainer.eAttributeType.instanceClassName) {
+                case 'java.lang.Boolean': continue;
+                case 'boolean':
+                    t.type = OPENAPI!JSONDataType#boolean;
+                case 'byte[]':
+                    t.type = OPENAPI!JSONDataType#string;
+                    t.format = "binary";
+                case 'java.lang.Double': continue;
+                case 'double':
+                    t.type = OPENAPI!JSONDataType#number;
+                    t.format = "double";
+                case 'java.lang.Integer': continue;
+                case 'int':
+                    t.type = OPENAPI!JSONDataType#integer;
+                    t.format = "int32";
+                case 'java.lang.Float': continue;
+                case 'float':
+                    t.type = OPENAPI!JSONDataType#number;
+                    t.format = "float";
+                case 'java.lang.Long': continue;
+                case 'long':
+                    t.type = OPENAPI!JSONDataType#integer;
+                    t.format = "int64";
+                case 'java.lang.String':
+                    t.type = OPENAPI!JSONDataType#string;
+                    // NOTE - byte format is used for base64 encoded characters, not supported yet
+                    // NOTE - password format is not supported yet
+                case 'java.math.BigDecimal':
+                    t.type = OPENAPI!JSONDataType#number;
+                case 'java.math.BigInteger':
+                    t.type = OPENAPI!JSONDataType#integer;
+                case 'java.time.LocalDate': continue;
+                case 'java.util.Date': continue;
+                case 'org.joda.time.LocalDate':
+                    t.type = OPENAPI!JSONDataType#string;
+                    t.format = "date";
+                case 'java.time.LocalDateTime': continue;
+                case 'java.time.OffsetDateTime': continue;
+                case 'java.time.ZonedDateTime': continue;
+                case 'org.joda.time.DateTime': continue;
+                case 'org.joda.time.LocalDateTime': continue;
+                case 'org.joda.time.MutableDateTime':
+                    t.type = OPENAPI!JSONDataType#string;
+                    t.format = "date-time";
+                default:
+                    log.info("Unknown attribute type: " + s.eContainer.eAttributeType.instanceClassName);
+                    t.type = OPENAPI!JSONDataType#string;
+            }
         }
-        
+
         if (s.eContainer.required) {
 		    var transferObjectTypeExposedByAnnotation = asmUtils.getExtensionAnnotationListByName(s.eContainer.eContainer, "exposedBy").selectOne(a | a.details.get("value") == s.details.get("value"));
 		    if (transferObjectTypeExposedByAnnotation.isDefined()) {
