@@ -125,7 +125,7 @@ rule CreateExposedServiceOperationResponseDefinitionSchema
 rule CreateExposedServiceOperationResponseDefinitionSchemaReference
     transform s : ASM!EAnnotation
     to t : OPENAPI!SchemaReference {
-        guard: s.eContainer.isKindOf(ASM!EOperation) and s.source == asmUtils.getAnnotationUri("exposedBy") and asmUtils.isUnbound(s.eContainer)
+        guard: s.eContainer.isKindOf(ASM!EOperation) and s.source == asmUtils.getAnnotationUri("exposedBy") and asmUtils.isUnbound(s.eContainer) and s.eContainer.eType.isDefined()
 
         var operationTypeExposedByAnnotation = asmUtils.getExtensionAnnotationListByName(s.eContainer.eType, "exposedBy").selectOne(a | a.details.get("value") == s.details.get("value"));
         if (s.eContainer.many) {
