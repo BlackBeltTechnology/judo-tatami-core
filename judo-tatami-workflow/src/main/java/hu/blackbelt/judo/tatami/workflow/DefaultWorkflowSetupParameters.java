@@ -90,7 +90,8 @@ public class DefaultWorkflowSetupParameters {
 	@Builder.Default
 	private Boolean ignoreAsm2Expression = false;
 
-
+	@Builder.Default
+	private Boolean ignoreAsm2Script = false;
 
 	public static DefaultWorkflowSetupParametersBuilder addTransformerCalculatedUris(DefaultWorkflowSetupParametersBuilder builder) throws URISyntaxException {
 		return builder

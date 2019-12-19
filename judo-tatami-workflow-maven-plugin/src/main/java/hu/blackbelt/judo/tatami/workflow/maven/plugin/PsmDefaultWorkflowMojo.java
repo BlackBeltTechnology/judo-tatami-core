@@ -124,6 +124,9 @@ public class PsmDefaultWorkflowMojo extends AbstractMojo {
 	@Parameter(property = "ignoreAsm2Expression", defaultValue = "false")
 	private Boolean ignoreAsm2expression = false;
 
+	@Parameter(property = "ignoreAsm2Script", defaultValue = "false")
+	private Boolean ignoreAsm2script = false;
+
 	@Parameter(property = "psmGeneratorClassName")
 	private String psmGeneratorClassName;
 
@@ -249,6 +252,7 @@ public class PsmDefaultWorkflowMojo extends AbstractMojo {
 					.ignoreAsm2Rdbms(ignoreAsm2Rdbms)
 					.ignoreAsm2sdk(ignoreAsm2sdk)
 					.ignoreAsm2Expression(ignoreAsm2expression)
+					.ignoreAsm2Script(ignoreAsm2script)
 					.ignorePsm2Measure(ignorePsm2Measure)
 					.ignoreRdbms2Liquibase(ignoreRdbms2Liquibase)
 					.psm2AsmModelTransformationScriptURI(psm2asmModelScriptRootResolved)

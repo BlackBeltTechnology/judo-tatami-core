@@ -25,11 +25,13 @@ import hu.blackbelt.judo.meta.measure.runtime.MeasureModel;
 import hu.blackbelt.judo.meta.openapi.runtime.OpenapiModel;
 import hu.blackbelt.judo.meta.psm.runtime.PsmModel;
 import hu.blackbelt.judo.meta.rdbms.runtime.RdbmsModel;
+import hu.blackbelt.judo.meta.script.runtime.ScriptModel;
 import hu.blackbelt.judo.tatami.asm2jaxrsapi.Asm2JAXRSAPIWork;
 import hu.blackbelt.judo.tatami.asm2openapi.Asm2OpenAPITransformationTrace;
 import hu.blackbelt.judo.tatami.asm2openapi.Asm2OpenAPIWork;
 import hu.blackbelt.judo.tatami.asm2rdbms.Asm2RdbmsTransformationTrace;
 import hu.blackbelt.judo.tatami.asm2rdbms.Asm2RdbmsWork;
+import hu.blackbelt.judo.tatami.asm2script.Asm2ScriptWork;
 import hu.blackbelt.judo.tatami.asm2sdk.Asm2SDKWork;
 import hu.blackbelt.judo.tatami.core.workflow.engine.WorkFlowEngine;
 import hu.blackbelt.judo.tatami.core.workflow.flow.WorkFlow;
@@ -43,7 +45,6 @@ import hu.blackbelt.judo.tatami.psm2asm.Psm2AsmWork;
 import hu.blackbelt.judo.tatami.psm2measure.Psm2MeasureTransformationTrace;
 import hu.blackbelt.judo.tatami.psm2measure.Psm2MeasureWork;
 import hu.blackbelt.judo.tatami.rdbms2liquibase.Rdbms2LiquibaseWork;
-import hu.blackelt.judo.tatami.asm2expression.Asm2Expression;
 import hu.blackelt.judo.tatami.asm2expression.Asm2ExpressionWork;
 import lombok.Getter;
 
@@ -121,6 +122,11 @@ public class PsmDefaultWorkflow {
 				Asm2ExpressionWork asm2ExpressionWork = new Asm2ExpressionWork(transformationContext);
 				asmWorks.add(asm2ExpressionWork);
 			}
+			if (!parameters.getIgnoreAsm2Script() && !parameters.getIgnorePsm2Measure()) {
+				Asm2ScriptWork asm2ScriptWork = new Asm2ScriptWork(transformationContext);
+				asmWorks.add(asm2ScriptWork);
+			}
+
 			if (!parameters.getIgnoreAsm2Openapi()) {
 				Asm2OpenAPIWork asm2OpenapiWork = new Asm2OpenAPIWork(transformationContext,
 						parameters.getAsm2OpenapiModelTransformationScriptURI());
@@ -185,6 +191,9 @@ public class PsmDefaultWorkflow {
 			}
 			if (!parameters.getIgnoreAsm2Expression() && !parameters.getIgnorePsm2Measure()) {
 				verifier.isClassExists(ExpressionModel.class);
+			}
+			if (!parameters.getIgnoreAsm2Script() && !parameters.getIgnorePsm2Measure()) {
+				verifier.isClassExists(ScriptModel.class);
 			}
 			if (!parameters.getIgnoreAsm2Openapi()) {
 				verifier.isClassExists(OpenapiModel.class);
