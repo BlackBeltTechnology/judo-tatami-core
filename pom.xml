@@ -706,6 +706,7 @@
                 <module>judo-tatami-asm2openapi</module>
                 <module>judo-tatami-asm2jaxrsapi</module>
                 <module>judo-tatami-asm2expression</module>
+                <module>judo-tatami-asm2script</module>
                 <module>judo-tatami-asm2sdk</module>
                 <module>judo-tatami-workflow</module>
                 <module>judo-tatami-workflow-osgi</module>
