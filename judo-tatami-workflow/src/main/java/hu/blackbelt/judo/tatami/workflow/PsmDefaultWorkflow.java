@@ -19,6 +19,7 @@ import java.util.List;
 import com.google.common.collect.Lists;
 
 import hu.blackbelt.judo.meta.asm.runtime.AsmModel;
+import hu.blackbelt.judo.meta.expression.runtime.ExpressionModel;
 import hu.blackbelt.judo.meta.liquibase.runtime.LiquibaseModel;
 import hu.blackbelt.judo.meta.measure.runtime.MeasureModel;
 import hu.blackbelt.judo.meta.openapi.runtime.OpenapiModel;
@@ -42,6 +43,8 @@ import hu.blackbelt.judo.tatami.psm2asm.Psm2AsmWork;
 import hu.blackbelt.judo.tatami.psm2measure.Psm2MeasureTransformationTrace;
 import hu.blackbelt.judo.tatami.psm2measure.Psm2MeasureWork;
 import hu.blackbelt.judo.tatami.rdbms2liquibase.Rdbms2LiquibaseWork;
+import hu.blackelt.judo.tatami.asm2expression.Asm2Expression;
+import hu.blackelt.judo.tatami.asm2expression.Asm2ExpressionWork;
 import lombok.Getter;
 
 public class PsmDefaultWorkflow {
@@ -114,6 +117,10 @@ public class PsmDefaultWorkflow {
 									parameters.getRdbms2LiquibaseModelTransformationScriptURI(), dialect)));
 				}
 			}
+			if (!parameters.getIgnoreAsm2Expression() && !parameters.getIgnorePsm2Measure()) {
+				Asm2ExpressionWork asm2ExpressionWork = new Asm2ExpressionWork(transformationContext);
+				asmWorks.add(asm2ExpressionWork);
+			}
 			if (!parameters.getIgnoreAsm2Openapi()) {
 				Asm2OpenAPIWork asm2OpenapiWork = new Asm2OpenAPIWork(transformationContext,
 						parameters.getAsm2OpenapiModelTransformationScriptURI());
@@ -175,6 +182,9 @@ public class PsmDefaultWorkflow {
 				if (!parameters.getIgnoreRdbms2Liquibase()) {
 					verifier.isMultipleKeyExists(LiquibaseModel.class, parameters.getDialectList().stream().map(d -> "liquibase:" + d).toArray());
 				}
+			}
+			if (!parameters.getIgnoreAsm2Expression() && !parameters.getIgnorePsm2Measure()) {
+				verifier.isClassExists(ExpressionModel.class);
 			}
 			if (!parameters.getIgnoreAsm2Openapi()) {
 				verifier.isClassExists(OpenapiModel.class);

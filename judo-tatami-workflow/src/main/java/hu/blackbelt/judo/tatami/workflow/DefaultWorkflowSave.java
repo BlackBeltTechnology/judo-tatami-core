@@ -1,6 +1,7 @@
 package hu.blackbelt.judo.tatami.workflow;
 
 import static hu.blackbelt.judo.meta.asm.runtime.AsmModel.SaveArguments.asmSaveArgumentsBuilder;
+import static hu.blackbelt.judo.meta.expression.runtime.ExpressionModel.SaveArguments.expressionSaveArgumentsBuilder;
 import static hu.blackbelt.judo.meta.liquibase.runtime.LiquibaseModel.SaveArguments.liquibaseSaveArgumentsBuilder;
 import static hu.blackbelt.judo.meta.measure.runtime.MeasureModel.SaveArguments.measureSaveArgumentsBuilder;
 import static hu.blackbelt.judo.meta.openapi.runtime.OpenapiModel.SaveArguments.openapiSaveArgumentsBuilder;
@@ -17,6 +18,7 @@ import java.util.List;
 
 import hu.blackbelt.judo.meta.asm.runtime.AsmModel;
 import hu.blackbelt.judo.meta.asm.runtime.AsmModel.AsmValidationException;
+import hu.blackbelt.judo.meta.expression.runtime.ExpressionModel;
 import hu.blackbelt.judo.meta.liquibase.runtime.LiquibaseModel;
 import hu.blackbelt.judo.meta.liquibase.runtime.LiquibaseModel.LiquibaseValidationException;
 import hu.blackbelt.judo.meta.measure.runtime.MeasureModel;
@@ -33,7 +35,7 @@ import hu.blackbelt.judo.tatami.psm2measure.Psm2MeasureTransformationTrace;
 
 public class DefaultWorkflowSave {
 	
-	public static void saveModels(TransformationContext transformationContext, File dest, List<String> dialectList) throws IOException, AsmValidationException, 
+	public static void saveModels(TransformationContext transformationContext, File dest, List<String> dialectList) throws IOException, AsmValidationException,
 		MeasureValidationException, RdbmsValidationException, OpenapiValidationException, LiquibaseValidationException {
 
 		if (!dest.exists()) {
@@ -44,17 +46,20 @@ public class DefaultWorkflowSave {
 		}
 
 		transformationContext.getByClass(AsmModel.class).ifPresent(throwingConsumerWrapper((m) ->  
-			m.saveAsmModel(asmSaveArgumentsBuilder().file(new File(dest, transformationContext.getModelName() + "-" + "asm.model")))));
+			m.saveAsmModel(asmSaveArgumentsBuilder().file(new File(dest, transformationContext.getModelName() + "-asm.model")))));
 
 		transformationContext.getByClass(MeasureModel.class).ifPresent(throwingConsumerWrapper((m) ->  
-			m.saveMeasureModel(measureSaveArgumentsBuilder().file(new File(dest, transformationContext.getModelName() + "-" + "measure.model")))));
+			m.saveMeasureModel(measureSaveArgumentsBuilder().file(new File(dest, transformationContext.getModelName() + "-measure.model")))));
 
 		dialectList.forEach(dialect -> transformationContext.get(RdbmsModel.class, "rdbms:" + dialect)
 				.ifPresent(throwingConsumerWrapper((m) -> m.saveRdbmsModel(
 						rdbmsSaveArgumentsBuilder().file(new File(dest, transformationContext.getModelName() + "-" + "rdbms_" + dialect + ".model"))))));
 
+		transformationContext.getByClass(ExpressionModel.class).ifPresent(throwingConsumerWrapper((m) ->
+				m.saveExpressionModel(expressionSaveArgumentsBuilder().file(new File(dest, transformationContext.getModelName() + "-expression.model")))));
+
 		transformationContext.getByClass(OpenapiModel.class).ifPresent(throwingConsumerWrapper((m) ->
-			m.saveOpenapiModel(openapiSaveArgumentsBuilder().file(new File(dest, transformationContext.getModelName() + "-" + "openapi.model")))));
+			m.saveOpenapiModel(openapiSaveArgumentsBuilder().file(new File(dest, transformationContext.getModelName() + "-openapi.model")))));
 		
 		dialectList.forEach(dialect -> transformationContext.get(LiquibaseModel.class, "liquibase:" + dialect)
 				.ifPresent(throwingConsumerWrapper((m) -> m.saveLiquibaseModel(liquibaseSaveArgumentsBuilder()
@@ -69,8 +74,8 @@ public class DefaultWorkflowSave {
 		dialectList.forEach(dialect -> transformationContext
 				.get(Asm2RdbmsTransformationTrace.class, "asm2rdbmstrace:" + dialect)
 				.ifPresent(throwingConsumerWrapper((m) -> m.save(new File(dest, transformationContext.getModelName() + "-" + "asm2rdbms_" + dialect + ".model")))));
-		
-		
+
+
 		transformationContext.getByClass(Asm2OpenAPITransformationTrace.class).ifPresent(throwingConsumerWrapper((m) ->
 			m.save(new File(dest, transformationContext.getModelName() + "-" + "asm2openapi.model"))));
 		
