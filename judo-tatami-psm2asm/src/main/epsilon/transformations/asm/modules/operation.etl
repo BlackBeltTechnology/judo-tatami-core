@@ -24,6 +24,22 @@ rule CreateParameter
         t.eType = s.type.asmEquivalent();
 }
 
+@abstract
+rule CreateScriptBodyAnnotation
+    transform s : JUDOPSM!OperationDeclaration
+    to t : ASM!EAnnotation {
+        guard: s.implementation.isDefined() and s.implementation.body.isDefined() and s.implementation.body.trim() <> ""
+
+        t.source = asmUtils.getAnnotationUri("script");
+
+		var script = new ASM!EStringToStringMapEntry;
+        script.key = "body";
+        script.value = s.implementation.body;
+        t.details.add(script);
+
+}
+
+
 @greedy
 rule CreateInputParameter
     transform s : JUDOPSM!Parameter
@@ -83,6 +99,14 @@ rule CreateBoundOperation
         s.eContainer.asmEquivalent().eOperations.add(t);
 }
 
+
+rule CreateScriptBodyAnnotationForBoundOperation
+    transform s : JUDOPSM!BoundOperation
+    to t : ASM!EAnnotation
+    extends CreateScriptBodyAnnotation {
+        s.equivalent("CreateBoundOperation").eAnnotations.add(t);
+}
+
 @greedy
 rule CreateUnboundInterface
     transform s : JUDOPSM!Namespace
@@ -103,6 +127,13 @@ rule CreateUnboundOperation
         t.name = s.name;
         
         s.getNamespace().equivalent("CreateUnboundInterface").eOperations.add(t);
+}
+
+rule CreateScriptBodyAnnotationForUnboundOperation
+    transform s : JUDOPSM!UnboundOperation
+    to t : ASM!EAnnotation
+    extends CreateScriptBodyAnnotation {
+        s.equivalent("CreateUnboundOperation").eAnnotations.add(t);
 }
 
 rule CreateGraphOperation
