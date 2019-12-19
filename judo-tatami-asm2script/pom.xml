@@ -115,22 +115,12 @@
 		</dependency>
 		<dependency>
 			<groupId>hu.blackbelt.judo.meta</groupId>
-			<artifactId>hu.blackbelt.judo.meta.expression.builder.jql</artifactId>
+			<artifactId>hu.blackbelt.judo.meta.jcl.model</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>hu.blackbelt.judo.meta</groupId>
-			<artifactId>hu.blackbelt.judo.meta.expression.builder.jql.asm</artifactId>
+			<artifactId>hu.blackbelt.judo.meta.script.builder.jcl</artifactId>
 		</dependency>
-		<dependency>
-			<groupId>hu.blackbelt.judo.meta</groupId>
-			<artifactId>hu.blackbelt.judo.meta.expression.model.adapter.asm</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>hu.blackbelt.judo.meta</groupId>
-			<artifactId>hu.blackbelt.judo.meta.expression.model.adapter.measure</artifactId>
-		</dependency>
-
-
 
 		<dependency>
 			<groupId>hu.blackbelt.judo.tatami</groupId>

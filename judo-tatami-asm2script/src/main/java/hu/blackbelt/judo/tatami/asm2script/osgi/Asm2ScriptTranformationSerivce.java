@@ -4,24 +4,24 @@ import hu.blackbelt.epsilon.runtime.execution.api.Log;
 import hu.blackbelt.epsilon.runtime.execution.impl.Slf4jLog;
 import hu.blackbelt.epsilon.runtime.execution.impl.StringBuilderLogger;
 import hu.blackbelt.judo.meta.asm.runtime.AsmModel;
-import hu.blackbelt.judo.meta.expression.runtime.ExpressionModel;
 import hu.blackbelt.judo.meta.measure.runtime.MeasureModel;
+import hu.blackbelt.judo.meta.script.runtime.ScriptModel;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.emf.common.util.URI;
 import org.osgi.service.component.annotations.Component;
 
-import static hu.blackbelt.judo.tatami.asm2script.Asm2Script.executeAsm2Expression;
+import static hu.blackbelt.judo.tatami.asm2script.Asm2Script.executeAsm2Script;
 
 @Component(immediate = true, service = Asm2ScriptTranformationSerivce.class)
 @Slf4j
 
 public class Asm2ScriptTranformationSerivce {
 
-    public ExpressionModel install(AsmModel asmModel, MeasureModel measureModel) {
-        ExpressionModel expressionModel = ExpressionModel.buildExpressionModel()
+    public ScriptModel install(AsmModel asmModel, MeasureModel measureModel) {
+        ScriptModel scriptModel = ScriptModel.buildScriptModel()
                 .name(asmModel.getName())
                 .version(asmModel.getVersion())
-                .uri(URI.createURI("expression:" + asmModel.getName() + ".model"))
+                .uri(URI.createURI("script:" + asmModel.getName() + ".model"))
                 .checksum(asmModel.getChecksum())
                 .tags(asmModel.getTags())
                 .build();
@@ -30,13 +30,13 @@ public class Asm2ScriptTranformationSerivce {
 
         try {
 
-            executeAsm2Expression(asmModel, measureModel, expressionModel);
+            executeAsm2Script(asmModel, measureModel, scriptModel);
 
             log.info("\u001B[33m {}\u001B[0m", logger.getBuffer());
         } catch (Exception e) {
             log.info("\u001B[31m {}\u001B[0m", logger.getBuffer());
             throw e;
         }
-        return expressionModel;
+        return scriptModel;
     }
 }

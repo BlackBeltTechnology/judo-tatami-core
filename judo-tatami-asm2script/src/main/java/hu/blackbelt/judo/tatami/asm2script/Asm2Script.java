@@ -1,16 +1,16 @@
 package hu.blackbelt.judo.tatami.asm2script;
 
 import hu.blackbelt.judo.meta.asm.runtime.AsmModel;
-import hu.blackbelt.judo.meta.expression.builder.jql.JqlExtractor;
-import hu.blackbelt.judo.meta.expression.builder.jql.asm.AsmJqlExtractor;
-import hu.blackbelt.judo.meta.expression.runtime.ExpressionModel;
 import hu.blackbelt.judo.meta.measure.runtime.MeasureModel;
 import hu.blackbelt.judo.meta.measure.support.MeasureModelResourceSupport;
+import hu.blackbelt.judo.meta.script.builder.jcl.AsmJclExtractor;
+import hu.blackbelt.judo.meta.script.builder.jcl.JclExtractor;
+import hu.blackbelt.judo.meta.script.runtime.ScriptModel;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 
 public class Asm2Script {
 
-    public static void executeAsm2Expression(AsmModel asmModel, MeasureModel measureModel, ExpressionModel expressionModel) {
+    public static void executeAsm2Script(AsmModel asmModel, MeasureModel measureModel, ScriptModel scriptModel) {
         ResourceSet measureResourceSet;
         if (measureModel == null) {
             measureResourceSet = MeasureModelResourceSupport.createMeasureResourceSet();
@@ -18,8 +18,8 @@ public class Asm2Script {
             measureResourceSet = measureModel.getResourceSet();
         }
 
-        JqlExtractor jqlExtractor = new AsmJqlExtractor(asmModel.getResourceSet(), measureResourceSet, expressionModel.getResourceSet());
-        jqlExtractor.extractExpressions();
+        JclExtractor jclExtractor = new AsmJclExtractor(asmModel.getResourceSet(), measureResourceSet, scriptModel.getResourceSet());
+        jclExtractor.extractScripts();
     }
 
 }

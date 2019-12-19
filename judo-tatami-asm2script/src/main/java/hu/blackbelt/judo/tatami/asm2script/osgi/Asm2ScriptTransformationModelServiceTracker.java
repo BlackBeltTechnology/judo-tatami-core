@@ -3,6 +3,7 @@ package hu.blackbelt.judo.tatami.asm2script.osgi;
 import hu.blackbelt.judo.meta.asm.runtime.AsmModel;
 import hu.blackbelt.judo.meta.expression.runtime.ExpressionModel;
 import hu.blackbelt.judo.meta.measure.runtime.MeasureModel;
+import hu.blackbelt.judo.meta.script.runtime.ScriptModel;
 import hu.blackbelt.judo.tatami.core.AbstractModelPairTracker;
 import lombok.extern.slf4j.Slf4j;
 import org.osgi.framework.ServiceRegistration;
@@ -22,8 +23,8 @@ public class Asm2ScriptTransformationModelServiceTracker extends AbstractModelPa
     @Reference
     Asm2ScriptTranformationSerivce asm2ScriptTranformationSerivce;
 
-    Map<String, ServiceRegistration<ExpressionModel>> registrations = new ConcurrentHashMap<>();
-    Map<String, ExpressionModel> models = new HashMap<>();
+    Map<String, ServiceRegistration<ScriptModel>> registrations = new ConcurrentHashMap<>();
+    Map<String, ScriptModel> models = new HashMap<>();
 
     @Activate
     protected void activate(ComponentContext contextPar) {
@@ -42,22 +43,22 @@ public class Asm2ScriptTransformationModelServiceTracker extends AbstractModelPa
     @Override
     public void install(AsmModel asmModel, MeasureModel measureModel) {
         String key = asmModel.getName();
-        ExpressionModel expressionModel = null;
+        ScriptModel scriptModel = null;
         if (models.containsKey(key)) {
             log.error("Model already loaded: " + asmModel.getName());
             return;
         }
 
         try {
-            expressionModel = asm2ScriptTranformationSerivce.install(asmModel, measureModel);
-            log.info("Registering model: " + expressionModel);
-            ServiceRegistration<ExpressionModel> modelServiceRegistration =
+            scriptModel = asm2ScriptTranformationSerivce.install(asmModel, measureModel);
+            log.info("Registering model: " + scriptModel);
+            ServiceRegistration<ScriptModel> modelServiceRegistration =
                     componentContext.getBundleContext()
-                            .registerService(ExpressionModel.class, expressionModel, expressionModel.toDictionary());
-            models.put(key, expressionModel);
+                            .registerService(ScriptModel.class, scriptModel, scriptModel.toDictionary());
+            models.put(key, scriptModel);
             registrations.put(key, modelServiceRegistration);
         } catch (Exception e) {
-            log.error("Could not register PSM Model: " + asmModel.getName(), e);
+            log.error("Could not register Script Model: " + asmModel.getName(), e);
         }
     }
 

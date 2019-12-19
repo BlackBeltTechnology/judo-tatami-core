@@ -5,7 +5,7 @@ import hu.blackbelt.epsilon.runtime.execution.impl.Slf4jLog;
 import hu.blackbelt.judo.meta.asm.runtime.AsmModel;
 import hu.blackbelt.judo.meta.expression.runtime.ExpressionModel;
 import hu.blackbelt.judo.meta.measure.runtime.MeasureModel;
-import hu.blackbelt.judo.tatami.asm2script.Asm2Script;
+import hu.blackbelt.judo.meta.script.runtime.ScriptModel;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.emf.common.util.URI;
 import org.junit.jupiter.api.BeforeEach;
@@ -20,6 +20,8 @@ import static hu.blackbelt.judo.meta.expression.runtime.ExpressionModel.SaveArgu
 import static hu.blackbelt.judo.meta.expression.runtime.ExpressionModel.buildExpressionModel;
 import static hu.blackbelt.judo.meta.measure.runtime.MeasureModel.LoadArguments.measureLoadArgumentsBuilder;
 import static hu.blackbelt.judo.meta.measure.runtime.MeasureModel.loadMeasureModel;
+import static hu.blackbelt.judo.meta.script.runtime.ScriptModel.SaveArguments.scriptSaveArgumentsBuilder;
+import static hu.blackbelt.judo.meta.script.runtime.ScriptModel.buildScriptModel;
 
 @Slf4j
 public class Asm2ScriptTest {
@@ -28,12 +30,12 @@ public class Asm2ScriptTest {
     public static final String TARGET_TEST_CLASSES = "target/test-classes";
     public static final String NORTHWIND_ASM_MODEL = "northwind-asm.model";
     public static final String NORTHWIND_MEASURE_MODEL = "northwind-measure.model";
-    public static final String NORTHWIND_EXPRESSION_MODEL = "northwind-expression.model";
+    public static final String NORTHWIND_SCRIPT_MODEL = "northwind-script.model";
 
     Log slf4jlog;
     AsmModel asmModel;
     MeasureModel measureModel;
-    ExpressionModel expressionModel;
+    ScriptModel scriptModel;
 
     @BeforeEach
     public void setUp() throws Exception {
@@ -51,7 +53,7 @@ public class Asm2ScriptTest {
                 .name(NORTHWIND));
 
         // Create empty Expression model
-        expressionModel = buildExpressionModel()
+        scriptModel = buildScriptModel()
                 .name(NORTHWIND)
                 .build();
 
@@ -59,10 +61,10 @@ public class Asm2ScriptTest {
 
     @Test
     public void testExecuteAsm2ExpressionGeneration() throws Exception {
-        Asm2Script.executeAsm2Expression(asmModel, measureModel, expressionModel);
+        Asm2Script.executeAsm2Script(asmModel, measureModel, scriptModel);
 
-        expressionModel.saveExpressionModel(expressionSaveArgumentsBuilder()
-                .outputStream(new FileOutputStream(new File(TARGET_TEST_CLASSES, NORTHWIND_EXPRESSION_MODEL))));
+        scriptModel.saveScriptModel(scriptSaveArgumentsBuilder()
+                .outputStream(new FileOutputStream(new File(TARGET_TEST_CLASSES, NORTHWIND_SCRIPT_MODEL))));
 
     }
 }
