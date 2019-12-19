@@ -9,12 +9,25 @@ operation ASM!EOperation getFullOperationPath() : String {
 }
 
 @cached
-operation ASM!EAttribute getTypeDefinition() : String {	
-	if (self.upperBound == -1) {
-		return "Collection<" + self.eType.instanceClass.name + ">";
-	} else {
-		return self.eType.instanceClass.name;
+operation ASM!EAttribute getTypeDefinition() : String {
+    var prefix = "";
+    var postfix = "";
+
+	if (self.upperBound == -1 or self.upperBound > 1) {
+		prefix = "Collection<";
+		postfix = ">";
 	}
+
+    var typeName;
+	if (self.eType.instanceClass.isDefined()) {
+	    typeName = self.eType.instanceClass.name;
+	} else if (self.eType.isKindOf(ASM!EEnum)) {
+		typeName = "java.lang.Integer";
+	} else {
+	    throw "Unsupported attribute type: " + self.eType;
+	}
+
+	return prefix + typeName + postfix;
 }
 
 @cached 
@@ -30,7 +43,7 @@ operation ASM!EReference getBareTypeDefinition() : String {
 
 @cached
 operation ASM!EReference getTypeDefinition() : String {	
-	if (self.upperBound == -1) {
+	if (self.upperBound == -1 or self.upperBound > 1) {
 		return "Collection<" + self.getBareTypeDefinition() + ">";
 	} else {
 		return self.getBareTypeDefinition();
