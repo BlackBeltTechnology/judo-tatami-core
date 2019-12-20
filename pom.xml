@@ -77,7 +77,7 @@
         <judo-meta-jcl-version>1.0.0.20191219_123313_2da89c5_develop</judo-meta-jcl-version>
         <judo-meta-jcl-import-range>[1.0,1.1)</judo-meta-jcl-import-range>
 
-        <judo-meta-script-version>1.0.0-SNAPSHOT</judo-meta-script-version>
+        <judo-meta-script-version>1.0.0.20191220_183209_90b5dc7_develop</judo-meta-script-version>
         <judo-meta-script-import-range>[1.0,1.1)</judo-meta-script-import-range>
 
         <judo-meta-asm-version>1.0.0.20191220_175057_ffac52f_develop</judo-meta-asm-version>
