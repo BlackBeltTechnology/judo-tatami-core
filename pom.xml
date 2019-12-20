@@ -77,7 +77,7 @@
         <judo-meta-jcl-version>1.0.0.20191219_123313_2da89c5_develop</judo-meta-jcl-version>
         <judo-meta-jcl-import-range>[1.0,1.1)</judo-meta-jcl-import-range>
 
-        <judo-meta-script-version>1.0.0.20191219_160611_a76cf45_develop</judo-meta-script-version>
+        <judo-meta-script-version>1.0.0.20191220_145254_213d0e4_develop</judo-meta-script-version>
         <judo-meta-script-import-range>[1.0,1.1)</judo-meta-script-import-range>
 
         <judo-meta-asm-version>1.0.0.20191217_134006_a431fce_develop</judo-meta-asm-version>
@@ -327,6 +327,12 @@
                 <version>${judo-meta-jcl-version}</version>
             </dependency>
 
+            <dependency>
+                <groupId>hu.blackbelt.judo.meta</groupId>
+                <artifactId>hu.blackbelt.judo.meta.script.builder.jcl</artifactId>
+                <version>${judo-meta-script-version}</version>
+            </dependency>
+
             <!--dependency>
                 <groupId>hu.blackbelt.judo.meta</groupId>
                 <artifactId>judo-meta-psm-jql-extract-runtime</artifactId>
@@ -546,6 +552,8 @@
                                 <ignoreAsm2sdk>true</ignoreAsm2sdk>
                                 <ignoreAsm2jaxrsapi>true</ignoreAsm2jaxrsapi>
                                 <ignoreRdbms2Liquibase>true</ignoreRdbms2Liquibase>
+                                <ignoreAsm2expression>true</ignoreAsm2expression>
+                                <ignoreAsm2script>true</ignoreAsm2script>
                             </configuration>
                         </execution>
                     </executions>
