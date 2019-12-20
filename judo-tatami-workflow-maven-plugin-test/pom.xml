@@ -73,6 +73,7 @@
 							<ignorePsm2Measure>false</ignorePsm2Measure>
 							<ignoreAsm2Rdbms>false</ignoreAsm2Rdbms>
 							<ignoreAsm2Expression>false</ignoreAsm2Expression>
+							<ignoreAsm2script>false</ignoreAsm2script>
 							<ignoreAsm2Openapi>false</ignoreAsm2Openapi>
 							<ignoreRdbms2Liquibase>false</ignoreRdbms2Liquibase>
 							<ignoreAsm2jaxrsapi>false</ignoreAsm2jaxrsapi>

@@ -6,6 +6,7 @@ import static hu.blackbelt.judo.meta.liquibase.runtime.LiquibaseModel.SaveArgume
 import static hu.blackbelt.judo.meta.measure.runtime.MeasureModel.SaveArguments.measureSaveArgumentsBuilder;
 import static hu.blackbelt.judo.meta.openapi.runtime.OpenapiModel.SaveArguments.openapiSaveArgumentsBuilder;
 import static hu.blackbelt.judo.meta.rdbms.runtime.RdbmsModel.SaveArguments.rdbmsSaveArgumentsBuilder;
+import static hu.blackbelt.judo.meta.script.runtime.ScriptModel.SaveArguments.scriptSaveArgumentsBuilder;
 import static hu.blackbelt.judo.tatami.asm2jaxrsapi.Asm2JAXRSAPIWork.JAXRSAPI_OUTPUT;
 import static hu.blackbelt.judo.tatami.asm2sdk.Asm2SDKWork.SDK_OUTPUT;
 import static hu.blackbelt.judo.tatami.core.ThrowingConsumer.throwingConsumerWrapper;
@@ -27,6 +28,7 @@ import hu.blackbelt.judo.meta.openapi.runtime.OpenapiModel;
 import hu.blackbelt.judo.meta.openapi.runtime.OpenapiModel.OpenapiValidationException;
 import hu.blackbelt.judo.meta.rdbms.runtime.RdbmsModel;
 import hu.blackbelt.judo.meta.rdbms.runtime.RdbmsModel.RdbmsValidationException;
+import hu.blackbelt.judo.meta.script.runtime.ScriptModel;
 import hu.blackbelt.judo.tatami.asm2openapi.Asm2OpenAPITransformationTrace;
 import hu.blackbelt.judo.tatami.asm2rdbms.Asm2RdbmsTransformationTrace;
 import hu.blackbelt.judo.tatami.core.workflow.work.TransformationContext;
@@ -57,6 +59,9 @@ public class DefaultWorkflowSave {
 
 		transformationContext.getByClass(ExpressionModel.class).ifPresent(throwingConsumerWrapper((m) ->
 				m.saveExpressionModel(expressionSaveArgumentsBuilder().file(new File(dest, transformationContext.getModelName() + "-expression.model")))));
+
+		transformationContext.getByClass(ScriptModel.class).ifPresent(throwingConsumerWrapper((m) ->
+				m.saveScriptModel(scriptSaveArgumentsBuilder().file(new File(dest, transformationContext.getModelName() + "-script.model")))));
 
 		transformationContext.getByClass(OpenapiModel.class).ifPresent(throwingConsumerWrapper((m) ->
 			m.saveOpenapiModel(openapiSaveArgumentsBuilder().file(new File(dest, transformationContext.getModelName() + "-openapi.model")))));
