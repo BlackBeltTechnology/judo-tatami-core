@@ -10,6 +10,7 @@ import static hu.blackbelt.judo.meta.script.runtime.ScriptModel.SaveArguments.sc
 import static hu.blackbelt.judo.tatami.asm2jaxrsapi.Asm2JAXRSAPIWork.JAXRSAPI_OUTPUT;
 import static hu.blackbelt.judo.tatami.asm2sdk.Asm2SDKWork.SDK_OUTPUT;
 import static hu.blackbelt.judo.tatami.core.ThrowingConsumer.throwingConsumerWrapper;
+import static hu.blackbelt.judo.tatami.script2operation.Script2OperationWork.OPERATION_OUTPUT;
 
 import java.io.File;
 import java.io.IOException;
@@ -34,6 +35,7 @@ import hu.blackbelt.judo.tatami.asm2rdbms.Asm2RdbmsTransformationTrace;
 import hu.blackbelt.judo.tatami.core.workflow.work.TransformationContext;
 import hu.blackbelt.judo.tatami.psm2asm.Psm2AsmTransformationTrace;
 import hu.blackbelt.judo.tatami.psm2measure.Psm2MeasureTransformationTrace;
+import hu.blackbelt.judo.tatami.script2operation.Script2OperationWork;
 
 public class DefaultWorkflowSave {
 	
@@ -83,9 +85,12 @@ public class DefaultWorkflowSave {
 
 		transformationContext.getByClass(Asm2OpenAPITransformationTrace.class).ifPresent(throwingConsumerWrapper((m) ->
 			m.save(new File(dest, transformationContext.getModelName() + "-" + "asm2openapi.model"))));
-		
+
 		transformationContext.get(InputStream.class, SDK_OUTPUT).ifPresent(throwingConsumerWrapper((m) ->
-			Files.copy(m, new File(dest, transformationContext.getModelName() + "-" + "asm2sdk.jar").toPath())));
+				Files.copy(m, new File(dest, transformationContext.getModelName() + "-" + "asm2sdk.jar").toPath())));
+
+		transformationContext.get(InputStream.class, OPERATION_OUTPUT).ifPresent(throwingConsumerWrapper((m) ->
+			Files.copy(m, new File(dest, transformationContext.getModelName() + "-" + "script2operation.jar").toPath())));
 		
 		transformationContext.get(InputStream.class, JAXRSAPI_OUTPUT).ifPresent(throwingConsumerWrapper((m)->
 			Files.copy(m, new File(dest, transformationContext.getModelName() + "-" + "asm2jaxrsapi.jar").toPath())));

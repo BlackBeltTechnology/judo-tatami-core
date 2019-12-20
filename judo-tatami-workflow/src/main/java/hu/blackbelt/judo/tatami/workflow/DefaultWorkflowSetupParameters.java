@@ -93,6 +93,9 @@ public class DefaultWorkflowSetupParameters {
 	@Builder.Default
 	private Boolean ignoreAsm2Script = false;
 
+	@Builder.Default
+	private Boolean ignoreScript2Operation = false;
+
 	public static DefaultWorkflowSetupParametersBuilder addTransformerCalculatedUris(DefaultWorkflowSetupParametersBuilder builder) throws URISyntaxException {
 		return builder
 				.psm2AsmModelTransformationScriptURI(calculatePsm2AsmTransformationScriptURI())
