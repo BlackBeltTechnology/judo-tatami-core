@@ -53,46 +53,46 @@
         <epsilon-version>1.5.1</epsilon-version>
         <tycho-version>1.4.0</tycho-version>
 
-        <epsilon-runtime-version>1.2.0.20191018_105940_dc9d257_develop</epsilon-runtime-version>
+        <epsilon-runtime-version>1.2.0.20191216_103052_a5925f7_develop</epsilon-runtime-version>
         <epsilon-runtime-eclipse-version>1.2.0.20191105_183445_4b0b2da_develop</epsilon-runtime-eclipse-version>
 
-        <emf-genmodel-generator-version>1.0.0.20191105_182930_676cf43_develop</emf-genmodel-generator-version>
+        <emf-genmodel-generator-version>1.0.0.20191222_154354_a61f75c_develop</emf-genmodel-generator-version>
         <judo-genmodel-generator-version>1.0.0.20191105_183255_7673428_develop</judo-genmodel-generator-version>
 
-        <judo-framework-version>2.0.0_develop_135</judo-framework-version>
+        <judo-framework-version>2.0.0.20191112_160510_496b413_develop</judo-framework-version>
 
         <!-- Model versions -->
-        <judo-meta-rdbms-version>1.0.0.20191220_193119_cab1153_develop</judo-meta-rdbms-version>
+        <judo-meta-rdbms-version>1.0.0.20191222_223900_28d9083_develop</judo-meta-rdbms-version>
         <judo-meta-rdbms-import-range>[1.0,1.1)</judo-meta-rdbms-import-range>
 
-        <judo-meta-esm-version>1.1.0.20191220_180428_4f1d622_develop</judo-meta-esm-version>
+        <judo-meta-esm-version>1.1.0.20191222_201523_0f228e4_develop</judo-meta-esm-version>
         <judo-meta-esm-import-range>[1.0,1.1)</judo-meta-esm-import-range>
 
-        <judo-meta-psm-version>1.0.0.20191220_182136_b01c7c2_develop</judo-meta-psm-version>
+        <judo-meta-psm-version>1.0.0.20191222_195936_f876179_develop</judo-meta-psm-version>
         <judo-meta-psm-import-range>[1.0,1.1)</judo-meta-psm-import-range>
 
-        <judo-meta-jql-version>1.0.0.20191112_164935_2d7c4d3_develop</judo-meta-jql-version>
+        <judo-meta-jql-version>1.0.0.20191222_230412_716d024_develop</judo-meta-jql-version>
         <judo-meta-jql-import-range>[1.0,1.1)</judo-meta-jql-import-range>
 
-        <judo-meta-jcl-version>1.0.0.20191219_123313_2da89c5_develop</judo-meta-jcl-version>
+        <judo-meta-jcl-version>1.0.0.20191222_231509_3974812_develop</judo-meta-jcl-version>
         <judo-meta-jcl-import-range>[1.0,1.1)</judo-meta-jcl-import-range>
 
-        <judo-meta-script-version>1.0.0.20191220_183209_90b5dc7_develop</judo-meta-script-version>
+        <judo-meta-script-version>1.0.0.20191222_210809_c9ede64_develop</judo-meta-script-version>
         <judo-meta-script-import-range>[1.0,1.1)</judo-meta-script-import-range>
 
-        <judo-meta-asm-version>1.0.0.20191220_175057_ffac52f_develop</judo-meta-asm-version>
+        <judo-meta-asm-version>1.0.0.20191222_220748_43ea58f_develop</judo-meta-asm-version>
         <judo-meta-asm-import-range>[1.0,1.1)</judo-meta-asm-import-range>
 
-        <judo-meta-expression-version>1.0.0.20191220_193101_72a0cd4_develop</judo-meta-expression-version>
+        <judo-meta-expression-version>1.0.0.20191222_231541_1100c1a_develop</judo-meta-expression-version>
         <judo-meta-expression-import-range>[1.0,1.1)</judo-meta-expression-import-range>
 
-        <judo-meta-measure-version>1.0.0.20191220_185036_ecbae5c_develop</judo-meta-measure-version>
+        <judo-meta-measure-version>1.0.0.20191222_220833_d42fe26_develop</judo-meta-measure-version>
         <judo-meta-measure-import-range>[1.0,1.1)</judo-meta-measure-import-range>
 
-        <judo-meta-liquibase-version>1.0.0.20191220_190247_25e6753_develop</judo-meta-liquibase-version>
+        <judo-meta-liquibase-version>1.0.0.20191222_225931_c3325f6_develop</judo-meta-liquibase-version>
         <judo-meta-liquibase-import-range>[1.0,1.1)</judo-meta-liquibase-import-range>
 
-        <judo-meta-openapi-version>1.0.0.20191220_190932_6d5c254_develop</judo-meta-openapi-version>
+        <judo-meta-openapi-version>1.0.0.20191222_223235_34ea46f_develop</judo-meta-openapi-version>
         <judo-meta-openapi-import-range>[1.0,1.1)</judo-meta-openapi-import-range>
 
         <judo-dao-api-version>1.0.0.20191220_205229_b4e8ff6_develop</judo-dao-api-version>
@@ -567,8 +567,8 @@
                                 <ignoreAsm2sdk>true</ignoreAsm2sdk>
                                 <ignoreAsm2jaxrsapi>true</ignoreAsm2jaxrsapi>
                                 <ignoreRdbms2Liquibase>true</ignoreRdbms2Liquibase>
-                                <ignoreAsm2expression>true</ignoreAsm2expression>
-                                <ignoreAsm2script>true</ignoreAsm2script>
+                                <ignoreAsm2Expression>true</ignoreAsm2Expression>
+                                <ignoreAsm2Script>true</ignoreAsm2Script>
                             </configuration>
                         </execution>
                     </executions>
