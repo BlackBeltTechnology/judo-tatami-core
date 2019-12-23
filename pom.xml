@@ -77,7 +77,7 @@
         <judo-meta-jcl-version>1.0.0.20191222_231509_3974812_develop</judo-meta-jcl-version>
         <judo-meta-jcl-import-range>[1.0,1.1)</judo-meta-jcl-import-range>
 
-        <judo-meta-script-version>1.0.0.20191222_210809_c9ede64_develop</judo-meta-script-version>
+        <judo-meta-script-version>1.0.0.20191222_233403_191e200_develop</judo-meta-script-version>
         <judo-meta-script-import-range>[1.0,1.1)</judo-meta-script-import-range>
 
         <judo-meta-asm-version>1.0.0.20191222_220748_43ea58f_develop</judo-meta-asm-version>
@@ -96,7 +96,7 @@
         <judo-meta-openapi-import-range>[1.0,1.1)</judo-meta-openapi-import-range>
 
         <judo-dao-api-version>1.0.0.20191220_205229_b4e8ff6_develop</judo-dao-api-version>
-        <judo-script-codegen-version>1.0.0.20191220_210653_67abe4a_develop</judo-script-codegen-version>
+        <judo-script-codegen-version>1.0.0.20191222_234632_33995bb_develop</judo-script-codegen-version>
         <structured-map-proxy-version>1.0.0.20191217_122241_77813e8_develop</structured-map-proxy-version>
 
         <!-- We use older version of plugin to avoid chicked egg problem -->
