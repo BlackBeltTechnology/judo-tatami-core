@@ -75,7 +75,7 @@ eclipse-build:
 
     - wercker/maven:
       goals: clean deploy
-      profiles: modules-eclipse
+      profiles: !modules,modules-eclipse
       settings: .maven.xml
       maven_opts: -Dorg.ops4j.pax.url.mvn.settings=${WERCKER_ROOT}/.maven.xml -DuseCustomSettings=true
       cache_repo: true
