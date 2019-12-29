@@ -73,6 +73,6 @@
    <repository-reference location="https://nexus.judo.technology/repository/p2/p2-swagger/1.0.0" enabled="true" />
 
    <repository-reference location="https://nexus.judo.technology/repository/p2/judo-meta-rdbms/1.0.0.20191227_133951_02b1df4_develop" enabled="true" />
-   <repository-reference location="https://nexus.judo.technology/repository/p2/judo-meta-liquibase/1.0.0.20191227_140543_a2e337a_develop" enabled="true" />
+   <repository-reference location="https://nexus.judo.technology/repository/p2/judo-meta-liquibase/1.0.0.20191229_114702_3739a2f_develop" enabled="true" />
 
 </site>

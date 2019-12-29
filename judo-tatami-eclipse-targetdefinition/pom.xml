@@ -128,7 +128,7 @@
 								</replacement>
 								<replacement>
 									<token>(judo-meta-measure\/)(.*)(\"\/&gt;)</token>
-									<value>$1${judo-meta-mesure-version}"/&gt;</value>
+									<value>$1${judo-meta-measure-version}"/&gt;</value>
 								</replacement>
 
 								<!-- expression -->
