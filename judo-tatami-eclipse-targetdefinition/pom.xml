@@ -91,6 +91,11 @@
 		                            <token>(hu.blackbelt.judo.meta.esm.feature.feature.group\"\ version\=\")(.*)(\"\/&gt;)</token>
 		                            <value>$1${judo-meta-esm-version}"/&gt;</value>
 		                        </replacement>
+								<replacement>
+									<token>(hu.blackbelt.judo.meta.esm.designer.feature.feature.group\"\ version\=\")(.*)(\"\/&gt;)</token>
+									<value>$1${judo-meta-esm-version}"/&gt;</value>
+								</replacement>
+
 		                        <replacement>
 		                            <token>(judo-meta-esm\/)(.*)(\"\/&gt;)</token>
 		                            <value>$1${judo-meta-esm-version}"/&gt;</value>
@@ -115,8 +120,18 @@
 		                            <token>(judo-meta-liquibase\/)(.*)(\"\/&gt;)</token>
 		                            <value>$1${judo-meta-liquibase-version}"/&gt;</value>
 		                        </replacement>
-		                        
-		                        <!-- expression -->
+
+								<!-- measure -->
+								<replacement>
+									<token>(hu.blackbelt.judo.meta.measure.feature.feature.group\"\ version\=\")(.*)(\"\/&gt;)</token>
+									<value>$1${judo-meta-measure-version}"/&gt;</value>
+								</replacement>
+								<replacement>
+									<token>(judo-meta-measure\/)(.*)(\"\/&gt;)</token>
+									<value>$1${judo-meta-mesure-version}"/&gt;</value>
+								</replacement>
+
+								<!-- expression -->
 		                        <replacement>
 		                            <token>(hu.blackbelt.judo.meta.expression.feature.feature.group\"\ version\=\")(.*)(\"\/&gt;)</token>
 		                            <value>$1${judo-meta-expression-version}"/&gt;</value>

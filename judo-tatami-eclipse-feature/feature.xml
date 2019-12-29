@@ -220,6 +220,7 @@
       <import feature="hu.blackbelt.judo.meta.psm.feature"/>
       <import feature="hu.blackbelt.judo.meta.asm.feature"/>
       <import feature="hu.blackbelt.judo.meta.esm.feature"/>
+      <import feature="hu.blackbelt.judo.meta.esm.designer.feature"/>
       <import feature="hu.blackbelt.judo.meta.jql.feature"/>
       <import feature="hu.blackbelt.judo.meta.rdbms.feature"/>
       <import feature="hu.blackbelt.judo.meta.liquibase.feature"/>
