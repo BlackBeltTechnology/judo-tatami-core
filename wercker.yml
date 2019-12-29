@@ -27,29 +27,6 @@ build:
       cache_repo: true
 
     - wercker/maven:
-      goals: tycho-versions:update-eclipse-metadata
-      profiles: modules-eclipse
-      maven_opts: -Dtycho.mode=maven
-      cache_repo: true
-      settings: .maven.xml
-
-    - wercker/maven:
-      goals: validate
-      pom: ./judo-tatami-eclipse-targetdefinition/pom.xml
-      profiles: update-target-versions,modules-eclipse
-      maven_opts: -Dtycho.mode=maven
-      settings: .maven.xml
-      cache_repo: true
-
-    - wercker/maven:
-      goals: validate
-      pom: ./judo-tatami-eclipse-site/pom.xml
-      profiles: update-category-versions,modules-eclipse
-      maven_opts: -Dtycho.mode=maven
-      settings: .maven.xml
-      cache_repo: true
-
-    - wercker/maven:
       goals: clean deploy
       profiles: ${BUILD_PROFILES}
       settings: .maven.xml
@@ -73,27 +50,6 @@ build:
 
 eclipse-build:
   steps:
-    - blackbelttechnology/import-gpg-keys@1.0.4:
-      secretkeys: $GPG_SECRET_KEYS
-      ownertrust: $GPG_OWNERTRUST
-
-    - blackbelttechnology/version-from-git-tag@1.0.8
-
-    - blackbelttechnology/version-from-pom@1.0.2:
-      pom: ./pom.xml
-
-    - script:
-      name: calculate version number
-      code: |-
-        export VERSION_NUMBER=${VERSION_FROM_POM_BASE_VERSION}.$(date +%Y%m%d_%H%M%S)_${VERSION_FROM_GIT_TAG_SHORT_SHA1}_${VERSION_FROM_GIT_TAG_CURRENT_BRANCH_VALID_NAME//[(\)]}
-        echo "Building version: ${VERSION_NUMBER}"
-
-    - wercker/maven:
-      goals: versions:set
-      maven_opts: -Dtycho.mode=maven -DnewVersion=${VERSION_NUMBER}
-      settings: .maven.xml
-      cache_repo: true
-
     - wercker/maven:
       goals: tycho-versions:update-eclipse-metadata
       profiles: modules-eclipse
@@ -119,7 +75,7 @@ eclipse-build:
 
     - wercker/maven:
       goals: clean deploy
-      profiles: ${BUILD_ECLIPSE_PROFILES},modules-eclipse
+      profiles: modules-eclipse
       settings: .maven.xml
       maven_opts: -Dorg.ops4j.pax.url.mvn.settings=${WERCKER_ROOT}/.maven.xml -DuseCustomSettings=true
       cache_repo: true
