@@ -75,9 +75,9 @@ eclipse-build:
 
     - wercker/maven:
       goals: deploy
-      profiles: \!modules,modules-eclipse,release-dummy,release-p2-judong
+      profiles: modules-eclipse,release-dummy,release-p2-judong
       settings: .maven.xml
-      maven_opts: -Dorg.ops4j.pax.url.mvn.settings=${WERCKER_ROOT}/.maven.xml -DuseCustomSettings=true
+      maven_opts: -DdeployOnly -Dorg.ops4j.pax.url.mvn.settings=${WERCKER_ROOT}/.maven.xml -DuseCustomSettings=true
       cache_repo: true
 
 #  after-steps:
