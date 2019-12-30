@@ -92,8 +92,32 @@
 	  </location>
 
 	  <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
+		  <repository location="https://nexus.judo.technology/repository/p2/judo-jql-ide-eclipse/1.0.0.20191230_101900_d21be1a_develop"/>
+		  <unit id="hu.blackbelt.judo.jql.ide.eclipse.feature.feature.group" version="1.0.0.20191230_101900_d21be1a_develop"/>
+	  </location>
+
+	  <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
       	  <repository location="https://nexus.judo.technology/repository/p2/judo-meta-openapi/1.0.0.20191227_133841_14faf7c_develop"/>
       	  <unit id="hu.blackbelt.judo.meta.openapi.feature.feature.group" version="1.0.0.20191227_133841_14faf7c_develop"/>
+      </location>
+
+	  <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
+      	  <repository location="https://nexus.judo.technology/repository/p2/judo-meta-script/1.0.0.20191227_142540_91171c6_develop"/>
+      	  <unit id="hu.blackbelt.judo.meta.script.feature.feature.group" version="1.0.0.20191227_142540_91171c6_develop"/>
+      </location>
+
+	  <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
+      	  <repository location="https://nexus.judo.technology/repository/p2/judo-meta-jcl/1.0.0.20191227_140453_4e7756a_develop"/>
+      	  <unit id="hu.blackbelt.judo.meta.jcl.feature.feature.group" version="1.0.0.20191227_140453_4e7756a_develop"/>
+      </location>
+
+	  <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
+      	  <repository location="https://nexus.judo.technology/repository/p2/judo-script-codegen/1.0.0.20191230_102842_179206c_develop"/>
+      	  <unit id="hu.blackbelt.judo.script.codegen.feature.feature.group" version="1.0.0.20191230_102842_179206c_develop"/>
+      </location>
+
+
+	  <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
       	  <repository location="https://nexus.judo.technology/repository/p2/p2-swagger/1.0.1.20191227_184350_5d5e858_develop"/>
 		  <unit id="io.swagger.annotations" version="1.5.24"/>
 		  <unit id="io.swagger.core" version="1.5.24"/>
