@@ -63,16 +63,12 @@ build:
       profiles: ${DEPLOY_PROFILES}
       cache_repo: true
 
-    - script:
-      name: upload repository to nexus p2
-      code: >-
-            ./upload-respository-to-nexus.sh
-            ${VERSION_NUMBER}
-            ${JUDONG_P2_UPSTREAM}/judo-epp-common
-            judo-tatami-eclipse-site/target/repository
-            ${JUDONG_NEXUS_USERNAME}
-            ${JUDONG_NEXUS_PASSWORD}
-            20
+    - blackbelttechnology/parallel-upload@1.0.2:
+      url:      ${JUDONG_P2_UPSTREAM}/judo-tatami/${VERSION_NUMBER}
+      path:     ${WERCKER_SOURCE_DIR}/judo-tatami-eclipse-site/target/repository
+      username: ${JUDONG_NEXUS_USERNAME}
+      password: ${JUDONG_NEXUS_PASSWORD}
+      proc:     "6"
 
 #  after-steps:
 #    - mbrevda/github-status:
