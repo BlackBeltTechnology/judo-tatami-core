@@ -63,6 +63,17 @@ build:
       profiles: ${DEPLOY_PROFILES}
       cache_repo: true
 
+    - script:
+      name: upload repository to nexus p2
+      code: >-
+            ./upload-respository-to-nexus.sh
+            ${VERSION_NUMBER}
+            ${JUDONG_P2_UPSTREAM}/judo-epp-common
+            judo-tatami-eclipse-site/target/repository
+            ${JUDONG_NEXUS_USERNAME}
+            ${JUDONG_NEXUS_PASSWORD}
+            20
+
 #  after-steps:
 #    - mbrevda/github-status:
 #      token: $GITHUB_ACCESS_TOKEN
