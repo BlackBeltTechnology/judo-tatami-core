@@ -66,6 +66,12 @@
 		                            <value>$1${epsilon-runtime-eclipse-version}"/&gt;</value>
 		                        </replacement>
 		                        
+                                <!-- P2 Swagger -->
+                                <replacement>
+                                    <token>(p2-swagger\/)(.*)(\"\/&gt;)</token>
+                                    <value>$1${p2-swagger-version}"/&gt;</value>
+                                </replacement>
+		                        
 		                        <!-- asm -->
 		                        <replacement>
 		                            <token>(hu.blackbelt.judo.meta.asm.feature.feature.group\"\ version\=\")(.*)(\"\/&gt;)</token>

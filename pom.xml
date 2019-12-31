@@ -1,4 +1,3 @@
-<?xml version='1.0' encoding='UTF-8'?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>hu.blackbelt.judo.tatami</groupId>
@@ -59,6 +58,8 @@
         <emf-genmodel-generator-version>1.0.0.20191222_154354_a61f75c_develop</emf-genmodel-generator-version>
         <judo-genmodel-generator-version>1.0.0.20191105_183255_7673428_develop</judo-genmodel-generator-version>
 
+        <p2-swagger-version>1.0.1.20191227_184350_5d5e858_develop</p2-swagger-version>
+
         <judo-framework-version>2.0.0.20191112_160510_496b413_develop</judo-framework-version>
 
         <!-- Model versions -->
@@ -92,7 +93,7 @@
         <judo-meta-liquibase-version>1.0.0.20191229_114702_3739a2f_develop</judo-meta-liquibase-version>
         <judo-meta-liquibase-import-range>[1.0,1.1)</judo-meta-liquibase-import-range>
 
-        <judo-meta-openapi-version>1.0.0.20191227_133841_14faf7c_develop</judo-meta-openapi-version>
+        <judo-meta-openapi-version>1.0.0.20191230_233109_9959119_develop</judo-meta-openapi-version>
         <judo-meta-openapi-import-range>[1.0,1.1)</judo-meta-openapi-import-range>
 
         <judo-dao-api-version>1.0.0.20191220_205229_b4e8ff6_develop</judo-dao-api-version>
