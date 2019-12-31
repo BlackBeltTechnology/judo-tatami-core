@@ -97,7 +97,7 @@
         <judo-meta-openapi-import-range>[1.0,1.1)</judo-meta-openapi-import-range>
 
         <judo-dao-api-version>1.0.0.20191220_205229_b4e8ff6_develop</judo-dao-api-version>
-        <judo-script-codegen-version>1.0.0.20191230_102842_179206c_develop</judo-script-codegen-version>
+        <judo-script-codegen-version>1.0.0.20191231_030840_deff444_develop</judo-script-codegen-version>
         <judo-jql-ide-eclipse-version>1.0.0.20191230_101900_d21be1a_develop</judo-jql-ide-eclipse-version>
 
         <structured-map-proxy-version>1.0.0.20191217_122241_77813e8_develop</structured-map-proxy-version>

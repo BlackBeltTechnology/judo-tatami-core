@@ -41,6 +41,7 @@
         <feature>judo-tatami-meta-expression</feature>
         <feature dependency="true">judo-tatami-meta-measure</feature>
         <bundle>mvn:hu.blackbelt.judo.meta/hu.blackbelt.judo.meta.expression.model.adapter.asm/${judo-meta-expression-version}</bundle>
+        <bundle>mvn:hu.blackbelt.judo.meta/hu.blackbelt.judo.meta.expression.builder.jql.asm/${judo-meta-expression-version}</bundle>
     </feature>
 
     <feature name="judo-tatami-meta-expression-psm" version="${project.version}" description="JUDO Tatami, Expression Model for PSM" install="false">
@@ -73,6 +74,22 @@
         <bundle>mvn:hu.blackbelt.judo.meta/hu.blackbelt.judo.meta.liquibase.osgi/${judo-meta-liquibase-version}</bundle>
     </feature>
 
+    <feature name="judo-tatami-meta-jcl" version="${project.version}" description="JUDO Tatami, JCL Model " install="false">
+        <feature>judo-tatami-meta-jql</feature>
+        <feature dependency="true">guava</feature>
+        <feature dependency="true">guice</feature>
+        <feature dependency="true">epsilon-runtime</feature>
+        <feature dependency="true">osgi-utils</feature>
+        <bundle>mvn:hu.blackbelt.judo.meta/hu.blackbelt.judo.meta.jcl.osgi/${judo-meta-jcl-version}</bundle>
+    </feature>
+
+    <feature name="judo-tatami-meta-script" version="${project.version}" description="JUDO Tatami, Script Model " install="false">
+        <feature>judo-tatami-meta-expression</feature>
+        <feature dependency="true">epsilon-runtime</feature>
+        <feature dependency="true">osgi-utils</feature>
+        <bundle>mvn:hu.blackbelt.judo.meta/hu.blackbelt.judo.meta.script.osgi/${judo-meta-script-version}</bundle>
+    </feature>
+
     <feature name="judo-tatami-meta" version="${project.version}" description="JUDO Tatami, meta types" install="false">
         <feature>judo-tatami-meta-asm</feature>
         <feature>judo-tatami-meta-psm</feature>
@@ -82,6 +99,8 @@
         <feature>judo-tatami-meta-openapi</feature>
         <feature>judo-tatami-meta-rdbms</feature>
         <feature>judo-tatami-meta-liquibase</feature>
+        <feature>judo-tatami-meta-script</feature>
+        <feature>judo-tatami-meta-jcl</feature>
     </feature>
 
 
@@ -90,6 +109,7 @@
         <feature dependency="true" version="2.12.0">eclipse-emf</feature>
         <feature dependency="true">epsilon-runtime</feature>
         <feature>judo-tatami-meta-asm</feature>
+        <bundle>mvn:hu.blackbelt.judo/judo-dao-api/${judo-dao-api-version}</bundle>
         <bundle>mvn:hu.blackbelt.judo.tatami/judo-tatami-core/${project.version}</bundle>
     </feature>
 
@@ -124,6 +144,35 @@
         <bundle>mvn:hu.blackbelt.judo.tatami/judo-tatami-asm2jaxrsapi/${project.version}</bundle>
     </feature>
 
+    <feature name="judo-tatami-asm2expression" version="${project.version}" description="JUDO Tatami, ASM to Expression" install="false">
+        <feature>judo-tatami-meta-asm</feature>
+        <feature>judo-tatami-meta-expression</feature>
+        <feature>judo-tatami-meta-measure</feature>
+        <feature>judo-tatami-meta-jql</feature>
+        <feature>judo-tatami-core</feature>
+        <bundle>mvn:hu.blackbelt.judo.meta/hu.blackbelt.judo.meta.expression.builder.jql/${judo-meta-expression-version}</bundle>
+        <bundle>mvn:hu.blackbelt.judo.meta/hu.blackbelt.judo.meta.expression.builder.jql.asm/${judo-meta-expression-version}</bundle>
+        <bundle>mvn:hu.blackbelt.judo.meta/hu.blackbelt.judo.meta.expression.model.adapter.asm/${judo-meta-expression-version}</bundle>
+        <bundle>mvn:hu.blackbelt.judo.meta/hu.blackbelt.judo.meta.expression.model.adapter.measure/${judo-meta-expression-version}</bundle>
+        <bundle>mvn:hu.blackbelt.judo.tatami/judo-tatami-asm2expression/${project.version}</bundle>
+    </feature>
+
+    <feature name="judo-tatami-asm2script" version="${project.version}" description="JUDO Tatami, ASM to Script" install="false">
+        <feature>judo-tatami-meta-asm</feature>
+        <feature>judo-tatami-meta-script</feature>
+        <feature>judo-tatami-meta-measure</feature>
+        <feature>judo-tatami-meta-expression</feature>
+        <feature>judo-tatami-meta-jql</feature>
+        <feature>judo-tatami-meta-jcl</feature>
+        <feature>judo-tatami-core</feature>
+        <bundle>mvn:hu.blackbelt.judo.meta/hu.blackbelt.judo.meta.expression.builder.jql/${judo-meta-expression-version}</bundle>
+        <bundle>mvn:hu.blackbelt.judo.meta/hu.blackbelt.judo.meta.expression.builder.jql.asm/${judo-meta-expression-version}</bundle>
+        <bundle>mvn:hu.blackbelt.judo.meta/hu.blackbelt.judo.meta.expression.model.adapter.asm/${judo-meta-expression-version}</bundle>
+        <bundle>mvn:hu.blackbelt.judo.meta/hu.blackbelt.judo.meta.expression.model.adapter.measure/${judo-meta-expression-version}</bundle>
+        <bundle>mvn:hu.blackbelt.judo.meta/hu.blackbelt.judo.meta.script.builder.jcl/${judo-meta-script-version}</bundle>
+        <bundle>mvn:hu.blackbelt.judo.tatami/judo-tatami-asm2script/${project.version}</bundle>
+    </feature>
+
     <feature name="judo-tatami-asm2openapi" version="${project.version}" description="JUDO Tatami, ASM to OpenAPI 2 (Swagger)" install="false">
         <feature>judo-tatami-meta-asm</feature>
         <feature>judo-tatami-meta-openapi</feature>
@@ -144,4 +193,16 @@
         <feature>judo-tatami-core</feature>
         <bundle>mvn:hu.blackbelt.judo.tatami/judo-tatami-rdbms2liquibase/${project.version}</bundle>
     </feature>
+
+    <feature name="judo-tatami-script2operation" version="${project.version}" description="JUDO Tatami, Script to Operation API" install="false">
+        <feature>judo-tatami-meta-script</feature>
+        <feature>judo-tatami-meta-expression</feature>
+        <feature>judo-tatami-core</feature>
+        <feature dependency="true">tinybundles</feature>
+        <feature dependency="true">eclipse-xtext</feature>
+        <bundle dependency="true">mvn:hu.blackbelt.judo.framework/compiler-api/${judo-framework-version}</bundle>
+        <bundle>mvn:hu.blackbelt.judo.script/hu.blackbelt.judo.script.codegen.generator/${judo-script-codegen-version}</bundle>
+        <bundle>mvn:hu.blackbelt.judo.tatami/judo-tatami-script2operation/${project.version}</bundle>
+    </feature>
+
 </features>
