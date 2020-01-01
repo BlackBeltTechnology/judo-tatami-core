@@ -39,8 +39,9 @@
 
     <feature name="judo-tatami-meta-expression-asm" version="${project.version}" description="JUDO Tatami, Expression Model for ASM" install="false">
         <feature>judo-tatami-meta-expression</feature>
-        <feature dependency="true">judo-tatami-meta-measure</feature>
+        <feature>judo-tatami-meta-measure</feature>
         <bundle>mvn:hu.blackbelt.judo.meta/hu.blackbelt.judo.meta.expression.model.adapter.asm/${judo-meta-expression-version}</bundle>
+        <bundle>mvn:hu.blackbelt.judo.meta/hu.blackbelt.judo.meta.expression.builder.jql/${judo-meta-expression-version}</bundle>
         <bundle>mvn:hu.blackbelt.judo.meta/hu.blackbelt.judo.meta.expression.builder.jql.asm/${judo-meta-expression-version}</bundle>
     </feature>
 
@@ -150,10 +151,7 @@
         <feature>judo-tatami-meta-measure</feature>
         <feature>judo-tatami-meta-jql</feature>
         <feature>judo-tatami-core</feature>
-        <bundle>mvn:hu.blackbelt.judo.meta/hu.blackbelt.judo.meta.expression.builder.jql/${judo-meta-expression-version}</bundle>
-        <bundle>mvn:hu.blackbelt.judo.meta/hu.blackbelt.judo.meta.expression.builder.jql.asm/${judo-meta-expression-version}</bundle>
-        <bundle>mvn:hu.blackbelt.judo.meta/hu.blackbelt.judo.meta.expression.model.adapter.asm/${judo-meta-expression-version}</bundle>
-        <bundle>mvn:hu.blackbelt.judo.meta/hu.blackbelt.judo.meta.expression.model.adapter.measure/${judo-meta-expression-version}</bundle>
+        <feature>judo-tatami-meta-expression-asm</feature>
         <bundle>mvn:hu.blackbelt.judo.tatami/judo-tatami-asm2expression/${project.version}</bundle>
     </feature>
 
@@ -165,10 +163,7 @@
         <feature>judo-tatami-meta-jql</feature>
         <feature>judo-tatami-meta-jcl</feature>
         <feature>judo-tatami-core</feature>
-        <bundle>mvn:hu.blackbelt.judo.meta/hu.blackbelt.judo.meta.expression.builder.jql/${judo-meta-expression-version}</bundle>
-        <bundle>mvn:hu.blackbelt.judo.meta/hu.blackbelt.judo.meta.expression.builder.jql.asm/${judo-meta-expression-version}</bundle>
-        <bundle>mvn:hu.blackbelt.judo.meta/hu.blackbelt.judo.meta.expression.model.adapter.asm/${judo-meta-expression-version}</bundle>
-        <bundle>mvn:hu.blackbelt.judo.meta/hu.blackbelt.judo.meta.expression.model.adapter.measure/${judo-meta-expression-version}</bundle>
+        <feature>judo-tatami-meta-expression-asm</feature>
         <bundle>mvn:hu.blackbelt.judo.meta/hu.blackbelt.judo.meta.script.builder.jcl/${judo-meta-script-version}</bundle>
         <bundle>mvn:hu.blackbelt.judo.tatami/judo-tatami-asm2script/${project.version}</bundle>
     </feature>
