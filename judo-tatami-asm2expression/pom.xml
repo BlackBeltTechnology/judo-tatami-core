@@ -29,7 +29,7 @@
 					<obrRepository>NONE</obrRepository>
 					<instructions>
 						<Export-Package>
-							hu.blackbelt.judo.tatami.asm2sdk.*;version=${project.version}
+							hu.blackbelt.judo.tatami.asm2expression.*;version=${project.version}
 						</Export-Package>
 						<Include-Resource>
 							{maven-resources}
