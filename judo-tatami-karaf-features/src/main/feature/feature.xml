@@ -115,6 +115,7 @@
     </feature>
 
     <feature name="judo-tatami-esm2psm" version="${project.version}" description="JUDO Tatami, ESM to PSM Transformation" install="false">
+        <capability>osgi.service;effective:=active;objectClass=hu.blackbelt.judo.meta.psm.runtime.PsmModel</capability>
         <feature>judo-tatami-meta-esm</feature>
         <feature>judo-tatami-meta-psm</feature>
         <feature>judo-tatami-core</feature>
@@ -123,6 +124,7 @@
 
 
     <feature name="judo-tatami-psm2asm" version="${project.version}" description="JUDO Tatami, PSM to ASM Transformation" install="false">
+        <capability>osgi.service;effective:=active;objectClass=hu.blackbelt.judo.meta.asm.runtime.AsmModel</capability>
         <feature>judo-tatami-meta-asm</feature>
         <feature>judo-tatami-meta-psm</feature>
         <feature>judo-tatami-core</feature>
@@ -130,6 +132,7 @@
     </feature>
 
     <feature name="judo-tatami-psm2measure" version="${project.version}" description="JUDO Tatami, PSM to Measure Transformation" install="false">
+        <capability>osgi.service;effective:=active;objectClass=hu.blackbelt.judo.meta.measure.runtime.MeasureModel</capability>
         <feature>judo-tatami-meta-measure</feature>
         <feature>judo-tatami-meta-psm</feature>
         <feature>judo-tatami-core</feature>
@@ -146,6 +149,7 @@
     </feature>
 
     <feature name="judo-tatami-asm2expression" version="${project.version}" description="JUDO Tatami, ASM to Expression" install="false">
+        <capability>osgi.service;effective:=active;objectClass=hu.blackbelt.judo.meta.expression.runtime.ExpressionModel</capability>
         <feature>judo-tatami-meta-asm</feature>
         <feature>judo-tatami-meta-expression</feature>
         <feature>judo-tatami-meta-measure</feature>
@@ -156,6 +160,7 @@
     </feature>
 
     <feature name="judo-tatami-asm2script" version="${project.version}" description="JUDO Tatami, ASM to Script" install="false">
+        <capability>osgi.service;effective:=active;objectClass=hu.blackbelt.judo.meta.script.runtime.ScriptModel</capability>
         <feature>judo-tatami-meta-asm</feature>
         <feature>judo-tatami-meta-script</feature>
         <feature>judo-tatami-meta-measure</feature>
@@ -168,7 +173,16 @@
         <bundle>mvn:hu.blackbelt.judo.tatami/judo-tatami-asm2script/${project.version}</bundle>
     </feature>
 
+    <feature name="judo-tatami-asm2sdk" version="${project.version}" description="JUDO Tatami, ASM to SDK" install="false">
+        <feature>judo-tatami-core</feature>
+        <feature>judo-tatami-meta-asm</feature>
+        <feature dependency="true">tinybundles</feature>
+        <bundle dependency="true">mvn:hu.blackbelt.judo.framework/compiler-api/${judo-framework-version}</bundle>
+        <bundle>mvn:hu.blackbelt.judo.tatami/judo-tatami-asm2sdk/${project.version}</bundle>
+    </feature>
+
     <feature name="judo-tatami-asm2openapi" version="${project.version}" description="JUDO Tatami, ASM to OpenAPI 2 (Swagger)" install="false">
+        <capability>osgi.service;effective:=active;objectClass=hu.blackbelt.judo.meta.openapi.runtime.OpenapiModel</capability>
         <feature>judo-tatami-meta-asm</feature>
         <feature>judo-tatami-meta-openapi</feature>
         <feature>judo-tatami-core</feature>
@@ -176,6 +190,7 @@
     </feature>
 
     <feature name="judo-tatami-asm2rdbms" version="${project.version}" description="JUDO Tatami, ASM to RDBMS" install="false">
+        <capability>osgi.service;effective:=active;objectClass=hu.blackbelt.judo.meta.rdbms.runtime.RdbmsModel</capability>
         <feature>judo-tatami-meta-asm</feature>
         <feature>judo-tatami-meta-rdbms</feature>
         <feature>judo-tatami-core</feature>
@@ -183,6 +198,7 @@
     </feature>
 
     <feature name="judo-tatami-rdbms2liquibase" version="${project.version}" description="JUDO Tatami, RDBMS to Liquibase" install="false">
+        <capability>osgi.service;effective:=active;objectClass=hu.blackbelt.judo.meta.liquibase.runtime.LiquibaseModel</capability>
         <feature>judo-tatami-meta-rdbms</feature>
         <feature>judo-tatami-meta-liquibase</feature>
         <feature>judo-tatami-core</feature>
@@ -200,4 +216,31 @@
         <bundle>mvn:hu.blackbelt.judo.tatami/judo-tatami-script2operation/${project.version}</bundle>
     </feature>
 
+
+    <feature name="judo-tatami-workflow" version="${project.version}" description="JUDO Tatami, OSGi workflow feature" install="false">
+        <feature>judo-tatami-core</feature>
+        <feature>judo-tatami-meta-esm</feature>
+
+        <feature>judo-tatami-esm2psm</feature>
+        <feature>judo-tatami-psm2asm</feature>
+        <feature>judo-tatami-psm2measure</feature>
+        <feature>judo-tatami-asm2jaxrsapi</feature>
+        <feature>judo-tatami-asm2expression</feature>
+        <feature>judo-tatami-asm2script</feature>
+        <feature>judo-tatami-asm2openapi</feature>
+        <feature>judo-tatami-asm2sdk</feature>
+        <feature>judo-tatami-asm2rdbms</feature>
+        <feature>judo-tatami-rdbms2liquibase</feature>
+        <feature>judo-tatami-script2operation</feature>
+
+        <bundle>mvn:hu.blackbelt.judo.tatami/judo-tatami-workflow/${project.version}</bundle>
+        <bundle>mvn:hu.blackbelt.judo.tatami/judo-tatami-workflow-osgi/${project.version}</bundle>
+    </feature>
+
 </features>
+
+
+
+
+
+
