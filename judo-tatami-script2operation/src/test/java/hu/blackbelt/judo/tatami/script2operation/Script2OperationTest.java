@@ -35,7 +35,7 @@ public class Script2OperationTest {
     }
 
     @Test
-    public void testExecuteAsm2SDKGeneration() throws Exception {
+    public void testExecuteScript2OperationGeneration() throws Exception {
         try (OutputStream outputStream =
                      new FileOutputStream(new File(TARGET_TEST_CLASSES, NORTHWIND + "-script2operation.jar"))) {
             ByteStreams.copy(

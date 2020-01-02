@@ -134,7 +134,7 @@ public class Script2Operation {
         });
 
         bundle.set( Constants.BUNDLE_MANIFESTVERSION, "2")
-                .set( Constants.BUNDLE_SYMBOLICNAME, modelName + "-asm2sdk" )
+                .set( Constants.BUNDLE_SYMBOLICNAME, modelName + "-script2operation" )
                 .set( Constants.BUNDLE_VERSION, version )
                 .set( Constants.REQUIRE_CAPABILITY,
                         "osgi.extender;filter:=\"(&(osgi.extender=osgi.component)(version>=1.3.0)(!(version>=2.0.0)))\"")
