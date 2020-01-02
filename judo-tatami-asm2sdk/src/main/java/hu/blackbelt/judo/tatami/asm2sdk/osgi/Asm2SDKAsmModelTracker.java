@@ -11,7 +11,7 @@ import org.osgi.service.component.annotations.*;
 
 @Component(immediate = true, configurationPolicy = ConfigurationPolicy.REQUIRE)
 @Slf4j
-public class AsmModelServiceTracker extends AbstractModelTracker<AsmModel> {
+public class Asm2SDKAsmModelTracker extends AbstractModelTracker<AsmModel> {
 
     @Reference
     Asm2SDKService asm2SDKService;

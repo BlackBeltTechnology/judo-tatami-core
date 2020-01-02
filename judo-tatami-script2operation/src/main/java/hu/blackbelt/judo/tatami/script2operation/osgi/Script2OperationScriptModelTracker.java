@@ -10,7 +10,7 @@ import org.osgi.service.component.annotations.*;
 
 @Component(immediate = true, configurationPolicy = ConfigurationPolicy.REQUIRE)
 @Slf4j
-public class ScriptModelServiceTracker extends AbstractModelTracker<ScriptModel> {
+public class Script2OperationScriptModelTracker extends AbstractModelTracker<ScriptModel> {
 
     @Reference
     Script2OperationService script2OperationService;

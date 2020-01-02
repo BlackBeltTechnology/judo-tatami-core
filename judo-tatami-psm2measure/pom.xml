@@ -52,7 +52,7 @@
                     <obrRepository>NONE</obrRepository>
                     <instructions>
                         <Export-Package>
-                            hu.blackbelt.judo.tatami.psm.measure.*;version=${project.version}
+                            hu.blackbelt.judo.tatami.psm2measure.*;version=${project.version}
                         </Export-Package>
                         <Include-Resource>
                             {maven-resources},
