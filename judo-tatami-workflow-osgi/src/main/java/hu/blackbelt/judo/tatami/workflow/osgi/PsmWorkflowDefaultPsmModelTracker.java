@@ -16,8 +16,8 @@ import java.util.Hashtable;
 /**
  * Tracking {@link PsmModel} instances. When a {@link PsmModel} instance registered this service
  * creates a {@link PsmWorkflowProcess} instances with the corresponding settings.
- * To create the {@link PsmWorkflowProcess}  o configuration created / deleted over
- * {@link org.osgi.service.cm.ConfigurationAdmin} serive, so the lifecycle of the {@link PsmWorkflowProcess}
+ * To create the {@link PsmWorkflowProcess} configuration created / deleted over
+ * {@link org.osgi.service.cm.ConfigurationAdmin} service, so the lifecycle of the {@link PsmWorkflowProcess}
  * is managed by Declarative Service.
  *
  */
@@ -29,7 +29,7 @@ public class PsmWorkflowDefaultPsmModelTracker extends AbstractModelTracker<PsmM
 
     public static final String MODEL_NAME_PROPERTY = "modelName";
     public static final String PSM_MODEL_PROPERTY = "psmModel";
-    public static final String TRANSFORMATION_CONTEXT_REGISTRATION_SERVICE_FILTER = "TransformationContextRegistrationServiceFilter";
+    public static final String TRANSFORMATION_CONTEXT_REGISTRATION_SERVICE_FILTER = "transformationContextRegistrationServiceFilter";
     public static final String TRANSFORMATION_CONTEXT_REGISTRATION_SERVICE_TARGET = "transformationContextRegistrationService.target";
     public static final String IMPLEMENTATION_DEFAULT = "(implementation=default)";
 
@@ -86,8 +86,6 @@ public class PsmWorkflowDefaultPsmModelTracker extends AbstractModelTracker<PsmM
         psmWorkflowProcessProperties.put(MODEL_NAME_PROPERTY, psmModel.getName());
         psmWorkflowProcessProperties.put(PSM_MODEL_PROPERTY, psmModel);
         psmWorkflowProcessProperties.put(this.getClass().getName(), "true");
-
-        // TODO: Registering all the configuration parameters for PsmWorkflowProcess.
 
         final Configuration psmWorkflowProcessConfiguration;
         try {

@@ -33,7 +33,8 @@ import hu.blackbelt.judo.tatami.psm2measure.Psm2MeasureTransformationTrace;
 /**
  * This class manages the OSGi lifecycle of transformed models / bundles
  */
-@Component(property = "implementation=default", service = TransformationContextRegistrationService.class)
+@Component(property = "implementation=default", immediate = true,
+        service = TransformationContextRegistrationService.class)
 public class DefaultTransformationContextRegistrationService extends AbstractTransformationContextRegistrationService
         implements TransformationContextRegistrationService {
 
