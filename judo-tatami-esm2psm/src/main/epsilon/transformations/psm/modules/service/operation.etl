@@ -331,25 +331,21 @@ rule CreateCardinalityForOutputForGetOperationOfTransferObjectRelation
 rule CreateCreateOperationForTransferObjectRelation
     transform s : ESM!RelationFeature
     to t : JUDOPSM!BoundOperation {
-    guard: s.createable and s.eContainer.mapping.isDefined()
+    guard: s.isCreateAllowed() and s.eContainer.mapping.isDefined()
         t.name = "create_" + s.name + "_";
         s.eContainer.getPSMTransferObjectTypeEquivalent().operations.add(t);
         t.input = s.equivalent("CreateInputForCreateOperationForTransferObjectRelation");
         t.output = s.equivalent("CreateOutputForCreateOperationForTransferObjectRelation");
         t.implementation = s.equivalent("CreateCreateImplementationForTransferObjectRelation");
         
-        if (not s.updateable) {
+        if (not s.isUpdateAllowed()) {
 	        for (relation in s.target.relations) {
 	            if ( (relation.isKindOf(ESM!OneWayRelationMember)
 	                    and relation.relationMemberType == ESM!RelationMemberType#BOUND
 	                    and relation.target.mapping.isDefined())
-	                  or s.target.isKindOf(ESM!EntityType) ){
-	                
-	                if (relation.lower <= 1 and relation.upper == 1) {
-	                    createGetRangeOperation(s,relation);
-	                } else if (relation.upper > 1 or relation.upper == -1) {
-	                    createGetRangeOperation(s,relation);
-	                }
+	                  or s.target.isKindOf(ESM!EntityType) ) {
+
+	                createGetRangeOperation(s,relation);
 	            }
 	        }
         }
@@ -416,7 +412,7 @@ rule CreateCardinalityForOutputForCreateOperationOfTransferObjectRelation
 rule CreateUpdateOperationForTransferObjectRelation
     transform s : ESM!RelationFeature
     to t : JUDOPSM!BoundOperation {
-    guard: s.updateable and s.eContainer.mapping.isDefined()
+    guard: s.isUpdateAllowed() and s.eContainer.mapping.isDefined()
         t.name = "update_" + s.name + "_";
         s.eContainer.getPSMTransferObjectTypeEquivalent().operations.add(t);
         t.input = s.equivalent("CreateInputForUpdateOperationForTransferObjectRelation");
@@ -429,11 +425,11 @@ rule CreateUpdateOperationForTransferObjectRelation
                     and relation.target.mapping.isDefined())
                   or s.target.isKindOf(ESM!EntityType) ){
                 
-                if (relation.lower <= 1 and relation.upper == 1) {
+                if (relation.upper == 1) {
                     createSetOperation(s,relation);
                     createUnsetOperation(s,relation);
                     createGetRangeOperation(s,relation);
-                } else if (relation.upper > 1 or relation.upper == -1) {
+                } else {
                     createAddAllOperation(s,relation);
                     createRemoveAllOperation(s,relation);
                     createGetRangeOperation(s,relation);
@@ -503,7 +499,7 @@ rule CreateCardinalityForOutputForUpdateOperationOfTransferObjectRelation
 rule CreateDeleteOperationForTransferObjectRelation
     transform s : ESM!RelationFeature
     to t : JUDOPSM!BoundOperation {
-    guard: s.deleteable and s.eContainer.mapping.isDefined()
+    guard: s.isDeleteAllowed() and s.eContainer.mapping.isDefined()
         t.name = "delete_" + s.name + "_";
         s.eContainer.getPSMTransferObjectTypeEquivalent().operations.add(t);
         t.implementation = s.equivalent("CreateUpdateImplementationForTransferObjectRelation");

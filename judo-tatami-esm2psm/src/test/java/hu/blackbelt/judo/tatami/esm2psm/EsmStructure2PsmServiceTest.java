@@ -113,43 +113,27 @@ public class EsmStructure2PsmServiceTest {
 	void testCreateUpdateOperationForTransferObjectRelation() throws Exception {
 		testName = "CreateUpdateOperationForTransferObjectRelation";
 		
-		EntityType order = newEntityTypeBuilder().withName("order").build();
+		EntityType order = newEntityTypeBuilder().withName("Order").build();
 		order.setMapping(newMappingBuilder().withTarget(order).build());
 		
-		TransferObjectType orderInfo = newTransferObjectTypeBuilder()
-				.withName("orderInfo").withMapping(newMappingBuilder().withTarget(order).build()).build();
-		
-		EntityType orderItem = newEntityTypeBuilder().withName("orderItem").build();
+		EntityType orderItem = newEntityTypeBuilder().withName("OrderItem").build();
 		orderItem.setMapping(newMappingBuilder().withTarget(orderItem).build());
-		
-		TransferObjectType orderItemInfo = newTransferObjectTypeBuilder().withName("orderItemInfo")
-				.withMapping(newMappingBuilder().withTarget(orderItem).build()).build();
 		
 		OneWayRelationMember items = newOneWayRelationMemberBuilder().withName("items")
 				.withUpdateable(true)
-				.withRelationMemberType(RelationMemberType.RELATION).withTarget(orderItemInfo).build();
+				.withRelationMemberType(RelationMemberType.RELATION).withTarget(orderItem).build();
 		
-		EntityType product = newEntityTypeBuilder().withName("product").build();
+		EntityType product = newEntityTypeBuilder().withName("Product").build();
 		product.setMapping(newMappingBuilder().withTarget(product).build());
 		
-		TransferObjectType productInfo = newTransferObjectTypeBuilder().withName("productInfo")
-				.withMapping(newMappingBuilder().withTarget(product).build()).build();
-		
-		OneWayRelationMember prod = newOneWayRelationMemberBuilder().withName("prod")
+		OneWayRelationMember productOfItem = newOneWayRelationMemberBuilder().withName("product")
 				.withTarget(product).build();
-		orderItem.getRelations().add(prod);
+		orderItem.getRelations().add(productOfItem);
 				
-		OneWayRelationMember products = newOneWayRelationMemberBuilder().withName("products")
-				.withRelationMemberType(RelationMemberType.BOUND)
-				.withLower(0).withUpper(1)
-				.withBinding(prod)
-				.withTarget(productInfo).build();
-		
-		orderItemInfo.getRelations().add(products);
-		orderInfo.getRelations().add(items);
+		order.getRelations().add(items);
 		
 		Model model = newModelBuilder().withName("Model")
-				.withElements(ImmutableList.of(order, orderInfo, orderItem, orderItemInfo, product, productInfo)).build();
+				.withElements(ImmutableList.of(order, orderItem, product)).build();
 
 		esmModel.addContent(model);
 		
@@ -157,12 +141,12 @@ public class EsmStructure2PsmServiceTest {
 		
 		final Optional<hu.blackbelt.judo.meta.psm.service.BoundOperationWithRelation> psmSetOp = allPsm(
 				hu.blackbelt.judo.meta.psm.service.BoundOperationWithRelation.class)
-				.filter(o -> o.getName().equals("set_" + items.getName() + "_" + products.getName()))
+				.filter(o -> o.getName().equals("set_" + items.getName() + "_" + productOfItem.getName()))
 				.findAny();
 		
 		final Optional<hu.blackbelt.judo.meta.psm.service.TransferObjectRelation> psmProductsTransferObjectRelation = allPsm(
 				hu.blackbelt.judo.meta.psm.service.TransferObjectRelation.class)
-				.filter(r -> r.getName().equals(products.getName()))
+				.filter(r -> r.getName().equals(productOfItem.getName()))
 				.findAny();
 		assertTrue(psmProductsTransferObjectRelation.isPresent());
 		
@@ -182,7 +166,7 @@ public class EsmStructure2PsmServiceTest {
 		
 		final Optional<hu.blackbelt.judo.meta.psm.service.BoundOperationWithRelation> psmUnsetOp = allPsm(
 				hu.blackbelt.judo.meta.psm.service.BoundOperationWithRelation.class)
-				.filter(o -> o.getName().equals("unset_" + items.getName() + "_" + products.getName()))
+				.filter(o -> o.getName().equals("unset_" + items.getName() + "_" + productOfItem.getName()))
 				.findAny();
 		
 		assertTrue(psmUnsetOp.isPresent());
@@ -193,7 +177,6 @@ public class EsmStructure2PsmServiceTest {
 		assertThat(psmUnsetOp.get().getRelation(), IsEqual.equalTo(psmProductsTransferObjectRelation.get()));
 		
 		assertThat(psmItemsTransferObjectRelation.get().getSet().get(0), IsEqual.equalTo(psmSetOp.get()));
-		
 	}
 
 	@Test
