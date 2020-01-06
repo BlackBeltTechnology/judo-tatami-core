@@ -1,10 +1,8 @@
 import "../namespace/namespace.etl";
 import "../data/primitiveTypedElement.etl";
 import "../data/referenceTypedElement.etl";
-import "../../../../operations/esm/type/_importType.eol";
-import "../../../../operations/esm/service/transferObjectType.eol";
-import "../../../../operations/esm/namespace/namespace.eol";
 import "../derived/expressionType.etl";
+import "../../../../operations/_importAll.eol";
 
 rule CreateTransferAttributeFromAttribute
     transform s: ESM!DataMember

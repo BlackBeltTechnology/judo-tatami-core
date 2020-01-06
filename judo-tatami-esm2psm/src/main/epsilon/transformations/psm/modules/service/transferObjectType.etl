@@ -1,10 +1,10 @@
+import "operation.etl";
 import "../namespace/namespace.etl";
 import "../data/primitiveTypedElement.etl";
 import "../data/referenceTypedElement.etl";
-import "../../../../operations/esm/type/_importType.eol";
-import "../../../../operations/esm/service/transferObjectType.eol";
-import "../../../../operations/esm/namespace/namespace.eol";
 import "../derived/expressionType.etl";
+import "../../../../operations/_importAll.eol";
+
 
 @abstract
 rule CreateTransferObjectType
@@ -12,8 +12,9 @@ rule CreateTransferObjectType
 	to t: JUDOPSM!TransferObjectType 
 	extends CreateNamespaceElement {
 	  for (super in s.generalizations) {
-        t.superTransferObjectTypes.add(super.target.getPSMEquivalent());
+        t.superTransferObjectTypes.add(super.target.getPSMTransferObjectTypeEquivalent());
       }
+    t.getTemplate = s.equivalent("CreateGetTemplateOperationFromTransferObjectType");
 }
 
 rule CreateMappedTransferObjectType
@@ -54,6 +55,7 @@ rule CreateDefaultMappedTransferObjectTypeForEntity
       }
 
       s.eContainer.getPSMGeneratedDefaultTransferObjectNamespaceEquivalent().elements.add(t);      
+	  t.getTemplate = s.equivalent("CreateGetTemplateOperationFromTransferObjectType");
 	  
 	  t.entityType = s.equivalent("CreateEntityType");
 	  log.debug("Created Default MappedTransferObjectType for EntityType: " + t.name);

@@ -1,7 +1,0 @@
-operation ESM!ExposedService getPSMEquivalent() : JUDOPSM!AccessPoint {
-	return ESM!AccessPoint.all.selectOne(ap | ap.exposedServices.includes(self)).equivalent("CreateAccessPoint");
-}
-
-operation ESM!ExposedGraph getPSMEquivalent() : JUDOPSM!AccessPoint {
-	return ESM!AccessPoint.all.selectOne(ap | ap.exposedGraphs.includes(self)).equivalent("CreateAccessPoint");
-}

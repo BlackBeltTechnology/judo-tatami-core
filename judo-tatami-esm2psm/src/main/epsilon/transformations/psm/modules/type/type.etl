@@ -1,5 +1,5 @@
 import "../namespace/namespace.etl";
-import "../../../../operations/esm/type/_importType.eol";
+import "../../../../operations/_importAll.eol";
 
 rule CreateXMLType
 	transform s: ESM!XMLType

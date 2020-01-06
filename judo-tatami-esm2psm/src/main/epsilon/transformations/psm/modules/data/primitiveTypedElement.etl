@@ -1,4 +1,4 @@
-import "../../../../operations/esm/data/_importData.eol";
+import "../../../../operations/_importAll.eol";
 import "../namespace/namespace.etl";
 
 @abstract
