@@ -459,7 +459,7 @@ public class EsmStrucutre2PsmDerivedTest {
 
         assertTrue(psmStaticNavigationAsDefault.isPresent());
 
-        String psmName = "_" + navigationProperty.getName() + "_default_TestModel_container";
+        String psmName = "_" + navigationProperty.getName() + "_default_container";
         assertThat(psmStaticNavigationAsDefault.get().getName(), IsEqual.equalTo(psmName));
 
         assertThat(psmStaticNavigationAsDefault.get().eContainer(), IsEqual.equalTo(psmModel));
@@ -578,7 +578,7 @@ public class EsmStrucutre2PsmDerivedTest {
 
         assertTrue(psmEntityType.getRelations().size() == 1);
 
-        String psmNavigationPropertyName = "_" + containment.getName() + "_default_TestModel_entityType";
+        String psmNavigationPropertyName = "_" + containment.getName() + "_default_entityType";
 
         final Namespace namespaceOfPsmEntityType = (Namespace) psmEntityType.eContainer();
         final Optional<hu.blackbelt.judo.meta.psm.derived.StaticNavigation> psmNavigationProperty = namespaceOfPsmEntityType.getElements().stream()
@@ -624,7 +624,7 @@ public class EsmStrucutre2PsmDerivedTest {
 
         assertTrue(psmEntityType.getRelations().size() == 1);
 
-        String psmNavigationPropertyName = "_" + associationEnd.getName() + "_default_TestModel_entityType";
+        String psmNavigationPropertyName = "_" + associationEnd.getName() + "_default_entityType";
 
         final Namespace namespaceOfPsmEntityType = (Namespace) psmEntityType.eContainer();
         final Optional<hu.blackbelt.judo.meta.psm.derived.StaticNavigation> psmNavigationProperty = namespaceOfPsmEntityType.getElements().stream()
@@ -670,7 +670,7 @@ public class EsmStrucutre2PsmDerivedTest {
 
         assertTrue(psmEntityType.getNavigationProperties().size() == 1);
 
-        String psmNavigationPropertyName = "_" + associationEnd.getName() + "_default_TestModel_entityType";
+        String psmNavigationPropertyName = "_" + associationEnd.getName() + "_default_entityType";
 
         final Namespace namespaceOfPsmEntityType = (Namespace) psmEntityType.eContainer();
         final Optional<hu.blackbelt.judo.meta.psm.derived.StaticNavigation> psmNavigationProperty = namespaceOfPsmEntityType.getElements().stream()

@@ -1,6 +1,6 @@
 import "../namespace/namespace.etl";
 import "../type/type.etl";
-import "../../../../operations/esm/measure/measure.eol";
+import "../../../../operations/_importAll.eol";
 
 rule CreateMeasure
     transform s: ESM!Measure

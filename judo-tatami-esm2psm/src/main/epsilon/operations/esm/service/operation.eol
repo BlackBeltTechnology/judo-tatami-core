@@ -1,7 +1,99 @@
+import "transferObjectRelation.eol";
+import "transferObjectType.eol";
+
 operation ESM!BoundOperation getPSMEquivalent(): JUDOPSM!OperationDeclaration {
     return self.equivalent("CreateBoundOperation");
 }
 
 operation ESM!UnboundOperation getPSMEquivalent(): JUDOPSM!OperationDeclaration {
     return self.equivalent("CreateUnboundOperation");
+}
+
+operation createNewOperationBody(): JUDOPSM!OperationBody {
+    var implementation = new JUDOPSM!OperationBody;
+    implementation.stateful = true;
+    implementation.customImplementation = false;
+    return implementation;
+}
+
+operation createNewCardinality(): JUDOPSM!Cardinality {
+    var cardinality = new JUDOPSM!Cardinality;
+    cardinality.lower = 1;
+    cardinality.upper = 1;
+	return cardinality;
+}
+
+operation createNewParameter(source: ESM!RelationFeature): JUDOPSM!Parameter {
+    var input = new JUDOPSM!Parameter;
+    input.name = "input";
+    input.cardinality = createNewCardinality();
+    input.type = source.target.getPSMTransferObjectTypeEquivalent();
+    return input;
+}
+
+operation createSetOperation(source: ESM!RelationFeature, relation: ESM!RelationFeature) {
+    var setOperation = new JUDOPSM!BoundOperationWithRelation;
+    setOperation.name = "set_" + source.name + "_" + relation.name;
+    setOperation.relation = relation.getPSMTransferObjectRelationEquivalent();
+    
+    setOperation.input = createNewParameter(source);
+    setOperation.implementation = createNewOperationBody();
+    
+    source.eContainer.getPSMTransferObjectTypeEquivalent().operations.add(setOperation);
+    source.getPSMTransferObjectRelationEquivalent().set.add(setOperation);
+}
+
+operation createAddAllOperation(source: ESM!RelationFeature, relation: ESM!RelationFeature) {
+    var addAllOperation = new JUDOPSM!BoundOperationWithRelation;
+    addAllOperation.name = "addAll_" + source.name + "_" + relation.name;
+    addAllOperation.relation = relation.getPSMTransferObjectRelationEquivalent();
+                       
+    addAllOperation.input = createNewParameter(source);
+    addAllOperation.implementation = createNewOperationBody();
+
+    source.eContainer.getPSMTransferObjectTypeEquivalent().operations.add(addAllOperation);
+    source.getPSMTransferObjectRelationEquivalent().addAll.add(addAllOperation);
+}
+
+operation createUnsetOperation(source: ESM!RelationFeature, relation: ESM!RelationFeature) {
+    var unsetOperation = new JUDOPSM!BoundOperationWithRelation;
+    unsetOperation.name = "unset_" + source.name + "_" + relation.name;
+    unsetOperation.relation = relation.getPSMTransferObjectRelationEquivalent();
+    
+    unsetOperation.input = createNewParameter(source);
+    unsetOperation.implementation = createNewOperationBody();
+    
+    source.eContainer.getPSMTransferObjectTypeEquivalent().operations.add(unsetOperation);
+    source.getPSMTransferObjectRelationEquivalent().unset.add(unsetOperation);
+}
+
+operation createRemoveAllOperation(source: ESM!RelationFeature, relation: ESM!RelationFeature) {
+    var removeAllOperation = new JUDOPSM!BoundOperationWithRelation;
+    removeAllOperation.name = "removeAll_" + source.name + "_" + relation.name;
+    removeAllOperation.relation = relation.getPSMTransferObjectRelationEquivalent();
+                            
+    removeAllOperation.input = createNewParameter(source);
+    removeAllOperation.implementation = createNewOperationBody();
+
+    source.eContainer.getPSMTransferObjectTypeEquivalent().operations.add(removeAllOperation);
+    source.getPSMTransferObjectRelationEquivalent().removeAll.add(removeAllOperation);
+}
+
+operation createGetRangeOperation(source: ESM!RelationFeature, relation: ESM!RelationFeature) {
+    var getRangeOperation = new JUDOPSM!UnboundOperationWithRelation;
+    getRangeOperation.name = "GetRange_" + source.eContainer.name + "_" + source.name + "_";
+    getRangeOperation.relation = relation.getPSMTransferObjectRelationEquivalent();
+    
+    getRangeOperation.output = new JUDOPSM!Parameter;
+    getRangeOperation.output.name = "output";
+    getRangeOperation.output.cardinality = new JUDOPSM!Cardinality;
+    getRangeOperation.output.cardinality.lower = 0;
+    getRangeOperation.output.cardinality.upper = -1;
+    getRangeOperation.output.type = relation.target.getPSMTransferObjectTypeEquivalent();
+    
+    getRangeOperation.implementation = createNewOperationBody();
+    getRangeOperation.implementation.stateful = false;
+    
+    (source.eContainer).eContainer.getPSMEquivalent().elements.add(getRangeOperation);
+    source.getPSMTransferObjectRelationEquivalent().getRange.add(getRangeOperation);
 }

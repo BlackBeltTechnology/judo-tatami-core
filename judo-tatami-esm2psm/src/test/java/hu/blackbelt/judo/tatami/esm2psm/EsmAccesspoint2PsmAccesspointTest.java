@@ -182,7 +182,6 @@ public class EsmAccesspoint2PsmAccesspointTest {
 	}
 
 	@Test
-	@Disabled
 	public void testCreateExposedGraph() throws Exception {
 		testName = "CreateExposedGraph";
 
@@ -282,7 +281,8 @@ public class EsmAccesspoint2PsmAccesspointTest {
 		
 		//test get operation
 		final Optional<hu.blackbelt.judo.meta.psm.service.UnboundOperation> psmGetOperation = allPsm(
-				hu.blackbelt.judo.meta.psm.service.UnboundOperation.class).filter(op -> "get".equals(op.getName()))
+				hu.blackbelt.judo.meta.psm.service.UnboundOperation.class)
+				.filter(op -> op.getName().equals(accessPoint.getName() + "_get_" + exposedGraph.getName() + "_"))
 						.findAny();
 		assertTrue(psmGetOperation.isPresent());
 		assertThat(psmExposedGraph.get().getGet(), IsEqual.equalTo(psmGetOperation.get()));
@@ -294,8 +294,8 @@ public class EsmAccesspoint2PsmAccesspointTest {
 		
 		//test create operation
 		final Optional<hu.blackbelt.judo.meta.psm.service.UnboundOperation> psmCreateOperation = allPsm(
-				hu.blackbelt.judo.meta.psm.service.UnboundOperation.class).filter(op -> "create".equals(op.getName()))
-						.findAny();
+				hu.blackbelt.judo.meta.psm.service.UnboundOperation.class).filter(op -> op.getName().equals(accessPoint.getName() + "_create_" + exposedGraph.getName() + "_"))
+				.findAny();
 		assertTrue(psmCreateOperation.isPresent());
 		assertThat(psmExposedGraph.get().getCreate(), IsEqual.equalTo(psmCreateOperation.get()));
 		
@@ -310,9 +310,10 @@ public class EsmAccesspoint2PsmAccesspointTest {
 		assertThat(psmCreateOperation.get().getOutput().getType(), IsEqual.equalTo(psmExposedGraph.get().getMappedTransferObjectType()));
 		
 		//test update operation
-		final Optional<hu.blackbelt.judo.meta.psm.service.BoundOperation> psmUpdateOperation = allPsm(
-				hu.blackbelt.judo.meta.psm.service.BoundOperation.class).filter(op -> "update".equals(op.getName()))
-						.findAny();
+		final Optional<hu.blackbelt.judo.meta.psm.service.UnboundOperation> psmUpdateOperation = allPsm(
+				hu.blackbelt.judo.meta.psm.service.UnboundOperation.class)
+				.filter(op -> op.getName().equals(accessPoint.getName() + "_update_" + exposedGraph.getName() + "_"))
+				.findAny();
 		assertTrue(psmUpdateOperation.isPresent());
 		assertThat(psmExposedGraph.get().getUpdate(), IsEqual.equalTo(psmUpdateOperation.get()));
 		
@@ -327,13 +328,13 @@ public class EsmAccesspoint2PsmAccesspointTest {
 		assertThat(psmUpdateOperation.get().getOutput().getType(), IsEqual.equalTo(psmExposedGraph.get().getMappedTransferObjectType()));
 		
 		//test delete operation
-		final Optional<hu.blackbelt.judo.meta.psm.service.BoundOperation> psmDeleteOperation = allPsm(
-				hu.blackbelt.judo.meta.psm.service.BoundOperation.class).filter(op -> "delete".equals(op.getName()))
+		final Optional<hu.blackbelt.judo.meta.psm.service.UnboundOperation> psmDeleteOperation = allPsm(
+				hu.blackbelt.judo.meta.psm.service.UnboundOperation.class)
+				.filter(op -> op.getName().equals(accessPoint.getName() + "_delete_" + exposedGraph.getName() + "_"))
 						.findAny();
 		assertTrue(psmDeleteOperation.isPresent());
 		assertThat(psmExposedGraph.get().getDelete(), IsEqual.equalTo(psmDeleteOperation.get()));
 		
-		assertNull(psmDeleteOperation.get().getInput());
 		assertNull(psmDeleteOperation.get().getOutput());
 		
 	}

@@ -1,5 +1,5 @@
 import "../namespace/namespace.etl";
-import "../../../../operations/esm/data/_importData.eol";
+import "../../../../operations/_importAll.eol";
 
 @lazy
 @greedy
@@ -8,7 +8,6 @@ rule CreateCardinalityForReferenceTypedElement
     to t: JUDOPSM!Cardinality {
       t.upper = s.upper;
       t.lower = s.lower;
-      log.debug("Created Cardinality for Reference Typed Element: " + s.name);
 }
 
 rule CreateContainment

@@ -1,4 +1,4 @@
-import "../../../../operations/esm/namespace/_importNamespace.eol";
+import "../../../../operations/_importAll.eol";
 
 @abstract
 rule CreateSequence

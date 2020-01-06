@@ -1,8 +1,5 @@
 import "data/_importData.eol";
 import "type/_importType.eol";
 import "measure/_importMeasure.eol";
-import "accesspoint/accesspoint.eol";
-import "service/transferObjectType.eol";
-import "service/transferObjectRelation.eol";
-import "namespace/namespace.eol";
-import "namespace/namespace.eol";
+import "service/_importService.eol";
+import "namespace/_importNamespace.eol";
