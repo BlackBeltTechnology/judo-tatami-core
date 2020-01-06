@@ -1,4 +1,3 @@
-<?xml version='1.0' encoding='UTF-8'?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>hu.blackbelt.judo.tatami</groupId>
@@ -53,46 +52,58 @@
         <epsilon-version>1.5.1</epsilon-version>
         <tycho-version>1.4.0</tycho-version>
 
-        <epsilon-runtime-version>1.2.0.20191018_105940_dc9d257_develop</epsilon-runtime-version>
+        <epsilon-runtime-version>1.2.0.20191216_103052_a5925f7_develop</epsilon-runtime-version>
         <epsilon-runtime-eclipse-version>1.2.0.20191105_183445_4b0b2da_develop</epsilon-runtime-eclipse-version>
 
-        <emf-genmodel-generator-version>1.0.0.20191105_182930_676cf43_develop</emf-genmodel-generator-version>
+        <emf-genmodel-generator-version>1.0.0.20191222_154354_a61f75c_develop</emf-genmodel-generator-version>
         <judo-genmodel-generator-version>1.0.0.20191105_183255_7673428_develop</judo-genmodel-generator-version>
 
-        <judo-framework-version>2.0.0_develop_135</judo-framework-version>
+        <p2-swagger-version>1.0.1.20191227_184350_5d5e858_develop</p2-swagger-version>
+
+        <judo-framework-version>2.0.0.20191112_160510_496b413_develop</judo-framework-version>
 
         <!-- Model versions -->
-        <judo-meta-rdbms-version>1.0.0.20191112_161721_bcd0c66_develop</judo-meta-rdbms-version>
+        <judo-meta-rdbms-version>1.0.0.20191227_133951_02b1df4_develop</judo-meta-rdbms-version>
         <judo-meta-rdbms-import-range>[1.0,1.1)</judo-meta-rdbms-import-range>
 
-        <judo-meta-esm-version>1.1.0.20191214_105349_88ae964_develop</judo-meta-esm-version>
+        <judo-meta-esm-version>1.1.0.20191227_101823_e21f017_develop</judo-meta-esm-version>
         <judo-meta-esm-import-range>[1.0,1.1)</judo-meta-esm-import-range>
 
-        <judo-meta-psm-version>1.0.0.20191219_141111_827c652_develop</judo-meta-psm-version>
+        <judo-meta-psm-version>1.0.0.20191227_105210_4ce0798_develop</judo-meta-psm-version>
         <judo-meta-psm-import-range>[1.0,1.1)</judo-meta-psm-import-range>
 
-        <judo-meta-jql-version>1.0.0.20191112_164935_2d7c4d3_develop</judo-meta-jql-version>
+        <judo-meta-jql-version>1.0.0.20191227_134514_dfc1a73_develop</judo-meta-jql-version>
         <judo-meta-jql-import-range>[1.0,1.1)</judo-meta-jql-import-range>
 
-        <judo-meta-asm-version>1.0.0.20191217_134006_a431fce_develop</judo-meta-asm-version>
+        <judo-meta-jcl-version>1.0.0.20191227_140453_4e7756a_develop</judo-meta-jcl-version>
+        <judo-meta-jcl-import-range>[1.0,1.1)</judo-meta-jcl-import-range>
+
+        <judo-meta-script-version>1.0.0.20191227_142540_91171c6_develop</judo-meta-script-version>
+        <judo-meta-script-import-range>[1.0,1.1)</judo-meta-script-import-range>
+
+        <judo-meta-asm-version>1.0.0.20191227_133234_b29974b_develop</judo-meta-asm-version>
         <judo-meta-asm-import-range>[1.0,1.1)</judo-meta-asm-import-range>
 
-        <judo-meta-expression-version>1.0.0.20191218_125537_72d3c48_develop</judo-meta-expression-version>
+        <judo-meta-expression-version>1.0.0.20191227_141052_92ef61c_develop</judo-meta-expression-version>
         <judo-meta-expression-import-range>[1.0,1.1)</judo-meta-expression-import-range>
 
-        <judo-meta-measure-version>1.0.0.20191112_163601_632e4f6_develop</judo-meta-measure-version>
+        <judo-meta-measure-version>1.0.0.20191227_133319_9cf536c_develop</judo-meta-measure-version>
         <judo-meta-measure-import-range>[1.0,1.1)</judo-meta-measure-import-range>
 
-        <judo-meta-liquibase-version>1.0.0.20191016_092051_292c815_develop</judo-meta-liquibase-version>
+        <judo-meta-liquibase-version>1.0.0.20191229_114702_3739a2f_develop</judo-meta-liquibase-version>
         <judo-meta-liquibase-import-range>[1.0,1.1)</judo-meta-liquibase-import-range>
 
-        <judo-meta-openapi-version>1.0.0.20191112_162616_9c652f9_develop</judo-meta-openapi-version>
+        <judo-meta-openapi-version>1.0.0.20191230_233109_9959119_develop</judo-meta-openapi-version>
         <judo-meta-openapi-import-range>[1.0,1.1)</judo-meta-openapi-import-range>
+
+        <judo-dao-api-version>1.0.0.20191220_205229_b4e8ff6_develop</judo-dao-api-version>
+        <judo-script-codegen-version>1.0.0.20191231_030840_deff444_develop</judo-script-codegen-version>
+        <judo-jql-ide-eclipse-version>1.0.0.20191230_101900_d21be1a_develop</judo-jql-ide-eclipse-version>
 
         <structured-map-proxy-version>1.0.0.20191217_122241_77813e8_develop</structured-map-proxy-version>
 
         <!-- We use older version of plugin to avoid chicked egg problem -->
-        <judo-tatami-workflow-maven-plugin-version>1.0.0.20191219_114853_ecbe3a2_develop</judo-tatami-workflow-maven-plugin-version>
+        <judo-tatami-workflow-maven-plugin-version>1.0.0.20191220_213337_cbbf273_develop</judo-tatami-workflow-maven-plugin-version>
 
         <!-- Xtend / Xcore -->
         <emf-version>2.18.0</emf-version>
@@ -295,15 +306,45 @@
                 <version>${epsilon-version}</version>
             </dependency>
             <dependency>
-                <groupId>org.eclipse.platform</groupId>
-                <artifactId>org.eclipse.equinox.common</artifactId>
-                <version>3.10.0</version>
+                <groupId>hu.blackbelt.judo.meta</groupId>
+                <artifactId>hu.blackbelt.judo.meta.script.model</artifactId>
+                <version>${judo-meta-script-version}</version>
             </dependency>
+            <dependency>
+                <groupId>hu.blackbelt.judo.meta</groupId>
+                <artifactId>hu.blackbelt.judo.meta.script.builder.jcl</artifactId>
+                <version>${judo-meta-script-version}</version>
+            </dependency>
+
             <dependency>
                 <groupId>hu.blackbelt.judo.meta</groupId>
                 <artifactId>hu.blackbelt.judo.meta.jql.model</artifactId>
                 <version>${judo-meta-jql-version}</version>
             </dependency>
+            <dependency>
+                <groupId>hu.blackbelt.judo.meta</groupId>
+                <artifactId>hu.blackbelt.judo.meta.jcl.model</artifactId>
+                <version>${judo-meta-jcl-version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>hu.blackbelt.judo.meta</groupId>
+                <artifactId>hu.blackbelt.judo.meta.script.builder.jcl</artifactId>
+                <version>${judo-meta-script-version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>hu.blackbelt.judo.script</groupId>
+                <artifactId>hu.blackbelt.judo.script.codegen.generator</artifactId>
+                <version>${judo-script-codegen-version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>hu.blackbelt.judo</groupId>
+                <artifactId>judo-dao-api</artifactId>
+                <version>${judo-dao-api-version}</version>
+            </dependency>
+
             <!--dependency>
                 <groupId>hu.blackbelt.judo.meta</groupId>
                 <artifactId>judo-meta-psm-jql-extract-runtime</artifactId>
@@ -418,6 +459,12 @@
 
             <dependency>
                 <groupId>hu.blackbelt.judo.tatami</groupId>
+                <artifactId>judo-tatami-asm2script</artifactId>
+                <version>1.0.0-SNAPSHOT</version>
+            </dependency>
+
+            <dependency>
+                <groupId>hu.blackbelt.judo.tatami</groupId>
                 <artifactId>judo-tatami-asm2jaxrsapi</artifactId>
                 <version>1.0.0-SNAPSHOT</version>
             </dependency>
@@ -437,6 +484,12 @@
             <dependency>
                 <groupId>hu.blackbelt.judo.tatami</groupId>
                 <artifactId>judo-tatami-asm2sdk</artifactId>
+                <version>1.0.0-SNAPSHOT</version>
+            </dependency>
+
+            <dependency>
+                <groupId>hu.blackbelt.judo.tatami</groupId>
+                <artifactId>judo-tatami-script2operation</artifactId>
                 <version>1.0.0-SNAPSHOT</version>
             </dependency>
 
@@ -517,6 +570,8 @@
                                 <ignoreAsm2sdk>true</ignoreAsm2sdk>
                                 <ignoreAsm2jaxrsapi>true</ignoreAsm2jaxrsapi>
                                 <ignoreRdbms2Liquibase>true</ignoreRdbms2Liquibase>
+                                <ignoreAsm2Expression>true</ignoreAsm2Expression>
+                                <ignoreAsm2Script>true</ignoreAsm2Script>
                             </configuration>
                         </execution>
                     </executions>
@@ -706,7 +761,9 @@
                 <module>judo-tatami-asm2openapi</module>
                 <module>judo-tatami-asm2jaxrsapi</module>
                 <module>judo-tatami-asm2expression</module>
+                <module>judo-tatami-asm2script</module>
                 <module>judo-tatami-asm2sdk</module>
+                <module>judo-tatami-script2operation</module>
                 <module>judo-tatami-workflow</module>
                 <module>judo-tatami-workflow-osgi</module>
 		        <module>judo-tatami-workflow-maven-plugin</module>

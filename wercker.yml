@@ -63,6 +63,13 @@ build:
       profiles: ${DEPLOY_PROFILES}
       cache_repo: true
 
+    - blackbelttechnology/parallel-upload@1.0.2:
+      url:      ${JUDONG_P2_UPSTREAM}/judo-tatami/${VERSION_NUMBER}
+      path:     ${WERCKER_SOURCE_DIR}/judo-tatami-eclipse-site/target/repository
+      username: ${JUDONG_NEXUS_USERNAME}
+      password: ${JUDONG_NEXUS_PASSWORD}
+      proc:     "6"
+
 #  after-steps:
 #    - mbrevda/github-status:
 #      token: $GITHUB_ACCESS_TOKEN
@@ -70,6 +77,7 @@ build:
 #      msg: build completed
 #      fail: an error has occurred
 #      url: $WERCKER_RUN_URL
+
 
 # Based on http://vincent.demeester.fr/posts/2012-07-23-maven-release-gitflow/
 release:

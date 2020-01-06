@@ -20,7 +20,7 @@ public class TransformationConstants {
     public static final String TRAANSFORMATION_ASM_2_RDBMS = "Asm2RdbmsTransformation";
     public static final String TRAANSFORMATION_ASM_2_OPENAPI = "Asm2OpenapiTransformation";
     public static final String TRAANSFORMATION_ASM_2_JAXRSAPI = "Asm2JaxrsApiTransformation";
-    public static final String TRAANSFORMATION_ASM_2_SDK = "Asm2JSdkTransformation";
+    public static final String TRAANSFORMATION_ASM_2_SDK = "Asm2SdkTransformation";
 
     public static final String MANIFEST_TAG_PSM_2_ASM_SCRIPT_ROOT = TRAANSFORMATION_PSM_2_ASM + SCRIPT_ROOT_POSTFIX;
     public static final String MANIFEST_TAG_RDBMS_TO_LIQUIBASE_SCRIPT_ROOT = TRAANSFORMATION_RDBMS_TO_LIQUIBASE + SCRIPT_ROOT_POSTFIX;

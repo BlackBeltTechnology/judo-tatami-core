@@ -110,8 +110,17 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
         </dependency>
         <dependency>
             <groupId>hu.blackbelt.judo.tatami</groupId>
+            <artifactId>judo-tatami-asm2script</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>hu.blackbelt.judo.tatami</groupId>
             <artifactId>judo-tatami-asm2sdk</artifactId>
         </dependency>
+        <dependency>
+            <groupId>hu.blackbelt.judo.tatami</groupId>
+            <artifactId>judo-tatami-script2operation</artifactId>
+        </dependency>
+
         <dependency>
             <groupId>hu.blackbelt.epsilon</groupId>
             <artifactId>epsilon-runtime-execution</artifactId>

@@ -8,6 +8,7 @@ import static hu.blackbelt.judo.tatami.core.ThrowingSupplier.sneakyThrows;
 import static hu.blackbelt.judo.tatami.core.workflow.engine.WorkFlowEngineBuilder.aNewWorkFlowEngine;
 import static hu.blackbelt.judo.tatami.core.workflow.flow.ConditionalFlow.Builder.aNewConditionalFlow;
 import static hu.blackbelt.judo.tatami.core.workflow.flow.SequentialFlow.Builder.aNewSequentialFlow;
+import static hu.blackbelt.judo.tatami.script2operation.Script2OperationWork.OPERATION_OUTPUT;
 import static java.util.Optional.of;
 import static java.util.Optional.ofNullable;
 
@@ -25,11 +26,13 @@ import hu.blackbelt.judo.meta.measure.runtime.MeasureModel;
 import hu.blackbelt.judo.meta.openapi.runtime.OpenapiModel;
 import hu.blackbelt.judo.meta.psm.runtime.PsmModel;
 import hu.blackbelt.judo.meta.rdbms.runtime.RdbmsModel;
+import hu.blackbelt.judo.meta.script.runtime.ScriptModel;
 import hu.blackbelt.judo.tatami.asm2jaxrsapi.Asm2JAXRSAPIWork;
 import hu.blackbelt.judo.tatami.asm2openapi.Asm2OpenAPITransformationTrace;
 import hu.blackbelt.judo.tatami.asm2openapi.Asm2OpenAPIWork;
 import hu.blackbelt.judo.tatami.asm2rdbms.Asm2RdbmsTransformationTrace;
 import hu.blackbelt.judo.tatami.asm2rdbms.Asm2RdbmsWork;
+import hu.blackbelt.judo.tatami.asm2script.Asm2ScriptWork;
 import hu.blackbelt.judo.tatami.asm2sdk.Asm2SDKWork;
 import hu.blackbelt.judo.tatami.core.workflow.engine.WorkFlowEngine;
 import hu.blackbelt.judo.tatami.core.workflow.flow.WorkFlow;
@@ -43,7 +46,7 @@ import hu.blackbelt.judo.tatami.psm2asm.Psm2AsmWork;
 import hu.blackbelt.judo.tatami.psm2measure.Psm2MeasureTransformationTrace;
 import hu.blackbelt.judo.tatami.psm2measure.Psm2MeasureWork;
 import hu.blackbelt.judo.tatami.rdbms2liquibase.Rdbms2LiquibaseWork;
-import hu.blackelt.judo.tatami.asm2expression.Asm2Expression;
+import hu.blackbelt.judo.tatami.script2operation.Script2OperationWork;
 import hu.blackelt.judo.tatami.asm2expression.Asm2ExpressionWork;
 import lombok.Getter;
 
@@ -87,6 +90,7 @@ public class PsmDefaultWorkflow {
 		List<AbstractTransformationWork> asmWorks = Lists.newArrayList();
 		List<AbstractTransformationWork> rdbmsWorks = new ArrayList<>();
 		List<AbstractTransformationWork> asm2RdbmsWorks = new ArrayList<>();
+		List<AbstractTransformationWork> scriptWorks = new ArrayList<>();
 
 
 		if (parameters.getIgnorePsm2Asm() && parameters.getIgnorePsm2Measure()) {
@@ -121,6 +125,11 @@ public class PsmDefaultWorkflow {
 				Asm2ExpressionWork asm2ExpressionWork = new Asm2ExpressionWork(transformationContext);
 				asmWorks.add(asm2ExpressionWork);
 			}
+			if (!parameters.getIgnoreAsm2Script() && !parameters.getIgnorePsm2Measure()) {
+				Asm2ScriptWork asm2ScriptWork = new Asm2ScriptWork(transformationContext);
+				asmWorks.add(asm2ScriptWork);
+			}
+
 			if (!parameters.getIgnoreAsm2Openapi()) {
 				Asm2OpenAPIWork asm2OpenapiWork = new Asm2OpenAPIWork(transformationContext,
 						parameters.getAsm2OpenapiModelTransformationScriptURI());
@@ -135,6 +144,10 @@ public class PsmDefaultWorkflow {
 				Asm2SDKWork asm2sdkWork = new Asm2SDKWork(transformationContext,
 						parameters.getAsm2sdkModelTransformationScriptURI());
 				asmWorks.add(asm2sdkWork);
+			}
+			if (!parameters.getIgnoreScript2Operation() && !parameters.getIgnoreAsm2Script() && !parameters.getIgnorePsm2Measure()) {
+				Script2OperationWork script2OperationWork = new Script2OperationWork(transformationContext);
+				scriptWorks.add(script2OperationWork);
 			}
 		}
 
@@ -152,9 +165,18 @@ public class PsmDefaultWorkflow {
 								.execute(asmWorks.toArray(new AbstractTransformationWork[asmWorks.size()]))
 								.build())
 						.when(WorkReportPredicate.COMPLETED)
-						.then(aNewSequentialFlow()
-								.named("Sequential RDBMS Transformations")
-								.execute(rdbmsWorks.toArray(new AbstractTransformationWork[rdbmsWorks.size()]))
+						.then(aNewConditionalFlow()
+								.named("Conditional when all RDBMS Transformations COMPLETED Run All Script Transformation")
+								.execute(aNewSequentialFlow()
+												.named("Sequential RDBMS Transformations")
+												.execute(rdbmsWorks.toArray(new AbstractTransformationWork[rdbmsWorks.size()]))
+												.build())
+								.when(WorkReportPredicate.COMPLETED)
+								.then(aNewSequentialFlow()
+										.named("Sequential Script Transformations")
+										.execute(
+												scriptWorks.toArray(new AbstractTransformationWork[scriptWorks.size()]))
+										.build())
 								.build())
 						.build())
 				.build();
@@ -186,6 +208,9 @@ public class PsmDefaultWorkflow {
 			if (!parameters.getIgnoreAsm2Expression() && !parameters.getIgnorePsm2Measure()) {
 				verifier.isClassExists(ExpressionModel.class);
 			}
+			if (!parameters.getIgnoreAsm2Script() && !parameters.getIgnorePsm2Measure()) {
+				verifier.isClassExists(ScriptModel.class);
+			}
 			if (!parameters.getIgnoreAsm2Openapi()) {
 				verifier.isClassExists(OpenapiModel.class);
 				verifier.isClassExists(Asm2OpenAPITransformationTrace.class);
@@ -195,6 +220,9 @@ public class PsmDefaultWorkflow {
 			}
 			if (!parameters.getIgnoreAsm2sdk()) {
 				verifier.isKeyExists(InputStream.class, SDK_OUTPUT);
+			}
+			if (!parameters.getIgnoreScript2Operation() && !parameters.getIgnoreAsm2Script() && !parameters.getIgnorePsm2Measure()) {
+				verifier.isKeyExists(InputStream.class, OPERATION_OUTPUT);
 			}
 		}
 		if (!verifier.isAllExists()) {

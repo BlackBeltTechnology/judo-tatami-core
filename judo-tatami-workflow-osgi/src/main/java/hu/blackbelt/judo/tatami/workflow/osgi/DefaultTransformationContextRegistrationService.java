@@ -5,6 +5,14 @@ import static hu.blackbelt.judo.tatami.core.ThrowingConsumer.throwingConsumerWra
 import java.io.IOException;
 import java.io.InputStream;
 
+import hu.blackbelt.judo.meta.expression.runtime.ExpressionModel;
+import hu.blackbelt.judo.meta.script.runtime.ScriptModel;
+import hu.blackbelt.judo.tatami.asm2jaxrsapi.Asm2JAXRSAPI;
+import hu.blackbelt.judo.tatami.asm2jaxrsapi.Asm2JAXRSAPIWork;
+import hu.blackbelt.judo.tatami.asm2sdk.Asm2SDK;
+import hu.blackbelt.judo.tatami.asm2sdk.Asm2SDKWork;
+import hu.blackbelt.judo.tatami.script2operation.Script2Operation;
+import hu.blackbelt.judo.tatami.script2operation.Script2OperationWork;
 import org.osgi.framework.BundleException;
 import org.osgi.service.component.annotations.Component;
 
@@ -63,13 +71,31 @@ public class DefaultTransformationContextRegistrationService extends AbstractTra
     }
 
 
-    public void registerRdbmsModel(RdbmsModel rdbmsModel) {
+    public void registerExpressionModel(RdbmsModel rdbmsModel) {
         registerModel(rdbmsModel, rdbmsModel.toDictionary());
     }
 
     public void unregisterRdbmsModel(RdbmsModel rdbmsModel) {
         unregisterModel(rdbmsModel);
     }
+
+    public void registerExpressionModel(ExpressionModel expressionModel) {
+        registerModel(expressionModel, expressionModel.toDictionary());
+    }
+
+    public void unregisterExpressionModel(ExpressionModel expressionModel) {
+        unregisterModel(expressionModel);
+    }
+
+
+    public void registerScriptModel(ScriptModel scriptModel) {
+        registerModel(scriptModel, scriptModel.toDictionary());
+    }
+
+    public void unregisterScriptModel(ScriptModel scriptModel) {
+        unregisterModel(scriptModel);
+    }
+
 
     public void registerLiquibaseModel(LiquibaseModel liquibaseModel) {
         registerModel(liquibaseModel, liquibaseModel.toDictionary());
@@ -103,17 +129,28 @@ public class DefaultTransformationContextRegistrationService extends AbstractTra
         ungisterInputStream(sdkBundle);
     }
 
+    public void registerOperation(InputStream operationBundle) throws IOException, BundleException {
+        registerInputStreamAsBundle(operationBundle);
+    }
+
+    public void unregisterOperation(InputStream operationBundle) throws BundleException {
+        ungisterInputStream(operationBundle);
+    }
+
     public void registerTramsformationContext(TransformationContext transformationContext) {
         transformationContext.getByClass(EsmModel.class).ifPresent(m -> registerEsmModel(m));
         transformationContext.getByClass(PsmModel.class).ifPresent(m -> registerPsmModel(m));
         transformationContext.getByClass(AsmModel.class).ifPresent(m -> registerAsmModel(m));
         transformationContext.getByClass(MeasureModel.class).ifPresent(m -> registerMeasureModel(m));
-        transformationContext.getByClass(RdbmsModel.class).ifPresent(m -> registerRdbmsModel(m));
+        transformationContext.getByClass(ExpressionModel.class).ifPresent(m -> registerExpressionModel(m));
+        transformationContext.getByClass(ScriptModel.class).ifPresent(m -> registerScriptModel(m));
+        transformationContext.getByClass(RdbmsModel.class).ifPresent(m -> unregisterRdbmsModel(m));
         transformationContext.getByClass(OpenapiModel.class).ifPresent(m -> registerOpenapiModel(m));
         transformationContext.getByClass(LiquibaseModel.class).ifPresent(m -> registerLiquibaseModel(m));
 
-        transformationContext.get(InputStream.class, "").ifPresent(throwingConsumerWrapper(m -> registerJaxrsApi(m)));
-        transformationContext.get(InputStream.class, "").ifPresent(throwingConsumerWrapper(m -> registerSDK(m)));
+        transformationContext.get(InputStream.class, Asm2JAXRSAPIWork.JAXRSAPI_OUTPUT).ifPresent(throwingConsumerWrapper(m -> registerJaxrsApi(m)));
+        transformationContext.get(InputStream.class, Asm2SDKWork.SDK_OUTPUT).ifPresent(throwingConsumerWrapper(m -> registerSDK(m)));
+        transformationContext.get(InputStream.class, Script2OperationWork.OPERATION_OUTPUT).ifPresent(throwingConsumerWrapper(m -> registerOperation(m)));
 
         transformationContext.getByClass(Esm2PsmTransformationTrace.class).ifPresent(t -> registerTrace(t));
         transformationContext.getByClass(Psm2AsmTransformationTrace.class).ifPresent(t -> registerTrace(t));
@@ -128,12 +165,15 @@ public class DefaultTransformationContextRegistrationService extends AbstractTra
         transformationContext.getByClass(PsmModel.class).ifPresent(m -> unregisterPsmModel(m));
         transformationContext.getByClass(AsmModel.class).ifPresent(m -> unregisterAsmModel(m));
         transformationContext.getByClass(MeasureModel.class).ifPresent(m -> unregisterMeasureModel(m));
+        transformationContext.getByClass(ExpressionModel.class).ifPresent(m -> unregisterExpressionModel(m));
+        transformationContext.getByClass(ScriptModel.class).ifPresent(m -> unregisterScriptModel(m));
         transformationContext.getByClass(RdbmsModel.class).ifPresent(m -> unregisterRdbmsModel(m));
         transformationContext.getByClass(OpenapiModel.class).ifPresent(m -> unregisterOpenapiModel(m));
         transformationContext.getByClass(LiquibaseModel.class).ifPresent(m -> unregisterLiquibaseModel(m));
 
-        transformationContext.get(InputStream.class, "").ifPresent(throwingConsumerWrapper(m -> unregisterJaxrsApi(m)));
-        transformationContext.get(InputStream.class, "").ifPresent(throwingConsumerWrapper(m -> unregisterSDK(m)));
+        transformationContext.get(InputStream.class, Asm2JAXRSAPIWork.JAXRSAPI_OUTPUT).ifPresent(throwingConsumerWrapper(m -> unregisterJaxrsApi(m)));
+        transformationContext.get(InputStream.class, Asm2SDKWork.SDK_OUTPUT).ifPresent(throwingConsumerWrapper(m -> unregisterSDK(m)));
+        transformationContext.get(InputStream.class, Script2OperationWork.OPERATION_OUTPUT).ifPresent(throwingConsumerWrapper(m -> unregisterOperation(m)));
 
         transformationContext.getByClass(Esm2PsmTransformationTrace.class).ifPresent(t -> unregisterTrace(t));
         transformationContext.getByClass(Psm2AsmTransformationTrace.class).ifPresent(t -> unregisterTrace(t));
