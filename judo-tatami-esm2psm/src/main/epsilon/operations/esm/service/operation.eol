@@ -31,9 +31,17 @@ operation createNewParameter(source: ESM!RelationFeature): JUDOPSM!Parameter {
     return input;
 }
 
+operation createNewParameterForExposedGraph(source: ESM!ExposedGraph): JUDOPSM!Parameter {
+    var input = new JUDOPSM!Parameter;
+    input.name = "input";
+    input.cardinality = createNewCardinality();
+    input.type = source.target.getPSMTransferObjectTypeEquivalent();
+    return input;
+}
+
 operation createSetOperation(source: ESM!RelationFeature, relation: ESM!RelationFeature) {
     var setOperation = new JUDOPSM!BoundOperationWithRelation;
-    setOperation.name = "set_" + source.name + "_" + relation.name;
+    setOperation.name = "set" + relation.name.firstToUpperCase() + "Via" + source.name.firstToUpperCase() + "_";
     setOperation.relation = relation.getPSMTransferObjectRelationEquivalent();
     
     setOperation.input = createNewParameter(source);
@@ -45,7 +53,7 @@ operation createSetOperation(source: ESM!RelationFeature, relation: ESM!Relation
 
 operation createAddAllOperation(source: ESM!RelationFeature, relation: ESM!RelationFeature) {
     var addAllOperation = new JUDOPSM!BoundOperationWithRelation;
-    addAllOperation.name = "addAll_" + source.name + "_" + relation.name;
+    addAllOperation.name = "addAll" + relation.name.firstToUpperCase() + "Via" + source.name.firstToUpperCase() + "_";
     addAllOperation.relation = relation.getPSMTransferObjectRelationEquivalent();
                        
     addAllOperation.input = createNewParameter(source);
@@ -57,7 +65,7 @@ operation createAddAllOperation(source: ESM!RelationFeature, relation: ESM!Relat
 
 operation createUnsetOperation(source: ESM!RelationFeature, relation: ESM!RelationFeature) {
     var unsetOperation = new JUDOPSM!BoundOperationWithRelation;
-    unsetOperation.name = "unset_" + source.name + "_" + relation.name;
+    unsetOperation.name = "unset" + relation.name.firstToUpperCase() + "Via" + source.name.firstToUpperCase() + "_";
     unsetOperation.relation = relation.getPSMTransferObjectRelationEquivalent();
     
     unsetOperation.input = createNewParameter(source);
@@ -69,7 +77,7 @@ operation createUnsetOperation(source: ESM!RelationFeature, relation: ESM!Relati
 
 operation createRemoveAllOperation(source: ESM!RelationFeature, relation: ESM!RelationFeature) {
     var removeAllOperation = new JUDOPSM!BoundOperationWithRelation;
-    removeAllOperation.name = "removeAll_" + source.name + "_" + relation.name;
+    removeAllOperation.name = "removeAll" + relation.name.firstToUpperCase() + "Via" + source.name.firstToUpperCase() + "_";
     removeAllOperation.relation = relation.getPSMTransferObjectRelationEquivalent();
                             
     removeAllOperation.input = createNewParameter(source);
@@ -80,20 +88,101 @@ operation createRemoveAllOperation(source: ESM!RelationFeature, relation: ESM!Re
 }
 
 operation createGetRangeOperation(source: ESM!RelationFeature, relation: ESM!RelationFeature) {
-    var getRangeOperation = new JUDOPSM!UnboundOperationWithRelation;
-    getRangeOperation.name = "GetRange_" + source.eContainer.name + "_" + source.name + "_";
+    var getRangeOperation = new JUDOPSM!BoundOperationWithRelation;
+    getRangeOperation.name = "getRangeOf" + relation.name.firstToUpperCase() + "Via" + source.name.firstToUpperCase() + "_";
     getRangeOperation.relation = relation.getPSMTransferObjectRelationEquivalent();
-    
+
+    getRangeOperation.input = new JUDOPSM!Parameter;
+    getRangeOperation.input.name = "input";
+    getRangeOperation.input.cardinality = new JUDOPSM!Cardinality;
+    getRangeOperation.input.cardinality.lower = 1;
+    getRangeOperation.input.cardinality.upper = 1;
+    getRangeOperation.input.type = relation.eContainer.getPSMTransferObjectTypeEquivalent();
+
     getRangeOperation.output = new JUDOPSM!Parameter;
     getRangeOperation.output.name = "output";
     getRangeOperation.output.cardinality = new JUDOPSM!Cardinality;
     getRangeOperation.output.cardinality.lower = 0;
     getRangeOperation.output.cardinality.upper = -1;
     getRangeOperation.output.type = relation.target.getPSMTransferObjectTypeEquivalent();
-    
+
     getRangeOperation.implementation = createNewOperationBody();
     getRangeOperation.implementation.stateful = false;
-    
-    (source.eContainer).eContainer.getPSMEquivalent().elements.add(getRangeOperation);
+
+    source.eContainer.getPSMTransferObjectTypeEquivalent().operations.add(getRangeOperation);
     source.getPSMTransferObjectRelationEquivalent().getRange.add(getRangeOperation);
+}
+
+operation createSetOperationForExposedGraph(source: ESM!ExposedGraph, relation: ESM!RelationFeature) {
+    var setOperation = new JUDOPSM!UnboundOperationWithRelation;
+    setOperation.name = "set" + relation.name.firstToUpperCase() + "For" + source.name.firstToUpperCase() + "_";
+    setOperation.relation = relation.getPSMTransferObjectRelationEquivalent();
+
+    setOperation.input = createNewParameterForExposedGraph(source);
+    setOperation.implementation = createNewOperationBody();
+
+    source.eContainer.eContainer.getPSMEquivalent().elements.add(setOperation);
+    source.equivalent("CreateExposedGraph").set.add(setOperation);
+}
+
+operation createAddAllOperationForExposedGraph(source: ESM!ExposedGraph, relation: ESM!RelationFeature) {
+    var addAllOperation = new JUDOPSM!UnboundOperationWithRelation;
+    addAllOperation.name = "addAll" + relation.name.firstToUpperCase() + "For" + source.name.firstToUpperCase() + "_";
+    addAllOperation.relation = relation.getPSMTransferObjectRelationEquivalent();
+
+    addAllOperation.input = createNewParameterForExposedGraph(source);
+    addAllOperation.implementation = createNewOperationBody();
+
+    source.eContainer.eContainer.getPSMEquivalent().elements.add(addAllOperation);
+    source.equivalent("CreateExposedGraph").addAll.add(addAllOperation);
+}
+
+operation createUnsetOperationForExposedGraph(source: ESM!ExposedGraph, relation: ESM!RelationFeature) {
+    var unsetOperation = new JUDOPSM!UnboundOperationWithRelation;
+    unsetOperation.name = "unset" + relation.name.firstToUpperCase() + "For" + source.name.firstToUpperCase() + "_";
+    unsetOperation.relation = relation.getPSMTransferObjectRelationEquivalent();
+
+    unsetOperation.input = createNewParameterForExposedGraph(source);
+    unsetOperation.implementation = createNewOperationBody();
+
+    source.eContainer.eContainer.getPSMEquivalent().elements.add(unsetOperation);
+    source.equivalent("CreateExposedGraph").unset.add(unsetOperation);
+}
+
+operation createRemoveAllOperationForExposedGraph(source: ESM!ExposedGraph, relation: ESM!RelationFeature) {
+    var removeAllOperation = new JUDOPSM!UnboundOperationWithRelation;
+    removeAllOperation.name = "removeAll" + relation.name.firstToUpperCase() + "For" + source.name.firstToUpperCase() + "_";
+    removeAllOperation.relation = relation.getPSMTransferObjectRelationEquivalent();
+
+    removeAllOperation.input = createNewParameterForExposedGraph(source);
+    removeAllOperation.implementation = createNewOperationBody();
+
+    source.eContainer.eContainer.getPSMEquivalent().elements.add(removeAllOperation);
+    source.equivalent("CreateExposedGraph").removeAll.add(removeAllOperation);
+}
+
+operation createGetRangeOperationForExposedGraph(source: ESM!ExposedGraph, relation: ESM!RelationFeature) {
+    var getRangeOperation = new JUDOPSM!UnboundOperationWithRelation;
+    getRangeOperation.name = "GetRangeOf" + relation.name.firstToUpperCase() + "For" + source.eContainer.name + "Create" + source.name.firstToUpperCase() + "_";
+    getRangeOperation.relation = relation.getPSMTransferObjectRelationEquivalent();
+
+    getRangeOperation.input = new JUDOPSM!Parameter;
+    getRangeOperation.input.name = "input";
+    getRangeOperation.input.cardinality = new JUDOPSM!Cardinality;
+    getRangeOperation.input.cardinality.lower = 1;
+    getRangeOperation.input.cardinality.upper = 1;
+    getRangeOperation.input.type = relation.eContainer.getPSMTransferObjectTypeEquivalent();
+
+    getRangeOperation.output = new JUDOPSM!Parameter;
+    getRangeOperation.output.name = "output";
+    getRangeOperation.output.cardinality = new JUDOPSM!Cardinality;
+    getRangeOperation.output.cardinality.lower = 0;
+    getRangeOperation.output.cardinality.upper = -1;
+    getRangeOperation.output.type = relation.target.getPSMTransferObjectTypeEquivalent();
+
+    getRangeOperation.implementation = createNewOperationBody();
+    getRangeOperation.implementation.stateful = false;
+
+    source.eContainer.eContainer.getPSMEquivalent().elements.add(getRangeOperation);
+    source.equivalent("CreateExposedGraph").getRange.add(getRangeOperation);
 }

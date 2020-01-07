@@ -66,7 +66,7 @@ rule CreateOperationBody
 rule CreateGetOperationForExposedGraph
     transform s : ESM!ExposedGraph
     to t : JUDOPSM!UnboundOperation {
-        t.name = s.eContainer.name + "_get_" + s.name + "_";
+        t.name = s.eContainer.name + "Get" + s.name.firstToUpperCase() + "_";
         t.output = s.equivalent("CreateOutputForGetOperationForExposedGraph");
         t.implementation = s.equivalent("CreateGetImplementationFromExposedGraph");
         (s.eContainer).eContainer.getPSMEquivalent().elements.add(t);
@@ -111,7 +111,7 @@ rule CreateCreateOperationForExposedGraph
     to t : JUDOPSM!UnboundOperation {
     guard: s.createable
     
-        t.name = s.eContainer.name + "_create_" + s.name + "_";
+        t.name = s.eContainer.name + "Create" + s.name.firstToUpperCase() + "_";
         t.input = s.equivalent("CreateInputForCreateOperationForExposedGraph");
         t.output = s.equivalent("CreateOutputForCreateOperationForExposedGraph");
         t.implementation = s.equivalent("CreateCreateImplementationFromExposedGraph");
@@ -174,7 +174,7 @@ rule CreateUpdateOperationForExposedGraph
     transform s : ESM!ExposedGraph
     to t : JUDOPSM!UnboundOperation {
     guard: s.updateable
-        t.name = s.eContainer.name + "_update_" + s.name + "_";
+        t.name = s.eContainer.name + "Update" + s.name.firstToUpperCase() + "_";
         t.input = s.equivalent("CreateInputForUpdateOperationForExposedGraph");
         t.output = s.equivalent("CreateOutputForUpdateOperationForExposedGraph");
         t.implementation = s.equivalent("CreateUpdateImplementationFromExposedGraph");
@@ -241,7 +241,7 @@ rule CreateDeleteOperationForExposedGraph
     to t : JUDOPSM!UnboundOperation {
     guard: s.deleteable
    
-        t.name = s.eContainer.name + "_delete_" + s.name + "_";
+        t.name = s.eContainer.name + "Delete" + s.name.firstToUpperCase() + "_";
         t.input = s.equivalent("CreateInputForDeleteOperationForExposedGraph");
         t.implementation = s.equivalent("CreateDeleteImplementationFromExposedGraph");
         (s.eContainer).eContainer.getPSMEquivalent().elements.add(t);
@@ -286,7 +286,7 @@ rule CreateGetOperationForTransferObjectRelation
     transform s : ESM!RelationFeature
     to t : JUDOPSM!BoundOperation {
     guard: s.eContainer.mapping.isDefined()
-        t.name = "get_" + s.name + "_";
+        t.name = "get" + s.name.firstToUpperCase() + "_";
         s.eContainer.getPSMTransferObjectTypeEquivalent().operations.add(t);
         t.output = s.equivalent("CreateOutputForGetOperationForTransferObjectRelation");
         t.implementation = s.equivalent("CreateGetImplementationForTransferObjectRelation");
@@ -332,7 +332,7 @@ rule CreateCreateOperationForTransferObjectRelation
     transform s : ESM!RelationFeature
     to t : JUDOPSM!BoundOperation {
     guard: s.isCreateAllowed() and s.eContainer.mapping.isDefined()
-        t.name = "create_" + s.name + "_";
+        t.name = "create" + s.name.firstToUpperCase() + "_";
         s.eContainer.getPSMTransferObjectTypeEquivalent().operations.add(t);
         t.input = s.equivalent("CreateInputForCreateOperationForTransferObjectRelation");
         t.output = s.equivalent("CreateOutputForCreateOperationForTransferObjectRelation");
@@ -413,7 +413,7 @@ rule CreateUpdateOperationForTransferObjectRelation
     transform s : ESM!RelationFeature
     to t : JUDOPSM!BoundOperation {
     guard: s.isUpdateAllowed() and s.eContainer.mapping.isDefined()
-        t.name = "update_" + s.name + "_";
+        t.name = "update" + s.name.firstToUpperCase() + "_";
         s.eContainer.getPSMTransferObjectTypeEquivalent().operations.add(t);
         t.input = s.equivalent("CreateInputForUpdateOperationForTransferObjectRelation");
         t.output = s.equivalent("CreateOutputForUpdateOperationForTransferObjectRelation");
@@ -500,7 +500,7 @@ rule CreateDeleteOperationForTransferObjectRelation
     transform s : ESM!RelationFeature
     to t : JUDOPSM!BoundOperation {
     guard: s.isDeleteAllowed() and s.eContainer.mapping.isDefined()
-        t.name = "delete_" + s.name + "_";
+        t.name = "delete" + s.name.firstToUpperCase() + "_";
         s.eContainer.getPSMTransferObjectTypeEquivalent().operations.add(t);
         t.implementation = s.equivalent("CreateUpdateImplementationForTransferObjectRelation");
         t.input = s.equivalent("CreateInputForDeleteOperationForTransferObjectRelation");
