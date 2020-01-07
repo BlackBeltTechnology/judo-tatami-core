@@ -29,15 +29,7 @@ public class Script2OperationWork extends AbstractTransformationWork {
 		Optional<ScriptModel> asmModel = getTransformationContext().getByClass(ScriptModel.class);
 		asmModel.orElseThrow(() -> new IllegalArgumentException("Script Model does not found in transformation context"));
 
-		File temporaryDirectory = File.createTempFile(Script2Operation.class.getName(), asmModel.get().getName());
-		if (temporaryDirectory.exists()) {
-			temporaryDirectory.delete();
-		}
-		temporaryDirectory.deleteOnExit();
-		temporaryDirectory.mkdir();
-
-		InputStream script2OperationBundle = executeScript2OperationGeneration(asmModel.get(),
-				temporaryDirectory);
+		InputStream script2OperationBundle = executeScript2OperationGeneration(asmModel.get());
 
 		checkState(script2OperationBundle != null, "No InputStream created");
 

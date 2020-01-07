@@ -7,11 +7,8 @@ import java.io.InputStream;
 
 import hu.blackbelt.judo.meta.expression.runtime.ExpressionModel;
 import hu.blackbelt.judo.meta.script.runtime.ScriptModel;
-import hu.blackbelt.judo.tatami.asm2jaxrsapi.Asm2JAXRSAPI;
 import hu.blackbelt.judo.tatami.asm2jaxrsapi.Asm2JAXRSAPIWork;
-import hu.blackbelt.judo.tatami.asm2sdk.Asm2SDK;
 import hu.blackbelt.judo.tatami.asm2sdk.Asm2SDKWork;
-import hu.blackbelt.judo.tatami.script2operation.Script2Operation;
 import hu.blackbelt.judo.tatami.script2operation.Script2OperationWork;
 import org.osgi.framework.BundleException;
 import org.osgi.service.component.annotations.Component;
@@ -33,7 +30,8 @@ import hu.blackbelt.judo.tatami.psm2measure.Psm2MeasureTransformationTrace;
 /**
  * This class manages the OSGi lifecycle of transformed models / bundles
  */
-@Component(property = "implementation=default", service = TransformationContextRegistrationService.class)
+@Component(property = "implementation=default", immediate = true,
+        service = TransformationContextRegistrationService.class)
 public class DefaultTransformationContextRegistrationService extends AbstractTransformationContextRegistrationService
         implements TransformationContextRegistrationService {
 
@@ -71,7 +69,7 @@ public class DefaultTransformationContextRegistrationService extends AbstractTra
     }
 
 
-    public void registerExpressionModel(RdbmsModel rdbmsModel) {
+    public void registerRdbmsModel(RdbmsModel rdbmsModel) {
         registerModel(rdbmsModel, rdbmsModel.toDictionary());
     }
 
@@ -137,16 +135,18 @@ public class DefaultTransformationContextRegistrationService extends AbstractTra
         ungisterInputStream(operationBundle);
     }
 
-    public void registerTramsformationContext(TransformationContext transformationContext) {
-        transformationContext.getByClass(EsmModel.class).ifPresent(m -> registerEsmModel(m));
-        transformationContext.getByClass(PsmModel.class).ifPresent(m -> registerPsmModel(m));
+    public void registerTramsformationContext(TransformationContext transformationContext, String sqlDialect) {
+        //transformationContext.getByClass(EsmModel.class).ifPresent(m -> registerEsmModel(m));
+        //transformationContext.getByClass(PsmModel.class).ifPresent(m -> registerPsmModel(m));
         transformationContext.getByClass(AsmModel.class).ifPresent(m -> registerAsmModel(m));
         transformationContext.getByClass(MeasureModel.class).ifPresent(m -> registerMeasureModel(m));
         transformationContext.getByClass(ExpressionModel.class).ifPresent(m -> registerExpressionModel(m));
         transformationContext.getByClass(ScriptModel.class).ifPresent(m -> registerScriptModel(m));
-        transformationContext.getByClass(RdbmsModel.class).ifPresent(m -> unregisterRdbmsModel(m));
+
+        transformationContext.get(RdbmsModel.class, "rdbms:" + sqlDialect).ifPresent(m -> registerRdbmsModel(m));
         transformationContext.getByClass(OpenapiModel.class).ifPresent(m -> registerOpenapiModel(m));
-        transformationContext.getByClass(LiquibaseModel.class).ifPresent(m -> registerLiquibaseModel(m));
+        transformationContext.get(LiquibaseModel.class, "liquibase:" + sqlDialect).ifPresent(m -> registerLiquibaseModel(m));
+
 
         transformationContext.get(InputStream.class, Asm2JAXRSAPIWork.JAXRSAPI_OUTPUT).ifPresent(throwingConsumerWrapper(m -> registerJaxrsApi(m)));
         transformationContext.get(InputStream.class, Asm2SDKWork.SDK_OUTPUT).ifPresent(throwingConsumerWrapper(m -> registerSDK(m)));
@@ -159,17 +159,17 @@ public class DefaultTransformationContextRegistrationService extends AbstractTra
         transformationContext.getByClass(Asm2OpenAPITransformationTrace.class).ifPresent(t -> registerTrace(t));
     }
 
-    public void unregisterTramsformationContext(TransformationContext transformationContext) {
+    public void unregisterTramsformationContext(TransformationContext transformationContext, String sqlDialect) {
 
-        transformationContext.getByClass(EsmModel.class).ifPresent(m -> unregisterEsmModel(m));
-        transformationContext.getByClass(PsmModel.class).ifPresent(m -> unregisterPsmModel(m));
+        //transformationContext.getByClass(EsmModel.class).ifPresent(m -> unregisterEsmModel(m));
+        //transformationContext.getByClass(PsmModel.class).ifPresent(m -> unregisterPsmModel(m));
         transformationContext.getByClass(AsmModel.class).ifPresent(m -> unregisterAsmModel(m));
         transformationContext.getByClass(MeasureModel.class).ifPresent(m -> unregisterMeasureModel(m));
         transformationContext.getByClass(ExpressionModel.class).ifPresent(m -> unregisterExpressionModel(m));
         transformationContext.getByClass(ScriptModel.class).ifPresent(m -> unregisterScriptModel(m));
-        transformationContext.getByClass(RdbmsModel.class).ifPresent(m -> unregisterRdbmsModel(m));
+        transformationContext.get(RdbmsModel.class, "rdbms:" + sqlDialect).ifPresent(m -> unregisterRdbmsModel(m));
         transformationContext.getByClass(OpenapiModel.class).ifPresent(m -> unregisterOpenapiModel(m));
-        transformationContext.getByClass(LiquibaseModel.class).ifPresent(m -> unregisterLiquibaseModel(m));
+        transformationContext.get(LiquibaseModel.class, "liquibase:" + sqlDialect).ifPresent(m -> unregisterLiquibaseModel(m));
 
         transformationContext.get(InputStream.class, Asm2JAXRSAPIWork.JAXRSAPI_OUTPUT).ifPresent(throwingConsumerWrapper(m -> unregisterJaxrsApi(m)));
         transformationContext.get(InputStream.class, Asm2SDKWork.SDK_OUTPUT).ifPresent(throwingConsumerWrapper(m -> unregisterSDK(m)));

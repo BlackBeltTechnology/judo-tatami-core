@@ -47,7 +47,7 @@ import hu.blackbelt.judo.tatami.psm2measure.Psm2MeasureTransformationTrace;
 import hu.blackbelt.judo.tatami.psm2measure.Psm2MeasureWork;
 import hu.blackbelt.judo.tatami.rdbms2liquibase.Rdbms2LiquibaseWork;
 import hu.blackbelt.judo.tatami.script2operation.Script2OperationWork;
-import hu.blackelt.judo.tatami.asm2expression.Asm2ExpressionWork;
+import hu.blackbelt.judo.tatami.asm2expression.Asm2ExpressionWork;
 import lombok.Getter;
 
 public class PsmDefaultWorkflow {

@@ -2,45 +2,47 @@ package hu.blackbelt.judo.tatami.workflow.osgi;
 
 import hu.blackbelt.judo.meta.psm.runtime.PsmModel;
 import hu.blackbelt.judo.tatami.core.AbstractModelTracker;
+import hu.blackbelt.osgi.utils.osgi.api.PropertiesUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.service.cm.Configuration;
 import org.osgi.service.cm.ConfigurationAdmin;
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.*;
+import org.osgi.service.metatype.annotations.Designate;
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.Dictionary;
 import java.util.Hashtable;
 
 /**
  * Tracking {@link PsmModel} instances. When a {@link PsmModel} instance registered this service
  * creates a {@link PsmWorkflowProcess} instances with the corresponding settings.
- * To create the {@link PsmWorkflowProcess}  o configuration created / deleted over
- * {@link org.osgi.service.cm.ConfigurationAdmin} serive, so the lifecycle of the {@link PsmWorkflowProcess}
+ * To create the {@link PsmWorkflowProcess} configuration created / deleted over
+ * {@link org.osgi.service.cm.ConfigurationAdmin} service, so the lifecycle of the {@link PsmWorkflowProcess}
  * is managed by Declarative Service.
  *
  */
-@Component(immediate = true, configurationPolicy = ConfigurationPolicy.REQUIRE,
-        property = PsmWorkflowDefaultPsmModelTracker.TRANSFORMATION_CONTEXT_REGISTRATION_SERVICE_FILTER + "=" +
-                PsmWorkflowDefaultPsmModelTracker.IMPLEMENTATION_DEFAULT)
+@Component(immediate = true, configurationPolicy = ConfigurationPolicy.REQUIRE)
+@Designate(ocd = PsmWorkflowDefaultPsmModelTrackerConfiguration.class)
 @Slf4j
 public class PsmWorkflowDefaultPsmModelTracker extends AbstractModelTracker<PsmModel> {
 
-    public static final String MODEL_NAME_PROPERTY = "modelName";
-    public static final String PSM_MODEL_PROPERTY = "psmModel";
-    public static final String TRANSFORMATION_CONTEXT_REGISTRATION_SERVICE_FILTER = "TransformationContextRegistrationServiceFilter";
-    public static final String TRANSFORMATION_CONTEXT_REGISTRATION_SERVICE_TARGET = "transformationContextRegistrationService.target";
-    public static final String IMPLEMENTATION_DEFAULT = "(implementation=default)";
+    public static final String PROP_WORKFLOW_PROCESS_MODEL_NAME_PROPERTY = "modelName";
+    public static final String PROP_WORKFLOW_PROCESS_PSM_MODEL_TARGET = "psmModel.target";
+    public static final String PROP_WORKFLOW_PROCESS_TRANSFORMATION_CONTEXT_REGISTRATION_SERVICE_TARGET = "transformationContextRegistrationService.target";
 
     @Reference
     ConfigurationAdmin configurationAdmin;
 
     ComponentContext componentContext;
+    PsmWorkflowDefaultPsmModelTrackerConfiguration config;
 
     @Activate
-    public void activate(ComponentContext componentContextContext) {
+    public void activate(ComponentContext componentContextContext, PsmWorkflowDefaultPsmModelTrackerConfiguration config) {
         this.componentContext = componentContextContext;
+        this.config = config;
         openTracker(componentContextContext.getBundleContext());
     }
 
@@ -81,16 +83,27 @@ public class PsmWorkflowDefaultPsmModelTracker extends AbstractModelTracker<PsmM
         String modelName = psmModel.getName();
 
         final Dictionary<String, Object> psmWorkflowProcessProperties = new Hashtable<>();
-        psmWorkflowProcessProperties.put(TRANSFORMATION_CONTEXT_REGISTRATION_SERVICE_TARGET,
-                componentContext.getProperties().get(TRANSFORMATION_CONTEXT_REGISTRATION_SERVICE_FILTER));
-        psmWorkflowProcessProperties.put(MODEL_NAME_PROPERTY, psmModel.getName());
-        psmWorkflowProcessProperties.put(PSM_MODEL_PROPERTY, psmModel);
+        psmWorkflowProcessProperties.put(PROP_WORKFLOW_PROCESS_TRANSFORMATION_CONTEXT_REGISTRATION_SERVICE_TARGET,
+                config.transformationContextRegistrationServiceFilter());
+        psmWorkflowProcessProperties.put(PROP_WORKFLOW_PROCESS_MODEL_NAME_PROPERTY, psmModel.getName());
+        psmWorkflowProcessProperties.put(PROP_WORKFLOW_PROCESS_PSM_MODEL_TARGET, "(name=" + psmModel.getName() + ")");
         psmWorkflowProcessProperties.put(this.getClass().getName(), "true");
+        psmWorkflowProcessProperties.put("sqlDialect", config.sqlDialect());
 
-        // TODO: Registering all the configuration parameters for PsmWorkflowProcess.
+        for (String keyName : Collections.list(componentContext.getProperties().keys())) {
+            if (keyName.startsWith("ignore")) {
+                psmWorkflowProcessProperties.put(keyName, PropertiesUtil.toBoolean(componentContext.getProperties().get(keyName), false));
+            }
+        }
 
         final Configuration psmWorkflowProcessConfiguration;
         try {
+            StringBuffer stringBuffer = new StringBuffer();
+            for (String key : Collections.list(psmWorkflowProcessProperties.keys())) {
+                stringBuffer.append("\n\t" + key + "=" + psmWorkflowProcessProperties.get(key));
+            }
+            log.info("Registering workflow process for model: " + psmModel.getName() + stringBuffer.toString());
+
             psmWorkflowProcessConfiguration = configurationAdmin.createFactoryConfiguration(
                     PsmWorkflowProcess.class.getName(), "?");
             psmWorkflowProcessConfiguration.update(psmWorkflowProcessProperties);
@@ -110,7 +123,7 @@ public class PsmWorkflowDefaultPsmModelTracker extends AbstractModelTracker<PsmM
         try {
             final Configuration[] psmWorkflowProcessConfigurationsToDelete = configurationAdmin.listConfigurations(
                     "(&(service.factoryPid=" + PsmWorkflowProcess.class.getName() + ")" +
-                            "(" + MODEL_NAME_PROPERTY + "=" + modelName + ")(" + this.getClass().getName() + "=true))");
+                            "(" + PROP_WORKFLOW_PROCESS_MODEL_NAME_PROPERTY + "=" + modelName + ")(" + this.getClass().getName() + "=true))");
 
             if (psmWorkflowProcessConfigurationsToDelete != null) {
                 for (final Configuration c : psmWorkflowProcessConfigurationsToDelete) {

@@ -1,4 +1,4 @@
-package hu.blackelt.judo.tatami.asm2expression;
+package hu.blackbelt.judo.tatami.asm2expression;
 
 import hu.blackbelt.judo.meta.expression.runtime.ExpressionModel;
 import hu.blackbelt.judo.meta.measure.runtime.MeasureModel;
@@ -10,7 +10,6 @@ import java.util.Optional;
 import hu.blackbelt.judo.tatami.core.workflow.work.TransformationContext;
 
 import static hu.blackbelt.judo.meta.expression.runtime.ExpressionModel.buildExpressionModel;
-import static hu.blackelt.judo.tatami.asm2expression.Asm2Expression.executeAsm2Expression;
 
 import java.io.File;
 
@@ -41,6 +40,6 @@ public class Asm2ExpressionWork extends AbstractTransformationWork {
 				.orElseGet(() -> buildExpressionModel().name(asmModel.get().getName()).build());
 		getTransformationContext().put(expressionModel);
 
-		executeAsm2Expression(asmModel.get(), measureModel.orElse(null), expressionModel);
+		Asm2Expression.executeAsm2Expression(asmModel.get(), measureModel.orElse(null), expressionModel);
 	}
 }

@@ -52,7 +52,7 @@
                     <obrRepository>NONE</obrRepository>
                     <instructions>
                         <Export-Package>
-                            hu.blackbelt.judo.tatami.psm.asm.*;version=${project.version}
+                            hu.blackbelt.judo.tatami.psm2asm.*;version=${project.version}
                         </Export-Package>
                         <Include-Resource>
                             tatami/=target/classes/tatami

@@ -1,4 +1,4 @@
-package hu.blackelt.judo.tatami.asm2expression.osgi;
+package hu.blackbelt.judo.tatami.asm2expression.osgi;
 
 import hu.blackbelt.judo.meta.asm.runtime.AsmModel;
 import hu.blackbelt.judo.meta.expression.runtime.ExpressionModel;

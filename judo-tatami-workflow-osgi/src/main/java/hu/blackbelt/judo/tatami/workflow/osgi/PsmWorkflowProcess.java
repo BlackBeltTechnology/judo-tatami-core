@@ -6,12 +6,15 @@ import java.util.Arrays;
 import java.util.LinkedList;
 
 import com.google.common.collect.ImmutableList;
+import hu.blackbelt.judo.tatami.psm2asm.Psm2Asm;
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.component.annotations.ReferenceCardinality;
+import org.osgi.service.component.annotations.ReferencePolicyOption;
 import org.osgi.service.metatype.annotations.Designate;
 
 import hu.blackbelt.judo.meta.psm.runtime.PsmModel;
@@ -23,8 +26,6 @@ import hu.blackbelt.judo.tatami.workflow.PsmDefaultWorkflow;
 
 /**
  * This process represents a {@link PsmDefaultWorkflow} process for a {@link PsmModel} instances.
- * It referencing all the required transformation bundles over a {@link TransformationBundleHolder} which is
- * managed by {@link TransformationBundleTracker}.
  * After the transformation workflow executed the {@link TransformationContext} are registering the models / bundles / traces
  * via {@link TransformationContextRegistrationService}. By default the {@link DefaultTransformationContextRegistrationService}
  * is used, but it is configurable in {@link PsmWorkflowDefaultPsmModelTracker}'s configuration.
@@ -40,27 +41,6 @@ public class PsmWorkflowProcess {
     @Reference(name = "psmModel")
     PsmModel psmModel;
 
-    @Reference(name = "psm2asm")
-    TransformationBundleHolder psm2asm;
-
-    @Reference(name = "psm2measure")
-    TransformationBundleHolder psm2measure;
-
-    @Reference(name = "asm2rdbms")
-    TransformationBundleHolder asm2rdbms;
-
-    @Reference(name = "asm2openapi")
-    TransformationBundleHolder asm2openapi;
-
-    @Reference(name = "rdbms2liquibase")
-    TransformationBundleHolder rdbms2liquibase;
-
-    @Reference(name = "asm2jaxrsapi")
-    TransformationBundleHolder asm2jaxrsapi;
-
-    @Reference(name = "asm2sdk")
-    TransformationBundleHolder asm2sdk;
-
     private TransformationContext transformationContext;
 
     @Activate
@@ -68,26 +48,29 @@ public class PsmWorkflowProcess {
             throws URISyntaxException, IOException, PsmModel.PsmValidationException {
 
         this.psmWorkflowProcessConfiguration = config;
-        PsmDefaultWorkflow defaultWorkflow = new PsmDefaultWorkflow(DefaultWorkflowSetupParameters.defaultWorkflowSetupParameters()
+
+        DefaultWorkflowSetupParameters.DefaultWorkflowSetupParametersBuilder workflowSetupParameters = DefaultWorkflowSetupParameters.defaultWorkflowSetupParameters();
+        DefaultWorkflowSetupParameters.addTransformerCalculatedUris(workflowSetupParameters);
+        workflowSetupParameters
                 .modelName(psmModel.getName())
                 .psmModel(psmModel)
-                .dialectList(ImmutableList.of(config.sqlDialect()))
-                // Psm2Asm
-                .psm2AsmModelTransformationScriptURI(psm2asm.resolveURIByManifestName(config.psm2AsmTransformationScriptUriHeaderName()))
-                // Psm2Measure
-                .psm2MeasureModelTransformationScriptURI(psm2measure.resolveURIByManifestName(config.psm2MeasureTransformationScriptUriHeaderName()))
-                // Asm2Rdbms
-                .asm2RdbmsModelTransformationScriptURI(asm2rdbms.resolveURIByManifestName(config.asm2RdbmsTransformationScriptUriHeaderName()))
-                .asm2RdbmsModelTransformationModelURI(asm2rdbms.resolveURIByManifestName(config.asm2RdbmsTransformationModelUriHeaderName()))
-                // Asm2Openapi
-                .asm2OpenapiModelTransformationScriptURI(asm2openapi.resolveURIByManifestName(config.asm2OpenapiTransformationScriptUriHeaderName()))
-                // Rdbms2Liquibase
-                .rdbms2LiquibaseModelTransformationScriptURI(rdbms2liquibase.resolveURIByManifestName(config.rdbms2LiquibaseTransformationScriptUriHeaderName()))
-                // Asm2JaxrsApi
-                .asm2jaxrsapiModelTransformationScriptURI(asm2jaxrsapi.resolveURIByManifestName(config.asm2JaxrsapiTransformationScriptUriHeaderName()))
-                // Asm2SDK
-                .asm2sdkModelTransformationScriptURI(asm2sdk.resolveURIByManifestName(config.asm2SdkTransformationScriptUriHeaderName()))
-        );
+                .dialectList(ImmutableList.of(config.sqlDialect()));
+
+        workflowSetupParameters.ignorePsm2Asm(config.ignorePsm2Asm());
+        workflowSetupParameters.ignorePsm2Measure(config.ignorePsm2Measure());
+
+        workflowSetupParameters.ignoreAsm2Expression(config.ignoreAsm2Expression());
+        workflowSetupParameters.ignoreAsm2jaxrsapi(config.ignoreAsm2jaxrsapi());
+        workflowSetupParameters.ignoreAsm2Openapi(config.ignoreAsm2Openapi());
+        workflowSetupParameters.ignoreAsm2Rdbms(config.ignoreAsm2Rdbms());
+        workflowSetupParameters.ignoreAsm2Script(config.ignoreAsm2Script());
+        workflowSetupParameters.ignoreAsm2sdk(config.ignoreAsm2Sdk());
+
+        workflowSetupParameters.ignoreRdbms2Liquibase(config.ignoreRdbms2Liquibase());
+        workflowSetupParameters.ignoreScript2Operation(config.ignoreScript2Operation());
+
+
+        PsmDefaultWorkflow defaultWorkflow = new PsmDefaultWorkflow(workflowSetupParameters);
 
         WorkReport workReport = defaultWorkflow.startDefaultWorkflow();
 
@@ -97,12 +80,12 @@ public class PsmWorkflowProcess {
 
         // Get transformation context and registering all services which are presented
         transformationContext = defaultWorkflow.getTransformationContext();
-        transformationContextRegistrationService.registerTramsformationContext(transformationContext);
+        transformationContextRegistrationService.registerTramsformationContext(transformationContext, config.sqlDialect());
     }
 
     @Deactivate
     public void deactivate() {
-        transformationContextRegistrationService.unregisterTramsformationContext(transformationContext);
+        transformationContextRegistrationService.unregisterTramsformationContext(transformationContext, psmWorkflowProcessConfiguration.sqlDialect());
     }
 
 }

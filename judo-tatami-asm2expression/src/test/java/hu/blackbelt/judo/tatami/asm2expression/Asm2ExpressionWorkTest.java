@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 
 import hu.blackbelt.judo.meta.measure.runtime.MeasureModel;
-import hu.blackelt.judo.tatami.asm2expression.Asm2ExpressionWork;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

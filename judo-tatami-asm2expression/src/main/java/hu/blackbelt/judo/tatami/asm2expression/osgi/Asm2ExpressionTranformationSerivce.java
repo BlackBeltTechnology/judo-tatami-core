@@ -1,4 +1,4 @@
-package hu.blackelt.judo.tatami.asm2expression.osgi;
+package hu.blackbelt.judo.tatami.asm2expression.osgi;
 
 import hu.blackbelt.epsilon.runtime.execution.api.Log;
 import hu.blackbelt.epsilon.runtime.execution.impl.Slf4jLog;
@@ -6,11 +6,10 @@ import hu.blackbelt.epsilon.runtime.execution.impl.StringBuilderLogger;
 import hu.blackbelt.judo.meta.asm.runtime.AsmModel;
 import hu.blackbelt.judo.meta.expression.runtime.ExpressionModel;
 import hu.blackbelt.judo.meta.measure.runtime.MeasureModel;
+import hu.blackbelt.judo.tatami.asm2expression.Asm2Expression;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.emf.common.util.URI;
 import org.osgi.service.component.annotations.Component;
-
-import static hu.blackelt.judo.tatami.asm2expression.Asm2Expression.executeAsm2Expression;
 
 @Component(immediate = true, service = Asm2ExpressionTranformationSerivce.class)
 @Slf4j
@@ -30,7 +29,7 @@ public class Asm2ExpressionTranformationSerivce {
 
         try {
 
-            executeAsm2Expression(asmModel, measureModel, expressionModel);
+            Asm2Expression.executeAsm2Expression(asmModel, measureModel, expressionModel);
 
             log.info("\u001B[33m {}\u001B[0m", logger.getBuffer());
         } catch (Exception e) {

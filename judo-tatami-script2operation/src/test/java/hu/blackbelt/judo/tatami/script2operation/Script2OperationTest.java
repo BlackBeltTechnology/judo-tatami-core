@@ -39,8 +39,7 @@ public class Script2OperationTest {
         try (OutputStream outputStream =
                      new FileOutputStream(new File(TARGET_TEST_CLASSES, NORTHWIND + "-script2operation.jar"))) {
             ByteStreams.copy(
-                    executeScript2OperationGeneration(scriptModel,
-                            new File(TARGET_TEST_CLASSES, GENERATED_JAVA)), outputStream);
+                    executeScript2OperationGeneration(scriptModel), outputStream);
         }
     }
 }
