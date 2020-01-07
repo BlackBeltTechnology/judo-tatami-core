@@ -52,7 +52,6 @@ public class Rdbms2LiquibaseWork extends AbstractTransformationWork {
 		LiquibaseModel liquibaseModel = getTransformationContext().getByClass(LiquibaseModel.class)
 				.orElseGet(() -> buildLiquibaseModel().name(rdbmsModel.get().getName()).build());
 
-		getTransformationContext().put(liquibaseModel);
 		getTransformationContext().put("liquibase:" + dialect, liquibaseModel);
 
 		Rdbms2Liquibase.executeRdbms2LiquibaseTransformation(rdbmsModel.get(), liquibaseModel,

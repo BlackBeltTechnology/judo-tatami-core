@@ -56,6 +56,20 @@ public class PsmWorkflowProcess {
                 .psmModel(psmModel)
                 .dialectList(ImmutableList.of(config.sqlDialect()));
 
+        workflowSetupParameters.ignorePsm2Asm(config.ignorePsm2Asm());
+        workflowSetupParameters.ignorePsm2Measure(config.ignorePsm2Measure());
+
+        workflowSetupParameters.ignoreAsm2Expression(config.ignoreAsm2Expression());
+        workflowSetupParameters.ignoreAsm2jaxrsapi(config.ignoreAsm2jaxrsapi());
+        workflowSetupParameters.ignoreAsm2Openapi(config.ignoreAsm2Openapi());
+        workflowSetupParameters.ignoreAsm2Rdbms(config.ignoreAsm2Rdbms());
+        workflowSetupParameters.ignoreAsm2Script(config.ignoreAsm2Script());
+        workflowSetupParameters.ignoreAsm2sdk(config.ignoreAsm2Sdk());
+
+        workflowSetupParameters.ignoreRdbms2Liquibase(config.ignoreRdbms2Liquibase());
+        workflowSetupParameters.ignoreScript2Operation(config.ignoreScript2Operation());
+
+
         PsmDefaultWorkflow defaultWorkflow = new PsmDefaultWorkflow(workflowSetupParameters);
 
         WorkReport workReport = defaultWorkflow.startDefaultWorkflow();
@@ -66,12 +80,12 @@ public class PsmWorkflowProcess {
 
         // Get transformation context and registering all services which are presented
         transformationContext = defaultWorkflow.getTransformationContext();
-        transformationContextRegistrationService.registerTramsformationContext(transformationContext);
+        transformationContextRegistrationService.registerTramsformationContext(transformationContext, config.sqlDialect());
     }
 
     @Deactivate
     public void deactivate() {
-        transformationContextRegistrationService.unregisterTramsformationContext(transformationContext);
+        transformationContextRegistrationService.unregisterTramsformationContext(transformationContext, psmWorkflowProcessConfiguration.sqlDialect());
     }
 
 }

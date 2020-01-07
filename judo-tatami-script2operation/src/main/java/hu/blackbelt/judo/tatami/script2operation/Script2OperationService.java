@@ -32,7 +32,7 @@ public class Script2OperationService {
         try {
             script2OperationBundles.put(scriptModel,
                     bundleContext.installBundle(this.getClass().getName(),
-                            executeScript2OperationGeneration(scriptModel, new File(""))));
+                            executeScript2OperationGeneration(scriptModel)));
         } catch (Exception e) {
             throw e;
         }

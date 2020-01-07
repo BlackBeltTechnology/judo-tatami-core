@@ -30,7 +30,7 @@ public class Script2Operation {
 
     static Logger log = LoggerFactory.getLogger(Script2Operation.class);
 
-    public static InputStream executeScript2OperationGeneration(ScriptModel scriptModel, File sourceCodeOutputDir) throws Exception {
+    public static InputStream executeScript2OperationGeneration(ScriptModel scriptModel) throws Exception {
 
         ScriptModelResourceSupport scriptModelResourceSupport =
                 scriptModelResourceSupportBuilder().resourceSet(scriptModel.getResourceSet()).build();

@@ -35,46 +35,47 @@ public abstract class AbstractTransformationContextRegistrationService implement
     }
 
     public <T> void registerModel(T o, Dictionary<String, ?> props) {
-        log.info("\u001B[33m {}\u001B[0mRegistering model: " + o);
+        log.info("\u001B[33mRegistering model: {}\u001B[0m ", o);
         ServiceRegistration<?> modelServiceRegistration =
                 bundleContext.registerService((Class<T>) o.getClass(), o, props);
         serviceRegistrationMap.put(o, modelServiceRegistration);
     }
 
     public <T> void unregisterModel(T o) {
-        log.info("\u001B[33m {}\u001B[0mUnregistering model: " + o);
+        log.info("\u001B[33mUnregistering model: {}\u001B[0m", o);
         checkState(serviceRegistrationMap.containsKey(o), "The model is not registered");
         serviceRegistrationMap.get(o).unregister();
     }
 
     public void registerTrace(TransformationTrace trace) {
-        log.info("\u001B[33m {}\u001B[0mRegistering trace model: " + trace);
+        log.info("\u001B[33mRegistering trace model: {}\u001B[0m", trace);
         ServiceRegistration<?> modelServiceRegistration =
                 bundleContext.registerService(TransformationTrace.class, trace, new Hashtable<>());
         serviceRegistrationMap.put(trace, modelServiceRegistration);
     }
 
     public void unregisterTrace(TransformationTrace trace) {
-        log.info("\u001B[33m {}\u001B[0mUnregistering trace model: " + trace);
+        log.info("\u001B[33mUnregistering trace model: {}\u001B[0m", trace);
         checkState(serviceRegistrationMap.containsKey(trace), "The trace model is not registered");
         serviceRegistrationMap.get(trace).unregister();
     }
 
     public void registerInputStreamAsBundle(InputStream is) throws BundleException, IOException {
-        log.info("\u001B[33m {}\u001B[0mInstalling stream as bundle" + is.toString()+ " - " + is.available());
-        Bundle installedBundle = bundleContext.installBundle(this.getClass().getName(), is);
+        log.info("\u001B[33mInstalling stream as bundle: {}\u001B[0m" , is.toString()+ " - " + is.available());
+        Bundle installedBundle = bundleContext.installBundle(this.getClass().getName() + is.toString(), is);
+        installedBundle.start();
         bundleRegistrationMap.put(is, installedBundle);
     }
 
     public void ungisterInputStream(InputStream is) throws BundleException {
-        log.info("\u001B[33m {}\u001B[0mUnregistering trace model: " + is);
+        log.info("\u001B[33mUnregistering trace model: {}\u001B[0m", is);
         checkState(bundleRegistrationMap.containsKey(is), "The input stream is not registered");
         bundleRegistrationMap.get(is).uninstall();
     }
 
     @Override
-    public abstract void registerTramsformationContext(TransformationContext transformationContext);
+    public abstract void registerTramsformationContext(TransformationContext transformationContext, String sqlDialect);
 
     @Override
-    public abstract void unregisterTramsformationContext(TransformationContext transformationContext);
+    public abstract void unregisterTramsformationContext(TransformationContext transformationContext, String sqlDialect);
 }
