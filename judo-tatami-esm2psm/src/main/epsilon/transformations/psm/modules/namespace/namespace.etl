@@ -45,7 +45,7 @@ rule CreateGeneratedDefaultTransferObjectTypeRootPackage
 rule CreateGeneratedDefaultTransferObjectTypePackage
   transform s : ESM!Package
   to t: JUDOPSM!Package {
-    t.name = "_default_transferobjecttypes_" + s.name;
+    t.name = s.name;
     s.eContainer.getPSMGeneratedDefaultTransferObjectNamespaceEquivalent().packages.add(t);
     
     log.debug("Created Generated Package for DefaultTransferObjectType: " + t.name);
