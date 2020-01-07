@@ -41,7 +41,7 @@ operation createNewParameterForExposedGraph(source: ESM!ExposedGraph): JUDOPSM!P
 
 operation createSetOperation(source: ESM!RelationFeature, relation: ESM!RelationFeature) {
     var setOperation = new JUDOPSM!BoundOperationWithRelation;
-    setOperation.name = "set" + relation.name.firstToUpperCase() + "Via" + source.name.firstToUpperCase() + "_";
+    setOperation.name = "set" + relation.name.firstToUpperCase() + "Of" + source.name.firstToUpperCase() + "_";
     setOperation.relation = relation.getPSMTransferObjectRelationEquivalent();
     
     setOperation.input = createNewParameter(source);
@@ -53,7 +53,7 @@ operation createSetOperation(source: ESM!RelationFeature, relation: ESM!Relation
 
 operation createAddAllOperation(source: ESM!RelationFeature, relation: ESM!RelationFeature) {
     var addAllOperation = new JUDOPSM!BoundOperationWithRelation;
-    addAllOperation.name = "addAll" + relation.name.firstToUpperCase() + "Via" + source.name.firstToUpperCase() + "_";
+    addAllOperation.name = "addAll" + relation.name.firstToUpperCase() + "To" + source.name.firstToUpperCase() + "_";
     addAllOperation.relation = relation.getPSMTransferObjectRelationEquivalent();
                        
     addAllOperation.input = createNewParameter(source);
@@ -65,7 +65,7 @@ operation createAddAllOperation(source: ESM!RelationFeature, relation: ESM!Relat
 
 operation createUnsetOperation(source: ESM!RelationFeature, relation: ESM!RelationFeature) {
     var unsetOperation = new JUDOPSM!BoundOperationWithRelation;
-    unsetOperation.name = "unset" + relation.name.firstToUpperCase() + "Via" + source.name.firstToUpperCase() + "_";
+    unsetOperation.name = "unset" + relation.name.firstToUpperCase() + "Of" + source.name.firstToUpperCase() + "_";
     unsetOperation.relation = relation.getPSMTransferObjectRelationEquivalent();
     
     unsetOperation.input = createNewParameter(source);
@@ -77,7 +77,7 @@ operation createUnsetOperation(source: ESM!RelationFeature, relation: ESM!Relati
 
 operation createRemoveAllOperation(source: ESM!RelationFeature, relation: ESM!RelationFeature) {
     var removeAllOperation = new JUDOPSM!BoundOperationWithRelation;
-    removeAllOperation.name = "removeAll" + relation.name.firstToUpperCase() + "Via" + source.name.firstToUpperCase() + "_";
+    removeAllOperation.name = "removeAll" + relation.name.firstToUpperCase() + "From" + source.name.firstToUpperCase() + "_";
     removeAllOperation.relation = relation.getPSMTransferObjectRelationEquivalent();
                             
     removeAllOperation.input = createNewParameter(source);
@@ -115,7 +115,7 @@ operation createGetRangeOperation(source: ESM!RelationFeature, relation: ESM!Rel
 
 operation createSetOperationForExposedGraph(source: ESM!ExposedGraph, relation: ESM!RelationFeature) {
     var setOperation = new JUDOPSM!UnboundOperationWithRelation;
-    setOperation.name = "set" + relation.name.firstToUpperCase() + "For" + source.name.firstToUpperCase() + "_";
+    setOperation.name = "Set" + relation.name.firstToUpperCase() + "In" + source.eContainer.name + "Update" + source.name.firstToUpperCase() + "_";
     setOperation.relation = relation.getPSMTransferObjectRelationEquivalent();
 
     setOperation.input = createNewParameterForExposedGraph(source);
@@ -127,7 +127,7 @@ operation createSetOperationForExposedGraph(source: ESM!ExposedGraph, relation: 
 
 operation createAddAllOperationForExposedGraph(source: ESM!ExposedGraph, relation: ESM!RelationFeature) {
     var addAllOperation = new JUDOPSM!UnboundOperationWithRelation;
-    addAllOperation.name = "addAll" + relation.name.firstToUpperCase() + "For" + source.name.firstToUpperCase() + "_";
+    addAllOperation.name = "AddAll" + relation.name.firstToUpperCase() + "To" + source.eContainer.name + "Update" + source.name.firstToUpperCase() + "_";
     addAllOperation.relation = relation.getPSMTransferObjectRelationEquivalent();
 
     addAllOperation.input = createNewParameterForExposedGraph(source);
@@ -139,7 +139,7 @@ operation createAddAllOperationForExposedGraph(source: ESM!ExposedGraph, relatio
 
 operation createUnsetOperationForExposedGraph(source: ESM!ExposedGraph, relation: ESM!RelationFeature) {
     var unsetOperation = new JUDOPSM!UnboundOperationWithRelation;
-    unsetOperation.name = "unset" + relation.name.firstToUpperCase() + "For" + source.name.firstToUpperCase() + "_";
+    unsetOperation.name = "Unset" + relation.name.firstToUpperCase() + "In" + source.eContainer.name + "Update" + source.name.firstToUpperCase() + "_";
     unsetOperation.relation = relation.getPSMTransferObjectRelationEquivalent();
 
     unsetOperation.input = createNewParameterForExposedGraph(source);
@@ -151,7 +151,7 @@ operation createUnsetOperationForExposedGraph(source: ESM!ExposedGraph, relation
 
 operation createRemoveAllOperationForExposedGraph(source: ESM!ExposedGraph, relation: ESM!RelationFeature) {
     var removeAllOperation = new JUDOPSM!UnboundOperationWithRelation;
-    removeAllOperation.name = "removeAll" + relation.name.firstToUpperCase() + "For" + source.name.firstToUpperCase() + "_";
+    removeAllOperation.name = "RemoveAll" + relation.name.firstToUpperCase() + "From" + source.eContainer.name + "Update" + source.name.firstToUpperCase() + "_";
     removeAllOperation.relation = relation.getPSMTransferObjectRelationEquivalent();
 
     removeAllOperation.input = createNewParameterForExposedGraph(source);

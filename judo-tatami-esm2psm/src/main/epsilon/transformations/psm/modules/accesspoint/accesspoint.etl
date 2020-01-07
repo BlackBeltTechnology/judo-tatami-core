@@ -35,7 +35,6 @@ rule CreateExposedGraph
 
       for (relation in s.target.relations) {
           var rangeAllowed = false;
-          // TODO - check if rangeExpression is set
           if (relation.isKindOf(ESM!OneWayRelationMember)) {
               if (relation.eContainer.isKindOf(ESM!EntityType)) {
                   rangeAllowed = not relation.containment and relation.relationMemberType <> ESM!RelationMemberType#PROPERTY;
@@ -46,8 +45,18 @@ rule CreateExposedGraph
               rangeAllowed = relation.target.mapping.isDefined();
           }
 
-          if (rangeAllowed and (s.createable or s.updateable)) {
+          if (rangeAllowed and relation.rangeExpression.isDefined() and relation.rangeExpression.trim().length() > 0 and (s.createable or s.updateable)) {
               createGetRangeOperationForExposedGraph(s,relation);
+          }
+
+          if (s.updateable) {
+              if (relation.upper == 1) {
+                  createSetOperationForExposedGraph(s,relation);
+                  createUnsetOperationForExposedGraph(s,relation);
+              } else {
+                  createAddAllOperationForExposedGraph(s,relation);
+                  createRemoveAllOperationForExposedGraph(s,relation);
+              }
           }
       }
 
