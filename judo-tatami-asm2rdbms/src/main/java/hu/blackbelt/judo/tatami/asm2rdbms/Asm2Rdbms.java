@@ -32,12 +32,12 @@ public class Asm2Rdbms {
     public static final String ASM_2_RDBMS_URI_POSTFIX = "asm2rdbms";
 
     public static final String DIALECT_HSQLDB = "hsqldb";
-    public static final String DIALECT_POSTGGRESSQL = "postgressql";
+    public static final String DIALECT_POSTGRESQL = "postgresql";
     public static final String DIALECT_ORACLE = "oracle";
 
     static Map<String, String> dialectTypeFileNames = ImmutableMap.of(
             DIALECT_HSQLDB, "RDBMS_Data_Types_Hsqldb.xlsx",
-            DIALECT_POSTGGRESSQL, "RDBMS_Data_Types_Postgres.xlsx",
+            DIALECT_POSTGRESQL, "RDBMS_Data_Types_Postgres.xlsx",
             DIALECT_ORACLE, "RDBMS_Data_Types_Oracle.xlsx"
     );
 
