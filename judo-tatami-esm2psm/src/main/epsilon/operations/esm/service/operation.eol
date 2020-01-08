@@ -87,7 +87,7 @@ operation createRemoveAllOperation(source: ESM!RelationFeature, relation: ESM!Re
     source.getPSMTransferObjectRelationEquivalent().removeAll.add(removeAllOperation);
 }
 
-operation createGetRangeOperation(source: ESM!RelationFeature, relation: ESM!RelationFeature) {
+operation createGetRangeOperation(source: ESM!RelationFeature, relation: ESM!RelationFeature) : JUDOPSM!BoundOperationWithRelation {
     var getRangeOperation = new JUDOPSM!BoundOperationWithRelation;
     getRangeOperation.name = "getRangeOf" + relation.name.firstToUpperCase() + "Via" + source.name.firstToUpperCase() + "_";
     getRangeOperation.relation = relation.getPSMTransferObjectRelationEquivalent();
@@ -110,7 +110,7 @@ operation createGetRangeOperation(source: ESM!RelationFeature, relation: ESM!Rel
     getRangeOperation.implementation.stateful = false;
 
     source.eContainer.getPSMTransferObjectTypeEquivalent().operations.add(getRangeOperation);
-    source.getPSMTransferObjectRelationEquivalent().getRange.add(getRangeOperation);
+    return getRangeOperation;
 }
 
 operation createSetOperationForExposedGraph(source: ESM!ExposedGraph, relation: ESM!RelationFeature) {
@@ -161,9 +161,9 @@ operation createRemoveAllOperationForExposedGraph(source: ESM!ExposedGraph, rela
     source.equivalent("CreateExposedGraph").removeAll.add(removeAllOperation);
 }
 
-operation createGetRangeOperationForExposedGraph(source: ESM!ExposedGraph, relation: ESM!RelationFeature) {
+operation createGetRangeOperationForExposedGraph(source: ESM!ExposedGraph, relation: ESM!RelationFeature) : JUDOPSM!UnboundOperationWithRelation {
     var getRangeOperation = new JUDOPSM!UnboundOperationWithRelation;
-    getRangeOperation.name = "GetRangeOf" + relation.name.firstToUpperCase() + "For" + source.eContainer.name + "Create" + source.name.firstToUpperCase() + "_";
+    getRangeOperation.name = "GetRangeOf" + relation.name.firstToUpperCase() + "For" + source.eContainer.name + "Edit" + source.name.firstToUpperCase() + "_";
     getRangeOperation.relation = relation.getPSMTransferObjectRelationEquivalent();
 
     getRangeOperation.input = new JUDOPSM!Parameter;
@@ -184,5 +184,5 @@ operation createGetRangeOperationForExposedGraph(source: ESM!ExposedGraph, relat
     getRangeOperation.implementation.stateful = false;
 
     source.eContainer.eContainer.getPSMEquivalent().elements.add(getRangeOperation);
-    source.equivalent("CreateExposedGraph").getRange.add(getRangeOperation);
+    return getRangeOperation;
 }
