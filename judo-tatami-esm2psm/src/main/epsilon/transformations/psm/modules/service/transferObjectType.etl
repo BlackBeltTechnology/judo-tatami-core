@@ -49,7 +49,7 @@ rule CreateUnmappedTransferObjectType
 rule CreateDefaultMappedTransferObjectTypeForEntity
 	transform s: ESM!EntityType
 	to t: JUDOPSM!MappedTransferObjectType {
-	  t.name = "_" + s.name + "_defaulttransferobjecttype";
+	  t.name = s.name;
 	  for (super in s.generalizations) {
         t.superTransferObjectTypes.add(super.target.equivalent("CreateDefaultMappedTransferObjectTypeForEntity"));
       }

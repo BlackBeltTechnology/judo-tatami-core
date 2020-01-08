@@ -69,7 +69,7 @@
         <judo-meta-esm-version>1.1.0.20191227_101823_e21f017_develop</judo-meta-esm-version>
         <judo-meta-esm-import-range>[1.0,1.1)</judo-meta-esm-import-range>
 
-        <judo-meta-psm-version>1.0.0.20191227_105210_4ce0798_develop</judo-meta-psm-version>
+        <judo-meta-psm-version>1.0.0.20200108_123107_6e79b72_develop</judo-meta-psm-version>
         <judo-meta-psm-import-range>[1.0,1.1)</judo-meta-psm-import-range>
 
         <judo-meta-jql-version>1.0.0.20191227_134514_dfc1a73_develop</judo-meta-jql-version>

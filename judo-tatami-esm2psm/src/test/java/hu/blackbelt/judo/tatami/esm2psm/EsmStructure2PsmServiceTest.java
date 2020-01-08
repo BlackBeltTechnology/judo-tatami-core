@@ -52,11 +52,6 @@ public class EsmStructure2PsmServiceTest {
 	private final String TEST = "test";
 	private final String TARGET_TEST_CLASSES = "target/test-classes";
 
-	private final String DEFAULT_TRANSFEROBJECTTYPES_PACKAGENAME = "_default_transferobjecttypes";
-
-	private final String DEFAULT_TRANSFEROBJECTTYPE_PREFIX = "_";
-	private final String DEFAULT_TRANSFEROBJECTTYPE_SUFFIX = "_defaulttransferobjecttype";
-
 	Log slf4jlog;
 	private static final Logger logger = LoggerFactory.getLogger(EsmStructure2PsmServiceTest.class);
 	EsmModel esmModel;
@@ -141,7 +136,7 @@ public class EsmStructure2PsmServiceTest {
 		
 		final Optional<hu.blackbelt.judo.meta.psm.service.BoundOperationWithRelation> psmSetOp = allPsm(
 				hu.blackbelt.judo.meta.psm.service.BoundOperationWithRelation.class)
-				.filter(o -> o.getName().equals("set_" + items.getName() + "_" + productOfItem.getName()))
+				.filter(o -> o.getName().equalsIgnoreCase("set" + productOfItem.getName() + "Of" + items.getName() + "_"))
 				.findAny();
 		
 		final Optional<hu.blackbelt.judo.meta.psm.service.TransferObjectRelation> psmProductsTransferObjectRelation = allPsm(
@@ -166,7 +161,7 @@ public class EsmStructure2PsmServiceTest {
 		
 		final Optional<hu.blackbelt.judo.meta.psm.service.BoundOperationWithRelation> psmUnsetOp = allPsm(
 				hu.blackbelt.judo.meta.psm.service.BoundOperationWithRelation.class)
-				.filter(o -> o.getName().equals("unset_" + items.getName() + "_" + productOfItem.getName()))
+				.filter(o -> o.getName().equalsIgnoreCase("unset" + productOfItem.getName() + "Of" + items.getName() + "_"))
 				.findAny();
 		
 		assertTrue(psmUnsetOp.isPresent());
@@ -263,8 +258,7 @@ public class EsmStructure2PsmServiceTest {
 
 		final Optional<hu.blackbelt.judo.meta.psm.service.MappedTransferObjectType> psmDefaultTransferObjectOfTargetEntityType = allPsm(
 				hu.blackbelt.judo.meta.psm.service.MappedTransferObjectType.class)
-						.filter(mappedTOT -> (DEFAULT_TRANSFEROBJECTTYPE_PREFIX + targetEntityType.getName()
-								+ DEFAULT_TRANSFEROBJECTTYPE_SUFFIX).equals(mappedTOT.getName()))
+						.filter(mappedTOT -> (targetEntityType.getName()).equals(mappedTOT.getName()))
 						.findAny();
 		assertTrue(psmDefaultTransferObjectOfTargetEntityType.isPresent());
 
@@ -414,15 +408,13 @@ public class EsmStructure2PsmServiceTest {
 		assertTrue(psmEntityType.isPresent());
 		final Optional<hu.blackbelt.judo.meta.psm.service.MappedTransferObjectType> psmDefaultTransferObject = allPsm(
 				hu.blackbelt.judo.meta.psm.service.MappedTransferObjectType.class)
-						.filter(mappedTOT -> (DEFAULT_TRANSFEROBJECTTYPE_PREFIX + entityType.getName()
-								+ DEFAULT_TRANSFEROBJECTTYPE_SUFFIX).equals(mappedTOT.getName()))
+						.filter(mappedTOT -> (entityType.getName()).equals(mappedTOT.getName()))
 						.findAny();
 		assertTrue(psmDefaultTransferObject.isPresent());
 
-		assertThat(psmDefaultTransferObject.get().getName(), IsEqual.equalTo(
-				DEFAULT_TRANSFEROBJECTTYPE_PREFIX + entityType.getName() + DEFAULT_TRANSFEROBJECTTYPE_SUFFIX));
+		assertThat(psmDefaultTransferObject.get().getName(), IsEqual.equalTo(entityType.getName()));
 		assertThat(psmDefaultTransferObject.get().getNamespace().getName(),
-				IsEqual.equalTo(DEFAULT_TRANSFEROBJECTTYPES_PACKAGENAME + "_" + servicePackage.getName()));
+				IsEqual.equalTo(servicePackage.getName()));
 
 		final Optional<hu.blackbelt.judo.meta.psm.data.EntityType> psmTargetEntityType = allPsm(
 				hu.blackbelt.judo.meta.psm.data.EntityType.class)
@@ -431,8 +423,7 @@ public class EsmStructure2PsmServiceTest {
 
 		final Optional<hu.blackbelt.judo.meta.psm.service.MappedTransferObjectType> psmTargetMappedTransferObjectType = allPsm(
 				hu.blackbelt.judo.meta.psm.service.MappedTransferObjectType.class)
-						.filter(mappedTOT -> (DEFAULT_TRANSFEROBJECTTYPE_PREFIX + targetEntityType.getName()
-								+ DEFAULT_TRANSFEROBJECTTYPE_SUFFIX).equals(mappedTOT.getName()))
+						.filter(mappedTOT -> (targetEntityType.getName()).equals(mappedTOT.getName()))
 						.findAny();
 		assertTrue(psmTargetMappedTransferObjectType.isPresent());
 
@@ -550,15 +541,13 @@ public class EsmStructure2PsmServiceTest {
 		// defaultTransferObject of entityType
 		final Optional<hu.blackbelt.judo.meta.psm.service.MappedTransferObjectType> psmDefaultTransferObject = allPsm(
 				hu.blackbelt.judo.meta.psm.service.MappedTransferObjectType.class)
-						.filter(mappedTOT -> (DEFAULT_TRANSFEROBJECTTYPE_PREFIX + entityType.getName()
-								+ DEFAULT_TRANSFEROBJECTTYPE_SUFFIX).equals(mappedTOT.getName()))
+						.filter(mappedTOT -> (entityType.getName()).equals(mappedTOT.getName()))
 						.findAny();
 		assertTrue(psmDefaultTransferObject.isPresent());
 
-		assertThat(psmDefaultTransferObject.get().getName(), IsEqual.equalTo(
-				DEFAULT_TRANSFEROBJECTTYPE_PREFIX + entityType.getName() + DEFAULT_TRANSFEROBJECTTYPE_SUFFIX));
+		assertThat(psmDefaultTransferObject.get().getName(), IsEqual.equalTo(entityType.getName()));
 		assertThat(psmDefaultTransferObject.get().getNamespace().getName(),
-				IsEqual.equalTo(DEFAULT_TRANSFEROBJECTTYPES_PACKAGENAME + "_" + entitiesPackage.getName()));
+				IsEqual.equalTo(entitiesPackage.getName()));
 
 		// attributes
 		final Optional<TransferAttribute> transferAttributeBasic = allPsm(TransferAttribute.class)
@@ -684,8 +673,7 @@ public class EsmStructure2PsmServiceTest {
 
 		final Optional<hu.blackbelt.judo.meta.psm.service.MappedTransferObjectType> psmTargetDefaultMappedTransferObjectType = allPsm(
 				hu.blackbelt.judo.meta.psm.service.MappedTransferObjectType.class)
-						.filter(mappedTOT -> (DEFAULT_TRANSFEROBJECTTYPE_PREFIX + targetEntityType.getName()
-								+ DEFAULT_TRANSFEROBJECTTYPE_SUFFIX).equals(mappedTOT.getName()))
+						.filter(mappedTOT -> (targetEntityType.getName()).equals(mappedTOT.getName()))
 						.findAny();
 		assertTrue(psmTargetDefaultMappedTransferObjectType.isPresent());
 		
@@ -892,31 +880,25 @@ public class EsmStructure2PsmServiceTest {
 
 		final Optional<hu.blackbelt.judo.meta.psm.service.MappedTransferObjectType> psmDefaultGrandparentTransferObject = allPsm(
 				hu.blackbelt.judo.meta.psm.service.MappedTransferObjectType.class)
-						.filter(mappedTOT -> (DEFAULT_TRANSFEROBJECTTYPE_PREFIX + grandparentEntityType.getName()
-								+ DEFAULT_TRANSFEROBJECTTYPE_SUFFIX).equals(mappedTOT.getName()))
+						.filter(mappedTOT -> (grandparentEntityType.getName()).equals(mappedTOT.getName()))
 						.findAny();
 		assertTrue(psmDefaultGrandparentTransferObject.isPresent());
 		assertThat(psmDefaultGrandparentTransferObject.get().getName(),
-				IsEqual.equalTo(DEFAULT_TRANSFEROBJECTTYPE_PREFIX + grandparentEntityType.getName()
-						+ DEFAULT_TRANSFEROBJECTTYPE_SUFFIX));
+				IsEqual.equalTo(grandparentEntityType.getName()));
 
 		final Optional<hu.blackbelt.judo.meta.psm.service.MappedTransferObjectType> psmDefaultParentTransferObject = allPsm(
 				hu.blackbelt.judo.meta.psm.service.MappedTransferObjectType.class)
-						.filter(mappedTOT -> (DEFAULT_TRANSFEROBJECTTYPE_PREFIX + parentEntityType.getName()
-								+ DEFAULT_TRANSFEROBJECTTYPE_SUFFIX).equals(mappedTOT.getName()))
+						.filter(mappedTOT -> (parentEntityType.getName()).equals(mappedTOT.getName()))
 						.findAny();
 		assertTrue(psmDefaultParentTransferObject.isPresent());
-		assertThat(psmDefaultParentTransferObject.get().getName(), IsEqual.equalTo(
-				DEFAULT_TRANSFEROBJECTTYPE_PREFIX + parentEntityType.getName() + DEFAULT_TRANSFEROBJECTTYPE_SUFFIX));
+		assertThat(psmDefaultParentTransferObject.get().getName(), IsEqual.equalTo(parentEntityType.getName()));
 
 		final Optional<hu.blackbelt.judo.meta.psm.service.MappedTransferObjectType> psmDefaultChildTransferObject = allPsm(
 				hu.blackbelt.judo.meta.psm.service.MappedTransferObjectType.class)
-						.filter(mappedTOT -> (DEFAULT_TRANSFEROBJECTTYPE_PREFIX + childEntityType.getName()
-								+ DEFAULT_TRANSFEROBJECTTYPE_SUFFIX).equals(mappedTOT.getName()))
+						.filter(mappedTOT -> (childEntityType.getName()).equals(mappedTOT.getName()))
 						.findAny();
 		assertTrue(psmDefaultChildTransferObject.isPresent());
-		assertThat(psmDefaultChildTransferObject.get().getName(), IsEqual.equalTo(
-				DEFAULT_TRANSFEROBJECTTYPE_PREFIX + childEntityType.getName() + DEFAULT_TRANSFEROBJECTTYPE_SUFFIX));
+		assertThat(psmDefaultChildTransferObject.get().getName(), IsEqual.equalTo(childEntityType.getName()));
 
 		assertTrue(psmDefaultParentTransferObject.get().getSuperTransferObjectTypes()
 				.contains(psmDefaultGrandparentTransferObject.get()));
@@ -1091,14 +1073,12 @@ public class EsmStructure2PsmServiceTest {
 
 		final Optional<hu.blackbelt.judo.meta.psm.service.MappedTransferObjectType> psmDefaultTransferObjectA = allPsm(
 				hu.blackbelt.judo.meta.psm.service.MappedTransferObjectType.class)
-						.filter(mappedTOT -> (DEFAULT_TRANSFEROBJECTTYPE_PREFIX + entityTypeA.getName()
-								+ DEFAULT_TRANSFEROBJECTTYPE_SUFFIX).equals(mappedTOT.getName()))
+						.filter(mappedTOT -> (entityTypeA.getName()).equals(mappedTOT.getName()))
 						.findAny();
 		assertTrue(psmDefaultTransferObjectA.isPresent());
 		final Optional<hu.blackbelt.judo.meta.psm.service.MappedTransferObjectType> psmDefaultTransferObjectB = allPsm(
 				hu.blackbelt.judo.meta.psm.service.MappedTransferObjectType.class)
-						.filter(mappedTOT -> (DEFAULT_TRANSFEROBJECTTYPE_PREFIX + entityTypeB.getName()
-								+ DEFAULT_TRANSFEROBJECTTYPE_SUFFIX).equals(mappedTOT.getName()))
+						.filter(mappedTOT -> (entityTypeB.getName()).equals(mappedTOT.getName()))
 						.findAny();
 		assertTrue(psmDefaultTransferObjectB.isPresent());
 
