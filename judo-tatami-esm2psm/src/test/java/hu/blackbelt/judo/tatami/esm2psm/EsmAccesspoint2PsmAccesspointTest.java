@@ -279,7 +279,7 @@ public class EsmAccesspoint2PsmAccesspointTest {
 		//test get operation
 		final Optional<hu.blackbelt.judo.meta.psm.service.UnboundOperation> psmGetOperation = allPsm(
 				hu.blackbelt.judo.meta.psm.service.UnboundOperation.class)
-				.filter(op -> op.getName().equalsIgnoreCase(accessPoint.getName() + "Get" + exposedGraph.getName() + "_"))
+				.filter(op -> op.getName().equalsIgnoreCase("_" + accessPoint.getName() + "Get" + exposedGraph.getName()))
 						.findAny();
 		assertTrue(psmGetOperation.isPresent());
 		assertThat(psmExposedGraph.get().getGet(), IsEqual.equalTo(psmGetOperation.get()));
@@ -291,7 +291,7 @@ public class EsmAccesspoint2PsmAccesspointTest {
 		
 		//test create operation
 		final Optional<hu.blackbelt.judo.meta.psm.service.UnboundOperation> psmCreateOperation = allPsm(
-				hu.blackbelt.judo.meta.psm.service.UnboundOperation.class).filter(op -> op.getName().equalsIgnoreCase(accessPoint.getName() + "Create" + exposedGraph.getName() + "_"))
+				hu.blackbelt.judo.meta.psm.service.UnboundOperation.class).filter(op -> op.getName().equalsIgnoreCase("_" + accessPoint.getName() + "Create" + exposedGraph.getName()))
 				.findAny();
 		assertTrue(psmCreateOperation.isPresent());
 		assertThat(psmExposedGraph.get().getCreate(), IsEqual.equalTo(psmCreateOperation.get()));
@@ -309,7 +309,7 @@ public class EsmAccesspoint2PsmAccesspointTest {
 		//test update operation
 		final Optional<hu.blackbelt.judo.meta.psm.service.UnboundOperation> psmUpdateOperation = allPsm(
 				hu.blackbelt.judo.meta.psm.service.UnboundOperation.class)
-				.filter(op -> op.getName().equalsIgnoreCase(accessPoint.getName() + "Update" + exposedGraph.getName() + "_"))
+				.filter(op -> op.getName().equalsIgnoreCase("_" + accessPoint.getName() + "Update" + exposedGraph.getName()))
 				.findAny();
 		assertTrue(psmUpdateOperation.isPresent());
 		assertThat(psmExposedGraph.get().getUpdate(), IsEqual.equalTo(psmUpdateOperation.get()));
@@ -327,7 +327,7 @@ public class EsmAccesspoint2PsmAccesspointTest {
 		//test delete operation
 		final Optional<hu.blackbelt.judo.meta.psm.service.UnboundOperation> psmDeleteOperation = allPsm(
 				hu.blackbelt.judo.meta.psm.service.UnboundOperation.class)
-				.filter(op -> op.getName().equalsIgnoreCase(accessPoint.getName() + "Delete" + exposedGraph.getName() + "_"))
+				.filter(op -> op.getName().equalsIgnoreCase("_" + accessPoint.getName() + "Delete" + exposedGraph.getName()))
 						.findAny();
 		assertTrue(psmDeleteOperation.isPresent());
 		assertThat(psmExposedGraph.get().getDelete(), IsEqual.equalTo(psmDeleteOperation.get()));

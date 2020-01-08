@@ -136,7 +136,7 @@ public class EsmStructure2PsmServiceTest {
 		
 		final Optional<hu.blackbelt.judo.meta.psm.service.BoundOperationWithRelation> psmSetOp = allPsm(
 				hu.blackbelt.judo.meta.psm.service.BoundOperationWithRelation.class)
-				.filter(o -> o.getName().equalsIgnoreCase("set" + productOfItem.getName() + "Of" + items.getName() + "_"))
+				.filter(o -> o.getName().equalsIgnoreCase("_set" + productOfItem.getName() + "Of" + items.getName()))
 				.findAny();
 		
 		final Optional<hu.blackbelt.judo.meta.psm.service.TransferObjectRelation> psmProductsTransferObjectRelation = allPsm(
@@ -161,7 +161,7 @@ public class EsmStructure2PsmServiceTest {
 		
 		final Optional<hu.blackbelt.judo.meta.psm.service.BoundOperationWithRelation> psmUnsetOp = allPsm(
 				hu.blackbelt.judo.meta.psm.service.BoundOperationWithRelation.class)
-				.filter(o -> o.getName().equalsIgnoreCase("unset" + productOfItem.getName() + "Of" + items.getName() + "_"))
+				.filter(o -> o.getName().equalsIgnoreCase("_unset" + productOfItem.getName() + "Of" + items.getName()))
 				.findAny();
 		
 		assertTrue(psmUnsetOp.isPresent());
