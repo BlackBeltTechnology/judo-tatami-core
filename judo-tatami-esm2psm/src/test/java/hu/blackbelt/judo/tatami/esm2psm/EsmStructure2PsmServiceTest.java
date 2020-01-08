@@ -5,10 +5,13 @@ import hu.blackbelt.epsilon.runtime.execution.api.Log;
 import hu.blackbelt.epsilon.runtime.execution.impl.Slf4jLog;
 import hu.blackbelt.judo.meta.esm.namespace.Model;
 import hu.blackbelt.judo.meta.esm.namespace.Package;
+import hu.blackbelt.judo.meta.esm.operation.BoundOperation;
+import hu.blackbelt.judo.meta.esm.operation.UnboundOperation;
 import hu.blackbelt.judo.meta.esm.runtime.EsmModel;
 import hu.blackbelt.judo.meta.esm.structure.*;
 import hu.blackbelt.judo.meta.esm.type.StringType;
 import hu.blackbelt.judo.meta.psm.runtime.PsmModel;
+import hu.blackbelt.judo.meta.psm.service.MappedTransferObjectType;
 import hu.blackbelt.judo.meta.psm.service.TransferAttribute;
 import hu.blackbelt.judo.meta.psm.service.TransferObjectRelation;
 import lombok.extern.slf4j.Slf4j;
@@ -32,6 +35,8 @@ import java.util.stream.StreamSupport;
 
 import static hu.blackbelt.judo.meta.esm.namespace.util.builder.NamespaceBuilders.newModelBuilder;
 import static hu.blackbelt.judo.meta.esm.namespace.util.builder.NamespaceBuilders.newPackageBuilder;
+import static hu.blackbelt.judo.meta.esm.operation.util.builder.OperationBuilders.newBoundOperationBuilder;
+import static hu.blackbelt.judo.meta.esm.operation.util.builder.OperationBuilders.newParameterBuilder;
 import static hu.blackbelt.judo.meta.esm.runtime.EsmModel.buildEsmModel;
 import static hu.blackbelt.judo.meta.esm.structure.util.builder.StructureBuilders.*;
 import static hu.blackbelt.judo.meta.esm.type.util.builder.TypeBuilders.newStringTypeBuilder;
@@ -102,6 +107,78 @@ public class EsmStructure2PsmServiceTest {
 		// Make transformation which returns the trace with the serialized URI's
 		esm2PsmTransformationTrace = executeEsm2PsmTransformation(esmModel, psmModel, new Slf4jLog(log),
 				calculateEsm2PsmTransformationScriptURI());
+	}
+
+	@Test
+	void testGenerateEmbeddedTransferObjectRelationsForMappedTransferObjectTypesOfStatefulOperationInputParameters() throws Exception {
+		testName = "testGenerateEmbeddedTransferObjectRelationsForMappedTransferObjectTypesOfStatefulOperationInputParameters";
+		//ShipperInfo
+		EntityType shipperEntity = newEntityTypeBuilder().withName("Shipper")
+				.withRelations(ImmutableList.of(
+						newTwoWayRelationMemberBuilder().withName("shipperOrders").withTarget(orderEntity).withPartner(shipperInOrderEntity).withUpper(-1).build()
+				))
+				.build();
+		shipperEntity.setMapping(newMappingBuilder().withTarget(shipperEntity).build());
+
+		TransferObjectType shipperInfo = newTransferObjectTypeBuilder().withName("ShipperInfo")
+				.withMapping(newMappingBuilder().withTarget(shipperEntity).build())
+				.build();
+
+		//OrderItem (for product relation in intOrdInf)
+		EntityType orderDetail = newEntityTypeBuilder().withName("OrderDetail")
+				.build();
+		orderDetail.setMapping(newMappingBuilder().withTarget(orderDetail).build());
+
+		TransferObjectType orderItem = newTransferObjectTypeBuilder().withName("OrderItem")
+				.withMapping(newMappingBuilder().withTarget(orderDetail).build())
+				.build();
+
+		//OrderInfo
+		EntityType orderEntity = newEntityTypeBuilder().withName("Order")
+				.withRelations(ImmutableList.of(
+						newTwoWayRelationMemberBuilder().withName("shipper").withTarget(shipperEntity).withPartner(shipperOrdersInShipperEntity).withPrimary(true).withDefaultExpression("").withRangeExpression("").build(),
+						newOneWayRelationMemberBuilder().withName("items").withTarget(orderDetail).withContainment(true).withLower(1).withUpper(-1).build()
+				))
+				.build();
+		orderEntity.setMapping(newMappingBuilder().withTarget(orderEntity).build());
+
+		TransferObjectType orderInfo = newTransferObjectTypeBuilder().withName("OrderInfo")
+				.withMapping(newMappingBuilder().withTarget(orderEntity).build())
+				.withRelations(ImmutableList.of(
+						newOneWayRelationMemberBuilder().withName("shipper").withTarget(shipperInfo).withBinding().withGetterExpression("self.shipper").withRelationMemberType(RelationMemberType.BOUND).build(),
+						newOneWayRelationMemberBuilder().withName("items").withTarget(orderItem).withAggregation(true).withBinding(itemsInOrder).withGetterExpression("self.orderDetails").withRelationMemberType(RelationMemberType.BOUND).build()
+
+				))
+				.build();
+
+		//InternationalOrderInfo with supertype OrderInfo
+			//nonEmbedded relations shipper (OrderInfo->ShipperInfo) & items (OrderItem -> ProductInfo)
+		/*
+		EntityType internationalOrderEntity = newEntityTypeBuilder().withName("Shipper")
+				.build();
+		internationalOrderEntity.setMapping(newMappingBuilder().withTarget(internationalOrderEntity).build());
+
+		TransferObjectType internationalOrderInfo = newTransferObjectTypeBuilder().withName("InternationalOrderInfo")
+				.withMapping(newMappingBuilder().withTarget(orderEntity).build())
+				.withRelations(ImmutableList.of(
+
+				))
+				.build();*/
+
+
+
+		//"createOrder_" bound op with input parameter typed InternationalOrderInfo
+		//TODO: change target to internationalOrderInfo when supported
+		BoundOperation createOrder = newBoundOperationBuilder().withName("createOrder_").withBody("body")
+				.withAbstract_(false)
+				.withInput(newParameterBuilder().withName("input").withLower(1).withUpper(1)
+						.withTarget(orderInfo).build())
+				.withOutput(newParameterBuilder().withName("output").withLower(1).withUpper(1)
+						.withTarget(orderInfo).build())
+				.withCustomImplementation(true).build();
+
+		transform();
+
 	}
 	
 	@Test
