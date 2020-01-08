@@ -90,6 +90,7 @@ rule CreateOperation
         }
 }
 
+@greedy
 rule CreateBoundOperation
     transform s : JUDOPSM!BoundOperation
     to t : ASM!EOperation
@@ -99,7 +100,7 @@ rule CreateBoundOperation
         s.eContainer.asmEquivalent().eOperations.add(t);
 }
 
-
+@greedy
 rule CreateScriptBodyAnnotationForBoundOperation
     transform s : JUDOPSM!BoundOperation
     to t : ASM!EAnnotation
@@ -120,6 +121,7 @@ rule CreateUnboundInterface
         s.asmEquivalent().eClassifiers.add(t);
 }
 
+@greedy
 rule CreateUnboundOperation
     transform s : JUDOPSM!UnboundOperation
     to t : ASM!EOperation
@@ -129,6 +131,7 @@ rule CreateUnboundOperation
         s.getNamespace().equivalent("CreateUnboundInterface").eOperations.add(t);
 }
 
+@greedy
 rule CreateScriptBodyAnnotationForUnboundOperation
     transform s : JUDOPSM!UnboundOperation
     to t : ASM!EAnnotation
