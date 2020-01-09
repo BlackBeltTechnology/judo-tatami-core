@@ -25,6 +25,7 @@ rule CreateMappedTransferObjectType
 	  
 	  t.entityType = s.mapping.target.equivalent("CreateEntityType");
 	  t.filter = s.mapping.equivalent("CreateFilterExpressionForMappedTransferObjectType");
+	  /*
 	  //TODO: check
 	  log.debug("[CreateMappedTransferObjectType] (checking) " + s.name);
 	  var operationWithInputParamTargetingMTO = ESM!Operation.all.selectOne(oper | (oper.stateful and oper.input.isDefined() and oper.input.target == s) );
@@ -36,13 +37,14 @@ rule CreateMappedTransferObjectType
 	    for (relation in nonembeddedRelations) {
 	      t.relations.add(relation.equivalent("CreateEmbeddedTransferRelationForNonembeddedTransferRelation"));
 	    }
+	    
 	  } else {
 	    log.debug("[CreateMappedTransferObjectType] " + t.name + " not an inputParameter [NOPE]");
 	  }//---
-      
+      */
 	  log.debug("Created Mapped TransferObject Type: " + t.name);
 }
-
+/*
 //TODO: check & move to transferObjectRelation.etl
 @lazy
 rule CreateEmbeddedTransferRelationForNonembeddedTransferRelation
@@ -62,16 +64,16 @@ rule CreateEmbeddedTransferRelationForNonembeddedTransferRelation
 rule CreateReferenceMappedTransferObjectType
     transform s: ESM!OneWayRelationMember
     to t: JUDOPSM!MappedTransferObjectType {
-      t.name = s.target.mapping.target.name/*.firstToUpperCase()*/ + "Reference";
+      t.name = s.target.mapping.target.name + "Reference";
       t.entityType = s.target.mapping.target.equivalent("CreateEntityType"); //TODO-ask
-      //filter? superTransferObjectTypes? 
+      //filter? superTransferObjectTypes?
       //getTemplate?
       s.eContainer.eContainer.getPSMEquivalent().elements.add(t); //TODO package hierarchy
       
       log.debug("Created Reference Mapped TransferObject Type: " + t.name);
 }
 //---
-
+*/
 @lazy
 rule CreateFilterExpressionForMappedTransferObjectType
     transform s : ESM!Mapping

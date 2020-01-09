@@ -20,6 +20,7 @@ import org.eclipse.emf.ecore.EObject;
 import org.hamcrest.core.IsEqual;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,8 +36,7 @@ import java.util.stream.StreamSupport;
 
 import static hu.blackbelt.judo.meta.esm.namespace.util.builder.NamespaceBuilders.newModelBuilder;
 import static hu.blackbelt.judo.meta.esm.namespace.util.builder.NamespaceBuilders.newPackageBuilder;
-import static hu.blackbelt.judo.meta.esm.operation.util.builder.OperationBuilders.newBoundOperationBuilder;
-import static hu.blackbelt.judo.meta.esm.operation.util.builder.OperationBuilders.newParameterBuilder;
+import static hu.blackbelt.judo.meta.esm.operation.util.builder.OperationBuilders.*;
 import static hu.blackbelt.judo.meta.esm.runtime.EsmModel.buildEsmModel;
 import static hu.blackbelt.judo.meta.esm.structure.util.builder.StructureBuilders.*;
 import static hu.blackbelt.judo.meta.esm.type.util.builder.TypeBuilders.newStringTypeBuilder;
@@ -109,14 +109,15 @@ public class EsmStructure2PsmServiceTest {
 				calculateEsm2PsmTransformationScriptURI());
 	}
 
+	@Disabled
 	@Test
 	void testGenerateEmbeddedTransferObjectRelationsForMappedTransferObjectTypesOfStatefulOperationInputParameters() throws Exception {
 		testName = "testGenerateEmbeddedTransferObjectRelationsForMappedTransferObjectTypesOfStatefulOperationInputParameters";
+
 		//ShipperInfo
+		TwoWayRelationMember shipperOrdersInShipper = newTwoWayRelationMemberBuilder().withName("shipperOrders").withUpper(-1).build();
 		EntityType shipperEntity = newEntityTypeBuilder().withName("Shipper")
-				.withRelations(ImmutableList.of(
-						newTwoWayRelationMemberBuilder().withName("shipperOrders").withTarget(orderEntity).withPartner(shipperInOrderEntity).withUpper(-1).build()
-				))
+				.withRelations(ImmutableList.of(shipperOrdersInShipper))
 				.build();
 		shipperEntity.setMapping(newMappingBuilder().withTarget(shipperEntity).build());
 
@@ -124,29 +125,51 @@ public class EsmStructure2PsmServiceTest {
 				.withMapping(newMappingBuilder().withTarget(shipperEntity).build())
 				.build();
 
+		//ProductInfo
+		EntityType productEntity = newEntityTypeBuilder().withName("Product")
+				.withRelations(ImmutableList.of())
+				.build();
+		productEntity.setMapping(newMappingBuilder().withTarget(productEntity).build());
+
+		TransferObjectType productInfo = newTransferObjectTypeBuilder().withName("ProductInfo")
+				.withMapping(newMappingBuilder().withTarget(productEntity).build())
+				.withRelations(ImmutableList.of(
+						//owrm: category
+				))
+				.build();
+
 		//OrderItem (for product relation in intOrdInf)
+		OneWayRelationMember productInOrderDetail = newOneWayRelationMemberBuilder().withName("product").withLower(1).withTarget(productEntity).build();
 		EntityType orderDetail = newEntityTypeBuilder().withName("OrderDetail")
+				.withRelations(ImmutableList.of(productInOrderDetail))
 				.build();
 		orderDetail.setMapping(newMappingBuilder().withTarget(orderDetail).build());
 
 		TransferObjectType orderItem = newTransferObjectTypeBuilder().withName("OrderItem")
 				.withMapping(newMappingBuilder().withTarget(orderDetail).build())
+				.withRelations(ImmutableList.of(
+						newOneWayRelationMemberBuilder().withName("product").withTarget(productInfo).withBinding(productInOrderDetail).withLower(1).withRelationMemberType(RelationMemberType.BOUND).withGetterExpression("self.product").build()
+				))
 				.build();
 
 		//OrderInfo
+		OneWayRelationMember itemsInOrder = newOneWayRelationMemberBuilder().withName("items").withTarget(orderDetail).withContainment(true).withLower(1).withUpper(-1).build();
+		TwoWayRelationMember shipperInOrder = newTwoWayRelationMemberBuilder().withName("shipper").withTarget(shipperEntity).withPrimary(true).withDefaultExpression("").withRangeExpression("").build();
+		shipperInOrder.setPartner(shipperOrdersInShipper);
+		shipperOrdersInShipper.setPartner(shipperInOrder);
 		EntityType orderEntity = newEntityTypeBuilder().withName("Order")
-				.withRelations(ImmutableList.of(
-						newTwoWayRelationMemberBuilder().withName("shipper").withTarget(shipperEntity).withPartner(shipperOrdersInShipperEntity).withPrimary(true).withDefaultExpression("").withRangeExpression("").build(),
-						newOneWayRelationMemberBuilder().withName("items").withTarget(orderDetail).withContainment(true).withLower(1).withUpper(-1).build()
-				))
+				.withRelations(ImmutableList.of(shipperInOrder, itemsInOrder))
 				.build();
 		orderEntity.setMapping(newMappingBuilder().withTarget(orderEntity).build());
+		shipperOrdersInShipper.setTarget(orderEntity);
 
 		TransferObjectType orderInfo = newTransferObjectTypeBuilder().withName("OrderInfo")
 				.withMapping(newMappingBuilder().withTarget(orderEntity).build())
 				.withRelations(ImmutableList.of(
-						newOneWayRelationMemberBuilder().withName("shipper").withTarget(shipperInfo).withBinding().withGetterExpression("self.shipper").withRelationMemberType(RelationMemberType.BOUND).build(),
-						newOneWayRelationMemberBuilder().withName("items").withTarget(orderItem).withAggregation(true).withBinding(itemsInOrder).withGetterExpression("self.orderDetails").withRelationMemberType(RelationMemberType.BOUND).build()
+						//nonembedded => new embedded "shipper_" targeting ShipperReference (mto w/o members)
+						newOneWayRelationMemberBuilder().withName("shipper").withTarget(shipperInfo).withBinding(shipperInOrder).withGetterExpression("self.shipper").withRelationMemberType(RelationMemberType.BOUND).build(),
+						//embedded => goto target
+						newOneWayRelationMemberBuilder().withName("items").withTarget(orderItem).withAggregation(true).withBinding(itemsInOrder).withGetterExpression("self.orderDetails").withRelationMemberType(RelationMemberType.BOUND).withLower(1).withUpper(-1).build()
 
 				))
 				.build();
@@ -166,19 +189,26 @@ public class EsmStructure2PsmServiceTest {
 				.build();*/
 
 
-
 		//"createOrder_" bound op with input parameter typed InternationalOrderInfo
 		//TODO: change target to internationalOrderInfo when supported
-		BoundOperation createOrder = newBoundOperationBuilder().withName("createOrder_").withBody("body")
-				.withAbstract_(false)
+		UnboundOperation createOrder = newUnboundOperationBuilder().withName("createOrder_")
 				.withInput(newParameterBuilder().withName("input").withLower(1).withUpper(1)
 						.withTarget(orderInfo).build())
 				.withOutput(newParameterBuilder().withName("output").withLower(1).withUpper(1)
 						.withTarget(orderInfo).build())
-				.withCustomImplementation(true).build();
+				.withCustomImplementation(true).withBody("body").withStateful(true)
+				.build();
 
+		Package entities = newPackageBuilder().withName("entities").withElements(ImmutableList.of(
+				orderEntity, shipperEntity, orderDetail, productEntity
+		)).build();
+		Package services = newPackageBuilder().withName("services").withElements(ImmutableList.of(
+				orderInfo, shipperInfo, orderItem, productInfo,
+				createOrder
+		)).build();
+		Model model = newModelBuilder().withName("testModel").withElements(ImmutableList.of(entities, services)).build();
+		esmModel.addContent(model);
 		transform();
-
 	}
 	
 	@Test
