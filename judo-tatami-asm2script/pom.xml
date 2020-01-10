@@ -65,6 +65,16 @@
 						<artifactId>judo-tatami-psm2measure</artifactId>
 						<version>${project.version}</version>
 					</dependency>
+					<dependency>
+						<groupId>hu.blackbelt.judo.script</groupId>
+						<artifactId>hu.blackbelt.judo.script.codegen.generator</artifactId>
+						<version>1.0.0-SNAPSHOT</version>
+					</dependency>
+					<dependency>
+						<groupId>hu.blackbelt.judo.meta</groupId>
+						<artifactId>hu.blackbelt.judo.meta.script.builder.jcl</artifactId>
+						<version>1.0.0-SNAPSHOT</version>
+					</dependency>
 
 				</dependencies>
 			</plugin>

@@ -21,7 +21,6 @@ public class Script2OperationTest {
     public static final String NORTHWIND = "northwind";
     public static final String TARGET_TEST_CLASSES = "target/test-classes";
     public static final String NORTHWIND_SCRIPT_MODEL = "northwind-script.model";
-    public static final String GENERATED_JAVA = "generated/java";
 
     ScriptModel scriptModel;
 
