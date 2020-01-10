@@ -1,0 +1,11 @@
+operation ASM!EAnnotation addBehaviourAnnotationOfOwnerExposedGraph(type : String, exposedGraph : String) {
+    var typeEntry = new ASM!EStringToStringMapEntry;
+    typeEntry.key = "type";
+    typeEntry.value = type;
+    self.details.add(typeEntry);
+
+    var ownerEntry = new ASM!EStringToStringMapEntry;
+    ownerEntry.key = "owner";
+    ownerEntry.value = exposedGraph;
+    self.details.add(ownerEntry);
+}
