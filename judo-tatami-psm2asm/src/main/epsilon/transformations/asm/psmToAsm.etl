@@ -6,19 +6,6 @@ import "modules/package.etl";
 import "modules/transferObject.etl";
 import "modules/type.etl";
 
-pre {
-    log.debug("///s");
-    var allStatefulOps = JUDOPSM!UnboundOperation.all.select(op | op.implementation.isDefined() and op.implementation.stateful);
-    log.debug("allStatefulOps: " + allStatefulOps.collect(mto | mto.name));
-    
-    var allInputMTOs = JUDOPSM!MappedTransferObjectType.all.select(mto | allStatefulOps.exists(op | op.input.isDefined() and op.input.type == mto));
-    log.debug("allInputMTOs: " + allInputMTOs.collect(mto | mto.name));
-    
-    var allTargetedMTOs = allInputMTOs.closure(mto | mto.relations.select(rel | rel.embedded).collect(rel2 | rel2.target)).flatten();
-    log.debug("allTargetedMTOs: " + allTargetedMTOs.collect(mto | mto.name));
-    
-}
-
 post {
     asmUtils.enrichWithAnnotations();
 }
