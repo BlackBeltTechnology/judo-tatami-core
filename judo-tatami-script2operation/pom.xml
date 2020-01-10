@@ -51,7 +51,7 @@
 						<configuration>
 							<ignorePsm2Asm>false</ignorePsm2Asm>
 							<ignorePsm2Measure>false</ignorePsm2Measure>
-							<ignoreAsm2script>false</ignoreAsm2script>
+							<ignoreAsm2Script>false</ignoreAsm2Script>
 						</configuration>
 					</execution>
 				</executions>

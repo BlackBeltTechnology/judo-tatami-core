@@ -3,7 +3,6 @@ package hu.blackbelt.judo.tatami.script2operation;
 import com.google.common.io.ByteStreams;
 import hu.blackbelt.judo.meta.script.runtime.ScriptModel;
 import lombok.extern.slf4j.Slf4j;
-import org.eclipse.emf.common.util.URI;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -29,7 +28,7 @@ public class Script2OperationTest {
         // Loading ASM to isolated ResourceSet, because in Tatami
         // there is no new namespace registration made.
         scriptModel = loadScriptModel(scriptLoadArgumentsBuilder()
-                .uri(URI.createFileURI(new File(TARGET_TEST_CLASSES, NORTHWIND_SCRIPT_MODEL).getAbsolutePath()))
+                .file(new File(TARGET_TEST_CLASSES, NORTHWIND_SCRIPT_MODEL))
                 .name(NORTHWIND));
     }
 
