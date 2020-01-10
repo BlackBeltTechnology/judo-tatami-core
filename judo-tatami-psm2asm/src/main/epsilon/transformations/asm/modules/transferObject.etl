@@ -51,7 +51,8 @@ rule CreateEmbeddedTransferObjectRelationForUnembedded
     transform s : JUDOPSM!TransferObjectRelation
     to t : ASM!EReference {
       guard: not s.embedded 
-            and psmUtils.getAllContainers(s.eContainer).exists(mto | JUDOPSM!UnboundOperation.all.selectOne(oper | oper.implementation.isDefined() and oper.implementation.stateful and oper.input.isDefined() and oper.input.type == mto).isDefined())
+            and psmUtils.getAllContainers(s.eContainer).including(s).exists(mto | JUDOPSM!UnboundOperation.all.selectOne(oper | oper.implementation.isDefined() and oper.implementation.stateful and oper.input.isDefined() and oper.input.type == mto).isDefined())
+      log.debug("[CreateEmbeddedTransferObjectRelationForUnembedded] on " + s.name + " in " + s.eContainer.name);
         t.name = "_" + s.name;
         t.containment = true;
 
