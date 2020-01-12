@@ -148,9 +148,14 @@ public class Asm2JAXRSAPI {
                                 "javax.ws.rs.core;version=\"[2.0,3)\"," +
                                 "hu.blackbelt.judo.tatami.core"
 
-                )
-                .set( Constants.EXPORT_PACKAGE, exportedPackages.stream().collect(Collectors.joining(",")))
-                .set("Service-Component", Joiner.on(",").join(scrXmlFiles));
+                );
+
+        if (exportedPackages.size() > 0) {
+            bundle.set( Constants.EXPORT_PACKAGE, exportedPackages.stream().collect(Collectors.joining(",")));
+        }
+        if (scrXmlFiles.size() > 0) {
+            bundle.set("Service-Component", Joiner.on(",").join(scrXmlFiles));
+        }
         return bundle.build();
     }
 

@@ -149,9 +149,15 @@ public class Asm2SDK {
                         "osgi.extender;filter:=\"(&(osgi.extender=osgi.component)(version>=1.3.0)(!(version>=2.0.0)))\"")
                 .set( Constants.IMPORT_PACKAGE,
                         "org.osgi.framework;version=\"[1.8,2.0)\""
-                )
-                .set( Constants.EXPORT_PACKAGE, exportedPackages.stream().collect(Collectors.joining(",")))
-                .set("Service-Component", Joiner.on(",").join(scrXmlFiles));
+                );
+
+        if (exportedPackages.size() > 0) {
+            bundle.set( Constants.EXPORT_PACKAGE, exportedPackages.stream().collect(Collectors.joining(",")));
+        }
+
+        if (scrXmlFiles.size() > 0) {
+            bundle.set("Service-Component", Joiner.on(",").join(scrXmlFiles));
+        }
         return bundle.build();
     }
 
