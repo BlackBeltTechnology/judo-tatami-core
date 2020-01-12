@@ -53,10 +53,10 @@
         <tycho-version>1.4.0</tycho-version>
 
         <epsilon-runtime-version>1.2.0.20200112_015713_3d243d7_develop</epsilon-runtime-version>
-        <epsilon-runtime-eclipse-version>1.2.0.20191105_183445_4b0b2da_develop</epsilon-runtime-eclipse-version>
+        <epsilon-runtime-eclipse-version>1.2.0.20200112_022936_df2f83b_develop</epsilon-runtime-eclipse-version>
 
         <emf-genmodel-generator-version>1.0.0.20191222_154354_a61f75c_develop</emf-genmodel-generator-version>
-        <judo-genmodel-generator-version>1.0.0.20191105_183255_7673428_develop</judo-genmodel-generator-version>
+        <judo-genmodel-generator-version>1.0.0.20191227_185540_12197c7_develop</judo-genmodel-generator-version>
 
         <p2-swagger-version>1.0.1.20191227_184350_5d5e858_develop</p2-swagger-version>
 
