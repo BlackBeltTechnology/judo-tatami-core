@@ -38,29 +38,17 @@
 		                    <replacements>
 		                        <!-- EMF Genmodel generator version -->
 		                        <replacement>
-		                            <token>(hu.blackbelt.eclipse.emf.genmodel.generator.feature.feature.group\"\ version\=\")(.*)(\"\/&gt;)</token>
-		                            <value>$1${emf-genmodel-generator-version}"/&gt;</value>
-		                        </replacement>
-		                        <replacement>
 		                            <token>(emf-genmodel-generator\/)(.*)(\"\/&gt;)</token>
 		                            <value>$1${emf-genmodel-generator-version}"/&gt;</value>
 		                        </replacement>
 		
 		                        <!-- JUDO Genmodel generator version -->
 		                        <replacement>
-		                            <token>(hu.blackbelt.judo.eclipse.emf.genmodel.generator.feature.feature.group\"\ version\=\")(.*)(\"\/&gt;)</token>
-		                            <value>$1${judo-genmodel-generator-version}"/&gt;</value>
-		                        </replacement>
-		                        <replacement>
 		                            <token>(judo-genmodel-generator\/)(.*)(\"\/&gt;)</token>
 		                            <value>$1${judo-genmodel-generator-version}"/&gt;</value>
 		                        </replacement>
 		
 		                        <!-- Epsilon Runtime -->
-		                        <replacement>
-		                            <token>(hu.blackbelt.epsilon.runtime.feature.feature.group\"\ version\=\")(.*)(\"\/&gt;)</token>
-		                            <value>$1${epsilon-runtime-eclipse-version}"/&gt;</value>
-		                        </replacement>
 		                        <replacement>
 		                            <token>(epsilon-runtime-eclipse\/)(.*)(\"\/&gt;)</token>
 		                            <value>$1${epsilon-runtime-eclipse-version}"/&gt;</value>
@@ -74,19 +62,11 @@
 		                        
 		                        <!-- asm -->
 		                        <replacement>
-		                            <token>(hu.blackbelt.judo.meta.asm.feature.feature.group\"\ version\=\")(.*)(\"\/&gt;)</token>
-		                            <value>$1${judo-meta-asm-version}"/&gt;</value>
-		                        </replacement>
-		                        <replacement>
 		                            <token>(judo-meta-asm\/)(.*)(\"\/&gt;)</token>
 		                            <value>$1${judo-meta-asm-version}"/&gt;</value>
 		                        </replacement>
 		                        
 		                        <!-- psm -->
-		                        <replacement>
-		                            <token>(hu.blackbelt.judo.meta.psm.feature.feature.group\"\ version\=\")(.*)(\"\/&gt;)</token>
-		                            <value>$1${judo-meta-psm-version}"/&gt;</value>
-		                        </replacement>
 		                        <replacement>
 		                            <token>(judo-meta-psm\/)(.*)(\"\/&gt;)</token>
 		                            <value>$1${judo-meta-psm-version}"/&gt;</value>
@@ -94,24 +74,11 @@
 		                        
 		                        <!-- esm -->
 		                        <replacement>
-		                            <token>(hu.blackbelt.judo.meta.esm.feature.feature.group\"\ version\=\")(.*)(\"\/&gt;)</token>
-		                            <value>$1${judo-meta-esm-version}"/&gt;</value>
-		                        </replacement>
-								<replacement>
-									<token>(hu.blackbelt.judo.meta.esm.designer.feature.feature.group\"\ version\=\")(.*)(\"\/&gt;)</token>
-									<value>$1${judo-meta-esm-version}"/&gt;</value>
-								</replacement>
-
-		                        <replacement>
 		                            <token>(judo-meta-esm\/)(.*)(\"\/&gt;)</token>
 		                            <value>$1${judo-meta-esm-version}"/&gt;</value>
 		                        </replacement>
 		                        
 		                        <!-- rdbms -->
-		                        <replacement>
-		                            <token>(hu.blackbelt.judo.meta.rdbms.feature.feature.group\"\ version\=\")(.*)(\"\/&gt;)</token>
-		                            <value>$1${judo-meta-rdbms-version}"/&gt;</value>
-		                        </replacement>
 		                        <replacement>
 		                            <token>(judo-meta-rdbms\/)(.*)(\"\/&gt;)</token>
 		                            <value>$1${judo-meta-rdbms-version}"/&gt;</value>
@@ -119,19 +86,11 @@
 		                        
 		                        <!-- liquibase -->
 		                        <replacement>
-		                            <token>(hu.blackbelt.judo.meta.liquibase.feature.feature.group\"\ version\=\")(.*)(\"\/&gt;)</token>
-		                            <value>$1${judo-meta-liquibase-version}"/&gt;</value>
-		                        </replacement>
-		                        <replacement>
 		                            <token>(judo-meta-liquibase\/)(.*)(\"\/&gt;)</token>
 		                            <value>$1${judo-meta-liquibase-version}"/&gt;</value>
 		                        </replacement>
 
 								<!-- measure -->
-								<replacement>
-									<token>(hu.blackbelt.judo.meta.measure.feature.feature.group\"\ version\=\")(.*)(\"\/&gt;)</token>
-									<value>$1${judo-meta-measure-version}"/&gt;</value>
-								</replacement>
 								<replacement>
 									<token>(judo-meta-measure\/)(.*)(\"\/&gt;)</token>
 									<value>$1${judo-meta-measure-version}"/&gt;</value>
@@ -139,29 +98,23 @@
 
 								<!-- expression -->
 		                        <replacement>
-		                            <token>(hu.blackbelt.judo.meta.expression.feature.feature.group\"\ version\=\")(.*)(\"\/&gt;)</token>
-		                            <value>$1${judo-meta-expression-version}"/&gt;</value>
-		                        </replacement>
-		                        <replacement>
 		                            <token>(judo-meta-expression\/)(.*)(\"\/&gt;)</token>
 		                            <value>$1${judo-meta-expression-version}"/&gt;</value>
 		                        </replacement>
 		                        
 		                        <!-- jql -->
 		                        <replacement>
-		                            <token>(hu.blackbelt.judo.meta.jql.feature.feature.group\"\ version\=\")(.*)(\"\/&gt;)</token>
-		                            <value>$1${judo-meta-jql-version}"/&gt;</value>
-		                        </replacement>
-		                        <replacement>
 		                            <token>(judo-meta-jql\/)(.*)(\"\/&gt;)</token>
 		                            <value>$1${judo-meta-jql-version}"/&gt;</value>
 		                        </replacement>
 
+		                        <!-- jql ide eclipse -->
+		                        <replacement>
+		                            <token>(judo-jql-ide-eclipse\/)(.*)(\"\/&gt;)</token>
+		                            <value>$1${judo-jql-ide-eclipse-version}"/&gt;</value>
+		                        </replacement>
+
 								<!-- openapi -->
-								<replacement>
-									<token>(hu.blackbelt.judo.meta.openapi.feature.feature.group\"\ version\=\")(.*)(\"\/&gt;)</token>
-									<value>$1${judo-meta-openapi-version}"/&gt;</value>
-								</replacement>
 								<replacement>
 									<token>(judo-meta-openapi\/)(.*)(\"\/&gt;)</token>
 									<value>$1${judo-meta-openapi-version}"/&gt;</value>
@@ -169,19 +122,11 @@
 
 								<!-- script -->
 								<replacement>
-									<token>(hu.blackbelt.judo.meta.script.feature.feature.group\"\ version\=\")(.*)(\"\/&gt;)</token>
-									<value>$1${judo-meta-script-version}"/&gt;</value>
-								</replacement>
-								<replacement>
 									<token>(judo-meta-script\/)(.*)(\"\/&gt;)</token>
 									<value>$1${judo-meta-script-version}"/&gt;</value>
 								</replacement>
 
 								<!-- jcl -->
-								<replacement>
-									<token>(hu.blackbelt.judo.meta.jcl.feature.feature.group\"\ version\=\")(.*)(\"\/&gt;)</token>
-									<value>$1${judo-meta-jcl-version}"/&gt;</value>
-								</replacement>
 								<replacement>
 									<token>(judo-meta-jcl\/)(.*)(\"\/&gt;)</token>
 									<value>$1${judo-meta-jcl-version}"/&gt;</value>
@@ -189,13 +134,15 @@
 
 								<!-- script codegen -->
 								<replacement>
-									<token>(hu.blackbelt.judo.script.codegen.feature.feature.group\"\ version\=\")(.*)(\"\/&gt;)</token>
-									<value>$1${judo-script-codegen-version}"/&gt;</value>
-								</replacement>
-								<replacement>
 									<token>(judo-script-codegen\/)(.*)(\"\/&gt;)</token>
 									<value>$1${judo-script-codegen-version}"/&gt;</value>
 								</replacement>
+
+                                <!-- Because in ourt repository all versions are flattened, ever featur can be the last version -->
+                                <replacement>
+                                    <token>(feature.group\"\ version\=\")(.*)(\"\/&gt;)</token>
+                                    <value>$10.0.0"/&gt;</value>
+                                </replacement>
 
 							</replacements>
 		                    <regex>true</regex>

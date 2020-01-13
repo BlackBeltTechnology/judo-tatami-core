@@ -1,4 +1,5 @@
 import "../utils/_importUtils.eol";
+import "operation.etl";
 
 rule CreateAccessPointAnnotation
     transform s : JUDOPSM!AccessPoint
@@ -81,4 +82,75 @@ rule CreateExposedGraphReferenceBinding
         }
 
         s.equivalent("CreateExposedGraphReference").eAnnotations.add(t);
+}
+
+rule AddGetAnnotationToUnboundOperation
+    transform s : JUDOPSM!UnboundOperation
+    to t : ASM!EAnnotation
+    extends AddAnnotationToUnboundOperation {
+        guard: s.getOwnerExposedGraph.isDefined()
+
+        t.addBehaviourAnnotationOfOwnerExposedGraph("get", asmUtils.getReferenceFQName(s.getOwnerExposedGraph.equivalent("CreateExposedGraphReference")));
+}
+
+rule AddCreateAnnotationToUnboundOperation
+    transform s : JUDOPSM!UnboundOperation
+    to t : ASM!EAnnotation
+    extends AddAnnotationToUnboundOperation {
+        guard: s.createOwnerExposedGraph.isDefined()
+
+        t.addBehaviourAnnotationOfOwnerExposedGraph("create", asmUtils.getReferenceFQName(s.createOwnerExposedGraph.equivalent("CreateExposedGraphReference")));
+}
+
+rule AddUpdateAnnotationToUnboundOperation
+    transform s : JUDOPSM!UnboundOperation
+    to t : ASM!EAnnotation
+    extends AddAnnotationToUnboundOperation {
+        guard: s.updateOwnerExposedGraph.isDefined()
+
+        t.addBehaviourAnnotationOfOwnerExposedGraph("update", asmUtils.getReferenceFQName(s.updateOwnerExposedGraph.equivalent("CreateExposedGraphReference")));
+}
+
+rule AddDeleteAnnotationToUnboundOperation
+    transform s : JUDOPSM!UnboundOperation
+    to t : ASM!EAnnotation
+    extends AddAnnotationToUnboundOperation {
+        guard: s.deleteOwnerExposedGraph.isDefined()
+
+        t.addBehaviourAnnotationOfOwnerExposedGraph("delete", asmUtils.getReferenceFQName(s.deleteOwnerExposedGraph.equivalent("CreateExposedGraphReference")));
+}
+
+rule AddSetAnnotationToBoundOperationWithRelation
+    transform s : JUDOPSM!BoundOperationWithRelation
+    to t : ASM!EAnnotation
+    extends AddAnnotationToUnboundOperationWithRelation {
+        guard: s.setOwnerExposedGraph.isDefined()
+
+        t.addBehaviourAnnotationOfOwnerExposedGraph("set", asmUtils.getReferenceFQName(s.setOwnerExposedGraph.equivalent("CreateExposedGraphReference")));
+}
+
+rule AddUnSetAnnotationToBoundOperationWithRelation
+    transform s : JUDOPSM!BoundOperationWithRelation
+    to t : ASM!EAnnotation
+    extends AddAnnotationToUnboundOperationWithRelation {
+        guard: s.unsetOwnerExposedGraph.isDefined()
+
+        t.addBehaviourAnnotationOfOwnerExposedGraph("unset", asmUtils.getReferenceFQName(s.unsetOwnerExposedGraph.equivalent("CreateExposedGraphReference")));
+}
+rule AddAddAllAnnotationToBoundOperationWithRelation
+    transform s : JUDOPSM!BoundOperationWithRelation
+    to t : ASM!EAnnotation
+    extends AddAnnotationToUnboundOperationWithRelation {
+        guard: s.addAllOwnerExposedGraph.isDefined()
+
+        t.addBehaviourAnnotationOfOwnerExposedGraph("addAll", asmUtils.getReferenceFQName(s.addAllOwnerExposedGraph.equivalent("CreateExposedGraphReference")));
+}
+
+rule AddRemoveAllAnnotationToBoundOperationWithRelation
+    transform s : JUDOPSM!BoundOperationWithRelation
+    to t : ASM!EAnnotation
+    extends AddAnnotationToUnboundOperationWithRelation {
+        guard: s.removeAllOwnerExposedGraph.isDefined()
+
+        t.addBehaviourAnnotationOfOwnerExposedGraph("removeAll", asmUtils.getReferenceFQName(s.removeAllOwnerExposedGraph.equivalent("CreateExposedGraphReference")));
 }
