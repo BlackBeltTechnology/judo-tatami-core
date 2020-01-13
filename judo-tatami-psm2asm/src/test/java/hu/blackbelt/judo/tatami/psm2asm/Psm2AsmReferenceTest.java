@@ -75,49 +75,9 @@ public class Psm2AsmReferenceTest {
                 .build();
     }
 
-    @Disabled
     @Test
     public void testReferenceEmbedding() throws Exception {
         slf4jlog.info("testReferenceEmbedment~~~~~~~~~~~~~~~~~~~~");
-        /*
-        //ShipperInfo
-        TwoWayRelationMember shipperOrdersInShipper = newTwoWayRelationMemberBuilder().withName("shipperOrders").withUpper(-1).build();
-        hu.blackbelt.judo.meta.esm.structure.EntityType shipperEntity = newEntityTypeBuilder().withName("Shipper")
-                .withRelations(ImmutableList.of(shipperOrdersInShipper))
-                .build();
-        shipperEntity.setMapping(newMappingBuilder().withTarget(shipperEntity).build());
-
-        hu.blackbelt.judo.meta.esm.structure.TransferObjectType shipperInfo = newTransferObjectTypeBuilder().withName("ShipperInfo")
-                .withMapping(newMappingBuilder().withTarget(shipperEntity).build())
-                .build();
-
-        //ProductInfo
-        hu.blackbelt.judo.meta.esm.structure.EntityType productEntity = newEntityTypeBuilder().withName("Product")
-                .withRelations(ImmutableList.of())
-                .build();
-        productEntity.setMapping(newMappingBuilder().withTarget(productEntity).build());
-
-        hu.blackbelt.judo.meta.esm.structure.TransferObjectType productInfo = newTransferObjectTypeBuilder().withName("ProductInfo")
-                .withMapping(newMappingBuilder().withTarget(productEntity).build())
-                .withRelations(ImmutableList.of(
-                        //owrm: category
-                ))
-                .build();
-
-        //OrderItem (for product relation in intOrdInf)
-        OneWayRelationMember productInOrderDetail = newOneWayRelationMemberBuilder().withName("product").withLower(1).withTarget(productEntity).build();
-        hu.blackbelt.judo.meta.esm.structure.EntityType orderDetail = newEntityTypeBuilder().withName("OrderDetail")
-                .withRelations(ImmutableList.of(productInOrderDetail))
-                .build();
-        orderDetail.setMapping(newMappingBuilder().withTarget(orderDetail).build());
-
-        hu.blackbelt.judo.meta.esm.structure.TransferObjectType orderItem = newTransferObjectTypeBuilder().withName("OrderItem")
-                .withMapping(newMappingBuilder().withTarget(orderDetail).build())
-                .withRelations(ImmutableList.of(
-                        newOneWayRelationMemberBuilder().withName("product").withTarget(productInfo).withBinding(productInOrderDetail).withLower(1).withRelationMemberType(RelationMemberType.BOUND).withGetterExpression("self.product").build()
-                ))
-                .build();
-*/
         //ShipperInfo
         //TwoWayRelationMember shipperOrdersInShipper = newTwoWayRelationMemberBuilder().withName("shipperOrders").withUpper(-1).build();
         AssociationEnd shipperOrdersInShipper = newAssociationEndBuilder().withName("shipperOrders").withCardinality(newCardinalityBuilder().withUpper(-1).withLower(0).build()).build();
@@ -137,42 +97,17 @@ public class Psm2AsmReferenceTest {
                 )).build();
 
         //OrderItem (for product relation in intOrdInf)
-        AssociationEnd productInOrderDetail = newAssociationEndBuilder().withName("product").withTarget(productEntity).withCardinality(newCardinalityBuilder().withLower(1).withUpper(1).build()).build();
+        AssociationEnd productInOrderDetail = newAssociationEndBuilder().withName("productInOrderDetail").withTarget(productEntity).withCardinality(newCardinalityBuilder().withLower(1).withUpper(1).build()).build();
         EntityType orderDetail = newEntityTypeBuilder().withName("OrderDetail")
                 .withRelations(ImmutableList.of(productInOrderDetail))
                 .build();
 
         MappedTransferObjectType orderItem = newMappedTransferObjectTypeBuilder().withName("OrderItem").withEntityType(orderDetail)
                 .withRelations(ImmutableList.of(
-                        //newOneWayRelationMemberBuilder().withName("product").withTarget(productInfo).withBinding(productInOrderDetail).withLower(1).withRelationMemberType(RelationMemberType.BOUND).withGetterExpression("self.product").build()
                         newTransferObjectRelationBuilder().withName("product").withEmbedded(false).withTarget(productInfo).withBinding(productInOrderDetail).withCardinality(newCardinalityBuilder().withLower(1).withUpper(1).build()).build()
                 ))
                 .build();
 
-        //OrderInfo
-        /*
-        //OrderInfo
-        OneWayRelationMember itemsInOrder = newOneWayRelationMemberBuilder().withName("items").withTarget(orderDetail).withContainment(true).withLower(1).withUpper(-1).build();
-        TwoWayRelationMember shipperInOrder = newTwoWayRelationMemberBuilder().withName("shipper").withTarget(shipperEntity).withPrimary(true).withDefaultExpression("").withRangeExpression("").build();
-        shipperInOrder.setPartner(shipperOrdersInShipper);
-        shipperOrdersInShipper.setPartner(shipperInOrder);
-        EntityType orderEntity = newEntityTypeBuilder().withName("Order")
-                .withRelations(ImmutableList.of(shipperInOrder, itemsInOrder))
-                .build();
-        orderEntity.setMapping(newMappingBuilder().withTarget(orderEntity).build());
-        shipperOrdersInShipper.setTarget(orderEntity);
-
-        TransferObjectType orderInfo = newTransferObjectTypeBuilder().withName("OrderInfo")
-                .withMapping(newMappingBuilder().withTarget(orderEntity).build())
-                .withRelations(ImmutableList.of(
-                        //nonembedded => new embedded "shipper_" targeting ShipperReference (mto w/o members)
-                        newOneWayRelationMemberBuilder().withName("shipper").withTarget(shipperInfo).withBinding(shipperInOrder).withGetterExpression("self.shipper").withRelationMemberType(RelationMemberType.BOUND).build(),
-                        //embedded => goto target
-                        newOneWayRelationMemberBuilder().withName("items").withTarget(orderItem).withAggregation(true).withBinding(itemsInOrder).withGetterExpression("self.orderDetails").withRelationMemberType(RelationMemberType.BOUND).withLower(1).withUpper(-1).build()
-
-                ))
-                .build();
-*/
         //TODO: continue
         //AssociationEnd itemsInOrder = newAssociationEndBuilder().withName("items").withTarget(orderDetail)//.withContainment(true).withLower(1).withUpper(-1).build();
         //shipperInOrder + shipperOrdersInShipper (twr@esm -> 2assoc@psm)
@@ -190,29 +125,11 @@ public class Psm2AsmReferenceTest {
         MappedTransferObjectType orderInfo = newMappedTransferObjectTypeBuilder().withName("OrderInfo").withEntityType(orderEntity)
                 .withRelations(ImmutableList.of(
                         //nonembedded => new embedded "shipper_" targeting ShipperReference (mto w/o members)
-                        //newOneWayRelationMemberBuilder().withName("shipper").withTarget(shipperInfo).withBinding(shipperInOrder).withGetterExpression("self.shipper").withRelationMemberType(RelationMemberType.BOUND).build(),
                         newTransferObjectRelationBuilder().withName("shipper").withTarget(shipperInfo).withBinding(shipperInOrder).withEmbedded(false).withCardinality(newCardinalityBuilder().withLower(0).withUpper(1).build()).build(),
                         //embedded => goto target
-                        //newOneWayRelationMemberBuilder().withName("items").withTarget(orderItem).withAggregation(true).withBinding(itemsInOrder).withGetterExpression("self.orderDetails").withRelationMemberType(RelationMemberType.BOUND).withLower(1).withUpper(-1).build()
-                        newTransferObjectRelationBuilder().withName("items").withTarget(orderItem).withBinding(orderDetailsInOrder).withEmbedded(true).withCardinality(newCardinalityBuilder().withLower(1).withUpper(-1).build()).build() //todo: create
+                        newTransferObjectRelationBuilder().withName("items").withTarget(orderItem).withBinding(orderDetailsInOrder).withEmbedded(true).withEmbeddedCreate(true).withCardinality(newCardinalityBuilder().withLower(1).withUpper(-1).build()).build()
                 ))
                 .build();
-
-        //InternationalOrderInfo
-        //nonEmbedded relations shipper (OrderInfo->ShipperInfo) & items (OrderItem -> ProductInfo)
-        /*
-        //InternationalOrderInfo with supertype OrderInfo
-        //nonEmbedded relations shipper (OrderInfo->ShipperInfo) & items (OrderItem -> ProductInfo)
-    EntityType internationalOrderEntity = newEntityTypeBuilder().withName("Shipper")
-            .build();
-    internationalOrderEntity.setMapping(newMappingBuilder().withTarget(internationalOrderEntity).build());
-
-    TransferObjectType internationalOrderInfo = newTransferObjectTypeBuilder().withName("InternationalOrderInfo")
-            .withMapping(newMappingBuilder().withTarget(orderEntity).build())
-            .withRelations(ImmutableList.of(
-
-            ))
-            .build();*/
 
         EntityType internationalOrderEntity = newEntityTypeBuilder().withName("InternationalOrder")
                 .withRelations(ImmutableList.of(
