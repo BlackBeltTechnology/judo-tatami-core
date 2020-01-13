@@ -6,25 +6,6 @@ import "modules/package.etl";
 import "modules/transferObject.etl";
 import "modules/type.etl";
 
-pre {
-    var orderInfo = JUDOPSM!MappedTransferObjectType.all.selectOne(mto | mto.name="OrderInfo");
-    if(orderInfo.isDefined()){
-        log.debug("orderInfo found");
-    }
-    var shipper = JUDOPSM!TransferObjectRelation.all.selectOne(tor | (tor.name == "shipper") and (tor.eContainer == orderInfo));
-    if(shipper.isDefined()){
-        log.debug("getAllContainer: " + psmUtils.getAllContainers(shipper.eContainer));
-        log.debug("isEmbedded: " + shipper.embedded);
-    }
-    var createOrder = JUDOPSM!UnboundOperation.all.selectOne(oper | (oper.name == "createOrder_") and oper.implementation.isDefined() and oper.implementation.stateful and oper.input.isDefined() and oper.input.type == orderInfo);
-    if(createOrder.isDefined()){
-        log.debug("createOrder found");
-    }
-    if(orderInfo.isDefined() and createOrder.isDefined() and shipper.isDefined()){
-        log.debug("pls work: " + ((not shipper.embedded) and psmUtils.getAllContainers(orderInfo).including(orderInfo).exists(mto | JUDOPSM!UnboundOperation.all.selectOne(oper | oper.implementation.isDefined() and oper.implementation.stateful and oper.input.isDefined() and oper.input.type == mto).isDefined())));
-    }
-}
-
 post {
     asmUtils.enrichWithAnnotations();
 }

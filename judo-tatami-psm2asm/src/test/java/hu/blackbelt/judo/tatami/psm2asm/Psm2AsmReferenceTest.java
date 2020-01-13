@@ -15,6 +15,7 @@ import hu.blackbelt.judo.meta.psm.service.MappedTransferObjectType;
 import hu.blackbelt.judo.meta.psm.service.UnboundOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
@@ -74,6 +75,7 @@ public class Psm2AsmReferenceTest {
                 .build();
     }
 
+    @Disabled
     @Test
     public void testReferenceEmbedding() throws Exception {
         slf4jlog.info("testReferenceEmbedment~~~~~~~~~~~~~~~~~~~~");
@@ -143,7 +145,7 @@ public class Psm2AsmReferenceTest {
         MappedTransferObjectType orderItem = newMappedTransferObjectTypeBuilder().withName("OrderItem").withEntityType(orderDetail)
                 .withRelations(ImmutableList.of(
                         //newOneWayRelationMemberBuilder().withName("product").withTarget(productInfo).withBinding(productInOrderDetail).withLower(1).withRelationMemberType(RelationMemberType.BOUND).withGetterExpression("self.product").build()
-                        newTransferObjectRelationBuilder().withName("product").withTarget(productInfo).withBinding(productInOrderDetail).withCardinality(newCardinalityBuilder().withLower(1).withUpper(1).build()).build()
+                        newTransferObjectRelationBuilder().withName("product").withEmbedded(false).withTarget(productInfo).withBinding(productInOrderDetail).withCardinality(newCardinalityBuilder().withLower(1).withUpper(1).build()).build()
                 ))
                 .build();
 
