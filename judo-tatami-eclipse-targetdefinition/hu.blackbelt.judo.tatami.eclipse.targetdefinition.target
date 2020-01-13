@@ -4,116 +4,116 @@
   <locations>
     <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
       <repository location="http://download.eclipse.org/releases/2019-12"/>
-	    <unit id="org.eclipse.emf.mwe2.language.sdk.feature.group" version="2.11.1.v20191121-1148"/>
-	    <unit id="org.eclipse.emf.mwe2.runtime.sdk.feature.group" version="2.11.1.v20191121-1148"/>
-	    <unit id="org.eclipse.emf.sdk.feature.group" version="2.20.0.v20191028-0905"/>
-	    <unit id="org.eclipse.pde.source.feature.group" version="3.14.200.v20191210-0610"/>
-	    <unit id="org.eclipse.equinox.core.sdk.feature.group" version="3.19.100.v20191120-0247"/>
-	    <unit id="org.eclipse.equinox.sdk.feature.group" version="3.20.0.v20191122-2104"/>
-	    <unit id="org.eclipse.e4.core.tools.feature.source.feature.group" version="4.14.0.v20191115-2149"/>
-	    <unit id="org.eclipse.sdk.feature.group" version="4.14.0.v20191210-0610"/>
+	    <unit id="org.eclipse.emf.mwe2.language.sdk.feature.group" version="0.0.0"/>
+	    <unit id="org.eclipse.emf.mwe2.runtime.sdk.feature.group" version="0.0.0"/>
+	    <unit id="org.eclipse.emf.sdk.feature.group" version="0.0.0"/>
+	    <unit id="org.eclipse.pde.source.feature.group" version="0.0.0"/>
+	    <unit id="org.eclipse.equinox.core.sdk.feature.group" version="0.0.0"/>
+	    <unit id="org.eclipse.equinox.sdk.feature.group" version="0.0.0"/>
+	    <unit id="org.eclipse.e4.core.tools.feature.source.feature.group" version="0.0.0"/>
+	    <unit id="org.eclipse.sdk.feature.group" version="0.0.0"/>
     </location>
 	  <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
-		  <unit id="org.eclipse.epsilon.core.dt.feature.feature.group" version="1.5.1.201809302027"/>
-		  <unit id="org.eclipse.epsilon.core.feature.feature.group" version="1.5.1.201809302027"/>
-		  <unit id="org.eclipse.epsilon.emc.graphml.feature.feature.group" version="1.5.1.201809302027"/>
-		  <unit id="org.eclipse.epsilon.emc.spreadsheets.excel.dt.feature.feature.group" version="1.5.1.201809302027"/>
-		  <unit id="org.eclipse.epsilon.emc.spreadsheets.excel.feature.feature.group" version="1.5.1.201809302027"/>
-		  <unit id="org.eclipse.epsilon.emc.spreadsheets.feature.feature.group" version="1.5.1.201809302027"/>
-		  <unit id="org.eclipse.epsilon.emc.spreadsheets.google.dt.feature.feature.group" version="1.5.1.201809302027"/>
-		  <unit id="org.eclipse.epsilon.emc.spreadsheets.google.feature.feature.group" version="1.5.1.201809302027"/>
-		  <unit id="org.eclipse.epsilon.emf.dt.feature.feature.group" version="1.5.1.201809302027"/>
-		  <unit id="org.eclipse.epsilon.emf.feature.feature.group" version="1.5.1.201809302027"/>
-		  <unit id="org.eclipse.epsilon.eunit.dt.emf.feature.feature.group" version="1.5.1.201809302027"/>
-		  <unit id="org.eclipse.epsilon.evl.emf.validation.feature.feature.group" version="1.5.1.201809302027"/>
-		  <unit id="org.eclipse.epsilon.ewl.emf.feature.feature.group" version="1.5.1.201809302027"/>
-		  <unit id="org.eclipse.epsilon.ewl.gmf.feature.feature.group" version="1.5.1.201809302027"/>
-		  <unit id="org.eclipse.epsilon.simulink.dt.feature.feature.group" version="1.5.1.201809302027"/>
-		  <unit id="org.eclipse.epsilon.simulink.feature.feature.group" version="1.5.1.201809302027"/>
-		  <unit id="org.eclipse.epsilon.uml.dt.feature.feature.group" version="1.5.1.201809302027"/>
-		  <unit id="org.eclipse.epsilon.uml.feature.feature.group" version="1.5.1.201809302027"/>
+		  <unit id="org.eclipse.epsilon.core.dt.feature.feature.group" version="0.0.0"/>
+		  <unit id="org.eclipse.epsilon.core.feature.feature.group" version="0.0.0"/>
+		  <unit id="org.eclipse.epsilon.emc.graphml.feature.feature.group" version="0.0.0"/>
+		  <unit id="org.eclipse.epsilon.emc.spreadsheets.excel.dt.feature.feature.group" version="0.0.0"/>
+		  <unit id="org.eclipse.epsilon.emc.spreadsheets.excel.feature.feature.group" version="0.0.0"/>
+		  <unit id="org.eclipse.epsilon.emc.spreadsheets.feature.feature.group" version="0.0.0"/>
+		  <unit id="org.eclipse.epsilon.emc.spreadsheets.google.dt.feature.feature.group" version="0.0.0"/>
+		  <unit id="org.eclipse.epsilon.emc.spreadsheets.google.feature.feature.group" version="0.0.0"/>
+		  <unit id="org.eclipse.epsilon.emf.dt.feature.feature.group" version="0.0.0"/>
+		  <unit id="org.eclipse.epsilon.emf.feature.feature.group" version="0.0.0"/>
+		  <unit id="org.eclipse.epsilon.eunit.dt.emf.feature.feature.group" version="0.0.0"/>
+		  <unit id="org.eclipse.epsilon.evl.emf.validation.feature.feature.group" version="0.0.0"/>
+		  <unit id="org.eclipse.epsilon.ewl.emf.feature.feature.group" version="0.0.0"/>
+		  <unit id="org.eclipse.epsilon.ewl.gmf.feature.feature.group" version="0.0.0"/>
+		  <unit id="org.eclipse.epsilon.simulink.dt.feature.feature.group" version="0.0.0"/>
+		  <unit id="org.eclipse.epsilon.simulink.feature.feature.group" version="0.0.0"/>
+		  <unit id="org.eclipse.epsilon.uml.dt.feature.feature.group" version="0.0.0"/>
+		  <unit id="org.eclipse.epsilon.uml.feature.feature.group" version="0.0.0"/>
 		  <repository location="http://download.eclipse.org/epsilon/updates"/>
 	  </location>
 	  <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
-		  <unit id="hu.blackbelt.eclipse.emf.genmodel.generator.feature.feature.group" version="1.0.0.20191222_154354_a61f75c_develop"/>
+		  <unit id="hu.blackbelt.eclipse.emf.genmodel.generator.feature.feature.group" version="0.0.0"/>
 		  <repository location="https://nexus.judo.technology/repository/p2/emf-genmodel-generator/1.0.0.20191222_154354_a61f75c_develop"/>
 	  </location>
 	  <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
-		  <unit id="hu.blackbelt.judo.eclipse.emf.genmodel.generator.feature.feature.group" version="1.0.0.20191105_183255_7673428_develop"/>
-		  <repository location="https://nexus.judo.technology/repository/p2/judo-genmodel-generator/1.0.0.20191105_183255_7673428_develop"/>
+		  <unit id="hu.blackbelt.judo.eclipse.emf.genmodel.generator.feature.feature.group" version="0.0.0"/>
+		  <repository location="https://nexus.judo.technology/repository/p2/judo-genmodel-generator/1.0.0.20191227_185540_12197c7_develop"/>
 	  </location>
 	  <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
-		  <unit id="hu.blackbelt.epsilon.runtime.feature.feature.group" version="1.2.0.20191105_183445_4b0b2da_develop"/>
-		  <repository location="https://nexus.judo.technology/repository/p2/epsilon-runtime-eclipse/1.2.0.20191105_183445_4b0b2da_develop"/>
+		  <unit id="hu.blackbelt.epsilon.runtime.feature.feature.group" version="0.0.0"/>
+		  <repository location="https://nexus.judo.technology/repository/p2/epsilon-runtime-eclipse/1.2.0.20200112_022936_df2f83b_develop"/>
 	  </location>
 	  
 	  
 	  
 	  <!-- //////////////////////// Models \\\\\\\\\\\\\\\\\\\\\\\\\ -->
 	  <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
-		  <repository location="https://nexus.judo.technology/repository/p2/judo-meta-asm/1.0.0.20191227_133234_b29974b_develop"/>
-		  <unit id="hu.blackbelt.judo.meta.asm.feature.feature.group" version="1.0.0.20191227_133234_b29974b_develop"/>
+		  <repository location="https://nexus.judo.technology/repository/p2/judo-meta-asm/1.0.0.20200112_031229_be74b13_develop"/>
+		  <unit id="hu.blackbelt.judo.meta.asm.feature.feature.group" version="0.0.0"/>
 	  </location>
 
       <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
-  		  <repository location="https://nexus.judo.technology/repository/p2/judo-meta-esm/1.1.0.20191227_101823_e21f017_develop"/>
-  		  <unit id="hu.blackbelt.judo.meta.esm.feature.feature.group" version="1.1.0.20191227_101823_e21f017_develop"/>
-          <unit id="hu.blackbelt.judo.meta.esm.designer.feature.feature.group" version="1.1.0.20191227_101823_e21f017_develop"/>
+  		  <repository location="https://nexus.judo.technology/repository/p2/judo-meta-esm/1.1.0.20200112_024734_4654dd6_develop"/>
+  		  <unit id="hu.blackbelt.judo.meta.esm.feature.feature.group" version="0.0.0"/>
+          <unit id="hu.blackbelt.judo.meta.esm.designer.feature.feature.group" version="0.0.0"/>
       </location>
 
 	  <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
-		  <repository location="https://nexus.judo.technology/repository/p2/judo-meta-psm/1.0.0.20191227_105210_4ce0798_develop"/>
-		  <unit id="hu.blackbelt.judo.meta.psm.feature.feature.group" version="1.0.0.20191227_105210_4ce0798_develop"/>
+		  <repository location="https://nexus.judo.technology/repository/p2/judo-meta-psm/1.0.0.20200112_024603_4a38320_develop"/>
+		  <unit id="hu.blackbelt.judo.meta.psm.feature.feature.group" version="0.0.0"/>
 	  </location>
 
 	  <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
-		  <repository location="https://nexus.judo.technology/repository/p2/judo-meta-measure/1.0.0.20191227_133319_9cf536c_develop"/>
-		  <unit id="hu.blackbelt.judo.meta.measure.feature.feature.group" version="1.0.0.20191227_133319_9cf536c_develop"/>
+		  <repository location="https://nexus.judo.technology/repository/p2/judo-meta-measure/1.0.0.20200112_030434_1a2a1fb_develop"/>
+		  <unit id="hu.blackbelt.judo.meta.measure.feature.feature.group" version="0.0.0"/>
 	  </location>
 
 	  <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
-		  <repository location="https://nexus.judo.technology/repository/p2/judo-meta-jql/1.0.0.20191227_134514_dfc1a73_develop"/>
-		  <unit id="hu.blackbelt.judo.meta.jql.feature.feature.group" version="1.0.0.20191227_134514_dfc1a73_develop"/>
+		  <repository location="https://nexus.judo.technology/repository/p2/judo-meta-jql/1.0.0.20200112_030445_9877e2b_develop"/>
+		  <unit id="hu.blackbelt.judo.meta.jql.feature.feature.group" version="0.0.0"/>
 	  </location>
 
 	  <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
-		  <repository location="https://nexus.judo.technology/repository/p2/judo-meta-rdbms/1.0.0.20191227_133951_02b1df4_develop"/>
-		  <unit id="hu.blackbelt.judo.meta.rdbms.feature.feature.group" version="1.0.0.20191227_133951_02b1df4_develop"/>
+		  <repository location="https://nexus.judo.technology/repository/p2/judo-meta-rdbms/1.0.0.20200112_032816_c19b3a4_develop"/>
+		  <unit id="hu.blackbelt.judo.meta.rdbms.feature.feature.group" version="0.0.0"/>
 	  </location>
 
 	  <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
-		  <repository location="https://nexus.judo.technology/repository/p2/judo-meta-liquibase/1.0.0.20191229_114702_3739a2f_develop"/>
-		  <unit id="hu.blackbelt.judo.meta.liquibase.feature.feature.group" version="1.0.0.20191229_114702_3739a2f_develop"/>
+		  <repository location="https://nexus.judo.technology/repository/p2/judo-meta-liquibase/1.0.0.20200112_031935_1b64664_develop"/>
+		  <unit id="hu.blackbelt.judo.meta.liquibase.feature.feature.group" version="0.0.0"/>
 	  </location>
 
 	  <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
-		  <repository location="https://nexus.judo.technology/repository/p2/judo-meta-expression/1.0.0.20191227_141052_92ef61c_develop"/>
-		  <unit id="hu.blackbelt.judo.meta.expression.feature.feature.group" version="1.0.0.20191227_141052_92ef61c_develop"/>
+		  <repository location="https://nexus.judo.technology/repository/p2/judo-meta-expression/1.0.0.20200112_033455_4fa9867_develop"/>
+		  <unit id="hu.blackbelt.judo.meta.expression.feature.feature.group" version="0.0.0"/>
 	  </location>
 
 	  <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
-		  <repository location="https://nexus.judo.technology/repository/p2/judo-jql-ide-eclipse/1.0.0.20191230_101900_d21be1a_develop"/>
-		  <unit id="hu.blackbelt.judo.jql.ide.eclipse.feature.feature.group" version="1.0.0.20191230_101900_d21be1a_develop"/>
+		  <repository location="https://nexus.judo.technology/repository/p2/judo-jql-ide-eclipse/1.0.0.20200112_035552_3edb935_develop"/>
+		  <unit id="hu.blackbelt.judo.jql.ide.eclipse.feature.feature.group" version="0.0.0"/>
 	  </location>
 
 	  <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
-      	  <repository location="https://nexus.judo.technology/repository/p2/judo-meta-openapi/1.0.0.20191230_233109_9959119_develop"/>
-      	  <unit id="hu.blackbelt.judo.meta.openapi.feature.feature.group" version="1.0.0.20191230_233109_9959119_develop"/>
+      	  <repository location="https://nexus.judo.technology/repository/p2/judo-meta-openapi/1.0.0.20200112_031451_f9edb52_develop"/>
+      	  <unit id="hu.blackbelt.judo.meta.openapi.feature.feature.group" version="0.0.0"/>
       </location>
 
 	  <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
-      	  <repository location="https://nexus.judo.technology/repository/p2/judo-meta-script/1.0.0.20191227_142540_91171c6_develop"/>
-      	  <unit id="hu.blackbelt.judo.meta.script.feature.feature.group" version="1.0.0.20191227_142540_91171c6_develop"/>
+      	  <repository location="https://nexus.judo.technology/repository/p2/judo-meta-script/1.0.0.20200112_035424_4e4df31_develop"/>
+      	  <unit id="hu.blackbelt.judo.meta.script.feature.feature.group" version="0.0.0"/>
       </location>
 
 	  <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
-      	  <repository location="https://nexus.judo.technology/repository/p2/judo-meta-jcl/1.0.0.20191227_140453_4e7756a_develop"/>
-      	  <unit id="hu.blackbelt.judo.meta.jcl.feature.feature.group" version="1.0.0.20191227_140453_4e7756a_develop"/>
+      	  <repository location="https://nexus.judo.technology/repository/p2/judo-meta-jcl/1.0.0.20200112_032851_fd9821f_develop"/>
+      	  <unit id="hu.blackbelt.judo.meta.jcl.feature.feature.group" version="0.0.0"/>
       </location>
 
 	  <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
-      	  <repository location="https://nexus.judo.technology/repository/p2/judo-script-codegen/1.0.0.20191230_102842_179206c_develop"/>
-      	  <unit id="hu.blackbelt.judo.script.codegen.feature.feature.group" version="1.0.0.20191230_102842_179206c_develop"/>
+      	  <repository location="https://nexus.judo.technology/repository/p2/judo-script-codegen/1.0.0.20200112_040359_fb8da08_develop"/>
+      	  <unit id="hu.blackbelt.judo.script.codegen.feature.feature.group" version="0.0.0"/>
       </location>
 
   	  <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
@@ -135,58 +135,58 @@
 
 	  <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
 		  <unit id="com.google.gson" version="2.8.2.v20180104-1110"/>
-		  <unit id="org.eclipse.acceleo.query.feature.group" version="6.0.8.201902261618"/>
-		  <unit id="org.eclipse.acceleo.query.source.feature.group" version="6.0.8.201902261618"/>
-		  <unit id="org.eclipse.acceleo.ui.interpreter.feature.group" version="3.7.8.201902261618"/>
-		  <unit id="org.eclipse.acceleo.ui.interpreter.source.feature.group" version="3.7.8.201902261618"/>
-		  <unit id="org.eclipse.eef.ext.widgets.reference.feature.feature.group" version="2.1.3.201909051307"/>
-		  <unit id="org.eclipse.eef.ext.widgets.reference.feature.source.feature.group" version="2.1.3.201909051307"/>
-		  <unit id="org.eclipse.eef.sdk.feature.feature.group" version="2.1.3.201909051307"/>
-		  <unit id="org.eclipse.eef.sdk.feature.source.feature.group" version="2.1.3.201909051307"/>
-		  <unit id="org.eclipse.elk.algorithms.feature.feature.group" version="0.5.0"/>
-		  <unit id="org.eclipse.elk.algorithms.feature.source.feature.group" version="0.5.0"/>
-		  <unit id="org.eclipse.elk.feature.feature.group" version="0.5.0"/>
-		  <unit id="org.eclipse.elk.feature.source.feature.group" version="0.5.0"/>
-		  <unit id="org.eclipse.elk.graphviz.feature.feature.group" version="0.5.0"/>
-		  <unit id="org.eclipse.elk.graphviz.feature.source.feature.group" version="0.5.0"/>
-		  <unit id="org.eclipse.sirius.aql.feature.group" version="6.3.0.201910180815"/>
-		  <unit id="org.eclipse.sirius.aql.source.feature.group" version="6.3.0.201910180815"/>
-		  <unit id="org.eclipse.sirius.diagram.elk.feature.feature.group" version="6.3.0.201910180815"/>
-		  <unit id="org.eclipse.sirius.diagram.elk.feature.source.feature.group" version="6.3.0.201910180815"/>
-		  <unit id="org.eclipse.sirius.doc.feature.feature.group" version="6.3.0.201910180815"/>
-		  <unit id="org.eclipse.sirius.doc.feature.source.feature.group" version="6.3.0.201910180815"/>
-		  <unit id="org.eclipse.sirius.interpreter.feature.feature.group" version="6.3.0.201910180815"/>
-		  <unit id="org.eclipse.sirius.interpreter.feature.source.feature.group" version="6.3.0.201910180815"/>
-		  <unit id="org.eclipse.sirius.properties.feature.feature.group" version="6.3.0.201910180815"/>
-		  <unit id="org.eclipse.sirius.properties.feature.source.feature.group" version="6.3.0.201910180815"/>
-		  <unit id="org.eclipse.sirius.runtime.acceleo.feature.group" version="6.3.0.201910180815"/>
-		  <unit id="org.eclipse.sirius.runtime.acceleo.source.feature.group" version="6.3.0.201910180815"/>
-		  <unit id="org.eclipse.sirius.runtime.aql.feature.group" version="6.3.0.201910180815"/>
-		  <unit id="org.eclipse.sirius.runtime.aql.source.feature.group" version="6.3.0.201910180815"/>
-		  <unit id="org.eclipse.sirius.runtime.feature.group" version="6.3.0.201910180815"/>
-		  <unit id="org.eclipse.sirius.runtime.ide.eef.feature.group" version="6.3.0.201910180815"/>
-		  <unit id="org.eclipse.sirius.runtime.ide.eef.source.feature.group" version="6.3.0.201910180815"/>
-		  <unit id="org.eclipse.sirius.runtime.ide.ui.acceleo.feature.group" version="6.3.0.201910180815"/>
-		  <unit id="org.eclipse.sirius.runtime.ide.ui.acceleo.source.feature.group" version="6.3.0.201910180815"/>
-		  <unit id="org.eclipse.sirius.runtime.ide.ui.feature.group" version="6.3.0.201910180815"/>
-		  <unit id="org.eclipse.sirius.runtime.ide.ui.source.feature.group" version="6.3.0.201910180815"/>
-		  <unit id="org.eclipse.sirius.runtime.ide.xtext.feature.group" version="6.3.0.201910180815"/>
-		  <unit id="org.eclipse.sirius.runtime.ide.xtext.source.feature.group" version="6.3.0.201910180815"/>
-		  <unit id="org.eclipse.sirius.runtime.ocl.feature.group" version="6.3.0.201910180815"/>
-		  <unit id="org.eclipse.sirius.runtime.ocl.source.feature.group" version="6.3.0.201910180815"/>
-		  <unit id="org.eclipse.sirius.runtime.source.feature.group" version="6.3.0.201910180815"/>
-		  <unit id="org.eclipse.sirius.samples.properties.feature.feature.group" version="6.3.0.201910180815"/>
-		  <unit id="org.eclipse.sirius.samples.properties.feature.source.feature.group" version="6.3.0.201910180815"/>
-		  <unit id="org.eclipse.sirius.specifier.feature.group" version="6.3.0.201910180815"/>
-		  <unit id="org.eclipse.sirius.specifier.ide.ui.acceleo.feature.group" version="6.3.0.201910180815"/>
-		  <unit id="org.eclipse.sirius.specifier.ide.ui.acceleo.source.feature.group" version="6.3.0.201910180815"/>
-		  <unit id="org.eclipse.sirius.specifier.ide.ui.aql.feature.group" version="6.3.0.201910180815"/>
-		  <unit id="org.eclipse.sirius.specifier.ide.ui.aql.source.feature.group" version="6.3.0.201910180815"/>
-		  <unit id="org.eclipse.sirius.specifier.ide.ui.feature.group" version="6.3.0.201910180815"/>
-		  <unit id="org.eclipse.sirius.specifier.ide.ui.source.feature.group" version="6.3.0.201910180815"/>
-		  <unit id="org.eclipse.sirius.specifier.properties.feature.feature.group" version="6.3.0.201910180815"/>
-		  <unit id="org.eclipse.sirius.specifier.properties.feature.source.feature.group" version="6.3.0.201910180815"/>
-		  <unit id="org.eclipse.sirius.specifier.source.feature.group" version="6.3.0.201910180815"/>
+		  <unit id="org.eclipse.acceleo.query.feature.group" version="0.0.0"/>
+		  <unit id="org.eclipse.acceleo.query.source.feature.group" version="0.0.0"/>
+		  <unit id="org.eclipse.acceleo.ui.interpreter.feature.group" version="0.0.0"/>
+		  <unit id="org.eclipse.acceleo.ui.interpreter.source.feature.group" version="0.0.0"/>
+		  <unit id="org.eclipse.eef.ext.widgets.reference.feature.feature.group" version="0.0.0"/>
+		  <unit id="org.eclipse.eef.ext.widgets.reference.feature.source.feature.group" version="0.0.0"/>
+		  <unit id="org.eclipse.eef.sdk.feature.feature.group" version="0.0.0"/>
+		  <unit id="org.eclipse.eef.sdk.feature.source.feature.group" version="0.0.0"/>
+		  <unit id="org.eclipse.elk.algorithms.feature.feature.group" version="0.0.0"/>
+		  <unit id="org.eclipse.elk.algorithms.feature.source.feature.group" version="0.0.0"/>
+		  <unit id="org.eclipse.elk.feature.feature.group" version="0.0.0"/>
+		  <unit id="org.eclipse.elk.feature.source.feature.group" version="0.0.0"/>
+		  <unit id="org.eclipse.elk.graphviz.feature.feature.group" version="0.0.0"/>
+		  <unit id="org.eclipse.elk.graphviz.feature.source.feature.group" version="0.0.0"/>
+		  <unit id="org.eclipse.sirius.aql.feature.group" version="0.0.0"/>
+		  <unit id="org.eclipse.sirius.aql.source.feature.group" version="0.0.0"/>
+		  <unit id="org.eclipse.sirius.diagram.elk.feature.feature.group" version="0.0.0"/>
+		  <unit id="org.eclipse.sirius.diagram.elk.feature.source.feature.group" version="0.0.0"/>
+		  <unit id="org.eclipse.sirius.doc.feature.feature.group" version="0.0.0"/>
+		  <unit id="org.eclipse.sirius.doc.feature.source.feature.group" version="0.0.0"/>
+		  <unit id="org.eclipse.sirius.interpreter.feature.feature.group" version="0.0.0"/>
+		  <unit id="org.eclipse.sirius.interpreter.feature.source.feature.group" version="0.0.0"/>
+		  <unit id="org.eclipse.sirius.properties.feature.feature.group" version="0.0.0"/>
+		  <unit id="org.eclipse.sirius.properties.feature.source.feature.group" version="0.0.0"/>
+		  <unit id="org.eclipse.sirius.runtime.acceleo.feature.group" version="0.0.0"/>
+		  <unit id="org.eclipse.sirius.runtime.acceleo.source.feature.group" version="0.0.0"/>
+		  <unit id="org.eclipse.sirius.runtime.aql.feature.group" version="0.0.0"/>
+		  <unit id="org.eclipse.sirius.runtime.aql.source.feature.group" version="0.0.0"/>
+		  <unit id="org.eclipse.sirius.runtime.feature.group" version="0.0.0"/>
+		  <unit id="org.eclipse.sirius.runtime.ide.eef.feature.group" version="0.0.0"/>
+		  <unit id="org.eclipse.sirius.runtime.ide.eef.source.feature.group" version="0.0.0"/>
+		  <unit id="org.eclipse.sirius.runtime.ide.ui.acceleo.feature.group" version="0.0.0"/>
+		  <unit id="org.eclipse.sirius.runtime.ide.ui.acceleo.source.feature.group" version="0.0.0"/>
+		  <unit id="org.eclipse.sirius.runtime.ide.ui.feature.group" version="0.0.0"/>
+		  <unit id="org.eclipse.sirius.runtime.ide.ui.source.feature.group" version="0.0.0"/>
+		  <unit id="org.eclipse.sirius.runtime.ide.xtext.feature.group" version="0.0.0"/>
+		  <unit id="org.eclipse.sirius.runtime.ide.xtext.source.feature.group" version="0.0.0"/>
+		  <unit id="org.eclipse.sirius.runtime.ocl.feature.group" version="0.0.0"/>
+		  <unit id="org.eclipse.sirius.runtime.ocl.source.feature.group" version="0.0.0"/>
+		  <unit id="org.eclipse.sirius.runtime.source.feature.group" version="0.0.0"/>
+		  <unit id="org.eclipse.sirius.samples.properties.feature.feature.group" version="0.0.0"/>
+		  <unit id="org.eclipse.sirius.samples.properties.feature.source.feature.group" version="0.0.0"/>
+		  <unit id="org.eclipse.sirius.specifier.feature.group" version="0.0.0"/>
+		  <unit id="org.eclipse.sirius.specifier.ide.ui.acceleo.feature.group" version="0.0.0"/>
+		  <unit id="org.eclipse.sirius.specifier.ide.ui.acceleo.source.feature.group" version="0.0.0"/>
+		  <unit id="org.eclipse.sirius.specifier.ide.ui.aql.feature.group" version="0.0.0"/>
+		  <unit id="org.eclipse.sirius.specifier.ide.ui.aql.source.feature.group" version="0.0.0"/>
+		  <unit id="org.eclipse.sirius.specifier.ide.ui.feature.group" version="0.0.0"/>
+		  <unit id="org.eclipse.sirius.specifier.ide.ui.source.feature.group" version="0.0.0"/>
+		  <unit id="org.eclipse.sirius.specifier.properties.feature.feature.group" version="0.0.0"/>
+		  <unit id="org.eclipse.sirius.specifier.properties.feature.source.feature.group" version="0.0.0"/>
+		  <unit id="org.eclipse.sirius.specifier.source.feature.group" version="0.0.0"/>
 		  <repository location="https://download.eclipse.org/sirius/updates/releases/6.3.0/photon/"/>
 	  </location>
   </locations>

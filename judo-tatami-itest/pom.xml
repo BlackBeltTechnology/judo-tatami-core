@@ -614,7 +614,7 @@
         <dependency>
             <groupId>hu.blackbelt.cxf</groupId>
             <artifactId>cxf-jaxrs-application-manager</artifactId>
-            <version>0.5.0.develop_00081</version>
+            <version>${cxf-jaxrs-application-manager-version}</version>
         </dependency>
 
         <dependency>

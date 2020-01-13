@@ -18,7 +18,7 @@
     <repositories>
         <repository>
             <id>eclipse</id>
-            <url>http://download.eclipse.org/releases/2019-03</url>
+            <url>http://download.eclipse.org/releases/2019-12</url>
             <layout>p2</layout>
         </repository>
         <repository>
@@ -42,13 +42,8 @@
             <layout>p2</layout>
         </repository>
         <repository>
-            <id>judo-meta-esm</id>
-            <url>https://nexus.judo.technology/repository/p2/judo-meta-esm/${judo-meta-esm-version}</url>
-            <layout>p2</layout>
-        </repository>
-        <repository>
-            <id>judo-meta-psm</id>
-            <url>https://nexus.judo.technology/repository/p2/judo-meta-psm/${judo-meta-psm-version}</url>
+            <id>p2-swagger</id>
+            <url>https://nexus.judo.technology/repository/p2/p2-swagger/${p2-swagger-version}</url>
             <layout>p2</layout>
         </repository>
         <repository>
@@ -57,23 +52,13 @@
             <layout>p2</layout>
         </repository>
         <repository>
-            <id>judo-meta-expression</id>
-            <url>https://nexus.judo.technology/repository/p2/judo-meta-expression/${judo-meta-expression-version}</url>
+            <id>judo-meta-psm</id>
+            <url>https://nexus.judo.technology/repository/p2/judo-meta-psm/${judo-meta-psm-version}</url>
             <layout>p2</layout>
         </repository>
         <repository>
-            <id>judo-meta-jql</id>
-            <url>https://nexus.judo.technology/repository/p2/judo-meta-jql/${judo-meta-jql-version}</url>
-            <layout>p2</layout>
-        </repository>
-        <repository>
-            <id>judo-meta-measure</id>
-            <url>https://nexus.judo.technology/repository/p2/judo-meta-measure/${judo-meta-measure-version}</url>
-            <layout>p2</layout>
-        </repository>
-        <repository>
-            <id>swagger</id>
-            <url>https://nexus.judo.technology/repository/p2/p2-swagger/1.0.0</url>
+            <id>judo-meta-esm</id>
+            <url>https://nexus.judo.technology/repository/p2/judo-meta-esm/${judo-meta-esm-version}</url>
             <layout>p2</layout>
         </repository>
         <repository>
@@ -87,8 +72,43 @@
             <layout>p2</layout>
         </repository>
         <repository>
+            <id>judo-meta-measure</id>
+            <url>https://nexus.judo.technology/repository/p2/judo-meta-measure/${judo-meta-measure-version}</url>
+            <layout>p2</layout>
+        </repository>
+        <repository>
+            <id>judo-meta-expression</id>
+            <url>https://nexus.judo.technology/repository/p2/judo-meta-expression/${judo-meta-expression-version}</url>
+            <layout>p2</layout>
+        </repository>
+        <repository>
+            <id>judo-meta-jql</id>
+            <url>https://nexus.judo.technology/repository/p2/judo-meta-jql/${judo-meta-jql-version}</url>
+            <layout>p2</layout>
+        </repository>
+        <repository>
+            <id>judo-jql-ide-eclipse</id>
+            <url>https://nexus.judo.technology/repository/p2/judo-jql-ide-eclipse/${judo-jql-ide-eclipse-version}</url>
+            <layout>p2</layout>
+        </repository>
+        <repository>
             <id>judo-meta-openapi</id>
             <url>https://nexus.judo.technology/repository/p2/judo-meta-openapi/${judo-meta-openapi-version}</url>
+            <layout>p2</layout>
+        </repository>
+        <repository>
+            <id>judo-meta-script</id>
+            <url>https://nexus.judo.technology/repository/p2/judo-meta-script/${judo-meta-script-version}</url>
+            <layout>p2</layout>
+        </repository>
+        <repository>
+            <id>judo-meta-jcl</id>
+            <url>https://nexus.judo.technology/repository/p2/judo-meta-jcl/${judo-meta-jcl-version}</url>
+            <layout>p2</layout>
+        </repository>
+        <repository>
+            <id>judo-script-codegen</id>
+            <url>https://nexus.judo.technology/repository/p2/judo-script-codegen/${judo-script-codegen-version}</url>
             <layout>p2</layout>
         </repository>
     </repositories>
@@ -186,6 +206,46 @@
                 </configuration>
             </plugin>
 
+            <plugin>
+                <groupId>org.jboss.tools.tycho-plugins</groupId>
+                <artifactId>repository-utils</artifactId>
+                <version>${tycho-version}</version>
+                <executions>
+                    <execution>
+                        <id>generate-facade</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>generate-repository-facade</goal>
+                        </goals>
+                        <configuration>
+                            <symbols>
+                                <update.site.name>${project.description} Update site</update.site.name>
+                                <update.site.description>Use this URL in Eclipse to install</update.site.description>
+                            </symbols>
+                            <associateSites>
+                                    <site>http://download.eclipse.org/epsilon/updates/</site>
+                                    <site>https://nexus.judo.technology/repository/p2/emf-genmodel-generator/${emf-genmodel-generator-version}</site>
+                                    <site>https://nexus.judo.technology/repository/p2/judo-genmodel-generator/${judo-genmodel-generator-version}</site>
+                                    <site>https://nexus.judo.technology/repository/p2/epsilon-runtime-eclipse/${epsilon-runtime-eclipse-version}</site>
+                                    <site>https://nexus.judo.technology/repository/p2/p2-swagger/${p2-swagger-version}</site>
+                                    <site>https://nexus.judo.technology/repository/p2/judo-meta-asm/${judo-meta-asm-version}</site>
+                                    <site>https://nexus.judo.technology/repository/p2/judo-meta-psm/${judo-meta-psm-version}</site>
+                                    <site>https://nexus.judo.technology/repository/p2/judo-meta-esm/${judo-meta-esm-version}</site>
+                                    <site>https://nexus.judo.technology/repository/p2/judo-meta-rdbms/${judo-meta-rdbms-version}</site>
+                                    <site>https://nexus.judo.technology/repository/p2/judo-meta-liquibase/${judo-meta-liquibase-version}</site>
+                                    <site>https://nexus.judo.technology/repository/p2/judo-meta-measure/${judo-meta-measure-version}</site>
+                                    <site>https://nexus.judo.technology/repository/p2/judo-meta-expression/${judo-meta-expression-version}</site>
+                                    <site>https://nexus.judo.technology/repository/p2/judo-meta-jql/${judo-meta-jql-version}</site>
+                                    <site>https://nexus.judo.technology/repository/p2/judo-jql-ide-eclipse/${judo-jql-ide-eclipse-version}</site>
+                                    <site>https://nexus.judo.technology/repository/p2/judo-meta-openapi/${judo-meta-openapi-version}</site>
+                                    <site>https://nexus.judo.technology/repository/p2/judo-meta-script/${judo-meta-script-version}</site>
+                                    <site>https://nexus.judo.technology/repository/p2/judo-meta-jcl/${judo-meta-script-version}</site>
+                                    <site>https://nexus.judo.technology/repository/p2/judo-script-codegen/${judo-script-codegen-version}</site>
+                            </associateSites>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
 
@@ -236,12 +296,6 @@
                                     <value>repository-reference location="$2$3${p2-swagger-version}"</value>
                                 </replacement>
 
-                                <!-- ESM -->
-                                <replacement>
-                                    <token>(repository-reference\ location\=\")(.*?)(judo-meta-esm\/)(.*?)(\")</token>
-                                    <value>repository-reference location="$2$3${judo-meta-esm-version}"</value>
-                                </replacement>
-
                                 <!-- ASM -->
                                 <replacement>
                                     <token>(repository-reference\ location\=\")(.*?)(judo-meta-asm\/)(.*?)(\")</token>
@@ -252,6 +306,24 @@
                                 <replacement>
                                     <token>(repository-reference\ location\=\")(.*?)(judo-meta-psm\/)(.*?)(\")</token>
                                     <value>repository-reference location="$2$3${judo-meta-psm-version}"</value>
+                                </replacement>
+
+                                <!-- ESM -->
+                                <replacement>
+                                    <token>(repository-reference\ location\=\")(.*?)(judo-meta-esm\/)(.*?)(\")</token>
+                                    <value>repository-reference location="$2$3${judo-meta-esm-version}"</value>
+                                </replacement>
+
+                                <!-- RDBMS -->
+                                <replacement>
+                                    <token>(repository-reference\ location\=\")(.*?)(judo-meta-rdbms\/)(.*?)(\")</token>
+                                    <value>repository-reference location="$2$3${judo-meta-rdbms-version}"</value>
+                                </replacement>
+
+                                <!-- Liquibase -->
+                                <replacement>
+                                    <token>(repository-reference\ location\=\")(.*?)(judo-meta-liquibase\/)(.*?)(\")</token>
+                                    <value>repository-reference location="$2$3${judo-meta-liquibase-version}"</value>
                                 </replacement>
 
                                 <!-- MEASURE -->
@@ -272,22 +344,34 @@
                                     <value>repository-reference location="$2$3${judo-meta-jql-version}"</value>
                                 </replacement>
 
+                                <!-- JQL IDE Eclipse -->
+                                <replacement>
+                                    <token>(repository-reference\ location\=\")(.*?)(judo-jql-ide-eclipse\/)(.*?)(\")</token>
+                                    <value>repository-reference location="$2$3${judo-jql-ide-eclipse-version}"</value>
+                                </replacement>
+
                                 <!-- OpenAPI -->
                                 <replacement>
                                     <token>(repository-reference\ location\=\")(.*?)(judo-meta-openapi\/)(.*?)(\")</token>
                                     <value>repository-reference location="$2$3${judo-meta-openapi-version}"</value>
                                 </replacement>
 
-                                <!-- RDBMS -->
+                                <!-- Script -->
                                 <replacement>
-                                    <token>(repository-reference\ location\=\")(.*?)(judo-meta-rdbms\/)(.*?)(\")</token>
-                                    <value>repository-reference location="$2$3${judo-meta-rdbms-version}"</value>
+                                    <token>(repository-reference\ location\=\")(.*?)(judo-meta-script\/)(.*?)(\")</token>
+                                    <value>repository-reference location="$2$3${judo-meta-script-version}"</value>
                                 </replacement>
 
-                                <!-- Liquibase -->
+                                <!-- JCL -->
                                 <replacement>
-                                    <token>(repository-reference\ location\=\")(.*?)(judo-meta-liquibase\/)(.*?)(\")</token>
-                                    <value>repository-reference location="$2$3${judo-meta-liquibase-version}"</value>
+                                    <token>(repository-reference\ location\=\")(.*?)(judo-meta-jcl\/)(.*?)(\")</token>
+                                    <value>repository-reference location="$2$3${judo-meta-jcl-version}"</value>
+                                </replacement>
+
+                                <!-- Script Codegen -->
+                                <replacement>
+                                    <token>(repository-reference\ location\=\")(.*?)(judo-script-codegen\/)(.*?)(\")</token>
+                                    <value>repository-reference location="$2$3${judo-script-codegen-version}"</value>
                                 </replacement>
 
                             </replacements>
