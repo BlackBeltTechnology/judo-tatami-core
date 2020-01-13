@@ -36,7 +36,6 @@ rule CreateScriptBodyAnnotation
         script.key = "body";
         script.value = s.implementation.body;
         t.details.add(script);
-
 }
 
 
@@ -354,4 +353,144 @@ rule CreateRangeOperationForRelation
         t.eType = s.target.asmEquivalent();
         
         s.equivalent("CreateGraphOperation").eOperations.add(t);
+}
+
+@abstract
+rule AddAnnotationToBoundOperation
+    transform s : JUDOPSM!BoundOperation
+    to t : ASM!EAnnotation {
+        t.source = asmUtils.getAnnotationUri("behaviour");
+
+        s.equivalent("CreateBoundOperation").eAnnotations.add(t);
+}
+
+@abstract
+rule AddAnnotationToBoundOperationWithRelation
+    transform s : JUDOPSM!BoundOperationWithRelation
+    to t : ASM!EAnnotation
+    extends AddAnnotationToBoundOperation {
+        var relationEntry = new ASM!EStringToStringMapEntry;
+        relationEntry.key = "relation";
+        relationEntry.value = asmUtils.getReferenceFQName(s.relation.equivalent("CreateTransferObjectRelation"));
+        t.details.add(relationEntry);
+}
+
+@abstract
+rule AddAnnotationToUnboundOperation
+    transform s : JUDOPSM!UnboundOperation
+    to t : ASM!EAnnotation {
+        t.source = asmUtils.getAnnotationUri("behaviour");
+
+        s.equivalent("CreateUnboundOperation").eAnnotations.add(t);
+}
+
+@abstract
+rule AddAnnotationToUnboundOperationWithRelation
+    transform s : JUDOPSM!UnboundOperationWithRelation
+    to t : ASM!EAnnotation
+    extends AddAnnotationToUnboundOperation {
+        var relationEntry = new ASM!EStringToStringMapEntry;
+        relationEntry.key = "relation";
+        relationEntry.value = asmUtils.getReferenceFQName(s.relation.equivalent("CreateTransferObjectRelation"));
+        t.details.add(relationEntry);
+}
+
+rule AddGetAnnotationToBoundOperation
+    transform s : JUDOPSM!BoundOperation
+    to t : ASM!EAnnotation
+    extends AddAnnotationToBoundOperation {
+        guard: s.getOwnerRelation.isDefined()
+
+        t.addBehaviourAnnotationOfOwnerRelation("get", asmUtils.getReferenceFQName(s.getOwnerRelation.equivalent("CreateTransferObjectRelation")));
+}
+
+rule AddCreateAnnotationToBoundOperation
+    transform s : JUDOPSM!BoundOperation
+    to t : ASM!EAnnotation
+    extends AddAnnotationToBoundOperation {
+        guard: s.createOwnerRelation.isDefined()
+
+        t.addBehaviourAnnotationOfOwnerRelation("create", asmUtils.getReferenceFQName(s.createOwnerRelation.equivalent("CreateTransferObjectRelation")));
+}
+
+rule AddUpdateAnnotationToBoundOperation
+    transform s : JUDOPSM!BoundOperation
+    to t : ASM!EAnnotation
+    extends AddAnnotationToBoundOperation {
+        guard: s.updateOwnerRelation.isDefined()
+
+        t.addBehaviourAnnotationOfOwnerRelation("update", asmUtils.getReferenceFQName(s.updateOwnerRelation.equivalent("CreateTransferObjectRelation")));
+}
+
+rule AddDeleteAnnotationToBoundOperation
+    transform s : JUDOPSM!BoundOperation
+    to t : ASM!EAnnotation
+    extends AddAnnotationToBoundOperation {
+        guard: s.deleteOwnerRelation.isDefined()
+
+        t.addBehaviourAnnotationOfOwnerRelation("delete", asmUtils.getReferenceFQName(s.deleteOwnerRelation.equivalent("CreateTransferObjectRelation")));
+}
+
+rule AddSetAnnotationToBoundOperationWithRelation
+    transform s : JUDOPSM!BoundOperationWithRelation
+    to t : ASM!EAnnotation
+    extends AddAnnotationToBoundOperationWithRelation {
+        guard: s.setOwnerRelation.isDefined()
+
+        t.addBehaviourAnnotationOfOwnerRelation("set", asmUtils.getReferenceFQName(s.setOwnerRelation.equivalent("CreateTransferObjectRelation")));
+}
+
+rule AddUnSetAnnotationToBoundOperationWithRelation
+    transform s : JUDOPSM!BoundOperationWithRelation
+    to t : ASM!EAnnotation
+    extends AddAnnotationToBoundOperationWithRelation {
+        guard: s.unsetOwnerRelation.isDefined()
+
+        t.addBehaviourAnnotationOfOwnerRelation("unset", asmUtils.getReferenceFQName(s.unsetOwnerRelation.equivalent("CreateTransferObjectRelation")));
+}
+rule AddAddAllAnnotationToBoundOperationWithRelation
+    transform s : JUDOPSM!BoundOperationWithRelation
+    to t : ASM!EAnnotation
+    extends AddAnnotationToBoundOperationWithRelation {
+        guard: s.addAllOwnerRelation.isDefined()
+
+        t.addBehaviourAnnotationOfOwnerRelation("addAll", asmUtils.getReferenceFQName(s.addAllOwnerRelation.equivalent("CreateTransferObjectRelation")));
+}
+
+rule AddRemoveAllAnnotationToBoundOperationWithRelation
+    transform s : JUDOPSM!BoundOperationWithRelation
+    to t : ASM!EAnnotation
+    extends AddAnnotationToBoundOperationWithRelation {
+        guard: s.removeAllOwnerRelation.isDefined()
+
+        t.addBehaviourAnnotationOfOwnerRelation("removeAll", asmUtils.getReferenceFQName(s.removeAllOwnerRelation.equivalent("CreateTransferObjectRelation")));
+}
+
+rule AddGetRangeAnnotationToBoundOperationWithRelation
+    transform s : JUDOPSM!BoundOperationWithRelation
+    to t : ASM!EAnnotation
+    extends AddAnnotationToBoundOperationWithRelation {
+        guard: s.getRangeOwnerParameter.isDefined() and s.getRangeOwnerParameter.isInput()
+
+        var asmParameter = s.getRangeOwnerParameter.equivalent("CreateInputParameter");
+        t.addBehaviourAnnotationOfOwnerParameter("getRange", asmUtils.getOperationFQName(asmParameter.eContainer), asmParameter.name);
+}
+
+rule AddGetRangeAnnotationToUnboundOperationWithRelation
+    transform s : JUDOPSM!UnboundOperationWithRelation
+    to t : ASM!EAnnotation
+    extends AddAnnotationToUnboundOperationWithRelation {
+        guard: s.getRangeOwnerParameter.isDefined() and s.getRangeOwnerParameter.isInput()
+
+        var asmParameter = s.getRangeOwnerParameter.equivalent("CreateInputParameter");
+        t.addBehaviourAnnotationOfOwnerParameter("getRange", asmUtils.getOperationFQName(asmParameter.eContainer), asmParameter.name);
+}
+
+rule AddGetTemplateAnnotationToUnboundOperation
+    transform s : JUDOPSM!UnboundOperation
+    to t : ASM!EAnnotation
+    extends AddAnnotationToUnboundOperation {
+        guard: s.getTemplateOwnerTransferObjectType.isDefined()
+
+        t.addBehaviourAnnotationOfOwnerTransferObjectType("getTemplate", asmUtils.getClassifierFQName(s.getTemplateOwnerTransferObjectType.asmEquivalent()));
 }
