@@ -138,72 +138,26 @@ rule CreateScriptBodyAnnotationForUnboundOperation
         s.equivalent("CreateUnboundOperation").eAnnotations.add(t);
 }
 
-/*rule CreateGraphOperation
-    transform s : JUDOPSM!TransferObjectRelation
-    to t : ASM!EClass {
-    	guard: s.isNavigable()
-    	
-        t.name = s.eContainer.name + "__" + s.name;
-        t.abstract = true;
-        t.interface = true;
-        
-        s.eContainer.eContainer.asmEquivalent().eClassifiers.add(t);
-}*/
-
+@lazy
 rule CreateMappedEntityTypeAnnotationOnReferenceClassForRelation
-    transform s : JUDOPSM!TransferObjectRelation
+    transform s : JUDOPSM!MappedTransferObjectType
     to t : ASM!EAnnotation {
-        guard: not (s.embedded or s.embeddedCreate or s.embeddedUpdate or s.embeddedDelete)
-            and JUDOPSM!OperationDeclaration.all.select(oper | oper.isStatefulWithInputTypeOfMappedTransferObject()).collect(oper | psmUtils.getAllContainers(oper.input.type).including(s.eContainer)).flatten().asSet().includes(s.eContainer)
-        
         t.source = asmUtils.getAnnotationUri("mappedEntityType");
 		
 		var mappedEntityType = new ASM!EStringToStringMapEntry;
         mappedEntityType.key = "value";
-        mappedEntityType.value = asmUtils.getClassifierFQName(s.target.entityType.equivalent("CreateEntityClass"));
+        mappedEntityType.value = asmUtils.getClassifierFQName(s.entityType.equivalent("CreateEntityClass"));
         t.details.add(mappedEntityType);
-        
-        s.equivalent("CreateReferenceClassForRelation").eAnnotations.add(t);
 }
 
+@lazy
 rule CreateReferenceClassForRelation
-    transform s : JUDOPSM!TransferObjectRelation
+    transform s : JUDOPSM!MappedTransferObjectType
     to t : ASM!EClass {
-        guard: not (s.embedded or s.embeddedCreate or s.embeddedUpdate or s.embeddedDelete)
-            and JUDOPSM!OperationDeclaration.all.select(oper | oper.isStatefulWithInputTypeOfMappedTransferObject()).collect(oper | psmUtils.getAllContainers(oper.input.type).including(s.eContainer)).flatten().asSet().includes(s.eContainer)
-        
-        t.name = s.eContainer.name + "__" + s.name + "__Reference";
-        s.eContainer.getNamespace().asmEquivalent().eClassifiers.add(t);
+        t.name = "_" + s.entityType.name + "Reference";
+        t.eAnnotations.add(s.equivalent("CreateMappedEntityTypeAnnotationOnReferenceClassForRelation"));
+        s.getNamespace().asmEquivalent().eClassifiers.add(t);
 }
-/*
-rule CreateStatefulAnnotationForRangeOperationForRelation
-    transform s : JUDOPSM!TransferObjectRelation
-    to t : ASM!EAnnotation {
-        guard: s.isNavigable() and s.range.isDefined()
-        
-        t.source = asmUtils.getAnnotationUri("stateful");
-		
-		var stateful = new ASM!EStringToStringMapEntry;
-        stateful.key = "value";
-        stateful.value = "false";
-        t.details.add(stateful);
-        
-        s.equivalent("CreateRangeOperationForRelation").eAnnotations.add(t);
-}*/
-/*
-rule CreateRangeOperationForRelation
-    transform s : JUDOPSM!TransferObjectRelation
-    to t : ASM!EOperation {
-        guard: s.isNavigable() and s.range.isDefined()
-        
-        t.name = "getRange";
-        
-        t.lowerBound = 0;
-        t.upperBound = -1;
-        t.eType = s.target.asmEquivalent();
-        
-        s.equivalent("CreateGraphOperation").eOperations.add(t);
-}*/
 
 @abstract
 rule AddAnnotationToBoundOperation

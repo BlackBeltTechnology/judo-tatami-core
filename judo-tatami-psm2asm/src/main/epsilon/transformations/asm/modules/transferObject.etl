@@ -44,12 +44,12 @@ rule CreateGeneratedEmbeddedTransferRelationInTransferObjectOfOperationInputType
       guard: not (s.embedded or s.embeddedCreate or s.embeddedUpdate or s.embeddedDelete) and JUDOPSM!OperationDeclaration.all.select(oper | oper.isStatefulWithInputTypeOfMappedTransferObject()).collect(oper | psmUtils.getAllContainers(oper.input.type).including(s.eContainer)).flatten().asSet().includes(s.eContainer)
         log.debug("[CreateGeneratedEmbeddedTransferRelationInTransferObjectOfOperationInputType] on " + s.name + " in " + s.eContainer.name); //todo-clean
         t.name = "_" + s.name;
-        //t.containment = true; //todo-ask if correct
+        t.containment = true;
 
         t.lowerBound = s.cardinality.lower;
         t.upperBound = s.cardinality.upper;
         
-        t.eType = s.equivalent("CreateReferenceClassForRelation");
+        t.eType = s.target.equivalent("CreateReferenceClassForRelation");
         t.derived = s.binding.isDefined() and not s.binding.isKindOf(JUDOPSM!Relation); //todo-check
         t.changeable = s.binding.isDefined() and (s.binding.isKindOf(JUDOPSM!Relation) or (s.binding.isKindOf(JUDOPSM!ReferenceAccessor) and s.binding.setterExpression.isDefined())); //todo-check
         
@@ -70,7 +70,7 @@ rule CreateBindingAnnotationForEmbeddedTransferObjectRelationOfTransferObjectsIn
         
         s.equivalent("CreateGeneratedEmbeddedTransferRelationInTransferObjectOfOperationInputType").eAnnotations.add(t); 
     }
-/*    
+ 
 rule CreateEmbeddedFlagsForGeneratedEmbeddedTransferObjectRelationOfTransferObjectsInOperationInputType
 	transform s : JUDOPSM!TransferObjectRelation
 	to t : ASM!EAnnotation {
@@ -81,21 +81,21 @@ rule CreateEmbeddedFlagsForGeneratedEmbeddedTransferObjectRelationOfTransferObje
 
 		var createEntry = new ASM!EStringToStringMapEntry;
         createEntry.key = "create";
-        createEntry.value = s.embeddedCreate.asString();
+        createEntry.value = "false";
         t.details.add(createEntry);
 
 		var updateEntry = new ASM!EStringToStringMapEntry;
         updateEntry.key = "update";
-        updateEntry.value = s.embeddedUpdate.asString();
+        updateEntry.value = "false";
         t.details.add(updateEntry);
 
 		var deleteEntry = new ASM!EStringToStringMapEntry;
         deleteEntry.key = "delete";
-        deleteEntry.value = s.embeddedDelete.asString();
+        deleteEntry.value = "false";
         t.details.add(deleteEntry);
 
         s.equivalent("CreateGeneratedEmbeddedTransferRelationInTransferObjectOfOperationInputType").eAnnotations.add(t);
-    }*/
+    }
 
 @abstract
 rule AddTransferAttributeConstraints
