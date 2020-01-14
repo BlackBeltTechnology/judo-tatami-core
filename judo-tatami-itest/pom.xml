@@ -555,6 +555,7 @@
             <artifactId>judo-tatami-rdbms2liquibase</artifactId>
             <scope>test</scope>
         </dependency>
+
         <dependency>
             <groupId>hu.blackbelt.judo.tatami</groupId>
             <artifactId>judo-tatami-asm2jaxrsapi</artifactId>

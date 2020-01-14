@@ -49,8 +49,8 @@ public class NorthwindTatamiESMTransformationPipelineITest extends TatamiESMTran
     private static final String BASE_URL = "http://localhost:8181/cxf/northwind/InternalAP";
     private static final String NORTHWIND_ENTITIES_ORDER = "northwind.entities.Order";
     private static final String NORTHWIND = "northwind-esm";
-    private static final String NORTHWIND_SERVICE_GET_ALL_ORDERS = "/northwind/service/getAllOrders";
-    private static final String NORTHWIND_SERVICE_GET_ALL_INTERNATIONAL_ORDERS = "/northwind/service/getAllInternationalOrders";
+    private static final String NORTHWIND_SERVICES_GET_ALL_ORDERS = "/northwind/services/getAllOrders";
+    private static final String NORTHWIND_SERVICES_GET_ALL_INTERNATIONAL_ORDERS = "/northwind/services/getAllInternationalOrders";
 
     @Override
     public Option getProvisonModelBundle() throws FileNotFoundException {
@@ -141,8 +141,8 @@ public class NorthwindTatamiESMTransformationPipelineITest extends TatamiESMTran
         assertBundleStarted(bundleContext,  NORTHWIND + "-asm2jaxrsapi");
 
 
-        assertNotNull(getResponse(NORTHWIND_SERVICE_GET_ALL_ORDERS));
-        assertNotNull(getResponse(NORTHWIND_SERVICE_GET_ALL_INTERNATIONAL_ORDERS));
+        assertNotNull(getResponse(NORTHWIND_SERVICES_GET_ALL_ORDERS));
+        assertNotNull(getResponse(NORTHWIND_SERVICES_GET_ALL_INTERNATIONAL_ORDERS));
 
         log.log(LOG_INFO, "==============================================");
         log.log(LOG_INFO, "== STOPPING TEST REST METHOD");
