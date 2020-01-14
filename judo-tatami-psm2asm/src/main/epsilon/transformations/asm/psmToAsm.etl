@@ -7,52 +7,40 @@ import "modules/transferObject.etl";
 import "modules/type.etl";
 
 pre {
-	
-	log.debug("//orderInfo");
 	var orderInfo = JUDOPSM!MappedTransferObjectType.all.selectOne(mto | mto.name="OrderInfo");
     if(orderInfo.isDefined()){
         log.debug("OrderInfo found");
     }
-    log.debug("//orderItem");
 	var orderItem = JUDOPSM!MappedTransferObjectType.all.selectOne(mto | mto.name="OrderItem");
     if(orderItem.isDefined()){
         log.debug("OrderItem found");
     }
-    log.debug("//productInfo");
     var productInfo = JUDOPSM!MappedTransferObjectType.all.selectOne(mto | mto.name="ProductInfo");
     if(productInfo.isDefined()){
         log.debug("ProductInfo found");
     }
-    //---
-    log.debug("//shipper");
     var shipper = JUDOPSM!TransferObjectRelation.all.selectOne(tor | (tor.name == "shipper") and (tor.eContainer == orderInfo));
     if(shipper.isDefined()){
     	log.debug("items found in " + shipper.eContainer.name);
         log.debug("getAllContainer of [" + shipper.eContainer.name + "]: " + psmUtils.getAllContainers(shipper.eContainer).including(shipper.eContainer));
         log.debug("isEmbedded: " + shipper.embedded);
     }
-    log.debug("//items");
     var items = JUDOPSM!TransferObjectRelation.all.selectOne(tor | (tor.name == "items") and (tor.eContainer == orderInfo));
     if(items.isDefined()){
     	log.debug("items found in " + items.eContainer.name);
         log.debug("getAllContainer of [" + items.eContainer.name + "]: " + psmUtils.getAllContainers(items.eContainer).including(items.eContainer));
         log.debug("isEmbedded: " + items.embedded);
     }
-    log.debug("//product");
     var product = JUDOPSM!TransferObjectRelation.all.selectOne(tor | (tor.name == "product") and (tor.eContainer == orderItem));
     if(product.isDefined()){
     	log.debug("product found in " + product.eContainer.name);
         log.debug("getAllContainer of [" + product.eContainer.name + "]: " + psmUtils.getAllContainers(product.eContainer).including(product.eContainer));
         log.debug("isEmbedded: " + product.embedded);
     }
-    //---
-    log.debug("//createOrder");
     var createOrder = JUDOPSM!UnboundOperation.all.selectOne(oper | (oper.name == "createOrder_") and oper.implementation.isDefined() and oper.implementation.stateful and oper.input.isDefined() and oper.input.type == orderInfo);
     if(createOrder.isDefined()){
         log.debug("createOrder found");
     }
-    //---
-    log.debug("//all");
     if(product.isDefined()){
     	log.debug("allOnProduct " + JUDOPSM!OperationDeclaration.all.select(oper | oper.implementation.isDefined() and oper.implementation.stateful and oper.input.isDefined() and oper.input.type.isDefined() and oper.input.type.isTypeOf(JUDOPSM!MappedTransferObjectType)).collect(oper | psmUtils.getAllContainers(oper.input.type).including(product.eContainer)).flatten().asSet());
     	/*log.debug("~~proto~~");

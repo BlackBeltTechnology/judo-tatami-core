@@ -76,10 +76,8 @@ public class Psm2AsmReferenceTest {
     }
 
     @Test
-    public void testReferenceEmbedding() throws Exception {
-        slf4jlog.info("testReferenceEmbedment~~~~~~~~~~~~~~~~~~~~");
-        //ShipperInfo
-        //TwoWayRelationMember shipperOrdersInShipper = newTwoWayRelationMemberBuilder().withName("shipperOrders").withUpper(-1).build();
+    public void testCreateEmbeddedTransferRelationInTransferObjectsOfOperationInputType() throws Exception {
+        slf4jlog.info("testCreateEmbeddedTransferRelationInTransferObjectsOfOperationInputType");
         AssociationEnd shipperOrdersInShipper = newAssociationEndBuilder().withName("shipperOrders").withCardinality(newCardinalityBuilder().withUpper(-1).withLower(0).build()).build();
         EntityType shipperEntity = newEntityTypeBuilder().withName("Shipper").withRelations(ImmutableList.of(shipperOrdersInShipper)).build();
 
@@ -88,15 +86,12 @@ public class Psm2AsmReferenceTest {
 
                 )).build();
 
-        //ProductInfo
         EntityType productEntity = newEntityTypeBuilder().withName("Product").withRelations(ImmutableList.of()).build();
 
         MappedTransferObjectType productInfo = newMappedTransferObjectTypeBuilder().withName("ProductInfo").withEntityType(productEntity)
                 .withRelations(ImmutableList.of(
-                        //orwm:category@esm
                 )).build();
 
-        //OrderItem (for product relation in intOrdInf)
         AssociationEnd productInOrderDetail = newAssociationEndBuilder().withName("productInOrderDetail").withTarget(productEntity).withCardinality(newCardinalityBuilder().withLower(1).withUpper(1).build()).build();
         EntityType orderDetail = newEntityTypeBuilder().withName("OrderDetail")
                 .withRelations(ImmutableList.of(productInOrderDetail))
@@ -108,52 +103,22 @@ public class Psm2AsmReferenceTest {
                 ))
                 .build();
 
-        //TODO: continue
-        //AssociationEnd itemsInOrder = newAssociationEndBuilder().withName("items").withTarget(orderDetail)//.withContainment(true).withLower(1).withUpper(-1).build();
-        //shipperInOrder + shipperOrdersInShipper (twr@esm -> 2assoc@psm)
         Containment orderDetailsInOrder = newContainmentBuilder().withName("orderDetails").withTarget(orderDetail).withCardinality(newCardinalityBuilder().withLower(1).withUpper(-1).build()).build();
         AssociationEnd shipperInOrder = newAssociationEndBuilder().withName("shipper").withTarget(shipperEntity).withCardinality(newCardinalityBuilder().withLower(0).withUpper(1).build()).build();
         shipperInOrder.setPartner(shipperOrdersInShipper);
         shipperOrdersInShipper.setPartner(shipperInOrder);
         EntityType orderEntity = newEntityTypeBuilder().withName("Order")
-                .withRelations(ImmutableList.of(orderDetailsInOrder, shipperInOrder/*, itemsInOrder*/))
+                .withRelations(ImmutableList.of(orderDetailsInOrder, shipperInOrder))
                 .build();
         shipperOrdersInShipper.setTarget(orderEntity);
-        //orderEntity.setMapping(newMappingBuilder().withTarget(orderEntity).build());
-        //shipperOrdersInShipper.setTarget(orderEntity);
 
         MappedTransferObjectType orderInfo = newMappedTransferObjectTypeBuilder().withName("OrderInfo").withEntityType(orderEntity)
                 .withRelations(ImmutableList.of(
-                        //nonembedded => new embedded "shipper_" targeting ShipperReference (mto w/o members)
                         newTransferObjectRelationBuilder().withName("shipper").withTarget(shipperInfo).withBinding(shipperInOrder).withEmbedded(false).withCardinality(newCardinalityBuilder().withLower(0).withUpper(1).build()).build(),
-                        //embedded => goto target
                         newTransferObjectRelationBuilder().withName("items").withTarget(orderItem).withBinding(orderDetailsInOrder).withEmbedded(true).withEmbeddedCreate(true).withCardinality(newCardinalityBuilder().withLower(1).withUpper(-1).build()).build()
                 ))
                 .build();
 
-        EntityType internationalOrderEntity = newEntityTypeBuilder().withName("InternationalOrder")
-                .withRelations(ImmutableList.of(
-
-                ))
-                .withSuperEntityTypes(orderEntity)
-                .build();
-        MappedTransferObjectType internationalOrderInfo = newMappedTransferObjectTypeBuilder().withName("InternationalOrderInfo")
-                .withEntityType(internationalOrderEntity)
-                .withRelations(ImmutableList.of(
-
-                ))
-                .build();
-/*
-        //"createOrder_" bound op with input parameter typed InternationalOrderInfo
-        //TODO: change target to internationalOrderInfo when supported
-        UnboundOperation createOrder = newUnboundOperationBuilder().withName("createOrder_")
-                .withInput(newParameterBuilder().withName("input").withLower(1).withUpper(1)
-                        .withTarget(orderInfo).build())
-                .withOutput(newParameterBuilder().withName("output").withLower(1).withUpper(1)
-                        .withTarget(orderInfo).build())
-                .withCustomImplementation(true).withBody("body").withStateful(true)
-                .build();
-*/
         UnboundOperation createOrder = newUnboundOperationBuilder().withName("createOrder_")
                 .withInput(newParameterBuilder().withName("input").withCardinality(newCardinalityBuilder().withLower(1).withUpper(1).build()).withType(orderInfo).build())
                 .withOutput(newParameterBuilder().withName("output").withCardinality(newCardinalityBuilder().withLower(1).withUpper(1).build()).withType(orderInfo).build())
@@ -162,8 +127,6 @@ public class Psm2AsmReferenceTest {
 
         Package entities = newPackageBuilder().withName("entities").withElements(ImmutableList.of(orderEntity, shipperEntity, orderDetail, productEntity)).build();
         Package services = newPackageBuilder().withName("services").withElements(ImmutableList.of(orderInfo, shipperInfo, orderItem, productInfo, createOrder)).build();
-
-        //Package navigations = newPackageBuilder().withName("navigations").withElements(ImmutableList.of(productSelector)).build();
 
         //Model model = newModelBuilder().withName("testModel").withElements(ImmutableList.of(entities, services)).build();
         Model model = NamespaceBuilders.newModelBuilder().withName("testModel")
