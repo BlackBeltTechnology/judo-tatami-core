@@ -2,15 +2,16 @@
   import "../operations/jaxrs.eol";
 %]
 <?xml version="1.0" encoding="UTF-8"?>
-<component name="[%= packagePath %].[%= className %]" immediate="true">
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.3.0" name="[%= packagePath %].[%= className %]" immediate="true">
   <implementation class="[%= packagePath %].[%= className %]"/>
   <service>
     <provide interface="[%= packagePath %].[%= className %]"/>
     <reference
          interface="hu.blackbelt.judo.tatami.core.Dispatcher"
          name="__dispatcher"
+         policy="dynamic"
          policy-option="greedy"
          bind="__bindDispatcher"
          unbind="__unbindDispatcher"/>
   </service>
-</component>
+</scr:component>
