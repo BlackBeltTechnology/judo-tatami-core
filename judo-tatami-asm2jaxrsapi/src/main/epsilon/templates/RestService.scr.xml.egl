@@ -9,7 +9,6 @@
     <reference
          interface="hu.blackbelt.judo.tatami.core.Dispatcher"
          name="__dispatcher"
-         policy="dynamic"
          policy-option="greedy"
          bind="__bindDispatcher"
          unbind="__unbindDispatcher"/>
