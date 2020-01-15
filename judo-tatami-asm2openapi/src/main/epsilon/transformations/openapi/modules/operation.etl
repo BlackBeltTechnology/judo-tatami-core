@@ -43,6 +43,7 @@ rule CreateExposedServiceGetOperation
     to t : OPENAPI!Operation {
         guard: s.eContainer.isKindOf(ASM!EOperation) and s.source == asmUtils.getAnnotationUri("exposedBy") and asmUtils.isUnbound(s.eContainer) and s.eContainer.eParameters.isEmpty and asmUtils.annotatedAsFalse(s.eContainer, "stateful")
         
+        //t.`operationId` = asmUtils.getOperationFQName(s.eContainer);
         s.equivalent("CreateExposedServicePath").`get` = t;
 }
 
@@ -51,6 +52,7 @@ rule CreateExposedServicePostOperation
     to t : OPENAPI!Operation{
         guard: s.eContainer.isKindOf(ASM!EOperation) and s.source == asmUtils.getAnnotationUri("exposedBy") and asmUtils.isUnbound(s.eContainer) and (not s.eContainer.eParameters.isEmpty or asmUtils.annotatedAsTrue(s.eContainer, "stateful"))
         
+        //t.`operationId` = asmUtils.getOperationFQName(s.eContainer);
         s.equivalent("CreateExposedServicePath").`post` = t;
 }
 
@@ -113,7 +115,7 @@ rule CreateExposedServicePostOperationResponseDefinition
 rule CreateExposedServiceOperationResponseDefinitionSchema
     transform s : ASM!EAnnotation
     to t : OPENAPI!Schema {
-        guard: s.eContainer.isKindOf(ASM!EOperation) and s.source == asmUtils.getAnnotationUri("exposedBy") and asmUtils.isUnbound(s.eContainer)
+        guard: s.eContainer.isKindOf(ASM!EOperation) and s.source == asmUtils.getAnnotationUri("exposedBy") and asmUtils.isUnbound(s.eContainer) and s.eContainer.eType.isDefined()
         
         if (s.eContainer.eParameters.isEmpty and asmUtils.annotatedAsFalse(s.eContainer, "stateful")) {
             s.equivalent("CreateExposedServiceGetOperationResponseDefinition").schema = t;
