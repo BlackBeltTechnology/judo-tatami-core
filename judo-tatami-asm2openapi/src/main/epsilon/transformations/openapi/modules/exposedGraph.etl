@@ -99,7 +99,8 @@ rule CreateExposedGraphGetOperation
     to t : OPENAPI!Operation
     extends CreateExposedGraphOperation {
         guard: s.eContainer.isKindOf(ASM!EOperation) and s.source == asmUtils.getAnnotationUri("exposedGraph") and asmUtils.isBound(s.eContainer) and s.eContainer.eParameters.isEmpty and asmUtils.annotatedAsFalse(s.eContainer, "stateful")
-        
+
+        //t.`operationId` = s.details.get("value") + "/" + asmUtils.getOperationFQName(s.eContainer);
         s.equivalent("CreateExposedGraphPath").`get` = t;
 }
 
@@ -110,7 +111,7 @@ rule CreateExposedGraphPostOperation
         guard: s.eContainer.isKindOf(ASM!EOperation) and s.source == asmUtils.getAnnotationUri("exposedGraph") and asmUtils.isBound(s.eContainer) and (not s.eContainer.eParameters.isEmpty or asmUtils.annotatedAsTrue(s.eContainer, "stateful"))
         
         t.consumes.add("application/json");
-
+        //t.`operationId` = s.details.get("value") + "/" + asmUtils.getOperationFQName(s.eContainer);
         s.equivalent("CreateExposedGraphPath").`post` = t;
 }
 
