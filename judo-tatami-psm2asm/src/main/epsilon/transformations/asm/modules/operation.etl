@@ -78,6 +78,70 @@ rule CreateStatefulAnnotationOnOperation
         s.asmEquivalent().eAnnotations.add(t);
 }
 
+rule CreateStatefulAnnotationOnBoundOperationWithBehaviour
+    transform s : JUDOPSM!BoundOperation
+    to t : ASM!EAnnotation {
+        guard: not s.implementation.isDefined() and
+            (s.getOwnerRelation.isDefined() or s.createOwnerRelation.isDefined() or s.updateOwnerRelation.isDefined() or s.deleteOwnerRelation.isDefined())
+
+        t.source = asmUtils.getAnnotationUri("stateful");
+
+		var stateful = new ASM!EStringToStringMapEntry;
+        stateful.key = "value";
+        stateful.value = (s.createOwnerRelation.isDefined() or s.updateOwnerRelation.isDefined() or s.deleteOwnerRelation.isDefined()).asString();
+        t.details.add(stateful);
+
+        s.asmEquivalent().eAnnotations.add(t);
+}
+
+rule CreateStatefulAnnotationOnBoundOperationWithRelationWithBehaviour
+    transform s : JUDOPSM!BoundOperationWithRelation
+    to t : ASM!EAnnotation {
+        guard: not s.implementation.isDefined() and
+            (s.setOwnerRelation.isDefined() or s.unsetOwnerRelation.isDefined() or s.addAllOwnerRelation.isDefined() or s.removeAllOwnerRelation.isDefined() or s.getRangeOwnerParameter.isDefined())
+
+        t.source = asmUtils.getAnnotationUri("stateful");
+
+		var stateful = new ASM!EStringToStringMapEntry;
+        stateful.key = "value";
+        stateful.value = (s.setOwnerRelation.isDefined() or s.unsetOwnerRelation.isDefined() or s.addAllOwnerRelation.isDefined() or s.removeAllOwnerRelation.isDefined()).asString();
+        t.details.add(stateful);
+
+        s.asmEquivalent().eAnnotations.add(t);
+}
+
+rule CreateStatefulAnnotationOnUnboundOperationWithBehaviour
+    transform s : JUDOPSM!UnboundOperation
+    to t : ASM!EAnnotation {
+        guard: not s.implementation.isDefined() and
+            (s.getOwnerRelation.isDefined() or s.createOwnerRelation.isDefined() or s.updateOwnerRelation.isDefined() or s.deleteOwnerRelation.isDefined() or s.getTemplateOwnerTransferObjectType.isDefined())
+
+        t.source = asmUtils.getAnnotationUri("stateful");
+
+		var stateful = new ASM!EStringToStringMapEntry;
+        stateful.key = "value";
+        stateful.value = (s.createOwnerRelation.isDefined() or s.updateOwnerRelation.isDefined() or s.deleteOwnerRelation.isDefined()).asString();
+        t.details.add(stateful);
+
+        s.asmEquivalent().eAnnotations.add(t);
+}
+
+rule CreateStatefulAnnotationOnUnboundOperationWithRelationWithBehaviour
+    transform s : JUDOPSM!UnboundOperationWithRelation
+    to t : ASM!EAnnotation {
+        guard: not s.implementation.isDefined() and
+            (s.setOwnerRelation.isDefined() or s.unsetOwnerRelation.isDefined() or s.addAllOwnerRelation.isDefined() or s.removeAllOwnerRelation.isDefined() or s.getRangeOwnerParameter.isDefined())
+
+        t.source = asmUtils.getAnnotationUri("stateful");
+
+		var stateful = new ASM!EStringToStringMapEntry;
+        stateful.key = "value";
+        stateful.value = (s.setOwnerRelation.isDefined() or s.unsetOwnerRelation.isDefined() or s.addAllOwnerRelation.isDefined() or s.removeAllOwnerRelation.isDefined()).asString();
+        t.details.add(stateful);
+
+        s.asmEquivalent().eAnnotations.add(t);
+}
+
 @abstract
 rule CreateOperation
     transform s : JUDOPSM!OperationDeclaration
