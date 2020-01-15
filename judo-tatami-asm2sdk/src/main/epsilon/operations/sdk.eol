@@ -57,7 +57,6 @@ operation ASM!EReference getTypeDefinition() : String {
 operation getAllDTOs(): Collection {
     return ASM!EClass.all.select(class | class.name <> "__UnboundServices" and
                                          class.name <> "__Static" and
-                                         not asmUtils.isBuiltInOperationGroup(class) and
                                          (asmUtils.isMappedTransferObjectType(class) or
                                          not asmUtils.isEntityType(class)) and
                                          not asmUtils.isAccessPoint(class));
