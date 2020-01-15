@@ -5,7 +5,7 @@ operation String normalizeName() : String {
 
 @cached
 operation String toJAXRSPath() : String {
-    return self.replace("\\.__UnboundServices", "").replace("[__#\\.]", "/").replace("[^0-9a-zA-Z_/]", "/").replace("\\$", "/");
+    return self.replace("\\.__UnboundServices", "").replace("[#\\.]", "/").replace("[^0-9a-zA-Z_/]", "/").replace("\\$", "/");
 }
 
 /*
