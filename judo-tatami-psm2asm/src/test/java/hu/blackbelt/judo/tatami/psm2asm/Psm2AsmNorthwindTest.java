@@ -59,7 +59,7 @@ public class Psm2AsmNorthwindTest {
                 .build();
     }
 
-    @Disabled
+    //@Disabled
     @Test
     public void testPsm2AsmTransformationFromEsmNorthwind() throws Exception {
         // Make transformation which returns the trace with the serialized URI's
@@ -70,11 +70,7 @@ public class Psm2AsmNorthwindTest {
                 new Slf4jLog(log),
                 calculatePsm2AsmTransformationScriptURI());
 
-        //assertTrue(psmModel.isValid());
-
-        //assertDoesNotThrow(() -> {
         asmModel.saveAsmModel(asmSaveArgumentsBuilder()
                 .outputStream(new FileOutputStream(new File(TARGET_TEST_CLASSES, NORTHWIND_ASM_MODEL))));
-        //});
     }
 }

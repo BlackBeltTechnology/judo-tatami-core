@@ -56,7 +56,7 @@ public class Psm2Asm {
                                 .build()))
                 .injectContexts(ImmutableMap.of(
                         "asmUtils", new AsmUtils(asmModel.getResourceSet()),
-                        "psmUtils", new PsmUtils()
+                        "psmUtils", new PsmUtils(psmModel.getResourceSet())
                 )).build();
 
         // run the model / metadata loading

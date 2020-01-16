@@ -1,5 +1,4 @@
 import "../utils/_importUtils.eol";
-import "operation.etl";
 
 @abstract
 rule CreateTransferObject
@@ -41,8 +40,8 @@ rule CreateUnmappedTransferObject
 rule CreateGeneratedEmbeddedTransferRelationInTransferObjectOfOperationInputType
     transform s : JUDOPSM!TransferObjectRelation
     to t : ASM!EReference {
-      guard: not (s.embedded or s.embeddedCreate or s.embeddedUpdate or s.embeddedDelete) and JUDOPSM!OperationDeclaration.all.select(oper | oper.isStatefulWithInputTypeOfMappedTransferObject()).collect(oper | psmUtils.getAllContainers(oper.input.type).including(s.eContainer)).flatten().asSet().includes(s.eContainer)
-        log.debug("[CreateGeneratedEmbeddedTransferRelationInTransferObjectOfOperationInputType] on " + s.name + " in " + s.eContainer.name); //todo-clean
+      guard: not (s.embedded or s.embeddedCreate or s.embeddedUpdate or s.embeddedDelete)
+      and psmUtils.getAllMappedTransferObjectsTypeOfInputParameterInOperations().exists(mto | psmUtils.getAllContainingMappedTransferObjects(s.eContainer).contains(s.eContainer))
         t.name = "_" + s.name;
         t.containment = true;
 
@@ -50,16 +49,19 @@ rule CreateGeneratedEmbeddedTransferRelationInTransferObjectOfOperationInputType
         t.upperBound = s.cardinality.upper;
         
         t.eType = s.target.equivalent("CreateReferenceClassForRelation");
-        t.derived = s.binding.isDefined() and not s.binding.isKindOf(JUDOPSM!Relation); //todo-check
-        t.changeable = s.binding.isDefined() and (s.binding.isKindOf(JUDOPSM!Relation) or (s.binding.isKindOf(JUDOPSM!ReferenceAccessor) and s.binding.setterExpression.isDefined())); //todo-check
-        
+        t.derived = s.binding.isDefined() and not s.binding.isKindOf(JUDOPSM!Relation);
+        t.changeable = s.binding.isDefined() and (s.binding.isKindOf(JUDOPSM!Relation) or (s.binding.isKindOf(JUDOPSM!ReferenceAccessor) and s.binding.setterExpression.isDefined()));
+        t.eAnnotations.add(s.equivalent("CreateBindingAnnotationForEmbeddedTransferObjectRelationOfTransferObjectsInOperationInputType"));
+        t.eAnnotations.add(s.equivalent("CreateEmbeddedFlagsForGeneratedEmbeddedTransferObjectRelationOfTransferObjectsInOperationInputType"));
         s.eContainer.asmEquivalent().eStructuralFeatures.add(t);
+
+        log.debug("[CreateGeneratedEmbeddedTransferRelationInTransferObjectOfOperationInputType] on " + s.name + " in " + s.eContainer.name);
 }
 
+@lazy
 rule CreateBindingAnnotationForEmbeddedTransferObjectRelationOfTransferObjectsInOperationInputType
     transform s : JUDOPSM!TransferObjectRelation
     to t : ASM!EAnnotation {
-        guard: not (s.embedded or s.embeddedCreate or s.embeddedUpdate or s.embeddedDelete) and JUDOPSM!OperationDeclaration.all.select(oper | oper.isStatefulWithInputTypeOfMappedTransferObject()).collect(oper | psmUtils.getAllContainers(oper.input.type).including(s.eContainer)).flatten().asSet().includes(s.eContainer)
         
         t.source = asmUtils.getAnnotationUri("binding");
         
@@ -67,15 +69,12 @@ rule CreateBindingAnnotationForEmbeddedTransferObjectRelationOfTransferObjectsIn
         binding.key = "value";
         binding.value = s.name;
         t.details.add(binding);
-        
-        s.equivalent("CreateGeneratedEmbeddedTransferRelationInTransferObjectOfOperationInputType").eAnnotations.add(t); 
     }
- 
+
+@lazy
 rule CreateEmbeddedFlagsForGeneratedEmbeddedTransferObjectRelationOfTransferObjectsInOperationInputType
 	transform s : JUDOPSM!TransferObjectRelation
 	to t : ASM!EAnnotation {
-		guard: not s.embedded
-			and JUDOPSM!OperationDeclaration.all.select(oper | oper.isStatefulWithInputTypeOfMappedTransferObject()).collect(oper | psmUtils.getAllContainers(oper.input.type).including(s.eContainer)).flatten().asSet().includes(s.eContainer)
 
 		t.source = asmUtils.getAnnotationUri("embedded");
 
@@ -96,6 +95,27 @@ rule CreateEmbeddedFlagsForGeneratedEmbeddedTransferObjectRelationOfTransferObje
 
         s.equivalent("CreateGeneratedEmbeddedTransferRelationInTransferObjectOfOperationInputType").eAnnotations.add(t);
     }
+
+@lazy
+rule CreateMappedEntityTypeAnnotationOnReferenceClassForRelation
+    transform s : JUDOPSM!MappedTransferObjectType
+    to t : ASM!EAnnotation {
+        t.source = asmUtils.getAnnotationUri("mappedEntityType");
+        
+        var mappedEntityType = new ASM!EStringToStringMapEntry;
+        mappedEntityType.key = "value";
+        mappedEntityType.value = asmUtils.getClassifierFQName(s.entityType.equivalent("CreateEntityClass"));
+        t.details.add(mappedEntityType);
+}
+
+@lazy
+rule CreateReferenceClassForRelation
+    transform s : JUDOPSM!MappedTransferObjectType
+    to t : ASM!EClass {
+        t.name = "_" + s.entityType.name + "Reference";
+        t.eAnnotations.add(s.equivalent("CreateMappedEntityTypeAnnotationOnReferenceClassForRelation"));
+        s.getNamespace().asmEquivalent().eClassifiers.add(t);
+}
 
 @abstract
 rule AddTransferAttributeConstraints

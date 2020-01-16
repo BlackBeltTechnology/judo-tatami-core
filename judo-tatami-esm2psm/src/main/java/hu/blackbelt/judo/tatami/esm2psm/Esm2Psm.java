@@ -59,7 +59,7 @@ public class Esm2Psm {
                                 .build()))
                 .injectContexts(ImmutableMap.of(
                         "esmUtils", new EsmUtils(esmModel.getResourceSet()),
-                        "psmUtils", new PsmUtils()
+                        "psmUtils", new PsmUtils(psmModel.getResourceSet())
                 ))
                 .build();
 

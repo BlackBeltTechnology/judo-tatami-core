@@ -138,27 +138,6 @@ rule CreateScriptBodyAnnotationForUnboundOperation
         s.equivalent("CreateUnboundOperation").eAnnotations.add(t);
 }
 
-@lazy
-rule CreateMappedEntityTypeAnnotationOnReferenceClassForRelation
-    transform s : JUDOPSM!MappedTransferObjectType
-    to t : ASM!EAnnotation {
-        t.source = asmUtils.getAnnotationUri("mappedEntityType");
-		
-		var mappedEntityType = new ASM!EStringToStringMapEntry;
-        mappedEntityType.key = "value";
-        mappedEntityType.value = asmUtils.getClassifierFQName(s.entityType.equivalent("CreateEntityClass"));
-        t.details.add(mappedEntityType);
-}
-
-@lazy
-rule CreateReferenceClassForRelation
-    transform s : JUDOPSM!MappedTransferObjectType
-    to t : ASM!EClass {
-        t.name = "_" + s.entityType.name + "Reference";
-        t.eAnnotations.add(s.equivalent("CreateMappedEntityTypeAnnotationOnReferenceClassForRelation"));
-        s.getNamespace().asmEquivalent().eClassifiers.add(t);
-}
-
 @abstract
 rule AddAnnotationToBoundOperation
     transform s : JUDOPSM!BoundOperation
