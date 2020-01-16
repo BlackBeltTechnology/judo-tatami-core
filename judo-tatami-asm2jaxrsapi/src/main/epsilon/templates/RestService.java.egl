@@ -53,17 +53,17 @@ public class [%= className %] {
 		parameters.put("[%= p.name %]", [%= asmUtils.safeName(p.name.firstToLowerCase()) %][% if (p.many) { %].stream().map(e -> e[% } %].toMap()[% if (p.many) { %])[% } %]);[% } %]
 
         [% if (op.eType.isUndefined()) {%]
-        __dispatcher.get().callOperation("simple", "[%= asmUtils.getOperationFQName(op) %]", parameters);
+        __dispatcher.get().callOperation("[%= asmUtils.getOperationFQName(op) %]", parameters);
         return Response.status(Response.Status.OK).build();
         [% } else if (op.many) { %]
-        Object output = __dispatcher.get().callOperation("simple", "[%= asmUtils.getOperationFQName(op) %]", parameters).get("output");
+        Object output = __dispatcher.get().callOperation("[%= asmUtils.getOperationFQName(op) %]", parameters).get("__output");
     	return output == null ? Response.ok().build() : Response.ok(
     			((Collection<Map<String, Object>>) output).stream()
     			.map(p -> [%= op.eType.getDtoTypeName() %].fromMap(p))
     			.collect(Collectors.toList()))
     			.build();
         [% } else { %]
-        return Response.ok([%= op.eType.getDtoTypeName() %].fromMap((Map<String, Object>) ((Map<String, Object>) __dispatcher.get().callOperation("simple", "[%= asmUtils.getOperationFQName(op) %]", parameters)).get("output"))).build();
+        return Response.ok([%= op.eType.getDtoTypeName() %].fromMap((Map<String, Object>) ((Map<String, Object>) __dispatcher.get().callOperation("[%= asmUtils.getOperationFQName(op) %]", parameters)).get("__output"))).build();
         [% } %]
     }
 [% } %]
