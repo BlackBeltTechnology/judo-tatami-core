@@ -41,7 +41,7 @@ rule CreateGeneratedEmbeddedTransferRelationInTransferObjectOfOperationInputType
     transform s : JUDOPSM!TransferObjectRelation
     to t : ASM!EReference {
       guard: not (s.embedded or s.embeddedCreate or s.embeddedUpdate or s.embeddedDelete)
-      and psmUtils.getAllMappedTransferObjectsTypeOfInputParameterInOperations().exists(mto | psmUtils.getAllContainingMappedTransferObjects(s.eContainer).contains(s.eContainer))
+      and psmUtils.getAllMappedTransferObjectsTypeOfInputParameterInOperations(s.eResource().getResourceSet()).exists(mto | psmUtils.getAllContainingMappedTransferObjects(s.eContainer).contains(s.eContainer))
         t.name = "_" + s.name;
         t.containment = true;
 
