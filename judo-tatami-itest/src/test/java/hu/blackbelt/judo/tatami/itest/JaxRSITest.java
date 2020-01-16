@@ -10,7 +10,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.runner.RunWith;
 import org.ops4j.pax.exam.Configuration;
 import org.ops4j.pax.exam.Option;
@@ -63,9 +62,7 @@ import static rest.demo.services.InternationalOrderInfo.internationalOrderInfoBu
 import static rest.demo.services.InternationalOrderInfoQuery.internationalOrderInfoQueryBuilder;
 import static rest.demo.services.OrderInfo.orderInfoBuilder;
 import static rest.demo.services.OrderInfoQuery.orderInfoQueryBuilder;
-import static rest.demo.services.OrderItemQuery.orderItemQueryBuilder;
 import static rest.demo.services.ProductInfo.productInfoBuilder;
-import static rest.demo.services.ProductInfoQuery.productInfoQueryBuilder;
 import static rest.demo.services.ShipperInfo.shipperInfoBuilder;
 
 @Category(JaxRSTestSuite.class)
@@ -96,14 +93,6 @@ public class JaxRSITest {
     private static final String DEMO_SERVICE_PRODUCTINFOQUERY_CATEGORY_GET_RANGE = "/demo/services/ProductInfoQuery/category/getRange";
     private static final String DEMO_SERVICE_PRODUCTINFOQUERY_CATEGORY_UNSET = "/demo/services/ProductInfoQuery/category/unset";
 
-    //TODO-check&clean: moved to pom
-    //public static final String FRAMEWORK_COMPILER_API = "compiler-api";
-    //public static final String FRAMEWORK_GROUPID = "hu.blackbelt.judo.framework";
-
-    //public static final String BLACKBELT_CXF_GROUPID = "hu.blackbelt.cxf";
-    //public static final String JAXRS_APPLICATION_MANAGER = "cxf-jaxrs-application-manager";
-    //public static final String JAXRS_APPLICATION_MANAGER_VERSION = "0.5.0.develop_00081";
-
     public static final String FEATURE_JUDO_TATAMI_CORE = "judo-tatami-core";
 
     private Dispatcher dispatcher;
@@ -122,7 +111,7 @@ public class JaxRSITest {
     ObjectMapper objectMapper;
 
     @Configuration
-    public Option[] config () throws FileNotFoundException {
+    public Option[] config() throws FileNotFoundException {
         return combine(karafConfig(this.getClass()),
 
                 features(karafStandardRepo()),
@@ -223,19 +212,19 @@ public class JaxRSITest {
         );
     }
 
-    private Map<String, Object> fillTestMap () {
+    private Map<String, Object> fillTestMap() {
         //key: path to endpoint method, value: object to return from dispatcher
         Map<String, Object> testMap = new HashMap<>();
         //UnboundServices
         //getAllOrders (input: none, output: collection<OrderInfoQuery>), required (OrderInfoQuery): orderDate
         testMap.put("demo.services.__UnboundServices#getAllOrders", ImmutableList.of(
-                        orderInfoQueryBuilder().shipperName("shipperNameInOrderInfoQuery0").orderDate(ZonedDateTime.now()).build().toMap(),
-                        orderInfoQueryBuilder().shipperName("shipperNameInOrderInfoQuery1").orderDate(ZonedDateTime.now()).build().toMap()));
+                orderInfoQueryBuilder().shipperName("shipperNameInOrderInfoQuery0").orderDate(ZonedDateTime.now()).build().toMap(),
+                orderInfoQueryBuilder().shipperName("shipperNameInOrderInfoQuery1").orderDate(ZonedDateTime.now()).build().toMap()));
 
         //getAllInternationalOrders (input: none, output: collection<InternationalOrderInfoQuery>), required (InternationalOrderInfoQuery): orderDate
         testMap.put("demo.services.__UnboundServices#getAllInternationalOrders", ImmutableList.of(
-                        internationalOrderInfoQueryBuilder().shipperName("shipperNameInInternationalOrderInfoQuery0").orderDate(ZonedDateTime.now()).build().toMap(),
-                        internationalOrderInfoQueryBuilder().shipperName("shipperNameInInternationalOrderInfoQuery1").orderDate(ZonedDateTime.now()).build().toMap()));
+                internationalOrderInfoQueryBuilder().shipperName("shipperNameInInternationalOrderInfoQuery0").orderDate(ZonedDateTime.now()).build().toMap(),
+                internationalOrderInfoQueryBuilder().shipperName("shipperNameInInternationalOrderInfoQuery1").orderDate(ZonedDateTime.now()).build().toMap()));
 
         //createOrder (input: OrderInfo, output: OrderInfo), required (OrderInfo): orderDate
         testMap.put("demo.services.__UnboundServices#createOrder", orderInfoBuilder().shipperName("shipperNameInNewOrderInfo").orderDate(ZonedDateTime.now()).build().toMap());
@@ -290,7 +279,7 @@ public class JaxRSITest {
     }
 
     @Before
-    public void init () throws Exception {
+    public void init() throws Exception {
         class Semaphore {
         }
 
@@ -303,22 +292,22 @@ public class JaxRSITest {
 
             dispatcher = new Dispatcher() {
                 @Override
-                public Map<String, Object> callOperation (String operationFqName, Map<String, Object> payload) {
-                    log.log(LOG_INFO, "Dispatcher called - " + operationFqName + " Payload: " + payload.toString());
+                public Map<String, Object> callOperation(String target, String operationFqName, Map<String, Object> payload) {
+                    log.log(LOG_INFO, "Dispatcher called - " + target + " " + operationFqName + " Payload: " + payload.toString());
                     if (!testMap.containsKey(operationFqName)) {
                         switch (operationFqName) {
                             case "demo.services.OrderInfo#deleteOrder": //(input: none)
-                            //case "demo.services.OrderInfoQuery__items#set": //(input: identifier & collection<rest.demo.services.OrderInfoQuery$items$Reference>)
-                            //case "demo.services.OrderInfoQuery__items#addAll": //(input: identifier & collection<rest.demo.services.OrderInfoQuery$items$Reference>)
-                            //case "demo.services.OrderInfoQuery__items#removeAll": //(input: identifier & collection<rest.demo.services.OrderInfoQuery$items$Reference>)
-                            //case "demo.services.ProductInfoQuery__category#unset": //(input: identifier only)
-                            //    return ImmutableMap.of();
+                                //case "demo.services.OrderInfoQuery__items#set": //(input: identifier & collection<rest.demo.services.OrderInfoQuery$items$Reference>)
+                                //case "demo.services.OrderInfoQuery__items#addAll": //(input: identifier & collection<rest.demo.services.OrderInfoQuery$items$Reference>)
+                                //case "demo.services.OrderInfoQuery__items#removeAll": //(input: identifier & collection<rest.demo.services.OrderInfoQuery$items$Reference>)
+                                //case "demo.services.ProductInfoQuery__category#unset": //(input: identifier only)
+                                //    return ImmutableMap.of();
                             default:
                                 log.log(LOG_ERROR, "Operation not found by operationFqName! Given operationFqName was \"" + operationFqName + "\"");
                                 return ImmutableMap.of();
                         }
                     } else {
-                        return ImmutableMap.of(Dispatcher.OUTPUT_PARAMETER_NAME, testMap.get(operationFqName));
+                        return ImmutableMap.of("output", testMap.get(operationFqName));
                     }
                 }
             };
@@ -329,14 +318,14 @@ public class JaxRSITest {
         }
     }
 
-    public WebTarget getWebTarget (String pathToMethod) {
+    public WebTarget getWebTarget(String pathToMethod) {
         return ClientBuilder.newClient().register(
                 new JacksonJaxbJsonProvider(objectMapper, JacksonJaxbJsonProvider.DEFAULT_ANNOTATIONS))
                 .target(BASE_URL).path(pathToMethod);
     }
 
     //GET
-    public Response getResponse (String pathToMethod) {
+    public Response getResponse(String pathToMethod) {
         try {
             testResponse = getWebTarget(pathToMethod)
                     .request("application/json")
@@ -349,7 +338,7 @@ public class JaxRSITest {
     }
 
     //POST with input
-    public Response getResponse (String pathToMethod, Object input) {
+    public Response getResponse(String pathToMethod, Object input) {
         try {
             testResponse = getWebTarget(pathToMethod)
                     .request("application/json")
@@ -362,7 +351,7 @@ public class JaxRSITest {
     }
 
     //POST with class type
-    public Response getResponseWithEmptyPost (String pathToMethod) {
+    public Response getResponseWithEmptyPost(String pathToMethod) {
         try {
             testResponse = getWebTarget(pathToMethod)
                     .request("application/json")
@@ -375,17 +364,17 @@ public class JaxRSITest {
     }
 
     @AfterEach
-    public void clearTestResponse () {
+    public void clearTestResponse() {
         testResponse.close();
     }
 
-    private void logTest (String path) {
+    private void logTest(String path) {
         log.log(LOG_INFO, "==============================================\nTesting " + path + "...\n==============================================");
     }
 
     //Unbound Services
     @Test
-    public void testGetAllOrders () throws IOException {
+    public void testGetAllOrders() throws IOException {
         logTest(DEMO_SERVICE_GET_ALL_ORDERS);
 
         Response response = getResponse(DEMO_SERVICE_GET_ALL_ORDERS);
@@ -403,7 +392,7 @@ public class JaxRSITest {
     }
 
     @Test
-    public void testGetAllInternationalOrders () {
+    public void testGetAllInternationalOrders() {
         logTest(DEMO_SERVICE_GET_ALL_INTERNATIONAL_ORDERS);
 
         Response response = getResponse(DEMO_SERVICE_GET_ALL_INTERNATIONAL_ORDERS);
@@ -419,7 +408,7 @@ public class JaxRSITest {
     }
 
     @Test
-    public void testCreateOrder () {
+    public void testCreateOrder() {
         logTest(DEMO_SERVICE_CREATE_ORDER);
 
         Response response = getResponse(DEMO_SERVICE_CREATE_ORDER, orderInfoBuilder().orderDate(ZonedDateTime.now()).build());
@@ -430,7 +419,7 @@ public class JaxRSITest {
     }
 
     @Test
-    public void testCreateInternationalOrder () {
+    public void testCreateInternationalOrder() {
         logTest(DEMO_SERVICE_CREATE_INTERNATIONAL_ORDER);
 
         Response response = getResponse(DEMO_SERVICE_CREATE_INTERNATIONAL_ORDER,
@@ -442,7 +431,7 @@ public class JaxRSITest {
     }
 
     @Test
-    public void testCreateProduct () {
+    public void testCreateProduct() {
         logTest(DEMO_SERVICE_CREATE_PRODUCT);
 
         Response response = getResponse(DEMO_SERVICE_CREATE_PRODUCT,
@@ -454,7 +443,7 @@ public class JaxRSITest {
     }
 
     @Test
-    public void testCreateShipper () {
+    public void testCreateShipper() {
         logTest(DEMO_SERVICE_CREATE_SHIPPER);
 
         Response response = getResponse(DEMO_SERVICE_CREATE_SHIPPER, shipperInfoBuilder().build());
@@ -466,7 +455,7 @@ public class JaxRSITest {
 
     //Bound Services
     @Test
-    public void testOrderInfoDeleteOrder () {
+    public void testOrderInfoDeleteOrder() {
         logTest(DEMO_SERVICE_ORDERINFO_DELETE_ORDER);
 
         Response response = getResponseWithEmptyPost(DEMO_SERVICE_ORDERINFO_DELETE_ORDER);
@@ -476,7 +465,7 @@ public class JaxRSITest {
     }
 
     @Test
-    public void testCreateCategory () {
+    public void testCreateCategory() {
         logTest(DEMO_SERVICE_CREATE_CATEGORY);
 
         Response response = getResponse(DEMO_SERVICE_CREATE_CATEGORY, categoryInfoBuilder().categoryName("categoryNameInNewCategoryInfo").build());
@@ -487,7 +476,7 @@ public class JaxRSITest {
     }
 
     @Test
-    public void testOrderInfoUpdateOrder () {
+    public void testOrderInfoUpdateOrder() {
         logTest(DEMO_SERVICE_ORDERINFO_UPDATE_ORDER);
 
         Response response = getResponse(DEMO_SERVICE_ORDERINFO_UPDATE_ORDER,
@@ -500,7 +489,7 @@ public class JaxRSITest {
     }
 
     @Test
-    public void testOrderInfoChangeShipment () {
+    public void testOrderInfoChangeShipment() {
         logTest(DEMO_SERVICE_ORDERINFO_CHANGE_SHIPMENT);
 
         Response response = getResponse(DEMO_SERVICE_ORDERINFO_CHANGE_SHIPMENT, orderInfoBuilder().orderDate(ZonedDateTime.now()).build());

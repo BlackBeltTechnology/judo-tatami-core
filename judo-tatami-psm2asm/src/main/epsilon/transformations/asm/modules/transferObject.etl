@@ -78,17 +78,17 @@ rule CreateEmbeddedFlagsForGeneratedEmbeddedTransferObjectRelationOfTransferObje
 
 		t.source = asmUtils.getAnnotationUri("embedded");
 
-		var createEntry = new ASM!EStringToStringMapEntry;
+        var createEntry = new ASM!EStringToStringMapEntry;
         createEntry.key = "create";
         createEntry.value = "false";
         t.details.add(createEntry);
 
-		var updateEntry = new ASM!EStringToStringMapEntry;
+        var updateEntry = new ASM!EStringToStringMapEntry;
         updateEntry.key = "update";
         updateEntry.value = "false";
         t.details.add(updateEntry);
 
-		var deleteEntry = new ASM!EStringToStringMapEntry;
+        var deleteEntry = new ASM!EStringToStringMapEntry;
         deleteEntry.key = "delete";
         deleteEntry.value = "false";
         t.details.add(deleteEntry);

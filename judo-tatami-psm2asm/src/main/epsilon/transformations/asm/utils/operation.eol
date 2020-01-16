@@ -48,8 +48,3 @@ operation ASM!EAnnotation addBehaviourAnnotationOfOwnerParameter(type : String, 
     ownerParameterEntry.value = parameter;
     self.details.add(ownerParameterEntry);
 }
-
-operation JUDOPSM!OperationDeclaration isStatefulWithInputTypeOfMappedTransferObject() : Boolean {
-	return self.implementation.isDefined() and self.implementation.stateful 
-	and self.input.isDefined() and self.input.type.isDefined() and self.input.type.isTypeOf(JUDOPSM!MappedTransferObjectType);
-}

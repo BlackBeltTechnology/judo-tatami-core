@@ -41,16 +41,6 @@ rule CreateParameter
 	  
 	  if (s.eContainer.input == s) {
 	  	s.eContainer.getPSMEquivalent().input = t;
-	  	//TODO: check0 
-	    /*if (s.eContainer.getPSMEquivalent().implementation.isDefined() and s.eContainer.getPSMEquivalent().implementation.stateful) {
-	      if (t.type.isKindOf(JUDOPSM!MappedTransferObjectType)) {
-	        //t.type.
-	      } else {
-	        log.debug("[CreateParam] t.type not MTO of: (param) " + s.name + " in (op) " + s.eContainer.getPSMEquivalent().name);
-	      }
-	    } else {
-	      log.debug("[CreateParam] no implementation or stateless: (param) " + s.name + " in (op) " + s.eContainer.getPSMEquivalent().name);
-	    }*/
 	  } else if (s.eContainer.output == s) {
 	  	s.eContainer.getPSMEquivalent().output = t;
 	  } else if (s.eContainer.faults.contains(s)) {

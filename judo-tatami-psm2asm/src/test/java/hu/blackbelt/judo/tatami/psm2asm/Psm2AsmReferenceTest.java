@@ -14,13 +14,15 @@ import hu.blackbelt.judo.meta.psm.runtime.PsmModel;
 import hu.blackbelt.judo.meta.psm.service.MappedTransferObjectType;
 import hu.blackbelt.judo.meta.psm.service.UnboundOperation;
 import lombok.extern.slf4j.Slf4j;
+import org.eclipse.emf.ecore.EClass;
+import org.eclipse.emf.ecore.EReference;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.util.Iterator;
+import java.util.Optional;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
@@ -128,10 +130,8 @@ public class Psm2AsmReferenceTest {
         Package entities = newPackageBuilder().withName("entities").withElements(ImmutableList.of(orderEntity, shipperEntity, orderDetail, productEntity)).build();
         Package services = newPackageBuilder().withName("services").withElements(ImmutableList.of(orderInfo, shipperInfo, orderItem, productInfo, createOrder)).build();
 
-        //Model model = newModelBuilder().withName("testModel").withElements(ImmutableList.of(entities, services)).build();
         Model model = NamespaceBuilders.newModelBuilder().withName("testModel")
                 .withPackages(ImmutableList.of(entities, services))
-                //.withElements(accessPoint)
                 .build();
         psmModel.addContent(model);
         executePsm2AsmTransformation(
@@ -141,6 +141,28 @@ public class Psm2AsmReferenceTest {
                 calculatePsm2AsmTransformationScriptURI());
         asmModel.saveAsmModel(asmSaveArgumentsBuilder()
                 .outputStream(new FileOutputStream(new File(TARGET_TEST_CLASSES, REFERENCE_ASM_MODEL))));
+
+        final Optional<EClass> asmOrderInfo = allAsm(EClass.class).filter(eclazz -> "OrderInfo".equals(eclazz.getName())).findAny();
+        assertTrue(asmOrderInfo.isPresent());
+        final Optional<EClass> asmOrderItem = allAsm(EClass.class).filter(eclazz -> "OrderItem".equals(eclazz.getName())).findAny();
+        assertTrue(asmOrderItem.isPresent());
+        final Optional<EClass> shipperReferenceClass = allAsm(EClass.class).filter(eclazz -> "_ShipperReference".equals(eclazz.getName())).findAny();
+        assertTrue(shipperReferenceClass.isPresent());
+        final Optional<EClass> productReferenceClass = allAsm(EClass.class).filter(eclazz -> "_ProductReference".equals(eclazz.getName())).findAny();
+        assertTrue(productReferenceClass.isPresent());
+        final Optional<EReference> embeddedProductReference = allAsm(EReference.class).filter(reference -> "_product".equals(reference.getName())).findAny();
+        assertTrue(embeddedProductReference.isPresent());
+        final Optional<EReference> embeddedShipperReference = allAsm(EReference.class).filter(reference -> "_shipper".equals(reference.getName())).findAny();
+        assertTrue(embeddedShipperReference.isPresent());
+
+
+        assertTrue(embeddedShipperReference.get().isContainment());
+        assertTrue(embeddedShipperReference.get().getEReferenceType().equals(shipperReferenceClass.get()));
+        assertTrue(asmOrderInfo.get().getEAllReferences().contains(embeddedShipperReference.get()));
+
+        assertTrue(embeddedProductReference.get().isContainment());
+        assertTrue(embeddedProductReference.get().getEReferenceType().equals(productReferenceClass.get()));
+        assertTrue(asmOrderItem.get().getEAllReferences().contains(embeddedProductReference.get()));
     }
 
     static <T> Stream<T> asStream(Iterator<T> sourceIterator, boolean parallel) {

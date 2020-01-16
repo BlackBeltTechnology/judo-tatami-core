@@ -300,7 +300,7 @@
             <relations xsi:type="structure:TwoWayRelationMember" xmi:id="_JYnRreq1EemUZMITjXqp8w" name="customer" target="_JYmqeeq1EemUZMITjXqp8w" defaultExpression="" rangeExpression="" partner="_JYmqeuq1EemUZMITjXqp8w"/>
             <relations xsi:type="structure:TwoWayRelationMember" xmi:id="_JYnRruq1EemUZMITjXqp8w" name="employee" target="_JYmqgOq1EemUZMITjXqp8w" defaultExpression="" rangeExpression="" partner="_JYmqgeq1EemUZMITjXqp8w"/>
             <relations xsi:type="structure:TwoWayRelationMember" xmi:id="_JYnRr-q1EemUZMITjXqp8w" name="shipper" target="_JYofyuq1EemUZMITjXqp8w" defaultExpression="" rangeExpression="" partner="_JYofy-q1EemUZMITjXqp8w" primary="true"/>
-            <relations xmi:id="_JYnRsOq1EemUZMITjXqp8w" xsi:type="structure:OneWayRelationMember" name="shipAddress" target="_JYmDYeq1EemUZMITjXqp8w" containment="true"/>
+            <relations xsi:type="structure:OneWayRelationMember" xmi:id="_JYnRsOq1EemUZMITjXqp8w" name="shipAddress" target="_JYmDYeq1EemUZMITjXqp8w" containment="true"/>
             <relations xsi:type="structure:OneWayRelationMember" xmi:id="_JYnRs-q1EemUZMITjXqp8w" lower="1" upper="-1" name="items" target="_JYn4nuq1EemUZMITjXqp8w" containment="true"/>
             <relations xsi:type="structure:OneWayRelationMember" xmi:id="_JYnRtuq1EemUZMITjXqp8w" upper="-1" name="categories" target="_JYmDcOq1EemUZMITjXqp8w" relationMemberType="PROPERTY" getterExpression="self.orderDetails.product.category"/>
             <attributes xsi:type="structure:DataMember" xmi:id="_JYnRueq1EemUZMITjXqp8w" name="orderDate" dataType="_Z9J8IIN1EeiLE-B2bbL0fg" required="true"/>
