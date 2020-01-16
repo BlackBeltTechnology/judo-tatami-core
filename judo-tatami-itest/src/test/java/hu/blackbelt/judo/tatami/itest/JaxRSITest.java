@@ -302,8 +302,8 @@ public class JaxRSITest {
 
             dispatcher = new Dispatcher() {
                 @Override
-                public Map<String, Object> callOperation (String target, String operationFqName, Map<String, Object> payload) {
-                    log.log(LOG_INFO, "Dispatcher called - " + target + " " + operationFqName + " Payload: " + payload.toString());
+                public Map<String, Object> callOperation (String operationFqName, Map<String, Object> payload) {
+                    log.log(LOG_INFO, "Dispatcher called - " + operationFqName + " Payload: " + payload.toString());
                     if (!testMap.containsKey(operationFqName)) {
                         switch (operationFqName) {
                             case "demo.services.OrderInfo#deleteOrder": //(input: none)
@@ -317,7 +317,7 @@ public class JaxRSITest {
                                 return ImmutableMap.of();
                         }
                     } else {
-                        return ImmutableMap.of("output", testMap.get(operationFqName));
+                        return ImmutableMap.of(Dispatcher.OUTPUT_PARAMETER_NAME, testMap.get(operationFqName));
                     }
                 }
             };

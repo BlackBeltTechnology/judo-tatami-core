@@ -52,6 +52,22 @@ rule CreateInputParameter
 }
 
 @greedy
+rule CreateOutputParameterName
+    transform s : JUDOPSM!OperationDeclaration
+    to t : ASM!EAnnotation {
+        guard: s.output.isDefined()
+
+        t.source = asmUtils.getAnnotationUri("outputParameterName");
+
+        var script = new ASM!EStringToStringMapEntry;
+        script.key = "value";
+        script.value = s.output.name;
+        t.details.add(script);
+
+        s.asmEquivalent().eAnnotations.add(t);
+    }
+
+@greedy
 rule CreateFaultParameter
     transform s : JUDOPSM!Parameter
     to t : ASM!EClass {
