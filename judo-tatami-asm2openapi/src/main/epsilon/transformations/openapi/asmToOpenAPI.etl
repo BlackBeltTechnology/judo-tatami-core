@@ -4,4 +4,3 @@ import "modules/schema.etl";
 import "modules/property.etl";
 import "modules/parameter.etl";
 import "modules/operation.etl";
-import "modules/exposedGraph.etl";
