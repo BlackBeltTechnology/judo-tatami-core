@@ -141,12 +141,19 @@ public class Script2Operation {
                 .set( Constants.IMPORT_PACKAGE,
                         "org.osgi.framework;version=\"[1.8,2.0)\"," +
                         "hu.blackbelt.judo.dao.api;version=\"[1.0,2.0)\""
-                )
-                .set( Constants.EXPORT_PACKAGE, exportedPackages.stream().collect(Collectors.joining(",")))
-                .set("Service-Component",
-                        scrXmlFilesByFqName.keySet().stream()
-                                .map(n -> "OSGI-INF/" + n + ".xml")
-                                .collect(Collectors.joining(",")));
+                );
+
+        if (exportedPackages.size() > 0) {
+                bundle.set( Constants.EXPORT_PACKAGE, exportedPackages.stream().collect(Collectors.joining(",")));
+
+        }
+
+        if (scrXmlFilesByFqName.size() > 0) {
+                bundle.set("Service-Component",
+                    scrXmlFilesByFqName.keySet().stream()
+                            .map(n -> "OSGI-INF/" + n + ".xml")
+                            .collect(Collectors.joining(",")));
+        }
         return bundle.build();
     }
 

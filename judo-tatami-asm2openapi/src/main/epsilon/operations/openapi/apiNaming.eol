@@ -3,7 +3,7 @@
 operation String toOpenAPIPath() : String {
     var result = self
             .replace("\\.__UnboundServices", "")
-            .replace("[__#\\.]", "/")
+            .replace("[#\\.]", "/")
 //            .replaceAll("//", "/")
 //            .replaceAll("//", "/")
 //            .replaceAll("//", "/")

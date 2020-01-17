@@ -127,8 +127,8 @@ public class NorthwindTatamiESMTransformationPipelineITest extends TatamiESMTran
 
         Dispatcher dispatcher = new Dispatcher() {
             @Override
-            public Map<String, Object> callOperation(String target, String operation, Map<String, Object> payload) {
-                log.log(LOG_INFO, "Dispatcher called - " + target + " " + operation + " Payload: " + payload.toString());
+            public Map<String, Object> callOperation(String operation, Map<String, Object> payload) {
+                log.log(LOG_INFO, "Dispatcher called - " + operation + " Payload: " + payload.toString());
                 return ImmutableMap.<String, Object>of();
             }
         };
