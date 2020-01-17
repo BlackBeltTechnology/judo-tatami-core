@@ -167,7 +167,7 @@ public class EsmAccesspoint2PsmAccesspointTest {
 
 		final Optional<hu.blackbelt.judo.meta.psm.accesspoint.ExposedService> psmExposedService = allPsm(
 				hu.blackbelt.judo.meta.psm.accesspoint.ExposedService.class)
-						.filter(exposedSrvc -> psmUnboundOperation.get().equals(exposedSrvc.getOperation())).findAny();
+						.filter(exposedSrvc -> psmUnboundOperation.get().equals(exposedSrvc.getOperationGroup())).findAny();
 		assertTrue(psmExposedService.isPresent());
 
 		final Optional<hu.blackbelt.judo.meta.psm.accesspoint.AccessPoint> psmAccessPoint = allPsm(

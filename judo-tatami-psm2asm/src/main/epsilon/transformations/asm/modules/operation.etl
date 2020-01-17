@@ -107,6 +107,11 @@ rule CreateStatefulAnnotationOnBoundOperationWithBehaviour
         stateful.value = (s.createOwnerRelation.isDefined() or s.updateOwnerRelation.isDefined() or s.deleteOwnerRelation.isDefined()).asString();
         t.details.add(stateful);
 
+        var bound = new ASM!EStringToStringMapEntry;
+        bound.key = "value";
+        bound.value = "true";
+        t.details.add(bound);
+
         s.asmEquivalent().eAnnotations.add(t);
 }
 
@@ -122,6 +127,11 @@ rule CreateStatefulAnnotationOnBoundOperationWithRelationWithBehaviour
         stateful.key = "value";
         stateful.value = (s.setOwnerRelation.isDefined() or s.unsetOwnerRelation.isDefined() or s.addAllOwnerRelation.isDefined() or s.removeAllOwnerRelation.isDefined()).asString();
         t.details.add(stateful);
+
+        var bound = new ASM!EStringToStringMapEntry;
+        bound.key = "value";
+        bound.value = "true";
+        t.details.add(bound);
 
         s.asmEquivalent().eAnnotations.add(t);
 }
@@ -139,6 +149,11 @@ rule CreateStatefulAnnotationOnUnboundOperationWithBehaviour
         stateful.value = (s.createOwnerRelation.isDefined() or s.updateOwnerRelation.isDefined() or s.deleteOwnerRelation.isDefined()).asString();
         t.details.add(stateful);
 
+        var bound = new ASM!EStringToStringMapEntry;
+        bound.key = "value";
+        bound.value = "false";
+        t.details.add(bound);
+
         s.asmEquivalent().eAnnotations.add(t);
 }
 
@@ -154,6 +169,11 @@ rule CreateStatefulAnnotationOnUnboundOperationWithRelationWithBehaviour
         stateful.key = "value";
         stateful.value = (s.setOwnerRelation.isDefined() or s.unsetOwnerRelation.isDefined() or s.addAllOwnerRelation.isDefined() or s.removeAllOwnerRelation.isDefined()).asString();
         t.details.add(stateful);
+
+        var bound = new ASM!EStringToStringMapEntry;
+        bound.key = "value";
+        bound.value = "false";
+        t.details.add(bound);
 
         s.asmEquivalent().eAnnotations.add(t);
 }
@@ -188,26 +208,13 @@ rule CreateScriptBodyAnnotationForBoundOperation
 }
 
 @greedy
-rule CreateUnboundInterface
-    transform s : JUDOPSM!Namespace
-    to t : ASM!EClass {
-    	guard: s.elements.selectOne(e | e.isKindOf(JUDOPSM!UnboundOperation)).isDefined()
-    	
-        t.name = "__UnboundServices";
-        t.abstract = true;
-        t.interface = true;
-        
-        s.asmEquivalent().eClassifiers.add(t);
-}
-
-@greedy
 rule CreateUnboundOperation
     transform s : JUDOPSM!UnboundOperation
     to t : ASM!EOperation
     extends CreateOperation {
         t.name = s.name;
-        
-        s.getNamespace().equivalent("CreateUnboundInterface").eOperations.add(t);
+
+        s.eContainer.asmEquivalent().eOperations.add(t);
 }
 
 @greedy

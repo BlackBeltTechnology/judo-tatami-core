@@ -23,7 +23,7 @@ rule CreateAccessPoint
         
         // TODO - add platform specific attributes (protocol, message format, etc.)
         
-        s.getNamespace().asmEquivalent().eClassifiers.add(t);
+        s.eContainer.asmEquivalent().eClassifiers.add(t);
 }
 
 rule CreateExposedByAnnotationForUnboundOperation
@@ -36,7 +36,7 @@ rule CreateExposedByAnnotationForUnboundOperation
         exposedBy.value = asmUtils.getClassifierFQName(s.eContainer.equivalent("CreateAccessPoint"));
         t.details.add(exposedBy);
         
-        s.`operation`.equivalent("CreateUnboundOperation").eAnnotations.add(t);
+        s.`operationGroup`.asmEquivalent().eAnnotations.add(t);
 }
 
 rule CreateExposedGraphReference

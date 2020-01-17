@@ -1,10 +1,12 @@
 package hu.blackbelt.judo.tatami.psm2measure;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
 import hu.blackbelt.epsilon.runtime.execution.ExecutionContext;
 import hu.blackbelt.epsilon.runtime.execution.api.Log;
 import hu.blackbelt.epsilon.runtime.execution.contexts.EtlExecutionContext;
 import hu.blackbelt.judo.meta.measure.runtime.MeasureModel;
+import hu.blackbelt.judo.meta.psm.PsmUtils;
 import hu.blackbelt.judo.meta.psm.runtime.PsmModel;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.epsilon.common.util.UriUtil;
@@ -16,7 +18,7 @@ import java.util.List;
 import static hu.blackbelt.epsilon.runtime.execution.ExecutionContext.executionContextBuilder;
 import static hu.blackbelt.epsilon.runtime.execution.contexts.EtlExecutionContext.etlExecutionContextBuilder;
 import static hu.blackbelt.epsilon.runtime.execution.model.emf.WrappedEmfModelContext.wrappedEmfModelContextBuilder;
-import static hu.blackbelt.judo.tatami.core.TransformationTraceUtil.*;
+import static hu.blackbelt.judo.tatami.core.TransformationTraceUtil.getTransformationTraceFromEtlExecutionContext;
 import static hu.blackbelt.judo.tatami.psm2measure.Psm2MeasureTransformationTrace.PSM_2_MEASURE_URI_POSTFIX;
 import static hu.blackbelt.judo.tatami.psm2measure.Psm2MeasureTransformationTrace.resolvePsm2MeasureTrace;
 
@@ -41,6 +43,8 @@ public class Psm2Measure {
                                 .name("MEASURES")
                                 .resource(measureModel.getResource())
                                 .build()))
+                .injectContexts(ImmutableMap.of(
+                        "psmUtils", new PsmUtils()))
                 .build();
 
         // run the model / metadata loading
