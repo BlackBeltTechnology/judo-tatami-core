@@ -4,6 +4,11 @@ operation JUDOPSM!BoundOperation asmEquivalent() : ASM!EOperation {
 }
 
 @cached
+operation JUDOPSM!BoundTransferOperation asmEquivalent() : ASM!EOperation {
+    return self.equivalent("CreateBoundTransferOperation");
+}
+
+@cached
 operation JUDOPSM!UnboundOperation asmEquivalent() : ASM!EOperation {
     return self.equivalent("CreateUnboundOperation");
 }
