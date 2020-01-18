@@ -231,13 +231,13 @@ rule AddAnnotationToBoundOperation
 
 @abstract
 rule AddAnnotationToBoundOperationWithRelation
-    transform s : JUDOPSM!BoundTransferOperation
+    transform s : JUDOPSM!BoundTransferOperationWithRelation
     to t : ASM!EAnnotation
     extends AddAnnotationToBoundOperation {
-        /*var relationEntry = new ASM!EStringToStringMapEntry;
+        var relationEntry = new ASM!EStringToStringMapEntry;
         relationEntry.key = "relation";
         relationEntry.value = asmUtils.getReferenceFQName(s.relation.equivalent("CreateTransferObjectRelation"));
-        t.details.add(relationEntry); */
+        t.details.add(relationEntry);
 }
 
 @abstract
@@ -297,7 +297,7 @@ rule AddDeleteAnnotationToBoundOperation
 }
 
 rule AddSetAnnotationToBoundOperationWithRelation
-    transform s : JUDOPSM!BoundTransferOperation
+    transform s : JUDOPSM!BoundTransferOperationWithRelation
     to t : ASM!EAnnotation
     extends AddAnnotationToBoundOperationWithRelation {
         guard: s.setOwnerRelation.isDefined()
@@ -306,7 +306,7 @@ rule AddSetAnnotationToBoundOperationWithRelation
 }
 
 rule AddUnSetAnnotationToBoundOperationWithRelation
-    transform s : JUDOPSM!BoundTransferOperation
+    transform s : JUDOPSM!BoundTransferOperationWithRelation
     to t : ASM!EAnnotation
     extends AddAnnotationToBoundOperationWithRelation {
         guard: s.unsetOwnerRelation.isDefined()
@@ -314,7 +314,7 @@ rule AddUnSetAnnotationToBoundOperationWithRelation
         t.addBehaviourAnnotationOfOwnerRelation("unset", asmUtils.getReferenceFQName(s.unsetOwnerRelation.equivalent("CreateTransferObjectRelation")));
 }
 rule AddAddAllAnnotationToBoundOperationWithRelation
-    transform s : JUDOPSM!BoundTransferOperation
+    transform s : JUDOPSM!BoundTransferOperationWithRelation
     to t : ASM!EAnnotation
     extends AddAnnotationToBoundOperationWithRelation {
         guard: s.addAllOwnerRelation.isDefined()
@@ -323,7 +323,7 @@ rule AddAddAllAnnotationToBoundOperationWithRelation
 }
 
 rule AddRemoveAllAnnotationToBoundOperationWithRelation
-    transform s : JUDOPSM!BoundTransferOperation
+    transform s : JUDOPSM!BoundTransferOperationWithRelation
     to t : ASM!EAnnotation
     extends AddAnnotationToBoundOperationWithRelation {
         guard: s.removeAllOwnerRelation.isDefined()
@@ -332,7 +332,7 @@ rule AddRemoveAllAnnotationToBoundOperationWithRelation
 }
 
 rule AddGetRangeAnnotationToBoundOperationWithRelation
-    transform s : JUDOPSM!BoundTransferOperation
+    transform s : JUDOPSM!BoundTransferOperationWithRelation
     to t : ASM!EAnnotation
     extends AddAnnotationToBoundOperationWithRelation {
         guard: s.getRangeOwnerParameter.isDefined() and s.getRangeOwnerParameter.isInput()
