@@ -74,12 +74,22 @@
 					<dependency>
 						<groupId>hu.blackbelt.judo.meta</groupId>
 						<artifactId>hu.blackbelt.judo.meta.script.builder.jcl</artifactId>
-						<version>1.0.0-SNAPSHOT</version>
+						<version>${judo-meta-script-version}</version>
+					</dependency>
+					<dependency>
+						<groupId>hu.blackbelt.judo.meta</groupId>
+						<artifactId>hu.blackbelt.judo.meta.expression.model.adapter.asm</artifactId>
+						<version>${judo-meta-expression-version}</version>
+					</dependency>
+					<dependency>
+						<groupId>hu.blackbelt.judo.meta</groupId>
+						<artifactId>hu.blackbelt.judo.meta.script.model</artifactId>
+						<version>${judo-meta-script-version}</version>
 					</dependency>
 					<dependency>
 						<groupId>hu.blackbelt.judo.meta</groupId>
 						<artifactId>hu.blackbelt.judo.meta.jcl.model</artifactId>
-						<version>1.0.0-SNAPSHOT</version>
+						<version>${judo-meta-jcl-version}</version>
 					</dependency>
 				</dependencies>
 			</plugin>
