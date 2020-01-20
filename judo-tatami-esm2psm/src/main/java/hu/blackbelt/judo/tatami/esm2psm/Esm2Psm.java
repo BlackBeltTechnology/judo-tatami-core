@@ -10,16 +10,27 @@ import hu.blackbelt.judo.meta.esm.runtime.EsmUtils;
 import hu.blackbelt.judo.meta.psm.PsmUtils;
 import hu.blackbelt.judo.meta.psm.runtime.PsmModel;
 import hu.blackbelt.judo.tatami.core.TransformationTraceUtil;
+import hu.blackbelt.judo.tatami.core.workflow.engine.WorkFlowEngine;
+import hu.blackbelt.judo.tatami.core.workflow.flow.WorkFlow;
+import hu.blackbelt.judo.tatami.core.workflow.work.TransformationContext;
+import hu.blackbelt.judo.tatami.core.workflow.work.WorkReport;
+import hu.blackbelt.judo.tatami.core.workflow.work.WorkStatus;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.epsilon.common.util.UriUtil;
 
+import java.io.File;
+import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 import static hu.blackbelt.epsilon.runtime.execution.ExecutionContext.executionContextBuilder;
 import static hu.blackbelt.epsilon.runtime.execution.contexts.EtlExecutionContext.etlExecutionContextBuilder;
 import static hu.blackbelt.epsilon.runtime.execution.model.emf.WrappedEmfModelContext.wrappedEmfModelContextBuilder;
+import static hu.blackbelt.judo.meta.esm.runtime.EsmModel.LoadArguments.esmLoadArgumentsBuilder;
+import static hu.blackbelt.judo.meta.psm.runtime.PsmModel.SaveArguments.psmSaveArgumentsBuilder;
 import static hu.blackbelt.judo.tatami.core.TransformationTraceUtil.*;
+import static hu.blackbelt.judo.tatami.core.workflow.engine.WorkFlowEngineBuilder.aNewWorkFlowEngine;
+import static hu.blackbelt.judo.tatami.core.workflow.flow.SequentialFlow.Builder.aNewSequentialFlow;
 import static hu.blackbelt.judo.tatami.esm2psm.Esm2PsmTransformationTrace.ESM_2_PSM_URI_POSTFIX;
 import static hu.blackbelt.judo.tatami.esm2psm.Esm2PsmTransformationTrace.resolveEsm2PsmTrace;
 

@@ -25,10 +25,10 @@ import static hu.blackbelt.judo.tatami.asm2openapi.Asm2OpenAPI.calculateAsm2Open
 import static hu.blackbelt.judo.tatami.asm2openapi.Asm2OpenAPI.executeAsm2OpenAPITransformation;
 
 @Slf4j
-public class Asm2OpenAPINorthwindTest {
+public class Asm2OpenAPIesmNorthwindTest {
     public static final String MODEL_NAME = "northwind";
-    public static final String ESM_NORTHWIND_ASM_MODEL = "northwind-asm.model";
-    public static final String ESM_NORTHWIND_OPENAPI_MODEL = "psmNorthwind-openapi.model";
+    public static final String ESM_NORTHWIND_ASM_MODEL = "esmNorthwind-asm.model";
+    public static final String ESM_NORTHWIND_OPENAPI_MODEL = "esmNorthwind-openapi.model";
     public static final String ESM_NORTHWIND_ASM_2_OPENAPI_MODEL = "psmNorthwind-asm2openapi.model";
     public static final String TARGET_TEST_CLASSES = "target/test-classes";
 

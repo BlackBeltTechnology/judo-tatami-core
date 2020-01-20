@@ -5,6 +5,7 @@ import com.google.common.collect.ImmutableMap;
 import hu.blackbelt.judo.meta.asm.runtime.AsmUtils;
 import hu.blackbelt.judo.meta.rdbms.RdbmsIdentifierField;
 import hu.blackbelt.judo.meta.rdbms.RdbmsTable;
+import hu.blackbelt.judo.meta.rdbms.RdbmsValueField;
 import hu.blackbelt.judo.meta.rdbms.runtime.RdbmsModel;
 import hu.blackbelt.judo.tatami.core.Dispatcher;
 import hu.blackbelt.judo.tatami.core.TransformationTrace;
@@ -105,8 +106,8 @@ public class NorthwindTatamiPSMTransformationPipelineITest extends TatamiPSMTran
 
         List<EObject> orderRdbmsObjectList = transformationTraceService.getDescendantOfInstanceByModelType(DEMO, RdbmsModel.class, orderClass.get());
 
-        assertThat(orderRdbmsObjectList, hasSize(2));
-        assertThat(orderRdbmsObjectList, hasItems(instanceOf(RdbmsTable.class), instanceOf(RdbmsIdentifierField.class) ));
+        assertThat(orderRdbmsObjectList, hasSize(3));
+        assertThat(orderRdbmsObjectList, hasItems(instanceOf(RdbmsTable.class), instanceOf(RdbmsIdentifierField.class), instanceOf(RdbmsValueField.class)));
         assertThat(orderRdbmsObjectList.stream()
                 .filter(RdbmsTable.class::isInstance)
                 .map(RdbmsTable.class::cast)

@@ -12,6 +12,7 @@ import hu.blackbelt.judo.meta.psm.namespace.Package;
 import hu.blackbelt.judo.meta.psm.namespace.util.builder.NamespaceBuilders;
 import hu.blackbelt.judo.meta.psm.runtime.PsmModel;
 import hu.blackbelt.judo.meta.psm.service.MappedTransferObjectType;
+import hu.blackbelt.judo.meta.psm.service.TransferObjectRelation;
 import hu.blackbelt.judo.meta.psm.service.UnboundOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.emf.ecore.EClass;
@@ -82,10 +83,8 @@ public class Psm2AsmReferenceTest {
         slf4jlog.info("testCreateEmbeddedTransferRelationInTransferObjectsOfOperationInputType");
         AssociationEnd shipperOrdersInShipper = newAssociationEndBuilder().withName("shipperOrders").withCardinality(newCardinalityBuilder().withUpper(-1).withLower(0).build()).build();
         EntityType shipperEntity = newEntityTypeBuilder().withName("Shipper").withRelations(ImmutableList.of(shipperOrdersInShipper)).build();
-
         MappedTransferObjectType shipperInfo = newMappedTransferObjectTypeBuilder().withName("ShipperInfo").withEntityType(shipperEntity)
                 .withRelations(ImmutableList.of(
-
                 )).build();
 
         EntityType productEntity = newEntityTypeBuilder().withName("Product").withRelations(ImmutableList.of()).build();
@@ -99,9 +98,13 @@ public class Psm2AsmReferenceTest {
                 .withRelations(ImmutableList.of(productInOrderDetail))
                 .build();
 
+        //mutual embedding
+        TransferObjectRelation orderItemEmbeddingOrderInfo = newTransferObjectRelationBuilder().withName("embeddingOrder").withEmbedded(true).withCardinality(newCardinalityBuilder().withLower(1).withUpper(1).build()).build();
         MappedTransferObjectType orderItem = newMappedTransferObjectTypeBuilder().withName("OrderItem").withEntityType(orderDetail)
                 .withRelations(ImmutableList.of(
                         newTransferObjectRelationBuilder().withName("product").withEmbedded(false).withTarget(productInfo).withBinding(productInOrderDetail).withCardinality(newCardinalityBuilder().withLower(1).withUpper(1).build()).build()
+                        , orderItemEmbeddingOrderInfo
+                        //mutual embedding
                 ))
                 .build();
 
@@ -120,6 +123,9 @@ public class Psm2AsmReferenceTest {
                         newTransferObjectRelationBuilder().withName("items").withTarget(orderItem).withBinding(orderDetailsInOrder).withEmbedded(true).withEmbeddedCreate(true).withCardinality(newCardinalityBuilder().withLower(1).withUpper(-1).build()).build()
                 ))
                 .build();
+
+        //mutual embedding
+        orderItemEmbeddingOrderInfo.setTarget(orderInfo);
 
         UnboundOperation createOrder = newUnboundOperationBuilder().withName("createOrder_")
                 .withInput(newParameterBuilder().withName("input").withCardinality(newCardinalityBuilder().withLower(1).withUpper(1).build()).withType(orderInfo).build())

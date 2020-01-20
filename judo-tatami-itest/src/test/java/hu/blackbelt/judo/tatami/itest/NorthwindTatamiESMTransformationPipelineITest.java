@@ -5,6 +5,7 @@ import com.google.common.collect.ImmutableMap;
 import hu.blackbelt.judo.meta.asm.runtime.AsmUtils;
 import hu.blackbelt.judo.meta.rdbms.RdbmsIdentifierField;
 import hu.blackbelt.judo.meta.rdbms.RdbmsTable;
+import hu.blackbelt.judo.meta.rdbms.RdbmsValueField;
 import hu.blackbelt.judo.meta.rdbms.runtime.RdbmsModel;
 import hu.blackbelt.judo.tatami.core.Dispatcher;
 import hu.blackbelt.judo.tatami.core.TransformationTrace;
@@ -22,13 +23,16 @@ import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
 
 import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.io.*;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import static hu.blackbelt.judo.tatami.itest.TestUtility.*;
@@ -106,8 +110,8 @@ public class NorthwindTatamiESMTransformationPipelineITest extends TatamiESMTran
 
         List<EObject> orderRdbmsObjectList = transformationTraceService.getDescendantOfInstanceByModelType(NORTHWIND, RdbmsModel.class, orderClass.get());
 
-        assertThat(orderRdbmsObjectList, hasSize(2));
-        assertThat(orderRdbmsObjectList, hasItems(instanceOf(RdbmsTable.class), instanceOf(RdbmsIdentifierField.class) ));
+        assertThat(orderRdbmsObjectList, hasSize(3));
+        assertThat(orderRdbmsObjectList, hasItems(instanceOf(RdbmsTable.class), instanceOf(RdbmsIdentifierField.class), instanceOf(RdbmsValueField.class)));
         assertThat(orderRdbmsObjectList.stream()
                 .filter(RdbmsTable.class::isInstance)
                 .map(RdbmsTable.class::cast)
@@ -155,7 +159,8 @@ public class NorthwindTatamiESMTransformationPipelineITest extends TatamiESMTran
         try {
             response = wt.path(path)
                     .request("application/json")
-                    .get();
+                    .header("__identifier", UUID.randomUUID())
+                    .post(Entity.entity("", MediaType.APPLICATION_JSON));
         } catch (Exception e) {
             log.log(LOG_ERROR, "EXCEPTION: ", e);
         }
