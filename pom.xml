@@ -69,22 +69,22 @@
         <judo-meta-esm-version>1.1.0.20200112_024734_4654dd6_develop</judo-meta-esm-version>
         <judo-meta-esm-import-range>[1.0,1.1)</judo-meta-esm-import-range>
 
-        <judo-meta-psm-version>1.0.0.20200120_081959_a00a7ce_develop</judo-meta-psm-version>
+        <judo-meta-psm-version>1.0.0-SNAPSHOT</judo-meta-psm-version>
         <judo-meta-psm-import-range>[1.0,1.1)</judo-meta-psm-import-range>
 
         <judo-meta-jql-version>1.0.0.20200112_030445_9877e2b_develop</judo-meta-jql-version>
         <judo-meta-jql-import-range>[1.0,1.1)</judo-meta-jql-import-range>
 
-        <judo-meta-jcl-version>1.0.0.20200117_155804_c2bee67_develop</judo-meta-jcl-version>
+        <judo-meta-jcl-version>1.0.0-SNAPSHOT</judo-meta-jcl-version>
         <judo-meta-jcl-import-range>[1.0,1.1)</judo-meta-jcl-import-range>
 
-        <judo-meta-script-version>1.0.0.20200120_090239_5acf6b9_develop</judo-meta-script-version>
+        <judo-meta-script-version>1.0.0-SNAPSHOT</judo-meta-script-version>
         <judo-meta-script-import-range>[1.0,1.1)</judo-meta-script-import-range>
 
         <judo-meta-asm-version>1.0.0.20200116_130228_68c102c_develop</judo-meta-asm-version>
         <judo-meta-asm-import-range>[1.0,1.1)</judo-meta-asm-import-range>
 
-        <judo-meta-expression-version>1.0.0.20200117_155913_78bd576_develop</judo-meta-expression-version>
+        <judo-meta-expression-version>1.0.0.20200112_033455_4fa9867_develop</judo-meta-expression-version>
         <judo-meta-expression-import-range>[1.0,1.1)</judo-meta-expression-import-range>
 
         <judo-meta-measure-version>1.0.0.20200112_030434_1a2a1fb_develop</judo-meta-measure-version>
@@ -97,7 +97,7 @@
         <judo-meta-openapi-import-range>[1.0,1.1)</judo-meta-openapi-import-range>
 
         <judo-dao-api-version>1.0.0.20191220_205229_b4e8ff6_develop</judo-dao-api-version>
-        <judo-script-codegen-version>1.0.0.20200120_091421_4470575_develop</judo-script-codegen-version>
+        <judo-script-codegen-version>1.0.0-SNAPSHOT</judo-script-codegen-version>
         <judo-jql-ide-eclipse-version>1.0.0.20200112_035552_3edb935_develop</judo-jql-ide-eclipse-version>
 
         <structured-map-proxy-version>1.0.0.20191217_122241_77813e8_develop</structured-map-proxy-version>
@@ -577,7 +577,6 @@
                         </execution>
                     </executions>
                     <dependencies>
-
                         <dependency>
                             <groupId>hu.blackbelt.judo.meta</groupId>
                             <artifactId>hu.blackbelt.judo.meta.psm.model.northwind</artifactId>
