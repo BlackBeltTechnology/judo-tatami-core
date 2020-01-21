@@ -8,6 +8,7 @@ import hu.blackbelt.judo.meta.esm.runtime.EsmModel;
 import hu.blackbelt.judo.meta.esm.structure.EntityType;
 import hu.blackbelt.judo.meta.esm.structure.TransferObjectType;
 import hu.blackbelt.judo.meta.psm.runtime.PsmModel;
+import hu.blackbelt.judo.meta.psm.service.TransferOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
@@ -32,6 +33,7 @@ import static hu.blackbelt.judo.meta.psm.runtime.PsmModel.SaveArguments.psmSaveA
 import static hu.blackbelt.judo.meta.psm.runtime.PsmModel.buildPsmModel;
 import static hu.blackbelt.judo.tatami.esm2psm.Esm2Psm.calculateEsm2PsmTransformationScriptURI;
 import static hu.blackbelt.judo.tatami.esm2psm.Esm2Psm.executeEsm2PsmTransformation;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @Slf4j
@@ -151,6 +153,8 @@ public class EsmOperation2PsmOperationTest {
         final Optional<hu.blackbelt.judo.meta.psm.namespace.Model> psmModel = allPsm(hu.blackbelt.judo.meta.psm.namespace.Model.class)
 				.filter(m -> "Model".equals(m.getName())).findAny();
         assertTrue(psmModel.isPresent());
+
+        assertEquals(6L, allPsm(TransferOperation.class).count());
     }
 
 //	@Test

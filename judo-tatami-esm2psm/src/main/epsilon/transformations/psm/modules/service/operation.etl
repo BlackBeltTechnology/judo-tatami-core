@@ -55,21 +55,21 @@ rule CreateUnboundTransferOperationInDefaultTransferObjectType
       s.eContainer.equivalent("CreateDefaultMappedTransferObjectTypeForEntity").operations.add(t);
 }
 
-rule CreateUnboundOperation
-	transform s: ESM!Operation
-	to t: JUDOPSM!UnboundOperation
-	extends CreateNamespaceElement {
-	  guard: s.modifier == ESM!OperationModifier#STATIC and not s.eContainer.isKindOf(ESM!EntityType) and s.bound
+rule CreateReferencedUnboundOperation
+    transform s: ESM!Operation
+    to t: JUDOPSM!UnboundOperation
+    extends CreateNamedElement {
+	  guard: s.modifier == ESM!OperationModifier#STATIC and not s.eContainer.isKindOf(ESM!EntityType) and not s.bound
 
 	  t.implementation = s.equivalent("CreateOperationBody");
 	  s.eContainer.getPSMEquivalent().operations.add(t);
 }
 
-rule CreateUnboundOperation
-	transform s: ESM!Operation
-	to t: JUDOPSM!UnboundOperation
-	extends CreateNamespaceElement {
-	  guard: s.modifier == ESM!OperationModifier#STATIC and not s.eContainer.isKindOf(ESM!EntityType) and not s.bound
+rule CreateInPlaceUnboundOperation
+    transform s: ESM!Operation
+    to t: JUDOPSM!UnboundOperation
+    extends CreateNamedElement {
+	  guard: s.modifier == ESM!OperationModifier#STATIC and not s.eContainer.isKindOf(ESM!EntityType) and s.bound
 
 	  var resolvedBinding = esmUtils.resolveBindingOfOperation(s.eContainer, s).orElse(null);
 
