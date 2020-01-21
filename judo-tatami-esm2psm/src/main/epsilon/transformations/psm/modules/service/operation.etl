@@ -1,27 +1,89 @@
 import "../namespace/namespace.etl";
 import "../../../../operations/_importAll.eol";
 
-/*
+@lazy
+@greedy
+rule CreateOperationBody
+    transform s: ESM!Operation
+    to t: JUDOPSM!OperationBody {
+      t.body = s.body;
+      t.stateful = s.stateful;
+      t.customImplementation = s.customImplementation;
+}
+
 rule CreateBoundOperation
-    transform s: ESM!BoundOperation
+    transform s: ESM!Operation
     to t: JUDOPSM!BoundOperation
     extends CreateNamedElement {
-      s.eContainer.getPSMTransferObjectTypeEquivalent().operations.add(t);
-      if(not s.`abstract`) {
-        t.implementation = s.equivalent("CreateOperationBody");
+      guard: s.modifier <> ESM!OperationModifier#STATIC and s.eContainer.isKindOf(ESM!EntityType)
+
+      t.implementation = s.equivalent("CreateOperationBody");
+      t.instanceRepresentation = s.eContainer.equivalent("CreateDefaultMappedTransferObjectTypeForEntity");
+      s.eContainer.equivalent("CreateEntityType").operations.add(t);
+}
+
+rule CreateBoundTransferOperationInDefaultTransferObjectType
+    transform s: ESM!Operation
+    to t: JUDOPSM!BoundTransferOperation
+    extends CreateNamedElement {
+      guard: s.modifier <> ESM!OperationModifier#STATIC and s.eContainer.isKindOf(ESM!EntityType)
+
+      t.binding = s.equivalent("CreateBoundOperation");
+      s.eContainer.equivalent("CreateDefaultMappedTransferObjectTypeForEntity").operations.add(t);
+}
+
+rule CreateBoundTransferOperation
+    transform s: ESM!Operation
+    to t: JUDOPSM!BoundTransferOperation
+    extends CreateNamedElement {
+      guard: s.modifier <> ESM!OperationModifier#STATIC and s.bound
+
+      var resolvedBinding = esmUtils.resolveBindingOfOperation(s.eContainer, s).orElse(null);
+      if (resolvedBinding.isDefined()) {
+          t.binding = resolvedBinding.equivalent("CreateBoundOperation");
       }
-      log.debug("Created BoundOperation: " + t.name);
+      s.eContainer.getPSMEquivalent().operations.add(t);
+}
+
+rule CreateUnboundTransferOperationInDefaultTransferObjectType
+    transform s: ESM!Operation
+    to t: JUDOPSM!UnboundOperation
+    extends CreateNamedElement {
+      guard: s.modifier == ESM!OperationModifier#STATIC and s.eContainer.isKindOf(ESM!EntityType)
+
+      t.implementation = s.equivalent("CreateOperationBody");
+      s.eContainer.equivalent("CreateDefaultMappedTransferObjectTypeForEntity").operations.add(t);
 }
 
 rule CreateUnboundOperation
-	transform s: ESM!UnboundOperation
+	transform s: ESM!Operation
 	to t: JUDOPSM!UnboundOperation
 	extends CreateNamespaceElement {
+	  guard: s.modifier == ESM!OperationModifier#STATIC and not s.eContainer.isKindOf(ESM!EntityType) and s.bound
+
 	  t.implementation = s.equivalent("CreateOperationBody");
-	  
-	  log.debug("Created UnboundOperation: " + s.name);
+	  s.eContainer.getPSMEquivalent().operations.add(t);
 }
 
+rule CreateUnboundOperation
+	transform s: ESM!Operation
+	to t: JUDOPSM!UnboundOperation
+	extends CreateNamespaceElement {
+	  guard: s.modifier == ESM!OperationModifier#STATIC and not s.eContainer.isKindOf(ESM!EntityType) and not s.bound
+
+	  var resolvedBinding = esmUtils.resolveBindingOfOperation(s.eContainer, s).orElse(null);
+
+	  if (resolvedBinding.isDefined()) {
+	    t.implementation = new JUDOPSM!OperationBody;
+	    t.implementation.body = resolvedBinding.body;
+	    t.implementation.stateful = resolvedBinding.stateful;
+	    t.implementation.customImplementation = resolvedBinding.customImplementation;
+	  }
+
+	  s.eContainer.getPSMEquivalent().operations.add(t);
+}
+
+/*
 @lazy
 @greedy
 rule CreateCardinalityForParameter
@@ -48,17 +110,6 @@ rule CreateParameter
 	  	s.eContainer.getPSMEquivalent().faults.add(t);
 	  }
 	  log.debug("Created Parameter: " + t.name);
-}
-
-@lazy
-@greedy
-rule CreateOperationBody
-    transform s: ESM!Operation
-    to t: JUDOPSM!OperationBody {
-      t.body = s.body;
-      t.stateful = true;
-      t.customImplementation = s.customImplementation;
-      log.debug("Created Operation Body for operation: " + s.name);
 }
 
 //for exposed graph

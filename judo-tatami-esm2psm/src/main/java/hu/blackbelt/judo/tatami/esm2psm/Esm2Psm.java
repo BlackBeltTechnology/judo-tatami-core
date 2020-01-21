@@ -39,7 +39,7 @@ public class Esm2Psm {
     public static Esm2PsmTransformationTrace executeEsm2PsmTransformation(EsmModel esmModel, PsmModel psmModel, Log log,
                                                                           URI scriptDir) throws Exception {
 
-        EsmUtils esmUtils = new EsmUtils(esmModel.getResourceSet(), false);
+        EsmUtils esmUtils = new EsmUtils();
         //esmUtils.processAllEntities();
         //esmUtils.processAllMixins();
 
@@ -58,7 +58,7 @@ public class Esm2Psm {
                                 .resource(psmModel.getResource())
                                 .build()))
                 .injectContexts(ImmutableMap.of(
-                        "esmUtils", new EsmUtils(esmModel.getResourceSet()),
+                        "esmUtils", new EsmUtils(),
                         "psmUtils", new PsmUtils()
                 ))
                 .build();
