@@ -37,7 +37,7 @@ rule CreateUnmappedTransferObject
     extends CreateTransferObject {
     }
 
-rule CreateGeneratedEmbeddedTransferRelationInTransferObjectOfOperationInputType
+rule CreateGeneratedEmbeddedTransferRelationForNonEmbeddedTransferRelation
     transform s : JUDOPSM!TransferObjectRelation
     to t : ASM!EReference {
       guard: not s.embedded
@@ -48,18 +48,18 @@ rule CreateGeneratedEmbeddedTransferRelationInTransferObjectOfOperationInputType
         t.lowerBound = s.cardinality.lower;
         t.upperBound = s.cardinality.upper;
         
-        t.eType = s.target.equivalent("CreateReferenceClassForRelation");
+        t.eType = s.target.entityType.equivalent("CreateReferenceClassForEntityType");
         t.derived = s.binding.isDefined() and not s.binding.isKindOf(JUDOPSM!Relation);
         t.changeable = s.binding.isDefined() and (s.binding.isKindOf(JUDOPSM!Relation) or (s.binding.isKindOf(JUDOPSM!ReferenceAccessor) and s.binding.setterExpression.isDefined()));
-        t.eAnnotations.add(s.equivalent("CreateBindingAnnotationForEmbeddedTransferObjectRelationOfTransferObjectsInOperationInputType"));
-        t.eAnnotations.add(s.equivalent("CreateEmbeddedFlagsForGeneratedEmbeddedTransferObjectRelationOfTransferObjectsInOperationInputType"));
+        t.eAnnotations.add(s.equivalent("CreateBindingAnnotationForGeneratedEmbeddedTransferObjectRelation"));
+        t.eAnnotations.add(s.equivalent("CreateEmbeddedFlagsForGeneratedEmbeddedTransferObjectRelation"));
         s.eContainer.asmEquivalent().eStructuralFeatures.add(t);
 
         log.debug("[CreateGeneratedEmbeddedTransferRelationInTransferObjectOfOperationInputType] on " + s.name + " in " + s.eContainer.name);
 }
 
 @lazy
-rule CreateBindingAnnotationForEmbeddedTransferObjectRelationOfTransferObjectsInOperationInputType
+rule CreateBindingAnnotationForGeneratedEmbeddedTransferObjectRelation
     transform s : JUDOPSM!TransferObjectRelation
     to t : ASM!EAnnotation {
         
@@ -72,7 +72,7 @@ rule CreateBindingAnnotationForEmbeddedTransferObjectRelationOfTransferObjectsIn
     }
 
 @lazy
-rule CreateEmbeddedFlagsForGeneratedEmbeddedTransferObjectRelationOfTransferObjectsInOperationInputType
+rule CreateEmbeddedFlagsForGeneratedEmbeddedTransferObjectRelation
 	transform s : JUDOPSM!TransferObjectRelation
 	to t : ASM!EAnnotation {
 
@@ -93,28 +93,39 @@ rule CreateEmbeddedFlagsForGeneratedEmbeddedTransferObjectRelationOfTransferObje
         deleteEntry.value = "false";
         t.details.add(deleteEntry);
 
-        s.equivalent("CreateGeneratedEmbeddedTransferRelationInTransferObjectOfOperationInputType").eAnnotations.add(t);
+        s.equivalent("CreateGeneratedEmbeddedTransferRelationForNonEmbeddedTransferRelation").eAnnotations.add(t);
     }
 
-@lazy
-rule CreateMappedEntityTypeAnnotationOnReferenceClassForRelation
-    transform s : JUDOPSM!MappedTransferObjectType
+rule CreateMappedEntityTypeAnnotationOnReferenceClassForEntityType
+    transform s : JUDOPSM!EntityType
     to t : ASM!EAnnotation {
         t.source = asmUtils.getAnnotationUri("mappedEntityType");
         
         var mappedEntityType = new ASM!EStringToStringMapEntry;
         mappedEntityType.key = "value";
-        mappedEntityType.value = asmUtils.getClassifierFQName(s.entityType.equivalent("CreateEntityClass"));
+        mappedEntityType.value = asmUtils.getClassifierFQName(s.equivalent("CreateEntityClass"));
+        s.equivalent("CreateReferenceClassForEntityType").eAnnotations.add(t);
         t.details.add(mappedEntityType);
 }
 
-@lazy
-rule CreateReferenceClassForRelation
-    transform s : JUDOPSM!MappedTransferObjectType
+rule CreateReferenceClassForEntityType
+    transform s : JUDOPSM!EntityType
     to t : ASM!EClass {
-        t.name = "_" + s.entityType.name + "Reference";
-        t.eAnnotations.add(s.equivalent("CreateMappedEntityTypeAnnotationOnReferenceClassForRelation"));
-        s.getNamespace().asmEquivalent().eClassifiers.add(t);
+      
+      t.name = s.name + "__" + "Reference";
+      for (super in s.superEntityTypes) {
+			t.eSuperTypes.add(super.equivalent("CreateReferenceClassForEntityType"));
+	  }
+	  
+      var defaultTransferObjectPackage = psmUtils.getDefaultTransferObjectTypesPackage(s);
+      if(defaultTransferObjectPackage.isPresent()) {
+      	log.debug("defaultTransferObjectPackage " + defaultTransferObjectPackage.get().name);
+      	defaultTransferObjectPackage.get().asmEquivalent().eClassifiers.add(t);
+      } else {
+      	s.getNamespace().asmEquivalent().eClassifiers.add(t);
+      }
+      
+      log.debug("[CreateReferenceClassForTransferObjectType] " + t.name);
 }
 
 @abstract

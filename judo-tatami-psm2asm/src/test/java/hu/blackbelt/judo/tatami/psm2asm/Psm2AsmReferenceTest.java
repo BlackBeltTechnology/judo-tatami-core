@@ -49,6 +49,8 @@ public class Psm2AsmReferenceTest {
 
     public static final String TARGET_TEST_CLASSES = "target/test-classes";
 
+    public static final String GENERATED_REFERENCE_CLASS_POSTFIX = "__Reference";
+
     Log slf4jlog;
     PsmModel psmModel;
     AsmModel asmModel;
@@ -152,9 +154,9 @@ public class Psm2AsmReferenceTest {
         assertTrue(asmOrderInfo.isPresent());
         final Optional<EClass> asmOrderItem = allAsm(EClass.class).filter(eclazz -> "OrderItem".equals(eclazz.getName())).findAny();
         assertTrue(asmOrderItem.isPresent());
-        final Optional<EClass> shipperReferenceClass = allAsm(EClass.class).filter(eclazz -> "_ShipperReference".equals(eclazz.getName())).findAny();
+        final Optional<EClass> shipperReferenceClass = allAsm(EClass.class).filter(eclazz -> (shipperEntity.getName() + GENERATED_REFERENCE_CLASS_POSTFIX).equals(eclazz.getName())).findAny();
         assertTrue(shipperReferenceClass.isPresent());
-        final Optional<EClass> productReferenceClass = allAsm(EClass.class).filter(eclazz -> "_ProductReference".equals(eclazz.getName())).findAny();
+        final Optional<EClass> productReferenceClass = allAsm(EClass.class).filter(eclazz -> (productEntity.getName() + GENERATED_REFERENCE_CLASS_POSTFIX).equals(eclazz.getName())).findAny();
         assertTrue(productReferenceClass.isPresent());
         final Optional<EReference> embeddedProductReference = allAsm(EReference.class).filter(reference -> "_product".equals(reference.getName())).findAny();
         assertTrue(embeddedProductReference.isPresent());
