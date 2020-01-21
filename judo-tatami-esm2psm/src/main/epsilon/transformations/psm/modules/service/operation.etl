@@ -1,6 +1,7 @@
 import "../namespace/namespace.etl";
 import "../../../../operations/_importAll.eol";
 
+/*
 rule CreateBoundOperation
     transform s: ESM!BoundOperation
     to t: JUDOPSM!BoundOperation
@@ -611,3 +612,4 @@ rule CreateCardinalityForOutputForGetTemplateOperationForTransferObjectType
         t.lower = 0;
         t.upper = 1;
 }
+*/

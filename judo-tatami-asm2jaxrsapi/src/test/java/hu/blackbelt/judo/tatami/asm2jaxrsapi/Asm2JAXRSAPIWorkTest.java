@@ -22,7 +22,6 @@ import static hu.blackbelt.judo.tatami.core.workflow.flow.SequentialFlow.Builder
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-@Disabled
 public class Asm2JAXRSAPIWorkTest {
 
 	public static final String NORTHWIND = "northwind";

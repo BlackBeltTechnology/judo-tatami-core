@@ -2,6 +2,7 @@ import "../namespace/namespace.etl";
 import "../derived/referenceAccessor.etl";
 import "../../../../operations/_importAll.eol";
 
+/*
 rule CreateAccessPoint
 	transform s: ESM!AccessPoint
 	to t: JUDOPSM!AccessPoint
@@ -10,8 +11,10 @@ rule CreateAccessPoint
 }
 
 rule CreateExposedService
-	transform s: ESM!ExposedService
+	transform s: ESM!ExposedGraph
 	to t: JUDOPSM!ExposedService {
+	  guard: s.target.isKindOf(ESM!TransferObjectType) and not s.target.mapping.isDefined()
+
 	  t.`operation` = s.`operation`.equivalent("CreateUnboundOperation");
 	  s.eContainer.equivalent("CreateAccessPoint").exposedServices.add(t);
 	  log.debug("Created ExposedService.");
@@ -21,6 +24,7 @@ rule CreateExposedGraph
     transform s: ESM!ExposedGraph
     to t: JUDOPSM!ExposedGraph
     extends CreateNamedElement {
+      guard: s.target.isKindOf(ESM!TransferObjectType) and s.target.mapping.isDefined()
     
       t.mappedTransferObjectType = s.target.getPSMTransferObjectTypeEquivalent();
      
@@ -92,3 +96,4 @@ rule CreateCardinalityOfExposedGraph
 	  t.upper = s.upper;
   	  t.lower = s.lower;
 }
+*/

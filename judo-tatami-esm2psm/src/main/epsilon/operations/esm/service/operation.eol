@@ -1,6 +1,7 @@
 import "transferObjectRelation.eol";
 import "transferObjectType.eol";
 
+/*
 operation ESM!BoundOperation getPSMEquivalent(): JUDOPSM!OperationDeclaration {
     return self.equivalent("CreateBoundOperation");
 }
@@ -186,3 +187,4 @@ operation createGetRangeOperationForExposedGraph(source: ESM!ExposedGraph, relat
     source.eContainer.eContainer.getPSMEquivalent().elements.add(getRangeOperation);
     return getRangeOperation;
 }
+*/

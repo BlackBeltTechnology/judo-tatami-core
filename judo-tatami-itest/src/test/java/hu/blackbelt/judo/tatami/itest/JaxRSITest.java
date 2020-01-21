@@ -21,11 +21,8 @@ import org.osgi.framework.ServiceReference;
 import org.osgi.service.log.LogService;
 import rest.demo.services.CategoryInfo;
 import rest.demo.services.InternationalOrderInfo;
-import rest.demo.services.InternationalOrderInfoQuery;
 import rest.demo.services.OrderInfo;
-import rest.demo.services.OrderInfoQuery;
 import rest.demo.services.ProductInfo;
-import rest.demo.services.ShipmentChange;
 import rest.demo.services.ShipperInfo;
 
 import javax.inject.Inject;
@@ -59,12 +56,9 @@ import static org.osgi.service.log.LogService.LOG_ERROR;
 import static org.osgi.service.log.LogService.LOG_INFO;
 import static rest.demo.services.CategoryInfo.categoryInfoBuilder;
 import static rest.demo.services.InternationalOrderInfo.internationalOrderInfoBuilder;
-import static rest.demo.services.InternationalOrderInfoQuery.internationalOrderInfoQueryBuilder;
 import static rest.demo.services.OrderInfo.orderInfoBuilder;
-import static rest.demo.services.OrderInfoQuery.orderInfoQueryBuilder;
-import static rest.demo.services.OrderItemQuery.orderItemQueryBuilder;
+import static rest.demo.services.OrderItem.orderItemBuilder;
 import static rest.demo.services.ProductInfo.productInfoBuilder;
-import static rest.demo.services.ProductInfoQuery.productInfoQueryBuilder;
 import static rest.demo.services.ShipperInfo.shipperInfoBuilder;
 
 @Category(JaxRSTestSuite.class)
@@ -85,15 +79,15 @@ public class JaxRSITest {
     private static final String DEMO_SERVICE_ORDERINFO_CHANGE_SHIPMENT = "/demo/services/OrderInfo/changeShipment";
     private static final String DEMO_SERVICE_ORDERINFO_UPDATE_ORDER = "/demo/services/OrderInfo/updateOrder";
 
-    private static final String DEMO_SERVICE_ORDERINFOQUERY_CATEGORIES_GET = "/demo/services/OrderInfoQuery/categories/get";
+    private static final String DEMO_SERVICE_ORDERINFO_CATEGORIES_GET = "/demo/services/OrderInfo/categories/get";
 
-    private static final String DEMO_SERVICE_ORDERINFOQUERY_ITEMS_GET = "/demo/services/OrderInfoQuery/items/get";
-    private static final String DEMO_SERVICE_ORDERINFOQUERY_ITEMS_SET = "/demo/services/OrderInfoQuery/items/set";
-    private static final String DEMO_SERVICE_ORDERINFOQUERY_ITEMS_ADD_ALL = "/demo/services/OrderInfoQuery/items/addAll";
-    private static final String DEMO_SERVICE_ORDERINFOQUERY_ITEMS_REMOVE_ALL = "/demo/services/OrderInfoQuery/items/removeAll";
+    private static final String DEMO_SERVICE_ORDERINFO_ITEMS_GET = "/demo/services/OrderInfo/items/get";
+    private static final String DEMO_SERVICE_ORDERINFO_ITEMS_SET = "/demo/services/OrderInfo/items/set";
+    private static final String DEMO_SERVICE_ORDERINFO_ITEMS_ADD_ALL = "/demo/services/OrderInfo/items/addAll";
+    private static final String DEMO_SERVICE_ORDERINFO_ITEMS_REMOVE_ALL = "/demo/services/OrderInfo/items/removeAll";
 
-    private static final String DEMO_SERVICE_PRODUCTINFOQUERY_CATEGORY_GET_RANGE = "/demo/services/ProductInfoQuery/category/getRange";
-    private static final String DEMO_SERVICE_PRODUCTINFOQUERY_CATEGORY_UNSET = "/demo/services/ProductInfoQuery/category/unset";
+    private static final String DEMO_SERVICE_PRODUCTINFO_CATEGORY_GET_RANGE = "/demo/services/ProductInfo/category/getRange";
+    private static final String DEMO_SERVICE_PRODUCTINFO_CATEGORY_UNSET = "/demo/services/ProductInfo/category/unset";
 
     //TODO-check&clean: moved to pom
     //public static final String FRAMEWORK_COMPILER_API = "compiler-api";
@@ -226,15 +220,15 @@ public class JaxRSITest {
         //key: path to endpoint method, value: object to return from dispatcher
         Map<String, Object> testMap = new HashMap<>();
         //UnboundServices
-        //getAllOrders (input: none, output: collection<OrderInfoQuery>), required (OrderInfoQuery): orderDate
+        //getAllOrders (input: none, output: collection<OrderInfo>), required (OrderInfo): orderDate
         testMap.put("demo.services.__UnboundServices#getAllOrders", ImmutableList.of(
-                        orderInfoQueryBuilder().shipperName("shipperNameInOrderInfoQuery0").orderDate(ZonedDateTime.now()).build().toMap(),
-                        orderInfoQueryBuilder().shipperName("shipperNameInOrderInfoQuery1").orderDate(ZonedDateTime.now()).build().toMap()));
+                        orderInfoBuilder().shipperName("shipperNameInOrderInfo0").orderDate(ZonedDateTime.now()).build().toMap(),
+                        orderInfoBuilder().shipperName("shipperNameInOrderInfo1").orderDate(ZonedDateTime.now()).build().toMap()));
 
-        //getAllInternationalOrders (input: none, output: collection<InternationalOrderInfoQuery>), required (InternationalOrderInfoQuery): orderDate
+        //getAllInternationalOrders (input: none, output: collection<InternationalOrderInfo>), required (InternationalOrderInfo): orderDate
         testMap.put("demo.services.__UnboundServices#getAllInternationalOrders", ImmutableList.of(
-                        internationalOrderInfoQueryBuilder().shipperName("shipperNameInInternationalOrderInfoQuery0").orderDate(ZonedDateTime.now()).build().toMap(),
-                        internationalOrderInfoQueryBuilder().shipperName("shipperNameInInternationalOrderInfoQuery1").orderDate(ZonedDateTime.now()).build().toMap()));
+                        internationalOrderInfoBuilder().shipperName("shipperNameInInternationalOrderInfo0").orderDate(ZonedDateTime.now()).build().toMap(),
+                        internationalOrderInfoBuilder().shipperName("shipperNameInInternationalOrderInfo1").orderDate(ZonedDateTime.now()).build().toMap()));
 
         //createOrder (input: OrderInfo, output: OrderInfo), required (OrderInfo): orderDate
         testMap.put("demo.services.__UnboundServices#createOrder", orderInfoBuilder().shipperName("shipperNameInNewOrderInfo").orderDate(ZonedDateTime.now()).build().toMap());
@@ -259,30 +253,30 @@ public class JaxRSITest {
         //changeShipment (input: ShipmentChange, output: OrderInfo)
         testMap.put("demo.services.OrderInfo#changeShipment", orderInfoBuilder().shipperName("shipperNameInNewShipmentChange").orderDate(ZonedDateTime.now()).build().toMap());
 
-        //OrderInfoQuery-categories (input: identifier only, output: collection<CategoryInfo>)
-        testMap.put("demo.services.OrderInfoQuery__categories#get", ImmutableList.of(
+        //OrderInfo-categories (input: identifier only, output: collection<CategoryInfo>)
+        testMap.put("demo.services.OrderInfo__categories#get", ImmutableList.of(
                         categoryInfoBuilder().categoryName("categoryName0").build().toMap(),
                         categoryInfoBuilder().categoryName("categoryName1").build().toMap()));
 
-        //OrderInfoQuery-items (input: identifier only, output: collection<OrderItemQuery>)
-        testMap.put("demo.services.OrderInfoQuery__items#get", ImmutableList.of(
-                        orderItemQueryBuilder().productName("productName0").quantity(42).discount(2.71).product(
-                                productInfoQueryBuilder().productName("productName").unitPrice(3.14).category(
-                                        categoryInfoBuilder().categoryName("categoryNameInProductInfoQuery").build()
+        //OrderInfo-items (input: identifier only, output: collection<OrderItem>)
+        testMap.put("demo.services.OrderInfo__items#get", ImmutableList.of(
+                        orderItemBuilder().productName("productName0").quantity(42).discount(2.71).product(
+                                productInfoBuilder().productName("productName").unitPrice(3.14).category(
+                                        categoryInfoBuilder().categoryName("categoryNameInProductInfo").build()
                                 ).build()
                         ).category(
-                                categoryInfoBuilder().categoryName("categoryNameInOrderItemQuery").build()
+                                categoryInfoBuilder().categoryName("categoryNameInOrderItem").build()
                         ).build().toMap(),
-                        orderItemQueryBuilder().productName("productName1").quantity(42).discount(2.71).product(
-                                productInfoQueryBuilder().productName("productName").unitPrice(3.14).category(
-                                        categoryInfoBuilder().categoryName("categoryNameInProductInfoQuery").build()
+                        orderItemBuilder().productName("productName1").quantity(42).discount(2.71).product(
+                                productInfoBuilder().productName("productName").unitPrice(3.14).category(
+                                        categoryInfoBuilder().categoryName("categoryNameInProductInfo").build()
                                 ).build()
                         ).category(
-                                categoryInfoBuilder().categoryName("categoryNameInOrderItemQuery").build()
+                                categoryInfoBuilder().categoryName("categoryNameInOrderItem").build()
                         ).build().toMap()));
 
-        //ProductInfoQuery-category (input: identifier only, output: collection<CategoryInfo>)
-        testMap.put("demo.services.ProductInfoQuery__category#getRange", ImmutableList.of(
+        //ProductInfo-category (input: identifier only, output: collection<CategoryInfo>)
+        testMap.put("demo.services.ProductInfo__category#getRange", ImmutableList.of(
                         categoryInfoBuilder().categoryName("categoryName0").build().toMap(),
                         categoryInfoBuilder().categoryName("categoryName1").build().toMap()));
         return testMap;
@@ -307,10 +301,10 @@ public class JaxRSITest {
                     if (!testMap.containsKey(operationFqName)) {
                         switch (operationFqName) {
                             case "demo.services.OrderInfo#deleteOrder": //(input: none)
-                            case "demo.services.OrderInfoQuery__items#set": //(input: identifier & collection<rest.demo.services.OrderInfoQuery$items$Reference>)
-                            case "demo.services.OrderInfoQuery__items#addAll": //(input: identifier & collection<rest.demo.services.OrderInfoQuery$items$Reference>)
-                            case "demo.services.OrderInfoQuery__items#removeAll": //(input: identifier & collection<rest.demo.services.OrderInfoQuery$items$Reference>)
-                            case "demo.services.ProductInfoQuery__category#unset": //(input: identifier only)
+                            case "demo.services.OrderInfo__items#set": //(input: identifier & collection<rest.demo.services.OrderInfo$items$Reference>)
+                            case "demo.services.OrderInfo__items#addAll": //(input: identifier & collection<rest.demo.services.OrderInfo$items$Reference>)
+                            case "demo.services.OrderInfo__items#removeAll": //(input: identifier & collection<rest.demo.services.OrderInfo$items$Reference>)
+                            case "demo.services.ProductInfo__category#unset": //(input: identifier only)
                                 return ImmutableMap.of();
                             default:
                                 log.log(LOG_ERROR, "Operation not found by operationFqName! Given operationFqName was \"" + operationFqName + "\"");
@@ -394,11 +388,11 @@ public class JaxRSITest {
 
 
         //serializing the response containing collection
-        List<OrderInfoQuery> output = response.readEntity(new GenericType<List<OrderInfoQuery>>() {
+        List<OrderInfo> output = response.readEntity(new GenericType<List<OrderInfo>>() {
         });
 
-        assertTrue("shipperNameInOrderInfoQuery0".equals(output.get(0).getShipperName()));
-        assertTrue("shipperNameInOrderInfoQuery1".equals(output.get(1).getShipperName()));
+        assertTrue("shipperNameInOrderInfo0".equals(output.get(0).getShipperName()));
+        assertTrue("shipperNameInOrderInfo1".equals(output.get(1).getShipperName()));
     }
 
     @Test
@@ -410,11 +404,11 @@ public class JaxRSITest {
         assertNotNull(response);
         assertTrue(response.getStatusInfo().getFamily().equals(Response.Status.Family.SUCCESSFUL));
 
-        List<InternationalOrderInfoQuery> output = response.readEntity(new GenericType<List<InternationalOrderInfoQuery>>() {
+        List<InternationalOrderInfo> output = response.readEntity(new GenericType<List<InternationalOrderInfo>>() {
         });
 
-        assertTrue("shipperNameInInternationalOrderInfoQuery0".equals(output.get(0).getShipperName()));
-        assertTrue("shipperNameInInternationalOrderInfoQuery1".equals(output.get(1).getShipperName()));
+        assertTrue("shipperNameInInternationalOrderInfo0".equals(output.get(0).getShipperName()));
+        assertTrue("shipperNameInInternationalOrderInfo1".equals(output.get(1).getShipperName()));
     }
 
     @Test
@@ -498,22 +492,22 @@ public class JaxRSITest {
         assertTrue("newShipperNameInNewOrderInfo".equals(response.readEntity(OrderInfo.class).getShipperName()));
     }
 
-    @Test
-    public void testOrderInfoChangeShipment () {
-        logTest(DEMO_SERVICE_ORDERINFO_CHANGE_SHIPMENT);
-
-        Response response = getResponse(DEMO_SERVICE_ORDERINFO_CHANGE_SHIPMENT, orderInfoBuilder().orderDate(ZonedDateTime.now()).build());
-
-        assertNotNull(response);
-        assertTrue(response.getStatusInfo().getFamily().equals(Response.Status.Family.SUCCESSFUL));
-        assertTrue("shipperNameInNewShipmentChange".equals(response.readEntity(ShipmentChange.class).getShipperName()));
-    }
-
 //    @Test
-//    public void testOrderInfoQueryCategoriesGet () {
-//        logTest(DEMO_SERVICE_ORDERINFOQUERY_CATEGORIES_GET);
+//    public void testOrderInfoChangeShipment () {
+//        logTest(DEMO_SERVICE_ORDERINFO_CHANGE_SHIPMENT);
 //
-//        Response response = getResponse(DEMO_SERVICE_ORDERINFOQUERY_CATEGORIES_GET);
+//        Response response = getResponse(DEMO_SERVICE_ORDERINFO_CHANGE_SHIPMENT, orderInfoBuilder().orderDate(ZonedDateTime.now()).build());
+//
+//        assertNotNull(response);
+//        assertTrue(response.getStatusInfo().getFamily().equals(Response.Status.Family.SUCCESSFUL));
+//        assertTrue("shipperNameInNewShipmentChange".equals(response.readEntity(ShipmentChange.class).getShipperName()));
+//    }
+//
+//    @Test
+//    public void testOrderInfoCategoriesGet () {
+//        logTest(DEMO_SERVICE_ORDERINFO_CATEGORIES_GET);
+//
+//        Response response = getResponse(DEMO_SERVICE_ORDERINFO_CATEGORIES_GET);
 //
 //        assertNotNull(response);
 //        assertTrue(response.getStatusInfo().getFamily().equals(Response.Status.Family.SUCCESSFUL));
@@ -526,15 +520,15 @@ public class JaxRSITest {
 //    }
 //
 //    @Test
-//    public void testOrderInfoQueryItemsGet () {
-//        logTest(DEMO_SERVICE_ORDERINFOQUERY_ITEMS_GET);
+//    public void testOrderInfoItemsGet () {
+//        logTest(DEMO_SERVICE_ORDERINFO_ITEMS_GET);
 //
-//        Response response = getResponse(DEMO_SERVICE_ORDERINFOQUERY_ITEMS_GET);
+//        Response response = getResponse(DEMO_SERVICE_ORDERINFO_ITEMS_GET);
 //
 //        assertNotNull(response);
 //        assertTrue(response.getStatusInfo().getFamily().equals(Response.Status.Family.SUCCESSFUL));
 //
-//        List<OrderItemQuery> output = response.readEntity(new GenericType<List<OrderItemQuery>>() {
+//        List<OrderItem> output = response.readEntity(new GenericType<List<OrderItem>>() {
 //        });
 //
 //        assertTrue("productName0".equals(output.get(0).getProductName()));
@@ -543,10 +537,10 @@ public class JaxRSITest {
 //    }
 //
 //    @Test
-//    public void testProductInfoQueryCategoryGetRange () {
-//        logTest(DEMO_SERVICE_PRODUCTINFOQUERY_CATEGORY_GET_RANGE);
+//    public void testProductInfoCategoryGetRange () {
+//        logTest(DEMO_SERVICE_PRODUCTINFO_CATEGORY_GET_RANGE);
 //
-//        Response response = getResponse(DEMO_SERVICE_PRODUCTINFOQUERY_CATEGORY_GET_RANGE);
+//        Response response = getResponse(DEMO_SERVICE_PRODUCTINFO_CATEGORY_GET_RANGE);
 //
 //        assertNotNull(response);
 //        assertTrue(response.getStatusInfo().getFamily().equals(Response.Status.Family.SUCCESSFUL));
@@ -559,39 +553,39 @@ public class JaxRSITest {
 //    }
 //
 //    @Test
-//    public void testProductInfoQueryCategoryUnset () throws Exception {
-//        logTest(DEMO_SERVICE_PRODUCTINFOQUERY_CATEGORY_UNSET);
+//    public void testProductInfoCategoryUnset () throws Exception {
+//        logTest(DEMO_SERVICE_PRODUCTINFO_CATEGORY_UNSET);
 //
-//        Response response = getResponseWithEmptyPost(DEMO_SERVICE_PRODUCTINFOQUERY_CATEGORY_UNSET);
-//
-//        assertNotNull(response);
-//        assertTrue(response.getStatusInfo().getFamily().equals(Response.Status.Family.SUCCESSFUL));
-//    }
-//
-//    @Test
-//    public void testOrderInfoQueryItemsSet () {
-//        logTest(DEMO_SERVICE_ORDERINFOQUERY_ITEMS_SET);
-//
-//        Response response = getResponse(DEMO_SERVICE_ORDERINFOQUERY_ITEMS_SET, ImmutableList.of(orderInfoQuery$items$ReferenceBuilder().build()));
+//        Response response = getResponseWithEmptyPost(DEMO_SERVICE_PRODUCTINFO_CATEGORY_UNSET);
 //
 //        assertNotNull(response);
 //        assertTrue(response.getStatusInfo().getFamily().equals(Response.Status.Family.SUCCESSFUL));
 //    }
 //
 //    @Test
-//    public void testOrderInfoQueryItemsAddAll () {
-//        logTest(DEMO_SERVICE_ORDERINFOQUERY_ITEMS_ADD_ALL);
+//    public void testOrderInfoItemsSet () {
+//        logTest(DEMO_SERVICE_ORDERINFO_ITEMS_SET);
 //
-//        Response response = getResponse(DEMO_SERVICE_ORDERINFOQUERY_ITEMS_ADD_ALL, ImmutableList.of(orderInfoQuery$items$ReferenceBuilder().build()));
+//        Response response = getResponse(DEMO_SERVICE_ORDERINFO_ITEMS_SET, ImmutableList.of(orderInfo$items$ReferenceBuilder().build()));
+//
 //        assertNotNull(response);
 //        assertTrue(response.getStatusInfo().getFamily().equals(Response.Status.Family.SUCCESSFUL));
 //    }
 //
 //    @Test
-//    public void testOrderInfoQueryItemsRemoveAll () {
-//        logTest(DEMO_SERVICE_ORDERINFOQUERY_ITEMS_REMOVE_ALL);
+//    public void testOrderInfoItemsAddAll () {
+//        logTest(DEMO_SERVICE_ORDERINFO_ITEMS_ADD_ALL);
 //
-//        Response response = getResponse(DEMO_SERVICE_ORDERINFOQUERY_ITEMS_REMOVE_ALL, ImmutableList.of(orderInfoQuery$items$ReferenceBuilder().build()));
+//        Response response = getResponse(DEMO_SERVICE_ORDERINFO_ITEMS_ADD_ALL, ImmutableList.of(orderInfo$items$ReferenceBuilder().build()));
+//        assertNotNull(response);
+//        assertTrue(response.getStatusInfo().getFamily().equals(Response.Status.Family.SUCCESSFUL));
+//    }
+//
+//    @Test
+//    public void testOrderInfoItemsRemoveAll () {
+//        logTest(DEMO_SERVICE_ORDERINFO_ITEMS_REMOVE_ALL);
+//
+//        Response response = getResponse(DEMO_SERVICE_ORDERINFO_ITEMS_REMOVE_ALL, ImmutableList.of(orderInfo$items$ReferenceBuilder().build()));
 //
 //        assertNotNull(response);
 //        assertTrue(response.getStatusInfo().getFamily().equals(Response.Status.Family.SUCCESSFUL));

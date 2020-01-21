@@ -105,7 +105,7 @@ public class NorthwindTatamiPSMTransformationPipelineITest extends TatamiPSMTran
 
         List<EObject> orderRdbmsObjectList = transformationTraceService.getDescendantOfInstanceByModelType(DEMO, RdbmsModel.class, orderClass.get());
 
-        assertThat(orderRdbmsObjectList, hasSize(2));
+        assertThat(orderRdbmsObjectList, hasSize(3));
         assertThat(orderRdbmsObjectList, hasItems(instanceOf(RdbmsTable.class), instanceOf(RdbmsIdentifierField.class) ));
         assertThat(orderRdbmsObjectList.stream()
                 .filter(RdbmsTable.class::isInstance)
