@@ -2,7 +2,6 @@ import "../namespace/namespace.etl";
 import "../derived/referenceAccessor.etl";
 import "../../../../operations/_importAll.eol";
 
-/*
 rule CreateAccessPoint
 	transform s: ESM!AccessPoint
 	to t: JUDOPSM!AccessPoint
@@ -12,13 +11,41 @@ rule CreateAccessPoint
 
 rule CreateExposedService
 	transform s: ESM!ExposedGraph
-	to t: JUDOPSM!ExposedService {
-	  guard: s.target.isKindOf(ESM!TransferObjectType) and not s.target.mapping.isDefined()
+	to t: JUDOPSM!ExposedService
+	extends CreateNamedElement {
+	  guard: not s.target.mapping.isDefined()
 
-	  t.`operation` = s.`operation`.equivalent("CreateUnboundOperation");
+	  t.`operationGroup` = s.target.getPSMTransferObjectTypeEquivalent();
+
 	  s.eContainer.equivalent("CreateAccessPoint").exposedServices.add(t);
 	  log.debug("Created ExposedService.");
 }
+
+rule CreateExposedGraph
+    transform s : ESM!ExposedGraph
+    to t : JUDOPSM!ExposedGraph
+    extends CreateNamedElement {
+      guard: s.target.mapping.isDefined()
+
+	  t.`mappedTransferObjectType` = s.target.getPSMTransferObjectTypeEquivalent();
+	  t.selector = s.equivalent("CreateStaticNavigationForExposedGraph");
+
+	  s.eContainer.equivalent("CreateAccessPoint").exposedGraphs.add(t);
+	  log.debug("Created ExposedGraph.");
+}
+
+rule CreateExposedGraphCardinality
+    transform s : ESM!ExposedGraph
+    to t : JUDOPSM!Cardinality {
+      guard: s.target.mapping.isDefined()
+
+      t.lower = s.lower;
+      t.upper = s.upper;
+
+      s.equivalent("CreateExposedGraph").cardinality = t;
+}
+
+/*
 
 rule CreateExposedGraph
     transform s: ESM!ExposedGraph
@@ -86,14 +113,5 @@ rule CreateExposedGraph
       }
 
       log.debug("Created ExposedGraph: " + t.name);
-}
-
-@lazy
-@greedy
-rule CreateCardinalityOfExposedGraph
-	transform s: ESM!ExposedGraph
-	to t: JUDOPSM!Cardinality {
-	  t.upper = s.upper;
-  	  t.lower = s.lower;
 }
 */

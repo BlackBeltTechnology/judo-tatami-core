@@ -124,6 +124,7 @@ rule CreateCardinalityForExposedGraphSelector
       t.lower = s.lower;
 }
 
+@lazy
 @greedy
 rule CreateStaticNavigationForExposedGraph
 	transform s : ESM!StaticNavigation

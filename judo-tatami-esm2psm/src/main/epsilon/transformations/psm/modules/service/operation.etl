@@ -132,13 +132,10 @@ rule CreateParameter
 	  
 	  if (s.eContainer.input == s) {
 	  	s.eContainer.getPSMEquivalent().input = t;
-	  	log.info("Create input parameter " + s.name + " (" + s.eContainer.name + ")");
 	  } else if (s.eContainer.output == s) {
 	  	s.eContainer.getPSMEquivalent().output = t;
-	  	log.info("Create output parameter " + s.name + " (" + s.eContainer.name + ")");
 	  } else if (s.eContainer.faults.contains(s)) {
 	  	s.eContainer.getPSMEquivalent().faults.add(t);
-	  	log.info("Create fault parameter " + s.name + " (" + s.eContainer.name + ")");
 	  }
 }
 
