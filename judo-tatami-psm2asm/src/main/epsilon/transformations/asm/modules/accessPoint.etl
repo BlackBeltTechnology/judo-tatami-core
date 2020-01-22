@@ -29,11 +29,11 @@ rule CreateAccessPoint
 rule CreateExposedByAnnotationForUnboundOperation
     transform s : JUDOPSM!ExposedService
     to t : ASM!EAnnotation {
-        t.source = asmUtils.getAnnotationUri("exposedBy");
+        t.source = asmUtils.getAnnotationUri("exposedService");
         
         var exposedBy = new ASM!EStringToStringMapEntry;
         exposedBy.key = "value";
-        exposedBy.value = asmUtils.getClassifierFQName(s.eContainer.equivalent("CreateAccessPoint"));
+        exposedBy.value = asmUtils.getClassifierFQName(s.eContainer.equivalent("CreateAccessPoint")) + "/" + s.name;
         t.details.add(exposedBy);
         
         s.`operationGroup`.asmEquivalent().eAnnotations.add(t);
