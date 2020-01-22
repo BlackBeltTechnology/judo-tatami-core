@@ -53,16 +53,15 @@ rule CreateGeneratedEmbeddedTransferRelationForNonEmbeddedTransferRelation
         t.changeable = s.binding.isDefined() and (s.binding.isKindOf(JUDOPSM!Relation) or (s.binding.isKindOf(JUDOPSM!ReferenceAccessor) and s.binding.setterExpression.isDefined()));
         t.eAnnotations.add(s.equivalent("CreateBindingAnnotationForGeneratedEmbeddedTransferObjectRelation"));
         t.eAnnotations.add(s.equivalent("CreateEmbeddedFlagsForGeneratedEmbeddedTransferObjectRelation"));
-        s.eContainer.asmEquivalent().eStructuralFeatures.add(t);
+        s.eContainer.equivalent("CreateExtendedTransferObjectForGenerateEmbeddedTransferObjectRelation").eStructuralFeatures.add(t);
 
-        log.debug("[CreateGeneratedEmbeddedTransferRelationInTransferObjectOfOperationInputType] on " + s.name + " in " + s.eContainer.name);
+        log.debug("[CreateGeneratedEmbeddedTransferRelationForNonEmbeddedTransferRelation] on " + s.name + " in " + s.eContainer.name);
 }
 
 @lazy
 rule CreateBindingAnnotationForGeneratedEmbeddedTransferObjectRelation
     transform s : JUDOPSM!TransferObjectRelation
     to t : ASM!EAnnotation {
-        
         t.source = asmUtils.getAnnotationUri("binding");
         
         var binding = new ASM!EStringToStringMapEntry;
@@ -75,7 +74,6 @@ rule CreateBindingAnnotationForGeneratedEmbeddedTransferObjectRelation
 rule CreateEmbeddedFlagsForGeneratedEmbeddedTransferObjectRelation
 	transform s : JUDOPSM!TransferObjectRelation
 	to t : ASM!EAnnotation {
-
 		t.source = asmUtils.getAnnotationUri("embedded");
 
         var createEntry = new ASM!EStringToStringMapEntry;
@@ -94,6 +92,37 @@ rule CreateEmbeddedFlagsForGeneratedEmbeddedTransferObjectRelation
         t.details.add(deleteEntry);
 
         s.equivalent("CreateGeneratedEmbeddedTransferRelationForNonEmbeddedTransferRelation").eAnnotations.add(t);
+    }
+
+@lazy
+rule CreateExtendedTransferObjectForGenerateEmbeddedTransferObjectRelation
+	transform s : JUDOPSM!MappedTransferObjectType
+	to t : ASM!EClass {
+		t.name = s.name + "__Extended";
+		s.getNamespace().asmEquivalent().eClassifiers.add(t);
+
+		for (super in s.superTransferObjectTypes) {
+		    t.eSuperTypes.add(super.asmEquivalent());
+		}
+		t.eSuperTypes.add(s.equivalent("CreateMappedTransferObject"));
+		
+		t.eAnnotations.add(s.equivalent("CreateMappedEntityTypeAnnotationOnExtendedMappedTransferObject"));
+		
+		log.debug("Created extended transfer object type: " + t.name);
+	}
+
+@lazy
+rule CreateMappedEntityTypeAnnotationOnExtendedMappedTransferObject
+    transform s : JUDOPSM!MappedTransferObjectType
+    to t : ASM!EAnnotation {
+        t.source = asmUtils.getAnnotationUri("mappedEntityType");
+		
+		var mappedEntityType = new ASM!EStringToStringMapEntry;
+        mappedEntityType.key = "value";
+        mappedEntityType.value = asmUtils.getClassifierFQName(s.entityType.equivalent("CreateEntityClass"));
+        t.details.add(mappedEntityType);
+
+        s.equivalent("CreateMappedTransferObject").eAnnotations.add(t);
     }
 
 rule CreateMappedEntityTypeAnnotationOnReferenceClassForEntityType

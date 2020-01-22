@@ -159,8 +159,7 @@ public class NorthwindTatamiESMTransformationPipelineITest extends TatamiESMTran
         try {
             response = wt.path(path)
                     .request("application/json")
-                    .header("__identifier", UUID.randomUUID())
-                    .post(Entity.entity("", MediaType.APPLICATION_JSON));
+                    .get();
         } catch (Exception e) {
             log.log(LOG_ERROR, "EXCEPTION: ", e);
         }

@@ -152,8 +152,8 @@
                         <phase>generate-test-sources</phase>
                         <configuration>
                             <tasks>
-                                <unzip src="${project.basedir}/target/test-classes/northwind-asm2jaxrsapi.jar" dest="${project.basedir}/target/test-classes/generated-test-sources"/>
-                                <unzip src="${project.basedir}/target/test-classes/northwind-esm-asm2jaxrsapi.jar" dest="${project.basedir}/target/test-classes/generated-test-sources"/>
+                                <unzip src="${project.basedir}/target/test-classes/northwind-asm2jaxrsapi.jar" dest="${project.basedir}/target/test-classes/generated-test-sources/psm"/>
+                                <unzip src="${project.basedir}/target/test-classes/northwind-esm-asm2jaxrsapi.jar" dest="${project.basedir}/target/test-classes/generated-test-sources/esm"/>
                             </tasks>
                         </configuration>
                         <goals>
@@ -176,7 +176,8 @@
                         </goals>
                         <configuration>
                             <sources>
-                                <source>${project.basedir}/target/test-classes/generated-test-sources</source>
+                                <source>${project.basedir}/target/test-classes/generated-test-sources/psm</source>
+                                <source>${project.basedir}/target/test-classes/generated-test-sources/esm</source>
                             </sources>
                         </configuration>
                     </execution>

@@ -38,7 +38,7 @@ for (ap in asmUtils.getAllAccessPoints()) {
 		outputJavaClasses.add(boundOperationClass.getExposedMappedTransferObjectJavaFileName(ap));
 		outputScrXmls.add(boundOperationClass.getExposedMappedTransferObjectScrXmlFileName(ap));
 		apServiceInstances.put((boundOperationClass.getExposedMappedTransferObjectPackageName(ap) + "." + boundOperationClass.name.normalizeName()).replaceAll("\\.", "_"),
-			boundOperationClass.getExposedMappedTransferObjectPackageName(ap) + "." + boundOperationClass.name.normalizeName());
+			boundOperationClass.getExposedMappedTransferObjectPackageName(ap) + "." + boundOperationClass.name.normalizeName());		
     }
     
     // Generate ApplicationConfigs

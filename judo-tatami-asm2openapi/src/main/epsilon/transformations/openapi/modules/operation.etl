@@ -162,12 +162,10 @@ rule CreateExposedGraphOperationEntityIdParameter
     transform s : ASM!EAnnotation
     to t : OPENAPI!ParameterReference {
         var cl = s.eContainer.eContainingClass;
-        log.debug("s.eContainer== " + s.eContainer.name);
-        log.debug("s.eContainer.eContainingClass== " + s.eContainer.eContainingClass.name);
+
         var mappedEntityType = asmUtils.getMappedEntityType(s.eContainer.eContainingClass);
         var mappedEntityTypeExposedByAnnotation = mappedEntityType.get().eAnnotations.selectOne(a | a.source = asmUtils.getAnnotationUri("exposedBy") and a.details.get("value") == s.details.get("value"));
-        log.debug("mappedEntityType== " + mappedEntityType.get().name);
-        log.debug("mappedEntityTypeExposedByAnnotation== " + mappedEntityTypeExposedByAnnotation);
+
         t.ref = mappedEntityTypeExposedByAnnotation.equivalent("CreateEntityIdParameterDeclaration").getReference();
 }
 

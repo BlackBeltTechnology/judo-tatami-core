@@ -152,12 +152,18 @@ public class Psm2AsmReferenceTest {
 
         final Optional<EClass> asmOrderInfo = allAsm(EClass.class).filter(eclazz -> "OrderInfo".equals(eclazz.getName())).findAny();
         assertTrue(asmOrderInfo.isPresent());
+        final Optional<EClass> asmExtendedOrderInfo = allAsm(EClass.class).filter(eclazz -> "OrderInfo__Extended".equals(eclazz.getName())).findAny();
+        assertTrue(asmExtendedOrderInfo.isPresent());
         final Optional<EClass> asmOrderItem = allAsm(EClass.class).filter(eclazz -> "OrderItem".equals(eclazz.getName())).findAny();
         assertTrue(asmOrderItem.isPresent());
+        final Optional<EClass> asmExtendedOrderItem = allAsm(EClass.class).filter(eclazz -> "OrderItem__Extended".equals(eclazz.getName())).findAny();
+        assertTrue(asmExtendedOrderItem.isPresent());
+
         final Optional<EClass> shipperReferenceClass = allAsm(EClass.class).filter(eclazz -> (shipperEntity.getName() + GENERATED_REFERENCE_CLASS_POSTFIX).equals(eclazz.getName())).findAny();
         assertTrue(shipperReferenceClass.isPresent());
         final Optional<EClass> productReferenceClass = allAsm(EClass.class).filter(eclazz -> (productEntity.getName() + GENERATED_REFERENCE_CLASS_POSTFIX).equals(eclazz.getName())).findAny();
         assertTrue(productReferenceClass.isPresent());
+
         final Optional<EReference> embeddedProductReference = allAsm(EReference.class).filter(reference -> "_product".equals(reference.getName())).findAny();
         assertTrue(embeddedProductReference.isPresent());
         final Optional<EReference> embeddedShipperReference = allAsm(EReference.class).filter(reference -> "_shipper".equals(reference.getName())).findAny();
@@ -166,11 +172,11 @@ public class Psm2AsmReferenceTest {
 
         assertTrue(embeddedShipperReference.get().isContainment());
         assertTrue(embeddedShipperReference.get().getEReferenceType().equals(shipperReferenceClass.get()));
-        assertTrue(asmOrderInfo.get().getEAllReferences().contains(embeddedShipperReference.get()));
+        assertTrue(asmExtendedOrderInfo.get().getEAllReferences().contains(embeddedShipperReference.get()));
 
         assertTrue(embeddedProductReference.get().isContainment());
         assertTrue(embeddedProductReference.get().getEReferenceType().equals(productReferenceClass.get()));
-        assertTrue(asmOrderItem.get().getEAllReferences().contains(embeddedProductReference.get()));
+        assertTrue(asmExtendedOrderItem.get().getEAllReferences().contains(embeddedProductReference.get()));
     }
 
     static <T> Stream<T> asStream(Iterator<T> sourceIterator, boolean parallel) {

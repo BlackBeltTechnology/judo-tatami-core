@@ -17,6 +17,7 @@ import org.ops4j.pax.exam.junit.PaxExam;
 import org.ops4j.pax.exam.spi.reactors.ExamReactorStrategy;
 import org.ops4j.pax.exam.spi.reactors.PerClass;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.Constants;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.log.LogService;
 import rest.demo.services.CategoryInfo;
@@ -35,6 +36,8 @@ import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.time.ZonedDateTime;
@@ -46,11 +49,11 @@ import java.util.UUID;
 import static hu.blackbelt.judo.framework.KarafTestUtil.karafConfig;
 import static hu.blackbelt.judo.framework.KarafTestUtil.karafStandardRepo;
 import static hu.blackbelt.judo.tatami.itest.TatamiTestUtil.*;
-import static hu.blackbelt.judo.tatami.itest.TestUtility.assertBundleStarted;
-import static hu.blackbelt.judo.tatami.itest.TestUtility.waitWebPage;
+import static hu.blackbelt.judo.tatami.itest.TestUtility.*;
 import static junit.framework.TestCase.assertNotNull;
 import static junit.framework.TestCase.assertTrue;
 import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
+import static org.ops4j.pax.exam.CoreOptions.provision;
 import static org.ops4j.pax.exam.OptionUtils.combine;
 import static org.ops4j.pax.exam.cm.ConfigurationAdminOptions.newConfiguration;
 import static org.ops4j.pax.exam.karaf.options.KarafDistributionOption.editConfigurationFilePut;
@@ -168,13 +171,6 @@ public class JaxRSITest {
                         .versionAsInProject().start(),
 
                 mavenBundle()
-                        .groupId("hu.blackbelt.judo.tatami")
-                        .artifactId("judo-tatami-asm2jaxrsapi")
-                        .classifier("test-bundle")
-                        .type("jar")
-                        .versionAsInProject().start(),
-
-                mavenBundle()
                         .groupId("org.json")
                         .artifactId("json")
                         .versionAsInProject().start(),
@@ -207,10 +203,20 @@ public class JaxRSITest {
                 mavenBundle()
                         .groupId("com.fasterxml.jackson.datatype")
                         .artifactId("jackson-datatype-guava")
-                        .versionAsInProject().start()
+                        .versionAsInProject().start(),
+
+                getProvisonJaxrsApi()
 
         );
     }
+
+    public Option getProvisonJaxrsApi() throws FileNotFoundException {
+//        log.log(LOG_INFO, "Deploying JAXRSAPI: " + new File(testTargetDir(getClass()).getAbsolutePath(),  "northwind-asm2jaxrsapi.jar")
+        return provision(
+                new FileInputStream(new File(testTargetDir(getClass()).getAbsolutePath(),  "northwind-asm2jaxrsapi.jar"))
+        );
+    }
+
 
     private Map<String, Object> fillTestMap() {
         //key: path to endpoint method, value: object to return from dispatcher
@@ -288,7 +294,7 @@ public class JaxRSITest {
         ServiceReference reference = bundleContext.getServiceReference(Semaphore.class);
         if (reference == null) {
 
-            assertBundleStarted(bundleContext, "northwind-asm2jaxrsapi");
+            assertBundleStarted(bundleContext, "demo-asm2jaxrsapi");
 
             dispatcher = new Dispatcher() {
                 @Override
@@ -301,7 +307,7 @@ public class JaxRSITest {
                                 //case "demo.services.OrderInfoQuery__items#addAll": //(input: identifier & collection<rest.demo.services.OrderInfoQuery$items$Reference>)
                                 //case "demo.services.OrderInfoQuery__items#removeAll": //(input: identifier & collection<rest.demo.services.OrderInfoQuery$items$Reference>)
                                 //case "demo.services.ProductInfoQuery__category#unset": //(input: identifier only)
-                                //    return ImmutableMap.of();
+                                    return ImmutableMap.of();
                             default:
                                 log.log(LOG_ERROR, "Operation not found by operationFqName! Given operationFqName was \"" + operationFqName + "\"");
                                 return ImmutableMap.of();
