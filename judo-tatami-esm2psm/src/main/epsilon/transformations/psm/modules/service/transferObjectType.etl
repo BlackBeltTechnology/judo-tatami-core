@@ -14,7 +14,7 @@ rule CreateTransferObjectType
 	  for (super in s.generalizations) {
         t.superTransferObjectTypes.add(super.target.getPSMTransferObjectTypeEquivalent());
       }
-      t.getTemplate = s.equivalent("CreateGetTemplateOperationFromTransferObjectType");
+        t.getTemplate = s.equivalent("CreateGetTemplateOperationFromTransferObjectType");
 }
 
 rule CreateMappedTransferObjectType
@@ -25,7 +25,7 @@ rule CreateMappedTransferObjectType
 	  
 	  t.entityType = s.mapping.target.equivalent("CreateEntityType");
 	  t.filter = s.mapping.equivalent("CreateFilterExpressionForMappedTransferObjectType");
-
+      
 	  log.debug("Created Mapped TransferObject Type: " + t.name);
 }
 
