@@ -29,6 +29,16 @@ rule CreateBoundTransferOperationInDefaultTransferObjectType
       guard: s.modifier <> ESM!OperationModifier#STATIC and s.eContainer.isKindOf(ESM!EntityType)
 
       t.binding = s.equivalent("CreateBoundOperation");
+
+      if (s.input.isDefined()) {
+          t.input = new JUDOPSM!Parameter;
+          t.input.name = s.input.equivalent("CreateParameter").name;
+          t.input.type = s.input.equivalent("CreateParameter").type;
+          t.input.cardinality = new JUDOPSM!Cardinality;
+          t.input.cardinality.lower = s.input.lower;
+          t.input.cardinality.upper = s.input.upper;
+      }
+
       s.eContainer.equivalent("CreateDefaultMappedTransferObjectTypeForEntity").operations.add(t);
 }
 
@@ -55,7 +65,7 @@ rule CreateUnboundTransferOperationInDefaultTransferObjectType
       s.eContainer.equivalent("CreateDefaultMappedTransferObjectTypeForEntity").operations.add(t);
 }
 
-rule CreateReferencedUnboundOperation
+rule CreateInPlaceUnboundOperation
     transform s: ESM!Operation
     to t: JUDOPSM!UnboundOperation
     extends CreateNamedElement {
@@ -65,7 +75,7 @@ rule CreateReferencedUnboundOperation
 	  s.eContainer.getPSMEquivalent().operations.add(t);
 }
 
-rule CreateInPlaceUnboundOperation
+rule CreateReferencedUnboundOperation
     transform s: ESM!Operation
     to t: JUDOPSM!UnboundOperation
     extends CreateNamedElement {
@@ -83,7 +93,6 @@ rule CreateInPlaceUnboundOperation
 	  s.eContainer.getPSMEquivalent().operations.add(t);
 }
 
-/*
 @lazy
 @greedy
 rule CreateCardinalityForParameter
@@ -109,9 +118,9 @@ rule CreateParameter
 	  } else if (s.eContainer.faults.contains(s)) {
 	  	s.eContainer.getPSMEquivalent().faults.add(t);
 	  }
-	  log.debug("Created Parameter: " + t.name);
 }
 
+/*
 //for exposed graph
 //get operation
 @lazy

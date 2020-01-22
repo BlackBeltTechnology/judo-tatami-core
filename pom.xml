@@ -69,7 +69,7 @@
         <judo-meta-esm-version>1.1.0.20200121_173146_6d75792_feature_JNG_933_Refactor_operations</judo-meta-esm-version>
         <judo-meta-esm-import-range>[1.0,1.1)</judo-meta-esm-import-range>
 
-	<judo-meta-psm-version>1.0.0.20200120_154155_f7f2050_feature_JNG_933_refactor_operations</judo-meta-psm-version>
+	<judo-meta-psm-version>1.0.0.20200122_105119_3038251_feature_JNG_933_refactor_operations</judo-meta-psm-version>
         <judo-meta-psm-import-range>[1.0,1.1)</judo-meta-psm-import-range>
 
         <judo-meta-jql-version>1.0.0.20200112_030445_9877e2b_develop</judo-meta-jql-version>

@@ -2,17 +2,17 @@ import "../utils/_importUtils.eol";
 
 @cached
 operation JUDOPSM!Parameter isInput() : Boolean {
-    return JUDOPSM!OperationDeclaration.all.selectOne(o | o.input == self).isDefined();
+    return self.eContainer.input == self;
 }
 
 @cached
 operation JUDOPSM!Parameter isOutput() : Boolean {
-    return JUDOPSM!OperationDeclaration.all.selectOne(o | o.output == self).isDefined();
+    return self.eContainer.output == self;
 }
 
 @cached
 operation JUDOPSM!Parameter isFault() : Boolean {
-    return JUDOPSM!OperationDeclaration.all.selectOne(o | o.faults.contains(self)).isDefined();
+    return self.eContainer.faults.contains(self);
 }
 
 @abstract
@@ -146,23 +146,9 @@ rule CreateBoundOperationAnnotation
 
         var boundEntry = new ASM!EStringToStringMapEntry;
         boundEntry.key = "value";
-        boundEntry.value = s.isKindOf(JUDOPSM!BoundOperation).asString();
+        boundEntry.value = (s.isKindOf(JUDOPSM!BoundOperation) or s.isKindOf(JUDOPSM!BoundTransferOperation)).asString();
         t.details.add(boundEntry);
 
-        s.asmEquivalent().eAnnotations.add(t);
-}
-
-@greedy
-rule CreateBoundTransferOperationAnnotation
-    transform s : JUDOPSM!BoundTransferOperation
-    to t : ASM!EAnnotation {
-        t.source = asmUtils.getAnnotationUri("bound");
-        
-        var boundEntry = new ASM!EStringToStringMapEntry;
-        boundEntry.key = "value";
-        boundEntry.value = s.binding.isKindOf(JUDOPSM!BoundOperation).asString();
-        t.details.add(boundEntry);
-    
         s.asmEquivalent().eAnnotations.add(t);
 }
 
@@ -176,19 +162,6 @@ rule CreateBoundTransferOperation
             t.lowerBound = s.binding.output.cardinality.lower;
             t.upperBound = s.binding.output.cardinality.upper;
             t.eType = s.binding.output.type.asmEquivalent();
-        }
-        
-        if (s.binding.input.isDefined()) {
-            var input = new ASM!EParameter;
-            input.name = s.binding.input.name;
-            input.lowerBound = s.binding.input.cardinality.lower;
-            input.upperBound = s.binding.input.cardinality.upper;
-            input.eType = s.binding.input.type.asmEquivalent();
-            t.eParameters.add(input);
-        }
-        
-        if (not s.binding.faults.isEmpty()) {
-            throw "Fault are not supported yet";
         }
 
         var bindingAnnotation = new ASM!EAnnotation;
