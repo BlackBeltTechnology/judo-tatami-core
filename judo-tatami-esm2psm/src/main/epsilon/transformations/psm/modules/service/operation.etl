@@ -39,6 +39,25 @@ rule CreateBoundTransferOperationInDefaultTransferObjectType
           t.input.cardinality.upper = s.input.upper;
       }
 
+      if (s.output.isDefined()) {
+          t.output = new JUDOPSM!Parameter;
+          t.output.name = s.output.equivalent("CreateParameter").name;
+          t.output.type = s.output.equivalent("CreateParameter").type;
+          t.output.cardinality = new JUDOPSM!Cardinality;
+          t.output.cardinality.lower = s.output.lower;
+          t.output.cardinality.upper = s.output.upper;
+      }
+
+      for (f in s.faults) {
+          var fault = new JUDOPSM!Parameter;
+          fault.name = f.equivalent("CreateParameter").name;
+          fault.type = f.equivalent("CreateParameter").type;
+          fault.cardinality = new JUDOPSM!Cardinality;
+          fault.cardinality.lower = f.lower;
+          fault.cardinality.upper = f.upper;
+          t.faults.add(fault);
+      }
+
       s.eContainer.equivalent("CreateDefaultMappedTransferObjectTypeForEntity").operations.add(t);
 }
 
@@ -113,10 +132,13 @@ rule CreateParameter
 	  
 	  if (s.eContainer.input == s) {
 	  	s.eContainer.getPSMEquivalent().input = t;
+	  	log.info("Create input parameter " + s.name + " (" + s.eContainer.name + ")");
 	  } else if (s.eContainer.output == s) {
 	  	s.eContainer.getPSMEquivalent().output = t;
+	  	log.info("Create output parameter " + s.name + " (" + s.eContainer.name + ")");
 	  } else if (s.eContainer.faults.contains(s)) {
 	  	s.eContainer.getPSMEquivalent().faults.add(t);
+	  	log.info("Create fault parameter " + s.name + " (" + s.eContainer.name + ")");
 	  }
 }
 

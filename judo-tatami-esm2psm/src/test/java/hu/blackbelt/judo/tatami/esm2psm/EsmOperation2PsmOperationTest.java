@@ -129,19 +129,13 @@ public class EsmOperation2PsmOperationTest {
     private static final int OUTPUT_PARAMETER_CARDINALITY_LOWER = 10;
     private static final int OUTPUT_PARAMETER_CARDINALITY_UPPER = 15;
 
-//    private static final Predicate<OperationDeclaration> EXPECTED_INPUT_AND_OUTPUT_PARAMETERS = o -> o.getInput() != null && o.getOutput() != null &&
-//            INPUT_PARAMETER_NAME.equals(o.getInput().getName()) &&
-//            (MODEL_NAME + PsmUtils.NAMESPACE_SEPARATOR + INPUT_PARAMETER_TYPE_NAME).equals(PsmUtils.namespaceElementToString(o.getInput().getType())) &&
-//            o.getInput().getCardinality() != null && o.getInput().getCardinality().getLower() == INPUT_PARAMETER_CARDINALITY_LOWER && o.getInput().getCardinality().getUpper() == INPUT_PARAMETER_CARDINALITY_UPPER &&
-//            OUTPUT_PARAMETER_NAME.equals(o.getOutput().getName()) &&
-//            (MODEL_NAME + PsmUtils.NAMESPACE_SEPARATOR + OUTPUT_PARAMETER_NAME).equals(PsmUtils.namespaceElementToString(o.getOutput().getType())) &&
-//            o.getOutput().getCardinality() != null && o.getOutput().getCardinality().getLower() == OUTPUT_PARAMETER_CARDINALITY_LOWER && o.getOutput().getCardinality().getUpper() == OUTPUT_PARAMETER_CARDINALITY_UPPER;
-
-    private static final Predicate<OperationDeclaration> EXPECTED_INPUT_AND_OUTPUT_PARAMETERS = o -> o.getInput() != null &&
+    private static final Predicate<OperationDeclaration> EXPECTED_INPUT_AND_OUTPUT_PARAMETERS = o -> o.getInput() != null && o.getOutput() != null &&
             INPUT_PARAMETER_NAME.equals(o.getInput().getName()) &&
             (MODEL_NAME + PsmUtils.NAMESPACE_SEPARATOR + INPUT_PARAMETER_TYPE_NAME).equals(PsmUtils.namespaceElementToString(o.getInput().getType())) &&
-            o.getInput().getCardinality() != null && o.getInput().getCardinality().getLower() == INPUT_PARAMETER_CARDINALITY_LOWER && o.getInput().getCardinality().getUpper() == INPUT_PARAMETER_CARDINALITY_UPPER
-            ;
+            o.getInput().getCardinality() != null && o.getInput().getCardinality().getLower() == INPUT_PARAMETER_CARDINALITY_LOWER && o.getInput().getCardinality().getUpper() == INPUT_PARAMETER_CARDINALITY_UPPER &&
+            OUTPUT_PARAMETER_NAME.equals(o.getOutput().getName()) &&
+            (MODEL_NAME + PsmUtils.NAMESPACE_SEPARATOR + OUTPUT_PARAMETER_TYPE_NAME).equals(PsmUtils.namespaceElementToString(o.getOutput().getType())) &&
+            o.getOutput().getCardinality() != null && o.getOutput().getCardinality().getLower() == OUTPUT_PARAMETER_CARDINALITY_LOWER && o.getOutput().getCardinality().getUpper() == OUTPUT_PARAMETER_CARDINALITY_UPPER;
 
     private OperationBuilder parameterDecorator(final OperationBuilder operationBuilder, final TransferObjectType inputParameterType, final TransferObjectType outputParameterType, final TransferObjectType fault1Type, final TransferObjectType fault2Type) {
         return operationBuilder
