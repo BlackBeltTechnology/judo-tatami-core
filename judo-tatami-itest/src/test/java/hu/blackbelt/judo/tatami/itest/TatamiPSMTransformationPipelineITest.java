@@ -1,6 +1,5 @@
 package hu.blackbelt.judo.tatami.itest;
 
-import hu.blackbelt.epsilon.runtime.execution.exceptions.ScriptExecutionException;
 import hu.blackbelt.judo.meta.asm.runtime.AsmModel;
 import hu.blackbelt.judo.meta.liquibase.runtime.LiquibaseModel;
 import hu.blackbelt.judo.meta.measure.runtime.MeasureModel;
@@ -13,9 +12,6 @@ import hu.blackbelt.judo.tatami.core.TransformationTrace;
 import hu.blackbelt.judo.tatami.core.TransformationTraceService;
 import hu.blackbelt.judo.tatami.core.TransformationTraceUtil;
 import hu.blackbelt.osgi.utils.osgi.api.BundleTrackerManager;
-import io.swagger.models.Swagger;
-import io.swagger.util.Json;
-import io.swagger.util.Yaml;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
@@ -29,7 +25,9 @@ import org.osgi.framework.ServiceReference;
 import org.osgi.service.log.LogService;
 
 import javax.inject.Inject;
-import java.io.*;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.Collection;
 import java.util.Collections;
 
@@ -39,6 +37,7 @@ import static hu.blackbelt.judo.meta.asm.runtime.AsmModel.SaveArguments.asmSaveA
 import static hu.blackbelt.judo.meta.liquibase.runtime.LiquibaseModel.SaveArguments.liquibaseSaveArgumentsBuilder;
 import static hu.blackbelt.judo.meta.measure.runtime.MeasureModel.SaveArguments.measureSaveArgumentsBuilder;
 import static hu.blackbelt.judo.meta.openapi.runtime.OpenapiModel.SaveArguments.openapiSaveArgumentsBuilder;
+import static hu.blackbelt.judo.meta.openapi.runtime.exporter.OpenAPIExporter.convertModelToFile;
 import static hu.blackbelt.judo.meta.psm.runtime.PsmModel.SaveArguments.psmSaveArgumentsBuilder;
 import static hu.blackbelt.judo.meta.rdbms.runtime.RdbmsModel.SaveArguments.rdbmsSaveArgumentsBuilder;
 import static hu.blackbelt.judo.tatami.itest.TatamiTestUtil.*;
@@ -233,20 +232,9 @@ public abstract class TatamiPSMTransformationPipelineITest {
         });
 
         final EList<EObject> openAPIContents = openAPIModel.getResourceSet().getResource(openAPIModel.getUri(), false).getContents();
-        if (!openAPIContents.isEmpty()) {
-            final Swagger swagger = OpenAPIExporter.convertModelToOpenAPI((API) openAPIContents.get(0));
-            try (final Writer targetFileWriter = new FileWriter(new File("itest-" + getAppName() + "-openapi.json"))) {
-                final String json = Json.pretty().writeValueAsString(swagger);
-                targetFileWriter.append(json);
-            } catch (IOException ex) {
-                log.log(LOG_ERROR, "Unable to create JSON output", ex);
-            }
-            try (final Writer targetFileWriter = new FileWriter(new File("itest-" + getAppName() + "-openapi.yaml"))) {
-                final String yaml = Yaml.pretty().writeValueAsString(swagger);
-                targetFileWriter.append(yaml);
-            } catch (IOException ex) {
-                log.log(LOG_ERROR, "Unable to create YAML output", ex);
-            }
-        }
+        openAPIContents.forEach(api -> {
+            convertModelToFile((API) api, new File("itest-" + getAppName() + "-" + ((API) api).getInfo().getTitle() + "-openapi.yaml").getAbsolutePath(), OpenAPIExporter.Format.YAML);
+            convertModelToFile((API) api, new File("itest-" + getAppName() + "-" + ((API) api).getInfo().getTitle() + "-openapi.json").getAbsolutePath(), OpenAPIExporter.Format.JSON);
+        });
     }
 }
