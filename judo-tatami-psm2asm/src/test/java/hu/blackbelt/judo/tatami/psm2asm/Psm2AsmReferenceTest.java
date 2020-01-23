@@ -4,15 +4,19 @@ import com.google.common.collect.ImmutableList;
 import hu.blackbelt.epsilon.runtime.execution.api.Log;
 import hu.blackbelt.epsilon.runtime.execution.impl.Slf4jLog;
 import hu.blackbelt.judo.meta.asm.runtime.AsmModel;
+import hu.blackbelt.judo.meta.psm.accesspoint.AccessPoint;
+import hu.blackbelt.judo.meta.psm.accesspoint.ExposedGraph;
 import hu.blackbelt.judo.meta.psm.data.AssociationEnd;
 import hu.blackbelt.judo.meta.psm.data.Containment;
 import hu.blackbelt.judo.meta.psm.data.EntityType;
+import hu.blackbelt.judo.meta.psm.derived.StaticNavigation;
 import hu.blackbelt.judo.meta.psm.namespace.Model;
 import hu.blackbelt.judo.meta.psm.namespace.Package;
 import hu.blackbelt.judo.meta.psm.namespace.util.builder.NamespaceBuilders;
 import hu.blackbelt.judo.meta.psm.runtime.PsmModel;
 import hu.blackbelt.judo.meta.psm.service.MappedTransferObjectType;
 import hu.blackbelt.judo.meta.psm.service.TransferObjectRelation;
+import hu.blackbelt.judo.meta.psm.service.TransferOperationBehaviourType;
 import hu.blackbelt.judo.meta.psm.service.UnboundOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.emf.ecore.EClass;
@@ -31,7 +35,11 @@ import static hu.blackbelt.judo.meta.asm.runtime.AsmModel.SaveArguments.asmSaveA
 import static hu.blackbelt.judo.meta.asm.runtime.AsmModel.buildAsmModel;
 import static hu.blackbelt.judo.meta.psm.PsmEpsilonValidator.calculatePsmValidationScriptURI;
 import static hu.blackbelt.judo.meta.psm.PsmEpsilonValidator.validatePsm;
+import static hu.blackbelt.judo.meta.psm.accesspoint.util.builder.AccesspointBuilders.newAccessPointBuilder;
+import static hu.blackbelt.judo.meta.psm.accesspoint.util.builder.AccesspointBuilders.newExposedGraphBuilder;
 import static hu.blackbelt.judo.meta.psm.data.util.builder.DataBuilders.*;
+import static hu.blackbelt.judo.meta.psm.derived.util.builder.DerivedBuilders.newReferenceExpressionTypeBuilder;
+import static hu.blackbelt.judo.meta.psm.derived.util.builder.DerivedBuilders.newStaticNavigationBuilder;
 import static hu.blackbelt.judo.meta.psm.namespace.util.builder.NamespaceBuilders.newPackageBuilder;
 import static hu.blackbelt.judo.meta.psm.runtime.PsmModel.buildPsmModel;
 import static hu.blackbelt.judo.meta.psm.service.util.builder.ServiceBuilders.*;
@@ -119,10 +127,23 @@ public class Psm2AsmReferenceTest {
                 .build();
         shipperOrdersInShipper.setTarget(orderEntity);
 
+
+        StaticNavigation orderSelector = newStaticNavigationBuilder().withName("orderSelector")
+                .withCardinality(newCardinalityBuilder().withLower(0).withUpper(-1))
+                .withTarget(orderEntity)
+                .withGetterExpression(newReferenceExpressionTypeBuilder().withExpression("demo::entities::Order"))
+                .build();
+
+        ExposedGraph exposedGraph = newExposedGraphBuilder().withName("orders")
+                .withSelector(orderSelector)
+                .withCardinality(newCardinalityBuilder().withLower(0).withUpper(-1).build())
+                .build();
+
         UnboundOperation createOrder = newUnboundOperationBuilder().withName("createOrder_")
+                .withBehaviour(newTransferOperationBehaviourBuilder().withBehaviourType(TransferOperationBehaviourType.CREATE).withOwner(exposedGraph).build())
                 .withInput(newParameterBuilder().withName("input").withCardinality(newCardinalityBuilder().withLower(1).withUpper(1).build()).build())
                 .withOutput(newParameterBuilder().withName("output").withCardinality(newCardinalityBuilder().withLower(1).withUpper(1).build()).build())
-                .withImplementation(newOperationBodyBuilder().withBody("body").withCustomImplementation(true).withStateful(true).build())
+                .withImplementation(newOperationBodyBuilder().withBody("body").withCustomImplementation(true).build())
                 .build();
         MappedTransferObjectType orderInfo = newMappedTransferObjectTypeBuilder().withName("OrderInfo").withEntityType(orderEntity)
                 .withRelations(ImmutableList.of(
@@ -132,15 +153,22 @@ public class Psm2AsmReferenceTest {
                 .build();
         createOrder.getInput().setType(orderInfo);
         createOrder.getOutput().setType(orderInfo);
+        exposedGraph.setMappedTransferObjectType(orderInfo);
+
+
+        AccessPoint accessPoint = newAccessPointBuilder().withName("accessPoint")
+                .withExposedGraphs(exposedGraph)
+                .build();
 
         //mutual embedding
         orderItemEmbeddingOrderInfo.setTarget(orderInfo);
 
         Package entities = newPackageBuilder().withName("entities").withElements(ImmutableList.of(orderEntity, shipperEntity, orderDetail, productEntity)).build();
-        Package services = newPackageBuilder().withName("services").withElements(ImmutableList.of(orderInfo, shipperInfo, orderItem, productInfo)).build();
+        Package services = newPackageBuilder().withName("services").withElements(ImmutableList.of(orderInfo, shipperInfo, orderItem, productInfo, orderSelector)).build();
 
         Model model = NamespaceBuilders.newModelBuilder().withName("testModel")
                 .withPackages(ImmutableList.of(entities, services))
+                .withElements(accessPoint)
                 .build();
         psmModel.addContent(model);
         executePsm2AsmTransformation(
