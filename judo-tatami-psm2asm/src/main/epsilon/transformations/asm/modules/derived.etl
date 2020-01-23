@@ -212,12 +212,12 @@ rule CreateStaticData
 	transform s : JUDOPSM!StaticData
 	to t : ASM!EAttribute
 	extends CreatePrimitiveAccessor {
-		s.getNamespace().equivalent("CreateClassForStatics").eStructuralFeatures.add(t);
+		s.eContainer.equivalent("CreateClassForStatics").eStructuralFeatures.add(t);
 }
 
 rule CreateStaticNavigation
 	transform s : JUDOPSM!StaticNavigation
 	to t : ASM!EReference
 	extends CreateReferenceAccessor {
-		s.getNamespace().equivalent("CreateClassForStatics").eStructuralFeatures.add(t);
+		s.eContainer.equivalent("CreateClassForStatics").eStructuralFeatures.add(t);
 }

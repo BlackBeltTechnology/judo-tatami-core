@@ -2,12 +2,7 @@
 @cached
 operation String toOpenAPIPath() : String {
     var result = self
-            .replace("\\.__UnboundServices", "")
             .replace("[#\\.]", "/")
-//            .replaceAll("//", "/")
-//            .replaceAll("//", "/")
-//            .replaceAll("//", "/")
-//            .replaceAll("//", "/")
             .replace("[^0-9a-zA-Z_/]", "_");
     return result;
 }

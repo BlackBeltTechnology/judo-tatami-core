@@ -1,6 +1,23 @@
 import "transferObjectRelation.eol";
 import "transferObjectType.eol";
 
+operation ESM!Operation getPSMEquivalent() : JUDOPSM!OperationDeclaration {
+    if (self.modifier <> ESM!OperationModifier#STATIC and self.eContainer.isKindOf(ESM!EntityType)) {
+        return self.equivalent("CreateBoundOperation");
+    } else if (self.modifier <> ESM!OperationModifier#STATIC and self.bound) {
+        return self.equivalent("CreateBoundTransferOperation");
+    } else if (self.modifier == ESM!OperationModifier#STATIC and self.eContainer.isKindOf(ESM!EntityType)) {
+        return self.equivalent("CreateUnboundTransferOperationInDefaultTransferObjectType");
+    } else if (self.modifier == ESM!OperationModifier#STATIC and not self.eContainer.isKindOf(ESM!EntityType) and not self.bound) {
+        return self.equivalent("CreateInPlaceUnboundOperation");
+    } else if (self.modifier == ESM!OperationModifier#STATIC and not self.eContainer.isKindOf(ESM!EntityType) and self.bound) {
+        return self.equivalent("CreateReferencedUnboundOperation");
+    } else {
+        throw "Unsupported operation type";
+    }
+}
+
+/*
 operation ESM!BoundOperation getPSMEquivalent(): JUDOPSM!OperationDeclaration {
     return self.equivalent("CreateBoundOperation");
 }
@@ -186,3 +203,4 @@ operation createGetRangeOperationForExposedGraph(source: ESM!ExposedGraph, relat
     source.eContainer.eContainer.getPSMEquivalent().elements.add(getRangeOperation);
     return getRangeOperation;
 }
+*/

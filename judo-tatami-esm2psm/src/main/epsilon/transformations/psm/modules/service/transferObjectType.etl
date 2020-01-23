@@ -5,7 +5,6 @@ import "../data/referenceTypedElement.etl";
 import "../derived/expressionType.etl";
 import "../../../../operations/_importAll.eol";
 
-
 @abstract
 rule CreateTransferObjectType
 	transform s: ESM!TransferObjectType

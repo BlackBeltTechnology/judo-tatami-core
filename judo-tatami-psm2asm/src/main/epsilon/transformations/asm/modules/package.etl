@@ -19,11 +19,8 @@ rule PackageToPackage
 	transform s : JUDOPSM!Package
 	to t : ASM!EPackage
 	extends NamespaceToPackage {
-	
-	var container = psmUtils.getNamespaceOfPackage(s);
-	if (container.isPresent()) {
-	    t.nsURI = container.get().asmEquivalent().nsURI + "/" + s.name;
-	    t.nsPrefix = container.get().asmEquivalent().nsPrefix + s.name.firstToUpperCase();
-		container.get().asmEquivalent().eSubpackages.add(t);
-	}
+
+    t.nsURI = s.eContainer.asmEquivalent().nsURI + "/" + s.name;
+    t.nsPrefix = s.eContainer.asmEquivalent().nsPrefix + s.name.firstToUpperCase();
+    s.eContainer.asmEquivalent().eSubpackages.add(t);
 }

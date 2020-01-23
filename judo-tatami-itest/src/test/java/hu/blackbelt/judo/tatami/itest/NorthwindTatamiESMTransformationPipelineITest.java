@@ -27,7 +27,10 @@ import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -36,7 +39,6 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import static hu.blackbelt.judo.tatami.itest.TestUtility.*;
-import static junit.framework.TestCase.assertNotNull;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.ops4j.pax.exam.CoreOptions.provision;
@@ -53,8 +55,8 @@ public class NorthwindTatamiESMTransformationPipelineITest extends TatamiESMTran
     private static final String BASE_URL = "http://localhost:8181/cxf/northwind/InternalAP";
     private static final String NORTHWIND_ENTITIES_ORDER = "northwind.entities.Order";
     private static final String NORTHWIND = "northwind-esm";
-    private static final String NORTHWIND_SERVICES_GET_ALL_ORDERS = "/northwind/services/getAllOrders";
-    private static final String NORTHWIND_SERVICES_GET_ALL_INTERNATIONAL_ORDERS = "/northwind/services/getAllInternationalOrders";
+//    private static final String NORTHWIND_SERVICE_GET_ALL_ORDERS = "/northwind/service/getAllOrders";
+//    private static final String NORTHWIND_SERVICE_GET_ALL_INTERNATIONAL_ORDERS = "/northwind/service/getAllInternationalOrders";
 
     @Override
     public Option getProvisonModelBundle() throws FileNotFoundException {
@@ -140,13 +142,10 @@ public class NorthwindTatamiESMTransformationPipelineITest extends TatamiESMTran
 
         waitWebPage(BASE_URL +"/?_wadl");
 
-
-
         assertBundleStarted(bundleContext,  NORTHWIND + "-asm2jaxrsapi");
 
-
-        assertNotNull(getResponse(NORTHWIND_SERVICES_GET_ALL_ORDERS));
-        assertNotNull(getResponse(NORTHWIND_SERVICES_GET_ALL_INTERNATIONAL_ORDERS));
+//        assertNotNull(getResponse(NORTHWIND_SERVICE_GET_ALL_ORDERS));
+//        assertNotNull(getResponse(NORTHWIND_SERVICE_GET_ALL_INTERNATIONAL_ORDERS));
 
         log.log(LOG_INFO, "==============================================");
         log.log(LOG_INFO, "== STOPPING TEST REST METHOD");

@@ -119,24 +119,25 @@ public class Psm2AsmReferenceTest {
                 .build();
         shipperOrdersInShipper.setTarget(orderEntity);
 
+        UnboundOperation createOrder = newUnboundOperationBuilder().withName("createOrder_")
+                .withInput(newParameterBuilder().withName("input").withCardinality(newCardinalityBuilder().withLower(1).withUpper(1).build()).build())
+                .withOutput(newParameterBuilder().withName("output").withCardinality(newCardinalityBuilder().withLower(1).withUpper(1).build()).build())
+                .withImplementation(newOperationBodyBuilder().withBody("body").withCustomImplementation(true).withStateful(true).build())
+                .build();
         MappedTransferObjectType orderInfo = newMappedTransferObjectTypeBuilder().withName("OrderInfo").withEntityType(orderEntity)
                 .withRelations(ImmutableList.of(
                         newTransferObjectRelationBuilder().withName("shipper").withTarget(shipperInfo).withBinding(shipperInOrder).withEmbedded(false).withCardinality(newCardinalityBuilder().withLower(0).withUpper(1).build()).build(),
                         newTransferObjectRelationBuilder().withName("items").withTarget(orderItem).withBinding(orderDetailsInOrder).withEmbedded(true).withEmbeddedCreate(true).withCardinality(newCardinalityBuilder().withLower(1).withUpper(-1).build()).build()
-                ))
+                )).withOperations(createOrder)
                 .build();
+        createOrder.getInput().setType(orderInfo);
+        createOrder.getOutput().setType(orderInfo);
 
         //mutual embedding
         orderItemEmbeddingOrderInfo.setTarget(orderInfo);
 
-        UnboundOperation createOrder = newUnboundOperationBuilder().withName("createOrder_")
-                .withInput(newParameterBuilder().withName("input").withCardinality(newCardinalityBuilder().withLower(1).withUpper(1).build()).withType(orderInfo).build())
-                .withOutput(newParameterBuilder().withName("output").withCardinality(newCardinalityBuilder().withLower(1).withUpper(1).build()).withType(orderInfo).build())
-                .withImplementation(newOperationBodyBuilder().withBody("body").withCustomImplementation(true).withStateful(true).build())
-                .build();
-
         Package entities = newPackageBuilder().withName("entities").withElements(ImmutableList.of(orderEntity, shipperEntity, orderDetail, productEntity)).build();
-        Package services = newPackageBuilder().withName("services").withElements(ImmutableList.of(orderInfo, shipperInfo, orderItem, productInfo, createOrder)).build();
+        Package services = newPackageBuilder().withName("services").withElements(ImmutableList.of(orderInfo, shipperInfo, orderItem, productInfo)).build();
 
         Model model = NamespaceBuilders.newModelBuilder().withName("testModel")
                 .withPackages(ImmutableList.of(entities, services))
