@@ -437,7 +437,7 @@ public class EsmAccesspoint2PsmAccesspointTest {
                 EcoreUtil.equals(o.getOutput().getType(), defaultE.get())
         ));
 
-        assertEquals(15, graph.get().getMappedTransferObjectType().getOperations().size());
+        assertEquals(15L, graph.get().getMappedTransferObjectType().getOperations().stream().filter(o -> o instanceof UnboundOperation).count());
     }
 
     static <T> Stream<T> asStream(Iterator<T> sourceIterator, boolean parallel) {

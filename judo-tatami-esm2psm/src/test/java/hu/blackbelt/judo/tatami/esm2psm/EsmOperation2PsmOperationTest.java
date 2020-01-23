@@ -28,7 +28,6 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -300,6 +299,9 @@ public class EsmOperation2PsmOperationTest {
         final String NAME_OF_GET_OPERATION = "_getGForAP";
 
         final String NAME_OF_GET_E_OPERATION = "_getE";
+        final String NAME_OF_CREATE_E_OPERATION = "_createE";
+        final String NAME_OF_UPDATE_E_OPERATION = "_updateE";
+        final String NAME_OF_DELETE_E_OPERATION = "_deleteE";
 
         final EntityType entityTypeF = newEntityTypeBuilder()
                 .withName(ENTITY_TYPE_F_NAME)
@@ -407,17 +409,40 @@ public class EsmOperation2PsmOperationTest {
                 EcoreUtil.equals(o.getOutput().getType(), defaultE.get())
         ));
 
-        assertTrue(defaultD.get().getOperations().stream().anyMatch(o -> NAME_OF_GET_E_OPERATION.equals(o.getName())));
+        assertTrue(graph.get().getMappedTransferObjectType().getOperations().stream().anyMatch(o -> NAME_OF_CREATE_E_OPERATION.equals(o.getName()) && (o instanceof BoundTransferOperation) &&
+                o.getBehaviour() != null && o.getBehaviour().getBehaviourType() == TransferOperationBehaviourType.CREATE_RELATION && EcoreUtil.equals(o.getBehaviour().getOwner(), dToE.get()) &&
+                o.getInput() != null && o.getOutput() != null && o.getFaults().isEmpty() &&
+                o.getInput().getCardinality().getLower() == 1 && o.getInput().getCardinality().getUpper() == 1 &&
+                EcoreUtil.equals(o.getInput().getType(), defaultE.get()) &&
+                o.getOutput().getCardinality().getLower() == 1 && o.getOutput().getCardinality().getUpper() == 1 &&
+                EcoreUtil.equals(o.getOutput().getType(), defaultE.get())
+        ));
+
+        assertTrue(graph.get().getMappedTransferObjectType().getOperations().stream().anyMatch(o -> NAME_OF_UPDATE_E_OPERATION.equals(o.getName()) && (o instanceof BoundTransferOperation) &&
+                o.getBehaviour() != null && o.getBehaviour().getBehaviourType() == TransferOperationBehaviourType.UPDATE_RELATION && EcoreUtil.equals(o.getBehaviour().getOwner(), dToE.get()) &&
+                o.getInput() != null && o.getOutput() != null && o.getFaults().isEmpty() &&
+                o.getInput().getCardinality().getLower() == 1 && o.getInput().getCardinality().getUpper() == 1 &&
+                EcoreUtil.equals(o.getInput().getType(), defaultE.get()) &&
+                o.getOutput().getCardinality().getLower() == 1 && o.getOutput().getCardinality().getUpper() == 1 &&
+                EcoreUtil.equals(o.getOutput().getType(), defaultE.get())
+        ));
+
+        assertTrue(graph.get().getMappedTransferObjectType().getOperations().stream().anyMatch(o -> NAME_OF_DELETE_E_OPERATION.equals(o.getName()) && (o instanceof BoundTransferOperation) &&
+                o.getBehaviour() != null && o.getBehaviour().getBehaviourType() == TransferOperationBehaviourType.DELETE_RELATION && EcoreUtil.equals(o.getBehaviour().getOwner(), dToE.get()) &&
+                o.getInput() != null && o.getOutput() == null && o.getFaults().isEmpty() &&
+                o.getInput().getCardinality().getLower() == 1 && o.getInput().getCardinality().getUpper() == 1 &&
+                EcoreUtil.equals(o.getInput().getType(), defaultE.get())
+        ));
 
         log.debug("List of generated operations (D):{}", defaultD.get().getOperations().stream().map(o -> "\n - " + o.getName()).sorted().collect(Collectors.joining()));
 
-        final ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        psmModel.savePsmModel(psmSaveArgumentsBuilder()
-                .outputStream(bos)
-                .build());
-        log.info(bos.toString());
+//        final ByteArrayOutputStream bos = new ByteArrayOutputStream();
+//        psmModel.savePsmModel(psmSaveArgumentsBuilder()
+//                .outputStream(bos)
+//                .build());
+//        log.info(bos.toString());
 
-        assertEquals(2, defaultD.get().getOperations().size());
+        assertEquals(5, defaultD.get().getOperations().size());
     }
 
     static <T> Stream<T> asStream(Iterator<T> sourceIterator, boolean parallel) {
