@@ -155,7 +155,7 @@ rule CreateGetOperationForRelation
         t.output.cardinality.lower = s.lower;
         t.output.cardinality.upper = s.upper;
 
-        s.eContainer.equivalent("CreateEntityType").operations.add(t);
+        s.eContainer.mapping.target.equivalent("CreateEntityType").operations.add(t);
 }
 
 @greedy
@@ -204,7 +204,7 @@ rule CreateCreateOperationForRelation
         t.output.cardinality.lower = 1;
         t.output.cardinality.upper = 1;
 
-        s.eContainer.equivalent("CreateEntityType").operations.add(t);
+        s.eContainer.mapping.target.equivalent("CreateEntityType").operations.add(t);
 }
 
 @greedy
@@ -260,7 +260,7 @@ rule CreateUpdateOperationForRelation
         t.output.cardinality.lower = 1;
         t.output.cardinality.upper = 1;
 
-        s.eContainer.equivalent("CreateEntityType").operations.add(t);
+        s.eContainer.mapping.target.equivalent("CreateEntityType").operations.add(t);
 }
 
 @greedy
@@ -309,7 +309,7 @@ rule CreateDeleteOperationForRelation
         t.input.cardinality.lower = 1;
         t.input.cardinality.upper = 1;
 
-        s.eContainer.equivalent("CreateEntityType").operations.add(t);
+        s.eContainer.mapping.target.equivalent("CreateEntityType").operations.add(t);
 }
 
 @greedy
