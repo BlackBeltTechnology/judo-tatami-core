@@ -181,6 +181,170 @@ rule CreateGetTransferOperationForRelation
         s.eContainer.getPSMTransferObjectTypeEquivalent().operations.add(t);
 }
 
+operation ESM!RelationFeature createSetOperationForRelation(relation : ESM!RelationFeature) : JUDOPSM!BoundOperation {
+    var t = new JUDOPSM!BoundOperation;
+
+    t.name = "_set" + relation.name.firstToUpperCase() + "Of" + self.name.firstToUpperCase();
+    t.instanceRepresentation = self.target.getPSMTransferObjectTypeEquivalent();
+
+    t.input = new JUDOPSM!Parameter;
+    t.input.name = "input";
+    t.input.type = self.target.getPSMTransferObjectTypeEquivalent();
+    t.input.cardinality = new JUDOPSM!Cardinality;
+    t.input.cardinality.lower = 1;
+    t.input.cardinality.upper = 1;
+
+    self.eContainer.mapping.target.equivalent("CreateEntityType").operations.add(t);
+
+    return t;
+}
+
+operation ESM!RelationFeature createSetTransferOperationForRelation(relation : ESM!RelationFeature, binding : JUDOPSM!BoundOperation) : JUDOPSM!BoundTransferOperation {
+    var t = new JUDOPSM!BoundTransferOperation;
+
+    t.name = "_set" + relation.name.firstToUpperCase() + "Of" + self.name.firstToUpperCase();
+    t.behaviour = new JUDOPSM!TransferOperationBehaviour;
+    t.behaviour.behaviourType = JUDOPSM!TransferOperationBehaviourType#SET_RELATION_OF_RELATION;
+    t.behaviour.owner = self.equivalent("CreateCreateOperationForRelation");
+    t.behaviour.relation = relation.getPSMTransferObjectRelationEquivalent();
+
+    t.input = new JUDOPSM!Parameter;
+    t.input.name = "input";
+    t.input.type = self.target.getPSMTransferObjectTypeEquivalent();
+    t.input.cardinality = new JUDOPSM!Cardinality;
+    t.input.cardinality.lower = 1;
+    t.input.cardinality.upper = 1;
+
+    t.binding = binding;
+
+    self.eContainer.getPSMTransferObjectTypeEquivalent().operations.add(t);
+
+    return t;
+}
+
+operation ESM!RelationFeature createUnsetOperationForRelation(relation : ESM!RelationFeature) : JUDOPSM!BoundOperation {
+    var t = new JUDOPSM!BoundOperation;
+
+    t.name = "_unset" + relation.name.firstToUpperCase() + "Of" + self.name.firstToUpperCase();
+    t.instanceRepresentation = self.target.getPSMTransferObjectTypeEquivalent();
+
+    t.input = new JUDOPSM!Parameter;
+    t.input.name = "input";
+    t.input.type = self.target.getPSMTransferObjectTypeEquivalent();
+    t.input.cardinality = new JUDOPSM!Cardinality;
+    t.input.cardinality.lower = 1;
+    t.input.cardinality.upper = 1;
+
+    self.eContainer.mapping.target.equivalent("CreateEntityType").operations.add(t);
+
+    return t;
+}
+
+operation ESM!RelationFeature createUnsetTransferOperationForRelation(relation : ESM!RelationFeature, binding : JUDOPSM!BoundOperation) : JUDOPSM!BoundTransferOperation {
+    var t = new JUDOPSM!BoundTransferOperation;
+
+    t.name = "_unset" + relation.name.firstToUpperCase() + "Of" + self.name.firstToUpperCase();
+    t.behaviour = new JUDOPSM!TransferOperationBehaviour;
+    t.behaviour.behaviourType = JUDOPSM!TransferOperationBehaviourType#UNSET_RELATION_OF_RELATION;
+    t.behaviour.owner = self.equivalent("CreateCreateOperationForRelation");
+    t.behaviour.relation = relation.getPSMTransferObjectRelationEquivalent();
+
+    t.input = new JUDOPSM!Parameter;
+    t.input.name = "input";
+    t.input.type = self.target.getPSMTransferObjectTypeEquivalent();
+    t.input.cardinality = new JUDOPSM!Cardinality;
+    t.input.cardinality.lower = 1;
+    t.input.cardinality.upper = 1;
+
+    t.binding = binding;
+
+    self.eContainer.getPSMTransferObjectTypeEquivalent().operations.add(t);
+
+    return t;
+}
+
+operation ESM!RelationFeature createAddAllOperationForRelation(relation : ESM!RelationFeature) : JUDOPSM!BoundOperation {
+    var t = new JUDOPSM!BoundOperation;
+
+    t.name = "_add" + relation.name.firstToUpperCase() + "Of" + self.name.firstToUpperCase();
+    t.instanceRepresentation = self.target.getPSMTransferObjectTypeEquivalent();
+
+    t.input = new JUDOPSM!Parameter;
+    t.input.name = "input";
+    t.input.type = self.target.getPSMTransferObjectTypeEquivalent();
+    t.input.cardinality = new JUDOPSM!Cardinality;
+    t.input.cardinality.lower = 1;
+    t.input.cardinality.upper = 1;
+
+    self.eContainer.mapping.target.equivalent("CreateEntityType").operations.add(t);
+
+    return t;
+}
+
+operation ESM!RelationFeature createAddAllTransferOperationForRelation(relation : ESM!RelationFeature, binding : JUDOPSM!BoundOperation) : JUDOPSM!BoundTransferOperation {
+    var t = new JUDOPSM!BoundTransferOperation;
+
+    t.name = "_add" + relation.name.firstToUpperCase() + "Of" + self.name.firstToUpperCase();
+    t.behaviour = new JUDOPSM!TransferOperationBehaviour;
+    t.behaviour.behaviourType = JUDOPSM!TransferOperationBehaviourType#ADD_ALL_TO_RELATION_OF_RELATION;
+    t.behaviour.owner = self.equivalent("CreateCreateOperationForRelation");
+    t.behaviour.relation = relation.getPSMTransferObjectRelationEquivalent();
+
+    t.input = new JUDOPSM!Parameter;
+    t.input.name = "input";
+    t.input.type = self.target.getPSMTransferObjectTypeEquivalent();
+    t.input.cardinality = new JUDOPSM!Cardinality;
+    t.input.cardinality.lower = 1;
+    t.input.cardinality.upper = 1;
+
+    t.binding = binding;
+
+    self.eContainer.getPSMTransferObjectTypeEquivalent().operations.add(t);
+
+    return t;
+}
+
+operation ESM!RelationFeature createRemoveAllOperationForRelation(relation : ESM!RelationFeature) : JUDOPSM!BoundOperation {
+    var t = new JUDOPSM!BoundOperation;
+
+    t.name = "_remove" + relation.name.firstToUpperCase() + "Of" + self.name.firstToUpperCase();
+    t.instanceRepresentation = self.target.getPSMTransferObjectTypeEquivalent();
+
+    t.input = new JUDOPSM!Parameter;
+    t.input.name = "input";
+    t.input.type = self.target.getPSMTransferObjectTypeEquivalent();
+    t.input.cardinality = new JUDOPSM!Cardinality;
+    t.input.cardinality.lower = 1;
+    t.input.cardinality.upper = 1;
+
+    self.eContainer.mapping.target.equivalent("CreateEntityType").operations.add(t);
+
+    return t;
+}
+
+operation ESM!RelationFeature createRemoveAllTransferOperationForRelation(relation : ESM!RelationFeature, binding : JUDOPSM!BoundOperation) : JUDOPSM!BoundTransferOperation {
+    var t = new JUDOPSM!BoundTransferOperation;
+
+    t.name = "_remove" + relation.name.firstToUpperCase() + "Of" + self.name.firstToUpperCase();
+    t.behaviour = new JUDOPSM!TransferOperationBehaviour;
+    t.behaviour.behaviourType = JUDOPSM!TransferOperationBehaviourType#REMOVE_ALL_FROM_RELATION_OF_RELATION;
+    t.behaviour.owner = self.equivalent("CreateCreateOperationForRelation");
+    t.behaviour.relation = relation.getPSMTransferObjectRelationEquivalent();
+
+    t.input = new JUDOPSM!Parameter;
+    t.input.name = "input";
+    t.input.type = self.target.getPSMTransferObjectTypeEquivalent();
+    t.input.cardinality = new JUDOPSM!Cardinality;
+    t.input.cardinality.lower = 1;
+    t.input.cardinality.upper = 1;
+
+    t.binding = binding;
+
+    self.eContainer.getPSMTransferObjectTypeEquivalent().operations.add(t);
+
+    return t;
+}
+
 @greedy
 rule CreateCreateOperationForRelation
     transform s : ESM!RelationFeature
@@ -289,6 +453,43 @@ rule CreateUpdateTransferOperationForRelation
         t.output.cardinality.upper = 1;
 
         t.binding = s.equivalent("CreateUpdateOperationForRelation");
+
+        for (relation in s.target.relations.select(r | r.isKindOf(ESM!TwoWayRelationMember) implies r.partner <> s)) {
+            var rangeAllowed = false;
+            var containment = false;
+            if (relation.isKindOf(ESM!OneWayRelationMember)) {
+                if (relation.eContainer.isKindOf(ESM!EntityType)) {
+                    rangeAllowed = not relation.containment and relation.relationMemberType <> ESM!RelationMemberType#PROPERTY;
+                    containment = relation.containment;
+                } else if (relation.eContainer.isKindOf(ESM!TransferObjectType)) {
+                    rangeAllowed = relation.relationMemberType <> ESM!RelationMemberType#PROPERTY and (relation.relationMemberType == ESM!RelationMemberType#BOUND implies (not relation.binding.containment and relation.binding.relationMemberType <> ESM!RelationMemberType#PROPERTY)) and relation.target.mapping.isDefined();
+                    containment = relation.relationMemberType == ESM!RelationMemberType#BOUND and relation.binding.containment and relation.target.mapping.isDefined();
+                }
+            } else if (relation.isKindOf(ESM!TwoWayRelationMember)) {
+                rangeAllowed = relation.target.mapping.isDefined();
+            }
+
+            if (rangeAllowed and relation.rangeExpression.isDefined() and relation.rangeExpression.trim().length() > 0 and (s.isCreateAllowed() or s.isUpdateAllowed())) {
+                //s.createGetRangeOperationForExposedGraphEdit(relation, t.input, "update");
+            }
+
+            if (relation.upper == 1) {
+                if (not containment) {
+                    s.createSetTransferOperationForRelation(relation, s.createSetOperationForRelation(relation));
+                }
+                if (not containment or s.isDeleteAllowed()) {
+                    s.createUnsetTransferOperationForRelation(relation, s.createUnsetOperationForRelation(relation));
+                }
+            } else {
+                if (not containment) {
+                    s.createSetTransferOperationForRelation(relation, s.createSetOperationForRelation(relation));
+                    s.createAddAllTransferOperationForRelation(relation, s.createAddAllOperationForRelation(relation));
+                }
+                if (not containment or s.deleteable) {
+                    s.createRemoveAllTransferOperationForRelation(relation, s.createRemoveAllOperationForRelation(relation));
+                }
+            }
+        }
 
         s.eContainer.getPSMTransferObjectTypeEquivalent().operations.add(t);
 }

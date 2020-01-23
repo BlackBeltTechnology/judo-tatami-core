@@ -442,7 +442,7 @@ public class EsmOperation2PsmOperationTest {
 //                .build());
 //        log.info(bos.toString());
 
-        assertEquals(5, defaultD.get().getOperations().size());
+        assertEquals(12, defaultD.get().getOperations().size());
     }
 
     static <T> Stream<T> asStream(Iterator<T> sourceIterator, boolean parallel) {
