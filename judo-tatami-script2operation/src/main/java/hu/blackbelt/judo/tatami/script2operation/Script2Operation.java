@@ -43,7 +43,7 @@ public class Script2Operation {
 
         scriptModelResourceSupport.getStreamOfScriptBindingOperationBinding()
                 .forEach(binding -> {
-                    String packageName = scriptGenerator.createPackageName(binding.getTypeName());
+                    String packageName = scriptGenerator.generatePackageName(binding.getTypeName());
                     String unitName =  scriptGenerator.generateClassName(binding.getOperationName());
                     String sourceCode = String.valueOf(scriptGenerator.generate(binding.getScript(), binding));
 
