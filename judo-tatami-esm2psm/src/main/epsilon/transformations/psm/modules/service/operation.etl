@@ -205,7 +205,7 @@ operation ESM!RelationFeature createSetTransferOperationForRelation(relation : E
     t.name = "_set" + relation.name.firstToUpperCase() + "Of" + self.name.firstToUpperCase();
     t.behaviour = new JUDOPSM!TransferOperationBehaviour;
     t.behaviour.behaviourType = JUDOPSM!TransferOperationBehaviourType#SET_RELATION_OF_RELATION;
-    t.behaviour.owner = self.equivalent("CreateCreateOperationForRelation");
+    t.behaviour.owner = self.getPSMTransferObjectRelationEquivalent();
     t.behaviour.relation = relation.getPSMTransferObjectRelationEquivalent();
 
     t.input = new JUDOPSM!Parameter;
@@ -246,7 +246,7 @@ operation ESM!RelationFeature createUnsetTransferOperationForRelation(relation :
     t.name = "_unset" + relation.name.firstToUpperCase() + "Of" + self.name.firstToUpperCase();
     t.behaviour = new JUDOPSM!TransferOperationBehaviour;
     t.behaviour.behaviourType = JUDOPSM!TransferOperationBehaviourType#UNSET_RELATION_OF_RELATION;
-    t.behaviour.owner = self.equivalent("CreateCreateOperationForRelation");
+    t.behaviour.owner = self.getPSMTransferObjectRelationEquivalent();
     t.behaviour.relation = relation.getPSMTransferObjectRelationEquivalent();
 
     t.input = new JUDOPSM!Parameter;
@@ -266,7 +266,7 @@ operation ESM!RelationFeature createUnsetTransferOperationForRelation(relation :
 operation ESM!RelationFeature createAddAllOperationForRelation(relation : ESM!RelationFeature) : JUDOPSM!BoundOperation {
     var t = new JUDOPSM!BoundOperation;
 
-    t.name = "_add" + relation.name.firstToUpperCase() + "Of" + self.name.firstToUpperCase();
+    t.name = "_add" + relation.name.firstToUpperCase() + "To" + self.name.firstToUpperCase();
     t.instanceRepresentation = self.target.getPSMTransferObjectTypeEquivalent();
 
     t.input = new JUDOPSM!Parameter;
@@ -284,10 +284,10 @@ operation ESM!RelationFeature createAddAllOperationForRelation(relation : ESM!Re
 operation ESM!RelationFeature createAddAllTransferOperationForRelation(relation : ESM!RelationFeature, binding : JUDOPSM!BoundOperation) : JUDOPSM!BoundTransferOperation {
     var t = new JUDOPSM!BoundTransferOperation;
 
-    t.name = "_add" + relation.name.firstToUpperCase() + "Of" + self.name.firstToUpperCase();
+    t.name = "_add" + relation.name.firstToUpperCase() + "To" + self.name.firstToUpperCase();
     t.behaviour = new JUDOPSM!TransferOperationBehaviour;
     t.behaviour.behaviourType = JUDOPSM!TransferOperationBehaviourType#ADD_ALL_TO_RELATION_OF_RELATION;
-    t.behaviour.owner = self.equivalent("CreateCreateOperationForRelation");
+    t.behaviour.owner = self.getPSMTransferObjectRelationEquivalent();
     t.behaviour.relation = relation.getPSMTransferObjectRelationEquivalent();
 
     t.input = new JUDOPSM!Parameter;
@@ -307,7 +307,7 @@ operation ESM!RelationFeature createAddAllTransferOperationForRelation(relation 
 operation ESM!RelationFeature createRemoveAllOperationForRelation(relation : ESM!RelationFeature) : JUDOPSM!BoundOperation {
     var t = new JUDOPSM!BoundOperation;
 
-    t.name = "_remove" + relation.name.firstToUpperCase() + "Of" + self.name.firstToUpperCase();
+    t.name = "_remove" + relation.name.firstToUpperCase() + "From" + self.name.firstToUpperCase();
     t.instanceRepresentation = self.target.getPSMTransferObjectTypeEquivalent();
 
     t.input = new JUDOPSM!Parameter;
@@ -325,10 +325,10 @@ operation ESM!RelationFeature createRemoveAllOperationForRelation(relation : ESM
 operation ESM!RelationFeature createRemoveAllTransferOperationForRelation(relation : ESM!RelationFeature, binding : JUDOPSM!BoundOperation) : JUDOPSM!BoundTransferOperation {
     var t = new JUDOPSM!BoundTransferOperation;
 
-    t.name = "_remove" + relation.name.firstToUpperCase() + "Of" + self.name.firstToUpperCase();
+    t.name = "_remove" + relation.name.firstToUpperCase() + "From" + self.name.firstToUpperCase();
     t.behaviour = new JUDOPSM!TransferOperationBehaviour;
     t.behaviour.behaviourType = JUDOPSM!TransferOperationBehaviourType#REMOVE_ALL_FROM_RELATION_OF_RELATION;
-    t.behaviour.owner = self.equivalent("CreateCreateOperationForRelation");
+    t.behaviour.owner = self.getPSMTransferObjectRelationEquivalent();
     t.behaviour.relation = relation.getPSMTransferObjectRelationEquivalent();
 
     t.input = new JUDOPSM!Parameter;
