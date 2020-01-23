@@ -139,6 +139,48 @@ rule CreateParameter
 	  }
 }
 
+@greedy
+rule CreateGetOperationForRelation
+    transform s : ESM!RelationFeature
+    to t : JUDOPSM!BoundOperation {
+        guard: s.eContainer.isKindOf(ESM!TransferObjectType) and s.eContainer.mapping.isDefined() and s.target.isKindOf(ESM!TransferObjectType) and s.target.mapping.isDefined()
+
+        t.name = "_get" + s.name.firstToUpperCase();
+        t.instanceRepresentation = s.target.getPSMTransferObjectTypeEquivalent();
+
+        t.output = new JUDOPSM!Parameter;
+        t.output.name = "output";
+        t.output.type = s.target.getPSMTransferObjectTypeEquivalent();
+        t.output.cardinality = new JUDOPSM!Cardinality;
+        t.output.cardinality.lower = s.lower;
+        t.output.cardinality.upper = s.upper;
+
+        s.eContainer.equivalent("CreateEntityType").operations.add(t);
+}
+
+@greedy
+rule CreateGetTransferOperationForRelation
+    transform s : ESM!RelationFeature
+    to t : JUDOPSM!BoundTransferOperation {
+        guard: s.eContainer.isKindOf(ESM!TransferObjectType) and s.eContainer.mapping.isDefined() and s.target.isKindOf(ESM!TransferObjectType) and s.target.mapping.isDefined()
+
+        t.name = "_get" + s.name.firstToUpperCase();
+        t.behaviour = new JUDOPSM!TransferOperationBehaviour;
+        t.behaviour.behaviourType = JUDOPSM!TransferOperationBehaviourType#GET_RELATION;
+        t.behaviour.owner = s.getPSMTransferObjectRelationEquivalent();
+
+        t.output = new JUDOPSM!Parameter;
+        t.output.name = "output";
+        t.output.type = s.target.getPSMTransferObjectTypeEquivalent();
+        t.output.cardinality = new JUDOPSM!Cardinality;
+        t.output.cardinality.lower = s.lower;
+        t.output.cardinality.upper = s.upper;
+
+        t.binding = s.equivalent("CreateGetOperationForRelation");
+
+        s.eContainer.getPSMTransferObjectTypeEquivalent().operations.add(t);
+}
+
 /*
 //for exposed graph
 //get operation

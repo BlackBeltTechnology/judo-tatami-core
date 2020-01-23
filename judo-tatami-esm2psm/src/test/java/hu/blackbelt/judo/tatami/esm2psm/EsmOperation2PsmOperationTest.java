@@ -2,23 +2,33 @@ package hu.blackbelt.judo.tatami.esm2psm;
 
 import hu.blackbelt.epsilon.runtime.execution.api.Log;
 import hu.blackbelt.epsilon.runtime.execution.impl.Slf4jLog;
+import hu.blackbelt.judo.meta.esm.accesspoint.AccessPoint;
 import hu.blackbelt.judo.meta.esm.namespace.Model;
 import hu.blackbelt.judo.meta.esm.operation.OperationModifier;
 import hu.blackbelt.judo.meta.esm.operation.util.builder.OperationBuilder;
 import hu.blackbelt.judo.meta.esm.runtime.EsmModel;
 import hu.blackbelt.judo.meta.esm.runtime.EsmUtils;
 import hu.blackbelt.judo.meta.esm.structure.EntityType;
+import hu.blackbelt.judo.meta.esm.structure.RelationMemberType;
 import hu.blackbelt.judo.meta.esm.structure.TransferObjectType;
 import hu.blackbelt.judo.meta.psm.PsmUtils;
+import hu.blackbelt.judo.meta.psm.accesspoint.ExposedGraph;
 import hu.blackbelt.judo.meta.psm.runtime.PsmModel;
+import hu.blackbelt.judo.meta.psm.service.BoundTransferOperation;
+import hu.blackbelt.judo.meta.psm.service.MappedTransferObjectType;
 import hu.blackbelt.judo.meta.psm.service.OperationDeclaration;
+import hu.blackbelt.judo.meta.psm.service.TransferObjectRelation;
+import hu.blackbelt.judo.meta.psm.service.TransferOperation;
+import hu.blackbelt.judo.meta.psm.service.TransferOperationBehaviourType;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -26,9 +36,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
+import static hu.blackbelt.judo.meta.esm.accesspoint.util.builder.AccesspointBuilders.newAccessPointBuilder;
+import static hu.blackbelt.judo.meta.esm.accesspoint.util.builder.AccesspointBuilders.newExposedGraphBuilder;
 import static hu.blackbelt.judo.meta.esm.namespace.util.builder.NamespaceBuilders.newModelBuilder;
 import static hu.blackbelt.judo.meta.esm.operation.util.builder.OperationBuilders.newOperationBuilder;
 import static hu.blackbelt.judo.meta.esm.operation.util.builder.OperationBuilders.newParameterBuilder;
@@ -38,7 +51,7 @@ import static hu.blackbelt.judo.meta.psm.runtime.PsmModel.SaveArguments.psmSaveA
 import static hu.blackbelt.judo.meta.psm.runtime.PsmModel.buildPsmModel;
 import static hu.blackbelt.judo.tatami.esm2psm.Esm2Psm.calculateEsm2PsmTransformationScriptURI;
 import static hu.blackbelt.judo.tatami.esm2psm.Esm2Psm.executeEsm2PsmTransformation;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 @Slf4j
 public class EsmOperation2PsmOperationTest {
@@ -263,6 +276,148 @@ public class EsmOperation2PsmOperationTest {
         assertTrue(detaultE.isPresent());
         assertTrue(detaultE.get().getOperations().stream().anyMatch(o -> BOUND_OPERATION_NAME.equals(o.getName()) && EXPECTED_INPUT_AND_OUTPUT_PARAMETERS.test(o)));
         assertTrue(detaultE.get().getOperations().stream().anyMatch(o -> STATIC_OPERATION_NAME.equals(o.getName()) && EXPECTED_INPUT_AND_OUTPUT_PARAMETERS.test(o)));
+    }
+
+    @Test
+    void testGeneratingBehaviourOfTransferObjectRelations() throws Exception {
+        testName = "testGeneratingBehaviourOfTransferObjectRelations";
+
+        final String MODEL_NAME = "Model";
+        final String ENTITY_TYPE_D_NAME = "D";
+        final String ENTITY_TYPE_E_NAME = "E";
+        final String ENTITY_TYPE_F_NAME = "F";
+        final String RELATION_NAME_FROM_D_TO_E = "e";
+        final String SINGLE_CONTAINMENT_RELATION_NAME = "singleContainment";
+        final String MULTIPLE_CONTAINMENT_RELATION_NAME = "multipleContainment";
+        final String SINGLE_REFERENCE_RELATION_NAME = "singleReference";
+        final String MULTIPLE_REFERENCE_RELATION_NAME = "multipleReference";
+        final String EXPOSED_GRAPH_NAME = "g";
+        final String ACCESS_POINT_NAME = "AP";
+
+        final int LOWER = 2;
+        final int UPPER = 5;
+
+        final String NAME_OF_GET_OPERATION = "_getGForAP";
+
+        final String NAME_OF_GET_E_OPERATION = "_getE";
+
+        final EntityType entityTypeF = newEntityTypeBuilder()
+                .withName(ENTITY_TYPE_F_NAME)
+                .build();
+        entityTypeF.setMapping(newMappingBuilder().withTarget(entityTypeF).build());
+
+        final EntityType entityTypeE = newEntityTypeBuilder()
+                .withName(ENTITY_TYPE_E_NAME)
+                .withRelations(newOneWayRelationMemberBuilder()
+                        .withName(SINGLE_CONTAINMENT_RELATION_NAME)
+                        .withRelationMemberType(RelationMemberType.RELATION)
+                        .withTarget(entityTypeF)
+                        .withContainment(true)
+                        .withCreateable(true).withUpdateable(true).withDeleteable(true)
+                        .withLower(0).withUpper(1)
+                        .withRangeExpression(MODEL_NAME + EsmUtils.NAMESPACE_SEPARATOR + ENTITY_TYPE_F_NAME)
+                        .build())
+                .withRelations(newOneWayRelationMemberBuilder()
+                        .withName(SINGLE_REFERENCE_RELATION_NAME)
+                        .withRelationMemberType(RelationMemberType.RELATION)
+                        .withTarget(entityTypeF)
+                        .withContainment(false)
+                        .withLower(0).withUpper(1)
+                        .withRangeExpression(MODEL_NAME + EsmUtils.NAMESPACE_SEPARATOR + ENTITY_TYPE_F_NAME)
+                        .build())
+                .withRelations(newOneWayRelationMemberBuilder()
+                        .withName(MULTIPLE_CONTAINMENT_RELATION_NAME)
+                        .withRelationMemberType(RelationMemberType.RELATION)
+                        .withTarget(entityTypeF)
+                        .withContainment(true)
+                        .withCreateable(true).withUpdateable(true).withDeleteable(true)
+                        .withLower(0).withUpper(-1)
+                        .withRangeExpression(MODEL_NAME + EsmUtils.NAMESPACE_SEPARATOR + ENTITY_TYPE_F_NAME)
+                        .build())
+                .withRelations(newOneWayRelationMemberBuilder()
+                        .withName(MULTIPLE_REFERENCE_RELATION_NAME)
+                        .withRelationMemberType(RelationMemberType.RELATION)
+                        .withTarget(entityTypeF)
+                        .withContainment(false)
+                        .withLower(0).withUpper(-1)
+                        .withRangeExpression(MODEL_NAME + EsmUtils.NAMESPACE_SEPARATOR + ENTITY_TYPE_F_NAME)
+                        .build())
+                .build();
+        entityTypeE.setMapping(newMappingBuilder().withTarget(entityTypeE).build());
+
+        final EntityType entityTypeD = newEntityTypeBuilder()
+                .withName(ENTITY_TYPE_D_NAME)
+                .withRelations(newOneWayRelationMemberBuilder()
+                        .withName(RELATION_NAME_FROM_D_TO_E)
+                        .withTarget(entityTypeE)
+                        .withLower(LOWER)
+                        .withUpper(UPPER)
+                        .withContainment(true)
+                        .withAggregation(true)
+                        .build())
+                .build();
+        entityTypeD.setMapping(newMappingBuilder().withTarget(entityTypeD).build());
+
+        final AccessPoint accessPoint = newAccessPointBuilder()
+                .withName(ACCESS_POINT_NAME)
+                .withExposedGraphs(newExposedGraphBuilder()
+                        .withName(EXPOSED_GRAPH_NAME)
+                        .withTarget(entityTypeD)
+                        .withGetterExpression(MODEL_NAME + EsmUtils.NAMESPACE_SEPARATOR + ENTITY_TYPE_D_NAME)
+                        .withLower(0)
+                        .withUpper(-1)
+                        .withCreateable(false).withUpdateable(false).withDeleteable(false)
+                        .build())
+                .build();
+
+        final Model model = newModelBuilder().withName(MODEL_NAME)
+                .withElements(Arrays.asList(entityTypeD, entityTypeE, entityTypeF, accessPoint)).build();
+
+        esmModel.addContent(model);
+
+        transform();
+
+        final Optional<hu.blackbelt.judo.meta.psm.accesspoint.AccessPoint> ap = allPsm(hu.blackbelt.judo.meta.psm.accesspoint.AccessPoint.class).findAny();
+        assertTrue(ap.isPresent());
+
+        final Optional<ExposedGraph> graph = ap.get().getExposedGraphs().stream().filter(g -> EXPOSED_GRAPH_NAME.equals(g.getName())).findAny();
+        assertTrue(graph.isPresent());
+
+        final Optional<hu.blackbelt.judo.meta.psm.service.MappedTransferObjectType> defaultD = allPsm(MappedTransferObjectType.class)
+                .filter(t -> ENTITY_TYPE_D_NAME.equals(t.getName()))
+                .findAny();
+        assertTrue(defaultD.isPresent());
+
+        final Optional<hu.blackbelt.judo.meta.psm.service.MappedTransferObjectType> defaultE = allPsm(MappedTransferObjectType.class)
+                .filter(t -> ENTITY_TYPE_E_NAME.equals(t.getName()))
+                .findAny();
+        assertTrue(defaultE.isPresent());
+
+        final Optional<TransferObjectRelation> dToE = defaultD.get().getRelations().stream().filter(r -> RELATION_NAME_FROM_D_TO_E.equals(r.getName())).findAny();
+        assertTrue(dToE.isPresent());
+
+        final Optional<TransferOperation> getG = defaultD.get().getOperations().stream().filter(o -> NAME_OF_GET_OPERATION.equals(o.getName())).findAny();
+        assertTrue(getG.isPresent());
+        assertNotNull(getG.get().getOutput());
+
+        assertTrue(graph.get().getMappedTransferObjectType().getOperations().stream().anyMatch(o -> NAME_OF_GET_E_OPERATION.equals(o.getName()) && (o instanceof BoundTransferOperation) &&
+                o.getBehaviour() != null && o.getBehaviour().getBehaviourType() == TransferOperationBehaviourType.GET_RELATION && EcoreUtil.equals(o.getBehaviour().getOwner(), dToE.get()) &&
+                o.getInput() == null && o.getOutput() != null && o.getFaults().isEmpty() &&
+                o.getOutput().getCardinality().getLower() == LOWER && o.getOutput().getCardinality().getUpper() == UPPER &&
+                EcoreUtil.equals(o.getOutput().getType(), defaultE.get())
+        ));
+
+        assertTrue(defaultD.get().getOperations().stream().anyMatch(o -> NAME_OF_GET_E_OPERATION.equals(o.getName())));
+
+        log.debug("List of generated operations (D):{}", defaultD.get().getOperations().stream().map(o -> "\n - " + o.getName()).sorted().collect(Collectors.joining()));
+
+        final ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        psmModel.savePsmModel(psmSaveArgumentsBuilder()
+                .outputStream(bos)
+                .build());
+        log.info(bos.toString());
+
+        assertEquals(2, defaultD.get().getOperations().size());
     }
 
     static <T> Stream<T> asStream(Iterator<T> sourceIterator, boolean parallel) {
