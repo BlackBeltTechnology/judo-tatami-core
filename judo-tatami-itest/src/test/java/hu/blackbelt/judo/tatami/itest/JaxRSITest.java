@@ -145,6 +145,13 @@ public class JaxRSITest {
                         .versionAsInProject().start(),
 
                 mavenBundle()
+                        .groupId("hu.blackbelt.judo.tatami")
+                        .artifactId("judo-tatami-asm2jaxrsapi")
+                        .classifier("test-bundle")
+                        .type("jar")
+                        .versionAsInProject().start(),
+
+                mavenBundle()
                         .groupId("org.json")
                         .artifactId("json")
                         .versionAsInProject().start(),
@@ -177,17 +184,8 @@ public class JaxRSITest {
                 mavenBundle()
                         .groupId("com.fasterxml.jackson.datatype")
                         .artifactId("jackson-datatype-guava")
-                        .versionAsInProject().start(),
+                        .versionAsInProject().start()
 
-                getProvisonJaxrsApi()
-
-        );
-    }
-
-    public Option getProvisonJaxrsApi() throws FileNotFoundException {
-//        log.log(LOG_INFO, "Deploying JAXRSAPI: " + new File(testTargetDir(getClass()).getAbsolutePath(),  "northwind-asm2jaxrsapi.jar")
-        return provision(
-                new FileInputStream(new File(testTargetDir(getClass()).getAbsolutePath(),  "northwind-asm2jaxrsapi.jar"))
         );
     }
 
@@ -234,7 +232,7 @@ public class JaxRSITest {
         ServiceReference reference = bundleContext.getServiceReference(Semaphore.class);
         if (reference == null) {
 
-            assertBundleStarted(bundleContext, "demo-asm2jaxrsapi");
+            assertBundleStarted(bundleContext, "northwind-asm2jaxrsapi");
 
             dispatcher = new Dispatcher() {
                 @Override

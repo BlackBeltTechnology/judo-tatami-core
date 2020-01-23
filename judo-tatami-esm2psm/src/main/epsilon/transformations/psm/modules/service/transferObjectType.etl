@@ -13,7 +13,6 @@ rule CreateTransferObjectType
 	  for (super in s.generalizations) {
         t.superTransferObjectTypes.add(super.target.getPSMTransferObjectTypeEquivalent());
       }
-        t.getTemplate = s.equivalent("CreateGetTemplateOperationFromTransferObjectType");
 }
 
 rule CreateMappedTransferObjectType
@@ -53,8 +52,7 @@ rule CreateDefaultMappedTransferObjectTypeForEntity
         t.superTransferObjectTypes.add(super.target.equivalent("CreateDefaultMappedTransferObjectTypeForEntity"));
       }
 
-      s.eContainer.getPSMGeneratedDefaultTransferObjectNamespaceEquivalent().elements.add(t);      
-	  t.getTemplate = s.equivalent("CreateGetTemplateOperationFromTransferObjectType");
+      s.eContainer.getPSMGeneratedDefaultTransferObjectNamespaceEquivalent().elements.add(t);
 	  
 	  t.entityType = s.equivalent("CreateEntityType");
 	  log.debug("Created Default MappedTransferObjectType for EntityType: " + t.name);
