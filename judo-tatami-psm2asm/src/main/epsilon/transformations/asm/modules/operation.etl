@@ -105,8 +105,11 @@ rule CreateStatefulAnnotationOnOperationWithBehaviour
         stateful.key = "value";
         switch (s.behaviour.behaviourType) {
             case JUDOPSM!TransferOperationBehaviourType#GET:
+                stateful.value = "false";
             case JUDOPSM!TransferOperationBehaviourType#GET_RELATION:
+                stateful.value = "false";
             case JUDOPSM!TransferOperationBehaviourType#GET_RANGE_OF_RELATION:
+                stateful.value = "false";
             case JUDOPSM!TransferOperationBehaviourType#GET_TEMPLATE:
                 stateful.value = "false";
             default:
