@@ -145,7 +145,7 @@ rule CreateGetOperationForRelation
     to t : JUDOPSM!BoundOperation {
         guard: s.eContainer.isKindOf(ESM!TransferObjectType) and s.eContainer.mapping.isDefined() and s.target.isKindOf(ESM!TransferObjectType) and s.target.mapping.isDefined()
 
-        t.name = "_get" + s.name.firstToUpperCase();
+        t.name = "_get" + s.name.firstToUpperCase() + "For" + esmUtils.getNamespaceElementFQName(s.eContainer).replace("::", "_");
         t.instanceRepresentation = s.target.getPSMTransferObjectTypeEquivalent();
 
         t.output = new JUDOPSM!Parameter;
@@ -184,7 +184,7 @@ rule CreateGetTransferOperationForRelation
 operation ESM!RelationFeature createSetOperationForRelation(relation : ESM!RelationFeature) : JUDOPSM!BoundOperation {
     var t = new JUDOPSM!BoundOperation;
 
-    t.name = "_set" + relation.name.firstToUpperCase() + "Of" + self.name.firstToUpperCase();
+    t.name = "_set" + relation.name.firstToUpperCase() + "Of" + self.name.firstToUpperCase() + "For" + esmUtils.getNamespaceElementFQName(self.eContainer).replace("::", "_");
     t.instanceRepresentation = self.target.getPSMTransferObjectTypeEquivalent();
 
     t.input = new JUDOPSM!Parameter;
@@ -225,7 +225,7 @@ operation ESM!RelationFeature createSetTransferOperationForRelation(relation : E
 operation ESM!RelationFeature createUnsetOperationForRelation(relation : ESM!RelationFeature) : JUDOPSM!BoundOperation {
     var t = new JUDOPSM!BoundOperation;
 
-    t.name = "_unset" + relation.name.firstToUpperCase() + "Of" + self.name.firstToUpperCase();
+    t.name = "_unset" + relation.name.firstToUpperCase() + "Of" + self.name.firstToUpperCase() + "For" + esmUtils.getNamespaceElementFQName(self.eContainer).replace("::", "_");
     t.instanceRepresentation = self.target.getPSMTransferObjectTypeEquivalent();
 
     t.input = new JUDOPSM!Parameter;
@@ -266,7 +266,7 @@ operation ESM!RelationFeature createUnsetTransferOperationForRelation(relation :
 operation ESM!RelationFeature createAddAllOperationForRelation(relation : ESM!RelationFeature) : JUDOPSM!BoundOperation {
     var t = new JUDOPSM!BoundOperation;
 
-    t.name = "_add" + relation.name.firstToUpperCase() + "To" + self.name.firstToUpperCase();
+    t.name = "_add" + relation.name.firstToUpperCase() + "To" + self.name.firstToUpperCase() + "For" + esmUtils.getNamespaceElementFQName(self.eContainer).replace("::", "_");
     t.instanceRepresentation = self.target.getPSMTransferObjectTypeEquivalent();
 
     t.input = new JUDOPSM!Parameter;
@@ -307,7 +307,7 @@ operation ESM!RelationFeature createAddAllTransferOperationForRelation(relation 
 operation ESM!RelationFeature createRemoveAllOperationForRelation(relation : ESM!RelationFeature) : JUDOPSM!BoundOperation {
     var t = new JUDOPSM!BoundOperation;
 
-    t.name = "_remove" + relation.name.firstToUpperCase() + "From" + self.name.firstToUpperCase();
+    t.name = "_remove" + relation.name.firstToUpperCase() + "From" + self.name.firstToUpperCase() + "For" + esmUtils.getNamespaceElementFQName(self.eContainer).replace("::", "_");
     t.instanceRepresentation = self.target.getPSMTransferObjectTypeEquivalent();
 
     t.input = new JUDOPSM!Parameter;
@@ -348,7 +348,7 @@ operation ESM!RelationFeature createRemoveAllTransferOperationForRelation(relati
 operation ESM!RelationFeature createGetRangeOperationForRelation(relation : ESM!RelationFeature, action : String) : JUDOPSM!BoundOperation {
     var t = new JUDOPSM!BoundOperation;
 
-    t.name = "_getRangeOf" + relation.name.firstToUpperCase() + "To" + action.firstToUpperCase() + self.name.firstToUpperCase();
+    t.name = "_getRangeOf" + relation.name.firstToUpperCase() + "To" + action.firstToUpperCase() + self.name.firstToUpperCase() + "For" + esmUtils.getNamespaceElementFQName(self.eContainer).replace("::", "_");
     t.instanceRepresentation = self.target.getPSMTransferObjectTypeEquivalent();
 
     t.input = new JUDOPSM!Parameter;
@@ -399,7 +399,7 @@ rule CreateCreateOperationForRelation
     to t : JUDOPSM!BoundOperation {
         guard: s.eContainer.isKindOf(ESM!TransferObjectType) and s.eContainer.mapping.isDefined() and s.target.isKindOf(ESM!TransferObjectType) and s.target.mapping.isDefined() and s.isCreateAllowed()
 
-        t.name = "_create" + s.name.firstToUpperCase();
+        t.name = "_create" + s.name.firstToUpperCase() + "For" + esmUtils.getNamespaceElementFQName(s.eContainer).replace("::", "_");
         t.instanceRepresentation = s.target.getPSMTransferObjectTypeEquivalent();
 
         t.input = new JUDOPSM!Parameter;
@@ -455,7 +455,7 @@ rule CreateUpdateOperationForRelation
     to t : JUDOPSM!BoundOperation {
         guard: s.eContainer.isKindOf(ESM!TransferObjectType) and s.eContainer.mapping.isDefined() and s.target.isKindOf(ESM!TransferObjectType) and s.target.mapping.isDefined() and s.isUpdateAllowed()
 
-        t.name = "_update" + s.name.firstToUpperCase();
+        t.name = "_update" + s.name.firstToUpperCase() + "For" + esmUtils.getNamespaceElementFQName(s.eContainer).replace("::", "_");
         t.instanceRepresentation = s.target.getPSMTransferObjectTypeEquivalent();
 
         t.input = new JUDOPSM!Parameter;
@@ -565,7 +565,7 @@ rule CreateDeleteOperationForRelation
     to t : JUDOPSM!BoundOperation {
         guard: s.eContainer.isKindOf(ESM!TransferObjectType) and s.eContainer.mapping.isDefined() and s.target.isKindOf(ESM!TransferObjectType) and s.target.mapping.isDefined() and s.isDeleteAllowed()
 
-        t.name = "_delete" + s.name.firstToUpperCase();
+        t.name = "_delete" + s.name.firstToUpperCase() + "For" + esmUtils.getNamespaceElementFQName(s.eContainer).replace("::", "_");
         t.instanceRepresentation = s.target.getPSMTransferObjectTypeEquivalent();
 
         t.input = new JUDOPSM!Parameter;

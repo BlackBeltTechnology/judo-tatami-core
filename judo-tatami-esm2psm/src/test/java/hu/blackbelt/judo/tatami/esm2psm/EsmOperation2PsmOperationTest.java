@@ -46,6 +46,8 @@ import static hu.blackbelt.judo.meta.esm.operation.util.builder.OperationBuilder
 import static hu.blackbelt.judo.meta.esm.operation.util.builder.OperationBuilders.newParameterBuilder;
 import static hu.blackbelt.judo.meta.esm.runtime.EsmModel.buildEsmModel;
 import static hu.blackbelt.judo.meta.esm.structure.util.builder.StructureBuilders.*;
+import static hu.blackbelt.judo.meta.psm.PsmEpsilonValidator.calculatePsmValidationScriptURI;
+import static hu.blackbelt.judo.meta.psm.PsmEpsilonValidator.validatePsm;
 import static hu.blackbelt.judo.meta.psm.runtime.PsmModel.SaveArguments.psmSaveArgumentsBuilder;
 import static hu.blackbelt.judo.meta.psm.runtime.PsmModel.buildPsmModel;
 import static hu.blackbelt.judo.tatami.esm2psm.Esm2Psm.calculateEsm2PsmTransformationScriptURI;
@@ -109,6 +111,8 @@ public class EsmOperation2PsmOperationTest {
         esm2PsmTransformationTrace = executeEsm2PsmTransformation(esmModel, psmModel, new Slf4jLog(log),
                 calculateEsm2PsmTransformationScriptURI());
 
+        assertTrue(psmModel.isValid());
+        validatePsm(new Slf4jLog(log), psmModel, calculatePsmValidationScriptURI());
     }
 
     private static final String MODEL_NAME = "Model";
