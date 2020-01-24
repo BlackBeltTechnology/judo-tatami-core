@@ -167,7 +167,7 @@ operation ESM!ExposedGraph createGetRangeOperationForExposedGraphEdit(relation :
 
     t.output = new JUDOPSM!Parameter;
     t.output.name = "output";
-    t.output.type = self.target.getPSMTransferObjectTypeEquivalent();
+    t.output.type = relation.target.getPSMTransferObjectTypeEquivalent();
     t.output.cardinality = new JUDOPSM!Cardinality;
     t.output.cardinality.lower = 0;
     t.output.cardinality.upper = -1;

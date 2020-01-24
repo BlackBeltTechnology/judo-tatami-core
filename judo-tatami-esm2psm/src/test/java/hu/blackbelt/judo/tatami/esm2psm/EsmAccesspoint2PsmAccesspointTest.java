@@ -301,6 +301,11 @@ public class EsmAccesspoint2PsmAccesspointTest {
                 .findAny();
         assertTrue(defaultE.isPresent());
 
+        final Optional<hu.blackbelt.judo.meta.psm.service.MappedTransferObjectType> defaultF = allPsm(MappedTransferObjectType.class)
+                .filter(t -> ENTITY_TYPE_F_NAME.equals(t.getName()))
+                .findAny();
+        assertTrue(defaultF.isPresent());
+
         final Optional<TransferObjectRelation> defaultSingleContainment = defaultE.get().getRelations().stream().filter(r -> SINGLE_CONTAINMENT_RELATION_NAME.equals(r.getName())).findAny();
         final Optional<TransferObjectRelation> defaultMultipleContainment = defaultE.get().getRelations().stream().filter(r -> MULTIPLE_CONTAINMENT_RELATION_NAME.equals(r.getName())).findAny();
         final Optional<TransferObjectRelation> defaultSingleReference = defaultE.get().getRelations().stream().filter(r -> SINGLE_REFERENCE_RELATION_NAME.equals(r.getName())).findAny();
@@ -411,7 +416,7 @@ public class EsmAccesspoint2PsmAccesspointTest {
                 o.getInput().getCardinality().getLower() == 1 && o.getInput().getCardinality().getUpper() == 1 &&
                 EcoreUtil.equals(o.getInput().getType(), defaultE.get()) &&
                 o.getOutput().getCardinality().getLower() == 0 && o.getOutput().getCardinality().getUpper() == -1 &&
-                EcoreUtil.equals(o.getOutput().getType(), defaultE.get())
+                EcoreUtil.equals(o.getOutput().getType(), defaultF.get())
         ));
 
         assertTrue(graph.get().getMappedTransferObjectType().getOperations().stream().anyMatch(o -> NAME_OF_GET_RANGE_OF_SINGLE_REFERENCE_TO_UPDATE.equals(o.getName()) && (o instanceof UnboundOperation) &&
@@ -420,7 +425,7 @@ public class EsmAccesspoint2PsmAccesspointTest {
                 o.getInput().getCardinality().getLower() == 1 && o.getInput().getCardinality().getUpper() == 1 &&
                 EcoreUtil.equals(o.getInput().getType(), defaultE.get()) &&
                 o.getOutput().getCardinality().getLower() == 0 && o.getOutput().getCardinality().getUpper() == -1 &&
-                EcoreUtil.equals(o.getOutput().getType(), defaultE.get())
+                EcoreUtil.equals(o.getOutput().getType(), defaultF.get())
         ));
 
         assertTrue(graph.get().getMappedTransferObjectType().getOperations().stream().anyMatch(o -> NAME_OF_GET_RANGE_OF_MULTIPLE_REFERENCE_TO_CREATE.equals(o.getName()) && (o instanceof UnboundOperation) &&
@@ -429,7 +434,7 @@ public class EsmAccesspoint2PsmAccesspointTest {
                 o.getInput().getCardinality().getLower() == 1 && o.getInput().getCardinality().getUpper() == 1 &&
                 EcoreUtil.equals(o.getInput().getType(), defaultE.get()) &&
                 o.getOutput().getCardinality().getLower() == 0 && o.getOutput().getCardinality().getUpper() == -1 &&
-                EcoreUtil.equals(o.getOutput().getType(), defaultE.get())
+                EcoreUtil.equals(o.getOutput().getType(), defaultF.get())
         ));
 
         assertTrue(graph.get().getMappedTransferObjectType().getOperations().stream().anyMatch(o -> NAME_OF_GET_RANGE_OF_MULTIPLE_REFERENCE_TO_UPDATE.equals(o.getName()) && (o instanceof UnboundOperation) &&
@@ -438,7 +443,7 @@ public class EsmAccesspoint2PsmAccesspointTest {
                 o.getInput().getCardinality().getLower() == 1 && o.getInput().getCardinality().getUpper() == 1 &&
                 EcoreUtil.equals(o.getInput().getType(), defaultE.get()) &&
                 o.getOutput().getCardinality().getLower() == 0 && o.getOutput().getCardinality().getUpper() == -1 &&
-                EcoreUtil.equals(o.getOutput().getType(), defaultE.get())
+                EcoreUtil.equals(o.getOutput().getType(), defaultF.get())
         ));
 
         assertEquals(15L, graph.get().getMappedTransferObjectType().getOperations().stream().filter(o -> o instanceof UnboundOperation).count());
