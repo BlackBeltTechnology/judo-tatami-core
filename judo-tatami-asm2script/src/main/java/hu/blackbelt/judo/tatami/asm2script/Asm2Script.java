@@ -3,8 +3,8 @@ package hu.blackbelt.judo.tatami.asm2script;
 import hu.blackbelt.judo.meta.asm.runtime.AsmModel;
 import hu.blackbelt.judo.meta.measure.runtime.MeasureModel;
 import hu.blackbelt.judo.meta.measure.support.MeasureModelResourceSupport;
-import hu.blackbelt.judo.meta.script.builder.jcl.AsmJclExtractor;
 import hu.blackbelt.judo.meta.script.builder.jcl.JclExtractor;
+import hu.blackbelt.judo.meta.script.builder.jcl.asm.AsmJclExtractor;
 import hu.blackbelt.judo.meta.script.runtime.ScriptModel;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 

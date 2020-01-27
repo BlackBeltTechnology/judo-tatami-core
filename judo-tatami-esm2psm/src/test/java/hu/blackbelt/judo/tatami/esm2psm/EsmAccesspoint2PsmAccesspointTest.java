@@ -126,6 +126,7 @@ public class EsmAccesspoint2PsmAccesspointTest {
                 .withOperations(newOperationBuilder().withName(OPERATION_NAME)
                         .withCustomImplementation(true)
                         .withModifier(OperationModifier.STATIC)
+                        .withBinding("")
                         .build())
                 .build();
 

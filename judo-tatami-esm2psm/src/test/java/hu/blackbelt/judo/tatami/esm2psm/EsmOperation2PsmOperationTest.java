@@ -205,11 +205,13 @@ public class EsmOperation2PsmOperationTest {
         final EntityType entityType = newEntityTypeBuilder().withName(ENTITY_TYPE_NAME).withAbstract_(false)
                 .withOperations(parameterDecorator(newOperationBuilder()
                                 .withName(BOUND_OPERATION_NAME)
+                                .withBinding("")
                                 .withBody(body),
                         inputParameterType, outputParameterType, fault1Type, fault2Type).build())
                 .withOperations(parameterDecorator(newOperationBuilder()
                                 .withName(STATIC_OPERATION_NAME)
                                 .withModifier(OperationModifier.STATIC)
+                                .withBinding("")
                                 .withBody(body),
                         inputParameterType, outputParameterType, fault1Type, fault2Type).build())
                 .build();
@@ -225,6 +227,7 @@ public class EsmOperation2PsmOperationTest {
                 .withOperations(parameterDecorator(newOperationBuilder()
                                 .withName(STATIC_OPERATION_NAME_IN_MAPPED_TRANSFER_OBJECT_TYPE)
                                 .withModifier(OperationModifier.STATIC)
+                                .withBinding("")
                                 .withBound(true)
                                 .withBinding(MODEL_NAME + EsmUtils.NAMESPACE_SEPARATOR + ENTITY_TYPE_NAME + EsmUtils.OPERATION_SEPARATOR + STATIC_OPERATION_NAME),
                         inputParameterType, outputParameterType, fault1Type, fault2Type).build())
@@ -234,12 +237,14 @@ public class EsmOperation2PsmOperationTest {
                 .withOperations(parameterDecorator(newOperationBuilder()
                                 .withName(STATIC_REFERENCING_OPERATION_NAME_IN_UNMAPPED_TRANSFER_OBJECT_TYPE)
                                 .withModifier(OperationModifier.STATIC)
+                                .withBinding("")
                                 .withBound(true)
                                 .withBinding(MODEL_NAME + EsmUtils.NAMESPACE_SEPARATOR + ENTITY_TYPE_NAME + EsmUtils.OPERATION_SEPARATOR + STATIC_OPERATION_NAME),
                         inputParameterType, outputParameterType, fault1Type, fault2Type).build())
                 .withOperations(parameterDecorator(newOperationBuilder()
                                 .withName(STATIC_OPERATION_NAME_IN_UNMAPPED_TRANSFER_OBJECT_TYPE)
                                 .withModifier(OperationModifier.STATIC)
+                                .withBinding("")
                                 .withBody(body),
                         inputParameterType, outputParameterType, fault1Type, fault2Type).build())
                 .build();

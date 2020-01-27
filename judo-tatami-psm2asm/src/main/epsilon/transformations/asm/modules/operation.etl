@@ -142,6 +142,20 @@ rule CreateBoundOperation
 }
 
 @greedy
+rule CreateInstanceRepresentationOfBoundOperation
+    transform s : JUDOPSM!BoundOperation
+    to t : ASM!EAnnotation {
+        t.source = asmUtils.getAnnotationUri("instanceRepresentation");
+
+        var instanceRepresentation = new ASM!EStringToStringMapEntry;
+        instanceRepresentation.key = "value";
+        instanceRepresentation.value = asmUtils.getClassifierFQName(s.instanceRepresentation.asmEquivalent());
+        t.details.add(instanceRepresentation);
+
+        s.equivalent("CreateBoundOperation").eAnnotations.add(t);
+}
+
+@greedy
 rule CreateBoundOperationAnnotation
     transform s : JUDOPSM!OperationDeclaration
     to t : ASM!EAnnotation {
