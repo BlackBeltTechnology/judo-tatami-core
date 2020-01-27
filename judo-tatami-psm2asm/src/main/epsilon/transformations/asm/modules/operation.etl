@@ -21,7 +21,14 @@ rule CreateParameter
     to t : ASM!ETypedElement {
         t.lowerBound = s.cardinality.lower;
         t.upperBound = s.cardinality.upper;
-        t.eType = s.type.asmEquivalent();
+        if(psmUtils.getAllContainingMappedTransferObjects(s.type).exists(mto | psmUtils.getTransferObjectTypesToExtendWithEmbeddedRelations(s.eResource().getResourceSet()).contains(mto))) {
+        	log.debug("YEP: [" + s.name + "] " +  " in [" + s.eContainer.name + "] " +  " with type: [" + s.type.name + "] " );
+        	t.eType = s.type.equivalent("CreateExtendedTransferObjectForGeneratedEmbeddedTransferObjectRelation");
+        } else {
+        	log.debug("NOPE: [" + s.name + "] " +  " in [" + s.eContainer.name + "] " +  " with type: [" + s.type.name + "] " );
+        	t.eType = s.type.asmEquivalent();
+        }
+        
 }
 
 @abstract

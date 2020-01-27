@@ -69,7 +69,7 @@
         <judo-meta-esm-version>1.1.0.20200125_134347_682810f_develop</judo-meta-esm-version>
         <judo-meta-esm-import-range>[1.0,1.1)</judo-meta-esm-import-range>
 
-	    <judo-meta-psm-version>1.0.0.20200124_130014_a887b2d_feature_JNG_930_Update_PsmUtil_to_support_Psm2Asm_transformation</judo-meta-psm-version>
+	    <judo-meta-psm-version>1.0.0.20200127_195724_fabac42_feature_JNG_930_Update_PsmUtil_to_support_Psm2Asm_transformation</judo-meta-psm-version>
         <judo-meta-psm-import-range>[1.0,1.1)</judo-meta-psm-import-range>
 
         <judo-meta-jql-version>1.0.0.20200121_123121_8610e0d_develop</judo-meta-jql-version>

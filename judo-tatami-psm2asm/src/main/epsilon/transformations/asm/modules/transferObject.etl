@@ -53,7 +53,7 @@ rule CreateGeneratedEmbeddedTransferRelationForNonEmbeddedTransferRelation
         t.changeable = s.binding.isDefined() and (s.binding.isKindOf(JUDOPSM!Relation) or (s.binding.isKindOf(JUDOPSM!ReferenceAccessor) and s.binding.setterExpression.isDefined()));
         t.eAnnotations.add(s.equivalent("CreateBindingAnnotationForGeneratedEmbeddedTransferObjectRelation"));
         t.eAnnotations.add(s.equivalent("CreateEmbeddedFlagsForGeneratedEmbeddedTransferObjectRelation"));
-        s.eContainer.equivalent("CreateExtendedTransferObjectForGenerateEmbeddedTransferObjectRelation").eStructuralFeatures.add(t);
+        s.eContainer.equivalent("CreateExtendedTransferObjectForGeneratedEmbeddedTransferObjectRelation").eStructuralFeatures.add(t);
 
         log.debug("[CreateGeneratedEmbeddedTransferRelationForNonEmbeddedTransferRelation] on " + s.name + " in " + s.eContainer.name);
 }
@@ -95,15 +95,12 @@ rule CreateEmbeddedFlagsForGeneratedEmbeddedTransferObjectRelation
     }
 
 @lazy
-rule CreateExtendedTransferObjectForGenerateEmbeddedTransferObjectRelation
+rule CreateExtendedTransferObjectForGeneratedEmbeddedTransferObjectRelation
 	transform s : JUDOPSM!MappedTransferObjectType
 	to t : ASM!EClass {
 		t.name = s.name + "__Extended";
 		s.getNamespace().asmEquivalent().eClassifiers.add(t);
-
-		for (super in s.superTransferObjectTypes) {
-		    t.eSuperTypes.add(super.asmEquivalent());
-		}
+		
 		t.eSuperTypes.add(s.equivalent("CreateMappedTransferObject"));
 		
 		t.eAnnotations.add(s.equivalent("CreateMappedEntityTypeAnnotationOnExtendedMappedTransferObject"));

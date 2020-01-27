@@ -79,7 +79,7 @@ public class [%= dto.name.normalizeName() %] {
 	    [% for (ref in dto.eAllReferences) { %]
 	    if (map.containsKey("[%= ref.name %]")) {
 	    	[% if (ref.many) { %]
-		    builder.[%= asmUtils.safeName(ref.name.firstToLowerCase()) %](([%= ref.getTypeDefinition() %]) ((List) map.get("[%= ref.name %]")).stream().map(i -> [%= ref.eReferenceType.getDtoPackageName() + "." + ref.eReferenceType.name %].fromMap((Map<String, Object>) i)).collect(Collectors.toList()));
+		    builder.[%= asmUtils.safeName(ref.name.firstToLowerCase()) %](([%= ref.getTypeDefinition() %]) ((List) map.get("[%= ref.name %]")).stream().map(i -> [%= ref.eReferenceType.getDtoPackageName() + "." + ref.eReferenceType.name.normalizeName() %].fromMap((Map<String, Object>) i)).collect(Collectors.toList()));
 	    	[% } else { %]
 		    builder.[%= asmUtils.safeName(ref.name.firstToLowerCase()) %]([%= ref.getTypeDefinition() %].fromMap((Map<String, Object>) map.get("[%= ref.name %]")));
 			[% } %]
