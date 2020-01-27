@@ -17,28 +17,37 @@ for (ap in asmUtils.getAllAccessPoints()) {
     var apServiceInstances : Map = new Map();
 
     var exposedServices = asmUtils.getExposedServicesOfAccessPoint(ap);
-	log.debug("exposedServices: " + exposedServices.collect(exposedService | "op: " + exposedService.getName() + " in " + exposedService.getEContainingClass().getName()));
-	
-    // Unbound service
-    if (exposedServices.size() > 0) {
-		genUnboundService(ap, exposedServices);
-		outputJavaClasses.add(ap.getUnboundServiceJavaFileName());
-		outputScrXmls.add(ap.getUnboundServiceScrXmlFileName());
-		apServiceInstances.put("unboundService", ap.getUnboundServicePackageName() + "." + ap.getUnboundServiceClassName());
-    }
-	
     var boundOperations = ASM!EOperation.all.select(op | asmUtils.isBound(op) and asmUtils.getAccessPointsOfOperation(op).contains(ap));
 	var boundOperationClasses = boundOperations.collect(op | op.eContainer).asSet();
-	log.debug("boundOperations: " + boundOperations.collect(boundOperation | boundOperation.getName()));
-	log.debug("boundOperationClasses: " + boundOperationClasses.collect(boundOperationClass | boundOperationClass.getName()));
+    var exposedServiceGroups = exposedServices.collect(s | s.eContainer).asSet();
+    
+    for (exposed in boundOperationClasses.includingAll(exposedServiceGroups).asSet()) {
+        log.debug("Exposed class: " + asmUtils.getClassifierFQName(exposed));
+        
+        var _unboundOperations = exposedServices.select(op | op.eContainer == exposed);
+        var _boundOperations = boundOperations.select(op | op.eContainer == exposed);
+        
+        var t = TemplateFactory.load("RestService.java.egl");
+		t.populate("className", exposed.name.normalizeName());
+		t.populate("packagePath", exposed.getExposedPackageName(ap));
+		t.populate("operations", _boundOperations.includingAll(_unboundOperations));
+		t.populate("restPath", "/" + asmUtils.getPackageFQName(exposed.ePackage).toJAXRSPath() + "/" + exposed.name.normalizeName().toJAXRSPath());
+		t.populate("fullyQualifiedOperation", false);
 	
-    // Bound service
-    for (boundOperationClass in boundOperationClasses) {
-		genExposedMappedTransferObject(boundOperationClass, ap, boundOperations.select(op | op.eContainer == boundOperationClass));
-		outputJavaClasses.add(boundOperationClass.getExposedMappedTransferObjectJavaFileName(ap));
-		outputScrXmls.add(boundOperationClass.getExposedMappedTransferObjectScrXmlFileName(ap));
-		apServiceInstances.put((boundOperationClass.getExposedMappedTransferObjectPackageName(ap) + "." + boundOperationClass.name.normalizeName()).replaceAll("\\.", "_"),
-			boundOperationClass.getExposedMappedTransferObjectPackageName(ap) + "." + boundOperationClass.name.normalizeName());		
+		t.generate(exposed.getExposedJavaFileName(ap));
+		t.reset();
+	
+		var t = TemplateFactory.load("RestService.scr.xml.egl");
+		t.populate("className", exposed.name.normalizeName());
+		t.populate("packagePath", exposed.getExposedPackageName(ap));
+		t.generate(exposed.getExposedScrXmlFileName(ap));
+		t.reset();
+        
+        outputJavaClasses.add(exposed.getExposedJavaFileName(ap));
+        outputScrXmls.add(exposed.getExposedScrXmlFileName(ap));
+        
+        apServiceInstances.put((exposed.getExposedPackageName(ap) + "." + exposed.name).normalizeName().replaceAll("\\.", "_"),
+            (exposed.getExposedPackageName(ap) + "." + exposed.name).normalizeName());
     }
     
     // Generate ApplicationConfigs

@@ -4,47 +4,11 @@ operation JUDOPSM!BoundOperation asmEquivalent() : ASM!EOperation {
 }
 
 @cached
+operation JUDOPSM!BoundTransferOperation asmEquivalent() : ASM!EOperation {
+    return self.equivalent("CreateBoundTransferOperation");
+}
+
+@cached
 operation JUDOPSM!UnboundOperation asmEquivalent() : ASM!EOperation {
     return self.equivalent("CreateUnboundOperation");
-}
-
-operation ASM!EAnnotation addBehaviourAnnotationOfOwnerTransferObjectType(type : String, transferObjectType : String) {
-    var typeEntry = new ASM!EStringToStringMapEntry;
-    typeEntry.key = "type";
-    typeEntry.value = type;
-    self.details.add(typeEntry);
-
-    var ownerEntry = new ASM!EStringToStringMapEntry;
-    ownerEntry.key = "owner";
-    ownerEntry.value = transferObjectType;
-    self.details.add(ownerEntry);
-}
-
-operation ASM!EAnnotation addBehaviourAnnotationOfOwnerRelation(type : String, relation : String) {
-    var typeEntry = new ASM!EStringToStringMapEntry;
-    typeEntry.key = "type";
-    typeEntry.value = type;
-    self.details.add(typeEntry);
-
-    var ownerEntry = new ASM!EStringToStringMapEntry;
-    ownerEntry.key = "owner";
-    ownerEntry.value = relation;
-    self.details.add(ownerEntry);
-}
-
-operation ASM!EAnnotation addBehaviourAnnotationOfOwnerParameter(type : String, op : String, parameter : String) {
-    var typeEntry = new ASM!EStringToStringMapEntry;
-    typeEntry.key = "type";
-    typeEntry.value = type;
-    self.details.add(typeEntry);
-
-    var ownerEntry = new ASM!EStringToStringMapEntry;
-    ownerEntry.key = "owner";
-    ownerEntry.value = op;
-    self.details.add(ownerEntry);
-
-    var ownerParameterEntry = new ASM!EStringToStringMapEntry;
-    ownerParameterEntry.key = "parameterName";
-    ownerParameterEntry.value = parameter;
-    self.details.add(ownerParameterEntry);
 }

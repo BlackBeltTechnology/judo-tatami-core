@@ -17,10 +17,10 @@ rule CreateTransferObjectRelation
       t.defaultValue = s.equivalent("CreateStaticNavigationForTransferObjectRelationDefaultValue");
       t.range = s.equivalent("CreateNavigationPropertyForTransferObjectRelationRange");
       
-      t.get = s.equivalent("CreateGetOperationForTransferObjectRelation");
-      t.create = s.equivalent("CreateCreateOperationForTransferObjectRelation");
-      t.update = s.equivalent("CreateUpdateOperationForTransferObjectRelation");
-      t.`delete` = s.equivalent("CreateDeleteOperationForTransferObjectRelation"); 
+//      t.get = s.equivalent("CreateGetOperationForTransferObjectRelation");
+//      t.create = s.equivalent("CreateCreateOperationForTransferObjectRelation");
+//      t.update = s.equivalent("CreateUpdateOperationForTransferObjectRelation");
+//      t.`delete` = s.equivalent("CreateDeleteOperationForTransferObjectRelation");
       
       s.eContainer.getPSMEquivalent().relations.add(t);
 }
@@ -103,10 +103,10 @@ rule CreateTransferObjectRelationForDefaultTransferObjectType
       t.defaultValue = s.equivalent("CreateStaticNavigationForTransferObjectRelationDefaultValue");
       t.range = s.equivalent("CreateNavigationPropertyForTransferObjectRelationRange");
       
-      t.get = s.equivalent("CreateGetOperationForTransferObjectRelation");
-      t.create = s.equivalent("CreateCreateOperationForTransferObjectRelation");
-      t.update = s.equivalent("CreateUpdateOperationForTransferObjectRelation");
-      t.`delete` = s.equivalent("CreateDeleteOperationForTransferObjectRelation"); 
+//      t.get = s.equivalent("CreateGetOperationForTransferObjectRelation");
+//      t.create = s.equivalent("CreateCreateOperationForTransferObjectRelation");
+//      t.update = s.equivalent("CreateUpdateOperationForTransferObjectRelation");
+//      t.`delete` = s.equivalent("CreateDeleteOperationForTransferObjectRelation");
       
       if (s.containment) {
         if (s.isCreateAllowed()) {

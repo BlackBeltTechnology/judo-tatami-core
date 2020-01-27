@@ -7,3 +7,8 @@ operation JUDOPSM!MappedTransferObjectType asmEquivalent() : ASM!EClass {
 operation JUDOPSM!UnmappedTransferObjectType asmEquivalent() : ASM!EClass {
     return self.equivalent("CreateUnmappedTransferObject");
 }
+
+@cached
+operation JUDOPSM!TransferObjectRelation asmEquivalent() : ASM!EReference {
+    return self.equivalent("CreateTransferObjectRelation");
+}

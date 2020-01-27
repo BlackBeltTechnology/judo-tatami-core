@@ -2,17 +2,17 @@ import "../utils/_importUtils.eol";
 
 @cached
 operation JUDOPSM!Parameter isInput() : Boolean {
-    return JUDOPSM!OperationDeclaration.all.selectOne(o | o.input == self).isDefined();
+    return self.eContainer.input == self;
 }
 
 @cached
 operation JUDOPSM!Parameter isOutput() : Boolean {
-    return JUDOPSM!OperationDeclaration.all.selectOne(o | o.output == self).isDefined();
+    return self.eContainer.output == self;
 }
 
 @cached
 operation JUDOPSM!Parameter isFault() : Boolean {
-    return JUDOPSM!OperationDeclaration.all.selectOne(o | o.faults.contains(self)).isDefined();
+    return self.eContainer.faults.contains(self);
 }
 
 @abstract
@@ -37,7 +37,6 @@ rule CreateScriptBodyAnnotation
         script.value = s.implementation.body;
         t.details.add(script);
 }
-
 
 @greedy
 rule CreateInputParameter
@@ -80,7 +79,7 @@ rule CreateFaultParameter
 
 @greedy
 rule CreateStatefulAnnotationOnOperation
-    transform s : JUDOPSM!OperationDeclaration
+    transform s : JUDOPSM!TransferOperation
     to t : ASM!EAnnotation {
         guard: s.implementation.isDefined()
 
@@ -94,65 +93,28 @@ rule CreateStatefulAnnotationOnOperation
         s.asmEquivalent().eAnnotations.add(t);
 }
 
-rule CreateStatefulAnnotationOnBoundOperationWithBehaviour
-    transform s : JUDOPSM!BoundOperation
+@greedy
+rule CreateStatefulAnnotationOnOperationWithBehaviour
+    transform s : JUDOPSM!TransferOperation
     to t : ASM!EAnnotation {
-        guard: not s.implementation.isDefined() and
-            (s.getOwnerRelation.isDefined() or s.createOwnerRelation.isDefined() or s.updateOwnerRelation.isDefined() or s.deleteOwnerRelation.isDefined())
+        guard: not s.implementation.isDefined() and s.behaviour.isDefined()
 
         t.source = asmUtils.getAnnotationUri("stateful");
 
 		var stateful = new ASM!EStringToStringMapEntry;
         stateful.key = "value";
-        stateful.value = (s.createOwnerRelation.isDefined() or s.updateOwnerRelation.isDefined() or s.deleteOwnerRelation.isDefined()).asString();
-        t.details.add(stateful);
-
-        s.asmEquivalent().eAnnotations.add(t);
-}
-
-rule CreateStatefulAnnotationOnBoundOperationWithRelationWithBehaviour
-    transform s : JUDOPSM!BoundOperationWithRelation
-    to t : ASM!EAnnotation {
-        guard: not s.implementation.isDefined() and
-            (s.setOwnerRelation.isDefined() or s.unsetOwnerRelation.isDefined() or s.addAllOwnerRelation.isDefined() or s.removeAllOwnerRelation.isDefined() or s.getRangeOwnerParameter.isDefined())
-
-        t.source = asmUtils.getAnnotationUri("stateful");
-
-		var stateful = new ASM!EStringToStringMapEntry;
-        stateful.key = "value";
-        stateful.value = (s.setOwnerRelation.isDefined() or s.unsetOwnerRelation.isDefined() or s.addAllOwnerRelation.isDefined() or s.removeAllOwnerRelation.isDefined()).asString();
-        t.details.add(stateful);
-
-        s.asmEquivalent().eAnnotations.add(t);
-}
-
-rule CreateStatefulAnnotationOnUnboundOperationWithBehaviour
-    transform s : JUDOPSM!UnboundOperation
-    to t : ASM!EAnnotation {
-        guard: not s.implementation.isDefined() and
-            (s.getOwnerRelation.isDefined() or s.createOwnerRelation.isDefined() or s.updateOwnerRelation.isDefined() or s.deleteOwnerRelation.isDefined() or s.getTemplateOwnerTransferObjectType.isDefined())
-
-        t.source = asmUtils.getAnnotationUri("stateful");
-
-		var stateful = new ASM!EStringToStringMapEntry;
-        stateful.key = "value";
-        stateful.value = (s.createOwnerRelation.isDefined() or s.updateOwnerRelation.isDefined() or s.deleteOwnerRelation.isDefined()).asString();
-        t.details.add(stateful);
-
-        s.asmEquivalent().eAnnotations.add(t);
-}
-
-rule CreateStatefulAnnotationOnUnboundOperationWithRelationWithBehaviour
-    transform s : JUDOPSM!UnboundOperationWithRelation
-    to t : ASM!EAnnotation {
-        guard: not s.implementation.isDefined() and
-            (s.setOwnerRelation.isDefined() or s.unsetOwnerRelation.isDefined() or s.addAllOwnerRelation.isDefined() or s.removeAllOwnerRelation.isDefined() or s.getRangeOwnerParameter.isDefined())
-
-        t.source = asmUtils.getAnnotationUri("stateful");
-
-		var stateful = new ASM!EStringToStringMapEntry;
-        stateful.key = "value";
-        stateful.value = (s.setOwnerRelation.isDefined() or s.unsetOwnerRelation.isDefined() or s.addAllOwnerRelation.isDefined() or s.removeAllOwnerRelation.isDefined()).asString();
+        switch (s.behaviour.behaviourType) {
+            case JUDOPSM!TransferOperationBehaviourType#GET:
+                stateful.value = "false";
+            case JUDOPSM!TransferOperationBehaviourType#GET_RELATION:
+                stateful.value = "false";
+            case JUDOPSM!TransferOperationBehaviourType#GET_RANGE_OF_RELATION:
+                stateful.value = "false";
+            case JUDOPSM!TransferOperationBehaviourType#GET_TEMPLATE:
+                stateful.value = "false";
+            default:
+                stateful.value = "true";
+        }
         t.details.add(stateful);
 
         s.asmEquivalent().eAnnotations.add(t);
@@ -175,7 +137,44 @@ rule CreateBoundOperation
     to t : ASM!EOperation
     extends CreateOperation {
         t.name = s.name;
-        
+
+        s.eContainer.equivalent("CreateEntityClass").eOperations.add(t);
+}
+
+@greedy
+rule CreateBoundOperationAnnotation
+    transform s : JUDOPSM!OperationDeclaration
+    to t : ASM!EAnnotation {
+        t.source = asmUtils.getAnnotationUri("bound");
+
+        var boundEntry = new ASM!EStringToStringMapEntry;
+        boundEntry.key = "value";
+        boundEntry.value = (s.isKindOf(JUDOPSM!BoundOperation) or s.isKindOf(JUDOPSM!BoundTransferOperation)).asString();
+        t.details.add(boundEntry);
+
+        s.asmEquivalent().eAnnotations.add(t);
+}
+
+@greedy
+rule CreateBoundTransferOperation
+    transform s : JUDOPSM!BoundTransferOperation
+    to t : ASM!EOperation {
+        t.name = s.name;
+
+        if (s.binding.output.isDefined()) {
+            t.lowerBound = s.binding.output.cardinality.lower;
+            t.upperBound = s.binding.output.cardinality.upper;
+            t.eType = s.binding.output.type.asmEquivalent();
+        }
+
+        var bindingAnnotation = new ASM!EAnnotation;
+        bindingAnnotation.source = asmUtils.getAnnotationUri("binding");
+        var bindingEntry = new ASM!EStringToStringMapEntry;
+        bindingEntry.key = "binding";
+        bindingEntry.value = s.binding.asmEquivalent().name;
+        bindingAnnotation.details.add(bindingEntry);
+        t.eAnnotations.add(bindingAnnotation);
+
         s.eContainer.asmEquivalent().eOperations.add(t);
 }
 
@@ -188,26 +187,13 @@ rule CreateScriptBodyAnnotationForBoundOperation
 }
 
 @greedy
-rule CreateUnboundInterface
-    transform s : JUDOPSM!Namespace
-    to t : ASM!EClass {
-    	guard: s.elements.selectOne(e | e.isKindOf(JUDOPSM!UnboundOperation)).isDefined()
-    	
-        t.name = "__UnboundServices";
-        t.abstract = true;
-        t.interface = true;
-        
-        s.asmEquivalent().eClassifiers.add(t);
-}
-
-@greedy
 rule CreateUnboundOperation
     transform s : JUDOPSM!UnboundOperation
     to t : ASM!EOperation
     extends CreateOperation {
         t.name = s.name;
-        
-        s.getNamespace().equivalent("CreateUnboundInterface").eOperations.add(t);
+
+        s.eContainer.asmEquivalent().eOperations.add(t);
 }
 
 @greedy
@@ -220,140 +206,70 @@ rule CreateScriptBodyAnnotationForUnboundOperation
 
 @abstract
 rule AddAnnotationToBoundOperation
-    transform s : JUDOPSM!BoundOperation
+    transform s : JUDOPSM!BoundTransferOperation
     to t : ASM!EAnnotation {
         t.source = asmUtils.getAnnotationUri("behaviour");
 
-        s.equivalent("CreateBoundOperation").eAnnotations.add(t);
+        s.equivalent("CreateBoundTransferOperation").eAnnotations.add(t);
 }
 
-@abstract
-rule AddAnnotationToBoundOperationWithRelation
-    transform s : JUDOPSM!BoundOperationWithRelation
-    to t : ASM!EAnnotation
-    extends AddAnnotationToBoundOperation {
-        var relationEntry = new ASM!EStringToStringMapEntry;
-        relationEntry.key = "relation";
-        relationEntry.value = asmUtils.getReferenceFQName(s.relation.equivalent("CreateTransferObjectRelation"));
-        t.details.add(relationEntry);
-}
-
-@abstract
-rule AddAnnotationToUnboundOperation
-    transform s : JUDOPSM!UnboundOperation
+@greedy
+rule AddBehaviourAnnotation
+    transform s : JUDOPSM!TransferOperation
     to t : ASM!EAnnotation {
+        guard: s.behaviour.isDefined()    
+    
         t.source = asmUtils.getAnnotationUri("behaviour");
-
-        s.equivalent("CreateUnboundOperation").eAnnotations.add(t);
-}
-
-@abstract
-rule AddAnnotationToUnboundOperationWithRelation
-    transform s : JUDOPSM!UnboundOperationWithRelation
-    to t : ASM!EAnnotation
-    extends AddAnnotationToUnboundOperation {
-        var relationEntry = new ASM!EStringToStringMapEntry;
-        relationEntry.key = "relation";
-        relationEntry.value = asmUtils.getReferenceFQName(s.relation.equivalent("CreateTransferObjectRelation"));
-        t.details.add(relationEntry);
-}
-
-rule AddGetAnnotationToBoundOperation
-    transform s : JUDOPSM!BoundOperation
-    to t : ASM!EAnnotation
-    extends AddAnnotationToBoundOperation {
-        guard: s.getOwnerRelation.isDefined()
-
-        t.addBehaviourAnnotationOfOwnerRelation("get", asmUtils.getReferenceFQName(s.getOwnerRelation.equivalent("CreateTransferObjectRelation")));
-}
-
-rule AddCreateAnnotationToBoundOperation
-    transform s : JUDOPSM!BoundOperation
-    to t : ASM!EAnnotation
-    extends AddAnnotationToBoundOperation {
-        guard: s.createOwnerRelation.isDefined()
-
-        t.addBehaviourAnnotationOfOwnerRelation("create", asmUtils.getReferenceFQName(s.createOwnerRelation.equivalent("CreateTransferObjectRelation")));
-}
-
-rule AddUpdateAnnotationToBoundOperation
-    transform s : JUDOPSM!BoundOperation
-    to t : ASM!EAnnotation
-    extends AddAnnotationToBoundOperation {
-        guard: s.updateOwnerRelation.isDefined()
-
-        t.addBehaviourAnnotationOfOwnerRelation("update", asmUtils.getReferenceFQName(s.updateOwnerRelation.equivalent("CreateTransferObjectRelation")));
-}
-
-rule AddDeleteAnnotationToBoundOperation
-    transform s : JUDOPSM!BoundOperation
-    to t : ASM!EAnnotation
-    extends AddAnnotationToBoundOperation {
-        guard: s.deleteOwnerRelation.isDefined()
-
-        t.addBehaviourAnnotationOfOwnerRelation("delete", asmUtils.getReferenceFQName(s.deleteOwnerRelation.equivalent("CreateTransferObjectRelation")));
-}
-
-rule AddSetAnnotationToBoundOperationWithRelation
-    transform s : JUDOPSM!BoundOperationWithRelation
-    to t : ASM!EAnnotation
-    extends AddAnnotationToBoundOperationWithRelation {
-        guard: s.setOwnerRelation.isDefined()
-
-        t.addBehaviourAnnotationOfOwnerRelation("set", asmUtils.getReferenceFQName(s.setOwnerRelation.equivalent("CreateTransferObjectRelation")));
-}
-
-rule AddUnSetAnnotationToBoundOperationWithRelation
-    transform s : JUDOPSM!BoundOperationWithRelation
-    to t : ASM!EAnnotation
-    extends AddAnnotationToBoundOperationWithRelation {
-        guard: s.unsetOwnerRelation.isDefined()
-
-        t.addBehaviourAnnotationOfOwnerRelation("unset", asmUtils.getReferenceFQName(s.unsetOwnerRelation.equivalent("CreateTransferObjectRelation")));
-}
-rule AddAddAllAnnotationToBoundOperationWithRelation
-    transform s : JUDOPSM!BoundOperationWithRelation
-    to t : ASM!EAnnotation
-    extends AddAnnotationToBoundOperationWithRelation {
-        guard: s.addAllOwnerRelation.isDefined()
-
-        t.addBehaviourAnnotationOfOwnerRelation("addAll", asmUtils.getReferenceFQName(s.addAllOwnerRelation.equivalent("CreateTransferObjectRelation")));
-}
-
-rule AddRemoveAllAnnotationToBoundOperationWithRelation
-    transform s : JUDOPSM!BoundOperationWithRelation
-    to t : ASM!EAnnotation
-    extends AddAnnotationToBoundOperationWithRelation {
-        guard: s.removeAllOwnerRelation.isDefined()
-
-        t.addBehaviourAnnotationOfOwnerRelation("removeAll", asmUtils.getReferenceFQName(s.removeAllOwnerRelation.equivalent("CreateTransferObjectRelation")));
-}
-
-rule AddGetRangeAnnotationToBoundOperationWithRelation
-    transform s : JUDOPSM!BoundOperationWithRelation
-    to t : ASM!EAnnotation
-    extends AddAnnotationToBoundOperationWithRelation {
-        guard: s.getRangeOwnerParameter.isDefined() and s.getRangeOwnerParameter.isInput()
-
-        var asmParameter = s.getRangeOwnerParameter.equivalent("CreateInputParameter");
-        t.addBehaviourAnnotationOfOwnerParameter("getRange", asmUtils.getOperationFQName(asmParameter.eContainer), asmParameter.name);
-}
-
-rule AddGetRangeAnnotationToUnboundOperationWithRelation
-    transform s : JUDOPSM!UnboundOperationWithRelation
-    to t : ASM!EAnnotation
-    extends AddAnnotationToUnboundOperationWithRelation {
-        guard: s.getRangeOwnerParameter.isDefined() and s.getRangeOwnerParameter.isInput()
-
-        var asmParameter = s.getRangeOwnerParameter.equivalent("CreateInputParameter");
-        t.addBehaviourAnnotationOfOwnerParameter("getRange", asmUtils.getOperationFQName(asmParameter.eContainer), asmParameter.name);
-}
-
-rule AddGetTemplateAnnotationToUnboundOperation
-    transform s : JUDOPSM!UnboundOperation
-    to t : ASM!EAnnotation
-    extends AddAnnotationToUnboundOperation {
-        guard: s.getTemplateOwnerTransferObjectType.isDefined()
-
-        t.addBehaviourAnnotationOfOwnerTransferObjectType("getTemplate", asmUtils.getClassifierFQName(s.getTemplateOwnerTransferObjectType.asmEquivalent()));
+        
+        var typeEntry = new ASM!EStringToStringMapEntry;
+        typeEntry.key = "type";
+        switch (s.behaviour.behaviourType) {
+            case JUDOPSM!TransferOperationBehaviourType#GET: typeEntry.value = "get"; 
+            case JUDOPSM!TransferOperationBehaviourType#CREATE: typeEntry.value = "create";
+            case JUDOPSM!TransferOperationBehaviourType#UPDATE: typeEntry.value = "update";
+            case JUDOPSM!TransferOperationBehaviourType#DELETE: typeEntry.value = "delete";
+            case JUDOPSM!TransferOperationBehaviourType#SET_RELATION: typeEntry.value = "set";
+            case JUDOPSM!TransferOperationBehaviourType#UNSET_RELATION: typeEntry.value = "unset";
+            case JUDOPSM!TransferOperationBehaviourType#ADD_ALL_TO_RELATION: typeEntry.value = "addAll";
+            case JUDOPSM!TransferOperationBehaviourType#REMOVE_ALL_FROM_RELATION: typeEntry.value = "removeAll";
+            case JUDOPSM!TransferOperationBehaviourType#GET_RELATION: typeEntry.value = "get";
+            case JUDOPSM!TransferOperationBehaviourType#CREATE_RELATION: typeEntry.value = "create";
+            case JUDOPSM!TransferOperationBehaviourType#UPDATE_RELATION: typeEntry.value = "update";
+            case JUDOPSM!TransferOperationBehaviourType#DELETE_RELATION: typeEntry.value = "delete";
+            case JUDOPSM!TransferOperationBehaviourType#SET_RELATION_OF_RELATION: typeEntry.value = "set";
+            case JUDOPSM!TransferOperationBehaviourType#UNSET_RELATION_OF_RELATION: typeEntry.value = "unset";
+            case JUDOPSM!TransferOperationBehaviourType#ADD_ALL_TO_RELATION_OF_RELATION: typeEntry.value = "addAll";
+            case JUDOPSM!TransferOperationBehaviourType#REMOVE_ALL_FROM_RELATION_OF_RELATION: typeEntry.value = "removeAll";
+            case JUDOPSM!TransferOperationBehaviourType#GET_RANGE_OF_RELATION: typeEntry.value = "getRange";
+            case JUDOPSM!TransferOperationBehaviourType#GET_TEMPLATE: typeEntry.value = "getTemplate";
+        }
+        t.details.add(typeEntry);
+        
+        var ownerEntry = new ASM!EStringToStringMapEntry;
+        ownerEntry.key = "owner";
+        switch (s.behaviour.behaviourType) {
+            case JUDOPSM!TransferOperationBehaviourType#GET_RANGE_OF_RELATION:
+                ownerEntry.value = asmUtils.getOperationFQName(s.behaviour.owner.eContainer.asmEquivalent());
+            case JUDOPSM!TransferOperationBehaviourType#GET_TEMPLATE:
+                ownerEntry.value = asmUtils.getClassifierFQName(s.behaviour.owner.asmEquivalent());
+            default:
+                ownerEntry.value = asmUtils.getReferenceFQName(s.behaviour.owner.asmEquivalent());
+        }
+        t.details.add(ownerEntry);
+        
+        if (s.behaviour.behaviourType == JUDOPSM!TransferOperationBehaviourType#GET_RANGE_OF_RELATION) {
+            var parameterNameEntry = new ASM!EStringToStringMapEntry;
+	        parameterNameEntry.key = "parameterName";
+	        parameterNameEntry.value = s.behaviour.owner.name;
+	        t.details.add(parameterNameEntry);
+        }
+        
+        if (s.behaviour.relation.isDefined()) {
+	        var relationEntry = new ASM!EStringToStringMapEntry;
+	        relationEntry.key = "relation";
+	        relationEntry.value = asmUtils.getReferenceFQName(s.behaviour.relation.asmEquivalent());
+	        t.details.add(relationEntry);
+        }
+        
+        s.asmEquivalent().eAnnotations.add(t); 
 }

@@ -5,7 +5,7 @@ rule CreateTransferObject
 	transform s : JUDOPSM!TransferObjectType
 	to t : ASM!EClass {
 		t.name = s.name;
-		s.getNamespace().asmEquivalent().eClassifiers.add(t);
+		s.eContainer.asmEquivalent().eClassifiers.add(t);
 
 		for (super in s.superTransferObjectTypes) {
 		    t.eSuperTypes.add(super.asmEquivalent());

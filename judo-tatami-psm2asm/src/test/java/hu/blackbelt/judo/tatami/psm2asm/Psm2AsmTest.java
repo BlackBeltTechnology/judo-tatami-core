@@ -20,6 +20,7 @@ import java.util.Optional;
 
 import static hu.blackbelt.judo.meta.asm.runtime.AsmModel.SaveArguments.asmSaveArgumentsBuilder;
 import static hu.blackbelt.judo.meta.asm.runtime.AsmModel.buildAsmModel;
+import static hu.blackbelt.judo.meta.asm.runtime.AsmUtils.*;
 import static hu.blackbelt.judo.meta.psm.PsmEpsilonValidator.calculatePsmValidationScriptURI;
 import static hu.blackbelt.judo.meta.psm.PsmEpsilonValidator.validatePsm;
 import static hu.blackbelt.judo.meta.psm.runtime.PsmModel.LoadArguments.psmLoadArgumentsBuilder;
@@ -108,20 +109,9 @@ public class Psm2AsmTest {
         final Optional<EReference> itemsOfOrderInfo = orderInfo.get().getEAllReferences().stream().filter(r -> "items".equals(r.getName())).findAny();
         assertTrue(itemsOfOrderInfo.isPresent());
 
-        // TODO - enable if released next version of Northwind model with allowed flags
-//        assertTrue(AsmUtils.isAllowedToCreateEmbeddedObject(itemsOfOrderInfo.get()));
-//        assertTrue(AsmUtils.isAllowedToUpdateEmbeddedObject(itemsOfOrderInfo.get()));
-//        assertTrue(AsmUtils.isAllowedToDeleteEmbeddedObject(itemsOfOrderInfo.get()));
-
-        Optional<EClass> orderInfoQuery = asmUtils.getClassByFQName("demo.services.OrderInfoQuery");
-        assertTrue(orderInfoQuery.isPresent());
-
-        final Optional<EReference> itemsOfOrderInfoQuery = orderInfoQuery.get().getEAllReferences().stream().filter(r -> "items".equals(r.getName())).findAny();
-        assertTrue(itemsOfOrderInfoQuery.isPresent());
-
-        assertFalse(AsmUtils.isAllowedToCreateEmbeddedObject(itemsOfOrderInfoQuery.get()));
-        assertFalse(AsmUtils.isAllowedToUpdateEmbeddedObject(itemsOfOrderInfoQuery.get()));
-        assertFalse(AsmUtils.isAllowedToDeleteEmbeddedObject(itemsOfOrderInfoQuery.get()));
+        assertTrue(isAllowedToCreateEmbeddedObject(itemsOfOrderInfo.get()));
+        assertTrue(isAllowedToUpdateEmbeddedObject(itemsOfOrderInfo.get()));
+        assertTrue(isAllowedToDeleteEmbeddedObject(itemsOfOrderInfo.get()));
     }
 
 }

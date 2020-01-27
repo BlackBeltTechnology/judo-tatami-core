@@ -1,11 +1,10 @@
-import "../../../operations/psm/namespace/_importNamespace.eol";
 import "../../../operations/psm/measure/_importMeasure.eol";
 
 @abstract
 rule CreateMeasure
     transform s : JUDOPSM!Measure
     to t : MEASURES!Measure {
-        t.namespace = s.getNamespace().toString();
+        t.namespace = psmUtils.namespaceToString(s.getNamespace());
         t.name = s.name;
         t.symbol = s.symbol;
     }

@@ -5,7 +5,7 @@ rule CreateEnumeration
 	transform s : JUDOPSM!EnumerationType
 	to t : ASM!EEnum {
 		t.name = s.name;
-		s.getNamespace().asmEquivalent().eClassifiers.add(t);
+		s.eContainer.asmEquivalent().eClassifiers.add(t);
 		for (m in s.members) {
 			var l = new ASM!EEnumLiteral;
 			l.value = m.ordinal;
@@ -22,7 +22,7 @@ rule CreateStringType
         t.name = s.name;
         t.instanceClassName = "java.lang.String";
         
-        s.getNamespace().asmEquivalent().eClassifiers.add(t);
+        s.eContainer.asmEquivalent().eClassifiers.add(t);
     }
 
 @greedy
@@ -41,7 +41,7 @@ rule CreateIntegerType
             t.instanceClassName = "java.math.BigDecimal";
         }
         
-        s.getNamespace().asmEquivalent().eClassifiers.add(t);
+        s.eContainer.asmEquivalent().eClassifiers.add(t);
     }
 
 @greedy
@@ -59,7 +59,7 @@ rule CreateDecimalType
             t.instanceClassName = "java.math.BigDecimal";
         }
         
-        s.getNamespace().asmEquivalent().eClassifiers.add(t);
+        s.eContainer.asmEquivalent().eClassifiers.add(t);
     }
 
 @greedy
@@ -69,7 +69,7 @@ rule CreateBooleanType
         t.name = s.name;
         t.instanceClassName = "java.lang.Boolean";
         
-        s.getNamespace().asmEquivalent().eClassifiers.add(t);
+        s.eContainer.asmEquivalent().eClassifiers.add(t);
     }
 
 @greedy
@@ -93,7 +93,7 @@ rule CreateDateType
         t.name = s.name;
         t.instanceClassName = "java.time.LocalDate";
         
-        s.getNamespace().asmEquivalent().eClassifiers.add(t);
+        s.eContainer.asmEquivalent().eClassifiers.add(t);
     }
 
 @greedy
@@ -103,7 +103,7 @@ rule CreateTimestampType
         t.name = s.name;
         t.instanceClassName = "java.time.ZonedDateTime";
         
-        s.getNamespace().asmEquivalent().eClassifiers.add(t);
+        s.eContainer.asmEquivalent().eClassifiers.add(t);
     }
 
 @greedy
@@ -115,5 +115,5 @@ rule CreateCustomType
         t.name = s.name;
         t.instanceClassName = "java.lang.Object";
         
-        s.getNamespace().asmEquivalent().eClassifiers.add(t);
+        s.eContainer.asmEquivalent().eClassifiers.add(t);
     }

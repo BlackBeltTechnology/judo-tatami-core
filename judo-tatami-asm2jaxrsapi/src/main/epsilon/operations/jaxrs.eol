@@ -5,7 +5,7 @@ operation String normalizeName() : String {
 
 @cached
 operation String toJAXRSPath() : String {
-    return self.replace("\\.__UnboundServices", "").replace("[#\\.]", "/").replace("[^0-9a-zA-Z_/]", "/").replace("\\$", "/");
+    return self.replace("[#\\.]", "/").replace("[^0-9a-zA-Z_/]", "/").replace("\\$", "/");
 }
 
 /*
@@ -25,13 +25,13 @@ operation getIdTypeName() : String {
 }
 
 @cached
-operation ASM!EClass getPackagePrefix() : String {
+operation getPackagePrefix() : String {
     return "rest.";
 }
 
 @cached
 operation ASM!EClass getDtoPackageName() : String {
-	return self.getPackagePrefix() + asmUtils.getPackageFQName(self.ePackage);
+	return getPackagePrefix() + asmUtils.getPackageFQName(self.ePackage);
 }
 
 @cached
@@ -86,7 +86,7 @@ operation ASM!EReference getBareTypeDefinition() : String {
 
 @cached
 operation ASM!EClass getApplicationPackageName() : String {
-	return self.getPackagePrefix() + asmUtils.getClassifierFQName(self);
+	return getPackagePrefix() + asmUtils.getClassifierFQName(self);
 }
 
 @cached
@@ -120,75 +120,15 @@ operation genApplication(ap : ASM!EClass, serviceInstances : Map) {
 	t.reset();
 }
 
-/*
- Unbound Service
- */
-operation genUnboundService(ap : ASM!EClass, operations : Collection) {
-	var t = TemplateFactory.load("RestService.java.egl");
-	t.populate("boundService", false);
-	t.populate("className", ap.getUnboundServiceClassName());
-	t.populate("packagePath", ap.getUnboundServicePackageName());
-	t.populate("operations", operations);
-	t.populate("restPath", "/");
-	t.populate("fullyQualifiedOperation", true);
-
-	t.generate(ap.getUnboundServiceJavaFileName());
-	t.reset();
-
-	var t = TemplateFactory.load("RestService.scr.xml.egl");
-	t.populate("className", ap.getUnboundServiceClassName());
-	t.populate("packagePath", ap.getUnboundServicePackageName());
-	t.generate(ap.getUnboundServiceScrXmlFileName());
-	t.reset();
+operation ASM!EClass getExposedPackageName(ap: ASM!EClass) : String {
+	return getPackagePrefix() + asmUtils.getClassifierFQName(ap) + "." + asmUtils.getPackageFQName(self.ePackage);
 }
 
-operation ASM!EClass getUnboundServicePackageName() : String {
-	return self.getPackagePrefix() + asmUtils.getClassifierFQName(self);
+operation ASM!EClass getExposedScrXmlFileName(ap: ASM!EClass) : String {
+	return "OSGI-INF/" + self.getExposedPackageName(ap) + "." + self.name.normalizeName() + ".xml";
 }
 
-operation ASM!EClass getUnboundServiceClassName() : String {
-	return "UnboundServices";
-}
-
-operation ASM!EClass getUnboundServiceJavaFileName() : String {
-	return self.getUnboundServicePackageName().replaceAll("\\.", "/") + "/" + self.getUnboundServiceClassName() + ".java";
-}
-
-operation ASM!EClass getUnboundServiceScrXmlFileName() : String {
-	return "OSGI-INF/" + self.getUnboundServicePackageName() + "." + self.getUnboundServiceClassName() + ".xml";
-}
-
-/*
- Exposed mapped transfer object
- */
-operation genExposedMappedTransferObject(class : ASM!EClass, ap : ASM!EClass, operations: Collection) {
-	var t = TemplateFactory.load("RestService.java.egl");
-	t.populate("boundService", true);
-	t.populate("className", class.name.normalizeName());
-	t.populate("packagePath", class.getExposedMappedTransferObjectPackageName(ap));
-	t.populate("operations", operations);
-	t.populate("restPath", "/" + asmUtils.getPackageFQName(class.ePackage).toJAXRSPath() + "/" + class.name.normalizeName().toJAXRSPath());
-	t.populate("fullyQualifiedOperation", false);
-
-	t.generate(class.getExposedMappedTransferObjectJavaFileName(ap));
-	t.reset();
-
-	var t = TemplateFactory.load("RestService.scr.xml.egl");
-	t.populate("className", class.name.normalizeName());
-	t.populate("packagePath", class.getExposedMappedTransferObjectPackageName(ap));
-	t.generate(class.getExposedMappedTransferObjectScrXmlFileName(ap));
-	t.reset();
-}
-
-operation ASM!EClass getExposedMappedTransferObjectPackageName(ap: ASM!EClass) : String {
-	return self.getPackagePrefix() + asmUtils.getClassifierFQName(ap) + "." + asmUtils.getPackageFQName(self.ePackage);
-}
-
-operation ASM!EClass getExposedMappedTransferObjectScrXmlFileName(ap: ASM!EClass) : String {
-	return "OSGI-INF/" + self.getExposedMappedTransferObjectPackageName(ap) + "." + self.name.normalizeName() + ".xml";
-}
-
-operation ASM!EClass getExposedMappedTransferObjectJavaFileName(ap: ASM!EClass) : String {
-	return self.getExposedMappedTransferObjectPackageName(ap)
+operation ASM!EClass getExposedJavaFileName(ap: ASM!EClass) : String {
+	return self.getExposedPackageName(ap)
 		.replaceAll("\\.", "/") + "/" + self.name.normalizeName() + ".java";
 }

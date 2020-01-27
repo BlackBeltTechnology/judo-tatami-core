@@ -137,7 +137,7 @@ rule CreateExposedServiceOperationResponseDefinitionSchema
         
         if (s.eContainer.eParameters.isEmpty and asmUtils.annotatedAsFalse(s.eContainer, "stateful")) {
             s.equivalent("CreateExposedServiceGetOperationResponseDefinition").schema = t;
-        } else if (not s.eContainer.eParameters.isEmpty or  asmUtils.annotatedAsTrue(s.eContainer, "stateful")) {
+        } else if (not s.eContainer.eParameters.isEmpty or asmUtils.annotatedAsTrue(s.eContainer, "stateful")) {
             s.equivalent("CreateExposedServicePostOperationResponseDefinition").schema = t;
         }
 }

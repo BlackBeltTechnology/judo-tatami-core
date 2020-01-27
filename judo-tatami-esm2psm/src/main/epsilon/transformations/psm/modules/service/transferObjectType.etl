@@ -5,7 +5,6 @@ import "../data/referenceTypedElement.etl";
 import "../derived/expressionType.etl";
 import "../../../../operations/_importAll.eol";
 
-
 @abstract
 rule CreateTransferObjectType
 	transform s: ESM!TransferObjectType
@@ -14,7 +13,6 @@ rule CreateTransferObjectType
 	  for (super in s.generalizations) {
         t.superTransferObjectTypes.add(super.target.getPSMTransferObjectTypeEquivalent());
       }
-    t.getTemplate = s.equivalent("CreateGetTemplateOperationFromTransferObjectType");
 }
 
 rule CreateMappedTransferObjectType
@@ -55,8 +53,7 @@ rule CreateDefaultMappedTransferObjectTypeForEntity
       }
 
       s.eContainer.getPSMGeneratedDefaultTransferObjectNamespaceEquivalent().elements.add(t);      
-	  t.getTemplate = s.equivalent("CreateGetTemplateOperationFromTransferObjectType");
-	  
+
 	  t.entityType = s.equivalent("CreateEntityType");
 	  log.debug("Created Default MappedTransferObjectType for EntityType: " + t.name);
 }

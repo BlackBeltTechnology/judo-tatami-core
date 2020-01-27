@@ -6,6 +6,7 @@ import hu.blackbelt.judo.tatami.core.workflow.flow.WorkFlow;
 import hu.blackbelt.judo.tatami.core.workflow.work.TransformationContext;
 import hu.blackbelt.judo.tatami.core.workflow.work.WorkReport;
 import hu.blackbelt.judo.tatami.core.workflow.work.WorkStatus;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -21,6 +22,7 @@ import static hu.blackbelt.judo.tatami.psm2asm.Psm2Asm.calculatePsm2AsmTransform
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 
+@Slf4j
 class Psm2AsmWorkTest {
 
     public static final String NORTHWIND = "northwind";
@@ -47,6 +49,10 @@ class Psm2AsmWorkTest {
 
 		WorkFlowEngine workFlowEngine = aNewWorkFlowEngine().build();
 		WorkReport workReport = workFlowEngine.run(workflow);
+
+		if (workReport.getError() != null) {
+			log.error("Error found:", workReport.getError());
+		}
 
 		assertThat(workReport.getStatus(), equalTo(WorkStatus.COMPLETED));
 	}
