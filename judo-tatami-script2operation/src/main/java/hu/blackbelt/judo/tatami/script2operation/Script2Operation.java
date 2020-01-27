@@ -7,19 +7,23 @@ import hu.blackbelt.judo.framework.compiler.api.FullyQualifiedName;
 import hu.blackbelt.judo.framework.compiler.api.fileobject.JavaFileObjects;
 import hu.blackbelt.judo.meta.script.runtime.ScriptModel;
 import hu.blackbelt.judo.meta.script.support.ScriptModelResourceSupport;
+import hu.blackbelt.judo.script.codegen.generator.Script2JavaGenerator;
 import org.ops4j.pax.tinybundles.core.TinyBundle;
 import org.osgi.framework.Constants;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import javax.tools.JavaFileObject;
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
-
-import hu.blackbelt.judo.script.codegen.generator.Script2JavaGenerator;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import static hu.blackbelt.judo.framework.compiler.api.CompilerContext.compilerContextBuilder;
 import static hu.blackbelt.judo.meta.script.support.ScriptModelResourceSupport.scriptModelResourceSupportBuilder;
@@ -47,12 +51,16 @@ public class Script2Operation {
                     String unitName =  scriptGenerator.generateClassName(binding.getOperationName());
                     String sourceCode = String.valueOf(scriptGenerator.generate(binding.getScript(), binding));
 
+                    String operationFQName = String.valueOf(binding.getTypeName()).replace("::", ".") + "#" + binding.getOperationName();
+
                     sourceCodesByFqName.put(packageName + "." + unitName, sourceCode);
                     scrXmlFilesByFqName.put(packageName + "." + unitName,
 
                         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
                         "<scr:component xmlns:scr=\"http://www.osgi.org/xmlns/scr/v1.3.0\" name=\"" + packageName + "." + unitName + "\" immediate=\"true\">\n" +
                         "    <implementation class=\"" + packageName + "." + unitName + "\"/>\n" +
+                        "    <property name=\"operation.name\">" + operationFQName + "</property>\n" +
+                        "    <property name=\"script\">true</property>\n" +
                         "    <service>\n" +
                         "        <provide interface=\"java.util.Function\"/>\n" +
                         "    </service>\n" +

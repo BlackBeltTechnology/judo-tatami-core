@@ -11,7 +11,11 @@
 
     <artifactId>judo-tatami-itest</artifactId>
     <name>Judo :: Tatami :: Itest</name>
-        
+
+    <properties>
+        <judo-tatami-workflow-maven-plugin-version>${project.version}</judo-tatami-workflow-maven-plugin-version>
+    </properties>
+
     <build>
         <testResources>
             <testResource>
