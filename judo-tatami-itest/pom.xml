@@ -61,7 +61,6 @@
                 <executions>
                    <execution>
                         <id>execute-northwind-test-model-from-general</id>
-                        <!--phase>generate-test-sources</phase-->
                         <configuration>
                             <ignorePsm2Asm>false</ignorePsm2Asm>
                             <ignoreRdbms2Liquibase>false</ignoreRdbms2Liquibase>

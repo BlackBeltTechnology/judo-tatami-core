@@ -23,9 +23,7 @@ import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
 
 import javax.ws.rs.client.ClientBuilder;
-import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
-import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.io.File;
 import java.io.FileInputStream;
@@ -35,7 +33,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 import static hu.blackbelt.judo.tatami.itest.TestUtility.*;
@@ -67,13 +64,13 @@ public class NorthwindTatamiESMTransformationPipelineITest extends TatamiESMTran
 
     private InputStream getEsmModelBundle() throws FileNotFoundException {
         return bundle()
-                .add( "model/" + NORTHWIND + ".judo-meta-esm",
+                .add("model/" + NORTHWIND + ".judo-meta-esm",
                         new FileInputStream(new File(testTargetDir(getClass()).getAbsolutePath(), "northwind-esm.model")))
-                .set( Constants.BUNDLE_MANIFESTVERSION, "2")
-                .set( Constants.BUNDLE_SYMBOLICNAME, NORTHWIND + "-model" )
+                .set(Constants.BUNDLE_MANIFESTVERSION, "2")
+                .set(Constants.BUNDLE_SYMBOLICNAME, NORTHWIND + "-model")
                 //set( Constants.IMPORT_PACKAGE, "meta/psm;version=\"" + getConfiguration(META_PSM_IMPORT_RANGE) +"\"")
-                .set( "Esm-Models", "file=model/" + NORTHWIND + ".judo-meta-esm;version=1.0.0;name=" + NORTHWIND + ";checksum=notset;meta-version-range=\"[1.0.0,2)\"")
-                .build( withBnd());
+                .set("Esm-Models", "file=model/" + NORTHWIND + ".judo-meta-esm;version=1.0.0;name=" + NORTHWIND + ";checksum=notset;meta-version-range=\"[1.0.0,2)\"")
+                .build(withBnd());
     }
 
     @Override
@@ -140,9 +137,9 @@ public class NorthwindTatamiESMTransformationPipelineITest extends TatamiESMTran
         };
         bundleContext.registerService(Dispatcher.class, dispatcher, null);
 
-        waitWebPage(BASE_URL +"/?_wadl");
+        waitWebPage(BASE_URL + "/?_wadl");
 
-        assertBundleStarted(bundleContext,  NORTHWIND + "-asm2jaxrsapi");
+        assertBundleStarted(bundleContext, NORTHWIND + "-asm2jaxrsapi");
 
 //        assertNotNull(getResponse(NORTHWIND_SERVICE_GET_ALL_ORDERS));
 //        assertNotNull(getResponse(NORTHWIND_SERVICE_GET_ALL_INTERNATIONAL_ORDERS));

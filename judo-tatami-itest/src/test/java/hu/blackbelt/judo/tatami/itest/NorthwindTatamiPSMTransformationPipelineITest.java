@@ -25,7 +25,10 @@ import org.osgi.framework.ServiceReference;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Response;
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -61,13 +64,13 @@ public class NorthwindTatamiPSMTransformationPipelineITest extends TatamiPSMTran
 
     private InputStream getPsmModelBundle() throws FileNotFoundException {
         return bundle()
-                .add( "model/" + DEMO + ".judo-meta-psm",
-                        new FileInputStream(new File(testTargetDir(getClass()).getAbsolutePath(),  "northwind-psm.model")))
-                .set( Constants.BUNDLE_MANIFESTVERSION, "2")
-                .set( Constants.BUNDLE_SYMBOLICNAME,  DEMO + "-model" )
+                .add("model/" + DEMO + ".judo-meta-psm",
+                        new FileInputStream(new File(testTargetDir(getClass()).getAbsolutePath(), "northwind-psm.model")))
+                .set(Constants.BUNDLE_MANIFESTVERSION, "2")
+                .set(Constants.BUNDLE_SYMBOLICNAME, DEMO + "-model")
                 //set( Constants.IMPORT_PACKAGE, "meta/psm;version=\"" + getConfiguration(META_PSM_IMPORT_RANGE) +"\"")
-                .set( "Psm-Models", "file=model/" + DEMO + ".judo-meta-psm;version=1.0.0;name=" + DEMO + ";checksum=notset;meta-version-range=\"[1.0.0,2)\"")
-                .build( withBnd());
+                .set("Psm-Models", "file=model/" + DEMO + ".judo-meta-psm;version=1.0.0;name=" + DEMO + ";checksum=notset;meta-version-range=\"[1.0.0,2)\"")
+                .build(withBnd());
     }
 
     @Override
@@ -97,7 +100,7 @@ public class NorthwindTatamiPSMTransformationPipelineITest extends TatamiPSMTran
         Collection<ServiceReference<TransformationTrace>> transformationTraces = bundleContext.getServiceReferences(TransformationTrace.class, null);
 
         assertThat(transformationTraces.stream().map(r -> bundleContext.getService(r).getTransformationTraceName()).collect(Collectors.toList()),
-                containsInAnyOrder( "asm2openapi", "asm2rdbms", "psm2measure", "psm2asm"));
+                containsInAnyOrder("asm2openapi", "asm2rdbms", "psm2measure", "psm2asm"));
 
 
         AsmUtils asmUtils = new AsmUtils(asmModel.getResourceSet());
@@ -134,18 +137,18 @@ public class NorthwindTatamiPSMTransformationPipelineITest extends TatamiPSMTran
         };
         bundleContext.registerService(Dispatcher.class, dispatcher, null);
 
-        waitWebPage(BASE_URL +"/?_wadl");
+        waitWebPage(BASE_URL + "/?_wadl");
 
         WebTarget wt = ClientBuilder.newClient().register(new JacksonJaxbJsonProvider()).target(BASE_URL);
 
-        assertBundleStarted(bundleContext,  DEMO + "-asm2jaxrsapi");
+        assertBundleStarted(bundleContext, DEMO + "-asm2jaxrsapi");
 
         Response response = null;
         try {
             response = wt.path(DEMO_SERVICE_GET_ALL_ORDERS)
                     .request("application/json")
                     .get();
-                    //.post(null, OrderInfo.class);
+            //.post(null, OrderInfo.class);
         } catch (Exception e) {
             log.log(LOG_ERROR, "EXCEPTION: ", e);
         }
