@@ -1,6 +1,13 @@
 package hu.blackbelt.judo.tatami.workflow.osgi;
 
-import static com.google.common.base.Preconditions.checkState;
+import com.google.common.collect.Maps;
+import hu.blackbelt.judo.tatami.core.TransformationTrace;
+import hu.blackbelt.judo.tatami.core.workflow.work.TransformationContext;
+import lombok.extern.slf4j.Slf4j;
+import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.BundleException;
+import org.osgi.framework.ServiceRegistration;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -8,16 +15,7 @@ import java.util.Dictionary;
 import java.util.Hashtable;
 import java.util.Map;
 
-import org.osgi.framework.Bundle;
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.BundleException;
-import org.osgi.framework.ServiceRegistration;
-
-import com.google.common.collect.Maps;
-
-import hu.blackbelt.judo.tatami.core.TransformationTrace;
-import hu.blackbelt.judo.tatami.core.workflow.work.TransformationContext;
-import lombok.extern.slf4j.Slf4j;
+import static com.google.common.base.Preconditions.checkState;
 
 /**
  * This class add abstract methods to handle the OSGi lifecycle of transformed models / traces / bundles
@@ -74,8 +72,8 @@ public abstract class AbstractTransformationContextRegistrationService implement
     }
 
     @Override
-    public abstract void registerTramsformationContext(TransformationContext transformationContext, String sqlDialect);
+    public abstract void registerTransformationContext(TransformationContext transformationContext, String sqlDialect);
 
     @Override
-    public abstract void unregisterTramsformationContext(TransformationContext transformationContext, String sqlDialect);
+    public abstract void unregisterTransformationContext(TransformationContext transformationContext, String sqlDialect);
 }

@@ -452,7 +452,7 @@
       <mapping xmi:id="_s8FwIv8MEem4dONaAfrVDg" target="_JYnRrOq1EemUZMITjXqp8w" filter=""/>
     </elements>
     <elements xsi:type="structure:TransferObjectType" name="Tester" xmi:id="TESTER">
-      <operations name="test" modifier="STATIC"/>
+      <operations name="test" modifier="STATIC" binding=""/>
     </elements>
   </elements>
   <elements xsi:type="accesspoint:AccessPoint" xmi:id="_BwhYMAVjEeqKgZHIs7Kffw" name="InternalAP">

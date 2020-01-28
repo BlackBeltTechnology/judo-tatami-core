@@ -1,28 +1,22 @@
 package hu.blackbelt.judo.tatami.workflow.osgi;
 
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.util.Arrays;
-import java.util.LinkedList;
-
 import com.google.common.collect.ImmutableList;
-import hu.blackbelt.judo.tatami.psm2asm.Psm2Asm;
-import org.osgi.service.component.ComponentContext;
-import org.osgi.service.component.annotations.Activate;
-import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.ConfigurationPolicy;
-import org.osgi.service.component.annotations.Deactivate;
-import org.osgi.service.component.annotations.Reference;
-import org.osgi.service.component.annotations.ReferenceCardinality;
-import org.osgi.service.component.annotations.ReferencePolicyOption;
-import org.osgi.service.metatype.annotations.Designate;
-
 import hu.blackbelt.judo.meta.psm.runtime.PsmModel;
 import hu.blackbelt.judo.tatami.core.workflow.work.TransformationContext;
 import hu.blackbelt.judo.tatami.core.workflow.work.WorkReport;
 import hu.blackbelt.judo.tatami.core.workflow.work.WorkStatus;
 import hu.blackbelt.judo.tatami.workflow.DefaultWorkflowSetupParameters;
 import hu.blackbelt.judo.tatami.workflow.PsmDefaultWorkflow;
+import org.osgi.service.component.ComponentContext;
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.ConfigurationPolicy;
+import org.osgi.service.component.annotations.Deactivate;
+import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.metatype.annotations.Designate;
+
+import java.io.IOException;
+import java.net.URISyntaxException;
 
 /**
  * This process represents a {@link PsmDefaultWorkflow} process for a {@link PsmModel} instances.
@@ -80,12 +74,12 @@ public class PsmWorkflowProcess {
 
         // Get transformation context and registering all services which are presented
         transformationContext = defaultWorkflow.getTransformationContext();
-        transformationContextRegistrationService.registerTramsformationContext(transformationContext, config.sqlDialect());
+        transformationContextRegistrationService.registerTransformationContext(transformationContext, config.sqlDialect());
     }
 
     @Deactivate
     public void deactivate() {
-        transformationContextRegistrationService.unregisterTramsformationContext(transformationContext, psmWorkflowProcessConfiguration.sqlDialect());
+        transformationContextRegistrationService.unregisterTransformationContext(transformationContext, psmWorkflowProcessConfiguration.sqlDialect());
     }
 
 }

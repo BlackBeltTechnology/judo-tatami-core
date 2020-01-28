@@ -1,31 +1,30 @@
 package hu.blackbelt.judo.tatami.workflow.osgi;
 
-import static hu.blackbelt.judo.tatami.core.ThrowingConsumer.throwingConsumerWrapper;
-
-import java.io.IOException;
-import java.io.InputStream;
-
-import hu.blackbelt.judo.meta.expression.runtime.ExpressionModel;
-import hu.blackbelt.judo.meta.script.runtime.ScriptModel;
-import hu.blackbelt.judo.tatami.asm2jaxrsapi.Asm2JAXRSAPIWork;
-import hu.blackbelt.judo.tatami.asm2sdk.Asm2SDKWork;
-import hu.blackbelt.judo.tatami.script2operation.Script2OperationWork;
-import org.osgi.framework.BundleException;
-import org.osgi.service.component.annotations.Component;
-
 import hu.blackbelt.judo.meta.asm.runtime.AsmModel;
 import hu.blackbelt.judo.meta.esm.runtime.EsmModel;
+import hu.blackbelt.judo.meta.expression.runtime.ExpressionModel;
 import hu.blackbelt.judo.meta.liquibase.runtime.LiquibaseModel;
 import hu.blackbelt.judo.meta.measure.runtime.MeasureModel;
 import hu.blackbelt.judo.meta.openapi.runtime.OpenapiModel;
 import hu.blackbelt.judo.meta.psm.runtime.PsmModel;
 import hu.blackbelt.judo.meta.rdbms.runtime.RdbmsModel;
+import hu.blackbelt.judo.meta.script.runtime.ScriptModel;
+import hu.blackbelt.judo.tatami.asm2jaxrsapi.Asm2JAXRSAPIWork;
 import hu.blackbelt.judo.tatami.asm2openapi.Asm2OpenAPITransformationTrace;
 import hu.blackbelt.judo.tatami.asm2rdbms.Asm2RdbmsTransformationTrace;
+import hu.blackbelt.judo.tatami.asm2sdk.Asm2SDKWork;
 import hu.blackbelt.judo.tatami.core.workflow.work.TransformationContext;
 import hu.blackbelt.judo.tatami.esm2psm.Esm2PsmTransformationTrace;
 import hu.blackbelt.judo.tatami.psm2asm.Psm2AsmTransformationTrace;
 import hu.blackbelt.judo.tatami.psm2measure.Psm2MeasureTransformationTrace;
+import hu.blackbelt.judo.tatami.script2operation.Script2OperationWork;
+import org.osgi.framework.BundleException;
+import org.osgi.service.component.annotations.Component;
+
+import java.io.IOException;
+import java.io.InputStream;
+
+import static hu.blackbelt.judo.tatami.core.ThrowingConsumer.throwingConsumerWrapper;
 
 /**
  * This class manages the OSGi lifecycle of transformed models / bundles
@@ -135,7 +134,7 @@ public class DefaultTransformationContextRegistrationService extends AbstractTra
         ungisterInputStream(operationBundle);
     }
 
-    public void registerTramsformationContext(TransformationContext transformationContext, String sqlDialect) {
+    public void registerTransformationContext(TransformationContext transformationContext, String sqlDialect) {
         //transformationContext.getByClass(EsmModel.class).ifPresent(m -> registerEsmModel(m));
         //transformationContext.getByClass(PsmModel.class).ifPresent(m -> registerPsmModel(m));
         transformationContext.getByClass(AsmModel.class).ifPresent(m -> registerAsmModel(m));
@@ -155,11 +154,11 @@ public class DefaultTransformationContextRegistrationService extends AbstractTra
         transformationContext.getByClass(Esm2PsmTransformationTrace.class).ifPresent(t -> registerTrace(t));
         transformationContext.getByClass(Psm2AsmTransformationTrace.class).ifPresent(t -> registerTrace(t));
         transformationContext.getByClass(Psm2MeasureTransformationTrace.class).ifPresent(t -> registerTrace(t));
-        transformationContext.getByClass(Asm2RdbmsTransformationTrace.class).ifPresent(t -> registerTrace(t));
+        transformationContext.get(Asm2RdbmsTransformationTrace.class, "asm2rdbmstrace:" + sqlDialect).ifPresent(t -> registerTrace(t));
         transformationContext.getByClass(Asm2OpenAPITransformationTrace.class).ifPresent(t -> registerTrace(t));
     }
 
-    public void unregisterTramsformationContext(TransformationContext transformationContext, String sqlDialect) {
+    public void unregisterTransformationContext(TransformationContext transformationContext, String sqlDialect) {
 
         //transformationContext.getByClass(EsmModel.class).ifPresent(m -> unregisterEsmModel(m));
         //transformationContext.getByClass(PsmModel.class).ifPresent(m -> unregisterPsmModel(m));
