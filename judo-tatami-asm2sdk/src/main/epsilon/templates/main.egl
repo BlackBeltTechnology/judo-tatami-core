@@ -15,6 +15,8 @@ for (dto in getAllDTOs()) {
     outputJavaClasses.add(dto.getDtoBuilderJavaFileName());
 }
 
+/*
+// TODO - generate services (not only for exposed services), ASM utils is refactored
 for (ap in asmUtils.getAllAccessPoints()) {
 
     var apServiceInstances : Map = new Map();
@@ -50,7 +52,6 @@ for (ap in asmUtils.getAllAccessPoints()) {
             boundOperationClass.getExposedMappedTransferObjectPackageName(ap) + "." + boundOperationClass.getExposedMappedTransferObjectClassName());
     }
 }
+*/
 
 %]
-
-
