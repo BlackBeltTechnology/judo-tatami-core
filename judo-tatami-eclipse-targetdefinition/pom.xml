@@ -132,13 +132,19 @@
 									<value>$1${judo-meta-jcl-version}"/&gt;</value>
 								</replacement>
 
+		                        <!-- jcl ide eclipse -->
+		                        <replacement>
+		                            <token>(judo-jcl-ide-eclipse\/)(.*)(\"\/&gt;)</token>
+		                            <value>$1${judo-jcl-ide-eclipse-version}"/&gt;</value>
+		                        </replacement>
+
 								<!-- script codegen -->
 								<replacement>
 									<token>(judo-script-codegen\/)(.*)(\"\/&gt;)</token>
 									<value>$1${judo-script-codegen-version}"/&gt;</value>
 								</replacement>
 
-                                <!-- Because in ourt repository all versions are flattened, ever featur can be the last version -->
+                                <!-- Because in our repository all versions are flattened, ever feature can be the last version -->
                                 <replacement>
                                     <token>(feature.group\"\ version\=\")(.*)(\"\/&gt;)</token>
                                     <value>$10.0.0"/&gt;</value>
