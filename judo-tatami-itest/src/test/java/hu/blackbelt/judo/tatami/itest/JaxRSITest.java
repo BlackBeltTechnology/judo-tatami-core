@@ -60,7 +60,7 @@ import static restdto.demo.services.ProductInfo.productInfoBuilder;
 @RunWith(PaxExam.class)
 @ExamReactorStrategy(PerClass.class)
 public class JaxRSITest {
-    private static final String BASE_URL = "http://localhost:8181/cxf";
+    private static final String BASE_URL = "http://localhost:8181/cxf/demo";
 
     private static final String DEMO_SERVICE_GET_ALL_INTERNATIONAL_ORDERS = "/demo/services/InternationalOrderInfo/getAllInternationalOrders";
     private static final String DEMO_SERVICE_CREATE_INTERNATIONAL_ORDER = "/demo/services/InternationalOrderInfo/createInternationalOrder";
