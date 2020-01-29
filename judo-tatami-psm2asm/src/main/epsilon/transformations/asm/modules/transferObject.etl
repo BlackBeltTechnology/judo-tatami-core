@@ -54,8 +54,6 @@ rule CreateGeneratedEmbeddedTransferRelationForNonEmbeddedTransferRelation
         t.eAnnotations.add(s.equivalent("CreateBindingAnnotationForGeneratedEmbeddedTransferObjectRelation"));
         t.eAnnotations.add(s.equivalent("CreateEmbeddedFlagsForGeneratedEmbeddedTransferObjectRelation"));
         s.eContainer.equivalent("CreateExtendedTransferObjectForGeneratedEmbeddedTransferObjectRelation").eStructuralFeatures.add(t);
-
-        log.debug("[CreateGeneratedEmbeddedTransferRelationForNonEmbeddedTransferRelation] on " + s.name + " in " + s.eContainer.name);
 }
 
 @lazy
@@ -104,8 +102,6 @@ rule CreateExtendedTransferObjectForGeneratedEmbeddedTransferObjectRelation
 		t.eSuperTypes.add(s.equivalent("CreateMappedTransferObject"));
 		
 		t.eAnnotations.add(s.equivalent("CreateMappedEntityTypeAnnotationOnExtendedMappedTransferObject"));
-		
-		log.debug("Created extended transfer object type: " + t.name);
 	}
 
 @lazy
@@ -143,7 +139,6 @@ rule CreateReferenceClassForEntityType
 			t.eSuperTypes.add(super.equivalent("CreateReferenceClassForEntityType"));
 	  }
       s.getNamespace().asmEquivalent().eClassifiers.add(t);
-      log.debug("[CreateReferenceClassForTransferObjectType] " + t.name);
 }
 
 @abstract
