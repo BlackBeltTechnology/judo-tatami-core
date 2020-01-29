@@ -117,6 +117,9 @@ public class AccessPointTest {
                 .withOperations(getAuthor)
                 .build();
 
+        final BoundOperation getMessages = newBoundOperationBuilder()
+                .withName("_getMessages")
+                .build();
         final Attribute userName = newAttributeBuilder()
                 .withName("name")
                 .withDataType(string)
@@ -138,6 +141,7 @@ public class AccessPointTest {
                 .withAttributes(userName)
                 .withAttributes(userEmail)
                 .withRelations(messagesOfUser)
+                .withOperations(getMessages)
                 .build();
         useAssociationEnd(authorOfMessage)
                 .withTarget(user)
@@ -212,6 +216,20 @@ public class AccessPointTest {
                                 .build())
                         .build())
                 .build();
+        useBoundOperation(getMessages)
+                .withInstanceRepresentation(userDTO)
+                .withOutput(newParameterBuilder()
+                        .withName("output")
+                        .withType(messageDTO)
+                        .withCardinality(newCardinalityBuilder().withUpper(-1).build())
+                        .build())
+                .build();
+        final TransferObjectRelation messagesOfUserDTO = newTransferObjectRelationBuilder()
+                .withName("messages")
+                .withTarget(messageDTO)
+                .withCardinality(newCardinalityBuilder().withUpper(-1).build())
+                .withBinding(messagesOfUser)
+                .build();
         useMappedTransferObjectType(userDTO)
                 .withName("UserDTO")
                 .withEntityType(user)
@@ -221,12 +239,7 @@ public class AccessPointTest {
                         .withRequired(true)
                         .withBinding(userName)
                         .build())
-                .withRelations(newTransferObjectRelationBuilder()
-                        .withName("messages")
-                        .withTarget(messageDTO)
-                        .withCardinality(newCardinalityBuilder().withUpper(-1).build())
-                        .withBinding(messagesOfUser)
-                        .build())
+                .withRelations(messagesOfUserDTO)
                 .withOperations(newUnboundOperationBuilder()
                         .withName("checkEmailIsUnique")
                         .withInput(newParameterBuilder()
@@ -236,6 +249,19 @@ public class AccessPointTest {
                                 .build())
                         .withImplementation(newOperationBodyBuilder()
                                 .withCustomImplementation(true)
+                                .build())
+                        .build())
+                .withOperations(newBoundTransferOperationBuilder()
+                        .withName("_getMessages")
+                        .withBinding(getMessages)
+                        .withOutput(newParameterBuilder()
+                                .withName("output")
+                                .withType(messageDTO)
+                                .withCardinality(newCardinalityBuilder().withUpper(-1).build())
+                                .build())
+                        .withBehaviour(newTransferOperationBehaviourBuilder()
+                                .withBehaviourType(TransferOperationBehaviourType.GET_RELATION)
+                                .withOwner(messagesOfUserDTO)
                                 .build())
                         .build())
                 .build();
@@ -273,6 +299,16 @@ public class AccessPointTest {
                 .withCardinality(newCardinalityBuilder().withUpper(-1).build())
                 .build();
 
+        final StaticNavigation allUsers = newStaticNavigationBuilder()
+                .withName("AllUsers")
+                .withTarget(user)
+                .withGetterExpression(newReferenceExpressionTypeBuilder()
+                        .withDialect(ExpressionDialect.JQL)
+                        .withExpression("Model::User")
+                        .build())
+                .withCardinality(newCardinalityBuilder().withUpper(-1).build())
+                .build();
+
         final AccessPoint accessPoint1 = newAccessPointBuilder()
                 .withName("AP1")
                 .withExposedServices(newExposedServiceBuilder()
@@ -281,15 +317,15 @@ public class AccessPointTest {
                         .build())
                 .build();
 
-        final ExposedGraph messenger2Graph = newExposedGraphBuilder()
-                .withName("messenger2")
+        final ExposedGraph allMessagesGraph = newExposedGraphBuilder()
+                .withName("allMessages")
                 .withMappedTransferObjectType(messageDTO)
                 .withCardinality(newCardinalityBuilder().withUpper(-1).build())
                 .withSelector(allMessages)
                 .build();
         useMappedTransferObjectType(messageDTO)
                 .withOperations(newUnboundOperationBuilder()
-                        .withName("_getMessenger2")
+                        .withName("_getAllMessages")
                         .withOutput(newParameterBuilder()
                                 .withName("output")
                                 .withType(messageDTO)
@@ -297,45 +333,45 @@ public class AccessPointTest {
                                 .build())
                         .withBehaviour(newTransferOperationBehaviourBuilder()
                                 .withBehaviourType(TransferOperationBehaviourType.GET)
-                                .withOwner(messenger2Graph)
+                                .withOwner(allMessagesGraph)
                                 .build())
                         .build())
                 .build();
 
-        final ExposedGraph messenger3Graph = newExposedGraphBuilder()
-                .withName("messenger3")
-                .withMappedTransferObjectType(messageDTO)
+        final ExposedGraph allUsersGraph = newExposedGraphBuilder()
+                .withName("allUsers")
+                .withMappedTransferObjectType(userDTO)
                 .withCardinality(newCardinalityBuilder().withUpper(-1).build())
-                .withSelector(allMessages)
+                .withSelector(allUsers)
                 .build();
-        useMappedTransferObjectType(messageDTO)
+        useMappedTransferObjectType(userDTO)
                 .withOperations(newUnboundOperationBuilder()
-                        .withName("_getMessenger3")
+                        .withName("_getAllUsers")
                         .withOutput(newParameterBuilder()
                                 .withName("output")
-                                .withType(messageDTO)
+                                .withType(userDTO)
                                 .withCardinality(newCardinalityBuilder().withUpper(-1).build())
                                 .build())
                         .withBehaviour(newTransferOperationBehaviourBuilder()
                                 .withBehaviourType(TransferOperationBehaviourType.GET)
-                                .withOwner(messenger3Graph)
+                                .withOwner(allUsersGraph)
                                 .build())
                         .build())
                 .build();
 
         final AccessPoint accessPoint2 = newAccessPointBuilder()
                 .withName("AP2")
-                .withExposedGraphs(messenger2Graph)
+                .withExposedGraphs(allMessagesGraph)
                 .build();
 
         final AccessPoint accessPoint3 = newAccessPointBuilder()
                 .withName("AP3")
-                .withExposedGraphs(messenger3Graph)
+                .withExposedGraphs(allUsersGraph)
                 .build();
 
         final Model model = newModelBuilder()
                 .withName("Model")
-                .withElements(Arrays.asList(string, message, user, messageDTO, userDTO, emailDTO, allMessages, accessPoint1, accessPoint2, accessPoint3))
+                .withElements(Arrays.asList(string, message, user, messageDTO, userDTO, emailDTO, allMessages, allUsers, accessPoint1, accessPoint2, accessPoint3))
                 .build();
 
         psmModel.addContent(model);
