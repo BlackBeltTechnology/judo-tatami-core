@@ -8,7 +8,7 @@ rule CreateOpenAPIAccessPoint
         t.swagger = "2.0";
 
         t.host = "localhost:8181"; // TODO
-        t.basePath = "/api";
+        t.basePath = "/api/" + asmUtils.getModel().get().name;
         
         t.schemes.add(OPENAPI!SchemeType#http);
         t.schemes.add(OPENAPI!SchemeType#https);
