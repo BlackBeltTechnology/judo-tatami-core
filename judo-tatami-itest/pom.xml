@@ -24,6 +24,30 @@
             </testResource>
         </testResources>
         <plugins>
+
+            <plugin>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>3.1.0</version>
+                <executions>
+                    <execution>
+                        <id>copy-model-resources</id>
+                        <phase>generate-test-sources</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${basedir}/target/test-classes</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>src/test/resources</directory>
+                                    <filtering>true</filtering>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>exec-maven-plugin</artifactId>
@@ -31,7 +55,7 @@
                 <executions>
                     <execution>
                         <id>generate-full-demo</id>
-                        <phase>generate-resources</phase>
+                        <phase>generate-test-sources</phase>
                         <goals>
                             <goal>java</goal>
                         </goals>
@@ -44,12 +68,45 @@
                             <includePluginDependencies>true</includePluginDependencies>
                         </configuration>
                     </execution>
+
+                    <execution>
+                        <id>generate-esm-demo</id>
+                        <phase>generate-test-sources</phase>
+                        <goals>
+                            <goal>java</goal>
+                        </goals>
+                        <configuration>
+                            <mainClass>hu.blackbelt.judo.tatami.esm2psm.Esm2PsmWork</mainClass>
+                            <arguments>
+                                <argument>${basedir}/target/test-classes/northwind-esm.model</argument>
+                                <argument>northwind</argument>
+                                <argument>${basedir}/target/test-classes/northwind-esm-psm.model</argument>
+                            </arguments>
+                            <includeProjectDependencies>true</includeProjectDependencies>
+                            <includePluginDependencies>true</includePluginDependencies>
+                        </configuration>
+                    </execution>
                 </executions>
                 <dependencies>
                     <dependency>
                         <groupId>hu.blackbelt.judo.meta</groupId>
                         <artifactId>hu.blackbelt.judo.meta.psm.model.northwind</artifactId>
                         <version>${judo-meta-psm-version}</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>hu.blackbelt.judo.tatami</groupId>
+                        <artifactId>judo-tatami-esm2psm</artifactId>
+                        <version>${project.version}</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>org.slf4j</groupId>
+                        <artifactId>slf4j-api</artifactId>
+                        <version>1.6.2</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>org.slf4j</groupId>
+                        <artifactId>slf4j-log4j12</artifactId>
+                        <version>1.6.2</version>
                     </dependency>
                 </dependencies>
             </plugin>
@@ -61,14 +118,74 @@
                 <executions>
                     <execution>
                         <id>execute-northwind-test-model-from-general</id>
+                        <phase>generate-test-sources</phase>
                         <configuration>
                             <ignorePsm2Asm>false</ignorePsm2Asm>
+                            <ignoreAsm2jaxrsapi>false</ignoreAsm2jaxrsapi>
                             <ignoreRdbms2Liquibase>false</ignoreRdbms2Liquibase>
+                        </configuration>
+                    </execution>
+
+                    <execution>
+                        <id>execute-northwind-esm-test-model-from-general</id>
+                        <phase>generate-test-sources</phase>
+                        <goals>
+                            <goal>psm-default-workflow</goal>
+                        </goals>
+                        <configuration>
+                            <psmModelFile>${basedir}/target/test-classes/northwind-esm-psm.model</psmModelFile>
+                            <destination>${basedir}/target/test-classes</destination>
+                            <modelName>northwind-esm</modelName>
+                            <dialectList>hsqldb,oracle</dialectList>
+                            <ignorePsm2Measure>true</ignorePsm2Measure>
+                            <ignoreAsm2Rdbms>true</ignoreAsm2Rdbms>
+                            <ignoreAsm2Openapi>true</ignoreAsm2Openapi>
+                            <ignoreAsm2sdk>true</ignoreAsm2sdk>
+                            <ignoreRdbms2Liquibase>true</ignoreRdbms2Liquibase>
+                            <ignoreAsm2Expression>true</ignoreAsm2Expression>
+                            <ignoreAsm2Script>true</ignoreAsm2Script>
                         </configuration>
                     </execution>
                 </executions>
             </plugin>
 
+            <plugin>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <phase>generate-test-sources</phase>
+                        <configuration>
+                            <tasks>
+                                <unzip src="${project.basedir}/target/test-classes/northwind-asm2jaxrsapi.jar" dest="${project.basedir}/target/test-classes/generated-test-sources"/>
+                                <unzip src="${project.basedir}/target/test-classes/northwind-esm-asm2jaxrsapi.jar" dest="${project.basedir}/target/test-classes/generated-test-sources"/>
+                            </tasks>
+                        </configuration>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <version>3.0.0</version>
+                <executions>
+                    <execution>
+                        <id>psm-northwind-add-test-sources</id>
+                        <phase>generate-test-sources</phase>
+                        <goals>
+                            <goal>add-test-source</goal>
+                        </goals>
+                        <configuration>
+                            <sources>
+                                <source>${project.basedir}/target/test-classes/generated-test-sources</source>
+                            </sources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -559,6 +676,8 @@
             <artifactId>judo-tatami-rdbms2liquibase</artifactId>
             <scope>test</scope>
         </dependency>
+
+        <!--
         <dependency>
             <groupId>hu.blackbelt.judo.tatami</groupId>
             <artifactId>judo-tatami-asm2jaxrsapi</artifactId>
@@ -567,6 +686,7 @@
             <type>jar</type>
             <scope>test</scope>
         </dependency>
+        -->
 
         <dependency>
             <groupId>com.fasterxml.jackson.datatype</groupId>
