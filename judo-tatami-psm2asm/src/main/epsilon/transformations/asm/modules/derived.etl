@@ -4,6 +4,8 @@ import "../utils/_importUtils.eol";
 rule AddPrimitiveAccessorConstraints
 	transform s : JUDOPSM!PrimitiveAccessor
     to t : ASM!EAnnotation {
+        guard: not s.isKindOf(JUDOPSM!StaticData)
+
         t.source = asmUtils.getAnnotationUri("constraints");
         
         s.asmEquivalent().eAnnotations.add(t);
@@ -14,7 +16,7 @@ rule AddStringPrimitiveAccessorConstraints
 	transform s : JUDOPSM!PrimitiveAccessor
     to t : ASM!EAnnotation
     extends AddPrimitiveAccessorConstraints {
-        guard: s.dataType.isKindOf(JUDOPSM!StringType)
+        guard: not s.isKindOf(JUDOPSM!StaticData) and s.dataType.isKindOf(JUDOPSM!StringType)
         
         var maxLength = new ASM!EStringToStringMapEntry;
         maxLength.key = "maxLength";
@@ -27,7 +29,7 @@ rule AddCustomPrimitiveAccessorConstraints
 	transform s : JUDOPSM!PrimitiveAccessor
     to t : ASM!EAnnotation
     extends AddPrimitiveAccessorConstraints {
-        guard: s.dataType.isKindOf(JUDOPSM!CustomType)
+        guard: not s.isKindOf(JUDOPSM!StaticData) and s.dataType.isKindOf(JUDOPSM!CustomType)
         
         var customType = new ASM!EStringToStringMapEntry;
         customType.key = "customType";
@@ -56,7 +58,7 @@ rule AddNumericPrimitiveAccessorConstraints
 	transform s : JUDOPSM!PrimitiveAccessor
     to t : ASM!EAnnotation
     extends AddAbstractNumericPrimitiveAccessorConstraints {
-        guard: s.dataType.isKindOf(JUDOPSM!NumericType) and not s.dataType.isKindOf(JUDOPSM!MeasuredType)
+        guard: not s.isKindOf(JUDOPSM!StaticData) and s.dataType.isKindOf(JUDOPSM!NumericType) and not s.dataType.isKindOf(JUDOPSM!MeasuredType)
     }
 
 @greedy
@@ -81,7 +83,9 @@ rule AddMeasuredPrimitiveAccessorConstraints
 rule CreatePrimitiveAccessorExpressionAnnotation
 	transform s : JUDOPSM!PrimitiveAccessor
 	to t : ASM!EAnnotation {
-	    t.source = extendedMetadataURI + "/expression";
+	    guard: not s.isKindOf(JUDOPSM!StaticData)
+
+	    t.source = asmUtils.getAnnotationUri("expression");
 	    
 	    var getter = new ASM!EStringToStringMapEntry;
 	    getter.key = "getter";
@@ -114,6 +118,8 @@ rule CreatePrimitiveAccessorExpressionAnnotation
 rule CreateReferenceAccessorExpressionAnnotation
 	transform s : JUDOPSM!ReferenceAccessor
 	to t : ASM!EAnnotation {
+	    guard: not s.isKindOf(JUDOPSM!StaticNavigation)
+
 	    t.source = asmUtils.getAnnotationUri("expression");
 	    
 	    var getter = new ASM!EStringToStringMapEntry;
@@ -194,30 +200,4 @@ rule CreateNavigationProperty
 	to t : ASM!EReference
 	extends CreateReferenceAccessor {
 		s.getEntityType().equivalent("CreateEntityClass").eStructuralFeatures.add(t);
-}
-
-@greedy
-rule CreateClassForStatics
-    transform s : JUDOPSM!Namespace
-    to t : ASM!EClass {
-        guard: s.elements.selectOne(e | e.isKindOf(JUDOPSM!StaticData) or e.isKindOf(JUDOPSM!StaticNavigation)).isDefined()
-
-        t.name = "__Static";
-        t.abstract = true;
-
-        s.asmEquivalent().eClassifiers.add(t);
-}
-
-rule CreateStaticData
-	transform s : JUDOPSM!StaticData
-	to t : ASM!EAttribute
-	extends CreatePrimitiveAccessor {
-		s.eContainer.equivalent("CreateClassForStatics").eStructuralFeatures.add(t);
-}
-
-rule CreateStaticNavigation
-	transform s : JUDOPSM!StaticNavigation
-	to t : ASM!EReference
-	extends CreateReferenceAccessor {
-		s.eContainer.equivalent("CreateClassForStatics").eStructuralFeatures.add(t);
 }
