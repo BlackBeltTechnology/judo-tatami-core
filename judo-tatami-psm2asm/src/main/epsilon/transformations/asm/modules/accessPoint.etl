@@ -26,17 +26,30 @@ rule CreateAccessPoint
         s.eContainer.asmEquivalent().eClassifiers.add(t);
 }
 
-rule CreateExposedByAnnotationForUnboundOperation
+rule CreateExposedServiceReference
+    transform s : JUDOPSM!ExposedService
+    to t : ASM!EReference {
+        t.name = s.name;
+
+        t.lowerBound = 1;
+        t.upperBound = 1;
+        t.eType = s.operationGroup.asmEquivalent();
+        t.derived = true;
+
+        s.eContainer.equivalent("CreateAccessPoint").eStructuralFeatures.add(t);
+}
+
+rule CreateExposedServiceReferenceAnnotation
     transform s : JUDOPSM!ExposedService
     to t : ASM!EAnnotation {
         t.source = asmUtils.getAnnotationUri("exposedService");
-        
-        var exposedBy = new ASM!EStringToStringMapEntry;
-        exposedBy.key = "value";
-        exposedBy.value = asmUtils.getClassifierFQName(s.eContainer.equivalent("CreateAccessPoint")) + "/" + s.name;
-        t.details.add(exposedBy);
-        
-        s.`operationGroup`.asmEquivalent().eAnnotations.add(t);
+
+        var exposedServiceEntry = new ASM!EStringToStringMapEntry;
+        exposedServiceEntry.key = "value";
+        exposedServiceEntry.value = "true";
+        t.details.add(exposedServiceEntry);
+
+        s.equivalent("CreateExposedServiceReference").eAnnotations.add(t);
 }
 
 rule CreateExposedGraphReference
@@ -52,10 +65,23 @@ rule CreateExposedGraphReference
         s.eContainer.equivalent("CreateAccessPoint").eStructuralFeatures.add(t);
 }
 
+rule CreateExposedGraphReferenceAnnotation
+    transform s : JUDOPSM!ExposedGraph
+    to t : ASM!EAnnotation {
+        t.source = asmUtils.getAnnotationUri("exposedGraph");
+
+        var exposedGraphEntry = new ASM!EStringToStringMapEntry;
+        exposedGraphEntry.key = "value";
+        exposedGraphEntry.value = "true";
+        t.details.add(exposedGraphEntry);
+
+        s.equivalent("CreateExposedGraphReference").eAnnotations.add(t);
+}
+
 rule CreateExposedGraphReferenceBinding
     transform s : JUDOPSM!ExposedGraph
     to t : ASM!EAnnotation {
-        t.source = extendedMetadataURI + "/expression";
+        t.source = asmUtils.getAnnotationUri("expression");
 
         var getter = new ASM!EStringToStringMapEntry;
         getter.key = "getter";

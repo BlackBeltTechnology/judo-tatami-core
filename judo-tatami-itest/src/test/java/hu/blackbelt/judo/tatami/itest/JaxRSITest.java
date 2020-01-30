@@ -19,7 +19,7 @@ import org.ops4j.pax.exam.spi.reactors.PerClass;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.log.LogService;
-import rest.demo.services.InternationalOrderInfo;
+import restdto.demo.services.InternationalOrderInfo;
 
 import javax.inject.Inject;
 import javax.ws.rs.client.ClientBuilder;
@@ -50,17 +50,17 @@ import static org.ops4j.pax.exam.karaf.options.KarafDistributionOption.editConfi
 import static org.ops4j.pax.exam.karaf.options.KarafDistributionOption.features;
 import static org.osgi.service.log.LogService.LOG_ERROR;
 import static org.osgi.service.log.LogService.LOG_INFO;
-import static rest.demo.services.CategoryInfo.categoryInfoBuilder;
-import static rest.demo.services.InternationalOrderInfo.internationalOrderInfoBuilder;
-import static rest.demo.services.OrderInfo.orderInfoBuilder;
-import static rest.demo.services.OrderItem.orderItemBuilder;
-import static rest.demo.services.ProductInfo.productInfoBuilder;
+import static restdto.demo.services.CategoryInfo.categoryInfoBuilder;
+import static restdto.demo.services.InternationalOrderInfo.internationalOrderInfoBuilder;
+import static restdto.demo.services.OrderInfo.orderInfoBuilder;
+import static restdto.demo.services.OrderItem.orderItemBuilder;
+import static restdto.demo.services.ProductInfo.productInfoBuilder;
 
 @Category(JaxRSTestSuite.class)
 @RunWith(PaxExam.class)
 @ExamReactorStrategy(PerClass.class)
 public class JaxRSITest {
-    private static final String BASE_URL = "http://localhost:8181/cxf/demo/internalAP";
+    private static final String BASE_URL = "http://localhost:8181/cxf/demo";
 
     private static final String DEMO_SERVICE_GET_ALL_INTERNATIONAL_ORDERS = "/demo/services/InternationalOrderInfo/getAllInternationalOrders";
     private static final String DEMO_SERVICE_CREATE_INTERNATIONAL_ORDER = "/demo/services/InternationalOrderInfo/createInternationalOrder";
