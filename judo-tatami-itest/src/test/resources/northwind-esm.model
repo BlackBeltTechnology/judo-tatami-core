@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="ASCII"?>
-<namespace:Model xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:accesspoint="http://blackbelt.hu/judo/meta/esm/accesspoint" xmlns:measure="http://blackbelt.hu/judo/meta/esm/measure" xmlns:namespace="http://blackbelt.hu/judo/meta/esm/namespace" xmlns:operation="http://blackbelt.hu/judo/meta/esm/operation" xmlns:structure="http://blackbelt.hu/judo/meta/esm/structure" xmlns:type="http://blackbelt.hu/judo/meta/esm/type" xmi:id="_JYjAEOq1EemUZMITjXqp8w" name="northwind">
+<namespace:Model xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:accesspoint="http://blackbelt.hu/judo/meta/esm/accesspoint" xmlns:measure="http://blackbelt.hu/judo/meta/esm/measure" xmlns:namespace="http://blackbelt.hu/judo/meta/esm/namespace" xmlns:structure="http://blackbelt.hu/judo/meta/esm/structure" xmlns:type="http://blackbelt.hu/judo/meta/esm/type" xmi:id="_JYjAEOq1EemUZMITjXqp8w" name="northwind" metaVersion="$VERSION_PLACEHOLDER$">
   <elements xsi:type="namespace:Package" xmi:id="_g0GS4B1REemwg4NgOjaKeA" name="measures">
     <elements xsi:type="measure:Measure" xmi:id="_oNT8IB1REemwg4NgOjaKeA" name="Mass">
       <units xmi:id="_2IFN4B1REemwg4NgOjaKeA" name="milligram" rateDividend="1.0E-6" symbol="mg"/>
@@ -301,7 +301,7 @@
       <relations xsi:type="structure:TwoWayRelationMember" xmi:id="_JYnRruq1EemUZMITjXqp8w" name="employee" target="_JYmqgOq1EemUZMITjXqp8w" defaultExpression="" rangeExpression="" partner="_JYmqgeq1EemUZMITjXqp8w"/>
       <relations xsi:type="structure:TwoWayRelationMember" xmi:id="_JYnRr-q1EemUZMITjXqp8w" name="shipper" target="_JYofyuq1EemUZMITjXqp8w" defaultExpression="" rangeExpression="" partner="_JYofy-q1EemUZMITjXqp8w" primary="true"/>
       <relations xsi:type="structure:OneWayRelationMember" xmi:id="_JYnRsOq1EemUZMITjXqp8w" name="shipAddress" target="_JYmDYeq1EemUZMITjXqp8w" containment="true"/>
-      <relations xsi:type="structure:OneWayRelationMember" xmi:id="_JYnRs-q1EemUZMITjXqp8w" lower="1" upper="-1" name="items" target="_JYn4nuq1EemUZMITjXqp8w" containment="true"/>
+      <relations xsi:type="structure:OneWayRelationMember" xmi:id="_JYnRs-q1EemUZMITjXqp8w" lower="1" upper="-1" name="orderDetails" target="_JYn4nuq1EemUZMITjXqp8w" containment="true"/>
       <relations xsi:type="structure:OneWayRelationMember" xmi:id="_JYnRtuq1EemUZMITjXqp8w" upper="-1" name="categories" target="_JYmDcOq1EemUZMITjXqp8w" relationMemberType="PROPERTY" getterExpression="self.orderDetails.product.category"/>
       <attributes xsi:type="structure:DataMember" xmi:id="_JYnRueq1EemUZMITjXqp8w" name="orderDate" dataType="_Z9J8IIN1EeiLE-B2bbL0fg" required="true"/>
       <attributes xsi:type="structure:DataMember" xmi:id="_JYnRvOq1EemUZMITjXqp8w" name="requiredDate" dataType="_Z9J8IIN1EeiLE-B2bbL0fg"/>
@@ -378,7 +378,7 @@
   </elements>
   <elements xsi:type="namespace:Package" xmi:id="_JYpGxOq1EemUZMITjXqp8w" name="services">
     <elements xsi:type="structure:TransferObjectType" xmi:id="_JYpGxeq1EemUZMITjXqp8w" name="CategoryInfo">
-      <relations xsi:type="structure:OneWayRelationMember" xmi:id="_s8Csuf8MEem4dONaAfrVDg" upper="-1" name="products" target="_JYofpOq1EemUZMITjXqp8w" binding="_JYmDceq1EemUZMITjXqp8w" relationMemberType="BOUND" getterExpression="self.products"/>
+      <relations xsi:type="structure:OneWayRelationMember" upper="-1" name="products" target="_s8D6-P8MEem4dONaAfrVDg" rangeExpression="northwind::entities::Product" updateable="false" deleteable="false" relationMemberType="PROPERTY" getterExpression="self.products"/>
       <attributes xsi:type="structure:DataMember" xmi:id="_s8Csvv8MEem4dONaAfrVDg" name="categoryName" dataType="_Nppx8IUcEeipmMyz9cMCRA" required="true" binding="_JYmDc-q1EemUZMITjXqp8w" dataMemberType="BOUND" getterExpression="self.categoryName"/>
       <mapping xmi:id="_s8Cswv8MEem4dONaAfrVDg" target="_JYmDcOq1EemUZMITjXqp8w" filter=""/>
     </elements>
@@ -388,41 +388,16 @@
       <attributes xsi:type="structure:DataMember" xmi:id="_s8DTyP8MEem4dONaAfrVDg" name="timestamp" dataType="_Z9J8IIN1EeiLE-B2bbL0fg"/>
     </elements>
     <elements xsi:type="structure:TransferObjectType" xmi:id="_s8DTzP8MEem4dONaAfrVDg" name="InternationalOrderInfo">
-      <relations xsi:type="structure:OneWayRelationMember" xmi:id="_s8DTzf8MEem4dONaAfrVDg" lower="1" upper="-1" name="items" target="_s8FwAv8MEem4dONaAfrVDg" binding="_JYnRs-q1EemUZMITjXqp8w" relationMemberType="BOUND" getterExpression="self.orderDetails"/>
-      <relations xsi:type="structure:OneWayRelationMember" xmi:id="_s8DT0v8MEem4dONaAfrVDg" name="shipper" target="_s8EiBv8MEem4dONaAfrVDg" binding="_JYnRr-q1EemUZMITjXqp8w" relationMemberType="BOUND" getterExpression="self.shipper"/>
-      <attributes xsi:type="structure:DataMember" xmi:id="_s8DT1_8MEem4dONaAfrVDg" name="orderDate" dataType="_Z9J8IIN1EeiLE-B2bbL0fg" required="true" binding="_JYnRueq1EemUZMITjXqp8w" dataMemberType="BOUND" getterExpression="self.orderDate"/>
-      <attributes xsi:type="structure:DataMember" xmi:id="_s8DT2_8MEem4dONaAfrVDg" name="shipperName" dataType="_Nppx8IUcEeipmMyz9cMCRA" binding="_JYn4meq1EemUZMITjXqp8w" dataMemberType="BOUND" getterExpression="self.shipperName"/>
       <attributes xsi:type="structure:DataMember" xmi:id="_s8DT3_8MEem4dONaAfrVDg" name="customsDescription" dataType="_Nppx8IUcEeipmMyz9cMCRA" required="true" binding="_JYnRjuq1EemUZMITjXqp8w" dataMemberType="BOUND" getterExpression="self.customsDescription"/>
       <attributes xsi:type="structure:DataMember" xmi:id="_s8DT4_8MEem4dONaAfrVDg" name="exciseTax" dataType="_VDVVQIUcEeipmMyz9cMCRA" required="true" binding="_JYnRkeq1EemUZMITjXqp8w" dataMemberType="BOUND" getterExpression="self.exciseTax"/>
+      <generalizations target="_s8FI9f8MEem4dONaAfrVDg"/>
       <mapping xmi:id="_s8DT5_8MEem4dONaAfrVDg" target="_JYnRjeq1EemUZMITjXqp8w" filter=""/>
     </elements>
-    <elements xsi:type="structure:TransferObjectType" xmi:id="_s8DT6f8MEem4dONaAfrVDg" name="InternationalOrderInfoQuery">
-      <relations xsi:type="structure:OneWayRelationMember" xmi:id="_s8DT6v8MEem4dONaAfrVDg" lower="1" upper="-1" name="items" target="_s8D62_8MEem4dONaAfrVDg" aggregation="true" binding="_JYnRs-q1EemUZMITjXqp8w" relationMemberType="BOUND" getterExpression="self.orderDetails"/>
-      <relations xsi:type="structure:OneWayRelationMember" xmi:id="_s8DT7_8MEem4dONaAfrVDg" upper="-1" name="categories" target="_JYpGxeq1EemUZMITjXqp8w" aggregation="true" binding="_JYnRtuq1EemUZMITjXqp8w" relationMemberType="BOUND" getterExpression="self.categories"/>
-      <attributes xsi:type="structure:DataMember" xmi:id="_s8D60f8MEem4dONaAfrVDg" name="orderDate" dataType="_Z9J8IIN1EeiLE-B2bbL0fg" required="true" binding="_JYnRueq1EemUZMITjXqp8w" dataMemberType="BOUND" getterExpression="self.orderDate"/>
-      <attributes xsi:type="structure:DataMember" xmi:id="_s8D61f8MEem4dONaAfrVDg" name="shipperName" dataType="_Nppx8IUcEeipmMyz9cMCRA" binding="_JYn4meq1EemUZMITjXqp8w" dataMemberType="BOUND" getterExpression="self.shipperName"/>
-      <mapping xmi:id="_s8D62f8MEem4dONaAfrVDg" target="_JYnRjeq1EemUZMITjXqp8w" filter=""/>
-    </elements>
-    <elements xsi:type="structure:TransferObjectType" xmi:id="_s8D62_8MEem4dONaAfrVDg" name="OrderItemQuery">
-      <relations xsi:type="structure:OneWayRelationMember" xmi:id="_s8D63P8MEem4dONaAfrVDg" lower="1" name="product" target="_s8D6-P8MEem4dONaAfrVDg" binding="_JYn4n-q1EemUZMITjXqp8w" relationMemberType="BOUND" getterExpression="self.product"/>
-      <relations xsi:type="structure:OneWayRelationMember" xmi:id="_s8D64f8MEem4dONaAfrVDg" lower="1" name="category" target="_JYpGxeq1EemUZMITjXqp8w" binding="_JYn4ouq1EemUZMITjXqp8w" relationMemberType="BOUND" getterExpression="self.category"/>
-      <attributes xsi:type="structure:DataMember" xmi:id="_s8D65v8MEem4dONaAfrVDg" name="unitPrice" dataType="_VDVVQIUcEeipmMyz9cMCRA" required="true" binding="_JYn4peq1EemUZMITjXqp8w" dataMemberType="BOUND" getterExpression="self.unitPrice"/>
-      <attributes xsi:type="structure:DataMember" xmi:id="_s8D66v8MEem4dONaAfrVDg" name="quantity" dataType="_TXtg8IUcEeipmMyz9cMCRA" required="true" binding="_JYn4qOq1EemUZMITjXqp8w" dataMemberType="BOUND" getterExpression="self.quantity"/>
-      <attributes xsi:type="structure:DataMember" xmi:id="_s8D67v8MEem4dONaAfrVDg" name="discount" dataType="_VDVVQIUcEeipmMyz9cMCRA" required="true" binding="_JYn4q-q1EemUZMITjXqp8w" dataMemberType="BOUND" getterExpression="self.discount"/>
-      <attributes xsi:type="structure:DataMember" xmi:id="_s8D68v8MEem4dONaAfrVDg" name="productName" dataType="_Nppx8IUcEeipmMyz9cMCRA" required="true" binding="_JYn4ruq1EemUZMITjXqp8w" dataMemberType="BOUND" getterExpression="self.productName"/>
-      <mapping xmi:id="_s8D69v8MEem4dONaAfrVDg" target="_JYn4nuq1EemUZMITjXqp8w" filter=""/>
-    </elements>
     <elements xsi:type="structure:TransferObjectType" xmi:id="_s8D6-P8MEem4dONaAfrVDg" name="ProductInfo">
-      <relations xsi:type="structure:OneWayRelationMember" xmi:id="_s8D6-f8MEem4dONaAfrVDg" lower="1" name="category" target="_JYpGxeq1EemUZMITjXqp8w" updateable="false" deleteable="false" binding="_JYofpuq1EemUZMITjXqp8w" relationMemberType="BOUND" getterExpression="self.category"/>
+      <relations xsi:type="structure:OneWayRelationMember" xmi:id="_s8D6-f8MEem4dONaAfrVDg" lower="1" name="category" target="_JYpGxeq1EemUZMITjXqp8w" updateable="false" deleteable="false" binding="_JYofpuq1EemUZMITjXqp8w" relationMemberType="PROPERTY" getterExpression="self.category"/>
       <attributes xsi:type="structure:DataMember" xmi:id="_s8Eh4_8MEem4dONaAfrVDg" name="unitPrice" dataType="_VDVVQIUcEeipmMyz9cMCRA" required="true" binding="_JYofr-q1EemUZMITjXqp8w" dataMemberType="BOUND" getterExpression="self.unitPrice"/>
       <attributes xsi:type="structure:DataMember" xmi:id="_s8Eh5_8MEem4dONaAfrVDg" name="productName" dataType="_Nppx8IUcEeipmMyz9cMCRA" required="true" binding="_JYofqeq1EemUZMITjXqp8w" dataMemberType="BOUND" getterExpression="self.productName"/>
       <mapping xmi:id="_s8Eh6_8MEem4dONaAfrVDg" target="_JYofpOq1EemUZMITjXqp8w" filter=""/>
-    </elements>
-    <elements xsi:type="structure:TransferObjectType" xmi:id="_s8Eh7f8MEem4dONaAfrVDg" name="ProductInfoQuery">
-      <relations xsi:type="structure:OneWayRelationMember" xmi:id="_s8Eh7v8MEem4dONaAfrVDg" lower="1" name="category" target="_JYpGxeq1EemUZMITjXqp8w" binding="_JYofpuq1EemUZMITjXqp8w" relationMemberType="BOUND" getterExpression="self.category"/>
-      <attributes xsi:type="structure:DataMember" xmi:id="_s8Eh8_8MEem4dONaAfrVDg" name="unitPrice" dataType="_VDVVQIUcEeipmMyz9cMCRA" required="true" binding="_JYofr-q1EemUZMITjXqp8w" dataMemberType="BOUND" getterExpression="self.unitPrice"/>
-      <attributes xsi:type="structure:DataMember" xmi:id="_s8Eh9_8MEem4dONaAfrVDg" name="productName" dataType="_Nppx8IUcEeipmMyz9cMCRA" required="true" binding="_JYofqeq1EemUZMITjXqp8w" dataMemberType="BOUND" getterExpression="self.productName"/>
-      <mapping xmi:id="_s8Eh-_8MEem4dONaAfrVDg" target="_JYofpOq1EemUZMITjXqp8w" filter=""/>
     </elements>
     <elements xsi:type="structure:TransferObjectType" xmi:id="_s8Eh_f8MEem4dONaAfrVDg" name="ShipmentChange">
       <attributes xsi:type="structure:DataMember" xmi:id="_s8Eh_v8MEem4dONaAfrVDg" name="shipperName" dataType="_Nppx8IUcEeipmMyz9cMCRA" required="true"/>
@@ -434,8 +409,8 @@
     </elements>
     <elements xsi:type="structure:TransferObjectType" xmi:id="_s8FI9f8MEem4dONaAfrVDg" name="OrderInfo">
       <relations xsi:type="structure:OneWayRelationMember" xmi:id="_s8FI9v8MEem4dONaAfrVDg" lower="1" upper="-1" name="items" target="_s8FwAv8MEem4dONaAfrVDg" aggregation="true" binding="_JYnRs-q1EemUZMITjXqp8w" relationMemberType="BOUND" getterExpression="self.orderDetails"/>
-      <relations xsi:type="structure:OneWayRelationMember" xmi:id="_s8FI-_8MEem4dONaAfrVDg" name="shipper" target="_s8EiBv8MEem4dONaAfrVDg" binding="_JYnRr-q1EemUZMITjXqp8w" relationMemberType="BOUND" getterExpression="self.shipper"/>
-      <relations xsi:type="structure:OneWayRelationMember" xmi:id="_s8FJAP8MEem4dONaAfrVDg" upper="-1" name="categories" target="_JYpGxeq1EemUZMITjXqp8w" binding="_JYnRtuq1EemUZMITjXqp8w" relationMemberType="BOUND" getterExpression="self.categories"/>
+      <relations xsi:type="structure:OneWayRelationMember" xmi:id="_s8FI-_8MEem4dONaAfrVDg" name="shipper" target="_s8EiBv8MEem4dONaAfrVDg" createable="false" updateable="false" deleteable="false" binding="_JYnRr-q1EemUZMITjXqp8w" relationMemberType="BOUND" getterExpression="self.shipper"/>
+      <relations xsi:type="structure:OneWayRelationMember" xmi:id="_s8FJAP8MEem4dONaAfrVDg" upper="-1" name="categories" target="_JYpGxeq1EemUZMITjXqp8w" updateable="false" deleteable="false" binding="_JYnRtuq1EemUZMITjXqp8w" relationMemberType="BOUND" getterExpression="self.categories"/>
       <relations xsi:type="structure:OneWayRelationMember" xmi:id="_s8FJBf8MEem4dONaAfrVDg" upper="-1" name="comments" target="_s8CsxP8MEem4dONaAfrVDg" aggregation="true"/>
       <attributes xsi:type="structure:DataMember" xmi:id="_s8FJCv8MEem4dONaAfrVDg" name="orderDate" dataType="_Z9J8IIN1EeiLE-B2bbL0fg" required="true" binding="_JYnRueq1EemUZMITjXqp8w" dataMemberType="BOUND" getterExpression="self.orderDate"/>
       <attributes xsi:type="structure:DataMember" xmi:id="_s8FJDv8MEem4dONaAfrVDg" name="shipperName" dataType="_Nppx8IUcEeipmMyz9cMCRA" binding="_JYn4meq1EemUZMITjXqp8w" dataMemberType="BOUND" getterExpression="self.shipperName"/>
@@ -444,21 +419,8 @@
     <elements xsi:type="structure:TransferObjectType" xmi:id="_s8FwAv8MEem4dONaAfrVDg" name="OrderItem">
       <mapping xmi:id="_s8FwA_8MEem4dONaAfrVDg" target="_JYn4nuq1EemUZMITjXqp8w" filter=""/>
     </elements>
-    <elements xsi:type="structure:TransferObjectType" xmi:id="_s8FwD_8MEem4dONaAfrVDg" name="OrderInforQuery">
-      <relations xsi:type="structure:OneWayRelationMember" xmi:id="_s8FwEP8MEem4dONaAfrVDg" lower="1" upper="-1" name="orderDetails" target="_s8D62_8MEem4dONaAfrVDg" aggregation="true" binding="_JYnRs-q1EemUZMITjXqp8w" relationMemberType="BOUND" getterExpression="self.orderDetails"/>
-      <relations xsi:type="structure:OneWayRelationMember" xmi:id="_s8FwFf8MEem4dONaAfrVDg" upper="-1" name="categories" target="_JYpGxeq1EemUZMITjXqp8w" binding="_JYnRtuq1EemUZMITjXqp8w" relationMemberType="BOUND" getterExpression="self.categories"/>
-      <attributes xsi:type="structure:DataMember" xmi:id="_s8FwGv8MEem4dONaAfrVDg" name="orderDate" dataType="_Z9J8IIN1EeiLE-B2bbL0fg" required="true" binding="_JYnRueq1EemUZMITjXqp8w" dataMemberType="BOUND" getterExpression="self.orderDate"/>
-      <attributes xsi:type="structure:DataMember" xmi:id="_s8FwHv8MEem4dONaAfrVDg" name="shipperName" dataType="_Nppx8IUcEeipmMyz9cMCRA" binding="_JYn4meq1EemUZMITjXqp8w" dataMemberType="BOUND" getterExpression="self.shipperName"/>
-      <mapping xmi:id="_s8FwIv8MEem4dONaAfrVDg" target="_JYnRrOq1EemUZMITjXqp8w" filter=""/>
-    </elements>
-    <elements xsi:type="structure:TransferObjectType" name="Tester" xmi:id="TESTER">
-      <operations name="test" modifier="STATIC" binding=""/>
-    </elements>
   </elements>
-  <elements xsi:type="accesspoint:AccessPoint" xmi:id="_BwhYMAVjEeqKgZHIs7Kffw" name="InternalAP">
-    <exposedGraphs xmi:id="_BwhYOAVjEeqKgZHIs7Kffw" name="ordersAssignedToEmployee" upper="-1" target="_s8FwD_8MEem4dONaAfrVDg" getterExpression="northwind::entities::Employee.orders"/>
-    <exposedGraphs name="tester" target="TESTER" getterExpression=""/>
-  </elements>
+  <elements xsi:type="accesspoint:AccessPoint" xmi:id="_BwhYMAVjEeqKgZHIs7Kffw" name="InternalAP"/>
   <elements xsi:type="accesspoint:AccessPoint" xmi:id="_BwhYOwVjEeqKgZHIs7Kffw" name="ExternalAP">
     <exposedGraphs xmi:id="_BwhYPAVjEeqKgZHIs7Kffw" name="allProducts" upper="-1" target="_s8D6-P8MEem4dONaAfrVDg" getterExpression="northwind::entities::Product"/>
     <exposedGraphs xmi:id="_BwhYPwVjEeqKgZHIs7Kffw" name="allCategories" upper="-1" target="_JYpGxeq1EemUZMITjXqp8w" getterExpression="northwind::entities::Category"/>
