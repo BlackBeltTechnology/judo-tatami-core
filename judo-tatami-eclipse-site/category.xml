@@ -3,19 +3,15 @@
    <description>
       To install these features, point Eclipse at this site.
    </description>
-   
    <feature id="hu.blackbelt.epsilon.runtime.feature">
       <category name="site"/>
-   </feature>   
-   
+   </feature>
    <feature id="hu.blackbelt.judo.eclipse.emf.genmodel.generator.feature">
       <category name="site"/>
-   </feature>   
-
+   </feature>
    <feature id="hu.blackbelt.eclipse.emf.genmodel.generator.feature">
       <category name="site"/>
-   </feature>   
-   
+   </feature>
    <feature id="hu.blackbelt.judo.meta.esm.feature">
       <category name="site"/>
    </feature>
@@ -46,25 +42,28 @@
    <feature id="hu.blackbelt.judo.meta.openapi.feature">
       <category name="site"/>
    </feature>
-
+   <feature id="hu.blackbelt.judo.jql.ide.eclipse.feature">
+      <category name="site"/>
+   </feature>
+   <feature id="hu.blackbelt.judo.jcl.ide.eclipse.feature">
+      <category name="site"/>
+   </feature>
+   <feature id="hu.blackbelt.judo.meta.jcl.feature">
+      <category name="site"/>
+   </feature>
    <category-def name="site" label="Judo Tatami Update Site">
       <description>
          Judo Tatami Update Site: contains all features in this build.
       </description>
    </category-def>
-
-   <!-- This is currently ignored by Tycho, see https://bugs.eclipse.org/bugs/show_bug.cgi?id=453708 -->
-   <!-- The tycho plugin 1.5.0 will fix it -->
    <repository-reference location="http://download.eclipse.org/epsilon/updates/" enabled="true" />
-
    <repository-reference location="https://nexus.judo.technology/repository/p2/emf-genmodel-generator/1.0.0.20191222_154354_a61f75c_develop" enabled="true" />
    <repository-reference location="https://nexus.judo.technology/repository/p2/judo-genmodel-generator/1.0.0.20200113_162627_224b5ae_develop" enabled="true" />
    <repository-reference location="https://nexus.judo.technology/repository/p2/epsilon-runtime-eclipse/1.2.0.20200112_022936_df2f83b_develop" enabled="true" />
    <repository-reference location="https://nexus.judo.technology/repository/p2/p2-swagger/1.0.1.20200124_031018_bbfdfea_develop" enabled="true" />
-
    <repository-reference location="https://nexus.judo.technology/repository/p2/judo-meta-asm/1.0.0.20200127_132153_5e1875e_develop" enabled="true" />
    <repository-reference location="https://nexus.judo.technology/repository/p2/judo-meta-psm/1.0.0.20200124_194537_38a7229_develop" enabled="true" />
-   <repository-reference location="https://nexus.judo.technology/repository/p2/judo-meta-esm/1.1.0.20200129_165657_b19b181_develop" enabled="true" />
+   <repository-reference location="https://nexus.judo.technology/repository/p2/judo-meta-esm/1.1.0.20200129_224804_f880fec_develop" enabled="true" />
    <repository-reference location="https://nexus.judo.technology/repository/p2/judo-meta-rdbms/1.0.0.20200112_032816_c19b3a4_develop" enabled="true" />
    <repository-reference location="https://nexus.judo.technology/repository/p2/judo-meta-liquibase/1.0.0.20200112_031935_1b64664_develop" enabled="true" />
    <repository-reference location="https://nexus.judo.technology/repository/p2/judo-meta-measure/1.0.0.20200112_030434_1a2a1fb_develop" enabled="true" />
@@ -76,7 +75,4 @@
    <repository-reference location="https://nexus.judo.technology/repository/p2/judo-meta-jcl/1.0.0.20200128_152739_30066ca_develop" enabled="true" />
    <repository-reference location="https://nexus.judo.technology/repository/p2/judo-meta-jcl-ide-eclipse/1.0.0.20200112_030445_9877e2b_develop" enabled="true" />
    <repository-reference location="https://nexus.judo.technology/repository/p2/judo-script-codegen/1.0.0.20200127_202608_694853f_develop" enabled="true" />
-
-
-
 </site>
