@@ -141,12 +141,12 @@ public class JaxRSITest {
                         .artifactId("compiler-api")
                         .versionAsInProject().start(),
 
-                mavenBundle()
+                /*mavenBundle()
                         .groupId("hu.blackbelt.judo.tatami")
                         .artifactId("judo-tatami-asm2jaxrsapi")
                         .classifier("test-bundle")
                         .type("jar")
-                        .versionAsInProject().start(),
+                        .versionAsInProject().start(),*/
 
                 mavenBundle()
                         .groupId("org.json")
