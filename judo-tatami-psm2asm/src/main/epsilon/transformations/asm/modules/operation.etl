@@ -184,7 +184,7 @@ rule CreateBoundTransferOperation
         var bindingAnnotation = new ASM!EAnnotation;
         bindingAnnotation.source = asmUtils.getAnnotationUri("binding");
         var bindingEntry = new ASM!EStringToStringMapEntry;
-        bindingEntry.key = "binding";
+        bindingEntry.key = "value";
         bindingEntry.value = s.binding.asmEquivalent().name;
         bindingAnnotation.details.add(bindingEntry);
         t.eAnnotations.add(bindingAnnotation);
@@ -197,6 +197,22 @@ rule CreateScriptBodyAnnotationForBoundOperation
     transform s : JUDOPSM!BoundOperation
     to t : ASM!EAnnotation
     extends CreateScriptBodyAnnotation {
+        s.equivalent("CreateBoundOperation").eAnnotations.add(t);
+}
+
+@greedy
+rule CreateScriptBodyAnnotationForBoundOperation
+    transform s : JUDOPSM!BoundOperation
+    to t : ASM!EAnnotation {
+        guard: s.`abstract`
+
+        t.source = asmUtils.getAnnotationUri("abstract");
+
+        var abstractEntry = new ASM!EStringToStringMapEntry;
+        abstractEntry.key = "value";
+        abstractEntry.value = s.`abstract`.asString();
+        t.details.add(abstractEntry);
+
         s.equivalent("CreateBoundOperation").eAnnotations.add(t);
 }
 

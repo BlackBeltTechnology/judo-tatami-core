@@ -8,51 +8,60 @@ executionContext.getContext().put("outputJavaClasses", outputJavaClasses);
 executionContext.getContext().put("outputScrXmls", outputScrXmls);
 
 for (dto in ASM!EClass.all.select(c | c.eAnnotations.exists(a | asmUtils.getResolvedExposedBy(a).isPresent()) and (asmUtils.getMappedEntityType(c).isPresent() or (not asmUtils.getMappedEntityType(c).isPresent() and not asmUtils.isEntityType(c))))) {
+    log.debug("DTO: " + asmUtils.getClassifierFQName(dto));
+
     genDto(dto);
 	outputJavaClasses.add(dto.getDtoJavaFileName());
 }
 
-for (ap in asmUtils.getAllAccessPoints()) {
+var apServiceInstances : Map = new Map();
+for (clazz in ASM!EOperation.all.select(op | not asmUtils.getAccessPointsOfOperation(op).isEmpty()).collect(op | op.eContainingClass).asSet()) {
+    var operationsOfClazz = clazz.eOperations.select(op | not asmUtils.getAccessPointsOfOperation(op).isEmpty());
+
+    log.debug("Exposed class: " + asmUtils.getClassifierFQName(clazz));
+
+    var t = TemplateFactory.load("RestService.java.egl");
+    t.populate("className", clazz.name.normalizeName());
+    t.populate("packagePath", clazz.getExposedPackageName());
+    t.populate("operations", operationsOfClazz);
+    t.populate("restPath", "/" + asmUtils.getPackageFQName(clazz.ePackage).toJAXRSPath() + "/" + clazz.name.normalizeName().toJAXRSPath());
+    t.populate("fullyQualifiedOperation", false);
+
+    t.generate(clazz.getExposedJavaFileName());
+    t.reset();
+
+    var t = TemplateFactory.load("RestService.scr.xml.egl");
+    t.populate("className", clazz.name.normalizeName());
+    t.populate("packagePath", clazz.getExposedPackageName());
+    t.generate(clazz.getExposedScrXmlFileName());
+    t.reset();
+
+    outputJavaClasses.add(clazz.getExposedJavaFileName());
+    outputScrXmls.add(clazz.getExposedScrXmlFileName());
+
+    apServiceInstances.put((clazz.getExposedPackageName() + "." + clazz.name).normalizeName().replaceAll("\\.", "_"),
+                (clazz.getExposedPackageName() + "." + clazz.name).normalizeName());
+}
+
+// Generate ApplicationConfigs
+genApplication(apServiceInstances);
+outputJavaClasses.add(getApplicationConfigJavaFileName());
+outputScrXmls.add(getApplicationConfigScrXmlFileName());
+
+
+/*for (ap in asmUtils.getAllAccessPoints()) {
 
     var apServiceInstances : Map = new Map();
-
-    var exposedServices = asmUtils.getExposedServicesOfAccessPoint(ap);
-    var boundOperations = ASM!EOperation.all.select(op | asmUtils.isBound(op) and asmUtils.getAccessPointsOfOperation(op).contains(ap));
-	var boundOperationClasses = boundOperations.collect(op | op.eContainer).asSet();
-    var exposedServiceGroups = exposedServices.collect(s | s.eContainer).asSet();
+    var operationClasses = ASM!EOperation.all.select(op | asmUtils.getAccessPointsOfOperation(op).contains(ap)).collect(op | op.eContainer).asSet();
     
-    for (exposed in boundOperationClasses.includingAll(exposedServiceGroups).asSet()) {
-        log.debug("Exposed class: " + asmUtils.getClassifierFQName(exposed));
-        
-        var _unboundOperations = exposedServices.select(op | op.eContainer == exposed);
-        var _boundOperations = boundOperations.select(op | op.eContainer == exposed);
-        
-        var t = TemplateFactory.load("RestService.java.egl");
-		t.populate("className", exposed.name.normalizeName());
-		t.populate("packagePath", exposed.getExposedPackageName(ap));
-		t.populate("operations", _boundOperations.includingAll(_unboundOperations));
-		t.populate("restPath", "/" + asmUtils.getPackageFQName(exposed.ePackage).toJAXRSPath() + "/" + exposed.name.normalizeName().toJAXRSPath());
-		t.populate("fullyQualifiedOperation", false);
-	
-		t.generate(exposed.getExposedJavaFileName(ap));
-		t.reset();
-	
-		var t = TemplateFactory.load("RestService.scr.xml.egl");
-		t.populate("className", exposed.name.normalizeName());
-		t.populate("packagePath", exposed.getExposedPackageName(ap));
-		t.generate(exposed.getExposedScrXmlFileName(ap));
-		t.reset();
-        
-        outputJavaClasses.add(exposed.getExposedJavaFileName(ap));
-        outputScrXmls.add(exposed.getExposedScrXmlFileName(ap));
-        
-        apServiceInstances.put((exposed.getExposedPackageName(ap) + "." + exposed.name).normalizeName().replaceAll("\\.", "_"),
-            (exposed.getExposedPackageName(ap) + "." + exposed.name).normalizeName());
+    for (clazz in operationClasses) {
+        apServiceInstances.put((clazz.getExposedPackageName() + "." + clazz.name).normalizeName().replaceAll("\\.", "_"),
+            (clazz.getExposedPackageName() + "." + clazz.name).normalizeName());
     }
     
     // Generate ApplicationConfigs
     genApplication(ap, apServiceInstances);
 	outputJavaClasses.add(ap.getApplicationConfigJavaFileName());
 	outputScrXmls.add(ap.getApplicationConfigScrXmlFileName());
-}
+} */
 %]

@@ -7,7 +7,7 @@ rule CreateTag
     to t : OPENAPI!Tag {
         guard: asmUtils.isGraph(s)
         
-		t.name = asmUtils.getGraphName(s).get().toOpenAPIName();
+		t.name = s.name.toOpenAPIName();
 		
 		var root = asmUtils.getResolvedRoot(s);
         if (root.isPresent()) {
