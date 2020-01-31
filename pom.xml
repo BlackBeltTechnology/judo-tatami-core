@@ -103,7 +103,7 @@
         <structured-map-proxy-version>1.0.0.20191217_122241_77813e8_develop</structured-map-proxy-version>
 
         <!-- We use older version of plugin to avoid chicked egg problem -->
-        <judo-tatami-workflow-maven-plugin-version>1.0.0.20200130_133707_07f2aba_feature_JNG_964_fix_tatami_modules_of_operations</judo-tatami-workflow-maven-plugin-version>
+        <judo-tatami-maven-plugin-version>1.0.0.20200131_112210_1439c9e_develop</judo-tatami-maven-plugin-version>
 
         <!-- Xtend / Xcore -->
         <emf-version>2.18.0</emf-version>
@@ -550,7 +550,7 @@
                 <plugin>
                     <groupId>hu.blackbelt.judo.tatami</groupId>
                     <artifactId>judo-tatami-workflow-maven-plugin</artifactId>
-                    <version>${judo-tatami-workflow-maven-plugin-version}</version>
+                    <version>${judo-tatami-maven-plugin-version}</version>
                     <executions>
                         <execution>
                             <id>execute-northwind-test-model-from-general</id>
