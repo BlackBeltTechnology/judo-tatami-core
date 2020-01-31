@@ -50,7 +50,7 @@ import static org.osgi.service.log.LogService.LOG_INFO;
 @ExamReactorStrategy(PerClass.class)
 public class NorthwindTatamiPSMTransformationPipelineITest extends TatamiPSMTransformationPipelineITest {
 
-    private static final String BASE_URL = "http://localhost:8181/cxf/demo/internalAP";
+    private static final String BASE_URL = "http://localhost:8181/cxf/demo";
     private static final String DEMO_ENTITIES_ORDER = "demo.entities.Order";
     private static final String DEMO = "northwind-psm";
     private static final String DEMO_SERVICE_GET_ALL_ORDERS = "/demo/service/getAllOrders";

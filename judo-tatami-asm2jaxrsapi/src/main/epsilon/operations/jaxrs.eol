@@ -25,13 +25,18 @@ operation getIdTypeName() : String {
 }
 
 @cached
-operation getPackagePrefix() : String {
-    return "rest.";
+operation getRestPackagePrefix() : String {
+    return "rest";
+}
+
+@cached
+operation getDtoPackagePrefix() : String {
+    return "restdto";
 }
 
 @cached
 operation ASM!EClass getDtoPackageName() : String {
-	return getPackagePrefix() + asmUtils.getPackageFQName(self.ePackage);
+	return getDtoPackagePrefix() + "." + asmUtils.getPackageFQName(self.ePackage);
 }
 
 @cached
@@ -85,50 +90,52 @@ operation ASM!EReference getBareTypeDefinition() : String {
 }
 
 @cached
-operation ASM!EClass getApplicationPackageName() : String {
-	return getPackagePrefix() + asmUtils.getClassifierFQName(self);
+operation getApplicationPackageName() : String {
+	return asmUtils.getModel().get().name;
 }
 
 @cached
-operation ASM!EClass getApplicationConfigJavaFileName() : String {
-	return self.getApplicationPackageName().replaceAll("\\.", "/") + "/ApplicationConfig.java";
+operation getApplicationConfigJavaFileName() : String {
+	return getApplicationPackageName().replaceAll("\\.", "/") + "/ApplicationConfig.java";
 }
 
 @cached
-operation ASM!EClass getApplicationConfigScrXmlFileName() : String {
-	return "OSGI-INF/" + self.getApplicationPackageName() + ".ApplicationConfig.xml";
+operation getApplicationConfigScrXmlFileName() : String {
+	return "OSGI-INF/" + getApplicationPackageName() + ".ApplicationConfig.xml";
 }
 
 /*
  Application Config
  */
-operation genApplication(ap : ASM!EClass, serviceInstances : Map) {
+operation genApplication(serviceInstances : Map) {
 	var t = TemplateFactory.load("ApplicationConfig.java.egl");
-	t.populate("ap", ap);
 	t.populate("className", "ApplicationConfig");
-	t.populate("packagePath", ap.getApplicationPackageName());
-	t.populate("restPath", "/" + asmUtils.getClassifierFQName(ap).toJAXRSPath());
+	t.populate("packagePath", getApplicationPackageName());
+	t.populate("restPath", "/" + asmUtils.getModel().get().name);
 	t.populate("serviceInstances", serviceInstances);
-	t.generate(ap.getApplicationConfigJavaFileName());
+	t.generate(getApplicationConfigJavaFileName());
 	t.reset();
 
 	var t = TemplateFactory.load("ApplicationConfig.scr.xml.egl");
 	t.populate("className", "ApplicationConfig");
-	t.populate("packagePath", ap.getApplicationPackageName());
+	t.populate("packagePath", getApplicationPackageName());
 	t.populate("serviceInstances", serviceInstances);
-	t.generate(ap.getApplicationConfigScrXmlFileName());
+	t.generate(getApplicationConfigScrXmlFileName());
 	t.reset();
 }
 
-operation ASM!EClass getExposedPackageName(ap: ASM!EClass) : String {
-	return getPackagePrefix() + asmUtils.getClassifierFQName(ap) + "." + asmUtils.getPackageFQName(self.ePackage);
+@cached
+operation ASM!EClass getExposedPackageName() : String {
+	return getRestPackagePrefix() + "." + asmUtils.getPackageFQName(self.ePackage);
 }
 
-operation ASM!EClass getExposedScrXmlFileName(ap: ASM!EClass) : String {
-	return "OSGI-INF/" + self.getExposedPackageName(ap) + "." + self.name.normalizeName() + ".xml";
+@cached
+operation ASM!EClass getExposedScrXmlFileName() : String {
+	return "OSGI-INF/" + self.getExposedPackageName() + "." + self.name.normalizeName() + ".xml";
 }
 
-operation ASM!EClass getExposedJavaFileName(ap: ASM!EClass) : String {
-	return self.getExposedPackageName(ap)
+@cached
+operation ASM!EClass getExposedJavaFileName() : String {
+	return self.getExposedPackageName()
 		.replaceAll("\\.", "/") + "/" + self.name.normalizeName() + ".java";
 }
