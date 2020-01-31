@@ -15,7 +15,7 @@ for (dto in ASM!EClass.all.select(c | c.eAnnotations.exists(a | asmUtils.getReso
 }
 
 var apServiceInstances : Map = new Map();
-for (clazz in ASM!EOperation.all.select(op | not asmUtils.getAccessPointsOfOperation(op).isEmpty()).collect(op | op.eContainer).asSet()) {
+for (clazz in ASM!EOperation.all.select(op | not asmUtils.getAccessPointsOfOperation(op).isEmpty()).collect(op | op.eContainingClass).asSet()) {
     var operationsOfClazz = clazz.eOperations.select(op | not asmUtils.getAccessPointsOfOperation(op).isEmpty());
 
     log.debug("Exposed class: " + asmUtils.getClassifierFQName(clazz));
