@@ -40,7 +40,7 @@ rule CreateUnmappedTransferObject
 rule CreateGeneratedEmbeddedTransferRelationForNonEmbeddedTransferRelation
     transform s : JUDOPSM!TransferObjectRelation
     to t : ASM!EReference {
-      guard: not s.embedded
+      guard: not s.embedded and s.binding.isDefined() and s.binding.isKindOf(JUDOPSM!Relation)
       and psmUtils.getAllContainingMappedTransferObjects(s.eContainer).exists(mto | psmUtils.getTransferObjectTypesToExtendWithEmbeddedRelations(s.eResource().getResourceSet()).contains(mto))
         t.name = "_" + s.name;
         t.containment = true;

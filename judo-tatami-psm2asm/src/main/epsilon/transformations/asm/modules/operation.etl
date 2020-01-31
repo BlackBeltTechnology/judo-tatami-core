@@ -21,7 +21,7 @@ rule CreateParameter
     to t : ASM!ETypedElement {
         t.lowerBound = s.cardinality.lower;
         t.upperBound = s.cardinality.upper;
-        if(psmUtils.isParameterTypeExtended(s)) {
+        if (s.eContainer.isKindOf(JUDOPSM!TransferOperation) and psmUtils.isTransferOperationParameterTypeExtended(s.eContainer)) {
         	t.eType = s.type.equivalent("CreateExtendedTransferObjectForGeneratedEmbeddedTransferObjectRelation");
         } else {
         	t.eType = s.type.asmEquivalent();

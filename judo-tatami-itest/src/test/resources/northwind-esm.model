@@ -417,10 +417,20 @@
       <mapping xmi:id="_s8FJEv8MEem4dONaAfrVDg" target="_JYnRrOq1EemUZMITjXqp8w" filter=""/>
     </elements>
     <elements xsi:type="structure:TransferObjectType" xmi:id="_s8FwAv8MEem4dONaAfrVDg" name="OrderItem">
+      <relations xsi:type="structure:OneWayRelationMember" lower="1" name="product" target="_s8D6-P8MEem4dONaAfrVDg" rangeExpression="northwind::entities::Product" createable="false" updateable="false" deleteable="false" binding="_JYn4n-q1EemUZMITjXqp8w" relationMemberType="BOUND"/>
+      <relations xsi:type="structure:OneWayRelationMember" lower="1" name="category" target="_JYpGxeq1EemUZMITjXqp8w" rangeExpression="northwind::entities::Category" updateable="false" deleteable="false" binding="_JYn4ouq1EemUZMITjXqp8w" relationMemberType="BOUND"/>
+      <attributes xsi:type="structure:DataMember" name="unitPrice" dataType="_VDVVQIUcEeipmMyz9cMCRA" required="true" binding="_JYn4peq1EemUZMITjXqp8w" dataMemberType="BOUND"/>
+      <attributes xsi:type="structure:DataMember" name="quantity" dataType="_TXtg8IUcEeipmMyz9cMCRA" required="true" binding="_JYn4qOq1EemUZMITjXqp8w" dataMemberType="BOUND"/>
+      <attributes xsi:type="structure:DataMember" name="discount" dataType="_VDVVQIUcEeipmMyz9cMCRA" required="true" binding="_JYn4q-q1EemUZMITjXqp8w" dataMemberType="BOUND"/>
+      <attributes xsi:type="structure:DataMember" name="productName" dataType="_Nppx8IUcEeipmMyz9cMCRA" required="true" binding="_JYn4ruq1EemUZMITjXqp8w" dataMemberType="BOUND"/>
+      <attributes xsi:type="structure:DataMember" name="categoryName" dataType="_Nppx8IUcEeipmMyz9cMCRA" required="true" binding="_JYn4seq1EemUZMITjXqp8w" dataMemberType="BOUND"/>
+      <attributes xsi:type="structure:DataMember" name="price" dataType="_VDVVQIUcEeipmMyz9cMCRA" binding="_JYn4tOq1EemUZMITjXqp8w" dataMemberType="BOUND"/>
       <mapping xmi:id="_s8FwA_8MEem4dONaAfrVDg" target="_JYn4nuq1EemUZMITjXqp8w" filter=""/>
     </elements>
   </elements>
-  <elements xsi:type="accesspoint:AccessPoint" xmi:id="_BwhYMAVjEeqKgZHIs7Kffw" name="InternalAP"/>
+  <elements xsi:type="accesspoint:AccessPoint" xmi:id="_BwhYMAVjEeqKgZHIs7Kffw" name="InternalAP">
+    <exposedGraphs name="allInternationalOrders" upper="-1" target="_s8DTzP8MEem4dONaAfrVDg" getterExpression="northwind::entities::InternationalOrder"/>
+  </elements>
   <elements xsi:type="accesspoint:AccessPoint" xmi:id="_BwhYOwVjEeqKgZHIs7Kffw" name="ExternalAP">
     <exposedGraphs xmi:id="_BwhYPAVjEeqKgZHIs7Kffw" name="allProducts" upper="-1" target="_s8D6-P8MEem4dONaAfrVDg" getterExpression="northwind::entities::Product"/>
     <exposedGraphs xmi:id="_BwhYPwVjEeqKgZHIs7Kffw" name="allCategories" upper="-1" target="_JYpGxeq1EemUZMITjXqp8w" getterExpression="northwind::entities::Category"/>
