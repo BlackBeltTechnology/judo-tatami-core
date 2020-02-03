@@ -12,10 +12,6 @@
     <artifactId>judo-tatami-itest</artifactId>
     <name>Judo :: Tatami :: Itest</name>
 
-    <properties>
-        <judo-tatami-workflow-maven-plugin-version>${project.version}</judo-tatami-workflow-maven-plugin-version>
-    </properties>
-
     <build>
         <testResources>
             <testResource>
@@ -53,22 +49,6 @@
                 <artifactId>exec-maven-plugin</artifactId>
                 <version>1.6.0</version>
                 <executions>
-                    <execution>
-                        <id>generate-jaxrs-demo</id>
-                        <phase>generate-test-sources</phase>
-                        <goals>
-                            <goal>java</goal>
-                        </goals>
-                        <configuration>
-                            <mainClass>hu.blackbelt.model.northwind.Demo</mainClass>
-                            <arguments>
-                                <argument>${basedir}/target/test-classes/northwind-psm.model</argument>
-                            </arguments>
-                            <includeProjectDependencies>true</includeProjectDependencies>
-                            <includePluginDependencies>true</includePluginDependencies>
-                        </configuration>
-                    </execution>
-
                     <execution>
                         <id>generate-full-demo</id>
                         <phase>generate-test-sources</phase>
@@ -132,7 +112,7 @@
                 <artifactId>judo-tatami-workflow-maven-plugin</artifactId>
                 <version>${project.version}</version>
                 <executions>
-                    <execution>
+                   <execution>
                         <id>execute-northwind-test-model-from-general</id>
                         <phase>generate-test-sources</phase>
                         <configuration>
@@ -172,8 +152,8 @@
                         <phase>generate-test-sources</phase>
                         <configuration>
                             <tasks>
-                                <unzip src="${project.basedir}/target/test-classes/northwind-asm2jaxrsapi.jar" dest="${project.basedir}/target/test-classes/generated-test-sources"/>
-                                <unzip src="${project.basedir}/target/test-classes/northwind-esm-asm2jaxrsapi.jar" dest="${project.basedir}/target/test-classes/generated-test-sources"/>
+                                <unzip src="${project.basedir}/target/test-classes/northwind-asm2jaxrsapi.jar" dest="${project.basedir}/target/test-classes/generated-test-sources/psm"/>
+                                <unzip src="${project.basedir}/target/test-classes/northwind-esm-asm2jaxrsapi.jar" dest="${project.basedir}/target/test-classes/generated-test-sources/esm"/>
                             </tasks>
                         </configuration>
                         <goals>

@@ -107,6 +107,11 @@
             <layout>p2</layout>
         </repository>
         <repository>
+            <id>judo-jcl-ide-eclipse</id>
+            <url>https://nexus.judo.technology/repository/p2/judo-jcl-ide-eclipse/${judo-jcl-ide-eclipse-version}</url>
+            <layout>p2</layout>
+        </repository>
+        <repository>
             <id>judo-script-codegen</id>
             <url>https://nexus.judo.technology/repository/p2/judo-script-codegen/${judo-script-codegen-version}</url>
             <layout>p2</layout>
@@ -240,6 +245,7 @@
                                     <site>https://nexus.judo.technology/repository/p2/judo-meta-openapi/${judo-meta-openapi-version}</site>
                                     <site>https://nexus.judo.technology/repository/p2/judo-meta-script/${judo-meta-script-version}</site>
                                     <site>https://nexus.judo.technology/repository/p2/judo-meta-jcl/${judo-meta-script-version}</site>
+                                    <site>https://nexus.judo.technology/repository/p2/judo-jcl-ide-eclipse/${judo-jcl-ide-eclipse-version}</site>
                                     <site>https://nexus.judo.technology/repository/p2/judo-script-codegen/${judo-script-codegen-version}</site>
                             </associateSites>
                         </configuration>
@@ -366,6 +372,12 @@
                                 <replacement>
                                     <token>(repository-reference\ location\=\")(.*?)(judo-meta-jcl\/)(.*?)(\")</token>
                                     <value>repository-reference location="$2$3${judo-meta-jcl-version}"</value>
+                                </replacement>
+
+                                <!-- JCL IDE Eclipse -->
+                                <replacement>
+                                    <token>(repository-reference\ location\=\")(.*?)(judo-jcl-ide-eclipse\/)(.*?)(\")</token>
+                                    <value>repository-reference location="$2$3${judo-jcl-ide-eclipse-version}"</value>
                                 </replacement>
 
                                 <!-- Script Codegen -->

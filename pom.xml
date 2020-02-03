@@ -52,18 +52,18 @@
         <epsilon-version>1.5.1</epsilon-version>
         <tycho-version>1.4.0</tycho-version>
 
-        <epsilon-runtime-version>1.2.0.20200112_015713_3d243d7_develop</epsilon-runtime-version>
-        <epsilon-runtime-eclipse-version>1.2.0.20200112_022936_df2f83b_develop</epsilon-runtime-eclipse-version>
+        <epsilon-runtime-version>1.2.1</epsilon-runtime-version>
+        <epsilon-runtime-eclipse-version>1.2.0</epsilon-runtime-eclipse-version>
 
-        <emf-genmodel-generator-version>1.0.0.20191222_154354_a61f75c_develop</emf-genmodel-generator-version>
-        <judo-genmodel-generator-version>1.0.0.20191227_185540_12197c7_develop</judo-genmodel-generator-version>
+        <emf-genmodel-generator-version>1.0.0</emf-genmodel-generator-version>
+        <judo-genmodel-generator-version>1.0.0.20200130_232426_224b5ae_1_0_beta1</judo-genmodel-generator-version>
 
-        <p2-swagger-version>1.0.1.20191227_184350_5d5e858_develop</p2-swagger-version>
+        <p2-swagger-version>1.0.1</p2-swagger-version>
 
-        <judo-framework-version>2.0.0.20191112_160510_496b413_develop</judo-framework-version>
+        <judo-framework-version>2.0.0.20200131_134644_496b413_1_0_beta1</judo-framework-version>
 
         <!-- Model versions -->
-        <judo-meta-rdbms-version>1.0.0.20200112_032816_c19b3a4_develop</judo-meta-rdbms-version>
+        <judo-meta-rdbms-version>1.0.0.20200131_122622_529a366_1_0_beta1</judo-meta-rdbms-version>
         <judo-meta-rdbms-import-range>[1.0,1.1)</judo-meta-rdbms-import-range>
 
         <judo-meta-esm-version>1.1.0.20200131_022718_716ef58_1_0_beta1</judo-meta-esm-version>
@@ -72,38 +72,39 @@
         <judo-meta-psm-version>1.0.0.20200131_103050_48a7a6c_1_0_beta1</judo-meta-psm-version>
         <judo-meta-psm-import-range>[1.0,1.1)</judo-meta-psm-import-range>
 
-        <judo-meta-jql-version>1.0.0.20200121_123121_8610e0d_develop</judo-meta-jql-version>
+        <judo-meta-jql-version>1.0.0.20200131_122339_903c0eb_1_0_beta1</judo-meta-jql-version>
         <judo-meta-jql-import-range>[1.0,1.1)</judo-meta-jql-import-range>
 
-        <judo-meta-jcl-version>1.0.0.20200121_140839_0ca66b9_develop</judo-meta-jcl-version>
+        <judo-meta-jcl-version>1.0.0.20200131_133250_6480762_1_0_beta1</judo-meta-jcl-version>
         <judo-meta-jcl-import-range>[1.0,1.1)</judo-meta-jcl-import-range>
 
-        <judo-meta-script-version>1.0.0.20200127_201315_7ee4604_develop</judo-meta-script-version>
+        <judo-meta-script-version>1.0.0.20200131_181931_85a5161_1_0_beta1</judo-meta-script-version>
         <judo-meta-script-import-range>[1.0,1.1)</judo-meta-script-import-range>
 
-        <judo-meta-asm-version>1.0.0.20200131_104700_4236af3_develop</judo-meta-asm-version>
+        <judo-meta-asm-version>1.0.0.20200203_135604_5eb64a7_1_0_beta1</judo-meta-asm-version>
         <judo-meta-asm-import-range>[1.0,1.1)</judo-meta-asm-import-range>
 
-        <judo-meta-expression-version>1.0.0.20200127_150354_e32ad99_develop</judo-meta-expression-version>
+        <judo-meta-expression-version>1.0.0.20200131_130902_8b42ac8_1_0_beta1</judo-meta-expression-version>
         <judo-meta-expression-import-range>[1.0,1.1)</judo-meta-expression-import-range>
 
-        <judo-meta-measure-version>1.0.0.20200112_030434_1a2a1fb_develop</judo-meta-measure-version>
+        <judo-meta-measure-version>1.0.0.20200131_121641_0b15242_1_0_beta1</judo-meta-measure-version>
         <judo-meta-measure-import-range>[1.0,1.1)</judo-meta-measure-import-range>
 
-        <judo-meta-liquibase-version>1.0.0.20200112_031935_1b64664_develop</judo-meta-liquibase-version>
+        <judo-meta-liquibase-version>1.0.0.20200131_150239_fbcba0d_1_0_beta1</judo-meta-liquibase-version>
         <judo-meta-liquibase-import-range>[1.0,1.1)</judo-meta-liquibase-import-range>
 
-        <judo-meta-openapi-version>1.0.0.20200112_031451_f9edb52_develop</judo-meta-openapi-version>
+        <judo-meta-openapi-version>1.0.0.20200203_140119_012d72c_1_0_beta1</judo-meta-openapi-version>
         <judo-meta-openapi-import-range>[1.0,1.1)</judo-meta-openapi-import-range>
 
-        <judo-dao-api-version>1.0.0.20191220_205229_b4e8ff6_develop</judo-dao-api-version>
-        <judo-script-codegen-version>1.0.0.20200127_202608_694853f_develop</judo-script-codegen-version>
-        <judo-jql-ide-eclipse-version>1.0.0.20200112_035552_3edb935_develop</judo-jql-ide-eclipse-version>
+        <judo-dao-api-version>1.0.0.20200131_134420_05c8a8e_1_0_beta1</judo-dao-api-version>
+        <judo-script-codegen-version>1.0.0.20200131_212141_46bdb90_1_0_beta1</judo-script-codegen-version>
+        <judo-jql-ide-eclipse-version>1.0.0.20200131_135908_49b64a5_1_0_beta1</judo-jql-ide-eclipse-version>
+        <judo-jcl-ide-eclipse-version>1.0.0.20200201_015509_e29380c_1_0_beta1</judo-jcl-ide-eclipse-version>
 
-        <structured-map-proxy-version>1.0.0.20191217_122241_77813e8_develop</structured-map-proxy-version>
+        <structured-map-proxy-version>1.0.0</structured-map-proxy-version>
 
         <!-- We use older version of plugin to avoid chicked egg problem -->
-        <judo-tatami-workflow-maven-plugin-version>1.0.0.20200130_133707_07f2aba_feature_JNG_964_fix_tatami_modules_of_operations</judo-tatami-workflow-maven-plugin-version>
+        <judo-tatami-maven-plugin-version>1.0.0.20200131_112210_1439c9e_develop</judo-tatami-maven-plugin-version>
 
         <!-- Xtend / Xcore -->
         <emf-version>2.18.0</emf-version>
@@ -125,17 +126,17 @@
         <cxf-version>3.3.3</cxf-version>
         <osgi-utils-version>1.0.7</osgi-utils-version>
         <bouncycastle-karaf-features-version>1.61.2</bouncycastle-karaf-features-version>
-        <tinybundles-karaf-features-version>3.0.0_1</tinybundles-karaf-features-version>
+        <tinybundles-karaf-features-version>1.0.0</tinybundles-karaf-features-version>
         <google-karaf-features-version>1.0.3</google-karaf-features-version>
-        <eclipse-emf-karaf-features-version>1.0.0.develop_10</eclipse-emf-karaf-features-version>
-        <eclipse-epsilon-karaf-features-version>1.0.0.develop_5</eclipse-epsilon-karaf-features-version>
-        <eclipse-xtext-karaf-features-version>1.0.0.develop_6</eclipse-xtext-karaf-features-version>
+        <eclipse-emf-karaf-features-version>1.0.0</eclipse-emf-karaf-features-version>
+        <eclipse-epsilon-karaf-features-version>1.0.2</eclipse-epsilon-karaf-features-version>
+        <eclipse-xtext-karaf-features-version>1.0.0</eclipse-xtext-karaf-features-version>
         <antlr-karaf-features-version>1.0.1</antlr-karaf-features-version>
         <apache-commons-karaf-features-version>1.0.5</apache-commons-karaf-features-version>
         <apache-poi-karaf-features-version>1.0.2</apache-poi-karaf-features-version>
-        <apache-httpclient-karaf-features-version>1.0.1.develop_15</apache-httpclient-karaf-features-version>
-        <cxf-jaxrs-application-manager-version>0.5.0.develop_00083</cxf-jaxrs-application-manager-version>
-	<log4j.configuration>log4j.properties</log4j.configuration>
+        <apache-httpclient-karaf-features-version>1.0.0</apache-httpclient-karaf-features-version>
+        <cxf-jaxrs-application-manager-version>0.5.0</cxf-jaxrs-application-manager-version>
+        <log4j.configuration>log4j.properties</log4j.configuration>
     </properties>
 
     <url>http://github.com/${project-repositoryId}</url>
@@ -550,7 +551,7 @@
                 <plugin>
                     <groupId>hu.blackbelt.judo.tatami</groupId>
                     <artifactId>judo-tatami-workflow-maven-plugin</artifactId>
-                    <version>${judo-tatami-workflow-maven-plugin-version}</version>
+                    <version>${judo-tatami-maven-plugin-version}</version>
                     <executions>
                         <execution>
                             <id>execute-northwind-test-model-from-general</id>
