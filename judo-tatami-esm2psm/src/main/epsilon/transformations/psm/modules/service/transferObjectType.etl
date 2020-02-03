@@ -52,7 +52,7 @@ rule CreateDefaultMappedTransferObjectTypeForEntity
         t.superTransferObjectTypes.add(super.target.equivalent("CreateDefaultMappedTransferObjectTypeForEntity"));
       }
 
-      s.eContainer.getPSMGeneratedDefaultTransferObjectNamespaceEquivalent().elements.add(t);      
+      s.eContainer.getPSMGeneratedDefaultTransferObjectNamespaceEquivalent().elements.add(t);
 
 	  t.entityType = s.equivalent("CreateEntityType");
 	  log.debug("Created Default MappedTransferObjectType for EntityType: " + t.name);

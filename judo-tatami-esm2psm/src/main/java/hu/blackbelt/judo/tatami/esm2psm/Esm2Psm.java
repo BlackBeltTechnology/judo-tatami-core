@@ -16,10 +16,11 @@ import org.eclipse.epsilon.common.util.UriUtil;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
+
 import static hu.blackbelt.epsilon.runtime.execution.ExecutionContext.executionContextBuilder;
 import static hu.blackbelt.epsilon.runtime.execution.contexts.EtlExecutionContext.etlExecutionContextBuilder;
 import static hu.blackbelt.epsilon.runtime.execution.model.emf.WrappedEmfModelContext.wrappedEmfModelContextBuilder;
-import static hu.blackbelt.judo.tatami.core.TransformationTraceUtil.*;
+import static hu.blackbelt.judo.tatami.core.TransformationTraceUtil.getTransformationTraceFromEtlExecutionContext;
 import static hu.blackbelt.judo.tatami.esm2psm.Esm2PsmTransformationTrace.ESM_2_PSM_URI_POSTFIX;
 import static hu.blackbelt.judo.tatami.esm2psm.Esm2PsmTransformationTrace.resolveEsm2PsmTrace;
 
@@ -29,9 +30,10 @@ public class Esm2Psm {
 
     /**
      * Execute ESM to PSM model transformation,
-     * @param esmModel The ESM model definition and loaded resources
-     * @param psmModel The PSM model definition transformed to
-     * @param log The log instance used in scripts
+     *
+     * @param esmModel  The ESM model definition and loaded resources
+     * @param psmModel  The PSM model definition transformed to
+     * @param log       The log instance used in scripts
      * @param scriptDir The physical filesystem directory where the script root is
      * @return The trace object list of the transformation conforms the meta model defined in {@link TransformationTraceUtil}.
      * @throws Exception
