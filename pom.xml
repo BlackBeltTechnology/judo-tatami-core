@@ -81,7 +81,7 @@
         <judo-meta-script-version>1.0.0.20200131_181931_85a5161_1_0_beta1</judo-meta-script-version>
         <judo-meta-script-import-range>[1.0,1.1)</judo-meta-script-import-range>
 
-        <judo-meta-asm-version>1.0.0.20200131_125057_1051352_1_0_beta1</judo-meta-asm-version>
+        <judo-meta-asm-version>1.0.0.20200203_135604_5eb64a7_1_0_beta1</judo-meta-asm-version>
         <judo-meta-asm-import-range>[1.0,1.1)</judo-meta-asm-import-range>
 
         <judo-meta-expression-version>1.0.0.20200131_130902_8b42ac8_1_0_beta1</judo-meta-expression-version>
@@ -93,7 +93,7 @@
         <judo-meta-liquibase-version>1.0.0.20200131_150239_fbcba0d_1_0_beta1</judo-meta-liquibase-version>
         <judo-meta-liquibase-import-range>[1.0,1.1)</judo-meta-liquibase-import-range>
 
-        <judo-meta-openapi-version>1.0.0.20200131_121809_d847470_1_0_beta1</judo-meta-openapi-version>
+        <judo-meta-openapi-version>1.0.0.20200203_140119_012d72c_1_0_beta1</judo-meta-openapi-version>
         <judo-meta-openapi-import-range>[1.0,1.1)</judo-meta-openapi-import-range>
 
         <judo-dao-api-version>1.0.0.20200131_134420_05c8a8e_1_0_beta1</judo-dao-api-version>
@@ -136,7 +136,7 @@
         <apache-poi-karaf-features-version>1.0.2</apache-poi-karaf-features-version>
         <apache-httpclient-karaf-features-version>1.0.0</apache-httpclient-karaf-features-version>
         <cxf-jaxrs-application-manager-version>0.5.0</cxf-jaxrs-application-manager-version>
-	<log4j.configuration>log4j.properties</log4j.configuration>
+        <log4j.configuration>log4j.properties</log4j.configuration>
     </properties>
 
     <url>http://github.com/${project-repositoryId}</url>

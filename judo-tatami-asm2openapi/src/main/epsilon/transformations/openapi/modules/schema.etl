@@ -26,7 +26,7 @@ rule CreateTransferObjectSingleSchemaDefinition
         t.description = "Schema of " + s.eContainer.name + " instance";
         t.type = OPENAPI!JSONDataType#object;
 
-        if (asmUtils.isMappedTransferObjectType(s.eContainer)) {
+        if (asmUtils.isMappedTransferObjectType(s.eContainer) and not s.eContainer.eSuperTypes.exists(sup | asmUtils.isMappedTransferObjectType(sup))) {
             var id = new OPENAPI!PropertyDeclaration;
             id.name = "__identifier";
 

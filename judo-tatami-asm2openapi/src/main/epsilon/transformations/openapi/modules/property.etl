@@ -8,9 +8,7 @@ rule CreateDataPropertyDeclaration
         t.name = s.eContainer.name;
         
 	    var transferObjectTypeExposedByAnnotation = asmUtils.getExtensionAnnotationListByName(s.eContainer.eContainer, "exposedBy").selectOne(a | a.details.get("value") == s.details.get("value"));
-	    if (transferObjectTypeExposedByAnnotation.isDefined()) {
-	    	transferObjectTypeExposedByAnnotation.equivalent("CreateTransferObjectSingleSchemaDefinition").properties.add(t);
-	    }
+	    transferObjectTypeExposedByAnnotation.equivalent("CreateTransferObjectSingleSchemaDefinition").properties.add(t);
 }
 
 rule CreateDataPropertyDefinition
@@ -76,12 +74,14 @@ rule CreateDataPropertyDefinition
             }
         }
 
-        if (s.eContainer.required) {
-		    var transferObjectTypeExposedByAnnotation = asmUtils.getExtensionAnnotationListByName(s.eContainer.eContainer, "exposedBy").selectOne(a | a.details.get("value") == s.details.get("value"));
-		    if (transferObjectTypeExposedByAnnotation.isDefined()) {
-			    transferObjectTypeExposedByAnnotation.equivalent("CreateTransferObjectSingleSchemaDefinition").required.add(s.eContainer.name);
-		    }
+        if (not s.eContainer.changeable) {
+            t.readOnly = true;
+        } else if (s.eContainer.required) {
+            // Read only properties cannot be marked as required by a schema
+            var transferObjectTypeExposedByAnnotation = asmUtils.getExtensionAnnotationListByName(s.eContainer.eContainer, "exposedBy").selectOne(a | a.details.get("value") == s.details.get("value"));
+            transferObjectTypeExposedByAnnotation.equivalent("CreateTransferObjectSingleSchemaDefinition").required.add(s.eContainer.name);
         }
+
 	    s.equivalent("CreateDataPropertyDeclaration").property = t;
 }
 
@@ -92,9 +92,7 @@ rule CreateReferencePropertyDeclaration
 
         t.name = s.eContainer.name;
 	    var transferObjectTypeExposedByAnnotation = asmUtils.getExtensionAnnotationListByName(s.eContainer.eContainer, "exposedBy").selectOne(a | a.details.get("value") == s.details.get("value"));
-	    if (transferObjectTypeExposedByAnnotation.isDefined()) {
-	    	transferObjectTypeExposedByAnnotation.equivalent("CreateTransferObjectSingleSchemaDefinition").properties.add(t);
-	    }
+	    transferObjectTypeExposedByAnnotation.equivalent("CreateTransferObjectSingleSchemaDefinition").properties.add(t);
 }
 
 rule CreateReferencePropertyDefinition
@@ -102,11 +100,23 @@ rule CreateReferencePropertyDefinition
     to t : OPENAPI!Property {
         guard: s.eContainer.isKindOf(ASM!EReference) and s.source == asmUtils.getAnnotationUri("exposedBy")
         
-        if (s.eContainer.required) {
-		    var transferObjectTypeExposedByAnnotation = asmUtils.getExtensionAnnotationListByName(s.eContainer.eContainer, "exposedBy").selectOne(a | a.details.get("value") == s.details.get("value"));
-		    if (transferObjectTypeExposedByAnnotation.isDefined()) {
-			    transferObjectTypeExposedByAnnotation.equivalent("CreateTransferObjectSingleSchemaDefinition").required.add(s.eContainer.name);
-		    }
+        if (not s.eContainer.changeable) {
+            t.readOnly = true;
+        } else if (s.eContainer.required) {
+            // Read only properties cannot be marked as required by a schema
+            var transferObjectTypeExposedByAnnotation = asmUtils.getExtensionAnnotationListByName(s.eContainer.eContainer, "exposedBy").selectOne(a | a.details.get("value") == s.details.get("value"));
+            transferObjectTypeExposedByAnnotation.equivalent("CreateTransferObjectSingleSchemaDefinition").required.add(s.eContainer.name);
+        }
+
+        if (not s.eContainer.containment and asmUtils.isMappedTransferObjectType(s.eContainer.eReferenceType)) {
+            t.type = OPENAPI!JSONDataType#object;
+            var entityRef = new OPENAPI!PropertyDeclaration;
+            entityRef.name = "__identifier";
+            entityRef.property = new OPENAPI!Property;
+            entityRef.property.description = "ID of " + asmUtils.getMappedEntityType(s.eContainer.eReferenceType).get().name + " instance";
+            entityRef.property.type = OPENAPI!JSONDataType#string;
+
+            t.properties.add(entityRef);
         }
 
         s.equivalent("CreateReferencePropertyDeclaration").property = t;
@@ -115,14 +125,14 @@ rule CreateReferencePropertyDefinition
 rule CreateReferencePropertyDefinitionReference
     transform s : ASM!EAnnotation
     to t : OPENAPI!SchemaReference {
-        guard: s.eContainer.isKindOf(ASM!EReference) and s.source == asmUtils.getAnnotationUri("exposedBy")
+        guard: s.eContainer.isKindOf(ASM!EReference) and s.eContainer.containment and s.source == asmUtils.getAnnotationUri("exposedBy")
         
         var targetTypeExposedByAnnotation = asmUtils.getExtensionAnnotationListByName(s.eContainer.eReferenceType, "exposedBy").selectOne(a | a.details.get("value") == s.details.get("value"));
         
 		if (s.eContainer.many) {
-		    s.equivalent("CreateReferencePropertyDefinitionReference").ref = targetTypeExposedByAnnotation.equivalent("CreateTransferObjectArraySchemaDeclaration").getReference();
+		    t.ref = targetTypeExposedByAnnotation.equivalent("CreateTransferObjectArraySchemaDeclaration").getReference();
 		} else {
-		    s.equivalent("CreateReferencePropertyDefinitionReference").ref = targetTypeExposedByAnnotation.equivalent("CreateTransferObjectSingleSchemaDeclaration").getReference();
+		    t.ref = targetTypeExposedByAnnotation.equivalent("CreateTransferObjectSingleSchemaDeclaration").getReference();
 		}
 		
         s.equivalent("CreateReferencePropertyDefinition").ref = t;

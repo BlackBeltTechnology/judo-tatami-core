@@ -55,7 +55,7 @@
                 <artifactId>judo-tatami-workflow-maven-plugin</artifactId>
                 <version>${project.version}</version>
                 <executions>
-                    <execution>
+                   <execution>
                         <id>execute-northwind-test-model-from-general</id>
                         <configuration>
                             <ignorePsm2Asm>false</ignorePsm2Asm>
@@ -555,6 +555,7 @@
             <artifactId>judo-tatami-rdbms2liquibase</artifactId>
             <scope>test</scope>
         </dependency>
+
         <dependency>
             <groupId>hu.blackbelt.judo.tatami</groupId>
             <artifactId>judo-tatami-asm2jaxrsapi</artifactId>

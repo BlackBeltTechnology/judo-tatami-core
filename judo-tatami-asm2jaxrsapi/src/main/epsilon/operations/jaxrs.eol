@@ -86,7 +86,7 @@ operation ASM!EReference getTypeDefinition() : String {
 
 @cached
 operation ASM!EReference getBareTypeDefinition() : String {
-	return self.eReferenceType.getDtoPackageName() + "." + self.eReferenceType.name;
+	return self.eReferenceType.getDtoPackageName() + "." + self.eReferenceType.name.normalizeName();
 }
 
 @cached

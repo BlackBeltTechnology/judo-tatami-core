@@ -51,7 +51,7 @@
 	  
 	  <!-- //////////////////////// Models \\\\\\\\\\\\\\\\\\\\\\\\\ -->
 	  <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
-		  <repository location="https://nexus.judo.technology/repository/p2/judo-meta-asm/1.0.0.20200131_125057_1051352_1_0_beta1"/>
+		  <repository location="https://nexus.judo.technology/repository/p2/judo-meta-asm/1.0.0.20200203_135604_5eb64a7_1_0_beta1"/>
 		  <unit id="hu.blackbelt.judo.meta.asm.feature.feature.group" version="0.0.0"/>
 	  </location>
 
@@ -102,7 +102,7 @@
 	  </location>
 
 	  <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
-      	  <repository location="https://nexus.judo.technology/repository/p2/judo-meta-openapi/1.0.0.20200131_121809_d847470_1_0_beta1"/>
+      	  <repository location="https://nexus.judo.technology/repository/p2/judo-meta-openapi/1.0.0.20200203_140119_012d72c_1_0_beta1"/>
       	  <unit id="hu.blackbelt.judo.meta.openapi.feature.feature.group" version="0.0.0"/>
       </location>
 
@@ -115,6 +115,11 @@
       	  <repository location="https://nexus.judo.technology/repository/p2/judo-meta-jcl/1.0.0.20200131_133250_6480762_1_0_beta1"/>
       	  <unit id="hu.blackbelt.judo.meta.jcl.feature.feature.group" version="0.0.0"/>
       </location>
+
+   	  <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
+		  <repository location="https://nexus.judo.technology/repository/p2/judo-jcl-ide-eclipse/1.0.0.20200131_144426_a334716_1_0_beta1"/>
+		  <unit id="hu.blackbelt.judo.jcl.ide.eclipse.feature.feature.group" version="0.0.0"/>
+	  </location>
 
 	  <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
       	  <repository location="https://nexus.judo.technology/repository/p2/judo-script-codegen/1.0.0.20200131_212141_46bdb90_1_0_beta1"/>
