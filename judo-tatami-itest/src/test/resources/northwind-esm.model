@@ -378,7 +378,7 @@
   </elements>
   <elements xsi:type="namespace:Package" xmi:id="_JYpGxOq1EemUZMITjXqp8w" name="services">
     <elements xsi:type="structure:TransferObjectType" xmi:id="_JYpGxeq1EemUZMITjXqp8w" name="CategoryInfo">
-      <relations xsi:type="structure:OneWayRelationMember" upper="-1" name="products" target="_s8D6-P8MEem4dONaAfrVDg" rangeExpression="northwind::entities::Product" updateable="false" deleteable="false" relationMemberType="PROPERTY" getterExpression="self.products"/>
+      <relations xsi:type="structure:OneWayRelationMember" upper="-1" name="products" target="_s8D6-P8MEem4dONaAfrVDg" rangeExpression="northwind::entities::Product" updateable="false" deleteable="false" binding="_JYmDceq1EemUZMITjXqp8w" relationMemberType="BOUND" getterExpression="self.products"/>
       <attributes xsi:type="structure:DataMember" xmi:id="_s8Csvv8MEem4dONaAfrVDg" name="categoryName" dataType="_Nppx8IUcEeipmMyz9cMCRA" required="true" binding="_JYmDc-q1EemUZMITjXqp8w" dataMemberType="BOUND" getterExpression="self.categoryName"/>
       <mapping xmi:id="_s8Cswv8MEem4dONaAfrVDg" target="_JYmDcOq1EemUZMITjXqp8w" filter=""/>
     </elements>
@@ -394,7 +394,7 @@
       <mapping xmi:id="_s8DT5_8MEem4dONaAfrVDg" target="_JYnRjeq1EemUZMITjXqp8w" filter=""/>
     </elements>
     <elements xsi:type="structure:TransferObjectType" xmi:id="_s8D6-P8MEem4dONaAfrVDg" name="ProductInfo">
-      <relations xsi:type="structure:OneWayRelationMember" xmi:id="_s8D6-f8MEem4dONaAfrVDg" lower="1" name="category" target="_JYpGxeq1EemUZMITjXqp8w" updateable="false" deleteable="false" binding="_JYofpuq1EemUZMITjXqp8w" relationMemberType="PROPERTY" getterExpression="self.category"/>
+      <relations xsi:type="structure:OneWayRelationMember" xmi:id="_s8D6-f8MEem4dONaAfrVDg" lower="1" name="category" target="_JYpGxeq1EemUZMITjXqp8w" createable="false" updateable="false" deleteable="false" binding="_JYofpuq1EemUZMITjXqp8w" relationMemberType="BOUND" getterExpression="self.category"/>
       <attributes xsi:type="structure:DataMember" xmi:id="_s8Eh4_8MEem4dONaAfrVDg" name="unitPrice" dataType="_VDVVQIUcEeipmMyz9cMCRA" required="true" binding="_JYofr-q1EemUZMITjXqp8w" dataMemberType="BOUND" getterExpression="self.unitPrice"/>
       <attributes xsi:type="structure:DataMember" xmi:id="_s8Eh5_8MEem4dONaAfrVDg" name="productName" dataType="_Nppx8IUcEeipmMyz9cMCRA" required="true" binding="_JYofqeq1EemUZMITjXqp8w" dataMemberType="BOUND" getterExpression="self.productName"/>
       <mapping xmi:id="_s8Eh6_8MEem4dONaAfrVDg" target="_JYofpOq1EemUZMITjXqp8w" filter=""/>
