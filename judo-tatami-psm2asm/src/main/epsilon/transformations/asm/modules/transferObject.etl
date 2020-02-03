@@ -37,87 +37,6 @@ rule CreateUnmappedTransferObject
     extends CreateTransferObject {
     }
 
-rule CreateGeneratedEmbeddedTransferRelationForNonEmbeddedTransferRelation
-    transform s : JUDOPSM!TransferObjectRelation
-    to t : ASM!EReference {
-      guard: not s.embedded and s.binding.isDefined() and s.binding.isKindOf(JUDOPSM!Relation)
-      and psmUtils.getAllContainingMappedTransferObjects(s.eContainer).exists(mto | psmUtils.getTransferObjectTypesToExtendWithEmbeddedRelations(s.eResource().getResourceSet()).contains(mto))
-        t.name = "_" + s.name;
-        t.containment = true;
-
-        t.lowerBound = s.cardinality.lower;
-        t.upperBound = s.cardinality.upper;
-        
-        t.eType = s.target.entityType.equivalent("CreateReferenceClassForEntityType");
-        t.derived = s.binding.isDefined() and not s.binding.isKindOf(JUDOPSM!Relation);
-        t.changeable = s.binding.isDefined() and (s.binding.isKindOf(JUDOPSM!Relation) or (s.binding.isKindOf(JUDOPSM!ReferenceAccessor) and s.binding.setterExpression.isDefined()));
-        t.eAnnotations.add(s.equivalent("CreateBindingAnnotationForGeneratedEmbeddedTransferObjectRelation"));
-        t.eAnnotations.add(s.equivalent("CreateEmbeddedFlagsForGeneratedEmbeddedTransferObjectRelation"));
-        s.eContainer.equivalent("CreateExtendedTransferObjectForGeneratedEmbeddedTransferObjectRelation").eStructuralFeatures.add(t);
-}
-
-@lazy
-rule CreateBindingAnnotationForGeneratedEmbeddedTransferObjectRelation
-    transform s : JUDOPSM!TransferObjectRelation
-    to t : ASM!EAnnotation {
-        t.source = asmUtils.getAnnotationUri("binding");
-        
-        var binding = new ASM!EStringToStringMapEntry;
-        binding.key = "value";
-        binding.value = s.name;
-        t.details.add(binding);
-    }
-
-@lazy
-rule CreateEmbeddedFlagsForGeneratedEmbeddedTransferObjectRelation
-	transform s : JUDOPSM!TransferObjectRelation
-	to t : ASM!EAnnotation {
-		t.source = asmUtils.getAnnotationUri("embedded");
-
-        var createEntry = new ASM!EStringToStringMapEntry;
-        createEntry.key = "create";
-        createEntry.value = "false";
-        t.details.add(createEntry);
-
-        var updateEntry = new ASM!EStringToStringMapEntry;
-        updateEntry.key = "update";
-        updateEntry.value = "false";
-        t.details.add(updateEntry);
-
-        var deleteEntry = new ASM!EStringToStringMapEntry;
-        deleteEntry.key = "delete";
-        deleteEntry.value = "false";
-        t.details.add(deleteEntry);
-
-        s.equivalent("CreateGeneratedEmbeddedTransferRelationForNonEmbeddedTransferRelation").eAnnotations.add(t);
-    }
-
-@lazy
-rule CreateExtendedTransferObjectForGeneratedEmbeddedTransferObjectRelation
-	transform s : JUDOPSM!MappedTransferObjectType
-	to t : ASM!EClass {
-		t.name = s.name + "__Extended";
-		s.getNamespace().asmEquivalent().eClassifiers.add(t);
-		
-		t.eSuperTypes.add(s.equivalent("CreateMappedTransferObject"));
-		
-		t.eAnnotations.add(s.equivalent("CreateMappedEntityTypeAnnotationOnExtendedMappedTransferObject"));
-	}
-
-@lazy
-rule CreateMappedEntityTypeAnnotationOnExtendedMappedTransferObject
-    transform s : JUDOPSM!MappedTransferObjectType
-    to t : ASM!EAnnotation {
-        t.source = asmUtils.getAnnotationUri("mappedEntityType");
-		
-		var mappedEntityType = new ASM!EStringToStringMapEntry;
-        mappedEntityType.key = "value";
-        mappedEntityType.value = asmUtils.getClassifierFQName(s.entityType.equivalent("CreateEntityClass"));
-        t.details.add(mappedEntityType);
-
-        s.equivalent("CreateMappedTransferObject").eAnnotations.add(t);
-    }
-
 rule CreateMappedEntityTypeAnnotationOnReferenceClassForEntityType
     transform s : JUDOPSM!EntityType
     to t : ASM!EAnnotation {
@@ -258,7 +177,7 @@ rule CreateTransferObjectAttribute
 		
 		t.eType = s.dataType.asmEquivalent();
 		t.derived = s.binding.isDefined() and not s.binding.isKindOf(JUDOPSM!Attribute);
-		t.changeable = s.binding.isDefined() and (s.binding.isKindOf(JUDOPSM!Attribute) or (s.binding.isKindOf(JUDOPSM!PrimitiveAccessor) and s.binding.setterExpression.isDefined()));
+		t.changeable = not s.binding.isDefined() or (s.binding.isKindOf(JUDOPSM!Attribute) or (s.binding.isKindOf(JUDOPSM!PrimitiveAccessor) and s.binding.setterExpression.isDefined()));
 
 		s.eContainer.asmEquivalent().eStructuralFeatures.add(t);
 	}
@@ -274,7 +193,7 @@ rule CreateTransferObjectRelation
 		
 		t.eType = s.target.asmEquivalent();
 		t.derived = s.binding.isDefined() and not s.binding.isKindOf(JUDOPSM!Relation);
-		t.changeable = s.binding.isDefined() and (s.binding.isKindOf(JUDOPSM!Relation) or (s.binding.isKindOf(JUDOPSM!ReferenceAccessor) and s.binding.setterExpression.isDefined()));
+		t.changeable = not s.binding.isDefined() or (s.binding.isKindOf(JUDOPSM!Relation) or (s.binding.isKindOf(JUDOPSM!ReferenceAccessor) and s.binding.setterExpression.isDefined()));
 		
 		s.eContainer.asmEquivalent().eStructuralFeatures.add(t);
 	}
