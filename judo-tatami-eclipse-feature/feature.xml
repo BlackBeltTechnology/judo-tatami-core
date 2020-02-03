@@ -227,6 +227,7 @@
       <import feature="hu.blackbelt.judo.meta.expression.feature"/>
       <import feature="hu.blackbelt.judo.meta.openapi.feature"/>
       <import feature="hu.blackbelt.judo.meta.measure.feature"/>
+
    </requires>
 
 </feature>
