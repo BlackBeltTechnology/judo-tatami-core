@@ -28,8 +28,6 @@ rule CreateParameter
 rule CreateScriptBodyAnnotation
     transform s : JUDOPSM!OperationDeclaration
     to t : ASM!EAnnotation {
-        guard: s.implementation.isDefined() and s.implementation.body.isDefined() and s.implementation.body.trim() <> ""
-
         t.source = asmUtils.getAnnotationUri("script");
 
 		var script = new ASM!EStringToStringMapEntry;
@@ -197,11 +195,13 @@ rule CreateScriptBodyAnnotationForBoundOperation
     transform s : JUDOPSM!BoundOperation
     to t : ASM!EAnnotation
     extends CreateScriptBodyAnnotation {
+        guard: s.implementation.isDefined() and s.implementation.body.isDefined() and s.implementation.body.trim() <> ""
+
         s.equivalent("CreateBoundOperation").eAnnotations.add(t);
 }
 
 @greedy
-rule CreateScriptBodyAnnotationForBoundOperation
+rule CreateAbstractAnnotationForBoundOperation
     transform s : JUDOPSM!BoundOperation
     to t : ASM!EAnnotation {
         guard: s.`abstract`
@@ -231,6 +231,8 @@ rule CreateScriptBodyAnnotationForUnboundOperation
     transform s : JUDOPSM!UnboundOperation
     to t : ASM!EAnnotation
     extends CreateScriptBodyAnnotation {
+        guard: s.implementation.isDefined() and s.implementation.body.isDefined() and s.implementation.body.trim() <> ""
+
         s.equivalent("CreateUnboundOperation").eAnnotations.add(t);
 }
 
