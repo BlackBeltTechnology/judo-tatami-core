@@ -60,7 +60,7 @@
 
         <p2-swagger-version>1.0.1</p2-swagger-version>
 
-        <judo-framework-version>2.0.0.20200131_134644_496b413_1_0_beta1</judo-framework-version>
+        <judo-framework-version>2.0.0.20200204_213842_d428bdd_1_0_beta1</judo-framework-version>
 
         <!-- Model versions -->
         <judo-meta-rdbms-version>1.0.0.20200203_191233_309fdce_1_0_beta1</judo-meta-rdbms-version>
