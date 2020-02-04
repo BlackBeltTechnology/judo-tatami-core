@@ -148,7 +148,9 @@ public class Script2Operation {
                         "osgi.extender;filter:=\"(&(osgi.extender=osgi.component)(version>=1.3.0)(!(version>=2.0.0)))\"")
                 .set( Constants.IMPORT_PACKAGE,
                         "org.osgi.framework;version=\"[1.8,2.0)\"," +
-                        "hu.blackbelt.judo.dao.api;version=\"[1.0,2.0)\""
+                        "hu.blackbelt.judo.dao.api;version=\"[1.0,2.0)\"," +
+                        "hu.blackbelt.judo.meta.asm.runtime;version=\"[1.0,2.0)\"," +
+                        "org.eclipse.emf.ecore"
                 );
 
         if (exportedPackages.size() > 0) {
