@@ -77,7 +77,7 @@
 
     <feature name="judo-tatami-meta-jcl" version="${project.version}" description="JUDO Tatami, JCL Model " install="false">
         <feature>judo-tatami-meta-jql</feature>
-        <feature dependency="true">guava</feature>
+        <feature dependency="true">guava-21</feature>
         <feature dependency="true">guice</feature>
         <feature dependency="true">epsilon-runtime</feature>
         <feature dependency="true">osgi-utils</feature>
