@@ -59,10 +59,10 @@ public class Script2Operation {
                         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
                         "<scr:component xmlns:scr=\"http://www.osgi.org/xmlns/scr/v1.3.0\" name=\"" + packageName + "." + unitName + "\" immediate=\"true\">\n" +
                         "    <implementation class=\"" + packageName + "." + unitName + "\"/>\n" +
-                        "    <property name=\"operation.name\">" + operationFQName + "</property>\n" +
-                        "    <property name=\"script\">true</property>\n" +
+                        "    <property name=\"operation.name\" value=\"" + operationFQName + "\"/>\n" +
+                        "    <property name=\"script\" value=\"true\"/>\n" +
                         "    <service>\n" +
-                        "        <provide interface=\"java.util.Function\"/>\n" +
+                        "        <provide interface=\"java.util.function.Function\"/>\n" +
                         "    </service>\n" +
                         "    <reference name=\"dao\" interface=\"hu.blackbelt.judo.dao.api.DAO\" field=\"dao\"/>\n" +
                         "    <reference name=\"identifierProvider\" interface=\"hu.blackbelt.judo.dao.api.IdentifierProvider\" field=\"idProvider\"/>\n" +
