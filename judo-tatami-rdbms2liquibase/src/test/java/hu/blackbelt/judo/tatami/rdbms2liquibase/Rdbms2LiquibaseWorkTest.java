@@ -1,6 +1,5 @@
 package hu.blackbelt.judo.tatami.rdbms2liquibase;
 
-import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.Arrays;
@@ -13,7 +12,7 @@ import org.junit.jupiter.api.Test;
 import com.google.common.collect.Lists;
 
 import static hu.blackbelt.judo.tatami.core.workflow.engine.WorkFlowEngineBuilder.aNewWorkFlowEngine;
-import static hu.blackbelt.judo.tatami.core.workflow.flow.ParallelFlow.Builder.aNewParallelFlow;
+import static hu.blackbelt.judo.tatami.core.workflow.flow.SequentialFlow.Builder.aNewSequentialFlow;
 import static hu.blackbelt.judo.tatami.rdbms2liquibase.Rdbms2Liquibase.calculateRdbms2LiquibaseTransformationScriptURI;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -55,7 +54,8 @@ public class Rdbms2LiquibaseWorkTest {
 
 	@Test
 	void testSimpleWorkflow() {
-		WorkFlow workflow = aNewParallelFlow().execute(rdbms2LiquibaseWorks.toArray(new Work[rdbms2LiquibaseWorks.size()])).build();
+		// WorkFlow workflow = aNewParallelFlow().execute(rdbms2LiquibaseWorks.toArray(new Work[rdbms2LiquibaseWorks.size()])).build();
+		WorkFlow workflow = aNewSequentialFlow().execute(rdbms2LiquibaseWorks.toArray(new Work[rdbms2LiquibaseWorks.size()])).build();
 
 		WorkFlowEngine workFlowEngine = aNewWorkFlowEngine().build();
 		WorkReport workReport = workFlowEngine.run(workflow);

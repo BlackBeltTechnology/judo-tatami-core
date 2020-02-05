@@ -7,7 +7,6 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
-import hu.blackbelt.epsilon.runtime.execution.api.Log;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -26,7 +25,7 @@ import static hu.blackbelt.judo.meta.asm.runtime.AsmModel.LoadArguments.asmLoadA
 import static hu.blackbelt.judo.tatami.asm2rdbms.Asm2Rdbms.calculateAsm2RdbmsModelURI;
 import static hu.blackbelt.judo.tatami.asm2rdbms.Asm2Rdbms.calculateAsm2RdbmsTransformationScriptURI;
 import static hu.blackbelt.judo.tatami.core.workflow.engine.WorkFlowEngineBuilder.aNewWorkFlowEngine;
-import static hu.blackbelt.judo.tatami.core.workflow.flow.ParallelFlow.Builder.aNewParallelFlow;
+import static hu.blackbelt.judo.tatami.core.workflow.flow.SequentialFlow.Builder.aNewSequentialFlow;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static hu.blackbelt.judo.meta.asm.runtime.AsmModel.loadAsmModel;
@@ -63,9 +62,8 @@ public class Asm2RdbmsWorkTest {
 
 	@Test
 	void testSimpleWorkflow() {
-		//WorkFlow workflow = aNewSequentialFlow().execute(asm2RdbmsWork).build();
-		
-		WorkFlow workflow = aNewParallelFlow().execute(asm2RdbmsWorks.toArray(new Work[asm2RdbmsWorks.size()])).build();
+		WorkFlow workflow = aNewSequentialFlow().execute(asm2RdbmsWorks.toArray(new Work[asm2RdbmsWorks.size()])).build();
+		//WorkFlow workflow = aNewParallelFlow().execute(asm2RdbmsWorks.toArray(new Work[asm2RdbmsWorks.size()])).build();
 
 		WorkFlowEngine workFlowEngine = aNewWorkFlowEngine().build();
 		WorkReport workReport = workFlowEngine.run(workflow);
