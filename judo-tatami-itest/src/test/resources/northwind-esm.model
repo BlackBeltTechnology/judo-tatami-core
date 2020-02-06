@@ -213,15 +213,15 @@
   </elements>
   <elements xsi:type="namespace:Package" xmi:id="_JYmDYOq1EemUZMITjXqp8w" name="entities">
     <elements xsi:type="structure:EntityType" xmi:id="_JYmDYeq1EemUZMITjXqp8w" name="Address">
-      <relations xsi:type="structure:OneWayRelationMember" xmi:id="_JYmDYuq1EemUZMITjXqp8w" lower="1" name="city" target="_JYmDfuq1EemUZMITjXqp8w" defaultExpression="" rangeExpression=""/>
+      <relations xsi:type="structure:OneWayRelationMember" xmi:id="_JYmDYuq1EemUZMITjXqp8w" lower="1" name="city" target="_JYmDfuq1EemUZMITjXqp8w" defaultExpression="" rangeExpression="" createable="false" updateable="false" deleteable="false"/>
       <attributes xsi:type="structure:DataMember" xmi:id="_JYmDZeq1EemUZMITjXqp8w" name="address" dataType="_Nppx8IUcEeipmMyz9cMCRA" required="true" defaultExpression=""/>
       <attributes xsi:type="structure:DataMember" xmi:id="_JYmDaOq1EemUZMITjXqp8w" name="region" dataType="_Nppx8IUcEeipmMyz9cMCRA" defaultExpression=""/>
       <attributes xsi:type="structure:DataMember" xmi:id="_JYmDa-q1EemUZMITjXqp8w" name="postalCode" dataType="_Lw4a8IOGEeiLE-B2bbL0fg" required="true" defaultExpression=""/>
       <mapping xmi:id="_JYmDb-q1EemUZMITjXqp8w" target="_JYmDYeq1EemUZMITjXqp8w" filter=""/>
     </elements>
     <elements xsi:type="structure:EntityType" xmi:id="_JYmDcOq1EemUZMITjXqp8w" name="Category">
-      <relations xsi:type="structure:TwoWayRelationMember" xmi:id="_JYmDceq1EemUZMITjXqp8w" upper="-1" name="products" target="_JYofpOq1EemUZMITjXqp8w" defaultExpression="" rangeExpression="" partner="_JYofpuq1EemUZMITjXqp8w" primary="true"/>
-      <relations xsi:type="structure:TwoWayRelationMember" xmi:id="_JYmDcuq1EemUZMITjXqp8w" name="owner" target="_JYmqgOq1EemUZMITjXqp8w" defaultExpression="" rangeExpression="" partner="_JYmqiOq1EemUZMITjXqp8w" primary="true"/>
+      <relations xsi:type="structure:TwoWayRelationMember" xmi:id="_JYmDceq1EemUZMITjXqp8w" upper="-1" name="products" target="_JYofpOq1EemUZMITjXqp8w" defaultExpression="" rangeExpression="" createable="false" updateable="false" deleteable="false" partner="_JYofpuq1EemUZMITjXqp8w" primary="true"/>
+      <relations xsi:type="structure:TwoWayRelationMember" xmi:id="_JYmDcuq1EemUZMITjXqp8w" name="owner" target="_JYmqgOq1EemUZMITjXqp8w" defaultExpression="" rangeExpression="" createable="false" updateable="false" deleteable="false" partner="_JYmqiOq1EemUZMITjXqp8w" primary="true"/>
       <attributes xsi:type="structure:DataMember" xmi:id="_JYmDc-q1EemUZMITjXqp8w" name="categoryName" dataType="_Nppx8IUcEeipmMyz9cMCRA" required="true"/>
       <attributes xsi:type="structure:DataMember" xmi:id="_JYmDduq1EemUZMITjXqp8w" name="description" dataType="_tXQUoIOGEeiLE-B2bbL0fg"/>
       <attributes xsi:type="structure:DataMember" xmi:id="_JYmDeeq1EemUZMITjXqp8w" name="picture" dataType="_j-zrcINuEeiLE-B2bbL0fg"/>
@@ -232,7 +232,7 @@
       <mapping xmi:id="_JYmDg-q1EemUZMITjXqp8w" target="_JYmDfuq1EemUZMITjXqp8w" filter=""/>
     </elements>
     <elements xsi:type="structure:EntityType" xmi:id="_JYmDhOq1EemUZMITjXqp8w" name="Company">
-      <relations xsi:type="structure:TwoWayRelationMember" xmi:id="_JYmDheq1EemUZMITjXqp8w" upper="-1" name="manufacturedProducts" target="_JYofpOq1EemUZMITjXqp8w" defaultExpression="" rangeExpression="" partner="_JYofpeq1EemUZMITjXqp8w" primary="true"/>
+      <relations xsi:type="structure:TwoWayRelationMember" xmi:id="_JYmDheq1EemUZMITjXqp8w" upper="-1" name="manufacturedProducts" target="_JYofpOq1EemUZMITjXqp8w" defaultExpression="" rangeExpression="" createable="false" updateable="false" deleteable="false" partner="_JYofpeq1EemUZMITjXqp8w" primary="true"/>
       <attributes xsi:type="structure:DataMember" xmi:id="_JYmDhuq1EemUZMITjXqp8w" name="companyName" dataType="_Nppx8IUcEeipmMyz9cMCRA" required="true"/>
       <attributes xsi:type="structure:DataMember" xmi:id="_JYmDieq1EemUZMITjXqp8w" name="contactName" dataType="_Nppx8IUcEeipmMyz9cMCRA"/>
       <attributes xsi:type="structure:DataMember" xmi:id="_JYmDjOq1EemUZMITjXqp8w" name="contactTitle" dataType="_Nppx8IUcEeipmMyz9cMCRA"/>
@@ -242,17 +242,17 @@
       <mapping xmi:id="_JYmqeOq1EemUZMITjXqp8w" target="_JYmDhOq1EemUZMITjXqp8w" filter=""/>
     </elements>
     <elements xsi:type="structure:EntityType" xmi:id="_JYmqeeq1EemUZMITjXqp8w" name="Customer">
-      <relations xsi:type="structure:TwoWayRelationMember" xmi:id="_JYmqeuq1EemUZMITjXqp8w" upper="-1" name="orders" target="_JYnRrOq1EemUZMITjXqp8w" defaultExpression="" rangeExpression="" partner="_JYnRreq1EemUZMITjXqp8w" primary="true"/>
-      <relations xsi:type="structure:OneWayRelationMember" xmi:id="_JYmqe-q1EemUZMITjXqp8w" upper="-1" name="addresses" target="_JYmDYeq1EemUZMITjXqp8w" containment="true"/>
+      <relations xsi:type="structure:TwoWayRelationMember" xmi:id="_JYmqeuq1EemUZMITjXqp8w" upper="-1" name="orders" target="_JYnRrOq1EemUZMITjXqp8w" defaultExpression="" rangeExpression="" createable="false" updateable="false" deleteable="false" partner="_JYnRreq1EemUZMITjXqp8w" primary="true"/>
+      <relations xsi:type="structure:OneWayRelationMember" xmi:id="_JYmqe-q1EemUZMITjXqp8w" upper="-1" name="addresses" target="_JYmDYeq1EemUZMITjXqp8w" createable="false" updateable="false" deleteable="false" containment="true"/>
       <mapping xmi:id="_JYmqf-q1EemUZMITjXqp8w" target="_JYmqeeq1EemUZMITjXqp8w" filter=""/>
     </elements>
     <elements xsi:type="structure:EntityType" xmi:id="_JYmqgOq1EemUZMITjXqp8w" name="Employee">
-      <relations xsi:type="structure:TwoWayRelationMember" xmi:id="_JYmqgeq1EemUZMITjXqp8w" upper="-1" name="orders" target="_JYnRrOq1EemUZMITjXqp8w" defaultExpression="" rangeExpression="" partner="_JYnRruq1EemUZMITjXqp8w" primary="true"/>
-      <relations xsi:type="structure:OneWayRelationMember" xmi:id="_JYmqguq1EemUZMITjXqp8w" name="address" target="_JYmDYeq1EemUZMITjXqp8w" containment="true"/>
-      <relations xsi:type="structure:TwoWayRelationMember" xmi:id="_JYmqheq1EemUZMITjXqp8w" name="reportsTo" target="_JYmqgOq1EemUZMITjXqp8w" defaultExpression="" rangeExpression="" partner="_JYmqhuq1EemUZMITjXqp8w" primary="true"/>
-      <relations xsi:type="structure:TwoWayRelationMember" xmi:id="_JYmqhuq1EemUZMITjXqp8w" upper="-1" name="employees" target="_JYmqgOq1EemUZMITjXqp8w" defaultExpression="" rangeExpression="" partner="_JYmqheq1EemUZMITjXqp8w"/>
-      <relations xsi:type="structure:TwoWayRelationMember" xmi:id="_JYmqh-q1EemUZMITjXqp8w" name="territory" target="_JYpGu-q1EemUZMITjXqp8w" defaultExpression="" rangeExpression="" partner="_JYpGvOq1EemUZMITjXqp8w" primary="true"/>
-      <relations xsi:type="structure:TwoWayRelationMember" xmi:id="_JYmqiOq1EemUZMITjXqp8w" name="category" target="_JYmDcOq1EemUZMITjXqp8w" defaultExpression="" rangeExpression="" partner="_JYmDcuq1EemUZMITjXqp8w"/>
+      <relations xsi:type="structure:TwoWayRelationMember" xmi:id="_JYmqgeq1EemUZMITjXqp8w" upper="-1" name="orders" target="_JYnRrOq1EemUZMITjXqp8w" defaultExpression="" rangeExpression="" createable="false" updateable="false" deleteable="false" partner="_JYnRruq1EemUZMITjXqp8w" primary="true"/>
+      <relations xsi:type="structure:OneWayRelationMember" xmi:id="_JYmqguq1EemUZMITjXqp8w" name="address" target="_JYmDYeq1EemUZMITjXqp8w" createable="false" updateable="false" deleteable="false" containment="true"/>
+      <relations xsi:type="structure:TwoWayRelationMember" xmi:id="_JYmqheq1EemUZMITjXqp8w" name="reportsTo" target="_JYmqgOq1EemUZMITjXqp8w" defaultExpression="" rangeExpression="" createable="false" updateable="false" deleteable="false" partner="_JYmqhuq1EemUZMITjXqp8w" primary="true"/>
+      <relations xsi:type="structure:TwoWayRelationMember" xmi:id="_JYmqhuq1EemUZMITjXqp8w" upper="-1" name="employees" target="_JYmqgOq1EemUZMITjXqp8w" defaultExpression="" rangeExpression="" createable="false" updateable="false" deleteable="false" partner="_JYmqheq1EemUZMITjXqp8w"/>
+      <relations xsi:type="structure:TwoWayRelationMember" xmi:id="_JYmqh-q1EemUZMITjXqp8w" name="territory" target="_JYpGu-q1EemUZMITjXqp8w" defaultExpression="" rangeExpression="" createable="false" updateable="false" deleteable="false" partner="_JYpGvOq1EemUZMITjXqp8w" primary="true"/>
+      <relations xsi:type="structure:TwoWayRelationMember" xmi:id="_JYmqiOq1EemUZMITjXqp8w" name="category" target="_JYmDcOq1EemUZMITjXqp8w" defaultExpression="" rangeExpression="" createable="false" updateable="false" deleteable="false" partner="_JYmDcuq1EemUZMITjXqp8w"/>
       <attributes xsi:type="structure:DataMember" xmi:id="_JYmqieq1EemUZMITjXqp8w" name="titleOfCourtesy" dataType="_Nppx8IUcEeipmMyz9cMCRA"/>
       <attributes xsi:type="structure:DataMember" xmi:id="_JYmqjOq1EemUZMITjXqp8w" name="birthDate" dataType="_YoqOYIN1EeiLE-B2bbL0fg"/>
       <attributes xsi:type="structure:DataMember" xmi:id="_JYmqj-q1EemUZMITjXqp8w" name="hireDate" dataType="_YoqOYIN1EeiLE-B2bbL0fg"/>
@@ -280,9 +280,10 @@
       <attributes xsi:type="structure:DataMember" xmi:id="_JYnRkeq1EemUZMITjXqp8w" name="exciseTax" dataType="_VDVVQIUcEeipmMyz9cMCRA" required="true"/>
       <generalizations xmi:id="_JYnRlOq1EemUZMITjXqp8w" target="_JYnRrOq1EemUZMITjXqp8w"/>
       <mapping xmi:id="_JYnRluq1EemUZMITjXqp8w" target="_JYnRjeq1EemUZMITjXqp8w" filter=""/>
+      <operations name="ship" customImplementation="false" body="/* TODO */" binding=""/>
     </elements>
     <elements xsi:type="structure:EntityType" xmi:id="_JYnRl-q1EemUZMITjXqp8w" name="MailingList">
-      <relations xsi:type="structure:OneWayRelationMember" xmi:id="_JYnRmOq1EemUZMITjXqp8w" name="person" target="_JYn4v-q1EemUZMITjXqp8w"/>
+      <relations xsi:type="structure:OneWayRelationMember" xmi:id="_JYnRmOq1EemUZMITjXqp8w" name="person" target="_JYn4v-q1EemUZMITjXqp8w" createable="false" updateable="false" deleteable="false"/>
       <mapping xmi:id="_JYnRnOq1EemUZMITjXqp8w" target="_JYnRl-q1EemUZMITjXqp8w" filter=""/>
     </elements>
     <elements xsi:type="structure:EntityType" xmi:id="_JYnRneq1EemUZMITjXqp8w" name="OnlineInternationalOrder">
@@ -297,12 +298,12 @@
       <mapping xmi:id="_JYnRq-q1EemUZMITjXqp8w" target="_JYnRpeq1EemUZMITjXqp8w" filter=""/>
     </elements>
     <elements xsi:type="structure:EntityType" xmi:id="_JYnRrOq1EemUZMITjXqp8w" name="Order">
-      <relations xsi:type="structure:TwoWayRelationMember" xmi:id="_JYnRreq1EemUZMITjXqp8w" name="customer" target="_JYmqeeq1EemUZMITjXqp8w" defaultExpression="" rangeExpression="" partner="_JYmqeuq1EemUZMITjXqp8w"/>
-      <relations xsi:type="structure:TwoWayRelationMember" xmi:id="_JYnRruq1EemUZMITjXqp8w" name="employee" target="_JYmqgOq1EemUZMITjXqp8w" defaultExpression="" rangeExpression="" partner="_JYmqgeq1EemUZMITjXqp8w"/>
-      <relations xsi:type="structure:TwoWayRelationMember" xmi:id="_JYnRr-q1EemUZMITjXqp8w" name="shipper" target="_JYofyuq1EemUZMITjXqp8w" defaultExpression="" rangeExpression="" partner="_JYofy-q1EemUZMITjXqp8w" primary="true"/>
-      <relations xsi:type="structure:OneWayRelationMember" xmi:id="_JYnRsOq1EemUZMITjXqp8w" name="shipAddress" target="_JYmDYeq1EemUZMITjXqp8w" containment="true"/>
-      <relations xsi:type="structure:OneWayRelationMember" xmi:id="_JYnRs-q1EemUZMITjXqp8w" lower="1" upper="-1" name="orderDetails" target="_JYn4nuq1EemUZMITjXqp8w" containment="true"/>
-      <relations xsi:type="structure:OneWayRelationMember" xmi:id="_JYnRtuq1EemUZMITjXqp8w" upper="-1" name="categories" target="_JYmDcOq1EemUZMITjXqp8w" relationMemberType="PROPERTY" getterExpression="self.orderDetails.product.category"/>
+      <relations xsi:type="structure:TwoWayRelationMember" xmi:id="_JYnRreq1EemUZMITjXqp8w" name="customer" target="_JYmqeeq1EemUZMITjXqp8w" defaultExpression="" rangeExpression="" createable="false" updateable="false" deleteable="false" partner="_JYmqeuq1EemUZMITjXqp8w"/>
+      <relations xsi:type="structure:TwoWayRelationMember" xmi:id="_JYnRruq1EemUZMITjXqp8w" name="employee" target="_JYmqgOq1EemUZMITjXqp8w" defaultExpression="" rangeExpression="" createable="false" updateable="false" deleteable="false" partner="_JYmqgeq1EemUZMITjXqp8w"/>
+      <relations xsi:type="structure:TwoWayRelationMember" xmi:id="_JYnRr-q1EemUZMITjXqp8w" name="shipper" target="_JYofyuq1EemUZMITjXqp8w" defaultExpression="" rangeExpression="" createable="false" updateable="false" deleteable="false" partner="_JYofy-q1EemUZMITjXqp8w" primary="true"/>
+      <relations xsi:type="structure:OneWayRelationMember" xmi:id="_JYnRsOq1EemUZMITjXqp8w" name="shipAddress" target="_JYmDYeq1EemUZMITjXqp8w" createable="false" updateable="false" deleteable="false" containment="true"/>
+      <relations xsi:type="structure:OneWayRelationMember" xmi:id="_JYnRs-q1EemUZMITjXqp8w" lower="1" upper="-1" name="orderDetails" target="_JYn4nuq1EemUZMITjXqp8w" createable="false" updateable="false" deleteable="false" containment="true"/>
+      <relations xsi:type="structure:OneWayRelationMember" xmi:id="_JYnRtuq1EemUZMITjXqp8w" upper="-1" name="categories" target="_JYmDcOq1EemUZMITjXqp8w" updateable="false" deleteable="false" relationMemberType="PROPERTY" getterExpression="self.orderDetails.product.category"/>
       <attributes xsi:type="structure:DataMember" xmi:id="_JYnRueq1EemUZMITjXqp8w" name="orderDate" dataType="_Z9J8IIN1EeiLE-B2bbL0fg" required="true"/>
       <attributes xsi:type="structure:DataMember" xmi:id="_JYnRvOq1EemUZMITjXqp8w" name="requiredDate" dataType="_Z9J8IIN1EeiLE-B2bbL0fg"/>
       <attributes xsi:type="structure:DataMember" xmi:id="_JYn4kOq1EemUZMITjXqp8w" name="shippedDate" dataType="_Z9J8IIN1EeiLE-B2bbL0fg"/>
@@ -312,12 +313,12 @@
       <attributes xsi:type="structure:DataMember" name="totalPrice" dataType="_VDVVQIUcEeipmMyz9cMCRA" required="true" binding="//@elements.2/@elements.12/@attributes.6" dataMemberType="PROPERTY" getterExpression="self.orderDetails!sum(od | od.price)"/>
       <attributes xsi:type="structure:DataMember" name="totalWeight" dataType="_h2iYkB1XEemwg4NgOjaKeA" binding="//@elements.2/@elements.12/@attributes.7" dataMemberType="PROPERTY" getterExpression="self.orderDetails!sum(od | od.weight)"/>
       <mapping xmi:id="_JYn4neq1EemUZMITjXqp8w" target="_JYnRrOq1EemUZMITjXqp8w" filter=""/>
-      <operations name="ship" customImplementation="false" body="var northwind::types::Integer 1 := 1" binding=""/>
-      <operations name="shipAll" customImplementation="false" body="" modifier="STATIC" binding=""/>
+      <operations name="ship" customImplementation="false" body="/* TODO */" modifier="ABSTRACT" binding=""/>
+      <operations name="shipAll" customImplementation="false" body="/* TODO */" modifier="STATIC" binding=""/>
     </elements>
     <elements xsi:type="structure:EntityType" xmi:id="_JYn4nuq1EemUZMITjXqp8w" name="OrderDetail">
-      <relations xsi:type="structure:OneWayRelationMember" xmi:id="_JYn4n-q1EemUZMITjXqp8w" lower="1" name="product" target="_JYofpOq1EemUZMITjXqp8w"/>
-      <relations xsi:type="structure:OneWayRelationMember" xmi:id="_JYn4ouq1EemUZMITjXqp8w" lower="1" name="category" target="_JYmDcOq1EemUZMITjXqp8w" relationMemberType="PROPERTY" getterExpression="self.product.category"/>
+      <relations xsi:type="structure:OneWayRelationMember" xmi:id="_JYn4n-q1EemUZMITjXqp8w" lower="1" name="product" target="_JYofpOq1EemUZMITjXqp8w" createable="false" updateable="false" deleteable="false"/>
+      <relations xsi:type="structure:OneWayRelationMember" xmi:id="_JYn4ouq1EemUZMITjXqp8w" lower="1" name="category" target="_JYmDcOq1EemUZMITjXqp8w" updateable="false" deleteable="false" relationMemberType="PROPERTY" getterExpression="self.product.category"/>
       <attributes xsi:type="structure:DataMember" xmi:id="_JYn4peq1EemUZMITjXqp8w" name="unitPrice" dataType="_VDVVQIUcEeipmMyz9cMCRA" required="true"/>
       <attributes xsi:type="structure:DataMember" xmi:id="_JYn4qOq1EemUZMITjXqp8w" name="quantity" dataType="_TXtg8IUcEeipmMyz9cMCRA" required="true"/>
       <attributes xsi:type="structure:DataMember" xmi:id="_JYn4q-q1EemUZMITjXqp8w" name="discount" dataType="_VDVVQIUcEeipmMyz9cMCRA" required="true"/>
@@ -328,7 +329,7 @@
       <mapping xmi:id="_JYn4uOq1EemUZMITjXqp8w" target="_JYn4nuq1EemUZMITjXqp8w" filter=""/>
     </elements>
     <elements xsi:type="structure:EntityType" xmi:id="_JYn4ueq1EemUZMITjXqp8w" name="PaymentList">
-      <relations xsi:type="structure:OneWayRelationMember" xmi:id="_JYn4uuq1EemUZMITjXqp8w" lower="1" upper="-1" name="employees" target="_JYmqgOq1EemUZMITjXqp8w"/>
+      <relations xsi:type="structure:OneWayRelationMember" xmi:id="_JYn4uuq1EemUZMITjXqp8w" lower="1" upper="-1" name="employees" target="_JYmqgOq1EemUZMITjXqp8w" createable="false" updateable="false" deleteable="false"/>
       <mapping xmi:id="_JYn4vuq1EemUZMITjXqp8w" target="_JYn4ueq1EemUZMITjXqp8w" filter=""/>
     </elements>
     <elements xsi:type="structure:EntityType" xmi:id="_JYn4v-q1EemUZMITjXqp8w" name="Person">
@@ -338,10 +339,10 @@
       <mapping xmi:id="_JYofo-q1EemUZMITjXqp8w" target="_JYn4v-q1EemUZMITjXqp8w" filter=""/>
     </elements>
     <elements xsi:type="structure:EntityType" xmi:id="_JYofpOq1EemUZMITjXqp8w" name="Product">
-      <relations xsi:type="structure:TwoWayRelationMember" xmi:id="_JYofpeq1EemUZMITjXqp8w" upper="-1" name="manufacturers" target="_JYmDhOq1EemUZMITjXqp8w" partner="_JYmDheq1EemUZMITjXqp8w"/>
-      <relations xsi:type="structure:TwoWayRelationMember" xmi:id="_JYofpuq1EemUZMITjXqp8w" lower="1" name="category" target="_JYmDcOq1EemUZMITjXqp8w" partner="_JYmDceq1EemUZMITjXqp8w"/>
-      <relations xsi:type="structure:TwoWayRelationMember" xmi:id="_JYofp-q1EemUZMITjXqp8w" name="supplier" target="_JYpGs-q1EemUZMITjXqp8w" partner="_JYpGtOq1EemUZMITjXqp8w" primary="true"/>
-      <relations xsi:type="structure:TwoWayRelationMember" xmi:id="_JYofqOq1EemUZMITjXqp8w" name="store" target="_JYof0Oq1EemUZMITjXqp8w" partner="_JYpGsOq1EemUZMITjXqp8w" primary="true"/>
+      <relations xsi:type="structure:TwoWayRelationMember" xmi:id="_JYofpeq1EemUZMITjXqp8w" upper="-1" name="manufacturers" target="_JYmDhOq1EemUZMITjXqp8w" createable="false" updateable="false" deleteable="false" partner="_JYmDheq1EemUZMITjXqp8w"/>
+      <relations xsi:type="structure:TwoWayRelationMember" xmi:id="_JYofpuq1EemUZMITjXqp8w" lower="1" name="category" target="_JYmDcOq1EemUZMITjXqp8w" createable="false" updateable="false" deleteable="false" partner="_JYmDceq1EemUZMITjXqp8w"/>
+      <relations xsi:type="structure:TwoWayRelationMember" xmi:id="_JYofp-q1EemUZMITjXqp8w" name="supplier" target="_JYpGs-q1EemUZMITjXqp8w" createable="false" updateable="false" deleteable="false" partner="_JYpGtOq1EemUZMITjXqp8w" primary="true"/>
+      <relations xsi:type="structure:TwoWayRelationMember" xmi:id="_JYofqOq1EemUZMITjXqp8w" name="store" target="_JYof0Oq1EemUZMITjXqp8w" createable="false" updateable="false" deleteable="false" partner="_JYpGsOq1EemUZMITjXqp8w" primary="true"/>
       <attributes xsi:type="structure:DataMember" xmi:id="_JYofqeq1EemUZMITjXqp8w" name="productName" dataType="_Nppx8IUcEeipmMyz9cMCRA" required="true"/>
       <attributes xsi:type="structure:DataMember" xmi:id="_JYofrOq1EemUZMITjXqp8w" name="quantityPerUnit" dataType="_TXtg8IUcEeipmMyz9cMCRA"/>
       <attributes xsi:type="structure:DataMember" xmi:id="_JYofr-q1EemUZMITjXqp8w" name="unitPrice" dataType="_VDVVQIUcEeipmMyz9cMCRA" required="true"/>
@@ -353,30 +354,30 @@
       <mapping xmi:id="_JYofwuq1EemUZMITjXqp8w" target="_JYofpOq1EemUZMITjXqp8w" filter=""/>
     </elements>
     <elements xsi:type="structure:EntityType" xmi:id="_JYofw-q1EemUZMITjXqp8w" name="Region">
-      <relations xsi:type="structure:TwoWayRelationMember" xmi:id="_JYofxOq1EemUZMITjXqp8w" upper="-1" name="territories" target="_JYpGu-q1EemUZMITjXqp8w" partner="_JYpGveq1EemUZMITjXqp8w" primary="true"/>
+      <relations xsi:type="structure:TwoWayRelationMember" xmi:id="_JYofxOq1EemUZMITjXqp8w" upper="-1" name="territories" target="_JYpGu-q1EemUZMITjXqp8w" createable="false" updateable="false" deleteable="false" partner="_JYpGveq1EemUZMITjXqp8w" primary="true"/>
       <attributes xsi:type="structure:DataMember" xmi:id="_JYofxeq1EemUZMITjXqp8w" name="regionDescription" dataType="_Nppx8IUcEeipmMyz9cMCRA" required="true"/>
       <mapping xmi:id="_JYofyeq1EemUZMITjXqp8w" target="_JYofw-q1EemUZMITjXqp8w" filter=""/>
     </elements>
     <elements xsi:type="structure:EntityType" xmi:id="_JYofyuq1EemUZMITjXqp8w" name="Shipper">
-      <relations xsi:type="structure:TwoWayRelationMember" xmi:id="_JYofy-q1EemUZMITjXqp8w" upper="-1" name="shipperOrders" target="_JYnRrOq1EemUZMITjXqp8w" partner="_JYnRr-q1EemUZMITjXqp8w"/>
-      <relations xsi:type="structure:TwoWayRelationMember" xmi:id="_JYofzOq1EemUZMITjXqp8w" name="territory" target="_JYpGu-q1EemUZMITjXqp8w" partner="_JYpGvuq1EemUZMITjXqp8w" primary="true"/>
+      <relations xsi:type="structure:TwoWayRelationMember" xmi:id="_JYofy-q1EemUZMITjXqp8w" upper="-1" name="shipperOrders" target="_JYnRrOq1EemUZMITjXqp8w" createable="false" updateable="false" deleteable="false" partner="_JYnRr-q1EemUZMITjXqp8w"/>
+      <relations xsi:type="structure:TwoWayRelationMember" xmi:id="_JYofzOq1EemUZMITjXqp8w" name="territory" target="_JYpGu-q1EemUZMITjXqp8w" createable="false" updateable="false" deleteable="false" partner="_JYpGvuq1EemUZMITjXqp8w" primary="true"/>
       <generalizations xmi:id="_JYofzeq1EemUZMITjXqp8w" target="_JYmDhOq1EemUZMITjXqp8w"/>
       <mapping xmi:id="_JYofz-q1EemUZMITjXqp8w" target="_JYofyuq1EemUZMITjXqp8w" filter=""/>
     </elements>
     <elements xsi:type="structure:EntityType" xmi:id="_JYof0Oq1EemUZMITjXqp8w" name="Store">
-      <relations xsi:type="structure:TwoWayRelationMember" xmi:id="_JYpGsOq1EemUZMITjXqp8w" upper="-1" name="products" target="_JYofpOq1EemUZMITjXqp8w" partner="_JYofqOq1EemUZMITjXqp8w"/>
+      <relations xsi:type="structure:TwoWayRelationMember" xmi:id="_JYpGsOq1EemUZMITjXqp8w" upper="-1" name="products" target="_JYofpOq1EemUZMITjXqp8w" createable="false" updateable="false" deleteable="false" partner="_JYofqOq1EemUZMITjXqp8w"/>
       <mapping xmi:id="_JYpGsuq1EemUZMITjXqp8w" target="_JYof0Oq1EemUZMITjXqp8w" filter=""/>
     </elements>
     <elements xsi:type="structure:EntityType" xmi:id="_JYpGs-q1EemUZMITjXqp8w" name="Supplier">
-      <relations xsi:type="structure:TwoWayRelationMember" xmi:id="_JYpGtOq1EemUZMITjXqp8w" upper="-1" name="suppliedProducts" target="_JYofpOq1EemUZMITjXqp8w" partner="_JYofp-q1EemUZMITjXqp8w"/>
+      <relations xsi:type="structure:TwoWayRelationMember" xmi:id="_JYpGtOq1EemUZMITjXqp8w" upper="-1" name="suppliedProducts" target="_JYofpOq1EemUZMITjXqp8w" createable="false" updateable="false" deleteable="false" partner="_JYofp-q1EemUZMITjXqp8w"/>
       <attributes xsi:type="structure:DataMember" xmi:id="_JYpGteq1EemUZMITjXqp8w" name="homePage" dataType="_A5EFMIN4EeiLE-B2bbL0fg"/>
       <generalizations xmi:id="_JYpGuOq1EemUZMITjXqp8w" target="_JYmDhOq1EemUZMITjXqp8w"/>
       <mapping xmi:id="_JYpGuuq1EemUZMITjXqp8w" target="_JYpGs-q1EemUZMITjXqp8w" filter=""/>
     </elements>
     <elements xsi:type="structure:EntityType" xmi:id="_JYpGu-q1EemUZMITjXqp8w" name="Territory">
-      <relations xsi:type="structure:TwoWayRelationMember" xmi:id="_JYpGvOq1EemUZMITjXqp8w" upper="-1" name="employees" target="_JYmqgOq1EemUZMITjXqp8w" partner="_JYmqh-q1EemUZMITjXqp8w"/>
-      <relations xsi:type="structure:TwoWayRelationMember" xmi:id="_JYpGveq1EemUZMITjXqp8w" name="region" target="_JYofw-q1EemUZMITjXqp8w" partner="_JYofxOq1EemUZMITjXqp8w"/>
-      <relations xsi:type="structure:TwoWayRelationMember" xmi:id="_JYpGvuq1EemUZMITjXqp8w" name="shipper" target="_JYofyuq1EemUZMITjXqp8w" partner="_JYofzOq1EemUZMITjXqp8w"/>
+      <relations xsi:type="structure:TwoWayRelationMember" xmi:id="_JYpGvOq1EemUZMITjXqp8w" upper="-1" name="employees" target="_JYmqgOq1EemUZMITjXqp8w" createable="false" updateable="false" deleteable="false" partner="_JYmqh-q1EemUZMITjXqp8w"/>
+      <relations xsi:type="structure:TwoWayRelationMember" xmi:id="_JYpGveq1EemUZMITjXqp8w" name="region" target="_JYofw-q1EemUZMITjXqp8w" createable="false" updateable="false" deleteable="false" partner="_JYofxOq1EemUZMITjXqp8w"/>
+      <relations xsi:type="structure:TwoWayRelationMember" xmi:id="_JYpGvuq1EemUZMITjXqp8w" name="shipper" target="_JYofyuq1EemUZMITjXqp8w" createable="false" updateable="false" deleteable="false" partner="_JYofzOq1EemUZMITjXqp8w"/>
       <attributes xsi:type="structure:DataMember" xmi:id="_JYpGv-q1EemUZMITjXqp8w" name="territoryDescription" dataType="_Nppx8IUcEeipmMyz9cMCRA" required="true"/>
       <mapping xmi:id="_JYpGw-q1EemUZMITjXqp8w" target="_JYpGu-q1EemUZMITjXqp8w" filter=""/>
     </elements>
@@ -398,7 +399,7 @@
       <generalizations target="_s8FI9f8MEem4dONaAfrVDg"/>
       <mapping xmi:id="_s8DT5_8MEem4dONaAfrVDg" target="_JYnRjeq1EemUZMITjXqp8w" filter=""/>
       <operations name="shipAll" modifier="STATIC" binding="northwind::entities::Order.shipAll" bound="true"/>
-      <operations name="deleteAllCancelled" customImplementation="false" body="" modifier="STATIC" binding=""/>
+      <operations name="deleteAllCancelled" customImplementation="false" body="/* TODO */" modifier="STATIC" binding=""/>
     </elements>
     <elements xsi:type="structure:TransferObjectType" xmi:id="_s8D6-P8MEem4dONaAfrVDg" name="ProductInfo">
       <relations xsi:type="structure:OneWayRelationMember" xmi:id="_s8D6-f8MEem4dONaAfrVDg" lower="1" name="category" target="_JYpGxeq1EemUZMITjXqp8w" createable="false" updateable="false" deleteable="false" binding="_JYofpuq1EemUZMITjXqp8w" relationMemberType="BOUND" getterExpression="self.category"/>
@@ -433,10 +434,13 @@
       <attributes xsi:type="structure:DataMember" name="unitPrice" dataType="_VDVVQIUcEeipmMyz9cMCRA" required="true" binding="_JYn4peq1EemUZMITjXqp8w" dataMemberType="BOUND"/>
       <attributes xsi:type="structure:DataMember" name="quantity" dataType="_TXtg8IUcEeipmMyz9cMCRA" required="true" binding="_JYn4qOq1EemUZMITjXqp8w" dataMemberType="BOUND"/>
       <attributes xsi:type="structure:DataMember" name="discount" dataType="_VDVVQIUcEeipmMyz9cMCRA" required="true" binding="_JYn4q-q1EemUZMITjXqp8w" dataMemberType="BOUND"/>
-      <attributes xsi:type="structure:DataMember" name="productName" dataType="_Nppx8IUcEeipmMyz9cMCRA" required="true" binding="_JYn4ruq1EemUZMITjXqp8w" dataMemberType="BOUND"/>
+      <attributes xsi:type="structure:DataMember" name="productName" dataType="_Nppx8IUcEeipmMyz9cMCRA" required="true" binding="_JYn4ruq1EemUZMITjXqp8w" dataMemberType="BOUND" getterExpression="self.categoryName + ': ' + self.product.productName"/>
       <attributes xsi:type="structure:DataMember" name="categoryName" dataType="_Nppx8IUcEeipmMyz9cMCRA" required="true" binding="_JYn4seq1EemUZMITjXqp8w" dataMemberType="BOUND"/>
       <attributes xsi:type="structure:DataMember" name="price" dataType="_VDVVQIUcEeipmMyz9cMCRA" binding="_JYn4tOq1EemUZMITjXqp8w" dataMemberType="BOUND"/>
       <mapping xmi:id="_s8FwA_8MEem4dONaAfrVDg" target="_JYn4nuq1EemUZMITjXqp8w" filter=""/>
+    </elements>
+    <elements xsi:type="structure:TransferObjectType" name="Initializer">
+      <operations name="startupInitializer" modifier="STATIC" binding="" initializer="true"/>
     </elements>
   </elements>
   <elements xsi:type="accesspoint:AccessPoint" xmi:id="_BwhYMAVjEeqKgZHIs7Kffw" name="InternalAP">
