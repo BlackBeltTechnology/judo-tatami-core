@@ -81,6 +81,8 @@ rule CreateUnboundTransferOperationInDefaultTransferObjectType
       guard: s.modifier == ESM!OperationModifier#STATIC and s.eContainer.isKindOf(ESM!EntityType)
 
       t.implementation = s.equivalent("CreateOperationBody");
+      t.initializer = s.initializer;
+
       s.eContainer.equivalent("CreateDefaultMappedTransferObjectTypeForEntity").operations.add(t);
 }
 
@@ -91,6 +93,8 @@ rule CreateInPlaceUnboundOperation
 	  guard: s.modifier == ESM!OperationModifier#STATIC and not s.eContainer.isKindOf(ESM!EntityType) and not s.bound
 
 	  t.implementation = s.equivalent("CreateOperationBody");
+	  t.initializer = s.initializer;
+
 	  s.eContainer.getPSMEquivalent().operations.add(t);
 }
 

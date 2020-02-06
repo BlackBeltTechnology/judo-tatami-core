@@ -236,6 +236,22 @@ rule CreateScriptBodyAnnotationForUnboundOperation
         s.equivalent("CreateUnboundOperation").eAnnotations.add(t);
 }
 
+@greedy
+rule CreateInitializerAnnotation
+    transform s : JUDOPSM!UnboundOperation
+    to t : ASM!EAnnotation{
+        guard: s.initializer
+
+        t.source = asmUtils.getAnnotationUri("initializer");
+
+        var initializerEntry = new ASM!EStringToStringMapEntry;
+        initializerEntry.key = "value";
+        initializerEntry.value = "true";
+        t.details.add(initializerEntry);
+
+        s.equivalent("CreateUnboundOperation").eAnnotations.add(t);
+}
+
 @abstract
 rule AddAnnotationToBoundOperation
     transform s : JUDOPSM!BoundTransferOperation

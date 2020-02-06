@@ -20,6 +20,7 @@ import hu.blackbelt.judo.meta.psm.service.OperationDeclaration;
 import hu.blackbelt.judo.meta.psm.service.TransferObjectRelation;
 import hu.blackbelt.judo.meta.psm.service.TransferOperation;
 import hu.blackbelt.judo.meta.psm.service.TransferOperationBehaviourType;
+import hu.blackbelt.judo.meta.psm.service.UnboundOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
@@ -681,6 +682,66 @@ public class EsmOperation2PsmOperationTest {
         log.debug("List of generated operations (D):{}", defaultD.get().getOperations().stream().map(o -> "\n - " + o.getName()).sorted().collect(Collectors.joining()));
 
         assertEquals(15L, defaultD.get().getOperations().stream().filter(o -> o instanceof BoundTransferOperation).count());
+    }
+
+    @Test
+    void testInitializerFlag() throws Exception {
+        testName = "TestInitializerFlag";
+
+        // FIXME - replace test case (using ESM initializer flag instead of type and operation names)
+        final TransferObjectType initializer1 = newTransferObjectTypeBuilder()
+                .withName("Initializer1")
+                .withOperations(newOperationBuilder()
+                        .withName("run")
+                        .withModifier(OperationModifier.STATIC)
+                        .withBody("// TODO")
+                        .withBinding("")
+                        .withInitializer(true)
+                        .build())
+                .build();
+
+        final TransferObjectType initializer2 = newTransferObjectTypeBuilder()
+                .withName("Initializer2")
+                .withOperations(newOperationBuilder()
+                        .withName("run")
+                        .withModifier(OperationModifier.STATIC)
+                        .withBody("// TODO")
+                        .withBinding("")
+                        .withInitializer(true)
+                        .build())
+                .build();
+
+        final TransferObjectType nonInitializer1 = newTransferObjectTypeBuilder()
+                .withName("NonInitializer1")
+                .withOperations(newOperationBuilder()
+                        .withName("run")
+                        .withModifier(OperationModifier.STATIC)
+                        .withBody("// TODO")
+                        .withBinding("")
+                        .build())
+                .build();
+
+        final TransferObjectType nonInitializer2 = newTransferObjectTypeBuilder()
+                .withName("NonInitializer2")
+                .withOperations(newOperationBuilder()
+                        .withName("run")
+                        .withModifier(OperationModifier.STATIC)
+                        .withBody("// TODO")
+                        .withBinding("")
+                        .build())
+                .build();
+
+        final Model model = newModelBuilder().withName(MODEL_NAME)
+                .withElements(Arrays.asList(initializer1, initializer2, nonInitializer1, nonInitializer2))
+                .build();
+
+        esmModel.addContent(model);
+
+        transform();
+
+        final List<UnboundOperation> initializers = allPsm(UnboundOperation.class).filter(o -> o.isInitializer()).collect(Collectors.toList());
+
+        assertEquals(2, initializers.size());
     }
 
     static <T> Stream<T> asStream(Iterator<T> sourceIterator, boolean parallel) {
