@@ -29,10 +29,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static hu.blackbelt.judo.tatami.itest.TestUtility.*;
@@ -135,7 +132,10 @@ public class NorthwindTatamiPSMTransformationPipelineITest extends TatamiPSMTran
                 return ImmutableMap.<String, Object>of();
             }
         };
-        bundleContext.registerService(Dispatcher.class, dispatcher, null);
+        AsmUtils asmUtils = new AsmUtils(asmModel.getResourceSet());
+        Dictionary<String, Object> props = new Hashtable<>();
+        props.put("judo.model.name", asmUtils.getModel().get().getName());
+        bundleContext.registerService(Dispatcher.class, dispatcher, props);
 
         waitWebPage(BASE_URL + "/?_wadl");
 

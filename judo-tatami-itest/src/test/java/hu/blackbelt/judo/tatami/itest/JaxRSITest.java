@@ -30,10 +30,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.io.FileNotFoundException;
 import java.time.ZonedDateTime;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static hu.blackbelt.judo.framework.KarafTestUtil.karafConfig;
@@ -253,7 +250,9 @@ public class JaxRSITest {
                     }
                 }
             };
-            bundleContext.registerService(Dispatcher.class, dispatcher, null);
+            Dictionary<String, Object> props = new Hashtable<>();
+            props.put("judo.model.name", "demo");
+            bundleContext.registerService(Dispatcher.class, dispatcher, props);
 
             waitWebPage(BASE_URL + "/?_wadl");
             bundleContext.registerService(Semaphore.class, new Semaphore(), null);
