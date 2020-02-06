@@ -201,7 +201,7 @@ rule CreateCreateOperationForExposedGraph
         t.output.cardinality.lower = 1;
         t.output.cardinality.upper = 1;
 
-        for (relation in s.target.relations.select(r | r.isKindOf(ESM!TwoWayRelationMember) implies r.partner <> s)) {
+        for (relation in s.target.relations.select(r | not r.isReadOnly() and (r.isKindOf(ESM!TwoWayRelationMember) implies r.partner <> s))) {
             var rangeAllowed = false;
             if (relation.isKindOf(ESM!OneWayRelationMember)) {
                 if (relation.eContainer.isKindOf(ESM!EntityType)) {
@@ -245,7 +245,7 @@ rule CreateUpdateOperationForExposedGraph
         t.output.cardinality.lower = 1;
         t.output.cardinality.upper = 1;
 
-        for (relation in s.target.relations.select(r | r.isKindOf(ESM!TwoWayRelationMember) implies r.partner <> s)) {
+        for (relation in s.target.relations.select(r | not r.isReadOnly() and (r.isKindOf(ESM!TwoWayRelationMember) implies r.partner <> s))) {
             var rangeAllowed = false;
             var containment = false;
             if (relation.isKindOf(ESM!OneWayRelationMember)) {
@@ -268,7 +268,7 @@ rule CreateUpdateOperationForExposedGraph
                 if (not containment) {
                     s.createSetOperationForExposedGraph(relation);
                 }
-                if (not containment or s.deleteable) {
+                if (relation.lower == 0 and (not containment or s.deleteable)) {
                     s.createUnsetOperationForExposedGraph(relation);
                 }
             } else {
