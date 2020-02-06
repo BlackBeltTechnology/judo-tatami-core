@@ -53,12 +53,16 @@ public class Script2Operation {
 
                     String operationFQName = String.valueOf(binding.getTypeName()).replace("::", ".") + "#" + binding.getOperationName();
 
+                    String[] packages = packageName.split("\\.");
+                    String modelName = packages.length > 0 ? packages[0] : ""; // FIXME - set model name from ASM model instead of substring of packageName
+
                     sourceCodesByFqName.put(packageName + "." + unitName, sourceCode);
                     scrXmlFilesByFqName.put(packageName + "." + unitName,
 
-                        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+                    "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
                         "<scr:component xmlns:scr=\"http://www.osgi.org/xmlns/scr/v1.3.0\" name=\"" + packageName + "." + unitName + "\" immediate=\"true\">\n" +
                         "    <implementation class=\"" + packageName + "." + unitName + "\"/>\n" +
+                        "    <property name=\"judo.model.name\" value=\"" + modelName + "\"/>\n" +
                         "    <property name=\"operation.name\" value=\"" + operationFQName + "\"/>\n" +
                         "    <property name=\"script\" value=\"true\"/>\n" +
                         "    <service>\n" +
