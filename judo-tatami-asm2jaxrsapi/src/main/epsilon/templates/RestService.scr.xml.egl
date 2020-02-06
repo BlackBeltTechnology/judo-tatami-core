@@ -11,6 +11,7 @@
          name="__dispatcher"
          policy="dynamic"
          policy-option="greedy"
+         target="(judo.model.name=[%= modelName %])"
          bind="__bindDispatcher"
          unbind="__unbindDispatcher"/>
   </service>
