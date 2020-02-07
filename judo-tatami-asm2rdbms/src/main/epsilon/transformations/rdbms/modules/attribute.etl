@@ -39,7 +39,7 @@ rule EAttributeToUniqueKey
 		log.debug("    Add uniquie constraint: " + asmUtils.getAttributeFQName(s));
 	    
 	    u.uuid = asmUtils.getAttributeFQName(s) + "@uniqueConstraint";
-		s.eContainingClass.equivalent("EClassToRdbmsTable").uniqueConstraints.add(t);
+		s.eContainingClass.equivalent("EClassToRdbmsTable").uniqueConstraints.add(u);
 		
 		u.sqlName = ("UQ_" + md5(u.uuid));
 		u.name = asmUtils.getAttributeFQName(s); 
