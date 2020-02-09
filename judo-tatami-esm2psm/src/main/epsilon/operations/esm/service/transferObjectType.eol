@@ -39,3 +39,7 @@ operation ESM!TwoWayRelationMember getPSMTransferObjectRelationEquivalent() : JU
         throw "Unsupported relation feature";
     }
 }
+
+operation ESM!Class getAllRelations() : Set {
+    return esmUtils.getAllSuperTypes(self).including(self).collect(c | c.relations).flatten().asSet();
+}

@@ -457,7 +457,7 @@ rule CreateCreateTransferOperationForRelation
 
         t.binding = s.equivalent("CreateCreateOperationForRelation");
 
-        for (relation in s.target.relations.select(r | r.isKindOf(ESM!TwoWayRelationMember) implies r.partner <> s)) {
+        for (relation in s.target.getAllRelations().select(r | not r.isReadOnly() and (r.isKindOf(ESM!TwoWayRelationMember) implies r.partner <> s))) {
             var rangeAllowed = false;
             if (relation.isKindOf(ESM!OneWayRelationMember)) {
                 if (relation.eContainer.isKindOf(ESM!EntityType)) {
@@ -530,7 +530,7 @@ rule CreateUpdateTransferOperationForRelation
 
         t.binding = s.equivalent("CreateUpdateOperationForRelation");
 
-        for (relation in s.target.relations.select(r | r.isKindOf(ESM!TwoWayRelationMember) implies r.partner <> s)) {
+        for (relation in s.target.getAllRelations().select(r | not r.isReadOnly() and (r.isKindOf(ESM!TwoWayRelationMember) implies r.partner <> s))) {
             var rangeAllowed = false;
             var containment = false;
             if (relation.isKindOf(ESM!OneWayRelationMember)) {
@@ -549,19 +549,28 @@ rule CreateUpdateTransferOperationForRelation
                 s.createGetRangeTransferOperationForRelation(relation, s.createGetRangeOperationForRelation(relation, "update"), t.input, "update");
             }
 
+            var entityPartner;
+            if (relation.isKindOf(ESM!TwoWayRelationMember)) {
+                entityPartner = relation.partner;
+            } else if (relation.relationMemberType == ESM!RelationMemberType#BOUND and relation.binding.isKindOf(ESM!TwoWayRelationMember)) {
+                entityPartner = relation.binding.partner;
+            }
+
             if (relation.upper == 1) {
-                if (not containment) {
+                if (not containment and (entityPartner.isDefined() implies (entityPartner.lower < entityPartner.upper or entityPartner.upper == -1))) {
                     s.createSetTransferOperationForRelation(relation, s.createSetOperationForRelation(relation));
                 }
-                if (not containment or s.isDeleteAllowed()) {
+                if (relation.lower == 0 and (not containment or s.isDeleteAllowed()) and (entityPartner.isDefined() implies (entityPartner.lower < entityPartner.upper or entityPartner.upper == -1))) {
                     s.createUnsetTransferOperationForRelation(relation, s.createUnsetOperationForRelation(relation));
                 }
             } else {
-                if (not containment) {
+                if (not containment and (entityPartner.isDefined() implies (entityPartner.lower < entityPartner.upper or entityPartner.upper == -1))) {
                     s.createSetTransferOperationForRelation(relation, s.createSetOperationForRelation(relation));
+                }
+                if ((relation.lower < relation.upper or relation.upper == -1) and not containment and (entityPartner.isDefined() implies (entityPartner.lower < entityPartner.upper or entityPartner.upper == -1))) {
                     s.createAddAllTransferOperationForRelation(relation, s.createAddAllOperationForRelation(relation));
                 }
-                if (not containment or s.isDeleteAllowed()) {
+                if ((relation.lower < relation.upper or relation.upper == -1) and (not containment or s.isDeleteAllowed()) and (entityPartner.isDefined() implies (entityPartner.lower < entityPartner.upper or entityPartner.upper == -1))) {
                     s.createRemoveAllTransferOperationForRelation(relation, s.createRemoveAllOperationForRelation(relation));
                 }
             }
