@@ -404,6 +404,7 @@ public class EsmOperation2PsmOperationTest {
                         .withLower(LOWER)
                         .withUpper(UPPER)
                         .withContainment(true)
+                        .withCreateable(true).withUpdateable(true).withDeleteable(true)
                         .withAggregation(true)
                         .build())
                 .build();
