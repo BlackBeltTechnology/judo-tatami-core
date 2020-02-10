@@ -88,7 +88,7 @@ rule CreateDataPropertyDefinition
 rule CreateReferencePropertyDeclaration
     transform s : ASM!EAnnotation
     to t : OPENAPI!PropertyDeclaration {
-        guard: s.eContainer.isKindOf(ASM!EReference) and s.source == asmUtils.getAnnotationUri("exposedBy")
+        guard: s.eContainer.isKindOf(ASM!EReference) and s.eContainer.containment and s.source == asmUtils.getAnnotationUri("exposedBy")
 
         t.name = s.eContainer.name;
 	    var transferObjectTypeExposedByAnnotation = asmUtils.getExtensionAnnotationListByName(s.eContainer.eContainer, "exposedBy").selectOne(a | a.details.get("value") == s.details.get("value"));
@@ -98,7 +98,7 @@ rule CreateReferencePropertyDeclaration
 rule CreateReferencePropertyDefinition
     transform s : ASM!EAnnotation
     to t : OPENAPI!Property {
-        guard: s.eContainer.isKindOf(ASM!EReference) and s.source == asmUtils.getAnnotationUri("exposedBy")
+        guard: s.eContainer.isKindOf(ASM!EReference) and s.eContainer.containment and s.source == asmUtils.getAnnotationUri("exposedBy")
         
         if (not s.eContainer.changeable) {
             t.readOnly = true;
@@ -106,17 +106,6 @@ rule CreateReferencePropertyDefinition
             // Read only properties cannot be marked as required by a schema
             var transferObjectTypeExposedByAnnotation = asmUtils.getExtensionAnnotationListByName(s.eContainer.eContainer, "exposedBy").selectOne(a | a.details.get("value") == s.details.get("value"));
             transferObjectTypeExposedByAnnotation.equivalent("CreateTransferObjectSingleSchemaDefinition").required.add(s.eContainer.name);
-        }
-
-        if (not s.eContainer.containment and asmUtils.isMappedTransferObjectType(s.eContainer.eReferenceType)) {
-            t.type = OPENAPI!JSONDataType#object;
-            var entityRef = new OPENAPI!PropertyDeclaration;
-            entityRef.name = "__identifier";
-            entityRef.property = new OPENAPI!Property;
-            entityRef.property.description = "ID of " + asmUtils.getMappedEntityType(s.eContainer.eReferenceType).get().name + " instance";
-            entityRef.property.type = OPENAPI!JSONDataType#string;
-
-            t.properties.add(entityRef);
         }
 
         s.equivalent("CreateReferencePropertyDeclaration").property = t;
@@ -136,4 +125,142 @@ rule CreateReferencePropertyDefinitionReference
 		}
 		
         s.equivalent("CreateReferencePropertyDefinition").ref = t;
+}
+
+rule CreateDataPropertyDeclarationExtended
+    transform s : ASM!EAnnotation
+    to t : OPENAPI!PropertyDeclaration {
+        guard: s.eContainer.isKindOf(ASM!EAttribute) and s.source == asmUtils.getAnnotationUri("exposedBy")
+
+        t.name = s.eContainer.name;
+
+	    var transferObjectTypeExposedByAnnotation = asmUtils.getExtensionAnnotationListByName(s.eContainer.eContainer, "exposedBy").selectOne(a | a.details.get("value") == s.details.get("value"));
+	    transferObjectTypeExposedByAnnotation.equivalent("CreateTransferObjectSingleSchemaDefinitionExtended").properties.add(t);
+}
+
+rule CreateDataPropertyDefinitionExtended
+    transform s : ASM!EAnnotation
+    to t : OPENAPI!Property {
+        guard: s.eContainer.isKindOf(ASM!EAttribute) and s.source == asmUtils.getAnnotationUri("exposedBy")
+
+        if (s.eContainer.many) {
+            throw "Collection attributes are not supported";
+        }
+
+        if (s.eContainer.eAttributeType.isKindOf(ASM!EEnum)) {
+            // TODO - set literals in t.enum
+            t.type = OPENAPI!JSONDataType#integer;
+        } else {
+            switch (s.eContainer.eAttributeType.instanceClassName) {
+                case 'java.lang.Boolean': continue;
+                case 'boolean':
+                    t.type = OPENAPI!JSONDataType#boolean;
+                case 'byte[]':
+                    t.type = OPENAPI!JSONDataType#string;
+                    t.format = "binary";
+                case 'java.lang.Double': continue;
+                case 'double':
+                    t.type = OPENAPI!JSONDataType#number;
+                    t.format = "double";
+                case 'java.lang.Integer': continue;
+                case 'int':
+                    t.type = OPENAPI!JSONDataType#integer;
+                    t.format = "int32";
+                case 'java.lang.Float': continue;
+                case 'float':
+                    t.type = OPENAPI!JSONDataType#number;
+                    t.format = "float";
+                case 'java.lang.Long': continue;
+                case 'long':
+                    t.type = OPENAPI!JSONDataType#integer;
+                    t.format = "int64";
+                case 'java.lang.String':
+                    t.type = OPENAPI!JSONDataType#string;
+                    // NOTE - byte format is used for base64 encoded characters, not supported yet
+                    // NOTE - password format is not supported yet
+                case 'java.math.BigDecimal':
+                    t.type = OPENAPI!JSONDataType#number;
+                case 'java.math.BigInteger':
+                    t.type = OPENAPI!JSONDataType#integer;
+                case 'java.time.LocalDate': continue;
+                case 'java.util.Date': continue;
+                case 'org.joda.time.LocalDate':
+                    t.type = OPENAPI!JSONDataType#string;
+                    t.format = "date";
+                case 'java.time.LocalDateTime': continue;
+                case 'java.time.OffsetDateTime': continue;
+                case 'java.time.ZonedDateTime': continue;
+                case 'org.joda.time.DateTime': continue;
+                case 'org.joda.time.LocalDateTime': continue;
+                case 'org.joda.time.MutableDateTime':
+                    t.type = OPENAPI!JSONDataType#string;
+                    t.format = "date-time";
+                default:
+                    log.info("Unknown attribute type: " + s.eContainer.eAttributeType.instanceClassName);
+                    t.type = OPENAPI!JSONDataType#string;
+            }
+        }
+
+        if (not s.eContainer.changeable) {
+            t.readOnly = true;
+        } else if (s.eContainer.required) {
+            // Read only properties cannot be marked as required by a schema
+            var transferObjectTypeExposedByAnnotation = asmUtils.getExtensionAnnotationListByName(s.eContainer.eContainer, "exposedBy").selectOne(a | a.details.get("value") == s.details.get("value"));
+            transferObjectTypeExposedByAnnotation.equivalent("CreateTransferObjectSingleSchemaDefinitionExtended").required.add(s.eContainer.name);
+        }
+
+	    s.equivalent("CreateDataPropertyDeclarationExtended").property = t;
+}
+
+rule CreateReferencePropertyDeclarationExtended
+    transform s : ASM!EAnnotation
+    to t : OPENAPI!PropertyDeclaration {
+        guard: s.eContainer.isKindOf(ASM!EReference) and s.source == asmUtils.getAnnotationUri("exposedBy")
+
+        t.name = s.eContainer.name;
+	    var transferObjectTypeExposedByAnnotation = asmUtils.getExtensionAnnotationListByName(s.eContainer.eContainer, "exposedBy").selectOne(a | a.details.get("value") == s.details.get("value"));
+	    transferObjectTypeExposedByAnnotation.equivalent("CreateTransferObjectSingleSchemaDefinitionExtended").properties.add(t);
+}
+
+rule CreateReferencePropertyDefinitionExtended
+    transform s : ASM!EAnnotation
+    to t : OPENAPI!Property {
+        guard: s.eContainer.isKindOf(ASM!EReference) and s.source == asmUtils.getAnnotationUri("exposedBy")
+
+        if (not s.eContainer.changeable) {
+            t.readOnly = true;
+        } else if (s.eContainer.required) {
+            // Read only properties cannot be marked as required by a schema
+            var transferObjectTypeExposedByAnnotation = asmUtils.getExtensionAnnotationListByName(s.eContainer.eContainer, "exposedBy").selectOne(a | a.details.get("value") == s.details.get("value"));
+            transferObjectTypeExposedByAnnotation.equivalent("CreateTransferObjectSingleSchemaDefinitionExtended").required.add(s.eContainer.name);
+        }
+
+        if (not s.eContainer.containment and asmUtils.isMappedTransferObjectType(s.eContainer.eReferenceType)) {
+            t.type = OPENAPI!JSONDataType#object;
+            var entityRef = new OPENAPI!PropertyDeclaration;
+            entityRef.name = "__identifier";
+            entityRef.property = new OPENAPI!Property;
+            entityRef.property.description = "ID of " + asmUtils.getMappedEntityType(s.eContainer.eReferenceType).get().name + " instance";
+            entityRef.property.type = OPENAPI!JSONDataType#string;
+
+            t.properties.add(entityRef);
+        }
+
+        s.equivalent("CreateReferencePropertyDeclarationExtended").property = t;
+}
+
+rule CreateReferencePropertyDefinitionReferenceExtended
+    transform s : ASM!EAnnotation
+    to t : OPENAPI!SchemaReference {
+        guard: s.eContainer.isKindOf(ASM!EReference) and s.eContainer.containment and s.source == asmUtils.getAnnotationUri("exposedBy")
+
+        var targetTypeExposedByAnnotation = asmUtils.getExtensionAnnotationListByName(s.eContainer.eReferenceType, "exposedBy").selectOne(a | a.details.get("value") == s.details.get("value"));
+
+		if (s.eContainer.many) {
+		    t.ref = targetTypeExposedByAnnotation.equivalent("CreateTransferObjectArraySchemaDeclarationExtended").getReference();
+		} else {
+		    t.ref = targetTypeExposedByAnnotation.equivalent("CreateTransferObjectSingleSchemaDeclarationExtended").getReference();
+		}
+
+        s.equivalent("CreateReferencePropertyDefinitionExtended").ref = t;
 }
