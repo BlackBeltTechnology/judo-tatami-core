@@ -96,7 +96,7 @@
         <judo-meta-openapi-version>1.0.0.20200207_114728_b132324_1_0_beta1</judo-meta-openapi-version>
         <judo-meta-openapi-import-range>[1.0,1.1)</judo-meta-openapi-import-range>
 
-        <judo-dao-api-version>1.0.0.20200131_134420_05c8a8e_1_0_beta1</judo-dao-api-version>
+        <judo-dao-api-version>1.0.0.20200211_122649_70d606f_feature_JNG_1026_update_OpenAPI_of_default_operations</judo-dao-api-version>
         <judo-script-codegen-version>1.0.0.20200207_174953_0f0c52c_1_0_beta1</judo-script-codegen-version>
         <judo-jql-ide-eclipse-version>1.0.0.20200207_134855_b705269_1_0_beta1</judo-jql-ide-eclipse-version>
         <judo-jcl-ide-eclipse-version>1.0.0.20200207_145138_a839e8d_1_0_beta1</judo-jcl-ide-eclipse-version>

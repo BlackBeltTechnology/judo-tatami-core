@@ -40,6 +40,44 @@ rule CreateTransferObjectSingleSchemaDeclarationForDelete
         s.equivalent("CreateOpenAPIAccessPoint").definitions.add(t);
 }
 
+rule CreateTransferObjectSingleSchemaDeclarationForChangeSingleReference
+    transform s : ASM!EClass
+    to t : OPENAPI!SchemaDeclaration
+    extends CreateTransferObjectSingleSchemaDeclarationForDelete {
+        guard: asmUtils.isAccessPoint(s)
+
+        t.name = asmUtils.getModel().get().name + "__change_reference";
+
+        var reference = new OPENAPI!PropertyDeclaration;
+        reference.name = "__referenced_identifier";
+
+        reference.property = new OPENAPI!Property;
+        reference.property.description = "ID of referenced instance";
+        reference.property.type = OPENAPI!JSONDataType#string;
+
+        t.schema.properties.add(reference);
+}
+
+rule CreateTransferObjectSingleSchemaDeclarationForChangeManyReference
+    transform s : ASM!EClass
+    to t : OPENAPI!SchemaDeclaration
+    extends CreateTransferObjectSingleSchemaDeclarationForDelete {
+        guard: asmUtils.isAccessPoint(s)
+
+        t.name = asmUtils.getModel().get().name + "__change_references";
+
+        var references = new OPENAPI!PropertyDeclaration;
+        references.name = "__referenced_identifiers";
+
+        references.property = new OPENAPI!Property;
+        references.property.description = "IDs of referenced instances";
+        references.property.type = OPENAPI!JSONDataType#array;
+        references.property.items = new OPENAPI!Property;
+        references.property.items.type = OPENAPI!JSONDataType#string;
+
+        t.schema.properties.add(references);
+}
+
 rule CreateTransferObjectSingleSchemaDefinitionExtended
     transform s : ASM!EAnnotation
     to t : OPENAPI!Schema {
