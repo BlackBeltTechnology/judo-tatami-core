@@ -59,10 +59,10 @@ import static restdto.demo.services.ProductInfo.productInfoBuilder;
 public class JaxRSITest {
     private static final String BASE_URL = "http://localhost:8181/cxf/demo";
 
-    private static final String DEMO_SERVICE_GET_ALL_INTERNATIONAL_ORDERS = "/demo/services/InternationalOrderInfo/getAllInternationalOrders";
-    private static final String DEMO_SERVICE_CREATE_INTERNATIONAL_ORDER = "/demo/services/InternationalOrderInfo/createInternationalOrder";
+    private static final String DEMO_SERVICE_GET_ALL_INTERNATIONAL_ORDERS = "/demo/internalAP/allInternationalOrders/get";
+    private static final String DEMO_SERVICE_CREATE_INTERNATIONAL_ORDER = "/demo/internalAP/allInternationalOrders/create";
 
-    private static final String DEMO_SERVICE_DELETE_ORDER_ITEM = "/demo/services/OrderInfo/deleteItem";
+    private static final String DEMO_SERVICE_DELETE_ORDER_ITEM = "/demo/services/OrderInfo/items/delete";
 
     public static final String FEATURE_JUDO_TATAMI_CORE = "judo-tatami-core";
 
