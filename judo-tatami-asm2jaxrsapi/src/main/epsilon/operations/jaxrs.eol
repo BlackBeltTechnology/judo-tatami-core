@@ -4,8 +4,29 @@ operation String normalizeName() : String {
 }
 
 @cached
-operation String toJAXRSPath() : String {
-    return self.replace("[#\\.]", "/").replace("[^0-9a-zA-Z_/]", "/").replace("\\$", "/");
+operation ASM!EOperation toJAXRSPath() : String {
+    var path = asmUtils.getOperationFQName(self);
+
+    var behaviour = asmUtils.getBehaviour(self);
+    if (behaviour.present) {
+        var owner = asmUtils.getOwnerOfOperationWithDefaultBehaviour(self);
+        var relation = asmUtils.getRelationOfOperationWithDefaultBehaviour(self);
+
+        switch (behaviour.get().toString()) {
+            case "GET": path = asmUtils.getReferenceFQName(owner.get) + "/get";
+            case "CREATE": path = asmUtils.getReferenceFQName(owner.get) + "/create";
+            case "UPDATE": path = asmUtils.getReferenceFQName(owner.get) + "/update";
+            case "DELETE": path = asmUtils.getReferenceFQName(owner.get) + "/delete";
+            case "SET": path = asmUtils.getReferenceFQName(owner.get) + "/" + relation.get().name + "/set";
+            case "UNSET": path = asmUtils.getReferenceFQName(owner.get) + "/" + relation.get().name + "/unset";
+            case "ADD_ALL": path = asmUtils.getReferenceFQName(owner.get) + "/" + relation.get().name + "/add";
+            case "REMOVE_ALL": path = asmUtils.getReferenceFQName(owner.get) + "/" + relation.get().name + "/remove";
+            case "GET_RANGE": path = asmUtils.getOperationFQName(owner.get.eOperation) + "/" + owner.get.name + "/" + relation.get().name + "/remove";
+            case "GET_TEMPLATE": path = asmUtils.getClassifierFQName(owner.get) + "/template";
+        }
+    }
+
+    return path.replace("[#\\.]", "/").replace("[^0-9a-zA-Z_/]", "_");
 }
 
 /*
