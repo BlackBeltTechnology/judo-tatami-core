@@ -50,7 +50,7 @@ rule CreateGetOperationForExposedGraph
     to t : JUDOPSM!UnboundOperation {
         guard: s.target.mapping.isDefined() and s.getterExpression.trim() <> ''
 
-        t.name = "_get" + s.name.firstToUpperCase() + "For" + s.eContainer.name.firstToUpperCase();
+        t.name = "_get" + s.name.firstToUpperCase() + "For" + esmUtils.getNamespaceElementFQName(s.eContainer).replace("::", "_").firstToUpperCase();
         t.behaviour = new JUDOPSM!TransferOperationBehaviour;
         t.behaviour.behaviourType = JUDOPSM!TransferOperationBehaviourType#GET;
         t.behaviour.owner = s.equivalent("CreateExposedGraph");
@@ -68,7 +68,7 @@ rule CreateGetOperationForExposedGraph
 operation ESM!ExposedGraph createSetOperationForExposedGraph(relation : ESM!RelationFeature) : JUDOPSM!UnboundOperation {
     var t = new JUDOPSM!UnboundOperation;
 
-    t.name = "_set" + relation.name.firstToUpperCase() + "Of" + self.name.firstToUpperCase() + "For" + self.eContainer.name.firstToUpperCase();
+    t.name = "_set" + relation.name.firstToUpperCase() + "Of" + self.name.firstToUpperCase() + "For" + esmUtils.getNamespaceElementFQName(self.eContainer).replace("::", "_").firstToUpperCase();
     t.behaviour = new JUDOPSM!TransferOperationBehaviour;
     t.behaviour.behaviourType = JUDOPSM!TransferOperationBehaviourType#SET_RELATION;
     t.behaviour.owner = self.equivalent("CreateExposedGraph");
@@ -89,7 +89,7 @@ operation ESM!ExposedGraph createSetOperationForExposedGraph(relation : ESM!Rela
 operation ESM!ExposedGraph createUnsetOperationForExposedGraph(relation : ESM!RelationFeature) : JUDOPSM!UnboundOperation {
     var t = new JUDOPSM!UnboundOperation;
 
-    t.name = "_unset" + relation.name.firstToUpperCase() + "Of" + self.name.firstToUpperCase() + "For" + self.eContainer.name.firstToUpperCase();
+    t.name = "_unset" + relation.name.firstToUpperCase() + "Of" + self.name.firstToUpperCase() + "For" + esmUtils.getNamespaceElementFQName(self.eContainer).replace("::", "_").firstToUpperCase();
     t.behaviour = new JUDOPSM!TransferOperationBehaviour;
     t.behaviour.behaviourType = JUDOPSM!TransferOperationBehaviourType#UNSET_RELATION;
     t.behaviour.owner = self.equivalent("CreateExposedGraph");
@@ -110,7 +110,7 @@ operation ESM!ExposedGraph createUnsetOperationForExposedGraph(relation : ESM!Re
 operation ESM!ExposedGraph createAddAllOperationForExposedGraph(relation : ESM!RelationFeature) : JUDOPSM!UnboundOperation {
     var t = new JUDOPSM!UnboundOperation;
 
-    t.name = "_add" + relation.name.firstToUpperCase() + "To" + self.name.firstToUpperCase() + "For" + self.eContainer.name.firstToUpperCase();
+    t.name = "_add" + relation.name.firstToUpperCase() + "To" + self.name.firstToUpperCase() + "For" + esmUtils.getNamespaceElementFQName(self.eContainer).replace("::", "_").firstToUpperCase();
     t.behaviour = new JUDOPSM!TransferOperationBehaviour;
     t.behaviour.behaviourType = JUDOPSM!TransferOperationBehaviourType#ADD_ALL_TO_RELATION;
     t.behaviour.owner = self.equivalent("CreateExposedGraph");
@@ -131,7 +131,7 @@ operation ESM!ExposedGraph createAddAllOperationForExposedGraph(relation : ESM!R
 operation ESM!ExposedGraph createRemoveAllOperationForExposedGraph(relation : ESM!RelationFeature) : JUDOPSM!UnboundOperation {
     var t = new JUDOPSM!UnboundOperation;
 
-    t.name = "_remove" + relation.name.firstToUpperCase() + "From" + self.name.firstToUpperCase() + "For" + self.eContainer.name.firstToUpperCase();
+    t.name = "_remove" + relation.name.firstToUpperCase() + "From" + self.name.firstToUpperCase() + "For" + esmUtils.getNamespaceElementFQName(self.eContainer).replace("::", "_").firstToUpperCase();
     t.behaviour = new JUDOPSM!TransferOperationBehaviour;
     t.behaviour.behaviourType = JUDOPSM!TransferOperationBehaviourType#REMOVE_ALL_FROM_RELATION;
     t.behaviour.owner = self.equivalent("CreateExposedGraph");
@@ -152,7 +152,7 @@ operation ESM!ExposedGraph createRemoveAllOperationForExposedGraph(relation : ES
 operation ESM!ExposedGraph createGetRangeOperationForExposedGraphEdit(relation : ESM!RelationFeature, parameter : JUDOPSM!Parameter, action : String) : JUDOPSM!UnboundOperation {
     var t = new JUDOPSM!UnboundOperation;
 
-    t.name = "_getRangeOf" + relation.name.firstToUpperCase() + "To" + action.firstToUpperCase() + self.name.firstToUpperCase() + "For" + self.eContainer.name.firstToUpperCase();
+    t.name = "_getRangeOf" + relation.name.firstToUpperCase() + "To" + action.firstToUpperCase() + self.name.firstToUpperCase() + "For" + esmUtils.getNamespaceElementFQName(self.eContainer).replace("::", "_").firstToUpperCase();
     t.behaviour = new JUDOPSM!TransferOperationBehaviour;
     t.behaviour.behaviourType = JUDOPSM!TransferOperationBehaviourType#GET_RANGE_OF_RELATION;
     t.behaviour.owner = parameter;
@@ -182,7 +182,7 @@ rule CreateCreateOperationForExposedGraph
     to t : JUDOPSM!UnboundOperation {
         guard: s.target.mapping.isDefined() and s.getterExpression.trim() <> '' and s.createable
 
-        t.name = "_create" + s.name.firstToUpperCase() + "For" + s.eContainer.name.firstToUpperCase();
+        t.name = "_create" + s.name.firstToUpperCase() + "For" + esmUtils.getNamespaceElementFQName(s.eContainer).replace("::", "_").firstToUpperCase();
         t.behaviour = new JUDOPSM!TransferOperationBehaviour;
         t.behaviour.behaviourType = JUDOPSM!TransferOperationBehaviourType#CREATE;
         t.behaviour.owner = s.equivalent("CreateExposedGraph");
@@ -227,7 +227,7 @@ rule CreateUpdateOperationForExposedGraph
     to t : JUDOPSM!UnboundOperation {
         guard: s.target.mapping.isDefined() and s.getterExpression.trim() <> '' and s.updateable
 
-        t.name = "_update" + s.name.firstToUpperCase() + "For" + s.eContainer.name.firstToUpperCase();
+        t.name = "_update" + s.name.firstToUpperCase() + "For" + esmUtils.getNamespaceElementFQName(s.eContainer).replace("::", "_").firstToUpperCase();
         t.behaviour = new JUDOPSM!TransferOperationBehaviour;
         t.behaviour.behaviourType = JUDOPSM!TransferOperationBehaviourType#UPDATE;
         t.behaviour.owner = s.equivalent("CreateExposedGraph");
@@ -300,7 +300,7 @@ rule CreateDeleteOperationForExposedGraph
     to t : JUDOPSM!UnboundOperation {
         guard: s.target.mapping.isDefined() and s.getterExpression.trim() <> '' and s.deleteable
 
-        t.name = "_delete" + s.name.firstToUpperCase() + "For" + s.eContainer.name.firstToUpperCase();
+        t.name = "_delete" + s.name.firstToUpperCase() + "For" + esmUtils.getNamespaceElementFQName(s.eContainer).replace("::", "_").firstToUpperCase();
         t.behaviour = new JUDOPSM!TransferOperationBehaviour;
         t.behaviour.behaviourType = JUDOPSM!TransferOperationBehaviourType#DELETE;
         t.behaviour.owner = s.equivalent("CreateExposedGraph");

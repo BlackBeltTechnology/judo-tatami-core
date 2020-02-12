@@ -308,7 +308,7 @@ public class EsmOperation2PsmOperationTest {
         final int LOWER = 2;
         final int UPPER = 5;
 
-        final String NAME_OF_GET_OPERATION = "_getGForAP";
+        final String NAME_OF_GET_OPERATION = "_getGForModel_AP";
 
         final String NAME_OF_GET_E_OPERATION = "_getE";
         final String NAME_OF_CREATE_E_OPERATION = "_createE";

@@ -207,26 +207,26 @@ public class EsmAccesspoint2PsmAccesspointTest {
         final int LOWER = 2;
         final int UPPER = 5;
 
-        final String NAME_OF_GET_OPERATION = "_getGForAP";
-        final String NAME_OF_CREATE_OPERATION = "_createGForAP";
-        final String NAME_OF_UPDATE_OPERATION = "_updateGForAP";
-        final String NAME_OF_DELETE_OPERATION = "_deleteGForAP";
+        final String NAME_OF_GET_OPERATION = "_getGForModel_AP";
+        final String NAME_OF_CREATE_OPERATION = "_createGForModel_AP";
+        final String NAME_OF_UPDATE_OPERATION = "_updateGForModel_AP";
+        final String NAME_OF_DELETE_OPERATION = "_deleteGForModel_AP";
 
-        final String NAME_OF_UNSET_SINGLE_CONTAINMENT_OPERATION = "_unsetSingleContainmentOfGForAP";
+        final String NAME_OF_UNSET_SINGLE_CONTAINMENT_OPERATION = "_unsetSingleContainmentOfGForModel_AP";
 
-        final String NAME_OF_SET_SINGLE_REFERENCE_OPERATION = "_setSingleReferenceOfGForAP";
-        final String NAME_OF_UNSET_SINGLE_REFERENCE_OPERATION = "_unsetSingleReferenceOfGForAP";
+        final String NAME_OF_SET_SINGLE_REFERENCE_OPERATION = "_setSingleReferenceOfGForModel_AP";
+        final String NAME_OF_UNSET_SINGLE_REFERENCE_OPERATION = "_unsetSingleReferenceOfGForModel_AP";
 
-        final String NAME_OF_REMOVE_ALL_MULTIPLE_CONTAINMENT_OPERATION = "_removeMultipleContainmentFromGForAP";
+        final String NAME_OF_REMOVE_ALL_MULTIPLE_CONTAINMENT_OPERATION = "_removeMultipleContainmentFromGForModel_AP";
 
-        final String NAME_OF_SET_MULTIPLE_REFERENCE_OPERATION = "_setMultipleReferenceOfGForAP";
-        final String NAME_OF_ADD_ALL_MULTIPLE_REFERENCE_OPERATION = "_addMultipleReferenceToGForAP";
-        final String NAME_OF_REMOVE_ALL_MULTIPLE_REFERENCE_OPERATION = "_removeMultipleReferenceFromGForAP";
+        final String NAME_OF_SET_MULTIPLE_REFERENCE_OPERATION = "_setMultipleReferenceOfGForModel_AP";
+        final String NAME_OF_ADD_ALL_MULTIPLE_REFERENCE_OPERATION = "_addMultipleReferenceToGForModel_AP";
+        final String NAME_OF_REMOVE_ALL_MULTIPLE_REFERENCE_OPERATION = "_removeMultipleReferenceFromGForModel_AP";
 
-//        final String NAME_OF_GET_RANGE_OF_SINGLE_REFERENCE_TO_CREATE = "_getRangeOfSingleReferenceToCreateGForAP";
-//        final String NAME_OF_GET_RANGE_OF_MULTIPLE_REFERENCE_TO_CREATE = "_getRangeOfMultipleReferenceToCreateGForAP";
-//        final String NAME_OF_GET_RANGE_OF_SINGLE_REFERENCE_TO_UPDATE = "_getRangeOfSingleReferenceToUpdateGForAP";
-//        final String NAME_OF_GET_RANGE_OF_MULTIPLE_REFERENCE_TO_UPDATE = "_getRangeOfMultipleReferenceToUpdateGForAP";
+//        final String NAME_OF_GET_RANGE_OF_SINGLE_REFERENCE_TO_CREATE = "_getRangeOfSingleReferenceToCreateGForModel_AP";
+//        final String NAME_OF_GET_RANGE_OF_MULTIPLE_REFERENCE_TO_CREATE = "_getRangeOfMultipleReferenceToCreateGForModel_AP";
+//        final String NAME_OF_GET_RANGE_OF_SINGLE_REFERENCE_TO_UPDATE = "_getRangeOfSingleReferenceToUpdateGForModel_AP";
+//        final String NAME_OF_GET_RANGE_OF_MULTIPLE_REFERENCE_TO_UPDATE = "_getRangeOfMultipleReferenceToUpdateGForModel_AP";
 
         final EntityType entityTypeF = newEntityTypeBuilder()
                 .withName(ENTITY_TYPE_F_NAME)
