@@ -8,7 +8,7 @@ rule CreateExposedServicePath
     to t : OPENAPI!Path {
         guard: s.eContainer.isKindOf(ASM!EOperation) and s.source == asmUtils.getAnnotationUri("exposedBy")
 
-        t.relativePath = "/" + asmUtils.getOperationFQName(s.eContainer).toOpenAPIPath();
+        t.relativePath = "/" + s.eContainer.toOpenAPIPath();
 
         var accessPoint = asmUtils.getResolvedExposedBy(s);
         if (accessPoint.isPresent()) {

@@ -41,7 +41,7 @@ public class [%= className %] {
 	@Produces ( "application/json" )
 	@Consumes ( "application/json" )
 	[% } %]
-	@Path("/[% if (fullyQualifiedOperation) { %][%= (asmUtils.getPackageFQName(op.eContainingClass.ePackage) + "." + op.name).replaceAll("\\.", "/") %][% } else { %][%= op.name %][% } %]")
+	@Path("/[% if (fullyQualifiedOperation) { %][%= op.toJAXRSPath() %][% } else { %][%= op.name %][% } %]")
     public Response [% if (fullyQualifiedOperation) { %][%= (asmUtils.getPackageFQName(op.eContainingClass.ePackage) + "." + op.name).replaceAll("\\.", "__") %][% } else { %][%= op.name %][% } %]([% if(asmUtils.isBound(op)) { %]@HeaderParam("__identifier") java.util.UUID __identifier[% if(not op.eParameters.isEmpty()) { %], [% } %][% } %] [% for (p in op.eParameters) { if (p.many) { %]Collection<[%= p.eType.getDtoTypeName() %]>[% } else { %][%= p.eType.getDtoTypeName() %][% } %] [%= asmUtils.safeName(p.name.firstToLowerCase()) %][% if (hasMore) { %], [% } %][% } %]) {
 		if (!__dispatcher.isPresent()) {
         	return Response.status(Response.Status.SERVICE_UNAVAILABLE).build();

@@ -201,21 +201,22 @@ rule CreateCreateOperationForExposedGraph
         t.output.cardinality.lower = 1;
         t.output.cardinality.upper = 1;
 
-        for (relation in s.target.getAllRelations().select(r | not r.isReadOnly() and (r.isKindOf(ESM!TwoWayRelationMember) implies r.partner <> s))) {
+        for (relation in s.target.getAllRelations().select(r | r.target.mapping.isDefined() and not r.isReadOnly() and (r.isKindOf(ESM!TwoWayRelationMember) implies r.partner <> s))) {
             var rangeAllowed = false;
             if (relation.isKindOf(ESM!OneWayRelationMember)) {
                 if (relation.eContainer.isKindOf(ESM!EntityType)) {
                     rangeAllowed = not relation.containment and relation.relationMemberType <> ESM!RelationMemberType#PROPERTY;
                 } else if (relation.eContainer.isKindOf(ESM!TransferObjectType)) {
-                    rangeAllowed = relation.relationMemberType <> ESM!RelationMemberType#PROPERTY and (relation.relationMemberType == ESM!RelationMemberType#BOUND implies (not relation.binding.containment and relation.binding.relationMemberType <> ESM!RelationMemberType#PROPERTY)) and relation.target.mapping.isDefined();
+                    rangeAllowed = relation.relationMemberType <> ESM!RelationMemberType#PROPERTY and (relation.relationMemberType == ESM!RelationMemberType#BOUND implies (not relation.binding.containment and relation.binding.relationMemberType <> ESM!RelationMemberType#PROPERTY));
                 }
             } else if (relation.isKindOf(ESM!TwoWayRelationMember)) {
-                rangeAllowed = relation.target.mapping.isDefined();
+                rangeAllowed = true;
             }
 
+            /* temporary disabled
             if (rangeAllowed and relation.rangeExpression.isDefined() and relation.rangeExpression.trim().length() > 0 and (s.createable or s.updateable)) {
                 s.createGetRangeOperationForExposedGraphEdit(relation, t.input, "create");
-            }
+            } */
         }
 
         s.target.getPSMTransferObjectTypeEquivalent().operations.add(t);
@@ -245,7 +246,7 @@ rule CreateUpdateOperationForExposedGraph
         t.output.cardinality.lower = 1;
         t.output.cardinality.upper = 1;
 
-        for (relation in s.target.getAllRelations().select(r | not r.isReadOnly() and (r.isKindOf(ESM!TwoWayRelationMember) implies r.partner <> s))) {
+        for (relation in s.target.getAllRelations().select(r | r.target.mapping.isDefined() and not r.isReadOnly() and (r.isKindOf(ESM!TwoWayRelationMember) implies r.partner <> s))) {
             var rangeAllowed = false;
             var containment = false;
             if (relation.isKindOf(ESM!OneWayRelationMember)) {
@@ -253,15 +254,11 @@ rule CreateUpdateOperationForExposedGraph
                     rangeAllowed = not relation.containment and relation.relationMemberType <> ESM!RelationMemberType#PROPERTY;
                     containment = relation.containment;
                 } else if (relation.eContainer.isKindOf(ESM!TransferObjectType)) {
-                    rangeAllowed = relation.relationMemberType <> ESM!RelationMemberType#PROPERTY and (relation.relationMemberType == ESM!RelationMemberType#BOUND implies (not relation.binding.containment and relation.binding.relationMemberType <> ESM!RelationMemberType#PROPERTY)) and relation.target.mapping.isDefined();
+                    rangeAllowed = relation.relationMemberType <> ESM!RelationMemberType#PROPERTY and (relation.relationMemberType == ESM!RelationMemberType#BOUND implies (not relation.binding.containment and relation.binding.relationMemberType <> ESM!RelationMemberType#PROPERTY));
                     containment = relation.relationMemberType == ESM!RelationMemberType#BOUND and relation.binding.containment and relation.target.mapping.isDefined();
                 }
             } else if (relation.isKindOf(ESM!TwoWayRelationMember)) {
-                rangeAllowed = relation.target.mapping.isDefined();
-            }
-
-            if (rangeAllowed and relation.rangeExpression.isDefined() and relation.rangeExpression.trim().length() > 0 and (s.createable or s.updateable)) {
-                s.createGetRangeOperationForExposedGraphEdit(relation, t.input, "update");
+                rangeAllowed = true;
             }
 
             var entityPartner;
@@ -289,6 +286,10 @@ rule CreateUpdateOperationForExposedGraph
                     s.createRemoveAllOperationForExposedGraph(relation);
                 }
             }
+
+            /*if (rangeAllowed and relation.rangeExpression.isDefined() and relation.rangeExpression.trim().length() > 0 and (s.createable or s.updateable)) {
+                s.createGetRangeOperationForExposedGraphEdit(relation, t.input, "update");
+            }*/
         }
 
         s.target.getPSMTransferObjectTypeEquivalent().operations.add(t);

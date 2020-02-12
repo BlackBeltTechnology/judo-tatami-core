@@ -69,17 +69,92 @@ rule CreateParameterDefinitionSchemaReference
     transform s : ASM!EAnnotation
     to t : OPENAPI!SchemaReference {
         guard: s.eContainer.isKindOf(ASM!EParameter) and s.source == asmUtils.getAnnotationUri("exposedBy") and s.eContainer.eType.isDefined()
-        
+
         if (s.eContainer.eType.isKindOf(ASM!EClass)) {
             var transferObjectTypeExposedByAnnotation = asmUtils.getExtensionAnnotationListByName(s.eContainer.eType, "exposedBy").selectOne(a | a.details.get("value") == s.details.get("value"));
 		    if (transferObjectTypeExposedByAnnotation.isDefined()) {
-		        if (s.eContainer.many) {
-		            t.ref = transferObjectTypeExposedByAnnotation.equivalent("CreateTransferObjectArraySchemaDeclaration").getReference();
+		        var behaviour = asmUtils.getBehaviour(s.eContainer.eOperation);
+		        var behaviourRelation = asmUtils.getRelationOfOperationWithDefaultBehaviour(s.eContainer.eOperation);
+
+		        if (behaviour.isDefined() and behaviour.get().toString() == "CREATE") {
+                    if (s.eContainer.many) {
+                        t.ref = transferObjectTypeExposedByAnnotation.equivalent("CreateTransferObjectArraySchemaDeclarationExtended").getReference();
+                    } else {
+                        t.ref = transferObjectTypeExposedByAnnotation.equivalent("CreateTransferObjectSingleSchemaDeclarationExtended").getReference();
+                    }
+                } else if (behaviour.isDefined() and (behaviour.get().toString() == "DELETE" or behaviour.get().toString() == "UNSET")) {
+                    if (s.eContainer.many) {
+                        throw "Unsupported parameter";
+                    } else {
+                        t.ref = asmUtils.getAllAccessPoints().selectOne(ap | asmUtils.getClassifierFQName(ap) == s.details.get("value")).equivalent("CreateTransferObjectSingleSchemaDeclarationForDelete").getReference();
+                    }
+                } else if (behaviour.isDefined() and (behaviour.get().toString() == "SET" or behaviour.get().toString() == "ADD_ALL" or behaviour.get().toString() == "REMOVE_ALL") and behaviourRelation.isDefined()) {
+                    if (s.eContainer.many) {
+                        throw "Unsupported parameter";
+                    } else {
+                        t.ref = s.equivalent("CreateParameterDefinitionSchemaReferenceForReferenceChange").getReference();
+                    }
 		        } else {
-		        	t.ref = transferObjectTypeExposedByAnnotation.equivalent("CreateTransferObjectSingleSchemaDeclaration").getReference();
+                    if (s.eContainer.many) {
+                        t.ref = transferObjectTypeExposedByAnnotation.equivalent("CreateTransferObjectArraySchemaDeclaration").getReference();
+                    } else {
+                        t.ref = transferObjectTypeExposedByAnnotation.equivalent("CreateTransferObjectSingleSchemaDeclaration").getReference();
+                    }
 		        }
 		    }
         }
         
         s.equivalent("CreateParameterDefinitionSchema").ref = t;
+}
+
+@lazy
+rule CreateParameterDefinitionSchemaReferenceForReferenceChange
+    transform s : ASM!EAnnotation
+    to t : OPENAPI!SchemaDeclaration {
+        guard: s.eContainer.isKindOf(ASM!EParameter) and s.source == asmUtils.getAnnotationUri("exposedBy") and s.eContainer.eType.isDefined() and s.eContainer.eType.isKindOf(ASM!EClass)
+
+        t.name = (asmUtils.getOperationFQName(s.eContainer.eOperation) + "__" + s.eContainer.name).toOpenAPIName();
+
+        t.schema = new OPENAPI!Schema;
+        t.schema.description = "Schema of change instance reference";
+        t.schema.type = OPENAPI!JSONDataType#object;
+
+        var id = new OPENAPI!PropertyDeclaration;
+        id.name = "__identifier";
+
+        id.property = new OPENAPI!Property;
+        id.property.description = "ID of instance";
+        id.property.type = OPENAPI!JSONDataType#string;
+
+        t.schema.properties.add(id);
+
+        var ref = new OPENAPI!PropertyDeclaration;
+
+        var reference = asmUtils.getRelationOfOperationWithDefaultBehaviour(s.eContainer.eOperation).get();
+        ref.name = reference.name;
+
+        ref.property = new OPENAPI!Property;
+        ref.property.description = "Referenced element(s)";
+
+        var refId = new OPENAPI!PropertyDeclaration;
+        refId.name = "__identifier";
+
+        refId.property = new OPENAPI!Property;
+        refId.property.description = "ID of referenced instance";
+        refId.property.type = OPENAPI!JSONDataType#string;
+
+        if (reference.many) {
+            ref.property.type = OPENAPI!JSONDataType#array;
+            ref.property.items = new OPENAPI!Property;
+            ref.property.items.type = OPENAPI!JSONDataType#object;
+            ref.property.items.properties.add(refId);
+        } else {
+            ref.property.type = OPENAPI!JSONDataType#object;
+            ref.property.properties.add(refId);
+        }
+
+        t.schema.properties.add(ref);
+
+        var ap = asmUtils.getAllAccessPoints().selectOne(ap | asmUtils.getClassifierFQName(ap) == s.details.get("value"));
+        ap.equivalent("CreateOpenAPIAccessPoint").definitions.add(t);
 }

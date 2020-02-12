@@ -17,6 +17,52 @@ rule CreateTransferObjectSingleSchemaDeclaration
         }
 }
 
+rule CreateTransferObjectSingleSchemaDeclarationForDelete
+    transform s : ASM!EClass
+    to t : OPENAPI!SchemaDeclaration {
+        guard: asmUtils.isAccessPoint(s)
+
+        t.name = asmUtils.getModel().get().name + "__identifier";
+
+        t.schema = new OPENAPI!Schema;
+        t.schema.description = "Schema of instance reference";
+        t.schema.type = OPENAPI!JSONDataType#object;
+
+        var id = new OPENAPI!PropertyDeclaration;
+        id.name = "__identifier";
+
+        id.property = new OPENAPI!Property;
+        id.property.description = "ID of instance";
+        id.property.type = OPENAPI!JSONDataType#string;
+
+        t.schema.properties.add(id);
+
+        s.equivalent("CreateOpenAPIAccessPoint").definitions.add(t);
+}
+
+rule CreateTransferObjectSingleSchemaDefinitionExtended
+    transform s : ASM!EAnnotation
+    to t : OPENAPI!Schema {
+        guard: s.eContainer.isKindOf(ASM!EClass) and s.source == asmUtils.getAnnotationUri("exposedBy") and (not asmUtils.isEntityType(s.eContainer) or asmUtils.isMappedTransferObjectType(s.eContainer))
+        s.eContainer.getEAllSuperTypes().collect(superType | t.allOf.add(asmUtils.getExtensionAnnotationByName(superType, "exposedBy", false).get().equivalent("CreateTransferObjectSingleSchemaDefinitionExtended")));
+
+        t.description = "Schema of " + s.eContainer.name + " instance (for creation)";
+        t.type = OPENAPI!JSONDataType#object;
+
+        if (asmUtils.isMappedTransferObjectType(s.eContainer) and not s.eContainer.eSuperTypes.exists(sup | asmUtils.isMappedTransferObjectType(sup))) {
+            var id = new OPENAPI!PropertyDeclaration;
+            id.name = "__identifier";
+
+            id.property = new OPENAPI!Property;
+            id.property.description = "ID of " + asmUtils.getMappedEntityType(s.eContainer).get().name + " instance";
+            id.property.type = OPENAPI!JSONDataType#string;
+
+            t.properties.add(id);
+        }
+
+        s.equivalent("CreateTransferObjectSingleSchemaDeclarationExtended").schema = t;
+}
+
 rule CreateTransferObjectSingleSchemaDefinition
     transform s : ASM!EAnnotation
     to t : OPENAPI!Schema {
@@ -75,4 +121,79 @@ rule CreateTransferObjectArrayItemsDefinition
         t.ref.ref = s.equivalent("CreateTransferObjectSingleSchemaDeclaration").getReference();
         
         s.equivalent("CreateTransferObjectArraySchemaDefinition").items = t;
+}
+
+rule CreateTransferObjectSingleSchemaDeclarationExtended
+    transform s : ASM!EAnnotation
+    to t : OPENAPI!SchemaDeclaration {
+        guard: s.eContainer.isKindOf(ASM!EClass) and s.source == asmUtils.getAnnotationUri("exposedBy") and (not asmUtils.isEntityType(s.eContainer) or asmUtils.isMappedTransferObjectType(s.eContainer))
+
+        t.name = asmUtils.getClassifierFQName(s.eContainer).toOpenAPIName() + "__extended";
+
+        var accessPoint = asmUtils.getResolvedExposedBy(s);
+        if (accessPoint.isPresent()) {
+		    accessPoint.get().equivalent("CreateOpenAPIAccessPoint").definitions.add(t);
+        } else {
+            delete t;
+        }
+}
+
+rule CreateTransferObjectSingleSchemaDefinitionExtended
+    transform s : ASM!EAnnotation
+    to t : OPENAPI!Schema {
+        guard: s.eContainer.isKindOf(ASM!EClass) and s.source == asmUtils.getAnnotationUri("exposedBy") and (not asmUtils.isEntityType(s.eContainer) or asmUtils.isMappedTransferObjectType(s.eContainer))
+        s.eContainer.getEAllSuperTypes().collect(superType | t.allOf.add(asmUtils.getExtensionAnnotationByName(superType, "exposedBy", false).get().equivalent("CreateTransferObjectSingleSchemaDefinitionExtended")));
+
+        t.description = "Schema of " + s.eContainer.name + " instance (for creation)";
+        t.type = OPENAPI!JSONDataType#object;
+
+        if (asmUtils.isMappedTransferObjectType(s.eContainer) and not s.eContainer.eSuperTypes.exists(sup | asmUtils.isMappedTransferObjectType(sup))) {
+            var id = new OPENAPI!PropertyDeclaration;
+            id.name = "__identifier";
+
+            id.property = new OPENAPI!Property;
+            id.property.description = "ID of " + asmUtils.getMappedEntityType(s.eContainer).get().name + " instance";
+            id.property.type = OPENAPI!JSONDataType#string;
+
+            t.properties.add(id);
+        }
+
+        s.equivalent("CreateTransferObjectSingleSchemaDeclarationExtended").schema = t;
+}
+
+rule CreateTransferObjectArraySchemaDeclarationExtended
+    transform s : ASM!EAnnotation
+    to t : OPENAPI!SchemaDeclaration {
+        guard: s.eContainer.isKindOf(ASM!EClass) and s.source == asmUtils.getAnnotationUri("exposedBy") and (not asmUtils.isEntityType(s.eContainer) or asmUtils.isMappedTransferObjectType(s.eContainer))
+
+        t.name = "arrayOf__" + asmUtils.getClassifierFQName(s.eContainer).toOpenAPIName() + "__extended";
+
+        var accessPoint = asmUtils.getResolvedExposedBy(s);
+        if (accessPoint.isPresent()) {
+            accessPoint.get().equivalent("CreateOpenAPIAccessPoint").definitions.add(t);
+        } else {
+            delete t;
+        }
+}
+
+rule CreateTransferObjectArraySchemaDefinitionExtended
+    transform s : ASM!EAnnotation
+    to t : OPENAPI!Schema {
+        guard: s.eContainer.isKindOf(ASM!EClass) and s.source == asmUtils.getAnnotationUri("exposedBy") and (not asmUtils.isEntityType(s.eContainer) or asmUtils.isMappedTransferObjectType(s.eContainer))
+
+        t.description = "Array of " + s.eContainer.name + " instances (for creation)";
+        t.type = OPENAPI!JSONDataType#array;
+
+        s.equivalent("CreateTransferObjectArraySchemaDeclarationExtended").schema = t;
+}
+
+rule CreateTransferObjectArrayItemsDefinitionExtended
+    transform s : ASM!EAnnotation
+    to t : OPENAPI!Property {
+        guard: s.eContainer.isKindOf(ASM!EClass) and s.source == asmUtils.getAnnotationUri("exposedBy") and (not asmUtils.isEntityType(s.eContainer) or asmUtils.isMappedTransferObjectType(s.eContainer))
+
+        t.ref = new OPENAPI!SchemaReference;
+        t.ref.ref = s.equivalent("CreateTransferObjectSingleSchemaDeclarationExtended").getReference();
+
+        s.equivalent("CreateTransferObjectArraySchemaDefinitionExtended").items = t;
 }

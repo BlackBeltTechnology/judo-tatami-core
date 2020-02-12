@@ -50,7 +50,7 @@ public class NorthwindTatamiPSMTransformationPipelineITest extends TatamiPSMTran
     private static final String BASE_URL = "http://localhost:8181/cxf/demo";
     private static final String DEMO_ENTITIES_ORDER = "demo.entities.Order";
     private static final String DEMO = "northwind-psm";
-    private static final String DEMO_SERVICE_GET_ALL_ORDERS = "/demo/service/getAllOrders";
+    private static final String DEMO_SERVICE_GET_ALL_ORDERS = "/service/getAllOrders";
 
     @Override
     public Option getProvisonModelBundle() throws FileNotFoundException {

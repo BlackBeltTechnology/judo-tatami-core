@@ -24,8 +24,8 @@ for (clazz in ASM!EOperation.all.select(op | not asmUtils.getAccessPointsOfOpera
     t.populate("className", clazz.name.normalizeName());
     t.populate("packagePath", clazz.getExposedPackageName());
     t.populate("operations", operationsOfClazz);
-    t.populate("restPath", "/" + asmUtils.getPackageFQName(clazz.ePackage).toJAXRSPath() + "/" + clazz.name.normalizeName().toJAXRSPath());
-    t.populate("fullyQualifiedOperation", false);
+    t.populate("restPath", "/");
+    t.populate("fullyQualifiedOperation", true);
 
     t.generate(clazz.getExposedJavaFileName());
     t.reset();
