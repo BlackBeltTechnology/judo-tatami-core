@@ -55,7 +55,7 @@ public class NorthwindTatamiESMTransformationPipelineITest extends TatamiESMTran
     private static final String BASE_URL = "http://localhost:8181/cxf/northwind";
     private static final String NORTHWIND_ENTITIES_ORDER = "northwind.entities.Order";
     private static final String NORTHWIND = "northwind-esm";
-    private static final String NORTHWIND_SERVICE_GET_ALL_INTERNATIONAL_ORDERS = "/northwind/InternalAP/allInternationalOrders";
+    private static final String NORTHWIND_SERVICE_GET_ALL_INTERNATIONAL_ORDERS = "/InternalAP/allInternationalOrders";
 
     @Override
     public Option getProvisonModelBundle() throws FileNotFoundException {

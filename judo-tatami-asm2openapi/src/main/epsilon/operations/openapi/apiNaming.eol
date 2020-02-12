@@ -22,7 +22,7 @@ operation ASM!EOperation toOpenAPIPath() : String {
         }
     }
 
-    return path.replace("[#\\.]", "/").replace("[^0-9a-zA-Z_/]", "_");
+    return path.replaceFirst("^" + asmUtils.getModel().get().name + "\\.", "").replace("[#\\.]", "/").replace("[^0-9a-zA-Z_/]", "_");
 }
 
 // convert a string (ie. name) to OpenAPI name (key)
