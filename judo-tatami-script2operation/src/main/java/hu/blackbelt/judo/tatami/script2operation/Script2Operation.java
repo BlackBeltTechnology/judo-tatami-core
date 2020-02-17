@@ -53,8 +53,7 @@ public class Script2Operation {
 
                     String operationFQName = String.valueOf(binding.getTypeName()).replace("::", ".") + "#" + binding.getOperationName();
 
-                    String[] packages = packageName.split("\\.");
-                    String modelName = packages.length > 0 ? packages[0] : ""; // FIXME - set model name from ASM model instead of substring of packageName
+                    String modelName = scriptModel.getName();
 
                     sourceCodesByFqName.put(packageName + "." + unitName, sourceCode);
                     scrXmlFilesByFqName.put(packageName + "." + unitName,
