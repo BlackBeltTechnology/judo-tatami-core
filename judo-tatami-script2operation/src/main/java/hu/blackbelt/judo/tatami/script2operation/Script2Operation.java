@@ -154,7 +154,9 @@ public class Script2Operation {
                         "org.osgi.framework;version=\"[1.8,2.0)\"," +
                         "hu.blackbelt.judo.dao.api;version=\"[1.0,2.0)\"," +
                         "hu.blackbelt.judo.meta.asm.runtime;version=\"[1.0,2.0)\"," +
-                        "org.eclipse.emf.ecore"
+                        "org.eclipse.emf.ecore," +
+                        "org.eclipse.emf.common," +
+                        "org.eclipse.emf.common.util"
                 );
 
         if (exportedPackages.size() > 0) {
