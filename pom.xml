@@ -1003,6 +1003,7 @@
                             <tag>${project.version}</tag>
                             <deleteRelease>true</deleteRelease>
                             <commitish>${env.WERCKER_GIT_COMMIT}</commitish>
+                            <!--
                             <fileSets>
                                 <fileSet>
                                     <directory>${basedir}</directory>
@@ -1013,6 +1014,7 @@
                                     </includes>
                                 </fileSet>
                             </fileSets>
+                            -->
                         </configuration>
                         <executions>
                             <execution>
