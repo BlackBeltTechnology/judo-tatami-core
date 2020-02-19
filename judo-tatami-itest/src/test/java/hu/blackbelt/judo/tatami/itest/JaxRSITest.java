@@ -29,8 +29,13 @@ import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.io.FileNotFoundException;
-import java.time.ZonedDateTime;
-import java.util.*;
+import java.time.OffsetDateTime;
+import java.util.Dictionary;
+import java.util.HashMap;
+import java.util.Hashtable;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static hu.blackbelt.judo.framework.KarafTestUtil.karafConfig;
@@ -191,7 +196,7 @@ public class JaxRSITest {
         testMap.put("demo.services.InternationalOrderInfo#getAllInternationalOrders", ImmutableList.of(
                 internationalOrderInfoBuilder()
                         .shipperName("shipperNameInInternationalOrderInfo0")
-                        .orderDate(ZonedDateTime.now())
+                        .orderDate(OffsetDateTime.now())
                         .items(ImmutableList.of(
                                 orderItemBuilder().productName("productName0").quantity(42).discount(2.71).product(
                                         productInfoBuilder().productName("productName").unitPrice(3.14).category(
@@ -208,10 +213,10 @@ public class JaxRSITest {
                                         categoryInfoBuilder().categoryName("categoryNameInOrderItem").build()
                                 ).build()))
                         .build().toMap(),
-                internationalOrderInfoBuilder().shipperName("shipperNameInInternationalOrderInfo1").orderDate(ZonedDateTime.now()).build().toMap()));
+                internationalOrderInfoBuilder().shipperName("shipperNameInInternationalOrderInfo1").orderDate(OffsetDateTime.now()).build().toMap()));
 
         //createOrder (input: OrderInfo, output: OrderInfo), required (OrderInfo): orderDate
-        testMap.put("demo.services.InternationalOrderInfo#createInternationalOrder", orderInfoBuilder().shipperName("shipperNameInNewInternationalOrderInfo").orderDate(ZonedDateTime.now()).build().toMap());
+        testMap.put("demo.services.InternationalOrderInfo#createInternationalOrder", orderInfoBuilder().shipperName("shipperNameInNewInternationalOrderInfo").orderDate(OffsetDateTime.now()).build().toMap());
 
         return testMap;
     }
@@ -334,7 +339,7 @@ public class JaxRSITest {
     public void testCreateInternationalOrder() {
         logTest(DEMO_SERVICE_CREATE_INTERNATIONAL_ORDER);
 
-        Response response = getResponse(DEMO_SERVICE_CREATE_INTERNATIONAL_ORDER, orderInfoBuilder().orderDate(ZonedDateTime.now()).build());
+        Response response = getResponse(DEMO_SERVICE_CREATE_INTERNATIONAL_ORDER, orderInfoBuilder().orderDate(OffsetDateTime.now()).build());
 
         assertNotNull(response);
         assertTrue(response.getStatusInfo().getFamily().equals(Response.Status.Family.SUCCESSFUL));
