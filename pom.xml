@@ -366,6 +366,13 @@
                 <groupId>hu.blackbelt.judo.meta</groupId>
                 <artifactId>hu.blackbelt.judo.meta.esm.model.northwind</artifactId>
                 <version>${judo-meta-esm-version}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>hu.blackbelt.judo.meta</groupId>
+                <artifactId>hu.blackbelt.judo.meta.psm.model.northwind</artifactId>
+                <version>${judo-meta-psm-version}</version>
+                <scope>test</scope>
             </dependency>
             <dependency>
                 <groupId>hu.blackbelt.judo.meta</groupId>
@@ -761,7 +768,6 @@
             </activation>
             <modules>
                 <module>judo-tatami-core</module>
-                <module>judo-tatami-esm-validation</module>
                 <module>judo-tatami-esm2psm</module>
                 <module>judo-tatami-psm2asm</module>
                 <module>judo-tatami-psm2measure</module>
@@ -773,6 +779,8 @@
                 <module>judo-tatami-asm2script</module>
                 <module>judo-tatami-asm2sdk</module>
                 <module>judo-tatami-script2operation</module>
+                <module>judo-tatami-esm-validation</module>
+                <module>judo-tatami-psm-validation</module>
                 <module>judo-tatami-workflow</module>
                 <module>judo-tatami-workflow-osgi</module>
 		        <module>judo-tatami-workflow-maven-plugin</module>
