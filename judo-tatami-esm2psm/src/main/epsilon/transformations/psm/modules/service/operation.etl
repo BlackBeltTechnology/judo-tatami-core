@@ -17,6 +17,7 @@ rule CreateBoundOperation
     extends CreateNamedElement {
       guard: s.modifier <> ESM!OperationModifier#STATIC and s.eContainer.isKindOf(ESM!EntityType)
 
+      t.`abstract` = s.modifier == ESM!OperationModifier#ABSTRACT;
       t.implementation = s.equivalent("CreateOperationBody");
       t.instanceRepresentation = s.eContainer.equivalent("CreateDefaultMappedTransferObjectTypeForEntity");
       s.eContainer.equivalent("CreateEntityType").operations.add(t);
