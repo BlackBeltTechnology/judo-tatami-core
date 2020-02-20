@@ -2,12 +2,12 @@ package hu.blackbelt.judo.tatami.itest;
 
 import com.fasterxml.jackson.jaxrs.json.JacksonJaxbJsonProvider;
 import com.google.common.collect.ImmutableMap;
+import hu.blackbelt.judo.dispatcher.api.Dispatcher;
 import hu.blackbelt.judo.meta.asm.runtime.AsmUtils;
 import hu.blackbelt.judo.meta.rdbms.RdbmsIdentifierField;
 import hu.blackbelt.judo.meta.rdbms.RdbmsTable;
 import hu.blackbelt.judo.meta.rdbms.RdbmsValueField;
 import hu.blackbelt.judo.meta.rdbms.runtime.RdbmsModel;
-import hu.blackbelt.judo.tatami.core.Dispatcher;
 import hu.blackbelt.judo.tatami.core.TransformationTrace;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
