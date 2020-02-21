@@ -118,10 +118,13 @@ public class EsmOperation2PsmOperationTest {
 
     private static final String MODEL_NAME = "Model";
     private static final String ENTITY_TYPE_NAME = "E";
+    private static final String ABSTRACT_ENTITY_TYPE_NAME = "A";
     private static final String MAPPED_TRANSFER_OBJECT_TYPE_NAME = "M";
     private static final String UNMAPPED_TRANSFER_OBJECT_TYPE_NAME = "U";
 
     private static final String BOUND_OPERATION_NAME = "boundOperation";
+    private static final String ABSTRACT_OPERATION_NAME_WITH_BODY = "abstractOperation1";
+    private static final String ABSTRACT_OPERATION_NAME_WITH_CUSTOMIMPLEMENTATION = "abstractOperation2";
     private static final String STATIC_OPERATION_NAME = "staticOperation";
     private static final String BOUND_OPERATION_NAME_IN_MAPPED_TRANSFER_OBJECT_TYPE = "boundOperation2";
     private static final String STATIC_OPERATION_NAME_IN_MAPPED_TRANSFER_OBJECT_TYPE = "staticOperation2";
@@ -202,7 +205,7 @@ public class EsmOperation2PsmOperationTest {
         final TransferObjectType fault2Type = newTransferObjectTypeBuilder()
                 .withName(FAULT2_TYPE_NAME)
                 .build();
-
+        
         final EntityType entityType = newEntityTypeBuilder().withName(ENTITY_TYPE_NAME).withAbstract_(false)
                 .withOperations(parameterDecorator(newOperationBuilder()
                                 .withName(BOUND_OPERATION_NAME)
@@ -217,6 +220,22 @@ public class EsmOperation2PsmOperationTest {
                         inputParameterType, outputParameterType, fault1Type, fault2Type).build())
                 .build();
         entityType.setMapping(newMappingBuilder().withTarget(entityType).build());
+
+        final EntityType abstractEntityType = newEntityTypeBuilder().withName(ABSTRACT_ENTITY_TYPE_NAME).withAbstract_(true)
+                .withOperations(newOperationBuilder()
+                        .withName(ABSTRACT_OPERATION_NAME_WITH_BODY)
+                        .withBinding("")
+                        .withBody(body)
+                        .withModifier(OperationModifier.ABSTRACT)
+                        .build())
+                .withOperations(newOperationBuilder()
+                        .withName(ABSTRACT_OPERATION_NAME_WITH_CUSTOMIMPLEMENTATION)
+                        .withBinding("")
+                        .withCustomImplementation(true)
+                        .withModifier(OperationModifier.ABSTRACT)
+                        .build())
+                .build();
+        abstractEntityType.setMapping(newMappingBuilder().withTarget(abstractEntityType).build());
 
         final TransferObjectType mappedTransferObjectType = newTransferObjectTypeBuilder().withName(MAPPED_TRANSFER_OBJECT_TYPE_NAME)
                 .withMapping(newMappingBuilder().withTarget(entityType).build())
@@ -251,7 +270,7 @@ public class EsmOperation2PsmOperationTest {
                 .build();
 
         final Model model = newModelBuilder().withName(MODEL_NAME).build();
-        model.getElements().addAll(Arrays.asList(entityType, mappedTransferObjectType, unmappedTransferObjectType, inputParameterType, outputParameterType, fault1Type, fault2Type));
+        model.getElements().addAll(Arrays.asList(entityType, abstractEntityType, mappedTransferObjectType, unmappedTransferObjectType, inputParameterType, outputParameterType, fault1Type, fault2Type));
 
         esmModel.addContent(model);
 
@@ -266,6 +285,13 @@ public class EsmOperation2PsmOperationTest {
                 .findAny();
         assertTrue(e.isPresent());
         assertTrue(e.get().getOperations().stream().anyMatch(o -> BOUND_OPERATION_NAME.equals(o.getName()) && EXPECTED_INPUT_AND_OUTPUT_PARAMETERS.test(o)));
+        
+        final Optional<hu.blackbelt.judo.meta.psm.data.EntityType> a = allPsm(hu.blackbelt.judo.meta.psm.data.EntityType.class)
+                .filter(et -> ABSTRACT_ENTITY_TYPE_NAME.equals(et.getName()))
+                .findAny();
+        assertTrue(a.isPresent());
+        assertTrue(a.get().getOperations().stream().anyMatch(o -> ABSTRACT_OPERATION_NAME_WITH_BODY.equals(o.getName()) && o.getImplementation() == null));
+        assertTrue(a.get().getOperations().stream().anyMatch(o -> ABSTRACT_OPERATION_NAME_WITH_CUSTOMIMPLEMENTATION.equals(o.getName()) && o.getImplementation() == null));
 
         final Optional<hu.blackbelt.judo.meta.psm.service.MappedTransferObjectType> m = allPsm(hu.blackbelt.judo.meta.psm.service.MappedTransferObjectType.class)
                 .filter(t -> MAPPED_TRANSFER_OBJECT_TYPE_NAME.equals(t.getName()))
