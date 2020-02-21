@@ -76,19 +76,19 @@ rule CreateParameterDefinitionSchemaReference
 		        var behaviour = asmUtils.getBehaviour(s.eContainer.eOperation);
 		        var behaviourRelation = asmUtils.getRelationOfOperationWithDefaultBehaviour(s.eContainer.eOperation);
 
-		        if (behaviour.isDefined() and behaviour.get().toString() == "CREATE") {
+		        if (behaviour.present and behaviour.get().toString() == "CREATE") {
                     if (s.eContainer.many) {
                         t.ref = transferObjectTypeExposedByAnnotation.equivalent("CreateTransferObjectArraySchemaDeclarationExtended").getReference();
                     } else {
                         t.ref = transferObjectTypeExposedByAnnotation.equivalent("CreateTransferObjectSingleSchemaDeclarationExtended").getReference();
                     }
-                } else if (behaviour.isDefined() and (behaviour.get().toString() == "DELETE" or behaviour.get().toString() == "UNSET")) {
+                } else if (behaviour.present and (behaviour.get().toString() == "DELETE" or behaviour.get().toString() == "UNSET")) {
                     if (s.eContainer.many) {
                         throw "Unsupported parameter";
                     } else {
                         t.ref = asmUtils.getAllAccessPoints().selectOne(ap | asmUtils.getClassifierFQName(ap) == s.details.get("value")).equivalent("CreateTransferObjectSingleSchemaDeclarationForDelete").getReference();
                     }
-                } else if (behaviour.isDefined() and (behaviour.get().toString() == "SET" or behaviour.get().toString() == "ADD_ALL" or behaviour.get().toString() == "REMOVE_ALL") and behaviourRelation.isDefined()) {
+                } else if (behaviour.present and (behaviour.get().toString() == "SET" or behaviour.get().toString() == "ADD_ALL" or behaviour.get().toString() == "REMOVE_ALL") and behaviourRelation.present) {
                     if (s.eContainer.many) {
                         throw "Unsupported parameter";
                     } else {
