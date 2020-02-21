@@ -251,7 +251,7 @@ public class JaxRSITest {
                     if (!testMap.containsKey(operationFqName)) {
                         return ImmutableMap.of();
                     } else {
-                        return ImmutableMap.of(Dispatcher.OUTPUT_PARAMETER_NAME, testMap.get(operationFqName));
+                        return ImmutableMap.of("output", testMap.get(operationFqName));
                     }
                 }
             };
