@@ -68,6 +68,9 @@ public class [%= dto.name.normalizeName() %] {
 	}
 
 	public static [%= dto.name.normalizeName() %] fromMap(Map<String, Object> map) {
+		if (map == null) {
+			return null;
+		}
 		[%= dto.name.normalizeName() %]Builder builder = [%= dto.name.normalizeName().firstToLowerCase() %]Builder();
 		if (map.containsKey("__identifier")) {
 			builder.__identifier(([%= getIdTypeName() %])map.get("__identifier"));
