@@ -151,6 +151,10 @@
 			<groupId>hu.blackbelt.judo.tatami</groupId>
 			<artifactId>judo-tatami-core</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>hu.blackbelt.judo</groupId>
+			<artifactId>judo-dispatcher-api</artifactId>
+		</dependency>
 
 		<dependency>
 			<groupId>javax.ws.rs</groupId>

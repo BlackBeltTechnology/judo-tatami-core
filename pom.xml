@@ -97,7 +97,8 @@
         <judo-meta-openapi-import-range>[1.0,1.1)</judo-meta-openapi-import-range>
 
         <judo-dao-api-version>1.0.0.20200212_124052_1c7db17_1_0_beta1</judo-dao-api-version>
-        <judo-script-codegen-version>1.0.0.20200220_170031_5a167c9_1_0_beta1</judo-script-codegen-version>
+        <judo-dispatcher-api-version>1.0.0.20200220_094150_2d714d1_1_0_beta1</judo-dispatcher-api-version>
+        <judo-script-codegen-version>1.0.0.20200221_124544_5148334_develop</judo-script-codegen-version>
         <judo-jql-ide-eclipse-version>1.0.0.20200220_165338_cb66a41_1_0_beta1</judo-jql-ide-eclipse-version>
         <judo-jcl-ide-eclipse-version>1.0.0.20200220_170148_7cbc6c1_1_0_beta1</judo-jcl-ide-eclipse-version>
 
@@ -345,6 +346,12 @@
                 <groupId>hu.blackbelt.judo</groupId>
                 <artifactId>judo-dao-api</artifactId>
                 <version>${judo-dao-api-version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>hu.blackbelt.judo</groupId>
+                <artifactId>judo-dispatcher-api</artifactId>
+                <version>${judo-dispatcher-api-version}</version>
             </dependency>
 
             <!--dependency>
