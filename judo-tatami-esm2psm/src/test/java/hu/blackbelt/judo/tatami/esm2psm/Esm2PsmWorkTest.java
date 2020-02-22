@@ -7,6 +7,8 @@ import hu.blackbelt.judo.tatami.core.workflow.flow.WorkFlow;
 import hu.blackbelt.judo.tatami.core.workflow.work.TransformationContext;
 import hu.blackbelt.judo.tatami.core.workflow.work.WorkReport;
 import hu.blackbelt.judo.tatami.core.workflow.work.WorkStatus;
+import hu.blackbelt.model.northwind.esm.NorthwindEsmModel;
+import hu.blackbelt.epsilon.runtime.execution.exceptions.ScriptExecutionException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -15,7 +17,6 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.Optional;
 
-import static hu.blackbelt.judo.meta.esm.runtime.EsmModel.LoadArguments.esmLoadArgumentsBuilder;
 import static hu.blackbelt.judo.meta.psm.runtime.PsmModel.SaveArguments.psmSaveArgumentsBuilder;
 import static hu.blackbelt.judo.tatami.core.workflow.engine.WorkFlowEngineBuilder.aNewWorkFlowEngine;
 import static hu.blackbelt.judo.tatami.core.workflow.flow.SequentialFlow.Builder.aNewSequentialFlow;
@@ -35,10 +36,8 @@ class Esm2PsmWorkTest {
 	TransformationContext transformationContext;
 
 	@BeforeEach
-	void setUp() throws IOException, EsmModel.EsmValidationException, URISyntaxException {
-		EsmModel esmModel = EsmModel.loadEsmModel(
-				esmLoadArgumentsBuilder().file(new File(TARGET_TEST_CLASSES, NORTHWIND_ESM_MODEL)).name(NORTHWIND));
-
+	void setUp() throws IOException, EsmModel.EsmValidationException, URISyntaxException, ScriptExecutionException {
+		EsmModel esmModel = NorthwindEsmModel.fullDemo();
 		transformationContext = new TransformationContext(NORTHWIND);
 		transformationContext.put(esmModel);
 

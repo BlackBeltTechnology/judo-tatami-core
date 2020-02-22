@@ -371,6 +371,11 @@
             </dependency>
             <dependency>
                 <groupId>hu.blackbelt.judo.meta</groupId>
+                <artifactId>hu.blackbelt.judo.meta.esm.model.northwind</artifactId>
+                <version>${judo-meta-esm-version}</version>
+            </dependency>
+            <dependency>
+                <groupId>hu.blackbelt.judo.meta</groupId>
                 <artifactId>hu.blackbelt.judo.meta.asm.model</artifactId>
                 <version>${judo-meta-asm-version}</version>
             </dependency>
