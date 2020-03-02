@@ -270,6 +270,11 @@ public class EsmStructure2PsmServiceTest {
 				.withName("transferRelationContainment").withContainment(true).withAggregation(true).withLower(1)
 				.withUpper(1).withRelationMemberType(RelationMemberType.RELATION).withTarget(targetEntityType).build();
 		oneWayRelationContainment.setBinding(oneWayRelationContainment);
+		
+		OneWayRelationMember oneWayRelationAggregation = newOneWayRelationMemberBuilder()
+				.withName("oneWayRelationAggregation").withContainment(false).withAggregation(true).withLower(1)
+				.withUpper(1).withRelationMemberType(RelationMemberType.RELATION).withTarget(targetEntityType).build();
+		oneWayRelationAggregation.setBinding(oneWayRelationAggregation);
 
 		OneWayRelationMember oneWayRelationBasic = newOneWayRelationMemberBuilder().withName("transferRelationBasic")
 				.withContainment(false).withAggregation(false).withLower(1).withUpper(1)
@@ -303,7 +308,7 @@ public class EsmStructure2PsmServiceTest {
 				.setBinding(oneWayRelationWithPropertyWithDefaultAndRange);
 
 		EntityType entityType = newEntityTypeBuilder().withName("entityType")
-				.withRelations(ImmutableList.of(oneWayRelationContainment, oneWayRelationBasic,
+				.withRelations(ImmutableList.of(oneWayRelationContainment, oneWayRelationAggregation, oneWayRelationBasic,
 						oneWayRelationWithProperty, oneWayRelationWithPropertyWithDefault,
 						oneWayRelationWithPropertyWithRange,
 						oneWayRelationWithPropertyWithDefaultAndRange))
@@ -373,6 +378,18 @@ public class EsmStructure2PsmServiceTest {
 		assertTrue(psmTransferObjectRelationEmbedded.get().isEmbedded());
 		assertTrue(psmTransferObjectRelationEmbedded.get().getCardinality().getLower() == 1
 				&& psmTransferObjectRelationEmbedded.get().getCardinality().getUpper() == 1);
+		
+		final Optional<TransferObjectRelation> psmTransferObjectRelationEmbedded2 = allPsm(TransferObjectRelation.class)
+				.filter(transferObjectRel -> oneWayRelationAggregation.getName().equals(transferObjectRel.getName()))
+				.findAny();
+		assertTrue(psmTransferObjectRelationEmbedded2.isPresent());
+
+		assertTrue(psmDefaultTransferObject.get().getRelations().contains(psmTransferObjectRelationEmbedded2.get()));
+		assertThat(psmTransferObjectRelationEmbedded2.get().getTarget(),
+				IsEqual.equalTo(psmTargetMappedTransferObjectType.get()));
+		assertTrue(psmTransferObjectRelationEmbedded2.get().isEmbedded());
+		assertTrue(psmTransferObjectRelationEmbedded2.get().getCardinality().getLower() == 1
+				&& psmTransferObjectRelationEmbedded2.get().getCardinality().getUpper() == 1);
 
 		// property
 		final Optional<TransferObjectRelation> psmTransferObjectRelation = allPsm(TransferObjectRelation.class)
