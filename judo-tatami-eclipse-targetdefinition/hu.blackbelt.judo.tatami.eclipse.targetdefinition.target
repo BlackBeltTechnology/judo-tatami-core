@@ -56,7 +56,7 @@
 	  </location>
 
       <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
-  		  <repository location="https://nexus.judo.technology/repository/p2/judo-meta-esm/1.1.0.20200302_160745_b1f9633_develop"/>
+  		  <repository location="https://nexus.judo.technology/repository/p2/judo-meta-esm/1.1.0.20200305_113623_33c7c05_develop"/>
   		  <unit id="hu.blackbelt.judo.meta.esm.feature.feature.group" version="0.0.0"/>
           <unit id="hu.blackbelt.judo.meta.esm.designer.feature.feature.group" version="0.0.0"/>
       </location>
@@ -87,17 +87,17 @@
 	  </location>
 
 	  <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
-		  <repository location="https://nexus.judo.technology/repository/p2/judo-meta-expression/1.0.0.20200304_161833_37f192c_develop"/>
+		  <repository location="https://nexus.judo.technology/repository/p2/judo-meta-expression/1.0.0.20200305_123448_1dc9929_develop"/>
 		  <unit id="hu.blackbelt.judo.meta.expression.feature.feature.group" version="0.0.0"/>
 	  </location>
 
 	  <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
-		  <repository location="https://nexus.judo.technology/repository/p2/judo-jql-ide-eclipse/1.0.0.20200304_163055_e3d79c0_develop"/>
+		  <repository location="https://nexus.judo.technology/repository/p2/judo-jql-ide-eclipse/1.0.0.20200305_124743_7f357aa_develop"/>
 		  <unit id="hu.blackbelt.judo.jql.ide.eclipse.feature.feature.group" version="0.0.0"/>
 	  </location>
 
 	  <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
-		  <repository location="https://nexus.judo.technology/repository/p2/judo-jcl-ide-eclipse/1.0.0.20200304_163840_03918e1_develop"/>
+		  <repository location="https://nexus.judo.technology/repository/p2/judo-jcl-ide-eclipse/1.0.0.20200305_125649_2ae0028_develop"/>
 		  <unit id="hu.blackbelt.judo.jcl.ide.eclipse.feature.feature.group" version="0.0.0"/>
 	  </location>
 
@@ -107,7 +107,7 @@
       </location>
 
 	  <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
-      	  <repository location="https://nexus.judo.technology/repository/p2/judo-meta-script/1.0.0.20200304_162924_408ac4d_develop"/>
+      	  <repository location="https://nexus.judo.technology/repository/p2/judo-meta-script/1.0.0.20200305_124613_207fedf_develop"/>
       	  <unit id="hu.blackbelt.judo.meta.script.feature.feature.group" version="0.0.0"/>
       </location>
 
@@ -117,12 +117,12 @@
       </location>
 
    	  <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
-		  <repository location="https://nexus.judo.technology/repository/p2/judo-jcl-ide-eclipse/1.0.0.20200304_163840_03918e1_develop"/>
+		  <repository location="https://nexus.judo.technology/repository/p2/judo-jcl-ide-eclipse/1.0.0.20200305_125649_2ae0028_develop"/>
 		  <unit id="hu.blackbelt.judo.jcl.ide.eclipse.feature.feature.group" version="0.0.0"/>
 	  </location>
 
 	  <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
-      	  <repository location="https://nexus.judo.technology/repository/p2/judo-script-codegen/1.0.0.20200304_163750_073802e_develop"/>
+      	  <repository location="https://nexus.judo.technology/repository/p2/judo-script-codegen/1.0.0.20200305_125512_6407938_develop"/>
       	  <unit id="hu.blackbelt.judo.script.codegen.feature.feature.group" version="0.0.0"/>
       </location>
 
