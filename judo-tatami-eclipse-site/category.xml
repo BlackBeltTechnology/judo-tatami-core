@@ -63,16 +63,16 @@
    <repository-reference location="https://nexus.judo.technology/repository/p2/p2-swagger/1.0.1" enabled="true" />
    <repository-reference location="https://nexus.judo.technology/repository/p2/judo-meta-asm/1.0.0.20200304_153402_a4f5973_develop" enabled="true" />
    <repository-reference location="https://nexus.judo.technology/repository/p2/judo-meta-psm/1.0.0.20200304_090459_235347d_develop" enabled="true" />
-   <repository-reference location="https://nexus.judo.technology/repository/p2/judo-meta-esm/1.1.0.20200305_151508_b5877a7_develop" enabled="true" />
+   <repository-reference location="https://nexus.judo.technology/repository/p2/judo-meta-esm/1.1.0.20200306_121732_ad2d801_develop" enabled="true" />
    <repository-reference location="https://nexus.judo.technology/repository/p2/judo-meta-rdbms/1.0.0.20200304_155533_1b93579_develop" enabled="true" />
    <repository-reference location="https://nexus.judo.technology/repository/p2/judo-meta-liquibase/1.0.0.20200304_154050_59bae40_develop" enabled="true" />
    <repository-reference location="https://nexus.judo.technology/repository/p2/judo-meta-measure/1.0.0.20200304_154113_124b083_develop" enabled="true" />
-   <repository-reference location="https://nexus.judo.technology/repository/p2/judo-meta-expression/1.0.0.20200305_172816_57865a2_develop" enabled="true" />
+   <repository-reference location="https://nexus.judo.technology/repository/p2/judo-meta-expression/1.0.0.20200306_150002_97d2403_develop" enabled="true" />
    <repository-reference location="https://nexus.judo.technology/repository/p2/judo-meta-jql/1.0.0.20200304_153431_e65864b_develop" enabled="true" />
-   <repository-reference location="https://nexus.judo.technology/repository/p2/judo-jql-ide-eclipse/1.0.0.20200305_173938_bb54255_develop" enabled="true" />
+   <repository-reference location="https://nexus.judo.technology/repository/p2/judo-jql-ide-eclipse/1.0.0.20200306_151330_4fa8974_develop" enabled="true" />
    <repository-reference location="https://nexus.judo.technology/repository/p2/judo-meta-openapi/1.0.0.20200304_154759_e6091b6_develop" enabled="true" />
-   <repository-reference location="https://nexus.judo.technology/repository/p2/judo-meta-script/1.0.0.20200305_173827_b72572e_develop" enabled="true" />
-   <repository-reference location="https://nexus.judo.technology/repository/p2/judo-meta-jcl/1.0.0.20200304_161850_130ab0b_develop" enabled="true" />
-   <repository-reference location="https://nexus.judo.technology/repository/p2/judo-jcl-ide-eclipse/1.0.0.20200305_174658_391c889_develop" enabled="true" />
-   <repository-reference location="https://nexus.judo.technology/repository/p2/judo-script-codegen/1.0.0.20200305_174550_3951002_develop" enabled="true" />
+   <repository-reference location="https://nexus.judo.technology/repository/p2/judo-meta-script/1.0.0.20200306_151138_9319865_develop" enabled="true" />
+   <repository-reference location="https://nexus.judo.technology/repository/p2/judo-meta-jcl/1.0.0.20200306_131424_e561fe1_develop" enabled="true" />
+   <repository-reference location="https://nexus.judo.technology/repository/p2/judo-jcl-ide-eclipse/1.0.0.20200306_152054_ae45663_develop" enabled="true" />
+   <repository-reference location="https://nexus.judo.technology/repository/p2/judo-script-codegen/1.0.0.20200306_151954_cf2dcf8_develop" enabled="true" />
 </site>
