@@ -97,7 +97,7 @@
 	  </location>
 
 	  <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
-		  <repository location="https://nexus.judo.technology/repository/p2/judo-jcl-ide-eclipse/1.0.0.20200306_152054_ae45663_develop"/>
+		  <repository location="https://nexus.judo.technology/repository/p2/judo-jcl-ide-eclipse/1.0.0.20200309_155939_e67173b_develop"/>
 		  <unit id="hu.blackbelt.judo.jcl.ide.eclipse.feature.feature.group" version="0.0.0"/>
 	  </location>
 
@@ -107,7 +107,7 @@
       </location>
 
 	  <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
-      	  <repository location="https://nexus.judo.technology/repository/p2/judo-meta-script/1.0.0.20200306_151138_9319865_develop"/>
+      	  <repository location="https://nexus.judo.technology/repository/p2/judo-meta-script/1.0.0.20200309_141317_c47f5f4_develop"/>
       	  <unit id="hu.blackbelt.judo.meta.script.feature.feature.group" version="0.0.0"/>
       </location>
 
@@ -117,12 +117,12 @@
       </location>
 
    	  <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
-		  <repository location="https://nexus.judo.technology/repository/p2/judo-jcl-ide-eclipse/1.0.0.20200306_152054_ae45663_develop"/>
+		  <repository location="https://nexus.judo.technology/repository/p2/judo-jcl-ide-eclipse/1.0.0.20200309_155939_e67173b_develop"/>
 		  <unit id="hu.blackbelt.judo.jcl.ide.eclipse.feature.feature.group" version="0.0.0"/>
 	  </location>
 
 	  <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
-      	  <repository location="https://nexus.judo.technology/repository/p2/judo-script-codegen/1.0.0.20200306_151954_cf2dcf8_develop"/>
+      	  <repository location="https://nexus.judo.technology/repository/p2/judo-script-codegen/1.0.0.20200309_152102_4f6436b_develop"/>
       	  <unit id="hu.blackbelt.judo.script.codegen.feature.feature.group" version="0.0.0"/>
       </location>
 
