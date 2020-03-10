@@ -98,7 +98,7 @@
 
         <judo-dao-api-version>1.0.0.20200228_205257_ff7b104_develop</judo-dao-api-version>
         <judo-dispatcher-api-version>1.0.0.20200220_093445_2d714d1_develop</judo-dispatcher-api-version>
-        <judo-script-codegen-version>1.0.0.20200310_130549_2968796_develop</judo-script-codegen-version>
+        <judo-script-codegen-version>1.0.0.20200310_145240_4d7af75_develop</judo-script-codegen-version>
         <judo-jql-ide-eclipse-version>1.0.0.20200310_111957_0cbef17_develop</judo-jql-ide-eclipse-version>
         <judo-jcl-ide-eclipse-version>1.0.0.20200310_130537_e817ece_develop</judo-jcl-ide-eclipse-version>
 
