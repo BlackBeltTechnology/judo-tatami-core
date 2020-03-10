@@ -69,10 +69,10 @@
    <repository-reference location="https://nexus.judo.technology/repository/p2/judo-meta-measure/1.0.0.20200304_154113_124b083_develop" enabled="true" />
    <repository-reference location="https://nexus.judo.technology/repository/p2/judo-meta-expression/1.0.0.20200306_150002_97d2403_develop" enabled="true" />
    <repository-reference location="https://nexus.judo.technology/repository/p2/judo-meta-jql/1.0.0.20200304_153431_e65864b_develop" enabled="true" />
-   <repository-reference location="https://nexus.judo.technology/repository/p2/judo-jql-ide-eclipse/1.0.0.20200306_151330_4fa8974_develop" enabled="true" />
+   <repository-reference location="https://nexus.judo.technology/repository/p2/judo-jql-ide-eclipse/1.0.0.20200310_111957_0cbef17_develop" enabled="true" />
    <repository-reference location="https://nexus.judo.technology/repository/p2/judo-meta-openapi/1.0.0.20200304_154759_e6091b6_develop" enabled="true" />
-   <repository-reference location="https://nexus.judo.technology/repository/p2/judo-meta-script/1.0.0.20200309_141317_c47f5f4_develop" enabled="true" />
+   <repository-reference location="https://nexus.judo.technology/repository/p2/judo-meta-script/1.0.0.20200310_125202_9579f7f_develop" enabled="true" />
    <repository-reference location="https://nexus.judo.technology/repository/p2/judo-meta-jcl/1.0.0.20200306_131424_e561fe1_develop" enabled="true" />
-   <repository-reference location="https://nexus.judo.technology/repository/p2/judo-jcl-ide-eclipse/1.0.0.20200309_155939_e67173b_develop" enabled="true" />
-   <repository-reference location="https://nexus.judo.technology/repository/p2/judo-script-codegen/1.0.0.20200309_152102_4f6436b_develop" enabled="true" />
+   <repository-reference location="https://nexus.judo.technology/repository/p2/judo-jcl-ide-eclipse/1.0.0.20200310_130537_e817ece_develop" enabled="true" />
+   <repository-reference location="https://nexus.judo.technology/repository/p2/judo-script-codegen/1.0.0.20200310_130549_2968796_develop" enabled="true" />
 </site>
