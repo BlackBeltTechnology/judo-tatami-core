@@ -103,7 +103,7 @@
         <judo-jcl-ide-eclipse-version>1.0.0.20200312_095729_2374227_develop</judo-jcl-ide-eclipse-version>
 
         <structured-map-proxy-version>1.0.0</structured-map-proxy-version>
-        <judo-operation-utils-version>1.0.0.20200313_100513_66e09d4_master</judo-operation-utils-version>
+        <judo-operation-utils-version>1.0.0.20200313_171618_5ebbcce_develop</judo-operation-utils-version>
 
 
         <!-- We use older version of plugin to avoid chicked egg problem -->
