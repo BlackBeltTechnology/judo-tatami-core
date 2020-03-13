@@ -103,6 +103,8 @@
         <judo-jcl-ide-eclipse-version>1.0.0.20200312_095729_2374227_develop</judo-jcl-ide-eclipse-version>
 
         <structured-map-proxy-version>1.0.0</structured-map-proxy-version>
+        <judo-operation-utils-version>1.0.0.20200313_100513_66e09d4_master</judo-operation-utils-version>
+
 
         <!-- We use older version of plugin to avoid chicked egg problem -->
         <judo-tatami-maven-plugin-version>1.0.0.20200303_135340_0b09b0e4_plugin</judo-tatami-maven-plugin-version>
@@ -352,6 +354,18 @@
                 <groupId>hu.blackbelt.judo</groupId>
                 <artifactId>judo-dispatcher-api</artifactId>
                 <version>${judo-dispatcher-api-version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>hu.blackbelt</groupId>
+                <artifactId>structured-map-proxy</artifactId>
+                <version>${structured-map-proxy-version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>hu.blackbelt.judo</groupId>
+                <artifactId>judo-operation-utils</artifactId>
+                <version>${judo-operation-utils-version}</version>
             </dependency>
 
             <!--dependency>
