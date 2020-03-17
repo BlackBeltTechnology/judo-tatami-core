@@ -73,6 +73,6 @@
    <repository-reference location="https://nexus.judo.technology/repository/p2/judo-meta-openapi/1.0.0.20200316_232031_51e503c_1_0_beta1" enabled="true" />
    <repository-reference location="https://nexus.judo.technology/repository/p2/judo-meta-script/1.0.0.20200316_233549_1a908f8_1_0_beta1" enabled="true" />
    <repository-reference location="https://nexus.judo.technology/repository/p2/judo-meta-jcl/1.0.0.20200316_232640_7c2e69e_1_0_beta1" enabled="true" />
-   <repository-reference location="https://nexus.judo.technology/repository/p2/judo-jcl-ide-eclipse/1.0.0.20200316_234418_25ff1b7_1_0_beta1" enabled="true" />
+   <repository-reference location="https://nexus.judo.technology/repository/p2/judo-jcl-ide-eclipse/1.0.0.20200316_235819_25ff1b7_1_0_beta1" enabled="true" />
    <repository-reference location="https://nexus.judo.technology/repository/p2/judo-script-codegen/1.0.0.20200316_234322_5acf391_1_0_beta1" enabled="true" />
 </site>

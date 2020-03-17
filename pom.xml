@@ -100,7 +100,7 @@
         <judo-dispatcher-api-version>1.0.0</judo-dispatcher-api-version>
         <judo-script-codegen-version>1.0.0.20200316_234322_5acf391_1_0_beta1</judo-script-codegen-version>
         <judo-jql-ide-eclipse-version>1.0.0.20200316_233715_5a67be0_1_0_beta1</judo-jql-ide-eclipse-version>
-        <judo-jcl-ide-eclipse-version>1.0.0.20200316_234418_25ff1b7_1_0_beta1</judo-jcl-ide-eclipse-version>
+        <judo-jcl-ide-eclipse-version>1.0.0.20200316_235819_25ff1b7_1_0_beta1</judo-jcl-ide-eclipse-version>
 
         <structured-map-proxy-version>1.0.0</structured-map-proxy-version>
         <judo-operation-utils-version>1.0.0.20200313_172002_3bda3b0_develop</judo-operation-utils-version>
