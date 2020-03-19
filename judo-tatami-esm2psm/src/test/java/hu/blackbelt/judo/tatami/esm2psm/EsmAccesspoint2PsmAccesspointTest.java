@@ -121,7 +121,7 @@ public class EsmAccesspoint2PsmAccesspointTest {
         final String OPERATION_NAME = "unboundOperation";
         final String ACCESS_POINT_NAME = "AP";
 
-        final TransferObjectType mappedTransferObjectType = newTransferObjectTypeBuilder()
+        final TransferObjectType unmappedTransferObjectType = newTransferObjectTypeBuilder()
                 .withName(TRANSFER_OBJECT_TYPE_NAME)
                 .withOperations(newOperationBuilder().withName(OPERATION_NAME)
                         .withCustomImplementation(true)
@@ -134,13 +134,13 @@ public class EsmAccesspoint2PsmAccesspointTest {
                 .withName(ACCESS_POINT_NAME)
                 .withExposedGraphs(newExposedGraphBuilder()
                         .withName(SERVICE_GROUP_NAME)
-                        .withTarget(mappedTransferObjectType)
+                        .withTarget(unmappedTransferObjectType)
                         .withGetterExpression("")
                         .build())
                 .build();
 
         final Model model = newModelBuilder().withName(MODEL_NAME)
-                .withElements(Arrays.asList(mappedTransferObjectType, accessPoint)).build();
+                .withElements(Arrays.asList(unmappedTransferObjectType, accessPoint)).build();
 
         esmModel.addContent(model);
 

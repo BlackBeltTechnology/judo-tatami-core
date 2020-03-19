@@ -53,14 +53,8 @@
         <tycho-version>1.4.0</tycho-version>
 
         <epsilon-runtime-version>1.2.2</epsilon-runtime-version>
-        <epsilon-runtime-eclipse-version>1.2.2</epsilon-runtime-eclipse-version>
 
-        <emf-genmodel-generator-version>1.0.0</emf-genmodel-generator-version>
-        <judo-genmodel-generator-version>1.0.0</judo-genmodel-generator-version>
-
-        <p2-swagger-version>1.0.1</p2-swagger-version>
-
-        <judo-framework-version>2.0.0.20200204_213842_d428bdd_1_0_beta1</judo-framework-version>
+       <judo-framework-version>2.0.0.20200204_213842_d428bdd_1_0_beta1</judo-framework-version>
 
         <!-- Model versions -->
         <judo-meta-rdbms-version>1.0.0.20200316_232029_d9e9c36_1_0_beta1</judo-meta-rdbms-version>
@@ -99,9 +93,7 @@
         <judo-dao-api-version>1.0.0</judo-dao-api-version>
         <judo-dispatcher-api-version>1.0.0</judo-dispatcher-api-version>
         <judo-script-codegen-version>1.0.0.20200316_234322_5acf391_1_0_beta1</judo-script-codegen-version>
-        <judo-jql-ide-eclipse-version>1.0.0.20200316_233715_5a67be0_1_0_beta1</judo-jql-ide-eclipse-version>
-        <judo-jcl-ide-eclipse-version>1.0.0.20200316_235819_25ff1b7_1_0_beta1</judo-jcl-ide-eclipse-version>
-
+ 
         <structured-map-proxy-version>1.0.0</structured-map-proxy-version>
         <judo-operation-utils-version>1.0.0.20200313_172002_3bda3b0_develop</judo-operation-utils-version>
 
@@ -802,110 +794,6 @@
                 <module>judo-tatami-karaf-kar</module>
             </modules>
         </profile>
-
-		<profile>
-            <id>modules-eclipse</id>
-            <activation>
-                <activeByDefault>false</activeByDefault>
-            </activation>
-            <modules>
-                <module>judo-tatami-eclipse-site</module>
-                <module>judo-tatami-eclipse-targetdefinition</module>
-                <module>judo-tatami-eclipse-feature</module>
-            </modules>
-
-            <build>
-      			<plugins>
-                    <plugin>
-                        <groupId>org.eclipse.tycho</groupId>
-                        <artifactId>tycho-maven-plugin</artifactId>
-                        <version>${tycho-version}</version>
-                        <extensions>true</extensions>
-                    </plugin>
-
-                    <plugin>
-                        <groupId>org.eclipse.tycho</groupId>
-                        <artifactId>target-platform-configuration</artifactId>
-                        <version>${tycho-version}</version>
-                        <configuration>
-                            <target>
-                                <artifact>
-                                    <groupId>hu.blackbelt.judo.tatami</groupId>
-                                    <artifactId>hu.blackbelt.judo.tatami.eclipse.targetdefinition</artifactId>
-                                    <version>${project.version}</version>
-                                </artifact>
-                            </target>
-                            <environments>
-                                <environment>
-                                    <os>linux</os>
-                                    <ws>gtk</ws>
-                                    <arch>x86</arch>
-                                </environment>
-                                <environment>
-                                    <os>linux</os>
-                                    <ws>gtk</ws>
-                                    <arch>x86_64</arch>
-                                </environment>
-                                <environment>
-                                    <os>win32</os>
-                                    <ws>win32</ws>
-                                    <arch>x86</arch>
-                                </environment>
-                                <environment>
-                                    <os>win32</os>
-                                    <ws>win32</ws>
-                                    <arch>x86_64</arch>
-                                </environment>
-                                <environment>
-                                    <os>macosx</os>
-                                    <ws>cocoa</ws>
-                                    <arch>x86_64</arch>
-                                </environment>
-                            </environments>
-                        </configuration>
-                    </plugin>
-
-                    <plugin>
-                        <groupId>org.eclipse.tycho</groupId>
-                        <artifactId>tycho-versions-plugin</artifactId>
-                        <version>${tycho-version}</version>
-                    </plugin>
-
-                    <plugin>
-                        <groupId>org.eclipse.tycho</groupId>
-                        <artifactId>tycho-surefire-plugin</artifactId>
-                        <version>${tycho-version}</version>
-                    </plugin>
-
-                    <plugin>
-                        <groupId>org.eclipse.tycho.extras</groupId>
-                        <artifactId>tycho-source-feature-plugin</artifactId>
-                        <version>${tycho-version}</version>
-                    </plugin>
-
-                    <plugin>
-                        <groupId>org.eclipse.tycho</groupId>
-                        <artifactId>tycho-source-plugin</artifactId>
-                        <version>${tycho-version}</version>
-                    </plugin>
-
-                    <plugin>
-                        <groupId>org.eclipse.tycho</groupId>
-                        <artifactId>tycho-p2-plugin</artifactId>
-                        <version>${tycho-version}</version>
-                        <executions>
-                            <execution>
-                                <id>attach-p2-metadata</id>
-                                <phase>package</phase>
-                                <goals>
-                                    <goal>p2-metadata</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-		        </plugins>
-      		</build>
-    	</profile>
 
         <profile>
             <id>sign-artifacts</id>
