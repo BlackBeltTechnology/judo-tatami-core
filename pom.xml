@@ -92,10 +92,10 @@
 
         <judo-dao-api-version>1.0.0</judo-dao-api-version>
         <judo-dispatcher-api-version>1.0.0</judo-dispatcher-api-version>
-        <judo-script-codegen-version>1.0.0.20200320_144619_6f0f38d_develop</judo-script-codegen-version>
+        <judo-script-codegen-version>1.0.0.20200320_165337_6796a24_develop</judo-script-codegen-version>
 
         <structured-map-proxy-version>1.0.0</structured-map-proxy-version>
-        <judo-operation-utils-version>1.0.0.20200313_172002_3bda3b0_develop</judo-operation-utils-version>
+        <judo-operation-utils-version>1.0.0.20200320_161813_9ed69ed_develop</judo-operation-utils-version>
 
 
         <!-- We use older version of plugin to avoid chicked egg problem -->
