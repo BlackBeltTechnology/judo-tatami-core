@@ -15,7 +15,7 @@ operation ASM!EReference isForeign() : Boolean {
 
 @cached
 operation ASM!EReference isMandatory() : Boolean {
-	return self.lowerBound == 1;
+	return self.lowerBound == 1 and self.upperBound == 1;
 }
 
 @cached
