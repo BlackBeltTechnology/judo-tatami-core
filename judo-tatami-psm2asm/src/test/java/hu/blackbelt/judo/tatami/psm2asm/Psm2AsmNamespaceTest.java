@@ -84,7 +84,7 @@ public class Psm2AsmNamespaceTest {
     }
     
     @Test
-    void testAccessPoint() throws Exception {
+    void testNamespace() throws Exception {
         
     	Package packOfPack = newPackageBuilder().withName("packageB").build();
     	
