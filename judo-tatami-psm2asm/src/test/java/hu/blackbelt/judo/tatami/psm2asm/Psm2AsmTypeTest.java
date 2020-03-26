@@ -4,6 +4,9 @@ import static hu.blackbelt.judo.meta.asm.runtime.AsmModel.buildAsmModel;
 import static hu.blackbelt.judo.meta.asm.runtime.AsmModel.SaveArguments.asmSaveArgumentsBuilder;
 import static hu.blackbelt.judo.meta.psm.PsmEpsilonValidator.calculatePsmValidationScriptURI;
 import static hu.blackbelt.judo.meta.psm.PsmEpsilonValidator.validatePsm;
+import static hu.blackbelt.judo.meta.psm.measure.util.builder.MeasureBuilders.newMeasureBuilder;
+import static hu.blackbelt.judo.meta.psm.measure.util.builder.MeasureBuilders.newMeasuredTypeBuilder;
+import static hu.blackbelt.judo.meta.psm.measure.util.builder.MeasureBuilders.newUnitBuilder;
 import static hu.blackbelt.judo.meta.psm.namespace.util.builder.NamespaceBuilders.newModelBuilder;
 import static hu.blackbelt.judo.meta.psm.runtime.PsmModel.buildPsmModel;
 import static hu.blackbelt.judo.meta.psm.type.util.builder.TypeBuilders.newBooleanTypeBuilder;
@@ -37,6 +40,9 @@ import hu.blackbelt.epsilon.runtime.execution.api.Log;
 import hu.blackbelt.epsilon.runtime.execution.impl.Slf4jLog;
 import hu.blackbelt.judo.meta.asm.runtime.AsmModel;
 import hu.blackbelt.judo.meta.asm.runtime.AsmUtils;
+import hu.blackbelt.judo.meta.psm.measure.Measure;
+import hu.blackbelt.judo.meta.psm.measure.MeasuredType;
+import hu.blackbelt.judo.meta.psm.measure.Unit;
 import hu.blackbelt.judo.meta.psm.namespace.Model;
 import hu.blackbelt.judo.meta.psm.runtime.PsmModel;
 import hu.blackbelt.judo.meta.psm.type.BooleanType;
@@ -138,8 +144,16 @@ public class Psm2AsmTypeTest {
     	
     	CustomType custom = newCustomTypeBuilder().withName("object").build();
     	
+		Unit unit = newUnitBuilder().withName("u").build();
+		Measure m = newMeasureBuilder().withName("measure").withUnits(unit).build();
+		MeasuredType measuredType = newMeasuredTypeBuilder().withName("measuredType").withStoreUnit(unit)
+				.withPrecision(5).withScale(3).build();
+    	
 		Model model = newModelBuilder().withName(TEST_MODEL_NAME)
-				.withElements(ImmutableList.of(enumType,strType,intType,longType,bigDecimalIntType,floatType,doubleType,bigDecimalType,boolType,dateType,timeStampType,custom)).build();
+				.withElements(ImmutableList.of(
+						enumType,strType,intType,longType,bigDecimalIntType,
+						floatType,doubleType,bigDecimalType,boolType,dateType,timeStampType,custom,
+						m,measuredType)).build();
 
         psmModel.addContent(model);
 
@@ -192,7 +206,6 @@ public class Psm2AsmTypeTest {
         assertTrue(asmBigDecimalType.get().getEPackage().equals(asmTestModel));
         assertTrue(asmBigDecimalType.get().getInstanceClassName().equals(BIG_DECIMAL));
         
-        
         final Optional<EDataType> asmBoolType = asmUtils.all(EDataType.class).filter(e -> e.getName().equals(boolType.getName())).findAny();
         assertTrue(asmBoolType.isPresent());
         assertTrue(asmBoolType.get().getEPackage().equals(asmTestModel));
@@ -212,5 +225,10 @@ public class Psm2AsmTypeTest {
         assertTrue(asmCustom.isPresent());
         assertTrue(asmCustom.get().getEPackage().equals(asmTestModel));
         assertTrue(asmCustom.get().getInstanceClassName().equals(OBJECT));
+        
+        final Optional<EDataType> asmMeasured = asmUtils.all(EDataType.class).filter(e -> e.getName().equals(measuredType.getName())).findAny();
+        assertTrue(asmMeasured.isPresent());
+        assertTrue(asmMeasured.get().getEPackage().equals(asmTestModel));
+        assertTrue(asmMeasured.get().getInstanceClassName().equals(FLOAT));
     }
 }
