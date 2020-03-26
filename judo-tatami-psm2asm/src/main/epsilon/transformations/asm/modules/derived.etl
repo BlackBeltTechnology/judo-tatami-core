@@ -63,7 +63,7 @@ rule AddNumericPrimitiveAccessorConstraints
 
 @greedy
 rule AddMeasuredPrimitiveAccessorConstraints
-    transform s : JUDOPSM!Attribute
+    transform s : JUDOPSM!PrimitiveAccessor
     to t : ASM!EAnnotation
     extends AddAbstractNumericPrimitiveAccessorConstraints {
         guard: s.dataType.isKindOf(JUDOPSM!MeasuredType)

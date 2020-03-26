@@ -106,13 +106,8 @@ public class Psm2AsmDataTest {
 	}
 
 	@Test
-	void testAccessPoint() throws Exception {
+	void testData() throws Exception {
 
-		EnumerationMember x = newEnumerationMemberBuilder().withName("x").withOrdinal(1).build();
-		EnumerationMember y = newEnumerationMemberBuilder().withName("y").withOrdinal(2).build();
-		EnumerationMember z = newEnumerationMemberBuilder().withName("z").withOrdinal(3).build();
-		EnumerationType enumType = newEnumerationTypeBuilder().withName("enum").withMembers(ImmutableList.of(x, y, z))
-				.build();
 		StringType strType = newStringTypeBuilder().withName("string").withMaxLength(256).build();
 		NumericType intType = newNumericTypeBuilder().withName("int").withPrecision(6).withScale(0).build();
 		BooleanType boolType = newBooleanTypeBuilder().withName("bool").build();
@@ -159,7 +154,7 @@ public class Psm2AsmDataTest {
 		entity4.getRelations().addAll(ImmutableList.of(associationPartner2));
 
 		Model model = newModelBuilder().withName("M").withElements(ImmutableList.of(abstractEntity1, abstractEntity2,
-				entity1, entity2, entity3, entity4, enumType, strType, intType, boolType, custom, measuredType, m))
+				entity1, entity2, entity3, entity4, strType, intType, boolType, custom, measuredType, m))
 				.build();
 
 		psmModel.addContent(model);
