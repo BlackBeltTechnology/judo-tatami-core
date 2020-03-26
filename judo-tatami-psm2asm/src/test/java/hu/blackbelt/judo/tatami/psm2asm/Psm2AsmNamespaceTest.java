@@ -34,11 +34,6 @@ public class Psm2AsmNamespaceTest {
 
     public static final String MODEL_NAME = "Test";
     public static final String TARGET_TEST_CLASSES = "target/test-classes";
-    
-    public static final String ACCESSPOINT_SOURCE = AsmUtils.getAnnotationUri("accessPoint");
-    public static final String EXPOSED_SERVICE_SOURCE = AsmUtils.getAnnotationUri("exposedService");
-    public static final String EXPOSED_GRAPH_SOURCE = AsmUtils.getAnnotationUri("exposedGraph");
-    public static final String EXPRESSION_SOURCE = AsmUtils.getAnnotationUri("expression");
 
     public static final String NS_URI = "http://blackbelt.hu/judo/" + MODEL_NAME;
     public static final String NS_PREFIX = "runtime" + MODEL_NAME;
