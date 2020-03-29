@@ -72,13 +72,13 @@
         <judo-meta-jcl-version>1.0.0.20200319_195901_e7d30f1_1_0_beta1</judo-meta-jcl-version>
         <judo-meta-jcl-import-range>[1.0,1.1)</judo-meta-jcl-import-range>
 
-        <judo-meta-script-version>1.0.0.20200319_200810_a53753e_1_0_beta1</judo-meta-script-version>
+        <judo-meta-script-version>1.0.0.20200329_004924_9c1ff76_1_0_beta1</judo-meta-script-version>
         <judo-meta-script-import-range>[1.0,1.1)</judo-meta-script-import-range>
 
         <judo-meta-asm-version>1.0.0.20200319_193759_8111609_1_0_beta1</judo-meta-asm-version>
         <judo-meta-asm-import-range>[1.0,1.1)</judo-meta-asm-import-range>
 
-        <judo-meta-expression-version>1.0.0.20200319_195752_0f0eabf_1_0_beta1</judo-meta-expression-version>
+        <judo-meta-expression-version>1.0.0.20200327_100513_9f9397b_1_0_beta1</judo-meta-expression-version>
         <judo-meta-expression-import-range>[1.0,1.1)</judo-meta-expression-import-range>
 
         <judo-meta-measure-version>1.0.0.20200319_194527_b89d3f7_1_0_beta1</judo-meta-measure-version>
@@ -92,10 +92,10 @@
 
         <judo-dao-api-version>1.0.0</judo-dao-api-version>
         <judo-dispatcher-api-version>1.0.0</judo-dispatcher-api-version>
-        <judo-script-codegen-version>1.0.0.20200319_201642_b2f0ef9_1_0_beta1</judo-script-codegen-version>
+        <judo-script-codegen-version>1.0.0.20200329_005822_4376aeb_1_0_beta1</judo-script-codegen-version>
  
         <structured-map-proxy-version>1.0.0</structured-map-proxy-version>
-        <judo-operation-utils-version>1.0.0.20200320_161813_9ed69ed_develop</judo-operation-utils-version>
+        <judo-operation-utils-version>1.0.0.20200327_093626_9ed69ed_1_0_beta1</judo-operation-utils-version>
 
 
         <!-- We use older version of plugin to avoid chicked egg problem -->
