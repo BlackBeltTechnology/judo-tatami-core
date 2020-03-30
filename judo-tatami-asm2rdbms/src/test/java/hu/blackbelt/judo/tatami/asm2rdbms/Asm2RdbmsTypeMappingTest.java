@@ -14,7 +14,6 @@ import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.EcorePackage;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -46,8 +45,9 @@ public class Asm2RdbmsTypeMappingTest {
     private static final String DOUBLE = "DOUBLE";
     private static final String VARCHAR = "VARCHAR";
     private static final String BOOLEAN = "BOOLEAN";
+    private static final String DATE = "DATE";
 
-    Slf4jLog logger;
+    private Slf4jLog logger;
 
     private AsmModel asmModel;
     private RdbmsModel rdbmsModel;
@@ -70,20 +70,26 @@ public class Asm2RdbmsTypeMappingTest {
         Asm2RdbmsTransformationTrace asm2RdbmsTransformationTrace = executeAsm2RdbmsTransformation(asmModel, rdbmsModel, new Slf4jLog(log),
                 calculateAsm2RdbmsTransformationScriptURI(),
                 calculateAsm2RdbmsModelURI(), "hsqldb");
+        logger.info("Execute asm2rdbms transformation");
 
         asmModel = asm2RdbmsTransformationTrace.getAsmModel();
+        logger.info("Extract asm model from transformation trace");
         rdbmsModel = asm2RdbmsTransformationTrace.getRdbmsModel();
+        logger.info("Extract rdbms model from transformation trace");
 
         rdbmsModelResourceSupport = RdbmsModelResourceSupport.rdbmsModelResourceSupportBuilder()
                 .resourceSet(rdbmsModel.getResourceSet())
                 .uri(rdbmsModel.getUri())
                 .build();
+        logger.info("Create rdbms model support from transformed rdbms model");
 
         asmModel.saveAsmModel(asmSaveArgumentsBuilder()
                 .file(new File(TARGET_TEST_CLASSES, "testTypeMapping" + "-" + testName + "-" + ASM_MODEL_NAME + ".model")));
+        logger.info("Save asm model");
         rdbmsModel.saveRdbmsModel(rdbmsSaveArgumentsBuilder()
                 .file(new File(TARGET_TEST_CLASSES, "testTypeMapping" + "-" + testName + "-" + RDBMS_MODEL_NAME + ".model")));
-        asm2RdbmsTransformationTrace.save(new File(TARGET_TEST_CLASSES, "testTypeMapping" + "-" + testName + "-" + "Asm2RdbmsTarnsformationTrace.model"));
+        logger.info("Save transformed rdbms model");
+        asm2RdbmsTransformationTrace.save(new File(TARGET_TEST_CLASSES, "testTypeMapping" + "-" + testName + "-" + "Asm2RdbmsTransformationTrace.model"));
 
     }
 
@@ -140,6 +146,7 @@ public class Asm2RdbmsTypeMappingTest {
                 )
                 .withEAnnotations(eAnnotation)
                 .build();
+        logger.info("Create TestNumericTypesClass eclass");
 
         // add class to package
         final EPackage ePackage = newEPackageBuilder()
@@ -148,9 +155,11 @@ public class Asm2RdbmsTypeMappingTest {
                 .withNsURI("http:///com.example.test.ecore")
                 .withEClassifiers(eClass)
                 .build();
+        logger.info("Create TestNumericTypesPackage EPackage");
 
         // add everything to asmModel
         asmModel.addContent(ePackage);
+        logger.info("Add TestNumericTypesPackage to asmModel");
 
         // transform previously created asm model to rdbms model
         executeTransformation("testNumericTypes");
@@ -232,6 +241,7 @@ public class Asm2RdbmsTypeMappingTest {
                 )
                 .withEAnnotations(eAnnotation)
                 .build();
+        logger.info("Create TestStringlikeTypesClass eclass");
 
         // add class to package
         final EPackage ePackage = newEPackageBuilder()
@@ -240,9 +250,11 @@ public class Asm2RdbmsTypeMappingTest {
                 .withNsURI("http:///com.example.test.ecore")
                 .withEClassifiers(eClass)
                 .build();
+        logger.info("Create TestStringlikeTypesPackage EPackage");
 
         // add eth to asmModel
         asmModel.addContent(ePackage);
+        logger.info("Add TestStringlikeTypesPackage to asmModel");
 
         // transform previously created asm model to rdbms model
         executeTransformation("testStringlikeTypes");
@@ -271,7 +283,6 @@ public class Asm2RdbmsTypeMappingTest {
     }
 
     @Test
-    @Disabled
     @DisplayName("Test Date Types")
     public void testDateTypes() throws Exception {
         final EcorePackage ecore = EcorePackage.eINSTANCE;
@@ -296,6 +307,8 @@ public class Asm2RdbmsTypeMappingTest {
                 )
                 .withEAnnotations(eAnnotation)
                 .build();
+        logger.info("Create TestDateTypesClass eclass");
+
 
         // add class to package
         final EPackage ePackage = newEPackageBuilder()
@@ -304,19 +317,35 @@ public class Asm2RdbmsTypeMappingTest {
                 .withNsURI("http:///com.example.test.ecore")
                 .withEClassifiers(eClass)
                 .build();
+        logger.info("Create TestDateTypesPackage EPackage");
 
         // add eth to asmModel
         asmModel.addContent(ePackage);
+        logger.info("Add TestDateTypesPackage to asmModel");
 
         // transform previously created asm model to rdbms model
         executeTransformation("testDateTypes");
 
-        //TODO ASSERTIONS
+        //check eclass (tables)
+        Object[] rdbmsTables = rdbmsModelResourceSupport.getStreamOfRdbmsRdbmsTable().toArray();
+        assertEquals(1, rdbmsTables.length);
+        assertTrue(rdbmsTables[0] instanceof RdbmsTable);
+        assertEquals("TestDateTypesPackage.TestDateTypesClass", ((RdbmsTable) rdbmsTables[0]).getName());
 
+        //check eattributes (fields)
+        EList<RdbmsField> rdbmsFields = ((RdbmsTable) rdbmsTables[0]).getFields();
+        assertEquals(3, rdbmsFields.size()); //+2 type and id
+        final String fqname = "TestDateTypesPackage.TestDateTypesClass#";
+        assertEquals(DATE,
+                rdbmsFields.stream()
+                        .filter(rdbmsField -> (fqname + "dateAttr").equals(rdbmsField.getName()))
+                        .findAny().get().getRdbmsTypeName());
+
+        //check primary key
+        assertNotNull(((RdbmsTable) rdbmsTables[0]).getPrimaryKey());
     }
 
     @Test
-    @Disabled
     @DisplayName("Test Boolean Types")
     public void testBooleanTypes() throws Exception {
         final EcorePackage ecore = EcorePackage.eINSTANCE;
@@ -341,6 +370,7 @@ public class Asm2RdbmsTypeMappingTest {
                 )
                 .withEAnnotations(eAnnotation)
                 .build();
+        logger.info("Create TestBooleanTypesClass eclass");
 
         // add class to package
         final EPackage ePackage = newEPackageBuilder()
@@ -349,16 +379,31 @@ public class Asm2RdbmsTypeMappingTest {
                 .withNsURI("http:///com.example.test.ecore")
                 .withEClassifiers(eClass)
                 .build();
+        logger.info("Create TestBooleanTypesPackage EPackage");
 
         // add eth to asmModel
         asmModel.addContent(ePackage);
+        logger.info("Add TestBooleanTypesPackage to asmModel");
 
         // transform previously created asm model to rdbms model
         executeTransformation("testBooleanTypes");
 
-        //TODO ASSERTIONS
+        Object[] rdbmsTables = rdbmsModelResourceSupport.getStreamOfRdbmsRdbmsTable().toArray();
+        assertEquals(1, rdbmsTables.length);
+        assertTrue(rdbmsTables[0] instanceof RdbmsTable);
+        assertEquals("TestBooleanTypesPackage.TestBooleanTypesClass", ((RdbmsTable) rdbmsTables[0]).getName());
 
+        //check eattributes (fields)
+        EList<RdbmsField> rdbmsFields = ((RdbmsTable) rdbmsTables[0]).getFields();
+        assertEquals(3, rdbmsFields.size()); //+2 type and id
+        final String fqname = "TestBooleanTypesPackage.TestBooleanTypesClass#";
+        assertEquals(BOOLEAN,
+                rdbmsFields.stream()
+                        .filter(rdbmsField -> (fqname + "booleanAttr").equals(rdbmsField.getName()))
+                        .findAny().get().getRdbmsTypeName());
+
+        //check primary key
+        assertNotNull(((RdbmsTable) rdbmsTables[0]).getPrimaryKey());
     }
-
 
 }
