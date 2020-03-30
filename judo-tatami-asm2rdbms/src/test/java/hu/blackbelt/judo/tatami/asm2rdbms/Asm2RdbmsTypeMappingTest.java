@@ -177,9 +177,9 @@ public class Asm2RdbmsTypeMappingTest {
                 rdbmsFields.stream()
                         .filter(rdbmsField -> (fqname + "doubleAttr").equals(rdbmsField.getName()))
                         .findAny().get().getRdbmsTypeName());
-        assertEquals(DOUBLE,
+        assertEquals(BIGINT,
                 rdbmsFields.stream()
-                        .filter(rdbmsField -> (fqname + "doubleAttr").equals(rdbmsField.getName()))
+                        .filter(rdbmsField -> (fqname + "longAttr").equals(rdbmsField.getName()))
                         .findAny().get().getRdbmsTypeName());
         assertEquals(FLOAT,
                 rdbmsFields.stream()
@@ -203,9 +203,8 @@ public class Asm2RdbmsTypeMappingTest {
     }
 
     @Test
-    @Disabled
     @DisplayName("Test String-like Types")
-    public void testStringTypes() throws Exception {
+    public void testStringlikeTypes() throws Exception {
         final EcorePackage ecore = EcorePackage.eINSTANCE;
 
         // create annotation
@@ -220,7 +219,7 @@ public class Asm2RdbmsTypeMappingTest {
                 .withName("TestStringlikeTypesClass")
                 .withEStructuralFeatures(
                         ImmutableList.of(
-                                //FIXME: there are no rules to transform char ...
+                                //there are no rules to transform char
 //                                newEAttributeBuilder()
 //                                        .withName("charAttr")
 //                                        .withEType(ecore.getEChar())
@@ -248,8 +247,27 @@ public class Asm2RdbmsTypeMappingTest {
         // transform previously created asm model to rdbms model
         executeTransformation("testStringlikeTypes");
 
-        //TODO ASSERTIONS
+        //check eclass (tables)
+        Object[] rdbmsTables = rdbmsModelResourceSupport.getStreamOfRdbmsRdbmsTable().toArray();
+        assertEquals(1, rdbmsTables.length);
+        assertTrue(rdbmsTables[0] instanceof RdbmsTable);
+        assertEquals("TestStringlikeTypesPackage.TestStringlikeTypesClass", ((RdbmsTable) rdbmsTables[0]).getName());
 
+        //check eattributes (fields)
+        EList<RdbmsField> rdbmsFields = ((RdbmsTable) rdbmsTables[0]).getFields();
+        assertEquals(3, rdbmsFields.size()); //+2 type and id
+        final String fqname = "TestStringlikeTypesPackage.TestStringlikeTypesClass#";
+//        assertEquals(VARCHAR,
+//                rdbmsFields.stream()
+//                        .filter(rdbmsField -> (fqname + "charAttr").equals(rdbmsField.getName()))
+//                        .findAny().get().getRdbmsTypeName());
+        assertEquals(VARCHAR,
+                rdbmsFields.stream()
+                        .filter(rdbmsField -> (fqname + "stringAttr").equals(rdbmsField.getName()))
+                        .findAny().get().getRdbmsTypeName());
+
+        //check primary key
+        assertNotNull(((RdbmsTable) rdbmsTables[0]).getPrimaryKey());
     }
 
     @Test
