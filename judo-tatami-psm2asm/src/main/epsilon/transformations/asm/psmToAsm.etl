@@ -1,8 +1,8 @@
 import "modules/accessPoint.etl";
 import "modules/derived.etl";
-import "modules/entity.etl";
+import "modules/data.etl";
 import "modules/operation.etl";
-import "modules/package.etl";
+import "modules/namespace.etl";
 import "modules/transferObject.etl";
 import "modules/type.etl";
 

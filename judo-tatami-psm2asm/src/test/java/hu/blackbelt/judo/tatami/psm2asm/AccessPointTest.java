@@ -1,5 +1,43 @@
 package hu.blackbelt.judo.tatami.psm2asm;
 
+import static hu.blackbelt.judo.meta.asm.runtime.AsmModel.buildAsmModel;
+import static hu.blackbelt.judo.meta.asm.runtime.AsmModel.SaveArguments.asmSaveArgumentsBuilder;
+import static hu.blackbelt.judo.meta.psm.PsmEpsilonValidator.calculatePsmValidationScriptURI;
+import static hu.blackbelt.judo.meta.psm.PsmEpsilonValidator.validatePsm;
+import static hu.blackbelt.judo.meta.psm.accesspoint.util.builder.AccesspointBuilders.newAccessPointBuilder;
+import static hu.blackbelt.judo.meta.psm.accesspoint.util.builder.AccesspointBuilders.newExposedGraphBuilder;
+import static hu.blackbelt.judo.meta.psm.accesspoint.util.builder.AccesspointBuilders.newExposedServiceBuilder;
+import static hu.blackbelt.judo.meta.psm.data.util.builder.DataBuilders.newAssociationEndBuilder;
+import static hu.blackbelt.judo.meta.psm.data.util.builder.DataBuilders.newAttributeBuilder;
+import static hu.blackbelt.judo.meta.psm.data.util.builder.DataBuilders.newBoundOperationBuilder;
+import static hu.blackbelt.judo.meta.psm.data.util.builder.DataBuilders.newEntityTypeBuilder;
+import static hu.blackbelt.judo.meta.psm.data.util.builder.DataBuilders.newOperationBodyBuilder;
+import static hu.blackbelt.judo.meta.psm.data.util.builder.DataBuilders.useAssociationEnd;
+import static hu.blackbelt.judo.meta.psm.data.util.builder.DataBuilders.useBoundOperation;
+import static hu.blackbelt.judo.meta.psm.derived.util.builder.DerivedBuilders.newReferenceExpressionTypeBuilder;
+import static hu.blackbelt.judo.meta.psm.derived.util.builder.DerivedBuilders.newStaticNavigationBuilder;
+import static hu.blackbelt.judo.meta.psm.namespace.util.builder.NamespaceBuilders.newModelBuilder;
+import static hu.blackbelt.judo.meta.psm.runtime.PsmModel.buildPsmModel;
+import static hu.blackbelt.judo.meta.psm.service.util.builder.ServiceBuilders.newBoundTransferOperationBuilder;
+import static hu.blackbelt.judo.meta.psm.service.util.builder.ServiceBuilders.newMappedTransferObjectTypeBuilder;
+import static hu.blackbelt.judo.meta.psm.service.util.builder.ServiceBuilders.newParameterBuilder;
+import static hu.blackbelt.judo.meta.psm.service.util.builder.ServiceBuilders.newTransferAttributeBuilder;
+import static hu.blackbelt.judo.meta.psm.service.util.builder.ServiceBuilders.newTransferObjectRelationBuilder;
+import static hu.blackbelt.judo.meta.psm.service.util.builder.ServiceBuilders.newTransferOperationBehaviourBuilder;
+import static hu.blackbelt.judo.meta.psm.service.util.builder.ServiceBuilders.newUnboundOperationBuilder;
+import static hu.blackbelt.judo.meta.psm.service.util.builder.ServiceBuilders.newUnmappedTransferObjectTypeBuilder;
+import static hu.blackbelt.judo.meta.psm.service.util.builder.ServiceBuilders.useMappedTransferObjectType;
+import static hu.blackbelt.judo.meta.psm.type.util.builder.TypeBuilders.newCardinalityBuilder;
+import static hu.blackbelt.judo.meta.psm.type.util.builder.TypeBuilders.newStringTypeBuilder;
+import static hu.blackbelt.judo.tatami.psm2asm.Psm2Asm.calculatePsm2AsmTransformationScriptURI;
+import static hu.blackbelt.judo.tatami.psm2asm.Psm2Asm.executePsm2AsmTransformation;
+
+import java.io.File;
+import java.util.Arrays;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
 import hu.blackbelt.epsilon.runtime.execution.api.Log;
 import hu.blackbelt.epsilon.runtime.execution.impl.Slf4jLog;
 import hu.blackbelt.judo.meta.asm.runtime.AsmModel;
@@ -20,27 +58,6 @@ import hu.blackbelt.judo.meta.psm.service.TransferOperationBehaviourType;
 import hu.blackbelt.judo.meta.psm.service.UnmappedTransferObjectType;
 import hu.blackbelt.judo.meta.psm.type.StringType;
 import lombok.extern.slf4j.Slf4j;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
-import java.io.File;
-import java.util.Arrays;
-
-import static hu.blackbelt.judo.meta.asm.runtime.AsmModel.SaveArguments.asmSaveArgumentsBuilder;
-import static hu.blackbelt.judo.meta.asm.runtime.AsmModel.buildAsmModel;
-import static hu.blackbelt.judo.meta.psm.PsmEpsilonValidator.calculatePsmValidationScriptURI;
-import static hu.blackbelt.judo.meta.psm.PsmEpsilonValidator.validatePsm;
-import static hu.blackbelt.judo.meta.psm.accesspoint.util.builder.AccesspointBuilders.*;
-import static hu.blackbelt.judo.meta.psm.data.util.builder.DataBuilders.*;
-import static hu.blackbelt.judo.meta.psm.derived.util.builder.DerivedBuilders.newReferenceExpressionTypeBuilder;
-import static hu.blackbelt.judo.meta.psm.derived.util.builder.DerivedBuilders.newStaticNavigationBuilder;
-import static hu.blackbelt.judo.meta.psm.namespace.util.builder.NamespaceBuilders.newModelBuilder;
-import static hu.blackbelt.judo.meta.psm.runtime.PsmModel.buildPsmModel;
-import static hu.blackbelt.judo.meta.psm.service.util.builder.ServiceBuilders.*;
-import static hu.blackbelt.judo.meta.psm.type.util.builder.TypeBuilders.newCardinalityBuilder;
-import static hu.blackbelt.judo.meta.psm.type.util.builder.TypeBuilders.newStringTypeBuilder;
-import static hu.blackbelt.judo.tatami.psm2asm.Psm2Asm.calculatePsm2AsmTransformationScriptURI;
-import static hu.blackbelt.judo.tatami.psm2asm.Psm2Asm.executePsm2AsmTransformation;
 
 @Slf4j
 public class AccessPointTest {
@@ -54,16 +71,13 @@ public class AccessPointTest {
 
     @BeforeEach
     public void setUp() {
-
         // Default logger
         slf4jlog = new Slf4jLog(log);
-
         // Loading PSM to isolated ResourceSet, because in Tatami
         // there is no new namespace registration made.
         psmModel = buildPsmModel()
                 .name(MODEL_NAME)
                 .build();
-
         // Create empty ASM model
         asmModel = buildAsmModel()
                 .name(MODEL_NAME)
@@ -74,7 +88,7 @@ public class AccessPointTest {
         psmModel.savePsmModel(PsmModel.SaveArguments.psmSaveArgumentsBuilder()
                 .file(new File(TARGET_TEST_CLASSES, getClass().getName() + "-" + testName + "-psm.model"))
                 .build());
-
+        
         validatePsm(new Slf4jLog(log), psmModel, calculatePsmValidationScriptURI());
 
         executePsm2AsmTransformation(psmModel, asmModel, new Slf4jLog(log), calculatePsm2AsmTransformationScriptURI());
