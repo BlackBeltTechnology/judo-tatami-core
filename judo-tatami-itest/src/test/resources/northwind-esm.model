@@ -10,16 +10,12 @@
       <units xmi:id="_HM9EIB1SEemwg4NgOjaKeA" name="tonne" rateDividend="1000.0" symbol="t"/>
     </elements>
     <elements xsi:type="measure:Measure" xmi:id="_qJUV0B1REemwg4NgOjaKeA" name="Time">
-      <units xsi:type="measure:DurationUnit" xmi:id="_PCQ14B2GEemwg4NgOjaKeA" name="millisecond" rateDividend="0.001" symbol="ms"/>
+      <units xsi:type="measure:DurationUnit" xmi:id="_PCQ14B2GEemwg4NgOjaKeA" name="millisecond" rateDividend="0.001" symbol="ms" unitType="millisecond"/>
       <units xsi:type="measure:DurationUnit" xmi:id="_SlUs8B2GEemwg4NgOjaKeA" name="second" symbol="s" unitType="second"/>
       <units xsi:type="measure:DurationUnit" xmi:id="_S5zvMB2GEemwg4NgOjaKeA" name="minute" rateDividend="60.0" symbol="min" unitType="minute"/>
       <units xsi:type="measure:DurationUnit" xmi:id="_TRAHMB2GEemwg4NgOjaKeA" name="hour" rateDividend="3600.0" symbol="h" unitType="hour"/>
       <units xsi:type="measure:DurationUnit" xmi:id="_TjC5cB2GEemwg4NgOjaKeA" name="day" rateDividend="86400.0" symbol="" unitType="day"/>
       <units xsi:type="measure:DurationUnit" xmi:id="_ezprAB2GEemwg4NgOjaKeA" name="week" rateDividend="604800.0" symbol="" unitType="week"/>
-    </elements>
-    <elements xsi:type="measure:Measure" xmi:id="_tTcIcB1REemwg4NgOjaKeA" name="MonthBasedTime">
-      <units xsi:type="measure:DurationUnit" xmi:id="_yX3RgB2GEemwg4NgOjaKeA" name="month" unitType="month"/>
-      <units xsi:type="measure:DurationUnit" xmi:id="_zDfocB2GEemwg4NgOjaKeA" name="year" rateDividend="12.0" unitType="year"/>
     </elements>
     <elements xsi:type="measure:Measure" xmi:id="_vrNREB1REemwg4NgOjaKeA" name="Length">
       <units xmi:id="_nzyzcB1SEemwg4NgOjaKeA" name="nanometre" rateDividend="1.0E-9" symbol="nm"/>
@@ -205,8 +201,6 @@
     <elements xsi:type="namespace:Package" xmi:id="_zeDeUB1WEemwg4NgOjaKeA" name="measured">
       <elements xsi:type="measure:MeasuredType" xmi:id="_h2iYkB1XEemwg4NgOjaKeA" name="MassStoredInKilograms" precision="15" scale="4" storeUnit="_C8XYsB1SEemwg4NgOjaKeA"/>
       <elements xsi:type="measure:MeasuredType" xmi:id="_PGtxgB1ZEemwg4NgOjaKeA" name="TimeStoredInSeconds" precision="15" scale="4" storeUnit="_SlUs8B2GEemwg4NgOjaKeA"/>
-      <elements xsi:type="measure:MeasuredType" xmi:id="_WrULYB1ZEemwg4NgOjaKeA" name="TimeStoredInMonths" precision="9" storeUnit="_yX3RgB2GEemwg4NgOjaKeA"/>
-      <elements xsi:type="measure:MeasuredType" xmi:id="_fdkrMB1ZEemwg4NgOjaKeA" name="AreaStoredInSquareMetre" precision="15" scale="4" storeUnit="_eD5KMB1TEemwg4NgOjaKeA"/>
       <elements xsi:type="measure:MeasuredType" xmi:id="_DTYUEB1eEemwg4NgOjaKeA" name="VolumeStoredInLitre" precision="15" scale="4" storeUnit="_CYY3AB1UEemwg4NgOjaKeA"/>
       <elements xsi:type="measure:MeasuredType" xmi:id="_bfc2gB1eEemwg4NgOjaKeA" name="VelocityStoredInKmPerHour" precision="15" scale="4" storeUnit="_zR6KoB1UEemwg4NgOjaKeA"/>
     </elements>
@@ -243,12 +237,12 @@
     </elements>
     <elements xsi:type="structure:EntityType" xmi:id="_JYmqeeq1EemUZMITjXqp8w" name="Customer">
       <relations xsi:type="structure:TwoWayRelationMember" xmi:id="_JYmqeuq1EemUZMITjXqp8w" upper="-1" name="orders" target="_JYnRrOq1EemUZMITjXqp8w" defaultExpression="" rangeExpression="" partner="_JYnRreq1EemUZMITjXqp8w" primary="true"/>
-      <relations xsi:type="structure:OneWayRelationMember" xmi:id="_JYmqe-q1EemUZMITjXqp8w" upper="-1" name="addresses" target="_JYmDYeq1EemUZMITjXqp8w" containment="true"/>
+      <relations xsi:type="structure:OneWayRelationMember" xmi:id="_JYmqe-q1EemUZMITjXqp8w" upper="-1" name="addresses" target="_JYmDYeq1EemUZMITjXqp8w" containment="true" aggregation="true"/>
       <mapping xmi:id="_JYmqf-q1EemUZMITjXqp8w" target="_JYmqeeq1EemUZMITjXqp8w" filter=""/>
     </elements>
     <elements xsi:type="structure:EntityType" xmi:id="_JYmqgOq1EemUZMITjXqp8w" name="Employee">
       <relations xsi:type="structure:TwoWayRelationMember" xmi:id="_JYmqgeq1EemUZMITjXqp8w" upper="-1" name="orders" target="_JYnRrOq1EemUZMITjXqp8w" defaultExpression="" rangeExpression="" partner="_JYnRruq1EemUZMITjXqp8w" primary="true"/>
-      <relations xsi:type="structure:OneWayRelationMember" xmi:id="_JYmqguq1EemUZMITjXqp8w" name="address" target="_JYmDYeq1EemUZMITjXqp8w" containment="true"/>
+      <relations xsi:type="structure:OneWayRelationMember" xmi:id="_JYmqguq1EemUZMITjXqp8w" name="address" target="_JYmDYeq1EemUZMITjXqp8w" containment="true" aggregation="true"/>
       <relations xsi:type="structure:TwoWayRelationMember" xmi:id="_JYmqheq1EemUZMITjXqp8w" name="reportsTo" target="_JYmqgOq1EemUZMITjXqp8w" defaultExpression="" rangeExpression="" partner="_JYmqhuq1EemUZMITjXqp8w" primary="true"/>
       <relations xsi:type="structure:TwoWayRelationMember" xmi:id="_JYmqhuq1EemUZMITjXqp8w" upper="-1" name="employees" target="_JYmqgOq1EemUZMITjXqp8w" defaultExpression="" rangeExpression="" partner="_JYmqheq1EemUZMITjXqp8w"/>
       <relations xsi:type="structure:TwoWayRelationMember" xmi:id="_JYmqh-q1EemUZMITjXqp8w" name="territory" target="_JYpGu-q1EemUZMITjXqp8w" defaultExpression="" rangeExpression="" partner="_JYpGvOq1EemUZMITjXqp8w" primary="true"/>
@@ -291,18 +285,19 @@
       <generalizations xmi:id="_JYnRoeq1EemUZMITjXqp8w" target="_JYnRpeq1EemUZMITjXqp8w"/>
       <generalizations xmi:id="_JYnRouq1EemUZMITjXqp8w" target="_JYnRjeq1EemUZMITjXqp8w"/>
       <mapping xmi:id="_JYnRpOq1EemUZMITjXqp8w" target="_JYnRneq1EemUZMITjXqp8w" filter=""/>
+      <operations name="ship" customImplementation="false" body="// do nothing" binding=""/>
     </elements>
     <elements xsi:type="structure:EntityType" xmi:id="_JYnRpeq1EemUZMITjXqp8w" name="OnlineOrder">
       <attributes xsi:type="structure:DataMember" xmi:id="_JYnRpuq1EemUZMITjXqp8w" name="webshopUrl" dataType="_A5EFMIN4EeiLE-B2bbL0fg" required="true"/>
       <generalizations xmi:id="_JYnRqeq1EemUZMITjXqp8w" target="_JYnRrOq1EemUZMITjXqp8w"/>
       <mapping xmi:id="_JYnRq-q1EemUZMITjXqp8w" target="_JYnRpeq1EemUZMITjXqp8w" filter=""/>
     </elements>
-    <elements xsi:type="structure:EntityType" xmi:id="_JYnRrOq1EemUZMITjXqp8w" name="Order">
+    <elements xsi:type="structure:EntityType" xmi:id="_JYnRrOq1EemUZMITjXqp8w" name="Order" abstract="true">
       <relations xsi:type="structure:TwoWayRelationMember" xmi:id="_JYnRreq1EemUZMITjXqp8w" name="customer" target="_JYmqeeq1EemUZMITjXqp8w" defaultExpression="" rangeExpression="" partner="_JYmqeuq1EemUZMITjXqp8w"/>
       <relations xsi:type="structure:TwoWayRelationMember" xmi:id="_JYnRruq1EemUZMITjXqp8w" name="employee" target="_JYmqgOq1EemUZMITjXqp8w" defaultExpression="" rangeExpression="" partner="_JYmqgeq1EemUZMITjXqp8w"/>
       <relations xsi:type="structure:TwoWayRelationMember" xmi:id="_JYnRr-q1EemUZMITjXqp8w" name="shipper" target="_JYofyuq1EemUZMITjXqp8w" defaultExpression="" rangeExpression="" partner="_JYofy-q1EemUZMITjXqp8w" primary="true"/>
-      <relations xsi:type="structure:OneWayRelationMember" xmi:id="_JYnRsOq1EemUZMITjXqp8w" name="shipAddress" target="_JYmDYeq1EemUZMITjXqp8w" containment="true"/>
-      <relations xsi:type="structure:OneWayRelationMember" xmi:id="_JYnRs-q1EemUZMITjXqp8w" lower="1" upper="-1" name="orderDetails" target="_JYn4nuq1EemUZMITjXqp8w" containment="true"/>
+      <relations xsi:type="structure:OneWayRelationMember" xmi:id="_JYnRsOq1EemUZMITjXqp8w" name="shipAddress" target="_JYmDYeq1EemUZMITjXqp8w" containment="true" aggregation="true"/>
+      <relations xsi:type="structure:OneWayRelationMember" xmi:id="_JYnRs-q1EemUZMITjXqp8w" lower="1" upper="-1" name="orderDetails" target="_JYn4nuq1EemUZMITjXqp8w" containment="true" aggregation="true"/>
       <relations xsi:type="structure:OneWayRelationMember" xmi:id="_JYnRtuq1EemUZMITjXqp8w" upper="-1" name="categories" target="_JYmDcOq1EemUZMITjXqp8w" relationMemberType="PROPERTY" getterExpression="self.orderDetails.product.category"/>
       <attributes xsi:type="structure:DataMember" xmi:id="_JYnRueq1EemUZMITjXqp8w" name="orderDate" dataType="_Z9J8IIN1EeiLE-B2bbL0fg" required="true"/>
       <attributes xsi:type="structure:DataMember" xmi:id="_JYnRvOq1EemUZMITjXqp8w" name="requiredDate" dataType="_Z9J8IIN1EeiLE-B2bbL0fg"/>
@@ -313,8 +308,12 @@
       <attributes xsi:type="structure:DataMember" name="totalPrice" dataType="_VDVVQIUcEeipmMyz9cMCRA" required="true" binding="//@elements.2/@elements.12/@attributes.6" dataMemberType="PROPERTY" getterExpression="self.orderDetails!sum(od | od.price)"/>
       <attributes xsi:type="structure:DataMember" name="totalWeight" dataType="_h2iYkB1XEemwg4NgOjaKeA" binding="//@elements.2/@elements.12/@attributes.7" dataMemberType="PROPERTY" getterExpression="self.orderDetails!sum(od | od.weight)"/>
       <mapping xmi:id="_JYn4neq1EemUZMITjXqp8w" target="_JYnRrOq1EemUZMITjXqp8w" filter=""/>
-      <operations name="ship" customImplementation="false" body="/* TODO */" modifier="ABSTRACT" binding=""/>
+      <operations name="ship" customImplementation="false" body="" modifier="ABSTRACT" binding=""/>
       <operations name="shipAll" customImplementation="false" body="/* TODO */" modifier="STATIC" binding=""/>
+      <operations name="changeShipment" customImplementation="false" body="return this" binding="">
+        <input lower="1" name="input" target="_s8Eh_f8MEem4dONaAfrVDg"/>
+        <output lower="1" name="output" target="_s8FI9f8MEem4dONaAfrVDg"/>
+      </operations>
     </elements>
     <elements xsi:type="structure:EntityType" xmi:id="_JYn4nuq1EemUZMITjXqp8w" name="OrderDetail">
       <relations xsi:type="structure:OneWayRelationMember" xmi:id="_JYn4n-q1EemUZMITjXqp8w" lower="1" name="product" target="_JYofpOq1EemUZMITjXqp8w"/>
@@ -410,7 +409,7 @@
     </elements>
     <elements xsi:type="structure:TransferObjectType" xmi:id="_s8Eh_f8MEem4dONaAfrVDg" name="ShipmentChange">
       <attributes xsi:type="structure:DataMember" xmi:id="_s8Eh_v8MEem4dONaAfrVDg" name="shipperName" dataType="_Nppx8IUcEeipmMyz9cMCRA" required="true"/>
-      <attributes xsi:type="structure:DataMember" xmi:id="_s8EiAv8MEem4dONaAfrVDg" name="orderDate" dataType="_YoqOYIN1EeiLE-B2bbL0fg"/>
+      <attributes xsi:type="structure:DataMember" xmi:id="_s8EiAv8MEem4dONaAfrVDg" name="orderDate" dataType="_Z9J8IIN1EeiLE-B2bbL0fg"/>
     </elements>
     <elements xsi:type="structure:TransferObjectType" xmi:id="_s8EiBv8MEem4dONaAfrVDg" name="ShipperInfo">
       <attributes xsi:type="structure:DataMember" xmi:id="_s8EiB_8MEem4dONaAfrVDg" name="companyName" dataType="_Nppx8IUcEeipmMyz9cMCRA" required="true" binding="_JYmDhuq1EemUZMITjXqp8w" dataMemberType="BOUND" getterExpression="self.companyName"/>
@@ -427,6 +426,10 @@
       <attributes xsi:type="structure:DataMember" name="totalWeight" dataType="_h2iYkB1XEemwg4NgOjaKeA" binding="//@elements.2/@elements.12/@attributes.7" dataMemberType="BOUND"/>
       <mapping xmi:id="_s8FJEv8MEem4dONaAfrVDg" target="_JYnRrOq1EemUZMITjXqp8w" filter=""/>
       <operations name="ship" binding="ship" bound="true"/>
+      <operations name="changeShipment" body="" binding="changeShipment" bound="true">
+        <input lower="1" name="input" target="_s8Eh_f8MEem4dONaAfrVDg"/>
+        <output lower="1" name="output" target="_s8FI9f8MEem4dONaAfrVDg"/>
+      </operations>
     </elements>
     <elements xsi:type="structure:TransferObjectType" xmi:id="_s8FwAv8MEem4dONaAfrVDg" name="OrderItem">
       <relations xsi:type="structure:OneWayRelationMember" lower="1" name="product" target="_s8D6-P8MEem4dONaAfrVDg" rangeExpression="northwind::entities::Product" binding="_JYn4n-q1EemUZMITjXqp8w" relationMemberType="BOUND" getterExpression="self.product"/>
