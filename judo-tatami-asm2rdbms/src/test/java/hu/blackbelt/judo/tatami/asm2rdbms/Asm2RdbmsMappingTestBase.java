@@ -3,7 +3,6 @@ package hu.blackbelt.judo.tatami.asm2rdbms;
 import hu.blackbelt.epsilon.runtime.execution.impl.Slf4jLog;
 import hu.blackbelt.judo.meta.asm.runtime.AsmModel;
 import hu.blackbelt.judo.meta.rdbms.runtime.RdbmsModel;
-import hu.blackbelt.judo.meta.rdbms.support.RdbmsModelResourceSupport;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 
@@ -30,7 +29,7 @@ public class Asm2RdbmsMappingTestBase {
     protected AsmModel asmModel;
     protected RdbmsModel rdbmsModel;
 
-    protected RdbmsModelResourceSupport rdbmsModelResourceSupport;
+    protected RdbmsUtils rdbmsUtils;
 
     @BeforeEach
     protected void setUp() {
@@ -48,26 +47,24 @@ public class Asm2RdbmsMappingTestBase {
         Asm2RdbmsTransformationTrace asm2RdbmsTransformationTrace = executeAsm2RdbmsTransformation(asmModel, rdbmsModel, new Slf4jLog(log),
                 calculateAsm2RdbmsTransformationScriptURI(),
                 calculateAsm2RdbmsModelURI(), "hsqldb");
-        logger.info("Execute asm2rdbms transformation");
+        logger.debug("Execute asm2rdbms transformation");
 
         asmModel = asm2RdbmsTransformationTrace.getAsmModel();
-        logger.info("Extract asm model from transformation trace");
+        logger.debug("Extract asm model from transformation trace");
         rdbmsModel = asm2RdbmsTransformationTrace.getRdbmsModel();
-        logger.info("Extract rdbms model from transformation trace");
+        logger.debug("Extract rdbms model from transformation trace");
 
-        rdbmsModelResourceSupport = RdbmsModelResourceSupport.rdbmsModelResourceSupportBuilder()
-                .resourceSet(rdbmsModel.getResourceSet())
-                .uri(rdbmsModel.getUri())
-                .build();
-        logger.info("Create rdbms model support from transformed rdbms model");
+
+        rdbmsUtils = new RdbmsUtils(rdbmsModel);
+        logger.debug("Create rdbms model support from transformed rdbms model");
 
         asmModel.saveAsmModel(asmSaveArgumentsBuilder()
-                .file(new File(TARGET_TEST_CLASSES, "testTypeMapping" + "-" + testName + "-" + ASM_MODEL_NAME + ".model")));
-        logger.info("Save asm model");
+                .file(new File(TARGET_TEST_CLASSES, testName + "-" + ASM_MODEL_NAME + ".model")));
+        logger.debug("Save asm model");
         rdbmsModel.saveRdbmsModel(rdbmsSaveArgumentsBuilder()
-                .file(new File(TARGET_TEST_CLASSES, "testTypeMapping" + "-" + testName + "-" + RDBMS_MODEL_NAME + ".model")));
-        logger.info("Save transformed rdbms model");
-        asm2RdbmsTransformationTrace.save(new File(TARGET_TEST_CLASSES, "testTypeMapping" + "-" + testName + "-" + "Asm2RdbmsTransformationTrace.model"));
+                .file(new File(TARGET_TEST_CLASSES, testName + "-" + RDBMS_MODEL_NAME + ".model")));
+        logger.debug("Save transformed rdbms model");
+        asm2RdbmsTransformationTrace.save(new File(TARGET_TEST_CLASSES, testName + "-" + "Asm2RdbmsTransformationTrace.model"));
     }
 
 }
