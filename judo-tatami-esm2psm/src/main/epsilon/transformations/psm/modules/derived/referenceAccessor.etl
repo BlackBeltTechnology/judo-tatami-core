@@ -130,7 +130,8 @@ rule CreateStaticNavigationForExposedGraph
 	transform s : ESM!StaticNavigation
 	to t : JUDOPSM!StaticNavigation
 	extends CreateNamedElement {
-	  guard: s.isTypeOf(ESM!ExposedGraph)
+	  guard: s.isTypeOf(ESM!ExposedGraph) and s.target.mapping.isDefined() and s.getterExpression.trim() <> ''
+
 	  var ecoreUtil = new Native("org.eclipse.emf.ecore.util.EcoreUtil");
 	  ecoreUtil.getRootContainer(s).equivalent("CreateGeneratedNavigationRootPackage").elements.add(t);
 	  t.name = "_" + s.name + "_selector_" + s.eContainer.name;
