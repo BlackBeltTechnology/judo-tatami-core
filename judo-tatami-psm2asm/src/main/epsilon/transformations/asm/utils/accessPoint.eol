@@ -1,4 +1,0 @@
-@cached
-operation JUDOPSM!ExposedGraph asmEquivalent() : ASM!EReference {
-    return self.equivalent("CreateExposedGraphReference");
-}

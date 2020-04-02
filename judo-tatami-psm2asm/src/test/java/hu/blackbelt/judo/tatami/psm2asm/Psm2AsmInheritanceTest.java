@@ -5,7 +5,7 @@ import hu.blackbelt.epsilon.runtime.execution.api.Log;
 import hu.blackbelt.epsilon.runtime.execution.impl.Slf4jLog;
 import hu.blackbelt.judo.meta.asm.runtime.AsmModel;
 import hu.blackbelt.judo.meta.asm.runtime.AsmUtils;
-import hu.blackbelt.judo.meta.psm.accesspoint.AccessPoint;
+import hu.blackbelt.judo.meta.psm.accesspoint.ActorType;
 import hu.blackbelt.judo.meta.psm.data.AssociationEnd;
 import hu.blackbelt.judo.meta.psm.data.EntityType;
 import hu.blackbelt.judo.meta.psm.derived.ExpressionDialect;
@@ -16,6 +16,7 @@ import hu.blackbelt.judo.meta.psm.runtime.PsmModel;
 import hu.blackbelt.judo.meta.psm.service.MappedTransferObjectType;
 import hu.blackbelt.judo.meta.psm.service.TransferObjectRelation;
 import hu.blackbelt.judo.meta.psm.service.TransferObjectType;
+import hu.blackbelt.judo.meta.psm.service.UnmappedTransferObjectType;
 import hu.blackbelt.judo.meta.psm.type.Primitive;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.emf.ecore.EAnnotation;
@@ -35,8 +36,7 @@ import static hu.blackbelt.judo.meta.asm.runtime.AsmModel.SaveArguments.asmSaveA
 import static hu.blackbelt.judo.meta.asm.runtime.AsmModel.buildAsmModel;
 import static hu.blackbelt.judo.meta.psm.PsmEpsilonValidator.calculatePsmValidationScriptURI;
 import static hu.blackbelt.judo.meta.psm.PsmEpsilonValidator.validatePsm;
-import static hu.blackbelt.judo.meta.psm.accesspoint.util.builder.AccesspointBuilders.newAccessPointBuilder;
-import static hu.blackbelt.judo.meta.psm.accesspoint.util.builder.AccesspointBuilders.newExposedGraphBuilder;
+import static hu.blackbelt.judo.meta.psm.accesspoint.util.builder.AccesspointBuilders.newActorTypeBuilder;
 import static hu.blackbelt.judo.meta.psm.data.util.builder.DataBuilders.*;
 import static hu.blackbelt.judo.meta.psm.derived.util.builder.DerivedBuilders.newReferenceExpressionTypeBuilder;
 import static hu.blackbelt.judo.meta.psm.derived.util.builder.DerivedBuilders.newStaticNavigationBuilder;
@@ -176,13 +176,17 @@ public class Psm2AsmInheritanceTest {
                 .withGetterExpression(newReferenceExpressionTypeBuilder().withDialect(ExpressionDialect.JQL).withExpression("model::entities::Category.owner").build())
                 .build();
 
-        AccessPoint accessPoint = newAccessPointBuilder().withName("AP")
-                .withExposedGraphs(
-                        newExposedGraphBuilder().withName("productsCategoriesOwner")
-                                .withMappedTransferObjectType(productTransferObject)
-                                .withSelector(productSelector)
+        UnmappedTransferObjectType accessPoint = newUnmappedTransferObjectTypeBuilder().withName("AP")
+                .withRelations(
+                        newTransferObjectRelationBuilder().withName("productsCategoriesOwner")
+                                .withTarget(productTransferObject)
+                                .withBinding(productSelector)
                                 .withCardinality(newCardinalityBuilder().withLower(1).withUpper(1).build()).build()
                 ).build();
+        ActorType actor = newActorTypeBuilder()
+                .withName("Actor")
+                .withTransferObjectType(accessPoint)
+                .build();
 
         Package entities = newPackageBuilder().withName("entities").withElements(ImmutableList.of(
                 categoryEntity, employeeEntity, personEntity, productEntity
@@ -198,7 +202,7 @@ public class Psm2AsmInheritanceTest {
 
         Model model = newModelBuilder().withName("model")
                 .withPackages(ImmutableList.of(entities, service, types, navigations))
-                .withElements(accessPoint)
+                .withElements(ImmutableList.of(accessPoint, actor))
                 .build();
         psmModel.addContent(model);
 
