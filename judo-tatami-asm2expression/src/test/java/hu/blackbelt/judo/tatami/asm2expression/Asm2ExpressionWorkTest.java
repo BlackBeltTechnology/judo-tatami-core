@@ -6,7 +6,6 @@ import java.net.URISyntaxException;
 
 import hu.blackbelt.judo.meta.measure.runtime.MeasureModel;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import hu.blackbelt.judo.meta.asm.runtime.AsmModel;
@@ -24,7 +23,6 @@ import static hu.blackbelt.judo.tatami.core.workflow.flow.SequentialFlow.Builder
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.CoreMatchers.equalTo;
 
-@Disabled
 public class Asm2ExpressionWorkTest {
 	public static final String NORTHWIND = "northwind";
 	public static final String NORTHWIND_ASM_MODEL = "northwind-asm.model";
