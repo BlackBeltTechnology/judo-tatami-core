@@ -57,6 +57,17 @@ public class RdbmsUtils {
     }
 
     /**
+     * Get certain RdbmsTable
+     * @param rdbmsTableUUID RdbmsTable's UUID to search for (packagename.classname)
+     * @return RdbmsTable if exists
+     */
+    public Optional<RdbmsTable> getRdbmsTableWithUUID(String rdbmsTableUUID) {
+        return getRdbmsTables().isPresent()
+                ? getRdbmsTables().get().stream().filter(o -> rdbmsTableUUID.equals(o.getUuid())).findAny()
+                : Optional.empty();
+    }
+
+    /**
      * Get all RdbmsField from certain RdbmsTable
      * @param rdbmsTableName RdbmsTable's name to get all RdbmsField from (packagename.classname)
      * @return All RdbmsField if exists
@@ -64,6 +75,17 @@ public class RdbmsUtils {
     public Optional<EList<RdbmsField>> getRdbmsFields(String rdbmsTableName) {
         return getRdbmsTable(rdbmsTableName).isPresent() && !(getRdbmsTable(rdbmsTableName).get().getFields().isEmpty())
                 ? Optional.of(getRdbmsTable(rdbmsTableName).get().getFields())
+                : Optional.empty();
+    }
+
+    /**
+     * Get all RdbmsField from certain RdbmsTable
+     * @param rdbmsTableUUID RdbmsTable's UUID to get all RdbmsField from (packagename.classname)
+     * @return All RdbmsField if exists
+     */
+    public Optional<EList<RdbmsField>> getRdbmsFieldsWithUUID(String rdbmsTableUUID) {
+        return getRdbmsTable(rdbmsTableUUID).isPresent() && !(getRdbmsTable(rdbmsTableUUID).get().getFields().isEmpty())
+                ? Optional.of(getRdbmsTable(rdbmsTableUUID).get().getFields())
                 : Optional.empty();
     }
 
@@ -77,6 +99,19 @@ public class RdbmsUtils {
         final String FQNAME = rdbmsTableName + "#" + rdbmsFieldName;
         return (getRdbmsFields(rdbmsTableName).isPresent() && getRdbmsFields(rdbmsTableName).get().stream().anyMatch(o -> FQNAME.equals(o.getName())))
                 ? Optional.of(getRdbmsFields(rdbmsTableName).get().stream().filter(o -> FQNAME.equals(o.getName())).findAny().get())
+                : Optional.empty();
+    }
+
+    /**
+     * Get certain RdbmsField from given RdbmsTable
+     * @param rdbmsTablUUID RdbmsTable's uuid to search in (packagename.classname)
+     * @param rdbmsFieldUUID RdbmsField's uuid to search for
+     * @return RdbmsField if exists
+     */
+    public Optional<RdbmsField> getRdbmsFieldWithUUID(String rdbmsTablUUID, String rdbmsFieldUUID) {
+        final String FQNAME = rdbmsTablUUID + "#" + rdbmsFieldUUID;
+        return (getRdbmsFields(rdbmsTablUUID).isPresent() && getRdbmsFields(rdbmsTablUUID).get().stream().anyMatch(o -> FQNAME.equals(o.getUuid())))
+                ? Optional.of(getRdbmsFields(rdbmsTablUUID).get().stream().filter(o -> FQNAME.equals(o.getUuid())).findAny().get())
                 : Optional.empty();
     }
 
