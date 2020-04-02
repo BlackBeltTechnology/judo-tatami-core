@@ -33,6 +33,9 @@ public class RdbmsUtils {
                 .build();
     }
 
+    //////////////////////////////////////////////////
+    //////////////////// TABLES //////////////////////
+
     /**
      * Get all RdbmsTable from RdbmsModel
      * @return all RdbmsTable if exists
@@ -67,6 +70,9 @@ public class RdbmsUtils {
                 : Optional.empty();
     }
 
+    //////////////////////////////////////////////////
+    //////////////////// FIELDS //////////////////////
+
     /**
      * Get all RdbmsField from certain RdbmsTable
      * @param rdbmsTableName RdbmsTable's name to get all RdbmsField from (packagename.classname)
@@ -84,17 +90,21 @@ public class RdbmsUtils {
      * @return All RdbmsField if exists
      */
     public Optional<EList<RdbmsField>> getRdbmsFieldsWithUUID(String rdbmsTableUUID) {
-        return getRdbmsTable(rdbmsTableUUID).isPresent() && !(getRdbmsTable(rdbmsTableUUID).get().getFields().isEmpty())
-                ? Optional.of(getRdbmsTable(rdbmsTableUUID).get().getFields())
+        return getRdbmsTableWithUUID(rdbmsTableUUID).isPresent() && !(getRdbmsTableWithUUID(rdbmsTableUUID).get().getFields().isEmpty())
+                ? Optional.of(getRdbmsTableWithUUID(rdbmsTableUUID).get().getFields())
                 : Optional.empty();
     }
 
     /**
      * Get certain RdbmsField from given RdbmsTable
+     * During search, rdbmsTableName and rdbmsFieldName are concatenated with '#' between them
+     * Usage of this method is not recommended
+     * Use {@link #getRdbmsFieldWithUUID(String)} instead
      * @param rdbmsTableName RdbmsTable's name to search in (packagename.classname)
      * @param rdbmsFieldName RdbmsField's name to search for
      * @return RdbmsField if exists
      */
+    @Deprecated
     public Optional<RdbmsField> getRdbmsField(String rdbmsTableName, String rdbmsFieldName) {
         final String FQNAME = rdbmsTableName + "#" + rdbmsFieldName;
         return (getRdbmsFields(rdbmsTableName).isPresent() && getRdbmsFields(rdbmsTableName).get().stream().anyMatch(o -> FQNAME.equals(o.getName())))
@@ -104,14 +114,16 @@ public class RdbmsUtils {
 
     /**
      * Get certain RdbmsField from given RdbmsTable
-     * @param rdbmsTablUUID RdbmsTable's uuid to search in (packagename.classname)
      * @param rdbmsFieldUUID RdbmsField's uuid to search for
      * @return RdbmsField if exists
      */
-    public Optional<RdbmsField> getRdbmsFieldWithUUID(String rdbmsTablUUID, String rdbmsFieldUUID) {
-        final String FQNAME = rdbmsTablUUID + "#" + rdbmsFieldUUID;
-        return (getRdbmsFields(rdbmsTablUUID).isPresent() && getRdbmsFields(rdbmsTablUUID).get().stream().anyMatch(o -> FQNAME.equals(o.getUuid())))
-                ? Optional.of(getRdbmsFields(rdbmsTablUUID).get().stream().filter(o -> FQNAME.equals(o.getUuid())).findAny().get())
+    public Optional<RdbmsField> getRdbmsFieldWithUUID(String rdbmsFieldUUID) {
+        if(!rdbmsFieldUUID.matches("([a-zA-Z0-9_]+\\.)*[a-zA-Z0-9_]+#[a-zA-Z0-9_]+"))
+            return Optional.empty();
+
+        final String rdbmsTableUUID = rdbmsFieldUUID.split("#")[0];
+        return (getRdbmsFieldsWithUUID(rdbmsTableUUID).isPresent() && getRdbmsFieldsWithUUID(rdbmsTableUUID).get().stream().anyMatch(o -> rdbmsFieldUUID.equals(o.getUuid())))
+                ? Optional.of(getRdbmsFieldsWithUUID(rdbmsTableUUID).get().stream().filter(o -> rdbmsFieldUUID.equals(o.getUuid())).findAny().get())
                 : Optional.empty();
     }
 
