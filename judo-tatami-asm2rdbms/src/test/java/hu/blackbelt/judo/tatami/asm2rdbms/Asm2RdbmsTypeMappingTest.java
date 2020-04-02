@@ -1,6 +1,7 @@
 package hu.blackbelt.judo.tatami.asm2rdbms;
 
 import com.google.common.collect.ImmutableList;
+import hu.blackbelt.judo.meta.rdbms.RdbmsField;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.emf.ecore.EAnnotation;
 import org.eclipse.emf.ecore.EClass;
@@ -13,7 +14,6 @@ import static org.eclipse.emf.ecore.util.builder.EcoreBuilders.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@SuppressWarnings("OptionalGetWithoutIsPresent")
 @Slf4j
 public class Asm2RdbmsTypeMappingTest extends Asm2RdbmsMappingTestBase {
     private static final String INTEGER = "INTEGER";
@@ -24,6 +24,22 @@ public class Asm2RdbmsTypeMappingTest extends Asm2RdbmsMappingTestBase {
     private static final String VARCHAR = "VARCHAR";
     private static final String BOOLEAN = "BOOLEAN";
     private static final String DATE = "DATE";
+
+    /**
+     * Asserts the fundamental properties of a RdbmsField
+     * @param rdbmsField RdbmsField to check
+     * @param expectedType name of the expected type
+     * @param expectedSize -1 if undefined
+     * @param expectedPrecision -1 if undefined
+     * @param expectedScale -1 if undefined
+     */
+    private void typeAsserter(final RdbmsField rdbmsField, final String expectedType,
+                              final int expectedSize, final int expectedPrecision, final int expectedScale) {
+        assertEquals(expectedType, rdbmsField.getName());
+        if(expectedSize > -1) assertEquals(expectedSize, rdbmsField.getSize());
+        if(expectedPrecision > -1) assertEquals(expectedPrecision, rdbmsField.getPrecision());
+        if(expectedScale > -1) assertEquals(expectedScale, rdbmsField.getScale());
+    }
 
     @Test
     @DisplayName("Test Numeric Types")
@@ -109,23 +125,46 @@ public class Asm2RdbmsTypeMappingTest extends Asm2RdbmsMappingTestBase {
                 .orElseThrow(() -> new Exception("There is no table with given name or there are no fields in the given table"))
                 .size()); //+2 type and id
 
-        // check field types
-        assertEquals(DECIMAL, rdbmsUtils.getRdbmsFieldWithUUID(RDBMS_TABLE_NAME + "#bigDecimalAttr")
-                .orElseThrow(() -> new Exception("There's no attribute field with the given name: bigDecimalAttr")).getRdbmsTypeName());
-        assertEquals(DECIMAL, rdbmsUtils.getRdbmsFieldWithUUID(RDBMS_TABLE_NAME + "#bigInteger")
-                .orElseThrow(() -> new Exception("There's no attribute field with the given name: bigInteger")).getRdbmsTypeName());
-        assertEquals(DOUBLE, rdbmsUtils.getRdbmsFieldWithUUID(RDBMS_TABLE_NAME + "#doubleAttr")
-                .orElseThrow(() -> new Exception("There's no attribute field with the given name: doubleAttr")).getRdbmsTypeName());
-        assertEquals(BIGINT, rdbmsUtils.getRdbmsFieldWithUUID(RDBMS_TABLE_NAME + "#longAttr")
-                .orElseThrow(() -> new Exception("There's no attribute field with the given name: longAttr")).getRdbmsTypeName());
-        assertEquals(FLOAT, rdbmsUtils.getRdbmsFieldWithUUID(RDBMS_TABLE_NAME + "#floatAttr")
-                .orElseThrow(() -> new Exception("There's no attribute field with the given name: floatAttr")).getRdbmsTypeName());
-        assertEquals(INTEGER, rdbmsUtils.getRdbmsFieldWithUUID(RDBMS_TABLE_NAME + "#intAttr")
-                .orElseThrow(() -> new Exception("There's no attribute field with the given name: intAttr")).getRdbmsTypeName());
-        assertEquals(INTEGER, rdbmsUtils.getRdbmsFieldWithUUID(RDBMS_TABLE_NAME + "#shortAttr")
-                .orElseThrow(() -> new Exception("There's no attribute field with the given name: shortAttr")).getRdbmsTypeName());
-        assertEquals(INTEGER, rdbmsUtils.getRdbmsFieldWithUUID(RDBMS_TABLE_NAME + "#byteAttr")
-                .orElseThrow(() -> new Exception("There's no attribute field with the given name: byteAttr")).getRdbmsTypeName());
+        // check field types based on typemapping table
+        assertTrue(rdbmsUtils.getRdbmsField(RDBMS_TABLE_NAME, "bigDecimalAttr", true).isPresent());
+        assertEquals(DECIMAL, rdbmsUtils.getRdbmsField(RDBMS_TABLE_NAME, "bigDecimalAttr", true)
+                .get().getRdbmsTypeName());
+//        assertEquals(64, rdbmsUtils.getRdbmsField(RDBMS_TABLE_NAME, "bigDecimalAttr", true)
+//                .get().getPrecision()); FIXME: Transformation error
+//        assertEquals(20, rdbmsUtils.getRdbmsField(RDBMS_TABLE_NAME, "bigDecimalAttr", true)
+//                .get().getScale()); FIXME: Transformation error
+
+        assertTrue(rdbmsUtils.getRdbmsField(RDBMS_TABLE_NAME, "bigInteger", true).isPresent());
+        assertEquals(DECIMAL, rdbmsUtils.getRdbmsField(RDBMS_TABLE_NAME , "bigInteger", true)
+                .get().getRdbmsTypeName());
+//        assertEquals(18, rdbmsUtils.getRdbmsField(RDBMS_TABLE_NAME , "bigInteger", true)
+//                .get().getPrecision()); FIXME: Transformation error
+        assertEquals(0, rdbmsUtils.getRdbmsField(RDBMS_TABLE_NAME , "bigInteger", true)
+                .get().getScale());
+
+        assertTrue(rdbmsUtils.getRdbmsField(RDBMS_TABLE_NAME, "doubleAttr", true).isPresent());
+        assertEquals(DOUBLE, rdbmsUtils.getRdbmsField(RDBMS_TABLE_NAME , "doubleAttr", true)
+                .get().getRdbmsTypeName());
+
+        assertTrue(rdbmsUtils.getRdbmsField(RDBMS_TABLE_NAME, "longAttr", true).isPresent());
+        assertEquals(BIGINT, rdbmsUtils.getRdbmsField(RDBMS_TABLE_NAME , "longAttr", true)
+                .get().getRdbmsTypeName());
+
+        assertTrue(rdbmsUtils.getRdbmsField(RDBMS_TABLE_NAME, "floatAttr", true).isPresent());
+        assertEquals(FLOAT, rdbmsUtils.getRdbmsField(RDBMS_TABLE_NAME , "floatAttr", true)
+                .get().getRdbmsTypeName());
+
+        assertTrue(rdbmsUtils.getRdbmsField(RDBMS_TABLE_NAME, "intAttr", true).isPresent());
+        assertEquals(INTEGER, rdbmsUtils.getRdbmsField(RDBMS_TABLE_NAME , "intAttr", true)
+                .get().getRdbmsTypeName());
+
+        assertTrue(rdbmsUtils.getRdbmsField(RDBMS_TABLE_NAME, "shortAttr", true).isPresent());
+        assertEquals(INTEGER, rdbmsUtils.getRdbmsField(RDBMS_TABLE_NAME , "shortAttr", true)
+                .get().getRdbmsTypeName());
+
+        assertTrue(rdbmsUtils.getRdbmsField(RDBMS_TABLE_NAME, "byteAttr", true).isPresent());
+        assertEquals(INTEGER, rdbmsUtils.getRdbmsField(RDBMS_TABLE_NAME , "byteAttr", true)
+                .get().getRdbmsTypeName());
     }
 
     @Test
@@ -187,9 +226,13 @@ public class Asm2RdbmsTypeMappingTest extends Asm2RdbmsMappingTestBase {
                 .orElseThrow(() -> new Exception("There are no fields in the given table"))
                 .size()); //+2 type and id
 
-        // check field types
-        assertEquals(VARCHAR, rdbmsUtils.getRdbmsFieldWithUUID(RDBMS_TABLE_NAME + "#stringAttr")
-                .orElseThrow(() -> new Exception("There's no attribute field with the given name: stringAttr")).getRdbmsTypeName());
+
+        // check field types based on typemapping table
+        assertTrue(rdbmsUtils.getRdbmsField(RDBMS_TABLE_NAME, "stringAttr", true).isPresent());
+        assertEquals(VARCHAR, rdbmsUtils.getRdbmsField(RDBMS_TABLE_NAME , "stringAttr", true)
+                .get().getRdbmsTypeName());
+        assertEquals(255, rdbmsUtils.getRdbmsField(RDBMS_TABLE_NAME , "stringAttr", true)
+                .get().getSize());
     }
 
     @Test
@@ -247,9 +290,10 @@ public class Asm2RdbmsTypeMappingTest extends Asm2RdbmsMappingTestBase {
                 .orElseThrow(() -> new Exception("There are no fields in the given table"))
                 .size()); //+2 type and id
 
-        // check field types
-        assertEquals(DATE, rdbmsUtils.getRdbmsFieldWithUUID(RDBMS_TABLE_NAME + "#dateAttr")
-                .orElseThrow(() -> new Exception("There's no attribute field with the given name: dateAttr")).getRdbmsTypeName());
+        // check field types based on typemapping table
+        assertTrue(rdbmsUtils.getRdbmsField(RDBMS_TABLE_NAME, "dateAttr", true).isPresent());
+        assertEquals(DATE, rdbmsUtils.getRdbmsField(RDBMS_TABLE_NAME , "dateAttr", true)
+                .get().getRdbmsTypeName());
     }
 
     @Test
@@ -306,9 +350,10 @@ public class Asm2RdbmsTypeMappingTest extends Asm2RdbmsMappingTestBase {
                 .orElseThrow(() -> new Exception("There no fields in the given table"))
                 .size()); //+2 type and id
 
-        // check field types
-        assertEquals(BOOLEAN, rdbmsUtils.getRdbmsFieldWithUUID(RDBMS_TABLE_NAME + "#booleanAttr")
-                .orElseThrow(() -> new Exception("There's no attribute field with the given name: booleanAttr")).getRdbmsTypeName());
+        // check field types based on typemapping table
+        assertTrue(rdbmsUtils.getRdbmsField(RDBMS_TABLE_NAME, "booleanAttr", true).isPresent());
+        assertEquals(BOOLEAN, rdbmsUtils.getRdbmsField(RDBMS_TABLE_NAME , "booleanAttr", true)
+                .get().getRdbmsTypeName());
     }
 
 }
