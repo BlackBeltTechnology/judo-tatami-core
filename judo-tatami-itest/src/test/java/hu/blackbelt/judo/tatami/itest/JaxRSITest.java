@@ -7,7 +7,6 @@ import com.google.common.collect.ImmutableMap;
 import hu.blackbelt.judo.dispatcher.api.Dispatcher;
 import hu.blackbelt.osgi.utils.osgi.api.BundleTrackerManager;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.jupiter.api.AfterEach;
@@ -62,7 +61,6 @@ import static restdto.demo.services.ProductInfo.productInfoBuilder;
 @Category(JaxRSTestSuite.class)
 @RunWith(PaxExam.class)
 @ExamReactorStrategy(PerClass.class)
-@Ignore
 public class JaxRSITest {
     private static final String BASE_URL = "http://localhost:8181/cxf/demo";
 
@@ -195,7 +193,7 @@ public class JaxRSITest {
         Map<String, Object> testMap = new HashMap<>();
 
         //getAllInternationalOrders (input: none, output: collection<InternationalOrderInfo>), required (InternationalOrderInfo): orderDate
-        testMap.put("demo.services.InternationalOrderInfo#getAllInternationalOrders", ImmutableList.of(
+        testMap.put("demo.internalAP#getAllInternationalOrders", ImmutableList.of(
                 internationalOrderInfoBuilder()
                         .shipperName("shipperNameInInternationalOrderInfo0")
                         .orderDate(OffsetDateTime.now())
@@ -218,7 +216,7 @@ public class JaxRSITest {
                 internationalOrderInfoBuilder().shipperName("shipperNameInInternationalOrderInfo1").orderDate(OffsetDateTime.now()).build().toMap()));
 
         //createOrder (input: OrderInfo, output: OrderInfo), required (OrderInfo): orderDate
-        testMap.put("demo.services.InternationalOrderInfo#createInternationalOrder", orderInfoBuilder().shipperName("shipperNameInNewInternationalOrderInfo").orderDate(OffsetDateTime.now()).build().toMap());
+        testMap.put("demo.internalAP#createInternationalOrder", orderInfoBuilder().shipperName("shipperNameInNewInternationalOrderInfo").orderDate(OffsetDateTime.now()).build().toMap());
 
         return testMap;
     }
@@ -241,7 +239,7 @@ public class JaxRSITest {
                     log.log(LOG_INFO, "Dispatcher called - " + operationFqName + " Payload: " + payload.toString());
 
                     switch (operationFqName) {
-                        case "demo.services.InternationalOrderInfo#createInternationalOrder":
+                        case "demo.internalAP#createInternationalOrder":
                             checkArgument(!((Map) payload.get("input")).isEmpty(), "Payload of create must not be empty");
                             break;
                         case "demo.services.OrderInfo#deleteItem":
