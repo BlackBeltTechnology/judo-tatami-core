@@ -63,22 +63,22 @@
         <judo-meta-esm-version>1.1.0.20200319_174531_481f495_1_0_beta1</judo-meta-esm-version>
         <judo-meta-esm-import-range>[1.0,1.1)</judo-meta-esm-import-range>
 
-        <judo-meta-psm-version>1.1.0.20200403_085949_d988bcf_develop</judo-meta-psm-version>
+        <judo-meta-psm-version>1.1.0-SNAPSHOT</judo-meta-psm-version>
         <judo-meta-psm-import-range>[1.0,1.1)</judo-meta-psm-import-range>
 
-        <judo-meta-jql-version>1.0.0.20200319_193807_35433d0_1_0_beta1</judo-meta-jql-version>
+        <judo-meta-jql-version>1.0.0-SNAPSHOT</judo-meta-jql-version>
         <judo-meta-jql-import-range>[1.0,1.1)</judo-meta-jql-import-range>
 
-        <judo-meta-jcl-version>1.0.0.20200319_195901_e7d30f1_1_0_beta1</judo-meta-jcl-version>
+        <judo-meta-jcl-version>1.0.0-SNAPSHOT</judo-meta-jcl-version>
         <judo-meta-jcl-import-range>[1.0,1.1)</judo-meta-jcl-import-range>
 
-        <judo-meta-script-version>1.0.0.20200329_022018_78bdfa4_1_0_beta1</judo-meta-script-version>
+        <judo-meta-script-version>1.0.0-SNAPSHOT</judo-meta-script-version>
         <judo-meta-script-import-range>[1.0,1.1)</judo-meta-script-import-range>
 
         <judo-meta-asm-version>1.0.0.20200319_193759_8111609_1_0_beta1</judo-meta-asm-version>
         <judo-meta-asm-import-range>[1.0,1.1)</judo-meta-asm-import-range>
 
-        <judo-meta-expression-version>1.0.1.20200403_094404_ab793de_develop</judo-meta-expression-version>
+        <judo-meta-expression-version>1.0.1-SNAPSHOT</judo-meta-expression-version>
         <judo-meta-expression-import-range>[1.0,1.1)</judo-meta-expression-import-range>
 
         <judo-meta-measure-version>1.0.0.20200319_194527_b89d3f7_1_0_beta1</judo-meta-measure-version>
@@ -92,7 +92,7 @@
 
         <judo-dao-api-version>1.0.0</judo-dao-api-version>
         <judo-dispatcher-api-version>1.0.0</judo-dispatcher-api-version>
-        <judo-script-codegen-version>1.0.0.20200329_022945_22869d0_1_0_beta1</judo-script-codegen-version>
+        <judo-script-codegen-version>1.0.0-SNAPSHOT</judo-script-codegen-version>
 
         <structured-map-proxy-version>1.0.0</structured-map-proxy-version>
         <judo-operation-utils-version>1.0.0.20200327_093626_9ed69ed_1_0_beta1</judo-operation-utils-version>
