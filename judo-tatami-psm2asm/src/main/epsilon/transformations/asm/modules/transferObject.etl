@@ -136,7 +136,7 @@ rule AddMeasuredTransferAttributeConstraints
 rule CreateTransferObjectAttributeBindingAnnotation
 	transform s : JUDOPSM!TransferAttribute
 	to t : ASM!EAnnotation {
-		guard: s.isPrimitive() and s.binding.isDefined()
+		guard: s.isPrimitive() and s.binding.isDefined() and not s.binding.isKindOf(JUDOPSM!StaticData)
 		
 		t.source = asmUtils.getAnnotationUri("binding");
 		
@@ -151,7 +151,7 @@ rule CreateTransferObjectAttributeBindingAnnotation
 rule CreateTransferObjectRelationBindingAnnotation
 	transform s : JUDOPSM!TransferObjectRelation
 	to t : ASM!EAnnotation {
-		guard: s.binding.isDefined()
+		guard: s.binding.isDefined() and not s.binding.isKindOf(JUDOPSM!StaticNavigation)
 		
 		t.source = asmUtils.getAnnotationUri("binding");
 		

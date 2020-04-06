@@ -1,9 +1,12 @@
 import "../utils/_importUtils.eol";
 import "operation.etl";
 
+@greedy
 rule CreateAccessPointAnnotation
-    transform s : JUDOPSM!AccessPoint
+    transform s : JUDOPSM!TransferObjectType
     to t : ASM!EAnnotation {
+        guard: s.isAccessPoint()
+
         t.source = asmUtils.getAnnotationUri("accessPoint");
         
         var accessPoint = new ASM!EStringToStringMapEntry;
@@ -11,37 +14,14 @@ rule CreateAccessPointAnnotation
         accessPoint.value = "true";
         t.details.add(accessPoint);
         
-        s.equivalent("CreateAccessPoint").eAnnotations.add(t);
-}
-
-rule CreateAccessPoint
-    transform s : JUDOPSM!AccessPoint
-    to t : ASM!EClass {
-        t.name = s.name;
-        t.abstract = true;
-        t.interface = true;
-        
-        // TODO - add platform specific attributes (protocol, message format, etc.)
-        
-        s.eContainer.asmEquivalent().eClassifiers.add(t);
-}
-
-rule CreateExposedServiceReference
-    transform s : JUDOPSM!ExposedService
-    to t : ASM!EReference {
-        t.name = s.name;
-
-        t.lowerBound = 1;
-        t.upperBound = 1;
-        t.eType = s.operationGroup.asmEquivalent();
-        t.derived = true;
-
-        s.eContainer.equivalent("CreateAccessPoint").eStructuralFeatures.add(t);
+        s.asmEquivalent().eAnnotations.add(t);
 }
 
 rule CreateExposedServiceReferenceAnnotation
-    transform s : JUDOPSM!ExposedService
+    transform s : JUDOPSM!TransferObjectRelation
     to t : ASM!EAnnotation {
+        guard: s.eContainer.isAccessPoint() and not s.isExposedGraph()
+
         t.source = asmUtils.getAnnotationUri("exposedService");
 
         var exposedServiceEntry = new ASM!EStringToStringMapEntry;
@@ -49,25 +29,14 @@ rule CreateExposedServiceReferenceAnnotation
         exposedServiceEntry.value = "true";
         t.details.add(exposedServiceEntry);
 
-        s.equivalent("CreateExposedServiceReference").eAnnotations.add(t);
-}
-
-rule CreateExposedGraphReference
-    transform s : JUDOPSM!ExposedGraph
-    to t : ASM!EReference {
-        t.name = s.name;
-
-        t.lowerBound = s.cardinality.lower;
-        t.upperBound = s.cardinality.upper;
-        t.eType = s.mappedTransferObjectType.equivalent("CreateMappedTransferObject");
-        t.derived = true;
-
-        s.eContainer.equivalent("CreateAccessPoint").eStructuralFeatures.add(t);
+        s.asmEquivalent().eAnnotations.add(t);
 }
 
 rule CreateExposedGraphReferenceAnnotation
-    transform s : JUDOPSM!ExposedGraph
+    transform s : JUDOPSM!TransferObjectRelation
     to t : ASM!EAnnotation {
+        guard: s.isExposedGraph()
+
         t.source = asmUtils.getAnnotationUri("exposedGraph");
 
         var exposedGraphEntry = new ASM!EStringToStringMapEntry;
@@ -75,37 +44,39 @@ rule CreateExposedGraphReferenceAnnotation
         exposedGraphEntry.value = "true";
         t.details.add(exposedGraphEntry);
 
-        s.equivalent("CreateExposedGraphReference").eAnnotations.add(t);
+        s.asmEquivalent().eAnnotations.add(t);
 }
 
 rule CreateExposedGraphReferenceBinding
-    transform s : JUDOPSM!ExposedGraph
+    transform s : JUDOPSM!TransferObjectRelation
     to t : ASM!EAnnotation {
+        guard: s.isExposedGraph()
+
         t.source = asmUtils.getAnnotationUri("expression");
 
         var getter = new ASM!EStringToStringMapEntry;
         getter.key = "getter";
-        getter.value = s.selector.getterExpression.expression;
+        getter.value = s.binding.getterExpression.expression;
 
         var getterDialect = new ASM!EStringToStringMapEntry;
         getterDialect.key = "getter.dialect";
-        getterDialect.value = s.selector.getterExpression.dialect.asString();
+        getterDialect.value = s.binding.getterExpression.dialect.asString();
 
         t.details.add(getter);
         t.details.add(getterDialect);
 
-        if (s.selector.setterExpression.isDefined()) {
+        if (s.binding.setterExpression.isDefined()) {
             var setter = new ASM!EStringToStringMapEntry;
             setter.key = "setter";
-            setter.value = s.selector.setterExpression.expression;
+            setter.value = s.binding.setterExpression.expression;
 
             var setterDialect = new ASM!EStringToStringMapEntry;
             setterDialect.key = "setter.dialect";
-            setterDialect.value = s.selector.setterExpression.dialect.asString();
+            setterDialect.value = s.binding.setterExpression.dialect.asString();
 
             t.details.add(setter);
             t.details.add(setterDialect);
         }
 
-        s.equivalent("CreateExposedGraphReference").eAnnotations.add(t);
+        s.asmEquivalent().eAnnotations.add(t);
 }

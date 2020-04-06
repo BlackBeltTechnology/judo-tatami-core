@@ -6,6 +6,10 @@ operation ESM!TransferObjectType getPSMEquivalent() : JUDOPSM!TransferObjectType
 	}
 }
 
+operation ESM!AccessPoint getPSMTransferObjectTypeEquivalent() : JUDOPSM!TransferObjectType {
+    return self.equivalent("CreateAccessPoint");
+}
+
 operation ESM!TransferObjectType getPSMTransferObjectTypeEquivalent() : JUDOPSM!TransferObjectType {
     if (self.isKindOf(ESM!TransferObjectType) and not self.isTypeOf(ESM!EntityType)) {
 	    return self.getPSMEquivalent();

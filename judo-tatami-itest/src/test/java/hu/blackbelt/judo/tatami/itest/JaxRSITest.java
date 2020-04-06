@@ -64,8 +64,8 @@ import static restdto.demo.services.ProductInfo.productInfoBuilder;
 public class JaxRSITest {
     private static final String BASE_URL = "http://localhost:8181/cxf/demo";
 
-    private static final String DEMO_SERVICE_GET_ALL_INTERNATIONAL_ORDERS = "/internalAP/allInternationalOrders/get";
-    private static final String DEMO_SERVICE_CREATE_INTERNATIONAL_ORDER = "/internalAP/allInternationalOrders/create";
+    private static final String DEMO_SERVICE_GET_ALL_INTERNATIONAL_ORDERS = "/internalAP/internationalOrders/get";
+    private static final String DEMO_SERVICE_CREATE_INTERNATIONAL_ORDER = "/internalAP/internationalOrders/create";
 
     private static final String DEMO_SERVICE_DELETE_ORDER_ITEM = "/services/OrderInfo/items/delete";
 
@@ -193,7 +193,7 @@ public class JaxRSITest {
         Map<String, Object> testMap = new HashMap<>();
 
         //getAllInternationalOrders (input: none, output: collection<InternationalOrderInfo>), required (InternationalOrderInfo): orderDate
-        testMap.put("demo.services.InternationalOrderInfo#getAllInternationalOrders", ImmutableList.of(
+        testMap.put("demo.internalAP#getAllInternationalOrders", ImmutableList.of(
                 internationalOrderInfoBuilder()
                         .shipperName("shipperNameInInternationalOrderInfo0")
                         .orderDate(OffsetDateTime.now())
@@ -216,7 +216,7 @@ public class JaxRSITest {
                 internationalOrderInfoBuilder().shipperName("shipperNameInInternationalOrderInfo1").orderDate(OffsetDateTime.now()).build().toMap()));
 
         //createOrder (input: OrderInfo, output: OrderInfo), required (OrderInfo): orderDate
-        testMap.put("demo.services.InternationalOrderInfo#createInternationalOrder", orderInfoBuilder().shipperName("shipperNameInNewInternationalOrderInfo").orderDate(OffsetDateTime.now()).build().toMap());
+        testMap.put("demo.internalAP#createInternationalOrder", orderInfoBuilder().shipperName("shipperNameInNewInternationalOrderInfo").orderDate(OffsetDateTime.now()).build().toMap());
 
         return testMap;
     }
@@ -239,7 +239,7 @@ public class JaxRSITest {
                     log.log(LOG_INFO, "Dispatcher called - " + operationFqName + " Payload: " + payload.toString());
 
                     switch (operationFqName) {
-                        case "demo.services.InternationalOrderInfo#createInternationalOrder":
+                        case "demo.internalAP#createInternationalOrder":
                             checkArgument(!((Map) payload.get("input")).isEmpty(), "Payload of create must not be empty");
                             break;
                         case "demo.services.OrderInfo#deleteItem":

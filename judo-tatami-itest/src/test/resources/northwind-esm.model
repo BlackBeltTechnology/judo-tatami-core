@@ -447,11 +447,11 @@
     </elements>
   </elements>
   <elements xsi:type="accesspoint:AccessPoint" xmi:id="_BwhYMAVjEeqKgZHIs7Kffw" name="InternalAP">
-    <exposedGraphs name="allInternationalOrders" upper="-1" target="_s8DTzP8MEem4dONaAfrVDg" getterExpression="northwind::entities::InternationalOrder"/>
-    <exposedGraphs name="allShippers" upper="-1" target="_s8EiBv8MEem4dONaAfrVDg" getterExpression="northwind::entities::Shipper"/>
+    <exposedGraphs name="allInternationalOrders" upper="-1" target="_s8DTzP8MEem4dONaAfrVDg" getterExpression="northwind::entities::InternationalOrder" createable="true" updateable="true" deleteable="true"/>
+    <exposedGraphs name="allShippers" upper="-1" target="_s8EiBv8MEem4dONaAfrVDg" getterExpression="northwind::entities::Shipper" createable="true" updateable="true" deleteable="true"/>
   </elements>
   <elements xsi:type="accesspoint:AccessPoint" xmi:id="_BwhYOwVjEeqKgZHIs7Kffw" name="ExternalAP">
-    <exposedGraphs xmi:id="_BwhYPAVjEeqKgZHIs7Kffw" name="allProducts" upper="-1" target="_s8D6-P8MEem4dONaAfrVDg" getterExpression="northwind::entities::Product"/>
-    <exposedGraphs xmi:id="_BwhYPwVjEeqKgZHIs7Kffw" name="allCategories" upper="-1" target="_JYpGxeq1EemUZMITjXqp8w" getterExpression="northwind::entities::Category"/>
+    <exposedGraphs xmi:id="_BwhYPAVjEeqKgZHIs7Kffw" name="allProducts" upper="-1" target="_s8D6-P8MEem4dONaAfrVDg" getterExpression="northwind::entities::Product" createable="true" updateable="true" deleteable="true"/>
+    <exposedGraphs xmi:id="_BwhYPwVjEeqKgZHIs7Kffw" name="allCategories" upper="-1" target="_JYpGxeq1EemUZMITjXqp8w" getterExpression="northwind::entities::Category" createable="true" updateable="true" deleteable="true"/>
   </elements>
 </namespace:Model>
