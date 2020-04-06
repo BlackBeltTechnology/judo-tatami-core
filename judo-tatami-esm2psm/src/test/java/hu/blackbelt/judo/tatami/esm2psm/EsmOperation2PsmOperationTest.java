@@ -333,7 +333,7 @@ public class EsmOperation2PsmOperationTest {
         final int LOWER = 2;
         final int UPPER = 5;
 
-        final String NAME_OF_GET_OPERATION = "_getGForModel_AP";
+        final String NAME_OF_GET_OPERATION = "_getG";
 
         final String NAME_OF_GET_E_OPERATION = "_getE";
         final String NAME_OF_CREATE_E_OPERATION = "_createE";
@@ -485,7 +485,7 @@ public class EsmOperation2PsmOperationTest {
         final Optional<TransferObjectRelation> dToE = defaultD.get().getRelations().stream().filter(r -> RELATION_NAME_FROM_D_TO_E.equals(r.getName())).findAny();
         assertTrue(dToE.isPresent());
 
-        final Optional<TransferOperation> getG = defaultD.get().getOperations().stream().filter(o -> NAME_OF_GET_OPERATION.equals(o.getName())).findAny();
+        final Optional<TransferOperation> getG = ap.get().getOperations().stream().filter(o -> NAME_OF_GET_OPERATION.equals(o.getName())).findAny();
         assertTrue(getG.isPresent());
         assertNotNull(getG.get().getOutput());
 
