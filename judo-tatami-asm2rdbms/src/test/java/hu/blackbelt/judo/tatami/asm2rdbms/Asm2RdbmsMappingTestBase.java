@@ -2,6 +2,7 @@ package hu.blackbelt.judo.tatami.asm2rdbms;
 
 import hu.blackbelt.epsilon.runtime.execution.impl.Slf4jLog;
 import hu.blackbelt.judo.meta.asm.runtime.AsmModel;
+import hu.blackbelt.judo.meta.rdbms.RdbmsField;
 import hu.blackbelt.judo.meta.rdbms.runtime.RdbmsModel;
 import hu.blackbelt.judo.meta.rdbms.runtime.RdbmsUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -17,6 +18,8 @@ import static hu.blackbelt.judo.meta.rdbmsDataTypes.support.RdbmsDataTypesModelR
 import static hu.blackbelt.judo.meta.rdbmsNameMapping.support.RdbmsNameMappingModelResourceSupport.registerRdbmsNameMappingMetamodel;
 import static hu.blackbelt.judo.meta.rdbmsRules.support.RdbmsTableMappingRulesModelResourceSupport.registerRdbmsTableMappingRulesMetamodel;
 import static hu.blackbelt.judo.tatami.asm2rdbms.Asm2Rdbms.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @Slf4j
 public class Asm2RdbmsMappingTestBase {
@@ -31,6 +34,24 @@ public class Asm2RdbmsMappingTestBase {
     protected RdbmsModel rdbmsModel;
 
     protected RdbmsUtils rdbmsUtils;
+
+
+    /**
+     * Asserts the fundamental properties of a RdbmsField
+     * @param rdbmsField RdbmsField to check
+     * @param expectedType name of the expected type
+     * @param expectedSize -1 if undefined
+     * @param expectedPrecision -1 if undefined
+     * @param expectedScale -1 if undefined
+     */
+    protected void typeAsserter(final RdbmsField rdbmsField, final String expectedType,
+                              final int expectedSize, final int expectedPrecision, final int expectedScale) {
+        assertNotNull(rdbmsField);
+        assertEquals(expectedType, rdbmsField.getRdbmsTypeName());
+        assertEquals(expectedSize, rdbmsField.getSize());
+        assertEquals(expectedPrecision, rdbmsField.getPrecision());
+        assertEquals(expectedScale, rdbmsField.getScale());
+    }
 
     @BeforeEach
     protected void setUp() {
