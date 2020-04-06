@@ -58,13 +58,15 @@
 
         <!-- Model versions -->
         <!-- CHANGE BACK TO DEVELOP/BETA WHEN DONE -->
-        <judo-meta-rdbms-version>1.0.0.20200406_090816_aca53c6_feature_JNG_1259_Extend_RdbmsUtils</judo-meta-rdbms-version>
+        <judo-meta-rdbms-version>
+            1.0.0.20200406_131434_a4479a5_feature_JNG_1259_Extend_RdbmsUtils
+        </judo-meta-rdbms-version>
         <judo-meta-rdbms-import-range>[1.0,1.1)</judo-meta-rdbms-import-range>
 
         <judo-meta-esm-version>1.1.0.20200319_174531_481f495_1_0_beta1</judo-meta-esm-version>
         <judo-meta-esm-import-range>[1.0,1.1)</judo-meta-esm-import-range>
 
-        <judo-meta-psm-version>1.1.0.20200403_164030_f5d9261_develop</judo-meta-psm-version>
+        <judo-meta-psm-version>1.1.0.20200406_090802_12654a8_develop</judo-meta-psm-version>
         <judo-meta-psm-import-range>[1.0,1.1)</judo-meta-psm-import-range>
 
         <judo-meta-jql-version>1.0.0.20200319_193807_35433d0_1_0_beta1</judo-meta-jql-version>
