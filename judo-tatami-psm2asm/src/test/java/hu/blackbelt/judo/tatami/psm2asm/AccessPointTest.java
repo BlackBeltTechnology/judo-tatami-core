@@ -4,9 +4,7 @@ import static hu.blackbelt.judo.meta.asm.runtime.AsmModel.buildAsmModel;
 import static hu.blackbelt.judo.meta.asm.runtime.AsmModel.SaveArguments.asmSaveArgumentsBuilder;
 import static hu.blackbelt.judo.meta.psm.PsmEpsilonValidator.calculatePsmValidationScriptURI;
 import static hu.blackbelt.judo.meta.psm.PsmEpsilonValidator.validatePsm;
-import static hu.blackbelt.judo.meta.psm.accesspoint.util.builder.AccesspointBuilders.newAccessPointBuilder;
-import static hu.blackbelt.judo.meta.psm.accesspoint.util.builder.AccesspointBuilders.newExposedGraphBuilder;
-import static hu.blackbelt.judo.meta.psm.accesspoint.util.builder.AccesspointBuilders.newExposedServiceBuilder;
+import static hu.blackbelt.judo.meta.psm.accesspoint.util.builder.AccesspointBuilders.*;
 import static hu.blackbelt.judo.meta.psm.data.util.builder.DataBuilders.newAssociationEndBuilder;
 import static hu.blackbelt.judo.meta.psm.data.util.builder.DataBuilders.newAttributeBuilder;
 import static hu.blackbelt.judo.meta.psm.data.util.builder.DataBuilders.newBoundOperationBuilder;
@@ -35,14 +33,13 @@ import static hu.blackbelt.judo.tatami.psm2asm.Psm2Asm.executePsm2AsmTransformat
 import java.io.File;
 import java.util.Arrays;
 
+import hu.blackbelt.judo.meta.psm.accesspoint.ActorType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import hu.blackbelt.epsilon.runtime.execution.api.Log;
 import hu.blackbelt.epsilon.runtime.execution.impl.Slf4jLog;
 import hu.blackbelt.judo.meta.asm.runtime.AsmModel;
-import hu.blackbelt.judo.meta.psm.accesspoint.AccessPoint;
-import hu.blackbelt.judo.meta.psm.accesspoint.ExposedGraph;
 import hu.blackbelt.judo.meta.psm.data.AssociationEnd;
 import hu.blackbelt.judo.meta.psm.data.Attribute;
 import hu.blackbelt.judo.meta.psm.data.BoundOperation;
@@ -323,19 +320,25 @@ public class AccessPointTest {
                 .withCardinality(newCardinalityBuilder().withUpper(-1).build())
                 .build();
 
-        final AccessPoint accessPoint1 = newAccessPointBuilder()
+        final UnmappedTransferObjectType accessPoint1 = newUnmappedTransferObjectTypeBuilder()
                 .withName("AP1")
-                .withExposedServices(newExposedServiceBuilder()
+                .withRelations(newTransferObjectRelationBuilder()
                         .withName("messenger")
-                        .withOperationGroup(messageDTO)
+                        .withTarget(messageDTO)
+                        .withCardinality(newCardinalityBuilder().build())
                         .build())
                 .build();
 
-        final ExposedGraph allMessagesGraph = newExposedGraphBuilder()
+        final ActorType actor1 = newActorTypeBuilder()
+                .withName("Actor1")
+                .withTransferObjectType(accessPoint1)
+                .build();
+
+        final TransferObjectRelation allMessagesGraph = newTransferObjectRelationBuilder()
                 .withName("allMessages")
-                .withMappedTransferObjectType(messageDTO)
+                .withTarget(messageDTO)
                 .withCardinality(newCardinalityBuilder().withUpper(-1).build())
-                .withSelector(allMessages)
+                .withBinding(allMessages)
                 .build();
         useMappedTransferObjectType(messageDTO)
                 .withOperations(newUnboundOperationBuilder()
@@ -352,11 +355,11 @@ public class AccessPointTest {
                         .build())
                 .build();
 
-        final ExposedGraph allUsersGraph = newExposedGraphBuilder()
+        final TransferObjectRelation allUsersGraph = newTransferObjectRelationBuilder()
                 .withName("allUsers")
-                .withMappedTransferObjectType(userDTO)
+                .withTarget(userDTO)
                 .withCardinality(newCardinalityBuilder().withUpper(-1).build())
-                .withSelector(allUsers)
+                .withBinding(allUsers)
                 .build();
         useMappedTransferObjectType(userDTO)
                 .withOperations(newUnboundOperationBuilder()
@@ -373,19 +376,29 @@ public class AccessPointTest {
                         .build())
                 .build();
 
-        final AccessPoint accessPoint2 = newAccessPointBuilder()
+        final UnmappedTransferObjectType accessPoint2 = newUnmappedTransferObjectTypeBuilder()
                 .withName("AP2")
-                .withExposedGraphs(allMessagesGraph)
+                .withRelations(allMessagesGraph)
                 .build();
 
-        final AccessPoint accessPoint3 = newAccessPointBuilder()
+        final ActorType actor2 = newActorTypeBuilder()
+                .withName("Actor2")
+                .withTransferObjectType(accessPoint2)
+                .build();
+
+        final UnmappedTransferObjectType accessPoint3 = newUnmappedTransferObjectTypeBuilder()
                 .withName("AP3")
-                .withExposedGraphs(allUsersGraph)
+                .withRelations(allUsersGraph)
+                .build();
+
+        final ActorType actor3 = newActorTypeBuilder()
+                .withName("Actor3")
+                .withTransferObjectType(accessPoint3)
                 .build();
 
         final Model model = newModelBuilder()
                 .withName("Model")
-                .withElements(Arrays.asList(string, message, user, messageDTO, userDTO, emailDTO, allMessages, allUsers, accessPoint1, accessPoint2, accessPoint3))
+                .withElements(Arrays.asList(string, message, user, messageDTO, userDTO, emailDTO, allMessages, allUsers, accessPoint1, accessPoint2, accessPoint3, actor1, actor2, actor3))
                 .build();
 
         psmModel.addContent(model);

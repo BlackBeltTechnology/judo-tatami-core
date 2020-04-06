@@ -4,31 +4,13 @@ import static hu.blackbelt.judo.meta.asm.runtime.AsmModel.buildAsmModel;
 import static hu.blackbelt.judo.meta.asm.runtime.AsmModel.SaveArguments.asmSaveArgumentsBuilder;
 import static hu.blackbelt.judo.meta.psm.PsmEpsilonValidator.calculatePsmValidationScriptURI;
 import static hu.blackbelt.judo.meta.psm.PsmEpsilonValidator.validatePsm;
-import static hu.blackbelt.judo.meta.psm.accesspoint.util.builder.AccesspointBuilders.newAccessPointBuilder;
-import static hu.blackbelt.judo.meta.psm.accesspoint.util.builder.AccesspointBuilders.newExposedGraphBuilder;
-import static hu.blackbelt.judo.meta.psm.accesspoint.util.builder.AccesspointBuilders.newExposedServiceBuilder;
-import static hu.blackbelt.judo.meta.psm.data.util.builder.DataBuilders.newAssociationEndBuilder;
-import static hu.blackbelt.judo.meta.psm.data.util.builder.DataBuilders.newAttributeBuilder;
-import static hu.blackbelt.judo.meta.psm.data.util.builder.DataBuilders.newBoundOperationBuilder;
 import static hu.blackbelt.judo.meta.psm.data.util.builder.DataBuilders.newEntityTypeBuilder;
-import static hu.blackbelt.judo.meta.psm.data.util.builder.DataBuilders.newOperationBodyBuilder;
-import static hu.blackbelt.judo.meta.psm.data.util.builder.DataBuilders.useAssociationEnd;
-import static hu.blackbelt.judo.meta.psm.data.util.builder.DataBuilders.useBoundOperation;
 import static hu.blackbelt.judo.meta.psm.derived.util.builder.DerivedBuilders.newReferenceExpressionTypeBuilder;
 import static hu.blackbelt.judo.meta.psm.derived.util.builder.DerivedBuilders.newStaticNavigationBuilder;
 import static hu.blackbelt.judo.meta.psm.namespace.util.builder.NamespaceBuilders.newModelBuilder;
 import static hu.blackbelt.judo.meta.psm.runtime.PsmModel.buildPsmModel;
-import static hu.blackbelt.judo.meta.psm.service.util.builder.ServiceBuilders.newBoundTransferOperationBuilder;
-import static hu.blackbelt.judo.meta.psm.service.util.builder.ServiceBuilders.newMappedTransferObjectTypeBuilder;
-import static hu.blackbelt.judo.meta.psm.service.util.builder.ServiceBuilders.newParameterBuilder;
-import static hu.blackbelt.judo.meta.psm.service.util.builder.ServiceBuilders.newTransferAttributeBuilder;
-import static hu.blackbelt.judo.meta.psm.service.util.builder.ServiceBuilders.newTransferObjectRelationBuilder;
-import static hu.blackbelt.judo.meta.psm.service.util.builder.ServiceBuilders.newTransferOperationBehaviourBuilder;
-import static hu.blackbelt.judo.meta.psm.service.util.builder.ServiceBuilders.newUnboundOperationBuilder;
-import static hu.blackbelt.judo.meta.psm.service.util.builder.ServiceBuilders.newUnmappedTransferObjectTypeBuilder;
-import static hu.blackbelt.judo.meta.psm.service.util.builder.ServiceBuilders.useMappedTransferObjectType;
+import static hu.blackbelt.judo.meta.psm.service.util.builder.ServiceBuilders.*;
 import static hu.blackbelt.judo.meta.psm.type.util.builder.TypeBuilders.newCardinalityBuilder;
-import static hu.blackbelt.judo.meta.psm.type.util.builder.TypeBuilders.newStringTypeBuilder;
 import static hu.blackbelt.judo.tatami.psm2asm.Psm2Asm.calculatePsm2AsmTransformationScriptURI;
 import static hu.blackbelt.judo.tatami.psm2asm.Psm2Asm.executePsm2AsmTransformation;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -36,9 +18,11 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
-import java.util.Arrays;
 import java.util.Optional;
 
+import hu.blackbelt.judo.meta.psm.accesspoint.ActorType;
+import hu.blackbelt.judo.meta.psm.accesspoint.util.builder.AccesspointBuilders;
+import hu.blackbelt.judo.meta.psm.service.TransferObjectRelation;
 import org.eclipse.emf.ecore.EAnnotation;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EReference;
@@ -53,23 +37,12 @@ import hu.blackbelt.epsilon.runtime.execution.api.Log;
 import hu.blackbelt.epsilon.runtime.execution.impl.Slf4jLog;
 import hu.blackbelt.judo.meta.asm.runtime.AsmModel;
 import hu.blackbelt.judo.meta.asm.runtime.AsmUtils;
-import hu.blackbelt.judo.meta.psm.accesspoint.AccessPoint;
-import hu.blackbelt.judo.meta.psm.accesspoint.ExposedGraph;
-import hu.blackbelt.judo.meta.psm.accesspoint.ExposedService;
-import hu.blackbelt.judo.meta.psm.data.AssociationEnd;
-import hu.blackbelt.judo.meta.psm.data.Attribute;
-import hu.blackbelt.judo.meta.psm.data.BoundOperation;
 import hu.blackbelt.judo.meta.psm.data.EntityType;
-import hu.blackbelt.judo.meta.psm.data.util.builder.DataBuilders;
-import hu.blackbelt.judo.meta.psm.derived.ExpressionDialect;
 import hu.blackbelt.judo.meta.psm.derived.StaticNavigation;
 import hu.blackbelt.judo.meta.psm.namespace.Model;
 import hu.blackbelt.judo.meta.psm.runtime.PsmModel;
 import hu.blackbelt.judo.meta.psm.service.MappedTransferObjectType;
-import hu.blackbelt.judo.meta.psm.service.TransferObjectRelation;
-import hu.blackbelt.judo.meta.psm.service.TransferOperationBehaviourType;
 import hu.blackbelt.judo.meta.psm.service.UnmappedTransferObjectType;
-import hu.blackbelt.judo.meta.psm.type.StringType;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -77,7 +50,7 @@ public class Psm2AsmAccessPointTest {
 
     public static final String MODEL_NAME = "Test";
     public static final String TARGET_TEST_CLASSES = "target/test-classes";
-    
+
     public static final String ACCESSPOINT_SOURCE = AsmUtils.getAnnotationUri("accessPoint");
     public static final String EXPOSED_SERVICE_SOURCE = AsmUtils.getAnnotationUri("exposedService");
     public static final String EXPOSED_GRAPH_SOURCE = AsmUtils.getAnnotationUri("exposedGraph");
@@ -108,7 +81,7 @@ public class Psm2AsmAccessPointTest {
         psmModel.savePsmModel(PsmModel.SaveArguments.psmSaveArgumentsBuilder()
                 .file(new File(TARGET_TEST_CLASSES, getClass().getName() + "-" + testName + "-psm.model"))
                 .build());
-        
+
         assertTrue(psmModel.isValid());
         validatePsm(new Slf4jLog(log), psmModel, calculatePsmValidationScriptURI());
 
@@ -119,25 +92,27 @@ public class Psm2AsmAccessPointTest {
                 .file(new File(TARGET_TEST_CLASSES, getClass().getName() + "-" + testName + "-asm.model"))
                 .build());
     }
-    
+
     @Test
     void testAccessPoint() throws Exception {
-        
-		UnmappedTransferObjectType opGroup = newUnmappedTransferObjectTypeBuilder().withName("operationGroup").build();
-		ExposedService eService = newExposedServiceBuilder().withName("eService").withOperationGroup(opGroup).build();
-		
-		EntityType entity = newEntityTypeBuilder().withName("entity").build();
-		MappedTransferObjectType mappedObject = newMappedTransferObjectTypeBuilder().withName("mappedObject").withEntityType(entity).build();
-		StaticNavigation selector = newStaticNavigationBuilder().withName("selector").withTarget(entity)
-					.withGetterExpression(newReferenceExpressionTypeBuilder().withExpression("M::entity").build())
-					.withCardinality(newCardinalityBuilder().withLower(0).withUpper(-1).build())
-					.build();
-		ExposedGraph eGraph = newExposedGraphBuilder().withMappedTransferObjectType(mappedObject)
-					.withName("eGraph")
-					.withSelector(selector)
-					.withCardinality(newCardinalityBuilder().withLower(0).withUpper(-1).build())
-					.build();
-		
+
+        UnmappedTransferObjectType opGroup = newUnmappedTransferObjectTypeBuilder().withName("operationGroup").build();
+        TransferObjectRelation eService = newTransferObjectRelationBuilder().withName("eService")
+                .withCardinality(newCardinalityBuilder().build())
+                .withTarget(opGroup).build();
+
+        EntityType entity = newEntityTypeBuilder().withName("entity").build();
+        MappedTransferObjectType mappedObject = newMappedTransferObjectTypeBuilder().withName("mappedObject").withEntityType(entity).build();
+        StaticNavigation selector = newStaticNavigationBuilder().withName("selector").withTarget(entity)
+                .withGetterExpression(newReferenceExpressionTypeBuilder().withExpression("M::entity").build())
+                .withCardinality(newCardinalityBuilder().withLower(0).withUpper(-1).build())
+                .build();
+        TransferObjectRelation eGraph = newTransferObjectRelationBuilder().withTarget(mappedObject)
+                .withName("eGraph")
+                .withBinding(selector)
+                .withCardinality(newCardinalityBuilder().withLower(0).withUpper(-1).build())
+                .build();
+
 //		StaticNavigation selector2 = newStaticNavigationBuilder().withName("selector2").withTarget(entity)
 //				.withGetterExpression(newReferenceExpressionTypeBuilder().withExpression("M::entity").build())
 //				.withSetterExpression(newReferenceSelectorTypeBuilder().withExpression("M::entity").build())
@@ -148,37 +123,41 @@ public class Psm2AsmAccessPointTest {
 //				.withSelector(selector)
 //				.withCardinality(newCardinalityBuilder().withLower(0).withUpper(-1).build())
 //				.build();
-		
-		AccessPoint accessPoint = newAccessPointBuilder().withName("accessPoint")
-				.withExposedServices(eService)
-				.withExposedGraphs(ImmutableList.of(eGraph
-						//eGraph2
-						))
-				.build();
 
-		Model model = newModelBuilder().withName("M").withElements(ImmutableList.of(accessPoint, opGroup, entity, mappedObject, selector
-				//, selector2
-				)).build();
+        UnmappedTransferObjectType accessPoint = newUnmappedTransferObjectTypeBuilder().withName("accessPoint")
+                .withRelations(eService)
+                .withRelations(ImmutableList.of(eGraph
+                        //eGraph2
+                ))
+                .build();
+
+        ActorType actor = AccesspointBuilders.newActorTypeBuilder()
+                .withName("Actor")
+                .withTransferObjectType(accessPoint)
+                .build();
+
+        Model model = newModelBuilder().withName("M").withElements(ImmutableList.of(actor, accessPoint, opGroup, entity, mappedObject, selector
+                //, selector2
+        )).build();
 
         psmModel.addContent(model);
 
         transform("testAccessPoint");
-        
+
         final Optional<EClass> asmAP = asmUtils.all(EClass.class).filter(c -> c.getName().equals(accessPoint.getName())).findAny();
         assertTrue(asmAP.isPresent());
-        assertTrue(asmAP.get().isAbstract());
-        assertTrue(asmAP.get().isInterface());
         assertThat(asmAP.get().getEAnnotation(ACCESSPOINT_SOURCE), IsNull.notNullValue());
         final EAnnotation apAnnotation = asmAP.get().getEAnnotation(ACCESSPOINT_SOURCE);
         assertTrue(apAnnotation.getDetails().containsKey("value"));
         assertTrue(apAnnotation.getDetails().get("value").equals("true"));
         assertTrue(apAnnotation.getEModelElement().equals(asmAP.get()));
-        
+
         final Optional<EReference> asmES = asmUtils.all(EReference.class).filter(r -> r.getName().equals(eService.getName())).findAny();
         assertTrue(asmES.isPresent());
-        assertThat(asmES.get().getLowerBound(), IsEqual.equalTo(1));
-        assertThat(asmES.get().getUpperBound(), IsEqual.equalTo(1));
-        assertTrue(asmES.get().isDerived());
+        // don't care
+        //assertThat(asmES.get().getLowerBound(), IsEqual.equalTo(1));
+        //assertThat(asmES.get().getUpperBound(), IsEqual.equalTo(1));
+        //assertTrue(asmES.get().isDerived());
         assertTrue(asmES.get().getEContainingClass().equals(asmAP.get()));
         final Optional<EClass> asmOpGroup = asmUtils.all(EClass.class).filter(c -> c.getName().equals(opGroup.getName())).findAny();
         assertTrue(asmOpGroup.isPresent());
@@ -188,14 +167,14 @@ public class Psm2AsmAccessPointTest {
         assertTrue(esAnnotation.getDetails().containsKey("value"));
         assertTrue(esAnnotation.getDetails().get("value").equals("true"));
         assertTrue(esAnnotation.getEModelElement().equals(asmES.get()));
-        
+
         final Optional<EReference> asmEG = asmUtils.all(EReference.class).filter(r -> r.getName().equals(eGraph.getName())).findAny();
         assertTrue(asmEG.isPresent());
         assertThat(asmEG.get().getLowerBound(), IsEqual.equalTo(eGraph.getCardinality().getLower()));
         assertThat(asmEG.get().getUpperBound(), IsEqual.equalTo(eGraph.getCardinality().getUpper()));
         assertTrue(asmEG.get().isDerived());
         assertTrue(asmEG.get().getEContainingClass().equals(asmAP.get()));
-        
+
         final Optional<EClass> asmMappedObject = asmUtils.all(EClass.class).filter(c -> c.getName().equals(mappedObject.getName())).findAny();
         assertTrue(asmMappedObject.isPresent());
         assertTrue(asmEG.get().getEType().equals(asmMappedObject.get()));
@@ -213,7 +192,7 @@ public class Psm2AsmAccessPointTest {
         assertFalse(egExprAnnotation.getDetails().containsKey("setter"));
         assertFalse(egExprAnnotation.getDetails().containsKey("setter.dialect"));
         assertTrue(egExprAnnotation.getEModelElement().equals(asmEG.get()));
-        
+
 //        final Optional<EReference> asmEG2 = asmUtils.all(EReference.class).filter(r -> r.getName().equals(eGraph2.getName())).findAny();
 //        assertTrue(asmEG2.isPresent());
 //        assertThat(asmEG2.get().getEAnnotation(EXPRESSION_SOURCE), IsNull.notNullValue());

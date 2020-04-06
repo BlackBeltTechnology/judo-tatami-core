@@ -1,12 +1,12 @@
 package hu.blackbelt.judo.tatami.asm2rdbms;
 
 import com.google.common.collect.ImmutableList;
-import hu.blackbelt.judo.meta.rdbms.RdbmsField;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.emf.ecore.EAnnotation;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.EcorePackage;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -14,6 +14,7 @@ import static org.eclipse.emf.ecore.util.builder.EcoreBuilders.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+@SuppressWarnings("OptionalGetWithoutIsPresent")
 @Slf4j
 public class Asm2RdbmsTypeMappingTest extends Asm2RdbmsMappingTestBase {
     private static final String INTEGER = "INTEGER";
@@ -25,21 +26,6 @@ public class Asm2RdbmsTypeMappingTest extends Asm2RdbmsMappingTestBase {
     private static final String BOOLEAN = "BOOLEAN";
     private static final String DATE = "DATE";
 
-    /**
-     * Asserts the fundamental properties of a RdbmsField
-     * @param rdbmsField RdbmsField to check
-     * @param expectedType name of the expected type
-     * @param expectedSize -1 if undefined
-     * @param expectedPrecision -1 if undefined
-     * @param expectedScale -1 if undefined
-     */
-    private void typeAsserter(final RdbmsField rdbmsField, final String expectedType,
-                              final int expectedSize, final int expectedPrecision, final int expectedScale) {
-        assertEquals(expectedType, rdbmsField.getName());
-        if(expectedSize > -1) assertEquals(expectedSize, rdbmsField.getSize());
-        if(expectedPrecision > -1) assertEquals(expectedPrecision, rdbmsField.getPrecision());
-        if(expectedScale > -1) assertEquals(expectedScale, rdbmsField.getScale());
-    }
 
     @Test
     @DisplayName("Test Numeric Types")
@@ -58,6 +44,7 @@ public class Asm2RdbmsTypeMappingTest extends Asm2RdbmsMappingTestBase {
                 .withName("TestNumericTypesClass")
                 .withEStructuralFeatures(
                         ImmutableList.of(
+                                // built in types
                                 newEAttributeBuilder()
                                         .withName("bigDecimalAttr")
                                         .withEType(ecore.getEBigDecimal())
@@ -126,45 +113,47 @@ public class Asm2RdbmsTypeMappingTest extends Asm2RdbmsMappingTestBase {
                 .size()); //+2 type and id
 
         // check field types based on typemapping table
-        assertTrue(rdbmsUtils.getRdbmsField(RDBMS_TABLE_NAME, "bigDecimalAttr", true).isPresent());
-        assertEquals(DECIMAL, rdbmsUtils.getRdbmsField(RDBMS_TABLE_NAME, "bigDecimalAttr", true)
-                .get().getRdbmsTypeName());
-//        assertEquals(64, rdbmsUtils.getRdbmsField(RDBMS_TABLE_NAME, "bigDecimalAttr", true)
-//                .get().getPrecision()); FIXME: Transformation error
-//        assertEquals(20, rdbmsUtils.getRdbmsField(RDBMS_TABLE_NAME, "bigDecimalAttr", true)
-//                .get().getScale()); FIXME: Transformation error
+//        typeAsserter(rdbmsUtils.getRdbmsField(RDBMS_TABLE_NAME, "bigDecimalAttr", true).get(),
+//                DECIMAL,
+//                -1,
+//                64,
+//                20);
+//        typeAsserter(rdbmsUtils.getRdbmsField(RDBMS_TABLE_NAME , "bigInteger", true).get(),
+//                DECIMAL,
+//                -1,
+//                18,
+//                0);
+        typeAsserter(rdbmsUtils.getRdbmsField(RDBMS_TABLE_NAME, "doubleAttr", true).get(),
+                DOUBLE,
+                -1,
+                -1,
+                -1);
+        typeAsserter(rdbmsUtils.getRdbmsField(RDBMS_TABLE_NAME, "longAttr", true).get(),
+                BIGINT,
+                -1,
+                -1,
+                -1);
+        typeAsserter(rdbmsUtils.getRdbmsField(RDBMS_TABLE_NAME, "floatAttr", true).get(),
+                FLOAT,
+                -1,
+                -1,
+                -1);
+        typeAsserter(rdbmsUtils.getRdbmsField(RDBMS_TABLE_NAME, "intAttr", true).get(),
+                INTEGER,
+                -1,
+                -1,
+                -1);
+        typeAsserter(rdbmsUtils.getRdbmsField(RDBMS_TABLE_NAME, "shortAttr", true).get(),
+                INTEGER,
+                -1,
+                -1,
+                -1);
+        typeAsserter(rdbmsUtils.getRdbmsField(RDBMS_TABLE_NAME, "byteAttr", true).get(),
+                INTEGER,
+                -1,
+                -1,
+                -1);
 
-        assertTrue(rdbmsUtils.getRdbmsField(RDBMS_TABLE_NAME, "bigInteger", true).isPresent());
-        assertEquals(DECIMAL, rdbmsUtils.getRdbmsField(RDBMS_TABLE_NAME , "bigInteger", true)
-                .get().getRdbmsTypeName());
-//        assertEquals(18, rdbmsUtils.getRdbmsField(RDBMS_TABLE_NAME , "bigInteger", true)
-//                .get().getPrecision()); FIXME: Transformation error
-        assertEquals(0, rdbmsUtils.getRdbmsField(RDBMS_TABLE_NAME , "bigInteger", true)
-                .get().getScale());
-
-        assertTrue(rdbmsUtils.getRdbmsField(RDBMS_TABLE_NAME, "doubleAttr", true).isPresent());
-        assertEquals(DOUBLE, rdbmsUtils.getRdbmsField(RDBMS_TABLE_NAME , "doubleAttr", true)
-                .get().getRdbmsTypeName());
-
-        assertTrue(rdbmsUtils.getRdbmsField(RDBMS_TABLE_NAME, "longAttr", true).isPresent());
-        assertEquals(BIGINT, rdbmsUtils.getRdbmsField(RDBMS_TABLE_NAME , "longAttr", true)
-                .get().getRdbmsTypeName());
-
-        assertTrue(rdbmsUtils.getRdbmsField(RDBMS_TABLE_NAME, "floatAttr", true).isPresent());
-        assertEquals(FLOAT, rdbmsUtils.getRdbmsField(RDBMS_TABLE_NAME , "floatAttr", true)
-                .get().getRdbmsTypeName());
-
-        assertTrue(rdbmsUtils.getRdbmsField(RDBMS_TABLE_NAME, "intAttr", true).isPresent());
-        assertEquals(INTEGER, rdbmsUtils.getRdbmsField(RDBMS_TABLE_NAME , "intAttr", true)
-                .get().getRdbmsTypeName());
-
-        assertTrue(rdbmsUtils.getRdbmsField(RDBMS_TABLE_NAME, "shortAttr", true).isPresent());
-        assertEquals(INTEGER, rdbmsUtils.getRdbmsField(RDBMS_TABLE_NAME , "shortAttr", true)
-                .get().getRdbmsTypeName());
-
-        assertTrue(rdbmsUtils.getRdbmsField(RDBMS_TABLE_NAME, "byteAttr", true).isPresent());
-        assertEquals(INTEGER, rdbmsUtils.getRdbmsField(RDBMS_TABLE_NAME , "byteAttr", true)
-                .get().getRdbmsTypeName());
     }
 
     @Test
@@ -184,11 +173,6 @@ public class Asm2RdbmsTypeMappingTest extends Asm2RdbmsMappingTestBase {
                 .withName("TestStringlikeTypesClass")
                 .withEStructuralFeatures(
                         ImmutableList.of(
-                                //there are no rules to transform char
-//                                newEAttributeBuilder()
-//                                        .withName("charAttr")
-//                                        .withEType(ecore.getEChar())
-//                                        .build(),
                                 newEAttributeBuilder()
                                         .withName("stringAttr")
                                         .withEType(ecore.getEString())
@@ -228,11 +212,11 @@ public class Asm2RdbmsTypeMappingTest extends Asm2RdbmsMappingTestBase {
 
 
         // check field types based on typemapping table
-        assertTrue(rdbmsUtils.getRdbmsField(RDBMS_TABLE_NAME, "stringAttr", true).isPresent());
-        assertEquals(VARCHAR, rdbmsUtils.getRdbmsField(RDBMS_TABLE_NAME , "stringAttr", true)
-                .get().getRdbmsTypeName());
-        assertEquals(255, rdbmsUtils.getRdbmsField(RDBMS_TABLE_NAME , "stringAttr", true)
-                .get().getSize());
+        typeAsserter(rdbmsUtils.getRdbmsField(RDBMS_TABLE_NAME, "stringAttr", true).get(),
+                VARCHAR,
+                255,
+                -1,
+                -1);
     }
 
     @Test
@@ -291,9 +275,11 @@ public class Asm2RdbmsTypeMappingTest extends Asm2RdbmsMappingTestBase {
                 .size()); //+2 type and id
 
         // check field types based on typemapping table
-        assertTrue(rdbmsUtils.getRdbmsField(RDBMS_TABLE_NAME, "dateAttr", true).isPresent());
-        assertEquals(DATE, rdbmsUtils.getRdbmsField(RDBMS_TABLE_NAME , "dateAttr", true)
-                .get().getRdbmsTypeName());
+        typeAsserter(rdbmsUtils.getRdbmsField(RDBMS_TABLE_NAME, "dateAttr", true).get(),
+                DATE,
+                -1,
+                -1,
+                -1);
     }
 
     @Test
@@ -354,6 +340,13 @@ public class Asm2RdbmsTypeMappingTest extends Asm2RdbmsMappingTestBase {
         assertTrue(rdbmsUtils.getRdbmsField(RDBMS_TABLE_NAME, "booleanAttr", true).isPresent());
         assertEquals(BOOLEAN, rdbmsUtils.getRdbmsField(RDBMS_TABLE_NAME , "booleanAttr", true)
                 .get().getRdbmsTypeName());
+    }
+
+    @Test
+    @Disabled
+    @DisplayName("Test Custom Types")
+    public void testCustomTypes() {
+        //TODO
     }
 
 }
