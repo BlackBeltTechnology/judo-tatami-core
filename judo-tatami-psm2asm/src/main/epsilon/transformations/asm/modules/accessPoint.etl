@@ -1,6 +1,26 @@
 import "../utils/_importUtils.eol";
 import "operation.etl";
 
+rule CreateActorTypeAnnotation
+    transform s : JUDOPSM!ActorType
+    to t : ASM!EAnnotation {
+        t.source = asmUtils.getAnnotationUri("actor");
+
+        var actorName = new ASM!EStringToStringMapEntry;
+        actorName.key = "name";
+        actorName.value = psmUtils.namespaceElementToString(s);
+        t.details.add(actorName);
+
+        if (s.realm.isDefined()) {
+            var realm = new ASM!EStringToStringMapEntry;
+            realm.key = "realm";
+            realm.value = s.realm;
+            t.details.add(realm);
+        }
+
+        s.transferObjectType.asmEquivalent().eAnnotations.add(t);
+}
+
 @greedy
 rule CreateAccessPointAnnotation
     transform s : JUDOPSM!TransferObjectType
