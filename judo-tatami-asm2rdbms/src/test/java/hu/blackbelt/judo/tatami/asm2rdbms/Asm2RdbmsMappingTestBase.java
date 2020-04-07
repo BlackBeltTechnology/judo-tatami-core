@@ -2,13 +2,14 @@ package hu.blackbelt.judo.tatami.asm2rdbms;
 
 import hu.blackbelt.epsilon.runtime.execution.impl.Slf4jLog;
 import hu.blackbelt.judo.meta.asm.runtime.AsmModel;
-import hu.blackbelt.judo.meta.rdbms.RdbmsField;
 import hu.blackbelt.judo.meta.rdbms.runtime.RdbmsModel;
 import hu.blackbelt.judo.meta.rdbms.runtime.RdbmsUtils;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 
 import java.io.File;
+import java.io.IOException;
 
 import static hu.blackbelt.judo.meta.asm.runtime.AsmModel.SaveArguments.asmSaveArgumentsBuilder;
 import static hu.blackbelt.judo.meta.asm.runtime.AsmModel.buildAsmModel;
@@ -18,8 +19,6 @@ import static hu.blackbelt.judo.meta.rdbmsDataTypes.support.RdbmsDataTypesModelR
 import static hu.blackbelt.judo.meta.rdbmsNameMapping.support.RdbmsNameMappingModelResourceSupport.registerRdbmsNameMappingMetamodel;
 import static hu.blackbelt.judo.meta.rdbmsRules.support.RdbmsTableMappingRulesModelResourceSupport.registerRdbmsTableMappingRulesMetamodel;
 import static hu.blackbelt.judo.tatami.asm2rdbms.Asm2Rdbms.*;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @Slf4j
 public class Asm2RdbmsMappingTestBase {
@@ -35,24 +34,6 @@ public class Asm2RdbmsMappingTestBase {
 
     protected RdbmsUtils rdbmsUtils;
 
-
-    /**
-     * Asserts the fundamental properties of a RdbmsField
-     * @param rdbmsField RdbmsField to check
-     * @param expectedType name of the expected type
-     * @param expectedSize -1 if undefined
-     * @param expectedPrecision -1 if undefined
-     * @param expectedScale -1 if undefined
-     */
-    protected void typeAsserter(final RdbmsField rdbmsField, final String expectedType,
-                              final int expectedSize, final int expectedPrecision, final int expectedScale) {
-        assertNotNull(rdbmsField);
-        assertEquals(expectedType, rdbmsField.getRdbmsTypeName());
-        assertEquals(expectedSize, rdbmsField.getSize());
-        assertEquals(expectedPrecision, rdbmsField.getPrecision());
-        assertEquals(expectedScale, rdbmsField.getScale());
-    }
-
     @BeforeEach
     protected void setUp() {
         logger = new Slf4jLog(log);
@@ -65,7 +46,8 @@ public class Asm2RdbmsMappingTestBase {
         registerRdbmsTableMappingRulesMetamodel(rdbmsModel.getResourceSet());
     }
 
-    protected void executeTransformation(String testName) throws Exception {
+    @SneakyThrows
+    protected void executeTransformation(String testName) {
         Asm2RdbmsTransformationTrace asm2RdbmsTransformationTrace = executeAsm2RdbmsTransformation(asmModel, rdbmsModel, new Slf4jLog(log),
                 calculateAsm2RdbmsTransformationScriptURI(),
                 calculateAsm2RdbmsModelURI(), "hsqldb");
@@ -80,13 +62,17 @@ public class Asm2RdbmsMappingTestBase {
         rdbmsUtils = new RdbmsUtils(rdbmsModel);
         logger.debug("Create rdbms model support from transformed rdbms model");
 
-        asmModel.saveAsmModel(asmSaveArgumentsBuilder()
-                .file(new File(TARGET_TEST_CLASSES, testName + "-" + ASM_MODEL_NAME + ".model")));
-        logger.debug("Save asm model");
-        rdbmsModel.saveRdbmsModel(rdbmsSaveArgumentsBuilder()
-                .file(new File(TARGET_TEST_CLASSES, testName + "-" + RDBMS_MODEL_NAME + ".model")));
-        logger.debug("Save transformed rdbms model");
-        asm2RdbmsTransformationTrace.save(new File(TARGET_TEST_CLASSES, testName + "-" + "Asm2RdbmsTransformationTrace.model"));
+        try {
+            asmModel.saveAsmModel(asmSaveArgumentsBuilder()
+                    .file(new File(TARGET_TEST_CLASSES, testName + "-" + ASM_MODEL_NAME + ".model")));
+            logger.debug("Save asm model");
+            rdbmsModel.saveRdbmsModel(rdbmsSaveArgumentsBuilder()
+                    .file(new File(TARGET_TEST_CLASSES, testName + "-" + RDBMS_MODEL_NAME + ".model")));
+            logger.debug("Save transformed rdbms model");
+            asm2RdbmsTransformationTrace.save(new File(TARGET_TEST_CLASSES, testName + "-" + "Asm2RdbmsTransformationTrace.model"));
+        } catch (IOException e) {
+            logger.debug("Unable to save model(s)");
+        }
     }
 
 }
