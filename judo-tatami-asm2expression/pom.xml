@@ -65,7 +65,11 @@
 						<artifactId>judo-tatami-psm2measure</artifactId>
 						<version>${project.version}</version>
 					</dependency>
-
+					<dependency>
+						<groupId>hu.blackbelt.judo.meta</groupId>
+						<artifactId>hu.blackbelt.judo.meta.expression.model</artifactId>
+						<version>${judo-meta-expression-version}</version>
+					</dependency>
 				</dependencies>
 			</plugin>
 
