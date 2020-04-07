@@ -139,15 +139,15 @@ public class Asm2RdbmsRelationMappingTest extends Asm2RdbmsMappingTestBase {
         assertEquals(3, rdbmsUtils.getRdbmsTables()
                 .orElseThrow(() -> new RuntimeException("No tables were found")).size());
 
-        assertTrue(rdbmsUtils.getRdbmsTable(RDBMS_TABLE_NAME_TO).isPresent());
-        assertTrue(rdbmsUtils.getRdbmsTable(RDBMS_TABLE_NAME_FROM).isPresent());
+        assertEquals(2, rdbmsUtils.getRdbmsFields(RDBMS_TABLE_NAME_TO)
+                .orElseThrow(() -> new RuntimeException(RDBMS_TABLE_NAME_TO + " table not found"))
+                .size());
+        assertEquals(2, rdbmsUtils.getRdbmsFields(RDBMS_TABLE_NAME_FROM)
+                .orElseThrow(() -> new RuntimeException(RDBMS_TABLE_NAME_FROM + " table not found"))
+                .size());
 
         // check junction table
-        assertEquals(1, rdbmsUtils.getRdbmsJunctionTables()
-                .orElseThrow(() -> new RuntimeException("No junction tables were found")).size());
-
         assertTrue(rdbmsUtils.getRdbmsJunctionTable(RDBMS_TABLE_NAME_FROM + "#" + ONE_WAY_REFERENCE + " to " + RDBMS_TABLE_NAME_TO).isPresent());
-
 
         // check if RdbmsForeignKey not exists unnecessarily
         assertFalse(rdbmsUtils.getRdbmsForeignKey(RDBMS_TABLE_NAME_FROM, ONE_WAY_REFERENCE, false).isPresent());
@@ -212,9 +212,10 @@ public class Asm2RdbmsRelationMappingTest extends Asm2RdbmsMappingTestBase {
 
         // check if RdbmsForeignKey is valid
         assertEquals(rdbmsUtils.getRdbmsTable(RDBMS_TABLE_NAME_TO)
-                        .orElseThrow(() -> new RuntimeException("No " + RDBMS_TABLE_NAME_TO + " were found")).getPrimaryKey(),
+                        .orElseThrow(() -> new RuntimeException(RDBMS_TABLE_NAME_TO + " table not found"))
+                        .getPrimaryKey(),
                 rdbmsUtils.getRdbmsForeignKey(RDBMS_TABLE_NAME_FROM, ONE_WAY_REFERENCE, false)
-                        .orElseThrow(() -> new RuntimeException("No " + RDBMS_TABLE_NAME_FROM + "#" + ONE_WAY_REFERENCE + " were found"))
+                        .orElseThrow(() -> new RuntimeException(ONE_WAY_REFERENCE + " attribute not found"))
                         .getReferenceKey());
     }
 
@@ -222,7 +223,6 @@ public class Asm2RdbmsRelationMappingTest extends Asm2RdbmsMappingTestBase {
     /////////////// TWO WAY RELATIONS ////////////////
 
     @Test
-    @Disabled //FIXME
     @DisplayName("Test TwoWayRelation With Null To One Cardinalities")
     public void testTwoWayRelationWithNullToOneCardinalities() {
         // create annotations
@@ -294,8 +294,7 @@ public class Asm2RdbmsRelationMappingTest extends Asm2RdbmsMappingTestBase {
         assertEquals(2, rdbmsUtils.getRdbmsTables()
                 .orElseThrow(() -> new RuntimeException("No tables were found")).size());
 
-        //FIXME: attribures of asm model get consumed during transformation
-        assertEquals(3, rdbmsUtils.getRdbmsFields(RDBMS_TABLE_NAME_1)
+        assertEquals(2, rdbmsUtils.getRdbmsFields(RDBMS_TABLE_NAME_1)
                 .orElseThrow(() -> new RuntimeException(RDBMS_TABLE_NAME_1 + " table not found"))
                 .size()); //+2 id and type
 
@@ -303,20 +302,101 @@ public class Asm2RdbmsRelationMappingTest extends Asm2RdbmsMappingTestBase {
                 .orElseThrow(() -> new RuntimeException(RDBMS_TABLE_NAME_2 + " table not found"))
                 .size());  //+2 id and type
 
-        //FIXME: attribures of asm model get consumed during transformation
-        assertEquals(rdbmsUtils.getRdbmsTable(RDBMS_TABLE_NAME_2)
-                        .orElseThrow(() -> new RuntimeException(RDBMS_TABLE_NAME_2 + " table not found"))
-                        .getPrimaryKey(),
-                rdbmsUtils.getRdbmsForeignKey(RDBMS_TABLE_NAME_1, TWO_WAY_REFERENCE2, false)
-                        .orElseThrow(() -> new RuntimeException(TWO_WAY_REFERENCE2 + " attribute not found"))
-                        .getReferenceKey());
-
         assertEquals(rdbmsUtils.getRdbmsTable(RDBMS_TABLE_NAME_1)
                         .orElseThrow(() -> new RuntimeException(RDBMS_TABLE_NAME_1 + " table not found"))
                         .getPrimaryKey(),
                 rdbmsUtils.getRdbmsForeignKey(RDBMS_TABLE_NAME_2, TWO_WAY_REFERENCE1, false)
                         .orElseThrow(() -> new RuntimeException(TWO_WAY_REFERENCE1 + " attribute not found"))
                         .getReferenceKey());
+    }
+
+    @Test
+    @DisplayName("Test TwoWayRelation With Null To Infinite Cardinalities")
+    public void testTwoWayRelationWithNullToInfiniteCardinalities() {
+        // create annotations
+        final EAnnotation eAnnotation = newEAnnotationBuilder()
+                .withSource("http://blackbelt.hu/judo/meta/ExtendedMetadata/entity")
+                .build();
+
+        eAnnotation.getDetails().put("value", "true");
+
+        final EAnnotation eAnnotation2 = newEAnnotationBuilder()
+                .withSource("http://blackbelt.hu/judo/meta/ExtendedMetadata/entity")
+                .build();
+
+        eAnnotation2.getDetails().put("value", "true");
+
+        // create classes
+        final EClass twoWayRelation1 = newEClassBuilder()
+                .withName("TwoWayRelation1")
+                .withEAnnotations(eAnnotation)
+                .build();
+
+        final EClass twoWayRelation2 = newEClassBuilder()
+                .withName("TwoWayRelation2")
+                .withEAnnotations(eAnnotation2)
+                .build();
+
+        // create references
+        final EReference twoWayReference1 = newEReferenceBuilder()
+                .withName("twoWayReference1")
+                .withLowerBound(0)
+                .withUpperBound(-1)
+                .withEType(twoWayRelation1)
+                .build();
+
+        final EReference twoWayReference2 = newEReferenceBuilder()
+                .withName("twoWayReference2")
+                .withLowerBound(0)
+                .withUpperBound(-1)
+                .withEType(twoWayRelation2)
+                .build();
+
+        // add opposites
+        twoWayReference1.setEOpposite(twoWayReference2);
+        twoWayReference2.setEOpposite(twoWayReference1);
+
+        // add references
+        twoWayRelation1.getEStructuralFeatures().add(twoWayReference2);
+        twoWayRelation2.getEStructuralFeatures().add(twoWayReference1);
+
+        // create package
+        final EPackage ePackage = newEPackageBuilder()
+                .withName("TestEpackage")
+                .withEClassifiers(ImmutableList.of(twoWayRelation1, twoWayRelation2))
+                .withNsPrefix("test")
+                .withNsURI("http:///com.example.test.ecore")
+                .build();
+
+        // add content to asm model
+        asmModel.addContent(ePackage);
+
+        executeTransformation("testTwoWayRelationWithNullToInfiniteCardinalities");
+
+        final String RDBMS_TABLE_NAME_1 = "TestEpackage.TwoWayRelation1";
+        final String RDBMS_TABLE_NAME_2 = "TestEpackage.TwoWayRelation2";
+        final String TWO_WAY_REFERENCE1 = "twoWayReference1";
+        final String TWO_WAY_REFERENCE2 = "twoWayReference2";
+
+        // check if tables exist
+        assertEquals(3, rdbmsUtils.getRdbmsTables()
+                .orElseThrow(() -> new RuntimeException("No tables were found"))
+                .size());
+
+        assertEquals(2, rdbmsUtils.getRdbmsFields(RDBMS_TABLE_NAME_1)
+                .orElseThrow(() -> new RuntimeException(RDBMS_TABLE_NAME_1 + " table not found"))
+                .size()); //+2 id and type
+
+        assertEquals(2, rdbmsUtils.getRdbmsFields(RDBMS_TABLE_NAME_2)
+                .orElseThrow(() -> new RuntimeException(RDBMS_TABLE_NAME_2 + " table not found"))
+                .size());  //+2 id and type
+
+        // check junction table
+//        assertTrue(rdbmsUtils.getRdbmsJunctionTable(RDBMS_TABLE_NAME_FROM + "#" + ONE_WAY_REFERENCE + " to " + RDBMS_TABLE_NAME_TO).isPresent());
+
+        // check if RdbmsForeignKey not exists unnecessarily
+        assertFalse(rdbmsUtils.getRdbmsForeignKey(RDBMS_TABLE_NAME_1, TWO_WAY_REFERENCE2, false).isPresent());
+        assertFalse(rdbmsUtils.getRdbmsForeignKey(RDBMS_TABLE_NAME_2, TWO_WAY_REFERENCE1, false).isPresent());
     }
 
 }
