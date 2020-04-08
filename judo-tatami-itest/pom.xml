@@ -312,6 +312,24 @@
                 </plugins>
             </build>
         </profile>
+        <profile>
+            <id>all-itest</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>all-itest</id>
+                            </execution>
+                        </executions>
+                        <configuration>
+                            <groups>hu.blackbelt.judo.tatami.itest.ESMTestSuite,hu.blackbelt.judo.tatami.itest.PSMTestSuite,hu.blackbelt.judo.tatami.itest.JaxRSTestSuite</groups>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
 
     </profiles>
 
