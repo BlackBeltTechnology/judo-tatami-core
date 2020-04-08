@@ -119,6 +119,8 @@
         <feature dependency="true">epsilon-runtime</feature>
         <feature>judo-tatami-meta-asm</feature>
         <bundle>mvn:hu.blackbelt.judo/judo-dao-api/${judo-dao-api-version}</bundle>
+        <bundle>mvn:hu.blackbelt.judo/judo-dispatcher-api/${judo-dispatcher-api-version}</bundle>
+        <bundle>mvn:hu.blackbelt.judo/judo-operation-utils/${judo-operation-utils-version}</bundle>
         <bundle>mvn:hu.blackbelt.judo.tatami/judo-tatami-core/${project.version}</bundle>
     </feature>
 

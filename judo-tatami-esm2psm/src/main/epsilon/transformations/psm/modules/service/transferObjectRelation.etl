@@ -102,25 +102,12 @@ rule CreateTransferObjectRelationForDefaultTransferObjectType
       s.eContainer.equivalent("CreateDefaultMappedTransferObjectTypeForEntity").relations.add(t);
       t.defaultValue = s.equivalent("CreateStaticNavigationForTransferObjectRelationDefaultValue");
       t.range = s.equivalent("CreateNavigationPropertyForTransferObjectRelationRange");
+      t.embedded = s.aggregation;
       
 //      t.get = s.equivalent("CreateGetOperationForTransferObjectRelation");
 //      t.create = s.equivalent("CreateCreateOperationForTransferObjectRelation");
 //      t.update = s.equivalent("CreateUpdateOperationForTransferObjectRelation");
 //      t.`delete` = s.equivalent("CreateDeleteOperationForTransferObjectRelation");
-      
-      if (s.containment) {
-        if (s.isCreateAllowed()) {
-            t.embeddedCreate = true;
-        }
-        
-        if (s.isUpdateAllowed()) {
-            t.embeddedUpdate = true;
-        }
-        
-        if (s.isDeleteAllowed()) {
-            t.embeddedDelete = true;
-        }
-      }
       
       log.debug("Created TransferObjectRelation for DefaultTransferObjectType: [" + t.name + "] into [" + t.eContainer.name + "]");
 }
@@ -133,8 +120,16 @@ rule CreateTransferObjectRelationForDefaultTransferObjectTypeFromOneWayRelationM
            and s.relationMemberType == ESM!RelationMemberType#RELATION
            and s.containment
            
-      t.embedded = s.containment;
-      
+      if (s.isCreateAllowed()) {
+          t.embeddedCreate = true;
+      }
+      if (s.isUpdateAllowed()) {
+          t.embeddedUpdate = true;
+      }
+      if (s.isDeleteAllowed()) {
+          t.embeddedDelete = true;
+      }
+
       t.binding = s.equivalent("CreateContainment");
       
       log.debug("Created TransferObjectRelation for DefaultTransferObjectType: [" + t.name + "] into [" + t.eContainer.name + "]");
@@ -148,7 +143,7 @@ rule CreateTransferObjectRelationForDefaultTransferObjectTypeFromOneWayRelationM
            and s.relationMemberType == ESM!RelationMemberType#RELATION
            and not s.containment
            
-      t.embedded = s.containment;
+      t.embedded = s.aggregation;
       t.binding = s.equivalent("CreateAssociationEndWithoutPartner");
       
       log.debug("Created TransferObjectRelationFromTwoWayRelationMember: [" + t.name + "] into [" + t.eContainer.name + "]");
@@ -161,7 +156,6 @@ rule CreateTransferObjectRelationForDefaultTransferObjectTypeFromOneWayRelationM
       guard: s.eContainer.isKindOf(ESM!EntityType)
            and s.relationMemberType == ESM!RelationMemberType#PROPERTY
            
-      t.embedded = s.containment;
       t.binding = s.equivalent("CreateNavigationProperty");
       
       log.debug("Created TransferObjectRelationFromTwoWayRelationMember: [" + t.name + "] into [" + t.eContainer.name + "]");
@@ -172,8 +166,6 @@ rule CreateTransferObjectRelationForDefaultTransferObjectTypeFromTwoWayRelationM
     to t: JUDOPSM!TransferObjectRelation
     extends CreateTransferObjectRelationForDefaultTransferObjectType {
       guard: s.eContainer.isKindOf(ESM!EntityType)
-           
-      t.embedded = s.aggregation;
       
       t.binding = s.equivalent("CreateAssociationEndWithPartner");
       

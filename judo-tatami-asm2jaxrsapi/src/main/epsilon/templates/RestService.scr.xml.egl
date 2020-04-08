@@ -7,10 +7,11 @@
   <service>
     <provide interface="[%= packagePath %].[%= className %]"/>
     <reference
-         interface="hu.blackbelt.judo.tatami.core.Dispatcher"
+         interface="hu.blackbelt.judo.dispatcher.api.Dispatcher"
          name="__dispatcher"
          policy="dynamic"
          policy-option="greedy"
+         target="(judo.model.name=[%= modelName %])"
          bind="__bindDispatcher"
          unbind="__unbindDispatcher"/>
   </service>

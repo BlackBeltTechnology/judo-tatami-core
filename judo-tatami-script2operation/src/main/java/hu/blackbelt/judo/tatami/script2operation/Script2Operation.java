@@ -53,23 +53,27 @@ public class Script2Operation {
 
                     String operationFQName = String.valueOf(binding.getTypeName()).replace("::", ".") + "#" + binding.getOperationName();
 
+                    String modelName = scriptModel.getName();
+
                     sourceCodesByFqName.put(packageName + "." + unitName, sourceCode);
                     scrXmlFilesByFqName.put(packageName + "." + unitName,
 
-                        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+                    "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
                         "<scr:component xmlns:scr=\"http://www.osgi.org/xmlns/scr/v1.3.0\" name=\"" + packageName + "." + unitName + "\" immediate=\"true\">\n" +
                         "    <implementation class=\"" + packageName + "." + unitName + "\"/>\n" +
-                        "    <property name=\"operation.name\">" + operationFQName + "</property>\n" +
-                        "    <property name=\"script\">true</property>\n" +
+                        "    <property name=\"judo.model.name\" value=\"" + modelName + "\"/>\n" +
+                        "    <property name=\"operation.name\" value=\"" + operationFQName + "\"/>\n" +
+                        "    <property name=\"script\" value=\"true\"/>\n" +
                         "    <service>\n" +
-                        "        <provide interface=\"java.util.Function\"/>\n" +
+                        "        <provide interface=\"java.util.function.Function\"/>\n" +
                         "    </service>\n" +
-                        "    <reference name=\"dao\" interface=\"hu.blackbelt.judo.dao.api.DAO\" field=\"dao\"/>\n" +
+                        "    <reference name=\"dao\" interface=\"hu.blackbelt.judo.dao.api.DAO\" field=\"dao\" target=\"(judo.model.name=" + modelName + ")\"/>\n" +
+                        "    <reference name=\"dispatcher\" interface=\"hu.blackbelt.judo.dispatcher.api.Dispatcher\" field=\"dispatcher\" target=\"(judo.model.name=" + modelName + ")\"/>\n" +
+                        "    <reference name=\"asmModel\" interface=\"hu.blackbelt.judo.meta.asm.runtime.AsmModel\" bind=\"setAsmModel\" target=\"(name=" + modelName + ")\"/>\n" +
                         "    <reference name=\"identifierProvider\" interface=\"hu.blackbelt.judo.dao.api.IdentifierProvider\" field=\"idProvider\"/>\n" +
                         "\n" +
                         "</scr:component>\n"
                     );
-
                 });
 
         if (log.isDebugEnabled()) {
@@ -148,7 +152,14 @@ public class Script2Operation {
                         "osgi.extender;filter:=\"(&(osgi.extender=osgi.component)(version>=1.3.0)(!(version>=2.0.0)))\"")
                 .set( Constants.IMPORT_PACKAGE,
                         "org.osgi.framework;version=\"[1.8,2.0)\"," +
-                        "hu.blackbelt.judo.dao.api;version=\"[1.0,2.0)\""
+                        "hu.blackbelt.judo.dao.api;version=\"[1.0,2.0)\"," +
+                        "hu.blackbelt.judo.dispatcher.api;version=\"[1.0,2.0)\"," +
+                        "hu.blackbelt.judo.meta.asm.runtime;version=\"[1.0,2.0)\"," +
+                        "hu.blackbelt.judo.operation.utils;version=\"[1.0,2.0)\"," +
+                        "org.eclipse.emf.ecore," +
+                        "org.eclipse.emf.common," +
+                        "org.eclipse.emf.common.util," +
+                        "org.slf4j;version=\"1.7.2\""
                 );
 
         if (exportedPackages.size() > 0) {

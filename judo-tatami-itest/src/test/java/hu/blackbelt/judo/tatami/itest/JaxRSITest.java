@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.jaxrs.json.JacksonJaxbJsonProvider;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import hu.blackbelt.judo.tatami.core.Dispatcher;
+import hu.blackbelt.judo.dispatcher.api.Dispatcher;
 import hu.blackbelt.osgi.utils.osgi.api.BundleTrackerManager;
 import org.junit.Before;
 import org.junit.Test;
@@ -31,8 +31,10 @@ import javax.ws.rs.core.Response;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.time.ZonedDateTime;
+import java.time.OffsetDateTime;
+import java.util.Dictionary;
 import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -65,10 +67,10 @@ import static restdto.demo.services.ProductInfo.productInfoBuilder;
 public class JaxRSITest {
     private static final String BASE_URL = "http://localhost:8181/cxf/demo";
 
-    private static final String DEMO_SERVICE_GET_ALL_INTERNATIONAL_ORDERS = "/demo/services/InternationalOrderInfo/getAllInternationalOrders";
-    private static final String DEMO_SERVICE_CREATE_INTERNATIONAL_ORDER = "/demo/services/InternationalOrderInfo/createInternationalOrder";
+    private static final String DEMO_SERVICE_GET_ALL_INTERNATIONAL_ORDERS = "/internalAP/internationalOrders/get";
+    private static final String DEMO_SERVICE_CREATE_INTERNATIONAL_ORDER = "/internalAP/internationalOrders/create";
 
-    private static final String DEMO_SERVICE_DELETE_ORDER_ITEM = "/demo/services/OrderInfo/deleteItem";
+    private static final String DEMO_SERVICE_DELETE_ORDER_ITEM = "/services/OrderInfo/items/delete";
 
     public static final String FEATURE_JUDO_TATAMI_CORE = "judo-tatami-core";
 
@@ -195,10 +197,10 @@ public class JaxRSITest {
         Map<String, Object> testMap = new HashMap<>();
 
         //getAllInternationalOrders (input: none, output: collection<InternationalOrderInfo>), required (InternationalOrderInfo): orderDate
-        testMap.put("demo.services.InternationalOrderInfo#getAllInternationalOrders", ImmutableList.of(
+        testMap.put("demo.internalAP#getAllInternationalOrders", ImmutableList.of(
                 internationalOrderInfoBuilder()
                         .shipperName("shipperNameInInternationalOrderInfo0")
-                        .orderDate(ZonedDateTime.now())
+                        .orderDate(OffsetDateTime.now())
                         .items(ImmutableList.of(
                                 orderItemBuilder().productName("productName0").quantity(42).discount(2.71).product(
                                         productInfoBuilder().productName("productName").unitPrice(3.14).category(
@@ -215,10 +217,10 @@ public class JaxRSITest {
                                         categoryInfoBuilder().categoryName("categoryNameInOrderItem").build()
                                 ).build()))
                         .build().toMap(),
-                internationalOrderInfoBuilder().shipperName("shipperNameInInternationalOrderInfo1").orderDate(ZonedDateTime.now()).build().toMap()));
+                internationalOrderInfoBuilder().shipperName("shipperNameInInternationalOrderInfo1").orderDate(OffsetDateTime.now()).build().toMap()));
 
         //createOrder (input: OrderInfo, output: OrderInfo), required (OrderInfo): orderDate
-        testMap.put("demo.services.InternationalOrderInfo#createInternationalOrder", orderInfoBuilder().shipperName("shipperNameInNewInternationalOrderInfo").orderDate(ZonedDateTime.now()).build().toMap());
+        testMap.put("demo.internalAP#createInternationalOrder", orderInfoBuilder().shipperName("shipperNameInNewInternationalOrderInfo").orderDate(OffsetDateTime.now()).build().toMap());
 
         return testMap;
     }
@@ -241,7 +243,7 @@ public class JaxRSITest {
                     log.log(LOG_INFO, "Dispatcher called - " + operationFqName + " Payload: " + payload.toString());
 
                     switch (operationFqName) {
-                        case "demo.services.InternationalOrderInfo#createInternationalOrder":
+                        case "demo.internalAP#createInternationalOrder":
                             checkArgument(!((Map) payload.get("input")).isEmpty(), "Payload of create must not be empty");
                             break;
                         case "demo.services.OrderInfo#deleteItem":
@@ -253,11 +255,13 @@ public class JaxRSITest {
                     if (!testMap.containsKey(operationFqName)) {
                         return ImmutableMap.of();
                     } else {
-                        return ImmutableMap.of(Dispatcher.OUTPUT_PARAMETER_NAME, testMap.get(operationFqName));
+                        return ImmutableMap.of("output", testMap.get(operationFqName));
                     }
                 }
             };
-            bundleContext.registerService(Dispatcher.class, dispatcher, null);
+            Dictionary<String, Object> props = new Hashtable<>();
+            props.put("judo.model.name", "demo");
+            bundleContext.registerService(Dispatcher.class, dispatcher, props);
 
             waitWebPage(BASE_URL + "/?_wadl");
             bundleContext.registerService(Semaphore.class, new Semaphore(), null);
@@ -339,7 +343,7 @@ public class JaxRSITest {
     public void testCreateInternationalOrder() {
         logTest(DEMO_SERVICE_CREATE_INTERNATIONAL_ORDER);
 
-        Response response = getResponse(DEMO_SERVICE_CREATE_INTERNATIONAL_ORDER, orderInfoBuilder().orderDate(ZonedDateTime.now()).build());
+        Response response = getResponse(DEMO_SERVICE_CREATE_INTERNATIONAL_ORDER, orderInfoBuilder().orderDate(OffsetDateTime.now()).build());
 
         assertNotNull(response);
         assertTrue(response.getStatusInfo().getFamily().equals(Response.Status.Family.SUCCESSFUL));

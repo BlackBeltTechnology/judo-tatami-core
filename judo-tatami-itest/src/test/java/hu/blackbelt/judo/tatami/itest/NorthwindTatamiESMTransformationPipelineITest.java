@@ -2,12 +2,12 @@ package hu.blackbelt.judo.tatami.itest;
 
 import com.fasterxml.jackson.jaxrs.json.JacksonJaxbJsonProvider;
 import com.google.common.collect.ImmutableMap;
+import hu.blackbelt.judo.dispatcher.api.Dispatcher;
 import hu.blackbelt.judo.meta.asm.runtime.AsmUtils;
 import hu.blackbelt.judo.meta.rdbms.RdbmsIdentifierField;
 import hu.blackbelt.judo.meta.rdbms.RdbmsTable;
 import hu.blackbelt.judo.meta.rdbms.RdbmsValueField;
 import hu.blackbelt.judo.meta.rdbms.runtime.RdbmsModel;
-import hu.blackbelt.judo.tatami.core.Dispatcher;
 import hu.blackbelt.judo.tatami.core.TransformationTrace;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
@@ -30,6 +30,8 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.Collection;
+import java.util.Dictionary;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -38,6 +40,7 @@ import java.util.stream.Collectors;
 import static hu.blackbelt.judo.tatami.itest.TestUtility.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
+import static org.junit.Assert.assertNotNull;
 import static org.ops4j.pax.exam.CoreOptions.provision;
 import static org.ops4j.pax.tinybundles.core.TinyBundles.bundle;
 import static org.ops4j.pax.tinybundles.core.TinyBundles.withBnd;
@@ -52,8 +55,7 @@ public class NorthwindTatamiESMTransformationPipelineITest extends TatamiESMTran
     private static final String BASE_URL = "http://localhost:8181/cxf/northwind";
     private static final String NORTHWIND_ENTITIES_ORDER = "northwind.entities.Order";
     private static final String NORTHWIND = "northwind-esm";
-//    private static final String NORTHWIND_SERVICE_GET_ALL_ORDERS = "/northwind/service/getAllOrders";
-//    private static final String NORTHWIND_SERVICE_GET_ALL_INTERNATIONAL_ORDERS = "/northwind/service/getAllInternationalOrders";
+    private static final String NORTHWIND_SERVICE_GET_ALL_INTERNATIONAL_ORDERS = "/InternalAP/allInternationalOrders";
 
     @Override
     public Option getProvisonModelBundle() throws FileNotFoundException {
@@ -135,14 +137,16 @@ public class NorthwindTatamiESMTransformationPipelineITest extends TatamiESMTran
                 return ImmutableMap.<String, Object>of();
             }
         };
-        bundleContext.registerService(Dispatcher.class, dispatcher, null);
+        AsmUtils asmUtils = new AsmUtils(asmModel.getResourceSet());
+        Dictionary<String, Object> props = new Hashtable<>();
+        props.put("judo.model.name", asmUtils.getModel().get().getName());
+        bundleContext.registerService(Dispatcher.class, dispatcher, props);
 
         waitWebPage(BASE_URL + "/?_wadl");
 
         assertBundleStarted(bundleContext, NORTHWIND + "-asm2jaxrsapi");
 
-//        assertNotNull(getResponse(NORTHWIND_SERVICE_GET_ALL_ORDERS));
-//        assertNotNull(getResponse(NORTHWIND_SERVICE_GET_ALL_INTERNATIONAL_ORDERS));
+        assertNotNull(getResponse(NORTHWIND_SERVICE_GET_ALL_INTERNATIONAL_ORDERS));
 
         log.log(LOG_INFO, "==============================================");
         log.log(LOG_INFO, "== STOPPING TEST REST METHOD");

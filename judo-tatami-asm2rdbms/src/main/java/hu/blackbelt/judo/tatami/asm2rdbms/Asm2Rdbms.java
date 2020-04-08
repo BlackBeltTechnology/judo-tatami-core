@@ -2,6 +2,7 @@ package hu.blackbelt.judo.tatami.asm2rdbms;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.hash.Hashing;
 import hu.blackbelt.epsilon.runtime.execution.ExecutionContext;
 import hu.blackbelt.epsilon.runtime.execution.api.Log;
 import hu.blackbelt.epsilon.runtime.execution.contexts.EtlExecutionContext;
@@ -13,6 +14,7 @@ import org.eclipse.epsilon.common.util.UriUtil;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.nio.charset.Charset;
 import java.util.List;
 import java.util.Map;
 
@@ -40,6 +42,8 @@ public class Asm2Rdbms {
             DIALECT_POSTGRESQL, "RDBMS_Data_Types_Postgres.xlsx",
             DIALECT_ORACLE, "RDBMS_Data_Types_Oracle.xlsx"
     );
+
+    private static MD5Utils MD5_UTILS = new MD5Utils();
 
     public static Asm2RdbmsTransformationTrace executeAsm2RdbmsTransformation(AsmModel asmModel, RdbmsModel rdbmsModel, Log log,
                                                                               java.net.URI scriptUri, java.net.URI excelModelUri, String dialect) throws Exception {
@@ -77,6 +81,7 @@ public class Asm2Rdbms {
                 )
                 .injectContexts(ImmutableMap.of(
                         "AbbreviateUtils", new AbbreviateUtils(),
+                        "MD5Utils", MD5_UTILS,
                         "asmUtils", new AsmUtils(asmModel.getResourceSet())
                 ))
                 .build();
@@ -145,5 +150,10 @@ public class Asm2Rdbms {
         return psmRoot;
     }
 
+    public static class MD5Utils {
 
+        public static String md5(final String string) {
+            return Hashing.md5().hashString(string, Charset.forName("UTF-8")).toString();
+        }
+    }
 }

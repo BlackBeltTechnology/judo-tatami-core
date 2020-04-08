@@ -2,12 +2,12 @@ package hu.blackbelt.judo.tatami.itest;
 
 import com.fasterxml.jackson.jaxrs.json.JacksonJaxbJsonProvider;
 import com.google.common.collect.ImmutableMap;
+import hu.blackbelt.judo.dispatcher.api.Dispatcher;
 import hu.blackbelt.judo.meta.asm.runtime.AsmUtils;
 import hu.blackbelt.judo.meta.rdbms.RdbmsIdentifierField;
 import hu.blackbelt.judo.meta.rdbms.RdbmsTable;
 import hu.blackbelt.judo.meta.rdbms.RdbmsValueField;
 import hu.blackbelt.judo.meta.rdbms.runtime.RdbmsModel;
-import hu.blackbelt.judo.tatami.core.Dispatcher;
 import hu.blackbelt.judo.tatami.core.TransformationTrace;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
@@ -29,10 +29,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static hu.blackbelt.judo.tatami.itest.TestUtility.*;
@@ -53,7 +50,7 @@ public class NorthwindTatamiPSMTransformationPipelineITest extends TatamiPSMTran
     private static final String BASE_URL = "http://localhost:8181/cxf/demo";
     private static final String DEMO_ENTITIES_ORDER = "demo.entities.Order";
     private static final String DEMO = "northwind-psm";
-    private static final String DEMO_SERVICES_GET_ALL_CATEGORIES = "/demo/services/Category/getAllCategories";
+    private static final String DEMO_SERVICE_GET_ALL_ORDERS = "/service/getAllOrders";
 
     @Override
     public Option getProvisonModelBundle() throws FileNotFoundException {
@@ -135,7 +132,10 @@ public class NorthwindTatamiPSMTransformationPipelineITest extends TatamiPSMTran
                 return ImmutableMap.<String, Object>of();
             }
         };
-        bundleContext.registerService(Dispatcher.class, dispatcher, null);
+        AsmUtils asmUtils = new AsmUtils(asmModel.getResourceSet());
+        Dictionary<String, Object> props = new Hashtable<>();
+        props.put("judo.model.name", asmUtils.getModel().get().getName());
+        bundleContext.registerService(Dispatcher.class, dispatcher, props);
 
         waitWebPage(BASE_URL + "/?_wadl");
 
@@ -145,7 +145,7 @@ public class NorthwindTatamiPSMTransformationPipelineITest extends TatamiPSMTran
 
         Response response = null;
         try {
-            response = wt.path(DEMO_SERVICES_GET_ALL_CATEGORIES)
+            response = wt.path(DEMO_SERVICE_GET_ALL_ORDERS)
                     .request("application/json")
                     .get();
             //.post(null, OrderInfo.class);

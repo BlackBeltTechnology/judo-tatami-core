@@ -28,8 +28,6 @@ rule CreateParameter
 rule CreateScriptBodyAnnotation
     transform s : JUDOPSM!OperationDeclaration
     to t : ASM!EAnnotation {
-        guard: s.implementation.isDefined() and s.implementation.body.isDefined() and s.implementation.body.trim() <> ""
-
         t.source = asmUtils.getAnnotationUri("script");
 
 		var script = new ASM!EStringToStringMapEntry;
@@ -46,6 +44,14 @@ rule CreateInputParameter
         guard: s.isInput()
         
         t.name = s.name;
+        
+        var immutableAnnotation = new ASM!EAnnotation;
+        immutableAnnotation.source = asmUtils.getAnnotationUri("immutable");
+        var immutableEntry = new ASM!EStringToStringMapEntry;
+        immutableEntry.key = "value";
+        immutableEntry.value = s.isImmutable().asString();
+        immutableAnnotation.details.add(immutableEntry);
+        t.eAnnotations.add(immutableAnnotation);      
         
         s.eContainer.asmEquivalent().eParameters.add(t);
 }
@@ -197,11 +203,13 @@ rule CreateScriptBodyAnnotationForBoundOperation
     transform s : JUDOPSM!BoundOperation
     to t : ASM!EAnnotation
     extends CreateScriptBodyAnnotation {
+        guard: s.implementation.isDefined() and s.implementation.body.isDefined() and s.implementation.body.trim() <> ""
+
         s.equivalent("CreateBoundOperation").eAnnotations.add(t);
 }
 
 @greedy
-rule CreateScriptBodyAnnotationForBoundOperation
+rule CreateAbstractAnnotationForBoundOperation
     transform s : JUDOPSM!BoundOperation
     to t : ASM!EAnnotation {
         guard: s.`abstract`
@@ -231,6 +239,24 @@ rule CreateScriptBodyAnnotationForUnboundOperation
     transform s : JUDOPSM!UnboundOperation
     to t : ASM!EAnnotation
     extends CreateScriptBodyAnnotation {
+        guard: s.implementation.isDefined() and s.implementation.body.isDefined() and s.implementation.body.trim() <> ""
+
+        s.equivalent("CreateUnboundOperation").eAnnotations.add(t);
+}
+
+@greedy
+rule CreateInitializerAnnotation
+    transform s : JUDOPSM!UnboundOperation
+    to t : ASM!EAnnotation{
+        guard: s.initializer
+
+        t.source = asmUtils.getAnnotationUri("initializer");
+
+        var initializerEntry = new ASM!EStringToStringMapEntry;
+        initializerEntry.key = "value";
+        initializerEntry.value = "true";
+        t.details.add(initializerEntry);
+
         s.equivalent("CreateUnboundOperation").eAnnotations.add(t);
 }
 

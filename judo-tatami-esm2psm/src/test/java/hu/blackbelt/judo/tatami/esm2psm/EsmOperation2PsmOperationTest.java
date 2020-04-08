@@ -12,7 +12,6 @@ import hu.blackbelt.judo.meta.esm.structure.EntityType;
 import hu.blackbelt.judo.meta.esm.structure.RelationMemberType;
 import hu.blackbelt.judo.meta.esm.structure.TransferObjectType;
 import hu.blackbelt.judo.meta.psm.PsmUtils;
-import hu.blackbelt.judo.meta.psm.accesspoint.ExposedGraph;
 import hu.blackbelt.judo.meta.psm.runtime.PsmModel;
 import hu.blackbelt.judo.meta.psm.service.BoundTransferOperation;
 import hu.blackbelt.judo.meta.psm.service.MappedTransferObjectType;
@@ -20,6 +19,7 @@ import hu.blackbelt.judo.meta.psm.service.OperationDeclaration;
 import hu.blackbelt.judo.meta.psm.service.TransferObjectRelation;
 import hu.blackbelt.judo.meta.psm.service.TransferOperation;
 import hu.blackbelt.judo.meta.psm.service.TransferOperationBehaviourType;
+import hu.blackbelt.judo.meta.psm.service.UnboundOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
@@ -117,10 +117,13 @@ public class EsmOperation2PsmOperationTest {
 
     private static final String MODEL_NAME = "Model";
     private static final String ENTITY_TYPE_NAME = "E";
+    private static final String ABSTRACT_ENTITY_TYPE_NAME = "A";
     private static final String MAPPED_TRANSFER_OBJECT_TYPE_NAME = "M";
     private static final String UNMAPPED_TRANSFER_OBJECT_TYPE_NAME = "U";
 
     private static final String BOUND_OPERATION_NAME = "boundOperation";
+    private static final String ABSTRACT_OPERATION_NAME_WITH_BODY = "abstractOperation1";
+    private static final String ABSTRACT_OPERATION_NAME_WITH_CUSTOMIMPLEMENTATION = "abstractOperation2";
     private static final String STATIC_OPERATION_NAME = "staticOperation";
     private static final String BOUND_OPERATION_NAME_IN_MAPPED_TRANSFER_OBJECT_TYPE = "boundOperation2";
     private static final String STATIC_OPERATION_NAME_IN_MAPPED_TRANSFER_OBJECT_TYPE = "staticOperation2";
@@ -201,7 +204,7 @@ public class EsmOperation2PsmOperationTest {
         final TransferObjectType fault2Type = newTransferObjectTypeBuilder()
                 .withName(FAULT2_TYPE_NAME)
                 .build();
-
+        
         final EntityType entityType = newEntityTypeBuilder().withName(ENTITY_TYPE_NAME).withAbstract_(false)
                 .withOperations(parameterDecorator(newOperationBuilder()
                                 .withName(BOUND_OPERATION_NAME)
@@ -216,6 +219,22 @@ public class EsmOperation2PsmOperationTest {
                         inputParameterType, outputParameterType, fault1Type, fault2Type).build())
                 .build();
         entityType.setMapping(newMappingBuilder().withTarget(entityType).build());
+
+        final EntityType abstractEntityType = newEntityTypeBuilder().withName(ABSTRACT_ENTITY_TYPE_NAME).withAbstract_(true)
+                .withOperations(newOperationBuilder()
+                        .withName(ABSTRACT_OPERATION_NAME_WITH_BODY)
+                        .withBinding("")
+                        .withBody(body)
+                        .withModifier(OperationModifier.ABSTRACT)
+                        .build())
+                .withOperations(newOperationBuilder()
+                        .withName(ABSTRACT_OPERATION_NAME_WITH_CUSTOMIMPLEMENTATION)
+                        .withBinding("")
+                        .withCustomImplementation(true)
+                        .withModifier(OperationModifier.ABSTRACT)
+                        .build())
+                .build();
+        abstractEntityType.setMapping(newMappingBuilder().withTarget(abstractEntityType).build());
 
         final TransferObjectType mappedTransferObjectType = newTransferObjectTypeBuilder().withName(MAPPED_TRANSFER_OBJECT_TYPE_NAME)
                 .withMapping(newMappingBuilder().withTarget(entityType).build())
@@ -250,7 +269,7 @@ public class EsmOperation2PsmOperationTest {
                 .build();
 
         final Model model = newModelBuilder().withName(MODEL_NAME).build();
-        model.getElements().addAll(Arrays.asList(entityType, mappedTransferObjectType, unmappedTransferObjectType, inputParameterType, outputParameterType, fault1Type, fault2Type));
+        model.getElements().addAll(Arrays.asList(entityType, abstractEntityType, mappedTransferObjectType, unmappedTransferObjectType, inputParameterType, outputParameterType, fault1Type, fault2Type));
 
         esmModel.addContent(model);
 
@@ -265,6 +284,13 @@ public class EsmOperation2PsmOperationTest {
                 .findAny();
         assertTrue(e.isPresent());
         assertTrue(e.get().getOperations().stream().anyMatch(o -> BOUND_OPERATION_NAME.equals(o.getName()) && EXPECTED_INPUT_AND_OUTPUT_PARAMETERS.test(o)));
+        
+        final Optional<hu.blackbelt.judo.meta.psm.data.EntityType> a = allPsm(hu.blackbelt.judo.meta.psm.data.EntityType.class)
+                .filter(et -> ABSTRACT_ENTITY_TYPE_NAME.equals(et.getName()))
+                .findAny();
+        assertTrue(a.isPresent());
+        assertTrue(a.get().getOperations().stream().anyMatch(o -> ABSTRACT_OPERATION_NAME_WITH_BODY.equals(o.getName()) && o.getImplementation() == null));
+        assertTrue(a.get().getOperations().stream().anyMatch(o -> ABSTRACT_OPERATION_NAME_WITH_CUSTOMIMPLEMENTATION.equals(o.getName()) && o.getImplementation() == null));
 
         final Optional<hu.blackbelt.judo.meta.psm.service.MappedTransferObjectType> m = allPsm(hu.blackbelt.judo.meta.psm.service.MappedTransferObjectType.class)
                 .filter(t -> MAPPED_TRANSFER_OBJECT_TYPE_NAME.equals(t.getName()))
@@ -307,7 +333,7 @@ public class EsmOperation2PsmOperationTest {
         final int LOWER = 2;
         final int UPPER = 5;
 
-        final String NAME_OF_GET_OPERATION = "_getGForAP";
+        final String NAME_OF_GET_OPERATION = "_getG";
 
         final String NAME_OF_GET_E_OPERATION = "_getE";
         final String NAME_OF_CREATE_E_OPERATION = "_createE";
@@ -325,10 +351,10 @@ public class EsmOperation2PsmOperationTest {
         final String NAME_OF_ADD_ALL_MULTIPLE_REFERENCE_OPERATION = "_addMultipleReferenceToE";
         final String NAME_OF_REMOVE_ALL_MULTIPLE_REFERENCE_OPERATION = "_removeMultipleReferenceFromE";
 
-        final String NAME_OF_GET_RANGE_OF_SINGLE_REFERENCE_TO_CREATE = "_getRangeOfSingleReferenceToCreateE";
-        final String NAME_OF_GET_RANGE_OF_MULTIPLE_REFERENCE_TO_CREATE = "_getRangeOfMultipleReferenceToCreateE";
-        final String NAME_OF_GET_RANGE_OF_SINGLE_REFERENCE_TO_UPDATE = "_getRangeOfSingleReferenceToUpdateE";
-        final String NAME_OF_GET_RANGE_OF_MULTIPLE_REFERENCE_TO_UPDATE = "_getRangeOfMultipleReferenceToUpdateE";
+//        final String NAME_OF_GET_RANGE_OF_SINGLE_REFERENCE_TO_CREATE = "_getRangeOfSingleReferenceToCreateE";
+//        final String NAME_OF_GET_RANGE_OF_MULTIPLE_REFERENCE_TO_CREATE = "_getRangeOfMultipleReferenceToCreateE";
+//        final String NAME_OF_GET_RANGE_OF_SINGLE_REFERENCE_TO_UPDATE = "_getRangeOfSingleReferenceToUpdateE";
+//        final String NAME_OF_GET_RANGE_OF_MULTIPLE_REFERENCE_TO_UPDATE = "_getRangeOfMultipleReferenceToUpdateE";
 
         final String NAME_OF_GET_E_OPERATION_ET = "_getEFor" + MODEL_NAME + "_" + ENTITY_TYPE_D_NAME;
         final String NAME_OF_CREATE_E_OPERATION_ET = "_createEFor" + MODEL_NAME + "_" + ENTITY_TYPE_D_NAME;
@@ -346,10 +372,10 @@ public class EsmOperation2PsmOperationTest {
         final String NAME_OF_ADD_ALL_MULTIPLE_REFERENCE_OPERATION_ET = "_addMultipleReferenceToEFor" + MODEL_NAME + "_" + ENTITY_TYPE_D_NAME;
         final String NAME_OF_REMOVE_ALL_MULTIPLE_REFERENCE_OPERATION_ET = "_removeMultipleReferenceFromEFor" + MODEL_NAME + "_" + ENTITY_TYPE_D_NAME;
 
-        final String NAME_OF_GET_RANGE_OF_SINGLE_REFERENCE_TO_CREATE_ET = "_getRangeOfSingleReferenceToCreateEFor" + MODEL_NAME + "_" + ENTITY_TYPE_D_NAME;
-        final String NAME_OF_GET_RANGE_OF_MULTIPLE_REFERENCE_TO_CREATE_ET = "_getRangeOfMultipleReferenceToCreateEFor" + MODEL_NAME + "_" + ENTITY_TYPE_D_NAME;
-        final String NAME_OF_GET_RANGE_OF_SINGLE_REFERENCE_TO_UPDATE_ET = "_getRangeOfSingleReferenceToUpdateEFor" + MODEL_NAME + "_" + ENTITY_TYPE_D_NAME;
-        final String NAME_OF_GET_RANGE_OF_MULTIPLE_REFERENCE_TO_UPDATE_ET = "_getRangeOfMultipleReferenceToUpdateEFor" + MODEL_NAME + "_" + ENTITY_TYPE_D_NAME;
+//        final String NAME_OF_GET_RANGE_OF_SINGLE_REFERENCE_TO_CREATE_ET = "_getRangeOfSingleReferenceToCreateEFor" + MODEL_NAME + "_" + ENTITY_TYPE_D_NAME;
+//        final String NAME_OF_GET_RANGE_OF_MULTIPLE_REFERENCE_TO_CREATE_ET = "_getRangeOfMultipleReferenceToCreateEFor" + MODEL_NAME + "_" + ENTITY_TYPE_D_NAME;
+//        final String NAME_OF_GET_RANGE_OF_SINGLE_REFERENCE_TO_UPDATE_ET = "_getRangeOfSingleReferenceToUpdateEFor" + MODEL_NAME + "_" + ENTITY_TYPE_D_NAME;
+//        final String NAME_OF_GET_RANGE_OF_MULTIPLE_REFERENCE_TO_UPDATE_ET = "_getRangeOfMultipleReferenceToUpdateEFor" + MODEL_NAME + "_" + ENTITY_TYPE_D_NAME;
 
         final EntityType entityTypeF = newEntityTypeBuilder()
                 .withName(ENTITY_TYPE_F_NAME)
@@ -403,6 +429,7 @@ public class EsmOperation2PsmOperationTest {
                         .withLower(LOWER)
                         .withUpper(UPPER)
                         .withContainment(true)
+                        .withCreateable(true).withUpdateable(true).withDeleteable(true)
                         .withAggregation(true)
                         .build())
                 .build();
@@ -427,10 +454,12 @@ public class EsmOperation2PsmOperationTest {
 
         transform();
 
-        final Optional<hu.blackbelt.judo.meta.psm.accesspoint.AccessPoint> ap = allPsm(hu.blackbelt.judo.meta.psm.accesspoint.AccessPoint.class).findAny();
+        final Optional<hu.blackbelt.judo.meta.psm.service.TransferObjectType> ap = allPsm(hu.blackbelt.judo.meta.psm.service.TransferObjectType.class)
+                .filter(t -> t.isAccessPoint())
+                .findAny();
         assertTrue(ap.isPresent());
 
-        final Optional<ExposedGraph> graph = ap.get().getExposedGraphs().stream().filter(g -> EXPOSED_GRAPH_NAME.equals(g.getName())).findAny();
+        final Optional<TransferObjectRelation> graph = ap.get().getRelations().stream().filter(g -> EXPOSED_GRAPH_NAME.equals(g.getName())).findAny();
         assertTrue(graph.isPresent());
 
         final Optional<hu.blackbelt.judo.meta.psm.data.EntityType> d = allPsm(hu.blackbelt.judo.meta.psm.data.EntityType.class)
@@ -456,7 +485,7 @@ public class EsmOperation2PsmOperationTest {
         final Optional<TransferObjectRelation> dToE = defaultD.get().getRelations().stream().filter(r -> RELATION_NAME_FROM_D_TO_E.equals(r.getName())).findAny();
         assertTrue(dToE.isPresent());
 
-        final Optional<TransferOperation> getG = defaultD.get().getOperations().stream().filter(o -> NAME_OF_GET_OPERATION.equals(o.getName())).findAny();
+        final Optional<TransferOperation> getG = ap.get().getOperations().stream().filter(o -> NAME_OF_GET_OPERATION.equals(o.getName())).findAny();
         assertTrue(getG.isPresent());
         assertNotNull(getG.get().getOutput());
 
@@ -470,7 +499,9 @@ public class EsmOperation2PsmOperationTest {
         assertTrue(defaultSingleReference.isPresent());
         assertTrue(defaultMultipleReference.isPresent());
 
-        assertTrue(graph.get().getMappedTransferObjectType().getOperations().stream().anyMatch(o -> NAME_OF_GET_E_OPERATION.equals(o.getName()) && (o instanceof BoundTransferOperation) &&
+        assertTrue(graph.get().isExposedGraph());
+
+        assertTrue(graph.get().getTarget().getOperations().stream().anyMatch(o -> NAME_OF_GET_E_OPERATION.equals(o.getName()) && (o instanceof BoundTransferOperation) &&
                 EcoreUtil.equals(((BoundTransferOperation) o).getBinding().getInstanceRepresentation().getEntityType(), d.get()) &&
                 o.getBehaviour() != null && o.getBehaviour().getBehaviourType() == TransferOperationBehaviourType.GET_RELATION && EcoreUtil.equals(o.getBehaviour().getOwner(), dToE.get()) &&
                 o.getInput() == null && o.getOutput() != null && o.getFaults().isEmpty() &&
@@ -482,7 +513,7 @@ public class EsmOperation2PsmOperationTest {
                 EcoreUtil.equals(((BoundTransferOperation) o).getBinding().getOutput().getType(), defaultE.get())
         ));
 
-        final Optional<TransferOperation> create = graph.get().getMappedTransferObjectType().getOperations().stream().filter(o -> NAME_OF_CREATE_E_OPERATION.equals(o.getName()) && (o instanceof BoundTransferOperation) &&
+        final Optional<TransferOperation> create = graph.get().getTarget().getOperations().stream().filter(o -> NAME_OF_CREATE_E_OPERATION.equals(o.getName()) && (o instanceof BoundTransferOperation) &&
                 EcoreUtil.equals(((BoundTransferOperation) o).getBinding().getInstanceRepresentation().getEntityType(), d.get()) &&
                 o.getBehaviour() != null && o.getBehaviour().getBehaviourType() == TransferOperationBehaviourType.CREATE_RELATION && EcoreUtil.equals(o.getBehaviour().getOwner(), dToE.get()) &&
                 o.getInput() != null && o.getOutput() != null && o.getFaults().isEmpty() &&
@@ -500,7 +531,7 @@ public class EsmOperation2PsmOperationTest {
 
         assertTrue(create.isPresent());
 
-        final Optional<TransferOperation> update = graph.get().getMappedTransferObjectType().getOperations().stream().filter(o -> NAME_OF_UPDATE_E_OPERATION.equals(o.getName()) && (o instanceof BoundTransferOperation) &&
+        final Optional<TransferOperation> update = graph.get().getTarget().getOperations().stream().filter(o -> NAME_OF_UPDATE_E_OPERATION.equals(o.getName()) && (o instanceof BoundTransferOperation) &&
                 EcoreUtil.equals(((BoundTransferOperation) o).getBinding().getInstanceRepresentation().getEntityType(), d.get()) &&
                 o.getBehaviour() != null && o.getBehaviour().getBehaviourType() == TransferOperationBehaviourType.UPDATE_RELATION && EcoreUtil.equals(o.getBehaviour().getOwner(), dToE.get()) &&
                 o.getInput() != null && o.getOutput() != null && o.getFaults().isEmpty() &&
@@ -518,7 +549,7 @@ public class EsmOperation2PsmOperationTest {
 
         assertTrue(update.isPresent());
 
-        assertTrue(graph.get().getMappedTransferObjectType().getOperations().stream().anyMatch(o -> NAME_OF_DELETE_E_OPERATION.equals(o.getName()) && (o instanceof BoundTransferOperation) &&
+        assertTrue(graph.get().getTarget().getOperations().stream().anyMatch(o -> NAME_OF_DELETE_E_OPERATION.equals(o.getName()) && (o instanceof BoundTransferOperation) &&
                 EcoreUtil.equals(((BoundTransferOperation) o).getBinding().getInstanceRepresentation().getEntityType(), d.get()) &&
                 o.getBehaviour() != null && o.getBehaviour().getBehaviourType() == TransferOperationBehaviourType.DELETE_RELATION && EcoreUtil.equals(o.getBehaviour().getOwner(), dToE.get()) &&
                 o.getInput() != null && o.getOutput() == null && o.getFaults().isEmpty() &&
@@ -530,7 +561,7 @@ public class EsmOperation2PsmOperationTest {
                 EcoreUtil.equals(((BoundTransferOperation) o).getBinding().getInput().getType(), defaultE.get())
         ));
 
-        assertTrue(graph.get().getMappedTransferObjectType().getOperations().stream().anyMatch(o -> NAME_OF_UNSET_SINGLE_CONTAINMENT_OPERATION.equals(o.getName()) && (o instanceof BoundTransferOperation) &&
+        assertTrue(graph.get().getTarget().getOperations().stream().anyMatch(o -> NAME_OF_UNSET_SINGLE_CONTAINMENT_OPERATION.equals(o.getName()) && (o instanceof BoundTransferOperation) &&
                 EcoreUtil.equals(((BoundTransferOperation) o).getBinding().getInstanceRepresentation().getEntityType(), d.get()) &&
                 o.getBehaviour() != null && o.getBehaviour().getBehaviourType() == TransferOperationBehaviourType.UNSET_RELATION_OF_RELATION && EcoreUtil.equals(o.getBehaviour().getOwner(), dToE.get()) && EcoreUtil.equals(o.getBehaviour().getRelation(), defaultSingleContainment.get()) &&
                 o.getInput() != null && o.getOutput() == null && o.getFaults().isEmpty() &&
@@ -542,7 +573,7 @@ public class EsmOperation2PsmOperationTest {
                 EcoreUtil.equals(((BoundTransferOperation) o).getBinding().getInput().getType(), defaultE.get())
         ));
 
-        assertTrue(graph.get().getMappedTransferObjectType().getOperations().stream().anyMatch(o -> NAME_OF_SET_SINGLE_REFERENCE_OPERATION.equals(o.getName()) && (o instanceof BoundTransferOperation) &&
+        assertTrue(graph.get().getTarget().getOperations().stream().anyMatch(o -> NAME_OF_SET_SINGLE_REFERENCE_OPERATION.equals(o.getName()) && (o instanceof BoundTransferOperation) &&
                 EcoreUtil.equals(((BoundTransferOperation) o).getBinding().getInstanceRepresentation().getEntityType(), d.get()) &&
                 o.getBehaviour() != null && o.getBehaviour().getBehaviourType() == TransferOperationBehaviourType.SET_RELATION_OF_RELATION && EcoreUtil.equals(o.getBehaviour().getOwner(), dToE.get()) && EcoreUtil.equals(o.getBehaviour().getRelation(), defaultSingleReference.get()) &&
                 o.getInput() != null && o.getOutput() == null && o.getFaults().isEmpty() &&
@@ -554,7 +585,7 @@ public class EsmOperation2PsmOperationTest {
                 EcoreUtil.equals(((BoundTransferOperation) o).getBinding().getInput().getType(), defaultE.get())
         ));
 
-        assertTrue(graph.get().getMappedTransferObjectType().getOperations().stream().anyMatch(o -> NAME_OF_UNSET_SINGLE_REFERENCE_OPERATION.equals(o.getName()) && (o instanceof BoundTransferOperation) &&
+        assertTrue(graph.get().getTarget().getOperations().stream().anyMatch(o -> NAME_OF_UNSET_SINGLE_REFERENCE_OPERATION.equals(o.getName()) && (o instanceof BoundTransferOperation) &&
                 EcoreUtil.equals(((BoundTransferOperation) o).getBinding().getInstanceRepresentation().getEntityType(), d.get()) &&
                 o.getBehaviour() != null && o.getBehaviour().getBehaviourType() == TransferOperationBehaviourType.UNSET_RELATION_OF_RELATION && EcoreUtil.equals(o.getBehaviour().getOwner(), dToE.get()) && EcoreUtil.equals(o.getBehaviour().getRelation(), defaultSingleReference.get()) &&
                 o.getInput() != null && o.getOutput() == null && o.getFaults().isEmpty() &&
@@ -566,7 +597,7 @@ public class EsmOperation2PsmOperationTest {
                 EcoreUtil.equals(((BoundTransferOperation) o).getBinding().getInput().getType(), defaultE.get())
         ));
 
-        assertTrue(graph.get().getMappedTransferObjectType().getOperations().stream().anyMatch(o -> NAME_OF_REMOVE_ALL_MULTIPLE_CONTAINMENT_OPERATION.equals(o.getName()) && (o instanceof BoundTransferOperation) &&
+        assertTrue(graph.get().getTarget().getOperations().stream().anyMatch(o -> NAME_OF_REMOVE_ALL_MULTIPLE_CONTAINMENT_OPERATION.equals(o.getName()) && (o instanceof BoundTransferOperation) &&
                 EcoreUtil.equals(((BoundTransferOperation) o).getBinding().getInstanceRepresentation().getEntityType(), d.get()) &&
                 o.getBehaviour() != null && o.getBehaviour().getBehaviourType() == TransferOperationBehaviourType.REMOVE_ALL_FROM_RELATION_OF_RELATION && EcoreUtil.equals(o.getBehaviour().getOwner(), dToE.get()) && EcoreUtil.equals(o.getBehaviour().getRelation(), defaultMultipleContainment.get()) &&
                 o.getInput() != null && o.getOutput() == null && o.getFaults().isEmpty() &&
@@ -578,7 +609,7 @@ public class EsmOperation2PsmOperationTest {
                 EcoreUtil.equals(((BoundTransferOperation) o).getBinding().getInput().getType(), defaultE.get())
         ));
 
-        assertTrue(graph.get().getMappedTransferObjectType().getOperations().stream().anyMatch(o -> NAME_OF_SET_MULTIPLE_REFERENCE_OPERATION.equals(o.getName()) && (o instanceof BoundTransferOperation) &&
+        assertTrue(graph.get().getTarget().getOperations().stream().anyMatch(o -> NAME_OF_SET_MULTIPLE_REFERENCE_OPERATION.equals(o.getName()) && (o instanceof BoundTransferOperation) &&
                 EcoreUtil.equals(((BoundTransferOperation) o).getBinding().getInstanceRepresentation().getEntityType(), d.get()) &&
                 o.getBehaviour() != null && o.getBehaviour().getBehaviourType() == TransferOperationBehaviourType.SET_RELATION_OF_RELATION && EcoreUtil.equals(o.getBehaviour().getOwner(), dToE.get()) && EcoreUtil.equals(o.getBehaviour().getRelation(), defaultMultipleReference.get()) &&
                 o.getInput() != null && o.getOutput() == null && o.getFaults().isEmpty() &&
@@ -590,7 +621,7 @@ public class EsmOperation2PsmOperationTest {
                 EcoreUtil.equals(((BoundTransferOperation) o).getBinding().getInput().getType(), defaultE.get())
         ));
 
-        assertTrue(graph.get().getMappedTransferObjectType().getOperations().stream().anyMatch(o -> NAME_OF_ADD_ALL_MULTIPLE_REFERENCE_OPERATION.equals(o.getName()) && (o instanceof BoundTransferOperation) &&
+        assertTrue(graph.get().getTarget().getOperations().stream().anyMatch(o -> NAME_OF_ADD_ALL_MULTIPLE_REFERENCE_OPERATION.equals(o.getName()) && (o instanceof BoundTransferOperation) &&
                 EcoreUtil.equals(((BoundTransferOperation) o).getBinding().getInstanceRepresentation().getEntityType(), d.get()) &&
                 o.getBehaviour() != null && o.getBehaviour().getBehaviourType() == TransferOperationBehaviourType.ADD_ALL_TO_RELATION_OF_RELATION && EcoreUtil.equals(o.getBehaviour().getOwner(), dToE.get()) && EcoreUtil.equals(o.getBehaviour().getRelation(), defaultMultipleReference.get()) &&
                 o.getInput() != null && o.getOutput() == null && o.getFaults().isEmpty() &&
@@ -602,7 +633,7 @@ public class EsmOperation2PsmOperationTest {
                 EcoreUtil.equals(((BoundTransferOperation) o).getBinding().getInput().getType(), defaultE.get())
         ));
 
-        assertTrue(graph.get().getMappedTransferObjectType().getOperations().stream().anyMatch(o -> NAME_OF_REMOVE_ALL_MULTIPLE_REFERENCE_OPERATION.equals(o.getName()) && (o instanceof BoundTransferOperation) &&
+        assertTrue(graph.get().getTarget().getOperations().stream().anyMatch(o -> NAME_OF_REMOVE_ALL_MULTIPLE_REFERENCE_OPERATION.equals(o.getName()) && (o instanceof BoundTransferOperation) &&
                 EcoreUtil.equals(((BoundTransferOperation) o).getBinding().getInstanceRepresentation().getEntityType(), d.get()) &&
                 o.getBehaviour() != null && o.getBehaviour().getBehaviourType() == TransferOperationBehaviourType.REMOVE_ALL_FROM_RELATION_OF_RELATION && EcoreUtil.equals(o.getBehaviour().getOwner(), dToE.get()) && EcoreUtil.equals(o.getBehaviour().getRelation(), defaultMultipleReference.get()) &&
                 o.getInput() != null && o.getOutput() == null && o.getFaults().isEmpty() &&
@@ -614,73 +645,133 @@ public class EsmOperation2PsmOperationTest {
                 EcoreUtil.equals(((BoundTransferOperation) o).getBinding().getInput().getType(), defaultE.get())
         ));
 
-        assertTrue(graph.get().getMappedTransferObjectType().getOperations().stream().anyMatch(o -> NAME_OF_GET_RANGE_OF_SINGLE_REFERENCE_TO_CREATE.equals(o.getName()) && (o instanceof BoundTransferOperation) &&
-                EcoreUtil.equals(((BoundTransferOperation) o).getBinding().getInstanceRepresentation().getEntityType(), d.get()) &&
-                o.getBehaviour() != null && o.getBehaviour().getBehaviourType() == TransferOperationBehaviourType.GET_RANGE_OF_RELATION && EcoreUtil.equals(o.getBehaviour().getOwner(), create.get().getInput()) && EcoreUtil.equals(o.getBehaviour().getRelation(), defaultSingleReference.get()) &&
-                o.getInput() != null && o.getOutput() != null && o.getFaults().isEmpty() &&
-                o.getInput().getCardinality().getLower() == 1 && o.getInput().getCardinality().getUpper() == 1 &&
-                EcoreUtil.equals(o.getInput().getType(), defaultE.get()) &&
-                o.getOutput().getCardinality().getLower() == 0 && o.getOutput().getCardinality().getUpper() == -1 &&
-                EcoreUtil.equals(o.getOutput().getType(), defaultF.get()) &&
-                NAME_OF_GET_RANGE_OF_SINGLE_REFERENCE_TO_CREATE_ET.equals(((BoundTransferOperation) o).getBinding().getName()) &&
-                ((BoundTransferOperation) o).getBinding().getInput() != null && ((BoundTransferOperation) o).getBinding().getOutput() != null && ((BoundTransferOperation) o).getBinding().getFaults().isEmpty() &&
-                ((BoundTransferOperation) o).getBinding().getInput().getCardinality().getLower() == 1 && o.getInput().getCardinality().getUpper() == 1 &&
-                EcoreUtil.equals(((BoundTransferOperation) o).getBinding().getInput().getType(), defaultE.get()) &&
-                ((BoundTransferOperation) o).getBinding().getOutput().getCardinality().getLower() == 0 && o.getOutput().getCardinality().getUpper() == -1 &&
-                EcoreUtil.equals(((BoundTransferOperation) o).getBinding().getOutput().getType(), defaultF.get())
-        ));
-
-        assertTrue(graph.get().getMappedTransferObjectType().getOperations().stream().anyMatch(o -> NAME_OF_GET_RANGE_OF_SINGLE_REFERENCE_TO_UPDATE.equals(o.getName()) && (o instanceof BoundTransferOperation) &&
-                EcoreUtil.equals(((BoundTransferOperation) o).getBinding().getInstanceRepresentation().getEntityType(), d.get()) &&
-                o.getBehaviour() != null && o.getBehaviour().getBehaviourType() == TransferOperationBehaviourType.GET_RANGE_OF_RELATION && EcoreUtil.equals(o.getBehaviour().getOwner(), update.get().getInput()) && EcoreUtil.equals(o.getBehaviour().getRelation(), defaultSingleReference.get()) &&
-                o.getInput() != null && o.getOutput() != null && o.getFaults().isEmpty() &&
-                o.getInput().getCardinality().getLower() == 1 && o.getInput().getCardinality().getUpper() == 1 &&
-                EcoreUtil.equals(o.getInput().getType(), defaultE.get()) &&
-                o.getOutput().getCardinality().getLower() == 0 && o.getOutput().getCardinality().getUpper() == -1 &&
-                EcoreUtil.equals(o.getOutput().getType(), defaultF.get()) &&
-                NAME_OF_GET_RANGE_OF_SINGLE_REFERENCE_TO_UPDATE_ET.equals(((BoundTransferOperation) o).getBinding().getName()) &&
-                ((BoundTransferOperation) o).getBinding().getInput() != null && ((BoundTransferOperation) o).getBinding().getOutput() != null && ((BoundTransferOperation) o).getBinding().getFaults().isEmpty() &&
-                ((BoundTransferOperation) o).getBinding().getInput().getCardinality().getLower() == 1 && o.getInput().getCardinality().getUpper() == 1 &&
-                EcoreUtil.equals(((BoundTransferOperation) o).getBinding().getInput().getType(), defaultE.get()) &&
-                ((BoundTransferOperation) o).getBinding().getOutput().getCardinality().getLower() == 0 && o.getOutput().getCardinality().getUpper() == -1 &&
-                EcoreUtil.equals(((BoundTransferOperation) o).getBinding().getOutput().getType(), defaultF.get())
-        ));
-
-        assertTrue(graph.get().getMappedTransferObjectType().getOperations().stream().anyMatch(o -> NAME_OF_GET_RANGE_OF_MULTIPLE_REFERENCE_TO_CREATE.equals(o.getName()) && (o instanceof BoundTransferOperation) &&
-                EcoreUtil.equals(((BoundTransferOperation) o).getBinding().getInstanceRepresentation().getEntityType(), d.get()) &&
-                o.getBehaviour() != null && o.getBehaviour().getBehaviourType() == TransferOperationBehaviourType.GET_RANGE_OF_RELATION && EcoreUtil.equals(o.getBehaviour().getOwner(), create.get().getInput()) && EcoreUtil.equals(o.getBehaviour().getRelation(), defaultMultipleReference.get()) &&
-                o.getInput() != null && o.getOutput() != null && o.getFaults().isEmpty() &&
-                o.getInput().getCardinality().getLower() == 1 && o.getInput().getCardinality().getUpper() == 1 &&
-                EcoreUtil.equals(o.getInput().getType(), defaultE.get()) &&
-                o.getOutput().getCardinality().getLower() == 0 && o.getOutput().getCardinality().getUpper() == -1 &&
-                EcoreUtil.equals(o.getOutput().getType(), defaultF.get()) &&
-                NAME_OF_GET_RANGE_OF_MULTIPLE_REFERENCE_TO_CREATE_ET.equals(((BoundTransferOperation) o).getBinding().getName()) &&
-                ((BoundTransferOperation) o).getBinding().getInput() != null && ((BoundTransferOperation) o).getBinding().getOutput() != null && ((BoundTransferOperation) o).getBinding().getFaults().isEmpty() &&
-                ((BoundTransferOperation) o).getBinding().getInput().getCardinality().getLower() == 1 && o.getInput().getCardinality().getUpper() == 1 &&
-                EcoreUtil.equals(((BoundTransferOperation) o).getBinding().getInput().getType(), defaultE.get()) &&
-                ((BoundTransferOperation) o).getBinding().getOutput().getCardinality().getLower() == 0 && o.getOutput().getCardinality().getUpper() == -1 &&
-                EcoreUtil.equals(((BoundTransferOperation) o).getBinding().getOutput().getType(), defaultF.get())
-        ));
-
-        assertTrue(graph.get().getMappedTransferObjectType().getOperations().stream().anyMatch(o -> NAME_OF_GET_RANGE_OF_MULTIPLE_REFERENCE_TO_UPDATE.equals(o.getName()) && (o instanceof BoundTransferOperation) &&
-                EcoreUtil.equals(((BoundTransferOperation) o).getBinding().getInstanceRepresentation().getEntityType(), d.get()) &&
-                o.getBehaviour() != null && o.getBehaviour().getBehaviourType() == TransferOperationBehaviourType.GET_RANGE_OF_RELATION && EcoreUtil.equals(o.getBehaviour().getOwner(), update.get().getInput()) && EcoreUtil.equals(o.getBehaviour().getRelation(), defaultMultipleReference.get()) &&
-                o.getInput() != null && o.getOutput() != null && o.getFaults().isEmpty() &&
-                o.getInput().getCardinality().getLower() == 1 && o.getInput().getCardinality().getUpper() == 1 &&
-                EcoreUtil.equals(o.getInput().getType(), defaultE.get()) &&
-                o.getOutput().getCardinality().getLower() == 0 && o.getOutput().getCardinality().getUpper() == -1 &&
-                EcoreUtil.equals(o.getOutput().getType(), defaultF.get()) &&
-                NAME_OF_GET_RANGE_OF_MULTIPLE_REFERENCE_TO_UPDATE_ET.equals(((BoundTransferOperation) o).getBinding().getName()) &&
-                ((BoundTransferOperation) o).getBinding().getInput() != null && ((BoundTransferOperation) o).getBinding().getOutput() != null && ((BoundTransferOperation) o).getBinding().getFaults().isEmpty() &&
-                ((BoundTransferOperation) o).getBinding().getInput().getCardinality().getLower() == 1 && o.getInput().getCardinality().getUpper() == 1 &&
-                EcoreUtil.equals(((BoundTransferOperation) o).getBinding().getInput().getType(), defaultE.get()) &&
-                ((BoundTransferOperation) o).getBinding().getOutput().getCardinality().getLower() == 0 && o.getOutput().getCardinality().getUpper() == -1 &&
-                EcoreUtil.equals(((BoundTransferOperation) o).getBinding().getOutput().getType(), defaultF.get())
-        ));
+//        assertTrue(graph.get().getTarget().getOperations().stream().anyMatch(o -> NAME_OF_GET_RANGE_OF_SINGLE_REFERENCE_TO_CREATE.equals(o.getName()) && (o instanceof BoundTransferOperation) &&
+//                EcoreUtil.equals(((BoundTransferOperation) o).getBinding().getInstanceRepresentation().getEntityType(), d.get()) &&
+//                o.getBehaviour() != null && o.getBehaviour().getBehaviourType() == TransferOperationBehaviourType.GET_RANGE_OF_RELATION && EcoreUtil.equals(o.getBehaviour().getOwner(), create.get().getInput()) && EcoreUtil.equals(o.getBehaviour().getRelation(), defaultSingleReference.get()) &&
+//                o.getInput() != null && o.getOutput() != null && o.getFaults().isEmpty() &&
+//                o.getInput().getCardinality().getLower() == 1 && o.getInput().getCardinality().getUpper() == 1 &&
+//                EcoreUtil.equals(o.getInput().getType(), defaultE.get()) &&
+//                o.getOutput().getCardinality().getLower() == 0 && o.getOutput().getCardinality().getUpper() == -1 &&
+//                EcoreUtil.equals(o.getOutput().getType(), defaultF.get()) &&
+//                NAME_OF_GET_RANGE_OF_SINGLE_REFERENCE_TO_CREATE_ET.equals(((BoundTransferOperation) o).getBinding().getName()) &&
+//                ((BoundTransferOperation) o).getBinding().getInput() != null && ((BoundTransferOperation) o).getBinding().getOutput() != null && ((BoundTransferOperation) o).getBinding().getFaults().isEmpty() &&
+//                ((BoundTransferOperation) o).getBinding().getInput().getCardinality().getLower() == 1 && o.getInput().getCardinality().getUpper() == 1 &&
+//                EcoreUtil.equals(((BoundTransferOperation) o).getBinding().getInput().getType(), defaultE.get()) &&
+//                ((BoundTransferOperation) o).getBinding().getOutput().getCardinality().getLower() == 0 && o.getOutput().getCardinality().getUpper() == -1 &&
+//                EcoreUtil.equals(((BoundTransferOperation) o).getBinding().getOutput().getType(), defaultF.get())
+//        ));
+//
+//        assertTrue(graph.get().getTarget().getOperations().stream().anyMatch(o -> NAME_OF_GET_RANGE_OF_SINGLE_REFERENCE_TO_UPDATE.equals(o.getName()) && (o instanceof BoundTransferOperation) &&
+//                EcoreUtil.equals(((BoundTransferOperation) o).getBinding().getInstanceRepresentation().getEntityType(), d.get()) &&
+//                o.getBehaviour() != null && o.getBehaviour().getBehaviourType() == TransferOperationBehaviourType.GET_RANGE_OF_RELATION && EcoreUtil.equals(o.getBehaviour().getOwner(), update.get().getInput()) && EcoreUtil.equals(o.getBehaviour().getRelation(), defaultSingleReference.get()) &&
+//                o.getInput() != null && o.getOutput() != null && o.getFaults().isEmpty() &&
+//                o.getInput().getCardinality().getLower() == 1 && o.getInput().getCardinality().getUpper() == 1 &&
+//                EcoreUtil.equals(o.getInput().getType(), defaultE.get()) &&
+//                o.getOutput().getCardinality().getLower() == 0 && o.getOutput().getCardinality().getUpper() == -1 &&
+//                EcoreUtil.equals(o.getOutput().getType(), defaultF.get()) &&
+//                NAME_OF_GET_RANGE_OF_SINGLE_REFERENCE_TO_UPDATE_ET.equals(((BoundTransferOperation) o).getBinding().getName()) &&
+//                ((BoundTransferOperation) o).getBinding().getInput() != null && ((BoundTransferOperation) o).getBinding().getOutput() != null && ((BoundTransferOperation) o).getBinding().getFaults().isEmpty() &&
+//                ((BoundTransferOperation) o).getBinding().getInput().getCardinality().getLower() == 1 && o.getInput().getCardinality().getUpper() == 1 &&
+//                EcoreUtil.equals(((BoundTransferOperation) o).getBinding().getInput().getType(), defaultE.get()) &&
+//                ((BoundTransferOperation) o).getBinding().getOutput().getCardinality().getLower() == 0 && o.getOutput().getCardinality().getUpper() == -1 &&
+//                EcoreUtil.equals(((BoundTransferOperation) o).getBinding().getOutput().getType(), defaultF.get())
+//        ));
+//
+//        assertTrue(graph.get().getTarget().getOperations().stream().anyMatch(o -> NAME_OF_GET_RANGE_OF_MULTIPLE_REFERENCE_TO_CREATE.equals(o.getName()) && (o instanceof BoundTransferOperation) &&
+//                EcoreUtil.equals(((BoundTransferOperation) o).getBinding().getInstanceRepresentation().getEntityType(), d.get()) &&
+//                o.getBehaviour() != null && o.getBehaviour().getBehaviourType() == TransferOperationBehaviourType.GET_RANGE_OF_RELATION && EcoreUtil.equals(o.getBehaviour().getOwner(), create.get().getInput()) && EcoreUtil.equals(o.getBehaviour().getRelation(), defaultMultipleReference.get()) &&
+//                o.getInput() != null && o.getOutput() != null && o.getFaults().isEmpty() &&
+//                o.getInput().getCardinality().getLower() == 1 && o.getInput().getCardinality().getUpper() == 1 &&
+//                EcoreUtil.equals(o.getInput().getType(), defaultE.get()) &&
+//                o.getOutput().getCardinality().getLower() == 0 && o.getOutput().getCardinality().getUpper() == -1 &&
+//                EcoreUtil.equals(o.getOutput().getType(), defaultF.get()) &&
+//                NAME_OF_GET_RANGE_OF_MULTIPLE_REFERENCE_TO_CREATE_ET.equals(((BoundTransferOperation) o).getBinding().getName()) &&
+//                ((BoundTransferOperation) o).getBinding().getInput() != null && ((BoundTransferOperation) o).getBinding().getOutput() != null && ((BoundTransferOperation) o).getBinding().getFaults().isEmpty() &&
+//                ((BoundTransferOperation) o).getBinding().getInput().getCardinality().getLower() == 1 && o.getInput().getCardinality().getUpper() == 1 &&
+//                EcoreUtil.equals(((BoundTransferOperation) o).getBinding().getInput().getType(), defaultE.get()) &&
+//                ((BoundTransferOperation) o).getBinding().getOutput().getCardinality().getLower() == 0 && o.getOutput().getCardinality().getUpper() == -1 &&
+//                EcoreUtil.equals(((BoundTransferOperation) o).getBinding().getOutput().getType(), defaultF.get())
+//        ));
+//
+//        assertTrue(graph.get().getTarget().getOperations().stream().anyMatch(o -> NAME_OF_GET_RANGE_OF_MULTIPLE_REFERENCE_TO_UPDATE.equals(o.getName()) && (o instanceof BoundTransferOperation) &&
+//                EcoreUtil.equals(((BoundTransferOperation) o).getBinding().getInstanceRepresentation().getEntityType(), d.get()) &&
+//                o.getBehaviour() != null && o.getBehaviour().getBehaviourType() == TransferOperationBehaviourType.GET_RANGE_OF_RELATION && EcoreUtil.equals(o.getBehaviour().getOwner(), update.get().getInput()) && EcoreUtil.equals(o.getBehaviour().getRelation(), defaultMultipleReference.get()) &&
+//                o.getInput() != null && o.getOutput() != null && o.getFaults().isEmpty() &&
+//                o.getInput().getCardinality().getLower() == 1 && o.getInput().getCardinality().getUpper() == 1 &&
+//                EcoreUtil.equals(o.getInput().getType(), defaultE.get()) &&
+//                o.getOutput().getCardinality().getLower() == 0 && o.getOutput().getCardinality().getUpper() == -1 &&
+//                EcoreUtil.equals(o.getOutput().getType(), defaultF.get()) &&
+//                NAME_OF_GET_RANGE_OF_MULTIPLE_REFERENCE_TO_UPDATE_ET.equals(((BoundTransferOperation) o).getBinding().getName()) &&
+//                ((BoundTransferOperation) o).getBinding().getInput() != null && ((BoundTransferOperation) o).getBinding().getOutput() != null && ((BoundTransferOperation) o).getBinding().getFaults().isEmpty() &&
+//                ((BoundTransferOperation) o).getBinding().getInput().getCardinality().getLower() == 1 && o.getInput().getCardinality().getUpper() == 1 &&
+//                EcoreUtil.equals(((BoundTransferOperation) o).getBinding().getInput().getType(), defaultE.get()) &&
+//                ((BoundTransferOperation) o).getBinding().getOutput().getCardinality().getLower() == 0 && o.getOutput().getCardinality().getUpper() == -1 &&
+//                EcoreUtil.equals(((BoundTransferOperation) o).getBinding().getOutput().getType(), defaultF.get())
+//        ));
 
         log.debug("List of generated operations (D):{}", defaultD.get().getOperations().stream().map(o -> "\n - " + o.getName()).sorted().collect(Collectors.joining()));
 
-        assertEquals(15L, defaultD.get().getOperations().stream().filter(o -> o instanceof BoundTransferOperation).count());
+        assertEquals(11L, defaultD.get().getOperations().stream().filter(o -> o instanceof BoundTransferOperation).count());
+    }
+
+    @Test
+    void testInitializerFlag() throws Exception {
+        testName = "TestInitializerFlag";
+
+        // FIXME - replace test case (using ESM initializer flag instead of type and operation names)
+        final TransferObjectType initializer1 = newTransferObjectTypeBuilder()
+                .withName("Initializer1")
+                .withOperations(newOperationBuilder()
+                        .withName("run")
+                        .withModifier(OperationModifier.STATIC)
+                        .withBody("// TODO")
+                        .withBinding("")
+                        .withInitializer(true)
+                        .build())
+                .build();
+
+        final TransferObjectType initializer2 = newTransferObjectTypeBuilder()
+                .withName("Initializer2")
+                .withOperations(newOperationBuilder()
+                        .withName("run")
+                        .withModifier(OperationModifier.STATIC)
+                        .withBody("// TODO")
+                        .withBinding("")
+                        .withInitializer(true)
+                        .build())
+                .build();
+
+        final TransferObjectType nonInitializer1 = newTransferObjectTypeBuilder()
+                .withName("NonInitializer1")
+                .withOperations(newOperationBuilder()
+                        .withName("run")
+                        .withModifier(OperationModifier.STATIC)
+                        .withBody("// TODO")
+                        .withBinding("")
+                        .build())
+                .build();
+
+        final TransferObjectType nonInitializer2 = newTransferObjectTypeBuilder()
+                .withName("NonInitializer2")
+                .withOperations(newOperationBuilder()
+                        .withName("run")
+                        .withModifier(OperationModifier.STATIC)
+                        .withBody("// TODO")
+                        .withBinding("")
+                        .build())
+                .build();
+
+        final Model model = newModelBuilder().withName(MODEL_NAME)
+                .withElements(Arrays.asList(initializer1, initializer2, nonInitializer1, nonInitializer2))
+                .build();
+
+        esmModel.addContent(model);
+
+        transform();
+
+        final List<UnboundOperation> initializers = allPsm(UnboundOperation.class).filter(o -> o.isInitializer()).collect(Collectors.toList());
+
+        assertEquals(2, initializers.size());
     }
 
     static <T> Stream<T> asStream(Iterator<T> sourceIterator, boolean parallel) {
