@@ -368,6 +368,12 @@ public class Asm2RdbmsTypeMappingTest extends Asm2RdbmsMappingTestBase {
                 255,
                 -1,
                 -1);
+        typeAsserter(rdbmsUtils.getRdbmsField(RDBMS_TABLE_NAME, "javalangStringAttr", true)
+                        .orElseThrow(() -> new RuntimeException("javalangStringAttr is missing")),
+                VARCHAR,
+                255,
+                -1,
+                -1);
     }
 
     @Test
