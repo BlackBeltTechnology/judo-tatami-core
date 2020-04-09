@@ -356,7 +356,7 @@ public class Asm2RdbmsTypeMappingTest extends Asm2RdbmsMappingTestBase {
         assertTrue(rdbmsUtils.getRdbmsTable(RDBMS_TABLE_NAME).isPresent());
 
         // check attributes -> fields
-        assertEquals(3, rdbmsUtils.getRdbmsFields(RDBMS_TABLE_NAME)
+        assertEquals(4, rdbmsUtils.getRdbmsFields(RDBMS_TABLE_NAME)
                 .orElseThrow(() -> new RuntimeException("There are no fields in the given table"))
                 .size()); //+2 type and id
 
