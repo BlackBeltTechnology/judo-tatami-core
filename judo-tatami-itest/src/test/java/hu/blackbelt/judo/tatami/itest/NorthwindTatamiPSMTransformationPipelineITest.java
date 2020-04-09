@@ -153,6 +153,8 @@ public class NorthwindTatamiPSMTransformationPipelineITest extends TatamiPSMTran
             log.log(LOG_ERROR, "EXCEPTION: ", e);
         }
         assertNotNull(response);
+        log.log(LOG_INFO, "~~~~~~~~~~~~~ response: ");
+        log.log(LOG_INFO, String.valueOf(response.getStatus()));
 
         log.log(LOG_INFO, "==============================================");
         log.log(LOG_INFO, "== STOPPING TEST REST METHOD");
