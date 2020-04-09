@@ -1,16 +1,20 @@
 package hu.blackbelt.judo.tatami.asm2rdbms;
 
 import com.google.common.collect.ImmutableList;
+import hu.blackbelt.judo.meta.rdbms.RdbmsForeignKey;
+import hu.blackbelt.judo.meta.rdbms.RdbmsIdentifierField;
+import hu.blackbelt.judo.meta.rdbms.RdbmsJunctionTable;
+import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EAnnotation;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.EReference;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static org.eclipse.emf.ecore.util.builder.EcoreBuilders.*;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class Asm2RdbmsRelationMappingTest extends Asm2RdbmsMappingTestBase {
     //////////////////////////////////////////////////
@@ -139,18 +143,36 @@ public class Asm2RdbmsRelationMappingTest extends Asm2RdbmsMappingTestBase {
         assertEquals(3, rdbmsUtils.getRdbmsTables()
                 .orElseThrow(() -> new RuntimeException("No tables were found")).size());
 
-        assertEquals(2, rdbmsUtils.getRdbmsFields(RDBMS_TABLE_NAME_TO)
-                .orElseThrow(() -> new RuntimeException(RDBMS_TABLE_NAME_TO + " table not found"))
-                .size());
         assertEquals(2, rdbmsUtils.getRdbmsFields(RDBMS_TABLE_NAME_FROM)
                 .orElseThrow(() -> new RuntimeException(RDBMS_TABLE_NAME_FROM + " table not found"))
                 .size());
+        assertEquals(2, rdbmsUtils.getRdbmsFields(RDBMS_TABLE_NAME_TO)
+                .orElseThrow(() -> new RuntimeException(RDBMS_TABLE_NAME_TO + " table not found"))
+                .size());
 
-        // check junction table
-        assertTrue(rdbmsUtils.getRdbmsJunctionTable(RDBMS_TABLE_NAME_FROM + "#" + ONE_WAY_REFERENCE + " to " + RDBMS_TABLE_NAME_TO).isPresent());
+        // save rdbmsJunctionTable
+        RdbmsJunctionTable rdbmsJunctionTable = rdbmsUtils.getRdbmsJunctionTable(RDBMS_TABLE_NAME_FROM + "#" + ONE_WAY_REFERENCE + " to " + RDBMS_TABLE_NAME_TO)
+                .orElseThrow(() -> new RuntimeException(RDBMS_TABLE_NAME_FROM + "#" + ONE_WAY_REFERENCE + " to " + RDBMS_TABLE_NAME_TO + " junction table not found"));
 
-        // check if RdbmsForeignKey not exists unnecessarily
-        assertFalse(rdbmsUtils.getRdbmsForeignKey(RDBMS_TABLE_NAME_FROM, ONE_WAY_REFERENCE, false).isPresent());
+        // save rdbmsForeignKeys
+        EList<RdbmsForeignKey> rdbmsForeignKeys = rdbmsUtils.getRdbmsForeignKeys(RDBMS_TABLE_NAME_FROM + "#" + ONE_WAY_REFERENCE + " to " + RDBMS_TABLE_NAME_TO)
+                .orElseThrow(() -> new RuntimeException(RDBMS_TABLE_NAME_FROM + "#" + ONE_WAY_REFERENCE + " to " + RDBMS_TABLE_NAME_TO + " junction table not found"));
+
+        // save primaryKeys
+        RdbmsIdentifierField primaryKeyFrom = rdbmsUtils.getRdbmsTable(RDBMS_TABLE_NAME_FROM)
+                .orElseThrow(() -> new RuntimeException(RDBMS_TABLE_NAME_FROM + " table not found"))
+                .getPrimaryKey();
+        RdbmsIdentifierField primaryKeyTo = rdbmsUtils.getRdbmsTable(RDBMS_TABLE_NAME_TO)
+                .orElseThrow(() -> new RuntimeException(RDBMS_TABLE_NAME_TO + " table not found"))
+                .getPrimaryKey();
+
+        // assertions
+        assertTrue(rdbmsForeignKeys.stream().anyMatch(o -> o.getReferenceKey().equals(primaryKeyFrom)));
+        assertTrue(rdbmsForeignKeys.stream().anyMatch(o -> o.getReferenceKey().equals(primaryKeyTo)));
+
+        assertEquals(rdbmsJunctionTable.getField1().getReferenceKey(), primaryKeyTo);
+        assertEquals(rdbmsJunctionTable.getField2().getReferenceKey(), primaryKeyFrom);
+
     }
 
     @Test
@@ -288,7 +310,7 @@ public class Asm2RdbmsRelationMappingTest extends Asm2RdbmsMappingTestBase {
         final String RDBMS_TABLE_NAME_1 = "TestEpackage.TwoWayRelation1";
         final String RDBMS_TABLE_NAME_2 = "TestEpackage.TwoWayRelation2";
         final String TWO_WAY_REFERENCE1 = "twoWayReference1";
-        final String TWO_WAY_REFERENCE2 = "twoWayReference2";
+        //final String TWO_WAY_REFERENCE2 = "twoWayReference2";
 
         // check if tables exist
         assertEquals(2, rdbmsUtils.getRdbmsTables()
@@ -391,12 +413,31 @@ public class Asm2RdbmsRelationMappingTest extends Asm2RdbmsMappingTestBase {
                 .orElseThrow(() -> new RuntimeException(RDBMS_TABLE_NAME_2 + " table not found"))
                 .size());  //+2 id and type
 
-        // check junction table
-//        assertTrue(rdbmsUtils.getRdbmsJunctionTable(RDBMS_TABLE_NAME_FROM + "#" + ONE_WAY_REFERENCE + " to " + RDBMS_TABLE_NAME_TO).isPresent());
+        // save rdbmsJunctionTable
+        RdbmsJunctionTable rdbmsJunctionTable =
+                rdbmsUtils.getRdbmsJunctionTable(RDBMS_TABLE_NAME_2 + "#" + TWO_WAY_REFERENCE1 + " to " + RDBMS_TABLE_NAME_1 + "#" + TWO_WAY_REFERENCE2)
+                        .orElseThrow(() -> new RuntimeException(RDBMS_TABLE_NAME_2 + "#" + TWO_WAY_REFERENCE1 + " to " + RDBMS_TABLE_NAME_1 + "#" + TWO_WAY_REFERENCE2 +
+                                " junction table not found"));
 
-        // check if RdbmsForeignKey not exists unnecessarily
-        assertFalse(rdbmsUtils.getRdbmsForeignKey(RDBMS_TABLE_NAME_1, TWO_WAY_REFERENCE2, false).isPresent());
-        assertFalse(rdbmsUtils.getRdbmsForeignKey(RDBMS_TABLE_NAME_2, TWO_WAY_REFERENCE1, false).isPresent());
+        // save rdbmsForeignKeys
+        EList<RdbmsForeignKey> rdbmsForeignKeys = rdbmsUtils.getRdbmsForeignKeys(RDBMS_TABLE_NAME_2 + "#" + TWO_WAY_REFERENCE1 + " to " + RDBMS_TABLE_NAME_1 + "#" + TWO_WAY_REFERENCE2)
+                .orElseThrow(() -> new RuntimeException(RDBMS_TABLE_NAME_2 + "#" + TWO_WAY_REFERENCE1 + " to " + RDBMS_TABLE_NAME_1 + "#" + TWO_WAY_REFERENCE2 +
+                        " junction table not found"));
+
+        // save primaryKeys
+        RdbmsIdentifierField primaryKey1 = rdbmsUtils.getRdbmsTable(RDBMS_TABLE_NAME_1)
+                .orElseThrow(() -> new RuntimeException(RDBMS_TABLE_NAME_1 + " table not found"))
+                .getPrimaryKey();
+        RdbmsIdentifierField primaryKey2 = rdbmsUtils.getRdbmsTable(RDBMS_TABLE_NAME_2)
+                .orElseThrow(() -> new RuntimeException(RDBMS_TABLE_NAME_2 + " table not found"))
+                .getPrimaryKey();
+
+        // assertions
+        assertTrue(rdbmsForeignKeys.stream().anyMatch(o -> o.getReferenceKey().equals(primaryKey1)));
+        assertTrue(rdbmsForeignKeys.stream().anyMatch(o -> o.getReferenceKey().equals(primaryKey2)));
+
+        assertEquals(rdbmsJunctionTable.getField1().getReferenceKey(), primaryKey1);
+        assertEquals(rdbmsJunctionTable.getField2().getReferenceKey(), primaryKey2);
     }
 
 }
