@@ -3,11 +3,7 @@ package hu.blackbelt.judo.tatami.asm2rdbms;
 import com.google.common.collect.ImmutableList;
 import hu.blackbelt.judo.meta.rdbms.RdbmsField;
 import lombok.extern.slf4j.Slf4j;
-import org.eclipse.emf.ecore.EAnnotation;
-import org.eclipse.emf.ecore.EClass;
-import org.eclipse.emf.ecore.EPackage;
-import org.eclipse.emf.ecore.EcorePackage;
-import org.junit.jupiter.api.Disabled;
+import org.eclipse.emf.ecore.*;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -24,6 +20,8 @@ public class Asm2RdbmsTypeMappingTest extends Asm2RdbmsMappingTestBase {
     private static final String VARCHAR = "VARCHAR";
     private static final String BOOLEAN = "BOOLEAN";
     private static final String DATE = "DATE";
+    private static final String TIMESTAMP = "TIMESTAMP";
+    private static final String TIMESTAMP_WITH_TIMEZONE = "TIMESTAMP WITH TIMEZONE";
 
     /**
      * Asserts the fundamental properties of a RdbmsField
@@ -34,13 +32,26 @@ public class Asm2RdbmsTypeMappingTest extends Asm2RdbmsMappingTestBase {
      * @param expectedPrecision -1 if undefined
      * @param expectedScale     -1 if undefined
      */
-    protected void typeAsserter(final RdbmsField rdbmsField, final String expectedType,
-                                final int expectedSize, final int expectedPrecision, final int expectedScale) {
+    private void typeAsserter(final RdbmsField rdbmsField, final String expectedType,
+                              final int expectedSize, final int expectedPrecision, final int expectedScale) {
         assertNotNull(rdbmsField);
         assertEquals(expectedType, rdbmsField.getRdbmsTypeName());
         assertEquals(expectedSize, rdbmsField.getSize());
         assertEquals(expectedPrecision, rdbmsField.getPrecision());
         assertEquals(expectedScale, rdbmsField.getScale());
+    }
+
+    /**
+     * Creates EDataType with given instance type name
+     *
+     * @param instanceTypeName name of instance type
+     * @return new EDataType with name created from instanceTypeName without dots
+     */
+    private EDataType customEDataTypeBuilder(final String instanceTypeName) {
+        return newEDataTypeBuilder()
+                .withName(instanceTypeName.replace(".", ""))
+                .withInstanceTypeName(instanceTypeName)
+                .build();
     }
 
     @Test
@@ -255,6 +266,19 @@ public class Asm2RdbmsTypeMappingTest extends Asm2RdbmsMappingTestBase {
 
         eAnnotation.getDetails().put("value", "true");
 
+        // create custom date types
+        final EDataType javautilDate = customEDataTypeBuilder("java.util.Date");
+        final EDataType javasqlDate = customEDataTypeBuilder("java.sql.Date");
+        final EDataType javatimeLocalDate = customEDataTypeBuilder("java.time.LocalDate");
+        final EDataType orgjodatimeLocalDate = customEDataTypeBuilder("org.joda.time.LocalDate");
+        final EDataType javasqlTimestamp = customEDataTypeBuilder("java.sql.Timestamp");
+        final EDataType javatimeLocalDateTime = customEDataTypeBuilder("java.time.LocalDateTime");
+        final EDataType javatimeOffsetDateTime = customEDataTypeBuilder("java.time.OffsetDateTime");
+        final EDataType javatimeZonedDateTime = customEDataTypeBuilder("java.time.ZonedDateTime");
+        final EDataType orgjodatimeDateTime = customEDataTypeBuilder("org.joda.time.DateTime");
+        final EDataType orgjodatimeLocalDateTime = customEDataTypeBuilder("org.joda.time.LocalDateTime");
+        final EDataType orgjodatimeMutableDateTime = customEDataTypeBuilder("org.joda.time.MutableDateTime");
+
         // create class with date type attributes
         final EClass eClass = newEClassBuilder()
                 .withName("TestDateTypesClass")
@@ -263,6 +287,50 @@ public class Asm2RdbmsTypeMappingTest extends Asm2RdbmsMappingTestBase {
                                 newEAttributeBuilder()
                                         .withName("dateAttr")
                                         .withEType(ecore.getEDate())
+                                        .build(),
+                                newEAttributeBuilder()
+                                        .withName("javautilDateAttr")
+                                        .withEType(javautilDate)
+                                        .build(),
+                                newEAttributeBuilder()
+                                        .withName("javasqlDateAttr")
+                                        .withEType(javasqlDate)
+                                        .build(),
+                                newEAttributeBuilder()
+                                        .withName("javatimeLocalDateAttr")
+                                        .withEType(javatimeLocalDate)
+                                        .build(),
+                                newEAttributeBuilder()
+                                        .withName("orgjodatimeLocalDateAttr")
+                                        .withEType(orgjodatimeLocalDate)
+                                        .build(),
+                                newEAttributeBuilder()
+                                        .withName("javasqlTimestampAttr")
+                                        .withEType(javasqlTimestamp)
+                                        .build(),
+                                newEAttributeBuilder()
+                                        .withName("javatimeLocalDateTimeAttr")
+                                        .withEType(javatimeLocalDateTime)
+                                        .build(),
+                                newEAttributeBuilder()
+                                        .withName("javatimeOffsetDateTimeAttr")
+                                        .withEType(javatimeOffsetDateTime)
+                                        .build(),
+                                newEAttributeBuilder()
+                                        .withName("javatimeZonedDateTimeAttr")
+                                        .withEType(javatimeZonedDateTime)
+                                        .build(),
+                                newEAttributeBuilder()
+                                        .withName("orgjodatimeDateTimeAttr")
+                                        .withEType(orgjodatimeDateTime)
+                                        .build(),
+                                newEAttributeBuilder()
+                                        .withName("orgjodatimeLocalDateTimeAttr")
+                                        .withEType(orgjodatimeLocalDateTime)
+                                        .build(),
+                                newEAttributeBuilder()
+                                        .withName("orgjodatimeMutableDateTimeAttr")
+                                        .withEType(orgjodatimeMutableDateTime)
                                         .build()
                         )
                 )
@@ -271,12 +339,29 @@ public class Asm2RdbmsTypeMappingTest extends Asm2RdbmsMappingTestBase {
         logger.debug("Create TestDateTypesClass eclass");
 
 
-        // add class to package
+        // add class and custom types to package
         final EPackage ePackage = newEPackageBuilder()
                 .withName("TestDateTypesPackage")
                 .withNsPrefix("test")
                 .withNsURI("http:///com.example.test.ecore")
-                .withEClassifiers(eClass)
+                .withEClassifiers(ImmutableList.of(
+                        // eclass
+                        eClass,
+
+                        // custom types
+                        javautilDate,
+                        javautilDate,
+                        javasqlDate,
+                        javatimeLocalDate,
+                        orgjodatimeLocalDate,
+                        javasqlTimestamp,
+                        javatimeLocalDateTime,
+                        javatimeOffsetDateTime,
+                        javatimeZonedDateTime,
+                        orgjodatimeDateTime,
+                        orgjodatimeLocalDateTime,
+                        orgjodatimeMutableDateTime
+                ))
                 .build();
         logger.debug("Create TestDateTypesPackage EPackage");
 
@@ -294,7 +379,7 @@ public class Asm2RdbmsTypeMappingTest extends Asm2RdbmsMappingTestBase {
         assertTrue(rdbmsUtils.getRdbmsTable(RDBMS_TABLE_NAME).isPresent());
 
         // check attributes -> fields
-        assertEquals(3, rdbmsUtils.getRdbmsFields(RDBMS_TABLE_NAME)
+        assertEquals(14, rdbmsUtils.getRdbmsFields(RDBMS_TABLE_NAME)
                 .orElseThrow(() -> new RuntimeException("There are no fields in the given table"))
                 .size()); //+2 type and id
 
@@ -302,6 +387,72 @@ public class Asm2RdbmsTypeMappingTest extends Asm2RdbmsMappingTestBase {
         typeAsserter(rdbmsUtils.getRdbmsField(RDBMS_TABLE_NAME, "dateAttr", true)
                         .orElseThrow(() -> new RuntimeException("dateAttr is missing")),
                 DATE,
+                -1,
+                -1,
+                -1);
+        typeAsserter(rdbmsUtils.getRdbmsField(RDBMS_TABLE_NAME, "javautilDateAttr", true)
+                        .orElseThrow(() -> new RuntimeException("javautilDateAttr is missing")),
+                DATE,
+                -1,
+                -1,
+                -1);
+        typeAsserter(rdbmsUtils.getRdbmsField(RDBMS_TABLE_NAME, "javasqlDateAttr", true)
+                        .orElseThrow(() -> new RuntimeException("javasqlDateAttr is missing")),
+                DATE,
+                -1,
+                -1,
+                -1);
+        typeAsserter(rdbmsUtils.getRdbmsField(RDBMS_TABLE_NAME, "javatimeLocalDateAttr", true)
+                        .orElseThrow(() -> new RuntimeException("javatimeLocalDateAttr is missing")),
+                DATE,
+                -1,
+                -1,
+                -1);
+        typeAsserter(rdbmsUtils.getRdbmsField(RDBMS_TABLE_NAME, "orgjodatimeLocalDateAttr", true)
+                        .orElseThrow(() -> new RuntimeException("orgjodatimeLocalDateAttr is missing")),
+                DATE,
+                -1,
+                -1,
+                -1);
+        typeAsserter(rdbmsUtils.getRdbmsField(RDBMS_TABLE_NAME, "javasqlTimestampAttr", true)
+                        .orElseThrow(() -> new RuntimeException("javasqlTimestampAttr is missing")),
+                TIMESTAMP,
+                -1,
+                -1,
+                -1);
+        typeAsserter(rdbmsUtils.getRdbmsField(RDBMS_TABLE_NAME, "javatimeLocalDateTimeAttr", true)
+                        .orElseThrow(() -> new RuntimeException("javatimeLocalDateTimeAttr is missing")),
+                TIMESTAMP,
+                -1,
+                -1,
+                -1);
+        typeAsserter(rdbmsUtils.getRdbmsField(RDBMS_TABLE_NAME, "javatimeOffsetDateTimeAttr", true)
+                        .orElseThrow(() -> new RuntimeException("javatimeOffsetDateTimeAttr is missing")),
+                TIMESTAMP_WITH_TIMEZONE,
+                -1,
+                -1,
+                -1);
+        typeAsserter(rdbmsUtils.getRdbmsField(RDBMS_TABLE_NAME, "javatimeZonedDateTimeAttr", true)
+                        .orElseThrow(() -> new RuntimeException("javatimeZonedDateTimeAttr is missing")),
+                TIMESTAMP_WITH_TIMEZONE,
+                -1,
+                -1,
+                -1);
+        typeAsserter(rdbmsUtils.getRdbmsField(RDBMS_TABLE_NAME, "orgjodatimeDateTimeAttr", true)
+                        .orElseThrow(() -> new RuntimeException("orgjodatimeDateTimeAttr is missing")),
+                TIMESTAMP_WITH_TIMEZONE,
+                -1,
+                -1,
+                -1);
+        typeAsserter(rdbmsUtils.getRdbmsField(RDBMS_TABLE_NAME, "orgjodatimeLocalDateTimeAttr", true)
+                        .orElseThrow(() -> new RuntimeException("orgjodatimeLocalDateTimeAttr is missing")),
+                TIMESTAMP,
+                -1,
+                -1,
+                -1);
+        typeAsserter(rdbmsUtils.getRdbmsField(RDBMS_TABLE_NAME, "orgjodatimeMutableDateTimeAttr", true)
+                        .orElseThrow(() -> new RuntimeException("orgjodatimeMutableDateTimeAttr is missing")),
+                TIMESTAMP_WITH_TIMEZONE,
                 -1,
                 -1,
                 -1);
@@ -368,13 +519,6 @@ public class Asm2RdbmsTypeMappingTest extends Asm2RdbmsMappingTestBase {
                 -1,
                 -1,
                 -1);
-    }
-
-    @Test
-    @Disabled
-    @DisplayName("Test Custom Types")
-    public void testCustomTypes() {
-        //TODO
     }
 
 }
