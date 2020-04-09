@@ -66,6 +66,16 @@ public class Asm2RdbmsTypeMappingTest extends Asm2RdbmsMappingTestBase {
 
         eAnnotation.getDetails().put("value", "true");
 
+        // create custom numeric types
+        final EDataType javalangByte = customEDataTypeBuilder("java.lang.Byte");
+        final EDataType javalangShort = customEDataTypeBuilder("java.lang.Short");
+        final EDataType javalangInteger = customEDataTypeBuilder("java.lang.Integer");
+        final EDataType javalangLong = customEDataTypeBuilder("java.lang.Long");
+        final EDataType javamathBigInteger = customEDataTypeBuilder("java.math.BigInteger");
+        final EDataType javalangFloat = customEDataTypeBuilder("java.lang.Float");
+        final EDataType javalangDouble = customEDataTypeBuilder("java.lang.Double");
+        final EDataType javamathBigDecimal = customEDataTypeBuilder("java.math.BigDecimal");
+
         // create class with numeric type attributes
         final EClass eClass = newEClassBuilder()
                 .withName("TestNumericTypesClass")
@@ -102,6 +112,38 @@ public class Asm2RdbmsTypeMappingTest extends Asm2RdbmsMappingTestBase {
                                 newEAttributeBuilder()
                                         .withName("byteAttr")
                                         .withEType(ecore.getEByte())
+                                        .build(),
+                                newEAttributeBuilder()
+                                        .withName("javalangByteAttr")
+                                        .withEType(javalangByte)
+                                        .build(),
+                                newEAttributeBuilder()
+                                        .withName("javalangShortAttr")
+                                        .withEType(javalangShort)
+                                        .build(),
+                                newEAttributeBuilder()
+                                        .withName("javalangIntegerAttr")
+                                        .withEType(javalangInteger)
+                                        .build(),
+                                newEAttributeBuilder()
+                                        .withName("javalangLongAttr")
+                                        .withEType(javalangLong)
+                                        .build(),
+                                newEAttributeBuilder()
+                                        .withName("javamathBigIntegerAttr")
+                                        .withEType(javamathBigInteger)
+                                        .build(),
+                                newEAttributeBuilder()
+                                        .withName("javalangFloatAttr")
+                                        .withEType(javalangFloat)
+                                        .build(),
+                                newEAttributeBuilder()
+                                        .withName("javalangDoubleAttr")
+                                        .withEType(javalangDouble)
+                                        .build(),
+                                newEAttributeBuilder()
+                                        .withName("javamathBigDecimalAttr")
+                                        .withEType(javamathBigDecimal)
                                         .build()
                         )
                 )
@@ -109,12 +151,25 @@ public class Asm2RdbmsTypeMappingTest extends Asm2RdbmsMappingTestBase {
                 .build();
         logger.debug("Create TestNumericTypesClass eclass");
 
-        // add class to package
+        // add class and custom numeric types to package
         final EPackage ePackage = newEPackageBuilder()
                 .withName("TestNumericTypesPackage")
                 .withNsPrefix("test")
                 .withNsURI("http:///com.example.test.ecore")
-                .withEClassifiers(eClass)
+                .withEClassifiers(ImmutableList.of(
+                        // add eclass
+                        eClass,
+
+                        // add custom types
+                        javalangByte,
+                        javalangShort,
+                        javalangInteger,
+                        javalangLong,
+                        javamathBigInteger,
+                        javalangFloat,
+                        javalangDouble,
+                        javamathBigDecimal
+                ))
                 .build();
         logger.debug("Create TestNumericTypesPackage EPackage");
 
@@ -134,7 +189,7 @@ public class Asm2RdbmsTypeMappingTest extends Asm2RdbmsMappingTestBase {
         assertEquals(1, rdbmsUtils.getRdbmsTables()
                 .orElseThrow(() -> new RuntimeException("There are no tables created")).size());
 
-        assertEquals(10, rdbmsUtils.getRdbmsFields(RDBMS_TABLE_NAME)
+        assertEquals(18, rdbmsUtils.getRdbmsFields(RDBMS_TABLE_NAME)
                 .orElseThrow(() -> new RuntimeException("There is no table with given name or there are no fields in the given table"))
                 .size()); //+2 type and id
 
@@ -187,6 +242,54 @@ public class Asm2RdbmsTypeMappingTest extends Asm2RdbmsMappingTestBase {
                 -1,
                 -1,
                 -1);
+        typeAsserter(rdbmsUtils.getRdbmsField(RDBMS_TABLE_NAME, "javalangByteAttr", true)
+                        .orElseThrow(() -> new RuntimeException("javalangByteAttr is missing")),
+                INTEGER,
+                -1,
+                -1,
+                -1);
+        typeAsserter(rdbmsUtils.getRdbmsField(RDBMS_TABLE_NAME, "javalangShortAttr", true)
+                        .orElseThrow(() -> new RuntimeException("javalangShortAttr is missing")),
+                INTEGER,
+                -1,
+                -1,
+                -1);
+        typeAsserter(rdbmsUtils.getRdbmsField(RDBMS_TABLE_NAME, "javalangIntegerAttr", true)
+                        .orElseThrow(() -> new RuntimeException("javalangIntegerAttr is missing")),
+                INTEGER,
+                -1,
+                -1,
+                -1);
+        typeAsserter(rdbmsUtils.getRdbmsField(RDBMS_TABLE_NAME, "javalangLongAttr", true)
+                        .orElseThrow(() -> new RuntimeException("javalangLongAttr is missing")),
+                BIGINT,
+                -1,
+                -1,
+                -1);
+//        typeAsserter(rdbmsUtils.getRdbmsField(RDBMS_TABLE_NAME, "javamathBigIntegerAttr", true)
+//                        .orElseThrow(() -> new RuntimeException("javamathBigIntegerAttr is missing")),
+//                DECIMAL,
+//                -1,
+//                18,
+//                0);
+        typeAsserter(rdbmsUtils.getRdbmsField(RDBMS_TABLE_NAME, "javalangFloatAttr", true)
+                        .orElseThrow(() -> new RuntimeException("javalangFloatAttr is missing")),
+                FLOAT,
+                -1,
+                -1,
+                -1);
+        typeAsserter(rdbmsUtils.getRdbmsField(RDBMS_TABLE_NAME, "javalangDoubleAttr", true)
+                        .orElseThrow(() -> new RuntimeException("javalangDoubleAttr is missing")),
+                DOUBLE,
+                -1,
+                -1,
+                -1);
+//        typeAsserter(rdbmsUtils.getRdbmsField(RDBMS_TABLE_NAME, "javamathBigDecimalAttr", true)
+//                        .orElseThrow(() -> new RuntimeException("javamathBigDecimalAttr is missing")),
+//                DECIMAL,
+//                -1,
+//                64,
+//                20);
 
     }
 
