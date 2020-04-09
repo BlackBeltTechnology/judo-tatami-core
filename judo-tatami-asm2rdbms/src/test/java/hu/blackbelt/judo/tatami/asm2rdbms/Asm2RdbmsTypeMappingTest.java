@@ -305,6 +305,9 @@ public class Asm2RdbmsTypeMappingTest extends Asm2RdbmsMappingTestBase {
 
         eAnnotation.getDetails().put("value", "true");
 
+        // create custom string-like type
+        final EDataType javalangString = customEDataTypeBuilder("java.lang.String");
+
         // create class with string-like type attributes
         final EClass eClass = newEClassBuilder()
                 .withName("TestStringlikeTypesClass")
@@ -313,6 +316,10 @@ public class Asm2RdbmsTypeMappingTest extends Asm2RdbmsMappingTestBase {
                                 newEAttributeBuilder()
                                         .withName("stringAttr")
                                         .withEType(ecore.getEString())
+                                        .build(),
+                                newEAttributeBuilder()
+                                        .withName("javalangStringAttr")
+                                        .withEType(javalangString)
                                         .build()
                         )
                 )
@@ -325,7 +332,13 @@ public class Asm2RdbmsTypeMappingTest extends Asm2RdbmsMappingTestBase {
                 .withName("TestStringlikeTypesPackage")
                 .withNsPrefix("test")
                 .withNsURI("http:///com.example.test.ecore")
-                .withEClassifiers(eClass)
+                .withEClassifiers(ImmutableList.of(
+                        // add eclass
+                        eClass,
+
+                        // add custom string-like type
+                        javalangString
+                ))
                 .build();
         logger.debug("Create TestStringlikeTypesPackage EPackage");
 
@@ -573,6 +586,9 @@ public class Asm2RdbmsTypeMappingTest extends Asm2RdbmsMappingTestBase {
 
         eAnnotation.getDetails().put("value", "true");
 
+        // create custom type
+        final EDataType javalangBoolean = customEDataTypeBuilder("java.lang.Boolean");
+
         // create class with boolean type attributes
         final EClass eClass = newEClassBuilder()
                 .withName("TestBooleanTypesClass")
@@ -581,6 +597,10 @@ public class Asm2RdbmsTypeMappingTest extends Asm2RdbmsMappingTestBase {
                                 newEAttributeBuilder()
                                         .withName("booleanAttr")
                                         .withEType(ecore.getEBoolean())
+                                        .build(),
+                                newEAttributeBuilder()
+                                        .withName("javalangBooleanAttr")
+                                        .withEType(javalangBoolean)
                                         .build()
                         )
                 )
@@ -588,12 +608,18 @@ public class Asm2RdbmsTypeMappingTest extends Asm2RdbmsMappingTestBase {
                 .build();
         logger.debug("Create TestBooleanTypesClass eclass");
 
-        // add class to package
+        // add class and custom booolean type to package
         final EPackage ePackage = newEPackageBuilder()
                 .withName("TestBooleanTypesPackage")
                 .withNsPrefix("test")
                 .withNsURI("http:///com.example.test.ecore")
-                .withEClassifiers(eClass)
+                .withEClassifiers(ImmutableList.of(
+                        // add eclass
+                        eClass,
+
+                        // add custom type
+                        javalangBoolean
+                ))
                 .build();
         logger.debug("Create TestBooleanTypesPackage EPackage");
 
@@ -611,13 +637,19 @@ public class Asm2RdbmsTypeMappingTest extends Asm2RdbmsMappingTestBase {
         assertTrue(rdbmsUtils.getRdbmsTable(RDBMS_TABLE_NAME).isPresent());
 
         // check attributes -> fields
-        assertEquals(3, rdbmsUtils.getRdbmsFields(RDBMS_TABLE_NAME)
+        assertEquals(4, rdbmsUtils.getRdbmsFields(RDBMS_TABLE_NAME)
                 .orElseThrow(() -> new RuntimeException("There no fields in the given table"))
                 .size()); //+2 type and id
 
         // check field types based on typemapping table
         typeAsserter(rdbmsUtils.getRdbmsField(RDBMS_TABLE_NAME, "booleanAttr", true)
                         .orElseThrow(() -> new RuntimeException("booleanAttr is missing")),
+                BOOLEAN,
+                -1,
+                -1,
+                -1);
+        typeAsserter(rdbmsUtils.getRdbmsField(RDBMS_TABLE_NAME, "javalangBooleanAttr", true)
+                        .orElseThrow(() -> new RuntimeException("javalangBooleanAttr is missing")),
                 BOOLEAN,
                 -1,
                 -1,
