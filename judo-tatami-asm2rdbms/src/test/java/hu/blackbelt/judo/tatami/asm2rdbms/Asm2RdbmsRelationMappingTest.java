@@ -73,15 +73,98 @@ public class Asm2RdbmsRelationMappingTest extends Asm2RdbmsMappingTestBase {
         final String RDBMS_TABLE_NAME_FROM = "TestEpackage.OneWayRelationFrom";
         final String ONE_WAY_REFERENCE = "oneWayReference";
 
-        // check if tables exist
+        // ASSERTION - check if tables exist
         assertEquals(2, rdbmsUtils.getRdbmsTables()
-                .orElseThrow(() -> new RuntimeException("No tables were found")).size());
+                .orElseThrow(() -> new RuntimeException("No tables were found"))
+                .size());
 
-        // check if RdbmsForeignKey is valid
+        // ASSERTION - check for correct number of fields
+        assertEquals(3, rdbmsUtils.getRdbmsFields(RDBMS_TABLE_NAME_FROM)
+                .orElseThrow(() -> new RuntimeException(RDBMS_TABLE_NAME_FROM + " not found"))
+                .size());
+        assertEquals(2, rdbmsUtils.getRdbmsFields(RDBMS_TABLE_NAME_TO)
+                .orElseThrow(() -> new RuntimeException(RDBMS_TABLE_NAME_TO + " not found"))
+                .size());
+
+        // ASSERTION - check if RdbmsForeignKey is valid
         assertEquals(rdbmsUtils.getRdbmsTable(RDBMS_TABLE_NAME_TO)
                         .orElseThrow(() -> new RuntimeException(RDBMS_TABLE_NAME_TO + " table not found"))
                         .getPrimaryKey(),
-                rdbmsUtils.getRdbmsForeignKey(RDBMS_TABLE_NAME_FROM, ONE_WAY_REFERENCE, false)
+                rdbmsUtils.getRdbmsForeignKey(RDBMS_TABLE_NAME_FROM, ONE_WAY_REFERENCE)
+                        .orElseThrow(() -> new RuntimeException(ONE_WAY_REFERENCE + " attribute not found"))
+                        .getReferenceKey());
+    }
+
+    @Test
+    @DisplayName("Test OneWayRelation With One To One Cardinality")
+    public void testOneWayRelationWithOneToOneCardinality() { //This test might be unnecessary though
+        // create annotation
+        EAnnotation eAnnotation = newEAnnotationBuilder()
+                .withSource("http://blackbelt.hu/judo/meta/ExtendedMetadata/entity")
+                .build();
+
+        eAnnotation.getDetails().put("value", "true");
+
+        // create class to
+        final EClass oneWayRelationTo = newEClassBuilder()
+                .withName("OneWayRelationTo")
+                .withEAnnotations(eAnnotation)
+                .build();
+
+
+        // create annotation2
+        EAnnotation eAnnotation2 = newEAnnotationBuilder()
+                .withSource("http://blackbelt.hu/judo/meta/ExtendedMetadata/entity")
+                .build();
+
+        eAnnotation2.getDetails().put("value", "true");
+
+        // create class from
+        final EClass oneWayRelationFrom = newEClassBuilder()
+                .withName("OneWayRelationFrom")
+                .withEAnnotations(eAnnotation2)
+                .withEStructuralFeatures(newEReferenceBuilder()
+                        .withName("oneWayReference")
+                        .withEType(oneWayRelationTo)
+                        .withLowerBound(1)
+                        .withUpperBound(1)
+                        .build())
+                .build();
+
+        // create package
+        final EPackage ePackage = newEPackageBuilder()
+                .withName("TestEpackage")
+                .withEClassifiers(ImmutableList.of(oneWayRelationFrom, oneWayRelationTo))
+                .withNsPrefix("test")
+                .withNsURI("http:///com.example.test.ecore")
+                .build();
+
+        // add content to asm model
+        asmModel.addContent(ePackage);
+
+        executeTransformation("testOneWayRelationWithOneToOneCardinality");
+
+        final String RDBMS_TABLE_NAME_TO = "TestEpackage.OneWayRelationTo";
+        final String RDBMS_TABLE_NAME_FROM = "TestEpackage.OneWayRelationFrom";
+        final String ONE_WAY_REFERENCE = "oneWayReference";
+
+        // ASSERTION - check if tables exist
+        assertEquals(2, rdbmsUtils.getRdbmsTables()
+                .orElseThrow(() -> new RuntimeException("No tables were found")).size());
+
+        // ASSERTION - check for correct number of fields
+        assertEquals(3, rdbmsUtils.getRdbmsFields(RDBMS_TABLE_NAME_FROM)
+                .orElseThrow(() -> new RuntimeException(RDBMS_TABLE_NAME_FROM + " not found"))
+                .size());
+        assertEquals(2, rdbmsUtils.getRdbmsFields(RDBMS_TABLE_NAME_TO)
+                .orElseThrow(() -> new RuntimeException(RDBMS_TABLE_NAME_TO + " not found"))
+                .size());
+
+        // ASSERTION - check if RdbmsForeignKey is valid
+        assertEquals(rdbmsUtils.getRdbmsTable(RDBMS_TABLE_NAME_TO)
+                        .orElseThrow(() -> new RuntimeException(RDBMS_TABLE_NAME_TO + " table not found"))
+                        .getPrimaryKey(),
+                rdbmsUtils.getRdbmsForeignKey(RDBMS_TABLE_NAME_FROM, ONE_WAY_REFERENCE)
                         .orElseThrow(() -> new RuntimeException(ONE_WAY_REFERENCE + " attribute not found"))
                         .getReferenceKey());
     }
@@ -140,10 +223,11 @@ public class Asm2RdbmsRelationMappingTest extends Asm2RdbmsMappingTestBase {
         final String ONE_WAY_REFERENCE = "oneWayReference";
         final String RDBMS_JUNCTION_TABLE_NAME = RDBMS_TABLE_NAME_FROM + "#" + ONE_WAY_REFERENCE + " to " + RDBMS_TABLE_NAME_TO;
 
-        // check if tables exist
+        // ASSERTION - check if tables exist
         assertEquals(3, rdbmsUtils.getRdbmsTables()
                 .orElseThrow(() -> new RuntimeException("No tables were found")).size());
 
+        // ASSERTION - check for correct number of fields
         assertEquals(2, rdbmsUtils.getRdbmsFields(RDBMS_TABLE_NAME_FROM)
                 .orElseThrow(() -> new RuntimeException(RDBMS_TABLE_NAME_FROM + " table not found"))
                 .size());
@@ -151,15 +235,15 @@ public class Asm2RdbmsRelationMappingTest extends Asm2RdbmsMappingTestBase {
                 .orElseThrow(() -> new RuntimeException(RDBMS_TABLE_NAME_TO + " table not found"))
                 .size());
 
-        // save rdbmsJunctionTable
+        // SAVE - rdbmsJunctionTable
         RdbmsJunctionTable rdbmsJunctionTable = rdbmsUtils.getRdbmsJunctionTable(RDBMS_JUNCTION_TABLE_NAME)
                 .orElseThrow(() -> new RuntimeException(RDBMS_JUNCTION_TABLE_NAME + " junction table not found"));
 
-        // save rdbmsForeignKeys
+        // SAVE - rdbmsForeignKeys
         EList<RdbmsForeignKey> rdbmsForeignKeys = rdbmsUtils.getRdbmsForeignKeys(RDBMS_JUNCTION_TABLE_NAME)
                 .orElseThrow(() -> new RuntimeException(RDBMS_JUNCTION_TABLE_NAME + " junction table not found"));
 
-        // save primaryKeys
+        // SAVE - primaryKeys
         RdbmsIdentifierField primaryKeyFrom = rdbmsUtils.getRdbmsTable(RDBMS_TABLE_NAME_FROM)
                 .orElseThrow(() -> new RuntimeException(RDBMS_TABLE_NAME_FROM + " table not found"))
                 .getPrimaryKey();
@@ -167,79 +251,14 @@ public class Asm2RdbmsRelationMappingTest extends Asm2RdbmsMappingTestBase {
                 .orElseThrow(() -> new RuntimeException(RDBMS_TABLE_NAME_TO + " table not found"))
                 .getPrimaryKey();
 
-        // assertions
+        // ASSERTION - TODO: name it
         assertTrue(rdbmsForeignKeys.stream().anyMatch(o -> o.getReferenceKey().equals(primaryKeyFrom)));
         assertTrue(rdbmsForeignKeys.stream().anyMatch(o -> o.getReferenceKey().equals(primaryKeyTo)));
 
+        // ASSERTION - TODO: name it
         assertEquals(rdbmsJunctionTable.getField1().getReferenceKey(), primaryKeyTo);
         assertEquals(rdbmsJunctionTable.getField2().getReferenceKey(), primaryKeyFrom);
 
-    }
-
-    @Test
-    @DisplayName("Test OneWayRelation With One To One Cardinality")
-    public void testOneWayRelationWithOneToOneCardinality() { //This test might be unnecessary though
-        // create annotation
-        EAnnotation eAnnotation = newEAnnotationBuilder()
-                .withSource("http://blackbelt.hu/judo/meta/ExtendedMetadata/entity")
-                .build();
-
-        eAnnotation.getDetails().put("value", "true");
-
-        // create class to
-        final EClass oneWayRelationTo = newEClassBuilder()
-                .withName("OneWayRelationTo")
-                .withEAnnotations(eAnnotation)
-                .build();
-
-
-        // create annotation2
-        EAnnotation eAnnotation2 = newEAnnotationBuilder()
-                .withSource("http://blackbelt.hu/judo/meta/ExtendedMetadata/entity")
-                .build();
-
-        eAnnotation2.getDetails().put("value", "true");
-
-        // create class from
-        final EClass oneWayRelationFrom = newEClassBuilder()
-                .withName("OneWayRelationFrom")
-                .withEAnnotations(eAnnotation2)
-                .withEStructuralFeatures(newEReferenceBuilder()
-                        .withName("oneWayReference")
-                        .withEType(oneWayRelationTo)
-                        .withLowerBound(1)
-                        .withUpperBound(1)
-                        .build())
-                .build();
-
-        // create package
-        final EPackage ePackage = newEPackageBuilder()
-                .withName("TestEpackage")
-                .withEClassifiers(ImmutableList.of(oneWayRelationFrom, oneWayRelationTo))
-                .withNsPrefix("test")
-                .withNsURI("http:///com.example.test.ecore")
-                .build();
-
-        // add content to asm model
-        asmModel.addContent(ePackage);
-
-        executeTransformation("testOneWayRelationWithOneToOneCardinality");
-
-        final String RDBMS_TABLE_NAME_TO = "TestEpackage.OneWayRelationTo";
-        final String RDBMS_TABLE_NAME_FROM = "TestEpackage.OneWayRelationFrom";
-        final String ONE_WAY_REFERENCE = "oneWayReference";
-
-        // check if tables exist
-        assertEquals(2, rdbmsUtils.getRdbmsTables()
-                .orElseThrow(() -> new RuntimeException("No tables were found")).size());
-
-        // check if RdbmsForeignKey is valid
-        assertEquals(rdbmsUtils.getRdbmsTable(RDBMS_TABLE_NAME_TO)
-                        .orElseThrow(() -> new RuntimeException(RDBMS_TABLE_NAME_TO + " table not found"))
-                        .getPrimaryKey(),
-                rdbmsUtils.getRdbmsForeignKey(RDBMS_TABLE_NAME_FROM, ONE_WAY_REFERENCE, false)
-                        .orElseThrow(() -> new RuntimeException(ONE_WAY_REFERENCE + " attribute not found"))
-                        .getReferenceKey());
     }
 
     //////////////////////////////////////////////////
@@ -313,7 +332,7 @@ public class Asm2RdbmsRelationMappingTest extends Asm2RdbmsMappingTestBase {
         final String TWO_WAY_REFERENCE1 = "twoWayReference1";
         //final String TWO_WAY_REFERENCE2 = "twoWayReference2";
 
-        // check if tables exist
+        // ASSERTION - check if tables exist
         assertEquals(2, rdbmsUtils.getRdbmsTables()
                 .orElseThrow(() -> new RuntimeException("No tables were found"))
                 .size());
@@ -326,13 +345,15 @@ public class Asm2RdbmsRelationMappingTest extends Asm2RdbmsMappingTestBase {
                 .orElseThrow(() -> new RuntimeException(RDBMS_TABLE_NAME_2 + " table not found"))
                 .size());  //+2 id and type
 
+        // ASSERTION - TODO: name it
         assertEquals(rdbmsUtils.getRdbmsTable(RDBMS_TABLE_NAME_1)
                         .orElseThrow(() -> new RuntimeException(RDBMS_TABLE_NAME_1 + " table not found"))
                         .getPrimaryKey(),
-                rdbmsUtils.getRdbmsForeignKey(RDBMS_TABLE_NAME_2, TWO_WAY_REFERENCE1, false)
+                rdbmsUtils.getRdbmsForeignKey(RDBMS_TABLE_NAME_2, TWO_WAY_REFERENCE1)
                         .orElseThrow(() -> new RuntimeException(TWO_WAY_REFERENCE1 + " attribute not found"))
                         .getReferenceKey());
     }
+
     @Test
     @DisplayName("Test TwoWayRelation With One To One Cardinalities")
     public void testTwoWayRelationWithOneToOneCardinalities() {
@@ -398,29 +419,29 @@ public class Asm2RdbmsRelationMappingTest extends Asm2RdbmsMappingTestBase {
 
         final String RDBMS_TABLE_NAME_1 = "TestEpackage.TwoWayRelation1";
         final String RDBMS_TABLE_NAME_2 = "TestEpackage.TwoWayRelation2";
-        final String TWO_WAY_REFERENCE1 = "twoWayReference1";
-        //final String TWO_WAY_REFERENCE2 = "twoWayReference2";
+        // final String TWO_WAY_REFERENCE1 = "twoWayReference1";
+        final String TWO_WAY_REFERENCE2 = "twoWayReference2";
 
-        // check if tables exist
+        // ASSERTION - check if tables exist
         assertEquals(2, rdbmsUtils.getRdbmsTables()
                 .orElseThrow(() -> new RuntimeException("No tables were found"))
                 .size());
 
-//        assertEquals(2, rdbmsUtils.getRdbmsFields(RDBMS_TABLE_NAME_1)
-//                .orElseThrow(() -> new RuntimeException(RDBMS_TABLE_NAME_1 + " table not found"))
-//                .size()); //+2 id and type
-//
-//        assertEquals(3, rdbmsUtils.getRdbmsFields(RDBMS_TABLE_NAME_2)
-//                .orElseThrow(() -> new RuntimeException(RDBMS_TABLE_NAME_2 + " table not found"))
-//                .size());  //+2 id and type
+        //TODO: fix transformation rule, currently the table with first="false" gets the foreign key field
+        assertEquals(3, rdbmsUtils.getRdbmsFields(RDBMS_TABLE_NAME_1)
+                .orElseThrow(() -> new RuntimeException(RDBMS_TABLE_NAME_1 + " table not found"))
+                .size()); //+2 id and type
 
-        //TODO: fix transformation rule
-//        assertEquals(rdbmsUtils.getRdbmsTable(RDBMS_TABLE_NAME_1)
-//                        .orElseThrow(() -> new RuntimeException(RDBMS_TABLE_NAME_1 + " table not found"))
-//                        .getPrimaryKey(),
-//                rdbmsUtils.getRdbmsForeignKey(RDBMS_TABLE_NAME_2, TWO_WAY_REFERENCE1, false)
-//                        .orElseThrow(() -> new RuntimeException(TWO_WAY_REFERENCE1 + " attribute not found"))
-//                        .getReferenceKey());
+        assertEquals(2, rdbmsUtils.getRdbmsFields(RDBMS_TABLE_NAME_2)
+                .orElseThrow(() -> new RuntimeException(RDBMS_TABLE_NAME_2 + " table not found"))
+                .size());  //+2 id and type
+
+        assertEquals(rdbmsUtils.getRdbmsTable(RDBMS_TABLE_NAME_2)
+                        .orElseThrow(() -> new RuntimeException(RDBMS_TABLE_NAME_2 + " table not found"))
+                        .getPrimaryKey(),
+                rdbmsUtils.getRdbmsForeignKey(RDBMS_TABLE_NAME_1, TWO_WAY_REFERENCE2)
+                        .orElseThrow(() -> new RuntimeException(TWO_WAY_REFERENCE2 + " attribute not found"))
+                        .getReferenceKey());
     }
 
     @Test
@@ -490,8 +511,9 @@ public class Asm2RdbmsRelationMappingTest extends Asm2RdbmsMappingTestBase {
         final String RDBMS_TABLE_NAME_2 = "TestEpackage.TwoWayRelation2";
         final String TWO_WAY_REFERENCE1 = "twoWayReference1";
         final String TWO_WAY_REFERENCE2 = "twoWayReference2";
+        final String RDBMS_JUNCTION_TABLE = RDBMS_TABLE_NAME_2 + "#" + TWO_WAY_REFERENCE1 + " to " + RDBMS_TABLE_NAME_1 + "#" + TWO_WAY_REFERENCE2;
 
-        // check if tables exist
+        // ASSERTION - TODO: name it
         assertEquals(3, rdbmsUtils.getRdbmsTables()
                 .orElseThrow(() -> new RuntimeException("No tables were found"))
                 .size());
@@ -504,18 +526,16 @@ public class Asm2RdbmsRelationMappingTest extends Asm2RdbmsMappingTestBase {
                 .orElseThrow(() -> new RuntimeException(RDBMS_TABLE_NAME_2 + " table not found"))
                 .size());  //+2 id and type
 
-        // save rdbmsJunctionTable
+        // SAVE - rdbmsJunctionTable
         RdbmsJunctionTable rdbmsJunctionTable =
-                rdbmsUtils.getRdbmsJunctionTable(RDBMS_TABLE_NAME_2 + "#" + TWO_WAY_REFERENCE1 + " to " + RDBMS_TABLE_NAME_1 + "#" + TWO_WAY_REFERENCE2)
-                        .orElseThrow(() -> new RuntimeException(RDBMS_TABLE_NAME_2 + "#" + TWO_WAY_REFERENCE1 + " to " + RDBMS_TABLE_NAME_1 + "#" + TWO_WAY_REFERENCE2 +
-                                " junction table not found"));
+                rdbmsUtils.getRdbmsJunctionTable(RDBMS_JUNCTION_TABLE)
+                        .orElseThrow(() -> new RuntimeException(RDBMS_JUNCTION_TABLE + " junction table not found"));
 
-        // save rdbmsForeignKeys
-        EList<RdbmsForeignKey> rdbmsForeignKeys = rdbmsUtils.getRdbmsForeignKeys(RDBMS_TABLE_NAME_2 + "#" + TWO_WAY_REFERENCE1 + " to " + RDBMS_TABLE_NAME_1 + "#" + TWO_WAY_REFERENCE2)
-                .orElseThrow(() -> new RuntimeException(RDBMS_TABLE_NAME_2 + "#" + TWO_WAY_REFERENCE1 + " to " + RDBMS_TABLE_NAME_1 + "#" + TWO_WAY_REFERENCE2 +
-                        " junction table not found"));
+        // SAVE - rdbmsForeignKeys
+        EList<RdbmsForeignKey> rdbmsForeignKeys = rdbmsUtils.getRdbmsForeignKeys(RDBMS_JUNCTION_TABLE)
+                .orElseThrow(() -> new RuntimeException(RDBMS_JUNCTION_TABLE + " junction table not found"));
 
-        // save primaryKeys
+        // SAVE - primaryKeys
         RdbmsIdentifierField primaryKey1 = rdbmsUtils.getRdbmsTable(RDBMS_TABLE_NAME_1)
                 .orElseThrow(() -> new RuntimeException(RDBMS_TABLE_NAME_1 + " table not found"))
                 .getPrimaryKey();
@@ -523,12 +543,164 @@ public class Asm2RdbmsRelationMappingTest extends Asm2RdbmsMappingTestBase {
                 .orElseThrow(() -> new RuntimeException(RDBMS_TABLE_NAME_2 + " table not found"))
                 .getPrimaryKey();
 
-        // assertions
+        // ASSERTION - TODO: name it
         assertTrue(rdbmsForeignKeys.stream().anyMatch(o -> o.getReferenceKey().equals(primaryKey1)));
         assertTrue(rdbmsForeignKeys.stream().anyMatch(o -> o.getReferenceKey().equals(primaryKey2)));
 
         assertEquals(rdbmsJunctionTable.getField1().getReferenceKey(), primaryKey1);
         assertEquals(rdbmsJunctionTable.getField2().getReferenceKey(), primaryKey2);
+    }
+
+    //////////////////////////////////////////////////
+    ////////////// ONE WAY CONTAINMENTS //////////////
+
+
+    @Test
+    @DisplayName("Test OneWayContainment With Null To One Cardinality")
+    public void testOneWayContainmentWithNullToOneCardinality() {
+        // create annotation
+        EAnnotation eAnnotation = newEAnnotationBuilder()
+                .withSource("http://blackbelt.hu/judo/meta/ExtendedMetadata/entity")
+                .build();
+
+        eAnnotation.getDetails().put("value", "true");
+
+        // create class to
+        final EClass oneWayContainmentTo = newEClassBuilder()
+                .withName("OneWayContainmentTo")
+                .withEAnnotations(eAnnotation)
+                .build();
+
+
+        // create annotation2
+        EAnnotation eAnnotation2 = newEAnnotationBuilder()
+                .withSource("http://blackbelt.hu/judo/meta/ExtendedMetadata/entity")
+                .build();
+
+        eAnnotation2.getDetails().put("value", "true");
+
+        // create class from
+        final EClass oneWayContainmentFrom = newEClassBuilder()
+                .withName("OneWayContainmentFrom")
+                .withEAnnotations(eAnnotation2)
+                .withEStructuralFeatures(newEReferenceBuilder()
+                        .withName("oneWayContainment")
+                        .withEType(oneWayContainmentTo)
+                        .withLowerBound(0)
+                        .withUpperBound(1)
+                        .build())
+                .build();
+
+        // create package
+        final EPackage ePackage = newEPackageBuilder()
+                .withName("TestEpackage")
+                .withEClassifiers(ImmutableList.of(oneWayContainmentFrom, oneWayContainmentTo))
+                .withNsPrefix("test")
+                .withNsURI("http:///com.example.test.ecore")
+                .build();
+
+        // add content to asm model
+        asmModel.addContent(ePackage);
+
+        executeTransformation("testOneWayContainmentWithNullToOneCardinality");
+
+        final String RDBMS_TABLE_NAME_TO = "TestEpackage.OneWayContainmentTo";
+        final String RDBMS_TABLE_NAME_FROM = "TestEpackage.OneWayContainmentFrom";
+        final String ONE_WAY_CONTAINMENT = "oneWayContainment";
+
+        // ASSERTION - check if tables exist
+        assertEquals(2, rdbmsUtils.getRdbmsTables()
+                .orElseThrow(() -> new RuntimeException("No tables were found")).size());
+
+        // ASSERTION - check for correct number of fields
+        assertEquals(3, rdbmsUtils.getRdbmsFields(RDBMS_TABLE_NAME_FROM)
+                .orElseThrow(() -> new RuntimeException(RDBMS_TABLE_NAME_FROM + " not found"))
+                .size());
+        assertEquals(2, rdbmsUtils.getRdbmsFields(RDBMS_TABLE_NAME_TO)
+                .orElseThrow(() -> new RuntimeException(RDBMS_TABLE_NAME_FROM + " not found"))
+                .size());
+
+        // ASSERTION - check if RdbmsForeignKey is valid
+        assertEquals(rdbmsUtils.getRdbmsTable(RDBMS_TABLE_NAME_TO)
+                        .orElseThrow(() -> new RuntimeException(RDBMS_TABLE_NAME_TO + " table not found"))
+                        .getPrimaryKey(),
+                rdbmsUtils.getRdbmsForeignKey(RDBMS_TABLE_NAME_FROM, ONE_WAY_CONTAINMENT)
+                        .orElseThrow(() -> new RuntimeException(ONE_WAY_CONTAINMENT + " attribute not found"))
+                        .getReferenceKey());
+    }
+
+    @Test
+    @DisplayName("Test OneWayContainment With One To One Cardinality")
+    public void testOneWayContainmentWithOneToOneCardinality() {
+        // create annotation
+        EAnnotation eAnnotation = newEAnnotationBuilder()
+                .withSource("http://blackbelt.hu/judo/meta/ExtendedMetadata/entity")
+                .build();
+
+        eAnnotation.getDetails().put("value", "true");
+
+        // create class to
+        final EClass oneWayContainmentTo = newEClassBuilder()
+                .withName("OneWayContainmentTo")
+                .withEAnnotations(eAnnotation)
+                .build();
+
+
+        // create annotation2
+        EAnnotation eAnnotation2 = newEAnnotationBuilder()
+                .withSource("http://blackbelt.hu/judo/meta/ExtendedMetadata/entity")
+                .build();
+
+        eAnnotation2.getDetails().put("value", "true");
+
+        // create class from
+        final EClass oneWayContainmentFrom = newEClassBuilder()
+                .withName("OneWayContainmentFrom")
+                .withEAnnotations(eAnnotation2)
+                .withEStructuralFeatures(newEReferenceBuilder()
+                        .withName("oneWayContainment")
+                        .withEType(oneWayContainmentTo)
+                        .withLowerBound(1)
+                        .withUpperBound(1)
+                        .build())
+                .build();
+
+        // create package
+        final EPackage ePackage = newEPackageBuilder()
+                .withName("TestEpackage")
+                .withEClassifiers(ImmutableList.of(oneWayContainmentFrom, oneWayContainmentTo))
+                .withNsPrefix("test")
+                .withNsURI("http:///com.example.test.ecore")
+                .build();
+
+        // add content to asm model
+        asmModel.addContent(ePackage);
+
+        executeTransformation("testOneWayContainmentWithOneToOneCardinality");
+
+        final String RDBMS_TABLE_NAME_TO = "TestEpackage.OneWayContainmentTo";
+        final String RDBMS_TABLE_NAME_FROM = "TestEpackage.OneWayContainmentFrom";
+        final String ONE_WAY_CONTAINMENT = "oneWayContainment";
+
+        // ASSERTION - check if tables exist
+        assertEquals(2, rdbmsUtils.getRdbmsTables()
+                .orElseThrow(() -> new RuntimeException("No tables were found")).size());
+
+        // ASSERTION - check for correct number of fields
+        assertEquals(3, rdbmsUtils.getRdbmsFields(RDBMS_TABLE_NAME_FROM)
+                .orElseThrow(() -> new RuntimeException(RDBMS_TABLE_NAME_FROM + " not found"))
+                .size());
+        assertEquals(2, rdbmsUtils.getRdbmsFields(RDBMS_TABLE_NAME_TO)
+                .orElseThrow(() -> new RuntimeException(RDBMS_TABLE_NAME_FROM + " not found"))
+                .size());
+
+        // ASSERTION - check if RdbmsForeignKey is valid
+        assertEquals(rdbmsUtils.getRdbmsTable(RDBMS_TABLE_NAME_TO)
+                        .orElseThrow(() -> new RuntimeException(RDBMS_TABLE_NAME_TO + " table not found"))
+                        .getPrimaryKey(),
+                rdbmsUtils.getRdbmsForeignKey(RDBMS_TABLE_NAME_FROM, ONE_WAY_CONTAINMENT)
+                        .orElseThrow(() -> new RuntimeException(ONE_WAY_CONTAINMENT + " attribute not found"))
+                        .getReferenceKey());
     }
 
 }
