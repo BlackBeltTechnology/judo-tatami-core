@@ -59,7 +59,7 @@ public class Asm2RdbmsMappingTestBase {
         logger.debug("Extract rdbms model from transformation trace");
 
 
-        rdbmsUtils = new RdbmsUtils(rdbmsModel);
+        rdbmsUtils = new RdbmsUtils(rdbmsModel.getResourceSet());
         logger.debug("Create rdbms model support from transformed rdbms model");
 
         try {
