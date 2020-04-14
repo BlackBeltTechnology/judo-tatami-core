@@ -206,61 +206,61 @@ public class Asm2RdbmsTypeMappingTest extends Asm2RdbmsMappingTestBase {
 //                -1,
 //                18,
 //                0);
-        typeAsserter(rdbmsUtils.getRdbmsField(RDBMS_TABLE_NAME, "doubleAttr", true)
+        typeAsserter(rdbmsUtils.getRdbmsField(RDBMS_TABLE_NAME, RDBMS_TABLE_NAME + "#doubleAttr")
                         .orElseThrow(() -> new RuntimeException("doubleAttr is missing")),
                 DOUBLE,
                 -1,
                 -1,
                 -1);
-        typeAsserter(rdbmsUtils.getRdbmsField(RDBMS_TABLE_NAME, "longAttr", true)
+        typeAsserter(rdbmsUtils.getRdbmsField(RDBMS_TABLE_NAME, RDBMS_TABLE_NAME + "#longAttr")
                         .orElseThrow(() -> new RuntimeException("longAttr is missing")),
                 BIGINT,
                 -1,
                 -1,
                 -1);
-        typeAsserter(rdbmsUtils.getRdbmsField(RDBMS_TABLE_NAME, "floatAttr", true)
+        typeAsserter(rdbmsUtils.getRdbmsField(RDBMS_TABLE_NAME, RDBMS_TABLE_NAME + "#floatAttr")
                         .orElseThrow(() -> new RuntimeException("floatAttr is missing")),
                 FLOAT,
                 -1,
                 -1,
                 -1);
-        typeAsserter(rdbmsUtils.getRdbmsField(RDBMS_TABLE_NAME, "intAttr", true)
+        typeAsserter(rdbmsUtils.getRdbmsField(RDBMS_TABLE_NAME, RDBMS_TABLE_NAME + "#intAttr")
                         .orElseThrow(() -> new RuntimeException("intAttr is missing")),
                 INTEGER,
                 -1,
                 -1,
                 -1);
-        typeAsserter(rdbmsUtils.getRdbmsField(RDBMS_TABLE_NAME, "shortAttr", true)
+        typeAsserter(rdbmsUtils.getRdbmsField(RDBMS_TABLE_NAME, RDBMS_TABLE_NAME + "#shortAttr")
                         .orElseThrow(() -> new RuntimeException("shortAttr is missing")),
                 INTEGER,
                 -1,
                 -1,
                 -1);
-        typeAsserter(rdbmsUtils.getRdbmsField(RDBMS_TABLE_NAME, "byteAttr", true)
+        typeAsserter(rdbmsUtils.getRdbmsField(RDBMS_TABLE_NAME, RDBMS_TABLE_NAME + "#byteAttr")
                         .orElseThrow(() -> new RuntimeException("byteAttr is missing")),
                 INTEGER,
                 -1,
                 -1,
                 -1);
-        typeAsserter(rdbmsUtils.getRdbmsField(RDBMS_TABLE_NAME, "javalangByteAttr", true)
+        typeAsserter(rdbmsUtils.getRdbmsField(RDBMS_TABLE_NAME, RDBMS_TABLE_NAME + "#javalangByteAttr")
                         .orElseThrow(() -> new RuntimeException("javalangByteAttr is missing")),
                 INTEGER,
                 -1,
                 -1,
                 -1);
-        typeAsserter(rdbmsUtils.getRdbmsField(RDBMS_TABLE_NAME, "javalangShortAttr", true)
+        typeAsserter(rdbmsUtils.getRdbmsField(RDBMS_TABLE_NAME, RDBMS_TABLE_NAME + "#javalangShortAttr")
                         .orElseThrow(() -> new RuntimeException("javalangShortAttr is missing")),
                 INTEGER,
                 -1,
                 -1,
                 -1);
-        typeAsserter(rdbmsUtils.getRdbmsField(RDBMS_TABLE_NAME, "javalangIntegerAttr", true)
+        typeAsserter(rdbmsUtils.getRdbmsField(RDBMS_TABLE_NAME, RDBMS_TABLE_NAME + "#javalangIntegerAttr")
                         .orElseThrow(() -> new RuntimeException("javalangIntegerAttr is missing")),
                 INTEGER,
                 -1,
                 -1,
                 -1);
-        typeAsserter(rdbmsUtils.getRdbmsField(RDBMS_TABLE_NAME, "javalangLongAttr", true)
+        typeAsserter(rdbmsUtils.getRdbmsField(RDBMS_TABLE_NAME, RDBMS_TABLE_NAME + "#javalangLongAttr")
                         .orElseThrow(() -> new RuntimeException("javalangLongAttr is missing")),
                 BIGINT,
                 -1,
@@ -272,13 +272,13 @@ public class Asm2RdbmsTypeMappingTest extends Asm2RdbmsMappingTestBase {
 //                -1,
 //                18,
 //                0);
-        typeAsserter(rdbmsUtils.getRdbmsField(RDBMS_TABLE_NAME, "javalangFloatAttr", true)
+        typeAsserter(rdbmsUtils.getRdbmsField(RDBMS_TABLE_NAME, RDBMS_TABLE_NAME + "#javalangFloatAttr")
                         .orElseThrow(() -> new RuntimeException("javalangFloatAttr is missing")),
                 FLOAT,
                 -1,
                 -1,
                 -1);
-        typeAsserter(rdbmsUtils.getRdbmsField(RDBMS_TABLE_NAME, "javalangDoubleAttr", true)
+        typeAsserter(rdbmsUtils.getRdbmsField(RDBMS_TABLE_NAME, RDBMS_TABLE_NAME + "#javalangDoubleAttr")
                         .orElseThrow(() -> new RuntimeException("javalangDoubleAttr is missing")),
                 DOUBLE,
                 -1,
@@ -362,13 +362,13 @@ public class Asm2RdbmsTypeMappingTest extends Asm2RdbmsMappingTestBase {
 
 
         // check field types based on typemapping table
-        typeAsserter(rdbmsUtils.getRdbmsField(RDBMS_TABLE_NAME, "stringAttr", true)
+        typeAsserter(rdbmsUtils.getRdbmsField(RDBMS_TABLE_NAME, RDBMS_TABLE_NAME + "#stringAttr")
                         .orElseThrow(() -> new RuntimeException("stringAttr is missing")),
                 VARCHAR,
                 255,
                 -1,
                 -1);
-        typeAsserter(rdbmsUtils.getRdbmsField(RDBMS_TABLE_NAME, "javalangStringAttr", true)
+        typeAsserter(rdbmsUtils.getRdbmsField(RDBMS_TABLE_NAME, RDBMS_TABLE_NAME + "#javalangStringAttr")
                         .orElseThrow(() -> new RuntimeException("javalangStringAttr is missing")),
                 VARCHAR,
                 255,
@@ -506,73 +506,73 @@ public class Asm2RdbmsTypeMappingTest extends Asm2RdbmsMappingTestBase {
                 .size()); //+2 type and id
 
         // check field types based on typemapping table
-        typeAsserter(rdbmsUtils.getRdbmsField(RDBMS_TABLE_NAME, "dateAttr", true)
+        typeAsserter(rdbmsUtils.getRdbmsField(RDBMS_TABLE_NAME, RDBMS_TABLE_NAME + "#dateAttr")
                         .orElseThrow(() -> new RuntimeException("dateAttr is missing")),
                 DATE,
                 -1,
                 -1,
                 -1);
-        typeAsserter(rdbmsUtils.getRdbmsField(RDBMS_TABLE_NAME, "javautilDateAttr", true)
+        typeAsserter(rdbmsUtils.getRdbmsField(RDBMS_TABLE_NAME, RDBMS_TABLE_NAME + "#javautilDateAttr")
                         .orElseThrow(() -> new RuntimeException("javautilDateAttr is missing")),
                 DATE,
                 -1,
                 -1,
                 -1);
-        typeAsserter(rdbmsUtils.getRdbmsField(RDBMS_TABLE_NAME, "javasqlDateAttr", true)
+        typeAsserter(rdbmsUtils.getRdbmsField(RDBMS_TABLE_NAME, RDBMS_TABLE_NAME + "#javasqlDateAttr")
                         .orElseThrow(() -> new RuntimeException("javasqlDateAttr is missing")),
                 DATE,
                 -1,
                 -1,
                 -1);
-        typeAsserter(rdbmsUtils.getRdbmsField(RDBMS_TABLE_NAME, "javatimeLocalDateAttr", true)
+        typeAsserter(rdbmsUtils.getRdbmsField(RDBMS_TABLE_NAME, RDBMS_TABLE_NAME + "#javatimeLocalDateAttr")
                         .orElseThrow(() -> new RuntimeException("javatimeLocalDateAttr is missing")),
                 DATE,
                 -1,
                 -1,
                 -1);
-        typeAsserter(rdbmsUtils.getRdbmsField(RDBMS_TABLE_NAME, "orgjodatimeLocalDateAttr", true)
+        typeAsserter(rdbmsUtils.getRdbmsField(RDBMS_TABLE_NAME, RDBMS_TABLE_NAME + "#orgjodatimeLocalDateAttr")
                         .orElseThrow(() -> new RuntimeException("orgjodatimeLocalDateAttr is missing")),
                 DATE,
                 -1,
                 -1,
                 -1);
-        typeAsserter(rdbmsUtils.getRdbmsField(RDBMS_TABLE_NAME, "javasqlTimestampAttr", true)
+        typeAsserter(rdbmsUtils.getRdbmsField(RDBMS_TABLE_NAME, RDBMS_TABLE_NAME + "#javasqlTimestampAttr")
                         .orElseThrow(() -> new RuntimeException("javasqlTimestampAttr is missing")),
                 TIMESTAMP,
                 -1,
                 -1,
                 -1);
-        typeAsserter(rdbmsUtils.getRdbmsField(RDBMS_TABLE_NAME, "javatimeLocalDateTimeAttr", true)
+        typeAsserter(rdbmsUtils.getRdbmsField(RDBMS_TABLE_NAME, RDBMS_TABLE_NAME + "#javatimeLocalDateTimeAttr")
                         .orElseThrow(() -> new RuntimeException("javatimeLocalDateTimeAttr is missing")),
                 TIMESTAMP,
                 -1,
                 -1,
                 -1);
-        typeAsserter(rdbmsUtils.getRdbmsField(RDBMS_TABLE_NAME, "javatimeOffsetDateTimeAttr", true)
+        typeAsserter(rdbmsUtils.getRdbmsField(RDBMS_TABLE_NAME, RDBMS_TABLE_NAME + "#javatimeOffsetDateTimeAttr")
                         .orElseThrow(() -> new RuntimeException("javatimeOffsetDateTimeAttr is missing")),
                 TIMESTAMP_WITH_TIMEZONE,
                 -1,
                 -1,
                 -1);
-        typeAsserter(rdbmsUtils.getRdbmsField(RDBMS_TABLE_NAME, "javatimeZonedDateTimeAttr", true)
+        typeAsserter(rdbmsUtils.getRdbmsField(RDBMS_TABLE_NAME, RDBMS_TABLE_NAME + "#javatimeZonedDateTimeAttr")
                         .orElseThrow(() -> new RuntimeException("javatimeZonedDateTimeAttr is missing")),
                 TIMESTAMP_WITH_TIMEZONE,
                 -1,
                 -1,
                 -1);
-        typeAsserter(rdbmsUtils.getRdbmsField(RDBMS_TABLE_NAME, "orgjodatimeDateTimeAttr", true)
+        typeAsserter(rdbmsUtils.getRdbmsField(RDBMS_TABLE_NAME, RDBMS_TABLE_NAME + "#orgjodatimeDateTimeAttr")
                         .orElseThrow(() -> new RuntimeException("orgjodatimeDateTimeAttr is missing")),
                 TIMESTAMP_WITH_TIMEZONE,
                 -1,
                 -1,
                 -1);
-        typeAsserter(rdbmsUtils.getRdbmsField(RDBMS_TABLE_NAME, "orgjodatimeLocalDateTimeAttr", true)
+        typeAsserter(rdbmsUtils.getRdbmsField(RDBMS_TABLE_NAME, RDBMS_TABLE_NAME + "#orgjodatimeLocalDateTimeAttr")
                         .orElseThrow(() -> new RuntimeException("orgjodatimeLocalDateTimeAttr is missing")),
                 TIMESTAMP,
                 -1,
                 -1,
                 -1);
-        typeAsserter(rdbmsUtils.getRdbmsField(RDBMS_TABLE_NAME, "orgjodatimeMutableDateTimeAttr", true)
+        typeAsserter(rdbmsUtils.getRdbmsField(RDBMS_TABLE_NAME, RDBMS_TABLE_NAME + "#orgjodatimeMutableDateTimeAttr")
                         .orElseThrow(() -> new RuntimeException("orgjodatimeMutableDateTimeAttr is missing")),
                 TIMESTAMP_WITH_TIMEZONE,
                 -1,
@@ -648,13 +648,13 @@ public class Asm2RdbmsTypeMappingTest extends Asm2RdbmsMappingTestBase {
                 .size()); //+2 type and id
 
         // check field types based on typemapping table
-        typeAsserter(rdbmsUtils.getRdbmsField(RDBMS_TABLE_NAME, "booleanAttr", true)
+        typeAsserter(rdbmsUtils.getRdbmsField(RDBMS_TABLE_NAME, RDBMS_TABLE_NAME + "#booleanAttr")
                         .orElseThrow(() -> new RuntimeException("booleanAttr is missing")),
                 BOOLEAN,
                 -1,
                 -1,
                 -1);
-        typeAsserter(rdbmsUtils.getRdbmsField(RDBMS_TABLE_NAME, "javalangBooleanAttr", true)
+        typeAsserter(rdbmsUtils.getRdbmsField(RDBMS_TABLE_NAME, RDBMS_TABLE_NAME + "#javalangBooleanAttr")
                         .orElseThrow(() -> new RuntimeException("javalangBooleanAttr is missing")),
                 BOOLEAN,
                 -1,

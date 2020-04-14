@@ -59,7 +59,7 @@
         <!-- Model versions -->
         <!-- CHANGE BACK TO DEVELOP/BETA WHEN DONE -->
         <judo-meta-rdbms-version>
-            1.0.0.20200406_131434_a4479a5_feature_JNG_1259_Extend_RdbmsUtils
+            1.0.0.20200409_114138_a0ecf83_feature_JNG_1259_Extend_RdbmsUtils
         </judo-meta-rdbms-version>
         <judo-meta-rdbms-import-range>[1.0,1.1)</judo-meta-rdbms-import-range>
 
