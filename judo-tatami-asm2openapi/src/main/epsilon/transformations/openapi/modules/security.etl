@@ -3,7 +3,8 @@ rule CreateSecuritySchemeDeclarationForAccessPoint
     to t : OPENAPI!SecuritySchemeDeclaration {
         guard: s.eContainer.isKindOf(ASM!EClass) 
 	        and asmUtils.isAccessPoint(s.eContainer)
-	        and s.source == asmUtils.getAnnotationUri("actor") 
+	        and s.source == asmUtils.getAnnotationUri("actor")
+	        and s.details.containsKey("realm")
 
         t.name = s.details.get("realm");
         s.eContainer.equivalent("CreateOpenAPIAccessPoint").securityDefinitions.add(t);
@@ -15,6 +16,7 @@ rule CreateSecuritySchemeForAccessPoint
         guard: s.eContainer.isKindOf(ASM!EClass) 
 	        and asmUtils.isAccessPoint(s.eContainer)
 	        and s.source == asmUtils.getAnnotationUri("actor")
+	        and s.details.containsKey("realm")
 
         t.type = OPENAPI!SecuritySchemeType#oauth2;
         t.flow = OPENAPI!OAuth2FlowType#implicit;
@@ -28,6 +30,7 @@ rule CreateSecurityRequirementOption
 		guard: s.eContainer.isKindOf(ASM!EClass) 
 	        and asmUtils.isAccessPoint(s.eContainer)
 	        and s.source == asmUtils.getAnnotationUri("actor")
+	        and s.details.containsKey("realm")
 	
 	s.eContainer.equivalent("CreateOpenAPIAccessPoint").security.add(t);
 }
@@ -38,6 +41,7 @@ rule CreateSecurityRequirement
 		guard: s.eContainer.isKindOf(ASM!EClass) 
 	        and asmUtils.isAccessPoint(s.eContainer)
 	        and s.source == asmUtils.getAnnotationUri("actor")
+	        and s.details.containsKey("realm")
 	
 	t.securitySchemeName = s.details.get("realm");
 	s.equivalent("CreateSecurityRequirementOption").securityRequirements.add(t);
