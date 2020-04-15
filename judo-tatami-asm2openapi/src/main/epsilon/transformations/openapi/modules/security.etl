@@ -1,0 +1,44 @@
+rule CreateSecuritySchemeDeclarationForAccessPoint
+    transform s : ASM!EAnnotation
+    to t : OPENAPI!SecuritySchemeDeclaration {
+        guard: s.eContainer.isKindOf(ASM!EClass) 
+	        and asmUtils.isAccessPoint(s.eContainer)
+	        and s.source == asmUtils.getAnnotationUri("actor") 
+
+        t.name = s.details.get("realm");
+        s.eContainer.equivalent("CreateOpenAPIAccessPoint").securityDefinitions.add(t);
+}
+
+rule CreateSecuritySchemeForAccessPoint
+    transform s : ASM!EAnnotation
+    to t : OPENAPI!SecurityScheme {
+        guard: s.eContainer.isKindOf(ASM!EClass) 
+	        and asmUtils.isAccessPoint(s.eContainer)
+	        and s.source == asmUtils.getAnnotationUri("actor")
+
+        t.type = OPENAPI!SecuritySchemeType#oauth2;
+        t.flow = OPENAPI!OAuth2FlowType#implicit;
+        
+        s.equivalent("CreateSecuritySchemeDeclarationForAccessPoint").securityScheme = t;
+}
+
+rule CreateSecurityRequirementOption
+	transform s : ASM!EAnnotation
+	to t : OPENAPI!SecurityRequirementOption {
+		guard: s.eContainer.isKindOf(ASM!EClass) 
+	        and asmUtils.isAccessPoint(s.eContainer)
+	        and s.source == asmUtils.getAnnotationUri("actor")
+	
+	s.eContainer.equivalent("CreateOpenAPIAccessPoint").security.add(t);
+}
+
+rule CreateSecurityRequirement
+	transform s : ASM!EAnnotation
+	to t : OPENAPI!SecurityRequirement {
+		guard: s.eContainer.isKindOf(ASM!EClass) 
+	        and asmUtils.isAccessPoint(s.eContainer)
+	        and s.source == asmUtils.getAnnotationUri("actor")
+	
+	t.securitySchemeName = s.details.get("realm");
+	s.equivalent("CreateSecurityRequirementOption").securityRequirements.add(t);
+}
