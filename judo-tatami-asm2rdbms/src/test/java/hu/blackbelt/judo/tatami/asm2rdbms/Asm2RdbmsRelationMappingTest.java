@@ -17,9 +17,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class Asm2RdbmsRelationMappingTest extends Asm2RdbmsMappingTestBase {
-    //////////////////////////////////////////////////
-    /////////////// ONE WAY RELATIONS ////////////////
-
     @Test
     @DisplayName("Test OneWayRelation With Null To One Cardinality")
     public void testOneWayRelationWithNullToOneCardinality() {
@@ -263,8 +260,98 @@ public class Asm2RdbmsRelationMappingTest extends Asm2RdbmsMappingTestBase {
 
     }
 
-    //////////////////////////////////////////////////
-    /////////////// TWO WAY RELATIONS ////////////////
+    @Test
+    @DisplayName("Test OneWayRelation With One To Infinite Cardinality")
+    public void testOneWayRelationWithOneToInfiniteCardinality() {
+        // create annotation
+        EAnnotation eAnnotation = newEAnnotationBuilder()
+                .withSource("http://blackbelt.hu/judo/meta/ExtendedMetadata/entity")
+                .build();
+
+        eAnnotation.getDetails().put("value", "true");
+
+        // create class to
+        final EClass oneWayRelationTo = newEClassBuilder()
+                .withName("OneWayRelationTo")
+                .withEAnnotations(eAnnotation)
+                .build();
+
+
+        // create annotation2
+        EAnnotation eAnnotation2 = newEAnnotationBuilder()
+                .withSource("http://blackbelt.hu/judo/meta/ExtendedMetadata/entity")
+                .build();
+
+        eAnnotation2.getDetails().put("value", "true");
+
+        // create class from
+        final EClass oneWayRelationFrom = newEClassBuilder()
+                .withName("OneWayRelationFrom")
+                .withEAnnotations(eAnnotation2)
+                .withEStructuralFeatures(newEReferenceBuilder()
+                        .withName("oneWayReference")
+                        .withEType(oneWayRelationTo)
+                        .withLowerBound(1)
+                        .withUpperBound(-1)
+                        .build())
+                .build();
+
+        // create package
+        final EPackage ePackage = newEPackageBuilder()
+                .withName("TestEpackage")
+                .withEClassifiers(ImmutableList.of(oneWayRelationFrom, oneWayRelationTo))
+                .withNsPrefix("test")
+                .withNsURI("http:///com.example.test.ecore")
+                .build();
+
+        // add content to asm model
+        asmModel.addContent(ePackage);
+
+        executeTransformation("testOneWayRelationWithOneToInfiniteCardinality");
+
+        final String RDBMS_TABLE_NAME_TO = "TestEpackage.OneWayRelationTo";
+        final String RDBMS_TABLE_NAME_FROM = "TestEpackage.OneWayRelationFrom";
+        final String ONE_WAY_REFERENCE = "oneWayReference";
+        final String RDBMS_JUNCTION_TABLE_NAME = RDBMS_TABLE_NAME_FROM + "#" + ONE_WAY_REFERENCE + " to " + RDBMS_TABLE_NAME_TO;
+
+        // ASSERTION - check if tables exist
+        assertEquals(3, rdbmsUtils.getRdbmsTables()
+                .orElseThrow(() -> new RuntimeException("No tables were found"))
+                .size());
+
+        // ASSERTION - check for correct number of fields
+        assertEquals(2, rdbmsUtils.getRdbmsFields(RDBMS_TABLE_NAME_FROM)
+                .orElseThrow(() -> new RuntimeException(RDBMS_TABLE_NAME_FROM + " table not found"))
+                .size());
+        assertEquals(2, rdbmsUtils.getRdbmsFields(RDBMS_TABLE_NAME_TO)
+                .orElseThrow(() -> new RuntimeException(RDBMS_TABLE_NAME_TO + " table not found"))
+                .size());
+
+        // SAVE - rdbmsJunctionTable
+        RdbmsJunctionTable rdbmsJunctionTable = rdbmsUtils.getRdbmsJunctionTable(RDBMS_JUNCTION_TABLE_NAME)
+                .orElseThrow(() -> new RuntimeException(RDBMS_JUNCTION_TABLE_NAME + " junction table not found"));
+
+        // SAVE - rdbmsForeignKeys
+        EList<RdbmsForeignKey> rdbmsForeignKeys = rdbmsUtils.getRdbmsForeignKeys(RDBMS_JUNCTION_TABLE_NAME)
+                .orElseThrow(() -> new RuntimeException(RDBMS_JUNCTION_TABLE_NAME + " junction table not found"));
+
+        // SAVE - primaryKeys
+        RdbmsIdentifierField primaryKeyFrom = rdbmsUtils.getRdbmsTable(RDBMS_TABLE_NAME_FROM)
+                .orElseThrow(() -> new RuntimeException(RDBMS_TABLE_NAME_FROM + " table not found"))
+                .getPrimaryKey();
+        RdbmsIdentifierField primaryKeyTo = rdbmsUtils.getRdbmsTable(RDBMS_TABLE_NAME_TO)
+                .orElseThrow(() -> new RuntimeException(RDBMS_TABLE_NAME_TO + " table not found"))
+                .getPrimaryKey();
+
+        // ASSERTION - check if correct keys are in junction table
+        assertTrue(rdbmsForeignKeys.stream().anyMatch(o -> o.getReferenceKey().equals(primaryKeyFrom)));
+        assertTrue(rdbmsForeignKeys.stream().anyMatch(o -> o.getReferenceKey().equals(primaryKeyTo)));
+
+        // ASSERTION - check if field1 and field2 is the primary keys from "From" and "To"
+        assertEquals(rdbmsJunctionTable.getField1().getReferenceKey(), primaryKeyTo);
+        assertEquals(rdbmsJunctionTable.getField2().getReferenceKey(), primaryKeyFrom);
+
+    }
 
     @Test
     @DisplayName("Test TwoWayRelation With Null To One Cardinalities")
@@ -556,10 +643,6 @@ public class Asm2RdbmsRelationMappingTest extends Asm2RdbmsMappingTestBase {
         assertEquals(rdbmsJunctionTable.getField1().getReferenceKey(), primaryKey1);
         assertEquals(rdbmsJunctionTable.getField2().getReferenceKey(), primaryKey2);
     }
-
-    //////////////////////////////////////////////////
-    ////////////// ONE WAY CONTAINMENTS //////////////
-
 
     @Test
     @DisplayName("Test OneWayContainment With Null To One Cardinality")
