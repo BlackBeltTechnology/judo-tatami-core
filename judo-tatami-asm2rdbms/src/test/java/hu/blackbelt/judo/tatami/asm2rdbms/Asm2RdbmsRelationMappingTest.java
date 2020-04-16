@@ -944,7 +944,7 @@ public class Asm2RdbmsRelationMappingTest extends Asm2RdbmsMappingTestBase {
         // add content to asm model
         asmModel.addContent(ePackage);
 
-        executeTransformation("testTwoWayRelationWithOneToInfiniteAndNullToInfiniteCardinalities");
+        executeTransformation("testTwoWayRelationWithNullToInfiniteAndOneToInfiniteCardinalities");
 
         final String RDBMS_TABLE_NAME_1 = "TestEpackage.TwoWayRelation1";
         final String RDBMS_TABLE_NAME_2 = "TestEpackage.TwoWayRelation2";
@@ -1053,7 +1053,7 @@ public class Asm2RdbmsRelationMappingTest extends Asm2RdbmsMappingTestBase {
         // add content to asm model
         asmModel.addContent(ePackage);
 
-        executeTransformation("testTwoWayRelationWithOneToInfiniteAndNullToInfiniteCardinalities");
+        executeTransformation("testTwoWayRelationWithOneToInfiniteAndOneToInfiniteCardinalities");
 
         final String RDBMS_TABLE_NAME_1 = "TestEpackage.TwoWayRelation1";
         final String RDBMS_TABLE_NAME_2 = "TestEpackage.TwoWayRelation2";
