@@ -775,6 +775,333 @@ public class Asm2RdbmsRelationMappingTest extends Asm2RdbmsMappingTestBase {
     }
 
     @Test
+    @DisplayName("Test TwoWayRelation With One To Infinite And Null To Infinite Cardinalities")
+    public void testTwoWayRelationWithOneToInfiniteAndNullToInfiniteCardinalities() {
+        // create annotations
+        final EAnnotation eAnnotation = newEAnnotationBuilder()
+                .withSource("http://blackbelt.hu/judo/meta/ExtendedMetadata/entity")
+                .build();
+
+        eAnnotation.getDetails().put("value", "true");
+
+        final EAnnotation eAnnotation2 = newEAnnotationBuilder()
+                .withSource("http://blackbelt.hu/judo/meta/ExtendedMetadata/entity")
+                .build();
+
+        eAnnotation2.getDetails().put("value", "true");
+
+        // create classes
+        final EClass twoWayRelation1 = newEClassBuilder()
+                .withName("TwoWayRelation1")
+                .withEAnnotations(eAnnotation)
+                .build();
+
+        final EClass twoWayRelation2 = newEClassBuilder()
+                .withName("TwoWayRelation2")
+                .withEAnnotations(eAnnotation2)
+                .build();
+
+        // create references
+        final EReference twoWayReference1 = newEReferenceBuilder()
+                .withName("twoWayReference1")
+                .withLowerBound(1)
+                .withUpperBound(-1)
+                .withEType(twoWayRelation1)
+                .build();
+
+        final EReference twoWayReference2 = newEReferenceBuilder()
+                .withName("twoWayReference2")
+                .withLowerBound(0)
+                .withUpperBound(-1)
+                .withEType(twoWayRelation2)
+                .build();
+
+        // add opposites
+        twoWayReference1.setEOpposite(twoWayReference2);
+        twoWayReference2.setEOpposite(twoWayReference1);
+
+        // add references
+        twoWayRelation1.getEStructuralFeatures().add(twoWayReference2);
+        twoWayRelation2.getEStructuralFeatures().add(twoWayReference1);
+
+        // create package
+        final EPackage ePackage = newEPackageBuilder()
+                .withName("TestEpackage")
+                .withEClassifiers(ImmutableList.of(twoWayRelation1, twoWayRelation2))
+                .withNsPrefix("test")
+                .withNsURI("http:///com.example.test.ecore")
+                .build();
+
+        // add content to asm model
+        asmModel.addContent(ePackage);
+
+        executeTransformation("testTwoWayRelationWithOneToInfiniteAndNullToInfiniteCardinalities");
+
+        final String RDBMS_TABLE_NAME_1 = "TestEpackage.TwoWayRelation1";
+        final String RDBMS_TABLE_NAME_2 = "TestEpackage.TwoWayRelation2";
+        final String TWO_WAY_REFERENCE1 = "twoWayReference1";
+        final String TWO_WAY_REFERENCE2 = "twoWayReference2";
+        final String RDBMS_JUNCTION_TABLE = RDBMS_TABLE_NAME_2 + "#" + TWO_WAY_REFERENCE1 + " to " + RDBMS_TABLE_NAME_1 + "#" + TWO_WAY_REFERENCE2;
+
+        // ASSERTION - check if tables exist
+        assertEquals(3, rdbmsUtils.getRdbmsTables()
+                .orElseThrow(() -> new RuntimeException("No tables were found"))
+                .size());
+
+        // ASSERTION - check for correct number of fields
+        assertEquals(2, rdbmsUtils.getRdbmsFields(RDBMS_TABLE_NAME_1)
+                .orElseThrow(() -> new RuntimeException(RDBMS_TABLE_NAME_1 + " table not found"))
+                .size()); //+2 id and type
+
+        assertEquals(2, rdbmsUtils.getRdbmsFields(RDBMS_TABLE_NAME_2)
+                .orElseThrow(() -> new RuntimeException(RDBMS_TABLE_NAME_2 + " table not found"))
+                .size());  //+2 id and type
+
+        // SAVE - rdbmsJunctionTable
+        RdbmsJunctionTable rdbmsJunctionTable =
+                rdbmsUtils.getRdbmsJunctionTable(RDBMS_JUNCTION_TABLE)
+                        .orElseThrow(() -> new RuntimeException(RDBMS_JUNCTION_TABLE + " junction table not found"));
+
+        // SAVE - rdbmsForeignKeys
+        EList<RdbmsForeignKey> rdbmsForeignKeys = rdbmsUtils.getRdbmsForeignKeys(RDBMS_JUNCTION_TABLE)
+                .orElseThrow(() -> new RuntimeException(RDBMS_JUNCTION_TABLE + " junction table not found"));
+
+        // SAVE - primaryKeys
+        RdbmsIdentifierField primaryKey1 = rdbmsUtils.getRdbmsTable(RDBMS_TABLE_NAME_1)
+                .orElseThrow(() -> new RuntimeException(RDBMS_TABLE_NAME_1 + " table not found"))
+                .getPrimaryKey();
+        RdbmsIdentifierField primaryKey2 = rdbmsUtils.getRdbmsTable(RDBMS_TABLE_NAME_2)
+                .orElseThrow(() -> new RuntimeException(RDBMS_TABLE_NAME_2 + " table not found"))
+                .getPrimaryKey();
+
+        // ASSERTION - check if correct keys are in junction table
+        assertTrue(rdbmsForeignKeys.stream().anyMatch(o -> o.getReferenceKey().equals(primaryKey1)));
+        assertTrue(rdbmsForeignKeys.stream().anyMatch(o -> o.getReferenceKey().equals(primaryKey2)));
+
+        // ASSERTION - check if field1 and field2 is the primary keys from "From" and "To"
+        assertEquals(rdbmsJunctionTable.getField1().getReferenceKey(), primaryKey1);
+        assertEquals(rdbmsJunctionTable.getField2().getReferenceKey(), primaryKey2);
+    }
+
+    @Test
+    @DisplayName("Test TwoWayRelation With Null To Infinite And One To Infinite Cardinalities")
+    public void testTwoWayRelationWithNullToInfiniteAndOneToInfiniteCardinalities() {
+        // create annotations
+        final EAnnotation eAnnotation = newEAnnotationBuilder()
+                .withSource("http://blackbelt.hu/judo/meta/ExtendedMetadata/entity")
+                .build();
+
+        eAnnotation.getDetails().put("value", "true");
+
+        final EAnnotation eAnnotation2 = newEAnnotationBuilder()
+                .withSource("http://blackbelt.hu/judo/meta/ExtendedMetadata/entity")
+                .build();
+
+        eAnnotation2.getDetails().put("value", "true");
+
+        // create classes
+        final EClass twoWayRelation1 = newEClassBuilder()
+                .withName("TwoWayRelation1")
+                .withEAnnotations(eAnnotation)
+                .build();
+
+        final EClass twoWayRelation2 = newEClassBuilder()
+                .withName("TwoWayRelation2")
+                .withEAnnotations(eAnnotation2)
+                .build();
+
+        // create references
+        final EReference twoWayReference1 = newEReferenceBuilder()
+                .withName("twoWayReference1")
+                .withLowerBound(0)
+                .withUpperBound(-1)
+                .withEType(twoWayRelation1)
+                .build();
+
+        final EReference twoWayReference2 = newEReferenceBuilder()
+                .withName("twoWayReference2")
+                .withLowerBound(1)
+                .withUpperBound(-1)
+                .withEType(twoWayRelation2)
+                .build();
+
+        // add opposites
+        twoWayReference1.setEOpposite(twoWayReference2);
+        twoWayReference2.setEOpposite(twoWayReference1);
+
+        // add references
+        twoWayRelation1.getEStructuralFeatures().add(twoWayReference2);
+        twoWayRelation2.getEStructuralFeatures().add(twoWayReference1);
+
+        // create package
+        final EPackage ePackage = newEPackageBuilder()
+                .withName("TestEpackage")
+                .withEClassifiers(ImmutableList.of(twoWayRelation1, twoWayRelation2))
+                .withNsPrefix("test")
+                .withNsURI("http:///com.example.test.ecore")
+                .build();
+
+        // add content to asm model
+        asmModel.addContent(ePackage);
+
+        executeTransformation("testTwoWayRelationWithOneToInfiniteAndNullToInfiniteCardinalities");
+
+        final String RDBMS_TABLE_NAME_1 = "TestEpackage.TwoWayRelation1";
+        final String RDBMS_TABLE_NAME_2 = "TestEpackage.TwoWayRelation2";
+        final String TWO_WAY_REFERENCE1 = "twoWayReference1";
+        final String TWO_WAY_REFERENCE2 = "twoWayReference2";
+        final String RDBMS_JUNCTION_TABLE = RDBMS_TABLE_NAME_2 + "#" + TWO_WAY_REFERENCE1 + " to " + RDBMS_TABLE_NAME_1 + "#" + TWO_WAY_REFERENCE2;
+
+        // ASSERTION - check if tables exist
+        assertEquals(3, rdbmsUtils.getRdbmsTables()
+                .orElseThrow(() -> new RuntimeException("No tables were found"))
+                .size());
+
+        // ASSERTION - check for correct number of fields
+        assertEquals(2, rdbmsUtils.getRdbmsFields(RDBMS_TABLE_NAME_1)
+                .orElseThrow(() -> new RuntimeException(RDBMS_TABLE_NAME_1 + " table not found"))
+                .size()); //+2 id and type
+
+        assertEquals(2, rdbmsUtils.getRdbmsFields(RDBMS_TABLE_NAME_2)
+                .orElseThrow(() -> new RuntimeException(RDBMS_TABLE_NAME_2 + " table not found"))
+                .size());  //+2 id and type
+
+        // SAVE - rdbmsJunctionTable
+        RdbmsJunctionTable rdbmsJunctionTable =
+                rdbmsUtils.getRdbmsJunctionTable(RDBMS_JUNCTION_TABLE)
+                        .orElseThrow(() -> new RuntimeException(RDBMS_JUNCTION_TABLE + " junction table not found"));
+
+        // SAVE - rdbmsForeignKeys
+        EList<RdbmsForeignKey> rdbmsForeignKeys = rdbmsUtils.getRdbmsForeignKeys(RDBMS_JUNCTION_TABLE)
+                .orElseThrow(() -> new RuntimeException(RDBMS_JUNCTION_TABLE + " junction table not found"));
+
+        // SAVE - primaryKeys
+        RdbmsIdentifierField primaryKey1 = rdbmsUtils.getRdbmsTable(RDBMS_TABLE_NAME_1)
+                .orElseThrow(() -> new RuntimeException(RDBMS_TABLE_NAME_1 + " table not found"))
+                .getPrimaryKey();
+        RdbmsIdentifierField primaryKey2 = rdbmsUtils.getRdbmsTable(RDBMS_TABLE_NAME_2)
+                .orElseThrow(() -> new RuntimeException(RDBMS_TABLE_NAME_2 + " table not found"))
+                .getPrimaryKey();
+
+        // ASSERTION - check if correct keys are in junction table
+        assertTrue(rdbmsForeignKeys.stream().anyMatch(o -> o.getReferenceKey().equals(primaryKey1)));
+        assertTrue(rdbmsForeignKeys.stream().anyMatch(o -> o.getReferenceKey().equals(primaryKey2)));
+
+        // ASSERTION - check if field1 and field2 is the primary keys from "From" and "To"
+        assertEquals(rdbmsJunctionTable.getField1().getReferenceKey(), primaryKey1);
+        assertEquals(rdbmsJunctionTable.getField2().getReferenceKey(), primaryKey2);
+    }
+
+    @Test
+    @DisplayName("Test TwoWayRelation With One To Infinite And One To Infinite Cardinalities")
+    public void testTwoWayRelationWithOneToInfiniteAndOneToInfiniteCardinalities() {
+        // create annotations
+        final EAnnotation eAnnotation = newEAnnotationBuilder()
+                .withSource("http://blackbelt.hu/judo/meta/ExtendedMetadata/entity")
+                .build();
+
+        eAnnotation.getDetails().put("value", "true");
+
+        final EAnnotation eAnnotation2 = newEAnnotationBuilder()
+                .withSource("http://blackbelt.hu/judo/meta/ExtendedMetadata/entity")
+                .build();
+
+        eAnnotation2.getDetails().put("value", "true");
+
+        // create classes
+        final EClass twoWayRelation1 = newEClassBuilder()
+                .withName("TwoWayRelation1")
+                .withEAnnotations(eAnnotation)
+                .build();
+
+        final EClass twoWayRelation2 = newEClassBuilder()
+                .withName("TwoWayRelation2")
+                .withEAnnotations(eAnnotation2)
+                .build();
+
+        // create references
+        final EReference twoWayReference1 = newEReferenceBuilder()
+                .withName("twoWayReference1")
+                .withLowerBound(1)
+                .withUpperBound(-1)
+                .withEType(twoWayRelation1)
+                .build();
+
+        final EReference twoWayReference2 = newEReferenceBuilder()
+                .withName("twoWayReference2")
+                .withLowerBound(1)
+                .withUpperBound(-1)
+                .withEType(twoWayRelation2)
+                .build();
+
+        // add opposites
+        twoWayReference1.setEOpposite(twoWayReference2);
+        twoWayReference2.setEOpposite(twoWayReference1);
+
+        // add references
+        twoWayRelation1.getEStructuralFeatures().add(twoWayReference2);
+        twoWayRelation2.getEStructuralFeatures().add(twoWayReference1);
+
+        // create package
+        final EPackage ePackage = newEPackageBuilder()
+                .withName("TestEpackage")
+                .withEClassifiers(ImmutableList.of(twoWayRelation1, twoWayRelation2))
+                .withNsPrefix("test")
+                .withNsURI("http:///com.example.test.ecore")
+                .build();
+
+        // add content to asm model
+        asmModel.addContent(ePackage);
+
+        executeTransformation("testTwoWayRelationWithOneToInfiniteAndNullToInfiniteCardinalities");
+
+        final String RDBMS_TABLE_NAME_1 = "TestEpackage.TwoWayRelation1";
+        final String RDBMS_TABLE_NAME_2 = "TestEpackage.TwoWayRelation2";
+        final String TWO_WAY_REFERENCE1 = "twoWayReference1";
+        final String TWO_WAY_REFERENCE2 = "twoWayReference2";
+        final String RDBMS_JUNCTION_TABLE = RDBMS_TABLE_NAME_2 + "#" + TWO_WAY_REFERENCE1 + " to " + RDBMS_TABLE_NAME_1 + "#" + TWO_WAY_REFERENCE2;
+
+        // ASSERTION - check if tables exist
+        assertEquals(3, rdbmsUtils.getRdbmsTables()
+                .orElseThrow(() -> new RuntimeException("No tables were found"))
+                .size());
+
+        // ASSERTION - check for correct number of fields
+        assertEquals(2, rdbmsUtils.getRdbmsFields(RDBMS_TABLE_NAME_1)
+                .orElseThrow(() -> new RuntimeException(RDBMS_TABLE_NAME_1 + " table not found"))
+                .size()); //+2 id and type
+
+        assertEquals(2, rdbmsUtils.getRdbmsFields(RDBMS_TABLE_NAME_2)
+                .orElseThrow(() -> new RuntimeException(RDBMS_TABLE_NAME_2 + " table not found"))
+                .size());  //+2 id and type
+
+        // SAVE - rdbmsJunctionTable
+        RdbmsJunctionTable rdbmsJunctionTable =
+                rdbmsUtils.getRdbmsJunctionTable(RDBMS_JUNCTION_TABLE)
+                        .orElseThrow(() -> new RuntimeException(RDBMS_JUNCTION_TABLE + " junction table not found"));
+
+        // SAVE - rdbmsForeignKeys
+        EList<RdbmsForeignKey> rdbmsForeignKeys = rdbmsUtils.getRdbmsForeignKeys(RDBMS_JUNCTION_TABLE)
+                .orElseThrow(() -> new RuntimeException(RDBMS_JUNCTION_TABLE + " junction table not found"));
+
+        // SAVE - primaryKeys
+        RdbmsIdentifierField primaryKey1 = rdbmsUtils.getRdbmsTable(RDBMS_TABLE_NAME_1)
+                .orElseThrow(() -> new RuntimeException(RDBMS_TABLE_NAME_1 + " table not found"))
+                .getPrimaryKey();
+        RdbmsIdentifierField primaryKey2 = rdbmsUtils.getRdbmsTable(RDBMS_TABLE_NAME_2)
+                .orElseThrow(() -> new RuntimeException(RDBMS_TABLE_NAME_2 + " table not found"))
+                .getPrimaryKey();
+
+        // ASSERTION - check if correct keys are in junction table
+        assertTrue(rdbmsForeignKeys.stream().anyMatch(o -> o.getReferenceKey().equals(primaryKey1)));
+        assertTrue(rdbmsForeignKeys.stream().anyMatch(o -> o.getReferenceKey().equals(primaryKey2)));
+
+        // ASSERTION - check if field1 and field2 is the primary keys from "From" and "To"
+        assertEquals(rdbmsJunctionTable.getField1().getReferenceKey(), primaryKey1);
+        assertEquals(rdbmsJunctionTable.getField2().getReferenceKey(), primaryKey2);
+    }
+
+    @Test
     @DisplayName("Test TwoWayRelation With Null To One Cardinalities")
     public void testTwoWayRelationWithNullToOneCardinalities() {
         // create annotations
