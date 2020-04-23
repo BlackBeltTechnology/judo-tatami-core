@@ -1,11 +1,15 @@
 package hu.blackbelt.judo.tatami.asm2rdbms;
 
+import com.google.common.collect.ImmutableList;
 import hu.blackbelt.epsilon.runtime.execution.impl.Slf4jLog;
 import hu.blackbelt.judo.meta.asm.runtime.AsmModel;
 import hu.blackbelt.judo.meta.rdbms.runtime.RdbmsModel;
 import hu.blackbelt.judo.meta.rdbms.runtime.RdbmsUtils;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.eclipse.emf.ecore.EAnnotation;
+import org.eclipse.emf.ecore.EClassifier;
+import org.eclipse.emf.ecore.EPackage;
 import org.junit.jupiter.api.BeforeEach;
 
 import java.io.File;
@@ -19,6 +23,8 @@ import static hu.blackbelt.judo.meta.rdbmsDataTypes.support.RdbmsDataTypesModelR
 import static hu.blackbelt.judo.meta.rdbmsNameMapping.support.RdbmsNameMappingModelResourceSupport.registerRdbmsNameMappingMetamodel;
 import static hu.blackbelt.judo.meta.rdbmsRules.support.RdbmsTableMappingRulesModelResourceSupport.registerRdbmsTableMappingRulesMetamodel;
 import static hu.blackbelt.judo.tatami.asm2rdbms.Asm2Rdbms.*;
+import static org.eclipse.emf.ecore.util.builder.EcoreBuilders.newEAnnotationBuilder;
+import static org.eclipse.emf.ecore.util.builder.EcoreBuilders.newEPackageBuilder;
 
 @Slf4j
 public class Asm2RdbmsMappingTestBase {
@@ -73,6 +79,30 @@ public class Asm2RdbmsMappingTestBase {
         } catch (IOException e) {
             logger.debug("Unable to save model(s)");
         }
+    }
+
+    //TODO: refactor on type mapping and relation mapping
+    protected EAnnotation newEntityEAnnotation() {
+        EAnnotation eAnnotation = newEAnnotationBuilder()
+                .withSource("http://blackbelt.hu/judo/meta/ExtendedMetadata/entity")
+                .build();
+
+        eAnnotation.getDetails().put("value", "true");
+        return eAnnotation;
+    }
+
+    //TODO: refactor all
+    protected EPackage newEPackage(ImmutableList<EClassifier> eClassifiers) {
+        return newEPackageBuilder()
+                .withName("TestEpackage")
+                .withEClassifiers(eClassifiers)
+                .withNsPrefix("test")
+                .withNsURI("http:///com.example.test.ecore")
+                .build();
+    }
+
+    protected EPackage newEPackage(EClassifier eClassifiers) {
+        return newEPackage(ImmutableList.of(eClassifiers));
     }
 
 }

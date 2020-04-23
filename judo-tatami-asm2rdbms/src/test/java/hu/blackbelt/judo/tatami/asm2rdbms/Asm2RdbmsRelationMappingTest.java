@@ -21,11 +21,7 @@ public class Asm2RdbmsRelationMappingTest extends Asm2RdbmsMappingTestBase {
     @DisplayName("Test OneWayRelation With Null To Infinite Cardinality")
     public void testOneWayRelationWithNullToInfiniteCardinality() {
         // create annotation
-        EAnnotation eAnnotation = newEAnnotationBuilder()
-                .withSource("http://blackbelt.hu/judo/meta/ExtendedMetadata/entity")
-                .build();
-
-        eAnnotation.getDetails().put("value", "true");
+        EAnnotation eAnnotation = newEntityEAnnotation();
 
         // create class to
         final EClass oneWayRelationTo = newEClassBuilder()
@@ -35,11 +31,7 @@ public class Asm2RdbmsRelationMappingTest extends Asm2RdbmsMappingTestBase {
 
 
         // create annotation2
-        EAnnotation eAnnotation2 = newEAnnotationBuilder()
-                .withSource("http://blackbelt.hu/judo/meta/ExtendedMetadata/entity")
-                .build();
-
-        eAnnotation2.getDetails().put("value", "true");
+        EAnnotation eAnnotation2 = newEntityEAnnotation();
 
         // create class from
         final EClass oneWayRelationFrom = newEClassBuilder()
@@ -114,11 +106,7 @@ public class Asm2RdbmsRelationMappingTest extends Asm2RdbmsMappingTestBase {
     @DisplayName("Test OneWayRelation With One To Infinite Cardinality")
     public void testOneWayRelationWithOneToInfiniteCardinality() {
         // create annotation
-        EAnnotation eAnnotation = newEAnnotationBuilder()
-                .withSource("http://blackbelt.hu/judo/meta/ExtendedMetadata/entity")
-                .build();
-
-        eAnnotation.getDetails().put("value", "true");
+        EAnnotation eAnnotation = newEntityEAnnotation();
 
         // create class to
         final EClass oneWayRelationTo = newEClassBuilder()
@@ -128,11 +116,7 @@ public class Asm2RdbmsRelationMappingTest extends Asm2RdbmsMappingTestBase {
 
 
         // create annotation2
-        EAnnotation eAnnotation2 = newEAnnotationBuilder()
-                .withSource("http://blackbelt.hu/judo/meta/ExtendedMetadata/entity")
-                .build();
-
-        eAnnotation2.getDetails().put("value", "true");
+        EAnnotation eAnnotation2 = newEntityEAnnotation();
 
         // create class from
         final EClass oneWayRelationFrom = newEClassBuilder()
@@ -207,11 +191,7 @@ public class Asm2RdbmsRelationMappingTest extends Asm2RdbmsMappingTestBase {
     @DisplayName("Test OneWayRelation With Null To One Cardinality")
     public void testOneWayRelationWithNullToOneCardinality() {
         // create annotation
-        EAnnotation eAnnotation = newEAnnotationBuilder()
-                .withSource("http://blackbelt.hu/judo/meta/ExtendedMetadata/entity")
-                .build();
-
-        eAnnotation.getDetails().put("value", "true");
+        EAnnotation eAnnotation = newEntityEAnnotation();
 
         // create class to
         final EClass oneWayRelationTo = newEClassBuilder()
@@ -221,11 +201,7 @@ public class Asm2RdbmsRelationMappingTest extends Asm2RdbmsMappingTestBase {
 
 
         // create annotation2
-        EAnnotation eAnnotation2 = newEAnnotationBuilder()
-                .withSource("http://blackbelt.hu/judo/meta/ExtendedMetadata/entity")
-                .build();
-
-        eAnnotation2.getDetails().put("value", "true");
+        EAnnotation eAnnotation2 = newEntityEAnnotation();
 
         // create class from
         final EClass oneWayRelationFrom = newEClassBuilder()
@@ -282,11 +258,7 @@ public class Asm2RdbmsRelationMappingTest extends Asm2RdbmsMappingTestBase {
     @DisplayName("Test OneWayRelation With One To One Cardinality")
     public void testOneWayRelationWithOneToOneCardinality() {
         // create annotation
-        EAnnotation eAnnotation = newEAnnotationBuilder()
-                .withSource("http://blackbelt.hu/judo/meta/ExtendedMetadata/entity")
-                .build();
-
-        eAnnotation.getDetails().put("value", "true");
+        EAnnotation eAnnotation = newEntityEAnnotation();
 
         // create class to
         final EClass oneWayRelationTo = newEClassBuilder()
@@ -296,11 +268,7 @@ public class Asm2RdbmsRelationMappingTest extends Asm2RdbmsMappingTestBase {
 
 
         // create annotation2
-        EAnnotation eAnnotation2 = newEAnnotationBuilder()
-                .withSource("http://blackbelt.hu/judo/meta/ExtendedMetadata/entity")
-                .build();
-
-        eAnnotation2.getDetails().put("value", "true");
+        EAnnotation eAnnotation2 = newEntityEAnnotation();
 
         // create class from
         final EClass oneWayRelationFrom = newEClassBuilder()
@@ -357,11 +325,7 @@ public class Asm2RdbmsRelationMappingTest extends Asm2RdbmsMappingTestBase {
     @DisplayName("Test OneWayContainment With Null To Infinite Cardinality")
     public void testOneWayContainmentWithNullToInfiniteCardinality() {
         // create annotation
-        EAnnotation eAnnotation = newEAnnotationBuilder()
-                .withSource("http://blackbelt.hu/judo/meta/ExtendedMetadata/entity")
-                .build();
-
-        eAnnotation.getDetails().put("value", "true");
+        EAnnotation eAnnotation = newEntityEAnnotation();
 
         // create class to
         final EClass oneWayContainmentTo = newEClassBuilder()
@@ -371,11 +335,7 @@ public class Asm2RdbmsRelationMappingTest extends Asm2RdbmsMappingTestBase {
 
 
         // create annotation2
-        EAnnotation eAnnotation2 = newEAnnotationBuilder()
-                .withSource("http://blackbelt.hu/judo/meta/ExtendedMetadata/entity")
-                .build();
-
-        eAnnotation2.getDetails().put("value", "true");
+        EAnnotation eAnnotation2 = newEntityEAnnotation();
 
         // create class from
         final EClass oneWayContainmentFrom = newEClassBuilder()
@@ -434,11 +394,7 @@ public class Asm2RdbmsRelationMappingTest extends Asm2RdbmsMappingTestBase {
     @DisplayName("Test OneWayContainment With One To Infinite Cardinality")
     public void testOneWayContainmentWithOneToInfiniteCardinality() {
         // create annotation
-        EAnnotation eAnnotation = newEAnnotationBuilder()
-                .withSource("http://blackbelt.hu/judo/meta/ExtendedMetadata/entity")
-                .build();
-
-        eAnnotation.getDetails().put("value", "true");
+        EAnnotation eAnnotation = newEntityEAnnotation();
 
         // create class to
         final EClass oneWayContainmentTo = newEClassBuilder()
@@ -448,11 +404,7 @@ public class Asm2RdbmsRelationMappingTest extends Asm2RdbmsMappingTestBase {
 
 
         // create annotation2
-        EAnnotation eAnnotation2 = newEAnnotationBuilder()
-                .withSource("http://blackbelt.hu/judo/meta/ExtendedMetadata/entity")
-                .build();
-
-        eAnnotation2.getDetails().put("value", "true");
+        EAnnotation eAnnotation2 = newEntityEAnnotation();
 
         // create class from
         final EClass oneWayContainmentFrom = newEClassBuilder()
@@ -511,11 +463,7 @@ public class Asm2RdbmsRelationMappingTest extends Asm2RdbmsMappingTestBase {
     @DisplayName("Test OneWayContainment With Null To One Cardinality")
     public void testOneWayContainmentWithNullToOneCardinality() {
         // create annotation
-        EAnnotation eAnnotation = newEAnnotationBuilder()
-                .withSource("http://blackbelt.hu/judo/meta/ExtendedMetadata/entity")
-                .build();
-
-        eAnnotation.getDetails().put("value", "true");
+        EAnnotation eAnnotation = newEntityEAnnotation();
 
         // create class to
         final EClass oneWayContainmentTo = newEClassBuilder()
@@ -525,11 +473,7 @@ public class Asm2RdbmsRelationMappingTest extends Asm2RdbmsMappingTestBase {
 
 
         // create annotation2
-        EAnnotation eAnnotation2 = newEAnnotationBuilder()
-                .withSource("http://blackbelt.hu/judo/meta/ExtendedMetadata/entity")
-                .build();
-
-        eAnnotation2.getDetails().put("value", "true");
+        EAnnotation eAnnotation2 = newEntityEAnnotation();
 
         // create class from
         final EClass oneWayContainmentFrom = newEClassBuilder()
@@ -588,11 +532,7 @@ public class Asm2RdbmsRelationMappingTest extends Asm2RdbmsMappingTestBase {
     @DisplayName("Test OneWayContainment With One To One Cardinality")
     public void testOneWayContainmentWithOneToOneCardinality() {
         // create annotation
-        EAnnotation eAnnotation = newEAnnotationBuilder()
-                .withSource("http://blackbelt.hu/judo/meta/ExtendedMetadata/entity")
-                .build();
-
-        eAnnotation.getDetails().put("value", "true");
+        EAnnotation eAnnotation = newEntityEAnnotation();
 
         // create class to
         final EClass oneWayContainmentTo = newEClassBuilder()
@@ -602,11 +542,7 @@ public class Asm2RdbmsRelationMappingTest extends Asm2RdbmsMappingTestBase {
 
 
         // create annotation2
-        EAnnotation eAnnotation2 = newEAnnotationBuilder()
-                .withSource("http://blackbelt.hu/judo/meta/ExtendedMetadata/entity")
-                .build();
-
-        eAnnotation2.getDetails().put("value", "true");
+        EAnnotation eAnnotation2 = newEntityEAnnotation();
 
         // create class from
         final EClass oneWayContainmentFrom = newEClassBuilder()
@@ -665,17 +601,9 @@ public class Asm2RdbmsRelationMappingTest extends Asm2RdbmsMappingTestBase {
     @DisplayName("Test TwoWayRelation With Null To Infinite Cardinalities")
     public void testTwoWayRelationWithNullToInfiniteCardinalities() {
         // create annotations
-        final EAnnotation eAnnotation = newEAnnotationBuilder()
-                .withSource("http://blackbelt.hu/judo/meta/ExtendedMetadata/entity")
-                .build();
+        final EAnnotation eAnnotation = newEntityEAnnotation();
 
-        eAnnotation.getDetails().put("value", "true");
-
-        final EAnnotation eAnnotation2 = newEAnnotationBuilder()
-                .withSource("http://blackbelt.hu/judo/meta/ExtendedMetadata/entity")
-                .build();
-
-        eAnnotation2.getDetails().put("value", "true");
+        final EAnnotation eAnnotation2 = newEntityEAnnotation();
 
         // create classes
         final EClass twoWayRelation1 = newEClassBuilder()
@@ -774,17 +702,9 @@ public class Asm2RdbmsRelationMappingTest extends Asm2RdbmsMappingTestBase {
     @DisplayName("Test TwoWayRelation With One To Infinite And Null To Infinite Cardinalities")
     public void testTwoWayRelationWithOneToInfiniteAndNullToInfiniteCardinalities() {
         // create annotations
-        final EAnnotation eAnnotation = newEAnnotationBuilder()
-                .withSource("http://blackbelt.hu/judo/meta/ExtendedMetadata/entity")
-                .build();
+        final EAnnotation eAnnotation = newEntityEAnnotation();
 
-        eAnnotation.getDetails().put("value", "true");
-
-        final EAnnotation eAnnotation2 = newEAnnotationBuilder()
-                .withSource("http://blackbelt.hu/judo/meta/ExtendedMetadata/entity")
-                .build();
-
-        eAnnotation2.getDetails().put("value", "true");
+        final EAnnotation eAnnotation2 = newEntityEAnnotation();
 
         // create classes
         final EClass twoWayRelation1 = newEClassBuilder()
@@ -883,17 +803,9 @@ public class Asm2RdbmsRelationMappingTest extends Asm2RdbmsMappingTestBase {
     @DisplayName("Test TwoWayRelation With Null To Infinite And One To Infinite Cardinalities")
     public void testTwoWayRelationWithNullToInfiniteAndOneToInfiniteCardinalities() {
         // create annotations
-        final EAnnotation eAnnotation = newEAnnotationBuilder()
-                .withSource("http://blackbelt.hu/judo/meta/ExtendedMetadata/entity")
-                .build();
+        final EAnnotation eAnnotation = newEntityEAnnotation();
 
-        eAnnotation.getDetails().put("value", "true");
-
-        final EAnnotation eAnnotation2 = newEAnnotationBuilder()
-                .withSource("http://blackbelt.hu/judo/meta/ExtendedMetadata/entity")
-                .build();
-
-        eAnnotation2.getDetails().put("value", "true");
+        final EAnnotation eAnnotation2 = newEntityEAnnotation();
 
         // create classes
         final EClass twoWayRelation1 = newEClassBuilder()
@@ -992,17 +904,9 @@ public class Asm2RdbmsRelationMappingTest extends Asm2RdbmsMappingTestBase {
     @DisplayName("Test TwoWayRelation With One To Infinite Cardinalities")
     public void testTwoWayRelationWithOneToInfiniteCardinalities() {
         // create annotations
-        final EAnnotation eAnnotation = newEAnnotationBuilder()
-                .withSource("http://blackbelt.hu/judo/meta/ExtendedMetadata/entity")
-                .build();
+        final EAnnotation eAnnotation = newEntityEAnnotation();
 
-        eAnnotation.getDetails().put("value", "true");
-
-        final EAnnotation eAnnotation2 = newEAnnotationBuilder()
-                .withSource("http://blackbelt.hu/judo/meta/ExtendedMetadata/entity")
-                .build();
-
-        eAnnotation2.getDetails().put("value", "true");
+        final EAnnotation eAnnotation2 = newEntityEAnnotation();
 
         // create classes
         final EClass twoWayRelation1 = newEClassBuilder()
@@ -1101,17 +1005,9 @@ public class Asm2RdbmsRelationMappingTest extends Asm2RdbmsMappingTestBase {
     @DisplayName("Test TwoWayRelation With Null To Infinite And Null To One Cardinalities")
     public void testTwoWayRelationWithNullToInfiniteAndNullToOneCardinalities() {
         // create annotations
-        final EAnnotation eAnnotation = newEAnnotationBuilder()
-                .withSource("http://blackbelt.hu/judo/meta/ExtendedMetadata/entity")
-                .build();
+        final EAnnotation eAnnotation = newEntityEAnnotation();
 
-        eAnnotation.getDetails().put("value", "true");
-
-        final EAnnotation eAnnotation2 = newEAnnotationBuilder()
-                .withSource("http://blackbelt.hu/judo/meta/ExtendedMetadata/entity")
-                .build();
-
-        eAnnotation2.getDetails().put("value", "true");
+        final EAnnotation eAnnotation2 = newEntityEAnnotation();
 
         // create classes
         final EClass twoWayRelation1 = newEClassBuilder()
@@ -1192,17 +1088,9 @@ public class Asm2RdbmsRelationMappingTest extends Asm2RdbmsMappingTestBase {
     @DisplayName("Test TwoWayRelation With Null To Infinite And One To One Cardinalities")
     public void testTwoWayRelationWithNullToInfiniteAndOneToOneCardinalities() {
         // create annotations
-        final EAnnotation eAnnotation = newEAnnotationBuilder()
-                .withSource("http://blackbelt.hu/judo/meta/ExtendedMetadata/entity")
-                .build();
+        final EAnnotation eAnnotation = newEntityEAnnotation();
 
-        eAnnotation.getDetails().put("value", "true");
-
-        final EAnnotation eAnnotation2 = newEAnnotationBuilder()
-                .withSource("http://blackbelt.hu/judo/meta/ExtendedMetadata/entity")
-                .build();
-
-        eAnnotation2.getDetails().put("value", "true");
+        final EAnnotation eAnnotation2 = newEntityEAnnotation();
 
         // create classes
         final EClass twoWayRelation1 = newEClassBuilder()
@@ -1283,17 +1171,9 @@ public class Asm2RdbmsRelationMappingTest extends Asm2RdbmsMappingTestBase {
     @DisplayName("Test TwoWayRelation With One To Infinite And Null To One Cardinalities")
     public void testTwoWayRelationWithOneToInfiniteAndNullToOneCardinalities() {
         // create annotations
-        final EAnnotation eAnnotation = newEAnnotationBuilder()
-                .withSource("http://blackbelt.hu/judo/meta/ExtendedMetadata/entity")
-                .build();
+        final EAnnotation eAnnotation = newEntityEAnnotation();
 
-        eAnnotation.getDetails().put("value", "true");
-
-        final EAnnotation eAnnotation2 = newEAnnotationBuilder()
-                .withSource("http://blackbelt.hu/judo/meta/ExtendedMetadata/entity")
-                .build();
-
-        eAnnotation2.getDetails().put("value", "true");
+        final EAnnotation eAnnotation2 = newEntityEAnnotation();
 
         // create classes
         final EClass twoWayRelation1 = newEClassBuilder()
@@ -1374,17 +1254,9 @@ public class Asm2RdbmsRelationMappingTest extends Asm2RdbmsMappingTestBase {
     @DisplayName("Test TwoWayRelation With One To Infinite And One To One Cardinalities")
     public void testTwoWayRelationWithOneToInfiniteAndOneToOneCardinalities() {
         // create annotations
-        final EAnnotation eAnnotation = newEAnnotationBuilder()
-                .withSource("http://blackbelt.hu/judo/meta/ExtendedMetadata/entity")
-                .build();
+        final EAnnotation eAnnotation = newEntityEAnnotation();
 
-        eAnnotation.getDetails().put("value", "true");
-
-        final EAnnotation eAnnotation2 = newEAnnotationBuilder()
-                .withSource("http://blackbelt.hu/judo/meta/ExtendedMetadata/entity")
-                .build();
-
-        eAnnotation2.getDetails().put("value", "true");
+        final EAnnotation eAnnotation2 = newEntityEAnnotation();
 
         // create classes
         final EClass twoWayRelation1 = newEClassBuilder()
@@ -1465,17 +1337,9 @@ public class Asm2RdbmsRelationMappingTest extends Asm2RdbmsMappingTestBase {
     @DisplayName("Test TwoWayRelation With Null To One And Null To Infinite Cardinalities")
     public void testTwoWayRelationWithNullToOneAndNullToInfiniteCardinalities() {
         // create annotations
-        final EAnnotation eAnnotation = newEAnnotationBuilder()
-                .withSource("http://blackbelt.hu/judo/meta/ExtendedMetadata/entity")
-                .build();
+        final EAnnotation eAnnotation = newEntityEAnnotation();
 
-        eAnnotation.getDetails().put("value", "true");
-
-        final EAnnotation eAnnotation2 = newEAnnotationBuilder()
-                .withSource("http://blackbelt.hu/judo/meta/ExtendedMetadata/entity")
-                .build();
-
-        eAnnotation2.getDetails().put("value", "true");
+        final EAnnotation eAnnotation2 = newEntityEAnnotation();
 
         // create classes
         final EClass twoWayRelation1 = newEClassBuilder()
@@ -1556,17 +1420,9 @@ public class Asm2RdbmsRelationMappingTest extends Asm2RdbmsMappingTestBase {
     @DisplayName("Test TwoWayRelation With Null To One And One To Infinite Cardinalities")
     public void testTwoWayRelationWithNullToOneAndOneToInfiniteCardinalities() {
         // create annotations
-        final EAnnotation eAnnotation = newEAnnotationBuilder()
-                .withSource("http://blackbelt.hu/judo/meta/ExtendedMetadata/entity")
-                .build();
+        final EAnnotation eAnnotation = newEntityEAnnotation();
 
-        eAnnotation.getDetails().put("value", "true");
-
-        final EAnnotation eAnnotation2 = newEAnnotationBuilder()
-                .withSource("http://blackbelt.hu/judo/meta/ExtendedMetadata/entity")
-                .build();
-
-        eAnnotation2.getDetails().put("value", "true");
+        final EAnnotation eAnnotation2 = newEntityEAnnotation();
 
         // create classes
         final EClass twoWayRelation1 = newEClassBuilder()
@@ -1647,17 +1503,9 @@ public class Asm2RdbmsRelationMappingTest extends Asm2RdbmsMappingTestBase {
     @DisplayName("Test TwoWayRelation With Null To One Cardinalities")
     public void testTwoWayRelationWithNullToOneCardinalities() {
         // create annotations
-        final EAnnotation eAnnotation = newEAnnotationBuilder()
-                .withSource("http://blackbelt.hu/judo/meta/ExtendedMetadata/entity")
-                .build();
+        final EAnnotation eAnnotation = newEntityEAnnotation();
 
-        eAnnotation.getDetails().put("value", "true");
-
-        final EAnnotation eAnnotation2 = newEAnnotationBuilder()
-                .withSource("http://blackbelt.hu/judo/meta/ExtendedMetadata/entity")
-                .build();
-
-        eAnnotation2.getDetails().put("value", "true");
+        final EAnnotation eAnnotation2 = newEntityEAnnotation();
 
         // create classes
         final EClass twoWayRelation1 = newEClassBuilder()
@@ -1739,17 +1587,9 @@ public class Asm2RdbmsRelationMappingTest extends Asm2RdbmsMappingTestBase {
     @DisplayName("Test TwoWayRelation With Null To One And One To One Cardinalities")
     public void testTwoWayRelationWithNullToOneAndOnetoOneCardinalities() {
         // create annotations
-        final EAnnotation eAnnotation = newEAnnotationBuilder()
-                .withSource("http://blackbelt.hu/judo/meta/ExtendedMetadata/entity")
-                .build();
+        final EAnnotation eAnnotation = newEntityEAnnotation();
 
-        eAnnotation.getDetails().put("value", "true");
-
-        final EAnnotation eAnnotation2 = newEAnnotationBuilder()
-                .withSource("http://blackbelt.hu/judo/meta/ExtendedMetadata/entity")
-                .build();
-
-        eAnnotation2.getDetails().put("value", "true");
+        final EAnnotation eAnnotation2 = newEntityEAnnotation();
 
         // create classes
         final EClass twoWayRelation1 = newEClassBuilder()
@@ -1830,17 +1670,9 @@ public class Asm2RdbmsRelationMappingTest extends Asm2RdbmsMappingTestBase {
     @DisplayName("Test TwoWayRelation With One To One And Null to Infinite Cardinalities")
     public void testTwoWayRelationWithOneToOneAndNulltoInfiniteCardinalities() {
         // create annotations
-        final EAnnotation eAnnotation = newEAnnotationBuilder()
-                .withSource("http://blackbelt.hu/judo/meta/ExtendedMetadata/entity")
-                .build();
+        final EAnnotation eAnnotation = newEntityEAnnotation();
 
-        eAnnotation.getDetails().put("value", "true");
-
-        final EAnnotation eAnnotation2 = newEAnnotationBuilder()
-                .withSource("http://blackbelt.hu/judo/meta/ExtendedMetadata/entity")
-                .build();
-
-        eAnnotation2.getDetails().put("value", "true");
+        final EAnnotation eAnnotation2 = newEntityEAnnotation();
 
         // create classes
         final EClass twoWayRelation1 = newEClassBuilder()
@@ -1921,17 +1753,9 @@ public class Asm2RdbmsRelationMappingTest extends Asm2RdbmsMappingTestBase {
     @DisplayName("Test TwoWayRelation With One To One And One to Infinite Cardinalities")
     public void testTwoWayRelationWithOneToOneAndOnetoInfiniteCardinalities() {
         // create annotations
-        final EAnnotation eAnnotation = newEAnnotationBuilder()
-                .withSource("http://blackbelt.hu/judo/meta/ExtendedMetadata/entity")
-                .build();
+        final EAnnotation eAnnotation = newEntityEAnnotation();
 
-        eAnnotation.getDetails().put("value", "true");
-
-        final EAnnotation eAnnotation2 = newEAnnotationBuilder()
-                .withSource("http://blackbelt.hu/judo/meta/ExtendedMetadata/entity")
-                .build();
-
-        eAnnotation2.getDetails().put("value", "true");
+        final EAnnotation eAnnotation2 = newEntityEAnnotation();
 
         // create classes
         final EClass twoWayRelation1 = newEClassBuilder()
@@ -2012,17 +1836,9 @@ public class Asm2RdbmsRelationMappingTest extends Asm2RdbmsMappingTestBase {
     @DisplayName("Test TwoWayRelation With One To One And Null to One Cardinalities")
     public void testTwoWayRelationWithOneToOneAndNulltoOneCardinalities() {
         // create annotations
-        final EAnnotation eAnnotation = newEAnnotationBuilder()
-                .withSource("http://blackbelt.hu/judo/meta/ExtendedMetadata/entity")
-                .build();
+        final EAnnotation eAnnotation = newEntityEAnnotation();
 
-        eAnnotation.getDetails().put("value", "true");
-
-        final EAnnotation eAnnotation2 = newEAnnotationBuilder()
-                .withSource("http://blackbelt.hu/judo/meta/ExtendedMetadata/entity")
-                .build();
-
-        eAnnotation2.getDetails().put("value", "true");
+        final EAnnotation eAnnotation2 = newEntityEAnnotation();
 
         // create classes
         final EClass twoWayRelation1 = newEClassBuilder()
@@ -2103,17 +1919,9 @@ public class Asm2RdbmsRelationMappingTest extends Asm2RdbmsMappingTestBase {
     @DisplayName("Test TwoWayRelation With One To One Cardinalities")
     public void testTwoWayRelationWithOneToOneCardinalities() {
         // create annotations
-        final EAnnotation eAnnotation = newEAnnotationBuilder()
-                .withSource("http://blackbelt.hu/judo/meta/ExtendedMetadata/entity")
-                .build();
+        final EAnnotation eAnnotation = newEntityEAnnotation();
 
-        eAnnotation.getDetails().put("value", "true");
-
-        final EAnnotation eAnnotation2 = newEAnnotationBuilder()
-                .withSource("http://blackbelt.hu/judo/meta/ExtendedMetadata/entity")
-                .build();
-
-        eAnnotation2.getDetails().put("value", "true");
+        final EAnnotation eAnnotation2 = newEntityEAnnotation();
 
         // create classes
         final EClass twoWayRelation1 = newEClassBuilder()
@@ -2188,6 +1996,244 @@ public class Asm2RdbmsRelationMappingTest extends Asm2RdbmsMappingTestBase {
                 rdbmsUtils.getRdbmsForeignKey(RDBMS_TABLE_NAME_1, TWO_WAY_REFERENCE2)
                         .orElseThrow(() -> new RuntimeException(TWO_WAY_REFERENCE2 + " attribute not found"))
                         .getReferenceKey());
+    }
+
+    @Test
+    @DisplayName("Test Self OneWayRelation With Null to One Cardinality")
+    public void testSelfOneWayRelationWithNulltoOneCardinality() {
+        //create eannotation
+        final EAnnotation eAnnotation = newEntityEAnnotation();
+
+        //create eclass
+        final EClass self = newEClassBuilder()
+                .withName("Self")
+                .withEAnnotations(eAnnotation)
+                .build();
+
+        //create one way reference
+        final EReference oneWayReference = newEReferenceBuilder()
+                .withName("selfOnaWayReference")
+                .withLowerBound(0)
+                .withUpperBound(1)
+                .withEType(self)
+                .build();
+
+        //add reference to self
+        self.getEStructuralFeatures().add(oneWayReference);
+
+        //create epackage
+        final EPackage ePackage = newEPackage(self);
+
+        //add content to model
+        asmModel.addContent(ePackage);
+
+        executeTransformation("testSelfOneWayRelationWithNulltoOneCardinality");
+
+        final String RDBMS_TABLE_NAME = "TestEpackage.Self";
+        final String ONE_WAY_REFERENCE = "selfOnaWayReference";
+
+        // ASSERTION - check if tables exist
+        assertEquals(1, rdbmsUtils.getRdbmsTables()
+                .orElseThrow(() -> new RuntimeException("No tables were found"))
+                .size());
+
+        // ASSERTION - check for correct number of fields
+        assertEquals(3, rdbmsUtils.getRdbmsFields(RDBMS_TABLE_NAME)
+                .orElseThrow(() -> new RuntimeException(RDBMS_TABLE_NAME + " not found"))
+                .size());
+
+        // ASSERTION - check if RdbmsForeignKey is valid
+        assertEquals(rdbmsUtils.getRdbmsTable(RDBMS_TABLE_NAME)
+                        .orElseThrow(() -> new RuntimeException(RDBMS_TABLE_NAME + " table not found"))
+                        .getPrimaryKey(),
+                rdbmsUtils.getRdbmsForeignKey(RDBMS_TABLE_NAME, ONE_WAY_REFERENCE)
+                        .orElseThrow(() -> new RuntimeException(ONE_WAY_REFERENCE + " attribute not found"))
+                        .getReferenceKey());
+    }
+
+    @Test
+    @DisplayName("Test Self OneWayRelation With One to One Cardinality")
+    public void testSelfOneWayRelationWithOnetoOneCardinality() {
+        //create eannotation
+        final EAnnotation eAnnotation = newEntityEAnnotation();
+
+        //create eclass
+        final EClass self = newEClassBuilder()
+                .withName("Self")
+                .withEAnnotations(eAnnotation)
+                .build();
+
+        //create one way reference
+        final EReference oneWayReference = newEReferenceBuilder()
+                .withName("selfOnaWayReference")
+                .withLowerBound(1)
+                .withUpperBound(1)
+                .withEType(self)
+                .build();
+
+        //add reference to self
+        self.getEStructuralFeatures().add(oneWayReference);
+
+        //create epackage
+        final EPackage ePackage = newEPackage(self);
+
+        //add content to model
+        asmModel.addContent(ePackage);
+
+        executeTransformation("testSelfOneWayRelationWithOnetoOneCardinality");
+
+        final String RDBMS_TABLE_NAME = "TestEpackage.Self";
+        final String ONE_WAY_REFERENCE = "selfOnaWayReference";
+
+        // ASSERTION - check if tables exist
+        assertEquals(1, rdbmsUtils.getRdbmsTables()
+                .orElseThrow(() -> new RuntimeException("No tables were found"))
+                .size());
+
+        // ASSERTION - check for correct number of fields
+        assertEquals(3, rdbmsUtils.getRdbmsFields(RDBMS_TABLE_NAME)
+                .orElseThrow(() -> new RuntimeException(RDBMS_TABLE_NAME + " not found"))
+                .size());
+
+        // ASSERTION - check if RdbmsForeignKey is valid
+        assertEquals(rdbmsUtils.getRdbmsTable(RDBMS_TABLE_NAME)
+                        .orElseThrow(() -> new RuntimeException(RDBMS_TABLE_NAME + " table not found"))
+                        .getPrimaryKey(),
+                rdbmsUtils.getRdbmsForeignKey(RDBMS_TABLE_NAME, ONE_WAY_REFERENCE)
+                        .orElseThrow(() -> new RuntimeException(ONE_WAY_REFERENCE + " attribute not found"))
+                        .getReferenceKey());
+    }
+
+    @Test
+    @DisplayName("Test Self OneWayRelation With Null to Infinite Cardinality")
+    public void testSelfOneWayRelationWithNulltoInfiniteCardinality() {
+        //create eannotation
+        final EAnnotation eAnnotation = newEntityEAnnotation();
+
+        //create eclass
+        final EClass self = newEClassBuilder()
+                .withName("Self")
+                .withEAnnotations(eAnnotation)
+                .build();
+
+        //create one way reference
+        final EReference oneWayReference = newEReferenceBuilder()
+                .withName("selfOnaWayReference")
+                .withLowerBound(0)
+                .withUpperBound(-1)
+                .withEType(self)
+                .build();
+
+        //add reference to self
+        self.getEStructuralFeatures().add(oneWayReference);
+
+        //create epackage
+        final EPackage ePackage = newEPackage(self);
+
+        //add content to model
+        asmModel.addContent(ePackage);
+
+        executeTransformation("testSelfOneWayRelationWithNulltoInfiniteCardinality");
+
+        final String RDBMS_TABLE_NAME = "TestEpackage.Self";
+        final String ONE_WAY_REFERENCE = "selfOnaWayReference";
+        final String RDBMS_JUNCTION_TABLE_NAME = RDBMS_TABLE_NAME + "#" + ONE_WAY_REFERENCE + " to " + RDBMS_TABLE_NAME;
+
+        // ASSERTION - check if tables exist
+        assertEquals(2, rdbmsUtils.getRdbmsTables()
+                .orElseThrow(() -> new RuntimeException("No tables were found"))
+                .size());
+
+        // ASSERTION - check for correct number of fields
+        assertEquals(2, rdbmsUtils.getRdbmsFields(RDBMS_TABLE_NAME)
+                .orElseThrow(() -> new RuntimeException(RDBMS_TABLE_NAME + " table not found"))
+                .size());
+
+        // SAVE - rdbmsJunctionTable
+        RdbmsJunctionTable rdbmsJunctionTable = rdbmsUtils.getRdbmsJunctionTable(RDBMS_JUNCTION_TABLE_NAME)
+                .orElseThrow(() -> new RuntimeException(RDBMS_JUNCTION_TABLE_NAME + " junction table not found"));
+
+        // SAVE - rdbmsForeignKeys
+        EList<RdbmsForeignKey> rdbmsForeignKeys = rdbmsUtils.getRdbmsForeignKeys(RDBMS_JUNCTION_TABLE_NAME)
+                .orElseThrow(() -> new RuntimeException(RDBMS_JUNCTION_TABLE_NAME + " junction table not found"));
+
+        // SAVE - primaryKeys
+        RdbmsIdentifierField primaryKey = rdbmsUtils.getRdbmsTable(RDBMS_TABLE_NAME)
+                .orElseThrow(() -> new RuntimeException(RDBMS_TABLE_NAME + " table not found"))
+                .getPrimaryKey();
+
+        // ASSERTION - check if correct keys are in junction table
+        assertTrue(rdbmsForeignKeys.stream().anyMatch(o -> o.getReferenceKey().equals(primaryKey)));
+
+        // ASSERTION - check if field1 and field2 is the primary keys from "From" and "To"
+        assertEquals(rdbmsJunctionTable.getField1().getReferenceKey(), primaryKey);
+        assertEquals(rdbmsJunctionTable.getField2().getReferenceKey(), primaryKey);
+    }
+
+    @Test
+    @DisplayName("Test Self OneWayRelation With One to Infinite Cardinality")
+    public void testSelfOneWayRelationWithOnetoInfiniteCardinality() {
+        //create eannotation
+        final EAnnotation eAnnotation = newEntityEAnnotation();
+
+        //create eclass
+        final EClass self = newEClassBuilder()
+                .withName("Self")
+                .withEAnnotations(eAnnotation)
+                .build();
+
+        //create one way reference
+        final EReference oneWayReference = newEReferenceBuilder()
+                .withName("selfOnaWayReference")
+                .withLowerBound(1)
+                .withUpperBound(-1)
+                .withEType(self)
+                .build();
+
+        //add reference to self
+        self.getEStructuralFeatures().add(oneWayReference);
+
+        //create epackage
+        final EPackage ePackage = newEPackage(self);
+
+        //add content to model
+        asmModel.addContent(ePackage);
+
+        executeTransformation("testSelfOneWayRelationWithOnetoInfiniteCardinality");
+
+        final String RDBMS_TABLE_NAME = "TestEpackage.Self";
+        final String ONE_WAY_REFERENCE = "selfOnaWayReference";
+        final String RDBMS_JUNCTION_TABLE_NAME = RDBMS_TABLE_NAME + "#" + ONE_WAY_REFERENCE + " to " + RDBMS_TABLE_NAME;
+
+        // ASSERTION - check if tables exist
+        assertEquals(2, rdbmsUtils.getRdbmsTables()
+                .orElseThrow(() -> new RuntimeException("No tables were found"))
+                .size());
+
+        // ASSERTION - check for correct number of fields
+        assertEquals(2, rdbmsUtils.getRdbmsFields(RDBMS_TABLE_NAME)
+                .orElseThrow(() -> new RuntimeException(RDBMS_TABLE_NAME + " table not found"))
+                .size());
+
+        // SAVE - rdbmsJunctionTable
+        RdbmsJunctionTable rdbmsJunctionTable = rdbmsUtils.getRdbmsJunctionTable(RDBMS_JUNCTION_TABLE_NAME)
+                .orElseThrow(() -> new RuntimeException(RDBMS_JUNCTION_TABLE_NAME + " junction table not found"));
+
+        // SAVE - rdbmsForeignKeys
+        EList<RdbmsForeignKey> rdbmsForeignKeys = rdbmsUtils.getRdbmsForeignKeys(RDBMS_JUNCTION_TABLE_NAME)
+                .orElseThrow(() -> new RuntimeException(RDBMS_JUNCTION_TABLE_NAME + " junction table not found"));
+
+        // SAVE - primaryKeys
+        RdbmsIdentifierField primaryKey = rdbmsUtils.getRdbmsTable(RDBMS_TABLE_NAME)
+                .orElseThrow(() -> new RuntimeException(RDBMS_TABLE_NAME + " table not found"))
+                .getPrimaryKey();
+
+        // ASSERTION - check if correct keys are in junction table
+        assertTrue(rdbmsForeignKeys.stream().anyMatch(o -> o.getReferenceKey().equals(primaryKey)));
+
+        // ASSERTION - check if field1 and field2 is the primary keys from "From" and "To"
+        assertEquals(rdbmsJunctionTable.getField1().getReferenceKey(), primaryKey);
+        assertEquals(rdbmsJunctionTable.getField2().getReferenceKey(), primaryKey);
     }
 
 }
