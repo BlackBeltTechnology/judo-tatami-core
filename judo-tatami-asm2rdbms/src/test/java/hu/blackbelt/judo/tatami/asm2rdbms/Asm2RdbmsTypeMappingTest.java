@@ -194,6 +194,7 @@ public class Asm2RdbmsTypeMappingTest extends Asm2RdbmsMappingTestBase {
                 .size()); //+2 type and id
 
         // check field types based on typemapping table
+        // todo fix mapping
 //        typeAsserter(rdbmsUtils.getRdbmsField(RDBMS_TABLE_NAME, "bigDecimalAttr", true)
 //                        .orElseThrow(() -> new RuntimeException("intAttr is missing")),
 //                DECIMAL,
@@ -266,6 +267,7 @@ public class Asm2RdbmsTypeMappingTest extends Asm2RdbmsMappingTestBase {
                 -1,
                 -1,
                 -1);
+        // todo fix mapping
 //        typeAsserter(rdbmsUtils.getRdbmsField(RDBMS_TABLE_NAME, "javamathBigIntegerAttr", true)
 //                        .orElseThrow(() -> new RuntimeException("javamathBigIntegerAttr is missing")),
 //                DECIMAL,
@@ -284,6 +286,7 @@ public class Asm2RdbmsTypeMappingTest extends Asm2RdbmsMappingTestBase {
                 -1,
                 -1,
                 -1);
+        // todo fix mapping
 //        typeAsserter(rdbmsUtils.getRdbmsField(RDBMS_TABLE_NAME, "javamathBigDecimalAttr", true)
 //                        .orElseThrow(() -> new RuntimeException("javamathBigDecimalAttr is missing")),
 //                DECIMAL,
