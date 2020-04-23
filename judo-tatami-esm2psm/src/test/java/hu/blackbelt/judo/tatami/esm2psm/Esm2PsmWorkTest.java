@@ -10,6 +10,7 @@ import hu.blackbelt.judo.tatami.core.workflow.work.WorkStatus;
 import hu.blackbelt.model.northwind.esm.NorthwindEsmModel;
 import hu.blackbelt.epsilon.runtime.execution.exceptions.ScriptExecutionException;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
