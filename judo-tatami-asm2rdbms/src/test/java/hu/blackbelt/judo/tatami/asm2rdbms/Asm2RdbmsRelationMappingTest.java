@@ -330,6 +330,7 @@ public class Asm2RdbmsRelationMappingTest extends Asm2RdbmsMappingTestBase {
 
         executeTransformation(transformationName);
 
+        //TODO self
         final String RDBMS_TABLE_NAME_1;
         final String RDBMS_TABLE_NAME_2;
         final String TWO_WAY_REFERENCE;
