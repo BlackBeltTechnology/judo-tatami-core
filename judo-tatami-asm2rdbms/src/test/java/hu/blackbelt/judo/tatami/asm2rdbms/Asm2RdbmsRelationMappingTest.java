@@ -11,10 +11,14 @@ import org.eclipse.emf.ecore.EReference;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import static org.eclipse.emf.ecore.util.builder.EcoreBuilders.newEClassBuilder;
 import static org.eclipse.emf.ecore.util.builder.EcoreBuilders.newEReferenceBuilder;
 import static org.junit.jupiter.api.Assertions.*;
 
+@SuppressWarnings("OptionalGetWithoutIsPresent")
 public class Asm2RdbmsRelationMappingTest extends Asm2RdbmsMappingTestBase {
 
     /**
@@ -22,7 +26,6 @@ public class Asm2RdbmsRelationMappingTest extends Asm2RdbmsMappingTestBase {
      *
      * @param cardinality -1, 0, 1
      * @return Infinite, Null or One
-     * @throws IllegalArgumentException if cardinality other then -1, 0 or 1
      */
     private String parseCardinality(int cardinality) {
         switch (cardinality) {
@@ -38,12 +41,11 @@ public class Asm2RdbmsRelationMappingTest extends Asm2RdbmsMappingTestBase {
     }
 
     /**
-     * Concats 2 "readable" cardinalities for testing purposes
+     * Concatenates 2 "readable" cardinalities for testing purposes
      *
-     * @param lowerCardinality lowerCardinality
-     * @param upperCardinality upperCardinality
+     * @param lowerCardinality
+     * @param upperCardinality
      * @return 2 "readable" cardinalities with "To" between them
-     * @throws IllegalArgumentException if cardinality is not valid
      */
     private String parseCardinalities(int lowerCardinality, int upperCardinality) {
         return parseCardinality(lowerCardinality) + "To" + parseCardinality(upperCardinality);
@@ -51,14 +53,13 @@ public class Asm2RdbmsRelationMappingTest extends Asm2RdbmsMappingTestBase {
 
 
     /**
-     * Concats 4 "readable" cardinalities for testing purposes
+     * Concatenates 4 "readable" cardinalities for testing purposes
      *
-     * @param lowerCardinality1 lowerCardinality1
-     * @param upperCardinality1 upperCardinality1
-     * @param lowerCardinality2 lowerCardinality2
-     * @param upperCardinality2 upperCardinality2
+     * @param lowerCardinality1
+     * @param upperCardinality1
+     * @param lowerCardinality2
+     * @param upperCardinality2
      * @return 4 "readable" cardinalities with "To" and "And" between them
-     * @throws IllegalArgumentException if cardinality is not valid
      */
     private String parseCardinalities(int lowerCardinality1, int upperCardinality1, int lowerCardinality2, int upperCardinality2) {
         return parseCardinality(lowerCardinality1) + "To" + parseCardinality(upperCardinality1) +
@@ -73,9 +74,8 @@ public class Asm2RdbmsRelationMappingTest extends Asm2RdbmsMappingTestBase {
     /**
      * Calls {@link #testOneWayRelation(int, int, boolean, boolean)} with both boolean parameters with false value
      *
-     * @param lowerCardinality lowerCardinality
-     * @param upperCardinality upperCardinality
-     * @throws IllegalArgumentException if cardinality is not valid
+     * @param lowerCardinality
+     * @param upperCardinality
      */
     private void testOneWayRelation(int lowerCardinality, int upperCardinality) {
         testOneWayRelation(lowerCardinality, upperCardinality, false, false);
@@ -84,10 +84,9 @@ public class Asm2RdbmsRelationMappingTest extends Asm2RdbmsMappingTestBase {
     /**
      * Calls {@link #testOneWayRelation(int, int, boolean, boolean)} with isSelf parameter with false value
      *
-     * @param lowerCardinality lowerCardinality
-     * @param upperCardinality upperCardinality
-     * @param isContainment    isContainment
-     * @throws IllegalArgumentException if cardinality is not valid
+     * @param lowerCardinality
+     * @param upperCardinality
+     * @param isContainment
      */
     private void testOneWayRelation(int lowerCardinality, int upperCardinality, boolean isContainment) {
         testOneWayRelation(lowerCardinality, upperCardinality, isContainment, false);
@@ -97,29 +96,27 @@ public class Asm2RdbmsRelationMappingTest extends Asm2RdbmsMappingTestBase {
      * Tests one way reference with given cardintaliy.
      * It can be a containment and/or can reference to itself.
      *
-     * @param lowerCardinality lowerCardinality
-     * @param upperCardinality upperCardinality
-     * @param isContainment    isContainment
-     * @param isSelf           isSelf
-     * @throws IllegalArgumentException if cardinality is not valid
+     * @param lowerCardinality
+     * @param upperCardinality
+     * @param isContainment
+     * @param isSelf
      */
     private void testOneWayRelation(int lowerCardinality, int upperCardinality, boolean isContainment, boolean isSelf) {
-        // TODO assert foreignkeysql name unique (self, oneway)
-
-        // Check parameters
+        //////////////////////
+        // parameter checking
         if (!((lowerCardinality == 0 && upperCardinality == 1) ||
                 (lowerCardinality == 1 && upperCardinality == 1) ||
                 (lowerCardinality == 0 && upperCardinality == -1) ||
                 (lowerCardinality == 1 && upperCardinality == -1)))
-            throw new IllegalArgumentException(String.format("Invalid cardinalities: %d, %d", lowerCardinality, upperCardinality));
+            fail(String.format("Invalid cardinalities: %d, %d", lowerCardinality, upperCardinality));
 
-        // Create eclass1
+        ///////////////////
+        // setup asm model
         final EClass oneWayRelation1 = newEClassBuilder()
                 .withName("OneWayRelation1")
                 .withEAnnotations(newEntityEAnnotation())
                 .build();
 
-        // Create relation/reference
         final EReference oneWayReference = newEReferenceBuilder()
                 .withName("oneWayReference")
                 .withLowerBound(lowerCardinality)
@@ -128,7 +125,6 @@ public class Asm2RdbmsRelationMappingTest extends Asm2RdbmsMappingTestBase {
                 .withEType(oneWayRelation1)
                 .build();
 
-        // Create epackage
         final EPackage ePackage;
         if (!isSelf) {
             final EClass oneWayRelation2 = newEClassBuilder()
@@ -136,17 +132,16 @@ public class Asm2RdbmsRelationMappingTest extends Asm2RdbmsMappingTestBase {
                     .withEAnnotations(newEntityEAnnotation())
                     .withEStructuralFeatures(oneWayReference)
                     .build();
-
             ePackage = newEPackage(ImmutableList.of(oneWayRelation2, oneWayRelation1));
         } else {
             oneWayRelation1.getEStructuralFeatures().add(oneWayReference);
             ePackage = newEPackage(oneWayRelation1);
         }
 
-        // Add content to asmModel
         asmModel.addContent(ePackage);
 
-        // "Calculate" name for saved file during test
+        ////////////////////////
+        // setup transformation
         final String transformationName;
         if (!isContainment && !isSelf) {
             transformationName = "testOneWayRelationWith" + parseCardinalities(lowerCardinality, upperCardinality) + "Cardinality";
@@ -160,110 +155,99 @@ public class Asm2RdbmsRelationMappingTest extends Asm2RdbmsMappingTestBase {
 
         executeTransformation(transformationName);
 
-        // SAVE - table and reference name
+        ///////////////////////////////
+        // prepare rdbms element names
         final String RDBMS_TABLE_NAME_1 = "TestEpackage.OneWayRelation1";
         final String RDBMS_TABLE_NAME_2 = isSelf ? RDBMS_TABLE_NAME_1 : "TestEpackage.OneWayRelation2";
         final String ONE_WAY_REFERENCE = isContainment
                 ? "oneWayRelation" + (!isSelf ? "2" : "1") + "OneWayReference"
                 : "oneWayReference";
+        final String RDBMS_JUNCTION_TABLE_NAME = RDBMS_TABLE_NAME_2 + "#" + ONE_WAY_REFERENCE + " to " + RDBMS_TABLE_NAME_1;
 
-        // Calculate the possible variates of table- and field numbers
-        int expectedTableNumber, expectedFieldNumber1, expectedFieldNumber2 = 0;
-        if (upperCardinality == -1 && isContainment && isSelf) {
-            expectedTableNumber = 1;
-            expectedFieldNumber1 = 3;
-        } else if (upperCardinality == -1 && isContainment) {
-            expectedFieldNumber1 = 3;
-            expectedTableNumber = expectedFieldNumber2 = 2;
-        } else if (upperCardinality == -1 && isSelf) {
-            expectedTableNumber = expectedFieldNumber1 = 2;
-        } else if (upperCardinality != -1 && isContainment && isSelf) {
-            expectedTableNumber = 1;
-            expectedFieldNumber1 = 3;
-        } else if (upperCardinality == -1) {
-            expectedTableNumber = 3;
-            expectedFieldNumber1 = expectedFieldNumber2 = 2;
-        } else if (isContainment) {
-            expectedFieldNumber1 = 3;
-            expectedTableNumber = expectedFieldNumber2 = 2;
-        } else if (isSelf) {
-            expectedTableNumber = 1;
-            expectedFieldNumber1 = 3;
-        } else {
-            expectedFieldNumber2 = 3;
-            expectedTableNumber = expectedFieldNumber1 = 2;
-        }
+        ///////////////////////////////////////////////
+        // fill sets with required rdbms element names
+        Set<String> tables = new HashSet<>();
+        Set<String> fields1 = new HashSet<>();
+        Set<String> fields2 = new HashSet<>();
+        Set<String> fields3 = new HashSet<>();
 
-        // ASSERTION - correct number of tables
-        assertEquals(expectedTableNumber, rdbmsUtils.getRdbmsTables()
-                .orElseThrow(() -> new RuntimeException("No tables were found"))
-                .size());
-
-        // ASSERTION - correct number of fields
-        assertEquals(expectedFieldNumber1, rdbmsUtils.getRdbmsFields(RDBMS_TABLE_NAME_1)
-                .orElseThrow(() -> new RuntimeException(RDBMS_TABLE_NAME_1 + " table not found"))
-                .size());
+        tables.add(RDBMS_TABLE_NAME_1);
+        fields1.add(RDBMS_TABLE_NAME_1 + "#_type");
+        fields1.add(RDBMS_TABLE_NAME_1 + "#_id");
         if (!isSelf) {
-            assertEquals(expectedFieldNumber2, rdbmsUtils.getRdbmsFields(RDBMS_TABLE_NAME_2)
-                    .orElseThrow(() -> new RuntimeException(RDBMS_TABLE_NAME_2 + " table not found"))
-                    .size());
+            tables.add(RDBMS_TABLE_NAME_2);
+            fields2.add(RDBMS_TABLE_NAME_2 + "#_type");
+            fields2.add(RDBMS_TABLE_NAME_2 + "#_id");
         }
-
 
         if (upperCardinality == -1 && !isContainment) {
-            // SAVE - junction table name
-            final String RDBMS_JUNCTION_TABLE_NAME = RDBMS_TABLE_NAME_2 + "#" + ONE_WAY_REFERENCE + " to " + RDBMS_TABLE_NAME_1;
+            tables.add(RDBMS_JUNCTION_TABLE_NAME);
+            fields3.add(RDBMS_JUNCTION_TABLE_NAME + "#id");
+            fields3.add(ONE_WAY_REFERENCE);
+            fields3.add("OneWayRelation" + (isSelf ? "1" : "2") + "#" + ONE_WAY_REFERENCE);
+        } else if (isContainment) {
+            fields1.add(ONE_WAY_REFERENCE);
+        } else {
+            (isSelf ? fields1 : fields2).add(ONE_WAY_REFERENCE);
+        }
 
-            // SAVE - junction table
-            RdbmsJunctionTable rdbmsJunctionTable = rdbmsUtils.getRdbmsJunctionTable(RDBMS_JUNCTION_TABLE_NAME)
-                    .orElseThrow(() -> new RuntimeException(RDBMS_JUNCTION_TABLE_NAME + " junction table not found"));
+        //////////////////////////////////////////////
+        // compare required and actual rdbms elements
+        rdbmsUtils.getRdbmsTables()
+                .orElseThrow(() -> new RuntimeException("No tables found"))
+                .forEach(o -> assertTrue(tables.contains(o.getName())));
 
-            // SAVE - foreign keys
-            EList<RdbmsForeignKey> rdbmsForeignKeys = rdbmsUtils.getRdbmsForeignKeys(RDBMS_JUNCTION_TABLE_NAME)
-                    .orElseThrow(() -> new RuntimeException(RDBMS_JUNCTION_TABLE_NAME + " junction table not found"));
+        rdbmsUtils.getRdbmsFields(RDBMS_TABLE_NAME_1)
+                .orElseThrow(() -> new RuntimeException(RDBMS_TABLE_NAME_1 + " not found"))
+                .forEach(o -> assertTrue(fields1.contains(o.getName())));
 
-            // SAVE - primary key 1
-            RdbmsIdentifierField primaryKey1 = rdbmsUtils.getRdbmsTable(RDBMS_TABLE_NAME_1)
-                    .orElseThrow(() -> new RuntimeException(RDBMS_TABLE_NAME_1 + " table not found"))
-                    .getPrimaryKey();
+        if (!isSelf) {
+            rdbmsUtils.getRdbmsFields(RDBMS_TABLE_NAME_2)
+                    .orElseThrow(() -> new RuntimeException(RDBMS_TABLE_NAME_2 + " not found"))
+                    .forEach(o -> assertTrue(fields2.contains(o.getName())));
+        }
 
-            // ASSERTION - primary key 1 can be found in junction table
+        if (upperCardinality == -1 && !isContainment) {
+            rdbmsUtils.getRdbmsFields(RDBMS_JUNCTION_TABLE_NAME)
+                    .orElseThrow(() -> new RuntimeException(RDBMS_JUNCTION_TABLE_NAME + " not found"))
+                    .forEach(o -> assertTrue(fields3.contains(o.getName())));
+        }
+
+        //////////////////////////////////////////////////////////
+        // "validate" model based on previously created asm model
+        if (upperCardinality == -1 && !isContainment) {
+            // SAVE - junction table, foreign keys and first primary key
+            RdbmsJunctionTable rdbmsJunctionTable = rdbmsUtils.getRdbmsJunctionTable(RDBMS_JUNCTION_TABLE_NAME).get();
+            EList<RdbmsForeignKey> rdbmsForeignKeys = rdbmsUtils.getRdbmsForeignKeys(RDBMS_JUNCTION_TABLE_NAME).get();
+            RdbmsIdentifierField primaryKey1 = rdbmsUtils.getRdbmsTable(RDBMS_TABLE_NAME_1).get().getPrimaryKey();
+
+            // ASSERTIONS - check if table1's primary key is in the junction tables foreign key "list" and is contained in field1
             assertTrue(rdbmsForeignKeys.stream().anyMatch(o -> o.getReferenceKey().equals(primaryKey1)));
-
-            // ASSERTION - field1 contains the correct primary key
             assertEquals(rdbmsJunctionTable.getField1().getReferenceKey(), primaryKey1);
-
             if (isSelf) {
-                // ASSERTION - field2 contains the correct primary key
+                // ASSERTION - field2 must contain the same value
                 assertEquals(rdbmsJunctionTable.getField2().getReferenceKey(), primaryKey1);
             } else {
-                // SAVE - primary key 2
-                RdbmsIdentifierField primaryKey2 = rdbmsUtils.getRdbmsTable(RDBMS_TABLE_NAME_2)
-                        .orElseThrow(() -> new RuntimeException(RDBMS_TABLE_NAME_2 + " table not found"))
-                        .getPrimaryKey();
+                // SAVE - table2's primary key
+                RdbmsIdentifierField primaryKey2 = rdbmsUtils.getRdbmsTable(RDBMS_TABLE_NAME_2).get().getPrimaryKey();
 
-                // ASSERTION - primary key 2 can be found in junction table
+                // ASSERTIONS - check if table2's primary key is in the junction tables foreign key "list" and is contained in field2
                 assertTrue(rdbmsForeignKeys.stream().anyMatch(o -> o.getReferenceKey().equals(primaryKey2)));
-
-                // ASSERTION - field2 contains the correct primary key
                 assertEquals(rdbmsJunctionTable.getField2().getReferenceKey(), primaryKey2);
             }
 
-            // ASSERTION - field1's and field2's foreignkeysqlname not equals
+            // ASSERTION - field1's and field2's foreignkeysql names are not equal
             assertNotEquals(rdbmsJunctionTable.getField1().getForeignKeySqlName(),
                     rdbmsJunctionTable.getField2().getForeignKeySqlName());
 
         } else {
-            final String container = (!isContainment || isSelf) ? RDBMS_TABLE_NAME_1 : RDBMS_TABLE_NAME_2;
-            final String contained = (!isContainment || isSelf) ? RDBMS_TABLE_NAME_2 : RDBMS_TABLE_NAME_1;
-            // ASSERTION - foreign key contains to the correct primary key
-            assertEquals(rdbmsUtils.getRdbmsTable(container)
-                            .orElseThrow(() -> new RuntimeException(RDBMS_TABLE_NAME_1 + " table not found"))
-                            .getPrimaryKey(),
-                    rdbmsUtils.getRdbmsForeignKey(contained, ONE_WAY_REFERENCE)
-                            .orElseThrow(() -> new RuntimeException(ONE_WAY_REFERENCE + " attribute not found"))
-                            .getReferenceKey());
+            final String contained = !isContainment || isSelf ? RDBMS_TABLE_NAME_1 : RDBMS_TABLE_NAME_2;
+            final String container = !isContainment || isSelf ? RDBMS_TABLE_NAME_2 : RDBMS_TABLE_NAME_1;
+            // ASSERTION - table1 (or 2) contains the other tables primary key
+            assertEquals(rdbmsUtils.getRdbmsTable(contained).get().getPrimaryKey(),
+                    rdbmsUtils.getRdbmsForeignKey(container, ONE_WAY_REFERENCE).get().getReferenceKey());
         }
+
 
     }
 
@@ -275,9 +259,8 @@ public class Asm2RdbmsRelationMappingTest extends Asm2RdbmsMappingTestBase {
      * Calls {@link #testTwoWayRelation(int, int, int, int, boolean)} where both end of the reference is the same
      * and isSelf is false
      *
-     * @param lowerCardinality lowerCardinality
-     * @param upperCardinality upperCardinality
-     * @throws IllegalArgumentException if cardinality is not valid
+     * @param lowerCardinality
+     * @param upperCardinality
      */
     private void testTwoWayRelation(int lowerCardinality, int upperCardinality) {
         testTwoWayRelation(lowerCardinality, upperCardinality, lowerCardinality, upperCardinality, false);
@@ -286,10 +269,9 @@ public class Asm2RdbmsRelationMappingTest extends Asm2RdbmsMappingTestBase {
     /**
      * Calls {@link #testTwoWayRelation(int, int, int, int, boolean)} where both end of the reference is the same.
      *
-     * @param lowerCardinality lowerCardinality
-     * @param upperCardinality upperCardinality
-     * @param isSelf           isSelf
-     * @throws IllegalArgumentException if cardinality is not valid
+     * @param lowerCardinality
+     * @param upperCardinality
+     * @param isSelf
      */
     private void testTwoWayRelation(int lowerCardinality, int upperCardinality, boolean isSelf) {
         testTwoWayRelation(lowerCardinality, upperCardinality, lowerCardinality, upperCardinality, isSelf);
@@ -298,11 +280,10 @@ public class Asm2RdbmsRelationMappingTest extends Asm2RdbmsMappingTestBase {
     /**
      * Calls {@link #testTwoWayRelation(int, int, int, int, boolean)} where isSelf is false
      *
-     * @param lowerCardinality1 lowerCardinality1
-     * @param upperCardinality1 upperCardinality1
-     * @param lowerCardinality2 lowerCardinality2
-     * @param upperCardinality2 upperCardinality2
-     * @throws IllegalArgumentException if cardinality is not valid
+     * @param lowerCardinality1
+     * @param upperCardinality1
+     * @param lowerCardinality2
+     * @param upperCardinality2
      */
     private void testTwoWayRelation(int lowerCardinality1, int upperCardinality1, int lowerCardinality2, int upperCardinality2) {
         testTwoWayRelation(lowerCardinality1, upperCardinality1, lowerCardinality2, upperCardinality2, false);
@@ -312,12 +293,11 @@ public class Asm2RdbmsRelationMappingTest extends Asm2RdbmsMappingTestBase {
      * Tests two way reference with given cardinalities.
      * It can reference to itself.
      *
-     * @param lowerCardinality1 lowerCardinality1
-     * @param upperCardinality1 upperCardinality1
-     * @param lowerCardinality2 lowerCardinality2
-     * @param upperCardinality2 upperCardinality2
-     * @param isSelf            isSelf
-     * @throws IllegalArgumentException if cardinality is not valid
+     * @param lowerCardinality1
+     * @param upperCardinality1
+     * @param lowerCardinality2
+     * @param upperCardinality2
+     * @param isSelf
      */
     private void testTwoWayRelation(int lowerCardinality1, int upperCardinality1, int lowerCardinality2, int upperCardinality2, boolean isSelf) {
         // Check parameters
@@ -329,7 +309,7 @@ public class Asm2RdbmsRelationMappingTest extends Asm2RdbmsMappingTestBase {
                 (lowerCardinality2 == 1 && upperCardinality2 == 1) ||
                 (lowerCardinality2 == 0 && upperCardinality2 == -1) ||
                 (lowerCardinality2 == 1 && upperCardinality2 == -1))) {
-            throw new IllegalArgumentException(String.format("Invalid cardinalities: %d, %d, %d, %d", lowerCardinality1, upperCardinality1, lowerCardinality2, upperCardinality2));
+            fail(String.format("Invalid cardinalities: %d, %d, %d, %d", lowerCardinality1, upperCardinality1, lowerCardinality2, upperCardinality2));
         }
 
         // create eclass1
