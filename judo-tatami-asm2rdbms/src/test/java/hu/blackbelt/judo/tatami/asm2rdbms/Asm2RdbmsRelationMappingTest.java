@@ -13,8 +13,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.eclipse.emf.ecore.util.builder.EcoreBuilders.newEClassBuilder;
 import static org.eclipse.emf.ecore.util.builder.EcoreBuilders.newEReferenceBuilder;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class Asm2RdbmsRelationMappingTest extends Asm2RdbmsMappingTestBase {
 
@@ -250,6 +249,10 @@ public class Asm2RdbmsRelationMappingTest extends Asm2RdbmsMappingTestBase {
                 assertEquals(rdbmsJunctionTable.getField2().getReferenceKey(), primaryKey2);
             }
 
+            // ASSERTION - field1's and field2's foreignkeysqlname not equals
+            assertNotEquals(rdbmsJunctionTable.getField1().getForeignKeySqlName(),
+                    rdbmsJunctionTable.getField2().getForeignKeySqlName());
+
         } else {
             final String container = (!isContainment || isSelf) ? RDBMS_TABLE_NAME_1 : RDBMS_TABLE_NAME_2;
             final String contained = (!isContainment || isSelf) ? RDBMS_TABLE_NAME_2 : RDBMS_TABLE_NAME_1;
@@ -440,6 +443,10 @@ public class Asm2RdbmsRelationMappingTest extends Asm2RdbmsMappingTestBase {
                 // ASSERTION - field2 contains the correct primary key
                 assertEquals(rdbmsJunctionTable.getField2().getReferenceKey(), primaryKey2);
             }
+
+            // ASSERTION - field1's and field2's foreignkeysqlname not equals
+            assertNotEquals(rdbmsJunctionTable.getField1().getForeignKeySqlName(),
+                    rdbmsJunctionTable.getField2().getForeignKeySqlName());
         } else {
             final boolean decider;
             if (upperCardinality1 == -1 || upperCardinality2 == -1) {
