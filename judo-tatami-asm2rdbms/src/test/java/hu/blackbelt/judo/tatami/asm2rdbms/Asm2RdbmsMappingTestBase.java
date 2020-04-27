@@ -81,7 +81,7 @@ public class Asm2RdbmsMappingTestBase {
         }
     }
 
-    //TODO: refactor on type mapping and relation mapping
+    //TODO: use on type mapping tests
     protected EAnnotation newEntityEAnnotation() {
         EAnnotation eAnnotation = newEAnnotationBuilder()
                 .withSource("http://blackbelt.hu/judo/meta/ExtendedMetadata/entity")
@@ -91,7 +91,7 @@ public class Asm2RdbmsMappingTestBase {
         return eAnnotation;
     }
 
-    //TODO: refactor all
+    //TODO: use on type mapping tests
     protected EPackage newEPackage(ImmutableList<EClassifier> eClassifiers) {
         return newEPackageBuilder()
                 .withName("TestEpackage")
