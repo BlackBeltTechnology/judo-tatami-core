@@ -68,7 +68,7 @@ public class Asm2RdbmsRelationMappingTest extends Asm2RdbmsMappingTestBase {
     }
 
     //////////////////////////////////////////////////////////////////////////
-    //////////////////////////////////////////////////////////////////////////
+    /////////////////////////// ONE WAY RELATIONS ////////////////////////////
     //////////////////////////////////////////////////////////////////////////
 
     /**
@@ -265,7 +265,7 @@ public class Asm2RdbmsRelationMappingTest extends Asm2RdbmsMappingTestBase {
     }
 
     //////////////////////////////////////////////////////////////////////////
-    //////////////////////////////////////////////////////////////////////////
+    /////////////////////////// TWO WAY RELATIONS ////////////////////////////
     //////////////////////////////////////////////////////////////////////////
 
     /**
@@ -386,7 +386,7 @@ public class Asm2RdbmsRelationMappingTest extends Asm2RdbmsMappingTestBase {
 
         final String RDBMS_TABLE_NAME_1 = "TestEpackage.TwoWayRelation1";
         final String RDBMS_TABLE_NAME_2 = isSelf ? RDBMS_TABLE_NAME_1 : "TestEpackage.TwoWayRelation2";
-        final String TWO_WAY_REFERENCE;
+
         if (upperCardinality1 == -1 && upperCardinality2 == -1) {
             final String RDBMS_JUNCTION_TABLE = RDBMS_TABLE_NAME_2 + "#twoWayReference1 to " + RDBMS_TABLE_NAME_1 + "#twoWayReference2";
 
@@ -454,7 +454,7 @@ public class Asm2RdbmsRelationMappingTest extends Asm2RdbmsMappingTestBase {
                 }
             }
 
-            TWO_WAY_REFERENCE = "twoWayReference" + (decider ? "2" : "1");
+            final String TWO_WAY_REFERENCE = "twoWayReference" + (decider ? "2" : "1");
 
             // ASSERTION - check if number of tables is correct
             assertEquals(isSelf ? 1 : 2, rdbmsUtils.getRdbmsTables()
@@ -486,7 +486,7 @@ public class Asm2RdbmsRelationMappingTest extends Asm2RdbmsMappingTestBase {
     }
 
     //////////////////////////////////////////////////////////////////////////
-    //////////////////////////////////////////////////////////////////////////
+    //////////////////////////////// TESTS ///////////////////////////////////
     //////////////////////////////////////////////////////////////////////////
 
     @Test
