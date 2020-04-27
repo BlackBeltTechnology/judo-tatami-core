@@ -148,15 +148,15 @@ public class Asm2RdbmsRelationMappingTest extends Asm2RdbmsMappingTestBase {
         asmModel.addContent(ePackage);
 
         // "Calculate" name for saved file during test
-        String transformationName = "testOneWay";
+        final String transformationName;
         if (!isContainment && !isSelf) {
-            transformationName += "RelationWith" + parseCardinalities(lowerCardinality, upperCardinality) + "Cardinality";
+            transformationName = "testOneWayRelationWith" + parseCardinalities(lowerCardinality, upperCardinality) + "Cardinality";
         } else if (isContainment && !isSelf) {
-            transformationName += "ContainmentWith" + parseCardinalities(lowerCardinality, upperCardinality) + "Cardinality";
+            transformationName = "testOneWayContainmentWith" + parseCardinalities(lowerCardinality, upperCardinality) + "Cardinality";
         } else if (!isContainment) {
-            transformationName += "SelfRelationWidth" + parseCardinalities(lowerCardinality, upperCardinality) + "Cardinality";
+            transformationName = "testOneWaySelfRelationWidth" + parseCardinalities(lowerCardinality, upperCardinality) + "Cardinality";
         } else {
-            transformationName += "SelfContainmentWith" + parseCardinalities(lowerCardinality, upperCardinality) + "Cardinality";
+            transformationName = "testOneWaySelfContainmentWith" + parseCardinalities(lowerCardinality, upperCardinality) + "Cardinality";
         }
 
         executeTransformation(transformationName);
@@ -164,16 +164,9 @@ public class Asm2RdbmsRelationMappingTest extends Asm2RdbmsMappingTestBase {
         // SAVE - table and reference name
         final String RDBMS_TABLE_NAME_1 = "TestEpackage.OneWayRelation1";
         final String RDBMS_TABLE_NAME_2 = isSelf ? RDBMS_TABLE_NAME_1 : "TestEpackage.OneWayRelation2";
-        String ONE_WAY_REFERENCE;
-        if (isContainment) {
-            if (!isSelf) {
-                ONE_WAY_REFERENCE = "oneWayRelation2OneWayReference";
-            } else {
-                ONE_WAY_REFERENCE = "oneWayRelation1OneWayReference";
-            }
-        } else {
-            ONE_WAY_REFERENCE = "oneWayReference";
-        }
+        final String ONE_WAY_REFERENCE = isContainment
+                ? "oneWayRelation" + (!isSelf ? "2" : "1") + "OneWayReference"
+                : "oneWayReference";
 
         // Calculate the possible variates of table- and field numbers
         int expectedTableNumber, expectedFieldNumber1, expectedFieldNumber2 = 0;
@@ -181,30 +174,25 @@ public class Asm2RdbmsRelationMappingTest extends Asm2RdbmsMappingTestBase {
             expectedTableNumber = 1;
             expectedFieldNumber1 = 3;
         } else if (upperCardinality == -1 && isContainment) {
-            expectedTableNumber = 2;
             expectedFieldNumber1 = 3;
-            expectedFieldNumber2 = 2;
+            expectedTableNumber = expectedFieldNumber2 = 2;
         } else if (upperCardinality == -1 && isSelf) {
-            expectedTableNumber = 2;
-            expectedFieldNumber1 = 2;
+            expectedTableNumber = expectedFieldNumber1 = 2;
         } else if (upperCardinality != -1 && isContainment && isSelf) {
             expectedTableNumber = 1;
             expectedFieldNumber1 = 3;
         } else if (upperCardinality == -1) {
             expectedTableNumber = 3;
-            expectedFieldNumber1 = 2;
-            expectedFieldNumber2 = 2;
+            expectedFieldNumber1 = expectedFieldNumber2 = 2;
         } else if (isContainment) {
-            expectedTableNumber = 2;
             expectedFieldNumber1 = 3;
-            expectedFieldNumber2 = 2;
+            expectedTableNumber = expectedFieldNumber2 = 2;
         } else if (isSelf) {
             expectedTableNumber = 1;
             expectedFieldNumber1 = 3;
         } else {
-            expectedTableNumber = 2;
-            expectedFieldNumber1 = 2;
             expectedFieldNumber2 = 3;
+            expectedTableNumber = expectedFieldNumber1 = 2;
         }
 
         // ASSERTION - correct number of tables
@@ -341,6 +329,7 @@ public class Asm2RdbmsRelationMappingTest extends Asm2RdbmsMappingTestBase {
             throw new IllegalArgumentException(String.format("Invalid cardinalities: %d, %d, %d, %d", lowerCardinality1, upperCardinality1, lowerCardinality2, upperCardinality2));
         }
 
+        // create eclass1
         final EClass twoWayRelation1 = newEClassBuilder()
                 .withName("TwoWayRelation1")
                 .withEAnnotations(newEntityEAnnotation())
@@ -368,15 +357,19 @@ public class Asm2RdbmsRelationMappingTest extends Asm2RdbmsMappingTestBase {
 
         final EPackage ePackage;
         if (!isSelf) {
+            // create eclass2
             final EClass twoWayRelation2 = newEClassBuilder()
                     .withName("TwoWayRelation2")
                     .withEAnnotations(newEntityEAnnotation())
                     .build();
+
+            // setup relations
             twoWayReference2.setEType(twoWayRelation2);
             twoWayReference1.setEOpposite(twoWayReference2);
             twoWayRelation2.getEStructuralFeatures().add(twoWayReference1);
             ePackage = newEPackage(ImmutableList.of(twoWayRelation1, twoWayRelation2));
         } else {
+            // setup relations
             twoWayReference2.setEType(twoWayRelation1);
             twoWayReference1.setEOpposite(twoWayReference2);
             twoWayRelation1.getEStructuralFeatures().add(twoWayReference1);
@@ -386,13 +379,9 @@ public class Asm2RdbmsRelationMappingTest extends Asm2RdbmsMappingTestBase {
         // Add content to asmModel
         asmModel.addContent(ePackage);
 
-        String transformationName = "testTwoWay";
-        if (!isSelf) {
-            transformationName += "RelationWith" + parseCardinalities(lowerCardinality1, upperCardinality1, upperCardinality2, upperCardinality2) + "Cardinalities";
-        } else {
-            transformationName += "SelfRelationWith" + parseCardinalities(lowerCardinality1, upperCardinality1, upperCardinality2, upperCardinality2) + "Cardinalities";
-        }
-
+        final String transformationName = !isSelf
+                ? "testTwoWayRelationWith" + parseCardinalities(lowerCardinality1, upperCardinality1, upperCardinality2, upperCardinality2) + "Cardinalities"
+                : "testTwoWaySelfRelationWith" + parseCardinalities(lowerCardinality1, upperCardinality1, upperCardinality2, upperCardinality2) + "Cardinalities";
         executeTransformation(transformationName);
 
         final String RDBMS_TABLE_NAME_1 = "TestEpackage.TwoWayRelation1";
@@ -721,7 +710,7 @@ public class Asm2RdbmsRelationMappingTest extends Asm2RdbmsMappingTestBase {
     @Test
     @DisplayName("Test Self TwoWayRelation With Null To One And Null To Infinite Cardinalities")
     public void testSelfTwoWayRelationWithNullToOneAndNullToInfiniteCardinalities() {
-        testTwoWayRelation(0, 1, 1, -1, true);
+        testTwoWayRelation(0, 1, 0, -1, true);
     }
 
     @Test
@@ -745,7 +734,7 @@ public class Asm2RdbmsRelationMappingTest extends Asm2RdbmsMappingTestBase {
     @Test
     @DisplayName("Test Self TwoWayRelation With Null To Infinite And Null To One Cardinalities")
     public void testSelfTwoWayRelationWithNullToInfiniteAndNullToOneCardinalities() {
-        testTwoWayRelation(0, 1, 0, 1, true);
+        testTwoWayRelation(0, -1, 0, 1, true);
     }
 
     @Test
