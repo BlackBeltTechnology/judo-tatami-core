@@ -363,8 +363,8 @@ public class Asm2RdbmsRelationMappingTest extends Asm2RdbmsMappingTestBase {
         asmModel.addContent(ePackage);
 
         final String transformationName = !isSelf
-                ? "testTwoWayRelationWith" + parseCardinalities(lowerCardinality1, upperCardinality1, upperCardinality2, upperCardinality2) + "Cardinalities"
-                : "testTwoWaySelfRelationWith" + parseCardinalities(lowerCardinality1, upperCardinality1, upperCardinality2, upperCardinality2) + "Cardinalities";
+                ? "testTwoWayRelationWith" + parseCardinalities(lowerCardinality1, upperCardinality1, lowerCardinality2, upperCardinality2) + "Cardinalities"
+                : "testTwoWaySelfRelationWith" + parseCardinalities(lowerCardinality1, upperCardinality1, lowerCardinality2, upperCardinality2) + "Cardinalities";
         executeTransformation(transformationName);
 
         final String RDBMS_TABLE_NAME_1 = "TestEpackage.TwoWayRelation1";
