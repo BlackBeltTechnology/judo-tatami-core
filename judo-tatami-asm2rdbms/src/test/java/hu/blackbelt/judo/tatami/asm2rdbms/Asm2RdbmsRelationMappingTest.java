@@ -199,18 +199,18 @@ public class Asm2RdbmsRelationMappingTest extends Asm2RdbmsMappingTestBase {
 
         rdbmsUtils.getRdbmsFields(RDBMS_TABLE_NAME_1)
                 .orElseThrow(() -> new RuntimeException(RDBMS_TABLE_NAME_1 + " not found"))
-                .forEach(o -> assertTrue(fields1.contains(o.getName())));
+                .forEach(o -> assertTrue(fields1.contains(o.getName()), o.getName()));
 
         if (!isSelf) {
             rdbmsUtils.getRdbmsFields(RDBMS_TABLE_NAME_2)
                     .orElseThrow(() -> new RuntimeException(RDBMS_TABLE_NAME_2 + " not found"))
-                    .forEach(o -> assertTrue(fields2.contains(o.getName())));
+                    .forEach(o -> assertTrue(fields2.contains(o.getName()), o.getName()));
         }
 
         if (upperCardinality == -1 && !isContainment) {
             rdbmsUtils.getRdbmsFields(RDBMS_JUNCTION_TABLE_NAME)
                     .orElseThrow(() -> new RuntimeException(RDBMS_JUNCTION_TABLE_NAME + " not found"))
-                    .forEach(o -> assertTrue(fields3.contains(o.getName())));
+                    .forEach(o -> assertTrue(fields3.contains(o.getName()), o.getName()));
         }
 
         //////////////////////////////////////////////////////////
@@ -369,25 +369,69 @@ public class Asm2RdbmsRelationMappingTest extends Asm2RdbmsMappingTestBase {
 
         final String RDBMS_TABLE_NAME_1 = "TestEpackage.TwoWayRelation1";
         final String RDBMS_TABLE_NAME_2 = isSelf ? RDBMS_TABLE_NAME_1 : "TestEpackage.TwoWayRelation2";
+        final String TWO_WAY_REFERENCE1 = "twoWayReference1";
+        final String TWO_WAY_REFERENCE2 = "twoWayReference2";
+        final String RDBMS_JUNCTION_TABLE =
+                RDBMS_TABLE_NAME_2 +
+                "#" +
+                TWO_WAY_REFERENCE1 +
+                " to " +
+                RDBMS_TABLE_NAME_1 +
+                "#" +
+                TWO_WAY_REFERENCE2;
+
+        ///////////////////////////////////////////////
+        // fill sets with required rdbms element names
+        Set<String> tables = new HashSet<>();
+        Set<String> fields1 = new HashSet<>();
+        Set<String> fields2 = new HashSet<>();
+        Set<String> fields3 = new HashSet<>();
+
+        tables.add(RDBMS_TABLE_NAME_1);
+        fields1.add(RDBMS_TABLE_NAME_1 + "#_type");
+        fields1.add(RDBMS_TABLE_NAME_1 + "#_id");
+        if (!isSelf) {
+            tables.add(RDBMS_TABLE_NAME_2);
+            fields2.add(RDBMS_TABLE_NAME_2 + "#_type");
+            fields2.add(RDBMS_TABLE_NAME_2 + "#_id");
+        }
 
         if (upperCardinality1 == -1 && upperCardinality2 == -1) {
-            final String RDBMS_JUNCTION_TABLE = RDBMS_TABLE_NAME_2 + "#twoWayReference1 to " + RDBMS_TABLE_NAME_1 + "#twoWayReference2";
+            tables.add(RDBMS_JUNCTION_TABLE);
+            fields3.add(RDBMS_JUNCTION_TABLE + "#id");
+            fields3.add(TWO_WAY_REFERENCE2);
+            fields3.add(TWO_WAY_REFERENCE1);
+        } else if(upperCardinality2 == -1 || (upperCardinality1 != -1 && lowerCardinality2 == 0))  {
+            (isSelf ? fields1 : fields2).add(TWO_WAY_REFERENCE1);
+        } else {
+            fields1.add(TWO_WAY_REFERENCE2);
+        }
 
-            // ASSERTION - check if tables exist
-            assertEquals(isSelf ? 2 : 3, rdbmsUtils.getRdbmsTables()
-                    .orElseThrow(() -> new RuntimeException("No tables were found"))
-                    .size());
+        //////////////////////////////////////////////
+        // compare required and actual rdbms elements
+        rdbmsUtils.getRdbmsTables()
+                .orElseThrow(() -> new RuntimeException("No tables found"))
+                .forEach(o -> assertTrue(tables.contains(o.getName()), o.getName()));
 
-            // ASSERTION - check for correct number of fields
-            assertEquals(2, rdbmsUtils.getRdbmsFields(RDBMS_TABLE_NAME_1)
-                    .orElseThrow(() -> new RuntimeException(RDBMS_TABLE_NAME_1 + " table not found"))
-                    .size()); //+2 id and type
-            if (!isSelf) {
-                assertEquals(2, rdbmsUtils.getRdbmsFields(RDBMS_TABLE_NAME_2)
-                        .orElseThrow(() -> new RuntimeException(RDBMS_TABLE_NAME_2 + " table not found"))
-                        .size());  //+2 id and type
-            }
+        rdbmsUtils.getRdbmsFields(RDBMS_TABLE_NAME_1)
+                .orElseThrow(() -> new RuntimeException(RDBMS_TABLE_NAME_1 + " not found"))
+                .forEach(o -> assertTrue(fields1.contains(o.getName()), o.getName()));
 
+        if (!isSelf) {
+            rdbmsUtils.getRdbmsFields(RDBMS_TABLE_NAME_2)
+                    .orElseThrow(() -> new RuntimeException(RDBMS_TABLE_NAME_2 + " not found"))
+                    .forEach(o -> assertTrue(fields2.contains(o.getName()), o.getName()));
+        }
+
+        if (upperCardinality1 == -1 && upperCardinality2 == -1) {
+            rdbmsUtils.getRdbmsFields(RDBMS_JUNCTION_TABLE)
+                    .orElseThrow(() -> new RuntimeException(RDBMS_JUNCTION_TABLE + " not found"))
+                    .forEach(o -> assertTrue(fields3.contains(o.getName()), o.getName()));
+        }
+
+        //////////////////////////////////////////////////////////
+        // "validate" model based on previously created asm model
+        if (upperCardinality1 == -1 && upperCardinality2 == -1) {
             // SAVE - rdbmsJunctionTable
             RdbmsJunctionTable rdbmsJunctionTable =
                     rdbmsUtils.getRdbmsJunctionTable(RDBMS_JUNCTION_TABLE)
@@ -428,45 +472,16 @@ public class Asm2RdbmsRelationMappingTest extends Asm2RdbmsMappingTestBase {
             assertNotEquals(rdbmsJunctionTable.getField1().getForeignKeySqlName(),
                     rdbmsJunctionTable.getField2().getForeignKeySqlName());
         } else {
-            final boolean decider;
-            if (upperCardinality1 == -1 || upperCardinality2 == -1) {
-                decider = upperCardinality1 == -1;
-            } else {
-                if (lowerCardinality1 == lowerCardinality2 && lowerCardinality1 == 1) {
-                    decider = true;
-                } else if (lowerCardinality1 == lowerCardinality2) {
-                    decider = false;
-                } else {
-                    decider = lowerCardinality1 != 1;
-                }
-            }
-
-            final String TWO_WAY_REFERENCE = "twoWayReference" + (decider ? "2" : "1");
-
-            // ASSERTION - check if number of tables is correct
-            assertEquals(isSelf ? 1 : 2, rdbmsUtils.getRdbmsTables()
-                    .orElseThrow(() -> new RuntimeException("No tables found"))
-                    .size());
-
-
-            // ASSERTION - check if number of fields is correct in each table
-            assertEquals(decider || isSelf ? 3 : 2, rdbmsUtils.getRdbmsFields(RDBMS_TABLE_NAME_1)
-                    .orElseThrow(() -> new RuntimeException(RDBMS_TABLE_NAME_1 + " table not found"))
-                    .size());
-            if (!isSelf) {
-                assertEquals(decider ? 2 : 3, rdbmsUtils.getRdbmsFields(RDBMS_TABLE_NAME_2)
-                        .orElseThrow(() -> new RuntimeException(RDBMS_TABLE_NAME_2 + " table not found"))
-                        .size());
-            }
-
-            final String contained = decider ? RDBMS_TABLE_NAME_2 : RDBMS_TABLE_NAME_1;
+            final boolean decider = fields1.contains(TWO_WAY_REFERENCE2);
             final String container = decider ? RDBMS_TABLE_NAME_1 : RDBMS_TABLE_NAME_2;
+            final String contained = decider ? RDBMS_TABLE_NAME_2 : RDBMS_TABLE_NAME_1;
+
             // ASSERTION - check if foreign key is valid
             assertEquals(rdbmsUtils.getRdbmsTable(contained)
                             .orElseThrow(() -> new RuntimeException(contained + " table not found"))
                             .getPrimaryKey(),
-                    rdbmsUtils.getRdbmsForeignKey(container, TWO_WAY_REFERENCE)
-                            .orElseThrow(() -> new RuntimeException(TWO_WAY_REFERENCE + " field not found"))
+                    rdbmsUtils.getRdbmsForeignKey(container, decider ? TWO_WAY_REFERENCE2 : TWO_WAY_REFERENCE1)
+                            .orElseThrow(() -> new RuntimeException(decider ? TWO_WAY_REFERENCE2 : TWO_WAY_REFERENCE1 + " field not found"))
                             .getReferenceKey());
         }
 
