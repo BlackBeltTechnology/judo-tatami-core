@@ -204,52 +204,13 @@ public class Asm2RdbmsRelationMappingTest extends Asm2RdbmsMappingTestBase {
         //////////////////////////////////////////////
         // compare required and actual rdbms elements
 
-        // tables
-        rdbmsUtils.getRdbmsTables()
-                .orElseThrow(() -> new RuntimeException("No tables found"))
-                .forEach(o -> {
-                    assertTrue(tables.contains(o.getName()), o.getName() + " not found");
-                    tables.remove(o.getName());
-                });
-        if (tables.size() != 0) {
-            fail(format("Tables are missing: %s", tables));
-        }
-
-        // table1 fields
-        rdbmsUtils.getRdbmsFields(RDBMS_TABLE_NAME_1)
-                .orElseThrow(() -> new RuntimeException(RDBMS_TABLE_NAME_1 + " not found"))
-                .forEach(o -> {
-                    assertTrue(fields1.contains(o.getName()), o.getName() + " not found");
-                    fields1.remove(o.getName());
-                });
-        if (fields1.size() != 0) {
-            fail(format("Tables are missing: %s", fields1));
-        }
-
-        // table2 fields
+        assertTables(tables);
+        assertFields(fields1, RDBMS_TABLE_NAME_1);
         if (!isSelf) {
-            rdbmsUtils.getRdbmsFields(RDBMS_TABLE_NAME_2)
-                    .orElseThrow(() -> new RuntimeException(RDBMS_TABLE_NAME_2 + " not found"))
-                    .forEach(o -> {
-                        assertTrue(fields2.contains(o.getName()), o.getName() + " not found");
-                        fields2.remove(o.getName());
-                    });
-            if (fields2.size() != 0) {
-                fail(format("Tables are missing: %s", fields2));
-            }
+            assertFields(fields2, RDBMS_TABLE_NAME_2);
         }
-
-        // junction table
         if (upperCardinality == -1 && !isContainment) {
-            rdbmsUtils.getRdbmsFields(RDBMS_JUNCTION_TABLE_NAME)
-                    .orElseThrow(() -> new RuntimeException(RDBMS_JUNCTION_TABLE_NAME + " not found"))
-                    .forEach(o -> {
-                        assertTrue(fields3.contains(o.getName()), o.getName() + " not found");
-                        fields3.remove(o.getName());
-                    });
-            if (fields3.size() != 0) {
-                fail(format("Tables are missing: %s", fields3));
-            }
+            assertFields(fields3, RDBMS_JUNCTION_TABLE_NAME);
         }
 
         // compare required and actual rdbms elements
@@ -459,52 +420,13 @@ public class Asm2RdbmsRelationMappingTest extends Asm2RdbmsMappingTestBase {
         //////////////////////////////////////////////
         // compare required and actual rdbms elements
 
-        // tables
-        rdbmsUtils.getRdbmsTables()
-                .orElseThrow(() -> new RuntimeException("No tables found"))
-                .forEach(o -> {
-                    assertTrue(tables.contains(o.getName()), o.getName() + " not found");
-                    tables.remove(o.getName());
-                });
-        if (tables.size() != 0) {
-            fail(format("Tables are missing: %s", tables));
-        }
-
-        // table1
-        rdbmsUtils.getRdbmsFields(RDBMS_TABLE_NAME_1)
-                .orElseThrow(() -> new RuntimeException(RDBMS_TABLE_NAME_1 + " not found"))
-                .forEach(o -> {
-                    assertTrue(fields1.contains(o.getName()), o.getName() + " not found");
-                    fields1.remove(o.getName());
-                });
-        if (fields1.size() != 0) {
-            fail(format("Tables are missing: %s", fields1));
-        }
-
-        // table2
+        assertTables(tables);
+        assertFields(fields1, RDBMS_TABLE_NAME_1);
         if (!isSelf) {
-            rdbmsUtils.getRdbmsFields(RDBMS_TABLE_NAME_2)
-                    .orElseThrow(() -> new RuntimeException(RDBMS_TABLE_NAME_2 + " not found"))
-                    .forEach(o -> {
-                        assertTrue(fields2.contains(o.getName()), o.getName() + " not found");
-                        fields2.remove(o.getName());
-                    });
-            if (fields2.size() != 0) {
-                fail(format("Tables are missing: %s", fields2));
-            }
+            assertFields(fields2, RDBMS_TABLE_NAME_2);
         }
-
-        // junction table
         if (upperCardinality1 == -1 && upperCardinality2 == -1) {
-            rdbmsUtils.getRdbmsFields(RDBMS_JUNCTION_TABLE)
-                    .orElseThrow(() -> new RuntimeException(RDBMS_JUNCTION_TABLE + " not found"))
-                    .forEach(o -> {
-                        assertTrue(fields3.contains(o.getName()), o.getName() + " not found");
-                        fields3.remove(o.getName());
-                    });
-            if (fields3.size() != 0) {
-                fail(format("Tables are missing: %s", fields3));
-            }
+            assertFields(fields3, RDBMS_JUNCTION_TABLE);
         }
 
         // fill sets with required rdbms element names

@@ -111,7 +111,7 @@ public class Asm2RdbmsMappingTestBase {
 
 
     //TODO: use on other tests
-    protected void compareSets(final Set<String> expected) {
+    protected void assertTables(final Set<String> expected) {
         rdbmsUtils.getRdbmsTables()
                 .orElseThrow(() -> new RuntimeException("Tables not found"))
                 .forEach(o -> {
@@ -124,7 +124,7 @@ public class Asm2RdbmsMappingTestBase {
     }
 
     //TODO: use on other tests
-    protected void compareSets(final Set<String> expected, final String tableName) {
+    protected void assertFields(final Set<String> expected, final String tableName) {
         rdbmsUtils.getRdbmsFields(tableName)
                 .orElseThrow(() -> new RuntimeException(tableName + " not found"))
                 .forEach(o -> {
