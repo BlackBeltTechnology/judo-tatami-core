@@ -14,6 +14,7 @@ import org.junit.jupiter.api.Test;
 import java.util.HashSet;
 import java.util.Set;
 
+import static java.lang.String.format;
 import static org.eclipse.emf.ecore.util.builder.EcoreBuilders.newEClassBuilder;
 import static org.eclipse.emf.ecore.util.builder.EcoreBuilders.newEReferenceBuilder;
 import static org.junit.jupiter.api.Assertions.*;
@@ -108,10 +109,12 @@ public class Asm2RdbmsRelationMappingTest extends Asm2RdbmsMappingTestBase {
                 (lowerCardinality == 1 && upperCardinality == 1) ||
                 (lowerCardinality == 0 && upperCardinality == -1) ||
                 (lowerCardinality == 1 && upperCardinality == -1)))
-            fail(String.format("Invalid cardinalities: %d, %d", lowerCardinality, upperCardinality));
+            fail(format("Invalid cardinalities: %d, %d", lowerCardinality, upperCardinality));
 
-        ///////////////////
+        // parameter checking
+        /////////////////////
         // setup asm model
+
         final EClass oneWayRelation1 = newEClassBuilder()
                 .withName("OneWayRelation1")
                 .withEAnnotations(newEntityEAnnotation())
@@ -140,8 +143,10 @@ public class Asm2RdbmsRelationMappingTest extends Asm2RdbmsMappingTestBase {
 
         asmModel.addContent(ePackage);
 
+        // setup asm model
         ////////////////////////
         // setup transformation
+
         final String transformationName;
         if (!isContainment && !isSelf) {
             transformationName = "testOneWayRelationWith" + parseCardinalities(lowerCardinality, upperCardinality) + "Cardinality";
@@ -155,8 +160,10 @@ public class Asm2RdbmsRelationMappingTest extends Asm2RdbmsMappingTestBase {
 
         executeTransformation(transformationName);
 
+        // setup transformation
         ///////////////////////////////
         // prepare rdbms element names
+
         final String RDBMS_TABLE_NAME_1 = "TestEpackage.OneWayRelation1";
         final String RDBMS_TABLE_NAME_2 = isSelf ? RDBMS_TABLE_NAME_1 : "TestEpackage.OneWayRelation2";
         final String ONE_WAY_REFERENCE = isContainment
@@ -164,8 +171,10 @@ public class Asm2RdbmsRelationMappingTest extends Asm2RdbmsMappingTestBase {
                 : "oneWayReference";
         final String RDBMS_JUNCTION_TABLE_NAME = RDBMS_TABLE_NAME_2 + "#" + ONE_WAY_REFERENCE + " to " + RDBMS_TABLE_NAME_1;
 
+        // prepare rdbms element names
         ///////////////////////////////////////////////
         // fill sets with required rdbms element names
+
         Set<String> tables = new HashSet<>();
         Set<String> fields1 = new HashSet<>();
         Set<String> fields2 = new HashSet<>();
@@ -191,30 +200,62 @@ public class Asm2RdbmsRelationMappingTest extends Asm2RdbmsMappingTestBase {
             (isSelf ? fields1 : fields2).add(ONE_WAY_REFERENCE);
         }
 
+        // fill sets with required rdbms element names
         //////////////////////////////////////////////
         // compare required and actual rdbms elements
+
+        // tables
         rdbmsUtils.getRdbmsTables()
                 .orElseThrow(() -> new RuntimeException("No tables found"))
-                .forEach(o -> assertTrue(tables.contains(o.getName())));
+                .forEach(o -> {
+                    assertTrue(tables.contains(o.getName()), o.getName() + " not found");
+                    tables.remove(o.getName());
+                });
+        if (tables.size() != 0) {
+            fail(format("Tables are missing: %s", tables));
+        }
 
+        // table1 fields
         rdbmsUtils.getRdbmsFields(RDBMS_TABLE_NAME_1)
                 .orElseThrow(() -> new RuntimeException(RDBMS_TABLE_NAME_1 + " not found"))
-                .forEach(o -> assertTrue(fields1.contains(o.getName()), o.getName()));
+                .forEach(o -> {
+                    assertTrue(fields1.contains(o.getName()), o.getName() + " not found");
+                    fields1.remove(o.getName());
+                });
+        if (fields1.size() != 0) {
+            fail(format("Tables are missing: %s", fields1));
+        }
 
+        // table2 fields
         if (!isSelf) {
             rdbmsUtils.getRdbmsFields(RDBMS_TABLE_NAME_2)
                     .orElseThrow(() -> new RuntimeException(RDBMS_TABLE_NAME_2 + " not found"))
-                    .forEach(o -> assertTrue(fields2.contains(o.getName()), o.getName()));
+                    .forEach(o -> {
+                        assertTrue(fields2.contains(o.getName()), o.getName() + " not found");
+                        fields2.remove(o.getName());
+                    });
+            if (fields2.size() != 0) {
+                fail(format("Tables are missing: %s", fields2));
+            }
         }
 
+        // junction table
         if (upperCardinality == -1 && !isContainment) {
             rdbmsUtils.getRdbmsFields(RDBMS_JUNCTION_TABLE_NAME)
                     .orElseThrow(() -> new RuntimeException(RDBMS_JUNCTION_TABLE_NAME + " not found"))
-                    .forEach(o -> assertTrue(fields3.contains(o.getName()), o.getName()));
+                    .forEach(o -> {
+                        assertTrue(fields3.contains(o.getName()), o.getName() + " not found");
+                        fields3.remove(o.getName());
+                    });
+            if (fields3.size() != 0) {
+                fail(format("Tables are missing: %s", fields3));
+            }
         }
 
+        // compare required and actual rdbms elements
         //////////////////////////////////////////////////////////
         // "validate" model based on previously created asm model
+
         if (upperCardinality == -1 && !isContainment) {
             // SAVE - junction table, foreign keys and first primary key
             RdbmsJunctionTable rdbmsJunctionTable = rdbmsUtils.getRdbmsJunctionTable(RDBMS_JUNCTION_TABLE_NAME).get();
@@ -300,7 +341,8 @@ public class Asm2RdbmsRelationMappingTest extends Asm2RdbmsMappingTestBase {
      * @param isSelf
      */
     private void testTwoWayRelation(int lowerCardinality1, int upperCardinality1, int lowerCardinality2, int upperCardinality2, boolean isSelf) {
-        // Check parameters
+        //////////////////////
+        // parameter checking
         if (!((lowerCardinality1 == 0 && upperCardinality1 == 1) ||
                 (lowerCardinality1 == 1 && upperCardinality1 == 1) ||
                 (lowerCardinality1 == 0 && upperCardinality1 == -1) ||
@@ -309,16 +351,18 @@ public class Asm2RdbmsRelationMappingTest extends Asm2RdbmsMappingTestBase {
                 (lowerCardinality2 == 1 && upperCardinality2 == 1) ||
                 (lowerCardinality2 == 0 && upperCardinality2 == -1) ||
                 (lowerCardinality2 == 1 && upperCardinality2 == -1))) {
-            fail(String.format("Invalid cardinalities: %d, %d, %d, %d", lowerCardinality1, upperCardinality1, lowerCardinality2, upperCardinality2));
+            fail(format("Invalid cardinalities: %d, %d, %d, %d", lowerCardinality1, upperCardinality1, lowerCardinality2, upperCardinality2));
         }
 
-        // create eclass1
+        // parameter checking
+        /////////////////////
+        // setup asm model
+
         final EClass twoWayRelation1 = newEClassBuilder()
                 .withName("TwoWayRelation1")
                 .withEAnnotations(newEntityEAnnotation())
                 .build();
 
-        // create references
         final EReference twoWayReference1 = newEReferenceBuilder()
                 .withName("twoWayReference1")
                 .withLowerBound(lowerCardinality1)
@@ -332,40 +376,41 @@ public class Asm2RdbmsRelationMappingTest extends Asm2RdbmsMappingTestBase {
                 .withUpperBound(upperCardinality2)
                 .build();
 
-        // add opposites
         twoWayReference2.setEOpposite(twoWayReference1);
-
-        // add references
         twoWayRelation1.getEStructuralFeatures().add(twoWayReference2);
 
         final EPackage ePackage;
         if (!isSelf) {
-            // create eclass2
             final EClass twoWayRelation2 = newEClassBuilder()
                     .withName("TwoWayRelation2")
                     .withEAnnotations(newEntityEAnnotation())
                     .build();
 
-            // setup relations
             twoWayReference2.setEType(twoWayRelation2);
             twoWayReference1.setEOpposite(twoWayReference2);
             twoWayRelation2.getEStructuralFeatures().add(twoWayReference1);
             ePackage = newEPackage(ImmutableList.of(twoWayRelation1, twoWayRelation2));
         } else {
-            // setup relations
             twoWayReference2.setEType(twoWayRelation1);
             twoWayReference1.setEOpposite(twoWayReference2);
             twoWayRelation1.getEStructuralFeatures().add(twoWayReference1);
             ePackage = newEPackage(twoWayRelation1);
         }
 
-        // Add content to asmModel
         asmModel.addContent(ePackage);
+
+        // setup asm model
+        ////////////////////////
+        // setup transformation
 
         final String transformationName = !isSelf
                 ? "testTwoWayRelationWith" + parseCardinalities(lowerCardinality1, upperCardinality1, lowerCardinality2, upperCardinality2) + "Cardinalities"
                 : "testTwoWaySelfRelationWith" + parseCardinalities(lowerCardinality1, upperCardinality1, lowerCardinality2, upperCardinality2) + "Cardinalities";
         executeTransformation(transformationName);
+
+        // setup transformation
+        ///////////////////////////////
+        // prepare rdbms element names
 
         final String RDBMS_TABLE_NAME_1 = "TestEpackage.TwoWayRelation1";
         final String RDBMS_TABLE_NAME_2 = isSelf ? RDBMS_TABLE_NAME_1 : "TestEpackage.TwoWayRelation2";
@@ -373,15 +418,17 @@ public class Asm2RdbmsRelationMappingTest extends Asm2RdbmsMappingTestBase {
         final String TWO_WAY_REFERENCE2 = "twoWayReference2";
         final String RDBMS_JUNCTION_TABLE =
                 RDBMS_TABLE_NAME_2 +
-                "#" +
-                TWO_WAY_REFERENCE1 +
-                " to " +
-                RDBMS_TABLE_NAME_1 +
-                "#" +
-                TWO_WAY_REFERENCE2;
+                        "#" +
+                        TWO_WAY_REFERENCE1 +
+                        " to " +
+                        RDBMS_TABLE_NAME_1 +
+                        "#" +
+                        TWO_WAY_REFERENCE2;
 
+        // prepare rdbms element names
         ///////////////////////////////////////////////
         // fill sets with required rdbms element names
+
         Set<String> tables = new HashSet<>();
         Set<String> fields1 = new HashSet<>();
         Set<String> fields2 = new HashSet<>();
@@ -401,36 +448,69 @@ public class Asm2RdbmsRelationMappingTest extends Asm2RdbmsMappingTestBase {
             fields3.add(RDBMS_JUNCTION_TABLE + "#id");
             fields3.add(TWO_WAY_REFERENCE2);
             fields3.add(TWO_WAY_REFERENCE1);
-        } else if(upperCardinality2 == -1 || (upperCardinality1 != -1 && lowerCardinality2 == 0))  {
+        } else if (upperCardinality2 == -1 || (upperCardinality1 != -1 && lowerCardinality2 == 0)) {
             (isSelf ? fields1 : fields2).add(TWO_WAY_REFERENCE1);
         } else {
             fields1.add(TWO_WAY_REFERENCE2);
         }
+        final boolean decider = fields1.contains(TWO_WAY_REFERENCE2);
 
+        // fill sets with required rdbms element names
         //////////////////////////////////////////////
         // compare required and actual rdbms elements
+
+        // tables
         rdbmsUtils.getRdbmsTables()
                 .orElseThrow(() -> new RuntimeException("No tables found"))
-                .forEach(o -> assertTrue(tables.contains(o.getName()), o.getName()));
+                .forEach(o -> {
+                    assertTrue(tables.contains(o.getName()), o.getName() + " not found");
+                    tables.remove(o.getName());
+                });
+        if (tables.size() != 0) {
+            fail(format("Tables are missing: %s", tables));
+        }
 
+        // table1
         rdbmsUtils.getRdbmsFields(RDBMS_TABLE_NAME_1)
                 .orElseThrow(() -> new RuntimeException(RDBMS_TABLE_NAME_1 + " not found"))
-                .forEach(o -> assertTrue(fields1.contains(o.getName()), o.getName()));
+                .forEach(o -> {
+                    assertTrue(fields1.contains(o.getName()), o.getName() + " not found");
+                    fields1.remove(o.getName());
+                });
+        if (fields1.size() != 0) {
+            fail(format("Tables are missing: %s", fields1));
+        }
 
+        // table2
         if (!isSelf) {
             rdbmsUtils.getRdbmsFields(RDBMS_TABLE_NAME_2)
                     .orElseThrow(() -> new RuntimeException(RDBMS_TABLE_NAME_2 + " not found"))
-                    .forEach(o -> assertTrue(fields2.contains(o.getName()), o.getName()));
+                    .forEach(o -> {
+                        assertTrue(fields2.contains(o.getName()), o.getName() + " not found");
+                        fields2.remove(o.getName());
+                    });
+            if (fields2.size() != 0) {
+                fail(format("Tables are missing: %s", fields2));
+            }
         }
 
+        // junction table
         if (upperCardinality1 == -1 && upperCardinality2 == -1) {
             rdbmsUtils.getRdbmsFields(RDBMS_JUNCTION_TABLE)
                     .orElseThrow(() -> new RuntimeException(RDBMS_JUNCTION_TABLE + " not found"))
-                    .forEach(o -> assertTrue(fields3.contains(o.getName()), o.getName()));
+                    .forEach(o -> {
+                        assertTrue(fields3.contains(o.getName()), o.getName() + " not found");
+                        fields3.remove(o.getName());
+                    });
+            if (fields3.size() != 0) {
+                fail(format("Tables are missing: %s", fields3));
+            }
         }
 
+        // fill sets with required rdbms element names
         //////////////////////////////////////////////////////////
         // "validate" model based on previously created asm model
+
         if (upperCardinality1 == -1 && upperCardinality2 == -1) {
             // SAVE - rdbmsJunctionTable
             RdbmsJunctionTable rdbmsJunctionTable =
@@ -472,7 +552,6 @@ public class Asm2RdbmsRelationMappingTest extends Asm2RdbmsMappingTestBase {
             assertNotEquals(rdbmsJunctionTable.getField1().getForeignKeySqlName(),
                     rdbmsJunctionTable.getField2().getForeignKeySqlName());
         } else {
-            final boolean decider = fields1.contains(TWO_WAY_REFERENCE2);
             final String container = decider ? RDBMS_TABLE_NAME_1 : RDBMS_TABLE_NAME_2;
             final String contained = decider ? RDBMS_TABLE_NAME_2 : RDBMS_TABLE_NAME_1;
 
