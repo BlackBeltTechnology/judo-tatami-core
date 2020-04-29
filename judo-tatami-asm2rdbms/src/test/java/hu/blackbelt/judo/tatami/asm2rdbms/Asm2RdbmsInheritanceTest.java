@@ -1,8 +1,9 @@
 package hu.blackbelt.judo.tatami.asm2rdbms;
 
 import com.google.common.collect.ImmutableList;
+import hu.blackbelt.judo.meta.rdbms.RdbmsIdentifierField;
 import hu.blackbelt.judo.meta.rdbms.RdbmsTable;
-import org.eclipse.emf.ecore.EAnnotation;
+import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.EcorePackage;
@@ -10,35 +11,38 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static org.eclipse.emf.ecore.util.builder.EcoreBuilders.*;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import java.util.HashSet;
+import java.util.Set;
 
+import static java.lang.String.format;
+import static org.eclipse.emf.ecore.util.builder.EcoreBuilders.newEAttributeBuilder;
+import static org.eclipse.emf.ecore.util.builder.EcoreBuilders.newEClassBuilder;
+import static org.junit.jupiter.api.Assertions.*;
+
+@SuppressWarnings("OptionalGetWithoutIsPresent")
 public class Asm2RdbmsInheritanceTest extends Asm2RdbmsMappingTestBase {
+    private void assertParents(Set<String> expected, String tableName) {
+        rdbmsUtils.getRdbmsTable(tableName)
+                .orElseThrow(() -> new RuntimeException(tableName + " not found"))
+                .getParents().forEach(o -> {
+            assertTrue(expected.contains(o.getName()), o.getName() + " not found");
+            expected.remove(o.getName());
+        });
+        if (expected.size() != 0) {
+            fail(format("Parents are missing from %s: %s", tableName, expected));
+        }
+    }
 
     @Test
     @DisplayName("Test Basic Inheritance")
     public void testBasicInheritance() {
+        ///////////////////
+        // setup asm model
         final EcorePackage ecore = EcorePackage.eINSTANCE;
 
-        // create annotation
-        EAnnotation eAnnotation = newEAnnotationBuilder()
-                .withSource("http://blackbelt.hu/judo/meta/ExtendedMetadata/entity")
-                .build();
-
-        eAnnotation.getDetails().put("value", "true");
-
-        // create annotation2
-        EAnnotation eAnnotation2 = newEAnnotationBuilder()
-                .withSource("http://blackbelt.hu/judo/meta/ExtendedMetadata/entity")
-                .build();
-
-        eAnnotation2.getDetails().put("value", "true");
-
-        // create class fruit
         final EClass fruit = newEClassBuilder()
                 .withName("fruit")
-                .withEAnnotations(eAnnotation)
+                .withEAnnotations(newEntityEAnnotation())
                 .withEStructuralFeatures(
                         newEAttributeBuilder()
                                 .withName("fruit_id")
@@ -47,7 +51,6 @@ public class Asm2RdbmsInheritanceTest extends Asm2RdbmsMappingTestBase {
                 )
                 .build();
 
-        // create class apple
         final EClass apple = newEClassBuilder()
                 .withName("apple")
                 .withESuperTypes(fruit)
@@ -57,18 +60,11 @@ public class Asm2RdbmsInheritanceTest extends Asm2RdbmsMappingTestBase {
                                 .withEType(ecore.getEString())
                                 .build()
                 )
-                .withEAnnotations(eAnnotation2)
+                .withEAnnotations(newEntityEAnnotation())
                 .build();
 
-        // create package
-        final EPackage ePackage = newEPackageBuilder()
-                .withName("TestEpackage")
-                .withEClassifiers(ImmutableList.of(fruit, apple))
-                .withNsPrefix("test")
-                .withNsURI("http:///com.example.test.ecore")
-                .build();
+        final EPackage ePackage = newEPackage(ImmutableList.of(fruit, apple));
 
-        // add content to asm model
         asmModel.addContent(ePackage);
 
         executeTransformation("testBasicInheritance");
@@ -78,35 +74,41 @@ public class Asm2RdbmsInheritanceTest extends Asm2RdbmsMappingTestBase {
         final String RDBMS_FIELD_FRUIT_ID = "TestEpackage.fruit#fruit_id";
         final String RDBMS_FIELD_APPLE_TYPE = "TestEpackage.apple#apple_type";
 
-        // ASSERTION - check if number of tables is correct
-        assertEquals(2, rdbmsUtils.getRdbmsTables()
-                .orElseThrow(() -> new RuntimeException("No tables found"))
-                .size());
+        // setup asm model and transform
+        ////////////////////////
+        // fill expected values
 
-        // ASSERTION - check if number of fields is correct
-        assertEquals(3, rdbmsUtils.getRdbmsFields(RDBMS_TABLE_FRUIT)
-                .orElseThrow(() -> new RuntimeException(RDBMS_TABLE_FRUIT + " table not found"))
-                .size());
-        assertEquals(3, rdbmsUtils.getRdbmsFields(RDBMS_TABLE_APPLE)
-                .orElseThrow(() -> new RuntimeException(RDBMS_TABLE_APPLE + " table not found"))
-                .size());
+        Set<String> tables = new HashSet<>();
+        Set<String> fields1 = new HashSet<>();
+        Set<String> fields2 = new HashSet<>();
+        Set<String> parents = new HashSet<>();
 
-        // ASSERTION - check if defined attributes are presented
-        assertTrue(rdbmsUtils.getRdbmsField(RDBMS_TABLE_FRUIT, RDBMS_FIELD_FRUIT_ID).isPresent());
-        assertTrue(rdbmsUtils.getRdbmsField(RDBMS_TABLE_APPLE, RDBMS_FIELD_APPLE_TYPE).isPresent());
+        tables.add(RDBMS_TABLE_FRUIT);
+        tables.add(RDBMS_TABLE_APPLE);
+        fields1.add(RDBMS_TABLE_FRUIT + "#_id");
+        fields1.add(RDBMS_TABLE_FRUIT + "#_type");
+        fields1.add(RDBMS_FIELD_FRUIT_ID);
+        fields2.add(RDBMS_TABLE_APPLE + "#_id");
+        fields2.add(RDBMS_TABLE_APPLE + "#_type");
+        fields2.add(RDBMS_FIELD_APPLE_TYPE);
+        parents.add(RDBMS_TABLE_FRUIT);
 
-        // SAVE - save 2 tables
-        RdbmsTable rdbmsTable_fruit = rdbmsUtils.getRdbmsTable(RDBMS_TABLE_FRUIT)
-                .orElseThrow(() -> new RuntimeException(RDBMS_TABLE_FRUIT + " table not found"));
-        RdbmsTable rdbmsTable_apple = rdbmsUtils.getRdbmsTable(RDBMS_TABLE_APPLE)
-                .orElseThrow(() -> new RuntimeException(RDBMS_TABLE_APPLE + " table not found"));
+        // fill expected values
+        ////////////////////////////////////////////////////////////
+        // compare expected and actual values
 
-        // ASSERTION - check if apple table has only one parent
-        assertEquals(1, rdbmsTable_apple.getParents().size());
+        assertTables(tables);
+        assertFields(fields1, RDBMS_TABLE_FRUIT);
+        assertFields(fields2, RDBMS_TABLE_APPLE);
+        assertParents(parents, RDBMS_TABLE_APPLE);
+
+        // compare expected and actual values
+        ////////////////////////////////////////////////////////////
+        // "validate" rdbms model
 
         // ASSERTION - check if apple's parent is valid
-        assertEquals(rdbmsTable_fruit.getPrimaryKey(),
-                rdbmsTable_apple.getParents().get(0).getPrimaryKey());
+        assertEquals(rdbmsUtils.getRdbmsTable(RDBMS_TABLE_FRUIT).get().getPrimaryKey(),
+                rdbmsUtils.getRdbmsTable(RDBMS_TABLE_APPLE).get().getParents().get(0).getPrimaryKey());
     }
 
     @Disabled
@@ -115,31 +117,9 @@ public class Asm2RdbmsInheritanceTest extends Asm2RdbmsMappingTestBase {
     public void testInheritanceWithTwoParents() {
         final EcorePackage ecore = EcorePackage.eINSTANCE;
 
-        // create annotation
-        EAnnotation eAnnotation = newEAnnotationBuilder()
-                .withSource("http://blackbelt.hu/judo/meta/ExtendedMetadata/entity")
-                .build();
-
-        eAnnotation.getDetails().put("value", "true");
-
-        // create annotation1
-        EAnnotation eAnnotation1 = newEAnnotationBuilder()
-                .withSource("http://blackbelt.hu/judo/meta/ExtendedMetadata/entity")
-                .build();
-
-        eAnnotation.getDetails().put("value", "true");
-
-        // create annotation2
-        EAnnotation eAnnotation2 = newEAnnotationBuilder()
-                .withSource("http://blackbelt.hu/judo/meta/ExtendedMetadata/entity")
-                .build();
-
-        eAnnotation.getDetails().put("value", "true");
-
-        // create eclass vegetable
-        EClass vegetable = newEClassBuilder()
-                .withName("vegetables")
-                .withEAnnotations(eAnnotation)
+        final EClass vegetable = newEClassBuilder()
+                .withName("vegetable")
+                .withEAnnotations(newEntityEAnnotation())
                 .withEStructuralFeatures(
                         newEAttributeBuilder()
                                 .withName("isVegetable")
@@ -148,10 +128,9 @@ public class Asm2RdbmsInheritanceTest extends Asm2RdbmsMappingTestBase {
                 )
                 .build();
 
-        // create eclass fruit
-        EClass fruit = newEClassBuilder()
-                .withName("fruits")
-                .withEAnnotations(eAnnotation1)
+        final EClass fruit = newEClassBuilder()
+                .withName("fruit")
+                .withEAnnotations(newEntityEAnnotation())
                 .withEStructuralFeatures(
                         newEAttributeBuilder()
                                 .withName("isFruit")
@@ -160,10 +139,9 @@ public class Asm2RdbmsInheritanceTest extends Asm2RdbmsMappingTestBase {
                 )
                 .build();
 
-        // create eclass tomato
-        EClass tomato = newEClassBuilder()
+        final EClass tomato = newEClassBuilder()
                 .withName("tomato")
-                .withEAnnotations(eAnnotation2)
+                .withEAnnotations(newEntityEAnnotation())
                 .withEStructuralFeatures(
                         newEAttributeBuilder()
                                 .withName("tomato_type")
@@ -173,27 +151,53 @@ public class Asm2RdbmsInheritanceTest extends Asm2RdbmsMappingTestBase {
                 .withESuperTypes(ImmutableList.of(vegetable, fruit))
                 .build();
 
-        // create package
-        final EPackage ePackage = newEPackageBuilder()
-                .withName("TestEpackage")
-                .withEClassifiers(ImmutableList.of(vegetable, fruit, tomato))
-                .withNsPrefix("test")
-                .withNsURI("http:///com.example.test.ecore")
-                .build();
+        final EPackage ePackage = newEPackage(ImmutableList.of(vegetable, fruit, tomato));
 
-        // add content to asm model
         asmModel.addContent(ePackage);
 
         executeTransformation("testInheritanceWithTwoParents");
 
-        // ASSERTION - check if correct number of tables were created
-        assertEquals(3, rdbmsUtils.getRdbmsTables()
-                .orElseThrow(() -> new RuntimeException("No tables found"))
-                .size());
+        final String RDBMS_TABLE_VEGETABLE = "TestEpackage.vegetable";
+        final String RDBMS_TABLE_FRUIT = "TestEpackage.fruit";
+        final String RDBMS_TABLE_TOMATO = "TestEpackage.tomato";
 
-        //TODO: test fails
+        Set<String> tables = new HashSet<>();
+        Set<String> fields1 = new HashSet<>(); //vegetable
+        Set<String> fields2 = new HashSet<>(); //fruit
+        Set<String> fields3 = new HashSet<>(); //apple
+        Set<String> parents = new HashSet<>();
 
+        tables.add(RDBMS_TABLE_VEGETABLE);
+        tables.add(RDBMS_TABLE_FRUIT);
+        tables.add(RDBMS_TABLE_TOMATO);
+
+        fields1.add(RDBMS_TABLE_VEGETABLE + "#_id");
+        fields1.add(RDBMS_TABLE_VEGETABLE + "#_type");
+        fields1.add(RDBMS_TABLE_VEGETABLE + "#isVegetable");
+
+        fields2.add(RDBMS_TABLE_FRUIT + "#_id");
+        fields2.add(RDBMS_TABLE_FRUIT + "#_type");
+        fields2.add(RDBMS_TABLE_FRUIT + "#isFruit");
+
+        fields3.add(RDBMS_TABLE_TOMATO + "#_id");
+        fields3.add(RDBMS_TABLE_TOMATO + "#_type");
+        fields3.add(RDBMS_TABLE_TOMATO + "#tomato_type");
+        //fields3.add(RDBMS_TABLE_TOMATO + "#isFruit");
+        //fields3.add(RDBMS_TABLE_TOMATO + "#isVegetable");
+
+        parents.add(RDBMS_TABLE_VEGETABLE);
+        parents.add(RDBMS_TABLE_FRUIT);
+
+        assertTables(tables);
+        assertFields(fields1, RDBMS_TABLE_VEGETABLE);
+        assertFields(fields2, RDBMS_TABLE_FRUIT);
+        assertFields(fields3, RDBMS_TABLE_TOMATO);
+        assertParents(parents, RDBMS_TABLE_TOMATO);
+
+        EList<RdbmsTable> rdbmsParents = rdbmsUtils.getRdbmsTable(RDBMS_TABLE_TOMATO).get().getParents();
+        RdbmsIdentifierField primaryKey1 = rdbmsUtils.getRdbmsTable(RDBMS_TABLE_VEGETABLE).get().getPrimaryKey();
+        RdbmsIdentifierField primaryKey2 = rdbmsUtils.getRdbmsTable(RDBMS_TABLE_FRUIT).get().getPrimaryKey();
+        assertTrue(rdbmsParents.stream().anyMatch(o -> o.getPrimaryKey().equals(primaryKey1)), "Parents primary key is not valid");
+        assertTrue(rdbmsParents.stream().anyMatch(o -> o.getPrimaryKey().equals(primaryKey2)), "Parents primary key is not valid");
     }
-
-
 }
