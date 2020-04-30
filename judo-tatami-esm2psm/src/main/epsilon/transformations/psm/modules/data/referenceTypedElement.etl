@@ -15,8 +15,8 @@ rule CreateContainment
 	to t: JUDOPSM!Containment
 	extends CreateNamedElement {
 	  guard: s.eContainer.isKindOf(ESM!EntityType)
-	       and s.relationMemberType = ESM!RelationMemberType#RELATION
-           and s.containment
+	       and s.memberType == ESM!MemberType#STORED
+           and s.isComposition()
 	  
 	  t.cardinality = s.equivalent("CreateCardinalityForReferenceTypedElement");
 	  s.eContainer.getPSMEquivalent().getRelations().add(t);
@@ -30,8 +30,8 @@ rule CreateAssociationEndWithoutPartner
 	to t: JUDOPSM!AssociationEnd
 	extends CreateNamedElement {
 	  guard: s.eContainer.isKindOf(ESM!EntityType) 
-           and s.relationMemberType = ESM!RelationMemberType#RELATION
-           and not s.containment
+           and s.memberType == ESM!MemberType#STORED
+           and not s.isComposition()
 	  
 	  t.cardinality = s.equivalent("CreateCardinalityForReferenceTypedElement");
 	  t.reverseCascadeDelete = s.reverseCascadeDelete;
@@ -45,7 +45,7 @@ rule CreateAssociationEndWithPartner
 	transform s: ESM!TwoWayRelationMember
 	to t: JUDOPSM!AssociationEnd
 	extends CreateNamedElement {
-	  
+		
 	  t.cardinality = s.equivalent("CreateCardinalityForReferenceTypedElement");
 	  t.reverseCascadeDelete = s.reverseCascadeDelete;
 	  t.partner = s.partner.getPSMEquivalent();

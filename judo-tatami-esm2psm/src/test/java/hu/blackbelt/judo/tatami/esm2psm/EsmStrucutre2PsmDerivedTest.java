@@ -116,7 +116,7 @@ public class EsmStrucutre2PsmDerivedTest {
         DataMember member = newDataMemberBuilder().withName("dataProperty")
                 .withDataType(string)
                 .withGetterExpression("exp")
-                .withDataMemberType(DataMemberType.PROPERTY)
+                .withMemberType(MemberType.DERIVED)
                 .build();
         member.setBinding(member);
 
@@ -153,7 +153,7 @@ public class EsmStrucutre2PsmDerivedTest {
 
         DataMember member = newDataMemberBuilder().withName("member")
                 .withDataType(string)
-                .withDataMemberType(DataMemberType.PROPERTY)
+                .withMemberType(MemberType.DERIVED)
                 .withGetterExpression("self.member")
                 .build();
 
@@ -217,7 +217,7 @@ public class EsmStrucutre2PsmDerivedTest {
 
         StringType string = newStringTypeBuilder().withName("str").withMaxLength(256).build();
 
-        DataMember member = newDataMemberBuilder().withName("member").withDataMemberType(DataMemberType.ATTRIBUTE)
+        DataMember member = newDataMemberBuilder().withName("member").withMemberType(MemberType.STORED)
                 .withDataType(string)
                 .withDefaultExpression("self.member")
                 .build();
@@ -259,8 +259,9 @@ public class EsmStrucutre2PsmDerivedTest {
         EntityType target = newEntityTypeBuilder().withName("target").build();
         target.setMapping(newMappingBuilder().withTarget(target).build());
 
-        OneWayRelationMember navigationProperty = newOneWayRelationMemberBuilder().withName("navigationProperty").withContainment(false)
-                .withRelationMemberType(RelationMemberType.PROPERTY)
+        OneWayRelationMember navigationProperty = newOneWayRelationMemberBuilder().withName("navigationProperty")
+        		.withRelationKind(RelationKind.ASSOCIATION)
+        		.withMemberType(MemberType.DERIVED)
                 .withGetterExpression("exp")
                 .withLower(1)
                 .withUpper(3)
@@ -304,7 +305,7 @@ public class EsmStrucutre2PsmDerivedTest {
         navigationTarget.setMapping(newMappingBuilder().withTarget(navigationTarget).build());
 
         OneWayRelationMember navigationProperty = newOneWayRelationMemberBuilder().withName("navigationProperty")
-        		.withRelationMemberType(RelationMemberType.PROPERTY)
+        		.withMemberType(MemberType.DERIVED)
                 .withGetterExpression("exp").withLower(1).withUpper(3).withTarget(navigationTarget)
                 .build();
 
@@ -345,7 +346,7 @@ public class EsmStrucutre2PsmDerivedTest {
         navigationTarget.setMapping(newMappingBuilder().withTarget(navigationTarget).build());
 
         OneWayRelationMember navigationProperty1 = newOneWayRelationMemberBuilder().withName("navigationProperty1")
-        		.withRelationMemberType(RelationMemberType.PROPERTY)
+        		.withMemberType(MemberType.DERIVED)
                 .withGetterExpression("self.navigationProperty.target")
                 .withRangeExpression("self.navigationProperty.target")
                 .withLower(1)
@@ -433,7 +434,7 @@ public class EsmStrucutre2PsmDerivedTest {
         navigationTarget.setMapping(newMappingBuilder().withTarget(navigationTarget).build());
         
         OneWayRelationMember navigationProperty = newOneWayRelationMemberBuilder().withName("navigationProperty")
-        		.withRelationMemberType(RelationMemberType.PROPERTY)
+        		.withMemberType(MemberType.DERIVED)
                 .withGetterExpression("self.navigationProperty.target")
                 .withDefaultExpression("self.navigationProperty.target")
                 .withLower(1).withUpper(3)
@@ -554,7 +555,8 @@ public class EsmStrucutre2PsmDerivedTest {
         EntityType target = newEntityTypeBuilder().withName("target").build();
         target.setMapping(newMappingBuilder().withTarget(target).build());
 
-        OneWayRelationMember containment = newOneWayRelationMemberBuilder().withName("containment").withContainment(true)
+        OneWayRelationMember containment = newOneWayRelationMemberBuilder().withName("containment")
+        		.withRelationKind(RelationKind.COMPOSITION)
                 .withDefaultExpression("defaultExpression")
                 .withLower(1)
                 .withUpper(3)
@@ -599,7 +601,8 @@ public class EsmStrucutre2PsmDerivedTest {
         EntityType target = newEntityTypeBuilder().withName("target").build();
         target.setMapping(newMappingBuilder().withTarget(target).build());
 
-        OneWayRelationMember associationEnd = newOneWayRelationMemberBuilder().withName("associationEnd").withContainment(false)
+        OneWayRelationMember associationEnd = newOneWayRelationMemberBuilder().withName("associationEnd")
+        		.withRelationKind(RelationKind.ASSOCIATION)
                 .withDefaultExpression("defaultExpression")
                 .withReverseCascadeDelete(true)
                 .withLower(1)
@@ -645,7 +648,9 @@ public class EsmStrucutre2PsmDerivedTest {
         EntityType target = newEntityTypeBuilder().withName("target").build();
         target.setMapping(newMappingBuilder().withTarget(target).build());
 
-        OneWayRelationMember associationEnd = newOneWayRelationMemberBuilder().withName("associationEnd").withContainment(false).withRelationMemberType(RelationMemberType.PROPERTY)
+        OneWayRelationMember associationEnd = newOneWayRelationMemberBuilder().withName("associationEnd")
+        		.withRelationKind(RelationKind.ASSOCIATION)
+        		.withMemberType(MemberType.DERIVED)
                 .withGetterExpression("getterExpression")
                 .withDefaultExpression("defaultExpression")
                 .withLower(1)
@@ -690,7 +695,8 @@ public class EsmStrucutre2PsmDerivedTest {
         EntityType target = newEntityTypeBuilder().withName("target").build();
         target.setMapping(newMappingBuilder().withTarget(target).build());
 
-        OneWayRelationMember containment = newOneWayRelationMemberBuilder().withName("containment").withContainment(true)
+        OneWayRelationMember containment = newOneWayRelationMemberBuilder().withName("containment")
+        		.withRelationKind(RelationKind.COMPOSITION)
                 .withRangeExpression("rangeExpression")
                 .withLower(1)
                 .withUpper(3)
@@ -731,7 +737,8 @@ public class EsmStrucutre2PsmDerivedTest {
         EntityType target = newEntityTypeBuilder().withName("target").build();
         target.setMapping(newMappingBuilder().withTarget(target).build());
 
-        OneWayRelationMember associationEnd = newOneWayRelationMemberBuilder().withName("associationEnd").withContainment(false)
+        OneWayRelationMember associationEnd = newOneWayRelationMemberBuilder().withName("associationEnd")
+        		.withRelationKind(RelationKind.ASSOCIATION)
                 .withRangeExpression("rangeExpression")
                 .withReverseCascadeDelete(true)
                 .withLower(1)
@@ -773,8 +780,9 @@ public class EsmStrucutre2PsmDerivedTest {
         EntityType target = newEntityTypeBuilder().withName("target").build();
         target.setMapping(newMappingBuilder().withTarget(target).build());
 
-        OneWayRelationMember associationEnd = newOneWayRelationMemberBuilder().withName("associationEnd").withContainment(false)
-        		.withRelationMemberType(RelationMemberType.PROPERTY)
+        OneWayRelationMember associationEnd = newOneWayRelationMemberBuilder().withName("associationEnd")
+        		.withRelationKind(RelationKind.ASSOCIATION)
+        		.withMemberType(MemberType.DERIVED)
                 .withGetterExpression("getterExpresssion")
                 .withRangeExpression("rangeExpression")
                 .withReverseCascadeDelete(true)

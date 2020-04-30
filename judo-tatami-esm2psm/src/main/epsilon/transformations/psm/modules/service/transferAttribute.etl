@@ -10,7 +10,7 @@ rule CreateTransferAttributeFromAttribute
     extends CreatePrimitiveTypedElement {
       guard: s.eContainer.isKindOf(ESM!TransferObjectType)
             and not s.eContainer.isKindOf(ESM!EntityType) 
-            and s.dataMemberType == ESM!DataMemberType#ATTRIBUTE
+            and s.memberType == ESM!MemberType#STORED
             
       t.defaultValue = s.equivalent("CreateStaticDataForTransferAttributeDefaultValue");
       t.binding = s.equivalent("CreateDataPropertyForTransferAttributeBinding");
@@ -25,13 +25,13 @@ rule CreateTransferAttributeFromBound
     extends CreatePrimitiveTypedElement {
       guard: s.eContainer.isKindOf(ESM!TransferObjectType)
             and not s.eContainer.isKindOf(ESM!EntityType) 
-            and s.dataMemberType = ESM!DataMemberType#BOUND
+            and s.memberType == ESM!MemberType#BOUND
             
       t.defaultValue = s.equivalent("CreateStaticDataForTransferAttributeDefaultValue");
       
-      if (s.binding.dataMemberType = ESM!DataMemberType#ATTRIBUTE){
+      if (s.binding.memberType = ESM!MemberType#STORED){
          t.binding = s.binding.equivalent("CreateAttribute");
-      } else if (s.binding.dataMemberType = ESM!DataMemberType#PROPERTY) {
+      } else if (s.binding.memberType = ESM!MemberType#DERIVED) {
          t.binding = s.binding.equivalent("CreateDataProperty");
       }
      
@@ -46,7 +46,7 @@ rule CreateTransferAttributeFromProperty
     extends CreatePrimitiveTypedElement {
       guard: s.eContainer.isKindOf(ESM!TransferObjectType)
             and not s.eContainer.isKindOf(ESM!EntityType) 
-            and s.dataMemberType == ESM!DataMemberType#PROPERTY
+            and s.memberType == ESM!MemberType#DERIVED
             
       t.defaultValue = s.equivalent("CreateStaticDataForTransferAttributeDefaultValue");
       t.binding = s.equivalent("CreateDataPropertyForTransferAttributeBinding");
@@ -61,7 +61,7 @@ rule CreateTransferAttributeFromAttributeForDefaultTransferObjectType
     to t: JUDOPSM!TransferAttribute 
     extends CreatePrimitiveTypedElement {
       guard: s.eContainer.isKindOf(ESM!EntityType)
-            and s.dataMemberType = ESM!DataMemberType#ATTRIBUTE
+            and s.memberType == ESM!MemberType#STORED
       
       t.defaultValue = s.equivalent("CreateStaticDataForTransferAttributeDefaultValue");
       t.binding = s.equivalent("CreateAttribute");
@@ -75,7 +75,7 @@ rule CreateTransferAttributeFromPropertyForDefaultTransferObjectType
     to t: JUDOPSM!TransferAttribute 
     extends CreatePrimitiveTypedElement {
       guard: s.eContainer.isKindOf(ESM!EntityType)
-            and s.dataMemberType = ESM!DataMemberType#PROPERTY
+            and s.memberType == ESM!MemberType#DERIVED
       
       t.defaultValue = s.equivalent("CreateStaticDataForTransferAttributeDefaultValue");
       t.binding = s.equivalent("CreateDataProperty");
