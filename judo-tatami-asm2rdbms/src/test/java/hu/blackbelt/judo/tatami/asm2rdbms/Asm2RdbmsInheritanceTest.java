@@ -6,8 +6,6 @@ import hu.blackbelt.judo.meta.rdbms.RdbmsTable;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EPackage;
-import org.eclipse.emf.ecore.EcorePackage;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -15,7 +13,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 import static java.lang.String.format;
-import static org.eclipse.emf.ecore.util.builder.EcoreBuilders.newEAttributeBuilder;
 import static org.eclipse.emf.ecore.util.builder.EcoreBuilders.newEClassBuilder;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -41,8 +38,6 @@ public class Asm2RdbmsInheritanceTest extends Asm2RdbmsMappingTestBase {
     public void testBasicInheritance() {
         ///////////////////
         // setup asm model
-        final EcorePackage ecore = EcorePackage.eINSTANCE;
-
         final EClass fruit = newEClassBuilder()
                 .withName("fruit")
                 .withEAnnotations(newEntityEAnnotation())
@@ -106,8 +101,6 @@ public class Asm2RdbmsInheritanceTest extends Asm2RdbmsMappingTestBase {
     public void testInheritanceWithTwoParents() {
         ///////////////////
         // setup asm model
-        final EcorePackage ecore = EcorePackage.eINSTANCE;
-
         final EClass vegetable = newEClassBuilder()
                 .withName("vegetable")
                 .withEAnnotations(newEntityEAnnotation())
@@ -183,14 +176,11 @@ public class Asm2RdbmsInheritanceTest extends Asm2RdbmsMappingTestBase {
                 RDBMS_TABLE_TOMATO + "'s parent's primary key is not valid: " + primaryKey2.getName());
     }
 
-    //FIXME: only the direct parent is present
     @Test
     @DisplayName("Test Indirect Inheritance")
     public void testIndirectInheritance() {
         ///////////////////
         // setup asm model
-        final EcorePackage ecore = EcorePackage.eINSTANCE;
-
         final EClass vehicle = newEClassBuilder()
                 .withName("vehicle")
                 .withEAnnotations(newEntityEAnnotation())
@@ -243,7 +233,6 @@ public class Asm2RdbmsInheritanceTest extends Asm2RdbmsMappingTestBase {
         fields3.add(RDBMS_TABLE_ELECTRIC_CAR + TYPE_ATTRIBUTE);
 
         parents1.add(RDBMS_TABLE_VEHICLE);
-//        parents2.add(RDBMS_TABLE_VEHICLE);
         parents2.add(RDBMS_TABLE_CAR);
 
         // prepare table names and fill sets with required elements
@@ -269,21 +258,16 @@ public class Asm2RdbmsInheritanceTest extends Asm2RdbmsMappingTestBase {
 
         assertTrue(rdbmsParents2.stream().anyMatch(o -> o.getPrimaryKey().equals(primaryKey1)),
                 RDBMS_TABLE_CAR + "'s parent's primary key is not valid: " + primaryKey1.getName());
-//        assertTrue(rdbmsParents3.stream().anyMatch(o -> o.getPrimaryKey().equals(primaryKey1)),
-//                RDBMS_TABLE_ELECTRIC_CAR + "'s parent's primary key is not valid: " + primaryKey1.getName());
 
         assertTrue(rdbmsParents3.stream().anyMatch(o -> o.getPrimaryKey().equals(primaryKey2)),
                 RDBMS_TABLE_ELECTRIC_CAR + "'s parent's primary key is not valid: " + primaryKey1.getName());
     }
 
-    //FIXME: only the direct parent is present
     @Test
     @DisplayName("Test Diamond Inheritance")
     public void testDiamondInheritance() {
         ///////////////////
         // setup asm model
-        final EcorePackage ecore = EcorePackage.eINSTANCE;
-
         final EClass A = newEClassBuilder()
                 .withName("A")
                 .withEAnnotations(newEntityEAnnotation())
@@ -346,7 +330,6 @@ public class Asm2RdbmsInheritanceTest extends Asm2RdbmsMappingTestBase {
 
         fields3.add(RDBMS_TABLE_C + ID_ATTRIBUTE);
         fields3.add(RDBMS_TABLE_C + TYPE_ATTRIBUTE);
-//        parents3.add(RDBMS_TABLE_A);
         parents3.add(RDBMS_TABLE_B);
         parents3.add(RDBMS_TABLE_BB);
 
@@ -381,8 +364,6 @@ public class Asm2RdbmsInheritanceTest extends Asm2RdbmsMappingTestBase {
         assertTrue(rdbmsParents22.stream().anyMatch(o -> o.getPrimaryKey().equals(primaryKey1)),
                 RDBMS_TABLE_BB + "'s parent's primary key is not valid: " + primaryKey1.getName());
 
-//        assertTrue(rdbmsParents3.stream().anyMatch(o -> o.getPrimaryKey().equals(primaryKey1)),
-//                RDBMS_TABLE_C + "'s parent's primary key is not valid: " + primaryKey1.getName());
         assertTrue(rdbmsParents3.stream().anyMatch(o -> o.getPrimaryKey().equals(primaryKey2)),
                 RDBMS_TABLE_C + "'s parent's primary key is not valid: " + primaryKey2.getName());
         assertTrue(rdbmsParents3.stream().anyMatch(o -> o.getPrimaryKey().equals(primaryKey22)),
