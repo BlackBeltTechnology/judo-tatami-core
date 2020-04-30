@@ -21,6 +21,9 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @SuppressWarnings("OptionalGetWithoutIsPresent")
 public class Asm2RdbmsInheritanceTest extends Asm2RdbmsMappingTestBase {
+    private final String ID_ATTRIBUTE = "#_id";
+    private final String TYPE_ATTRIBUTE = "#_type";
+
     private void assertParents(Set<String> expected, String tableName) {
         rdbmsUtils.getRdbmsTable(tableName)
                 .orElseThrow(() -> new RuntimeException(tableName + " not found"))
@@ -85,11 +88,11 @@ public class Asm2RdbmsInheritanceTest extends Asm2RdbmsMappingTestBase {
 
         tables.add(RDBMS_TABLE_FRUIT);
         tables.add(RDBMS_TABLE_APPLE);
-        fields1.add(RDBMS_TABLE_FRUIT + "#_id");
-        fields1.add(RDBMS_TABLE_FRUIT + "#_type");
+        fields1.add(RDBMS_TABLE_FRUIT + ID_ATTRIBUTE);
+        fields1.add(RDBMS_TABLE_FRUIT + TYPE_ATTRIBUTE);
         fields1.add(RDBMS_FIELD_FRUIT_ID);
-        fields2.add(RDBMS_TABLE_APPLE + "#_id");
-        fields2.add(RDBMS_TABLE_APPLE + "#_type");
+        fields2.add(RDBMS_TABLE_APPLE + ID_ATTRIBUTE);
+        fields2.add(RDBMS_TABLE_APPLE + TYPE_ATTRIBUTE);
         fields2.add(RDBMS_FIELD_APPLE_TYPE);
         parents.add(RDBMS_TABLE_FRUIT);
 
@@ -111,10 +114,11 @@ public class Asm2RdbmsInheritanceTest extends Asm2RdbmsMappingTestBase {
                 rdbmsUtils.getRdbmsTable(RDBMS_TABLE_APPLE).get().getParents().get(0).getPrimaryKey());
     }
 
-    @Disabled
     @Test
     @DisplayName("Test Inheritance With Two Parents")
     public void testInheritanceWithTwoParents() {
+        ///////////////////
+        // setup asm model
         final EcorePackage ecore = EcorePackage.eINSTANCE;
 
         final EClass vegetable = newEClassBuilder()
@@ -157,6 +161,10 @@ public class Asm2RdbmsInheritanceTest extends Asm2RdbmsMappingTestBase {
 
         executeTransformation("testInheritanceWithTwoParents");
 
+        // setup asm model and transform
+        ////////////////////////////////////////////////////////////
+        // prepare table names and fill sets with required elements
+
         final String RDBMS_TABLE_VEGETABLE = "TestEpackage.vegetable";
         final String RDBMS_TABLE_FRUIT = "TestEpackage.fruit";
         final String RDBMS_TABLE_TOMATO = "TestEpackage.tomato";
@@ -171,22 +179,23 @@ public class Asm2RdbmsInheritanceTest extends Asm2RdbmsMappingTestBase {
         tables.add(RDBMS_TABLE_FRUIT);
         tables.add(RDBMS_TABLE_TOMATO);
 
-        fields1.add(RDBMS_TABLE_VEGETABLE + "#_id");
-        fields1.add(RDBMS_TABLE_VEGETABLE + "#_type");
+        fields1.add(RDBMS_TABLE_VEGETABLE + ID_ATTRIBUTE);
+        fields1.add(RDBMS_TABLE_VEGETABLE + TYPE_ATTRIBUTE);
         fields1.add(RDBMS_TABLE_VEGETABLE + "#isVegetable");
 
-        fields2.add(RDBMS_TABLE_FRUIT + "#_id");
-        fields2.add(RDBMS_TABLE_FRUIT + "#_type");
+        fields2.add(RDBMS_TABLE_FRUIT + ID_ATTRIBUTE);
+        fields2.add(RDBMS_TABLE_FRUIT + TYPE_ATTRIBUTE);
         fields2.add(RDBMS_TABLE_FRUIT + "#isFruit");
 
-        fields3.add(RDBMS_TABLE_TOMATO + "#_id");
-        fields3.add(RDBMS_TABLE_TOMATO + "#_type");
+        fields3.add(RDBMS_TABLE_TOMATO + ID_ATTRIBUTE);
+        fields3.add(RDBMS_TABLE_TOMATO + TYPE_ATTRIBUTE);
         fields3.add(RDBMS_TABLE_TOMATO + "#tomato_type");
-        //fields3.add(RDBMS_TABLE_TOMATO + "#isFruit");
-        //fields3.add(RDBMS_TABLE_TOMATO + "#isVegetable");
-
         parents.add(RDBMS_TABLE_VEGETABLE);
         parents.add(RDBMS_TABLE_FRUIT);
+
+        // prepare table names and fill sets with required elements
+        ////////////////////////////////////////////////////////////
+        // compare expected and actual elements
 
         assertTables(tables);
         assertFields(fields1, RDBMS_TABLE_VEGETABLE);
@@ -194,10 +203,14 @@ public class Asm2RdbmsInheritanceTest extends Asm2RdbmsMappingTestBase {
         assertFields(fields3, RDBMS_TABLE_TOMATO);
         assertParents(parents, RDBMS_TABLE_TOMATO);
 
-        EList<RdbmsTable> rdbmsParents = rdbmsUtils.getRdbmsTable(RDBMS_TABLE_TOMATO).get().getParents();
-        RdbmsIdentifierField primaryKey1 = rdbmsUtils.getRdbmsTable(RDBMS_TABLE_VEGETABLE).get().getPrimaryKey();
-        RdbmsIdentifierField primaryKey2 = rdbmsUtils.getRdbmsTable(RDBMS_TABLE_FRUIT).get().getPrimaryKey();
-        assertTrue(rdbmsParents.stream().anyMatch(o -> o.getPrimaryKey().equals(primaryKey1)), "Parents primary key is not valid");
-        assertTrue(rdbmsParents.stream().anyMatch(o -> o.getPrimaryKey().equals(primaryKey2)), "Parents primary key is not valid");
+        // compare expected and actual elements
+        ////////////////////////////////////////
+        // "validate" rdbms model
+
+        final EList<RdbmsTable> rdbmsParents = rdbmsUtils.getRdbmsTable(RDBMS_TABLE_TOMATO).get().getParents();
+        final RdbmsIdentifierField primaryKey1 = rdbmsUtils.getRdbmsTable(RDBMS_TABLE_VEGETABLE).get().getPrimaryKey();
+        final RdbmsIdentifierField primaryKey2 = rdbmsUtils.getRdbmsTable(RDBMS_TABLE_FRUIT).get().getPrimaryKey();
+        assertTrue(rdbmsParents.stream().anyMatch(o -> o.getPrimaryKey().equals(primaryKey1)), "Parent's primary key is not valid");
+        assertTrue(rdbmsParents.stream().anyMatch(o -> o.getPrimaryKey().equals(primaryKey2)), "Parent's primary key is not valid");
     }
 }
