@@ -1,6 +1,7 @@
 package hu.blackbelt.judo.tatami.asm2rdbms;
 
 import com.google.common.collect.ImmutableList;
+import hu.blackbelt.judo.meta.asm.runtime.AsmUtils;
 import hu.blackbelt.judo.meta.rdbms.RdbmsIdentifierField;
 import hu.blackbelt.judo.meta.rdbms.RdbmsTable;
 import org.eclipse.emf.common.util.EList;
@@ -12,6 +13,7 @@ import org.junit.jupiter.api.Test;
 import java.util.HashSet;
 import java.util.Set;
 
+import static hu.blackbelt.judo.meta.asm.runtime.AsmUtils.addExtensionAnnotation;
 import static java.lang.String.format;
 import static org.eclipse.emf.ecore.util.builder.EcoreBuilders.newEClassBuilder;
 import static org.junit.jupiter.api.Assertions.*;
@@ -40,14 +42,14 @@ public class Asm2RdbmsInheritanceTest extends Asm2RdbmsMappingTestBase {
         // setup asm model
         final EClass fruit = newEClassBuilder()
                 .withName("fruit")
-                .withEAnnotations(newEntityEAnnotation())
                 .build();
+        addExtensionAnnotation(fruit, ENTITY_ANNOTATION, VALUE_ANNOTATION);
 
         final EClass apple = newEClassBuilder()
                 .withName("apple")
                 .withESuperTypes(fruit)
-                .withEAnnotations(newEntityEAnnotation())
                 .build();
+        addExtensionAnnotation(apple, ENTITY_ANNOTATION, VALUE_ANNOTATION);
 
         final EPackage ePackage = newEPackage(ImmutableList.of(fruit, apple));
 
@@ -103,19 +105,19 @@ public class Asm2RdbmsInheritanceTest extends Asm2RdbmsMappingTestBase {
         // setup asm model
         final EClass vegetable = newEClassBuilder()
                 .withName("vegetable")
-                .withEAnnotations(newEntityEAnnotation())
                 .build();
+        addExtensionAnnotation(vegetable, ENTITY_ANNOTATION, VALUE_ANNOTATION);
 
         final EClass fruit = newEClassBuilder()
                 .withName("fruit")
-                .withEAnnotations(newEntityEAnnotation())
                 .build();
+        addExtensionAnnotation(fruit, ENTITY_ANNOTATION, VALUE_ANNOTATION);
 
         final EClass tomato = newEClassBuilder()
                 .withName("tomato")
-                .withEAnnotations(newEntityEAnnotation())
                 .withESuperTypes(ImmutableList.of(vegetable, fruit))
                 .build();
+        addExtensionAnnotation(tomato, ENTITY_ANNOTATION, VALUE_ANNOTATION);
 
         final EPackage ePackage = newEPackage(ImmutableList.of(vegetable, fruit, tomato));
 
@@ -183,20 +185,20 @@ public class Asm2RdbmsInheritanceTest extends Asm2RdbmsMappingTestBase {
         // setup asm model
         final EClass vehicle = newEClassBuilder()
                 .withName("vehicle")
-                .withEAnnotations(newEntityEAnnotation())
                 .build();
+        addExtensionAnnotation(vehicle, ENTITY_ANNOTATION, VALUE_ANNOTATION);
 
         final EClass car = newEClassBuilder()
                 .withName("car")
-                .withEAnnotations(newEntityEAnnotation())
                 .withESuperTypes(vehicle)
                 .build();
+        addExtensionAnnotation(car, ENTITY_ANNOTATION, VALUE_ANNOTATION);
 
         final EClass electric_car = newEClassBuilder()
                 .withName("electric_car")
-                .withEAnnotations(newEntityEAnnotation())
                 .withESuperTypes(car)
                 .build();
+        addExtensionAnnotation(electric_car, ENTITY_ANNOTATION, VALUE_ANNOTATION);
 
         final EPackage ePackage = newEPackage(ImmutableList.of(vehicle, car, electric_car));
 
@@ -270,23 +272,23 @@ public class Asm2RdbmsInheritanceTest extends Asm2RdbmsMappingTestBase {
         // setup asm model
         final EClass A = newEClassBuilder()
                 .withName("A")
-                .withEAnnotations(newEntityEAnnotation())
                 .build();
+        addExtensionAnnotation(A, ENTITY_ANNOTATION, VALUE_ANNOTATION);
         final EClass B = newEClassBuilder()
                 .withName("B")
-                .withEAnnotations(newEntityEAnnotation())
                 .withESuperTypes(A)
                 .build();
+        addExtensionAnnotation(B, ENTITY_ANNOTATION, VALUE_ANNOTATION);
         final EClass BB = newEClassBuilder()
                 .withName("BB")
-                .withEAnnotations(newEntityEAnnotation())
                 .withESuperTypes(A)
                 .build();
+        addExtensionAnnotation(BB, ENTITY_ANNOTATION, VALUE_ANNOTATION);
         final EClass C = newEClassBuilder()
                 .withName("C")
-                .withEAnnotations(newEntityEAnnotation())
                 .withESuperTypes(ImmutableList.of(B, BB))
                 .build();
+        addExtensionAnnotation(C, ENTITY_ANNOTATION, VALUE_ANNOTATION);
 
         final EPackage ePackage = newEPackage(ImmutableList.of(A, B, BB, C));
 
