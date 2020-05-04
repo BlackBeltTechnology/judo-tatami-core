@@ -1,12 +1,15 @@
 package hu.blackbelt.judo.tatami.asm2rdbms;
 
 import com.google.common.collect.ImmutableList;
+import hu.blackbelt.judo.meta.asm.runtime.AsmUtils;
 import hu.blackbelt.judo.meta.rdbms.RdbmsField;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.emf.ecore.*;
+import org.eclipse.epsilon.eol.exceptions.models.EolNotInstantiableModelElementTypeException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import static hu.blackbelt.judo.meta.asm.runtime.AsmUtils.addExtensionAnnotation;
 import static org.eclipse.emf.ecore.util.builder.EcoreBuilders.*;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -58,13 +61,6 @@ public class Asm2RdbmsTypeMappingTest extends Asm2RdbmsMappingTestBase {
     @DisplayName("Test Numeric Types")
     public void testNumericTypes() {
         final EcorePackage ecore = EcorePackage.eINSTANCE;
-
-        // create annotation
-        EAnnotation eAnnotation = newEAnnotationBuilder()
-                .withSource("http://blackbelt.hu/judo/meta/ExtendedMetadata/entity")
-                .build();
-
-        eAnnotation.getDetails().put("value", "true");
 
         // create custom numeric types
         final EDataType javalangByte = customEDataTypeBuilder("java.lang.Byte");
@@ -147,16 +143,12 @@ public class Asm2RdbmsTypeMappingTest extends Asm2RdbmsMappingTestBase {
                                         .build()
                         )
                 )
-                .withEAnnotations(eAnnotation)
                 .build();
-        logger.debug("Create TestNumericTypesClass eclass");
+        addExtensionAnnotation(eClass, ENTITY_ANNOTATION, VALUE_ANNOTATION);
 
         // add class and custom numeric types to package
-        final EPackage ePackage = newEPackageBuilder()
-                .withName("TestNumericTypesPackage")
-                .withNsPrefix("test")
-                .withNsURI("http:///com.example.test.ecore")
-                .withEClassifiers(ImmutableList.of(
+        final EPackage ePackage = newEPackage(
+                ImmutableList.of(
                         // add eclass
                         eClass,
 
@@ -169,18 +161,16 @@ public class Asm2RdbmsTypeMappingTest extends Asm2RdbmsMappingTestBase {
                         javalangFloat,
                         javalangDouble,
                         javamathBigDecimal
-                ))
-                .build();
-        logger.debug("Create TestNumericTypesPackage EPackage");
+                ));
 
         // add everything to asmModel
         asmModel.addContent(ePackage);
-        logger.debug("Add TestNumericTypesPackage to asmModel");
 
         // transform previously created asm model to rdbms model
         executeTransformation("testNumericTypes");
 
         // check eclass -> tables
+        // todo use sets
         final String RDBMS_TABLE_NAME = "TestNumericTypesPackage.TestNumericTypesClass";
         assertEquals(1, rdbmsUtils.getRdbmsTables().orElseThrow(() -> new RuntimeException("There are no tables created")).size());
         assertTrue(rdbmsUtils.getRdbmsTable(RDBMS_TABLE_NAME).isPresent());
@@ -301,13 +291,6 @@ public class Asm2RdbmsTypeMappingTest extends Asm2RdbmsMappingTestBase {
     public void testStringlikeTypes() {
         final EcorePackage ecore = EcorePackage.eINSTANCE;
 
-        // create annotation
-        EAnnotation eAnnotation = newEAnnotationBuilder()
-                .withSource("http://blackbelt.hu/judo/meta/ExtendedMetadata/entity")
-                .build();
-
-        eAnnotation.getDetails().put("value", "true");
-
         // create custom string-like type
         final EDataType javalangString = customEDataTypeBuilder("java.lang.String");
 
@@ -326,33 +309,27 @@ public class Asm2RdbmsTypeMappingTest extends Asm2RdbmsMappingTestBase {
                                         .build()
                         )
                 )
-                .withEAnnotations(eAnnotation)
                 .build();
-        logger.debug("Create TestStringlikeTypesClass eclass");
+        addExtensionAnnotation(eClass, ENTITY_ANNOTATION, VALUE_ANNOTATION);
 
         // add class to package
-        final EPackage ePackage = newEPackageBuilder()
-                .withName("TestStringlikeTypesPackage")
-                .withNsPrefix("test")
-                .withNsURI("http:///com.example.test.ecore")
-                .withEClassifiers(ImmutableList.of(
+        final EPackage ePackage = newEPackage(
+                ImmutableList.of(
                         // add eclass
                         eClass,
 
                         // add custom string-like type
                         javalangString
-                ))
-                .build();
-        logger.debug("Create TestStringlikeTypesPackage EPackage");
+                ));
 
         // add eth to asmModel
         asmModel.addContent(ePackage);
-        logger.debug("Add TestStringlikeTypesPackage to asmModel");
 
         // transform previously created asm model to rdbms model
         executeTransformation("testStringlikeTypes");
 
         // check eclass -> tables
+        // todo use sets
         final String RDBMS_TABLE_NAME = "TestStringlikeTypesPackage.TestStringlikeTypesClass";
         assertEquals(1, rdbmsUtils.getRdbmsTables()
                 .orElseThrow(() -> new RuntimeException("There are no tables created")).size());
@@ -383,13 +360,6 @@ public class Asm2RdbmsTypeMappingTest extends Asm2RdbmsMappingTestBase {
     @DisplayName("Test Date Types")
     public void testDateTypes() {
         final EcorePackage ecore = EcorePackage.eINSTANCE;
-
-        // create annotation
-        EAnnotation eAnnotation = newEAnnotationBuilder()
-                .withSource("http://blackbelt.hu/judo/meta/ExtendedMetadata/entity")
-                .build();
-
-        eAnnotation.getDetails().put("value", "true");
 
         // create custom date types
         final EDataType javautilDate = customEDataTypeBuilder("java.util.Date");
@@ -459,17 +429,12 @@ public class Asm2RdbmsTypeMappingTest extends Asm2RdbmsMappingTestBase {
                                         .build()
                         )
                 )
-                .withEAnnotations(eAnnotation)
                 .build();
-        logger.debug("Create TestDateTypesClass eclass");
-
+        addExtensionAnnotation(eClass, ENTITY_ANNOTATION, VALUE_ANNOTATION);
 
         // add class and custom types to package
-        final EPackage ePackage = newEPackageBuilder()
-                .withName("TestDateTypesPackage")
-                .withNsPrefix("test")
-                .withNsURI("http:///com.example.test.ecore")
-                .withEClassifiers(ImmutableList.of(
+        final EPackage ePackage = newEPackage(
+                ImmutableList.of(
                         // eclass
                         eClass,
 
@@ -486,18 +451,16 @@ public class Asm2RdbmsTypeMappingTest extends Asm2RdbmsMappingTestBase {
                         orgjodatimeDateTime,
                         orgjodatimeLocalDateTime,
                         orgjodatimeMutableDateTime
-                ))
-                .build();
-        logger.debug("Create TestDateTypesPackage EPackage");
+                ));
 
         // add eth to asmModel
         asmModel.addContent(ePackage);
-        logger.debug("Add TestDateTypesPackage to asmModel");
 
         // transform previously created asm model to rdbms model
         executeTransformation("testDateTypes");
 
         // check eclass -> tables
+        // todo use sets
         final String RDBMS_TABLE_NAME = "TestDateTypesPackage.TestDateTypesClass";
         assertEquals(1, rdbmsUtils.getRdbmsTables()
                 .orElseThrow(() -> new RuntimeException("There are no tables created")).size());
@@ -588,13 +551,6 @@ public class Asm2RdbmsTypeMappingTest extends Asm2RdbmsMappingTestBase {
     public void testBooleanTypes() {
         final EcorePackage ecore = EcorePackage.eINSTANCE;
 
-        // create annotation
-        EAnnotation eAnnotation = newEAnnotationBuilder()
-                .withSource("http://blackbelt.hu/judo/meta/ExtendedMetadata/entity")
-                .build();
-
-        eAnnotation.getDetails().put("value", "true");
-
         // create custom type
         final EDataType javalangBoolean = customEDataTypeBuilder("java.lang.Boolean");
 
@@ -613,33 +569,27 @@ public class Asm2RdbmsTypeMappingTest extends Asm2RdbmsMappingTestBase {
                                         .build()
                         )
                 )
-                .withEAnnotations(eAnnotation)
                 .build();
-        logger.debug("Create TestBooleanTypesClass eclass");
+        addExtensionAnnotation(eClass, ENTITY_ANNOTATION, VALUE_ANNOTATION);
 
         // add class and custom booolean type to package
-        final EPackage ePackage = newEPackageBuilder()
-                .withName("TestBooleanTypesPackage")
-                .withNsPrefix("test")
-                .withNsURI("http:///com.example.test.ecore")
-                .withEClassifiers(ImmutableList.of(
+        final EPackage ePackage = newEPackage(
+                ImmutableList.of(
                         // add eclass
                         eClass,
 
                         // add custom type
                         javalangBoolean
-                ))
-                .build();
-        logger.debug("Create TestBooleanTypesPackage EPackage");
+                ));
 
         // add eth to asmModel
         asmModel.addContent(ePackage);
-        logger.debug("Add TestBooleanTypesPackage to asmModel");
 
         // transform previously created asm model to rdbms model
         executeTransformation("testBooleanTypes");
 
         // check eclass -> tables
+        // todo use sets
         final String RDBMS_TABLE_NAME = "TestBooleanTypesPackage.TestBooleanTypesClass";
         assertEquals(1, rdbmsUtils.getRdbmsTables()
                 .orElseThrow(() -> new RuntimeException("There are no tables created")).size());
