@@ -1,11 +1,12 @@
 package hu.blackbelt.judo.tatami.asm2rdbms;
 
 import com.google.common.collect.ImmutableList;
-import hu.blackbelt.judo.meta.asm.runtime.AsmUtils;
 import hu.blackbelt.judo.meta.rdbms.RdbmsField;
 import lombok.extern.slf4j.Slf4j;
-import org.eclipse.emf.ecore.*;
-import org.eclipse.epsilon.eol.exceptions.models.EolNotInstantiableModelElementTypeException;
+import org.eclipse.emf.ecore.EClass;
+import org.eclipse.emf.ecore.EDataType;
+import org.eclipse.emf.ecore.EPackage;
+import org.eclipse.emf.ecore.EcorePackage;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -171,7 +172,7 @@ public class Asm2RdbmsTypeMappingTest extends Asm2RdbmsMappingTestBase {
 
         // check eclass -> tables
         // todo use sets
-        final String RDBMS_TABLE_NAME = "TestNumericTypesPackage.TestNumericTypesClass";
+        final String RDBMS_TABLE_NAME = "TestEpackage.TestNumericTypesClass";
         assertEquals(1, rdbmsUtils.getRdbmsTables().orElseThrow(() -> new RuntimeException("There are no tables created")).size());
         assertTrue(rdbmsUtils.getRdbmsTable(RDBMS_TABLE_NAME).isPresent());
 
@@ -330,7 +331,7 @@ public class Asm2RdbmsTypeMappingTest extends Asm2RdbmsMappingTestBase {
 
         // check eclass -> tables
         // todo use sets
-        final String RDBMS_TABLE_NAME = "TestStringlikeTypesPackage.TestStringlikeTypesClass";
+        final String RDBMS_TABLE_NAME = "TestEpackage.TestStringlikeTypesClass";
         assertEquals(1, rdbmsUtils.getRdbmsTables()
                 .orElseThrow(() -> new RuntimeException("There are no tables created")).size());
         assertTrue(rdbmsUtils.getRdbmsTable(RDBMS_TABLE_NAME).isPresent());
@@ -461,7 +462,7 @@ public class Asm2RdbmsTypeMappingTest extends Asm2RdbmsMappingTestBase {
 
         // check eclass -> tables
         // todo use sets
-        final String RDBMS_TABLE_NAME = "TestDateTypesPackage.TestDateTypesClass";
+        final String RDBMS_TABLE_NAME = "TestEpackage.TestDateTypesClass";
         assertEquals(1, rdbmsUtils.getRdbmsTables()
                 .orElseThrow(() -> new RuntimeException("There are no tables created")).size());
         assertTrue(rdbmsUtils.getRdbmsTable(RDBMS_TABLE_NAME).isPresent());
@@ -590,7 +591,7 @@ public class Asm2RdbmsTypeMappingTest extends Asm2RdbmsMappingTestBase {
 
         // check eclass -> tables
         // todo use sets
-        final String RDBMS_TABLE_NAME = "TestBooleanTypesPackage.TestBooleanTypesClass";
+        final String RDBMS_TABLE_NAME = "TestEpackage.TestBooleanTypesClass";
         assertEquals(1, rdbmsUtils.getRdbmsTables()
                 .orElseThrow(() -> new RuntimeException("There are no tables created")).size());
         assertTrue(rdbmsUtils.getRdbmsTable(RDBMS_TABLE_NAME).isPresent());
