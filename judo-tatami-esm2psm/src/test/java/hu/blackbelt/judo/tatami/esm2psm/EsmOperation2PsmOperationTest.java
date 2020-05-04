@@ -9,7 +9,8 @@ import hu.blackbelt.judo.meta.esm.operation.util.builder.OperationBuilder;
 import hu.blackbelt.judo.meta.esm.runtime.EsmModel;
 import hu.blackbelt.judo.meta.esm.runtime.EsmUtils;
 import hu.blackbelt.judo.meta.esm.structure.EntityType;
-import hu.blackbelt.judo.meta.esm.structure.RelationMemberType;
+import hu.blackbelt.judo.meta.esm.structure.MemberType;
+import hu.blackbelt.judo.meta.esm.structure.RelationKind;
 import hu.blackbelt.judo.meta.esm.structure.TransferObjectType;
 import hu.blackbelt.judo.meta.psm.PsmUtils;
 import hu.blackbelt.judo.meta.psm.runtime.PsmModel;
@@ -386,35 +387,35 @@ public class EsmOperation2PsmOperationTest {
                 .withName(ENTITY_TYPE_E_NAME)
                 .withRelations(newOneWayRelationMemberBuilder()
                         .withName(SINGLE_CONTAINMENT_RELATION_NAME)
-                        .withRelationMemberType(RelationMemberType.RELATION)
+                        .withMemberType(MemberType.STORED)
                         .withTarget(entityTypeF)
-                        .withContainment(true)
+                        .withRelationKind(RelationKind.COMPOSITION)
                         .withCreateable(true).withUpdateable(true).withDeleteable(true)
                         .withLower(0).withUpper(1)
                         .withRangeExpression(MODEL_NAME + EsmUtils.NAMESPACE_SEPARATOR + ENTITY_TYPE_F_NAME)
                         .build())
                 .withRelations(newOneWayRelationMemberBuilder()
                         .withName(SINGLE_REFERENCE_RELATION_NAME)
-                        .withRelationMemberType(RelationMemberType.RELATION)
+                        .withMemberType(MemberType.STORED)
                         .withTarget(entityTypeF)
-                        .withContainment(false)
+                        .withRelationKind(RelationKind.ASSOCIATION)
                         .withLower(0).withUpper(1)
                         .withRangeExpression(MODEL_NAME + EsmUtils.NAMESPACE_SEPARATOR + ENTITY_TYPE_F_NAME)
                         .build())
                 .withRelations(newOneWayRelationMemberBuilder()
                         .withName(MULTIPLE_CONTAINMENT_RELATION_NAME)
-                        .withRelationMemberType(RelationMemberType.RELATION)
+                        .withMemberType(MemberType.STORED)
                         .withTarget(entityTypeF)
-                        .withContainment(true)
+                        .withRelationKind(RelationKind.COMPOSITION)
                         .withCreateable(true).withUpdateable(true).withDeleteable(true)
                         .withLower(0).withUpper(-1)
                         .withRangeExpression(MODEL_NAME + EsmUtils.NAMESPACE_SEPARATOR + ENTITY_TYPE_F_NAME)
                         .build())
                 .withRelations(newOneWayRelationMemberBuilder()
                         .withName(MULTIPLE_REFERENCE_RELATION_NAME)
-                        .withRelationMemberType(RelationMemberType.RELATION)
+                        .withMemberType(MemberType.STORED)
                         .withTarget(entityTypeF)
-                        .withContainment(false)
+                        .withRelationKind(RelationKind.ASSOCIATION)
                         .withLower(0).withUpper(-1)
                         .withRangeExpression(MODEL_NAME + EsmUtils.NAMESPACE_SEPARATOR + ENTITY_TYPE_F_NAME)
                         .build())
@@ -428,9 +429,8 @@ public class EsmOperation2PsmOperationTest {
                         .withTarget(entityTypeE)
                         .withLower(LOWER)
                         .withUpper(UPPER)
-                        .withContainment(true)
+                        .withRelationKind(RelationKind.AGGREGATION)
                         .withCreateable(true).withUpdateable(true).withDeleteable(true)
-                        .withAggregation(true)
                         .build())
                 .build();
         entityTypeD.setMapping(newMappingBuilder().withTarget(entityTypeD).build());

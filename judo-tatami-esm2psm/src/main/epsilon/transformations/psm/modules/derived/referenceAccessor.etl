@@ -34,7 +34,7 @@ rule CreateNavigationProperty
     to t : JUDOPSM!NavigationProperty
     extends CreateNamedElement {
       guard: s.eContainer.isKindOf(ESM!EntityType)
-            and s.relationMemberType = ESM!RelationMemberType#PROPERTY
+            and s.memberType == ESM!MemberType#DERIVED
       
        t.cardinality = s.equivalent("CreateCardinalityForReferenceTypedElement");
        s.eContainer.getPSMEquivalent().navigationProperties.add(t);

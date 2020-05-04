@@ -44,13 +44,13 @@ import hu.blackbelt.epsilon.runtime.execution.impl.Slf4jLog;
 import hu.blackbelt.judo.meta.esm.namespace.Model;
 import hu.blackbelt.judo.meta.esm.runtime.EsmModel;
 import hu.blackbelt.judo.meta.esm.structure.DataMember;
-import hu.blackbelt.judo.meta.esm.structure.DataMemberType;
+import hu.blackbelt.judo.meta.esm.structure.MemberType;
 import hu.blackbelt.judo.meta.esm.structure.EntitySequence;
 import hu.blackbelt.judo.meta.esm.structure.EntityType;
 import hu.blackbelt.judo.meta.esm.structure.Generalization;
 import hu.blackbelt.judo.meta.esm.structure.NamespaceSequence;
 import hu.blackbelt.judo.meta.esm.structure.OneWayRelationMember;
-import hu.blackbelt.judo.meta.esm.structure.RelationMemberType;
+import hu.blackbelt.judo.meta.esm.structure.RelationKind;
 import hu.blackbelt.judo.meta.esm.structure.TwoWayRelationMember;
 import hu.blackbelt.judo.meta.esm.type.StringType;
 import hu.blackbelt.judo.meta.psm.data.Attribute;
@@ -172,7 +172,7 @@ public class EsmStrucutre2PsmDataTest {
         testName = "CreateAttribute";
 
         StringType string = newStringTypeBuilder().withName("string").withMaxLength(256).build();
-        DataMember attribute = newDataMemberBuilder().withName("attribute").withDataMemberType(DataMemberType.ATTRIBUTE).withDataType(string)
+        DataMember attribute = newDataMemberBuilder().withName("attribute").withMemberType(MemberType.STORED).withDataType(string)
                 .build();
         attribute.setBinding(attribute);
 
@@ -212,8 +212,8 @@ public class EsmStrucutre2PsmDataTest {
                 .withTarget(target)
                 .build());
 
-        OneWayRelationMember containment = newOneWayRelationMemberBuilder().withName("containment").withRelationMemberType(RelationMemberType.RELATION)
-        		.withContainment(true).withAggregation(true)
+        OneWayRelationMember containment = newOneWayRelationMemberBuilder().withName("containment").withMemberType(MemberType.STORED)
+        		.withRelationKind(RelationKind.COMPOSITION)
                 .withLower(1).withUpper(3).withTarget(target)
                 .build();
         containment.setBinding(containment);
@@ -254,8 +254,10 @@ public class EsmStrucutre2PsmDataTest {
                 .withTarget(target)
                 .build());
 
-        OneWayRelationMember associationEnd = newOneWayRelationMemberBuilder().withName("associationEnd").withRelationMemberType(RelationMemberType.RELATION)
-        		.withContainment(false).withReverseCascadeDelete(true)
+        OneWayRelationMember associationEnd = newOneWayRelationMemberBuilder().withName("associationEnd")
+        		.withMemberType(MemberType.STORED)
+        		.withRelationKind(RelationKind.ASSOCIATION)
+        		.withReverseCascadeDelete(true)
                 .withLower(1).withUpper(3)
                 .withTarget(target)
                 .build();

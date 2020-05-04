@@ -11,7 +11,7 @@ rule CreateDataProperty
 	to t : JUDOPSM!DataProperty
 	extends CreatePrimitiveTypedElement {
 	  guard: s.eContainer.isKindOf(ESM!EntityType)
-	           and s.dataMemberType = ESM!DataMemberType#PROPERTY
+	           and s.memberType == ESM!MemberType#DERIVED
 	            
 	  t.getterExpression = s.equivalent("CreateGetterExpressionForDataProperty");
 	  
@@ -56,7 +56,7 @@ rule CreateDataPropertyForTransferAttributeBinding
     extends CreatePrimitiveTypedElement {
         guard: s.eContainer.isKindOf(ESM!TransferObjectType)
             and not s.eContainer.isKindOf(ESM!EntityType) 
-            and s.dataMemberType = ESM!DataMemberType#PROPERTY
+            and s.memberType == ESM!MemberType#DERIVED
             and s.getterExpression.isDefined() and s.getterExpression.trim().length() > 0
        
        t.getterExpression = s.equivalent("CreateGetterExpressionForDataProperty");

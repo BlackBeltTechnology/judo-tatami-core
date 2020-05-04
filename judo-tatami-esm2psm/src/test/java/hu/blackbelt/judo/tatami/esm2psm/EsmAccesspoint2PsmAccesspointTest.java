@@ -8,7 +8,8 @@ import hu.blackbelt.judo.meta.esm.operation.OperationModifier;
 import hu.blackbelt.judo.meta.esm.runtime.EsmModel;
 import hu.blackbelt.judo.meta.esm.runtime.EsmUtils;
 import hu.blackbelt.judo.meta.esm.structure.EntityType;
-import hu.blackbelt.judo.meta.esm.structure.RelationMemberType;
+import hu.blackbelt.judo.meta.esm.structure.MemberType;
+import hu.blackbelt.judo.meta.esm.structure.RelationKind;
 import hu.blackbelt.judo.meta.esm.structure.TransferObjectType;
 import hu.blackbelt.judo.meta.psm.runtime.PsmModel;
 import hu.blackbelt.judo.meta.psm.service.MappedTransferObjectType;
@@ -194,7 +195,7 @@ public class EsmAccesspoint2PsmAccesspointTest {
                 .filter(r -> r.isExposedGraph())
                 .anyMatch(g -> EXPOSED_GRAPH_NAME.equals(g.getName())));
     }
-
+    
     @Test
     void testGeneratingBehaviourOfExposedGraphs() throws Exception {
         testName = "testGeneratingBehaviourOfExposedGraphs";
@@ -242,35 +243,35 @@ public class EsmAccesspoint2PsmAccesspointTest {
                 .withName(ENTITY_TYPE_E_NAME)
                 .withRelations(newOneWayRelationMemberBuilder()
                         .withName(SINGLE_CONTAINMENT_RELATION_NAME)
-                        .withRelationMemberType(RelationMemberType.RELATION)
+                        .withMemberType(MemberType.STORED)
                         .withTarget(entityTypeF)
-                        .withContainment(true)
+                        .withRelationKind(RelationKind.COMPOSITION)
                         .withCreateable(true).withUpdateable(true).withDeleteable(true)
                         .withLower(0).withUpper(1)
                         .withRangeExpression(MODEL_NAME + EsmUtils.NAMESPACE_SEPARATOR + ENTITY_TYPE_F_NAME)
                         .build())
                 .withRelations(newOneWayRelationMemberBuilder()
                         .withName(SINGLE_REFERENCE_RELATION_NAME)
-                        .withRelationMemberType(RelationMemberType.RELATION)
+                        .withMemberType(MemberType.STORED)
                         .withTarget(entityTypeF)
-                        .withContainment(false)
+                        .withRelationKind(RelationKind.ASSOCIATION)
                         .withLower(0).withUpper(1)
                         .withRangeExpression(MODEL_NAME + EsmUtils.NAMESPACE_SEPARATOR + ENTITY_TYPE_F_NAME)
                         .build())
                 .withRelations(newOneWayRelationMemberBuilder()
                         .withName(MULTIPLE_CONTAINMENT_RELATION_NAME)
-                        .withRelationMemberType(RelationMemberType.RELATION)
+                        .withMemberType(MemberType.STORED)
                         .withTarget(entityTypeF)
-                        .withContainment(true)
+                        .withRelationKind(RelationKind.COMPOSITION)
                         .withCreateable(true).withUpdateable(true).withDeleteable(true)
                         .withLower(0).withUpper(-1)
                         .withRangeExpression(MODEL_NAME + EsmUtils.NAMESPACE_SEPARATOR + ENTITY_TYPE_F_NAME)
                         .build())
                 .withRelations(newOneWayRelationMemberBuilder()
                         .withName(MULTIPLE_REFERENCE_RELATION_NAME)
-                        .withRelationMemberType(RelationMemberType.RELATION)
+                        .withMemberType(MemberType.STORED)
                         .withTarget(entityTypeF)
-                        .withContainment(false)
+                        .withRelationKind(RelationKind.ASSOCIATION)
                         .withLower(0).withUpper(-1)
                         .withRangeExpression(MODEL_NAME + EsmUtils.NAMESPACE_SEPARATOR + ENTITY_TYPE_F_NAME)
                         .build())

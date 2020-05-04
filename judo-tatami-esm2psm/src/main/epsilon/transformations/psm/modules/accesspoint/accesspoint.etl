@@ -200,9 +200,9 @@ rule CreateCreateOperationForExposedGraph
             var rangeAllowed = false;
             if (relation.isKindOf(ESM!OneWayRelationMember)) {
                 if (relation.eContainer.isKindOf(ESM!EntityType)) {
-                    rangeAllowed = not relation.containment and relation.relationMemberType <> ESM!RelationMemberType#PROPERTY;
+                    rangeAllowed = not relation.isComposition() and relation.memberType <> ESM!MemberType#DERIVED;
                 } else if (relation.eContainer.isKindOf(ESM!TransferObjectType)) {
-                    rangeAllowed = relation.relationMemberType <> ESM!RelationMemberType#PROPERTY and (relation.relationMemberType == ESM!RelationMemberType#BOUND implies (not relation.binding.containment and relation.binding.relationMemberType <> ESM!RelationMemberType#PROPERTY));
+                    rangeAllowed = relation.memberType <> ESM!MemberType#DERIVED and (relation.memberType == ESM!MemberType#BOUND implies (not relation.binding.isComposition() and relation.binding.memberType <> ESM!MemberType#DERIVED));
                 }
             } else if (relation.isKindOf(ESM!TwoWayRelationMember)) {
                 rangeAllowed = true;
@@ -246,11 +246,11 @@ rule CreateUpdateOperationForExposedGraph
             var containment = false;
             if (relation.isKindOf(ESM!OneWayRelationMember)) {
                 if (relation.eContainer.isKindOf(ESM!EntityType)) {
-                    rangeAllowed = not relation.containment and relation.relationMemberType <> ESM!RelationMemberType#PROPERTY;
-                    containment = relation.containment;
+                    rangeAllowed = not relation.isComposition() and relation.memberType <> ESM!MemberType#DERIVED;
+                    containment = relation.isComposition();
                 } else if (relation.eContainer.isKindOf(ESM!TransferObjectType)) {
-                    rangeAllowed = relation.relationMemberType <> ESM!RelationMemberType#PROPERTY and (relation.relationMemberType == ESM!RelationMemberType#BOUND implies (not relation.binding.containment and relation.binding.relationMemberType <> ESM!RelationMemberType#PROPERTY));
-                    containment = relation.relationMemberType == ESM!RelationMemberType#BOUND and relation.binding.containment and relation.target.mapping.isDefined();
+                    rangeAllowed = relation.memberType <> ESM!MemberType#DERIVED and (relation.memberType == ESM!MemberType#BOUND implies (not relation.binding.isComposition() and relation.binding.memberType <> ESM!MemberType#DERIVED));
+                    containment = relation.memberType == ESM!MemberType#BOUND and relation.binding.isComposition() and relation.target.mapping.isDefined();
                 }
             } else if (relation.isKindOf(ESM!TwoWayRelationMember)) {
                 rangeAllowed = true;
@@ -259,7 +259,7 @@ rule CreateUpdateOperationForExposedGraph
             var entityPartner;
             if (relation.isKindOf(ESM!TwoWayRelationMember)) {
                 entityPartner = relation.partner;
-            } else if (relation.relationMemberType == ESM!RelationMemberType#BOUND and relation.binding.isKindOf(ESM!TwoWayRelationMember)) {
+            } else if (relation.memberType == ESM!MemberType#BOUND and relation.binding.isKindOf(ESM!TwoWayRelationMember)) {
                 entityPartner = relation.binding.partner;
             }
 
