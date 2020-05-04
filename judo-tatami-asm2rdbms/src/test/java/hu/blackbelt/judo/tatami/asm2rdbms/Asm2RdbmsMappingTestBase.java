@@ -7,7 +7,6 @@ import hu.blackbelt.judo.meta.rdbms.runtime.RdbmsModel;
 import hu.blackbelt.judo.meta.rdbms.runtime.RdbmsUtils;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.eclipse.emf.ecore.EAnnotation;
 import org.eclipse.emf.ecore.EClassifier;
 import org.eclipse.emf.ecore.EPackage;
 import org.junit.jupiter.api.BeforeEach;
@@ -25,7 +24,6 @@ import static hu.blackbelt.judo.meta.rdbmsNameMapping.support.RdbmsNameMappingMo
 import static hu.blackbelt.judo.meta.rdbmsRules.support.RdbmsTableMappingRulesModelResourceSupport.registerRdbmsTableMappingRulesMetamodel;
 import static hu.blackbelt.judo.tatami.asm2rdbms.Asm2Rdbms.*;
 import static java.lang.String.format;
-import static org.eclipse.emf.ecore.util.builder.EcoreBuilders.newEAnnotationBuilder;
 import static org.eclipse.emf.ecore.util.builder.EcoreBuilders.newEPackageBuilder;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
@@ -36,6 +34,9 @@ public class Asm2RdbmsMappingTestBase {
     protected static final String RDBMS_MODEL_NAME = "TestRdbmsModel";
 
     protected static final String TARGET_TEST_CLASSES = "target/test-classes";
+
+    protected static final String ENTITY_ANNOTATION = "entity";
+    protected static final String VALUE_ANNOTATION = "true";
 
     protected Slf4jLog logger;
 
@@ -86,16 +87,6 @@ public class Asm2RdbmsMappingTestBase {
     }
 
     //TODO: use on other tests
-    protected EAnnotation newEntityEAnnotation() {
-        EAnnotation eAnnotation = newEAnnotationBuilder()
-                .withSource("http://blackbelt.hu/judo/meta/ExtendedMetadata/entity")
-                .build();
-
-        eAnnotation.getDetails().put("value", "true");
-        return eAnnotation;
-    }
-
-    //TODO: use on other tests
     protected EPackage newEPackage(final ImmutableList<EClassifier> eClassifiers) {
         return newEPackageBuilder()
                 .withName("TestEpackage")
@@ -105,10 +96,10 @@ public class Asm2RdbmsMappingTestBase {
                 .build();
     }
 
+    //TODO: use on other tests
     protected EPackage newEPackage(final EClassifier eClassifiers) {
         return newEPackage(ImmutableList.of(eClassifiers));
     }
-
 
     //TODO: use on other tests
     protected void assertTables(final Set<String> expected) {

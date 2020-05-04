@@ -1,6 +1,7 @@
 package hu.blackbelt.judo.tatami.asm2rdbms;
 
 import com.google.common.collect.ImmutableList;
+import hu.blackbelt.judo.meta.asm.runtime.AsmUtils;
 import hu.blackbelt.judo.meta.rdbms.RdbmsForeignKey;
 import hu.blackbelt.judo.meta.rdbms.RdbmsIdentifierField;
 import hu.blackbelt.judo.meta.rdbms.RdbmsJunctionTable;
@@ -14,12 +15,13 @@ import org.junit.jupiter.api.Test;
 import java.util.HashSet;
 import java.util.Set;
 
+import static hu.blackbelt.judo.meta.asm.runtime.AsmUtils.addExtensionAnnotation;
 import static java.lang.String.format;
 import static org.eclipse.emf.ecore.util.builder.EcoreBuilders.newEClassBuilder;
 import static org.eclipse.emf.ecore.util.builder.EcoreBuilders.newEReferenceBuilder;
 import static org.junit.jupiter.api.Assertions.*;
 
-@SuppressWarnings("OptionalGetWithoutIsPresent")
+@SuppressWarnings({"OptionalGetWithoutIsPresent", "JavaDoc"})
 public class Asm2RdbmsRelationMappingTest extends Asm2RdbmsMappingTestBase {
 
     /**
@@ -117,8 +119,8 @@ public class Asm2RdbmsRelationMappingTest extends Asm2RdbmsMappingTestBase {
 
         final EClass oneWayRelation1 = newEClassBuilder()
                 .withName("OneWayRelation1")
-                .withEAnnotations(newEntityEAnnotation())
                 .build();
+        addExtensionAnnotation(oneWayRelation1, ENTITY_ANNOTATION, VALUE_ANNOTATION);
 
         final EReference oneWayReference = newEReferenceBuilder()
                 .withName("oneWayReference")
@@ -132,9 +134,9 @@ public class Asm2RdbmsRelationMappingTest extends Asm2RdbmsMappingTestBase {
         if (!isSelf) {
             final EClass oneWayRelation2 = newEClassBuilder()
                     .withName("OneWayRelation2")
-                    .withEAnnotations(newEntityEAnnotation())
                     .withEStructuralFeatures(oneWayReference)
                     .build();
+            addExtensionAnnotation(oneWayRelation2, ENTITY_ANNOTATION, VALUE_ANNOTATION);
             ePackage = newEPackage(ImmutableList.of(oneWayRelation2, oneWayRelation1));
         } else {
             oneWayRelation1.getEStructuralFeatures().add(oneWayReference);
@@ -321,8 +323,8 @@ public class Asm2RdbmsRelationMappingTest extends Asm2RdbmsMappingTestBase {
 
         final EClass twoWayRelation1 = newEClassBuilder()
                 .withName("TwoWayRelation1")
-                .withEAnnotations(newEntityEAnnotation())
                 .build();
+        addExtensionAnnotation(twoWayRelation1, ENTITY_ANNOTATION, VALUE_ANNOTATION);
 
         final EReference twoWayReference1 = newEReferenceBuilder()
                 .withName("twoWayReference1")
@@ -344,8 +346,8 @@ public class Asm2RdbmsRelationMappingTest extends Asm2RdbmsMappingTestBase {
         if (!isSelf) {
             final EClass twoWayRelation2 = newEClassBuilder()
                     .withName("TwoWayRelation2")
-                    .withEAnnotations(newEntityEAnnotation())
                     .build();
+            addExtensionAnnotation(twoWayRelation2, ENTITY_ANNOTATION, VALUE_ANNOTATION);
 
             twoWayReference2.setEType(twoWayRelation2);
             twoWayReference1.setEOpposite(twoWayReference2);
