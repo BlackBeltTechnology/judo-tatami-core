@@ -1,15 +1,19 @@
 package hu.blackbelt.judo.tatami.asm2rdbms;
 
+import com.google.common.collect.ImmutableList;
 import hu.blackbelt.epsilon.runtime.execution.impl.Slf4jLog;
 import hu.blackbelt.judo.meta.asm.runtime.AsmModel;
 import hu.blackbelt.judo.meta.rdbms.runtime.RdbmsModel;
 import hu.blackbelt.judo.meta.rdbms.runtime.RdbmsUtils;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.eclipse.emf.ecore.EClassifier;
+import org.eclipse.emf.ecore.EPackage;
 import org.junit.jupiter.api.BeforeEach;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Set;
 
 import static hu.blackbelt.judo.meta.asm.runtime.AsmModel.SaveArguments.asmSaveArgumentsBuilder;
 import static hu.blackbelt.judo.meta.asm.runtime.AsmModel.buildAsmModel;
@@ -19,6 +23,10 @@ import static hu.blackbelt.judo.meta.rdbmsDataTypes.support.RdbmsDataTypesModelR
 import static hu.blackbelt.judo.meta.rdbmsNameMapping.support.RdbmsNameMappingModelResourceSupport.registerRdbmsNameMappingMetamodel;
 import static hu.blackbelt.judo.meta.rdbmsRules.support.RdbmsTableMappingRulesModelResourceSupport.registerRdbmsTableMappingRulesMetamodel;
 import static hu.blackbelt.judo.tatami.asm2rdbms.Asm2Rdbms.*;
+import static java.lang.String.format;
+import static org.eclipse.emf.ecore.util.builder.EcoreBuilders.newEPackageBuilder;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 @Slf4j
 public class Asm2RdbmsMappingTestBase {
@@ -26,6 +34,10 @@ public class Asm2RdbmsMappingTestBase {
     protected static final String RDBMS_MODEL_NAME = "TestRdbmsModel";
 
     protected static final String TARGET_TEST_CLASSES = "target/test-classes";
+
+    protected static final String ENTITY_ANNOTATION = "entity";
+    protected static final String VALUE_ANNOTATION = "true";
+
 
     protected Slf4jLog logger;
 
@@ -47,7 +59,7 @@ public class Asm2RdbmsMappingTestBase {
     }
 
     @SneakyThrows
-    protected void executeTransformation(String testName) {
+    protected void executeTransformation(final String testName) {
         Asm2RdbmsTransformationTrace asm2RdbmsTransformationTrace = executeAsm2RdbmsTransformation(asmModel, rdbmsModel, new Slf4jLog(log),
                 calculateAsm2RdbmsTransformationScriptURI(),
                 calculateAsm2RdbmsModelURI(), "hsqldb");
@@ -72,6 +84,48 @@ public class Asm2RdbmsMappingTestBase {
             asm2RdbmsTransformationTrace.save(new File(TARGET_TEST_CLASSES, testName + "-" + "Asm2RdbmsTransformationTrace.model"));
         } catch (IOException e) {
             logger.debug("Unable to save model(s)");
+        }
+    }
+
+    //TODO: use on other tests
+    protected EPackage newEPackage(final ImmutableList<EClassifier> eClassifiers) {
+        return newEPackageBuilder()
+                .withName("TestEpackage")
+                .withEClassifiers(eClassifiers)
+                .withNsPrefix("test")
+                .withNsURI("http:///com.example.test.ecore")
+                .build();
+    }
+
+    //TODO: use on other tests
+    protected EPackage newEPackage(final EClassifier eClassifiers) {
+        return newEPackage(ImmutableList.of(eClassifiers));
+    }
+
+
+    //TODO: use on other tests
+    protected void assertTables(final Set<String> expected) {
+        rdbmsUtils.getRdbmsTables()
+                .orElseThrow(() -> new RuntimeException("Tables not found"))
+                .forEach(o -> {
+                    assertTrue(expected.contains(o.getName()), o.getName() + " not found");
+                    expected.remove(o.getName());
+                });
+        if (expected.size() != 0) {
+            fail(format("Tables are missing: %s", expected));
+        }
+    }
+
+    //TODO: use on other tests
+    protected void assertFields(final Set<String> expected, final String tableName) {
+        rdbmsUtils.getRdbmsFields(tableName)
+                .orElseThrow(() -> new RuntimeException(tableName + " not found"))
+                .forEach(o -> {
+                    assertTrue(expected.contains(o.getName()), o.getName() + " not found");
+                    expected.remove(o.getName());
+                });
+        if (expected.size() != 0) {
+            fail(format("Fields are missing from %s: %s", tableName, expected));
         }
     }
 
