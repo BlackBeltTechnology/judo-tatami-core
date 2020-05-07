@@ -336,7 +336,6 @@ public class Asm2RdbmsTypeMappingTest extends Asm2RdbmsMappingTestBase {
         executeTransformation("testStringlikeTypes");
 
         // check eclass -> tables
-        // todo use sets
         final String RDBMS_TABLE_NAME = "TestEpackage.TestStringlikeTypesClass";
 
         // create and fill expected sets
