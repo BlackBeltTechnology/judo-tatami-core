@@ -60,7 +60,7 @@
         <judo-meta-rdbms-version>1.0.0.20200423_074431_12be781_develop</judo-meta-rdbms-version>
         <judo-meta-rdbms-import-range>[1.0,1.1)</judo-meta-rdbms-import-range>
 
-        <judo-meta-esm-version>1.1.0.20200429_111041_6ed178c_develop</judo-meta-esm-version>
+        <judo-meta-esm-version>1.1.0.20200508_121931_58f9bc3_develop</judo-meta-esm-version>
         <judo-meta-esm-import-range>[1.0,1.1)</judo-meta-esm-import-range>
 
         <judo-meta-psm-version>1.1.0.20200406_124222_728e3fc_develop</judo-meta-psm-version>
@@ -72,13 +72,13 @@
         <judo-meta-jcl-version>1.0.1.20200403_160145_e1da907_develop</judo-meta-jcl-version>
         <judo-meta-jcl-import-range>[1.0,1.1)</judo-meta-jcl-import-range>
 
-        <judo-meta-script-version>1.0.1.20200429_155018_dfa0c0f_develop</judo-meta-script-version>
+        <judo-meta-script-version>1.0.1.20200508_152329_9bd9fe3_develop</judo-meta-script-version>
         <judo-meta-script-import-range>[1.0,1.1)</judo-meta-script-import-range>
 
         <judo-meta-asm-version>1.1.0.20200429_152412_8eb5bcd_develop</judo-meta-asm-version>
         <judo-meta-asm-import-range>[1.0,1.1)</judo-meta-asm-import-range>
 
-	<judo-meta-expression-version>1.0.1.20200429_153755_17b3a90_develop</judo-meta-expression-version>
+	<judo-meta-expression-version>1.0.1.20200508_151103_aa41a3c_develop</judo-meta-expression-version>
         <judo-meta-expression-import-range>[1.0,1.1)</judo-meta-expression-import-range>
 
         <judo-meta-measure-version>1.0.0.20200319_171617_08a456f_develop</judo-meta-measure-version>
@@ -87,12 +87,12 @@
         <judo-meta-liquibase-version>1.0.0.20200319_171324_60e9dfa_develop</judo-meta-liquibase-version>
         <judo-meta-liquibase-import-range>[1.0,1.1)</judo-meta-liquibase-import-range>
 
-        <judo-meta-openapi-version>1.0.0.20200319_172005_8885392_develop</judo-meta-openapi-version>
+        <judo-meta-openapi-version>1.0.0.20200506_151306_7c7f32c_develop</judo-meta-openapi-version>
         <judo-meta-openapi-import-range>[1.0,1.1)</judo-meta-openapi-import-range>
 
         <judo-dao-api-version>1.0.0</judo-dao-api-version>
         <judo-dispatcher-api-version>1.0.0</judo-dispatcher-api-version>
-        <judo-script-codegen-version>1.1.0.20200429_155944_d2e9fd4_develop</judo-script-codegen-version>
+        <judo-script-codegen-version>1.1.0.20200508_153222_e685e5d_develop</judo-script-codegen-version>
 
         <structured-map-proxy-version>1.0.0</structured-map-proxy-version>
         <judo-operation-utils-version>1.1.0.20200424_162743_fecf37e_develop</judo-operation-utils-version>
