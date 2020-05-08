@@ -132,7 +132,7 @@ rule EReferenceToRdbmsJunctionTableForeignKeyUnidirectional
 		fk1.fromType(fk1.referenceKey);
 		fk1.mandatory = s.isMandatory();
 		fk1.sqlName = s.referenceIdentifierSqlName();
-	    fk1.foreignKeySqlName = s.referenceFkSqlName(); 
+	    fk1.foreignKeySqlName = s.referenceFkSqlName() + "1";
 
 		fk1.readOnly = true;
 		fk1.deleteOnCascade = true;
@@ -144,7 +144,7 @@ rule EReferenceToRdbmsJunctionTableForeignKeyUnidirectional
 		fk2.fromType(fk2.referenceKey);
 		fk2.mandatory = false;
 		fk2.sqlName = s.sqlName() + "_" + s.eContainingClass.tableSqlName() + "_" + fk2.referenceKey.sqlName;
-	    fk2.foreignKeySqlName = s.referenceUniFkSqlName(); 
+	    fk2.foreignKeySqlName = s.referenceUniFkSqlName() + "2";
 
 		fk2.readOnly = true;
 		fk2.deleteOnCascade = true;

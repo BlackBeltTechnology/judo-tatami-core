@@ -38,7 +38,6 @@ public class Asm2RdbmsMappingTestBase {
     protected static final String ENTITY_ANNOTATION = "entity";
     protected static final String VALUE_ANNOTATION = "true";
 
-
     protected Slf4jLog logger;
 
     protected AsmModel asmModel;
@@ -101,7 +100,6 @@ public class Asm2RdbmsMappingTestBase {
     protected EPackage newEPackage(final EClassifier eClassifiers) {
         return newEPackage(ImmutableList.of(eClassifiers));
     }
-
 
     //TODO: use on other tests
     protected void assertTables(final Set<String> expected) {
