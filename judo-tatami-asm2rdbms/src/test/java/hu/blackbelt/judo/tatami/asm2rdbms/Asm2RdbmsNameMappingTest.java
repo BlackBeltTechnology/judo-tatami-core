@@ -1,195 +1,236 @@
 package hu.blackbelt.judo.tatami.asm2rdbms;
 
+import com.google.common.collect.ImmutableList;
 import hu.blackbelt.judo.meta.rdbmsNameMapping.util.builder.NameMappingsBuilder;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.EReference;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.util.HashSet;
-import java.util.Set;
-
-import static com.google.common.collect.ImmutableList.of;
 import static hu.blackbelt.judo.meta.asm.runtime.AsmUtils.addExtensionAnnotation;
 import static hu.blackbelt.judo.meta.rdbmsNameMapping.util.builder.NameMappingBuilder.create;
-import static java.lang.String.format;
 import static org.eclipse.emf.ecore.EcorePackage.eINSTANCE;
 import static org.eclipse.emf.ecore.util.builder.EcoreBuilders.*;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class Asm2RdbmsNameMappingTest extends Asm2RdbmsMappingTestBase {
 
-    private void assertTablesSlqName(final Set<String> expected) {
-        rdbmsUtils.getRdbmsTables()
-                .orElseThrow(() -> new RuntimeException("Tables not found"))
-                .forEach(o -> {
-                    assertTrue(expected.contains(o.getSqlName()), o.getSqlName() + " not found");
-                    expected.remove(o.getSqlName());
-                });
-        if (expected.size() != 0) {
-            fail(format("Tables are missing: %s", expected));
-        }
-    }
-
-    private void assertFieldsSqlName(final Set<String> expected, final String tableName) {
-        rdbmsUtils.getRdbmsFields(tableName)
-                .orElseThrow(() -> new RuntimeException(tableName + " not found"))
-                .forEach(o -> {
-                    assertTrue(expected.contains(o.getSqlName()), o.getSqlName() + " not found");
-                    expected.remove(o.getSqlName());
-                });
-        if (expected.size() != 0) {
-            fail(format("Fields are missing from %s: %s", tableName, expected));
-        }
-    }
-
     @Test
-    public void testNameMapping() { // TODO: containment
-        ///////////////
-        // setup names
-
+    @DisplayName("Test Table And Attribute Name Mapping")
+    public void testTableAndAttributeNameMapping() {
         final String RDBMS_TABLE_NAME = "TestEpackage.TestEclass";
-        final String RDBMS_TABLE_NAME2 = "TestEpackage.TestEclass2";
-        final String RDBMS_ATTRIBUTE_NAME = RDBMS_TABLE_NAME + "#testAttribute";
-        final String RDBMS_REFERENCE_NAME = RDBMS_TABLE_NAME2 + "#testReference";
-        final String RDBMS_TWO_REFERENCE_NAME = RDBMS_TABLE_NAME2 + "#twoWayReference";
-        final String RDBMS_TWO_REFERENCE_NAME2 = RDBMS_TABLE_NAME + "#twoWayReference2";
+        final String RDBMS_ATTRIBUTE_NAME = "TestEpackage.TestEclass#nameMappingAttribute";
         final String NAME_MAPPING_STRING = "NewName";
 
-
-        // setup names
-        ////////////////////////////////////
-        // add name mappings to rdbms model
-
+        // create name mappings
         rdbmsModel.addContent(
                 NameMappingsBuilder.create()
-                        .withNameMappings(of(
+                        .withNameMappings(ImmutableList.of(
                                 create() // table
                                         .withFullyQualifiedName(RDBMS_TABLE_NAME)
                                         .withRdbmsName(RDBMS_TABLE_NAME + NAME_MAPPING_STRING)
                                         .build(),
-                                create() // table2
-                                        .withFullyQualifiedName(RDBMS_TABLE_NAME2)
-                                        .withRdbmsName(RDBMS_TABLE_NAME2 + NAME_MAPPING_STRING)
-                                        .build(),
-                                create() // junction table
-                                        .withFullyQualifiedName(RDBMS_TWO_REFERENCE_NAME + " to " + RDBMS_TWO_REFERENCE_NAME2)
-                                        .withRdbmsName(RDBMS_TWO_REFERENCE_NAME + " to " + RDBMS_TWO_REFERENCE_NAME2 + " " + NAME_MAPPING_STRING)
-                                        .build(),
                                 create() // attribute
                                         .withFullyQualifiedName(RDBMS_ATTRIBUTE_NAME)
                                         .withRdbmsName(RDBMS_ATTRIBUTE_NAME + NAME_MAPPING_STRING)
-                                        .build(),
-                                create() // reference
-                                        .withFullyQualifiedName(RDBMS_REFERENCE_NAME)
-                                        .withRdbmsName(RDBMS_REFERENCE_NAME + NAME_MAPPING_STRING)
-                                        .build(),
-                                create() // two way reference
-                                        .withFullyQualifiedName(RDBMS_TWO_REFERENCE_NAME)
-                                        .withRdbmsName(RDBMS_TWO_REFERENCE_NAME + NAME_MAPPING_STRING)
-                                        .build(),
-                                create() // two way reference2
-                                        .withFullyQualifiedName(RDBMS_TWO_REFERENCE_NAME2)
-                                        .withRdbmsName(RDBMS_TWO_REFERENCE_NAME2 + NAME_MAPPING_STRING)
                                         .build()
                         ))
                         .build()
         );
 
-        // add name mappings to rdbms model
-        ///////////////////////////////////
-        // setup asm model
-
         EClass testEclass = newEClassBuilder()
                 .withName("TestEclass")
                 .withEStructuralFeatures(
                         newEAttributeBuilder()
-                                .withName("testAttribute")
+                                .withName("nameMappingAttribute")
                                 .withEType(eINSTANCE.getEString())
                                 .build()
                 )
                 .build();
         addExtensionAnnotation(testEclass, ENTITY_ANNOTATION, VALUE_ANNOTATION);
 
-        EClass testEclass2 = newEClassBuilder()
-                .withName("TestEclass2")
-                .withEStructuralFeatures(
-                        newEReferenceBuilder()
-                                .withName("testReference")
-                                .withLowerBound(0)
-                                .withUpperBound(1)
-                                .withEType(testEclass)
-                                .build()
-                )
-                .build();
-        addExtensionAnnotation(testEclass2, ENTITY_ANNOTATION, VALUE_ANNOTATION);
-
-        EReference eReference = newEReferenceBuilder()
-                .withName("twoWayReference")
-                .withLowerBound(0)
-                .withUpperBound(-1)
-                .withEType(testEclass)
-                .build();
-        EReference eReference2 = newEReferenceBuilder()
-                .withName("twoWayReference2")
-                .withLowerBound(0)
-                .withUpperBound(-1)
-                .withEType(testEclass2)
-                .build();
-
-        eReference.setEOpposite(eReference2);
-        eReference2.setEOpposite(eReference);
-
-        testEclass.getEStructuralFeatures().add(eReference2);
-        testEclass2.getEStructuralFeatures().add(eReference);
-
-        EPackage ePackage = newEPackage(of(testEclass, testEclass2));
+        EPackage ePackage = newEPackage(testEclass);
 
         asmModel.addContent(ePackage);
 
-        // setup asm model and transform
+        executeTransformation("testTableAndAttributeNameMapping");
 
-        executeTransformation("testNameMapping");
+        // ASSERTION - compare new sql name
+        assertEquals(
+                rdbmsUtils.getRdbmsTable(RDBMS_TABLE_NAME)
+                        .orElseThrow(() -> new RuntimeException(RDBMS_TABLE_NAME + " table not found"))
+                        .getSqlName(),
+                RDBMS_TABLE_NAME + NAME_MAPPING_STRING
+        );
 
-        // setup asm model and transform
-        ////////////////////////////////
-        // fill expected sets
+        // ASSERTION - compare new sql name
+        assertEquals(
+                rdbmsUtils.getRdbmsField(RDBMS_TABLE_NAME, RDBMS_ATTRIBUTE_NAME)
+                        .orElseThrow(() -> new RuntimeException(RDBMS_ATTRIBUTE_NAME + " table not found"))
+                        .getSqlName(),
+                RDBMS_ATTRIBUTE_NAME + NAME_MAPPING_STRING
+        );
+    }
 
-        Set<String> tableSqlNames = new HashSet<>();
-        Set<String> fieldSqlNames = new HashSet<>();
-        Set<String> fieldSqlNames2 = new HashSet<>();
-        Set<String> fieldSqlNames3 = new HashSet<>(); // junction table
+    @Test
+    @DisplayName("Test Reference Name Mapping")
+    public void testReferenceNameMapping() {
+        final String RDBMS_TABLE_NAME = "TestEpackage.TestEclass";
+        final String RDBMS_TABLE_NAME2 = "TestEpackage.TestEclass2";
+        final String RDBMS_REFERENCE_NAME = "nameMappingReference";
+        final String RDBMS_SELF_REFERENCE_NAME = "selfReference";
+        final String RDBMS_CONTAINMENT_NAME = "testEclass2NameMappingContainment";
+        final String NAME_MAPPING_STRING = "NewName";
 
-        tableSqlNames.add(RDBMS_TABLE_NAME + NAME_MAPPING_STRING);
-        tableSqlNames.add(RDBMS_TABLE_NAME2 + NAME_MAPPING_STRING);
-        // tableSqlNames.add(RDBMS_TWO_REFERENCE_NAME + " to " + RDBMS_TWO_REFERENCE_NAME2 + " " + NAME_MAPPING_STRING);
-        tableSqlNames.add("T_TEEP_TSES_WWFC_TEEP_TT2_TWR2"); // FIXME: why?
+        // create mappings
+        rdbmsModel.addContent(
+                NameMappingsBuilder.create()
+                        .withNameMappings(ImmutableList.of(
+                                create() // reference
+                                        .withFullyQualifiedName(RDBMS_TABLE_NAME2 + "#" + RDBMS_REFERENCE_NAME)
+                                        .withRdbmsName(RDBMS_REFERENCE_NAME + NAME_MAPPING_STRING)
+                                        .build(),
+                                create() // self reference
+                                        .withFullyQualifiedName(RDBMS_TABLE_NAME2 + "#" + RDBMS_SELF_REFERENCE_NAME)
+                                        .withRdbmsName(RDBMS_SELF_REFERENCE_NAME + NAME_MAPPING_STRING)
+                                        .build(),
+                                create() // containment
+                                        .withFullyQualifiedName(RDBMS_TABLE_NAME + "#nameMappingContainment")
+                                        .withRdbmsName(RDBMS_CONTAINMENT_NAME + NAME_MAPPING_STRING)
+                                        .build()
+                        ))
+                        .build()
+        );
 
-        fieldSqlNames.add("ID");
-        fieldSqlNames.add("TYPE");
-        fieldSqlNames.add(RDBMS_ATTRIBUTE_NAME + NAME_MAPPING_STRING);
+        EClass testEclass = newEClassBuilder()
+                .withName("TestEclass")
+                .build();
+        addExtensionAnnotation(testEclass, ENTITY_ANNOTATION, VALUE_ANNOTATION);
 
+        EClass testEclass2 = newEClassBuilder()
+                .withName("TestEclass2")
+                .withEStructuralFeatures(ImmutableList.of(
+                        newEReferenceBuilder()
+                                .withName("nameMappingReference")
+                                .withLowerBound(1)
+                                .withUpperBound(1)
+                                .withEType(testEclass)
+                                .build(),
+                        newEReferenceBuilder()
+                                .withName("nameMappingContainment")
+                                .withLowerBound(1)
+                                .withUpperBound(1)
+                                .withContainment(true)
+                                .withEType(testEclass)
+                                .build()
+                ))
+                .build();
+        addExtensionAnnotation(testEclass2, ENTITY_ANNOTATION, VALUE_ANNOTATION);
 
-        fieldSqlNames2.add("ID");
-        fieldSqlNames2.add("TYPE");
-        fieldSqlNames2.add(RDBMS_REFERENCE_NAME + NAME_MAPPING_STRING);
+        testEclass2.getEStructuralFeatures().add(
+                newEReferenceBuilder()
+                        .withName("selfReference")
+                        .withLowerBound(1)
+                        .withUpperBound(1)
+                        .withEType(testEclass2)
+                        .build()
+        );
 
-        fieldSqlNames3.add("ID");
-        fieldSqlNames3.add(RDBMS_TWO_REFERENCE_NAME + NAME_MAPPING_STRING);
-        fieldSqlNames3.add(RDBMS_TWO_REFERENCE_NAME2 + NAME_MAPPING_STRING);
+        EPackage ePackage = newEPackage(ImmutableList.of(testEclass, testEclass2));
 
-        // fill expected sets
-        ////////////////////////////////////
-        // compare expected and actual sets
+        asmModel.addContent(ePackage);
 
-        assertTablesSlqName(tableSqlNames);
-        assertFieldsSqlName(fieldSqlNames, RDBMS_TABLE_NAME);
-        assertFieldsSqlName(fieldSqlNames2, RDBMS_TABLE_NAME2);
-        assertFieldsSqlName(fieldSqlNames3, RDBMS_TWO_REFERENCE_NAME + " to " + RDBMS_TWO_REFERENCE_NAME2);
+        executeTransformation("testReferenceNameMapping");
 
-        // compare expected and actual sets
-        ///////////////////////////////////
+        // ASSERTION - compare new sql name
+        assertEquals(
+                RDBMS_REFERENCE_NAME + NAME_MAPPING_STRING,
+                rdbmsUtils.getRdbmsField(RDBMS_TABLE_NAME2, RDBMS_REFERENCE_NAME)
+                        .orElseThrow(() -> new RuntimeException(RDBMS_REFERENCE_NAME + " field not found"))
+                        .getSqlName()
+        );
+
+        // ASSERTION - compare new sql name
+        assertEquals(
+                RDBMS_SELF_REFERENCE_NAME + NAME_MAPPING_STRING,
+                rdbmsUtils.getRdbmsField(RDBMS_TABLE_NAME2, RDBMS_SELF_REFERENCE_NAME)
+                        .orElseThrow(() -> new RuntimeException(RDBMS_SELF_REFERENCE_NAME + " field not found"))
+                        .getSqlName()
+        );
+
+        // FIXME
+        // ASSERTION - compare new sql name
+//        assertEquals(
+//                RDBMS_CONTAINMENT_NAME + NAME_MAPPING_STRING,
+//                rdbmsUtils.getRdbmsField(RDBMS_TABLE_NAME, RDBMS_CONTAINMENT_NAME)
+//                        .orElseThrow(() -> new RuntimeException(RDBMS_CONTAINMENT_NAME + " field not found"))
+//                        .getSqlName()
+//        );
+
+    }
+
+    @Test
+    @DisplayName("Test Junction Table Name Mapping")
+    public void testJunctionTableNameMapping() {
+
+        // create mapping
+        rdbmsModel.addContent(
+                NameMappingsBuilder.create()
+                        .withNameMappings(create() // reference
+                                .withFullyQualifiedName(
+                                        "TestEpackage.TestEclass#TestEclass2Ref" +
+                                                "_TestEpackage.TestEclass2#TestEclassRef"
+                                )
+                                .withRdbmsName("NewSqlNameForJunctionTable")
+                                .build()
+                        )
+                        .build()
+        );
+
+        EClass testEclass = newEClassBuilder()
+                .withName("TestEclass")
+                .build();
+        addExtensionAnnotation(testEclass, ENTITY_ANNOTATION, VALUE_ANNOTATION);
+
+        EClass testEclass2 = newEClassBuilder()
+                .withName("TestEclass2")
+                .build();
+        addExtensionAnnotation(testEclass2, ENTITY_ANNOTATION, VALUE_ANNOTATION);
+
+        EReference testEreference = newEReferenceBuilder()
+                .withName("TestEclassRef")
+                .withEType(testEclass)
+                .withLowerBound(0)
+                .withUpperBound(-1)
+                .build();
+        EReference testEreference2 = newEReferenceBuilder()
+                .withName("TestEclass2Ref")
+                .withEType(testEclass2)
+                .withLowerBound(0)
+                .withUpperBound(-1)
+                .build();
+
+        testEreference.setEOpposite(testEreference2);
+        testEreference2.setEOpposite(testEreference);
+
+        testEclass.getEStructuralFeatures().add(testEreference2);
+        testEclass2.getEStructuralFeatures().add(testEreference);
+
+        EPackage ePackage = newEPackage(ImmutableList.of(testEclass, testEclass2));
+
+        asmModel.addContent(ePackage);
+
+        executeTransformation("testJunctionTableNameMapping");
+
+        // ASSERTION - compare new sql name
+        assertEquals(
+                "NewSqlNameForJunctionTable",
+                rdbmsUtils.getRdbmsJunctionTables()
+                        .orElseThrow(() -> new RuntimeException("Junction tables not found"))
+                        .get(0).getSqlName()
+        );
+
     }
 
 }
