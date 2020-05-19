@@ -174,17 +174,26 @@ public class Asm2RdbmsNameMappingTest extends Asm2RdbmsMappingTestBase {
     @DisplayName("Test Junction Table Name Mapping")
     public void testJunctionTableNameMapping() {
 
+        final String JUNCTION_TABLE_NAME = "TestEpackage.TestEclass#TestEclass2Ref" +
+                "_TestEpackage.TestEclass2#TestEclassRef";
+
         // create mapping
         rdbmsModel.addContent(
                 NameMappingsBuilder.create()
-                        .withNameMappings(create() // reference
-                                .withFullyQualifiedName(
-                                        "TestEpackage.TestEclass#TestEclass2Ref" +
-                                                "_TestEpackage.TestEclass2#TestEclassRef"
-                                )
-                                .withRdbmsName("NewSqlNameForJunctionTable")
-                                .build()
-                        )
+                        .withNameMappings(ImmutableList.of(
+                                create() // reference
+                                        .withFullyQualifiedName(JUNCTION_TABLE_NAME)
+                                        .withRdbmsName("NewSqlNameForJunctionTable")
+                                        .build(),
+                                create() // junct. field
+                                        .withFullyQualifiedName("TestEpackage.TestEclass2#TestEclassRef")
+                                        .withRdbmsName("TestRefNewName")
+                                        .build(),
+                                create() // junct. field
+                                        .withFullyQualifiedName("TestEpackage.TestEclass#TestEclass2Ref")
+                                        .withRdbmsName("TestRef2NewName")
+                                        .build()
+                        ))
                         .build()
         );
 
@@ -229,6 +238,21 @@ public class Asm2RdbmsNameMappingTest extends Asm2RdbmsMappingTestBase {
                 rdbmsUtils.getRdbmsJunctionTables()
                         .orElseThrow(() -> new RuntimeException("Junction tables not found"))
                         .get(0).getSqlName()
+        );
+
+        // ASSERTION - compare new sql name
+        assertEquals(
+                "TestRef2NewName",
+                rdbmsUtils.getRdbmsJunctionTables()
+                        .orElseThrow(() -> new RuntimeException("Junction tables not found"))
+                        .get(0).getField1().getSqlName()
+        );
+        // ASSERTION - compare new sql name
+        assertEquals(
+                "TestRefNewName",
+                rdbmsUtils.getRdbmsJunctionTables()
+                        .orElseThrow(() -> new RuntimeException("Junction tables not found"))
+                        .get(0).getField2().getSqlName()
         );
 
     }
