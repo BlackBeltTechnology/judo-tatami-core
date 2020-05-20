@@ -86,7 +86,6 @@ public class Asm2RdbmsMappingTestBase {
         }
     }
 
-    //TODO: use on other tests
     protected EPackage newEPackage(final ImmutableList<EClassifier> eClassifiers) {
         return newEPackageBuilder()
                 .withName("TestEpackage")
@@ -96,12 +95,10 @@ public class Asm2RdbmsMappingTestBase {
                 .build();
     }
 
-    //TODO: use on other tests
     protected EPackage newEPackage(final EClassifier eClassifiers) {
         return newEPackage(ImmutableList.of(eClassifiers));
     }
 
-    //TODO: use on other tests
     protected void assertTables(final Set<String> expected) {
         rdbmsUtils.getRdbmsTables()
                 .orElseThrow(() -> new RuntimeException("Tables not found"))
@@ -114,7 +111,6 @@ public class Asm2RdbmsMappingTestBase {
         }
     }
 
-    //TODO: use on other tests
     protected void assertFields(final Set<String> expected, final String tableName) {
         rdbmsUtils.getRdbmsFields(tableName)
                 .orElseThrow(() -> new RuntimeException(tableName + " not found"))

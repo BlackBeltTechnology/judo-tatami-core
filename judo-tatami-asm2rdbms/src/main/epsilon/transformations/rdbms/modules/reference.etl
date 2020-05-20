@@ -34,7 +34,7 @@ rule EReferenceToRdbmsTableInverseForeignKey
     	s.eReferenceType.equivalent("EClassToRdbmsTable").fields.add(fk);
 
     	fk.name = s.eContainingClass.name.firstToLowerCase() + s.name.firstToUpperCase();
-    	fk.uuid = asmUtils.getClassifierFQName(s.eReferenceType);
+    	fk.uuid = asmUtils.getReferenceFQName(s);
     	
     	fk.referenceKey = s.eContainingClass.equivalent("EClassToRdbmsTable").primaryKey;
 		fk.fromType(fk.referenceKey);
