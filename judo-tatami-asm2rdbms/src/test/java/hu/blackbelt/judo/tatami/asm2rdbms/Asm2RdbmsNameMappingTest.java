@@ -76,11 +76,11 @@ public class Asm2RdbmsNameMappingTest extends Asm2RdbmsMappingTestBase {
     @Test
     @DisplayName("Test Reference Name Mapping")
     public void testReferenceNameMapping() {
-        //final String RDBMS_TABLE_NAME = "TestEpackage.TestEclass";
+        final String RDBMS_TABLE_NAME = "TestEpackage.TestEclass";
         final String RDBMS_TABLE_NAME2 = "TestEpackage.TestEclass2";
         final String RDBMS_REFERENCE_NAME = "nameMappingReference";
         final String RDBMS_SELF_REFERENCE_NAME = "selfReference";
-        //final String RDBMS_CONTAINMENT_NAME = "testEclass2NameMappingContainment";
+        final String RDBMS_CONTAINMENT_NAME = "testEclass2NameMappingContainment";
         final String NAME_MAPPING_STRING = "NewName";
 
         // create mappings
@@ -94,11 +94,11 @@ public class Asm2RdbmsNameMappingTest extends Asm2RdbmsMappingTestBase {
                                 create() // self reference
                                         .withFullyQualifiedName(RDBMS_TABLE_NAME2 + "#" + RDBMS_SELF_REFERENCE_NAME)
                                         .withRdbmsName(RDBMS_SELF_REFERENCE_NAME + NAME_MAPPING_STRING)
+                                        .build(),
+                                create() // containment
+                                        .withFullyQualifiedName(RDBMS_TABLE_NAME2 + "#nameMappingContainment")
+                                        .withRdbmsName(RDBMS_TABLE_NAME2 + "#nameMappingContainment" + NAME_MAPPING_STRING)
                                         .build()
-//                                create() // containment
-//                                        .withFullyQualifiedName("TestEpackage.TestEclass") // FIXME
-//                                        .withRdbmsName(RDBMS_CONTAINMENT_NAME + NAME_MAPPING_STRING)
-//                                        .build()
                         ))
                         .build()
         );
@@ -116,14 +116,14 @@ public class Asm2RdbmsNameMappingTest extends Asm2RdbmsMappingTestBase {
                                 .withLowerBound(1)
                                 .withUpperBound(1)
                                 .withEType(testEclass)
+                                .build(),
+                        newEReferenceBuilder()
+                                .withName("nameMappingContainment")
+                                .withLowerBound(1)
+                                .withUpperBound(1)
+                                .withContainment(true)
+                                .withEType(testEclass)
                                 .build()
-//                        newEReferenceBuilder()
-//                                .withName("nameMappingContainment")
-//                                .withLowerBound(1)
-//                                .withUpperBound(1)
-//                                .withContainment(true)
-//                                .withEType(testEclass)
-//                                .build()
                 ))
                 .build();
         addExtensionAnnotation(testEclass2, ENTITY_ANNOTATION, VALUE_ANNOTATION);
@@ -156,6 +156,14 @@ public class Asm2RdbmsNameMappingTest extends Asm2RdbmsMappingTestBase {
                 RDBMS_SELF_REFERENCE_NAME + NAME_MAPPING_STRING,
                 rdbmsUtils.getRdbmsField(RDBMS_TABLE_NAME2, RDBMS_SELF_REFERENCE_NAME)
                         .orElseThrow(() -> new RuntimeException(RDBMS_SELF_REFERENCE_NAME + " field not found"))
+                        .getSqlName()
+        );
+
+        // ASSERTION - compare new sql name
+        assertEquals(
+                RDBMS_TABLE_NAME2 + "#nameMappingContainment" + NAME_MAPPING_STRING,
+                rdbmsUtils.getRdbmsField(RDBMS_TABLE_NAME, RDBMS_CONTAINMENT_NAME)
+                        .orElseThrow(() -> new RuntimeException(RDBMS_CONTAINMENT_NAME + " field not found"))
                         .getSqlName()
         );
 
