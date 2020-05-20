@@ -207,17 +207,16 @@ public class Asm2RdbmsTypeMappingTest extends Asm2RdbmsMappingTestBase {
         assertFields(fields, RDBMS_TABLE_NAME);
 
         // check field types based on typemapping table
-        // todo fix mapping
-//        typeAsserter(rdbmsUtils.getRdbmsField(RDBMS_TABLE_NAME, "bigDecimalAttr", true).get(),
-//                DECIMAL,
-//                -1,
-//                64,
-//                20);
-//        typeAsserter(rdbmsUtils.getRdbmsField(RDBMS_TABLE_NAME, "bigInteger", true).get(),
-//                DECIMAL,
-//                -1,
-//                18,
-//                0);
+        typeAsserter(rdbmsUtils.getRdbmsField(RDBMS_TABLE_NAME, RDBMS_TABLE_NAME + "#bigDecimalAttr").get(),
+                DECIMAL,
+                -1,
+                64,
+                20);
+        typeAsserter(rdbmsUtils.getRdbmsField(RDBMS_TABLE_NAME, RDBMS_TABLE_NAME + "#bigInteger").get(),
+                DECIMAL,
+                -1,
+                18,
+                0);
         typeAsserter(rdbmsUtils.getRdbmsField(RDBMS_TABLE_NAME, RDBMS_TABLE_NAME + "#doubleAttr").get(),
                 DOUBLE,
                 -1,
@@ -268,12 +267,11 @@ public class Asm2RdbmsTypeMappingTest extends Asm2RdbmsMappingTestBase {
                 -1,
                 -1,
                 -1);
-        // todo fix mapping
-//        typeAsserter(rdbmsUtils.getRdbmsField(RDBMS_TABLE_NAME, "javamathBigIntegerAttr", true).get(),
-//                DECIMAL,
-//                -1,
-//                18,
-//                0);
+        typeAsserter(rdbmsUtils.getRdbmsField(RDBMS_TABLE_NAME, RDBMS_TABLE_NAME + "#javamathBigIntegerAttr").get(),
+                DECIMAL,
+                -1,
+                18,
+                0);
         typeAsserter(rdbmsUtils.getRdbmsField(RDBMS_TABLE_NAME, RDBMS_TABLE_NAME + "#javalangFloatAttr").get(),
                 FLOAT,
                 -1,
@@ -284,12 +282,11 @@ public class Asm2RdbmsTypeMappingTest extends Asm2RdbmsMappingTestBase {
                 -1,
                 -1,
                 -1);
-        // todo fix mapping
-//        typeAsserter(rdbmsUtils.getRdbmsField(RDBMS_TABLE_NAME, "javamathBigDecimalAttr", true).get(),
-//                DECIMAL,
-//                -1,
-//                64,
-//                20);
+        typeAsserter(rdbmsUtils.getRdbmsField(RDBMS_TABLE_NAME, RDBMS_TABLE_NAME + "#javamathBigDecimalAttr").get(),
+                DECIMAL,
+                -1,
+                64,
+                20);
 
     }
 
