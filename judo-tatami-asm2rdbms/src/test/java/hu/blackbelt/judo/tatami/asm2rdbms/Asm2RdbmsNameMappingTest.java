@@ -58,18 +58,18 @@ public class Asm2RdbmsNameMappingTest extends Asm2RdbmsMappingTestBase {
 
         // ASSERTION - compare new sql name
         assertEquals(
+                RDBMS_TABLE_NAME + NAME_MAPPING_STRING,
                 rdbmsUtils.getRdbmsTable(RDBMS_TABLE_NAME)
                         .orElseThrow(() -> new RuntimeException(RDBMS_TABLE_NAME + " table not found"))
-                        .getSqlName(),
-                RDBMS_TABLE_NAME + NAME_MAPPING_STRING
+                        .getSqlName()
         );
 
         // ASSERTION - compare new sql name
         assertEquals(
+                RDBMS_ATTRIBUTE_NAME + NAME_MAPPING_STRING,
                 rdbmsUtils.getRdbmsField(RDBMS_TABLE_NAME, RDBMS_ATTRIBUTE_NAME)
                         .orElseThrow(() -> new RuntimeException(RDBMS_ATTRIBUTE_NAME + " table not found"))
-                        .getSqlName(),
-                RDBMS_ATTRIBUTE_NAME + NAME_MAPPING_STRING
+                        .getSqlName()
         );
     }
 
@@ -180,7 +180,7 @@ public class Asm2RdbmsNameMappingTest extends Asm2RdbmsMappingTestBase {
         rdbmsModel.addContent(
                 NameMappingsBuilder.create()
                         .withNameMappings(ImmutableList.of(
-                                create() // reference
+                                create() // junct. table
                                         .withFullyQualifiedName(JUNCTION_TABLE_NAME)
                                         .withRdbmsName("NewSqlNameForJunctionTable")
                                         .build(),
