@@ -114,30 +114,3 @@ rule CreateNavigationPropertyForTransferObjectRelationRange
             
             log.debug("Created Navigation Property for transfer object relation range: " + t.name);
 }
-
-@lazy
-@greedy
-rule CreateCardinalityForExposedGraphSelector
-    transform s: ESM!ReferenceTypedElement
-    to t: JUDOPSM!Cardinality {
-      t.upper = s.upper;
-      t.lower = s.lower;
-}
-
-@lazy
-@greedy
-rule CreateStaticNavigationForExposedGraph
-	transform s : ESM!StaticNavigation
-	to t : JUDOPSM!StaticNavigation
-	extends CreateNamedElement {
-	  guard: s.isTypeOf(ESM!ExposedGraph) and s.target.mapping.isDefined() and s.getterExpression.trim() <> ''
-
-	  var ecoreUtil = new Native("org.eclipse.emf.ecore.util.EcoreUtil");
-	  ecoreUtil.getRootContainer(s).equivalent("CreateGeneratedNavigationRootPackage").elements.add(t);
-	  t.name = "_" + s.name + "_selector_" + s.eContainer.name;
-	  t.cardinality = s.equivalent("CreateCardinalityForExposedGraphSelector");
-	  t.getterExpression = s.equivalent("CreateGetterExpressionForExposedGraphSelector");
-	  t.target = s.target.mapping.target.equivalent("CreateEntityType");
-
-	  log.debug("Created StaticNavigation for ExposedGraph: " + t.name);
-}

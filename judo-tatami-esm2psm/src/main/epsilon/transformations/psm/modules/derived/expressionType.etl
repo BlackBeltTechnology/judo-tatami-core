@@ -74,11 +74,3 @@ rule CreateGetterExpressionForTransferObjectRelationBinding
         t.expression = s.getterExpression;
         log.debug("Created Reference Expression Type for Transfer Object Relation Binding: " + s.name);
 }
-
-@greedy
-rule CreateGetterExpressionForExposedGraphSelector
-    transform s : ESM!StaticNavigation
-    to t : JUDOPSM!ReferenceExpressionType {
-        t.expression = s.getterExpression;
-        log.debug("Created Reference Expression Type for Exposed Graph Selector: " + s.name);    
-}
