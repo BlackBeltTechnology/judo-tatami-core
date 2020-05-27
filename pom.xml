@@ -555,6 +555,12 @@
                 <version>3.0.0</version>
             </dependency>
 
+            <dependency>
+                <groupId>hu.blackbelt.judo.meta</groupId>
+                <artifactId>hu.blackbelt.judo.meta.psm.model.northwind</artifactId>
+                <scope>test</scope>
+                <version>${judo-meta-psm-version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
     <build>
