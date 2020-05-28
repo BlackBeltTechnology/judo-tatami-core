@@ -111,7 +111,7 @@ public class NorthwindTatamiPSMTransformationPipelineITest extends TatamiPSMTran
         assertThat(orderRdbmsObjectList.stream()
                 .filter(RdbmsTable.class::isInstance)
                 .map(RdbmsTable.class::cast)
-                .findFirst().get().getSqlName(), equalTo("T_ENTTS_ORDER"));
+                .findFirst().get().getSqlName(), equalTo("T_ENTITS_ORDER"));
 
         log.log(LOG_INFO, "==============================================");
         log.log(LOG_INFO, "== STOPPING TEST TRACE METHOD");
