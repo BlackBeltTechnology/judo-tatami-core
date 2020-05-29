@@ -25,8 +25,6 @@ import static hu.blackbelt.judo.tatami.psm2measure.Psm2Measure.executePsm2Measur
 @Slf4j
 public class Psm2MeasureTransformationService {
 
-    public static final String MEASURE_META_VERSION_RANGE = "Measure-Meta-Version-Range";
-
     Map<PsmModel, ServiceRegistration<TransformationTrace>> psm2MeasureTransformationTraceRegistration = Maps.newHashMap();
 
     BundleContext bundleContext;
