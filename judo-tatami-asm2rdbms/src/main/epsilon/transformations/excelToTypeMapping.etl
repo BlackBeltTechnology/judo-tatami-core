@@ -32,5 +32,10 @@ rule Excel2TypeMapping
         }
 
         t.rdbmsJdbcType = s.JdbcType;
+
+        if (s.SqlType.isDefined() and s.SqlType.trim() <> "") {
+            t.rdbmsSqlType = s.SqlType.asFloat().asInteger();
+        }
+
 		targetModel.typeMappings.add(t);
 }

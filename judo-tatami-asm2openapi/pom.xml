@@ -63,7 +63,6 @@
                             ${osgi-default-import},
                             *
 						</Import-Package>
-						<OpenAPI-Meta-Version-Range>${judo-meta-openapi-import-range}</OpenAPI-Meta-Version-Range>
 						<Asm2Openapi-Transformation-ScriptRoot>tatami/asm2openapi/transformations/openapi</Asm2Openapi-Transformation-ScriptRoot>
 					</instructions>
 				</configuration>

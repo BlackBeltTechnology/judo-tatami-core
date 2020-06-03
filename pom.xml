@@ -442,6 +442,12 @@
             </dependency>
 
             <dependency>
+                <groupId>hu.blackbelt.judo.meta</groupId>
+                <artifactId>hu.blackbelt.judo.meta.ui.model</artifactId>
+                <version>${judo-meta-ui-version}</version>
+            </dependency>
+
+            <dependency>
                 <groupId>hu.blackbelt.judo.framework</groupId>
                 <artifactId>compiler-api</artifactId>
                 <version>${judo-framework-version}</version>
@@ -632,6 +638,12 @@
                             <artifactId>hu.blackbelt.judo.meta.measure.model</artifactId>
                             <version>${judo-meta-measure-version}</version>
                         </dependency>
+                        <dependency>
+                            <groupId>hu.blackbelt.judo.meta</groupId>
+                            <artifactId>hu.blackbelt.judo.meta.ui.model</artifactId>
+                            <version>${judo-meta-ui-version}</version>
+                        </dependency>
+
                     </dependencies>
                 </plugin>
 

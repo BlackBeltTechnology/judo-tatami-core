@@ -20,8 +20,6 @@ import static hu.blackbelt.judo.tatami.rdbms2liquibase.Rdbms2Liquibase.executeRd
 @Slf4j
 public class Rdbms2LiquibaseTranformationSerivce {
 
-    public static final String LIQUIBASE_META_VERSION_RANGE = "Liquibase-Meta-Version-Range";
-
     BundleContext bundleContext;
 
     @Activate
