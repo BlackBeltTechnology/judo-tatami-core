@@ -58,38 +58,17 @@
 
         <!-- Model versions -->
         <judo-meta-rdbms-version>1.0.0.20200602_091340_865283d_develop</judo-meta-rdbms-version>
-        <judo-meta-rdbms-import-range>[1.0,1.1)</judo-meta-rdbms-import-range>
-
         <judo-meta-esm-version>1.1.0.20200522_122958_9811526_develop</judo-meta-esm-version>
-        <judo-meta-esm-import-range>[1.0,1.1)</judo-meta-esm-import-range>
-
         <judo-meta-psm-version>1.1.0.20200406_124222_728e3fc_develop</judo-meta-psm-version>
-        <judo-meta-psm-import-range>[1.0,1.1)</judo-meta-psm-import-range>
-
         <judo-meta-jql-version>1.0.1.20200522_124420_d3e619e_develop</judo-meta-jql-version>
-        <judo-meta-jql-import-range>[1.0,1.1)</judo-meta-jql-import-range>
-
         <judo-meta-jcl-version>1.0.1.20200522_130008_62e5fac_develop</judo-meta-jcl-version>
-        <judo-meta-jcl-import-range>[1.0,1.1)</judo-meta-jcl-import-range>
-
         <judo-meta-script-version>1.0.1.20200522_131215_79ad680_develop</judo-meta-script-version>
-        <judo-meta-script-import-range>[1.0,1.1)</judo-meta-script-import-range>
-
         <judo-meta-asm-version>1.1.0.20200429_152412_8eb5bcd_develop</judo-meta-asm-version>
-        <judo-meta-asm-import-range>[1.0,1.1)</judo-meta-asm-import-range>
-
-	<judo-meta-expression-version>1.0.1.20200522_130030_51961b8_develop</judo-meta-expression-version>
-        <judo-meta-expression-import-range>[1.0,1.1)</judo-meta-expression-import-range>
-
+        <judo-meta-expression-version>1.0.1.20200522_130030_51961b8_develop</judo-meta-expression-version>
         <judo-meta-measure-version>1.0.0.20200319_171617_08a456f_develop</judo-meta-measure-version>
-        <judo-meta-measure-import-range>[1.0,1.1)</judo-meta-measure-import-range>
-
         <judo-meta-liquibase-version>1.0.0.20200319_171324_60e9dfa_develop</judo-meta-liquibase-version>
-        <judo-meta-liquibase-import-range>[1.0,1.1)</judo-meta-liquibase-import-range>
-
         <judo-meta-openapi-version>1.0.0.20200506_151306_7c7f32c_develop</judo-meta-openapi-version>
-        <judo-meta-openapi-import-range>[1.0,1.1)</judo-meta-openapi-import-range>
-
+        <judo-meta-ui-version>1.0.0.20200529_134432_43ad04a_develop</judo-meta-ui-version>
         <judo-dao-api-version>1.0.0</judo-dao-api-version>
         <judo-dispatcher-api-version>1.0.0</judo-dispatcher-api-version>
         <judo-script-codegen-version>1.1.0.20200522_132100_44072bf_develop</judo-script-codegen-version>
@@ -442,6 +421,12 @@
             </dependency>
 
             <dependency>
+                <groupId>hu.blackbelt.judo.meta</groupId>
+                <artifactId>hu.blackbelt.judo.meta.ui.model</artifactId>
+                <version>${judo-meta-ui-version}</version>
+            </dependency>
+
+            <dependency>
                 <groupId>hu.blackbelt.judo.framework</groupId>
                 <artifactId>compiler-api</artifactId>
                 <version>${judo-framework-version}</version>
@@ -626,6 +611,12 @@
                             <artifactId>hu.blackbelt.judo.meta.measure.model</artifactId>
                             <version>${judo-meta-measure-version}</version>
                         </dependency>
+                        <dependency>
+                            <groupId>hu.blackbelt.judo.meta</groupId>
+                            <artifactId>hu.blackbelt.judo.meta.ui.model</artifactId>
+                            <version>${judo-meta-ui-version}</version>
+                        </dependency>
+
                     </dependencies>
                 </plugin>
 
