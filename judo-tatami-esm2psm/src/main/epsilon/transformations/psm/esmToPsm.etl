@@ -21,4 +21,4 @@ import "modules/service/transferObjectRelation.etl";
 
 import "modules/service/operation.etl";
 
-import "modules/accesspoint/accesspoint.etl";
+import "modules/accesspoint/accessPoint.etl";

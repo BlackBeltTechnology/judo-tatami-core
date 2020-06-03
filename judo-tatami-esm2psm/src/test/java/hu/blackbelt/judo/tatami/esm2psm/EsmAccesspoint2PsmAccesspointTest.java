@@ -2,13 +2,13 @@ package hu.blackbelt.judo.tatami.esm2psm;
 
 import hu.blackbelt.epsilon.runtime.execution.api.Log;
 import hu.blackbelt.epsilon.runtime.execution.impl.Slf4jLog;
-import hu.blackbelt.judo.meta.esm.accesspoint.AccessPoint;
 import hu.blackbelt.judo.meta.esm.namespace.Model;
 import hu.blackbelt.judo.meta.esm.operation.OperationModifier;
 import hu.blackbelt.judo.meta.esm.runtime.EsmModel;
 import hu.blackbelt.judo.meta.esm.runtime.EsmUtils;
 import hu.blackbelt.judo.meta.esm.structure.EntityType;
 import hu.blackbelt.judo.meta.esm.structure.MemberType;
+import hu.blackbelt.judo.meta.esm.structure.OneWayRelationMember;
 import hu.blackbelt.judo.meta.esm.structure.RelationKind;
 import hu.blackbelt.judo.meta.esm.structure.TransferObjectType;
 import hu.blackbelt.judo.meta.psm.runtime.PsmModel;
@@ -35,8 +35,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
-import static hu.blackbelt.judo.meta.esm.accesspoint.util.builder.AccesspointBuilders.newAccessPointBuilder;
-import static hu.blackbelt.judo.meta.esm.accesspoint.util.builder.AccesspointBuilders.newExposedGraphBuilder;
+import static hu.blackbelt.judo.meta.esm.accesspoint.util.builder.AccesspointBuilders.newActorTypeBuilder;
 import static hu.blackbelt.judo.meta.esm.namespace.util.builder.NamespaceBuilders.newModelBuilder;
 import static hu.blackbelt.judo.meta.esm.operation.util.builder.OperationBuilders.newOperationBuilder;
 import static hu.blackbelt.judo.meta.esm.runtime.EsmModel.buildEsmModel;
@@ -130,14 +129,17 @@ public class EsmAccesspoint2PsmAccesspointTest {
                         .build())
                 .build();
 
-        final AccessPoint accessPoint = newAccessPointBuilder()
+        final TransferObjectType accessPoint = newTransferObjectTypeBuilder()
                 .withName(ACCESS_POINT_NAME)
-                .withExposedGraphs(newExposedGraphBuilder()
+                .withRelations(newOneWayRelationMemberBuilder()
                         .withName(SERVICE_GROUP_NAME)
+                        .withMemberType(MemberType.DERIVED)
                         .withTarget(unmappedTransferObjectType)
-                        .withGetterExpression("")
+                        .withGetterExpression("Model::T")
                         .build())
                 .build();
+        
+        accessPoint.setActorType(newActorTypeBuilder().build());
 
         final Model model = newModelBuilder().withName(MODEL_NAME)
                 .withElements(Arrays.asList(unmappedTransferObjectType, accessPoint)).build();
@@ -168,17 +170,27 @@ public class EsmAccesspoint2PsmAccesspointTest {
                 .build();
         entityType.setMapping(newMappingBuilder().withTarget(entityType).build());
 
-        final AccessPoint accessPoint = newAccessPointBuilder()
-                .withName(ACCESS_POINT_NAME)
-                .withExposedGraphs(newExposedGraphBuilder()
-                        .withName(EXPOSED_GRAPH_NAME)
-                        .withTarget(entityType)
-                        .withGetterExpression(MODEL_NAME + EsmUtils.NAMESPACE_SEPARATOR + ENTITY_TYPE_NAME)
-                        .withLower(0)
-                        .withUpper(-1)
-                        .build())
+        final OneWayRelationMember eg = newOneWayRelationMemberBuilder()
+                .withName(EXPOSED_GRAPH_NAME)
+                .withTarget(entityType)
+                .withMemberType(MemberType.DERIVED)
+                .withGetterExpression(MODEL_NAME + EsmUtils.NAMESPACE_SEPARATOR + ENTITY_TYPE_NAME)
+                .withLower(0)
+                .withUpper(-1)
                 .build();
-
+        
+        final TransferObjectType accessPoint = newTransferObjectTypeBuilder()
+                .withName(ACCESS_POINT_NAME)
+                .withRelations(eg)
+                .build();
+        
+        accessPoint.setActorType(newActorTypeBuilder().build());
+        
+        log.debug("container is ap: " + ((TransferObjectType)eg.eContainer()).isAccesspoint());
+        log.debug("target is mapped: " + eg.getTarget().isMapped());
+        log.debug("getter: " + !eg.getGetterExpression().trim().equals(""));
+        
+        
         final Model model = newModelBuilder().withName(MODEL_NAME)
                 .withElements(Arrays.asList(entityType, accessPoint)).build();
 
@@ -278,9 +290,9 @@ public class EsmAccesspoint2PsmAccesspointTest {
                 .build();
         entityTypeE.setMapping(newMappingBuilder().withTarget(entityTypeE).build());
 
-        final AccessPoint accessPoint = newAccessPointBuilder()
+        final TransferObjectType accessPoint = newTransferObjectTypeBuilder()
                 .withName(ACCESS_POINT_NAME)
-                .withExposedGraphs(newExposedGraphBuilder()
+                .withRelations(newOneWayRelationMemberBuilder()
                         .withName(EXPOSED_GRAPH_NAME)
                         .withTarget(entityTypeE)
                         .withGetterExpression(MODEL_NAME + EsmUtils.NAMESPACE_SEPARATOR + ENTITY_TYPE_E_NAME)
@@ -289,6 +301,8 @@ public class EsmAccesspoint2PsmAccesspointTest {
                         .withCreateable(true).withUpdateable(true).withDeleteable(true)
                         .build())
                 .build();
+        
+        accessPoint.setActorType(newActorTypeBuilder().build());
 
         final Model model = newModelBuilder().withName(MODEL_NAME)
                 .withElements(Arrays.asList(entityTypeE, entityTypeF, accessPoint)).build();

@@ -1,7 +1,5 @@
 package hu.blackbelt.judo.tatami.asm2rdbms;
 
-import java.io.File;
-import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -21,30 +19,26 @@ import hu.blackbelt.judo.tatami.core.workflow.work.Work;
 import hu.blackbelt.judo.tatami.core.workflow.work.WorkReport;
 import hu.blackbelt.judo.tatami.core.workflow.work.WorkStatus;
 
-import static hu.blackbelt.judo.meta.asm.runtime.AsmModel.LoadArguments.asmLoadArgumentsBuilder;
 import static hu.blackbelt.judo.tatami.asm2rdbms.Asm2Rdbms.calculateAsm2RdbmsModelURI;
 import static hu.blackbelt.judo.tatami.asm2rdbms.Asm2Rdbms.calculateAsm2RdbmsTransformationScriptURI;
 import static hu.blackbelt.judo.tatami.core.workflow.engine.WorkFlowEngineBuilder.aNewWorkFlowEngine;
 import static hu.blackbelt.judo.tatami.core.workflow.flow.SequentialFlow.Builder.aNewSequentialFlow;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static hu.blackbelt.judo.meta.asm.runtime.AsmModel.loadAsmModel;
 
 @Slf4j
 public class Asm2RdbmsWorkTest {
 
 	public static final String NORTHWIND = "northwind";
-	public static final String NORTHWIND_ASM_MODEL = "northwind-asm.model";
-	public static final String TARGET_TEST_CLASSES = "target/test-classes";
 	public static final List<String> DIALECT_LIST = new LinkedList<String>(Arrays.asList("hsqldb", "oracle"));
 
 	List<Asm2RdbmsWork> asm2RdbmsWorks = Lists.newArrayList();
 	TransformationContext transformationContext;
 
 	@BeforeEach
-	void setUp() throws IOException, AsmModel.AsmValidationException {
-		AsmModel asmModel = loadAsmModel(
-				asmLoadArgumentsBuilder().file(new File(TARGET_TEST_CLASSES, NORTHWIND_ASM_MODEL)).name(NORTHWIND));
+	void setUp() throws Exception {
+		NorthwindModelLoader northwindModelLoader = NorthwindModelLoader.createNorthwindModelLoader(NORTHWIND);
+		AsmModel asmModel = northwindModelLoader.getAsmModel();
 
 		transformationContext = new TransformationContext(NORTHWIND);
 		transformationContext.put(asmModel);
