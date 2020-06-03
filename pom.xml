@@ -85,7 +85,7 @@
         <judo-meta-measure-import-range>[1.0,1.1)</judo-meta-measure-import-range>
 
         <judo-meta-liquibase-version>
-            1.0.0.20200602_082325_0767133_feature_JNG_1409_Extend_LiquibaseUtils
+            1.0.0.20200602_151618_faa6aa3_feature_JNG_1414_LiquibaseUtils_Tests
         </judo-meta-liquibase-version>
         <judo-meta-liquibase-import-range>[1.0,1.1)</judo-meta-liquibase-import-range>
 

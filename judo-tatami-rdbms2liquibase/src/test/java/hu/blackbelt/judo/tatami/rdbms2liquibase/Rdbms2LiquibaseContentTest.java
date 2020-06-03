@@ -29,6 +29,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @Slf4j
 public class Rdbms2LiquibaseContentTest {
+    final static String TARGET_TEST_CLASSES = "target/test-classes";
 
     private static Slf4jLog logger = new Slf4jLog(log);
 
@@ -69,8 +70,8 @@ public class Rdbms2LiquibaseContentTest {
             fail(format("Missing Column from %s: %s", tableName, expected.toString()));
     }
 
-    private void compareAddPrimaryKeys(final Set<String> expected, final String changeSetId) {
-        liquibaseUtils.getAddPrimaryKeys(changeSetId)
+    private void compareAddPrimaryKeys(final Set<String> expected, final String changeSetId, final String tableName) {
+        liquibaseUtils.getAddPrimaryKeys(changeSetId, tableName)
                 .orElseThrow(() -> new RuntimeException(changeSetId + " ChangeSet cannot be found"))
                 .forEach(e -> {
                     assertTrue(expected.contains(e.getColumnNames()), e.getColumnNames() + " AddPrimaryKeys is not expected");
@@ -80,8 +81,8 @@ public class Rdbms2LiquibaseContentTest {
             fail(format("Missing AddPrimaryKeys from %s: %s", changeSetId, expected.toString()));
     }
 
-    private void compareAddForeignKeyConstraints(final Set<String> expected, final String changeSetId) {
-        liquibaseUtils.getAddForeignKeyConstraints(changeSetId)
+    private void compareAddForeignKeyConstraints(final Set<String> expected, final String changeSetId, final String baseTable, final String refTable) {
+        liquibaseUtils.getAddForeignKeyConstraints(changeSetId, baseTable, refTable)
                 .orElseThrow(() -> new RuntimeException(changeSetId + " ChangeSet cannot be found"))
                 .forEach(e -> {
                     assertTrue(expected.contains(e.getConstraintName()), e.getConstraintName() + " AddForeignKeyConstraints is not expected");
@@ -91,8 +92,8 @@ public class Rdbms2LiquibaseContentTest {
             fail(format("Missing AddForeignKeyConstraints from %s: %s", changeSetId, expected.toString()));
     }
 
-    private void compareAddNotNullConstraints(final Set<String> expected, final String changeSetId) {
-        liquibaseUtils.getAddNotNullConstraints(changeSetId)
+    private void compareAddNotNullConstraints(final Set<String> expected, final String changeSetId, final String tableName) {
+        liquibaseUtils.getAddNotNullConstraints(changeSetId, tableName)
                 .orElseThrow(() -> new RuntimeException(changeSetId + " ChangeSet cannot be found"))
                 .forEach(e -> {
                     assertTrue(expected.contains(e.getColumnName()), e.getColumnName() + " AddNotNullConstraints is not expected");
@@ -117,14 +118,22 @@ public class Rdbms2LiquibaseContentTest {
         registerRdbmsDataTypesMetamodel(rdbmsModel.getResourceSet());
         registerRdbmsTableMappingRulesMetamodel(rdbmsModel.getResourceSet());
 
+        final String TEST_TABLE1_NAME = "TestTable1";
+        final String TEST_TABLE2_NAME = "TestTable2";
+        final String TEST_JUNCT_TABLE_NAME = "TestJunctTable";
+        final String ID_NAME = "_id";
+        final String NUMBER_FIELD_NAME = "NumberField";
+        final String TEST_TABLE1_FK = TEST_TABLE1_NAME + "_fk1";
+        final String TEST_TABLE2_FK = TEST_TABLE2_NAME + "_fk2";
+
         // table 1
-        final RdbmsTable rdbmsTable1 = newRdbmsTableBuilderInit("TestTable1")
-                .withSqlName("TestTable1")
+        final RdbmsTable rdbmsTable1 = newRdbmsTableBuilderInit(TEST_TABLE1_NAME)
+                .withSqlName(TEST_TABLE1_NAME)
                 .withFields(
                         newRdbmsValueFieldBuilder()
-                                .withName("NumberField")
-                                .withUuid("TestTable1#NumberField")
-                                .withSqlName("NumberField")
+                                .withName(NUMBER_FIELD_NAME)
+                                .withUuid(TEST_TABLE1_NAME + "#" + NUMBER_FIELD_NAME)
+                                .withSqlName(NUMBER_FIELD_NAME)
                                 .withRdbmsTypeName("DECIMAL")
                                 .withStorageByte(1)
                                 .withScale(2)
@@ -138,15 +147,15 @@ public class Rdbms2LiquibaseContentTest {
         rdbmsTable1.getPrimaryKey().setRdbmsTypeName("ID");
 
         // table 2
-        final RdbmsTable rdbmsTable2 = newRdbmsTableBuilderInit("TestTable2")
-                .withSqlName("TestTable2")
+        final RdbmsTable rdbmsTable2 = newRdbmsTableBuilderInit(TEST_TABLE2_NAME)
+                .withSqlName(TEST_TABLE2_NAME)
                 .build();
         rdbmsTable2.getPrimaryKey().setSqlName(rdbmsTable2.getPrimaryKey().getName());
         rdbmsTable2.getPrimaryKey().setRdbmsTypeName("ID");
 
         // junction table
         final RdbmsJunctionTable rdbmsJunctionTable =
-                newRdbmsJunctionTableBuilderInit("TestJunctTable", rdbmsTable1, rdbmsTable2).build();
+                newRdbmsJunctionTableBuilderInit(TEST_JUNCT_TABLE_NAME, rdbmsTable1, rdbmsTable2).build();
 
         rdbmsJunctionTable.setSqlName(rdbmsJunctionTable.getName());
         rdbmsJunctionTable.getPrimaryKey().setSqlName(rdbmsJunctionTable.getPrimaryKey().getName());
@@ -180,7 +189,7 @@ public class Rdbms2LiquibaseContentTest {
 
         try {
             rdbmsModel.saveRdbmsModel(RdbmsModel.SaveArguments.rdbmsSaveArgumentsBuilder()
-                    .file(new File("target/test-classes", format("testContents-%s-rdbms.model", rdbmsModel.getName())))
+                    .file(new File(TARGET_TEST_CLASSES, format("testContents-%s-rdbms.model", rdbmsModel.getName())))
                     .build());
             executeRdbms2LiquibaseTransformation(
                     rdbmsModel,
@@ -189,7 +198,7 @@ public class Rdbms2LiquibaseContentTest {
                     calculateRdbms2LiquibaseTransformationScriptURI(),
                     "hsqldb");
             liquibaseModel.saveLiquibaseModel(LiquibaseModel.SaveArguments.liquibaseSaveArgumentsBuilder()
-                    .file(new File("target/test-classes", format("testContents-%s-liquibase.xml", liquibaseModel.getName())))
+                    .file(new File(TARGET_TEST_CLASSES, format("testContents-%s-liquibase.xml", liquibaseModel.getName())))
                     .build());
         } catch (URISyntaxException e) {
             fail("URISyntaxException", e);
@@ -224,6 +233,7 @@ public class Rdbms2LiquibaseContentTest {
         Set<String> expectedAddPrimaryKey2 = new HashSet<>();
         Set<String> expectedAddPrimaryKey3 = new HashSet<>();
         Set<String> expectedAddForeignKeyConstraint = new HashSet<>();
+        Set<String> expectedAddForeignKeyConstraint1 = new HashSet<>();
         Set<String> expectedAddNotNullConstraint = new HashSet<>();
 
         // initialize expected sets
@@ -240,21 +250,21 @@ public class Rdbms2LiquibaseContentTest {
         expectedCreateTable2.add(rdbmsTable2.getSqlName());
         expectedCreateTable3.add(rdbmsJunctionTable.getSqlName());
 
-        expectedColumns1.add("_id");
-        expectedColumns1.add("NumberField");
-        expectedColumns2.add("_id");
-        expectedColumns3.add("_id");
-        expectedColumns3.add("TestTable1_fk1");
-        expectedColumns3.add("TestTable2_fk2");
+        expectedColumns1.add(ID_NAME);
+        expectedColumns1.add(NUMBER_FIELD_NAME);
+        expectedColumns2.add(ID_NAME);
+        expectedColumns3.add(ID_NAME);
+        expectedColumns3.add(TEST_TABLE1_FK);
+        expectedColumns3.add(TEST_TABLE2_FK);
 
-        expectedAddPrimaryKey1.add("_id");
-        expectedAddPrimaryKey2.add("_id");
-        expectedAddPrimaryKey3.add("_id");
+        expectedAddPrimaryKey1.add(ID_NAME);
+        expectedAddPrimaryKey2.add(ID_NAME);
+        expectedAddPrimaryKey3.add(ID_NAME);
 
-        expectedAddForeignKeyConstraint.add("TestTable1");
-        expectedAddForeignKeyConstraint.add("TestTable2");
+        expectedAddForeignKeyConstraint.add(TEST_TABLE1_NAME);
+        expectedAddForeignKeyConstraint1.add(TEST_TABLE2_NAME);
 
-        expectedAddNotNullConstraint.add("NumberField");
+        expectedAddNotNullConstraint.add(NUMBER_FIELD_NAME);
 
         // fill expected sets
         //////////////////////////////////
@@ -278,17 +288,19 @@ public class Rdbms2LiquibaseContentTest {
                 rdbmsJunctionTable.getSqlName());
 
         compareAddPrimaryKeys(expectedAddPrimaryKey1,
-                CHANGE_SET_CREATE_TABLE_ID + rdbmsTable1.getSqlName());
+                CHANGE_SET_CREATE_TABLE_ID + rdbmsTable1.getSqlName(), rdbmsTable1.getSqlName());
         compareAddPrimaryKeys(expectedAddPrimaryKey2,
-                CHANGE_SET_CREATE_TABLE_ID + rdbmsTable2.getSqlName());
+                CHANGE_SET_CREATE_TABLE_ID + rdbmsTable2.getSqlName(), rdbmsTable2.getSqlName());
         compareAddPrimaryKeys(expectedAddPrimaryKey3,
-                CHANGE_SET_CREATE_TABLE_ID + rdbmsJunctionTable.getSqlName());
+                CHANGE_SET_CREATE_TABLE_ID + rdbmsJunctionTable.getSqlName(), rdbmsJunctionTable.getSqlName());
 
         compareAddForeignKeyConstraints(expectedAddForeignKeyConstraint,
-                CHANGE_SET_CREATE_FOREIGN_KEY_ID + rdbmsJunctionTable.getSqlName());
+                CHANGE_SET_CREATE_FOREIGN_KEY_ID + rdbmsJunctionTable.getSqlName(), rdbmsJunctionTable.getSqlName(), rdbmsTable1.getSqlName());
+        compareAddForeignKeyConstraints(expectedAddForeignKeyConstraint1,
+                CHANGE_SET_CREATE_FOREIGN_KEY_ID + rdbmsJunctionTable.getSqlName(), rdbmsJunctionTable.getSqlName(), rdbmsTable2.getSqlName());
 
         compareAddNotNullConstraints(expectedAddNotNullConstraint,
-                CHANGE_SET_NOT_NULL_ID + rdbmsTable1.getSqlName());
+                CHANGE_SET_NOT_NULL_ID + rdbmsTable1.getSqlName(), rdbmsTable1.getSqlName());
 
         // run assertion on expected sets
         /////////////////////////////////
@@ -296,7 +308,7 @@ public class Rdbms2LiquibaseContentTest {
 
         /////////////// TestTable1 ///////////////////
         assertEquals(
-                "TestTable1",
+                TEST_TABLE1_NAME,
                 liquibaseUtils.getCreateTable(CHANGE_SET_CREATE_TABLE_ID + rdbmsTable1.getSqlName(),
                         rdbmsTable1.getSqlName()).get().getRemarks()
         );
@@ -304,30 +316,31 @@ public class Rdbms2LiquibaseContentTest {
                 "ID",
                 liquibaseUtils.getColumn(CHANGE_SET_CREATE_TABLE_ID + rdbmsTable1.getSqlName(),
                         rdbmsTable1.getSqlName(),
-                        "_id").get().getType()
+                        ID_NAME).get().getType()
         );
         assertEquals(
-                "TestTable1#_id",
+                TEST_TABLE1_NAME + "#" + ID_NAME,
                 liquibaseUtils.getColumn(CHANGE_SET_CREATE_TABLE_ID + rdbmsTable1.getSqlName(),
                         rdbmsTable1.getSqlName(),
-                        "_id").get().getRemarks()
+                        ID_NAME).get().getRemarks()
         );
         assertEquals(
                 "DECIMAL(3, 2)",
                 liquibaseUtils.getColumn(CHANGE_SET_CREATE_TABLE_ID + rdbmsTable1.getSqlName(),
                         rdbmsTable1.getSqlName(),
-                        "NumberField").get().getType()
+                        NUMBER_FIELD_NAME).get().getType()
         );
         assertEquals(
-                "TestTable1#NumberField",
+                TEST_TABLE1_NAME + "#" + NUMBER_FIELD_NAME,
                 liquibaseUtils.getColumn(CHANGE_SET_CREATE_TABLE_ID + rdbmsTable1.getSqlName(),
                         rdbmsTable1.getSqlName(),
-                        "NumberField").get().getRemarks()
+                        NUMBER_FIELD_NAME).get().getRemarks()
         );
         assertEquals(
                 "DECIMAL(3, 2)",
                 liquibaseUtils.getAddNotNullConstraint(CHANGE_SET_NOT_NULL_ID + rdbmsTable1.getSqlName(),
-                        "NumberField").get().getColumnDataType()
+                        rdbmsTable1.getSqlName(),
+                        NUMBER_FIELD_NAME).get().getColumnDataType()
         );
 
         /////////////// TestTable2 ///////////////////
@@ -335,13 +348,13 @@ public class Rdbms2LiquibaseContentTest {
                 "ID",
                 liquibaseUtils.getColumn(CHANGE_SET_CREATE_TABLE_ID + rdbmsTable2.getSqlName(),
                         rdbmsTable2.getSqlName(),
-                        "_id").get().getType()
+                        ID_NAME).get().getType()
         );
         assertEquals(
-                "TestTable2#_id",
+                TEST_TABLE2_NAME + "#" + ID_NAME,
                 liquibaseUtils.getColumn(CHANGE_SET_CREATE_TABLE_ID + rdbmsTable2.getSqlName(),
                         rdbmsTable2.getSqlName(),
-                        "_id").get().getRemarks()
+                        ID_NAME).get().getRemarks()
         );
 
         //////////// RdbmsJunctionTable //////////////
@@ -349,37 +362,37 @@ public class Rdbms2LiquibaseContentTest {
                 "ID",
                 liquibaseUtils.getColumn(CHANGE_SET_CREATE_TABLE_ID + rdbmsJunctionTable.getSqlName(),
                         rdbmsJunctionTable.getSqlName(),
-                        "_id").get().getType()
+                        ID_NAME).get().getType()
         );
         assertEquals(
-                "TestJunctTable#_id",
+                TEST_JUNCT_TABLE_NAME + "#" + ID_NAME,
                 liquibaseUtils.getColumn(CHANGE_SET_CREATE_TABLE_ID + rdbmsJunctionTable.getSqlName(),
                         rdbmsJunctionTable.getSqlName(),
-                        "_id").get().getRemarks()
-        );
-        assertEquals(
-                "FOREIGN_KEY",
-                liquibaseUtils.getColumn(CHANGE_SET_CREATE_TABLE_ID + rdbmsJunctionTable.getSqlName(),
-                        rdbmsJunctionTable.getSqlName(),
-                        "TestTable1_fk1").get().getType()
-        );
-        assertEquals(
-                "TestJunctTable#TestTable1_fk1",
-                liquibaseUtils.getColumn(CHANGE_SET_CREATE_TABLE_ID + rdbmsJunctionTable.getSqlName(),
-                        rdbmsJunctionTable.getSqlName(),
-                        "TestTable1_fk1").get().getRemarks()
+                        ID_NAME).get().getRemarks()
         );
         assertEquals(
                 "FOREIGN_KEY",
                 liquibaseUtils.getColumn(CHANGE_SET_CREATE_TABLE_ID + rdbmsJunctionTable.getSqlName(),
                         rdbmsJunctionTable.getSqlName(),
-                        "TestTable2_fk2").get().getType()
+                        TEST_TABLE1_FK).get().getType()
         );
         assertEquals(
-                "TestJunctTable#TestTable2_fk2",
+                TEST_JUNCT_TABLE_NAME + "#" + TEST_TABLE1_FK,
                 liquibaseUtils.getColumn(CHANGE_SET_CREATE_TABLE_ID + rdbmsJunctionTable.getSqlName(),
                         rdbmsJunctionTable.getSqlName(),
-                        "TestTable2_fk2").get().getRemarks()
+                        TEST_TABLE1_FK).get().getRemarks()
+        );
+        assertEquals(
+                "FOREIGN_KEY",
+                liquibaseUtils.getColumn(CHANGE_SET_CREATE_TABLE_ID + rdbmsJunctionTable.getSqlName(),
+                        rdbmsJunctionTable.getSqlName(),
+                        TEST_TABLE2_FK).get().getType()
+        );
+        assertEquals(
+                TEST_JUNCT_TABLE_NAME + "#" + TEST_TABLE2_FK,
+                liquibaseUtils.getColumn(CHANGE_SET_CREATE_TABLE_ID + rdbmsJunctionTable.getSqlName(),
+                        rdbmsJunctionTable.getSqlName(),
+                        TEST_TABLE2_FK).get().getRemarks()
         );
 
     }
