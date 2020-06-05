@@ -6,41 +6,11 @@ operation ESM!TransferObjectType getPSMEquivalent() : JUDOPSM!TransferObjectType
 	}
 }
 
-operation ESM!AccessPoint getPSMTransferObjectTypeEquivalent() : JUDOPSM!TransferObjectType {
-    return self.equivalent("CreateAccessPoint");
-}
-
 operation ESM!TransferObjectType getPSMTransferObjectTypeEquivalent() : JUDOPSM!TransferObjectType {
     if (self.isKindOf(ESM!TransferObjectType) and not self.isTypeOf(ESM!EntityType)) {
 	    return self.getPSMEquivalent();
     } else if (self.isTypeOf(ESM!EntityType)) {
         return self.equivalent("CreateDefaultMappedTransferObjectTypeForEntity");
-    }
-}
-
-operation ESM!OneWayRelationMember getPSMTransferObjectRelationEquivalent() : JUDOPSM!TransferObjectRelation {
-    if (self.eContainer.isKindOf(ESM!TransferObjectType) and not self.eContainer.isTypeOf(ESM!EntityType) and self.relationMemberType <> ESM!RelationMemberType#BOUND) {
-        return self.equivalent("CreateTransferObjectRelationFromRelationOrProperty");
-    } else if (self.eContainer.isKindOf(ESM!TransferObjectType) and not self.eContainer.isTypeOf(ESM!EntityType) and self.relationMemberType == ESM!RelationMemberType#BOUND and self.binding.isKindOf(ESM!OneWayRelationMember)) {
-        return self.equivalent("CreateTransferObjectRelationFromBoundToOneWayRelationMember");
-    } else if (self.eContainer.isKindOf(ESM!EntityType) and self.relationMemberType == ESM!RelationMemberType#RELATION and self.containment) {
-        return self.equivalent("CreateTransferObjectRelationForDefaultTransferObjectTypeFromOneWayRelationMemberContainment");
-    } else if (self.eContainer.isKindOf(ESM!EntityType) and self.relationMemberType == ESM!RelationMemberType#RELATION and not self.containment) {
-        return self.equivalent("CreateTransferObjectRelationForDefaultTransferObjectTypeFromOneWayRelationMemberNotContainment");
-    } else if (self.eContainer.isKindOf(ESM!EntityType) and self.relationMemberType == ESM!RelationMemberType#PROPERTY) {
-        return self.equivalent("CreateTransferObjectRelationForDefaultTransferObjectTypeFromOneWayRelationMemberProperty");
-    } else {
-        throw "Unsupported relation feature";
-    }
-}
-
-operation ESM!TwoWayRelationMember getPSMTransferObjectRelationEquivalent() : JUDOPSM!TransferObjectRelation {
-    if (self.eContainer.isKindOf(ESM!TransferObjectType) and not self.eContainer.isTypeOf(ESM!EntityType) and self.relationMemberType = ESM!RelationMemberType#BOUND and self.binding.isKindOf(ESM!TwoWayRelationMember)) {
-        return self.equivalent("CreateTransferObjectRelationFromBoundToTwoWayRelationMember");
-    } else if (self.eContainer.isKindOf(ESM!EntityType)) {
-        return self.equivalent("CreateTransferObjectRelationForDefaultTransferObjectTypeFromTwoWayRelationMember");
-    } else {
-        throw "Unsupported relation feature";
     }
 }
 

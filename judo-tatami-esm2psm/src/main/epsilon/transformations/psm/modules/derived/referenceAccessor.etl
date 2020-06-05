@@ -124,13 +124,11 @@ rule CreateCardinalityForExposedGraphSelector
       t.lower = s.lower;
 }
 
-@lazy
-@greedy
 rule CreateStaticNavigationForExposedGraph
-	transform s : ESM!StaticNavigation
+	transform s : ESM!OneWayRelationMember
 	to t : JUDOPSM!StaticNavigation
 	extends CreateNamedElement {
-	  guard: s.isTypeOf(ESM!ExposedGraph) and s.target.mapping.isDefined() and s.getterExpression.trim() <> ''
+	  guard: not s.eContainer.isMapped() and s.target.mapping.isDefined() and s.getterExpression.isDefined() and s.getterExpression.trim() <> ''
 
 	  var ecoreUtil = new Native("org.eclipse.emf.ecore.util.EcoreUtil");
 	  ecoreUtil.getRootContainer(s).equivalent("CreateGeneratedNavigationRootPackage").elements.add(t);

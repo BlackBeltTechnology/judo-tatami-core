@@ -33,7 +33,11 @@ rule CreateTransferObjectRelationFromRelationOrProperty
             and not s.eContainer.isTypeOf(ESM!EntityType)
             and s.memberType <> ESM!MemberType#BOUND
 
-      t.binding = s.equivalent("CreateNavigationPropertyForTransferObjectRelationBinding");
+      if(s.eContainer.isMapped()) {
+      	t.binding = s.equivalent("CreateNavigationPropertyForTransferObjectRelationBinding");
+      } else {
+      	t.binding = s.equivalent("CreateStaticNavigationForExposedGraph");
+      }
         
       log.debug("Created TransferObjectRelation (from OneWayRelationMember): [" + t.name + "] into [" + t.eContainer.name + "]");
 }
