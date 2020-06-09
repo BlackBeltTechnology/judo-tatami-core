@@ -1,0 +1,17 @@
+/*
+operation ESM!Model getUIEquivalent(): UI!Model {
+        return self.equivalent("CreateModel");
+}
+
+operation ESM!Package getUIEquivalent(): UI!Package {
+        return self.equivalent("CreatePackage");    
+}
+
+operation ESM!Model getUIGeneratedDefaultTransferObjectNamespaceEquivalent(): UI!Package {
+    return self.equivalent("CreateGeneratedDefaultTransferObjectTypeRootPackage");
+}
+
+operation ESM!Package getUIGeneratedDefaultTransferObjectNamespaceEquivalent(): UI!Package {
+    return self.equivalent("CreateGeneratedDefaultTransferObjectTypePackage");
+}
+*/

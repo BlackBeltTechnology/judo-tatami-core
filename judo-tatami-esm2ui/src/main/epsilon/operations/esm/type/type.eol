@@ -1,0 +1,30 @@
+
+/*
+operation ESM!esm::type::PasswordType getUIEquivalent(): ui::Input {
+	return self.equivalent("CreatePasswordType");
+}
+
+operation ESM!StringType getUIEquivalent(): UI!Input {
+	return self.equivalent("CreateStringType");
+}
+
+operation ESM!NumericType getUIEquivalent(): UI!Input {
+	return self.equivalent("CreateNumericType");
+}
+
+operation ESM!BooleanType getUIEquivalent(): UI!Input {
+	return self.equivalent("CreateBooleanType");
+}
+
+operation ESM!DateType getUIEquivalent(): UI!Input {
+	return self.equivalent("CreateDateInput");
+}
+
+operation ESM!TimestampType getUIEquivalent(): UI!Input {
+	return self.equivalent("CreateTimestampType");
+}
+
+operation ESM!EnumerationType getUIEquivalent(): UI!Input {
+	return self.equivalent("CreateEnumerationType");
+}
+*/

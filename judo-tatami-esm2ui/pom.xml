@@ -9,9 +9,9 @@
         <relativePath>..</relativePath>
     </parent>
 
-    <artifactId>judo-tatami-psm2asm</artifactId>
+    <artifactId>judo-tatami-esm2ui</artifactId>
     <packaging>bundle</packaging>
-    <name>Judo :: Tatami :: Psm2Asm</name>
+    <name>Judo :: Tatami :: Esm2Ui</name>
 
     <build>
         <plugins>
@@ -32,7 +32,7 @@
                             <goal>copy-resources</goal>
                         </goals>
                         <configuration>
-                            <outputDirectory>${basedir}/target/classes/tatami/psm2asm</outputDirectory>
+                            <outputDirectory>${basedir}/target/classes/tatami/esm2ui</outputDirectory>
                             <resources>
                                 <resource>
                                     <directory>src/main/epsilon</directory>
@@ -44,6 +44,38 @@
                 </executions>
             </plugin>
 
+            <!--plugin>
+                <groupId>hu.blackbelt</groupId>
+                <artifactId>unpack-artifact-maven-plugin</artifactId>
+                <version>1.0.0</version>
+                <executions>
+                    <execution>
+                        <id>copy-ui-scripts</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>unpack</goal>
+                        </goals>
+
+                        <configuration>
+                            <outDirectory>${basedir}/src/main/epsilon</outDirectory>
+                            <artifacts>
+                                <artifact>
+                                    <groupId>hu.blackbelt.judo.meta</groupId>
+                                    <artifactId>judo-meta-ui</artifactId>
+                                    <version>${judo-meta-ui-version}</version>
+                                    <resources>
+                                        <resource>
+                                            <source>judo/ui/operations</source>
+                                            <destination>operations/ui</destination>
+                                        </resource>
+                                    </resources>
+                                </artifact>
+                            </artifacts>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin-->
+
             <plugin>
                 <groupId>org.apache.felix</groupId>
                 <artifactId>maven-bundle-plugin</artifactId>
@@ -52,87 +84,22 @@
                     <obrRepository>NONE</obrRepository>
                     <instructions>
                         <Export-Package>
-                            hu.blackbelt.judo.tatami.psm2asm.*;version=${project.version}
+                            hu.blackbelt.judo.tatami.esm2ui.*;version=${project.version}
                         </Export-Package>
                         <Include-Resource>
-                            tatami/=target/classes/tatami
+                            tatami=target/classes/tatami
                         </Include-Resource>
 
                         <Import-Package>
                             ${osgi-default-import},
                             *
                         </Import-Package>
-                        <Psm2Asm-Transformation-ScriptRoot>tatami/psm2asm/transformations/asm</Psm2Asm-Transformation-ScriptRoot>
+                        <Esm2Ui-Transformation-ScriptRoot>tatami/esm2ui/transformations/ui</Esm2Ui-Transformation-ScriptRoot>
                     </instructions>
                 </configuration>
             </plugin>
 
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>exec-maven-plugin</artifactId>
-                <version>1.6.0</version>
-                <executions>
-                    <execution>
-                        <id>generate-full-demo</id>
-                        <phase>generate-test-resources</phase>
-                        <goals>
-                            <goal>java</goal>
-                        </goals>
-                        <configuration>
-                            <mainClass>hu.blackbelt.model.northwind.Demo</mainClass>
-                            <arguments>
-                                <argument>${basedir}/target/test-classes/northwind-psm.model</argument>
-                            </arguments>
-                            <includeProjectDependencies>true</includeProjectDependencies>
-                            <includePluginDependencies>true</includePluginDependencies>
-                        </configuration>
-                    </execution>
-                </executions>
-                <dependencies>
-                    <dependency>
-                        <groupId>hu.blackbelt.judo.meta</groupId>
-                        <artifactId>hu.blackbelt.judo.meta.psm.model.northwind</artifactId>
-                        <version>${judo-meta-psm-version}</version>
-                    </dependency>
-                </dependencies>
-            </plugin>
-
         </plugins>
-        <pluginManagement>
-        	<plugins>
-        		<!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
-        		<plugin>
-        			<groupId>org.eclipse.m2e</groupId>
-        			<artifactId>lifecycle-mapping</artifactId>
-        			<version>1.0.0</version>
-        			<configuration>
-        				<lifecycleMappingMetadata>
-        					<pluginExecutions>
-        						<pluginExecution>
-        							<pluginExecutionFilter>
-        								<groupId>
-        									org.codehaus.mojo
-        								</groupId>
-        								<artifactId>
-        									exec-maven-plugin
-        								</artifactId>
-        								<versionRange>
-        									[1.6.0,)
-        								</versionRange>
-        								<goals>
-        									<goal>java</goal>
-        								</goals>
-        							</pluginExecutionFilter>
-        							<action>
-        								<ignore></ignore>
-        							</action>
-        						</pluginExecution>
-        					</pluginExecutions>
-        				</lifecycleMappingMetadata>
-        			</configuration>
-        		</plugin>
-        	</plugins>
-        </pluginManagement>
     </build>
 
     <dependencies>
@@ -166,15 +133,15 @@
         </dependency>
         <dependency>
             <groupId>hu.blackbelt.judo.meta</groupId>
-            <artifactId>hu.blackbelt.judo.meta.psm.model</artifactId>
+            <artifactId>hu.blackbelt.judo.meta.esm.model</artifactId>
         </dependency>
         <dependency>
             <groupId>hu.blackbelt.judo.meta</groupId>
-            <artifactId>hu.blackbelt.judo.meta.asm.model</artifactId>
+            <artifactId>hu.blackbelt.judo.meta.esm.model.northwind</artifactId>
         </dependency>
         <dependency>
             <groupId>hu.blackbelt.judo.meta</groupId>
-            <artifactId>hu.blackbelt.judo.meta.expression.model</artifactId>
+            <artifactId>hu.blackbelt.judo.meta.ui.model</artifactId>
         </dependency>
         <dependency>
             <groupId>hu.blackbelt.judo.tatami</groupId>

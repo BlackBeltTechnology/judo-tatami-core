@@ -1,0 +1,9 @@
+operation transformGroup(prefix : String) : UI!ui::Flex {
+	return self.transform(prefix);
+}
+
+
+operation ESM!esm::ui::Group transform(prefix : String) : UI!ui::Flex {
+	var ret = self.transformContainer(prefix);
+	return ret;
+}

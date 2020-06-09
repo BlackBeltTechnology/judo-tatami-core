@@ -1,0 +1,95 @@
+import "../namespace/namespace.etl";
+import "../../../../operations/_importAll.eol";
+
+rule CreateApplication
+	transform s: ESM!esm::structure::TransferObjectType
+	to t: UI!ui::Application
+	extends CreateNamedElementFromNamespaceElement {
+	  guard: s.isAccesspoint()
+      log.debug("CreateApplication: " + s.name);
+       
+      t.name = t.uiName("Application#" + applicationType);
+	  t.type = applicationType;
+	  t.cols = applicationColumns;
+	  t.navigationController = s.equivalent("CreateNavigationController");
+}
+
+rule CreateNavigationController
+	transform s: ESM!esm::structure::TransferObjectType
+	to t: UI!ui::NavigationController
+	extends CreateNamedElementFromNamespaceElement {
+	  guard: s.isAccesspoint()
+          t.name = t.uiName("NavigationController");
+		  log.debug("CreateNavigationController: " + s.name);
+
+}
+
+@greedy
+rule CreateNavigationItemForAccessPointRelation
+    transform s : ESM!esm::structure::RelationFeature
+    to t : UI!ui::NavigationItem
+    extends CreateNamedElementFromNamedElement {
+        guard: s.eContainer.isAccesspoint() and s.target.mapping.isDefined()
+        and s.getterExpression.isDefined() and s.getterExpression.trim() <> ''
+  //      and s.target.table.isDefined and s.upper = -1
+		  log.debug("CreateNavigationItemForAccessPointRelation: " + s.name);
+          t.name = t.uiName("NavigationItem");
+          t.label = s.name;
+          t.target = s.equivalent("CreateEntryPageForAccessPointRelationForTable");
+          if (t.target.isUndefined()) {
+	          t.target = s.equivalent("CreateEntryPageForAccessPointRelationForView");      
+          }
+          if (t.target.isUndefined()) {
+  	          t.target = s.equivalent("CreateEntryPageForAccessPointRelationForForm");              
+          }
+          s.eContainer.equivalent("CreateNavigationController").items.add(t);
+}
+
+@greedy
+rule CreateEntryPageForAccessPointRelationForView
+    transform s : ESM!esm::structure::RelationFeature
+    to t : UI!ui::PageDefinition
+	extends CreateNamedElementFromNamedElement {
+        guard: s.eContainer.isAccesspoint() and s.target.mapping.isDefined()
+        and s.getterExpression.isDefined() and s.getterExpression.trim() <> ''
+        and s.target.view.isDefined()
+		  log.debug("CreateEntryPageForAccessPointRelationForView: " + s.name);
+          t.name = t.uiName("EntryPageView");
+          t.children.add(s.target.view.createFlexFromTransferObjectView(t.name));
+	      s.eContainer.equivalent("CreateApplication").pages.add(t);
+}
+
+@greedy
+rule CreateEntryPageForAccessPointRelationForForm
+    transform s : ESM!esm::structure::RelationFeature
+    to t : UI!ui::PageDefinition
+	extends CreateNamedElementFromNamedElement {
+        guard: s.eContainer.isAccesspoint() and s.target.mapping.isDefined()
+        and s.getterExpression.isDefined() and s.getterExpression.trim() <> ''
+		and s.target.form.isDefined()
+		  log.debug("CreateEntryPageForAccessPointRelationForForm: " + s.name);
+          t.name = t.uiName("EntryPageForm");
+          t.children.add(s.target.form.createFlexFromTransferObjectForm(t.name));
+	      s.eContainer.equivalent("CreateApplication").pages.add(t);
+}
+
+@greedy
+rule CreateEntryPageForAccessPointRelationForTable
+    transform s : ESM!esm::structure::RelationFeature
+    to t : UI!ui::PageDefinition
+	extends CreateNamedElementFromNamedElement {
+        guard: s.eContainer.isAccesspoint() and s.target.mapping.isDefined()
+        and s.getterExpression.isDefined() and s.getterExpression.trim() <> ''
+        and s.target.table.isDefined() and s.upper = -1
+		  log.debug("CreateEntryPageForAccessPointRelationForTable: " + s.name);
+          t.name = t.uiName("EntryPageTable");
+          var table = s.target.table.createTableFromTransferObjectTable(t.name);
+          t.children.add(table);
+          if (s.target.table.masterDetail and s.target.view.isDefined()) {
+	      		var detail = s.target.view.createDetailPageFromTransferObjectView(t.name);
+			    s.eContainer.equivalent("CreateApplication").pages.add(detail);
+	      		detail.children.add(s.target.view.createFlexFromTransferObjectView(t.name));
+	      		table.detail = detail;
+    	  }          
+	      s.eContainer.equivalent("CreateApplication").pages.add(t);
+}

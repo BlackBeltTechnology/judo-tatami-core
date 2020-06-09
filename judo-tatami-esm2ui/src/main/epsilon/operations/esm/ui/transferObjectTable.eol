@@ -1,0 +1,10 @@
+operation ESM!esm::ui::TransferObjectTable createTableFromTransferObjectTable(prefix : String) : UI!ui::Table {
+	var t : UI!ui::Table = new UI!ui::Table();
+    t.binding = self.getBindingName();
+	t.name = t.uiName(prefix);
+    return t;
+}
+
+
+operation ESM!esm::ui::TransferObjectTable transform(prefix : String) : UI!ui::Flex {
+}
