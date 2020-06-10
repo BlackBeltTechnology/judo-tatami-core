@@ -34,6 +34,7 @@ public class Asm2SDKTest {
         // Default logger
         slf4jlog = new Slf4jLog(log);
 
+
         // Loading ASM to isolated ResourceSet, because in Tatami
         // there is no new namespace registration made.
         asmModel = loadAsmModel(asmLoadArgumentsBuilder()
