@@ -94,7 +94,6 @@
                             ${osgi-default-import},
                             *
                         </Import-Package>
-                        <Psm-Meta-Version-Range>${judo-meta-psm-import-range}</Psm-Meta-Version-Range>
                         <Esm2Psm-Transformation-ScriptRoot>tatami/esm2psm/transformations/psm</Esm2Psm-Transformation-ScriptRoot>
                     </instructions>
                 </configuration>

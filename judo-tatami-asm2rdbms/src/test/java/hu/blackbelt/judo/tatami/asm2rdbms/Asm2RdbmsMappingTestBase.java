@@ -3,9 +3,10 @@ package hu.blackbelt.judo.tatami.asm2rdbms;
 import com.google.common.collect.ImmutableList;
 import hu.blackbelt.epsilon.runtime.execution.impl.Slf4jLog;
 import hu.blackbelt.judo.meta.asm.runtime.AsmModel;
+import hu.blackbelt.judo.meta.asm.runtime.AsmModel.AsmValidationException;
 import hu.blackbelt.judo.meta.rdbms.runtime.RdbmsModel;
+import hu.blackbelt.judo.meta.rdbms.runtime.RdbmsModel.RdbmsValidationException;
 import hu.blackbelt.judo.meta.rdbms.runtime.RdbmsUtils;
-import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.emf.ecore.EClassifier;
 import org.eclipse.emf.ecore.EPackage;
@@ -38,7 +39,7 @@ public class Asm2RdbmsMappingTestBase {
     protected static final String ENTITY_ANNOTATION = "entity";
     protected static final String VALUE_ANNOTATION = "true";
 
-    protected Slf4jLog logger;
+    protected static final Slf4jLog logger = new Slf4jLog(log);
 
     protected AsmModel asmModel;
     protected RdbmsModel rdbmsModel;
@@ -47,8 +48,7 @@ public class Asm2RdbmsMappingTestBase {
 
     @BeforeEach
     protected void setUp() {
-        logger = new Slf4jLog(log);
-
+        logger.debug("Building models");
         asmModel = buildAsmModel().name(ASM_MODEL_NAME).build();
         rdbmsModel = buildRdbmsModel().name(RDBMS_MODEL_NAME).build();
 
@@ -57,32 +57,36 @@ public class Asm2RdbmsMappingTestBase {
         registerRdbmsTableMappingRulesMetamodel(rdbmsModel.getResourceSet());
     }
 
-    @SneakyThrows
     protected void executeTransformation(final String testName) {
-        Asm2RdbmsTransformationTrace asm2RdbmsTransformationTrace = executeAsm2RdbmsTransformation(asmModel, rdbmsModel, new Slf4jLog(log),
-                calculateAsm2RdbmsTransformationScriptURI(),
-                calculateAsm2RdbmsModelURI(), "hsqldb");
-        logger.debug("Execute asm2rdbms transformation");
+        Asm2RdbmsTransformationTrace asm2RdbmsTransformationTrace = null;
+        try {
+            logger.debug("Executing asm2rdbms transformation");
+            asm2RdbmsTransformationTrace = executeAsm2RdbmsTransformation(asmModel, rdbmsModel, new Slf4jLog(log),
+                    calculateAsm2RdbmsTransformationScriptURI(),
+                    calculateAsm2RdbmsModelURI(), "hsqldb");
+        } catch (Exception e) {
+            fail("Unable to execute transformation", e);
+        }
 
-        asmModel = asm2RdbmsTransformationTrace.getAsmModel();
-        logger.debug("Extract asm model from transformation trace");
+        logger.debug("Extracting models from transformation trace");
         rdbmsModel = asm2RdbmsTransformationTrace.getRdbmsModel();
-        logger.debug("Extract rdbms model from transformation trace");
 
-
+        logger.debug("Initializing rdbmsUtils");
         rdbmsUtils = new RdbmsUtils(rdbmsModel.getResourceSet());
-        logger.debug("Create rdbms model support from transformed rdbms model");
 
         try {
+            logger.debug("Saving models and transformation trace");
             asmModel.saveAsmModel(asmSaveArgumentsBuilder()
-                    .file(new File(TARGET_TEST_CLASSES, testName + "-" + ASM_MODEL_NAME + ".model")));
-            logger.debug("Save asm model");
+                    .file(new File(TARGET_TEST_CLASSES, format("%s-%s.model", testName, ASM_MODEL_NAME))));
             rdbmsModel.saveRdbmsModel(rdbmsSaveArgumentsBuilder()
-                    .file(new File(TARGET_TEST_CLASSES, testName + "-" + RDBMS_MODEL_NAME + ".model")));
-            logger.debug("Save transformed rdbms model");
-            asm2RdbmsTransformationTrace.save(new File(TARGET_TEST_CLASSES, testName + "-" + "Asm2RdbmsTransformationTrace.model"));
+                    .file(new File(TARGET_TEST_CLASSES, format("%s-%s.model", testName, RDBMS_MODEL_NAME))));
+            asm2RdbmsTransformationTrace.save(new File(TARGET_TEST_CLASSES, format("%s-Asm2RdbmsTransformationTrace.model", testName)));
+        } catch (AsmValidationException e) {
+            fail("AsmModel is not valid", e);
+        } catch (RdbmsValidationException e) {
+            fail("RdbmsModel is not valid", e);
         } catch (IOException e) {
-            logger.debug("Unable to save model(s)");
+            logger.warn("Model(s) and/or transformation trace cannot be saved", e);
         }
     }
 

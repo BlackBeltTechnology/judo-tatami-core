@@ -29,8 +29,6 @@ import static hu.blackbelt.judo.tatami.psm2asm.Psm2Asm.executePsm2AsmTransformat
 @Slf4j
 public class Psm2AsmTransformationSerivce {
 
-    public static final String ASM_META_VERSION_RANGE = "Asm-Meta-Version-Range";
-
     Map<PsmModel, ServiceRegistration<TransformationTrace>> psm2AsmTransformationTraceRegistration = Maps.newHashMap();
 
     BundleContext bundleContext;
