@@ -97,7 +97,9 @@ public class Asm2SDKOperationTest {
     private void fillPsmModel() throws Exception {
     	PsmTestModelBuilder modelBuilder = new PsmTestModelBuilder();
     	modelBuilder.addEntity("RelatedEntity").withAttribute("String", "name");
-    	modelBuilder.addEntity("Entity").withAttribute("String", "text").withAggregation("RelatedEntity", "related", cardinality(0, 1));
+    	modelBuilder.addEntity("Entity").withAttribute("String", "text")
+    		.withAggregation("RelatedEntity", "related", cardinality(0, 1))
+    		.withAggregation("RelatedEntity", "relateds", cardinality(0, -1));;
     	modelBuilder.addUnmappedTransferObject("Initializer");
     	
     	// unbound operation

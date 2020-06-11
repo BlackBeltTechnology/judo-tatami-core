@@ -40,6 +40,10 @@ operation ASM!EReference getBareTypeDefinition() : String {
 	return self.eReferenceType.getDtoPackageName() + "." + self.eReferenceType.name;
 }
 
+@cached
+operation ASM!EReference isMulti() : Boolean {
+	return self.upperBound == -1 or self.upperBound > 1;
+} 
 
 @cached
 operation ASM!EReference getTypeDefinition() : String {	
@@ -116,17 +120,7 @@ operation genDaoInterfaces(dto : ASM!EClass) : Set {
 			var relatedDto = eReference.getEReferenceType();
 			if (asmUtils.isMappedTransferObjectType(relatedDto)) {
 				var relationName = eReference.name;
-				
-				template = TemplateFactory.load("dao/AddRelated.java.egl");
-				filename = baseName + "Add" + relationName.firstToUpperCase() + ".java";
-				template.generate(filename);
-				result.add(filename);
-				
-				template = TemplateFactory.load("dao/RemoveRelated.java.egl");
-				filename = baseName + "Remove" + relationName.firstToUpperCase() + ".java";
-				template.generate(filename);
-				result.add(filename);
-				
+				var multiRelation = eReference.isMulti();
 				template = TemplateFactory.load("dao/CreateRelated.java.egl");
 				filename = baseName + "Create" + relationName.firstToUpperCase() + ".java";
 				template.generate(filename);
@@ -137,15 +131,28 @@ operation genDaoInterfaces(dto : ASM!EClass) : Set {
 				template.generate(filename);
 				result.add(filename);
 				
-				template = TemplateFactory.load("dao/SetRelated.java.egl");
-				filename = baseName + "Set" + relationName.firstToUpperCase() + ".java";
-				template.generate(filename);
-				result.add(filename);
+				if (not multiRelation) {
+					template = TemplateFactory.load("dao/SetRelated.java.egl");
+					filename = baseName + "Set" + relationName.firstToUpperCase() + ".java";
+					template.generate(filename);
+					result.add(filename);
+					
+					template = TemplateFactory.load("dao/UnsetRelated.java.egl");
+					filename = baseName + "Unset" + relationName.firstToUpperCase() + ".java";
+					template.generate(filename);
+					result.add(filename);
+				} else {
+					template = TemplateFactory.load("dao/AddRelated.java.egl");
+					filename = baseName + "Add" + relationName.firstToUpperCase() + ".java";
+					template.generate(filename);
+					result.add(filename);
 				
-				template = TemplateFactory.load("dao/UnsetRelated.java.egl");
-				filename = baseName + "Unset" + relationName.firstToUpperCase() + ".java";
-				template.generate(filename);
-				result.add(filename);
+					template = TemplateFactory.load("dao/RemoveRelated.java.egl");
+					filename = baseName + "Remove" + relationName.firstToUpperCase() + ".java";
+					template.generate(filename);
+					result.add(filename);
+				}
+		
 			}
 		}
 		

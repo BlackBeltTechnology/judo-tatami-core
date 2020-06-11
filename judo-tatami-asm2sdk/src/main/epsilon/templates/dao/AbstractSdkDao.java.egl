@@ -33,7 +33,7 @@ public abstract class AbstractSdkDao {
 	protected <T> T fromPayload(Class<T> resultClass, Payload payload) {
 		return MapProxy.newInstance(resultClass, payload, false, "__identifier");
 	}
-
+	
 	protected <T> Payload asPayload(T t) {
 		Payload payload = Payload.asPayload(((MapHolder)t).toMap());
 		return payload;
