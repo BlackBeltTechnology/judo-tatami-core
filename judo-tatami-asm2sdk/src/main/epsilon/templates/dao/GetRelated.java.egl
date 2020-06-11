@@ -1,0 +1,36 @@
+[%
+  import "../../operations/sdk.eol";
+  out.setContentType("Java");
+%]
+
+package [%= dto.getDtoDaoPackageName() %];
+
+import java.util.UUID;
+import java.util.function.Function;
+
+import org.eclipse.emf.ecore.EReference;
+
+import hu.blackbelt.judo.dao.api.DAO;
+import hu.blackbelt.judo.dao.api.Payload;
+import hu.blackbelt.judo.meta.asm.runtime.AsmModel;
+
+import [%= dto.getPackagePrefix() %]dao.AbstractSdkDao;
+import [%= dto.getDtoTypeName() %];
+import [%= relatedDto.getDtoTypeName() %];
+
+public class [%= dto.getClassName() %]Get[%= relationName.firstToUpperCase() %] extends AbstractSdkDao implements Function<[%= dto.getClassName() %], [%= relatedDto.getClassName() %]> {
+
+	private final static String FQ_NAME = "[%= asmUtils.getClassifierFqName(dto) %]";
+	
+	protected [%= dto.getClassName() %]Get[%= relationName.firstToUpperCase() %](DAO<UUID> dao, AsmModel asmModel) {
+		super(dao, asmModel);
+	}
+
+	@Override
+	public [%= relatedDto.getClassName() %] apply([%= dto.getClassName() %] object) {
+        EReference ref = getReference(getEClass(FQ_NAME), "[%= relationName %]");
+		Payload resultPayload = dao.getNavigationResultAt(object.get__identifier(), ref).get(0);
+		return fromPayload(RelatedEntity.class, resultPayload);	
+	}
+	
+}

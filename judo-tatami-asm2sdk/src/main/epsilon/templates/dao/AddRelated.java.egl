@@ -1,0 +1,34 @@
+[%
+  import "../../operations/sdk.eol";
+  out.setContentType("Java");
+%]
+
+package [%= dto.getDtoDaoPackageName() %];
+
+import java.util.Collection;
+import java.util.UUID;
+import java.util.function.BiConsumer;
+import java.util.stream.Collectors;
+
+import hu.blackbelt.judo.dao.api.DAO;
+import hu.blackbelt.judo.meta.asm.runtime.AsmModel;
+
+import [%= dto.getPackagePrefix() %]dao.AbstractSdkDao;
+import [%= dto.getDtoTypeName() %];
+import [%= relatedDto.getDtoTypeName() %];
+
+public class [%= dto.getClassName() %]Add[%= relationName.firstToUpperCase() %] extends AbstractSdkDao implements BiConsumer<[%= dto.getClassName() %], Collection<[%= relatedDto.getClassName() %]>>{
+
+	private final static String FQ_NAME = "[%= asmUtils.getClassifierFqName(dto) %]";
+	
+	protected [%= dto.getClassName() %]Add[%= relationName.firstToUpperCase() %](DAO<UUID> dao, AsmModel asmModel) {
+		super(dao, asmModel);
+	}
+
+	@Override
+	public void accept([%= dto.getClassName() %] object, Collection<[%= relatedDto.getClassName() %]> relatedObjects) {
+		dao.addReferences(getReference(getEClass(FQ_NAME), "[%= relationName %]"), object.get__identifier(), relatedObjects.stream().map(relatedObject -> relatedObject.get__identifier()).collect(Collectors.toList()));
+
+	}
+
+}

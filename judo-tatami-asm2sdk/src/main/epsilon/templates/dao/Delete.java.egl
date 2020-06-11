@@ -1,0 +1,30 @@
+[%
+  import "../../operations/sdk.eol";
+  out.setContentType("Java");
+%]
+
+package [%= dto.getDtoDaoPackageName() %];
+
+import java.util.UUID;
+import java.util.function.Consumer;
+
+import hu.blackbelt.judo.dao.api.DAO;
+import hu.blackbelt.judo.meta.asm.runtime.AsmModel;
+
+import [%= dto.getPackagePrefix() %]dao.AbstractSdkDao;
+import [%= dto.getDtoTypeName() %];
+
+public class [%= dto.getClassName() %]Delete extends AbstractSdkDao implements Consumer<[%= dto.getClassName() %]>{
+
+	private final static String FQ_NAME = "[%= asmUtils.getClassifierFqName(dto) %]";
+	
+	protected [%= dto.getClassName() %]Delete(DAO<UUID> dao, AsmModel asmModel) {
+		super(dao, asmModel);
+	}
+
+	@Override
+	public void accept([%= dto.getClassName() %] subject) {
+		dao.delete(getEClass(FQ_NAME), subject.get__identifier());
+	}
+
+}

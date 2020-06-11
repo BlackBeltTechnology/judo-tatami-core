@@ -1,0 +1,32 @@
+[%
+  import "../../operations/sdk.eol";
+  out.setContentType("Java");
+%]
+
+package [%= dto.getDtoDaoPackageName() %];
+
+import java.util.UUID;
+import java.util.function.Function;
+
+import hu.blackbelt.judo.dao.api.DAO;
+import hu.blackbelt.judo.dao.api.Payload;
+import hu.blackbelt.judo.meta.asm.runtime.AsmModel;
+
+import [%= dto.getPackagePrefix() %]dao.AbstractSdkDao;
+import [%= dto.getDtoTypeName() %];
+
+public class [%= dto.getClassName() %]GetById extends AbstractSdkDao implements Function<UUID, [%= dto.getClassName() %]> {
+
+	private final static String FQ_NAME = "[%= asmUtils.getClassifierFqName(dto) %]";
+	
+	protected [%= dto.getClassName() %]GetById(DAO<UUID> dao, AsmModel asmModel) {
+		super(dao, asmModel);
+	}
+
+	@Override
+	public [%= dto.getClassName() %] apply(UUID id) {
+		Payload payload = dao.getByIdentifier(getEClass(FQ_NAME), id).get();
+		return fromPayload([%= dto.getClassName() %].class, payload);
+	}
+
+}

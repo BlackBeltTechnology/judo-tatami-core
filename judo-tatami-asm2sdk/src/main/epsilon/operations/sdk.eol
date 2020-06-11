@@ -74,6 +74,90 @@ operation getAccessPoints(): Collection {
 	return ASM!EClass.all.select(class | asmUtils.isAccessPoint(class));
 }
 
+operation genAbstractSdkDao() : String {
+	var template = TemplateFactory.load("dao/AbstractSdkDao.java.egl");
+	template.populate("package", "sdk.dao");
+	var filename = "sdk/dao/AbstractSdkDao.java";
+	template.generate(filename);
+	return filename;
+}
+
+operation genDaoInterfaces(dto : ASM!EClass) : Set {
+	var result = new Set();
+	if (asmUtils.isMappedTransferObjectType(dto) and /*FIXME - use annotation for skipping *_Reference transferobjects*/ not dto.getName().contains("_") ) {
+		var baseName = dto.getDtoDaoPackageName().replaceAll("\\.", "/")+"/"+dto.getClassName();
+		
+		var template = TemplateFactory.load("dao/Delete.java.egl");
+		var filename =  baseName + "Delete.java";
+		template.generate(filename);
+		result.add(filename);
+		
+		template = TemplateFactory.load("dao/Create.java.egl");
+		filename = baseName + "Create.java";
+		template.generate(filename);
+		result.add(filename);
+		
+		template = TemplateFactory.load("dao/GetAll.java.egl");
+		filename = baseName + "GetAll.java";
+		template.generate(filename);
+		result.add(filename);
+		
+		template = TemplateFactory.load("dao/GetById.java.egl");
+		filename = baseName + "GetById.java";
+		template.generate(filename);
+		result.add(filename);
+		
+		template = TemplateFactory.load("dao/Update.java.egl");
+		filename = baseName + "Update.java";
+		template.generate(filename);
+		result.add(filename);
+		
+		for (eReference in dto.getEReferences()) {
+			var relatedDto = eReference.getEReferenceType();
+			if (asmUtils.isMappedTransferObjectType(relatedDto)) {
+				var relationName = eReference.name;
+				
+				template = TemplateFactory.load("dao/AddRelated.java.egl");
+				filename = baseName + "Add" + relationName.firstToUpperCase() + ".java";
+				template.generate(filename);
+				result.add(filename);
+				
+				template = TemplateFactory.load("dao/RemoveRelated.java.egl");
+				filename = baseName + "Remove" + relationName.firstToUpperCase() + ".java";
+				template.generate(filename);
+				result.add(filename);
+				
+				template = TemplateFactory.load("dao/CreateRelated.java.egl");
+				filename = baseName + "Create" + relationName.firstToUpperCase() + ".java";
+				template.generate(filename);
+				result.add(filename);
+				
+				template = TemplateFactory.load("dao/GetRelated.java.egl");
+				filename = baseName + "Get" + relationName.firstToUpperCase() + ".java";
+				template.generate(filename);
+				result.add(filename);
+				
+				template = TemplateFactory.load("dao/SetRelated.java.egl");
+				filename = baseName + "Set" + relationName.firstToUpperCase() + ".java";
+				template.generate(filename);
+				result.add(filename);
+				
+				template = TemplateFactory.load("dao/UnsetRelated.java.egl");
+				filename = baseName + "Unset" + relationName.firstToUpperCase() + ".java";
+				template.generate(filename);
+				result.add(filename);
+			}
+		}
+		
+	}
+	return result;
+}
+
+operation ASM!EClass getDtoDaoPackageName() : String {
+	return self.getDtoPackageName()+"."+self.getClassName().toLowerCase() + "dao";
+}
+
+
 operation genDtoInterface(dto : ASM!EClass) {
     var template = TemplateFactory.load("DtoInterface.java.egl");
     template.populate("dto", dto);
@@ -146,8 +230,6 @@ operation genOperationInterface(dto : ASM!EClass, op : ASM!EOperation) {
 	map.put("extendedInterface", extendedInterface);
 	map.put("extendedMethod", extendedMethod);
 	
-	
-	
     map.put("operation", op);
     map.put("packageName", getOperationJavaPackageName(dto, op));
        
@@ -157,12 +239,12 @@ operation genOperationInterface(dto : ASM!EClass, op : ASM!EOperation) {
 }
 
 
-operation getOperationJavaPackageName(ap : ASM!EClass, op : ASM!EOperation) {
-	return "sdk." + asmUtils.getClassifierFQName(ap).toLowerCase() + "operation";
+operation getOperationJavaPackageName(dto : ASM!EClass, op : ASM!EOperation) {
+	return "sdk." + asmUtils.getClassifierFQName(dto).toLowerCase() + "operation";
 }
 
-operation getOperationJavaFileName(ap : ASM!EClass, op : ASM!EOperation) {
-	var packageName = getOperationJavaPackageName(ap, op);
+operation getOperationJavaFileName(dto : ASM!EClass, op : ASM!EOperation) {
+	var packageName = getOperationJavaPackageName(dto, op);
 	return packageName.replaceAll("\\.", "/") + "/" + op.name.firstToUpperCase() + ".java";
 }
 
@@ -171,7 +253,6 @@ operation ASM!EClass idType() : String {
 	return "java.util.UUID";
 }
 
- 
 @cached
 operation ASM!EClass getPackagePrefix() : String {
     return "sdk.";

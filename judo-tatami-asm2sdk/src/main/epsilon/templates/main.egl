@@ -6,6 +6,9 @@ var outputScrXmls = new Set();
 
 executionContext.getContext().put("outputJavaClasses", outputJavaClasses);
 
+genAbstractSdkDao();
+// outputJavaClasses.add();
+
 for (dto in getAllDTOs()) {
     //DTO interface
     genDtoInterface(dto);
@@ -13,15 +16,20 @@ for (dto in getAllDTOs()) {
     //DTO builder
     genDtoBuilder(dto);
     outputJavaClasses.add(dto.getDtoBuilderJavaFileName());
+    
+    var daoInterfaces = genDaoInterfaces(dto);
+    for (daoInterface in daoInterfaces) {
+    //	outputJavaClasses.add(daoInterface);
+	}
+    
+    var operations = asmUtils.getAllOperationDeclarations(dto, true);
+    for (op in operations) {
+    	genOperationInterface(dto, op);
+    	outputJavaClasses.add(getOperationJavaFileName(dto, op));
+    }
+    
 }
 
-for (ap in getAccessPoints()) {
-    var operations = asmUtils.getAllOperationDeclarations(ap, true);
-    for (op in operations) {
-    	genOperationInterface(ap, op);
-    	outputJavaClasses.add(getOperationJavaFileName(ap, op));
-    }
-}
 
 /*
 // TODO - generate services (not only for exposed services), ASM utils is refactored

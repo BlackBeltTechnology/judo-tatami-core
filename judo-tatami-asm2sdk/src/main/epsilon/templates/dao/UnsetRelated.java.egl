@@ -1,0 +1,30 @@
+[%
+  import "../../operations/sdk.eol";
+  out.setContentType("Java");
+%]
+
+package [%= dto.getDtoDaoPackageName() %];
+
+import java.util.UUID;
+import java.util.function.Consumer;
+
+import hu.blackbelt.judo.dao.api.DAO;
+import hu.blackbelt.judo.meta.asm.runtime.AsmModel;
+
+import [%= dto.getPackagePrefix() %]dao.AbstractSdkDao;
+import [%= dto.getDtoTypeName() %];
+
+public class [%= dto.getClassName() %]Unset[%= relationName.firstToUpperCase() %] extends AbstractSdkDao implements Consumer<[%= dto.getClassName() %]>{
+
+	private final static String FQ_NAME = "[%= asmUtils.getClassifierFqName(dto) %]";
+	
+	protected [%= dto.getClassName() %]Unset[%= relationName.firstToUpperCase() %](DAO<UUID> dao, AsmModel asmModel) {
+		super(dao, asmModel);
+	}
+
+	@Override
+	public void accept([%= dto.getClassName() %] object) {
+		dao.unsetReference(getReference(getEClass(FQ_NAME), "[%= relationName %]"), object.get__identifier());
+	}
+
+}
