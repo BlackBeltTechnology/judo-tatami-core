@@ -67,7 +67,7 @@ public class NorthwindTatamiESMTransformationPipelineITest extends TatamiESMTran
     private InputStream getEsmModelBundle() throws FileNotFoundException {
         return bundle()
                 .add("model/" + NORTHWIND + ".judo-meta-esm",
-                        new FileInputStream(new File(testTargetDir(getClass()).getAbsolutePath(), "northwind-esm.model")))
+                        new FileInputStream(new File(testTargetDir(getClass()).getAbsolutePath(), "/northwind-esm/northwind-esm.model")))
                 .set(Constants.BUNDLE_MANIFESTVERSION, "2")
                 .set(Constants.BUNDLE_SYMBOLICNAME, NORTHWIND + "-model")
                 //set( Constants.IMPORT_PACKAGE, "meta/psm;version=\"" + getConfiguration(META_PSM_IMPORT_RANGE) +"\"")
