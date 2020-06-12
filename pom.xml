@@ -46,15 +46,15 @@
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
 
-        <karaf-version>4.2.6</karaf-version>
-        <pax-exam-version>4.13.1</pax-exam-version>
+        <karaf-version>4.2.9</karaf-version>
+        <pax-exam-version>4.13.3</pax-exam-version>
         <slf4j-version>1.6.6</slf4j-version>
         <epsilon-version>1.5.1</epsilon-version>
         <tycho-version>1.4.0</tycho-version>
 
         <epsilon-runtime-version>1.2.2</epsilon-runtime-version>
 
-        <judo-framework-version>2.0.0.20200312_073929_414e55d_develop</judo-framework-version>
+        <judo-framework-version>2.0.0.20200612_154819_efb36b9_feature_JAVA_11</judo-framework-version>
 
         <!-- Model versions -->
         <judo-meta-rdbms-version>1.0.0.20200605_095434_9e51d65_develop</judo-meta-rdbms-version>
@@ -97,14 +97,14 @@
         <xpand-version>2.0.0</xpand-version>
         <emf-mapping-ecore2xml>2.11.0</emf-mapping-ecore2xml>
 
-        <cxf-version>3.3.3</cxf-version>
+        <cxf-version>3.3.6</cxf-version>
         <osgi-utils-version>1.0.7</osgi-utils-version>
         <bouncycastle-karaf-features-version>1.61.2</bouncycastle-karaf-features-version>
         <tinybundles-karaf-features-version>1.0.0</tinybundles-karaf-features-version>
-        <google-karaf-features-version>1.0.4</google-karaf-features-version>
-        <eclipse-emf-karaf-features-version>1.0.0</eclipse-emf-karaf-features-version>
+        <google-karaf-features-version>1.0.5</google-karaf-features-version>
+        <eclipse-emf-karaf-features-version>1.0.1</eclipse-emf-karaf-features-version>
         <eclipse-epsilon-karaf-features-version>1.0.3</eclipse-epsilon-karaf-features-version>
-        <eclipse-xtext-karaf-features-version>1.0.1</eclipse-xtext-karaf-features-version>
+        <eclipse-xtext-karaf-features-version>1.0.2</eclipse-xtext-karaf-features-version>
         <antlr-karaf-features-version>1.0.1</antlr-karaf-features-version>
         <apache-commons-karaf-features-version>1.0.5</apache-commons-karaf-features-version>
         <apache-poi-karaf-features-version>1.0.2</apache-poi-karaf-features-version>
@@ -138,7 +138,7 @@
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <version>1.16.16</version>
+            <version>1.18.12</version>
             <scope>provided</scope>
         </dependency>
 
@@ -683,7 +683,7 @@
 
                 <plugin>
                     <artifactId>maven-surefire-plugin</artifactId>
-                    <version>3.0.0-M3</version>
+                    <version>3.0.0-M4</version>
                     <configuration>
                         <argLine>-Dfile.encoding=UTF-8</argLine>
                         <trimStackTrace>false</trimStackTrace>
