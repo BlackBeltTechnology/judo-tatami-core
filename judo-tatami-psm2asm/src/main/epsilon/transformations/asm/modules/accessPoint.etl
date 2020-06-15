@@ -70,7 +70,7 @@ rule CreateExposedGraphReferenceAnnotation
 rule CreateExposedGraphReferenceBinding
     transform s : JUDOPSM!TransferObjectRelation
     to t : ASM!EAnnotation {
-        guard: s.isExposedGraph()
+        guard: s.isExposedGraph() and s.binding.isDefined() and s.binding.isKindOf(JUDOPSM!ReferenceAccessor)
 
         t.source = asmUtils.getAnnotationUri("expression");
 
