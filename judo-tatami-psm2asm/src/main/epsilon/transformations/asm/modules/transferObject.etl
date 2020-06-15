@@ -60,6 +60,19 @@ rule CreateReferenceClassForEntityType
       s.getNamespace().asmEquivalent().eClassifiers.add(t);
 }
 
+rule CreateAnnotationOnReferenceClassForEntityType
+    transform s : JUDOPSM!EntityType
+    to t : ASM!EAnnotation {
+        t.source = asmUtils.getAnnotationUri("referenceHolder");
+
+        var referenceHolder = new ASM!EStringToStringMapEntry;
+        referenceHolder.key = "value";
+        referenceHolder.value = "true";
+        t.details.add(referenceHolder);
+
+        s.equivalent("CreateReferenceClassForEntityType").eAnnotations.add(t);
+}
+
 @abstract
 rule AddTransferAttributeConstraints
 	transform s : JUDOPSM!TransferAttribute
