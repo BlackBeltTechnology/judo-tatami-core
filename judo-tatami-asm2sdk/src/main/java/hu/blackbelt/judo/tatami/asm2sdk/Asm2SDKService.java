@@ -21,7 +21,7 @@ import static hu.blackbelt.judo.tatami.asm2sdk.Asm2SDK.executeAsm2SDKGeneration;
 @Slf4j
 public class Asm2SDKService {
 
-    Map<AsmModel, Bundle> asm2jaxrsAPIBundles = Maps.newHashMap();
+    Map<AsmModel, Bundle> asm2SdkBundles = Maps.newHashMap();
 
     BundleContext bundleContext;
 
@@ -41,7 +41,7 @@ public class Asm2SDKService {
                             .toURI()
                             .resolve(".");
 
-            asm2jaxrsAPIBundles.put(asmModel,
+            asm2SdkBundles.put(asmModel,
                     bundleContext.installBundle(this.getClass().getName(),
                             executeAsm2SDKGeneration(asmModel, logger, scriptUri, new File(""))));
             log.info("\u001B[33m {}\u001B[0m", logger.getBuffer());
@@ -49,12 +49,12 @@ public class Asm2SDKService {
             log.info("\u001B[31m {}\u001B[0m", logger.getBuffer());
             throw e;
         }
-        asm2jaxrsAPIBundles.get(asmModel).start();
+        asm2SdkBundles.get(asmModel).start();
     }
 
     public void uninstall(AsmModel asmModel) throws BundleException {
-        if (asm2jaxrsAPIBundles.containsKey(asmModel)) {
-            asm2jaxrsAPIBundles.get(asmModel).uninstall();
+        if (asm2SdkBundles.containsKey(asmModel)) {
+            asm2SdkBundles.get(asmModel).uninstall();
         } else {
             log.error("ASM model is not installed: " + asmModel.toString());
         }
