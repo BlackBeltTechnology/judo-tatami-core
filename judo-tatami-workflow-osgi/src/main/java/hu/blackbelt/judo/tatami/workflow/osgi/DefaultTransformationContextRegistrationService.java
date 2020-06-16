@@ -23,6 +23,8 @@ import org.osgi.service.component.annotations.Component;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Dictionary;
+import java.util.Hashtable;
 
 import static hu.blackbelt.judo.tatami.core.ThrowingConsumer.throwingConsumerWrapper;
 
@@ -134,6 +136,12 @@ public class DefaultTransformationContextRegistrationService extends AbstractTra
         ungisterInputStream(operationBundle);
     }
 
+    public void registerTransformationContext(TransformationContext transformationContext) {
+        Dictionary dict = new Hashtable();
+        dict.put("name", transformationContext.getModelName());
+        registerModel(transformationContext, dict);
+    }
+
     public void registerTransformationContext(TransformationContext transformationContext, String sqlDialect) {
         //transformationContext.getByClass(EsmModel.class).ifPresent(m -> registerEsmModel(m));
         //transformationContext.getByClass(PsmModel.class).ifPresent(m -> registerPsmModel(m));
@@ -156,12 +164,14 @@ public class DefaultTransformationContextRegistrationService extends AbstractTra
         transformationContext.getByClass(Psm2MeasureTransformationTrace.class).ifPresent(t -> registerTrace(t));
         transformationContext.get(Asm2RdbmsTransformationTrace.class, "asm2rdbmstrace:" + sqlDialect).ifPresent(t -> registerTrace(t));
         transformationContext.getByClass(Asm2OpenAPITransformationTrace.class).ifPresent(t -> registerTrace(t));
+        unregisterTransformationContext(transformationContext);
     }
 
     public void unregisterTransformationContext(TransformationContext transformationContext, String sqlDialect) {
 
         //transformationContext.getByClass(EsmModel.class).ifPresent(m -> unregisterEsmModel(m));
         //transformationContext.getByClass(PsmModel.class).ifPresent(m -> unregisterPsmModel(m));
+        registerTransformationContext(transformationContext);
         transformationContext.getByClass(AsmModel.class).ifPresent(m -> unregisterAsmModel(m));
         transformationContext.getByClass(MeasureModel.class).ifPresent(m -> unregisterMeasureModel(m));
         transformationContext.getByClass(ExpressionModel.class).ifPresent(m -> unregisterExpressionModel(m));
