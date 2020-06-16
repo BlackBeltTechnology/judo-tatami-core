@@ -20,7 +20,7 @@ import static org.junit.Assert.assertEquals;
 
 public class TestUtility {
 
-    public static final Integer SERVICE_TIMEOUT = 60000;
+    public static final Integer SERVICE_TIMEOUT = 120000;
 
     private TestUtility() {
         super();
