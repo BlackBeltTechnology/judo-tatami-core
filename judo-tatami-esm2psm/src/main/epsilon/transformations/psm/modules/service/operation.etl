@@ -8,7 +8,7 @@ rule CreateOperationBody
     to t: JUDOPSM!OperationBody {
       t.body = s.body;
       t.stateful = s.stateful;
-      t.customImplementation = s.customImplementation;
+      t.customImplementation = s.customImplementation and s.modifier <> ESM!OperationModifier#ABSTRACT;
 }
 
 rule CreateBoundOperation
@@ -17,7 +17,12 @@ rule CreateBoundOperation
     extends CreateNamedElement {
       guard: s.modifier <> ESM!OperationModifier#STATIC and s.eContainer.isKindOf(ESM!EntityType)
 
-      t.implementation = s.equivalent("CreateOperationBody");
+      t.`abstract` = s.modifier == ESM!OperationModifier#ABSTRACT;
+      
+      if (s.modifier <> ESM!OperationModifier#ABSTRACT) {
+      	t.implementation = s.equivalent("CreateOperationBody");
+      }
+
       t.instanceRepresentation = s.eContainer.equivalent("CreateDefaultMappedTransferObjectTypeForEntity");
       s.eContainer.equivalent("CreateEntityType").operations.add(t);
 }
@@ -37,6 +42,7 @@ rule CreateBoundTransferOperationInDefaultTransferObjectType
           t.input.cardinality = new JUDOPSM!Cardinality;
           t.input.cardinality.lower = s.input.lower;
           t.input.cardinality.upper = s.input.upper;
+          t.input.immutable = s.input.immutable;
       }
 
       if (s.output.isDefined()) {
@@ -461,9 +467,9 @@ rule CreateCreateTransferOperationForRelation
             var rangeAllowed = false;
             if (relation.isKindOf(ESM!OneWayRelationMember)) {
                 if (relation.eContainer.isKindOf(ESM!EntityType)) {
-                    rangeAllowed = not relation.containment and relation.relationMemberType <> ESM!RelationMemberType#PROPERTY;
+                    rangeAllowed = not relation.isComposition() and relation.memberType <> ESM!MemberType#DERIVED;
                 } else if (relation.eContainer.isKindOf(ESM!TransferObjectType)) {
-                    rangeAllowed = relation.relationMemberType <> ESM!RelationMemberType#PROPERTY and (relation.relationMemberType == ESM!RelationMemberType#BOUND implies (not relation.binding.containment and relation.binding.relationMemberType <> ESM!RelationMemberType#PROPERTY));
+                    rangeAllowed = relation.memberType <> ESM!MemberType#DERIVED and (relation.memberType == ESM!MemberType#BOUND implies (not relation.binding.isComposition() and relation.binding.memberType <> ESM!MemberType#DERIVED));
                 }
             } else if (relation.isKindOf(ESM!TwoWayRelationMember)) {
                 rangeAllowed = true;
@@ -536,11 +542,11 @@ rule CreateUpdateTransferOperationForRelation
             var containment = false;
             if (relation.isKindOf(ESM!OneWayRelationMember)) {
                 if (relation.eContainer.isKindOf(ESM!EntityType)) {
-                    rangeAllowed = not relation.containment and relation.relationMemberType <> ESM!RelationMemberType#PROPERTY;
-                    containment = relation.containment;
+                    rangeAllowed = not relation.isComposition() and relation.memberType <> ESM!MemberType#DERIVED;
+                    containment = relation.isComposition();
                 } else if (relation.eContainer.isKindOf(ESM!TransferObjectType)) {
-                    rangeAllowed = relation.relationMemberType <> ESM!RelationMemberType#PROPERTY and (relation.relationMemberType == ESM!RelationMemberType#BOUND implies (not relation.binding.containment and relation.binding.relationMemberType <> ESM!RelationMemberType#PROPERTY));
-                    containment = relation.relationMemberType == ESM!RelationMemberType#BOUND and relation.binding.containment;
+                    rangeAllowed = relation.memberType <> ESM!MemberType#DERIVED and (relation.memberType == ESM!MemberType#BOUND implies (not relation.binding.isComposition() and relation.binding.memberType <> ESM!MemberType#DERIVED));
+                    containment = relation.memberType == ESM!MemberType#BOUND and relation.binding.isComposition();
                 }
             } else if (relation.isKindOf(ESM!TwoWayRelationMember)) {
                 rangeAllowed = true;
@@ -549,7 +555,7 @@ rule CreateUpdateTransferOperationForRelation
             var entityPartner;
             if (relation.isKindOf(ESM!TwoWayRelationMember)) {
                 entityPartner = relation.partner;
-            } else if (relation.relationMemberType == ESM!RelationMemberType#BOUND and relation.binding.isKindOf(ESM!TwoWayRelationMember)) {
+            } else if (relation.memberType == ESM!MemberType#BOUND and relation.binding.isKindOf(ESM!TwoWayRelationMember)) {
                 entityPartner = relation.binding.partner;
             }
 

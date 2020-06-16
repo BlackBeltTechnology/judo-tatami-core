@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>hu.blackbelt.judo.tatami</groupId>
 		<artifactId>judo-tatami-parent</artifactId>
-		<version>1.0.0-SNAPSHOT</version>
+		<version>1.1.0-SNAPSHOT</version>
 		<relativePath>..</relativePath>
 	</parent>
 
@@ -81,35 +81,11 @@
                             ${osgi-default-import},
                             *
 						</Import-Package>
-						<Rdbms-Meta-Version-Range>${judo-meta-rdbms-import-range}</Rdbms-Meta-Version-Range>
 						<Asm2Rdbms-Transformation-ModelRoot>tatami/asm2rdbms/model</Asm2Rdbms-Transformation-ModelRoot>
 						<Asm2Rdbms-Transformation-ScriptRoot>tatami/asm2rdbms/transformations</Asm2Rdbms-Transformation-ScriptRoot>
 					</instructions>
 				</configuration>
 			</plugin>
-
-			<plugin>
-				<groupId>hu.blackbelt.judo.tatami</groupId>
-				<artifactId>judo-tatami-workflow-maven-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>execute-northwind-test-model-from-general</id>
-						<configuration>
-							<ignorePsm2Asm>false</ignorePsm2Asm>
-							<ignoreAsm2Rdbms>true</ignoreAsm2Rdbms>
-							<ignoreRdbms2Liquibase>true</ignoreRdbms2Liquibase>
-						</configuration>
-					</execution>
-				</executions>
-				<dependencies>
-					<dependency>
-						<groupId>hu.blackbelt.judo.tatami</groupId>
-						<artifactId>judo-tatami-psm2asm</artifactId>
-						<version>${project.version}</version>
-					</dependency>
-				</dependencies>
-			</plugin>
-
 		</plugins>
 	</build>
 
@@ -158,6 +134,15 @@
 		<dependency>
 			<groupId>hu.blackbelt.judo.tatami</groupId>
 			<artifactId>judo-tatami-core</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>hu.blackbelt.judo.meta</groupId>
+			<artifactId>hu.blackbelt.judo.meta.psm.model.northwind</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>hu.blackbelt.judo.tatami</groupId>
+			<artifactId>judo-tatami-psm2asm</artifactId>
 		</dependency>
 	</dependencies>
 </project>

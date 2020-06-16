@@ -13,8 +13,6 @@ import java.io.File;
 import java.util.List;
 import java.util.Map;
 
-import static hu.blackbelt.judo.meta.asm.runtime.AsmModel.LoadArguments.asmLoadArgumentsBuilder;
-import static hu.blackbelt.judo.meta.asm.runtime.AsmModel.loadAsmModel;
 import static hu.blackbelt.judo.meta.rdbms.runtime.RdbmsModel.SaveArguments.rdbmsSaveArgumentsBuilder;
 import static hu.blackbelt.judo.meta.rdbmsDataTypes.support.RdbmsDataTypesModelResourceSupport.registerRdbmsDataTypesMetamodel;
 import static hu.blackbelt.judo.meta.rdbmsNameMapping.support.RdbmsNameMappingModelResourceSupport.registerRdbmsNameMappingMetamodel;
@@ -25,7 +23,6 @@ import static hu.blackbelt.judo.tatami.asm2rdbms.Asm2RdbmsTransformationTrace.fr
 @Slf4j
 public class Asm2RdbmsTest {
     public static final String NORTHWIND = "northwind";
-    public static final String NORTHWIND_ASM_MODEL = "northwind-asm.model";
     public static final String NORTHWIND_RDBMS_MODEL = "northwind-rdbms.model";
     public static final String NORTHWIND_ASM_2_RDBMS_MODEL = "northwind-asm2rdbms.model";
     public static final String TARGET_TEST_CLASSES = "target/test-classes";
@@ -39,11 +36,8 @@ public class Asm2RdbmsTest {
         // Default logger
         slf4jlog = new Slf4jLog(log);
 
-        // Loading ASM to isolated ResourceSet, because in Tatami
-        // there is no new namespace registration made.
-        asmModel = loadAsmModel(asmLoadArgumentsBuilder()
-                .file(new File(TARGET_TEST_CLASSES, NORTHWIND_ASM_MODEL))
-                .name(NORTHWIND));
+        NorthwindModelLoader northwindModelLoader = NorthwindModelLoader.createNorthwindModelLoader(NORTHWIND);
+        asmModel = northwindModelLoader.getAsmModel();
 
         // Create empty RDBMS model
         rdbmsModel = RdbmsModel.buildRdbmsModel()

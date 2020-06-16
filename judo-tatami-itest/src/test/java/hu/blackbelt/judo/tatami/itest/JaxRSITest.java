@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.jaxrs.json.JacksonJaxbJsonProvider;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import hu.blackbelt.judo.tatami.core.Dispatcher;
+import hu.blackbelt.judo.dispatcher.api.Dispatcher;
 import hu.blackbelt.osgi.utils.osgi.api.BundleTrackerManager;
 import org.junit.Before;
 import org.junit.Test;
@@ -28,19 +28,27 @@ import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.time.ZonedDateTime;
-import java.util.*;
+import java.time.OffsetDateTime;
+import java.util.Dictionary;
+import java.util.HashMap;
+import java.util.Hashtable;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static hu.blackbelt.judo.framework.KarafTestUtil.karafConfig;
 import static hu.blackbelt.judo.framework.KarafTestUtil.karafStandardRepo;
 import static hu.blackbelt.judo.tatami.itest.TatamiTestUtil.*;
-import static hu.blackbelt.judo.tatami.itest.TestUtility.assertBundleStarted;
+import static hu.blackbelt.judo.tatami.itest.TestUtility.testTargetDir;
 import static hu.blackbelt.judo.tatami.itest.TestUtility.waitWebPage;
 import static junit.framework.TestCase.assertNotNull;
 import static junit.framework.TestCase.assertTrue;
 import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
+import static org.ops4j.pax.exam.CoreOptions.provision;
 import static org.ops4j.pax.exam.OptionUtils.combine;
 import static org.ops4j.pax.exam.cm.ConfigurationAdminOptions.newConfiguration;
 import static org.ops4j.pax.exam.karaf.options.KarafDistributionOption.editConfigurationFilePut;
@@ -59,8 +67,8 @@ import static restdto.demo.services.ProductInfo.productInfoBuilder;
 public class JaxRSITest {
     private static final String BASE_URL = "http://localhost:8181/cxf/demo";
 
-    private static final String DEMO_SERVICE_GET_ALL_INTERNATIONAL_ORDERS = "/internalAP/allInternationalOrders/get";
-    private static final String DEMO_SERVICE_CREATE_INTERNATIONAL_ORDER = "/internalAP/allInternationalOrders/create";
+    private static final String DEMO_SERVICE_GET_ALL_INTERNATIONAL_ORDERS = "/internalAP/internationalOrders/get";
+    private static final String DEMO_SERVICE_CREATE_INTERNATIONAL_ORDER = "/internalAP/internationalOrders/create";
 
     private static final String DEMO_SERVICE_DELETE_ORDER_ITEM = "/services/OrderInfo/items/delete";
 
@@ -139,13 +147,6 @@ public class JaxRSITest {
                         .versionAsInProject().start(),
 
                 mavenBundle()
-                        .groupId("hu.blackbelt.judo.tatami")
-                        .artifactId("judo-tatami-asm2jaxrsapi")
-                        .classifier("test-bundle")
-                        .type("jar")
-                        .versionAsInProject().start(),
-
-                mavenBundle()
                         .groupId("org.json")
                         .artifactId("json")
                         .versionAsInProject().start(),
@@ -178,8 +179,16 @@ public class JaxRSITest {
                 mavenBundle()
                         .groupId("com.fasterxml.jackson.datatype")
                         .artifactId("jackson-datatype-guava")
-                        .versionAsInProject().start()
+                        .versionAsInProject().start(),
 
+                getProvisonJaxrsApi()
+        );
+    }
+
+    public Option getProvisonJaxrsApi() throws FileNotFoundException {
+//        log.log(LOG_INFO, "Deploying JAXRSAPI: " + new File(testTargetDir(getClass()).getAbsolutePath(),  "northwind-asm2jaxrsapi.jar")
+        return provision(
+                new FileInputStream(new File(testTargetDir(getClass()).getAbsolutePath(), "northwind-asm2jaxrsapi.jar"))
         );
     }
 
@@ -188,10 +197,10 @@ public class JaxRSITest {
         Map<String, Object> testMap = new HashMap<>();
 
         //getAllInternationalOrders (input: none, output: collection<InternationalOrderInfo>), required (InternationalOrderInfo): orderDate
-        testMap.put("demo.services.InternationalOrderInfo#getAllInternationalOrders", ImmutableList.of(
+        testMap.put("demo.internalAP#getAllInternationalOrders", ImmutableList.of(
                 internationalOrderInfoBuilder()
                         .shipperName("shipperNameInInternationalOrderInfo0")
-                        .orderDate(ZonedDateTime.now())
+                        .orderDate(OffsetDateTime.now())
                         .items(ImmutableList.of(
                                 orderItemBuilder().productName("productName0").quantity(42).discount(2.71).product(
                                         productInfoBuilder().productName("productName").unitPrice(3.14).category(
@@ -208,10 +217,10 @@ public class JaxRSITest {
                                         categoryInfoBuilder().categoryName("categoryNameInOrderItem").build()
                                 ).build()))
                         .build().toMap(),
-                internationalOrderInfoBuilder().shipperName("shipperNameInInternationalOrderInfo1").orderDate(ZonedDateTime.now()).build().toMap()));
+                internationalOrderInfoBuilder().shipperName("shipperNameInInternationalOrderInfo1").orderDate(OffsetDateTime.now()).build().toMap()));
 
         //createOrder (input: OrderInfo, output: OrderInfo), required (OrderInfo): orderDate
-        testMap.put("demo.services.InternationalOrderInfo#createInternationalOrder", orderInfoBuilder().shipperName("shipperNameInNewInternationalOrderInfo").orderDate(ZonedDateTime.now()).build().toMap());
+        testMap.put("demo.internalAP#createInternationalOrder", orderInfoBuilder().shipperName("shipperNameInNewInternationalOrderInfo").orderDate(OffsetDateTime.now()).build().toMap());
 
         return testMap;
     }
@@ -226,7 +235,7 @@ public class JaxRSITest {
         ServiceReference reference = bundleContext.getServiceReference(Semaphore.class);
         if (reference == null) {
 
-            assertBundleStarted(bundleContext, "northwind-asm2jaxrsapi");
+            //assertBundleStarted(bundleContext, "northwind-asm2jaxrsapi");
 
             dispatcher = new Dispatcher() {
                 @Override
@@ -234,7 +243,7 @@ public class JaxRSITest {
                     log.log(LOG_INFO, "Dispatcher called - " + operationFqName + " Payload: " + payload.toString());
 
                     switch (operationFqName) {
-                        case "demo.services.InternationalOrderInfo#createInternationalOrder":
+                        case "demo.internalAP#createInternationalOrder":
                             checkArgument(!((Map) payload.get("input")).isEmpty(), "Payload of create must not be empty");
                             break;
                         case "demo.services.OrderInfo#deleteItem":
@@ -246,7 +255,7 @@ public class JaxRSITest {
                     if (!testMap.containsKey(operationFqName)) {
                         return ImmutableMap.of();
                     } else {
-                        return ImmutableMap.of(Dispatcher.OUTPUT_PARAMETER_NAME, testMap.get(operationFqName));
+                        return ImmutableMap.of("output", testMap.get(operationFqName));
                     }
                 }
             };
@@ -334,7 +343,7 @@ public class JaxRSITest {
     public void testCreateInternationalOrder() {
         logTest(DEMO_SERVICE_CREATE_INTERNATIONAL_ORDER);
 
-        Response response = getResponse(DEMO_SERVICE_CREATE_INTERNATIONAL_ORDER, orderInfoBuilder().orderDate(ZonedDateTime.now()).build());
+        Response response = getResponse(DEMO_SERVICE_CREATE_INTERNATIONAL_ORDER, orderInfoBuilder().orderDate(OffsetDateTime.now()).build());
 
         assertNotNull(response);
         assertTrue(response.getStatusInfo().getFamily().equals(Response.Status.Family.SUCCESSFUL));

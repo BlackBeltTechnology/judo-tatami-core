@@ -57,7 +57,7 @@ public abstract class TatamiPSMTransformationPipelineITest {
 
     public static final String BLACKBELT_CXF_GROUPID = "hu.blackbelt.cxf";
     public static final String JAXRS_APPLICATION_MANAGER = "cxf-jaxrs-application-manager";
-    public static final String JAXRS_APPLICATION_MANAGER_VERSION = "0.4.0";
+    public static final String JAXRS_APPLICATION_MANAGER_VERSION = "0.5.0";
     public static final String FEATURE_JUDO_TATAMI_META_ASM = "judo-tatami-meta-asm";
     public static final String FEATURE_JUDO_TATAMI_META_ESM = "judo-tatami-meta-esm";
     public static final String FEATURE_JUDO_TATAMI_META_PSM = "judo-tatami-meta-psm";
@@ -178,6 +178,11 @@ public abstract class TatamiPSMTransformationPipelineITest {
 
 
                 /* Added for test purposes only */
+                mavenBundle()
+                        .groupId("com.fasterxml.jackson.module")
+                        .artifactId("jackson-module-jaxb-annotations")
+                        .versionAsInProject().start(),
+
                 mavenBundle()
                         .groupId(BLACKBELT_CXF_GROUPID)
                         .artifactId(JAXRS_APPLICATION_MANAGER)

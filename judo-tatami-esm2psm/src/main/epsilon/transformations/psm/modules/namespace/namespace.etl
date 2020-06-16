@@ -51,6 +51,25 @@ rule CreateGeneratedDefaultTransferObjectTypePackage
     log.debug("Created Generated Package for DefaultTransferObjectType: " + t.name);
 }
 
+@lazy
+rule CreateGeneratedActorTypeRootPackage
+  transform s : ESM!Model
+  to t: JUDOPSM!Package {
+    t.name = "_actortypes";
+    s.equivalent("CreateModel").packages.add(t);
+    log.debug("Created ActorTypePackage: " + t.name);
+}
+
+@lazy
+rule CreateGeneratedActorTypePackage
+  transform s : ESM!Package
+  to t: JUDOPSM!Package {
+    t.name = s.name;
+    s.eContainer.getPSMGeneratedDefaultTransferObjectNamespaceEquivalent().packages.add(t);
+    
+    log.debug("Created Generated Package for DefaultTransferObjectType: " + t.name);
+}
+
 rule CreatePackage
   transform s : ESM!Package
   to t : JUDOPSM!Package

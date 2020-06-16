@@ -5,7 +5,7 @@
     <parent>
         <groupId>hu.blackbelt.judo.tatami</groupId>
         <artifactId>judo-tatami-parent</artifactId>
-        <version>1.0.0-SNAPSHOT</version>
+        <version>1.1.0-SNAPSHOT</version>
         <relativePath>..</relativePath>
     </parent>
 
@@ -94,7 +94,6 @@
                             ${osgi-default-import},
                             *
                         </Import-Package>
-                        <Psm-Meta-Version-Range>${judo-meta-psm-import-range}</Psm-Meta-Version-Range>
                         <Esm2Psm-Transformation-ScriptRoot>tatami/esm2psm/transformations/psm</Esm2Psm-Transformation-ScriptRoot>
                     </instructions>
                 </configuration>
@@ -139,9 +138,7 @@
         <dependency>
             <groupId>hu.blackbelt.judo.meta</groupId>
             <artifactId>hu.blackbelt.judo.meta.esm.model.northwind</artifactId>
-            <scope>test</scope>
         </dependency>
-
         <dependency>
             <groupId>hu.blackbelt.judo.meta</groupId>
             <artifactId>hu.blackbelt.judo.meta.psm.model</artifactId>

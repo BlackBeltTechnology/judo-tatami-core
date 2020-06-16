@@ -2,7 +2,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>hu.blackbelt.judo.tatami</groupId>
     <artifactId>judo-tatami-parent</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.1.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>JUDO Tatami parent</name>
@@ -46,65 +46,39 @@
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
 
-        <karaf-version>4.2.6</karaf-version>
-        <pax-exam-version>4.13.1</pax-exam-version>
+        <karaf-version>4.2.9</karaf-version>
+        <pax-exam-version>4.13.3</pax-exam-version>
         <slf4j-version>1.6.6</slf4j-version>
         <epsilon-version>1.5.1</epsilon-version>
         <tycho-version>1.4.0</tycho-version>
 
-        <epsilon-runtime-version>1.2.1</epsilon-runtime-version>
-        <epsilon-runtime-eclipse-version>1.2.0</epsilon-runtime-eclipse-version>
+        <epsilon-runtime-version>1.2.2</epsilon-runtime-version>
 
-        <emf-genmodel-generator-version>1.0.0</emf-genmodel-generator-version>
-        <judo-genmodel-generator-version>1.0.0.20200203_171824_17e20f6_1_0_beta1</judo-genmodel-generator-version>
-
-        <p2-swagger-version>1.0.1</p2-swagger-version>
-
-        <judo-framework-version>2.0.0.20200204_213842_d428bdd_1_0_beta1</judo-framework-version>
+        <judo-framework-version>2.0.0.20200612_222500_007415d_develop</judo-framework-version>
 
         <!-- Model versions -->
-        <judo-meta-rdbms-version>1.0.0.20200218_040558_389ceaa_1_0_beta1</judo-meta-rdbms-version>
-        <judo-meta-rdbms-import-range>[1.0,1.1)</judo-meta-rdbms-import-range>
-
-        <judo-meta-esm-version>1.1.0.20200218_003910_0992cb3_1_0_beta1</judo-meta-esm-version>
-        <judo-meta-esm-import-range>[1.0,1.1)</judo-meta-esm-import-range>
-
-        <judo-meta-psm-version>1.0.0.20200214_131022_4bc065e_1_0_beta1</judo-meta-psm-version>
-        <judo-meta-psm-import-range>[1.0,1.1)</judo-meta-psm-import-range>
-
-        <judo-meta-jql-version>1.0.0.20200218_042349_6551863_1_0_beta1</judo-meta-jql-version>
-        <judo-meta-jql-import-range>[1.0,1.1)</judo-meta-jql-import-range>
-
-        <judo-meta-jcl-version>1.0.0.20200218_052047_9ee380c_1_0_beta1</judo-meta-jcl-version>
-        <judo-meta-jcl-import-range>[1.0,1.1)</judo-meta-jcl-import-range>
-
-        <judo-meta-script-version>1.0.0.20200218_054803_1e48611_1_0_beta1</judo-meta-script-version>
-        <judo-meta-script-import-range>[1.0,1.1)</judo-meta-script-import-range>
-
-        <judo-meta-asm-version>1.0.0.20200218_044706_1cb0de9_1_0_beta1</judo-meta-asm-version>
-        <judo-meta-asm-import-range>[1.0,1.1)</judo-meta-asm-import-range>
-
-        <judo-meta-expression-version>1.0.0.20200218_051904_a667dd0_1_0_beta1</judo-meta-expression-version>
-        <judo-meta-expression-import-range>[1.0,1.1)</judo-meta-expression-import-range>
-
-        <judo-meta-measure-version>1.0.0.20200218_035943_3432273_1_0_beta1</judo-meta-measure-version>
-        <judo-meta-measure-import-range>[1.0,1.1)</judo-meta-measure-import-range>
-
-        <judo-meta-liquibase-version>1.0.0.20200218_041553_7763933_1_0_beta1</judo-meta-liquibase-version>
-        <judo-meta-liquibase-import-range>[1.0,1.1)</judo-meta-liquibase-import-range>
-
-        <judo-meta-openapi-version>1.0.0.20200218_040136_4a1b93c_1_0_beta1</judo-meta-openapi-version>
-        <judo-meta-openapi-import-range>[1.0,1.1)</judo-meta-openapi-import-range>
-
-        <judo-dao-api-version>1.0.0.20200212_124052_1c7db17_1_0_beta1</judo-dao-api-version>
-        <judo-script-codegen-version>1.0.0.20200218_134606_f6084d0_1_0_beta1</judo-script-codegen-version>
-        <judo-jql-ide-eclipse-version>1.0.0.20200218_144310_dff9954_1_0_beta1</judo-jql-ide-eclipse-version>
-        <judo-jcl-ide-eclipse-version>1.0.0.20200218_144210_08a398d_1_0_beta1</judo-jcl-ide-eclipse-version>
+        <judo-meta-rdbms-version>1.0.0.20200605_095434_9e51d65_develop</judo-meta-rdbms-version>
+        <judo-meta-esm-version>1.1.0.20200604_172432_ee0db8a_develop</judo-meta-esm-version>
+        <judo-meta-psm-version>1.1.0.20200602_123622_2fd07f5_develop</judo-meta-psm-version>
+        <judo-meta-jql-version>1.0.1.20200605_093736_63bcae1_develop</judo-meta-jql-version>
+        <judo-meta-jcl-version>1.0.1.20200605_100141_937f460_develop</judo-meta-jcl-version>
+        <judo-meta-script-version>1.0.1.20200605_103957_f953891_develop</judo-meta-script-version>
+        <judo-meta-asm-version>1.1.0.20200611_141341_8e2f11c_develop</judo-meta-asm-version>
+        <judo-meta-expression-version>1.0.1.20200605_100125_d152baa_develop</judo-meta-expression-version>
+        <judo-meta-measure-version>1.0.0.20200605_094620_28449e6_develop</judo-meta-measure-version>
+        <judo-meta-liquibase-version>1.0.0.20200605_094438_715ed55_develop</judo-meta-liquibase-version>
+        <judo-meta-openapi-version>1.0.0.20200605_095300_a5f6e52_develop</judo-meta-openapi-version>
+        <judo-meta-ui-version>1.0.0.20200605_103445_2359a72_develop</judo-meta-ui-version>
+        <judo-dao-api-version>1.0.0</judo-dao-api-version>
+        <judo-dispatcher-api-version>1.0.0</judo-dispatcher-api-version>
+        <judo-script-codegen-version>1.1.0.20200605_104956_1f19539_develop</judo-script-codegen-version>
 
         <structured-map-proxy-version>1.0.0</structured-map-proxy-version>
+        <judo-operation-utils-version>1.1.0.20200424_162743_fecf37e_develop</judo-operation-utils-version>
+
 
         <!-- We use older version of plugin to avoid chicked egg problem -->
-        <judo-tatami-maven-plugin-version>1.0.0.20200131_112210_1439c9e_develop</judo-tatami-maven-plugin-version>
+        <judo-tatami-maven-plugin-version>1.1.0.20200424_124359_3ac33fac_plugin</judo-tatami-maven-plugin-version>
 
         <!-- Xtend / Xcore -->
         <emf-version>2.18.0</emf-version>
@@ -123,14 +97,14 @@
         <xpand-version>2.0.0</xpand-version>
         <emf-mapping-ecore2xml>2.11.0</emf-mapping-ecore2xml>
 
-        <cxf-version>3.3.3</cxf-version>
+        <cxf-version>3.3.6</cxf-version>
         <osgi-utils-version>1.0.7</osgi-utils-version>
         <bouncycastle-karaf-features-version>1.61.2</bouncycastle-karaf-features-version>
         <tinybundles-karaf-features-version>1.0.0</tinybundles-karaf-features-version>
-        <google-karaf-features-version>1.0.3</google-karaf-features-version>
-        <eclipse-emf-karaf-features-version>1.0.0</eclipse-emf-karaf-features-version>
-        <eclipse-epsilon-karaf-features-version>1.0.2</eclipse-epsilon-karaf-features-version>
-        <eclipse-xtext-karaf-features-version>1.0.0</eclipse-xtext-karaf-features-version>
+        <google-karaf-features-version>1.0.5</google-karaf-features-version>
+        <eclipse-emf-karaf-features-version>1.0.1</eclipse-emf-karaf-features-version>
+        <eclipse-epsilon-karaf-features-version>1.0.3</eclipse-epsilon-karaf-features-version>
+        <eclipse-xtext-karaf-features-version>1.0.2</eclipse-xtext-karaf-features-version>
         <antlr-karaf-features-version>1.0.1</antlr-karaf-features-version>
         <apache-commons-karaf-features-version>1.0.5</apache-commons-karaf-features-version>
         <apache-poi-karaf-features-version>1.0.2</apache-poi-karaf-features-version>
@@ -164,7 +138,7 @@
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <version>1.16.16</version>
+            <version>1.18.12</version>
             <scope>provided</scope>
         </dependency>
 
@@ -347,6 +321,24 @@
                 <version>${judo-dao-api-version}</version>
             </dependency>
 
+            <dependency>
+                <groupId>hu.blackbelt.judo</groupId>
+                <artifactId>judo-dispatcher-api</artifactId>
+                <version>${judo-dispatcher-api-version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>hu.blackbelt</groupId>
+                <artifactId>structured-map-proxy</artifactId>
+                <version>${structured-map-proxy-version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>hu.blackbelt.judo</groupId>
+                <artifactId>judo-operation-utils</artifactId>
+                <version>${judo-operation-utils-version}</version>
+            </dependency>
+
             <!--dependency>
                 <groupId>hu.blackbelt.judo.meta</groupId>
                 <artifactId>judo-meta-psm-jql-extract-runtime</artifactId>
@@ -366,13 +358,6 @@
                 <groupId>hu.blackbelt.judo.meta</groupId>
                 <artifactId>hu.blackbelt.judo.meta.esm.model.northwind</artifactId>
                 <version>${judo-meta-esm-version}</version>
-                <scope>test</scope>
-            </dependency>
-            <dependency>
-                <groupId>hu.blackbelt.judo.meta</groupId>
-                <artifactId>hu.blackbelt.judo.meta.psm.model.northwind</artifactId>
-                <version>${judo-meta-psm-version}</version>
-                <scope>test</scope>
             </dependency>
             <dependency>
                 <groupId>hu.blackbelt.judo.meta</groupId>
@@ -436,6 +421,12 @@
             </dependency>
 
             <dependency>
+                <groupId>hu.blackbelt.judo.meta</groupId>
+                <artifactId>hu.blackbelt.judo.meta.ui.model</artifactId>
+                <version>${judo-meta-ui-version}</version>
+            </dependency>
+
+            <dependency>
                 <groupId>hu.blackbelt.judo.framework</groupId>
                 <artifactId>compiler-api</artifactId>
                 <version>${judo-framework-version}</version>
@@ -456,91 +447,85 @@
             <dependency>
                 <groupId>hu.blackbelt.judo.tatami</groupId>
                 <artifactId>judo-tatami-core</artifactId>
-                <version>1.0.0-SNAPSHOT</version>
+                <version>1.1.0-SNAPSHOT</version>
             </dependency>
 
             <dependency>
                 <groupId>hu.blackbelt.judo.tatami</groupId>
                 <artifactId>judo-tatami-workflow</artifactId>
-                <version>1.0.0-SNAPSHOT</version>
+                <version>1.1.0-SNAPSHOT</version>
             </dependency>
 
             <dependency>
                 <groupId>hu.blackbelt.judo.tatami</groupId>
                 <artifactId>judo-tatami-asm2expression</artifactId>
-                <version>1.0.0-SNAPSHOT</version>
+                <version>1.1.0-SNAPSHOT</version>
             </dependency>
 
             <dependency>
                 <groupId>hu.blackbelt.judo.tatami</groupId>
                 <artifactId>judo-tatami-asm2script</artifactId>
-                <version>1.0.0-SNAPSHOT</version>
+                <version>1.1.0-SNAPSHOT</version>
             </dependency>
 
             <dependency>
                 <groupId>hu.blackbelt.judo.tatami</groupId>
                 <artifactId>judo-tatami-asm2jaxrsapi</artifactId>
-                <version>1.0.0-SNAPSHOT</version>
+                <version>1.1.0-SNAPSHOT</version>
             </dependency>
 
             <dependency>
                 <groupId>hu.blackbelt.judo.tatami</groupId>
                 <artifactId>judo-tatami-asm2openapi</artifactId>
-                <version>1.0.0-SNAPSHOT</version>
+                <version>1.1.0-SNAPSHOT</version>
             </dependency>
 
             <dependency>
                 <groupId>hu.blackbelt.judo.tatami</groupId>
                 <artifactId>judo-tatami-asm2rdbms</artifactId>
-                <version>1.0.0-SNAPSHOT</version>
+                <version>1.1.0-SNAPSHOT</version>
             </dependency>
 
             <dependency>
                 <groupId>hu.blackbelt.judo.tatami</groupId>
                 <artifactId>judo-tatami-asm2sdk</artifactId>
-                <version>1.0.0-SNAPSHOT</version>
+                <version>1.1.0-SNAPSHOT</version>
             </dependency>
 
             <dependency>
                 <groupId>hu.blackbelt.judo.tatami</groupId>
                 <artifactId>judo-tatami-script2operation</artifactId>
-                <version>1.0.0-SNAPSHOT</version>
+                <version>1.1.0-SNAPSHOT</version>
             </dependency>
 
             <dependency>
                 <groupId>hu.blackbelt.judo.tatami</groupId>
                 <artifactId>judo-tatami-itest</artifactId>
-                <version>1.0.0-SNAPSHOT</version>
+                <version>1.1.0-SNAPSHOT</version>
             </dependency>
 
             <dependency>
                 <groupId>hu.blackbelt.judo.tatami</groupId>
                 <artifactId>judo-tatami-esm2psm</artifactId>
-                <version>1.0.0-SNAPSHOT</version>
+                <version>1.1.0-SNAPSHOT</version>
             </dependency>
 
             <dependency>
                 <groupId>hu.blackbelt.judo.tatami</groupId>
                 <artifactId>judo-tatami-psm2asm</artifactId>
-                <version>1.0.0-SNAPSHOT</version>
+                <version>1.1.0-SNAPSHOT</version>
             </dependency>
-
-            <!--dependency>
-                <groupId>hu.blackbelt.judo.tatami</groupId>
-                <artifactId>judo-tatami-psm2jql</artifactId>
-                <version>1.0.0-SNAPSHOT</version>
-            </dependency-->
 
             <dependency>
                 <groupId>hu.blackbelt.judo.tatami</groupId>
                 <artifactId>judo-tatami-psm2measure</artifactId>
-                <version>1.0.0-SNAPSHOT</version>
+                <version>1.1.0-SNAPSHOT</version>
             </dependency>
 
             <dependency>
                 <groupId>hu.blackbelt.judo.tatami</groupId>
                 <artifactId>judo-tatami-rdbms2liquibase</artifactId>
-                <version>1.0.0-SNAPSHOT</version>
+                <version>1.1.0-SNAPSHOT</version>
             </dependency>
 
             <dependency>
@@ -555,6 +540,12 @@
                 <version>3.0.0</version>
             </dependency>
 
+            <dependency>
+                <groupId>hu.blackbelt.judo.meta</groupId>
+                <artifactId>hu.blackbelt.judo.meta.psm.model.northwind</artifactId>
+                <scope>test</scope>
+                <version>${judo-meta-psm-version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
     <build>
@@ -626,6 +617,12 @@
                             <artifactId>hu.blackbelt.judo.meta.measure.model</artifactId>
                             <version>${judo-meta-measure-version}</version>
                         </dependency>
+                        <dependency>
+                            <groupId>hu.blackbelt.judo.meta</groupId>
+                            <artifactId>hu.blackbelt.judo.meta.ui.model</artifactId>
+                            <version>${judo-meta-ui-version}</version>
+                        </dependency>
+
                     </dependencies>
                 </plugin>
 
@@ -686,7 +683,7 @@
 
                 <plugin>
                     <artifactId>maven-surefire-plugin</artifactId>
-                    <version>3.0.0-M3</version>
+                    <version>3.0.0-M4</version>
                     <configuration>
                         <argLine>-Dfile.encoding=UTF-8</argLine>
                         <trimStackTrace>false</trimStackTrace>
@@ -790,110 +787,6 @@
                 <module>judo-tatami-karaf-kar</module>
             </modules>
         </profile>
-
-		<profile>
-            <id>modules-eclipse</id>
-            <activation>
-                <activeByDefault>false</activeByDefault>
-            </activation>
-            <modules>
-                <module>judo-tatami-eclipse-site</module>
-                <module>judo-tatami-eclipse-targetdefinition</module>
-                <module>judo-tatami-eclipse-feature</module>
-            </modules>
-
-            <build>
-      			<plugins>
-                    <plugin>
-                        <groupId>org.eclipse.tycho</groupId>
-                        <artifactId>tycho-maven-plugin</artifactId>
-                        <version>${tycho-version}</version>
-                        <extensions>true</extensions>
-                    </plugin>
-
-                    <plugin>
-                        <groupId>org.eclipse.tycho</groupId>
-                        <artifactId>target-platform-configuration</artifactId>
-                        <version>${tycho-version}</version>
-                        <configuration>
-                            <target>
-                                <artifact>
-                                    <groupId>hu.blackbelt.judo.tatami</groupId>
-                                    <artifactId>hu.blackbelt.judo.tatami.eclipse.targetdefinition</artifactId>
-                                    <version>${project.version}</version>
-                                </artifact>
-                            </target>
-                            <environments>
-                                <environment>
-                                    <os>linux</os>
-                                    <ws>gtk</ws>
-                                    <arch>x86</arch>
-                                </environment>
-                                <environment>
-                                    <os>linux</os>
-                                    <ws>gtk</ws>
-                                    <arch>x86_64</arch>
-                                </environment>
-                                <environment>
-                                    <os>win32</os>
-                                    <ws>win32</ws>
-                                    <arch>x86</arch>
-                                </environment>
-                                <environment>
-                                    <os>win32</os>
-                                    <ws>win32</ws>
-                                    <arch>x86_64</arch>
-                                </environment>
-                                <environment>
-                                    <os>macosx</os>
-                                    <ws>cocoa</ws>
-                                    <arch>x86_64</arch>
-                                </environment>
-                            </environments>
-                        </configuration>
-                    </plugin>
-
-                    <plugin>
-                        <groupId>org.eclipse.tycho</groupId>
-                        <artifactId>tycho-versions-plugin</artifactId>
-                        <version>${tycho-version}</version>
-                    </plugin>
-
-                    <plugin>
-                        <groupId>org.eclipse.tycho</groupId>
-                        <artifactId>tycho-surefire-plugin</artifactId>
-                        <version>${tycho-version}</version>
-                    </plugin>
-
-                    <plugin>
-                        <groupId>org.eclipse.tycho.extras</groupId>
-                        <artifactId>tycho-source-feature-plugin</artifactId>
-                        <version>${tycho-version}</version>
-                    </plugin>
-
-                    <plugin>
-                        <groupId>org.eclipse.tycho</groupId>
-                        <artifactId>tycho-source-plugin</artifactId>
-                        <version>${tycho-version}</version>
-                    </plugin>
-
-                    <plugin>
-                        <groupId>org.eclipse.tycho</groupId>
-                        <artifactId>tycho-p2-plugin</artifactId>
-                        <version>${tycho-version}</version>
-                        <executions>
-                            <execution>
-                                <id>attach-p2-metadata</id>
-                                <phase>package</phase>
-                                <goals>
-                                    <goal>p2-metadata</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-		        </plugins>
-      		</build>
-    	</profile>
 
         <profile>
             <id>sign-artifacts</id>

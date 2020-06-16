@@ -15,7 +15,7 @@ rule CreateAttribute
     to t: JUDOPSM!Attribute
     extends CreatePrimitiveTypedElement {
       guard: s.eContainer.isKindOf(ESM!EntityType)
-            and s.dataMemberType = ESM!DataMemberType#ATTRIBUTE
+            and s.memberType == ESM!MemberType#STORED
       t.identifier = s.identifier;
       s.eContainer.getPSMEquivalent().attributes.add(t);
       log.debug("Created Attribute: " + t.name);

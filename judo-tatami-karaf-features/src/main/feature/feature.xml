@@ -99,6 +99,12 @@
         <bundle>mvn:hu.blackbelt.judo.meta/hu.blackbelt.judo.meta.script.builder.jcl.asm/${judo-meta-script-version}</bundle>
     </feature>
 
+    <feature name="judo-tatami-meta-ui" version="${project.version}" description="JUDO Tatami, UI Model " install="false">
+        <feature dependency="true">epsilon-runtime</feature>
+        <feature dependency="true">osgi-utils</feature>
+        <bundle>mvn:hu.blackbelt.judo.meta/hu.blackbelt.judo.meta.ui.osgi/${judo-meta-ui-version}</bundle>
+    </feature>
+
     <feature name="judo-tatami-meta" version="${project.version}" description="JUDO Tatami, meta types" install="false">
         <feature>judo-tatami-meta-asm</feature>
         <feature>judo-tatami-meta-psm</feature>
@@ -110,6 +116,7 @@
         <feature>judo-tatami-meta-liquibase</feature>
         <feature>judo-tatami-meta-script</feature>
         <feature>judo-tatami-meta-jcl</feature>
+        <feature>judo-tatami-meta-ui</feature>
     </feature>
 
 
@@ -119,6 +126,8 @@
         <feature dependency="true">epsilon-runtime</feature>
         <feature>judo-tatami-meta-asm</feature>
         <bundle>mvn:hu.blackbelt.judo/judo-dao-api/${judo-dao-api-version}</bundle>
+        <bundle>mvn:hu.blackbelt.judo/judo-dispatcher-api/${judo-dispatcher-api-version}</bundle>
+        <bundle>mvn:hu.blackbelt.judo/judo-operation-utils/${judo-operation-utils-version}</bundle>
         <bundle>mvn:hu.blackbelt.judo.tatami/judo-tatami-core/${project.version}</bundle>
     </feature>
 

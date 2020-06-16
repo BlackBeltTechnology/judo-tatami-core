@@ -13,7 +13,7 @@ feature:repo-add mvn:hu.blackbelt.karaf.features/eclipse-xtext-features/2.16.0_1
 feature:repo-add mvn:hu.blackbelt.karaf.features/tinybundles-features/3.0.0_1/xml/features
 feature:repo-add mvn:hu.blackbelt.karaf.features/antlr-features/1.0.1/xml/features
 feature:repo-add mvn:hu.blackbelt.epsilon/features/1.2.0.develop_93/xml/features
-feature:repo-add mvn:hu.blackbelt.judo.tatami/features/1.0.0-SNAPSHOT/xml/features
+feature:repo-add mvn:hu.blackbelt.judo.tatami/features/1.1.0-SNAPSHOT/xml/features
 feature:install -v http cxf-jaxrs cxf-jackson guava
 bundle:install -s mvn:hu.blackbelt.judo.framework/compiler-api/2.0.0_develop_128
 bundle:install -s mvn:hu.blackbelt.cxf/cxf-jaxrs-application-manager/0.4.0

@@ -2,59 +2,34 @@ import "../namespace/namespace.etl";
 import "../derived/referenceAccessor.etl";
 import "../../../../operations/_importAll.eol";
 
-rule CreateAccessPoint
-	transform s: ESM!AccessPoint
-	to t: JUDOPSM!AccessPoint
-	extends CreateNamespaceElement {
-	  log.debug("Created AccessPoint: " + t.name);
+rule CreateActorType
+	transform s: ESM!ActorType
+	to t: JUDOPSM!ActorType {
+	  t.name = s.eContainer.name;
+	  if (s.realm == ESM!Realm#CUSTOM) {
+	  	t.realm = s.customRealm;
+	  }
+	  
+	  t.transferObjectType = s.eContainer.getPSMTransferObjectTypeEquivalent();
+	  s.eContainer.getPSMTransferObjectTypeEquivalent().actorType = t;
+	  s.eContainer.eContainer.getPSMGeneratedActorTypeNamespaceEquivalent().elements.add(t);
+	  
+	  log.debug("Created ActorType: " + t.name);
 }
 
-rule CreateExposedService
-	transform s: ESM!ExposedGraph
-	to t: JUDOPSM!ExposedService
-	extends CreateNamedElement {
-        guard: not s.target.mapping.isDefined() or s.getterExpression.trim() == ''
-
-        t.`operationGroup` = s.target.getPSMTransferObjectTypeEquivalent();
-
-        s.eContainer.equivalent("CreateAccessPoint").exposedServices.add(t);
-        log.debug("Created ExposedService.");
-}
-
-rule CreateExposedGraph
-    transform s : ESM!ExposedGraph
-    to t : JUDOPSM!ExposedGraph
-    extends CreateNamedElement {
-        guard: s.target.mapping.isDefined() and s.getterExpression.trim() <> ''
-
-        t.`mappedTransferObjectType` = s.target.getPSMTransferObjectTypeEquivalent();
-        t.selector = s.equivalent("CreateStaticNavigationForExposedGraph");
-
-        s.eContainer.equivalent("CreateAccessPoint").exposedGraphs.add(t);
-        log.debug("Created ExposedGraph.");
-}
-
-rule CreateExposedGraphCardinality
-    transform s : ESM!ExposedGraph
-    to t : JUDOPSM!Cardinality {
-        guard: s.target.mapping.isDefined() and s.getterExpression.trim() <> ''
-
-        t.lower = s.lower;
-        t.upper = s.upper;
-
-        s.equivalent("CreateExposedGraph").cardinality = t;
-}
-
+@greedy
 rule CreateGetOperationForExposedGraph
-    transform s : ESM!ExposedGraph
+    transform s : ESM!RelationFeature
     to t : JUDOPSM!UnboundOperation {
-        guard: s.target.mapping.isDefined() and s.getterExpression.trim() <> ''
+        guard: s.eContainer.isAccesspoint() and s.target.mapping.isDefined() 
+        and s.getterExpression.isDefined() and s.getterExpression.trim() <> ''
 
-        t.name = "_get" + s.name.firstToUpperCase() + "For" + esmUtils.getNamespaceElementFQName(s.eContainer).replace("::", "_").firstToUpperCase();
+        t.name = "_get" + s.name.firstToUpperCase();
         t.behaviour = new JUDOPSM!TransferOperationBehaviour;
         t.behaviour.behaviourType = JUDOPSM!TransferOperationBehaviourType#GET;
-        t.behaviour.owner = s.equivalent("CreateExposedGraph");
-
+        
+	    t.behaviour.owner = s.getPSMTransferObjectRelationEquivalent();
+        
         t.output = new JUDOPSM!Parameter;
         t.output.name = "output";
         t.output.type = s.target.getPSMTransferObjectTypeEquivalent();
@@ -62,16 +37,17 @@ rule CreateGetOperationForExposedGraph
         t.output.cardinality.lower = s.lower;
         t.output.cardinality.upper = s.upper;
 
-        s.target.getPSMTransferObjectTypeEquivalent().operations.add(t);
+        s.eContainer.getPSMTransferObjectTypeEquivalent().operations.add(t);
 }
 
-operation ESM!ExposedGraph createSetOperationForExposedGraph(relation : ESM!RelationFeature) : JUDOPSM!UnboundOperation {
+operation ESM!RelationFeature createSetOperationForExposedGraph(relation : ESM!RelationFeature) : JUDOPSM!UnboundOperation {
     var t = new JUDOPSM!UnboundOperation;
 
-    t.name = "_set" + relation.name.firstToUpperCase() + "Of" + self.name.firstToUpperCase() + "For" + esmUtils.getNamespaceElementFQName(self.eContainer).replace("::", "_").firstToUpperCase();
+    t.name = "_set" + relation.name.firstToUpperCase() + "Of" + self.name.firstToUpperCase();
     t.behaviour = new JUDOPSM!TransferOperationBehaviour;
     t.behaviour.behaviourType = JUDOPSM!TransferOperationBehaviourType#SET_RELATION;
-    t.behaviour.owner = self.equivalent("CreateExposedGraph");
+    t.behaviour.owner = self.getPSMTransferObjectRelationEquivalent();
+    
     t.behaviour.relation = relation.getPSMTransferObjectRelationEquivalent();
 
     t.input = new JUDOPSM!Parameter;
@@ -81,18 +57,19 @@ operation ESM!ExposedGraph createSetOperationForExposedGraph(relation : ESM!Rela
     t.input.cardinality.lower = 1;
     t.input.cardinality.upper = 1;
 
-    self.target.getPSMTransferObjectTypeEquivalent().operations.add(t);
+    self.eContainer.getPSMTransferObjectTypeEquivalent().operations.add(t);
 
     return t;
 }
 
-operation ESM!ExposedGraph createUnsetOperationForExposedGraph(relation : ESM!RelationFeature) : JUDOPSM!UnboundOperation {
+operation ESM!RelationFeature createUnsetOperationForExposedGraph(relation : ESM!RelationFeature) : JUDOPSM!UnboundOperation {
     var t = new JUDOPSM!UnboundOperation;
 
-    t.name = "_unset" + relation.name.firstToUpperCase() + "Of" + self.name.firstToUpperCase() + "For" + esmUtils.getNamespaceElementFQName(self.eContainer).replace("::", "_").firstToUpperCase();
+    t.name = "_unset" + relation.name.firstToUpperCase() + "Of" + self.name.firstToUpperCase();
     t.behaviour = new JUDOPSM!TransferOperationBehaviour;
     t.behaviour.behaviourType = JUDOPSM!TransferOperationBehaviourType#UNSET_RELATION;
-    t.behaviour.owner = self.equivalent("CreateExposedGraph");
+    t.behaviour.owner = self.getPSMTransferObjectRelationEquivalent();
+    
     t.behaviour.relation = relation.getPSMTransferObjectRelationEquivalent();
 
     t.input = new JUDOPSM!Parameter;
@@ -102,18 +79,18 @@ operation ESM!ExposedGraph createUnsetOperationForExposedGraph(relation : ESM!Re
     t.input.cardinality.lower = 1;
     t.input.cardinality.upper = 1;
 
-    self.target.getPSMTransferObjectTypeEquivalent().operations.add(t);
+    self.eContainer.getPSMTransferObjectTypeEquivalent().operations.add(t);
 
     return t;
 }
 
-operation ESM!ExposedGraph createAddAllOperationForExposedGraph(relation : ESM!RelationFeature) : JUDOPSM!UnboundOperation {
+operation ESM!RelationFeature createAddAllOperationForExposedGraph(relation : ESM!RelationFeature) : JUDOPSM!UnboundOperation {
     var t = new JUDOPSM!UnboundOperation;
 
-    t.name = "_add" + relation.name.firstToUpperCase() + "To" + self.name.firstToUpperCase() + "For" + esmUtils.getNamespaceElementFQName(self.eContainer).replace("::", "_").firstToUpperCase();
+    t.name = "_add" + relation.name.firstToUpperCase() + "To" + self.name.firstToUpperCase();
     t.behaviour = new JUDOPSM!TransferOperationBehaviour;
     t.behaviour.behaviourType = JUDOPSM!TransferOperationBehaviourType#ADD_ALL_TO_RELATION;
-    t.behaviour.owner = self.equivalent("CreateExposedGraph");
+    t.behaviour.owner = self.getPSMTransferObjectRelationEquivalent();
     t.behaviour.relation = relation.getPSMTransferObjectRelationEquivalent();
 
     t.input = new JUDOPSM!Parameter;
@@ -123,18 +100,18 @@ operation ESM!ExposedGraph createAddAllOperationForExposedGraph(relation : ESM!R
     t.input.cardinality.lower = 1;
     t.input.cardinality.upper = 1;
 
-    self.target.getPSMTransferObjectTypeEquivalent().operations.add(t);
+    self.eContainer.getPSMTransferObjectTypeEquivalent().operations.add(t);
 
     return t;
 }
 
-operation ESM!ExposedGraph createRemoveAllOperationForExposedGraph(relation : ESM!RelationFeature) : JUDOPSM!UnboundOperation {
+operation ESM!RelationFeature createRemoveAllOperationForExposedGraph(relation : ESM!RelationFeature) : JUDOPSM!UnboundOperation {
     var t = new JUDOPSM!UnboundOperation;
 
-    t.name = "_remove" + relation.name.firstToUpperCase() + "From" + self.name.firstToUpperCase() + "For" + esmUtils.getNamespaceElementFQName(self.eContainer).replace("::", "_").firstToUpperCase();
+    t.name = "_remove" + relation.name.firstToUpperCase() + "From" + self.name.firstToUpperCase();
     t.behaviour = new JUDOPSM!TransferOperationBehaviour;
     t.behaviour.behaviourType = JUDOPSM!TransferOperationBehaviourType#REMOVE_ALL_FROM_RELATION;
-    t.behaviour.owner = self.equivalent("CreateExposedGraph");
+    t.behaviour.owner = self.getPSMTransferObjectRelationEquivalent();
     t.behaviour.relation = relation.getPSMTransferObjectRelationEquivalent();
 
     t.input = new JUDOPSM!Parameter;
@@ -144,15 +121,15 @@ operation ESM!ExposedGraph createRemoveAllOperationForExposedGraph(relation : ES
     t.input.cardinality.lower = 1;
     t.input.cardinality.upper = 1;
 
-    self.target.getPSMTransferObjectTypeEquivalent().operations.add(t);
+    self.eContainer.getPSMTransferObjectTypeEquivalent().operations.add(t);
 
     return t;
 }
 
-operation ESM!ExposedGraph createGetRangeOperationForExposedGraphEdit(relation : ESM!RelationFeature, parameter : JUDOPSM!Parameter, action : String) : JUDOPSM!UnboundOperation {
+operation ESM!RelationFeature createGetRangeOperationForExposedGraphEdit(relation : ESM!RelationFeature, parameter : JUDOPSM!Parameter, action : String) : JUDOPSM!UnboundOperation {
     var t = new JUDOPSM!UnboundOperation;
 
-    t.name = "_getRangeOf" + relation.name.firstToUpperCase() + "To" + action.firstToUpperCase() + self.name.firstToUpperCase() + "For" + esmUtils.getNamespaceElementFQName(self.eContainer).replace("::", "_").firstToUpperCase();
+    t.name = "_getRangeOf" + relation.name.firstToUpperCase() + "To" + action.firstToUpperCase() + self.name.firstToUpperCase();
     t.behaviour = new JUDOPSM!TransferOperationBehaviour;
     t.behaviour.behaviourType = JUDOPSM!TransferOperationBehaviourType#GET_RANGE_OF_RELATION;
     t.behaviour.owner = parameter;
@@ -172,20 +149,22 @@ operation ESM!ExposedGraph createGetRangeOperationForExposedGraphEdit(relation :
     t.output.cardinality.lower = 0;
     t.output.cardinality.upper = -1;
 
-    self.target.getPSMTransferObjectTypeEquivalent().operations.add(t);
+    self.eContainer.getPSMTransferObjectTypeEquivalent().operations.add(t);
 
     return t;
 }
 
+@greedy
 rule CreateCreateOperationForExposedGraph
-    transform s : ESM!ExposedGraph
+    transform s : ESM!RelationFeature
     to t : JUDOPSM!UnboundOperation {
-        guard: s.target.mapping.isDefined() and s.getterExpression.trim() <> '' and s.createable
+        guard: s.eContainer.isAccesspoint() and s.target.mapping.isDefined()
+        and s.getterExpression.isDefined() and s.getterExpression.trim() <> '' and s.createable
 
-        t.name = "_create" + s.name.firstToUpperCase() + "For" + esmUtils.getNamespaceElementFQName(s.eContainer).replace("::", "_").firstToUpperCase();
+        t.name = "_create" + s.name.firstToUpperCase();
         t.behaviour = new JUDOPSM!TransferOperationBehaviour;
         t.behaviour.behaviourType = JUDOPSM!TransferOperationBehaviourType#CREATE;
-        t.behaviour.owner = s.equivalent("CreateExposedGraph");
+        t.behaviour.owner = s.getPSMTransferObjectRelationEquivalent();
 
         t.input = new JUDOPSM!Parameter;
         t.input.name = "input";
@@ -205,9 +184,9 @@ rule CreateCreateOperationForExposedGraph
             var rangeAllowed = false;
             if (relation.isKindOf(ESM!OneWayRelationMember)) {
                 if (relation.eContainer.isKindOf(ESM!EntityType)) {
-                    rangeAllowed = not relation.containment and relation.relationMemberType <> ESM!RelationMemberType#PROPERTY;
+                    rangeAllowed = not relation.isComposition() and relation.memberType <> ESM!MemberType#DERIVED;
                 } else if (relation.eContainer.isKindOf(ESM!TransferObjectType)) {
-                    rangeAllowed = relation.relationMemberType <> ESM!RelationMemberType#PROPERTY and (relation.relationMemberType == ESM!RelationMemberType#BOUND implies (not relation.binding.containment and relation.binding.relationMemberType <> ESM!RelationMemberType#PROPERTY));
+                    rangeAllowed = relation.memberType <> ESM!MemberType#DERIVED and (relation.memberType == ESM!MemberType#BOUND implies (not relation.binding.isComposition() and relation.binding.memberType <> ESM!MemberType#DERIVED));
                 }
             } else if (relation.isKindOf(ESM!TwoWayRelationMember)) {
                 rangeAllowed = true;
@@ -219,18 +198,21 @@ rule CreateCreateOperationForExposedGraph
             } */
         }
 
-        s.target.getPSMTransferObjectTypeEquivalent().operations.add(t);
+        s.eContainer.getPSMTransferObjectTypeEquivalent().operations.add(t);
 }
 
+@greedy
 rule CreateUpdateOperationForExposedGraph
-    transform s : ESM!ExposedGraph
+    transform s : ESM!RelationFeature
     to t : JUDOPSM!UnboundOperation {
-        guard: s.target.mapping.isDefined() and s.getterExpression.trim() <> '' and s.updateable
+        guard: s.eContainer.isAccesspoint() and s.target.mapping.isDefined()
+        and s.getterExpression.isDefined() and s.getterExpression.trim() <> '' and s.updateable
 
-        t.name = "_update" + s.name.firstToUpperCase() + "For" + esmUtils.getNamespaceElementFQName(s.eContainer).replace("::", "_").firstToUpperCase();
+        t.name = "_update" + s.name.firstToUpperCase();
         t.behaviour = new JUDOPSM!TransferOperationBehaviour;
         t.behaviour.behaviourType = JUDOPSM!TransferOperationBehaviourType#UPDATE;
-        t.behaviour.owner = s.equivalent("CreateExposedGraph");
+        t.behaviour.owner = s.getPSMTransferObjectRelationEquivalent();
+        
 
         t.input = new JUDOPSM!Parameter;
         t.input.name = "input";
@@ -251,11 +233,11 @@ rule CreateUpdateOperationForExposedGraph
             var containment = false;
             if (relation.isKindOf(ESM!OneWayRelationMember)) {
                 if (relation.eContainer.isKindOf(ESM!EntityType)) {
-                    rangeAllowed = not relation.containment and relation.relationMemberType <> ESM!RelationMemberType#PROPERTY;
-                    containment = relation.containment;
+                    rangeAllowed = not relation.isComposition() and relation.memberType <> ESM!MemberType#DERIVED;
+                    containment = relation.isComposition();
                 } else if (relation.eContainer.isKindOf(ESM!TransferObjectType)) {
-                    rangeAllowed = relation.relationMemberType <> ESM!RelationMemberType#PROPERTY and (relation.relationMemberType == ESM!RelationMemberType#BOUND implies (not relation.binding.containment and relation.binding.relationMemberType <> ESM!RelationMemberType#PROPERTY));
-                    containment = relation.relationMemberType == ESM!RelationMemberType#BOUND and relation.binding.containment and relation.target.mapping.isDefined();
+                    rangeAllowed = relation.memberType <> ESM!MemberType#DERIVED and (relation.memberType == ESM!MemberType#BOUND implies (not relation.binding.isComposition() and relation.binding.memberType <> ESM!MemberType#DERIVED));
+                    containment = relation.memberType == ESM!MemberType#BOUND and relation.binding.isComposition() and relation.target.mapping.isDefined();
                 }
             } else if (relation.isKindOf(ESM!TwoWayRelationMember)) {
                 rangeAllowed = true;
@@ -264,7 +246,7 @@ rule CreateUpdateOperationForExposedGraph
             var entityPartner;
             if (relation.isKindOf(ESM!TwoWayRelationMember)) {
                 entityPartner = relation.partner;
-            } else if (relation.relationMemberType == ESM!RelationMemberType#BOUND and relation.binding.isKindOf(ESM!TwoWayRelationMember)) {
+            } else if (relation.memberType == ESM!MemberType#BOUND and relation.binding.isKindOf(ESM!TwoWayRelationMember)) {
                 entityPartner = relation.binding.partner;
             }
 
@@ -292,18 +274,19 @@ rule CreateUpdateOperationForExposedGraph
             }*/
         }
 
-        s.target.getPSMTransferObjectTypeEquivalent().operations.add(t);
+        s.eContainer.getPSMTransferObjectTypeEquivalent().operations.add(t);
 }
 
+@greedy
 rule CreateDeleteOperationForExposedGraph
-    transform s : ESM!ExposedGraph
+    transform s : ESM!RelationFeature
     to t : JUDOPSM!UnboundOperation {
-        guard: s.target.mapping.isDefined() and s.getterExpression.trim() <> '' and s.deleteable
+        guard: s.eContainer.isAccesspoint() and s.target.mapping.isDefined() and s.getterExpression.isDefined() and s.getterExpression.trim() <> '' and s.deleteable
 
-        t.name = "_delete" + s.name.firstToUpperCase() + "For" + esmUtils.getNamespaceElementFQName(s.eContainer).replace("::", "_").firstToUpperCase();
+        t.name = "_delete" + s.name.firstToUpperCase();
         t.behaviour = new JUDOPSM!TransferOperationBehaviour;
         t.behaviour.behaviourType = JUDOPSM!TransferOperationBehaviourType#DELETE;
-        t.behaviour.owner = s.equivalent("CreateExposedGraph");
+        t.behaviour.owner = s.getPSMTransferObjectRelationEquivalent();
 
         t.input = new JUDOPSM!Parameter;
         t.input.name = "input";
@@ -312,5 +295,6 @@ rule CreateDeleteOperationForExposedGraph
         t.input.cardinality.lower = 1;
         t.input.cardinality.upper = 1;
 
-        s.target.getPSMTransferObjectTypeEquivalent().operations.add(t);
+        s.eContainer.getPSMTransferObjectTypeEquivalent().operations.add(t);
+        
 }

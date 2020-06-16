@@ -76,8 +76,9 @@ rule CreateGetterExpressionForTransferObjectRelationBinding
 }
 
 @greedy
+@lazy
 rule CreateGetterExpressionForExposedGraphSelector
-    transform s : ESM!StaticNavigation
+    transform s : ESM!OneWayRelationMember
     to t : JUDOPSM!ReferenceExpressionType {
         t.expression = s.getterExpression;
         log.debug("Created Reference Expression Type for Exposed Graph Selector: " + s.name);    

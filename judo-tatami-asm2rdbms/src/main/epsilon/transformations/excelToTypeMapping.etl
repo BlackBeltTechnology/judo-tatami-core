@@ -20,17 +20,22 @@ rule Excel2TypeMapping
         }
 
         if (s.Precision.isDefined() and s.Precision.trim() <> "") {
-            t.rdbmsPrecision = new Integer(s.Precision);
+            t.rdbmsPrecision = s.Precision.asFloat().asInteger();
         } else {
             t.rdbmsPrecision = -1;
         }
 
         if (s.Scale.isDefined() and s.Scale.trim() <> "") {
-            t.rdbmsScale = new Integer(s.Scale);
+            t.rdbmsScale = s.Scale.asFloat().asInteger();
         } else {
             t.rdbmsScale = -1;
         }
 
         t.rdbmsJdbcType = s.JdbcType;
+
+        if (s.SqlType.isDefined() and s.SqlType.trim() <> "") {
+            t.rdbmsSqlType = s.SqlType.asFloat().asInteger();
+        }
+
 		targetModel.typeMappings.add(t);
 }

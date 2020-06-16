@@ -2,12 +2,12 @@ package hu.blackbelt.judo.tatami.itest;
 
 import com.fasterxml.jackson.jaxrs.json.JacksonJaxbJsonProvider;
 import com.google.common.collect.ImmutableMap;
+import hu.blackbelt.judo.dispatcher.api.Dispatcher;
 import hu.blackbelt.judo.meta.asm.runtime.AsmUtils;
 import hu.blackbelt.judo.meta.rdbms.RdbmsIdentifierField;
 import hu.blackbelt.judo.meta.rdbms.RdbmsTable;
 import hu.blackbelt.judo.meta.rdbms.RdbmsValueField;
 import hu.blackbelt.judo.meta.rdbms.runtime.RdbmsModel;
-import hu.blackbelt.judo.tatami.core.Dispatcher;
 import hu.blackbelt.judo.tatami.core.TransformationTrace;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
@@ -67,7 +67,7 @@ public class NorthwindTatamiESMTransformationPipelineITest extends TatamiESMTran
     private InputStream getEsmModelBundle() throws FileNotFoundException {
         return bundle()
                 .add("model/" + NORTHWIND + ".judo-meta-esm",
-                        new FileInputStream(new File(testTargetDir(getClass()).getAbsolutePath(), "northwind-esm.model")))
+                        new FileInputStream(new File(testTargetDir(getClass()).getAbsolutePath(), "/northwind-esm/northwind-esm.model")))
                 .set(Constants.BUNDLE_MANIFESTVERSION, "2")
                 .set(Constants.BUNDLE_SYMBOLICNAME, NORTHWIND + "-model")
                 //set( Constants.IMPORT_PACKAGE, "meta/psm;version=\"" + getConfiguration(META_PSM_IMPORT_RANGE) +"\"")
@@ -116,7 +116,7 @@ public class NorthwindTatamiESMTransformationPipelineITest extends TatamiESMTran
         assertThat(orderRdbmsObjectList.stream()
                 .filter(RdbmsTable.class::isInstance)
                 .map(RdbmsTable.class::cast)
-                .findFirst().get().getSqlName(), equalTo("T_ENTTS_ORDER"));
+                .findFirst().get().getSqlName(), equalTo("T_ENTITS_ORDER"));
 
         log.log(LOG_INFO, "==============================================");
         log.log(LOG_INFO, "== STOPPING TEST TRACE METHOD");

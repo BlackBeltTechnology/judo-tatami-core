@@ -68,12 +68,12 @@ public class Script2Operation {
                         "        <provide interface=\"java.util.function.Function\"/>\n" +
                         "    </service>\n" +
                         "    <reference name=\"dao\" interface=\"hu.blackbelt.judo.dao.api.DAO\" field=\"dao\" target=\"(judo.model.name=" + modelName + ")\"/>\n" +
+                        "    <reference name=\"dispatcher\" interface=\"hu.blackbelt.judo.dispatcher.api.Dispatcher\" field=\"dispatcher\" target=\"(judo.model.name=" + modelName + ")\"/>\n" +
                         "    <reference name=\"asmModel\" interface=\"hu.blackbelt.judo.meta.asm.runtime.AsmModel\" bind=\"setAsmModel\" target=\"(name=" + modelName + ")\"/>\n" +
                         "    <reference name=\"identifierProvider\" interface=\"hu.blackbelt.judo.dao.api.IdentifierProvider\" field=\"idProvider\"/>\n" +
                         "\n" +
                         "</scr:component>\n"
                     );
-
                 });
 
         if (log.isDebugEnabled()) {
@@ -153,10 +153,13 @@ public class Script2Operation {
                 .set( Constants.IMPORT_PACKAGE,
                         "org.osgi.framework;version=\"[1.8,2.0)\"," +
                         "hu.blackbelt.judo.dao.api;version=\"[1.0,2.0)\"," +
+                        "hu.blackbelt.judo.dispatcher.api;version=\"[1.0,2.0)\"," +
                         "hu.blackbelt.judo.meta.asm.runtime;version=\"[1.0,2.0)\"," +
+                        "hu.blackbelt.judo.operation.utils;version=\"[1.0,2.0)\"," +
                         "org.eclipse.emf.ecore," +
                         "org.eclipse.emf.common," +
-                        "org.eclipse.emf.common.util"
+                        "org.eclipse.emf.common.util," +
+                        "org.slf4j;version=\"1.7.2\""
                 );
 
         if (exportedPackages.size() > 0) {

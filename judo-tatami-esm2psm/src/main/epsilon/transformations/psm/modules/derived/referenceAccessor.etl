@@ -34,7 +34,7 @@ rule CreateNavigationProperty
     to t : JUDOPSM!NavigationProperty
     extends CreateNamedElement {
       guard: s.eContainer.isKindOf(ESM!EntityType)
-            and s.relationMemberType = ESM!RelationMemberType#PROPERTY
+            and s.memberType == ESM!MemberType#DERIVED
       
        t.cardinality = s.equivalent("CreateCardinalityForReferenceTypedElement");
        s.eContainer.getPSMEquivalent().navigationProperties.add(t);
@@ -124,13 +124,12 @@ rule CreateCardinalityForExposedGraphSelector
       t.lower = s.lower;
 }
 
-@lazy
-@greedy
 rule CreateStaticNavigationForExposedGraph
-	transform s : ESM!StaticNavigation
+	transform s : ESM!OneWayRelationMember
 	to t : JUDOPSM!StaticNavigation
 	extends CreateNamedElement {
-	  guard: s.isTypeOf(ESM!ExposedGraph)
+	  guard: not s.eContainer.isMapped() and s.target.mapping.isDefined() and s.getterExpression.isDefined() and s.getterExpression.trim() <> ''
+
 	  var ecoreUtil = new Native("org.eclipse.emf.ecore.util.EcoreUtil");
 	  ecoreUtil.getRootContainer(s).equivalent("CreateGeneratedNavigationRootPackage").elements.add(t);
 	  t.name = "_" + s.name + "_selector_" + s.eContainer.name;

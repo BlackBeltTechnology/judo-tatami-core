@@ -101,7 +101,7 @@ rule CreateTimestampType
     transform s : JUDOPSM!TimestampType
     to t : ASM!EDataType {
         t.name = s.name;
-        t.instanceClassName = "java.time.ZonedDateTime";
+        t.instanceClassName = "java.time.OffsetDateTime";
         
         s.eContainer.asmEquivalent().eClassifiers.add(t);
     }

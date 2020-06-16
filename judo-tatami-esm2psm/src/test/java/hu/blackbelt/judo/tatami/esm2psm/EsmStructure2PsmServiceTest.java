@@ -7,10 +7,10 @@ import hu.blackbelt.judo.meta.esm.namespace.Model;
 import hu.blackbelt.judo.meta.esm.namespace.Package;
 import hu.blackbelt.judo.meta.esm.runtime.EsmModel;
 import hu.blackbelt.judo.meta.esm.structure.DataMember;
-import hu.blackbelt.judo.meta.esm.structure.DataMemberType;
+import hu.blackbelt.judo.meta.esm.structure.MemberType;
 import hu.blackbelt.judo.meta.esm.structure.EntityType;
 import hu.blackbelt.judo.meta.esm.structure.OneWayRelationMember;
-import hu.blackbelt.judo.meta.esm.structure.RelationMemberType;
+import hu.blackbelt.judo.meta.esm.structure.RelationKind;
 import hu.blackbelt.judo.meta.esm.structure.TransferObjectType;
 import hu.blackbelt.judo.meta.esm.structure.TwoWayRelationMember;
 import hu.blackbelt.judo.meta.esm.type.StringType;
@@ -129,18 +129,18 @@ public class EsmStructure2PsmServiceTest {
 
 		// relations
 		OneWayRelationMember oneWayRelationContainmentTargetingUnmapped = newOneWayRelationMemberBuilder()
-				.withName("transferRelationAggregationTargetingUnmapped").withAggregation(true).withContainment(false)
-				.withLower(1).withUpper(1).withRelationMemberType(RelationMemberType.RELATION)
+				.withName("transferRelationAggregationTargetingUnmapped").withRelationKind(RelationKind.AGGREGATION)
+				.withLower(1).withUpper(1).withMemberType(MemberType.STORED)
 				.withTarget(targetUnmappedTransferObjectType).build();
 
 		OneWayRelationMember oneWayRelationContainmentTargetingMapped = newOneWayRelationMemberBuilder()
-				.withName("transferRelationContainmentTargetingMapped").withContainment(false).withAggregation(true)
-				.withLower(1).withUpper(1).withRelationMemberType(RelationMemberType.RELATION)
+				.withName("transferRelationContainmentTargetingMapped").withRelationKind(RelationKind.AGGREGATION)
+				.withLower(1).withUpper(1).withMemberType(MemberType.STORED)
 				.withTarget(targetMappedTransferObjectType).build();
 
 		OneWayRelationMember oneWayRelationBasicTargetingEntity = newOneWayRelationMemberBuilder()
-				.withName("transferRelationBasicTargetingEntity").withContainment(false).withAggregation(false)
-				.withLower(1).withUpper(1).withRelationMemberType(RelationMemberType.RELATION)
+				.withName("transferRelationBasicTargetingEntity").withRelationKind(RelationKind.ASSOCIATION)
+				.withLower(1).withUpper(1).withMemberType(MemberType.STORED)
 				.withTarget(targetEntityType).build();
 
 		// Unmapped TransferObjectType
@@ -267,43 +267,48 @@ public class EsmStructure2PsmServiceTest {
 		targetEntityType.setMapping(newMappingBuilder().withTarget(targetEntityType).build());
 
 		OneWayRelationMember oneWayRelationContainment = newOneWayRelationMemberBuilder()
-				.withName("transferRelationContainment").withContainment(true).withAggregation(true).withLower(1)
-				.withUpper(1).withRelationMemberType(RelationMemberType.RELATION).withTarget(targetEntityType).build();
+				.withName("transferRelationContainment").withRelationKind(RelationKind.COMPOSITION).withLower(1)
+				.withUpper(1).withMemberType(MemberType.STORED).withTarget(targetEntityType).build();
 		oneWayRelationContainment.setBinding(oneWayRelationContainment);
+		
+		OneWayRelationMember oneWayRelationAggregation = newOneWayRelationMemberBuilder()
+				.withName("oneWayRelationAggregation").withRelationKind(RelationKind.AGGREGATION).withLower(1)
+				.withUpper(1).withMemberType(MemberType.STORED).withTarget(targetEntityType).build();
+		oneWayRelationAggregation.setBinding(oneWayRelationAggregation);
 
 		OneWayRelationMember oneWayRelationBasic = newOneWayRelationMemberBuilder().withName("transferRelationBasic")
-				.withContainment(false).withAggregation(false).withLower(1).withUpper(1)
-				.withRelationMemberType(RelationMemberType.RELATION).withTarget(targetEntityType).build();
+				.withRelationKind(RelationKind.ASSOCIATION).withLower(1).withUpper(1)
+				.withMemberType(MemberType.STORED).withTarget(targetEntityType).build();
 		oneWayRelationBasic.setBinding(oneWayRelationBasic);
 
 		OneWayRelationMember oneWayRelationWithProperty = newOneWayRelationMemberBuilder()
-				.withName("transferRelationWithBinding").withContainment(false).withAggregation(false).withLower(1)
-				.withUpper(1).withRelationMemberType(RelationMemberType.PROPERTY)
+				.withName("transferRelationWithBinding").withRelationKind(RelationKind.ASSOCIATION).withLower(1)
+				.withUpper(1).withMemberType(MemberType.DERIVED)
 				.withGetterExpression("self.transferRelationWithBinding.target").withTarget(targetEntityType).build();
 		oneWayRelationWithProperty.setBinding(oneWayRelationWithProperty);
 
 		OneWayRelationMember oneWayRelationWithPropertyWithDefault = newOneWayRelationMemberBuilder()
-				.withName("transferRelationWithBindingWithDefault").withContainment(false).withLower(1)
-				.withUpper(1).withRelationMemberType(RelationMemberType.PROPERTY).withGetterExpression("expr")
+				.withName("transferRelationWithBindingWithDefault").withRelationKind(RelationKind.ASSOCIATION).withLower(1)
+				.withUpper(1).withMemberType(MemberType.DERIVED).withGetterExpression("expr")
 				.withTarget(targetEntityType).withDefaultExpression("expr").build();
 		oneWayRelationWithPropertyWithDefault.setBinding(oneWayRelationWithPropertyWithDefault);
 
 		OneWayRelationMember oneWayRelationWithPropertyWithRange = newOneWayRelationMemberBuilder()
-				.withName("transferRelationWithBindingWithRange").withContainment(false).withLower(1)
-				.withUpper(1).withRelationMemberType(RelationMemberType.PROPERTY).withGetterExpression("expr")
+				.withName("transferRelationWithBindingWithRange").withRelationKind(RelationKind.ASSOCIATION).withLower(1)
+				.withUpper(1).withMemberType(MemberType.DERIVED).withGetterExpression("expr")
 				.withTarget(targetEntityType).withRangeExpression("expr").build();
 		oneWayRelationWithPropertyWithRange.setBinding(oneWayRelationWithPropertyWithRange);
 
 		OneWayRelationMember oneWayRelationWithPropertyWithDefaultAndRange = newOneWayRelationMemberBuilder()
-				.withName("transferRelationWithBindingWithDefaultAndRange").withContainment(false)
-				.withLower(1).withUpper(1).withRelationMemberType(RelationMemberType.PROPERTY)
+				.withName("transferRelationWithBindingWithDefaultAndRange").withRelationKind(RelationKind.ASSOCIATION)
+				.withLower(1).withUpper(1).withMemberType(MemberType.DERIVED)
 				.withGetterExpression("expr").withTarget(targetEntityType).withDefaultExpression("expr")
 				.withRangeExpression("expr").build();
 		oneWayRelationWithPropertyWithDefaultAndRange
 				.setBinding(oneWayRelationWithPropertyWithDefaultAndRange);
 
 		EntityType entityType = newEntityTypeBuilder().withName("entityType")
-				.withRelations(ImmutableList.of(oneWayRelationContainment, oneWayRelationBasic,
+				.withRelations(ImmutableList.of(oneWayRelationContainment, oneWayRelationAggregation, oneWayRelationBasic,
 						oneWayRelationWithProperty, oneWayRelationWithPropertyWithDefault,
 						oneWayRelationWithPropertyWithRange,
 						oneWayRelationWithPropertyWithDefaultAndRange))
@@ -373,6 +378,18 @@ public class EsmStructure2PsmServiceTest {
 		assertTrue(psmTransferObjectRelationEmbedded.get().isEmbedded());
 		assertTrue(psmTransferObjectRelationEmbedded.get().getCardinality().getLower() == 1
 				&& psmTransferObjectRelationEmbedded.get().getCardinality().getUpper() == 1);
+		
+		final Optional<TransferObjectRelation> psmTransferObjectRelationEmbedded2 = allPsm(TransferObjectRelation.class)
+				.filter(transferObjectRel -> oneWayRelationAggregation.getName().equals(transferObjectRel.getName()))
+				.findAny();
+		assertTrue(psmTransferObjectRelationEmbedded2.isPresent());
+
+		assertTrue(psmDefaultTransferObject.get().getRelations().contains(psmTransferObjectRelationEmbedded2.get()));
+		assertThat(psmTransferObjectRelationEmbedded2.get().getTarget(),
+				IsEqual.equalTo(psmTargetMappedTransferObjectType.get()));
+		assertTrue(psmTransferObjectRelationEmbedded2.get().isEmbedded());
+		assertTrue(psmTransferObjectRelationEmbedded2.get().getCardinality().getLower() == 1
+				&& psmTransferObjectRelationEmbedded2.get().getCardinality().getUpper() == 1);
 
 		// property
 		final Optional<TransferObjectRelation> psmTransferObjectRelation = allPsm(TransferObjectRelation.class)
@@ -425,12 +442,12 @@ public class EsmStructure2PsmServiceTest {
 
 		DataMember dataMemberBasic = newDataMemberBuilder().withName("transferAttributeBasic").withRequired(false)
 				.withIdentifier(false).withDataType(stringType)
-				.withDataMemberType(DataMemberType.ATTRIBUTE)
+				.withMemberType(MemberType.STORED)
 				.build();
 		dataMemberBasic.setBinding(dataMemberBasic);
 
 		DataMember dataMemberWithProperty = newDataMemberBuilder().withName("transferAttributeWithBinding")
-				.withRequired(false).withDataMemberType(DataMemberType.PROPERTY).withIdentifier(false)
+				.withRequired(false).withMemberType(MemberType.DERIVED).withIdentifier(false)
 				.withDataType(stringType).withGetterExpression("expr")
 				.build();
 		dataMemberWithProperty.setBinding(dataMemberWithProperty);
@@ -511,42 +528,42 @@ public class EsmStructure2PsmServiceTest {
 				.withMapping(newMappingBuilder().withTarget(entityType).withFilter("expr").build()).build();
 
 		OneWayRelationMember oneWayRelationBasic = newOneWayRelationMemberBuilder().withName("transferRelationBasic")
-				.withContainment(false).withAggregation(false).withLower(1).withUpper(1)
-				.withRelationMemberType(RelationMemberType.RELATION)
+				.withRelationKind(RelationKind.ASSOCIATION).withLower(1).withUpper(1)
+				.withMemberType(MemberType.STORED)
 				.withTarget(targetEntityType)
 				.build();
 
 		OneWayRelationMember oneWayRelationBasicTargetingMapped = newOneWayRelationMemberBuilder()
-				.withName("transferRelationBasicTargetingMapped").withContainment(false).withLower(1).withUpper(1)
+				.withName("transferRelationBasicTargetingMapped").withRelationKind(RelationKind.ASSOCIATION).withLower(1).withUpper(1)
 				.withTarget(targetMappedTransferObjectType)
 				.build();
 
 		OneWayRelationMember oneWayRelationWithProperty = newOneWayRelationMemberBuilder()
-				.withName("transferRelationWithBinding").withContainment(false).withLower(1).withUpper(1)
-				.withRelationMemberType(RelationMemberType.PROPERTY)
+				.withName("transferRelationWithBinding").withRelationKind(RelationKind.ASSOCIATION).withLower(1).withUpper(1)
+				.withMemberType(MemberType.DERIVED)
 				.withGetterExpression("self.oneWayRelationWithProperty.target").withTarget(targetEntityType)
 				.build();
 
 		OneWayRelationMember oneWayRelationWithPropertyWithDefault = newOneWayRelationMemberBuilder()
-				.withName("transferRelationWithBindingWithSetterWithDefault").withContainment(false).withLower(1)
-				.withUpper(1).withRelationMemberType(RelationMemberType.PROPERTY).withGetterExpression("expr")
+				.withName("transferRelationWithBindingWithSetterWithDefault").withRelationKind(RelationKind.ASSOCIATION).withLower(1)
+				.withUpper(1).withMemberType(MemberType.DERIVED).withGetterExpression("expr")
 				.withTarget(targetEntityType).withDefaultExpression("expr").build();
 
 		OneWayRelationMember oneWayRelationWithPropertyWithRange = newOneWayRelationMemberBuilder()
-				.withName("transferRelationWithBindingWithSetterWithRange").withContainment(false).withLower(1)
-				.withUpper(1).withRelationMemberType(RelationMemberType.PROPERTY).withGetterExpression("expr")
+				.withName("transferRelationWithBindingWithSetterWithRange").withRelationKind(RelationKind.ASSOCIATION).withLower(1)
+				.withUpper(1).withMemberType(MemberType.DERIVED).withGetterExpression("expr")
 				.withTarget(targetEntityType)
 				.withRangeExpression("expr").build();
 
 		OneWayRelationMember oneWayRelationWithPropertyWithDefaultAndRange = newOneWayRelationMemberBuilder()
-				.withName("transferRelationWithBindingWithSetterWithDefaultAndRange").withContainment(false)
-				.withLower(1).withUpper(1).withRelationMemberType(RelationMemberType.PROPERTY)
+				.withName("transferRelationWithBindingWithSetterWithDefaultAndRange").withRelationKind(RelationKind.ASSOCIATION)
+				.withLower(1).withUpper(1).withMemberType(MemberType.DERIVED)
 				.withGetterExpression("expr").withTarget(targetEntityType).withDefaultExpression("expr")
 				.withRangeExpression("expr").build();
 
 		OneWayRelationMember oneWayRelationWithPropertyWithDefaultAndRangeTargetingMapped = newOneWayRelationMemberBuilder()
 				.withName("transferRelationWithBindingWithSetterWithDefaultAndRangeTargetingMapped")
-				.withContainment(false).withLower(1).withUpper(1).withRelationMemberType(RelationMemberType.PROPERTY)
+				.withRelationKind(RelationKind.ASSOCIATION).withLower(1).withUpper(1).withMemberType(MemberType.DERIVED)
 				.withGetterExpression("expr").withTarget(targetMappedTransferObjectType).withDefaultExpression("expr")
 				.withRangeExpression("expr").build();
 
@@ -702,13 +719,13 @@ public class EsmStructure2PsmServiceTest {
 				.build();
 		// property
 		DataMember dataMemberWithProperty = newDataMemberBuilder().withName("transferAttributeWithBinding")
-				.withRequired(false).withDataMemberType(DataMemberType.PROPERTY).withIdentifier(false)
+				.withRequired(false).withMemberType(MemberType.DERIVED).withIdentifier(false)
 				.withDataType(stringType).withGetterExpression("expr")
 				.build();
 
 		DataMember dataMemberWithPropertyAndDefault = newDataMemberBuilder()
 				.withName("transferAttributeWithBindingAndSetterAndDefault").withRequired(false)
-				.withDataMemberType(DataMemberType.PROPERTY).withIdentifier(false).withDataType(stringType)
+				.withMemberType(MemberType.DERIVED).withIdentifier(false).withDataType(stringType)
 				.withGetterExpression("expr").withDefaultExpression("expr").build();
 
 		TransferObjectType mappedTransferObjectType = newTransferObjectTypeBuilder()

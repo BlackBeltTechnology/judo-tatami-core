@@ -139,7 +139,7 @@ operation createSetOperationForExposedGraph(source: ESM!ExposedGraph, relation: 
     setOperation.implementation = createNewOperationBody();
 
     source.eContainer.eContainer.getPSMEquivalent().elements.add(setOperation);
-    source.equivalent("CreateExposedGraph").set.add(setOperation);
+    source.equivalent("CreateExposedServiceAndGraph").set.add(setOperation);
 }
 
 operation createAddAllOperationForExposedGraph(source: ESM!ExposedGraph, relation: ESM!RelationFeature) {
@@ -151,7 +151,7 @@ operation createAddAllOperationForExposedGraph(source: ESM!ExposedGraph, relatio
     addAllOperation.implementation = createNewOperationBody();
 
     source.eContainer.eContainer.getPSMEquivalent().elements.add(addAllOperation);
-    source.equivalent("CreateExposedGraph").addAll.add(addAllOperation);
+    source.equivalent("CreateExposedServiceAndGraph").addAll.add(addAllOperation);
 }
 
 operation createUnsetOperationForExposedGraph(source: ESM!ExposedGraph, relation: ESM!RelationFeature) {
@@ -163,7 +163,7 @@ operation createUnsetOperationForExposedGraph(source: ESM!ExposedGraph, relation
     unsetOperation.implementation = createNewOperationBody();
 
     source.eContainer.eContainer.getPSMEquivalent().elements.add(unsetOperation);
-    source.equivalent("CreateExposedGraph").unset.add(unsetOperation);
+    source.equivalent("CreateExposedServiceAndGraph").unset.add(unsetOperation);
 }
 
 operation createRemoveAllOperationForExposedGraph(source: ESM!ExposedGraph, relation: ESM!RelationFeature) {
@@ -175,7 +175,7 @@ operation createRemoveAllOperationForExposedGraph(source: ESM!ExposedGraph, rela
     removeAllOperation.implementation = createNewOperationBody();
 
     source.eContainer.eContainer.getPSMEquivalent().elements.add(removeAllOperation);
-    source.equivalent("CreateExposedGraph").removeAll.add(removeAllOperation);
+    source.equivalent("CreateExposedServiceAndGraph").removeAll.add(removeAllOperation);
 }
 
 operation createGetRangeOperationForExposedGraph(source: ESM!ExposedGraph, relation: ESM!RelationFeature) : JUDOPSM!UnboundOperationWithRelation {
