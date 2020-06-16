@@ -9,9 +9,9 @@
         <relativePath>..</relativePath>
     </parent>
 
-    <artifactId>judo-tatami-esm-validation</artifactId>
+    <artifactId>judo-tatami-asm-validation</artifactId>
     <packaging>bundle</packaging>
-    <name>Judo :: Tatami :: Esm Validation</name>
+    <name>Judo :: Tatami :: Asm Validation</name>
 
     <build>
         <plugins>
@@ -27,7 +27,7 @@
                 <configuration>
                     <obrRepository>NONE</obrRepository>
                     <instructions>
-                        <Export-Package>hu.blackbelt.judo.tatami.esm.validation.*;version=${project.version}</Export-Package>
+                        <Export-Package>hu.blackbelt.judo.tatami.asm.validation.*;version=${project.version}</Export-Package>
                         <Import-Package>
                             ${osgi-default-import},
                             *
@@ -35,7 +35,6 @@
                     </instructions>
                 </configuration>
             </plugin>
-
         </plugins>
     </build>
 
@@ -46,11 +45,16 @@
         </dependency>
         <dependency>
             <groupId>hu.blackbelt.judo.meta</groupId>
-            <artifactId>hu.blackbelt.judo.meta.esm.model</artifactId>
+            <artifactId>hu.blackbelt.judo.meta.psm.model</artifactId>
         </dependency>
         <dependency>
             <groupId>hu.blackbelt.judo.meta</groupId>
-            <artifactId>hu.blackbelt.judo.meta.esm.model.northwind</artifactId>
+            <artifactId>hu.blackbelt.judo.meta.psm.model.northwind</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>hu.blackbelt.judo.tatami</groupId>
+            <artifactId>judo-tatami-psm2asm</artifactId>
             <scope>test</scope>
         </dependency>
     </dependencies>

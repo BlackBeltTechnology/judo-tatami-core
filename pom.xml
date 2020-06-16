@@ -389,6 +389,16 @@
                 <artifactId>hu.blackbelt.judo.meta.expression.model.adapter.measure</artifactId>
                 <version>${judo-meta-expression-version}</version>
             </dependency>
+            <dependency>
+                <groupId>hu.blackbelt.judo.meta</groupId>
+                <artifactId>hu.blackbelt.judo.meta.expression.model.adapter.psm</artifactId>
+                <version>${judo-meta-expression-version}</version>
+            </dependency>
+            <dependency>
+                <groupId>hu.blackbelt.judo.meta</groupId>
+                <artifactId>hu.blackbelt.judo.meta.expression.model.adapter.esm</artifactId>
+                <version>${judo-meta-expression-version}</version>
+            </dependency>
 
             <dependency>
                 <groupId>hu.blackbelt.judo.meta</groupId>
@@ -778,6 +788,10 @@
                 <module>judo-tatami-script2operation</module>
                 <module>judo-tatami-esm-validation</module>
                 <module>judo-tatami-psm-validation</module>
+                <module>judo-tatami-asm-validation</module>
+                <module>judo-tatami-expression-asm-validation</module>
+                <module>judo-tatami-expression-psm-validation</module>
+                <module>judo-tatami-expression-esm-validation</module>
                 <module>judo-tatami-workflow</module>
                 <module>judo-tatami-workflow-osgi</module>
 		        <module>judo-tatami-workflow-maven-plugin</module>

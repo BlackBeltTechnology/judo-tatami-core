@@ -13,9 +13,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 
+import static hu.blackbelt.judo.meta.psm.runtime.PsmModel.LoadArguments.psmLoadArgumentsBuilder;
+import static hu.blackbelt.judo.meta.psm.runtime.PsmModel.loadPsmModel;
 import static hu.blackbelt.judo.tatami.core.workflow.engine.WorkFlowEngineBuilder.aNewWorkFlowEngine;
 import static hu.blackbelt.judo.tatami.core.workflow.flow.SequentialFlow.Builder.aNewSequentialFlow;
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -24,13 +27,13 @@ import static org.hamcrest.MatcherAssert.assertThat;
 @Slf4j
 class PsmValidationWorkTest {
 
-    public static final String NORTHWIND = "northwind";
+	public static final String NORTHWIND = "northwind";
 
     TransformationContext transformationContext;
     PsmValidationWork psmValidationWork;
 
 	@BeforeEach
-	void setUp() throws IOException, PsmModel.PsmValidationException, URISyntaxException, ScriptExecutionException {
+	void setUp() {
 
 		Demo demo = new Demo();
 		PsmModel psmModel = demo.fullDemo();

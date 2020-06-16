@@ -1,46 +1,52 @@
-package hu.blackbelt.judo.tatami.esm.validation;
+package hu.blackbelt.judo.tatami.asm.validation;
 
-import hu.blackbelt.epsilon.runtime.execution.exceptions.ScriptExecutionException;
-import hu.blackbelt.judo.meta.esm.runtime.EsmModel;
+import hu.blackbelt.epsilon.runtime.execution.impl.Slf4jLog;
+import hu.blackbelt.judo.meta.asm.runtime.AsmModel;
+import hu.blackbelt.judo.meta.psm.runtime.PsmModel;
 import hu.blackbelt.judo.tatami.core.workflow.engine.WorkFlowEngine;
 import hu.blackbelt.judo.tatami.core.workflow.flow.WorkFlow;
 import hu.blackbelt.judo.tatami.core.workflow.work.TransformationContext;
 import hu.blackbelt.judo.tatami.core.workflow.work.WorkReport;
 import hu.blackbelt.judo.tatami.core.workflow.work.WorkStatus;
-import hu.blackbelt.model.northwind.esm.NorthwindEsmModel;
+import hu.blackbelt.model.northwind.Demo;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.io.IOException;
-import java.net.URISyntaxException;
-
+import static hu.blackbelt.judo.meta.asm.runtime.AsmModel.buildAsmModel;
 import static hu.blackbelt.judo.tatami.core.workflow.engine.WorkFlowEngineBuilder.aNewWorkFlowEngine;
 import static hu.blackbelt.judo.tatami.core.workflow.flow.SequentialFlow.Builder.aNewSequentialFlow;
+import static hu.blackbelt.judo.tatami.psm2asm.Psm2Asm.calculatePsm2AsmTransformationScriptURI;
+import static hu.blackbelt.judo.tatami.psm2asm.Psm2Asm.executePsm2AsmTransformation;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 @Slf4j
-class EsmValidationWorkTest {
+class AsmValidationWorkTest {
 
-    public static final String NORTHWIND = "northwind";
+	public static final String NORTHWIND = "northwind";
 
     TransformationContext transformationContext;
-    EsmValidationWork esmValidationWork;
+    AsmValidationWork asmValidationWork;
 
 	@BeforeEach
-	void setUp() throws IOException, EsmModel.EsmValidationException, URISyntaxException, ScriptExecutionException {
+	void setUp() throws Exception {
 
-		EsmModel esmModel = NorthwindEsmModel.fullDemo();
+		Demo demo = new Demo();
+		PsmModel psmModel = demo.fullDemo();
+
+		AsmModel asmModel = buildAsmModel().name(NORTHWIND).build();
+		executePsm2AsmTransformation(psmModel, asmModel, new Slf4jLog(log), calculatePsm2AsmTransformationScriptURI() );
+
 		transformationContext = new TransformationContext(NORTHWIND);
-		transformationContext.put(esmModel);
+		transformationContext.put(asmModel);
 
-		esmValidationWork = new EsmValidationWork(transformationContext);
+		asmValidationWork = new AsmValidationWork(transformationContext);
 	}
 
 	@Test
 	void testSimpleWorkflow() {
-		WorkFlow workflow = aNewSequentialFlow().execute(esmValidationWork).build();
+		WorkFlow workflow = aNewSequentialFlow().execute(asmValidationWork).build();
 
 		WorkFlowEngine workFlowEngine = aNewWorkFlowEngine().build();
 		WorkReport workReport = workFlowEngine.run(workflow);
