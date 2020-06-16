@@ -49,7 +49,12 @@ public class [%= className %] {
 		Map<String, Object> parameters = new HashMap();
 		[% if(asmUtils.isBound(op)) { %] parameters.put("__identifier", __identifier); [% } %]
         [% for (p in op.eParameters) { %]
-		parameters.put("[%= p.name %]", [%= asmUtils.safeName(p.name.firstToLowerCase()) %][% if (p.many) { %].stream().map(e -> e[% } %].toMap()[% if (p.many) { %])[% } %]);[% } %]
+            [% if (p.many) { %]
+		        parameters.put("[%= p.name %]", [%= asmUtils.safeName(p.name.firstToLowerCase()) %].stream().map(e -> e.toMap()).collect(Collectors.toList()));
+            [% } else { %]
+		        parameters.put("[%= p.name %]", [%= asmUtils.safeName(p.name.firstToLowerCase()) %].toMap());
+            [% } %]
+        [% } %]
 
         [% if (op.eType.isUndefined()) {%]
         __dispatcher.get().callOperation("[%= asmUtils.getOperationFQName(op) %]", parameters);
