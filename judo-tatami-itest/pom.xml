@@ -232,10 +232,6 @@
 
                 <configuration>
                     <groups>none</groups>
-                    <systemPropertyVariables>
-                        <pax.exam.karaf.version>${karaf-version}</pax.exam.karaf.version>
-                        <pax.exam.service.timeout>60000</pax.exam.service.timeout>
-                    </systemPropertyVariables>
                 </configuration>
                 <dependencies>
                     <dependency>

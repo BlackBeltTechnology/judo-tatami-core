@@ -42,6 +42,7 @@ import static hu.blackbelt.judo.meta.psm.runtime.PsmModel.SaveArguments.psmSaveA
 import static hu.blackbelt.judo.meta.rdbms.runtime.RdbmsModel.SaveArguments.rdbmsSaveArgumentsBuilder;
 import static hu.blackbelt.judo.tatami.itest.TatamiTestUtil.*;
 import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
+import static org.ops4j.pax.exam.CoreOptions.systemProperty;
 import static org.ops4j.pax.exam.OptionUtils.combine;
 import static org.ops4j.pax.exam.cm.ConfigurationAdminOptions.newConfiguration;
 import static org.ops4j.pax.exam.karaf.options.KarafDistributionOption.*;
@@ -115,6 +116,9 @@ public abstract class TatamiPSMTransformationPipelineITest {
     public Option[] config() throws FileNotFoundException {
 
         return combine(karafConfig(this.getClass()),
+
+                systemProperty("org.ops4j.pax.exam.raw.extender.intern.Parser.DEFAULT_TIMEOUT").value("60000"),
+                systemProperty("pax.exam.service.timeout").value("60000"),
 
                 features(karafStandardRepo()),
 
