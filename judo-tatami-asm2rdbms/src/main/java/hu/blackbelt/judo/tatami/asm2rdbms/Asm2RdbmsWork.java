@@ -34,6 +34,10 @@ public class Asm2RdbmsWork extends AbstractTransformationWork {
 		this.dialect = dialect;
 	}
 
+	public Asm2RdbmsWork(TransformationContext transformationContex, String dialect) {
+		this(transformationContex, Asm2Rdbms.calculateAsm2RdbmsTransformationScriptURI(), Asm2Rdbms.calculateAsm2RdbmsModelURI(), dialect);
+	}
+
 	@Override
 	public void execute() throws Exception {
 		Optional<AsmModel> asmModel = getTransformationContext().getByClass(AsmModel.class);

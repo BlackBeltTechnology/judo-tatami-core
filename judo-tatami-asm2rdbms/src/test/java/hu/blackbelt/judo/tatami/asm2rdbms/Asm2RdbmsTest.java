@@ -54,10 +54,7 @@ public class Asm2RdbmsTest {
     public void testAsm2RdbmsTransformation() throws Exception {
 
         Asm2RdbmsTransformationTrace asm2RdbmsTransformationTrace =
-                executeAsm2RdbmsTransformation(asmModel, rdbmsModel, new Slf4jLog(log),
-                        calculateAsm2RdbmsTransformationScriptURI(),
-                        calculateAsm2RdbmsModelURI(),
-                        "hsqldb");
+                executeAsm2RdbmsTransformation(asmModel, rdbmsModel, "hsqldb");
 
         // Saving trace map
         asm2RdbmsTransformationTrace.save(new File(TARGET_TEST_CLASSES, NORTHWIND_ASM_2_RDBMS_MODEL));

@@ -20,9 +20,4 @@ public abstract class TatamiESMTransformationPipelineITest extends TatamiPSMTran
     @Inject
     protected EsmModel esmModel;
 
-    public void saveModels() throws Exception {
-        super.saveModels();
-        esmModel.saveEsmModel(esmSaveArgumentsBuilder()
-                .file(new File("itest-" + getAppName() + "-esm.model")));
-    }
 }

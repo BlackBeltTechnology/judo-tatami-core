@@ -7,10 +7,14 @@ import com.google.common.collect.Sets;
 import hu.blackbelt.epsilon.runtime.execution.ExecutionContext;
 import hu.blackbelt.epsilon.runtime.execution.api.Log;
 import hu.blackbelt.epsilon.runtime.execution.contexts.EglExecutionContext;
+import hu.blackbelt.epsilon.runtime.execution.impl.Slf4jLog;
 import hu.blackbelt.judo.framework.compiler.api.CompilerUtil;
 import hu.blackbelt.judo.framework.compiler.api.FullyQualifiedName;
 import hu.blackbelt.judo.meta.asm.runtime.AsmModel;
 import hu.blackbelt.judo.meta.asm.runtime.AsmUtils;
+import hu.blackbelt.judo.tatami.core.CachingInputStream;
+import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 import org.eclipse.epsilon.common.util.UriUtil;
 import org.ops4j.pax.tinybundles.core.TinyBundle;
 import org.osgi.framework.Constants;
@@ -30,9 +34,19 @@ import static hu.blackbelt.epsilon.runtime.execution.model.emf.WrappedEmfModelCo
 import static hu.blackbelt.judo.framework.compiler.api.CompilerContext.compilerContextBuilder;
 import static org.ops4j.pax.tinybundles.core.TinyBundles.bundle;
 
+@Slf4j
 public class Asm2JAXRSAPI {
 
     public static final String SCRIPT_ROOT_TATAMI_ASM_2_JAXRSAPI = "tatami/asm2jaxrsapi/templates/";
+
+    public static InputStream executeAsm2JAXRSAPIGeneration(AsmModel asmModel, File sourceCodeOutputDir) throws Exception {
+        return executeAsm2JAXRSAPIGeneration(asmModel, new Slf4jLog(log), calculateAsm2JaxrsapiTemplateScriptURI(), sourceCodeOutputDir);
+    }
+
+    public static InputStream executeAsm2JAXRSAPIGeneration(AsmModel asmModel, Log log,
+                                                            File sourceCodeOutputDir) throws Exception {
+        return executeAsm2JAXRSAPIGeneration(asmModel, log, calculateAsm2JaxrsapiTemplateScriptURI(), sourceCodeOutputDir);
+    }
 
     public static InputStream executeAsm2JAXRSAPIGeneration(AsmModel asmModel, Log log,
                                                             URI scriptDir, File sourceCodeOutputDir) throws Exception {
@@ -156,10 +170,11 @@ public class Asm2JAXRSAPI {
         if (scrXmlFiles.size() > 0) {
             bundle.set("Service-Component", Joiner.on(",").join(scrXmlFiles));
         }
-        return bundle.build();
+        return new CachingInputStream(bundle.build());
     }
 
-    public static URI calculateAsm2JaxrsapiTemplateScriptURI() throws URISyntaxException {
+    @SneakyThrows(URISyntaxException.class)
+    public static URI calculateAsm2JaxrsapiTemplateScriptURI() {
         URI psmRoot = Asm2JAXRSAPI.class.getProtectionDomain().getCodeSource().getLocation().toURI();
         if (psmRoot.toString().endsWith(".jar")) {
             psmRoot = new URI("jar:" + psmRoot.toString() + "!/" + SCRIPT_ROOT_TATAMI_ASM_2_JAXRSAPI);

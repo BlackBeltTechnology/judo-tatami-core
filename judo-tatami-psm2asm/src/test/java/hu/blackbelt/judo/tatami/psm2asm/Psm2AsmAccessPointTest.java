@@ -92,7 +92,7 @@ public class Psm2AsmAccessPointTest {
         assertTrue(psmModel.isValid());
         validatePsm(new Slf4jLog(log), psmModel, calculatePsmValidationScriptURI());
 
-        executePsm2AsmTransformation(psmModel, asmModel, new Slf4jLog(log), calculatePsm2AsmTransformationScriptURI());
+        executePsm2AsmTransformation(psmModel, asmModel);
 
         assertTrue(asmModel.isValid());
         asmModel.saveAsmModel(asmSaveArgumentsBuilder()

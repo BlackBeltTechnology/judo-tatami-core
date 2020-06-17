@@ -389,6 +389,16 @@
                 <artifactId>hu.blackbelt.judo.meta.expression.model.adapter.measure</artifactId>
                 <version>${judo-meta-expression-version}</version>
             </dependency>
+            <dependency>
+                <groupId>hu.blackbelt.judo.meta</groupId>
+                <artifactId>hu.blackbelt.judo.meta.expression.model.adapter.psm</artifactId>
+                <version>${judo-meta-expression-version}</version>
+            </dependency>
+            <dependency>
+                <groupId>hu.blackbelt.judo.meta</groupId>
+                <artifactId>hu.blackbelt.judo.meta.expression.model.adapter.esm</artifactId>
+                <version>${judo-meta-expression-version}</version>
+            </dependency>
 
             <dependency>
                 <groupId>hu.blackbelt.judo.meta</groupId>
@@ -527,6 +537,43 @@
                 <artifactId>judo-tatami-rdbms2liquibase</artifactId>
                 <version>1.1.0-SNAPSHOT</version>
             </dependency>
+
+            <dependency>
+                <groupId>hu.blackbelt.judo.tatami</groupId>
+                <artifactId>judo-tatami-esm-validation</artifactId>
+                <version>1.1.0-SNAPSHOT</version>
+            </dependency>
+
+            <dependency>
+                <groupId>hu.blackbelt.judo.tatami</groupId>
+                <artifactId>judo-tatami-psm-validation</artifactId>
+                <version>1.1.0-SNAPSHOT</version>
+            </dependency>
+
+            <dependency>
+                <groupId>hu.blackbelt.judo.tatami</groupId>
+                <artifactId>judo-tatami-asm-validation</artifactId>
+                <version>1.1.0-SNAPSHOT</version>
+            </dependency>
+
+            <dependency>
+                <groupId>hu.blackbelt.judo.tatami</groupId>
+                <artifactId>judo-tatami-expression-asm-validation</artifactId>
+                <version>1.1.0-SNAPSHOT</version>
+            </dependency>
+
+            <dependency>
+                <groupId>hu.blackbelt.judo.tatami</groupId>
+                <artifactId>judo-tatami-expression-psm-validation</artifactId>
+                <version>1.1.0-SNAPSHOT</version>
+            </dependency>
+
+            <dependency>
+                <groupId>hu.blackbelt.judo.tatami</groupId>
+                <artifactId>judo-tatami-expression-esm-validation</artifactId>
+                <version>1.1.0-SNAPSHOT</version>
+            </dependency>
+
 
             <dependency>
                 <groupId>org.hamcrest</groupId>
@@ -776,6 +823,12 @@
                 <module>judo-tatami-asm2script</module>
                 <module>judo-tatami-asm2sdk</module>
                 <module>judo-tatami-script2operation</module>
+                <module>judo-tatami-esm-validation</module>
+                <module>judo-tatami-psm-validation</module>
+                <module>judo-tatami-asm-validation</module>
+                <module>judo-tatami-expression-asm-validation</module>
+                <module>judo-tatami-expression-psm-validation</module>
+                <module>judo-tatami-expression-esm-validation</module>
                 <module>judo-tatami-workflow</module>
                 <module>judo-tatami-workflow-osgi</module>
 		        <module>judo-tatami-workflow-maven-plugin</module>
