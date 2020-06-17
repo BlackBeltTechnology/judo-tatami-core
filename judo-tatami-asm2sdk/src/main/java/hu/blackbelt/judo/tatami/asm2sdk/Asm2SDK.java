@@ -80,7 +80,8 @@ public class Asm2SDK {
         // Transformation script
         executionContext.executeProgram(eglExecutionContext);
 
-        Set<String> javaFileNames = (Set<String>)executionContext.getContext().get("outputJavaClasses");
+        Set<String> javaFileNames = ((Set<String>) executionContext.getContext().get("outputJavaClasses"))
+                .stream().map(s -> s.replaceAll("//", "/")).collect(Collectors.toSet());
         Set<String> scrXmlFileNames = Sets.newHashSet(); // (Set<String>)executionContext.getContext().get("outputScrXmls");
 
         // compile(outputDir, (Set<String>)executionContext.getContext().get("outputJavaClasses"));
