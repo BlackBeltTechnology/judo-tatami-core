@@ -27,7 +27,6 @@ import hu.blackbelt.judo.tatami.core.workflow.work.WorkStatus;
 public class Rdbms2LiquibaseWorkTest {
 	
 	public static final String NORTHWIND = "northwind";
-	public static final String NORTHWIND_RDBMS_MODEL = "northwind-rdbms.model";
 	public static final List<String> DIALECT_LIST = new LinkedList<String>(Arrays.asList("hsqldb", "oracle"));
     
 	List<Rdbms2LiquibaseWork> rdbms2LiquibaseWorks = Lists.newArrayList();
@@ -42,13 +41,7 @@ public class Rdbms2LiquibaseWorkTest {
 		transformationContext.put("rdbms:oracle",rdbmsModel);
 
 		DIALECT_LIST.forEach(dialect -> {
-			try {
-				new Rdbms2LiquibaseWork(transformationContext,
-						calculateRdbms2LiquibaseTransformationScriptURI(),
-						dialect);
-			} catch (URISyntaxException e) {
-				throw new RuntimeException(e);
-			}
+				new Rdbms2LiquibaseWork(transformationContext, dialect);
 		});
 	}
 

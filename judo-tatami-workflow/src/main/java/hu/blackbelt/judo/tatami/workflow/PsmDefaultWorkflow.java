@@ -98,27 +98,21 @@ public class PsmDefaultWorkflow {
 		}
 
 		if (!parameters.getIgnorePsm2Measure()) {
-			Psm2MeasureWork psm2MeasureWork = new Psm2MeasureWork(transformationContext,
-					parameters.getPsm2MeasureModelTransformationScriptURI());
+			Psm2MeasureWork psm2MeasureWork = new Psm2MeasureWork(transformationContext);
 			psmWorks.add(psm2MeasureWork);
 		}
 		if (!parameters.getIgnorePsm2Asm()) {
-			Psm2AsmWork psm2AsmWork = new Psm2AsmWork(transformationContext,
-					parameters.getPsm2AsmModelTransformationScriptURI());
+			Psm2AsmWork psm2AsmWork = new Psm2AsmWork(transformationContext);
 			psmWorks.add(psm2AsmWork);
 
 			if (!parameters.getIgnoreAsm2Rdbms()) {
-				parameters.getDialectList().forEach(dialect -> asm2RdbmsWorks.add(new Asm2RdbmsWork(transformationContext,
-						parameters.getAsm2RdbmsModelTransformationScriptURI(),
-						parameters.getAsm2RdbmsModelTransformationModelURI(),
-						dialect)));
+				parameters.getDialectList().forEach(dialect -> asm2RdbmsWorks.add(new Asm2RdbmsWork(transformationContext, dialect)));
 
 				asmWorks.addAll(asm2RdbmsWorks);
 
 				if (!parameters.getIgnoreRdbms2Liquibase()) {
 					parameters.getDialectList()
-							.forEach(dialect -> rdbmsWorks.add(new Rdbms2LiquibaseWork(transformationContext,
-									parameters.getRdbms2LiquibaseModelTransformationScriptURI(), dialect)));
+							.forEach(dialect -> rdbmsWorks.add(new Rdbms2LiquibaseWork(transformationContext, dialect)));
 				}
 			}
 			if (!parameters.getIgnoreAsm2Expression() && !parameters.getIgnorePsm2Measure()) {
@@ -131,18 +125,15 @@ public class PsmDefaultWorkflow {
 			}
 
 			if (!parameters.getIgnoreAsm2Openapi()) {
-				Asm2OpenAPIWork asm2OpenapiWork = new Asm2OpenAPIWork(transformationContext,
-						parameters.getAsm2OpenapiModelTransformationScriptURI());
+				Asm2OpenAPIWork asm2OpenapiWork = new Asm2OpenAPIWork(transformationContext);
 				asmWorks.add(asm2OpenapiWork);
 			}
 			if (!parameters.getIgnoreAsm2jaxrsapi()) {
-				Asm2JAXRSAPIWork asm2jaxrsapiWork = new Asm2JAXRSAPIWork(transformationContext,
-						parameters.getAsm2jaxrsapiModelTransformationScriptURI());
+				Asm2JAXRSAPIWork asm2jaxrsapiWork = new Asm2JAXRSAPIWork(transformationContext);
 				asmWorks.add(asm2jaxrsapiWork);
 			}
 			if (!parameters.getIgnoreAsm2sdk()) {
-				Asm2SDKWork asm2sdkWork = new Asm2SDKWork(transformationContext,
-						parameters.getAsm2sdkModelTransformationScriptURI());
+				Asm2SDKWork asm2sdkWork = new Asm2SDKWork(transformationContext);
 				asmWorks.add(asm2sdkWork);
 			}
 			if (!parameters.getIgnoreScript2Operation() && !parameters.getIgnoreAsm2Script() && !parameters.getIgnorePsm2Measure()) {

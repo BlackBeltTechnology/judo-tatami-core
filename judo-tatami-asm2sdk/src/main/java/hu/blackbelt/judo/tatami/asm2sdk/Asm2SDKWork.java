@@ -28,6 +28,10 @@ public class Asm2SDKWork extends AbstractTransformationWork {
 		this.transformationScriptRoot = transformationScriptRoot;
 	}
 
+	public Asm2SDKWork(TransformationContext transformationContext) {
+		this(transformationContext, Asm2SDK.calculateAsm2SDKTemplateScriptURI());
+	}
+
 	@Override
 	public void execute() throws Exception {
 

@@ -45,11 +45,11 @@ public class Asm2JAXRSAPITest {
         try (OutputStream bundleOutputStream =
                      new FileOutputStream(new File(TARGET_TEST_CLASSES, NORTHWIND + "-rest.jar"))) {
             ByteStreams.copy(
-                    executeAsm2JAXRSAPIGeneration(asmModel, new Slf4jLog(log),
-                            calculateAsm2JaxrsapiTemplateScriptURI(),
+                    executeAsm2JAXRSAPIGeneration(asmModel,
                             new File(TARGET_TEST_CLASSES, "generated/java")),
                     bundleOutputStream
             );
         }
     }
+
 }

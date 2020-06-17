@@ -11,7 +11,6 @@ import java.util.List;
 import java.util.Set;
 
 import hu.blackbelt.judo.meta.psm.runtime.PsmModel;
-import lombok.Getter;
 import org.apache.maven.artifact.DependencyResolutionRequiredException;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -23,12 +22,7 @@ import org.codehaus.plexus.classworlds.realm.ClassRealm;
 import org.eclipse.aether.RepositorySystem;
 import org.eclipse.aether.RepositorySystemSession;
 import org.eclipse.aether.repository.RemoteRepository;
-import hu.blackbelt.judo.meta.asm.runtime.AsmModel.AsmValidationException;
-import hu.blackbelt.judo.meta.liquibase.runtime.LiquibaseModel.LiquibaseValidationException;
-import hu.blackbelt.judo.meta.measure.runtime.MeasureModel.MeasureValidationException;
-import hu.blackbelt.judo.meta.openapi.runtime.OpenapiModel.OpenapiValidationException;
 import hu.blackbelt.judo.meta.psm.runtime.PsmModel.PsmValidationException;
-import hu.blackbelt.judo.meta.rdbms.runtime.RdbmsModel.RdbmsValidationException;
 import hu.blackbelt.judo.tatami.workflow.PsmDefaultWorkflow;
 import hu.blackbelt.judo.tatami.workflow.DefaultWorkflowSave;
 import hu.blackbelt.judo.tatami.workflow.DefaultWorkflowSetupParameters;
@@ -39,15 +33,6 @@ import static com.google.common.base.Strings.isNullOrEmpty;
 		defaultPhase = LifecyclePhase.COMPILE,
 		requiresDependencyResolution = ResolutionScope.COMPILE)
 public class PsmDefaultWorkflowMojo extends AbstractMojo {
-
-	public static final String PSM_2_ASM_TRANSFORMATION_SCRIPT_ROOT = "Psm2Asm-Transformation-ScriptRoot";
-	public static final String PSM_2_MEASURE_TRANSFORMATION_SCRIPT_ROOT = "Psm2Measure-Transformation-ScriptRoot";
-	public static final String ASM_2_OPEN_API_TRANSFORMATION_SCRIPT_ROOT = "Asm2Openapi-Transformation-ScriptRoot";
-	public static final String ASM_2_RDBMS_TRANSFORMATION_SCRIPT_ROOT = "Asm2Rdbms-Transformation-ScriptRoot";
-	public static final String ASM_2_RDBMS_TRANSFORMATION_MODEL_ROOT = "Asm2Rdbms-Transformation-ModelRoot";
-	public static final String RDBMS_2_LIQUIBASE_TRANSFORMATION_SCRIPT_ROOT = "Rdbms2Liquibase-Transformation-ScriptRoot";
-	public static final String ASM_2_SDK_TRANSFORMATION_SCRIPT_ROOT = "Asm2SDK-Transformation-ScriptRoot";
-	public static final String ASM_2_JAXRSAPI_TRANSFORMATION_SCRIPT_ROOT = "Asm2Jaxrsapi-Transformation-ScriptRoot";
 
 	@Parameter(defaultValue = "${project}", readonly = true, required = true)
 	private MavenProject project;
@@ -67,33 +52,9 @@ public class PsmDefaultWorkflowMojo extends AbstractMojo {
 	@Parameter(property = "psmModelFile")
 	private File psmModelFile;
 
-	@Parameter(property = "psm2asmTransformationScriptRoot")
-	private File psm2asmTransformationScriptRoot;
-
-	@Parameter(property = "psm2measureTransformationScriptRoot")
-	private File psm2measureTransformationScriptRoot;
-
-	@Parameter(property = "asm2openApiTransformationScriptRoot")
-	private File asm2openApiTransformationScriptRoot;
-
-	@Parameter(property = "asm2rdbmsTransformationScriptRoot")
-	private File asm2rdbmsTransformationScriptRoot;
-
-	@Parameter(property = "asm2rdbmsTransformationModelRoot")
-	private File asm2rdbmsTransformationModelRoot;
-
-	@Parameter(property = "rdbms2liquibaseTransformationScriptRoot")
-	private File rdbms2liquibaseTransformationScriptRoot;
-
-	@Parameter(property = "asm2sdkTransformationScriptRoot")
-	private File asm2sdkTransformationScriptRoot;
-
-	@Parameter(property = "asm2jaxrsapiTransformationScriptRoot")
-	private File asm2jaxrsapiTransformationScriptRoot;
-	
-	
 	@Parameter(property = "destination")
 	private File destination;
+
 	@Parameter(property = "modelName")
 	private String modelName;
 	
@@ -136,17 +97,8 @@ public class PsmDefaultWorkflowMojo extends AbstractMojo {
 	@Parameter(property = "psmGeneratorMethodName")
 	private String psmGeneratorMethodName;
 
-	@Getter
-	@Parameter(property = "tagsForSearch", defaultValue =
-			PSM_2_ASM_TRANSFORMATION_SCRIPT_ROOT + "," +
-			PSM_2_MEASURE_TRANSFORMATION_SCRIPT_ROOT + "," +
-			ASM_2_OPEN_API_TRANSFORMATION_SCRIPT_ROOT + "," +
-			ASM_2_RDBMS_TRANSFORMATION_SCRIPT_ROOT + "," +
-			ASM_2_RDBMS_TRANSFORMATION_MODEL_ROOT + "," +
-			RDBMS_2_LIQUIBASE_TRANSFORMATION_SCRIPT_ROOT + "," +
-			ASM_2_SDK_TRANSFORMATION_SCRIPT_ROOT + "," +
-			ASM_2_JAXRSAPI_TRANSFORMATION_SCRIPT_ROOT)
-	private List<String> tagsForSearch;
+	@Parameter(property = "validateModels", defaultValue = "true")
+	private Boolean validateModels = true;
 
 	Set<URL> classPathUrls = new HashSet<>();
 
@@ -186,66 +138,8 @@ public class PsmDefaultWorkflowMojo extends AbstractMojo {
 			throw new MojoExecutionException("Failed to set classloader", e);
 		}
 
-		WorkflowHelper workflowHelper = new WorkflowHelper(getLog(), classPathUrls, tagsForSearch);
-
 		PsmDefaultWorkflow defaultWorkflow;
 		try {
-			workflowHelper.extract();
-
-			URI psm2measureModelScriptRootResolved = new URI("notset");
-			URI psm2asmModelScriptRootResolved = new URI("notset");
-			URI asm2rdbmsModelScriptRootResolved = new URI("notset");
-			URI asm2rdbmsModelModelRootResolved = new URI("notset");
-			URI asm2openApiModelScriptRootResolved = new URI("notset");
-			URI rdbms2liquibaseModelScriptRootResolved = new URI("notset");
-			URI asm2sdkModelScriptRootResolved = new URI("notset");
-			URI asm2jaxrsapiModelScriptRootResolved = new URI("notset");
-
-			if (!ignorePsm2Measure) {
-				psm2measureModelScriptRootResolved = (psm2measureTransformationScriptRoot == null)
-						? workflowHelper.getUrlPathForTag(PSM_2_MEASURE_TRANSFORMATION_SCRIPT_ROOT).toURI()
-						: psm2measureTransformationScriptRoot.toURI();
-			}
-
-			if (!ignorePsm2Asm) {
-				psm2asmModelScriptRootResolved = (psm2asmTransformationScriptRoot == null)
-						? workflowHelper.getUrlPathForTag(PSM_2_ASM_TRANSFORMATION_SCRIPT_ROOT).toURI()
-						: psm2asmTransformationScriptRoot.toURI();
-			}
-
-			if (!ignorePsm2Asm && !ignoreAsm2Rdbms) {
-				asm2rdbmsModelScriptRootResolved = (asm2rdbmsTransformationScriptRoot == null)
-						? workflowHelper.getUrlPathForTag(ASM_2_RDBMS_TRANSFORMATION_SCRIPT_ROOT).toURI()
-						: asm2rdbmsTransformationScriptRoot.toURI();
-				asm2rdbmsModelModelRootResolved = (asm2rdbmsTransformationModelRoot == null)
-						? workflowHelper.getUrlPathForTag(ASM_2_RDBMS_TRANSFORMATION_MODEL_ROOT).toURI()
-						: asm2rdbmsTransformationModelRoot.toURI();
-			}
-
-			if (!ignorePsm2Asm && !ignoreAsm2Openapi) {
-				asm2openApiModelScriptRootResolved = (asm2openApiTransformationScriptRoot == null)
-						? workflowHelper.getUrlPathForTag(ASM_2_OPEN_API_TRANSFORMATION_SCRIPT_ROOT).toURI()
-						: asm2openApiTransformationScriptRoot.toURI();
-			}
-
-			if (!ignorePsm2Asm && !ignoreAsm2Rdbms && !ignoreRdbms2Liquibase) {
-				rdbms2liquibaseModelScriptRootResolved = (rdbms2liquibaseTransformationScriptRoot == null)
-						? workflowHelper.getUrlPathForTag(RDBMS_2_LIQUIBASE_TRANSFORMATION_SCRIPT_ROOT).toURI()
-						: rdbms2liquibaseTransformationScriptRoot.toURI();
-			}
-
-			if (!ignorePsm2Asm && !ignoreAsm2sdk) {
-				asm2sdkModelScriptRootResolved = (asm2sdkTransformationScriptRoot == null)
-						? workflowHelper.getUrlPathForTag(ASM_2_SDK_TRANSFORMATION_SCRIPT_ROOT).toURI()
-						: asm2sdkTransformationScriptRoot.toURI();
-			}
-
-			if (!ignorePsm2Asm && !ignoreAsm2jaxrsapi) {
-				asm2jaxrsapiModelScriptRootResolved = (asm2jaxrsapiTransformationScriptRoot == null)
-						? workflowHelper.getUrlPathForTag(ASM_2_JAXRSAPI_TRANSFORMATION_SCRIPT_ROOT).toURI()
-						: asm2jaxrsapiTransformationScriptRoot.toURI();
-			}
-
 			DefaultWorkflowSetupParameters.DefaultWorkflowSetupParametersBuilder parameters =
 					DefaultWorkflowSetupParameters
 					.defaultWorkflowSetupParameters()
@@ -259,16 +153,11 @@ public class PsmDefaultWorkflowMojo extends AbstractMojo {
 					.ignorePsm2Measure(ignorePsm2Measure)
 					.ignoreScript2Operation(ignoreScript2Operation)
 					.ignoreRdbms2Liquibase(ignoreRdbms2Liquibase)
-					.psm2AsmModelTransformationScriptURI(psm2asmModelScriptRootResolved)
-					.psm2MeasureModelTransformationScriptURI(psm2measureModelScriptRootResolved)
-					.asm2RdbmsModelTransformationScriptURI(asm2rdbmsModelScriptRootResolved)
-					.asm2OpenapiModelTransformationScriptURI(asm2openApiModelScriptRootResolved)
-					.rdbms2LiquibaseModelTransformationScriptURI(rdbms2liquibaseModelScriptRootResolved)
+					.validateModels(validateModels)
 					.modelName(modelName)
-					.dialectList(dialectList)
-					.asm2RdbmsModelTransformationModelURI(asm2rdbmsModelModelRootResolved)
-					.asm2sdkModelTransformationScriptURI(asm2sdkModelScriptRootResolved)
-					.asm2jaxrsapiModelTransformationScriptURI(asm2jaxrsapiModelScriptRootResolved);
+					.dialectList(dialectList);
+
+			//DefaultWorkflowSetupParameters.addTransformerCalculatedUris(parameters);
 
 			if (!isNullOrEmpty(psmGeneratorClassName) && !isNullOrEmpty(psmGeneratorMethodName)) {
 				Class generatorClass = Thread.currentThread().getContextClassLoader().loadClass(psmGeneratorClassName);
@@ -279,8 +168,7 @@ public class PsmDefaultWorkflowMojo extends AbstractMojo {
 				parameters.psmModelSourceURI(psmModelFile.toURI());
 			}
 			defaultWorkflow = new PsmDefaultWorkflow(parameters);
-		} catch (IOException | PsmValidationException | URISyntaxException | ClassNotFoundException |
-				NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
+		} catch (IOException | PsmValidationException | ClassNotFoundException | NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
 			throw new MojoFailureException("An error occurred during the setup phase of the workflow.", e);
 		}
 
@@ -299,8 +187,7 @@ public class PsmDefaultWorkflowMojo extends AbstractMojo {
 		destination.mkdirs();
 		try {
 			DefaultWorkflowSave.saveModels(defaultWorkflow.getTransformationContext(), destination, dialectList);
-		} catch (AsmValidationException | IOException | MeasureValidationException | RdbmsValidationException
-				| OpenapiValidationException | LiquibaseValidationException | IllegalStateException e) {
+		} catch (Exception e) {
 			throw new MojoFailureException("An error occurred during the saving phase of the workflow.", e);
 		}
 	}

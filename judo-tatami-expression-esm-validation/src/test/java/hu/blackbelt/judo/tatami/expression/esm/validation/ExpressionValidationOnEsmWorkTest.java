@@ -48,13 +48,13 @@ class ExpressionValidationOnEsmWorkTest {
 		EsmModel esmModel = NorthwindEsmModel.fullDemo();
 
 		PsmModel psmModel = PsmModel.buildPsmModel().name(NORTHWIND).build();
-		executeEsm2PsmTransformation(esmModel, psmModel, new Slf4jLog(log), calculateEsm2PsmTransformationScriptURI());
+		executeEsm2PsmTransformation(esmModel, psmModel);
 
 		AsmModel asmModel = buildAsmModel().name(NORTHWIND).build();
-		executePsm2AsmTransformation(psmModel, asmModel, new Slf4jLog(log), calculatePsm2AsmTransformationScriptURI());
+		executePsm2AsmTransformation(psmModel, asmModel);
 
 		MeasureModel measureModel = buildMeasureModel().name(NORTHWIND).build();
-		executePsm2MeasureTransformation(psmModel, measureModel, new Slf4jLog(log), calculatePsm2MeasureTransformationScriptURI());
+		executePsm2MeasureTransformation(psmModel, measureModel);
 
 		ExpressionModel expressionModel = buildExpressionModel().name(NORTHWIND).build();
 		executeAsm2Expression(asmModel, measureModel, expressionModel);

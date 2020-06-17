@@ -36,7 +36,7 @@ class AsmValidationWorkTest {
 		PsmModel psmModel = demo.fullDemo();
 
 		AsmModel asmModel = buildAsmModel().name(NORTHWIND).build();
-		executePsm2AsmTransformation(psmModel, asmModel, new Slf4jLog(log), calculatePsm2AsmTransformationScriptURI() );
+		executePsm2AsmTransformation(psmModel, asmModel);
 
 		transformationContext = new TransformationContext(NORTHWIND);
 		transformationContext.put(asmModel);

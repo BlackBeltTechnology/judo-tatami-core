@@ -39,8 +39,7 @@ import hu.blackbelt.judo.tatami.script2operation.Script2OperationWork;
 
 public class DefaultWorkflowSave {
 	
-	public static void saveModels(TransformationContext transformationContext, File dest, List<String> dialectList) throws IOException, AsmValidationException,
-		MeasureValidationException, RdbmsValidationException, OpenapiValidationException, LiquibaseValidationException {
+	public static void saveModels(TransformationContext transformationContext, File dest, List<String> dialectList) {
 
 		if (!dest.exists()) {
 			throw new IllegalArgumentException("Destination doesn't exist!");

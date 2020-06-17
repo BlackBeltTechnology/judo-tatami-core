@@ -28,6 +28,10 @@ public class Asm2JAXRSAPIWork extends AbstractTransformationWork {
 		this.transformationScriptRoot = transformationScriptRoot;
 	}
 
+	public Asm2JAXRSAPIWork(TransformationContext transformationContext) {
+		this(transformationContext, Asm2JAXRSAPI.calculateAsm2JaxrsapiTemplateScriptURI());
+	}
+
 	@Override
 	public void execute() throws Exception {
 

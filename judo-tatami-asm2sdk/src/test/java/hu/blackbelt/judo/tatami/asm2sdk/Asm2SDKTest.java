@@ -46,9 +46,7 @@ public class Asm2SDKTest {
         try (OutputStream outputStream =
                      new FileOutputStream(new File(TARGET_TEST_CLASSES, NORTHWIND + "-sdk.jar"))) {
             ByteStreams.copy(
-                    executeAsm2SDKGeneration(asmModel, new Slf4jLog(log),
-                            calculateAsm2SDKTemplateScriptURI(),
-                            new File(TARGET_TEST_CLASSES, GENERATED_JAVA)),
+                    executeAsm2SDKGeneration(asmModel, new File(TARGET_TEST_CLASSES, GENERATED_JAVA)),
                     outputStream
             );
         }

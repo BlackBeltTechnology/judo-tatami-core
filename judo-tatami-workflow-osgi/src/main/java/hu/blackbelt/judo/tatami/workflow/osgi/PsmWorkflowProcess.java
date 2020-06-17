@@ -48,7 +48,7 @@ public class PsmWorkflowProcess {
         this.psmWorkflowProcessConfiguration = config;
 
         DefaultWorkflowSetupParameters.DefaultWorkflowSetupParametersBuilder workflowSetupParameters = DefaultWorkflowSetupParameters.defaultWorkflowSetupParameters();
-        DefaultWorkflowSetupParameters.addTransformerCalculatedUris(workflowSetupParameters);
+        //DefaultWorkflowSetupParameters.addTransformerCalculatedUris(workflowSetupParameters);
         workflowSetupParameters
                 .modelName(psmModel.getName())
                 .psmModel(psmModel)

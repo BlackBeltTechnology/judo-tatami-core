@@ -28,6 +28,10 @@ public class Psm2MeasureWork extends AbstractTransformationWork {
 		this.transformationScriptRoot = transformationScriptRoot;
 	}
 
+	public Psm2MeasureWork(TransformationContext transformationContext) {
+		this(transformationContext, Psm2Measure.calculatePsm2MeasureTransformationScriptURI());
+	}
+
 	@Override
 	public void execute() throws Exception {
 

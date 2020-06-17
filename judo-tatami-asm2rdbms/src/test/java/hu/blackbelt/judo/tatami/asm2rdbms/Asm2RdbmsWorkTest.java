@@ -44,13 +44,7 @@ public class Asm2RdbmsWorkTest {
 		transformationContext.put(asmModel);
 		
 		DIALECT_LIST.forEach(dialect -> {
-			try {
-				asm2RdbmsWorks.add(new Asm2RdbmsWork(transformationContext,
-						calculateAsm2RdbmsTransformationScriptURI(), calculateAsm2RdbmsModelURI(),
-						dialect));
-			} catch (URISyntaxException e) {
-				throw new RuntimeException(e);
-			}
+				asm2RdbmsWorks.add(new Asm2RdbmsWork(transformationContext, dialect));
 		});
 	}
 
