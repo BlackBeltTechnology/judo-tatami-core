@@ -12,6 +12,7 @@ import hu.blackbelt.judo.framework.compiler.api.CompilerUtil;
 import hu.blackbelt.judo.framework.compiler.api.FullyQualifiedName;
 import hu.blackbelt.judo.meta.asm.runtime.AsmModel;
 import hu.blackbelt.judo.meta.asm.runtime.AsmUtils;
+import hu.blackbelt.judo.tatami.core.CachingInputStream;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.epsilon.common.util.UriUtil;
@@ -169,7 +170,7 @@ public class Asm2JAXRSAPI {
         if (scrXmlFiles.size() > 0) {
             bundle.set("Service-Component", Joiner.on(",").join(scrXmlFiles));
         }
-        return bundle.build();
+        return new CachingInputStream(bundle.build());
     }
 
     @SneakyThrows(URISyntaxException.class)

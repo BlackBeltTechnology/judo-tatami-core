@@ -9,6 +9,7 @@ import org.osgi.service.cm.Configuration;
 import org.osgi.service.cm.ConfigurationAdmin;
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.*;
+import org.osgi.service.metatype.annotations.AttributeDefinition;
 import org.osgi.service.metatype.annotations.Designate;
 
 import java.io.IOException;
@@ -89,6 +90,11 @@ public class PsmWorkflowDefaultPsmModelTracker extends AbstractModelTracker<PsmM
         psmWorkflowProcessProperties.put(PROP_WORKFLOW_PROCESS_PSM_MODEL_TARGET, "(name=" + psmModel.getName() + ")");
         psmWorkflowProcessProperties.put(this.getClass().getName(), "true");
         psmWorkflowProcessProperties.put("sqlDialect", config.sqlDialect());
+
+        psmWorkflowProcessProperties.put("validateModels", config.validateModels());
+        psmWorkflowProcessProperties.put("saveCompletedModels", config.saveCompletedModels());
+        psmWorkflowProcessProperties.put("saveFailedModels", config.saveFailedModels());
+        psmWorkflowProcessProperties.put("outputDirectory", config.outputDirectory());
 
         for (String keyName : Collections.list(componentContext.getProperties().keys())) {
             if (keyName.startsWith("ignore")) {

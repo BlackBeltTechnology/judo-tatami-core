@@ -99,7 +99,7 @@ public class PsmDefaultWorkflow {
 			throw new IllegalArgumentException("All transformation path are ignored");
 		}
 
-		if (!parameters.getValidateModels()) {
+		if (parameters.getValidateModels()) {
 			psmWorks.add(new PsmValidationWork(transformationContext));
 		}
 

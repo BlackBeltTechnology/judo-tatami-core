@@ -27,7 +27,7 @@
                 <configuration>
                     <obrRepository>NONE</obrRepository>
                     <instructions>
-                        <Export-Package>hu.blackbelt.judo.tatami.esm.validation.*;version=${project.version}</Export-Package>
+                        <Export-Package>hu.blackbelt.judo.tatami.psm.validation.*;version=${project.version}</Export-Package>
                         <Import-Package>
                             ${osgi-default-import},
                             *

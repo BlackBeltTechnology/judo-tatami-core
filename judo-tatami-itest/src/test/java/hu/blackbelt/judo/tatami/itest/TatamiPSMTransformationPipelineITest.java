@@ -11,6 +11,7 @@ import hu.blackbelt.judo.meta.rdbms.runtime.RdbmsModel;
 import hu.blackbelt.judo.tatami.core.TransformationTrace;
 import hu.blackbelt.judo.tatami.core.TransformationTraceService;
 import hu.blackbelt.judo.tatami.core.TransformationTraceUtil;
+import hu.blackbelt.judo.tatami.core.workflow.work.TransformationContext;
 import hu.blackbelt.osgi.utils.osgi.api.BundleTrackerManager;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.URI;
@@ -31,8 +32,7 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.Collections;
 
-import static hu.blackbelt.judo.framework.KarafTestUtil.karafConfig;
-import static hu.blackbelt.judo.framework.KarafTestUtil.karafStandardRepo;
+import static hu.blackbelt.judo.framework.KarafTestUtil.*;
 import static hu.blackbelt.judo.meta.asm.runtime.AsmModel.SaveArguments.asmSaveArgumentsBuilder;
 import static hu.blackbelt.judo.meta.liquibase.runtime.LiquibaseModel.SaveArguments.liquibaseSaveArgumentsBuilder;
 import static hu.blackbelt.judo.meta.measure.runtime.MeasureModel.SaveArguments.measureSaveArgumentsBuilder;
@@ -44,8 +44,7 @@ import static hu.blackbelt.judo.tatami.itest.TatamiTestUtil.*;
 import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
 import static org.ops4j.pax.exam.OptionUtils.combine;
 import static org.ops4j.pax.exam.cm.ConfigurationAdminOptions.newConfiguration;
-import static org.ops4j.pax.exam.karaf.options.KarafDistributionOption.editConfigurationFilePut;
-import static org.ops4j.pax.exam.karaf.options.KarafDistributionOption.features;
+import static org.ops4j.pax.exam.karaf.options.KarafDistributionOption.*;
 import static org.osgi.service.log.LogService.LOG_ERROR;
 import static org.osgi.service.log.LogService.LOG_INFO;
 
@@ -76,6 +75,8 @@ public abstract class TatamiPSMTransformationPipelineITest {
     public static final String FEATURE_JUDO_TATAMI_RDBMS_2_LIQUIBASE = "judo-tatami-rdbms2liquibase";
     public static final String FEATURE_JUDO_TATAMI_ASM_2_RDBMS = "judo-tatami-asm2rdbms";
 
+    public static final String FEATURE_JUDO_TATAMI_WORKFLOW = "judo-tatami-workflow";
+
     @Inject
     LogService log;
 
@@ -105,6 +106,9 @@ public abstract class TatamiPSMTransformationPipelineITest {
 
     @Inject
     BundleContext bundleContext;
+
+    @Inject
+    TransformationContext transformationContext;
 
 
     @Configuration
@@ -144,8 +148,9 @@ public abstract class TatamiPSMTransformationPipelineITest {
                         FEATURE_JUDO_TATAMI_META_EXPRESSION,
                         FEATURE_JUDO_TATAMI_META_MEASURE, FEATURE_JUDO_TATAMI_META_OPENAPI, FEATURE_JUDO_TATAMI_META_RDBMS, FEATURE_JUDO_TATAMI_META_LIQUIBASE, FEATURE_JUDO_TATAMI_CORE,
                         FEATURE_JUDO_TATAMI_ESM_2_PSM, FEATURE_JUDO_TATAMI_PSM_2_ASM, FEATURE_JUDO_TATAMI_PSM_2_MEASURE, FEATURE_JUDO_TATAMI_ASM_2_JAXRSAPI, FEATURE_JUDO_TATAMI_ASM_2_OPENAPI,
-                        FEATURE_JUDO_TATAMI_ASM_2_RDBMS, FEATURE_JUDO_TATAMI_RDBMS_2_LIQUIBASE),
+                        FEATURE_JUDO_TATAMI_ASM_2_RDBMS, FEATURE_JUDO_TATAMI_RDBMS_2_LIQUIBASE, FEATURE_JUDO_TATAMI_WORKFLOW),
 
+                /*
                 newConfiguration("hu.blackbelt.judo.tatami.asm2jaxrsapi.osgi.Asm2JAXRSAPITransformationAsmModelTracker")
                         .put("placeholder", "true").asOption(),
 
@@ -169,6 +174,23 @@ public abstract class TatamiPSMTransformationPipelineITest {
 
                 newConfiguration("hu.blackbelt.judo.tatami.rdbms2liquibase.osgi.Rdbms2LiquibaseRdbmsModelTracker")
                         .put("placeholder", "true").asOption(),
+                 */
+
+
+                newConfiguration("hu.blackbelt.judo.tatami.esm2psm.osgi.Esm2PsmTransformationEsmModelTracker")
+                        .put("placeholder", "true").asOption(),
+
+                /*
+                newConfiguration("hu.blackbelt.judo.tatami.workflow.osgi.PsmWorkflowDefaultPsmModelTracker")
+                        .put("placeholder", "true")
+                        .put("sqlDialect", "hsqldb")
+                        .put("validateModels", "true")
+                        .put("saveCompletedModels", "true")
+                        .put("saveFailedModels", "true")
+                        .put("outputDirectory", new File("target", "exam").getAbsolutePath())
+                */
+                replaceConfigurationFile("/etc/hu.blackbelt.judo.tatami.workflow.osgi.PsmWorkflowDefaultPsmModelTracker.cfg",
+                        getConfigFile(getClass(), "/etc/hu.blackbelt.judo.tatami.workflow.osgi.PsmWorkflowDefaultPsmModelTracker.cfg")),
 
                 editConfigurationFilePut("etc/org.ops4j.pax.web.cfg",
                         "org.osgi.service.http.port", "8181"),
@@ -201,45 +223,4 @@ public abstract class TatamiPSMTransformationPipelineITest {
 
     public abstract String getAppName();
 
-    public void saveModels() throws Exception {
-        asmModel.saveAsmModel(asmSaveArgumentsBuilder()
-                .file(new File("itest-" + getAppName() + "-asm.model")));
-
-        psmModel.savePsmModel(psmSaveArgumentsBuilder()
-                .file(new File("itest-" + getAppName() + "-psm.model")));
-
-        rdbmsModel.saveRdbmsModel(rdbmsSaveArgumentsBuilder()
-                .file(new File("itest-" + getAppName() + "-rdbms.model")));
-
-        measureModel.saveMeasureModel(measureSaveArgumentsBuilder()
-                .file(new File("itest-" + getAppName() + "-measure.model")));
-
-        liquibaseModel.saveLiquibaseModel(liquibaseSaveArgumentsBuilder()
-                .file(new File("itest-" + getAppName() + ".changelog.xml")));
-
-        openAPIModel.saveOpenapiModel(openapiSaveArgumentsBuilder()
-                .file(new File("itest-" + getAppName() + "-openapi.model")));
-
-        final Collection<ServiceReference<TransformationTrace>> traceReferences =
-                bundleContext.getServiceReferences(TransformationTrace.class, "(" + Constants.OBJECTCLASS + "=*)");
-        log.log(LOG_INFO, "Number of traces: " + traceReferences.size());
-        traceReferences.forEach(traceReference -> {
-            final TransformationTrace trace = bundleContext.getService(traceReference);
-            log.log(LOG_INFO, "  - Trace: " + trace.getTransformationTraceName() + "; target model type: " + trace.getTargetModelType());
-            final ResourceSet traceResourceSet = TransformationTraceUtil.createTraceResourceSet(trace.getTransformationTraceName());
-            final Resource traceResource = traceResourceSet.createResource(URI.createURI(new File("itest-" + getAppName() + "-" + trace.getTransformationTraceName() + ".model").getAbsolutePath()));
-            try {
-                traceResource.getContents().addAll(TransformationTraceUtil.getTransformationTraceFromEtlExecutionContext(trace.getTransformationTraceName(), trace.getTransformationTrace()));
-                traceResource.save(Collections.emptyMap());
-            } catch (IOException ex) {
-                log.log(LOG_ERROR, "Unable to save transformation trace", ex);
-            }
-        });
-
-        final EList<EObject> openAPIContents = openAPIModel.getResourceSet().getResource(openAPIModel.getUri(), false).getContents();
-        openAPIContents.forEach(api -> {
-            convertModelToFile((API) api, new File("itest-" + getAppName() + "-" + ((API) api).getInfo().getTitle() + "-openapi.yaml").getAbsolutePath(), OpenAPIExporter.Format.YAML);
-            convertModelToFile((API) api, new File("itest-" + getAppName() + "-" + ((API) api).getInfo().getTitle() + "-openapi.json").getAbsolutePath(), OpenAPIExporter.Format.JSON);
-        });
-    }
 }

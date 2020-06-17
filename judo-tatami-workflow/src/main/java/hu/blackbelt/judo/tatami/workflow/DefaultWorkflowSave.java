@@ -5,6 +5,7 @@ import static hu.blackbelt.judo.meta.expression.runtime.ExpressionModel.SaveArgu
 import static hu.blackbelt.judo.meta.liquibase.runtime.LiquibaseModel.SaveArguments.liquibaseSaveArgumentsBuilder;
 import static hu.blackbelt.judo.meta.measure.runtime.MeasureModel.SaveArguments.measureSaveArgumentsBuilder;
 import static hu.blackbelt.judo.meta.openapi.runtime.OpenapiModel.SaveArguments.openapiSaveArgumentsBuilder;
+import static hu.blackbelt.judo.meta.openapi.runtime.exporter.OpenAPIExporter.convertModelToFile;
 import static hu.blackbelt.judo.meta.rdbms.runtime.RdbmsModel.SaveArguments.rdbmsSaveArgumentsBuilder;
 import static hu.blackbelt.judo.meta.script.runtime.ScriptModel.SaveArguments.scriptSaveArgumentsBuilder;
 import static hu.blackbelt.judo.tatami.asm2jaxrsapi.Asm2JAXRSAPIWork.JAXRSAPI_OUTPUT;
@@ -25,8 +26,10 @@ import hu.blackbelt.judo.meta.liquibase.runtime.LiquibaseModel;
 import hu.blackbelt.judo.meta.liquibase.runtime.LiquibaseModel.LiquibaseValidationException;
 import hu.blackbelt.judo.meta.measure.runtime.MeasureModel;
 import hu.blackbelt.judo.meta.measure.runtime.MeasureModel.MeasureValidationException;
+import hu.blackbelt.judo.meta.openapi.API;
 import hu.blackbelt.judo.meta.openapi.runtime.OpenapiModel;
 import hu.blackbelt.judo.meta.openapi.runtime.OpenapiModel.OpenapiValidationException;
+import hu.blackbelt.judo.meta.openapi.runtime.exporter.OpenAPIExporter;
 import hu.blackbelt.judo.meta.rdbms.runtime.RdbmsModel;
 import hu.blackbelt.judo.meta.rdbms.runtime.RdbmsModel.RdbmsValidationException;
 import hu.blackbelt.judo.meta.script.runtime.ScriptModel;
@@ -36,6 +39,8 @@ import hu.blackbelt.judo.tatami.core.workflow.work.TransformationContext;
 import hu.blackbelt.judo.tatami.psm2asm.Psm2AsmTransformationTrace;
 import hu.blackbelt.judo.tatami.psm2measure.Psm2MeasureTransformationTrace;
 import hu.blackbelt.judo.tatami.script2operation.Script2OperationWork;
+import org.eclipse.emf.common.util.EList;
+import org.eclipse.emf.ecore.EObject;
 
 public class DefaultWorkflowSave {
 	
@@ -66,7 +71,12 @@ public class DefaultWorkflowSave {
 
 		transformationContext.getByClass(OpenapiModel.class).ifPresent(throwingConsumerWrapper((m) ->
 			m.saveOpenapiModel(openapiSaveArgumentsBuilder().file(new File(dest, transformationContext.getModelName() + "-openapi.model")))));
-		
+
+		transformationContext.getByClass(OpenapiModel.class).ifPresent(throwingConsumerWrapper((m) -> m.getResourceSet().getResource(m.getUri(), false).getContents().forEach(api -> {
+			convertModelToFile((API) api, new File(dest, transformationContext.getModelName() + "-" + ((API) api).getInfo().getTitle() + "-openapi.yaml").getAbsolutePath(), OpenAPIExporter.Format.YAML);
+			convertModelToFile((API) api, new File(dest, transformationContext.getModelName() + "-" + ((API) api).getInfo().getTitle() + "-openapi.json").getAbsolutePath(), OpenAPIExporter.Format.JSON);
+		})));
+
 		dialectList.forEach(dialect -> transformationContext.get(LiquibaseModel.class, "liquibase:" + dialect)
 				.ifPresent(throwingConsumerWrapper((m) -> m.saveLiquibaseModel(liquibaseSaveArgumentsBuilder()
 						.file(new File(dest, transformationContext.getModelName() + "-" + "liquibase_" + dialect + ".changelog.xml"))))));

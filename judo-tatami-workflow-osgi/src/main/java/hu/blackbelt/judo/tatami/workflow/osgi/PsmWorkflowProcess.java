@@ -67,22 +67,34 @@ public class PsmWorkflowProcess {
         workflowSetupParameters.ignoreRdbms2Liquibase(config.ignoreRdbms2Liquibase());
         workflowSetupParameters.ignoreScript2Operation(config.ignoreScript2Operation());
 
+        File outputDirectory;
+        if (config.outputDirectory() == null || config.outputDirectory().equals("")) {
+            outputDirectory = new File("model-dump-" + System.currentTimeMillis());
+        } else {
+            outputDirectory = new File(config.outputDirectory());
+        }
+
+        workflowSetupParameters.validateModels(config.validateModels());
 
         PsmDefaultWorkflow defaultWorkflow = new PsmDefaultWorkflow(workflowSetupParameters);
+        try {
+            WorkReport workReport = defaultWorkflow.startDefaultWorkflow();
+            if (workReport.getStatus() != WorkStatus.COMPLETED) {
+                saveFailedModels(defaultWorkflow, config, outputDirectory);
+                throw new IllegalStateException(workReport.getError());
+            }
+        } catch (Exception e) {
+            saveFailedModels(defaultWorkflow, config, outputDirectory);
+            throw e;
+        }
 
-        WorkReport workReport = defaultWorkflow.startDefaultWorkflow();
-
-        if (workReport.getStatus() != WorkStatus.COMPLETED) {
-            // Dump the existing models.
+        if (config.saveCompletedModels()) {
             try {
-                File destDir = new File("model-dump-" + System.currentTimeMillis());
-                destDir.mkdirs();
-                DefaultWorkflowSave.saveModels(defaultWorkflow.getTransformationContext(), destDir, ImmutableList.of(config.sqlDialect()));
+                outputDirectory.mkdirs();
+                DefaultWorkflowSave.saveModels(defaultWorkflow.getTransformationContext(), outputDirectory, ImmutableList.of(config.sqlDialect()));
             } catch (Exception e) {
                 log.error("Could not dump models: ", e);
             }
-
-            throw new IllegalStateException(workReport.getError());
         }
 
         // Get transformation context and registering all services which are presented
@@ -93,6 +105,19 @@ public class PsmWorkflowProcess {
     @Deactivate
     public void deactivate() {
         transformationContextRegistrationService.unregisterTransformationContext(transformationContext, psmWorkflowProcessConfiguration.sqlDialect());
+    }
+
+    private void saveFailedModels(PsmDefaultWorkflow defaultWorkflow, PsmWorkflowProcessConfiguration config, File outputDirectory) {
+        // Dump the existing models.
+        if (config.saveFailedModels()) {
+            try {
+                outputDirectory.mkdirs();
+                DefaultWorkflowSave.saveModels(defaultWorkflow.getTransformationContext(), outputDirectory, ImmutableList.of(config.sqlDialect()));
+            } catch (Exception e) {
+                log.error("Could not dump models: ", e);
+            }
+        }
+
     }
 
 }

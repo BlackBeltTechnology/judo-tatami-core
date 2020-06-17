@@ -97,8 +97,8 @@ public class PsmDefaultWorkflowMojo extends AbstractMojo {
 	@Parameter(property = "psmGeneratorMethodName")
 	private String psmGeneratorMethodName;
 
-	@Parameter(property = "validateModels", defaultValue = "true")
-	private Boolean validateModels = true;
+	@Parameter(property = "validateModels", defaultValue = "false")
+	private Boolean validateModels = false;
 
 	Set<URL> classPathUrls = new HashSet<>();
 
