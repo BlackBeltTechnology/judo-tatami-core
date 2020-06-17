@@ -95,15 +95,20 @@ public class DefaultWorkflowSave {
 		transformationContext.getByClass(Asm2OpenAPITransformationTrace.class).ifPresent(throwingConsumerWrapper((m) ->
 			m.save(new File(dest, transformationContext.getModelName() + "-" + "asm2openapi.model"))));
 
-		transformationContext.get(InputStream.class, SDK_OUTPUT).ifPresent(throwingConsumerWrapper((m) ->
-				Files.copy(m, new File(dest, transformationContext.getModelName() + "-" + "asm2sdk.jar").toPath())));
+		transformationContext.get(InputStream.class, SDK_OUTPUT).ifPresent(throwingConsumerWrapper((m) -> {
+			Files.copy(m, new File(dest, transformationContext.getModelName() + "-" + "asm2sdk.jar").toPath());
+			m.close();
+		}));
 
-		transformationContext.get(InputStream.class, OPERATION_OUTPUT).ifPresent(throwingConsumerWrapper((m) ->
-			Files.copy(m, new File(dest, transformationContext.getModelName() + "-" + "script2operation.jar").toPath())));
+		transformationContext.get(InputStream.class, OPERATION_OUTPUT).ifPresent(throwingConsumerWrapper((m) -> {
+			Files.copy(m, new File(dest, transformationContext.getModelName() + "-" + "script2operation.jar").toPath());
+			m.close();
+		}));
 		
-		transformationContext.get(InputStream.class, JAXRSAPI_OUTPUT).ifPresent(throwingConsumerWrapper((m)->
-			Files.copy(m, new File(dest, transformationContext.getModelName() + "-" + "asm2jaxrsapi.jar").toPath())));
-			
+		transformationContext.get(InputStream.class, JAXRSAPI_OUTPUT).ifPresent(throwingConsumerWrapper((m)-> {
+			Files.copy(m, new File(dest, transformationContext.getModelName() + "-" + "asm2jaxrsapi.jar").toPath());
+			m.close();
+		}));
 	}
 
 }
