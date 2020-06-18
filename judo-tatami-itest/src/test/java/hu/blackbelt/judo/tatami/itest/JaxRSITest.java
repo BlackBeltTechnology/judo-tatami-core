@@ -143,12 +143,7 @@ public class JaxRSITest {
                         .groupId("hu.blackbelt.cxf")
                         .artifactId("cxf-jaxrs-application-manager")
                         .versionAsInProject().start(),
-
-                mavenBundle()
-                        .groupId("hu.blackbelt.judo.framework")
-                        .artifactId("compiler-api")
-                        .versionAsInProject().start(),
-
+                
                 mavenBundle()
                         .groupId("org.json")
                         .artifactId("json")

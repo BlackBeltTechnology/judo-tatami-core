@@ -232,6 +232,7 @@
 
                 <configuration>
                     <groups>none</groups>
+                    <forkedProcessExitTimeoutInSeconds>1</forkedProcessExitTimeoutInSeconds>
                 </configuration>
                 <dependencies>
                     <dependency>

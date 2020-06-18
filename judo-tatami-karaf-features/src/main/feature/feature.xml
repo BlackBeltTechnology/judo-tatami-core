@@ -161,6 +161,7 @@
         <feature>judo-tatami-core</feature>
         <feature dependency="true">tinybundles</feature>
         <feature dependency="true">cxf-jackson</feature>
+        <bundle dependency="true">mvn:hu.blackbelt.bundles.eclipse-jdt-ecj/org.eclipse.jdt.ecj/3.21.0_1</bundle>
         <bundle dependency="true">mvn:hu.blackbelt.judo.framework/compiler-api/${judo-framework-version}</bundle>
         <bundle>mvn:hu.blackbelt.judo.tatami/judo-tatami-asm2jaxrsapi/${project.version}</bundle>
     </feature>
@@ -195,6 +196,7 @@
         <feature>judo-tatami-core</feature>
         <feature>judo-tatami-meta-asm</feature>
         <feature dependency="true">tinybundles</feature>
+        <bundle dependency="true">mvn:hu.blackbelt.bundles.eclipse-jdt-ecj/org.eclipse.jdt.ecj/3.21.0_1</bundle>
         <bundle dependency="true">mvn:hu.blackbelt.judo.framework/compiler-api/${judo-framework-version}</bundle>
         <bundle>mvn:hu.blackbelt.judo.tatami/judo-tatami-asm2sdk/${project.version}</bundle>
     </feature>
@@ -229,6 +231,7 @@
         <feature>judo-tatami-core</feature>
         <feature dependency="true">tinybundles</feature>
         <feature dependency="true">eclipse-xtext</feature>
+        <bundle dependency="true">mvn:hu.blackbelt.bundles.eclipse-jdt-ecj/org.eclipse.jdt.ecj/3.21.0_1</bundle>
         <bundle dependency="true">mvn:hu.blackbelt.judo.framework/compiler-api/${judo-framework-version}</bundle>
         <bundle>mvn:hu.blackbelt.judo.script/hu.blackbelt.judo.script.codegen.generator/${judo-script-codegen-version}</bundle>
         <bundle>mvn:hu.blackbelt.judo.tatami/judo-tatami-script2operation/${project.version}</bundle>
