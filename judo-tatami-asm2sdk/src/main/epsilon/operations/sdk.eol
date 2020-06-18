@@ -224,27 +224,27 @@ operation genOperationInterface(dto : ASM!EClass, op : ASM!EOperation) : Set {
 	if (opIsMany) { 
 		opReturnTemplate =  
 			'Map<String, Object> result = {Call}\n'+
-			'Collection<Payload> outputPayloads = (Collection<Payload>) result.get("{ReturnName}");\n' +
-			'return outputPayloads.stream().map(payload -> SdkUtil.fromPayload({ReturnTypeSingle}.class, payload)).collect(Collectors.toList());';
+			'        Collection<Payload> outputPayloads = (Collection<Payload>) result.get("{ReturnName}");\n' +
+			'        return outputPayloads.stream().map(payload -> SdkUtil.fromPayload({ReturnTypeSingle}.class, payload)).collect(Collectors.toList());';
 	} else { 
 		opReturnTemplate = 
 			'Map<String, Object> result = {Call}\n'+
-			'Payload outputPayload = (Payload) result.get("{ReturnName}");\n' +
-			'return SdkUtil.fromPayload({ReturnTypeSingle}.class, outputPayload);';
+			'        Payload outputPayload = (Payload) result.get("{ReturnName}");\n' +
+			'        return SdkUtil.fromPayload({ReturnTypeSingle}.class, outputPayload);';
 	}
 	var exchangeThis; 
 	if (opIsBound) {
 		exchangeThis = 'Payload thisPayload = exchange.getAsPayload("__this");\n' +
-				'{ThisType} _this = SdkUtil.fromPayload({ThisType}.class, thisPayload);\n';
+				'        {ThisType} _this = SdkUtil.fromPayload({ThisType}.class, thisPayload);\n';
 	}
 	var exchangeReturn;
 	var exchangeVariable;
 	if (opHasReturn) {
-		exchangeVariable = '{ReturnType} result =';
-		exchangeReturn = 'return Payload.map("{ReturnName}", SdkUtil.asPayload(result));';
+		exchangeVariable = '        {ReturnType} result =';
+		exchangeReturn = '        return Payload.map("{ReturnName}", SdkUtil.asPayload(result));';
 	} else {
 		exchangeVariable = "";
-		exchangeReturn = 'return Payload.empty();';
+		exchangeReturn = '        return Payload.empty();';
 	}
 	var exchangeInput;
 	if (opHasParam) {
@@ -264,7 +264,7 @@ operation genOperationInterface(dto : ASM!EClass, op : ASM!EOperation) : Set {
 	        wrapperImpl = call;
 			exchangeFunctionImpl =
 				exchangeThis + 
-				'operation.accept(_this,' + exchangeInput + ');\n' +
+				'        operation.accept(_this,' + exchangeInput + ');\n' +
 				exchangeReturn;	        
         } else {
 			extendedInterface = "java.util.function.BiFunction<{ThisType}, {InputType}, {ReturnType}>";
@@ -284,7 +284,7 @@ operation genOperationInterface(dto : ASM!EClass, op : ASM!EOperation) : Set {
 			wrapperImpl = call;
 			exchangeFunctionImpl =
 				exchangeThis + 
-				'operation.accept(_this);\n' +
+				'        operation.accept(_this);\n' +
 				exchangeReturn;        					
 		} else {
 			extendedInterface = "java.util.function.Function<{ThisType}, {ReturnType}>";
