@@ -23,12 +23,6 @@ public abstract class AbstractSdkDao {
 		this.asmUtils = new AsmUtils(asmModel.getResourceSet());
 	}
 
-	protected AbstractSdkDao(DAO<UUID> dao, AsmModel asmModel) {
-		this.dao = dao;
-		this.asmModel = asmModel;
-		this.asmUtils = new AsmUtils(asmModel.getResourceSet());
-	}
-
 	protected EClass getEClass(String fqName) {
 		EClass eClass = asmUtils.getClassByFQName(fqName).get();
 		return eClass;

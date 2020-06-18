@@ -1,0 +1,18 @@
+[%
+  import "../../operations/sdk.eol";
+%]
+
+[%
+	var fullClassName = packageName + '.wrapper.' + op.name.firstToUpperCase() + 'DispatcherWrapper';
+%]
+
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.3.0" name="[%= fullClassName %]" immediate="true">
+  <implementation class="[%= fullClassName %]"/>
+  <service>
+    <provide interface="[%= packageName %].[%= op.name.firstToUpperCase() %]"/>
+  </service>
+  <reference name="dispatcher" interface="hu.blackbelt.judo.dispatcher.api.Dispatcher" field="dispatcher"/>
+  <property name="sdk.wrapper" type="Boolean" value="true"/>
+  <property name="service.ranking" type="Integer" value="2147483647"/>
+</scr:component>

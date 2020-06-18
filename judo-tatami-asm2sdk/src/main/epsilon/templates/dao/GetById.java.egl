@@ -20,10 +20,6 @@ public class [%= dto.getClassName() %]GetById extends AbstractSdkDao implements 
 
 	private final static String FQ_NAME = "[%= asmUtils.getClassifierFqName(dto) %]";
 	
-	protected [%= dto.getClassName() %]GetById(DAO<UUID> dao, AsmModel asmModel) {
-		super(dao, asmModel);
-	}
-
 	@Override
 	public [%= dto.getClassName() %] apply(UUID id) {
 		Payload payload = dao.getByIdentifier(getEClass(FQ_NAME), id).get();

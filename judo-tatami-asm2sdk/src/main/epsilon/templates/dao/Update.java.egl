@@ -20,13 +20,9 @@ public class [%= dto.getClassName() %]Update extends AbstractSdkDao implements F
 
 	private final static String FQ_NAME = "[%= asmUtils.getClassifierFqName(dto) %]";
 	
-	protected [%= dto.getClassName() %]Update(DAO<UUID> dao, AsmModel asmModel) {
-		super(dao, asmModel);
-	}
-
 	@Override
 	public [%= dto.getClassName() %] apply([%= dto.getClassName() %] data) {
-		Payload resultPayload = dao.update(getEClass(FQ_NAME), asPayload(data));
+		Payload resultPayload = dao.update(getEClass(FQ_NAME), Payload.asPayload(asMap(data)));
 		return fromPayload([%= dto.getClassName() %].class, resultPayload);
 	}
 

@@ -23,10 +23,6 @@ public class [%= dto.getClassName() %]Get[%= relationName.firstToUpperCase() %] 
 
 	private final static String FQ_NAME = "[%= asmUtils.getClassifierFqName(dto) %]";
 	
-	protected [%= dto.getClassName() %]Get[%= relationName.firstToUpperCase() %](DAO<UUID> dao, AsmModel asmModel) {
-		super(dao, asmModel);
-	}
-
 	@Override
 	public [%= relatedDto.getClassName() %] apply([%= dto.getClassName() %] object) {
         EReference ref = getReference(getEClass(FQ_NAME), "[%= relationName %]");

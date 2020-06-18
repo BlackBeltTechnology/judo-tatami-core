@@ -67,9 +67,8 @@ public class Asm2SDK {
         executionContext.executeProgram(eglExecutionContext);
 
         Set<String> javaFileNames = (Set<String>)executionContext.getContext().get("outputJavaClasses");
-        Set<String> scrXmlFileNames = Sets.newHashSet(); // (Set<String>)executionContext.getContext().get("outputScrXmls");
+        Set<String> scrXmlFileNames = (Set<String>)executionContext.getContext().get("outputScrXmls");
 
-        // compile(outputDir, (Set<String>)executionContext.getContext().get("outputJavaClasses"));
         executionContext.commit();
         executionContext.close();
 

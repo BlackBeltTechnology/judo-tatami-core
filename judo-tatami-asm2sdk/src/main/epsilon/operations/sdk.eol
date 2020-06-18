@@ -95,76 +95,86 @@ operation genUtil(templateName : String) : String {
 	return fileName;
 }
 
-operation genDaoInterfaces(dto : ASM!EClass) : Set {
+operation getDaoActions(dto : ASM!EClass) : Set {
 	var result = new Set();
 	if (asmUtils.isMappedTransferObjectType(dto) and not asmUtils.annotatedAsTrue(dto, "referenceHolder")) {
-		var baseName = dto.getDtoDaoPackageName().replaceAll("\\.", "/")+"/"+dto.getClassName();
-		
-		var template = TemplateFactory.load("dao/Delete.java.egl");
-		var filename =  baseName + "Delete.java";
+		result.add("Delete");
+		result.add("Create");
+		result.add("GetAll");
+		result.add("GetById");
+		result.add("Update");
+	}
+	return result;
+}
+
+operation genDaoScrXml(dto : ASM!EClass, daoAction : String) {
+	var template = TemplateFactory.load("dao/DaoInterface.scr.xml.egl");
+	var filename =  "OSGI-INF/" + dto.getDtoDaoPackageName() + "." + dto.getClassName() + daoAction +".xml";
+	template.generate(filename);
+	return filename;
+}
+
+operation genDaoInterfaces(dto : ASM!EClass) : Set {
+	var result = new Set();
+	var baseName = dto.getDtoDaoPackageName().replaceAll("\\.", "/")+"/"+dto.getClassName();
+
+	for (daoAction in getDaoActions(dto)) {
+		var template = TemplateFactory.load("dao/"+ daoAction + ".java.egl");
+		var filename =  baseName + daoAction +".java";
 		template.generate(filename);
-		result.add(filename);
-		
-		template = TemplateFactory.load("dao/Create.java.egl");
-		filename = baseName + "Create.java";
-		template.generate(filename);
-		result.add(filename);
-		
-		template = TemplateFactory.load("dao/GetAll.java.egl");
-		filename = baseName + "GetAll.java";
-		template.generate(filename);
-		result.add(filename);
-		
-		template = TemplateFactory.load("dao/GetById.java.egl");
-		filename = baseName + "GetById.java";
-		template.generate(filename);
-		result.add(filename);
-		
-		template = TemplateFactory.load("dao/Update.java.egl");
-		filename = baseName + "Update.java";
-		template.generate(filename);
-		result.add(filename);
-		
-		for (eReference in dto.getEReferences()) {
-			var relatedDto = eReference.getEReferenceType();
-			if (asmUtils.isMappedTransferObjectType(relatedDto)) {
-				var relationName = eReference.name;
-				var multiRelation = eReference.isMulti();
-				template = TemplateFactory.load("dao/CreateRelated.java.egl");
-				filename = baseName + "Create" + relationName.firstToUpperCase() + ".java";
+		result.add(filename);		
+		result.add(genDaoScrXml(dto, daoAction));		
+	}
+	
+	for (eReference in dto.getEReferences()) {
+		var relatedDto = eReference.getEReferenceType();
+		if (asmUtils.isMappedTransferObjectType(relatedDto)) {
+			var relationName = eReference.name;
+			var multiRelation = eReference.isMulti();
+			var template = TemplateFactory.load("dao/CreateRelated.java.egl");
+			var daoAction = "Create" + relationName.firstToUpperCase();
+			var filename = baseName + daoAction + ".java";
+			template.generate(filename);
+			result.add(filename);
+			result.add(genDaoScrXml(dto, daoAction));
+			
+			template = TemplateFactory.load("dao/GetRelated.java.egl");
+			daoAction = "Get" + relationName.firstToUpperCase();
+			filename = baseName + daoAction + ".java";
+			template.generate(filename);
+			result.add(filename);
+			result.add(genDaoScrXml(dto, daoAction));
+			
+			if (not multiRelation) {
+				template = TemplateFactory.load("dao/SetRelated.java.egl");
+				daoAction = "Set" + relationName.firstToUpperCase();
+				filename = baseName + daoAction + ".java";
 				template.generate(filename);
 				result.add(filename);
+				result.add(genDaoScrXml(dto, daoAction));
 				
-				template = TemplateFactory.load("dao/GetRelated.java.egl");
-				filename = baseName + "Get" + relationName.firstToUpperCase() + ".java";
+				template = TemplateFactory.load("dao/UnsetRelated.java.egl");
+				daoAction = "Unset" + relationName.firstToUpperCase();
+				filename = baseName + daoAction + ".java";
 				template.generate(filename);
 				result.add(filename);
+				result.add(genDaoScrXml(dto, daoAction));
 				
-				if (not multiRelation) {
-					template = TemplateFactory.load("dao/SetRelated.java.egl");
-					filename = baseName + "Set" + relationName.firstToUpperCase() + ".java";
-					template.generate(filename);
-					result.add(filename);
-					
-					template = TemplateFactory.load("dao/UnsetRelated.java.egl");
-					filename = baseName + "Unset" + relationName.firstToUpperCase() + ".java";
-					template.generate(filename);
-					result.add(filename);
-				} else {
-					template = TemplateFactory.load("dao/AddRelated.java.egl");
-					filename = baseName + "Add" + relationName.firstToUpperCase() + ".java";
-					template.generate(filename);
-					result.add(filename);
-				
-					template = TemplateFactory.load("dao/RemoveRelated.java.egl");
-					filename = baseName + "Remove" + relationName.firstToUpperCase() + ".java";
-					template.generate(filename);
-					result.add(filename);
-				}
-		
+			} else {
+				template = TemplateFactory.load("dao/AddRelated.java.egl");
+				filename = baseName + "Add" + relationName.firstToUpperCase() + ".java";
+				template.generate(filename);
+				result.add(filename);
+				result.add(genDaoScrXml(dto, daoAction));
+			
+				template = TemplateFactory.load("dao/RemoveRelated.java.egl");
+				daoAction = "Remove" + relationName.firstToUpperCase();
+				filename = baseName + daoAction + ".java";
+				template.generate(filename);
+				result.add(filename);
+				result.add(genDaoScrXml(dto, daoAction));
 			}
-		}
-		
+		}	
 	}
 	return result;
 }
@@ -187,6 +197,38 @@ operation genDtoBuilder(dto : ASM!EClass) {
     template.generate(dto.getDtoBuilderJavaFileName());
     template.reset();
 }
+
+operation genOperationScrXmls(dto : ASM!EClass, op : ASM!EOperation) : Set {
+	var generatedFiles = new Set();
+	var packageName = getOperationJavaPackageName(dto, op);
+	
+	var fileName = getDispatcherWrapperScrXmlFileName(dto, op);	
+	var t = TemplateFactory.load("operation/DispatcherWrapper.scr.xml.egl");
+	t.populate("op", op);
+	t.populate("packageName", packageName);
+	t.generate(fileName);
+	generatedFiles.add(fileName);
+	
+	fileName = getExchangeFunctionScrXmlFileName(dto, op);	
+	t = TemplateFactory.load("operation/ExchangeFunction.scr.xml.egl");
+	t.populate("op", op);
+	t.populate("packageName", packageName);
+	t.generate(fileName);
+	generatedFiles.add(fileName);
+	
+	return generatedFiles;
+}
+
+@cached
+operation getDispatcherWrapperScrXmlFileName(dto : ASM!EClass, op : ASM!EOperation) : String {
+	return "OSGI-INF/" + getOperationJavaPackageName(dto, op) + ".wrapper." + op.name.firstToUpperCase() + "DispatcherWrapper.xml";
+}
+
+@cached
+operation getExchangeFunctionScrXmlFileName(dto : ASM!EClass, op : ASM!EOperation) : String {
+	return "OSGI-INF/" + getOperationJavaPackageName(dto, op) + ".exchange." + op.name.firstToUpperCase() + "ExchangeFunction.xml";
+}
+	
 
 operation genOperationInterface(dto : ASM!EClass, op : ASM!EOperation) : Set {
 	var map = new Map();
@@ -224,24 +266,24 @@ operation genOperationInterface(dto : ASM!EClass, op : ASM!EOperation) : Set {
 	if (opIsMany) { 
 		opReturnTemplate =  
 			'Map<String, Object> result = {Call}\n'+
-			'        Collection<Payload> outputPayloads = (Collection<Payload>) result.get("{ReturnName}");\n' +
+			'        Collection<Map<String, Object>> outputPayloads = (Collection<Map<String, Object>>) result.get("{ReturnName}");\n' +
 			'        return outputPayloads.stream().map(payload -> SdkUtil.fromPayload({ReturnTypeSingle}.class, payload)).collect(Collectors.toList());';
 	} else { 
 		opReturnTemplate = 
 			'Map<String, Object> result = {Call}\n'+
-			'        Payload outputPayload = (Payload) result.get("{ReturnName}");\n' +
+			'        Map<String, Object> outputPayload = (Map<String, Object>) result.get("{ReturnName}");\n' +
 			'        return SdkUtil.fromPayload({ReturnTypeSingle}.class, outputPayload);';
 	}
 	var exchangeThis; 
 	if (opIsBound) {
-		exchangeThis = 'Payload thisPayload = exchange.getAsPayload("__this");\n' +
+		exchangeThis = 'Map<String, Object> thisPayload = (Map<String, Object>) exchange.get("__this");\n' +
 				'        {ThisType} _this = SdkUtil.fromPayload({ThisType}.class, thisPayload);\n';
 	}
 	var exchangeReturn;
 	var exchangeVariable;
 	if (opHasReturn) {
 		exchangeVariable = '        {ReturnType} result =';
-		exchangeReturn = '        return Payload.map("{ReturnName}", SdkUtil.asPayload(result));';
+		exchangeReturn = '        return Payload.map("{ReturnName}", SdkUtil.asMap(result));';
 	} else {
 		exchangeVariable = "";
 		exchangeReturn = '        return Payload.empty();';
@@ -251,13 +293,13 @@ operation genOperationInterface(dto : ASM!EClass, op : ASM!EOperation) : Set {
 		if (opHasParamMany) {
 			exchangeInput = 'exchange.getAsCollectionPayload("{InputName}").stream().map(payload -> SdkUtil.fromPayload({InputTypeSingle}.class, payload)).collect(Collectors.toList())';
 		} else {
-			exchangeInput = 'SdkUtil.fromPayload({InputTypeSingle}.class, exchange.getAsPayload("{InputName}"))';
+			exchangeInput = 'SdkUtil.fromPayload({InputTypeSingle}.class, (Map<String, Object>) exchange.get("{InputName}"))';
 		}
 	} else {
 		exchangeInput = "";
 	}
 	if (opIsBound and opHasParam) {
-		var call = 'dispatcher.callOperation(FQ_NAME, Payload.map("__this", SdkUtil.asPayload(_this), "{InputName}", SdkUtil.asPayload({InputName})));';
+		var call = 'dispatcher.callOperation(FQ_NAME, SdkUtil.asMap("__this", SdkUtil.asMap(_this), "{InputName}", SdkUtil.asMap({InputName})));';
 		if (not opHasReturn) {
 			extendedInterface = "java.util.function.BiConsumer<{ThisType}, {InputType}>";
 			extendedMethod = "void accept({ThisType} _this, {InputType} {InputName})";
@@ -277,7 +319,7 @@ operation genOperationInterface(dto : ASM!EClass, op : ASM!EOperation) : Set {
         }
         		
 	} else if (opIsBound and not opHasParam) {
-		var call= 'dispatcher.callOperation(FQ_NAME, Payload.map("__this", SdkUtil.asPayload(_this)));';
+		var call= 'dispatcher.callOperation(FQ_NAME, SdkUtil.asMap("__this", SdkUtil.asMap(_this)));';
 		if (not opHasReturn) {
 			extendedInterface = "java.util.function.Consumer<{ThisType}>";
 			extendedMethod = "void accept({ThisType} _this)";		
@@ -297,7 +339,7 @@ operation genOperationInterface(dto : ASM!EClass, op : ASM!EOperation) : Set {
 		} 
 	
 	} else if (not opIsBound and opHasParam) {
-		var call = 'dispatcher.callOperation(FQ_NAME, Payload.map("{InputName}", SdkUtil.asPayload({InputName})));';
+		var call = 'dispatcher.callOperation(FQ_NAME, SdkUtil.asMap("{InputName}", SdkUtil.asMap({InputName})));';
 		if (not opHasReturn) {
 			extendedInterface = "java.util.function.Consumer<{InputType}>";
 			extendedMethod = "void accept({InputType} {InputName})";

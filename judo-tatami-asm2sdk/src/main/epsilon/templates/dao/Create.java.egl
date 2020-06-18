@@ -22,14 +22,10 @@ public class [%= dto.getClassName() %]Create extends AbstractSdkDao implements F
 
 	private final static String FQ_NAME = "[%= asmUtils.getClassifierFqName(dto) %]";
 	
-	protected [%= dto.getClassName() %]Create(DAO<UUID> dao, AsmModel asmModel) {
-		super(dao, asmModel);
-	}
-
 	@Override
 	public [%= dto.getClassName() %] apply([%= dto.getClassName() %] object) {
 		EClass eClass = getEClass(FQ_NAME);
-		Payload resultPayload = dao.create(eClass, asPayload(object));
+		Payload resultPayload = dao.create(eClass, Payload.asPayload(asMap(object)));
 		return fromPayload([%= dto.getClassName() %].class, resultPayload);
 	}
 

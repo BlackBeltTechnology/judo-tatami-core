@@ -21,10 +21,6 @@ public class [%= dto.getClassName() %]Set[%= relationName.firstToUpperCase() %] 
 
 	private final static String FQ_NAME = "[%= asmUtils.getClassifierFqName(dto) %]";
 	
-	protected [%= dto.getClassName() %]Set[%= relationName.firstToUpperCase() %](DAO<UUID> dao, AsmModel asmModel) {
-		super(dao, asmModel);
-	}
-
 	@Override
 	public void accept([%= dto.getClassName() %] object, [%= relatedDto.getClassName() %] relatedObject) {
 		dao.setReference(getReference(getEClass(FQ_NAME), "[%= relationName %]"), object.get__identifier(), Arrays.asList(relatedObject.get__identifier()));
