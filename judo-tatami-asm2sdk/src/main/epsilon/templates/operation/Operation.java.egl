@@ -1,13 +1,12 @@
 [%
-  import "../operations/sdk.eol";
+  import "../../operations/sdk.eol";
   out.setContentType("Java");
 %]
 
 package [%= map.get("packageName") %];
 
-[% if(map.get("operation").isMany()) { %] import java.util.Collection; [% } %]
-
-[% if (map.get("inputType").isDefined()) { %] [% } %]
+import java.util.Collection;
+import java.util.stream.Collectors;
 
 public interface [%= map.get("operation").name.firstToUpperCase() %] extends [%= map.get("extendedInterface") %] {
 

@@ -18,6 +18,11 @@ operation ASM!ETypedElement getTypeDefinition() : String {
 		postfix = ">";
 	}
 
+	return prefix + self.getSingleTypeDefinition() + postfix;
+}
+
+@cached
+operation ASM!ETypedElement getSingleTypeDefinition() : String {
     var typeName;
 	if (self.eType.instanceClass.isDefined()) {
 	    typeName = self.eType.instanceClass.name;
@@ -26,9 +31,9 @@ operation ASM!ETypedElement getTypeDefinition() : String {
 	} else {
 	    throw "Unsupported attribute type: " + self.eType;
 	}
-
-	return prefix + typeName + postfix;
+	return typeName;
 }
+
 
 @cached 
 operation getIdTypeName() : String { 
@@ -78,17 +83,21 @@ operation getAccessPoints(): Collection {
 	return ASM!EClass.all.select(class | asmUtils.isAccessPoint(class));
 }
 
-operation genAbstractSdkDao() : String {
-	var template = TemplateFactory.load("dao/AbstractSdkDao.java.egl");
-	template.populate("package", "sdk.dao");
-	var filename = "sdk/dao/AbstractSdkDao.java";
-	template.generate(filename);
-	return filename;
+operation genUtil(templateName : String) : String {
+	var utilPackageName = getModelPackageName() + ".util";	
+	var utilPackagePath = utilPackageName.replaceAll("\\.", "/");
+
+	var template = TemplateFactory.load("util/"+templateName+".java.egl");
+	template.populate("package", utilPackageName);
+	var fileName = utilPackagePath + "/" + templateName + ".java";
+	template.generate(fileName);
+	
+	return fileName;
 }
 
 operation genDaoInterfaces(dto : ASM!EClass) : Set {
 	var result = new Set();
-	if (asmUtils.isMappedTransferObjectType(dto) and /*FIXME - use annotation for skipping *_Reference transferobjects*/ not dto.getName().contains("_") ) {
+	if (asmUtils.isMappedTransferObjectType(dto) and not asmUtils.annotatedAsTrue(dto, "referenceHolder")) {
 		var baseName = dto.getDtoDaoPackageName().replaceAll("\\.", "/")+"/"+dto.getClassName();
 		
 		var template = TemplateFactory.load("dao/Delete.java.egl");
@@ -179,81 +188,224 @@ operation genDtoBuilder(dto : ASM!EClass) {
     template.reset();
 }
 
-operation genOperationInterface(dto : ASM!EClass, op : ASM!EOperation) {
+operation genOperationInterface(dto : ASM!EClass, op : ASM!EOperation) : Set {
 	var map = new Map();
-	var t = TemplateFactory.load("Operation.java.egl");
-	var inputType;
-	if (not op.eParameters.empty) {
-		inputType = op.eParameters.get(0).getTypeDefinition();
-		map.put("inputType", inputType);
-	}
-	
+	var opHasParam = not op.eParameters.empty;
+	var opHasParamMany = opHasParam and (op.eParameters.get(0).upperBound == -1 or op.eParameters.get(0).upperBound > 1);	
 	var extendedInterface;
 	var extendedMethod;
+	var wrapperImpl;
+	var exchangeFunctionImpl;
 	var opHasReturn = op.eType.isDefined();
 	var opIsBound = asmUtils.isBound(op);
-	var opHasParam = inputType.isDefined();
+	var opIsMany = op.upperBound == -1 or op.upperBound > 1;
+	if (opHasParam) {
+		var inputType = op.eParameters.get(0).eType.getDtoTypeName();
+		map.put("InputTypeSingle", inputType);
+		if (opHasParamMany) {
+			inputType = "Collection<" + inputType + ">";		
+		}
+		map.put("InputType", inputType);
+		map.put("InputName", op.eParameters.get(0).name);
+	}	
 	if (opHasReturn) {
-		map.put("ReturnType", op.eType.getDtoTypeName());
+		var returnTypeName = op.eType.getDtoTypeName();
+		map.put("ReturnTypeSingle", returnTypeName);
+		if (opIsMany) {
+			returnTypeName = "Collection<"+returnTypeName + ">";
+		}
+		map.put("ReturnType", returnTypeName);
+		map.put("ReturnName", asmUtils.getOutputParameterName(op).get());
 	}
 	if (opIsBound) {
 		map.put("ThisType", dto.getDtoTypeName());
 	}
-	if (opHasParam) {
-		map.put("InputType", inputType);
+	var opReturnTemplate;
+	if (opIsMany) { 
+		opReturnTemplate =  
+			'Map<String, Object> result = {Call}\n'+
+			'Collection<Payload> outputPayloads = (Collection<Payload>) result.get("{ReturnName}");\n' +
+			'return outputPayloads.stream().map(payload -> SdkUtil.fromPayload({ReturnTypeSingle}.class, payload)).collect(Collectors.toList());';
+	} else { 
+		opReturnTemplate = 
+			'Map<String, Object> result = {Call}\n'+
+			'Payload outputPayload = (Payload) result.get("{ReturnName}");\n' +
+			'return SdkUtil.fromPayload({ReturnTypeSingle}.class, outputPayload);';
 	}
-	if (opHasReturn and opIsBound and opHasParam) {
-		extendedInterface = "java.util.function.BiFunction<{ThisType}, {InputType}, {ReturnType}>";
-		extendedMethod = "{ReturnType} apply({ThisType} _this, {InputType} input)";
-	} else if (opHasReturn and opIsBound and not opHasParam) {
-		extendedInterface = "java.util.function.Function<{ThisType}, {ReturnType}>";
-		extendedMethod = "{ReturnType} apply({ThisType} _this)";
-	} else if (opHasReturn and not opIsBound and opHasParam) {
-		extendedInterface = "java.util.function.Function<{InputType}, {ReturnType}>";
-		extendedMethod = "{ReturnType} apply({InputType} input)";
-	} else if (opHasReturn and not opIsBound and not opHasParam) {
-		extendedInterface = "java.util.function.Supplier<{ReturnType}>";
-		extendedMethod = "{ReturnType} get()";
-	} else if (not opHasReturn and opIsBound and opHasParam) {
-		extendedInterface = "java.util.function.BiConsumer<{ThisType}, {InputType}>";
-		extendedMethod = "void accept({ThisType} _this, {InputType} input)";
-	} else if (not opHasReturn and opIsBound and not opHasParam) {
-		extendedInterface = "java.util.function.Consumer<{ThisType}>";
-		extendedMethod = "void accept({ThisType} _this)";
-	} else if (not opHasReturn and not opIsBound and opHasParam) {
-		extendedInterface = "java.util.function.Consumer<{InputType}>";
-		extendedMethod = "void accept({InputType} input)";
+	var exchangeThis; 
+	if (opIsBound) {
+		exchangeThis = 'Payload thisPayload = exchange.getAsPayload("__this");\n' +
+				'{ThisType} _this = SdkUtil.fromPayload({ThisType}.class, thisPayload);\n';
+	}
+	var exchangeReturn;
+	var exchangeVariable;
+	if (opHasReturn) {
+		exchangeVariable = '{ReturnType} result =';
+		exchangeReturn = 'return Payload.map("{ReturnName}", SdkUtil.asPayload(result));';
 	} else {
-		extendedInterface = "Runnable";
-		extendedMethod = "void run()";
+		exchangeVariable = "";
+		exchangeReturn = 'return Payload.empty();';
 	}
+	var exchangeInput;
+	if (opHasParam) {
+		if (opHasParamMany) {
+			exchangeInput = 'exchange.getAsCollectionPayload("{InputName}").stream().map(payload -> SdkUtil.fromPayload({InputTypeSingle}.class, payload)).collect(Collectors.toList())';
+		} else {
+			exchangeInput = 'SdkUtil.fromPayload({InputTypeSingle}.class, exchange.getAsPayload("{InputName}"))';
+		}
+	} else {
+		exchangeInput = "";
+	}
+	if (opIsBound and opHasParam) {
+		var call = 'dispatcher.callOperation(FQ_NAME, Payload.map("__this", SdkUtil.asPayload(_this), "{InputName}", SdkUtil.asPayload({InputName})));';
+		if (not opHasReturn) {
+			extendedInterface = "java.util.function.BiConsumer<{ThisType}, {InputType}>";
+			extendedMethod = "void accept({ThisType} _this, {InputType} {InputName})";
+	        wrapperImpl = call;
+			exchangeFunctionImpl =
+				exchangeThis + 
+				'operation.accept(_this,' + exchangeInput + ');\n' +
+				exchangeReturn;	        
+        } else {
+			extendedInterface = "java.util.function.BiFunction<{ThisType}, {InputType}, {ReturnType}>";
+			extendedMethod = "{ReturnType} apply({ThisType} _this, {InputType} {InputName})";
+			wrapperImpl =  opReturnTemplate.replaceAll("\\{Call\\}", call);
+			exchangeFunctionImpl =
+				exchangeThis + 
+				exchangeVariable + 'operation.apply(_this,' + exchangeInput + ');\n' +
+				exchangeReturn;	        			
+        }
+        		
+	} else if (opIsBound and not opHasParam) {
+		var call= 'dispatcher.callOperation(FQ_NAME, Payload.map("__this", SdkUtil.asPayload(_this)));';
+		if (not opHasReturn) {
+			extendedInterface = "java.util.function.Consumer<{ThisType}>";
+			extendedMethod = "void accept({ThisType} _this)";		
+			wrapperImpl = call;
+			exchangeFunctionImpl =
+				exchangeThis + 
+				'operation.accept(_this);\n' +
+				exchangeReturn;        					
+		} else {
+			extendedInterface = "java.util.function.Function<{ThisType}, {ReturnType}>";
+			extendedMethod = "{ReturnType} apply({ThisType} _this)";
+			wrapperImpl =  opReturnTemplate.replaceAll("\\{Call\\}", call);
+			exchangeFunctionImpl =
+				exchangeThis + 
+				exchangeVariable + 'operation.apply(_this);\n' +
+				exchangeReturn;        					
+		} 
+	
+	} else if (not opIsBound and opHasParam) {
+		var call = 'dispatcher.callOperation(FQ_NAME, Payload.map("{InputName}", SdkUtil.asPayload({InputName})));';
+		if (not opHasReturn) {
+			extendedInterface = "java.util.function.Consumer<{InputType}>";
+			extendedMethod = "void accept({InputType} {InputName})";
+			wrapperImpl =  call;
+			exchangeFunctionImpl =
+				exchangeThis + 
+				exchangeVariable + 'operation.accept(' + exchangeInput + ');\n' +
+				exchangeReturn;        					
+		} else {
+			extendedInterface = "java.util.function.Function<{InputType}, {ReturnType}>";
+			extendedMethod = "{ReturnType} apply({InputType} {InputName})";
+			wrapperImpl =  opReturnTemplate.replaceAll("\\{Call\\}", call);
+			exchangeFunctionImpl = 			
+				exchangeThis + 
+				exchangeVariable + 'operation.apply(' + exchangeInput + ');\n' +
+				exchangeReturn;        								
+		}
+	} else if (not opIsBound and not opHasParam) { 
+		var call = 'dispatcher.callOperation(FQ_NAME, Payload.empty());';
+		if (not opHasReturn) {
+			extendedInterface = "Runnable";
+			extendedMethod = "void run()";
+			wrapperImpl =  call;
+			exchangeFunctionImpl = 'operation.run();' +
+				exchangeReturn;        					
+		} else {
+			extendedInterface = "java.util.function.Supplier<{ReturnType}>";
+			extendedMethod = "{ReturnType} get()";
+			wrapperImpl =  opReturnTemplate.replaceAll("\\{Call\\}", call);
+			exchangeFunctionImpl = 
+				exchangeVariable + 'operation.get();\n' +
+				exchangeReturn;        					
+		}
+	}
+
 	extendedInterface = extendedInterface.replaceAll("\\{ReturnType\\}", map.get("ReturnType"));
 	extendedInterface = extendedInterface.replaceAll("\\{InputType\\}", map.get("InputType"));
+	extendedInterface = extendedInterface.replaceAll("\\{InputName\\}", map.get("InputName"));
 	extendedInterface = extendedInterface.replaceAll("\\{ThisType\\}", map.get("ThisType"));
+	extendedInterface = extendedInterface.replaceAll("\\{InputTypeSingle\\}", map.get("InputTypeSingle"));
 	extendedMethod = extendedMethod.replaceAll("\\{ReturnType\\}", map.get("ReturnType"));
 	extendedMethod = extendedMethod.replaceAll("\\{InputType\\}", map.get("InputType"));
+	extendedMethod = extendedMethod.replaceAll("\\{InputName\\}", map.get("InputName"));	
 	extendedMethod = extendedMethod.replaceAll("\\{ThisType\\}", map.get("ThisType"));	
+	extendedMethod = extendedMethod.replaceAll("\\{InputTypeSingle\\}", map.get("InputTypeSingle"));
+	wrapperImpl = wrapperImpl.replaceAll("\\{InputName\\}", map.get("InputName"));	
+	wrapperImpl = wrapperImpl.replaceAll("\\{ReturnType\\}", map.get("ReturnType"));
+	wrapperImpl = wrapperImpl.replaceAll("\\{ReturnTypeSingle\\}", map.get("ReturnTypeSingle"));
+	wrapperImpl = wrapperImpl.replaceAll("\\{ReturnName\\}", map.get("ReturnName"));
+	wrapperImpl = wrapperImpl.replaceAll("\\{InputTypeSingle\\}", map.get("InputTypeSingle"));
+	wrapperImpl = wrapperImpl.replaceAll("\\{InputType\\}", map.get("InputType"));
+	exchangeFunctionImpl = exchangeFunctionImpl.replaceAll("\\{InputName\\}", map.get("InputName"));	
+	exchangeFunctionImpl = exchangeFunctionImpl.replaceAll("\\{ReturnType\\}", map.get("ReturnType"));
+	exchangeFunctionImpl = exchangeFunctionImpl.replaceAll("\\{ReturnTypeSingle\\}", map.get("ReturnTypeSingle"));
+	exchangeFunctionImpl = exchangeFunctionImpl.replaceAll("\\{ReturnName\\}", map.get("ReturnName"));
+	exchangeFunctionImpl = exchangeFunctionImpl.replaceAll("\\{ThisType\\}", map.get("ThisType"));
+	exchangeFunctionImpl = exchangeFunctionImpl.replaceAll("\\{InputType\\}", map.get("InputType"));
+	exchangeFunctionImpl = exchangeFunctionImpl.replaceAll("\\{InputTypeSingle\\}", map.get("InputTypeSingle"));
+	
 	
 	map.put("extendedInterface", extendedInterface);
 	map.put("extendedMethod", extendedMethod);
+	map.put("wrapperImpl", wrapperImpl);
+	map.put("exchangeFunctionImpl", exchangeFunctionImpl);
 	
     map.put("operation", op);
     map.put("packageName", getOperationJavaPackageName(dto, op));
-       
+     
+    var generatedFiles = new Set();
+     
+	var t = TemplateFactory.load("operation/Operation.java.egl");  
     t.populate("map", map);
-    t.generate(getOperationJavaFileName(dto, op));
+    var fileName = getOperationJavaFileName(map.get("packageName"), op);
+    t.generate(fileName);
+    generatedFiles.add(fileName);
     
+	var t = TemplateFactory.load("operation/DispatcherWrapper.java.egl");
+    t.populate("map", map);
+    var fileName = getDispatcherWrapperJavaFileName(map.get("packageName")+".wrapper", op);
+    t.generate(fileName);
+    generatedFiles.add(fileName);
+    
+	var t = TemplateFactory.load("operation/ExchangeFunction.java.egl");
+    t.populate("map", map);
+    var fileName = getExchangeFunctionJavaFileName(map.get("packageName")+".exchange", op);
+    t.generate(fileName);
+    generatedFiles.add(fileName);
+    
+    return generatedFiles;
 }
 
 
 operation getOperationJavaPackageName(dto : ASM!EClass, op : ASM!EOperation) {
-	return "sdk." + asmUtils.getClassifierFQName(dto).toLowerCase() + "operation";
+	return getPackagePrefix() + asmUtils.getClassifierFQName(dto).toLowerCase() + "operation";
 }
 
-operation getOperationJavaFileName(dto : ASM!EClass, op : ASM!EOperation) {
-	var packageName = getOperationJavaPackageName(dto, op);
+operation getOperationJavaFileName(packageName : String, op : ASM!EOperation) {
 	return packageName.replaceAll("\\.", "/") + "/" + op.name.firstToUpperCase() + ".java";
 }
+
+operation getDispatcherWrapperJavaFileName(packageName : String, op : ASM!EOperation) {	
+	return packageName.replaceAll("\\.", "/") + "/" + op.name.firstToUpperCase() + "DispatcherWrapper.java";
+}
+
+operation getExchangeFunctionJavaFileName(packageName : String, op : ASM!EOperation) {	
+	return packageName.replaceAll("\\.", "/") + "/" + op.name.firstToUpperCase() + "ExchangeFunction.java";
+}
+
 
 @cached
 operation ASM!EClass idType() : String {
@@ -261,13 +413,18 @@ operation ASM!EClass idType() : String {
 }
 
 @cached
-operation ASM!EClass getPackagePrefix() : String {
+operation getPackagePrefix() : String {
     return "sdk.";
 }
 
 @cached
+operation getModelPackageName() : String {
+	return getPackagePrefix() + asmUtils.getPackageFQName(asmUtils.getModel().get()); 
+}
+
+@cached
 operation ASM!EClass getDtoPackageName() : String {
-	return self.getPackagePrefix() + asmUtils.getPackageFQName(self.ePackage);
+	return getPackagePrefix() + asmUtils.getPackageFQName(self.ePackage);
 }
 
 @cached
@@ -325,7 +482,7 @@ operation genUnboundServiceInterface(ap : ASM!EClass, op : ASM!EOperation) {
 }
 
 operation ASM!EClass getUnboundServicePackageName() : String {
-	return "sdk." + asmUtils.getClassifierFQName(self) + "." + self.getUnboundServiceClassName().toLowerCase();
+	return getPackagePrefix() + asmUtils.getClassifierFQName(self) + "." + self.getUnboundServiceClassName().toLowerCase();
 }
 
 operation ASM!EClass getUnboundServiceClassName() : String {
@@ -350,7 +507,7 @@ operation genExposedMappedTransferObjectInterface(boundOperationClass : ASM!ECla
 }
 
 operation ASM!EClass getExposedMappedTransferObjectPackageName(ap: ASM!EClass) : String {
-	return "sdk." + asmUtils.getClassifierFQName(ap) + "." + asmUtils.getPackageFQName(self.ePackage) + "." + self.getExposedMappedTransferObjectClassName().toLowerCase();
+	return getPackagePrefix() + asmUtils.getClassifierFQName(ap) + "." + asmUtils.getPackageFQName(self.ePackage) + "." + self.getExposedMappedTransferObjectClassName().toLowerCase();
 }
 
 @cached

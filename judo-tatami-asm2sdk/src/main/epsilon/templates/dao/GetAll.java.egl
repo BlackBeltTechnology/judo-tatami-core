@@ -15,7 +15,8 @@ import hu.blackbelt.judo.dao.api.DAO;
 import hu.blackbelt.judo.dao.api.Payload;
 import hu.blackbelt.judo.meta.asm.runtime.AsmModel;
 
-import [%= dto.getPackagePrefix() %]dao.AbstractSdkDao;
+import [%= getModelPackageName() %].util.AbstractSdkDao;
+import static [%= getModelPackageName() %].util.SdkUtil.*;
 import [%= dto.getDtoTypeName() %];
 
 public class [%= dto.getClassName() %]GetAll extends AbstractSdkDao implements Supplier<Collection<[%= dto.getClassName() %]>>{

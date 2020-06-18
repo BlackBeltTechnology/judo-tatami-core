@@ -135,6 +135,14 @@
 			<groupId>hu.blackbelt.judo.framework</groupId>
 			<artifactId>compiler-api</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>hu.blackbelt.judo</groupId>
+			<artifactId>judo-dao-api</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>hu.blackbelt.judo</groupId>
+			<artifactId>judo-dispatcher-api</artifactId>
+		</dependency>
 
 		<dependency>
 			<groupId>org.ops4j.pax.tinybundles</groupId>
@@ -164,6 +172,7 @@
 			<version>${project.version}</version>
 			<scope>test</scope>
 		</dependency>
+		
 	</dependencies>
 </project>
 

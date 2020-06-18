@@ -1,5 +1,5 @@
 [%
-  import "../../operations/sdk.eol";
+  import "../../operations/sdk.eol";  
   out.setContentType("Java");
 %]
 
@@ -14,7 +14,8 @@ import hu.blackbelt.judo.dao.api.DAO;
 import hu.blackbelt.judo.dao.api.Payload;
 import hu.blackbelt.judo.meta.asm.runtime.AsmModel;
 
-import [%= dto.getPackagePrefix() %]dao.AbstractSdkDao;
+import [%= getModelPackageName() %].util.AbstractSdkDao;
+import static [%= getModelPackageName() %].util.SdkUtil.*;
 import [%= dto.getDtoTypeName() %];
 
 public class [%= dto.getClassName() %]Create extends AbstractSdkDao implements Function<[%= dto.getClassName() %], [%= dto.getClassName() %]>{

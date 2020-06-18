@@ -14,7 +14,8 @@ import hu.blackbelt.judo.dao.api.DAO;
 import hu.blackbelt.judo.dao.api.Payload;
 import hu.blackbelt.judo.meta.asm.runtime.AsmModel;
 
-import [%= dto.getPackagePrefix() %]dao.AbstractSdkDao;
+import [%= getModelPackageName() %].util.AbstractSdkDao;
+import static [%= getModelPackageName() %].util.SdkUtil.*;
 import [%= dto.getDtoTypeName() %];
 import [%= relatedDto.getDtoTypeName() %];
 
@@ -30,7 +31,7 @@ public class [%= dto.getClassName() %]Get[%= relationName.firstToUpperCase() %] 
 	public [%= relatedDto.getClassName() %] apply([%= dto.getClassName() %] object) {
         EReference ref = getReference(getEClass(FQ_NAME), "[%= relationName %]");
 		Payload resultPayload = dao.getNavigationResultAt(object.get__identifier(), ref).get(0);
-		return fromPayload(RelatedEntity.class, resultPayload);	
+		return fromPayload([%= relatedDto.getClassName() %].class, resultPayload);	
 	}
 	
 }

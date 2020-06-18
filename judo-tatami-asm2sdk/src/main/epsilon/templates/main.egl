@@ -6,8 +6,8 @@ var outputScrXmls = new Set();
 
 executionContext.getContext().put("outputJavaClasses", outputJavaClasses);
 
-genAbstractSdkDao();
-// outputJavaClasses.add();
+outputJavaClasses.add(genUtil("AbstractSdkDao"));
+outputJavaClasses.add(genUtil("SdkUtil"));
 
 for (dto in getAllDTOs()) {
     //DTO interface
@@ -19,13 +19,15 @@ for (dto in getAllDTOs()) {
     
     var daoInterfaces = genDaoInterfaces(dto);
     for (daoInterface in daoInterfaces) {
-    //	outputJavaClasses.add(daoInterface);
+    	outputJavaClasses.add(daoInterface);
 	}
     
     var operations = asmUtils.getAllOperationDeclarations(dto, true);
     for (op in operations) {
-    	genOperationInterface(dto, op);
-    	outputJavaClasses.add(getOperationJavaFileName(dto, op));
+    	var generatedFiles = genOperationInterface(dto, op);
+    	for (generatedFile in generatedFiles) {
+    	    	outputJavaClasses.add(generatedFile);
+    	}
     }
     
 }

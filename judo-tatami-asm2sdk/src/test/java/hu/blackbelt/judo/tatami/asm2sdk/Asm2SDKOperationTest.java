@@ -96,7 +96,9 @@ public class Asm2SDKOperationTest {
 
     private void fillPsmModel() throws Exception {
     	PsmTestModelBuilder modelBuilder = new PsmTestModelBuilder();
+    	modelBuilder.addEntity("InputEntity").withAttribute("String", "name");
     	modelBuilder.addEntity("RelatedEntity").withAttribute("String", "name");
+    	modelBuilder.addEntity("OutputEntity").withAttribute("String", "name");
     	modelBuilder.addEntity("Entity").withAttribute("String", "text")
     		.withAggregation("RelatedEntity", "related", cardinality(0, 1))
     		.withAggregation("RelatedEntity", "relateds", cardinality(0, -1));;
@@ -106,28 +108,36 @@ public class Asm2SDKOperationTest {
     	modelBuilder.addUnboundOperation("Initializer", "unboundOperationVoid");
     	// unbound operation with single entity input
     	modelBuilder.addUnboundOperation("Initializer", "unboundOperationWithEntityInputVoid")
-    		.withInput("Entity", "input", cardinality(0, 1));
+    		.withInput("InputEntity", "input", cardinality(0, 1));
     	modelBuilder.addUnboundOperation("Initializer", "unboundOperationWithEntityInputSingle")
-		.withInput("Entity", "input", cardinality(0, 1))
-		.withOutput("Entity", cardinality(1,1));
+		.withInput("InputEntity", "input", cardinality(0, 1))
+		.withOutput("OutputEntity", cardinality(1,1));
     	modelBuilder.addUnboundOperation("Initializer", "unboundOperationWithEntityInputMulti")
-		.withInput("Entity", "input", cardinality(0, 1))
-		.withOutput("Entity", cardinality(0, -1));
+		.withInput("InputEntity", "input", cardinality(0, 1))
+		.withOutput("OutputEntity", cardinality(0, -1));
+    	modelBuilder.addUnboundOperation("Initializer", "unboundOperationMulti")		
+		.withOutput("OutputEntity", cardinality(0, -1));
+    	modelBuilder.addUnboundOperation("Initializer", "unboundOperationSingle")		
+		.withOutput("OutputEntity", cardinality(1, 1));
     	// unbound operation with multiple entity input
     	modelBuilder.addUnboundOperation("Initializer", "unboundOperationWithEntitiesInputVoid")
-    		.withInput("Entity", "input", cardinality(0, -1));
+    		.withInput("InputEntity", "input", cardinality(0, -1));
     	
     	modelBuilder.addBoundOperation("Entity", "boundOperationVoid");
     	modelBuilder.addBoundOperation("Entity", "boundOperationWithEntityInputVoid")
-    		.withInput("Entity", "input", cardinality(0, 1));
+    		.withInput("InputEntity", "input", cardinality(0, 1));
     	modelBuilder.addBoundOperation("Entity", "boundOperationWithEntityInputSingle")
-		.withInput("Entity", "input", cardinality(0, 1))
-		.withOutput("Entity", cardinality(1,1));
+		.withInput("InputEntity", "input", cardinality(0, 1))
+		.withOutput("OutputEntity", cardinality(1,1));
     	modelBuilder.addBoundOperation("Entity", "boundOperationWithEntityInputMulti")
-		.withInput("Entity", "input", cardinality(0, 1))
-		.withOutput("Entity", cardinality(0, -1));
+		.withInput("InputEntity", "input", cardinality(0, 1))
+		.withOutput("OutputEntity", cardinality(0, -1));
+    	modelBuilder.addBoundOperation("Entity", "boundOperationMulti")
+		.withOutput("OutputEntity", cardinality(0, -1));
+    	modelBuilder.addBoundOperation("Entity", "boundOperationSingle")
+		.withOutput("OutputEntity", cardinality(0, 1));    	
     	modelBuilder.addBoundOperation("Entity", "boundOperationWithEntitiesInputVoid")
-    		.withInput("Entity", "input", cardinality(0, -1));
+    		.withInput("InputEntity", "input", cardinality(0, -1));
     	
     	modelBuilder.addUnboundOperation("Initializer", "scriptOperation").withBody("var demo::entities::Entity e");
     	

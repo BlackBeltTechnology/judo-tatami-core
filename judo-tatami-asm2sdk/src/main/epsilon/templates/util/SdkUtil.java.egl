@@ -1,0 +1,37 @@
+package sdk.demo.util;
+
+import java.util.Collection;
+import java.util.Objects;
+import java.util.stream.Collectors;
+
+import org.eclipse.emf.ecore.EClass;
+import org.eclipse.emf.ecore.EReference;
+import hu.blackbelt.judo.dao.api.Payload;
+import hu.blackbelt.structured.map.proxy.MapHolder;
+import hu.blackbelt.structured.map.proxy.MapProxy;
+
+public class SdkUtil {
+
+	private SdkUtil() {
+	}
+
+	public static <T> T fromPayload(Class<T> resultClass, Payload payload) {
+		return MapProxy.newInstance(resultClass, payload, false, "__identifier");
+	}
+
+	public static <T> Collection<Payload> asPayload(Collection<T> t) {
+			return ((Collection<?>)t).stream().map(elem -> Payload.asPayload(((MapHolder) elem).toMap())).collect(Collectors.toList());
+	}
+
+	public static <T> Payload asPayload(T t) {
+		Payload payload = Payload.asPayload(((MapHolder) t).toMap());
+		return payload;
+	}
+
+	public static EReference getReference(EClass eClass, String referenceName) {
+		EReference ref = eClass.getEAllReferences().stream().filter(r -> Objects.equals(r.getName(), referenceName))
+				.findAny().get();
+		return ref;
+	}
+
+}

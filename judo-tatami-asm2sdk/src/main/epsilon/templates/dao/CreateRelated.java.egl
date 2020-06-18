@@ -14,7 +14,8 @@ import hu.blackbelt.judo.dao.api.Payload;
 import hu.blackbelt.judo.meta.asm.runtime.AsmModel;
 [% if (multiRelation) { %]import java.util.Collection;[%}%]
 
-import [%= dto.getPackagePrefix() %]dao.AbstractSdkDao;
+import [%= getModelPackageName() %].util.AbstractSdkDao;
+import static [%= getModelPackageName() %].util.SdkUtil.*;
 import [%= dto.getDtoTypeName() %];
 import [%= relatedDto.getDtoTypeName() %];
 
