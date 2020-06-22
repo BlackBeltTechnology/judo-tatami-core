@@ -18,13 +18,20 @@ import static [%= getModelPackageName() %].util.SdkUtil.*;
 import [%= dto.getDtoTypeName() %];
 import [%= relatedDto.getDtoTypeName() %];
 
-public class [%= dto.getClassName() %]Remove[%= relationName.firstToUpperCase() %] extends AbstractSdkDao implements BiConsumer<[%= dto.getClassName() %], Collection<[%= relatedDto.getClassName() %]>>{
+[% var name = dto.getClassName() + "Remove" + relationName.firstToUpperCase(); %]
+
+[% if (daoImpl) { %] 
+public class [%= name %]Impl extends AbstractSdkDao implements  [%= name %]{
 
 	private final static String FQ_NAME = "[%= asmUtils.getClassifierFqName(dto) %]";
+	[% } else { %]
+	public interface [%= name %] extends BiConsumer<[%= dto.getClassName() %], Collection<[%= relatedDto.getClassName() %]>> {
+	[% } %] 
 	
 	@Override
-	public void accept([%= dto.getClassName() %] object, Collection<[%= relatedDto.getClassName() %]> relatedObjects) {
+	public void accept([%= dto.getClassName() %] object, Collection<[%= relatedDto.getClassName() %]> relatedObjects)
+	[% if (daoImpl) { %] {
 		dao.removeReferences(getReference(getEClass(FQ_NAME), "[%= relationName %]"), object.get__identifier(), relatedObjects.stream().map(relatedObject -> relatedObject.get__identifier()).collect(Collectors.toList()));
 	}
-
+	[% } else { %];[% } %]
 }

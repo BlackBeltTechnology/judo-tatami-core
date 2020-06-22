@@ -15,13 +15,20 @@ import [%= getModelPackageName() %].util.AbstractSdkDao;
 import static [%= getModelPackageName() %].util.SdkUtil.*;
 import [%= dto.getDtoTypeName() %];
 
-public class [%= dto.getClassName() %]Delete extends AbstractSdkDao implements Consumer<[%= dto.getClassName() %]>{
+[% var name = dto.getClassName() + "Delete"; %] 
+[% if (daoImpl) { %] 
+public class [%= name %]Impl extends AbstractSdkDao implements [%= name %]{
 
 	private final static String FQ_NAME = "[%= asmUtils.getClassifierFqName(dto) %]";
+	[% } else { %]
+	public interface [%= name %] extends Consumer<[%= dto.getClassName() %]>{
+	[% } %] 
 	
 	@Override
-	public void accept([%= dto.getClassName() %] subject) {
+	public void accept([%= dto.getClassName() %] subject) 
+	[% if (daoImpl) { %] {
 		dao.delete(getEClass(FQ_NAME), subject.get__identifier());
 	}
+	[% } else { %];[% } %]
 
 }

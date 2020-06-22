@@ -16,14 +16,21 @@ import [%= getModelPackageName() %].util.AbstractSdkDao;
 import static [%= getModelPackageName() %].util.SdkUtil.*;
 import [%= dto.getDtoTypeName() %];
 
-public class [%= dto.getClassName() %]Update extends AbstractSdkDao implements Function<[%= dto.getClassName() %], [%= dto.getClassName() %]>{
+[% var name = dto.getClassName() + "Update"; %] 
+
+[% if (daoImpl) { %] 
+public class [%= name %]Impl extends AbstractSdkDao implements  [%= name %]{
 
 	private final static String FQ_NAME = "[%= asmUtils.getClassifierFqName(dto) %]";
+	[% } else { %]
+	public interface [%= name %] extends Function<[%= dto.getClassName() %], [%= dto.getClassName() %]>{
+	[% } %] 
 	
 	@Override
-	public [%= dto.getClassName() %] apply([%= dto.getClassName() %] data) {
+	public [%= dto.getClassName() %] apply([%= dto.getClassName() %] data)
+	[% if (daoImpl) { %] {
 		Payload resultPayload = dao.update(getEClass(FQ_NAME), Payload.asPayload(asMap(data)));
 		return fromPayload([%= dto.getClassName() %].class, resultPayload);
 	}
-
+	[% } else { %];[% } %]
 }

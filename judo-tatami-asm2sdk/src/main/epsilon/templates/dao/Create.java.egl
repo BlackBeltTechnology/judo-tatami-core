@@ -18,15 +18,23 @@ import [%= getModelPackageName() %].util.AbstractSdkDao;
 import static [%= getModelPackageName() %].util.SdkUtil.*;
 import [%= dto.getDtoTypeName() %];
 
-public class [%= dto.getClassName() %]Create extends AbstractSdkDao implements Function<[%= dto.getClassName() %], [%= dto.getClassName() %]>{
+[% var name = dto.getClassName() + "Create"; %]
 
+[% if (daoImpl) { %] 
+public class [%= name%]Impl extends AbstractSdkDao implements [%= name %] {
 	private final static String FQ_NAME = "[%= asmUtils.getClassifierFqName(dto) %]";
-	
+
+[% } else { %]
+public interface [%= name %] extends Function<[%= dto.getClassName() %], [%= dto.getClassName() %]>{
+[% } %] 
+
 	@Override
-	public [%= dto.getClassName() %] apply([%= dto.getClassName() %] object) {
+	public [%= dto.getClassName() %] apply([%= dto.getClassName() %] object) 
+	[% if (daoImpl) { %] {
 		EClass eClass = getEClass(FQ_NAME);
 		Payload resultPayload = dao.create(eClass, Payload.asPayload(asMap(object)));
 		return fromPayload([%= dto.getClassName() %].class, resultPayload);
 	}
+	[% } else { %];[% } %]
 
 }

@@ -15,13 +15,20 @@ import [%= getModelPackageName() %].util.AbstractSdkDao;
 import static [%= getModelPackageName() %].util.SdkUtil.*;
 import [%= dto.getDtoTypeName() %];
 
-public class [%= dto.getClassName() %]Unset[%= relationName.firstToUpperCase() %] extends AbstractSdkDao implements Consumer<[%= dto.getClassName() %]>{
+[% var name = dto.getClassName() + "Unset" + relationName.firstToUpperCase(); %]
+
+[% if (daoImpl) { %] 
+public class [%= name %]Impl  extends AbstractSdkDao implements  [%= name %]{
 
 	private final static String FQ_NAME = "[%= asmUtils.getClassifierFqName(dto) %]";
+	[% } else { %]
+	public interface [%= name %] extends Consumer<[%= dto.getClassName() %]> {
+	[% } %] 
 	
 	@Override
-	public void accept([%= dto.getClassName() %] object) {
+	public void accept([%= dto.getClassName() %] object)
+	[% if (daoImpl) { %] {
 		dao.unsetReference(getReference(getEClass(FQ_NAME), "[%= relationName %]"), object.get__identifier());
 	}
-
+	[% } else { %];[% } %]
 }

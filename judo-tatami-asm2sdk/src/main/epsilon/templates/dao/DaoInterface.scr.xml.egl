@@ -1,14 +1,10 @@
 [%
   import "../../operations/sdk.eol";
+  var fullClassName = dto.getDtoDaoPackageName() + "." + dto.getClassName() + daoAction;
 %]
-
-[%
-	var fullClassName = dto.getDtoDaoPackageName() + "." + dto.getClassName() + daoAction;
-%]
-
 <?xml version="1.0" encoding="UTF-8"?>
 <scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.3.0" name="[%= fullClassName %]" immediate="true">
-  <implementation class="[%= fullClassName %]"/>
+  <implementation class="[%= fullClassName %]Impl"/>
   <service>
     <provide interface="[%= fullClassName %]"/>
   </service>

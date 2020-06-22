@@ -20,13 +20,20 @@ import [%= dto.getDtoTypeName() %];
 import [%= relatedDto.getDtoTypeName() %];
 
 [% var relatedType; if (not multiRelation) relatedType = relatedDto.getClassName(); else relatedType = "Collection<" + relatedDto.getClassName() + ">"; %]
+[% var name = dto.getClassName() + "Create"+ relationName.firstToUpperCase(); %]
 
-public class [%= dto.getClassName() %]Create[%= relationName.firstToUpperCase() %] extends AbstractSdkDao implements BiFunction<[%= dto.getClassName() %], [%= relatedType %], [%= relatedType %]>{
+[% if (daoImpl) { %]
+public class [%= name %]Impl extends AbstractSdkDao implements [%= name %] {
 
 	private final static String FQ_NAME = "[%= asmUtils.getClassifierFqName(dto) %]";
+[% } else { %]
+	public interface [%= name %] extends BiFunction<[%= dto.getClassName() %], [%= relatedType %], [%= relatedType %]>{
+	
+	[% } %] 
 	
 	@Override
-	public [%= relatedType %] apply([%= dto.getClassName() %] object, [%= relatedType %] relatedObject) {
+	public [%= relatedType %] apply([%= dto.getClassName() %] object, [%= relatedType %] relatedObject) 
+	[% if (daoImpl) { %] {
 		[% if (multiRelation) { %]
 				[%=relatedType %] result = new ArrayList<>();
 			for ([%= relatedDto.getClassName() %] element : relatedObject) {
@@ -39,5 +46,6 @@ public class [%= dto.getClassName() %]Create[%= relationName.firstToUpperCase() 
 		return fromPayload([%= relatedDto.getClassName() %].class, resultPayload);
 		[%}%]
 	}
+	[% } else { %];[% } %]
 
 }

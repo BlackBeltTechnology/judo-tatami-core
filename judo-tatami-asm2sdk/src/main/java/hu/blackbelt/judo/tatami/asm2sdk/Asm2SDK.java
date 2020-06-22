@@ -147,7 +147,14 @@ public class Asm2SDK {
                 .set( Constants.REQUIRE_CAPABILITY,
                         "osgi.extender;filter:=\"(&(osgi.extender=osgi.component)(version>=1.3.0)(!(version>=2.0.0)))\"")
                 .set( Constants.IMPORT_PACKAGE,
-                        "org.osgi.framework;version=\"[1.8,2.0)\""
+                        "org.osgi.framework;version=\"[1.8,2.0)\"," +
+                        "hu.blackbelt.judo.dao.api;version=\"[1.0,2.0)\"," +
+                        "hu.blackbelt.judo.dispatcher.api;version=\"[1.0,2.0)\"," +
+                        "hu.blackbelt.judo.meta.asm.runtime;version=\"[1.0,2.0)\"," +
+                        "org.eclipse.emf.ecore," +
+                        "org.eclipse.emf.common," +
+                        "org.eclipse.emf.common.util," +
+                        "org.slf4j;version=\"1.7.2\""
                 );
 
         if (exportedPackages.size() > 0) {

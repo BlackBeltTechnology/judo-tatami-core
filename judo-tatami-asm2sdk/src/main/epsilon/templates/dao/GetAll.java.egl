@@ -19,14 +19,22 @@ import [%= getModelPackageName() %].util.AbstractSdkDao;
 import static [%= getModelPackageName() %].util.SdkUtil.*;
 import [%= dto.getDtoTypeName() %];
 
-public class [%= dto.getClassName() %]GetAll extends AbstractSdkDao implements Supplier<Collection<[%= dto.getClassName() %]>>{
+[% var name = dto.getClassName() +"GetAll"; %] 
+
+[% if (daoImpl) { %] 
+public class [%= name %]Impl extends AbstractSdkDao implements [%= name %]{
 
 	private final static String FQ_NAME = "[%= asmUtils.getClassifierFqName(dto) %]";
+	[% } else { %]
+	public interface [%= name %] extends Supplier<Collection<[%= dto.getClassName() %]>>{
+	[% } %] 
 	
 	@Override
-	public Collection<[%= dto.getClassName() %]> get() {
+	public Collection<[%= dto.getClassName() %]> get()
+	[% if (daoImpl) { %] {
+
 		List<Payload> payloads = dao.getAllOf(getEClass(FQ_NAME));
 		return payloads.stream().map(payload -> fromPayload([%= dto.getClassName() %].class, payload)).collect(Collectors.toList());
 	}
-
+	[% } else { %];[% } %]
 }

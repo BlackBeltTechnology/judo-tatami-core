@@ -1,11 +1,9 @@
 [%
   import "../../operations/sdk.eol";
 %]
-
 [%
 	var fullClassName = packageName + '.wrapper.' + op.name.firstToUpperCase() + 'DispatcherWrapper';
 %]
-
 <?xml version="1.0" encoding="UTF-8"?>
 <scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.3.0" name="[%= fullClassName %]" immediate="true">
   <implementation class="[%= fullClassName %]"/>
