@@ -151,6 +151,7 @@ public class Asm2SDK {
                         "hu.blackbelt.judo.dao.api;version=\"[1.0,2.0)\"," +
                         "hu.blackbelt.judo.dispatcher.api;version=\"[1.0,2.0)\"," +
                         "hu.blackbelt.judo.meta.asm.runtime;version=\"[1.0,2.0)\"," +
+                        "hu.blackbelt.structured.map.proxy;version=\"[1.0,2.0)\"," +
                         "org.eclipse.emf.ecore," +
                         "org.eclipse.emf.common," +
                         "org.eclipse.emf.common.util," +
