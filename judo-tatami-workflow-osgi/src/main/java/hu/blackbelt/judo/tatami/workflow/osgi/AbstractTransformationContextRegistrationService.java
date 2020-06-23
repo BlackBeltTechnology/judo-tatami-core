@@ -58,6 +58,19 @@ public abstract class AbstractTransformationContextRegistrationService implement
         serviceRegistrationMap.get(trace).unregister();
     }
 
+    public void registerTransformationContext(TransformationContext o, Dictionary<String, ?> props) {
+        log.info("\u001B[33mRegistering transformation context: {}\u001B[0m ", o);
+        ServiceRegistration<?> modelServiceRegistration =
+                bundleContext.registerService(TransformationContext.class, o, props);
+        serviceRegistrationMap.put(o, modelServiceRegistration);
+    }
+
+    public void unregisterTransformationContext(TransformationContext o) {
+        log.info("\u001B[33mUnregistering model: {}\u001B[0m", o);
+        checkState(serviceRegistrationMap.containsKey(o), "The transformation context is not registered");
+        serviceRegistrationMap.get(o).unregister();
+    }
+
     public void registerInputStreamAsBundle(InputStream is) throws BundleException, IOException {
         log.info("\u001B[33mInstalling stream as bundle: {}\u001B[0m" , is.toString()+ " - " + is.available());
         Bundle installedBundle = bundleContext.installBundle(this.getClass().getName() + is.toString(), is);

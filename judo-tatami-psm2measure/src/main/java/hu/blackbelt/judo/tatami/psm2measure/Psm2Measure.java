@@ -5,9 +5,12 @@ import com.google.common.collect.ImmutableMap;
 import hu.blackbelt.epsilon.runtime.execution.ExecutionContext;
 import hu.blackbelt.epsilon.runtime.execution.api.Log;
 import hu.blackbelt.epsilon.runtime.execution.contexts.EtlExecutionContext;
+import hu.blackbelt.epsilon.runtime.execution.impl.Slf4jLog;
 import hu.blackbelt.judo.meta.measure.runtime.MeasureModel;
 import hu.blackbelt.judo.meta.psm.PsmUtils;
 import hu.blackbelt.judo.meta.psm.runtime.PsmModel;
+import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.epsilon.common.util.UriUtil;
 
@@ -22,9 +25,18 @@ import static hu.blackbelt.judo.tatami.core.TransformationTraceUtil.getTransform
 import static hu.blackbelt.judo.tatami.psm2measure.Psm2MeasureTransformationTrace.PSM_2_MEASURE_URI_POSTFIX;
 import static hu.blackbelt.judo.tatami.psm2measure.Psm2MeasureTransformationTrace.resolvePsm2MeasureTrace;
 
+@Slf4j
 public class Psm2Measure {
 
     public static final String SCRIPT_ROOT_TATAMI_PSM_2_MEASURE = "tatami/psm2measure/transformations/measure/";
+
+    public static Psm2MeasureTransformationTrace executePsm2MeasureTransformation(PsmModel psmModel, MeasureModel measureModel) throws Exception {
+        return executePsm2MeasureTransformation(psmModel, measureModel, new Slf4jLog(log), calculatePsm2MeasureTransformationScriptURI());
+    }
+
+    public static Psm2MeasureTransformationTrace executePsm2MeasureTransformation(PsmModel psmModel, MeasureModel measureModel, Log log) throws Exception {
+        return executePsm2MeasureTransformation(psmModel, measureModel, log, calculatePsm2MeasureTransformationScriptURI());
+    }
 
     public static Psm2MeasureTransformationTrace executePsm2MeasureTransformation(PsmModel psmModel, MeasureModel measureModel, Log log,
                                                                                   URI scriptUri) throws Exception {
@@ -68,7 +80,8 @@ public class Psm2Measure {
                 .trace(resolvePsm2MeasureTrace(traceModel, psmModel, measureModel)).build();
     }
 
-    public static URI calculatePsm2MeasureTransformationScriptURI() throws URISyntaxException {
+    @SneakyThrows(URISyntaxException.class)
+    public static URI calculatePsm2MeasureTransformationScriptURI() {
         URI psmRoot = Psm2Measure.class.getProtectionDomain().getCodeSource().getLocation().toURI();
         if (psmRoot.toString().endsWith(".jar")) {
             psmRoot = new URI("jar:" + psmRoot.toString() + "!/" + SCRIPT_ROOT_TATAMI_PSM_2_MEASURE);

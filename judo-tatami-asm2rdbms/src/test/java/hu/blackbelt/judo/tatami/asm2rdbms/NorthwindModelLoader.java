@@ -28,7 +28,7 @@ public class NorthwindModelLoader {
                 .name(modelName)
                 .build();
 
-        executePsm2AsmTransformation(psmModel, asmModel, slf4jlog, calculatePsm2AsmTransformationScriptURI());
+        executePsm2AsmTransformation(psmModel, asmModel);
     }
 
     public static NorthwindModelLoader createNorthwindModelLoader(final String modelName) throws Exception {

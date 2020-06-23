@@ -15,7 +15,6 @@
 	<packaging>maven-plugin</packaging>
 	<name>Judo :: Tatami :: Workflow :: Maven :: Plugin</name>
 	<url>http://maven.apache.org</url>
-
 	<build>
 		<plugins>
 			<plugin>

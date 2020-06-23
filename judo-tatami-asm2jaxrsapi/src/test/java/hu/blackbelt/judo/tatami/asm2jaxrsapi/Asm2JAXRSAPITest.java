@@ -32,11 +32,8 @@ public class Asm2JAXRSAPITest {
         // Default logger
         slf4jlog = new Slf4jLog(log);
 
-        // Loading ASM to isolated ResourceSet, because in Tatami
-        // there is no new namespace registration made.
-        asmModel = loadAsmModel(asmLoadArgumentsBuilder()
-                .uri(URI.createFileURI(new File(TARGET_TEST_CLASSES, "northwind-asm.model").getAbsolutePath()))
-                .name(NORTHWIND));
+        NorthwindModelLoader northwindModelLoader = NorthwindModelLoader.createNorthwindModelLoader(NORTHWIND);
+        asmModel = northwindModelLoader.getAsmModel();
     }
 
 
@@ -45,11 +42,11 @@ public class Asm2JAXRSAPITest {
         try (OutputStream bundleOutputStream =
                      new FileOutputStream(new File(TARGET_TEST_CLASSES, NORTHWIND + "-rest.jar"))) {
             ByteStreams.copy(
-                    executeAsm2JAXRSAPIGeneration(asmModel, new Slf4jLog(log),
-                            calculateAsm2JaxrsapiTemplateScriptURI(),
+                    executeAsm2JAXRSAPIGeneration(asmModel,
                             new File(TARGET_TEST_CLASSES, "generated/java")),
                     bundleOutputStream
             );
         }
     }
+
 }

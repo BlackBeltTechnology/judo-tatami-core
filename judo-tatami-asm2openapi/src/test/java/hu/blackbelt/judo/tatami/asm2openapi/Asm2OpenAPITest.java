@@ -60,11 +60,8 @@ public class Asm2OpenAPITest {
     @Test
     public void testAsm2OpenAPITransformation() throws Exception {
 
-        Asm2OpenAPITransformationTrace asm2OpenAPITransformationTrace = executeAsm2OpenAPITransformation(
-                asmModel,
-                openapiModel,
-                new Slf4jLog(log),
-                calculateAsm2OpenapiTransformationScriptURI());
+        Asm2OpenAPITransformationTrace asm2OpenAPITransformationTrace = executeAsm2OpenAPITransformation(asmModel,
+                openapiModel);
 
         // Saving trace map
         asm2OpenAPITransformationTrace.save(new File(TARGET_TEST_CLASSES, NORTHWIND_ASM_2_OPENAPI_MODEL));

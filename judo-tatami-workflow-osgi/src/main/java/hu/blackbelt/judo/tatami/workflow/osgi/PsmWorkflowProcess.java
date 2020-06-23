@@ -5,8 +5,10 @@ import hu.blackbelt.judo.meta.psm.runtime.PsmModel;
 import hu.blackbelt.judo.tatami.core.workflow.work.TransformationContext;
 import hu.blackbelt.judo.tatami.core.workflow.work.WorkReport;
 import hu.blackbelt.judo.tatami.core.workflow.work.WorkStatus;
+import hu.blackbelt.judo.tatami.workflow.DefaultWorkflowSave;
 import hu.blackbelt.judo.tatami.workflow.DefaultWorkflowSetupParameters;
 import hu.blackbelt.judo.tatami.workflow.PsmDefaultWorkflow;
+import lombok.extern.slf4j.Slf4j;
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
@@ -15,6 +17,7 @@ import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.metatype.annotations.Designate;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 
@@ -26,6 +29,7 @@ import java.net.URISyntaxException;
  */
 @Component(immediate = true, configurationPolicy = ConfigurationPolicy.REQUIRE)
 @Designate(ocd = PsmWorkflowProcessConfiguration.class)
+@Slf4j
 public class PsmWorkflowProcess {
     PsmWorkflowProcessConfiguration psmWorkflowProcessConfiguration;
 
@@ -44,7 +48,7 @@ public class PsmWorkflowProcess {
         this.psmWorkflowProcessConfiguration = config;
 
         DefaultWorkflowSetupParameters.DefaultWorkflowSetupParametersBuilder workflowSetupParameters = DefaultWorkflowSetupParameters.defaultWorkflowSetupParameters();
-        DefaultWorkflowSetupParameters.addTransformerCalculatedUris(workflowSetupParameters);
+        //DefaultWorkflowSetupParameters.addTransformerCalculatedUris(workflowSetupParameters);
         workflowSetupParameters
                 .modelName(psmModel.getName())
                 .psmModel(psmModel)
@@ -63,13 +67,34 @@ public class PsmWorkflowProcess {
         workflowSetupParameters.ignoreRdbms2Liquibase(config.ignoreRdbms2Liquibase());
         workflowSetupParameters.ignoreScript2Operation(config.ignoreScript2Operation());
 
+        File outputDirectory;
+        if (config.outputDirectory() == null || config.outputDirectory().equals("")) {
+            outputDirectory = new File("model-dump-" + System.currentTimeMillis());
+        } else {
+            outputDirectory = new File(config.outputDirectory());
+        }
+
+        workflowSetupParameters.validateModels(config.validateModels());
 
         PsmDefaultWorkflow defaultWorkflow = new PsmDefaultWorkflow(workflowSetupParameters);
+        try {
+            WorkReport workReport = defaultWorkflow.startDefaultWorkflow();
+            if (workReport.getStatus() != WorkStatus.COMPLETED) {
+                saveFailedModels(defaultWorkflow, config, outputDirectory);
+                throw new IllegalStateException(workReport.getError());
+            }
+        } catch (Exception e) {
+            saveFailedModels(defaultWorkflow, config, outputDirectory);
+            throw e;
+        }
 
-        WorkReport workReport = defaultWorkflow.startDefaultWorkflow();
-
-        if (workReport.getStatus() != WorkStatus.COMPLETED) {
-            throw new IllegalStateException(workReport.getError());
+        if (config.saveCompletedModels()) {
+            try {
+                outputDirectory.mkdirs();
+                DefaultWorkflowSave.saveModels(defaultWorkflow.getTransformationContext(), outputDirectory, ImmutableList.of(config.sqlDialect()));
+            } catch (Exception e) {
+                log.error("Could not dump models: ", e);
+            }
         }
 
         // Get transformation context and registering all services which are presented
@@ -80,6 +105,19 @@ public class PsmWorkflowProcess {
     @Deactivate
     public void deactivate() {
         transformationContextRegistrationService.unregisterTransformationContext(transformationContext, psmWorkflowProcessConfiguration.sqlDialect());
+    }
+
+    private void saveFailedModels(PsmDefaultWorkflow defaultWorkflow, PsmWorkflowProcessConfiguration config, File outputDirectory) {
+        // Dump the existing models.
+        if (config.saveFailedModels()) {
+            try {
+                outputDirectory.mkdirs();
+                DefaultWorkflowSave.saveModels(defaultWorkflow.getTransformationContext(), outputDirectory, ImmutableList.of(config.sqlDialect()));
+            } catch (Exception e) {
+                log.error("Could not dump models: ", e);
+            }
+        }
+
     }
 
 }

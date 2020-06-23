@@ -206,11 +206,7 @@ public class Psm2AsmInheritanceTest {
                 .build();
         psmModel.addContent(model);
 
-        executePsm2AsmTransformation(
-                psmModel,
-                asmModel,
-                new Slf4jLog(log),
-                calculatePsm2AsmTransformationScriptURI());
+        executePsm2AsmTransformation(psmModel, asmModel);
         asmModel.saveAsmModel(asmSaveArgumentsBuilder()
                 .outputStream(new FileOutputStream(new File(TARGET_TEST_CLASSES, INHERITANCE_ASM_MODEL))));
 

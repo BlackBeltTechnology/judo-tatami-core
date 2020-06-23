@@ -41,6 +41,8 @@ import hu.blackbelt.judo.tatami.core.workflow.work.TransformationContext;
 import hu.blackbelt.judo.tatami.core.workflow.work.WorkReport;
 import hu.blackbelt.judo.tatami.core.workflow.work.WorkReportPredicate;
 import hu.blackbelt.judo.tatami.core.workflow.work.WorkStatus;
+import hu.blackbelt.judo.tatami.expression.asm.validation.ExpressionValidationOnAsmWork;
+import hu.blackbelt.judo.tatami.psm.validation.PsmValidationWork;
 import hu.blackbelt.judo.tatami.psm2asm.Psm2AsmTransformationTrace;
 import hu.blackbelt.judo.tatami.psm2asm.Psm2AsmWork;
 import hu.blackbelt.judo.tatami.psm2measure.Psm2MeasureTransformationTrace;
@@ -97,57 +99,48 @@ public class PsmDefaultWorkflow {
 			throw new IllegalArgumentException("All transformation path are ignored");
 		}
 
-		if (!parameters.getIgnorePsm2Measure()) {
-			Psm2MeasureWork psm2MeasureWork = new Psm2MeasureWork(transformationContext,
-					parameters.getPsm2MeasureModelTransformationScriptURI());
-			psmWorks.add(psm2MeasureWork);
+		if (parameters.getValidateModels()) {
+			psmWorks.add(new PsmValidationWork(transformationContext));
 		}
+
+		if (!parameters.getIgnorePsm2Measure()) {
+			psmWorks.add(new Psm2MeasureWork(transformationContext));
+		}
+
 		if (!parameters.getIgnorePsm2Asm()) {
-			Psm2AsmWork psm2AsmWork = new Psm2AsmWork(transformationContext,
-					parameters.getPsm2AsmModelTransformationScriptURI());
-			psmWorks.add(psm2AsmWork);
+			psmWorks.add(new Psm2AsmWork(transformationContext));
 
 			if (!parameters.getIgnoreAsm2Rdbms()) {
-				parameters.getDialectList().forEach(dialect -> asm2RdbmsWorks.add(new Asm2RdbmsWork(transformationContext,
-						parameters.getAsm2RdbmsModelTransformationScriptURI(),
-						parameters.getAsm2RdbmsModelTransformationModelURI(),
-						dialect)));
-
+				parameters.getDialectList().forEach(dialect -> {
+					asm2RdbmsWorks.add(new Asm2RdbmsWork(transformationContext, dialect));
+				});
 				asmWorks.addAll(asm2RdbmsWorks);
-
 				if (!parameters.getIgnoreRdbms2Liquibase()) {
 					parameters.getDialectList()
-							.forEach(dialect -> rdbmsWorks.add(new Rdbms2LiquibaseWork(transformationContext,
-									parameters.getRdbms2LiquibaseModelTransformationScriptURI(), dialect)));
+							.forEach(dialect -> rdbmsWorks.add(new Rdbms2LiquibaseWork(transformationContext, dialect)));
 				}
 			}
 			if (!parameters.getIgnoreAsm2Expression() && !parameters.getIgnorePsm2Measure()) {
-				Asm2ExpressionWork asm2ExpressionWork = new Asm2ExpressionWork(transformationContext);
-				asmWorks.add(asm2ExpressionWork);
+				asmWorks.add(new Asm2ExpressionWork(transformationContext));
+				if (parameters.getValidateModels()) {
+					asmWorks.add(new ExpressionValidationOnAsmWork(transformationContext));
+				}
 			}
 			if (!parameters.getIgnoreAsm2Script() && !parameters.getIgnorePsm2Measure()) {
-				Asm2ScriptWork asm2ScriptWork = new Asm2ScriptWork(transformationContext);
-				asmWorks.add(asm2ScriptWork);
+				asmWorks.add(new Asm2ScriptWork(transformationContext));
 			}
 
 			if (!parameters.getIgnoreAsm2Openapi()) {
-				Asm2OpenAPIWork asm2OpenapiWork = new Asm2OpenAPIWork(transformationContext,
-						parameters.getAsm2OpenapiModelTransformationScriptURI());
-				asmWorks.add(asm2OpenapiWork);
+				asmWorks.add(new Asm2OpenAPIWork(transformationContext));
 			}
 			if (!parameters.getIgnoreAsm2jaxrsapi()) {
-				Asm2JAXRSAPIWork asm2jaxrsapiWork = new Asm2JAXRSAPIWork(transformationContext,
-						parameters.getAsm2jaxrsapiModelTransformationScriptURI());
-				asmWorks.add(asm2jaxrsapiWork);
+				asmWorks.add(new Asm2JAXRSAPIWork(transformationContext));
 			}
 			if (!parameters.getIgnoreAsm2sdk()) {
-				Asm2SDKWork asm2sdkWork = new Asm2SDKWork(transformationContext,
-						parameters.getAsm2sdkModelTransformationScriptURI());
-				asmWorks.add(asm2sdkWork);
+				asmWorks.add(new Asm2SDKWork(transformationContext));
 			}
 			if (!parameters.getIgnoreScript2Operation() && !parameters.getIgnoreAsm2Script() && !parameters.getIgnorePsm2Measure()) {
-				Script2OperationWork script2OperationWork = new Script2OperationWork(transformationContext);
-				scriptWorks.add(script2OperationWork);
+				scriptWorks.add(new Script2OperationWork(transformationContext));
 			}
 		}
 

@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.InputStream;
 import java.io.OutputStream;
 
 import static hu.blackbelt.judo.meta.asm.runtime.AsmModel.LoadArguments.asmLoadArgumentsBuilder;
@@ -43,14 +44,21 @@ public class Asm2SDKTest {
 
     @Test
     public void testExecuteAsm2SDKGeneration() throws Exception {
+        InputStream stream = executeAsm2SDKGeneration(asmModel, new File(TARGET_TEST_CLASSES, GENERATED_JAVA));
         try (OutputStream outputStream =
                      new FileOutputStream(new File(TARGET_TEST_CLASSES, NORTHWIND + "-sdk.jar"))) {
-            ByteStreams.copy(
-                    executeAsm2SDKGeneration(asmModel, new Slf4jLog(log),
-                            calculateAsm2SDKTemplateScriptURI(),
-                            new File(TARGET_TEST_CLASSES, GENERATED_JAVA)),
+            ByteStreams.copy(stream
+                    ,
                     outputStream
             );
         }
+        stream.close();
+
+        try (OutputStream outputStream =
+                     new FileOutputStream(new File(TARGET_TEST_CLASSES, NORTHWIND + "-sdk.2.jar"))) {
+            ByteStreams.copy(stream, outputStream);
+        }
+        stream.close();
+
     }
 }

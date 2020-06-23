@@ -4,13 +4,16 @@ import static hu.blackbelt.judo.meta.asm.runtime.AsmModel.buildAsmModel;
 import static hu.blackbelt.judo.meta.asm.runtime.AsmModel.SaveArguments.asmSaveArgumentsBuilder;
 import static hu.blackbelt.judo.meta.psm.PsmEpsilonValidator.calculatePsmValidationScriptURI;
 import static hu.blackbelt.judo.meta.psm.PsmEpsilonValidator.validatePsm;
-import static hu.blackbelt.judo.meta.psm.data.util.builder.DataBuilders.newEntityTypeBuilder;
+import static hu.blackbelt.judo.meta.psm.accesspoint.util.builder.AccesspointBuilders.newActorTypeBuilder;
+import static hu.blackbelt.judo.meta.psm.data.util.builder.DataBuilders.*;
 import static hu.blackbelt.judo.meta.psm.derived.util.builder.DerivedBuilders.newReferenceExpressionTypeBuilder;
 import static hu.blackbelt.judo.meta.psm.derived.util.builder.DerivedBuilders.newStaticNavigationBuilder;
 import static hu.blackbelt.judo.meta.psm.namespace.util.builder.NamespaceBuilders.newModelBuilder;
+import static hu.blackbelt.judo.meta.psm.namespace.util.builder.NamespaceBuilders.newPackageBuilder;
 import static hu.blackbelt.judo.meta.psm.runtime.PsmModel.buildPsmModel;
 import static hu.blackbelt.judo.meta.psm.service.util.builder.ServiceBuilders.*;
 import static hu.blackbelt.judo.meta.psm.type.util.builder.TypeBuilders.newCardinalityBuilder;
+import static hu.blackbelt.judo.meta.psm.type.util.builder.TypeBuilders.newStringTypeBuilder;
 import static hu.blackbelt.judo.tatami.psm2asm.Psm2Asm.calculatePsm2AsmTransformationScriptURI;
 import static hu.blackbelt.judo.tatami.psm2asm.Psm2Asm.executePsm2AsmTransformation;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -18,11 +21,15 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
+import java.util.Arrays;
 import java.util.Optional;
 
 import hu.blackbelt.judo.meta.psm.accesspoint.ActorType;
-import hu.blackbelt.judo.meta.psm.accesspoint.util.builder.AccesspointBuilders;
+import hu.blackbelt.judo.meta.psm.data.Attribute;
+import hu.blackbelt.judo.meta.psm.data.Relation;
 import hu.blackbelt.judo.meta.psm.service.TransferObjectRelation;
+import hu.blackbelt.judo.meta.psm.service.TransferObjectType;
+import hu.blackbelt.judo.meta.psm.type.StringType;
 import org.eclipse.emf.ecore.EAnnotation;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EReference;
@@ -85,12 +92,100 @@ public class Psm2AsmAccessPointTest {
         assertTrue(psmModel.isValid());
         validatePsm(new Slf4jLog(log), psmModel, calculatePsmValidationScriptURI());
 
-        executePsm2AsmTransformation(psmModel, asmModel, new Slf4jLog(log), calculatePsm2AsmTransformationScriptURI());
+        executePsm2AsmTransformation(psmModel, asmModel);
 
         assertTrue(asmModel.isValid());
         asmModel.saveAsmModel(asmSaveArgumentsBuilder()
                 .file(new File(TARGET_TEST_CLASSES, getClass().getName() + "-" + testName + "-asm.model"))
                 .build());
+    }
+
+    @Test
+    void testEntityTypeAsAccessPoint() throws Exception {
+        final StringType stringType = newStringTypeBuilder()
+                .withName("String")
+                .withMaxLength(255)
+                .build();
+
+        final Attribute nameOfRelatedEntity = newAttributeBuilder()
+                .withName("name")
+                .withDataType(stringType)
+                .build();
+        final EntityType relatedEntity = newEntityTypeBuilder()
+                .withName("RelatedEntity")
+                .withAttributes(nameOfRelatedEntity)
+                .build();
+
+        final Attribute textOfEntity = newAttributeBuilder()
+                .withName("text")
+                .withDataType(stringType)
+                .build();
+        final Relation relatedOfEntity = newAssociationEndBuilder()
+                .withName("related")
+                .withCardinality(newCardinalityBuilder().build())
+                .withTarget(relatedEntity)
+                .build();
+        final EntityType entity = newEntityTypeBuilder()
+                .withName("Entity")
+                .withAttributes(textOfEntity)
+                .withRelations(relatedOfEntity)
+                .build();
+
+        final TransferObjectType relatedEntityDTO = newMappedTransferObjectTypeBuilder()
+                .withName("RelatedEntity")
+                .withEntityType(relatedEntity)
+                .withAttributes(newTransferAttributeBuilder()
+                        .withName("name")
+                        .withDataType(stringType)
+                        .withBinding(nameOfRelatedEntity)
+                        .build())
+                .build();
+
+        final TransferObjectType entityDTO = newMappedTransferObjectTypeBuilder()
+                .withName("Entity")
+                .withEntityType(entity)
+                .withAttributes(newTransferAttributeBuilder()
+                        .withName("text")
+                        .withDataType(stringType)
+                        .withBinding(textOfEntity)
+                        .build())
+                .withRelations(newTransferObjectRelationBuilder()
+                        .withName("related")
+                        .withEmbedded(true)
+                        .withCardinality(newCardinalityBuilder().build())
+                        .withBinding(relatedOfEntity)
+                        .withTarget(relatedEntityDTO)
+                        .build())
+                .build();
+
+        final ActorType entityActor = newActorTypeBuilder()
+                .withName("EntityActor")
+                .withTransferObjectType(entityDTO)
+                .build();
+
+        final Model model = newModelBuilder()
+                .withName("demo")
+                .withPackages(newPackageBuilder()
+                        .withName("types")
+                        .withElements(stringType)
+                        .build())
+                .withPackages(newPackageBuilder()
+                        .withName("entities")
+                        .withElements(Arrays.asList(entity, relatedEntity))
+                        .build())
+                .withPackages(newPackageBuilder()
+                        .withName("_default_transferobjecttypes")
+                        .withElements(Arrays.asList(entityDTO, relatedEntityDTO))
+                        .build())
+                .withPackages(newPackageBuilder()
+                        .withName("services")
+                        .withElements(entityActor)
+                        .build())
+                .build();
+
+        psmModel.addContent(model);
+
+        transform("testEntityTypeAsAccessPoint");
     }
 
     @Test
@@ -131,7 +226,7 @@ public class Psm2AsmAccessPointTest {
                 ))
                 .build();
 
-        ActorType actor = AccesspointBuilders.newActorTypeBuilder()
+        ActorType actor = newActorTypeBuilder()
                 .withName("Actor")
                 .withTransferObjectType(accessPoint)
                 .build();

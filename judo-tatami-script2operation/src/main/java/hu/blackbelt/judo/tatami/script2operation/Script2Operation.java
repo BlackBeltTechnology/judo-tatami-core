@@ -8,17 +8,14 @@ import hu.blackbelt.judo.framework.compiler.api.fileobject.JavaFileObjects;
 import hu.blackbelt.judo.meta.script.runtime.ScriptModel;
 import hu.blackbelt.judo.meta.script.support.ScriptModelResourceSupport;
 import hu.blackbelt.judo.script.codegen.generator.Script2JavaGenerator;
+import hu.blackbelt.judo.tatami.core.CachingInputStream;
 import org.ops4j.pax.tinybundles.core.TinyBundle;
 import org.osgi.framework.Constants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.tools.JavaFileObject;
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.nio.charset.Charset;
 import java.util.Collections;
 import java.util.Map;
@@ -173,7 +170,7 @@ public class Script2Operation {
                             .map(n -> "OSGI-INF/" + n + ".xml")
                             .collect(Collectors.joining(",")));
         }
-        return bundle.build();
+        return new CachingInputStream(bundle.build());
     }
 
     private static InputStream getClassByteCode(Class clazz) {

@@ -74,11 +74,7 @@ public class Psm2AsmTest {
     public void testPsm2AsmTransformation() throws Exception {
 
         // Make transformation which returns the trace with the serialized URI's
-        Psm2AsmTransformationTrace psm2AsmTransformationTrace = executePsm2AsmTransformation(
-                psmModel,
-                asmModel,
-                new Slf4jLog(log),
-                calculatePsm2AsmTransformationScriptURI());
+        Psm2AsmTransformationTrace psm2AsmTransformationTrace = executePsm2AsmTransformation(psmModel, asmModel);
 
         psm2AsmTransformationTrace.save(new File(TARGET_TEST_CLASSES, NORTHWIND_PSM_2_ASM_MODEL));
 

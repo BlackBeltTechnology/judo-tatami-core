@@ -191,12 +191,7 @@ public class Rdbms2LiquibaseContentTest {
             rdbmsModel.saveRdbmsModel(RdbmsModel.SaveArguments.rdbmsSaveArgumentsBuilder()
                     .file(new File(TARGET_TEST_CLASSES, format("testContents-%s-rdbms.model", rdbmsModel.getName())))
                     .build());
-            executeRdbms2LiquibaseTransformation(
-                    rdbmsModel,
-                    liquibaseModel,
-                    new Slf4jLog(log),
-                    calculateRdbms2LiquibaseTransformationScriptURI(),
-                    "hsqldb");
+            executeRdbms2LiquibaseTransformation(rdbmsModel, liquibaseModel, "hsqldb");
             liquibaseModel.saveLiquibaseModel(LiquibaseModel.SaveArguments.liquibaseSaveArgumentsBuilder()
                     .file(new File(TARGET_TEST_CLASSES, format("testContents-%s-liquibase.xml", liquibaseModel.getName())))
                     .build());

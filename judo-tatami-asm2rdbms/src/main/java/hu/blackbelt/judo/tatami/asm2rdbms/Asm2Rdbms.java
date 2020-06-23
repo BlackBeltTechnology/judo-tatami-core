@@ -6,9 +6,12 @@ import com.google.common.hash.Hashing;
 import hu.blackbelt.epsilon.runtime.execution.ExecutionContext;
 import hu.blackbelt.epsilon.runtime.execution.api.Log;
 import hu.blackbelt.epsilon.runtime.execution.contexts.EtlExecutionContext;
+import hu.blackbelt.epsilon.runtime.execution.impl.Slf4jLog;
 import hu.blackbelt.judo.meta.asm.runtime.AsmModel;
 import hu.blackbelt.judo.meta.asm.runtime.AsmUtils;
 import hu.blackbelt.judo.meta.rdbms.runtime.RdbmsModel;
+import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.epsilon.common.util.UriUtil;
 
@@ -26,6 +29,7 @@ import static hu.blackbelt.epsilon.runtime.execution.model.excel.ExcelModelConte
 import static hu.blackbelt.judo.tatami.asm2rdbms.Asm2RdbmsTransformationTrace.resolveAsm2RdbmsTrace;
 import static hu.blackbelt.judo.tatami.core.TransformationTraceUtil.*;
 
+@Slf4j
 public class Asm2Rdbms {
 
     public static final String SCRIPT_ROOT_TATAMI_ASM_2_RDBMS = "tatami/asm2rdbms/transformations/";
@@ -44,6 +48,16 @@ public class Asm2Rdbms {
     );
 
     private static MD5Utils MD5_UTILS = new MD5Utils();
+
+
+    public static Asm2RdbmsTransformationTrace executeAsm2RdbmsTransformation(AsmModel asmModel, RdbmsModel rdbmsModel, String dialect) throws Exception {
+        return executeAsm2RdbmsTransformation(asmModel, rdbmsModel, new Slf4jLog(log), calculateAsm2RdbmsTransformationScriptURI(), calculateAsm2RdbmsModelURI(), dialect);
+
+    }
+
+    public static Asm2RdbmsTransformationTrace executeAsm2RdbmsTransformation(AsmModel asmModel, RdbmsModel rdbmsModel, Log log,  String dialect) throws Exception {
+        return executeAsm2RdbmsTransformation(asmModel, rdbmsModel, log, calculateAsm2RdbmsTransformationScriptURI(), calculateAsm2RdbmsModelURI(), dialect);
+    }
 
     public static Asm2RdbmsTransformationTrace executeAsm2RdbmsTransformation(AsmModel asmModel, RdbmsModel rdbmsModel, Log log,
                                                                               java.net.URI scriptUri, java.net.URI excelModelUri, String dialect) throws Exception {
@@ -130,15 +144,16 @@ public class Asm2Rdbms {
                 .trace(resolveAsm2RdbmsTrace(traceModel, asmModel, rdbmsModel)).build();
     }
 
-    public static URI calculateAsm2RdbmsTransformationScriptURI() throws URISyntaxException {
+    public static URI calculateAsm2RdbmsTransformationScriptURI() {
         return calculateURI(SCRIPT_ROOT_TATAMI_ASM_2_RDBMS);
     }
 
-    public static URI calculateAsm2RdbmsModelURI() throws URISyntaxException {
+    public static URI calculateAsm2RdbmsModelURI(){
         return calculateURI(MODEL_ROOT_TATAMI_ASM_2_RDBMS);
     }
 
-    public static URI calculateURI(String path) throws URISyntaxException {
+    @SneakyThrows(URISyntaxException.class)
+    public static URI calculateURI(String path) {
         URI psmRoot = Asm2Rdbms.class.getProtectionDomain().getCodeSource().getLocation().toURI();
         if (psmRoot.toString().endsWith(".jar")) {
             psmRoot = new URI("jar:" + psmRoot.toString() + "!/" + path);

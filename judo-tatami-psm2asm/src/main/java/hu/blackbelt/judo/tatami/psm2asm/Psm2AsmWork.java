@@ -28,6 +28,10 @@ public class Psm2AsmWork extends AbstractTransformationWork {
 		this.transformationScriptRoot = transformationScriptRoot;
 	}
 
+	public Psm2AsmWork(TransformationContext transformationContext) {
+		this(transformationContext, Psm2Asm.calculatePsm2AsmTransformationScriptURI());
+	}
+
 	@Override
 	public void execute() throws Exception {
 

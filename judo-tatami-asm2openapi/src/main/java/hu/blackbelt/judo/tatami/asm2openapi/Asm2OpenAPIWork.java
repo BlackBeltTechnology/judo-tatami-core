@@ -26,6 +26,10 @@ public class Asm2OpenAPIWork extends AbstractTransformationWork {
         this.transformationScriptRoot = transformationScriptRoot;
     }
 
+    public Asm2OpenAPIWork(TransformationContext transformationContext) {
+        this(transformationContext, Asm2OpenAPI.calculateAsm2OpenapiTransformationScriptURI());
+    }
+
     @Override
     public void execute() throws Exception {
         Optional<AsmModel> asmModel = getTransformationContext().getByClass(AsmModel.class);

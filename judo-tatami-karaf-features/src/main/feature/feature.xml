@@ -161,6 +161,7 @@
         <feature>judo-tatami-core</feature>
         <feature dependency="true">tinybundles</feature>
         <feature dependency="true">cxf-jackson</feature>
+        <bundle dependency="true">mvn:hu.blackbelt.bundles.eclipse-jdt-ecj/org.eclipse.jdt.ecj/3.21.0_1</bundle>
         <bundle dependency="true">mvn:hu.blackbelt.judo.framework/compiler-api/${judo-framework-version}</bundle>
         <bundle>mvn:hu.blackbelt.judo.tatami/judo-tatami-asm2jaxrsapi/${project.version}</bundle>
     </feature>
@@ -195,6 +196,7 @@
         <feature>judo-tatami-core</feature>
         <feature>judo-tatami-meta-asm</feature>
         <feature dependency="true">tinybundles</feature>
+        <bundle dependency="true">mvn:hu.blackbelt.bundles.eclipse-jdt-ecj/org.eclipse.jdt.ecj/3.21.0_1</bundle>
         <bundle dependency="true">mvn:hu.blackbelt.judo.framework/compiler-api/${judo-framework-version}</bundle>
         <bundle>mvn:hu.blackbelt.judo.tatami/judo-tatami-asm2sdk/${project.version}</bundle>
     </feature>
@@ -229,11 +231,59 @@
         <feature>judo-tatami-core</feature>
         <feature dependency="true">tinybundles</feature>
         <feature dependency="true">eclipse-xtext</feature>
+        <bundle dependency="true">mvn:hu.blackbelt.bundles.eclipse-jdt-ecj/org.eclipse.jdt.ecj/3.21.0_1</bundle>
         <bundle dependency="true">mvn:hu.blackbelt.judo.framework/compiler-api/${judo-framework-version}</bundle>
         <bundle>mvn:hu.blackbelt.judo.script/hu.blackbelt.judo.script.codegen.generator/${judo-script-codegen-version}</bundle>
         <bundle>mvn:hu.blackbelt.judo.tatami/judo-tatami-script2operation/${project.version}</bundle>
     </feature>
 
+    <feature name="judo-tatami-validation-psm" version="${project.version}" description="JUDO Tatami, PSM Validation API" install="false">
+        <feature>judo-tatami-meta-psm</feature>
+        <feature>judo-tatami-core</feature>
+        <bundle>mvn:hu.blackbelt.judo.tatami/judo-tatami-psm-validation/${project.version}</bundle>
+    </feature>
+
+    <feature name="judo-tatami-validation-asm" version="${project.version}" description="JUDO Tatami, ASM Validation API" install="false">
+        <feature>judo-tatami-meta-asm</feature>
+        <feature>judo-tatami-core</feature>
+        <bundle>mvn:hu.blackbelt.judo.tatami/judo-tatami-asm-validation/${project.version}</bundle>
+    </feature>
+
+    <feature name="judo-tatami-validation-esm" version="${project.version}" description="JUDO Tatami, ESM Validation API" install="false">
+        <feature>judo-tatami-meta-esm</feature>
+        <feature>judo-tatami-core</feature>
+        <bundle>mvn:hu.blackbelt.judo.tatami/judo-tatami-esm-validation/${project.version}</bundle>
+    </feature>
+
+    <feature name="judo-tatami-validation-expression-asm" version="${project.version}" description="JUDO Tatami, Expression ASM Validation API" install="false">
+        <feature>judo-tatami-meta-asm</feature>
+        <feature>judo-tatami-meta-expression</feature>
+        <feature>judo-tatami-core</feature>
+        <feature>judo-tatami-meta-measure</feature>
+        <bundle>mvn:hu.blackbelt.judo.meta/hu.blackbelt.judo.meta.expression.model.adapter.measure/${judo-meta-expression-version}</bundle>
+        <bundle>mvn:hu.blackbelt.judo.meta/hu.blackbelt.judo.meta.expression.model.adapter.asm/${judo-meta-expression-version}</bundle>
+        <bundle>mvn:hu.blackbelt.judo.tatami/judo-tatami-expression-asm-validation/${project.version}</bundle>
+    </feature>
+
+    <feature name="judo-tatami-validation-expression-psm" version="${project.version}" description="JUDO Tatami, Expression PSM Validation API" install="false">
+        <feature>judo-tatami-meta-psm</feature>
+        <feature>judo-tatami-meta-expression</feature>
+        <feature>judo-tatami-core</feature>
+        <feature>judo-tatami-meta-measure</feature>
+        <bundle>mvn:hu.blackbelt.judo.meta/hu.blackbelt.judo.meta.expression.model.adapter.measure/${judo-meta-expression-version}</bundle>
+        <bundle>mvn:hu.blackbelt.judo.meta/hu.blackbelt.judo.meta.expression.model.adapter.psm/${judo-meta-expression-version}</bundle>
+        <bundle>mvn:hu.blackbelt.judo.tatami/judo-tatami-expression-psm-validation/${project.version}</bundle>
+    </feature>
+
+    <feature name="judo-tatami-validation-expression-esm" version="${project.version}" description="JUDO Tatami, Expression ESM Validation API" install="false">
+        <feature>judo-tatami-meta-esm</feature>
+        <feature>judo-tatami-meta-expression</feature>
+        <feature>judo-tatami-core</feature>
+        <feature>judo-tatami-meta-measure</feature>
+        <bundle>mvn:hu.blackbelt.judo.meta/hu.blackbelt.judo.meta.expression.model.adapter.measure/${judo-meta-expression-version}</bundle>
+        <bundle>mvn:hu.blackbelt.judo.meta/hu.blackbelt.judo.meta.expression.model.adapter.esm/${judo-meta-expression-version}</bundle>
+        <bundle>mvn:hu.blackbelt.judo.tatami/judo-tatami-expression-esm-validation/${project.version}</bundle>
+    </feature>
 
     <feature name="judo-tatami-workflow" version="${project.version}" description="JUDO Tatami, OSGi workflow feature" install="false">
         <feature>judo-tatami-core</feature>
@@ -250,6 +300,13 @@
         <feature>judo-tatami-asm2rdbms</feature>
         <feature>judo-tatami-rdbms2liquibase</feature>
         <feature>judo-tatami-script2operation</feature>
+
+        <feature>judo-tatami-validation-asm</feature>
+        <feature>judo-tatami-validation-psm</feature>
+        <feature>judo-tatami-validation-esm</feature>
+        <feature>judo-tatami-validation-expression-asm</feature>
+        <feature>judo-tatami-validation-expression-psm</feature>
+        <feature>judo-tatami-validation-expression-esm</feature>
 
         <bundle>mvn:hu.blackbelt.judo.tatami/judo-tatami-workflow/${project.version}</bundle>
         <bundle>mvn:hu.blackbelt.judo.tatami/judo-tatami-workflow-osgi/${project.version}</bundle>

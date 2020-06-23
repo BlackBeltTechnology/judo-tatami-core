@@ -39,8 +39,7 @@ public class PsmDefaultWorkflowWithCalculatedUriTest {
 	@Test
 	void testDefaultWorkflowWithCalculatedUri() throws URISyntaxException, IOException, PsmValidationException {
 		defaultWorkflow = new PsmDefaultWorkflow(
-				DefaultWorkflowSetupParameters.addTransformerCalculatedUris(
-						DefaultWorkflowSetupParameters.defaultWorkflowSetupParameters())
+						DefaultWorkflowSetupParameters.defaultWorkflowSetupParameters()
 						.psmModel(new Demo().fullDemo())
 						.modelName("northwind")
 						.dialectList(ImmutableList.of("hsqldb", "oracle")));
