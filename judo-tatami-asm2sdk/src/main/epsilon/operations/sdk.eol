@@ -332,23 +332,23 @@ operation genOperationInterface(dto : ASM!EClass, op : ASM!EOperation) : Set {
 		opReturnTemplate =  
 			'Map<String, Object> result = {Call}\n'+
 			'        Collection<Map<String, Object>> outputPayloads = (Collection<Map<String, Object>>) result.get("{ReturnName}");\n' +
-			'        return outputPayloads.stream().map(payload -> SdkUtil.fromPayload({ReturnTypeSingle}.class, payload)).collect(Collectors.toList());';
+			'        return outputPayloads.stream().map(payload -> fromPayload({ReturnTypeSingle}.class, payload)).collect(Collectors.toList());';
 	} else { 
 		opReturnTemplate = 
 			'Map<String, Object> result = {Call}\n'+
 			'        Map<String, Object> outputPayload = (Map<String, Object>) result.get("{ReturnName}");\n' +
-			'        return SdkUtil.fromPayload({ReturnTypeSingle}.class, outputPayload);';
+			'        return fromPayload({ReturnTypeSingle}.class, outputPayload);';
 	}
 	var exchangeThis; 
 	if (opIsBound) {
 		exchangeThis = 'Map<String, Object> thisPayload = (Map<String, Object>) exchange.get("__this");\n' +
-				'        {ThisType} _this = SdkUtil.fromPayload({ThisType}.class, thisPayload);\n';
+				'        {ThisType} _this = fromPayload({ThisType}.class, thisPayload);\n';
 	}
 	var exchangeReturn;
 	var exchangeVariable;
 	if (opHasReturn) {
 		exchangeVariable = '        {ReturnType} result =';
-		exchangeReturn = '        return Payload.map("{ReturnName}", SdkUtil.asMap(result));';
+		exchangeReturn = '        return Payload.map("{ReturnName}", asMap(result));';
 	} else {
 		exchangeVariable = "";
 		exchangeReturn = '        return Payload.empty();';
@@ -356,15 +356,15 @@ operation genOperationInterface(dto : ASM!EClass, op : ASM!EOperation) : Set {
 	var exchangeInput;
 	if (opHasParam) {
 		if (opHasParamMany) {
-			exchangeInput = 'exchange.getAsCollectionPayload("{InputName}").stream().map(payload -> SdkUtil.fromPayload({InputTypeSingle}.class, payload)).collect(Collectors.toList())';
+			exchangeInput = 'exchange.getAsCollectionPayload("{InputName}").stream().map(payload -> fromPayload({InputTypeSingle}.class, payload)).collect(Collectors.toList())';
 		} else {
-			exchangeInput = 'SdkUtil.fromPayload({InputTypeSingle}.class, (Map<String, Object>) exchange.get("{InputName}"))';
+			exchangeInput = 'fromPayload({InputTypeSingle}.class, (Map<String, Object>) exchange.get("{InputName}"))';
 		}
 	} else {
 		exchangeInput = "";
 	}
 	if (opIsBound and opHasParam) {
-		var call = 'dispatcher.callOperation(FQ_NAME, SdkUtil.asMap("__identifier", _this.get__identifier(), "{InputName}", SdkUtil.asMap({InputName})));';
+		var call = 'dispatcher.callOperation(FQ_NAME, asMap("__identifier", _this.get__identifier(), "{InputName}", asMap({InputName})));';
 		if (not opHasReturn) {
 			extendedInterface = "java.util.function.BiConsumer<{ThisType}, {InputType}>";
 			extendedMethod = "void accept({ThisType} _this, {InputType} {InputName})";
@@ -384,7 +384,7 @@ operation genOperationInterface(dto : ASM!EClass, op : ASM!EOperation) : Set {
         }
         		
 	} else if (opIsBound and not opHasParam) {
-		var call= 'dispatcher.callOperation(FQ_NAME, SdkUtil.asMap("__identifier", _this.get__identifier()));';
+		var call= 'dispatcher.callOperation(FQ_NAME, asMap("__identifier", _this.get__identifier()));';
 		if (not opHasReturn) {
 			extendedInterface = "java.util.function.Consumer<{ThisType}>";
 			extendedMethod = "void accept({ThisType} _this)";		
@@ -404,7 +404,7 @@ operation genOperationInterface(dto : ASM!EClass, op : ASM!EOperation) : Set {
 		} 
 	
 	} else if (not opIsBound and opHasParam) {
-		var call = 'dispatcher.callOperation(FQ_NAME, SdkUtil.asMap("{InputName}", SdkUtil.asMap({InputName})));';
+		var call = 'dispatcher.callOperation(FQ_NAME, asMap("{InputName}", asMap({InputName})));';
 		if (not opHasReturn) {
 			extendedInterface = "java.util.function.Consumer<{InputType}>";
 			extendedMethod = "void accept({InputType} {InputName})";
