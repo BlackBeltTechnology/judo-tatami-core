@@ -1,4 +1,4 @@
-package sdk.demo.util;
+package [%= package %];
 
 import java.util.Collection;
 import java.util.HashMap;

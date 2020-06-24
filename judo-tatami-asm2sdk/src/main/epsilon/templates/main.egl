@@ -24,8 +24,7 @@ for (dto in getAllDTOs()) {
     		outputJavaClasses.add(daoInterface);
     	} else if (daoInterface.endsWith(".xml")){
     		outputScrXmls.add(daoInterface);
-    	}
-    	
+    	}    	
 	}
     
     var operations = asmUtils.getAllOperationDeclarations(dto, true);
@@ -38,10 +37,22 @@ for (dto in getAllDTOs()) {
     	for (generatedXml in generatedXmls) {
     		outputScrXmls.add(generatedXml);
     	}
-    }
-    
+	}
 }
 
+for (dto in getAllEntities()) {
+    var operations = asmUtils.getAllOperationDeclarations(dto, true);
+    for (op in operations) {
+    	var generatedFiles = genOperationInterface(dto, op);
+    	for (generatedFile in generatedFiles) {
+    	    	outputJavaClasses.add(generatedFile);
+	   	}
+    	var generatedXmls = genOperationScrXmls(dto, op);
+    	for (generatedXml in generatedXmls) {
+    		outputScrXmls.add(generatedXml);
+    	}
+	}
+}
 
 /*
 // TODO - generate services (not only for exposed services), ASM utils is refactored

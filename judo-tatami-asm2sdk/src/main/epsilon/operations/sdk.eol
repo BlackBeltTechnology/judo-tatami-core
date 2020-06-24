@@ -78,6 +78,11 @@ operation getAllDTOs(): Collection {
     	(asmUtils.isMappedTransferObjectType(class) or not asmUtils.isEntityType(class)));
 }
 
+operation getAllEntities(): Collection {
+    return ASM!EClass.all.select(class | 
+    	(asmUtils.isEntityType(class)));
+}
+
 @cached
 operation getAccessPoints(): Collection {
 	return ASM!EClass.all.select(class | asmUtils.isAccessPoint(class));
@@ -248,19 +253,27 @@ operation genOperationScrXmls(dto : ASM!EClass, op : ASM!EOperation) : Set {
 	var generatedFiles = new Set();
 	var packageName = getOperationJavaPackageName(dto, op);
 	
-	var fileName = getDispatcherWrapperScrXmlFileName(dto, op);	
-	var t = TemplateFactory.load("operation/DispatcherWrapper.scr.xml.egl");
-	t.populate("op", op);
-	t.populate("packageName", packageName);
-	t.generate(fileName);
-	generatedFiles.add(fileName);
+	if (not asmUtils.isEntityType(dto)) {
+		var fileName = getDispatcherWrapperScrXmlFileName(dto, op);	
+		var t = TemplateFactory.load("operation/DispatcherWrapper.scr.xml.egl");
+		t.populate("op", op);
+		t.populate("packageName", packageName);
+		t.generate(fileName);
+		generatedFiles.add(fileName);
+	}
 	
-	fileName = getExchangeFunctionScrXmlFileName(dto, op);	
-	t = TemplateFactory.load("operation/ExchangeFunction.scr.xml.egl");
-	t.populate("op", op);
-	t.populate("packageName", packageName);
-	t.generate(fileName);
-	generatedFiles.add(fileName);
+	if (asmUtils.isEntityType(dto) and asmUtils.isBound(op) or (not asmUtils.isEntityType(dto) and asmUtils.isUnbound(op))) {
+		var t = TemplateFactory.load("operation/ExchangeFunction.scr.xml.egl");
+		if (asmUtils.isEntityType(dto) and asmUtils.isBound(op)) {
+			t.populate("packageName", packageName + ".custom");
+		} else {
+			t.populate("packageName", packageName);
+		}
+		var fileName = getExchangeFunctionScrXmlFileName(dto, op);	
+		t.populate("op", op);
+		t.generate(fileName);
+		generatedFiles.add(fileName);
+	}
 	
 	return generatedFiles;
 }
@@ -306,7 +319,13 @@ operation genOperationInterface(dto : ASM!EClass, op : ASM!EOperation) : Set {
 		map.put("ReturnName", asmUtils.getOutputParameterName(op).get());
 	}
 	if (opIsBound) {
-		map.put("ThisType", dto.getDtoTypeName());
+		if (asmUtils.isEntityType(dto)) {
+			var instanceRepresentation = asmUtils.getExtensionAnnotationValue(op, "instanceRepresentation", false).get();
+			var instanceRepresentationClass =asmUtils.getClassByFQName(instanceRepresentation).get();
+			map.put("ThisType", instanceRepresentationClass.getDtoTypeName());
+		} else {
+			map.put("ThisType", dto.getDtoTypeName());
+		}
 	}
 	var opReturnTemplate;
 	if (opIsMany) { 
@@ -345,7 +364,7 @@ operation genOperationInterface(dto : ASM!EClass, op : ASM!EOperation) : Set {
 		exchangeInput = "";
 	}
 	if (opIsBound and opHasParam) {
-		var call = 'dispatcher.callOperation(FQ_NAME, SdkUtil.asMap("__this", SdkUtil.asMap(_this), "{InputName}", SdkUtil.asMap({InputName})));';
+		var call = 'dispatcher.callOperation(FQ_NAME, SdkUtil.asMap("__identifier", _this.get__identifier(), "{InputName}", SdkUtil.asMap({InputName})));';
 		if (not opHasReturn) {
 			extendedInterface = "java.util.function.BiConsumer<{ThisType}, {InputType}>";
 			extendedMethod = "void accept({ThisType} _this, {InputType} {InputName})";
@@ -365,7 +384,7 @@ operation genOperationInterface(dto : ASM!EClass, op : ASM!EOperation) : Set {
         }
         		
 	} else if (opIsBound and not opHasParam) {
-		var call= 'dispatcher.callOperation(FQ_NAME, SdkUtil.asMap("__this", SdkUtil.asMap(_this)));';
+		var call= 'dispatcher.callOperation(FQ_NAME, SdkUtil.asMap("__identifier", _this.get__identifier()));';
 		if (not opHasReturn) {
 			extendedInterface = "java.util.function.Consumer<{ThisType}>";
 			extendedMethod = "void accept({ThisType} _this)";		
@@ -455,24 +474,50 @@ operation genOperationInterface(dto : ASM!EClass, op : ASM!EOperation) : Set {
     map.put("packageName", getOperationJavaPackageName(dto, op));
      
     var generatedFiles = new Set();
-     
-	var t = TemplateFactory.load("operation/Operation.java.egl");  
-    t.populate("map", map);
-    var fileName = getOperationJavaFileName(map.get("packageName"), op);
-    t.generate(fileName);
-    generatedFiles.add(fileName);
-    
-	var t = TemplateFactory.load("operation/DispatcherWrapper.java.egl");
-    t.populate("map", map);
-    var fileName = getDispatcherWrapperJavaFileName(map.get("packageName")+".wrapper", op);
-    t.generate(fileName);
-    generatedFiles.add(fileName);
-    
-	var t = TemplateFactory.load("operation/ExchangeFunction.java.egl");
-    t.populate("map", map);
-    var fileName = getExchangeFunctionJavaFileName(map.get("packageName")+".exchange", op);
-    t.generate(fileName);
-    generatedFiles.add(fileName);
+       
+    if (asmUtils.isEntityType(dto) and asmUtils.isBound(op)) {
+		var t = TemplateFactory.load("operation/Operation.java.egl");
+		var newMap = new Map();
+		newMap.putAll(map);  
+	    newMap.put("packageName", map.get("packageName")+".custom");
+	    t.populate("map", newMap);
+	    var fileName = getOperationJavaFileName(newMap.get("packageName"), op);
+	    t.generate(fileName);
+	    generatedFiles.add(fileName);
+    }  
+    else {
+    	var t = TemplateFactory.load("operation/Operation.java.egl");  
+	    t.populate("map", map);
+	    var fileName = getOperationJavaFileName(map.get("packageName"), op);
+	    t.generate(fileName);
+	    generatedFiles.add(fileName);
+    } 
+       
+	    
+    if (not asmUtils.isEntityType(dto)) {
+		var t = TemplateFactory.load("operation/DispatcherWrapper.java.egl");
+	    t.populate("map", map);
+	    var fileName = getDispatcherWrapperJavaFileName(map.get("packageName")+".wrapper", op);
+	    t.generate(fileName);
+	    generatedFiles.add(fileName);
+	}
+	
+	if (asmUtils.isEntityType(dto) and asmUtils.isBound(op)) {	    
+		var t = TemplateFactory.load("operation/ExchangeFunction.java.egl");
+		var newMap = new Map();
+		newMap.putAll(map);  
+	    newMap.put("packageName", map.get("packageName")+".custom");
+	    t.populate("map", newMap);
+	    var fileName = getExchangeFunctionJavaFileName(newMap.get("packageName")+".exchange", op);
+	    t.generate(fileName);
+	    generatedFiles.add(fileName);
+    } else if (not asmUtils.isEntityType(dto) and asmUtils.isUnbound(op)) {	    
+		var t = TemplateFactory.load("operation/ExchangeFunction.java.egl");
+	    t.populate("map", map);
+	    var fileName = getExchangeFunctionJavaFileName(map.get("packageName")+".exchange", op);
+	    t.generate(fileName);
+	    generatedFiles.add(fileName);
+    }
     
     return generatedFiles;
 }
