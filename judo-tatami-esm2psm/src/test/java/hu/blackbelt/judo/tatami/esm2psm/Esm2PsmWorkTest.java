@@ -10,6 +10,7 @@ import hu.blackbelt.judo.tatami.core.workflow.work.WorkReport;
 import hu.blackbelt.judo.tatami.core.workflow.work.WorkStatus;
 import hu.blackbelt.model.northwind.esm.NorthwindEsmModel;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
@@ -44,6 +45,7 @@ class Esm2PsmWorkTest {
 		esm2PsmWork = new Esm2PsmWork(transformationContext, calculateEsm2PsmTransformationScriptURI());
 	}
 
+	@Disabled
 	@Test
 	void testSimpleWorkflow() throws IOException, PsmModel.PsmValidationException {
 		WorkFlow workflow = aNewSequentialFlow().execute(esm2PsmWork).build();

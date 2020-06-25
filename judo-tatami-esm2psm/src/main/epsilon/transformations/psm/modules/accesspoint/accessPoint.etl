@@ -186,7 +186,7 @@ rule CreateCreateOperationForExposedGraph
                 if (relation.eContainer.isKindOf(ESM!EntityType)) {
                     rangeAllowed = not relation.isComposition() and relation.memberType <> ESM!MemberType#DERIVED;
                 } else if (relation.eContainer.isKindOf(ESM!TransferObjectType)) {
-                    rangeAllowed = relation.memberType <> ESM!MemberType#DERIVED and (relation.memberType == ESM!MemberType#BOUND implies (not relation.binding.isComposition() and relation.binding.memberType <> ESM!MemberType#DERIVED));
+                    rangeAllowed = relation.memberType <> ESM!MemberType#DERIVED and (relation.memberType == ESM!MemberType#MAPPED implies (not relation.binding.isComposition() and relation.binding.memberType <> ESM!MemberType#DERIVED));
                 }
             } else if (relation.isKindOf(ESM!TwoWayRelationMember)) {
                 rangeAllowed = true;
@@ -236,8 +236,8 @@ rule CreateUpdateOperationForExposedGraph
                     rangeAllowed = not relation.isComposition() and relation.memberType <> ESM!MemberType#DERIVED;
                     containment = relation.isComposition();
                 } else if (relation.eContainer.isKindOf(ESM!TransferObjectType)) {
-                    rangeAllowed = relation.memberType <> ESM!MemberType#DERIVED and (relation.memberType == ESM!MemberType#BOUND implies (not relation.binding.isComposition() and relation.binding.memberType <> ESM!MemberType#DERIVED));
-                    containment = relation.memberType == ESM!MemberType#BOUND and relation.binding.isComposition() and relation.target.mapping.isDefined();
+                    rangeAllowed = relation.memberType <> ESM!MemberType#DERIVED and (relation.memberType == ESM!MemberType#MAPPED implies (not relation.binding.isComposition() and relation.binding.memberType <> ESM!MemberType#DERIVED));
+                    containment = relation.memberType == ESM!MemberType#MAPPED and relation.binding.isComposition() and relation.target.mapping.isDefined();
                 }
             } else if (relation.isKindOf(ESM!TwoWayRelationMember)) {
                 rangeAllowed = true;
@@ -246,7 +246,7 @@ rule CreateUpdateOperationForExposedGraph
             var entityPartner;
             if (relation.isKindOf(ESM!TwoWayRelationMember)) {
                 entityPartner = relation.partner;
-            } else if (relation.memberType == ESM!MemberType#BOUND and relation.binding.isKindOf(ESM!TwoWayRelationMember)) {
+            } else if (relation.memberType == ESM!MemberType#MAPPED and relation.binding.isKindOf(ESM!TwoWayRelationMember)) {
                 entityPartner = relation.binding.partner;
             }
 

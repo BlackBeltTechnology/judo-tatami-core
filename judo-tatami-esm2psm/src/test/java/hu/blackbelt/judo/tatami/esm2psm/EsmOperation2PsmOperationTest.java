@@ -4,7 +4,8 @@ import hu.blackbelt.epsilon.runtime.execution.api.Log;
 import hu.blackbelt.epsilon.runtime.execution.impl.Slf4jLog;
 import hu.blackbelt.judo.meta.esm.accesspoint.ActorType;
 import hu.blackbelt.judo.meta.esm.namespace.Model;
-import hu.blackbelt.judo.meta.esm.operation.OperationModifier;
+import hu.blackbelt.judo.meta.esm.operation.Operation;
+import hu.blackbelt.judo.meta.esm.operation.OperationType;
 import hu.blackbelt.judo.meta.esm.operation.util.builder.OperationBuilder;
 import hu.blackbelt.judo.meta.esm.runtime.EsmModel;
 import hu.blackbelt.judo.meta.esm.runtime.EsmUtils;
@@ -48,6 +49,8 @@ import static hu.blackbelt.judo.meta.esm.runtime.EsmModel.buildEsmModel;
 import static hu.blackbelt.judo.meta.esm.structure.util.builder.StructureBuilders.*;
 import static hu.blackbelt.judo.meta.psm.PsmEpsilonValidator.calculatePsmValidationScriptURI;
 import static hu.blackbelt.judo.meta.psm.PsmEpsilonValidator.validatePsm;
+import static hu.blackbelt.judo.meta.esm.runtime.EsmEpsilonValidator.validateEsm;
+import static hu.blackbelt.judo.meta.esm.runtime.EsmEpsilonValidator.calculateEsmValidationScriptURI;
 import static hu.blackbelt.judo.meta.psm.runtime.PsmModel.SaveArguments.psmSaveArgumentsBuilder;
 import static hu.blackbelt.judo.meta.psm.runtime.PsmModel.buildPsmModel;
 import static hu.blackbelt.judo.tatami.esm2psm.Esm2Psm.calculateEsm2PsmTransformationScriptURI;
@@ -107,6 +110,9 @@ public class EsmOperation2PsmOperationTest {
     }
 
     private void transform() throws Exception {
+    	assertTrue(esmModel.isValid());
+    	validateEsm(new Slf4jLog(log), esmModel, calculateEsmValidationScriptURI());
+    	
         // Make transformation which returns the trace with the serialized URI's
         esm2PsmTransformationTrace = executeEsm2PsmTransformation(esmModel, psmModel, new Slf4jLog(log),
                 calculateEsm2PsmTransformationScriptURI());
@@ -213,7 +219,7 @@ public class EsmOperation2PsmOperationTest {
                         inputParameterType, outputParameterType, fault1Type, fault2Type).build())
                 .withOperations(parameterDecorator(newOperationBuilder()
                                 .withName(STATIC_OPERATION_NAME)
-                                .withModifier(OperationModifier.STATIC)
+                                .withOperationType(OperationType.STATIC)
                                 .withBinding("")
                                 .withBody(body),
                         inputParameterType, outputParameterType, fault1Type, fault2Type).build())
@@ -225,13 +231,13 @@ public class EsmOperation2PsmOperationTest {
                         .withName(ABSTRACT_OPERATION_NAME_WITH_BODY)
                         .withBinding("")
                         .withBody(body)
-                        .withModifier(OperationModifier.ABSTRACT)
+                        .withOperationType(OperationType.ABSTRACT)
                         .build())
                 .withOperations(newOperationBuilder()
                         .withName(ABSTRACT_OPERATION_NAME_WITH_CUSTOMIMPLEMENTATION)
                         .withBinding("")
                         .withCustomImplementation(true)
-                        .withModifier(OperationModifier.ABSTRACT)
+                        .withOperationType(OperationType.ABSTRACT)
                         .build())
                 .build();
         abstractEntityType.setMapping(newMappingBuilder().withTarget(abstractEntityType).build());
@@ -240,35 +246,23 @@ public class EsmOperation2PsmOperationTest {
                 .withMapping(newMappingBuilder().withTarget(entityType).build())
                 .withOperations(parameterDecorator(newOperationBuilder()
                                 .withName(BOUND_OPERATION_NAME_IN_MAPPED_TRANSFER_OBJECT_TYPE)
-                                .withBound(true)
-                                .withBinding(BOUND_OPERATION_NAME),
-                        inputParameterType, outputParameterType, fault1Type, fault2Type).build())
-                .withOperations(parameterDecorator(newOperationBuilder()
-                                .withName(STATIC_OPERATION_NAME_IN_MAPPED_TRANSFER_OBJECT_TYPE)
-                                .withModifier(OperationModifier.STATIC)
-                                .withBinding("")
-                                .withBound(true)
-                                .withBinding(MODEL_NAME + EsmUtils.NAMESPACE_SEPARATOR + ENTITY_TYPE_NAME + EsmUtils.OPERATION_SEPARATOR + STATIC_OPERATION_NAME),
+                                .withOperationType(OperationType.MAPPED)
+                                .withBinding(BOUND_OPERATION_NAME)
+                                .withBody(""),
                         inputParameterType, outputParameterType, fault1Type, fault2Type).build())
                 .build();
-
+        
         final TransferObjectType unmappedTransferObjectType = newTransferObjectTypeBuilder().withName(UNMAPPED_TRANSFER_OBJECT_TYPE_NAME)
                 .withOperations(parameterDecorator(newOperationBuilder()
-                                .withName(STATIC_REFERENCING_OPERATION_NAME_IN_UNMAPPED_TRANSFER_OBJECT_TYPE)
-                                .withModifier(OperationModifier.STATIC)
-                                .withBinding("")
-                                .withBound(true)
-                                .withBinding(MODEL_NAME + EsmUtils.NAMESPACE_SEPARATOR + ENTITY_TYPE_NAME + EsmUtils.OPERATION_SEPARATOR + STATIC_OPERATION_NAME),
-                        inputParameterType, outputParameterType, fault1Type, fault2Type).build())
-                .withOperations(parameterDecorator(newOperationBuilder()
                                 .withName(STATIC_OPERATION_NAME_IN_UNMAPPED_TRANSFER_OBJECT_TYPE)
-                                .withModifier(OperationModifier.STATIC)
+                                .withOperationType(OperationType.STATIC)
                                 .withBinding("")
                                 .withBody(body),
                         inputParameterType, outputParameterType, fault1Type, fault2Type).build())
                 .build();
 
         final Model model = newModelBuilder().withName(MODEL_NAME).build();
+        
         model.getElements().addAll(Arrays.asList(entityType, abstractEntityType, mappedTransferObjectType, unmappedTransferObjectType, inputParameterType, outputParameterType, fault1Type, fault2Type));
 
         esmModel.addContent(model);
@@ -297,14 +291,12 @@ public class EsmOperation2PsmOperationTest {
                 .findAny();
         assertTrue(m.isPresent());
         assertTrue(m.get().getOperations().stream().anyMatch(o -> BOUND_OPERATION_NAME_IN_MAPPED_TRANSFER_OBJECT_TYPE.equals(o.getName()) && EXPECTED_INPUT_AND_OUTPUT_PARAMETERS.test(o)));
-        assertTrue(m.get().getOperations().stream().anyMatch(o -> STATIC_OPERATION_NAME_IN_MAPPED_TRANSFER_OBJECT_TYPE.equals(o.getName()) && EXPECTED_INPUT_AND_OUTPUT_PARAMETERS.test(o)));
 
         final Optional<hu.blackbelt.judo.meta.psm.service.UnmappedTransferObjectType> u = allPsm(hu.blackbelt.judo.meta.psm.service.UnmappedTransferObjectType.class)
                 .filter(t -> UNMAPPED_TRANSFER_OBJECT_TYPE_NAME.equals(t.getName()))
                 .findAny();
         assertTrue(u.isPresent());
         assertTrue(u.get().getOperations().stream().anyMatch(o -> STATIC_OPERATION_NAME_IN_UNMAPPED_TRANSFER_OBJECT_TYPE.equals(o.getName()) && EXPECTED_INPUT_AND_OUTPUT_PARAMETERS.test(o)));
-        assertTrue(u.get().getOperations().stream().anyMatch(o -> STATIC_REFERENCING_OPERATION_NAME_IN_UNMAPPED_TRANSFER_OBJECT_TYPE.equals(o.getName()) && EXPECTED_INPUT_AND_OUTPUT_PARAMETERS.test(o)));
 
         final Optional<hu.blackbelt.judo.meta.psm.service.MappedTransferObjectType> detaultE = allPsm(hu.blackbelt.judo.meta.psm.service.MappedTransferObjectType.class)
                 .filter(t -> ENTITY_TYPE_NAME.equals(t.getName()))
@@ -494,7 +486,7 @@ public class EsmOperation2PsmOperationTest {
                 .withName("Initializer1")
                 .withOperations(newOperationBuilder()
                         .withName("run")
-                        .withModifier(OperationModifier.STATIC)
+                        .withOperationType(OperationType.STATIC)
                         .withBody("// TODO")
                         .withBinding("")
                         .withInitializer(true)
@@ -505,7 +497,7 @@ public class EsmOperation2PsmOperationTest {
                 .withName("Initializer2")
                 .withOperations(newOperationBuilder()
                         .withName("run")
-                        .withModifier(OperationModifier.STATIC)
+                        .withOperationType(OperationType.STATIC)
                         .withBody("// TODO")
                         .withBinding("")
                         .withInitializer(true)
@@ -516,7 +508,7 @@ public class EsmOperation2PsmOperationTest {
                 .withName("NonInitializer1")
                 .withOperations(newOperationBuilder()
                         .withName("run")
-                        .withModifier(OperationModifier.STATIC)
+                        .withOperationType(OperationType.STATIC)
                         .withBody("// TODO")
                         .withBinding("")
                         .build())
@@ -526,7 +518,7 @@ public class EsmOperation2PsmOperationTest {
                 .withName("NonInitializer2")
                 .withOperations(newOperationBuilder()
                         .withName("run")
-                        .withModifier(OperationModifier.STATIC)
+                        .withOperationType(OperationType.STATIC)
                         .withBody("// TODO")
                         .withBinding("")
                         .build())
