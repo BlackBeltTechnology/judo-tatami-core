@@ -39,7 +39,6 @@ class EsmValidationWorkTest {
 		esmValidationWork = new EsmValidationWork(transformationContext);
 	}
 
-	@Disabled
 	@Test
 	void testSimpleWorkflow() {
 		WorkFlow workflow = aNewSequentialFlow().execute(esmValidationWork).build();

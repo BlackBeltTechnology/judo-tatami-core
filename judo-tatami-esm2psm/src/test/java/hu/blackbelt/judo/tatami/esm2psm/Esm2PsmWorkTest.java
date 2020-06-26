@@ -45,7 +45,6 @@ class Esm2PsmWorkTest {
 		esm2PsmWork = new Esm2PsmWork(transformationContext, calculateEsm2PsmTransformationScriptURI());
 	}
 
-	@Disabled
 	@Test
 	void testSimpleWorkflow() throws IOException, PsmModel.PsmValidationException {
 		WorkFlow workflow = aNewSequentialFlow().execute(esm2PsmWork).build();
