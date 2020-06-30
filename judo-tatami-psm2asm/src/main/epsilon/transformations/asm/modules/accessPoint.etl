@@ -67,10 +67,10 @@ rule CreateExposedGraphReferenceAnnotation
         s.asmEquivalent().eAnnotations.add(t);
 }
 
-rule CreateExposedGraphReferenceBinding
+rule CreateNavigationReferenceBinding
     transform s : JUDOPSM!TransferObjectRelation
     to t : ASM!EAnnotation {
-        guard: s.isExposedGraph() and s.binding.isDefined() and s.binding.isKindOf(JUDOPSM!ReferenceAccessor)
+        guard: s.eContainer().isKindOf(JUDOPSM!UnmappedTransferObjectType) and s.binding.isDefined() and s.binding.isKindOf(JUDOPSM!ReferenceAccessor)
 
         t.source = asmUtils.getAnnotationUri("expression");
 
