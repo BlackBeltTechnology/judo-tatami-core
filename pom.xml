@@ -54,7 +54,7 @@
 
         <epsilon-runtime-version>1.2.2</epsilon-runtime-version>
 
-        <judo-framework-version>2.0.0.20200619_151750_f48a55c_develop</judo-framework-version>
+        <judo-framework-version>2.0.0.20200629_214515_fb8a017_develop</judo-framework-version>
 
         <!-- Model versions -->
         <judo-meta-rdbms-version>1.0.0.20200619_154921_900fc24_develop</judo-meta-rdbms-version>
@@ -73,7 +73,7 @@
         <judo-dispatcher-api-version>1.0.0</judo-dispatcher-api-version>
         <judo-script-codegen-version>1.1.0.20200626_104906_85a3462_feature_JNG_1484_fix_expression_builder_and_model_adapter</judo-script-codegen-version>
 
-        <structured-map-proxy-version>1.0.1</structured-map-proxy-version>
+        <structured-map-proxy-version>1.0.3</structured-map-proxy-version>
         <judo-operation-utils-version>1.1.0.20200424_162743_fecf37e_develop</judo-operation-utils-version>
 
 
@@ -98,7 +98,7 @@
         <emf-mapping-ecore2xml>2.11.0</emf-mapping-ecore2xml>
 
         <cxf-version>3.3.6</cxf-version>
-        <osgi-utils-version>1.0.7</osgi-utils-version>
+        <osgi-utils-version>1.0.10</osgi-utils-version>
         <bouncycastle-karaf-features-version>1.61.2</bouncycastle-karaf-features-version>
         <tinybundles-karaf-features-version>1.0.0</tinybundles-karaf-features-version>
         <google-karaf-features-version>1.0.5</google-karaf-features-version>
@@ -172,7 +172,7 @@
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
-            <version>20.0</version>
+            <version>27.1-jre</version>
         </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>

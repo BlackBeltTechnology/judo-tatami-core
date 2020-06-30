@@ -7,18 +7,21 @@
     <feature name="judo-tatami-meta-asm" version="${project.version}" description="JUDO Tatami, Architecture Specific Model " install="false">
         <feature dependency="true">epsilon-runtime</feature>
         <feature dependency="true">osgi-utils</feature>
+        <feature dependency="true">guava-27</feature>
         <bundle>mvn:hu.blackbelt.judo.meta/hu.blackbelt.judo.meta.asm.osgi/${judo-meta-asm-version}</bundle>
     </feature>
 
     <feature name="judo-tatami-meta-esm" version="${project.version}" description="JUDO Tatami, Editor Model " install="false">
         <feature dependency="true">epsilon-runtime</feature>
         <feature dependency="true">osgi-utils</feature>
+        <feature dependency="true">guava-27</feature>
         <bundle>mvn:hu.blackbelt.judo.meta/hu.blackbelt.judo.meta.esm.osgi/${judo-meta-esm-version}</bundle>
     </feature>
 
    <feature name="judo-tatami-meta-psm" version="${project.version}" description="JUDO Tatami, Platform Specific Model " install="false">
         <feature dependency="true">epsilon-runtime</feature>
         <feature dependency="true">osgi-utils</feature>
+        <feature dependency="true">guava-27</feature>
         <bundle>mvn:hu.blackbelt.judo.meta/hu.blackbelt.judo.meta.psm.osgi/${judo-meta-psm-version}</bundle>
    </feature>
 
@@ -27,12 +30,14 @@
         <feature dependency="true">eclipse-xtext</feature>
         <feature dependency="true">epsilon-runtime</feature>
         <feature dependency="true">osgi-utils</feature>
+        <feature dependency="true">guava-27</feature>
         <bundle>mvn:hu.blackbelt.judo.meta/hu.blackbelt.judo.meta.jql.osgi/${judo-meta-jql-version}</bundle>
     </feature>
 
     <feature name="judo-tatami-meta-expression" version="${project.version}" description="JUDO Tatami, Expression Model " install="false">
         <feature dependency="true">epsilon-runtime</feature>
         <feature dependency="true">osgi-utils</feature>
+        <feature dependency="true">guava-27</feature>
         <bundle>mvn:hu.blackbelt.judo.meta/hu.blackbelt.judo.meta.expression.osgi/${judo-meta-expression-version}</bundle>
         <bundle>mvn:hu.blackbelt.judo.meta/hu.blackbelt.judo.meta.expression.model.adapter.measure/${judo-meta-expression-version}</bundle>
     </feature>
@@ -40,6 +45,7 @@
     <feature name="judo-tatami-meta-expression-asm" version="${project.version}" description="JUDO Tatami, Expression Model for ASM" install="false">
         <feature>judo-tatami-meta-expression</feature>
         <feature>judo-tatami-meta-measure</feature>
+        <feature dependency="true">guava-27</feature>
         <bundle>mvn:hu.blackbelt.judo.meta/hu.blackbelt.judo.meta.expression.model.adapter.asm/${judo-meta-expression-version}</bundle>
         <bundle>mvn:hu.blackbelt.judo.meta/hu.blackbelt.judo.meta.expression.builder.jql/${judo-meta-expression-version}</bundle>
         <bundle>mvn:hu.blackbelt.judo.meta/hu.blackbelt.judo.meta.expression.builder.jql.asm/${judo-meta-expression-version}</bundle>
@@ -47,18 +53,21 @@
 
     <feature name="judo-tatami-meta-expression-psm" version="${project.version}" description="JUDO Tatami, Expression Model for PSM" install="false">
         <feature>judo-tatami-meta-expression</feature>
+        <feature dependency="true">guava-27</feature>
         <bundle>mvn:hu.blackbelt.judo.meta/hu.blackbelt.judo.meta.expression.model.adapter.psm/${judo-meta-expression-version}</bundle>
     </feature>
 
     <feature name="judo-tatami-meta-measure" version="${project.version}" description="JUDO Tatami, Measure Model " install="false">
         <feature dependency="true">epsilon-runtime</feature>
         <feature dependency="true">osgi-utils</feature>
+        <feature dependency="true">guava-27</feature>
         <bundle>mvn:hu.blackbelt.judo.meta/hu.blackbelt.judo.meta.measure.osgi/${judo-meta-measure-version}</bundle>
     </feature>
 
     <feature name="judo-tatami-meta-openapi" version="${project.version}" description="JUDO Tatami, OpenAPI Model " install="false">
         <feature dependency="true">epsilon-runtime</feature>
         <feature dependency="true">osgi-utils</feature>
+        <feature dependency="true">guava-27</feature>
         <feature dependency="true">cxf-rs-description-swagger2</feature>
         <bundle>mvn:hu.blackbelt.judo.meta/hu.blackbelt.judo.meta.openapi.osgi/${judo-meta-openapi-version}</bundle>
     </feature>
@@ -66,12 +75,14 @@
     <feature name="judo-tatami-meta-rdbms" version="${project.version}" description="JUDO Tatami, RDBMS Model " install="false">
         <feature dependency="true">epsilon-runtime</feature>
         <feature dependency="true">osgi-utils</feature>
+        <feature dependency="true">guava-27</feature>
         <bundle>mvn:hu.blackbelt.judo.meta/hu.blackbelt.judo.meta.rdbms.osgi/${judo-meta-rdbms-version}</bundle>
     </feature>
 
     <feature name="judo-tatami-meta-liquibase" version="${project.version}" description="JUDO Tatami, Liquibase Model " install="false">
         <feature dependency="true">epsilon-runtime</feature>
         <feature dependency="true">osgi-utils</feature>
+        <feature dependency="true">guava-27</feature>
         <bundle>mvn:hu.blackbelt.judo.meta/hu.blackbelt.judo.meta.liquibase.osgi/${judo-meta-liquibase-version}</bundle>
     </feature>
 
@@ -88,6 +99,7 @@
         <feature>judo-tatami-meta-expression</feature>
         <feature dependency="true">epsilon-runtime</feature>
         <feature dependency="true">osgi-utils</feature>
+        <feature dependency="true">guava-27</feature>
         <bundle>mvn:hu.blackbelt.judo.meta/hu.blackbelt.judo.meta.script.osgi/${judo-meta-script-version}</bundle>
     </feature>
 
@@ -102,6 +114,7 @@
     <feature name="judo-tatami-meta-ui" version="${project.version}" description="JUDO Tatami, UI Model " install="false">
         <feature dependency="true">epsilon-runtime</feature>
         <feature dependency="true">osgi-utils</feature>
+        <feature dependency="true">guava-27</feature>
         <bundle>mvn:hu.blackbelt.judo.meta/hu.blackbelt.judo.meta.ui.osgi/${judo-meta-ui-version}</bundle>
     </feature>
 
@@ -122,6 +135,7 @@
 
     <feature name="judo-tatami-core" version="${project.version}" description="JUDO Tatami, Core" install="false">
         <feature dependency="true">guava</feature>
+        <feature dependency="true">guava-27</feature>
         <feature dependency="true" version="2.12.0">eclipse-emf</feature>
         <feature dependency="true">epsilon-runtime</feature>
         <feature>judo-tatami-meta-asm</feature>
