@@ -574,6 +574,12 @@
                 <version>1.1.0-SNAPSHOT</version>
             </dependency>
 
+            <dependency>
+                <groupId>hu.blackbelt.judo.tatami</groupId>
+                <artifactId>judo-tatami-openapi2restclient</artifactId>
+                <version>1.1.0-SNAPSHOT</version>
+            </dependency>
+
 
             <dependency>
                 <groupId>org.hamcrest</groupId>
@@ -823,6 +829,7 @@
                 <module>judo-tatami-asm2script</module>
                 <module>judo-tatami-asm2sdk</module>
                 <module>judo-tatami-script2operation</module>
+                <module>judo-tatami-openapi2restclient</module>
                 <module>judo-tatami-esm-validation</module>
                 <module>judo-tatami-psm-validation</module>
                 <module>judo-tatami-asm-validation</module>
