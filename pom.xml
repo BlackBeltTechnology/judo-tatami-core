@@ -54,31 +54,31 @@
 
         <epsilon-runtime-version>1.2.2</epsilon-runtime-version>
 
-        <judo-framework-version>2.0.0.20200619_151750_f48a55c_develop</judo-framework-version>
+        <judo-framework-version>2.0.0.20200629_214515_fb8a017_develop</judo-framework-version>
 
         <!-- Model versions -->
-        <judo-meta-rdbms-version>1.0.0-SNAPSHOT</judo-meta-rdbms-version>
-        <judo-meta-esm-version>1.1.0-SNAPSHOT</judo-meta-esm-version>
-        <judo-meta-psm-version>1.1.0.20200623_125402_dce57a3_develop</judo-meta-psm-version>
-        <judo-meta-jql-version>1.0.1-SNAPSHOT</judo-meta-jql-version>
-        <judo-meta-jcl-version>1.0.1-SNAPSHOT</judo-meta-jcl-version>
-        <judo-meta-script-version>1.0.1-SNAPSHOT</judo-meta-script-version>
-        <judo-meta-asm-version>1.1.0-SNAPSHOT</judo-meta-asm-version>
-        <judo-meta-expression-version>1.0.1-SNAPSHOT</judo-meta-expression-version>
-        <judo-meta-measure-version>1.0.0-SNAPSHOT</judo-meta-measure-version>
-        <judo-meta-liquibase-version>1.0.0-SNAPSHOT</judo-meta-liquibase-version>
-        <judo-meta-openapi-version>1.0.0-SNAPSHOT</judo-meta-openapi-version>
-        <judo-meta-ui-version>1.0.0.20200619_164210_a41cc45_develop</judo-meta-ui-version>
-        <judo-dao-api-version>1.0.0</judo-dao-api-version>
-        <judo-dispatcher-api-version>1.0.0</judo-dispatcher-api-version>
-        <judo-script-codegen-version>1.1.0-SNAPSHOT</judo-script-codegen-version>
+        <judo-meta-rdbms-version>1.0.0.20200630_015226_bc49ed0_develop</judo-meta-rdbms-version>
+        <judo-meta-esm-version>1.1.0.20200629_201342_8f1e8ac_develop</judo-meta-esm-version>
+        <judo-meta-psm-version>1.1.0.20200629_201844_9705490_develop</judo-meta-psm-version>
+        <judo-meta-jql-version>1.0.1.20200630_013651_8437b63_develop</judo-meta-jql-version>
+        <judo-meta-jcl-version>1.0.1.20200630_021012_eece377_develop</judo-meta-jcl-version>
+        <judo-meta-script-version>1.0.1.20200630_023317_6c93873_develop</judo-meta-script-version>
+        <judo-meta-asm-version>1.1.0.20200630_013620_4eb0b43_develop</judo-meta-asm-version>
+        <judo-meta-expression-version>1.0.1.20200630_020239_546d239_develop</judo-meta-expression-version>
+        <judo-meta-measure-version>1.0.0.20200630_014254_d7bdaac_develop</judo-meta-measure-version>
+        <judo-meta-liquibase-version>1.0.0.20200630_014528_bff1ed7_develop</judo-meta-liquibase-version>
+        <judo-meta-openapi-version>1.0.0.20200630_014538_0c133d9_develop</judo-meta-openapi-version>
+        <judo-meta-ui-version>1.0.0.20200630_022113_f0e320a_develop</judo-meta-ui-version>
+        <judo-dao-api-version>1.0.1</judo-dao-api-version>
+        <judo-dispatcher-api-version>1.0.1</judo-dispatcher-api-version>
+        <judo-script-codegen-version>1.1.0.20200630_025206_34b8892_develop</judo-script-codegen-version>
 
-        <structured-map-proxy-version>1.0.1</structured-map-proxy-version>
-        <judo-operation-utils-version>1.1.0.20200424_162743_fecf37e_develop</judo-operation-utils-version>
+        <structured-map-proxy-version>1.0.3</structured-map-proxy-version>
+        <judo-operation-utils-version>1.1.0.20200629_130216_d2ee04f_develop</judo-operation-utils-version>
 
 
         <!-- We use older version of plugin to avoid chicked egg problem -->
-        <judo-tatami-maven-plugin-version>1.1.0.20200619_142013_2dbccbf6_plugin</judo-tatami-maven-plugin-version>
+        <judo-tatami-maven-plugin-version>1.1.0.20200424_124359_3ac33fac_plugin</judo-tatami-maven-plugin-version>
 
         <!-- Xtend / Xcore -->
         <emf-version>2.18.0</emf-version>
@@ -98,10 +98,10 @@
         <emf-mapping-ecore2xml>2.11.0</emf-mapping-ecore2xml>
 
         <cxf-version>3.3.6</cxf-version>
-        <osgi-utils-version>1.0.7</osgi-utils-version>
+        <osgi-utils-version>1.0.10</osgi-utils-version>
         <bouncycastle-karaf-features-version>1.61.2</bouncycastle-karaf-features-version>
         <tinybundles-karaf-features-version>1.0.0</tinybundles-karaf-features-version>
-        <google-karaf-features-version>1.0.5</google-karaf-features-version>
+        <google-karaf-features-version>1.0.6</google-karaf-features-version>
         <eclipse-emf-karaf-features-version>1.0.1</eclipse-emf-karaf-features-version>
         <eclipse-epsilon-karaf-features-version>1.0.3</eclipse-epsilon-karaf-features-version>
         <eclipse-xtext-karaf-features-version>1.0.2</eclipse-xtext-karaf-features-version>
@@ -109,7 +109,7 @@
         <apache-commons-karaf-features-version>1.0.5</apache-commons-karaf-features-version>
         <apache-poi-karaf-features-version>1.0.2</apache-poi-karaf-features-version>
         <apache-httpclient-karaf-features-version>1.0.0</apache-httpclient-karaf-features-version>
-        <cxf-jaxrs-application-manager-version>0.5.0</cxf-jaxrs-application-manager-version>
+        <cxf-jaxrs-application-manager-version>0.6.0</cxf-jaxrs-application-manager-version>
         <log4j.configuration>log4j.properties</log4j.configuration>
     </properties>
 
@@ -172,7 +172,7 @@
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
-            <version>20.0</version>
+            <version>27.1-jre</version>
         </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
