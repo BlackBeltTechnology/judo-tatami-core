@@ -32,12 +32,17 @@ import java.util.stream.StreamSupport;
 
 import static hu.blackbelt.judo.meta.esm.namespace.util.builder.NamespaceBuilders.newModelBuilder;
 import static hu.blackbelt.judo.meta.esm.measure.util.builder.MeasureBuilders.*;
+import static hu.blackbelt.judo.meta.esm.runtime.EsmEpsilonValidator.calculateEsmValidationScriptURI;
+import static hu.blackbelt.judo.meta.esm.runtime.EsmEpsilonValidator.validateEsm;
 import static hu.blackbelt.judo.meta.esm.runtime.EsmModel.buildEsmModel;
 import static hu.blackbelt.judo.meta.psm.runtime.PsmModel.SaveArguments.psmSaveArgumentsBuilder;
+import static hu.blackbelt.judo.meta.psm.PsmEpsilonValidator.calculatePsmValidationScriptURI;
+import static hu.blackbelt.judo.meta.psm.PsmEpsilonValidator.validatePsm;
 import static hu.blackbelt.judo.meta.psm.runtime.PsmModel.buildPsmModel;
 import static hu.blackbelt.judo.tatami.esm2psm.Esm2Psm.calculateEsm2PsmTransformationScriptURI;
 import static hu.blackbelt.judo.tatami.esm2psm.Esm2Psm.executeEsm2PsmTransformation;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @Slf4j
@@ -98,13 +103,19 @@ public class EsmMeasure2PsmMeasureTest {
     }
 
     private void transform() throws Exception {
+    	
+    	assertTrue(esmModel.isValid());
+    	validateEsm(new Slf4jLog(log), esmModel, calculateEsmValidationScriptURI());
+
         // Make transformation which returns the trace with the serialized URI's
         esm2PsmTransformationTrace = executeEsm2PsmTransformation(
                 esmModel,
                 psmModel,
                 new Slf4jLog(log),
                 calculateEsm2PsmTransformationScriptURI());
-
+        
+        assertTrue(psmModel.isValid());
+        validatePsm(new Slf4jLog(log), psmModel, calculatePsmValidationScriptURI());
     }
 
     @Test
@@ -134,17 +145,25 @@ public class EsmMeasure2PsmMeasureTest {
     void testCreateDerivedMeasure() throws Exception {
         testName = "CreateDerivedMeasure";
         
-        Unit unit = newUnitBuilder().withName("base").withSymbol("b").build();
-        MeasureDefinitionTerm term = newMeasureDefinitionTermBuilder().withExponent(5).withUnit(unit).build();
+        Unit unit1 = newUnitBuilder().withName("unit1").withSymbol("u1").build();
+        MeasureDefinitionTerm term1 = newMeasureDefinitionTermBuilder().withExponent(1).withUnit(unit1).build();
+        Unit unit2 = newUnitBuilder().withName("unit2").withSymbol("u2").build();
+        MeasureDefinitionTerm term2 = newMeasureDefinitionTermBuilder().withExponent(-1).withUnit(unit2).build();
         
-        Measure measure = newMeasureBuilder().withName("measure").withSymbol("m")
-        		.withTerms(term)
-        		.withUnits(unit)
+        Measure measure1 = newMeasureBuilder().withName("measure1").withSymbol("m1")
+        		.withUnits(unit1)
+        		.build();
+        Measure measure2 = newMeasureBuilder().withName("measure2").withSymbol("m2")
+        		.withUnits(unit2)
+        		.build();
+        
+        Measure derivedMeasure = newMeasureBuilder().withName("dmeasure").withSymbol("dm")
+        		.withTerms(ImmutableList.of(term1,term2))
         		.build();
         
         final Model model = newModelBuilder()
                 .withName("TestModel")
-                .withElements(measure)
+                .withElements(ImmutableList.of(measure1,measure2,derivedMeasure))
                 .build();
 
         esmModel.addContent(model);
@@ -154,8 +173,15 @@ public class EsmMeasure2PsmMeasureTest {
                 .findAny();
 
         assertTrue(psmDerivedMeasure.isPresent());
-        assertThat(psmDerivedMeasure.get().getName(), IsEqual.equalTo(measure.getName()));
-        assertThat(psmDerivedMeasure.get().getSymbol(), IsEqual.equalTo(measure.getSymbol()));
+        assertThat(psmDerivedMeasure.get().getName(), IsEqual.equalTo(derivedMeasure.getName()));
+        assertThat(psmDerivedMeasure.get().getSymbol(), IsEqual.equalTo(derivedMeasure.getSymbol()));
+        assertEquals(2, psmDerivedMeasure.get().getTerms().size());
+        
+        final hu.blackbelt.judo.meta.psm.measure.MeasureDefinitionTerm psmTerm1 = psmDerivedMeasure.get().getTerms().get(0);
+        final hu.blackbelt.judo.meta.psm.measure.MeasureDefinitionTerm psmTerm2 = psmDerivedMeasure.get().getTerms().get(1);
+        assertTrue((psmTerm1.getExponent() == 1 && psmTerm2.getExponent() == -1) || (psmTerm1.getExponent() == -1 && psmTerm2.getExponent() == 1));
+        assertTrue((psmTerm1.getUnit().getName().equals(unit1.getName()) && psmTerm2.getUnit().getName().equals(unit2.getName()))
+        		|| (psmTerm1.getUnit().getName().equals(unit2.getName()) && psmTerm2.getUnit().getName().equals(unit1.getName())));
     }
     
     @Test
@@ -167,40 +193,6 @@ public class EsmMeasure2PsmMeasureTest {
         			.withRateDividend(2)
         			.build();
         Measure measure = newMeasureBuilder().withName("measure").withSymbol("m")
-        		.withUnits(unit)
-        		.build();
-        
-        final Model model = newModelBuilder()
-                .withName("TestModel")
-                .withElements(measure)
-                .build();
-
-        esmModel.addContent(model);
-        transform();
-
-        final Optional<hu.blackbelt.judo.meta.psm.measure.Unit> psmUnit = allPsm(hu.blackbelt.judo.meta.psm.measure.Unit.class)
-                .findAny();
-
-        assertTrue(psmUnit.isPresent());
-        assertThat(psmUnit.get().getName(), IsEqual.equalTo(unit.getName()));
-        assertThat(psmUnit.get().getSymbol(), IsEqual.equalTo(unit.getSymbol()));
-        assertThat(psmUnit.get().getRateDividend(), IsEqual.equalTo(unit.getRateDividend()));
-        assertThat(psmUnit.get().getRateDivisor(), IsEqual.equalTo(unit.getRateDivisor()));
-        assertThat(psmUnit.get().getMeasure().getName(), IsEqual.equalTo(measure.getName()));
-    }
-    
-    @Test
-    void testCreateUnitInDerivedMeasure() throws Exception {
-        testName = "CreateUnit";
-        
-        Unit unit = newUnitBuilder().withName("unit").withSymbol("u")
-    			.withRateDivisor(2)
-    			.withRateDividend(2)
-        		.build();
-        MeasureDefinitionTerm term = newMeasureDefinitionTermBuilder().withExponent(5).withUnit(unit).build();
-        
-        Measure measure = newMeasureBuilder().withName("measure").withSymbol("m")
-        		.withTerms(term)
         		.withUnits(unit)
         		.build();
         
@@ -260,21 +252,36 @@ public class EsmMeasure2PsmMeasureTest {
     void testCreateDurationUnitInDerivedMeasure() throws Exception {
         testName = "CreateDurationUnit";
         
-        DurationUnit unit = newDurationUnitBuilder().withName("unit").withSymbol("u")
-    			.withRateDivisor(2)
-    			.withRateDividend(2)
+        DurationUnit unit1 = newDurationUnitBuilder().withName("msec").withSymbol("ms")
+    			.withRateDivisor(1)
+    			.withRateDividend(1)
     			.withUnitType(DurationType.MILLISECOND)
         		.build();
-        MeasureDefinitionTerm term = newMeasureDefinitionTermBuilder().withExponent(5).withUnit(unit).build();
         
-        Measure measure = newMeasureBuilder().withName("measure").withSymbol("m")
-        		.withTerms(term)
-        		.withUnits(unit)
+        Measure measure1 = newMeasureBuilder().withName("measure1").withSymbol("m1")
+        		.withUnits(unit1)
+        		.build();
+        
+        MeasureDefinitionTerm term1 = newMeasureDefinitionTermBuilder().withExponent(-2).withUnit(unit1).build();
+        
+        Unit unit2 = newUnitBuilder().withName("unit2").withSymbol("u2")
+    			.withRateDivisor(1)
+    			.withRateDividend(1)
+        		.build();
+        
+        Measure measure2 = newMeasureBuilder().withName("measure2").withSymbol("m2")
+        		.withUnits(unit2)
+        		.build();
+        
+        MeasureDefinitionTerm term2 = newMeasureDefinitionTermBuilder().withExponent(1).withUnit(unit2).build();
+        
+        Measure measure3 = newMeasureBuilder().withName("measure3").withSymbol("m3")
+        		.withTerms(ImmutableList.of(term1,term2))
         		.build();
         
         final Model model = newModelBuilder()
                 .withName("TestModel")
-                .withElements(measure)
+                .withElements(ImmutableList.of(measure1, measure2, measure3))
                 .build();
 
         esmModel.addContent(model);
@@ -284,41 +291,49 @@ public class EsmMeasure2PsmMeasureTest {
                 .findAny();
 
         assertTrue(psmDurationUnit.isPresent());
-        assertThat(psmDurationUnit.get().getName(), IsEqual.equalTo(unit.getName()));
-        assertThat(psmDurationUnit.get().getSymbol(), IsEqual.equalTo(unit.getSymbol()));
-        assertThat(psmDurationUnit.get().getRateDividend(), IsEqual.equalTo(unit.getRateDividend()));
-        assertThat(psmDurationUnit.get().getRateDivisor(), IsEqual.equalTo(unit.getRateDivisor()));
-        assertThat(psmDurationUnit.get().getMeasure().getName(), IsEqual.equalTo(measure.getName()));
+        assertThat(psmDurationUnit.get().getName(), IsEqual.equalTo(unit1.getName()));
+        assertThat(psmDurationUnit.get().getSymbol(), IsEqual.equalTo(unit1.getSymbol()));
+        assertThat(psmDurationUnit.get().getRateDividend(), IsEqual.equalTo(unit1.getRateDividend()));
+        assertThat(psmDurationUnit.get().getRateDivisor(), IsEqual.equalTo(unit1.getRateDivisor()));
+        assertThat(psmDurationUnit.get().getMeasure().getName(), IsEqual.equalTo(measure1.getName()));
     }
     
     @Test
     void testCreateMeasureDefinitionTerm() throws Exception {
         testName = "CreateMeasureDefinitionTerm";
         
-        DurationUnit unit = newDurationUnitBuilder().withName("unit").withSymbol("u").build();
-        MeasureDefinitionTerm term = newMeasureDefinitionTermBuilder().withExponent(5).withUnit(unit).build();
+        Unit unit1 = newUnitBuilder().withName("unit1").withSymbol("u1").build();
+        MeasureDefinitionTerm term1 = newMeasureDefinitionTermBuilder().withExponent(1).withUnit(unit1).build();
+        Unit unit2 = newUnitBuilder().withName("unit2").withSymbol("u2").build();
+        MeasureDefinitionTerm term2 = newMeasureDefinitionTermBuilder().withExponent(-1).withUnit(unit2).build();
         
-        Measure measure = newMeasureBuilder().withName("measure").withSymbol("m")
-        		.withTerms(term)
-        		.withUnits(unit)
+        Measure measure1 = newMeasureBuilder().withName("measure1").withSymbol("m1")
+        		.withUnits(unit1)
+        		.build();
+        Measure measure2 = newMeasureBuilder().withName("measure2").withSymbol("m2")
+        		.withUnits(unit2)
+        		.build();
+        
+        Measure derivedMeasure = newMeasureBuilder().withName("dmeasure").withSymbol("dm")
+        		.withTerms(ImmutableList.of(term1,term2))
         		.build();
         
         final Model model = newModelBuilder()
                 .withName("TestModel")
-                .withElements(measure)
+                .withElements(ImmutableList.of(measure1,measure2,derivedMeasure))
                 .build();
 
         esmModel.addContent(model);
         transform();
 
         final Optional<hu.blackbelt.judo.meta.psm.measure.MeasureDefinitionTerm> psmMeasureDefinitionUnit = allPsm(hu.blackbelt.judo.meta.psm.measure.MeasureDefinitionTerm.class)
-                .findAny();
+                .filter(t -> t.getExponent() == 1).findAny();
         final Optional<hu.blackbelt.judo.meta.psm.measure.DerivedMeasure> psmMeasure = allPsm(hu.blackbelt.judo.meta.psm.measure.DerivedMeasure.class)
                 .findAny();
 
         assertTrue(psmMeasureDefinitionUnit.isPresent());
-        assertThat(psmMeasureDefinitionUnit.get().getUnit().getName(), IsEqual.equalTo(term.getUnit().getName()));
-        assertThat(psmMeasureDefinitionUnit.get().getExponent(), IsEqual.equalTo(term.getExponent()));
+        assertThat(psmMeasureDefinitionUnit.get().getUnit().getName(), IsEqual.equalTo(term1.getUnit().getName()));
+        assertThat(psmMeasureDefinitionUnit.get().getExponent(), IsEqual.equalTo(term1.getExponent()));
         assertThat(psmMeasure.get().getTerms().get(0), IsEqual.equalTo(psmMeasureDefinitionUnit.get()));
     }
     

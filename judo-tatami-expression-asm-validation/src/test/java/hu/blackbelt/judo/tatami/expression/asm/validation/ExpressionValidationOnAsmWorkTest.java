@@ -30,7 +30,6 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 @Slf4j
-@Disabled
 class ExpressionValidationOnAsmWorkTest {
 
 	public static final String NORTHWIND = "northwind";

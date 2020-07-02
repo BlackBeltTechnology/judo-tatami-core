@@ -65,7 +65,7 @@ rule CreateGeneratedActorTypePackage
   transform s : ESM!Package
   to t: JUDOPSM!Package {
     t.name = s.name;
-    s.eContainer.getPSMGeneratedDefaultTransferObjectNamespaceEquivalent().packages.add(t);
+    s.eContainer.getPSMGeneratedActorTypeNamespaceEquivalent().packages.add(t);
     
     log.debug("Created Generated Package for DefaultTransferObjectType: " + t.name);
 }

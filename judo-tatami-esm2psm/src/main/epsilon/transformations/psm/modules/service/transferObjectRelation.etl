@@ -31,7 +31,7 @@ rule CreateTransferObjectRelationFromRelationOrProperty
     extends CreateTransferObjectRelation {
       guard: s.eContainer.isKindOf(ESM!TransferObjectType) 
             and not s.eContainer.isTypeOf(ESM!EntityType)
-            and s.memberType <> ESM!MemberType#BOUND
+            and s.memberType <> ESM!MemberType#MAPPED
 
       if(s.eContainer.isMapped()) {
       	t.binding = s.equivalent("CreateNavigationPropertyForTransferObjectRelationBinding");
@@ -46,9 +46,7 @@ rule CreateTransferObjectRelationFromBoundToOneWayRelationMember
     transform s: ESM!OneWayRelationMember
     to t: JUDOPSM!TransferObjectRelation
     extends CreateTransferObjectRelation {
-      guard: s.eContainer.isKindOf(ESM!TransferObjectType) 
-            and not s.eContainer.isTypeOf(ESM!EntityType)
-            and s.memberType == ESM!MemberType#BOUND
+      guard: s.memberType == ESM!MemberType#MAPPED
             and s.binding.isKindOf(ESM!OneWayRelationMember)
             
       if (s.binding.memberType = ESM!MemberType#STORED and s.binding.isComposition()) {
@@ -77,9 +75,7 @@ rule CreateTransferObjectRelationFromBoundToTwoWayRelationMember
     transform s: ESM!OneWayRelationMember
     to t: JUDOPSM!TransferObjectRelation
     extends CreateTransferObjectRelation {
-      guard: s.eContainer.isKindOf(ESM!TransferObjectType) 
-            and not s.eContainer.isTypeOf(ESM!EntityType)
-            and s.memberType == ESM!MemberType#BOUND
+      guard: s.memberType == ESM!MemberType#MAPPED
             and s.binding.isKindOf(ESM!TwoWayRelationMember)
             
         t.binding = s.binding.equivalent("CreateAssociationEndWithPartner");
@@ -120,8 +116,7 @@ rule CreateTransferObjectRelationForDefaultTransferObjectTypeFromOneWayRelationM
     transform s: ESM!OneWayRelationMember
     to t: JUDOPSM!TransferObjectRelation
     extends CreateTransferObjectRelationForDefaultTransferObjectType {
-      guard: s.eContainer.isKindOf(ESM!EntityType)
-           and s.memberType == ESM!MemberType#STORED
+      guard: s.memberType == ESM!MemberType#STORED
            and s.isComposition()
            
       t.embedded = s.isComposition();
@@ -145,8 +140,7 @@ rule CreateTransferObjectRelationForDefaultTransferObjectTypeFromOneWayRelationM
     transform s: ESM!OneWayRelationMember
     to t: JUDOPSM!TransferObjectRelation
     extends CreateTransferObjectRelationForDefaultTransferObjectType {
-      guard: s.eContainer.isKindOf(ESM!EntityType)
-           and s.memberType == ESM!MemberType#STORED
+      guard: s.memberType == ESM!MemberType#STORED
            and not s.isComposition()
            
       t.binding = s.equivalent("CreateAssociationEndWithoutPartner");
@@ -170,7 +164,6 @@ rule CreateTransferObjectRelationForDefaultTransferObjectTypeFromTwoWayRelationM
     transform s: ESM!TwoWayRelationMember
     to t: JUDOPSM!TransferObjectRelation
     extends CreateTransferObjectRelationForDefaultTransferObjectType {
-      guard: s.eContainer.isKindOf(ESM!EntityType)
       
       t.binding = s.equivalent("CreateAssociationEndWithPartner");
       
