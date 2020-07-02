@@ -54,43 +54,4 @@ for (dto in getAllEntities()) {
 	}
 }
 
-/*
-// TODO - generate services (not only for exposed services), ASM utils is refactored
-for (ap in asmUtils.getAllAccessPoints()) {
-
-    var apServiceInstances : Map = new Map();
-
-    //Unbound Services
-    var exposedServices = asmUtils.getExposedServicesOfAccessPoint(ap);
-    log.info("exposedServices: " + exposedServices.collect(exposedService | "op: " + exposedService.getName() + " in " + exposedService.getEContainingClass().getName()));
-
-    if (exposedServices.size() > 0) {
-
-        for(op in exposedServices) {
-           outputJavaClasses.add(ap.getUnboundServiceJavaFileName(op.getName()));
-           genUnboundServiceInterface(ap, op);
-        }
-        outputScrXmls.add(ap.getUnboundServiceScrXmlFileName());
-        apServiceInstances.put("unboundService", ap.getUnboundServicePackageName() + "." + ap.getUnboundServiceClassName());
-    }
-
-    //Unbound Services
-    var boundOperations = ASM!EOperation.all.select(op | asmUtils.isBound(op) and asmUtils.getAccessPointsOfOperation(op).contains(ap));
-    var boundOperationClasses = boundOperations.collect(op | op.eContainer).asSet();
-    log.info("boundOperations: " + boundOperations.collect(boundOperation | boundOperation.getName()));
-    log.info("boundOperationClasses: " + boundOperationClasses.collect(boundOperationClass | boundOperationClass.getName()));
-    
-    for (boundOperationClass in boundOperationClasses) {
-        //genExposedMappedTransferObjectInterface(boundOperationClass,ap);
-        for(op in boundOperations.select(op | op.eContainer == boundOperationClass)) {
-           outputJavaClasses.add(boundOperationClass.getExposedMappedTransferObjectJavaFileName(ap, op.name));
-           genExposedMappedTransferObjectInterface(boundOperationClass, ap, op);
-        }
-        outputScrXmls.add(boundOperationClass.getExposedMappedTransferObjectScrXmlFileName(ap));
-        apServiceInstances.put((boundOperationClass.getExposedMappedTransferObjectPackageName(ap) + "." + boundOperationClass.getExposedMappedTransferObjectClassName()).replaceAll("\\.", "_"),
-            boundOperationClass.getExposedMappedTransferObjectPackageName(ap) + "." + boundOperationClass.getExposedMappedTransferObjectClassName());
-    }
-}
-*/
-
 %]

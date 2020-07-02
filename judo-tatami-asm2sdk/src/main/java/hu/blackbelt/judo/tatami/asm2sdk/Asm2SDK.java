@@ -106,13 +106,6 @@ public class Asm2SDK {
         Set<String> exportedPackages = Sets.newHashSet();
 
         // Add helper classes
-        /*
-        bundle.add(getClassFileName(CompositeClassLoader.class), getClassByteCode(CompositeClassLoader.class));
-        bundle.add(getClassFileName(ReflectionUtil.class), getClassByteCode(ReflectionUtil.class));
-        bundle.add(getClassFileName(MapBuilderProxy.class), getClassByteCode(MapBuilderProxy.class));
-        bundle.add(getClassFileName(MapHolder.class), getClassByteCode(MapHolder.class));
-        bundle.add(getClassFileName(MapProxy.class), getClassByteCode(MapProxy.class));
-        */
 
         compiled.forEach(c -> {
             FullyQualifiedName fullyQualifiedName = (FullyQualifiedName) c;

@@ -3,7 +3,7 @@
   out.setContentType("Java");
 %]
 
-package [%= dto.getDtoPackageName() + dto.getClassPackage().toLowerCase() %];
+package [%= dto.getDtoPackageName() %];
 
 import hu.blackbelt.structured.map.proxy.MapProxy;
 import hu.blackbelt.structured.map.proxy.MapBuilderProxy;
