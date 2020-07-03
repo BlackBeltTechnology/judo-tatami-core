@@ -17,7 +17,6 @@ import hu.blackbelt.judo.meta.psm.service.TransferObjectRelation;
 import hu.blackbelt.judo.meta.psm.service.TransferOperation;
 import hu.blackbelt.judo.meta.psm.service.TransferOperationBehaviourType;
 import hu.blackbelt.judo.meta.psm.service.UnboundOperation;
-import hu.blackbelt.model.northwind.esm.NorthwindEsmModel;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
@@ -235,6 +234,7 @@ public class EsmAccesspoint2PsmAccesspointTest {
         final String NAME_OF_CREATE_OPERATION = "_createG";
         final String NAME_OF_UPDATE_OPERATION = "_updateG";
         final String NAME_OF_DELETE_OPERATION = "_deleteG";
+        final String NAME_OF_GET_PRINCIPAL_OPERATION = "_principal";
 
         final String NAME_OF_UNSET_SINGLE_CONTAINMENT_OPERATION = "_unsetSingleContainmentOfG";
 
@@ -478,7 +478,14 @@ public class EsmAccesspoint2PsmAccesspointTest {
 //                EcoreUtil.equals(o.getOutput().getType(), defaultF.get())
 //        ));
 
-        assertEquals(11L, ap.get().getOperations().stream().filter(o -> o instanceof UnboundOperation).count());
+        assertTrue(ap.get().getOperations().stream().anyMatch(o -> NAME_OF_GET_PRINCIPAL_OPERATION.equals(o.getName()) && (o instanceof UnboundOperation) &&
+                o.getBehaviour() != null && o.getBehaviour().getBehaviourType() == TransferOperationBehaviourType.GET_PRINCIPAL && EcoreUtil.equals(o.getBehaviour().getOwner(), ap.get()) &&
+                o.getInput() == null && o.getOutput() != null && o.getFaults().isEmpty() &&
+                o.getOutput().getCardinality().getLower() == 0 && o.getOutput().getCardinality().getUpper() == 1 &&
+                EcoreUtil.equals(o.getOutput().getType(), ap.get())
+        ));
+
+        assertEquals(12L, ap.get().getOperations().stream().filter(o -> o instanceof UnboundOperation).count());
     }
 
     static <T> Stream<T> asStream(Iterator<T> sourceIterator, boolean parallel) {
