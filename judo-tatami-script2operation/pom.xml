@@ -136,7 +136,6 @@
 						<artifactId>hu.blackbelt.judo.script.codegen.generator</artifactId>
 						<version>${judo-script-codegen-version}</version>
 					</dependency>
-
 				</dependencies>
 			</plugin>
 
@@ -212,6 +211,11 @@
 			<groupId>hu.blackbelt.judo</groupId>
 			<artifactId>judo-operation-utils</artifactId>
 		</dependency>
+
+		<dependency>
+             <groupId>org.slf4j</groupId>
+             <artifactId>slf4j-api</artifactId>
+   		</dependency>
 
 	</dependencies>
 </project>
