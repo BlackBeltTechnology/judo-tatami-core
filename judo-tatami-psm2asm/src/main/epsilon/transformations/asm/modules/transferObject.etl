@@ -12,6 +12,46 @@ rule CreateTransferObject
 		}
 	}
 
+@greedy
+rule CreateTransferObjectTypeAnnotationClass
+	transform s : JUDOPSM!TransferObjectType
+	to t : ASM!EAnnotation {
+        t.source = asmUtils.getAnnotationUri("transferObjectType");
+        
+        var transferObject = new ASM!EStringToStringMapEntry;
+        transferObject.key = "value";
+        transferObject.value = "true";
+        t.details.add(transferObject);
+        
+        s.asmEquivalent().eAnnotations.add(t);
+	}
+	
+rule CreateTransferObjectTypeAnnotationClassForEntityTypeClass
+	transform s : JUDOPSM!EntityType
+	to t : ASM!EAnnotation {
+        t.source = asmUtils.getAnnotationUri("transferObjectType");
+        
+        var transferObject = new ASM!EStringToStringMapEntry;
+        transferObject.key = "value";
+        transferObject.value = "true";
+        t.details.add(transferObject);
+        
+        s.equivalent("CreateEntityClass").eAnnotations.add(t);
+	}
+
+rule CreateTransferObjectTypeAnnotationClassForReferenceClass
+	transform s : JUDOPSM!EntityType
+	to t : ASM!EAnnotation {
+        t.source = asmUtils.getAnnotationUri("transferObjectType");
+        
+        var transferObject = new ASM!EStringToStringMapEntry;
+        transferObject.key = "value";
+        transferObject.value = "true";
+        t.details.add(transferObject);
+        
+        s.equivalent("CreateReferenceClassForEntityType").eAnnotations.add(t);
+	}
+
 rule CreateMappedEntityTypeAnnotationOnMappedTransferObject
     transform s : JUDOPSM!MappedTransferObjectType
     to t : ASM!EAnnotation {

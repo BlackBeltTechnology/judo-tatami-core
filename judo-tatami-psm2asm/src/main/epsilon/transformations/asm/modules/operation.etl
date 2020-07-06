@@ -1,20 +1,5 @@
 import "../utils/_importUtils.eol";
 
-@cached
-operation JUDOPSM!Parameter isInput() : Boolean {
-    return self.eContainer.input == self;
-}
-
-@cached
-operation JUDOPSM!Parameter isOutput() : Boolean {
-    return self.eContainer.output == self;
-}
-
-@cached
-operation JUDOPSM!Parameter isFault() : Boolean {
-    return self.eContainer.faults.contains(self);
-}
-
 @abstract
 rule CreateParameter
     transform s : JUDOPSM!Parameter
