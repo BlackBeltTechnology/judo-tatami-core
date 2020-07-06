@@ -217,12 +217,6 @@ public class Psm2AsmServiceTest {
 		
 		assertTrue(asmEntity1.isPresent());
 		
-		final EAnnotation asmTransferObjectTypeAnnotation1 = asmEntity1.get().getEAnnotation(TRANSFER_OBJECT_TYPE);
-		assertThat(asmTransferObjectTypeAnnotation1, IsNull.notNullValue());
-		assertTrue(asmTransferObjectTypeAnnotation1.getDetails().containsKey("value"));
-		assertTrue(asmTransferObjectTypeAnnotation1.getDetails().get("value").equals("true"));
-		assertTrue(asmTransferObjectTypeAnnotation1.getEModelElement().equals(asmEntity1.get()));
-		
 		final Optional<EClass> asmEntity1Reference = asmUtils.all(EClass.class).filter(c -> c.getName().equals(entity1.getName() + "__Reference"))
 				.findAny();
 		

@@ -25,19 +25,6 @@ rule CreateTransferObjectTypeAnnotationClass
         
         s.asmEquivalent().eAnnotations.add(t);
 	}
-	
-rule CreateTransferObjectTypeAnnotationClassForEntityTypeClass
-	transform s : JUDOPSM!EntityType
-	to t : ASM!EAnnotation {
-        t.source = asmUtils.getAnnotationUri("transferObjectType");
-        
-        var transferObject = new ASM!EStringToStringMapEntry;
-        transferObject.key = "value";
-        transferObject.value = "true";
-        t.details.add(transferObject);
-        
-        s.equivalent("CreateEntityClass").eAnnotations.add(t);
-	}
 
 rule CreateTransferObjectTypeAnnotationClassForReferenceClass
 	transform s : JUDOPSM!EntityType
