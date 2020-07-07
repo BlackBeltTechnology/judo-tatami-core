@@ -2,6 +2,11 @@ package hu.blackbelt.judo.tatami.psm2asm;
 
 import static hu.blackbelt.judo.meta.asm.runtime.AsmModel.buildAsmModel;
 import static hu.blackbelt.judo.meta.asm.runtime.AsmModel.SaveArguments.asmSaveArgumentsBuilder;
+import static hu.blackbelt.judo.meta.esm.runtime.EsmEpsilonValidator.calculateEsmValidationScriptURI;
+import static hu.blackbelt.judo.meta.esm.runtime.EsmEpsilonValidator.validateEsm;
+import static hu.blackbelt.judo.meta.esm.runtime.EsmModel.buildEsmModel;
+import static hu.blackbelt.judo.meta.esm.structure.util.builder.StructureBuilders.newGeneralizationBuilder;
+import static hu.blackbelt.judo.meta.esm.structure.util.builder.StructureBuilders.newMappingBuilder;
 import static hu.blackbelt.judo.meta.psm.PsmEpsilonValidator.calculatePsmValidationScriptURI;
 import static hu.blackbelt.judo.meta.psm.PsmEpsilonValidator.validatePsm;
 import static hu.blackbelt.judo.meta.psm.data.util.builder.DataBuilders.newAssociationEndBuilder;
@@ -30,6 +35,8 @@ import static hu.blackbelt.judo.meta.psm.type.util.builder.TypeBuilders.newCardi
 import static hu.blackbelt.judo.meta.psm.type.util.builder.TypeBuilders.newCustomTypeBuilder;
 import static hu.blackbelt.judo.meta.psm.type.util.builder.TypeBuilders.newNumericTypeBuilder;
 import static hu.blackbelt.judo.meta.psm.type.util.builder.TypeBuilders.newStringTypeBuilder;
+import static hu.blackbelt.judo.tatami.esm2psm.Esm2Psm.calculateEsm2PsmTransformationScriptURI;
+import static hu.blackbelt.judo.tatami.esm2psm.Esm2Psm.executeEsm2PsmTransformation;
 import static hu.blackbelt.judo.tatami.psm2asm.Psm2Asm.calculatePsm2AsmTransformationScriptURI;
 import static hu.blackbelt.judo.tatami.psm2asm.Psm2Asm.executePsm2AsmTransformation;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -39,6 +46,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.io.File;
 import java.util.Optional;
 
+import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EAnnotation;
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
@@ -58,6 +66,8 @@ import hu.blackbelt.epsilon.runtime.execution.api.Log;
 import hu.blackbelt.epsilon.runtime.execution.impl.Slf4jLog;
 import hu.blackbelt.judo.meta.asm.runtime.AsmModel;
 import hu.blackbelt.judo.meta.asm.runtime.AsmUtils;
+import hu.blackbelt.judo.meta.esm.runtime.EsmModel;
+import hu.blackbelt.judo.meta.esm.structure.Generalization;
 import hu.blackbelt.judo.meta.psm.accesspoint.ActorType;
 import hu.blackbelt.judo.meta.psm.PsmUtils;
 import hu.blackbelt.judo.meta.psm.data.AssociationEnd;
@@ -682,4 +692,49 @@ public class Psm2AsmServiceTest {
 		assertTrue(asmUnboundInitAnnotation3.getDetails().get("value").equals(String.valueOf(true)));
 
 	}
+	
+    @Test
+    public void testTransferObjectTypeAnnotationOnDefaultTransferObjects() throws Exception {
+    	
+    	hu.blackbelt.judo.meta.esm.structure.EntityType entityType = hu.blackbelt.judo.meta.esm.structure.util.builder.StructureBuilders.newEntityTypeBuilder().withName("entityType").build();
+        entityType.setMapping(newMappingBuilder()
+                .withTarget(entityType)
+                .build());
+
+        final hu.blackbelt.judo.meta.esm.namespace.Model model = hu.blackbelt.judo.meta.esm.namespace.util.builder.NamespaceBuilders.newModelBuilder()
+                .withName("TestModel")
+                .withElements(ImmutableList.of(entityType))
+                .build();
+        
+        EsmModel esmModel = buildEsmModel()
+                .uri(URI.createURI("urn:test.judo-meta-esm"))
+                .name("test")
+                .build();
+        
+        esmModel.addContent(model);
+    	
+        assertTrue(esmModel.isValid());
+    	validateEsm(new Slf4jLog(log), esmModel, calculateEsmValidationScriptURI());
+    
+        executeEsm2PsmTransformation(
+                esmModel,
+                psmModel,
+                new Slf4jLog(log),
+                calculateEsm2PsmTransformationScriptURI());
+        
+        assertTrue(psmModel.isValid());
+        validatePsm(new Slf4jLog(log), psmModel, calculatePsmValidationScriptURI());
+    	
+        transform("testDefaultTransferObjectAnnotations");
+        
+        
+    	final String ENTITY_SOURCE = AsmUtils.getAnnotationUri("entity");
+    	final String TRANSFER_OBJECT_TYPE = AsmUtils.getAnnotationUri("transferObjectType");
+    	
+    	final Optional<EClass> orderDefault = asmUtils.all(EClass.class).filter(c -> c.getName().equals(entityType.getName()) && c.getEAnnotation(TRANSFER_OBJECT_TYPE) != null).findAny();
+    	assertTrue(orderDefault.isPresent());
+    	final Optional<EClass> orderEntity = asmUtils.all(EClass.class).filter(c -> c.getName().equals(entityType.getName()) && c.getEAnnotation(ENTITY_SOURCE) != null).findAny();
+    	assertTrue(orderEntity.isPresent());
+    	assertFalse(orderDefault.get().getEPackage().equals(orderEntity.get().getEPackage()));
+    }
 }
