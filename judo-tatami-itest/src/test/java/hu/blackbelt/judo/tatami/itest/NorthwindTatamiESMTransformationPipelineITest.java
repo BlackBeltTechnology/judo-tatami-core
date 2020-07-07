@@ -10,7 +10,10 @@ import hu.blackbelt.judo.meta.rdbms.RdbmsValueField;
 import hu.blackbelt.judo.meta.rdbms.runtime.RdbmsModel;
 import hu.blackbelt.judo.tatami.core.TransformationTrace;
 import org.eclipse.emf.ecore.EClass;
+import org.eclipse.emf.ecore.EClassifier;
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.EPackage;
+import org.eclipse.epsilon.ecl.parse.Ecl_EolParserRules.newExpression_return;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
@@ -40,7 +43,9 @@ import java.util.stream.Collectors;
 import static hu.blackbelt.judo.tatami.itest.TestUtility.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import static org.ops4j.pax.exam.CoreOptions.provision;
 import static org.ops4j.pax.tinybundles.core.TinyBundles.bundle;
 import static org.ops4j.pax.tinybundles.core.TinyBundles.withBnd;
@@ -138,6 +143,32 @@ public class NorthwindTatamiESMTransformationPipelineITest extends TatamiESMTran
         log.log(LOG_INFO, "==============================================");
         log.log(LOG_INFO, "== STOPPING TEST REST METHOD");
         log.log(LOG_INFO, "==============================================");
+    }
+    
+    @Test
+    public void testTransferObjectTypeAnnotationOnDefaultTransferObjects() throws Exception {
+    	
+    	final String ENTITY_SOURCE = AsmUtils.getAnnotationUri("entity");
+    	final String TRANSFER_OBJECT_TYPE = AsmUtils.getAnnotationUri("transferObjectType");
+    	AsmUtils asmUtils = new AsmUtils(asmModel.getResourceSet());
+    	
+    	final Optional<EClass> orderDefault = asmUtils.all(EClass.class).filter(c -> c.getName().equals("Order") && c.getEAnnotation(TRANSFER_OBJECT_TYPE) != null).findAny();
+    	assertTrue(orderDefault.isPresent());
+    	final Optional<EClass> orderEntity = asmUtils.all(EClass.class).filter(c -> c.getName().equals("Order") && c.getEAnnotation(ENTITY_SOURCE) != null).findAny();
+    	assertTrue(orderEntity.isPresent());
+    	assertFalse(orderDefault.get().getEPackage().equals(orderEntity.get().getEPackage()));
+    	
+    	final Optional<EClass> intOrderDefault = asmUtils.all(EClass.class).filter(c -> c.getName().equals("InternationalOrder") && c.getEAnnotation(TRANSFER_OBJECT_TYPE) != null).findAny();
+    	assertTrue(intOrderDefault.isPresent());
+    	final Optional<EClass> intOrderEntity = asmUtils.all(EClass.class).filter(c -> c.getName().equals("InternationalOrder") && c.getEAnnotation(ENTITY_SOURCE) != null).findAny();
+    	assertTrue(intOrderEntity.isPresent());
+    	assertFalse(intOrderDefault.get().getEPackage().equals(intOrderEntity.get().getEPackage()));
+
+    	final Optional<EClass> productDefault = asmUtils.all(EClass.class).filter(c -> c.getName().equals("Product") && c.getEAnnotation(TRANSFER_OBJECT_TYPE) != null).findAny();
+    	assertTrue(productDefault.isPresent());
+    	final Optional<EClass> productEntity = asmUtils.all(EClass.class).filter(c -> c.getName().equals("Product") && c.getEAnnotation(ENTITY_SOURCE) != null).findAny();
+    	assertTrue(productEntity.isPresent());
+    	assertFalse(productDefault.get().getEPackage().equals(productEntity.get().getEPackage()));
     }
 
     private Response getResponse(String path) throws Exception {
