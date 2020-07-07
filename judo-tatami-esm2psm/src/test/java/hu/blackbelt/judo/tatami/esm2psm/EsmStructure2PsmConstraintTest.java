@@ -139,7 +139,6 @@ public class EsmStructure2PsmConstraintTest {
         assertTrue(psmConstraint.isPresent());
         
         assertThat(psmConstraint.get().getName(), IsEqual.equalTo(constraint.getName()));
-        assertThat(psmConstraint.get().getConstrained(), IsEqual.equalTo(psmEntityType.get()));
         assertTrue(psmEntityType.get().getConstraints().contains(psmConstraint.get()));
         assertThat(psmConstraint.get().getExpression().getExpression(), IsEqual.equalTo(constraint.getExpression()));
     }
