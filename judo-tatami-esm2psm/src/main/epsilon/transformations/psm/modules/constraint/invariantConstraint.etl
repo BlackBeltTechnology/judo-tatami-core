@@ -8,5 +8,6 @@ rule CreateInvariantConstraint
     extends CreateNamedElement {
         t.expression = s.equivalent("CreateLogicalExpressionTypeForInvariantConstraint");
         t.constrained = s.eContainer.getPSMEquivalent();
+        s.eContainer.getPSMEquivalent().constraints.add(t);
         log.debug("Created invariant constraint: " + t.name);
 }
