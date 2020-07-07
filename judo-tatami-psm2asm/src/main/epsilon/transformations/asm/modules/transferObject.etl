@@ -22,6 +22,18 @@ rule CreateMappedEntityTypeAnnotationOnMappedTransferObject
         mappedEntityType.value = asmUtils.getClassifierFQName(s.entityType.equivalent("CreateEntityClass"));
         t.details.add(mappedEntityType);
 
+        if (s.filter.isDefined()) {
+            var filter = new ASM!EStringToStringMapEntry;
+            filter.key = "filter";
+            filter.value = s.filter.expression;
+            t.details.add(filter);
+
+            var filterDialect = new ASM!EStringToStringMapEntry;
+            filterDialect.key = "filter.dialect";
+            filterDialect.value = s.filter.dialect.asString();
+            t.details.add(filterDialect);
+        }
+
         s.equivalent("CreateMappedTransferObject").eAnnotations.add(t);
     }
 

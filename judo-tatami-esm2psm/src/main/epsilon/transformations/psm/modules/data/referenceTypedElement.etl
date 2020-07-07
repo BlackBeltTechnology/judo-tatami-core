@@ -14,8 +14,7 @@ rule CreateContainment
 	transform s: ESM!OneWayRelationMember
 	to t: JUDOPSM!Containment
 	extends CreateNamedElement {
-	  guard: s.eContainer.isKindOf(ESM!EntityType)
-	       and s.memberType == ESM!MemberType#STORED
+	  guard: s.memberType == ESM!MemberType#STORED
            and s.isComposition()
 	  
 	  t.cardinality = s.equivalent("CreateCardinalityForReferenceTypedElement");
@@ -29,8 +28,7 @@ rule CreateAssociationEndWithoutPartner
 	transform s: ESM!OneWayRelationMember
 	to t: JUDOPSM!AssociationEnd
 	extends CreateNamedElement {
-	  guard: s.eContainer.isKindOf(ESM!EntityType) 
-           and s.memberType == ESM!MemberType#STORED
+	  guard: s.memberType == ESM!MemberType#STORED
            and not s.isComposition()
 	  
 	  t.cardinality = s.equivalent("CreateCardinalityForReferenceTypedElement");

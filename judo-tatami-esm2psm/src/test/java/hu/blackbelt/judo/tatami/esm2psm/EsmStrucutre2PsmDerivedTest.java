@@ -30,10 +30,14 @@ import java.util.stream.StreamSupport;
 
 import static hu.blackbelt.judo.meta.esm.namespace.util.builder.NamespaceBuilders.newModelBuilder;
 import static hu.blackbelt.judo.meta.esm.namespace.util.builder.NamespaceBuilders.newPackageBuilder;
+import static hu.blackbelt.judo.meta.esm.runtime.EsmEpsilonValidator.calculateEsmValidationScriptURI;
+import static hu.blackbelt.judo.meta.esm.runtime.EsmEpsilonValidator.validateEsm;
 import static hu.blackbelt.judo.meta.esm.runtime.EsmModel.buildEsmModel;
 import static hu.blackbelt.judo.meta.esm.structure.util.builder.StructureBuilders.*;
 import static hu.blackbelt.judo.meta.esm.type.util.builder.TypeBuilders.newStringTypeBuilder;
 import static hu.blackbelt.judo.meta.psm.runtime.PsmModel.SaveArguments.psmSaveArgumentsBuilder;
+import static hu.blackbelt.judo.meta.psm.PsmEpsilonValidator.calculatePsmValidationScriptURI;
+import static hu.blackbelt.judo.meta.psm.PsmEpsilonValidator.validatePsm;
 import static hu.blackbelt.judo.meta.psm.runtime.PsmModel.buildPsmModel;
 import static hu.blackbelt.judo.tatami.esm2psm.Esm2Psm.calculateEsm2PsmTransformationScriptURI;
 import static hu.blackbelt.judo.tatami.esm2psm.Esm2Psm.executeEsm2PsmTransformation;
@@ -99,12 +103,16 @@ public class EsmStrucutre2PsmDerivedTest {
     }
 
     private void transform() throws Exception {
+    	assertTrue(esmModel.isValid());
+    	validateEsm(new Slf4jLog(log), esmModel, calculateEsmValidationScriptURI());
         // Make transformation which returns the trace with the serialized URI's
         esm2PsmTransformationTrace = executeEsm2PsmTransformation(
                 esmModel,
                 psmModel,
                 new Slf4jLog(log),
                 calculateEsm2PsmTransformationScriptURI());
+        assertTrue(psmModel.isValid());
+        validatePsm(new Slf4jLog(log), psmModel, calculatePsmValidationScriptURI());
     }
 
     @Test
@@ -217,7 +225,7 @@ public class EsmStrucutre2PsmDerivedTest {
 
         StringType string = newStringTypeBuilder().withName("str").withMaxLength(256).build();
 
-        DataMember member = newDataMemberBuilder().withName("member").withMemberType(MemberType.STORED)
+        DataMember member = newDataMemberBuilder().withName("member").withMemberType(MemberType.TRANSIENT)
                 .withDataType(string)
                 .withDefaultExpression("self.member")
                 .build();
@@ -354,8 +362,8 @@ public class EsmStrucutre2PsmDerivedTest {
                 .withTarget(navigationTarget)
                 .build();
 
-        EntityType target = newEntityTypeBuilder().withName("entityType")
-                .build();
+        EntityType target = newEntityTypeBuilder().withName("entityType").build();
+        target.setMapping(newMappingBuilder().withTarget(target).build());
 
         TransferObjectType container = newTransferObjectTypeBuilder().withName("container")
                 .withMapping(newMappingBuilder().withTarget(target).build())
@@ -604,7 +612,7 @@ public class EsmStrucutre2PsmDerivedTest {
         OneWayRelationMember associationEnd = newOneWayRelationMemberBuilder().withName("associationEnd")
         		.withRelationKind(RelationKind.ASSOCIATION)
                 .withDefaultExpression("defaultExpression")
-                .withReverseCascadeDelete(true)
+                .withReverseCascadeDelete(false)
                 .withLower(1)
                 .withUpper(3)
                 .withTarget(target)
@@ -740,7 +748,7 @@ public class EsmStrucutre2PsmDerivedTest {
         OneWayRelationMember associationEnd = newOneWayRelationMemberBuilder().withName("associationEnd")
         		.withRelationKind(RelationKind.ASSOCIATION)
                 .withRangeExpression("rangeExpression")
-                .withReverseCascadeDelete(true)
+                .withReverseCascadeDelete(false)
                 .withLower(1)
                 .withUpper(3)
                 .withTarget(target)
@@ -785,7 +793,7 @@ public class EsmStrucutre2PsmDerivedTest {
         		.withMemberType(MemberType.DERIVED)
                 .withGetterExpression("getterExpresssion")
                 .withRangeExpression("rangeExpression")
-                .withReverseCascadeDelete(true)
+                .withReverseCascadeDelete(false)
                 .withLower(1)
                 .withUpper(3)
                 .withTarget(target)

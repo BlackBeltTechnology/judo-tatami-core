@@ -8,18 +8,18 @@ rule CreateOperationBody
     to t: JUDOPSM!OperationBody {
       t.body = s.body;
       t.stateful = s.stateful;
-      t.customImplementation = s.customImplementation and s.modifier <> ESM!OperationModifier#ABSTRACT;
+      t.customImplementation = s.customImplementation and s.operationType <> ESM!OperationType#ABSTRACT;
 }
 
 rule CreateBoundOperation
     transform s: ESM!Operation
     to t: JUDOPSM!BoundOperation
     extends CreateNamedElement {
-      guard: s.modifier <> ESM!OperationModifier#STATIC and s.eContainer.isKindOf(ESM!EntityType)
+      guard: s.operationType <> ESM!OperationType#STATIC and s.eContainer.isKindOf(ESM!EntityType)
 
-      t.`abstract` = s.modifier == ESM!OperationModifier#ABSTRACT;
+      t.`abstract` = s.operationType == ESM!OperationType#ABSTRACT;
       
-      if (s.modifier <> ESM!OperationModifier#ABSTRACT) {
+      if (s.operationType <> ESM!OperationType#ABSTRACT) {
       	t.implementation = s.equivalent("CreateOperationBody");
       }
 
@@ -31,7 +31,7 @@ rule CreateBoundTransferOperationInDefaultTransferObjectType
     transform s: ESM!Operation
     to t: JUDOPSM!BoundTransferOperation
     extends CreateNamedElement {
-      guard: s.modifier <> ESM!OperationModifier#STATIC and s.eContainer.isKindOf(ESM!EntityType)
+      guard: s.operationType <> ESM!OperationType#STATIC and s.eContainer.isKindOf(ESM!EntityType)
 
       t.binding = s.equivalent("CreateBoundOperation");
 
@@ -71,7 +71,7 @@ rule CreateBoundTransferOperation
     transform s: ESM!Operation
     to t: JUDOPSM!BoundTransferOperation
     extends CreateNamedElement {
-      guard: s.modifier <> ESM!OperationModifier#STATIC and s.bound
+      guard: s.operationType == ESM!OperationType#MAPPED
 
       var resolvedBinding = esmUtils.resolveBindingOfOperation(s.eContainer, s).orElse(null);
       if (resolvedBinding.isDefined()) {
@@ -84,7 +84,7 @@ rule CreateUnboundTransferOperationInDefaultTransferObjectType
     transform s: ESM!Operation
     to t: JUDOPSM!UnboundOperation
     extends CreateNamedElement {
-      guard: s.modifier == ESM!OperationModifier#STATIC and s.eContainer.isKindOf(ESM!EntityType)
+      guard: s.operationType == ESM!OperationType#STATIC and s.eContainer.isKindOf(ESM!EntityType)
 
       t.implementation = s.equivalent("CreateOperationBody");
       t.initializer = s.initializer;
@@ -96,28 +96,10 @@ rule CreateInPlaceUnboundOperation
     transform s: ESM!Operation
     to t: JUDOPSM!UnboundOperation
     extends CreateNamedElement {
-	  guard: s.modifier == ESM!OperationModifier#STATIC and not s.eContainer.isKindOf(ESM!EntityType) and not s.bound
+	  guard: s.operationType == ESM!OperationType#STATIC and not s.eContainer.isKindOf(ESM!EntityType)
 
 	  t.implementation = s.equivalent("CreateOperationBody");
 	  t.initializer = s.initializer;
-
-	  s.eContainer.getPSMEquivalent().operations.add(t);
-}
-
-rule CreateReferencedUnboundOperation
-    transform s: ESM!Operation
-    to t: JUDOPSM!UnboundOperation
-    extends CreateNamedElement {
-	  guard: s.modifier == ESM!OperationModifier#STATIC and not s.eContainer.isKindOf(ESM!EntityType) and s.bound
-
-	  var resolvedBinding = esmUtils.resolveBindingOfOperation(s.eContainer, s).orElse(null);
-
-	  if (resolvedBinding.isDefined()) {
-	    t.implementation = new JUDOPSM!OperationBody;
-	    t.implementation.body = resolvedBinding.body;
-	    t.implementation.stateful = resolvedBinding.stateful;
-	    t.implementation.customImplementation = resolvedBinding.customImplementation;
-	  }
 
 	  s.eContainer.getPSMEquivalent().operations.add(t);
 }
@@ -469,7 +451,7 @@ rule CreateCreateTransferOperationForRelation
                 if (relation.eContainer.isKindOf(ESM!EntityType)) {
                     rangeAllowed = not relation.isComposition() and relation.memberType <> ESM!MemberType#DERIVED;
                 } else if (relation.eContainer.isKindOf(ESM!TransferObjectType)) {
-                    rangeAllowed = relation.memberType <> ESM!MemberType#DERIVED and (relation.memberType == ESM!MemberType#BOUND implies (not relation.binding.isComposition() and relation.binding.memberType <> ESM!MemberType#DERIVED));
+                    rangeAllowed = relation.memberType <> ESM!MemberType#DERIVED and (relation.memberType == ESM!MemberType#MAPPED implies (not relation.binding.isComposition() and relation.binding.memberType <> ESM!MemberType#DERIVED));
                 }
             } else if (relation.isKindOf(ESM!TwoWayRelationMember)) {
                 rangeAllowed = true;
@@ -545,8 +527,8 @@ rule CreateUpdateTransferOperationForRelation
                     rangeAllowed = not relation.isComposition() and relation.memberType <> ESM!MemberType#DERIVED;
                     containment = relation.isComposition();
                 } else if (relation.eContainer.isKindOf(ESM!TransferObjectType)) {
-                    rangeAllowed = relation.memberType <> ESM!MemberType#DERIVED and (relation.memberType == ESM!MemberType#BOUND implies (not relation.binding.isComposition() and relation.binding.memberType <> ESM!MemberType#DERIVED));
-                    containment = relation.memberType == ESM!MemberType#BOUND and relation.binding.isComposition();
+                    rangeAllowed = relation.memberType <> ESM!MemberType#DERIVED and (relation.memberType == ESM!MemberType#MAPPED implies (not relation.binding.isComposition() and relation.binding.memberType <> ESM!MemberType#DERIVED));
+                    containment = relation.memberType == ESM!MemberType#MAPPED and relation.binding.isComposition();
                 }
             } else if (relation.isKindOf(ESM!TwoWayRelationMember)) {
                 rangeAllowed = true;
@@ -555,7 +537,7 @@ rule CreateUpdateTransferOperationForRelation
             var entityPartner;
             if (relation.isKindOf(ESM!TwoWayRelationMember)) {
                 entityPartner = relation.partner;
-            } else if (relation.memberType == ESM!MemberType#BOUND and relation.binding.isKindOf(ESM!TwoWayRelationMember)) {
+            } else if (relation.memberType == ESM!MemberType#MAPPED and relation.binding.isKindOf(ESM!TwoWayRelationMember)) {
                 entityPartner = relation.binding.partner;
             }
 

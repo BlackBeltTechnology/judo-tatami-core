@@ -8,9 +8,7 @@ rule CreateTransferAttributeFromAttribute
     transform s: ESM!DataMember
     to t: JUDOPSM!TransferAttribute 
     extends CreatePrimitiveTypedElement {
-      guard: s.eContainer.isKindOf(ESM!TransferObjectType)
-            and not s.eContainer.isKindOf(ESM!EntityType) 
-            and s.memberType == ESM!MemberType#STORED
+      guard: s.memberType == ESM!MemberType#TRANSIENT
             
       t.defaultValue = s.equivalent("CreateStaticDataForTransferAttributeDefaultValue");
       t.binding = s.equivalent("CreateDataPropertyForTransferAttributeBinding");
@@ -23,9 +21,7 @@ rule CreateTransferAttributeFromBound
     transform s: ESM!DataMember
     to t: JUDOPSM!TransferAttribute 
     extends CreatePrimitiveTypedElement {
-      guard: s.eContainer.isKindOf(ESM!TransferObjectType)
-            and not s.eContainer.isKindOf(ESM!EntityType) 
-            and s.memberType == ESM!MemberType#BOUND
+      guard: s.memberType == ESM!MemberType#MAPPED
             
       t.defaultValue = s.equivalent("CreateStaticDataForTransferAttributeDefaultValue");
       
@@ -60,8 +56,7 @@ rule CreateTransferAttributeFromAttributeForDefaultTransferObjectType
     transform s: ESM!DataMember
     to t: JUDOPSM!TransferAttribute 
     extends CreatePrimitiveTypedElement {
-      guard: s.eContainer.isKindOf(ESM!EntityType)
-            and s.memberType == ESM!MemberType#STORED
+      guard: s.memberType == ESM!MemberType#STORED
       
       t.defaultValue = s.equivalent("CreateStaticDataForTransferAttributeDefaultValue");
       t.binding = s.equivalent("CreateAttribute");

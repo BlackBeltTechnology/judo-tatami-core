@@ -37,10 +37,14 @@ import java.util.stream.StreamSupport;
 
 import static hu.blackbelt.judo.meta.esm.namespace.util.builder.NamespaceBuilders.newModelBuilder;
 import static hu.blackbelt.judo.meta.esm.namespace.util.builder.NamespaceBuilders.newPackageBuilder;
+import static hu.blackbelt.judo.meta.esm.runtime.EsmEpsilonValidator.calculateEsmValidationScriptURI;
+import static hu.blackbelt.judo.meta.esm.runtime.EsmEpsilonValidator.validateEsm;
 import static hu.blackbelt.judo.meta.esm.runtime.EsmModel.buildEsmModel;
 import static hu.blackbelt.judo.meta.esm.structure.util.builder.StructureBuilders.*;
 import static hu.blackbelt.judo.meta.esm.type.util.builder.TypeBuilders.newStringTypeBuilder;
 import static hu.blackbelt.judo.meta.psm.runtime.PsmModel.SaveArguments.psmSaveArgumentsBuilder;
+import static hu.blackbelt.judo.meta.psm.PsmEpsilonValidator.calculatePsmValidationScriptURI;
+import static hu.blackbelt.judo.meta.psm.PsmEpsilonValidator.validatePsm;
 import static hu.blackbelt.judo.meta.psm.runtime.PsmModel.buildPsmModel;
 import static hu.blackbelt.judo.tatami.esm2psm.Esm2Psm.calculateEsm2PsmTransformationScriptURI;
 import static hu.blackbelt.judo.tatami.esm2psm.Esm2Psm.executeEsm2PsmTransformation;
@@ -102,9 +106,13 @@ public class EsmStructure2PsmServiceTest {
 	}
 
 	private void transform() throws Exception {
+		assertTrue(esmModel.isValid());
+    	validateEsm(new Slf4jLog(log), esmModel, calculateEsmValidationScriptURI());
 		// Make transformation which returns the trace with the serialized URI's
 		esm2PsmTransformationTrace = executeEsm2PsmTransformation(esmModel, psmModel, new Slf4jLog(log),
 				calculateEsm2PsmTransformationScriptURI());
+		assertTrue(psmModel.isValid());
+        validatePsm(new Slf4jLog(log), psmModel, calculatePsmValidationScriptURI());
 	}
 
 	@Test
@@ -114,6 +122,7 @@ public class EsmStructure2PsmServiceTest {
 		// attributes
 		StringType stringType = newStringTypeBuilder().withName("stringType").withMaxLength(255).build();
 		DataMember dataMemberBasic = newDataMemberBuilder().withName("transferAttributeBasic").withRequired(false)
+				.withMemberType(MemberType.TRANSIENT)
 				.withIdentifier(false).withDataType(stringType).build();
 
 		// relation targets
@@ -130,17 +139,17 @@ public class EsmStructure2PsmServiceTest {
 		// relations
 		OneWayRelationMember oneWayRelationContainmentTargetingUnmapped = newOneWayRelationMemberBuilder()
 				.withName("transferRelationAggregationTargetingUnmapped").withRelationKind(RelationKind.AGGREGATION)
-				.withLower(1).withUpper(1).withMemberType(MemberType.STORED)
+				.withLower(1).withUpper(1).withMemberType(MemberType.TRANSIENT)
 				.withTarget(targetUnmappedTransferObjectType).build();
 
 		OneWayRelationMember oneWayRelationContainmentTargetingMapped = newOneWayRelationMemberBuilder()
 				.withName("transferRelationContainmentTargetingMapped").withRelationKind(RelationKind.AGGREGATION)
-				.withLower(1).withUpper(1).withMemberType(MemberType.STORED)
+				.withLower(1).withUpper(1).withMemberType(MemberType.TRANSIENT)
 				.withTarget(targetMappedTransferObjectType).build();
 
 		OneWayRelationMember oneWayRelationBasicTargetingEntity = newOneWayRelationMemberBuilder()
-				.withName("transferRelationBasicTargetingEntity").withRelationKind(RelationKind.ASSOCIATION)
-				.withLower(1).withUpper(1).withMemberType(MemberType.STORED)
+				.withName("transferRelationBasicTargetingEntity").withRelationKind(RelationKind.AGGREGATION)
+				.withLower(1).withUpper(1).withMemberType(MemberType.TRANSIENT)
 				.withTarget(targetEntityType).build();
 
 		// Unmapped TransferObjectType
@@ -253,7 +262,7 @@ public class EsmStructure2PsmServiceTest {
 		assertTrue(psmTransferObjectRelationBasicTargetingEntity.isPresent());
 		assertTrue(psmTransferObjectRelationBasicTargetingEntity.get().getTarget()
 				.equals(psmDefaultTransferObjectOfTargetEntityType.get()));
-		assertFalse(psmTransferObjectRelationBasicTargetingEntity.get().isEmbedded());
+		assertTrue(psmTransferObjectRelationBasicTargetingEntity.get().isEmbedded());
 		assertTrue(psmUnmappedTransferObject.get().getRelations()
 				.contains(psmTransferObjectRelationBasicTargetingEntity.get()));
 	}
@@ -528,13 +537,17 @@ public class EsmStructure2PsmServiceTest {
 				.withMapping(newMappingBuilder().withTarget(entityType).withFilter("expr").build()).build();
 
 		OneWayRelationMember oneWayRelationBasic = newOneWayRelationMemberBuilder().withName("transferRelationBasic")
-				.withRelationKind(RelationKind.ASSOCIATION).withLower(1).withUpper(1)
-				.withMemberType(MemberType.STORED)
+				.withRelationKind(RelationKind.AGGREGATION)
+				.withLower(1).withUpper(1)
+				.withMemberType(MemberType.TRANSIENT)
 				.withTarget(targetEntityType)
 				.build();
 
 		OneWayRelationMember oneWayRelationBasicTargetingMapped = newOneWayRelationMemberBuilder()
-				.withName("transferRelationBasicTargetingMapped").withRelationKind(RelationKind.ASSOCIATION).withLower(1).withUpper(1)
+				.withName("transferRelationBasicTargetingMapped")
+				.withRelationKind(RelationKind.AGGREGATION)
+				.withLower(1).withUpper(1)
+				.withMemberType(MemberType.TRANSIENT)
 				.withTarget(targetMappedTransferObjectType)
 				.build();
 
@@ -570,14 +583,19 @@ public class EsmStructure2PsmServiceTest {
 		// MappedTransferObjectTypes
 		TransferObjectType mappedTransferObjectType = newTransferObjectTypeBuilder()
 				.withName("mappedTransferObjectType").withMapping(newMappingBuilder().withTarget(entityType).build())
-				.withRelations(ImmutableList.of(oneWayRelationBasicTargetingMapped,
-						oneWayRelationWithPropertyWithDefaultAndRangeTargetingMapped, oneWayRelationBasic,
+				.withRelations(ImmutableList.of(
+						oneWayRelationBasicTargetingMapped,
+						oneWayRelationWithPropertyWithDefaultAndRangeTargetingMapped,
+						oneWayRelationBasic,
 						oneWayRelationWithProperty,
 						oneWayRelationWithPropertyWithDefaultAndRange,
-						oneWayRelationWithPropertyWithDefault, oneWayRelationWithPropertyWithRange))
+						oneWayRelationWithPropertyWithDefault,
+						oneWayRelationWithPropertyWithRange
+						))
 				.build();
 		Package servicePackage = newPackageBuilder().withName("service")
-				.withElements(ImmutableList.of(mappedTransferObjectType, targetMappedTransferObjectType)).build();
+				.withElements(ImmutableList.of(
+						mappedTransferObjectType, targetMappedTransferObjectType)).build();
 		Package entitiesPackage = newPackageBuilder().withName("entities")
 				.withElements(ImmutableList.of(entityType, targetEntityType)).build();
 		Model model = newModelBuilder().withName("Model")
@@ -716,6 +734,7 @@ public class EsmStructure2PsmServiceTest {
 
 		DataMember dataMemberBasic = newDataMemberBuilder().withName("transferAttributeBasic").withRequired(false)
 				.withIdentifier(false).withDataType(stringType)
+				.withMemberType(MemberType.TRANSIENT)
 				.build();
 		// property
 		DataMember dataMemberWithProperty = newDataMemberBuilder().withName("transferAttributeWithBinding")
@@ -869,7 +888,7 @@ public class EsmStructure2PsmServiceTest {
 		// grandparent
 		DataMember dataMemberOfGrandparent = newDataMemberBuilder().withName("inheritedAttributeFromGrandparent")
 				.withRequired(false).withIdentifier(false).withDataType(stringType)
-
+				.withMemberType(MemberType.TRANSIENT)
 				.build();
 
 		TransferObjectType grandparentMappedTransferObjectType = newTransferObjectTypeBuilder()
@@ -880,7 +899,7 @@ public class EsmStructure2PsmServiceTest {
 		// parent
 		DataMember dataMemberOfParent = newDataMemberBuilder().withName("inheritedAttributeFromParent")
 				.withRequired(false).withIdentifier(false).withDataType(stringType)
-
+				.withMemberType(MemberType.TRANSIENT)
 				.build();
 
 		TransferObjectType parentMappedTransferObjectType = newTransferObjectTypeBuilder()
