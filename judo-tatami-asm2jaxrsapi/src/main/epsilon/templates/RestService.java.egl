@@ -68,11 +68,13 @@ public class [%= className %] {
             parameters.put("__principal", securityContext.getUserPrincipal());
         }
         [% for (p in op.eParameters) { %]
+        if ([%= asmUtils.safeName(p.name.firstToLowerCase()) %] != null) {
             [% if (p.many) { %]
-		        parameters.put("[%= p.name %]", [%= asmUtils.safeName(p.name.firstToLowerCase()) %].stream().map(e -> e.toMap()).collect(Collectors.toList()));
+            parameters.put("[%= p.name %]", [%= asmUtils.safeName(p.name.firstToLowerCase()) %].stream().map(e -> e.toMap()).collect(Collectors.toList()));
             [% } else { %]
-		        parameters.put("[%= p.name %]", [%= asmUtils.safeName(p.name.firstToLowerCase()) %].toMap());
+            parameters.put("[%= p.name %]", [%= asmUtils.safeName(p.name.firstToLowerCase()) %].toMap());
             [% } %]
+        }
         [% } %]
 
         [% if (op.eType.isUndefined()) {%]
