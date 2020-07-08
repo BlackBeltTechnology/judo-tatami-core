@@ -46,11 +46,13 @@ import static hu.blackbelt.judo.meta.esm.operation.util.builder.OperationBuilder
 import static hu.blackbelt.judo.meta.esm.runtime.EsmModel.buildEsmModel;
 import static hu.blackbelt.judo.meta.esm.structure.util.builder.StructureBuilders.*;
 import static hu.blackbelt.judo.meta.esm.type.util.builder.TypeBuilders.newStringTypeBuilder;
+
 import static hu.blackbelt.judo.meta.esm.ui.util.builder.UiBuilders.newTransferObjectTableBuilder;
 import static hu.blackbelt.judo.meta.esm.ui.util.builder.UiBuilders.newTransferObjectFormBuilder;
 import static hu.blackbelt.judo.meta.esm.ui.util.builder.UiBuilders.newTransferObjectViewBuilder;
 import static hu.blackbelt.judo.meta.esm.ui.util.builder.UiBuilders.newDataColumnBuilder;
 import static hu.blackbelt.judo.meta.esm.ui.util.builder.UiBuilders.newGroupBuilder;
+import static hu.blackbelt.judo.meta.esm.ui.util.builder.UiBuilders.newDataFieldBuilder;
 
 import static hu.blackbelt.judo.meta.esm.runtime.EsmModel.SaveArguments.esmSaveArgumentsBuilder;
 
@@ -160,13 +162,17 @@ public class EsmAccesspoint2UiApplicationTest {
     }
 
     
-    private Component createContainerTree(String prefix) {
+    private Component createContainerTree(String prefix, DataMember dataMember) {
     	return newGroupBuilder()
     			.withLayout(Layout.VERTICAL)
     			.withName(prefix + "_grp1")
     			.withComponents(newGroupBuilder()
     					.withLayout(Layout.VERTICAL)
     					.withName(prefix + "_grp2")
+    					.withComponents(
+    							newDataFieldBuilder()
+    								.withLabel("Label - " + dataMember.getName())
+    								.withDataFeature(dataMember).build())
     					.build())
     			.build();
     }
@@ -193,7 +199,10 @@ public class EsmAccesspoint2UiApplicationTest {
         // Exposed entity
         final String EXPOSED_ENTITY_TYPE_NAME = "ExposedEntity";
 
-        DataMember attribute = newDataMemberBuilder().withName("attribute").withMemberType(MemberType.STORED).withDataType(string)
+        DataMember attribute = newDataMemberBuilder()
+        		.withName("attribute")
+        		.withMemberType(MemberType.STORED)
+        		.withDataType(string)
                 .build();
         attribute.setBinding(attribute);
 
@@ -245,7 +254,7 @@ public class EsmAccesspoint2UiApplicationTest {
         final String EXPOSED_GRAPH_VIEW_NAME = "ExposedGraphViewName";
         final TransferObjectView exposedEntityView = newTransferObjectViewBuilder()
         		.withName(EXPOSED_GRAPH_VIEW_NAME)
-        		.withComponents(createContainerTree("group_view"))
+        		.withComponents(createContainerTree("group_view", attribute))
         		.build();
         exposedEntity.setView(exposedEntityView);
 
@@ -253,7 +262,7 @@ public class EsmAccesspoint2UiApplicationTest {
         final String EXPOSED_GRAPH_FORM_NAME = "ExposedGraphFormName";
         final TransferObjectForm exposedEntityForm = newTransferObjectFormBuilder()
         		.withName(EXPOSED_GRAPH_FORM_NAME)
-        		.withComponents(createContainerTree("group_form"))
+        		.withComponents(createContainerTree("group_form", attribute))
         		.build();
         exposedEntity.setForm(exposedEntityForm);
 

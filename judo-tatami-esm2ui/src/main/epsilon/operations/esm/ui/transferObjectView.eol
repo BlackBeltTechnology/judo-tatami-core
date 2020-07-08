@@ -1,5 +1,5 @@
-operation ESM!esm::ui::TransferObjectView createFlexFromTransferObjectView(prefix : String) : UI!ui::Flex {
-	var t : UI!ui::Flex = self.transform(prefix);
+operation ESM!esm::ui::TransferObjectView createFlexFromTransferObjectView() : UI!ui::Flex {
+	var t : UI!ui::Flex = self.createFlexFromContainer();
     return t;
 }
 
@@ -8,11 +8,10 @@ operation ESM!esm::ui::TransferObjectView createDetailPageFromTransferObjectView
 	var t : UI!ui::PageDefinition = new UI!ui::PageDefinition();
     t.binding = esmUtils.getNamespaceElementFQName(self.eContainer) + "." + self.name;
 	t.name = self.name.uiName(prefix);
-    //t.children.add(self.createFlexFromTransferObjectView(t.name));
     return t;
 }
 
-operation ESM!esm::ui::TransferObjectView transform(prefix : String) : UI!ui::Flex {
-	var t : UI!ui::Flex = self.transformContainer(prefix);
+operation ESM!esm::ui::TransferObjectView map() : UI!ui::Flex {
+	var t : UI!ui::Flex = self.createFlexFromTransferObjectView();
     return t;
 }

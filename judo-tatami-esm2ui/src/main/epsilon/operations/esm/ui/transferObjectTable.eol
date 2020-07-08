@@ -1,4 +1,4 @@
-operation ESM!esm::ui::TransferObjectTable createTableFromTransferObjectTable(prefix : String) : UI!ui::Table {
+operation ESM!esm::ui::TransferObjectTable createTableFromTransferObjectTable() : UI!ui::Table {
 	var t : UI!ui::Table = new UI!ui::Table();
     t.binding = self.getBindingName();
 	t.name = self.name;
@@ -6,7 +6,7 @@ operation ESM!esm::ui::TransferObjectTable createTableFromTransferObjectTable(pr
 }
 
 
-operation ESM!esm::ui::TransferObjectTable transform(prefix : String) : UI!ui::Flex {
-	var t : UI!ui::Flex = self.transformContainer(prefix);
+operation ESM!esm::ui::TransferObjectTable map() : UI!ui::Table {
+	var t : UI!ui::Table = self.createTableFromTransferObjectTable();
     return t;
 }

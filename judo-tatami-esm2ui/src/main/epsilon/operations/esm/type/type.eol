@@ -1,30 +1,33 @@
-
-/*
-operation ESM!esm::type::PasswordType getUIEquivalent(): ui::Input {
-	return self.equivalent("CreatePasswordType");
+operation ESM!esm::namespace::NamedElement fillInput(input : UI!ui::Input, row : Integer, col : Integer): UI!ui::Input {
+	input.col = col;
+	input.row  = row;
+	return input;
 }
 
-operation ESM!StringType getUIEquivalent(): UI!Input {
-	return self.equivalent("CreateStringType");
+operation ESM!esm::type::PasswordType map(): UI!ui::Input {
+	return self.fillInput(new UI!ui::PasswordInput(), 2, 1);
 }
 
-operation ESM!NumericType getUIEquivalent(): UI!Input {
-	return self.equivalent("CreateNumericType");
+operation ESM!esm::type::StringType map(): UI!ui::Input {
+	return self.fillInput(new UI!ui::TextInput(), 2, 1);
 }
 
-operation ESM!BooleanType getUIEquivalent(): UI!Input {
-	return self.equivalent("CreateBooleanType");
+operation ESM!esm::type::NumericType map(): UI!ui::Input {
+	return self.fillInput(new UI!ui::NumericInput(), 2, 1);
 }
 
-operation ESM!DateType getUIEquivalent(): UI!Input {
-	return self.equivalent("CreateDateInput");
+operation ESM!esm::type::BooleanType map(): UI!ui::Input {
+	return self.fillInput(new UI!ui::Switch(), 2, 1);
 }
 
-operation ESM!TimestampType getUIEquivalent(): UI!Input {
-	return self.equivalent("CreateTimestampType");
+operation ESM!esm::type::DateType map(): UI!ui::Input {
+	return self.fillInput(new UI!ui::DateInput(), 2, 1);
 }
 
-operation ESM!EnumerationType getUIEquivalent(): UI!Input {
-	return self.equivalent("CreateEnumerationType");
+operation ESM!esm::type::TimestampType map(): UI!ui::Input {
+	return self.fillInput(new UI!ui::DateTimeInput(), 2, 1);
 }
-*/
+
+//operation ESM!esm::type::EnumerationType map(): UI!ui::Input {
+//	return self.fillInput(new UI!ui::DateInput(), 2, 1);
+//}

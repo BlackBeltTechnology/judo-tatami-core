@@ -55,7 +55,7 @@ rule CreateEntryPageForAccessPointRelationForView
         and s.target.view.isDefined()
 		  log.debug("CreateEntryPageForAccessPointRelationForView: " + s.name);
           t.name = t.uiName("EntryPageView");
-          t.children.add(s.target.view.createFlexFromTransferObjectView(t.name));
+          t.children.add(s.target.view.map());
 	      s.eContainer.equivalent("CreateApplication").pages.add(t);
 }
 
@@ -69,7 +69,7 @@ rule CreateEntryPageForAccessPointRelationForForm
 		and s.target.form.isDefined()
 		  log.debug("CreateEntryPageForAccessPointRelationForForm: " + s.name);
           t.name = t.uiName("EntryPageForm");
-          t.children.add(s.target.form.createFlexFromTransferObjectForm(t.name));
+          t.children.add(s.target.form.map());
 	      s.eContainer.equivalent("CreateApplication").pages.add(t);
 }
 
@@ -83,12 +83,12 @@ rule CreateEntryPageForAccessPointRelationForTable
         and s.target.table.isDefined() and s.upper = -1
 		  log.debug("CreateEntryPageForAccessPointRelationForTable: " + s.name);
           t.name = t.uiName("EntryPageTable");
-          var table = s.target.table.createTableFromTransferObjectTable(t.name);
+          var table = s.target.table.createTableFromTransferObjectTable();
           t.children.add(table);
           if (s.target.table.masterDetail and s.target.view.isDefined()) {
 	      		var detail = s.target.view.createDetailPageFromTransferObjectView(t.name);
 			    s.eContainer.equivalent("CreateApplication").pages.add(detail);
-	      		detail.children.add(s.target.view.createFlexFromTransferObjectView(t.name));
+	      		detail.children.add(s.target.view.map());
 	      		table.detail = detail;
     	  }          
 	      s.eContainer.equivalent("CreateApplication").pages.add(t);

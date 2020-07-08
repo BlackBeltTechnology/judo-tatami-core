@@ -1,12 +1,5 @@
-
-operation ESM!esm::ui::Container transform() : UI!ui::Container {
-	throw "Type has no tranform operation: " + self.eClass;
-}
-
-operation ESM!esm::ui::Container transformContainer(prefix : String) : UI!ui::Flex {
+operation ESM!esm::ui::Container createFlexFromContainer() : UI!ui::Flex {
 	var ret = new UI!ui::Flex();
-	
-	(self.name).println("Transform container: ");
 	
     ret.binding = self.getBindingName();
 	ret.name = self.name;	
@@ -19,7 +12,11 @@ operation ESM!esm::ui::Container transformContainer(prefix : String) : UI!ui::Fl
 	}
 
 	for (component in self.components) {
-		ret.children.add(component.transform(""));
+		ret.children.add(component.map());
 	}
 	return ret;
+}
+
+operation ESM!esm::ui::Container map() : UI!ui::Flex {
+	return self.createFlexFromContainer();
 }
