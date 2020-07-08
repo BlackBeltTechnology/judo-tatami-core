@@ -14,9 +14,10 @@ import static hu.blackbelt.judo.meta.psm.runtime.PsmModel.buildPsmModel;
 import static hu.blackbelt.judo.meta.psm.service.util.builder.ServiceBuilders.*;
 import static hu.blackbelt.judo.meta.psm.type.util.builder.TypeBuilders.newCardinalityBuilder;
 import static hu.blackbelt.judo.meta.psm.type.util.builder.TypeBuilders.newStringTypeBuilder;
-import static hu.blackbelt.judo.tatami.psm2asm.Psm2Asm.calculatePsm2AsmTransformationScriptURI;
 import static hu.blackbelt.judo.tatami.psm2asm.Psm2Asm.executePsm2AsmTransformation;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.IsEqual.equalTo;
+import static org.hamcrest.core.IsNull.notNullValue;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -33,8 +34,6 @@ import hu.blackbelt.judo.meta.psm.type.StringType;
 import org.eclipse.emf.ecore.EAnnotation;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EReference;
-import org.hamcrest.core.IsEqual;
-import org.hamcrest.core.IsNull;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -160,6 +159,7 @@ public class Psm2AsmAccessPointTest {
 
         final ActorType entityActor = newActorTypeBuilder()
                 .withName("EntityActor")
+                .withRealm("Sandbox")
                 .withTransferObjectType(entityDTO)
                 .build();
 
@@ -186,6 +186,12 @@ public class Psm2AsmAccessPointTest {
         psmModel.addContent(model);
 
         transform("testEntityTypeAsAccessPoint");
+
+        final Optional<EClass> ap = asmUtils.all(EClass.class).filter(c -> AsmUtils.isAccessPoint(c)).findAny();
+        assertThat(ap.isPresent(), equalTo(Boolean.TRUE));
+        final Optional<EAnnotation> actorType = AsmUtils.getExtensionAnnotationByName(ap.get(), "actor", false);
+        assertThat(actorType.isPresent(), equalTo(Boolean.TRUE));
+        assertThat(actorType.get().getDetails().get("realm"), equalTo("Sandbox"));
     }
 
     @Test
@@ -228,6 +234,7 @@ public class Psm2AsmAccessPointTest {
 
         ActorType actor = newActorTypeBuilder()
                 .withName("Actor")
+                .withRealm("Sandbox")
                 .withTransferObjectType(accessPoint)
                 .build();
 
@@ -241,7 +248,7 @@ public class Psm2AsmAccessPointTest {
 
         final Optional<EClass> asmAP = asmUtils.all(EClass.class).filter(c -> c.getName().equals(accessPoint.getName())).findAny();
         assertTrue(asmAP.isPresent());
-        assertThat(asmAP.get().getEAnnotation(ACCESSPOINT_SOURCE), IsNull.notNullValue());
+        assertThat(asmAP.get().getEAnnotation(ACCESSPOINT_SOURCE), notNullValue());
         final EAnnotation apAnnotation = asmAP.get().getEAnnotation(ACCESSPOINT_SOURCE);
         assertTrue(apAnnotation.getDetails().containsKey("value"));
         assertTrue(apAnnotation.getDetails().get("value").equals("true"));
@@ -257,7 +264,7 @@ public class Psm2AsmAccessPointTest {
         final Optional<EClass> asmOpGroup = asmUtils.all(EClass.class).filter(c -> c.getName().equals(opGroup.getName())).findAny();
         assertTrue(asmOpGroup.isPresent());
         assertTrue(asmES.get().getEType().equals(asmOpGroup.get()));
-        assertThat(asmES.get().getEAnnotation(EXPOSED_SERVICE_SOURCE), IsNull.notNullValue());
+        assertThat(asmES.get().getEAnnotation(EXPOSED_SERVICE_SOURCE), notNullValue());
         final EAnnotation esAnnotation = asmES.get().getEAnnotation(EXPOSED_SERVICE_SOURCE);
         assertTrue(esAnnotation.getDetails().containsKey("value"));
         assertTrue(esAnnotation.getDetails().get("value").equals("true"));
@@ -265,16 +272,16 @@ public class Psm2AsmAccessPointTest {
 
         final Optional<EReference> asmEG = asmUtils.all(EReference.class).filter(r -> r.getName().equals(eGraph.getName())).findAny();
         assertTrue(asmEG.isPresent());
-        assertThat(asmEG.get().getLowerBound(), IsEqual.equalTo(eGraph.getCardinality().getLower()));
-        assertThat(asmEG.get().getUpperBound(), IsEqual.equalTo(eGraph.getCardinality().getUpper()));
+        assertThat(asmEG.get().getLowerBound(), equalTo(eGraph.getCardinality().getLower()));
+        assertThat(asmEG.get().getUpperBound(), equalTo(eGraph.getCardinality().getUpper()));
         assertTrue(asmEG.get().isDerived());
         assertTrue(asmEG.get().getEContainingClass().equals(asmAP.get()));
 
         final Optional<EClass> asmMappedObject = asmUtils.all(EClass.class).filter(c -> c.getName().equals(mappedObject.getName())).findAny();
         assertTrue(asmMappedObject.isPresent());
         assertTrue(asmEG.get().getEType().equals(asmMappedObject.get()));
-        assertThat(asmEG.get().getEAnnotation(EXPOSED_GRAPH_SOURCE), IsNull.notNullValue());
-        assertThat(asmEG.get().getEAnnotation(EXPRESSION_SOURCE), IsNull.notNullValue());
+        assertThat(asmEG.get().getEAnnotation(EXPOSED_GRAPH_SOURCE), notNullValue());
+        assertThat(asmEG.get().getEAnnotation(EXPRESSION_SOURCE), notNullValue());
         final EAnnotation egAnnotation = asmEG.get().getEAnnotation(EXPOSED_GRAPH_SOURCE);
         assertTrue(egAnnotation.getDetails().containsKey("value"));
         assertTrue(egAnnotation.getDetails().get("value").equals("true"));
@@ -287,6 +294,12 @@ public class Psm2AsmAccessPointTest {
         assertFalse(egExprAnnotation.getDetails().containsKey("setter"));
         assertFalse(egExprAnnotation.getDetails().containsKey("setter.dialect"));
         assertTrue(egExprAnnotation.getEModelElement().equals(asmEG.get()));
+
+        final Optional<EClass> ap = asmUtils.all(EClass.class).filter(c -> AsmUtils.isAccessPoint(c)).findAny();
+        assertThat(ap.isPresent(), equalTo(Boolean.TRUE));
+        final Optional<EAnnotation> actorType = AsmUtils.getExtensionAnnotationByName(ap.get(), "actor", false);
+        assertThat(actorType.isPresent(), equalTo(Boolean.TRUE));
+        assertThat(actorType.get().getDetails().get("realm"), equalTo("Sandbox"));
 
 //        final Optional<EReference> asmEG2 = asmUtils.all(EReference.class).filter(r -> r.getName().equals(eGraph2.getName())).findAny();
 //        assertTrue(asmEG2.isPresent());

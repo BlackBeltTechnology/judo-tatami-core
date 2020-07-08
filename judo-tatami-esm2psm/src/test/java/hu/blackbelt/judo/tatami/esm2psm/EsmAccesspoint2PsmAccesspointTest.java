@@ -2,6 +2,7 @@ package hu.blackbelt.judo.tatami.esm2psm;
 
 import hu.blackbelt.epsilon.runtime.execution.api.Log;
 import hu.blackbelt.epsilon.runtime.execution.impl.Slf4jLog;
+import hu.blackbelt.judo.meta.esm.accesspoint.Realm;
 import hu.blackbelt.judo.meta.esm.namespace.Model;
 import hu.blackbelt.judo.meta.esm.operation.OperationType;
 import hu.blackbelt.judo.meta.esm.runtime.EsmModel;
@@ -11,6 +12,7 @@ import hu.blackbelt.judo.meta.esm.structure.MemberType;
 import hu.blackbelt.judo.meta.esm.structure.OneWayRelationMember;
 import hu.blackbelt.judo.meta.esm.structure.RelationKind;
 import hu.blackbelt.judo.meta.esm.structure.TransferObjectType;
+import hu.blackbelt.judo.meta.psm.accesspoint.ActorType;
 import hu.blackbelt.judo.meta.psm.runtime.PsmModel;
 import hu.blackbelt.judo.meta.psm.service.MappedTransferObjectType;
 import hu.blackbelt.judo.meta.psm.service.TransferObjectRelation;
@@ -48,8 +50,7 @@ import static hu.blackbelt.judo.meta.psm.runtime.PsmModel.SaveArguments.psmSaveA
 import static hu.blackbelt.judo.meta.psm.runtime.PsmModel.buildPsmModel;
 import static hu.blackbelt.judo.tatami.esm2psm.Esm2Psm.calculateEsm2PsmTransformationScriptURI;
 import static hu.blackbelt.judo.tatami.esm2psm.Esm2Psm.executeEsm2PsmTransformation;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 @Slf4j
 public class EsmAccesspoint2PsmAccesspointTest {
@@ -144,7 +145,9 @@ public class EsmAccesspoint2PsmAccesspointTest {
                         .build())
                 .build();
         
-        accessPoint.setActorType(newActorTypeBuilder().build());
+        accessPoint.setActorType(newActorTypeBuilder()
+                .withRealm(Realm.PUBLIC)
+                .build());
 
         final Model model = newModelBuilder().withName(MODEL_NAME)
                 .withElements(Arrays.asList(unmappedTransferObjectType, accessPoint)).build();
@@ -157,6 +160,10 @@ public class EsmAccesspoint2PsmAccesspointTest {
                 .filter(t -> t.isAccessPoint())
                 .findAny();
         assertTrue(ap.isPresent());
+
+        final Optional<ActorType> actorType = allPsm(ActorType.class).findAny();
+        assertTrue(actorType.isPresent());
+        assertNull(actorType.get().getRealm());
 
         assertTrue(ap.get().getRelations().stream().anyMatch(s -> SERVICE_GROUP_NAME.equals(s.getName())));
     }
@@ -189,12 +196,15 @@ public class EsmAccesspoint2PsmAccesspointTest {
                 .withRelations(eg)
                 .build();
         
-        accessPoint.setActorType(newActorTypeBuilder().build());
+        accessPoint.setActorType(newActorTypeBuilder()
+                .withRealm(Realm.CUSTOM)
+                .withCustomRealm("sandbox")
+                .build());
         
         log.debug("container is ap: " + ((TransferObjectType)eg.eContainer()).isAccesspoint());
         log.debug("target is mapped: " + eg.getTarget().isMapped());
         log.debug("getter: " + !eg.getGetterExpression().trim().equals(""));
-        
+
         
         final Model model = newModelBuilder().withName(MODEL_NAME)
                 .withElements(Arrays.asList(entityType, accessPoint)).build();
@@ -207,6 +217,10 @@ public class EsmAccesspoint2PsmAccesspointTest {
                 .filter(t -> t.isAccessPoint())
                 .findAny();
         assertTrue(ap.isPresent());
+
+        final Optional<ActorType> actorType = allPsm(ActorType.class).findAny();
+        assertTrue(actorType.isPresent());
+        assertEquals("sandbox", actorType.get().getRealm());
 
         assertTrue(ap.get().getRelations().stream()
                 .filter(r -> r.isExposedGraph())
