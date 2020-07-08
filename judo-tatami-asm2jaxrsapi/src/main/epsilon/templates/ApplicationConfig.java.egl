@@ -7,12 +7,17 @@ package [%= packagePath %];
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 
 @ApplicationPath("[%= restPath %]")
 public class ApplicationConfig extends Application {
-	
+
+    private final Map<String, Object> properties = new TreeMap();
+
 	[% for (name : String in serviceInstances.keySet()) { %]
 	[%= serviceInstances.get(name) %] [%= name %];
 	[% } %]
@@ -26,5 +31,13 @@ public class ApplicationConfig extends Application {
 			[% } %]
 
         ));
+    }
+
+    public Map<String, Object> getProperties() {
+        return Collections.unmodifiableMap(this.properties);
+    }
+
+    public void setContext(Object context) {
+        properties.put("context", context);
     }
 }

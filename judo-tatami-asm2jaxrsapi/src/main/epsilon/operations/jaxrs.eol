@@ -140,6 +140,7 @@ operation genApplication(serviceInstances : Map) {
 	var t = TemplateFactory.load("ApplicationConfig.scr.xml.egl");
 	t.populate("className", "ApplicationConfig");
 	t.populate("packagePath", getApplicationPackageName());
+	t.populate("restPath", "/" + asmUtils.getModel().get().name);
 	t.populate("serviceInstances", serviceInstances);
 	t.generate(getApplicationConfigScrXmlFileName());
 	t.reset();
