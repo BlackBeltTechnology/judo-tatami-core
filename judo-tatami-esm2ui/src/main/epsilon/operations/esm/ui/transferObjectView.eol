@@ -7,7 +7,8 @@ operation ESM!esm::ui::TransferObjectView createFlexFromTransferObjectView(prefi
 operation ESM!esm::ui::TransferObjectView createDetailPageFromTransferObjectView(prefix : String) : UI!ui::PageDefinition {
 	var t : UI!ui::PageDefinition = new UI!ui::PageDefinition();
     t.binding = esmUtils.getNamespaceElementFQName(self.eContainer) + "." + self.name;
-	t.name = t.uiName(prefix);
+	t.name = self.name.uiName(prefix);
+    //t.children.add(self.createFlexFromTransferObjectView(t.name));
     return t;
 }
 

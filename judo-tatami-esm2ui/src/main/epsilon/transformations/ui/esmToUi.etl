@@ -40,8 +40,18 @@ operation String uiName() : String {
 	return self.replaceAll("::", uiSep()).replaceAll("\\.", uiSep());
 } 
 
+
+@cached
+operation String uiName(postfix : String) : String {
+	if (postfix.isUndefined()) {
+		return self.uiName();
+	} else {
+		return self.uiName() + uiSep() + postfix;
+	}
+} 
+
 @cached
 operation uiSep() : String {
-	return "__";
+	return "/";
 }
 

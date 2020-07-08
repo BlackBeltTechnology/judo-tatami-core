@@ -6,8 +6,10 @@ operation ESM!esm::ui::Container transform() : UI!ui::Container {
 operation ESM!esm::ui::Container transformContainer(prefix : String) : UI!ui::Flex {
 	var ret = new UI!ui::Flex();
 	
+	(self.name).println("Transform container: ");
+	
     ret.binding = self.getBindingName();
-	ret.name = ret.uiName(prefix);	
+	ret.name = self.name;	
 
 	if (self.layout == ESM!esm::ui::Layout#HORIZONTAL) {
 		ret.direction = UI!Axis#HORIZONTAL;
@@ -17,7 +19,7 @@ operation ESM!esm::ui::Container transformContainer(prefix : String) : UI!ui::Fl
 	}
 
 	for (component in self.components) {
-		ret.children.add(component.transform(ret.name));
+		ret.children.add(component.transform(""));
 	}
 	return ret;
 }
