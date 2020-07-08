@@ -161,8 +161,8 @@ public class PsmDefaultWorkflowMojo extends AbstractMojo {
 
 			if (!isNullOrEmpty(psmGeneratorClassName) && !isNullOrEmpty(psmGeneratorMethodName)) {
 				Class generatorClass = Thread.currentThread().getContextClassLoader().loadClass(psmGeneratorClassName);
-				Method generatorMethid = generatorClass.getMethod(psmGeneratorMethodName);
-				PsmModel psmModel = (PsmModel) generatorMethid.invoke(generatorClass.newInstance());
+				Method generatorMethod = generatorClass.getMethod(psmGeneratorMethodName);
+				PsmModel psmModel = (PsmModel) generatorMethod.invoke(generatorClass.newInstance());
 				parameters.psmModel(psmModel);
 			} else {
 				parameters.psmModelSourceURI(psmModelFile.toURI());
