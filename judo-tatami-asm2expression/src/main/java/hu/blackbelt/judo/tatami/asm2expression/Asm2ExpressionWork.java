@@ -28,13 +28,6 @@ public class Asm2ExpressionWork extends AbstractTransformationWork {
 
 		Optional<MeasureModel> measureModel = getTransformationContext().getByClass(MeasureModel.class);
 
-		File temporaryDirectory = File.createTempFile(Asm2Expression.class.getName(), asmModel.get().getName());
-		if (temporaryDirectory.exists()) {
-			temporaryDirectory.delete();
-		}
-		temporaryDirectory.deleteOnExit();
-		temporaryDirectory.mkdir();
-
 		ExpressionModel
 				expressionModel = getTransformationContext().getByClass(ExpressionModel.class)
 				.orElseGet(() -> buildExpressionModel().name(asmModel.get().getName()).build());

@@ -3,7 +3,7 @@ package hu.blackbelt.judo.tatami.esm2psm;
 import hu.blackbelt.epsilon.runtime.execution.api.Log;
 import hu.blackbelt.epsilon.runtime.execution.impl.Slf4jLog;
 import hu.blackbelt.judo.meta.esm.namespace.Model;
-import hu.blackbelt.judo.meta.esm.operation.OperationModifier;
+import hu.blackbelt.judo.meta.esm.operation.OperationType;
 import hu.blackbelt.judo.meta.esm.runtime.EsmModel;
 import hu.blackbelt.judo.meta.esm.runtime.EsmUtils;
 import hu.blackbelt.judo.meta.esm.structure.EntityType;
@@ -17,6 +17,7 @@ import hu.blackbelt.judo.meta.psm.service.TransferObjectRelation;
 import hu.blackbelt.judo.meta.psm.service.TransferOperation;
 import hu.blackbelt.judo.meta.psm.service.TransferOperationBehaviourType;
 import hu.blackbelt.judo.meta.psm.service.UnboundOperation;
+import hu.blackbelt.model.northwind.esm.NorthwindEsmModel;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
@@ -38,6 +39,8 @@ import java.util.stream.StreamSupport;
 import static hu.blackbelt.judo.meta.esm.accesspoint.util.builder.AccesspointBuilders.newActorTypeBuilder;
 import static hu.blackbelt.judo.meta.esm.namespace.util.builder.NamespaceBuilders.newModelBuilder;
 import static hu.blackbelt.judo.meta.esm.operation.util.builder.OperationBuilders.newOperationBuilder;
+import static hu.blackbelt.judo.meta.esm.runtime.EsmEpsilonValidator.calculateEsmValidationScriptURI;
+import static hu.blackbelt.judo.meta.esm.runtime.EsmEpsilonValidator.validateEsm;
 import static hu.blackbelt.judo.meta.esm.runtime.EsmModel.buildEsmModel;
 import static hu.blackbelt.judo.meta.esm.structure.util.builder.StructureBuilders.*;
 import static hu.blackbelt.judo.meta.psm.PsmEpsilonValidator.calculatePsmValidationScriptURI;
@@ -102,6 +105,9 @@ public class EsmAccesspoint2PsmAccesspointTest {
     }
 
     private void transform() throws Exception {
+    	assertTrue(esmModel.isValid());
+    	validateEsm(new Slf4jLog(log), esmModel, calculateEsmValidationScriptURI());
+
         // Make transformation which returns the trace with the serialized URI's
         esm2PsmTransformationTrace = executeEsm2PsmTransformation(esmModel, psmModel, new Slf4jLog(log),
                 calculateEsm2PsmTransformationScriptURI());
@@ -124,7 +130,7 @@ public class EsmAccesspoint2PsmAccesspointTest {
                 .withName(TRANSFER_OBJECT_TYPE_NAME)
                 .withOperations(newOperationBuilder().withName(OPERATION_NAME)
                         .withCustomImplementation(true)
-                        .withModifier(OperationModifier.STATIC)
+                        .withOperationType(OperationType.STATIC)
                         .withBinding("")
                         .build())
                 .build();
@@ -133,9 +139,9 @@ public class EsmAccesspoint2PsmAccesspointTest {
                 .withName(ACCESS_POINT_NAME)
                 .withRelations(newOneWayRelationMemberBuilder()
                         .withName(SERVICE_GROUP_NAME)
-                        .withMemberType(MemberType.DERIVED)
+                        .withMemberType(MemberType.TRANSIENT)
+                        .withRelationKind(RelationKind.AGGREGATION)
                         .withTarget(unmappedTransferObjectType)
-                        .withGetterExpression("Model::T")
                         .build())
                 .build();
         
@@ -295,6 +301,7 @@ public class EsmAccesspoint2PsmAccesspointTest {
                 .withRelations(newOneWayRelationMemberBuilder()
                         .withName(EXPOSED_GRAPH_NAME)
                         .withTarget(entityTypeE)
+                        .withMemberType(MemberType.DERIVED)
                         .withGetterExpression(MODEL_NAME + EsmUtils.NAMESPACE_SEPARATOR + ENTITY_TYPE_E_NAME)
                         .withLower(LOWER)
                         .withUpper(UPPER)

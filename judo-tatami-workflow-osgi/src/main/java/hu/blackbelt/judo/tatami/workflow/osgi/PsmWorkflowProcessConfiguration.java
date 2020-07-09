@@ -41,5 +41,16 @@ public @interface PsmWorkflowProcessConfiguration {
     @AttributeDefinition
     boolean ignoreScript2Operation() default false;
 
+    @AttributeDefinition
+    boolean validateModels() default false;
+
+    @AttributeDefinition
+    boolean saveCompletedModels() default false;
+
+    @AttributeDefinition
+    boolean saveFailedModels() default false;
+
+    @AttributeDefinition
+    String outputDirectory() default "";
 
 }

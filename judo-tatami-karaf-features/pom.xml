@@ -37,7 +37,7 @@
         <profile>
             <id>verify-feature</id>
             <activation>
-                <activeByDefault>false</activeByDefault>
+                <activeByDefault>true</activeByDefault>
             </activation>
             <build>
                 <plugins>
@@ -116,6 +116,12 @@
                                         <feature>judo-tatami-asm2sdk</feature>
                                         <feature>judo-tatami-script2operation</feature>
                                         <feature>judo-tatami-rdbms2liquibase</feature>
+                                        <feature>judo-tatami-validation-asm</feature>
+                                        <feature>judo-tatami-validation-psm</feature>
+                                        <feature>judo-tatami-validation-esm</feature>
+                                        <feature>judo-tatami-validation-expression-asm</feature>
+                                        <feature>judo-tatami-validation-expression-psm</feature>
+                                        <feature>judo-tatami-validation-expression-esm</feature>
                                         <feature>judo-tatami-workflow</feature>
                                     </features>
                                 </configuration>

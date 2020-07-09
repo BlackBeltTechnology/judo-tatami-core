@@ -12,6 +12,33 @@ rule CreateTransferObject
 		}
 	}
 
+@greedy
+rule CreateTransferObjectTypeAnnotationClass
+	transform s : JUDOPSM!TransferObjectType
+	to t : ASM!EAnnotation {
+        t.source = asmUtils.getAnnotationUri("transferObjectType");
+        
+        var transferObject = new ASM!EStringToStringMapEntry;
+        transferObject.key = "value";
+        transferObject.value = "true";
+        t.details.add(transferObject);
+        
+        s.asmEquivalent().eAnnotations.add(t);
+	}
+
+rule CreateTransferObjectTypeAnnotationClassForReferenceClass
+	transform s : JUDOPSM!EntityType
+	to t : ASM!EAnnotation {
+        t.source = asmUtils.getAnnotationUri("transferObjectType");
+        
+        var transferObject = new ASM!EStringToStringMapEntry;
+        transferObject.key = "value";
+        transferObject.value = "true";
+        t.details.add(transferObject);
+        
+        s.equivalent("CreateReferenceClassForEntityType").eAnnotations.add(t);
+	}
+
 rule CreateMappedEntityTypeAnnotationOnMappedTransferObject
     transform s : JUDOPSM!MappedTransferObjectType
     to t : ASM!EAnnotation {
@@ -21,6 +48,18 @@ rule CreateMappedEntityTypeAnnotationOnMappedTransferObject
         mappedEntityType.key = "value";
         mappedEntityType.value = asmUtils.getClassifierFQName(s.entityType.equivalent("CreateEntityClass"));
         t.details.add(mappedEntityType);
+
+        if (s.filter.isDefined()) {
+            var filter = new ASM!EStringToStringMapEntry;
+            filter.key = "filter";
+            filter.value = s.filter.expression;
+            t.details.add(filter);
+
+            var filterDialect = new ASM!EStringToStringMapEntry;
+            filterDialect.key = "filter.dialect";
+            filterDialect.value = s.filter.dialect.asString();
+            t.details.add(filterDialect);
+        }
 
         s.equivalent("CreateMappedTransferObject").eAnnotations.add(t);
     }

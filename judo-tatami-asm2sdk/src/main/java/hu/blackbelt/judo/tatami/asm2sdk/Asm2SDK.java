@@ -7,10 +7,14 @@ import com.google.common.collect.Sets;
 import hu.blackbelt.epsilon.runtime.execution.ExecutionContext;
 import hu.blackbelt.epsilon.runtime.execution.api.Log;
 import hu.blackbelt.epsilon.runtime.execution.contexts.EglExecutionContext;
+import hu.blackbelt.epsilon.runtime.execution.impl.Slf4jLog;
 import hu.blackbelt.judo.framework.compiler.api.CompilerUtil;
 import hu.blackbelt.judo.framework.compiler.api.FullyQualifiedName;
 import hu.blackbelt.judo.meta.asm.runtime.AsmModel;
 import hu.blackbelt.judo.meta.asm.runtime.AsmUtils;
+import hu.blackbelt.judo.tatami.core.CachingInputStream;
+import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 import org.eclipse.epsilon.common.util.UriUtil;
 import org.ops4j.pax.tinybundles.core.TinyBundle;
 import org.osgi.framework.Constants;
@@ -29,9 +33,19 @@ import static hu.blackbelt.epsilon.runtime.execution.model.emf.WrappedEmfModelCo
 import static hu.blackbelt.judo.framework.compiler.api.CompilerContext.compilerContextBuilder;
 import static org.ops4j.pax.tinybundles.core.TinyBundles.bundle;
 
+@Slf4j
 public class Asm2SDK {
 
     public static final String SCRIPT_ROOT_TATAMI_ASM_2_SDK = "tatami/asm2sdk/templates/";
+
+    public static InputStream executeAsm2SDKGeneration(AsmModel asmModel, Log log,
+                                                       File sourceCodeOutputDir) throws Exception {
+        return executeAsm2SDKGeneration(asmModel, log, calculateAsm2SDKTemplateScriptURI(), sourceCodeOutputDir);
+    }
+
+    public static InputStream executeAsm2SDKGeneration(AsmModel asmModel, File sourceCodeOutputDir) throws Exception {
+        return executeAsm2SDKGeneration(asmModel, new Slf4jLog(log), calculateAsm2SDKTemplateScriptURI(), sourceCodeOutputDir);
+    }
 
     public static InputStream executeAsm2SDKGeneration(AsmModel asmModel, Log log,
                                                        URI scriptUri, File sourceCodeOutputDir) throws Exception {
@@ -66,7 +80,8 @@ public class Asm2SDK {
         // Transformation script
         executionContext.executeProgram(eglExecutionContext);
 
-        Set<String> javaFileNames = (Set<String>)executionContext.getContext().get("outputJavaClasses");
+        Set<String> javaFileNames = ((Set<String>) executionContext.getContext().get("outputJavaClasses"))
+                .stream().map(s -> s.replaceAll("//", "/")).collect(Collectors.toSet());
         Set<String> scrXmlFileNames = (Set<String>)executionContext.getContext().get("outputScrXmls");
 
         executionContext.commit();
@@ -158,10 +173,11 @@ public class Asm2SDK {
         if (scrXmlFiles.size() > 0) {
             bundle.set("Service-Component", Joiner.on(",").join(scrXmlFiles));
         }
-        return bundle.build();
+        return new CachingInputStream(bundle.build());
     }
 
-    public static URI calculateAsm2SDKTemplateScriptURI() throws URISyntaxException {
+    @SneakyThrows(URISyntaxException.class)
+    public static URI calculateAsm2SDKTemplateScriptURI() {
         URI psmRoot = Asm2SDK.class.getProtectionDomain().getCodeSource().getLocation().toURI();
         if (psmRoot.toString().endsWith(".jar")) {
             psmRoot = new URI("jar:" + psmRoot.toString() + "!/" + SCRIPT_ROOT_TATAMI_ASM_2_SDK);

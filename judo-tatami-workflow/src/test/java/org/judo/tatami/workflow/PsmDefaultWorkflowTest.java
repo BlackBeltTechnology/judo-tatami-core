@@ -32,15 +32,6 @@ public class PsmDefaultWorkflowTest {
 	
 	PsmDefaultWorkflow defaultWorkflow;
 
-    public static final URI PSM2ASM_SCRIPTROOT = new File("../judo-tatami-psm2asm/src/main/epsilon/transformations/asm/").toURI();
-    public static final URI PSM2MEASURE_SCRIPTROOT = new File("../judo-tatami-psm2measure/src/main/epsilon/transformations/measure/").toURI();
-    public static final URI ASM2RDBMS_SCRIPTROOT = new File("../judo-tatami-asm2rdbms/src/main/epsilon/transformations/").toURI();
-    public static final URI ASM2OPENAPI_SCRIPTROOT = new File("../judo-tatami-asm2openapi/src/main/epsilon/transformations/openapi/").toURI();
-    public static final URI RDMBS2LIQUIBASE_SCRIPTROOT = new File("../judo-tatami-rdbms2liquibase/src/main/epsilon/transformations/").toURI();
-    public static final URI EXCELMODEL_SCRIPTROOT = new File("../judo-tatami-asm2rdbms/model/").toURI();
-    public static final URI ASM2SDK_SCRIPTROOT = new File("../judo-tatami-asm2sdk/src/main/epsilon/templates/").toURI();
-    public static final URI ASM2JAXRSAPI_SCRIPTROOT = new File("../judo-tatami-asm2jaxrsapi/src/main/epsilon/templates/").toURI();
-    
     public static final String FILE_LOCATION = "target/test-classes/northwind-psm.model";
     
     public static final File TARGET_TEST_CLASSES = new File("target/test-classes");
@@ -94,14 +85,6 @@ public class PsmDefaultWorkflowTest {
 
 		defaultWorkflow = new PsmDefaultWorkflow(DefaultWorkflowSetupParameters.defaultWorkflowSetupParameters()
 				.psmModelSourceURI(new File(FILE_LOCATION).toURI())
-				.psm2AsmModelTransformationScriptURI(PSM2ASM_SCRIPTROOT)
-				.psm2MeasureModelTransformationScriptURI(PSM2MEASURE_SCRIPTROOT)
-				.asm2jaxrsapiModelTransformationScriptURI(ASM2JAXRSAPI_SCRIPTROOT)
-				.asm2RdbmsModelTransformationScriptURI(ASM2RDBMS_SCRIPTROOT)
-				.asm2RdbmsModelTransformationModelURI(EXCELMODEL_SCRIPTROOT)
-				.asm2OpenapiModelTransformationScriptURI(ASM2OPENAPI_SCRIPTROOT)
-				.asm2sdkModelTransformationScriptURI(ASM2SDK_SCRIPTROOT)
-				.rdbms2LiquibaseModelTransformationScriptURI(RDMBS2LIQUIBASE_SCRIPTROOT)
 				.modelName(MODEL_NAME)
 				.dialectList(DIALECT_LIST));
 		workReport = defaultWorkflow.startDefaultWorkflow();

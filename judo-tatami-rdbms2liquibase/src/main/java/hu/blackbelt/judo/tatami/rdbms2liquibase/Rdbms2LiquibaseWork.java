@@ -31,6 +31,12 @@ public class Rdbms2LiquibaseWork extends AbstractTransformationWork {
 		this.dialect = dialect;
 	}
 
+	public Rdbms2LiquibaseWork(TransformationContext transformationContext,
+							   String dialect) {
+
+		this(transformationContext, Rdbms2Liquibase.calculateRdbms2LiquibaseTransformationScriptURI(), dialect);
+	}
+
 	@Override
 	public void execute() throws Exception {
 

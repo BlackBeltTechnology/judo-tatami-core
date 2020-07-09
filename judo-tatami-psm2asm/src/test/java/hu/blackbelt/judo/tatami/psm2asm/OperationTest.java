@@ -63,7 +63,7 @@ public class OperationTest {
 
         validatePsm(new Slf4jLog(log), psmModel, calculatePsmValidationScriptURI());
 
-        executePsm2AsmTransformation(psmModel, asmModel, new Slf4jLog(log), calculatePsm2AsmTransformationScriptURI());
+        executePsm2AsmTransformation(psmModel, asmModel);
 
         asmModel.saveAsmModel(asmSaveArgumentsBuilder()
                 .file(new File(TARGET_TEST_CLASSES, getClass().getName() + "-" + testName + "-asm.model"))

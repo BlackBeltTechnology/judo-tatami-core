@@ -54,27 +54,27 @@
 
         <epsilon-runtime-version>1.2.2</epsilon-runtime-version>
 
-        <judo-framework-version>2.0.0.20200612_222500_007415d_develop</judo-framework-version>
+        <judo-framework-version>2.0.0.20200629_214515_fb8a017_develop</judo-framework-version>
 
         <!-- Model versions -->
-        <judo-meta-rdbms-version>1.0.0.20200605_095434_9e51d65_develop</judo-meta-rdbms-version>
-        <judo-meta-esm-version>1.1.0.20200604_172432_ee0db8a_develop</judo-meta-esm-version>
-        <judo-meta-psm-version>1.1.0.20200615_143005_c1b9bce_develop</judo-meta-psm-version>
-        <judo-meta-jql-version>1.0.1.20200605_093736_63bcae1_develop</judo-meta-jql-version>
-        <judo-meta-jcl-version>1.0.1.20200605_100141_937f460_develop</judo-meta-jcl-version>
-        <judo-meta-script-version>1.0.1.20200605_103957_f953891_develop</judo-meta-script-version>
-        <judo-meta-asm-version>1.1.0.20200611_141341_8e2f11c_develop</judo-meta-asm-version>
-        <judo-meta-expression-version>1.0.1.20200616_084420_e33184d_develop</judo-meta-expression-version>
-        <judo-meta-measure-version>1.0.0.20200605_094620_28449e6_develop</judo-meta-measure-version>
-        <judo-meta-liquibase-version>1.0.0.20200605_094438_715ed55_develop</judo-meta-liquibase-version>
-        <judo-meta-openapi-version>1.0.0.20200605_095300_a5f6e52_develop</judo-meta-openapi-version>
-        <judo-meta-ui-version>1.0.0.20200605_103445_2359a72_develop</judo-meta-ui-version>
-        <judo-dao-api-version>1.0.0</judo-dao-api-version>
-        <judo-dispatcher-api-version>1.0.0</judo-dispatcher-api-version>
-        <judo-script-codegen-version>1.1.0.20200605_104956_1f19539_develop</judo-script-codegen-version>
+        <judo-meta-rdbms-version>1.0.0.20200630_234951_51d5e61_develop</judo-meta-rdbms-version>
+        <judo-meta-esm-version>1.1.0.20200702_134819_321333e_develop</judo-meta-esm-version>
+        <judo-meta-psm-version>1.1.0.20200707_124855_fc5640c_develop</judo-meta-psm-version>
+        <judo-meta-jql-version>1.0.1.20200630_232815_ed6c349_develop</judo-meta-jql-version>
+        <judo-meta-jcl-version>1.0.1.20200702_131544_4fe7b50_develop</judo-meta-jcl-version>
+        <judo-meta-script-version>1.0.1.20200702_143413_dd323ed_develop</judo-meta-script-version>
+        <judo-meta-asm-version>1.1.0.20200702_130733_7926a0b_develop</judo-meta-asm-version>
+        <judo-meta-expression-version>1.0.1.20200702_141534_0c42a60_develop</judo-meta-expression-version>
+        <judo-meta-measure-version>1.0.0.20200630_232902_b6ce25f_develop</judo-meta-measure-version>
+        <judo-meta-liquibase-version>1.0.0.20200630_232906_9113d74_develop</judo-meta-liquibase-version>
+        <judo-meta-openapi-version>1.0.0.20200630_233529_cd0a349_develop</judo-meta-openapi-version>
+        <judo-meta-ui-version>1.0.0.20200702_140117_a5b8876_develop</judo-meta-ui-version>
+        <judo-dao-api-version>1.0.1</judo-dao-api-version>
+        <judo-dispatcher-api-version>1.0.1</judo-dispatcher-api-version>
+        <judo-script-codegen-version>1.1.0.20200706_114943_e5901e4_develop</judo-script-codegen-version>
 
-        <structured-map-proxy-version>1.0.2</structured-map-proxy-version>
-        <judo-operation-utils-version>1.1.0.20200424_162743_fecf37e_develop</judo-operation-utils-version>
+        <structured-map-proxy-version>1.0.3</structured-map-proxy-version>
+        <judo-operation-utils-version>1.1.0.20200706_113528_d3209b2_develop</judo-operation-utils-version>
 
 
         <!-- We use older version of plugin to avoid chicked egg problem -->
@@ -98,10 +98,10 @@
         <emf-mapping-ecore2xml>2.11.0</emf-mapping-ecore2xml>
 
         <cxf-version>3.3.6</cxf-version>
-        <osgi-utils-version>1.0.7</osgi-utils-version>
+        <osgi-utils-version>1.0.10</osgi-utils-version>
         <bouncycastle-karaf-features-version>1.61.2</bouncycastle-karaf-features-version>
         <tinybundles-karaf-features-version>1.0.0</tinybundles-karaf-features-version>
-        <google-karaf-features-version>1.0.5</google-karaf-features-version>
+        <google-karaf-features-version>1.0.6</google-karaf-features-version>
         <eclipse-emf-karaf-features-version>1.0.1</eclipse-emf-karaf-features-version>
         <eclipse-epsilon-karaf-features-version>1.0.3</eclipse-epsilon-karaf-features-version>
         <eclipse-xtext-karaf-features-version>1.0.2</eclipse-xtext-karaf-features-version>
@@ -109,7 +109,7 @@
         <apache-commons-karaf-features-version>1.0.5</apache-commons-karaf-features-version>
         <apache-poi-karaf-features-version>1.0.2</apache-poi-karaf-features-version>
         <apache-httpclient-karaf-features-version>1.0.0</apache-httpclient-karaf-features-version>
-        <cxf-jaxrs-application-manager-version>0.5.0</cxf-jaxrs-application-manager-version>
+        <cxf-jaxrs-application-manager-version>0.6.0</cxf-jaxrs-application-manager-version>
         <log4j.configuration>log4j.properties</log4j.configuration>
     </properties>
 
@@ -172,7 +172,7 @@
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
-            <version>20.0</version>
+            <version>27.1-jre</version>
         </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
@@ -389,6 +389,16 @@
                 <artifactId>hu.blackbelt.judo.meta.expression.model.adapter.measure</artifactId>
                 <version>${judo-meta-expression-version}</version>
             </dependency>
+            <dependency>
+                <groupId>hu.blackbelt.judo.meta</groupId>
+                <artifactId>hu.blackbelt.judo.meta.expression.model.adapter.psm</artifactId>
+                <version>${judo-meta-expression-version}</version>
+            </dependency>
+            <dependency>
+                <groupId>hu.blackbelt.judo.meta</groupId>
+                <artifactId>hu.blackbelt.judo.meta.expression.model.adapter.esm</artifactId>
+                <version>${judo-meta-expression-version}</version>
+            </dependency>
 
             <dependency>
                 <groupId>hu.blackbelt.judo.meta</groupId>
@@ -527,6 +537,43 @@
                 <artifactId>judo-tatami-rdbms2liquibase</artifactId>
                 <version>1.1.0-SNAPSHOT</version>
             </dependency>
+
+            <dependency>
+                <groupId>hu.blackbelt.judo.tatami</groupId>
+                <artifactId>judo-tatami-esm-validation</artifactId>
+                <version>1.1.0-SNAPSHOT</version>
+            </dependency>
+
+            <dependency>
+                <groupId>hu.blackbelt.judo.tatami</groupId>
+                <artifactId>judo-tatami-psm-validation</artifactId>
+                <version>1.1.0-SNAPSHOT</version>
+            </dependency>
+
+            <dependency>
+                <groupId>hu.blackbelt.judo.tatami</groupId>
+                <artifactId>judo-tatami-asm-validation</artifactId>
+                <version>1.1.0-SNAPSHOT</version>
+            </dependency>
+
+            <dependency>
+                <groupId>hu.blackbelt.judo.tatami</groupId>
+                <artifactId>judo-tatami-expression-asm-validation</artifactId>
+                <version>1.1.0-SNAPSHOT</version>
+            </dependency>
+
+            <dependency>
+                <groupId>hu.blackbelt.judo.tatami</groupId>
+                <artifactId>judo-tatami-expression-psm-validation</artifactId>
+                <version>1.1.0-SNAPSHOT</version>
+            </dependency>
+
+            <dependency>
+                <groupId>hu.blackbelt.judo.tatami</groupId>
+                <artifactId>judo-tatami-expression-esm-validation</artifactId>
+                <version>1.1.0-SNAPSHOT</version>
+            </dependency>
+
 
             <dependency>
                 <groupId>org.hamcrest</groupId>
@@ -776,6 +823,12 @@
                 <module>judo-tatami-asm2script</module>
                 <module>judo-tatami-asm2sdk</module>
                 <module>judo-tatami-script2operation</module>
+                <module>judo-tatami-esm-validation</module>
+                <module>judo-tatami-psm-validation</module>
+                <module>judo-tatami-asm-validation</module>
+                <module>judo-tatami-expression-asm-validation</module>
+                <module>judo-tatami-expression-psm-validation</module>
+                <module>judo-tatami-expression-esm-validation</module>
                 <module>judo-tatami-workflow</module>
                 <module>judo-tatami-workflow-osgi</module>
 		        <module>judo-tatami-workflow-maven-plugin</module>

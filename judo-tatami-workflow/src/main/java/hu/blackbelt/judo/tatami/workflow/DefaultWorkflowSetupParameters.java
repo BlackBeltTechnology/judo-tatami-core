@@ -1,5 +1,6 @@
 package hu.blackbelt.judo.tatami.workflow;
 
+import java.io.File;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
@@ -33,32 +34,8 @@ public class DefaultWorkflowSetupParameters {
 	 * When PsmModel is defined psmModelURI is ignored.
 	 */
 	private PsmModel psmModel;
-	
+
 	private URI psmModelSourceURI;
-
-	@NonNull
-	private URI psm2AsmModelTransformationScriptURI;
-
-	@NonNull
-	private URI asm2OpenapiModelTransformationScriptURI;
-
-	@NonNull
-	private URI psm2MeasureModelTransformationScriptURI;
-
-	@NonNull
-	private URI asm2RdbmsModelTransformationScriptURI;
-
-	@NonNull
-	private URI asm2RdbmsModelTransformationModelURI;
-
-	@NonNull
-	private URI rdbms2LiquibaseModelTransformationScriptURI;
-	
-	@NonNull
-	private URI asm2sdkModelTransformationScriptURI;
-	
-	@NonNull
-	private URI asm2jaxrsapiModelTransformationScriptURI;
 
 	@NonNull
 	private String modelName;
@@ -96,17 +73,7 @@ public class DefaultWorkflowSetupParameters {
 	@Builder.Default
 	private Boolean ignoreScript2Operation = false;
 
-	public static DefaultWorkflowSetupParametersBuilder addTransformerCalculatedUris(DefaultWorkflowSetupParametersBuilder builder) throws URISyntaxException {
-		return builder
-				.psm2AsmModelTransformationScriptURI(calculatePsm2AsmTransformationScriptURI())
-				.psm2MeasureModelTransformationScriptURI(calculatePsm2MeasureTransformationScriptURI())
-				.asm2jaxrsapiModelTransformationScriptURI(calculateAsm2JaxrsapiTemplateScriptURI())
-				.asm2OpenapiModelTransformationScriptURI(calculateAsm2OpenapiTransformationScriptURI())
-				.asm2RdbmsModelTransformationModelURI(calculateAsm2RdbmsModelURI())
-				.asm2RdbmsModelTransformationScriptURI(calculateAsm2RdbmsTransformationScriptURI())
-				.asm2sdkModelTransformationScriptURI(calculateAsm2SDKTemplateScriptURI())
-				.rdbms2LiquibaseModelTransformationScriptURI(calculateRdbms2LiquibaseTransformationScriptURI());
-	}
-
+	@Builder.Default
+	private Boolean validateModels = false;
 
 }

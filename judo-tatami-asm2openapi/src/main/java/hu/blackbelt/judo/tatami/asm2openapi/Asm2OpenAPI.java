@@ -5,9 +5,12 @@ import com.google.common.collect.ImmutableMap;
 import hu.blackbelt.epsilon.runtime.execution.ExecutionContext;
 import hu.blackbelt.epsilon.runtime.execution.api.Log;
 import hu.blackbelt.epsilon.runtime.execution.contexts.EtlExecutionContext;
+import hu.blackbelt.epsilon.runtime.execution.impl.Slf4jLog;
 import hu.blackbelt.judo.meta.asm.runtime.AsmModel;
 import hu.blackbelt.judo.meta.asm.runtime.AsmUtils;
 import hu.blackbelt.judo.meta.openapi.runtime.OpenapiModel;
+import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.epsilon.common.util.UriUtil;
 
@@ -22,13 +25,21 @@ import static hu.blackbelt.judo.tatami.asm2openapi.Asm2OpenAPITransformationTrac
 import static hu.blackbelt.judo.tatami.asm2openapi.Asm2OpenAPITransformationTrace.resolveAsm2OpenAPITrace;
 import static hu.blackbelt.judo.tatami.core.TransformationTraceUtil.*;
 
+@Slf4j
 public class Asm2OpenAPI {
 
     public static final String SCRIPT_ROOT_TATAMI_ASM_2_OPENAPI = "tatami/asm2openapi/transformations/openapi/";
 
+    public static Asm2OpenAPITransformationTrace executeAsm2OpenAPITransformation(AsmModel asmModel, OpenapiModel openAPIModel) throws Exception {
+        return executeAsm2OpenAPITransformation(asmModel, openAPIModel, new Slf4jLog(log), calculateAsm2OpenapiTransformationScriptURI());
+    }
+
+    public static Asm2OpenAPITransformationTrace executeAsm2OpenAPITransformation(AsmModel asmModel, OpenapiModel openAPIModel, Log log) throws Exception {
+        return executeAsm2OpenAPITransformation(asmModel, openAPIModel, log, calculateAsm2OpenapiTransformationScriptURI());
+    }
+
     public static Asm2OpenAPITransformationTrace executeAsm2OpenAPITransformation(AsmModel asmModel, OpenapiModel openAPIModel, Log log,
                                                                                   URI scriptDir) throws Exception {
-
         // Execution context
         ExecutionContext executionContext = executionContextBuilder()
                 .log(log)
@@ -74,7 +85,8 @@ public class Asm2OpenAPI {
                 .trace(resolveAsm2OpenAPITrace(traceModel, asmModel, openAPIModel)).build();
     }
 
-    public static URI calculateAsm2OpenapiTransformationScriptURI() throws URISyntaxException {
+    @SneakyThrows(URISyntaxException.class)
+    public static URI calculateAsm2OpenapiTransformationScriptURI() {
         URI psmRoot = Asm2OpenAPI.class.getProtectionDomain().getCodeSource().getLocation().toURI();
         if (psmRoot.toString().endsWith(".jar")) {
             psmRoot = new URI("jar:" + psmRoot.toString() + "!/" + SCRIPT_ROOT_TATAMI_ASM_2_OPENAPI);

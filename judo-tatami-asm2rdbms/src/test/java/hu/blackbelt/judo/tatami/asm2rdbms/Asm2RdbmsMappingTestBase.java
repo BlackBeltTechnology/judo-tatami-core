@@ -61,9 +61,7 @@ public class Asm2RdbmsMappingTestBase {
         Asm2RdbmsTransformationTrace asm2RdbmsTransformationTrace = null;
         try {
             logger.debug("Executing asm2rdbms transformation");
-            asm2RdbmsTransformationTrace = executeAsm2RdbmsTransformation(asmModel, rdbmsModel, new Slf4jLog(log),
-                    calculateAsm2RdbmsTransformationScriptURI(),
-                    calculateAsm2RdbmsModelURI(), "hsqldb");
+            asm2RdbmsTransformationTrace = executeAsm2RdbmsTransformation(asmModel, rdbmsModel, "hsqldb");
         } catch (Exception e) {
             fail("Unable to execute transformation", e);
         }

@@ -5,11 +5,13 @@ import com.google.common.collect.ImmutableMap;
 import hu.blackbelt.epsilon.runtime.execution.ExecutionContext;
 import hu.blackbelt.epsilon.runtime.execution.api.Log;
 import hu.blackbelt.epsilon.runtime.execution.contexts.EtlExecutionContext;
+import hu.blackbelt.epsilon.runtime.execution.impl.Slf4jLog;
 import hu.blackbelt.judo.meta.esm.runtime.EsmModel;
 import hu.blackbelt.judo.meta.esm.runtime.EsmUtils;
 import hu.blackbelt.judo.meta.psm.PsmUtils;
 import hu.blackbelt.judo.meta.psm.runtime.PsmModel;
 import hu.blackbelt.judo.tatami.core.TransformationTraceUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.epsilon.common.util.UriUtil;
 
@@ -24,9 +26,35 @@ import static hu.blackbelt.judo.tatami.core.TransformationTraceUtil.getTransform
 import static hu.blackbelt.judo.tatami.esm2psm.Esm2PsmTransformationTrace.ESM_2_PSM_URI_POSTFIX;
 import static hu.blackbelt.judo.tatami.esm2psm.Esm2PsmTransformationTrace.resolveEsm2PsmTrace;
 
+@Slf4j
 public class Esm2Psm {
 
     public static final String SCRIPT_ROOT_TATAMI_ESM_2_PSM = "tatami/esm2psm/transformations/psm/";
+
+    /**
+     * Execute ESM to PSM model transformation,
+     *
+     * @param esmModel  The ESM model definition and loaded resources
+     * @param psmModel  The PSM model definition transformed to
+     * @return The trace object list of the transformation conforms the meta model defined in {@link TransformationTraceUtil}.
+     * @throws Exception
+     */
+    public static Esm2PsmTransformationTrace executeEsm2PsmTransformation(EsmModel esmModel, PsmModel psmModel) throws Exception {
+        return executeEsm2PsmTransformation(esmModel, psmModel, new Slf4jLog(log), calculateEsm2PsmTransformationScriptURI());
+    }
+
+    /**
+     * Execute ESM to PSM model transformation,
+     *
+     * @param esmModel  The ESM model definition and loaded resources
+     * @param psmModel  The PSM model definition transformed to
+     * @param log       The log instance used in scripts
+     * @return The trace object list of the transformation conforms the meta model defined in {@link TransformationTraceUtil}.
+     * @throws Exception
+     */
+    public static Esm2PsmTransformationTrace executeEsm2PsmTransformation(EsmModel esmModel, PsmModel psmModel, Log log) throws Exception {
+        return executeEsm2PsmTransformation(esmModel, psmModel, log, calculateEsm2PsmTransformationScriptURI());
+    }
 
     /**
      * Execute ESM to PSM model transformation,

@@ -65,9 +65,7 @@ public class Rdbms2LiquibaseTest {
     @Test
     public void testRdbms2LiquibaseTransformation() throws Exception {
 
-        executeRdbms2LiquibaseTransformation(rdbmsModel, liquibaseModel, new Slf4jLog(log),
-                calculateRdbms2LiquibaseTransformationScriptURI(),
-                "hsqldb");
+        executeRdbms2LiquibaseTransformation(rdbmsModel, liquibaseModel, "hsqldb");
 
         liquibaseModel.saveLiquibaseModel(liquibaseSaveArgumentsBuilder()
                 .outputStream(fixUriOutputStream(

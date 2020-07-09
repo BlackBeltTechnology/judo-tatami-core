@@ -1,6 +1,8 @@
 package hu.blackbelt.judo.tatami.esm2psm;
 
 import static hu.blackbelt.judo.meta.esm.namespace.util.builder.NamespaceBuilders.newModelBuilder;
+import static hu.blackbelt.judo.meta.esm.runtime.EsmEpsilonValidator.calculateEsmValidationScriptURI;
+import static hu.blackbelt.judo.meta.esm.runtime.EsmEpsilonValidator.validateEsm;
 import static hu.blackbelt.judo.meta.esm.runtime.EsmModel.buildEsmModel;
 import static hu.blackbelt.judo.meta.esm.structure.util.builder.StructureBuilders.newDataMemberBuilder;
 import static hu.blackbelt.judo.meta.esm.structure.util.builder.StructureBuilders.newEntitySequenceBuilder;
@@ -11,6 +13,8 @@ import static hu.blackbelt.judo.meta.esm.structure.util.builder.StructureBuilder
 import static hu.blackbelt.judo.meta.esm.structure.util.builder.StructureBuilders.newOneWayRelationMemberBuilder;
 import static hu.blackbelt.judo.meta.esm.structure.util.builder.StructureBuilders.newTwoWayRelationMemberBuilder;
 import static hu.blackbelt.judo.meta.esm.type.util.builder.TypeBuilders.newStringTypeBuilder;
+import static hu.blackbelt.judo.meta.psm.PsmEpsilonValidator.calculatePsmValidationScriptURI;
+import static hu.blackbelt.judo.meta.psm.PsmEpsilonValidator.validatePsm;
 import static hu.blackbelt.judo.meta.psm.runtime.PsmModel.buildPsmModel;
 import static hu.blackbelt.judo.meta.psm.runtime.PsmModel.SaveArguments.psmSaveArgumentsBuilder;
 import static hu.blackbelt.judo.tatami.esm2psm.Esm2Psm.calculateEsm2PsmTransformationScriptURI;
@@ -115,13 +119,17 @@ public class EsmStrucutre2PsmDataTest {
     }
 
     private void transform() throws Exception {
+    	assertTrue(esmModel.isValid());
+    	validateEsm(new Slf4jLog(log), esmModel, calculateEsmValidationScriptURI());
+    
         // Make transformation which returns the trace with the serialized URI's
         esm2PsmTransformationTrace = executeEsm2PsmTransformation(
                 esmModel,
                 psmModel,
                 new Slf4jLog(log),
                 calculateEsm2PsmTransformationScriptURI());
-
+        assertTrue(psmModel.isValid());
+        validatePsm(new Slf4jLog(log), psmModel, calculatePsmValidationScriptURI());
     }
 
     @Test
@@ -257,7 +265,7 @@ public class EsmStrucutre2PsmDataTest {
         OneWayRelationMember associationEnd = newOneWayRelationMemberBuilder().withName("associationEnd")
         		.withMemberType(MemberType.STORED)
         		.withRelationKind(RelationKind.ASSOCIATION)
-        		.withReverseCascadeDelete(true)
+        		.withReverseCascadeDelete(false)
                 .withLower(1).withUpper(3)
                 .withTarget(target)
                 .build();
@@ -288,7 +296,7 @@ public class EsmStrucutre2PsmDataTest {
         assertTrue(psmAssociationEnd.getCardinality().getLower() == associationEnd.getLower());
         assertTrue(psmAssociationEnd.getCardinality().getUpper() == associationEnd.getUpper());
         assertTrue(psmAssociationEnd.getTarget().equals(psmTarget));
-        assertTrue(((hu.blackbelt.judo.meta.psm.data.AssociationEnd)psmAssociationEnd).isReverseCascadeDelete());
+        assertFalse(((hu.blackbelt.judo.meta.psm.data.AssociationEnd)psmAssociationEnd).isReverseCascadeDelete());
     }
 
     @Test
@@ -358,7 +366,8 @@ public class EsmStrucutre2PsmDataTest {
         EntitySequence entitySequence = newEntitySequenceBuilder().withName("eSequence").withInitialValue(1).withIncrement(2).build();
 
         EntityType entityType = newEntityTypeBuilder().withName("entityType").withSequences(entitySequence).build();
-
+        entityType.setMapping(newMappingBuilder().withTarget(entityType).build());	
+        
         final Model model = newModelBuilder()
                 .withName("TestModel")
                 .withElements(ImmutableList.of(entityType))
