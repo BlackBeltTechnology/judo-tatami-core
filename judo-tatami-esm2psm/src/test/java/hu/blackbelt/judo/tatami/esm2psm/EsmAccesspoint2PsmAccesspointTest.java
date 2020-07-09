@@ -249,6 +249,7 @@ public class EsmAccesspoint2PsmAccesspointTest {
         final String NAME_OF_UPDATE_OPERATION = "_updateG";
         final String NAME_OF_DELETE_OPERATION = "_deleteG";
         final String NAME_OF_GET_PRINCIPAL_OPERATION = "_principal";
+        final String NAME_OF_MAP_PRINCIPAL_OPERATION = "_map_principal";
 
         final String NAME_OF_UNSET_SINGLE_CONTAINMENT_OPERATION = "_unsetSingleContainmentOfG";
 
@@ -323,7 +324,10 @@ public class EsmAccesspoint2PsmAccesspointTest {
                         .build())
                 .build();
         
-        accessPoint.setActorType(newActorTypeBuilder().build());
+        accessPoint.setActorType(newActorTypeBuilder()
+                .withRealm(Realm.CUSTOM)
+                .withCustomRealm("sandbox")
+                .build());
 
         final Model model = newModelBuilder().withName(MODEL_NAME)
                 .withElements(Arrays.asList(entityTypeE, entityTypeF, accessPoint)).build();
@@ -500,6 +504,21 @@ public class EsmAccesspoint2PsmAccesspointTest {
         ));
 
         assertEquals(12L, ap.get().getOperations().stream().filter(o -> o instanceof UnboundOperation).count());
+
+        final Optional<hu.blackbelt.judo.meta.psm.accesspoint.ActorType> actorType = allPsm(hu.blackbelt.judo.meta.psm.accesspoint.ActorType.class)
+                .findAny();
+        assertTrue(actorType.isPresent());
+
+        assertTrue(actorType.get().getOperations().stream().anyMatch(o -> NAME_OF_MAP_PRINCIPAL_OPERATION.equals(o.getName()) && (o instanceof UnboundOperation) &&
+                o.getBehaviour() != null && o.getBehaviour().getBehaviourType() == TransferOperationBehaviourType.MAP_PRINCIPAL && EcoreUtil.equals(o.getBehaviour().getOwner(), actorType.get()) &&
+                o.getInput() != null && o.getOutput() != null && o.getFaults().isEmpty() &&
+                o.getInput().getCardinality().getLower() == 0 && o.getInput().getCardinality().getUpper() == 1 &&
+                EcoreUtil.equals(o.getInput().getType(), actorType.get()) &&
+                o.getOutput().getCardinality().getLower() == 0 && o.getOutput().getCardinality().getUpper() == 1 &&
+                EcoreUtil.equals(o.getOutput().getType(), ap.get())
+        ));
+
+        assertEquals(1L, actorType.get().getOperations().stream().filter(o -> o instanceof UnboundOperation).count());
     }
 
     static <T> Stream<T> asStream(Iterator<T> sourceIterator, boolean parallel) {

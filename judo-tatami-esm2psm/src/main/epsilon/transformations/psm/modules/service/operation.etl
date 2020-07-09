@@ -625,57 +625,6 @@ rule CreateGetPrincipalOperationForAccessPoint
 }
 
 @greedy
-rule CreateGetPrincipalOperationInputParameterTypeForAccessPoint
-    transform s : ESM!TransferObjectType
-    to t : JUDOPSM!UnmappedTransferObjectType {
-        guard: s.isAccessPoint() and s.actorType.realm <> ESM!Realm#PUBLIC
-
-        t.name = "_Input_" + s.name;
-
-        s.getPSMTransferObjectTypeEquivalent().eContainer.elements.add(t);
-}
-
-@greedy
-rule CreateGetPrincipalOperationInputParameterTokenAttributeForAccessPoint
-    transform s : ESM!TransferObjectType
-    to t : JUDOPSM!TransferAttribute {
-        guard: s.isAccessPoint() and s.actorType.realm <> ESM!Realm#PUBLIC
-
-        t.name = "token" + s.name;
-        t.required = true;
-        t.dataType = s.equivalent("CreateGetPrincipalOperationTokenTypeForAccessPoint");
-
-        s.equivalent("CreateGetPrincipalOperationInputParameterTypeForAccessPoint").attributes.add(t);
-}
-
-@greedy
-rule CreateGetPrincipalOperationTokenTypeForAccessPoint
-    transform s : ESM!TransferObjectType
-    to t : JUDOPSM!StringType {
-        guard: s.isAccessPoint() and s.actorType.realm <> ESM!Realm#PUBLIC
-
-        t.name = "_Token_" + s.name;
-        t.maxLength = 2048;
-
-        s.getPSMTransferObjectTypeEquivalent().eContainer.elements.add(t);
-}
-
-@greedy
-rule CreateGetPrincipalOperationInputParameterForAccessPoint
-    transform s : ESM!TransferObjectType
-    to t : JUDOPSM!Parameter {
-        guard: s.isAccessPoint() and s.actorType.realm <> ESM!Realm#PUBLIC
-
-        t.name = "input";
-        t.type = s.equivalent("CreateGetPrincipalOperationInputParameterTypeForAccessPoint");
-        t.cardinality = new JUDOPSM!Cardinality;
-        t.cardinality.lower = 1;
-        t.cardinality.upper = 1;
-
-        s.equivalent("CreateGetPrincipalOperationForAccessPoint").input = t;
-}
-
-@greedy
 rule CreateGetPrincipalOperationOutputParameterForAccessPoint
     transform s : ESM!TransferObjectType
     to t : JUDOPSM!Parameter {
@@ -688,4 +637,46 @@ rule CreateGetPrincipalOperationOutputParameterForAccessPoint
         t.cardinality.upper = 1;
 
         s.equivalent("CreateGetPrincipalOperationForAccessPoint").output = t;
+}
+
+@greedy
+rule CreateMapPrincipalOperationForActoryType
+    transform s : ESM!ActorType
+    to t : JUDOPSM!UnboundOperation {
+        t.name = "_map_principal";
+        t.behaviour = new JUDOPSM!TransferOperationBehaviour;
+        t.behaviour.behaviourType = JUDOPSM!TransferOperationBehaviourType#MAP_PRINCIPAL;
+        t.behaviour.owner = s.equivalent("CreateActorType");
+        
+        s.equivalent("CreateActorType").operations.add(t);
+}
+
+@greedy
+rule CreateMapPrincipalOperationInputParameterForActorType
+    transform s : ESM!ActorType
+    to t : JUDOPSM!Parameter {
+        guard: s.realm <> ESM!Realm#PUBLIC
+
+        t.name = "input";
+        t.type = s.equivalent("CreateActorType");
+        t.cardinality = new JUDOPSM!Cardinality;
+        t.cardinality.lower = 0;
+        t.cardinality.upper = 1;
+
+        s.equivalent("CreateMapPrincipalOperationForActoryType").input = t;
+}
+
+@greedy
+rule CreateMapPrincipalOperationOutputParameterForActorType
+    transform s : ESM!ActorType
+    to t : JUDOPSM!Parameter {
+        guard: s.eContainer.isDefined()
+
+        t.name = "output";
+        t.type = s.eContainer.getPSMTransferObjectTypeEquivalent();
+        t.cardinality = new JUDOPSM!Cardinality;
+        t.cardinality.lower = 0;
+        t.cardinality.upper = 1;
+
+        s.equivalent("CreateMapPrincipalOperationForActoryType").output = t;
 }
