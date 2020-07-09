@@ -1,8 +1,12 @@
 package hu.blackbelt.judo.tatami.rdbms2liquibase;
 
+import hu.blackbelt.epsilon.runtime.execution.api.Log;
 import hu.blackbelt.epsilon.runtime.execution.impl.Slf4jLog;
+import hu.blackbelt.judo.meta.asm.runtime.AsmModel;
 import hu.blackbelt.judo.meta.liquibase.runtime.LiquibaseModel;
+import hu.blackbelt.judo.meta.psm.runtime.PsmModel;
 import hu.blackbelt.judo.meta.rdbms.runtime.RdbmsModel;
+import hu.blackbelt.model.northwind.Demo;
 import liquibase.Liquibase;
 import liquibase.database.Database;
 import liquibase.database.core.HsqlDatabase;
@@ -24,6 +28,8 @@ import static hu.blackbelt.judo.meta.rdbms.runtime.RdbmsModel.LoadArguments.rdbm
 import static hu.blackbelt.judo.meta.rdbmsDataTypes.support.RdbmsDataTypesModelResourceSupport.registerRdbmsDataTypesMetamodel;
 import static hu.blackbelt.judo.meta.rdbmsNameMapping.support.RdbmsNameMappingModelResourceSupport.registerRdbmsNameMappingMetamodel;
 import static hu.blackbelt.judo.meta.rdbmsRules.support.RdbmsTableMappingRulesModelResourceSupport.registerRdbmsTableMappingRulesMetamodel;
+import static hu.blackbelt.judo.tatami.asm2rdbms.Asm2Rdbms.executeAsm2RdbmsTransformation;
+import static hu.blackbelt.judo.tatami.psm2asm.Psm2Asm.executePsm2AsmTransformation;
 import static hu.blackbelt.judo.tatami.rdbms2liquibase.Rdbms2Liquibase.calculateRdbms2LiquibaseTransformationScriptURI;
 import static hu.blackbelt.judo.tatami.rdbms2liquibase.Rdbms2Liquibase.executeRdbms2LiquibaseTransformation;
 
@@ -35,26 +41,35 @@ public class Rdbms2LiquibaseTest {
     public static final String NORTHWIND_LIQUIBASE_MODEL = "northwind.changelog.xml";
     public static final String TARGET_TEST_CLASSES = "target/test-classes";
 
+    Log slf4jlog;
     RdbmsModel rdbmsModel;
     LiquibaseModel liquibaseModel;
 
     @BeforeEach
     public void setUp() throws Exception {
 
-        // Create RDBMS to isolated ResourceSet, because in Tatami
-        // there is no new namespace registration made.
-        rdbmsModel = RdbmsModel.buildRdbmsModel()
+    	// Default logger
+        slf4jlog = new Slf4jLog(log);
+
+        final PsmModel psmModel = new Demo().fullDemo();
+
+        // Create empty ASM model
+        AsmModel asmModel = AsmModel.buildAsmModel()
                 .name(NORTHWIND)
                 .build();
 
-        // The RDBMS model resourceset have to know the mapping models
+        executePsm2AsmTransformation(psmModel, asmModel);
+        
+        // Create empty RDBMS model
+        rdbmsModel = RdbmsModel.buildRdbmsModel()
+                .name(NORTHWIND)
+                .build();
+        
         registerRdbmsNameMappingMetamodel(rdbmsModel.getResourceSet());
         registerRdbmsDataTypesMetamodel(rdbmsModel.getResourceSet());
         registerRdbmsTableMappingRulesMetamodel(rdbmsModel.getResourceSet());
 
-        // Load default data
-        rdbmsModel.loadResource(rdbmsLoadArgumentsBuilder()
-                .file(new File(TARGET_TEST_CLASSES, NORTHWIND_RDBMS_MODEL)));
+        executeAsm2RdbmsTransformation(asmModel, rdbmsModel, "hsqldb");
 
         // Create empty LIQUIBASE model
         liquibaseModel = buildLiquibaseModel()
@@ -83,6 +98,4 @@ public class Rdbms2LiquibaseTest {
 
         liquibase.update("full,1.0.0");
     }
-
-
 }

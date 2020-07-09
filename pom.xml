@@ -76,10 +76,6 @@
         <structured-map-proxy-version>1.0.3</structured-map-proxy-version>
         <judo-operation-utils-version>1.1.0.20200706_113528_d3209b2_develop</judo-operation-utils-version>
 
-
-        <!-- We use older version of plugin to avoid chicked egg problem -->
-        <judo-tatami-maven-plugin-version>1.1.0.20200424_124359_3ac33fac_plugin</judo-tatami-maven-plugin-version>
-
         <!-- Xtend / Xcore -->
         <emf-version>2.18.0</emf-version>
         <emf-common-version>2.16.0</emf-common-version>
@@ -598,81 +594,6 @@
     <build>
         <pluginManagement>
             <plugins>
-                <plugin>
-                    <groupId>hu.blackbelt.judo.tatami</groupId>
-                    <artifactId>judo-tatami-workflow-maven-plugin</artifactId>
-                    <version>${judo-tatami-maven-plugin-version}</version>
-                    <executions>
-                        <execution>
-                            <id>execute-northwind-test-model-from-general</id>
-                            <phase>process-test-resources</phase>
-                            <goals>
-                                <goal>psm-default-workflow</goal>
-                            </goals>
-                            <configuration>
-                                <psmGeneratorClassName>hu.blackbelt.model.northwind.Demo</psmGeneratorClassName>
-                                <psmGeneratorMethodName>fullDemo</psmGeneratorMethodName>
-                                <destination>${basedir}/target/test-classes</destination>
-                                <modelName>northwind</modelName>
-                                <dialectList>hsqldb,oracle</dialectList>
-                                <ignorePsm2Asm>true</ignorePsm2Asm>
-                                <ignorePsm2Measure>true</ignorePsm2Measure>
-                                <ignoreAsm2Rdbms>true</ignoreAsm2Rdbms>
-                                <ignoreAsm2Openapi>true</ignoreAsm2Openapi>
-                                <ignoreAsm2sdk>true</ignoreAsm2sdk>
-                                <ignoreAsm2jaxrsapi>true</ignoreAsm2jaxrsapi>
-                                <ignoreRdbms2Liquibase>true</ignoreRdbms2Liquibase>
-                                <ignoreAsm2Expression>true</ignoreAsm2Expression>
-                                <ignoreAsm2Script>true</ignoreAsm2Script>
-                            </configuration>
-                        </execution>
-                    </executions>
-                    <dependencies>
-
-                        <dependency>
-                            <groupId>hu.blackbelt.judo.meta</groupId>
-                            <artifactId>hu.blackbelt.judo.meta.psm.model.northwind</artifactId>
-                            <version>${judo-meta-psm-version}</version>
-                        </dependency>
-                        <dependency>
-                            <groupId>hu.blackbelt.judo.meta</groupId>
-                            <artifactId>hu.blackbelt.judo.meta.psm.model</artifactId>
-                            <version>${judo-meta-psm-version}</version>
-                        </dependency>
-                        <dependency>
-                            <groupId>hu.blackbelt.judo.meta</groupId>
-                            <artifactId>hu.blackbelt.judo.meta.rdbms.model</artifactId>
-                            <version>${judo-meta-rdbms-version}</version>
-                        </dependency>
-                        <dependency>
-                            <groupId>hu.blackbelt.judo.meta</groupId>
-                            <artifactId>hu.blackbelt.judo.meta.liquibase.model</artifactId>
-                            <version>${judo-meta-liquibase-version}</version>
-                        </dependency>
-                        <dependency>
-                            <groupId>hu.blackbelt.judo.meta</groupId>
-                            <artifactId>hu.blackbelt.judo.meta.asm.model</artifactId>
-                            <version>${judo-meta-asm-version}</version>
-                        </dependency>
-                        <dependency>
-                            <groupId>hu.blackbelt.judo.meta</groupId>
-                            <artifactId>hu.blackbelt.judo.meta.openapi.model</artifactId>
-                            <version>${judo-meta-openapi-version}</version>
-                        </dependency>
-                        <dependency>
-                            <groupId>hu.blackbelt.judo.meta</groupId>
-                            <artifactId>hu.blackbelt.judo.meta.measure.model</artifactId>
-                            <version>${judo-meta-measure-version}</version>
-                        </dependency>
-                        <dependency>
-                            <groupId>hu.blackbelt.judo.meta</groupId>
-                            <artifactId>hu.blackbelt.judo.meta.ui.model</artifactId>
-                            <version>${judo-meta-ui-version}</version>
-                        </dependency>
-
-                    </dependencies>
-                </plugin>
-
                 <plugin>
                     <groupId>org.apache.karaf.tooling</groupId>
                     <artifactId>karaf-maven-plugin</artifactId>

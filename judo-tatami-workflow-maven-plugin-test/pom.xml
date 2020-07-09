@@ -99,6 +99,52 @@
 						</configuration>
 					</execution>
 				</executions>
+				
+				  <dependencies>
+
+                        <dependency>
+                            <groupId>hu.blackbelt.judo.meta</groupId>
+                            <artifactId>hu.blackbelt.judo.meta.psm.model.northwind</artifactId>
+                            <version>${judo-meta-psm-version}</version>
+                        </dependency>
+                        <dependency>
+                            <groupId>hu.blackbelt.judo.meta</groupId>
+                            <artifactId>hu.blackbelt.judo.meta.psm.model</artifactId>
+                            <version>${judo-meta-psm-version}</version>
+                        </dependency>
+                        <dependency>
+                            <groupId>hu.blackbelt.judo.meta</groupId>
+                            <artifactId>hu.blackbelt.judo.meta.rdbms.model</artifactId>
+                            <version>${judo-meta-rdbms-version}</version>
+                        </dependency>
+                        <dependency>
+                            <groupId>hu.blackbelt.judo.meta</groupId>
+                            <artifactId>hu.blackbelt.judo.meta.liquibase.model</artifactId>
+                            <version>${judo-meta-liquibase-version}</version>
+                        </dependency>
+                        <dependency>
+                            <groupId>hu.blackbelt.judo.meta</groupId>
+                            <artifactId>hu.blackbelt.judo.meta.asm.model</artifactId>
+                            <version>${judo-meta-asm-version}</version>
+                        </dependency>
+                        <dependency>
+                            <groupId>hu.blackbelt.judo.meta</groupId>
+                            <artifactId>hu.blackbelt.judo.meta.openapi.model</artifactId>
+                            <version>${judo-meta-openapi-version}</version>
+                        </dependency>
+                        <dependency>
+                            <groupId>hu.blackbelt.judo.meta</groupId>
+                            <artifactId>hu.blackbelt.judo.meta.measure.model</artifactId>
+                            <version>${judo-meta-measure-version}</version>
+                        </dependency>
+                        <dependency>
+                            <groupId>hu.blackbelt.judo.meta</groupId>
+                            <artifactId>hu.blackbelt.judo.meta.ui.model</artifactId>
+                            <version>${judo-meta-ui-version}</version>
+                        </dependency>
+
+                    </dependencies>
+				
 			</plugin>
 		</plugins>
 		<pluginManagement>
