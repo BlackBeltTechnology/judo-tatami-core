@@ -96,10 +96,15 @@ rule CreateStatefulAnnotationOnOperationWithBehaviour
         stateful.key = "value";
         switch (s.behaviour.behaviourType) {
             case JUDOPSM!TransferOperationBehaviourType#GET:
+                stateful.value = "false";
             case JUDOPSM!TransferOperationBehaviourType#GET_RELATION:
+                stateful.value = "false";
             case JUDOPSM!TransferOperationBehaviourType#GET_RANGE_OF_RELATION:
+                stateful.value = "false";
             case JUDOPSM!TransferOperationBehaviourType#GET_TEMPLATE:
+                stateful.value = "false";
             case JUDOPSM!TransferOperationBehaviourType#GET_PRINCIPAL:
+                stateful.value = "false";
             case JUDOPSM!TransferOperationBehaviourType#MAP_PRINCIPAL:
                 stateful.value = "false";
             default:
@@ -293,7 +298,9 @@ rule AddBehaviourAnnotation
             case JUDOPSM!TransferOperationBehaviourType#GET_RANGE_OF_RELATION:
                 ownerEntry.value = asmUtils.getOperationFQName(s.behaviour.owner.eContainer.asmEquivalent());
             case JUDOPSM!TransferOperationBehaviourType#GET_TEMPLATE:
+                ownerEntry.value = asmUtils.getClassifierFQName(s.behaviour.owner.asmEquivalent());
             case JUDOPSM!TransferOperationBehaviourType#GET_PRINCIPAL:
+                ownerEntry.value = asmUtils.getClassifierFQName(s.behaviour.owner.asmEquivalent());
             case JUDOPSM!TransferOperationBehaviourType#MAP_PRINCIPAL:
                 ownerEntry.value = asmUtils.getClassifierFQName(s.behaviour.owner.asmEquivalent());
             default:
