@@ -1,5 +1,5 @@
 operation ESM!esm::ui::DataField createInputFromDataField() : UI!ui::Input {
-	var ret : UI!ui::Input = self.dataFeature.getMember().getDataType().map();
+	var ret : UI!ui::Input = self.dataFeature.getMember().getDataType().input();
 	ret.binding = self.getBindingName();
 	ret.name = self.name;
 	ret.label = self.label; //self.dataFeature.getMember().getDisplayLabel();

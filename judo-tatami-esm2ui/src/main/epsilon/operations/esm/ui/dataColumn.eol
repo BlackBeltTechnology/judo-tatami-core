@@ -1,0 +1,11 @@
+operation ESM!esm::ui::DataColumn createFormattedFromDataColumn() : UI!ui::Formatted {
+	var ret : UI!ui::Formatted = self.dataFeature.getMember().getDataType().formatted();
+	ret.binding = self.getBindingName();
+	ret.name = self.name;
+	ret.label = self.label; //self.dataFeature.getMember().getDisplayLabel();
+	return ret;
+}
+
+operation ESM!esm::ui::DataColumn map() : UI!ui::VisualElement {
+	return self.createFormattedFromDataColumn();
+}

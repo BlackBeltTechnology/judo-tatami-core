@@ -1,0 +1,11 @@
+operation ESM!esm::ui::ActionButton createButtonFromActionButton() : UI!ui::Button {
+	var ret : UI!ui::Button = new UI!ui::Button();
+	ret.binding = self.getBindingName();
+	ret.name = self.name;
+	ret.label = self.label; //self.dataFeature.getMember().getDisplayLabel();
+	return ret;
+}
+
+operation ESM!esm::ui::ActionButton map() : UI!ui::Button {
+	return self.createButtonFromActionButton();
+}

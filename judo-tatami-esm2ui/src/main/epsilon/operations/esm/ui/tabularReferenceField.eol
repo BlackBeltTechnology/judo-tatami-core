@@ -1,0 +1,14 @@
+operation ESM!esm::ui::TabularReferenceField createTableFromTabularReferenceField() : UI!ui::Table {
+	var table : UI!ui::Table = new UI!ui::Table();
+	table.binding = self.getBindingName();
+	table.name = self.name;	
+	
+	for (column in self.columns) {
+		table.columns.add(column.map());
+	}
+	return table;
+}
+
+operation ESM!esm::ui::TabularReferenceField map() : UI!ui::Table {
+	return self.createTableFromTabularReferenceField();
+}

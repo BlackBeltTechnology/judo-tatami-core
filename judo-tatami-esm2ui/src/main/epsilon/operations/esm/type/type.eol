@@ -4,30 +4,68 @@ operation ESM!esm::namespace::NamedElement fillInput(input : UI!ui::Input, row :
 	return input;
 }
 
-operation ESM!esm::type::PasswordType map(): UI!ui::Input {
+operation ESM!esm::type::PasswordType input(): UI!ui::Input {
 	return self.fillInput(new UI!ui::PasswordInput(), 2, 1);
 }
 
-operation ESM!esm::type::StringType map(): UI!ui::Input {
+operation ESM!esm::type::StringType input(): UI!ui::Input {
 	return self.fillInput(new UI!ui::TextInput(), 2, 1);
 }
 
-operation ESM!esm::type::NumericType map(): UI!ui::Input {
+operation ESM!esm::type::NumericType input(): UI!ui::Input {
 	return self.fillInput(new UI!ui::NumericInput(), 2, 1);
 }
 
-operation ESM!esm::type::BooleanType map(): UI!ui::Input {
+operation ESM!esm::type::BooleanType input(): UI!ui::Input {
 	return self.fillInput(new UI!ui::Switch(), 2, 1);
 }
 
-operation ESM!esm::type::DateType map(): UI!ui::Input {
+operation ESM!esm::type::DateType input(): UI!ui::Input {
 	return self.fillInput(new UI!ui::DateInput(), 2, 1);
 }
 
-operation ESM!esm::type::TimestampType map(): UI!ui::Input {
+operation ESM!esm::type::TimestampType input(): UI!ui::Input {
 	return self.fillInput(new UI!ui::DateTimeInput(), 2, 1);
 }
 
-//operation ESM!esm::type::EnumerationType map(): UI!ui::Input {
+//operation ESM!esm::type::EnumerationType input(): UI!ui::Input {
 //	return self.fillInput(new UI!ui::DateInput(), 2, 1);
+//}
+
+
+operation ESM!esm::namespace::NamedElement fillFormatted(formatted : UI!ui::Formatted, format : String, row : Integer, col : Integer): UI!ui::Formatted {
+	formatted.name = self.name;
+	formatted.col = col;
+	formatted.row  = row;
+	formatted.format = format;
+	return formatted;
+}
+
+operation ESM!esm::type::PasswordType formatted(): UI!ui::Formatted {
+	return self.fillFormatted(new UI!ui::Formatted(), "%s", 2, 1);
+}
+
+operation ESM!esm::type::StringType formatted(): UI!ui::Formatted {
+	return self.fillFormatted(new UI!ui::Formatted(), "%s", 2, 1);
+}
+
+// TODO: sprinf numberic format
+operation ESM!esm::type::NumericType formatted(): UI!ui::Formatted {
+	return self.fillFormatted(new UI!ui::Formatted(), "%s", 2, 1);
+}
+
+operation ESM!esm::type::BooleanType formatted(): UI!ui::Formatted {
+	return self.fillFormatted(new UI!ui::Formatted(), "%s", 2, 1);
+}
+
+operation ESM!esm::type::DateType formatted(): UI!ui::Formatted {
+	return self.fillFormatted(new UI!ui::Formatted(), "%s", 2, 1);
+}
+
+operation ESM!esm::type::TimestampType formatted(): UI!ui::Formatted {
+	return self.fillFormatted(new UI!ui::Formatted(), "%s", 2, 1);
+}
+
+//operation ESM!esm::type::EnumerationType text(): UI!ui::Formatted {
+//	return self.fillText(new UI!ui::DateInput(), 2, 1);
 //}
