@@ -75,7 +75,7 @@ operation ASM!EParameter getTypeDefinition() : String {
 @cached
 operation getAllDTOs(): Collection {
     return ASM!EClass.all.select(class | 
-    	(asmUtils.isMappedTransferObjectType(class) or not asmUtils.isEntityType(class)));
+    	((asmUtils.isMappedTransferObjectType(class) or not asmUtils.isEntityType(class))) and not asmUtils.annotatedAsTrue(class, "referenceHolder"));
 }
 
 operation getAllEntities(): Collection {

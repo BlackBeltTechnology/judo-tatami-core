@@ -12,11 +12,11 @@ import java.util.Collection;
 
 public interface [%= dto.getClassName() %] {
 
-    static [%= dto.getClassName() %] create[%= dto.getClassName() %]() {
+    static [%= dto.getClassName() %] create() {
         return MapProxy.newInstance([%= dto.getClassName() %].class);
     }
 
-    static [%= dto.getClassName() %]Builder [%= dto.getClassName() %]Builder() {
+    static [%= dto.getClassName() %]Builder builder() {
         return MapBuilderProxy.newInstance([%= dto.getClassName() %]Builder.class, [%= dto.getClassName() %].class, "with");
     }
 

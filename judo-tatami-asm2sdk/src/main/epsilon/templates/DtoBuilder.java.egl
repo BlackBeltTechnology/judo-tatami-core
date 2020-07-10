@@ -9,9 +9,6 @@ import hu.blackbelt.structured.map.proxy.MapBuilderProxy;
 import java.util.Collection;
 
 public interface [%= dto.getClassName() %]Builder {
-    static [%= dto.getClassName() %]Builder create[%= dto.getClassName() %]Builder() {
-        return MapBuilderProxy.newInstance([%= dto.getClassName() %]Builder.class, [%= dto.getClassName() %].class, "with");
-    }
 
     [% for (field in dto.eAllAttributes.includingAll(dto.eAllReferences)) { %]
     public [%= dto.getClassName() %]Builder [%= field.builderName() %]([%= field.getTypeDefinition() %] [%= asmUtils.safeName(field.name.firstToLowerCase()) %]);
