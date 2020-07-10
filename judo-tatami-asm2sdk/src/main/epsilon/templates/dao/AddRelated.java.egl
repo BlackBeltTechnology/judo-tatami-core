@@ -1,0 +1,38 @@
+[%
+  import "../../operations/sdk.eol";
+  out.setContentType("Java");
+%]
+
+package [%= dto.getDtoDaoPackageName() %];
+
+import java.util.UUID;
+import java.util.stream.Collectors;
+
+import hu.blackbelt.judo.dao.api.DAO;
+import hu.blackbelt.judo.meta.asm.runtime.AsmModel;
+
+import [%= getModelPackageName() %].util.AbstractSdkDao;
+import static [%= getModelPackageName() %].util.SdkUtil.*;
+import [%= dto.getDtoTypeName() %];
+import [%= relatedDto.getDtoTypeName() %];
+
+[% var name = dto.getClassName() + "Add"+ relationName.firstToUpperCase(); %]
+
+[% if (daoImpl) { %] 
+public class [%= name %]Impl extends AbstractSdkDao implements [%= name %] {
+
+	private final static String FQ_NAME = "[%= asmUtils.getClassifierFqName(dto) %]";
+[% } else { %]
+public interface [%= dto.getClassName() %]Add[%= relationName.firstToUpperCase() %] extends java.util.function.BiConsumer<[%= dto.getClassName() %], java.util.Collection<[%= relatedDto.getClassName() %]>>{
+[% } %] 
+	
+	@Override
+	public void accept([%= dto.getClassName() %] object, java.util.Collection<[%= relatedDto.getClassName() %]> relatedObjects) 
+	[% if (daoImpl) { %]
+	{
+		dao.addReferences(getReference(getEClass(FQ_NAME), "[%= relationName %]"), object.get__identifier(), relatedObjects.stream().map(relatedObject -> relatedObject.get__identifier()).collect(Collectors.toList()));
+
+	}
+	[% } else { %] ; [% } %]
+
+}

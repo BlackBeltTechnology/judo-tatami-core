@@ -36,6 +36,7 @@ public class Asm2SDKTest {
     	 // Default logger
         final Log slf4jlog = new Slf4jLog(log);
 
+
         final PsmModel psmModel = new Demo().fullDemo();
 
         // Create empty ASM model
