@@ -6,7 +6,6 @@
 package [%= dto.getDtoDaoPackageName() %];
 
 import java.util.UUID;
-import java.util.function.Function;
 
 import org.eclipse.emf.ecore.EReference;
 
@@ -26,7 +25,7 @@ public class [%= name %]Impl extends AbstractSdkDao implements  [%= name %]{
 
 	private final static String FQ_NAME = "[%= asmUtils.getClassifierFqName(dto) %]";
 	[% } else { %]
-	public interface [%= name %] extends Function<[%= dto.getClassName() %], [%= relatedDto.getClassName() %]> {
+	public interface [%= name %] extends java.util.function.Function<[%= dto.getClassName() %], [%= relatedDto.getClassName() %]> {
 	[% } %] 
 	
 	@Override

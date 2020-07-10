@@ -6,7 +6,6 @@
 package [%= dto.getDtoDaoPackageName() %];
 
 import java.util.UUID;
-import java.util.function.Function;
 
 import hu.blackbelt.judo.dao.api.DAO;
 import hu.blackbelt.judo.dao.api.Payload;
@@ -23,7 +22,7 @@ public class [%= name %]Impl extends AbstractSdkDao implements  [%= name %]{
 
 	private final static String FQ_NAME = "[%= asmUtils.getClassifierFqName(dto) %]";
 	[% } else { %]
-	public interface [%= name %] extends Function<[%= dto.getClassName() %], [%= dto.getClassName() %]>{
+	public interface [%= name %] extends java.util.function.Function<[%= dto.getClassName() %], [%= dto.getClassName() %]>{
 	[% } %] 
 	
 	@Override

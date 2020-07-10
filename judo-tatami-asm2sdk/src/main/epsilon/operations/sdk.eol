@@ -304,7 +304,7 @@ operation genOperationInterface(dto : ASM!EClass, op : ASM!EOperation) : Set {
 		var inputType = op.eParameters.get(0).eType.getDtoTypeName();
 		map.put("InputTypeSingle", inputType);
 		if (opHasParamMany) {
-			inputType = "Collection<" + inputType + ">";		
+			inputType = "java.util.Collection<" + inputType + ">";		
 		}
 		map.put("InputType", inputType);
 		map.put("InputName", op.eParameters.get(0).name);
@@ -313,7 +313,7 @@ operation genOperationInterface(dto : ASM!EClass, op : ASM!EOperation) : Set {
 		var returnTypeName = op.eType.getDtoTypeName();
 		map.put("ReturnTypeSingle", returnTypeName);
 		if (opIsMany) {
-			returnTypeName = "Collection<"+returnTypeName + ">";
+			returnTypeName = "java.util.Collection<"+returnTypeName + ">";
 		}
 		map.put("ReturnType", returnTypeName);
 		map.put("ReturnName", asmUtils.getOutputParameterName(op).get());
@@ -331,7 +331,7 @@ operation genOperationInterface(dto : ASM!EClass, op : ASM!EOperation) : Set {
 	if (opIsMany) { 
 		opReturnTemplate =  
 			'Map<String, Object> result = {Call}\n'+
-			'        Collection<Map<String, Object>> outputPayloads = (Collection<Map<String, Object>>) result.get("{ReturnName}");\n' +
+			'        java.util.Collection<Map<String, Object>> outputPayloads = (java.util.Collection<Map<String, Object>>) result.get("{ReturnName}");\n' +
 			'        return outputPayloads.stream().map(payload -> fromPayload({ReturnTypeSingle}.class, payload)).collect(Collectors.toList());';
 	} else { 
 		opReturnTemplate = 

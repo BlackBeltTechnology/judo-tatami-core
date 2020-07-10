@@ -5,9 +5,7 @@
 
 package [%= dto.getDtoDaoPackageName() %];
 
-import java.util.Collection;
 import java.util.UUID;
-import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
 
 import hu.blackbelt.judo.dao.api.DAO;
@@ -25,11 +23,11 @@ public class [%= name %]Impl extends AbstractSdkDao implements  [%= name %]{
 
 	private final static String FQ_NAME = "[%= asmUtils.getClassifierFqName(dto) %]";
 	[% } else { %]
-	public interface [%= name %] extends BiConsumer<[%= dto.getClassName() %], Collection<[%= relatedDto.getClassName() %]>> {
+	public interface [%= name %] extends java.util.function.BiConsumer<[%= dto.getClassName() %], java.util.Collection<[%= relatedDto.getClassName() %]>> {
 	[% } %] 
 	
 	@Override
-	public void accept([%= dto.getClassName() %] object, Collection<[%= relatedDto.getClassName() %]> relatedObjects)
+	public void accept([%= dto.getClassName() %] object, java.util.Collection<[%= relatedDto.getClassName() %]> relatedObjects)
 	[% if (daoImpl) { %] {
 		dao.removeReferences(getReference(getEClass(FQ_NAME), "[%= relationName %]"), object.get__identifier(), relatedObjects.stream().map(relatedObject -> relatedObject.get__identifier()).collect(Collectors.toList()));
 	}
