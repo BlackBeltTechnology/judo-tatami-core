@@ -1,23 +1,24 @@
 package hu.blackbelt.judo.tatami.asm2sdk;
 
-import com.google.common.io.ByteStreams;
-import hu.blackbelt.epsilon.runtime.execution.api.Log;
-import hu.blackbelt.epsilon.runtime.execution.impl.Slf4jLog;
-import hu.blackbelt.judo.meta.asm.runtime.AsmModel;
-import lombok.extern.slf4j.Slf4j;
-import org.eclipse.emf.common.util.URI;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import static hu.blackbelt.judo.tatami.asm2sdk.Asm2SDK.executeAsm2SDKGeneration;
+import static hu.blackbelt.judo.tatami.psm2asm.Psm2Asm.executePsm2AsmTransformation;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-import static hu.blackbelt.judo.meta.asm.runtime.AsmModel.LoadArguments.asmLoadArgumentsBuilder;
-import static hu.blackbelt.judo.meta.asm.runtime.AsmModel.loadAsmModel;
-import static hu.blackbelt.judo.tatami.asm2sdk.Asm2SDK.calculateAsm2SDKTemplateScriptURI;
-import static hu.blackbelt.judo.tatami.asm2sdk.Asm2SDK.executeAsm2SDKGeneration;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import com.google.common.io.ByteStreams;
+
+import hu.blackbelt.epsilon.runtime.execution.api.Log;
+import hu.blackbelt.epsilon.runtime.execution.impl.Slf4jLog;
+import hu.blackbelt.judo.meta.asm.runtime.AsmModel;
+import hu.blackbelt.judo.meta.psm.runtime.PsmModel;
+import hu.blackbelt.model.northwind.Demo;
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class Asm2SDKTest {
@@ -32,15 +33,18 @@ public class Asm2SDKTest {
 
     @BeforeEach
     public void setUp() throws Exception {
-        // Default logger
-        slf4jlog = new Slf4jLog(log);
+    	 // Default logger
+        final Log slf4jlog = new Slf4jLog(log);
 
 
-        // Loading ASM to isolated ResourceSet, because in Tatami
-        // there is no new namespace registration made.
-        asmModel = loadAsmModel(asmLoadArgumentsBuilder()
-                .uri(URI.createFileURI(new File(TARGET_TEST_CLASSES, NORTHWIND_ASM_MODEL).getAbsolutePath()))
-                .name(NORTHWIND));
+        final PsmModel psmModel = new Demo().fullDemo();
+
+        // Create empty ASM model
+        asmModel = AsmModel.buildAsmModel()
+                .name(NORTHWIND)
+                .build();
+
+        executePsm2AsmTransformation(psmModel, asmModel);
     }
 
     @Test
