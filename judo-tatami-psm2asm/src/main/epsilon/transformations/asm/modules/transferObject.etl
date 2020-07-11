@@ -70,6 +70,7 @@ rule CreateMappedTransferObject
     extends CreateTransferObject {
     }
 
+@greedy
 rule CreateUnmappedTransferObject
     transform s : JUDOPSM!UnmappedTransferObjectType
     to t : ASM!EClass

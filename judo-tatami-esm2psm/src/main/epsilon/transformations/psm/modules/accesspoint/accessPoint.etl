@@ -2,6 +2,16 @@ import "../namespace/namespace.etl";
 import "../derived/referenceAccessor.etl";
 import "../../../../operations/_importAll.eol";
 
+@lazy
+rule CreateGetPrincipalOperationTokenTypeForAccessPoint
+    transform s : ESM!Model
+    to t : JUDOPSM!StringType {
+        t.name = "_TokenString";
+        t.maxLength = 2048;
+
+        s.equivalent("CreateModel").elements.add(t);
+}
+
 rule CreateActorType
 	transform s: ESM!ActorType
 	to t: JUDOPSM!ActorType {
@@ -13,7 +23,22 @@ rule CreateActorType
 	  t.transferObjectType = s.eContainer.getPSMTransferObjectTypeEquivalent();
 	  s.eContainer.getPSMTransferObjectTypeEquivalent().actorType = t;
 	  s.eContainer.eContainer.getPSMGeneratedActorTypeNamespaceEquivalent().elements.add(t);
-	  
+
+      var stringType = ESM!Model.all.first().equivalent("CreateGetPrincipalOperationTokenTypeForAccessPoint");
+	  if (s.realm <> ESM!Realm#PUBLIC) {
+        // TODO - create attributes based on Excel definition for s.customRealm
+
+        var email = new JUDOPSM!TransferAttribute();
+        email.name = "email";
+        email.dataType = stringType;
+        t.attributes.add(email);
+
+        var username = new JUDOPSM!TransferAttribute();
+        username.name = "username";
+        username.dataType = stringType;
+        t.attributes.add(username);
+	  }
+
 	  log.debug("Created ActorType: " + t.name);
 }
 
