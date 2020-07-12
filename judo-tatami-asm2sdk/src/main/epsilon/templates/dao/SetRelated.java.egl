@@ -1,0 +1,34 @@
+[%
+  import "../../operations/sdk.eol";
+  out.setContentType("Java");
+%]
+
+package [%= dto.getDtoDaoPackageName() %];
+
+import java.util.UUID;
+
+import hu.blackbelt.judo.dao.api.DAO;
+import hu.blackbelt.judo.meta.asm.runtime.AsmModel;
+
+import [%= getModelPackageName() %].util.AbstractSdkDao;
+import static [%= getModelPackageName() %].util.SdkUtil.*;
+import [%= dto.getDtoTypeName() %];
+import [%= relatedDto.getDtoTypeName() %];
+
+[% var name =  dto.getClassName() + "Set" + relationName.firstToUpperCase(); %] 
+
+[% if (daoImpl) { %] 
+public class [%= name %]Impl extends AbstractSdkDao implements  [%= name %]{
+
+	private final static String FQ_NAME = "[%= asmUtils.getClassifierFqName(dto) %]";
+	[% } else { %]
+	public interface [%= name %] extends java.util.function.BiConsumer<[%= dto.getClassName() %], [%= relatedDto.getClassName() %]> {
+	[% } %] 
+	
+	@Override
+	public void accept([%= dto.getClassName() %] object, [%= relatedDto.getClassName() %] relatedObject) 
+	[% if (daoImpl) { %] {
+		dao.setReference(getReference(getEClass(FQ_NAME), "[%= relationName %]"), object.get__identifier(), java.util.Arrays.asList(relatedObject.get__identifier()));
+	}
+	[% } else { %];[% } %]
+}

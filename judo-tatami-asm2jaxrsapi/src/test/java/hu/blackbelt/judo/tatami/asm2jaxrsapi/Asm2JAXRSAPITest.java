@@ -1,22 +1,23 @@
 package hu.blackbelt.judo.tatami.asm2jaxrsapi;
 
-import com.google.common.io.ByteStreams;
-import hu.blackbelt.epsilon.runtime.execution.api.Log;
-import hu.blackbelt.epsilon.runtime.execution.impl.Slf4jLog;
-import hu.blackbelt.judo.meta.asm.runtime.AsmModel;
-import lombok.extern.slf4j.Slf4j;
-import org.eclipse.emf.common.util.URI;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import static hu.blackbelt.judo.tatami.asm2jaxrsapi.Asm2JAXRSAPI.executeAsm2JAXRSAPIGeneration;
+import static hu.blackbelt.judo.tatami.psm2asm.Psm2Asm.executePsm2AsmTransformation;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
 
-import static hu.blackbelt.judo.meta.asm.runtime.AsmModel.LoadArguments.asmLoadArgumentsBuilder;
-import static hu.blackbelt.judo.meta.asm.runtime.AsmModel.loadAsmModel;
-import static hu.blackbelt.judo.tatami.asm2jaxrsapi.Asm2JAXRSAPI.calculateAsm2JaxrsapiTemplateScriptURI;
-import static hu.blackbelt.judo.tatami.asm2jaxrsapi.Asm2JAXRSAPI.executeAsm2JAXRSAPIGeneration;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import com.google.common.io.ByteStreams;
+
+import hu.blackbelt.epsilon.runtime.execution.api.Log;
+import hu.blackbelt.epsilon.runtime.execution.impl.Slf4jLog;
+import hu.blackbelt.judo.meta.asm.runtime.AsmModel;
+import hu.blackbelt.judo.meta.psm.runtime.PsmModel;
+import hu.blackbelt.model.northwind.Demo;
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class Asm2JAXRSAPITest {
@@ -32,10 +33,15 @@ public class Asm2JAXRSAPITest {
         // Default logger
         slf4jlog = new Slf4jLog(log);
 
-        NorthwindModelLoader northwindModelLoader = NorthwindModelLoader.createNorthwindModelLoader(NORTHWIND);
-        asmModel = northwindModelLoader.getAsmModel();
-    }
+        PsmModel psmModel = new Demo().fullDemo();
 
+        // Create empty RDBMS model
+        asmModel = AsmModel.buildAsmModel()
+                .name(NORTHWIND)
+                .build();
+
+        executePsm2AsmTransformation(psmModel, asmModel);
+    }
 
     @Test
     public void testExecuteAsm2JAXRSAPIGeneration() throws Exception {

@@ -1,0 +1,39 @@
+[%
+  import "../../operations/sdk.eol";  
+  out.setContentType("Java");
+%]
+
+package [%= dto.getDtoDaoPackageName() %];
+
+import java.util.UUID;
+
+import org.eclipse.emf.ecore.EClass;
+
+import hu.blackbelt.judo.dao.api.DAO;
+import hu.blackbelt.judo.dao.api.Payload;
+import hu.blackbelt.judo.meta.asm.runtime.AsmModel;
+
+import [%= getModelPackageName() %].util.AbstractSdkDao;
+import static [%= getModelPackageName() %].util.SdkUtil.*;
+import [%= dto.getDtoTypeName() %];
+
+[% var name = dto.getClassName() + "Create"; %]
+
+[% if (daoImpl) { %] 
+public class [%= name%]Impl extends AbstractSdkDao implements [%= name %] {
+	private final static String FQ_NAME = "[%= asmUtils.getClassifierFqName(dto) %]";
+
+[% } else { %]
+public interface [%= name %] extends java.util.function.Function<[%= dto.getClassName() %], [%= dto.getClassName() %]>{
+[% } %] 
+
+	@Override
+	public [%= dto.getClassName() %] apply([%= dto.getClassName() %] object) 
+	[% if (daoImpl) { %] {
+		EClass eClass = getEClass(FQ_NAME);
+		Payload resultPayload = dao.create(eClass, Payload.asPayload(asMap(object)));
+		return fromPayload([%= dto.getClassName() %].class, resultPayload);
+	}
+	[% } else { %];[% } %]
+
+}

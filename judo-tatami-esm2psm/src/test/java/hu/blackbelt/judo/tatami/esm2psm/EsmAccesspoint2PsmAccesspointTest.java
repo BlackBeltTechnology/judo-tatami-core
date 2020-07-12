@@ -2,8 +2,9 @@ package hu.blackbelt.judo.tatami.esm2psm;
 
 import hu.blackbelt.epsilon.runtime.execution.api.Log;
 import hu.blackbelt.epsilon.runtime.execution.impl.Slf4jLog;
+import hu.blackbelt.judo.meta.esm.accesspoint.Realm;
 import hu.blackbelt.judo.meta.esm.namespace.Model;
-import hu.blackbelt.judo.meta.esm.operation.OperationModifier;
+import hu.blackbelt.judo.meta.esm.operation.OperationType;
 import hu.blackbelt.judo.meta.esm.runtime.EsmModel;
 import hu.blackbelt.judo.meta.esm.runtime.EsmUtils;
 import hu.blackbelt.judo.meta.esm.structure.EntityType;
@@ -11,13 +12,13 @@ import hu.blackbelt.judo.meta.esm.structure.MemberType;
 import hu.blackbelt.judo.meta.esm.structure.OneWayRelationMember;
 import hu.blackbelt.judo.meta.esm.structure.RelationKind;
 import hu.blackbelt.judo.meta.esm.structure.TransferObjectType;
+import hu.blackbelt.judo.meta.psm.accesspoint.ActorType;
 import hu.blackbelt.judo.meta.psm.runtime.PsmModel;
 import hu.blackbelt.judo.meta.psm.service.MappedTransferObjectType;
 import hu.blackbelt.judo.meta.psm.service.TransferObjectRelation;
 import hu.blackbelt.judo.meta.psm.service.TransferOperation;
 import hu.blackbelt.judo.meta.psm.service.TransferOperationBehaviourType;
 import hu.blackbelt.judo.meta.psm.service.UnboundOperation;
-import hu.blackbelt.model.northwind.esm.NorthwindEsmModel;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
@@ -39,6 +40,8 @@ import java.util.stream.StreamSupport;
 import static hu.blackbelt.judo.meta.esm.accesspoint.util.builder.AccesspointBuilders.newActorTypeBuilder;
 import static hu.blackbelt.judo.meta.esm.namespace.util.builder.NamespaceBuilders.newModelBuilder;
 import static hu.blackbelt.judo.meta.esm.operation.util.builder.OperationBuilders.newOperationBuilder;
+import static hu.blackbelt.judo.meta.esm.runtime.EsmEpsilonValidator.calculateEsmValidationScriptURI;
+import static hu.blackbelt.judo.meta.esm.runtime.EsmEpsilonValidator.validateEsm;
 import static hu.blackbelt.judo.meta.esm.runtime.EsmModel.buildEsmModel;
 import static hu.blackbelt.judo.meta.esm.structure.util.builder.StructureBuilders.*;
 import static hu.blackbelt.judo.meta.psm.PsmEpsilonValidator.calculatePsmValidationScriptURI;
@@ -47,8 +50,7 @@ import static hu.blackbelt.judo.meta.psm.runtime.PsmModel.SaveArguments.psmSaveA
 import static hu.blackbelt.judo.meta.psm.runtime.PsmModel.buildPsmModel;
 import static hu.blackbelt.judo.tatami.esm2psm.Esm2Psm.calculateEsm2PsmTransformationScriptURI;
 import static hu.blackbelt.judo.tatami.esm2psm.Esm2Psm.executeEsm2PsmTransformation;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 @Slf4j
 public class EsmAccesspoint2PsmAccesspointTest {
@@ -103,6 +105,9 @@ public class EsmAccesspoint2PsmAccesspointTest {
     }
 
     private void transform() throws Exception {
+    	assertTrue(esmModel.isValid());
+    	validateEsm(new Slf4jLog(log), esmModel, calculateEsmValidationScriptURI());
+
         // Make transformation which returns the trace with the serialized URI's
         esm2PsmTransformationTrace = executeEsm2PsmTransformation(esmModel, psmModel, new Slf4jLog(log),
                 calculateEsm2PsmTransformationScriptURI());
@@ -125,7 +130,7 @@ public class EsmAccesspoint2PsmAccesspointTest {
                 .withName(TRANSFER_OBJECT_TYPE_NAME)
                 .withOperations(newOperationBuilder().withName(OPERATION_NAME)
                         .withCustomImplementation(true)
-                        .withModifier(OperationModifier.STATIC)
+                        .withOperationType(OperationType.STATIC)
                         .withBinding("")
                         .build())
                 .build();
@@ -134,13 +139,15 @@ public class EsmAccesspoint2PsmAccesspointTest {
                 .withName(ACCESS_POINT_NAME)
                 .withRelations(newOneWayRelationMemberBuilder()
                         .withName(SERVICE_GROUP_NAME)
-                        .withMemberType(MemberType.DERIVED)
+                        .withMemberType(MemberType.TRANSIENT)
+                        .withRelationKind(RelationKind.AGGREGATION)
                         .withTarget(unmappedTransferObjectType)
-                        .withGetterExpression("Model::T")
                         .build())
                 .build();
         
-        accessPoint.setActorType(newActorTypeBuilder().build());
+        accessPoint.setActorType(newActorTypeBuilder()
+                .withRealm(Realm.PUBLIC)
+                .build());
 
         final Model model = newModelBuilder().withName(MODEL_NAME)
                 .withElements(Arrays.asList(unmappedTransferObjectType, accessPoint)).build();
@@ -153,6 +160,10 @@ public class EsmAccesspoint2PsmAccesspointTest {
                 .filter(t -> t.isAccessPoint())
                 .findAny();
         assertTrue(ap.isPresent());
+
+        final Optional<ActorType> actorType = allPsm(ActorType.class).findAny();
+        assertTrue(actorType.isPresent());
+        assertNull(actorType.get().getRealm());
 
         assertTrue(ap.get().getRelations().stream().anyMatch(s -> SERVICE_GROUP_NAME.equals(s.getName())));
     }
@@ -185,12 +196,15 @@ public class EsmAccesspoint2PsmAccesspointTest {
                 .withRelations(eg)
                 .build();
         
-        accessPoint.setActorType(newActorTypeBuilder().build());
+        accessPoint.setActorType(newActorTypeBuilder()
+                .withRealm(Realm.CUSTOM)
+                .withCustomRealm("sandbox")
+                .build());
         
         log.debug("container is ap: " + ((TransferObjectType)eg.eContainer()).isAccesspoint());
         log.debug("target is mapped: " + eg.getTarget().isMapped());
         log.debug("getter: " + !eg.getGetterExpression().trim().equals(""));
-        
+
         
         final Model model = newModelBuilder().withName(MODEL_NAME)
                 .withElements(Arrays.asList(entityType, accessPoint)).build();
@@ -203,6 +217,10 @@ public class EsmAccesspoint2PsmAccesspointTest {
                 .filter(t -> t.isAccessPoint())
                 .findAny();
         assertTrue(ap.isPresent());
+
+        final Optional<ActorType> actorType = allPsm(ActorType.class).findAny();
+        assertTrue(actorType.isPresent());
+        assertEquals("sandbox", actorType.get().getRealm());
 
         assertTrue(ap.get().getRelations().stream()
                 .filter(r -> r.isExposedGraph())
@@ -230,6 +248,8 @@ public class EsmAccesspoint2PsmAccesspointTest {
         final String NAME_OF_CREATE_OPERATION = "_createG";
         final String NAME_OF_UPDATE_OPERATION = "_updateG";
         final String NAME_OF_DELETE_OPERATION = "_deleteG";
+        final String NAME_OF_GET_PRINCIPAL_OPERATION = "_principal";
+        final String NAME_OF_MAP_PRINCIPAL_OPERATION = "_map_principal";
 
         final String NAME_OF_UNSET_SINGLE_CONTAINMENT_OPERATION = "_unsetSingleContainmentOfG";
 
@@ -296,6 +316,7 @@ public class EsmAccesspoint2PsmAccesspointTest {
                 .withRelations(newOneWayRelationMemberBuilder()
                         .withName(EXPOSED_GRAPH_NAME)
                         .withTarget(entityTypeE)
+                        .withMemberType(MemberType.DERIVED)
                         .withGetterExpression(MODEL_NAME + EsmUtils.NAMESPACE_SEPARATOR + ENTITY_TYPE_E_NAME)
                         .withLower(LOWER)
                         .withUpper(UPPER)
@@ -303,7 +324,10 @@ public class EsmAccesspoint2PsmAccesspointTest {
                         .build())
                 .build();
         
-        accessPoint.setActorType(newActorTypeBuilder().build());
+        accessPoint.setActorType(newActorTypeBuilder()
+                .withRealm(Realm.CUSTOM)
+                .withCustomRealm("sandbox")
+                .build());
 
         final Model model = newModelBuilder().withName(MODEL_NAME)
                 .withElements(Arrays.asList(entityTypeE, entityTypeF, accessPoint)).build();
@@ -472,7 +496,29 @@ public class EsmAccesspoint2PsmAccesspointTest {
 //                EcoreUtil.equals(o.getOutput().getType(), defaultF.get())
 //        ));
 
-        assertEquals(11L, ap.get().getOperations().stream().filter(o -> o instanceof UnboundOperation).count());
+        assertTrue(ap.get().getOperations().stream().anyMatch(o -> NAME_OF_GET_PRINCIPAL_OPERATION.equals(o.getName()) && (o instanceof UnboundOperation) &&
+                o.getBehaviour() != null && o.getBehaviour().getBehaviourType() == TransferOperationBehaviourType.GET_PRINCIPAL && EcoreUtil.equals(o.getBehaviour().getOwner(), ap.get()) &&
+                o.getInput() == null && o.getOutput() != null && o.getFaults().isEmpty() &&
+                o.getOutput().getCardinality().getLower() == 0 && o.getOutput().getCardinality().getUpper() == 1 &&
+                EcoreUtil.equals(o.getOutput().getType(), ap.get())
+        ));
+
+        assertEquals(12L, ap.get().getOperations().stream().filter(o -> o instanceof UnboundOperation).count());
+
+        final Optional<hu.blackbelt.judo.meta.psm.accesspoint.ActorType> actorType = allPsm(hu.blackbelt.judo.meta.psm.accesspoint.ActorType.class)
+                .findAny();
+        assertTrue(actorType.isPresent());
+
+        assertTrue(actorType.get().getOperations().stream().anyMatch(o -> NAME_OF_MAP_PRINCIPAL_OPERATION.equals(o.getName()) && (o instanceof UnboundOperation) &&
+                o.getBehaviour() != null && o.getBehaviour().getBehaviourType() == TransferOperationBehaviourType.MAP_PRINCIPAL && EcoreUtil.equals(o.getBehaviour().getOwner(), actorType.get()) &&
+                o.getInput() != null && o.getOutput() != null && o.getFaults().isEmpty() &&
+                o.getInput().getCardinality().getLower() == 0 && o.getInput().getCardinality().getUpper() == 1 &&
+                EcoreUtil.equals(o.getInput().getType(), actorType.get()) &&
+                o.getOutput().getCardinality().getLower() == 0 && o.getOutput().getCardinality().getUpper() == 1 &&
+                EcoreUtil.equals(o.getOutput().getType(), ap.get())
+        ));
+
+        assertEquals(1L, actorType.get().getOperations().stream().filter(o -> o instanceof UnboundOperation).count());
     }
 
     static <T> Stream<T> asStream(Iterator<T> sourceIterator, boolean parallel) {

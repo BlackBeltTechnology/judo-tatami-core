@@ -82,9 +82,8 @@ public class Asm2SDK {
 
         Set<String> javaFileNames = ((Set<String>) executionContext.getContext().get("outputJavaClasses"))
                 .stream().map(s -> s.replaceAll("//", "/")).collect(Collectors.toSet());
-        Set<String> scrXmlFileNames = Sets.newHashSet(); // (Set<String>)executionContext.getContext().get("outputScrXmls");
+        Set<String> scrXmlFileNames = (Set<String>)executionContext.getContext().get("outputScrXmls");
 
-        // compile(outputDir, (Set<String>)executionContext.getContext().get("outputJavaClasses"));
         executionContext.commit();
         executionContext.close();
 
@@ -122,13 +121,6 @@ public class Asm2SDK {
         Set<String> exportedPackages = Sets.newHashSet();
 
         // Add helper classes
-        /*
-        bundle.add(getClassFileName(CompositeClassLoader.class), getClassByteCode(CompositeClassLoader.class));
-        bundle.add(getClassFileName(ReflectionUtil.class), getClassByteCode(ReflectionUtil.class));
-        bundle.add(getClassFileName(MapBuilderProxy.class), getClassByteCode(MapBuilderProxy.class));
-        bundle.add(getClassFileName(MapHolder.class), getClassByteCode(MapHolder.class));
-        bundle.add(getClassFileName(MapProxy.class), getClassByteCode(MapProxy.class));
-        */
 
         compiled.forEach(c -> {
             FullyQualifiedName fullyQualifiedName = (FullyQualifiedName) c;
@@ -163,7 +155,15 @@ public class Asm2SDK {
                 .set( Constants.REQUIRE_CAPABILITY,
                         "osgi.extender;filter:=\"(&(osgi.extender=osgi.component)(version>=1.3.0)(!(version>=2.0.0)))\"")
                 .set( Constants.IMPORT_PACKAGE,
-                        "org.osgi.framework;version=\"[1.8,2.0)\""
+                        "org.osgi.framework;version=\"[1.8,2.0)\"," +
+                        "hu.blackbelt.judo.dao.api;version=\"[1.0,2.0)\"," +
+                        "hu.blackbelt.judo.dispatcher.api;version=\"[1.0,2.0)\"," +
+                        "hu.blackbelt.judo.meta.asm.runtime;version=\"[1.0,2.0)\"," +
+                        "hu.blackbelt.structured.map.proxy;version=\"[1.0,2.0)\"," +
+                        "org.eclipse.emf.ecore," +
+                        "org.eclipse.emf.common," +
+                        "org.eclipse.emf.common.util," +
+                        "org.slf4j;version=\"1.7.2\""
                 );
 
         if (exportedPackages.size() > 0) {

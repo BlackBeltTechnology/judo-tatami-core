@@ -54,31 +54,27 @@
 
         <epsilon-runtime-version>1.2.2</epsilon-runtime-version>
 
-        <judo-framework-version>2.0.0.20200619_151750_f48a55c_develop</judo-framework-version>
+        <judo-framework-version>2.0.0.20200629_214515_fb8a017_develop</judo-framework-version>
 
         <!-- Model versions -->
-        <judo-meta-rdbms-version>1.0.0.20200619_154921_900fc24_develop</judo-meta-rdbms-version>
-        <judo-meta-esm-version>1.1.0.20200623_125231_44d626d_develop</judo-meta-esm-version>
-        <judo-meta-psm-version>1.1.0.20200623_125402_dce57a3_develop</judo-meta-psm-version>
-        <judo-meta-jql-version>1.0.1.20200619_161236_570d40a_develop</judo-meta-jql-version>
-        <judo-meta-jcl-version>1.0.1.20200619_163407_707d97a_develop</judo-meta-jcl-version>
-        <judo-meta-script-version>1.0.1.20200626_103346_91e2557_feature_JNG_1484_fix_expression_builder_and_model_adapter</judo-meta-script-version>
-        <judo-meta-asm-version>1.1.0.20200619_161113_927157f_develop</judo-meta-asm-version>
-        <judo-meta-expression-version>1.0.1.20200629_163433_88ba1ad_develop</judo-meta-expression-version>
-        <judo-meta-measure-version>1.0.0.20200619_154219_0665452_develop</judo-meta-measure-version>
-        <judo-meta-liquibase-version>1.0.0.20200619_161745_93d75e4_develop</judo-meta-liquibase-version>
-        <judo-meta-openapi-version>1.0.0.20200619_154504_5286f06_develop</judo-meta-openapi-version>
-        <judo-meta-ui-version>1.0.0.20200619_164210_a41cc45_develop</judo-meta-ui-version>
-        <judo-dao-api-version>1.0.0</judo-dao-api-version>
-        <judo-dispatcher-api-version>1.0.0</judo-dispatcher-api-version>
-        <judo-script-codegen-version>1.1.0.20200626_104906_85a3462_feature_JNG_1484_fix_expression_builder_and_model_adapter</judo-script-codegen-version>
+        <judo-meta-rdbms-version>1.0.0.20200630_234951_51d5e61_develop</judo-meta-rdbms-version>
+        <judo-meta-esm-version>1.1.0.20200702_134819_321333e_develop</judo-meta-esm-version>
+        <judo-meta-psm-version>1.1.0.20200709_133556_4db2d43_feature_JNG_1492_add_getPrincipal_operation</judo-meta-psm-version>
+        <judo-meta-jql-version>1.0.1.20200630_232815_ed6c349_develop</judo-meta-jql-version>
+        <judo-meta-jcl-version>1.0.1.20200702_131544_4fe7b50_develop</judo-meta-jcl-version>
+        <judo-meta-script-version>1.0.1.20200702_143413_dd323ed_develop</judo-meta-script-version>
+        <judo-meta-asm-version>1.1.0.20200709_153602_94c0f9c_feature_JNG_1492_add_getPrincipal_operation</judo-meta-asm-version>
+        <judo-meta-expression-version>1.0.1.20200702_141534_0c42a60_develop</judo-meta-expression-version>
+        <judo-meta-measure-version>1.0.0.20200630_232902_b6ce25f_develop</judo-meta-measure-version>
+        <judo-meta-liquibase-version>1.0.0.20200630_232906_9113d74_develop</judo-meta-liquibase-version>
+        <judo-meta-openapi-version>1.0.0.20200630_233529_cd0a349_develop</judo-meta-openapi-version>
+        <judo-meta-ui-version>1.0.0.20200702_140117_a5b8876_develop</judo-meta-ui-version>
+        <judo-dao-api-version>1.0.1</judo-dao-api-version>
+        <judo-dispatcher-api-version>1.0.2.20200709_154058_726a3b9_feature_JNG_1492_add_getPrincipal_operation</judo-dispatcher-api-version>
+        <judo-script-codegen-version>1.1.0.20200706_114943_e5901e4_develop</judo-script-codegen-version>
 
-        <structured-map-proxy-version>1.0.1</structured-map-proxy-version>
-        <judo-operation-utils-version>1.1.0.20200424_162743_fecf37e_develop</judo-operation-utils-version>
-
-
-        <!-- We use older version of plugin to avoid chicked egg problem -->
-        <judo-tatami-maven-plugin-version>1.1.0.20200424_124359_3ac33fac_plugin</judo-tatami-maven-plugin-version>
+        <structured-map-proxy-version>1.0.3</structured-map-proxy-version>
+        <judo-operation-utils-version>1.1.0.20200706_113528_d3209b2_develop</judo-operation-utils-version>
 
         <!-- Xtend / Xcore -->
         <emf-version>2.18.0</emf-version>
@@ -98,10 +94,10 @@
         <emf-mapping-ecore2xml>2.11.0</emf-mapping-ecore2xml>
 
         <cxf-version>3.3.6</cxf-version>
-        <osgi-utils-version>1.0.7</osgi-utils-version>
+        <osgi-utils-version>1.0.10</osgi-utils-version>
         <bouncycastle-karaf-features-version>1.61.2</bouncycastle-karaf-features-version>
         <tinybundles-karaf-features-version>1.0.0</tinybundles-karaf-features-version>
-        <google-karaf-features-version>1.0.5</google-karaf-features-version>
+        <google-karaf-features-version>1.0.6</google-karaf-features-version>
         <eclipse-emf-karaf-features-version>1.0.1</eclipse-emf-karaf-features-version>
         <eclipse-epsilon-karaf-features-version>1.0.3</eclipse-epsilon-karaf-features-version>
         <eclipse-xtext-karaf-features-version>1.0.2</eclipse-xtext-karaf-features-version>
@@ -109,7 +105,7 @@
         <apache-commons-karaf-features-version>1.0.5</apache-commons-karaf-features-version>
         <apache-poi-karaf-features-version>1.0.2</apache-poi-karaf-features-version>
         <apache-httpclient-karaf-features-version>1.0.0</apache-httpclient-karaf-features-version>
-        <cxf-jaxrs-application-manager-version>0.5.0</cxf-jaxrs-application-manager-version>
+        <cxf-jaxrs-application-manager-version>0.6.0</cxf-jaxrs-application-manager-version>
         <log4j.configuration>log4j.properties</log4j.configuration>
     </properties>
 
@@ -172,7 +168,7 @@
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
-            <version>20.0</version>
+            <version>27.1-jre</version>
         </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
@@ -604,81 +600,6 @@
     <build>
         <pluginManagement>
             <plugins>
-                <plugin>
-                    <groupId>hu.blackbelt.judo.tatami</groupId>
-                    <artifactId>judo-tatami-workflow-maven-plugin</artifactId>
-                    <version>${judo-tatami-maven-plugin-version}</version>
-                    <executions>
-                        <execution>
-                            <id>execute-northwind-test-model-from-general</id>
-                            <phase>process-test-resources</phase>
-                            <goals>
-                                <goal>psm-default-workflow</goal>
-                            </goals>
-                            <configuration>
-                                <psmGeneratorClassName>hu.blackbelt.model.northwind.Demo</psmGeneratorClassName>
-                                <psmGeneratorMethodName>fullDemo</psmGeneratorMethodName>
-                                <destination>${basedir}/target/test-classes</destination>
-                                <modelName>northwind</modelName>
-                                <dialectList>hsqldb,oracle</dialectList>
-                                <ignorePsm2Asm>true</ignorePsm2Asm>
-                                <ignorePsm2Measure>true</ignorePsm2Measure>
-                                <ignoreAsm2Rdbms>true</ignoreAsm2Rdbms>
-                                <ignoreAsm2Openapi>true</ignoreAsm2Openapi>
-                                <ignoreAsm2sdk>true</ignoreAsm2sdk>
-                                <ignoreAsm2jaxrsapi>true</ignoreAsm2jaxrsapi>
-                                <ignoreRdbms2Liquibase>true</ignoreRdbms2Liquibase>
-                                <ignoreAsm2Expression>true</ignoreAsm2Expression>
-                                <ignoreAsm2Script>true</ignoreAsm2Script>
-                            </configuration>
-                        </execution>
-                    </executions>
-                    <dependencies>
-
-                        <dependency>
-                            <groupId>hu.blackbelt.judo.meta</groupId>
-                            <artifactId>hu.blackbelt.judo.meta.psm.model.northwind</artifactId>
-                            <version>${judo-meta-psm-version}</version>
-                        </dependency>
-                        <dependency>
-                            <groupId>hu.blackbelt.judo.meta</groupId>
-                            <artifactId>hu.blackbelt.judo.meta.psm.model</artifactId>
-                            <version>${judo-meta-psm-version}</version>
-                        </dependency>
-                        <dependency>
-                            <groupId>hu.blackbelt.judo.meta</groupId>
-                            <artifactId>hu.blackbelt.judo.meta.rdbms.model</artifactId>
-                            <version>${judo-meta-rdbms-version}</version>
-                        </dependency>
-                        <dependency>
-                            <groupId>hu.blackbelt.judo.meta</groupId>
-                            <artifactId>hu.blackbelt.judo.meta.liquibase.model</artifactId>
-                            <version>${judo-meta-liquibase-version}</version>
-                        </dependency>
-                        <dependency>
-                            <groupId>hu.blackbelt.judo.meta</groupId>
-                            <artifactId>hu.blackbelt.judo.meta.asm.model</artifactId>
-                            <version>${judo-meta-asm-version}</version>
-                        </dependency>
-                        <dependency>
-                            <groupId>hu.blackbelt.judo.meta</groupId>
-                            <artifactId>hu.blackbelt.judo.meta.openapi.model</artifactId>
-                            <version>${judo-meta-openapi-version}</version>
-                        </dependency>
-                        <dependency>
-                            <groupId>hu.blackbelt.judo.meta</groupId>
-                            <artifactId>hu.blackbelt.judo.meta.measure.model</artifactId>
-                            <version>${judo-meta-measure-version}</version>
-                        </dependency>
-                        <dependency>
-                            <groupId>hu.blackbelt.judo.meta</groupId>
-                            <artifactId>hu.blackbelt.judo.meta.ui.model</artifactId>
-                            <version>${judo-meta-ui-version}</version>
-                        </dependency>
-
-                    </dependencies>
-                </plugin>
-
                 <plugin>
                     <groupId>org.apache.karaf.tooling</groupId>
                     <artifactId>karaf-maven-plugin</artifactId>

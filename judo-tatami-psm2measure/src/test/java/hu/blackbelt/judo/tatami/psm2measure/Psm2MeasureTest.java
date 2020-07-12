@@ -2,8 +2,10 @@ package hu.blackbelt.judo.tatami.psm2measure;
 
 import hu.blackbelt.epsilon.runtime.execution.api.Log;
 import hu.blackbelt.epsilon.runtime.execution.impl.Slf4jLog;
+import hu.blackbelt.judo.meta.asm.runtime.AsmModel;
 import hu.blackbelt.judo.meta.measure.runtime.MeasureModel;
 import hu.blackbelt.judo.meta.psm.runtime.PsmModel;
+import hu.blackbelt.model.northwind.Demo;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.emf.ecore.EObject;
 import org.junit.jupiter.api.BeforeEach;
@@ -22,7 +24,7 @@ import static hu.blackbelt.judo.tatami.psm2measure.Psm2MeasureTransformationTrac
 
 @Slf4j
 public class Psm2MeasureTest {
-    public static final String NORTHWIND = "northwind";
+    public static final String DEMO = "demo";
     public static final String NORTHWIND_PSM_MODEL = "northwind-psm.model";
     public static final String NORTHWIND_MEASURE_MODEL = "northwind-measure.model";
     public final static String NORTHWIND_PSM_2_MEASURE_MODEL = "northwind-psm2measure.model";
@@ -37,15 +39,11 @@ public class Psm2MeasureTest {
         // Default logger
         slf4jlog = new Slf4jLog(log);
 
-        // Loading PSM to isolated ResourceSet, because in Tatami
-        // there is no new namespace registration made.
-        psmModel = loadPsmModel(psmLoadArgumentsBuilder()
-                .file(new File(TARGET_TEST_CLASSES, NORTHWIND_PSM_MODEL))
-                .name(NORTHWIND));
+        psmModel = new Demo().fullDemo();
 
         // Create empty MEASURE model
         measureModel = buildMeasureModel()
-                .name(NORTHWIND)
+                .name(DEMO)
                 .build();
     }
 
@@ -60,7 +58,7 @@ public class Psm2MeasureTest {
 
         // Loading trace map
         Psm2MeasureTransformationTrace psm2MeasureTransformationTraceLoaded =
-                fromModelsAndTrace(NORTHWIND, psmModel, measureModel, new File(TARGET_TEST_CLASSES, NORTHWIND_PSM_2_MEASURE_MODEL));
+                fromModelsAndTrace(DEMO, psmModel, measureModel, new File(TARGET_TEST_CLASSES, NORTHWIND_PSM_2_MEASURE_MODEL));
 
         Map<EObject, List<EObject>> resolvedTrace = psm2MeasureTransformationTraceLoaded.getTransformationTrace();
 

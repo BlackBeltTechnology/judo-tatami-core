@@ -6,6 +6,8 @@ import hu.blackbelt.judo.tatami.core.workflow.flow.WorkFlow;
 import hu.blackbelt.judo.tatami.core.workflow.work.TransformationContext;
 import hu.blackbelt.judo.tatami.core.workflow.work.WorkReport;
 import hu.blackbelt.judo.tatami.core.workflow.work.WorkStatus;
+import hu.blackbelt.model.northwind.Demo;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -33,8 +35,7 @@ public class Psm2MeasureWorkTest {
 
 	@BeforeEach
 	void setUp() throws IOException, PsmValidationException, URISyntaxException {
-		PsmModel psmModel = loadPsmModel(
-				psmLoadArgumentsBuilder().file(new File(TARGET_TEST_CLASSES, NORTHWIND_PSM_MODEL)).name(NORTHWIND));
+		PsmModel psmModel = new Demo().fullDemo();
 		transformationContext = new TransformationContext(NORTHWIND);
 		transformationContext.put(psmModel);
 

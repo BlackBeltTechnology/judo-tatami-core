@@ -33,7 +33,8 @@
 							<goal>copy-resources</goal>
 						</goals>
 						<configuration>
-							<outputDirectory>${basedir}/target/classes/tatami/asm2sdk</outputDirectory>
+							<outputDirectory>${basedir}/target/classes/tatami/asm2sdk
+							</outputDirectory>
 							<resources>
 								<resource>
 									<directory>src/main/epsilon</directory>
@@ -61,67 +62,48 @@
 							tatami=target/classes/tatami
 						</Include-Resource>
 						<Import-Package>
-                            ${osgi-default-import},
-                            *
+							${osgi-default-import},
+							*
 						</Import-Package>
-						<Asm2SDK-Transformation-ScriptRoot>tatami/asm2sdk/templates</Asm2SDK-Transformation-ScriptRoot>
+						<Asm2SDK-Transformation-ScriptRoot>tatami/asm2sdk/templates
+						</Asm2SDK-Transformation-ScriptRoot>
 					</instructions>
 				</configuration>
-			</plugin>
-
-			<plugin>
-				<groupId>hu.blackbelt.judo.tatami</groupId>
-				<artifactId>judo-tatami-workflow-maven-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>execute-northwind-test-model-from-general</id>
-						<configuration>
-							<ignorePsm2Asm>false</ignorePsm2Asm>
-						</configuration>
-					</execution>
-				</executions>
-				<dependencies>
-					<dependency>
-						<groupId>hu.blackbelt.judo.tatami</groupId>
-						<artifactId>judo-tatami-psm2asm</artifactId>
-						<version>${project.version}</version>
-					</dependency>
-				</dependencies>
 			</plugin>
 
 		</plugins>
 	</build>
 
 	<dependencies>
-        <dependency>
-            <groupId>org.eclipse.emf</groupId>
-            <artifactId>org.eclipse.emf.ecore</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.emf</groupId>
-            <artifactId>org.eclipse.emf.common</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.emf</groupId>
-            <artifactId>org.eclipse.emf.ecore.xmi</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.epsilon</groupId>
-            <artifactId>epsilon-core</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.epsilon</groupId>
-            <artifactId>epsilon-emf</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>hu.blackbelt.epsilon</groupId>
-            <artifactId>epsilon-runtime-execution</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>hu.blackbelt.epsilon</groupId>
-            <artifactId>epsilon-runtime-osgi</artifactId>
-        </dependency>        
-        <dependency>
+		<dependency>
+			<groupId>org.eclipse.emf</groupId>
+			<artifactId>org.eclipse.emf.ecore</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.emf</groupId>
+			<artifactId>org.eclipse.emf.common</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.emf</groupId>
+			<artifactId>org.eclipse.emf.ecore.xmi</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.epsilon</groupId>
+			<artifactId>epsilon-core</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.epsilon</groupId>
+			<artifactId>epsilon-emf</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>hu.blackbelt.epsilon</groupId>
+			<artifactId>epsilon-runtime-execution</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>hu.blackbelt.epsilon</groupId>
+			<artifactId>epsilon-runtime-osgi</artifactId>
+		</dependency>
+		<dependency>
 			<groupId>hu.blackbelt.judo.meta</groupId>
 			<artifactId>hu.blackbelt.judo.meta.asm.model</artifactId>
 		</dependency>
@@ -133,6 +115,14 @@
 			<groupId>hu.blackbelt.judo.framework</groupId>
 			<artifactId>compiler-api</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>hu.blackbelt.judo</groupId>
+			<artifactId>judo-dao-api</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>hu.blackbelt.judo</groupId>
+			<artifactId>judo-dispatcher-api</artifactId>
+		</dependency>
 
 		<dependency>
 			<groupId>org.ops4j.pax.tinybundles</groupId>
@@ -142,9 +132,38 @@
 		<dependency>
 			<groupId>hu.blackbelt</groupId>
 			<artifactId>structured-map-proxy</artifactId>
-			<version>${structured-map-proxy-version}</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>hu.blackbelt.judo.tatami</groupId>
+			<artifactId>judo-tatami-psm2asm</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>hu.blackbelt.judo.meta</groupId>
+			<artifactId>hu.blackbelt.judo.meta.psm.model.northwind</artifactId>
 		</dependency>
 
+		<dependency>
+			<groupId>hu.blackbelt.judo.meta</groupId>
+			<artifactId>hu.blackbelt.judo.meta.psm.model.northwind</artifactId>
+			<version>${judo-meta-psm-version}</version>
+		</dependency>	
+		
+		<dependency>
+			<groupId>hu.blackbelt.judo.meta</groupId>
+			<artifactId>hu.blackbelt.judo.meta.psm.model.test</artifactId>
+			<version>${judo-meta-psm-version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>hu.blackbelt.judo.tatami</groupId>
+			<artifactId>judo-tatami-psm2asm</artifactId>
+			<version>${project.version}</version>
+			<scope>test</scope>
+		</dependency>
+		
 	</dependencies>
 </project>
 

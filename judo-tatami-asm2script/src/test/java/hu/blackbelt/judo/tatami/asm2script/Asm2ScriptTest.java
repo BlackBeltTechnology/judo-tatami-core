@@ -1,27 +1,24 @@
 package hu.blackbelt.judo.tatami.asm2script;
 
-import hu.blackbelt.epsilon.runtime.execution.api.Log;
-import hu.blackbelt.epsilon.runtime.execution.impl.Slf4jLog;
-import hu.blackbelt.judo.meta.asm.runtime.AsmModel;
-import hu.blackbelt.judo.meta.expression.runtime.ExpressionModel;
-import hu.blackbelt.judo.meta.measure.runtime.MeasureModel;
-import hu.blackbelt.judo.meta.script.runtime.ScriptModel;
-import lombok.extern.slf4j.Slf4j;
-import org.eclipse.emf.common.util.URI;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import static hu.blackbelt.judo.meta.script.runtime.ScriptModel.buildScriptModel;
+import static hu.blackbelt.judo.meta.script.runtime.ScriptModel.SaveArguments.scriptSaveArgumentsBuilder;
+import static hu.blackbelt.judo.tatami.psm2asm.Psm2Asm.executePsm2AsmTransformation;
+import static hu.blackbelt.judo.tatami.psm2measure.Psm2Measure.executePsm2MeasureTransformation;
 
 import java.io.File;
 import java.io.FileOutputStream;
 
-import static hu.blackbelt.judo.meta.asm.runtime.AsmModel.LoadArguments.asmLoadArgumentsBuilder;
-import static hu.blackbelt.judo.meta.asm.runtime.AsmModel.loadAsmModel;
-import static hu.blackbelt.judo.meta.expression.runtime.ExpressionModel.SaveArguments.expressionSaveArgumentsBuilder;
-import static hu.blackbelt.judo.meta.expression.runtime.ExpressionModel.buildExpressionModel;
-import static hu.blackbelt.judo.meta.measure.runtime.MeasureModel.LoadArguments.measureLoadArgumentsBuilder;
-import static hu.blackbelt.judo.meta.measure.runtime.MeasureModel.loadMeasureModel;
-import static hu.blackbelt.judo.meta.script.runtime.ScriptModel.SaveArguments.scriptSaveArgumentsBuilder;
-import static hu.blackbelt.judo.meta.script.runtime.ScriptModel.buildScriptModel;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import hu.blackbelt.epsilon.runtime.execution.api.Log;
+import hu.blackbelt.epsilon.runtime.execution.impl.Slf4jLog;
+import hu.blackbelt.judo.meta.asm.runtime.AsmModel;
+import hu.blackbelt.judo.meta.measure.runtime.MeasureModel;
+import hu.blackbelt.judo.meta.psm.runtime.PsmModel;
+import hu.blackbelt.judo.meta.script.runtime.ScriptModel;
+import hu.blackbelt.model.northwind.Demo;
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class Asm2ScriptTest {
@@ -42,21 +39,25 @@ public class Asm2ScriptTest {
         // Default logger
         slf4jlog = new Slf4jLog(log);
 
-        // Loading ASM to isolated ResourceSet, because in Tatami
-        // there is no new namespace registration made.
-        asmModel = loadAsmModel(asmLoadArgumentsBuilder()
-                .uri(URI.createFileURI(new File(TARGET_TEST_CLASSES, NORTHWIND_ASM_MODEL).getAbsolutePath()))
-                .name(NORTHWIND));
+        final PsmModel psmModel = new Demo().fullDemo();
 
-        measureModel = loadMeasureModel(measureLoadArgumentsBuilder()
-                .uri(URI.createFileURI(new File(TARGET_TEST_CLASSES, NORTHWIND_MEASURE_MODEL).getAbsolutePath()))
-                .name(NORTHWIND));
+        // Create empty ASM model
+        asmModel = AsmModel.buildAsmModel()
+                .name(NORTHWIND)
+                .build();
+
+        // Create empty Measure model
+        measureModel = MeasureModel.buildMeasureModel()
+                .name(NORTHWIND)
+                .build();
+        
+        executePsm2AsmTransformation(psmModel, asmModel);
+        executePsm2MeasureTransformation(psmModel, measureModel);
 
         // Create empty Expression model
         scriptModel = buildScriptModel()
                 .name(NORTHWIND)
                 .build();
-
     }
 
     @Test
