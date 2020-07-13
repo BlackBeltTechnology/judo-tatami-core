@@ -20,6 +20,8 @@
             </testResource>
         </testResources>
         <plugins>
+
+			<!-- 1. Unpack ESM model -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-dependency-plugin</artifactId>
@@ -45,6 +47,7 @@
                 </executions>
             </plugin>
 
+			<!-- 2. Copy karaf configs for Pax-exam -->
             <plugin>
                 <artifactId>maven-resources-plugin</artifactId>
                 <version>3.1.0</version>
@@ -73,6 +76,8 @@
                 <artifactId>exec-maven-plugin</artifactId>
                 <version>3.0.0</version>
                 <executions>
+
+					<!-- 3. Write PSM model -->
                     <execution>
                         <id>generate-full-demo</id>
                         <phase>generate-test-sources</phase>
@@ -90,6 +95,7 @@
                         </configuration>
                     </execution>
 
+					<!-- 4. Transform ESM model to PSM model -->
                     <execution>
                         <id>generate-esm-demo</id>
                         <phase>generate-test-sources</phase>
@@ -101,7 +107,7 @@
                             <arguments>
                                 <argument>${basedir}/target/test-classes/northwind-esm/northwind-esm.model</argument>
                                 <argument>northwind</argument>
-                                <argument>${basedir}/target/test-classes/northwind-esm/northwind-esm-psm.model</argument>
+                                <argument>${basedir}/target/test-classes/northwind-esm/northwind-psm.model</argument>
                             </arguments>
                             <includeProjectDependencies>true</includeProjectDependencies>
                             <includePluginDependencies>true</includePluginDependencies>
@@ -138,16 +144,29 @@
                 <artifactId>judo-tatami-workflow-maven-plugin</artifactId>
                 <version>${project.version}</version>
                 <executions>
+					<!-- 5. Transform PSM model to model artifacts  -->
                    <execution>
-                        <id>execute-northwind-test-model-from-general</id>
+                        <id>execute-northwind-psm-test-model-from-general</id>
                         <phase>generate-test-sources</phase>
+                        <goals>
+                            <goal>psm-default-workflow</goal>
+                        </goals>
                         <configuration>
-                            <ignorePsm2Asm>false</ignorePsm2Asm>
-                            <ignoreAsm2jaxrsapi>false</ignoreAsm2jaxrsapi>
+                            <psmModelFile>${basedir}/target/test-classes/northwind-psm/northwind-psm.model</psmModelFile>
+                            <destination>${basedir}/target/test-classes/northwind-psm</destination>
+                            <modelName>northwind-psm</modelName>
+                            <dialectList>hsqldb</dialectList>
+                            <ignorePsm2Measure>false</ignorePsm2Measure>
+                            <ignoreAsm2Rdbms>false</ignoreAsm2Rdbms>
+                            <ignoreAsm2Openapi>false</ignoreAsm2Openapi>
+                            <ignoreAsm2sdk>false</ignoreAsm2sdk>
                             <ignoreRdbms2Liquibase>false</ignoreRdbms2Liquibase>
+                            <ignoreAsm2Expression>false</ignoreAsm2Expression>
+                            <ignoreAsm2Script>false</ignoreAsm2Script>
                         </configuration>
                     </execution>
 
+					<!-- 6. Transform ESM (PSM representation) model to model artifacts  -->
                     <execution>
                         <id>execute-northwind-esm-test-model-from-general</id>
                         <phase>generate-test-sources</phase>
@@ -155,22 +174,23 @@
                             <goal>psm-default-workflow</goal>
                         </goals>
                         <configuration>
-                            <psmModelFile>${basedir}/target/test-classes/northwind-esm/northwind-esm-psm.model</psmModelFile>
-                            <destination>${basedir}/target/test-classes</destination>
+                            <psmModelFile>${basedir}/target/test-classes/northwind-esm/northwind-psm.model</psmModelFile>
+                            <destination>${basedir}/target/test-classes/northwind-esm</destination>
                             <modelName>northwind-esm</modelName>
-                            <dialectList>hsqldb,oracle</dialectList>
-                            <ignorePsm2Measure>true</ignorePsm2Measure>
-                            <ignoreAsm2Rdbms>true</ignoreAsm2Rdbms>
-                            <ignoreAsm2Openapi>true</ignoreAsm2Openapi>
-                            <ignoreAsm2sdk>true</ignoreAsm2sdk>
-                            <ignoreRdbms2Liquibase>true</ignoreRdbms2Liquibase>
-                            <ignoreAsm2Expression>true</ignoreAsm2Expression>
-                            <ignoreAsm2Script>true</ignoreAsm2Script>
+                            <dialectList>hsqldb</dialectList>
+                            <ignorePsm2Measure>false</ignorePsm2Measure>
+                            <ignoreAsm2Rdbms>false</ignoreAsm2Rdbms>
+                            <ignoreAsm2Openapi>false</ignoreAsm2Openapi>
+                            <ignoreAsm2sdk>false</ignoreAsm2sdk>
+                            <ignoreRdbms2Liquibase>false</ignoreRdbms2Liquibase>
+                            <ignoreAsm2Expression>false</ignoreAsm2Expression>
+                            <ignoreAsm2Script>false</ignoreAsm2Script>
                         </configuration>
                     </execution>
                 </executions>
             </plugin>
 
+			<!-- 7. Unzip JAR artifacts to be able use the source code of test building  -->
             <plugin>
                 <artifactId>maven-antrun-plugin</artifactId>
                 <executions>
@@ -178,8 +198,8 @@
                         <phase>generate-test-sources</phase>
                         <configuration>
                             <tasks>
-                                <unzip src="${project.basedir}/target/test-classes/northwind-asm2jaxrsapi.jar" dest="${project.basedir}/target/test-classes/generated-test-sources/psm"/>
-                                <unzip src="${project.basedir}/target/test-classes/northwind-esm-asm2jaxrsapi.jar" dest="${project.basedir}/target/test-classes/generated-test-sources/esm"/>
+                                <unzip src="${project.basedir}/target/test-classes/northwind-psm/northwind-psm-asm2jaxrsapi.jar" dest="${project.basedir}/target/test-classes/generated-test-sources/psm"/>
+                                <unzip src="${project.basedir}/target/test-classes/northwind-esm/northwind-esm-asm2jaxrsapi.jar" dest="${project.basedir}/target/test-classes/generated-test-sources/esm"/>
                             </tasks>
                         </configuration>
                         <goals>
@@ -189,6 +209,7 @@
                 </executions>
             </plugin>
 
+			<!-- 8. Attach rest and sdk code  -->
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>build-helper-maven-plugin</artifactId>
@@ -202,7 +223,8 @@
                         </goals>
                         <configuration>
                             <sources>
-                                <source>${project.basedir}/target/test-classes/generated-test-sources</source>
+                                <source>${project.basedir}/target/test-classes/generated-test-sources/psm</source>
+                                <source>${project.basedir}/target/test-classes/generated-test-sources/esm</source>
                             </sources>
                         </configuration>
                     </execution>
@@ -607,6 +629,16 @@
             <type>xml</type>
             <scope>test</scope>
         </dependency>
+
+        <dependency>
+            <groupId>hu.blackbelt.karaf.features</groupId>
+            <artifactId>openapi-generator-features</artifactId>
+            <version>${openapi-generator-karaf-features-version}</version>
+            <classifier>features</classifier>
+            <type>xml</type>
+            <scope>test</scope>
+        </dependency>
+
 
         <dependency>
             <groupId>hu.blackbelt.epsilon</groupId>

@@ -56,3 +56,5 @@ wercker.env
 /**/.wercker
 **/GSModel.log*
 
+/**/*.orig
+.vscode

@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>hu.blackbelt.judo.tatami</groupId>
+		<artifactId>judo-tatami-parent</artifactId>
+		<version>1.1.0-SNAPSHOT</version>
+		<relativePath>..</relativePath>
+	</parent>
+
+	<artifactId>judo-tatami-openapi2restclient</artifactId>
+	<packaging>bundle</packaging>
+	<name>Judo :: Tatami :: Openapi2RestClient</name>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.felix</groupId>
+				<artifactId>maven-bundle-plugin</artifactId>
+				<extensions>true</extensions>
+				<configuration>
+					<obrRepository>NONE</obrRepository>
+					<instructions>
+						<Export-Package>
+							hu.blackbelt.judo.tatami.openapi2restclient.*;version=${project.version}
+						</Export-Package>
+						<Include-Resource>
+							{maven-resources}
+						</Include-Resource>
+						<Import-Package>
+                            ${osgi-default-import},
+							io.swagger.v3.core.util;version="[2.0,3)",
+							io.swagger.v3.oas.models;version="[2.0,3)",
+							io.swagger.v3.oas.models.callbacks;version="[2.0,3)",
+							io.swagger.v3.oas.models.examples;version="[2.0,3)",
+							io.swagger.v3.oas.models.headers;version="[2.0,3)",
+							io.swagger.v3.oas.models.info;version="[2.0,3)",
+							io.swagger.v3.oas.models.media;version="[2.0,3)",
+							io.swagger.v3.oas.models.parameters;version="[2.0,3)",
+							io.swagger.v3.oas.models.responses;version="[2.0,3)",
+							io.swagger.v3.oas.models.security;version="[2.0,3)",
+							io.swagger.v3.oas.models.servers;version="[2.0,3)",
+							io.swagger.v3.oas.models.tags;version="[2.0,3)",
+                            *
+						</Import-Package>
+					</instructions>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+	<dependencies>
+        <dependency>
+			<groupId>hu.blackbelt.judo.meta</groupId>
+			<artifactId>hu.blackbelt.judo.meta.openapi.model</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>hu.blackbelt.judo.tatami</groupId>
+			<artifactId>judo-tatami-core</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>hu.blackbelt.judo.framework</groupId>
+			<artifactId>compiler-api</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.ops4j.pax.tinybundles</groupId>
+			<artifactId>tinybundles</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>hu.blackbelt.judo.meta</groupId>
+			<artifactId>hu.blackbelt.judo.meta.psm.model.northwind</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>hu.blackbelt.judo.tatami</groupId>
+			<artifactId>judo-tatami-psm2asm</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>hu.blackbelt.judo.tatami</groupId>
+			<artifactId>judo-tatami-asm2expression</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>hu.blackbelt.judo.tatami</groupId>
+			<artifactId>judo-tatami-psm2measure</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>hu.blackbelt.judo.tatami</groupId>
+			<artifactId>judo-tatami-asm2openapi</artifactId>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>com.bluetrainsoftware.maven</groupId>
+			<artifactId>openapi-dart-generator</artifactId>
+			<version>3.4</version>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.openapitools</groupId>
+			<artifactId>openapi-generator</artifactId>
+			<version>4.3.1</version>
+		</dependency>
+
+
+		<dependency>
+			<groupId>io.swagger</groupId>
+			<artifactId>swagger-parser</artifactId>
+			<version>1.0.47</version>
+		</dependency>
+
+		<dependency>
+			<groupId>io.swagger.parser.v3</groupId>
+			<artifactId>swagger-parser-v2-converter</artifactId>
+			<version>2.0.19</version>
+		</dependency>
+
+		<dependency>
+			<groupId>io.swagger.parser.v3</groupId>
+			<artifactId>swagger-parser</artifactId>
+			<version>2.0.19</version>
+		</dependency>
+
+	</dependencies>
+</project>
+

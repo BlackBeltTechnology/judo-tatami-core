@@ -16,7 +16,9 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.HeaderParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.SecurityContext;
 import hu.blackbelt.judo.dispatcher.api.Dispatcher;
 
 @Path("[%= restPath %]")
@@ -42,18 +44,37 @@ public class [%= className %] {
 	@Consumes ( "application/json" )
 	[% } %]
 	@Path("/[% if (fullyQualifiedOperation) { %][%= op.toJAXRSPath() %][% } else { %][%= op.name %][% } %]")
-    public Response [% if (fullyQualifiedOperation) { %][%= (asmUtils.getPackageFQName(op.eContainingClass.ePackage) + "." + op.name).replaceAll("\\.", "__") %][% } else { %][%= op.name %][% } %]([% if(asmUtils.isBound(op)) { %]@HeaderParam("__identifier") java.util.UUID __identifier[% if(not op.eParameters.isEmpty()) { %], [% } %][% } %] [% for (p in op.eParameters) { if (p.many) { %]Collection<[%= p.eType.getDtoTypeName() %]>[% } else { %][%= p.eType.getDtoTypeName() %][% } %] [%= asmUtils.safeName(p.name.firstToLowerCase()) %][% if (hasMore) { %], [% } %][% } %]) {
-		if (!__dispatcher.isPresent()) {
+    public Response [% if (fullyQualifiedOperation) { %][%= (asmUtils.getPackageFQName(op.eContainingClass.ePackage) + "." + op.name).replaceAll("\\.", "__") %][% } else { %][%= op.name %][% } %](
+        @Context SecurityContext securityContext[%
+        if (asmUtils.isBound(op)) { %]
+,
+        @HeaderParam("__identifier") java.util.UUID __identifier[%
+        } %][% for (p in op.eParameters) {
+          if (p.many) {%]
+,
+        Collection<[%= p.eType.getDtoTypeName() %]>[%
+            } else {
+            %]
+,
+        [%= p.eType.getDtoTypeName() %][%
+            }%] [%= asmUtils.safeName(p.name.firstToLowerCase()) %][%
+          } %]) {
+    	if (!__dispatcher.isPresent()) {
         	return Response.status(Response.Status.SERVICE_UNAVAILABLE).build();
     	}
 		Map<String, Object> parameters = new HashMap();
-		[% if(asmUtils.isBound(op)) { %] parameters.put("__identifier", __identifier); [% } %]
+		[% if (asmUtils.isBound(op)) { %] parameters.put("__identifier", __identifier); [% } %]
+        if (securityContext != null) {
+            parameters.put("__principal", securityContext.getUserPrincipal());
+        }
         [% for (p in op.eParameters) { %]
+        if ([%= asmUtils.safeName(p.name.firstToLowerCase()) %] != null) {
             [% if (p.many) { %]
-		        parameters.put("[%= p.name %]", [%= asmUtils.safeName(p.name.firstToLowerCase()) %].stream().map(e -> e.toMap()).collect(Collectors.toList()));
+            parameters.put("[%= p.name %]", [%= asmUtils.safeName(p.name.firstToLowerCase()) %].stream().map(e -> e.toMap()).collect(Collectors.toList()));
             [% } else { %]
-		        parameters.put("[%= p.name %]", [%= asmUtils.safeName(p.name.firstToLowerCase()) %].toMap());
+            parameters.put("[%= p.name %]", [%= asmUtils.safeName(p.name.firstToLowerCase()) %].toMap());
             [% } %]
+        }
         [% } %]
 
         [% if (op.eType.isUndefined()) {%]

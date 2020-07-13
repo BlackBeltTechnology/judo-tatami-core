@@ -1,18 +1,9 @@
 package hu.blackbelt.judo.tatami.asm2openapi;
 
-import hu.blackbelt.epsilon.runtime.execution.api.Log;
-import hu.blackbelt.epsilon.runtime.execution.impl.Slf4jLog;
-import hu.blackbelt.judo.meta.asm.runtime.AsmModel;
-import hu.blackbelt.judo.meta.openapi.API;
-import hu.blackbelt.judo.meta.openapi.runtime.OpenapiModel;
-import hu.blackbelt.judo.meta.openapi.runtime.exporter.OpenAPIExporter;
-import io.swagger.models.Swagger;
-import io.swagger.util.Json;
-import io.swagger.util.Yaml;
-import lombok.extern.slf4j.Slf4j;
-import org.eclipse.emf.ecore.EObject;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import static hu.blackbelt.judo.meta.openapi.runtime.OpenapiModel.SaveArguments.openapiSaveArgumentsBuilder;
+import static hu.blackbelt.judo.tatami.asm2openapi.Asm2OpenAPI.executeAsm2OpenAPITransformation;
+import static hu.blackbelt.judo.tatami.asm2openapi.Asm2OpenAPITransformationTrace.fromModelsAndTrace;
+import static hu.blackbelt.judo.tatami.psm2asm.Psm2Asm.executePsm2AsmTransformation;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -21,11 +12,22 @@ import java.io.Writer;
 import java.util.List;
 import java.util.Map;
 
-import static hu.blackbelt.judo.meta.asm.runtime.AsmModel.LoadArguments.asmLoadArgumentsBuilder;
-import static hu.blackbelt.judo.meta.asm.runtime.AsmModel.loadAsmModel;
-import static hu.blackbelt.judo.meta.openapi.runtime.OpenapiModel.SaveArguments.openapiSaveArgumentsBuilder;
-import static hu.blackbelt.judo.tatami.asm2openapi.Asm2OpenAPI.*;
-import static hu.blackbelt.judo.tatami.asm2openapi.Asm2OpenAPITransformationTrace.fromModelsAndTrace;
+import org.eclipse.emf.ecore.EObject;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import hu.blackbelt.epsilon.runtime.execution.api.Log;
+import hu.blackbelt.epsilon.runtime.execution.impl.Slf4jLog;
+import hu.blackbelt.judo.meta.asm.runtime.AsmModel;
+import hu.blackbelt.judo.meta.openapi.API;
+import hu.blackbelt.judo.meta.openapi.runtime.OpenapiModel;
+import hu.blackbelt.judo.meta.openapi.runtime.exporter.OpenAPIExporter;
+import hu.blackbelt.judo.meta.psm.runtime.PsmModel;
+import hu.blackbelt.model.northwind.Demo;
+import io.swagger.models.Swagger;
+import io.swagger.util.Json;
+import io.swagger.util.Yaml;
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class Asm2OpenAPITest {
@@ -45,11 +47,14 @@ public class Asm2OpenAPITest {
         // Default logger
         slf4jlog = new Slf4jLog(log);
 
-        // Loading ASM to isolated ResourceSet, because in Tatami
-        // there is no new namespace registration made.
-        asmModel = loadAsmModel(asmLoadArgumentsBuilder()
-                .file(new File(TARGET_TEST_CLASSES, NORTHWIND_ASM_MODEL))
-                .name(NORTHWIND));
+        PsmModel psmModel = new Demo().fullDemo();
+
+        // Create empty ASM model
+        asmModel = AsmModel.buildAsmModel()
+                .name(NORTHWIND)
+                .build();
+        
+        executePsm2AsmTransformation(psmModel, asmModel);
 
         // Create empty OPENAPI model
         openapiModel = OpenapiModel.buildOpenapiModel()

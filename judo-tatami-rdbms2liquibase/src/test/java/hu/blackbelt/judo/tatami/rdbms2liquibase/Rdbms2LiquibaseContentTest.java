@@ -1,6 +1,7 @@
 package hu.blackbelt.judo.tatami.rdbms2liquibase;
 
 import hu.blackbelt.epsilon.runtime.execution.impl.Slf4jLog;
+import hu.blackbelt.judo.meta.liquibase.Column;
 import hu.blackbelt.judo.meta.liquibase.runtime.LiquibaseModel;
 import hu.blackbelt.judo.meta.liquibase.runtime.LiquibaseUtils;
 import hu.blackbelt.judo.meta.rdbms.RdbmsJunctionTable;
@@ -22,7 +23,6 @@ import static hu.blackbelt.judo.meta.rdbms.util.builder.RdbmsBuilders.*;
 import static hu.blackbelt.judo.meta.rdbmsDataTypes.support.RdbmsDataTypesModelResourceSupport.registerRdbmsDataTypesMetamodel;
 import static hu.blackbelt.judo.meta.rdbmsNameMapping.support.RdbmsNameMappingModelResourceSupport.registerRdbmsNameMappingMetamodel;
 import static hu.blackbelt.judo.meta.rdbmsRules.support.RdbmsTableMappingRulesModelResourceSupport.registerRdbmsTableMappingRulesMetamodel;
-import static hu.blackbelt.judo.tatami.rdbms2liquibase.Rdbms2Liquibase.calculateRdbms2LiquibaseTransformationScriptURI;
 import static hu.blackbelt.judo.tatami.rdbms2liquibase.Rdbms2Liquibase.executeRdbms2LiquibaseTransformation;
 import static java.lang.String.format;
 import static org.junit.jupiter.api.Assertions.*;
@@ -30,6 +30,14 @@ import static org.junit.jupiter.api.Assertions.*;
 @Slf4j
 public class Rdbms2LiquibaseContentTest {
     final static String TARGET_TEST_CLASSES = "target/test-classes";
+
+    final static String TEST_TABLE1_NAME = "TestTable1";
+    final static String TEST_TABLE2_NAME = "TestTable2";
+    final static String TEST_JUNCT_TABLE_NAME = "TestJunctTable";
+    final static String ID_NAME = "_id";
+    final static String NUMBER_FIELD_NAME = "NumberField";
+    final static String TEST_TABLE1_FK = TEST_TABLE1_NAME + "_fk1";
+    final static String TEST_TABLE2_FK = TEST_TABLE2_NAME + "_fk2";
 
     private static Slf4jLog logger = new Slf4jLog(log);
 
@@ -71,14 +79,12 @@ public class Rdbms2LiquibaseContentTest {
     }
 
     private void compareAddPrimaryKeys(final Set<String> expected, final String changeSetId, final String tableName) {
-        liquibaseUtils.getAddPrimaryKeys(changeSetId, tableName)
-                .orElseThrow(() -> new RuntimeException(changeSetId + " ChangeSet cannot be found"))
-                .forEach(e -> {
-                    assertTrue(expected.contains(e.getColumnNames()), e.getColumnNames() + " AddPrimaryKeys is not expected");
-                    expected.remove(e.getColumnNames());
-                });
-        if (!expected.isEmpty())
-            fail(format("Missing AddPrimaryKeys from %s: %s", changeSetId, expected.toString()));
+        Column column = liquibaseUtils.getColumn(changeSetId, tableName, ID_NAME)
+                .orElseThrow(() -> new RuntimeException(changeSetId + " ChangeSet cannot be found"));
+
+        assertTrue(column.getConstraints() != null,  "Id have no constraint");
+        assertTrue(((Boolean) column.getConstraints().getPrimaryKey()),  "Id is not primary key");
+        assertFalse(((Boolean) column.getConstraints().getNullable()),  "Id is nullable");
     }
 
     private void compareAddForeignKeyConstraints(final Set<String> expected, final String changeSetId, final String baseTable, final String refTable) {
@@ -117,14 +123,6 @@ public class Rdbms2LiquibaseContentTest {
         registerRdbmsNameMappingMetamodel(rdbmsModel.getResourceSet());
         registerRdbmsDataTypesMetamodel(rdbmsModel.getResourceSet());
         registerRdbmsTableMappingRulesMetamodel(rdbmsModel.getResourceSet());
-
-        final String TEST_TABLE1_NAME = "TestTable1";
-        final String TEST_TABLE2_NAME = "TestTable2";
-        final String TEST_JUNCT_TABLE_NAME = "TestJunctTable";
-        final String ID_NAME = "_id";
-        final String NUMBER_FIELD_NAME = "NumberField";
-        final String TEST_TABLE1_FK = TEST_TABLE1_NAME + "_fk1";
-        final String TEST_TABLE2_FK = TEST_TABLE2_NAME + "_fk2";
 
         // table 1
         final RdbmsTable rdbmsTable1 = newRdbmsTableBuilderInit(TEST_TABLE1_NAME)

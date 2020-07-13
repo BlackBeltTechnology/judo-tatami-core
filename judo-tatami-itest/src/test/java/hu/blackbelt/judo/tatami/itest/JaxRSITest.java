@@ -122,6 +122,8 @@ public class JaxRSITest {
 
                 features(blackbeltEclipseXtext()),
 
+                features(blackbeltOpenapiGenerator()),
+
                 features(apacheCxf(), FEATURE_SWAGGER_CORE, FEATURE_CXF_JACKSON, FEATURE_CXF_JAXRS),
 
                 features(blackbeltTatami(), FEATURE_JUDO_TATAMI_CORE),
@@ -186,7 +188,7 @@ public class JaxRSITest {
     public Option getProvisonJaxrsApi() throws FileNotFoundException {
 //        log.log(LOG_INFO, "Deploying JAXRSAPI: " + new File(testTargetDir(getClass()).getAbsolutePath(),  "northwind-asm2jaxrsapi.jar")
         return provision(
-                new FileInputStream(new File(testTargetDir(getClass()).getAbsolutePath(), "northwind-asm2jaxrsapi.jar"))
+                new FileInputStream(new File(testTargetDir(getClass()).getAbsolutePath(), "northwind-psm/northwind-psm-asm2jaxrsapi.jar"))
         );
     }
 

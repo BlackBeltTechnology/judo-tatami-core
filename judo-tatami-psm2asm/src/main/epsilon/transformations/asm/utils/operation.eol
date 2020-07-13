@@ -12,3 +12,18 @@ operation JUDOPSM!BoundTransferOperation asmEquivalent() : ASM!EOperation {
 operation JUDOPSM!UnboundOperation asmEquivalent() : ASM!EOperation {
     return self.equivalent("CreateUnboundOperation");
 }
+
+@cached
+operation JUDOPSM!Parameter isInput() : Boolean {
+    return self.eContainer.input == self;
+}
+
+@cached
+operation JUDOPSM!Parameter isOutput() : Boolean {
+    return self.eContainer.output == self;
+}
+
+@cached
+operation JUDOPSM!Parameter isFault() : Boolean {
+    return self.eContainer.faults.contains(self);
+}

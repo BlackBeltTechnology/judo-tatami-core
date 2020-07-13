@@ -146,6 +146,8 @@ public abstract class TatamiPSMTransformationPipelineITest {
 
                 features(blackbeltEclipseXtext()),
 
+                features(blackbeltOpenapiGenerator()),
+
                 features(apacheCxf(), FEATURE_SWAGGER_CORE, FEATURE_CXF_JACKSON, FEATURE_CXF_JAXRS),
 
                 features(blackbeltTatami(), FEATURE_JUDO_TATAMI_META_ASM, FEATURE_JUDO_TATAMI_META_ESM, FEATURE_JUDO_TATAMI_META_PSM, FEATURE_JUDO_TATAMI_META_JQL,

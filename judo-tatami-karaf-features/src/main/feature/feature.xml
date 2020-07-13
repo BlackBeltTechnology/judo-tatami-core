@@ -143,6 +143,7 @@
         <bundle>mvn:hu.blackbelt.judo/judo-dispatcher-api/${judo-dispatcher-api-version}</bundle>
         <bundle>mvn:hu.blackbelt.judo/judo-operation-utils/${judo-operation-utils-version}</bundle>
         <bundle>mvn:hu.blackbelt.judo.tatami/judo-tatami-core/${project.version}</bundle>
+        <bundle>mvn:hu.blackbelt/structured-map-proxy/${structured-map-proxy-version}</bundle>        
     </feature>
 
     <feature name="judo-tatami-esm2psm" version="${project.version}" description="JUDO Tatami, ESM to PSM Transformation" install="false">
@@ -249,6 +250,13 @@
         <bundle dependency="true">mvn:hu.blackbelt.judo.framework/compiler-api/${judo-framework-version}</bundle>
         <bundle>mvn:hu.blackbelt.judo.script/hu.blackbelt.judo.script.codegen.generator/${judo-script-codegen-version}</bundle>
         <bundle>mvn:hu.blackbelt.judo.tatami/judo-tatami-script2operation/${project.version}</bundle>
+    </feature>
+
+    <feature name="judo-tatami-openapi2restclient" version="${project.version}" description="JUDO Tatami, OpenAPI to Rest client stubs" install="false">
+        <feature>openapi-generator</feature>
+        <feature>judo-tatami-meta-openapi</feature>
+        <feature>judo-tatami-core</feature>
+        <bundle>mvn:hu.blackbelt.judo.tatami/judo-tatami-openapi2restclient/${project.version}</bundle>
     </feature>
 
     <feature name="judo-tatami-validation-psm" version="${project.version}" description="JUDO Tatami, PSM Validation API" install="false">

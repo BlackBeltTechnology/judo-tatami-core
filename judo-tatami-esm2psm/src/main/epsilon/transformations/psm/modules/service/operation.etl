@@ -18,7 +18,7 @@ rule CreateBoundOperation
       guard: s.operationType <> ESM!OperationType#STATIC and s.eContainer.isKindOf(ESM!EntityType)
 
       t.`abstract` = s.operationType == ESM!OperationType#ABSTRACT;
-      
+
       if (s.operationType <> ESM!OperationType#ABSTRACT) {
       	t.implementation = s.equivalent("CreateOperationBody");
       }
@@ -117,11 +117,11 @@ rule CreateParameter
 	transform s : ESM!Parameter
 	to t : JUDOPSM!Parameter
 	extends CreateNamedElement {
-	
+
 	  t.cardinality = s.equivalent("CreateCardinalityForParameter");
-	  
+
 	  t.type = s.target.getPSMTransferObjectTypeEquivalent();
-	  
+
 	  if (s.eContainer.input == s) {
 	  	s.eContainer.getPSMEquivalent().input = t;
 	  } else if (s.eContainer.output == s) {
@@ -608,4 +608,75 @@ rule CreateDeleteTransferOperationForRelation
         t.binding = s.equivalent("CreateDeleteOperationForRelation");
 
         s.eContainer.getPSMTransferObjectTypeEquivalent().operations.add(t);
+}
+
+@greedy
+rule CreateGetPrincipalOperationForAccessPoint
+    transform s : ESM!TransferObjectType
+    to t : JUDOPSM!UnboundOperation {
+        guard: s.isAccessPoint()
+
+        t.name = "_principal";
+        t.behaviour = new JUDOPSM!TransferOperationBehaviour;
+        t.behaviour.behaviourType = JUDOPSM!TransferOperationBehaviourType#GET_PRINCIPAL;
+        t.behaviour.owner = s.getPSMTransferObjectTypeEquivalent();
+
+        s.getPSMTransferObjectTypeEquivalent().operations.add(t);
+}
+
+@greedy
+rule CreateGetPrincipalOperationOutputParameterForAccessPoint
+    transform s : ESM!TransferObjectType
+    to t : JUDOPSM!Parameter {
+        guard: s.isAccessPoint()
+
+        t.name = "output";
+        t.type = s.getPSMTransferObjectTypeEquivalent();
+        t.cardinality = new JUDOPSM!Cardinality;
+        t.cardinality.lower = 0;
+        t.cardinality.upper = 1;
+
+        s.equivalent("CreateGetPrincipalOperationForAccessPoint").output = t;
+}
+
+@greedy
+rule CreateMapPrincipalOperationForActoryType
+    transform s : ESM!ActorType
+    to t : JUDOPSM!UnboundOperation {
+        t.name = "_map_principal";
+        t.behaviour = new JUDOPSM!TransferOperationBehaviour;
+        t.behaviour.behaviourType = JUDOPSM!TransferOperationBehaviourType#MAP_PRINCIPAL;
+        t.behaviour.owner = s.equivalent("CreateActorType");
+        
+        s.equivalent("CreateActorType").operations.add(t);
+}
+
+@greedy
+rule CreateMapPrincipalOperationInputParameterForActorType
+    transform s : ESM!ActorType
+    to t : JUDOPSM!Parameter {
+        guard: s.realm <> ESM!Realm#PUBLIC
+
+        t.name = "input";
+        t.type = s.equivalent("CreateActorType");
+        t.cardinality = new JUDOPSM!Cardinality;
+        t.cardinality.lower = 0;
+        t.cardinality.upper = 1;
+
+        s.equivalent("CreateMapPrincipalOperationForActoryType").input = t;
+}
+
+@greedy
+rule CreateMapPrincipalOperationOutputParameterForActorType
+    transform s : ESM!ActorType
+    to t : JUDOPSM!Parameter {
+        guard: s.eContainer.isDefined()
+
+        t.name = "output";
+        t.type = s.eContainer.getPSMTransferObjectTypeEquivalent();
+        t.cardinality = new JUDOPSM!Cardinality;
+        t.cardinality.lower = 0;
+        t.cardinality.upper = 1;
+
+        s.equivalent("CreateMapPrincipalOperationForActoryType").output = t;
 }

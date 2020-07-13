@@ -1,0 +1,16 @@
+[%
+  import "../../operations/sdk.eol";
+  out.setContentType("Java");
+%]
+
+package [%= map.get("packageName") %];
+
+import java.util.Collection;
+import java.util.stream.Collectors;
+
+public interface [%= map.get("operation").name.firstToUpperCase() %] extends [%= map.get("extendedInterface") %] {
+
+	@Override
+	[%= map.get("extendedMethod") %];
+
+}
