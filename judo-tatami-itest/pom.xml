@@ -631,6 +631,16 @@
         </dependency>
 
         <dependency>
+            <groupId>hu.blackbelt.karaf.features</groupId>
+            <artifactId>openapi-generator-features</artifactId>
+            <version>${openapi-generator-karaf-features-version}</version>
+            <classifier>features</classifier>
+            <type>xml</type>
+            <scope>test</scope>
+        </dependency>
+
+
+        <dependency>
             <groupId>hu.blackbelt.epsilon</groupId>
             <artifactId>features</artifactId>
             <version>${epsilon-runtime-version}</version>

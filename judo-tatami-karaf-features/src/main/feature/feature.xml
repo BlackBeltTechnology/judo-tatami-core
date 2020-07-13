@@ -253,12 +253,6 @@
     </feature>
 
     <feature name="judo-tatami-openapi2restclient" version="${project.version}" description="JUDO Tatami, OpenAPI to Rest client stubs" install="false">
-        <feature>cxf-rs-description-swagger2</feature>
-        <feature>cxf-rs-description-openapi-v3</feature>
-        <feature>swagger2-parser</feature>
-        <feature>openapi-v3-parser</feature>
-        <feature>apache-commons-io</feature>
-
         <feature>openapi-generator</feature>
         <feature>judo-tatami-meta-openapi</feature>
         <feature>judo-tatami-core</feature>
@@ -328,7 +322,6 @@
         <feature>judo-tatami-asm2rdbms</feature>
         <feature>judo-tatami-rdbms2liquibase</feature>
         <feature>judo-tatami-script2operation</feature>
-        <feature>judo-tatami-openapi2restclient</feature>
 
         <feature>judo-tatami-validation-asm</feature>
         <feature>judo-tatami-validation-psm</feature>
