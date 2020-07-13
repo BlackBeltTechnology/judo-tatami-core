@@ -61,6 +61,10 @@ public class TatamiTestUtil {
         return maven().groupId("hu.blackbelt.epsilon").artifactId("features").versionAsInProject().classifier("features").type("xml");
     }
 
+    public static MavenArtifactUrlReference blackbeltOpenapiGenerator() {
+        return maven().groupId("hu.blackbelt.karaf.features").artifactId("openapi-generator-features").versionAsInProject().classifier("features").type("xml");
+    }
+
     public static MavenArtifactUrlReference blackbeltTatami() {
         return maven().groupId("hu.blackbelt.judo.tatami").artifactId("judo-tatami-karaf-features").versionAsInProject().classifier("features").type("xml");
     }

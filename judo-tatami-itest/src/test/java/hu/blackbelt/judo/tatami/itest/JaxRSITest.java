@@ -122,6 +122,8 @@ public class JaxRSITest {
 
                 features(blackbeltEclipseXtext()),
 
+                features(blackbeltOpenapiGenerator()),
+
                 features(apacheCxf(), FEATURE_SWAGGER_CORE, FEATURE_CXF_JACKSON, FEATURE_CXF_JAXRS),
 
                 features(blackbeltTatami(), FEATURE_JUDO_TATAMI_CORE),

@@ -81,6 +81,7 @@
                                         <descriptor>mvn:hu.blackbelt.karaf.features/eclipse-emf-features/${eclipse-emf-karaf-features-version}/xml/features</descriptor>
                                         <descriptor>mvn:hu.blackbelt.karaf.features/eclipse-epsilon-features/${eclipse-epsilon-karaf-features-version}/xml/features</descriptor>
                                         <descriptor>mvn:hu.blackbelt.karaf.features/eclipse-xtext-features/${eclipse-xtext-karaf-features-version}/xml/features</descriptor>
+                                        <descriptor>mvn:hu.blackbelt.karaf.features/openapi-generator-features/${openapi-generator-karaf-features-version}/xml/features</descriptor>
                                         <descriptor>mvn:hu.blackbelt.osgi.utils/features/${osgi-utils-version}/xml/features</descriptor>
                                         <descriptor>mvn:hu.blackbelt.epsilon/features/${epsilon-runtime-version}/xml/features</descriptor>
 
@@ -116,6 +117,7 @@
                                         <feature>judo-tatami-asm2sdk</feature>
                                         <feature>judo-tatami-script2operation</feature>
                                         <feature>judo-tatami-rdbms2liquibase</feature>
+                                        <feature>judo-tatami-openapi2restclient</feature>
                                         <feature>judo-tatami-validation-asm</feature>
                                         <feature>judo-tatami-validation-psm</feature>
                                         <feature>judo-tatami-validation-esm</feature>
@@ -247,6 +249,15 @@
                     <groupId>hu.blackbelt.karaf.features</groupId>
                     <artifactId>eclipse-xtext-features</artifactId>
                     <version>${eclipse-xtext-karaf-features-version}</version>
+                    <classifier>features</classifier>
+                    <type>xml</type>
+                    <scope>provided</scope>
+                </dependency>
+
+                <dependency>
+                    <groupId>hu.blackbelt.karaf.features</groupId>
+                    <artifactId>openapi-generator-features</artifactId>
+                    <version>${openapi-generator-karaf-features-version}</version>
                     <classifier>features</classifier>
                     <type>xml</type>
                     <scope>provided</scope>
