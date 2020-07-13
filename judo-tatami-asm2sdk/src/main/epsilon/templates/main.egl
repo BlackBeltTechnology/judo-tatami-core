@@ -18,13 +18,15 @@ for (dto in getAllDTOs()) {
     genDtoBuilder(dto);
     outputJavaClasses.add(dto.getDtoBuilderJavaFileName());
     
-    var daoInterfaces = genDaoInterfaces(dto);
-    for (daoInterface in daoInterfaces) {
-    	if (daoInterface.endsWith(".java")) {
-    		outputJavaClasses.add(daoInterface);
-    	} else if (daoInterface.endsWith(".xml")){
-    		outputScrXmls.add(daoInterface);
-    	}    	
+    if (asmUtils.isMappedTransferObjectType(dto)) {
+	    var daoInterfaces = genDaoInterfaces(dto);
+	    for (daoInterface in daoInterfaces) {
+	    	if (daoInterface.endsWith(".java")) {
+	    		outputJavaClasses.add(daoInterface);
+	    	} else if (daoInterface.endsWith(".xml")){
+	    		outputScrXmls.add(daoInterface);
+	    	}    	
+		}
 	}
     
     var operations = asmUtils.getAllOperationDeclarations(dto, true).select(op | not asmUtils.getBehaviour(op).isPresent());
@@ -41,7 +43,7 @@ for (dto in getAllDTOs()) {
 }
 
 for (dto in getAllEntities()) {
-    var operations = asmUtils.getAllOperationDeclarations(dto, true);
+    var operations = asmUtils.getAllOperationDeclarations(dto, true).select(op | not asmUtils.getBehaviour(op).isPresent());
     for (op in operations) {
     	var generatedFiles = genOperationInterface(dto, op);
     	for (generatedFile in generatedFiles) {

@@ -100,133 +100,43 @@ operation genUtil(templateName : String) : String {
 	return fileName;
 }
 
-operation getDaoActions(dto : ASM!EClass) : Set {
-	var result = new Set();
-	if (asmUtils.isMappedTransferObjectType(dto) and not asmUtils.annotatedAsTrue(dto, "referenceHolder")) {
-		result.add("Delete");
-		result.add("Create");
-		result.add("GetAll");
-		result.add("GetById");
-		result.add("Update");
-	}
-	return result;
-}
-
-operation genDaoScrXml(dto : ASM!EClass, daoAction : String) {
+operation genDaoScrXml(dto : ASM!EClass) {
 	var template = TemplateFactory.load("dao/DaoInterface.scr.xml.egl");
-	var filename =  "OSGI-INF/" + dto.getDtoDaoPackageName() + "." + dto.getClassName() + daoAction +".xml";
+	var filename =  "OSGI-INF/" + dto.getDtoDaoPackageName() + "." + dto.getClassName() + "Dao.xml";
 	template.generate(filename);
 	return filename;
 }
 
 operation genDaoInterfaces(dto : ASM!EClass) : Set {
 	var result = new Set();
+	result.add(genDaoScrXml(dto));	
 	var baseName = dto.getDtoDaoPackageName().replaceAll("\\.", "/")+"/"+dto.getClassName();
+	var templateName = "dao/Dao.java.egl";
 	var daoImpl = false;
-	
-	for (daoAction in getDaoActions(dto)) {
-		var template = TemplateFactory.load("dao/"+ daoAction + ".java.egl");
-		var filename =  baseName + daoAction +".java";
-		template.generate(filename);
-		result.add(filename);	
-		var daoImpl = true;
-		template = TemplateFactory.load("dao/"+ daoAction + ".java.egl");
-		filename = baseName + daoAction + "Impl.java";
-		template.generate(filename);
-		result.add(filename);	
-		
-		daoImpl = false;
-		
-		result.add(genDaoScrXml(dto, daoAction));		
-	}
-	
+
+	var singleRelations = new Set();
+	var multiRelations = new Set();
+
 	for (eReference in dto.getEReferences()) {
 		var relatedDto = eReference.getEReferenceType();
 		if (asmUtils.isMappedTransferObjectType(relatedDto)) {
-			var relationName = eReference.name;
-			var multiRelation = eReference.isMulti();
-			var template = TemplateFactory.load("dao/CreateRelated.java.egl");
-			var daoAction = "Create" + relationName.firstToUpperCase();
-			var filename = baseName + daoAction + ".java";
-			template.generate(filename);
-			result.add(filename);			
-			var daoImpl = true;
-			template = TemplateFactory.load("dao/CreateRelated.java.egl");			
-			filename = baseName + daoAction + "Impl.java";
-			template.generate(filename);
-			result.add(filename);
-			daoImpl = false;
-			result.add(genDaoScrXml(dto, daoAction));
-			
-			template = TemplateFactory.load("dao/GetRelated.java.egl");
-			daoAction = "Get" + relationName.firstToUpperCase();
-			filename = baseName + daoAction + ".java";
-			template.generate(filename);
-			result.add(filename);
-			daoImpl = true;
-			template = TemplateFactory.load("dao/GetRelated.java.egl");			
-			filename = baseName + daoAction + "Impl.java";
-			template.generate(filename);
-			result.add(filename);
-			daoImpl = false;
-			result.add(genDaoScrXml(dto, daoAction));
-			
-			if (not multiRelation) {
-				template = TemplateFactory.load("dao/SetRelated.java.egl");
-				daoAction = "Set" + relationName.firstToUpperCase();
-				filename = baseName + daoAction + ".java";
-				template.generate(filename);
-				result.add(filename);
-				daoImpl = true;
-				template = TemplateFactory.load("dao/SetRelated.java.egl");				
-				filename = baseName + daoAction + "Impl.java";
-				template.generate(filename);
-				result.add(filename);
-				daoImpl = false;
-				result.add(genDaoScrXml(dto, daoAction));
-				
-				template = TemplateFactory.load("dao/UnsetRelated.java.egl");
-				daoAction = "Unset" + relationName.firstToUpperCase();
-				filename = baseName + daoAction + ".java";
-				template.generate(filename);
-				result.add(filename);
-				daoImpl = true;
-				template = TemplateFactory.load("dao/UnsetRelated.java.egl");				
-				filename = baseName + daoAction + "Impl.java";
-				template.generate(filename);
-				result.add(filename);
-				daoImpl = false;
-				result.add(genDaoScrXml(dto, daoAction));
-				
+			if (eReference.isMulti()) {
+				multiRelations.add(eReference);
 			} else {
-				template = TemplateFactory.load("dao/AddRelated.java.egl");
-				filename = baseName + "Add" + relationName.firstToUpperCase() + ".java";
-				template.generate(filename);
-				result.add(filename);
-				result.add(genDaoScrXml(dto, daoAction));
-				daoImpl = true;
-				template = TemplateFactory.load("dao/AddRelated.java.egl");				
-				filename = baseName + "Add" + relationName.firstToUpperCase() + "Impl.java";
-				template.generate(filename);
-				result.add(filename);
-				daoImpl = false;
-				result.add(genDaoScrXml(dto, daoAction));
-			
-				daoAction = "Remove" + relationName.firstToUpperCase();
-				template = TemplateFactory.load("dao/RemoveRelated.java.egl");
-				filename = baseName + daoAction + ".java";
-				template.generate(filename);
-				result.add(filename);
-				daoImpl = true;
-				template = TemplateFactory.load("dao/RemoveRelated.java.egl");				
-				filename = baseName + daoAction + "Impl.java";
-				template.generate(filename);
-				result.add(filename);				
-				daoImpl = false;
-				result.add(genDaoScrXml(dto, daoAction));
+				singleRelations.add(eReference);
 			}
-		}	
+		}
 	}
+	
+	var template = TemplateFactory.load(templateName);
+	var filename =  baseName + "Dao.java";
+	template.generate(filename);
+	result.add(filename);	
+	var daoImpl = true;
+	template = TemplateFactory.load(templateName);
+	filename = baseName + "DaoImpl.java";
+	template.generate(filename);
+	result.add(filename);		
 	return result;
 }
 
