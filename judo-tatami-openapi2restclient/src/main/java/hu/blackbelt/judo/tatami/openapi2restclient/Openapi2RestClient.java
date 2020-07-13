@@ -34,6 +34,7 @@ public class Openapi2RestClient {
                                                                                    File generationOutputDir, Map<String, Object> generationOptions) throws Exception {
 
         Map<API, Map<String, File>> generatedResources = new HashMap<>();
+        generationOutputDir.mkdirs();
 
         openapiModel.getResource().getContents().stream()
                 .filter(m -> m instanceof API).map(m -> (API) m)

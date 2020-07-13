@@ -106,6 +106,7 @@
         <apache-poi-karaf-features-version>1.0.2</apache-poi-karaf-features-version>
         <apache-httpclient-karaf-features-version>1.0.0</apache-httpclient-karaf-features-version>
         <cxf-jaxrs-application-manager-version>0.6.0</cxf-jaxrs-application-manager-version>
+        <openapi-generator-karaf-features-version>1.0.1</openapi-generator-karaf-features-version>
         <log4j.configuration>log4j.properties</log4j.configuration>
     </properties>
 
