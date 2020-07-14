@@ -1,0 +1,16 @@
+[%
+  import "../../operations/sdk.eol";
+  out.setContentType("Java");
+%]
+
+package [%= getOperationJavaPackageName(dto) %];
+
+public interface [%= dto.getClassName() %]Operations {
+	
+	[% for (op in operations) { %]
+		[% var map = getOperationGenerationData(dto, op); %]
+		[%= map.get("operationMethod") %];
+		
+	[% } %]
+
+}
