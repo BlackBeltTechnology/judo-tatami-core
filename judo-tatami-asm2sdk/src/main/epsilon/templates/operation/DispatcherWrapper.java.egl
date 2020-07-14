@@ -3,23 +3,22 @@
   out.setContentType("Java");
 %]
 
-package [%= map.get("packageName") %].wrapper;
+package [%= getOperationJavaPackageName(dto) %].wrapper;
 
-import java.util.Collection;
-import java.util.stream.Collectors;
-import hu.blackbelt.judo.dispatcher.api.Dispatcher;
-import hu.blackbelt.judo.dao.api.Payload;
 import static [%= getModelPackageName() %].util.SdkUtil.*;
-import java.util.Map;
 
-public class [%= map.get("operation").name.firstToUpperCase() %]DispatcherWrapper implements [%= map.get("packageName") %].[%= map.get("operation").name.firstToUpperCase() %] {
+public class [%= dto.getClassName() %]OperationsDispatcherWrapper implements [%= getOperationJavaPackageName(dto) %].[%= dto.getClassName() %]Operations {
 
-	private static final String FQ_NAME = "[%= asmUtils.getOperationFqName(map.get("operation")) %]";
-	private Dispatcher dispatcher;
-
-	@Override
-	public [%= map.get("extendedMethod") %] {
-		[%= map.get("wrapperImpl") %]
-	}
-
+	private hu.blackbelt.judo.dispatcher.api.Dispatcher dispatcher;
+		
+	[% for (op in operations) { %]
+		[% var map = getOperationGenerationData(dto, op); %]
+		@Override
+		public [%= map.get("operationMethod") %] {
+			String fqName = "[%= asmUtils.getOperationFqName(op) %]";		
+			[%= map.get("wrapperImpl") %]
+		}
+ 
+	[% } %]
+	
 }
