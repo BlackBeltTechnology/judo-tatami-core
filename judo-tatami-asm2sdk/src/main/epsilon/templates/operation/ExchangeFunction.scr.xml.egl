@@ -8,9 +8,7 @@
   <service>
     <provide interface="java.util.function.Function"/>
   </service>
-  <reference name="operation" interface="[%=packageName %].[%= op.name.firstToUpperCase() %]" target="(!(sdk.wrapper=true))" policy-option="greedy" field="operation"/>
-  <property name="sdk.wrapper" type="Boolean" value="true"/>
-  <property name="service.ranking" type="Integer" value="2147483647"/>
+  <reference name="operation" interface="[%=packageName %].custom.[%= op.name.firstToUpperCase() %]" policy-option="greedy" field="operation"/>
   <property name="judo.model.name" value="[%= asmUtils.getModel().get().name %]" />
   <property name="operation.name" value="[%= asmUtils.getOperationFqName(op) %]" />
   <property name="script" value="false" />  

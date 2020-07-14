@@ -11,6 +11,4 @@
     <provide interface="[%= packageName %].[%= dto.getClassName() %]Operations"/>
   </service>
   <reference name="dispatcher" interface="hu.blackbelt.judo.dispatcher.api.Dispatcher" field="dispatcher"/>
-  <property name="sdk.wrapper" type="Boolean" value="true"/>
-  <property name="service.ranking" type="Integer" value="2147483647"/>
 </scr:component>
