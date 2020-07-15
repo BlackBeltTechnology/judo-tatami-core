@@ -1,0 +1,25 @@
+[%
+  import "../../operations/sdk.eol";
+  out.setContentType("Java");
+%]
+
+package [%= getInternalPrefix() + dto.getDtoPackageName() %];
+
+import static [%= getInternalPrefix() + getModelPackageName() %].util.SdkUtil.*;
+
+public interface [%= dto.getClassName() %]ExchangeFunctions {
+
+	[% for (op in dto.getCustomizableOperations()) { %]
+		[% var map = getOperationGenerationData(dto, op); %]
+		class [%= op.name.firstToUpperCase() %]ExchangeFunction implements java.util.function.Function<hu.blackbelt.judo.dao.api.Payload, hu.blackbelt.judo.dao.api.Payload>{
+	
+			private [%= getCustomOperationsPrefix() + dto.getDtoPackageName() %].[%= dto.getClassName() %].[%= op.name.firstToUpperCase() %] operation;
+	
+			@Override
+			public hu.blackbelt.judo.dao.api.Payload apply(hu.blackbelt.judo.dao.api.Payload exchange) {
+				[%= map.get("exchangeFunctionImpl") %]
+			}
+		}
+	[% } %]
+	
+}

@@ -12,11 +12,7 @@ outputJavaClasses.add(genUtil("SdkUtil"));
 
 for (dto in getAllDTOs()) {
     //DTO interface
-    genDtoInterface(dto);
-    outputJavaClasses.add(dto.getDtoJavaFileName());
-    //DTO builder
-    genDtoBuilder(dto);
-    outputJavaClasses.add(dto.getDtoBuilderJavaFileName());
+    outputJavaClasses.add(genDtoInterface(dto));
     
     if (asmUtils.isMappedTransferObjectType(dto)) {
 	    var daoInterfaces = genDaoInterfaces(dto);

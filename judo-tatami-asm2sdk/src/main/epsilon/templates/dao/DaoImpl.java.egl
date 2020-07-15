@@ -1,0 +1,114 @@
+[%
+  import "../../operations/sdk.eol";  
+  out.setContentType("Java");
+%]
+
+[% 
+	var dtoTypeName = getSdkPrefix() + dto.getDtoTypeName();
+	var name = dto.getClassName() + "Dao"; 	
+%]
+
+package [%= getInternalPrefix() + dto.getDtoPackageName() %];
+
+import static [%= getInternalPrefix() + getModelPackageName() %].util.SdkUtil.*;
+
+public class [%= name%]Impl extends [%= getInternalPrefix() + getModelPackageName() %].util.AbstractSdkDao implements [%= dtoTypeName %].[%= name %] {
+	private final static String FQ_NAME = "[%= asmUtils.getClassifierFqName(dto) %]";
+
+	@Override
+	public [%= dtoTypeName %] create([%= dtoTypeName %] data) {
+		org.eclipse.emf.ecore.EClass eClass = getEClass(FQ_NAME);
+		hu.blackbelt.judo.dao.api.Payload resultPayload = dao.create(eClass, hu.blackbelt.judo.dao.api.Payload.asPayload(asMap(data)));
+		return fromPayload([%= dtoTypeName %].class, resultPayload);
+	}
+	
+	@Override
+	public void delete([%= dtoTypeName %] subject) {	
+		dao.delete(getEClass(FQ_NAME), subject.get__identifier());
+	}
+	
+	@Override
+	public java.util.Collection<[%= dtoTypeName %]> getAll() {
+		java.util.List<hu.blackbelt.judo.dao.api.Payload> payloads = dao.getAllOf(getEClass(FQ_NAME));
+		return payloads.stream().map(payload -> fromPayload([%= dtoTypeName %].class, payload)).collect(java.util.stream.Collectors.toList());
+	}
+	
+	@Override
+	public [%= dtoTypeName %] getById(java.util.UUID id) {
+		hu.blackbelt.judo.dao.api.Payload payload = dao.getByIdentifier(getEClass(FQ_NAME), id).get();
+		return fromPayload([%= dtoTypeName %].class, payload);
+	}
+
+	@Override
+	public [%= dtoTypeName %] update([%= dtoTypeName %] data) {
+		hu.blackbelt.judo.dao.api.Payload resultPayload = dao.update(getEClass(FQ_NAME), hu.blackbelt.judo.dao.api.Payload.asPayload(asMap(data)));
+		return fromPayload([%= dtoTypeName %].class, resultPayload);
+	}
+	
+	[% for (rel in singleRelations) {%]
+		[% var relatedDto = rel.getEReferenceType();
+			var relatedType = getSdkPrefix() + relatedDto.getDtoTypeName();
+		 %]
+
+			@Override
+			public [%= relatedType %] create[%= rel.name.firstToUpperCase() %]([%= dtoTypeName %] object, [%= relatedType %] relatedObject) {
+				hu.blackbelt.judo.dao.api.Payload resultPayload = dao.createNavigationInstanceAt(object.get__identifier(), getReference(getEClass(FQ_NAME), "[%= rel.name %]"), hu.blackbelt.judo.dao.api.Payload.asPayload(asMap(relatedObject)));
+				return fromPayload([%= relatedType %].class, resultPayload);
+			}
+
+			@Override
+			public [%= relatedType %] get[%= rel.name.firstToUpperCase() %]([%= dtoTypeName %] object) {
+		        org.eclipse.emf.ecore.EReference ref = getReference(getEClass(FQ_NAME), "[%= rel.name %]");
+				hu.blackbelt.judo.dao.api.Payload resultPayload = dao.getNavigationResultAt(object.get__identifier(), ref).get(0);
+				return fromPayload([%= relatedType %].class, resultPayload);	
+			}
+
+			@Override
+			public void set[%= rel.name.firstToUpperCase() %]([%= dtoTypeName %] object, [%= relatedType %] relatedObject) { 
+				dao.setReference(getReference(getEClass(FQ_NAME), "[%= rel.name  %]"), object.get__identifier(), java.util.Arrays.asList(relatedObject.get__identifier()));
+			}
+
+			@Override
+			public void unset[%= rel.name.firstToUpperCase() %]([%= dtoTypeName %] object) {
+				dao.unsetReference(getReference(getEClass(FQ_NAME), "[%= rel.name %]"), object.get__identifier());
+			}
+
+	[% } %]
+	
+	[% for (rel in multiRelations) {%]
+		[% var relatedDto = rel.getEReferenceType();
+			var relatedType = "java.util.Collection<" + getSdkPrefix() + relatedDto.getDtoTypeName() + ">";
+			var singleRelatedType = getSdkPrefix() + relatedDto.getDtoTypeName();
+		%]
+
+			@Override
+			public [%= relatedType %] create[%= rel.name.firstToUpperCase() %]([%= dtoTypeName %] object, [%= relatedType %] relatedObjects) {
+				[%=relatedType %] result = new java.util.ArrayList<>();
+				for ([%= singleRelatedType %] element : relatedObjects) {
+					hu.blackbelt.judo.dao.api.Payload resultPayload = dao.createNavigationInstanceAt(object.get__identifier(), getReference(getEClass(FQ_NAME), "[%= rel.name %]"), hu.blackbelt.judo.dao.api.Payload.asPayload(asMap(element)));
+					result.add(fromPayload([%= singleRelatedType %].class, resultPayload));
+				}
+			return result;
+			}
+
+			@Override
+			public [%= relatedType %] get[%= rel.name.firstToUpperCase() %]([%= dtoTypeName %] object) {
+		        org.eclipse.emf.ecore.EReference ref = getReference(getEClass(FQ_NAME), "[%= rel.name %]");
+				java.util.Collection<hu.blackbelt.judo.dao.api.Payload> payloads = dao.getNavigationResultAt(object.get__identifier(), ref);
+				return payloads.stream().map(payload -> fromPayload([%= singleRelatedType %].class, payload)).collect(java.util.stream.Collectors.toList());
+			}
+	
+			@Override
+			public void remove[%= rel.name.firstToUpperCase() %]([%= dtoTypeName %] object, [%= relatedType %] relatedObjects) {
+			dao.removeReferences(getReference(getEClass(FQ_NAME), "[%= rel.name %]"), object.get__identifier(), relatedObjects.stream().map(relatedObject -> relatedObject.get__identifier()).collect(java.util.stream.Collectors.toList()));
+			}
+	
+			@Override
+			public void add[%= rel.name.firstToUpperCase() %]([%= dtoTypeName %] object, [%= relatedType %] relatedObjects) { 
+				dao.addReferences(getReference(getEClass(FQ_NAME), "[%= rel.name %]"), object.get__identifier(), relatedObjects.stream().map(relatedObject -> relatedObject.get__identifier()).collect(java.util.stream.Collectors.toList()));
+			}
+	
+	
+	[% } %]
+		
+}

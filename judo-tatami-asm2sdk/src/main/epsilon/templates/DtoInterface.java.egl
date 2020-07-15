@@ -3,33 +3,58 @@
   out.setContentType("Java");
 %]
 
-package [%= dto.getDtoPackageName() %];
-
-import hu.blackbelt.structured.map.proxy.MapProxy;
-import hu.blackbelt.structured.map.proxy.MapBuilderProxy;
-
-import java.util.Collection;
+package [%= getSdkPrefix() + dto.getDtoPackageName() %];
 
 public interface [%= dto.getClassName() %] {
 
     static [%= dto.getClassName() %] create() {
-        return MapProxy.newInstance([%= dto.getClassName() %].class);
+        return hu.blackbelt.structured.map.proxy.MapProxy.newInstance([%= dto.getClassName() %].class);
     }
 
     static [%= dto.getClassName() %]Builder builder() {
-        return MapBuilderProxy.newInstance([%= dto.getClassName() %]Builder.class, [%= dto.getClassName() %].class, "with");
+        return hu.blackbelt.structured.map.proxy.MapBuilderProxy.newInstance([%= dto.getClassName() %]Builder.class, [%= dto.getClassName() %].class, "with");
     }
 
-    public [%= dto.idType() %] get__identifier();
+    [%= dto.idType() %] get__identifier();
 
     [% for (field in dto.eAllAttributes.includingAll(dto.eAllReferences)) { %]
-    public [%= field.getTypeDefinition() %] [%= field.getterName() %]();
+    [%= field.getTypeDefinition() %] [%= field.getterName() %]();
     [% } %]
 
-    public void set__identifier([%= dto.idType() %] __identifier);
+    void set__identifier([%= dto.idType() %] __identifier);
 
     [% for (field in dto.eAllAttributes.includingAll(dto.eAllReferences)) { %]
-    public void [%= field.setterName() %]([%= field.getTypeDefinition() %] [%= asmUtils.safeName(field.name.firstToLowerCase()) %]);
+    void [%= field.setterName() %]([%= field.getTypeDefinition() %] [%= asmUtils.safeName(field.name.firstToLowerCase()) %]);
     [% } %]
 
+	interface [%= dto.getClassName() %]Builder {
+
+	    [% for (field in dto.eAllAttributes.includingAll(dto.eAllReferences)) { %]
+	    [%= dto.getClassName() %]Builder [%= field.builderName() %]([%= field.getTypeDefinition() %] [%= asmUtils.safeName(field.name.firstToLowerCase()) %]);
+	    [% } %]
+	
+	    [%= dto.getClassName() %]Builder with__identifier([%= dto.idType() %] __identifier);
+	
+	    [%= dto.getClassName() %] build();
+    
+	}
+
+	[% if (not operations.isEmpty()) { %]
+	interface [%= dto.getClassName() %]Operations {
+	
+		[% for (op in operations) { %]
+			[% var map = getOperationGenerationData(dto, op); %]
+
+			[%= map.get("operationMethod") %];
+			
+		[% } %]
+	}
+	[% } %]
+	
+	[% 
+		var t = TemplateFactory .load("dao/Dao.java.egl");
+		out.print(t.process);			 
+	%]
+		
 }
+

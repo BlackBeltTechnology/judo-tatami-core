@@ -1,0 +1,20 @@
+[%
+  import "../../operations/sdk.eol";
+  out.setContentType("Java");
+%]
+
+package [%= getCustomOperationsPrefix() + dto.getDtoPackageName() %];
+
+public interface [%= dto.getClassName() %] {
+
+	[% for (op in dto.getCustomizableOperations()) { %]
+			[% var map = getOperationGenerationData(dto, op); %]
+			@FunctionalInterface
+			interface [%= op.name.firstToUpperCase() %] extends [%= map.get("extendedInterface") %] {
+			
+				@Override
+				[%= map.get("extendedMethod") %];
+			}
+	[% } %] 
+
+}
