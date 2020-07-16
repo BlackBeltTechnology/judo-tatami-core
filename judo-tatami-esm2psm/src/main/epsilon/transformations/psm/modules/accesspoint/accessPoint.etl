@@ -31,8 +31,7 @@ rule CreateActorType
 rule CreateGetOperationForExposedGraph
     transform s : ESM!RelationFeature
     to t : JUDOPSM!UnboundOperation {
-        guard: s.eContainer.isAccesspoint() and s.target.mapping.isDefined() 
-        and s.getterExpression.isDefined() and s.getterExpression.trim() <> ''
+        guard: s.eContainer.isAccesspoint() and not s.eContainer.mapping.isDefined() and s.target.isKindOf(ESM!TransferObjectType) and s.target.mapping.isDefined() and s.memberType == ESM!MemberType#DERIVED
 
         t.name = "_get" + s.name.firstToUpperCase();
         t.behaviour = new JUDOPSM!TransferOperationBehaviour;
@@ -168,8 +167,7 @@ operation ESM!RelationFeature createGetRangeOperationForExposedGraphEdit(relatio
 rule CreateCreateOperationForExposedGraph
     transform s : ESM!RelationFeature
     to t : JUDOPSM!UnboundOperation {
-        guard: s.eContainer.isAccesspoint() and s.target.mapping.isDefined()
-        and s.getterExpression.isDefined() and s.getterExpression.trim() <> '' and s.createable
+        guard: s.eContainer.isAccesspoint() and not s.eContainer.mapping.isDefined() and s.target.isKindOf(ESM!TransferObjectType) and s.target.mapping.isDefined() and s.isCreateAllowed() and s.memberType == ESM!MemberType#DERIVED
 
         t.name = "_create" + s.name.firstToUpperCase();
         t.behaviour = new JUDOPSM!TransferOperationBehaviour;
@@ -215,8 +213,7 @@ rule CreateCreateOperationForExposedGraph
 rule CreateUpdateOperationForExposedGraph
     transform s : ESM!RelationFeature
     to t : JUDOPSM!UnboundOperation {
-        guard: s.eContainer.isAccesspoint() and s.target.mapping.isDefined()
-        and s.getterExpression.isDefined() and s.getterExpression.trim() <> '' and s.updateable
+        guard: s.eContainer.isAccesspoint() and not s.eContainer.mapping.isDefined() and s.target.isKindOf(ESM!TransferObjectType) and s.target.mapping.isDefined() and s.isUpdateAllowed() and s.memberType == ESM!MemberType#DERIVED
 
         t.name = "_update" + s.name.firstToUpperCase();
         t.behaviour = new JUDOPSM!TransferOperationBehaviour;
@@ -291,7 +288,7 @@ rule CreateUpdateOperationForExposedGraph
 rule CreateDeleteOperationForExposedGraph
     transform s : ESM!RelationFeature
     to t : JUDOPSM!UnboundOperation {
-        guard: s.eContainer.isAccesspoint() and s.target.mapping.isDefined() and s.getterExpression.isDefined() and s.getterExpression.trim() <> '' and s.deleteable
+        guard: s.eContainer.isAccesspoint() and not s.eContainer.mapping.isDefined() and s.target.isKindOf(ESM!TransferObjectType) and s.target.mapping.isDefined() and s.isDeleteAllowed() and s.memberType == ESM!MemberType#DERIVED
 
         t.name = "_delete" + s.name.firstToUpperCase();
         t.behaviour = new JUDOPSM!TransferOperationBehaviour;
