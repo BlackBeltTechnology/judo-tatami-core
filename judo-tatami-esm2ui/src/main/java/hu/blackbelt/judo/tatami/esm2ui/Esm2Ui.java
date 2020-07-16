@@ -5,11 +5,14 @@ import com.google.common.collect.ImmutableMap;
 import hu.blackbelt.epsilon.runtime.execution.ExecutionContext;
 import hu.blackbelt.epsilon.runtime.execution.api.Log;
 import hu.blackbelt.epsilon.runtime.execution.contexts.EtlExecutionContext;
+import hu.blackbelt.epsilon.runtime.execution.impl.Slf4jLog;
 import hu.blackbelt.judo.meta.esm.runtime.EsmModel;
 import hu.blackbelt.judo.meta.esm.runtime.EsmUtils;
 import hu.blackbelt.judo.meta.ui.runtime.UiUtils;
 import hu.blackbelt.judo.meta.ui.runtime.UiModel;
 import hu.blackbelt.judo.tatami.core.TransformationTraceUtil;
+import lombok.extern.slf4j.Slf4j;
+
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.epsilon.common.util.UriUtil;
 
@@ -24,9 +27,48 @@ import static hu.blackbelt.judo.tatami.core.TransformationTraceUtil.getTransform
 import static hu.blackbelt.judo.tatami.esm2ui.Esm2UiTransformationTrace.ESM_2_UI_URI_POSTFIX;
 import static hu.blackbelt.judo.tatami.esm2ui.Esm2UiTransformationTrace.resolveEsm2UiTrace;
 
+@Slf4j
 public class Esm2Ui {
 
     public static final String SCRIPT_ROOT_TATAMI_ESM_2_UI = "tatami/esm2ui/transformations/ui/";
+
+    /**
+     * Execute ESM to UI model transformation,
+     *
+     * @param esmModel  The ESM model definition and loaded resources
+     * @param uiModel  The UI model definition transformed to
+     * @return The trace object list of the transformation conforms the meta model defined in {@link TransformationTraceUtil}.
+     * @throws Exception
+     */
+    public static Esm2UiTransformationTrace executeEsm2UiTransformation(EsmModel esmModel, String applicationType, Integer applicationColumns, UiModel uiModel) throws Exception {
+    	return executeEsm2UiTransformation(esmModel, applicationType, applicationColumns, uiModel, new Slf4jLog(log), calculateEsm2UiTransformationScriptURI());
+    }
+
+    /**
+     * Execute ESM to UI model transformation,
+     *
+     * @param esmModel  The ESM model definition and loaded resources
+     * @param uiModel  The UI model definition transformed to
+     * @param log       The log instance used in scripts
+     * @return The trace object list of the transformation conforms the meta model defined in {@link TransformationTraceUtil}.
+     * @throws Exception
+     */
+    public static Esm2UiTransformationTrace executeEsm2UiTransformation(EsmModel esmModel, String applicationType, Integer applicationColumns, UiModel uiModel, Log log) throws Exception {
+    	return executeEsm2UiTransformation(esmModel, applicationType, applicationColumns, uiModel, log, calculateEsm2UiTransformationScriptURI());
+    }
+
+    /**
+     * Execute ESM to UI model transformation,
+     *
+     * @param esmModel  The ESM model definition and loaded resources
+     * @param uiModel  The UI model definition transformed to
+     * @param scriptDir The physical filesystem directory where the script root is
+     * @return The trace object list of the transformation conforms the meta model defined in {@link TransformationTraceUtil}.
+     * @throws Exception
+     */
+    public static Esm2UiTransformationTrace executeEsm2UiTransformation(EsmModel esmModel, String applicationType, Integer applicationColumns, UiModel uiModel, URI scriptDir) throws Exception {
+    	return executeEsm2UiTransformation(esmModel, applicationType, applicationColumns, uiModel, new Slf4jLog(log), scriptDir);
+    }
 
     /**
      * Execute ESM to UI model transformation,
@@ -42,8 +84,6 @@ public class Esm2Ui {
                                                                           URI scriptDir) throws Exception {
 
         EsmUtils esmUtils = new EsmUtils();
-        //esmUtils.processAllEntities();
-        //esmUtils.processAllMixins();
 
         // Execution context
         ExecutionContext executionContext = executionContextBuilder()

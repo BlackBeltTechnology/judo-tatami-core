@@ -1,0 +1,17 @@
+[%
+import "../operations/flutter.eol";
+
+var outputGeneratedSources = new Set();
+executionContext.getContext().put("outputGeneratedSources", outputGeneratedSources);
+
+var application = UI!ui::Application.all.first;
+
+var t = TemplateFactory.load("main.dart.egl");
+t.populate("application", application);
+outputGeneratedSources.add(createGeneratedFile("main.dart", t.process(), true));
+
+var t = TemplateFactory.load("nav.dart.egl");
+t.populate("application", application);
+outputGeneratedSources.add(createGeneratedFile("widgets/nav-drawer.dart", t.process(), true));
+
+%]
