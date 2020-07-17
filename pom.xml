@@ -70,11 +70,11 @@
         <judo-meta-openapi-version>1.0.0.20200716_155531_623bd4e_develop</judo-meta-openapi-version>
         <judo-meta-ui-version>1.0.0.20200716_161621_28c12f7_develop</judo-meta-ui-version>
         <judo-dao-api-version>1.0.1</judo-dao-api-version>
-        <judo-dispatcher-api-version>1.0.1</judo-dispatcher-api-version>
+        <judo-dispatcher-api-version>1.0.2.20200709_172739_726a3b9_develop</judo-dispatcher-api-version>
         <judo-script-codegen-version>1.1.0.20200716_163046_1f0fd35_develop</judo-script-codegen-version>
 
         <structured-map-proxy-version>1.0.3</structured-map-proxy-version>
-        <judo-operation-utils-version>1.1.0.20200716_161614_87197be_develop</judo-operation-utils-version>
+        <judo-operation-utils-version>1.1.0.20200717_080351_a5bdff0_develop</judo-operation-utils-version>
 
         <!-- Xtend / Xcore -->
         <emf-version>2.18.0</emf-version>
