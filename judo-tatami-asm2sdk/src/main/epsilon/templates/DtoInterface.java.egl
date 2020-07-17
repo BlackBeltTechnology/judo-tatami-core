@@ -39,10 +39,10 @@ public interface [%= dto.getClassName() %] {
     
 	}
 
-	[% if (not operations.isEmpty()) { %]
+	[% if (not dto.getSdkOperations().isEmpty()) { %]
 	interface [%= dto.getClassName() %]Operations {
 	
-		[% for (op in operations) { %]
+		[% for (op in dto.getSdkOperations()) { %]
 			[% var map = getOperationGenerationData(dto, op); %]
 
 			[%= map.get("operationMethod") %];

@@ -15,11 +15,16 @@ import org.osgi.service.component.annotations.Deactivate;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Collection;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import static hu.blackbelt.judo.tatami.asm2sdk.Asm2SDK.executeAsm2SDKGeneration;
 
@@ -27,7 +32,7 @@ import static hu.blackbelt.judo.tatami.asm2sdk.Asm2SDK.executeAsm2SDKGeneration;
 @Slf4j
 public class Asm2SDKService {
 
-    Map<AsmModel, Bundle> asm2sdkAPIBundles = Maps.newHashMap();
+    Map<AsmModel, Collection<Bundle>> asm2sdkAPIBundles = Maps.newHashMap();
 
     BundleContext bundleContext;
 
@@ -60,21 +65,26 @@ public class Asm2SDKService {
                             .getEntry("/tatami/asm2sdk/templates/main.egl")
                             .toURI()
                             .resolve(".");
-
-            asm2sdkAPIBundles.put(asmModel,
-                    bundleContext.installBundle(this.getClass().getName(),
-                            executeAsm2SDKGeneration(asmModel, logger, scriptUri, tempDir)));
+            Asm2SDKBundleStreams bundleStreams = executeAsm2SDKGeneration(asmModel, logger, scriptUri, tempDir);
+            Collection<Bundle> bundles = new HashSet<>();
+            bundles.add(bundleContext.installBundle(this.getClass().getName(), bundleStreams.getSdkBundleStream()));
+            bundles.add(bundleContext.installBundle(this.getClass().getName(), bundleStreams.getInternalBundleStream()));
+			asm2sdkAPIBundles.put(asmModel, bundles);
             log.info("\u001B[33m {}\u001B[0m", logger.getBuffer());
         } catch (Exception e) {
             log.info("\u001B[31m {}\u001B[0m", logger.getBuffer());
             throw e;
         }
-        asm2sdkAPIBundles.get(asmModel).start();
+        for (Bundle bundle : asm2sdkAPIBundles.get(asmModel)) {
+        	bundle.start();
+        }
     }
 
     public void uninstall(AsmModel asmModel) throws BundleException {
         if (asm2sdkAPIBundles.containsKey(asmModel)) {
-            asm2sdkAPIBundles.get(asmModel).uninstall();
+            for (Bundle bundle : asm2sdkAPIBundles.get(asmModel)) {
+            	bundle.uninstall();
+            }
         } else {
             log.error("ASM model is not installed: " + asmModel.toString());
         }

@@ -108,28 +108,6 @@ operation genDaoScrXml(dto : ASM!EClass) {
 }
 
 
-operation genOperationScrXmls(dto : ASM!EClass, operations) : Set {
-	var generatedFiles = new Set();
-	
-	for (op in dto.getCustomizableOperations()) {
-		var t = TemplateFactory.load("operation/ExchangeFunction.scr.xml.egl");
-		var fileName = getExchangeFunctionScrXmlFileName(dto, op);	
-		t.generate(fileName);
-		generatedFiles.add(fileName);
-	}
-	
-	if (not operations.isEmpty()) {
-		if (not asmUtils.isEntityType(dto)) {
-			var fileName = getDispatcherWrapperScrXmlFileName(dto);	
-			var t = TemplateFactory.load("operation/DispatcherWrapper.scr.xml.egl");
-			t.generate(fileName);
-			generatedFiles.add(fileName);
-		}
-	}
-	
-	return generatedFiles;
-}
-
 @cached
 operation getDispatcherWrapperScrXmlFileName(dto : ASM!EClass) : String {
 	return "OSGI-INF/" + getInternalPrefix() + dto.getDtoPackageName() + "." + dto.getClassName() + "OperationsDispatcherWrapper.xml";
@@ -140,7 +118,7 @@ operation getExchangeFunctionScrXmlFileName(dto : ASM!EClass, op : ASM!EOperatio
 	return "OSGI-INF/" + getInternalPrefix() + dto.getDtoPackageName() + "." + dto.getClassName() + "." + op.name.firstToUpperCase() + "ExchangeFunction.xml";
 }
 	
-operation genDaoInterfaces(dto : ASM!EClass) : Set {
+operation genInternalDaoInterfaces(dto : ASM!EClass) : Set {
 	var result = new Set();
 	result.add(genDaoScrXml(dto));
 	result.add(genDaoImpl(dto));
@@ -183,50 +161,69 @@ operation genDtoInterface(dto: ASM!EClass) : String {
 		}
 	}
 	
-	var operations = asmUtils.getAllOperationDeclarations(dto, true).select(op | not asmUtils.getBehaviour(op).isPresent());
 	var template = TemplateFactory.load("DtoInterface.java.egl");
 	var fileName = dto.getDtoJavaFileName(getSdkPrefix() + dto.getDtoPackageName());
 	template.generate(fileName);
 	return fileName;
 }
 
-operation genOperationInterfaces(dto : ASM!EClass, operations) : Set {
-
+operation genSdkOperationInterfaces(dto : ASM!EClass) : Set {
     var generatedFiles = new Set();
+	if (not dto.getCustomizableOperations().isEmpty()) {
+	   	var t = TemplateFactory.load("operation/CustomOperations.java.egl");  
+	    var fileName = dto.getDtoJavaFileName(getCustomOperationsPrefix() + dto.getDtoPackageName());
+		t.generate(fileName);
+	    generatedFiles.add(fileName);
+    }
+    return generatedFiles;
+}
 
+operation genInternalOperationInterfaces(dto : ASM!EClass) : Set {
+    var generatedFiles = new Set();
 	// the operation I can implement - only instance for entities or static	
-	if (not operations.isEmpty()) {
-		    
+	if (not dto.getSdkOperations().isEmpty()) {
 	    // the operations I can call, one for each transfer entity
 	    if (not asmUtils.isEntityType(dto)) {
 			var t = TemplateFactory.load("operation/DispatcherWrapper.java.egl");	    
 		    var fileName = dto.getDispatcherWrapperJavaFileName(getInternalPrefix() + dto.getDtoPackageName());
 		    t.generate(fileName);
 		    generatedFiles.add(fileName);
+		    
+		    var xmlFileName = getDispatcherWrapperScrXmlFileName(dto);	
+			var xmlTemplate = TemplateFactory.load("operation/DispatcherWrapper.scr.xml.egl");
+			xmlTemplate.generate(xmlFileName);
+			generatedFiles.add(xmlFileName);
 		}
 		
 		if (not dto.getCustomizableOperations().isEmpty()) {
-		   	var t = TemplateFactory.load("operation/CustomOperations.java.egl");  
-		    var fileName = dto.getDtoJavaFileName(getCustomOperationsPrefix() + dto.getDtoPackageName());
-			t.generate(fileName);
-		    generatedFiles.add(fileName);
-		
 			// the custom operations called by the dispatcher
 			var t = TemplateFactory.load("operation/ExchangeFunctions.java.egl");
 			var fileName = dto.getExchangeFunctionsJavaFileName(getInternalPrefix() + dto.getDtoPackageName());
 			t.generate(fileName);
 			generatedFiles.add(fileName);
+			
+			for (op in dto.getCustomizableOperations()) {
+				var xmlTemplate = TemplateFactory.load("operation/ExchangeFunction.scr.xml.egl");
+				var xmlFileName = getExchangeFunctionScrXmlFileName(dto, op);	
+				xmlTemplate.generate(xmlFileName);
+				generatedFiles.add(xmlFileName);
+			}
 		}
-	
 	}
 
     return generatedFiles;
 }
 
-operation ASM!EClass getCustomizableOperations() {
+@cached
+operation ASM!EClass getSdkOperations() {
 	return asmUtils.getAllOperationDeclarations(self, true)
-		.select(op | not asmUtils.getBehaviour(op).isPresent())
-		.select(op | ((asmUtils.isEntityType(self) and asmUtils.isBound(op))
+		.select(op | not asmUtils.getBehaviour(op).isPresent());
+}
+
+@cached
+operation ASM!EClass getCustomizableOperations() {
+		return self.getSdkOperations()
+			.select(op | ((asmUtils.isEntityType(self) and asmUtils.isBound(op))
 			or ((not asmUtils.isEntityType(self)) and asmUtils.isUnbound(op)))); 	
 }
 

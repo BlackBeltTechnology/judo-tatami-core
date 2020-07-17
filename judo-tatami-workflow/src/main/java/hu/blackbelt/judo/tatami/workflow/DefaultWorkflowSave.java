@@ -10,6 +10,7 @@ import static hu.blackbelt.judo.meta.rdbms.runtime.RdbmsModel.SaveArguments.rdbm
 import static hu.blackbelt.judo.meta.script.runtime.ScriptModel.SaveArguments.scriptSaveArgumentsBuilder;
 import static hu.blackbelt.judo.tatami.asm2jaxrsapi.Asm2JAXRSAPIWork.JAXRSAPI_OUTPUT;
 import static hu.blackbelt.judo.tatami.asm2sdk.Asm2SDKWork.SDK_OUTPUT;
+import static hu.blackbelt.judo.tatami.asm2sdk.Asm2SDKWork.SDK_OUTPUT_INTERNAL;
 import static hu.blackbelt.judo.tatami.core.ThrowingConsumer.executeWrapper;
 import static hu.blackbelt.judo.tatami.script2operation.Script2OperationWork.OPERATION_OUTPUT;
 
@@ -92,6 +93,11 @@ public class DefaultWorkflowSave {
 
 		transformationContext.get(InputStream.class, SDK_OUTPUT).ifPresent(executeWrapper(catchError, (m) -> {
 			Files.copy(m, deleteFileIfExists(new File(dest, transformationContext.getModelName() + "-" + "asm2sdk.jar")).toPath());
+			m.close();
+		}));
+		
+		transformationContext.get(InputStream.class, SDK_OUTPUT_INTERNAL).ifPresent(executeWrapper(catchError, (m) -> {
+			Files.copy(m, deleteFileIfExists(new File(dest, transformationContext.getModelName() + "-" + "asm2sdk-internal.jar")).toPath());
 			m.close();
 		}));
 

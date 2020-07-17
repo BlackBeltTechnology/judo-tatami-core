@@ -22,7 +22,9 @@ import javax.tools.JavaFileObject;
 import java.io.*;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -38,19 +40,18 @@ public class Asm2SDK {
 
     public static final String SCRIPT_ROOT_TATAMI_ASM_2_SDK = "tatami/asm2sdk/templates/";
 
-    public static InputStream executeAsm2SDKGeneration(AsmModel asmModel, Log log,
+    public static Asm2SDKBundleStreams executeAsm2SDKGeneration(AsmModel asmModel, Log log,
                                                        File sourceCodeOutputDir) throws Exception {
         return executeAsm2SDKGeneration(asmModel, log, calculateAsm2SDKTemplateScriptURI(), sourceCodeOutputDir);
     }
 
-    public static InputStream executeAsm2SDKGeneration(AsmModel asmModel, File sourceCodeOutputDir) throws Exception {
+    public static Asm2SDKBundleStreams executeAsm2SDKGeneration(AsmModel asmModel, File sourceCodeOutputDir) throws Exception {
         return executeAsm2SDKGeneration(asmModel, new Slf4jLog(log), calculateAsm2SDKTemplateScriptURI(), sourceCodeOutputDir);
     }
 
-    public static InputStream executeAsm2SDKGeneration(AsmModel asmModel, Log log,
+    public static Asm2SDKBundleStreams executeAsm2SDKGeneration(AsmModel asmModel, Log log,
                                                        URI scriptUri, File sourceCodeOutputDir) throws Exception {
 
-        // Execution context
         ExecutionContext executionContext = executionContextBuilder()
                 .log(log)
                 .modelContexts(ImmutableList.of(
@@ -80,25 +81,25 @@ public class Asm2SDK {
         // Transformation script
         executionContext.executeProgram(eglExecutionContext);
 
-        Set<String> javaFileNames = ((Set<String>) executionContext.getContext().get("outputJavaClasses"))
+        Set<String> sdkJavaFileNames = ((Set<String>) executionContext.getContext().get("sdkJavaClasses"))
                 .stream().map(s -> s.replaceAll("//", "/")).collect(Collectors.toSet());
-        Set<String> scrXmlFileNames = (Set<String>)executionContext.getContext().get("outputScrXmls");
+        Set<String> internalJavaFileNames = ((Set<String>) executionContext.getContext().get("internalJavaClasses"))
+                .stream().map(s -> s.replaceAll("//", "/")).collect(Collectors.toSet());
+        Set<String> internalXmlFileNames = (Set<String>)executionContext.getContext().get("internalScrXmls");
 
         executionContext.commit();
         executionContext.close();
 
-        // Generating bundle
-        return generateBundle(
+        return generateBundlesAsStream(
                 asmModel.getName(),
                 asmModel.getVersion(),
-                compile(sourceCodeOutputDir, javaFileNames),
                 sourceCodeOutputDir,
-                javaFileNames,
-                scrXmlFileNames
-        );
+                sdkJavaFileNames,
+                internalJavaFileNames,
+                internalXmlFileNames);
     }
 
-    private static Iterable<JavaFileObject> compile(File sourceDir, Set<String> sourceCodeFiles) throws Exception {
+	private static Iterable<JavaFileObject> compile(File sourceDir, Set<String> sourceCodeFiles) throws Exception {
         if (sourceCodeFiles.isEmpty()) {
             return Collections.emptyList();
         }
@@ -114,67 +115,112 @@ public class Asm2SDK {
         return  sourceCodeFiles.stream().map(fn -> new File(sourceDir.getAbsolutePath(), fn)).collect(Collectors.toList());
     }
 
-    private static InputStream generateBundle(String modelName, String version, Iterable<JavaFileObject> compiled, File sourceDir,
-                                              Set<String> sourceCodeFiles, Set<String> scrXmlFiles) throws FileNotFoundException {
-        TinyBundle bundle = bundle();
-
-        Set<String> exportedPackages = Sets.newHashSet();
-
-        // Add helper classes
-
+    private static Asm2SDKBundleStreams generateBundlesAsStream(String name, String version, File sourceCodeOutputDir,
+			Set<String> sdkJavaFileNames, Set<String> internalJavaFileNames, Set<String> internalXmlFileNames) throws Exception {
+        TinyBundle sdkBundle = bundle();
+        TinyBundle internalBundle = bundle();
+        
+        Set<String> sdkExportedPackages = Sets.newHashSet();
+        Set<String> internalExportedPackages = Sets.newHashSet();
+    	
+        Set<String> allJavaFiles = new HashSet<>();
+        allJavaFiles.addAll(sdkJavaFileNames);
+        allJavaFiles.addAll(internalJavaFileNames);
+        
+        Iterable<JavaFileObject> compiled = compile(sourceCodeOutputDir, sdkJavaFileNames);
         compiled.forEach(c -> {
             FullyQualifiedName fullyQualifiedName = (FullyQualifiedName) c;
             try {
-                bundle.add(fullyQualifiedName.getFullyQualifiedName().replace('.', '/') + ".class", c.openInputStream());
-                String packageName = fullyQualifiedName.getFullyQualifiedName()
-                        .substring(0 , fullyQualifiedName.getFullyQualifiedName().lastIndexOf("."));
-                exportedPackages.add(packageName);
+            	if (fullyQualifiedName.getFullyQualifiedName().startsWith("internal")) {
+            		internalBundle.add(getPathInBundle(fullyQualifiedName), c.openInputStream());
+            		internalExportedPackages.add(getPackageName(fullyQualifiedName));
+            	} else {
+            		sdkBundle.add(getPathInBundle(fullyQualifiedName), c.openInputStream());
+            		sdkExportedPackages.add(getPackageName(fullyQualifiedName));
+            	}
             } catch (IOException e) {
                 throw new RuntimeException("File not found: "+ c.getName(), e);
             }
         });
-        sourceCodeFiles.forEach(s -> {
+        
+        addSourceFiles(sourceCodeOutputDir, sdkJavaFileNames, sdkBundle);
+        addSourceFiles(sourceCodeOutputDir, internalJavaFileNames, internalBundle);
+        
+        addCommonBundleHeaders(sdkBundle, version);
+        addCommonBundleHeaders(internalBundle, version);
+        
+        sdkBundle.set( Constants.BUNDLE_SYMBOLICNAME, name + "-asm2sdk-sdk" )
+    	.set(Constants.IMPORT_PACKAGE,
+    			"org.osgi.framework;version=\"[1.8,2.0)\"," +    					
+				"hu.blackbelt.structured.map.proxy;version=\"[1.0,2.0)\","
+    			);
+
+    	internalBundle.set(Constants.BUNDLE_SYMBOLICNAME, name + "-asm2sdk-internal" )
+        .set(Constants.IMPORT_PACKAGE,
+              "org.osgi.framework;version=\"[1.8,2.0)\"," +
+              "hu.blackbelt.judo.dao.api;version=\"[1.0,2.0)\"," +
+              "hu.blackbelt.judo.dispatcher.api;version=\"[1.0,2.0)\"," +
+              "hu.blackbelt.judo.meta.asm.runtime;version=\"[1.0,2.0)\"," +
+              "hu.blackbelt.structured.map.proxy;version=\"[1.0,2.0)\"," +
+              "org.eclipse.emf.ecore," +
+              "org.eclipse.emf.common," +
+              "org.eclipse.emf.common.util," +
+              "org.slf4j;version=\"1.7.2\", " +
+              Joiner.on(",").join(sdkExportedPackages));
+
+        addExportedPackages(sdkBundle, sdkExportedPackages);
+        addExportedPackages(internalBundle, internalExportedPackages);
+
+        addXmlDesciptors(internalBundle, sourceCodeOutputDir, internalXmlFileNames);
+        
+        return new Asm2SDKBundleStreams(new CachingInputStream(sdkBundle.build()), new CachingInputStream(internalBundle.build()));
+	}
+
+	private static void addXmlDesciptors(TinyBundle bundle, File sourceDir, Set<String> xmlFilenames) {
+		xmlFilenames.forEach(s -> {
             try {
                 bundle.add(s, new FileInputStream(new File(sourceDir.getAbsolutePath(), s)));
             } catch (FileNotFoundException e) {
                 throw new RuntimeException("File not found: " + s, e);
             }
         });
+    	
+        if (xmlFilenames.size() > 0) {
+        	bundle.set("Service-Component", Joiner.on(",").join(xmlFilenames));
+        }
+	}
 
-        scrXmlFiles.forEach(s -> {
+	private static void addCommonBundleHeaders(TinyBundle bundle, String version) {
+		bundle.set( Constants.BUNDLE_MANIFESTVERSION, "2")
+    	.set( Constants.BUNDLE_VERSION, version )
+    	.set( Constants.REQUIRE_CAPABILITY, "osgi.extender;filter:=\"(&(osgi.extender=osgi.component)(version>=1.3.0)(!(version>=2.0.0)))\"");
+	}
+
+	private static void addExportedPackages(TinyBundle bundle, Set<String> packageNames) {
+		if (packageNames.size() > 0) {
+            bundle.set(Constants.EXPORT_PACKAGE, packageNames.stream().collect(Collectors.joining(",")));
+        }
+	}
+
+	private static String getPathInBundle(FullyQualifiedName fullyQualifiedName) {
+		return fullyQualifiedName.getFullyQualifiedName().replace('.', '/') + ".class";
+	}
+
+	private static String getPackageName(FullyQualifiedName fullyQualifiedName) {
+		String packageName = fullyQualifiedName.getFullyQualifiedName()
+		        .substring(0 , fullyQualifiedName.getFullyQualifiedName().lastIndexOf("."));
+		return packageName;
+	}
+
+	private static void addSourceFiles(File sourceCodeOutputDir, Set<String> javaFileNames, TinyBundle bundle) {
+		javaFileNames.forEach(s -> {
             try {
-                bundle.add(s, new FileInputStream(new File(sourceDir.getAbsolutePath(), s)));
+                bundle.add(s, new FileInputStream(new File(sourceCodeOutputDir.getAbsolutePath(), s)));
             } catch (FileNotFoundException e) {
                 throw new RuntimeException("File not found: " + s, e);
             }
         });
-
-        bundle.set( Constants.BUNDLE_MANIFESTVERSION, "2")
-                .set( Constants.BUNDLE_SYMBOLICNAME, modelName + "-asm2sdk" )
-                .set( Constants.BUNDLE_VERSION, version )
-                .set( Constants.REQUIRE_CAPABILITY,
-                        "osgi.extender;filter:=\"(&(osgi.extender=osgi.component)(version>=1.3.0)(!(version>=2.0.0)))\"")
-                .set( Constants.IMPORT_PACKAGE,
-                        "org.osgi.framework;version=\"[1.8,2.0)\"," +
-                        "hu.blackbelt.judo.dao.api;version=\"[1.0,2.0)\"," +
-                        "hu.blackbelt.judo.dispatcher.api;version=\"[1.0,2.0)\"," +
-                        "hu.blackbelt.judo.meta.asm.runtime;version=\"[1.0,2.0)\"," +
-                        "hu.blackbelt.structured.map.proxy;version=\"[1.0,2.0)\"," +
-                        "org.eclipse.emf.ecore," +
-                        "org.eclipse.emf.common," +
-                        "org.eclipse.emf.common.util," +
-                        "org.slf4j;version=\"1.7.2\""
-                );
-
-        if (exportedPackages.size() > 0) {
-            bundle.set( Constants.EXPORT_PACKAGE, exportedPackages.stream().collect(Collectors.joining(",")));
-        }
-
-        if (scrXmlFiles.size() > 0) {
-            bundle.set("Service-Component", Joiner.on(",").join(scrXmlFiles));
-        }
-        return new CachingInputStream(bundle.build());
-    }
+	}
 
     @SneakyThrows(URISyntaxException.class)
     public static URI calculateAsm2SDKTemplateScriptURI() {

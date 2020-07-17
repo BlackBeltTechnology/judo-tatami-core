@@ -7,6 +7,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Collection;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -23,47 +24,35 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class Asm2SDKTest {
 
-    public static final String NORTHWIND = "northwind";
-    public static final String TARGET_TEST_CLASSES = "target/test-classes";
-    public static final String NORTHWIND_ASM_MODEL = "northwind-asm.model";
-    public static final String GENERATED_JAVA = "generated/java";
+	public static final String MODEL_NAME = "northwind";
+	public static final String TARGET_TEST_CLASSES = "target/test-classes";
+	public static final String NORTHWIND_ASM_MODEL = "northwind-asm.model";
+	public static final String GENERATED_JAVA = "generated/java";
 
-    Log slf4jlog;
-    AsmModel asmModel;
+	Log slf4jlog;
+	AsmModel asmModel;
 
-    @BeforeEach
-    public void setUp() throws Exception {
-    	 // Default logger
-        final Log slf4jlog = new Slf4jLog(log);
+	@BeforeEach
+	public void setUp() throws Exception {
+		// Default logger
+		final Log slf4jlog = new Slf4jLog(log);
 
+		final PsmModel psmModel = new Demo().fullDemo();
 
-        final PsmModel psmModel = new Demo().fullDemo();
+		// Create empty ASM model
+		asmModel = AsmModel.buildAsmModel().name(MODEL_NAME).build();
 
-        // Create empty ASM model
-        asmModel = AsmModel.buildAsmModel()
-                .name(NORTHWIND)
-                .build();
+		executePsm2AsmTransformation(psmModel, asmModel);
+	}
 
-        executePsm2AsmTransformation(psmModel, asmModel);
-    }
+	@Test
+	public void testExecuteAsm2SDKGeneration() throws Exception {
+        Asm2SDKBundleStreams bundleStreams = executeAsm2SDKGeneration(asmModel, new File(TARGET_TEST_CLASSES, GENERATED_JAVA));
+        OutputStream sdkOutputStream = new FileOutputStream(new File(TARGET_TEST_CLASSES, String.format("%s-sdk.jar", MODEL_NAME)));
+        ByteStreams.copy(bundleStreams.getSdkBundleStream(), sdkOutputStream);
+        bundleStreams.getSdkBundleStream();
+        OutputStream internalOutputStream = new FileOutputStream(new File(TARGET_TEST_CLASSES, String.format("%s-sdk-internal.jar", MODEL_NAME)));
+        ByteStreams.copy(bundleStreams.getInternalBundleStream(), internalOutputStream);
 
-    @Test
-    public void testExecuteAsm2SDKGeneration() throws Exception {
-        InputStream stream = executeAsm2SDKGeneration(asmModel, new File(TARGET_TEST_CLASSES, GENERATED_JAVA));
-        try (OutputStream outputStream =
-                     new FileOutputStream(new File(TARGET_TEST_CLASSES, NORTHWIND + "-sdk.jar"))) {
-            ByteStreams.copy(stream
-                    ,
-                    outputStream
-            );
-        }
-        stream.close();
-
-        try (OutputStream outputStream =
-                     new FileOutputStream(new File(TARGET_TEST_CLASSES, NORTHWIND + "-sdk.2.jar"))) {
-            ByteStreams.copy(stream, outputStream);
-        }
-        stream.close();
-
-    }
+	}
 }

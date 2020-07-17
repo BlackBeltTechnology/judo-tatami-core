@@ -11,7 +11,7 @@ public class [%= dto.getClassName() %]OperationsDispatcherWrapper implements [%=
 
 	private hu.blackbelt.judo.dispatcher.api.Dispatcher dispatcher;
 		
-	[% for (op in operations) { %]
+	[% for (op in dto.getSdkOperations()) { %]
 		[% var map = getOperationGenerationData(dto, op); %]
 		@Override
 		public [%= map.get("operationMethod") %] {

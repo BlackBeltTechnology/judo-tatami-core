@@ -99,7 +99,7 @@ public class TransformationContext {
 			return this;
 		}
 		
-		public <T> TransformationContextVerifier isMultipleKeyExists(Class<T> valueType, Object[] keys) {
+		public <T> TransformationContextVerifier isMultipleKeyExists(Class<T> valueType, Object... keys) {
 			for (Object key : keys) {
 				allExists = allExists && verifyKeyPresent(valueType, key);
 			}

@@ -4,6 +4,7 @@ import static hu.blackbelt.judo.meta.psm.runtime.PsmModel.loadPsmModel;
 import static hu.blackbelt.judo.meta.psm.runtime.PsmModel.LoadArguments.psmLoadArgumentsBuilder;
 import static hu.blackbelt.judo.tatami.asm2jaxrsapi.Asm2JAXRSAPIWork.JAXRSAPI_OUTPUT;
 import static hu.blackbelt.judo.tatami.asm2sdk.Asm2SDKWork.SDK_OUTPUT;
+import static hu.blackbelt.judo.tatami.asm2sdk.Asm2SDKWork.SDK_OUTPUT_INTERNAL;
 import static hu.blackbelt.judo.tatami.core.ThrowingSupplier.sneakyThrows;
 import static hu.blackbelt.judo.tatami.core.workflow.engine.WorkFlowEngineBuilder.aNewWorkFlowEngine;
 import static hu.blackbelt.judo.tatami.core.workflow.flow.ConditionalFlow.Builder.aNewConditionalFlow;
@@ -212,7 +213,7 @@ public class PsmDefaultWorkflow {
 				verifier.isKeyExists(InputStream.class, JAXRSAPI_OUTPUT);
 			}
 			if (!parameters.getIgnoreAsm2sdk()) {
-				verifier.isKeyExists(InputStream.class, SDK_OUTPUT);
+				verifier.isMultipleKeyExists(InputStream.class, SDK_OUTPUT, SDK_OUTPUT_INTERNAL);
 			}
 			if (!parameters.getIgnoreScript2Operation() && !parameters.getIgnoreAsm2Script() && !parameters.getIgnorePsm2Measure()) {
 				verifier.isKeyExists(InputStream.class, OPERATION_OUTPUT);

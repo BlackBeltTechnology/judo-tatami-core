@@ -16,7 +16,9 @@ import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -72,17 +74,14 @@ public class Asm2SDKOperationTest {
 
     @Test
     public void testExecuteAsm2SDKGeneration() throws Exception {
-        try (OutputStream outputStream =
-                     new FileOutputStream(new File(TARGET_TEST_CLASSES, MODEL_NAME + "-sdk.jar"))) {
-            ByteStreams.copy(
-                    executeAsm2SDKGeneration(asmModel, new Slf4jLog(log),
-                            calculateAsm2SDKTemplateScriptURI(),
-                            new File(GENERATED_JAVA)),
-                    outputStream
-            );
-        }
+        Asm2SDKBundleStreams bundleStreams = executeAsm2SDKGeneration(asmModel, new File(TARGET_TEST_CLASSES, GENERATED_JAVA));
+        OutputStream sdkOutputStream = new FileOutputStream(new File(TARGET_TEST_CLASSES, String.format("%s-sdk.jar", MODEL_NAME)));
+        ByteStreams.copy(bundleStreams.getSdkBundleStream(), sdkOutputStream);
+        bundleStreams.getSdkBundleStream();
+        OutputStream internalOutputStream = new FileOutputStream(new File(TARGET_TEST_CLASSES, String.format("%s-sdk-internal.jar", MODEL_NAME)));
+        ByteStreams.copy(bundleStreams.getInternalBundleStream(), internalOutputStream);
     }
-    
+
     private void transform(final String testName) throws Exception {
         psmModel.savePsmModel(PsmModel.SaveArguments.psmSaveArgumentsBuilder()
                 .file(new File(TARGET_TEST_CLASSES, getClass().getName() + "-" + testName + "-psm.model"))
