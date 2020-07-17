@@ -127,7 +127,7 @@ public class Asm2SDK {
         allJavaFiles.addAll(sdkJavaFileNames);
         allJavaFiles.addAll(internalJavaFileNames);
         
-        Iterable<JavaFileObject> compiled = compile(sourceCodeOutputDir, sdkJavaFileNames);
+        Iterable<JavaFileObject> compiled = compile(sourceCodeOutputDir, allJavaFiles);
         compiled.forEach(c -> {
             FullyQualifiedName fullyQualifiedName = (FullyQualifiedName) c;
             try {
@@ -152,7 +152,7 @@ public class Asm2SDK {
         sdkBundle.set( Constants.BUNDLE_SYMBOLICNAME, name + "-asm2sdk-sdk" )
     	.set(Constants.IMPORT_PACKAGE,
     			"org.osgi.framework;version=\"[1.8,2.0)\"," +    					
-				"hu.blackbelt.structured.map.proxy;version=\"[1.0,2.0)\","
+				"hu.blackbelt.structured.map.proxy;version=\"[1.0,2.0)\""
     			);
 
     	internalBundle.set(Constants.BUNDLE_SYMBOLICNAME, name + "-asm2sdk-internal" )

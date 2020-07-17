@@ -8,7 +8,7 @@
 <scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.3.0" name="[%= fullClassName %]" immediate="true">
   <implementation class="[%= fullClassName %]"/>
   <service>
-    <provide interface="[%= getSdkPrefix() + dto.getDtoPackageName() %].[%= dto.getClassName() %].[%= dto.getClassName() %]Operations"/>
+    <provide interface="[%= getSdkPrefix() + dto.getDtoPackageName() %].[%= dto.getClassName() %]$[%= dto.getClassName() %]Operations"/>
   </service>
   <reference name="dispatcher" interface="hu.blackbelt.judo.dispatcher.api.Dispatcher" field="dispatcher"/>
 </scr:component>
