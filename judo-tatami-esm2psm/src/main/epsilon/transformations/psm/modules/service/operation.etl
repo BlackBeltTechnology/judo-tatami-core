@@ -135,7 +135,7 @@ rule CreateParameter
 rule CreateGetOperationForRelation
     transform s : ESM!RelationFeature
     to t : JUDOPSM!BoundOperation {
-        guard: s.eContainer.isKindOf(ESM!TransferObjectType) and s.eContainer.mapping.isDefined() and s.target.isKindOf(ESM!TransferObjectType) and s.target.mapping.isDefined()
+        guard: s.eContainer.isKindOf(ESM!TransferObjectType) and s.eContainer.mapping.isDefined() and s.target.isKindOf(ESM!TransferObjectType) and s.target.mapping.isDefined() and s.memberType <> ESM!MemberType#TRANSIENT
 
         t.name = "_get" + s.name.firstToUpperCase() + "For" + esmUtils.getNamespaceElementFQName(s.eContainer).replace("::", "_").firstToUpperCase();
         t.instanceRepresentation = s.eContainer.getPSMTransferObjectTypeEquivalent();
@@ -154,7 +154,7 @@ rule CreateGetOperationForRelation
 rule CreateGetTransferOperationForRelation
     transform s : ESM!RelationFeature
     to t : JUDOPSM!BoundTransferOperation {
-        guard: s.eContainer.isKindOf(ESM!TransferObjectType) and s.eContainer.mapping.isDefined() and s.target.isKindOf(ESM!TransferObjectType) and s.target.mapping.isDefined()
+        guard: s.eContainer.isKindOf(ESM!TransferObjectType) and s.eContainer.mapping.isDefined() and s.target.isKindOf(ESM!TransferObjectType) and s.target.mapping.isDefined() and s.memberType <> ESM!MemberType#TRANSIENT
 
         t.name = "_get" + s.name.firstToUpperCase();
         t.behaviour = new JUDOPSM!TransferOperationBehaviour;
@@ -396,7 +396,7 @@ operation ESM!RelationFeature createGetRangeTransferOperationForRelation(relatio
 rule CreateCreateOperationForRelation
     transform s : ESM!RelationFeature
     to t : JUDOPSM!BoundOperation {
-        guard: s.eContainer.isKindOf(ESM!TransferObjectType) and s.eContainer.mapping.isDefined() and s.target.isKindOf(ESM!TransferObjectType) and s.target.mapping.isDefined() and s.isCreateAllowed()
+        guard: s.eContainer.isKindOf(ESM!TransferObjectType) and s.eContainer.mapping.isDefined() and s.target.isKindOf(ESM!TransferObjectType) and s.target.mapping.isDefined() and s.isCreateAllowed() and s.memberType <> ESM!MemberType#TRANSIENT
 
         t.name = "_create" + s.name.firstToUpperCase() + "For" + esmUtils.getNamespaceElementFQName(s.eContainer).replace("::", "_").firstToUpperCase();
         t.instanceRepresentation = s.eContainer.getPSMTransferObjectTypeEquivalent();
@@ -422,7 +422,7 @@ rule CreateCreateOperationForRelation
 rule CreateCreateTransferOperationForRelation
     transform s : ESM!RelationFeature
     to t : JUDOPSM!BoundTransferOperation {
-        guard: s.eContainer.isKindOf(ESM!TransferObjectType) and s.eContainer.mapping.isDefined() and s.target.isKindOf(ESM!TransferObjectType) and s.target.mapping.isDefined() and s.isCreateAllowed()
+        guard: s.eContainer.isKindOf(ESM!TransferObjectType) and s.eContainer.mapping.isDefined() and s.target.isKindOf(ESM!TransferObjectType) and s.target.mapping.isDefined() and s.isCreateAllowed() and s.memberType <> ESM!MemberType#TRANSIENT
 
         t.name = "_create" + s.name.firstToUpperCase();
         t.behaviour = new JUDOPSM!TransferOperationBehaviour;
@@ -470,7 +470,7 @@ rule CreateCreateTransferOperationForRelation
 rule CreateUpdateOperationForRelation
     transform s : ESM!RelationFeature
     to t : JUDOPSM!BoundOperation {
-        guard: s.eContainer.isKindOf(ESM!TransferObjectType) and s.eContainer.mapping.isDefined() and s.target.isKindOf(ESM!TransferObjectType) and s.target.mapping.isDefined() and s.isUpdateAllowed()
+        guard: s.eContainer.isKindOf(ESM!TransferObjectType) and s.eContainer.mapping.isDefined() and s.target.isKindOf(ESM!TransferObjectType) and s.target.mapping.isDefined() and s.isUpdateAllowed() and s.memberType <> ESM!MemberType#TRANSIENT
 
         t.name = "_update" + s.name.firstToUpperCase() + "For" + esmUtils.getNamespaceElementFQName(s.eContainer).replace("::", "_").firstToUpperCase();
         t.instanceRepresentation = s.eContainer.getPSMTransferObjectTypeEquivalent();
@@ -496,7 +496,7 @@ rule CreateUpdateOperationForRelation
 rule CreateUpdateTransferOperationForRelation
     transform s : ESM!RelationFeature
     to t : JUDOPSM!BoundTransferOperation {
-        guard: s.eContainer.isKindOf(ESM!TransferObjectType) and s.eContainer.mapping.isDefined() and s.target.isKindOf(ESM!TransferObjectType) and s.target.mapping.isDefined() and s.isUpdateAllowed()
+        guard: s.eContainer.isKindOf(ESM!TransferObjectType) and s.eContainer.mapping.isDefined() and s.target.isKindOf(ESM!TransferObjectType) and s.target.mapping.isDefined() and s.isUpdateAllowed() and s.memberType <> ESM!MemberType#TRANSIENT
 
         t.name = "_update" + s.name.firstToUpperCase();
         t.behaviour = new JUDOPSM!TransferOperationBehaviour;
@@ -572,7 +572,7 @@ rule CreateUpdateTransferOperationForRelation
 rule CreateDeleteOperationForRelation
     transform s : ESM!RelationFeature
     to t : JUDOPSM!BoundOperation {
-        guard: s.eContainer.isKindOf(ESM!TransferObjectType) and s.eContainer.mapping.isDefined() and s.target.isKindOf(ESM!TransferObjectType) and s.target.mapping.isDefined() and s.isDeleteAllowed()
+        guard: s.eContainer.isKindOf(ESM!TransferObjectType) and s.eContainer.mapping.isDefined() and s.target.isKindOf(ESM!TransferObjectType) and s.target.mapping.isDefined() and s.isDeleteAllowed() and s.memberType <> ESM!MemberType#TRANSIENT
 
         t.name = "_delete" + s.name.firstToUpperCase() + "For" + esmUtils.getNamespaceElementFQName(s.eContainer).replace("::", "_").firstToUpperCase();
         t.instanceRepresentation = s.eContainer.getPSMTransferObjectTypeEquivalent();
@@ -591,7 +591,7 @@ rule CreateDeleteOperationForRelation
 rule CreateDeleteTransferOperationForRelation
     transform s : ESM!RelationFeature
     to t : JUDOPSM!BoundTransferOperation {
-        guard: s.eContainer.isKindOf(ESM!TransferObjectType) and s.eContainer.mapping.isDefined() and s.target.isKindOf(ESM!TransferObjectType) and s.target.mapping.isDefined() and s.isDeleteAllowed()
+        guard: s.eContainer.isKindOf(ESM!TransferObjectType) and s.eContainer.mapping.isDefined() and s.target.isKindOf(ESM!TransferObjectType) and s.target.mapping.isDefined() and s.isDeleteAllowed() and s.memberType <> ESM!MemberType#TRANSIENT
 
         t.name = "_delete" + s.name.firstToUpperCase();
         t.behaviour = new JUDOPSM!TransferOperationBehaviour;
