@@ -16,24 +16,24 @@ import static hu.blackbelt.judo.meta.psm.derived.util.builder.DerivedBuilders.ne
 import static hu.blackbelt.judo.meta.psm.derived.util.builder.DerivedBuilders.newStaticNavigationBuilder;
 import static hu.blackbelt.judo.meta.psm.namespace.util.builder.NamespaceBuilders.newModelBuilder;
 import static hu.blackbelt.judo.meta.psm.runtime.PsmModel.buildPsmModel;
-import static hu.blackbelt.judo.meta.psm.service.util.builder.ServiceBuilders.newBoundTransferOperationBuilder;
-import static hu.blackbelt.judo.meta.psm.service.util.builder.ServiceBuilders.newMappedTransferObjectTypeBuilder;
-import static hu.blackbelt.judo.meta.psm.service.util.builder.ServiceBuilders.newParameterBuilder;
-import static hu.blackbelt.judo.meta.psm.service.util.builder.ServiceBuilders.newTransferAttributeBuilder;
-import static hu.blackbelt.judo.meta.psm.service.util.builder.ServiceBuilders.newTransferObjectRelationBuilder;
-import static hu.blackbelt.judo.meta.psm.service.util.builder.ServiceBuilders.newTransferOperationBehaviourBuilder;
-import static hu.blackbelt.judo.meta.psm.service.util.builder.ServiceBuilders.newUnboundOperationBuilder;
-import static hu.blackbelt.judo.meta.psm.service.util.builder.ServiceBuilders.newUnmappedTransferObjectTypeBuilder;
-import static hu.blackbelt.judo.meta.psm.service.util.builder.ServiceBuilders.useMappedTransferObjectType;
+import static hu.blackbelt.judo.meta.psm.service.util.builder.ServiceBuilders.*;
 import static hu.blackbelt.judo.meta.psm.type.util.builder.TypeBuilders.newCardinalityBuilder;
 import static hu.blackbelt.judo.meta.psm.type.util.builder.TypeBuilders.newStringTypeBuilder;
 import static hu.blackbelt.judo.tatami.psm2asm.Psm2Asm.calculatePsm2AsmTransformationScriptURI;
 import static hu.blackbelt.judo.tatami.psm2asm.Psm2Asm.executePsm2AsmTransformation;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.IsEqual.equalTo;
 
 import java.io.File;
 import java.util.Arrays;
+import java.util.Optional;
 
+import hu.blackbelt.judo.meta.asm.runtime.AsmUtils;
 import hu.blackbelt.judo.meta.psm.accesspoint.ActorType;
+import hu.blackbelt.judo.meta.psm.service.*;
+import org.eclipse.emf.ecore.EClass;
+import org.eclipse.emf.ecore.EOperation;
+import org.hamcrest.core.IsEqual;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -49,10 +49,6 @@ import hu.blackbelt.judo.meta.psm.derived.ExpressionDialect;
 import hu.blackbelt.judo.meta.psm.derived.StaticNavigation;
 import hu.blackbelt.judo.meta.psm.namespace.Model;
 import hu.blackbelt.judo.meta.psm.runtime.PsmModel;
-import hu.blackbelt.judo.meta.psm.service.MappedTransferObjectType;
-import hu.blackbelt.judo.meta.psm.service.TransferObjectRelation;
-import hu.blackbelt.judo.meta.psm.service.TransferOperationBehaviourType;
-import hu.blackbelt.judo.meta.psm.service.UnmappedTransferObjectType;
 import hu.blackbelt.judo.meta.psm.type.StringType;
 import lombok.extern.slf4j.Slf4j;
 
@@ -85,7 +81,7 @@ public class AccessPointTest {
         psmModel.savePsmModel(PsmModel.SaveArguments.psmSaveArgumentsBuilder()
                 .file(new File(TARGET_TEST_CLASSES, getClass().getName() + "-" + testName + "-psm.model"))
                 .build());
-        
+
         validatePsm(new Slf4jLog(log), psmModel, calculatePsmValidationScriptURI());
 
         executePsm2AsmTransformation(psmModel, asmModel);
@@ -93,6 +89,100 @@ public class AccessPointTest {
         asmModel.saveAsmModel(asmSaveArgumentsBuilder()
                 .file(new File(TARGET_TEST_CLASSES, getClass().getName() + "-" + testName + "-asm.model"))
                 .build());
+    }
+
+    @Test
+    void testGetPrincipalOperations() throws Exception {
+        final ActorType actor1 = newActorTypeBuilder()
+                .withName("Actor1")
+                .withRealm("realm1")
+                .build();
+        final UnmappedTransferObjectType ap1 = newUnmappedTransferObjectTypeBuilder()
+                .withName("AccessPoint1")
+                .withActorType(actor1)
+                .build();
+        useUnmappedTransferObjectType(ap1)
+                .withOperations(newUnboundOperationBuilder()
+                        .withName("getPrincipal1")
+                        .withOutput(newParameterBuilder()
+                                .withName("output")
+                                .withCardinality(newCardinalityBuilder()
+                                        .withLower(0)
+                                        .withUpper(1)
+                                        .build())
+                                .withType(ap1)
+                                .build())
+                        .withBehaviour(newTransferOperationBehaviourBuilder()
+                                .withBehaviourType(TransferOperationBehaviourType.GET_PRINCIPAL)
+                                .withOwner(ap1)
+                                .build())
+                        .build())
+                .build();
+
+        final ActorType actor2 = newActorTypeBuilder()
+                .withName("Actor2")
+                .withRealm("realm2")
+                .build();
+        final UnmappedTransferObjectType ap2 = newUnmappedTransferObjectTypeBuilder()
+                .withName("AccessPoint2")
+                .withActorType(actor2)
+                .withRelations(newTransferObjectRelationBuilder()
+                        .withName("ap1")
+                        .withTarget(ap1)
+                        .withEmbedded(true)
+                        .withCardinality(newCardinalityBuilder()
+                                .withLower(0)
+                                .withUpper(1)
+                                .build())
+                        .build())
+                .build();
+        useUnmappedTransferObjectType(ap2)
+                .withOperations(newUnboundOperationBuilder()
+                        .withName("getPrincipal2")
+                        .withOutput(newParameterBuilder()
+                                .withName("output")
+                                .withCardinality(newCardinalityBuilder()
+                                        .withLower(0)
+                                        .withUpper(1)
+                                        .build())
+                                .withType(ap2)
+                                .build())
+                        .withBehaviour(newTransferOperationBehaviourBuilder()
+                                .withBehaviourType(TransferOperationBehaviourType.GET_PRINCIPAL)
+                                .withOwner(ap2)
+                                .build())
+                        .build())
+                .build();
+
+        final Model model = newModelBuilder()
+                .withName("Model")
+                .withElements(Arrays.asList(actor1, actor2, ap1, ap2))
+                .build();
+
+        psmModel.addContent(model);
+
+        transform("testGetPrincipalOperations");
+
+        final AsmUtils asmUtils = new AsmUtils(asmModel.getResourceSet());
+        final Optional<EOperation> getPrincipal1 = asmUtils.all(EOperation.class)
+                .filter(o -> "getPrincipal1".equals(o.getName()))
+                .findAny();
+        final Optional<EOperation> getPrincipal2 = asmUtils.all(EOperation.class)
+                .filter(o -> "getPrincipal2".equals(o.getName()))
+                .findAny();
+
+        assertThat(getPrincipal1.isPresent(), equalTo(Boolean.TRUE));
+        assertThat(getPrincipal2.isPresent(), equalTo(Boolean.TRUE));
+
+        // ensure that getPrincipal operations are exposed by their own access points only
+        assertThat(AsmUtils.getExtensionAnnotationListByName(getPrincipal1.get(), "exposedBy").parallelStream()
+                .allMatch(a -> "Model.AccessPoint1".equals(a.getDetails().get("value"))), equalTo(Boolean.TRUE));
+        assertThat(AsmUtils.getExtensionAnnotationListByName(getPrincipal1.get(), "exposedBy").parallelStream()
+                .anyMatch(a -> "Model.AccessPoint1".equals(a.getDetails().get("value"))), equalTo(Boolean.TRUE));
+        assertThat(AsmUtils.getExtensionAnnotationListByName(getPrincipal2.get(), "exposedBy").parallelStream()
+                .allMatch(a -> "Model.AccessPoint2".equals(a.getDetails().get("value"))), equalTo(Boolean.TRUE));
+        assertThat(AsmUtils.getExtensionAnnotationListByName(getPrincipal2.get(), "exposedBy").parallelStream()
+                .anyMatch(a -> "Model.AccessPoint2".equals(a.getDetails().get("value"))), equalTo(Boolean.TRUE));
     }
 
     @Test
