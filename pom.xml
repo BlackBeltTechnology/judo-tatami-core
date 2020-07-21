@@ -757,7 +757,7 @@
                 <module>judo-tatami-asm2expression</module>
                 <module>judo-tatami-asm2script</module>
                 <module>judo-tatami-asm2sdk</module>
-                <module>judo-tatami-ui2flutter</module>
+                <module>judo-tatami-ui2client</module>
                 <module>judo-tatami-script2operation</module>
                 <module>judo-tatami-openapi2restclient</module>
                 <module>judo-tatami-esm-validation</module>

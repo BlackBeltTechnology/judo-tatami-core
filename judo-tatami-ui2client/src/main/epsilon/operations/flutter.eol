@@ -1,0 +1,18 @@
+
+
+operation createGeneratedFile(path : String, source : String, overwrite : Boolean) {
+	var generatedFile = new Native("hu.blackbelt.judo.tatami.ui2client.GeneratedFile");
+	generatedFile.setPath(path);
+	generatedFile.setSource(source);
+	generatedFile.setOverwrite(overwrite);
+	return generatedFile;
+}
+
+
+operation createMustacheFavtory() {
+	var generatedFile = new Native("hu.blackbelt.judo.tatami.ui2client.GeneratedFile");
+	generatedFile.setPath(path);
+	generatedFile.setSource(source);
+	generatedFile.setOverwrite(overwrite);
+	return generatedFile;
+}
