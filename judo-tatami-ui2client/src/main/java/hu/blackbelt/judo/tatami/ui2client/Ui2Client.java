@@ -7,6 +7,7 @@ import com.google.common.base.Charsets;
 import hu.blackbelt.epsilon.runtime.execution.api.Log;
 import hu.blackbelt.epsilon.runtime.execution.impl.Slf4jLog;
 import hu.blackbelt.judo.meta.ui.runtime.UiModel;
+import hu.blackbelt.judo.meta.ui.support.UiModelResourceSupport;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
@@ -18,6 +19,9 @@ import java.util.Collections;
 import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
+
+import static hu.blackbelt.judo.meta.ui.support.UiModelResourceSupport.LoadArguments.uiLoadArgumentsBuilder;
+import static hu.blackbelt.judo.meta.ui.support.UiModelResourceSupport.loadUi;
 
 @Slf4j
 public class Ui2Client {
@@ -99,6 +103,12 @@ public class Ui2Client {
         //        Template template = handlebars.compile(templateName);
         //        return template;
         // HighConcurrencyTemplateCache
+
+        UiModelResourceSupport modelResourceSupport = loadUi(uiLoadArgumentsBuilder().resourceSet(uiModel.getResourceSet()).build());
+        modelResourceSupport.
+        for (GeneratorTemplate generatorTemplate : generatorTemplates) {
+
+        }
 
 
 

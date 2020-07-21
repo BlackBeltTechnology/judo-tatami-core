@@ -8,9 +8,8 @@ import java.util.Collection;
 @Getter
 @Setter
 public class GeneratorTemplate {
-
+	private String factoryExpression;
 	private String path;
 	private String source;
-	private Collection<> expression;
 	private Boolean overwrite = true;
 }
