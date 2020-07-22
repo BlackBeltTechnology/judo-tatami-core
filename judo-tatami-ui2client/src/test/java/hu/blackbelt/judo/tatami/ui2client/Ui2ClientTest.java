@@ -10,6 +10,7 @@ import java.io.OutputStream;
 
 import hu.blackbelt.judo.meta.esm.runtime.EsmModel;
 import hu.blackbelt.judo.meta.ui.runtime.UiModel;
+import hu.blackbelt.judo.tatami.ui2client.flutter.FlutterTemplateProvider;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -19,7 +20,7 @@ import hu.blackbelt.epsilon.runtime.execution.api.Log;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class Ui2FlutterTest {
+public class Ui2ClientTest {
 
     private final String TARGET_TEST_CLASSES = "target/test-classes";
     private final String TEST = "test";
@@ -34,15 +35,18 @@ public class Ui2FlutterTest {
         // Create empty UI model
         uiModel = UiModel.buildUiModel().name(TEST).build();
 
+        GeneratorTemplate generatorTemplate;
+
         executeEsm2UiTransformation(esmModel, "desktop", 12, uiModel);
     }
 
     @Test
     public void testExecuteUi2FlutterGeneration() throws Exception {
+        FlutterTemplateProvider flutterTemplateProvider = new FlutterTemplateProvider();
         try (OutputStream zipOutputStream =
                      new FileOutputStream(new File(TARGET_TEST_CLASSES, TEST + "-flutter.zip"))) {
             ByteStreams.copy(
-                    getGeneratedFilesAsZip(executeUi2FlutterGeneration(uiModel)),
+                    getGeneratedFilesAsZip(executeUi2FlutterGeneration(uiModel, flutterTemplateProvider.get())),
                     zipOutputStream
             );
         }

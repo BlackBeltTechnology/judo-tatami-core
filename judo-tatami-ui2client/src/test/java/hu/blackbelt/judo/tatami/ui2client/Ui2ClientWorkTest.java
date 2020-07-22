@@ -17,7 +17,7 @@ import hu.blackbelt.judo.tatami.core.workflow.work.TransformationContext;
 import hu.blackbelt.judo.tatami.core.workflow.work.WorkReport;
 import hu.blackbelt.judo.tatami.core.workflow.work.WorkStatus;
 
-public class Ui2FlutterWorkTest {
+public class Ui2ClientWorkTest {
 
 	private final String TEST = "test";
 

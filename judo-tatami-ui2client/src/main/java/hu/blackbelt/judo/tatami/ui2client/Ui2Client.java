@@ -1,6 +1,8 @@
 package hu.blackbelt.judo.tatami.ui2client;
 
+import com.github.jknack.handlebars.Context;
 import com.github.jknack.handlebars.Handlebars;
+import com.github.jknack.handlebars.Template;
 import com.github.jknack.handlebars.cache.HighConcurrencyTemplateCache;
 import com.github.jknack.handlebars.io.*;
 import com.google.common.base.Charsets;
@@ -20,11 +22,7 @@ import org.springframework.expression.spel.support.StandardEvaluationContext;
 import java.io.*;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Stream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -37,14 +35,6 @@ public class Ui2Client {
 
     public static final String SCRIPT_ROOT_TATAMI_UI_2_FLUTTER = "tatami/ui2flutter/templates/";
 
-    public static Collection<GeneratedFile> executeUi2FlutterGeneration(UiModel uiModel) throws Exception {
-        return executeUi2FlutterGeneration(uiModel, Collections.EMPTY_LIST, new Slf4jLog(log), calculateUi2FlutterTemplateScriptURI());
-    }
-
-    public static Collection<GeneratedFile> executeUi2FlutterGeneration(UiModel uiModel, Log log) throws Exception {
-        return executeUi2FlutterGeneration(uiModel, Collections.EMPTY_LIST, log, calculateUi2FlutterTemplateScriptURI());
-    }
-
     public static Collection<GeneratedFile> executeUi2FlutterGeneration(UiModel uiModel, Collection<GeneratorTemplate> generatorTemplates) throws Exception {
         return executeUi2FlutterGeneration(uiModel, generatorTemplates, new Slf4jLog(log), calculateUi2FlutterTemplateScriptURI());
     }
@@ -56,136 +46,81 @@ public class Ui2Client {
     public static Collection<GeneratedFile> executeUi2FlutterGeneration(UiModel uiModel, Collection<GeneratorTemplate> generatorTemplates, Log log,
                                                             URI scriptDir) throws Exception {
 
-        /*
-        // Execution context
-        ExecutionContext executionContext = executionContextBuilder()
-                .log(log)
-                .modelContexts(ImmutableList.of(
-                        wrappedEmfModelContextBuilder()
-                                .log(log)
-                                .name("UI")
-                                .resource(uiModel.getResourceSet().getResource(uiModel.getUri(), false))
-                                .build()
-                        )
-                )
-                .build();
-
-        // run the model / metadata loading
-        executionContext.load();
-
-        EglExecutionContext eglExecutionContext = eglExecutionContextBuilder()
-                .source(UriUtil.resolve("main.egl", scriptDir))
-                .outputRoot(File.createTempFile("ui2client", String.valueOf(System.currentTimeMillis())).getAbsolutePath())
-                .parameters(ImmutableList.of(
-                        programParameterBuilder().name("modelVersion").value(uiModel.getVersion()).build(),
-                        programParameterBuilder().name("extendedMetadataURI")
-                                .value("http://blackbelt.hu/judo/meta/ExtendedMetadata").build()
-                ))
-                .build();
-
-        // Transformation script
-        executionContext.executeProgram(eglExecutionContext); */
-
-
-        /*
-        ClassPathTemplateLoader cpTemplateLoader = new ClassPathTemplateLoader();
-        Handlebars handlebars = new Handlebars();
-        TemplateLoader loader = cpTemplateLoader;
-
-        if (scriptDir.getScheme().equals("file")) {
-            FileTemplateLoader fileTemplateLoader = new FileTemplateLoader(new File(scriptDir));
-            fileTemplateLoader.setSuffix(".dart.hbs");
-            loader = new CompositeTemplateLoader(fileTemplateLoader, cpTemplateLoader);
-        } */
-
         TemplateLoader scriptDirectoryTemplateLoader = new ClientGeneratorTemplateLoader(scriptDir);
         scriptDirectoryTemplateLoader.setSuffix(".hbs");
-
-        TemplateLoader defaultEmbeddedTemplateLoader = new ClassPathTemplateLoader();
 
         Handlebars handlebars = new Handlebars();
         handlebars.with(scriptDirectoryTemplateLoader);
         handlebars.setStringParams(true);
         handlebars.setCharset(Charsets.UTF_8);
+        UiModelResourceSupport modelResourceSupport = loadUi(uiLoadArgumentsBuilder()
+                .uri(org.eclipse.emf.common.util.URI.createURI("ui:" + uiModel.getName()))
+                .resourceSet(uiModel.getResourceSet()).build());
 
-        //
-        //        Template template = handlebars.compile(templateName);
-        //        return template;
-        // HighConcurrencyTemplateCache
-
-        UiModelResourceSupport modelResourceSupport = loadUi(uiLoadArgumentsBuilder().resourceSet(uiModel.getResourceSet()).build());
-        StandardEvaluationContext simpleContext = new StandardEvaluationContext(modelResourceSupport);
-
+        Collection<GeneratedFile> sourceFiles = new HashSet<>();
         for (GeneratorTemplate generatorTemplate : generatorTemplates) {
             ExpressionParser parser = new SpelExpressionParser();
-            StandardEvaluationContext ec = new StandardEvaluationContext();
-
-            /*
-            ec.registerFunction("replaceAll",
-                    Ui2Client.class.getMethod("replaceAll", String.class, String.class));
-            ec.registerFunction("toLowerCase",
-                    Ui2Client.class.getMethod("toLowerCase"));
-            */
 
             if (generatorTemplate.getFactoryExpression() != null) {
                 final Expression factoryExpression = parser.parseExpression(generatorTemplate.getFactoryExpression());
+                final Expression pathExpression = parser.parseExpression(generatorTemplate.getPathExpression());
+                final Expression overWriteExpression = parser.parseExpression(generatorTemplate.getOverwriteExpression());
+                final Template template;
+                if (generatorTemplate.getTemplate() != null && !"".equals(generatorTemplate.getTemplate().trim())) {
+                    template = handlebars.compileInline(generatorTemplate.getTemplate());
+                } else if (generatorTemplate.getTemplateName() != null && !"".equals(generatorTemplate.getTemplateName().trim())) {
+                    template = handlebars.compile(generatorTemplate.getTemplateName());
+                } else {
+                    template = null;
+                }
 
-                Collection<GeneratedFile> generatedFiles = new ArrayList<>();
-                modelResourceSupport.getStreamOfUiApplication().forEach(app -> {
-                    Collection<EObject> processingElements = factoryExpression.getValue(ec, app, Collection.class);
-                    processingElements.stream().forEach(element -> {
-                        GeneratedFile generatedFile = new GeneratedFile();
-                        generatedFile.setOverwrite(generatorTemplate.getOverwrite());
-                    });
+                Map<String, Expression> templateExpressions = new HashMap<>();
+                generatorTemplate.getTemplateContext().stream().forEach(ctx -> {
+                    final Expression contextTemplate = parser.parseExpression(ctx.getExpression());
+                    templateExpressions.put(ctx.getName(), contextTemplate);
                 });
 
 
+                if (template != null) {
+                    modelResourceSupport.getStreamOfUiApplication().forEach(app -> {
+                        StandardEvaluationContext evaluationContext = new StandardEvaluationContext();
+                        evaluationContext.setVariable("model", app);
+                        evaluationContext.setVariable("template", generatorTemplate);
 
-            }
+                        Collection<EObject> processingElements = factoryExpression.getValue(evaluationContext, app, Collection.class);
 
-            modelResourceSupport.getStreamOfUiApplication().forEach(app -> {
+                        processingElements.stream().forEach(element -> {
+                            evaluationContext.setVariable("element", element);
+                            String path = pathExpression.getValue(evaluationContext, String.class);
+                            Boolean overwite = overWriteExpression.getValue(evaluationContext, Boolean.class);
 
-                if (generatorTemplate.getFactoryExpression() != null) {
-                    Expression factoryExpression = parser.parseExpression(
-                            "stream().map(#replaceAll('A', 'B')).map(#toLowerCase()).collect(T(java.util.stream.Collectors).toList())");
+                            Context.Builder contextBuilder = Context
+                                    .newBuilder(element)
+                                    .combine("app", app)
+                                    .combine("template", generatorTemplate);
 
+                            generatorTemplate.getTemplateContext().stream().forEach(ctx -> {
+                                contextBuilder.combine(ctx.getName(),
+                                        templateExpressions.get(ctx.getName()).getValue(evaluationContext, ctx.getClazz()));
+                            });
+                            StringWriter sourceFile = new StringWriter();
+                            try {
+                                template.apply(contextBuilder.build(), sourceFile);
+                            } catch (IOException e) {
+                                log.error("Could not generate template: " + path);
+                            }
+                            GeneratedFile generatedFile = new GeneratedFile();
+                            generatedFile.setOverwrite(overwite);
+                            generatedFile.setPath(path);
+                            generatedFile.setSource(sourceFile.toString());
+                            sourceFiles.add(generatedFile);
+                        });
 
-
-
+                    });
                 }
-
-            });
+            }
         }
-
-        /*
-        ExpressionParser parser = new SpelExpressionParser();
-        List<Inventor> list = (List<Inventor>) parser.parseExpression(
-                "Members.?[Nationality == 'Serbian']").getValue(societyContext); */
-
-
-
-        // Compiling templates
-
-        Set<GeneratedFile> sourceFiles = (Set<GeneratedFile>) executionContext.getContext().get("outputGeneratedSources");
-
-        // compile(outputDir, (Set<String>)executionContext.getContext().get("outputJavaClasses"));
-        executionContext.commit();
-        executionContext.close();
-
         return sourceFiles;
-
-    }
-
-    public static InputStream executeUi2FlutterGenerationAsZip(UiModel uiModel) throws Exception {
-        return getGeneratedFilesAsZip(executeUi2FlutterGeneration(uiModel, Collections.EMPTY_LIST, new Slf4jLog(log), calculateUi2FlutterTemplateScriptURI()));
-    }
-
-    public static InputStream executeUi2FlutterGenerationAsZip(UiModel uiModel, Log log) throws Exception {
-        return getGeneratedFilesAsZip(executeUi2FlutterGeneration(uiModel, Collections.EMPTY_LIST, log, calculateUi2FlutterTemplateScriptURI()));
-    }
-
-    public static InputStream executeUi2FlutterGenerationAsZip(UiModel uiModel, Log log, URI scriptDir) throws Exception {
-        return  getGeneratedFilesAsZip(executeUi2FlutterGeneration(uiModel, Collections.EMPTY_LIST, log, scriptDir));
     }
 
     public static InputStream executeUi2FlutterGenerationAsZip(UiModel uiModel, Collection<GeneratorTemplate> generatorTemplates) throws Exception {

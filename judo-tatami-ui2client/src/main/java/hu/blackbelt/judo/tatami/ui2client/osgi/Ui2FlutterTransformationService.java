@@ -5,6 +5,8 @@ import hu.blackbelt.epsilon.runtime.execution.api.Log;
 import hu.blackbelt.epsilon.runtime.execution.impl.Slf4jLog;
 import hu.blackbelt.epsilon.runtime.execution.impl.StringBuilderLogger;
 import hu.blackbelt.judo.meta.ui.runtime.UiModel;
+import hu.blackbelt.judo.tatami.ui2client.ClientTemplateProvider;
+import hu.blackbelt.judo.tatami.ui2client.flutter.FlutterTemplateProvider;
 import lombok.extern.slf4j.Slf4j;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
@@ -50,7 +52,8 @@ public class Ui2FlutterTransformationService {
                             .toURI()
                             .resolve(".");
 
-            ui2FlutterZipStreams.put(uiModel, executeUi2FlutterGenerationAsZip(uiModel, logger,
+            ClientTemplateProvider clientTemplateProvider = new FlutterTemplateProvider();
+            ui2FlutterZipStreams.put(uiModel, executeUi2FlutterGenerationAsZip(uiModel, clientTemplateProvider.get(), logger,
                                     scriptUri));
             log.info("\u001B[33m {}\u001B[0m", logger.getBuffer());
         } catch (Exception e) {

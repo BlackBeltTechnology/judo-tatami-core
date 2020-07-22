@@ -12,12 +12,14 @@ import hu.blackbelt.epsilon.runtime.execution.impl.Slf4jLog;
 import hu.blackbelt.judo.meta.ui.runtime.UiModel;
 import hu.blackbelt.judo.tatami.core.workflow.work.AbstractTransformationWork;
 import hu.blackbelt.judo.tatami.core.workflow.work.TransformationContext;
+import hu.blackbelt.judo.tatami.ui2client.flutter.FlutterTemplateProvider;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class Ui2ClientWork extends AbstractTransformationWork {
 	
-	public static final String FLUTTER_OUTPUT = "ui2flutter:output";
+	public static final String CLIENT_OUTPUT = "ui2client:output";
+	public static final String CLIENT_PROVIDER = "ui2fclient:provider";
 
 	final URI transformationScriptRoot;
 
@@ -37,12 +39,13 @@ public class Ui2ClientWork extends AbstractTransformationWork {
 				.orElseThrow(() -> new IllegalArgumentException("UI Model does not found in transformation context"));
 
 		InputStream ui2flutterZip = executeUi2FlutterGenerationAsZip(uiModel,
+				getTransformationContext().getByClass(ClientTemplateProvider.class).orElseGet(() -> new FlutterTemplateProvider()).get(),
 				getTransformationContext().getByClass(Log.class).orElseGet(() -> new Slf4jLog(log)),
 				transformationScriptRoot);
 		
 		checkState(ui2flutterZip != null, "No InputStream created");
 
-		getTransformationContext().put(FLUTTER_OUTPUT, ui2flutterZip);
+		getTransformationContext().put(CLIENT_OUTPUT, ui2flutterZip);
 
 	}
 

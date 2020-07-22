@@ -94,6 +94,7 @@
                             ${osgi-default-import},
                             *
                         </Import-Package>
+                        <Embed-Dependency>compiler</Embed-Dependency>
                     </instructions>
                 </configuration>
             </plugin>
@@ -151,6 +152,12 @@
             <artifactId>judo-tatami-esm2ui</artifactId>
             <scope>test</scope>
         </dependency>
+
+		<dependency>
+			<groupId>com.github.jknack</groupId>
+			<artifactId>handlebars</artifactId>
+			<version>4.1.2</version>
+		</dependency>
 
     </dependencies>
 </project>

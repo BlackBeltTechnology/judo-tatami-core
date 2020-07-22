@@ -87,7 +87,7 @@
                             hu.blackbelt.judo.tatami.ui2flutter.*;version=${project.version}
                         </Export-Package>
                         <Include-Resource>
-                            tatami=target/classes/tatami
+                            templates=target/classes/templates
                         </Include-Resource>
 
                         <Import-Package>
