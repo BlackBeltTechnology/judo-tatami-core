@@ -6,17 +6,26 @@ import com.github.jknack.handlebars.io.*;
 import com.google.common.base.Charsets;
 import hu.blackbelt.epsilon.runtime.execution.api.Log;
 import hu.blackbelt.epsilon.runtime.execution.impl.Slf4jLog;
+import hu.blackbelt.judo.meta.ui.Application;
 import hu.blackbelt.judo.meta.ui.runtime.UiModel;
 import hu.blackbelt.judo.meta.ui.support.UiModelResourceSupport;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.eclipse.emf.ecore.EObject;
+import org.springframework.expression.Expression;
+import org.springframework.expression.ExpressionParser;
+import org.springframework.expression.spel.standard.SpelExpressionParser;
+import org.springframework.expression.spel.support.StandardEvaluationContext;
 
 import java.io.*;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Stream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -105,10 +114,53 @@ public class Ui2Client {
         // HighConcurrencyTemplateCache
 
         UiModelResourceSupport modelResourceSupport = loadUi(uiLoadArgumentsBuilder().resourceSet(uiModel.getResourceSet()).build());
-        modelResourceSupport.
-        for (GeneratorTemplate generatorTemplate : generatorTemplates) {
+        StandardEvaluationContext simpleContext = new StandardEvaluationContext(modelResourceSupport);
 
+        for (GeneratorTemplate generatorTemplate : generatorTemplates) {
+            ExpressionParser parser = new SpelExpressionParser();
+            StandardEvaluationContext ec = new StandardEvaluationContext();
+
+            /*
+            ec.registerFunction("replaceAll",
+                    Ui2Client.class.getMethod("replaceAll", String.class, String.class));
+            ec.registerFunction("toLowerCase",
+                    Ui2Client.class.getMethod("toLowerCase"));
+            */
+
+            if (generatorTemplate.getFactoryExpression() != null) {
+                final Expression factoryExpression = parser.parseExpression(generatorTemplate.getFactoryExpression());
+
+                Collection<GeneratedFile> generatedFiles = new ArrayList<>();
+                modelResourceSupport.getStreamOfUiApplication().forEach(app -> {
+                    Collection<EObject> processingElements = factoryExpression.getValue(ec, app, Collection.class);
+                    processingElements.stream().forEach(element -> {
+                        GeneratedFile generatedFile = new GeneratedFile();
+                        generatedFile.setOverwrite(generatorTemplate.getOverwrite());
+                    });
+                });
+
+
+
+            }
+
+            modelResourceSupport.getStreamOfUiApplication().forEach(app -> {
+
+                if (generatorTemplate.getFactoryExpression() != null) {
+                    Expression factoryExpression = parser.parseExpression(
+                            "stream().map(#replaceAll('A', 'B')).map(#toLowerCase()).collect(T(java.util.stream.Collectors).toList())");
+
+
+
+
+                }
+
+            });
         }
+
+        /*
+        ExpressionParser parser = new SpelExpressionParser();
+        List<Inventor> list = (List<Inventor>) parser.parseExpression(
+                "Members.?[Nationality == 'Serbian']").getValue(societyContext); */
 
 
 
