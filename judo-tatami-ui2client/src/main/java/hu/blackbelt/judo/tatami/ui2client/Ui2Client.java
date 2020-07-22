@@ -3,12 +3,10 @@ package hu.blackbelt.judo.tatami.ui2client;
 import com.github.jknack.handlebars.Context;
 import com.github.jknack.handlebars.Handlebars;
 import com.github.jknack.handlebars.Template;
-import com.github.jknack.handlebars.cache.HighConcurrencyTemplateCache;
 import com.github.jknack.handlebars.io.*;
 import com.google.common.base.Charsets;
 import hu.blackbelt.epsilon.runtime.execution.api.Log;
 import hu.blackbelt.epsilon.runtime.execution.impl.Slf4jLog;
-import hu.blackbelt.judo.meta.ui.Application;
 import hu.blackbelt.judo.meta.ui.runtime.UiModel;
 import hu.blackbelt.judo.meta.ui.support.UiModelResourceSupport;
 import lombok.SneakyThrows;
@@ -23,7 +21,6 @@ import java.io.*;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.*;
-import java.util.stream.Stream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -33,18 +30,18 @@ import static hu.blackbelt.judo.meta.ui.support.UiModelResourceSupport.loadUi;
 @Slf4j
 public class Ui2Client {
 
-    public static final String SCRIPT_ROOT_TATAMI_UI_2_FLUTTER = "tatami/ui2flutter/templates/";
+    public static final String TEMPLATE_ROOT_TATAMI_UI_2_CLIENT = "templates/";
 
-    public static Collection<GeneratedFile> executeUi2FlutterGeneration(UiModel uiModel, Collection<GeneratorTemplate> generatorTemplates) throws Exception {
-        return executeUi2FlutterGeneration(uiModel, generatorTemplates, new Slf4jLog(log), calculateUi2FlutterTemplateScriptURI());
+    public static Collection<GeneratedFile> executeUi2ClientGeneration(UiModel uiModel, Collection<GeneratorTemplate> generatorTemplates) throws Exception {
+        return executeUi2ClientGeneration(uiModel, generatorTemplates, new Slf4jLog(log), calculateUi2ClientTemplateScriptURI());
     }
 
-    public static Collection<GeneratedFile> executeUi2FlutterGeneration(UiModel uiModel, Collection<GeneratorTemplate> generatorTemplates, Log log) throws Exception {
-        return executeUi2FlutterGeneration(uiModel, generatorTemplates, log, calculateUi2FlutterTemplateScriptURI());
+    public static Collection<GeneratedFile> executeUi2ClientGeneration(UiModel uiModel, Collection<GeneratorTemplate> generatorTemplates, Log log) throws Exception {
+        return executeUi2ClientGeneration(uiModel, generatorTemplates, log, calculateUi2ClientTemplateScriptURI());
     }
 
-    public static Collection<GeneratedFile> executeUi2FlutterGeneration(UiModel uiModel, Collection<GeneratorTemplate> generatorTemplates, Log log,
-                                                            URI scriptDir) throws Exception {
+    public static Collection<GeneratedFile> executeUi2ClientGeneration(UiModel uiModel, Collection<GeneratorTemplate> generatorTemplates, Log log,
+                                                                       URI scriptDir) throws Exception {
 
         TemplateLoader scriptDirectoryTemplateLoader = new ClientGeneratorTemplateLoader(scriptDir);
         scriptDirectoryTemplateLoader.setSuffix(".hbs");
@@ -100,8 +97,13 @@ public class Ui2Client {
                                     .combine("template", generatorTemplate);
 
                             generatorTemplate.getTemplateContext().stream().forEach(ctx -> {
-                                contextBuilder.combine(ctx.getName(),
-                                        templateExpressions.get(ctx.getName()).getValue(evaluationContext, ctx.getClazz()));
+                                try {
+                                    contextBuilder.combine(ctx.getName(),
+                                            templateExpressions.get(ctx.getName()).getValue(evaluationContext,
+                                                    Ui2Client.class.getClassLoader().loadClass(ctx.getClassName())));
+                                } catch (ClassNotFoundException e) {
+                                    log.error("Class not found: " + ctx.getClassName());
+                                }
                             });
                             StringWriter sourceFile = new StringWriter();
                             try {
@@ -123,27 +125,27 @@ public class Ui2Client {
         return sourceFiles;
     }
 
-    public static InputStream executeUi2FlutterGenerationAsZip(UiModel uiModel, Collection<GeneratorTemplate> generatorTemplates) throws Exception {
-        return getGeneratedFilesAsZip(executeUi2FlutterGeneration(uiModel, generatorTemplates, new Slf4jLog(log), calculateUi2FlutterTemplateScriptURI()));
+    public static InputStream executeUi2ClientGenerationAsZip(UiModel uiModel, Collection<GeneratorTemplate> generatorTemplates) throws Exception {
+        return getGeneratedFilesAsZip(executeUi2ClientGeneration(uiModel, generatorTemplates, new Slf4jLog(log), calculateUi2ClientTemplateScriptURI()));
     }
 
-    public static InputStream executeUi2FlutterGenerationAsZip(UiModel uiModel, Collection<GeneratorTemplate> generatorTemplates, Log log) throws Exception {
-        return getGeneratedFilesAsZip(executeUi2FlutterGeneration(uiModel, generatorTemplates, log, calculateUi2FlutterTemplateScriptURI()));
+    public static InputStream executeUi2ClientGenerationAsZip(UiModel uiModel, Collection<GeneratorTemplate> generatorTemplates, Log log) throws Exception {
+        return getGeneratedFilesAsZip(executeUi2ClientGeneration(uiModel, generatorTemplates, log, calculateUi2ClientTemplateScriptURI()));
     }
 
-    public static InputStream executeUi2FlutterGenerationAsZip(UiModel uiModel, Collection<GeneratorTemplate> generatorTemplates, Log log, URI scriptDir) throws Exception {
-        return  getGeneratedFilesAsZip(executeUi2FlutterGeneration(uiModel, generatorTemplates, log, scriptDir));
+    public static InputStream executeUi2ClientGenerationAsZip(UiModel uiModel, Collection<GeneratorTemplate> generatorTemplates, Log log, URI scriptDir) throws Exception {
+        return  getGeneratedFilesAsZip(executeUi2ClientGeneration(uiModel, generatorTemplates, log, scriptDir));
     }
 
     @SneakyThrows(URISyntaxException.class)
-    public static URI calculateUi2FlutterTemplateScriptURI() {
+    public static URI calculateUi2ClientTemplateScriptURI() {
         URI uiRoot = Ui2Client.class.getProtectionDomain().getCodeSource().getLocation().toURI();
         if (uiRoot.toString().endsWith(".jar")) {
-            uiRoot = new URI("jar:" + uiRoot.toString() + "!/" + SCRIPT_ROOT_TATAMI_UI_2_FLUTTER);
+            uiRoot = new URI("jar:" + uiRoot.toString() + "!/" + TEMPLATE_ROOT_TATAMI_UI_2_CLIENT);
         } else if (uiRoot.toString().startsWith("jar:bundle:")) {
-            uiRoot = new URI(uiRoot.toString().substring(4, uiRoot.toString().indexOf("!")) + SCRIPT_ROOT_TATAMI_UI_2_FLUTTER);
+            uiRoot = new URI(uiRoot.toString().substring(4, uiRoot.toString().indexOf("!")) + TEMPLATE_ROOT_TATAMI_UI_2_CLIENT);
         } else {
-            uiRoot = new URI(uiRoot.toString() + "/" + SCRIPT_ROOT_TATAMI_UI_2_FLUTTER);
+            uiRoot = new URI(uiRoot.toString() + "/" + TEMPLATE_ROOT_TATAMI_UI_2_CLIENT);
         }
         return uiRoot;
     }

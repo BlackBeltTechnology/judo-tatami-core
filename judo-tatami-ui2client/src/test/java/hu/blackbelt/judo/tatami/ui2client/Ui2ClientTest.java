@@ -1,6 +1,6 @@
 package hu.blackbelt.judo.tatami.ui2client;
 
-import static hu.blackbelt.judo.tatami.ui2client.Ui2Client.executeUi2FlutterGeneration;
+import static hu.blackbelt.judo.tatami.ui2client.Ui2Client.executeUi2ClientGeneration;
 import static hu.blackbelt.judo.tatami.esm2ui.Esm2Ui.executeEsm2UiTransformation;
 import static hu.blackbelt.judo.tatami.ui2client.Ui2Client.getGeneratedFilesAsZip;
 
@@ -10,7 +10,6 @@ import java.io.OutputStream;
 
 import hu.blackbelt.judo.meta.esm.runtime.EsmModel;
 import hu.blackbelt.judo.meta.ui.runtime.UiModel;
-import hu.blackbelt.judo.tatami.ui2client.flutter.FlutterTemplateProvider;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -42,11 +41,12 @@ public class Ui2ClientTest {
 
     @Test
     public void testExecuteUi2FlutterGeneration() throws Exception {
-        FlutterTemplateProvider flutterTemplateProvider = new FlutterTemplateProvider();
         try (OutputStream zipOutputStream =
                      new FileOutputStream(new File(TARGET_TEST_CLASSES, TEST + "-flutter.zip"))) {
             ByteStreams.copy(
-                    getGeneratedFilesAsZip(executeUi2FlutterGeneration(uiModel, flutterTemplateProvider.get())),
+                    getGeneratedFilesAsZip(Ui2Client.executeUi2ClientGeneration(uiModel,
+//                            GeneratorTemplate.loadYamlURL(new File(TARGET_TEST_CLASSES, "templates/flutter/flutter.yaml").toURI().toURL()))),
+                            GeneratorTemplate.loadYamlURL(Ui2Client.calculateUi2ClientTemplateScriptURI().resolve("flutter/flutter.yaml").toURL()))),
                     zipOutputStream
             );
         }

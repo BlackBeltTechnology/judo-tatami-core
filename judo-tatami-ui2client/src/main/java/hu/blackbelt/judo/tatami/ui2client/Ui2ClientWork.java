@@ -1,8 +1,8 @@
 package hu.blackbelt.judo.tatami.ui2client;
 
 import static com.google.common.base.Preconditions.checkState;
-import static hu.blackbelt.judo.tatami.ui2client.Ui2Client.executeUi2FlutterGeneration;
-import static hu.blackbelt.judo.tatami.ui2client.Ui2Client.executeUi2FlutterGenerationAsZip;
+import static hu.blackbelt.judo.tatami.ui2client.Ui2Client.executeUi2ClientGeneration;
+import static hu.blackbelt.judo.tatami.ui2client.Ui2Client.executeUi2ClientGenerationAsZip;
 
 import java.io.InputStream;
 import java.net.URI;
@@ -12,14 +12,12 @@ import hu.blackbelt.epsilon.runtime.execution.impl.Slf4jLog;
 import hu.blackbelt.judo.meta.ui.runtime.UiModel;
 import hu.blackbelt.judo.tatami.core.workflow.work.AbstractTransformationWork;
 import hu.blackbelt.judo.tatami.core.workflow.work.TransformationContext;
-import hu.blackbelt.judo.tatami.ui2client.flutter.FlutterTemplateProvider;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class Ui2ClientWork extends AbstractTransformationWork {
 	
 	public static final String CLIENT_OUTPUT = "ui2client:output";
-	public static final String CLIENT_PROVIDER = "ui2fclient:provider";
 
 	final URI transformationScriptRoot;
 
@@ -29,7 +27,7 @@ public class Ui2ClientWork extends AbstractTransformationWork {
 	}
 
 	public Ui2ClientWork(TransformationContext transformationContext) {
-		this(transformationContext, Ui2Client.calculateUi2FlutterTemplateScriptURI());
+		this(transformationContext, Ui2Client.calculateUi2ClientTemplateScriptURI());
 	}
 
 	@Override
@@ -38,8 +36,9 @@ public class Ui2ClientWork extends AbstractTransformationWork {
 		UiModel uiModel = getTransformationContext().getByClass(UiModel.class)
 				.orElseThrow(() -> new IllegalArgumentException("UI Model does not found in transformation context"));
 
-		InputStream ui2flutterZip = executeUi2FlutterGenerationAsZip(uiModel,
-				getTransformationContext().getByClass(ClientTemplateProvider.class).orElseGet(() -> new FlutterTemplateProvider()).get(),
+		InputStream ui2flutterZip = executeUi2ClientGenerationAsZip(uiModel,
+//				getTransformationContext().getByClass(ClientTemplateProvider.class).orElseGet(() -> new FlutterTemplateProvider()).get(),
+				GeneratorTemplate.loadYamlURL(Ui2Client.calculateUi2ClientTemplateScriptURI().resolve("flutter/flutter.yaml").toURL()),
 				getTransformationContext().getByClass(Log.class).orElseGet(() -> new Slf4jLog(log)),
 				transformationScriptRoot);
 		

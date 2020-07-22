@@ -19,7 +19,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Map;
 
-import static hu.blackbelt.judo.tatami.ui2client.Ui2Client.executeUi2FlutterGenerationAsZip;
+import static hu.blackbelt.judo.tatami.ui2client.Ui2Client.executeUi2ClientGenerationAsZip;
 
 @Component(immediate = true, service = Ui2FlutterTransformationService.class)
 @Slf4j
@@ -53,7 +53,7 @@ public class Ui2FlutterTransformationService {
                             .resolve(".");
 
             ClientTemplateProvider clientTemplateProvider = new FlutterTemplateProvider();
-            ui2FlutterZipStreams.put(uiModel, executeUi2FlutterGenerationAsZip(uiModel, clientTemplateProvider.get(), logger,
+            ui2FlutterZipStreams.put(uiModel, executeUi2ClientGenerationAsZip(uiModel, clientTemplateProvider.get(), logger,
                                     scriptUri));
             log.info("\u001B[33m {}\u001B[0m", logger.getBuffer());
         } catch (Exception e) {

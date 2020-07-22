@@ -1,0 +1,9 @@
+- overwriteExpression: true
+  factoryExpression: "{#model}"
+  pathExpression: "#element.name.replaceAll('/', '__').concat('_test.dart')"
+  templateName: flutter/test.dart
+  templateContext:
+      - name: application
+        expression: "#element"
+        className: hu.blackbelt.judo.meta.ui.Application
+

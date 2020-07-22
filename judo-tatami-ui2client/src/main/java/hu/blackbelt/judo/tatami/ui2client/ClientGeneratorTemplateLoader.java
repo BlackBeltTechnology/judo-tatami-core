@@ -47,7 +47,7 @@ public class ClientGeneratorTemplateLoader extends URLTemplateLoader {
     @Override
     protected URL getResource(String location) throws IOException {
         try {
-            URL scriptUrl = root.resolve(location).toURL();
+            URL scriptUrl = new URI(root.toString() + location).toURL(); //root.resolve(location).toURL();
             try (InputStream is = scriptUrl.openStream()) {
                 if (is != null && is.available() > 0) {
                     return scriptUrl;
