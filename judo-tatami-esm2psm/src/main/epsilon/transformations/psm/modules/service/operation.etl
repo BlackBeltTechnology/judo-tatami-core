@@ -646,9 +646,9 @@ rule CreateMapPrincipalOperationForActoryType
         t.name = "_map_principal";
         t.behaviour = new JUDOPSM!TransferOperationBehaviour;
         t.behaviour.behaviourType = JUDOPSM!TransferOperationBehaviourType#MAP_PRINCIPAL;
-        t.behaviour.owner = s.equivalent("CreateActorType");
+        t.behaviour.owner = s.getPSMEquivalent();
         
-        s.equivalent("CreateActorType").operations.add(t);
+        s.getPSMEquivalent().operations.add(t);
 }
 
 @greedy
@@ -658,7 +658,7 @@ rule CreateMapPrincipalOperationInputParameterForActorType
         guard: s.realm <> ESM!Realm#PUBLIC
 
         t.name = "input";
-        t.type = s.equivalent("CreateActorType");
+        t.type = s.getPSMEquivalent();
         t.cardinality = new JUDOPSM!Cardinality;
         t.cardinality.lower = 0;
         t.cardinality.upper = 1;

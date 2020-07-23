@@ -139,8 +139,8 @@ public class Asm2SDKOperationTest {
     		.withInput("InputEntity", "input", cardinality(0, -1));
     	
     	modelBuilder.addUnboundOperation("Initializer", "scriptOperation").withBody("var demo::entities::Entity e");
-    	modelBuilder.addActorType("BoundVoidActor", "Entity");
-    	modelBuilder.addActorType("InitializerActor", "Initializer");
+//    	modelBuilder.addActorType("BoundVoidActor", "Entity");
+//    	modelBuilder.addActorType("InitializerActor", "Initializer");
         psmModel.addContent(modelBuilder.build());
         transform(MODEL_NAME);
 

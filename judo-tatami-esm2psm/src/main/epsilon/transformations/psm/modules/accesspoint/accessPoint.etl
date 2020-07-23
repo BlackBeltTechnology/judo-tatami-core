@@ -2,10 +2,10 @@ import "../namespace/namespace.etl";
 import "../derived/referenceAccessor.etl";
 import "../../../../operations/_importAll.eol";
 
-
-rule CreateActorType
+@abstract
+rule CreateAbstractActorType
 	transform s: ESM!ActorType
-	to t: JUDOPSM!ActorType {
+	to t: JUDOPSM!AbstractActorType {
 	  t.name = s.eContainer.name;
 	  if (s.realm == ESM!Realm#CUSTOM) {
 	  	t.realm = s.customRealm;
@@ -19,10 +19,40 @@ rule CreateActorType
 	      for (claim in CLAIMMAPPING!Mapping.all.select(m | m.Claim.isDefined() and m.Realm == s.customRealm)) {
 	          var attr = new JUDOPSM!TransferAttribute();
 	          attr.name = claim.Claim;
+	          attr.claimType = claim.Claim; // TODO - replace with claim type (string value of customClaim in new ESM model)
 	          attr.dataType = ESM!Model.all.first().equivalent("CreateModel").elements.selectOne(e | e.name == claim.getTypeName());
 	          t.attributes.add(attr);
 	      }
 	  }
+}
+
+rule CreateActorType
+	transform s: ESM!ActorType
+	to t: JUDOPSM!ActorType
+	extends CreateAbstractActorType {
+	  guard: s.eContainer.isDefined() and not s.eContainer.mapping.isDefined()
+
+	  log.debug("Created ActorType: " + t.name);
+}
+
+rule CreateMappedActorType
+	transform s: ESM!ActorType
+	to t: JUDOPSM!MappedActorType
+	extends CreateAbstractActorType {
+	  guard: s.eContainer.isDefined() and s.eContainer.mapping.isDefined()
+
+	  t.entityType = s.eContainer.mapping.target.getPSMEquivalent();
+
+	  if (s.realm <> ESM!Realm#PUBLIC) {
+          for (claim in CLAIMMAPPING!Mapping.all.select(m | m.Claim.isDefined() and m.Realm == s.customRealm and s.eContainer.attributes.exists(a | a.name == m.Claim))) {
+              var esmAccessPointAttribute = s.eContainer.attributes.selectOne(a | a.name == claim.Claim);
+              var actorAttribute = t.attributes.selectOne(a | a.name == claim.Claim);
+              if (esmAccessPointAttribute.memberType == ESM!MemberType#MAPPED) {
+                  actorAttribute.binding = esmAccessPointAttribute.equivalent("CreateTransferAttributeFromBound").binding;
+                  actorAttribute.dataType = actorAttribute.binding.dataType;
+              }
+          }
+      }
 
 	  log.debug("Created ActorType: " + t.name);
 }
