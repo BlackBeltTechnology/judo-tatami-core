@@ -42,7 +42,6 @@ rule CreateBoundTransferOperationInDefaultTransferObjectType
           t.input.cardinality = new JUDOPSM!Cardinality;
           t.input.cardinality.lower = s.input.lower;
           t.input.cardinality.upper = s.input.upper;
-          t.input.immutable = s.input.immutable;
       }
 
       if (s.output.isDefined()) {
