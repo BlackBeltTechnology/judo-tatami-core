@@ -1,24 +1,14 @@
 import "modules/namespace/namespace.etl";
 import "modules/accesspoint/accesspoint.etl";
 
-pre {
-	var emfTool = new Native("org.eclipse.epsilon.emc.emf.tools.EmfTool");
-	var ecoreUtil = emfTool.ecoreUtil;
-}
-
-/*
-operation getBindingName(element : Any) {
-	if (element.isKindOf(ESM!esm::namespace::NamespaceElement)) {
-		return esmUtils.getNamespaceElementFQName(element);
-	} else if (element.eContainer.isDefined()) {
-	    return getBindingName(element.eContainer) + "." + element.name;
-	} else {
-	    return element.name;
-	}
-} */
-
 operation Any getBindingName() {
-	if (self.isKindOf(ESM!esm::namespace::NamespaceElement)) {
+	if (self.isKindOf(ESM!esm::`operation`::Operation)) {
+		return esmUtils.getTransferOperationFQName(self);
+	} else if (self.isKindOf(ESM!esm::structure::OneWayRelationMember)) {
+		return esmUtils.getOneWayRelationFQName(self);
+	} else if (self.isKindOf(ESM!esm::structure::DataMember)) {
+		return esmUtils.getDataMemberFQName(self);
+	} else if (self.isKindOf(ESM!esm::namespace::NamespaceElement)) {
 		return esmUtils.getNamespaceElementFQName(self);
 	} else if (self.eContainer.isDefined()) {
 	    return self.eContainer.getBindingName() + "." + self.name;
@@ -31,13 +21,14 @@ operation UI!ui::NamedElement uiName(postfix : String) : String {
 	if (postfix.isUndefined()) {
 		return self.binding.uiName();
 	} else {
-		return self.binding.uiName() + uiSep() + postfix;
+		return self.binding.uiName() + "#"
+		 + postfix;
 	}
-} 
+}
 
 @cached
 operation String uiName() : String {
-	return self.replaceAll("::", uiSep()).replaceAll("\\.", uiSep());
+	return self;
 } 
 
 
@@ -46,12 +37,6 @@ operation String uiName(postfix : String) : String {
 	if (postfix.isUndefined()) {
 		return self.uiName();
 	} else {
-		return self.uiName() + uiSep() + postfix;
+		return self.uiName() + "#" + postfix;
 	}
 } 
-
-@cached
-operation uiSep() : String {
-	return "/";
-}
-

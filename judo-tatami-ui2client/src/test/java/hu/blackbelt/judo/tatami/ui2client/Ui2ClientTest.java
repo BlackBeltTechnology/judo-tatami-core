@@ -33,10 +33,13 @@ public class Ui2ClientTest {
         esmModel.addContent(SimpleOrderModel.createSimpleOrderModel());
         // Create empty UI model
         uiModel = UiModel.buildUiModel().name(TEST).build();
-
+        
         GeneratorTemplate generatorTemplate;
 
         executeEsm2UiTransformation(esmModel, "desktop", 12, uiModel);
+
+        uiModel.saveUiModel(UiModel.SaveArguments.uiSaveArgumentsBuilder().file(new File(TARGET_TEST_CLASSES, TEST + "-ui.model")).build());
+
     }
 
     @Test

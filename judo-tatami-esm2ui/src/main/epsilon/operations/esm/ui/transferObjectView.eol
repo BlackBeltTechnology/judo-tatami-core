@@ -3,14 +3,6 @@ operation ESM!esm::ui::TransferObjectView createFlexFromTransferObjectView() : U
     return t;
 }
 
-
-operation ESM!esm::ui::TransferObjectView createDetailPageFromTransferObjectView(prefix : String) : UI!ui::PageDefinition {
-	var t : UI!ui::PageDefinition = new UI!ui::PageDefinition();
-    t.binding = esmUtils.getNamespaceElementFQName(self.eContainer) + "." + self.name;
-	t.name = self.name.uiName(prefix);
-    return t;
-}
-
 operation ESM!esm::ui::TransferObjectView map() : UI!ui::Flex {
 	var t : UI!ui::Flex = self.createFlexFromTransferObjectView();
     return t;

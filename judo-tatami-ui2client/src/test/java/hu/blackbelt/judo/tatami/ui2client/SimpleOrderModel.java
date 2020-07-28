@@ -34,7 +34,6 @@ public class SimpleOrderModel {
         		.withMemberType(MemberType.STORED)
         		.withDataType(stringType)
         		.withRequired(true)
-        		.withInherited(newInheritedDataFeatureReferenceBuilder().build())
         		.build();
         orderCustomer.setBinding(orderCustomer);
 
@@ -43,10 +42,8 @@ public class SimpleOrderModel {
         		.withMemberType(MemberType.STORED)
         		.withDataType(dateType)
         		.withRequired(true)
-        		.withInherited(newInheritedDataFeatureReferenceBuilder().build())
         		.build();
         orderDate.setBinding(orderDate);
-        orderDate.setInherited(newInheritedDataFeatureReferenceBuilder().build());
         
         EntityType order = newEntityTypeBuilder()
                 .withName("Order")
@@ -62,7 +59,6 @@ public class SimpleOrderModel {
         		.withMemberType(MemberType.STORED)
         		.withDataType(integerType)
         		.withRequired(true)
-        		.withInherited(newInheritedDataFeatureReferenceBuilder().build())
         		.build();
         orderItemQuantity.setBinding(orderItemQuantity);
 
@@ -71,7 +67,6 @@ public class SimpleOrderModel {
         		.withMemberType(MemberType.STORED)
         		.withDataType(floatType)
         		.withRequired(true)
-        		.withInherited(newInheritedDataFeatureReferenceBuilder().build())
         		.build();
         orderItemPrice.setBinding(orderItemPrice);
 
@@ -80,7 +75,6 @@ public class SimpleOrderModel {
         		.withMemberType(MemberType.STORED)
         		.withDataType(stringType)
         		.withRequired(true)
-        		.withInherited(newInheritedDataFeatureReferenceBuilder().build())
         		.build();
         orderItemProduct.setBinding(orderItemProduct);
 
@@ -102,7 +96,6 @@ public class SimpleOrderModel {
         		.withDeleteable(true)
         		.withLower(0)
         		.withUpper(-1)
-        		.withInherited(newInheritedRelationFeatureReferenceBuilder().build())
         		.build();
         orderOrderItems.setBinding(orderOrderItems);
         useEntityType(order)
@@ -115,9 +108,6 @@ public class SimpleOrderModel {
                 .withName("OrderApplication")
                 .withActorType(newActorTypeBuilder().withRealm(Realm.PUBLIC).build())
                 .build();
-        useEntityType(order)
-        		.withMapping(newMappingBuilder().withTarget(application).build())
-        		.build();
 
         OneWayRelationMember applicationOrder = newOneWayRelationMemberBuilder()
         		.withName("Order")
@@ -132,22 +122,8 @@ public class SimpleOrderModel {
         		.withUpper(-1)
         		.build();
 
-        OneWayRelationMember applicationOrderItem = newOneWayRelationMemberBuilder()
-        		.withName("OrderItem")
-        		.withTarget(orderItem)
-        		.withMemberType(MemberType.DERIVED)
-        		.withRelationKind(RelationKind.ASSOCIATION)
-        		.withGetterExpression("SimpleOrder::OrderItem")
-        		.withCreateable(true)
-        		.withUpdateable(true)
-        		.withDeleteable(true)
-        		.withLower(0)
-        		.withUpper(-1)
-        		.build();
-        
         useTransferObjectType(application)
         		.withRelations(applicationOrder)
-        		.withRelations(applicationOrderItem)
         		.build();
         
         // Order Form
@@ -187,19 +163,19 @@ public class SimpleOrderModel {
 	                    						.withName("product")
 	                    						.withLabel("Product")
 	                    						.withVisible(true)
-	                    						.withDataFeature(orderItemProduct.getInherited())
+	                    						.withDataFeature(orderItemProduct)
 	                    						.build(),
                 							newDataColumnBuilder()
 	                    						.withName("quantity")
 	                    						.withLabel("Quantity")
 	                    						.withVisible(true)
-	                    						.withDataFeature(orderItemQuantity.getInherited())
+	                    						.withDataFeature(orderItemQuantity)
 	                    						.build(),
 	                    					newDataColumnBuilder()
 	                    						.withName("price")
 	                    						.withLabel("Price")
 	                    						.withVisible(true)
-	                    						.withDataFeature(orderItemPrice.getInherited())
+	                    						.withDataFeature(orderItemPrice)
 	                    						.build()
                     					))
                     					.build()
@@ -243,19 +219,19 @@ public class SimpleOrderModel {
 						.withName("product")
 						.withLabel("Product")
 						.withVisible(true)
-						.withDataFeature(orderItemProduct.getInherited())
+						.withDataFeature(orderItemProduct)
 						.build(),
 					newDataColumnBuilder()
 						.withName("quantity")
 						.withLabel("Quantity")
 						.withVisible(true)
-						.withDataFeature(orderItemQuantity.getInherited())
+						.withDataFeature(orderItemQuantity)
 						.build(),
 					newDataColumnBuilder()
 						.withName("price")
 						.withLabel("Price")
 						.withVisible(true)
-						.withDataFeature(orderItemPrice.getInherited())
+						.withDataFeature(orderItemPrice)
 						.build()
 				))
 				.build();
@@ -291,19 +267,19 @@ public class SimpleOrderModel {
             						.withName("product")
             						.withLabel("Product")
             						.withVisible(true)
-            						.withDataFeature(orderItemProduct.getInherited())
+            						.withDataFeature(orderItemProduct)
             						.build(),
     							newDataColumnBuilder()
             						.withName("quantity")
             						.withLabel("Quantity")
             						.withVisible(true)
-            						.withDataFeature(orderItemQuantity.getInherited())
+            						.withDataFeature(orderItemQuantity)
             						.build(),
             					newDataColumnBuilder()
             						.withName("price")
             						.withLabel("Price")
             						.withVisible(true)
-            						.withDataFeature(orderItemPrice.getInherited())
+            						.withDataFeature(orderItemPrice)
             						.build()
         					))
         					.build()

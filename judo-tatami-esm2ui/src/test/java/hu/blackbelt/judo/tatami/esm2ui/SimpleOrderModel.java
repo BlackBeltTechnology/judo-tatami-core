@@ -65,7 +65,6 @@ public class SimpleOrderModel {
         		.withMemberType(MemberType.STORED)
         		.withDataType(stringType)
         		.withRequired(true)
-        		.withInherited(newInheritedDataFeatureReferenceBuilder().build())
         		.build();
         orderCustomer.setBinding(orderCustomer);
 
@@ -74,10 +73,8 @@ public class SimpleOrderModel {
         		.withMemberType(MemberType.STORED)
         		.withDataType(dateType)
         		.withRequired(true)
-        		.withInherited(newInheritedDataFeatureReferenceBuilder().build())
         		.build();
         orderDate.setBinding(orderDate);
-        orderDate.setInherited(newInheritedDataFeatureReferenceBuilder().build());
         
         EntityType order = newEntityTypeBuilder()
                 .withName("Order")
@@ -93,7 +90,6 @@ public class SimpleOrderModel {
         		.withMemberType(MemberType.STORED)
         		.withDataType(integerType)
         		.withRequired(true)
-        		.withInherited(newInheritedDataFeatureReferenceBuilder().build())
         		.build();
         orderItemQuantity.setBinding(orderItemQuantity);
 
@@ -102,7 +98,6 @@ public class SimpleOrderModel {
         		.withMemberType(MemberType.STORED)
         		.withDataType(floatType)
         		.withRequired(true)
-        		.withInherited(newInheritedDataFeatureReferenceBuilder().build())
         		.build();
         orderItemPrice.setBinding(orderItemPrice);
 
@@ -111,7 +106,6 @@ public class SimpleOrderModel {
         		.withMemberType(MemberType.STORED)
         		.withDataType(stringType)
         		.withRequired(true)
-        		.withInherited(newInheritedDataFeatureReferenceBuilder().build())
         		.build();
         orderItemProduct.setBinding(orderItemProduct);
 
@@ -133,7 +127,6 @@ public class SimpleOrderModel {
         		.withDeleteable(true)
         		.withLower(0)
         		.withUpper(-1)
-        		.withInherited(newInheritedRelationFeatureReferenceBuilder().build())
         		.build();
         orderOrderItems.setBinding(orderOrderItems);
         useEntityType(order)
@@ -146,12 +139,9 @@ public class SimpleOrderModel {
                 .withName("OrderApplication")
                 .withActorType(newActorTypeBuilder().withRealm(Realm.PUBLIC).build())
                 .build();
-        useEntityType(order)
-        		.withMapping(newMappingBuilder().withTarget(application).build())
-        		.build();
 
-        OneWayRelationMember applicationOrder = newOneWayRelationMemberBuilder()
-        		.withName("Order")
+        OneWayRelationMember applicationOrders = newOneWayRelationMemberBuilder()
+        		.withName("orders")
         		.withTarget(order)
         		.withMemberType(MemberType.DERIVED)
         		.withRelationKind(RelationKind.ASSOCIATION)
@@ -163,22 +153,8 @@ public class SimpleOrderModel {
         		.withUpper(-1)
         		.build();
 
-        OneWayRelationMember applicationOrderItem = newOneWayRelationMemberBuilder()
-        		.withName("OrderItem")
-        		.withTarget(orderItem)
-        		.withMemberType(MemberType.DERIVED)
-        		.withRelationKind(RelationKind.ASSOCIATION)
-        		.withGetterExpression("SimpleOrder::OrderItem")
-        		.withCreateable(true)
-        		.withUpdateable(true)
-        		.withDeleteable(true)
-        		.withLower(0)
-        		.withUpper(-1)
-        		.build();
-        
         useTransferObjectType(application)
-        		.withRelations(applicationOrder)
-        		.withRelations(applicationOrderItem)
+        		.withRelations(applicationOrders)
         		.build();
         
         // Order Form
@@ -218,19 +194,19 @@ public class SimpleOrderModel {
 	                    						.withName("product")
 	                    						.withLabel("Product")
 	                    						.withVisible(true)
-	                    						.withDataFeature(orderItemProduct.getInherited())
+	                    						.withDataFeature(orderItemProduct)
 	                    						.build(),
                 							newDataColumnBuilder()
 	                    						.withName("quantity")
 	                    						.withLabel("Quantity")
 	                    						.withVisible(true)
-	                    						.withDataFeature(orderItemQuantity.getInherited())
+	                    						.withDataFeature(orderItemQuantity)
 	                    						.build(),
 	                    					newDataColumnBuilder()
 	                    						.withName("price")
 	                    						.withLabel("Price")
 	                    						.withVisible(true)
-	                    						.withDataFeature(orderItemPrice.getInherited())
+	                    						.withDataFeature(orderItemPrice)
 	                    						.build()
                     					))
                     					.build()
@@ -266,7 +242,7 @@ public class SimpleOrderModel {
         /* Order table */
         TransferObjectTable orderTable = newTransferObjectTableBuilder()
         		.withMasterDetail(true)
-				.withName("order")
+				.withName("OrderTable")
 				.withLabel("Order")
 				.withMaxVisibleElements(5)
 				.withColumns(Arrays.asList(
@@ -274,19 +250,19 @@ public class SimpleOrderModel {
 						.withName("product")
 						.withLabel("Product")
 						.withVisible(true)
-						.withDataFeature(orderItemProduct.getInherited())
+						.withDataFeature(orderItemProduct)
 						.build(),
 					newDataColumnBuilder()
 						.withName("quantity")
 						.withLabel("Quantity")
 						.withVisible(true)
-						.withDataFeature(orderItemQuantity.getInherited())
+						.withDataFeature(orderItemQuantity)
 						.build(),
 					newDataColumnBuilder()
 						.withName("price")
 						.withLabel("Price")
 						.withVisible(true)
-						.withDataFeature(orderItemPrice.getInherited())
+						.withDataFeature(orderItemPrice)
 						.build()
 				))
 				.build();
@@ -295,7 +271,7 @@ public class SimpleOrderModel {
         
         // Order View
         TransferObjectView orderView = newTransferObjectViewBuilder()
-				.withName("order")
+				.withName("OrderView")
 				.withLabel("Order")
         		.withComponents(Arrays.asList(
         				newDataFieldBuilder()
@@ -322,25 +298,54 @@ public class SimpleOrderModel {
             						.withName("product")
             						.withLabel("Product")
             						.withVisible(true)
-            						.withDataFeature(orderItemProduct.getInherited())
+            						.withDataFeature(orderItemProduct)
             						.build(),
     							newDataColumnBuilder()
             						.withName("quantity")
             						.withLabel("Quantity")
             						.withVisible(true)
-            						.withDataFeature(orderItemQuantity.getInherited())
+            						.withDataFeature(orderItemQuantity)
             						.build(),
             					newDataColumnBuilder()
             						.withName("price")
             						.withLabel("Price")
             						.withVisible(true)
-            						.withDataFeature(orderItemPrice.getInherited())
+            						.withDataFeature(orderItemPrice)
             						.build()
         					))
         					.build()
 				))
         		.build();
         order.setView(orderView);
+            
+        // Application View
+        TransferObjectView applicationView = newTransferObjectViewBuilder()
+				.withName("Dashboard")
+				.withLabel("Dashboard")
+        		.withComponents(Arrays.asList(
+        				newTabularReferenceFieldBuilder()
+        					.withName("All Order")
+        					.withLabel("orders")
+        					.withMaxVisibleElements(5)
+        					.withRelationFeature(applicationOrders)
+        					.withColumns(Arrays.asList(
+                				newDataColumnBuilder()
+	            					.withName("customer")
+	            					.withLabel("Customer")
+	            					.withIconName("text_fields")
+	            					.withDataFeature(orderCustomer)
+	            					.build(),
+    							newDataColumnBuilder()
+	    							.withName("orderDate")
+	    							.withLabel("Order Date")
+	    							.withIconName("calendar_today")
+	    							.withDataFeature(orderDate)
+	            					.build()
+        					))
+        					.build()
+				))
+        		.build();
+        application.setView(applicationView);
             
             
         // Create model
@@ -356,5 +361,6 @@ public class SimpleOrderModel {
 
         return model;
 	}
+	
 	
 }
