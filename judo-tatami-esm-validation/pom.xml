@@ -51,7 +51,6 @@
         <dependency>
             <groupId>hu.blackbelt.judo.meta</groupId>
             <artifactId>hu.blackbelt.judo.meta.esm.model.northwind</artifactId>
-            <scope>test</scope>
         </dependency>
     </dependencies>
 </project>

@@ -84,72 +84,46 @@
 		<dependency>
 			<groupId>hu.blackbelt.judo.meta</groupId>
 			<artifactId>hu.blackbelt.judo.meta.script.builder.jcl.asm</artifactId>
-			<version>${judo-meta-script-version}</version>
 		</dependency>
 		<dependency>
 			<groupId>hu.blackbelt.judo.meta</groupId>
 			<artifactId>hu.blackbelt.judo.meta.script.model.adapter.asm</artifactId>
-			<version>${judo-meta-script-version}</version>
 		</dependency>
 		<dependency>
 			<groupId>hu.blackbelt.judo.script</groupId>
 			<artifactId>hu.blackbelt.judo.script.codegen.generator</artifactId>
 		</dependency>
-
-		<dependency>
-			<groupId>hu.blackbelt.judo.meta</groupId>
-			<artifactId>hu.blackbelt.judo.meta.script.builder.jcl</artifactId>
-			<version>${judo-meta-script-version}</version>
-		</dependency>
-
-		<dependency>
-			<groupId>hu.blackbelt.judo.meta</groupId>
-			<artifactId>hu.blackbelt.judo.meta.script.model</artifactId>
-			<version>${judo-meta-script-version}</version>
-		</dependency>
-		<dependency>
-			<groupId>hu.blackbelt.judo.meta</groupId>
-			<artifactId>hu.blackbelt.judo.meta.script.builder.jcl</artifactId>
-			<version>${judo-meta-script-version}</version>
-		</dependency>
 		
 		<dependency>
 			<groupId>hu.blackbelt.judo.meta</groupId>
 			<artifactId>hu.blackbelt.judo.meta.jql.model</artifactId>
-			<version>${judo-meta-jql-version}</version>
 		</dependency>
 		
 		<dependency>
 			<groupId>hu.blackbelt.judo.meta</groupId>
 			<artifactId>hu.blackbelt.judo.meta.jcl.model</artifactId>
-			<version>${judo-meta-jcl-version}</version>
 		</dependency>
 		
 		<dependency>
 			<groupId>hu.blackbelt.judo.meta</groupId>
 			<artifactId>hu.blackbelt.judo.meta.expression.model</artifactId>
-			<version>${judo-meta-expression-version}</version>
 		</dependency>
 
 		<dependency>
 			<groupId>hu.blackbelt.judo.meta</groupId>
 			<artifactId>hu.blackbelt.judo.meta.expression.builder.jql</artifactId>
-			<version>${judo-meta-expression-version}</version>
 		</dependency>
 		<dependency>
 			<groupId>hu.blackbelt.judo.meta</groupId>
 			<artifactId>hu.blackbelt.judo.meta.expression.model.adapter.asm</artifactId>
-			<version>${judo-meta-expression-version}</version>
 		</dependency>
 		<dependency>
 			<groupId>hu.blackbelt.judo.meta</groupId>
 			<artifactId>hu.blackbelt.judo.meta.expression.model.adapter.psm</artifactId>
-			<version>${judo-meta-expression-version}</version>
 		</dependency>
         <dependency>
             <groupId>hu.blackbelt.judo.meta</groupId>
             <artifactId>hu.blackbelt.judo.meta.expression.model.adapter.measure</artifactId>
-            <version>${judo-meta-expression-version}</version>
         </dependency>
 
 		<dependency>
@@ -188,17 +162,17 @@
 		<dependency>
 			<groupId>hu.blackbelt.judo.tatami</groupId>
 			<artifactId>judo-tatami-psm2asm</artifactId>
-			<version>${project.version}</version>
+			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>hu.blackbelt.judo.tatami</groupId>
 			<artifactId>judo-tatami-psm2measure</artifactId>
-			<version>${project.version}</version>
+			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>hu.blackbelt.judo.tatami</groupId>
 			<artifactId>judo-tatami-asm2script</artifactId>
-			<version>${project.version}</version>
+			<scope>test</scope>
 		</dependency>
 		
 	</dependencies>
