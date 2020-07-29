@@ -341,10 +341,10 @@ public class EsmOperation2PsmOperationTest {
         final String NAME_OF_ADD_ALL_MULTIPLE_REFERENCE_OPERATION = "_addMultipleReferenceToE";
         final String NAME_OF_REMOVE_ALL_MULTIPLE_REFERENCE_OPERATION = "_removeMultipleReferenceFromE";
 
-//        final String NAME_OF_GET_RANGE_OF_SINGLE_REFERENCE_TO_CREATE = "_getRangeOfSingleReferenceToCreateE";
-//        final String NAME_OF_GET_RANGE_OF_MULTIPLE_REFERENCE_TO_CREATE = "_getRangeOfMultipleReferenceToCreateE";
-//        final String NAME_OF_GET_RANGE_OF_SINGLE_REFERENCE_TO_UPDATE = "_getRangeOfSingleReferenceToUpdateE";
-//        final String NAME_OF_GET_RANGE_OF_MULTIPLE_REFERENCE_TO_UPDATE = "_getRangeOfMultipleReferenceToUpdateE";
+        final String NAME_OF_GET_RANGE_OF_SINGLE_REFERENCE_TO_CREATE = "_getRangeOfSingleReferenceToCreateE";
+        final String NAME_OF_GET_RANGE_OF_MULTIPLE_REFERENCE_TO_CREATE = "_getRangeOfMultipleReferenceToCreateE";
+        final String NAME_OF_GET_RANGE_OF_SINGLE_REFERENCE_TO_UPDATE = "_getRangeOfSingleReferenceToUpdateE";
+        final String NAME_OF_GET_RANGE_OF_MULTIPLE_REFERENCE_TO_UPDATE = "_getRangeOfMultipleReferenceToUpdateE";
 
         final String NAME_OF_GET_E_OPERATION_ET = "_getEFor" + MODEL_NAME + "_" + ENTITY_TYPE_D_NAME;
         final String NAME_OF_CREATE_E_OPERATION_ET = "_createEFor" + MODEL_NAME + "_" + ENTITY_TYPE_D_NAME;
@@ -362,10 +362,10 @@ public class EsmOperation2PsmOperationTest {
         final String NAME_OF_ADD_ALL_MULTIPLE_REFERENCE_OPERATION_ET = "_addMultipleReferenceToEFor" + MODEL_NAME + "_" + ENTITY_TYPE_D_NAME;
         final String NAME_OF_REMOVE_ALL_MULTIPLE_REFERENCE_OPERATION_ET = "_removeMultipleReferenceFromEFor" + MODEL_NAME + "_" + ENTITY_TYPE_D_NAME;
 
-//        final String NAME_OF_GET_RANGE_OF_SINGLE_REFERENCE_TO_CREATE_ET = "_getRangeOfSingleReferenceToCreateEFor" + MODEL_NAME + "_" + ENTITY_TYPE_D_NAME;
-//        final String NAME_OF_GET_RANGE_OF_MULTIPLE_REFERENCE_TO_CREATE_ET = "_getRangeOfMultipleReferenceToCreateEFor" + MODEL_NAME + "_" + ENTITY_TYPE_D_NAME;
-//        final String NAME_OF_GET_RANGE_OF_SINGLE_REFERENCE_TO_UPDATE_ET = "_getRangeOfSingleReferenceToUpdateEFor" + MODEL_NAME + "_" + ENTITY_TYPE_D_NAME;
-//        final String NAME_OF_GET_RANGE_OF_MULTIPLE_REFERENCE_TO_UPDATE_ET = "_getRangeOfMultipleReferenceToUpdateEFor" + MODEL_NAME + "_" + ENTITY_TYPE_D_NAME;
+        final String NAME_OF_GET_RANGE_OF_SINGLE_REFERENCE_TO_CREATE_ET = "_getRangeOfSingleReferenceToCreateEFor" + MODEL_NAME + "_" + ENTITY_TYPE_D_NAME;
+        final String NAME_OF_GET_RANGE_OF_MULTIPLE_REFERENCE_TO_CREATE_ET = "_getRangeOfMultipleReferenceToCreateEFor" + MODEL_NAME + "_" + ENTITY_TYPE_D_NAME;
+        final String NAME_OF_GET_RANGE_OF_SINGLE_REFERENCE_TO_UPDATE_ET = "_getRangeOfSingleReferenceToUpdateEFor" + MODEL_NAME + "_" + ENTITY_TYPE_D_NAME;
+        final String NAME_OF_GET_RANGE_OF_MULTIPLE_REFERENCE_TO_UPDATE_ET = "_getRangeOfMultipleReferenceToUpdateEFor" + MODEL_NAME + "_" + ENTITY_TYPE_D_NAME;
 
         final EntityType entityTypeF = newEntityTypeBuilder()
                 .withName(ENTITY_TYPE_F_NAME)
@@ -449,6 +449,8 @@ public class EsmOperation2PsmOperationTest {
                 .findAny();
         assertTrue(defaultD.isPresent());
 
+        log.debug("List of generated operations (D):{}", defaultD.get().getOperations().stream().map(o -> "\n - " + o.getName()).sorted().collect(Collectors.joining()));
+
         final Optional<hu.blackbelt.judo.meta.psm.service.MappedTransferObjectType> defaultE = allPsm(MappedTransferObjectType.class)
                 .filter(t -> ENTITY_TYPE_E_NAME.equals(t.getName()))
                 .findAny();
@@ -472,9 +474,8 @@ public class EsmOperation2PsmOperationTest {
         assertTrue(defaultSingleReference.isPresent());
         assertTrue(defaultMultipleReference.isPresent());
 
-        log.debug("List of generated operations (D):{}", defaultD.get().getOperations().stream().map(o -> "\n - " + o.getName()).sorted().collect(Collectors.joining()));
-
         assertEquals(11L, defaultD.get().getOperations().stream().filter(o -> o instanceof BoundTransferOperation).count());
+        assertEquals(5L, defaultD.get().getOperations().stream().filter(o -> o instanceof UnboundOperation).count()); // including _getPrincipal
     }
 
     @Test

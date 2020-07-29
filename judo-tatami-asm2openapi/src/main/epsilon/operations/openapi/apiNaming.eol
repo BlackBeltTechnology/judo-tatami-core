@@ -17,7 +17,7 @@ operation ASM!EOperation toOpenAPIPath() : String {
             case "UNSET": path = asmUtils.getReferenceFQName(owner.get) + "/" + relation.get().name + "/unset";
             case "ADD_ALL": path = asmUtils.getReferenceFQName(owner.get) + "/" + relation.get().name + "/add";
             case "REMOVE_ALL": path = asmUtils.getReferenceFQName(owner.get) + "/" + relation.get().name + "/remove";
-            case "GET_RANGE": path = asmUtils.getOperationFQName(owner.get.eOperation) + "/" + owner.get.name + "/" + relation.get().name + "/remove";
+            case "GET_RANGE": path = owner.get.eContainer.toOpenAPIPath() + "/" + owner.get.name + "/" + relation.get().name + "/range";
             case "GET_TEMPLATE": path = asmUtils.getClassifierFQName(owner.get) + "/_template";
             case "GET_PRINCIPAL": path = asmUtils.getClassifierFQName(owner.get) + "/_principal";
         }
