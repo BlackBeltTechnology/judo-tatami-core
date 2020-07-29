@@ -35,7 +35,7 @@ public class [%= className %] {
     }
 [% for (op in operations) { %]
 
-    [% if (asmUtils.isStateless(op) and op.eParameters.size() > 0) { %]
+    [% if (asmUtils.isStateless(op) and op.eParameters.isEmpty) { %]
 	@GET
 	@Produces ( "application/json" )
     [% } else { %]
