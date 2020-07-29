@@ -64,7 +64,7 @@
         <judo-meta-jcl-version>1.0.1.20200716_160637_64ac7f8_develop</judo-meta-jcl-version>
         <judo-meta-script-version>1.0.1.20200716_162207_905b17e_develop</judo-meta-script-version>
         <judo-meta-asm-version>1.1.0.20200729_073206_c725487_develop</judo-meta-asm-version>
-        <judo-meta-expression-version>1.0.1.20200721_150238_0687fbe_develop</judo-meta-expression-version>
+        <judo-meta-expression-version>1.0.1.20200729_114616_d79933c_develop</judo-meta-expression-version>
         <judo-meta-measure-version>1.0.0.20200716_155041_bd4be91_develop</judo-meta-measure-version>
         <judo-meta-liquibase-version>1.0.0.20200716_154914_0d80cd5_develop</judo-meta-liquibase-version>
         <judo-meta-openapi-version>1.0.0.20200716_155531_623bd4e_develop</judo-meta-openapi-version>
@@ -305,6 +305,11 @@
                 <artifactId>hu.blackbelt.judo.meta.script.builder.jcl.asm</artifactId>
                 <version>${judo-meta-script-version}</version>
             </dependency>
+            <dependency>
+                <groupId>hu.blackbelt.judo.meta</groupId>
+                <artifactId>hu.blackbelt.judo.meta.script.model.adapter.asm</artifactId>
+                <version>${judo-meta-script-version}</version>
+            </dependency>
 
             <dependency>
                 <groupId>hu.blackbelt.judo.script</groupId>
@@ -355,6 +360,7 @@
                 <groupId>hu.blackbelt.judo.meta</groupId>
                 <artifactId>hu.blackbelt.judo.meta.esm.model.northwind</artifactId>
                 <version>${judo-meta-esm-version}</version>
+                <scope>test</scope>
             </dependency>
             <dependency>
                 <groupId>hu.blackbelt.judo.meta</groupId>
@@ -593,8 +599,8 @@
             <dependency>
                 <groupId>hu.blackbelt.judo.meta</groupId>
                 <artifactId>hu.blackbelt.judo.meta.psm.model.northwind</artifactId>
-                <scope>test</scope>
                 <version>${judo-meta-psm-version}</version>
+                <scope>test</scope>
             </dependency>
         </dependencies>
     </dependencyManagement>
