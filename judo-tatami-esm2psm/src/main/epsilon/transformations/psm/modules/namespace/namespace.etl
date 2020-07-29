@@ -24,7 +24,7 @@ rule CreateModel
 
     for (claim in CLAIMMAPPING!Mapping.all
             .select(m | m.Claim.isDefined())
-            .select(m | ESM!ActorType.all.exists(a | a.customRealm == m.Realm))) {
+            .select(m | ESM!ActorType.all.exists(a | a.realm == m.Realm))) {
         var typeName = claim.getTypeName();
         var type;
         if (typeName.isDefined() and not t.elements.exists(e | e.name == typeName)) {

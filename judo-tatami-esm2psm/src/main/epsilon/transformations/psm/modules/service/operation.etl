@@ -336,33 +336,8 @@ operation ESM!RelationFeature createRemoveAllTransferOperationForRelation(relati
     return t;
 }
 
-operation ESM!RelationFeature createGetRangeOperationForRelation(relation : ESM!RelationFeature, action : String) : JUDOPSM!BoundOperation {
-    var t = new JUDOPSM!BoundOperation;
-
-    t.name = "_getRangeOf" + relation.name.firstToUpperCase() + "To" + action.firstToUpperCase() + self.name.firstToUpperCase() + "For" + esmUtils.getNamespaceElementFQName(self.eContainer).replace("::", "_").firstToUpperCase();
-    t.instanceRepresentation = self.eContainer.getPSMTransferObjectTypeEquivalent();
-
-    t.input = new JUDOPSM!Parameter;
-    t.input.name = "input";
-    t.input.type = self.target.getPSMTransferObjectTypeEquivalent();
-    t.input.cardinality = new JUDOPSM!Cardinality;
-    t.input.cardinality.lower = 1;
-    t.input.cardinality.upper = 1;
-
-    t.output = new JUDOPSM!Parameter;
-    t.output.name = "output";
-    t.output.type = relation.target.getPSMTransferObjectTypeEquivalent();
-    t.output.cardinality = new JUDOPSM!Cardinality;
-    t.output.cardinality.lower = 0;
-    t.output.cardinality.upper = -1;
-
-    self.eContainer.mapping.target.equivalent("CreateEntityType").operations.add(t);
-
-    return t;
-}
-
-operation ESM!RelationFeature createGetRangeTransferOperationForRelation(relation : ESM!RelationFeature, binding : JUDOPSM!BoundOperation, parameter : JUDOPSM!Parameter, action : String) : JUDOPSM!BoundTransferOperation {
-    var t = new JUDOPSM!BoundTransferOperation;
+operation ESM!RelationFeature createGetRangeTransferOperationForRelation(relation : ESM!RelationFeature, parameter : JUDOPSM!Parameter, action : String) : JUDOPSM!UnboundOperation {
+    var t = new JUDOPSM!UnboundOperation;
 
     t.name = "_getRangeOf" + relation.name.firstToUpperCase() + "To" + action.firstToUpperCase() + self.name.firstToUpperCase();
     t.behaviour = new JUDOPSM!TransferOperationBehaviour;
@@ -374,7 +349,7 @@ operation ESM!RelationFeature createGetRangeTransferOperationForRelation(relatio
     t.input.name = "input";
     t.input.type = self.target.getPSMTransferObjectTypeEquivalent();
     t.input.cardinality = new JUDOPSM!Cardinality;
-    t.input.cardinality.lower = 1;
+    t.input.cardinality.lower = 0;
     t.input.cardinality.upper = 1;
 
     t.output = new JUDOPSM!Parameter;
@@ -383,8 +358,6 @@ operation ESM!RelationFeature createGetRangeTransferOperationForRelation(relatio
     t.output.cardinality = new JUDOPSM!Cardinality;
     t.output.cardinality.lower = 0;
     t.output.cardinality.upper = -1;
-
-    t.binding = binding;
 
     self.eContainer.getPSMTransferObjectTypeEquivalent().operations.add(t);
 
@@ -448,18 +421,17 @@ rule CreateCreateTransferOperationForRelation
             var rangeAllowed = false;
             if (relation.isKindOf(ESM!OneWayRelationMember)) {
                 if (relation.eContainer.isKindOf(ESM!EntityType)) {
-                    rangeAllowed = not relation.isComposition() and relation.memberType <> ESM!MemberType#DERIVED;
+                    rangeAllowed = not relation.isComposition() and relation.memberType == ESM!MemberType#STORED;
                 } else if (relation.eContainer.isKindOf(ESM!TransferObjectType)) {
-                    rangeAllowed = relation.memberType <> ESM!MemberType#DERIVED and (relation.memberType == ESM!MemberType#MAPPED implies (not relation.binding.isComposition() and relation.binding.memberType <> ESM!MemberType#DERIVED));
+                    rangeAllowed = relation.memberType == ESM!MemberType#MAPPED and not relation.binding.isComposition() and relation.binding.memberType == ESM!MemberType#STORED;
                 }
             } else if (relation.isKindOf(ESM!TwoWayRelationMember)) {
                 rangeAllowed = true;
             }
 
-            /* temporary disabled
             if (rangeAllowed and relation.rangeExpression.isDefined() and relation.rangeExpression.trim().length() > 0) {
-                s.createGetRangeTransferOperationForRelation(relation, s.createGetRangeOperationForRelation(relation, "create"), t.input, "create");
-            } */
+                s.createGetRangeTransferOperationForRelation(relation, t.input, "create");
+            }
         }
 
         s.eContainer.getPSMTransferObjectTypeEquivalent().operations.add(t);
@@ -523,10 +495,10 @@ rule CreateUpdateTransferOperationForRelation
             var containment = false;
             if (relation.isKindOf(ESM!OneWayRelationMember)) {
                 if (relation.eContainer.isKindOf(ESM!EntityType)) {
-                    rangeAllowed = not relation.isComposition() and relation.memberType <> ESM!MemberType#DERIVED;
+                    rangeAllowed = not relation.isComposition() and relation.memberType == ESM!MemberType#STORED;
                     containment = relation.isComposition();
                 } else if (relation.eContainer.isKindOf(ESM!TransferObjectType)) {
-                    rangeAllowed = relation.memberType <> ESM!MemberType#DERIVED and (relation.memberType == ESM!MemberType#MAPPED implies (not relation.binding.isComposition() and relation.binding.memberType <> ESM!MemberType#DERIVED));
+                    rangeAllowed = relation.memberType == ESM!MemberType#MAPPED and not relation.binding.isComposition() and relation.binding.memberType == ESM!MemberType#STORED;
                     containment = relation.memberType == ESM!MemberType#MAPPED and relation.binding.isComposition();
                 }
             } else if (relation.isKindOf(ESM!TwoWayRelationMember)) {
@@ -559,9 +531,9 @@ rule CreateUpdateTransferOperationForRelation
                 }
             }
 
-            /*if (rangeAllowed and relation.rangeExpression.isDefined() and relation.rangeExpression.trim().length() > 0) {
-                s.createGetRangeTransferOperationForRelation(relation, s.createGetRangeOperationForRelation(relation, "update"), t.input, "update");
-            }*/
+            if (rangeAllowed and relation.rangeExpression.isDefined() and relation.rangeExpression.trim().length() > 0) {
+                s.createGetRangeTransferOperationForRelation(relation, t.input, "update");
+            }
         }
 
         s.eContainer.getPSMTransferObjectTypeEquivalent().operations.add(t);
@@ -654,7 +626,7 @@ rule CreateMapPrincipalOperationForActoryType
 rule CreateMapPrincipalOperationInputParameterForActorType
     transform s : ESM!ActorType
     to t : JUDOPSM!Parameter {
-        guard: s.realm <> ESM!Realm#PUBLIC
+        guard: s.realm.isDefined() and s.realm.trim() <> ''
 
         t.name = "input";
         t.type = s.getPSMEquivalent();

@@ -2,7 +2,6 @@ package hu.blackbelt.judo.tatami.esm2psm;
 
 import hu.blackbelt.epsilon.runtime.execution.api.Log;
 import hu.blackbelt.epsilon.runtime.execution.impl.Slf4jLog;
-import hu.blackbelt.judo.meta.esm.accesspoint.Realm;
 import hu.blackbelt.judo.meta.esm.namespace.Model;
 import hu.blackbelt.judo.meta.esm.operation.OperationType;
 import hu.blackbelt.judo.meta.esm.runtime.EsmModel;
@@ -146,7 +145,6 @@ public class EsmAccesspoint2PsmAccesspointTest {
                 .build();
         
         accessPoint.setActorType(newActorTypeBuilder()
-                .withRealm(Realm.PUBLIC)
                 .build());
 
         final Model model = newModelBuilder().withName(MODEL_NAME)
@@ -197,8 +195,7 @@ public class EsmAccesspoint2PsmAccesspointTest {
                 .build();
         
         accessPoint.setActorType(newActorTypeBuilder()
-                .withRealm(Realm.CUSTOM)
-                .withCustomRealm("sandbox")
+                .withRealm("sandbox")
                 .build());
         
         log.debug("container is ap: " + ((TransferObjectType)eg.eContainer()).isAccesspoint());
@@ -262,10 +259,10 @@ public class EsmAccesspoint2PsmAccesspointTest {
         final String NAME_OF_ADD_ALL_MULTIPLE_REFERENCE_OPERATION = "_addMultipleReferenceToG";
         final String NAME_OF_REMOVE_ALL_MULTIPLE_REFERENCE_OPERATION = "_removeMultipleReferenceFromG";
 
-//        final String NAME_OF_GET_RANGE_OF_SINGLE_REFERENCE_TO_CREATE = "_getRangeOfSingleReferenceToCreateG";
-//        final String NAME_OF_GET_RANGE_OF_MULTIPLE_REFERENCE_TO_CREATE = "_getRangeOfMultipleReferenceToCreateG";
-//        final String NAME_OF_GET_RANGE_OF_SINGLE_REFERENCE_TO_UPDATE = "_getRangeOfSingleReferenceToUpdateG";
-//        final String NAME_OF_GET_RANGE_OF_MULTIPLE_REFERENCE_TO_UPDATE = "_getRangeOfMultipleReferenceToUpdateG";
+        final String NAME_OF_GET_RANGE_OF_SINGLE_REFERENCE_TO_CREATE = "_getRangeOfSingleReferenceToCreateG";
+        final String NAME_OF_GET_RANGE_OF_MULTIPLE_REFERENCE_TO_CREATE = "_getRangeOfMultipleReferenceToCreateG";
+        final String NAME_OF_GET_RANGE_OF_SINGLE_REFERENCE_TO_UPDATE = "_getRangeOfSingleReferenceToUpdateG";
+        final String NAME_OF_GET_RANGE_OF_MULTIPLE_REFERENCE_TO_UPDATE = "_getRangeOfMultipleReferenceToUpdateG";
 
         final EntityType entityTypeF = newEntityTypeBuilder()
                 .withName(ENTITY_TYPE_F_NAME)
@@ -325,8 +322,7 @@ public class EsmAccesspoint2PsmAccesspointTest {
                 .build();
         
         accessPoint.setActorType(newActorTypeBuilder()
-                .withRealm(Realm.CUSTOM)
-                .withCustomRealm("sandbox")
+                .withRealm("sandbox")
                 .build());
 
         final Model model = newModelBuilder().withName(MODEL_NAME)
@@ -460,41 +456,41 @@ public class EsmAccesspoint2PsmAccesspointTest {
                 EcoreUtil.equals(o.getInput().getType(), defaultE.get())
         ));
 
-//        assertTrue(ap.get().getOperations().stream().anyMatch(o -> NAME_OF_GET_RANGE_OF_SINGLE_REFERENCE_TO_CREATE.equals(o.getName()) && (o instanceof UnboundOperation) &&
-//                o.getBehaviour() != null && o.getBehaviour().getBehaviourType() == TransferOperationBehaviourType.GET_RANGE_OF_RELATION && EcoreUtil.equals(o.getBehaviour().getOwner(), create.get().getInput()) && EcoreUtil.equals(o.getBehaviour().getRelation(), defaultSingleReference.get()) &&
-//                o.getInput() != null && o.getOutput() != null && o.getFaults().isEmpty() &&
-//                o.getInput().getCardinality().getLower() == 1 && o.getInput().getCardinality().getUpper() == 1 &&
-//                EcoreUtil.equals(o.getInput().getType(), defaultE.get()) &&
-//                o.getOutput().getCardinality().getLower() == 0 && o.getOutput().getCardinality().getUpper() == -1 &&
-//                EcoreUtil.equals(o.getOutput().getType(), defaultF.get())
-//        ));
-//
-//        assertTrue(ap.get().getOperations().stream().anyMatch(o -> NAME_OF_GET_RANGE_OF_SINGLE_REFERENCE_TO_UPDATE.equals(o.getName()) && (o instanceof UnboundOperation) &&
-//                o.getBehaviour() != null && o.getBehaviour().getBehaviourType() == TransferOperationBehaviourType.GET_RANGE_OF_RELATION && EcoreUtil.equals(o.getBehaviour().getOwner(), update.get().getInput()) && EcoreUtil.equals(o.getBehaviour().getRelation(), defaultSingleReference.get()) &&
-//                o.getInput() != null && o.getOutput() != null && o.getFaults().isEmpty() &&
-//                o.getInput().getCardinality().getLower() == 1 && o.getInput().getCardinality().getUpper() == 1 &&
-//                EcoreUtil.equals(o.getInput().getType(), defaultE.get()) &&
-//                o.getOutput().getCardinality().getLower() == 0 && o.getOutput().getCardinality().getUpper() == -1 &&
-//                EcoreUtil.equals(o.getOutput().getType(), defaultF.get())
-//        ));
-//
-//        assertTrue(ap.get().getOperations().stream().anyMatch(o -> NAME_OF_GET_RANGE_OF_MULTIPLE_REFERENCE_TO_CREATE.equals(o.getName()) && (o instanceof UnboundOperation) &&
-//                o.getBehaviour() != null && o.getBehaviour().getBehaviourType() == TransferOperationBehaviourType.GET_RANGE_OF_RELATION && EcoreUtil.equals(o.getBehaviour().getOwner(), create.get().getInput()) && EcoreUtil.equals(o.getBehaviour().getRelation(), defaultMultipleReference.get()) &&
-//                o.getInput() != null && o.getOutput() != null && o.getFaults().isEmpty() &&
-//                o.getInput().getCardinality().getLower() == 1 && o.getInput().getCardinality().getUpper() == 1 &&
-//                EcoreUtil.equals(o.getInput().getType(), defaultE.get()) &&
-//                o.getOutput().getCardinality().getLower() == 0 && o.getOutput().getCardinality().getUpper() == -1 &&
-//                EcoreUtil.equals(o.getOutput().getType(), defaultF.get())
-//        ));
-//
-//        assertTrue(ap.get().getOperations().stream().anyMatch(o -> NAME_OF_GET_RANGE_OF_MULTIPLE_REFERENCE_TO_UPDATE.equals(o.getName()) && (o instanceof UnboundOperation) &&
-//                o.getBehaviour() != null && o.getBehaviour().getBehaviourType() == TransferOperationBehaviourType.GET_RANGE_OF_RELATION && EcoreUtil.equals(o.getBehaviour().getOwner(), update.get().getInput()) && EcoreUtil.equals(o.getBehaviour().getRelation(), defaultMultipleReference.get()) &&
-//                o.getInput() != null && o.getOutput() != null && o.getFaults().isEmpty() &&
-//                o.getInput().getCardinality().getLower() == 1 && o.getInput().getCardinality().getUpper() == 1 &&
-//                EcoreUtil.equals(o.getInput().getType(), defaultE.get()) &&
-//                o.getOutput().getCardinality().getLower() == 0 && o.getOutput().getCardinality().getUpper() == -1 &&
-//                EcoreUtil.equals(o.getOutput().getType(), defaultF.get())
-//        ));
+        assertTrue(ap.get().getOperations().stream().anyMatch(o -> NAME_OF_GET_RANGE_OF_SINGLE_REFERENCE_TO_CREATE.equals(o.getName()) && (o instanceof UnboundOperation) &&
+                o.getBehaviour() != null && o.getBehaviour().getBehaviourType() == TransferOperationBehaviourType.GET_RANGE_OF_RELATION && EcoreUtil.equals(o.getBehaviour().getOwner(), create.get().getInput()) && EcoreUtil.equals(o.getBehaviour().getRelation(), defaultSingleReference.get()) &&
+                o.getInput() != null && o.getOutput() != null && o.getFaults().isEmpty() &&
+                o.getInput().getCardinality().getLower() == 0 && o.getInput().getCardinality().getUpper() == 1 &&
+                EcoreUtil.equals(o.getInput().getType(), defaultE.get()) &&
+                o.getOutput().getCardinality().getLower() == 0 && o.getOutput().getCardinality().getUpper() == -1 &&
+                EcoreUtil.equals(o.getOutput().getType(), defaultF.get())
+        ));
+
+        assertTrue(ap.get().getOperations().stream().anyMatch(o -> NAME_OF_GET_RANGE_OF_SINGLE_REFERENCE_TO_UPDATE.equals(o.getName()) && (o instanceof UnboundOperation) &&
+                o.getBehaviour() != null && o.getBehaviour().getBehaviourType() == TransferOperationBehaviourType.GET_RANGE_OF_RELATION && EcoreUtil.equals(o.getBehaviour().getOwner(), update.get().getInput()) && EcoreUtil.equals(o.getBehaviour().getRelation(), defaultSingleReference.get()) &&
+                o.getInput() != null && o.getOutput() != null && o.getFaults().isEmpty() &&
+                o.getInput().getCardinality().getLower() == 0 && o.getInput().getCardinality().getUpper() == 1 &&
+                EcoreUtil.equals(o.getInput().getType(), defaultE.get()) &&
+                o.getOutput().getCardinality().getLower() == 0 && o.getOutput().getCardinality().getUpper() == -1 &&
+                EcoreUtil.equals(o.getOutput().getType(), defaultF.get())
+        ));
+
+        assertTrue(ap.get().getOperations().stream().anyMatch(o -> NAME_OF_GET_RANGE_OF_MULTIPLE_REFERENCE_TO_CREATE.equals(o.getName()) && (o instanceof UnboundOperation) &&
+                o.getBehaviour() != null && o.getBehaviour().getBehaviourType() == TransferOperationBehaviourType.GET_RANGE_OF_RELATION && EcoreUtil.equals(o.getBehaviour().getOwner(), create.get().getInput()) && EcoreUtil.equals(o.getBehaviour().getRelation(), defaultMultipleReference.get()) &&
+                o.getInput() != null && o.getOutput() != null && o.getFaults().isEmpty() &&
+                o.getInput().getCardinality().getLower() == 0 && o.getInput().getCardinality().getUpper() == 1 &&
+                EcoreUtil.equals(o.getInput().getType(), defaultE.get()) &&
+                o.getOutput().getCardinality().getLower() == 0 && o.getOutput().getCardinality().getUpper() == -1 &&
+                EcoreUtil.equals(o.getOutput().getType(), defaultF.get())
+        ));
+
+        assertTrue(ap.get().getOperations().stream().anyMatch(o -> NAME_OF_GET_RANGE_OF_MULTIPLE_REFERENCE_TO_UPDATE.equals(o.getName()) && (o instanceof UnboundOperation) &&
+                o.getBehaviour() != null && o.getBehaviour().getBehaviourType() == TransferOperationBehaviourType.GET_RANGE_OF_RELATION && EcoreUtil.equals(o.getBehaviour().getOwner(), update.get().getInput()) && EcoreUtil.equals(o.getBehaviour().getRelation(), defaultMultipleReference.get()) &&
+                o.getInput() != null && o.getOutput() != null && o.getFaults().isEmpty() &&
+                o.getInput().getCardinality().getLower() == 0 && o.getInput().getCardinality().getUpper() == 1 &&
+                EcoreUtil.equals(o.getInput().getType(), defaultE.get()) &&
+                o.getOutput().getCardinality().getLower() == 0 && o.getOutput().getCardinality().getUpper() == -1 &&
+                EcoreUtil.equals(o.getOutput().getType(), defaultF.get())
+        ));
 
         assertTrue(ap.get().getOperations().stream().anyMatch(o -> NAME_OF_GET_PRINCIPAL_OPERATION.equals(o.getName()) && (o instanceof UnboundOperation) &&
                 o.getBehaviour() != null && o.getBehaviour().getBehaviourType() == TransferOperationBehaviourType.GET_PRINCIPAL && EcoreUtil.equals(o.getBehaviour().getOwner(), ap.get()) &&
@@ -503,7 +499,7 @@ public class EsmAccesspoint2PsmAccesspointTest {
                 EcoreUtil.equals(o.getOutput().getType(), ap.get())
         ));
 
-        assertEquals(12L, ap.get().getOperations().stream().filter(o -> o instanceof UnboundOperation).count());
+        assertEquals(16L, ap.get().getOperations().stream().filter(o -> o instanceof UnboundOperation).count());
 
         final Optional<hu.blackbelt.judo.meta.psm.accesspoint.ActorType> actorType = allPsm(hu.blackbelt.judo.meta.psm.accesspoint.ActorType.class)
                 .findAny();
