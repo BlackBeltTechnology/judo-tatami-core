@@ -108,21 +108,17 @@
             <artifactId>hu.blackbelt.judo.meta.asm.model</artifactId>
         </dependency>
         <dependency>
-            <groupId>hu.blackbelt.judo.meta</groupId>
-            <artifactId>hu.blackbelt.judo.meta.expression.model</artifactId>
-        </dependency>
-        <dependency>
             <groupId>hu.blackbelt.judo.tatami</groupId>
             <artifactId>judo-tatami-core</artifactId>
         </dependency>
         <dependency>
             <groupId>hu.blackbelt.judo.tatami</groupId>
             <artifactId>judo-tatami-esm2psm</artifactId>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>hu.blackbelt.judo.meta</groupId>
             <artifactId>hu.blackbelt.judo.meta.psm.model.northwind</artifactId>
-            <version>${judo-meta-psm-version}</version>
         </dependency>
     </dependencies>
 </project>

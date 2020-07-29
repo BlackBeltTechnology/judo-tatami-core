@@ -43,6 +43,7 @@
     </feature>
 
     <feature name="judo-tatami-meta-expression-asm" version="${project.version}" description="JUDO Tatami, Expression Model for ASM" install="false">
+        <feature>judo-tatami-meta-asm</feature>
         <feature>judo-tatami-meta-expression</feature>
         <feature>judo-tatami-meta-measure</feature>
         <feature dependency="true">guava-27</feature>
@@ -52,6 +53,7 @@
     </feature>
 
     <feature name="judo-tatami-meta-expression-psm" version="${project.version}" description="JUDO Tatami, Expression Model for PSM" install="false">
+        <feature>judo-tatami-meta-psm</feature>
         <feature>judo-tatami-meta-expression</feature>
         <feature dependency="true">guava-27</feature>
         <bundle>mvn:hu.blackbelt.judo.meta/hu.blackbelt.judo.meta.expression.model.adapter.psm/${judo-meta-expression-version}</bundle>
@@ -291,7 +293,7 @@
         <feature>judo-tatami-meta-psm</feature>
         <feature>judo-tatami-meta-expression</feature>
         <feature>judo-tatami-core</feature>
-        <feature>judo-tatami-meta-measure</feature>
+        <feature>judo-tatami-meta-measure</feature><!-- TODO: remove -->
         <bundle>mvn:hu.blackbelt.judo.meta/hu.blackbelt.judo.meta.expression.model.adapter.measure/${judo-meta-expression-version}</bundle>
         <bundle>mvn:hu.blackbelt.judo.meta/hu.blackbelt.judo.meta.expression.model.adapter.psm/${judo-meta-expression-version}</bundle>
         <bundle>mvn:hu.blackbelt.judo.tatami/judo-tatami-expression-psm-validation/${project.version}</bundle>
@@ -301,7 +303,7 @@
         <feature>judo-tatami-meta-esm</feature>
         <feature>judo-tatami-meta-expression</feature>
         <feature>judo-tatami-core</feature>
-        <feature>judo-tatami-meta-measure</feature>
+        <feature>judo-tatami-meta-measure</feature><!-- TODO: remove -->
         <bundle>mvn:hu.blackbelt.judo.meta/hu.blackbelt.judo.meta.expression.model.adapter.measure/${judo-meta-expression-version}</bundle>
         <bundle>mvn:hu.blackbelt.judo.meta/hu.blackbelt.judo.meta.expression.model.adapter.esm/${judo-meta-expression-version}</bundle>
         <bundle>mvn:hu.blackbelt.judo.tatami/judo-tatami-expression-esm-validation/${project.version}</bundle>
@@ -335,9 +337,3 @@
     </feature>
 
 </features>
-
-
-
-
-
-

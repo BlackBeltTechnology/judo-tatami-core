@@ -133,12 +133,12 @@
 		<dependency>
 			<groupId>hu.blackbelt.judo.tatami</groupId>
 			<artifactId>judo-tatami-psm2asm</artifactId>
-			<version>${project.version}</version>
+			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>hu.blackbelt.judo.tatami</groupId>
 			<artifactId>judo-tatami-asm2rdbms</artifactId>
-			<version>${project.version}</version>
+			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>hu.blackbelt.judo.meta</groupId>
