@@ -5,6 +5,7 @@ import static hu.blackbelt.judo.meta.asm.runtime.AsmModel.SaveArguments.asmSaveA
 import static hu.blackbelt.judo.meta.psm.PsmEpsilonValidator.calculatePsmValidationScriptURI;
 import static hu.blackbelt.judo.meta.psm.PsmEpsilonValidator.validatePsm;
 import static hu.blackbelt.judo.meta.psm.accesspoint.util.builder.AccesspointBuilders.newActorTypeBuilder;
+import static hu.blackbelt.judo.meta.psm.accesspoint.util.builder.AccesspointBuilders.newMappedActorTypeBuilder;
 import static hu.blackbelt.judo.meta.psm.data.util.builder.DataBuilders.*;
 import static hu.blackbelt.judo.meta.psm.derived.util.builder.DerivedBuilders.newReferenceExpressionTypeBuilder;
 import static hu.blackbelt.judo.meta.psm.derived.util.builder.DerivedBuilders.newStaticNavigationBuilder;
@@ -25,6 +26,7 @@ import java.io.File;
 import java.util.Arrays;
 import java.util.Optional;
 
+import hu.blackbelt.judo.meta.psm.accesspoint.AbstractActorType;
 import hu.blackbelt.judo.meta.psm.accesspoint.ActorType;
 import hu.blackbelt.judo.meta.psm.data.Attribute;
 import hu.blackbelt.judo.meta.psm.data.Relation;
@@ -157,10 +159,11 @@ public class Psm2AsmAccessPointTest {
                         .build())
                 .build();
 
-        final ActorType entityActor = newActorTypeBuilder()
+        final AbstractActorType entityActor = newMappedActorTypeBuilder()
                 .withName("EntityActor")
                 .withRealm("Sandbox")
                 .withTransferObjectType(entityDTO)
+                .withEntityType(entity)
                 .build();
 
         final Model model = newModelBuilder()

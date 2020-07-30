@@ -22,6 +22,10 @@ rule CreateTransferObjectTypeAnnotationClass
         transferObject.key = "value";
         transferObject.value = "true";
         t.details.add(transferObject);
+
+        log.info("=> " + s.name);
+        log.info("  type -> " + s.type());
+        log.info("  asm -> " + s.asmEquivalent());
         
         s.asmEquivalent().eAnnotations.add(t);
 	}
@@ -39,6 +43,7 @@ rule CreateTransferObjectTypeAnnotationClassForReferenceClass
         s.equivalent("CreateReferenceClassForEntityType").eAnnotations.add(t);
 	}
 
+@greedy
 rule CreateMappedEntityTypeAnnotationOnMappedTransferObject
     transform s : JUDOPSM!MappedTransferObjectType
     to t : ASM!EAnnotation {
@@ -64,6 +69,7 @@ rule CreateMappedEntityTypeAnnotationOnMappedTransferObject
         s.equivalent("CreateMappedTransferObject").eAnnotations.add(t);
     }
 
+@greedy
 rule CreateMappedTransferObject
     transform s : JUDOPSM!MappedTransferObjectType
     to t : ASM!EClass
@@ -214,6 +220,21 @@ rule CreateTransferObjectRelationBindingAnnotation
         t.details.add(binding);
         
         s.equivalent("CreateTransferObjectRelation").eAnnotations.add(t); 
+    }
+
+rule CreateTransferAttributeClaimAnnotation
+	transform s : JUDOPSM!TransferAttribute
+	to t : ASM!EAnnotation {
+	    guard: s.claimType.isDefined()
+
+	    t.source = asmUtils.getAnnotationUri("claim");
+
+        var claim = new ASM!EStringToStringMapEntry;
+        claim.key = "value";
+        claim.value = s.claimType;
+        t.details.add(claim);
+
+        s.equivalent("CreateTransferObjectAttribute").eAnnotations.add(t);
     }
 
 rule CreateTransferObjectAttribute

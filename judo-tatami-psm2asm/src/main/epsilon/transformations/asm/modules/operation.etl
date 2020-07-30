@@ -29,15 +29,6 @@ rule CreateInputParameter
         guard: s.isInput()
         
         t.name = s.name;
-        
-        var immutableAnnotation = new ASM!EAnnotation;
-        immutableAnnotation.source = asmUtils.getAnnotationUri("immutable");
-        var immutableEntry = new ASM!EStringToStringMapEntry;
-        immutableEntry.key = "value";
-        immutableEntry.value = s.isImmutable().asString();
-        immutableAnnotation.details.add(immutableEntry);
-        t.eAnnotations.add(immutableAnnotation);      
-        
         s.eContainer.asmEquivalent().eParameters.add(t);
 }
 

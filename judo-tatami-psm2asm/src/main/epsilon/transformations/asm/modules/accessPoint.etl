@@ -1,8 +1,9 @@
 import "../utils/_importUtils.eol";
 import "operation.etl";
 
+@greedy
 rule CreateActorTypeAnnotation
-    transform s : JUDOPSM!ActorType
+    transform s : JUDOPSM!AbstractActorType
     to t : ASM!EAnnotation {
         t.source = asmUtils.getAnnotationUri("actor");
 

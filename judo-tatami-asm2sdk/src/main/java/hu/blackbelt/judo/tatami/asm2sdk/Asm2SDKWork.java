@@ -4,6 +4,7 @@ import hu.blackbelt.judo.tatami.core.workflow.work.AbstractTransformationWork;
 import hu.blackbelt.judo.meta.asm.runtime.AsmModel;
 import lombok.extern.slf4j.Slf4j;
 import java.net.URI;
+import java.util.Collection;
 import java.util.Optional;
 
 import hu.blackbelt.judo.tatami.core.workflow.work.TransformationContext;
@@ -20,6 +21,7 @@ import java.io.InputStream;
 public class Asm2SDKWork extends AbstractTransformationWork {
 
 	public static final String SDK_OUTPUT = "asm2SDK:output";
+	public static final String SDK_OUTPUT_INTERNAL = "asm2SDK:output-internal";
 
 	final URI transformationScriptRoot;
 
@@ -45,14 +47,13 @@ public class Asm2SDKWork extends AbstractTransformationWork {
 		temporaryDirectory.deleteOnExit();
 		temporaryDirectory.mkdir();
 
-		InputStream asm2SDKBundle = executeAsm2SDKGeneration(asmModel.get(),
+		Asm2SDKBundleStreams bundleStreams = executeAsm2SDKGeneration(asmModel.get(),
 				getTransformationContext().getByClass(Log.class).orElseGet(() -> new Slf4jLog(log)),
 				transformationScriptRoot,
 				temporaryDirectory);
 
-		checkState(asm2SDKBundle != null, "No InputStream created");
-
-		getTransformationContext().put(SDK_OUTPUT, asm2SDKBundle);
-
+		checkState(bundleStreams != null, "No InputStream created");
+		getTransformationContext().put(SDK_OUTPUT, bundleStreams.getSdkBundleStream());
+		getTransformationContext().put(SDK_OUTPUT_INTERNAL, bundleStreams.getInternalBundleStream());
 	}
 }

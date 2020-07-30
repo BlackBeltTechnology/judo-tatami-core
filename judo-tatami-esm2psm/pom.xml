@@ -41,40 +41,25 @@
                             </resources>
                         </configuration>
                     </execution>
-                </executions>
-            </plugin>
 
-            <!--plugin>
-                <groupId>hu.blackbelt</groupId>
-                <artifactId>unpack-artifact-maven-plugin</artifactId>
-                <version>1.0.0</version>
-                <executions>
                     <execution>
-                        <id>copy-psm-scripts</id>
-                        <phase>generate-sources</phase>
+                        <id>copy-models</id>
+                        <phase>process-resources</phase>
                         <goals>
-                            <goal>unpack</goal>
+                            <goal>copy-resources</goal>
                         </goals>
-
                         <configuration>
-                            <outDirectory>${basedir}/src/main/epsilon</outDirectory>
-                            <artifacts>
-                                <artifact>
-                                    <groupId>hu.blackbelt.judo.meta</groupId>
-                                    <artifactId>judo-meta-psm</artifactId>
-                                    <version>${judo-meta-psm-version}</version>
-                                    <resources>
-                                        <resource>
-                                            <source>judo/psm/operations</source>
-                                            <destination>operations/psm</destination>
-                                        </resource>
-                                    </resources>
-                                </artifact>
-                            </artifacts>
+                            <outputDirectory>${basedir}/target/classes/tatami/esm2psm/model</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>model</directory>
+                                    <filtering>false</filtering>
+                                </resource>
+                            </resources>
                         </configuration>
                     </execution>
                 </executions>
-            </plugin-->
+            </plugin>
 
             <plugin>
                 <groupId>org.apache.felix</groupId>
@@ -84,16 +69,18 @@
                     <obrRepository>NONE</obrRepository>
                     <instructions>
                         <Export-Package>
+                            tatami/esm2psm;version=${project.version},
                             hu.blackbelt.judo.tatami.esm2psm.*;version=${project.version}
                         </Export-Package>
                         <Include-Resource>
+                            {maven-resources},
                             tatami=target/classes/tatami
                         </Include-Resource>
-
                         <Import-Package>
                             ${osgi-default-import},
                             *
                         </Import-Package>
+                        <Esm2Psm-Transformation-ModelRoot>tatami/esm2psm/model</Esm2Psm-Transformation-ModelRoot>
                         <Esm2Psm-Transformation-ScriptRoot>tatami/esm2psm/transformations/psm</Esm2Psm-Transformation-ScriptRoot>
                     </instructions>
                 </configuration>
@@ -122,6 +109,10 @@
         <dependency>
             <groupId>org.eclipse.epsilon</groupId>
             <artifactId>epsilon-emf</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.epsilon</groupId>
+            <artifactId>epsilon-spreadsheets</artifactId>
         </dependency>
         <dependency>
             <groupId>hu.blackbelt.epsilon</groupId>

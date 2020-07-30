@@ -1,0 +1,52 @@
+[%
+  import "../../operations/sdk.eol";  
+  out.setContentType("Java");
+%]
+
+[% 
+	var dtoTypeName = getSdkPrefix() + dto.getDtoTypeName();
+	var name = dto.getClassName() + "Dao"; 	
+%]
+
+interface [%= name %] {
+	[%= dtoTypeName %] create([%= dtoTypeName %] data);
+	
+	void delete([%= dtoTypeName %] subject);
+	
+	java.util.Collection<[%= dtoTypeName %]> getAll();
+	
+	[%= dtoTypeName %] getById(java.util.UUID id);
+
+	[%= dtoTypeName %] update([%= dtoTypeName %] data);
+	
+	[% for (rel in singleRelations) {%]
+		[% var relatedDto = rel.getEReferenceType();
+			var relatedType = getSdkPrefix() + relatedDto.getDtoTypeName();
+		 %]
+
+	[%= relatedType %] create[%= rel.name.firstToUpperCase() %]([%= dtoTypeName %] object, [%= relatedType %] relatedObject);
+
+	[%= relatedType %] get[%= rel.name.firstToUpperCase() %]([%= dtoTypeName %] object);	
+
+	void set[%= rel.name.firstToUpperCase() %]([%= dtoTypeName %] object, [%= relatedType %] relatedObject);
+
+	void unset[%= rel.name.firstToUpperCase() %]([%= dtoTypeName %] object);
+
+	[%}%]
+	
+	[% for (rel in multiRelations) {%]
+		[% var relatedDto = rel.getEReferenceType();
+			var relatedType = "java.util.Collection<" + getSdkPrefix() + relatedDto.getDtoTypeName() + ">";
+		%]
+
+	[%= relatedType %] create[%= rel.name.firstToUpperCase() %]([%= dtoTypeName %] object, [%= relatedType %] relatedObjects);
+
+	[%= relatedType %] get[%= rel.name.firstToUpperCase() %]([%= dtoTypeName %] object);	
+	
+	void remove[%= rel.name.firstToUpperCase() %]([%= dtoTypeName %] object, [%= relatedType %] relatedObjects);
+	
+	void add[%= rel.name.firstToUpperCase() %]([%= dtoTypeName %] object, [%= relatedType %] relatedObjects);
+	
+	
+	[% } %]		
+}

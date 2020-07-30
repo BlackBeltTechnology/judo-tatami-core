@@ -44,7 +44,7 @@ public class [%= className %] {
 	@Consumes ( "application/json" )
 	[% } %]
 	@Path("/[% if (fullyQualifiedOperation) { %][%= op.toJAXRSPath() %][% } else { %][%= op.name %][% } %]")
-    public Response [% if (fullyQualifiedOperation) { %][%= (asmUtils.getPackageFQName(op.eContainingClass.ePackage) + "." + op.name).replaceAll("\\.", "__") %][% } else { %][%= op.name %][% } %](
+    public Response [%= op.name %](
         @Context SecurityContext securityContext[%
         if (asmUtils.isBound(op)) { %]
 ,
