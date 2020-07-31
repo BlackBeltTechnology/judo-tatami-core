@@ -245,6 +245,8 @@
     <feature name="judo-tatami-script2operation" version="${project.version}" description="JUDO Tatami, Script to Operation API" install="false">
         <feature>judo-tatami-meta-script</feature>
         <feature>judo-tatami-meta-expression</feature>
+        <feature>judo-tatami-meta-measure</feature>
+        <feature>judo-tatami-meta-asm</feature>
         <feature>judo-tatami-core</feature>
         <feature dependency="true">tinybundles</feature>
         <feature dependency="true">eclipse-xtext</feature>
