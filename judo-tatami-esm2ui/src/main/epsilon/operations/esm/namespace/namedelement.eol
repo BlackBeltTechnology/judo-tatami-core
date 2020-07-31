@@ -1,0 +1,34 @@
+operation ESM!esm::namespace::Model getUIEquivalent(): UI!Model {
+        return self.equivalent("CreateModel");
+}
+
+/*
+operation ESM!esm::namespace::NamedElement getContainerNamespace() : ESM!esm::namespace::NamespaceElement {
+	var container = self;
+	
+	while (container.isKindOf(ESM!esm::namespace::NamespaceElement) or container.isUndefined()) {
+		if (container.eContainer.isUndefined()) {
+			container = null;
+		} else {
+			container = container.eContener;
+		}
+	}
+	
+	return container;
+}
+
+operation ESM!esm::namespace::NamedElement getNameInNamespace() : String {
+	var container = self;
+	var name : String = "";
+	
+	while (not container.isKindOf(ESM!esm::namespace::NamespaceElement) or container.isUndefined()) {
+		if (container.eContainer.isUndefined()) {
+			container = null;
+		} else {
+			name = self.name + "/" + name;
+			container = container.eContener;
+		}
+	}
+	
+	return name;
+} */

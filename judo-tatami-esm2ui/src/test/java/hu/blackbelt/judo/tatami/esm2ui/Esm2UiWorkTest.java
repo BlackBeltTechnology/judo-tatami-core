@@ -26,6 +26,7 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+@Disabled("JNG-1406 Work in progress")
 class Esm2UiWorkTest {
 
 	public static final String NORTHWIND = "northwind";

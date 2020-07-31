@@ -1,6 +1,6 @@
 operation ESM!esm::structure::RelationFeature createPageForRelationForView(target : ESM!esm::structure::TransferObjectType) : UI!ui::PageDefinition {
 	var page : UI!ui::PageDefinition = new UI!ui::PageDefinition();
-	page.binding = esmUtils.getNamespaceElementFQName(self.eContainer) + "." + self.name;
+	page.binding = modelAdapter.buildTypeNameFromNamedElement(self).get();
 	page.name = page.uiName("RelationPageView") + "#" + esmUtils.getNamespaceElementFQName(target);
     page.children.add(self.target.view.map());
     
@@ -9,7 +9,7 @@ operation ESM!esm::structure::RelationFeature createPageForRelationForView(targe
 
 operation ESM!esm::structure::RelationFeature createPageForRelationForForm(target : ESM!esm::structure::TransferObjectType) : UI!ui::PageDefinition {
 	var page : UI!ui::PageDefinition = new UI!ui::PageDefinition();
-	page.binding = esmUtils.getNamespaceElementFQName(self.eContainer) + "." + self.name;
+	page.binding = modelAdapter.buildTypeNameFromNamedElement(self).get();
 	page.name = page.uiName("RelationPageForm") + "#" + esmUtils.getNamespaceElementFQName(target);
     page.children.add(self.target.form.map());
     
@@ -18,7 +18,7 @@ operation ESM!esm::structure::RelationFeature createPageForRelationForForm(targe
 
 operation ESM!esm::structure::RelationFeature createPageForRelationForTable(application : UI!ui::Application, target : ESM!esm::structure::TransferObjectType) : UI!ui::PageDefinition {
 	var page : UI!ui::PageDefinition = new UI!ui::PageDefinition();
-	page.binding = esmUtils.getNamespaceElementFQName(self.eContainer) + "." + self.name;
+	page.binding = modelAdapter.buildTypeNameFromNamedElement(self).get();
 	page.name = page.uiName("RelationPageTable") + "#" + esmUtils.getNamespaceElementFQName(target);
     
 	var table = self.target.table.createTableFromTransferObjectTable();
@@ -26,7 +26,7 @@ operation ESM!esm::structure::RelationFeature createPageForRelationForTable(appl
     
     if (self.target.table.masterDetail and self.target.view.isDefined()) {
 		var detail : UI!ui::PageDefinition = new UI!ui::PageDefinition();
-	  	detail.binding = page.binding;
+	  	detail.binding = modelAdapter.buildTypeNameFromNamedElement(self).get();
 	  	detail.name = page.name + "/detail";
 		application.pages.add(detail);
 	  	detail.children.add(self.target.view.map());

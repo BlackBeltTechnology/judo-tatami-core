@@ -1,7 +1,8 @@
 operation ESM!esm::ui::Container createFlexFromContainer() : UI!ui::Flex {
 	var ret = new UI!ui::Flex();
 	
-    ret.binding = self.getBindingName();
+    ret.binding = modelAdapter.buildTypeNameFromNamedElement(self).get();
+    
 	ret.name = self.name;	
 
 	if (self.layout == ESM!esm::ui::Layout#HORIZONTAL) {

@@ -1,6 +1,6 @@
 operation ESM!esm::ui::TabularReferenceField createTableFromTabularReferenceField() : UI!ui::Table {
 	var table : UI!ui::Table = new UI!ui::Table();
-	table.binding = self.getBindingName();
+    table.binding = modelAdapter.buildTypeNameFromNamedElement(self).get();
 	table.name = self.name;	
 	
 	for (column in self.columns) {

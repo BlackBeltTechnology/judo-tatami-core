@@ -1,6 +1,7 @@
 import "modules/namespace/namespace.etl";
 import "modules/accesspoint/accesspoint.etl";
 
+/*
 operation Any getBindingName() {
 	if (self.isKindOf(ESM!esm::`operation`::Operation)) {
 		return esmUtils.getTransferOperationFQName(self);
@@ -15,13 +16,13 @@ operation Any getBindingName() {
 	} else {
 	    return self.name;
 	}
-}
+} */
 
 operation UI!ui::NamedElement uiName(postfix : String) : String {
 	if (postfix.isUndefined()) {
-		return self.binding.uiName();
+		return self.binding;
 	} else {
-		return self.binding.uiName() + "#"
+		return self.binding + "#"
 		 + postfix;
 	}
 }

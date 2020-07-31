@@ -36,6 +36,7 @@ rule CreateApplication
         log.debug("CreateApplication: " + s.name);
 }
 
+
 rule CreateNavigationController
     transform s: ESM!esm::structure::TransferObjectType
     to t: UI!ui::NavigationController
@@ -130,13 +131,15 @@ rule CreateNavigationItemPageForAccessPointRelationForTable
         var application = s.eContainer.equivalent("CreateApplication");
 
         t.name = t.uiName("RelationPageTable");
+        t.binding = modelAdapter.buildTypeNameFromNamedElement(s).get();
           
         var table = s.target.table.createTableFromTransferObjectTable();
         t.children.add(table);
 
         if (s.target.table.masterDetail and s.target.view.isDefined()) {
             var detail : UI!ui::PageDefinition = new UI!ui::PageDefinition();
-            detail.binding = t.binding;
+	        detail.binding = modelAdapter.buildTypeNameFromNamedElement(s).get();
+
             detail.name = t.name + "/detail";
             application.pages.add(detail);
             detail.children.add(s.target.view.map());

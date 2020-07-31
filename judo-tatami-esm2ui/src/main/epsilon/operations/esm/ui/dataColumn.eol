@@ -1,6 +1,8 @@
 operation ESM!esm::ui::DataColumn createFormattedFromDataColumn() : UI!ui::Formatted {
 	var ret : UI!ui::Formatted = self.dataFeature.getMember().getDataType().formatted();
-	ret.binding = self.getBindingName();
+	//ret.binding = self.getBindingName();
+	ret.binding = modelAdapter.buildTypeNameFromNamedElement(self).get();
+	
 	ret.name = self.name;
 	ret.label = self.label; //self.dataFeature.getMember().getDisplayLabel();
 	return ret;

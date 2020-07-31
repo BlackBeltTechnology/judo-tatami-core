@@ -1,6 +1,6 @@
 operation ESM!esm::ui::ActionButton createButtonFromActionButton() : UI!ui::Button {
 	var ret : UI!ui::Button = new UI!ui::Button();
-	ret.binding = self.getBindingName();
+	ret.binding = modelAdapter.buildTypeNameFromNamedElement(self).get();
 	ret.name = self.name;
 	ret.label = self.label; //self.dataFeature.getMember().getDisplayLabel();
 	return ret;
