@@ -1,0 +1,37 @@
+operation ESM!esm::structure::RelationFeature createPageForRelationForView(target : ESM!esm::structure::TransferObjectType) : UI!ui::PageDefinition {
+	var page : UI!ui::PageDefinition = new UI!ui::PageDefinition();
+	page.binding = esmUtils.getNamespaceElementFQName(self.eContainer) + "." + self.name;
+	page.name = page.uiName("RelationPageView") + "#" + esmUtils.getNamespaceElementFQName(target);
+    page.children.add(self.target.view.map());
+    
+    return page;
+}
+
+operation ESM!esm::structure::RelationFeature createPageForRelationForForm(target : ESM!esm::structure::TransferObjectType) : UI!ui::PageDefinition {
+	var page : UI!ui::PageDefinition = new UI!ui::PageDefinition();
+	page.binding = esmUtils.getNamespaceElementFQName(self.eContainer) + "." + self.name;
+	page.name = page.uiName("RelationPageForm") + "#" + esmUtils.getNamespaceElementFQName(target);
+    page.children.add(self.target.form.map());
+    
+    return page;
+}
+
+operation ESM!esm::structure::RelationFeature createPageForRelationForTable(application : UI!ui::Application, target : ESM!esm::structure::TransferObjectType) : UI!ui::PageDefinition {
+	var page : UI!ui::PageDefinition = new UI!ui::PageDefinition();
+	page.binding = esmUtils.getNamespaceElementFQName(self.eContainer) + "." + self.name;
+	page.name = page.uiName("RelationPageTable") + "#" + esmUtils.getNamespaceElementFQName(target);
+    
+	var table = self.target.table.createTableFromTransferObjectTable();
+    page.children.add(table);
+    
+    if (self.target.table.masterDetail and self.target.view.isDefined()) {
+		var detail : UI!ui::PageDefinition = new UI!ui::PageDefinition();
+	  	detail.binding = page.binding;
+	  	detail.name = page.name + "/detail";
+		application.pages.add(detail);
+	  	detail.children.add(self.target.view.map());
+	  	table.detail = detail;        
+    }
+    
+    return page;
+}

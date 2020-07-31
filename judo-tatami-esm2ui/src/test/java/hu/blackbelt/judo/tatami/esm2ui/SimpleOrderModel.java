@@ -26,7 +26,6 @@ import java.util.Arrays;
 
 import static hu.blackbelt.judo.meta.ui.runtime.UiModel.buildUiModel;
 
-import hu.blackbelt.judo.meta.esm.accesspoint.Realm;
 import hu.blackbelt.judo.meta.esm.namespace.Model;
 import hu.blackbelt.judo.meta.esm.runtime.EsmModel;
 import hu.blackbelt.judo.meta.esm.structure.DataMember;
@@ -137,7 +136,7 @@ public class SimpleOrderModel {
         // Access Point
         TransferObjectType application = newTransferObjectTypeBuilder()
                 .withName("OrderApplication")
-                .withActorType(newActorTypeBuilder().withRealm(Realm.PUBLIC).build())
+                .withActorType(newActorTypeBuilder().withRealm("public").build())
                 .build();
 
         OneWayRelationMember applicationOrders = newOneWayRelationMemberBuilder()

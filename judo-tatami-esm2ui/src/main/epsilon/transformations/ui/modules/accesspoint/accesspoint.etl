@@ -2,42 +2,65 @@ import "../namespace/namespace.etl";
 import "../../../../operations/_importAll.eol";
 
 rule CreateApplication
-	transform s: ESM!esm::structure::TransferObjectType
-	to t: UI!ui::Application
-	extends CreateNamedElementFromNamespaceElement {
-	  guard: s.isAccesspoint()
-      log.debug("CreateApplication: " + s.name);
-       
-      t.name = t.uiName(applicationType);
-	  t.type = applicationType;
-	  t.cols = applicationColumns;
-	  t.navigationController = s.equivalent("CreateNavigationController");
+    transform s: ESM!esm::structure::TransferObjectType
+    to t: UI!ui::Application
+    extends CreateNamedElementFromNamespaceElement {
+        guard: s.isAccesspoint()
+
+        t.name = t.uiName(applicationType);
+        t.type = applicationType;
+        t.cols = applicationColumns;
+        t.navigationController = s.equivalent("CreateNavigationController");
+
+        var exposedRelations : Set = esmUtils.getAllExposedRelationsFromAccessPoint(s);
+        
+        for (relation in exposedRelations) {
+        	var targets : Set = esmUtils.getAllDescendantsOfTransferObjectType(relation.target).including(relation.target);
+        	
+        	for (target in targets) {
+        	
+                if (target.mapping.isDefined() and target.view.isDefined()) {
+                    t.pages.add(relation.createPageForRelationForView(target));
+                }
+
+                if (target.mapping.isDefined() and target.form.isDefined()) {
+                    t.pages.add(relation.createPageForRelationForForm(target));
+                }
+
+                if (target.mapping.isDefined() and target.table.isDefined() and relation.upper = -1) {
+                    t.pages.add(relation.createPageForRelationForTable(t,target));
+                }
+        	}
+        }
+
+        log.debug("CreateApplication: " + s.name);
 }
 
 rule CreateNavigationController
-	transform s: ESM!esm::structure::TransferObjectType
-	to t: UI!ui::NavigationController
-	extends CreateNamedElementFromNamespaceElement {
-	  guard: s.isAccesspoint()
-          t.name = t.uiName("NavigationController");
-		  log.debug("CreateNavigationController: " + s.name);
+    transform s: ESM!esm::structure::TransferObjectType
+    to t: UI!ui::NavigationController
+    extends CreateNamedElementFromNamespaceElement {
+        guard: s.isAccesspoint()
 
+        t.name = t.uiName("NavigationController");
+
+        log.debug("CreateNavigationController: " + s.name);
 }
 
 rule CreateApplicationDashboard
-	transform s: ESM!esm::structure::TransferObjectType
+    transform s: ESM!esm::structure::TransferObjectType
     to t : UI!ui::PageDefinition
-	extends CreateNamedElementFromNamespaceElement {
-	  guard: s.isAccesspoint() and s.view.isDefined()
-      log.debug("CreateDashboard: " + s.name);
+    extends CreateNamedElementFromNamespaceElement {
+        guard: s.isAccesspoint() and s.view.isDefined()
 
-      var application = s.equivalent("CreateApplication");        
-	  log.debug("CreateApplicationDashboard: " + s.name);
-      t.name = t.uiName("Dashboard");
-      t.children.add(s.view.map());
-      application.pages.add(t);
+        var application = s.equivalent("CreateApplication");
+        log.debug("CreateApplicationDashboard: " + s.name);
+        t.name = t.uiName("Dashboard");
+        t.children.add(s.view.map());
+        application.pages.add(t);
+
+        log.debug("CreateDashboard: " + s.name);
 }
-
 
 @greedy
 rule CreateNavigationItemForAccessPointRelation
@@ -45,74 +68,81 @@ rule CreateNavigationItemForAccessPointRelation
     to t : UI!ui::NavigationItem
     extends CreateNamedElementFromNamedElement {
         guard: s.eContainer.isAccesspoint() and s.target.mapping.isDefined()
-        and s.getterExpression.isDefined() and s.getterExpression.trim() <> ''
-        and ((s.target.table.isDefined and s.upper = -1) 
-        		or (s.target.view.isDefined() and s.upper = 1) 
-        		or (s.target.form.isDefined() and s.upper = 1))
-		  log.debug("CreateNavigationItemForAccessPointRelation: " + s.name);
-          t.name = t.uiName("NavigationItem");
-          t.label = s.name;
-          t.target = s.equivalent("CreateNavigationItemPageForAccessPointRelationForTable");
-          if (t.target.isUndefined()) {
-	          t.target = s.equivalent("CreateNavigationItemPageForAccessPointRelationForView");      
-          }
-          if (t.target.isUndefined()) {
-  	          t.target = s.equivalent("CreateNavigationItemPageForAccessPointRelationForForm");              
-          }
-          s.eContainer.equivalent("CreateNavigationController").items.add(t);
+            and s.getterExpression.isDefined() and s.getterExpression.trim() <> ''
+            and ((s.target.table.isDefined() and s.upper = -1) 
+                or (s.target.view.isDefined() and s.upper = 1) 
+                or (s.target.form.isDefined() and s.upper = 1))
+
+        t.name = t.uiName("NavigationItem");
+        t.label = s.name;
+        t.target = s.equivalent("CreateNavigationItemPageForAccessPointRelationForTable");
+        if (t.target.isUndefined()) {
+            t.target = s.equivalent("CreateNavigationItemPageForAccessPointRelationForView");
+        }
+        if (t.target.isUndefined()) {
+            t.target = s.equivalent("CreateNavigationItemPageForAccessPointRelationForForm");
+        }
+        s.eContainer.equivalent("CreateNavigationController").items.add(t);
+
+        log.debug("CreateNavigationItemForAccessPointRelation: " + s.name);
 }
 
 @greedy
 rule CreateNavigationItemPageForAccessPointRelationForView
     transform s : ESM!esm::structure::RelationFeature
     to t : UI!ui::PageDefinition
-	extends CreateNamedElementFromNamedElement {
-        guard: s.eContainer.isAccesspoint() and s.target.mapping.isDefined()
-        and s.getterExpression.isDefined() and s.getterExpression.trim() <> ''
-        and s.target.view.isDefined()
-          var application = s.eContainer.equivalent("CreateApplication");        
-		  log.debug("CreateNavigationItemPageForAccessPointRelationForView: " + s.name);
-          t.name = t.uiName("NavigationItemView");
-          t.children.add(s.target.view.map());
-	      application.pages.add(t);
+    extends CreateNamedElementFromNamedElement {
+        guard: s.eContainer.isAccesspoint()
+            and s.target.mapping.isDefined()
+            and s.target.view.isDefined()
+
+        var application = s.eContainer.equivalent("CreateApplication");
+        t.name = t.uiName("RelationPageView");
+        t.children.add(s.target.view.map());
+        application.pages.add(t);
+
+        log.debug("CreateNavigationItemPageForAccessPointRelationForView: " + s.name);
 }
 
 @greedy
 rule CreateNavigationItemPageForAccessPointRelationForForm
     transform s : ESM!esm::structure::RelationFeature
     to t : UI!ui::PageDefinition
-	extends CreateNamedElementFromNamedElement {
-        guard: s.eContainer.isAccesspoint() and s.target.mapping.isDefined()
-        and s.getterExpression.isDefined() and s.getterExpression.trim() <> ''
-		and s.target.form.isDefined()
-          var application = s.eContainer.equivalent("CreateApplication");
-		  log.debug("CreateNavigationItemPageForAccessPointRelationForForm: " + s.name);
-          t.name = t.uiName("NavigationItemForm");
-          t.children.add(s.target.form.map());
-	      application.pages.add(t);
+    extends CreateNamedElementFromNamedElement {
+        guard: s.eContainer.isAccesspoint() and s.target.mapping.isDefined() and s.target.form.isDefined()
+
+        var application = s.eContainer.equivalent("CreateApplication");
+
+        t.name = t.uiName("RelationPageForm");
+        t.children.add(s.target.form.map());
+        application.pages.add(t);
+
+        log.debug("CreateNavigationItemPageForAccessPointRelationForForm: " + s.name);
 }
 
 @greedy
 rule CreateNavigationItemPageForAccessPointRelationForTable
     transform s : ESM!esm::structure::RelationFeature
     to t : UI!ui::PageDefinition
-	extends CreateNamedElementFromNamedElement {
-        guard: s.eContainer.isAccesspoint() and s.target.mapping.isDefined()
-        and s.getterExpression.isDefined() and s.getterExpression.trim() <> ''
-        and s.target.table.isDefined() and s.upper = -1
-          var application = s.eContainer.equivalent("CreateApplication");
-		  log.debug("CreateNavigationItemPageForAccessPointRelationForTable: " + s.name);
-          t.name = t.uiName("NavigationItemTable");
+    extends CreateNamedElementFromNamedElement {
+        guard: s.eContainer.isAccesspoint() and s.target.mapping.isDefined() and s.target.table.isDefined() and s.upper = -1
+        
+        var application = s.eContainer.equivalent("CreateApplication");
+
+        t.name = t.uiName("RelationPageTable");
           
-          var table = s.target.table.createTableFromTransferObjectTable();
-          t.children.add(table);
-          if (s.target.table.masterDetail and s.target.view.isDefined()) {
-          		var detail : UI!ui::PageDefinition = new UI!ui::PageDefinition();    
-          		detail.binding = t.binding;
-          		detail.name = t.name + "/detail";
-			    application.pages.add(detail);
-	      		detail.children.add(s.target.view.map());
-	      		table.detail = detail;
-    	  }          
-	      application.pages.add(t);
+        var table = s.target.table.createTableFromTransferObjectTable();
+        t.children.add(table);
+
+        if (s.target.table.masterDetail and s.target.view.isDefined()) {
+            var detail : UI!ui::PageDefinition = new UI!ui::PageDefinition();
+            detail.binding = t.binding;
+            detail.name = t.name + "/detail";
+            application.pages.add(detail);
+            detail.children.add(s.target.view.map());
+            table.detail = detail;
+        }
+        application.pages.add(t);
+
+        log.debug("CreateNavigationItemPageForAccessPointRelationForTable: " + s.name);
 }

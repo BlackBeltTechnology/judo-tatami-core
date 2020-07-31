@@ -1,6 +1,5 @@
 package hu.blackbelt.judo.tatami.ui2client;
 
-import hu.blackbelt.judo.meta.esm.accesspoint.Realm;
 import hu.blackbelt.judo.meta.esm.namespace.Model;
 import hu.blackbelt.judo.meta.esm.structure.*;
 import hu.blackbelt.judo.meta.esm.type.DateType;
@@ -106,7 +105,7 @@ public class SimpleOrderModel {
         // Access Point
         TransferObjectType application = newTransferObjectTypeBuilder()
                 .withName("OrderApplication")
-                .withActorType(newActorTypeBuilder().withRealm(Realm.PUBLIC).build())
+                .withActorType(newActorTypeBuilder().withRealm("public").build())
                 .build();
 
         OneWayRelationMember applicationOrder = newOneWayRelationMemberBuilder()
