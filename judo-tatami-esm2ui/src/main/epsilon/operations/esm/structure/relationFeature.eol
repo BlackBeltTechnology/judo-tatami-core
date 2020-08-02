@@ -1,37 +1,57 @@
-operation ESM!esm::structure::RelationFeature createPageForRelationForView(target : ESM!esm::structure::TransferObjectType) : UI!ui::PageDefinition {
+@cached
+operation ESM!esm::structure::RelationFeature fqName() {
+	return esmUtils.getNamespaceElementFQName(self.eContainer) + "." + self.name;
+}
+
+operation ESM!esm::structure::RelationFeature createPageForRelationForView(application : UI!ui::Application, target : ESM!esm::structure::TransferObjectType) : UI!ui::PageDefinition {
 	var page : UI!ui::PageDefinition = new UI!ui::PageDefinition();
-	page.binding = modelAdapter.buildTypeNameFromNamedElement(self).get();
-	page.name = page.uiName("RelationPageView") + "#" + esmUtils.getNamespaceElementFQName(target);
-    page.children.add(self.target.view.map());
-    
+	page.dataElement = self.mapRelationType(application, target.mapClassType(application));
+	page.name = self.fqName().anchor("RelationPageView", target.fqName());
+	page.children.add(self.target.view.map(application));    
     return page;
 }
 
-operation ESM!esm::structure::RelationFeature createPageForRelationForForm(target : ESM!esm::structure::TransferObjectType) : UI!ui::PageDefinition {
+operation ESM!esm::structure::RelationFeature createPageForRelationForForm(application : UI!ui::Application, target : ESM!esm::structure::TransferObjectType) : UI!ui::PageDefinition {
 	var page : UI!ui::PageDefinition = new UI!ui::PageDefinition();
-	page.binding = modelAdapter.buildTypeNameFromNamedElement(self).get();
-	page.name = page.uiName("RelationPageForm") + "#" + esmUtils.getNamespaceElementFQName(target);
-    page.children.add(self.target.form.map());
+	page.dataElement = self.mapRelationType(application, target.mapClassType(application));
+	page.name = self.fqName().anchor("RelationPageForm", target.fqName());
+    page.children.add(self.target.form.map(application));
     
     return page;
 }
 
 operation ESM!esm::structure::RelationFeature createPageForRelationForTable(application : UI!ui::Application, target : ESM!esm::structure::TransferObjectType) : UI!ui::PageDefinition {
 	var page : UI!ui::PageDefinition = new UI!ui::PageDefinition();
-	page.binding = modelAdapter.buildTypeNameFromNamedElement(self).get();
-	page.name = page.uiName("RelationPageTable") + "#" + esmUtils.getNamespaceElementFQName(target);
+	page.dataElement = self.mapRelationType(application, target.mapClassType(application));
+	page.name = self.fqName().anchor("RelationPageTable", target.fqName());
     
 	var table = self.target.table.createTableFromTransferObjectTable();
     page.children.add(table);
     
     if (self.target.table.masterDetail and self.target.view.isDefined()) {
 		var detail : UI!ui::PageDefinition = new UI!ui::PageDefinition();
-	  	detail.binding = modelAdapter.buildTypeNameFromNamedElement(self).get();
-	  	detail.name = page.name + "/detail";
+		detail.dataElement = self.mapRelationType(application, target.mapClassType(application));
 		application.pages.add(detail);
-	  	detail.children.add(self.target.view.map());
+	  	detail.children.add(self.target.view.map(application));
 	  	table.detail = detail;        
     }
     
     return page;
+}
+
+operation ESM!esm::structure::RelationFeature createRelationTypeForClass(application : UI!ui::Application, clazz : UI!ui::data::ClassType) : UI!ui::data::RelationType {
+	var relation = new UI!ui::data::RelationType();	
+	relation.name = self.name;
+	clazz.relations.add(relation);
+	relation.target = self.target.mapClassType(application);
+	log.debug("Create relation " + relation.name + " in class type: " + clazz.name);
+	return relation;
+}
+
+operation ESM!esm::structure::RelationFeature mapRelationType(application : UI!ui::Application, clazz : UI!ui::data::ClassType) : UI!ui::data::RelationType {
+	var relation = clazz.relations.selectOne(r | r.name = self.name);
+	if (relation.isUndefined()) {
+		relation = self.createRelationTypeForClass(application, clazz);
+	}
+	return relation;
 }

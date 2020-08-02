@@ -144,11 +144,6 @@
             <artifactId>hu.blackbelt.judo.meta.ui.model</artifactId>
         </dependency>
         <dependency>
-            <groupId>hu.blackbelt.judo.meta</groupId>
-            <artifactId>hu.blackbelt.judo.meta.ui.model.adapter.esm</artifactId>
-        </dependency>
-
-        <dependency>
             <groupId>hu.blackbelt.judo.tatami</groupId>
             <artifactId>judo-tatami-core</artifactId>
         </dependency>

@@ -238,7 +238,7 @@ public class SimpleOrderModel {
             order.setForm(orderForm);        
 
         
-        /* Order table */
+        // Order table
         TransferObjectTable orderTable = newTransferObjectTableBuilder()
         		.withMasterDetail(true)
 				.withName("OrderTable")
@@ -316,7 +316,32 @@ public class SimpleOrderModel {
 				))
         		.build();
         order.setView(orderView);
-            
+
+        
+        // Order Item View
+        TransferObjectView orderItemView = newTransferObjectViewBuilder()
+				.withName("OrderItemView")
+				.withLabel("Order Item")
+        		.withComponents(Arrays.asList(
+	                				newDataFieldBuilder()
+	            						.withName("product")
+	            						.withLabel("Product")
+	            						.withDataFeature(orderItemProduct)
+	            						.build(),
+	        						newDataFieldBuilder()
+	            						.withName("quantity")
+	            						.withLabel("Quantity")
+	            						.withDataFeature(orderItemQuantity)
+	            						.build(),
+	        						newDataFieldBuilder()
+	            						.withName("price")
+	            						.withLabel("Price")
+	            						.withDataFeature(orderItemPrice)
+	            						.build()
+				))
+        		.build();
+        orderItem.setView(orderItemView);
+
         // Application View
         TransferObjectView applicationView = newTransferObjectViewBuilder()
 				.withName("Dashboard")

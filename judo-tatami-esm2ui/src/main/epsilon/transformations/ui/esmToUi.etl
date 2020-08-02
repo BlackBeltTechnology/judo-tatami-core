@@ -1,43 +1,19 @@
 import "modules/namespace/namespace.etl";
 import "modules/accesspoint/accesspoint.etl";
 
-/*
-operation Any getBindingName() {
-	if (self.isKindOf(ESM!esm::`operation`::Operation)) {
-		return esmUtils.getTransferOperationFQName(self);
-	} else if (self.isKindOf(ESM!esm::structure::OneWayRelationMember)) {
-		return esmUtils.getOneWayRelationFQName(self);
-	} else if (self.isKindOf(ESM!esm::structure::DataMember)) {
-		return esmUtils.getDataMemberFQName(self);
-	} else if (self.isKindOf(ESM!esm::namespace::NamespaceElement)) {
-		return esmUtils.getNamespaceElementFQName(self);
-	} else if (self.eContainer.isDefined()) {
-	    return self.eContainer.getBindingName() + "." + self.name;
+operation String anchor(anchor1 : String, anchor2 : String) : String {
+	if (anchor1.isUndefined()) {
+		return self;
 	} else {
-	    return self.name;
+		if (anchor2.isUndefined()) {
+			return self + "#" + anchor1;
+		} else {
+			return self.anchor(anchor1, null) + "/" + anchor2;
+		}
 	}
-} */
+} 
 
-operation UI!ui::NamedElement uiName(postfix : String) : String {
-	if (postfix.isUndefined()) {
-		return self.binding;
-	} else {
-		return self.binding + "#"
-		 + postfix;
-	}
+operation String anchor(anchor1 : String) : String {
+	return self.anchor(anchor1, null);
 }
 
-@cached
-operation String uiName() : String {
-	return self;
-} 
-
-
-@cached
-operation String uiName(postfix : String) : String {
-	if (postfix.isUndefined()) {
-		return self.uiName();
-	} else {
-		return self.uiName() + "#" + postfix;
-	}
-} 

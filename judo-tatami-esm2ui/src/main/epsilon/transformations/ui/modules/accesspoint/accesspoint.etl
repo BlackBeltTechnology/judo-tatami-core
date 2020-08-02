@@ -7,7 +7,9 @@ rule CreateApplication
     extends CreateNamedElementFromNamespaceElement {
         guard: s.isAccesspoint()
 
-        t.name = t.uiName(applicationType);
+        log.debug("CreateApplication: " + s.name);
+
+        t.name = s.fqName().anchor(applicationType);
         t.type = applicationType;
         t.cols = applicationColumns;
         t.navigationController = s.equivalent("CreateNavigationController");
@@ -18,22 +20,20 @@ rule CreateApplication
         	var targets : Set = esmUtils.getAllDescendantsOfTransferObjectType(relation.target).including(relation.target);
         	
         	for (target in targets) {
-        	
+        		        	
                 if (target.mapping.isDefined() and target.view.isDefined()) {
-                    t.pages.add(relation.createPageForRelationForView(target));
+                    t.pages.add(relation.createPageForRelationForView(t, target));
                 }
 
                 if (target.mapping.isDefined() and target.form.isDefined()) {
-                    t.pages.add(relation.createPageForRelationForForm(target));
+                    t.pages.add(relation.createPageForRelationForForm(t, target));
                 }
 
                 if (target.mapping.isDefined() and target.table.isDefined() and relation.upper = -1) {
-                    t.pages.add(relation.createPageForRelationForTable(t,target));
+                    t.pages.add(relation.createPageForRelationForTable(t, target));
                 }
         	}
         }
-
-        log.debug("CreateApplication: " + s.name);
 }
 
 
@@ -43,9 +43,9 @@ rule CreateNavigationController
     extends CreateNamedElementFromNamespaceElement {
         guard: s.isAccesspoint()
 
-        t.name = t.uiName("NavigationController");
-
         log.debug("CreateNavigationController: " + s.name);
+
+        t.name = s.fqName().anchor("NavigationController");
 }
 
 rule CreateApplicationDashboard
@@ -54,13 +54,16 @@ rule CreateApplicationDashboard
     extends CreateNamedElementFromNamespaceElement {
         guard: s.isAccesspoint() and s.view.isDefined()
 
+        log.debug("CreateDashboard: " + s.name);
+
         var application = s.equivalent("CreateApplication");
         log.debug("CreateApplicationDashboard: " + s.name);
-        t.name = t.uiName("Dashboard");
-        t.children.add(s.view.map());
+        t.name = s.fqName().anchor("Dashboard");
+        t.dataElement = s.mapClassType(application);
+        t.children.add(s.view.map(application));
         application.pages.add(t);
+        
 
-        log.debug("CreateDashboard: " + s.name);
 }
 
 @greedy
@@ -74,7 +77,9 @@ rule CreateNavigationItemForAccessPointRelation
                 or (s.target.view.isDefined() and s.upper = 1) 
                 or (s.target.form.isDefined() and s.upper = 1))
 
-        t.name = t.uiName("NavigationItem");
+        log.debug("CreateNavigationItemForAccessPointRelation: " + s.name);
+
+        t.name = s.fqName().anchor("NavigationItem");
         t.label = s.name;
         t.target = s.equivalent("CreateNavigationItemPageForAccessPointRelationForTable");
         if (t.target.isUndefined()) {
@@ -85,7 +90,6 @@ rule CreateNavigationItemForAccessPointRelation
         }
         s.eContainer.equivalent("CreateNavigationController").items.add(t);
 
-        log.debug("CreateNavigationItemForAccessPointRelation: " + s.name);
 }
 
 @greedy
@@ -96,13 +100,16 @@ rule CreateNavigationItemPageForAccessPointRelationForView
         guard: s.eContainer.isAccesspoint()
             and s.target.mapping.isDefined()
             and s.target.view.isDefined()
+        log.debug("CreateNavigationItemPageForAccessPointRelationForView: " + s.name);
 
         var application = s.eContainer.equivalent("CreateApplication");
-        t.name = t.uiName("RelationPageView");
-        t.children.add(s.target.view.map());
+
+        t.name = s.fqName().anchor("RelationPageView");
+                
+        t.dataElement = s.target.mapClassType(application);
+        t.children.add(s.target.view.map(application));
         application.pages.add(t);
 
-        log.debug("CreateNavigationItemPageForAccessPointRelationForView: " + s.name);
 }
 
 @greedy
@@ -112,13 +119,15 @@ rule CreateNavigationItemPageForAccessPointRelationForForm
     extends CreateNamedElementFromNamedElement {
         guard: s.eContainer.isAccesspoint() and s.target.mapping.isDefined() and s.target.form.isDefined()
 
+        log.debug("CreateNavigationItemPageForAccessPointRelationForForm: " + s.name);
+
         var application = s.eContainer.equivalent("CreateApplication");
 
-        t.name = t.uiName("RelationPageForm");
-        t.children.add(s.target.form.map());
-        application.pages.add(t);
+        t.name = s.fqName().anchor("RelationPageForm");
 
-        log.debug("CreateNavigationItemPageForAccessPointRelationForForm: " + s.name);
+        t.dataElement = s.target.mapClassType(application);
+        t.children.add(s.target.form.map(application));
+        application.pages.add(t);
 }
 
 @greedy
@@ -127,25 +136,26 @@ rule CreateNavigationItemPageForAccessPointRelationForTable
     to t : UI!ui::PageDefinition
     extends CreateNamedElementFromNamedElement {
         guard: s.eContainer.isAccesspoint() and s.target.mapping.isDefined() and s.target.table.isDefined() and s.upper = -1
+
+        log.debug("CreateNavigationItemPageForAccessPointRelationForTable: " + s.name);
         
         var application = s.eContainer.equivalent("CreateApplication");
 
-        t.name = t.uiName("RelationPageTable");
-        t.binding = modelAdapter.buildTypeNameFromNamedElement(s).get();
-          
-        var table = s.target.table.createTableFromTransferObjectTable();
+        t.name = s.fqName().anchor("RelationPageTable");
+
+        t.dataElement = s.target.mapClassType(application);
+        
+        var table = s.target.table.createTableFromTransferObjectTable(application);
         t.children.add(table);
 
         if (s.target.table.masterDetail and s.target.view.isDefined()) {
             var detail : UI!ui::PageDefinition = new UI!ui::PageDefinition();
-	        detail.binding = modelAdapter.buildTypeNameFromNamedElement(s).get();
-
+	        detail.dataElement = s.target.mapClassType(application);
             detail.name = t.name + "/detail";
             application.pages.add(detail);
-            detail.children.add(s.target.view.map());
+            detail.children.add(s.target.view.map(application));
             table.detail = detail;
         }
         application.pages.add(t);
 
-        log.debug("CreateNavigationItemPageForAccessPointRelationForTable: " + s.name);
 }

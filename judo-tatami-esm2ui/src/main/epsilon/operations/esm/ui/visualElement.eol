@@ -1,0 +1,8 @@
+@cached
+operation ESM!esm::ui::VisualElement getTransferObjectType() : ESM!esm::structure::TransferObjectType {
+	var to = self.eContainer;
+	while (to.isDefined() and not to.isKindOf(ESM!esm::structure::TransferObjectType)) {
+		to = to.eContainer;
+	}
+	return to;
+}

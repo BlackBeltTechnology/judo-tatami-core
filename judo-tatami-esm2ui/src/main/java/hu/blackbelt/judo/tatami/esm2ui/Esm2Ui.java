@@ -9,7 +9,6 @@ import hu.blackbelt.epsilon.runtime.execution.impl.Slf4jLog;
 import hu.blackbelt.judo.meta.esm.runtime.EsmModel;
 import hu.blackbelt.judo.meta.esm.runtime.EsmUtils;
 import hu.blackbelt.judo.meta.ui.runtime.UiUtils;
-import hu.blackbelt.judo.meta.ui.adapters.esm.EsmUiModelAdapter;
 import hu.blackbelt.judo.meta.ui.runtime.UiModel;
 import hu.blackbelt.judo.tatami.core.TransformationTraceUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -103,7 +102,6 @@ public class Esm2Ui {
                 .injectContexts(ImmutableMap.of(
                         "esmUtils", new EsmUtils(),
                         "uiUtils", new UiUtils(),
-                        "modelAdapter", new EsmUiModelAdapter(esmModel.getResourceSet(), uiModel.getResourceSet()),
                         "applicationType", applicationType,
                         "applicationColumns", applicationColumns
                 ))

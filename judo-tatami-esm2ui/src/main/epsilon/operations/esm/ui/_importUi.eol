@@ -1,3 +1,4 @@
+import "visualElement.eol";
 import "container.eol";
 import "group.eol";
 import "dataField.eol";

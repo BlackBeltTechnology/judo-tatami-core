@@ -1,8 +1,6 @@
-operation ESM!esm::ui::Container createFlexFromContainer() : UI!ui::Flex {
+operation ESM!esm::ui::Container createFlexFromContainer(application : UI!ui::Application) : UI!ui::Flex {
 	var ret = new UI!ui::Flex();
 	
-    ret.binding = modelAdapter.buildTypeNameFromNamedElement(self).get();
-    
 	ret.name = self.name;	
 
 	if (self.layout == ESM!esm::ui::Layout#HORIZONTAL) {
@@ -13,11 +11,11 @@ operation ESM!esm::ui::Container createFlexFromContainer() : UI!ui::Flex {
 	}
 
 	for (component in self.components) {
-		ret.children.add(component.map());
+		ret.children.add(component.map(application));
 	}
 	return ret;
 }
 
-operation ESM!esm::ui::Container map() : UI!ui::Flex {
-	return self.createFlexFromContainer();
+operation ESM!esm::ui::Container map(application : UI!ui::Application) : UI!ui::Flex {
+	return self.createFlexFromContainer(application);
 }

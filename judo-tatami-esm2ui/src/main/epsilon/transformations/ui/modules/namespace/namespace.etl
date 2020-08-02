@@ -5,14 +5,12 @@ import "../../../../operations/_importAll.eol";
 rule CreateNamedElementFromNamedElement
   transform s : ESM!esm::namespace::NamedElement
   to t : UI!ui::NamedElement {
-    t.binding = modelAdapter.buildTypeNameFromNamedElement(s).get();
-    log.debug("Created name element: " + t.name);
+//    log.debug("Created name element: " + t.name);
 }
 
 @abstract
 rule CreateNamedElementFromNamespaceElement
   transform s : ESM!esm::namespace::NamespaceElement
   to t : UI!ui::NamedElement {
-    t.binding = modelAdapter.buildTypeName(s).get();
-    log.debug("Created namespace element: " + t.name);
+//    log.debug("Created namespace element: " + t.name);
 }

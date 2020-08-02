@@ -1,0 +1,27 @@
+operation ESM!esm::structure::Class fqName() : String {
+	return esmUtils.getNamespaceElementFQName(self);
+}
+
+operation ESM!esm::structure::Class createClassType(application : UI!ui::Application) : UI!ui::data::ClassType {
+	var clazz = new UI!ui::data::ClassType();	
+	clazz.name = self.fqName();
+	application.dataElements.add(clazz);
+	
+	for (relation in self.relations) {
+		relation.createRelationTypeForClass(application, clazz);
+	}
+	for (attribute in self.attributes) {
+		attribute.createAttributeTypeForClass(application, clazz);
+	}
+		
+	log.debug("Create class type: " + clazz.name);
+	return clazz;
+}
+
+operation ESM!esm::structure::Class mapClassType(application : UI!ui::Application) : UI!ui::data::ClassType {
+	var clazz = application.dataElements.selectOne(r | r.name = self.fqName());
+	if (clazz.isUndefined()) {
+		clazz = self.createClassType(application);
+	}
+	return clazz;
+}

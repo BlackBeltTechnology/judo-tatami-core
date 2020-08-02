@@ -1,14 +1,13 @@
-operation ESM!esm::ui::TabularReferenceField createTableFromTabularReferenceField() : UI!ui::Table {
+operation ESM!esm::ui::TabularReferenceField createTableFromTabularReferenceField(application : UI!ui::Application) : UI!ui::Table {
 	var table : UI!ui::Table = new UI!ui::Table();
-    table.binding = modelAdapter.buildTypeNameFromNamedElement(self).get();
 	table.name = self.name;	
 	
 	for (column in self.columns) {
-		table.columns.add(column.map());
+		table.columns.add(column.map(application));
 	}
 	return table;
 }
 
-operation ESM!esm::ui::TabularReferenceField map() : UI!ui::Table {
-	return self.createTableFromTabularReferenceField();
+operation ESM!esm::ui::TabularReferenceField map(application : UI!ui::Application) : UI!ui::Table {
+	return self.createTableFromTabularReferenceField(application);
 }
