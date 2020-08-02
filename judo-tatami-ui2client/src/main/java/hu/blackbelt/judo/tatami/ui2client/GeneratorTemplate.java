@@ -23,10 +23,10 @@ import java.util.List;
 @Setter
 @Builder(builderMethodName = "generatorTemplateBuilder")
 public class GeneratorTemplate {
+
 	private String factoryExpression;
 	private String pathExpression;
 
-	@Builder.Default
 	private String overwriteExpression = "true";
 
 	private String template;
@@ -34,6 +34,9 @@ public class GeneratorTemplate {
 
 	@Builder.Default
 	private Collection<Expression> templateContext = new HashSet();
+
+	@Builder.Default
+	private boolean copy = false;
 
 	@AllArgsConstructor
 	@NoArgsConstructor

@@ -8,7 +8,7 @@ import lombok.Setter;
 public class GeneratedFile {
 
 	private String path;
-	private String source;
+	private byte[] content;
 	private Boolean overwrite = true;
 	
 }

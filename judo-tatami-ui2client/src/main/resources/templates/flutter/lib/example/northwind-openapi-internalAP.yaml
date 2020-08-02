@@ -1,0 +1,1063 @@
+---
+swagger: '2.0'
+info:
+  version: 1.0.0
+  title: InternalAP
+host: localhost:8181
+basePath: "/api/northwind"
+tags:
+  - name: allInternationalOrders
+    description: Exposed graph with InternationalOrderInfo instances as root
+  - name: allShippers
+    description: Exposed graph with ShipperInfo instances as root
+schemes:
+  - http
+produces:
+  - application/json
+paths:
+  "/services/OrderInfo/shipper/get":
+    get:
+      tags:
+        - allInternationalOrders
+      operationId: northwind.services.OrderInfo#_getShipper
+      parameters:
+        - "$ref": "#/parameters/__identifier__northwind_entities_Order"
+      responses:
+        '200':
+          description: Operation completed successfully
+          schema:
+            "$ref": "#/definitions/northwind_services_ShipperInfo"
+  "/services/CategoryInfo/products/get":
+    get:
+      tags:
+        - allInternationalOrders
+      operationId: northwind.services.CategoryInfo#_getProducts
+      parameters:
+        - "$ref": "#/parameters/__identifier__northwind_entities_Category"
+      responses:
+        '200':
+          description: Operation completed successfully
+          schema:
+            "$ref": "#/definitions/arrayOf__northwind_services_ProductInfo"
+  "/services/ProductInfo/category/get":
+    get:
+      tags:
+        - allInternationalOrders
+      operationId: northwind.services.ProductInfo#_getCategory
+      parameters:
+        - "$ref": "#/parameters/__identifier__northwind_entities_Product"
+      responses:
+        '200':
+          description: Operation completed successfully
+          schema:
+            "$ref": "#/definitions/northwind_services_CategoryInfo"
+  "/services/OrderItem/product/get":
+    get:
+      tags:
+        - allInternationalOrders
+      operationId: northwind.services.OrderItem#_getProduct
+      parameters:
+        - "$ref": "#/parameters/__identifier__northwind_entities_OrderDetail"
+      responses:
+        '200':
+          description: Operation completed successfully
+          schema:
+            "$ref": "#/definitions/northwind_services_ProductInfo"
+  "/InternalAP/allShippers/delete":
+    post:
+      operationId: northwind.InternalAP#_deleteAllShippers
+      parameters:
+        - "$ref": "#/parameters/northwind_InternalAP__deleteAllShippers__input"
+      responses:
+        '204':
+          description: Operation completed successfully
+  "/services/InternationalOrderInfo/shipAll":
+    post:
+      tags:
+        - allInternationalOrders
+      operationId: northwind.services.InternationalOrderInfo#shipAll
+      parameters: []
+      responses:
+        '204':
+          description: Operation completed successfully
+  "/InternalAP/allShippers/update":
+    post:
+      operationId: northwind.InternalAP#_updateAllShippers
+      parameters:
+        - "$ref": "#/parameters/northwind_InternalAP__updateAllShippers__input"
+      responses:
+        '200':
+          description: Operation completed successfully
+          schema:
+            "$ref": "#/definitions/northwind_services_ShipperInfo"
+  "/services/OrderInfo/ship": {}
+  "/InternalAP/allInternationalOrders/shipper/unset":
+    post:
+      operationId: northwind.InternalAP#_unsetShipperOfAllInternationalOrders
+      parameters:
+        - "$ref": "#/parameters/northwind_InternalAP__unsetShipperOfAllInternationalOrders__input"
+      responses:
+        '204':
+          description: Operation completed successfully
+  "/services/OrderInfo/items/delete":
+    post:
+      tags:
+        - allInternationalOrders
+      operationId: northwind.services.OrderInfo#_deleteItems
+      parameters:
+        - "$ref": "#/parameters/northwind_services_OrderInfo__deleteItems__input"
+        - "$ref": "#/parameters/__identifier__northwind_entities_Order"
+      responses:
+        '204':
+          description: Operation completed successfully
+  "/services/CategoryInfo/products/create":
+    post:
+      tags:
+        - allInternationalOrders
+      operationId: northwind.services.CategoryInfo#_createProducts
+      parameters:
+        - "$ref": "#/parameters/northwind_services_CategoryInfo__createProducts__input"
+        - "$ref": "#/parameters/__identifier__northwind_entities_Category"
+      responses:
+        '200':
+          description: Operation completed successfully
+          schema:
+            "$ref": "#/definitions/northwind_services_ProductInfo"
+  "/services/InternationalOrderInfo/deleteAllCancelled":
+    post:
+      tags:
+        - allInternationalOrders
+      operationId: northwind.services.InternationalOrderInfo#deleteAllCancelled
+      parameters: []
+      responses:
+        '204':
+          description: Operation completed successfully
+  "/InternalAP/allInternationalOrders/delete":
+    post:
+      operationId: northwind.InternalAP#_deleteAllInternationalOrders
+      parameters:
+        - "$ref": "#/parameters/northwind_InternalAP__deleteAllInternationalOrders__input"
+      responses:
+        '204':
+          description: Operation completed successfully
+  "/services/OrderInfo/items/update":
+    post:
+      tags:
+        - allInternationalOrders
+      operationId: northwind.services.OrderInfo#_updateItems
+      parameters:
+        - "$ref": "#/parameters/northwind_services_OrderInfo__updateItems__input"
+        - "$ref": "#/parameters/__identifier__northwind_entities_Order"
+      responses:
+        '200':
+          description: Operation completed successfully
+          schema:
+            "$ref": "#/definitions/northwind_services_OrderItem"
+  "/services/OrderInfo/changeShipment":
+    post:
+      tags:
+        - allInternationalOrders
+      operationId: northwind.services.OrderInfo#changeShipment
+      parameters:
+        - "$ref": "#/parameters/northwind_services_OrderInfo_changeShipment__input"
+        - "$ref": "#/parameters/__identifier__northwind_entities_Order"
+      responses:
+        '200':
+          description: Operation completed successfully
+          schema:
+            "$ref": "#/definitions/northwind_services_OrderInfo"
+  "/InternalAP/allInternationalOrders/get":
+    get:
+      operationId: northwind.InternalAP#_getAllInternationalOrders
+      parameters: []
+      responses:
+        '200':
+          description: Operation completed successfully
+          schema:
+            "$ref": "#/definitions/arrayOf__northwind_services_InternationalOrderInfo"
+  "/InternalAP/allInternationalOrders/shipper/set":
+    post:
+      operationId: northwind.InternalAP#_setShipperOfAllInternationalOrders
+      parameters:
+        - "$ref": "#/parameters/northwind_InternalAP__setShipperOfAllInternationalOrders__input"
+      responses:
+        '204':
+          description: Operation completed successfully
+  "/services/OrderInfo/items/get":
+    get:
+      tags:
+        - allInternationalOrders
+      operationId: northwind.services.OrderInfo#_getItems
+      parameters:
+        - "$ref": "#/parameters/__identifier__northwind_entities_Order"
+      responses:
+        '200':
+          description: Operation completed successfully
+          schema:
+            "$ref": "#/definitions/arrayOf__northwind_services_OrderItem"
+  "/services/CategoryInfo/products/delete":
+    post:
+      tags:
+        - allInternationalOrders
+      operationId: northwind.services.CategoryInfo#_deleteProducts
+      parameters:
+        - "$ref": "#/parameters/northwind_services_CategoryInfo__deleteProducts__input"
+        - "$ref": "#/parameters/__identifier__northwind_entities_Category"
+      responses:
+        '204':
+          description: Operation completed successfully
+  "/services/CategoryInfo/products/category/set":
+    post:
+      tags:
+        - allInternationalOrders
+      operationId: northwind.services.CategoryInfo#_setCategoryOfProducts
+      parameters:
+        - "$ref": "#/parameters/northwind_services_CategoryInfo__setCategoryOfProducts__input"
+        - "$ref": "#/parameters/__identifier__northwind_entities_Category"
+      responses:
+        '204':
+          description: Operation completed successfully
+  "/InternalAP/allInternationalOrders/create":
+    post:
+      operationId: northwind.InternalAP#_createAllInternationalOrders
+      parameters:
+        - "$ref": "#/parameters/northwind_InternalAP__createAllInternationalOrders__input"
+      responses:
+        '200':
+          description: Operation completed successfully
+          schema:
+            "$ref": "#/definitions/northwind_services_InternationalOrderInfo"
+  "/services/OrderItem/category/get":
+    get:
+      tags:
+        - allInternationalOrders
+      operationId: northwind.services.OrderItem#_getCategory
+      parameters:
+        - "$ref": "#/parameters/__identifier__northwind_entities_OrderDetail"
+      responses:
+        '200':
+          description: Operation completed successfully
+          schema:
+            "$ref": "#/definitions/northwind_services_CategoryInfo"
+  "/InternalAP/allInternationalOrders/update":
+    post:
+      operationId: northwind.InternalAP#_updateAllInternationalOrders
+      parameters:
+        - "$ref": "#/parameters/northwind_InternalAP__updateAllInternationalOrders__input"
+      responses:
+        '200':
+          description: Operation completed successfully
+          schema:
+            "$ref": "#/definitions/northwind_services_InternationalOrderInfo"
+  "/InternalAP/allInternationalOrders/items/remove":
+    post:
+      operationId: northwind.InternalAP#_removeItemsFromAllInternationalOrders
+      parameters:
+        - "$ref": "#/parameters/northwind_InternalAP__removeItemsFromAllInternationalOrders__input"
+      responses:
+        '204':
+          description: Operation completed successfully
+  "/InternalAP/allShippers/create":
+    post:
+      operationId: northwind.InternalAP#_createAllShippers
+      parameters:
+        - "$ref": "#/parameters/northwind_InternalAP__createAllShippers__input"
+      responses:
+        '200':
+          description: Operation completed successfully
+          schema:
+            "$ref": "#/definitions/northwind_services_ShipperInfo"
+  "/services/OrderInfo/items/product/set":
+    post:
+      tags:
+        - allInternationalOrders
+      operationId: northwind.services.OrderInfo#_setProductOfItems
+      parameters:
+        - "$ref": "#/parameters/northwind_services_OrderInfo__setProductOfItems__input"
+        - "$ref": "#/parameters/__identifier__northwind_entities_Order"
+      responses:
+        '204':
+          description: Operation completed successfully
+  "/services/OrderInfo/items/create":
+    post:
+      tags:
+        - allInternationalOrders
+      operationId: northwind.services.OrderInfo#_createItems
+      parameters:
+        - "$ref": "#/parameters/northwind_services_OrderInfo__createItems__input"
+        - "$ref": "#/parameters/__identifier__northwind_entities_Order"
+      responses:
+        '200':
+          description: Operation completed successfully
+          schema:
+            "$ref": "#/definitions/northwind_services_OrderItem"
+  "/InternalAP/allShippers/get":
+    get:
+      operationId: northwind.InternalAP#_getAllShippers
+      parameters: []
+      responses:
+        '200':
+          description: Operation completed successfully
+          schema:
+            "$ref": "#/definitions/arrayOf__northwind_services_ShipperInfo"
+  "/services/OrderInfo/categories/get":
+    get:
+      tags:
+        - allInternationalOrders
+      operationId: northwind.services.OrderInfo#_getCategories
+      parameters:
+        - "$ref": "#/parameters/__identifier__northwind_entities_Order"
+      responses:
+        '200':
+          description: Operation completed successfully
+          schema:
+            "$ref": "#/definitions/arrayOf__northwind_services_CategoryInfo"
+  "/services/CategoryInfo/products/update":
+    post:
+      tags:
+        - allInternationalOrders
+      operationId: northwind.services.CategoryInfo#_updateProducts
+      parameters:
+        - "$ref": "#/parameters/northwind_services_CategoryInfo__updateProducts__input"
+        - "$ref": "#/parameters/__identifier__northwind_entities_Category"
+      responses:
+        '200':
+          description: Operation completed successfully
+          schema:
+            "$ref": "#/definitions/northwind_services_ProductInfo"
+definitions:
+  northwind_services_ProductInfo:
+    type: object
+    required:
+      - productName
+      - unitPrice
+    properties:
+      unitPrice:
+        type: number
+        format: double
+      weight:
+        type: number
+        format: double
+      __identifier:
+        type: string
+        description: ID of Product instance
+      productName:
+        type: string
+    uniqueItems: false
+    description: Schema of ProductInfo instance
+  northwind_services_CategoryInfo:
+    type: object
+    required:
+      - categoryName
+    properties:
+      __identifier:
+        type: string
+        description: ID of Category instance
+      categoryName:
+        type: string
+    uniqueItems: false
+    description: Schema of CategoryInfo instance
+  northwind_services_OrderInfo:
+    type: object
+    required:
+      - orderDate
+    properties:
+      comments:
+        "$ref": "#/definitions/arrayOf__northwind_services_Comment"
+      totalPrice:
+        type: number
+        format: double
+        readOnly: true
+      totalWeight:
+        type: number
+        format: double
+        readOnly: true
+      shipperName:
+        type: string
+        readOnly: true
+      __identifier:
+        type: string
+        description: ID of Order instance
+      items:
+        "$ref": "#/definitions/arrayOf__northwind_services_OrderItem"
+      orderDate:
+        type: string
+        format: date-time
+    uniqueItems: false
+    description: Schema of OrderInfo instance
+  northwind_services_InternationalOrderInfo:
+    type: object
+    properties:
+      exciseTax:
+        type: number
+        format: double
+      customsDescription:
+        type: string
+      __identifier:
+        type: string
+        description: ID of Order instance
+      comments:
+        "$ref": "#/definitions/arrayOf__northwind_services_Comment"
+      items:
+        "$ref": "#/definitions/arrayOf__northwind_services_OrderItem"
+      orderDate:
+        type: string
+        format: date-time
+      shipperName:
+        type: string
+        readOnly: true
+      totalPrice:
+        type: number
+        format: double
+        readOnly: true
+      totalWeight:
+        type: number
+        format: double
+        readOnly: true
+    description: Schema of InternationalOrderInfo instance
+  northwind_services_ShipperInfo:
+    type: object
+    required:
+      - companyName
+    properties:
+      companyName:
+        type: string
+      __identifier:
+        type: string
+        description: ID of Shipper instance
+    uniqueItems: false
+    description: Schema of ShipperInfo instance
+  northwind_services_OrderItem:
+    type: object
+    required:
+      - discount
+      - quantity
+      - unitPrice
+    properties:
+      unitPrice:
+        type: number
+        format: double
+      quantity:
+        type: integer
+        format: int32
+      price:
+        type: number
+        format: double
+        readOnly: true
+      discount:
+        type: number
+        format: double
+      __identifier:
+        type: string
+        description: ID of OrderDetail instance
+      categoryName:
+        type: string
+        readOnly: true
+      productName:
+        type: string
+        readOnly: true
+    uniqueItems: false
+    description: Schema of OrderItem instance
+  northwind_services_ShipmentChange:
+    type: object
+    required:
+      - shipperName
+    properties:
+      shipperName:
+        type: string
+      orderDate:
+        type: string
+        format: date-time
+    uniqueItems: false
+    description: Schema of ShipmentChange instance
+  northwind_services_Comment:
+    type: object
+    required:
+      - note
+    properties:
+      note:
+        type: string
+      author:
+        type: string
+      timestamp:
+        type: string
+        format: date-time
+    uniqueItems: false
+    description: Schema of Comment instance
+  northwind_InternalAP:
+    type: object
+    properties:
+      allShippers:
+        readOnly: true
+        "$ref": "#/definitions/arrayOf__northwind_services_ShipperInfo"
+      allInternationalOrders:
+        readOnly: true
+        "$ref": "#/definitions/arrayOf__northwind_services_InternationalOrderInfo"
+    uniqueItems: false
+    description: Schema of InternalAP instance
+  arrayOf__northwind_services_InternationalOrderInfo:
+    properties: {}
+    type: array
+    description: Array of InternationalOrderInfo instances
+    items:
+      "$ref": "#/definitions/northwind_services_InternationalOrderInfo"
+    uniqueItems: false
+  arrayOf__northwind_services_ShipperInfo:
+    properties: {}
+    type: array
+    description: Array of ShipperInfo instances
+    items:
+      "$ref": "#/definitions/northwind_services_ShipperInfo"
+    uniqueItems: false
+  arrayOf__northwind_services_OrderItem:
+    properties: {}
+    type: array
+    description: Array of OrderItem instances
+    items:
+      "$ref": "#/definitions/northwind_services_OrderItem"
+    uniqueItems: false
+  arrayOf__northwind_services_Comment:
+    properties: {}
+    type: array
+    description: Array of Comment instances
+    items:
+      "$ref": "#/definitions/northwind_services_Comment"
+    uniqueItems: false
+  northwind_services_ProductInfo__extended:
+    type: object
+    required:
+      - category
+      - productName
+      - unitPrice
+    properties:
+      unitPrice:
+        type: number
+        format: double
+      weight:
+        type: number
+        format: double
+      __identifier:
+        type: string
+        description: ID of Product instance
+      category:
+        type: object
+        properties:
+          __identifier:
+            type: string
+            description: ID of Category instance
+      productName:
+        type: string
+    uniqueItems: false
+    description: Schema of ProductInfo instance (for creation)
+  northwind_services_CategoryInfo__extended:
+    type: object
+    required:
+      - categoryName
+    properties:
+      __identifier:
+        type: string
+        description: ID of Category instance
+      categoryName:
+        type: string
+      products:
+        type: object
+        properties:
+          __identifier:
+            type: string
+            description: ID of Product instance
+    uniqueItems: false
+    description: Schema of CategoryInfo instance (for creation)
+  northwind_services_OrderInfo__extended:
+    type: object
+    required:
+      - orderDate
+    properties:
+      shipper:
+        type: object
+        properties:
+          __identifier:
+            type: string
+            description: ID of Shipper instance
+      comments:
+        "$ref": "#/definitions/arrayOf__northwind_services_Comment__extended"
+      totalPrice:
+        type: number
+        format: double
+        readOnly: true
+      totalWeight:
+        type: number
+        format: double
+        readOnly: true
+      shipperName:
+        type: string
+        readOnly: true
+      __identifier:
+        type: string
+        description: ID of Order instance
+      categories:
+        type: object
+        readOnly: true
+        properties:
+          __identifier:
+            type: string
+            description: ID of Category instance
+      items:
+        "$ref": "#/definitions/arrayOf__northwind_services_OrderItem__extended"
+      orderDate:
+        type: string
+        format: date-time
+    uniqueItems: false
+    description: Schema of OrderInfo instance (for creation)
+  northwind_services_InternationalOrderInfo__extended:
+    type: object
+    properties:
+      exciseTax:
+        type: number
+        format: double
+      customsDescription:
+        type: string
+      __identifier:
+        type: string
+        description: ID of Order instance
+      categories:
+        type: object
+        readOnly: true
+        properties:
+          __identifier:
+            type: string
+            description: ID of Category instance
+      comments:
+        "$ref": "#/definitions/arrayOf__northwind_services_Comment__extended"
+      items:
+        "$ref": "#/definitions/arrayOf__northwind_services_OrderItem__extended"
+      orderDate:
+        type: string
+        format: date-time
+      shipper:
+        type: object
+        properties:
+          __identifier:
+            type: string
+            description: ID of Shipper instance
+      shipperName:
+        type: string
+        readOnly: true
+      totalPrice:
+        type: number
+        format: double
+        readOnly: true
+      totalWeight:
+        type: number
+        format: double
+        readOnly: true
+    description: Schema of InternationalOrderInfo instance (for creation)
+  northwind_services_ShipperInfo__extended:
+    type: object
+    required:
+      - companyName
+    properties:
+      companyName:
+        type: string
+      __identifier:
+        type: string
+        description: ID of Shipper instance
+    uniqueItems: false
+    description: Schema of ShipperInfo instance (for creation)
+  northwind_services_OrderItem__extended:
+    type: object
+    required:
+      - discount
+      - product
+      - quantity
+      - unitPrice
+    properties:
+      unitPrice:
+        type: number
+        format: double
+      product:
+        type: object
+        properties:
+          __identifier:
+            type: string
+            description: ID of Product instance
+      quantity:
+        type: integer
+        format: int32
+      price:
+        type: number
+        format: double
+        readOnly: true
+      discount:
+        type: number
+        format: double
+      __identifier:
+        type: string
+        description: ID of OrderDetail instance
+      category:
+        type: object
+        readOnly: true
+        properties:
+          __identifier:
+            type: string
+            description: ID of Category instance
+      categoryName:
+        type: string
+        readOnly: true
+      productName:
+        type: string
+        readOnly: true
+    uniqueItems: false
+    description: Schema of OrderItem instance (for creation)
+  northwind_services_ShipmentChange__extended:
+    type: object
+    required:
+      - shipperName
+    properties:
+      shipperName:
+        type: string
+      orderDate:
+        type: string
+        format: date-time
+    uniqueItems: false
+    description: Schema of ShipmentChange instance (for creation)
+  northwind_services_Comment__extended:
+    type: object
+    required:
+      - note
+    properties:
+      note:
+        type: string
+      author:
+        type: string
+      timestamp:
+        type: string
+        format: date-time
+    uniqueItems: false
+    description: Schema of Comment instance (for creation)
+  northwind_InternalAP__extended:
+    type: object
+    properties:
+      allShippers:
+        readOnly: true
+        "$ref": "#/definitions/arrayOf__northwind_services_ShipperInfo__extended"
+      allInternationalOrders:
+        readOnly: true
+        "$ref": "#/definitions/arrayOf__northwind_services_InternationalOrderInfo__extended"
+    uniqueItems: false
+    description: Schema of InternalAP instance (for creation)
+  arrayOf__northwind_services_InternationalOrderInfo__extended:
+    properties: {}
+    type: array
+    description: Array of InternationalOrderInfo instances (for creation)
+    items:
+      "$ref": "#/definitions/northwind_services_InternationalOrderInfo__extended"
+    uniqueItems: false
+  arrayOf__northwind_services_ShipperInfo__extended:
+    properties: {}
+    type: array
+    description: Array of ShipperInfo instances (for creation)
+    items:
+      "$ref": "#/definitions/northwind_services_ShipperInfo__extended"
+    uniqueItems: false
+  arrayOf__northwind_services_OrderItem__extended:
+    properties: {}
+    type: array
+    description: Array of OrderItem instances (for creation)
+    items:
+      "$ref": "#/definitions/northwind_services_OrderItem__extended"
+    uniqueItems: false
+  arrayOf__northwind_services_Comment__extended:
+    properties: {}
+    type: array
+    description: Array of Comment instances (for creation)
+    items:
+      "$ref": "#/definitions/northwind_services_Comment__extended"
+    uniqueItems: false
+  northwind__identifier:
+    type: object
+    properties:
+      __identifier:
+        type: string
+        description: ID of instance
+    uniqueItems: false
+    description: Schema of instance reference
+  arrayOf__northwind_InternalAP:
+    properties: {}
+    type: array
+    description: Array of InternalAP instances
+    items:
+      "$ref": "#/definitions/northwind_InternalAP"
+    uniqueItems: false
+  arrayOf__northwind_services_ProductInfo:
+    properties: {}
+    type: array
+    description: Array of ProductInfo instances
+    items:
+      "$ref": "#/definitions/northwind_services_ProductInfo"
+    uniqueItems: false
+  arrayOf__northwind_services_CategoryInfo:
+    properties: {}
+    type: array
+    description: Array of CategoryInfo instances
+    items:
+      "$ref": "#/definitions/northwind_services_CategoryInfo"
+    uniqueItems: false
+  arrayOf__northwind_services_OrderInfo:
+    properties: {}
+    type: array
+    description: Array of OrderInfo instances
+    items:
+      "$ref": "#/definitions/northwind_services_OrderInfo"
+    uniqueItems: false
+  arrayOf__northwind_services_ShipmentChange:
+    properties: {}
+    type: array
+    description: Array of ShipmentChange instances
+    items:
+      "$ref": "#/definitions/northwind_services_ShipmentChange"
+    uniqueItems: false
+  arrayOf__northwind_InternalAP__extended:
+    properties: {}
+    type: array
+    description: Array of InternalAP instances (for creation)
+    items:
+      "$ref": "#/definitions/northwind_InternalAP__extended"
+    uniqueItems: false
+  arrayOf__northwind_services_ProductInfo__extended:
+    properties: {}
+    type: array
+    description: Array of ProductInfo instances (for creation)
+    items:
+      "$ref": "#/definitions/northwind_services_ProductInfo__extended"
+    uniqueItems: false
+  arrayOf__northwind_services_CategoryInfo__extended:
+    properties: {}
+    type: array
+    description: Array of CategoryInfo instances (for creation)
+    items:
+      "$ref": "#/definitions/northwind_services_CategoryInfo__extended"
+    uniqueItems: false
+  arrayOf__northwind_services_OrderInfo__extended:
+    properties: {}
+    type: array
+    description: Array of OrderInfo instances (for creation)
+    items:
+      "$ref": "#/definitions/northwind_services_OrderInfo__extended"
+    uniqueItems: false
+  arrayOf__northwind_services_ShipmentChange__extended:
+    properties: {}
+    type: array
+    description: Array of ShipmentChange instances (for creation)
+    items:
+      "$ref": "#/definitions/northwind_services_ShipmentChange__extended"
+    uniqueItems: false
+  northwind_InternalAP__removeItemsFromAllInternationalOrders__input:
+    type: object
+    properties:
+      __identifier:
+        type: string
+        description: ID of instance
+      items:
+        type: array
+        description: Referenced element(s)
+        items:
+          type: object
+          properties:
+            __identifier:
+              type: string
+              description: ID of referenced instance
+    uniqueItems: false
+    description: Schema of change instance reference
+  northwind_InternalAP__setShipperOfAllInternationalOrders__input:
+    type: object
+    properties:
+      shipper:
+        type: object
+        description: Referenced element(s)
+        properties:
+          __identifier:
+            type: string
+            description: ID of referenced instance
+      __identifier:
+        type: string
+        description: ID of instance
+    uniqueItems: false
+    description: Schema of change instance reference
+  northwind_services_CategoryInfo__setCategoryOfProducts__input:
+    type: object
+    properties:
+      __identifier:
+        type: string
+        description: ID of instance
+      category:
+        type: object
+        description: Referenced element(s)
+        properties:
+          __identifier:
+            type: string
+            description: ID of referenced instance
+    uniqueItems: false
+    description: Schema of change instance reference
+  northwind_services_OrderInfo__setProductOfItems__input:
+    type: object
+    properties:
+      product:
+        type: object
+        description: Referenced element(s)
+        properties:
+          __identifier:
+            type: string
+            description: ID of referenced instance
+      __identifier:
+        type: string
+        description: ID of instance
+    uniqueItems: false
+    description: Schema of change instance reference
+parameters:
+  __identifier__northwind_entities_Product:
+    name: __identifier
+    in: header
+    description: ID of Product instance
+    required: true
+    type: string
+  __identifier__northwind_entities_Category:
+    name: __identifier
+    in: header
+    description: ID of Category instance
+    required: true
+    type: string
+  __identifier__northwind_entities_Order:
+    name: __identifier
+    in: header
+    description: ID of Order instance
+    required: true
+    type: string
+  __identifier__northwind_entities_InternationalOrder:
+    name: __identifier
+    in: header
+    description: ID of InternationalOrder instance
+    required: true
+    type: string
+  __identifier__northwind_entities_Shipper:
+    name: __identifier
+    in: header
+    description: ID of Shipper instance
+    required: true
+    type: string
+  __identifier__northwind_entities_OrderDetail:
+    name: __identifier
+    in: header
+    description: ID of OrderDetail instance
+    required: true
+    type: string
+  northwind_InternalAP__createAllInternationalOrders__input:
+    in: body
+    name: input
+    required: true
+    schema:
+      "$ref": "#/definitions/northwind_services_InternationalOrderInfo__extended"
+  northwind_InternalAP__createAllShippers__input:
+    in: body
+    name: input
+    required: true
+    schema:
+      "$ref": "#/definitions/northwind_services_ShipperInfo__extended"
+  northwind_InternalAP__removeItemsFromAllInternationalOrders__input:
+    in: body
+    name: input
+    required: true
+    schema:
+      "$ref": "#/definitions/northwind_InternalAP__removeItemsFromAllInternationalOrders__input"
+  northwind_InternalAP__setShipperOfAllInternationalOrders__input:
+    in: body
+    name: input
+    required: true
+    schema:
+      "$ref": "#/definitions/northwind_InternalAP__setShipperOfAllInternationalOrders__input"
+  northwind_InternalAP__unsetShipperOfAllInternationalOrders__input:
+    in: body
+    name: input
+    required: true
+    schema:
+      "$ref": "#/definitions/northwind__identifier"
+  northwind_InternalAP__updateAllInternationalOrders__input:
+    in: body
+    name: input
+    required: true
+    schema:
+      "$ref": "#/definitions/northwind_services_InternationalOrderInfo"
+  northwind_InternalAP__updateAllShippers__input:
+    in: body
+    name: input
+    required: true
+    schema:
+      "$ref": "#/definitions/northwind_services_ShipperInfo"
+  northwind_InternalAP__deleteAllInternationalOrders__input:
+    in: body
+    name: input
+    required: true
+    schema:
+      "$ref": "#/definitions/northwind__identifier"
+  northwind_InternalAP__deleteAllShippers__input:
+    in: body
+    name: input
+    required: true
+    schema:
+      "$ref": "#/definitions/northwind__identifier"
+  northwind_services_CategoryInfo__createProducts__input:
+    in: body
+    name: input
+    required: true
+    schema:
+      "$ref": "#/definitions/northwind_services_ProductInfo__extended"
+  northwind_services_CategoryInfo__setCategoryOfProducts__input:
+    in: body
+    name: input
+    required: true
+    schema:
+      "$ref": "#/definitions/northwind_services_CategoryInfo__setCategoryOfProducts__input"
+  northwind_services_CategoryInfo__updateProducts__input:
+    in: body
+    name: input
+    required: true
+    schema:
+      "$ref": "#/definitions/northwind_services_ProductInfo"
+  northwind_services_CategoryInfo__deleteProducts__input:
+    in: body
+    name: input
+    required: true
+    schema:
+      "$ref": "#/definitions/northwind__identifier"
+  northwind_services_OrderInfo_changeShipment__input:
+    in: body
+    name: input
+    required: true
+    schema:
+      "$ref": "#/definitions/northwind_services_ShipmentChange"
+  northwind_services_OrderInfo__createItems__input:
+    in: body
+    name: input
+    required: true
+    schema:
+      "$ref": "#/definitions/northwind_services_OrderItem__extended"
+  northwind_services_OrderInfo__setProductOfItems__input:
+    in: body
+    name: input
+    required: true
+    schema:
+      "$ref": "#/definitions/northwind_services_OrderInfo__setProductOfItems__input"
+  northwind_services_OrderInfo__updateItems__input:
+    in: body
+    name: input
+    required: true
+    schema:
+      "$ref": "#/definitions/northwind_services_OrderItem"
+  northwind_services_OrderInfo__deleteItems__input:
+    in: body
+    name: input
+    required: true
+    schema:
+      "$ref": "#/definitions/northwind__identifier"
+responses:
+  InternalServerError:
+    description: Internal server error

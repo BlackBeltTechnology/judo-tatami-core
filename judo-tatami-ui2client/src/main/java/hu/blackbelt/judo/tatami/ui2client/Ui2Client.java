@@ -5,6 +5,7 @@ import com.github.jknack.handlebars.Handlebars;
 import com.github.jknack.handlebars.Template;
 import com.github.jknack.handlebars.io.*;
 import com.google.common.base.Charsets;
+import com.google.common.io.ByteStreams;
 import hu.blackbelt.epsilon.runtime.execution.api.Log;
 import hu.blackbelt.epsilon.runtime.execution.impl.Slf4jLog;
 import hu.blackbelt.judo.meta.ui.runtime.UiModel;
@@ -20,6 +21,7 @@ import org.springframework.expression.spel.support.StandardEvaluationContext;
 import java.io.*;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.*;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -43,8 +45,9 @@ public class Ui2Client {
     public static Collection<GeneratedFile> executeUi2ClientGeneration(UiModel uiModel, Collection<GeneratorTemplate> generatorTemplates, Log log,
                                                                        URI scriptDir) throws Exception {
 
-        TemplateLoader scriptDirectoryTemplateLoader = new ClientGeneratorTemplateLoader(scriptDir);
-        scriptDirectoryTemplateLoader.setSuffix(".hbs");
+        ClientGeneratorTemplateLoader scriptDirectoryTemplateLoader = new ClientGeneratorTemplateLoader(scriptDir);
+        //scriptDirectoryTemplateLoader.setSuffix(".hbs");
+        scriptDirectoryTemplateLoader.setSuffix("");
 
         Handlebars handlebars = new Handlebars();
         handlebars.with(scriptDirectoryTemplateLoader);
@@ -62,8 +65,11 @@ public class Ui2Client {
                 final Expression factoryExpression = parser.parseExpression(generatorTemplate.getFactoryExpression());
                 final Expression pathExpression = parser.parseExpression(generatorTemplate.getPathExpression());
                 final Expression overWriteExpression = parser.parseExpression(generatorTemplate.getOverwriteExpression());
+
                 final Template template;
-                if (generatorTemplate.getTemplate() != null && !"".equals(generatorTemplate.getTemplate().trim())) {
+                if (generatorTemplate.isCopy()) {
+                    template = null;
+                } else if (generatorTemplate.getTemplate() != null && !"".equals(generatorTemplate.getTemplate().trim())) {
                     template = handlebars.compileInline(generatorTemplate.getTemplate());
                 } else if (generatorTemplate.getTemplateName() != null && !"".equals(generatorTemplate.getTemplateName().trim())) {
                     template = handlebars.compile(generatorTemplate.getTemplateName());
@@ -78,7 +84,7 @@ public class Ui2Client {
                 });
 
 
-                if (template != null) {
+                if (template != null || generatorTemplate.isCopy()) {
                     modelResourceSupport.getStreamOfUiApplication().forEach(app -> {
                         StandardEvaluationContext evaluationContext = new StandardEvaluationContext();
                         evaluationContext.setVariable("model", app);
@@ -105,16 +111,31 @@ public class Ui2Client {
                                     log.error("Class not found: " + ctx.getClassName());
                                 }
                             });
-                            StringWriter sourceFile = new StringWriter();
-                            try {
-                                template.apply(contextBuilder.build(), sourceFile);
-                            } catch (IOException e) {
-                                log.error("Could not generate template: " + path);
-                            }
+
                             GeneratedFile generatedFile = new GeneratedFile();
                             generatedFile.setOverwrite(overwite);
                             generatedFile.setPath(path);
-                            generatedFile.setSource(sourceFile.toString());
+
+                            if (generatorTemplate.isCopy()) {
+                                String location = generatorTemplate.getTemplateName();
+                                if (location.startsWith("/")) {
+                                    location =  location.substring(1);
+                                }
+                                location = scriptDirectoryTemplateLoader.resolve(location);
+                                try {
+                                    URL resource = scriptDirectoryTemplateLoader.getResource(location);
+                                    generatedFile.setContent(ByteStreams.toByteArray(resource.openStream()));
+                                } catch (IOException e) {
+                                }
+                            } else {
+                                StringWriter sourceFile = new StringWriter();
+                                try {
+                                    template.apply(contextBuilder.build(), sourceFile);
+                                } catch (IOException e) {
+                                    log.error("Could not generate template: " + path);
+                                }
+                                generatedFile.setContent(sourceFile.toString().getBytes(Charsets.UTF_8));
+                            }
                             sourceFiles.add(generatedFile);
                         });
 
@@ -155,8 +176,7 @@ public class Ui2Client {
         ZipOutputStream zipOutputStream = new ZipOutputStream(generatedZip);
         for (GeneratedFile generatedFile : generatedFiles) {
             zipOutputStream.putNextEntry(new ZipEntry(generatedFile.getPath()));
-            byte[] bytes = generatedFile.getSource().getBytes("utf-8");
-            zipOutputStream.write(bytes, 0, bytes.length);
+            zipOutputStream.write(generatedFile.getContent(), 0, generatedFile.getContent().length);
             zipOutputStream.flush();
             zipOutputStream.closeEntry();
         }

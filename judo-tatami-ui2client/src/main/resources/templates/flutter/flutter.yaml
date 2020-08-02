@@ -1,9 +1,157 @@
-- overwriteExpression: true
+- overwriteExpression: false
   factoryExpression: "{#model}"
-  pathExpression: "#element.name.replaceAll('/', '__').concat('_test.dart')"
-  templateName: flutter/test.dart
-  templateContext:
-      - name: application
-        expression: "#element"
-        className: hu.blackbelt.judo.meta.ui.Application
+  pathExpression: "'.gitignore'"
+  templateName: flutter/gitignore
+  copy: true
 
+- overwriteExpression: false
+  factoryExpression: "{#model}"
+  pathExpression: "'pubspec.yaml'"
+  templateName: flutter/pubspec.yaml
+  copy: true
+
+- overwriteExpression: false
+  factoryExpression: "{#model}"
+  pathExpression: "'README.md'"
+  templateName: flutter/README.md.hbs
+  templateContext:
+    - name: application
+      expression: "#element"
+      className: hu.blackbelt.judo.meta.ui.Application
+
+#- overwriteExpression: true
+#  factoryExpression: "{#model}"
+#  pathExpression: "#element.name.replaceAll('/', '__').concat('_test.dart')"
+#  templateName: flutter/test.dart
+#  templateContext:
+#      - name: application
+#        expression: "#element"
+#        className: hu.blackbelt.judo.meta.ui.Application
+
+- overwriteExpression: false
+  factoryExpression: "{#model}"
+  pathExpression: "'fonts/Roboto-Regular.ttf'"
+  templateName: flutter/fonts/Roboto-Regular.ttf
+  copy: true
+
+
+# ========================================
+# lib/components/parser
+# ========================================
+- overwriteExpression: false
+  factoryExpression: "{#model}"
+  pathExpression: "'lib/components/parsers/flexible_parser.dart'"
+  templateName: flutter/lib/components/parsers/flexible_parser.dart
+  copy: true
+
+- overwriteExpression: false
+  factoryExpression: "{#model}"
+  pathExpression: "'lib/components/parsers/judo_button_parser.dart'"
+  templateName: flutter/lib/components/parsers/judo_button_parser.dart
+  copy: true
+
+- overwriteExpression: false
+  factoryExpression: "{#model}"
+  pathExpression: "'lib/components/parsers/judo_group_parser.dart'"
+  templateName: flutter/lib/components/parsers/judo_group_parser.dart
+  copy: true
+
+- overwriteExpression: false
+  factoryExpression: "{#model}"
+  pathExpression: "'lib/components/parsers/judo_input_text_parser.dart'"
+  templateName: flutter/lib/components/parsers/judo_input_text_parser.dart
+  copy: true
+
+- overwriteExpression: false
+  factoryExpression: "{#model}"
+  pathExpression: "'lib/components/parsers/judo_radio_parser.dart'"
+  templateName: flutter/lib/components/parsers/judo_radio_parser.dart
+  copy: true
+
+- overwriteExpression: false
+  factoryExpression: "{#model}"
+  pathExpression: "'lib/components/parsers/judo_tab_parser.dart'"
+  templateName: flutter/lib/components/parsers/judo_tab_parser.dart
+  copy: true
+
+- overwriteExpression: false
+  factoryExpression: "{#model}"
+  pathExpression: "'lib/components/parsers/judo_title_parser.dart'"
+  templateName: flutter/lib/components/parsers/judo_title_parser.dart
+  copy: true
+
+- overwriteExpression: false
+  factoryExpression: "{#model}"
+  pathExpression: "'lib/components/parsers/tab_parser.dart'"
+  templateName: flutter/lib/components/parsers/tab_parser.dart
+  copy: true
+
+# ========================================
+# lib/components
+# ========================================
+
+- overwriteExpression: false
+  factoryExpression: "{#model}"
+  pathExpression: "'lib/components/judo_button.dart'"
+  templateName: flutter/lib/components/judo_button.dart
+  copy: true
+
+- overwriteExpression: false
+  factoryExpression: "{#model}"
+  pathExpression: "'lib/components/judo_card.dart'"
+  templateName: flutter/lib/components/judo_card.dart
+  copy: true
+
+- overwriteExpression: false
+  factoryExpression: "{#model}"
+  pathExpression: "'lib/components/judo_component.dart'"
+  templateName: flutter/lib/components/judo_component.dart
+  copy: true
+
+- overwriteExpression: false
+  factoryExpression: "{#model}"
+  pathExpression: "'lib/components/judo_container.dart'"
+  templateName: flutter/lib/components/judo_container.dart
+  copy: true
+
+- overwriteExpression: false
+  factoryExpression: "{#model}"
+  pathExpression: "'lib/components/judo_group.dart'"
+  templateName: flutter/lib/components/judo_group.dart
+  copy: true
+
+- overwriteExpression: false
+  factoryExpression: "{#model}"
+  pathExpression: "'lib/components/judo_input_text.dart'"
+  templateName: flutter/lib/components/judo_input_text.dart
+  copy: true
+
+- overwriteExpression: false
+  factoryExpression: "{#model}"
+  pathExpression: "'lib/components/judo_radio.dart'"
+  templateName: flutter/lib/components/judo_radio.dart
+  copy: true
+
+- overwriteExpression: false
+  factoryExpression: "{#model}"
+  pathExpression: "'lib/components/judo_radio_group.dart'"
+  templateName: flutter/lib/components/judo_radio_group.dart
+  copy: true
+
+- overwriteExpression: false
+  factoryExpression: "{#model}"
+  pathExpression: "'lib/components/judo_tab.dart'"
+  templateName: flutter/lib/components/judo_tab.dart
+  copy: true
+
+- overwriteExpression: false
+  factoryExpression: "{#model}"
+  pathExpression: "'lib/components/judo_tab_rework.dart'"
+  templateName: flutter/lib/components/judo_tab_rework.dart
+  copy: true
+
+- overwriteExpression: false
+  factoryExpression: "{#model}"
+  pathExpression: "'lib/components/judo_title.dart'"
+  templateName: flutter/lib/components/judo_title.dart
+  copy: true
