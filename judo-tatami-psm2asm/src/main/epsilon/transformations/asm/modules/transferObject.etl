@@ -23,10 +23,6 @@ rule CreateTransferObjectTypeAnnotationClass
         transferObject.value = "true";
         t.details.add(transferObject);
 
-        log.info("=> " + s.name);
-        log.info("  type -> " + s.type());
-        log.info("  asm -> " + s.asmEquivalent());
-        
         s.asmEquivalent().eAnnotations.add(t);
 	}
 
@@ -220,6 +216,21 @@ rule CreateTransferObjectRelationBindingAnnotation
         t.details.add(binding);
         
         s.equivalent("CreateTransferObjectRelation").eAnnotations.add(t); 
+    }
+
+rule CreateTransferObjectRelationRangeAnnotation
+	transform s : JUDOPSM!TransferObjectRelation
+	to t : ASM!EAnnotation {
+		guard: s.range.isDefined() and not s.range.isKindOf(JUDOPSM!StaticNavigation)
+
+		t.source = asmUtils.getAnnotationUri("range");
+
+		var range = new ASM!EStringToStringMapEntry;
+        range.key = "value";
+        range.value = s.range.name;
+        t.details.add(range);
+
+        s.equivalent("CreateTransferObjectRelation").eAnnotations.add(t);
     }
 
 rule CreateTransferAttributeClaimAnnotation

@@ -25,6 +25,23 @@ rule CreateTransferObjectRelation
       s.eContainer.getPSMEquivalent().relations.add(t);
 }
 
+@greedy
+rule CreateRangeTransferObjectRelation
+    transform s : ESM!RelationFeature
+    to t : JUDOPSM!TransferObjectRelation {
+        guard: s.eContainer.isKindOf(ESM!TransferObjectType) and s.eContainer.mapping.isDefined()
+            and s.target.mapping.isDefined() and s.rangeExpression.isDefined() and s.rangeExpression.trim().length() > 0
+
+        t.name = s.equivalent("CreateNavigationPropertyForTransferObjectRelationRange").name;
+        t.cardinality = new JUDOPSM!Cardinality;
+        t.cardinality.lower = 0;
+        t.cardinality.upper = -1;
+        t.target = s.target.getPSMTransferObjectTypeEquivalent();
+        t.binding = s.equivalent("CreateNavigationPropertyForTransferObjectRelationRange");
+
+        s.eContainer.getPSMTransferObjectTypeEquivalent().relations.add(t);
+}
+
 rule CreateTransferObjectRelationFromRelationOrProperty
     transform s: ESM!OneWayRelationMember
     to t: JUDOPSM!TransferObjectRelation
