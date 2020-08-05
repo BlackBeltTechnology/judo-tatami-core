@@ -5,35 +5,35 @@ operation ESM!esm::structure::RelationFeature fqName() {
 
 operation ESM!esm::structure::RelationFeature createPageForRelationForView(application : UI!ui::Application, target : ESM!esm::structure::TransferObjectType) : UI!ui::PageDefinition {
 	var page : UI!ui::PageDefinition = new UI!ui::PageDefinition();
-	page.dataElement = self.mapRelationType(application, target.mapClassType(application));
+	page.dataElement = self.mapRelationType(application, self.eContainer.mapClassType(application));
 	page.name = self.fqName().anchor("RelationPageView", target.fqName());
-	page.children.add(self.target.view.map(application));    
+	page.children.add(target.view.map(application));    
     return page;
 }
 
 operation ESM!esm::structure::RelationFeature createPageForRelationForForm(application : UI!ui::Application, target : ESM!esm::structure::TransferObjectType) : UI!ui::PageDefinition {
 	var page : UI!ui::PageDefinition = new UI!ui::PageDefinition();
-	page.dataElement = self.mapRelationType(application, target.mapClassType(application));
+	page.dataElement = self.mapRelationType(application, self.eContainer.mapClassType(application));
 	page.name = self.fqName().anchor("RelationPageForm", target.fqName());
-    page.children.add(self.target.form.map(application));
+    page.children.add(target.form.map(application));
     
     return page;
 }
 
 operation ESM!esm::structure::RelationFeature createPageForRelationForTable(application : UI!ui::Application, target : ESM!esm::structure::TransferObjectType) : UI!ui::PageDefinition {
 	var page : UI!ui::PageDefinition = new UI!ui::PageDefinition();
-	page.dataElement = self.mapRelationType(application, target.mapClassType(application));
+	page.dataElement = self.mapRelationType(application, self.eContainer.mapClassType(application));
 	page.name = self.fqName().anchor("RelationPageTable", target.fqName());
     
-	var table = self.target.table.createTableFromTransferObjectTable();
+	var table = target.table.createTableFromTransferObjectTable();
     page.children.add(table);
     
-    if (self.target.table.masterDetail and self.target.view.isDefined()) {
+    if (target.table.masterDetail and target.view.isDefined()) {
 		var detail : UI!ui::PageDefinition = new UI!ui::PageDefinition();
-		detail.dataElement = self.mapRelationType(application, target.mapClassType(application));
+		detail.dataElement = self.mapRelationType(application, self.eContainer.mapClassType(application));
 		application.pages.add(detail);
-	  	detail.children.add(self.target.view.map(application));
-	  	table.detail = detail;        
+	  	detail.children.add(target.view.map(application));
+	  	table.detail = detail;
     }
     
     return page;
@@ -42,6 +42,7 @@ operation ESM!esm::structure::RelationFeature createPageForRelationForTable(appl
 operation ESM!esm::structure::RelationFeature createRelationTypeForClass(application : UI!ui::Application, clazz : UI!ui::data::ClassType) : UI!ui::data::RelationType {
 	var relation = new UI!ui::data::RelationType();	
 	relation.name = self.name;
+	relation.isCollection = (self.upper == -1);
 	clazz.relations.add(relation);
 	relation.target = self.target.mapClassType(application);
 	log.debug("Create relation " + relation.name + " in class type: " + clazz.name);

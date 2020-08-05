@@ -27,6 +27,8 @@ import java.util.Arrays;
 import static hu.blackbelt.judo.meta.ui.runtime.UiModel.buildUiModel;
 
 import hu.blackbelt.judo.meta.esm.namespace.Model;
+import hu.blackbelt.judo.meta.esm.operation.Operation;
+import hu.blackbelt.judo.meta.esm.operation.OperationType;
 import hu.blackbelt.judo.meta.esm.runtime.EsmModel;
 import hu.blackbelt.judo.meta.esm.structure.DataMember;
 import hu.blackbelt.judo.meta.esm.structure.EntityType;
@@ -132,7 +134,67 @@ public class SimpleOrderModel {
         	.withRelations(orderOrderItems)
         	.build();
         
+        // Order item with tax
+        EntityType orderItemWithTax = newEntityTypeBuilder().withName("OrderItemWithTax")
+        		.withGeneralizations(newGeneralizationBuilder().withTarget(orderItem).build())
+        		.build();
+        orderItemWithTax.setMapping(newMappingBuilder().withTarget(orderItemWithTax).build());
+        
+        // Tax Authority
+        DataMember authorityName = newDataMemberBuilder()
+        		.withName("name")
+        		.withMemberType(MemberType.STORED)
+        		.withDataType(stringType)
+        		.withRequired(true)
+        		.build();
+        authorityName.setBinding(authorityName);
+        
+        DataMember authorityAddress = newDataMemberBuilder()
+        		.withName("address")
+        		.withMemberType(MemberType.STORED)
+        		.withDataType(stringType)
+        		.withRequired(true)
+        		.build();
+        authorityAddress.setBinding(authorityAddress);
+        
+        EntityType taxAuthority = newEntityTypeBuilder().withName("TaxAuthority")
+        		.withAttributes(authorityName,authorityAddress)
+        		.build();
+        taxAuthority.setMapping(newMappingBuilder().withTarget(taxAuthority).build());
+        
+        // Archived order
+        OneWayRelationMember orderForArchive = newOneWayRelationMemberBuilder()
+        		.withName("orders")
+        		.withTarget(order)
+        		.withMemberType(MemberType.STORED)
+        		.withRelationKind(RelationKind.ASSOCIATION)
+        		.withCreateable(false)
+        		.withUpdateable(false)
+        		.withDeleteable(false)
+        		.withLower(0)
+        		.withUpper(-1)
+        		.build();
+        
+        EntityType archivedOrder = newEntityTypeBuilder().withName("ArchivedOrder")
+        		.withRelations(orderForArchive)
+        		.build();
+        archivedOrder.setMapping(newMappingBuilder().withTarget(archivedOrder).build());
 
+        // SubmitOrderToTaxAuthority
+        
+        Operation submit = newOperationBuilder().withName("submitOrderToTaxAuthority")
+        		.withOperationType(OperationType.INSTANCE)
+        		.withInput(
+        				newParameterBuilder().withName("input").withTarget(taxAuthority)
+        				.withLower(0).withUpper(-1).build())
+        		.withOutput(
+        				newParameterBuilder().withName("output").withTarget(archivedOrder)
+        				.withLower(0).withUpper(1).build())
+        		.build();
+        submit.setBinding("submit");
+        
+        useEntityType(order).withOperations(submit).build();
+        
         // Access Point
         TransferObjectType application = newTransferObjectTypeBuilder()
                 .withName("OrderApplication")
@@ -342,6 +404,112 @@ public class SimpleOrderModel {
         		.build();
         orderItem.setView(orderItemView);
 
+        // Order item with tax view
+        TransferObjectView orderItemTaxView = newTransferObjectViewBuilder()
+				.withName("OrderItemTaxView")
+				.withLabel("Order Item Tax")
+        		.withComponents(Arrays.asList(
+	                				newDataFieldBuilder()
+	            						.withName("product")
+	            						.withLabel("Product")
+	            						.withDataFeature(orderItemProduct)
+	            						.build(),
+	        						newDataFieldBuilder()
+	            						.withName("quantity")
+	            						.withLabel("Quantity")
+	            						.withDataFeature(orderItemQuantity)
+	            						.build(),
+	        						newDataFieldBuilder()
+	            						.withName("price")
+	            						.withLabel("Price")
+	            						.withDataFeature(orderItemPrice)
+	            						.build()
+				))
+        		.build();
+        orderItemWithTax.setView(orderItemTaxView);
+        
+       // Order Form
+       TransferObjectForm taxAuthorityForm = newTransferObjectFormBuilder()
+        		.withName("TaxAuthorityForm")
+        		.withComponents(Arrays.asList(
+    				newGroupBuilder()
+                		.withName("Content")
+                		.withLabel("Order details")
+                		.withLayout(Layout.HORIZONTAL)
+                		.withWrap(true)
+                		.withHorizontal(Horizontal.LEFT)
+                		.withVertical(Vertical.TOP)
+                		.withFrame(true)
+                		.withComponents(Arrays.asList(
+                				newDataFieldBuilder()
+                					.withName("authorityName")
+                					.withLabel("TaxAuthorityName")
+                					.withIconName("text_fields")
+                					.withDataFeature(authorityName)
+                					.build(),
+
+                				newDataFieldBuilder()
+        							.withName("authorityAddress")
+        							.withLabel("TaxAuthorityAddress")
+        							.withIconName("text_fields")
+        							.withDataFeature(authorityAddress)
+                					.build()))
+                		.build(),
+
+            		newGroupBuilder()
+                		.withName("Buttons")
+                		.withLabel("Order details")
+                		.withLayout(Layout.HORIZONTAL)
+                		.withWrap(true)
+                		.withHorizontal(Horizontal.LEFT)
+                		.withVertical(Vertical.TOP)
+                		.withFrame(true)
+                		.withComponents(Arrays.asList(
+                				newActionButtonBuilder()
+                					.withName("cancel")
+                					.withLabel("Cancel")
+                					.withAction(Action.CANCEL)
+                					.build(),
+                				newActionButtonBuilder()
+                					.withName("ok")
+                					.withLabel("Ok")
+                					.withAction(Action.SUBMIT)
+                					.build()
+                		))
+                		.build()
+				))
+        		.build();
+        taxAuthority.setForm(taxAuthorityForm);  
+        
+        // Archived Order View
+        TransferObjectView archivedOrderView = newTransferObjectViewBuilder()
+				.withName("ArchivedOrderView")
+				.withLabel("Archived Order")
+        		.withComponents(Arrays.asList(
+        				newTabularReferenceFieldBuilder()
+    					.withName("Order")
+    					.withLabel("orders")
+    					.withMaxVisibleElements(5)
+    					.withRelationFeature(orderForArchive)
+    					.withColumns(Arrays.asList(
+            				newDataColumnBuilder()
+            					.withName("customer")
+            					.withLabel("Customer")
+            					.withIconName("text_fields")
+            					.withDataFeature(orderCustomer)
+            					.build(),
+							newDataColumnBuilder()
+    							.withName("orderDate")
+    							.withLabel("Order Date")
+    							.withIconName("calendar_today")
+    							.withDataFeature(orderDate)
+            					.build()
+    					))
+    					.build()
+			))
+        		.build();
+        archivedOrder.setView(archivedOrderView);
+        
         // Application View
         TransferObjectView applicationView = newTransferObjectViewBuilder()
 				.withName("Dashboard")
@@ -377,8 +545,10 @@ public class SimpleOrderModel {
 				.withName("SimpleOrder")
 				.withElements(Arrays.asList(
 						stringType, integerType, floatType, dateType, 
-						order, orderItem, 
-						application
+						order, orderItem, orderItemWithTax,
+						application,
+						taxAuthority,
+						archivedOrder
 				))
 				.withDemoAccessPoint(false)
 				.build();

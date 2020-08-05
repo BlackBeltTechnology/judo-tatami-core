@@ -5,6 +5,7 @@ operation ESM!esm::structure::Class fqName() : String {
 operation ESM!esm::structure::Class createClassType(application : UI!ui::Application) : UI!ui::data::ClassType {
 	var clazz = new UI!ui::data::ClassType();	
 	clazz.name = self.fqName();
+	clazz.isMapped = self.isMapped();
 	application.dataElements.add(clazz);
 	
 	for (relation in self.relations) {
@@ -12,6 +13,16 @@ operation ESM!esm::structure::Class createClassType(application : UI!ui::Applica
 	}
 	for (attribute in self.attributes) {
 		attribute.createAttributeTypeForClass(application, clazz);
+	}
+	
+	for (op in self.operations) {
+		if (op.operationType <> ESM!OperationType#ABSTRACT) {
+			op.createOperationTypeForClass(application, clazz);
+		}
+	}
+	
+	for (super in self.generalizations.collect(g | g.target)) {
+		clazz.superTypes.add(super.mapClassType(application));
 	}
 		
 	log.debug("Create class type: " + clazz.name);
