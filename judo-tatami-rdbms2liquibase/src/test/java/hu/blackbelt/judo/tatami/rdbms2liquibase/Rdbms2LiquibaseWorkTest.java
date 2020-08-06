@@ -6,6 +6,7 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -24,6 +25,7 @@ import hu.blackbelt.judo.tatami.core.workflow.work.Work;
 import hu.blackbelt.judo.tatami.core.workflow.work.WorkReport;
 import hu.blackbelt.judo.tatami.core.workflow.work.WorkStatus;
 
+@Slf4j
 public class Rdbms2LiquibaseWorkTest {
 	
 	public static final String NORTHWIND = "northwind";
@@ -53,6 +55,7 @@ public class Rdbms2LiquibaseWorkTest {
 		WorkFlowEngine workFlowEngine = aNewWorkFlowEngine().build();
 		WorkReport workReport = workFlowEngine.run(workflow);
 
+		log.info("Workflow completed with status {}", workReport.getStatus(), workReport.getError());
 		assertThat(workReport.getStatus(), equalTo(WorkStatus.COMPLETED));
 	}
 

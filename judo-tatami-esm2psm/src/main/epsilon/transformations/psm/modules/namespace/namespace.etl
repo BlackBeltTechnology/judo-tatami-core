@@ -21,28 +21,6 @@ rule CreateModel
   to t : JUDOPSM!Model
   extends CreateNamedElement {
     log.debug("Created model: " + t.name);
-
-    for (claim in CLAIMMAPPING!Mapping.all
-            .select(m | m.Claim.isDefined())
-            .select(m | ESM!ActorType.all.exists(a | a.realm == m.Realm))) {
-        var typeName = claim.getTypeName();
-        var type;
-        if (typeName.isDefined() and not t.elements.exists(e | e.name == typeName)) {
-            switch (claim.Type) {
-                case "String":
-                    type = new JUDOPSM!StringType;
-                    type.name = typeName;
-                    if (claim.Size.isDefined()) {
-                        type.maxLength = claim.Size.asFloat().asInteger();
-                    } else {
-                        type.maxLength = 255;
-                    }
-            }
-        }
-        if (type.isDefined()) {
-            t.elements.add(type);
-        }
-    }
 }
 
 @lazy

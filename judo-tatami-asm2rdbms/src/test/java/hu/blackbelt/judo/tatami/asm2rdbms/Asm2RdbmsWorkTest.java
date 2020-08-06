@@ -62,10 +62,7 @@ public class Asm2RdbmsWorkTest {
 		WorkFlowEngine workFlowEngine = aNewWorkFlowEngine().build();
 		WorkReport workReport = workFlowEngine.run(workflow);
 
-		if (workReport.getError() != null) {
-			log.error("Error found, ", workReport.getError());
-		}
-
+		log.info("Workflow completed with status {}", workReport.getStatus(), workReport.getError());
 		assertThat(workReport.getStatus(), equalTo(WorkStatus.COMPLETED));
 	}
 }

@@ -7,6 +7,7 @@ import hu.blackbelt.judo.meta.openapi.runtime.OpenapiModel;
 import hu.blackbelt.judo.meta.psm.runtime.PsmModel;
 import hu.blackbelt.judo.tatami.openapi2restclient.Openapi2RestClientWork;
 import hu.blackbelt.model.northwind.Demo;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -29,6 +30,7 @@ import static hu.blackbelt.judo.tatami.psm2measure.Psm2Measure.executePsm2Measur
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.CoreMatchers.equalTo;
 
+@Slf4j
 public class Openapi2RestClientWorkTest {
 	public static final String NORTHWIND = "northwind";
 
@@ -68,6 +70,7 @@ public class Openapi2RestClientWorkTest {
 		WorkFlowEngine workFlowEngine = aNewWorkFlowEngine().build();
 		WorkReport workReport = workFlowEngine.run(workflow);
 
+		log.info("Workflow completed with status {}", workReport.getStatus(), workReport.getError());
 		assertThat(workReport.getStatus(), equalTo(WorkStatus.COMPLETED));
 	}
 }

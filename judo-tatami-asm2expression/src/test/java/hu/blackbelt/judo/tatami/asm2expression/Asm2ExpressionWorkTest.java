@@ -7,6 +7,7 @@ import static hu.blackbelt.judo.tatami.psm2measure.Psm2Measure.executePsm2Measur
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -20,6 +21,7 @@ import hu.blackbelt.judo.tatami.core.workflow.work.WorkReport;
 import hu.blackbelt.judo.tatami.core.workflow.work.WorkStatus;
 import hu.blackbelt.model.northwind.Demo;
 
+@Slf4j
 public class Asm2ExpressionWorkTest {
 	public static final String NORTHWIND = "northwind";
 	public static final String NORTHWIND_ASM_MODEL = "northwind-asm.model";
@@ -60,6 +62,7 @@ public class Asm2ExpressionWorkTest {
 		WorkFlowEngine workFlowEngine = aNewWorkFlowEngine().build();
 		WorkReport workReport = workFlowEngine.run(workflow);
 
+		log.info("Workflow completed with status {}", workReport.getStatus(), workReport.getError());
 		assertThat(workReport.getStatus(), equalTo(WorkStatus.COMPLETED));
 	}
 }

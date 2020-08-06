@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.Optional;
 
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -26,6 +27,7 @@ import hu.blackbelt.judo.tatami.core.workflow.work.WorkReport;
 import hu.blackbelt.judo.tatami.core.workflow.work.WorkStatus;
 import hu.blackbelt.model.northwind.esm.NorthwindEsmModel;
 
+@Slf4j
 class Esm2PsmWorkTest {
 
 	public static final String NORTHWIND = "northwind";
@@ -51,6 +53,8 @@ class Esm2PsmWorkTest {
 
 		WorkFlowEngine workFlowEngine = aNewWorkFlowEngine().build();
 		WorkReport workReport = workFlowEngine.run(workflow);
+
+		log.info("Workflow completed with status {}", workReport.getStatus(), workReport.getError());
 
 		assertThat(workReport.getStatus(), equalTo(WorkStatus.COMPLETED));
 
