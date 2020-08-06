@@ -25,7 +25,7 @@ operation ESM!esm::structure::RelationFeature createPageForRelationForTable(appl
 	page.dataElement = self.mapRelationType(application, self.eContainer.mapClassType(application));
 	page.name = self.fqName().anchor("RelationPageTable", target.fqName());
     
-	var table = target.table.createTableFromTransferObjectTable();
+	var table = target.table.createTableFromTransferObjectTable(application);
     page.children.add(table);
     
     if (target.table.masterDetail and target.view.isDefined()) {
