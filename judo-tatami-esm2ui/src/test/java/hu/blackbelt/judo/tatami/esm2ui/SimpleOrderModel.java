@@ -162,21 +162,7 @@ public class SimpleOrderModel {
         		.build();
         taxAuthority.setMapping(newMappingBuilder().withTarget(taxAuthority).build());
         
-        // Archived order
-        OneWayRelationMember orderForArchive = newOneWayRelationMemberBuilder()
-        		.withName("orders")
-        		.withTarget(order)
-        		.withMemberType(MemberType.STORED)
-        		.withRelationKind(RelationKind.ASSOCIATION)
-        		.withCreateable(false)
-        		.withUpdateable(false)
-        		.withDeleteable(false)
-        		.withLower(0)
-        		.withUpper(-1)
-        		.build();
-        
         EntityType archivedOrder = newEntityTypeBuilder().withName("ArchivedOrder")
-        		.withRelations(orderForArchive)
         		.build();
         archivedOrder.setMapping(newMappingBuilder().withTarget(archivedOrder).build());
 
@@ -490,7 +476,7 @@ public class SimpleOrderModel {
     					.withName("Order")
     					.withLabel("orders")
     					.withMaxVisibleElements(5)
-    					.withRelationFeature(orderForArchive)
+    					.withRelationFeature(applicationOrders)
     					.withColumns(Arrays.asList(
             				newDataColumnBuilder()
             					.withName("customer")

@@ -17,22 +17,17 @@ rule CreateApplication
         var exposedRelations : Set = esmUtils.getAllExposedRelationsFromAccessPoint(s);
         
         for (relation in exposedRelations) {
-        	var targets : Set = esmUtils.getAllDescendantsOfTransferObjectType(relation.target).including(relation.target);
-        	
-        	for (target in targets) {
-        		        	
-                if (target.mapping.isDefined() and target.view.isDefined()) {
-                    t.pages.add(relation.createPageForRelationForView(t, target));
-                }
+            if (relation.target.mapping.isDefined() and relation.target.view.isDefined()) {
+                t.pages.add(relation.createPageForRelationForView(t, relation.target));
+            }
 
-                if (target.mapping.isDefined() and target.form.isDefined()) {
-                    t.pages.add(relation.createPageForRelationForForm(t, target));
-                }
+            if (relation.target.mapping.isDefined() and relation.target.form.isDefined()) {
+                t.pages.add(relation.createPageForRelationForForm(t, relation.target));
+            }
 
-                if (target.mapping.isDefined() and target.table.isDefined() and relation.upper = -1) {
-                    t.pages.add(relation.createPageForRelationForTable(t, target));
-                }
-        	}
+            if (relation.target.mapping.isDefined() and relation.target.table.isDefined() and relation.upper = -1) {
+                t.pages.add(relation.createPageForRelationForTable(t, relation.target));
+            }
         }
 }
 

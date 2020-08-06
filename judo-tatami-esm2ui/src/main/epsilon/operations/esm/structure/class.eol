@@ -8,10 +8,10 @@ operation ESM!esm::structure::Class createClassType(application : UI!ui::Applica
 	clazz.isMapped = self.isMapped();
 	application.dataElements.add(clazz);
 	
-	for (relation in self.relations) {
+	for (relation in self.getAllRelations()) {
 		relation.createRelationTypeForClass(application, clazz);
 	}
-	for (attribute in self.attributes) {
+	for (attribute in self.getAllAttributes()) {
 		attribute.createAttributeTypeForClass(application, clazz);
 	}
 	
@@ -20,11 +20,7 @@ operation ESM!esm::structure::Class createClassType(application : UI!ui::Applica
 			op.createOperationTypeForClass(application, clazz);
 		}
 	}
-	
-	for (super in self.generalizations.collect(g | g.target)) {
-		clazz.superTypes.add(super.mapClassType(application));
-	}
-		
+			
 	log.debug("Create class type: " + clazz.name);
 	return clazz;
 }
