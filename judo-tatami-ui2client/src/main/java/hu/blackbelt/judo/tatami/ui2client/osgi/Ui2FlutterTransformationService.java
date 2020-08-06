@@ -4,6 +4,7 @@ import com.google.common.collect.Maps;
 import hu.blackbelt.epsilon.runtime.execution.api.Log;
 import hu.blackbelt.epsilon.runtime.execution.impl.Slf4jLog;
 import hu.blackbelt.epsilon.runtime.execution.impl.StringBuilderLogger;
+import hu.blackbelt.judo.meta.ui.Application;
 import hu.blackbelt.judo.meta.ui.runtime.UiModel;
 import hu.blackbelt.judo.tatami.ui2client.ClientTemplateProvider;
 import hu.blackbelt.judo.tatami.ui2client.flutter.FlutterTemplateProvider;
@@ -27,7 +28,7 @@ public class Ui2FlutterTransformationService {
 
     File tempDir;
 
-    Map<UiModel, InputStream> ui2FlutterZipStreams = Maps.newHashMap();
+    Map<UiModel, Map<Application, InputStream>> ui2FlutterZipStreams = Maps.newHashMap();
 
     BundleContext scriptBundleContext;
 

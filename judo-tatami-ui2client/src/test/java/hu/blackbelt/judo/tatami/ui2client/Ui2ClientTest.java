@@ -7,8 +7,11 @@ import static hu.blackbelt.judo.tatami.ui2client.Ui2Client.getGeneratedFilesAsZi
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
+import java.util.Collection;
+import java.util.Map;
 
 import hu.blackbelt.judo.meta.esm.runtime.EsmModel;
+import hu.blackbelt.judo.meta.ui.Application;
 import hu.blackbelt.judo.meta.ui.runtime.UiModel;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -44,14 +47,14 @@ public class Ui2ClientTest {
 
     @Test
     public void testExecuteUi2FlutterGeneration() throws Exception {
-        try (OutputStream zipOutputStream =
-                     new FileOutputStream(new File(TARGET_TEST_CLASSES, TEST + "-flutter.zip"))) {
-            ByteStreams.copy(
-                    getGeneratedFilesAsZip(Ui2Client.executeUi2ClientGeneration(uiModel,
-//                            GeneratorTemplate.loadYamlURL(new File(TARGET_TEST_CLASSES, "templates/flutter/flutter.yaml").toURI().toURL()))),
-                            GeneratorTemplate.loadYamlURL(Ui2Client.calculateUi2ClientTemplateScriptURI().resolve("flutter/flutter.yaml").toURL()))),
-                    zipOutputStream
-            );
+        Map<Application, Collection<GeneratedFile>> generatedFiles = Ui2Client.executeUi2ClientGeneration(uiModel,
+                GeneratorTemplate.loadYamlURL(Ui2Client.calculateUi2ClientTemplateScriptURI().resolve("flutter/flutter.yaml").toURL()));
+        for (Application app : generatedFiles.keySet()) {
+            try (OutputStream zipOutputStream =
+                         new FileOutputStream(new File(TARGET_TEST_CLASSES, TEST + "-" + app.getName() + "-flutter.zip"))) {
+                ByteStreams.copy(getGeneratedFilesAsZip(generatedFiles.get(app)), zipOutputStream);
+            }
+
         }
     }
 

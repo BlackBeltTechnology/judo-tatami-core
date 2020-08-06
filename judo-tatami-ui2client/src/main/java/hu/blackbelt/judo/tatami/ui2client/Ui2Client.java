@@ -3,11 +3,11 @@ package hu.blackbelt.judo.tatami.ui2client;
 import com.github.jknack.handlebars.Context;
 import com.github.jknack.handlebars.Handlebars;
 import com.github.jknack.handlebars.Template;
-import com.github.jknack.handlebars.io.*;
 import com.google.common.base.Charsets;
 import com.google.common.io.ByteStreams;
 import hu.blackbelt.epsilon.runtime.execution.api.Log;
 import hu.blackbelt.epsilon.runtime.execution.impl.Slf4jLog;
+import hu.blackbelt.judo.meta.ui.Application;
 import hu.blackbelt.judo.meta.ui.runtime.UiModel;
 import hu.blackbelt.judo.meta.ui.support.UiModelResourceSupport;
 import lombok.SneakyThrows;
@@ -23,6 +23,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.*;
+import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -34,15 +35,15 @@ public class Ui2Client {
 
     public static final String TEMPLATE_ROOT_TATAMI_UI_2_CLIENT = "templates/";
 
-    public static Collection<GeneratedFile> executeUi2ClientGeneration(UiModel uiModel, Collection<GeneratorTemplate> generatorTemplates) throws Exception {
+    public static Map<Application, Collection<GeneratedFile>> executeUi2ClientGeneration(UiModel uiModel, Collection<GeneratorTemplate> generatorTemplates) throws Exception {
         return executeUi2ClientGeneration(uiModel, generatorTemplates, new Slf4jLog(log), calculateUi2ClientTemplateScriptURI());
     }
 
-    public static Collection<GeneratedFile> executeUi2ClientGeneration(UiModel uiModel, Collection<GeneratorTemplate> generatorTemplates, Log log) throws Exception {
+    public static Map<Application, Collection<GeneratedFile>> executeUi2ClientGeneration(UiModel uiModel, Collection<GeneratorTemplate> generatorTemplates, Log log) throws Exception {
         return executeUi2ClientGeneration(uiModel, generatorTemplates, log, calculateUi2ClientTemplateScriptURI());
     }
 
-    public static Collection<GeneratedFile> executeUi2ClientGeneration(UiModel uiModel, Collection<GeneratorTemplate> generatorTemplates, Log log,
+    public static Map<Application, Collection<GeneratedFile>> executeUi2ClientGeneration(UiModel uiModel, Collection<GeneratorTemplate> generatorTemplates, Log log,
                                                                        URI scriptDir) throws Exception {
 
         ClientGeneratorTemplateLoader scriptDirectoryTemplateLoader = new ClientGeneratorTemplateLoader(scriptDir);
@@ -57,7 +58,10 @@ public class Ui2Client {
                 .uri(org.eclipse.emf.common.util.URI.createURI("ui:" + uiModel.getName()))
                 .resourceSet(uiModel.getResourceSet()).build());
 
-        Collection<GeneratedFile> sourceFiles = new HashSet<>();
+        Map<Application, Collection<GeneratedFile>> sources = new HashMap<>();
+        modelResourceSupport.getStreamOfUiApplication().forEach(app -> { sources.put(app, new HashSet<>()); });
+
+        //Collection<GeneratedFile> sourceFiles = new HashSet<>();
         for (GeneratorTemplate generatorTemplate : generatorTemplates) {
             ExpressionParser parser = new SpelExpressionParser();
 
@@ -136,26 +140,30 @@ public class Ui2Client {
                                 }
                                 generatedFile.setContent(sourceFile.toString().getBytes(Charsets.UTF_8));
                             }
-                            sourceFiles.add(generatedFile);
+                            sources.get(app).add(generatedFile);
                         });
 
                     });
                 }
             }
         }
-        return sourceFiles;
+        return sources;
     }
 
-    public static InputStream executeUi2ClientGenerationAsZip(UiModel uiModel, Collection<GeneratorTemplate> generatorTemplates) throws Exception {
-        return getGeneratedFilesAsZip(executeUi2ClientGeneration(uiModel, generatorTemplates, new Slf4jLog(log), calculateUi2ClientTemplateScriptURI()));
+    public static Map<Application, InputStream> executeUi2ClientGenerationAsZip(UiModel uiModel, Collection<GeneratorTemplate> generatorTemplates) throws Exception {
+        return executeUi2ClientGeneration(uiModel, generatorTemplates, new Slf4jLog(log), calculateUi2ClientTemplateScriptURI()).entrySet()
+                .stream().collect(Collectors.toMap(e -> e.getKey(), e -> getGeneratedFilesAsZip(e.getValue())));
     }
 
-    public static InputStream executeUi2ClientGenerationAsZip(UiModel uiModel, Collection<GeneratorTemplate> generatorTemplates, Log log) throws Exception {
-        return getGeneratedFilesAsZip(executeUi2ClientGeneration(uiModel, generatorTemplates, log, calculateUi2ClientTemplateScriptURI()));
+    public static Map<Application, InputStream> executeUi2ClientGenerationAsZip(UiModel uiModel, Collection<GeneratorTemplate> generatorTemplates, Log log) throws Exception {
+        return executeUi2ClientGeneration(uiModel, generatorTemplates, log, calculateUi2ClientTemplateScriptURI()).entrySet()
+                .stream().collect(Collectors.toMap(e -> e.getKey(), e -> getGeneratedFilesAsZip(e.getValue())));
+
     }
 
-    public static InputStream executeUi2ClientGenerationAsZip(UiModel uiModel, Collection<GeneratorTemplate> generatorTemplates, Log log, URI scriptDir) throws Exception {
-        return  getGeneratedFilesAsZip(executeUi2ClientGeneration(uiModel, generatorTemplates, log, scriptDir));
+    public static Map<Application, InputStream> executeUi2ClientGenerationAsZip(UiModel uiModel, Collection<GeneratorTemplate> generatorTemplates, Log log, URI scriptDir) throws Exception {
+        return executeUi2ClientGeneration(uiModel, generatorTemplates, log, scriptDir).entrySet()
+                .stream().collect(Collectors.toMap(e -> e.getKey(), e -> getGeneratedFilesAsZip(e.getValue())));
     }
 
     @SneakyThrows(URISyntaxException.class)
@@ -171,7 +179,8 @@ public class Ui2Client {
         return uiRoot;
     }
 
-    public static InputStream getGeneratedFilesAsZip(Collection<GeneratedFile> generatedFiles) throws IOException {
+    @SneakyThrows(IOException.class)
+    public static InputStream getGeneratedFilesAsZip(Collection<GeneratedFile> generatedFiles) {
         ByteArrayOutputStream generatedZip = new ByteArrayOutputStream();
         ZipOutputStream zipOutputStream = new ZipOutputStream(generatedZip);
         for (GeneratedFile generatedFile : generatedFiles) {

@@ -132,6 +132,11 @@
         </dependency>
 
         <dependency>
+            <groupId>hu.blackbelt.judo.meta</groupId>
+            <artifactId>hu.blackbelt.judo.meta.esm.model.northwind</artifactId>
+        </dependency>
+
+        <dependency>
             <groupId>hu.blackbelt.judo.tatami</groupId>
             <artifactId>judo-tatami-esm2ui</artifactId>
             <scope>test</scope>
