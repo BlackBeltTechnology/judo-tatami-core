@@ -1,6 +1,6 @@
 import 'dart:async';
-import 'package:judo/rest/external/api.dart';
-import 'package:judo/store/external/northwind_external_category_info_store.dart';
+import 'package:judo/rest/external_ap/lib/api.dart';
+import 'package:judo/store/external_ap/northwind_external_ap_category_info_store.dart';
 import 'package:judo/utilities/constants.dart';
 import 'package:openapi_dart_common/openapi.dart';
 
@@ -9,8 +9,7 @@ class NorthwindExternalCategoryInfoRepository {
       ApiClient(basePath: kBasePathUrl, apiClientDelegate: DioClientDelegate());
 
   Future createCategory(NorthwindExternalCategoryInfoStore categoryInfo) async {
-    NorthwindServicesCategoryInfoExtended categoryExtended =
-        NorthwindServicesCategoryInfoExtended();
+    var categoryExtended = NorthwindServicesCategoryInfoExtended();
 
     categoryExtended.categoryName = categoryInfo.categoryName;
 
@@ -19,21 +18,24 @@ class NorthwindExternalCategoryInfoRepository {
             .northwindExternalAPCreateAllCategories(categoryExtended);
 
     categoryInfo.identifier = servicesCategoryInfo.identifier;
+    categoryInfo.categoryName = servicesCategoryInfo.categoryName;
   }
 
   Future removeCategory(NorthwindExternalCategoryInfoStore categoryInfo) async {
     NorthwindIdentifier northwindIdentifier = NorthwindIdentifier();
+
     northwindIdentifier.identifier = categoryInfo.identifier;
+
     await DefaultApi(_apiClient)
         .northwindExternalAPDeleteAllCategories(northwindIdentifier);
   }
 
-  Future update(NorthwindExternalCategoryInfoStore oldCategoryInfo,
+  Future updateCategory(NorthwindExternalCategoryInfoStore oldCategoryInfo,
       NorthwindExternalCategoryInfoStore newCategoryInfo) async {}
 
-  Future<NorthwindExternalCategoryInfoStore> get() async {}
+  Future<NorthwindExternalCategoryInfoStore> getCategory() async {}
 
-  Future getAll(
+  Future getAllCategories(
       List<NorthwindExternalCategoryInfoStore> categoryInfoList) async {
     List<NorthwindServicesCategoryInfo> list =
         await DefaultApi(_apiClient).northwindExternalAPGetAllCategories();

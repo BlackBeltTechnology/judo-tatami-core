@@ -1,6 +1,6 @@
-import 'package:judo/rest/internal/api.dart';
-import 'package:judo/store/internal/northwind_internal_international_order_info_store.dart';
-import 'package:judo/store/internal/northwind_internal_order_item_store.dart';
+import 'package:judo/rest/internal_ap/lib/api.dart';
+import 'package:judo/store/internal_ap/northwind_internal_ap_international_order_info_store.dart';
+import 'package:judo/store/internal_ap/northwind_internal_ap_order_item_store.dart';
 import 'package:judo/utilities/constants.dart';
 import 'package:openapi_dart_common/openapi.dart';
 
@@ -10,19 +10,17 @@ class NorthwindInternalOrderItemRepository {
 
   Future removeItem(NorthwindInternalInternationalOrderInfoStore orderInfo,
       NorthwindInternalOrderItemStore deletedOrderItem) async {
-    NorthwindInternalAPRemoveItemsFromAllInternationalOrdersInput
-        internationalOrdersInput =
+    var internationalOrdersInput =
         NorthwindInternalAPRemoveItemsFromAllInternationalOrdersInput();
 
     internationalOrdersInput.identifier = orderInfo.identifier;
-
     internationalOrdersInput.items = List<
         NorthwindInternalAPRemoveItemsFromAllInternationalOrdersInputItems>();
 
-    NorthwindInternalAPRemoveItemsFromAllInternationalOrdersInputItems
-        ordersInputItem =
+    var ordersInputItem =
         NorthwindInternalAPRemoveItemsFromAllInternationalOrdersInputItems();
     ordersInputItem.identifier = deletedOrderItem.identifier;
+
     internationalOrdersInput.items.add(ordersInputItem);
 
     await DefaultApi(_apiClient)
@@ -47,7 +45,6 @@ class NorthwindInternalOrderItemRepository {
         NorthwindServicesCategoryInfoExtendedProducts();
     northwindServicesOrderItemExtended.product.identifier =
         newOrderItem.product.identifier;
-
     northwindServicesOrderItemExtended.quantity = newOrderItem.quantity;
     northwindServicesOrderItemExtended.discount = newOrderItem.discount;
 
@@ -60,5 +57,8 @@ class NorthwindInternalOrderItemRepository {
     newOrderItem.price = northwindServicesOrderItem.price;
     newOrderItem.categoryName = northwindServicesOrderItem.categoryName;
     newOrderItem.productName = northwindServicesOrderItem.productName;
+    newOrderItem.unitPrice = northwindServicesOrderItem.unitPrice;
+    newOrderItem.discount = northwindServicesOrderItem.discount;
+    newOrderItem.quantity = northwindServicesOrderItem.quantity;
   }
 }

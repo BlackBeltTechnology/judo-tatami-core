@@ -1,5 +1,5 @@
-import 'package:judo/rest/internal/api.dart';
-import 'package:judo/store/internal/northwind_internal_shipper_info_store.dart';
+import 'package:judo/rest/internal_ap/lib/api.dart';
+import 'package:judo/store/internal_ap/northwind_internal_ap_shipper_info_store.dart';
 import 'package:judo/utilities/constants.dart';
 import 'package:openapi_dart_common/openapi.dart';
 
@@ -8,8 +8,7 @@ class NorthwindInternalShipperInfoRepository {
       ApiClient(basePath: kBasePathUrl, apiClientDelegate: DioClientDelegate());
 
   Future createShipper(NorthwindInternalShipperInfoStore shipper) async {
-    NorthwindServicesShipperInfoExtended shipperInfoExtended =
-        NorthwindServicesShipperInfoExtended();
+    var shipperInfoExtended = NorthwindServicesShipperInfoExtended();
 
     shipperInfoExtended.companyName = shipper.companyName;
 
@@ -17,6 +16,7 @@ class NorthwindInternalShipperInfoRepository {
         .northwindInternalAPCreateAllShippers(shipperInfoExtended);
 
     shipper.identifier = shipperInfo.identifier;
+    shipper.companyName = shipperInfo.companyName;
   }
 
   Future removeShipper(NorthwindInternalShipperInfoStore shipperInfo) async {}

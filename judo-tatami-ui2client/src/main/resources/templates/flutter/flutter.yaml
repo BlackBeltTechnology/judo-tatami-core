@@ -19,6 +19,13 @@
       expression: "#element"
       className: hu.blackbelt.judo.meta.ui.Application
 
+# ========================================
+# repositires
+# ========================================
+
+
+#  ("([a-z])([A-Z]+)", "$1_$2").toLowerCase()
+
 #- overwriteExpression: true
 #  factoryExpression: "{#model}"
 #  pathExpression: "#element.name.replaceAll('/', '__').concat('_test.dart')"
@@ -28,6 +35,9 @@
 #        expression: "#element"
 #        className: hu.blackbelt.judo.meta.ui.Application
 
+# ========================================
+# fonts
+# ========================================
 - overwriteExpression: false
   factoryExpression: "{#model}"
   pathExpression: "'fonts/Roboto-Regular.ttf'"

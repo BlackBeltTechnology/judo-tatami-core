@@ -1,7 +1,7 @@
-import 'package:judo/rest/internal/api.dart';
-import 'package:judo/store/internal/northwind_internal_international_order_info_store.dart';
-import 'package:judo/store/internal/northwind_internal_order_item_store.dart';
-import 'package:judo/store/internal/northwind_internal_shipper_info_store.dart';
+import 'package:judo/rest/internal_ap/lib/api.dart';
+import 'package:judo/store/internal_ap/northwind_internal_ap_international_order_info_store.dart';
+import 'package:judo/store/internal_ap/northwind_internal_ap_order_item_store.dart';
+import 'package:judo/store/internal_ap/northwind_internal_ap_shipper_info_store.dart';
 import 'package:judo/utilities/constants.dart';
 import 'package:openapi_dart_common/openapi.dart';
 
@@ -37,7 +37,7 @@ class NorthwindInternalInternationalOrderInfoRepository {
     }).toList();
 
     internationalOrderInfoExtended.shipper =
-        NorthwindServicesOrderInfoExtendedShipper();
+        NorthwindServicesShipperInfoExtended();
     internationalOrderInfoExtended.shipper.identifier =
         orderInfo.shipper.identifier;
 
@@ -55,6 +55,9 @@ class NorthwindInternalInternationalOrderInfoRepository {
     orderInfo.totalPrice = internationalOrderInfo.totalPrice;
     orderInfo.totalWeight = internationalOrderInfo.totalWeight;
     orderInfo.shipperName = internationalOrderInfo.shipperName;
+    orderInfo.customsDescription = internationalOrderInfo.customsDescription;
+    orderInfo.orderDate = internationalOrderInfo.orderDate;
+    orderInfo.exciseTax = internationalOrderInfo.exciseTax;
     orderInfo.items.forEach((e) {
       NorthwindServicesOrderItem northwindOrderItem =
           internationalOrderInfo.items.firstWhere((element) =>
@@ -101,7 +104,14 @@ class NorthwindInternalInternationalOrderInfoRepository {
         .northwindInternalAPUpdateAllInternationalOrders(
             northwindServicesInternationalOrderInfo);
 
-    // TODO: update orderInfo properties with northwindServicesInternionalOrderInfo response
+    orderInfo.identifier = northwindServicesInternationalOrderInfo.identifier;
+    orderInfo.orderDate = northwindServicesInternationalOrderInfo.orderDate;
+    orderInfo.customsDescription =
+        northwindServicesInternationalOrderInfo.customsDescription;
+    orderInfo.exciseTax = northwindServicesInternationalOrderInfo.exciseTax;
+    orderInfo.shipperName = northwindServicesInternationalOrderInfo.shipperName;
+    orderInfo.totalPrice = northwindServicesInternationalOrderInfo.totalPrice;
+    orderInfo.totalWeight = northwindServicesInternationalOrderInfo.totalWeight;
   }
 
   ////////////////////////////////////////////////////////////////////////////

@@ -1,8 +1,8 @@
 import 'dart:async';
 
-import 'package:judo/rest/external/api.dart';
-import 'package:judo/store/external/northwind_external_category_info_store.dart';
-import 'package:judo/store/external/northwind_external_product_info_store.dart';
+import 'package:judo/rest/external_ap/lib/api.dart';
+import 'package:judo/store/external_ap/northwind_external_ap_category_info_store.dart';
+import 'package:judo/store/external_ap/northwind_external_ap_product_info_store.dart';
 import 'package:judo/utilities/constants.dart';
 import 'package:openapi_dart_common/openapi.dart';
 
@@ -11,7 +11,7 @@ class NorthwindExternalProductInfoRepository {
       ApiClient(basePath: kBasePathUrl, apiClientDelegate: DioClientDelegate());
 
   Future createProduct(NorthwindExternalProductInfoStore productInfo) async {
-    NorthwindServicesProductInfoExtended northwindServicesProductInfoExtended =
+    var northwindServicesProductInfoExtended =
         NorthwindServicesProductInfoExtended();
 
     northwindServicesProductInfoExtended.weight = productInfo.weight;
@@ -25,21 +25,26 @@ class NorthwindExternalProductInfoRepository {
                 northwindServicesProductInfoExtended);
 
     productInfo.identifier = northwindServicesProductInfo.identifier;
+    productInfo.weight = northwindServicesProductInfo.weight;
+    productInfo.unitPrice = northwindServicesProductInfo.unitPrice;
+    productInfo.productName = northwindServicesProductInfo.productName;
   }
 
   Future removeProduct(NorthwindExternalProductInfoStore productInfo) async {
-    NorthwindIdentifier northwindIdentifier = NorthwindIdentifier();
+    var northwindIdentifier = NorthwindIdentifier();
     northwindIdentifier.identifier = productInfo.identifier;
+
     await DefaultApi(_apiClient)
         .northwindExternalAPDeleteAllProducts(northwindIdentifier);
   }
 
-  Future update(NorthwindExternalCategoryInfoStore oldCategoryInfo,
-      NorthwindExternalCategoryInfoStore newCategoryInfo) async {}
+  Future updateProduct(NorthwindExternalProductInfoStore oldProductInfo,
+      NorthwindExternalProductInfoStore newProductInfo) async {}
 
-  Future<NorthwindExternalCategoryInfoStore> get() async {}
+  Future<NorthwindExternalCategoryInfoStore> getProduct() async {}
 
-  Future getAll(List<NorthwindExternalProductInfoStore> productInfoList) async {
+  Future getAllProducts(
+      List<NorthwindExternalProductInfoStore> productInfoList) async {
     List<NorthwindServicesProductInfo> list =
         await DefaultApi(_apiClient).northwindExternalAPGetAllProducts();
 
@@ -60,7 +65,6 @@ class NorthwindExternalProductInfoRepository {
             await AllCategoriesApi(_apiClient)
                 .northwindServicesProductInfoGetCategory(element.identifier);
 
-        // TODO: check category exists
         newProduct.category = NorthwindExternalCategoryInfoStore();
         newProduct.category.identifier =
             northwindServicesCategoryInfo.identifier;
