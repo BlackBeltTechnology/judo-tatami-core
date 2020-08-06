@@ -13,7 +13,7 @@ class JudoInputText extends StatelessWidget implements IJudoComponent {
 
   final int col;
   final String label;
-  final IconData icon;
+  final Icon icon;
   final Function onChanged;
   final String initialValue;
 
@@ -31,7 +31,7 @@ class JudoInputText extends StatelessWidget implements IJudoComponent {
         initialValue: initialValue,
         decoration: InputDecoration(
           labelText: label,
-          prefixIcon: Icon(icon),
+          prefixIcon: icon,
         ),
         onChanged: onChanged,
       ),

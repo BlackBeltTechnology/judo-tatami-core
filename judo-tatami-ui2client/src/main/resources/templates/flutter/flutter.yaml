@@ -20,11 +20,64 @@
       className: hu.blackbelt.judo.meta.ui.Application
 
 # ========================================
+# stores
+# ========================================
+- overwriteExpression: true
+  factoryExpression: "#model.dataElements"
+  pathExpression: >
+    'lib/store/'
+    .concat(#element.eContainer().name.replaceAll('::','__').replaceAll('#','__').replaceAll('([a-z])([A-Z]+)', '$1_$2').toLowerCase())
+    .concat('/')
+    .concat(#element.name.replaceAll('::','__').replaceAll('#','__').replaceAll('([a-z])([A-Z]+)', '$1_$2').toLowerCase())
+    .concat('_store.dart')
+  templateName: flutter/lib/store/store.dart.hbs
+  templateContext:
+    - name: classType
+      expression: "#element"
+      className: hu.blackbelt.judo.meta.ui.data.ClassType
+    - name: application
+      expression: "#element.eContainer()"
+      className: hu.blackbelt.judo.meta.ui.Application
+    - name: packageName
+      expression: >
+        #element.eContainer().name.replaceAll('::','__').replaceAll('#','__').replaceAll('([a-z])([A-Z]+)', '$1_$2').toLowerCase()
+      className: java.lang.String
+    - name: importName
+      expression: >
+        #element.name.replaceAll('::','__').replaceAll('#','__').replaceAll('([a-z])([A-Z]+)', '$1_$2').toLowerCase()
+      className: java.lang.String
+
+- overwriteExpression: true
+  factoryExpression: "#model.dataElements"
+  pathExpression: >
+    'lib/store/'
+    .concat(#element.eContainer().name.replaceAll('::','__').replaceAll('#','__').replaceAll('([a-z])([A-Z]+)', '$1_$2').toLowerCase())
+    .concat('/')
+    .concat(#element.name.replaceAll('::','__').replaceAll('#','__').replaceAll('([a-z])([A-Z]+)', '$1_$2').toLowerCase())
+    .concat('_store.g.dart')
+  templateName: flutter/lib/store/store.g.dart.hbs
+  templateContext:
+    - name: classType
+      expression: "#element"
+      className: hu.blackbelt.judo.meta.ui.data.ClassType
+    - name: application
+      expression: "#element.eContainer()"
+      className: hu.blackbelt.judo.meta.ui.Application
+    - name: packageName
+      expression: >
+        #element.eContainer().name.replaceAll('::','__').replaceAll('#','__').replaceAll('([a-z])([A-Z]+)', '$1_$2').toLowerCase()
+      className: java.lang.String
+    - name: importName
+      expression: >
+        #element.name.replaceAll('::','__').replaceAll('#','__').replaceAll('([a-z])([A-Z]+)', '$1_$2').toLowerCase()
+      className: java.lang.String
+
+# ========================================
 # repositires
 # ========================================
 
 
-#  ("([a-z])([A-Z]+)", "$1_$2").toLowerCase()
+#  ("replaceAll([a-z])([A-Z]+)", "$1_$2").toLowerCase()
 
 #- overwriteExpression: true
 #  factoryExpression: "{#model}"
@@ -158,6 +211,12 @@
   factoryExpression: "{#model}"
   pathExpression: "'lib/components/judo_tab_rework.dart'"
   templateName: flutter/lib/components/judo_tab_rework.dart
+  copy: true
+
+- overwriteExpression: false
+  factoryExpression: "{#model}"
+  pathExpression: "'lib/components/judo_table.dart'"
+  templateName: flutter/lib/components/judo_table.dart
   copy: true
 
 - overwriteExpression: false

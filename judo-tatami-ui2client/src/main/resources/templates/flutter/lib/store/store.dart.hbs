@@ -1,0 +1,35 @@
+import 'package:judo/repositories/{{packageName}}/{{importName}}_repository.dart';
+import 'package:judo/store/external_ap/northwind_external_ap_product_info_store.dart';
+import 'package:mobx/mobx.dart';
+
+part '{{importName}}_store.g.dart';
+
+class NorthwindExternalAPCategoryInfoStore
+    extends _NorthwindExternalAPCategoryInfoStore
+    with _$NorthwindExternalAPCategoryInfoStore {
+  NorthwindExternalAPCategoryInfoStore() : super();
+
+  NorthwindExternalAPCategoryInfoStore.clone(
+      NorthwindExternalAPCategoryInfoStore categoryInfoStore)
+      : super.clone(categoryInfoStore);
+}
+
+abstract class _NorthwindExternalAPCategoryInfoStore
+    with Store, NorthwindExternalAPCategoryInfoRepository {
+  _NorthwindExternalAPCategoryInfoStore();
+
+  _NorthwindExternalAPCategoryInfoStore.clone(
+      NorthwindExternalAPCategoryInfoStore categoryInfoStore) {
+    identifier = categoryInfoStore.identifier;
+    categoryName = categoryInfoStore.categoryName;
+    products = ObservableList.of(categoryInfoStore.products);
+  }
+
+  String identifier;
+
+  @observable
+  String categoryName;
+
+  @observable
+  var products = ObservableList<NorthwindExternalAPProductInfoStore>();
+}

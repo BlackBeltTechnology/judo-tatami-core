@@ -20,7 +20,7 @@ class JudoTitle extends StatelessWidget implements IJudoComponent {
   @override
   Widget build(BuildContext context) {
     return JudoContainer(
-      padding: EdgeInsets.symmetric(horizontal: 10),
+      padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
       col: col,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

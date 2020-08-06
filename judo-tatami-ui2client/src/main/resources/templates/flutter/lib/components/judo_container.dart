@@ -52,7 +52,7 @@ class JudoExample extends StatelessWidget implements IJudoComponent {
     return JudoInputText(
       col: col,
       label: 'col',
-      icon: Icons.print,
+      icon: Icon(Icons.print),
     );
   }
 }

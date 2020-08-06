@@ -17,7 +17,7 @@ class JudoInputTextWidgetParser extends WidgetParser {
     var judoInputTextWidget = JudoInputText(
       col: col,
       label: label,
-      icon: getIconGuessFavorMaterial(name: icon),
+      icon: Icon(getIconGuessFavorMaterial(name: icon)),
     );
 
     return judoInputTextWidget;
