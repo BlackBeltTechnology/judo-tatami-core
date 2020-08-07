@@ -23,6 +23,7 @@ rule CreateActorTypeClaim
     extends CreateNamedElement {
         t.claimType = s.claimType.asString();
         t.dataType = s.attribute.dataType.getPSMEquivalent();
+        t.required = s.attribute.required;
 
         if (s.attribute.binding.isDefined() and s.attribute.memberType == ESM!MemberType#MAPPED) {
             t.binding = s.attribute.equivalent("CreateTransferAttributeFromBound").binding;
