@@ -1,0 +1,60 @@
+import 'package:mobx/mobx.dart';
+
+{{#each relations ~}}
+import 'package:{{ path application.name }}/store/{{ path application.dataElement.name }}/{{ path target.name }}_store.dart';
+{{/each}}
+
+part '{{path name}}_store.g.dart';
+
+class {{ fqClass name }}Store extends _{{ fqClass name }}Store
+    with _${{ fqClass name }}Store {
+
+    {{ fqClass name }}Store() : super();
+
+    {{ fqClass name }}Store.clone({{ fqClass name }}Store {{ fqVariable name }}) : super.clone({{ fqVariable name }});
+}
+
+abstract class _{{ fqClass name }}Store with Store {
+  _{{ fqClass name }}Store();
+
+  _{{ fqClass name }}Store.clone({{ fqClass name }}Store {{ variable name }}Store) {
+    identifier = {{ fqVariable name }}.identifier;
+
+    {{#each attributes ~}}
+    {{ variable name }} = {{ variable ../name }}Store.{{ variable name }};
+    {{/each}}
+
+    // Relations
+    {{#each relations ~}}
+    {{ variable name }} = ObservableList.of({{ variable ../name }}Store.{{ variable name }});
+    {{/each}}
+  }
+
+  String identifier;
+
+  // Attributes
+  {{#each attributes ~}}
+  @observable
+  String {{ variable name }};
+
+  {{/each}}
+
+  // Relations
+  {{#each relations ~}}
+  @observable
+  var {{ variable name }} = ObservableList<{{ fqClass target.name }}Store>();
+
+  {{/each}}
+
+  @override
+  bool operator ==(Object other) =>
+    identical(this, other) ||
+    other is _{{ fqClass name }}Store &&
+        runtimeType == other.runtimeType &&
+        identifier == other.identifier &&
+        identifier != null &&
+        other.identifier != null;
+
+  @override
+  int get hashCode => identifier.hashCode;
+}

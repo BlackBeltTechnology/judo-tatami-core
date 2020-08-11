@@ -1,0 +1,78 @@
+import 'package:mobx/mobx.dart';
+
+{{#each transferObjects ~}}
+import 'package:{{ path application.name }}/repositories/{{ path application.dataElement.name }}/{{ path name }}_repository.dart';
+{{/each}}
+
+{{#each transferObjects ~}}
+    import 'package:{{ path application.name }}/store/{{ path application.dataElement.name }}/{{ path name }}_store.dart';
+{{/each}}
+
+part '{{ path application.dataElement.name }}_aggregated_store.g.dart';
+
+class {{ fqClass application.dataElement.name }}Store extends _{{ fqClass application.dataElement.name }}Store
+    with _${{ fqClass application.dataElement.name }}Store {}
+
+abstract class _{{ fqClass application.dataElement.name }}Store with Store {
+    // Repositories
+    {{#each transferObjects ~}}
+    var _{{ variable name }}Repository = {{ fqClass name }}Repository();
+    {{/each}}
+
+    // Lists
+    {{#each transferObjects ~}}
+    @observable
+    var {{ variable name }}StoreList = ObservableList<{{ fqClass name }}Store>();
+
+    {{/each}}
+
+
+    {{#each transferObjects ~}}
+    //
+    //
+    // {{ name }} observables
+    @observable
+    {{ fqClass name }}Store current{{ className name }};
+
+    @observable
+    var edit{{ className name }} = {{ fqClass name }}Store();
+
+    {{/each}}
+
+    {{#each transferObjects ~}}
+    //
+    //
+    // {{ name }} actions
+    @action
+    void select{{ className name }}({{ fqClass name }}Store {{ variable name }}) {
+        current{{ className name }} = {{ variable name }};
+        edit{{ className name }} = {{ variable name }}Store.clone(current{{ className name }});
+    }
+
+    @action
+    Future create{{ className name }}() async {
+        current{{ className name }} = {{ variable name }}Store.clone(edit{{ className name }});
+        _{{ variable name }}Repository.create{{ className name }}(current{{ className name }});
+        {{ variable name }}StoreList.add(current{{ className name }});
+    }
+
+    @action
+    Future update{{ className name }}() async {
+        current{{ className name }} = {{ variable name }}Store.clone(edit{{ className name }});
+        await _{{ variable name }}Repository.update{{ className name }}(current{{ className name }});
+        getAll{{ className name }}();
+    }
+
+    @action
+    Future remove{{ className name }}() async {
+        await _{{ fqVariable name }}Repository.remove{{ className name }}(current{{ className name }});
+        {{ variable name }}StoreList.remove(current{{ className name }});
+    }
+
+    @action
+    Future getAll{{ className name }}() async {
+        {{ variable name }}StoreList.clear();
+        await _{{ variable name }}Repository.getAll{{ className name }}({{ variable name }}StoreList);
+    }
+    {{/each }}
+}
