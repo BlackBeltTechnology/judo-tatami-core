@@ -10,6 +10,7 @@ import hu.blackbelt.epsilon.runtime.execution.impl.Slf4jLog;
 import hu.blackbelt.judo.meta.ui.Application;
 import hu.blackbelt.judo.meta.ui.runtime.UiModel;
 import hu.blackbelt.judo.meta.ui.support.UiModelResourceSupport;
+import hu.blackbelt.judo.tatami.ui2client.flutter.FlutterHelper;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.emf.ecore.EObject;
@@ -54,6 +55,7 @@ public class Ui2Client {
         handlebars.with(scriptDirectoryTemplateLoader);
         handlebars.setStringParams(true);
         handlebars.setCharset(Charsets.UTF_8);
+        handlebars.registerHelpers(FlutterHelper.class);
         UiModelResourceSupport modelResourceSupport = loadUi(uiLoadArgumentsBuilder()
                 .uri(org.eclipse.emf.common.util.URI.createURI("ui:" + uiModel.getName()))
                 .resourceSet(uiModel.getResourceSet()).build());
@@ -91,19 +93,21 @@ public class Ui2Client {
                 if (template != null || generatorTemplate.isCopy()) {
                     modelResourceSupport.getStreamOfUiApplication().forEach(app -> {
                         StandardEvaluationContext evaluationContext = new StandardEvaluationContext();
-                        evaluationContext.setVariable("model", app);
+                        evaluationContext.setVariable("application", app);
                         evaluationContext.setVariable("template", generatorTemplate);
+                        // TODO: Generalized way
+                        FlutterHelper.registerSpEL(evaluationContext);
 
                         Collection<EObject> processingElements = factoryExpression.getValue(evaluationContext, app, Collection.class);
 
                         processingElements.stream().forEach(element -> {
-                            evaluationContext.setVariable("element", element);
+                            evaluationContext.setVariable("self", element);
                             String path = pathExpression.getValue(evaluationContext, String.class);
                             Boolean overwite = overWriteExpression.getValue(evaluationContext, Boolean.class);
 
                             Context.Builder contextBuilder = Context
                                     .newBuilder(element)
-                                    .combine("app", app)
+                                    .combine("application", app)
                                     .combine("template", generatorTemplate);
 
                             generatorTemplate.getTemplateContext().stream().forEach(ctx -> {

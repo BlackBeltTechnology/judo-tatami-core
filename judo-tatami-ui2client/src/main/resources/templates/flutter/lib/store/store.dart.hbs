@@ -1,35 +1,60 @@
-import 'package:judo/repositories/{{packageName}}/{{importName}}_repository.dart';
-import 'package:judo/store/external_ap/northwind_external_ap_product_info_store.dart';
 import 'package:mobx/mobx.dart';
 
-part '{{importName}}_store.g.dart';
+{{#each relations ~}}
+import 'package:{{ dartFileName application.dataElement.name }}/store/{{ dartFileName application.dataElement.name }}/{{ dartFileName target.name }}_store.dart';
+{{/each}}
 
-class NorthwindExternalAPCategoryInfoStore
-    extends _NorthwindExternalAPCategoryInfoStore
-    with _$NorthwindExternalAPCategoryInfoStore {
-  NorthwindExternalAPCategoryInfoStore() : super();
+part '{{dartFileName name}}_store.g.dart';
 
-  NorthwindExternalAPCategoryInfoStore.clone(
-      NorthwindExternalAPCategoryInfoStore categoryInfoStore)
-      : super.clone(categoryInfoStore);
+class {{ dartClassName name }}Store extends _{{ dartClassName name }}Store
+    with _${{ dartClassName name }}Store {
+
+    {{ dartClassName name }}Store() : super();
+
+    {{ dartClassName name }}Store.clone({{ dartClassName name }}Store {{ dartVariableName name }}) : super.clone({{ dartVariableName name }});
 }
 
-abstract class _NorthwindExternalAPCategoryInfoStore
-    with Store, NorthwindExternalAPCategoryInfoRepository {
-  _NorthwindExternalAPCategoryInfoStore();
+abstract class _{{ dartClassName name }}Store with Store {
+  _{{ dartClassName name }}Store();
 
-  _NorthwindExternalAPCategoryInfoStore.clone(
-      NorthwindExternalAPCategoryInfoStore categoryInfoStore) {
-    identifier = categoryInfoStore.identifier;
-    categoryName = categoryInfoStore.categoryName;
-    products = ObservableList.of(categoryInfoStore.products);
+  _{{ dartClassName name }}Store.clone({{ dartClassName name }}Store {{ dartVariableName name }}Store) {
+    identifier = {{ dartVariableName name }}.identifier;
+
+    {{#each attributes ~}}
+    {{ dartVariableName name }} = {{ dartVariableName ../name }}Store.{{ dartVariableName name }};
+    {{/each}}
+
+    // Relations
+    {{#each relations ~}}
+    {{ dartVariableName name }} = ObservableList.of({{ dartVariableName ../name }}Store.{{ dartVariableName name }});
+    {{/each}}
   }
 
   String identifier;
 
+  // Attributes
+  {{#each attributes ~}}
   @observable
-  String categoryName;
+  String {{ dartVariableName name }};
 
+  {{/each}}
+
+  // Relations
+  {{#each relations ~}}
   @observable
-  var products = ObservableList<NorthwindExternalAPProductInfoStore>();
+  var {{ dartVariableName name }} = ObservableList<{{ dartClassName target.name }}Store>();
+
+  {{/each}}
+
+  @override
+  bool operator ==(Object other) =>
+    identical(this, other) ||
+    other is _NorthwindExternalAPProductInfoStore &&
+        runtimeType == other.runtimeType &&
+        identifier == other.identifier &&
+        identifier != null &&
+        other.identifier != null;
+
+  @override
+  int get hashCode => identifier.hashCode;
 }

@@ -13,6 +13,7 @@ rule CreateApplication
         t.type = applicationType;
         t.cols = applicationColumns;
         t.navigationController = s.equivalent("CreateNavigationController");
+        t.dataElement = s.mapClassType(t);
 
         var exposedRelations : Set = esmUtils.getAllExposedRelationsFromAccessPoint(s);
         

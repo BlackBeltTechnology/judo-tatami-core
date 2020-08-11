@@ -1,0 +1,78 @@
+import 'package:mobx/mobx.dart';
+
+{{#each transferObjects ~}}
+import 'package:{{ dartFileName application.dataElement.name }}/repositories/{{ dartFileName application.dataElement.name }}/{{ dartFileName name }}_repository.dart';
+{{/each}}
+
+{{#each transferObjects ~}}
+    import 'package:{{ dartFileName application.dataElement.name }}/store/{{ dartFileName application.dataElement.name }}/{{ dartFileName name }}_store.dart';
+{{/each}}
+
+part '{{ dartFileName application.dataElement.name }}_aggregated_store.g.dart';
+
+class {{ dartClassName application.dataElement.name }}Store extends _{{ dartClassName application.dataElement.name }}Store
+    with _${{ dartClassName application.dataElement.name }}Store {}
+
+abstract class _{{ dartClassName application.dataElement.name }}Store with Store {
+    // Repositories
+    {{#each transferObjects ~}}
+    var _{{ dartVariableName name }}Repository = {{ dartClassName name }}Repository();
+    {{/each}}
+
+    // Lists
+    {{#each transferObjects ~}}
+    @observable
+    var {{ dartVariableName name }}StoreList = ObservableList<{{ dartClassName name }}Store>();
+
+    {{/each}}
+
+
+    {{#each transferObjects ~}}
+    //
+    //
+    // {{ name }} observables
+    @observable
+    {{ dartClassName name }}Store current{{ dartClassName name }};
+
+    @observable
+    var edit{{ dartClassName name }} = {{ dartClassName name }}Store();
+
+    {{/each}}
+
+    {{#each transferObjects ~}}
+    //
+    //
+    // {{ name }} actions
+    @action
+    void select{{ dartClassName name }}({{ dartClassName name }}Store {{ dartVariableName name }}) {
+        current{{ dartClassName name }} = {{ dartVariableName name }};
+        edit{{ dartClassName name }} = {{ dartClassName name }}Store.clone(current{{ dartClassName name }});
+    }
+
+    @action
+    Future create{{ dartClassName name }}() async {
+        current{{ dartClassName name }} = {{ dartClassName name }}Store.clone(edit{{ dartClassName name }});
+        _{{ dartVariableName name }}Repository.create{{ dartClassName name }}(current{{ dartClassName name }});
+        {{ dartVariableName name }}StoreList.add(current{{ dartClassName name }});
+    }
+
+    @action
+    Future update{{ dartClassName name }}() async {
+        current{{ dartClassName name }} = {{ dartClassName name }}Store.clone(edit{{ dartClassName name }});
+        await _{{ dartVariableName name }}Repository.update{{ dartClassName name }}(current{{ dartClassName name }});
+        getAll{{ dartClassName name }}();
+    }
+
+    @action
+    Future remove{{ dartClassName name }}() async {
+        await _{{ dartVariableName name }}Repository.remove{{ dartClassName name }}(current{{ dartClassName name }});
+        {{ dartVariableName name }}StoreList.remove(current{{ dartClassName name }});
+    }
+
+    @action
+    Future getAll{{ dartClassName name }}() async {
+        {{ dartVariableName name }}StoreList.clear();
+        await _{{ dartVariableName name }}Repository.getAll{{ dartClassName name }}({{ dartVariableName name }}StoreList);
+    }
+    {{/each }}
+}
