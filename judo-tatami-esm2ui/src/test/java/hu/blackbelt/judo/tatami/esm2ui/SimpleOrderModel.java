@@ -1,32 +1,46 @@
 package hu.blackbelt.judo.tatami.esm2ui;
 
+import static hu.blackbelt.judo.meta.esm.accesspoint.util.builder.AccesspointBuilders.newActorTypeBuilder;
+import static hu.blackbelt.judo.meta.esm.namespace.util.builder.NamespaceBuilders.newModelBuilder;
+import static hu.blackbelt.judo.meta.esm.namespace.util.builder.NamespaceBuilders.newPackageBuilder;
+import static hu.blackbelt.judo.meta.esm.operation.util.builder.OperationBuilders.newOperationBuilder;
+import static hu.blackbelt.judo.meta.esm.operation.util.builder.OperationBuilders.newParameterBuilder;
+import static hu.blackbelt.judo.meta.esm.runtime.EsmEpsilonValidator.calculateEsmValidationScriptURI;
+import static hu.blackbelt.judo.meta.esm.runtime.EsmEpsilonValidator.validateEsm;
+import static hu.blackbelt.judo.meta.esm.runtime.EsmModel.loadEsmModel;
+import static hu.blackbelt.judo.meta.esm.runtime.EsmModel.LoadArguments.esmLoadArgumentsBuilder;
+import static hu.blackbelt.judo.meta.esm.operation.util.builder.OperationBuilders.newInheritedOperationReferenceBuilder;
+import static hu.blackbelt.judo.meta.esm.structure.util.builder.StructureBuilders.newDataMemberBuilder;
+import static hu.blackbelt.judo.meta.esm.structure.util.builder.StructureBuilders.newEntityTypeBuilder;
+import static hu.blackbelt.judo.meta.esm.structure.util.builder.StructureBuilders.newGeneralizationBuilder;
+import static hu.blackbelt.judo.meta.esm.structure.util.builder.StructureBuilders.newMappingBuilder;
+import static hu.blackbelt.judo.meta.esm.structure.util.builder.StructureBuilders.newOneWayRelationMemberBuilder;
+import static hu.blackbelt.judo.meta.esm.structure.util.builder.StructureBuilders.newTransferObjectTypeBuilder;
+import static hu.blackbelt.judo.meta.esm.structure.util.builder.StructureBuilders.useEntityType;
+import static hu.blackbelt.judo.meta.esm.structure.util.builder.StructureBuilders.useTransferObjectType;
+import static hu.blackbelt.judo.meta.esm.type.util.builder.TypeBuilders.newBooleanTypeBuilder;
+import static hu.blackbelt.judo.meta.esm.type.util.builder.TypeBuilders.newDateTypeBuilder;
+import static hu.blackbelt.judo.meta.esm.type.util.builder.TypeBuilders.newNumericTypeBuilder;
 import static hu.blackbelt.judo.meta.esm.type.util.builder.TypeBuilders.newStringTypeBuilder;
+import static hu.blackbelt.judo.meta.esm.ui.util.builder.UiBuilders.newActionButtonBuilder;
+import static hu.blackbelt.judo.meta.esm.ui.util.builder.UiBuilders.newDataColumnBuilder;
+import static hu.blackbelt.judo.meta.esm.ui.util.builder.UiBuilders.newDataFieldBuilder;
+import static hu.blackbelt.judo.meta.esm.ui.util.builder.UiBuilders.newOperationFormBuilder;
+import static hu.blackbelt.judo.meta.esm.ui.util.builder.UiBuilders.newGroupBuilder;
+import static hu.blackbelt.judo.meta.esm.ui.util.builder.UiBuilders.newTabularReferenceFieldBuilder;
 import static hu.blackbelt.judo.meta.esm.ui.util.builder.UiBuilders.newTransferObjectFormBuilder;
 import static hu.blackbelt.judo.meta.esm.ui.util.builder.UiBuilders.newTransferObjectTableBuilder;
 import static hu.blackbelt.judo.meta.esm.ui.util.builder.UiBuilders.newTransferObjectViewBuilder;
-import static hu.blackbelt.judo.meta.esm.ui.util.builder.UiBuilders.newTabularReferenceFieldBuilder;
-import static hu.blackbelt.judo.meta.esm.ui.util.builder.UiBuilders.newDataColumnBuilder;
-import static hu.blackbelt.judo.meta.esm.ui.util.builder.UiBuilders.newDataFieldBuilder;
-import static hu.blackbelt.judo.meta.esm.ui.util.builder.UiBuilders.newActionButtonBuilder;
-import static hu.blackbelt.judo.meta.esm.ui.util.builder.UiBuilders.newGroupBuilder;
 
-import static hu.blackbelt.judo.meta.esm.type.util.builder.TypeBuilders.newNumericTypeBuilder;
-import static hu.blackbelt.judo.meta.esm.type.util.builder.TypeBuilders.newDateTypeBuilder;
-import static hu.blackbelt.judo.meta.esm.accesspoint.util.builder.AccesspointBuilders.newActorTypeBuilder;
-import static hu.blackbelt.judo.meta.esm.namespace.util.builder.NamespaceBuilders.newModelBuilder;
-import static hu.blackbelt.judo.meta.esm.operation.util.builder.OperationBuilders.newOperationBuilder;
-import static hu.blackbelt.judo.meta.esm.operation.util.builder.OperationBuilders.newParameterBuilder;
-import static hu.blackbelt.judo.meta.esm.runtime.EsmModel.buildEsmModel;
-import static hu.blackbelt.judo.meta.esm.structure.util.builder.StructureBuilders.*;
-import static hu.blackbelt.judo.meta.ui.runtime.UiEpsilonValidator.calculateUiValidationScriptURI;
-import static hu.blackbelt.judo.meta.ui.runtime.UiEpsilonValidator.validateUi;
-import static hu.blackbelt.judo.meta.ui.runtime.UiModel.SaveArguments.uiSaveArgumentsBuilder;
-
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Arrays;
 
-import static hu.blackbelt.judo.meta.ui.runtime.UiModel.buildUiModel;
-
+import hu.blackbelt.epsilon.runtime.execution.exceptions.ScriptExecutionException;
+import hu.blackbelt.epsilon.runtime.execution.impl.Slf4jLog;
 import hu.blackbelt.judo.meta.esm.namespace.Model;
+import hu.blackbelt.judo.meta.esm.namespace.Package;
 import hu.blackbelt.judo.meta.esm.operation.Operation;
 import hu.blackbelt.judo.meta.esm.operation.OperationType;
 import hu.blackbelt.judo.meta.esm.runtime.EsmModel;
@@ -36,31 +50,59 @@ import hu.blackbelt.judo.meta.esm.structure.MemberType;
 import hu.blackbelt.judo.meta.esm.structure.OneWayRelationMember;
 import hu.blackbelt.judo.meta.esm.structure.RelationKind;
 import hu.blackbelt.judo.meta.esm.structure.TransferObjectType;
+import hu.blackbelt.judo.meta.esm.support.EsmModelResourceSupport;
+import hu.blackbelt.judo.meta.esm.type.BooleanType;
 import hu.blackbelt.judo.meta.esm.type.DateType;
 import hu.blackbelt.judo.meta.esm.type.NumericType;
 import hu.blackbelt.judo.meta.esm.type.StringType;
 import hu.blackbelt.judo.meta.esm.ui.Action;
-import hu.blackbelt.judo.meta.esm.ui.Group;
 import hu.blackbelt.judo.meta.esm.ui.Horizontal;
 import hu.blackbelt.judo.meta.esm.ui.Layout;
 import hu.blackbelt.judo.meta.esm.ui.TransferObjectForm;
 import hu.blackbelt.judo.meta.esm.ui.TransferObjectTable;
 import hu.blackbelt.judo.meta.esm.ui.TransferObjectView;
 import hu.blackbelt.judo.meta.esm.ui.Vertical;
+import hu.blackbelt.model.northwind.esm.NorthwindEsmModel;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public class SimpleOrderModel {
 
+    public static Model createSimpleOrderModel() throws URISyntaxException, ScriptExecutionException, IOException, EsmModel.EsmValidationException {
+        EsmModel esmModel = loadEsmModel(esmLoadArgumentsBuilder()
+                .name("SimpleOrder")
+                .uri(org.eclipse.emf.common.util.URI.createURI(getNorthwindEsmModelUri().toString())));
+        validateEsm(new Slf4jLog(log), esmModel, calculateEsmValidationScriptURI());
+        EsmModelResourceSupport esmModelResourceSupport = EsmModelResourceSupport
+                .esmModelResourceSupportBuilder().resourceSet(esmModel.getResourceSet())
+                .uri(org.eclipse.emf.common.util.URI.createURI("test")).build();
+        return esmModelResourceSupport.getStreamOfEsmNamespaceModel().findFirst().get();
+    }
 
-	public static Model createSimpleOrderModel() {
+    public static URI getNorthwindEsmModelUri() throws URISyntaxException {
+        URI simpleOrderModel = SimpleOrderModel.class.getProtectionDomain().getCodeSource().getLocation().toURI();
+        if (simpleOrderModel.toString().endsWith(".jar")) {
+            simpleOrderModel = new URI("jar:" + simpleOrderModel.toString() + "!/SimpleOrder.model");
+        } else if (simpleOrderModel.toString().startsWith("jar:bundle:")) {
+            // bundle://37.0:0/validations/
+            // jar:bundle://37.0:0/!/validations/esm.evl
+            simpleOrderModel = new URI(simpleOrderModel.toString().substring(4, simpleOrderModel.toString().indexOf("!")) + "SimpleOrder.model");
+        } else {
+            simpleOrderModel = new URI(simpleOrderModel.toString() + "/SimpleOrder.model");
+        }
+        return simpleOrderModel;
+    }
+
+	public static Model createSimpleOrderModel2() {
 		
-		// Data types
-        StringType stringType = newStringTypeBuilder().withName("string").withMaxLength(256).build();
-        NumericType floatType = newNumericTypeBuilder().withName("float").withScale(4).withPrecision(7).build();
-        NumericType integerType = newNumericTypeBuilder().withName("integer").withScale(0).withPrecision(9).build();
-        DateType dateType = newDateTypeBuilder().withName("date").build();
-                
+		//Data types
+        StringType stringType = newStringTypeBuilder().withName("String").withMaxLength(256).build();
+        NumericType floatType = newNumericTypeBuilder().withName("Float").withScale(4).withPrecision(7).build();
+        NumericType integerType = newNumericTypeBuilder().withName("Integer").withScale(0).withPrecision(9).build();
+        DateType dateType = newDateTypeBuilder().withName("Date").build();
+        BooleanType boolType = newBooleanTypeBuilder().withName("Boolean").build();
         
-        // Order
+        //Order
         DataMember orderCustomer = newDataMemberBuilder()
         		.withName("customer")
         		.withMemberType(MemberType.STORED)
@@ -79,13 +121,11 @@ public class SimpleOrderModel {
         
         EntityType order = newEntityTypeBuilder()
                 .withName("Order")
-                .withAttributes(orderDate)
-                .withAttributes(orderCustomer)
+                .withAttributes(orderDate,orderCustomer)
                 .build();
         order.setMapping(newMappingBuilder().withTarget(order).build());
 
-
-        // Order Item
+        //OrderItem
         DataMember orderItemQuantity = newDataMemberBuilder()
         		.withName("quantity")
         		.withMemberType(MemberType.STORED)
@@ -112,13 +152,11 @@ public class SimpleOrderModel {
 
         EntityType orderItem = newEntityTypeBuilder()
                 .withName("OrderItem")
-            	.withAttributes(orderItemQuantity)
-            	.withAttributes(orderItemPrice)
-            	.withAttributes(orderItemProduct)
+            	.withAttributes(orderItemQuantity,orderItemPrice,orderItemProduct)
                 .build();
         orderItem.setMapping(newMappingBuilder().withTarget(orderItem).build());
         
-        OneWayRelationMember orderOrderItems = newOneWayRelationMemberBuilder()
+        OneWayRelationMember orderItems = newOneWayRelationMemberBuilder()
         		.withName("items")
         		.withTarget(orderItem)
         		.withMemberType(MemberType.STORED)
@@ -129,57 +167,211 @@ public class SimpleOrderModel {
         		.withLower(0)
         		.withUpper(-1)
         		.build();
-        orderOrderItems.setBinding(orderOrderItems);
+        orderItems.setBinding(orderItems);
         useEntityType(order)
-        	.withRelations(orderOrderItems)
+        	.withRelations(orderItems)
         	.build();
         
-        // Order item with tax
-        EntityType orderItemWithTax = newEntityTypeBuilder().withName("OrderItemWithTax")
-        		.withGeneralizations(newGeneralizationBuilder().withTarget(orderItem).build())
+        //InternationalOrder
+        DataMember internationalOrderDuty = newDataMemberBuilder()
+        		.withName("duty")
+        		.withMemberType(MemberType.STORED)
+        		.withDataType(floatType)
+        		.withRequired(true)
         		.build();
-        orderItemWithTax.setMapping(newMappingBuilder().withTarget(orderItemWithTax).build());
+        internationalOrderDuty.setBinding(internationalOrderDuty);
         
-        // Tax Authority
-        DataMember authorityName = newDataMemberBuilder()
+        EntityType internationalOrder = newEntityTypeBuilder().withName("InternationalOrder")
+        		.withGeneralizations(newGeneralizationBuilder().withTarget(order).build())
+        		.withAttributes(internationalOrderDuty)
+        		.build();
+        internationalOrder.setMapping(newMappingBuilder().withTarget(internationalOrder).build());
+        
+        //Employee
+        DataMember employeeName = newDataMemberBuilder()
         		.withName("name")
         		.withMemberType(MemberType.STORED)
         		.withDataType(stringType)
         		.withRequired(true)
         		.build();
-        authorityName.setBinding(authorityName);
+        employeeName.setBinding(employeeName);
         
-        DataMember authorityAddress = newDataMemberBuilder()
-        		.withName("address")
+        DataMember employeeId = newDataMemberBuilder()
+        		.withName("id")
         		.withMemberType(MemberType.STORED)
         		.withDataType(stringType)
         		.withRequired(true)
         		.build();
-        authorityAddress.setBinding(authorityAddress);
+        employeeId.setBinding(employeeId);
         
-        EntityType taxAuthority = newEntityTypeBuilder().withName("TaxAuthority")
-        		.withAttributes(authorityName,authorityAddress)
+        EntityType employee = newEntityTypeBuilder().withName("employee")
+        		.withOperations(newOperationBuilder().withName("promote").withOperationType(OperationType.INSTANCE).withBinding("").build())
+        		.withAttributes(employeeName,employeeId)
         		.build();
-        taxAuthority.setMapping(newMappingBuilder().withTarget(taxAuthority).build());
+        employee.setMapping(newMappingBuilder().withTarget(employee).build());
+        
+        EntityType archiver = newEntityTypeBuilder().withName("Archiver")
+        		.withGeneralizations(newGeneralizationBuilder().withTarget(employee).build())
+        		.build();
+        archiver.setMapping(newMappingBuilder().withTarget(archiver).build());
+        
+        EntityType deliverer = newEntityTypeBuilder().withName("Deliverer")
+        		.withGeneralizations(newGeneralizationBuilder().withTarget(employee).build())
+        		.build();
+        deliverer.setMapping(newMappingBuilder().withTarget(deliverer).build());
+        
+        //ArchivedOrder
+        DataMember archivedOrderArchivalDate = newDataMemberBuilder()
+        		.withName("archivalDate")
+        		.withMemberType(MemberType.STORED)
+        		.withDataType(dateType)
+        		.withRequired(true)
+        		.build();
+        archivedOrderArchivalDate.setBinding(archivedOrderArchivalDate);
+        
+        DataMember archivedOrderCustomer = newDataMemberBuilder()
+        		.withName("customer")
+        		.withMemberType(MemberType.STORED)
+        		.withDataType(stringType)
+        		.withRequired(true)
+        		.build();
+        archivedOrderCustomer.setBinding(archivedOrderCustomer);
+
+        DataMember archivedOrderOrderDate = newDataMemberBuilder()
+        		.withName("orderDate")
+        		.withMemberType(MemberType.STORED)
+        		.withDataType(dateType)
+        		.withRequired(true)
+        		.build();
+        archivedOrderOrderDate.setBinding(archivedOrderOrderDate);
         
         EntityType archivedOrder = newEntityTypeBuilder().withName("ArchivedOrder")
+        		.withAttributes(archivedOrderArchivalDate,archivedOrderCustomer,archivedOrderOrderDate)
         		.build();
         archivedOrder.setMapping(newMappingBuilder().withTarget(archivedOrder).build());
-
-        // SubmitOrderToTaxAuthority
         
-        Operation submit = newOperationBuilder().withName("submitOrderToTaxAuthority")
+        //ArchivedOrderItem
+        DataMember archivedOrderItemReview = newDataMemberBuilder()
+        		.withName("review")
+        		.withDataType(integerType)
+        		.build();
+        archivedOrderItemReview.setBinding(archivedOrderItemReview);
+        
+        EntityType archivedOrderItem = newEntityTypeBuilder()
+                .withName("ArchivedOrderItem")
+                .withGeneralizations(newGeneralizationBuilder().withTarget(orderItem).build())
+                .withAttributes(archivedOrderItemReview)
+                .build();
+        archivedOrderItem.setMapping(newMappingBuilder().withTarget(archivedOrderItem).build());
+        
+        OneWayRelationMember archivedOrderItems = newOneWayRelationMemberBuilder()
+        		.withName("items")
+        		.withTarget(archivedOrderItem)
+        		.withMemberType(MemberType.STORED)
+        		.withRelationKind(RelationKind.COMPOSITION)
+        		.withCreateable(false)
+        		.withUpdateable(false)
+        		.withDeleteable(false)
+        		.withLower(0)
+        		.withUpper(-1)
+        		.build();
+        archivedOrderItems.setBinding(archivedOrderItems);
+        
+        useEntityType(archivedOrder)
+        	.withRelations(archivedOrderItems)
+        	.build();
+
+        //ReturnedItems
+        DataMember returnedItemsIsDamaged = newDataMemberBuilder()
+        		.withName("isDamaged")
+        		.withDataType(boolType)
+        		.build();
+        
+        DataMember returnedItemsComment = newDataMemberBuilder()
+        		.withName("comment")
+        		.withDataType(stringType)
+        		.build();
+        
+        EntityType returnedItem = newEntityTypeBuilder().withName("ReturnedItem")
+        	.withGeneralizations(newGeneralizationBuilder().withTarget(orderItem).build())
+        	.withAttributes(returnedItemsIsDamaged,returnedItemsComment)
+        	.build();
+        
+        returnedItem.setMapping(newMappingBuilder().withTarget(returnedItem).build());
+        
+        //Complaint
+        DataMember complaintIsAngry = newDataMemberBuilder()
+        		.withName("isAngry")
+        		.withMemberType(MemberType.TRANSIENT)
+        		.withDataType(boolType)
+        		.build();
+        
+        DataMember complaintProduct = newDataMemberBuilder()
+        		.withName("product")
+        		.withMemberType(MemberType.TRANSIENT)
+        		.withDataType(stringType)
+        		.withRequired(true)
+        		.build();
+        
+        TransferObjectType complaint = newTransferObjectTypeBuilder().withName("Complaint")
+        		.withAttributes(complaintIsAngry,complaintProduct)
+        		.build();
+        
+        //DamagedProduct
+        DataMember damagedProductProduct = newDataMemberBuilder()
+        		.withName("product")
+        		.withMemberType(MemberType.TRANSIENT)
+        		.withDataType(stringType)
+        		.withRequired(true)
+        		.build();
+        DataMember damagedProductComplaint = newDataMemberBuilder()
+        		.withName("complaint")
+        		.withMemberType(MemberType.TRANSIENT)
+        		.withDataType(stringType)
+        		.build();
+        
+        TransferObjectType damagedProduct = newTransferObjectTypeBuilder().withName("DamagedProduct")
+        		.withAttributes(damagedProductProduct,damagedProductComplaint)
+        		.build();
+         
+        //Register return operation - single unmapped input, single mapped output
+        Operation registerReturnOperation = newOperationBuilder().withName("registerReturn")
         		.withOperationType(OperationType.INSTANCE)
         		.withInput(
-        				newParameterBuilder().withName("input").withTarget(taxAuthority)
-        				.withLower(0).withUpper(-1).build())
-        		.withOutput(
-        				newParameterBuilder().withName("output").withTarget(archivedOrder)
+        				newParameterBuilder().withName("input").withTarget(complaint)
         				.withLower(0).withUpper(1).build())
+        		.withOutput(
+        				newParameterBuilder().withName("output").withTarget(returnedItem)
+        				.withLower(1).withUpper(1).build())
+        		.withBinding("")
+        		.withInherited(newInheritedOperationReferenceBuilder().build())
         		.build();
-        submit.setBinding("submit");
         
-        useEntityType(order).withOperations(submit).build();
+        useEntityType(deliverer).withOperations(registerReturnOperation).build();
+        
+        //Review damaged products operation - no input, collection unmapped output
+        Operation reviewDamagedProductsOperation = newOperationBuilder().withName("reviewDamagedProducts")
+        		.withOperationType(OperationType.INSTANCE)
+        		.withOutput(
+        				newParameterBuilder().withName("output").withTarget(damagedProduct)
+        				.withLower(0).withUpper(-1).build())
+        		.withBinding("")
+        		.withInherited(newInheritedOperationReferenceBuilder().build())
+        		.build();
+        
+        useEntityType(archiver).withOperations(reviewDamagedProductsOperation).build();
+        
+        //Register complaints operations - collection unmapped input, no output
+        Operation registerComplaintsOperation = newOperationBuilder().withName("registerComplaints")
+        		.withOperationType(OperationType.INSTANCE)
+        		.withInput(
+        				newParameterBuilder().withName("input").withTarget(complaint)
+        				.withLower(0).withUpper(-1).build())
+        		.withBinding("")
+        		.withInherited(newInheritedOperationReferenceBuilder().build())
+        		.build();
+        
+        useEntityType(deliverer).withOperations(registerComplaintsOperation).build();
         
         // Access Point
         TransferObjectType application = newTransferObjectTypeBuilder()
@@ -199,14 +391,55 @@ public class SimpleOrderModel {
         		.withLower(0)
         		.withUpper(-1)
         		.build();
-
-        useTransferObjectType(application)
-        		.withRelations(applicationOrders)
+        useTransferObjectType(application).withRelations(applicationOrders).build();
+        
+        OneWayRelationMember applicationIntOrders = newOneWayRelationMemberBuilder()
+        		.withName("internationalOrders")
+        		.withTarget(internationalOrder)
+        		.withMemberType(MemberType.DERIVED)
+        		.withRelationKind(RelationKind.ASSOCIATION)
+        		.withGetterExpression("SimpleOrder::InternationalOrder")
+        		.withCreateable(true)
+        		.withUpdateable(true)
+        		.withDeleteable(true)
+        		.withLower(0)
+        		.withUpper(-1)
+        		.build();
+        useTransferObjectType(application).withRelations(applicationIntOrders).build();
+        
+        //Archive operation - single mapped input and single mapped output
+        Operation archiveOperation = newOperationBuilder().withName("archive")
+        		.withOperationType(OperationType.INSTANCE)
+        		.withInput(
+        				newParameterBuilder().withName("input").withTarget(archiver)
+        				.withLower(1).withUpper(1).build())
+        		.withOutput(
+        				newParameterBuilder().withName("output").withTarget(archivedOrder)
+        				.withLower(1).withUpper(1).build())
+        		.withBinding("")
+        		//.withInherited(newInheritedOperationReferenceBuilder().build())
         		.build();
         
-        // Order Form
+        useEntityType(order).withOperations(archiveOperation).build();
+        
+        //Return damaged items operation - collection mapped input and collection mapped output
+        Operation returnDamagedItemsOperation = newOperationBuilder().withName("returnDamagedItems")
+        		.withOperationType(OperationType.INSTANCE)
+        		.withInput(
+        				newParameterBuilder().withName("input").withTarget(deliverer)
+        				.withLower(0).withUpper(-1).build())
+        		.withOutput(
+        				newParameterBuilder().withName("output").withTarget(returnedItem)
+        				.withLower(0).withUpper(-1).build())
+        		.withBinding("")
+        		//.withInherited(newInheritedOperationReferenceBuilder().build())
+        		.build();
+        
+        useEntityType(order).withOperations(returnDamagedItemsOperation).build();
+        
+        //Order Form
         TransferObjectForm orderForm = newTransferObjectFormBuilder()
-            		.withName("OrderForm")
+            		.withName("orderForm")
             		.withComponents(Arrays.asList(
         				newGroupBuilder()
                     		.withName("Content")
@@ -235,7 +468,7 @@ public class SimpleOrderModel {
                     					.withName("orderItems")
                     					.withLabel("Items")
                     					.withMaxVisibleElements(5)
-                    					.withRelationFeature(orderOrderItems)
+                    					.withRelationFeature(orderItems)
                     					.withColumns(Arrays.asList(
     	                    				newDataColumnBuilder()
 	                    						.withName("product")
@@ -259,7 +492,6 @@ public class SimpleOrderModel {
                     					.build()
             				))
                     		.build(),
-
                 		newGroupBuilder()
                     		.withName("Buttons")
                     		.withLabel("Order details")
@@ -283,144 +515,268 @@ public class SimpleOrderModel {
                     		.build()
     				))
             		.build();
-            order.setForm(orderForm);        
+            order.setForm(orderForm);
+            
+            //Order Table
+            TransferObjectTable orderTable = newTransferObjectTableBuilder()
+            		.withMasterDetail(true)
+    				.withName("OrderTable")
+    				.withLabel("Order")
+    				.withMaxVisibleElements(5)
+    				.withColumns(Arrays.asList(
+        				newDataColumnBuilder()
+    						.withName("orderDate")
+    						.withLabel("Date")
+    						.withVisible(true)
+    						.withDataFeature(orderDate)
+    						.build(),
+    					newDataColumnBuilder()
+    						.withName("customer")
+    						.withLabel("Customer")
+    						.withVisible(true)
+    						.withDataFeature(orderCustomer)
+    						.build()
+    				))
+    				.build();
+            order.setTable(orderTable);        
 
-        
-        // Order table
-        TransferObjectTable orderTable = newTransferObjectTableBuilder()
-        		.withMasterDetail(true)
-				.withName("OrderTable")
-				.withLabel("Order")
-				.withMaxVisibleElements(5)
-				.withColumns(Arrays.asList(
-    				newDataColumnBuilder()
-						.withName("product")
-						.withLabel("Product")
-						.withVisible(true)
-						.withDataFeature(orderItemProduct)
-						.build(),
-					newDataColumnBuilder()
-						.withName("quantity")
-						.withLabel("Quantity")
-						.withVisible(true)
-						.withDataFeature(orderItemQuantity)
-						.build(),
-					newDataColumnBuilder()
-						.withName("price")
-						.withLabel("Price")
-						.withVisible(true)
-						.withDataFeature(orderItemPrice)
-						.build()
-				))
-				.build();
-        order.setTable(orderTable);        
+            //Order View
+            TransferObjectView orderView = newTransferObjectViewBuilder()
+    				.withName("OrderView")
+    				.withLabel("Order")
+            		.withComponents(Arrays.asList(
+            				newDataFieldBuilder()
+            					.withName("customer")
+            					.withLabel("Customer")
+            					.withIconName("text_fields")
+            					.withDataFeature(orderCustomer)
+            					.build(),
 
-        
-        // Order View
-        TransferObjectView orderView = newTransferObjectViewBuilder()
-				.withName("OrderView")
-				.withLabel("Order")
-        		.withComponents(Arrays.asList(
-        				newDataFieldBuilder()
-        					.withName("customer")
-        					.withLabel("Customer")
-        					.withIconName("text_fields")
-        					.withDataFeature(orderCustomer)
-        					.build(),
+            				newDataFieldBuilder()
+    							.withName("orderDate")
+    							.withLabel("Order Date")
+    							.withIconName("calendar_today")
+    							.withDataFeature(orderDate)
+            					.build(),
 
-        				newDataFieldBuilder()
-							.withName("orderDate")
-							.withLabel("Order Date")
-							.withIconName("calendar_today")
-							.withDataFeature(orderDate)
-        					.build(),
+            				newTabularReferenceFieldBuilder()
+            					.withName("orderItems")
+            					.withLabel("Items")
+            					.withMaxVisibleElements(5)
+            					.withRelationFeature(orderItems)
+            					.withColumns(Arrays.asList(
+                    				newDataColumnBuilder()
+                						.withName("product")
+                						.withLabel("Product")
+                						.withVisible(true)
+                						.withDataFeature(orderItemProduct)
+                						.build(),
+        							newDataColumnBuilder()
+                						.withName("quantity")
+                						.withLabel("Quantity")
+                						.withVisible(true)
+                						.withDataFeature(orderItemQuantity)
+                						.build(),
+                					newDataColumnBuilder()
+                						.withName("price")
+                						.withLabel("Price")
+                						.withVisible(true)
+                						.withDataFeature(orderItemPrice)
+                						.build()
+            					))
+            					.build(),
+            				newOperationFormBuilder()
+            					.withName("archive")
+            					.withLabel("archive")
+            					.withOperation("archive")
+            					.build(),
+            				newOperationFormBuilder()
+            					.withName("returnDamagedItems")
+            					.withLabel("returnDamagedItems")
+            					.withOperation("returnDamagedItems")
+            					.build()
+    				))
+            		.build();
+            order.setView(orderView);
+            
+            //Order Item View
+            TransferObjectView orderItemView = newTransferObjectViewBuilder()
+    				.withName("OrderItemView")
+    				.withLabel("Order Item")
+            		.withComponents(Arrays.asList(
+    	                				newDataFieldBuilder()
+    	            						.withName("product")
+    	            						.withLabel("Product")
+    	            						.withDataFeature(orderItemProduct)
+    	            						.build(),
+    	        						newDataFieldBuilder()
+    	            						.withName("quantity")
+    	            						.withLabel("Quantity")
+    	            						.withDataFeature(orderItemQuantity)
+    	            						.build(),
+    	        						newDataFieldBuilder()
+    	            						.withName("price")
+    	            						.withLabel("Price")
+    	            						.withDataFeature(orderItemPrice)
+    	            						.build()))
+            		.build();
+            orderItem.setView(orderItemView);
+            
+            //Order Item Form
+            TransferObjectForm orderItemForm = newTransferObjectFormBuilder()
+                		.withName("OrderItemForm")
+                		.withLabel("OrderItemForm")
+                		.withComponents(Arrays.asList(
+            				newGroupBuilder()
+                        		.withName("Content")
+                        		.withLabel("Deliverer")
+                        		.withLayout(Layout.HORIZONTAL)
+                        		.withWrap(true)
+                        		.withHorizontal(Horizontal.LEFT)
+                        		.withVertical(Vertical.TOP)
+                        		.withFrame(true)
+                        		.withComponents(Arrays.asList(
+                        				newDataFieldBuilder()
+                        					.withName("quantity")
+                        					.withLabel("Quantity")
+                        					.withIconName("dialpad")
+                        					.withDataFeature(orderItemQuantity)
+                        					.build(),
+                        				newDataFieldBuilder()
+                							.withName("price")
+                							.withLabel("Price")
+                							.withIconName("dialpad")
+                							.withDataFeature(orderItemPrice)
+                        					.build(),
+                        				newDataFieldBuilder()
+                							.withName("product")
+                							.withLabel("Product")
+                							.withIconName("text_fields")
+                							.withDataFeature(orderItemProduct)
+                        					.build()))
+                        		.build(),
+                    		newGroupBuilder()
+                        		.withName("Buttons")
+                        		.withLabel("Order details")
+                        		.withLayout(Layout.HORIZONTAL)
+                        		.withWrap(true)
+                        		.withHorizontal(Horizontal.LEFT)
+                        		.withVertical(Vertical.TOP)
+                        		.withFrame(true)
+                        		.withComponents(Arrays.asList(
+                        				newActionButtonBuilder()
+                        					.withName("cancel")
+                        					.withLabel("Cancel")
+                        					.withAction(Action.CANCEL)
+                        					.build(),
+                        				newActionButtonBuilder()
+                        					.withName("ok")
+                        					.withLabel("Ok")
+                        					.withAction(Action.SUBMIT)
+                        					.build()
+                        		))
+                        		.build()
+        				))
+                		.build();
+            orderItem.setForm(orderItemForm);
+            
+            //Order Item Table
+            TransferObjectTable orderItemTable = newTransferObjectTableBuilder()
+            		.withMasterDetail(true)
+    				.withName("OrderItemTable")
+    				.withLabel("OrderItemTable")
+    				.withMaxVisibleElements(5)
+    				.withColumns(Arrays.asList(
+        				newDataColumnBuilder()
+    						.withName("quantity")
+    						.withLabel("Quantity")
+    						.withVisible(true)
+    						.withDataFeature(orderItemQuantity)
+    						.build(),
+    					newDataColumnBuilder()
+    						.withName("price")
+    						.withLabel("Price")
+    						.withVisible(true)
+    						.withDataFeature(orderItemPrice)
+    						.build(),
+    					newDataColumnBuilder()
+    						.withName("product")
+    						.withLabel("Product")
+    						.withVisible(true)
+    						.withDataFeature(orderItemProduct)
+    						.build()
+    				))
+    				.build();
+            orderItem.setTable(orderItemTable);
 
-        				newTabularReferenceFieldBuilder()
-        					.withName("orderItems")
-        					.withLabel("Items")
-        					.withMaxVisibleElements(5)
-        					.withRelationFeature(orderOrderItems)
-        					.withColumns(Arrays.asList(
-                				newDataColumnBuilder()
-            						.withName("product")
-            						.withLabel("Product")
-            						.withVisible(true)
-            						.withDataFeature(orderItemProduct)
-            						.build(),
-    							newDataColumnBuilder()
-            						.withName("quantity")
-            						.withLabel("Quantity")
-            						.withVisible(true)
-            						.withDataFeature(orderItemQuantity)
-            						.build(),
-            					newDataColumnBuilder()
-            						.withName("price")
-            						.withLabel("Price")
-            						.withVisible(true)
-            						.withDataFeature(orderItemPrice)
-            						.build()
-        					))
-        					.build()
-				))
-        		.build();
-        order.setView(orderView);
-
-        
-        // Order Item View
-        TransferObjectView orderItemView = newTransferObjectViewBuilder()
-				.withName("OrderItemView")
-				.withLabel("Order Item")
+        //International Order View
+        TransferObjectView intOrderView = newTransferObjectViewBuilder()
+				.withName("internationalOrderView")
+				.withLabel("International Order")
         		.withComponents(Arrays.asList(
 	                				newDataFieldBuilder()
-	            						.withName("product")
-	            						.withLabel("Product")
-	            						.withDataFeature(orderItemProduct)
+	            						.withName("orderDate")
+	            						.withLabel("Order Date")
+	            						.withDataFeature(orderDate)
 	            						.build(),
 	        						newDataFieldBuilder()
-	            						.withName("quantity")
-	            						.withLabel("Quantity")
-	            						.withDataFeature(orderItemQuantity)
+	            						.withName("customer")
+	            						.withLabel("Customer")
+	            						.withDataFeature(orderCustomer)
 	            						.build(),
 	        						newDataFieldBuilder()
-	            						.withName("price")
-	            						.withLabel("Price")
-	            						.withDataFeature(orderItemPrice)
-	            						.build()
+	            						.withName("tax")
+	            						.withLabel("Tax")
+	            						.withDataFeature(internationalOrderDuty)
+	            						.build(),
+	            						
+	            					newTabularReferenceFieldBuilder()
+                    					.withName("items")
+                    					.withLabel("Items")
+                    					.withMaxVisibleElements(5)
+                    					.withRelationFeature(orderItems)
+                    					.withColumns(Arrays.asList(
+    	                    				newDataColumnBuilder()
+	                    						.withName("product")
+	                    						.withLabel("Product")
+	                    						.withVisible(true)
+	                    						.withDataFeature(orderItemProduct)
+	                    						.build(),
+                							newDataColumnBuilder()
+	                    						.withName("quantity")
+	                    						.withLabel("Quantity")
+	                    						.withVisible(true)
+	                    						.withDataFeature(orderItemQuantity)
+	                    						.build(),
+	                    					newDataColumnBuilder()
+	                    						.withName("price")
+	                    						.withLabel("Price")
+	                    						.withVisible(true)
+	                    						.withDataFeature(orderItemPrice)
+	                    						.build()
+                    					))
+                    					.build(),
+                    			   newOperationFormBuilder()
+                    					.withName("archive")
+                    					.withLabel("archive")
+                    					.withOperation("archive")
+                    					.build(),
+                    				newOperationFormBuilder()
+                    					.withName("returnDamagedItems")
+                    					.withLabel("returnDamagedItems")
+                    					.withOperation("returnDamagedItems")
+                    					.build()
 				))
         		.build();
-        orderItem.setView(orderItemView);
-
-        // Order item with tax view
-        TransferObjectView orderItemTaxView = newTransferObjectViewBuilder()
-				.withName("OrderItemTaxView")
-				.withLabel("Order Item Tax")
-        		.withComponents(Arrays.asList(
-	                				newDataFieldBuilder()
-	            						.withName("product")
-	            						.withLabel("Product")
-	            						.withDataFeature(orderItemProduct)
-	            						.build(),
-	        						newDataFieldBuilder()
-	            						.withName("quantity")
-	            						.withLabel("Quantity")
-	            						.withDataFeature(orderItemQuantity)
-	            						.build(),
-	        						newDataFieldBuilder()
-	            						.withName("price")
-	            						.withLabel("Price")
-	            						.withDataFeature(orderItemPrice)
-	            						.build()
-				))
-        		.build();
-        orderItemWithTax.setView(orderItemTaxView);
+        internationalOrder.setView(intOrderView);
         
-       // Order Form
-       TransferObjectForm taxAuthorityForm = newTransferObjectFormBuilder()
-        		.withName("TaxAuthorityForm")
+        //International Order Form
+        TransferObjectForm internationalOrderForm = newTransferObjectFormBuilder()
+        		.withName("InternationalOrderForm")
+        		.withLabel("InternationalOrderForm")
         		.withComponents(Arrays.asList(
     				newGroupBuilder()
                 		.withName("Content")
-                		.withLabel("Order details")
                 		.withLayout(Layout.HORIZONTAL)
                 		.withWrap(true)
                 		.withHorizontal(Horizontal.LEFT)
@@ -428,17 +784,49 @@ public class SimpleOrderModel {
                 		.withFrame(true)
                 		.withComponents(Arrays.asList(
                 				newDataFieldBuilder()
-                					.withName("authorityName")
-                					.withLabel("TaxAuthorityName")
-                					.withIconName("text_fields")
-                					.withDataFeature(authorityName)
+                					.withName("duty")
+                					.withLabel("Duty")
+                					.withIconName("dialpad")
+                					.withDataFeature(internationalOrderDuty)
                 					.build(),
-
                 				newDataFieldBuilder()
-        							.withName("authorityAddress")
-        							.withLabel("TaxAuthorityAddress")
+        							.withName("orderDate")
+        							.withLabel("Order Date")
+        							.withIconName("calendar_today")
+        							.withDataFeature(orderDate)
+                					.build(),
+                				newDataFieldBuilder()
+        							.withName("customer")
+        							.withLabel("Customer")
         							.withIconName("text_fields")
-        							.withDataFeature(authorityAddress)
+        							.withDataFeature(orderCustomer)
+                					.build(),
+                				
+                				newTabularReferenceFieldBuilder()
+                					.withName("items")
+                					.withLabel("Items")
+                					.withMaxVisibleElements(5)
+                					.withRelationFeature(orderItems)
+                					.withColumns(Arrays.asList(
+	                    				newDataColumnBuilder()
+                    						.withName("product")
+                    						.withLabel("Product")
+                    						.withVisible(true)
+                    						.withDataFeature(orderItemProduct)
+                    						.build(),
+            							newDataColumnBuilder()
+                    						.withName("quantity")
+                    						.withLabel("Quantity")
+                    						.withVisible(true)
+                    						.withDataFeature(orderItemQuantity)
+                    						.build(),
+                    					newDataColumnBuilder()
+                    						.withName("price")
+                    						.withLabel("Price")
+                    						.withVisible(true)
+                    						.withDataFeature(orderItemPrice)
+                    						.build()
+                					))
                 					.build()))
                 		.build(),
 
@@ -465,36 +853,865 @@ public class SimpleOrderModel {
                 		.build()
 				))
         		.build();
-        taxAuthority.setForm(taxAuthorityForm);  
+        internationalOrder.setForm(internationalOrderForm);
         
-        // Archived Order View
-        TransferObjectView archivedOrderView = newTransferObjectViewBuilder()
-				.withName("ArchivedOrderView")
-				.withLabel("Archived Order")
+        //International Order Table
+        TransferObjectTable internationalOrderTable = newTransferObjectTableBuilder()
+        		.withMasterDetail(true)
+				.withName("OrderTable")
+				.withLabel("Order")
+				.withMaxVisibleElements(5)
+				.withColumns(Arrays.asList(
+    				newDataColumnBuilder()
+						.withName("orderDate")
+						.withLabel("Date")
+						.withVisible(true)
+						.withDataFeature(orderDate)
+						.build(),
+					newDataColumnBuilder()
+						.withName("customer")
+						.withLabel("Customer")
+						.withVisible(true)
+						.withDataFeature(orderCustomer)
+						.build(),
+					newDataColumnBuilder()
+						.withName("duty")
+						.withLabel("Duty")
+						.withVisible(true)
+						.withDataFeature(internationalOrderDuty)
+						.build()
+				))
+				.build();
+        internationalOrder.setTable(internationalOrderTable);
+        
+        //ArchiverForm
+        TransferObjectForm archiverForm = newTransferObjectFormBuilder()
+         		.withName("ArchiverForm")
+         		.withComponents(Arrays.asList(
+     				newGroupBuilder()
+                 		.withName("Content")
+                 		.withLabel("Order details")
+                 		.withLayout(Layout.HORIZONTAL)
+                 		.withWrap(true)
+                 		.withHorizontal(Horizontal.LEFT)
+                 		.withVertical(Vertical.TOP)
+                 		.withFrame(true)
+                 		.withComponents(Arrays.asList(
+                 				newDataFieldBuilder()
+                 					.withName("archiverName")
+                 					.withLabel("Name")
+                 					.withIconName("text_fields")
+                 					.withDataFeature(employeeName)
+                 					.build(),
+                 				newDataFieldBuilder()
+         							.withName("archiverID")
+         							.withLabel("ID")
+         							.withIconName("text_fields")
+         							.withDataFeature(employeeId)
+                 					.build()))
+                 		.build(),
+
+             		newGroupBuilder()
+                 		.withName("Buttons")
+                 		.withLabel("Order details")
+                 		.withLayout(Layout.HORIZONTAL)
+                 		.withWrap(true)
+                 		.withHorizontal(Horizontal.LEFT)
+                 		.withVertical(Vertical.TOP)
+                 		.withFrame(true)
+                 		.withComponents(Arrays.asList(
+                 				newActionButtonBuilder()
+                 					.withName("cancel")
+                 					.withLabel("Cancel")
+                 					.withAction(Action.CANCEL)
+                 					.build(),
+                 				newActionButtonBuilder()
+                 					.withName("ok")
+                 					.withLabel("Ok")
+                 					.withAction(Action.SUBMIT)
+                 					.build()
+                 		))
+                 		.build()
+ 				))
+         		.build();
+         archiver.setForm(archiverForm);
+         
+         //ArchiverTable
+         TransferObjectTable archiverTable = newTransferObjectTableBuilder()
+         		.withMasterDetail(true)
+ 				.withName("ArchiverTable")
+ 				.withLabel("Order")
+ 				.withMaxVisibleElements(5)
+ 				.withColumns(Arrays.asList(
+     				newDataColumnBuilder()
+ 						.withName("archiverName")
+ 						.withLabel("Name")
+ 						.withVisible(true)
+ 						.withDataFeature(employeeName)
+ 						.build(),
+ 					newDataColumnBuilder()
+ 						.withName("archiverId")
+ 						.withLabel("ID")
+ 						.withVisible(true)
+ 						.withDataFeature(employeeId)
+ 						.build()
+ 				))
+ 				.build();
+         archiver.setTable(archiverTable);
+         
+         //ArchiverView
+         TransferObjectView archiverView = newTransferObjectViewBuilder()
+ 				.withName("ArchiverView")
+ 				.withLabel("Archiver")
+         		.withComponents(Arrays.asList(
+         				newDataFieldBuilder()
+         					.withName("archiverName")
+         					.withLabel("Name")
+         					.withIconName("text_fields")
+         					.withDataFeature(employeeName)
+         					.build(),
+         				newDataFieldBuilder()
+ 							.withName("archiverId")
+ 							.withLabel("ID")
+ 							.withIconName("text_fields")
+ 							.withDataFeature(employeeId)
+         					.build(),
+         				newOperationFormBuilder()
+        					.withName("reviewDamagedProducts")
+        					.withLabel("reviewDamagedProducts")
+        					.withOperation("reviewDamagedProducts")
+        					.build()
+ 				))
+         		.build();
+         archiver.setView(archiverView);
+         
+         //Archived Order Form
+         TransferObjectForm archivedOrderForm = newTransferObjectFormBuilder()
+          		.withName("ArchivedOrderForm")
+          		.withComponents(Arrays.asList(
+      				newGroupBuilder()
+                  		.withName("Content")
+                  		.withLabel("Order details")
+                  		.withLayout(Layout.HORIZONTAL)
+                  		.withWrap(true)
+                  		.withHorizontal(Horizontal.LEFT)
+                  		.withVertical(Vertical.TOP)
+                  		.withFrame(true)
+                  		.withComponents(Arrays.asList(
+                  				newDataFieldBuilder()
+                  					.withName("archivalDate")
+                  					.withLabel("Archival Date")
+                  					.withIconName("calendar_today")
+                  					.withDataFeature(archivedOrderArchivalDate)
+                  					.build(),
+                  				newDataFieldBuilder()
+          							.withName("orderDate")
+          							.withLabel("Order Date")
+          							.withIconName("calendar_today")
+          							.withDataFeature(archivedOrderOrderDate)
+                  					.build(),
+                  				newDataFieldBuilder()
+          							.withName("customer")
+          							.withLabel("Customer")
+          							.withIconName("text_fields")
+          							.withDataFeature(archivedOrderCustomer)
+                  					.build(),
+                  				newTabularReferenceFieldBuilder()
+                					.withName("items")
+                					.withLabel("Items")
+                					.withMaxVisibleElements(5)
+                					.withRelationFeature(archivedOrderItems)
+                					.withColumns(Arrays.asList(
+	                    				newDataColumnBuilder()
+                    						.withName("product")
+                    						.withLabel("Product")
+                    						.withVisible(true)
+                    						.withDataFeature(orderItemProduct)
+                    						.build(),
+            							newDataColumnBuilder()
+                    						.withName("quantity")
+                    						.withLabel("Quantity")
+                    						.withVisible(true)
+                    						.withDataFeature(orderItemQuantity)
+                    						.build(),
+                    					newDataColumnBuilder()
+                    						.withName("price")
+                    						.withLabel("Price")
+                    						.withVisible(true)
+                    						.withDataFeature(orderItemPrice)
+                    						.build(),
+                    					newDataColumnBuilder()
+                    						.withName("review")
+                    						.withLabel("Review")
+                    						.withVisible(true)
+                    						.withDataFeature(archivedOrderItemReview)
+                    						.build()
+                					))
+                					.build()
+                  				))
+                  		.build(),
+
+              		newGroupBuilder()
+                  		.withName("Buttons")
+                  		.withLabel("Order details")
+                  		.withLayout(Layout.HORIZONTAL)
+                  		.withWrap(true)
+                  		.withHorizontal(Horizontal.LEFT)
+                  		.withVertical(Vertical.TOP)
+                  		.withFrame(true)
+                  		.withComponents(Arrays.asList(
+                  				newActionButtonBuilder()
+                  					.withName("cancel")
+                  					.withLabel("Cancel")
+                  					.withAction(Action.CANCEL)
+                  					.build(),
+                  				newActionButtonBuilder()
+                  					.withName("ok")
+                  					.withLabel("Ok")
+                  					.withAction(Action.SUBMIT)
+                  					.build()
+                  		))
+                  		.build()
+  				))
+          		.build();
+         archivedOrder.setForm(archivedOrderForm);
+         
+         //Archived Order View
+         TransferObjectView archivedOrderView = newTransferObjectViewBuilder()
+ 				.withName("ArchivedOrderView")
+ 				.withLabel("Archived Order")
+         		.withComponents(Arrays.asList(
+         				newDataFieldBuilder()
+         					.withName("customer")
+         					.withLabel("Customer")
+         					.withIconName("text_fields")
+         					.withDataFeature(archivedOrderCustomer)
+         					.build(),
+
+         				newDataFieldBuilder()
+ 							.withName("orderDate")
+ 							.withLabel("Order Date")
+ 							.withIconName("calendar_today")
+ 							.withDataFeature(archivedOrderOrderDate)
+         					.build(),
+         					
+         				newDataFieldBuilder()
+ 							.withName("archivalDate")
+ 							.withLabel("Archival Date")
+ 							.withIconName("calendar_today")
+ 							.withDataFeature(archivedOrderArchivalDate)
+         					.build(),
+
+         				newTabularReferenceFieldBuilder()
+         					.withName("orderItems")
+         					.withLabel("Items")
+         					.withMaxVisibleElements(5)
+         					.withRelationFeature(archivedOrderItems)
+         					.withColumns(Arrays.asList(
+                 				newDataColumnBuilder()
+             						.withName("product")
+             						.withLabel("Product")
+             						.withVisible(true)
+             						.withDataFeature(orderItemProduct)
+             						.build(),
+     							newDataColumnBuilder()
+             						.withName("quantity")
+             						.withLabel("Quantity")
+             						.withVisible(true)
+             						.withDataFeature(orderItemQuantity)
+             						.build(),
+             					newDataColumnBuilder()
+             						.withName("price")
+             						.withLabel("Price")
+             						.withVisible(true)
+             						.withDataFeature(orderItemPrice)
+             						.build(),
+             					newDataColumnBuilder()
+             						.withName("review")
+             						.withLabel("Review")
+             						.withVisible(true)
+             						.withDataFeature(archivedOrderItemReview)
+             						.build()
+         					))
+         					.build()
+ 				))
+         		.build();
+         archivedOrder.setView(archivedOrderView);
+         
+         //Archived Order Table
+         TransferObjectTable archivedOrderTable = newTransferObjectTableBuilder()
+         		.withMasterDetail(true)
+ 				.withName("ArchivedOrderTable")
+ 				.withLabel("Archived Order")
+ 				.withMaxVisibleElements(5)
+ 				.withColumns(Arrays.asList(
+     				newDataColumnBuilder()
+ 						.withName("archivalDate")
+ 						.withLabel("archivalDate")
+ 						.withVisible(true)
+ 						.withDataFeature(archivedOrderArchivalDate)
+ 						.build(),
+ 					newDataColumnBuilder()
+ 						.withName("orderDate")
+ 						.withLabel("orderDate")
+ 						.withVisible(true)
+ 						.withDataFeature(archivedOrderOrderDate)
+ 						.build(),
+ 					newDataColumnBuilder()
+ 						.withName("customer")
+ 						.withLabel("customer")
+ 						.withVisible(true)
+ 						.withDataFeature(archivedOrderCustomer)
+ 						.build()))
+ 				.build();
+         archivedOrder.setTable(archivedOrderTable);
+         
+         //Archived Order Item View
+         TransferObjectView archivedOrderItemView = newTransferObjectViewBuilder()
+ 				.withName("ArchivedOrderItemView")
+ 				.withLabel("Archived Order Item")
+         		.withComponents(Arrays.asList(
+ 	                				newDataFieldBuilder()
+ 	            						.withName("product")
+ 	            						.withLabel("Product")
+ 	            						.withDataFeature(orderItemProduct)
+ 	            						.build(),
+ 	        						newDataFieldBuilder()
+ 	            						.withName("quantity")
+ 	            						.withLabel("Quantity")
+ 	            						.withDataFeature(orderItemQuantity)
+ 	            						.build(),
+ 	        						newDataFieldBuilder()
+ 	            						.withName("price")
+ 	            						.withLabel("Price")
+ 	            						.withDataFeature(orderItemPrice)
+ 	            						.build(),
+ 	            				    newDataFieldBuilder()
+ 	            						.withName("review")
+ 	            						.withLabel("review")
+ 	            						.withDataFeature(archivedOrderItemReview)
+ 	            						.build()))
+         		.build();
+         archivedOrderItem.setView(archivedOrderItemView);
+         
+         //Archived Order Item Form
+         TransferObjectForm archivedOrderItemForm = newTransferObjectFormBuilder()
+             		.withName("ArchivedOrderItemForm")
+             		.withLabel("ArchivedOrderItemForm")
+             		.withComponents(Arrays.asList(
+         				newGroupBuilder()
+                     		.withName("Content")
+                     		.withLabel("Deliverer")
+                     		.withLayout(Layout.HORIZONTAL)
+                     		.withWrap(true)
+                     		.withHorizontal(Horizontal.LEFT)
+                     		.withVertical(Vertical.TOP)
+                     		.withFrame(true)
+                     		.withComponents(Arrays.asList(
+                     				newDataFieldBuilder()
+                     					.withName("quantity")
+                     					.withLabel("Quantity")
+                     					.withIconName("dialpad")
+                     					.withDataFeature(orderItemQuantity)
+                     					.build(),
+                     				newDataFieldBuilder()
+             							.withName("price")
+             							.withLabel("Price")
+             							.withIconName("dialpad")
+             							.withDataFeature(orderItemPrice)
+                     					.build(),
+                     				newDataFieldBuilder()
+             							.withName("product")
+             							.withLabel("Product")
+             							.withIconName("text_fields")
+             							.withDataFeature(orderItemProduct)
+                     					.build(),
+                     			    newDataFieldBuilder()
+ 	            						.withName("review")
+ 	            						.withLabel("review")
+ 	            						.withIconName("dialpad")
+ 	            						.withDataFeature(archivedOrderItemReview)
+ 	            						.build()))
+                     		.build(),
+                 		newGroupBuilder()
+                     		.withName("Buttons")
+                     		.withLabel("Order details")
+                     		.withLayout(Layout.HORIZONTAL)
+                     		.withWrap(true)
+                     		.withHorizontal(Horizontal.LEFT)
+                     		.withVertical(Vertical.TOP)
+                     		.withFrame(true)
+                     		.withComponents(Arrays.asList(
+                     				newActionButtonBuilder()
+                     					.withName("cancel")
+                     					.withLabel("Cancel")
+                     					.withAction(Action.CANCEL)
+                     					.build(),
+                     				newActionButtonBuilder()
+                     					.withName("ok")
+                     					.withLabel("Ok")
+                     					.withAction(Action.SUBMIT)
+                     					.build()
+                     		))
+                     		.build()
+     				))
+             		.build();
+         archivedOrderItem.setForm(archivedOrderItemForm);
+         
+         //Archived Order item Table
+         TransferObjectTable archivedOrderItemTable = newTransferObjectTableBuilder()
+         		.withMasterDetail(true)
+ 				.withName("ArchivedOrderItemTable")
+ 				.withLabel("Archived Order Item")
+ 				.withMaxVisibleElements(5)
+				.withColumns(Arrays.asList(
+    				newDataColumnBuilder()
+						.withName("quantity")
+						.withLabel("Quantity")
+						.withVisible(true)
+						.withDataFeature(orderItemQuantity)
+						.build(),
+					newDataColumnBuilder()
+						.withName("price")
+						.withLabel("Price")
+						.withVisible(true)
+						.withDataFeature(orderItemPrice)
+						.build(),
+					newDataColumnBuilder()
+						.withName("product")
+						.withLabel("Product")
+						.withVisible(true)
+						.withDataFeature(orderItemProduct)
+						.build(),
+				    newDataColumnBuilder()
+						.withName("review")
+						.withLabel("Review")
+						.withVisible(true)
+						.withDataFeature(archivedOrderItemReview)
+						.build()
+				))
+				.build();
+         archivedOrderItem.setTable(archivedOrderItemTable);
+         
+         //Returned Item Table
+         TransferObjectTable returnedItemTable = newTransferObjectTableBuilder()
+         		.withMasterDetail(true)
+ 				.withName("ReturedItemTable")
+ 				.withLabel("ReturnedItemTable")
+ 				.withMaxVisibleElements(5)
+ 				.withColumns(Arrays.asList(
+     				newDataColumnBuilder()
+ 						.withName("quantity")
+ 						.withLabel("Quantity")
+ 						.withVisible(true)
+ 						.withDataFeature(orderItemQuantity)
+ 						.build(),
+ 					newDataColumnBuilder()
+ 						.withName("price")
+ 						.withLabel("Price")
+ 						.withVisible(true)
+ 						.withDataFeature(orderItemPrice)
+ 						.build(),
+ 					newDataColumnBuilder()
+ 						.withName("product")
+ 						.withLabel("Product")
+ 						.withVisible(true)
+ 						.withDataFeature(orderItemProduct)
+ 						.build(),
+ 				    newDataColumnBuilder()
+ 						.withName("isDamaged")
+ 						.withLabel("Damaged")
+ 						.withVisible(true)
+ 						.withDataFeature(returnedItemsIsDamaged)
+ 						.build(),
+ 					newDataColumnBuilder()
+ 						.withName("comment")
+ 						.withLabel("Comment")
+ 						.withVisible(true)
+ 						.withDataFeature(returnedItemsComment)
+ 						.build()
+ 				))
+ 				.build();
+         returnedItem.setTable(returnedItemTable);
+         
+         //Returned Item View
+         TransferObjectView returnedItemView = newTransferObjectViewBuilder()
+ 				.withName("ReturnedItemView")
+ 				.withLabel("Returned Item")
+         		.withComponents(Arrays.asList(
+ 	                				newDataFieldBuilder()
+ 	            						.withName("product")
+ 	            						.withLabel("Product")
+ 	            						.withDataFeature(orderItemProduct)
+ 	            						.build(),
+ 	        						newDataFieldBuilder()
+ 	            						.withName("quantity")
+ 	            						.withLabel("Quantity")
+ 	            						.withDataFeature(orderItemQuantity)
+ 	            						.build(),
+ 	        						newDataFieldBuilder()
+ 	            						.withName("price")
+ 	            						.withLabel("Price")
+ 	            						.withDataFeature(orderItemPrice)
+ 	            						.build(),
+ 	            				    newDataFieldBuilder()
+ 	            						.withName("isDamaged")
+ 	            						.withLabel("Damaged")
+ 	            						.withDataFeature(returnedItemsIsDamaged)
+ 	            						.build(),
+ 	            				    newDataFieldBuilder()
+ 	            						.withName("comment")
+ 	            						.withLabel("Comment")
+ 	            						.withDataFeature(returnedItemsComment)
+ 	            						.build()))
+         		.build();
+         returnedItem.setView(returnedItemView);
+         
+         //Returned Item Form
+         TransferObjectForm returnedItemForm = newTransferObjectFormBuilder()
+             		.withName("ReturnedItemForm")
+             		.withLabel("ReturnedItemForm")
+             		.withComponents(Arrays.asList(
+         				newGroupBuilder()
+                     		.withName("Content")
+                     		.withLabel("Deliverer")
+                     		.withLayout(Layout.HORIZONTAL)
+                     		.withWrap(true)
+                     		.withHorizontal(Horizontal.LEFT)
+                     		.withVertical(Vertical.TOP)
+                     		.withFrame(true)
+                     		.withComponents(Arrays.asList(
+                     				newDataFieldBuilder()
+                     					.withName("quantity")
+                     					.withLabel("Quantity")
+                     					.withIconName("dialpad")
+                     					.withDataFeature(orderItemQuantity)
+                     					.build(),
+                     				newDataFieldBuilder()
+             							.withName("price")
+             							.withLabel("Price")
+             							.withIconName("dialpad")
+             							.withDataFeature(orderItemPrice)
+                     					.build(),
+                     				newDataFieldBuilder()
+             							.withName("product")
+             							.withLabel("Product")
+             							.withIconName("text_fields")
+             							.withDataFeature(orderItemProduct)
+                     					.build(),
+                     			    newDataFieldBuilder()
+ 	            						.withName("isDamaged")
+ 	            						.withLabel("Damaged")
+ 	            						.withIconName("check_box")
+ 	            						.withDataFeature(returnedItemsIsDamaged)
+ 	            						.build(),
+ 	            					newDataFieldBuilder()
+             							.withName("comment")
+             							.withLabel("Comment")
+             							.withIconName("text_fields")
+             							.withDataFeature(returnedItemsComment)
+                     					.build()))
+                     		.build(),
+                 		newGroupBuilder()
+                     		.withName("Buttons")
+                     		.withLabel("Order details")
+                     		.withLayout(Layout.HORIZONTAL)
+                     		.withWrap(true)
+                     		.withHorizontal(Horizontal.LEFT)
+                     		.withVertical(Vertical.TOP)
+                     		.withFrame(true)
+                     		.withComponents(Arrays.asList(
+                     				newActionButtonBuilder()
+                     					.withName("cancel")
+                     					.withLabel("Cancel")
+                     					.withAction(Action.CANCEL)
+                     					.build(),
+                     				newActionButtonBuilder()
+                     					.withName("ok")
+                     					.withLabel("Ok")
+                     					.withAction(Action.SUBMIT)
+                     					.build()
+                     		))
+                     		.build()
+     				))
+             		.build();
+         returnedItem.setForm(returnedItemForm);
+         
+         //Deliverer Form
+         TransferObjectForm delivererForm = newTransferObjectFormBuilder()
+             		.withName("DelivererForm")
+             		.withComponents(Arrays.asList(
+         				newGroupBuilder()
+                     		.withName("Content")
+                     		.withLabel("Deliverer")
+                     		.withLayout(Layout.HORIZONTAL)
+                     		.withWrap(true)
+                     		.withHorizontal(Horizontal.LEFT)
+                     		.withVertical(Vertical.TOP)
+                     		.withFrame(true)
+                     		.withComponents(Arrays.asList(
+                     				newDataFieldBuilder()
+                     					.withName("name")
+                     					.withLabel("Name")
+                     					.withIconName("text_fields")
+                     					.withDataFeature(employeeName)
+                     					.build(),
+                     				newDataFieldBuilder()
+             							.withName("id")
+             							.withLabel("ID")
+             							.withIconName("text_fields")
+             							.withDataFeature(employeeId)
+                     					.build()))
+                     		.build(),
+                 		newGroupBuilder()
+                     		.withName("Buttons")
+                     		.withLabel("Order details")
+                     		.withLayout(Layout.HORIZONTAL)
+                     		.withWrap(true)
+                     		.withHorizontal(Horizontal.LEFT)
+                     		.withVertical(Vertical.TOP)
+                     		.withFrame(true)
+                     		.withComponents(Arrays.asList(
+                     				newActionButtonBuilder()
+                     					.withName("cancel")
+                     					.withLabel("Cancel")
+                     					.withAction(Action.CANCEL)
+                     					.build(),
+                     				newActionButtonBuilder()
+                     					.withName("ok")
+                     					.withLabel("Ok")
+                     					.withAction(Action.SUBMIT)
+                     					.build()
+                     		))
+                     		.build()
+     				))
+             		.build();
+             deliverer.setForm(delivererForm); 
+        
+        //Deliverer Table
+        TransferObjectTable delivererTable = newTransferObjectTableBuilder()
+        		.withMasterDetail(true)
+				.withName("DelivererTable")
+				.withLabel("Deliverer")
+				.withMaxVisibleElements(5)
+				.withColumns(Arrays.asList(
+    				newDataColumnBuilder()
+						.withName("name")
+						.withLabel("Name")
+						.withVisible(true)
+						.withDataFeature(employeeName)
+						.build(),
+					newDataColumnBuilder()
+						.withName("id")
+						.withLabel("ID")
+						.withVisible(true)
+						.withDataFeature(employeeId)
+						.build()))
+				.build();
+        deliverer.setTable(delivererTable);
+        
+        //Deliverer View
+        TransferObjectView delivererView = newTransferObjectViewBuilder()
+				.withName("DelivererView")
+				.withLabel("Deliverer")
         		.withComponents(Arrays.asList(
-        				newTabularReferenceFieldBuilder()
-    					.withName("Order")
-    					.withLabel("orders")
-    					.withMaxVisibleElements(5)
-    					.withRelationFeature(applicationOrders)
-    					.withColumns(Arrays.asList(
-            				newDataColumnBuilder()
-            					.withName("customer")
-            					.withLabel("Customer")
-            					.withIconName("text_fields")
-            					.withDataFeature(orderCustomer)
-            					.build(),
-							newDataColumnBuilder()
-    							.withName("orderDate")
-    							.withLabel("Order Date")
-    							.withIconName("calendar_today")
-    							.withDataFeature(orderDate)
-            					.build()
-    					))
-    					.build()
-			))
+	                				newDataFieldBuilder()
+	            						.withName("name")
+	            						.withLabel("Name")
+	            						.withDataFeature(employeeName)
+	            						.build(),
+	        						newDataFieldBuilder()
+	            						.withName("id")
+	            						.withLabel("ID")
+	            						.withDataFeature(employeeId)
+	            						.build()
+	            						
+        				
+        				))
         		.build();
-        archivedOrder.setView(archivedOrderView);
+        deliverer.setView(delivererView);
+         
+        //Complaint Form
+        TransferObjectForm complaintForm = newTransferObjectFormBuilder()
+            		.withName("ComplaintForm")
+            		.withComponents(Arrays.asList(
+        				newGroupBuilder()
+                    		.withName("Content")
+                    		.withLabel("Complaint")
+                    		.withLayout(Layout.HORIZONTAL)
+                    		.withWrap(true)
+                    		.withHorizontal(Horizontal.LEFT)
+                    		.withVertical(Vertical.TOP)
+                    		.withFrame(true)
+                    		.withComponents(Arrays.asList(
+                    				newDataFieldBuilder()
+                    					.withName("isAngry")
+                    					.withLabel("Angry")
+                    					.withIconName("check_box")
+                    					.withDataFeature(complaintIsAngry)
+                    					.build(),
+                    				newDataFieldBuilder()
+            							.withName("product")
+            							.withLabel("Product")
+            							.withIconName("text_fields")
+            							.withDataFeature(complaintProduct)
+                    					.build()))
+                    		.build(),
+                		newGroupBuilder()
+                    		.withName("Buttons")
+                    		.withLabel("Order details")
+                    		.withLayout(Layout.HORIZONTAL)
+                    		.withWrap(true)
+                    		.withHorizontal(Horizontal.LEFT)
+                    		.withVertical(Vertical.TOP)
+                    		.withFrame(true)
+                    		.withComponents(Arrays.asList(
+                    				newActionButtonBuilder()
+                    					.withName("cancel")
+                    					.withLabel("Cancel")
+                    					.withAction(Action.CANCEL)
+                    					.build(),
+                    				newActionButtonBuilder()
+                    					.withName("ok")
+                    					.withLabel("Ok")
+                    					.withAction(Action.SUBMIT)
+                    					.build()
+                    		))
+                    		.build()
+    				))
+            		.build();
+            complaint.setForm(complaintForm); 
+       
+       //Complaint Table
+       TransferObjectTable complaintTable = newTransferObjectTableBuilder()
+       		.withMasterDetail(true)
+				.withName("ComplaintTable")
+				.withLabel("Complaint")
+				.withMaxVisibleElements(5)
+				.withColumns(Arrays.asList(
+   				newDataColumnBuilder()
+						.withName("isAngry")
+						.withLabel("Angry")
+						.withVisible(true)
+						.withDataFeature(complaintIsAngry)
+						.build(),
+					newDataColumnBuilder()
+						.withName("product")
+						.withLabel("Product")
+						.withVisible(true)
+						.withDataFeature(complaintProduct)
+						.build()))
+				.build();
+       complaint.setTable(complaintTable);
+       
+       //Complaint View
+       TransferObjectView complaintView = newTransferObjectViewBuilder()
+				.withName("ComplaintView")
+				.withLabel("Complaint")
+       		.withComponents(Arrays.asList(
+				newDataFieldBuilder()
+					.withName("isAngry")
+					.withLabel("Angry")
+					.withDataFeature(complaintIsAngry)
+					.build(),
+				newDataFieldBuilder()
+					.withName("product")
+					.withLabel("Product")
+					.withDataFeature(complaintProduct)
+					.build()))
+       		.build();
+       complaint.setView(complaintView);
+         
+       //Damaged product Form
+       TransferObjectForm damagedProductForm = newTransferObjectFormBuilder()
+           		.withName("DamagedForm")
+           		.withComponents(Arrays.asList(
+       				newGroupBuilder()
+                   		.withName("Content")
+                   		.withLabel("Complaint")
+                   		.withLayout(Layout.HORIZONTAL)
+                   		.withWrap(true)
+                   		.withHorizontal(Horizontal.LEFT)
+                   		.withVertical(Vertical.TOP)
+                   		.withFrame(true)
+                   		.withComponents(Arrays.asList(
+                   				newDataFieldBuilder()
+                   					.withName("complaint")
+                   					.withLabel("Complaint")
+                   					.withIconName("text_fields")
+                   					.withDataFeature(damagedProductComplaint)
+                   					.build(),
+                   				newDataFieldBuilder()
+           							.withName("product")
+           							.withLabel("Product")
+           							.withIconName("text_fields")
+           							.withDataFeature(damagedProductProduct)
+                   					.build()))
+                   		.build(),
+               		newGroupBuilder()
+                   		.withName("Buttons")
+                   		.withLabel("Order details")
+                   		.withLayout(Layout.HORIZONTAL)
+                   		.withWrap(true)
+                   		.withHorizontal(Horizontal.LEFT)
+                   		.withVertical(Vertical.TOP)
+                   		.withFrame(true)
+                   		.withComponents(Arrays.asList(
+                   				newActionButtonBuilder()
+                   					.withName("cancel")
+                   					.withLabel("Cancel")
+                   					.withAction(Action.CANCEL)
+                   					.build(),
+                   				newActionButtonBuilder()
+                   					.withName("ok")
+                   					.withLabel("Ok")
+                   					.withAction(Action.SUBMIT)
+                   					.build()
+                   		))
+                   		.build()
+   				))
+           		.build();
+           damagedProduct.setForm(damagedProductForm); 
+      
+      //Damaged product Table
+      TransferObjectTable damagedProductTable = newTransferObjectTableBuilder()
+      		.withMasterDetail(true)
+				.withName("ComplaintTable")
+				.withLabel("Complaint")
+				.withMaxVisibleElements(5)
+				.withColumns(Arrays.asList(
+  				newDataColumnBuilder()
+						.withName("complaint")
+						.withLabel("Complaint")
+						.withVisible(true)
+						.withDataFeature(damagedProductComplaint)
+						.build(),
+					newDataColumnBuilder()
+						.withName("product")
+						.withLabel("Product")
+						.withVisible(true)
+						.withDataFeature(damagedProductProduct)
+						.build()))
+				.build();
+      damagedProduct.setTable(damagedProductTable);
+      
+      //Damaged Product View
+      TransferObjectView damagedProductView = newTransferObjectViewBuilder()
+				.withName("ComplaintView")
+				.withLabel("Complaint")
+      		.withComponents(Arrays.asList(
+				newDataFieldBuilder()
+					.withName("complaint")
+					.withLabel("Complaint")
+					.withDataFeature(damagedProductComplaint)
+					.build(),
+				newDataFieldBuilder()
+					.withName("product")
+					.withLabel("Product")
+					.withDataFeature(damagedProductProduct)
+					.build()))
+      		.build();
+      damagedProduct.setView(damagedProductView);
         
         // Application View
         TransferObjectView applicationView = newTransferObjectViewBuilder()
@@ -524,23 +1741,23 @@ public class SimpleOrderModel {
 				))
         		.build();
         application.setView(applicationView);
-            
-            
+        
+        Package types = newPackageBuilder().withName("types").withElements(stringType,integerType,floatType,dateType,boolType).build();
+        
         // Create model
 		Model model = newModelBuilder()
 				.withName("SimpleOrder")
-				.withElements(Arrays.asList(
-						stringType, integerType, floatType, dateType, 
-						order, orderItem, orderItemWithTax,
+				.withElements(types)
+				.withElements(order, orderItem, internationalOrder,
 						application,
-						taxAuthority,
-						archivedOrder
-				))
+						employee, archiver,
+						archivedOrder,
+						archivedOrderItem,
+						returnedItem, deliverer,
+						complaint,damagedProduct)
 				.withDemoAccessPoint(false)
 				.build();
 
         return model;
 	}
-	
-	
 }
