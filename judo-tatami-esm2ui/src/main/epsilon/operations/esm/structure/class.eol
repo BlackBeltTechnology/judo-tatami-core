@@ -4,15 +4,28 @@ operation ESM!esm::structure::Class fqName() : String {
 
 operation ESM!esm::structure::Class createClassType(application : UI!ui::Application) : UI!ui::data::ClassType {
 	var clazz = new UI!ui::data::ClassType();	
+
+    clazz.~srcClass = self;
+    clazz.~application = application;
+    
 	clazz.name = self.fqName();
 	clazz.isMapped = self.isMapped();
+					
 	application.dataElements.add(clazz);
 	
+    if (self.isAccesspoint()) {
+    	clazz.accessPoint = clazz;
+    	application.~apClass = clazz;
+    } else {
+    	clazz.accessPoint = application.~apClass;
+    }
+
+	
 	for (relation in self.getAllRelations()) {
-		relation.createRelationTypeForClass(application, clazz);
+		relation.mapRelationType(application, clazz);
 	}
 	for (attribute in self.getAllAttributes()) {
-		attribute.createAttributeTypeForClass(application, clazz);
+		attribute.mapAttributeType(application, clazz);
 	}
 	
 	for (op in self.operations) {
@@ -20,7 +33,7 @@ operation ESM!esm::structure::Class createClassType(application : UI!ui::Applica
 			op.createOperationTypeForClass(application, clazz);
 		}
 	}
-			
+
 	log.debug("Create class type: " + clazz.name);
 	return clazz;
 }

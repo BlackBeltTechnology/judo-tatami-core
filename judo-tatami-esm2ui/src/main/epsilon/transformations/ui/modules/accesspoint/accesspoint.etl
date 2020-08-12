@@ -7,6 +7,7 @@ rule CreateApplication
     extends CreateNamedElementFromNamespaceElement {
         guard: s.isAccesspoint()
 
+        t.~ap = s;
         log.debug("CreateApplication: " + s.name);
 
         t.name = s.fqName().anchor(applicationType);

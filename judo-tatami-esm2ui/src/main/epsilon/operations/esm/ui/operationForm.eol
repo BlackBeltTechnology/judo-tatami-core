@@ -1,0 +1,11 @@
+operation ESM!esm::ui::OperationForm createButtonFromOperationForm(application : UI!ui::Application) : UI!ui::Button {
+	var t : UI!ui::Button = new UI!ui::Button();
+	
+	t.name = self.name;
+	//t.dataElement = self.eContainer.mapClassType(application);	
+    return t;
+}
+
+operation ESM!esm::ui::OperationForm map(application : UI!ui::Application) : UI!ui::Button {
+    return self.createButtonFromOperationForm(application);
+}

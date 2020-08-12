@@ -10,3 +10,4 @@ import "dataColumn.eol";
 import "transferObjectForm.eol";
 import "transferObjectView.eol";
 import "transferObjectTable.eol";
+import "operationForm.eol";

@@ -31,6 +31,8 @@ operation ESM!esm::structure::RelationFeature createPageForRelationForTable(appl
     if (target.table.masterDetail and target.view.isDefined()) {
 		var detail : UI!ui::PageDefinition = new UI!ui::PageDefinition();
 		detail.dataElement = self.mapRelationType(application, self.eContainer.mapClassType(application));
+		detail.name = self.fqName().anchor("RelationPageTableDetail", target.fqName());
+
 		application.pages.add(detail);
 	  	detail.children.add(target.view.map(application));
 	  	table.detail = detail;

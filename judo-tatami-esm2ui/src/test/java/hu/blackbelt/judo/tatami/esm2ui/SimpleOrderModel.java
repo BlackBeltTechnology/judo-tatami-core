@@ -68,6 +68,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class SimpleOrderModel {
 
+	/*
     public static Model createSimpleOrderModel() throws URISyntaxException, ScriptExecutionException, IOException, EsmModel.EsmValidationException {
         EsmModel esmModel = loadEsmModel(esmLoadArgumentsBuilder()
                 .name("SimpleOrder")
@@ -91,9 +92,9 @@ public class SimpleOrderModel {
             simpleOrderModel = new URI(simpleOrderModel.toString() + "/SimpleOrder.model");
         }
         return simpleOrderModel;
-    }
+    } */
 
-	public static Model createSimpleOrderModel2() {
+	public static Model createSimpleOrderModel() {
 		
 		//Data types
         StringType stringType = newStringTypeBuilder().withName("String").withMaxLength(256).build();
