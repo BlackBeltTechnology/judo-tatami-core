@@ -21,7 +21,7 @@ operation String anchor(anchor1 : String) : String {
 post {
 	for (cl : UI!ClassType in UI!ClassType.all().select(c | not c.isAccessPoint())) {
 		
-		cl.accessPointRelations = esmUtils.getAccessPointRelationsForTransferObject(cl.~application.~ap, cl.~srcClass)	 
+		cl.accessPointRelations = esmUtils.getAccessPointRelationsLeadingToTransferObjectType(cl.~application.~ap, cl.~srcClass)	 
 				.collect(r | cl.accessPoint.relations.selectOne(r2 | r2.name = r.name));
 	}
 }

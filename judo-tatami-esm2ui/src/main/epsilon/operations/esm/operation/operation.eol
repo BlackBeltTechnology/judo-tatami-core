@@ -136,12 +136,6 @@ operation ESM!esm::`operation`::Operation createOperationTypeForClass(applicatio
 		type.name = self.input.target.fqName().anchor("Input");
 		var targetClass = self.input.target.mapClassType(application);
 		log.error(targetClass.name);
-		for (relation in self.input.target.relations) {
-			relation.createRelationTypeForClass(application, targetClass);
-		}
-		for (attribute in self.input.target.attributes) {
-			attribute.createAttributeTypeForClass(application, targetClass);
-		}
 		type.target = targetClass;		
 		operationType.input = type;
 	}
@@ -151,12 +145,6 @@ operation ESM!esm::`operation`::Operation createOperationTypeForClass(applicatio
 		type.name = self.output.target.fqName().anchor("Output");
 		var targetClass = self.output.target.mapClassType(application);
 		log.error(targetClass.name);
-		for (relation in self.output.target.relations) {
-			relation.createRelationTypeForClass(application, targetClass);
-		}
-		for (attribute in self.output.target.attributes) {
-			attribute.createAttributeTypeForClass(application, targetClass);
-		}
 		type.target = targetClass;
 		operationType.output = type;
 	}
