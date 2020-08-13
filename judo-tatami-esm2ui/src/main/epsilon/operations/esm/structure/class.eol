@@ -26,12 +26,15 @@ operation ESM!esm::structure::Class createClassType(application : UI!ui::Applica
 	}
 	
 	for (relation in self.getAllRelations()) {
-		relation.mapRelationType(application, clazz);
+		relation.createRelationTypeForClass(application, clazz);
+	}
+	for (attribute in self.getAllAttributes()) {
+		attribute.createAttributeTypeForClass(application, clazz);
 	}
 	
-	for (op in self.operations.asSet()) {
+	for (op in esmUtils.getAllOperations(self)) {
 		if (op.operationType <> ESM!OperationType#ABSTRACT) {
-			op.mapOperationType(application, clazz);
+			op.createOperationTypeForClass(application, clazz);
 		}
 	}
 

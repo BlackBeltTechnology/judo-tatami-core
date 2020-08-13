@@ -31,8 +31,28 @@ rule CreateApplication
                 t.pages.add(relation.createPageForRelationForTable(t, relation.target));
             }
         }
+        
+        var exposedOperations : Set = esmUtils.getAllExposedOperationsFromAccessPoint(s);
+        
+        for (op in exposedOperations) {
+        	if (op.input.isDefined()) {
+        		if (op.input.target.table.isDefined() and op.input.upper = -1) {
+        			t.pages.add(op.createPageForOperationInputForTable(t));
+        		}
+        		if (op.input.target.form.isDefined()) {
+        			t.pages.add(op.createPageForOperationInputForForm(t));
+        		}
+        	}
+        	if (op.output.isDefined()) {
+        		if (op.output.target.view.isDefined()) {
+        			t.pages.add(op.createPageForOperationOutputForView(t));
+        		}
+        		if (op.output.target.table.isDefined() and op.output.upper = -1) {
+        			t.pages.add(op.createPageForOperationOutputForTable(t));
+        		}
+        	}
+        }
 }
-
 
 rule CreateNavigationController
     transform s: ESM!esm::structure::TransferObjectType

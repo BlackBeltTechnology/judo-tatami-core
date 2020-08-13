@@ -3,13 +3,9 @@ package hu.blackbelt.judo.tatami.esm2ui;
 import static hu.blackbelt.judo.meta.esm.accesspoint.util.builder.AccesspointBuilders.newActorTypeBuilder;
 import static hu.blackbelt.judo.meta.esm.namespace.util.builder.NamespaceBuilders.newModelBuilder;
 import static hu.blackbelt.judo.meta.esm.namespace.util.builder.NamespaceBuilders.newPackageBuilder;
+import static hu.blackbelt.judo.meta.esm.operation.util.builder.OperationBuilders.newInheritedOperationReferenceBuilder;
 import static hu.blackbelt.judo.meta.esm.operation.util.builder.OperationBuilders.newOperationBuilder;
 import static hu.blackbelt.judo.meta.esm.operation.util.builder.OperationBuilders.newParameterBuilder;
-import static hu.blackbelt.judo.meta.esm.runtime.EsmEpsilonValidator.calculateEsmValidationScriptURI;
-import static hu.blackbelt.judo.meta.esm.runtime.EsmEpsilonValidator.validateEsm;
-import static hu.blackbelt.judo.meta.esm.runtime.EsmModel.loadEsmModel;
-import static hu.blackbelt.judo.meta.esm.runtime.EsmModel.LoadArguments.esmLoadArgumentsBuilder;
-import static hu.blackbelt.judo.meta.esm.operation.util.builder.OperationBuilders.newInheritedOperationReferenceBuilder;
 import static hu.blackbelt.judo.meta.esm.structure.util.builder.StructureBuilders.newDataMemberBuilder;
 import static hu.blackbelt.judo.meta.esm.structure.util.builder.StructureBuilders.newEntityTypeBuilder;
 import static hu.blackbelt.judo.meta.esm.structure.util.builder.StructureBuilders.newGeneralizationBuilder;
@@ -25,32 +21,25 @@ import static hu.blackbelt.judo.meta.esm.type.util.builder.TypeBuilders.newStrin
 import static hu.blackbelt.judo.meta.esm.ui.util.builder.UiBuilders.newActionButtonBuilder;
 import static hu.blackbelt.judo.meta.esm.ui.util.builder.UiBuilders.newDataColumnBuilder;
 import static hu.blackbelt.judo.meta.esm.ui.util.builder.UiBuilders.newDataFieldBuilder;
-import static hu.blackbelt.judo.meta.esm.ui.util.builder.UiBuilders.newOperationFormBuilder;
 import static hu.blackbelt.judo.meta.esm.ui.util.builder.UiBuilders.newGroupBuilder;
+import static hu.blackbelt.judo.meta.esm.ui.util.builder.UiBuilders.newOperationFormBuilder;
 import static hu.blackbelt.judo.meta.esm.ui.util.builder.UiBuilders.newTabularReferenceFieldBuilder;
 import static hu.blackbelt.judo.meta.esm.ui.util.builder.UiBuilders.newTransferObjectFormBuilder;
 import static hu.blackbelt.judo.meta.esm.ui.util.builder.UiBuilders.newTransferObjectTableBuilder;
 import static hu.blackbelt.judo.meta.esm.ui.util.builder.UiBuilders.newTransferObjectViewBuilder;
 
-import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.Arrays;
 
-import hu.blackbelt.epsilon.runtime.execution.exceptions.ScriptExecutionException;
-import hu.blackbelt.epsilon.runtime.execution.impl.Slf4jLog;
 import hu.blackbelt.judo.meta.esm.namespace.Model;
 import hu.blackbelt.judo.meta.esm.namespace.Package;
 import hu.blackbelt.judo.meta.esm.operation.Operation;
 import hu.blackbelt.judo.meta.esm.operation.OperationType;
-import hu.blackbelt.judo.meta.esm.runtime.EsmModel;
 import hu.blackbelt.judo.meta.esm.structure.DataMember;
 import hu.blackbelt.judo.meta.esm.structure.EntityType;
 import hu.blackbelt.judo.meta.esm.structure.MemberType;
 import hu.blackbelt.judo.meta.esm.structure.OneWayRelationMember;
 import hu.blackbelt.judo.meta.esm.structure.RelationKind;
 import hu.blackbelt.judo.meta.esm.structure.TransferObjectType;
-import hu.blackbelt.judo.meta.esm.support.EsmModelResourceSupport;
 import hu.blackbelt.judo.meta.esm.type.BooleanType;
 import hu.blackbelt.judo.meta.esm.type.DateType;
 import hu.blackbelt.judo.meta.esm.type.NumericType;
@@ -62,37 +51,10 @@ import hu.blackbelt.judo.meta.esm.ui.TransferObjectForm;
 import hu.blackbelt.judo.meta.esm.ui.TransferObjectTable;
 import hu.blackbelt.judo.meta.esm.ui.TransferObjectView;
 import hu.blackbelt.judo.meta.esm.ui.Vertical;
-import hu.blackbelt.model.northwind.esm.NorthwindEsmModel;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class SimpleOrderModel {
-
-	/*
-    public static Model createSimpleOrderModel() throws URISyntaxException, ScriptExecutionException, IOException, EsmModel.EsmValidationException {
-        EsmModel esmModel = loadEsmModel(esmLoadArgumentsBuilder()
-                .name("SimpleOrder")
-                .uri(org.eclipse.emf.common.util.URI.createURI(getNorthwindEsmModelUri().toString())));
-        validateEsm(new Slf4jLog(log), esmModel, calculateEsmValidationScriptURI());
-        EsmModelResourceSupport esmModelResourceSupport = EsmModelResourceSupport
-                .esmModelResourceSupportBuilder().resourceSet(esmModel.getResourceSet())
-                .uri(org.eclipse.emf.common.util.URI.createURI("test")).build();
-        return esmModelResourceSupport.getStreamOfEsmNamespaceModel().findFirst().get();
-    }
-
-    public static URI getNorthwindEsmModelUri() throws URISyntaxException {
-        URI simpleOrderModel = SimpleOrderModel.class.getProtectionDomain().getCodeSource().getLocation().toURI();
-        if (simpleOrderModel.toString().endsWith(".jar")) {
-            simpleOrderModel = new URI("jar:" + simpleOrderModel.toString() + "!/SimpleOrder.model");
-        } else if (simpleOrderModel.toString().startsWith("jar:bundle:")) {
-            // bundle://37.0:0/validations/
-            // jar:bundle://37.0:0/!/validations/esm.evl
-            simpleOrderModel = new URI(simpleOrderModel.toString().substring(4, simpleOrderModel.toString().indexOf("!")) + "SimpleOrder.model");
-        } else {
-            simpleOrderModel = new URI(simpleOrderModel.toString() + "/SimpleOrder.model");
-        }
-        return simpleOrderModel;
-    } */
 
 	public static Model createSimpleOrderModel() {
 		
@@ -299,6 +261,17 @@ public class SimpleOrderModel {
         	.build();
         
         returnedItem.setMapping(newMappingBuilder().withTarget(returnedItem).build());
+
+        //Donated item
+        DataMember donatedItemReceiver = newDataMemberBuilder()
+        		.withName("receiver")
+        		.withDataType(stringType)
+        		.build();
+        
+        EntityType donatedItem = newEntityTypeBuilder().withName("DonatedItem")
+        		.withAttributes(donatedItemReceiver)
+            	.build();
+        donatedItem.setMapping(newMappingBuilder().withTarget(donatedItem).build());
         
         //Complaint
         DataMember complaintIsAngry = newDataMemberBuilder()
@@ -334,6 +307,48 @@ public class SimpleOrderModel {
         TransferObjectType damagedProduct = newTransferObjectTypeBuilder().withName("DamagedProduct")
         		.withAttributes(damagedProductProduct,damagedProductComplaint)
         		.build();
+        
+        //Archive operation - single mapped input and single mapped output
+        Operation archiveOperation = newOperationBuilder().withName("archive")
+        		.withOperationType(OperationType.INSTANCE)
+        		.withInput(
+        				newParameterBuilder().withName("input").withTarget(archiver)
+        				.withLower(1).withUpper(1).build())
+        		.withOutput(
+        				newParameterBuilder().withName("output").withTarget(archivedOrder)
+        				.withLower(1).withUpper(1).build())
+        		.withBinding("")
+        		.withInherited(newInheritedOperationReferenceBuilder().build())
+        		.build();
+        
+        useEntityType(order).withOperations(archiveOperation).build();
+        
+        //Return damaged items operation - collection mapped input and collection mapped output
+        Operation returnDamagedItemsOperation = newOperationBuilder().withName("returnDamagedItems")
+        		.withOperationType(OperationType.INSTANCE)
+        		.withInput(
+        				newParameterBuilder().withName("input").withTarget(deliverer)
+        				.withLower(0).withUpper(-1).build())
+        		.withOutput(
+        				newParameterBuilder().withName("output").withTarget(returnedItem)
+        				.withLower(0).withUpper(-1).build())
+        		.withBinding("")
+        		.withInherited(newInheritedOperationReferenceBuilder().build())
+        		.build();
+        
+        useEntityType(order).withOperations(returnDamagedItemsOperation).build();
+        
+        //Donate operation
+        Operation donateOperation = newOperationBuilder().withName("donate")
+        		.withOperationType(OperationType.INSTANCE)
+        		.withOutput(
+        				newParameterBuilder().withName("output").withTarget(donatedItem)
+        				.withLower(0).withUpper(-1).build())
+        		.withBinding("")
+        		.withInherited(newInheritedOperationReferenceBuilder().build())
+        		.build();
+        
+        useEntityType(returnedItem).withOperations(donateOperation).build();
          
         //Register return operation - single unmapped input, single mapped output
         Operation registerReturnOperation = newOperationBuilder().withName("registerReturn")
@@ -407,36 +422,6 @@ public class SimpleOrderModel {
         		.withUpper(-1)
         		.build();
         useTransferObjectType(application).withRelations(applicationIntOrders).build();
-        
-        //Archive operation - single mapped input and single mapped output
-        Operation archiveOperation = newOperationBuilder().withName("archive")
-        		.withOperationType(OperationType.INSTANCE)
-        		.withInput(
-        				newParameterBuilder().withName("input").withTarget(archiver)
-        				.withLower(1).withUpper(1).build())
-        		.withOutput(
-        				newParameterBuilder().withName("output").withTarget(archivedOrder)
-        				.withLower(1).withUpper(1).build())
-        		.withBinding("")
-        		//.withInherited(newInheritedOperationReferenceBuilder().build())
-        		.build();
-        
-        useEntityType(order).withOperations(archiveOperation).build();
-        
-        //Return damaged items operation - collection mapped input and collection mapped output
-        Operation returnDamagedItemsOperation = newOperationBuilder().withName("returnDamagedItems")
-        		.withOperationType(OperationType.INSTANCE)
-        		.withInput(
-        				newParameterBuilder().withName("input").withTarget(deliverer)
-        				.withLower(0).withUpper(-1).build())
-        		.withOutput(
-        				newParameterBuilder().withName("output").withTarget(returnedItem)
-        				.withLower(0).withUpper(-1).build())
-        		.withBinding("")
-        		//.withInherited(newInheritedOperationReferenceBuilder().build())
-        		.build();
-        
-        useEntityType(order).withOperations(returnDamagedItemsOperation).build();
         
         //Order Form
         TransferObjectForm orderForm = newTransferObjectFormBuilder()
@@ -1364,7 +1349,12 @@ public class SimpleOrderModel {
  	            						.withName("comment")
  	            						.withLabel("Comment")
  	            						.withDataFeature(returnedItemsComment)
- 	            						.build()))
+ 	            						.build(),
+ 	            					newOperationFormBuilder()
+ 	               						.withName("donate")
+ 	               						.withLabel("donate")
+ 	               						.withOperation("donate")
+ 	               						.build()))
          		.build();
          returnedItem.setView(returnedItemView);
          
@@ -1713,6 +1703,37 @@ public class SimpleOrderModel {
 					.build()))
       		.build();
       damagedProduct.setView(damagedProductView);
+      
+    //Donated item Table
+      TransferObjectTable donatedItemTable = newTransferObjectTableBuilder()
+      		.withMasterDetail(true)
+				.withName("donatedItemTable")
+				.withLabel("Donated Items")
+				.withMaxVisibleElements(5)
+				.withColumns(Arrays.asList(
+  				newDataColumnBuilder()
+						.withName("receiver")
+						.withLabel("Receiver")
+						.withVisible(true)
+						.withDataFeature(donatedItemReceiver)
+						.build()
+				))
+				.build();
+      donatedItem.setTable(donatedItemTable);        
+
+      //Donated item View
+      TransferObjectView donatedItemView = newTransferObjectViewBuilder()
+				.withName("donatedItemView")
+				.withLabel("Donated Item")
+      		.withComponents(Arrays.asList(
+      				newDataFieldBuilder()
+      					.withName("receiver")
+      					.withLabel("Receiver")
+      					.withIconName("text_fields")
+      					.withDataFeature(donatedItemReceiver)
+      					.build()))
+      		.build();
+      donatedItem.setView(donatedItemView);
         
         // Application View
         TransferObjectView applicationView = newTransferObjectViewBuilder()
@@ -1754,7 +1775,8 @@ public class SimpleOrderModel {
 						employee, archiver,
 						archivedOrder,
 						archivedOrderItem,
-						returnedItem, deliverer,
+						returnedItem, donatedItem,
+						deliverer,
 						complaint,damagedProduct)
 				.withDemoAccessPoint(false)
 				.build();

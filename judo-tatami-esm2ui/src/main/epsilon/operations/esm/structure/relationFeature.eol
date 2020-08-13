@@ -4,14 +4,18 @@ operation ESM!esm::structure::RelationFeature fqName() {
 }
 
 operation ESM!esm::structure::RelationFeature createPageForRelationForView(application : UI!ui::Application, target : ESM!esm::structure::TransferObjectType) : UI!ui::PageDefinition {
+	log.debug("Create page for relation for view: " + target.name + " (relation: " + self.name + ")");
+	
 	var page : UI!ui::PageDefinition = new UI!ui::PageDefinition();
 	page.dataElement = self.mapRelationType(application, self.eContainer.mapClassType(application));
 	page.name = self.fqName().anchor("RelationPageView", target.fqName());
-	page.children.add(target.view.map(application));    
+	page.children.add(target.view.map(application));
     return page;
 }
 
 operation ESM!esm::structure::RelationFeature createPageForRelationForForm(application : UI!ui::Application, target : ESM!esm::structure::TransferObjectType) : UI!ui::PageDefinition {
+	log.debug("Create page for relation for form: " + target.name + " (relation: " + self.name + ")");
+	
 	var page : UI!ui::PageDefinition = new UI!ui::PageDefinition();
 	page.dataElement = self.mapRelationType(application, self.eContainer.mapClassType(application));
 	page.name = self.fqName().anchor("RelationPageForm", target.fqName());
@@ -21,6 +25,8 @@ operation ESM!esm::structure::RelationFeature createPageForRelationForForm(appli
 }
 
 operation ESM!esm::structure::RelationFeature createPageForRelationForTable(application : UI!ui::Application, target : ESM!esm::structure::TransferObjectType) : UI!ui::PageDefinition {
+	log.debug("Create page for relation for table: " + target.name + " (relation: " + self.name + ")");
+	
 	var page : UI!ui::PageDefinition = new UI!ui::PageDefinition();
 	page.dataElement = self.mapRelationType(application, self.eContainer.mapClassType(application));
 	page.name = self.fqName().anchor("RelationPageTable", target.fqName());
@@ -30,6 +36,7 @@ operation ESM!esm::structure::RelationFeature createPageForRelationForTable(appl
     
     if (target.table.masterDetail and target.view.isDefined()) {
 		var detail : UI!ui::PageDefinition = new UI!ui::PageDefinition();
+		detail.name = self.fqName().anchor("RelationPageTableMasterDetail", target.fqName());
 		detail.dataElement = self.mapRelationType(application, self.eContainer.mapClassType(application));
 		detail.name = self.fqName().anchor("RelationPageTableDetail", target.fqName());
 
