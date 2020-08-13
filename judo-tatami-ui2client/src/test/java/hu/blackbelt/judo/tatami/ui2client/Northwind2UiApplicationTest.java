@@ -70,7 +70,7 @@ public class Northwind2UiApplicationTest {
                 calculateEsm2UiTransformationScriptURI());
 
         assertTrue(uiModel.isValid());
-        validateUi(new Slf4jLog(log), uiModel, calculateUiValidationScriptURI());
+        validateUi(slf4jlog, uiModel, calculateUiValidationScriptURI());
     }
 
     

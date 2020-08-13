@@ -98,7 +98,7 @@ public class Ui2Client {
                         // TODO: Generalized way
                         FlutterHelper.registerSpEL(evaluationContext);
 
-                        Collection<EObject> processingElements = factoryExpression.getValue(evaluationContext, app, Collection.class);
+                        Collection<Object> processingElements = factoryExpression.getValue(evaluationContext, app, Collection.class);
 
                         processingElements.stream().forEach(element -> {
                             evaluationContext.setVariable("self", element);

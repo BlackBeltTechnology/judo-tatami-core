@@ -1,18 +1,14 @@
 package hu.blackbelt.judo.tatami.ui2client.flutter;
 
 import com.github.jknack.handlebars.Handlebars;
-import com.github.jknack.handlebars.Options;
 import com.github.jknack.handlebars.internal.lang3.StringUtils;
-import lombok.SneakyThrows;
+import hu.blackbelt.judo.meta.ui.Application;
+import hu.blackbelt.judo.meta.ui.data.ClassType;
+import hu.blackbelt.judo.meta.ui.data.RelationType;
+import lombok.*;
 import org.springframework.expression.spel.support.StandardEvaluationContext;
 
-import javax.management.relation.RelationType;
-import java.util.ArrayDeque;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Deque;
-import java.util.List;
-import java.util.stream.Collector;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static java.util.Arrays.stream;
@@ -27,7 +23,7 @@ public class FlutterHelper {
         context.registerFunction("path", FlutterHelper.class.getDeclaredMethod("path", new Class[] { String.class }));
         context.registerFunction("className", FlutterHelper.class.getDeclaredMethod("className", new Class[] { String.class }));
         context.registerFunction("variable", FlutterHelper.class.getDeclaredMethod("variable", new Class[] { String.class }));
-
+        context.registerFunction("operations", FlutterHelper.class.getDeclaredMethod("operations", new Class[] { Application.class }));
     }
 
     public static void registerHandlebars(Handlebars handlebars) {
@@ -73,4 +69,21 @@ public class FlutterHelper {
     public static String variable(String fqName) {
         return StringUtils.uncapitalize(className(fqName));
     }
+
+    public static Collection<RelationTuple> operations(Application application) {
+        return application.getDataElements().stream()
+                .filter(t -> t instanceof ClassType)
+                .flatMap(t -> ((ClassType) t).getRelations().stream())
+                .flatMap(r -> ((ClassType) r.eContainer()).getAccessPointRelations().stream()
+                        .map(r2 -> new RelationTuple(r2, r)))
+                .collect(Collectors.toSet());
+    }
+
+    @Getter @Setter @AllArgsConstructor @EqualsAndHashCode @ToString
+    public static class RelationTuple {
+        RelationType root;
+        RelationType relationType;
+//        ClassType classType;
+    }
+
 }

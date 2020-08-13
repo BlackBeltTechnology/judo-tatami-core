@@ -1,107 +1,184 @@
+//////////////////////////////////////////////////////////////////////////////
+// G E N E R A T E D    C L A S S
+// ------------------------------
+//   Application : {{ application.name }}
+//   Root: {{ root.name }}
+//   Class: {{ classType.name }}
+//   Relation: {{ relationType.name }}
+//   Relation target: {{ relationType.target.name }}
+
 import 'dart:async';
 
 import 'package:openapi_dart_common/openapi.dart';
 import 'package:{{ path application.name }}/utilities/constants.dart';
 import 'package:{{ path application.name }}/rest/{{ path application.dataElement.name }}/lib/api.dart';
 
-import 'package:{{ path application.name }}/store/{{ path application.dataElement.name }}/{{ path name }}_store.dart';
-{{#each relations ~}}
-import 'package:{{ path application.name }}/store/{{ path application.dataElement.name }}/{{ path target.name }}_store.dart';
-{{/each}}
+import 'package:{{ path application.name }}/store/{{ path application.dataElement.name }}/{{ path root.name }}/store.dart';
+{{# each classType.relations ~}}
+import 'package:{{ path application.name }}/store/{{ path application.dataElement.name }}/{{ path ../root.name }}/{{ fqPath target.name }}_store.dart';
+{{/ each}}
+import 'package:openapi_dart_common/openapi.dart';
 
 
-class {{ fqClass name }}Repository {
-  final ApiClient _apiClient =
-      ApiClient(basePath: kBasePathUrl, apiClientDelegate: DioClientDelegate());
+class {{ fqClass application.dataElement.name }}{{ className root.name }}{{ className relationType.name }}Repository {
+  final ApiClient _apiClient = ApiClient(basePath: kBasePathUrl, apiClientDelegate: DioClientDelegate());
 
   //////////////////////////////////////////////////////////////////////////////
+  // GET LIST
+  //////////////////////////////////////////////////////////////////////////////
+  Future get{{ className relationType.name }}({{ fqClass application.dataElement.name }}{{ className root.name }}Store {{ variable classType.name }}Store, List<{{ fqClass relationType.target.name }}Store> {{ variable relationType.target.name }}StoreList) async {
 
-  Future {{ fqClass name }}({{ fqClass name }}Store {{ fqVariable name }}Store) async {
-    var {{ variable name }}Extended = {{ fqClass name }}Extended();
+    // Call Server
+    List<{{ fqClass relationType.target.name }}> {{ variable relationType.target.name }}ResponseList = await {{ className root.name }}Api(_apiClient).{{ fqVariable classType.name }}Get{{ className relationType.name }}({{ variable classType.name }}Store.identifier);
 
-    {{#each attributes ~}}
-    {{ variable ../name }}Extended.{{ variable name }} = {{ variable ../name }}Store.{{ variable name }};
-    {{/each}}
+    // Response mapping
+    {{ variable relationType.target.name }}StoreList.addAll({{ variable relationType.target.name }}ResponseList.map<{{ fqClass relationType.target.name }}Store>(({{ variable classType.name }}Response) {
+      // Response mapping
+      var {{ variable relationType.target.name }}Store = {{ fqClass relationType.target.name }}Store();
 
-    {{ fqClass name }} {{ fqVariable name }} = await AllProductsApi(_apiClient)
-            .northwindServicesCategoryInfoCreateProducts(
-                productInfoStore.category.identifier,
-                northwindServicesProductInfoExtended);
+      // Attributes
+      {{ variable relationType.target.name}}Store.identifier = {{ variable relationType.target.name }}Response.identifier;
+      {{# each relationType.target.attributes ~}}
+      {{ variable ../relationType.target.name}}Store.{{ name }} = {{ variable ../relationType.target.name }}Response.{{ name }};
+      {{/ each }}
 
-    productInfoStore.identifier = northwindServicesProductInfo.identifier;
-    productInfoStore.weight = northwindServicesProductInfo.weight;
-    productInfoStore.unitPrice = northwindServicesProductInfo.unitPrice;
-    productInfoStore.productName = northwindServicesProductInfo.productName;
+      return {{ relationType.target.name }}Store;
+    }).toList());
   }
 
   //////////////////////////////////////////////////////////////////////////////
-
-  Future removeNorthwindExternalAPProductInfo(
-      NorthwindExternalAPProductInfoStore productInfoStore) async {
-    var northwindIdentifier = NorthwindIdentifier();
-    northwindIdentifier.identifier = productInfoStore.identifier;
-
-    await DefaultApi(_apiClient)
-        .northwindExternalAPDeleteAllProducts(northwindIdentifier);
+  // GET One
+  //////////////////////////////////////////////////////////////////////////////
+  Future getCategoryById(List<NorthwindExternalAPProductInfoStore> productInfoStoreList, String identifier, NorthwindExternalAPProductInfoStore productInfoStore) async {
+    // Check the store. If it is empty, loading it and selecting element
+    if (productInfoStoreList == null || productInfoStoreList.length == 0) {
+      getAllProducts(productInfoStoreList);
+    }
+    productInfoStore = productInfoStoreList.firstWhere((element) => element.identifier == identifier);
   }
 
   //////////////////////////////////////////////////////////////////////////////
+  // CREATE
+  //////////////////////////////////////////////////////////////////////////////
+  Future createAllProducts(NorthwindExternalAPProductInfoStore productInfoStore) async {
 
-  Future updateNorthwindExternalAPProductInfo(
-      NorthwindExternalAPProductInfoStore productInfoStore) async {
-    var northwindServicesProductInfo = NorthwindServicesProductInfo();
+    // Request mapping
+    var productInfoExtendedRequest = NorthwindServicesProductInfoExtended();
 
-    northwindServicesProductInfo.identifier = productInfoStore.identifier;
-    northwindServicesProductInfo.productName = productInfoStore.productName;
-    northwindServicesProductInfo.unitPrice = productInfoStore.unitPrice;
-    northwindServicesProductInfo.weight = productInfoStore.weight;
+    // Attributes
+    productInfoExtendedRequest.weight = productInfoStore.weight;
+    productInfoExtendedRequest.unitPrice = productInfoStore.unitPrice;
+    productInfoExtendedRequest.productName = productInfoStore.productName;
 
-    northwindServicesProductInfo = await DefaultApi(_apiClient)
-        .northwindExternalAPUpdateAllProducts(northwindServicesProductInfo);
+    //// Single association
+    // productInfoExtendedRequest.category = NorthwindServicesProductInfoExtendedCategory();
+    // productInfoExtendedRequest.category.identifier = productInfoStore.category.identifier;
 
-    productInfoStore.identifier = northwindServicesProductInfo.identifier;
-    productInfoStore.productName = northwindServicesProductInfo.productName;
-    productInfoStore.unitPrice = northwindServicesProductInfo.unitPrice;
-    productInfoStore.weight = northwindServicesProductInfo.weight;
+    // Call Server
+    NorthwindServicesProductInfo productInfoResponse = await DefaultApi(_apiClient).northwindExternalAPCreateAllProducts(productInfoExtendedRequest);
+
+    // Response mapping
+
+    // Attributes
+    productInfoStore.identifier = productInfoResponse.identifier;
+    productInfoStore.weight = productInfoResponse.weight;
+    productInfoStore.unitPrice = productInfoResponse.unitPrice;
+    productInfoStore.productName = productInfoResponse.productName;
+
   }
 
   //////////////////////////////////////////////////////////////////////////////
+  // REMOVE
+  //////////////////////////////////////////////////////////////////////////////
+  Future removeAllProducts(NorthwindExternalAPProductInfoStore productInfoStore) async {
+    // Request mapping
+    var productInfoRequest = NorthwindIdentifier();
+    productInfoRequest.identifier = productInfoStore.identifier;
 
-  Future<NorthwindExternalAPCategoryInfoStore> getProduct() async {}
+    // Call Server
+    await DefaultApi(_apiClient).northwindExternalAPDeleteAllProducts(productInfoRequest);
+  }
 
   //////////////////////////////////////////////////////////////////////////////
+  // UPDATE
+  //////////////////////////////////////////////////////////////////////////////
+  Future updateAllProducts(NorthwindExternalAPProductInfoStore productInfoStore) async {
+    // Request mapping
+    var productInfoRequest = NorthwindServicesProductInfo();
 
-  Future getAllNorthwindExternalAPProductInfo(
-      List<NorthwindExternalAPProductInfoStore> productInfoStoreList) async {
-    List<NorthwindServicesProductInfo> list =
-        await DefaultApi(_apiClient).northwindExternalAPGetAllProducts();
+    // Attributes
+    productInfoRequest.identifier = productInfoStore.identifier;
+    productInfoRequest.productName = productInfoStore.productName;
+    productInfoRequest.unitPrice = productInfoStore.unitPrice;
+    productInfoRequest.weight = productInfoStore.weight;
 
-    List<NorthwindExternalAPProductInfoStore> tempProductList = [];
+    // Call Server
+    var productInfoResponse = await DefaultApi(_apiClient).northwindExternalAPUpdateAllProducts(productInfoRequest);
 
-    list.forEach((element) async {
-      if (!productInfoStoreList
-          .any((product) => product.identifier == element.identifier)) {
-        NorthwindExternalAPProductInfoStore newProduct =
-            NorthwindExternalAPProductInfoStore();
-        newProduct.identifier = element.identifier;
-        newProduct.productName = element.productName;
-        newProduct.unitPrice = element.unitPrice;
-        newProduct.weight = element.weight;
-        tempProductList.add(newProduct);
+    // Response mapping
 
-        NorthwindServicesCategoryInfo northwindServicesCategoryInfo =
-            await AllCategoriesApi(_apiClient)
-                .northwindServicesProductInfoGetCategory(element.identifier);
+    // Attributes
+    productInfoStore.identifier = productInfoResponse.identifier;
+    productInfoStore.productName = productInfoResponse.productName;
+    productInfoStore.unitPrice = productInfoResponse.unitPrice;
+    productInfoStore.weight = productInfoResponse.weight;
+  }
 
-        newProduct.category = NorthwindExternalAPCategoryInfoStore();
-        newProduct.category.identifier =
-            northwindServicesCategoryInfo.identifier;
+  //////////////////////////////////////////////////////////////////////////////
+  // GET CREATE RANGE
+  //////////////////////////////////////////////////////////////////////////////
+  Future getRangeForCreateAllCategories(NorthwindExternalAPProductInfoStore productInfoStore, List<NorthwindExternalAPCategoryInfoStore> selectableCategoryInfoStoreList) async {
+    // Request mapping
+    var productInfoRequest = NorthwindServicesProductInfo();
 
-        newProduct.category.categoryName =
-            northwindServicesCategoryInfo.categoryName;
-      }
-    });
+    // Attributes
+    productInfoRequest.identifier = productInfoStore.identifier;
+    productInfoRequest.productName = productInfoStore.productName;
+    productInfoRequest.unitPrice = productInfoStore.unitPrice;
+    productInfoRequest.weight = productInfoStore.weight;
 
-    productInfoStoreList.addAll(tempProductList);
+    // Call Server
+    var categoryInfoListResponse = await DefaultApi(_apiClient).northwindExternalAPGetRangeOfCategoryToCreateAllProducts(productInfoRequest);
+
+    selectableCategoryInfoStoreList.addAll(categoryInfoListResponse.map<NorthwindExternalAPCategoryInfoStore>((categoryInfoStoreResponse) {
+      // Response mapping
+      var categoryInfoStore = NorthwindExternalAPCategoryInfoStore();
+
+      // Attributes
+      categoryInfoStore.identifier = categoryInfoStoreResponse.identifier;
+      categoryInfoStore.categoryName = categoryInfoStoreResponse.categoryName;
+
+      return categoryInfoStore;
+    }).toList());
+  }
+
+  //////////////////////////////////////////////////////////////////////////////
+  // GET UPDATE RANGE
+  //////////////////////////////////////////////////////////////////////////////
+  Future getRangeForUpdateAllCategories(NorthwindExternalAPProductInfoStore productInfoStore, List<NorthwindExternalAPCategoryInfoStore> selectableCategoryInfoStoreList) async {
+    // Request mapping
+    var productInfoRequest = NorthwindServicesProductInfo();
+
+    // Attributes
+    productInfoRequest.identifier = productInfoStore.identifier;
+    productInfoRequest.productName = productInfoStore.productName;
+    productInfoRequest.unitPrice = productInfoStore.unitPrice;
+    productInfoRequest.weight = productInfoStore.weight;
+
+    // Call Server
+    var categoryInfoListResponse = await DefaultApi(_apiClient).northwindExternalAPGetRangeOfCategoryToUpdateAllProducts(productInfoRequest);
+
+    selectableCategoryInfoStoreList.addAll(categoryInfoListResponse.map<NorthwindExternalAPCategoryInfoStore>((categoryInfoResponse) {
+      // Response mapping
+      var categoryInfoStore = NorthwindExternalAPCategoryInfoStore();
+
+      // Attributes
+      categoryInfoStore.identifier = categoryInfoResponse.identifier;
+      categoryInfoStore.categoryName = categoryInfoResponse.categoryName;
+
+      return categoryInfoStore;
+    }).toList());
+
   }
 }
+

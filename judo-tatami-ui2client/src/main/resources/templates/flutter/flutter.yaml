@@ -23,7 +23,7 @@
 - overwriteExpression: true
   factoryExpression: "#application.dataElement.relations"
   pathExpression: >
-    'lib/store/' + #path(#application.dataElement.name) + '/' + #path(#self.name) + '_store.dart'
+    'lib/store/' + #path(#application.dataElement.name) + '/' + #path(#self.name + 'Store') + '.dart'
   templateName: flutter/lib/store/application_exposed_relation_store.dart.hbs
   templateContext:
     - name: transferObjects
@@ -34,12 +34,29 @@
 - overwriteExpression: true
   factoryExpression: "#application.dataElements"
   pathExpression: >
-    'lib/store/' + #path(#self.eContainer().dataElement.name) + '/model/' + #fqPath(#self.name) + '_store.dart'
+    'lib/store/' +
+    #path(#self.eContainer().dataElement.name) +
+    '/model/' +
+    #fqPath(#self.name) + '__store.dart'
   templateName: flutter/lib/store/model_store.dart.hbs
 
 # ========================================
 # repositires
 # ========================================
+- overwriteExpression: true
+  factoryExpression: "#operations(#application)"
+  pathExpression: >
+    'lib/repository/' +
+    #path(#application.dataElement.name) + '/' +
+    #path(#self.root.name) + '/' +
+    #fqPath(#self.relationType.eContainer().name) + '__' +
+    #self.relationType.name  +
+    '__repository.dart'
+  templateName: flutter/lib/repositories/repository.dart.hbs
+  templateContext:
+    - name: classType
+      expression: "#self.relationType.eContainer()"
+      className: hu.blackbelt.judo.meta.ui.data.ClassType
 
 
 #  ("replaceAll([a-z])([A-Z]+)", "$1_$2").toLowerCase()
