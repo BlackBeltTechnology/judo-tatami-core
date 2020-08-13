@@ -49,79 +49,85 @@ class {{ fqClass application.dataElement.name }}{{ className root.name }}{{ clas
   //////////////////////////////////////////////////////////////////////////////
   // GET One
   //////////////////////////////////////////////////////////////////////////////
-  Future getCategoryById(List<NorthwindExternalAPProductInfoStore> productInfoStoreList, String identifier, NorthwindExternalAPProductInfoStore productInfoStore) async {
+  Future get{{ className relationType.name }}ById(List<{{ fqClass relationType.target.name }}Store> {{ variable relationType.target.name }}StoreList, String identifier, {{ fqClass relationType.target.name }}Store {{ variable relationType.target.name }}Store) async {
     // Check the store. If it is empty, loading it and selecting element
-    if (productInfoStoreList == null || productInfoStoreList.length == 0) {
-      getAllProducts(productInfoStoreList);
+    if ({{ variable relationType.target.name }}StoreList == null || {{ variable relationType.target.name }}StoreList.length == 0) {
+            get{{ className relationType.name }}({{ variable relationType.target.name }}StoreList);
     }
-    productInfoStore = productInfoStoreList.firstWhere((element) => element.identifier == identifier);
+    {{ variable relationType.target.name }}Store = {{ variable relationType.target.name }}StoreList.firstWhere((element) => element.identifier == identifier);
   }
 
   //////////////////////////////////////////////////////////////////////////////
   // CREATE
   //////////////////////////////////////////////////////////////////////////////
-  Future createAllProducts(NorthwindExternalAPProductInfoStore productInfoStore) async {
+  Future create{{ className relationType.name }}({{ fqClass relationType.name }}Store {{ variable relationType.name }}Store,  {{ fqClass relationType.target.name }}Store {{ variable relationType.target.name }}Store) async {
 
     // Request mapping
-    var productInfoExtendedRequest = NorthwindServicesProductInfoExtended();
+    var {{ variable relationType.target.name }}ExtendedRequest = {{ fqClass relationType.target.name }}Extended();
 
     // Attributes
-    productInfoExtendedRequest.weight = productInfoStore.weight;
-    productInfoExtendedRequest.unitPrice = productInfoStore.unitPrice;
-    productInfoExtendedRequest.productName = productInfoStore.productName;
+    {{# each relationType.target.attributes ~}}
+    {{ variable ../relationType.target.name}}ExtendedRequest.{{ name }} = {{ variable ../relationType.target.name }}Store.{{ name }};
+    {{/ each }}
 
-    //// Single association
-    // productInfoExtendedRequest.category = NorthwindServicesProductInfoExtendedCategory();
-    // productInfoExtendedRequest.category.identifier = productInfoStore.category.identifier;
+    // Single association
+    {{# each relationType.target.relations ~}}
+    {{# unless isCollection ~}}
+    {{ variable ../relationType.target.name }}ExtendedRequest.{{ variable name }} = {{ fqClass ../relationType.target.name }}ExtendedCategory();
+    {{ variable ../relationType.target.name }}ExtendedRequest.{{ variable name }}.identifier = {{ variable ../relationType.target.name }}.{{ variable name }}.identifier;
+    {{/ unless }}
+    {{/ each }}
 
     // Call Server
-    NorthwindServicesProductInfo productInfoResponse = await DefaultApi(_apiClient).northwindExternalAPCreateAllProducts(productInfoExtendedRequest);
+    var {{ variable relationType.target.name }}Response = await {{ className root.name }}Api(_apiClient).{{ fqVariable classType.name }}Create{{ className relationType.name }}({{ variable classType.name }}Store.identifier, {{ variable relationType.target.name }}ExtendedRequest);
 
     // Response mapping
 
     // Attributes
-    productInfoStore.identifier = productInfoResponse.identifier;
-    productInfoStore.weight = productInfoResponse.weight;
-    productInfoStore.unitPrice = productInfoResponse.unitPrice;
-    productInfoStore.productName = productInfoResponse.productName;
+    {{ variable relationType.target.name}}Store.identifier = {{ variable relationType.target.name }}Response.identifier;
+    {{# each relationType.target.attributes ~}}
+    {{ variable ../relationType.target.name}}Store.{{ name }} = {{ variable ../relationType.target.name }}Response.{{ name }};
+    {{/ each }}
 
   }
 
   //////////////////////////////////////////////////////////////////////////////
   // REMOVE
   //////////////////////////////////////////////////////////////////////////////
-  Future removeAllProducts(NorthwindExternalAPProductInfoStore productInfoStore) async {
+  Future remove{{ className relationType.name }}({{ fqClass relationType.name }}Store {{ variable relationType.name }}Store) async {
     // Request mapping
-    var productInfoRequest = NorthwindIdentifier();
-    productInfoRequest.identifier = productInfoStore.identifier;
+    var {{ variable relationType.target.name }}Request = {{ modelName application.name }}Identifier();
+    {{ variable relationType.target.name }}Request.identifier = {{ variable relationType.target.name }}Store.identifier;
 
     // Call Server
-    await DefaultApi(_apiClient).northwindExternalAPDeleteAllProducts(productInfoRequest);
+    await {{ className root.name }}Api(_apiClient).{{ fqVariable classType.name }}Delete{{ className relationType.name }}({{ variable relationType.target.name }}Request);
+
   }
 
   //////////////////////////////////////////////////////////////////////////////
   // UPDATE
   //////////////////////////////////////////////////////////////////////////////
-  Future updateAllProducts(NorthwindExternalAPProductInfoStore productInfoStore) async {
+  Future update{{ className relationType.name }}({{ fqClass relationType.name }}Store {{ variable relationType.name }}Store,  {{ fqClass relationType.target.name }}Store {{ variable relationType.target.name }}Store) async {
+
     // Request mapping
-    var productInfoRequest = NorthwindServicesProductInfo();
+    var {{ variable relationType.target.name }}Request = {{ fqClass relationType.target.name }}();
 
     // Attributes
-    productInfoRequest.identifier = productInfoStore.identifier;
-    productInfoRequest.productName = productInfoStore.productName;
-    productInfoRequest.unitPrice = productInfoStore.unitPrice;
-    productInfoRequest.weight = productInfoStore.weight;
+    {{ variable relationType.target.name}}Request.identifier = {{ variable relationType.target.name }}Store.identifier;
+    {{# each relationType.target.attributes ~}}
+    {{ variable ../relationType.target.name}}Request.{{ name }} = {{ variable ../relationType.target.name }}Store.{{ name }};
+    {{/ each }}
 
     // Call Server
-    var productInfoResponse = await DefaultApi(_apiClient).northwindExternalAPUpdateAllProducts(productInfoRequest);
+    var {{ variable relationType.target.name }}Response = await {{ className root.name }}Api(_apiClient).{{ fqVariable classType.name }}Update{{ className relationType.name }}({{ variable classType.name }}Store.identifier, {{ variable relationType.target.name }}Request);
 
     // Response mapping
 
     // Attributes
-    productInfoStore.identifier = productInfoResponse.identifier;
-    productInfoStore.productName = productInfoResponse.productName;
-    productInfoStore.unitPrice = productInfoResponse.unitPrice;
-    productInfoStore.weight = productInfoResponse.weight;
+    {{ variable relationType.target.name}}Store.identifier = {{ variable relationType.target.name }}Response.identifier;
+    {{# each relationType.target.attributes ~}}
+    {{ variable ../relationType.target.name}}Store.{{ name }} = {{ variable ../relationType.target.name }}Response.{{ name }};
+    {{/ each }}
   }
 
   //////////////////////////////////////////////////////////////////////////////
