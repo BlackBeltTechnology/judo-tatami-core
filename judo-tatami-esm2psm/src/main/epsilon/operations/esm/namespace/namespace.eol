@@ -21,17 +21,3 @@ operation ESM!Model getPSMGeneratedActorTypeNamespaceEquivalent(): JUDOPSM!Packa
 operation ESM!Package getPSMGeneratedActorTypeNamespaceEquivalent(): JUDOPSM!Package {
     return self.equivalent("CreateGeneratedActorTypePackage");
 }
-
-operation CLAIMMAPPING!Mapping getTypeName() : String {
-    switch (self.Type) {
-        case "String":
-            if (self.Size.isDefined()) {
-                return "_ClaimType_" + self.Type + "_" + self.Size.asFloat().asInteger();
-            } else {
-                return "_ClaimType_" + self.Type;
-            }
-        default:
-            log.error("Unsupported claim type: " + self.Type);
-            return undefined;
-    }
-}
