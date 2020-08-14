@@ -51,7 +51,9 @@ public class Ui2ClientTest {
                 GeneratorTemplate.loadYamlURL(Ui2Client.calculateUi2ClientTemplateScriptURI().resolve("flutter/flutter.yaml").toURL()));
         for (Application app : generatedFiles.keySet()) {
             try (OutputStream zipOutputStream =
-                         new FileOutputStream(new File(TARGET_TEST_CLASSES, TEST + "-" + app.getName() + "-flutter.zip"))) {
+                         new FileOutputStream(new File(TARGET_TEST_CLASSES, TEST + "-" +
+                                 app.getName().replaceAll("[^\\.A-Za-z0-9_]", "_") +
+                                 "-flutter.zip"))) {
                 ByteStreams.copy(getGeneratedFilesAsZip(generatedFiles.get(app)), zipOutputStream);
             }
 
