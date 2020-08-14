@@ -1,0 +1,14 @@
+library {{ variable application.dataElement.name }}.repository;
+
+import 'dart:async';
+
+import 'package:openapi_dart_common/openapi.dart';
+
+import '../../utilities/constants.dart';
+import '../../rest/external_ap/lib/api.dart';
+
+{{# each operations ~}}
+    part '../../store/{{ path application.dataElement.name }}/{{ path root.name}}/{{ fqPath relationType.owner.name }}__{{ fqPath relationType.name }}__repository.dart';
+{{/ each}}
+
+

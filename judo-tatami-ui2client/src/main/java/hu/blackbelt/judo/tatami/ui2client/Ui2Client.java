@@ -24,6 +24,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.*;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -115,6 +116,8 @@ public class Ui2Client {
                                     contextBuilder.combine(ctx.getName(),
                                             templateExpressions.get(ctx.getName()).getValue(evaluationContext,
                                                     Ui2Client.class.getClassLoader().loadClass(ctx.getClassName())));
+//                                            templateExpressions.get(ctx.getName()).getValue(evaluationContext));
+
                                 } catch (ClassNotFoundException e) {
                                     log.error("Class not found: " + ctx.getClassName());
                                 }
@@ -169,6 +172,39 @@ public class Ui2Client {
         return executeUi2ClientGeneration(uiModel, generatorTemplates, log, scriptDir).entrySet()
                 .stream().collect(Collectors.toMap(e -> e.getKey(), e -> getGeneratedFilesAsZip(e.getValue())));
     }
+
+    private static Consumer<Map.Entry<Application, Collection<GeneratedFile>>> getDirectoryWriter(File directory) {
+        return e -> {
+            File output = new File(directory, e.getKey().getName().replaceAll("[^\\.A-Za-z0-9_]", "_"));
+            e.getValue().stream().forEach(f -> {
+                File outFile = new File(output, f.getPath());
+                outFile.getParentFile().mkdirs();
+                if (!outFile.exists() || (f.getOverwrite())) {
+                    try {
+                        ByteStreams.copy(new ByteArrayInputStream(f.getContent()), new FileOutputStream(outFile));
+                    } catch (IOException ioException) {
+                        log.error("Could not write file: " + outFile.getAbsolutePath(), e);
+                    }
+                }
+            });
+        };
+    }
+    public static void executeUi2ClientGenerationToDirectory(UiModel uiModel, Collection<GeneratorTemplate> generatorTemplates, File directory) throws Exception {
+        executeUi2ClientGeneration(uiModel, generatorTemplates, new Slf4jLog(log), calculateUi2ClientTemplateScriptURI()).entrySet()
+                .stream().forEach(getDirectoryWriter(directory));
+    }
+
+    public static void executeUi2ClientGenerationToDirectory(UiModel uiModel, Collection<GeneratorTemplate> generatorTemplates, File directory, Log log) throws Exception {
+        executeUi2ClientGeneration(uiModel, generatorTemplates, log, calculateUi2ClientTemplateScriptURI()).entrySet()
+                .stream().forEach(getDirectoryWriter(directory));
+
+    }
+
+    public static void executeUi2ClientGenerationToDirectory(UiModel uiModel, Collection<GeneratorTemplate> generatorTemplates, File directory, Log log, URI scriptDir) throws Exception {
+        executeUi2ClientGeneration(uiModel, generatorTemplates, log, scriptDir).entrySet()
+                .stream().forEach(getDirectoryWriter(directory));
+    }
+
 
     @SneakyThrows(URISyntaxException.class)
     public static URI calculateUi2ClientTemplateScriptURI() {

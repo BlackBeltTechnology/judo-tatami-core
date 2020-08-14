@@ -1,6 +1,5 @@
 package hu.blackbelt.judo.tatami.ui2client;
 
-import com.google.common.io.ByteStreams;
 import hu.blackbelt.epsilon.runtime.execution.api.Log;
 import hu.blackbelt.epsilon.runtime.execution.impl.Slf4jLog;
 import hu.blackbelt.judo.meta.esm.runtime.EsmModel;
@@ -17,8 +16,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.OutputStream;
 import java.util.*;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
@@ -31,7 +28,6 @@ import static hu.blackbelt.judo.meta.ui.runtime.UiModel.SaveArguments.uiSaveArgu
 import static hu.blackbelt.judo.meta.ui.runtime.UiModel.buildUiModel;
 import static hu.blackbelt.judo.tatami.esm2ui.Esm2Ui.calculateEsm2UiTransformationScriptURI;
 import static hu.blackbelt.judo.tatami.esm2ui.Esm2Ui.executeEsm2UiTransformation;
-import static hu.blackbelt.judo.tatami.ui2client.Ui2Client.getGeneratedFilesAsZip;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @Slf4j
@@ -64,7 +60,7 @@ public class Northwind2UiApplicationTest {
         esmModel.saveEsmModel(esmSaveArgumentsBuilder().file(new File(TARGET_TEST_CLASSES, testName + "-esm.model")));
     }
 
-    private void transform() throws Exception {
+    private void transformEsm2Ui() throws Exception {
         // Make transformation which returns the trace with the serialized URI's
         esm2UiTransformationTrace = executeEsm2UiTransformation(esmModel, "default", 12, uiModel, new Slf4jLog(log),
                 calculateEsm2UiTransformationScriptURI());
@@ -80,8 +76,9 @@ public class Northwind2UiApplicationTest {
 
         esmModel = NorthwindEsmModel.fullDemo();
 
-        transform();
+        transformEsm2Ui();
 
+        /*
         Map<Application, Collection<GeneratedFile>> generatedFiles = Ui2Client.executeUi2ClientGeneration(uiModel,
                 GeneratorTemplate.loadYamlURL(Ui2Client.calculateUi2ClientTemplateScriptURI().resolve("flutter/flutter.yaml").toURL()));
         for (Application app : generatedFiles.keySet()) {
@@ -91,8 +88,10 @@ public class Northwind2UiApplicationTest {
                                  "-flutter.zip"))) {
                 ByteStreams.copy(getGeneratedFilesAsZip(generatedFiles.get(app)), zipOutputStream);
             }
-
-        }
+        } */
+        Ui2Client.executeUi2ClientGenerationToDirectory(uiModel,
+                GeneratorTemplate.loadYamlURL(Ui2Client.calculateUi2ClientTemplateScriptURI().resolve("flutter/flutter.yaml").toURL()),
+                new File(TARGET_TEST_CLASSES));
 
         final Optional<Application> application = allUi(Application.class)
                 .findAny();

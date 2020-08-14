@@ -3,36 +3,26 @@
 // ------------------------------
 //   Application : {{ application.name }}
 //   Root: {{ root.name }}
-//   Class: {{ classType.name }}
+//   Owner: {{ classType.name }}
 //   Relation: {{ relationType.name }}
 //   Relation target: {{ relationType.target.name }}
 
-import 'dart:async';
-
-import 'package:openapi_dart_common/openapi.dart';
-import 'package:{{ path application.name }}/utilities/constants.dart';
-import 'package:{{ path application.name }}/rest/{{ path application.dataElement.name }}/lib/api.dart';
-
-import 'package:{{ path application.name }}/store/{{ path application.dataElement.name }}/{{ path root.name }}/store.dart';
-{{# each classType.relations ~}}
-import 'package:{{ path application.name }}/store/{{ path application.dataElement.name }}/{{ path ../root.name }}/{{ fqPath target.name }}_store.dart';
-{{/ each}}
-import 'package:openapi_dart_common/openapi.dart';
-
+part of {{ variable application.dataElement.name }}.repository;
 
 class {{ fqClass application.dataElement.name }}{{ className root.name }}{{ className relationType.name }}Repository {
   final ApiClient _apiClient = ApiClient(basePath: kBasePathUrl, apiClientDelegate: DioClientDelegate());
 
+  {{# if relationType.isCollection ~}}
   //////////////////////////////////////////////////////////////////////////////
-  // GET LIST
+  // GET Collection
   //////////////////////////////////////////////////////////////////////////////
-  Future get{{ className relationType.name }}({{ fqClass application.dataElement.name }}{{ className root.name }}Store {{ variable classType.name }}Store, List<{{ fqClass relationType.target.name }}Store> {{ variable relationType.target.name }}StoreList) async {
+  Future get{{ className relationType.name }}({{ fqClass classType.name }}Store {{ variable relationType.name }}{{ className classType.name }}Store, List<{{ fqClass relationType.target.name }}Store> {{ variable relationType.target.name }}StoreList) async {
 
     // Call Server
-    List<{{ fqClass relationType.target.name }}> {{ variable relationType.target.name }}ResponseList = await {{ className root.name }}Api(_apiClient).{{ fqVariable classType.name }}Get{{ className relationType.name }}({{ variable classType.name }}Store.identifier);
+    List<{{ fqClass relationType.target.name }}> {{ variable relationType.target.name }}ResponseList = await {{ className root.name }}Api(_apiClient).{{ fqVariable classType.name }}Get{{ className relationType.name }}({{ variable relationType.name }}{{ className classType.name }}Store.identifier);
 
     // Response mapping
-    {{ variable relationType.target.name }}StoreList.addAll({{ variable relationType.target.name }}ResponseList.map<{{ fqClass relationType.target.name }}Store>(({{ variable classType.name }}Response) {
+    {{ variable relationType.target.name }}StoreList.addAll({{ variable relationType.target.name }}ResponseList.map<{{ fqClass relationType.target.name }}Store>(({{ variable relationType.target.name }}Response) {
       // Response mapping
       var {{ variable relationType.target.name }}Store = {{ fqClass relationType.target.name }}Store();
 
@@ -42,25 +32,44 @@ class {{ fqClass application.dataElement.name }}{{ className root.name }}{{ clas
       {{ variable ../relationType.target.name}}Store.{{ name }} = {{ variable ../relationType.target.name }}Response.{{ name }};
       {{/ each }}
 
-      return {{ relationType.target.name }}Store;
+      return {{ variable relationType.target.name }}Store;
     }).toList());
   }
 
   //////////////////////////////////////////////////////////////////////////////
   // GET One
   //////////////////////////////////////////////////////////////////////////////
-  Future get{{ className relationType.name }}ById(List<{{ fqClass relationType.target.name }}Store> {{ variable relationType.target.name }}StoreList, String identifier, {{ fqClass relationType.target.name }}Store {{ variable relationType.target.name }}Store) async {
+  Future get{{ className relationType.name }}ById({{ fqClass classType.name }}Store {{ variable relationType.name }}{{ className classType.name }}Store, String identifier, List<{{ fqClass relationType.target.name }}Store> {{ variable relationType.target.name }}StoreList,  {{ fqClass relationType.target.name }}Store {{ variable relationType.target.name }}Store) {
     // Check the store. If it is empty, loading it and selecting element
     if ({{ variable relationType.target.name }}StoreList == null || {{ variable relationType.target.name }}StoreList.length == 0) {
-            get{{ className relationType.name }}({{ variable relationType.target.name }}StoreList);
+      get{{ className relationType.name }}({{ variable relationType.name }}{{ className classType.name }}Store, {{ variable relationType.target.name }}StoreList);
     }
     {{ variable relationType.target.name }}Store = {{ variable relationType.target.name }}StoreList.firstWhere((element) => element.identifier == identifier);
   }
 
+  {{ else }}
+  //////////////////////////////////////////////////////////////////////////////
+  // GET Single
+  //////////////////////////////////////////////////////////////////////////////
+  Future get{{ className relationType.name }}({{ fqClass classType.name }}Store {{ variable relationType.name }}{{ className classType.name }}Store, {{ fqClass relationType.target.name }}Store {{ variable relationType.target.name }}Store) async {
+
+    // Call Server
+    {{ fqClass relationType.target.name }} {{ variable relationType.target.name }}Response = await {{ className root.name }}Api(_apiClient).{{ fqVariable classType.name }}Get{{ className relationType.name }}({{ variable relationType.name }}{{ className classType.name }}Store.identifier);
+
+    // Response mapping
+
+    // Attributes
+    {{ variable relationType.target.name}}Store.identifier = {{ variable relationType.target.name }}Response.identifier;
+    {{# each relationType.target.attributes ~}}
+    {{ variable ../relationType.target.name}}Store.{{ name }} = {{ variable ../relationType.target.name }}Response.{{ name }};
+    {{/ each }}
+  }
+  {{/ if}}
+
   //////////////////////////////////////////////////////////////////////////////
   // CREATE
   //////////////////////////////////////////////////////////////////////////////
-  Future create{{ className relationType.name }}({{ fqClass relationType.name }}Store {{ variable relationType.name }}Store,  {{ fqClass relationType.target.name }}Store {{ variable relationType.target.name }}Store) async {
+  Future create{{ className relationType.name }}({{ fqClass classType.name }}Store {{ variable relationType.name }}{{ className classType.name }}Store,  {{ fqClass relationType.target.name }}Store {{ variable relationType.target.name }}Store) async {
 
     // Request mapping
     var {{ variable relationType.target.name }}ExtendedRequest = {{ fqClass relationType.target.name }}Extended();
@@ -73,13 +82,13 @@ class {{ fqClass application.dataElement.name }}{{ className root.name }}{{ clas
     // Single association
     {{# each relationType.target.relations ~}}
     {{# unless isCollection ~}}
-    {{ variable ../relationType.target.name }}ExtendedRequest.{{ variable name }} = {{ fqClass ../relationType.target.name }}ExtendedCategory();
-    {{ variable ../relationType.target.name }}ExtendedRequest.{{ variable name }}.identifier = {{ variable ../relationType.target.name }}.{{ variable name }}.identifier;
+    {{ variable ../relationType.target.name }}ExtendedRequest.{{ variable name }} = {{ fqClass relationType.target.name }}Extended{{ className name }}();
+    {{ variable ../relationType.target.name }}ExtendedRequest.{{ variable name }}.identifier = {{ variable ../relationType.target.name }}Store.{{ variable name }}.identifier;
     {{/ unless }}
     {{/ each }}
 
     // Call Server
-    var {{ variable relationType.target.name }}Response = await {{ className root.name }}Api(_apiClient).{{ fqVariable classType.name }}Create{{ className relationType.name }}({{ variable classType.name }}Store.identifier, {{ variable relationType.target.name }}ExtendedRequest);
+    var {{ variable relationType.target.name }}Response = await {{ className root.name }}Api(_apiClient).{{ fqVariable classType.name }}Create{{ className relationType.name }}({{ variable relationType.name }}{{ className classType.name }}Store.identifier, {{ variable relationType.target.name }}ExtendedRequest);
 
     // Response mapping
 
@@ -94,20 +103,21 @@ class {{ fqClass application.dataElement.name }}{{ className root.name }}{{ clas
   //////////////////////////////////////////////////////////////////////////////
   // REMOVE
   //////////////////////////////////////////////////////////////////////////////
-  Future remove{{ className relationType.name }}({{ fqClass relationType.name }}Store {{ variable relationType.name }}Store) async {
+  // Single Future remove{{ className relationType.name }}({{ fqClass classType.name }}Store {{ variable relationType.name }}{{ className classType.name }}Store) async {
+  Future remove{{ className relationType.name }}({{ fqClass classType.name }}Store {{ variable relationType.name }}{{ className classType.name }}Store,  {{ fqClass relationType.target.name }}Store {{ variable relationType.target.name }}Store) async {
     // Request mapping
     var {{ variable relationType.target.name }}Request = {{ modelName application.name }}Identifier();
-    {{ variable relationType.target.name }}Request.identifier = {{ variable relationType.target.name }}Store.identifier;
+    {{ variable relationType.target.name }}Request.identifier = {{ variable relationType.name }}{{ className classType.name }}Store.identifier;
 
     // Call Server
-    await {{ className root.name }}Api(_apiClient).{{ fqVariable classType.name }}Delete{{ className relationType.name }}({{ variable relationType.target.name }}Request);
+    await {{ className root.name }}Api(_apiClient).{{ fqVariable classType.name }}Delete{{ className relationType.name }}({{ variable relationType.name }}{{ className classType.name }}Store.identifier, {{ variable relationType.target.name }}Request);
 
   }
 
   //////////////////////////////////////////////////////////////////////////////
   // UPDATE
   //////////////////////////////////////////////////////////////////////////////
-  Future update{{ className relationType.name }}({{ fqClass relationType.name }}Store {{ variable relationType.name }}Store,  {{ fqClass relationType.target.name }}Store {{ variable relationType.target.name }}Store) async {
+  Future update{{ className relationType.name }}({{ fqClass classType.name }}Store {{ variable relationType.name }}{{ className classType.name }}Store,  {{ fqClass relationType.target.name }}Store {{ variable relationType.target.name }}Store) async {
 
     // Request mapping
     var {{ variable relationType.target.name }}Request = {{ fqClass relationType.target.name }}();
@@ -119,7 +129,7 @@ class {{ fqClass application.dataElement.name }}{{ className root.name }}{{ clas
     {{/ each }}
 
     // Call Server
-    var {{ variable relationType.target.name }}Response = await {{ className root.name }}Api(_apiClient).{{ fqVariable classType.name }}Update{{ className relationType.name }}({{ variable classType.name }}Store.identifier, {{ variable relationType.target.name }}Request);
+    var {{ variable relationType.target.name }}Response = await {{ className root.name }}Api(_apiClient).{{ fqVariable classType.name }}Update{{ className relationType.name }}({{ variable relationType.name }}{{ className classType.name }}Store.identifier, {{ variable relationType.target.name }}Request);
 
     // Response mapping
 
@@ -130,61 +140,67 @@ class {{ fqClass application.dataElement.name }}{{ className root.name }}{{ clas
     {{/ each }}
   }
 
+  {{# each relationType.target.relations ~}}
   //////////////////////////////////////////////////////////////////////////////
-  // GET CREATE RANGE
+  // GET CREATE RANGE for {{ variable name }}
   //////////////////////////////////////////////////////////////////////////////
-  Future getRangeForCreateAllCategories(NorthwindExternalAPProductInfoStore productInfoStore, List<NorthwindExternalAPCategoryInfoStore> selectableCategoryInfoStoreList) async {
+  Future get{{ className name }}RangeForCreate{{ className ../relationType.name }}({{ fqClass ../relationType.target.name }}Store {{ variable ../relationType.name }}{{ fqClass ../classType.name }}Store, List<{{ fqClass target.name }}Store> selectable{{ className target.name }}StoreList) async {
+
     // Request mapping
-    var productInfoRequest = NorthwindServicesProductInfo();
+    var {{ variable ../relationType.target.name }}Request = {{ fqClass ../relationType.target.name }}();
 
     // Attributes
-    productInfoRequest.identifier = productInfoStore.identifier;
-    productInfoRequest.productName = productInfoStore.productName;
-    productInfoRequest.unitPrice = productInfoStore.unitPrice;
-    productInfoRequest.weight = productInfoStore.weight;
+    {{ variable ../relationType.target.name}}Request.identifier = {{ variable ../relationType.name }}{{ fqClass ../classType.name }}Store.identifier;
+    {{# each ../relationType.target.attributes ~}}
+    {{ variable ../../relationType.target.name}}Request.{{ name }} = {{ variable ../../relationType.name }}{{ fqClass ../../classType.name }}Store.{{ name }};
+    {{/ each }}
 
     // Call Server
-    var categoryInfoListResponse = await DefaultApi(_apiClient).northwindExternalAPGetRangeOfCategoryToCreateAllProducts(productInfoRequest);
+    var {{ variable target.name }}ListResponse = await {{ className ../root.name }}Api(_apiClient).{{ fqVariable classType.name }}GetRangeOf{{ className name }}ToCreate{{ className ../relationType.name }}({{ variable ../relationType.target.name }}Request);
 
-    selectableCategoryInfoStoreList.addAll(categoryInfoListResponse.map<NorthwindExternalAPCategoryInfoStore>((categoryInfoStoreResponse) {
+    selectable{{ className target.name }}StoreList.addAll({{ variable target.name }}ListResponse.map<{{ fqClass target.name }}Store>(({{ variable target.name }}Response) {
       // Response mapping
-      var categoryInfoStore = NorthwindExternalAPCategoryInfoStore();
+      var {{ variable target.name }}Store = {{ fqClass target.name }}Store();
 
       // Attributes
-      categoryInfoStore.identifier = categoryInfoStoreResponse.identifier;
-      categoryInfoStore.categoryName = categoryInfoStoreResponse.categoryName;
+      {{ variable target.name }}Store.identifier = {{ variable target.name }}Response.identifier;
+      {{# each target.attributes ~}}
+      {{ variable ../target.name }}Store.{{ name }} = {{ variable ../target.name }}Response.{{ name }};
+      {{/ each }}
 
-      return categoryInfoStore;
+      return {{ variable target.name }}Store;
     }).toList());
   }
+  //////////////////////////////////////////////////////////////////////////////
+  // GET UPDATE RANGE for {{ variable name }}
+  //////////////////////////////////////////////////////////////////////////////
+  Future get{{ className name }}RangeForUpdate{{ className ../relationType.name }}({{ fqClass ../relationType.target.name }}Store {{ variable ../relationType.name }}{{ fqClass ../classType.name }}Store, List<{{ fqClass target.name }}Store> selectable{{ className target.name }}StoreList) async {
 
-  //////////////////////////////////////////////////////////////////////////////
-  // GET UPDATE RANGE
-  //////////////////////////////////////////////////////////////////////////////
-  Future getRangeForUpdateAllCategories(NorthwindExternalAPProductInfoStore productInfoStore, List<NorthwindExternalAPCategoryInfoStore> selectableCategoryInfoStoreList) async {
     // Request mapping
-    var productInfoRequest = NorthwindServicesProductInfo();
+    var {{ variable ../relationType.target.name }}Request = {{ fqClass ../relationType.target.name }}();
 
     // Attributes
-    productInfoRequest.identifier = productInfoStore.identifier;
-    productInfoRequest.productName = productInfoStore.productName;
-    productInfoRequest.unitPrice = productInfoStore.unitPrice;
-    productInfoRequest.weight = productInfoStore.weight;
+    {{ variable ../relationType.target.name}}Request.identifier = {{ variable ../relationType.name }}{{ fqClass ../classType.name }}Store.identifier;
+    {{# each ../relationType.target.attributes ~}}
+    {{ variable ../../relationType.target.name}}Request.{{ name }} = {{ variable ../../relationType.name }}{{ fqClass ../../classType.name }}Store.{{ name }};
+    {{/ each }}
 
     // Call Server
-    var categoryInfoListResponse = await DefaultApi(_apiClient).northwindExternalAPGetRangeOfCategoryToUpdateAllProducts(productInfoRequest);
+    var {{ variable target.name }}ListResponse = await {{ className ../root.name }}Api(_apiClient).{{ fqVariable classType.name }}GetRangeOf{{ className name }}ToUpdate{{ className ../relationType.name }}({{ variable ../relationType.target.name }}Request);
 
-    selectableCategoryInfoStoreList.addAll(categoryInfoListResponse.map<NorthwindExternalAPCategoryInfoStore>((categoryInfoResponse) {
+    selectable{{ className target.name }}StoreList.addAll({{ variable target.name }}ListResponse.map<{{ fqClass target.name }}Store>(({{ variable target.name }}Response) {
       // Response mapping
-      var categoryInfoStore = NorthwindExternalAPCategoryInfoStore();
+      var {{ variable target.name }}Store = {{ fqClass target.name }}Store();
 
       // Attributes
-      categoryInfoStore.identifier = categoryInfoResponse.identifier;
-      categoryInfoStore.categoryName = categoryInfoResponse.categoryName;
+      {{ variable target.name }}Store.identifier = {{ variable target.name }}Response.identifier;
+      {{# each target.attributes ~}}
+      {{ variable ../target.name }}Store.{{ name }} = {{ variable ../target.name }}Response.{{ name }};
+      {{/ each }}
 
-      return categoryInfoStore;
+      return {{ variable target.name }}Store;
     }).toList());
-
   }
+{{/ each }}
 }
 

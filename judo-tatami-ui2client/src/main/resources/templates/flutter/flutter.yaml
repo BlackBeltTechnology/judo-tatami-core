@@ -35,7 +35,7 @@
   factoryExpression: "#application.dataElements"
   pathExpression: >
     'lib/store/' +
-    #path(#self.eContainer().dataElement.name) +
+    #path(#self.owner.dataElement.name) +
     '/model/' +
     #fqPath(#self.name) + '__store.dart'
   templateName: flutter/lib/store/model_store.dart.hbs
@@ -49,14 +49,26 @@
     'lib/repository/' +
     #path(#application.dataElement.name) + '/' +
     #path(#self.root.name) + '/' +
-    #fqPath(#self.relationType.eContainer().name) + '__' +
+    #fqPath(#self.relationType.owner.name) + '__' +
     #self.relationType.name  +
     '__repository.dart'
   templateName: flutter/lib/repositories/repository.dart.hbs
   templateContext:
     - name: classType
-      expression: "#self.relationType.eContainer()"
+      expression: "#self.relationType.owner"
       className: hu.blackbelt.judo.meta.ui.data.ClassType
+
+- overwriteExpression: true
+  factoryExpression: "#operations(#application)"
+  pathExpression: >
+    'lib/repository/' +
+    #path(#application.dataElement.name) + '/' +
+    'repository.dart'
+  templateName: flutter/lib/repositories/repository_package.dart.hbs
+  templateContext:
+    - name: operations
+      expression: "#operations(#application)"
+      className: java.util.Collection
 
 
 #  ("replaceAll([a-z])([A-Z]+)", "$1_$2").toLowerCase()
