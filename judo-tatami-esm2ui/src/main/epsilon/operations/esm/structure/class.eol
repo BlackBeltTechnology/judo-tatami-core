@@ -20,7 +20,6 @@ operation ESM!esm::structure::Class createClassType(application : UI!ui::Applica
     	clazz.accessPoint = application.~apClass;
     }
 
-
 	for (attribute in self.getAllAttributes()) {
 		attribute.mapAttributeType(application, clazz);
 	}
@@ -28,11 +27,8 @@ operation ESM!esm::structure::Class createClassType(application : UI!ui::Applica
 	for (relation in self.getAllRelations()) {
 		relation.createRelationTypeForClass(application, clazz);
 	}
-	for (attribute in self.getAllAttributes()) {
-		attribute.createAttributeTypeForClass(application, clazz);
-	}
 	
-	for (op in esmUtils.getAllOperations(self)) {
+	for (op in esmUtils.getAllOperations(self).asSet()) {
 		if (op.operationType <> ESM!OperationType#ABSTRACT) {
 			op.createOperationTypeForClass(application, clazz);
 		}

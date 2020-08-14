@@ -8,3 +8,4 @@ operation ESM!esm::ui::OperationForm createButtonFromOperationForm(application :
 
 operation ESM!esm::ui::OperationForm map(application : UI!ui::Application) : UI!ui::Button {
     return self.createButtonFromOperationForm(application);
+}
