@@ -18,7 +18,7 @@ abstract class _{{ fqClass ap.name }}GlobalStore with Store {
       _{{ fqVariable ap.name }}Repository =
         {{ fqClass ap.name }}Repository();
 
-    {{# each ap.relations ~}}
+    {{# each ap.relations}}
     ///////////////////////////////////////////////////////////
     // {{ name }}
     ///////////////////////////////////////////////////////////
@@ -32,13 +32,13 @@ abstract class _{{ fqClass ap.name }}GlobalStore with Store {
         ObservableList<{{ fqClass target.name }}Store>();
 
     @observable
-    {{ fqClass target.name }}Store current{{ className name }} = {{ fqClass target.name }}Store();
+    {{ fqClass target.name }}Store current{{ className name }};
 
     @observable
-    {{ fqClass target.name }}Store edit{{ className name }} = {{ fqClass target.name }}Store();
+    {{ fqClass target.name }}Store edit{{ className name }};
 
     @observable
-    {{ fqClass target.name }}Store new{{ className name }} = {{ fqClass target.name }}Store();
+    {{ fqClass target.name }}Store new{{ className name }};
 
     @action
     void select{{ className name }}({{ fqClass target.name }}Store {{ variable target.name }}Store) {
@@ -64,8 +64,6 @@ abstract class _{{ fqClass ap.name }}GlobalStore with Store {
         {{ fqClass target.name }}Store.clone(edit{{ className name }});
 
       await _{{ variable name }}Repository.update{{ className name }}(current{{ className name }});
-
-      get{{ className name }}();
     }
 
     @action
@@ -80,15 +78,13 @@ abstract class _{{ fqClass ap.name }}GlobalStore with Store {
       await _{{ variable name }}Repository.get{{ className name }}({{ variable name }}StoreList);
     }
 
-        {{# each target.relations ~}}
-
+        {{# each target.relations}}
     ///////////////////////////////////////////////////////////
     // {{../name}} -> {{ ../target.name}}.{{ name }}
     ///////////////////////////////////////////////////////////
     {{ fqClass ap.name }}{{ fqClass ../name }}{{ fqClass ../target.name }}{{ className name }}Repository
       _{{ variable ../name }}{{ fqClass ../target.name }}{{ className name }}Repository =
         {{ fqClass ap.name }}{{ fqClass ../name }}{{ fqClass ../target.name }}{{ className name }}Repository();
-
 
     {{# if isCollection }}
     @observable
@@ -98,13 +94,23 @@ abstract class _{{ fqClass ap.name }}GlobalStore with Store {
     {{/ if}}
 
     @observable
-    {{ fqClass target.name }}Store current{{ className ../name }}{{ fqClass ../target.name }}{{ className name }} = {{ fqClass target.name }}Store();
+    List<{{ fqClass target.name }}Store>
+      {{ variable ../name }}{{ fqClass ../target.name }}{{ className name }}StoreRangeForCreateList =
+        ObservableList<{{ fqClass target.name }}Store>();
 
     @observable
-    {{ fqClass target.name }}Store edit{{ className ../name }}{{ fqClass ../target.name }}{{ className name }} = {{ fqClass target.name }}Store();
+    List<{{ fqClass target.name }}Store>
+      {{ variable ../name }}{{ fqClass ../target.name }}{{ className name }}StoreRangeForUpdateList =
+        ObservableList<{{ fqClass target.name }}Store>();
 
     @observable
-    {{ fqClass target.name }}Store new{{ className ../name }}{{ fqClass ../target.name }}{{ className name }} = {{ fqClass target.name }}Store();
+    {{ fqClass target.name }}Store current{{ className ../name }}{{ fqClass ../target.name }}{{ className name }};
+
+    @observable
+    {{ fqClass target.name }}Store edit{{ className ../name }}{{ fqClass ../target.name }}{{ className name }};
+
+    @observable
+    {{ fqClass target.name }}Store new{{ className ../name }}{{ fqClass ../target.name }}{{ className name }};
 
     @action
     void select{{ className ../name }}{{ fqClass ../target.name }}{{ className name }}({{ fqClass target.name }}Store {{ variable target.name }}Store) {
@@ -138,8 +144,6 @@ abstract class _{{ fqClass ap.name }}GlobalStore with Store {
       await _{{ variable ../name }}{{ fqClass ../target.name }}{{ className name }}Repository.update{{ className name }}(
         current{{ className ../name }},
         current{{ className ../name }}{{ fqClass ../target.name }}{{ className name }});
-
-      get{{ className ../name }}{{ fqClass ../target.name }}{{ className name }}();
     }
 
     {{# if isCollection }}
@@ -164,6 +168,25 @@ abstract class _{{ fqClass ap.name }}GlobalStore with Store {
         current{{ className ../name }},
         current{{ className ../name }}{{ fqClass ../target.name }}{{ className name }});
       {{/ if }}
+    }
+
+
+
+    @action
+    Future getRangeForCreate{{ className ../name }}{{ fqClass ../target.name }}{{ className name }}() async{
+      {{ variable ../name }}{{ fqClass ../target.name }}{{ className name }}StoreRangeForCreateList.clear();
+      await _{{ fqVariable ../name }}Repository.get{{ className name }}RangeForCreate{{ className ../name }}(
+        current{{ className ../name }},
+        {{ variable ../name }}{{ fqClass ../target.name }}{{ className name }}StoreRangeForCreateList);
+    }
+
+
+    @action
+    Future getRangeForUpdate{{ className ../name }}{{ fqClass ../target.name }}{{ className name }}() async{
+    {{ variable ../name }}{{ fqClass ../target.name }}{{ className name }}StoreRangeForUpdateList.clear();
+       await _{{ fqVariable ../name }}Repository.get{{ className name }}RangeForUpdate{{ className ../name }}(
+         current{{ className ../name }},
+         {{ variable ../name }}{{ fqClass ../target.name }}{{ className name }}StoreRangeForUpdateList);
     }
 
         {{/ each}}

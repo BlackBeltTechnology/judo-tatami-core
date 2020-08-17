@@ -29,7 +29,12 @@ abstract class _{{ fqClass name }}Store with Store {
 
     // Relations
     {{#each relations ~}}
+        {{#  if isCollection }}
     {{ variable name }} = ObservableList.of({{ variable ../name }}Store.{{ variable name }});
+        {{ else }}
+    // TODO: Maybe clone?
+    {{ variable name }} = {{ variable ../name }}Store.{{ variable name }};
+        {{/ if}}
     {{/each}}
   }
 
@@ -44,8 +49,13 @@ abstract class _{{ fqClass name }}Store with Store {
 
   // Relations
   {{#each relations ~}}
+    {{#  if isCollection }}
   @observable
   var {{ variable name }} = ObservableList<{{ fqClass target.name }}Store>();
+    {{ else }}
+  @observable
+  {{ fqClass target.name }}Store {{ variable name }};
+    {{/ if}}
 
   {{/each}}
 

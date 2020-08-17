@@ -66,7 +66,7 @@ class {{ fqClass ap.name }}{{ className name }}DefaultRepository {
   {{# each target.relations ~}}
   {{# each target.relations ~}}
   //////////////////////////////////////////////////////////////////////////////
-  // GET CREATE RANGE
+  // GET RANGE FOR CREATE
   //////////////////////////////////////////////////////////////////////////////
   Future get{{ className ../name }}RangeForCreate{{ className ../../name }}({{ fqClass ../../target.name }}Store {{ variable ../../target.name }}Store, List<{{ fqClass ../target.name }}Store> selectable{{ className ../target.name }}ListStore) async {
     var {{ variable ../../target.name }}Request = {{ fqClass ap.name }}RepositoryStoreMapper.create{{ fqClass ../../target.name }}From{{ fqClass ../../target.name }}Store({{ variable ../../target.name }}Store);
@@ -76,7 +76,7 @@ class {{ fqClass ap.name }}{{ className name }}DefaultRepository {
   }
 
   //////////////////////////////////////////////////////////////////////////////
-  // GET UPDATE RANGE
+  // GET RANGE FOR UPDATE
   //////////////////////////////////////////////////////////////////////////////
   Future get{{ className ../name }}RangeForUpdate{{ className ../../name }}({{ fqClass ../../target.name }}Store {{ variable ../../target.name }}Store, List<{{ fqClass ../target.name }}Store> selectable{{ className ../target.name }}ListStore) async {
     var {{ variable ../../target.name }}Request = {{ fqClass ap.name }}RepositoryStoreMapper.create{{ fqClass ../../target.name }}From{{ fqClass ../../target.name }}Store({{ variable ../../target.name }}Store);
