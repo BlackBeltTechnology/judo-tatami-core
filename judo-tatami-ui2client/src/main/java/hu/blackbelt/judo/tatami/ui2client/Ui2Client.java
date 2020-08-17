@@ -3,6 +3,7 @@ package hu.blackbelt.judo.tatami.ui2client;
 import com.github.jknack.handlebars.Context;
 import com.github.jknack.handlebars.Handlebars;
 import com.github.jknack.handlebars.Template;
+import com.github.jknack.handlebars.helper.ConditionalHelpers;
 import com.google.common.base.Charsets;
 import com.google.common.io.ByteStreams;
 import hu.blackbelt.epsilon.runtime.execution.api.Log;
@@ -57,6 +58,7 @@ public class Ui2Client {
         handlebars.setStringParams(true);
         handlebars.setCharset(Charsets.UTF_8);
         handlebars.registerHelpers(FlutterHelper.class);
+        handlebars.registerHelpers(ConditionalHelpers.class);
         UiModelResourceSupport modelResourceSupport = loadUi(uiLoadArgumentsBuilder()
                 .uri(org.eclipse.emf.common.util.URI.createURI("ui:" + uiModel.getName()))
                 .resourceSet(uiModel.getResourceSet()).build());

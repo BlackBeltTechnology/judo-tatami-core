@@ -1,0 +1,25 @@
+//////////////////////////////////////////////////////////////////////////////
+// G E N E R A T E D    C L A S S
+// ------------------------------
+// Factory expression: {{{ cleanup template.factoryExpression }}}
+// Path expression: {{{ cleanup template.pathExpression }}}
+// Overwrite: {{{ cleanup template.overwriteExpression }}}
+// Template name: {{ template.templateName }}
+// Application: {{ application.name }}
+
+library {{ variable ap.name }}.store;
+
+import 'dart:async';
+
+import 'package:mobx/mobx.dart';
+import 'package:{{ modelPackage ap.name }}/{{ path ap.name }}/repository/package.dart';
+
+part 'package.g.dart';
+
+part '{{ path ap.name }}__global_store.dart';
+
+{{# each application.dataElements ~}}
+part '{{ fqPath name }}__store.dart';
+{{/ each }}
+
+

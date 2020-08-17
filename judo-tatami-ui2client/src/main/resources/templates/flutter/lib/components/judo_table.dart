@@ -1,7 +1,4 @@
-import 'package:flutter/material.dart';
-import 'package:judo/components/judo_component.dart';
-import 'package:judo/utilities/constants.dart';
-import 'judo_container.dart';
+part of judo.components;
 
 abstract class JudoTableDataInfo {
   List<DataColumn> getColumns();
@@ -31,18 +28,25 @@ class JudoTable extends StatelessWidget implements IJudoComponent {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: DataTable(
-        sortAscending: true,
-        columns: dataInfo.getColumns(),
-        rows: dataRow(rowList),
+    return Observer(
+      builder: (_) => Flexible(
+        flex: col,
+        child: Container(
+          height: rowList.length * kJudoHeight + kJudoHeight,
+          child: DataTable(
+            onSelectAll: (b) {},
+            sortAscending: sortAscending,
+            columns: dataInfo.getColumns(),
+            rows: dataRow(),
+          ),
+        ),
       ),
     );
   }
 
-  List<DataRow> dataRow(List list) {
+  List<DataRow> dataRow() {
     List<DataRow> dataRowList =
-        list.map<DataRow>(dataInfo.getRow(onTap)).toList();
+        rowList.map<DataRow>(dataInfo.getRow(onTap)).toList();
 
     return dataRowList;
   }

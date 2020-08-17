@@ -14,29 +14,55 @@
   pathExpression: "'README.md'"
   templateName: flutter/README.md.hbs
 
+
+- overwriteExpression: false
+  factoryExpression: "{#application}"
+  pathExpression: >
+    'lib/' +
+    #path(#application.dataElement.name) + '/' +
+    'main.dart'
+  templateName: flutter/lib/main.dart.hbs
+
 # ========================================
 # stores
 # ========================================
-
-# All relations are generated as store.
-# All relation in accesspoint are hanndled as a separated store
 - overwriteExpression: true
-  factoryExpression: "#application.dataElement.relations"
+  factoryExpression: "{#application}"
   pathExpression: >
-    'lib/store/' + #path(#application.dataElement.name) + '/' + #path(#self.name + 'Store') + '.dart'
-  templateName: flutter/lib/store/application_exposed_relation_store.dart.hbs
+    'lib/' +
+    #path(#application.dataElement.name) + '/store/' +
+    'package.dart'
+  templateName: flutter/lib/store/package.dart.hbs
+  templateContext:
+    - name: operations
+      expression: "#operations(#application)"
+      className: java.util.Collection
+    - name: ap
+      expression: "#application.dataElement"
+      className: hu.blackbelt.judo.meta.ui.data.ClassType
+
+- overwriteExpression: true
+  factoryExpression: "{#application}"
+  pathExpression: >
+    'lib/' + #path(#application.dataElement.name) + '/store/' + #path(#application.dataElement.name) + '__global_store.dart'
+  templateName: flutter/lib/store/global_store.dart.hbs
   templateContext:
     - name: transferObjects
       expression: "#application.dataElements"
       className: java.util.Collection
-
+    - name: ap
+      expression: "#application.dataElement"
+      className: hu.blackbelt.judo.meta.ui.data.ClassType
+    - name: operations
+      expression: "#operations(#application)"
+      className: java.util.Collection
 
 - overwriteExpression: true
   factoryExpression: "#application.dataElements"
   pathExpression: >
-    'lib/store/' +
+    'lib/' +
     #path(#self.owner.dataElement.name) +
-    '/model/' +
+    '/store/' +
     #fqPath(#self.name) + '__store.dart'
   templateName: flutter/lib/store/model_store.dart.hbs
 
@@ -44,43 +70,75 @@
 # repositires
 # ========================================
 - overwriteExpression: true
-  factoryExpression: "#operations(#application)"
+  factoryExpression: "{#application}"
   pathExpression: >
-    'lib/repository/' +
-    #path(#application.dataElement.name) + '/' +
-    #path(#self.root.name) + '/' +
-    #fqPath(#self.relationType.owner.name) + '__' +
-    #self.relationType.name  +
-    '__repository.dart'
-  templateName: flutter/lib/repositories/repository.dart.hbs
+    'lib/' +
+    #path(#application.dataElement.name) + '/repository/' +
+    'package.dart'
+  templateName: flutter/lib/repositories/package.dart.hbs
   templateContext:
-    - name: classType
-      expression: "#self.relationType.owner"
+    - name: operations
+      expression: "#operations(#application)"
+      className: java.util.Collection
+    - name: ap
+      expression: "#application.dataElement"
       className: hu.blackbelt.judo.meta.ui.data.ClassType
 
 - overwriteExpression: true
   factoryExpression: "#operations(#application)"
   pathExpression: >
-    'lib/repository/' +
-    #path(#application.dataElement.name) + '/' +
-    'repository.dart'
-  templateName: flutter/lib/repositories/repository_package.dart.hbs
+    'lib/' +
+    #path(#application.dataElement.name) + '/repository/' +
+    #path(#self.accessRelation.name) + '/' +
+    #fqPath(#self.relationType.owner.name) + '__' +
+    #self.relationType.name  +
+    '__repository.dart'
+  templateName: flutter/lib/repositories/repository_access_point_relation.dart.hbs
   templateContext:
+    - name: ap
+      expression: "#application.dataElement"
+      className: hu.blackbelt.judo.meta.ui.data.ClassType
     - name: operations
       expression: "#operations(#application)"
       className: java.util.Collection
 
+- overwriteExpression: true
+  factoryExpression: "#application.dataElement.relations"
+  pathExpression: >
+    'lib/' +
+    #path(#application.dataElement.name) + '/repository/' +
+    #path(#self.name) + '/' +
+    'default__repository.dart'
+  templateName: flutter/lib/repositories/repository_default.dart.hbs
+  templateContext:
+    - name: ap
+      expression: "#application.dataElement"
+      className: hu.blackbelt.judo.meta.ui.data.ClassType
 
-#  ("replaceAll([a-z])([A-Z]+)", "$1_$2").toLowerCase()
+- overwriteExpression: true
+  factoryExpression: "{#application}"
+  pathExpression: >
+    'lib/' +
+    #path(#application.dataElement.name) + '/repository/' +
+    'default__repository.dart'
+  templateName: flutter/lib/repositories/repository_access_point.dart.hbs
+  templateContext:
+    - name: ap
+      expression: "#application.dataElement"
+      className: hu.blackbelt.judo.meta.ui.data.ClassType
 
-#- overwriteExpression: true
-#  factoryExpression: "{#application}"
-#  pathExpression: "#self.name.replaceAll('/', '__').concat('_test.dart')"
-#  templateName: flutter/test.dart
-#  templateContext:
-#      - name: application
-#        expression: "#self"
-#        className: hu.blackbelt.judo.meta.ui.Application
+
+- overwriteExpression: true
+  factoryExpression: "{#application}"
+  pathExpression: >
+    'lib/' +
+    #path(#application.dataElement.name) + '/repository/' +
+    'mapper.dart'
+  templateName: flutter/lib/repositories/repository_store_mapper.dart.hbs
+  templateContext:
+    - name: ap
+      expression: "#application.dataElement"
+      className: hu.blackbelt.judo.meta.ui.data.ClassType
 
 # ========================================
 # fonts
@@ -91,55 +149,62 @@
   templateName: flutter/fonts/Roboto-Regular.ttf
   copy: true
 
-
 # ========================================
 # lib/components/parser
 # ========================================
 - overwriteExpression: false
   factoryExpression: "{#application}"
-  pathExpression: "'lib/components/parsers/flexible_parser.dart'"
+  pathExpression: >
+    'lib/' +
+    #path(#application.dataElement.name) + '/components/' +
+    'package.dart'
+  templateName: flutter/lib/components/package.dart.hbs
+
+- overwriteExpression: false
+  factoryExpression: "{#application}"
+  pathExpression: "'lib/' + #path(#application.dataElement.name) + '/components/parsers/flexible_parser.dart'"
   templateName: flutter/lib/components/parsers/flexible_parser.dart
   copy: true
 
 - overwriteExpression: false
   factoryExpression: "{#application}"
-  pathExpression: "'lib/components/parsers/judo_button_parser.dart'"
+  pathExpression: "'lib/' + #path(#application.dataElement.name) + '/components/parsers/judo_button_parser.dart'"
   templateName: flutter/lib/components/parsers/judo_button_parser.dart
   copy: true
 
 - overwriteExpression: false
   factoryExpression: "{#application}"
-  pathExpression: "'lib/components/parsers/judo_group_parser.dart'"
+  pathExpression: "'lib/' + #path(#application.dataElement.name) + '/components/parsers/judo_group_parser.dart'"
   templateName: flutter/lib/components/parsers/judo_group_parser.dart
   copy: true
 
 - overwriteExpression: false
   factoryExpression: "{#application}"
-  pathExpression: "'lib/components/parsers/judo_input_text_parser.dart'"
+  pathExpression: "'lib/' + #path(#application.dataElement.name) + '/components/parsers/judo_input_text_parser.dart'"
   templateName: flutter/lib/components/parsers/judo_input_text_parser.dart
   copy: true
 
 - overwriteExpression: false
   factoryExpression: "{#application}"
-  pathExpression: "'lib/components/parsers/judo_radio_parser.dart'"
+  pathExpression: "'lib/' + #path(#application.dataElement.name) + '/components/parsers/judo_radio_parser.dart'"
   templateName: flutter/lib/components/parsers/judo_radio_parser.dart
   copy: true
 
 - overwriteExpression: false
   factoryExpression: "{#application}"
-  pathExpression: "'lib/components/parsers/judo_tab_parser.dart'"
+  pathExpression: "'lib/' + #path(#application.dataElement.name) + '/components/parsers/judo_tab_parser.dart'"
   templateName: flutter/lib/components/parsers/judo_tab_parser.dart
   copy: true
 
 - overwriteExpression: false
   factoryExpression: "{#application}"
-  pathExpression: "'lib/components/parsers/judo_title_parser.dart'"
+  pathExpression: "'lib/' + #path(#application.dataElement.name) + '/components/parsers/judo_title_parser.dart'"
   templateName: flutter/lib/components/parsers/judo_title_parser.dart
   copy: true
 
 - overwriteExpression: false
   factoryExpression: "{#application}"
-  pathExpression: "'lib/components/parsers/tab_parser.dart'"
+  pathExpression: "'lib/' + #path(#application.dataElement.name) + '/components/parsers/tab_parser.dart'"
   templateName: flutter/lib/components/parsers/tab_parser.dart
   copy: true
 
@@ -149,72 +214,84 @@
 
 - overwriteExpression: false
   factoryExpression: "{#application}"
-  pathExpression: "'lib/components/judo_button.dart'"
+  pathExpression: "'lib/' + #path(#application.dataElement.name) + '/components/judo_button.dart'"
   templateName: flutter/lib/components/judo_button.dart
   copy: true
 
 - overwriteExpression: false
   factoryExpression: "{#application}"
-  pathExpression: "'lib/components/judo_card.dart'"
-  templateName: flutter/lib/components/judo_card.dart
-  copy: true
-
-- overwriteExpression: false
-  factoryExpression: "{#application}"
-  pathExpression: "'lib/components/judo_component.dart'"
+  pathExpression: "'lib/' + #path(#application.dataElement.name) + '/components/judo_component.dart'"
   templateName: flutter/lib/components/judo_component.dart
   copy: true
 
 - overwriteExpression: false
   factoryExpression: "{#application}"
-  pathExpression: "'lib/components/judo_container.dart'"
+  pathExpression: "'lib/' + #path(#application.dataElement.name) + '/components/judo_container.dart'"
   templateName: flutter/lib/components/judo_container.dart
   copy: true
 
 - overwriteExpression: false
   factoryExpression: "{#application}"
-  pathExpression: "'lib/components/judo_group.dart'"
-  templateName: flutter/lib/components/judo_group.dart
-  copy: true
-
-- overwriteExpression: false
-  factoryExpression: "{#application}"
-  pathExpression: "'lib/components/judo_input_text.dart'"
+  pathExpression: "'lib/' + #path(#application.dataElement.name) + '/components/judo_input_text.dart'"
   templateName: flutter/lib/components/judo_input_text.dart
   copy: true
 
 - overwriteExpression: false
   factoryExpression: "{#application}"
-  pathExpression: "'lib/components/judo_radio.dart'"
+  pathExpression: "'lib/' + #path(#application.dataElement.name) + '/components/judo_radio.dart'"
   templateName: flutter/lib/components/judo_radio.dart
   copy: true
 
 - overwriteExpression: false
   factoryExpression: "{#application}"
-  pathExpression: "'lib/components/judo_radio_group.dart'"
+  pathExpression: "'lib/' + #path(#application.dataElement.name) + '/components/judo_radio_group.dart'"
   templateName: flutter/lib/components/judo_radio_group.dart
   copy: true
 
 - overwriteExpression: false
   factoryExpression: "{#application}"
-  pathExpression: "'lib/components/judo_tab.dart'"
+  pathExpression: "'lib/' + #path(#application.dataElement.name) + '/components/judo_tab.dart'"
   templateName: flutter/lib/components/judo_tab.dart
   copy: true
 
 - overwriteExpression: false
   factoryExpression: "{#application}"
-  pathExpression: "'lib/components/judo_tab_rework.dart'"
-  templateName: flutter/lib/components/judo_tab_rework.dart
-  copy: true
-
-- overwriteExpression: false
-  factoryExpression: "{#application}"
-  pathExpression: "'lib/components/judo_table.dart'"
+  pathExpression: "'lib/' + #path(#application.dataElement.name) + '/components/judo_table.dart'"
   templateName: flutter/lib/components/judo_table.dart
   copy: true
 
 - overwriteExpression: false
   factoryExpression: "{#application}"
-  pathExpression: "'lib/components/judo_title.dart'"
+  pathExpression: "'lib/' + #path(#application.dataElement.name) + '/components/judo_title.dart'"
   templateName: flutter/lib/components/judo_title.dart
   copy: true
+
+# ========================================
+# utilities
+# ========================================
+- overwriteExpression: false
+  factoryExpression: "{#application}"
+  pathExpression: >
+    'lib/' +
+    #path(#application.dataElement.name) + '/utilities/' +
+    'package.dart'
+  templateName: flutter/lib/utilities/package.dart.hbs
+
+- overwriteExpression: false
+  factoryExpression: "{#application}"
+  pathExpression: "'lib/' + #path(#application.dataElement.name) + '/utilities/app_route_observer.dart'"
+  templateName: flutter/lib/utilities/app_route_observer.dart
+  copy: true
+
+- overwriteExpression: false
+  factoryExpression: "{#application}"
+  pathExpression: "'lib/' + #path(#application.dataElement.name) + '/utilities/constants.dart'"
+  templateName: flutter/lib/utilities/constants.dart
+  copy: true
+
+- overwriteExpression: false
+  factoryExpression: "{#application}"
+  pathExpression: "'lib/' + #path(#application.dataElement.name) + '/utilities/route_names.dart'"
+  templateName: flutter/lib/utilities/route_names.dart
+  copy: true
+

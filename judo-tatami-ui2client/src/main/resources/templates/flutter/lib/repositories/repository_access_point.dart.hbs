@@ -1,0 +1,22 @@
+//////////////////////////////////////////////////////////////////////////////
+// G E N E R A T E D    C L A S S
+// ------------------------------
+// Factory expression: {{{ cleanup template.factoryExpression }}}
+// Path expression: {{{ cleanup template.pathExpression }}}
+// Overwrite: {{{ cleanup template.overwriteExpression }}}
+// Template name: {{ template.templateName }}
+// Application: {{ application.name }}
+
+part of {{ variable ap.name }}.repository;
+
+class {{ fqClass ap.name }}Repository {
+  final ApiClient _apiClient = ApiClient(basePath: kBasePathUrl, apiClientDelegate: DioClientDelegate());
+
+  //////////////////////////////////////////////////////////////////////////////
+  // GET Principal
+  //////////////////////////////////////////////////////////////////////////////
+  Future get({{ fqClass ap.name }}Store {{ variable ap.name }}Store) async {
+    {{ fqClass ap.name }} {{ variable ap.name }}Response = await DefaultApi(_apiClient).{{ fqVariable ap.name }}Principal();
+    {{ fqClass ap.name }}RepositoryStoreMapper.map{{ fqClass ap.name }}To{{ fqClass ap.name }}Store({{ variable ap.name }}Response, {{ variable ap.name }}Store);
+  }
+}

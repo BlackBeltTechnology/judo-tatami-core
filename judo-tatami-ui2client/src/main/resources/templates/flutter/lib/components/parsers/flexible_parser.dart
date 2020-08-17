@@ -1,5 +1,4 @@
-import 'package:dynamic_widget/dynamic_widget.dart';
-import 'package:flutter/material.dart';
+part of judo.components;
 
 class FlexibleWidgetParser extends WidgetParser {
   @override

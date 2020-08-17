@@ -1,7 +1,4 @@
-import 'package:dynamic_widget/dynamic_widget.dart';
-import 'package:dynamic_widget/dynamic_widget/icons_helper.dart';
-import 'package:flutter/material.dart';
-import 'package:judo/components/judo_button.dart';
+part of judo.components;
 
 class JudoButtonParser extends WidgetParser {
   @override

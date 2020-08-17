@@ -1,10 +1,4 @@
-import 'package:dynamic_widget/dynamic_widget.dart';
-import 'package:dynamic_widget/dynamic_widget/icons_helper.dart';
-import 'package:dynamic_widget/dynamic_widget/utils.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-import 'package:judo/components/judo_input_text.dart';
-import 'package:judo/utilities/constants.dart';
+part of judo.components;
 
 class JudoInputTextWidgetParser extends WidgetParser {
   @override

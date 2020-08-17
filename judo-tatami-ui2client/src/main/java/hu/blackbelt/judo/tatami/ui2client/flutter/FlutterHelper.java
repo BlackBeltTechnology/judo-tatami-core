@@ -4,6 +4,7 @@ import com.github.jknack.handlebars.Handlebars;
 import com.github.jknack.handlebars.internal.lang3.StringUtils;
 import hu.blackbelt.judo.meta.ui.Application;
 import hu.blackbelt.judo.meta.ui.data.ClassType;
+import hu.blackbelt.judo.meta.ui.data.RelationKind;
 import hu.blackbelt.judo.meta.ui.data.RelationType;
 import lombok.*;
 import org.springframework.expression.spel.support.StandardEvaluationContext;
@@ -23,8 +24,11 @@ public class FlutterHelper {
         context.registerFunction("path", FlutterHelper.class.getDeclaredMethod("path", new Class[] { String.class }));
         context.registerFunction("className", FlutterHelper.class.getDeclaredMethod("className", new Class[] { String.class }));
         context.registerFunction("modelName", FlutterHelper.class.getDeclaredMethod("modelName", new Class[] { String.class }));
+        context.registerFunction("modelPackage", FlutterHelper.class.getDeclaredMethod("modelPackage", new Class[] { String.class }));
         context.registerFunction("variable", FlutterHelper.class.getDeclaredMethod("variable", new Class[] { String.class }));
         context.registerFunction("operations", FlutterHelper.class.getDeclaredMethod("operations", new Class[] { Application.class }));
+        context.registerFunction("isEmbedded", FlutterHelper.class.getDeclaredMethod("isEmbedded", new Class[] { RelationType.class }));
+        context.registerFunction("cleanup", FlutterHelper.class.getDeclaredMethod("cleanup", new Class[] { String.class }));
     }
 
     public static void registerHandlebars(Handlebars handlebars) {
@@ -74,8 +78,23 @@ public class FlutterHelper {
                 .findFirst().get());
     }
 
+    public static String modelPackage(String fqName) {
+        String[] splitted = fqName.split("::");
+        return path(stream(splitted)
+                .map(s -> StringUtils.capitalize(s))
+                .findFirst().get());
+    }
+
+    public static String cleanup(String string) {
+        return string.replaceAll("[\\n\\t ]", "");
+    }
+
     public static String variable(String fqName) {
         return StringUtils.uncapitalize(className(fqName));
+    }
+
+    public static boolean isEmbedded(RelationType relationType) {
+        return (!relationType.isIsReadOnly()) && (relationType.getRelationKind() != RelationKind.ASSOCIATION);
     }
 
     public static Collection<RelationTuple> operations(Application application) {
@@ -89,7 +108,7 @@ public class FlutterHelper {
 
     @Getter @Setter @AllArgsConstructor @EqualsAndHashCode @ToString
     public static class RelationTuple {
-        RelationType root;
+        RelationType accessRelation;
         RelationType relationType;
 //        ClassType classType;
     }

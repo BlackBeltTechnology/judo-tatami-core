@@ -1,6 +1,4 @@
-import 'package:flutter/material.dart';
-import 'package:judo/components/judo_radio.dart';
-import 'package:judo/utilities/constants.dart';
+part of judo.components;
 
 class JudoRadioGroup extends StatefulWidget {
   JudoRadioGroup({

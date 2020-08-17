@@ -1,6 +1,4 @@
-import 'package:dynamic_widget/dynamic_widget.dart';
-import 'package:dynamic_widget/dynamic_widget/icons_helper.dart';
-import 'package:flutter/material.dart';
+part of judo.components;
 
 class TabParser extends WidgetParser {
   @override

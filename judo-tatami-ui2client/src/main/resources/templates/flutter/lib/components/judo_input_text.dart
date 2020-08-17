@@ -1,6 +1,4 @@
-import 'package:flutter/material.dart';
-import 'package:judo/components/judo_component.dart';
-import 'judo_container.dart';
+part of judo.components;
 
 class JudoInputText extends StatelessWidget implements IJudoComponent {
   JudoInputText({

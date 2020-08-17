@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+part of judo.utility;
 
 const Color kPrimaryColor = Color(0xFFff6f00);
 

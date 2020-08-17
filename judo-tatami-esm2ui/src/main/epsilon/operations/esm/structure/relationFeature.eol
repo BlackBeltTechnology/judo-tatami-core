@@ -52,6 +52,33 @@ operation ESM!esm::structure::RelationFeature createRelationTypeForClass(applica
 	var relation = new UI!ui::data::RelationType();	
 	relation.name = self.name;
 	relation.isCollection = (self.upper == -1);
+	relation.isCreateable = self.createable;
+	relation.isUpdateable = self.updateable;
+	relation.isDeleteable = self.deleteable;
+	relation.isReadOnly = self.isReadOnly();
+	
+	if (self.memberType == ESM!esm::structure::MemberType#STORED) {
+		relation.memberType = UI!ui::data::MemberType#STORED;
+	} else if (self.memberType == ESM!esm::structure::MemberType#DERIVED) {
+		relation.memberType = UI!ui::data::MemberType#DERIVED;
+	} else if (self.memberType == ESM!esm::structure::MemberType#MAPPED) {
+		relation.memberType = UI!ui::data::MemberType#MAPPED;
+	} else if (self.memberType == ESM!esm::structure::MemberType#TRANSIENT) {
+		relation.memberType = UI!ui::data::MemberType#TRANSIENT;
+	} else {
+		relation.memberType = UI!ui::data::MemberType#STORED;
+	}
+
+	if (self.relationKind == ESM!esm::structure::RelationKind#ASSOCIATION) {
+		relation.relationKind = UI!ui::data::RelationKind#ASSOCIATION;
+	} else if (self.relationKind == ESM!esm::structure::RelationKind#COMPOSITION) {
+		relation.relationKind = UI!ui::data::RelationKind#COMPOSITION;
+	} else if (self.relationKind == ESM!esm::structure::RelationKind#AGGREGATION) {
+		relation.relationKind = UI!ui::data::RelationKind#AGGREGATION;
+	} else {
+		relation.relationKind = UI!ui::data::RelationKind#ASSOCIATION;
+	}
+		
 	clazz.relations.add(relation);
 	relation.target = self.target.mapClassType(application);
 	log.debug("Create relation " + relation.name + " in class type: " + clazz.name);

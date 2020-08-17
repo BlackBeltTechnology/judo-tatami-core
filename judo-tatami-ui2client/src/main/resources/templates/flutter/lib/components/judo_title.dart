@@ -1,7 +1,4 @@
-import 'package:flutter/material.dart';
-import 'package:judo/components/judo_component.dart';
-import 'package:judo/components/judo_container.dart';
-import 'package:judo/utilities/constants.dart';
+part of judo.components;
 
 class JudoTitle extends StatelessWidget implements IJudoComponent {
   JudoTitle({

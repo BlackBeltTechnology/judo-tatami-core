@@ -1,10 +1,13 @@
-import 'package:mobx/mobx.dart';
+//////////////////////////////////////////////////////////////////////////////
+// G E N E R A T E D    C L A S S
+// ------------------------------
+// Factory expression: {{{ cleanup template.factoryExpression }}}
+// Path expression: {{{ cleanup template.pathExpression }}}
+// Overwrite: {{{ cleanup template.overwriteExpression }}}
+// Template name: {{ template.templateName }}
+// Application: {{ application.name }}
 
-{{#each relations ~}}
-import 'package:{{ path application.name }}/store/{{ path application.dataElement.name }}/{{ path target.name }}_store.dart';
-{{/each}}
-
-part '{{path name}}_store.g.dart';
+part of {{ variable application.dataElement.name }}.store;
 
 class {{ fqClass name }}Store extends _{{ fqClass name }}Store
     with _${{ fqClass name }}Store {
@@ -18,7 +21,7 @@ abstract class _{{ fqClass name }}Store with Store {
   _{{ fqClass name }}Store();
 
   _{{ fqClass name }}Store.clone({{ fqClass name }}Store {{ variable name }}Store) {
-    identifier = {{ fqVariable name }}.identifier;
+    identifier = {{ variable name }}Store.identifier;
 
     {{#each attributes ~}}
     {{ variable name }} = {{ variable ../name }}Store.{{ variable name }};
