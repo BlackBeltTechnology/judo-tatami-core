@@ -1,3 +1,5 @@
+import "../type/_importType.eol";
+
 operation ESM!esm::structure::DataFeature createAttributeTypeForClass(application : UI!ui::Application, clazz : UI!ui::data::ClassType) : UI!ui::data::AttributeType {
 	var attribute = new UI!ui::data::AttributeType();	
 	attribute.name = self.name;
@@ -14,6 +16,8 @@ operation ESM!esm::structure::DataFeature createAttributeTypeForClass(applicatio
 		attribute.memberType = UI!ui::data::MemberType#STORED;
 	}
 	attribute.isReadOnly = self.isReadOnly();
+	
+	attribute.dataType = self.dataType.mapDataType(application);
 
 	clazz.attributes.add(attribute);
 	log.debug("Create attribute " + attribute.name + " in class type: " + clazz.name);

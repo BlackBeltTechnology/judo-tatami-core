@@ -28,10 +28,17 @@ operation ESM!esm::type::TimestampType input(): UI!ui::Input {
 	return self.fillInput(new UI!ui::DateTimeInput(), 2, 1);
 }
 
-//operation ESM!esm::type::EnumerationType input(): UI!ui::Input {
-//	return self.fillInput(new UI!ui::DateInput(), 2, 1);
-//}
-
+operation ESM!esm::type::EnumerationType input(): UI!ui::Input {
+	var radio = new UI!ui::Radio();
+	
+	for (m in self.members) {
+		var opt = new UI!ui::Option();
+		opt.selected = false;
+		radio.options.add(opt);
+	}
+	
+	return self.fillInput(radio, 2, 1);
+}
 
 operation ESM!esm::namespace::NamedElement fillFormatted(formatted : UI!ui::Formatted, format : String, row : Integer, col : Integer): UI!ui::Formatted {
 	formatted.name = self.name;
@@ -66,46 +73,190 @@ operation ESM!esm::type::TimestampType formatted(): UI!ui::Formatted {
 	return self.fillFormatted(new UI!ui::Formatted(), "%s", 2, 1);
 }
 
-//operation ESM!esm::type::EnumerationType text(): UI!ui::Formatted {
-//	return self.fillText(new UI!ui::DateInput(), 2, 1);
-//}
-
-
-//rule NumericType
-//    transform s: ESM!esm::type::NumericType
-//    to t: UI!ui::data::NumericType {    
-//    t.precision = s.precision;]
-//}
-
-/*
-operation ESM!esm::type::DataFeature createAttributeTypeForClass(application : UI!ui::Application, clazz : UI!ui::data::ClassType) : UI!ui::data::AttributeType {
-	var attribute = new UI!ui::data::AttributeType();	
-	attribute.name = self.name;
-
-	if (self.memberType == ESM!esm::structure::MemberType#STORED) {
-		attribute.memberType = UI!ui::data::MemberType#STORED;
-	} else if (self.memberType == ESM!esm::structure::MemberType#DERIVED) {
-		attribute.memberType = UI!ui::data::MemberType#DERIVED;
-	} else if (self.memberType == ESM!esm::structure::MemberType#MAPPED) {
-		attribute.memberType = UI!ui::data::MemberType#MAPPED;
-	} else if (self.memberType == ESM!esm::structure::MemberType#TRANSIENT) {
-		attribute.memberType = UI!ui::data::MemberType#TRANSIENT;
-	} else {
-		attribute.memberType = UI!ui::data::MemberType#STORED;
-	}
-	attribute.isReadOnly = self.isReadOnly();
-
-	clazz.attributes.add(attribute);
-	log.debug("Create attribute " + attribute.name + " in class type: " + clazz.name);
-	return attribute;
+operation ESM!esm::type::EnumerationType formatted(): UI!ui::Formatted {
+	return self.fillFormatted(new UI!ui::Formatted(), "%s", 2, 1);
 }
 
-operation ESM!esm::structure::DataFeature mapAttributeType(application : UI!ui::Application, clazz : UI!ui::data::ClassType) : UI!ui::data::AttributeType {
-	var attribute = clazz.attributes.selectOne(r | r.name = self.name);
-	if (attribute.isUndefined()) {
-		attribute = self.createAttributeTypeForClass(application, clazz);
+@cached
+operation ESM!esm::type::PasswordType fqName() {
+	if (self.eContainer.isKindOf(ESM!esm::namespace::NamespaceElement)) {
+		return esmUtils.getNamespaceElementFQName(self.eContainer) + "." + self.name;
+	} else {
+		return self.eContainer.name + "." + self.name;
 	}
-	return attribute;
-} */
+}
 
+operation ESM!esm::type::PasswordType createPasswordType(application : UI!ui::Application) : UI!ui::data::PasswordType {
+	var type = new UI!ui::data::PasswordType();
+	type.name = self.fqName();
+	application.dataTypes.add(type);	
+	return type;
+}
 
+operation ESM!esm::type::PasswordType mapDataType(application : UI!ui::Application) : UI!ui::data::PasswordType {
+	var type = application.dataTypes.selectOne(t | t.name = self.fqName());
+	if (type.isUndefined()) {
+		type = self.createPasswordType(application);
+	}
+	return type;
+}
+
+@cached
+operation ESM!esm::type::DateType fqName() {
+	if (self.eContainer.isKindOf(ESM!esm::namespace::NamespaceElement)) {
+		return esmUtils.getNamespaceElementFQName(self.eContainer) + "." + self.name;
+	} else {
+		return self.eContainer.name + "." + self.name;
+	}
+}
+
+operation ESM!esm::type::DateType createDateType(application : UI!ui::Application) : UI!ui::data::DateType {
+	var type = new UI!ui::data::DateType();
+	type.name = self.fqName();
+	application.dataTypes.add(type);	
+	return type;
+}
+
+operation ESM!esm::type::DateType mapDataType(application : UI!ui::Application) : UI!ui::data::DateType {
+	var type = application.dataTypes.selectOne(t | t.name = self.fqName());
+	if (type.isUndefined()) {
+		type = self.createDateType(application);
+	}
+	return type;
+}
+
+@cached
+operation ESM!esm::type::BooleanType fqName() {
+	if (self.eContainer.isKindOf(ESM!esm::namespace::NamespaceElement)) {
+		return esmUtils.getNamespaceElementFQName(self.eContainer) + "." + self.name;
+	} else {
+		return self.eContainer.name + "." + self.name;
+	}
+}
+
+operation ESM!esm::type::BooleanType createBooleanType(application : UI!ui::Application) : UI!ui::data::BooleanType {
+	var type = new UI!ui::data::BooleanType();
+	type.name = self.fqName();
+	application.dataTypes.add(type);	
+	return type;
+}
+
+operation ESM!esm::type::BooleanType mapDataType(application : UI!ui::Application) : UI!ui::data::BooleanType {
+	var type = application.dataTypes.selectOne(t | t.name = self.fqName());
+	if (type.isUndefined()) {
+		type = self.createBooleanType(application);
+	}
+	return type;
+}
+
+@cached
+operation ESM!esm::type::StringType fqName() {
+	if (self.eContainer.isKindOf(ESM!esm::namespace::NamespaceElement)) {
+		return esmUtils.getNamespaceElementFQName(self.eContainer) + "." + self.name;
+	} else {
+		return self.eContainer.name + "." + self.name;
+	}
+}
+
+operation ESM!esm::type::StringType createStringType(application : UI!ui::Application) : UI!ui::data::StringType {
+	var type = new UI!ui::data::StringType();
+	type.name = self.fqName();
+	type.regExp = self.regExp;
+	type.maxLength = self.maxLength;
+	application.dataTypes.add(type);	
+	return type;
+}
+
+operation ESM!esm::type::StringType mapDataType(application : UI!ui::Application) : UI!ui::data::StringType {
+	var type = application.dataTypes.selectOne(t | t.name = self.fqName());
+	if (type.isUndefined()) {
+		type = self.createStringType(application);
+	}
+	return type;
+}
+
+@cached
+operation ESM!esm::type::NumericType fqName() {
+	if (self.eContainer.isKindOf(ESM!esm::namespace::NamespaceElement)) {
+		return esmUtils.getNamespaceElementFQName(self.eContainer) + "." + self.name;
+	} else {
+		return self.eContainer.name + "." + self.name;
+	}
+}
+
+operation ESM!esm::type::NumericType createNumericType(application : UI!ui::Application) : UI!ui::data::NumericType {
+	var type = new UI!ui::data::NumericType();
+	type.name = self.fqName();
+	type.precision = self.precision;
+	type.scale = self.scale;
+	application.dataTypes.add(type);	
+	return type;
+}
+
+operation ESM!esm::type::NumericType mapDataType(application : UI!ui::Application) : UI!ui::data::NumericType {
+	var type = application.dataTypes.selectOne(t | t.name = self.fqName());
+	if (type.isUndefined()) {
+		type = self.createNumericType(application);
+	}
+	return type;
+}
+
+@cached
+operation ESM!esm::type::TimestampType fqName() {
+	if (self.eContainer.isKindOf(ESM!esm::namespace::NamespaceElement)) {
+		return esmUtils.getNamespaceElementFQName(self.eContainer) + "." + self.name;
+	} else {
+		return self.eContainer.name + "." + self.name;
+	}
+}
+
+operation ESM!esm::type::TimestampType createTimestampType(application : UI!ui::Application) : UI!ui::data::TimestampType {
+	var type = new UI!ui::data::TimestampType();
+	type.name = self.fqName();
+	application.dataTypes.add(type);	
+	return type;
+}
+
+operation ESM!esm::type::TimestampType mapDataType(application : UI!ui::Application) : UI!ui::data::TimestampType {
+	var type = application.dataTypes.selectOne(t | t.name = self.fqName());
+	if (type.isUndefined()) {
+		type = self.createTimestampType(application);
+	}
+	return type;
+}
+
+@cached
+operation ESM!esm::type::EnumerationType fqName() {
+	if (self.eContainer.isKindOf(ESM!esm::namespace::NamespaceElement)) {
+		return esmUtils.getNamespaceElementFQName(self.eContainer) + "." + self.name;
+	} else {
+		return self.eContainer.name + "." + self.name;
+	}
+}
+
+operation ESM!esm::type::EnumerationType createEnumerationType(application : UI!ui::Application) : UI!ui::data::EnumerationType {
+	var type = new UI!ui::data::EnumerationType();
+	type.name = self.fqName();
+	
+	for (m in self.members) {
+		type.members.add(m.createEnumerationMember());
+	}
+	
+	application.dataTypes.add(type);	
+	return type;
+}
+
+operation ESM!esm::type::EnumerationMember createEnumerationMember() : UI!ui::data::EnumerationMember {
+	var member = new UI!ui::data::EnumerationMember();
+	member.name = self.name;
+	member.ordinal = self.ordinal;
+	return member;
+}
+
+operation ESM!esm::type::EnumerationType mapDataType(application : UI!ui::Application) : UI!ui::data::EnumerationType {
+	var type = application.dataTypes.selectOne(t | t.name = self.fqName());
+	if (type.isUndefined()) {
+		type = self.createEnumerationType(application);
+	}
+	return type;
+}

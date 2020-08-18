@@ -14,10 +14,7 @@ import static hu.blackbelt.judo.meta.esm.structure.util.builder.StructureBuilder
 import static hu.blackbelt.judo.meta.esm.structure.util.builder.StructureBuilders.newTransferObjectTypeBuilder;
 import static hu.blackbelt.judo.meta.esm.structure.util.builder.StructureBuilders.useEntityType;
 import static hu.blackbelt.judo.meta.esm.structure.util.builder.StructureBuilders.useTransferObjectType;
-import static hu.blackbelt.judo.meta.esm.type.util.builder.TypeBuilders.newBooleanTypeBuilder;
-import static hu.blackbelt.judo.meta.esm.type.util.builder.TypeBuilders.newDateTypeBuilder;
-import static hu.blackbelt.judo.meta.esm.type.util.builder.TypeBuilders.newNumericTypeBuilder;
-import static hu.blackbelt.judo.meta.esm.type.util.builder.TypeBuilders.newStringTypeBuilder;
+import static hu.blackbelt.judo.meta.esm.type.util.builder.TypeBuilders.*;
 import static hu.blackbelt.judo.meta.esm.ui.util.builder.UiBuilders.newActionButtonBuilder;
 import static hu.blackbelt.judo.meta.esm.ui.util.builder.UiBuilders.newDataColumnBuilder;
 import static hu.blackbelt.judo.meta.esm.ui.util.builder.UiBuilders.newDataFieldBuilder;
@@ -42,8 +39,10 @@ import hu.blackbelt.judo.meta.esm.structure.RelationKind;
 import hu.blackbelt.judo.meta.esm.structure.TransferObjectType;
 import hu.blackbelt.judo.meta.esm.type.BooleanType;
 import hu.blackbelt.judo.meta.esm.type.DateType;
+import hu.blackbelt.judo.meta.esm.type.EnumerationType;
 import hu.blackbelt.judo.meta.esm.type.NumericType;
 import hu.blackbelt.judo.meta.esm.type.StringType;
+import hu.blackbelt.judo.meta.esm.type.TimestampType;
 import hu.blackbelt.judo.meta.esm.ui.Action;
 import hu.blackbelt.judo.meta.esm.ui.Horizontal;
 import hu.blackbelt.judo.meta.esm.ui.Layout;
@@ -64,6 +63,14 @@ public class SimpleOrderModel {
         NumericType integerType = newNumericTypeBuilder().withName("Integer").withScale(0).withPrecision(9).build();
         DateType dateType = newDateTypeBuilder().withName("Date").build();
         BooleanType boolType = newBooleanTypeBuilder().withName("Boolean").build();
+        TimestampType tsType = newTimestampTypeBuilder().withName("TimeStamp").build();
+        EnumerationType enumType = newEnumerationTypeBuilder().withName("Country")
+        		.withMembers(
+        				newEnumerationMemberBuilder().withName("HU").withOrdinal(1).build(),
+        				newEnumerationMemberBuilder().withName("DE").withOrdinal(2).build(),
+        				newEnumerationMemberBuilder().withName("FR").withOrdinal(3).build()
+        				)
+        		.build();
         
         //Order
         DataMember orderCustomer = newDataMemberBuilder()
@@ -82,9 +89,17 @@ public class SimpleOrderModel {
         		.build();
         orderDate.setBinding(orderDate);
         
+        DataMember orderReceived = newDataMemberBuilder()
+        		.withName("received")
+        		.withMemberType(MemberType.STORED)
+        		.withDataType(tsType)
+        		.withRequired(true)
+        		.build();
+        orderReceived.setBinding(orderReceived);
+        
         EntityType order = newEntityTypeBuilder()
                 .withName("Order")
-                .withAttributes(orderDate,orderCustomer)
+                .withAttributes(orderDate,orderCustomer,orderReceived)
                 .build();
         order.setMapping(newMappingBuilder().withTarget(order).build());
 
@@ -144,9 +159,17 @@ public class SimpleOrderModel {
         		.build();
         internationalOrderDuty.setBinding(internationalOrderDuty);
         
+        DataMember orderCountry = newDataMemberBuilder()
+        		.withName("country")
+        		.withMemberType(MemberType.STORED)
+        		.withDataType(enumType)
+        		.withRequired(true)
+        		.build();
+        orderCountry.setBinding(orderCountry);
+        
         EntityType internationalOrder = newEntityTypeBuilder().withName("InternationalOrder")
         		.withGeneralizations(newGeneralizationBuilder().withTarget(order).build())
-        		.withAttributes(internationalOrderDuty)
+        		.withAttributes(internationalOrderDuty,orderCountry)
         		.build();
         internationalOrder.setMapping(newMappingBuilder().withTarget(internationalOrder).build());
         
@@ -449,7 +472,14 @@ public class SimpleOrderModel {
             							.withIconName("calendar_today")
             							.withDataFeature(orderDate)
                     					.build(),
-
+                    					
+                    				newDataFieldBuilder()
+                    					.withName("received")
+                    					.withLabel("Received")
+                    					.withIconName("schedule")
+                    					.withDataFeature(orderReceived)
+                    					.build(),
+                    					
                     				newTabularReferenceFieldBuilder()
                     					.withName("orderItems")
                     					.withLabel("Items")
@@ -521,7 +551,13 @@ public class SimpleOrderModel {
     						.withLabel("Customer")
     						.withVisible(true)
     						.withDataFeature(orderCustomer)
-    						.build()
+    						.build(),
+    					newDataColumnBuilder()
+        					.withName("received")
+        					.withLabel("Received")
+        					.withVisible(true)
+        					.withDataFeature(orderReceived)
+        					.build()
     				))
     				.build();
             order.setTable(orderTable);        
@@ -543,6 +579,13 @@ public class SimpleOrderModel {
     							.withLabel("Order Date")
     							.withIconName("calendar_today")
     							.withDataFeature(orderDate)
+            					.build(),
+            				
+            				newDataFieldBuilder()
+            					.withName("received")
+            					.withLabel("Received")
+            					.withIconName("schedule")
+            					.withDataFeature(orderReceived)
             					.build(),
 
             				newTabularReferenceFieldBuilder()
@@ -715,6 +758,16 @@ public class SimpleOrderModel {
 	            						.withLabel("Tax")
 	            						.withDataFeature(internationalOrderDuty)
 	            						.build(),
+	            					newDataFieldBuilder()
+	            						.withName("country")
+	            						.withLabel("Country")
+	            						.withDataFeature(orderCountry)
+	            						.build(),
+	            					newDataFieldBuilder()
+                    					.withName("received")
+                    					.withLabel("Received")
+                    					.withDataFeature(orderReceived)
+                    					.build(),
 	            						
 	            					newTabularReferenceFieldBuilder()
                     					.withName("items")
@@ -786,6 +839,19 @@ public class SimpleOrderModel {
         							.withLabel("Customer")
         							.withIconName("text_fields")
         							.withDataFeature(orderCustomer)
+                					.build(),
+                				newDataFieldBuilder()
+        							.withName("country")
+        							.withLabel("Country")
+        							.withIconName("list")
+        							.withDataFeature(orderCountry)
+                					.build(),
+                				
+                				newDataFieldBuilder()
+                					.withName("received")
+                					.withLabel("Received")
+                					.withIconName("schedule")
+                					.withDataFeature(orderReceived)
                 					.build(),
                 				
                 				newTabularReferenceFieldBuilder()
@@ -865,7 +931,21 @@ public class SimpleOrderModel {
 						.withLabel("Duty")
 						.withVisible(true)
 						.withDataFeature(internationalOrderDuty)
-						.build()
+						.build(),
+						
+					newDataColumnBuilder()
+						.withName("country")
+						.withLabel("Country")
+						.withVisible(true)
+						.withDataFeature(orderCountry)
+    					.build(),
+    				
+    				newDataColumnBuilder()
+    					.withName("received")
+    					.withLabel("Received")
+    					.withVisible(true)
+    					.withDataFeature(orderReceived)
+    					.build()
 				))
 				.build();
         internationalOrder.setTable(internationalOrderTable);
@@ -1764,7 +1844,7 @@ public class SimpleOrderModel {
         		.build();
         application.setView(applicationView);
         
-        Package types = newPackageBuilder().withName("types").withElements(stringType,integerType,floatType,dateType,boolType).build();
+        Package types = newPackageBuilder().withName("types").withElements(stringType,integerType,floatType,dateType,boolType,tsType,enumType).build();
         
         // Create model
 		Model model = newModelBuilder()
