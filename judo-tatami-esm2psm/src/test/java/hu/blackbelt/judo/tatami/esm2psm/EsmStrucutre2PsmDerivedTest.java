@@ -8,13 +8,17 @@ import hu.blackbelt.judo.meta.esm.namespace.Package;
 import hu.blackbelt.judo.meta.esm.runtime.EsmModel;
 import hu.blackbelt.judo.meta.esm.structure.*;
 import hu.blackbelt.judo.meta.esm.type.StringType;
+import hu.blackbelt.judo.meta.psm.PsmUtils;
 import hu.blackbelt.judo.meta.psm.derived.NavigationProperty;
 import hu.blackbelt.judo.meta.psm.namespace.Namespace;
 import hu.blackbelt.judo.meta.psm.runtime.PsmModel;
+import hu.blackbelt.judo.meta.psm.service.TransferAttribute;
 import hu.blackbelt.judo.meta.psm.service.TransferObjectRelation;
 import hu.blackbelt.judo.meta.psm.service.TransferOperationBehaviourType;
 import hu.blackbelt.judo.meta.psm.service.UnboundOperation;
 import lombok.extern.slf4j.Slf4j;
+
+import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.util.EcoreUtil;
@@ -47,6 +51,7 @@ import static hu.blackbelt.judo.meta.psm.runtime.PsmModel.buildPsmModel;
 import static hu.blackbelt.judo.tatami.esm2psm.Esm2Psm.calculateEsm2PsmTransformationScriptURI;
 import static hu.blackbelt.judo.tatami.esm2psm.Esm2Psm.executeEsm2PsmTransformation;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -903,6 +908,7 @@ public class EsmStrucutre2PsmDerivedTest {
         TransferObjectType transferA = newTransferObjectTypeBuilder().withName("transferA").build();
         TransferObjectType transferB = newTransferObjectTypeBuilder().withName("transferB").build();
         entityB.setMapping(newMappingBuilder().withTarget(entityB).build());
+        transferB.getGeneralizations().add(newGeneralizationBuilder().withTarget(transferA).build());
         
         TransferObjectType ap = newTransferObjectTypeBuilder()
         		.withActorType(newActorTypeBuilder().build())
@@ -946,6 +952,24 @@ public class EsmStrucutre2PsmDerivedTest {
 		
 		final Optional<UnboundOperation> psmOperation = allPsm(UnboundOperation.class).filter(o -> o.getName().equals("_createRelation")).findAny();
 		assertTrue(psmOperation.isPresent());
+		
+		final Optional<TransferAttribute> psmAttribute = allPsm(TransferAttribute.class).filter(o -> o.getName().equals(member.getName())).findAny();
+		assertTrue(psmAttribute.isPresent());
+		assertNotNull(psmAttribute.get().getBinding());
+		assertTrue(psmAttribute.get().getBinding() instanceof hu.blackbelt.judo.meta.psm.derived.StaticData);
+		hu.blackbelt.judo.meta.psm.derived.StaticData staticData = (hu.blackbelt.judo.meta.psm.derived.StaticData)psmAttribute.get().getBinding();
+		assertTrue(staticData.getGetterExpression().getExpression().equals(member.getGetterExpression()));
+		
+		final Optional<hu.blackbelt.judo.meta.psm.service.TransferObjectType> psmTransferB = allPsm(hu.blackbelt.judo.meta.psm.service.TransferObjectType.class)
+                .filter(e -> e.getName().equals(transferB.getName())).findAny();
+        assertTrue(psmTransferB.isPresent());
+        
+        EList<TransferAttribute> allAttributesInB = PsmUtils.getAllTransferAttributes(psmTransferB.get());
+        assertTrue(allAttributesInB.contains(psmAttribute.get()));
+        
+        EList<TransferObjectRelation> allRelationsInB = PsmUtils.getAllTransferObjectRelations(psmTransferB.get());
+        assertTrue(allRelationsInB.contains(psmTransferObjectRelation.get()));
+		
     }
 
     static <T> Stream<T> asStream(Iterator<T> sourceIterator, boolean parallel) {
