@@ -19,45 +19,34 @@ class {{ fqClass ap.name }}{{ className name }}DefaultRepository {
   //////////////////////////////////////////////////////////////////////////////
   // GET ALL
   //////////////////////////////////////////////////////////////////////////////
-  Future get{{ className name }}(List<{{ fqClass target.name }}Store> {{ variable target.name }}ListStore) async {
+  Future<List<{{ fqClass target.name }}Store>> get{{ className name }}() async {
     var {{ variable target.name }}ListResponse = await DefaultApi(_apiClient).{{ fqVariable owner.name }}Get{{ className name }}();
-    {{ variable target.name }}ListStore.addAll({{ variable target.name }}ListResponse.map<{{ fqClass target.name }}Store>(
-      {{ fqClass ap.name }}RepositoryStoreMapper.create{{ fqClass target.name }}StoreFrom{{ fqClass target.name }}).toList());
-  }
-
-  //////////////////////////////////////////////////////////////////////////////
-  // GET BY ID
-  //////////////////////////////////////////////////////////////////////////////
-  Future get{{ className name }}ById(List<{{ fqClass target.name }}Store> {{ variable target.name }}ListStore, String identifier, {{ fqClass target.name }}Store {{ variable target.name }}Store) async {
-    // Check the store. If it is empty, loading it and selecting element
-    if ({{ variable target.name }}ListStore == null || {{ variable target.name }}ListStore.length == 0) {
-      get{{ className name }}({{ variable target.name }}ListStore);
-    }
-    {{ variable target.name }}Store = {{ variable target.name }}ListStore.firstWhere((element) => element.identifier == identifier);
+    return {{ variable target.name }}ListResponse.map<{{ fqClass target.name }}Store>(
+      {{ fqClass ap.name }}RepositoryStoreMapper.create{{ fqClass target.name }}StoreFrom{{ fqClass target.name }}).toList();
   }
 
   //////////////////////////////////////////////////////////////////////////////
   // CREATE
   //////////////////////////////////////////////////////////////////////////////
-  Future create{{ className name }}({{ fqClass target.name }}Store {{ variable target.name }}Store) async {
+  Future<{{ fqClass target.name }}Store> create{{ className name }}({{ fqClass target.name }}Store {{ variable target.name }}Store) async {
     var {{ variable target.name }}ExtendedRequest = {{ fqClass ap.name }}RepositoryStoreMapper.create{{ fqClass target.name }}ExtendedFrom{{ fqClass target.name }}Store({{ variable target.name }}Store);
     var {{ variable target.name }}Response = await DefaultApi(_apiClient).{{ fqVariable owner.name }}Create{{ className name }}({{ variable target.name }}ExtendedRequest);
-    {{ fqClass ap.name }}RepositoryStoreMapper.map{{ fqClass target.name }}To{{ fqClass target.name }}Store({{ variable target.name }}Response, {{ variable target.name }}Store);
+    return {{ fqClass ap.name }}RepositoryStoreMapper.create{{ fqClass target.name }}StoreFrom{{ fqClass target.name }}({{ variable target.name }}Response);
   }
 
   //////////////////////////////////////////////////////////////////////////////
   // UPDATE
   //////////////////////////////////////////////////////////////////////////////
-  Future update{{ className name }}({{ fqClass target.name }}Store {{ variable target.name }}Store) async {
+  Future<{{ fqClass target.name }}Store> update{{ className name }}({{ fqClass target.name }}Store {{ variable target.name }}Store) async {
     var {{ variable target.name }}Request = {{ fqClass ap.name }}RepositoryStoreMapper.create{{ fqClass target.name }}From{{ fqClass target.name }}Store({{ variable target.name }}Store);
     var {{ variable target.name }}Response = await DefaultApi(_apiClient).{{ fqVariable owner.name }}Update{{ className name }}({{ variable target.name }}Request);
-    {{ fqClass ap.name }}RepositoryStoreMapper.map{{ fqClass target.name }}To{{ fqClass target.name }}Store({{ variable target.name }}Response, {{ variable target.name }}Store);
+    return {{ fqClass ap.name }}RepositoryStoreMapper.create{{ fqClass target.name }}StoreFrom{{ fqClass target.name }}({{ variable target.name }}Response);
   }
 
   //////////////////////////////////////////////////////////////////////////////
   // REMOVE
   //////////////////////////////////////////////////////////////////////////////
-  Future remove{{ className name }}({{ fqClass target.name }}Store {{ variable target.name }}Store) async {
+  Future<void> remove{{ className name }}({{ fqClass target.name }}Store {{ variable target.name }}Store) async {
     var {{ variable target.name }}Request = NorthwindIdentifier();
     {{ variable target.name }}Request.identifier = {{ variable target.name }}Store.identifier;
     await DefaultApi(_apiClient).{{ fqVariable owner.name }}Delete{{ className name }}({{ variable target.name }}Request);
@@ -68,21 +57,21 @@ class {{ fqClass ap.name }}{{ className name }}DefaultRepository {
   //////////////////////////////////////////////////////////////////////////////
   // GET RANGE FOR CREATE
   //////////////////////////////////////////////////////////////////////////////
-  Future get{{ className ../name }}RangeForCreate{{ className ../../name }}({{ fqClass ../../target.name }}Store {{ variable ../../target.name }}Store, List<{{ fqClass ../target.name }}Store> selectable{{ className ../target.name }}ListStore) async {
+  Future<List<{{ fqClass ../target.name }}Store>> get{{ className ../name }}RangeForCreate{{ className ../../name }}({{ fqClass ../../target.name }}Store {{ variable ../../target.name }}Store) async {
     var {{ variable ../../target.name }}Request = {{ fqClass ap.name }}RepositoryStoreMapper.create{{ fqClass ../../target.name }}From{{ fqClass ../../target.name }}Store({{ variable ../../target.name }}Store);
     var {{ variable ../target.name }}ListResponse = await DefaultApi(_apiClient).{{ fqVariable ../../owner.name }}GetRangeOf{{ className ../name }}ToCreate{{ className ../../name }}({{ variable ../../target.name }}Request);
-    selectable{{ className ../target.name }}ListStore.addAll({{ variable ../target.name }}ListResponse.map<{{ fqClass ../target.name }}Store>(
-      {{ fqClass ap.name }}RepositoryStoreMapper.create{{ fqClass ../target.name }}StoreFrom{{ fqClass ../target.name }}).toList());
+    return {{ variable ../target.name }}ListResponse.map<{{ fqClass ../target.name }}Store>(
+      {{ fqClass ap.name }}RepositoryStoreMapper.create{{ fqClass ../target.name }}StoreFrom{{ fqClass ../target.name }}).toList();
   }
 
   //////////////////////////////////////////////////////////////////////////////
   // GET RANGE FOR UPDATE
   //////////////////////////////////////////////////////////////////////////////
-  Future get{{ className ../name }}RangeForUpdate{{ className ../../name }}({{ fqClass ../../target.name }}Store {{ variable ../../target.name }}Store, List<{{ fqClass ../target.name }}Store> selectable{{ className ../target.name }}ListStore) async {
+  Future<List<{{ fqClass ../target.name }}Store>> get{{ className ../name }}RangeForUpdate{{ className ../../name }}({{ fqClass ../../target.name }}Store {{ variable ../../target.name }}Store) async {
     var {{ variable ../../target.name }}Request = {{ fqClass ap.name }}RepositoryStoreMapper.create{{ fqClass ../../target.name }}From{{ fqClass ../../target.name }}Store({{ variable ../../target.name }}Store);
     var {{ variable ../target.name }}ListResponse = await DefaultApi(_apiClient).{{ fqVariable ../../owner.name }}GetRangeOf{{ className ../name }}ToUpdate{{ className ../../name }}({{ variable ../../target.name }}Request);
-    selectable{{ className ../target.name }}ListStore.addAll({{ variable ../target.name }}ListResponse.map<{{ fqClass ../target.name }}Store>(
-      {{ fqClass ap.name }}RepositoryStoreMapper.create{{ fqClass ../target.name }}StoreFrom{{ fqClass ../target.name }}).toList());
+    return {{ variable ../target.name }}ListResponse.map<{{ fqClass ../target.name }}Store>(
+      {{ fqClass ap.name }}RepositoryStoreMapper.create{{ fqClass ../target.name }}StoreFrom{{ fqClass ../target.name }}).toList();
   }
   {{/ each }}
   {{/ each }}
