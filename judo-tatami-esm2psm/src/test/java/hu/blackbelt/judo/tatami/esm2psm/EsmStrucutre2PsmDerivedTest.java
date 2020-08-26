@@ -5,15 +5,24 @@ import hu.blackbelt.epsilon.runtime.execution.api.Log;
 import hu.blackbelt.epsilon.runtime.execution.impl.Slf4jLog;
 import hu.blackbelt.judo.meta.esm.namespace.Model;
 import hu.blackbelt.judo.meta.esm.namespace.Package;
+import hu.blackbelt.judo.meta.esm.operation.OperationType;
 import hu.blackbelt.judo.meta.esm.runtime.EsmModel;
 import hu.blackbelt.judo.meta.esm.structure.*;
 import hu.blackbelt.judo.meta.esm.type.StringType;
+import hu.blackbelt.judo.meta.psm.PsmUtils;
 import hu.blackbelt.judo.meta.psm.derived.NavigationProperty;
 import hu.blackbelt.judo.meta.psm.namespace.Namespace;
 import hu.blackbelt.judo.meta.psm.runtime.PsmModel;
+import hu.blackbelt.judo.meta.psm.service.TransferAttribute;
+import hu.blackbelt.judo.meta.psm.service.TransferObjectRelation;
+import hu.blackbelt.judo.meta.psm.service.TransferOperationBehaviourType;
+import hu.blackbelt.judo.meta.psm.service.UnboundOperation;
 import lombok.extern.slf4j.Slf4j;
+
+import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.hamcrest.core.IsEqual;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -33,6 +42,7 @@ import static hu.blackbelt.judo.meta.esm.namespace.util.builder.NamespaceBuilder
 import static hu.blackbelt.judo.meta.esm.runtime.EsmEpsilonValidator.calculateEsmValidationScriptURI;
 import static hu.blackbelt.judo.meta.esm.runtime.EsmEpsilonValidator.validateEsm;
 import static hu.blackbelt.judo.meta.esm.runtime.EsmModel.buildEsmModel;
+import static hu.blackbelt.judo.meta.esm.accesspoint.util.builder.AccesspointBuilders.*;
 import static hu.blackbelt.judo.meta.esm.structure.util.builder.StructureBuilders.*;
 import static hu.blackbelt.judo.meta.esm.type.util.builder.TypeBuilders.newStringTypeBuilder;
 import static hu.blackbelt.judo.meta.psm.runtime.PsmModel.SaveArguments.psmSaveArgumentsBuilder;
@@ -42,6 +52,7 @@ import static hu.blackbelt.judo.meta.psm.runtime.PsmModel.buildPsmModel;
 import static hu.blackbelt.judo.tatami.esm2psm.Esm2Psm.calculateEsm2PsmTransformationScriptURI;
 import static hu.blackbelt.judo.tatami.esm2psm.Esm2Psm.executeEsm2PsmTransformation;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -103,6 +114,8 @@ public class EsmStrucutre2PsmDerivedTest {
     }
 
     private void transform() throws Exception {
+    	
+    	log.info(esmModel.getDiagnosticsAsString());
     	assertTrue(esmModel.isValid());
     	validateEsm(new Slf4jLog(log), esmModel, calculateEsmValidationScriptURI());
         // Make transformation which returns the trace with the serialized URI's
@@ -111,6 +124,8 @@ public class EsmStrucutre2PsmDerivedTest {
                 psmModel,
                 new Slf4jLog(log),
                 calculateEsm2PsmTransformationScriptURI());
+        
+        log.info(psmModel.getDiagnosticsAsString());
         assertTrue(psmModel.isValid());
         validatePsm(new Slf4jLog(log), psmModel, calculatePsmValidationScriptURI());
     }
@@ -478,7 +493,7 @@ public class EsmStrucutre2PsmDerivedTest {
         assertNull(psmStaticNavigationAsDefault.get().getSetterExpression());
     }
 
- /*   @Test
+/*    @Test
     void testCreateDataPropertyForEntityTypeDefaultTransferObjectTypeTransferAttributeDefaultAttribute() throws Exception {
         testName = "CreateDataPropertyForEntityTypeDefaultTransferObjectTypeTransferAttributeDefault";
 
@@ -516,8 +531,8 @@ public class EsmStrucutre2PsmDerivedTest {
         assertThat(psmDataProperty.get().getGetterExpression().getExpression(), IsEqual.equalTo(attribute.getDefaultExpression()));
         assertNull(psmDataProperty.get().getSetterExpression());
     }
-*/
- /*   @Test
+
+    @Test
     void testCreateDataPropertyForEntityTypeDefaultTransferObjectTypeTransferAttributeDefaultDataProperty() throws Exception {
         testName = "CreateDataPropertyForEntityTypeDefaultTransferObjectTypeTransferAttributeDefault";
 
@@ -554,8 +569,8 @@ public class EsmStrucutre2PsmDerivedTest {
         assertTrue(psmDataProperty.isPresent());
         assertThat(psmDataProperty.get().getGetterExpression().getExpression(), IsEqual.equalTo(dataProperty.getDefaultExpression()));
         assertNull(psmDataProperty.get().getSetterExpression());
-    }*/
-
+    }
+*/
     @Test
     void testCreateNavigationPropertyFromOneWayRelationMemberForEntityTypeDefaultTransferObjectTypeTransferObjectRelationDefaultContainment() throws Exception {
         testName = "CreateNavigationPropertyFromOneWayRelationMemberForEntityTypeDefaultTransferObjectTypeTransferObjectRelationDefault";
@@ -883,6 +898,161 @@ public class EsmStrucutre2PsmDerivedTest {
         assertTrue(psmNavigationProperty2.getName().equals(psmNavigationPropertyName2));
         assertThat(psmNavigationProperty2.getGetterExpression().getExpression(), IsEqual.equalTo(associationEnd2.getRangeExpression()));
         assertNull(psmNavigationProperty2.getSetterExpression());
+    }
+    
+    @Test
+    void testCreateTransferAttributeAndRelationsFromDerived() throws Exception {
+
+    	StringType string = newStringTypeBuilder().withName("string").withMaxLength(256).build();
+        
+        EntityType entityB = newEntityTypeBuilder().withName("entityB").build();
+        entityB.setMapping(newMappingBuilder().withTarget(entityB).build());
+        EntityType entityD = newEntityTypeBuilder().withName("entityD").build();
+        entityD.setMapping(newMappingBuilder().withTarget(entityD).build());
+        
+        TransferObjectType transferA = newTransferObjectTypeBuilder().withName("transferA").build();
+        TransferObjectType transferB = newTransferObjectTypeBuilder().withName("transferB").build();
+        entityB.setMapping(newMappingBuilder().withTarget(entityB).build());
+        transferB.getGeneralizations().add(newGeneralizationBuilder().withTarget(transferA).build());
+        
+        TransferObjectType ap = newTransferObjectTypeBuilder()
+        		.withActorType(newActorTypeBuilder().build())
+        		.withName("ap").build();
+
+        OneWayRelationMember relation = newOneWayRelationMemberBuilder().withName("relation")
+                .withLower(0)
+                .withUpper(-1)
+                .withTarget(entityD)
+                .withMemberType(MemberType.DERIVED)
+                .withRelationKind(RelationKind.AGGREGATION)
+                .withCreateable(true)
+                .withDeleteable(true)
+                .withUpdateable(true)
+                .withGetterExpression("TestModel::entityD")
+                .build();
+        transferA.getRelations().add(relation);
+        
+        DataMember member = newDataMemberBuilder().withName("member")
+        		.withDataType(string)
+        		.withMemberType(MemberType.DERIVED)
+        		.withGetterExpression("hello")
+        		.build();
+        transferA.getAttributes().add(member);
+
+        final Model model = newModelBuilder()
+                .withName("TestModel")
+                .withElements(ImmutableList.of(entityB,entityD,transferA,transferB,ap,string))
+                .build();
+
+        esmModel.addContent(model);
+        transform();
+
+        final Optional<hu.blackbelt.judo.meta.psm.service.TransferObjectType> psmTransferA = allPsm(hu.blackbelt.judo.meta.psm.service.TransferObjectType.class)
+                .filter(e -> e.getName().equals(transferA.getName())).findAny();
+        assertTrue(psmTransferA.isPresent());
+        
+        final Optional<TransferObjectRelation> psmTransferObjectRelation = allPsm(TransferObjectRelation.class)
+						.filter(r -> relation.getName().equals(r.getName())).findAny();
+		assertTrue(psmTransferObjectRelation.isPresent());
+		
+		final Optional<UnboundOperation> psmOperation = allPsm(UnboundOperation.class).filter(o -> o.getName().equals("_createRelation")).findAny();
+		assertTrue(psmOperation.isPresent());
+		
+		final Optional<TransferAttribute> psmAttribute = allPsm(TransferAttribute.class).filter(o -> o.getName().equals(member.getName())).findAny();
+		assertTrue(psmAttribute.isPresent());
+		assertNotNull(psmAttribute.get().getBinding());
+		assertTrue(psmAttribute.get().getBinding() instanceof hu.blackbelt.judo.meta.psm.derived.StaticData);
+		hu.blackbelt.judo.meta.psm.derived.StaticData staticData = (hu.blackbelt.judo.meta.psm.derived.StaticData)psmAttribute.get().getBinding();
+		assertTrue(staticData.getGetterExpression().getExpression().equals(member.getGetterExpression()));
+		
+		final Optional<hu.blackbelt.judo.meta.psm.service.TransferObjectType> psmTransferB = allPsm(hu.blackbelt.judo.meta.psm.service.TransferObjectType.class)
+                .filter(e -> e.getName().equals(transferB.getName())).findAny();
+        assertTrue(psmTransferB.isPresent());
+        
+        EList<TransferAttribute> allAttributesInB = PsmUtils.getAllTransferAttributes(psmTransferB.get());
+        assertTrue(allAttributesInB.contains(psmAttribute.get()));
+        
+        EList<TransferObjectRelation> allRelationsInB = PsmUtils.getAllTransferObjectRelations(psmTransferB.get());
+        assertTrue(allRelationsInB.contains(psmTransferObjectRelation.get()));
+		
+    }
+    
+    @Test
+    void testDerivedAttributesOfUnmappedTransferObjectType() throws Exception {
+    	
+    	testName = "DerivedMixinTest";
+    	
+    	StringType string = newStringTypeBuilder().withName("string").withMaxLength(256).build();
+
+    	DataMember attribute = newDataMemberBuilder()
+        .withName("derivedAttribute")
+        .withMemberType(MemberType.DERIVED)
+        .withDataType(string)
+        .withGetterExpression("text")
+        .build();
+    	
+        final TransferObjectType unmapped = newTransferObjectTypeBuilder()
+                .withName("U")
+                .withAttributes(attribute)
+                .build();
+
+        final EntityType entity = newEntityTypeBuilder()
+                .withName("E")
+                .build();
+        entity.setMapping(newMappingBuilder().withTarget(entity).build());
+
+        final TransferObjectType mapped = newTransferObjectTypeBuilder()
+                .withName("M")
+                .withMapping(newMappingBuilder().withTarget(entity).build())
+                .withGeneralizations(newGeneralizationBuilder().withTarget(unmapped).build())
+                .build();
+
+        final TransferObjectType accessPoint = newTransferObjectTypeBuilder()
+                .withName("AP")
+                .withActorType(newActorTypeBuilder().build())
+                .withRelations(newOneWayRelationMemberBuilder()
+                        .withName("accessToM")
+                        .withTarget(mapped)
+                        .withLower(0)
+                        .withUpper(-1)
+                        .withCreateable(true)
+                        .withUpdateable(true)
+                        .withMemberType(MemberType.DERIVED)
+                        .withRelationKind(RelationKind.ASSOCIATION)
+                        .withGetterExpression(
+                                "TestModel::E")
+                        .build())
+                .build();
+        
+        final Model model = newModelBuilder()
+                .withName("TestModel")
+                .withElements(ImmutableList.of(entity,unmapped,accessPoint,mapped,string))
+                .build();
+
+        esmModel.addContent(model);
+        transform();
+        
+        final Optional<TransferAttribute> psmAttribute = allPsm(TransferAttribute.class).filter(o -> o.getName().equals(attribute.getName())).findAny();
+		assertTrue(psmAttribute.isPresent());
+		assertNotNull(psmAttribute.get().getBinding());
+		assertTrue(psmAttribute.get().getBinding() instanceof hu.blackbelt.judo.meta.psm.derived.StaticData);
+		hu.blackbelt.judo.meta.psm.derived.StaticData staticData = (hu.blackbelt.judo.meta.psm.derived.StaticData)psmAttribute.get().getBinding();
+		assertTrue(staticData.getGetterExpression().getExpression().equals(attribute.getGetterExpression()));
+        
+		final Optional<hu.blackbelt.judo.meta.psm.service.TransferObjectType> psmMapped = allPsm(hu.blackbelt.judo.meta.psm.service.TransferObjectType.class)
+                .filter(e -> e.getName().equals(mapped.getName())).findAny();
+        assertTrue(psmMapped.isPresent());
+        
+        EList<TransferAttribute> allAttributesInMapped = PsmUtils.getAllTransferAttributes(psmMapped.get());
+        assertTrue(allAttributesInMapped.contains(psmAttribute.get()));
+        
+        final Optional<hu.blackbelt.judo.meta.psm.service.TransferObjectType> psmUnmapped = allPsm(hu.blackbelt.judo.meta.psm.service.TransferObjectType.class)
+                .filter(e -> e.getName().equals(unmapped.getName())).findAny();
+        assertTrue(psmUnmapped.isPresent());
+        
+        EList<TransferAttribute> allAttributesInUnmapped = PsmUtils.getAllTransferAttributes(psmUnmapped.get());
+        assertTrue(allAttributesInUnmapped.contains(psmAttribute.get()));
+        
     }
 
     static <T> Stream<T> asStream(Iterator<T> sourceIterator, boolean parallel) {
