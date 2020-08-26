@@ -4,15 +4,12 @@ import static hu.blackbelt.judo.meta.asm.runtime.AsmModel.buildAsmModel;
 import static hu.blackbelt.judo.meta.asm.runtime.AsmModel.SaveArguments.asmSaveArgumentsBuilder;
 import static hu.blackbelt.judo.meta.psm.PsmEpsilonValidator.calculatePsmValidationScriptURI;
 import static hu.blackbelt.judo.meta.psm.PsmEpsilonValidator.validatePsm;
-import static hu.blackbelt.judo.meta.psm.data.util.builder.DataBuilders.newEntityTypeBuilder;
-import static hu.blackbelt.judo.meta.psm.derived.util.builder.DerivedBuilders.newDataExpressionTypeBuilder;
-import static hu.blackbelt.judo.meta.psm.derived.util.builder.DerivedBuilders.newDataPropertyBuilder;
-import static hu.blackbelt.judo.meta.psm.derived.util.builder.DerivedBuilders.newNavigationPropertyBuilder;
-import static hu.blackbelt.judo.meta.psm.derived.util.builder.DerivedBuilders.newReferenceExpressionTypeBuilder;
-import static hu.blackbelt.judo.meta.psm.measure.util.builder.MeasureBuilders.newMeasureBuilder;
-import static hu.blackbelt.judo.meta.psm.measure.util.builder.MeasureBuilders.newMeasuredTypeBuilder;
-import static hu.blackbelt.judo.meta.psm.measure.util.builder.MeasureBuilders.newUnitBuilder;
-import static hu.blackbelt.judo.meta.psm.namespace.util.builder.NamespaceBuilders.newModelBuilder;
+import static hu.blackbelt.judo.meta.psm.accesspoint.util.builder.AccesspointBuilders.*;
+import static hu.blackbelt.judo.meta.psm.data.util.builder.DataBuilders.*;
+import static hu.blackbelt.judo.meta.psm.service.util.builder.ServiceBuilders.*;
+import static hu.blackbelt.judo.meta.psm.derived.util.builder.DerivedBuilders.*;
+import static hu.blackbelt.judo.meta.psm.measure.util.builder.MeasureBuilders.*;
+import static hu.blackbelt.judo.meta.psm.namespace.util.builder.NamespaceBuilders.*;
 import static hu.blackbelt.judo.meta.psm.runtime.PsmModel.buildPsmModel;
 import static hu.blackbelt.judo.meta.psm.type.util.builder.TypeBuilders.newBooleanTypeBuilder;
 import static hu.blackbelt.judo.meta.psm.type.util.builder.TypeBuilders.newCardinalityBuilder;
@@ -45,14 +42,22 @@ import hu.blackbelt.epsilon.runtime.execution.impl.Slf4jLog;
 import hu.blackbelt.judo.meta.asm.runtime.AsmModel;
 import hu.blackbelt.judo.meta.asm.runtime.AsmUtils;
 import hu.blackbelt.judo.meta.psm.PsmUtils;
+import hu.blackbelt.judo.meta.psm.accesspoint.ActorType;
+import hu.blackbelt.judo.meta.psm.accesspoint.MappedActorType;
 import hu.blackbelt.judo.meta.psm.data.EntityType;
-import hu.blackbelt.judo.meta.psm.derived.DataProperty;
-import hu.blackbelt.judo.meta.psm.derived.NavigationProperty;
+import hu.blackbelt.judo.meta.psm.derived.*;
 import hu.blackbelt.judo.meta.psm.measure.Measure;
 import hu.blackbelt.judo.meta.psm.measure.MeasuredType;
 import hu.blackbelt.judo.meta.psm.measure.Unit;
 import hu.blackbelt.judo.meta.psm.namespace.Model;
+import hu.blackbelt.judo.meta.psm.namespace.Package;
 import hu.blackbelt.judo.meta.psm.runtime.PsmModel;
+import hu.blackbelt.judo.meta.psm.service.MappedTransferObjectType;
+import hu.blackbelt.judo.meta.psm.service.TransferAttribute;
+import hu.blackbelt.judo.meta.psm.service.TransferObjectRelation;
+import hu.blackbelt.judo.meta.psm.service.TransferOperationBehaviourType;
+import hu.blackbelt.judo.meta.psm.service.UnboundOperation;
+import hu.blackbelt.judo.meta.psm.service.UnmappedTransferObjectType;
 import hu.blackbelt.judo.meta.psm.type.BooleanType;
 import hu.blackbelt.judo.meta.psm.type.CustomType;
 import hu.blackbelt.judo.meta.psm.type.NumericType;
@@ -91,11 +96,13 @@ public class Psm2AsmDerivedTest {
 		psmModel.savePsmModel(PsmModel.SaveArguments.psmSaveArgumentsBuilder()
 				.file(new File(TARGET_TEST_CLASSES, getClass().getName() + "-" + testName + "-psm.model")).build());
 
+		log.info(psmModel.getDiagnosticsAsString());
 		assertTrue(psmModel.isValid());
 		validatePsm(new Slf4jLog(log), psmModel, calculatePsmValidationScriptURI());
 
 		executePsm2AsmTransformation(psmModel, asmModel);
 
+		log.info(asmModel.getDiagnosticsAsString());
 		assertTrue(asmModel.isValid());
 		asmModel.saveAsmModel(asmSaveArgumentsBuilder()
 				.file(new File(TARGET_TEST_CLASSES, getClass().getName() + "-" + testName + "-asm.model")).build());
@@ -309,5 +316,151 @@ public class Psm2AsmDerivedTest {
 		assertTrue(asmNavPropExpr.getDetails().containsKey("getter.dialect"));
 		assertTrue(asmNavPropExpr.getDetails().get("getter.dialect")
 				.equals(navProp.getGetterExpression().getDialect().toString()));
+	}
+	
+	@Test
+	void testDerivedInUnmappedTransferObjectTypes() throws Exception {
+		
+		Package defaultTo = newPackageBuilder().withName("_default_transferobjecttypes").build();
+		Package genNav = newPackageBuilder().withName("_generated_navigations").build();
+		Package actorTypes = newPackageBuilder().withName("_actortypes").build();
+		
+		EntityType entity = newEntityTypeBuilder().withName("E").build();
+		EntityType entity2 = newEntityTypeBuilder().withName("E2").build();
+		StringType string = newStringTypeBuilder().withName("string").withMaxLength(256).build();
+		MappedTransferObjectType mapped = newMappedTransferObjectTypeBuilder().withName("M").withEntityType(entity).build();
+		MappedTransferObjectType defaultForEntity = newMappedTransferObjectTypeBuilder().withName("E").withEntityType(entity).build();
+		MappedTransferObjectType defaultForEntity2 = newMappedTransferObjectTypeBuilder().withName("E2").withEntityType(entity2).build();
+		UnmappedTransferObjectType unmapped = newUnmappedTransferObjectTypeBuilder().withName("U").build();
+		
+		UnmappedTransferObjectType ap = newUnmappedTransferObjectTypeBuilder().withName("AP").build();
+		
+		useMappedTransferObjectType(mapped).withSuperTransferObjectTypes(unmapped).build();
+		
+		StaticData staticData = newStaticDataBuilder().withName("_derivedAttribute_binding_U").withDataType(string).withGetterExpression(newDataExpressionTypeBuilder().withExpression("text").build()).build();
+		TransferAttribute attribute = newTransferAttributeBuilder().withName("derivedAttribute").withDataType(string).withBinding(staticData).build();
+		
+		useUnmappedTransferObjectType(unmapped).withAttributes(attribute).build();
+		
+		ActorType actorType = newActorTypeBuilder().withName("AP").withTransferObjectType(ap).build();
+		
+		useUnmappedTransferObjectType(ap).withActorType(actorType).build();
+	    
+	    StaticNavigation statNav = newStaticNavigationBuilder().withName("_accessToM_selector_AP")
+	    	.withTarget(entity).withCardinality(newCardinalityBuilder().withLower(0).withUpper(-1).build())
+	    	.withGetterExpression(newReferenceExpressionTypeBuilder().withExpression("TestModel::E").build()).build();
+		
+		TransferObjectRelation rel = newTransferObjectRelationBuilder().withName("accessToM").withBinding(statNav).withTarget(mapped)
+				.withCardinality(newCardinalityBuilder().withLower(0).withUpper(-1).build()).build();
+		
+		useUnmappedTransferObjectType(ap).withRelations(rel).build();
+		
+		StaticNavigation statNav2 = newStaticNavigationBuilder().withName("_E2_selector_U")
+		    	.withTarget(entity2).withCardinality(newCardinalityBuilder().withLower(0).withUpper(-1).build())
+		    	.withGetterExpression(newReferenceExpressionTypeBuilder().withExpression("TestModel::E2").build()).build();
+		
+		TransferObjectRelation rel2 = newTransferObjectRelationBuilder().withName("E2").withBinding(statNav2).withTarget(defaultForEntity2)
+				.withCardinality(newCardinalityBuilder().withLower(0).withUpper(-1).build()).build();
+		
+		useUnmappedTransferObjectType(unmapped).withRelations(rel2).build();
+		
+		UnboundOperation getOp = newUnboundOperationBuilder().withName("_getAccessToM")
+				.withOutput(newParameterBuilder().withName("output")
+						.withCardinality(newCardinalityBuilder().withUpper(-1).build())
+						.withType(mapped)
+						.build())
+				.withBehaviour(newTransferOperationBehaviourBuilder().withBehaviourType(TransferOperationBehaviourType.GET)
+						.withOwner(rel).build())
+				.build();
+		
+		UnboundOperation createOp = newUnboundOperationBuilder().withName("_createAccessToM")
+				.withOutput(newParameterBuilder().withName("output")
+						.withCardinality(newCardinalityBuilder().withLower(1).build())
+						.withType(mapped)
+						.build())
+				.withInput(newParameterBuilder().withName("input")
+						.withCardinality(newCardinalityBuilder().withLower(1).build())
+						.withType(mapped)
+						.build())
+				.withBehaviour(newTransferOperationBehaviourBuilder().withBehaviourType(TransferOperationBehaviourType.CREATE)
+						.withOwner(rel).build())
+				.build();
+		
+		UnboundOperation updateOp = newUnboundOperationBuilder().withName("_updateAccessToM")
+				.withOutput(newParameterBuilder().withName("output")
+						.withCardinality(newCardinalityBuilder().withLower(1).build())
+						.withType(mapped)
+						.build())
+				.withInput(newParameterBuilder().withName("input")
+						.withCardinality(newCardinalityBuilder().withLower(1).build())
+						.withType(mapped)
+						.build())
+				.withBehaviour(newTransferOperationBehaviourBuilder().withBehaviourType(TransferOperationBehaviourType.UPDATE)
+						.withOwner(rel).build())
+				.build();
+
+		UnboundOperation principalOp = newUnboundOperationBuilder().withName("_principal")
+				.withOutput(newParameterBuilder().withName("output")
+						.withCardinality(newCardinalityBuilder().build())
+						.withType(ap)
+						.build())
+				.withBehaviour(newTransferOperationBehaviourBuilder().withBehaviourType(TransferOperationBehaviourType.GET_PRINCIPAL)
+						.withOwner(ap).build())
+				.build();
+		useUnmappedTransferObjectType(ap).withOperations(getOp,createOp,updateOp,principalOp).build();
+		
+		UnboundOperation mapPrincipalOp = newUnboundOperationBuilder().withName("_map_principal")
+				.withOutput(newParameterBuilder().withName("output")
+						.withCardinality(newCardinalityBuilder().build())
+						.withType(ap)
+						.build())
+				.withBehaviour(newTransferOperationBehaviourBuilder().withBehaviourType(TransferOperationBehaviourType.MAP_PRINCIPAL)
+						.withOwner(actorType).build())
+				.build();
+		useActorType(actorType).withOperations(mapPrincipalOp).build();
+		
+		usePackage(actorTypes).withElements(actorType).build();
+		usePackage(genNav).withElements(statNav,statNav2).build();
+		usePackage(defaultTo).withElements(defaultForEntity,defaultForEntity2).build();
+		
+		Model model = newModelBuilder().withName("TestModel")
+				.withElements(string,entity,mapped,unmapped,ap,staticData,entity2)
+				.withPackages(actorTypes,genNav,defaultTo)
+				.build();
+
+		psmModel.addContent(model);
+
+		transform("testDerivedMixin");
+		
+		final EClass asmUnmapped = asmUtils.all(EClass.class).filter(c -> c.getName().equals(unmapped.getName()))
+				.findAny().get();
+		
+		final Optional<EReference> asmUnmappedDerivedRelation = asmUtils.all(EReference.class)
+				.filter(r -> r.getName().equals(rel2.getName())).findAny();
+		assertTrue(asmUnmappedDerivedRelation.isPresent());
+		assertTrue(asmUnmappedDerivedRelation.get().getEContainingClass().equals(asmUnmapped));
+		
+		final EAnnotation asmUnmappedDerivedExpr = asmUnmappedDerivedRelation.get().getEAnnotation(EXPRESSION_SOURCE);
+		assertThat(asmUnmappedDerivedExpr, IsNull.notNullValue());
+		assertThat(asmUnmappedDerivedExpr.getDetails().size(), IsEqual.equalTo(2));
+		assertTrue(asmUnmappedDerivedExpr.getDetails().containsKey("getter"));
+		assertTrue(asmUnmappedDerivedExpr.getDetails().get("getter").equals(statNav2.getGetterExpression().getExpression()));
+		assertTrue(asmUnmappedDerivedExpr.getDetails().containsKey("getter.dialect"));
+		assertTrue(asmUnmappedDerivedExpr.getDetails().get("getter.dialect")
+				.equals(statNav2.getGetterExpression().getDialect().toString()));
+		
+		final Optional<EAttribute> asmUnmappedDerivedAttribute = asmUtils.all(EAttribute.class)
+				.filter(a -> a.getName().equals(attribute.getName())).findAny();
+		assertTrue(asmUnmappedDerivedAttribute.isPresent());
+		assertTrue(asmUnmappedDerivedAttribute.get().getEContainingClass().equals(asmUnmapped));
+		
+		final EAnnotation asmUnmappedDerivedAttr = asmUnmappedDerivedAttribute.get().getEAnnotation(EXPRESSION_SOURCE);
+		assertThat(asmUnmappedDerivedAttr, IsNull.notNullValue());
+		assertThat(asmUnmappedDerivedAttr.getDetails().size(), IsEqual.equalTo(2));
+		assertTrue(asmUnmappedDerivedAttr.getDetails().containsKey("getter"));
+		assertTrue(asmUnmappedDerivedAttr.getDetails().get("getter").equals(staticData.getGetterExpression().getExpression()));
+		assertTrue(asmUnmappedDerivedAttr.getDetails().containsKey("getter.dialect"));
+		assertTrue(asmUnmappedDerivedAttr.getDetails().get("getter.dialect")
+				.equals(statNav2.getGetterExpression().getDialect().toString()));
 	}
 }
