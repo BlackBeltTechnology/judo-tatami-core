@@ -83,3 +83,11 @@ rule CreateGetterExpressionForExposedGraphSelector
         t.expression = s.getterExpression;
         log.debug("Created Reference Expression Type for Exposed Graph Selector: " + s.name);    
 }
+
+@lazy
+rule CreateGetterExpressionForStaticDataAsTransferAttributeBinding
+    transform s : ESM!DataMember
+       to t: JUDOPSM!DataExpressionType {
+     t.expression = s.getterExpression;
+     log.debug("Created Data Expression Type for Static Data for Transfer Attribute Binding: " + s.name);
+}

@@ -45,7 +45,12 @@ rule CreateTransferAttributeFromProperty
             and s.memberType == ESM!MemberType#DERIVED
             
       t.defaultValue = s.equivalent("CreateStaticDataForTransferAttributeDefaultValue");
-      t.binding = s.equivalent("CreateDataPropertyForTransferAttributeBinding");
+      
+      if (s.eContainer.mapping.isDefined()){
+         t.binding = s.equivalent("CreateDataPropertyForTransferAttributeBinding");
+      } else {
+         t.binding = s.equivalent("CreateStaticDataForTransferAttributeBinding");
+      }
       
       s.eContainer.getPSMEquivalent().attributes.add(t);
       log.debug("Created TransferAttribute: [" + t.name + "] into [" + t.eContainer.name + "]");
