@@ -468,7 +468,7 @@ rule CreateUpdateUnboundOperation
                 if (not containment and (entityPartner.isDefined() implies (entityPartner.lower < entityPartner.upper or entityPartner.upper == -1))) {
                     s.createSetUnboundOperation(relation);
                 }
-                if (relation.lower == 0 and (not containment or s.deleteable) and (entityPartner.isDefined() implies (entityPartner.lower < entityPartner.upper or entityPartner.upper == -1))) {
+                if (relation.lower == 0 and (not containment or s.isDeleteAllowed()) and (entityPartner.isDefined() implies (entityPartner.lower < entityPartner.upper or entityPartner.upper == -1))) {
                     s.createUnsetUnboundOperation(relation);
                 }
             } else {
@@ -478,7 +478,7 @@ rule CreateUpdateUnboundOperation
                 if ((relation.lower < relation.upper or relation.upper == -1) and not containment and (entityPartner.isDefined() implies (entityPartner.lower < entityPartner.upper or entityPartner.upper == -1))) {
                     s.createAddAllUnboundOperation(relation);
                 }
-                if ((relation.lower < relation.upper or relation.upper == -1) and (not containment or s.deleteable) and (entityPartner.isDefined() implies (entityPartner.lower < entityPartner.upper or entityPartner.upper == -1))) {
+                if ((relation.lower < relation.upper or relation.upper == -1) and (not containment or s.isDeleteAllowed()) and (entityPartner.isDefined() implies (entityPartner.lower < entityPartner.upper or entityPartner.upper == -1))) {
                     s.createRemoveAllUnboundOperation(relation);
                 }
             }
