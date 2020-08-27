@@ -249,6 +249,15 @@ rule CreateCreateTransferOperationForRelation
 
         t.binding = s.equivalent("CreateCreateOperationForRelation");
 
+/*
+        for (relation in s.target.getAllRelations().select(r | r.target.mapping.isDefined() and not r.isReadOnly() and (r.isKindOf(ESM!TwoWayRelationMember) implies r.partner <> s))) {
+            if (esmUtils.isRangeAllowedOnRelation(relation) and relation.rangeExpression.isDefined() and relation.rangeExpression.trim().length() > 0) {
+                s.createGetRangeTransferOperationForRelation(relation, t.input, "create");
+            }
+        }
+*/
+
+
         for (relation in s.target.getAllRelations().select(r | r.target.mapping.isDefined() and not r.isReadOnly() and (r.isKindOf(ESM!TwoWayRelationMember) implies r.partner <> s))) {
             var rangeAllowed = false;
             if (relation.isKindOf(ESM!OneWayRelationMember)) {
@@ -294,6 +303,13 @@ rule CreateCreateUnboundOperation
         t.output.cardinality.lower = 1;
         t.output.cardinality.upper = 1;
 
+/*
+        for (relation in s.target.getAllRelations().select(r | r.target.mapping.isDefined() and not r.isReadOnly() and (r.isKindOf(ESM!TwoWayRelationMember) implies r.partner <> s))) {
+            if (esmUtils.isRangeAllowedOnRelation(relation) and relation.rangeExpression.isDefined() and relation.rangeExpression.trim().length() > 0) {
+                s.createGetRangeTransferOperationForRelation(relation, t.input, "create");
+            }
+        }
+*/
         for (relation in s.target.getAllRelations().select(r | r.target.mapping.isDefined() and not r.isReadOnly() and (r.isKindOf(ESM!TwoWayRelationMember) implies r.partner <> s))) {
             var rangeAllowed = false;
             if (relation.isKindOf(ESM!OneWayRelationMember)) {
@@ -310,7 +326,6 @@ rule CreateCreateUnboundOperation
                 s.createGetRangeTransferOperationForRelation(relation, t.input, "create");
             }
         }
-
         s.eContainer.getPSMTransferObjectTypeEquivalent().operations.add(t);
 }
 
@@ -366,6 +381,28 @@ rule CreateUpdateTransferOperationForRelation
         t.output.cardinality.upper = 1;
 
         t.binding = s.equivalent("CreateUpdateOperationForRelation");
+
+/*
+        for (relation in s.target.getAllRelations().select(r | r.target.mapping.isDefined() and not r.isReadOnly() and (r.isKindOf(ESM!TwoWayRelationMember) implies r.partner <> s))) {
+
+			if (esmUtils.isSetOnRelation(relation)) {
+                s.createSetTransferOperationForRelation(relation, s.createSetOperationForRelation(relation));			
+			}
+			if (esmUtils.isUnsetOnRelation(relation)) {
+	            s.createUnsetTransferOperationForRelation(relation, s.createUnsetOperationForRelation(relation));
+			}
+			if (esmUtils.isAddOnRelation(relation)) {
+	            s.createAddAllTransferOperationForRelation(relation, s.createAddAllOperationForRelation(relation));
+			}
+			if (esmUtils.isAddOnRelation(relation)) {
+	            s.createAddAllTransferOperationForRelation(relation, s.createAddAllOperationForRelation(relation));
+			}
+            
+            if (esmUtils.isRangeAllowedOnRelation(relation) and relation.rangeExpression.isDefined() and relation.rangeExpression.trim().length() > 0) {
+                s.createGetRangeTransferOperationForRelation(relation, t.input, "update");
+            }
+        }
+*/
 
         for (relation in s.target.getAllRelations().select(r | r.target.mapping.isDefined() and not r.isReadOnly() and (r.isKindOf(ESM!TwoWayRelationMember) implies r.partner <> s))) {
             var rangeAllowed = false;
@@ -442,6 +479,28 @@ rule CreateUpdateUnboundOperation
         t.output.cardinality.lower = 1;
         t.output.cardinality.upper = 1;
 
+/*
+        for (relation in s.target.getAllRelations().select(r | r.target.mapping.isDefined() and not r.isReadOnly() and (r.isKindOf(ESM!TwoWayRelationMember) implies r.partner <> s))) {
+
+			if (esmUtils.isSetOnRelation(relation)) {
+                s.createSetTransferOperationForRelation(relation, s.createSetOperationForRelation(relation));			
+			}
+			if (esmUtils.isUnsetOnRelation(relation)) {
+	            s.createUnsetTransferOperationForRelation(relation, s.createUnsetOperationForRelation(relation));
+			}
+			if (esmUtils.isAddOnRelation(relation)) {
+	            s.createAddAllTransferOperationForRelation(relation, s.createAddAllOperationForRelation(relation));
+			}
+			if (esmUtils.isAddOnRelation(relation)) {
+	            s.createAddAllTransferOperationForRelation(relation, s.createAddAllOperationForRelation(relation));
+			}
+
+            if (esmUtils.isRangeAllowedOnRelation(relation) and relation.rangeExpression.isDefined() and relation.rangeExpression.trim().length() > 0) {
+                s.createGetRangeTransferOperationForRelation(relation, t.input, "update");
+            }
+        }
+*/
+
         for (relation in s.target.getAllRelations().select(r | r.target.mapping.isDefined() and not r.isReadOnly() and (r.isKindOf(ESM!TwoWayRelationMember) implies r.partner <> s))) {
             var rangeAllowed = false;
             var containment = false;
@@ -487,6 +546,7 @@ rule CreateUpdateUnboundOperation
                 s.createGetRangeTransferOperationForRelation(relation, t.input, "update");
             }
         }
+
 
         s.eContainer.getPSMTransferObjectTypeEquivalent().operations.add(t);
 }
