@@ -126,6 +126,9 @@
     - name: ap
       expression: "#application.dataElement"
       className: hu.blackbelt.judo.meta.ui.data.ClassType
+    - name: operations
+      expression: "#operations(#application)"
+      className: java.util.Collection
 
 
 - overwriteExpression: true

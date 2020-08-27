@@ -21,7 +21,7 @@ class {{ fqClass ap.name }}{{ className accessRelation.name }}{{ fqClass accessR
   //////////////////////////////////////////////////////////////////////////////
   // GET Collection
   //////////////////////////////////////////////////////////////////////////////
-  Future<List<{{ fqClass relationType.target.name }}Store>> get{{ className relationType.name }}({{ fqClass relationType.owner.name }}Store {{ variable relationType.name }}{{ className relationType.owner.name }}Store) async {
+  Future<List<{{ fqClass relationType.target.name }}Store>> get{{ fqClass accessRelation.target.name }}{{ className relationType.name }}({{ fqClass relationType.owner.name }}Store {{ variable relationType.name }}{{ className relationType.owner.name }}Store) async {
     List<{{ fqClass relationType.target.name }}> {{ variable relationType.target.name }}ResponseList = await {{ className accessRelation.name }}Api(_apiClient).{{ fqVariable relationType.owner.name }}Get{{ className relationType.name }}({{ variable relationType.name }}{{ className relationType.owner.name }}Store.identifier);
     return {{ variable relationType.target.name }}ResponseList.map<{{ fqClass relationType.target.name }}Store>(
       {{ fqClass ap.name }}RepositoryStoreMapper.create{{ fqClass relationType.target.name }}StoreFrom{{ fqClass relationType.target.name }}).toList();
@@ -31,7 +31,7 @@ class {{ fqClass ap.name }}{{ className accessRelation.name }}{{ fqClass accessR
   //////////////////////////////////////////////////////////////////////////////
   // GET SINGLE
   //////////////////////////////////////////////////////////////////////////////
-  Future<{{ fqClass relationType.target.name }}Store> get{{ className relationType.name }}({{ fqClass relationType.owner.name }}Store {{ variable relationType.name }}{{ className relationType.owner.name }}Store, {{ fqClass relationType.target.name }}Store {{ variable relationType.target.name }}Store) async {
+  Future<{{ fqClass relationType.target.name }}Store> get{{ fqClass accessRelation.target.name }}{{ className relationType.name }}({{ fqClass relationType.owner.name }}Store {{ variable relationType.name }}{{ className relationType.owner.name }}Store, {{ fqClass relationType.target.name }}Store {{ variable relationType.target.name }}Store) async {
     {{ fqClass relationType.target.name }} {{ variable relationType.target.name }}Response = await {{ className accessRelation.name }}Api(_apiClient).{{ fqVariable relationType.owner.name }}Get{{ className relationType.name }}({{ variable relationType.name }}{{ className relationType.owner.name }}Store.identifier);
     return {{ fqClass ap.name }}RepositoryStoreMapper.create{{ fqClass relationType.target.name }}StoreFrom{{ fqClass relationType.target.name }}({{ variable relationType.target.name }}Response);
   }
@@ -40,7 +40,7 @@ class {{ fqClass ap.name }}{{ className accessRelation.name }}{{ fqClass accessR
   //////////////////////////////////////////////////////////////////////////////
   // CREATE
   //////////////////////////////////////////////////////////////////////////////
-  Future<{{ fqClass relationType.target.name }}Store> create{{ className relationType.name }}({{ fqClass relationType.owner.name }}Store {{ variable relationType.name }}{{ className relationType.owner.name }}Store, c {{ variable relationType.target.name }}Store) async {
+  Future<{{ fqClass relationType.target.name }}Store> create{{ fqClass accessRelation.target.name }}{{ className relationType.name }}({{ fqClass relationType.owner.name }}Store {{ variable relationType.name }}{{ className relationType.owner.name }}Store, {{ fqClass relationType.target.name }}Store {{ variable relationType.target.name }}Store) async {
     var {{ variable relationType.target.name }}ExtendedRequest = {{ fqClass ap.name }}RepositoryStoreMapper.create{{ fqClass relationType.target.name }}ExtendedFrom{{ fqClass relationType.target.name }}Store({{ variable relationType.target.name }}Store);
     var {{ variable relationType.target.name }}Response = await {{ className accessRelation.name }}Api(_apiClient).{{ fqVariable relationType.owner.name }}Create{{ className relationType.name }}({{ variable relationType.name }}{{ className relationType.owner.name }}Store.identifier, {{ variable relationType.target.name }}ExtendedRequest);
     return {{ fqClass ap.name }}RepositoryStoreMapper.create{{ fqClass relationType.target.name }}StoreFrom{{ fqClass relationType.target.name }}({{ variable relationType.target.name }}Response);
@@ -49,8 +49,7 @@ class {{ fqClass ap.name }}{{ className accessRelation.name }}{{ fqClass accessR
   //////////////////////////////////////////////////////////////////////////////
   // REMOVE
   //////////////////////////////////////////////////////////////////////////////
-  // Single Future remove{{ className relationType.name }}({{ fqClass relationType.owner.name }}Store {{ variable relationType.name }}{{ className relationType.owner.name }}Store) async {
-  Future<void> remove{{ className relationType.name }}({{ fqClass relationType.owner.name }}Store {{ variable relationType.name }}{{ className relationType.owner.name }}Store,  {{ fqClass relationType.target.name }}Store {{ variable relationType.target.name }}Store) async {
+  Future<void> remove{{ fqClass accessRelation.target.name }}{{ className relationType.name }}({{ fqClass relationType.owner.name }}Store {{ variable relationType.name }}{{ className relationType.owner.name }}Store,  {{ fqClass relationType.target.name }}Store {{ variable relationType.target.name }}Store) async {
     // Request mapping
     var {{ variable relationType.target.name }}Request = {{ modelName application.name }}Identifier();
     {{ variable relationType.target.name }}Request.identifier = {{ variable relationType.name }}{{ className relationType.owner.name }}Store.identifier;
@@ -60,7 +59,7 @@ class {{ fqClass ap.name }}{{ className accessRelation.name }}{{ fqClass accessR
   //////////////////////////////////////////////////////////////////////////////
   // UPDATE
   //////////////////////////////////////////////////////////////////////////////
-  Future<{{ fqClass relationType.target.name }}Store> update{{ className relationType.name }}({{ fqClass relationType.owner.name }}Store {{ variable relationType.name }}{{ className relationType.owner.name }}Store,  {{ fqClass relationType.target.name }}Store {{ variable relationType.target.name }}Store) async {
+  Future<{{ fqClass relationType.target.name }}Store> update{{ fqClass accessRelation.target.name }}{{ className relationType.name }}({{ fqClass relationType.owner.name }}Store {{ variable relationType.name }}{{ className relationType.owner.name }}Store,  {{ fqClass relationType.target.name }}Store {{ variable relationType.target.name }}Store) async {
     var {{ variable relationType.target.name }}Request = {{ fqClass ap.name }}RepositoryStoreMapper.create{{ fqClass relationType.target.name }}From{{ fqClass relationType.target.name }}Store({{ variable relationType.target.name }}Store);
     var {{ variable relationType.target.name }}Response = await {{ className accessRelation.name }}Api(_apiClient).{{ fqVariable relationType.owner.name }}Update{{ className relationType.name }}({{ variable relationType.name }}{{ className relationType.owner.name }}Store.identifier, {{ variable relationType.target.name }}Request);
     return {{ fqClass ap.name }}RepositoryStoreMapper.create{{ fqClass relationType.target.name }}StoreFrom{{ fqClass relationType.target.name }}({{ variable relationType.target.name }}Response);
@@ -70,7 +69,7 @@ class {{ fqClass ap.name }}{{ className accessRelation.name }}{{ fqClass accessR
   //////////////////////////////////////////////////////////////////////////////
   // GET CREATE RANGE FOR {{ variable name }}
   //////////////////////////////////////////////////////////////////////////////
-  Future<List<{{ fqClass target.name }}Store>> get{{ className name }}RangeForCreate{{ className ../relationType.name }}({{ fqClass ../relationType.target.name }}Store {{ variable ../relationType.name }}{{ fqClass ../relationType.owner.name }}Store) async {
+  Future<List<{{ fqClass target.name }}Store>> get{{ fqClass accessRelation.target.name }}{{ className name }}RangeForCreate{{ className ../relationType.name }}({{ fqClass ../relationType.target.name }}Store {{ variable ../relationType.name }}{{ fqClass ../relationType.owner.name }}Store) async {
     var {{ variable ../relationType.target.name }}Request = {{ fqClass ap.name }}RepositoryStoreMapper.create{{ fqClass ../relationType.target.name }}From{{ fqClass ../relationType.target.name }}Store({{ variable ../relationType.name }}{{ fqClass ../relationType.owner.name }}Store);
     var {{ variable target.name }}ListResponse = await {{ className ../accessRelation.name }}Api(_apiClient).{{ fqVariable relationType.owner.name }}GetRangeOf{{ className name }}ToCreate{{ className ../relationType.name }}({{ variable ../relationType.target.name }}Request);
     return {{ variable target.name }}ListResponse.map<{{ fqClass target.name }}Store>(
@@ -80,7 +79,7 @@ class {{ fqClass ap.name }}{{ className accessRelation.name }}{{ fqClass accessR
   //////////////////////////////////////////////////////////////////////////////
   // GET UPDATE RANGE FOR {{ variable name }}
   //////////////////////////////////////////////////////////////////////////////
-  Future<List<{{ fqClass target.name }}Store>> get{{ className name }}RangeForUpdate{{ className ../relationType.name }}({{ fqClass ../relationType.target.name }}Store {{ variable ../relationType.name }}{{ fqClass ../relationType.owner.name }}Store, List<{{ fqClass target.name }}Store> selectable{{ className target.name }}ListStore) async {
+  Future<List<{{ fqClass target.name }}Store>> get{{ fqClass accessRelation.target.name }}{{ className name }}RangeForUpdate{{ className ../relationType.name }}({{ fqClass ../relationType.target.name }}Store {{ variable ../relationType.name }}{{ fqClass ../relationType.owner.name }}Store, List<{{ fqClass target.name }}Store> selectable{{ className target.name }}ListStore) async {
     var {{ variable ../relationType.target.name }}Request = {{ fqClass ap.name }}RepositoryStoreMapper.create{{ fqClass ../relationType.target.name }}From{{ fqClass ../relationType.target.name }}Store({{ variable ../relationType.name }}{{ fqClass ../relationType.owner.name }}Store);
     var {{ variable target.name }}ListResponse = await {{ className ../accessRelation.name }}Api(_apiClient).{{ fqVariable relationType.owner.name }}GetRangeOf{{ className name }}ToUpdate{{ className ../relationType.name }}({{ variable ../relationType.target.name }}Request);
     return {{ variable target.name }}ListResponse.map<{{ fqClass target.name }}Store>(
