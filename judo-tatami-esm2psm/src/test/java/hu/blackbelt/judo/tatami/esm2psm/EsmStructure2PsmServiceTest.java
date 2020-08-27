@@ -534,7 +534,7 @@ public class EsmStructure2PsmServiceTest {
 
 		TransferObjectType targetMappedTransferObjectType = newTransferObjectTypeBuilder()
 				.withName("targetMappedTransferObjectType")
-				.withMapping(newMappingBuilder().withTarget(entityType).withFilter("expr").build()).build();
+				.withMapping(newMappingBuilder().withTarget(targetEntityType).withFilter("expr").build()).build();
 
 		OneWayRelationMember oneWayRelationBasic = newOneWayRelationMemberBuilder().withName("transferRelationBasic")
 				.withRelationKind(RelationKind.AGGREGATION)
@@ -697,7 +697,7 @@ public class EsmStructure2PsmServiceTest {
 				hu.blackbelt.judo.meta.psm.service.MappedTransferObjectType.class)
 						.filter(mappedTOT -> targetMappedTransferObjectType.getName().equals(mappedTOT.getName()))
 						.findAny();
-		assertTrue(psmMappedTransferObject.isPresent());
+		assertTrue(psmTargetMappedTransferObjectType.isPresent());
 
 		assertTrue(
 				psmMappedTransferObject.get().getRelations().contains(psmTransferObjectRelationTargetingMapped.get()));
