@@ -856,6 +856,7 @@
             <groupId>hu.blackbelt.cxf</groupId>
             <artifactId>cxf-jaxrs-application-manager</artifactId>
             <version>${cxf-jaxrs-application-manager-version}</version>
+            <scope>test</scope>
         </dependency>
 
         <dependency>
