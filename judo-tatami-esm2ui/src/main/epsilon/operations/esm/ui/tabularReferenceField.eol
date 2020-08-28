@@ -1,6 +1,7 @@
 operation ESM!esm::ui::TabularReferenceField createTableFromTabularReferenceField(application : UI!ui::Application) : UI!ui::Table {
 	var table : UI!ui::Table = new UI!ui::Table();
 	table.name = self.name;	
+	table.dataElement = self.relationFeature.getMember().mapRelationType(application, self.relationFeature.getMember().eContainer.mapClassType(application));
 	
 	for (column in self.columns) {
 		table.columns.add(column.map(application));
