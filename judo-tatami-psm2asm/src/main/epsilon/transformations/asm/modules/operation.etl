@@ -85,7 +85,7 @@ rule CreateStatefulAnnotationOnOperationWithoutImplementationAndBehaviour
 		
 		var stateful = new ASM!EStringToStringMapEntry;
         stateful.key = "value";
-        stateful.value = "false";
+        stateful.value = "true";
         t.details.add(stateful);
         
         s.asmEquivalent().eAnnotations.add(t);
