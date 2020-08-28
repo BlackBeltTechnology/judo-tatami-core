@@ -76,6 +76,22 @@ rule CreateStatefulAnnotationOnOperation
 }
 
 @greedy
+rule CreateStatefulAnnotationOnOperationWithoutImplementationAndBehaviour
+    transform s : JUDOPSM!TransferOperation
+    to t : ASM!EAnnotation {
+        guard: not s.implementation.isDefined() and not s.behaviour.isDefined()
+
+        t.source = asmUtils.getAnnotationUri("stateful");
+		
+		var stateful = new ASM!EStringToStringMapEntry;
+        stateful.key = "value";
+        stateful.value = "true";
+        t.details.add(stateful);
+        
+        s.asmEquivalent().eAnnotations.add(t);
+}
+
+@greedy
 rule CreateStatefulAnnotationOnOperationWithBehaviour
     transform s : JUDOPSM!TransferOperation
     to t : ASM!EAnnotation {
