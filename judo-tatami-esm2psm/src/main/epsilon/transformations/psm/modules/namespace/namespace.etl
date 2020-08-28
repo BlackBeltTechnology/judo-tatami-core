@@ -42,6 +42,15 @@ rule CreateGeneratedDefaultTransferObjectTypeRootPackage
 }
 
 @lazy
+rule CreateExtensionRootPackage
+  transform s : ESM!Model
+  to t: JUDOPSM!Package {
+    t.name = "_extension";
+    s.equivalent("CreateModel").packages.add(t);
+    log.debug("Created extension package: " + t.name);
+}
+
+@lazy
 rule CreateGeneratedDefaultTransferObjectTypePackage
   transform s : ESM!Package
   to t: JUDOPSM!Package {
@@ -49,6 +58,16 @@ rule CreateGeneratedDefaultTransferObjectTypePackage
     s.eContainer.getPSMGeneratedDefaultTransferObjectNamespaceEquivalent().packages.add(t);
     
     log.debug("Created Generated Package for DefaultTransferObjectType: " + t.name);
+}
+
+@lazy
+rule CreateExtensionPackage
+  transform s : ESM!Package
+  to t: JUDOPSM!Package {
+    t.name = s.name;
+    s.eContainer.getPSMExtensionNamespaceEquivalent().packages.add(t);
+
+    log.debug("Created extension package: " + t.name);
 }
 
 @lazy
