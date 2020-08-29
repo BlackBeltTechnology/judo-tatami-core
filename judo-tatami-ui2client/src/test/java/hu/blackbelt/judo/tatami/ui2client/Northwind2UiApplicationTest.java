@@ -80,7 +80,7 @@ public class Northwind2UiApplicationTest {
 //        Load UI model from file for manual xml edit.
 //        uiModel = uiModel.loadResource(UiModel.LoadArguments.uiLoadArgumentsBuilder()
 //                .uri(org.eclipse.emf.common.util.URI.createURI("ui:" + TEST))
-//                .file(new File("target/test-classes/Northwind-ui.model"))
+//                .file(new File("src/test/resources/nortwind-ui-with-actions.model"))
 //                .build());
 
         transformEsm2Ui();
