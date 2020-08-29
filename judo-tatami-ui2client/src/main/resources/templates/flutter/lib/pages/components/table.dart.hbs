@@ -1,0 +1,24 @@
+Observer(builder: (_) {
+    switch(allCategoriesViewPageStore.allCategoriesStoreFuture.status){
+        case FutureStatus.pending:
+            return SizedBox(
+                child: CircularProgressIndicator(),
+                width: 30,
+                height: 30,
+            );
+        case FutureStatus.rejected:
+            return Container();
+        case FutureStatus.fulfilled:
+            return JudoTable(
+                col: {{col}},
+                dataInfo: {{fqClass (getPage this)}}{{fqClass name}}Table(),
+                rowList: {{ variable page.dataElement.name }}Store.{{ variable dataElement.name }},
+                {{#if onSelectItemAction.target}}
+                onTap: (element) {
+                    navigation.open(Routes.{{fqVariable onSelectItemAction.target.name}},
+                    arguments: {{fqClass onSelectItemAction.target.name}}Arguments({{ variable page.dataElement.name }}Store: element));
+                },
+                {{/if}}
+            );
+    }
+}),

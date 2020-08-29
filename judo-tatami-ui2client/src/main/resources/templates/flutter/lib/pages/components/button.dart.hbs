@@ -1,0 +1,13 @@
+JudoButton(
+    col: {{col}},
+{{#if (isSaveButton this)}}
+    onPressed: () => navigation.close({{ variable page.dataElement.name }}Store),
+    icon: Icon(Icons.save),
+{{else}}
+    {{#if (isBackButton this)}}
+    onPressed: () => navigation.close(),
+    icon: Icon(Icons.arrow_back_ios),
+    {{/if}}
+{{/if}}
+    label: '{{label}}',
+),

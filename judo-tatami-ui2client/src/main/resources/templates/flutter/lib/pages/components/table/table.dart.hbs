@@ -1,0 +1,44 @@
+//////////////////////////////////////////////////////////////////////////////
+// G E N E R A T E D    C L A S S
+// ------------------------------
+// Factory expression: {{{ cleanup template.factoryExpression }}}
+// Path expression: {{{ cleanup template.pathExpression }}}
+// Overwrite: {{{ cleanup template.overwriteExpression }}}
+// Template name: {{ template.templateName }}
+// Application: {{ application.name }}
+
+import 'package:flutter/material.dart';
+import 'package:{{modelPackage application.dataElement.name}}/{{path application.dataElement.name}}/components/package.dart';
+
+class {{fqClass (getPage table)}}{{fqClass table.name}}Table implements JudoTableDataInfo {
+
+    @override
+    List<DataColumn> getColumns() {
+        return [
+            {{# each columns}}
+            DataColumn(label: Text('{{label}}')),
+            {{/each}}
+            DataColumn(label: Text(""))
+        ];
+    }
+
+    @override
+    Function getRow(Function onTap) {
+        return ({{name}}) => DataRow(
+            cells: [
+                {{# each columns as |column|}}
+                DataCell(
+                    {{#if column}}
+                        {{> (getWidgetTemplate column) column=column parentName=../../name}}
+                        onTap: () => onTap({{../../name}}),
+                    {{/if}}
+                ),
+                {{/each}}
+                DataCell(
+                    Icon(Icons.arrow_forward_ios),
+                    onTap: () => onTap({{name}}),
+                )
+            ],
+        );
+    }
+}

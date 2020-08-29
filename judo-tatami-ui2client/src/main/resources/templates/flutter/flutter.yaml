@@ -298,3 +298,50 @@
   templateName: flutter/lib/utilities/route_names.dart
   copy: true
 
+# ========================================
+# pages
+# ========================================
+- overwriteExpression: true
+  factoryExpression: "#application.pages"
+  pathExpression: >
+    'lib/'+
+    #path(#application.dataElement.name) +
+    '/pages/' +
+    #fqPath(#self.name) +
+    '__page.dart'
+  templateName: flutter/lib/pages/page.dart.hbs
+  templateContext:
+    - name: page
+      expression: "#self"
+      className: hu.blackbelt.judo.meta.ui.PageDefinition
+    - name: ap
+      expression: "#application.dataElement"
+      className: hu.blackbelt.judo.meta.ui.data.ClassType
+
+# ========================================
+# tables
+# ========================================
+- overwriteExpression: true
+  factoryExpression: "#getTables(#application.pages)"
+  pathExpression: >
+    'lib/' +
+    #path(#application.dataElement.name) +
+    '/pages/tables/' +
+    #fqPath(#getPage(#self)) +
+    '__'+
+    #self.name +
+    '__table.dart'
+  templateName: flutter/lib/pages/components/table/table.dart.hbs
+  templateContext:
+    - name: table
+      expression: "#self"
+      className: hu.blackbelt.judo.meta.ui.Table
+
+- overwriteExpression: true
+  factoryExpression: "#application"
+  pathExpression: >
+    'lib/' +
+    #path(#application.dataElement.name) +
+    '/pages/tables/' +
+    'package.dart'
+  templateName: flutter/lib/pages/components/table/package.dart.hbs

@@ -1,0 +1,37 @@
+//////////////////////////////////////////////////////////////////////////////
+// G E N E R A T E D    C L A S S
+// ------------------------------
+// Factory expression: {{{ cleanup template.factoryExpression }}}
+// Path expression: {{{ cleanup template.pathExpression }}}
+// Overwrite: {{{ cleanup template.overwriteExpression }}}
+// Template name: {{ template.templateName }}
+// Application: {{ application.name }}
+
+import 'package:flutter/material.dart';
+import 'components/table/package.dart';
+import '../store/package.dart';
+
+class {{fqClass page.name}} extends StatelessWidget {
+
+{{ fqClass page.dataElement.name }}Store {{ variable page.dataElement.name }}Store;
+
+    @override
+    Widget build(BuildContext context) {
+        final externalApStore = locator<{{ fqClass ap.name }}GlobalStore>();
+        final navigation = locator<NavigationState>();
+
+        return NorthwindExternalAPScaffold(
+            pageTitle: 'title',
+            body: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                {{# each page.children as |child|}}
+                    {{#if child}}
+                        {{> (getWidgetTemplate child)}}
+                    {{/if}}
+                {{/each}}
+                ],
+            ),
+        );
+    }
+}
