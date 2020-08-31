@@ -6,6 +6,7 @@ import hu.blackbelt.judo.meta.esm.runtime.EsmModel;
 import hu.blackbelt.judo.meta.ui.Application;
 import hu.blackbelt.judo.meta.ui.NavigationController;
 import hu.blackbelt.judo.meta.ui.runtime.UiModel;
+import hu.blackbelt.judo.meta.ui.support.UiModelResourceSupport;
 import hu.blackbelt.judo.tatami.esm2ui.Esm2UiTransformationTrace;
 import hu.blackbelt.model.northwind.esm.NorthwindEsmModel;
 import lombok.extern.slf4j.Slf4j;
@@ -76,8 +77,13 @@ public class Northwind2UiApplicationTest {
 
         esmModel = NorthwindEsmModel.fullDemo();
 
-        transformEsm2Ui();
+//        Load UI model from file for manual xml edit.
+//        uiModel = uiModel.loadResource(UiModel.LoadArguments.uiLoadArgumentsBuilder()
+//                .uri(org.eclipse.emf.common.util.URI.createURI("ui:" + TEST))
+//                .file(new File("src/test/resources/nortwind-ui-with-actions.model"))
+//                .build());
 
+        transformEsm2Ui();
         /*
         Map<Application, Collection<GeneratedFile>> generatedFiles = Ui2Client.executeUi2ClientGeneration(uiModel,
                 GeneratorTemplate.loadYamlURL(Ui2Client.calculateUi2ClientTemplateScriptURI().resolve("flutter/flutter.yaml").toURL()));

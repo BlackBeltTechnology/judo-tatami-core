@@ -59,6 +59,8 @@ public class Ui2Client {
         handlebars.setCharset(Charsets.UTF_8);
         handlebars.registerHelpers(FlutterHelper.class);
         handlebars.registerHelpers(ConditionalHelpers.class);
+        handlebars.prettyPrint(true);
+        handlebars.setInfiniteLoops(true);
         UiModelResourceSupport modelResourceSupport = loadUi(uiLoadArgumentsBuilder()
                 .uri(org.eclipse.emf.common.util.URI.createURI("ui:" + uiModel.getName()))
                 .resourceSet(uiModel.getResourceSet()).build());
