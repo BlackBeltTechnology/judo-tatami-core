@@ -1,0 +1,32 @@
+[%
+  import "../operations/jaxrs.eol";
+  out.setContentType("Java");
+%]
+package [%= enumeration.getEnumerationPackageName() %];
+
+public class [%= enumeration.name.normalizeName() %] {
+
+    public static Integer resolveLiteral(String name) {
+        if (name == null) {
+            return null;
+        }
+[%      for (member in enumeration.eLiterals) { %]
+        if (java.util.Objects.equals(name, "[%= member.name %]")) {
+            return [%= member.value %];
+        }
+[%      } %]
+        throw new IllegalArgumentException("Invalid enumeration member: " + name);
+    }
+
+    public static String literalToString(Integer ordinal) {
+        if (ordinal == null) {
+            return null;
+        }
+[%      for (member in enumeration.eLiterals) { %]
+        if (java.util.Objects.equals(ordinal, [%= member.value %])) {
+            return "[%= member.name %]";
+        }
+[%      } %]
+        throw new IllegalArgumentException("Invalid enumeration ordinal: " + ordinal);
+    }
+}

@@ -31,6 +31,17 @@ operation ASM!EOperation toJAXRSPath() : String {
 }
 
 /*
+ Enum
+ */
+
+operation genEnumeration(e : ASM!EEnum) {
+	var t = TemplateFactory.load("Enumeration.java.egl");
+	t.populate("enumeration", e);
+	t.generate(e.getEnumerationJavaFileName());
+	t.reset();
+}
+
+/*
  DTO
  */
 
@@ -59,6 +70,16 @@ operation getDtoPackagePrefix() : String {
 @cached
 operation ASM!EClass getDtoPackageName() : String {
 	return getDtoPackagePrefix() + "." + asmUtils.getPackageFQName(self.ePackage);
+}
+
+@cached
+operation ASM!EEnum getEnumerationPackageName() : String {
+	return getDtoPackagePrefix() + "." + asmUtils.getPackageFQName(self.ePackage);
+}
+
+@cached
+operation ASM!EEnum getEnumerationJavaFileName() : String {
+	return self.getEnumerationPackageName().replaceAll("\\.", "/") + "/" + self.name.normalizeName() + ".java";
 }
 
 @cached
