@@ -33,7 +33,6 @@ import lombok.extern.slf4j.Slf4j;
 public class Asm2OpenAPITest {
 
     public static final String NORTHWIND = "northwind";
-    public static final String NORTHWIND_ASM_MODEL = "northwind-asm.model";
     public static final String NORTHWIND_OPENAPI_MODEL = "northwind-openapi.model";
     public static final String NORTHWIND_ASM_2_OPENAPI_MODEL = "northwind-asm2openapi.model";
     public static final String TARGET_TEST_CLASSES = "target/test-classes";

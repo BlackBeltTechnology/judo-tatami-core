@@ -24,8 +24,6 @@ import hu.blackbelt.model.northwind.Demo;
 class Asm2OpenAPIWorkTest {
 
     public static final String NORTHWIND = "northwind";
-    public static final String NORTHWIND_ASM_MODEL = "northwind-asm.model";
-    public static final String TARGET_TEST_CLASSES = "target/test-classes";
 
     Asm2OpenAPIWork asm2OpenAPIWork;
     TransformationContext transformationContext;

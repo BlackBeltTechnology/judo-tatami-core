@@ -89,7 +89,7 @@ operation ASM!EAttribute getTypeDefinition() : String {
 		    typeName = self.eType.instanceClass.name;
 	    }
 	} else if (self.eType.isKindOf(ASM!EEnum)) {
-		typeName = "java.lang.Integer";
+		typeName = "java.lang.String";
 	} else {
 	    throw "Unsupported attribute type: " + self.eType;
 	}

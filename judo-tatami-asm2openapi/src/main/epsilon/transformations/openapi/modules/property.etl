@@ -21,8 +21,8 @@ rule CreateDataPropertyDefinition
         }
 
         if (s.eContainer.eAttributeType.isKindOf(ASM!EEnum)) {
-            // TODO - set literals in t.enum
-            t.type = OPENAPI!JSONDataType#integer;
+            t.type = OPENAPI!JSONDataType#string;
+            t.enum = s.eContainer.eAttributeType.eLiterals.collect(l | l.name);
         } else {
             switch (s.eContainer.eAttributeType.instanceClassName) {
                 case 'java.lang.Boolean': continue;
@@ -148,8 +148,8 @@ rule CreateDataPropertyDefinitionExtended
         }
 
         if (s.eContainer.eAttributeType.isKindOf(ASM!EEnum)) {
-            // TODO - set literals in t.enum
-            t.type = OPENAPI!JSONDataType#integer;
+            t.type = OPENAPI!JSONDataType#string;
+            t.enum = s.eContainer.eAttributeType.eLiterals.collect(l | l.name);
         } else {
             switch (s.eContainer.eAttributeType.instanceClassName) {
                 case 'java.lang.Boolean': continue;
