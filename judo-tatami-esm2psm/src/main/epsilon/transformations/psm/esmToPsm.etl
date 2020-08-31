@@ -25,9 +25,8 @@ import "modules/accesspoint/accessPoint.etl";
 
 post {
     var enumsWithoutOrdinal = JUDOPSM!EnumerationMember.all.select(m | m.ordinal == -1).collect(m | m.eContainer).flatten().asSet();
-    log.info("E: " + enumsWithoutOrdinal);
     for (e in enumsWithoutOrdinal) {
-        log.info("Set/overwrite ordinals of enumeration: " + e.name);
+        log.debug("Set/overwrite ordinals of enumeration: " + e.name);
         var index = 0;
         for (m in e.members) {
             m.ordinal = index;
