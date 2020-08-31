@@ -11,11 +11,16 @@ operation ESM!esm::`operation`::Operation createPageForOperationOutputForView(ap
 	page.name = self.fqName().anchor("OperationOutputPageView", self.eContainer().fqName());
 	
 	if (self.output.target.view.isUndefined()) {
+		var flex = new UI!ui::Flex();
+		flex.name = self.name;	
+		page.children.add(flex);
 		log.warn(self.output.target.fqName() + " has no view defined");
 	} else {
 		page.children.add(self.output.target.view.map(application));
 	}
-	
+
+	uiUtils.organizeElements(page);
+		
     return page;
 }
 
@@ -27,10 +32,15 @@ operation ESM!esm::`operation`::Operation createPageForOperationInputForForm(app
 	page.name = self.fqName().anchor("OperationInputPageForm", self.eContainer().fqName());
     
     if (self.input.target.form.isUndefined()) {
+    	var flex = new UI!ui::Flex();
+		flex.name = self.name;	
+		page.children.add(flex);
 		log.warn(self.input.target.fqName() + " has no form defined");
 	} else {
 		page.children.add(self.input.target.form.map(application));
 	}
+	
+	uiUtils.organizeElements(page);
 	
     return page;
 }
@@ -43,9 +53,14 @@ operation ESM!esm::`operation`::Operation createPageForOperationInputForTable(ap
 	
 	page.dataElement = self.mapOperationInputType(application, clazz);
 	page.name = self.fqName().anchor("OperationInputPageTable", self.eContainer().fqName());
-    
+	
+	var flex = new UI!ui::Flex();
+	flex.name = self.name;
+	flex.direction = UI!Axis#VERTICAL;
+	page.children.add(flex);
+	
 	var table = self.input.target.table.createTableFromTransferObjectTable(application);
-    page.children.add(table);
+    flex.children.add(table);
     
     if (self.input.target.table.masterDetail and self.input.target.view.isDefined()) {
 		var detail : UI!ui::PageDefinition = new UI!ui::PageDefinition();
@@ -55,6 +70,8 @@ operation ESM!esm::`operation`::Operation createPageForOperationInputForTable(ap
 	  	detail.children.add(self.input.target.view.map(application));
 	  	table.detail = detail;        
     }
+    
+   	uiUtils.organizeElements(page);
     
     return page;
 }
@@ -68,8 +85,13 @@ operation ESM!esm::`operation`::Operation createPageForOperationOutputForTable(a
 	page.dataElement = self.mapOperationOutputType(application, clazz);
 	page.name = self.fqName().anchor("OperationOutputPageTable", self.eContainer().fqName());
     
+    var flex = new UI!ui::Flex();
+	flex.name = self.name;
+	flex.direction = UI!Axis#VERTICAL;
+	page.children.add(flex);
+    
 	var table = self.output.target.table.createTableFromTransferObjectTable(application);
-    page.children.add(table);
+    flex.children.add(table);
     
     if (self.output.target.table.masterDetail and self.output.target.view.isDefined()) {
 		var detail : UI!ui::PageDefinition = new UI!ui::PageDefinition();
@@ -79,6 +101,8 @@ operation ESM!esm::`operation`::Operation createPageForOperationOutputForTable(a
 	  	detail.children.add(self.output.target.view.map(application));
 	  	table.detail = detail;        
     }
+    
+   	uiUtils.organizeElements(page);
     
     return page;
 }

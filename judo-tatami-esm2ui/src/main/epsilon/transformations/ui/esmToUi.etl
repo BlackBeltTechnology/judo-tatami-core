@@ -17,6 +17,9 @@ operation String anchor(anchor1 : String) : String {
 	return self.anchor(anchor1, null);
 }
 
+pre {
+  var uiUtils = new Native("hu.blackbelt.judo.meta.ui.runtime.UiUtils");
+}
 
 post {
 	for (cl : UI!ClassType in UI!ClassType.all().select(c | not c.isAccessPoint())) {

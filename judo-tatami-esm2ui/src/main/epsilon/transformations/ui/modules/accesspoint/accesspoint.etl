@@ -80,7 +80,7 @@ rule CreateApplicationDashboard
         t.children.add(s.view.map(application));
         application.pages.add(t);
         
-
+        uiUtils.organizeElements(t);
 }
 
 @greedy
@@ -126,7 +126,8 @@ rule CreateNavigationItemPageForAccessPointRelationForView
         t.dataElement = s.target.mapClassType(application);
         t.children.add(s.target.view.map(application));
         application.pages.add(t);
-
+        
+        uiUtils.organizeElements(t);
 }
 
 @greedy
@@ -145,6 +146,8 @@ rule CreateNavigationItemPageForAccessPointRelationForForm
         t.dataElement = s.target.mapClassType(application);
         t.children.add(s.target.form.map(application));
         application.pages.add(t);
+        
+        uiUtils.organizeElements(t);
 }
 
 @greedy
@@ -162,8 +165,13 @@ rule CreateNavigationItemPageForAccessPointRelationForTable
 
         t.dataElement = s.target.mapClassType(application);
         
+        var flex = new UI!ui::Flex();
+		flex.name = self.name;
+		flex.direction = UI!Axis#VERTICAL;
+		t.children.add(flex);
+        
         var table = s.target.table.createTableFromTransferObjectTable(application);
-        t.children.add(table);
+        flex.children.add(table);
 
         if (s.target.table.masterDetail and s.target.view.isDefined()) {
             var detail : UI!ui::PageDefinition = new UI!ui::PageDefinition();
@@ -174,5 +182,6 @@ rule CreateNavigationItemPageForAccessPointRelationForTable
             table.detail = detail;
         }
         application.pages.add(t);
-
+        
+        uiUtils.organizeElements(t);
 }
