@@ -1,5 +1,6 @@
 package hu.blackbelt.judo.tatami.esm2psm;
 
+import static hu.blackbelt.judo.meta.esm.runtime.EsmModel.SaveArguments.esmSaveArgumentsBuilder;
 import static hu.blackbelt.judo.meta.psm.runtime.PsmModel.SaveArguments.psmSaveArgumentsBuilder;
 import static hu.blackbelt.judo.tatami.core.workflow.engine.WorkFlowEngineBuilder.aNewWorkFlowEngine;
 import static hu.blackbelt.judo.tatami.core.workflow.flow.SequentialFlow.Builder.aNewSequentialFlow;
@@ -32,6 +33,7 @@ class Esm2PsmWorkTest {
 
 	public static final String NORTHWIND = "northwind";
 	public static final String NORTHWIND_PSM_MODEL = NORTHWIND + "-psm.model";
+	public static final String NORTHWIND_ESM_MODEL = NORTHWIND + "-esm.model";
 	public static final String TARGET_TEST_CLASSES = "target/test-classes";
 
 	Esm2PsmWork esm2PsmWork;
@@ -45,6 +47,7 @@ class Esm2PsmWorkTest {
 		transformationContext.put(esmModel);
 
 		esm2PsmWork = new Esm2PsmWork(transformationContext, calculateEsm2PsmTransformationScriptURI());
+		esmModel.saveEsmModel(esmSaveArgumentsBuilder().file(new File(TARGET_TEST_CLASSES, NORTHWIND_ESM_MODEL)).build());
 	}
 
 	@Test

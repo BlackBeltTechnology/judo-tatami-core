@@ -366,7 +366,8 @@ public class EsmAccesspoint2PsmAccesspointTest {
 
         assertTrue(ap.get().getOperations().stream().anyMatch(o -> NAME_OF_GET_OPERATION.equals(o.getName()) && (o instanceof UnboundOperation) &&
                 o.getBehaviour() != null && o.getBehaviour().getBehaviourType() == TransferOperationBehaviourType.GET && EcoreUtil.equals(o.getBehaviour().getOwner(), graph.get()) &&
-                o.getInput() == null && o.getOutput() != null && o.getFaults().isEmpty() &&
+                o.getInput() != null && o.getOutput() != null && o.getFaults().isEmpty() &&
+                o.getInput().getCardinality().getLower() == 0 && o.getInput().getCardinality().getUpper() == 1 &&
                 o.getOutput().getCardinality().getLower() == LOWER && o.getOutput().getCardinality().getUpper() == UPPER &&
                 EcoreUtil.equals(o.getOutput().getType(), defaultE.get())
         ));

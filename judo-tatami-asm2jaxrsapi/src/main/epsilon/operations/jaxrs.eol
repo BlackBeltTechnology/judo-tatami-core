@@ -31,6 +31,17 @@ operation ASM!EOperation toJAXRSPath() : String {
 }
 
 /*
+ Enum
+ */
+
+operation genEnumeration(e : ASM!EEnum) {
+	var t = TemplateFactory.load("Enumeration.java.egl");
+	t.populate("enumeration", e);
+	t.generate(e.getEnumerationJavaFileName());
+	t.reset();
+}
+
+/*
  DTO
  */
 
@@ -62,6 +73,16 @@ operation ASM!EClass getDtoPackageName() : String {
 }
 
 @cached
+operation ASM!EEnum getEnumerationPackageName() : String {
+	return getDtoPackagePrefix() + "." + asmUtils.getPackageFQName(self.ePackage);
+}
+
+@cached
+operation ASM!EEnum getEnumerationJavaFileName() : String {
+	return self.getEnumerationPackageName().replaceAll("\\.", "/") + "/" + self.name.normalizeName() + ".java";
+}
+
+@cached
 operation ASM!EClass getDtoTypeName() : String {
 	return self.getDtoPackageName() + "." + self.name.normalizeName();
 }
@@ -89,7 +110,7 @@ operation ASM!EAttribute getTypeDefinition() : String {
 		    typeName = self.eType.instanceClass.name;
 	    }
 	} else if (self.eType.isKindOf(ASM!EEnum)) {
-		typeName = "java.lang.Integer";
+		typeName = "java.lang.String";
 	} else {
 	    throw "Unsupported attribute type: " + self.eType;
 	}
