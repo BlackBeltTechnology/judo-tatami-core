@@ -9,6 +9,7 @@ operation ESM!esm::structure::RelationFeature createPageForRelationForView(appli
 	var page : UI!ui::PageDefinition = new UI!ui::PageDefinition();
 	page.dataElement = self.mapRelationType(application, self.eContainer.mapClassType(application));
 	page.name = self.fqName().anchor("RelationPageView", target.fqName());
+	page.col = applicationColumns;
 	page.children.add(target.view.map(application));
 	
 	uiUtils.organizeElements(page);
@@ -22,6 +23,7 @@ operation ESM!esm::structure::RelationFeature createPageForRelationForForm(appli
 	var page : UI!ui::PageDefinition = new UI!ui::PageDefinition();
 	page.dataElement = self.mapRelationType(application, self.eContainer.mapClassType(application));
 	page.name = self.fqName().anchor("RelationPageForm", target.fqName());
+	page.col = applicationColumns;
     page.children.add(target.form.map(application));
     
 	uiUtils.organizeElements(page);
@@ -35,10 +37,12 @@ operation ESM!esm::structure::RelationFeature createPageForRelationForTable(appl
 	var page : UI!ui::PageDefinition = new UI!ui::PageDefinition();
 	page.dataElement = self.mapRelationType(application, self.eContainer.mapClassType(application));
 	page.name = self.fqName().anchor("RelationPageTable", target.fqName());
+	page.col = applicationColumns;
     
     var flex = new UI!ui::Flex();
 	flex.name = self.name;
 	flex.direction = UI!Axis#VERTICAL;
+	flex.col = applicationColumns;
 	page.children.add(flex);
     
 	var table = target.table.createTableFromTransferObjectTable(application);
@@ -48,8 +52,7 @@ operation ESM!esm::structure::RelationFeature createPageForRelationForTable(appl
 		var detail : UI!ui::PageDefinition = new UI!ui::PageDefinition();
 		detail.name = self.fqName().anchor("RelationPageTableMasterDetail", target.fqName());
 		detail.dataElement = self.mapRelationType(application, self.eContainer.mapClassType(application));
-		detail.name = self.fqName().anchor("RelationPageTableDetail", target.fqName());
-
+		detail.col = applicationColumns;
 		application.pages.add(detail);
 	  	detail.children.add(target.view.map(application));
 	  	table.detail = detail;

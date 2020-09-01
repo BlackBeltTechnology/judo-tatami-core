@@ -3,6 +3,7 @@ import "container.eol";
 import "group.eol";
 import "dataField.eol";
 import "actionButton.eol";
+import "tabBar.eol";
 
 import "tabularReferenceField.eol";
 import "dataColumn.eol";

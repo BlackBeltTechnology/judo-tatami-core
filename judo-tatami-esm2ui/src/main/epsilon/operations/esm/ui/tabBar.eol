@@ -1,0 +1,26 @@
+operation ESM!esm::ui::TabBar createTabController(application : UI!ui::Application) : UI!ui::TabController {
+	var ret : UI!ui::TabController = new UI!ui::TabController();
+	ret.name = self.name;	
+	
+	ret.col = applicationColumns;
+	
+	for (t in self.tabs) {
+	
+		var tab : UI!ui::Tab = new UI!ui::Tab();
+		tab.name = t.name;
+		
+		var flex = new UI!ui::Flex();
+		flex.name = tab.name.anchor("Flex");
+		flex.col = applicationColumns;
+		tab.element = flex;
+		
+		flex.children.add(t.map(application));
+		ret.tabs.add(tab);
+	}
+
+	return ret;
+}
+
+operation ESM!esm::ui::TabBar map(application : UI!ui::Application) : UI!ui::TabController {
+	return self.createTabController(application);
+}

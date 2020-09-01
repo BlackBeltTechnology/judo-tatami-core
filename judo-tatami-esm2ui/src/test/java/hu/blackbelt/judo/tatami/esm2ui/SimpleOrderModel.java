@@ -24,6 +24,7 @@ import static hu.blackbelt.judo.meta.esm.ui.util.builder.UiBuilders.newTabularRe
 import static hu.blackbelt.judo.meta.esm.ui.util.builder.UiBuilders.newTransferObjectFormBuilder;
 import static hu.blackbelt.judo.meta.esm.ui.util.builder.UiBuilders.newTransferObjectTableBuilder;
 import static hu.blackbelt.judo.meta.esm.ui.util.builder.UiBuilders.newTransferObjectViewBuilder;
+import static hu.blackbelt.judo.meta.esm.ui.util.builder.UiBuilders.newTabBarBuilder;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -53,6 +54,7 @@ import hu.blackbelt.judo.meta.esm.ui.Horizontal;
 import hu.blackbelt.judo.meta.esm.ui.Layout;
 import hu.blackbelt.judo.meta.esm.ui.OperationForm;
 import hu.blackbelt.judo.meta.esm.ui.Stretch;
+import hu.blackbelt.judo.meta.esm.ui.TabBar;
 import hu.blackbelt.judo.meta.esm.ui.TabularReferenceField;
 import hu.blackbelt.judo.meta.esm.ui.TransferObjectForm;
 import hu.blackbelt.judo.meta.esm.ui.TransferObjectTable;
@@ -466,7 +468,25 @@ public class SimpleOrderModel {
         createTableForTransferObject(order,true);        
 
         //Order View
-        createViewForTransferObjectType(order);
+        //createViewForTransferObjectType(order);
+        
+        TransferObjectView orderView = getViewForTransferObjectType(order);
+        
+        TabBar tab = newTabBarBuilder().withName("tabBar").withLabel("TabBar").withTabs(
+        		newGroupBuilder().withName("group").withComponents(
+        				newDataFieldBuilder().withName("orderDate").withLabel("orderDate").withIconName("calendar_today").withDataFeature(orderDate).build(),
+        				newDataFieldBuilder().withName("customer").withLabel("customer").withIconName("text_fields").withDataFeature(orderCustomer).build()
+        				).build(),
+        		newGroupBuilder().withName("group2").withComponents(
+        				newDataFieldBuilder().withName("received").withLabel("received").withIconName("schedule").withDataFeature(orderReceived).build(),
+        				newOperationFormBuilder().withName("returnDamagedItems").withLabel("returnDamagedItems").withOperation("returnDamagedItems").build()
+        				).build(),
+        		newGroupBuilder().withName("group3").withComponents(
+        				newOperationFormBuilder().withName("archive").withLabel("archive").withOperation("archive").build()
+        				).build()
+        		).build();
+        orderView.getComponents().add(tab);
+        order.setView(orderView);
             
         //Order Item Form
         createFormForTransferObjectType(orderItem);
@@ -693,8 +713,7 @@ public class SimpleOrderModel {
         transferObject.setTable(table); 
 	}
 	
-	private static void createViewForTransferObjectType(TransferObjectType transferObject) {
-		
+	private static TransferObjectView getViewForTransferObjectType(TransferObjectType transferObject) {
 		ArrayList<DataField> dataFields = new ArrayList<>();
 		ArrayList<TabularReferenceField> tables = new ArrayList<>();
 		ArrayList<OperationForm> operations = new ArrayList<>();
@@ -752,6 +771,12 @@ public class SimpleOrderModel {
         		.withComponents(tables)
         		.withComponents(operations)
         		.build();
+        
+        return view;
+	}
+	
+	private static void createViewForTransferObjectType(TransferObjectType transferObject) {
+		TransferObjectView view = getViewForTransferObjectType(transferObject);
         transferObject.setView(view);
 	}
 }
