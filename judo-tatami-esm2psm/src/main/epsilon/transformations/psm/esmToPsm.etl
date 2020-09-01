@@ -22,3 +22,15 @@ import "modules/service/transferObjectRelation.etl";
 import "modules/service/operation.etl";
 
 import "modules/accesspoint/accessPoint.etl";
+
+post {
+    var enumsWithoutOrdinal = JUDOPSM!EnumerationMember.all.select(m | m.ordinal == -1).collect(m | m.eContainer).flatten().asSet();
+    for (e in enumsWithoutOrdinal) {
+        log.debug("Set/overwrite ordinals of enumeration: " + e.name);
+        var index = 0;
+        for (m in e.members) {
+            m.ordinal = index;
+            index = index + 1;
+        }
+    }
+}

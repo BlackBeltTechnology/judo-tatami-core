@@ -52,7 +52,11 @@ public class [%= dto.name.normalizeName() %] {
 
 	    [% for (attr in dto.eAllAttributes) { %]
 	    if ([%= asmUtils.safeName(attr.name.firstToLowerCase()) %] != null) {
+[%          if (attr.eAttributeType.isKindOf(ASM!EEnum)) { %]
+		    ret.put("[%= attr.name %]", [%= attr.eAttributeType.getEnumerationPackageName() %].[%= attr.eAttributeType.name.normalizeName() %].resolveLiteral(this.[%= asmUtils.safeName(attr.name.firstToLowerCase()) %]));
+[%          } else { %]
 		    ret.put("[%= attr.name %]", this.[%= asmUtils.safeName(attr.name.firstToLowerCase()) %]);
+[%          } %]
 	    }
 		[% } %]
 	    [% for (ref in dto.eAllReferences) { %]
@@ -77,7 +81,11 @@ public class [%= dto.name.normalizeName() %] {
 		}
 	    [% for (attr in dto.eAllAttributes) { %]
 	    if (map.containsKey("[%= attr.name %]")) {
+[%          if (attr.eAttributeType.isKindOf(ASM!EEnum)) { %]
+		    builder.[%= asmUtils.safeName(attr.name.firstToLowerCase()) %]([%= attr.eAttributeType.getEnumerationPackageName() %].[%= attr.eAttributeType.name.normalizeName() %].literalToString((Integer) map.get("[%= attr.name %]")));
+[%          } else { %]
 			builder.[%= asmUtils.safeName(attr.name.firstToLowerCase()) %](([%= attr.getTypeDefinition() %]) map.get("[%= attr.name %]"));
+[%          } %]
 		}
 		[% } %]
 	    [% for (ref in dto.eAllReferences) { %]

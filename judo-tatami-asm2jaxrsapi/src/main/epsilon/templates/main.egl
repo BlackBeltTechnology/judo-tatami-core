@@ -14,6 +14,12 @@ for (dto in ASM!EClass.all.select(c | c.eAnnotations.exists(a | asmUtils.getReso
 	outputJavaClasses.add(dto.getDtoJavaFileName());
 }
 
+for (e in ASM!EEnum.all) {
+    log.debug("ENUMERATION: " + e.name);
+    genEnumeration(e);
+    outputJavaClasses.add(e.getEnumerationJavaFileName());
+}
+
 var apServiceInstances : Map = new Map();
 for (clazz in ASM!EOperation.all.select(op | not asmUtils.getAccessPointsOfOperation(op).isEmpty()).collect(op | op.eContainingClass).asSet()) {
     var operationsOfClazz = clazz.eOperations.select(op | not asmUtils.getAccessPointsOfOperation(op).isEmpty());

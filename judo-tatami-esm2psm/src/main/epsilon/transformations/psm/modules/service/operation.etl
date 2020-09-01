@@ -139,6 +139,13 @@ rule CreateGetOperationForRelation
         t.name = "_get" + s.name.firstToUpperCase() + "For" + esmUtils.getNamespaceElementFQName(s.eContainer).replace("::", "_").firstToUpperCase();
         t.instanceRepresentation = s.eContainer.getPSMTransferObjectTypeEquivalent();
 
+        t.input = new JUDOPSM!Parameter;
+        t.input.name = "input";
+        t.input.type = s.target.equivalent("CreateQueryCustomizerType");
+        t.input.cardinality = new JUDOPSM!Cardinality;
+        t.input.cardinality.lower = 0;
+        t.input.cardinality.upper = 1;
+
         t.output = new JUDOPSM!Parameter;
         t.output.name = "output";
         t.output.type = s.target.getPSMTransferObjectTypeEquivalent();
@@ -159,6 +166,13 @@ rule CreateGetTransferOperationForRelation
         t.behaviour = new JUDOPSM!TransferOperationBehaviour;
         t.behaviour.behaviourType = JUDOPSM!TransferOperationBehaviourType#GET_RELATION;
         t.behaviour.owner = s.getPSMTransferObjectRelationEquivalent();
+
+        t.input = new JUDOPSM!Parameter;
+        t.input.name = "input";
+        t.input.type = s.target.equivalent("CreateQueryCustomizerType");
+        t.input.cardinality = new JUDOPSM!Cardinality;
+        t.input.cardinality.lower = 0;
+        t.input.cardinality.upper = 1;
 
         t.output = new JUDOPSM!Parameter;
         t.output.name = "output";
@@ -184,6 +198,13 @@ rule CreateGetUnboundOperation
         
 	    t.behaviour.owner = s.getPSMTransferObjectRelationEquivalent();
         
+        t.input = new JUDOPSM!Parameter;
+        t.input.name = "input";
+        t.input.type = s.target.equivalent("CreateQueryCustomizerType");
+        t.input.cardinality = new JUDOPSM!Cardinality;
+        t.input.cardinality.lower = 0;
+        t.input.cardinality.upper = 1;
+
         t.output = new JUDOPSM!Parameter;
         t.output.name = "output";
         t.output.type = s.target.getPSMTransferObjectTypeEquivalent();
