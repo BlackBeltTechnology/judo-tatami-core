@@ -140,6 +140,7 @@ public class EsmAccesspoint2PsmAccesspointTest {
                         .withName(SERVICE_GROUP_NAME)
                         .withMemberType(MemberType.TRANSIENT)
                         .withRelationKind(RelationKind.AGGREGATION)
+                        .withLower(0).withUpper(-1)
                         .withTarget(unmappedTransferObjectType)
                         .build())
                 .build();
@@ -238,8 +239,8 @@ public class EsmAccesspoint2PsmAccesspointTest {
         final String EXPOSED_GRAPH_NAME = "g";
         final String ACCESS_POINT_NAME = "AP";
 
-        final int LOWER = 2;
-        final int UPPER = 5;
+        final int LOWER = 0;
+        final int UPPER = -1;
 
         final String NAME_OF_GET_OPERATION = "_getG";
         final String NAME_OF_CREATE_OPERATION = "_createG";

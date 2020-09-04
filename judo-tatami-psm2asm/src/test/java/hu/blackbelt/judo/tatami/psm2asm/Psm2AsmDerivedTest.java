@@ -127,13 +127,13 @@ public class Psm2AsmDerivedTest {
 				.build();
 
 		DataProperty stringDataProperty = newDataPropertyBuilder().withName("a1").withDataType(strType)
-				.withRequired(true).withGetterExpression(newDataExpressionTypeBuilder().withExpression("self.a1"))
+				.withGetterExpression(newDataExpressionTypeBuilder().withExpression("self.a1"))
 				.build();
 		DataProperty customDataProperty = newDataPropertyBuilder().withName("a2").withDataType(custom)
 				.withGetterExpression(newDataExpressionTypeBuilder().withExpression("self.a2")).build();
 		DataProperty boolDataProperty = newDataPropertyBuilder().withName("a3").withDataType(boolType)
 				.withGetterExpression(newDataExpressionTypeBuilder().withExpression("self.a3")).build();
-		DataProperty intDataProperty = newDataPropertyBuilder().withName("a4").withDataType(intType).withRequired(true)
+		DataProperty intDataProperty = newDataPropertyBuilder().withName("a4").withDataType(intType)
 				.withGetterExpression(newDataExpressionTypeBuilder().withExpression("self.a4")).build();
 		DataProperty measuredDataProperty = newDataPropertyBuilder().withName("a5").withDataType(measuredType)
 				.withGetterExpression(newDataExpressionTypeBuilder().withExpression("self.a5")).build();
@@ -142,7 +142,7 @@ public class Psm2AsmDerivedTest {
 				intDataProperty, measuredDataProperty));
 
 		NavigationProperty navProp = newNavigationPropertyBuilder().withName("navProp")
-				.withCardinality(newCardinalityBuilder().withLower(1).withUpper(1)).withTarget(entity3)
+				.withCardinality(newCardinalityBuilder().withLower(0).withUpper(1)).withTarget(entity3)
 				.withGetterExpression(newReferenceExpressionTypeBuilder().withExpression("self.navProp")).build();
 
 		entity1.getNavigationProperties().addAll(ImmutableList.of(navProp));
@@ -195,10 +195,10 @@ public class Psm2AsmDerivedTest {
 		assertTrue(asmIntDataProperty.isPresent());
 		assertTrue(asmMeasuredDataProperty.isPresent());
 
-		assertThat(asmStrDataProperty.get().getLowerBound(), IsEqual.equalTo(1));
+		assertThat(asmStrDataProperty.get().getLowerBound(), IsEqual.equalTo(0));
 		assertThat(asmCustomDataProperty.get().getLowerBound(), IsEqual.equalTo(0));
 		assertThat(asmBoolDataProperty.get().getLowerBound(), IsEqual.equalTo(0));
-		assertThat(asmIntDataProperty.get().getLowerBound(), IsEqual.equalTo(1));
+		assertThat(asmIntDataProperty.get().getLowerBound(), IsEqual.equalTo(0));
 		assertThat(asmMeasuredDataProperty.get().getLowerBound(), IsEqual.equalTo(0));
 
 		assertTrue(asmStrDataProperty.get().isDerived());
