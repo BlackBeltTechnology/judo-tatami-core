@@ -286,7 +286,7 @@ public class EsmStrucutre2PsmDerivedTest {
         		.withRelationKind(RelationKind.ASSOCIATION)
         		.withMemberType(MemberType.DERIVED)
                 .withGetterExpression("exp")
-                .withLower(1)
+                .withLower(0)
                 .withUpper(3)
                 .withTarget(target)
                 .build();
@@ -329,7 +329,7 @@ public class EsmStrucutre2PsmDerivedTest {
 
         OneWayRelationMember navigationProperty = newOneWayRelationMemberBuilder().withName("navigationProperty")
         		.withMemberType(MemberType.DERIVED)
-                .withGetterExpression("exp").withLower(1).withUpper(3).withTarget(navigationTarget)
+                .withGetterExpression("exp").withLower(0).withUpper(3).withTarget(navigationTarget)
                 .build();
 
         EntityType mappingTarget = newEntityTypeBuilder().withName("entityType").build();
@@ -372,7 +372,7 @@ public class EsmStrucutre2PsmDerivedTest {
         		.withMemberType(MemberType.DERIVED)
                 .withGetterExpression("self.navigationProperty.target")
                 .withRangeExpression("self.navigationProperty.target")
-                .withLower(1)
+                .withLower(0)
                 .withUpper(3)
                 .withTarget(navigationTarget)
                 .build();
@@ -460,7 +460,7 @@ public class EsmStrucutre2PsmDerivedTest {
         		.withMemberType(MemberType.DERIVED)
                 .withGetterExpression("self.navigationProperty.target")
                 .withDefaultExpression("self.navigationProperty.target")
-                .withLower(1).withUpper(3)
+                .withLower(0).withUpper(3)
                 .withTarget(navigationTarget)
                 .build();
 
@@ -676,7 +676,7 @@ public class EsmStrucutre2PsmDerivedTest {
         		.withMemberType(MemberType.DERIVED)
                 .withGetterExpression("getterExpression")
                 .withDefaultExpression("defaultExpression")
-                .withLower(1)
+                .withLower(0)
                 .withUpper(3)
                 .withTarget(target)
                 .build();
@@ -809,7 +809,7 @@ public class EsmStrucutre2PsmDerivedTest {
                 .withGetterExpression("getterExpresssion")
                 .withRangeExpression("rangeExpression")
                 .withReverseCascadeDelete(false)
-                .withLower(1)
+                .withLower(0)
                 .withUpper(3)
                 .withTarget(target)
                 .build();

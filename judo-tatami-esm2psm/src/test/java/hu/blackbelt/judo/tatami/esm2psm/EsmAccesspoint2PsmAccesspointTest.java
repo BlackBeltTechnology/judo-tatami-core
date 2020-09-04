@@ -238,7 +238,7 @@ public class EsmAccesspoint2PsmAccesspointTest {
         final String EXPOSED_GRAPH_NAME = "g";
         final String ACCESS_POINT_NAME = "AP";
 
-        final int LOWER = 2;
+        final int LOWER = 0;
         final int UPPER = 5;
 
         final String NAME_OF_GET_OPERATION = "_getG";
