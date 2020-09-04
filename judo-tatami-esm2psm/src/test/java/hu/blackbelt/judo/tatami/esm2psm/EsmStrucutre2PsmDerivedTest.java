@@ -287,7 +287,7 @@ public class EsmStrucutre2PsmDerivedTest {
         		.withMemberType(MemberType.DERIVED)
                 .withGetterExpression("exp")
                 .withLower(0)
-                .withUpper(3)
+                .withUpper(-1)
                 .withTarget(target)
                 .build();
         navigationProperty.setBinding(navigationProperty);        
@@ -329,7 +329,7 @@ public class EsmStrucutre2PsmDerivedTest {
 
         OneWayRelationMember navigationProperty = newOneWayRelationMemberBuilder().withName("navigationProperty")
         		.withMemberType(MemberType.DERIVED)
-                .withGetterExpression("exp").withLower(0).withUpper(3).withTarget(navigationTarget)
+                .withGetterExpression("exp").withLower(0).withUpper(-1).withTarget(navigationTarget)
                 .build();
 
         EntityType mappingTarget = newEntityTypeBuilder().withName("entityType").build();
@@ -373,7 +373,7 @@ public class EsmStrucutre2PsmDerivedTest {
                 .withGetterExpression("self.navigationProperty.target")
                 .withRangeExpression("self.navigationProperty.target")
                 .withLower(0)
-                .withUpper(3)
+                .withUpper(-1)
                 .withTarget(navigationTarget)
                 .build();
 
@@ -460,7 +460,7 @@ public class EsmStrucutre2PsmDerivedTest {
         		.withMemberType(MemberType.DERIVED)
                 .withGetterExpression("self.navigationProperty.target")
                 .withDefaultExpression("self.navigationProperty.target")
-                .withLower(0).withUpper(3)
+                .withLower(0).withUpper(-1)
                 .withTarget(navigationTarget)
                 .build();
 
@@ -582,7 +582,7 @@ public class EsmStrucutre2PsmDerivedTest {
         		.withRelationKind(RelationKind.COMPOSITION)
                 .withDefaultExpression("defaultExpression")
                 .withLower(1)
-                .withUpper(3)
+                .withUpper(-1)
                 .withTarget(target)
                 .build();
         containment.setBinding(containment);
@@ -629,7 +629,7 @@ public class EsmStrucutre2PsmDerivedTest {
                 .withDefaultExpression("defaultExpression")
                 .withReverseCascadeDelete(false)
                 .withLower(1)
-                .withUpper(3)
+                .withUpper(-1)
                 .withTarget(target)
                 .build();
         associationEnd.setBinding(associationEnd);
@@ -677,7 +677,7 @@ public class EsmStrucutre2PsmDerivedTest {
                 .withGetterExpression("getterExpression")
                 .withDefaultExpression("defaultExpression")
                 .withLower(0)
-                .withUpper(3)
+                .withUpper(-1)
                 .withTarget(target)
                 .build();
         associationEnd.setBinding(associationEnd);
@@ -722,7 +722,7 @@ public class EsmStrucutre2PsmDerivedTest {
         		.withRelationKind(RelationKind.COMPOSITION)
                 .withRangeExpression("rangeExpression")
                 .withLower(1)
-                .withUpper(3)
+                .withUpper(-1)
                 .withTarget(target)
                 .build();
         containment.setBinding(containment);
@@ -765,7 +765,7 @@ public class EsmStrucutre2PsmDerivedTest {
                 .withRangeExpression("rangeExpression")
                 .withReverseCascadeDelete(false)
                 .withLower(1)
-                .withUpper(3)
+                .withUpper(-1)
                 .withTarget(target)
                 .build();
         associationEnd.setBinding(associationEnd);
@@ -810,7 +810,7 @@ public class EsmStrucutre2PsmDerivedTest {
                 .withRangeExpression("rangeExpression")
                 .withReverseCascadeDelete(false)
                 .withLower(0)
-                .withUpper(3)
+                .withUpper(-1)
                 .withTarget(target)
                 .build();
         associationEnd.setBinding(associationEnd);
