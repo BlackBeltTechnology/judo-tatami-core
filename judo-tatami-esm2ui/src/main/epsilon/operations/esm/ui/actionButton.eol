@@ -4,6 +4,7 @@ operation ESM!esm::ui::ActionButton createButtonFromActionButton(application : U
 	// TODO: Make some mapping for operation or our semantic
 	ret.name = self.name;
 	ret.label = self.label; //self.dataFeature.getMember().getDisplayLabel();
+	ret.action = new UI!ui::BackAction();
 	return ret;
 }
 

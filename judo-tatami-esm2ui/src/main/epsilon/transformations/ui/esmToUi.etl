@@ -22,9 +22,146 @@ pre {
 }
 
 post {
-	for (cl : UI!ClassType in UI!ClassType.all().select(c | not c.isAccessPoint())) {
+	for (cl : UI!ui::data::ClassType in UI!ui::data::ClassType.all().select(c | not c.isAccessPoint())) {
 		
 		cl.accessPointRelations = esmUtils.getExposedRelationsFromAccessPointToTransferObjectType(cl.~application.~ap, cl.~srcClass)	 
 				.collect(r | cl.accessPoint.relations.selectOne(r2 | r2.name = r.name));
 	}
+	
+	// Iterate over all CallOperationAction to fix in/out parameter
+	for (callAction : UI!ui::CallOperationAction in UI!ui::CallOperationAction.all()) {
+		var op : ESM!esm::`operation`::Operation = callAction.~originalOperationForm.getOperationReference.getMember();
+		var application = callAction.~application;
+		
+		if (op.input.isDefined()) {
+			if (op.input.target.form.isDefined()) {
+				callAction.inputParameterPage = op.mapPageForOperationInputForForm(application);
+			}
+		}
+	
+		if (op.output.isDefined()) {
+			if (op.output.target.view.isDefined()) {
+		    	callAction.outputParameterPage = op.mapPageForOperationOutputForView(application);
+	      }
+		}	
+	}
+	
+	// Iterate over all relation
+	for (relationType : UI!ui::data::RelationType in UI!ui::data::RelationType.all()
+		.select(r | r.memberType == UI!ui::data::MemberType#STORED or r.memberType == UI!ui::data::MemberType#MAPPED)) {
+		var relationOwner = relationType.eContainer;
+		log.debug("Relation type: " + relationType.name);
+
+		// For self 
+		// GET always enabled
+		var readBehaviour = relationType.behaviours.selectOne(b | b.sourceRelationType = relationType and 
+			b.behaviour == UI!ui::data::RelationBehaviour#GET);
+		if (readBehaviour.isUndefined()) {
+			readBehaviour = new UI!ui::data::RelationBehaviourBySourceRelation();		
+			readBehaviour.sourceRelationType = relationType;
+			relationType.behaviours.add(readBehaviour);
+		}
+		
+		// CREATE			
+		if (relationType.~original.isUpdateAllowed()) {
+			var createBehaviour = relationType.behaviours.selectOne(b | b.sourceRelationType = relationType and 
+				b.behaviour == UI!ui::data::RelationBehaviour#CREATE);
+			if (createBehaviour.isUndefined()) {
+				createBehaviour = new UI!ui::data::RelationBehaviourBySourceRelation();		
+				createBehaviour.sourceRelationType = relationType;
+				createBehaviour.behaviour = UI!ui::data::RelationBehaviour#CREATE;
+				relationType.behaviours.add(createBehaviour);
+			}
+		}
+
+		// UPDATE			
+		if (relationType.~original.isUpdateAllowed()) {
+			var updateBehaviour = relationType.behaviours.selectOne(b | b.sourceRelationType = relationType and 
+				b.behaviour == UI!ui::data::RelationBehaviour#UPDATE);
+			if (updateBehaviour.isUndefined()) {
+				updateBehaviour = new UI!ui::data::RelationBehaviourBySourceRelation();		
+				updateBehaviour.sourceRelationType = relationType;
+				updateBehaviour.behaviour = UI!ui::data::RelationBehaviour#UPDATE;
+				relationType.behaviours.add(updateBehaviour);
+			}
+		}
+
+		// DELETE			
+		if (relationType.~original.isUpdateAllowed()) {
+			var deleteBehaviour = relationType.behaviours.selectOne(b | b.sourceRelationType = relationType and 
+				b.behaviour == UI!ui::data::RelationBehaviour#DELETE);
+			if (deleteBehaviour.isUndefined()) {
+				deleteBehaviour = new UI!ui::data::RelationBehaviourBySourceRelation();		
+				deleteBehaviour.sourceRelationType = relationType;
+				deleteBehaviour.behaviour = UI!ui::data::RelationBehaviour#DELETE;
+				relationType.behaviours.add(deleteBehaviour);
+			}
+		}
+
+
+		for (sourceRelationType : UI!ui::data::RelationType in UI!ui::data::RelationType.all().selectOne(c | c.target == relationOwner)) {
+			// DELETE
+			if (relationType.~original.isUpdateAllowed() and sourceRelationType.~original.isDeleteAllowed()) {
+				var deleteBehaviour = relationType.behaviours.selectOne(b | b.sourceRelationType = sourceRelationType and 
+					b.behaviour == UI!ui::data::RelationBehaviour#DELETE);
+				if (deleteBehaviour.isUndefined()) {
+					deleteBehaviour = new UI!ui::data::RelationBehaviourBySourceRelation();		
+					deleteBehaviour.sourceRelationType = sourceRelationType;
+					deleteBehaviour.behaviour = UI!ui::data::RelationBehaviour#DELETE;
+					relationType.behaviours.add(deleteBehaviour);
+				}
+			}
+	
+
+			// SET		
+			if (esmUtils.isSetOnRelation(sourceRelationType.~original, relationType.~original) ) {
+				var setBehaviour = relationType.behaviours.selectOne(b | b.sourceRelationType = sourceRelationType and 
+					b.behaviour == UI!ui::data::RelationBehaviour#SET);
+				if (setBehaviour.isUndefined()) {
+					setBehaviour = new UI!ui::data::RelationBehaviourBySourceRelation();		
+					setBehaviour.sourceRelationType = sourceRelationType;
+					setBehaviour.behaviour = UI!ui::data::RelationBehaviour#SET;
+					relationType.behaviours.add(setBehaviour);
+				}
+			}
+
+			// UNSET		
+			if (esmUtils.isUnsetOnRelation(sourceRelationType.~original, relationType.~original) ) {
+				var unsetBehaviour = relationType.behaviours.selectOne(b | b.sourceRelationType = sourceRelationType and 
+					b.behaviour == UI!ui::data::RelationBehaviour#UNSET);
+				if (unsetBehaviour.isUndefined()) {
+					unsetBehaviour = new UI!ui::data::RelationBehaviourBySourceRelation();		
+					unsetBehaviour.sourceRelationType = sourceRelationType;
+					unsetBehaviour.behaviour = UI!ui::data::RelationBehaviour#UNSET;
+					relationType.behaviours.add(unsetBehaviour);
+				}
+			}
+
+			// ADD		
+			if (esmUtils.isAddOnRelation(sourceRelationType.~original, relationType.~original) ) {
+				var addBehaviour = relationType.behaviours.selectOne(b | b.sourceRelationType = sourceRelationType and 
+					b.behaviour == UI!ui::data::RelationBehaviour#ADD);
+				if (addBehaviour.isUndefined()) {
+					addBehaviour = new UI!ui::data::RelationBehaviourBySourceRelation();		
+					addBehaviour.sourceRelationType = sourceRelationType;
+					addBehaviour.behaviour = UI!ui::data::RelationBehaviour#ADD;
+					relationType.behaviours.add(addBehaviour);
+				}
+			}
+
+			// REMOVE		
+			if (esmUtils.isRemoveOnRelation(sourceRelationType.~original, relationType.~original) ) {
+				var removeBehaviour = relationType.behaviours.selectOne(b | b.sourceRelationType = sourceRelationType and 
+					b.behaviour == UI!ui::data::RelationBehaviour#REMOVE);
+				if (removeBehaviour.isUndefined()) {
+					removeBehaviour = new UI!ui::data::RelationBehaviourBySourceRelation();		
+					removeBehaviour.sourceRelationType = sourceRelationType;
+					removeBehaviour.behaviour = UI!ui::data::RelationBehaviour#REMOVE;
+					relationType.behaviours.add(removeBehaviour);
+				}
+			}
+
+		}
+	}
+	
 }

@@ -1,8 +1,21 @@
 operation ESM!esm::ui::OperationForm createButtonFromOperationForm(application : UI!ui::Application) : UI!ui::Button {
 	var t : UI!ui::Button = new UI!ui::Button();
 	
+	
 	t.name = self.name;
-	//t.dataElement = self.eContainer.mapClassType(application);	
+	var op : ESM!esm::`operation`::Operation = self.getOperationReference.getMember();
+
+	log.debug("Create operation form: " + self.name);
+
+	t.dataElement = op.mapOperationType(application, op.eContainer.mapClassType(application));
+	
+	var callAction = new UI!ui::CallOperationAction();
+
+	// Deal the mapping later, to avoid endless loop
+	callAction.~originalOperationForm = self;
+	callAction.~application = application;
+	
+	t.action = callAction;
     return t;
 }
 

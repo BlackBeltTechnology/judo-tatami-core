@@ -10,12 +10,15 @@ rule CreateApplication
         t.~ap = s;
         log.debug("CreateApplication: " + s.name);
 
+		var defaultLayout = new UI!ui::LayoutType();
+        defaultLayout.cols = applicationColumns;
+        defaultLayout.type = applicationType;
+        t.layoutTypes.add(defaultLayout);    
+
         t.name = s.fqName().anchor(applicationType);
-        t.type = applicationType;
-        t.cols = applicationColumns;
         t.navigationController = s.equivalent("CreateNavigationController");
         t.dataElement = s.mapClassType(t);
-
+		
         var exposedRelations : Set = esmUtils.getAllExposedRelationsFromAccessPoint(s);
         
         for (relation in exposedRelations) {
@@ -36,20 +39,20 @@ rule CreateApplication
         
         for (op in exposedOperations) {
         	if (op.input.isDefined()) {
-        		if (op.input.target.table.isDefined() and op.input.upper = -1) {
-        			t.pages.add(op.createPageForOperationInputForTable(t));
-        		}
+        		//if (op.input.target.table.isDefined() and op.input.upper = -1) {
+        		//	t.pages.add(op.createPageForOperationInputForTable(t));
+        		//}
         		if (op.input.target.form.isDefined()) {
-        			t.pages.add(op.createPageForOperationInputForForm(t));
+        			t.pages.add(op.mapPageForOperationInputForForm(t));
         		}
         	}
         	if (op.output.isDefined()) {
         		if (op.output.target.view.isDefined()) {
-        			t.pages.add(op.createPageForOperationOutputForView(t));
+        			t.pages.add(op.mapPageForOperationOutputForView(t));
         		}
-        		if (op.output.target.table.isDefined() and op.output.upper = -1) {
-        			t.pages.add(op.createPageForOperationOutputForTable(t));
-        		}
+        		//if (op.output.target.table.isDefined() and op.output.upper = -1) {
+        		//	t.pages.add(op.createPageForOperationOutputForTable(t));
+        		//}
         	}
         }
 }
@@ -76,12 +79,16 @@ rule CreateApplicationDashboard
         var application = s.equivalent("CreateApplication");
         log.debug("CreateApplicationDashboard: " + s.name);
         t.name = s.fqName().anchor("Dashboard");
-        t.col = applicationColumns;
         t.dataElement = s.mapClassType(application);
-        t.children.add(s.view.map(application));
+ 
+	 	var pageContainer = new UI!ui::PageContainer();
+	    pageContainer.layoutType = application.layoutTypes.first;
+		pageContainer.name = s.name;
+		pageContainer.direction = UI!Axis#VERTICAL;
+		t.containers.add(pageContainer);
+	 
+        pageContainer.children.add(s.view.map(application));
         application.pages.add(t);
-        
-        uiUtils.organizeElements(t);
 }
 
 @greedy
@@ -123,12 +130,16 @@ rule CreateNavigationItemPageForAccessPointRelationForView
         var application = s.eContainer.equivalent("CreateApplication");
 
         t.name = s.fqName().anchor("RelationPageView");
-        t.col = applicationColumns;
         t.dataElement = s.target.mapClassType(application);
-        t.children.add(s.target.view.map(application));
-        application.pages.add(t);
-        
-        uiUtils.organizeElements(t);
+
+	 	var pageContainer = new UI!ui::PageContainer();
+	    pageContainer.layoutType = application.layoutTypes.first;
+		pageContainer.name = s.name;
+		pageContainer.direction = UI!Axis#VERTICAL;
+		t.containers.add(pageContainer);
+
+        pageContainer.children.add(s.target.view.map(application));
+        application.pages.add(t);        
 }
 
 @greedy
@@ -143,12 +154,16 @@ rule CreateNavigationItemPageForAccessPointRelationForForm
         var application = s.eContainer.equivalent("CreateApplication");
 
         t.name = s.fqName().anchor("RelationPageForm");
-		t.col = applicationColumns;
         t.dataElement = s.target.mapClassType(application);
-        t.children.add(s.target.form.map(application));
+
+	 	var pageContainer = new UI!ui::PageContainer();
+	    pageContainer.layoutType = application.layoutTypes.first;
+		pageContainer.name = s.name;
+		pageContainer.direction = UI!Axis#VERTICAL;
+		t.containers.add(pageContainer);
+
+        pageContainer.children.add(s.target.form.map(application));
         application.pages.add(t);
-        
-        uiUtils.organizeElements(t);
 }
 
 @greedy
@@ -163,26 +178,31 @@ rule CreateNavigationItemPageForAccessPointRelationForTable
         var application = s.eContainer.equivalent("CreateApplication");
 
         t.name = s.fqName().anchor("RelationPageTable");
-		t.col = applicationColumns;
         t.dataElement = s.target.mapClassType(application);
         
-        var flex = new UI!ui::Flex();
-		flex.name = self.name;
-		flex.direction = UI!Axis#VERTICAL;
-		t.children.add(flex);
+        var pageContainer = new UI!ui::PageContainer();
+        pageContainer.layoutType = application.layoutTypes.first;
+		pageContainer.name = self.name;
+		pageContainer.direction = UI!Axis#VERTICAL;
+		t.containers.add(pageContainer);
         
         var table = s.target.table.createTableFromTransferObjectTable(application);
-        flex.children.add(table);
+        pageContainer.children.add(table);
 
         if (s.target.table.masterDetail and s.target.view.isDefined()) {
             var detail : UI!ui::PageDefinition = new UI!ui::PageDefinition();
 	        detail.dataElement = s.target.mapClassType(application);
             detail.name = t.name + "/detail";
+
+			var detailPageContainer = new UI!ui::PageContainer();
+		    detailPageContainer.layoutType = application.layoutTypes.first;
+			detailPageContainer.name = self.name;
+			detailPageContainer.direction = UI!Axis#VERTICAL;
+			detail.containers.add(detailPageContainer);
+
             application.pages.add(detail);
-            detail.children.add(s.target.view.map(application));
+            detailPageContainer.children.add(s.target.view.map(application));
             table.detail = detail;
         }
         application.pages.add(t);
-        
-        uiUtils.organizeElements(t);
 }
