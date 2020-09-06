@@ -7,6 +7,7 @@ operation ESM!esm::structure::Class createClassType(application : UI!ui::Applica
 
     clazz.~srcClass = self;
     clazz.~application = application;
+    clazz.~original = self;
     
 	clazz.name = self.fqName();
 	clazz.isMapped = self.isMapped();

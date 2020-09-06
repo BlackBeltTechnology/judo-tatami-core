@@ -100,6 +100,7 @@ operation ESM!esm::`operation`::Operation createPageForOperationInputForTable(ap
 	var table = self.input.target.table.createTableFromTransferObjectTable(application);
     flex.children.add(table);
     
+    /*
     if (self.input.target.table.masterDetail and self.input.target.view.isDefined()) {
 		var detail : UI!ui::PageDefinition = new UI!ui::PageDefinition();
 		detail.name = self.fqName().anchor("OperationInputPageTableMasterDetail", self.input.target.fqName());
@@ -114,7 +115,7 @@ operation ESM!esm::`operation`::Operation createPageForOperationInputForTable(ap
 
 	  	detailPageContainer.children.add(self.input.target.view.map(application));
 	  	table.detail = detail;        
-    }
+    } */
     
     return page;
 }

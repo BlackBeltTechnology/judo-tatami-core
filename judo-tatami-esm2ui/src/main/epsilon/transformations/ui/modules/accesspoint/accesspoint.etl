@@ -7,7 +7,8 @@ rule CreateApplication
     extends CreateNamedElementFromNamespaceElement {
         guard: s.isAccesspoint()
 
-        t.~ap = s;
+        t.~original = s;
+
         log.debug("CreateApplication: " + s.name);
 
 		var defaultLayout = new UI!ui::LayoutType();
@@ -189,6 +190,7 @@ rule CreateNavigationItemPageForAccessPointRelationForTable
         var table = s.target.table.createTableFromTransferObjectTable(application);
         pageContainer.children.add(table);
 
+		/*
         if (s.target.table.masterDetail and s.target.view.isDefined()) {
             var detail : UI!ui::PageDefinition = new UI!ui::PageDefinition();
 	        detail.dataElement = s.target.mapClassType(application);
@@ -204,5 +206,7 @@ rule CreateNavigationItemPageForAccessPointRelationForTable
             detailPageContainer.children.add(s.target.view.map(application));
             table.detail = detail;
         }
+		*/
+		
         application.pages.add(t);
 }
