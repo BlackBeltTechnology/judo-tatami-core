@@ -61,6 +61,7 @@ operation ESM!esm::structure::RelationFeature createPageForRelationForTable(appl
 	var table = target.table.createTableFromTransferObjectTable(application);
     flex.children.add(table);
     
+    /*
     if (target.table.masterDetail and target.view.isDefined()) {
 		var detail : UI!ui::PageDefinition = new UI!ui::PageDefinition();
 		detail.name = self.fqName().anchor("RelationPageTableMasterDetail", target.fqName());
@@ -75,7 +76,7 @@ operation ESM!esm::structure::RelationFeature createPageForRelationForTable(appl
 		application.pages.add(detail);
 	  	pageDetailContainer.children.add(target.view.map(application));
 	  	table.detail = detail;
-    }
+    } */
     
     return page;
 }
