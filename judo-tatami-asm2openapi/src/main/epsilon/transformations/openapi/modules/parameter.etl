@@ -51,7 +51,7 @@ rule CreateParameterDefinition
         guard: s.eContainer.isKindOf(ASM!EParameter) and s.source == asmUtils.getAnnotationUri("exposedBy")
         
         t.name = s.eContainer.name;
-        t.required = true;
+        t.required = s.eContainer.required;
         t.`in` = OPENAPI!ParameterLocation#body;
         
         s.equivalent("CreateParameterDeclaration").parameter = t;
