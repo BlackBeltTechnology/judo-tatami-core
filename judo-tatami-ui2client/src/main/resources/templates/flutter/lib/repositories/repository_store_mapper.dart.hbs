@@ -13,6 +13,9 @@ class {{ fqClass ap.name }}RepositoryStoreMapper {
 
 {{# each application.dataElements }}
   static {{ fqClass name }}Store create{{ fqClass name }}StoreFrom{{ fqClass name }}({{ fqClass name }} {{ variable name }}) {
+    if ({{ variable name }} == null) {
+      return null;
+    }
     var {{ variable name }}Store = {{ fqClass name }}Store();
     map{{ fqClass name }}To{{ fqClass name }}Store({{ variable name }}, {{ variable name }}Store);
     return {{ variable name }}Store;
@@ -44,6 +47,9 @@ class {{ fqClass ap.name }}RepositoryStoreMapper {
   }
 
   static {{ fqClass name }} create{{ fqClass name }}From{{ fqClass name }}Store({{ fqClass name }}Store {{ variable name }}Store) {
+    if ({{ variable name }}Store == null) {
+      return null;
+    }
     var {{ variable name }} = {{ fqClass name }}();
     map{{ fqClass name }}StoreTo{{ fqClass name }}({{ variable name }}Store, {{ variable name }});
     return {{ variable name }};
@@ -99,11 +105,116 @@ class {{ fqClass ap.name }}RepositoryStoreMapper {
       return {{ variable target.name }};
     }).toList());
             {{ else }}
-      create{{ fqClass target.name }}ExtendedFrom{{ fqClass target.name }}Store({{ variable ../name }}Store.{{ name }});
+      if ({{ variable ../name }}Store.{{ name }} != null) {
+        create{{ fqClass target.name }}ExtendedFrom{{ fqClass target.name }}Store({{ variable ../name }}Store.{{ name }});
+      }
             {{/ if }}
         {{/ unless }}
     {{/ each }}
   }
-{{/ each }}
 
+  /*
+  // Relation
+  {{# each relations ~}}
+      {{# each behaviours ~}}
+          {{ behaviour }} {{ fqClass ../../name }}.{{ variable ../name }} ({{ fqClass ../target.name }})  {{ fqClass sourceRelationType.target.name }}.{{ variable sourceRelationType.name }}
+      {{/ each }}
+  {{/ each }}
+  */
+
+{{/ each }}
 }
+
+/*
+
+    // Relation
+    GET NorthwindExternalAP.AllProducts (NorthwindServicesProductInfo)  NorthwindServicesProductInfo.allProducts
+    CREATE NorthwindExternalAP.AllProducts (NorthwindServicesProductInfo)  NorthwindServicesProductInfo.allProducts
+    UPDATE NorthwindExternalAP.AllProducts (NorthwindServicesProductInfo)  NorthwindServicesProductInfo.allProducts
+    DELETE NorthwindExternalAP.AllProducts (NorthwindServicesProductInfo)  NorthwindServicesProductInfo.allProducts
+    GET NorthwindExternalAP.AllCategories (NorthwindServicesCategoryInfo)  NorthwindServicesCategoryInfo.allCategories
+    CREATE NorthwindExternalAP.AllCategories (NorthwindServicesCategoryInfo)  NorthwindServicesCategoryInfo.allCategories
+    UPDATE NorthwindExternalAP.AllCategories (NorthwindServicesCategoryInfo)  NorthwindServicesCategoryInfo.allCategories
+    DELETE NorthwindExternalAP.AllCategories (NorthwindServicesCategoryInfo)  NorthwindServicesCategoryInfo.allCategories
+
+
+
+    // Relation
+    RANGE NorthwindServicesProductInfo.Category (NorthwindServicesCategoryInfo)  NorthwindServicesProductInfo.allProducts
+    RANGE NorthwindServicesProductInfo.Category (NorthwindServicesCategoryInfo)  NorthwindServicesProductInfo.products
+
+    static NorthwindExternalAP SetProducts Of AllCategories Input Products
+
+    create NorthwindExternalAP SetProducts Of AllCategories Input Products From NorthwindServicesProductInfoStore
+
+    (NorthwindServicesProductInfoStore productInfoStore) {
+
+
+    var setProductsOfAllCategoriesInputProducts = NorthwindExternalAPSetProductsOfAllCategoriesInputProducts();
+  mapNorthwindServicesProductInfoStoreToNorthwindExternalAPSetProductsOfAllCategoriesInputProducts(productInfoStore, setProductsOfAllCategoriesInputProducts);
+  return setProductsOfAllCategoriesInputProducts;
+}
+
+static void mapNorthwindServicesProductInfoStoreToNorthwindExternalAPSetProductsOfAllCategoriesInputProducts (NorthwindServicesProductInfoStore productInfoStore, NorthwindExternalAPSetProductsOfAllCategoriesInputProducts setProductsOfAllCategoriesInputProducts) {
+  // Identifier
+  setProductsOfAllCategoriesInputProducts.identifier = productInfoStore.identifier;
+}
+
+static NorthwindExternalAPAddProductsToAllCategoriesInput createNorthwindExternalAPAddProductsToAllCategoriesInputFromNorthwindServicesCategoryInfoStoreAndProductInfoStoreList(NorthwindServicesCategoryInfoStore categoryInfoStore, List<NorthwindServicesProductInfoStore> productInfoStoreList) {
+  var productsToAllCategoriesInput = NorthwindExternalAPAddProductsToAllCategoriesInput();
+  mapNorthwindServicesCategoryInfoStoreAndProductInfoStoreListToNorthwindExternalAPAddProductsToAllCategoriesInput(categoryInfoStore, productInfoStoreList, productsToAllCategoriesInput);
+  return productsToAllCategoriesInput;
+}
+
+static void mapNorthwindServicesCategoryInfoStoreAndProductInfoStoreListToNorthwindExternalAPAddProductsToAllCategoriesInput(NorthwindServicesCategoryInfoStore categoryInfoStore, List<NorthwindServicesProductInfoStore> productInfoStoreList, NorthwindExternalAPAddProductsToAllCategoriesInput productsToAllCategoriesInput) {
+  // Identifier
+  productsToAllCategoriesInput.identifier = categoryInfoStore.identifier;
+  // Attributes
+
+  // Relations
+  productsToAllCategoriesInput.products = [];
+  productsToAllCategoriesInput.products.addAll(productInfoStoreList.map((e) => createNorthwindExternalAPSetProductsOfAllCategoriesInputProductsFromNorthwindServicesProductInfoStore(e)).toList());
+}
+
+static NorthwindExternalAPRemoveProductsFromAllCategoriesInput createNorthwindExternalAPRemoveProductsFromAllCategoriesInputFromNorthwindServicesCategoryInfoStoreAndProductInfoStoreList(NorthwindServicesCategoryInfoStore categoryInfoStore, List<NorthwindServicesProductInfoStore> productInfoStoreList) {
+  var productsFromAllCategoriesInput = NorthwindExternalAPRemoveProductsFromAllCategoriesInput();
+  mapNorthwindServicesCategoryInfoStoreAndProductInfoStoreListToNorthwindExternalAPRemoveProductsFromAllCategoriesInput(categoryInfoStore, productInfoStoreList, productsFromAllCategoriesInput);
+  return productsFromAllCategoriesInput;
+}
+
+static void mapNorthwindServicesCategoryInfoStoreAndProductInfoStoreListToNorthwindExternalAPRemoveProductsFromAllCategoriesInput(NorthwindServicesCategoryInfoStore categoryInfoStore, List<NorthwindServicesProductInfoStore> productInfoStoreList, NorthwindExternalAPRemoveProductsFromAllCategoriesInput productsFromAllCategoriesInput) {
+  // Identifier
+  productsFromAllCategoriesInput.identifier = categoryInfoStore.identifier;
+  // Attributes
+
+  // Relations
+  productsFromAllCategoriesInput.products = [];
+  productsFromAllCategoriesInput.products.addAll(productInfoStoreList.map((e) => createNorthwindExternalAPSetProductsOfAllCategoriesInputProductsFromNorthwindServicesProductInfoStore(e)).toList());
+}
+
+static NorthwindServicesCategoryInfoSetCategoryOfProductsInput createNorthwindServicesCategoryInfoSetCategoryOfProductsInputFromNorthwindServicesProductInfoStoreAndCategoryInfoStore(NorthwindServicesProductInfoStore productInfoStore, NorthwindServicesCategoryInfoStore selectedCategoryInfoStore) {
+  var categoryInfoSetCategoryOfProductsInput = NorthwindServicesCategoryInfoSetCategoryOfProductsInput();
+  mapNorthwindServicesProductInfoStoreAndCategoryInfoStoreFromNorthwindServicesCategoryInfoSetCategoryOfProductsInput(productInfoStore, selectedCategoryInfoStore, categoryInfoSetCategoryOfProductsInput);
+  return categoryInfoSetCategoryOfProductsInput;
+}
+
+static void mapNorthwindServicesProductInfoStoreAndCategoryInfoStoreFromNorthwindServicesCategoryInfoSetCategoryOfProductsInput(NorthwindServicesProductInfoStore productInfoStore, NorthwindServicesCategoryInfoStore selectedCategoryInfoStore, NorthwindServicesCategoryInfoSetCategoryOfProductsInput categoryInfoSetCategoryOfProductsInput) {
+  // Identifier
+  categoryInfoSetCategoryOfProductsInput.identifier = productInfoStore.identifier;
+  // Attributes
+
+  // Relations
+  categoryInfoSetCategoryOfProductsInput.category = createNorthwindExternalAPSetCategoryOfAllProductsInputCategoryFromNorthwindServicesCategoryInfoStore(selectedCategoryInfoStore);
+}
+
+static NorthwindExternalAPSetCategoryOfAllProductsInputCategory createNorthwindExternalAPSetCategoryOfAllProductsInputCategoryFromNorthwindServicesCategoryInfoStore(NorthwindServicesCategoryInfoStore categoryInfoStore) {
+  var setCategoryOfAllProductsInputCategory = NorthwindExternalAPSetCategoryOfAllProductsInputCategory();
+  mapNorthwindServicesCategoryInfoStoreToNorthwindExternalAPSetCategoryOfAllProductsInputCategory(categoryInfoStore, setCategoryOfAllProductsInputCategory);
+  return setCategoryOfAllProductsInputCategory;
+}
+
+static void mapNorthwindServicesCategoryInfoStoreToNorthwindExternalAPSetCategoryOfAllProductsInputCategory(NorthwindServicesCategoryInfoStore categoryInfoStore, NorthwindExternalAPSetCategoryOfAllProductsInputCategory setCategoryOfAllProductsInputCategory) {
+  // Identifier
+  setCategoryOfAllProductsInputCategory.identifier = categoryInfoStore.identifier;
+}
+*/

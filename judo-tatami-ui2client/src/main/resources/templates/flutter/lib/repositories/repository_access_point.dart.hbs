@@ -6,6 +6,12 @@
 // Overwrite: {{{ cleanup template.overwriteExpression }}}
 // Template name: {{ template.templateName }}
 // Application: {{ application.name }}
+//
+//{{# each ap.relations }}
+//    {{# each behaviours }}
+//        {{ behaviour }} {{ fqClass ap.name }}.{{ variable ../name }} ({{ fqClass ../target.name }})  {{ fqClass sourceRelationType.target.name }}.{{ variable sourceRelationType.name }}
+//    {{/ each }}
+//{{/ each }}
 
 part of {{ variable ap.name }}.repository;
 
@@ -19,13 +25,11 @@ class {{ fqClass ap.name }}Repository with
     {{ fqClass ap.name }}{{ className accessRelation.name }}{{ fqClass accessRelation.target.name }}{{ className relationType.name }}Repository{{# unless @last}},{{/ unless}}
 {{/ each }}
 {
-  final ApiClient _apiClient = ApiClient(basePath: kBasePathUrl, apiClientDelegate: DioClientDelegate());
-
   //////////////////////////////////////////////////////////////////////////////
   // GET Principal
   //////////////////////////////////////////////////////////////////////////////
   Future get({{ fqClass ap.name }}Store {{ variable ap.name }}Store) async {
-    {{ fqClass ap.name }} {{ variable ap.name }}Response = await DefaultApi(_apiClient).{{ fqVariable ap.name }}Principal();
+    {{ fqClass ap.name }} {{ variable ap.name }}Response = await DefaultApi(locator<ApiClient>()).{{ fqVariable ap.name }}Principal();
     {{ fqClass ap.name }}RepositoryStoreMapper.map{{ fqClass ap.name }}To{{ fqClass ap.name }}Store({{ variable ap.name }}Response, {{ variable ap.name }}Store);
   }
 }

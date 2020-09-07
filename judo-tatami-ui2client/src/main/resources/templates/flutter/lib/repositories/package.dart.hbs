@@ -12,6 +12,8 @@ library {{ variable ap.name }}.repository;
 import 'dart:async';
 import 'package:injectable/injectable.dart';
 
+import 'package:{{ modelPackage ap.name }}/{{ path ap.name }}/injector/injector.dart';
+
 import 'package:openapi_dart_common/openapi.dart';
 import 'package:{{ modelPackage ap.name }}/{{ path ap.name }}/utilities/package.dart';
 import 'package:{{ modelPackage ap.name }}/{{ path ap.name }}/rest/lib/api.dart';

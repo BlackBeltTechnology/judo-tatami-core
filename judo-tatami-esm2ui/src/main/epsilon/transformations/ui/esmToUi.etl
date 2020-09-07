@@ -83,6 +83,7 @@ post {
 						 and r == sourceRelationType or r.eContainer == sourceRelationType.target)
 			) {
 
+
 				// Handle inheritence on API level. 
 				var ownerRelationType = UI!ui::data::RelationType.all()
 					.selectOne(s | s.~application == application 

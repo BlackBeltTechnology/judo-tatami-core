@@ -10,17 +10,20 @@
 //   Relation: {{ name }}
 //   Relation owner: {{ owner.name }}
 //   Relation target: {{ target.name }}
+//
+//    {{# each behaviours }}
+//        {{ behaviour }} {{ fqClass ap.name }}.{{ variable ../name }} ({{ fqClass ../target.name }})  {{ fqClass sourceRelationType.target.name }}.{{ variable sourceRelationType.name }}
+//    {{/ each }}
 
 part of {{ variable ap.name }}.repository;
 
 class {{ fqClass ap.name }}{{ className name }}DefaultRepository {
-  final ApiClient _apiClient = ApiClient(basePath: kBasePathUrl, apiClientDelegate: DioClientDelegate());
 
   //////////////////////////////////////////////////////////////////////////////
   // GET ALL
   //////////////////////////////////////////////////////////////////////////////
   Future<List<{{ fqClass target.name }}Store>> get{{ className name }}() async {
-    var {{ variable target.name }}ListResponse = await DefaultApi(_apiClient).{{ fqVariable owner.name }}Get{{ className name }}();
+    var {{ variable target.name }}ListResponse = await DefaultApi(locator<ApiClient>()).{{ fqVariable owner.name }}Get{{ className name }}({{ modelName target.name }}Extension{{ fqClassWithoutModel target.name}}QueryCustomizer());
     return {{ variable target.name }}ListResponse.map<{{ fqClass target.name }}Store>(
       {{ fqClass ap.name }}RepositoryStoreMapper.create{{ fqClass target.name }}StoreFrom{{ fqClass target.name }}).toList();
   }
@@ -30,7 +33,7 @@ class {{ fqClass ap.name }}{{ className name }}DefaultRepository {
   //////////////////////////////////////////////////////////////////////////////
   Future<{{ fqClass target.name }}Store> create{{ className name }}({{ fqClass target.name }}Store {{ variable target.name }}Store) async {
     var {{ variable target.name }}ExtendedRequest = {{ fqClass ap.name }}RepositoryStoreMapper.create{{ fqClass target.name }}ExtendedFrom{{ fqClass target.name }}Store({{ variable target.name }}Store);
-    var {{ variable target.name }}Response = await DefaultApi(_apiClient).{{ fqVariable owner.name }}Create{{ className name }}({{ variable target.name }}ExtendedRequest);
+    var {{ variable target.name }}Response = await DefaultApi(locator<ApiClient>()).{{ fqVariable owner.name }}Create{{ className name }}({{ variable target.name }}ExtendedRequest);
     return {{ fqClass ap.name }}RepositoryStoreMapper.create{{ fqClass target.name }}StoreFrom{{ fqClass target.name }}({{ variable target.name }}Response);
   }
 
@@ -39,17 +42,17 @@ class {{ fqClass ap.name }}{{ className name }}DefaultRepository {
   //////////////////////////////////////////////////////////////////////////////
   Future<{{ fqClass target.name }}Store> update{{ className name }}({{ fqClass target.name }}Store {{ variable target.name }}Store) async {
     var {{ variable target.name }}Request = {{ fqClass ap.name }}RepositoryStoreMapper.create{{ fqClass target.name }}From{{ fqClass target.name }}Store({{ variable target.name }}Store);
-    var {{ variable target.name }}Response = await DefaultApi(_apiClient).{{ fqVariable owner.name }}Update{{ className name }}({{ variable target.name }}Request);
+    var {{ variable target.name }}Response = await DefaultApi(locator<ApiClient>()).{{ fqVariable owner.name }}Update{{ className name }}({{ variable target.name }}Request);
     return {{ fqClass ap.name }}RepositoryStoreMapper.create{{ fqClass target.name }}StoreFrom{{ fqClass target.name }}({{ variable target.name }}Response);
   }
 
   //////////////////////////////////////////////////////////////////////////////
-  // REMOVE
+  // DELETE
   //////////////////////////////////////////////////////////////////////////////
-  Future<void> remove{{ className name }}({{ fqClass target.name }}Store {{ variable target.name }}Store) async {
+  Future<void> delete{{ className name }}({{ fqClass target.name }}Store {{ variable target.name }}Store) async {
     var {{ variable target.name }}Request = NorthwindIdentifier();
     {{ variable target.name }}Request.identifier = {{ variable target.name }}Store.identifier;
-    await DefaultApi(_apiClient).{{ fqVariable owner.name }}Delete{{ className name }}({{ variable target.name }}Request);
+    await DefaultApi(locator<ApiClient>()).{{ fqVariable owner.name }}Delete{{ className name }}({{ variable target.name }}Request);
   }
 
   {{# each target.relations ~}}
@@ -59,7 +62,7 @@ class {{ fqClass ap.name }}{{ className name }}DefaultRepository {
   //////////////////////////////////////////////////////////////////////////////
   Future<List<{{ fqClass ../target.name }}Store>> get{{ className ../name }}RangeForCreate{{ className ../../name }}({{ fqClass ../../target.name }}Store {{ variable ../../target.name }}Store) async {
     var {{ variable ../../target.name }}Request = {{ fqClass ap.name }}RepositoryStoreMapper.create{{ fqClass ../../target.name }}From{{ fqClass ../../target.name }}Store({{ variable ../../target.name }}Store);
-    var {{ variable ../target.name }}ListResponse = await DefaultApi(_apiClient).{{ fqVariable ../../owner.name }}GetRangeOf{{ className ../name }}ToCreate{{ className ../../name }}({{ variable ../../target.name }}Request);
+    var {{ variable ../target.name }}ListResponse = await DefaultApi(locator<ApiClient>()).{{ fqVariable ../../owner.name }}GetRangeOf{{ className ../name }}ToCreate{{ className ../../name }}({{ variable ../../target.name }}Request);
     return {{ variable ../target.name }}ListResponse.map<{{ fqClass ../target.name }}Store>(
       {{ fqClass ap.name }}RepositoryStoreMapper.create{{ fqClass ../target.name }}StoreFrom{{ fqClass ../target.name }}).toList();
   }
@@ -69,7 +72,7 @@ class {{ fqClass ap.name }}{{ className name }}DefaultRepository {
   //////////////////////////////////////////////////////////////////////////////
   Future<List<{{ fqClass ../target.name }}Store>> get{{ className ../name }}RangeForUpdate{{ className ../../name }}({{ fqClass ../../target.name }}Store {{ variable ../../target.name }}Store) async {
     var {{ variable ../../target.name }}Request = {{ fqClass ap.name }}RepositoryStoreMapper.create{{ fqClass ../../target.name }}From{{ fqClass ../../target.name }}Store({{ variable ../../target.name }}Store);
-    var {{ variable ../target.name }}ListResponse = await DefaultApi(_apiClient).{{ fqVariable ../../owner.name }}GetRangeOf{{ className ../name }}ToUpdate{{ className ../../name }}({{ variable ../../target.name }}Request);
+    var {{ variable ../target.name }}ListResponse = await DefaultApi(locator<ApiClient>()).{{ fqVariable ../../owner.name }}GetRangeOf{{ className ../name }}ToUpdate{{ className ../../name }}({{ variable ../../target.name }}Request);
     return {{ variable ../target.name }}ListResponse.map<{{ fqClass ../target.name }}Store>(
       {{ fqClass ap.name }}RepositoryStoreMapper.create{{ fqClass ../target.name }}StoreFrom{{ fqClass ../target.name }}).toList();
   }

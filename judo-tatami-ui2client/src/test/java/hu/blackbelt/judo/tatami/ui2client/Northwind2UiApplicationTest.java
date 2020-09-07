@@ -5,6 +5,7 @@ import hu.blackbelt.epsilon.runtime.execution.impl.Slf4jLog;
 import hu.blackbelt.judo.meta.esm.runtime.EsmModel;
 import hu.blackbelt.judo.meta.ui.Application;
 import hu.blackbelt.judo.meta.ui.NavigationController;
+import hu.blackbelt.judo.meta.ui.data.NumericType;
 import hu.blackbelt.judo.meta.ui.runtime.UiModel;
 import hu.blackbelt.judo.meta.ui.support.UiModelResourceSupport;
 import hu.blackbelt.judo.tatami.esm2ui.Esm2UiTransformationTrace;

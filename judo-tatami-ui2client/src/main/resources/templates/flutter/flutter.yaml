@@ -41,21 +41,21 @@
       expression: "#application.dataElement"
       className: hu.blackbelt.judo.meta.ui.data.ClassType
 
-- overwriteExpression: true
-  factoryExpression: "{#application}"
-  pathExpression: >
-    'lib/' + #path(#application.dataElement.name) + '/store/' + #path(#application.dataElement.name) + '__global_store.dart'
-  templateName: flutter/lib/store/global_store.dart.hbs
-  templateContext:
-    - name: transferObjects
-      expression: "#application.dataElements"
-      className: java.util.Collection
-    - name: ap
-      expression: "#application.dataElement"
-      className: hu.blackbelt.judo.meta.ui.data.ClassType
-    - name: operations
-      expression: "#operations(#application)"
-      className: java.util.Collection
+#- overwriteExpression: true
+#  factoryExpression: "{#application}"
+#  pathExpression: >
+#    'lib/' + #path(#application.dataElement.name) + '/store/' + #path(#application.dataElement.name) + '__global_store.dart'
+#  templateName: flutter/lib/store/global_store.dart.hbs
+#  templateContext:
+#    - name: transferObjects
+#      expression: "#application.dataElements"
+#      className: java.util.Collection
+#    - name: ap
+#      expression: "#application.dataElement"
+#      className: hu.blackbelt.judo.meta.ui.data.ClassType
+#    - name: operations
+#      expression: "#operations(#application)"
+#      className: java.util.Collection
 
 - overwriteExpression: true
   factoryExpression: "#application.dataElements"
@@ -101,6 +101,12 @@
     - name: operations
       expression: "#operations(#application)"
       className: java.util.Collection
+    - name: applicationBehaviours
+      expression: "#applicationBehaviours(#application)"
+      className: java.util.Collection
+    - name: relationBehaviours
+      expression: "#relationBehaviours(#self.relationType)"
+      className: java.util.Collection
 
 - overwriteExpression: true
   factoryExpression: "#application.dataElement.relations"
@@ -114,6 +120,9 @@
     - name: ap
       expression: "#application.dataElement"
       className: hu.blackbelt.judo.meta.ui.data.ClassType
+    - name: relationBehaviours
+      expression: "#relationBehaviours(#self)"
+      className: java.util.Collection
 
 - overwriteExpression: true
   factoryExpression: "{#application}"
