@@ -17,14 +17,144 @@ operation String anchor(anchor1 : String) : String {
 	return self.anchor(anchor1, null);
 }
 
+// Create or retrevie the related Behaviour.
+operation UI!ui::data::RelationType mapRelationBehaviour(behaviour : Any, 
+	sourceRelationType : UI!ui::data::RelationType):UI!ui::data::RelationBehaviourBySourceRelation {
+	var relationBehaviour = self.behaviours
+		.selectOne(b | b.sourceRelationType = sourceRelationType 
+			and b.behaviour == behaviour);
+	if (relationBehaviour.isUndefined()) {
+		relationBehaviour = new UI!ui::data::RelationBehaviourBySourceRelation();		
+		relationBehaviour.sourceRelationType = sourceRelationType;
+		relationBehaviour.behaviour = behaviour;
+
+		self.behaviours.add(relationBehaviour);
+	}
+	return relationBehaviour;
+}
+
 pre {
   var uiUtils = new Native("hu.blackbelt.judo.meta.ui.runtime.UiUtils");
 }
 
 post {
-	for (cl : UI!ClassType in UI!ClassType.all().select(c | not c.isAccessPoint())) {
-		
-		cl.accessPointRelations = esmUtils.getExposedRelationsFromAccessPointToTransferObjectType(cl.~application.~ap, cl.~srcClass)	 
+
+	// Iterate over all CallOperationAction to fix in/out parameters
+	// It is done here to avoid endless loop.
+	for (cl : UI!ui::data::ClassType in UI!ui::data::ClassType.all().select(c | not c.isAccessPoint())) {
+		cl.accessPointRelations = esmUtils.getExposedRelationsFromAccessPointToTransferObjectType(cl.~application.~original, cl.~srcClass)	 
 				.collect(r | cl.accessPoint.relations.selectOne(r2 | r2.name = r.name));
+	}
+
+	// Iterate over all CallOperationAction to fix in/out parameters
+	// It is done here to avoid endless loop.
+	for (callAction : UI!ui::CallOperationAction in UI!ui::CallOperationAction.all()) {
+		var op : ESM!esm::`operation`::Operation = callAction.~originalOperationForm.getOperationReference.getMember();
+		var application = callAction.~application;
+		
+		if (op.input.isDefined()) {
+			if (op.input.target.form.isDefined()) {
+				callAction.inputParameterPage = op.mapPageForOperationInputForForm(application);
+			}
+		}
+	
+		if (op.output.isDefined()) {
+			if (op.output.target.view.isDefined()) {
+		    	callAction.outputParameterPage = op.mapPageForOperationOutputForView(application);
+	      }
+		}	
+	}
+	
+
+	for (application : UI!ui::Application in UI!ui::Application.all()) {
+			log.debug("======================");
+			log.debug("APP ================== : " + application.name);
+			log.debug("======================");
+	
+		// Iterate over all relation and mathing with all relations of the current
+		// relations target. Its important to be able to determinate the current 
+		// behaviours.
+		for (sourceRelationType : UI!ui::data::RelationType in UI!ui::data::RelationType.all()
+				.select(r | r.~application == application
+					and r.~original.memberType <> ESM!esm::structure::MemberType#TRANSIENT)) {
+	
+			for (relationType : UI!ui::data::RelationType in UI!ui::data::RelationType.all()
+					.select(r | r.~application == application
+						 and r == sourceRelationType or r.eContainer == sourceRelationType.target)
+			) {
+
+
+				// Handle inheritence on API level. 
+				var ownerRelationType = UI!ui::data::RelationType.all()
+					.selectOne(s | s.~application == application 
+						and relationType.~original == s.~original 
+						and s.~original.eContainer == s.eContainer.~original);
+					
+				var ownerSourceRelationType = UI!ui::data::RelationType.all()
+					.selectOne(s | s.~application == application 
+						and sourceRelationType.~original == s.~original 
+						and s.~original.eContainer == s.eContainer.~original);
+
+			    // GET		
+				log.debug(sourceRelationType.eContainer.name + "." + sourceRelationType.name + " >>> " + ownerRelationType.eContainer.name + "/" + ownerRelationType.name + "/get");
+				relationType.mapRelationBehaviour(UI!ui::data::RelationBehaviour#GET, ownerSourceRelationType);
+	
+				// CREATE			
+				if (relationType.~original.isCreateAllowed()) {
+					log.debug(sourceRelationType.eContainer.name + "." + sourceRelationType.name + " >>> " + ownerRelationType.eContainer.name + "/" + ownerRelationType.name + "/create");
+					relationType.mapRelationBehaviour(UI!ui::data::RelationBehaviour#CREATE, ownerSourceRelationType);
+				}
+	
+				// UPDATE			
+				if (relationType.~original.isUpdateAllowed()) {
+					log.debug(sourceRelationType.eContainer.name + "." + sourceRelationType.name + " >>> " + relationType.eContainer.name + "/" + relationType.name + "/update");
+					relationType.mapRelationBehaviour(UI!ui::data::RelationBehaviour#UPDATE, ownerSourceRelationType);
+				}
+				
+				// DELETE			
+				if (relationType.~original.isDeleteAllowed()) {
+					log.debug(sourceRelationType.eContainer.name + "." + sourceRelationType.name + " >>> " + relationType.eContainer.name + "/" + relationType.name + "/delete");
+					relationType.mapRelationBehaviour(UI!ui::data::RelationBehaviour#DELETE, ownerSourceRelationType);
+				}
+				
+				if (relationType.~original.memberType <> ESM!esm::structure::MemberType#TRANSIENT 
+						and sourceRelationType <> relationType
+						and not relationType.~original.isReadOnly()
+						and sourceRelationType.~original.isUpdateAllowed()
+	//					and relationType.~original.target.mapping.isDefined() 
+	//					and (relationType.~original.isKindOf(ESM!TwoWayRelationMember) implies relationType.~original.partner <> sourceRelationType.~original)					
+						) {
+					// SET 		
+					if (esmUtils.isSetOnRelation(sourceRelationType.~original, relationType.~original) ) {
+						log.debug(sourceRelationType.eContainer.name + "." + sourceRelationType.name + " >>> " + ownerSourceRelationType.eContainer.name + "/" + ownerSourceRelationType.name + "/" + ownerRelationType.name + "/set");
+						relationType.mapRelationBehaviour(UI!ui::data::RelationBehaviour#SET, ownerSourceRelationType);
+					}
+		
+					// UNSET		
+					if (esmUtils.isUnsetOnRelation(sourceRelationType.~original, relationType.~original) ) {
+						log.debug(sourceRelationType.eContainer.name + "." + sourceRelationType.name + " >>> " + ownerSourceRelationType.eContainer.name + "/" + ownerSourceRelationType.name + "/" + ownerRelationType.name + "/unset");
+						relationType.mapRelationBehaviour(UI!ui::data::RelationBehaviour#UNSET, ownerSourceRelationType);
+					}
+		
+					// ADD		
+					if (esmUtils.isAddOnRelation(sourceRelationType.~original, relationType.~original) ) {
+						log.debug(sourceRelationType.eContainer.name + "." + sourceRelationType.name + " >>> " + ownerSourceRelationType.eContainer.name + "/" + ownerSourceRelationType.name + "/" + ownerRelationType.name + "/add");
+						relationType.mapRelationBehaviour(UI!ui::data::RelationBehaviour#ADD, ownerSourceRelationType);
+					}
+		
+					// REMOVE		
+					if (esmUtils.isRemoveOnRelation(sourceRelationType.~original, relationType.~original) ) {
+						log.debug(sourceRelationType.eContainer.name + "." + sourceRelationType.name + " >>> " + ownerSourceRelationType.eContainer.name + "/" + ownerSourceRelationType.name + "/" + ownerRelationType.name + "/remove");
+						relationType.mapRelationBehaviour(UI!ui::data::RelationBehaviour#REMOVE, ownerSourceRelationType);
+					}
+
+					// RANGE GET		
+		            if (esmUtils.isRangeAllowedOnRelation(relationType.~original) and relationType.~original.rangeExpression.isDefined() and relationType.~original.rangeExpression.trim().length() > 0) {
+						log.debug(sourceRelationType.eContainer.name + "." + sourceRelationType.name + " >>> " + ownerSourceRelationType.eContainer.name + "/" + ownerSourceRelationType.name + "/(create|update)/input/" + ownerRelationType.name + "/range");
+						relationType.mapRelationBehaviour(UI!ui::data::RelationBehaviour#RANGE, ownerSourceRelationType);
+        		    }
+				}
+			}
+		}
 	}
 }

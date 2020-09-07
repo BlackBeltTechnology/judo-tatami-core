@@ -15,6 +15,7 @@ class {{ fqClass name }}Store extends _{{ fqClass name }}Store
     {{ fqClass name }}Store() : super();
 
     {{ fqClass name }}Store.clone({{ fqClass name }}Store {{ fqVariable name }}) : super.clone({{ fqVariable name }});
+
 }
 
 abstract class _{{ fqClass name }}Store with Store {
@@ -23,41 +24,73 @@ abstract class _{{ fqClass name }}Store with Store {
   _{{ fqClass name }}Store.clone({{ fqClass name }}Store {{ variable name }}Store) {
     identifier = {{ variable name }}Store.identifier;
 
-    {{#each attributes ~}}
+    {{# each attributes }}
     {{ variable name }} = {{ variable ../name }}Store.{{ variable name }};
-    {{/each}}
+    {{/ each }}
 
     // Relations
-    {{#each relations ~}}
-        {{#  if isCollection }}
-    {{ variable name }} = ObservableList.of({{ variable ../name }}Store.{{ variable name }});
-        {{ else }}
-    // TODO: Maybe clone?
-    {{ variable name }} = {{ variable ../name }}Store.{{ variable name }};
-        {{/ if}}
-    {{/each}}
+    {{# each relations }}
+      {{#  if isCollection }}
+    if ({{ variable ../name }}Store.{{ variable name }} != null) {
+      {{ variable name }} = ObservableList.of({{ variable ../name }}Store.{{ variable name }});
+    } else {
+      {{ variable name }} = ObservableList.of([]);
+    }
+      {{ else }}
+    {{ variable name }} = {{ fqClass target.name }}Store.clone({{ variable name }});
+      {{/ if }}
+    {{/ each }}
   }
 
   String identifier;
 
   // Attributes
-  {{#each attributes ~}}
-  @observable
-  String {{ variable name }};
+  {{# each attributes }}
 
-  {{/each}}
+  @observable
+  {{ dartType dataType }} {{ variable name }};
+
+  {{/ each }}
 
   // Relations
-  {{#each relations ~}}
+  {{# each relations }}
     {{#  if isCollection }}
+
   @observable
   var {{ variable name }} = ObservableList<{{ fqClass target.name }}Store>();
     {{ else }}
+
   @observable
   {{ fqClass target.name }}Store {{ variable name }};
-    {{/ if}}
+    {{/ if }}
+  {{/ each }}
 
-  {{/each}}
+
+  // Attributes
+  {{# each attributes }}
+  @action
+  void set{{ className name }}({{ dartType dataType }} {{ variable name }}) {
+    this.{{ variable name }} = {{ variable name }};
+  }
+  {{/ each}}
+
+  // Relations
+  {{#each relations }}
+    {{# if isCollection }}
+  @action
+  void set{{ className name }}(List<{{ fqClass target.name }}Store> {{ variable name }}) {
+    this.{{ variable name }}.clear();
+    this.{{ variable name }}.addAll({{ variable name }});
+  }
+    {{ else }}
+  @action
+  void set{{ className name }}({{ fqClass target.name }}Store {{ variable name }}) {
+    this.{{ variable name }} = {{ variable name }};
+  }
+    {{/ if }}
+
+{{/ each }}
+
 
   @override
   bool operator ==(Object other) =>

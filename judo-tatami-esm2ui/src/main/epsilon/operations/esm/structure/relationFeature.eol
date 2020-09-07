@@ -9,12 +9,16 @@ operation ESM!esm::structure::RelationFeature createPageForRelationForView(appli
 	var page : UI!ui::PageDefinition = new UI!ui::PageDefinition();
 	page.dataElement = self.mapRelationType(application, self.eContainer.mapClassType(application));
 	page.name = self.fqName().anchor("RelationPageView", target.fqName());
-	page.col = applicationColumns;
-	page.children.add(target.view.map(application));
+
+	var pageContainer = new UI!ui::PageContainer();
+    pageContainer.layoutType = application.layoutTypes.first;
+	pageContainer.name = self.name;
+	pageContainer.direction = UI!Axis#VERTICAL;
+	page.containers.add(pageContainer);
+
+	pageContainer.children.add(target.view.map(application));
 	
-	uiUtils.organizeElements(page);
-	
-    return page;
+	return page;
 }
 
 operation ESM!esm::structure::RelationFeature createPageForRelationForForm(application : UI!ui::Application, target : ESM!esm::structure::TransferObjectType) : UI!ui::PageDefinition {
@@ -23,10 +27,14 @@ operation ESM!esm::structure::RelationFeature createPageForRelationForForm(appli
 	var page : UI!ui::PageDefinition = new UI!ui::PageDefinition();
 	page.dataElement = self.mapRelationType(application, self.eContainer.mapClassType(application));
 	page.name = self.fqName().anchor("RelationPageForm", target.fqName());
-	page.col = applicationColumns;
-    page.children.add(target.form.map(application));
-    
-	uiUtils.organizeElements(page);
+
+	var pageContainer = new UI!ui::PageContainer();
+    pageContainer.layoutType = application.layoutTypes.first;
+	pageContainer.name = self.name;
+	pageContainer.direction = UI!Axis#VERTICAL;
+	page.containers.add(pageContainer);
+
+    pageContainer.children.add(target.form.map(application));
     
     return page;
 }
@@ -37,13 +45,18 @@ operation ESM!esm::structure::RelationFeature createPageForRelationForTable(appl
 	var page : UI!ui::PageDefinition = new UI!ui::PageDefinition();
 	page.dataElement = self.mapRelationType(application, self.eContainer.mapClassType(application));
 	page.name = self.fqName().anchor("RelationPageTable", target.fqName());
-	page.col = applicationColumns;
-    
+
+	var pageContainer = new UI!ui::PageContainer();
+    pageContainer.layoutType = application.layoutTypes.first;
+	pageContainer.name = self.name;
+	pageContainer.direction = UI!Axis#VERTICAL;
+	page.containers.add(pageContainer);
+
     var flex = new UI!ui::Flex();
 	flex.name = self.name;
 	flex.direction = UI!Axis#VERTICAL;
 	flex.col = applicationColumns;
-	page.children.add(flex);
+	pageContainer.children.add(flex);
     
 	var table = target.table.createTableFromTransferObjectTable(application);
     flex.children.add(table);
@@ -52,24 +65,31 @@ operation ESM!esm::structure::RelationFeature createPageForRelationForTable(appl
 		var detail : UI!ui::PageDefinition = new UI!ui::PageDefinition();
 		detail.name = self.fqName().anchor("RelationPageTableMasterDetail", target.fqName());
 		detail.dataElement = self.mapRelationType(application, self.eContainer.mapClassType(application));
-		detail.col = applicationColumns;
+
+		var pageDetailContainer = new UI!ui::PageContainer();
+	    pageDetailContainer.layoutType = application.layoutTypes.first;
+		pageDetailContainer.name = self.name;
+		pageDetailContainer.direction = UI!Axis#VERTICAL;
+		detail.containers.add(pageDetailContainer);
+
 		application.pages.add(detail);
-	  	detail.children.add(target.view.map(application));
+	  	pageDetailContainer.children.add(target.view.map(application));
 	  	table.detail = detail;
     }
-    
-	uiUtils.organizeElements(page);
     
     return page;
 }
 
 operation ESM!esm::structure::RelationFeature createRelationTypeForClass(application : UI!ui::Application, clazz : UI!ui::data::ClassType) : UI!ui::data::RelationType {
 	var relation = new UI!ui::data::RelationType();	
+    relation.~application = application;
+    relation.~original = self;
+
 	relation.name = self.name;
 	relation.isCollection = (self.upper == -1);
-	relation.isCreateable = self.createable;
-	relation.isUpdateable = self.updateable;
-	relation.isDeleteable = self.deleteable;
+//	relation.isCreateable = self.createable;
+//	relation.isUpdateable = self.updateable;
+//	relation.isDeleteable = self.deleteable;
 	relation.isReadOnly = self.isReadOnly();
 	
 	if (self.memberType == ESM!esm::structure::MemberType#STORED) {

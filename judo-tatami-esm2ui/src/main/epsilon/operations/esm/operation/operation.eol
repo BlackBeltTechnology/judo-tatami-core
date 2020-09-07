@@ -1,3 +1,4 @@
+
 @cached
 operation ESM!esm::`operation`::Operation fqName() {
 	return esmUtils.getNamespaceElementFQName(self.eContainer) + "." + self.name;
@@ -9,21 +10,34 @@ operation ESM!esm::`operation`::Operation createPageForOperationOutputForView(ap
 	var page : UI!ui::PageDefinition = new UI!ui::PageDefinition();
 	page.dataElement = self.mapOperationOutputType(application, self.eContainer().mapClassType(application));
 	page.name = self.fqName().anchor("OperationOutputPageView", self.eContainer().fqName());
-	page.col = applicationColumns;
 	
+	var pageContainer = new UI!ui::PageContainer();
+    pageContainer.layoutType = application.layoutTypes.first;
+	pageContainer.name = self.name;
+	pageContainer.direction = UI!Axis#VERTICAL;
+	page.containers.add(pageContainer);
+		
 	if (self.output.target.view.isUndefined()) {
 		var flex = new UI!ui::Flex();
 		flex.name = self.name;
 		flex.col = applicationColumns;
-		page.children.add(flex);
+		pageContainer.children.add(flex);
 		log.warn(self.output.target.fqName() + " has no view defined");
 	} else {
-		page.children.add(self.output.target.view.map(application));
+		pageContainer.children.add(self.output.target.view.map(application));
 	}
 
-	uiUtils.organizeElements(page);
-		
     return page;
+}
+
+operation ESM!esm::`operation`::Operation mapPageForOperationOutputForView(application : UI!ui::Application) : UI!ui::PageDefinition {
+	var opOutputPageName = self.fqName().anchor("OperationOutputPageView", self.eContainer().fqName());
+	var opOutputPage = application.pages.selectOne(p | p.name = opOutputPageName);
+	if (opOutputPage.isUndefined()) {
+		opOutputPage = self.createPageForOperationOutputForView(application);
+		application.pages.add(opOutputPage);
+	}
+	return opOutputPage;
 }
 
 operation ESM!esm::`operation`::Operation createPageForOperationInputForForm(application : UI!ui::Application) : UI!ui::PageDefinition {
@@ -32,21 +46,34 @@ operation ESM!esm::`operation`::Operation createPageForOperationInputForForm(app
 	var page : UI!ui::PageDefinition = new UI!ui::PageDefinition();
 	page.dataElement = self.mapOperationInputType(application, self.eContainer().mapClassType(application));
 	page.name = self.fqName().anchor("OperationInputPageForm", self.eContainer().fqName());
-    page.col = applicationColumns;
+
+	var pageContainer = new UI!ui::PageContainer();
+    pageContainer.layoutType = application.layoutTypes.first;
+	pageContainer.name = self.name;
+	pageContainer.direction = UI!Axis#VERTICAL;
+	page.containers.add(pageContainer);
     
     if (self.input.target.form.isUndefined()) {
     	var flex = new UI!ui::Flex();
 		flex.name = self.name;
 		flex.col = applicationColumns;
-		page.children.add(flex);
+		pageContainer.children.add(flex);
 		log.warn(self.input.target.fqName() + " has no form defined");
 	} else {
-		page.children.add(self.input.target.form.map(application));
+		pageContainer.children.add(self.input.target.form.map(application));
 	}
 	
-	uiUtils.organizeElements(page);
-	
     return page;
+}
+
+operation ESM!esm::`operation`::Operation mapPageForOperationInputForForm(application : UI!ui::Application) : UI!ui::PageDefinition {
+	var opInputPageName = self.fqName().anchor("OperationInputPageForm", self.eContainer().fqName());
+	var opInputPage = application.pages.selectOne(p | p.name = opInputPageName);
+	if (opInputPage.isUndefined()) {
+		opInputPage = self.createPageForOperationInputForForm(application);
+		application.pages.add(opInputPage);
+	}
+	return opInputPage;
 }
 
 operation ESM!esm::`operation`::Operation createPageForOperationInputForTable(application : UI!ui::Application) : UI!ui::PageDefinition {
@@ -57,28 +84,38 @@ operation ESM!esm::`operation`::Operation createPageForOperationInputForTable(ap
 	
 	page.dataElement = self.mapOperationInputType(application, clazz);
 	page.name = self.fqName().anchor("OperationInputPageTable", self.eContainer().fqName());
-	page.col = applicationColumns;
+	
+	var pageContainer = new UI!ui::PageContainer();
+    pageContainer.layoutType = application.layoutTypes.first;
+	pageContainer.name = self.name;
+	pageContainer.direction = UI!Axis#VERTICAL;
+	page.containers.add(pageContainer);
 	
 	var flex = new UI!ui::Flex();
 	flex.name = self.name;
 	flex.col = applicationColumns;
 	flex.direction = UI!Axis#VERTICAL;
-	page.children.add(flex);
+	pageContainer.children.add(flex);
 	
 	var table = self.input.target.table.createTableFromTransferObjectTable(application);
     flex.children.add(table);
     
+    /*
     if (self.input.target.table.masterDetail and self.input.target.view.isDefined()) {
 		var detail : UI!ui::PageDefinition = new UI!ui::PageDefinition();
 		detail.name = self.fqName().anchor("OperationInputPageTableMasterDetail", self.input.target.fqName());
-		detail.col = applicationColumns;
 		detail.dataElement = self.mapOperationInputType(application, clazz);
 		application.pages.add(detail);
-	  	detail.children.add(self.input.target.view.map(application));
+
+		var detailPageContainer = new UI!ui::PageContainer();
+	    detailPageContainer.layoutType = application.layoutTypes.first;
+		detailPageContainer.name = self.name;
+		detailPageContainer.direction = UI!Axis#VERTICAL;
+		detail.containers.add(detailPageContainer);
+
+	  	detailPageContainer.children.add(self.input.target.view.map(application));
 	  	table.detail = detail;        
-    }
-    
-   	uiUtils.organizeElements(page);
+    } */
     
     return page;
 }
@@ -87,17 +124,22 @@ operation ESM!esm::`operation`::Operation createPageForOperationOutputForTable(a
 	log.debug("Create page for operation output for table: " + self.output.target.name);
 	
 	var clazz : UI!ui::data::ClassType = self.eContainer().mapClassType(application);
-	var page : UI!ui::PageDefinition = new UI!ui::PageDefinition();
-	
+
+	var page : UI!ui::PageDefinition = new UI!ui::PageDefinition();	
 	page.dataElement = self.mapOperationOutputType(application, clazz);
 	page.name = self.fqName().anchor("OperationOutputPageTable", self.eContainer().fqName());
-	page.col = applicationColumns;
+    
+    var pageContainer = new UI!ui::PageContainer();
+    pageContainer.layoutType = application.layoutTypes.first;
+	pageContainer.name = self.name;
+	pageContainer.direction = UI!Axis#VERTICAL;
+	page.containers.add(pageContainer);
     
     var flex = new UI!ui::Flex();
 	flex.name = self.name;
 	flex.direction = UI!Axis#VERTICAL;
 	flex.col = applicationColumns;
-	page.children.add(flex);
+	pageContainer.children.add(flex);
     
 	var table = self.output.target.table.createTableFromTransferObjectTable(application);
     flex.children.add(table);
@@ -106,13 +148,17 @@ operation ESM!esm::`operation`::Operation createPageForOperationOutputForTable(a
 		var detail : UI!ui::PageDefinition = new UI!ui::PageDefinition();
 		detail.name = self.fqName().anchor("OperationOutputPageTableMasterDetail", self.output.target.fqName()); 
 		detail.dataElement = self.mapOperationOutputType(application, clazz);
-		detail.col = applicationColumns;
 		application.pages.add(detail);
-	  	detail.children.add(self.output.target.view.map(application));
+
+		var detailPageContainer = new UI!ui::PageContainer();
+	    detailPageContainer.layoutType = application.layoutTypes.first;
+		detailPageContainer.name = self.name;
+		detailPageContainer.direction = UI!Axis#VERTICAL;
+		detail.containers.add(detailPageContainer);
+
+	  	detailPageContainer.children.add(self.output.target.view.map(application));
 	  	table.detail = detail;        
     }
-    
-   	uiUtils.organizeElements(page);
     
     return page;
 }
