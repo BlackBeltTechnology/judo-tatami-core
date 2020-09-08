@@ -12,9 +12,18 @@
 //   Relation owner: {{ relationType.owner.name }}
 //   Relation target: {{ relationType.target.name }}
 //
-//    {{# each relationBehaviours }}
-//        {{ behaviour }} {{ fqClass relationType.target.name }}.{{ variable relationType.name }} {{ fqClass sourceRelationType.target.name }}.{{ variable sourceRelationType.name }}
+//    {{# relationType }}
+//    Behaviours: {{ fqClass ap.name }}.{{ variable name }} ({{ fqClass target.name }})
+//    {{# each behaviours }}
+//        self:   {{{ . }}}
 //    {{/ each }}
+//    {{# each targetBehaviours }}
+//        target: {{{ . }}}
+//    {{/ each }}
+//    {{# each sourceBehaviours }}
+//        source: {{{ . }}}
+//    {{/ each }}
+// {{/ relationType }}
 
 part of {{ variable ap.name }}.repository;
 

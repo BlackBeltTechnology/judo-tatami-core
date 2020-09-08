@@ -1,0 +1,6 @@
+// Iterate over all CallOperationAction to fix in/out parameters
+// It is done here to avoid endless loop.
+operation UI!ui::data::ClassType calculateAccessPointRelationsForRelation() {
+	self.accessPointRelations = esmUtils.getExposedRelationsFromAccessPointToTransferObjectType(self.~application.~original, self.~srcClass)	 
+				.collect(r | self.accessPoint.relations.selectOne(r2 | r2.name = r.name));
+}

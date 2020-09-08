@@ -7,11 +7,18 @@
 // Template name: {{ template.templateName }}
 // Application: {{ application.name }}
 //
-//{{# each ap.relations }}
+// {{# each ap.relations }}
+//    Behaviours: {{ fqClass ap.name }}.{{ variable name }} ({{ fqClass target.name }})
 //    {{# each behaviours }}
-//        {{ behaviour }} {{ fqClass ap.name }}.{{ variable ../name }} ({{ fqClass ../target.name }})  {{ fqClass sourceRelationType.target.name }}.{{ variable sourceRelationType.name }}
+//        self:   {{{ . }}}
 //    {{/ each }}
-//{{/ each }}
+//    {{# each targetBehaviours }}
+//        target: {{{ . }}}
+//    {{/ each }}
+//    {{# each sourceBehaviours }}
+//        source: {{{ . }}}
+//    {{/ each }}
+// {{/ each }}
 
 part of {{ variable ap.name }}.repository;
 

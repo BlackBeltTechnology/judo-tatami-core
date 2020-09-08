@@ -101,12 +101,6 @@
     - name: operations
       expression: "#operations(#application)"
       className: java.util.Collection
-    - name: applicationBehaviours
-      expression: "#applicationBehaviours(#application)"
-      className: java.util.Collection
-    - name: relationBehaviours
-      expression: "#relationBehaviours(#self.relationType)"
-      className: java.util.Collection
 
 - overwriteExpression: true
   factoryExpression: "#application.dataElement.relations"
@@ -120,9 +114,6 @@
     - name: ap
       expression: "#application.dataElement"
       className: hu.blackbelt.judo.meta.ui.data.ClassType
-    - name: relationBehaviours
-      expression: "#relationBehaviours(#self)"
-      className: java.util.Collection
 
 - overwriteExpression: true
   factoryExpression: "{#application}"

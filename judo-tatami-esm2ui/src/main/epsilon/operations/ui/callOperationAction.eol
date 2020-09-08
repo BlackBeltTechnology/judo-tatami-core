@@ -1,0 +1,21 @@
+
+operation UI!ui::CallOperationAction resolveParameterPageDefinitions() {
+	// Iterate over all CallOperationAction to fix in/out parameters
+	// It is done here to avoid endless loop.
+	for (callAction : UI!ui::CallOperationAction in UI!ui::CallOperationAction.all()) {
+		var op : ESM!esm::`operation`::Operation = callAction.~originalOperationForm.getOperationReference.getMember();
+		var application = callAction.~application;
+		
+		if (op.input.isDefined()) {
+			if (op.input.target.form.isDefined()) {
+				callAction.inputParameterPage = op.mapPageForOperationInputForForm(application);
+			}
+		}
+	
+		if (op.output.isDefined()) {
+			if (op.output.target.view.isDefined()) {
+		    	callAction.outputParameterPage = op.mapPageForOperationOutputForView(application);
+	      }
+		}	
+	}
+}

@@ -1,0 +1,123 @@
+import "callOperationAction.eol";
+import "data/classType.eol";
+import "data/relationBehaviour.eol";
+
+// Iterate over all CallOperationAction to fix in/out parameters
+// It is done here to avoid endless loop.
+operation UI!ui::Application calculateAccessPointRelationsForRelations() {
+	for (cl : UI!ui::data::ClassType in UI!ui::data::ClassType.all().select(c | not c.isAccessPoint() and c.~application == self)) {
+		cl.calculateAccessPointRelationsForRelation();
+	}
+}
+
+
+operation UI!ui::Application resolveActionPageDefinitions() {
+	for (callAction : UI!ui::CallOperationAction in UI!ui::CallOperationAction.all().select(a | a.~application = self )) {
+		callAction.resolveParameterPageDefinitions();
+	}
+}
+
+operation UI!ui::Application calculateRelationBehaviour() {
+	// Iterate over all relation and mathing with all relations of the current
+	// relations target. Its important to be able to determinate the current 
+	// behaviours.
+	for (relationType1 : UI!ui::data::RelationType in UI!ui::data::RelationType.all()
+			.select(r | r.~application == self
+				and r.~original.memberType <> ESM!esm::structure::MemberType#TRANSIENT
+	)) {
+
+		// Self
+		for (relationType2 : UI!ui::data::RelationType in UI!ui::data::RelationType.all()
+				.select(r | r.~application == self
+				and r.~original.memberType <> ESM!esm::structure::MemberType#TRANSIENT
+					 and r == relationType1
+	 	)) {
+		    // GET		
+			relationType2.mapRelationBehaviour(UI!ui::data::RelationBehaviourType#GET);
+	
+			// CREATE			
+			if (relationType2.~original.isCreateAllowed()) {
+				relationType2.mapRelationBehaviour(UI!ui::data::RelationBehaviourType#CREATE);
+			}
+	
+			// UPDATE			
+			if (relationType2.~original.isUpdateAllowed()) {
+				relationType2.mapRelationBehaviour(UI!ui::data::RelationBehaviourType#UPDATE);
+			}
+			
+			// DELETE			
+			if (relationType2.~original.isDeleteAllowed()) {
+				relationType2.mapRelationBehaviour(UI!ui::data::RelationBehaviourType#DELETE);
+			}
+		}
+
+	
+		// Source and Target
+		for (relationType2 : UI!ui::data::RelationType in UI!ui::data::RelationType.all()
+				.select(r | r.~application == self
+//     				and r.~original.memberType <> ESM!esm::structure::MemberType#TRANSIENT
+					and r.eContainer == relationType1.target
+		)) {
+		    // GET
+			relationType2.mapSourceRelationBehaviour(UI!ui::data::RelationBehaviourType#GET, relationType1);
+			relationType1.mapTargetRelationBehaviour(UI!ui::data::RelationBehaviourType#GET, relationType2);
+	
+			// CREATE
+			if (relationType1.~original.isCreateAllowed()) {
+				relationType2.mapSourceRelationBehaviour(UI!ui::data::RelationBehaviourType#CREATE, relationType1);
+				relationType1.mapTargetRelationBehaviour(UI!ui::data::RelationBehaviourType#CREATE, relationType2);
+			}
+			// UPDATE
+			if (relationType1.~original.isUpdateAllowed()) {
+				relationType2.mapSourceRelationBehaviour(UI!ui::data::RelationBehaviourType#UPDATE, relationType1);
+				relationType1.mapTargetRelationBehaviour(UI!ui::data::RelationBehaviourType#UPDATE, relationType2);
+			}
+
+			// DELETE
+			if (relationType1.~original.isDeleteAllowed()) {
+				relationType2.mapSourceRelationBehaviour(UI!ui::data::RelationBehaviourType#DELETE, relationType1);
+				relationType1.mapTargetRelationBehaviour(UI!ui::data::RelationBehaviourType#DELETE, relationType2);
+			}
+
+			// RANGE GET		
+            if (esmUtils.isRangeAllowedOnRelation(relationType1.~original) 
+            	and relationType1.~original.rangeExpression.isDefined() 
+            	and relationType1.~original.rangeExpression.trim().length() > 0) {
+					relationType2.mapSourceRelationBehaviour(UI!ui::data::RelationBehaviourType#RANGE, relationType1);
+					relationType1.mapTargetRelationBehaviour(UI!ui::data::RelationBehaviourType#RANGE, relationType2);
+		    }
+
+			if (relationType1.~original.memberType <> ESM!esm::structure::MemberType#TRANSIENT 
+					and not relationType1.~original.isReadOnly()
+//					and relationType1.~original.isUpdateAllowed()
+					and relationType1.~original.target.mapping.isDefined() 
+					and (relationType1.~original.isKindOf(ESM!TwoWayRelationMember) 
+						implies relationType1.~original.partner <> relationType2.~original)					
+			) {
+				// SET 		
+				if (esmUtils.isSetOnRelation(relationType1.~original, relationType2.~original) ) {
+					relationType2.mapSourceRelationBehaviour(UI!ui::data::RelationBehaviourType#SET, relationType1);
+					relationType1.mapTargetRelationBehaviour(UI!ui::data::RelationBehaviourType#SET, relationType2);
+				}
+	
+				// UNSET		
+				if (esmUtils.isUnsetOnRelation(relationType1.~original, relationType2.~original) ) {
+					relationType2.mapSourceRelationBehaviour(UI!ui::data::RelationBehaviourType#UNSET, relationType1);
+					relationType1.mapTargetRelationBehaviour(UI!ui::data::RelationBehaviourType#UNSET, relationType2);
+				}
+	
+				// ADD		
+				if (esmUtils.isAddOnRelation(relationType1.~original, relationType2.~original) ) {
+					relationType2.mapSourceRelationBehaviour(UI!ui::data::RelationBehaviourType#ADD, relationType1);
+					relationType1.mapTargetRelationBehaviour(UI!ui::data::RelationBehaviourType#ADD, relationType2);
+				}
+	
+				// REMOVE		
+				if (esmUtils.isRemoveOnRelation(relationType1.~original, relationType2.~original) ) {
+					relationType2.mapSourceRelationBehaviour(UI!ui::data::RelationBehaviourType#REMOVE, relationType1);
+					relationType1.mapTargetRelationBehaviour(UI!ui::data::RelationBehaviourType#REMOVE, relationType2);
+				}	
+			}
+		}
+	}
+}

@@ -143,7 +143,7 @@ operation ESM!esm::`operation`::Operation createPageForOperationOutputForTable(a
     
 	var table = self.output.target.table.createTableFromTransferObjectTable(application);
     flex.children.add(table);
-    
+    /*
     if (self.output.target.table.masterDetail and self.output.target.view.isDefined()) {
 		var detail : UI!ui::PageDefinition = new UI!ui::PageDefinition();
 		detail.name = self.fqName().anchor("OperationOutputPageTableMasterDetail", self.output.target.fqName()); 
@@ -158,7 +158,7 @@ operation ESM!esm::`operation`::Operation createPageForOperationOutputForTable(a
 
 	  	detailPageContainer.children.add(self.output.target.view.map(application));
 	  	table.detail = detail;        
-    }
+    } */
     
     return page;
 }
