@@ -8,7 +8,7 @@ operation UI!ui::data::RelationType mapRelationBehaviour(behaviour : Any) {
 			and s.~original.eContainer == s.eContainer.~original);		
 
 	var selfBehaviour = self.behaviours
-		.selectOne(b | b.targetRelationType = self);
+		.selectOne(b | b.targetRelationType = ownerTargetRelationType);
 
 
 	if (selfBehaviour.isUndefined()) {
@@ -45,11 +45,12 @@ operation UI!ui::data::RelationType mapSourceRelationBehaviour(behaviour : Any,
    sourceRelationType : UI!ui::data::RelationType) {
 
 	// Handle inheritence on API level. 
-	var ownerTargetRelationType = UI!ui::data::RelationType.all()
-		.selectOne(s | s.~application == self.~application 
-			and sourceRelationType.~original == s.~original 
-			and s.~original.eContainer == s.eContainer.~original);		
-
+	var ownerTargetRelationType = sourceRelationType;
+//	var ownerTargetRelationType = UI!ui::data::RelationType.all()
+//		.selectOne(s | s.~application == self.~application 
+//			and sourceRelationType.~original == s.~original 
+//			and s.~original.eContainer == s.eContainer.~original);		
+//
 	var sourceBehaviour = self.sourceBehaviours
 		.selectOne(b | b.targetRelationType = ownerTargetRelationType);
 

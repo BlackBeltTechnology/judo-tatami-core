@@ -55,7 +55,7 @@ operation UI!ui::Application calculateRelationBehaviour() {
 		// Source and Target
 		for (relationType2 : UI!ui::data::RelationType in UI!ui::data::RelationType.all()
 				.select(r | r.~application == self
-//     				and r.~original.memberType <> ESM!esm::structure::MemberType#TRANSIENT
+     				and r.~original.memberType <> ESM!esm::structure::MemberType#TRANSIENT
 					and r.eContainer == relationType1.target
 		)) {
 		    // GET
@@ -79,16 +79,19 @@ operation UI!ui::Application calculateRelationBehaviour() {
 				relationType1.mapTargetRelationBehaviour(UI!ui::data::RelationBehaviourType#DELETE, relationType2);
 			}
 
-			// RANGE GET		
-            if (esmUtils.isRangeAllowedOnRelation(relationType1.~original) 
-            	and relationType1.~original.rangeExpression.isDefined() 
-            	and relationType1.~original.rangeExpression.trim().length() > 0) {
+			// RANGE GET
+            if (
+            	esmUtils.isRangeAllowedOnRelation(relationType2.~original) 
+            	and relationType2.~original.rangeExpression.isDefined() 
+            	and relationType2.~original.rangeExpression.trim().length() > 0
+			) {
 					relationType2.mapSourceRelationBehaviour(UI!ui::data::RelationBehaviourType#RANGE, relationType1);
 					relationType1.mapTargetRelationBehaviour(UI!ui::data::RelationBehaviourType#RANGE, relationType2);
 		    }
 
-			if (relationType1.~original.memberType <> ESM!esm::structure::MemberType#TRANSIENT 
-					and not relationType1.~original.isReadOnly()
+			if (
+			// relationType1.~original.memberType <> ESM!esm::structure::MemberType#TRANSIENT 
+					not relationType1.~original.isReadOnly()
 //					and relationType1.~original.isUpdateAllowed()
 					and relationType1.~original.target.mapping.isDefined() 
 					and (relationType1.~original.isKindOf(ESM!TwoWayRelationMember) 
