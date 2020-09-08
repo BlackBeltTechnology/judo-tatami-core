@@ -46,9 +46,6 @@ public class FlutterHelper {
         context.registerFunction("isSaveButton", FlutterHelper.class.getDeclaredMethod("isSaveButton", new Class[]{Button.class}));
         context.registerFunction("isBackButton", FlutterHelper.class.getDeclaredMethod("isBackButton", new Class[]{Button.class}));
         context.registerFunction("dartType", FlutterHelper.class.getDeclaredMethod("dartType", new Class[]{DataType.class}));
-        context.registerFunction("clasBehaviours", FlutterHelper.class.getDeclaredMethod("clasBehaviours", new Class[]{ClassType.class}));
-        context.registerFunction("relationBehaviours", FlutterHelper.class.getDeclaredMethod("relationBehaviours", new Class[]{RelationType.class}));
-        context.registerFunction("applicationBehaviours", FlutterHelper.class.getDeclaredMethod("applicationBehaviours", new Class[]{Application.class}));
     }
 
     public static void registerHandlebars(Handlebars handlebars) {
@@ -237,7 +234,7 @@ public class FlutterHelper {
 //        ClassType classType;
     }
 
-
+/*
     public static Collection<BehaviourTuple> clasBehaviours(ClassType classType) {
         return classType.getRelations().stream()
                 .flatMap(r -> r.getBehaviours().stream())
@@ -271,4 +268,6 @@ public class FlutterHelper {
         RelationBehaviour behaviour;
         RelationType sourceRelationType;
     }
+ */
+
 }

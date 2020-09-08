@@ -11,8 +11,15 @@
 //   Relation owner: {{ owner.name }}
 //   Relation target: {{ target.name }}
 //
+//    Behaviours: {{ fqClass ap.name }}.{{ variable name }} ({{ fqClass target.name}})
 //    {{# each behaviours }}
-//        {{ behaviour }} {{ fqClass ap.name }}.{{ variable ../name }} ({{ fqClass ../target.name }})  {{ fqClass sourceRelationType.target.name }}.{{ variable sourceRelationType.name }}
+//        self:   {{{ . }}}
+//    {{/ each }}
+//    {{# each targetBehaviours }}
+//        target: {{{ . }}}
+//    {{/ each }}
+//    {{# each sourceBehaviours }}
+//        source: {{{ . }}}
 //    {{/ each }}
 
 part of {{ variable ap.name }}.repository;

@@ -21,144 +21,102 @@ operation UI!ui::Application calculateRelationBehaviour() {
 	// Iterate over all relation and mathing with all relations of the current
 	// relations target. Its important to be able to determinate the current 
 	// behaviours.
-	for (sourceRelationType : UI!ui::data::RelationType in UI!ui::data::RelationType.all()
+	for (relationType1 : UI!ui::data::RelationType in UI!ui::data::RelationType.all()
 			.select(r | r.~application == self
-				and r.~original.memberType <> ESM!esm::structure::MemberType#TRANSIENT)) {
-
+				and r.~original.memberType <> ESM!esm::structure::MemberType#TRANSIENT
+	)) {
 
 		// Self
-		for (relationType : UI!ui::data::RelationType in UI!ui::data::RelationType.all()
+		for (relationType2 : UI!ui::data::RelationType in UI!ui::data::RelationType.all()
 				.select(r | r.~application == self
-					 and r == sourceRelationType)
-		) {
+				and r.~original.memberType <> ESM!esm::structure::MemberType#TRANSIENT
+					 and r == relationType1
+	 	)) {
 		    // GET		
-			relationType.mapRelationBehaviour(UI!ui::data::RelationBehaviourType#GET);
+			relationType2.mapRelationBehaviour(UI!ui::data::RelationBehaviourType#GET);
 	
 			// CREATE			
-			if (relationType.~original.isCreateAllowed()) {
-				relationType.mapRelationBehaviour(UI!ui::data::RelationBehaviourType#CREATE);
+			if (relationType2.~original.isCreateAllowed()) {
+				relationType2.mapRelationBehaviour(UI!ui::data::RelationBehaviourType#CREATE);
 			}
 	
 			// UPDATE			
-			if (relationType.~original.isUpdateAllowed()) {
-				relationType.mapRelationBehaviour(UI!ui::data::RelationBehaviourType#UPDATE);
+			if (relationType2.~original.isUpdateAllowed()) {
+				relationType2.mapRelationBehaviour(UI!ui::data::RelationBehaviourType#UPDATE);
 			}
 			
 			// DELETE			
-			if (relationType.~original.isDeleteAllowed()) {
-				relationType.mapRelationBehaviour(UI!ui::data::RelationBehaviourType#DELETE);
+			if (relationType2.~original.isDeleteAllowed()) {
+				relationType2.mapRelationBehaviour(UI!ui::data::RelationBehaviourType#DELETE);
 			}
 		}
+
 	
-	
-		// Source 
-		for (relationType : UI!ui::data::RelationType in UI!ui::data::RelationType.all()
+		// Source and Target
+		for (relationType2 : UI!ui::data::RelationType in UI!ui::data::RelationType.all()
 				.select(r | r.~application == self
-					 and r.eContainer == sourceRelationType.target)
-		) {
-		    // GET		
-			relationType.mapSourceRelationBehaviour(UI!ui::data::RelationBehaviourType#GET, sourceRelationType);
+//     				and r.~original.memberType <> ESM!esm::structure::MemberType#TRANSIENT
+					and r.eContainer == relationType1.target
+		)) {
+		    // GET
+			relationType2.mapSourceRelationBehaviour(UI!ui::data::RelationBehaviourType#GET, relationType1);
+			relationType1.mapTargetRelationBehaviour(UI!ui::data::RelationBehaviourType#GET, relationType2);
 	
-			// CREATE			
-			if (relationType.~original.isCreateAllowed()) {
-				relationType.mapSourceRelationBehaviour(UI!ui::data::RelationBehaviourType#CREATE, sourceRelationType);
+			// CREATE
+			if (relationType1.~original.isCreateAllowed()) {
+				relationType2.mapSourceRelationBehaviour(UI!ui::data::RelationBehaviourType#CREATE, relationType1);
+				relationType1.mapTargetRelationBehaviour(UI!ui::data::RelationBehaviourType#CREATE, relationType2);
 			}
-	
-			// UPDATE			
-			if (relationType.~original.isUpdateAllowed()) {
-				relationType.mapSourceRelationBehaviour(UI!ui::data::RelationBehaviourType#UPDATE, sourceRelationType);
+			// UPDATE
+			if (relationType1.~original.isUpdateAllowed()) {
+				relationType2.mapSourceRelationBehaviour(UI!ui::data::RelationBehaviourType#UPDATE, relationType1);
+				relationType1.mapTargetRelationBehaviour(UI!ui::data::RelationBehaviourType#UPDATE, relationType2);
 			}
-			
-			// DELETE			
-			if (relationType.~original.isDeleteAllowed()) {
-				relationType.mapSourceRelationBehaviour(UI!ui::data::RelationBehaviourType#DELETE, sourceRelationType);
+
+			// DELETE
+			if (relationType1.~original.isDeleteAllowed()) {
+				relationType2.mapSourceRelationBehaviour(UI!ui::data::RelationBehaviourType#DELETE, relationType1);
+				relationType1.mapTargetRelationBehaviour(UI!ui::data::RelationBehaviourType#DELETE, relationType2);
 			}
-			
-			if (relationType.~original.memberType <> ESM!esm::structure::MemberType#TRANSIENT 
-					and not relationType.~original.isReadOnly()
-					and sourceRelationType.~original.isUpdateAllowed()
-					// and relationType.~original.target.mapping.isDefined() 
-					// and (relationType.~original.isKindOf(ESM!TwoWayRelationMember) implies relationType.~original.partner <> sourceRelationType.~original)					
-					) {
+
+			// RANGE GET		
+            if (esmUtils.isRangeAllowedOnRelation(relationType1.~original) 
+            	and relationType1.~original.rangeExpression.isDefined() 
+            	and relationType1.~original.rangeExpression.trim().length() > 0) {
+					relationType2.mapSourceRelationBehaviour(UI!ui::data::RelationBehaviourType#RANGE, relationType1);
+					relationType1.mapTargetRelationBehaviour(UI!ui::data::RelationBehaviourType#RANGE, relationType2);
+		    }
+
+			if (relationType1.~original.memberType <> ESM!esm::structure::MemberType#TRANSIENT 
+					and not relationType1.~original.isReadOnly()
+//					and relationType1.~original.isUpdateAllowed()
+					and relationType1.~original.target.mapping.isDefined() 
+					and (relationType1.~original.isKindOf(ESM!TwoWayRelationMember) 
+						implies relationType1.~original.partner <> relationType2.~original)					
+			) {
 				// SET 		
-				if (esmUtils.isSetOnRelation(sourceRelationType.~original, relationType.~original) ) {
-					relationType.mapSourceRelationBehaviour(UI!ui::data::RelationBehaviourType#SET, sourceRelationType);
+				if (esmUtils.isSetOnRelation(relationType1.~original, relationType2.~original) ) {
+					relationType2.mapSourceRelationBehaviour(UI!ui::data::RelationBehaviourType#SET, relationType1);
+					relationType1.mapTargetRelationBehaviour(UI!ui::data::RelationBehaviourType#SET, relationType2);
 				}
 	
 				// UNSET		
-				if (esmUtils.isUnsetOnRelation(sourceRelationType.~original, relationType.~original) ) {
-					relationType.mapSourceRelationBehaviour(UI!ui::data::RelationBehaviourType#UNSET, sourceRelationType);
+				if (esmUtils.isUnsetOnRelation(relationType1.~original, relationType2.~original) ) {
+					relationType2.mapSourceRelationBehaviour(UI!ui::data::RelationBehaviourType#UNSET, relationType1);
+					relationType1.mapTargetRelationBehaviour(UI!ui::data::RelationBehaviourType#UNSET, relationType2);
 				}
 	
 				// ADD		
-				if (esmUtils.isAddOnRelation(sourceRelationType.~original, relationType.~original) ) {
-					relationType.mapSourceRelationBehaviour(UI!ui::data::RelationBehaviourType#ADD, sourceRelationType);
+				if (esmUtils.isAddOnRelation(relationType1.~original, relationType2.~original) ) {
+					relationType2.mapSourceRelationBehaviour(UI!ui::data::RelationBehaviourType#ADD, relationType1);
+					relationType1.mapTargetRelationBehaviour(UI!ui::data::RelationBehaviourType#ADD, relationType2);
 				}
 	
 				// REMOVE		
-				if (esmUtils.isRemoveOnRelation(sourceRelationType.~original, relationType.~original) ) {
-					relationType.mapSourceRelationBehaviour(UI!ui::data::RelationBehaviourType#REMOVE, sourceRelationType);
-				}
-	
-				// RANGE GET		
-	            if (esmUtils.isRangeAllowedOnRelation(relationType.~original) and relationType.~original.rangeExpression.isDefined() and relationType.~original.rangeExpression.trim().length() > 0) {
-					relationType.mapSourceRelationBehaviour(UI!ui::data::RelationBehaviourType#RANGE, sourceRelationType);
-			    }
-			}
-		}
-	
-	
-		// Target 
-		for (relationType : UI!ui::data::RelationType in UI!ui::data::RelationType.all()
-				.select(r | r.~application == self
-					 and r.eContainer == sourceRelationType.target)
-		) {
-		    // GET		
-			relationType.mapSourceRelationBehaviour(UI!ui::data::RelationBehaviourType#GET, sourceRelationType);
-	
-			// CREATE			
-			if (relationType.~original.isCreateAllowed()) {
-				relationType.mapSourceRelationBehaviour(UI!ui::data::RelationBehaviourType#CREATE, sourceRelationType);
-			}
-	
-			// UPDATE			
-			if (relationType.~original.isUpdateAllowed()) {
-				relationType.mapSourceRelationBehaviour(UI!ui::data::RelationBehaviourType#UPDATE, sourceRelationType);
-			}
-			
-			// DELETE			
-			if (relationType.~original.isDeleteAllowed()) {
-				relationType.mapSourceRelationBehaviour(UI!ui::data::RelationBehaviourType#DELETE, sourceRelationType);
-			}
-			
-			if (relationType.~original.memberType <> ESM!esm::structure::MemberType#TRANSIENT 
-					and not relationType.~original.isReadOnly()
-					and sourceRelationType.~original.isUpdateAllowed()
-					) {
-				// SET 		
-				if (esmUtils.isSetOnRelation(sourceRelationType.~original, relationType.~original) ) {
-					relationType.mapSourceRelationBehaviour(UI!ui::data::RelationBehaviourType#SET, sourceRelationType);
-				}
-	
-				// UNSET		
-				if (esmUtils.isUnsetOnRelation(sourceRelationType.~original, relationType.~original) ) {
-					relationType.mapSourceRelationBehaviour(UI!ui::data::RelationBehaviourType#UNSET, sourceRelationType);
-				}
-	
-				// ADD		
-				if (esmUtils.isAddOnRelation(sourceRelationType.~original, relationType.~original) ) {
-					relationType.mapSourceRelationBehaviour(UI!ui::data::RelationBehaviourType#ADD, sourceRelationType);
-				}
-	
-				// REMOVE		
-				if (esmUtils.isRemoveOnRelation(sourceRelationType.~original, relationType.~original) ) {
-					relationType.mapSourceRelationBehaviour(UI!ui::data::RelationBehaviourType#REMOVE, sourceRelationType);
-				}
-	
-				// RANGE GET		
-	            if (esmUtils.isRangeAllowedOnRelation(relationType.~original) and relationType.~original.rangeExpression.isDefined() and relationType.~original.rangeExpression.trim().length() > 0) {
-					relationType.mapSourceRelationBehaviour(UI!ui::data::RelationBehaviourType#RANGE, sourceRelationType);
-			    }
+				if (esmUtils.isRemoveOnRelation(relationType1.~original, relationType2.~original) ) {
+					relationType2.mapSourceRelationBehaviour(UI!ui::data::RelationBehaviourType#REMOVE, relationType1);
+					relationType1.mapTargetRelationBehaviour(UI!ui::data::RelationBehaviourType#REMOVE, relationType2);
+				}	
 			}
 		}
 	}
