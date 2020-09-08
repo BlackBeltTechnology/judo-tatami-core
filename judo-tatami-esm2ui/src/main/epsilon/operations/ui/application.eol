@@ -98,7 +98,7 @@ operation UI!ui::Application calculateRelationBehaviour() {
 						implies relationType1.~original.partner <> relationType2.~original)					
 			) {
 				// SET 		
-				if (esmUtils.isSetOnRelation(relationType1.~original, relationType2.~original) ) {
+				if (esmUtils.isSetOnRelation(relationType2.~original) ) {
 					relationType2.mapSourceRelationBehaviour(UI!ui::data::RelationBehaviourType#SET, relationType1);
 					relationType1.mapTargetRelationBehaviour(UI!ui::data::RelationBehaviourType#SET, relationType2);
 				}
@@ -110,7 +110,7 @@ operation UI!ui::Application calculateRelationBehaviour() {
 				}
 	
 				// ADD		
-				if (esmUtils.isAddOnRelation(relationType1.~original, relationType2.~original) ) {
+				if (esmUtils.isAddOnRelation(relationType2.~original) ) {
 					relationType2.mapSourceRelationBehaviour(UI!ui::data::RelationBehaviourType#ADD, relationType1);
 					relationType1.mapTargetRelationBehaviour(UI!ui::data::RelationBehaviourType#ADD, relationType2);
 				}

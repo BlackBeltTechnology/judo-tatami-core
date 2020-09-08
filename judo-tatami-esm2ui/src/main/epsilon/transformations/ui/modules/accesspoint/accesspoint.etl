@@ -14,7 +14,8 @@ rule CreateApplication
 		var defaultLayout = new UI!ui::LayoutType();
         defaultLayout.cols = applicationColumns;
         defaultLayout.type = applicationType;
-        t.layoutTypes.add(defaultLayout);    
+        defaultLayout.original = true;
+        t.layoutTypes.add(defaultLayout);
 
         t.name = s.fqName().anchor(applicationType);
         t.navigationController = s.equivalent("CreateNavigationController");

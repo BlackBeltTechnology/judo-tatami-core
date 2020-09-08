@@ -365,15 +365,15 @@ rule CreateUpdateTransferOperationForRelation
 
         t.binding = s.equivalent("CreateUpdateOperationForRelation");
 
-        for (relation in s.target.getAllRelations().select(r | r.target.mapping.isDefined() and not r.isReadOnly() and (r.isKindOf(ESM!TwoWayRelationMember) implies r.partner <> s))) {
+        for (relation in esmUtils.getUpdateableRelationsOfRelation(s)) {
 
-			if (esmUtils.isSetOnRelation(s, relation)) {
+			if (esmUtils.isSetOnRelation(relation)) {
                 s.createSetTransferOperationForRelation(relation, s.createSetOperationForRelation(relation));			
 			}
 			if (esmUtils.isUnsetOnRelation(s, relation)) {
 	            s.createUnsetTransferOperationForRelation(relation, s.createUnsetOperationForRelation(relation));
 			}
-			if (esmUtils.isAddOnRelation(s, relation)) {
+			if (esmUtils.isAddOnRelation(relation)) {
 	            s.createAddAllTransferOperationForRelation(relation, s.createAddAllOperationForRelation(relation));
 			}
 			if (esmUtils.isRemoveOnRelation(s, relation)) {
@@ -413,15 +413,15 @@ rule CreateUpdateUnboundOperation
         t.output.cardinality.lower = 1;
         t.output.cardinality.upper = 1;
 
-        for (relation in s.target.getAllRelations().select(r | r.target.mapping.isDefined() and not r.isReadOnly() and (r.isKindOf(ESM!TwoWayRelationMember) implies r.partner <> s))) {
+        for (relation in esmUtils.getUpdateableRelationsOfRelation(s)) {
 
-			if (esmUtils.isSetOnRelation(s, relation)) {
+			if (esmUtils.isSetOnRelation(relation)) {
                 s.createSetUnboundOperation(relation);
 			}
 			if (esmUtils.isUnsetOnRelation(s, relation)) {
                 s.createUnsetUnboundOperation(relation);
 			}
-			if (esmUtils.isAddOnRelation(s, relation)) {
+			if (esmUtils.isAddOnRelation(relation)) {
                 s.createAddAllUnboundOperation(relation);
 			}
 			if (esmUtils.isRemoveOnRelation(s, relation)) {
