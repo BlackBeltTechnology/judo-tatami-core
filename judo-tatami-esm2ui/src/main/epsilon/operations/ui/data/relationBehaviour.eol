@@ -5,18 +5,14 @@ operation UI!ui::data::RelationType mapRelationBehaviour(behaviour : Any) {
 	var ownerTargetRelationType = UI!ui::data::RelationType.all()
 		.selectOne(s | s.~application == self.~application 
 			and self.~original == s.~original 
-			and s.~original.eContainer == s.eContainer.~original);		
+			and s.~original.eContainer == s.eContainer.~original); 
 
-	var selfBehaviour = self.behaviours
-		.selectOne(b | b.targetRelationType = ownerTargetRelationType);
-
-
-	if (selfBehaviour.isUndefined()) {
-		selfBehaviour = new UI!ui::data::RelationBehaviour();		
-		selfBehaviour.targetRelationType = ownerTargetRelationType;
+	if (self.behaviour.isUndefined()) {
+		self.behaviour = new UI!ui::data::RelationBehaviour();
+		self.behaviour.targetRelationType = ownerTargetRelationType;
 	}
-	selfBehaviour.behaviourTypes.add(behaviour);
-	self.behaviours.add(selfBehaviour);
+	self.behaviour.behaviourTypes.add(behaviour);
+	
 }
 
 operation UI!ui::data::RelationType mapTargetRelationBehaviour(behaviour : Any,

@@ -29,7 +29,8 @@ rule CreateApplication
             }
 
             if (relation.target.mapping.isDefined() and relation.target.form.isDefined()) {
-                t.pages.add(relation.createPageForRelationForForm(t, relation.target));
+                t.pages.add(relation.createPageForRelationForCreate(t, relation.target));
+                t.pages.add(relation.createPageForRelationForUpdate(t, relation.target));
             }
 
             if (relation.target.mapping.isDefined() and relation.target.table.isDefined() and relation.upper = -1) {
@@ -82,6 +83,7 @@ rule CreateApplicationDashboard
         log.debug("CreateApplicationDashboard: " + s.name);
         t.name = s.fqName().anchor("Dashboard");
         t.dataElement = s.mapClassType(application);
+		t.pageType = UI!ui::PageType#DASHBOARD;
  
 	 	var pageContainer = new UI!ui::PageContainer();
 	    pageContainer.layoutType = application.layoutTypes.first;
@@ -132,7 +134,8 @@ rule CreateNavigationItemPageForAccessPointRelationForView
         var application = s.eContainer.equivalent("CreateApplication");
 
         t.name = s.fqName().anchor("RelationPageView");
-        t.dataElement = s.target.mapClassType(application);
+        t.dataElement = s.mapRelationType(application, s.eContainer.mapClassType(application));
+		t.pageType = UI!ui::PageType#VIEW;
 
 	 	var pageContainer = new UI!ui::PageContainer();
 	    pageContainer.layoutType = application.layoutTypes.first;
@@ -151,12 +154,38 @@ rule CreateNavigationItemPageForAccessPointRelationForForm
     extends CreateNamedElementFromNamedElement {
         guard: s.eContainer.isAccesspoint() and s.target.mapping.isDefined() and s.target.form.isDefined()
 
-        log.debug("CreateNavigationItemPageForAccessPointRelationForForm: " + s.name);
+        log.debug("CreateNavigationItemPageForAccessPointRelationUpdateForm: " + s.name);
 
         var application = s.eContainer.equivalent("CreateApplication");
 
-        t.name = s.fqName().anchor("RelationPageForm");
-        t.dataElement = s.target.mapClassType(application);
+        t.name = s.fqName().anchor("RelationPageUpdate");
+        t.dataElement = s.mapRelationType(application, s.eContainer.mapClassType(application));
+		t.pageType = UI!ui::PageType#UPDATE;
+
+	 	var pageContainer = new UI!ui::PageContainer();
+	    pageContainer.layoutType = application.layoutTypes.first;
+		pageContainer.name = s.name;
+		pageContainer.direction = UI!Axis#VERTICAL;
+		t.containers.add(pageContainer);
+
+        pageContainer.children.add(s.target.form.map(application));
+        application.pages.add(t);
+}
+
+@greedy
+rule CreateNavigationItemPageForAccessPointRelationForForm
+    transform s : ESM!esm::structure::RelationFeature
+    to t : UI!ui::PageDefinition
+    extends CreateNamedElementFromNamedElement {
+        guard: s.eContainer.isAccesspoint() and s.target.mapping.isDefined() and s.target.form.isDefined()
+
+        log.debug("CreateNavigationItemPageForAccessPointRelationCreateForm: " + s.name);
+
+        var application = s.eContainer.equivalent("CreateApplication");
+
+        t.name = s.fqName().anchor("RelationPageCreate");
+        t.dataElement = s.mapRelationType(application, s.eContainer.mapClassType(application));
+		t.pageType = UI!ui::PageType#CREATE;
 
 	 	var pageContainer = new UI!ui::PageContainer();
 	    pageContainer.layoutType = application.layoutTypes.first;
@@ -180,7 +209,8 @@ rule CreateNavigationItemPageForAccessPointRelationForTable
         var application = s.eContainer.equivalent("CreateApplication");
 
         t.name = s.fqName().anchor("RelationPageTable");
-        t.dataElement = s.target.mapClassType(application);
+        t.dataElement = s.mapRelationType(application, s.eContainer.mapClassType(application));
+		t.pageType = UI!ui::PageType#TABLE;
         
         var pageContainer = new UI!ui::PageContainer();
         pageContainer.layoutType = application.layoutTypes.first;

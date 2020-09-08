@@ -10,6 +10,7 @@ operation ESM!esm::`operation`::Operation createPageForOperationOutputForView(ap
 	var page : UI!ui::PageDefinition = new UI!ui::PageDefinition();
 	page.dataElement = self.mapOperationOutputType(application, self.eContainer().mapClassType(application));
 	page.name = self.fqName().anchor("OperationOutputPageView", self.eContainer().fqName());
+	page.pageType = UI!ui::PageType#OPERATION_OUTPUT;
 	
 	var pageContainer = new UI!ui::PageContainer();
     pageContainer.layoutType = application.layoutTypes.first;
@@ -46,6 +47,7 @@ operation ESM!esm::`operation`::Operation createPageForOperationInputForForm(app
 	var page : UI!ui::PageDefinition = new UI!ui::PageDefinition();
 	page.dataElement = self.mapOperationInputType(application, self.eContainer().mapClassType(application));
 	page.name = self.fqName().anchor("OperationInputPageForm", self.eContainer().fqName());
+	page.pageType = UI!ui::PageType#OPERATION_INPUT;
 
 	var pageContainer = new UI!ui::PageContainer();
     pageContainer.layoutType = application.layoutTypes.first;
@@ -84,6 +86,7 @@ operation ESM!esm::`operation`::Operation createPageForOperationInputForTable(ap
 	
 	page.dataElement = self.mapOperationInputType(application, clazz);
 	page.name = self.fqName().anchor("OperationInputPageTable", self.eContainer().fqName());
+	page.pageType = UI!ui::PageType#OPERATION_INPUT;
 	
 	var pageContainer = new UI!ui::PageContainer();
     pageContainer.layoutType = application.layoutTypes.first;
@@ -128,6 +131,7 @@ operation ESM!esm::`operation`::Operation createPageForOperationOutputForTable(a
 	var page : UI!ui::PageDefinition = new UI!ui::PageDefinition();	
 	page.dataElement = self.mapOperationOutputType(application, clazz);
 	page.name = self.fqName().anchor("OperationOutputPageTable", self.eContainer().fqName());
+	page.pageType = UI!ui::PageType#OPERATION_OUTPUT;
     
     var pageContainer = new UI!ui::PageContainer();
     pageContainer.layoutType = application.layoutTypes.first;

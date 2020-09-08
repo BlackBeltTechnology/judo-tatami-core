@@ -33,5 +33,6 @@ post {
 		application.calculateAccessPointRelationsForRelations();
 		application.calculateRelationBehaviour();
 		application.resolveActionPageDefinitions();
+		application.calculatePageActions();
 	}
 }

@@ -21,6 +21,13 @@ operation UI!ui::Application calculateRelationBehaviour() {
 	// Iterate over all relation and mathing with all relations of the current
 	// relations target. Its important to be able to determinate the current 
 	// behaviours.
+	for (r : UI!ui::data::RelationType in UI!ui::data::RelationType.all()
+			.select(r | r.~application == self
+	)) {
+		r.behaviour = new UI!ui::data::RelationBehaviour();
+		r.behaviour.targetRelationType = r;
+	}
+	
 	for (relationType1 : UI!ui::data::RelationType in UI!ui::data::RelationType.all()
 			.select(r | r.~application == self
 				and r.~original.memberType <> ESM!esm::structure::MemberType#TRANSIENT
@@ -89,14 +96,14 @@ operation UI!ui::Application calculateRelationBehaviour() {
 					relationType1.mapTargetRelationBehaviour(UI!ui::data::RelationBehaviourType#RANGE, relationType2);
 		    }
 
-			if (
+//			if (
 			// relationType1.~original.memberType <> ESM!esm::structure::MemberType#TRANSIENT 
-					not relationType1.~original.isReadOnly()
+//					not relationType1.~original.isReadOnly()
 //					and relationType1.~original.isUpdateAllowed()
-					and relationType1.~original.target.mapping.isDefined() 
-					and (relationType1.~original.isKindOf(ESM!TwoWayRelationMember) 
-						implies relationType1.~original.partner <> relationType2.~original)					
-			) {
+//					and relationType1.~original.target.mapping.isDefined() 
+//					and (relationType1.~original.isKindOf(ESM!TwoWayRelationMember) 
+//						implies relationType1.~original.partner <> relationType2.~original)					
+//			) {
 				// SET 		
 				if (esmUtils.isSetOnRelation(relationType2.~original) ) {
 					relationType2.mapSourceRelationBehaviour(UI!ui::data::RelationBehaviourType#SET, relationType1);
@@ -120,7 +127,16 @@ operation UI!ui::Application calculateRelationBehaviour() {
 					relationType2.mapSourceRelationBehaviour(UI!ui::data::RelationBehaviourType#REMOVE, relationType1);
 					relationType1.mapTargetRelationBehaviour(UI!ui::data::RelationBehaviourType#REMOVE, relationType2);
 				}	
-			}
+//			}
 		}
 	}
 }
+
+
+operation UI!ui::Application calculatePageActions() {
+
+	for (pageDefinition : UI!ui::PageDefinition in self.pages) {
+		pageDefinition.calculateActions(self);
+	}
+}
+	

@@ -1,0 +1,42 @@
+operation UI!ui::PageDefinition calculateActions(application : UI!ui::Application) {
+
+	if (self.pageType == UI!ui::PageType#CREATE) {
+		self.instanceActions.add(new UI!ui::BackAction());
+		self.instanceActions.add(new UI!ui::SaveAction());
+	} else if (self.pageType == UI!ui::PageType#UPDATE) {
+		self.instanceActions.add(new UI!ui::BackAction());
+		self.instanceActions.add(new UI!ui::SaveAction());
+	} else if (self.pageType == UI!ui::PageType#VIEW) {
+		self.instanceActions.add(new UI!ui::BackAction());
+
+		if (self.dataElement.behaviour.isDeletable()) {
+			self.instanceActions.add(new UI!ui::DeleteAction());	
+		}
+		if (self.dataElement.behaviour.isUpdateable()) {
+		    // TODO: Better way to found the correct page instance
+			var page = application.pages.selectOne(p | p.pageType = UI!ui::PageType#UPDATE and p.dataElement == self.dataElement);
+			if (page.isDefined()) {
+			    var editAction = new UI!ui::EditAction();
+				editAction.target = page;
+				self.instanceActions.add(editAction);
+			} else {
+				log.warn("No update page defined for: " + self.name);
+			}
+		}
+	} else if (self.pageType == UI!ui::PageType#TABLE) {
+		self.instanceActions.add(new UI!ui::BackAction());
+
+		if (self.dataElement.behaviour.isCreatable()) {
+		    // TODO: Better way to found the correct page instance
+			var page = application.pages.selectOne(p | p.pageType = UI!ui::PageType#CREATE and p.dataElement == self.dataElement);
+			if (page.isDefined()) {
+			    var createAction = new UI!ui::CreateAction();
+				createAction.target = page;
+				self.instanceActions.add(createAction);	
+			} else {
+				log.warn("No update page defined for: " + self.name);
+			}
+		}
+		// TODO: Add
+	}
+}
