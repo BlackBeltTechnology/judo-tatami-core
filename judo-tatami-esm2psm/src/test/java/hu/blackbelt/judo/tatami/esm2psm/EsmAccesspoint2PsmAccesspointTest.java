@@ -6,6 +6,7 @@ import hu.blackbelt.judo.meta.esm.namespace.Model;
 import hu.blackbelt.judo.meta.esm.operation.OperationType;
 import hu.blackbelt.judo.meta.esm.runtime.EsmModel;
 import hu.blackbelt.judo.meta.esm.runtime.EsmUtils;
+import hu.blackbelt.judo.meta.esm.structure.DataMember;
 import hu.blackbelt.judo.meta.esm.structure.EntityType;
 import hu.blackbelt.judo.meta.esm.structure.MemberType;
 import hu.blackbelt.judo.meta.esm.structure.OneWayRelationMember;
@@ -37,6 +38,7 @@ import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 import static hu.blackbelt.judo.meta.esm.accesspoint.util.builder.AccesspointBuilders.newActorTypeBuilder;
+import static hu.blackbelt.judo.meta.esm.accesspoint.util.builder.AccesspointBuilders.newClaimBuilder;
 import static hu.blackbelt.judo.meta.esm.namespace.util.builder.NamespaceBuilders.newModelBuilder;
 import static hu.blackbelt.judo.meta.esm.operation.util.builder.OperationBuilders.newOperationBuilder;
 import static hu.blackbelt.judo.meta.esm.runtime.EsmEpsilonValidator.calculateEsmValidationScriptURI;
@@ -104,6 +106,7 @@ public class EsmAccesspoint2PsmAccesspointTest {
     }
 
     private void transform() throws Exception {
+    	log.debug("ESM diagnostics: {}", esmModel.getDiagnosticsAsString());
     	assertTrue(esmModel.isValid());
     	validateEsm(new Slf4jLog(log), esmModel, calculateEsmValidationScriptURI());
 
@@ -111,6 +114,7 @@ public class EsmAccesspoint2PsmAccesspointTest {
         esm2PsmTransformationTrace = executeEsm2PsmTransformation(esmModel, psmModel, new Slf4jLog(log),
                 calculateEsm2PsmTransformationScriptURI());
 
+        log.debug("PSM diagnostics: {}", psmModel.getDiagnosticsAsString());
         assertTrue(psmModel.isValid());
         validatePsm(new Slf4jLog(log), psmModel, calculatePsmValidationScriptURI());
     }
@@ -144,12 +148,12 @@ public class EsmAccesspoint2PsmAccesspointTest {
                         .withTarget(unmappedTransferObjectType)
                         .build())
                 .build();
-        
-        accessPoint.setActorType(newActorTypeBuilder()
-                .build());
+    	
+    	hu.blackbelt.judo.meta.esm.accesspoint.ActorType actor = newActorTypeBuilder().withName("actor").withPrincipal(accessPoint).build();
+    	useTransferObjectType(accessPoint).withActorType(actor).build();
 
         final Model model = newModelBuilder().withName(MODEL_NAME)
-                .withElements(Arrays.asList(unmappedTransferObjectType, accessPoint)).build();
+                .withElements(Arrays.asList(unmappedTransferObjectType, accessPoint, actor)).build();
 
         esmModel.addContent(model);
 
@@ -195,9 +199,8 @@ public class EsmAccesspoint2PsmAccesspointTest {
                 .withRelations(eg)
                 .build();
         
-        accessPoint.setActorType(newActorTypeBuilder()
-                .withRealm("sandbox")
-                .build());
+        hu.blackbelt.judo.meta.esm.accesspoint.ActorType actor = newActorTypeBuilder().withName("actor").withPrincipal(accessPoint).build();
+    	useTransferObjectType(accessPoint).withActorType(actor).build();
         
         log.debug("container is ap: " + ((TransferObjectType)eg.eContainer()).isAccesspoint());
         log.debug("target is mapped: " + eg.getTarget().isMapped());
@@ -205,7 +208,7 @@ public class EsmAccesspoint2PsmAccesspointTest {
 
         
         final Model model = newModelBuilder().withName(MODEL_NAME)
-                .withElements(Arrays.asList(entityType, accessPoint)).build();
+                .withElements(Arrays.asList(entityType, accessPoint, actor)).build();
 
         esmModel.addContent(model);
 
@@ -322,12 +325,11 @@ public class EsmAccesspoint2PsmAccesspointTest {
                         .build())
                 .build();
         
-        accessPoint.setActorType(newActorTypeBuilder()
-                .withRealm("sandbox")
-                .build());
+        hu.blackbelt.judo.meta.esm.accesspoint.ActorType actor = newActorTypeBuilder().withName("actor").withPrincipal(accessPoint).build();
+    	useTransferObjectType(accessPoint).withActorType(actor).build();
 
         final Model model = newModelBuilder().withName(MODEL_NAME)
-                .withElements(Arrays.asList(entityTypeE, entityTypeF, accessPoint)).build();
+                .withElements(Arrays.asList(entityTypeE, entityTypeF, accessPoint, actor)).build();
 
         esmModel.addContent(model);
 

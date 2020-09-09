@@ -5,12 +5,12 @@ import "../../../../operations/_importAll.eol";
 @abstract
 rule CreateAbstractActorType
 	transform s: ESM!ActorType
-	to t: JUDOPSM!AbstractActorType {
-	  t.name = s.eContainer.name;
+	to t: JUDOPSM!AbstractActorType
+	extends CreateNamespaceElement {
+	  t.name = s.name;
 
-	  t.transferObjectType = s.eContainer.getPSMTransferObjectTypeEquivalent();
-	  s.eContainer.getPSMTransferObjectTypeEquivalent().actorType = t;
-	  s.eContainer.eContainer.getPSMGeneratedActorTypeNamespaceEquivalent().elements.add(t);
+	  t.transferObjectType = s.principal.getPSMTransferObjectTypeEquivalent();
+	  s.principal.getPSMTransferObjectTypeEquivalent().actorType = t;
 
 	  if (s.realm.isDefined() and s.realm.trim() <> '') {
           t.realm = s.realm;
@@ -38,7 +38,7 @@ rule CreateActorType
 	transform s: ESM!ActorType
 	to t: JUDOPSM!ActorType
 	extends CreateAbstractActorType {
-	  guard: s.eContainer.isDefined() and not s.eContainer.mapping.isDefined()
+	  guard: s.principal.isDefined() and not s.principal.mapping.isDefined()
 
 	  log.debug("Created ActorType: " + t.name);
 }
@@ -47,9 +47,9 @@ rule CreateMappedActorType
 	transform s: ESM!ActorType
 	to t: JUDOPSM!MappedActorType
 	extends CreateAbstractActorType {
-	  guard: s.eContainer.isDefined() and s.eContainer.mapping.isDefined()
+	  guard: s.principal.isDefined() and s.principal.mapping.isDefined()
 
-	  t.entityType = s.eContainer.mapping.target.getPSMEquivalent();
+	  t.entityType = s.principal.mapping.target.getPSMEquivalent();
 
 	  log.debug("Created ActorType: " + t.name);
 }
