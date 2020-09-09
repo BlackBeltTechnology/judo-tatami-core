@@ -4,31 +4,31 @@ operation ESM!esm::namespace::NamedElement fillInput(input : UI!ui::Input, row :
 	return input;
 }
 
-operation ESM!esm::type::PasswordType input(): UI!ui::Input {
-	return self.fillInput(new UI!ui::PasswordInput(), 2, 1);
+operation ESM!esm::type::PasswordType input(basis : Integer): UI!ui::Input {
+	return self.fillInput(new UI!ui::PasswordInput(), 2, basis);
 }
 
-operation ESM!esm::type::StringType input(): UI!ui::Input {
-	return self.fillInput(new UI!ui::TextInput(), 2, 1);
+operation ESM!esm::type::StringType input(basis : Integer): UI!ui::Input {
+	return self.fillInput(new UI!ui::TextInput(), 2, basis);
 }
 
-operation ESM!esm::type::NumericType input(): UI!ui::Input {
-	return self.fillInput(new UI!ui::NumericInput(), 2, 1);
+operation ESM!esm::type::NumericType input(basis : Integer): UI!ui::Input {
+	return self.fillInput(new UI!ui::NumericInput(), 2, basis);
 }
 
-operation ESM!esm::type::BooleanType input(): UI!ui::Input {
-	return self.fillInput(new UI!ui::Switch(), 2, 1);
+operation ESM!esm::type::BooleanType input(basis : Integer): UI!ui::Input {
+	return self.fillInput(new UI!ui::Switch(), 2, basis);
 }
 
-operation ESM!esm::type::DateType input(): UI!ui::Input {
-	return self.fillInput(new UI!ui::DateInput(), 2, 1);
+operation ESM!esm::type::DateType input(basis : Integer): UI!ui::Input {
+	return self.fillInput(new UI!ui::DateInput(), 2, basis);
 }
 
-operation ESM!esm::type::TimestampType input(): UI!ui::Input {
-	return self.fillInput(new UI!ui::DateTimeInput(), 2, 1);
+operation ESM!esm::type::TimestampType input(basis : Integer): UI!ui::Input {
+	return self.fillInput(new UI!ui::DateTimeInput(), 2, basis);
 }
 
-operation ESM!esm::type::EnumerationType input(): UI!ui::Input {
+operation ESM!esm::type::EnumerationType input(basis : Integer): UI!ui::Input {
 	var radio = new UI!ui::Radio();
 	
 	for (m in self.members) {
@@ -37,7 +37,7 @@ operation ESM!esm::type::EnumerationType input(): UI!ui::Input {
 		radio.options.add(opt);
 	}
 	
-	return self.fillInput(radio, 2, 1);
+	return self.fillInput(radio, 2, basis);
 }
 
 operation ESM!esm::namespace::NamedElement fillFormatted(formatted : UI!ui::Formatted, format : String, row : Integer, col : Integer): UI!ui::Formatted {

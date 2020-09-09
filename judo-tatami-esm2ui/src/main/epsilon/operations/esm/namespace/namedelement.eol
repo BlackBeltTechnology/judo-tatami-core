@@ -1,3 +1,0 @@
-operation ESM!esm::namespace::Model getUIEquivalent(): UI!Model {
-        return self.equivalent("CreateModel");
-}

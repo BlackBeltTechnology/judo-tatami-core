@@ -2,7 +2,7 @@ operation ESM!esm::ui::TabularReferenceField createTableFromTabularReferenceFiel
 	var table : UI!ui::Table = new UI!ui::Table();
 	table.name = self.name;	
 	table.dataElement = self.relationFeature.getMember().mapRelationType(application, self.relationFeature.getMember().eContainer.mapClassType(application));
-	
+	table.col = self.basis;
 	for (column in self.columns) {
 		table.columns.add(column.map(application));
 	}

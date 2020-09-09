@@ -35,4 +35,10 @@ post {
 		application.resolveActionPageDefinitions();
 		application.calculatePageActions();
 	}
+	
+	for (application : UI!ui::Application in UI!ui::Application.all()) {
+		uiUtils.organizeApplication(application, "mobile", "mobile", 4);
+    	uiUtils.organizeApplication(application, "tablet", "tablet", 8);
+    	uiUtils.organizeApplication(application, "desktop", "desktop", 12);
+	}
 }

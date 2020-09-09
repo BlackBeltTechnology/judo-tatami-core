@@ -34,30 +34,23 @@ operation UI!ui::Application calculateRelationBehaviour() {
 	)) {
 
 		// Self
-		for (relationType2 : UI!ui::data::RelationType in UI!ui::data::RelationType.all()
-				.select(r | r.~application == self
-				and r.~original.memberType <> ESM!esm::structure::MemberType#TRANSIENT
-					 and r == relationType1
-	 	)) {
-		    // GET		
-			relationType2.mapRelationBehaviour(UI!ui::data::RelationBehaviourType#GET);
-	
-			// CREATE			
-			if (relationType2.~original.isCreateAllowed()) {
-				relationType2.mapRelationBehaviour(UI!ui::data::RelationBehaviourType#CREATE);
-			}
-	
-			// UPDATE			
-			if (relationType2.~original.isUpdateAllowed()) {
-				relationType2.mapRelationBehaviour(UI!ui::data::RelationBehaviourType#UPDATE);
-			}
-			
-			// DELETE			
-			if (relationType2.~original.isDeleteAllowed()) {
-				relationType2.mapRelationBehaviour(UI!ui::data::RelationBehaviourType#DELETE);
-			}
+	    // GET		
+		relationType1.mapRelationBehaviour(UI!ui::data::RelationBehaviourType#GET);
+
+		// CREATE			
+		if (relationType1.~original.isCreateAllowed()) {
+			relationType1.mapRelationBehaviour(UI!ui::data::RelationBehaviourType#CREATE);
 		}
 
+		// UPDATE			
+		if (relationType1.~original.isUpdateAllowed()) {
+			relationType1.mapRelationBehaviour(UI!ui::data::RelationBehaviourType#UPDATE);
+		}
+		
+		// DELETE			
+		if (relationType1.~original.isDeleteAllowed()) {
+			relationType1.mapRelationBehaviour(UI!ui::data::RelationBehaviourType#DELETE);
+		}
 	
 		// Source and Target
 		for (relationType2 : UI!ui::data::RelationType in UI!ui::data::RelationType.all()
