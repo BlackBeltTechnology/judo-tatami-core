@@ -58,8 +58,8 @@
 
         <!-- Model versions -->
         <judo-meta-rdbms-version>1.0.0.20200828_092655_edf7b58_develop</judo-meta-rdbms-version>
-        <judo-meta-esm-version>1.1.0.20200908_101535_d281701_feature_JNG_1572_AddExposedGraphUtils</judo-meta-esm-version>
-        <judo-meta-psm-version>1.1.0.20200904_152735_ab1be8f_develop</judo-meta-psm-version>
+        <judo-meta-esm-version>1.1.0.20200910_085347_a5ec2c8_feature_JNG_1572_AddExposedGraphUtils</judo-meta-esm-version>
+        <judo-meta-psm-version>1.1.0.20200910_124643_24e613f_develop</judo-meta-psm-version>
         <judo-meta-jql-version>1.0.1.20200828_091432_420a5c6_develop</judo-meta-jql-version>
         <judo-meta-jcl-version>1.0.1.20200828_094813_ae11242_develop</judo-meta-jcl-version>
         <judo-meta-script-version>1.0.1.20200901_153632_2fe8288_develop</judo-meta-script-version>
