@@ -7,6 +7,7 @@ import hu.blackbelt.judo.meta.ui.data.*;
 import lombok.*;
 import lombok.extern.java.Log;
 import org.eclipse.emf.common.util.ECollections;
+import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.TreeIterator;
 import org.eclipse.emf.ecore.EObject;
 import org.springframework.expression.spel.support.StandardEvaluationContext;
@@ -33,7 +34,7 @@ public class FlutterHelper {
         context.registerFunction("modelName", FlutterHelper.class.getDeclaredMethod("modelName", new Class[]{String.class}));
         context.registerFunction("modelPackage", FlutterHelper.class.getDeclaredMethod("modelPackage", new Class[]{String.class}));
         context.registerFunction("variable", FlutterHelper.class.getDeclaredMethod("variable", new Class[]{String.class}));
-        context.registerFunction("operations", FlutterHelper.class.getDeclaredMethod("operations", new Class[]{Application.class}));
+        context.registerFunction("operations", RelationTuple.class.getDeclaredMethod("operations", new Class[]{Application.class}));
         context.registerFunction("isEmbedded", FlutterHelper.class.getDeclaredMethod("isEmbedded", new Class[]{RelationType.class}));
         context.registerFunction("cleanup", FlutterHelper.class.getDeclaredMethod("cleanup", new Class[]{String.class}));
         context.registerFunction("getType", FlutterHelper.class.getDeclaredMethod("getType", new Class[]{VisualElement.class}));
@@ -195,16 +196,6 @@ public class FlutterHelper {
         }
     }
 
-
-    public static Collection<RelationTuple> operations(Application application) {
-        return application.getDataElements().stream()
-                .filter(t -> t instanceof ClassType)
-                .flatMap(t -> ((ClassType) t).getRelations().stream())
-                .flatMap(r -> ((ClassType) r.eContainer()).getAccessPointRelations().stream()
-                        .map(r2 -> new RelationTuple(r2, r)))
-                .collect(Collectors.toSet());
-    }
-
     @Getter
     @Setter
     @AllArgsConstructor
@@ -213,43 +204,13 @@ public class FlutterHelper {
     public static class RelationTuple {
         RelationType accessRelation;
         RelationType relationType;
-//        ClassType classType;
-    }
 
-/*
-    public static Collection<BehaviourTuple> clasBehaviours(ClassType classType) {
-        return classType.getRelations().stream()
-                .flatMap(r -> r.getBehaviours().stream())
-                .map(d -> new BehaviourTuple(d.getBehaviour(), d.getSourceRelationType()))
-                .collect(Collectors.toSet());
+        public static Collection<RelationTuple> operations(Application application) {
+            return ((Collection<RelationType>) application.getRelationTypes()).stream()
+                    .flatMap(r -> ((ClassType) (r.eContainer())).getAccessPointRelations().stream()
+                            .map(r2 -> new RelationTuple(r2, r)))
+                    .collect(Collectors.toSet());
+        }
     }
-
-    public static Collection<BehaviourTuple> relationBehaviours(RelationType relationType) {
-       //  return clasBehaviours((ClassType) relationType.eContainer());
-        return applicationBehaviours((Application) relationType.eContainer().eContainer()).stream()
-                .filter(d -> d.getSourceRelationType().equals(relationType))
-                .collect(Collectors.toSet());
-    }
-
-    public static Collection<BehaviourTuple> applicationBehaviours(Application application) {
-        return application.getDataElements().stream()
-                .filter(d -> d instanceof ClassType)
-                .map(d -> (ClassType) d)
-                .flatMap(d -> d.getRelations().stream())
-                .flatMap(d -> d.getBehaviours().stream())
-                .map(d -> new BehaviourTuple(d.getBehaviour(), d.getSourceRelationType()))
-                .collect(Collectors.toSet());
-    }
-
-    @Getter
-    @Setter
-    @AllArgsConstructor
-    @EqualsAndHashCode
-    @ToString
-    public static class BehaviourTuple {
-        RelationBehaviour behaviour;
-        RelationType sourceRelationType;
-    }
- */
 
 }
