@@ -9,7 +9,9 @@ rule CreateAbstractActorType
 	extends CreateNamespaceElement {
 	  t.transferObjectType = s.principal.getPSMTransferObjectTypeEquivalent();
 	  s.principal.getPSMTransferObjectTypeEquivalent().actorType = t;
-      t.realm = s.realm;
+      if (s.realm.isDefined() and s.realm.trim() <> '') {
+          t.realm = s.realm;
+	  }
 }
 
 rule CreateActorTypeClaim
