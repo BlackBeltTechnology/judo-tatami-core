@@ -248,7 +248,7 @@ public class JaxRSITest {
                             break;
                         case "demo.services.OrderInfo#deleteItem":
                             checkArgument(!((Map) payload.get("input")).isEmpty(), "Payload of delete must not be empty");
-                            checkArgument(payload.get("__identifier") instanceof UUID, "Bound operations must have identifier");
+                            checkArgument(payload.get("__signedIdentifier") instanceof String, "Bound operations must have identifier");
                             break;
                     }
 
@@ -279,7 +279,7 @@ public class JaxRSITest {
         try {
             testResponse = getWebTarget(pathToMethod)
                     .request("application/json")
-                    .header("__identifier", UUID.randomUUID())
+                    .header("__signedIdentifier", UUID.randomUUID().toString())
                     .get();
         } catch (Exception e) {
             log.log(LOG_ERROR, "EXCEPTION: ", e);
@@ -292,7 +292,7 @@ public class JaxRSITest {
         try {
             testResponse = getWebTarget(pathToMethod)
                     .request("application/json")
-                    .header("__identifier", UUID.randomUUID())
+                    .header("__signedIdentifier", UUID.randomUUID().toString())
                     .post(Entity.entity(input, MediaType.APPLICATION_JSON));
         } catch (Exception e) {
             log.log(LOG_ERROR, "EXCEPTION: ", e);
@@ -305,7 +305,7 @@ public class JaxRSITest {
         try {
             testResponse = getWebTarget(pathToMethod)
                     .request("application/json")
-                    .header("__identifier", UUID.randomUUID())
+                    .header("__signedIdentifier", UUID.randomUUID().toString())
                     .post(Entity.entity("", MediaType.APPLICATION_JSON));
         } catch (Exception e) {
             log.log(LOG_ERROR, "EXCEPTION: ", e);
@@ -358,7 +358,7 @@ public class JaxRSITest {
     public void testOrderItemDeleteOrder() {
         logTest(DEMO_SERVICE_DELETE_ORDER_ITEM);
 
-        Response response = getResponse(DEMO_SERVICE_DELETE_ORDER_ITEM, orderItemBuilder().__identifier(UUID.randomUUID()).build());
+        Response response = getResponse(DEMO_SERVICE_DELETE_ORDER_ITEM, orderItemBuilder().__signedIdentifier(UUID.randomUUID().toString()).build());
 
         assertNotNull(response);
         assertTrue(response.getStatusInfo().getFamily().equals(Response.Status.Family.SUCCESSFUL));

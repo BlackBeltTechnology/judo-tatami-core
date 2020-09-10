@@ -48,7 +48,7 @@ public class [%= className %] {
         @Context SecurityContext securityContext[%
         if (asmUtils.isBound(op)) { %]
 ,
-        @HeaderParam("__identifier") java.util.UUID __identifier[%
+        @HeaderParam("__signedIdentifier") java.lang.String __signedIdentifier[%
         } %][% for (p in op.eParameters) {
           if (p.many) {%]
 ,
@@ -63,7 +63,8 @@ public class [%= className %] {
         	return Response.status(Response.Status.SERVICE_UNAVAILABLE).build();
     	}
 		Map<String, Object> parameters = new HashMap();
-		[% if (asmUtils.isBound(op)) { %] parameters.put("__identifier", __identifier); [% } %]
+        parameters.put("__exposed", Boolean.TRUE);
+		[% if (asmUtils.isBound(op)) { %] parameters.put("__signedIdentifier", __signedIdentifier); [% } %]
         if (securityContext != null) {
             parameters.put("__principal", securityContext.getUserPrincipal());
         }

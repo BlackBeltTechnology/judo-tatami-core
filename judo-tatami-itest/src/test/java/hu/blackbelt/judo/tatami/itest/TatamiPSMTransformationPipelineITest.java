@@ -117,8 +117,8 @@ public abstract class TatamiPSMTransformationPipelineITest {
 
         return combine(karafConfig(this.getClass()),
 
-                systemProperty("org.ops4j.pax.exam.raw.extender.intern.Parser.DEFAULT_TIMEOUT").value("60000"),
-                systemProperty("pax.exam.service.timeout").value("60000"),
+                systemProperty("org.ops4j.pax.exam.raw.extender.intern.Parser.DEFAULT_TIMEOUT").value("120000"),
+                systemProperty("pax.exam.service.timeout").value("120000"),
 
                 features(karafStandardRepo()),
 

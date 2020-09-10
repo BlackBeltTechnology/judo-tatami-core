@@ -12,13 +12,19 @@ import java.util.stream.Collectors;
 
 public class [%= dto.name.normalizeName() %] {
 	private [%= getIdTypeName() %] __identifier;
+	private String __signedIdentifier;
+	private Boolean __updateable;
+	private Boolean __deleteable;
     [% for (field in dto.eAllAttributes.includingAll(dto.eAllReferences)) { %]
 	private [%= field.getTypeDefinition() %] [%= asmUtils.safeName(field.name.firstToLowerCase()) %];
 	[% } %]
 
-    @java.beans.ConstructorProperties({"__identifier"[% for (field in dto.eAllAttributes.includingAll(dto.eAllReferences)) { %], "[%= asmUtils.safeName(field.name.firstToLowerCase()) %]"[% } %]})
-    [%= dto.name.normalizeName() %]([%= getIdTypeName() %] __identifier[% for (field in dto.eAllAttributes.includingAll(dto.eAllReferences)) { %], [%= field.getTypeDefinition() %] [%= asmUtils.safeName(field.name.firstToLowerCase()) %][% } %]) {
+    @java.beans.ConstructorProperties({"__identifier", "__signedIdentifier", "__updateable", "__deleteable"[% for (field in dto.eAllAttributes.includingAll(dto.eAllReferences)) { %], "[%= asmUtils.safeName(field.name.firstToLowerCase()) %]"[% } %]})
+    [%= dto.name.normalizeName() %]([%= getIdTypeName() %] __identifier, String __signedIdentifier, Boolean __updateable, Boolean __deleteable[% for (field in dto.eAllAttributes.includingAll(dto.eAllReferences)) { %], [%= field.getTypeDefinition() %] [%= asmUtils.safeName(field.name.firstToLowerCase()) %][% } %]) {
 		this.__identifier = __identifier;
+		this.__signedIdentifier = __signedIdentifier;
+		this.__updateable = __updateable;
+		this.__deleteable = __deleteable;
         [% for (field in dto.eAllAttributes.includingAll(dto.eAllReferences)) { %]
         this.[%= asmUtils.safeName(field.name.firstToLowerCase()) %] = [%= asmUtils.safeName(field.name.firstToLowerCase()) %];
         [% } %]
@@ -27,6 +33,15 @@ public class [%= dto.name.normalizeName() %] {
 	// Getters
 	public [%= getIdTypeName() %] get__identifier() {
 		return this.__identifier;
+	}
+	public String get__signedIdentifier() {
+	    return this.__signedIdentifier;
+	}
+	public Boolean get__updateable() {
+	    return this.__updateable;
+	}
+	public Boolean get__deleteable() {
+	    return this.__deleteable;
 	}
     [% for (field in dto.eAllAttributes.includingAll(dto.eAllReferences)) { %]
 	public [%= field.getTypeDefinition() %] [%= asmUtils.getterName(field) %]() {
@@ -38,6 +53,15 @@ public class [%= dto.name.normalizeName() %] {
 	public void set__identifier([%= getIdTypeName() %] __identifier) {
 		this.__identifier = __identifier;
 	}
+	public void set__signedIdentifier(String __signedIdentifier) {
+	    this.__signedIdentifier = __signedIdentifier;
+	}
+	public void set__updateable(Boolean __updateable) {
+	    this.__updateable = __updateable;
+	}
+	public void set__deleteable(Boolean __deleteable) {
+	    this.__deleteable = __deleteable;
+	}
     [% for (field in dto.eAllAttributes.includingAll(dto.eAllReferences)) { %]
 	public void [%= asmUtils.setterName(field) %]([%= field.getTypeDefinition() %] [%= asmUtils.safeName(field.name.firstToLowerCase()) %]) {
 		this.[%= asmUtils.safeName(field.name.firstToLowerCase()) %] = [%= asmUtils.safeName(field.name.firstToLowerCase()) %];
@@ -48,6 +72,15 @@ public class [%= dto.name.normalizeName() %] {
 		Map ret = new LinkedHashMap();
 		if (this.__identifier != null) {
 			ret.put("__identifier", this.__identifier);
+		}
+		if (this.__signedIdentifier != null) {
+		    ret.put("__signedIdentifier", this.__signedIdentifier);
+		}
+		if (this.__updateable != null) {
+		    ret.put("__updateable", __updateable);
+		}
+		if (this.__deleteable != null) {
+		    ret.put("__deleteable", __deleteable);
 		}
 
 	    [% for (attr in dto.eAllAttributes) { %]
@@ -79,6 +112,15 @@ public class [%= dto.name.normalizeName() %] {
 		if (map.containsKey("__identifier")) {
 			builder.__identifier(([%= getIdTypeName() %])map.get("__identifier"));
 		}
+		if (map.containsKey("__signedIdentifier")) {
+		    builder.__signedIdentifier((String)map.get("__signedIdentifier"));
+		}
+		if (map.containsKey("__updateable")) {
+		    builder.__updateable((Boolean)map.get("__updateable"));
+		}
+		if (map.containsKey("__deleteable")) {
+		    builder.__deleteable((Boolean)map.get("__deleteable"));
+		}
 	    [% for (attr in dto.eAllAttributes) { %]
 	    if (map.containsKey("[%= attr.name %]")) {
 [%          if (attr.eAttributeType.isKindOf(ASM!EEnum)) { %]
@@ -101,7 +143,7 @@ public class [%= dto.name.normalizeName() %] {
 	}
 
 	public String toString() {
-	    return "[%= dto.name.normalizeName() %](identifier=" + this.__identifier + "[% for (field in dto.eAllAttributes.includingAll(dto.eAllReferences)) { %], [%= asmUtils.safeName(field.name.firstToLowerCase()) %]=" + this.[%= asmUtils.safeName(field.name.firstToLowerCase()) %] + "[% } %])";
+	    return "[%= dto.name.normalizeName() %](identifier=" + this.__identifier + ", signedIdentifier=" + this.__signedIdentifier + ", updateable=" + this.__updateable + ", deleteable=" + this.__deleteable + "[% for (field in dto.eAllAttributes.includingAll(dto.eAllReferences)) { %], [%= asmUtils.safeName(field.name.firstToLowerCase()) %]=" + this.[%= asmUtils.safeName(field.name.firstToLowerCase()) %] + "[% } %])";
 	}
 
     // Builder
@@ -111,6 +153,9 @@ public class [%= dto.name.normalizeName() %] {
 
 	public static class [%= dto.name.normalizeName() %]Builder {
 		private [%= getIdTypeName() %] __identifier;
+		private String __signedIdentifier;
+		private Boolean __updateable;
+		private Boolean __deleteable;
         [% for (field in dto.eAllAttributes.includingAll(dto.eAllReferences)) { %]
         private [%= field.getTypeDefinition() %] [%= asmUtils.safeName(field.name.firstToLowerCase()) %];
         [% } %]
@@ -122,6 +167,18 @@ public class [%= dto.name.normalizeName() %] {
 			this.__identifier = __identifier;
 			return this;
 		}
+		public [%= dto.name.normalizeName() %]Builder __signedIdentifier(String __signedIdentifier) {
+            this.__signedIdentifier = __signedIdentifier;
+            return this;
+        }
+		public [%= dto.name.normalizeName() %]Builder __updateable(Boolean __updateable) {
+            this.__updateable = __updateable;
+            return this;
+        }
+		public [%= dto.name.normalizeName() %]Builder __deleteable(Boolean __deleteable) {
+            this.__deleteable = __deleteable;
+            return this;
+        }
         [% for (field in dto.eAllAttributes.includingAll(dto.eAllReferences)) { %]
 		public [%= dto.name.normalizeName() %]Builder [%= asmUtils.safeName(field.name.firstToLowerCase()) %]([%= field.getTypeDefinition() %] [%= asmUtils.safeName(field.name.firstToLowerCase()) %]) {
 			this.[%= asmUtils.safeName(field.name.firstToLowerCase()) %] = [%= asmUtils.safeName(field.name.firstToLowerCase()) %];
@@ -130,11 +187,11 @@ public class [%= dto.name.normalizeName() %] {
 
 		[% } %]
 		public [%= dto.name.normalizeName() %] build() {
-			return new [%= dto.name.normalizeName() %](this.__identifier[% for (field in dto.eAllAttributes.includingAll(dto.eAllReferences)) { %], this.[%= asmUtils.safeName(field.name.firstToLowerCase()) %][% } %]);
+			return new [%= dto.name.normalizeName() %](this.__identifier, this.__signedIdentifier, this.__updateable, this.__deleteable[% for (field in dto.eAllAttributes.includingAll(dto.eAllReferences)) { %], this.[%= asmUtils.safeName(field.name.firstToLowerCase()) %][% } %]);
 		}
 
 		public String toString() {
-    	    return "[%= dto.name.normalizeName() %]Builder.[%= dto.name.normalizeName() %](identifier=" + __identifier + "[% for (field in dto.eAllAttributes.includingAll(dto.eAllReferences)) { %], [%= asmUtils.safeName(field.name.firstToLowerCase()) %]=" + this.[%= asmUtils.safeName(field.name.firstToLowerCase()) %] + "[% } %])";
+    	    return "[%= dto.name.normalizeName() %]Builder.[%= dto.name.normalizeName() %](identifier=" + __identifier + ", signedIdentifier=" + __signedIdentifier + ", updateable=" + __updateable + ", deleteable=" + __deleteable + "[% for (field in dto.eAllAttributes.includingAll(dto.eAllReferences)) { %], [%= asmUtils.safeName(field.name.firstToLowerCase()) %]=" + this.[%= asmUtils.safeName(field.name.firstToLowerCase()) %] + "[% } %])";
 		}
 	}
 }

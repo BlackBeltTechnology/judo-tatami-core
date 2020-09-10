@@ -29,7 +29,7 @@ rule CreateTransferObjectSingleSchemaDeclarationForDelete
         t.schema.type = OPENAPI!JSONDataType#object;
 
         var id = new OPENAPI!PropertyDeclaration;
-        id.name = "__identifier";
+        id.name = "__signedIdentifier";
 
         id.property = new OPENAPI!Property;
         id.property.description = "ID of instance";
@@ -51,7 +51,7 @@ rule CreateTransferObjectSingleSchemaDefinitionExtended
 
         if (asmUtils.isMappedTransferObjectType(s.eContainer) and not s.eContainer.eSuperTypes.exists(sup | asmUtils.isMappedTransferObjectType(sup))) {
             var id = new OPENAPI!PropertyDeclaration;
-            id.name = "__identifier";
+            id.name = "__signedIdentifier";
 
             id.property = new OPENAPI!Property;
             id.property.description = "ID of " + asmUtils.getMappedEntityType(s.eContainer).get().name + " instance";
@@ -74,7 +74,7 @@ rule CreateTransferObjectSingleSchemaDefinition
 
         if (asmUtils.isMappedTransferObjectType(s.eContainer) and not s.eContainer.eSuperTypes.exists(sup | asmUtils.isMappedTransferObjectType(sup))) {
             var id = new OPENAPI!PropertyDeclaration;
-            id.name = "__identifier";
+            id.name = "__signedIdentifier";
 
             id.property = new OPENAPI!Property;
             id.property.description = "ID of " + asmUtils.getMappedEntityType(s.eContainer).get().name + " instance";
@@ -149,7 +149,7 @@ rule CreateTransferObjectSingleSchemaDefinitionExtended
 
         if (asmUtils.isMappedTransferObjectType(s.eContainer) and not s.eContainer.eSuperTypes.exists(sup | asmUtils.isMappedTransferObjectType(sup))) {
             var id = new OPENAPI!PropertyDeclaration;
-            id.name = "__identifier";
+            id.name = "__signedIdentifier";
 
             id.property = new OPENAPI!Property;
             id.property.description = "ID of " + asmUtils.getMappedEntityType(s.eContainer).get().name + " instance";
