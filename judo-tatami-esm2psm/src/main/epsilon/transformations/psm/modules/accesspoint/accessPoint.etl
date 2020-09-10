@@ -7,14 +7,9 @@ rule CreateAbstractActorType
 	transform s: ESM!ActorType
 	to t: JUDOPSM!AbstractActorType
 	extends CreateNamespaceElement {
-	  t.name = s.name;
-
 	  t.transferObjectType = s.principal.getPSMTransferObjectTypeEquivalent();
 	  s.principal.getPSMTransferObjectTypeEquivalent().actorType = t;
-
-	  if (s.realm.isDefined() and s.realm.trim() <> '') {
-          t.realm = s.realm;
-	  }
+      t.realm = s.realm;
 }
 
 rule CreateActorTypeClaim
@@ -38,7 +33,7 @@ rule CreateActorType
 	transform s: ESM!ActorType
 	to t: JUDOPSM!ActorType
 	extends CreateAbstractActorType {
-	  guard: s.principal.isDefined() and not s.principal.mapping.isDefined()
+	  guard: s.principal.isDefined() and not s.principal.isMapped()
 
 	  log.debug("Created ActorType: " + t.name);
 }
@@ -47,9 +42,21 @@ rule CreateMappedActorType
 	transform s: ESM!ActorType
 	to t: JUDOPSM!MappedActorType
 	extends CreateAbstractActorType {
-	  guard: s.principal.isDefined() and s.principal.mapping.isDefined()
+	  guard: s.principal.isDefined() and s.principal.isMapped()
 
 	  t.entityType = s.principal.mapping.target.getPSMEquivalent();
 
 	  log.debug("Created ActorType: " + t.name);
+}
+
+rule CreateTransferObjectRelationFromAccess
+	transform s: ESM!Access
+	to t: JUDOPSM!TransferObjectRelation
+	extends CreateNamedElement {
+		t.cardinality = s.equivalent("CreateCardinalityForReferenceTypedElement");
+		t.access = true;
+		t.target = s.target.getPSMTransferObjectTypeEquivalent();
+		s.eContainer.getPSMEquivalent().relations.add(t);	
+	
+	log.debug("Created access relation: " + t.name + " for actor type: " + t.eContainer.name);
 }
