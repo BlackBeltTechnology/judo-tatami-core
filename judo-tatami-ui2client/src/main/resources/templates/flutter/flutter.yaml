@@ -322,12 +322,12 @@
 # tables
 # ========================================
 - overwriteExpression: true
-  factoryExpression: "#getTables(#application.pages)"
+  factoryExpression: "#application.tables"
   pathExpression: >
     'lib/' +
     #path(#application.dataElement.name) +
     '/pages/tables/' +
-    #fqPath(#getPage(#self)) +
+    #fqPath(#self.pageDefinition.name) +
     '__'+
     #self.name +
     '__table.dart'

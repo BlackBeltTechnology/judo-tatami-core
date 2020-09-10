@@ -8,8 +8,7 @@ operation ESM!esm::structure::RelationFeature createPageForRelationForView(appli
 	
 	var page : UI!ui::PageDefinition = new UI!ui::PageDefinition();
 	page.dataElement = self.mapRelationType(application, self.eContainer.mapClassType(application));
-	page.name = self.fqName().anchor("RelationPageView", target.fqName());
-	page.pageType = UI!ui::PageType#VIEW;
+	page.name = self.fqName().anchor("View");
 
 	var pageContainer = new UI!ui::PageContainer();
     pageContainer.layoutType = application.layoutTypes.first;
@@ -22,31 +21,12 @@ operation ESM!esm::structure::RelationFeature createPageForRelationForView(appli
 	return page;
 }
 
-operation ESM!esm::structure::RelationFeature createPageForRelationForCreate(application : UI!ui::Application, target : ESM!esm::structure::TransferObjectType) : UI!ui::PageDefinition {
-	log.debug("Create page for relation for create: " + target.name + " (relation: " + self.name + ")");
-	
-	var page : UI!ui::PageDefinition = new UI!ui::PageDefinition();
-	page.dataElement = self.mapRelationType(application, self.eContainer.mapClassType(application));
-	page.name = self.fqName().anchor("RelationPageCreate", target.fqName());
-	page.pageType = UI!ui::PageType#CREATE;
-
-	var pageContainer = new UI!ui::PageContainer();
-    pageContainer.layoutType = application.layoutTypes.first;
-	pageContainer.name = self.name;
-	pageContainer.direction = UI!Axis#VERTICAL;
-	page.containers.add(pageContainer);
-
-    pageContainer.children.add(target.form.map(application));
-    
-    return page;
-}
-
 operation ESM!esm::structure::RelationFeature createPageForRelationForUpdate(application : UI!ui::Application, target : ESM!esm::structure::TransferObjectType) : UI!ui::PageDefinition {
 	log.debug("Create page for relation for update: " + target.name + " (relation: " + self.name + ")");
 	
 	var page : UI!ui::PageDefinition = new UI!ui::PageDefinition();
 	page.dataElement = self.mapRelationType(application, self.eContainer.mapClassType(application));
-	page.name = self.fqName().anchor("RelationPageEdit", target.fqName());
+	page.name = self.fqName().anchor("Update");
 	page.pageType = UI!ui::PageType#UPDATE;
 
 	var pageContainer = new UI!ui::PageContainer();
@@ -60,14 +40,31 @@ operation ESM!esm::structure::RelationFeature createPageForRelationForUpdate(app
     return page;
 }
 
+operation ESM!esm::structure::RelationFeature createPageForRelationForCreate(application : UI!ui::Application, target : ESM!esm::structure::TransferObjectType) : UI!ui::PageDefinition {
+	log.debug("Create page for relation for create: " + target.name + " (relation: " + self.name + ")");
+	
+	var page : UI!ui::PageDefinition = new UI!ui::PageDefinition();
+	page.dataElement = self.mapRelationType(application, self.eContainer.mapClassType(application));
+	page.name = self.fqName().anchor("Create");
+	page.pageType = UI!ui::PageType#CREATE;
+
+	var pageContainer = new UI!ui::PageContainer();
+    pageContainer.layoutType = application.layoutTypes.first;
+	pageContainer.name = self.name;
+	pageContainer.direction = UI!Axis#VERTICAL;
+	page.containers.add(pageContainer);
+
+    pageContainer.children.add(target.form.map(application));
+    
+    return page;
+}
 
 operation ESM!esm::structure::RelationFeature createPageForRelationForTable(application : UI!ui::Application, target : ESM!esm::structure::TransferObjectType) : UI!ui::PageDefinition {
 	log.debug("Create page for relation for table: " + target.name + " (relation: " + self.name + ")");
 	
 	var page : UI!ui::PageDefinition = new UI!ui::PageDefinition();
 	page.dataElement = self.mapRelationType(application, self.eContainer.mapClassType(application));
-	page.name = self.fqName().anchor("RelationPageTable", target.fqName());
-	page.pageType = UI!ui::PageType#TABLE;
+	page.name = self.fqName().anchor("Table");
 
 	var pageContainer = new UI!ui::PageContainer();
     pageContainer.layoutType = application.layoutTypes.first;

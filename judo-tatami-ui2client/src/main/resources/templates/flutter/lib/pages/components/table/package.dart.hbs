@@ -7,6 +7,6 @@
 // Template name: {{ template.templateName }}
 // Application: {{ application.name }}
 
-{{# each (getTables application.pages) as |table|}}
-part '{{ fqPath (getPage table) }}__{{table.name}}__table.dart';
+{{# each application.tables as |table|}}
+part '{{ fqPath table.pageDefinition.name }}__{{table.name}}__table.dart';
 {{/ each }}
