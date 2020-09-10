@@ -2,6 +2,7 @@ package hu.blackbelt.judo.tatami.esm2ui;
 
 import hu.blackbelt.epsilon.runtime.execution.api.Log;
 import hu.blackbelt.epsilon.runtime.execution.impl.Slf4jLog;
+import hu.blackbelt.judo.meta.esm.accesspoint.ActorType;
 import hu.blackbelt.judo.meta.esm.namespace.Model;
 import hu.blackbelt.judo.meta.esm.runtime.EsmModel;
 import hu.blackbelt.judo.meta.esm.runtime.EsmUtils;
@@ -67,7 +68,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @Slf4j
 public class EsmAccesspoint2UiApplicationTest {
-
     private final String TEST_SOURCE_MODEL_NAME = "urn:test.judo-meta-esm";
     private final String TEST = "test";
     private final String TARGET_TEST_CLASSES = "target/test-classes";
@@ -141,10 +141,15 @@ public class EsmAccesspoint2UiApplicationTest {
                 .withName(ACCESS_POINT_NAME)
                 .build();
         
-        accessPoint.setActorType(newActorTypeBuilder().build());
+        ActorType actor = newActorTypeBuilder()
+                .withName("actor")
+                .withPrincipal(accessPoint)
+                .withRealm("sandbox")
+                .build();
+        useTransferObjectType(accessPoint).withActorType(actor).build();
 
         final Model model = newModelBuilder().withName(MODEL_NAME)
-                .withElements(Arrays.asList(accessPoint)).build();
+                .withElements(Arrays.asList(accessPoint, actor)).build();
 
         esmModel.addContent(model);
 
@@ -193,9 +198,15 @@ public class EsmAccesspoint2UiApplicationTest {
         final TransferObjectType accessPoint = newTransferObjectTypeBuilder()
                 .withName(ACCESS_POINT_NAME)
                 .build();
-        
-        accessPoint.setActorType(newActorTypeBuilder().build());
-        
+
+        ActorType actor = newActorTypeBuilder()
+                .withName("actor")
+                .withPrincipal(accessPoint)
+                .withRealm("sandbox")
+                .build();
+        useTransferObjectType(accessPoint).withActorType(actor).build();
+
+
         // Exposed entity
         final String EXPOSED_ENTITY_TYPE_NAME = "ExposedEntity";
 
@@ -268,7 +279,7 @@ public class EsmAccesspoint2UiApplicationTest {
 
         
         final Model model = newModelBuilder().withName(MODEL_NAME)
-                .withElements(Arrays.asList(string, exposedEntity, accessPoint)).build();
+                .withElements(Arrays.asList(string, exposedEntity, accessPoint, actor)).build();
 
         esmModel.addContent(model);
         
