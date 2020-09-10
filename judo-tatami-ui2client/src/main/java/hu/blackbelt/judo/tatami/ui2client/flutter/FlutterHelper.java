@@ -6,6 +6,7 @@ import hu.blackbelt.judo.meta.ui.*;
 import hu.blackbelt.judo.meta.ui.data.*;
 import lombok.*;
 import lombok.extern.java.Log;
+import org.eclipse.emf.common.util.ECollections;
 import org.eclipse.emf.common.util.TreeIterator;
 import org.eclipse.emf.ecore.EObject;
 import org.springframework.expression.spel.support.StandardEvaluationContext;
@@ -41,8 +42,6 @@ public class FlutterHelper {
         context.registerFunction("mainAxisAlignment", FlutterHelper.class.getDeclaredMethod("mainAxisAlignment", new Class[]{Flex.class}));
         context.registerFunction("crossAxisAlignment", FlutterHelper.class.getDeclaredMethod("crossAxisAlignment", new Class[]{Flex.class}));
         context.registerFunction("mainAxisSize", FlutterHelper.class.getDeclaredMethod("mainAxisSize", new Class[]{Flex.class}));
-        context.registerFunction("getTables", FlutterHelper.class.getDeclaredMethod("getTables", new Class[]{Collection.class}));
-        context.registerFunction("getPage", FlutterHelper.class.getDeclaredMethod("getPage", new Class[]{Table.class}));
         context.registerFunction("isSaveButton", FlutterHelper.class.getDeclaredMethod("isSaveButton", new Class[]{Button.class}));
         context.registerFunction("isBackButton", FlutterHelper.class.getDeclaredMethod("isBackButton", new Class[]{Button.class}));
         context.registerFunction("dartType", FlutterHelper.class.getDeclaredMethod("dartType", new Class[]{DataType.class}));
@@ -58,24 +57,6 @@ public class FlutterHelper {
 
     public static boolean isBackButton(Button button) {
         return button.getAction() != null && BackAction.class.equals(button.getAction().eClass().getInstanceClass());
-    }
-
-    public static String getPage(Table table) {
-        EObject parent = table.eContainer();
-        while (parent != null && !PageDefinition.class.equals(parent.eClass().getInstanceClass())) {
-            parent = parent.eContainer();
-        }
-        return parent != null ? ((PageDefinition) parent).getName() : null;
-    }
-
-    public static Collection<Table> getTables(Collection<PageDefinition> pages) {
-        Collection<Table> tables = new ArrayList<>();
-        pages.forEach(pageDefinition ->
-                tables.addAll(StreamSupport.stream(Spliterators.spliteratorUnknownSize(pageDefinition.eAllContents(), Spliterator.ORDERED), false)
-                        .filter(eObject -> Table.class.equals(eObject.eClass().getInstanceClass()))
-                        .map(eObject -> (Table) eObject)
-                        .collect(Collectors.toList())));
-        return tables;
     }
 
     public static String mainAxisSize(Flex flex) {
@@ -120,9 +101,10 @@ public class FlutterHelper {
 
     public static String fqPath(String fqName) {
         return fqName
+                .replaceAll("\\.", "__")
                 .replaceAll("::", "__")
-                .replaceAll("#", "_")
-                .replaceAll("/", "_")
+                .replaceAll("#", "__")
+                .replaceAll("/", "__")
                 .replaceAll("([a-z])([A-Z]+)", "$1_$2")
                 .toLowerCase();
     }

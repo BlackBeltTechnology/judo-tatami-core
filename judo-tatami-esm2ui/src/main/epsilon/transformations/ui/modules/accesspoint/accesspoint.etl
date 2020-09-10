@@ -133,7 +133,7 @@ rule CreateNavigationItemPageForAccessPointRelationForView
 
         var application = s.eContainer.equivalent("CreateApplication");
 
-        t.name = s.fqName().anchor("RelationPageView");
+        t.name = s.fqName().anchor("View");
         t.dataElement = s.mapRelationType(application, s.eContainer.mapClassType(application));
 		t.pageType = UI!ui::PageType#VIEW;
 
@@ -148,7 +148,7 @@ rule CreateNavigationItemPageForAccessPointRelationForView
 }
 
 @greedy
-rule CreateNavigationItemPageForAccessPointRelationForForm
+rule CreateNavigationItemPageForAccessPointRelationForUpdate
     transform s : ESM!esm::structure::RelationFeature
     to t : UI!ui::PageDefinition
     extends CreateNamedElementFromNamedElement {
@@ -158,7 +158,7 @@ rule CreateNavigationItemPageForAccessPointRelationForForm
 
         var application = s.eContainer.equivalent("CreateApplication");
 
-        t.name = s.fqName().anchor("RelationPageUpdate");
+        t.name = s.fqName().anchor("Update");
         t.dataElement = s.mapRelationType(application, s.eContainer.mapClassType(application));
 		t.pageType = UI!ui::PageType#UPDATE;
 
@@ -173,17 +173,17 @@ rule CreateNavigationItemPageForAccessPointRelationForForm
 }
 
 @greedy
-rule CreateNavigationItemPageForAccessPointRelationForForm
+rule CreateNavigationItemPageForAccessPointRelationForCreate
     transform s : ESM!esm::structure::RelationFeature
     to t : UI!ui::PageDefinition
     extends CreateNamedElementFromNamedElement {
         guard: s.eContainer.isAccesspoint() and s.target.mapping.isDefined() and s.target.form.isDefined()
 
-        log.debug("CreateNavigationItemPageForAccessPointRelationCreateForm: " + s.name);
+        log.debug("CreateNavigationItemPageForAccessPointRelationUpdateForm: " + s.name);
 
         var application = s.eContainer.equivalent("CreateApplication");
 
-        t.name = s.fqName().anchor("RelationPageCreate");
+        t.name = s.fqName().anchor("Create");
         t.dataElement = s.mapRelationType(application, s.eContainer.mapClassType(application));
 		t.pageType = UI!ui::PageType#CREATE;
 
@@ -197,6 +197,7 @@ rule CreateNavigationItemPageForAccessPointRelationForForm
         application.pages.add(t);
 }
 
+/*
 @greedy
 rule CreateNavigationItemPageForAccessPointRelationForTable
     transform s : ESM!esm::structure::RelationFeature
@@ -238,6 +239,7 @@ rule CreateNavigationItemPageForAccessPointRelationForTable
             table.detail = detail;
         }
 		*/
-		
+/*		
         application.pages.add(t);
 }
+*/
