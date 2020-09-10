@@ -14,7 +14,7 @@ operation ESM!esm::`operation`::Operation createPageForOperationOutputForView(ap
 	
 	var pageContainer = new UI!ui::PageContainer();
     pageContainer.layoutType = application.layoutTypes.first;
-	pageContainer.name = self.name;
+	pageContainer.name = "default";
 	pageContainer.direction = UI!Axis#VERTICAL;
 	page.containers.add(pageContainer);
 		
@@ -51,7 +51,7 @@ operation ESM!esm::`operation`::Operation createPageForOperationInputForForm(app
 
 	var pageContainer = new UI!ui::PageContainer();
     pageContainer.layoutType = application.layoutTypes.first;
-	pageContainer.name = self.name;
+	pageContainer.name = "default";
 	pageContainer.direction = UI!Axis#VERTICAL;
 	page.containers.add(pageContainer);
     
@@ -90,7 +90,7 @@ operation ESM!esm::`operation`::Operation createPageForOperationInputForTable(ap
 	
 	var pageContainer = new UI!ui::PageContainer();
     pageContainer.layoutType = application.layoutTypes.first;
-	pageContainer.name = self.name;
+	pageContainer.name = "default";
 	pageContainer.direction = UI!Axis#VERTICAL;
 	page.containers.add(pageContainer);
 	
@@ -112,7 +112,7 @@ operation ESM!esm::`operation`::Operation createPageForOperationInputForTable(ap
 
 		var detailPageContainer = new UI!ui::PageContainer();
 	    detailPageContainer.layoutType = application.layoutTypes.first;
-		detailPageContainer.name = self.name;
+		detailPageContainer.name = "default";
 		detailPageContainer.direction = UI!Axis#VERTICAL;
 		detail.containers.add(detailPageContainer);
 
@@ -135,7 +135,7 @@ operation ESM!esm::`operation`::Operation createPageForOperationOutputForTable(a
     
     var pageContainer = new UI!ui::PageContainer();
     pageContainer.layoutType = application.layoutTypes.first;
-	pageContainer.name = self.name;
+	pageContainer.name = "default";
 	pageContainer.direction = UI!Axis#VERTICAL;
 	page.containers.add(pageContainer);
     
@@ -156,7 +156,7 @@ operation ESM!esm::`operation`::Operation createPageForOperationOutputForTable(a
 
 		var detailPageContainer = new UI!ui::PageContainer();
 	    detailPageContainer.layoutType = application.layoutTypes.first;
-		detailPageContainer.name = self.name;
+		detailPageContainer.layoutType = "default";
 		detailPageContainer.direction = UI!Axis#VERTICAL;
 		detail.containers.add(detailPageContainer);
 

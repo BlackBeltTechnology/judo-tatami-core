@@ -13,7 +13,7 @@ rule CreateApplication
 
 		var defaultLayout = new UI!ui::LayoutType();
         defaultLayout.cols = applicationColumns;
-        defaultLayout.type = applicationType;
+        defaultLayout.name = "default";
         defaultLayout.original = true;
         t.layoutTypes.add(defaultLayout);
 
@@ -87,7 +87,7 @@ rule CreateApplicationDashboard
  
 	 	var pageContainer = new UI!ui::PageContainer();
 	    pageContainer.layoutType = application.layoutTypes.first;
-		pageContainer.name = s.name;
+		pageContainer.name = "default";
 		pageContainer.direction = UI!Axis#VERTICAL;
 		t.containers.add(pageContainer);
 	 
@@ -139,7 +139,7 @@ rule CreateNavigationItemPageForAccessPointRelationForView
 
 	 	var pageContainer = new UI!ui::PageContainer();
 	    pageContainer.layoutType = application.layoutTypes.first;
-		pageContainer.name = s.name;
+		pageContainer.name = "default";
 		pageContainer.direction = UI!Axis#VERTICAL;
 		t.containers.add(pageContainer);
 
@@ -164,7 +164,7 @@ rule CreateNavigationItemPageForAccessPointRelationForUpdate
 
 	 	var pageContainer = new UI!ui::PageContainer();
 	    pageContainer.layoutType = application.layoutTypes.first;
-		pageContainer.name = s.name;
+		pageContainer.name = "default";
 		pageContainer.direction = UI!Axis#VERTICAL;
 		t.containers.add(pageContainer);
 
@@ -189,7 +189,7 @@ rule CreateNavigationItemPageForAccessPointRelationForCreate
 
 	 	var pageContainer = new UI!ui::PageContainer();
 	    pageContainer.layoutType = application.layoutTypes.first;
-		pageContainer.name = s.name;
+		pageContainer.name = "default";
 		pageContainer.direction = UI!Axis#VERTICAL;
 		t.containers.add(pageContainer);
 
@@ -215,7 +215,7 @@ rule CreateNavigationItemPageForAccessPointRelationForTable
         
         var pageContainer = new UI!ui::PageContainer();
         pageContainer.layoutType = application.layoutTypes.first;
-		pageContainer.name = self.name;
+		pageContainer.name = "default";
 		pageContainer.direction = UI!Axis#VERTICAL;
 		t.containers.add(pageContainer);
         
@@ -230,7 +230,7 @@ rule CreateNavigationItemPageForAccessPointRelationForTable
 
 			var detailPageContainer = new UI!ui::PageContainer();
 		    detailPageContainer.layoutType = application.layoutTypes.first;
-			detailPageContainer.name = self.name;
+			detailPageContainer.name = "default";
 			detailPageContainer.direction = UI!Axis#VERTICAL;
 			detail.containers.add(detailPageContainer);
 

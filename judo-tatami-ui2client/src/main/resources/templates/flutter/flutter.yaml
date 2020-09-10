@@ -302,17 +302,20 @@
 # pages
 # ========================================
 - overwriteExpression: true
-  factoryExpression: "#application.pages"
+  factoryExpression: "#application.pageContainers"
   pathExpression: >
     'lib/'+
     #path(#application.dataElement.name) +
-    '/pages/' +
-    #fqPath(#self.name) +
+    '/pages/' + #self.layoutType.name + '/' +
+    #fqPath(#self.owner.name) +
     '__page.dart'
   templateName: flutter/lib/pages/page.dart.hbs
   templateContext:
-    - name: page
+    - name: pageContainer
       expression: "#self"
+      className: hu.blackbelt.judo.meta.ui.PageContainer
+    - name: page
+      expression: "#self.owner"
       className: hu.blackbelt.judo.meta.ui.PageDefinition
     - name: ap
       expression: "#application.dataElement"
@@ -326,8 +329,8 @@
   pathExpression: >
     'lib/' +
     #path(#application.dataElement.name) +
-    '/pages/tables/' +
-    #fqPath(#self.pageDefinition.name) +
+    '/pages/' + #path(#self.pageContainer.layoutType.name) + '/tables/' +
+    #fqPath(#self.pageContainer.owner.name) +
     '__'+
     #self.name +
     '__table.dart'
