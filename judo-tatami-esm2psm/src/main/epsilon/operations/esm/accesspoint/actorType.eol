@@ -1,7 +1,7 @@
 operation ESM!ActorType getPSMEquivalent(): JUDOPSM!TransferObjectType {
-	if (self.eContainer.isDefined() and not self.eContainer.mapping.isDefined()) {
+	if (self.principal.isDefined() and not self.principal.isMapped()) {
 	    return self.equivalent("CreateActorType");
-	} else if (self.eContainer.isDefined() and self.eContainer.mapping.isDefined()) {
+	} else if (self.principal.isDefined() and self.principal.isMapped()) {
         return self.equivalent("CreateMappedActorType");
 	} else {
 	    throw "Unsupported actor type";
