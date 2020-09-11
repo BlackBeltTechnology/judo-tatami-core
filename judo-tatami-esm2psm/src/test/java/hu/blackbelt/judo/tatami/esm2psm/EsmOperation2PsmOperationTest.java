@@ -435,6 +435,8 @@ public class EsmOperation2PsmOperationTest {
     	
         hu.blackbelt.judo.meta.esm.accesspoint.ActorType actor = newActorTypeBuilder().withName("actor")
         		.withClaims(newClaimBuilder().withAttribute(id).withName("id").build())
+        		.withAnonymous(false)
+        		.withRealm("sandbox")
         		.withPrincipal(entityTypeD).build();
     	useTransferObjectType(entityTypeD).withActorType(actor).build();
 
