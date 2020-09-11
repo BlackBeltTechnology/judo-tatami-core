@@ -155,6 +155,7 @@ public class EsmAccesspoint2PsmAccesspointTest {
     	ActorType actor = newActorTypeBuilder()
     			.withName("actor")
     			.withPrincipal(accessPoint)
+    			.withAnonymous(false)
     			.withRealm("sandbox")
     			.build();
     	useTransferObjectType(accessPoint).withActorType(actor).build();
@@ -209,7 +210,7 @@ public class EsmAccesspoint2PsmAccesspointTest {
         ActorType actor = newActorTypeBuilder()
         		.withName("actor")
     			.withPrincipal(accessPoint)
-    			.withRealm("sandbox")
+    			.withAnonymous(true)
     			.build();
     	useTransferObjectType(accessPoint).withActorType(actor).build();
     	
@@ -249,7 +250,7 @@ public class EsmAccesspoint2PsmAccesspointTest {
 
         final Optional<hu.blackbelt.judo.meta.psm.accesspoint.ActorType> actorType = allPsm(hu.blackbelt.judo.meta.psm.accesspoint.ActorType.class).findAny();
         assertTrue(actorType.isPresent());
-        assertEquals("sandbox", actorType.get().getRealm());
+        assertNull(actorType.get().getRealm());
 
         assertTrue(ap.get().getRelations().stream()
                 .filter(r -> r.isExposedGraph())
