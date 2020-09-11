@@ -242,8 +242,14 @@ rule CreateReferencePropertyDefinitionExtended
             entityRef.property = new OPENAPI!Property;
             entityRef.property.description = "ID of " + asmUtils.getMappedEntityType(s.eContainer.eReferenceType).get().name + " instance";
             entityRef.property.type = OPENAPI!JSONDataType#string;
-
             t.properties.add(entityRef);
+
+            var referenceId = new OPENAPI!PropertyDeclaration;
+            referenceId.name = "__referenceId";
+            referenceId.property = new OPENAPI!Property;
+            referenceId.property.description = "Client generated referenceId of " + asmUtils.getMappedEntityType(s.eContainer.eReferenceType).get().name + " instance";
+            referenceId.property.type = OPENAPI!JSONDataType#string;
+            t.properties.add(referenceId);
         }
 
         s.equivalent("CreateReferencePropertyDeclarationExtended").property = t;
