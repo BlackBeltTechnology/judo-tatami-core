@@ -14,14 +14,6 @@ operation ESM!Package getPSMGeneratedDefaultTransferObjectNamespaceEquivalent():
     return self.equivalent("CreateGeneratedDefaultTransferObjectTypePackage");
 }
 
-operation ESM!Model getPSMGeneratedActorTypeNamespaceEquivalent(): JUDOPSM!Package {
-    return self.equivalent("CreateGeneratedActorTypeRootPackage");
-}
-
-operation ESM!Package getPSMGeneratedActorTypeNamespaceEquivalent(): JUDOPSM!Package {
-    return self.equivalent("CreateGeneratedActorTypePackage");
-}
-
 operation ESM!Model getPSMExtensionNamespaceEquivalent(): JUDOPSM!Package {
     return self.equivalent("CreateExtensionRootPackage");
 }

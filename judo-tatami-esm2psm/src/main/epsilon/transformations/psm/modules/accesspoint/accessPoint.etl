@@ -5,14 +5,11 @@ import "../../../../operations/_importAll.eol";
 @abstract
 rule CreateAbstractActorType
 	transform s: ESM!ActorType
-	to t: JUDOPSM!AbstractActorType {
-	  t.name = s.eContainer.name;
-
-	  t.transferObjectType = s.eContainer.getPSMTransferObjectTypeEquivalent();
-	  s.eContainer.getPSMTransferObjectTypeEquivalent().actorType = t;
-	  s.eContainer.eContainer.getPSMGeneratedActorTypeNamespaceEquivalent().elements.add(t);
-
-	  if (s.realm.isDefined() and s.realm.trim() <> '') {
+	to t: JUDOPSM!AbstractActorType
+	extends CreateNamespaceElement {
+	  t.transferObjectType = s.principal.getPSMTransferObjectTypeEquivalent();
+	  s.principal.getPSMTransferObjectTypeEquivalent().actorType = t;
+      if (not s.isEffectiveAnonymous()) {
           t.realm = s.realm;
 	  }
 }
@@ -21,6 +18,7 @@ rule CreateActorTypeClaim
     transform s : ESM!Claim
     to t : JUDOPSM!TransferAttribute
     extends CreateNamedElement {
+    	guard: not s.eContainer.isEffectiveAnonymous()
         t.claimType = s.claimType.asString();
         t.dataType = s.attribute.dataType.getPSMEquivalent();
         t.required = s.attribute.required;
@@ -38,7 +36,7 @@ rule CreateActorType
 	transform s: ESM!ActorType
 	to t: JUDOPSM!ActorType
 	extends CreateAbstractActorType {
-	  guard: s.eContainer.isDefined() and not s.eContainer.mapping.isDefined()
+	  guard: s.principal.isDefined() and not s.principal.isMapped()
 
 	  log.debug("Created ActorType: " + t.name);
 }
@@ -47,9 +45,21 @@ rule CreateMappedActorType
 	transform s: ESM!ActorType
 	to t: JUDOPSM!MappedActorType
 	extends CreateAbstractActorType {
-	  guard: s.eContainer.isDefined() and s.eContainer.mapping.isDefined()
+	  guard: s.principal.isDefined() and s.principal.isMapped()
 
-	  t.entityType = s.eContainer.mapping.target.getPSMEquivalent();
+	  t.entityType = s.principal.mapping.target.getPSMEquivalent();
 
 	  log.debug("Created ActorType: " + t.name);
+}
+
+rule CreateTransferObjectRelationFromAccess
+	transform s: ESM!Access
+	to t: JUDOPSM!TransferObjectRelation
+	extends CreateNamedElement {
+		t.cardinality = s.equivalent("CreateCardinalityForReferenceTypedElement");
+		t.access = true;
+		t.target = s.target.getPSMTransferObjectTypeEquivalent();
+		s.eContainer.getPSMEquivalent().relations.add(t);	
+	
+	log.debug("Created access relation: " + t.name + " for actor type: " + t.eContainer.name);
 }

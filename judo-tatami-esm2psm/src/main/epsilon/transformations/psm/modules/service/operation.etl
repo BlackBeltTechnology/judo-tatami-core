@@ -635,10 +635,10 @@ rule CreateMapPrincipalOperationInputParameterForActorType
 rule CreateMapPrincipalOperationOutputParameterForActorType
     transform s : ESM!ActorType
     to t : JUDOPSM!Parameter {
-        guard: s.eContainer.isDefined()
+        guard: s.principal.isDefined()
 
         t.name = "output";
-        t.type = s.eContainer.getPSMTransferObjectTypeEquivalent();
+        t.type = s.principal.getPSMTransferObjectTypeEquivalent();
         t.cardinality = new JUDOPSM!Cardinality;
         t.cardinality.lower = 0;
         t.cardinality.upper = 1;

@@ -9,10 +9,12 @@ import hu.blackbelt.judo.meta.esm.operation.OperationType;
 import hu.blackbelt.judo.meta.esm.operation.util.builder.OperationBuilder;
 import hu.blackbelt.judo.meta.esm.runtime.EsmModel;
 import hu.blackbelt.judo.meta.esm.runtime.EsmUtils;
+import hu.blackbelt.judo.meta.esm.structure.DataMember;
 import hu.blackbelt.judo.meta.esm.structure.EntityType;
 import hu.blackbelt.judo.meta.esm.structure.MemberType;
 import hu.blackbelt.judo.meta.esm.structure.RelationKind;
 import hu.blackbelt.judo.meta.esm.structure.TransferObjectType;
+import hu.blackbelt.judo.meta.esm.type.NumericType;
 import hu.blackbelt.judo.meta.psm.PsmUtils;
 import hu.blackbelt.judo.meta.psm.runtime.PsmModel;
 import hu.blackbelt.judo.meta.psm.service.BoundTransferOperation;
@@ -42,11 +44,13 @@ import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 import static hu.blackbelt.judo.meta.esm.accesspoint.util.builder.AccesspointBuilders.newActorTypeBuilder;
+import static hu.blackbelt.judo.meta.esm.accesspoint.util.builder.AccesspointBuilders.newClaimBuilder;
 import static hu.blackbelt.judo.meta.esm.namespace.util.builder.NamespaceBuilders.newModelBuilder;
 import static hu.blackbelt.judo.meta.esm.operation.util.builder.OperationBuilders.newOperationBuilder;
 import static hu.blackbelt.judo.meta.esm.operation.util.builder.OperationBuilders.newParameterBuilder;
 import static hu.blackbelt.judo.meta.esm.runtime.EsmModel.buildEsmModel;
 import static hu.blackbelt.judo.meta.esm.structure.util.builder.StructureBuilders.*;
+import static hu.blackbelt.judo.meta.esm.type.util.builder.TypeBuilders.newNumericTypeBuilder;
 import static hu.blackbelt.judo.meta.psm.PsmEpsilonValidator.calculatePsmValidationScriptURI;
 import static hu.blackbelt.judo.meta.psm.PsmEpsilonValidator.validatePsm;
 import static hu.blackbelt.judo.meta.esm.runtime.EsmEpsilonValidator.validateEsm;
@@ -424,11 +428,20 @@ public class EsmOperation2PsmOperationTest {
                 .build();
         entityTypeD.setMapping(newMappingBuilder().withTarget(entityTypeD).build());
 
-        final ActorType actorType = newActorTypeBuilder().build();
-        entityTypeD.setActorType(actorType);
+        NumericType numeric = newNumericTypeBuilder().withName("numeric").withPrecision(2).withScale(1).build();
+        DataMember id = newDataMemberBuilder().withName("id").withDataType(numeric).withMemberType(MemberType.STORED).withRequired(true).withIdentifier(true).build();
+    	id.setBinding(id);
+    	entityTypeD.getAttributes().add(id);
+    	
+        hu.blackbelt.judo.meta.esm.accesspoint.ActorType actor = newActorTypeBuilder().withName("actor")
+        		.withClaims(newClaimBuilder().withAttribute(id).withName("id").build())
+        		.withAnonymous(false)
+        		.withRealm("sandbox")
+        		.withPrincipal(entityTypeD).build();
+    	useTransferObjectType(entityTypeD).withActorType(actor).build();
 
         final Model model = newModelBuilder().withName(MODEL_NAME)
-                .withElements(Arrays.asList(entityTypeD, entityTypeE, entityTypeF)).build();
+                .withElements(Arrays.asList(entityTypeD, entityTypeE, entityTypeF, numeric, actor)).build();
 
         esmModel.addContent(model);
 

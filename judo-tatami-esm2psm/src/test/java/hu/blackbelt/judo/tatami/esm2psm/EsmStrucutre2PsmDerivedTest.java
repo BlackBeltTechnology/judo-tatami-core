@@ -916,8 +916,10 @@ public class EsmStrucutre2PsmDerivedTest {
         transferB.getGeneralizations().add(newGeneralizationBuilder().withTarget(transferA).build());
         
         TransferObjectType ap = newTransferObjectTypeBuilder()
-        		.withActorType(newActorTypeBuilder().build())
         		.withName("ap").build();
+        
+        hu.blackbelt.judo.meta.esm.accesspoint.ActorType actor = newActorTypeBuilder().withName("actor").withPrincipal(ap).build();
+    	useTransferObjectType(ap).withActorType(actor).build();
 
         OneWayRelationMember relation = newOneWayRelationMemberBuilder().withName("relation")
                 .withLower(0)
@@ -941,7 +943,7 @@ public class EsmStrucutre2PsmDerivedTest {
 
         final Model model = newModelBuilder()
                 .withName("TestModel")
-                .withElements(ImmutableList.of(entityB,entityD,transferA,transferB,ap,string))
+                .withElements(ImmutableList.of(entityB,entityD,transferA,transferB,ap,string,actor))
                 .build();
 
         esmModel.addContent(model);
@@ -1009,7 +1011,6 @@ public class EsmStrucutre2PsmDerivedTest {
 
         final TransferObjectType accessPoint = newTransferObjectTypeBuilder()
                 .withName("AP")
-                .withActorType(newActorTypeBuilder().build())
                 .withRelations(newOneWayRelationMemberBuilder()
                         .withName("accessToM")
                         .withTarget(mapped)
@@ -1023,10 +1024,13 @@ public class EsmStrucutre2PsmDerivedTest {
                                 "TestModel::E")
                         .build())
                 .build();
+       
+        hu.blackbelt.judo.meta.esm.accesspoint.ActorType actor = newActorTypeBuilder().withName("actor").withPrincipal(accessPoint).build();
+    	useTransferObjectType(accessPoint).withActorType(actor).build();
         
         final Model model = newModelBuilder()
                 .withName("TestModel")
-                .withElements(ImmutableList.of(entity,unmapped,accessPoint,mapped,string))
+                .withElements(ImmutableList.of(entity,unmapped,accessPoint,mapped,string,actor))
                 .build();
 
         esmModel.addContent(model);

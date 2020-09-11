@@ -248,6 +248,21 @@ rule CreateTransferAttributeClaimAnnotation
         s.equivalent("CreateTransferObjectAttribute").eAnnotations.add(t);
     }
 
+rule CreateTransferObjectRelationAccessAnnotation
+	transform s : JUDOPSM!TransferObjectRelation
+	to t : ASM!EAnnotation {
+		guard: s.isAccess()
+		
+		t.source = asmUtils.getAnnotationUri("access");
+		
+		var binding = new ASM!EStringToStringMapEntry;
+        binding.key = "value";
+        binding.value = "true";
+        t.details.add(binding);
+        
+        s.equivalent("CreateTransferObjectRelation").eAnnotations.add(t); 
+    }
+
 rule CreateTransferObjectAttribute
 	transform s : JUDOPSM!TransferAttribute
 	to t : ASM!EAttribute {
