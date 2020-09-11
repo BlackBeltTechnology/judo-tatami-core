@@ -329,10 +329,10 @@
   pathExpression: >
     'lib/' +
     #path(#application.dataElement.name) +
-    '/pages/' + #path(#self.pageContainer.layoutType.name) + '/tables/' +
-    #fqPath(#self.pageContainer.owner.name) +
+    '/pages/' + #fqPath(#self.pageContainer.layoutType.name) + '/tables/' +
+    #fqPath(#self.pageDefinition.name) +
     '__'+
-    #self.name +
+    #fqPath(#self.name) +
     '__table.dart'
   templateName: flutter/lib/pages/components/table/table.dart.hbs
   templateContext:
@@ -341,10 +341,11 @@
       className: hu.blackbelt.judo.meta.ui.Table
 
 - overwriteExpression: true
-  factoryExpression: "#application"
+  factoryExpression: "#application.layoutTypes"
   pathExpression: >
     'lib/' +
     #path(#application.dataElement.name) +
-    '/pages/tables/' +
+    '/pages/' +
+    #fqPath(#self.name) + '/tables/' +
     'package.dart'
   templateName: flutter/lib/pages/components/table/package.dart.hbs

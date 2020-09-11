@@ -6,17 +6,10 @@ import hu.blackbelt.judo.meta.ui.*;
 import hu.blackbelt.judo.meta.ui.data.*;
 import lombok.*;
 import lombok.extern.java.Log;
-import org.eclipse.emf.common.util.ECollections;
-import org.eclipse.emf.common.util.EList;
-import org.eclipse.emf.common.util.TreeIterator;
-import org.eclipse.emf.ecore.EObject;
 import org.springframework.expression.spel.support.StandardEvaluationContext;
 
 import java.util.*;
-import java.util.List;
-import java.util.logging.Level;
 import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 import static java.util.Arrays.stream;
 
