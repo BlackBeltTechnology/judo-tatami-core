@@ -33,7 +33,7 @@ rule CreateApplication
                 t.pages.add(relation.createPageForRelationForUpdate(t, relation.target));
             }
 
-            if (relation.target.mapping.isDefined() and relation.target.table.isDefined() and relation.upper = -1) {
+            if (relation.target.mapping.isDefined() and relation.target.table.isDefined()) {
                 t.pages.add(relation.createPageForRelationForTable(t, relation.target));
             }
         }
@@ -148,17 +148,17 @@ rule CreateNavigationItemPageForAccessPointRelationForView
 }
 
 @greedy
-rule CreateNavigationItemPageForAccessPointRelationForUpdate
+rule CreateNavigationItemPageForAccessPointRelationForEdit
     transform s : ESM!esm::structure::RelationFeature
     to t : UI!ui::PageDefinition
     extends CreateNamedElementFromNamedElement {
         guard: s.eContainer.isAccesspoint() and s.target.mapping.isDefined() and s.target.form.isDefined()
 
-        log.debug("CreateNavigationItemPageForAccessPointRelationUpdateForm: " + s.name);
+        log.debug("CreateNavigationItemPageForAccessPointRelationUpdateEdit: " + s.name);
 
         var application = s.eContainer.equivalent("CreateApplication");
 
-        t.name = s.fqName().anchor("Update");
+        t.name = s.fqName().anchor("Edit");
         t.dataElement = s.mapRelationType(application, s.eContainer.mapClassType(application));
 		t.pageType = UI!ui::PageType#UPDATE;
 
@@ -195,6 +195,33 @@ rule CreateNavigationItemPageForAccessPointRelationForCreate
 
         pageContainer.children.add(s.target.form.map(application));
         application.pages.add(t);
+}
+
+@greedy
+rule CreateNavigationItemPageForAccessPointRelationForTable
+    transform s : ESM!esm::structure::RelationFeature
+    to t : UI!ui::PageDefinition
+    extends CreateNamedElementFromNamedElement {
+        guard: s.eContainer.isAccesspoint() and s.target.mapping.isDefined() and s.target.form.isDefined()
+
+        log.debug("CreateNavigationItemPageForAccessPointRelationUpdateForm: " + s.name);
+
+        var application = s.eContainer.equivalent("CreateApplication");
+
+        t.name = s.fqName().anchor("Table");
+        t.dataElement = s.mapRelationType(application, s.eContainer.mapClassType(application));
+		t.pageType = UI!ui::PageType#TABLE;
+
+	 	var pageContainer = new UI!ui::PageContainer();
+	    pageContainer.layoutType = application.layoutTypes.first;
+		pageContainer.name = "default";
+		pageContainer.direction = UI!Axis#VERTICAL;
+		t.containers.add(pageContainer);
+
+        var table = s.target.table.createTableFromTransferObjectTable(application);
+        pageContainer.children.add(table);
+        application.pages.add(t);
+
 }
 
 /*
