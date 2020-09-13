@@ -311,7 +311,7 @@
     '__page.dart'
   templateName: flutter/lib/pages/page.dart.hbs
   templateContext:
-    - name: pageContainer
+    - name: container
       expression: "#self"
       className: hu.blackbelt.judo.meta.ui.PageContainer
     - name: page
