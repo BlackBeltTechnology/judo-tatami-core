@@ -20,7 +20,7 @@ public class FlutterTemplateProvider implements ClientTemplateProvider {
                         .pathExpression("#element.name.replaceAll('/', '__').concat('_test.dart')")
                         .templateName("templates/flutter/test.dart")
                         .templateContext(ImmutableList.of(
-                                new GeneratorTemplate.Expression("application", "#this", Application.class.getName())
+                                new GeneratorTemplate.Expression("application", "#self")
                         ))
                         .build()
         );

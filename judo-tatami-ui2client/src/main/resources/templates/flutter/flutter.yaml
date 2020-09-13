@@ -36,10 +36,8 @@
   templateContext:
     - name: operations
       expression: "#operations(#application)"
-      className: java.util.Collection
     - name: ap
       expression: "#application.dataElement"
-      className: hu.blackbelt.judo.meta.ui.data.ClassType
 
 #- overwriteExpression: true
 #  factoryExpression: "{#application}"
@@ -49,13 +47,10 @@
 #  templateContext:
 #    - name: transferObjects
 #      expression: "#application.dataElements"
-#      className: java.util.Collection
 #    - name: ap
 #      expression: "#application.dataElement"
-#      className: hu.blackbelt.judo.meta.ui.data.ClassType
 #    - name: operations
 #      expression: "#operations(#application)"
-#      className: java.util.Collection
 
 - overwriteExpression: true
   factoryExpression: "#application.dataElements"
@@ -79,10 +74,8 @@
   templateContext:
     - name: operations
       expression: "#operations(#application)"
-      className: java.util.Collection
     - name: ap
       expression: "#application.dataElement"
-      className: hu.blackbelt.judo.meta.ui.data.ClassType
 
 - overwriteExpression: true
   factoryExpression: "#operations(#application)"
@@ -97,10 +90,8 @@
   templateContext:
     - name: ap
       expression: "#application.dataElement"
-      className: hu.blackbelt.judo.meta.ui.data.ClassType
     - name: operations
       expression: "#operations(#application)"
-      className: java.util.Collection
 
 - overwriteExpression: true
   factoryExpression: "#application.dataElement.relations"
@@ -113,7 +104,6 @@
   templateContext:
     - name: ap
       expression: "#application.dataElement"
-      className: hu.blackbelt.judo.meta.ui.data.ClassType
 
 - overwriteExpression: true
   factoryExpression: "{#application}"
@@ -125,10 +115,8 @@
   templateContext:
     - name: ap
       expression: "#application.dataElement"
-      className: hu.blackbelt.judo.meta.ui.data.ClassType
     - name: operations
       expression: "#operations(#application)"
-      className: java.util.Collection
 
 
 - overwriteExpression: true
@@ -141,7 +129,6 @@
   templateContext:
     - name: ap
       expression: "#application.dataElement"
-      className: hu.blackbelt.judo.meta.ui.data.ClassType
 
 # ========================================
 # fonts
@@ -313,13 +300,10 @@
   templateContext:
     - name: container
       expression: "#self"
-      className: hu.blackbelt.judo.meta.ui.PageContainer
     - name: page
       expression: "#self.owner"
-      className: hu.blackbelt.judo.meta.ui.PageDefinition
     - name: ap
       expression: "#application.dataElement"
-      className: hu.blackbelt.judo.meta.ui.data.ClassType
 
 # ========================================
 # tables
@@ -338,7 +322,6 @@
   templateContext:
     - name: table
       expression: "#self"
-      className: hu.blackbelt.judo.meta.ui.Table
 
 - overwriteExpression: true
   factoryExpression: "#application.layoutTypes"

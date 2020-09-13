@@ -45,7 +45,6 @@ public class GeneratorTemplate {
 	public static class Expression {
 		private String name;
 		private String expression;
-		private String className;
 	}
 
 	public static Collection<GeneratorTemplate> loadJsonString(String yaml) throws IOException {

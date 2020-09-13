@@ -116,15 +116,11 @@ public class Ui2Client {
                                     .combine("template", generatorTemplate);
 
                             generatorTemplate.getTemplateContext().stream().forEach(ctx -> {
-                                try {
-                                    contextBuilder.combine(ctx.getName(),
-                                            templateExpressions.get(ctx.getName()).getValue(evaluationContext,
-                                                    Ui2Client.class.getClassLoader().loadClass(ctx.getClassName())));
-//                                            templateExpressions.get(ctx.getName()).getValue(evaluationContext));
 
-                                } catch (ClassNotFoundException e) {
-                                    log.error("Class not found: " + ctx.getClassName());
-                                }
+                                Class type = templateExpressions.get(ctx.getName()).getValueType(evaluationContext);
+                                contextBuilder.combine(ctx.getName(),
+                                        templateExpressions.get(ctx.getName()).getValue(evaluationContext,
+                                                  templateExpressions.get(ctx.getName()).getValue(evaluationContext, type)));
                             });
 
                             GeneratedFile generatedFile = new GeneratedFile();
