@@ -24,19 +24,15 @@ part of {{ variable ap.name }}.repository;
 
 @lazySingleton
 class {{ fqClass ap.name }}Repository with
-{{# each ap.relations ~}}
-    {{ fqClass ap.name }}{{ className name }}DefaultRepository{{# unless @last}},{{/ unless}}
-{{/ each }}
-{{# if operations ~}},{{/if ~}}
-{{# each operations ~}}
-    {{ fqClass ap.name }}{{ className accessRelation.name }}{{ fqClass accessRelation.target.name }}{{ className relationType.name }}Repository{{# unless @last}},{{/ unless}}
-{{/ each }}
-{
+{{# each application.relationTypes ~}}
+    {{ fqClass owner.name }}{{ className name }}Repository{{# unless @last}},{{/ unless}}
+{{/ each }} {
   //////////////////////////////////////////////////////////////////////////////
   // GET Principal
   //////////////////////////////////////////////////////////////////////////////
-  Future get({{ fqClass ap.name }}Store {{ variable ap.name }}Store) async {
+  Future<{{ fqClass ap.name }}Store> getPrincipal() async {
     {{ fqClass ap.name }} {{ variable ap.name }}Response = await DefaultApi(locator<ApiClient>()).{{ fqVariable ap.name }}Principal();
-    {{ fqClass ap.name }}RepositoryStoreMapper.map{{ fqClass ap.name }}To{{ fqClass ap.name }}Store({{ variable ap.name }}Response, {{ variable ap.name }}Store);
+    return {{ fqClass ap.name }}RepositoryStoreMapper.create{{ fqClass ap.name }}StoreFrom{{ fqClass ap.name }}({{ variable ap.name }}Response);
+
   }
 }

@@ -1,0 +1,238 @@
+//////////////////////////////////////////////////////////////////////////////
+// G E N E R A T E D    C L A S S
+// ------------------------------
+// Factory expression: {{{ cleanup template.factoryExpression }}}
+// Path expression: {{{ cleanup template.pathExpression }}}
+// Overwrite: {{{ cleanup template.overwriteExpression }}}
+// Template name: {{ template.templateName }}
+// Application: {{ application.name }}
+//
+//   Relation: {{ relation.name }}
+//   Relation owner: {{ relation.owner.name }}
+//   Relation target: {{ relation.target.name }}
+//   Access Point: {{ relation.owner.root }}
+//
+//    Behaviours: {{ fqClass relation.owner.name }}.{{ variable relation.name }} ({{ fqClass relation.target.name }})
+//        self:   {{{ relation.behaviour }}}
+//    {{# each relation.targetBehaviours }}
+//        target: {{{ . }}}
+//    {{/ each }}
+//    {{# each relation.sourceBehaviours }}
+//        source: {{{ . }}}
+//    {{/ each }}
+
+part of {{ variable ap.name }}.repository;
+
+class {{ fqClass relation.owner.name }}{{ fqClass relation.name }}Repository {
+
+
+  {{# if behaviour.getable }}
+
+      {{# if relation.isCollection }}
+          {{# if relation.owner.root }}
+  //////////////////////////////////////////////////////////////////////////////
+  // GET Collection (Access Point)
+  //////////////////////////////////////////////////////////////////////////////
+  Future<List<{{ fqClass relation.target.name }}Store>> {{ fqVariable relation.owner.name }}{{ fqClass relation.name }}List() async {
+    List<{{ fqClass relation.target.name }}> {{ variable relation.target.name }}ListResponse = await DefaultApi(locator<ApiClient>()).{{ fqVariable relation.owner.name }}Get{{ className relation.name }}({{ modelName relation.target.name }}Extension{{ fqClassWithoutModel relation.target.name}}QueryCustomizer());
+    return {{ variable relation.target.name }}ListResponse.map<{{ fqClass relation.target.name }}Store>(
+      {{ fqClass ap.name }}RepositoryStoreMapper.create{{ fqClass relation.target.name }}StoreFrom{{ fqClass relation.target.name }}).toList();
+  }
+          {{ else }}
+  //////////////////////////////////////////////////////////////////////////////
+  // GET Collection
+  //////////////////////////////////////////////////////////////////////////////
+  Future<List<{{ fqClass relation.target.name }}Store>> {{ fqVariable relation.owner.name }}{{ fqClass relation.name }}List({{ fqClass relation.owner.name }}Store owner) async {
+    List<{{ fqClass relation.target.name }}> {{ variable relation.target.name }}ListResponse = await DefaultApi(locator<ApiClient>()).{{ fqVariable behaviour.targetRelationType.owner.name }}Get{{ className relation.name }}(owner.identifier, {{ modelName relation.target.name }}Extension{{ fqClassWithoutModel relation.target.name}}QueryCustomizer());
+    return {{ variable relation.target.name }}ListResponse.map<{{ fqClass relation.target.name }}Store>(
+      {{ fqClass ap.name }}RepositoryStoreMapper.create{{ fqClass relation.target.name }}StoreFrom{{ fqClass relation.target.name }}).toList();
+  }
+          {{/ if }}
+      {{ else }}
+          {{# if relation.owner.root }}
+  //////////////////////////////////////////////////////////////////////////////
+  // GET SINGLE (Access Point)
+  //////////////////////////////////////////////////////////////////////////////
+  Future<{{ fqClass relation.target.name }}Store> {{ fqVariable relation.owner.name }}{{ fqClass relation.name }}Get() async {
+    {{ fqClass relation.target.name }} {{ variable relation.target.name }}Response = await DefaultApi(locator<ApiClient>()).{{ fqVariable relation.owner.name }}Get{{ className relation.name }}({{ modelName relation.target.name }}Extension{{ fqClassWithoutModel relation.target.name}}QueryCustomizer());
+    return {{ fqClass ap.name }}RepositoryStoreMapper.create{{ fqClass relation.target.name }}StoreFrom{{ fqClass relation.target.name }}({{ variable relation.target.name }}Response);
+  }
+          {{ else }}
+  //////////////////////////////////////////////////////////////////////////////
+  // GET SINGLE
+  //////////////////////////////////////////////////////////////////////////////
+  Future<{{ fqClass relation.target.name }}Store> {{ fqVariable relation.owner.name }}{{ fqClass relation.name }}Get({{ fqClass relation.owner.name }}Store owner) async {
+    {{ fqClass relation.target.name }} {{ variable relation.target.name }}Response = await DefaultApi(locator<ApiClient>()).{{ fqVariable behaviour.targetRelationType.owner.name }}Get{{ className relation.name }}(owner.identifier, {{ modelName relation.target.name }}Extension{{ fqClassWithoutModel relation.target.name}}QueryCustomizer());
+    return {{ fqClass ap.name }}RepositoryStoreMapper.create{{ fqClass relation.target.name }}StoreFrom{{ fqClass relation.target.name }}({{ variable relation.target.name }}Response);
+  }
+          {{/ if }}
+      {{/ if }}
+  {{/ if }}
+  {{# if behaviour.creatable }}
+      {{# if relation.owner.root }}
+  //////////////////////////////////////////////////////////////////////////////
+  // CREATE (Access Point)
+  //////////////////////////////////////////////////////////////////////////////
+  Future<{{ fqClass relation.target.name }}Store> {{ fqVariable relation.owner.name }}{{ fqClass relation.name }}Create({{ fqClass relation.target.name }}Store target) async {
+    {{ fqClass relation.target.name }}Extended {{ variable relation.target.name }}ExtendedRequest = {{ fqClass ap.name }}RepositoryStoreMapper.create{{ fqClass relation.target.name }}ExtendedFrom{{ fqClass relation.target.name }}Store(target);
+    {{ fqClass relation.target.name }} {{ variable relation.target.name }}Response = await DefaultApi(locator<ApiClient>()).{{ fqVariable relation.owner.name }}Create{{ className relation.name }}({{ variable relation.target.name }}ExtendedRequest);
+    return {{ fqClass ap.name }}RepositoryStoreMapper.create{{ fqClass relation.target.name }}StoreFrom{{ fqClass relation.target.name }}({{ variable relation.target.name }}Response);
+  }
+      {{ else }}
+  //////////////////////////////////////////////////////////////////////////////
+  // CREATE
+  //////////////////////////////////////////////////////////////////////////////
+  Future<{{ fqClass relation.target.name }}Store> {{ fqVariable relation.owner.name }}{{ fqClass relation.name }}Create({{ fqClass relation.owner.name }}Store owner, {{ fqClass relation.target.name }}Store target) async {
+    {{ fqClass relation.target.name }}Extended {{ variable relation.target.name }}ExtendedRequest = {{ fqClass ap.name }}RepositoryStoreMapper.create{{ fqClass relation.target.name }}ExtendedFrom{{ fqClass relation.target.name }}Store(target);
+    {{ fqClass relation.target.name }} {{ variable relation.target.name }}Response = await DefaultApi(locator<ApiClient>()).{{ fqVariable behaviour.targetRelationType.owner.name }}Create{{ className relation.name }}(owner.identifier, {{ variable relation.target.name }}ExtendedRequest);
+    return {{ fqClass ap.name }}RepositoryStoreMapper.create{{ fqClass relation.target.name }}StoreFrom{{ fqClass relation.target.name }}({{ variable relation.target.name }}Response);
+  }
+      {{/ if }}
+  {{/ if }}
+  {{# if behaviour.deletable }}
+      {{# if relation.owner.root }}
+  //////////////////////////////////////////////////////////////////////////////
+  // DELETE (Access Point)
+  //////////////////////////////////////////////////////////////////////////////
+  Future<void> {{ fqVariable relation.owner.name }}{{ fqClass relation.name }}Delete({{ fqClass relation.target.name }}Store target) async {
+    var {{ variable relation.target.name }}Request = {{ modelName application.name }}Identifier();
+    {{ variable relation.target.name }}Request.identifier = target.identifier;
+    await DefaultApi(locator<ApiClient>()).{{ fqVariable relation.owner.name }}Delete{{ className relation.name }}({{ variable relation.target.name }}Request);
+  }
+      {{ else }}
+  //////////////////////////////////////////////////////////////////////////////
+  // DELETE
+  //////////////////////////////////////////////////////////////////////////////
+  Future<void> {{ fqVariable relation.owner.name }}{{ fqClass relation.name }}Delete({{ fqClass relation.owner.name }}Store owner,  {{ fqClass relation.target.name }}Store target) async {
+    var {{ variable relation.target.name }}Request = {{ modelName application.name }}Identifier();
+    {{ variable relation.target.name }}Request.identifier = target.identifier;
+    await DefaultApi(locator<ApiClient>()).{{ fqVariable behaviour.targetRelationType.owner.name }}Delete{{ className relation.name }}(owner.identifier, {{ variable relation.target.name }}Request);
+  }
+      {{/ if }}
+  {{/ if }}
+  {{# if behaviour.updateable }}
+      {{# if relation.owner.root }}
+  //////////////////////////////////////////////////////////////////////////////
+  // UPDATE  (Access Point)
+  //////////////////////////////////////////////////////////////////////////////
+    Future<{{ fqClass relation.target.name }}Store> {{ fqVariable relation.owner.name }}{{ fqClass relation.name }}Update({{ fqClass relation.target.name }}Store target) async {
+    {{ fqClass relation.target.name }} {{ variable relation.target.name }}Request = {{ fqClass ap.name }}RepositoryStoreMapper.create{{ fqClass relation.target.name }}From{{ fqClass relation.target.name }}Store(target);
+    {{ fqClass relation.target.name }} {{ variable relation.target.name }}Response = await DefaultApi(locator<ApiClient>()).{{ fqVariable relation.owner.name }}Update{{ className relation.name }}({{ variable relation.target.name }}Request);
+    return {{ fqClass ap.name }}RepositoryStoreMapper.create{{ fqClass relation.target.name }}StoreFrom{{ fqClass relation.target.name }}({{ variable relation.target.name }}Response);
+  }
+      {{ else }}
+  //////////////////////////////////////////////////////////////////////////////
+  // UPDATE
+  //////////////////////////////////////////////////////////////////////////////
+  Future<{{ fqClass relation.target.name }}Store> {{ fqVariable relation.owner.name }}{{ fqClass relation.name }}Update({{ fqClass relation.owner.name }}Store owner, {{ fqClass relation.target.name }}Store target) async {
+    {{ fqClass relation.target.name }} {{ variable relation.target.name }}Request = {{ fqClass ap.name }}RepositoryStoreMapper.create{{ fqClass relation.target.name }}From{{ fqClass relation.target.name }}Store(target);
+    {{ fqClass relation.target.name }} {{ variable relation.target.name }}Response = await DefaultApi(locator<ApiClient>()).{{ fqVariable behaviour.targetRelationType.owner.name }}Update{{ className relation.name }}(owner.identifier, {{ variable relation.target.name }}Request);
+    return {{ fqClass ap.name }}RepositoryStoreMapper.create{{ fqClass relation.target.name }}StoreFrom{{ fqClass relation.target.name }}({{ variable relation.target.name }}Response);
+  }
+      {{/ if }}
+  {{/ if }}
+
+  {{# each targetBehaviours as |targetBehaviour| }}
+      {{# if targetBehaviour.rangeable }}
+  //////////////////////////////////////////////////////////////////////////////
+  // GET CREATE RANGE FOR {{ variable targetBehaviour.targetRelationType.name }}
+  //////////////////////////////////////////////////////////////////////////////
+  Future<List<{{ fqClass targetBehaviour.targetRelationType.target.name }}Store>> {{ fqVariable relation.owner.name }}{{ fqClass relation.name }}RangeOf{{ fqClass targetBehaviour.targetRelationType.name }}ToCreate({{ fqClass relation.target.name }}Store target) async {
+    {{ fqClass relation.target.name }} {{ variable relation.target.name }}Request = {{ fqClass ap.name }}RepositoryStoreMapper.create{{ fqClass relation.target.name }}From{{ fqClass relation.target.name }}Store(target);
+    List<{{ fqClass targetBehaviour.targetRelationType.target.name }}> {{ variable targetBehaviour.targetRelationType.target.name}}ListResponse = await DefaultApi(locator<ApiClient>()).{{ fqVariable relation.owner.name }}GetRangeOf{{ fqClass targetBehaviour.targetRelationType.name }}ToCreate{{ fqClass relation.name }}({{ variable relation.target.name }}Request);
+    return {{ variable targetBehaviour.targetRelationType.target.name }}ListResponse.map<{{ fqClass targetBehaviour.targetRelationType.target.name }}Store>(
+      {{ fqClass ap.name }}RepositoryStoreMapper.create{{ fqClass targetBehaviour.targetRelationType.target.name }}StoreFrom{{ fqClass targetBehaviour.targetRelationType.target.name }}).toList();
+  }
+
+  //////////////////////////////////////////////////////////////////////////////
+  // GET UPDATE RANGE FOR {{ variable targetBehaviour.targetRelationType.name }}
+  //////////////////////////////////////////////////////////////////////////////
+  Future<List<{{ fqClass targetBehaviour.targetRelationType.target.name }}Store>> {{ fqVariable relation.owner.name }}{{ fqClass relation.name }}RangeOf{{ fqClass targetBehaviour.targetRelationType.name }}ToUpdate({{ fqClass relation.target.name }}Store target) async {
+    {{ fqClass relation.target.name }} {{ variable relation.target.name }}Request = {{ fqClass ap.name }}RepositoryStoreMapper.create{{ fqClass relation.target.name }}From{{ fqClass relation.target.name }}Store(target);
+    List<{{ fqClass targetBehaviour.targetRelationType.target.name }}> {{ variable targetBehaviour.targetRelationType.target.name}}ListResponse = await DefaultApi(locator<ApiClient>()).{{ fqVariable relation.owner.name }}GetRangeOf{{ fqClass targetBehaviour.targetRelationType.name }}ToUpdate{{ fqClass relation.name }}({{ variable relation.target.name }}Request);
+    return {{ variable targetBehaviour.targetRelationType.target.name }}ListResponse.map<{{ fqClass targetBehaviour.targetRelationType.target.name }}Store>(
+      {{ fqClass ap.name }}RepositoryStoreMapper.create{{ fqClass targetBehaviour.targetRelationType.target.name }}StoreFrom{{ fqClass targetBehaviour.targetRelationType.target.name }}).toList();
+  }
+      {{/ if }}
+      {{# if targetBehaviour.setable }}
+          {{# if relation.owner.root }}
+  //////////////////////////////////////////////////////////////////////////////
+  // SET {{ variable targetBehaviour.targetRelationType.name }} (Access Point)
+  //////////////////////////////////////////////////////////////////////////////
+  Future<void> {{ fqVariable relation.owner.name }}{{ fqClass relation.name }}Set{{ fqClass targetBehaviour.targetRelationType.name }}({{ fqClass relation.target.name }}Store target, {{ fqClass targetBehaviour.targetRelationType.target.name }}Store selected) async {
+    {{ fqClass relation.owner.name }}Set{{ fqClass targetBehaviour.targetRelationType.name }}Of{{ fqClass relation.name }}Input request = {{ fqClass ap.name }}RepositoryStoreMapper.create{{ fqClass relation.owner.name }}Set{{ fqClass targetBehaviour.targetRelationType.name }}Of{{ fqClass relation.name }}InputFrom{{ fqClass relation.target.name }}StoreAnd{{ fqClass targetBehaviour.targetRelationType.name }}InfoStore(target, selected);
+    await DefaultApi(locator<ApiClient>()).{{ fqVariable relation.owner.name }}Set{{ className targetBehaviour.targetRelationType.name }}Of{{ fqClass relation.name }}(request);
+  }
+          {{ else }}
+  //////////////////////////////////////////////////////////////////////////////
+  // SET {{ variable targetBehaviour.targetRelationType.name }}
+  //////////////////////////////////////////////////////////////////////////////
+  Future<void> {{ fqVariable relation.owner.name }}{{ fqClass relation.name }}Set{{ fqClass targetBehaviour.targetRelationType.name }}({{ fqClass relation.owner.name }}Store owner, {{ fqClass relation.target.name }}Store target, {{ fqClass targetBehaviour.targetRelationType.target.name }}Store selected) async {
+    {{ fqClass relation.owner.name }}Set{{ fqClass targetBehaviour.targetRelationType.name }}Of{{ fqClass relation.name }}Input request = {{ fqClass ap.name }}RepositoryStoreMapper.create{{ fqClass relation.owner.name }}Set{{ fqClass targetBehaviour.targetRelationType.name }}Of{{ fqClass relation.name }}InputFrom{{ fqClass relation.target.name }}StoreAnd{{ fqClass targetBehaviour.targetRelationType.name }}Store(target, selected);
+    await DefaultApi(locator<ApiClient>()).{{ fqVariable relation.owner.name }}Set{{ className targetBehaviour.targetRelationType.name }}Of{{ fqClass relation.name }}(owner.identifier, request);
+  }
+          {{/ if }}
+      {{/ if }}
+      {{# if targetBehaviour.unsetable }}
+          {{# if relation.owner.root }}
+  //////////////////////////////////////////////////////////////////////////////
+  // UNSET {{ variable targetBehaviour.targetRelationType.name }} (Access Point)
+  //////////////////////////////////////////////////////////////////////////////
+  Future<void> {{ fqVariable relation.owner.name }}{{ fqClass relation.name }}Unset{{ fqClass targetBehaviour.targetRelationType.name }}({{ fqClass relation.target.name }}Store target) async {
+    var request = NorthwindIdentifier();
+    request.identifier = target.identifier;
+    await DefaultApi(locator<ApiClient>()).{{ fqVariable relation.owner.name }}Unset{{ className targetBehaviour.targetRelationType.name }}Of{{ fqClass relation.name }}(request);
+  }
+          {{ else }}
+  //////////////////////////////////////////////////////////////////////////////
+  // UNSET {{ variable targetBehaviour.targetRelationType.name }}
+  //////////////////////////////////////////////////////////////////////////////
+  Future<void> {{ fqVariable relation.owner.name }}{{ fqClass relation.name }}Unset{{ fqClass targetBehaviour.targetRelationType.name }}({{ fqClass relation.owner.name }}Store owner, {{ fqClass relation.target.name }}Store target) async {
+    var request = NorthwindIdentifier();
+    request.identifier = target.identifier;
+    await DefaultApi(locator<ApiClient>()).{{ fqVariable relation.owner.name }}Unset{{ className targetBehaviour.targetRelationType.name }}Of{{ fqClass relation.name }}(owner.identifier, request);
+  }
+          {{/ if }}
+      {{/ if }}
+      {{# if targetBehaviour.addable }}
+          {{# if relation.owner.root }}
+  //////////////////////////////////////////////////////////////////////////////
+  // ADD {{ variable targetBehaviour.targetRelationType.name }} (Access Point)
+  //////////////////////////////////////////////////////////////////////////////
+  Future<void> {{ fqVariable relation.owner.name }}{{ fqClass relation.name }}Add{{ fqClass targetBehaviour.targetRelationType.name }}({{ fqClass relation.owner.name }}Store owner, {{ fqClass relation.target.name }}Store target, List<{{ fqClass targetBehaviour.targetRelationType.target.name }}Store> selected) async {
+    var request = {{ fqClass ap.name }}Mapper.create{{ fqClass relation.owner.name }}Add{{ fqClass targetBehaviour.targetRelationType.name }}To{{ fqClass relation.name }}InputFrom{{ fqClass relation.target.name }}StoreAnd{{ fqClass targetBehaviour.targetRelationType.name }}Store(target, selected);
+    await DefaultApi(locator<ApiClient>()).{{ fqVariable relation.owner.name }}Add{{ className targetBehaviour.targetRelationType.name }}To{{ fqClass relation.name }}(owner.identifier, request);
+  }
+          {{ else }}
+  //////////////////////////////////////////////////////////////////////////////
+  // ADD {{ variable targetBehaviour.targetRelationType.name }}
+  //////////////////////////////////////////////////////////////////////////////
+  Future<void> {{ fqVariable relation.owner.name }}{{ fqClass relation.name }}Add{{ fqClass targetBehaviour.targetRelationType.name }}({{ fqClass relation.target.name }}Store target, List<{{ fqClass targetBehaviour.targetRelationType.target.name }}Store> selected) async {
+    var request = {{ fqClass ap.name }}Mapper.create{{ fqClass relation.owner.name }}Add{{ fqClass targetBehaviour.targetRelationType.name }}To{{ fqClass relation.name }}InputFrom{{ fqClass relation.target.name }}StoreAnd{{ fqClass targetBehaviour.targetRelationType.name }}Store(target, selected);
+    await DefaultApi(locator<ApiClient>()).{{ fqVariable relation.owner.name }}Add{{ className targetBehaviour.targetRelationType.name }}To{{ fqClass relation.name }}(request);
+  }
+          {{/ if }}
+
+      {{/ if }}
+      {{# if targetBehaviour.removable }}
+          {{# if relation.owner.root }}
+  //////////////////////////////////////////////////////////////////////////////
+  // REMOVE {{ variable targetBehaviour.targetRelationType.name }} (Access Point)
+  //////////////////////////////////////////////////////////////////////////////
+  Future<void> {{ fqVariable relation.owner.name }}{{ fqClass relation.name }}Remove{{ fqClass targetBehaviour.targetRelationType.name }}({{ fqClass relation.owner.name }}Store owner, {{ fqClass relation.target.name }}Store target, List<{{ fqClass targetBehaviour.targetRelationType.target.name }}Store> selected) async {
+    var request = {{ fqClass ap.name }}Mapper.create{{ fqClass relation.owner.name }}Remove{{ fqClass targetBehaviour.targetRelationType.name }}From{{ fqClass relation.name }}InputFrom{{ fqClass relation.target.name }}StoreAnd{{ fqClass targetBehaviour.targetRelationType.name }}Store(target, selected);
+    await DefaultApi(locator<ApiClient>()).{{ fqVariable relation.owner.name }}Remove{{ className targetBehaviour.targetRelationType.name }}From{{ fqClass relation.name }}(owner.identifier, request);
+  }
+          {{ else }}
+  //////////////////////////////////////////////////////////////////////////////
+  // REMOVE {{ variable targetBehaviour.targetRelationType.name }}
+  //////////////////////////////////////////////////////////////////////////////
+  Future<void> {{ fqVariable relation.owner.name }}{{ fqClass relation.name }}Remove{{ fqClass targetBehaviour.targetRelationType.name }}({{ fqClass relation.target.name }}Store target, List<{{ fqClass targetBehaviour.targetRelationType.target.name }}Store> selected) async {
+    var request = {{ fqClass ap.name }}Mapper.create{{ fqClass relation.owner.name }}Add{{ fqClass targetBehaviour.targetRelationType.name }}From{{ fqClass relation.name }}InputFrom{{ fqClass relation.target.name }}StoreAnd{{ fqClass targetBehaviour.targetRelationType.name }}Store(target, selected);
+    await DefaultApi(locator<ApiClient>()).{{ fqVariable relation.owner.name }}Remove{{ className targetBehaviour.targetRelationType.name }}From{{ fqClass relation.name }}(request);
+  }
+          {{/ if }}
+      {{/ if }}
+
+  {{/ each }}
+}

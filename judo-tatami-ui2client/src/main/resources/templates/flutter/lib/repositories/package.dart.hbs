@@ -20,13 +20,8 @@ import 'package:{{ modelPackage ap.name }}/{{ path ap.name }}/rest/lib/api.dart'
 import 'package:{{ modelPackage ap.name }}/{{ path ap.name }}/store/package.dart';
 
 part 'mapper.dart';
-part 'default__repository.dart';
-{{# each ap.relations ~}}
-part '{{ path name }}/default__repository.dart';
+part '{{fqPath ap.name }}__repository.dart';
+{{# each application.relationTypes ~}}
+part '{{ fqPath owner.name }}__{{ fqPath name }}__repository.dart';
 {{/ each }}
-
-{{# each operations ~}}
-part '{{ path accessRelation.name}}/{{ fqPath relationType.owner.name }}__{{ fqPath relationType.name }}__repository.dart';
-{{/ each }}
-
 
