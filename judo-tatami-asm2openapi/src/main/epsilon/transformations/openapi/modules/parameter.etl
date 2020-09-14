@@ -21,7 +21,7 @@ rule CreateEntityIdParameterDefinition
     to t : OPENAPI!ParameterDefinition {
         guard: s.eContainer.isKindOf(ASM!EClass) and s.source == asmUtils.getAnnotationUri("exposedBy") and asmUtils.isEntityType(s.eContainer)
         
-        t.name = "__identifier";
+        t.name = "__signedIdentifier";
         t.`in` = OPENAPI!ParameterLocation#header;
         t.type = OPENAPI!JSONDataType#string;
         t.description = "ID of " + s.eContainer.name + " instance";
@@ -120,7 +120,7 @@ rule CreateParameterDefinitionSchemaReferenceForReferenceChange
         t.schema.type = OPENAPI!JSONDataType#object;
 
         var id = new OPENAPI!PropertyDeclaration;
-        id.name = "__identifier";
+        id.name = "__signedIdentifier";
 
         id.property = new OPENAPI!Property;
         id.property.description = "ID of instance";
@@ -137,7 +137,7 @@ rule CreateParameterDefinitionSchemaReferenceForReferenceChange
         ref.property.description = "Referenced element(s)";
 
         var refId = new OPENAPI!PropertyDeclaration;
-        refId.name = "__identifier";
+        refId.name = "__signedIdentifier";
 
         refId.property = new OPENAPI!Property;
         refId.property.description = "ID of referenced instance";
