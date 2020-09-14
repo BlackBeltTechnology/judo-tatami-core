@@ -1,22 +1,21 @@
 Observer(builder: (_) {
-    switch(allCategoriesViewPageStore.allCategoriesStoreFuture.status){
+    switch({{ getTargetDataTypeVariable page.dataElement }}Store.{{ getTargetDataTypeClass page.dataElement }}StoreFuture.status){
         case FutureStatus.pending:
-            return SizedBox(
-                child: CircularProgressIndicator(),
-                width: 30,
-                height: 30,
-            );
+            return JudoLoadingProgress();
         case FutureStatus.rejected:
             return Container();
         case FutureStatus.fulfilled:
             return JudoTable(
                 col: {{col}},
                 dataInfo: {{fqClass pageDefinition.name}}{{fqClass name}}Table(),
-                rowList: {{ variable page.dataElement.name }}Store.{{ variable dataElement.name }},
+                rowList: {{ getTargetDataTypeVariable page.dataElement }}Store.{{ variable dataElement.name }},
                 {{#if onSelectItemAction.target}}
-                onTap: (element) {
-                    navigation.open(Routes.{{fqVariable onSelectItemAction.target.name}},
-                    arguments: {{fqClass onSelectItemAction.target.name}}Arguments({{ variable page.dataElement.name }}Store: element));
+                onTap: (element) async {
+                    var response = await navigation.open(Routes.{{fqVariable onSelectItemAction.target.name}},
+                    arguments: {{fqClass onSelectItemAction.target.name}}Arguments({{ getTargetDataTypeVariable page.dataElement }}Store: element));
+                    if (response != null) {
+                {{ getTargetDataTypeVariable page.dataElement }}Store.get{{ getTargetDataTypeClass page.dataElement }}();
+                    }
                 },
                 {{/if}}
             );

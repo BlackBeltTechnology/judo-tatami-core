@@ -12,24 +12,96 @@ import 'package:flutter/material.dart';
 import 'components/table/package.dart';
 import '../store/package.dart';
 
-class {{fqClass page.name}} extends StatelessWidget {
+class {{fqClass page.name}}Page extends StatefulWidget {
+    static const String title = 'Categories';
 
-{{ fqClass page.dataElement.name }}Store {{ variable page.dataElement.name }}Store;
+{{#if (isTablePage page)}}
+    @override
+    State<StatefulWidget> createState() => _{{fqClass page.name}}PageState();
+}
+
+class _{{fqClass page.name}}PageState extends State<{{fqClass page.name}}Page> {
+
+    final {{fqClass page.name}}PageStore {{fqVariable page.name}}PageStore = {{fqClass page.name}}PageStore();
+
+    _{{fqClass page.name}}PageState(){
+    {{fqVariable page.name}}PageStore.get{{ getTargetDataTypeClass page.dataElement }}();
+    }
+{{/if}}
+{{#if (isViewPage page)}}
+    final {{ getTargetDataTypeClass page.dataElement }}Store {{ getTargetDataTypeVariable page.dataElement }}Store;
+
+    const {{fqClass page.name}}({Key key, @required this.{{ getTargetDataTypeVariable page.dataElement }}Store}) : super(key: key);
+
+    @override
+    State<StatefulWidget> createState() =>
+    _{{fqClass page.name}}PageState({{ getTargetDataTypeVariable page.dataElement }}Store: {{ getTargetDataTypeVariable page.dataElement }}PageStore);
+}
+
+class _{{fqClass page.name}}PageState extends State<{{fqClass page.name}}Page> {
+
+    final {{ getTargetDataTypeClass page.dataElement }}Store {{ getTargetDataTypeVariable page.dataElement }}Store;
+    final {{fqClass page.name}}PageStore {{fqVariable page.name}}PageStore = {{fqClass page.name}}PageStore();
+
+    _{{fqClass page.name}}PageState({@required this.{{ getTargetDataTypeVariable page.dataElement }}Store });
+{{/if}}
+{{#if (isCreatePage page)}}
+    const {{fqClass page.name}}({Key key}) : super(key: key);
+
+    @override
+    _{{fqClass page.name}}PageState createState() => _{{fqClass page.name}}PageState();
+}
+
+class _{{fqClass page.name}}PageState extends State<{{fqClass page.name}}Page> {
+
+    final {{ getTargetDataTypeClass page.dataElement }}Store {{ getTargetDataTypeVariable page.dataElement }}Store = {{ getTargetDataTypeClass page.dataElement }}Store();
+{{/if}}
+{{#if (isEditPage page)}}
+    final {{ getTargetDataTypeClass page.dataElement }}Store {{ getTargetDataTypeVariable page.dataElement }}Store;
+
+    const {{fqClass page.name}}({Key key, @required this.{{ getTargetDataTypeVariable page.dataElement }}Store}) : super(key: key);
+
+    @override
+    State<StatefulWidget> createState() =>
+    _{{fqClass page.name}}State({{ getTargetDataTypeVariable page.dataElement }}Store: {{ getTargetDataTypeVariable page.dataElement }}Store);
+}
+
+class _{{fqClass page.name}}PageState extends State<{{fqClass page.name}}Page> {
+
+    final {{ getTargetDataTypeClass page.dataElement }}Store {{ getTargetDataTypeVariable page.dataElement }}Store;
+
+    _{{fqClass page.name}}PageState({@required this.{{ getTargetDataTypeVariable page.dataElement }}Store});
+{{/if}}
 
     @override
     Widget build(BuildContext context) {
-        final externalApStore = locator<{{ fqClass ap.name }}GlobalStore>();
         final navigation = locator<NavigationState>();
 
         return NorthwindExternalAPScaffold(
-            pageTitle: 'title',
+            pageTitle: {{fqClass page.name}}Page.title,
+            {{#if (isHorizontal this)}}
             body: Column(
+            {{else}}
+            body: Row(
+            {{/if}}
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                {{# each page.children as |child|}}
-                    {{#if child}}
-                        {{> (getWidgetTemplate child)}}
-                    {{/if}}
+                {{#if (isInstanceAction page)}}
+                    Card(
+                        color: Colors.black12,
+                        child: Row(
+                            children: [
+                            {{#each page.instanceActions as |instanceAction|}}
+                                {{> templates/flutter/lib/pages/components/instanceAction.dart.hbs}}
+                            {{/each}}
+                            ],
+                        ),
+                    ),
+                {{/if}}
+                {{# each this.children as |child|}}
+                {{#if child}}
+                    {{> (getWidgetTemplate child)}}
+                {{/if}}
                 {{/each}}
                 ],
             ),

@@ -36,21 +36,83 @@ public class FlutterHelper {
         context.registerFunction("mainAxisAlignment", FlutterHelper.class.getDeclaredMethod("mainAxisAlignment", new Class[]{Flex.class}));
         context.registerFunction("crossAxisAlignment", FlutterHelper.class.getDeclaredMethod("crossAxisAlignment", new Class[]{Flex.class}));
         context.registerFunction("mainAxisSize", FlutterHelper.class.getDeclaredMethod("mainAxisSize", new Class[]{Flex.class}));
-        context.registerFunction("isSaveButton", FlutterHelper.class.getDeclaredMethod("isSaveButton", new Class[]{Button.class}));
-        context.registerFunction("isBackButton", FlutterHelper.class.getDeclaredMethod("isBackButton", new Class[]{Button.class}));
+        context.registerFunction("isSaveButton", FlutterHelper.class.getDeclaredMethod("isSaveButton", new Class[]{Action.class}));
+        context.registerFunction("isBackButton", FlutterHelper.class.getDeclaredMethod("isBackButton", new Class[]{Action.class}));
+        context.registerFunction("isCreateButton", FlutterHelper.class.getDeclaredMethod("isCreateButton", new Class[]{Action.class}));
+        context.registerFunction("isDeleteButton", FlutterHelper.class.getDeclaredMethod("isDeleteButton", new Class[]{Action.class}));
+        context.registerFunction("isEditButton", FlutterHelper.class.getDeclaredMethod("isEditButton", new Class[]{Action.class}));
         context.registerFunction("dartType", FlutterHelper.class.getDeclaredMethod("dartType", new Class[]{DataType.class}));
+        context.registerFunction("getTargetDataTypeClass", FlutterHelper.class.getDeclaredMethod("getTargetDataTypeClass", new Class[]{DataElement.class}));
+        context.registerFunction("getTargetDataTypeVariable", FlutterHelper.class.getDeclaredMethod("getTargetDataTypeVariable", new Class[]{DataElement.class}));
+        context.registerFunction("isTablePage", FlutterHelper.class.getDeclaredMethod("isTablePage", new Class[]{PageDefinition.class}));
+        context.registerFunction("isViewPage", FlutterHelper.class.getDeclaredMethod("isViewPage", new Class[]{PageDefinition.class}));
+        context.registerFunction("isCreatePage", FlutterHelper.class.getDeclaredMethod("isCreatePage", new Class[]{PageDefinition.class}));
+        context.registerFunction("isEditPage", FlutterHelper.class.getDeclaredMethod("isEditPage", new Class[]{PageDefinition.class}));
+        context.registerFunction("isInstanceAction", FlutterHelper.class.getDeclaredMethod("isInstanceAction", new Class[]{PageDefinition.class}));
     }
 
     public static void registerHandlebars(Handlebars handlebars) {
         handlebars.registerHelpers(FlutterHelper.class);
     }
 
-    public static boolean isSaveButton(Button button) {
-        return button.getAction() != null && SaveAction.class.equals(button.getAction().eClass().getInstanceClass());
+    public static boolean isInstanceAction (PageDefinition pageDefinition) {
+        return pageDefinition.getInstanceActions()!= null && !pageDefinition.getInstanceActions().isEmpty();
     }
 
-    public static boolean isBackButton(Button button) {
-        return button.getAction() != null && BackAction.class.equals(button.getAction().eClass().getInstanceClass());
+    public static boolean isEditPage(PageDefinition pageDefinition) {
+        return pageDefinition.getPageType().equals(PageType.UPDATE);
+    }
+
+    public static boolean isCreatePage(PageDefinition pageDefinition) {
+        return pageDefinition.getPageType().equals(PageType.CREATE);
+    }
+
+    public static boolean isTablePage(PageDefinition pageDefinition) {
+        return pageDefinition.getPageType().equals(PageType.TABLE);
+    }
+
+    public static boolean isViewPage(PageDefinition pageDefinition) {
+        return pageDefinition.getPageType().equals(PageType.VIEW);
+    }
+
+    private static String getTargetDataTypeName(DataElement dataElement) {
+        if (dataElement instanceof RelationType) {
+            return ((RelationType) dataElement).getTarget().getName();
+        }
+        if (dataElement instanceof OperationParameterType) {
+            return ((OperationParameterType) dataElement).getTarget().getName();
+        }
+        return null;
+    }
+
+    public static String getTargetDataTypeClass(DataElement dataElement) {
+        String name = getTargetDataTypeName(dataElement);
+        return name != null ? fqClass(name) : null;
+    }
+
+    public static String getTargetDataTypeVariable(DataElement dataElement) {
+        String name = getTargetDataTypeName(dataElement);
+        return name != null ? fqVariable(name) : null;
+    }
+
+    public static boolean isSaveButton(Action action) {
+        return action != null && SaveAction.class.equals(action.eClass().getInstanceClass());
+    }
+
+    public static boolean isBackButton(Action action) {
+        return action != null && BackAction.class.equals(action.eClass().getInstanceClass());
+    }
+
+    public static boolean isEditButton(Action action) {
+        return action != null && EditAction.class.equals(action.eClass().getInstanceClass());
+    }
+
+    public static boolean isDeleteButton(Action action) {
+        return action != null && DeleteAction.class.equals(action.eClass().getInstanceClass());
+    }
+
+    public static boolean isCreateButton(Action action) {
+        return action != null && CreateAction.class.equals(action.eClass().getInstanceClass());
     }
 
     public static String mainAxisSize(Flex flex) {

@@ -1,0 +1,49 @@
+JudoButton(
+    col: 1,
+{{#if (isSaveButton this)}}
+    onPressed: () => navigation.close({{ getTargetDataTypeVariable page.dataElement }}Store),
+    icon: Icon(Icons.save),
+    label: 'Save',
+{{/if}}
+{{#if (isBackButton this)}}
+    onPressed: () => navigation.close(),
+    icon: Icon(Icons.arrow_back_ios),
+{{/if}}
+{{#if (isCreateButton this)}}
+    onPressed: () async {
+        var created = await navigation.open(Routes.{{fqVariable this.target.name}}Page);
+        if (created != null) {
+            await {{fqVariable page.name}}PageStore.create{{ getTargetDataTypeClass page.dataElement }}(created);
+            {{fqVariable page.name}}PageStore.get{{ getTargetDataTypeClass page.dataElement }}();
+        }
+    },
+    label: 'Create',
+    icon: Icon(Icons.add),
+{{/if}}
+{{#if (isDeleteButton this)}}
+    onPressed: () async {
+        await {{fqVariable page.name}}PageStore.delete{{ getTargetDataTypeClass page.dataElement }}({{ getTargetDataTypeVariable page.dataElement }}Store);
+        navigation.close({{ getTargetDataTypeVariable page.dataElement }}Store);
+    },
+    label: 'Delete',
+    icon: Icon(Icons.delete),
+{{/if}}
+{{#if (isEditButton this)}}
+    onPressed: () async {
+        {{ getTargetDataTypeClass page.dataElement }}Store cloned = {{ getTargetDataTypeClass page.dataElement }}Store();
+        cloned.updateWith({{ getTargetDataTypeVariable page.dataElement }}Store);
+        var ret = await navigation.open(Routes.{{fqVariable this.target.name}}Page,
+        arguments: {{ fqClass this.target.name }}PageArguments({{ getTargetDataTypeVariable page.dataElement }}Store: cloned));
+        if (ret != null) {
+            {{ getTargetDataTypeVariable page.dataElement }}Store.updateWith(cloned);
+            var updated = await {{fqVariable page.name}}PageStore.update{{ getTargetDataTypeClass page.dataElement }}({{ getTargetDataTypeVariable page.dataElement }}Store);
+            if (updated != null) {
+            {{ getTargetDataTypeVariable page.dataElement }}Store.updateWith(updated);
+            }
+        }
+    },
+    label: 'Edit',
+    icon: Icon(Icons.edit),
+{{/if}}
+    rounded: true,
+),

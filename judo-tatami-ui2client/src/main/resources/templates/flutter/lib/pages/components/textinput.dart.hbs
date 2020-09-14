@@ -2,5 +2,5 @@ JudoInputText(
     col: {{col}},
     icon: Icon(Icons.edit),
     label: '{{label}}',
-    onChanged: (value) => this.categoryInfoStore.categoryName = value.toString(),
+    onChanged: (value) => this.{{ variable page.dataElement.name }}Store.{{dataElement.name}} = value.toString(),
 ),

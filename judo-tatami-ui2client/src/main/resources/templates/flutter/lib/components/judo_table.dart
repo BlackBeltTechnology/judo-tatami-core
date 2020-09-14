@@ -1,7 +1,7 @@
 part of judo.components;
 
 abstract class JudoTableDataInfo {
-  List<DataColumn> getColumns();
+  List<DataColumn> getColumns(Function onAdd);
 
   Function getRow(Function onTap);
 }
@@ -13,6 +13,8 @@ class JudoTable extends StatelessWidget implements IJudoComponent {
     @required this.rowList,
     this.onTap,
     this.sortAscending = true,
+    this.plusRow,
+    this.onAdd
   });
 
   final int col;
@@ -20,6 +22,8 @@ class JudoTable extends StatelessWidget implements IJudoComponent {
   final JudoTableDataInfo dataInfo;
   final List rowList;
   final Function onTap;
+  final Function onAdd;
+  final DataRow plusRow;
 
   @override
   int getColSize() {
@@ -28,26 +32,25 @@ class JudoTable extends StatelessWidget implements IJudoComponent {
 
   @override
   Widget build(BuildContext context) {
-    return Observer(
-      builder: (_) => Flexible(
+    return Flexible(
         flex: col,
         child: Container(
-          height: rowList.length * kJudoHeight + kJudoHeight,
-          child: DataTable(
-            onSelectAll: (b) {},
-            sortAscending: sortAscending,
-            columns: dataInfo.getColumns(),
-            rows: dataRow(),
+          height: rowList.length * kJudoHeight + kJudoHeight + (plusRow != null ? kJudoHeight : 0),
+          child: Observer(
+            builder: (_) => DataTable(
+              onSelectAll: (b) {},
+              sortAscending: sortAscending,
+              columns: dataInfo.getColumns(onAdd),
+              rows: dataRow(),
+            ),
           ),
         ),
-      ),
-    );
+      );
   }
 
   List<DataRow> dataRow() {
-    List<DataRow> dataRowList =
-        rowList.map<DataRow>(dataInfo.getRow(onTap)).toList();
-
+    List<DataRow> dataRowList = plusRow == null ? [] : [plusRow];
+    dataRowList.addAll(rowList.map<DataRow>(dataInfo.getRow(onTap)).toList());
     return dataRowList;
   }
 }

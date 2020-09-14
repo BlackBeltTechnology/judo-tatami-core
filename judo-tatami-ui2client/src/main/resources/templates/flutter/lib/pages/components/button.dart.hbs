@@ -1,13 +1,13 @@
 JudoButton(
     col: {{col}},
-{{#if (isSaveButton this)}}
-    onPressed: () => navigation.close({{ variable page.dataElement.name }}Store),
+{{#if (isSaveButton this.action)}}
+    onPressed: () => navigation.close({{ getTargetDataTypeVariable page.dataElement }}Store),
     icon: Icon(Icons.save),
-{{else}}
-    {{#if (isBackButton this)}}
+{{/if}}
+{{#if (isBackButton this.action)}}
     onPressed: () => navigation.close(),
     icon: Icon(Icons.arrow_back_ios),
-    {{/if}}
 {{/if}}
     label: '{{label}}',
+    rounded: true,
 ),

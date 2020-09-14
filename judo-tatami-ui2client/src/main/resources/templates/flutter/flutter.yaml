@@ -303,12 +303,7 @@
 # ========================================
 - overwriteExpression: true
   factoryExpression: "#application.pageContainers"
-  pathExpression: >
-    'lib/'+
-    #path(#application.dataElement.name) +
-    '/pages/' + #self.layoutType.name + '/' +
-    #fqPath(#self.owner.name) +
-    '__page.dart'
+  pathExpression: "'lib/' + #path(#application.dataElement.name) + '/pages/' + #self.layoutType.name + '/' + #fqPath(#self.owner.name) + '__page.dart'"
   templateName: flutter/lib/pages/page.dart.hbs
   templateContext:
     - name: container

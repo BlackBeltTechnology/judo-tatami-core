@@ -1,1 +1,7 @@
-- Numeric input {{name}}
+JudoInputText(
+    col: {{col}},
+    icon: Icon(Icons.edit),
+    label: '{{label}}',
+    onChanged: (value) => this.{{ variable page.dataElement.name }}Store.{{dataElement.name}} = double.parse(value),
+),
+
