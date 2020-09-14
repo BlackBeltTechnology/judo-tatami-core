@@ -160,7 +160,7 @@ class {{ fqClass relation.owner.name }}{{ fqClass relation.name }}Repository {
   // SET {{ variable targetBehaviour.targetRelationType.name }} (Access Point)
   //////////////////////////////////////////////////////////////////////////////
   Future<void> {{ fqVariable relation.owner.name }}{{ fqClass relation.name }}Set{{ fqClass targetBehaviour.targetRelationType.name }}({{ fqClass relation.target.name }}Store target, {{ fqClass targetBehaviour.targetRelationType.target.name }}Store selected) async {
-    {{ fqClass relation.owner.name }}Set{{ fqClass targetBehaviour.targetRelationType.name }}Of{{ fqClass relation.name }}Input request = {{ fqClass ap.name }}RepositoryStoreMapper.create{{ fqClass relation.owner.name }}Set{{ fqClass targetBehaviour.targetRelationType.name }}Of{{ fqClass relation.name }}InputFrom{{ fqClass relation.target.name }}StoreAnd{{ fqClass targetBehaviour.targetRelationType.name }}InfoStore(target, selected);
+    {{ fqClass relation.owner.name }}Set{{ fqClass targetBehaviour.targetRelationType.name }}Of{{ fqClass relation.name }}Input request = {{ fqClass ap.name }}RepositoryStoreMapper.create{{ fqClass relation.owner.name }}Set{{ fqClass targetBehaviour.targetRelationType.name }}Of{{ fqClass relation.name }}InputFrom{{ fqClass relation.target.name }}StoreAnd{{ fqClass targetBehaviour.targetRelationType.target.name }}Store(target, selected);
     await DefaultApi(locator<ApiClient>()).{{ fqVariable relation.owner.name }}Set{{ className targetBehaviour.targetRelationType.name }}Of{{ fqClass relation.name }}(request);
   }
           {{ else }}
@@ -168,7 +168,7 @@ class {{ fqClass relation.owner.name }}{{ fqClass relation.name }}Repository {
   // SET {{ variable targetBehaviour.targetRelationType.name }}
   //////////////////////////////////////////////////////////////////////////////
   Future<void> {{ fqVariable relation.owner.name }}{{ fqClass relation.name }}Set{{ fqClass targetBehaviour.targetRelationType.name }}({{ fqClass relation.owner.name }}Store owner, {{ fqClass relation.target.name }}Store target, {{ fqClass targetBehaviour.targetRelationType.target.name }}Store selected) async {
-    {{ fqClass relation.owner.name }}Set{{ fqClass targetBehaviour.targetRelationType.name }}Of{{ fqClass relation.name }}Input request = {{ fqClass ap.name }}RepositoryStoreMapper.create{{ fqClass relation.owner.name }}Set{{ fqClass targetBehaviour.targetRelationType.name }}Of{{ fqClass relation.name }}InputFrom{{ fqClass relation.target.name }}StoreAnd{{ fqClass targetBehaviour.targetRelationType.name }}Store(target, selected);
+    {{ fqClass relation.owner.name }}Set{{ fqClass targetBehaviour.targetRelationType.name }}Of{{ fqClass relation.name }}Input request = {{ fqClass ap.name }}RepositoryStoreMapper.create{{ fqClass relation.owner.name }}Set{{ fqClass targetBehaviour.targetRelationType.name }}Of{{ fqClass relation.name }}InputFrom{{ fqClass relation.target.name }}StoreAnd{{ fqClass targetBehaviour.targetRelationType.target.name }}Store(target, selected);
     await DefaultApi(locator<ApiClient>()).{{ fqVariable relation.owner.name }}Set{{ className targetBehaviour.targetRelationType.name }}Of{{ fqClass relation.name }}(owner.identifier, request);
   }
           {{/ if }}
@@ -199,17 +199,17 @@ class {{ fqClass relation.owner.name }}{{ fqClass relation.name }}Repository {
   //////////////////////////////////////////////////////////////////////////////
   // ADD {{ variable targetBehaviour.targetRelationType.name }} (Access Point)
   //////////////////////////////////////////////////////////////////////////////
-  Future<void> {{ fqVariable relation.owner.name }}{{ fqClass relation.name }}Add{{ fqClass targetBehaviour.targetRelationType.name }}({{ fqClass relation.owner.name }}Store owner, {{ fqClass relation.target.name }}Store target, List<{{ fqClass targetBehaviour.targetRelationType.target.name }}Store> selected) async {
-    var request = {{ fqClass ap.name }}Mapper.create{{ fqClass relation.owner.name }}Add{{ fqClass targetBehaviour.targetRelationType.name }}To{{ fqClass relation.name }}InputFrom{{ fqClass relation.target.name }}StoreAnd{{ fqClass targetBehaviour.targetRelationType.name }}Store(target, selected);
-    await DefaultApi(locator<ApiClient>()).{{ fqVariable relation.owner.name }}Add{{ className targetBehaviour.targetRelationType.name }}To{{ fqClass relation.name }}(owner.identifier, request);
+  Future<void> {{ fqVariable relation.owner.name }}{{ fqClass relation.name }}Add{{ fqClass targetBehaviour.targetRelationType.name }}({{ fqClass relation.target.name }}Store target, List<{{ fqClass targetBehaviour.targetRelationType.target.name }}Store> selected) async {
+    var request = {{ fqClass ap.name }}RepositoryStoreMapper.create{{ fqClass relation.owner.name }}Add{{ fqClass targetBehaviour.targetRelationType.name }}To{{ fqClass relation.name }}InputFrom{{ fqClass relation.target.name }}StoreAnd{{ fqClass targetBehaviour.targetRelationType.target.name }}StoreList(target, selected);
+    await DefaultApi(locator<ApiClient>()).{{ fqVariable relation.owner.name }}Add{{ className targetBehaviour.targetRelationType.name }}To{{ fqClass relation.name }}(request);
   }
           {{ else }}
   //////////////////////////////////////////////////////////////////////////////
   // ADD {{ variable targetBehaviour.targetRelationType.name }}
   //////////////////////////////////////////////////////////////////////////////
-  Future<void> {{ fqVariable relation.owner.name }}{{ fqClass relation.name }}Add{{ fqClass targetBehaviour.targetRelationType.name }}({{ fqClass relation.target.name }}Store target, List<{{ fqClass targetBehaviour.targetRelationType.target.name }}Store> selected) async {
-    var request = {{ fqClass ap.name }}Mapper.create{{ fqClass relation.owner.name }}Add{{ fqClass targetBehaviour.targetRelationType.name }}To{{ fqClass relation.name }}InputFrom{{ fqClass relation.target.name }}StoreAnd{{ fqClass targetBehaviour.targetRelationType.name }}Store(target, selected);
-    await DefaultApi(locator<ApiClient>()).{{ fqVariable relation.owner.name }}Add{{ className targetBehaviour.targetRelationType.name }}To{{ fqClass relation.name }}(request);
+  Future<void> {{ fqVariable relation.owner.name }}{{ fqClass relation.name }}Add{{ fqClass targetBehaviour.targetRelationType.name }}({{ fqClass relation.owner.name }}Store owner, {{ fqClass relation.target.name }}Store target, List<{{ fqClass targetBehaviour.targetRelationType.target.name }}Store> selected) async {
+    var request = {{ fqClass ap.name }}RepositoryStoreMapper.create{{ fqClass relation.owner.name }}Add{{ fqClass targetBehaviour.targetRelationType.name }}To{{ fqClass relation.name }}InputFrom{{ fqClass relation.target.name }}StoreAnd{{ fqClass targetBehaviour.targetRelationType.target.name }}StoreList(target, selected);
+    await DefaultApi(locator<ApiClient>()).{{ fqVariable relation.owner.name }}Add{{ className targetBehaviour.targetRelationType.name }}To{{ fqClass relation.name }}(owner.identifier, request);
   }
           {{/ if }}
 
@@ -219,17 +219,17 @@ class {{ fqClass relation.owner.name }}{{ fqClass relation.name }}Repository {
   //////////////////////////////////////////////////////////////////////////////
   // REMOVE {{ variable targetBehaviour.targetRelationType.name }} (Access Point)
   //////////////////////////////////////////////////////////////////////////////
-  Future<void> {{ fqVariable relation.owner.name }}{{ fqClass relation.name }}Remove{{ fqClass targetBehaviour.targetRelationType.name }}({{ fqClass relation.owner.name }}Store owner, {{ fqClass relation.target.name }}Store target, List<{{ fqClass targetBehaviour.targetRelationType.target.name }}Store> selected) async {
-    var request = {{ fqClass ap.name }}Mapper.create{{ fqClass relation.owner.name }}Remove{{ fqClass targetBehaviour.targetRelationType.name }}From{{ fqClass relation.name }}InputFrom{{ fqClass relation.target.name }}StoreAnd{{ fqClass targetBehaviour.targetRelationType.name }}Store(target, selected);
-    await DefaultApi(locator<ApiClient>()).{{ fqVariable relation.owner.name }}Remove{{ className targetBehaviour.targetRelationType.name }}From{{ fqClass relation.name }}(owner.identifier, request);
+  Future<void> {{ fqVariable relation.owner.name }}{{ fqClass relation.name }}Remove{{ fqClass targetBehaviour.targetRelationType.name }}({{ fqClass relation.target.name }}Store target, List<{{ fqClass targetBehaviour.targetRelationType.target.name }}Store> selected) async {
+    var request = {{ fqClass ap.name }}RepositoryStoreMapper.create{{ fqClass relation.owner.name }}Remove{{ fqClass targetBehaviour.targetRelationType.name }}From{{ fqClass relation.name }}InputFrom{{ fqClass relation.target.name }}StoreAnd{{ fqClass targetBehaviour.targetRelationType.target.name }}StoreList(target, selected);
+    await DefaultApi(locator<ApiClient>()).{{ fqVariable relation.owner.name }}Remove{{ className targetBehaviour.targetRelationType.name }}From{{ fqClass relation.name }}(request);
   }
           {{ else }}
   //////////////////////////////////////////////////////////////////////////////
   // REMOVE {{ variable targetBehaviour.targetRelationType.name }}
   //////////////////////////////////////////////////////////////////////////////
-  Future<void> {{ fqVariable relation.owner.name }}{{ fqClass relation.name }}Remove{{ fqClass targetBehaviour.targetRelationType.name }}({{ fqClass relation.target.name }}Store target, List<{{ fqClass targetBehaviour.targetRelationType.target.name }}Store> selected) async {
-    var request = {{ fqClass ap.name }}Mapper.create{{ fqClass relation.owner.name }}Add{{ fqClass targetBehaviour.targetRelationType.name }}From{{ fqClass relation.name }}InputFrom{{ fqClass relation.target.name }}StoreAnd{{ fqClass targetBehaviour.targetRelationType.name }}Store(target, selected);
-    await DefaultApi(locator<ApiClient>()).{{ fqVariable relation.owner.name }}Remove{{ className targetBehaviour.targetRelationType.name }}From{{ fqClass relation.name }}(request);
+  Future<void> {{ fqVariable relation.owner.name }}{{ fqClass relation.name }}Remove{{ fqClass targetBehaviour.targetRelationType.name }}({{ fqClass relation.owner.name }}Store owner, {{ fqClass relation.target.name }}Store target, List<{{ fqClass targetBehaviour.targetRelationType.target.name }}Store> selected) async {
+    var request = {{ fqClass ap.name }}RepositoryStoreMapper.create{{ fqClass relation.owner.name }}Remove{{ fqClass targetBehaviour.targetRelationType.name }}From{{ fqClass relation.name }}InputFrom{{ fqClass relation.target.name }}StoreAnd{{ fqClass targetBehaviour.targetRelationType.target.name }}StoreList(target, selected);
+    await DefaultApi(locator<ApiClient>()).{{ fqVariable relation.owner.name }}Remove{{ className targetBehaviour.targetRelationType.name }}From{{ fqClass relation.name }}(owner.identifier, request);
   }
           {{/ if }}
       {{/ if }}
