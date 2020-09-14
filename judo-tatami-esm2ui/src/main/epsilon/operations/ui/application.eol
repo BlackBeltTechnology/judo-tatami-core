@@ -77,9 +77,10 @@ operation UI!ui::Application calculateRelationBehaviour() {
 			}
 
 
-//			if (not relationType1.~original.isReadOnly()
-//					and relationType1.~original.isUpdateAllowed()
-//			) {
+			if (
+			//not relationType1.~original.isReadOnly() and
+					relationType1.~original.isUpdateAllowed()
+			) {
 
 				// RANGE GET
 	            if (
@@ -115,7 +116,7 @@ operation UI!ui::Application calculateRelationBehaviour() {
 					relationType1.mapTargetRelationBehaviour(UI!ui::data::RelationBehaviourType#REMOVE, relationType2);
 				}	
 			}
-//		}
+		}
 	}
 }
 
