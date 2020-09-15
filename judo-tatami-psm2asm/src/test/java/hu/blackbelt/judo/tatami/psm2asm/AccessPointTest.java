@@ -175,13 +175,13 @@ public class AccessPointTest {
         assertThat(getPrincipal2.isPresent(), equalTo(Boolean.TRUE));
 
         // ensure that getPrincipal operations are exposed by their own access points only
-        assertThat(AsmUtils.getExtensionAnnotationListByName(getPrincipal1.get(), "exposedBy").parallelStream()
+        assertThat(AsmUtils.getExtensionAnnotationListByName(getPrincipal1.get(), "exposedBy").stream()
                 .allMatch(a -> "Model.AccessPoint1".equals(a.getDetails().get("value"))), equalTo(Boolean.TRUE));
-        assertThat(AsmUtils.getExtensionAnnotationListByName(getPrincipal1.get(), "exposedBy").parallelStream()
+        assertThat(AsmUtils.getExtensionAnnotationListByName(getPrincipal1.get(), "exposedBy").stream()
                 .anyMatch(a -> "Model.AccessPoint1".equals(a.getDetails().get("value"))), equalTo(Boolean.TRUE));
-        assertThat(AsmUtils.getExtensionAnnotationListByName(getPrincipal2.get(), "exposedBy").parallelStream()
+        assertThat(AsmUtils.getExtensionAnnotationListByName(getPrincipal2.get(), "exposedBy").stream()
                 .allMatch(a -> "Model.AccessPoint2".equals(a.getDetails().get("value"))), equalTo(Boolean.TRUE));
-        assertThat(AsmUtils.getExtensionAnnotationListByName(getPrincipal2.get(), "exposedBy").parallelStream()
+        assertThat(AsmUtils.getExtensionAnnotationListByName(getPrincipal2.get(), "exposedBy").stream()
                 .anyMatch(a -> "Model.AccessPoint2".equals(a.getDetails().get("value"))), equalTo(Boolean.TRUE));
     }
 
