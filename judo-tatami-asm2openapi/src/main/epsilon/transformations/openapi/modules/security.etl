@@ -1,45 +1,45 @@
-rule CreateSecuritySchemeDeclarationForAccessPoint
+rule CreateSecuritySchemeDeclarationForActorType
     transform s : ASM!EAnnotation
     to t : OPENAPI!SecuritySchemeDeclaration {
         guard: s.eContainer.isKindOf(ASM!EClass) 
-	        and asmUtils.isAccessPoint(s.eContainer)
+	        and asmUtils.isActorType(s.eContainer)
 	        and s.source == asmUtils.getAnnotationUri("actor")
 	        and s.details.containsKey("realm")
 
         t.name = s.details.get("realm");
-        s.eContainer.equivalent("CreateOpenAPIAccessPoint").securityDefinitions.add(t);
+        s.eContainer.equivalent("CreateOpenAPIActorType").securityDefinitions.add(t);
 }
 
-rule CreateSecuritySchemeForAccessPoint
+rule CreateSecuritySchemeForActorType
     transform s : ASM!EAnnotation
     to t : OPENAPI!SecurityScheme {
         guard: s.eContainer.isKindOf(ASM!EClass) 
-	        and asmUtils.isAccessPoint(s.eContainer)
+	        and asmUtils.isActorType(s.eContainer)
 	        and s.source == asmUtils.getAnnotationUri("actor")
 	        and s.details.containsKey("realm")
 
         t.type = OPENAPI!SecuritySchemeType#oauth2;
         t.flow = OPENAPI!OAuth2FlowType#implicit;
         
-        s.equivalent("CreateSecuritySchemeDeclarationForAccessPoint").securityScheme = t;
+        s.equivalent("CreateSecuritySchemeDeclarationForActorType").securityScheme = t;
 }
 
 rule CreateSecurityRequirementOption
 	transform s : ASM!EAnnotation
 	to t : OPENAPI!SecurityRequirementOption {
 		guard: s.eContainer.isKindOf(ASM!EClass) 
-	        and asmUtils.isAccessPoint(s.eContainer)
+	        and asmUtils.isActorType(s.eContainer)
 	        and s.source == asmUtils.getAnnotationUri("actor")
 	        and s.details.containsKey("realm")
 	
-	s.eContainer.equivalent("CreateOpenAPIAccessPoint").security.add(t);
+	s.eContainer.equivalent("CreateOpenAPIActorType").security.add(t);
 }
 
 rule CreateSecurityRequirement
 	transform s : ASM!EAnnotation
 	to t : OPENAPI!SecurityRequirement {
 		guard: s.eContainer.isKindOf(ASM!EClass) 
-	        and asmUtils.isAccessPoint(s.eContainer)
+	        and asmUtils.isActorType(s.eContainer)
 	        and s.source == asmUtils.getAnnotationUri("actor")
 	        and s.details.containsKey("realm")
 	

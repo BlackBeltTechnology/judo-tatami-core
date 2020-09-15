@@ -576,38 +576,40 @@ rule CreateDeleteUnboundOperation
 }
 
 @greedy
-rule CreateGetPrincipalOperationForAccessPoint
-    transform s : ESM!TransferObjectType
+rule CreateGetPrincipalOperationForActorType
+    transform s : ESM!ActorType
     to t : JUDOPSM!UnboundOperation {
-        guard: s.isAccessPoint()
+        guard: s.principal.isDefined()
 
         t.name = "_principal";
         t.behaviour = new JUDOPSM!TransferOperationBehaviour;
         t.behaviour.behaviourType = JUDOPSM!TransferOperationBehaviourType#GET_PRINCIPAL;
-        t.behaviour.owner = s.getPSMTransferObjectTypeEquivalent();
+        t.behaviour.owner = s.getPSMEquivalent();
 
-        s.getPSMTransferObjectTypeEquivalent().operations.add(t);
+        s.getPSMEquivalent().operations.add(t);
 }
 
 @greedy
-rule CreateGetPrincipalOperationOutputParameterForAccessPoint
-    transform s : ESM!TransferObjectType
+rule CreateGetPrincipalOperationOutputParameterForActorType
+    transform s : ESM!ActorType
     to t : JUDOPSM!Parameter {
-        guard: s.isAccessPoint()
+        guard: s.principal.isDefined()
 
         t.name = "output";
-        t.type = s.getPSMTransferObjectTypeEquivalent();
+        t.type = s.principal.getPSMTransferObjectTypeEquivalent();
         t.cardinality = new JUDOPSM!Cardinality;
         t.cardinality.lower = 0;
         t.cardinality.upper = 1;
 
-        s.equivalent("CreateGetPrincipalOperationForAccessPoint").output = t;
+        s.equivalent("CreateGetPrincipalOperationForActorType").output = t;
 }
 
 @greedy
 rule CreateMapPrincipalOperationForActoryType
     transform s : ESM!ActorType
     to t : JUDOPSM!UnboundOperation {
+        guard: s.principal.isDefined()
+
         t.name = "_map_principal";
         t.behaviour = new JUDOPSM!TransferOperationBehaviour;
         t.behaviour.behaviourType = JUDOPSM!TransferOperationBehaviourType#MAP_PRINCIPAL;
@@ -620,7 +622,7 @@ rule CreateMapPrincipalOperationForActoryType
 rule CreateMapPrincipalOperationInputParameterForActorType
     transform s : ESM!ActorType
     to t : JUDOPSM!Parameter {
-        guard: s.realm.isDefined() and s.realm.trim() <> ''
+        guard: s.principal.isDefined() and s.realm.isDefined() and s.realm.trim() <> ''
 
         t.name = "input";
         t.type = s.getPSMEquivalent();
@@ -635,7 +637,7 @@ rule CreateMapPrincipalOperationInputParameterForActorType
 rule CreateMapPrincipalOperationOutputParameterForActorType
     transform s : ESM!ActorType
     to t : JUDOPSM!Parameter {
-        guard: s.principal.isDefined()
+        guard: s.principal.isDefined() and s.principal.isDefined()
 
         t.name = "output";
         t.type = s.principal.getPSMTransferObjectTypeEquivalent();

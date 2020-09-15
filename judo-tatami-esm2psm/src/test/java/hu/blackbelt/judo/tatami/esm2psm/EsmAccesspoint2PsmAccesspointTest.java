@@ -549,18 +549,18 @@ public class EsmAccesspoint2PsmAccesspointTest {
                 EcoreUtil.equals(o.getOutput().getType(), defaultF.get())
         ));
 
-        assertTrue(ap.get().getOperations().stream().anyMatch(o -> NAME_OF_GET_PRINCIPAL_OPERATION.equals(o.getName()) && (o instanceof UnboundOperation) &&
-                o.getBehaviour() != null && o.getBehaviour().getBehaviourType() == TransferOperationBehaviourType.GET_PRINCIPAL && EcoreUtil.equals(o.getBehaviour().getOwner(), ap.get()) &&
-                o.getInput() == null && o.getOutput() != null && o.getFaults().isEmpty() &&
-                o.getOutput().getCardinality().getLower() == 0 && o.getOutput().getCardinality().getUpper() == 1 &&
-                EcoreUtil.equals(o.getOutput().getType(), ap.get())
-        ));
-
-        assertEquals(16L, ap.get().getOperations().stream().filter(o -> o instanceof UnboundOperation).count());
+        assertEquals(15L, ap.get().getOperations().stream().filter(o -> o instanceof UnboundOperation).count());
 
         final Optional<hu.blackbelt.judo.meta.psm.accesspoint.ActorType> actorType = allPsm(hu.blackbelt.judo.meta.psm.accesspoint.ActorType.class)
                 .findAny();
         assertTrue(actorType.isPresent());
+
+        assertTrue(actorType.get().getOperations().stream().anyMatch(o -> NAME_OF_GET_PRINCIPAL_OPERATION.equals(o.getName()) && (o instanceof UnboundOperation) &&
+                o.getBehaviour() != null && o.getBehaviour().getBehaviourType() == TransferOperationBehaviourType.GET_PRINCIPAL && EcoreUtil.equals(o.getBehaviour().getOwner(), actorType.get()) &&
+                o.getInput() == null && o.getOutput() != null && o.getFaults().isEmpty() &&
+                o.getOutput().getCardinality().getLower() == 0 && o.getOutput().getCardinality().getUpper() == 1 &&
+                EcoreUtil.equals(o.getOutput().getType(), ap.get())
+        ));
 
         assertTrue(actorType.get().getOperations().stream().anyMatch(o -> NAME_OF_MAP_PRINCIPAL_OPERATION.equals(o.getName()) && (o instanceof UnboundOperation) &&
                 o.getBehaviour() != null && o.getBehaviour().getBehaviourType() == TransferOperationBehaviourType.MAP_PRINCIPAL && EcoreUtil.equals(o.getBehaviour().getOwner(), actorType.get()) &&
@@ -571,7 +571,7 @@ public class EsmAccesspoint2PsmAccesspointTest {
                 EcoreUtil.equals(o.getOutput().getType(), ap.get())
         ));
 
-        assertEquals(1L, actorType.get().getOperations().stream().filter(o -> o instanceof UnboundOperation).count());
+        assertEquals(2L, actorType.get().getOperations().stream().filter(o -> o instanceof UnboundOperation).count());
     }
 
     static <T> Stream<T> asStream(Iterator<T> sourceIterator, boolean parallel) {

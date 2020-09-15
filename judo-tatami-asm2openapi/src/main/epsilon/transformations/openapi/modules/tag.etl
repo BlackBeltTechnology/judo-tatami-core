@@ -12,6 +12,6 @@ rule CreateTag
 		var root = asmUtils.getResolvedRoot(s);
         if (root.isPresent()) {
 		    t.description = "Exposed graph with " + root.get().name + " instances as root";
-		    asmUtils.getAccessPointOfGraph(s).get().equivalent("CreateOpenAPIAccessPoint").tags.add(t);
+		    asmUtils.getActorTypeOfGraph(s).get().equivalent("CreateOpenAPIActorType").tags.add(t);
         }
 }

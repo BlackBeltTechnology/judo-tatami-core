@@ -8,9 +8,9 @@ rule CreateEntityIdParameterDeclaration
         
         t.name = "__identifier__" + asmUtils.getClassifierFQName(s.eContainer).toOpenAPIName();
         
-        var accessPoint = asmUtils.getResolvedExposedBy(s);
-        if (accessPoint.isPresent()) {
-            accessPoint.get().equivalent("CreateOpenAPIAccessPoint").parameters.add(t);
+        var actorType = asmUtils.getResolvedExposedBy(s);
+        if (actorType.isPresent()) {
+            actorType.get().equivalent("CreateOpenAPIActorType").parameters.add(t);
         } else {
             delete t;
         }
@@ -37,9 +37,9 @@ rule CreateParameterDeclaration
         
         t.name = (asmUtils.getOperationFQName(s.eContainer.eOperation) + "__" + s.eContainer.name).toOpenAPIName();
         
-        var accessPoint = asmUtils.getResolvedExposedBy(s);
-        if (accessPoint.isPresent()) {
-            accessPoint.get().equivalent("CreateOpenAPIAccessPoint").parameters.add(t);
+        var actorType = asmUtils.getResolvedExposedBy(s);
+        if (actorType.isPresent()) {
+            actorType.get().equivalent("CreateOpenAPIActorType").parameters.add(t);
         } else {
             delete t;
         }
@@ -86,7 +86,7 @@ rule CreateParameterDefinitionSchemaReference
                     if (s.eContainer.many) {
                         throw "Unsupported parameter";
                     } else {
-                        t.ref = asmUtils.getAllAccessPoints().selectOne(ap | asmUtils.getClassifierFQName(ap) == s.details.get("value")).equivalent("CreateTransferObjectSingleSchemaDeclarationForDelete").getReference();
+                        t.ref = asmUtils.getAllActorTypes().selectOne(ap | asmUtils.getClassifierFQName(ap) == s.details.get("value")).equivalent("CreateTransferObjectSingleSchemaDeclarationForDelete").getReference();
                     }
                 } else if (behaviour.present and (behaviour.get().toString() == "SET" or behaviour.get().toString() == "ADD_ALL" or behaviour.get().toString() == "REMOVE_ALL") and behaviourRelation.present) {
                     if (s.eContainer.many) {
@@ -155,6 +155,6 @@ rule CreateParameterDefinitionSchemaReferenceForReferenceChange
 
         t.schema.properties.add(ref);
 
-        var ap = asmUtils.getAllAccessPoints().selectOne(ap | asmUtils.getClassifierFQName(ap) == s.details.get("value"));
-        ap.equivalent("CreateOpenAPIAccessPoint").definitions.add(t);
+        var ap = asmUtils.getAllActorTypes().selectOne(ap | asmUtils.getClassifierFQName(ap) == s.details.get("value"));
+        ap.equivalent("CreateOpenAPIActorType").definitions.add(t);
 }

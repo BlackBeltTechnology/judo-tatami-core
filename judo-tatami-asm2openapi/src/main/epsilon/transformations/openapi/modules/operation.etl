@@ -10,9 +10,9 @@ rule CreateExposedServicePath
 
         t.relativePath = "/" + s.eContainer.toOpenAPIPath();
 
-        var accessPoint = asmUtils.getResolvedExposedBy(s);
-        if (accessPoint.isPresent()) {
-            accessPoint.get().equivalent("CreateOpenAPIAccessPoint").paths.add(t);
+        var actorType = asmUtils.getResolvedExposedBy(s);
+        if (actorType.isPresent()) {
+            actorType.get().equivalent("CreateOpenAPIActorType").paths.add(t);
         } else {
             delete t;
         }

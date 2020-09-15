@@ -1,4 +1,4 @@
-import "modules/accessPoint.etl";
+import "modules/actor.etl";
 import "modules/derived.etl";
 import "modules/data.etl";
 import "modules/operation.etl";

@@ -9,9 +9,9 @@ rule CreateTransferObjectSingleSchemaDeclaration
         
         t.name = asmUtils.getClassifierFQName(s.eContainer).toOpenAPIName();
         
-        var accessPoint = asmUtils.getResolvedExposedBy(s);
-        if (accessPoint.isPresent()) {
-		    accessPoint.get().equivalent("CreateOpenAPIAccessPoint").definitions.add(t);
+        var actorType = asmUtils.getResolvedExposedBy(s);
+        if (actorType.isPresent()) {
+		    actorType.get().equivalent("CreateOpenAPIActorType").definitions.add(t);
         } else {
             delete t;
         }
@@ -20,7 +20,7 @@ rule CreateTransferObjectSingleSchemaDeclaration
 rule CreateTransferObjectSingleSchemaDeclarationForDelete
     transform s : ASM!EClass
     to t : OPENAPI!SchemaDeclaration {
-        guard: asmUtils.isAccessPoint(s)
+        guard: asmUtils.isActorType(s)
 
         t.name = asmUtils.getModel().get().name + "__identifier";
 
@@ -37,7 +37,7 @@ rule CreateTransferObjectSingleSchemaDeclarationForDelete
 
         t.schema.properties.add(id);
 
-        s.equivalent("CreateOpenAPIAccessPoint").definitions.add(t);
+        s.equivalent("CreateOpenAPIActorType").definitions.add(t);
 }
 
 rule CreateTransferObjectSingleSchemaDefinitionExtended
@@ -143,9 +143,9 @@ rule CreateTransferObjectArraySchemaDeclaration
         
         t.name = "arrayOf__" + asmUtils.getClassifierFQName(s.eContainer).toOpenAPIName();
         
-        var accessPoint = asmUtils.getResolvedExposedBy(s);
-        if (accessPoint.isPresent()) {
-            accessPoint.get().equivalent("CreateOpenAPIAccessPoint").definitions.add(t);
+        var actorType = asmUtils.getResolvedExposedBy(s);
+        if (actorType.isPresent()) {
+            actorType.get().equivalent("CreateOpenAPIActorType").definitions.add(t);
         } else {
             delete t;
         }
@@ -180,9 +180,9 @@ rule CreateTransferObjectSingleSchemaDeclarationExtended
 
         t.name = asmUtils.getClassifierFQName(s.eContainer).toOpenAPIName() + "__extended";
 
-        var accessPoint = asmUtils.getResolvedExposedBy(s);
-        if (accessPoint.isPresent()) {
-		    accessPoint.get().equivalent("CreateOpenAPIAccessPoint").definitions.add(t);
+        var actorType = asmUtils.getResolvedExposedBy(s);
+        if (actorType.isPresent()) {
+		    actorType.get().equivalent("CreateOpenAPIActorType").definitions.add(t);
         } else {
             delete t;
         }
@@ -195,9 +195,9 @@ rule CreateTransferObjectArraySchemaDeclarationExtended
 
         t.name = "arrayOf__" + asmUtils.getClassifierFQName(s.eContainer).toOpenAPIName() + "__extended";
 
-        var accessPoint = asmUtils.getResolvedExposedBy(s);
-        if (accessPoint.isPresent()) {
-            accessPoint.get().equivalent("CreateOpenAPIAccessPoint").definitions.add(t);
+        var actorType = asmUtils.getResolvedExposedBy(s);
+        if (actorType.isPresent()) {
+            actorType.get().equivalent("CreateOpenAPIActorType").definitions.add(t);
         } else {
             delete t;
         }

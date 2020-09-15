@@ -2,46 +2,49 @@ import "../utils/_importUtils.eol";
 import "operation.etl";
 
 @greedy
-rule CreateActorTypeAnnotation
-    transform s : JUDOPSM!AbstractActorType
+rule CreateActorAnnotation
+    transform s : JUDOPSM!TransferObjectType
     to t : ASM!EAnnotation {
+        guard: s.actorType.isDefined()
+
         t.source = asmUtils.getAnnotationUri("actor");
 
         var actorName = new ASM!EStringToStringMapEntry;
         actorName.key = "name";
-        actorName.value = psmUtils.namespaceElementToString(s);
+        actorName.value = psmUtils.namespaceElementToString(s.actorType);
         t.details.add(actorName);
 
-        if (s.realm.isDefined()) {
+        if (s.actorType.realm.isDefined()) {
             var realm = new ASM!EStringToStringMapEntry;
             realm.key = "realm";
-            realm.value = s.realm;
+            realm.value = s.actorType.realm;
             t.details.add(realm);
         }
 
-        s.transferObjectType.asmEquivalent().eAnnotations.add(t);
-}
-
-@greedy
-rule CreateAccessPointAnnotation
-    transform s : JUDOPSM!TransferObjectType
-    to t : ASM!EAnnotation {
-        guard: s.isAccessPoint()
-
-        t.source = asmUtils.getAnnotationUri("accessPoint");
-        
-        var accessPoint = new ASM!EStringToStringMapEntry;
-        accessPoint.key = "value";
-        accessPoint.value = "true";
-        t.details.add(accessPoint);
-        
         s.asmEquivalent().eAnnotations.add(t);
 }
 
+@greedy
+rule CreateActorTypeAnnotation
+    transform s : JUDOPSM!TransferObjectType
+    to t : ASM!EAnnotation {
+        guard: s.isKindOf(JUDOPSM!AbstractActorType)
+
+        t.source = asmUtils.getAnnotationUri("actorType");
+
+        var actorType = new ASM!EStringToStringMapEntry;
+        actorType.key = "value";
+        actorType.value = "true";
+        t.details.add(actorType);
+
+        s.asmEquivalent().eAnnotations.add(t);
+}
+
+/* TODO: JNG-1630 - remove is not used anymore
 rule CreateExposedServiceReferenceAnnotation
     transform s : JUDOPSM!TransferObjectRelation
     to t : ASM!EAnnotation {
-        guard: s.eContainer.isAccessPoint() and not s.isExposedGraph()
+        guard: s.eContainer.isActorType() and not s.isExposedGraph()
 
         t.source = asmUtils.getAnnotationUri("exposedService");
 
@@ -51,7 +54,7 @@ rule CreateExposedServiceReferenceAnnotation
         t.details.add(exposedServiceEntry);
 
         s.asmEquivalent().eAnnotations.add(t);
-}
+} */
 
 rule CreateExposedGraphReferenceAnnotation
     transform s : JUDOPSM!TransferObjectRelation

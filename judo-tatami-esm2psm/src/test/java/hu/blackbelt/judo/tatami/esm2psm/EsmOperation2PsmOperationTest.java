@@ -488,7 +488,7 @@ public class EsmOperation2PsmOperationTest {
         assertTrue(defaultMultipleReference.isPresent());
 
         assertEquals(11L, defaultD.get().getOperations().stream().filter(o -> o instanceof BoundTransferOperation).count());
-        assertEquals(5L, defaultD.get().getOperations().stream().filter(o -> o instanceof UnboundOperation).count()); // including _getPrincipal
+        assertEquals(4L, defaultD.get().getOperations().stream().filter(o -> o instanceof UnboundOperation).count());
     }
 
     @Test
