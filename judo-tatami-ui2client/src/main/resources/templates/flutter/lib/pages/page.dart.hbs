@@ -11,66 +11,23 @@
 import 'package:flutter/material.dart';
 import 'components/table/package.dart';
 import '../store/package.dart';
+import '../utilities/package.dart';
+import '../components/package.dart';
 
 class {{fqClass page.name}}Page extends StatefulWidget {
     static const String title = 'Categories';
 
 {{#if (isTablePage page)}}
-    @override
-    State<StatefulWidget> createState() => _{{fqClass page.name}}PageState();
-}
-
-class _{{fqClass page.name}}PageState extends State<{{fqClass page.name}}Page> {
-
-    final {{fqClass page.name}}PageStore {{fqVariable page.name}}PageStore = {{fqClass page.name}}PageStore();
-
-    _{{fqClass page.name}}PageState(){
-    {{fqVariable page.name}}PageStore.get{{ getTargetDataTypeClass page.dataElement }}();
-    }
+{{> templates/flutter/lib/pages/pagetypesfragments/tablepagefragment.dart.hbs}}
 {{/if}}
 {{#if (isViewPage page)}}
-    final {{ getTargetDataTypeClass page.dataElement }}Store {{ getTargetDataTypeVariable page.dataElement }}Store;
-
-    const {{fqClass page.name}}({Key key, @required this.{{ getTargetDataTypeVariable page.dataElement }}Store}) : super(key: key);
-
-    @override
-    State<StatefulWidget> createState() =>
-    _{{fqClass page.name}}PageState({{ getTargetDataTypeVariable page.dataElement }}Store: {{ getTargetDataTypeVariable page.dataElement }}PageStore);
-}
-
-class _{{fqClass page.name}}PageState extends State<{{fqClass page.name}}Page> {
-
-    final {{ getTargetDataTypeClass page.dataElement }}Store {{ getTargetDataTypeVariable page.dataElement }}Store;
-    final {{fqClass page.name}}PageStore {{fqVariable page.name}}PageStore = {{fqClass page.name}}PageStore();
-
-    _{{fqClass page.name}}PageState({@required this.{{ getTargetDataTypeVariable page.dataElement }}Store });
+{{> templates/flutter/lib/pages/pagetypesfragments/viewpagefragment.dart.hbs}}
 {{/if}}
 {{#if (isCreatePage page)}}
-    const {{fqClass page.name}}({Key key}) : super(key: key);
-
-    @override
-    _{{fqClass page.name}}PageState createState() => _{{fqClass page.name}}PageState();
-}
-
-class _{{fqClass page.name}}PageState extends State<{{fqClass page.name}}Page> {
-
-    final {{ getTargetDataTypeClass page.dataElement }}Store {{ getTargetDataTypeVariable page.dataElement }}Store = {{ getTargetDataTypeClass page.dataElement }}Store();
+{{> templates/flutter/lib/pages/pagetypesfragments/createpagefragment.dart.hbs}}
 {{/if}}
 {{#if (isEditPage page)}}
-    final {{ getTargetDataTypeClass page.dataElement }}Store {{ getTargetDataTypeVariable page.dataElement }}Store;
-
-    const {{fqClass page.name}}({Key key, @required this.{{ getTargetDataTypeVariable page.dataElement }}Store}) : super(key: key);
-
-    @override
-    State<StatefulWidget> createState() =>
-    _{{fqClass page.name}}State({{ getTargetDataTypeVariable page.dataElement }}Store: {{ getTargetDataTypeVariable page.dataElement }}Store);
-}
-
-class _{{fqClass page.name}}PageState extends State<{{fqClass page.name}}Page> {
-
-    final {{ getTargetDataTypeClass page.dataElement }}Store {{ getTargetDataTypeVariable page.dataElement }}Store;
-
-    _{{fqClass page.name}}PageState({@required this.{{ getTargetDataTypeVariable page.dataElement }}Store});
+{{> templates/flutter/lib/pages/pagetypesfragments/editpagefragment.dart.hbs}}
 {{/if}}
 
     @override

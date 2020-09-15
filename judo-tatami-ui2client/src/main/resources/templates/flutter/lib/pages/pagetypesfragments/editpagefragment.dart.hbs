@@ -1,0 +1,14 @@
+    final {{ getTargetDataTypeClass page.dataElement }}Store {{ getTargetDataTypeVariable page.dataElement }}Store;
+
+    const {{fqClass page.name}}({Key key, @required this.{{ getTargetDataTypeVariable page.dataElement }}Store}) : super(key: key);
+
+    @override
+    State<StatefulWidget> createState() =>
+        _{{fqClass page.name}}State({{ getTargetDataTypeVariable page.dataElement }}Store: {{ getTargetDataTypeVariable page.dataElement }}Store);
+}
+
+class _{{fqClass page.name}}PageState extends State<{{fqClass page.name}}Page> {
+
+    final {{ getTargetDataTypeClass page.dataElement }}Store {{ getTargetDataTypeVariable page.dataElement }}Store;
+
+    _{{fqClass page.name}}PageState({@required this.{{ getTargetDataTypeVariable page.dataElement }}Store});
