@@ -77,8 +77,7 @@ operation UI!ui::Application calculateRelationBehaviour() {
 			}
 
 
-			if (
-			//not relationType1.~original.isReadOnly() and
+			if (not relationType2.~original.isReadOnly() and
 					relationType1.~original.isUpdateAllowed()
 			) {
 
