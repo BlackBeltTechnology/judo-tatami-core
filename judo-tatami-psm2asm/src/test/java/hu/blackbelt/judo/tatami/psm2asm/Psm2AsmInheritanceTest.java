@@ -114,7 +114,12 @@ public class Psm2AsmInheritanceTest {
                 ))
                 .build();
 
-        MappedTransferObjectType employeeTransferObject = newMappedTransferObjectTypeBuilder().withName("MTO_Employee").withSuperTransferObjectTypes(personTransferObject)
+        MappedTransferObjectType employeeTransferObject = newMappedTransferObjectTypeBuilder().withName("MTO_Employee")
+                .withAttributes(ImmutableList.of(
+                        newTransferAttributeBuilder().withName("firstName").withDataType(string).withRequired(true).build(),
+                        newTransferAttributeBuilder().withName("lastName").withDataType(string).withRequired(true).build(),
+                        newTransferAttributeBuilder().withName("title").withDataType(string).build()
+                ))
                 .withAttributes(ImmutableList.of(
                         newTransferAttributeBuilder().withName("titleOfCourtesy").withDataType(string).build()))
                 .withEntityType(employeeEntity)
@@ -221,7 +226,7 @@ public class Psm2AsmInheritanceTest {
 //        assertTrue(exposedByAnnotationOfFirstNameInEmployeeTransferObject.isPresent());
 //        assertTrue(exposedByAnnotationOfFirstNameInEmployeeTransferObject.get().getDetails().containsValue("model.AP"));
 
-        final Optional<EClass> asmPersonTransferObject = asmEmployeeTransferObject.get().getEAllSuperTypes().stream().filter(superType -> personTransferObject.getName().equals(superType.getName())).findAny();
+        final Optional<EClass> asmPersonTransferObject = allAsm(EClass.class).filter(t -> personTransferObject.getName().equals(t.getName())).findAny();
         assertTrue(asmPersonTransferObject.isPresent());
 
         final Optional<EAnnotation> exposedGraphAnnotationOfPersonTransferObject = AsmUtils.getExtensionAnnotationByName(asmPersonTransferObject.get(), "exposedGraph", false);

@@ -180,9 +180,11 @@ public class Psm2AsmServiceTest {
 		MappedTransferObjectType mapped2 = newMappedTransferObjectTypeBuilder().withName("mapped2")
 				.withEntityType(entity2).build();
 		MappedTransferObjectType mapped3 = newMappedTransferObjectTypeBuilder().withName("mapped3")
-				.withEntityType(entity3).withSuperTransferObjectTypes(ImmutableList.of(mapped1)).build();
+				.withEntityType(entity3)
+				.build();
 		MappedTransferObjectType mapped4 = newMappedTransferObjectTypeBuilder().withName("mapped4")
-				.withEntityType(entity4).withSuperTransferObjectTypes(ImmutableList.of(mapped3)).build();
+				.withEntityType(entity4)
+				.build();
 		MappedTransferObjectType mapped5 = newMappedTransferObjectTypeBuilder().withName("mapped5")
 				.withEntityType(entity5).build();
 
@@ -199,6 +201,34 @@ public class Psm2AsmServiceTest {
 
 		mapped1.getAttributes().addAll(ImmutableList.of(stringTransferAttr, customTransferAttr, boolTransferAttr,
 				intTransferAttr, measuredTransferAttr));
+		
+		TransferAttribute stringTransferAttr2 = newTransferAttributeBuilder().withName("ta1").withDataType(strType)
+				.withRequired(true).build();
+		TransferAttribute customTransferAttr2 = newTransferAttributeBuilder().withName("ta2").withDataType(custom)
+				.build();
+		TransferAttribute boolTransferAttr2 = newTransferAttributeBuilder().withName("ta3").withDataType(boolType)
+				.withBinding(boolAttr).build();
+		TransferAttribute intTransferAttr2 = newTransferAttributeBuilder().withName("ta4").withDataType(intType)
+				.withRequired(true).build();
+		TransferAttribute measuredTransferAttr2 = newTransferAttributeBuilder().withName("ta5")
+				.withDataType(measuredType).build();
+
+		mapped3.getAttributes().addAll(ImmutableList.of(stringTransferAttr2, customTransferAttr2, boolTransferAttr2,
+				intTransferAttr2, measuredTransferAttr2));
+		
+		TransferAttribute stringTransferAttr3 = newTransferAttributeBuilder().withName("ta1").withDataType(strType)
+				.withRequired(true).build();
+		TransferAttribute customTransferAttr3 = newTransferAttributeBuilder().withName("ta2").withDataType(custom)
+				.build();
+		TransferAttribute boolTransferAttr3 = newTransferAttributeBuilder().withName("ta3").withDataType(boolType)
+				.withBinding(boolAttr).build();
+		TransferAttribute intTransferAttr3 = newTransferAttributeBuilder().withName("ta4").withDataType(intType)
+				.withRequired(true).build();
+		TransferAttribute measuredTransferAttr3 = newTransferAttributeBuilder().withName("ta5")
+				.withDataType(measuredType).build();
+
+		mapped4.getAttributes().addAll(ImmutableList.of(stringTransferAttr3, customTransferAttr3, boolTransferAttr3,
+				intTransferAttr3, measuredTransferAttr3));
 
 		TransferObjectRelation tr1 = newTransferObjectRelationBuilder().withName("tr1").withBinding(association)
 				.withCardinality(newCardinalityBuilder().withLower(1).withUpper(1)).withTarget(mapped2).build();
@@ -298,16 +328,8 @@ public class Psm2AsmServiceTest {
 
 		final EClass asmMapped2 = asmUtils.all(EClass.class).filter(c -> c.getName().equals(mapped2.getName()))
 				.findAny().get();
-		final EClass asmMapped3 = asmUtils.all(EClass.class).filter(c -> c.getName().equals(mapped3.getName()))
-				.findAny().get();
-		final EClass asmMapped4 = asmUtils.all(EClass.class).filter(c -> c.getName().equals(mapped4.getName()))
-				.findAny().get();
 		final EClass asmMapped5 = asmUtils.all(EClass.class).filter(c -> c.getName().equals(mapped5.getName()))
 				.findAny().get();
-
-		assertTrue(asmMapped4.getESuperTypes().contains(asmMapped3));
-		assertTrue(asmMapped4.getEAllSuperTypes().contains(asmMapped3));
-		assertTrue(asmMapped4.getEAllSuperTypes().contains(asmMapped1.get()));
 
 		final EClass refEClass3 = asmUtils.all(EClass.class)
 				.filter(c -> c.getName().equals(entity3.getName() + "__" + "Reference")).findAny().get();
@@ -485,7 +507,8 @@ public class Psm2AsmServiceTest {
 		MappedTransferObjectType pt = newMappedTransferObjectTypeBuilder().withName("pt").withEntityType(p).build();
 		MappedTransferObjectType t1 = newMappedTransferObjectTypeBuilder().withName("t1").withEntityType(e1).build();
 		MappedTransferObjectType ct = newMappedTransferObjectTypeBuilder().withName("ct")
-				.withSuperTransferObjectTypes(t1).withEntityType(ch).build();
+				.withEntityType(ch)
+				.build();
 		MappedTransferObjectType type = newMappedTransferObjectTypeBuilder().withName("type").withEntityType(e2)
 				.build();
 		MappedTransferObjectType t3 = newMappedTransferObjectTypeBuilder().withName("t3").withEntityType(e3).build();

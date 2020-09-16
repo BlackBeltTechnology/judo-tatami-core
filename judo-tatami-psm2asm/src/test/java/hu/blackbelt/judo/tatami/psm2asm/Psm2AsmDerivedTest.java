@@ -335,8 +335,6 @@ public class Psm2AsmDerivedTest {
 		
 		UnmappedTransferObjectType ap = newUnmappedTransferObjectTypeBuilder().withName("AP").build();
 		
-		useMappedTransferObjectType(mapped).withSuperTransferObjectTypes(unmapped).build();
-		
 		StaticData staticData = newStaticDataBuilder().withName("_derivedAttribute_binding_U").withDataType(string).withGetterExpression(newDataExpressionTypeBuilder().withExpression("text").build()).build();
 		TransferAttribute attribute = newTransferAttributeBuilder().withName("derivedAttribute").withDataType(string).withBinding(staticData).build();
 		

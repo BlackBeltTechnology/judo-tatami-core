@@ -33,4 +33,54 @@ post {
             index = index + 1;
         }
     }
+    
+    var ecoreUtil = new Native("org.eclipse.emf.ecore.util.EcoreUtil");
+    
+    for (esmTransferObject in ESM!TransferObjectType.all) {
+    	var psmTransferObject : JUDOPSM!TransferObjectType = esmTransferObject.getPSMTransferObjectTypeEquivalent();
+    	
+    	for (esmSubClass in esmUtils.getAllDescendantsOfTransferObjectType(esmTransferObject)) {
+    		var psmSubClass : JUDOPSM!TransferObjectType = esmSubClass.getPSMTransferObjectTypeEquivalent();
+    	
+    		for (a in psmTransferObject.attributes) {
+    			if (not psmSubClass.attributes.exists(attr | attr.name.equals(a.name))) {
+    				psmSubClass.attributes.add(ecoreUtil.copy(a));
+    				log.debug("Added attribute: [" + a.name + "] to subclass [" + psmSubClass.name + "] from [" + psmTransferObject.name + "]");
+    			}
+    		}
+    		
+    		for (r in psmTransferObject.relations) {
+    			if (not psmSubClass.relations.exists(rel | rel.name.equals(r.name))) {
+    				psmSubClass.relations.add(ecoreUtil.copy(r));
+    				log.debug("Added relation: [" + r.name + "] to subclass [" + psmSubClass.name + "] from [" + psmTransferObject.name + "]");
+    			}
+    		}
+    		
+    		for (o in psmTransferObject.operations.select(op | not op.isKindOf(JUDOPSM!UnboundOperation))) {
+    			if (not psmSubClass.operations.exists(op | op.name.equals(o.name))) {
+	    			psmSubClass.operations.add(ecoreUtil.copy(o));
+	    			log.debug("Added operation: [" + o.name + "] to subclass [" + psmSubClass.name + "] from [" + psmTransferObject.name + "]");
+	    		}
+    		}
+    	}
+	}
+	
+	for (o in JUDOPSM!TransferOperation.all.select(op | op.behaviour.isDefined())) {
+		
+		if (o.behaviour.owner.isKindOf(JUDOPSM!TransferObjectRelation)) {
+			var newOwner : JUDOPSM!TransferObjectRelation = o.eContainer.relations.select(r | r.name.equals(o.behaviour.owner.name)).first();
+			o.behaviour.owner = newOwner;
+		} else if (o.behaviour.owner.isKindOf(JUDOPSM!Parameter)) {
+			var newRelation : JUDOPSM!TransferObjectRelation = o.behaviour.owner.type.relations.select(r | r.name.equals(o.behaviour.relation.name)).first();
+			o.behaviour.relation = newRelation;
+		}
+		
+		if (o.behaviour.relation.isDefined()
+				and o.behaviour.behaviourType <> JUDOPSM!TransferOperationBehaviourType#GET_RANGE_OF_RELATION
+				and o.behaviour.behaviourType <> JUDOPSM!TransferOperationBehaviourType#GET_TEMPLATE) {
+				
+			var newRelation : JUDOPSM!TransferObjectRelation = o.behaviour.owner.target.relations.select(r | r.name.equals(o.behaviour.relation.name)).first();
+			o.behaviour.relation = newRelation;
+		}
+	}
 }
