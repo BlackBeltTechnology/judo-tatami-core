@@ -647,3 +647,88 @@ rule CreateMapPrincipalOperationOutputParameterForActorType
 
         s.equivalent("CreateMapPrincipalOperationForActoryType").output = t;
 }
+
+@greedy
+rule CreateListOperationForRelation
+    transform s : ESM!RelationFeature
+    to t : JUDOPSM!BoundOperation {
+        guard: esmUtils.isListSupported(s)
+
+        t.name = "_list" + s.name.firstToUpperCase() + "For" + esmUtils.getNamespaceElementFQName(s.eContainer).replace("::", "_").firstToUpperCase();
+        t.instanceRepresentation = s.eContainer.getPSMTransferObjectTypeEquivalent();
+
+        t.input = new JUDOPSM!Parameter;
+        t.input.name = "input";
+        t.input.type = s.target.equivalent("CreateQueryCustomizerType");
+        t.input.cardinality = new JUDOPSM!Cardinality;
+        t.input.cardinality.lower = 0;
+        t.input.cardinality.upper = 1;
+
+        t.output = new JUDOPSM!Parameter;
+        t.output.name = "output";
+        t.output.type = s.target.getPSMTransferObjectTypeEquivalent();
+        t.output.cardinality = new JUDOPSM!Cardinality;
+        t.output.cardinality.lower = s.lower;
+        t.output.cardinality.upper = s.upper;
+
+        s.eContainer.mapping.target.equivalent("CreateEntityType").operations.add(t);
+}
+
+@greedy
+rule CreateListTransferOperationForRelation
+    transform s : ESM!RelationFeature
+    to t : JUDOPSM!BoundTransferOperation {
+        guard: esmUtils.isListSupported(s)
+
+        t.name = "_list" + s.name.firstToUpperCase();
+        t.behaviour = new JUDOPSM!TransferOperationBehaviour;
+        t.behaviour.behaviourType = JUDOPSM!TransferOperationBehaviourType#LIST;
+        t.behaviour.owner = s.getPSMTransferObjectRelationEquivalent();
+
+        t.input = new JUDOPSM!Parameter;
+        t.input.name = "input";
+        t.input.type = s.target.equivalent("CreateQueryCustomizerType");
+        t.input.cardinality = new JUDOPSM!Cardinality;
+        t.input.cardinality.lower = 0;
+        t.input.cardinality.upper = 1;
+
+        t.output = new JUDOPSM!Parameter;
+        t.output.name = "output";
+        t.output.type = s.target.getPSMTransferObjectTypeEquivalent();
+        t.output.cardinality = new JUDOPSM!Cardinality;
+        t.output.cardinality.lower = s.lower;
+        t.output.cardinality.upper = s.upper;
+
+        t.binding = s.equivalent("CreateGetOperationForRelation");
+
+        s.eContainer.getPSMTransferObjectTypeEquivalent().operations.add(t);
+}
+
+@greedy
+rule CreateListUnboundOperation
+    transform s : ESM!Access
+    to t : JUDOPSM!UnboundOperation {
+        guard: esmUtils.isListSupported(s)
+
+        t.name = "_list" + s.name.firstToUpperCase();
+        t.behaviour = new JUDOPSM!TransferOperationBehaviour;
+        t.behaviour.behaviourType = JUDOPSM!TransferOperationBehaviourType#LIST;
+
+	    t.behaviour.owner = s.equivalent("CreateTransferObjectRelationFromAccess");
+
+        t.input = new JUDOPSM!Parameter;
+        t.input.name = "input";
+        t.input.type = s.target.equivalent("CreateQueryCustomizerType");
+        t.input.cardinality = new JUDOPSM!Cardinality;
+        t.input.cardinality.lower = 0;
+        t.input.cardinality.upper = 1;
+
+        t.output = new JUDOPSM!Parameter;
+        t.output.name = "output";
+        t.output.type = s.target.getPSMTransferObjectTypeEquivalent();
+        t.output.cardinality = new JUDOPSM!Cardinality;
+        t.output.cardinality.lower = s.lower;
+        t.output.cardinality.upper = s.upper;
+
+        s.eContainer.getPSMEquivalent().operations.add(t);
+}

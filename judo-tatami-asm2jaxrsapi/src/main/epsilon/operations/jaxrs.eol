@@ -13,6 +13,12 @@ operation ASM!EOperation toJAXRSPath() : String {
         var relation = asmUtils.getRelationOfOperationWithDefaultBehaviour(self);
 
         switch (behaviour.get().toString()) {
+            case "LIST":
+                if (owner.many) {
+                    path = asmUtils.getReferenceFQName(owner.get) + "/~list";
+                } else {
+                    path = asmUtils.getReferenceFQName(owner.get) + "/~get";
+                }
             case "GET": path = asmUtils.getReferenceFQName(owner.get) + "/get";
             case "CREATE": path = asmUtils.getReferenceFQName(owner.get) + "/create";
             case "UPDATE": path = asmUtils.getReferenceFQName(owner.get) + "/update";
