@@ -276,6 +276,7 @@ rule AddBehaviourAnnotation
         var typeEntry = new ASM!EStringToStringMapEntry;
         typeEntry.key = "type";
         switch (s.behaviour.behaviourType) {
+            case JUDOPSM!TransferOperationBehaviourType#LIST: typeEntry.value = "list";
             case JUDOPSM!TransferOperationBehaviourType#GET: typeEntry.value = "get"; 
             case JUDOPSM!TransferOperationBehaviourType#CREATE: typeEntry.value = "create";
             case JUDOPSM!TransferOperationBehaviourType#UPDATE: typeEntry.value = "update";

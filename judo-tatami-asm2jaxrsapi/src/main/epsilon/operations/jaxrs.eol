@@ -14,7 +14,7 @@ operation ASM!EOperation toJAXRSPath() : String {
 
         switch (behaviour.get().toString()) {
             case "LIST":
-                if (owner.many) {
+                if (owner.get.many) {
                     path = asmUtils.getReferenceFQName(owner.get) + "/~list";
                 } else {
                     path = asmUtils.getReferenceFQName(owner.get) + "/~get";
@@ -28,12 +28,12 @@ operation ASM!EOperation toJAXRSPath() : String {
             case "ADD_ALL": path = asmUtils.getReferenceFQName(owner.get) + "/" + relation.get().name + "/add";
             case "REMOVE_ALL": path = asmUtils.getReferenceFQName(owner.get) + "/" + relation.get().name + "/remove";
             case "GET_RANGE": path = owner.get.eContainer.toJAXRSPath() + "/" + owner.get.name + "/" + relation.get().name + "/range";
-            case "GET_TEMPLATE": path = asmUtils.getClassifierFQName(owner.get) + "/_template";
-            case "GET_PRINCIPAL": path = asmUtils.getClassifierFQName(owner.get) + "/_principal";
+            case "GET_TEMPLATE": path = asmUtils.getClassifierFQName(owner.get) + "/~template";
+            case "GET_PRINCIPAL": path = asmUtils.getClassifierFQName(owner.get) + "/~principal";
         }
     }
 
-    return path.replaceFirst("^" + asmUtils.getModel().get().name + "\\.", "").replace("[#\\.]", "/").replace("[^0-9a-zA-Z_/]", "_");
+    return path.replaceFirst("^" + asmUtils.getModel().get().name + "\\.", "").replace("[#\\.]", "/").replace("[^0-9a-zA-Z_~/]", "_");
 }
 
 @cached
