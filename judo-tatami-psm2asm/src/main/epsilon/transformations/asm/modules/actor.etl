@@ -40,6 +40,22 @@ rule CreateActorTypeAnnotation
         s.asmEquivalent().eAnnotations.add(t);
 }
 
+@greedy
+rule CreateRealmTypeAnnotation
+    transform s : JUDOPSM!TransferObjectType
+    to t : ASM!EAnnotation {
+        guard: s.isKindOf(JUDOPSM!AbstractActorType) and s.realm.isDefined()
+
+        t.source = asmUtils.getAnnotationUri("realm");
+
+        var realm = new ASM!EStringToStringMapEntry;
+        realm.key = "value";
+        realm.value = s.realm;
+        t.details.add(realm);
+
+        s.asmEquivalent().eAnnotations.add(t);
+}
+
 /* TODO: JNG-1630 - remove is not used anymore
 rule CreateExposedServiceReferenceAnnotation
     transform s : JUDOPSM!TransferObjectRelation
