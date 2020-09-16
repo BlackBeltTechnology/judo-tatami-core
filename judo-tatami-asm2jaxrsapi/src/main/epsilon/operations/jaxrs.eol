@@ -30,6 +30,11 @@ operation ASM!EOperation toJAXRSPath() : String {
     return path.replaceFirst("^" + asmUtils.getModel().get().name + "\\.", "").replace("[#\\.]", "/").replace("[^0-9a-zA-Z_/]", "_");
 }
 
+@cached
+operation ASM!EClass getExposedReferences() : Collection {
+    return self.eAllReferences.select(r | asmUtils.getExtensionAnnotationByName(r, "exposedBy", false).present);
+}
+
 /*
  Enum
  */
