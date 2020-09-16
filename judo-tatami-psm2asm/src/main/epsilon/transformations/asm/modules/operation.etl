@@ -277,6 +277,17 @@ rule AddBehaviourAnnotation
         typeEntry.key = "type";
         switch (s.behaviour.behaviourType) {
             case JUDOPSM!TransferOperationBehaviourType#LIST: typeEntry.value = "list";
+            case JUDOPSM!TransferOperationBehaviourType#CREATE_INSTANCE: typeEntry.value = "createInstance";
+            case JUDOPSM!TransferOperationBehaviourType#VALIDATE_CREATE: typeEntry.value = "validateCreate";
+            case JUDOPSM!TransferOperationBehaviourType#REFRESH: typeEntry.value = "refresh";
+            case JUDOPSM!TransferOperationBehaviourType#UPDATE_INSTANCE: typeEntry.value = "updateInstance";
+            case JUDOPSM!TransferOperationBehaviourType#VALIDATE_UPDATE: typeEntry.value = "validateUpdate";
+            case JUDOPSM!TransferOperationBehaviourType#DELETE_INSTANCE: typeEntry.value = "deleteInstance";
+            case JUDOPSM!TransferOperationBehaviourType#SET_REFERENCE: typeEntry.value = "setReference";
+            case JUDOPSM!TransferOperationBehaviourType#UNSET_REFERENCE: typeEntry.value = "unsetReference";
+            case JUDOPSM!TransferOperationBehaviourType#ADD_REFERENCE: typeEntry.value = "addReference";
+            case JUDOPSM!TransferOperationBehaviourType#DELETE_REFERENCE: typeEntry.value = "removeReference";
+            case JUDOPSM!TransferOperationBehaviourType#GET_RANGE: typeEntry.value = "getReferenceRange";
             case JUDOPSM!TransferOperationBehaviourType#GET: typeEntry.value = "get"; 
             case JUDOPSM!TransferOperationBehaviourType#CREATE: typeEntry.value = "create";
             case JUDOPSM!TransferOperationBehaviourType#UPDATE: typeEntry.value = "update";
