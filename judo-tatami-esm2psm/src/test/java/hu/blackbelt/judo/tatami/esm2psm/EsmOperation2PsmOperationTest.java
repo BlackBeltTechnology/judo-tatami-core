@@ -322,6 +322,8 @@ public class EsmOperation2PsmOperationTest {
         final int UPPER = 5;
 
         final String NAME_OF_LIST_E_OPERATION = "_listE";
+        final String NAME_OF_CREATE_INSTANCE_E_OPERATION = "_createInstanceE";
+        final String NAME_OF_CREATE_INSTANCE_E_OPERATION_ET = "_createInstanceEFor" + MODEL_NAME + "_" + ENTITY_TYPE_D_NAME;
 
         final String NAME_OF_GET_E_OPERATION = "_getE";
         final String NAME_OF_CREATE_E_OPERATION = "_createE";
@@ -677,7 +679,25 @@ public class EsmOperation2PsmOperationTest {
                 EcoreUtil.equals(((BoundTransferOperation) o).getBinding().getOutput().getType(), defaultE.get())
         ));
 
-        assertEquals(12L, defaultD.get().getOperations().stream().filter(o -> o instanceof BoundTransferOperation).count());
+        final Optional<TransferOperation> create2 = defaultD.get().getOperations().stream().filter(o -> NAME_OF_CREATE_INSTANCE_E_OPERATION.equals(o.getName()) && (o instanceof BoundTransferOperation) &&
+                EcoreUtil.equals(((BoundTransferOperation) o).getBinding().getInstanceRepresentation().getEntityType(), d.get()) &&
+                o.getBehaviour() != null && o.getBehaviour().getBehaviourType() == TransferOperationBehaviourType.CREATE_INSTANCE && EcoreUtil.equals(o.getBehaviour().getOwner(), dToE.get()) &&
+                o.getInput() != null && o.getOutput() != null && o.getFaults().isEmpty() &&
+                o.getInput().getCardinality().getLower() == 1 && o.getInput().getCardinality().getUpper() == 1 &&
+                EcoreUtil.equals(o.getInput().getType(), defaultE.get()) &&
+                o.getOutput().getCardinality().getLower() == 1 && o.getOutput().getCardinality().getUpper() == 1 &&
+                EcoreUtil.equals(o.getOutput().getType(), defaultE.get()) &&
+                NAME_OF_CREATE_INSTANCE_E_OPERATION_ET.equals(((BoundTransferOperation) o).getBinding().getName()) &&
+                ((BoundTransferOperation) o).getBinding().getInput() != null && ((BoundTransferOperation) o).getBinding().getOutput() != null && ((BoundTransferOperation) o).getBinding().getFaults().isEmpty() &&
+                ((BoundTransferOperation) o).getBinding().getInput().getCardinality().getLower() == 1 && o.getInput().getCardinality().getUpper() == 1 &&
+                EcoreUtil.equals(((BoundTransferOperation) o).getBinding().getInput().getType(), defaultE.get()) &&
+                ((BoundTransferOperation) o).getBinding().getOutput().getCardinality().getLower() == 1 && o.getOutput().getCardinality().getUpper() == 1 &&
+                EcoreUtil.equals(((BoundTransferOperation) o).getBinding().getOutput().getType(), defaultE.get())
+        ).findAny();
+
+        assertTrue(create2.isPresent());
+
+        assertEquals(13L, defaultD.get().getOperations().stream().filter(o -> o instanceof BoundTransferOperation).count());
         assertEquals(4L, defaultD.get().getOperations().stream().filter(o -> o instanceof UnboundOperation).count());
     }
 

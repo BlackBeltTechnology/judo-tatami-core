@@ -303,6 +303,7 @@ public class EsmAccesspoint2PsmAccesspointTest {
         final String NAME_OF_MAP_PRINCIPAL_OPERATION = "_map_principal";
 
         final String NAME_OF_LIST_E = "_listAllEs";
+        final String NAME_OF_CREATE_INSTANCE_E = "_createInstanceAllEs";
 
         final String NAME_OF_UNSET_SINGLE_CONTAINMENT_OPERATION = "_unsetSingleContainmentOfG";
 
@@ -593,7 +594,18 @@ public class EsmAccesspoint2PsmAccesspointTest {
                 EcoreUtil.equals(o.getOutput().getType(), allEs.get().getTarget())
         ));
 
-        assertEquals(3L, actorType.get().getOperations().stream().filter(o -> o instanceof UnboundOperation).count());
+        final Optional<TransferOperation> create2 = actorType.get().getOperations().stream().filter(o -> NAME_OF_CREATE_INSTANCE_E.equals(o.getName()) && (o instanceof UnboundOperation) &&
+                o.getBehaviour() != null && o.getBehaviour().getBehaviourType() == TransferOperationBehaviourType.CREATE_INSTANCE && EcoreUtil.equals(o.getBehaviour().getOwner(), allEs.get()) &&
+                o.getInput() != null && o.getOutput() != null && o.getFaults().isEmpty() &&
+                o.getInput().getCardinality().getLower() == 1 && o.getInput().getCardinality().getUpper() == 1 &&
+                EcoreUtil.equals(o.getInput().getType(), defaultE.get()) &&
+                o.getOutput().getCardinality().getLower() == 1 && o.getOutput().getCardinality().getUpper() == 1 &&
+                EcoreUtil.equals(o.getOutput().getType(), defaultE.get())
+        ).findAny();
+
+        assertTrue(create2.isPresent());
+
+        assertEquals(4L, actorType.get().getOperations().stream().filter(o -> o instanceof UnboundOperation).count());
     }
 
     static <T> Stream<T> asStream(Iterator<T> sourceIterator, boolean parallel) {
