@@ -15,18 +15,22 @@ internalJavaClasses.add(genUtil("SdkUtil"));
 for (dto in getAllDTOs()) {
     sdkJavaClasses.add(genDtoInterface(dto));
     
+    var generatedFiles;
     if (asmUtils.isMappedTransferObjectType(dto)) {
-	    var daoInterfaces = genInternalDaoInterfaces(dto);
-	    for (daoInterface in daoInterfaces) {
-	    	if (daoInterface.endsWith(".java")) {
-	    		internalJavaClasses.add(daoInterface);
-	    	} else if (daoInterface.endsWith(".xml")){
-	    		internalScrXmls.add(daoInterface);
-	    	}    	
-		}
+	    generatedFiles = genInternalDaoInterfaces(dto);
+	} else {
+		generatedFiles = genUnmappedInitializerFiles(dto);
 	}
-    
-	var generatedFiles = genSdkOperationInterfaces(dto);
+	
+    for (file in generatedFiles) {
+    	if (file.endsWith(".java")) {
+    		internalJavaClasses.add(file);
+    	} else if (file.endsWith(".xml")){
+			internalScrXmls.add(file);
+	    	}    	
+	}
+	
+	generatedFiles = genSdkOperationInterfaces(dto);
 	for (generatedFile in generatedFiles) {
 	    	sdkJavaClasses.add(generatedFile);
    	}

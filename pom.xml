@@ -73,7 +73,7 @@
         <judo-dispatcher-api-version>1.0.2.20200709_172739_726a3b9_develop</judo-dispatcher-api-version>
         <judo-script-codegen-version>1.1.0.20200915_160234_b608012_develop</judo-script-codegen-version>
 
-        <structured-map-proxy-version>1.0.3</structured-map-proxy-version>
+        <structured-map-proxy-version>1.0.4</structured-map-proxy-version>
         <judo-operation-utils-version>1.1.0.20200915_154440_9e4e4b5_develop</judo-operation-utils-version>
 
         <!-- Xtend / Xcore -->
