@@ -286,7 +286,7 @@ rule AddBehaviourAnnotation
             case JUDOPSM!TransferOperationBehaviourType#SET_REFERENCE: typeEntry.value = "setReference";
             case JUDOPSM!TransferOperationBehaviourType#UNSET_REFERENCE: typeEntry.value = "unsetReference";
             case JUDOPSM!TransferOperationBehaviourType#ADD_REFERENCE: typeEntry.value = "addReference";
-            case JUDOPSM!TransferOperationBehaviourType#DELETE_REFERENCE: typeEntry.value = "removeReference";
+            case JUDOPSM!TransferOperationBehaviourType#REMOVE_REFERENCE: typeEntry.value = "removeReference";
             case JUDOPSM!TransferOperationBehaviourType#GET_RANGE: typeEntry.value = "getReferenceRange";
             case JUDOPSM!TransferOperationBehaviourType#GET: typeEntry.value = "get"; 
             case JUDOPSM!TransferOperationBehaviourType#CREATE: typeEntry.value = "create";
