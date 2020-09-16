@@ -100,8 +100,12 @@ public class Asm2SDKOperationTest {
     	modelBuilder.addEntity("OutputEntity").withAttribute("String", "name");
     	modelBuilder.addEntity("Entity").withAttribute("String", "text")
     		.withAggregation("RelatedEntity", "related", cardinality(0, 1))
-    		.withAggregation("RelatedEntity", "relateds", cardinality(0, -1));;
+    		.withAggregation("RelatedEntity", "relateds", cardinality(0, -1));
+		modelBuilder.addMappedTransferObject("EntityInfo", "Entity");
     	modelBuilder.addUnmappedTransferObject("Initializer");
+    	modelBuilder
+    		.addUnmappedTransferObject("UnmappedWithStatic")
+    		.withStaticData("String", "simpleArithmeticExpression", "1+2");
     	
     	// unbound operation
     	modelBuilder.addUnboundOperation("Initializer", "unboundOperationVoid");
