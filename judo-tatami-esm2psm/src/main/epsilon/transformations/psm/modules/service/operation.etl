@@ -900,3 +900,45 @@ rule CreateValidateCreateUnboundOperationForAccess
 
         s.eContainer.getPSMEquivalent().operations.add(t);
 }
+
+@greedy
+rule CreateRefreshOperationForTransferObjectType
+    transform s : ESM!TransferObjectType
+    to t : JUDOPSM!BoundOperation {
+        guard: esmUtils.isRefreshSupported(s)
+
+        t.name = "_refreshInstance" + "For" + esmUtils.getNamespaceElementFQName(s).replace("::", "_").firstToUpperCase();
+        t.instanceRepresentation = s.getPSMTransferObjectTypeEquivalent();
+
+        t.output = new JUDOPSM!Parameter;
+        t.output.name = "output";
+        t.output.type = s.getPSMTransferObjectTypeEquivalent();
+        t.output.cardinality = new JUDOPSM!Cardinality;
+        t.output.cardinality.lower = 1;
+        t.output.cardinality.upper = 1;
+
+        s.mapping.target.equivalent("CreateEntityType").operations.add(t);
+}
+
+@greedy
+rule CreateRefreshTransferOperationForTransferObjectType
+    transform s : ESM!TransferObjectType
+    to t : JUDOPSM!BoundTransferOperation {
+        guard: esmUtils.isRefreshSupported(s)
+
+        t.name = "_refreshInstance" + esmUtils.getNamespaceElementFQName(s).replace("::", "_").firstToUpperCase();
+        t.behaviour = new JUDOPSM!TransferOperationBehaviour;
+        t.behaviour.behaviourType = JUDOPSM!TransferOperationBehaviourType#REFRESH;
+        t.behaviour.owner = s.getPSMTransferObjectTypeEquivalent();
+
+        t.output = new JUDOPSM!Parameter;
+        t.output.name = "output";
+        t.output.type = s.getPSMTransferObjectTypeEquivalent();
+        t.output.cardinality = new JUDOPSM!Cardinality;
+        t.output.cardinality.lower = 1;
+        t.output.cardinality.upper = 1;
+
+        t.binding = s.equivalent("CreateRefreshOperationForTransferObjectType");
+
+        s.getPSMTransferObjectTypeEquivalent().operations.add(t);
+}
