@@ -338,4 +338,12 @@
         <bundle>mvn:hu.blackbelt.judo.tatami/judo-tatami-workflow-osgi/${project.version}</bundle>
     </feature>
 
+    <feature name="judo-tatami-example-northwind-psm" version="${project.version}" description="JUDO Tatami, Northwind PSM based example Model" install="false">
+        <bundle>mvn:hu.blackbelt.judo.tatami/judo-tatami-northwind-psm/${project.version}</bundle>
+    </feature>
+
+    <feature name="judo-tatami-example-northwind-esm" version="${project.version}" description="JUDO Tatami, Northwind ESM based example Model" install="false">
+        <bundle>mvn:hu.blackbelt.judo.tatami/judo-tatami-northwind-esm/${project.version}</bundle>
+    </feature>
+
 </features>
