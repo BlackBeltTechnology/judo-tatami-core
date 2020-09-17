@@ -1246,3 +1246,31 @@ rule CreateRemoveReferenceTransferOperationForRelationFeature
 
         s.eContainer.getPSMTransferObjectTypeEquivalent().operations.add(t);
 }
+
+@greedy
+rule CreateGetRangeReferenceTransferOperationForRelationFeature
+    transform s : ESM!RelationFeature
+    to t : JUDOPSM!UnboundOperation {
+        guard: esmUtils.isGetRangeSupported(s)
+
+        t.name = "_getRangeReference" + s.name.firstToUpperCase();
+        t.behaviour = new JUDOPSM!TransferOperationBehaviour;
+        t.behaviour.behaviourType = JUDOPSM!TransferOperationBehaviourType#GET_RANGE;
+        t.behaviour.owner = s.getPSMTransferObjectRelationEquivalent();
+
+        t.input = new JUDOPSM!Parameter;
+        t.input.name = "input";
+        t.input.type = s.eContainer.getPSMTransferObjectTypeEquivalent();
+        t.input.cardinality = new JUDOPSM!Cardinality;
+        t.input.cardinality.lower = 0;
+        t.input.cardinality.upper = 1;
+
+        t.output = new JUDOPSM!Parameter;
+        t.output.name = "output";
+        t.output.type = s.target.getPSMTransferObjectTypeEquivalent();
+        t.output.cardinality = new JUDOPSM!Cardinality;
+        t.output.cardinality.lower = 0;
+        t.output.cardinality.upper = -1;
+
+        s.eContainer.getPSMTransferObjectTypeEquivalent().operations.add(t);
+}
