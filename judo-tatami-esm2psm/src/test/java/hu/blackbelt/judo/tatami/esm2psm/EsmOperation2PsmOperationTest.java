@@ -2,9 +2,7 @@ package hu.blackbelt.judo.tatami.esm2psm;
 
 import hu.blackbelt.epsilon.runtime.execution.api.Log;
 import hu.blackbelt.epsilon.runtime.execution.impl.Slf4jLog;
-import hu.blackbelt.judo.meta.esm.accesspoint.ActorType;
 import hu.blackbelt.judo.meta.esm.namespace.Model;
-import hu.blackbelt.judo.meta.esm.operation.Operation;
 import hu.blackbelt.judo.meta.esm.operation.OperationType;
 import hu.blackbelt.judo.meta.esm.operation.util.builder.OperationBuilder;
 import hu.blackbelt.judo.meta.esm.runtime.EsmModel;
@@ -330,10 +328,15 @@ public class EsmOperation2PsmOperationTest {
         final String NAME_OF_DELETE_INSTANCE_E_OPERATION_ET = "_deleteInstanceFor" + MODEL_NAME + "_" + ENTITY_TYPE_E_NAME;
         final String NAME_OF_SET_REFERENCE_SINGLE_REFERENCE_OPERATION = "_setReferenceSingleReference";
         final String NAME_OF_SET_REFERENCE_SINGLE_REFERENCE_OPERATION_ET = "_setReferenceSingleReferenceFor" + MODEL_NAME + "_" + ENTITY_TYPE_E_NAME;
+        final String NAME_OF_UNSET_REFERENCE_SINGLE_REFERENCE_OPERATION = "_unsetReferenceSingleReference";
+        final String NAME_OF_UNSET_REFERENCE_SINGLE_REFERENCE_OPERATION_ET = "_unsetReferenceSingleReferenceFor" + MODEL_NAME + "_" + ENTITY_TYPE_E_NAME;
         final String NAME_OF_SET_REFERENCE_MULTIPLE_REFERENCE_OPERATION = "_setReferenceMultipleReference";
+        final String NAME_OF_UNSET_REFERENCE_MULTIPLE_REFERENCE_OPERATION = "_unsetReferenceMultipleReference";
         final String NAME_OF_SET_REFERENCE_MULTIPLE_REFERENCE_OPERATION_ET = "_setReferenceMultipleReferenceFor" + MODEL_NAME + "_" + ENTITY_TYPE_E_NAME;
         final String NAME_OF_SET_REFERENCE_SINGLE_CONTAINMENT_OPERATION = "_setReferenceSingleContainment";
+        final String NAME_OF_UNSET_REFERENCE_SINGLE_CONTAINMENT_OPERATION = "_unsetReferenceSingleContainment";
         final String NAME_OF_SET_REFERENCE_MULTIPLE_CONTAINMENT_OPERATION = "_setReferenceMultipleContainment";
+        final String NAME_OF_UNSET_REFERENCE_MULTIPLE_CONTAINMENT_OPERATION = "_unsetReferenceMultipleContainment";
 
         final String NAME_OF_LIST_E_OPERATION = "_listE";
         final String NAME_OF_CREATE_INSTANCE_E_OPERATION = "_createInstanceE";
@@ -499,7 +502,7 @@ public class EsmOperation2PsmOperationTest {
                 .findAny();
         assertTrue(defaultD.isPresent());
 
-        log.debug("List of generated operations (D):{}", defaultD.get().getOperations().stream().map(o -> "\n - " + o.getName()).sorted().collect(Collectors.joining()));
+        log.debug("List of generated operations (D):{}", defaultD.get().getOperations().stream().map(o -> "\n - " + o.getName() + ": " + (o.getBehaviour() != null ? o.getBehaviour().getBehaviourType() : "-")).sorted().collect(Collectors.joining()));
 
         final Optional<hu.blackbelt.judo.meta.psm.service.MappedTransferObjectType> defaultE = allPsm(MappedTransferObjectType.class)
                 .filter(t -> ENTITY_TYPE_E_NAME.equals(t.getName()))
@@ -901,6 +904,14 @@ public class EsmOperation2PsmOperationTest {
                 EcoreUtil.equals(((BoundTransferOperation) o).getBinding().getInput().getType(), defaultF.get())
         ));
 
+        assertTrue(defaultE.get().getOperations().stream().anyMatch(o -> NAME_OF_UNSET_REFERENCE_SINGLE_REFERENCE_OPERATION.equals(o.getName()) && (o instanceof BoundTransferOperation) &&
+                EcoreUtil.equals(((BoundTransferOperation) o).getBinding().getInstanceRepresentation().getEntityType(), e.get()) &&
+                o.getBehaviour() != null && o.getBehaviour().getBehaviourType() == TransferOperationBehaviourType.UNSET_REFERENCE && EcoreUtil.equals(o.getBehaviour().getOwner(), defaultSingleReference.get()) &&
+                o.getInput() == null && o.getOutput() == null && o.getFaults().isEmpty() &&
+                NAME_OF_UNSET_REFERENCE_SINGLE_REFERENCE_OPERATION_ET.equals(((BoundTransferOperation) o).getBinding().getName()) &&
+                ((BoundTransferOperation) o).getBinding().getInput() == null && ((BoundTransferOperation) o).getBinding().getOutput() == null && ((BoundTransferOperation) o).getBinding().getFaults().isEmpty()
+        ));
+
         assertTrue(defaultE.get().getOperations().stream().anyMatch(o -> NAME_OF_SET_REFERENCE_MULTIPLE_REFERENCE_OPERATION.equals(o.getName()) && (o instanceof BoundTransferOperation) &&
                 EcoreUtil.equals(((BoundTransferOperation) o).getBinding().getInstanceRepresentation().getEntityType(), e.get()) &&
                 o.getBehaviour() != null && o.getBehaviour().getBehaviourType() == TransferOperationBehaviourType.SET_REFERENCE && EcoreUtil.equals(o.getBehaviour().getOwner(), defaultMultipleReference.get()) &&
@@ -913,8 +924,11 @@ public class EsmOperation2PsmOperationTest {
                 EcoreUtil.equals(((BoundTransferOperation) o).getBinding().getInput().getType(), defaultF.get())
         ));
 
+        assertFalse(defaultE.get().getOperations().stream().anyMatch(o -> NAME_OF_UNSET_REFERENCE_MULTIPLE_REFERENCE_OPERATION.equals(o.getName())));
         assertFalse(defaultE.get().getOperations().stream().anyMatch(o -> NAME_OF_SET_REFERENCE_SINGLE_CONTAINMENT_OPERATION.equals(o.getName())));
+        assertFalse(defaultE.get().getOperations().stream().anyMatch(o -> NAME_OF_UNSET_REFERENCE_SINGLE_CONTAINMENT_OPERATION.equals(o.getName())));
         assertFalse(defaultE.get().getOperations().stream().anyMatch(o -> NAME_OF_SET_REFERENCE_MULTIPLE_CONTAINMENT_OPERATION.equals(o.getName())));
+        assertFalse(defaultE.get().getOperations().stream().anyMatch(o -> NAME_OF_UNSET_REFERENCE_MULTIPLE_CONTAINMENT_OPERATION.equals(o.getName())));
     }
 
     @Test
