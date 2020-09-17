@@ -7,8 +7,7 @@
 // Template name: {{ template.templateName }}
 // Application: {{ application.name }}
 
-import 'package:flutter/material.dart';
-import 'package:{{modelPackage application.dataElement.name}}/{{path application.dataElement.name}}/components/package.dart';
+part of {{ variable application.name }}.ui.pages.tables;
 
 class {{fqClass table.pageDefinition.name}}{{fqClass table.name}}Table implements JudoTableDataInfo {
 

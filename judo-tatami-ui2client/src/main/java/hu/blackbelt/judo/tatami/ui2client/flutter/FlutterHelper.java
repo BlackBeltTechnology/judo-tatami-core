@@ -156,7 +156,7 @@ public class FlutterHelper {
     }
 
     public static String getWidgetTemplate(VisualElement visualElementType) {
-        String componentsLocation = "templates/flutter/lib/pages/components/";
+        String componentsLocation = "templates/flutter/lib/ui/pages/widgets/";
         return componentsLocation + visualElementType.eClass().getInstanceClass().getSimpleName().toLowerCase() + ".dart.hbs";
     }
 

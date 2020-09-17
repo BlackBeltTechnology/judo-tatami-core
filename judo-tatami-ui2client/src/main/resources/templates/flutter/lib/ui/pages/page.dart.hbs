@@ -8,35 +8,28 @@
 // Application: {{ application.name }}
 // Container: {{ container.name }}
 
-import 'package:flutter/material.dart';
-{{#if (isTablePage page)}}
-import 'components/table/package.dart';
-{{/if}}
-import '../store/package.dart';
-import '../utilities/package.dart';
-import '../components/package.dart';
-
+part of {{ variable application.name }}.ui.pages;
 {{#if (isViewPage page)}}
-{{> templates/flutter/lib/pages/pagetypesfragments/viewpagestore.dart.hbs}}
+{{> templates/flutter/lib/ui/pages/pagetypesfragments/viewpagestore.dart.hbs}}
 {{/if}}
 {{#if (isTablePage page)}}
-{{> templates/flutter/lib/pages/pagetypesfragments/tablepagestore.dart.hbs}}
+{{> templates/flutter/lib/ui/pages/pagetypesfragments/tablepagestore.dart.hbs}}
 {{/if}}
 
 class {{fqClass page.name}}Page extends StatefulWidget {
     static const String title = '{{page.label}}';
 
 {{#if (isTablePage page)}}
-{{> templates/flutter/lib/pages/pagetypesfragments/tablepagefragment.dart.hbs}}
+{{> templates/flutter/lib/ui/pages/pagetypesfragments/tablepagefragment.dart.hbs}}
 {{/if}}
 {{#if (isViewPage page)}}
-{{> templates/flutter/lib/pages/pagetypesfragments/viewpagefragment.dart.hbs}}
+{{> templates/flutter/lib/ui/pages/pagetypesfragments/viewpagefragment.dart.hbs}}
 {{/if}}
 {{#if (isCreatePage page)}}
-{{> templates/flutter/lib/pages/pagetypesfragments/createpagefragment.dart.hbs}}
+{{> templates/flutter/lib/ui/pages/pagetypesfragments/createpagefragment.dart.hbs}}
 {{/if}}
 {{#if (isEditPage page)}}
-{{> templates/flutter/lib/pages/pagetypesfragments/editpagefragment.dart.hbs}}
+{{> templates/flutter/lib/ui/pages/pagetypesfragments/editpagefragment.dart.hbs}}
 {{/if}}
 
     @override
@@ -58,7 +51,7 @@ class {{fqClass page.name}}Page extends StatefulWidget {
                         child: Row(
                             children: [
                             {{#each page.instanceActions as |instanceAction|}}
-                                {{> templates/flutter/lib/pages/components/instanceAction.dart.hbs}}
+                                {{> templates/flutter/lib/ui/pages/widgets/instanceAction.dart.hbs}}
                             {{/each}}
                             ],
                         ),

@@ -7,6 +7,14 @@
 // Template name: {{ template.templateName }}
 // Application: {{ application.name }}
 
-{{# each tables as |table|}}
-part '{{ fqPath table.pageDefinition.name }}__{{ table.name }}__table.dart';
+library {{ variable application.name }}ui.pages;
+
+import 'package:flutter/material.dart';
+import 'widgets/table/package.dart';
+import '../../../store/package.dart';
+import '../../../utilities/package.dart';
+import '../../../components/package.dart';
+
+{{# each layout.pageContainers as |container|}}
+part '{{ fqPath container.owner.name }}__page.dart';
 {{/ each }}

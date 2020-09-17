@@ -274,8 +274,8 @@
 # ========================================
 - overwriteExpression: true
   factoryExpression: "#application.pageContainers"
-  pathExpression: "'lib/' + #path(#application.dataElement.name) + '/pages/' + #self.layoutType.name + '/' + #fqPath(#self.owner.name) + '__page.dart'"
-  templateName: flutter/lib/pages/page.dart.hbs
+  pathExpression: "'lib/' + #path(#application.dataElement.name) + '/ui/pages/' + #self.layoutType.name + '/' + #fqPath(#self.owner.name) + '__page.dart'"
+  templateName: flutter/lib/ui/pages/page.dart.hbs
   templateContext:
     - name: container
       expression: "#self"
@@ -289,10 +289,10 @@
   pathExpression: >
     'lib/' +
     #path(#application.dataElement.name) +
-    '/pages/' +
+    '/ui/pages/' +
     #fqPath(#self.name) +
     '/package.dart'
-  templateName: flutter/lib/pages/package.dart.hbs
+  templateName: flutter/lib/ui/pages/package.dart.hbs
   templateContext:
     - name: layout
       expression: "#self"
@@ -305,12 +305,12 @@
   pathExpression: >
     'lib/' +
     #path(#application.dataElement.name) +
-    '/pages/' + #fqPath(#self.pageContainer.layoutType.name) + '/tables/' +
+    '/ui/pages/' + #fqPath(#self.pageContainer.layoutType.name) + '/tables/' +
     #fqPath(#self.pageDefinition.name) +
     '__'+
     #fqPath(#self.name) +
     '__table.dart'
-  templateName: flutter/lib/pages/components/table/table.dart.hbs
+  templateName: flutter/lib/ui/pages/widgets/table/table.dart.hbs
   templateContext:
     - name: table
       expression: "#self"
@@ -320,10 +320,10 @@
   pathExpression: >
     'lib/' +
     #path(#application.dataElement.name) +
-    '/pages/' +
+    '/ui/pages/' +
     #fqPath(#self.name) + '/tables/' +
     'package.dart'
-  templateName: flutter/lib/pages/components/table/package.dart.hbs
+  templateName: flutter/lib/ui/pages/widgets/table/package.dart.hbs
 
 # ========================================
 # routes
@@ -333,8 +333,10 @@
   pathExpression: >
     'lib/' +
     #path(#application.dataElement.name) +
-    '/routes/router.dart'
-  templateName: flutter/lib/routes/router.dart.hbs
+    '/ui/routes/' +
+    #fqPath(#self.name) +
+    '/router.dart'
+  templateName: flutter/lib/ui/routes/router.dart.hbs
   templateContext:
     - name: layout
       expression: "#self"
