@@ -240,7 +240,7 @@ rule CreateReferencePropertyDefinitionExtended
             var entityRef = new OPENAPI!PropertyDeclaration;
             entityRef.name = "__signedIdentifier";
             entityRef.property = new OPENAPI!Property;
-            entityRef.property.description = "ID of " + asmUtils.getMappedEntityType(s.eContainer.eReferenceType).get().name + " instance";
+            entityRef.property.description = "Signed ID of " + asmUtils.getMappedEntityType(s.eContainer.eReferenceType).get().name + " instance";
             entityRef.property.type = OPENAPI!JSONDataType#string;
             t.properties.add(entityRef);
 

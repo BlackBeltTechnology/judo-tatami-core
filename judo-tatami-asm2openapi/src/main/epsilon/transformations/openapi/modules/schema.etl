@@ -28,14 +28,14 @@ rule CreateTransferObjectSingleSchemaDeclarationForDelete
         t.schema.description = "Schema of instance reference";
         t.schema.type = OPENAPI!JSONDataType#object;
 
-        var id = new OPENAPI!PropertyDeclaration;
-        id.name = "__signedIdentifier";
+        var signedId = new OPENAPI!PropertyDeclaration;
+        signedId.name = "__signedIdentifier";
 
-        id.property = new OPENAPI!Property;
-        id.property.description = "ID of instance";
-        id.property.type = OPENAPI!JSONDataType#string;
+        signedId.property = new OPENAPI!Property;
+        signedId.property.description = "Signed ID of instance";
+        signedId.property.type = OPENAPI!JSONDataType#string;
 
-        t.schema.properties.add(id);
+        t.schema.properties.add(signedId);
 
         s.equivalent("CreateOpenAPIActorType").definitions.add(t);
 }
@@ -50,15 +50,6 @@ rule CreateTransferObjectSingleSchemaDefinitionExtended
         t.type = OPENAPI!JSONDataType#object;
 
         if (asmUtils.isMappedTransferObjectType(s.eContainer) and not s.eContainer.eSuperTypes.exists(sup | asmUtils.isMappedTransferObjectType(sup))) {
-            var id = new OPENAPI!PropertyDeclaration;
-            id.name = "__signedIdentifier";
-
-            id.property = new OPENAPI!Property;
-            id.property.description = "ID of " + asmUtils.getMappedEntityType(s.eContainer).get().name + " instance";
-            id.property.type = OPENAPI!JSONDataType#string;
-
-            t.properties.add(id);
-
             var referenceId = new OPENAPI!PropertyDeclaration;
             referenceId.name = "__referenceId";
 
@@ -67,22 +58,6 @@ rule CreateTransferObjectSingleSchemaDefinitionExtended
             referenceId.property.type = OPENAPI!JSONDataType#string;
 
             t.properties.add(referenceId);
-
-            var updateable = new OPENAPI!PropertyDeclaration;
-            updateable.name = "__updateable";
-
-            updateable.property = new OPENAPI!Property;
-            updateable.property.type = OPENAPI!JSONDataType#boolean;
-
-            t.properties.add(updateable);
-
-            var deleteable = new OPENAPI!PropertyDeclaration;
-            deleteable.name = "__deleteable";
-
-            deleteable.property = new OPENAPI!Property;
-            deleteable.property.type = OPENAPI!JSONDataType#boolean;
-
-            t.properties.add(deleteable);
         }
 
         s.equivalent("CreateTransferObjectSingleSchemaDeclarationExtended").schema = t;
@@ -99,13 +74,22 @@ rule CreateTransferObjectSingleSchemaDefinition
 
         if (asmUtils.isMappedTransferObjectType(s.eContainer) and not s.eContainer.eSuperTypes.exists(sup | asmUtils.isMappedTransferObjectType(sup))) {
             var id = new OPENAPI!PropertyDeclaration;
-            id.name = "__signedIdentifier";
+            id.name = "__identifier";
 
             id.property = new OPENAPI!Property;
             id.property.description = "ID of " + asmUtils.getMappedEntityType(s.eContainer).get().name + " instance";
             id.property.type = OPENAPI!JSONDataType#string;
 
             t.properties.add(id);
+
+            var signedId = new OPENAPI!PropertyDeclaration;
+            signedId.name = "__signedIdentifier";
+
+            signedId.property = new OPENAPI!Property;
+            signedId.property.description = "Signed ID of " + asmUtils.getMappedEntityType(s.eContainer).get().name + " instance";
+            signedId.property.type = OPENAPI!JSONDataType#string;
+
+            t.properties.add(signedId);
 
             var referenceId = new OPENAPI!PropertyDeclaration;
             referenceId.name = "__referenceId";
