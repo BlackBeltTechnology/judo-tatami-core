@@ -44,6 +44,7 @@ rule CreateExposedServiceOperation
     to t : OPENAPI!Operation {
         t.`operationId` = asmUtils.getOperationFQName(s.eContainer);
 
+        /*
         for (exposedGraph in s.eContainer.eAnnotations.select(a | a.source = asmUtils.getAnnotationUri("exposedGraph")).collect(a | asmUtils.resolveReference(a.details.get("value")))) {
             if (exposedGraph.present) {
                 if (asmUtils.resolve(s.details.get("value")).orElse(null) == exposedGraph.get().eContainingClass) {
@@ -53,7 +54,7 @@ rule CreateExposedServiceOperation
                     }
                 }
             }
-        }
+        } */
 }
 
 rule CreateExposedServiceGetOperation

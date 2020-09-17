@@ -22,7 +22,8 @@ abstract class _{{ fqClass name }}Store with Store {
   _{{ fqClass name }}Store();
 
   _{{ fqClass name }}Store.clone({{ fqClass name }}Store {{ variable name }}Store) {
-    identifier = {{ variable name }}Store.identifier;
+    signedIdentifier = {{ variable name }}Store.signedIdentifier;
+    referenceIdentifier = {{ variable name }}Store.referenceIdentifier;
 
     {{# each attributes }}
     {{ variable name }} = {{ variable ../name }}Store.{{ variable name }};
@@ -42,7 +43,8 @@ abstract class _{{ fqClass name }}Store with Store {
     {{/ each }}
   }
 
-  String identifier;
+  String signedIdentifier;
+  String referenceIdentifier = Uuid().v1();
 
   // Attributes
   {{# each attributes }}
@@ -97,10 +99,10 @@ abstract class _{{ fqClass name }}Store with Store {
     identical(this, other) ||
     other is _{{ fqClass name }}Store &&
         runtimeType == other.runtimeType &&
-        identifier == other.identifier &&
-        identifier != null &&
-        other.identifier != null;
+        signedIdentifier == other.signedIdentifier &&
+        signedIdentifier != null &&
+        other.signedIdentifier != null;
 
   @override
-  int get hashCode => identifier.hashCode;
+  int get hashCode => signedIdentifier.hashCode;
 }

@@ -2,6 +2,7 @@ import "../../../operations/openapi/_importAll.eol";
 
 import "api.etl";
 
+/*
 rule CreateTag
     transform s : ASM!EReference
     to t : OPENAPI!Tag {
@@ -15,3 +16,4 @@ rule CreateTag
 		    asmUtils.getAccessPointOfGraph(s).get().equivalent("CreateOpenAPIAccessPoint").tags.add(t);
         }
 }
+*/
