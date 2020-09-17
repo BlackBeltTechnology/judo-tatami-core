@@ -1,0 +1,65 @@
+class {{fqClass page.name}}PageStore extends _{{fqClass page.name}}PageStore with _${{fqClass page.name}}PageStore {}
+
+abstract class _{{fqClass page.name}}PageStore with Store {
+    {{#with page.dataElement as |relation|}}
+    {{ fqClass relation.owner.name }}{{ fqClass relation.name }}Repository _{{ fqVariable relation.owner.name }}{{ fqClass relation.name }}Repository = locator<{{ fqClass relation.owner.name }}{{ fqClass relation.name }}Repository>();
+
+    @observable
+    String errorMessage;
+
+    {{#if relation.isCollection}}
+    @observable
+    List<{{ fqClass relation.name }}Store> {{fqVariable relation.name}}ListStore = ObservableList<{{ fqClass relation.name }}Store>();
+    {{/if}}
+
+    @observable
+    ObservableFuture {{fqVariable relation.name}}StoreFuture;
+
+    {{#with relation.behaviour as |selfbehaviour|}}
+    {{#if selfbehaviour.creatable}}
+    @action
+    Future<{{ getTargetDataTypeClass relation }}Store> create{{fqClass relation.name}}({{ getTargetDataTypeClass relation }}Store {{ getTargetDataTypeVariable relation }}Store) async {
+        try {
+            errorMessage = null;
+            {{relation.name}}StoreFuture = ObservableFuture(_{{ fqVariable relation.owner.name }}{{ fqClass relation.name }}Repository.{{ getTargetDataTypeVariable relation }}Create({{ getTargetDataTypeVariable relation }}Store));
+            return await {{relation.name}}StoreFuture;
+        } on ApiException {
+            errorMessage = "Could not create {{relation.name}}";
+        }
+    }
+    {{/if}}
+
+    {{#if selfbehaviour.removable}}
+    @action
+    Future<void> remove{{fqClass relation.name}}({{ getTargetDataTypeClass relation }}Store {{ getTargetDataTypeVariable relation }}Store) async {
+        try {
+            errorMessage = null;
+            {{relation.name}}StoreFuture = ObservableFuture(_{{ fqVariable relation.owner.name }}{{ fqClass relation.name }}Repository.{{ getTargetDataTypeVariable relation }}Delete({{ getTargetDataTypeVariable relation }}Store));
+            await {{relation.name}}StoreFuture;
+            {{relation.name}}ListStore.remove({{ getTargetDataTypeVariable relation }}Store);
+        } on ApiException {
+            errorMessage = "Could not remove {{relation.name}}";
+        }
+    }
+    {{/if}}
+
+    {{#if selfbehaviour.getable}}
+    {{#if relation.isCollection}}
+    @action
+    Future<List<{{ getTargetDataTypeClass relation }}Store>> get{{fqClass relation.name}}() async {
+        try {
+            errorMessage = null;
+            {{relation.name}}StoreFuture = ObservableFuture(_{{ fqVariable relation.owner.name }}{{ fqClass relation.name }}Repository.{{ getTargetDataTypeVariable relation }}List());
+            {{relation.name}}ListStore.clear();
+            {{relation.name}}ListStore.addAll(await {{relation.name}}StoreFuture);
+            return {{relation.name}}ListStore;
+        } on ApiException {
+            errorMessage = "Could not load all {{relation.name}}";
+        }
+
+    }
+    {{/if}}
+    {{/if}}
+    {{/with}}
+    {{/with}}
+}

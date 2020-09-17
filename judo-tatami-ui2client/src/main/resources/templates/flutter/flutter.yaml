@@ -89,7 +89,6 @@
     - name: relation
       expression: "#self"
 
-
 - overwriteExpression: true
   factoryExpression: "{#application}"
   pathExpression: >
@@ -285,6 +284,19 @@
     - name: ap
       expression: "#application.dataElement"
 
+- overwriteExpression: true
+  factoryExpression: "#application.layoutTypes"
+  pathExpression: >
+    'lib/' +
+    #path(#application.dataElement.name) +
+    '/pages/' +
+    #fqPath(#self.name) +
+    '/package.dart'
+  templateName: flutter/lib/pages/package.dart.hbs
+  templateContext:
+    - name: layout
+      expression: "#self"
+
 # ========================================
 # tables
 # ========================================
@@ -312,3 +324,17 @@
     #fqPath(#self.name) + '/tables/' +
     'package.dart'
   templateName: flutter/lib/pages/components/table/package.dart.hbs
+
+# ========================================
+# routes
+# ========================================
+- overwriteExpression: true
+  factoryExpression: "#application.layoutTypes"
+  pathExpression: >
+    'lib/' +
+    #path(#application.dataElement.name) +
+    '/routes/router.dart'
+  templateName: flutter/lib/routes/router.dart.hbs
+  templateContext:
+    - name: layout
+      expression: "#self"

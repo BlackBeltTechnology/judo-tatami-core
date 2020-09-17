@@ -48,6 +48,7 @@ public class FlutterHelper {
         context.registerFunction("isViewPage", FlutterHelper.class.getDeclaredMethod("isViewPage", new Class[]{PageDefinition.class}));
         context.registerFunction("isCreatePage", FlutterHelper.class.getDeclaredMethod("isCreatePage", new Class[]{PageDefinition.class}));
         context.registerFunction("isEditPage", FlutterHelper.class.getDeclaredMethod("isEditPage", new Class[]{PageDefinition.class}));
+        context.registerFunction("isDashboardPage", FlutterHelper.class.getDeclaredMethod("isDashboardPage", new Class[]{PageDefinition.class}));
         context.registerFunction("isInstanceAction", FlutterHelper.class.getDeclaredMethod("isInstanceAction", new Class[]{PageDefinition.class}));
     }
 
@@ -57,6 +58,10 @@ public class FlutterHelper {
 
     public static boolean isInstanceAction (PageDefinition pageDefinition) {
         return pageDefinition.getInstanceActions()!= null && !pageDefinition.getInstanceActions().isEmpty();
+    }
+
+    public static boolean isDashboardPage(PageDefinition pageDefinition) {
+        return pageDefinition.getPageType().equals(PageType.DASHBOARD);
     }
 
     public static boolean isEditPage(PageDefinition pageDefinition) {

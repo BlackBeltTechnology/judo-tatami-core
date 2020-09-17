@@ -9,13 +9,22 @@
 // Container: {{ container.name }}
 
 import 'package:flutter/material.dart';
+{{#if (isTablePage page)}}
 import 'components/table/package.dart';
+{{/if}}
 import '../store/package.dart';
 import '../utilities/package.dart';
 import '../components/package.dart';
 
+{{#if (isViewPage page)}}
+{{> templates/flutter/lib/pages/pagetypesfragments/viewpagestore.dart.hbs}}
+{{/if}}
+{{#if (isTablePage page)}}
+{{> templates/flutter/lib/pages/pagetypesfragments/tablepagestore.dart.hbs}}
+{{/if}}
+
 class {{fqClass page.name}}Page extends StatefulWidget {
-    static const String title = 'Categories';
+    static const String title = '{{page.label}}';
 
 {{#if (isTablePage page)}}
 {{> templates/flutter/lib/pages/pagetypesfragments/tablepagefragment.dart.hbs}}
