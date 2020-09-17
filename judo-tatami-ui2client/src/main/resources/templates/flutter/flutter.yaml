@@ -74,22 +74,6 @@
     - name: ap
       expression: "#application.dataElement"
 
-#- overwriteExpression: true
-#  factoryExpression: "#operations(#application)"
-#  pathExpression: >
-#    'lib/' +
-#    #path(#application.dataElement.name) + '/repository/' +
-#    #path(#self.accessRelation.name) + '/' +
-#    #fqPath(#self.relationType.owner.name) + '__' +
-#    #self.relationType.name  +
-#    '__repository.dart'
-#  templateName: flutter/lib/repositories/repository_access_point_relation.dart.hbs
-#  templateContext:
-#    - name: ap
-#      expression: "#application.dataElement"
-#    - name: operations
-#      expression: "#operations(#application)"
-
 - overwriteExpression: true
   factoryExpression: "#application.relationTypes"
   pathExpression: >
@@ -105,18 +89,6 @@
     - name: relation
       expression: "#self"
 
-
-#- overwriteExpression: true
-#  factoryExpression: "#application.dataElement.relations"
-#  pathExpression: >
-#    'lib/' +
-#    #path(#application.dataElement.name) + '/repository/' +
-#    #path(#self.name) + '/' +
-#    'default__repository.dart'
-#  templateName: flutter/lib/repositories/repository_default.dart.hbs
-#  templateContext:
-#    - name: ap
-#      expression: "#application.dataElement"
 
 - overwriteExpression: true
   factoryExpression: "{#application}"
