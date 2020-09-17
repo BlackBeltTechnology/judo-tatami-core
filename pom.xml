@@ -767,8 +767,10 @@
                 <module>judo-tatami-workflow</module>
                 <module>judo-tatami-workflow-osgi</module>
 		        <module>judo-tatami-workflow-maven-plugin</module>
-		        <module>judo-tatami-workflow-maven-plugin-test</module>
-                <module>judo-tatami-itest</module>
+		        <!-- <module>judo-tatami-workflow-maven-plugin-test</module> -->
+                <module>judo-tatami-northwind-psm</module>
+                <module>judo-tatami-northwind-esm</module>
+                <!-- <module>judo-tatami-itest</module> -->
                 <module>judo-tatami-karaf-features</module>
                 <module>judo-tatami-karaf-kar</module>
             </modules>
