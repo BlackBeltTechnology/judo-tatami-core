@@ -57,7 +57,7 @@ post {
     		}
     		
     		for (o in psmTransferObject.operations.select(op | not op.isKindOf(JUDOPSM!UnboundOperation)
-    				or not (op.behaviour.isDefined() and op.behaviour.owner.isKindOf(JUDOPSM!TransferObjectType)))) {
+    				and not (op.behaviour.isDefined() and op.behaviour.owner.isKindOf(JUDOPSM!TransferObjectType)))) {
     			if (not psmSubClass.operations.exists(op | op.name.equals(o.name))) {
 	    			psmSubClass.operations.add(ecoreUtil.copy(o));
 	    			log.debug("Added operation: [" + o.name + "] to subclass [" + psmSubClass.name + "] from [" + psmTransferObject.name + "]");
