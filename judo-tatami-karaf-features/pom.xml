@@ -125,6 +125,8 @@
                                         <feature>judo-tatami-validation-expression-psm</feature>
                                         <feature>judo-tatami-validation-expression-esm</feature>
                                         <feature>judo-tatami-workflow</feature>
+                                        <feature>judo-tatami-example-northwind-psm</feature>
+                                        <feature>judo-tatami-example-northwind-esm</feature>
                                     </features>
                                 </configuration>
                             </execution>
