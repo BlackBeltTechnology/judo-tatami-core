@@ -1,0 +1,27 @@
+[%
+  import "../../operations/sdk.eol";  
+  out.setContentType("Java");
+%]
+
+[% 
+	var dtoTypeName = getSdkPrefix() + dto.getDtoTypeName();
+	var name = dto.getClassName() + "StaticInitializer"; 	
+%]
+
+package [%= getInternalPrefix() + dto.getDtoPackageName() %];
+
+import static [%= getInternalPrefix() + getModelPackageName() %].util.SdkUtil.*;
+
+public class [%= name%]Impl extends [%= getInternalPrefix() + getModelPackageName() %].util.AbstractSdkDao implements [%= dtoTypeName %].[%= name %] {
+
+	private final static String FQ_NAME = "[%= asmUtils.getClassifierFqName(dto) %]";
+
+	@Override
+	public [%= dtoTypeName %].[%= dto.getClassName() %]Builder initBuilder() {
+		org.eclipse.emf.ecore.EClass eClass = getEClass(FQ_NAME);
+		hu.blackbelt.judo.dao.api.Payload resultPayload = dao.getStaticFeatures(eClass);
+		[%= dtoTypeName %] obj = fromPayload([%= dtoTypeName %].class, resultPayload);
+		return [%= dtoTypeName %].builderFrom(obj);
+	}
+
+}

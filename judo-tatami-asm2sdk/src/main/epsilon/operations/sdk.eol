@@ -102,7 +102,6 @@ operation genDaoScrXml(dto : ASM!EClass) {
 	return filename;
 }
 
-
 @cached
 operation getDispatcherWrapperScrXmlFileName(dto : ASM!EClass) : String {
 	return "OSGI-INF/" + getInternalPrefix() + dto.getDtoPackageName() + "." + dto.getClassName() + "OperationsDispatcherWrapper.xml";
@@ -118,7 +117,14 @@ operation genInternalDaoInterfaces(dto : ASM!EClass) : Set {
 	result.add(genDaoScrXml(dto));
 	result.add(genDaoImpl(dto));
 	return result;
-}	
+}
+
+operation genUnmappedInitializerFiles(dto : ASM!EClass) : Set {
+	var result = new Set();
+	result.add(genUnmappedInitializerScrXml(dto));
+	result.add(genUnmappedInitializerImpl(dto));
+	return result;
+}		
 
 operation genDaoImpl(dto: ASM!EClass) : String {
 	var singleRelations = new Set();
@@ -139,6 +145,20 @@ operation genDaoImpl(dto: ASM!EClass) : String {
 	var fileName = dto.getDaoImplJavaFileName(getInternalPrefix() + dto.getDtoPackageName());
 	template.generate(fileName);
 	return fileName;
+}
+
+operation genUnmappedInitializerImpl(dto: ASM!EClass) : String {
+	var template = TemplateFactory.load("dao/UnmappedInitializerImpl.java.egl");
+	var fileName = dto.getUnmappedInitializerImplJavaFileName(getInternalPrefix() + dto.getDtoPackageName());
+	template.generate(fileName);
+	return fileName;
+}
+
+operation genUnmappedInitializerScrXml(dto : ASM!EClass) {
+	var template = TemplateFactory.load("dao/UnmappedInitializer.scr.xml.egl");
+	var filename =  "OSGI-INF/" + getInternalPrefix() + dto.getDtoPackageName() + "." + dto.getClassName() + "StaticInitializerImpl.xml";
+	template.generate(filename);
+	return filename;
 }
 
 operation genDtoInterface(dto: ASM!EClass) : String {
@@ -417,6 +437,11 @@ operation ASM!EClass getDtoJavaFileName(package : String) : String {
 @cached
 operation ASM!EClass getDaoImplJavaFileName(package : String) : String {
 	return package.replaceAll("\\.", "/") + "/" + self.getClassName()  + "DaoImpl.java";
+}
+
+@cached
+operation ASM!EClass getUnmappedInitializerImplJavaFileName(package : String) : String {
+	return package.replaceAll("\\.", "/") + "/" + self.getClassName()  + "StaticInitializerImpl.java";
 }
 
 @cached
