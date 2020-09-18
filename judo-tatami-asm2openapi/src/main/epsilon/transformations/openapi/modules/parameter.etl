@@ -94,8 +94,13 @@ rule CreateParameterDefinitionSchemaReference
                     } else {
                         t.ref = s.equivalent("CreateParameterDefinitionSchemaReferenceForReferenceChange").getReference();
                     }
-                } else if (behaviour.present and (behaviour.get().toString() == "SET_REFERENCE" or behaviour.get().toString() == "UNSET_REFERENCE" or behaviour.get().toString() == "ADD_REFERENCE" or behaviour.get().toString() == "REMOVE_REFERENCE") and behaviourRelation.present) {
-                    throw "Not supported yet";
+                } else if (behaviour.present and (behaviour.get().toString() == "SET_REFERENCE" or behaviour.get().toString() == "UNSET_REFERENCE" or behaviour.get().toString() == "ADD_REFERENCE" or behaviour.get().toString() == "REMOVE_REFERENCE")) {
+                    var ap = asmUtils.getAllActorTypes().selectOne(ap | asmUtils.getClassifierFQName(ap) == s.details.get("value"));
+                    if (s.eContainer.many) {
+                        t.ref = ap.equivalent("CreateCollectionReferenceSchema").getReference();
+                    } else {
+                        t.ref = ap.equivalent("CreateSingleReferenceSchema").getReference();
+                    }
 		        } else {
                     if (s.eContainer.many) {
                         t.ref = transferObjectTypeExposedByAnnotation.equivalent("CreateTransferObjectArraySchemaDeclaration").getReference();
@@ -159,4 +164,54 @@ rule CreateParameterDefinitionSchemaReferenceForReferenceChange
 
         var ap = asmUtils.getAllActorTypes().selectOne(ap | asmUtils.getClassifierFQName(ap) == s.details.get("value"));
         ap.equivalent("CreateOpenAPIActorType").definitions.add(t);
+}
+
+@lazy
+rule CreateSingleReferenceSchema
+    transform s : ASM!EClass
+    to t : OPENAPI!SchemaDeclaration {
+        guard: asmUtils.isActorType(s)
+
+        t.name = "__SingleReference";
+
+        t.schema = new OPENAPI!Schema;
+        t.schema.description = "Schema used to set single reference";
+        t.schema.type = OPENAPI!JSONDataType#object;
+
+        var signedId = new OPENAPI!PropertyDeclaration;
+        signedId.name = "__signedIdentifier";
+
+        signedId.property = new OPENAPI!Property;
+        signedId.property.description = "Signed ID of referenced instance";
+        signedId.property.type = OPENAPI!JSONDataType#string;
+
+        t.schema.properties.add(signedId);
+
+        s.equivalent("CreateOpenAPIActorType").definitions.add(t);
+}
+
+@lazy
+rule CreateCollectionReferenceSchema
+    transform s : ASM!EClass
+    to t : OPENAPI!SchemaDeclaration {
+        guard: asmUtils.isActorType(s)
+
+        t.name = "__CollectionReference";
+
+        t.schema = new OPENAPI!Schema;
+        t.schema.description = "Schema used to set collection reference";
+        t.schema.type = OPENAPI!JSONDataType#array;
+
+        var refId = new OPENAPI!PropertyDeclaration;
+        refId.name = "__signedIdentifier";
+
+        refId.property = new OPENAPI!Property;
+        refId.property.description = "Signed ID of referenced instance";
+        refId.property.type = OPENAPI!JSONDataType#string;
+
+        t.schema.items = new OPENAPI!Property;
+        t.schema.items.type = OPENAPI!JSONDataType#object;
+        t.schema.items.properties.add(refId);
+
+        s.equivalent("CreateOpenAPIActorType").definitions.add(t);
 }

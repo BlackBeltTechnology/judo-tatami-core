@@ -19,8 +19,18 @@ operation ASM!EOperation toJAXRSPath() : String {
                 } else {
                     path = asmUtils.getReferenceFQName(owner.get) + "/~get";
                 }
-            case "CREATE_INSTANCE": path = asmUtils.getReferenceFQName(owner.get) + "/~create";
-            case "VALIDATE_CREATE": path = asmUtils.getReferenceFQName(owner.get) + "/~validate";
+            case "CREATE_INSTANCE":
+                if (asmUtils.isBound(self)) {
+                    path = asmUtils.getClassifierFQName(owner.get.eContainer) + "/~update/" + owner.get.name + "/~create";
+                } else {
+                    path = asmUtils.getReferenceFQName(owner.get) + "/~create";
+                }
+            case "VALIDATE_CREATE":
+                if (asmUtils.isBound(self)) {
+                    path = asmUtils.getClassifierFQName(owner.get.eContainer) + "/~update/" + owner.get.name + "/~validate";
+                } else {
+                    path = asmUtils.getReferenceFQName(owner.get) + "/~validate";
+                }
             case "REFRESH": path = asmUtils.getClassifierFQName(owner.get) + "/~get";
             case "UPDATE_INSTANCE": path = asmUtils.getClassifierFQName(owner.get) + "/~update";
             case "VALIDATE_UPDATE": path = asmUtils.getClassifierFQName(owner.get) + "/~validate";
@@ -30,6 +40,9 @@ operation ASM!EOperation toJAXRSPath() : String {
             case "ADD_REFERENCE": path = asmUtils.getClassifierFQName(owner.get.eContainer) + "/~update/" + owner.get.name + "/~add";
             case "REMOVE_REFERENCE": path = asmUtils.getClassifierFQName(owner.get.eContainer) + "/~update/" + owner.get.name + "/~remove";
             case "GET_REFERENCE_RANGE": path = asmUtils.getReferenceFQName(owner.get) + "/~range";
+            case "GET_TEMPLATE": path = asmUtils.getClassifierFQName(owner.get) + "/~template";
+            case "GET_PRINCIPAL": path = asmUtils.getClassifierFQName(owner.get) + "/~principal";
+
             case "GET": path = asmUtils.getReferenceFQName(owner.get) + "/get";
             case "CREATE": path = asmUtils.getReferenceFQName(owner.get) + "/create";
             case "UPDATE": path = asmUtils.getReferenceFQName(owner.get) + "/update";
@@ -39,8 +52,6 @@ operation ASM!EOperation toJAXRSPath() : String {
             case "ADD_ALL": path = asmUtils.getReferenceFQName(owner.get) + "/" + relation.get().name + "/add";
             case "REMOVE_ALL": path = asmUtils.getReferenceFQName(owner.get) + "/" + relation.get().name + "/remove";
             case "GET_RANGE": path = owner.get.eContainer.toJAXRSPath() + "/" + owner.get.name + "/" + relation.get().name + "/range";
-            case "GET_TEMPLATE": path = asmUtils.getClassifierFQName(owner.get) + "/~template";
-            case "GET_PRINCIPAL": path = asmUtils.getClassifierFQName(owner.get) + "/~principal";
         }
     }
 

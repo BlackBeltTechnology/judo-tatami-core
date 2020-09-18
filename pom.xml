@@ -63,7 +63,7 @@
         <judo-meta-jql-version>1.0.1.20200911_151101_497f524_develop</judo-meta-jql-version>
         <judo-meta-jcl-version>1.0.1.20200911_153138_1b36cee_develop</judo-meta-jcl-version>
         <judo-meta-script-version>1.0.1.20200915_154622_23285ac_develop</judo-meta-script-version>
-        <judo-meta-asm-version>1.1.0.20200917_205332_61d1182_feature_JNG_1633_change_base_of_REST_API</judo-meta-asm-version>
+        <judo-meta-asm-version>1.1.0.20200918_093607_2aa5794_feature_JNG_1633_change_base_of_REST_API</judo-meta-asm-version>
         <judo-meta-expression-version>1.0.1.20200911_153042_848a9f3_develop</judo-meta-expression-version>
         <judo-meta-measure-version>1.0.0.20200911_151807_a1d34f8_develop</judo-meta-measure-version>
         <judo-meta-liquibase-version>1.0.0.20200911_151645_2566ce8_develop</judo-meta-liquibase-version>
