@@ -55,34 +55,3 @@ rule CreateRealmTypeAnnotation
 
         s.asmEquivalent().eAnnotations.add(t);
 }
-
-/* TODO: JNG-1630 - remove is not used anymore
-rule CreateExposedServiceReferenceAnnotation
-    transform s : JUDOPSM!TransferObjectRelation
-    to t : ASM!EAnnotation {
-        guard: s.eContainer.isActorType() and not s.isExposedGraph()
-
-        t.source = asmUtils.getAnnotationUri("exposedService");
-
-        var exposedServiceEntry = new ASM!EStringToStringMapEntry;
-        exposedServiceEntry.key = "value";
-        exposedServiceEntry.value = "true";
-        t.details.add(exposedServiceEntry);
-
-        s.asmEquivalent().eAnnotations.add(t);
-} */
-
-rule CreateExposedGraphReferenceAnnotation
-    transform s : JUDOPSM!TransferObjectRelation
-    to t : ASM!EAnnotation {
-        guard: s.isExposedGraph()
-
-        t.source = asmUtils.getAnnotationUri("exposedGraph");
-
-        var exposedGraphEntry = new ASM!EStringToStringMapEntry;
-        exposedGraphEntry.key = "value";
-        exposedGraphEntry.value = "true";
-        t.details.add(exposedGraphEntry);
-
-        s.asmEquivalent().eAnnotations.add(t);
-}

@@ -59,7 +59,6 @@ public class Psm2AsmAccessPointTest {
     public static final String MODEL_NAME = "Test";
     public static final String TARGET_TEST_CLASSES = "target/test-classes";
 
-    public static final String EXPOSED_GRAPH_SOURCE = AsmUtils.getAnnotationUri("exposedGraph");
     public static final String EXPRESSION_SOURCE = AsmUtils.getAnnotationUri("expression");
 
     Log slf4jlog;
@@ -271,12 +270,7 @@ public class Psm2AsmAccessPointTest {
         final Optional<EClass> asmMappedObject = asmUtils.all(EClass.class).filter(c -> c.getName().equals(mappedObject.getName())).findAny();
         assertTrue(asmMappedObject.isPresent());
         assertTrue(asmEG.get().getEType().equals(asmMappedObject.get()));
-        assertThat(asmEG.get().getEAnnotation(EXPOSED_GRAPH_SOURCE), notNullValue());
         assertThat(asmEG.get().getEAnnotation(EXPRESSION_SOURCE), notNullValue());
-        final EAnnotation egAnnotation = asmEG.get().getEAnnotation(EXPOSED_GRAPH_SOURCE);
-        assertTrue(egAnnotation.getDetails().containsKey("value"));
-        assertTrue(egAnnotation.getDetails().get("value").equals("true"));
-        assertTrue(egAnnotation.getEModelElement().equals(asmEG.get()));
         final EAnnotation egExprAnnotation = asmEG.get().getEAnnotation(EXPRESSION_SOURCE);
         assertTrue(egExprAnnotation.getDetails().containsKey("getter"));
         assertTrue(egExprAnnotation.getDetails().containsKey("getter.dialect"));
