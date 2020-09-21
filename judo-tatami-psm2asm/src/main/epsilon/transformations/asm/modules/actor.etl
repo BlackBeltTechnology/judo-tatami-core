@@ -1,0 +1,57 @@
+import "../utils/_importUtils.eol";
+import "operation.etl";
+
+@greedy
+rule CreateActorAnnotation
+    transform s : JUDOPSM!TransferObjectType
+    to t : ASM!EAnnotation {
+        guard: s.actorType.isDefined()
+
+        t.source = asmUtils.getAnnotationUri("actor");
+
+        var actorName = new ASM!EStringToStringMapEntry;
+        actorName.key = "name";
+        actorName.value = psmUtils.namespaceElementToString(s.actorType);
+        t.details.add(actorName);
+
+        if (s.actorType.realm.isDefined()) {
+            var realm = new ASM!EStringToStringMapEntry;
+            realm.key = "realm";
+            realm.value = s.actorType.realm;
+            t.details.add(realm);
+        }
+
+        s.asmEquivalent().eAnnotations.add(t);
+}
+
+@greedy
+rule CreateActorTypeAnnotation
+    transform s : JUDOPSM!TransferObjectType
+    to t : ASM!EAnnotation {
+        guard: s.isKindOf(JUDOPSM!AbstractActorType)
+
+        t.source = asmUtils.getAnnotationUri("actorType");
+
+        var actorType = new ASM!EStringToStringMapEntry;
+        actorType.key = "value";
+        actorType.value = "true";
+        t.details.add(actorType);
+
+        s.asmEquivalent().eAnnotations.add(t);
+}
+
+@greedy
+rule CreateRealmTypeAnnotation
+    transform s : JUDOPSM!TransferObjectType
+    to t : ASM!EAnnotation {
+        guard: s.isKindOf(JUDOPSM!AbstractActorType) and s.realm.isDefined()
+
+        t.source = asmUtils.getAnnotationUri("realm");
+
+        var realm = new ASM!EStringToStringMapEntry;
+        realm.key = "value";
+        realm.value = s.realm;
+        t.details.add(realm);
+
+        s.asmEquivalent().eAnnotations.add(t);
+}

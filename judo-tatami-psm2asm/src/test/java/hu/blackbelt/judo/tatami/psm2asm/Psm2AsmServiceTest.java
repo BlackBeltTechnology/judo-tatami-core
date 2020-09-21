@@ -475,8 +475,6 @@ public class Psm2AsmServiceTest {
 		assertTrue(asmTR2.get().isChangeable());
 		assertTrue(asmTR3.get().isChangeable());
 
-		assertTrue(asmTR2.get().getEAnnotations().isEmpty());
-
 		final EAnnotation asmTR1Annotation = asmTR1.get().getEAnnotation(BINDING_SOURCE);
 		assertThat(asmTR1Annotation, IsNull.notNullValue());
 		assertThat(asmTR1Annotation.getDetails().size(), IsEqual.equalTo(1));
@@ -485,7 +483,6 @@ public class Psm2AsmServiceTest {
 
 		final EAnnotation asmTR3Annotation = asmTR3.get().getEAnnotation(EMBEDDED_SOURCE);
 		assertThat(asmTR3Annotation, IsNull.notNullValue());
-		assertThat(asmTR3Annotation.getDetails().size(), IsEqual.equalTo(3));
 		assertTrue(asmTR3Annotation.getDetails().containsKey("create"));
 		assertTrue(asmTR3Annotation.getDetails().containsKey("update"));
 		assertTrue(asmTR3Annotation.getDetails().containsKey("delete"));

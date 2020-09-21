@@ -9,6 +9,36 @@ operation ASM!EOperation toOpenAPIPath() : String {
         var relation = asmUtils.getRelationOfOperationWithDefaultBehaviour(self);
 
         switch (behaviour.get().toString()) {
+            case "LIST":
+                if (owner.get.many) {
+                    path = asmUtils.getReferenceFQName(owner.get) + "/~list";
+                } else {
+                    path = asmUtils.getReferenceFQName(owner.get) + "/~get";
+                }
+            case "CREATE_INSTANCE":
+                if (asmUtils.isBound(self)) {
+                    path = asmUtils.getClassifierFQName(owner.get.eContainer) + "/~update/" + owner.get.name + "/~create";
+                } else {
+                    path = asmUtils.getReferenceFQName(owner.get) + "/~create";
+                }
+            case "VALIDATE_CREATE":
+                if (asmUtils.isBound(self)) {
+                    path = asmUtils.getClassifierFQName(owner.get.eContainer) + "/~update/" + owner.get.name + "/~validate";
+                } else {
+                    path = asmUtils.getReferenceFQName(owner.get) + "/~validate";
+                }
+            case "REFRESH": path = asmUtils.getClassifierFQName(owner.get) + "/~get";
+            case "UPDATE_INSTANCE": path = asmUtils.getClassifierFQName(owner.get) + "/~update";
+            case "VALIDATE_UPDATE": path = asmUtils.getClassifierFQName(owner.get) + "/~validate";
+            case "DELETE_INSTANCE": path = asmUtils.getClassifierFQName(owner.get) + "/~delete";
+            case "SET_REFERENCE": path = asmUtils.getClassifierFQName(owner.get.eContainer) + "/~update/" + owner.get.name + "/~set";
+            case "UNSET_REFERENCE": path = asmUtils.getClassifierFQName(owner.get.eContainer) + "/~update/" + owner.get.name + "/~unset";
+            case "ADD_REFERENCE": path = asmUtils.getClassifierFQName(owner.get.eContainer) + "/~update/" + owner.get.name + "/~add";
+            case "REMOVE_REFERENCE": path = asmUtils.getClassifierFQName(owner.get.eContainer) + "/~update/" + owner.get.name + "/~remove";
+            case "GET_REFERENCE_RANGE": path = asmUtils.getReferenceFQName(owner.get) + "/~range";
+            case "GET_TEMPLATE": path = asmUtils.getClassifierFQName(owner.get) + "/~template";
+            case "GET_PRINCIPAL": path = asmUtils.getClassifierFQName(owner.get) + "/~principal";
+
             case "GET": path = asmUtils.getReferenceFQName(owner.get) + "/get";
             case "CREATE": path = asmUtils.getReferenceFQName(owner.get) + "/create";
             case "UPDATE": path = asmUtils.getReferenceFQName(owner.get) + "/update";
@@ -18,12 +48,10 @@ operation ASM!EOperation toOpenAPIPath() : String {
             case "ADD_ALL": path = asmUtils.getReferenceFQName(owner.get) + "/" + relation.get().name + "/add";
             case "REMOVE_ALL": path = asmUtils.getReferenceFQName(owner.get) + "/" + relation.get().name + "/remove";
             case "GET_RANGE": path = owner.get.eContainer.toOpenAPIPath() + "/" + owner.get.name + "/" + relation.get().name + "/range";
-            case "GET_TEMPLATE": path = asmUtils.getClassifierFQName(owner.get) + "/_template";
-            case "GET_PRINCIPAL": path = asmUtils.getClassifierFQName(owner.get) + "/_principal";
         }
     }
 
-    return path.replaceFirst("^" + asmUtils.getModel().get().name + "\\.", "").replace("[#\\.]", "/").replace("[^0-9a-zA-Z_/]", "_");
+    return path.replaceFirst("^" + asmUtils.getModel().get().name + "\\.", "").replace("[#\\.]", "/").replace("[^0-9a-zA-Z_~/]", "_");
 }
 
 // convert a string (ie. name) to OpenAPI name (key)

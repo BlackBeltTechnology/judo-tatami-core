@@ -8,9 +8,9 @@ rule CreateEntityIdParameterDeclaration
         
         t.name = "__identifier__" + asmUtils.getClassifierFQName(s.eContainer).toOpenAPIName();
         
-        var accessPoint = asmUtils.getResolvedExposedBy(s);
-        if (accessPoint.isPresent()) {
-            accessPoint.get().equivalent("CreateOpenAPIAccessPoint").parameters.add(t);
+        var actorType = asmUtils.getResolvedExposedBy(s);
+        if (actorType.isPresent()) {
+            actorType.get().equivalent("CreateOpenAPIActorType").parameters.add(t);
         } else {
             delete t;
         }
@@ -24,7 +24,7 @@ rule CreateEntityIdParameterDefinition
         t.name = "__signedIdentifier";
         t.`in` = OPENAPI!ParameterLocation#header;
         t.type = OPENAPI!JSONDataType#string;
-        t.description = "ID of " + s.eContainer.name + " instance";
+        t.description = "Signed ID of " + s.eContainer.name + " instance";
         t.required = true;
         
         s.equivalent("CreateEntityIdParameterDeclaration").parameter = t;
@@ -37,9 +37,9 @@ rule CreateParameterDeclaration
         
         t.name = (asmUtils.getOperationFQName(s.eContainer.eOperation) + "__" + s.eContainer.name).toOpenAPIName();
         
-        var accessPoint = asmUtils.getResolvedExposedBy(s);
-        if (accessPoint.isPresent()) {
-            accessPoint.get().equivalent("CreateOpenAPIAccessPoint").parameters.add(t);
+        var actorType = asmUtils.getResolvedExposedBy(s);
+        if (actorType.isPresent()) {
+            actorType.get().equivalent("CreateOpenAPIActorType").parameters.add(t);
         } else {
             delete t;
         }
@@ -51,7 +51,7 @@ rule CreateParameterDefinition
         guard: s.eContainer.isKindOf(ASM!EParameter) and s.source == asmUtils.getAnnotationUri("exposedBy")
         
         t.name = s.eContainer.name;
-        t.required = true;
+        t.required = s.eContainer.required;
         t.`in` = OPENAPI!ParameterLocation#body;
         
         s.equivalent("CreateParameterDeclaration").parameter = t;
@@ -76,23 +76,30 @@ rule CreateParameterDefinitionSchemaReference
 		        var behaviour = asmUtils.getBehaviour(s.eContainer.eOperation);
 		        var behaviourRelation = asmUtils.getRelationOfOperationWithDefaultBehaviour(s.eContainer.eOperation);
 
-		        if (behaviour.present and behaviour.get().toString() == "CREATE") {
+		        if (behaviour.present and (behaviour.get().toString() == "CREATE" or behaviour.get().toString() == "CREATE_INSTANCE" or behaviour.get().toString() == "VALIDATE_INSTANCE")) {
                     if (s.eContainer.many) {
                         t.ref = transferObjectTypeExposedByAnnotation.equivalent("CreateTransferObjectArraySchemaDeclarationExtended").getReference();
                     } else {
                         t.ref = transferObjectTypeExposedByAnnotation.equivalent("CreateTransferObjectSingleSchemaDeclarationExtended").getReference();
                     }
-                } else if (behaviour.present and (behaviour.get().toString() == "DELETE" or behaviour.get().toString() == "UNSET")) {
+                } else if (behaviour.present and (behaviour.get().toString() == "DELETE" or behaviour.get().toString() == "UNSET" or behaviour.get().toString() == "DELETE_INSTANCE")) {
                     if (s.eContainer.many) {
                         throw "Unsupported parameter";
                     } else {
-                        t.ref = asmUtils.getAllAccessPoints().selectOne(ap | asmUtils.getClassifierFQName(ap) == s.details.get("value")).equivalent("CreateTransferObjectSingleSchemaDeclarationForDelete").getReference();
+                        t.ref = asmUtils.getAllActorTypes().selectOne(ap | asmUtils.getClassifierFQName(ap) == s.details.get("value")).equivalent("CreateTransferObjectSingleSchemaDeclarationForDelete").getReference();
                     }
                 } else if (behaviour.present and (behaviour.get().toString() == "SET" or behaviour.get().toString() == "ADD_ALL" or behaviour.get().toString() == "REMOVE_ALL") and behaviourRelation.present) {
                     if (s.eContainer.many) {
                         throw "Unsupported parameter";
                     } else {
                         t.ref = s.equivalent("CreateParameterDefinitionSchemaReferenceForReferenceChange").getReference();
+                    }
+                } else if (behaviour.present and (behaviour.get().toString() == "SET_REFERENCE" or behaviour.get().toString() == "UNSET_REFERENCE" or behaviour.get().toString() == "ADD_REFERENCE" or behaviour.get().toString() == "REMOVE_REFERENCE")) {
+                    var ap = asmUtils.getAllActorTypes().selectOne(ap | asmUtils.getClassifierFQName(ap) == s.details.get("value"));
+                    if (s.eContainer.many) {
+                        t.ref = ap.equivalent("CreateCollectionReferenceSchema").getReference();
+                    } else {
+                        t.ref = ap.equivalent("CreateSingleReferenceSchema").getReference();
                     }
 		        } else {
                     if (s.eContainer.many) {
@@ -119,14 +126,14 @@ rule CreateParameterDefinitionSchemaReferenceForReferenceChange
         t.schema.description = "Schema of change instance reference";
         t.schema.type = OPENAPI!JSONDataType#object;
 
-        var id = new OPENAPI!PropertyDeclaration;
-        id.name = "__signedIdentifier";
+        var signedId = new OPENAPI!PropertyDeclaration;
+        signedId.name = "__signedIdentifier";
 
-        id.property = new OPENAPI!Property;
-        id.property.description = "ID of instance";
-        id.property.type = OPENAPI!JSONDataType#string;
+        signedId.property = new OPENAPI!Property;
+        signedId.property.description = "Signed ID of instance";
+        signedId.property.type = OPENAPI!JSONDataType#string;
 
-        t.schema.properties.add(id);
+        t.schema.properties.add(signedId);
 
         var ref = new OPENAPI!PropertyDeclaration;
 
@@ -140,7 +147,7 @@ rule CreateParameterDefinitionSchemaReferenceForReferenceChange
         refId.name = "__signedIdentifier";
 
         refId.property = new OPENAPI!Property;
-        refId.property.description = "ID of referenced instance";
+        refId.property.description = "Signed ID of referenced instance";
         refId.property.type = OPENAPI!JSONDataType#string;
 
         if (reference.many) {
@@ -155,6 +162,56 @@ rule CreateParameterDefinitionSchemaReferenceForReferenceChange
 
         t.schema.properties.add(ref);
 
-        var ap = asmUtils.getAllAccessPoints().selectOne(ap | asmUtils.getClassifierFQName(ap) == s.details.get("value"));
-        ap.equivalent("CreateOpenAPIAccessPoint").definitions.add(t);
+        var ap = asmUtils.getAllActorTypes().selectOne(ap | asmUtils.getClassifierFQName(ap) == s.details.get("value"));
+        ap.equivalent("CreateOpenAPIActorType").definitions.add(t);
+}
+
+@lazy
+rule CreateSingleReferenceSchema
+    transform s : ASM!EClass
+    to t : OPENAPI!SchemaDeclaration {
+        guard: asmUtils.isActorType(s)
+
+        t.name = "__SingleReference";
+
+        t.schema = new OPENAPI!Schema;
+        t.schema.description = "Schema used to set single reference";
+        t.schema.type = OPENAPI!JSONDataType#object;
+
+        var signedId = new OPENAPI!PropertyDeclaration;
+        signedId.name = "__signedIdentifier";
+
+        signedId.property = new OPENAPI!Property;
+        signedId.property.description = "Signed ID of referenced instance";
+        signedId.property.type = OPENAPI!JSONDataType#string;
+
+        t.schema.properties.add(signedId);
+
+        s.equivalent("CreateOpenAPIActorType").definitions.add(t);
+}
+
+@lazy
+rule CreateCollectionReferenceSchema
+    transform s : ASM!EClass
+    to t : OPENAPI!SchemaDeclaration {
+        guard: asmUtils.isActorType(s)
+
+        t.name = "__CollectionReference";
+
+        t.schema = new OPENAPI!Schema;
+        t.schema.description = "Schema used to set collection reference";
+        t.schema.type = OPENAPI!JSONDataType#array;
+
+        var refId = new OPENAPI!PropertyDeclaration;
+        refId.name = "__signedIdentifier";
+
+        refId.property = new OPENAPI!Property;
+        refId.property.description = "Signed ID of referenced instance";
+        refId.property.type = OPENAPI!JSONDataType#string;
+
+        t.schema.items = new OPENAPI!Property;
+        t.schema.items.type = OPENAPI!JSONDataType#object;
+        t.schema.items.properties.add(refId);
+
+        s.equivalent("CreateOpenAPIActorType").definitions.add(t);
 }

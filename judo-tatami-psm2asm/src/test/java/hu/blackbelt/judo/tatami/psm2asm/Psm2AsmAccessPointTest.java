@@ -59,9 +59,6 @@ public class Psm2AsmAccessPointTest {
     public static final String MODEL_NAME = "Test";
     public static final String TARGET_TEST_CLASSES = "target/test-classes";
 
-    public static final String ACCESSPOINT_SOURCE = AsmUtils.getAnnotationUri("accessPoint");
-    public static final String EXPOSED_SERVICE_SOURCE = AsmUtils.getAnnotationUri("exposedService");
-    public static final String EXPOSED_GRAPH_SOURCE = AsmUtils.getAnnotationUri("exposedGraph");
     public static final String EXPRESSION_SOURCE = AsmUtils.getAnnotationUri("expression");
 
     Log slf4jlog;
@@ -190,7 +187,7 @@ public class Psm2AsmAccessPointTest {
 
         transform("testEntityTypeAsAccessPoint");
 
-        final Optional<EClass> ap = asmUtils.all(EClass.class).filter(c -> AsmUtils.isAccessPoint(c)).findAny();
+        final Optional<EClass> ap = asmUtils.all(EClass.class).filter(c -> "Entity".equals(c.getName()) && asmUtils.isMappedTransferObjectType(c)).findAny();
         assertThat(ap.isPresent(), equalTo(Boolean.TRUE));
         final Optional<EAnnotation> actorType = AsmUtils.getExtensionAnnotationByName(ap.get(), "actor", false);
         assertThat(actorType.isPresent(), equalTo(Boolean.TRUE));
@@ -251,11 +248,6 @@ public class Psm2AsmAccessPointTest {
 
         final Optional<EClass> asmAP = asmUtils.all(EClass.class).filter(c -> c.getName().equals(accessPoint.getName())).findAny();
         assertTrue(asmAP.isPresent());
-        assertThat(asmAP.get().getEAnnotation(ACCESSPOINT_SOURCE), notNullValue());
-        final EAnnotation apAnnotation = asmAP.get().getEAnnotation(ACCESSPOINT_SOURCE);
-        assertTrue(apAnnotation.getDetails().containsKey("value"));
-        assertTrue(apAnnotation.getDetails().get("value").equals("true"));
-        assertTrue(apAnnotation.getEModelElement().equals(asmAP.get()));
 
         final Optional<EReference> asmES = asmUtils.all(EReference.class).filter(r -> r.getName().equals(eService.getName())).findAny();
         assertTrue(asmES.isPresent());
@@ -267,11 +259,6 @@ public class Psm2AsmAccessPointTest {
         final Optional<EClass> asmOpGroup = asmUtils.all(EClass.class).filter(c -> c.getName().equals(opGroup.getName())).findAny();
         assertTrue(asmOpGroup.isPresent());
         assertTrue(asmES.get().getEType().equals(asmOpGroup.get()));
-        assertThat(asmES.get().getEAnnotation(EXPOSED_SERVICE_SOURCE), notNullValue());
-        final EAnnotation esAnnotation = asmES.get().getEAnnotation(EXPOSED_SERVICE_SOURCE);
-        assertTrue(esAnnotation.getDetails().containsKey("value"));
-        assertTrue(esAnnotation.getDetails().get("value").equals("true"));
-        assertTrue(esAnnotation.getEModelElement().equals(asmES.get()));
 
         final Optional<EReference> asmEG = asmUtils.all(EReference.class).filter(r -> r.getName().equals(eGraph.getName())).findAny();
         assertTrue(asmEG.isPresent());
@@ -283,12 +270,7 @@ public class Psm2AsmAccessPointTest {
         final Optional<EClass> asmMappedObject = asmUtils.all(EClass.class).filter(c -> c.getName().equals(mappedObject.getName())).findAny();
         assertTrue(asmMappedObject.isPresent());
         assertTrue(asmEG.get().getEType().equals(asmMappedObject.get()));
-        assertThat(asmEG.get().getEAnnotation(EXPOSED_GRAPH_SOURCE), notNullValue());
         assertThat(asmEG.get().getEAnnotation(EXPRESSION_SOURCE), notNullValue());
-        final EAnnotation egAnnotation = asmEG.get().getEAnnotation(EXPOSED_GRAPH_SOURCE);
-        assertTrue(egAnnotation.getDetails().containsKey("value"));
-        assertTrue(egAnnotation.getDetails().get("value").equals("true"));
-        assertTrue(egAnnotation.getEModelElement().equals(asmEG.get()));
         final EAnnotation egExprAnnotation = asmEG.get().getEAnnotation(EXPRESSION_SOURCE);
         assertTrue(egExprAnnotation.getDetails().containsKey("getter"));
         assertTrue(egExprAnnotation.getDetails().containsKey("getter.dialect"));
@@ -298,7 +280,7 @@ public class Psm2AsmAccessPointTest {
         assertFalse(egExprAnnotation.getDetails().containsKey("setter.dialect"));
         assertTrue(egExprAnnotation.getEModelElement().equals(asmEG.get()));
 
-        final Optional<EClass> ap = asmUtils.all(EClass.class).filter(c -> AsmUtils.isAccessPoint(c)).findAny();
+        final Optional<EClass> ap = asmUtils.all(EClass.class).filter(c -> "accessPoint".equals(c.getName())).findAny();
         assertThat(ap.isPresent(), equalTo(Boolean.TRUE));
         final Optional<EAnnotation> actorType = AsmUtils.getExtensionAnnotationByName(ap.get(), "actor", false);
         assertThat(actorType.isPresent(), equalTo(Boolean.TRUE));

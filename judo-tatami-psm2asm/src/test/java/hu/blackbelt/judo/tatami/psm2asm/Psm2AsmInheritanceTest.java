@@ -229,10 +229,6 @@ public class Psm2AsmInheritanceTest {
         final Optional<EClass> asmPersonTransferObject = allAsm(EClass.class).filter(t -> personTransferObject.getName().equals(t.getName())).findAny();
         assertTrue(asmPersonTransferObject.isPresent());
 
-        final Optional<EAnnotation> exposedGraphAnnotationOfPersonTransferObject = AsmUtils.getExtensionAnnotationByName(asmPersonTransferObject.get(), "exposedGraph", false);
-//        assertTrue(exposedGraphAnnotationOfPersonTransferObject.isPresent());
-//        assertTrue(exposedGraphAnnotationOfPersonTransferObject.get().getDetails().containsValue("model.AP#productsCategoriesOwner"));
-
         final Optional<EAttribute> firstNameInPersonTransferObject = asmPersonTransferObject.get().getEAllAttributes().stream().filter(attribute -> "firstName".equals(attribute.getName())).findAny();
         assertTrue(firstNameInPersonTransferObject.isPresent());
 

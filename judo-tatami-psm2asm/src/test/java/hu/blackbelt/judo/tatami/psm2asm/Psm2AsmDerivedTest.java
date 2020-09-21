@@ -16,7 +16,6 @@ import static hu.blackbelt.judo.meta.psm.type.util.builder.TypeBuilders.newCardi
 import static hu.blackbelt.judo.meta.psm.type.util.builder.TypeBuilders.newCustomTypeBuilder;
 import static hu.blackbelt.judo.meta.psm.type.util.builder.TypeBuilders.newNumericTypeBuilder;
 import static hu.blackbelt.judo.meta.psm.type.util.builder.TypeBuilders.newStringTypeBuilder;
-import static hu.blackbelt.judo.tatami.psm2asm.Psm2Asm.calculatePsm2AsmTransformationScriptURI;
 import static hu.blackbelt.judo.tatami.psm2asm.Psm2Asm.executePsm2AsmTransformation;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -43,7 +42,6 @@ import hu.blackbelt.judo.meta.asm.runtime.AsmModel;
 import hu.blackbelt.judo.meta.asm.runtime.AsmUtils;
 import hu.blackbelt.judo.meta.psm.PsmUtils;
 import hu.blackbelt.judo.meta.psm.accesspoint.ActorType;
-import hu.blackbelt.judo.meta.psm.accesspoint.MappedActorType;
 import hu.blackbelt.judo.meta.psm.data.EntityType;
 import hu.blackbelt.judo.meta.psm.derived.*;
 import hu.blackbelt.judo.meta.psm.measure.Measure;
@@ -396,26 +394,6 @@ public class Psm2AsmDerivedTest {
 				.withBehaviour(newTransferOperationBehaviourBuilder().withBehaviourType(TransferOperationBehaviourType.UPDATE)
 						.withOwner(rel).build())
 				.build();
-
-		UnboundOperation principalOp = newUnboundOperationBuilder().withName("_principal")
-				.withOutput(newParameterBuilder().withName("output")
-						.withCardinality(newCardinalityBuilder().build())
-						.withType(ap)
-						.build())
-				.withBehaviour(newTransferOperationBehaviourBuilder().withBehaviourType(TransferOperationBehaviourType.GET_PRINCIPAL)
-						.withOwner(ap).build())
-				.build();
-		useUnmappedTransferObjectType(ap).withOperations(getOp,createOp,updateOp,principalOp).build();
-		
-		UnboundOperation mapPrincipalOp = newUnboundOperationBuilder().withName("_map_principal")
-				.withOutput(newParameterBuilder().withName("output")
-						.withCardinality(newCardinalityBuilder().build())
-						.withType(ap)
-						.build())
-				.withBehaviour(newTransferOperationBehaviourBuilder().withBehaviourType(TransferOperationBehaviourType.MAP_PRINCIPAL)
-						.withOwner(actorType).build())
-				.build();
-		useActorType(actorType).withOperations(mapPrincipalOp).build();
 		
 		usePackage(actorTypes).withElements(actorType).build();
 		usePackage(genNav).withElements(statNav,statNav2).build();

@@ -21,7 +21,7 @@ import "modules/service/transferObjectRelation.etl";
 
 import "modules/service/operation.etl";
 
-import "modules/accesspoint/accessPoint.etl";
+import "modules/actor/actorType.etl";
 
 post {
     var enumsWithoutOrdinal = JUDOPSM!EnumerationMember.all.select(m | m.ordinal == -1).collect(m | m.eContainer).flatten().asSet();

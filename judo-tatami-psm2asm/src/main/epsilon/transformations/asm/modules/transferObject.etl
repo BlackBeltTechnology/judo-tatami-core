@@ -301,6 +301,34 @@ rule CreateTransferObjectRelationEmbeddedFlags
 
 		t.source = asmUtils.getAnnotationUri("embedded");
 
+		var flag = new ASM!EStringToStringMapEntry;
+        flag.key = "value";
+        flag.value = "true";
+        t.details.add(flag);
+
+		var createEntry = new ASM!EStringToStringMapEntry;
+        createEntry.key = "create";
+        createEntry.value = s.embeddedCreate.asString();
+        t.details.add(createEntry);
+
+		var updateEntry = new ASM!EStringToStringMapEntry;
+        updateEntry.key = "update";
+        updateEntry.value = s.embeddedUpdate.asString();
+        t.details.add(updateEntry);
+
+		var deleteEntry = new ASM!EStringToStringMapEntry;
+        deleteEntry.key = "delete";
+        deleteEntry.value = s.embeddedDelete.asString();
+        t.details.add(deleteEntry);
+
+        s.equivalent("CreateTransferObjectRelation").eAnnotations.add(t);
+    }
+
+rule CreateTransferObjectRelationPermissions
+	transform s : JUDOPSM!TransferObjectRelation
+	to t : ASM!EAnnotation {
+		t.source = asmUtils.getAnnotationUri("permissions");
+
 		var createEntry = new ASM!EStringToStringMapEntry;
         createEntry.key = "create";
         createEntry.value = s.embeddedCreate.asString();
