@@ -13,6 +13,15 @@ rule CreateTransferObjectRelation
       t.target = s.target.getPSMTransferObjectTypeEquivalent();
       t.embedded = s.isAggregation();
       
+      if (s.isCreateAllowed()) {
+          t.embeddedCreate = true;
+      }
+      if (s.isUpdateAllowed()) {
+          t.embeddedUpdate = true;
+      }
+      if (s.isDeleteAllowed()) {
+          t.embeddedDelete = true;
+      }
       t.cardinality = s.equivalent("CreateCardinalityForReferenceTypedElement");
       t.defaultValue = s.equivalent("CreateStaticNavigationForTransferObjectRelationDefaultValue");
       t.range = s.equivalent("CreateNavigationPropertyForTransferObjectRelationRange");
@@ -68,17 +77,6 @@ rule CreateTransferObjectRelationFromBoundToOneWayRelationMember
             
       if (s.binding.memberType = ESM!MemberType#STORED and s.binding.isComposition()) {
         t.binding = s.binding.equivalent("CreateContainment");
-	        if (s.isCreateAllowed()) {
-	            t.embeddedCreate = true;
-	        }
-	        
-	        if (s.isUpdateAllowed()) {
-	            t.embeddedUpdate = true;
-	        }
-	        
-	        if (s.isDeleteAllowed()) {
-	            t.embeddedDelete = true;
-	        }
       } else if (s.binding.memberType = ESM!MemberType#STORED and not s.binding.isComposition()) {
         t.binding = s.binding.equivalent("CreateAssociationEndWithoutPartner");
       } else if (s.binding.memberType = ESM!MemberType#DERIVED) {
@@ -121,6 +119,16 @@ rule CreateTransferObjectRelationForDefaultTransferObjectType
       t.range = s.equivalent("CreateNavigationPropertyForTransferObjectRelationRange");
       t.embedded = s.isAggregation();
       
+      if (s.isCreateAllowed()) {
+          t.embeddedCreate = true;
+      }
+      if (s.isUpdateAllowed()) {
+          t.embeddedUpdate = true;
+      }
+      if (s.isDeleteAllowed()) {
+          t.embeddedDelete = true;
+      }
+
 //      t.get = s.equivalent("CreateGetOperationForTransferObjectRelation");
 //      t.create = s.equivalent("CreateCreateOperationForTransferObjectRelation");
 //      t.update = s.equivalent("CreateUpdateOperationForTransferObjectRelation");
@@ -138,16 +146,6 @@ rule CreateTransferObjectRelationForDefaultTransferObjectTypeFromOneWayRelationM
            
       t.embedded = s.isComposition();
       
-      if (s.isCreateAllowed()) {
-          t.embeddedCreate = true;
-      }
-      if (s.isUpdateAllowed()) {
-          t.embeddedUpdate = true;
-      }
-      if (s.isDeleteAllowed()) {
-          t.embeddedDelete = true;
-      }
-
       t.binding = s.equivalent("CreateContainment");
       
       log.debug("Created TransferObjectRelation for DefaultTransferObjectType: [" + t.name + "] into [" + t.eContainer.name + "]");

@@ -61,5 +61,14 @@ rule CreateTransferObjectRelationFromAccess
 		t.target = s.target.getPSMTransferObjectTypeEquivalent();
 		s.eContainer.getPSMEquivalent().relations.add(t);	
 	
+    if (s.isCreateAllowed()) {
+        t.embeddedCreate = true;
+    }
+    if (s.isUpdateAllowed()) {
+        t.embeddedUpdate = true;
+    }
+    if (s.isDeleteAllowed()) {
+        t.embeddedDelete = true;
+    }
 	log.debug("Created access relation: " + t.name + " for actor type: " + t.eContainer.name);
 }
