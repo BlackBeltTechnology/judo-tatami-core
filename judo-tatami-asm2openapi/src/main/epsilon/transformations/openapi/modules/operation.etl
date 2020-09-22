@@ -3,6 +3,10 @@ import "../../../operations/openapi/_importAll.eol";
 import "api.etl";
 import "parameter.etl";
 
+pre {
+  var DEPRECATED_BEHAVIOURS : Collection = Sequence{"GET", "CREATE", "UPDATE", "DELETE", "SET", "UNSET", "ADD_ALL", "REMOVE_ALL", "GET_RANGE"};
+}
+
 rule CreateExposedServicePath
     transform s : ASM!EAnnotation
     to t : OPENAPI!Path {
@@ -10,9 +14,9 @@ rule CreateExposedServicePath
 
         t.relativePath = "/" + s.eContainer.toOpenAPIPath();
 
-        var accessPoint = asmUtils.getResolvedExposedBy(s);
-        if (accessPoint.isPresent()) {
-            accessPoint.get().equivalent("CreateOpenAPIAccessPoint").paths.add(t);
+        var actorType = asmUtils.getResolvedExposedBy(s);
+        if (actorType.isPresent()) {
+            actorType.get().equivalent("CreateOpenAPIActorType").paths.add(t);
         } else {
             delete t;
         }
@@ -44,17 +48,10 @@ rule CreateExposedServiceOperation
     to t : OPENAPI!Operation {
         t.`operationId` = asmUtils.getOperationFQName(s.eContainer);
 
-        /*
-        for (exposedGraph in s.eContainer.eAnnotations.select(a | a.source = asmUtils.getAnnotationUri("exposedGraph")).collect(a | asmUtils.resolveReference(a.details.get("value")))) {
-            if (exposedGraph.present) {
-                if (asmUtils.resolve(s.details.get("value")).orElse(null) == exposedGraph.get().eContainingClass) {
-                    var tag = exposedGraph.get().equivalent("CreateTag");
-                    if (tag.isDefined()) {
-                        t.tags.add(tag.name);
-                    }
-                }
-            }
-        } */
+        var behaviour = asmUtils.getBehaviour(s.eContainer);
+        if (behaviour.present and DEPRECATED_BEHAVIOURS.contains(behaviour.get().toString())) {
+            t.deprecated = true;
+        }
 }
 
 rule CreateExposedServiceGetOperation

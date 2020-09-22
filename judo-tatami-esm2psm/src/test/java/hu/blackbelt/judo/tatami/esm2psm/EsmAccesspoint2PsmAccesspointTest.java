@@ -15,11 +15,7 @@ import hu.blackbelt.judo.meta.esm.structure.TransferObjectType;
 import hu.blackbelt.judo.meta.esm.accesspoint.Access;
 import hu.blackbelt.judo.meta.esm.accesspoint.ActorType;
 import hu.blackbelt.judo.meta.psm.runtime.PsmModel;
-import hu.blackbelt.judo.meta.psm.service.MappedTransferObjectType;
-import hu.blackbelt.judo.meta.psm.service.TransferObjectRelation;
-import hu.blackbelt.judo.meta.psm.service.TransferOperation;
-import hu.blackbelt.judo.meta.psm.service.TransferOperationBehaviourType;
-import hu.blackbelt.judo.meta.psm.service.UnboundOperation;
+import hu.blackbelt.judo.meta.psm.service.*;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
@@ -293,6 +289,7 @@ public class EsmAccesspoint2PsmAccesspointTest {
         final String SINGLE_REFERENCE_RELATION_NAME = "singleReference";
         final String MULTIPLE_REFERENCE_RELATION_NAME = "multipleReference";
         final String EXPOSED_GRAPH_NAME = "g";
+        final String ACCESS_NAME = "allEs";
         final String ACCESS_POINT_NAME = "AP";
 
         final int LOWER = 0;
@@ -304,6 +301,10 @@ public class EsmAccesspoint2PsmAccesspointTest {
         final String NAME_OF_DELETE_OPERATION = "_deleteG";
         final String NAME_OF_GET_PRINCIPAL_OPERATION = "_principal";
         final String NAME_OF_MAP_PRINCIPAL_OPERATION = "_map_principal";
+
+        final String NAME_OF_LIST_E = "_listAllEs";
+        final String NAME_OF_CREATE_INSTANCE_E = "_createInstanceAllEs";
+        final String NAME_OF_VALIDATE_CREATE_INSTANCE_E = "_validateCreateInstanceAllEs";
 
         final String NAME_OF_UNSET_SINGLE_CONTAINMENT_OPERATION = "_unsetSingleContainmentOfG";
 
@@ -378,7 +379,19 @@ public class EsmAccesspoint2PsmAccesspointTest {
                         .build())
                 .build();
         
-        ActorType actor = newActorTypeBuilder().withName("actor").withPrincipal(accessPoint).build();
+        ActorType actor = newActorTypeBuilder()
+                .withName("actor")
+                .withPrincipal(accessPoint)
+                .withAccesses(newAccessBuilder()
+                        .withName(ACCESS_NAME)
+                        .withCreateable(true)
+                        .withUpdateable(true)
+                        .withDeleteable(true)
+                        .withTargetDefinedCRUD(false)
+                        .withLower(0).withUpper(-1)
+                        .withTarget(entityTypeE)
+                        .build())
+                .build();
     	useTransferObjectType(accessPoint).withActorType(actor).build();
 
         final Model model = newModelBuilder().withName(MODEL_NAME)
@@ -549,18 +562,20 @@ public class EsmAccesspoint2PsmAccesspointTest {
                 EcoreUtil.equals(o.getOutput().getType(), defaultF.get())
         ));
 
-        assertTrue(ap.get().getOperations().stream().anyMatch(o -> NAME_OF_GET_PRINCIPAL_OPERATION.equals(o.getName()) && (o instanceof UnboundOperation) &&
-                o.getBehaviour() != null && o.getBehaviour().getBehaviourType() == TransferOperationBehaviourType.GET_PRINCIPAL && EcoreUtil.equals(o.getBehaviour().getOwner(), ap.get()) &&
-                o.getInput() == null && o.getOutput() != null && o.getFaults().isEmpty() &&
-                o.getOutput().getCardinality().getLower() == 0 && o.getOutput().getCardinality().getUpper() == 1 &&
-                EcoreUtil.equals(o.getOutput().getType(), ap.get())
-        ));
-
-        assertEquals(16L, ap.get().getOperations().stream().filter(o -> o instanceof UnboundOperation).count());
+        assertEquals(15L, ap.get().getOperations().stream().filter(o -> o instanceof UnboundOperation).count());
 
         final Optional<hu.blackbelt.judo.meta.psm.accesspoint.ActorType> actorType = allPsm(hu.blackbelt.judo.meta.psm.accesspoint.ActorType.class)
                 .findAny();
         assertTrue(actorType.isPresent());
+        final Optional<TransferObjectRelation> allEs = actorType.get().getRelations().stream().filter(r -> ACCESS_NAME.equals(r.getName())).findAny();
+        assertTrue(allEs.isPresent());
+
+        assertTrue(actorType.get().getOperations().stream().anyMatch(o -> NAME_OF_GET_PRINCIPAL_OPERATION.equals(o.getName()) && (o instanceof UnboundOperation) &&
+                o.getBehaviour() != null && o.getBehaviour().getBehaviourType() == TransferOperationBehaviourType.GET_PRINCIPAL && EcoreUtil.equals(o.getBehaviour().getOwner(), actorType.get()) &&
+                o.getInput() == null && o.getOutput() != null && o.getFaults().isEmpty() &&
+                o.getOutput().getCardinality().getLower() == 0 && o.getOutput().getCardinality().getUpper() == 1 &&
+                EcoreUtil.equals(o.getOutput().getType(), ap.get())
+        ));
 
         assertTrue(actorType.get().getOperations().stream().anyMatch(o -> NAME_OF_MAP_PRINCIPAL_OPERATION.equals(o.getName()) && (o instanceof UnboundOperation) &&
                 o.getBehaviour() != null && o.getBehaviour().getBehaviourType() == TransferOperationBehaviourType.MAP_PRINCIPAL && EcoreUtil.equals(o.getBehaviour().getOwner(), actorType.get()) &&
@@ -571,7 +586,36 @@ public class EsmAccesspoint2PsmAccesspointTest {
                 EcoreUtil.equals(o.getOutput().getType(), ap.get())
         ));
 
-        assertEquals(1L, actorType.get().getOperations().stream().filter(o -> o instanceof UnboundOperation).count());
+        assertTrue(actorType.get().getOperations().stream().anyMatch(o -> NAME_OF_LIST_E.equals(o.getName()) && (o instanceof UnboundOperation) &&
+                o.getBehaviour() != null && o.getBehaviour().getBehaviourType() == TransferOperationBehaviourType.LIST && EcoreUtil.equals(o.getBehaviour().getOwner(), allEs.get()) &&
+                o.getInput() != null && o.getOutput() != null && o.getFaults().isEmpty() &&
+                o.getInput().getCardinality().getLower() == 0 && o.getInput().getCardinality().getUpper() == 1 &&
+                o.getInput().getType() != null && (o.getInput().getType() instanceof UnmappedTransferObjectType) &&
+                o.getOutput().getCardinality().getLower() == 0 && o.getOutput().getCardinality().getUpper() == -1 &&
+                EcoreUtil.equals(o.getOutput().getType(), allEs.get().getTarget())
+        ));
+
+        final Optional<TransferOperation> create2 = actorType.get().getOperations().stream().filter(o -> NAME_OF_CREATE_INSTANCE_E.equals(o.getName()) && (o instanceof UnboundOperation) &&
+                o.getBehaviour() != null && o.getBehaviour().getBehaviourType() == TransferOperationBehaviourType.CREATE_INSTANCE && EcoreUtil.equals(o.getBehaviour().getOwner(), allEs.get()) &&
+                o.getInput() != null && o.getOutput() != null && o.getFaults().isEmpty() &&
+                o.getInput().getCardinality().getLower() == 1 && o.getInput().getCardinality().getUpper() == 1 &&
+                EcoreUtil.equals(o.getInput().getType(), defaultE.get()) &&
+                o.getOutput().getCardinality().getLower() == 1 && o.getOutput().getCardinality().getUpper() == 1 &&
+                EcoreUtil.equals(o.getOutput().getType(), defaultE.get())
+        ).findAny();
+
+        assertTrue(create2.isPresent());
+
+        assertTrue(actorType.get().getOperations().stream().anyMatch(o -> NAME_OF_VALIDATE_CREATE_INSTANCE_E.equals(o.getName()) && (o instanceof UnboundOperation) &&
+                o.getBehaviour() != null && o.getBehaviour().getBehaviourType() == TransferOperationBehaviourType.VALIDATE_CREATE && EcoreUtil.equals(o.getBehaviour().getOwner(), allEs.get()) &&
+                o.getInput() != null && o.getOutput() != null && o.getFaults().isEmpty() &&
+                o.getInput().getCardinality().getLower() == 1 && o.getInput().getCardinality().getUpper() == 1 &&
+                EcoreUtil.equals(o.getInput().getType(), defaultE.get()) &&
+                o.getOutput().getCardinality().getLower() == 1 && o.getOutput().getCardinality().getUpper() == 1 &&
+                EcoreUtil.equals(o.getOutput().getType(), defaultE.get())
+        ));
+
+        assertEquals(5L, actorType.get().getOperations().stream().filter(o -> o instanceof UnboundOperation).count());
     }
 
     static <T> Stream<T> asStream(Iterator<T> sourceIterator, boolean parallel) {

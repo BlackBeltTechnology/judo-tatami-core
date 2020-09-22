@@ -1,5 +1,4 @@
 import "modules/api.etl";
-import "modules/tag.etl";
 import "modules/schema.etl";
 import "modules/property.etl";
 import "modules/parameter.etl";
