@@ -7,15 +7,13 @@ abstract class JudoTableDataInfo {
 }
 
 class JudoTable extends StatelessWidget implements IJudoComponent {
-  JudoTable({
-    @required this.col,
-    @required this.dataInfo,
-    @required this.rowList,
-    this.onTap,
-    this.sortAscending = true,
-    this.plusRow,
-    this.onAdd
-  });
+  JudoTable(
+      {@required this.col,
+        @required this.dataInfo,
+        @required this.rowList,
+        this.onTap,
+        this.sortAscending = true,
+        this.onAdd});
 
   final int col;
   final bool sortAscending;
@@ -23,7 +21,6 @@ class JudoTable extends StatelessWidget implements IJudoComponent {
   final List rowList;
   final Function onTap;
   final Function onAdd;
-  final DataRow plusRow;
 
   @override
   int getColSize() {
@@ -33,9 +30,11 @@ class JudoTable extends StatelessWidget implements IJudoComponent {
   @override
   Widget build(BuildContext context) {
     return Flexible(
-        flex: col,
-        child: Container(
-          height: rowList.length * kJudoHeight + kJudoHeight + (plusRow != null ? kJudoHeight : 0),
+      flex: col,
+      child: rowList is ObservableList
+          ? Observer(
+        builder: (_) => Container(
+          height: rowList.length * kJudoHeight + kJudoHeight,
           child: Observer(
             builder: (_) => DataTable(
               onSelectAll: (b) {},
@@ -45,12 +44,23 @@ class JudoTable extends StatelessWidget implements IJudoComponent {
             ),
           ),
         ),
-      );
+      )
+          : Container(
+        height: rowList.length * kJudoHeight + kJudoHeight,
+        child: Observer(
+          builder: (_) => DataTable(
+            onSelectAll: (b) {},
+            sortAscending: sortAscending,
+            columns: dataInfo.getColumns(onAdd),
+            rows: dataRow(),
+          ),
+        ),
+      ),
+    );
   }
 
   List<DataRow> dataRow() {
-    List<DataRow> dataRowList = plusRow == null ? [] : [plusRow];
-    dataRowList.addAll(rowList.map<DataRow>(dataInfo.getRow(onTap)).toList());
+    List<DataRow> dataRowList = rowList.map<DataRow>(dataInfo.getRow(onTap)).toList();
     return dataRowList;
   }
 }

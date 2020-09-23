@@ -6,18 +6,23 @@ Observer(builder: (_) {
             return Container();
         case FutureStatus.fulfilled:
             return JudoTable(
-                col: {{ col }},
-                dataInfo: {{ fqClass pageDefinition.name }}{{ fqClass name }}Table(),
+                col: {{col}},
+                dataInfo: {{fqClass pageDefinition.name}}{{fqClass name}}Table(),
                 rowList: {{ fqVariable page.targetClassType.name }}Store.{{ variable dataElement.name }},
-                {{# if onSelectItemAction.target }}
-                onTap: (element) async {
-                    var response = await navigation.open(Routes.{{ fqVariable onSelectItemAction.target.name }},
-                    arguments: {{ fqClass onSelectItemAction.target.name }}Arguments({{ fqVariable page.targetClassType.name }}Store: element));
+                {{#each this.rowActions as |action|}}
+                {{#if (isViewButton action)}}
+                navigateToViewPageAction: (element) async {
+                    var response = await navigation.open(Routes.{{fqVariable action.target.name}},
+                    arguments: {{fqClass action.target.name}}Arguments({{ fqVariable page.targetClassType.name }}Store: element));
                     if (response != null) {
-                {{ fqVariable page.targetClassType.name }}Store.get{{ fqClass page.targetClassType.name }}();
+                        {{ fqVariable page.targetClassType.name }}Store.get{{ getTargetDataTypeClass page.dataElement }}();
                     }
                 },
                 {{/if}}
+                {{#if (isRemoveButton action)}}
+                removeAction: (element) => {{ fqVariable page.targetClassType.name }}Store.remove{{ fqClass page.targetClassType.name }}({{ fqVariable page.targetClassType.name }}Store, element),
+                {{/if}}
+                {{/each}}
             );
     }
 }),

@@ -38,6 +38,8 @@ public class FlutterHelper {
         context.registerFunction("isCreateButton", FlutterHelper.class.getDeclaredMethod("isCreateButton", new Class[]{Action.class}));
         context.registerFunction("isDeleteButton", FlutterHelper.class.getDeclaredMethod("isDeleteButton", new Class[]{Action.class}));
         context.registerFunction("isEditButton", FlutterHelper.class.getDeclaredMethod("isEditButton", new Class[]{Action.class}));
+        context.registerFunction("isRemoveButton", FlutterHelper.class.getDeclaredMethod("isRemoveButton", new Class[]{Action.class}));
+        context.registerFunction("isViewButton", FlutterHelper.class.getDeclaredMethod("isViewButton", new Class[]{Action.class}));
         context.registerFunction("dartType", FlutterHelper.class.getDeclaredMethod("dartType", new Class[]{DataType.class}));
         context.registerFunction("isInstanceAction", FlutterHelper.class.getDeclaredMethod("isInstanceAction", new Class[]{PageDefinition.class}));
     }
@@ -68,6 +70,14 @@ public class FlutterHelper {
 
     public static boolean isCreateButton(Action action) {
         return action != null && CreateAction.class.equals(action.eClass().getInstanceClass());
+    }
+
+    public static boolean isRemoveButton(Action action) {
+        return action != null && RemoveAction.class.equals(action.eClass().getInstanceClass());
+    }
+
+    public static boolean isViewButton(Action action) {
+        return action != null && ViewAction.class.equals(action.eClass().getInstanceClass());
     }
 
     public static String mainAxisSize(Flex flex) {

@@ -14,29 +14,42 @@ class {{ fqClass table.pageDefinition.name }}{{ fqClass table.name }}Table imple
     @override
     List<DataColumn> getColumns() {
         return [
-            {{# each columns }}
-            DataColumn(label: Text('{{ label }}')),
-            {{/ each }}
+            {{# each columns}}
+            DataColumn(label: Text('{{label}}')),
+            {{/each}}
+            {{#each table.rowActions}}
             DataColumn(label: Text(""))
+            {{/each}}
         ];
     }
 
     @override
-    Function getRow(Function onTap) {
-        return ({{ name }}) => DataRow(
+    Function getRow({Function navigateToEditPageAction, Function navigateToViewPageAction, Function navigateToCreatePageAction, Function removeAction}) {
+        return ({{variable table.dataElement.name}}) => DataRow(
             cells: [
                 {{# each columns as |column| }}
                 DataCell(
-                    {{# if column }}
-                        {{> (getWidgetTemplate column) column=column parentName=../../name }}
-                        onTap: () => onTap({{ ../../name }}),
-                    {{/ if}}
+                {{# each columns as |column|}}
+                DataCell(
+                    {{#if column}}
+                    {{> (getWidgetTemplate column) column=column dataName=(variable table.dataElement.name)}}
+                    {{/if}}
                 ),
-                {{/ each}}
+                {{/each}}
+                {{#each table.rowActions as |action|}}
+                {{#if (isRemoveButton action)}}
+                DataCell(
+                    Icon(Icons.link_off),
+                    onTap: () => removeAction({{variable table.dataElement.name}}),
+                ),
+                {{/if}}
+                {{#if (isViewButton action)}}
                 DataCell(
                     Icon(Icons.arrow_forward_ios),
-                    onTap: () => onTap({{ name }}),
+                    onTap: () => navigateToViewPageAction({{variable table.dataElement.name}}),
                 )
+                {{/if}}
+                {{/each}}
             ],
         );
     }
