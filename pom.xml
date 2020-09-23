@@ -60,21 +60,22 @@
         <judo-meta-rdbms-version>1.0.0.20200911_152326_64144fb_develop</judo-meta-rdbms-version>
         <judo-meta-esm-version>1.1.0.20200922_152457_2a196ae_develop</judo-meta-esm-version>
         <judo-meta-psm-version>1.1.0.20200921_082847_d38a2b2_develop</judo-meta-psm-version>
-        <judo-meta-jql-version>1.0.1.20200911_151101_497f524_develop</judo-meta-jql-version>
-        <judo-meta-jcl-version>1.0.1.20200911_153138_1b36cee_develop</judo-meta-jcl-version>
-        <judo-meta-script-version>1.0.1.20200915_154622_23285ac_develop</judo-meta-script-version>
+        <judo-meta-jql-version>1.0.1.20200923_145801_54834ca_develop</judo-meta-jql-version>
+        <judo-meta-jcl-version>1.0.1.20200923_153905_24fc98a_develop</judo-meta-jcl-version>
+        <judo-meta-script-version>1.0.1.20200923_155028_846b676_develop</judo-meta-script-version>
         <judo-meta-asm-version>1.1.0.20200922_153727_a9a05ec_develop</judo-meta-asm-version>
-        <judo-meta-expression-version>1.0.1.20200911_153042_848a9f3_develop</judo-meta-expression-version>
+        <judo-meta-expression-version>1.0.1.20200923_150653_c75b49b_develop</judo-meta-expression-version>
         <judo-meta-measure-version>1.0.0.20200911_151807_a1d34f8_develop</judo-meta-measure-version>
         <judo-meta-liquibase-version>1.0.0.20200911_151645_2566ce8_develop</judo-meta-liquibase-version>
         <judo-meta-openapi-version>1.0.0.20200911_152319_f9c917b_develop</judo-meta-openapi-version>
         <judo-meta-ui-version>1.0.0.20200911_154037_564ff27_develop</judo-meta-ui-version>
         <judo-dao-api-version>1.0.2.20200907_094135_d36399b_develop</judo-dao-api-version>
         <judo-dispatcher-api-version>1.0.2.20200709_172739_726a3b9_develop</judo-dispatcher-api-version>
-        <judo-script-codegen-version>1.1.0.20200915_160234_b608012_develop</judo-script-codegen-version>
+        <judo-script-codegen-version>1.1.0.20200923_160106_568b67d_develop</judo-script-codegen-version>
+        <judo-operation-utils-version>1.1.0.20200923_145711_aa77a32_develop</judo-operation-utils-version>
 
         <structured-map-proxy-version>1.0.4</structured-map-proxy-version>
-        <judo-operation-utils-version>1.1.0.20200915_154440_9e4e4b5_develop</judo-operation-utils-version>
+
 
         <!-- Xtend / Xcore -->
         <emf-version>2.18.0</emf-version>
