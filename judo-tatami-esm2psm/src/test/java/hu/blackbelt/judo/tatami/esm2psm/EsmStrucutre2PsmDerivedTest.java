@@ -5,25 +5,19 @@ import hu.blackbelt.epsilon.runtime.execution.api.Log;
 import hu.blackbelt.epsilon.runtime.execution.impl.Slf4jLog;
 import hu.blackbelt.judo.meta.esm.namespace.Model;
 import hu.blackbelt.judo.meta.esm.namespace.Package;
-import hu.blackbelt.judo.meta.esm.operation.OperationType;
 import hu.blackbelt.judo.meta.esm.runtime.EsmModel;
 import hu.blackbelt.judo.meta.esm.structure.*;
 import hu.blackbelt.judo.meta.esm.type.StringType;
-import hu.blackbelt.judo.meta.psm.PsmUtils;
-import hu.blackbelt.judo.meta.psm.derived.DataProperty;
 import hu.blackbelt.judo.meta.psm.derived.NavigationProperty;
 import hu.blackbelt.judo.meta.psm.namespace.Namespace;
 import hu.blackbelt.judo.meta.psm.runtime.PsmModel;
 import hu.blackbelt.judo.meta.psm.service.TransferAttribute;
 import hu.blackbelt.judo.meta.psm.service.TransferObjectRelation;
-import hu.blackbelt.judo.meta.psm.service.TransferOperationBehaviourType;
 import hu.blackbelt.judo.meta.psm.service.UnboundOperation;
 import lombok.extern.slf4j.Slf4j;
 
-import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
-import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.hamcrest.core.IsEqual;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -960,6 +954,10 @@ public class EsmStrucutre2PsmDerivedTest {
         final Optional<TransferObjectRelation> psmTransferObjectRelation = allPsm(TransferObjectRelation.class)
 						.filter(r -> relation.getName().equals(r.getName()) && r.eContainer().equals(psmTransferA.get())).findAny();
 		assertTrue(psmTransferObjectRelation.isPresent());
+		assertNotNull(psmTransferObjectRelation.get().getBinding());
+		assertTrue(psmTransferObjectRelation.get().getBinding() instanceof hu.blackbelt.judo.meta.psm.derived.StaticNavigation);
+		hu.blackbelt.judo.meta.psm.derived.StaticNavigation staticNavigation = (hu.blackbelt.judo.meta.psm.derived.StaticNavigation)psmTransferObjectRelation.get().getBinding();
+		assertTrue(staticNavigation.getGetterExpression().getExpression().equals(relation.getGetterExpression()));
 		
 		final Optional<UnboundOperation> psmOperation = allPsm(UnboundOperation.class).filter(o -> o.getName().equals("_createRelation")).findAny();
 		assertTrue(psmOperation.isPresent());
@@ -979,17 +977,22 @@ public class EsmStrucutre2PsmDerivedTest {
         assertEquals(1, psmTransferB.get().getRelations().size());
         
         TransferAttribute psmAttribute2 = psmTransferB.get().getAttributes().get(0);
+        assertTrue(psmAttribute2.getBinding() instanceof hu.blackbelt.judo.meta.psm.derived.DataProperty);
+		hu.blackbelt.judo.meta.psm.derived.DataProperty dataProperty = (hu.blackbelt.judo.meta.psm.derived.DataProperty)psmAttribute2.getBinding();
+		assertTrue(staticData.getGetterExpression().getExpression().equals(dataProperty.getGetterExpression().getExpression()));
+        
         TransferObjectRelation psmTransferObjectRelation2 = psmTransferB.get().getRelations().get(0);
+        assertTrue(psmTransferObjectRelation2.getBinding() instanceof hu.blackbelt.judo.meta.psm.derived.NavigationProperty);
+		hu.blackbelt.judo.meta.psm.derived.NavigationProperty navigationProperty = (hu.blackbelt.judo.meta.psm.derived.NavigationProperty)psmTransferObjectRelation2.getBinding();
+		assertTrue(staticNavigation.getGetterExpression().getExpression().equals(navigationProperty.getGetterExpression().getExpression()));
         
         assertEquals(psmAttribute.get().getName(), psmAttribute2.getName());
-		assertEquals(psmAttribute.get().getBinding(), psmAttribute2.getBinding());
 		assertEquals(psmAttribute.get().getClaimType(), psmAttribute2.getClaimType());
 		assertEquals(psmAttribute.get().getDataType(), psmAttribute2.getDataType());
 		assertEquals(psmAttribute.get().getDefaultValue(), psmAttribute2.getDefaultValue());
 		assertEquals(psmAttribute.get().isRequired(), psmAttribute2.isRequired());
 		
 		assertEquals(psmTransferObjectRelation.get().getName(), psmTransferObjectRelation2.getName());
-		assertEquals(psmTransferObjectRelation.get().getBinding(), psmTransferObjectRelation2.getBinding());
 		assertEquals(psmTransferObjectRelation.get().getCardinality().getLower(), psmTransferObjectRelation2.getCardinality().getLower());
 		assertEquals(psmTransferObjectRelation.get().getCardinality().getUpper(), psmTransferObjectRelation2.getCardinality().getUpper());
 		assertEquals(psmTransferObjectRelation.get().getTarget(), psmTransferObjectRelation2.getTarget());
@@ -1076,9 +1079,11 @@ public class EsmStrucutre2PsmDerivedTest {
         assertEquals(1, psmMapped.get().getAttributes().size());
         
         TransferAttribute psmAttribute2 = psmMapped.get().getAttributes().get(0);
+        assertTrue(psmAttribute2.getBinding() instanceof hu.blackbelt.judo.meta.psm.derived.DataProperty);
+		hu.blackbelt.judo.meta.psm.derived.DataProperty dataProperty = (hu.blackbelt.judo.meta.psm.derived.DataProperty)psmAttribute2.getBinding();
+		assertTrue(staticData.getGetterExpression().getExpression().equals(dataProperty.getGetterExpression().getExpression()));
         
         assertEquals(psmAttribute.get().getName(), psmAttribute2.getName());
-		assertEquals(psmAttribute.get().getBinding(), psmAttribute2.getBinding());
 		assertEquals(psmAttribute.get().getClaimType(), psmAttribute2.getClaimType());
 		assertEquals(psmAttribute.get().getDataType(), psmAttribute2.getDataType());
 		assertEquals(psmAttribute.get().getDefaultValue(), psmAttribute2.getDefaultValue());
