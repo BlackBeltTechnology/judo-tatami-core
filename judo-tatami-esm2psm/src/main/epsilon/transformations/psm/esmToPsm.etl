@@ -88,10 +88,20 @@ post {
     			}
     		}
     		
-    		for (o in psmTransferObject.operations
-    					/*.select(op | not op.isKindOf(JUDOPSM!UnboundOperation)
-    								and not (op.behaviour.isDefined() and op.behaviour.owner.isKindOf(JUDOPSM!TransferObjectType)))*/
-    			) {
+    		var cloneableOperations = psmTransferObject.operations
+    											.select(o | o.behaviour.isUndefined() or 
+    												(o.behaviour.isDefined() and
+														o.behaviour.behaviourType <> JUDOPSM!TransferOperationBehaviourType#REFRESH
+														and o.behaviour.behaviourType <> JUDOPSM!TransferOperationBehaviourType#UPDATE_INSTANCE
+														and o.behaviour.behaviourType <> JUDOPSM!TransferOperationBehaviourType#VALIDATE_UPDATE
+														and o.behaviour.behaviourType <> JUDOPSM!TransferOperationBehaviourType#DELETE_INSTANCE
+														and o.behaviour.behaviourType <> JUDOPSM!TransferOperationBehaviourType#GET_PRINCIPAL
+														and o.behaviour.behaviourType <> JUDOPSM!TransferOperationBehaviourType#MAP_PRINCIPAL
+														and o.behaviour.behaviourType <> JUDOPSM!TransferOperationBehaviourType#GET_TEMPLATE
+													)
+												);
+    		
+    		for (o in cloneableOperations) {
     			if (not psmSubClass.operations.exists(op | op.name.equals(o.name))) {
 	    			psmSubClass.operations.add(ecoreUtil.copy(o));
 	    			log.debug("Added operation: [" + o.name + "] to subclass [" + psmSubClass.name + "] from [" + psmTransferObject.name + "]");
@@ -105,11 +115,17 @@ post {
 		if (o.behaviour.owner.isKindOf(JUDOPSM!TransferObjectRelation)) {
 			var newOwner : JUDOPSM!TransferObjectRelation = o.eContainer.relations.select(r | r.name.equals(o.behaviour.owner.name)).first();
 			o.behaviour.owner = newOwner;
-		} else if (o.behaviour.owner.isKindOf(JUDOPSM!Parameter)) {
+		}
+		
+		if (o.behaviour.behaviourType == JUDOPSM!TransferOperationBehaviourType#GET_RANGE) {
+			o.input.type = o.behaviour.owner.eContainer();
+		}
+		
+		//for deprecated operation behaviours
+		if (o.behaviour.owner.isKindOf(JUDOPSM!Parameter)) {
 			var newRelation : JUDOPSM!TransferObjectRelation = o.behaviour.owner.type.relations.select(r | r.name.equals(o.behaviour.relation.name)).first();
 			o.behaviour.relation = newRelation;
 		}
-		
 		if (o.behaviour.relation.isDefined()
 				and o.behaviour.behaviourType <> JUDOPSM!TransferOperationBehaviourType#GET_RANGE_OF_RELATION
 				and o.behaviour.behaviourType <> JUDOPSM!TransferOperationBehaviourType#GET_TEMPLATE) {
