@@ -33,8 +33,6 @@
     'package.dart'
   templateName: flutter/lib/store/package.dart.hbs
   templateContext:
-    - name: operations
-      expression: "#operations(#application)"
     - name: ap
       expression: "#application.dataElement"
 
@@ -99,8 +97,6 @@
   templateContext:
     - name: ap
       expression: "#application.dataElement"
-    - name: operations
-      expression: "#operations(#application)"
 
 
 - overwriteExpression: true

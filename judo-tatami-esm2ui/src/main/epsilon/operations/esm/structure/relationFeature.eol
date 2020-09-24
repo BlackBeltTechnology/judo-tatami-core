@@ -3,107 +3,6 @@ operation ESM!esm::structure::RelationFeature fqName() {
 	return esmUtils.getNamespaceElementFQName(self.eContainer) + "." + self.name;
 }
 
-operation ESM!esm::structure::RelationFeature createPageForRelationForView(application : UI!ui::Application, target : ESM!esm::structure::TransferObjectType) : UI!ui::PageDefinition {
-	log.debug("Create page for relation for view: " + target.name + " (relation: " + self.name + ")");
-	
-	var page : UI!ui::PageDefinition = new UI!ui::PageDefinition();
-	page.dataElement = self.mapRelationType(application, self.eContainer.mapClassType(application));
-	page.name = self.fqName().anchor("View");
-	page.pageType = UI!ui::PageType#VIEW;
-
-	var pageContainer = new UI!ui::PageContainer();
-    pageContainer.layoutType = application.layoutTypes.first;
-	pageContainer.name = "default";
-	pageContainer.direction = UI!Axis#VERTICAL;
-	page.containers.add(pageContainer);
-
-	pageContainer.children.add(target.view.map(application));
-	
-	return page;
-}
-
-operation ESM!esm::structure::RelationFeature createPageForRelationForCreate(application : UI!ui::Application, target : ESM!esm::structure::TransferObjectType) : UI!ui::PageDefinition {
-	log.debug("Create page for relation for create: " + target.name + " (relation: " + self.name + ")");
-	
-	var page : UI!ui::PageDefinition = new UI!ui::PageDefinition();
-	page.dataElement = self.mapRelationType(application, self.eContainer.mapClassType(application));
-	page.name = self.fqName().anchor("Create");
-	page.pageType = UI!ui::PageType#CREATE;
-
-	var pageContainer = new UI!ui::PageContainer();
-    pageContainer.layoutType = application.layoutTypes.first;
-	pageContainer.name = "default";
-	pageContainer.direction = UI!Axis#VERTICAL;
-	page.containers.add(pageContainer);
-
-    pageContainer.children.add(target.form.map(application));
-    
-    return page;
-}
-
-operation ESM!esm::structure::RelationFeature createPageForRelationForUpdate(application : UI!ui::Application, target : ESM!esm::structure::TransferObjectType) : UI!ui::PageDefinition {
-	log.debug("Create page for relation for update: " + target.name + " (relation: " + self.name + ")");
-	
-	var page : UI!ui::PageDefinition = new UI!ui::PageDefinition();
-	page.dataElement = self.mapRelationType(application, self.eContainer.mapClassType(application));
-	page.name = self.fqName().anchor("Edit");
-	page.pageType = UI!ui::PageType#UPDATE;
-
-	var pageContainer = new UI!ui::PageContainer();
-    pageContainer.layoutType = application.layoutTypes.first;
-	pageContainer.name = "default";
-	pageContainer.direction = UI!Axis#VERTICAL;
-	page.containers.add(pageContainer);
-
-    pageContainer.children.add(target.form.map(application));
-    
-    return page;
-}
-
-
-operation ESM!esm::structure::RelationFeature createPageForRelationForTable(application : UI!ui::Application, target : ESM!esm::structure::TransferObjectType) : UI!ui::PageDefinition {
-	log.debug("Create page for relation for table: " + target.name + " (relation: " + self.name + ")");
-	
-	var page : UI!ui::PageDefinition = new UI!ui::PageDefinition();
-	page.dataElement = self.mapRelationType(application, self.eContainer.mapClassType(application));
-	page.name = self.fqName().anchor("Table");
-	page.pageType = UI!ui::PageType#TABLE;
-
-	var pageContainer = new UI!ui::PageContainer();
-    pageContainer.layoutType = application.layoutTypes.first;
-	pageContainer.name = "default";
-	pageContainer.direction = UI!Axis#VERTICAL;
-	page.containers.add(pageContainer);
-
-    var flex = new UI!ui::Flex();
-	flex.name = self.name;
-	flex.direction = UI!Axis#VERTICAL;
-	flex.col = applicationColumns;
-	pageContainer.children.add(flex);
-    
-	var table = target.table.createTableFromTransferObjectTable(application);
-    flex.children.add(table);
-    
-    /*
-    if (target.table.masterDetail and target.view.isDefined()) {
-		var detail : UI!ui::PageDefinition = new UI!ui::PageDefinition();
-		detail.name = self.fqName().anchor("TableMasterDetail", target.fqName());
-		detail.dataElement = self.mapRelationType(application, self.eContainer.mapClassType(application));
-
-		var pageDetailContainer = new UI!ui::PageContainer();
-	    pageDetailContainer.layoutType = application.layoutTypes.first;
-		pageDetailContainer.name = self.name;
-		pageDetailContainer.direction = UI!Axis#VERTICAL;
-		detail.containers.add(pageDetailContainer);
-
-		application.pages.add(detail);
-	  	pageDetailContainer.children.add(target.view.map(application));
-	  	table.detail = detail;
-    } */
-    
-    return page;
-}
-
 operation ESM!esm::structure::RelationFeature createRelationTypeForClass(application : UI!ui::Application, clazz : UI!ui::data::ClassType) : UI!ui::data::RelationType {
 	var relation = new UI!ui::data::RelationType();	
     relation.~application = application;
@@ -111,10 +10,6 @@ operation ESM!esm::structure::RelationFeature createRelationTypeForClass(applica
 
 	relation.name = self.name;
 	relation.isCollection = (self.upper == -1);
-//	relation.isCreateable = self.createable;
-//	relation.isUpdateable = self.updateable;
-//	relation.isDeleteable = self.deleteable;
-	relation.isReadOnly = self.isReadOnly();
 	
 	if (self.memberType == ESM!esm::structure::MemberType#STORED) {
 		relation.memberType = UI!ui::data::MemberType#STORED;
@@ -136,6 +31,31 @@ operation ESM!esm::structure::RelationFeature createRelationTypeForClass(applica
 		relation.relationKind = UI!ui::data::RelationKind#AGGREGATION;
 	} else {
 		relation.relationKind = UI!ui::data::RelationKind#ASSOCIATION;
+	}
+
+	if (esmUtils.isListSupported(self)) {
+		relation.behaviours.add(UI!ui::data::RelationBehaviourType#LIST);
+	}
+	if (esmUtils.isCreateSupported(self)) {
+		relation.behaviours.add(UI!ui::data::RelationBehaviourType#CREATE);
+	}
+	if (esmUtils.isSetReferenceSupported(self)) {
+		relation.behaviours.add(UI!ui::data::RelationBehaviourType#SET);
+	}
+	if (esmUtils.isUnsetReferenceSupported(self)) {
+		relation.behaviours.add(UI!ui::data::RelationBehaviourType#UNSET);
+	}
+	if (esmUtils.isAddReferenceSupported(self)) {
+		relation.behaviours.add(UI!ui::data::RelationBehaviourType#ADD);
+	}
+	if (esmUtils.isRemoveReferenceSupported(self)) {
+		relation.behaviours.add(UI!ui::data::RelationBehaviourType#REMOVE);
+	}
+	if (esmUtils.isGetRangeSupported(self)) {
+		relation.behaviours.add(UI!ui::data::RelationBehaviourType#RANGE);
+	}
+	if (esmUtils.isValidateCreateSupported(self)) {
+		relation.behaviours.add(UI!ui::data::RelationBehaviourType#VALIDATE_CREATE);
 	}
 		
 	clazz.relations.add(relation);

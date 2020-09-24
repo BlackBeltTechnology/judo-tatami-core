@@ -4,10 +4,13 @@ operation ESM!esm::`operation`::Operation fqName() {
 	return esmUtils.getNamespaceElementFQName(self.eContainer) + "." + self.name;
 }
 
-operation ESM!esm::`operation`::Operation createPageForOperationOutputForView(application : UI!ui::Application) : UI!ui::PageDefinition {
+operation ESM!esm::`operation`::Operation createViewPageForOperationOutput(application : UI!ui::Application) : UI!ui::PageDefinition {
 	log.debug("Create page for operation output for view: " + self.output.target.name);
 	
 	var page : UI!ui::PageDefinition = new UI!ui::PageDefinition();
+	page.~application = application;
+	page.~original = self;
+
 	page.dataElement = self.mapOperationOutputType(application, self.eContainer().mapClassType(application));
 	page.name = self.fqName().anchor("OperationOutputPageView", self.eContainer().fqName());
 	page.pageType = UI!ui::PageType#OPERATION_OUTPUT;
@@ -31,20 +34,22 @@ operation ESM!esm::`operation`::Operation createPageForOperationOutputForView(ap
     return page;
 }
 
-operation ESM!esm::`operation`::Operation mapPageForOperationOutputForView(application : UI!ui::Application) : UI!ui::PageDefinition {
-	var opOutputPageName = self.fqName().anchor("OperationOutputPageView", self.eContainer().fqName());
-	var opOutputPage = application.pages.selectOne(p | p.name = opOutputPageName);
+operation ESM!esm::`operation`::Operation mapViewPageForOperationOutput(application : UI!ui::Application) : UI!ui::PageDefinition {
+	var opOutputPage = application.pages.selectOne(p | p.~original = self and p.pageType = UI!ui::PageType#OPERATION_OUTPUT);
 	if (opOutputPage.isUndefined()) {
-		opOutputPage = self.createPageForOperationOutputForView(application);
+		opOutputPage = self.createViewPageForOperationOutput(application);
 		application.pages.add(opOutputPage);
 	}
 	return opOutputPage;
 }
 
-operation ESM!esm::`operation`::Operation createPageForOperationInputForForm(application : UI!ui::Application) : UI!ui::PageDefinition {
+operation ESM!esm::`operation`::Operation createFormPageForOperationInput(application : UI!ui::Application) : UI!ui::PageDefinition {
 	log.debug("Create page for operation input for form: " + self.input.target.name);
 	
 	var page : UI!ui::PageDefinition = new UI!ui::PageDefinition();
+	page.~application = application;
+	page.~original = self;
+
 	page.dataElement = self.mapOperationInputType(application, self.eContainer().mapClassType(application));
 	page.name = self.fqName().anchor("OperationInputPageForm", self.eContainer().fqName());
 	page.pageType = UI!ui::PageType#OPERATION_INPUT;
@@ -68,21 +73,22 @@ operation ESM!esm::`operation`::Operation createPageForOperationInputForForm(app
     return page;
 }
 
-operation ESM!esm::`operation`::Operation mapPageForOperationInputForForm(application : UI!ui::Application) : UI!ui::PageDefinition {
-	var opInputPageName = self.fqName().anchor("OperationInputPageForm", self.eContainer().fqName());
-	var opInputPage = application.pages.selectOne(p | p.name = opInputPageName);
+operation ESM!esm::`operation`::Operation mapFormPageForOperationInput(application : UI!ui::Application) : UI!ui::PageDefinition {
+	var opInputPage = application.pages.selectOne(p | p.~original = self and p.pageType = UI!ui::PageType#OPERATION_INPUT);
 	if (opInputPage.isUndefined()) {
-		opInputPage = self.createPageForOperationInputForForm(application);
+		opInputPage = self.createFormPageForOperationInput(application);
 		application.pages.add(opInputPage);
 	}
 	return opInputPage;
 }
 
-operation ESM!esm::`operation`::Operation createPageForOperationInputForTable(application : UI!ui::Application) : UI!ui::PageDefinition {
+operation ESM!esm::`operation`::Operation createTablePageForOperationInput(application : UI!ui::Application) : UI!ui::PageDefinition {
 	log.debug("Create page for operation input for table: " + self.input.target.name);
 	
 	var clazz : UI!ui::data::ClassType = self.eContainer().mapClassType(application);
 	var page : UI!ui::PageDefinition = new UI!ui::PageDefinition();
+	page.~application = application;
+	page.~original = self;
 	
 	page.dataElement = self.mapOperationInputType(application, clazz);
 	page.name = self.fqName().anchor("OperationInputPageTable", self.eContainer().fqName());
@@ -123,12 +129,25 @@ operation ESM!esm::`operation`::Operation createPageForOperationInputForTable(ap
     return page;
 }
 
-operation ESM!esm::`operation`::Operation createPageForOperationOutputForTable(application : UI!ui::Application) : UI!ui::PageDefinition {
+operation ESM!esm::`operation`::Operation mapTablePageForOperationInput(application : UI!ui::Application) : UI!ui::PageDefinition {
+	var opInputPage = application.pages.selectOne(p | p.~original = self and p.pageType = UI!ui::PageType#OPERATION_INPUT);
+	if (opInputPage.isUndefined()) {
+		opInputPage = self.createTablePageForOperationInput(application);
+		application.pages.add(opOutputPage);
+	}
+	return opInputPage;
+}
+
+
+operation ESM!esm::`operation`::Operation createTablePageForOperationOutput(application : UI!ui::Application) : UI!ui::PageDefinition {
 	log.debug("Create page for operation output for table: " + self.output.target.name);
 	
 	var clazz : UI!ui::data::ClassType = self.eContainer().mapClassType(application);
 
 	var page : UI!ui::PageDefinition = new UI!ui::PageDefinition();	
+	page.~application = application;
+	page.~original = self;
+
 	page.dataElement = self.mapOperationOutputType(application, clazz);
 	page.name = self.fqName().anchor("OperationOutputPageTable", self.eContainer().fqName());
 	page.pageType = UI!ui::PageType#OPERATION_OUTPUT;
@@ -166,6 +185,16 @@ operation ESM!esm::`operation`::Operation createPageForOperationOutputForTable(a
     
     return page;
 }
+
+operation ESM!esm::`operation`::Operation mapTablePageForOperationOutput(application : UI!ui::Application) : UI!ui::PageDefinition {
+	var opOutputPage = application.pages.selectOne(p | p.~original = self and p.pageType = UI!ui::PageType#OPERATION_OUTPUT);
+	if (opOutputPage.isUndefined()) {
+		opOutputPage = self.createTablePageForOperationOutput(application);
+		application.pages.add(opOutputPage);
+	}
+	return opOutputPage;
+}
+
 
 operation ESM!esm::`operation`::Operation mapOperationType(application : UI!ui::Application, clazz : UI!ui::data::ClassType) : UI!ui::data::OperationType {
 	var operationType = clazz.operations.selectOne(o | o.name.equals(self.name));

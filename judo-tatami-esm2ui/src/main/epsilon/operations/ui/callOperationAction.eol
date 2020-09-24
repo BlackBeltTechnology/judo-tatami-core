@@ -8,13 +8,13 @@ operation UI!ui::CallOperationAction resolveParameterPageDefinitions() {
 		
 		if (op.input.isDefined()) {
 			if (op.input.target.form.isDefined()) {
-				callAction.inputParameterPage = op.mapPageForOperationInputForForm(application);
+				callAction.inputParameterPage = op.mapFormPageForOperationInput(application);
 			}
 		}
 	
 		if (op.output.isDefined()) {
 			if (op.output.target.view.isDefined()) {
-		    	callAction.outputParameterPage = op.mapPageForOperationOutputForView(application);
+		    	callAction.outputParameterPage = op.mapViewPageForOperationOutput(application);
 	      }
 		}	
 	}
