@@ -7,72 +7,137 @@
 // Template name: {{ template.templateName }}
 // Application: {{ application.name }}
 
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:{{ modelPackage application.actor.name }}/{{ path application.actor.name }}/utilities/package.dart';
-import 'package:{{ modelPackage application.actor.name }}/{{ path application.actor.name }}/store/package.dart';
-import 'package:{{ modelPackage application.actor.name }}/{{ path application.actor.name }}/ui/route_map.dart';
-import 'package:{{ modelPackage application.actor.name }}/{{ path application.actor.name }}/ui/dashboard.dart';
+import 'package:openapi_dart_common/openapi.dart';
+import 'package:{{ modelPackage application.name }}/{{ path application.name }}/ui/routes/router.gr.dart' as router;
+import 'package:{{ modelPackage application.name }}/{{ path application.name }}/ui/drawer_items.dart';
+import 'package:{{ modelPackage application.name }}/{{ path application.name }}/ui/navigation_state.dart';
+import 'package:{{ modelPackage application.name }}/{{ path application.name }}/utilities/package.dart';
+import 'package:{{ modelPackage application.name }}/{{ path application.name }}/injector/injector.dart';
+
 
 void main() {
-  runApp({{ fqClass application.actor.name }}Application());
+    configureDependencies();
+    ApiClient _apiClient = ApiClient(basePath: "http://localhost:8181/api/{{ modelPackage application.name }}", apiClientDelegate: DioClientDelegate());
+    locator.registerSingleton<ApiClient>(_apiClient);
+    runApp({{ fqClass application.name }}Application());
 }
 
-class {{ fqClass application.actor.name }}Application extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) => MultiProvider(
-        providers: [
-          Provider<{{ fqClass application.actor.name }}GlobalStore>(create: (_) => {{ fqClass application.actor.name }}GlobalStore())
-        ],
-        child: MaterialApp(
-          theme: ThemeData.light().copyWith(
-            primaryColor: kPrimaryColor,
-            pageTransitionsTheme: PageTransitionsTheme(
-              // makes all platforms that can run Flutter apps display routes without any animation
-              builders: Map<TargetPlatform, _InanimatePageTransitionsBuilder>.fromIterable(
-                  TargetPlatform.values.toList(),
-                  key: (dynamic k) => k,
-                  value: (dynamic _) => const _InanimatePageTransitionsBuilder()),
-            ),
-          ),
-//          home: SafeArea(
-//            child: LayoutBuilder(builder: (context, constraints) {
-//              if (constraints.maxWidth >= 980) {
-//                SizingInformation.maxCol = 12;
-//                SizingInformation.padding = kJudoCardPadding;
-//                SizingInformation.margin = kJudoCardMargin;
-//
-//                return NorthwindExternalAPHomePage();
-//              } else if (constraints.maxWidth < 980 &&
-//                  constraints.maxWidth > 500) {
-//                SizingInformation.maxCol = 8;
-//                SizingInformation.padding = kJudoCardPadding / 2;
-//                SizingInformation.margin = kJudoCardMargin / 2;
-//
-//                return NorthwindExternalAPHomePage();
-//              } else {
-//                SizingInformation.maxCol = 4;
-//                SizingInformation.padding = kJudoCardPadding / 4;
-//                SizingInformation.margin = kJudoCardMargin / 4;
-//
-//                return NorthwindExternalAPHomePage();
-//              }
-//            }),
-//          ),
-          initialRoute: NorthwindExternalAPDashboard.route,
-          navigatorObservers: [AppRouteObserver()],
-          routes: NorthwindExternalAPRoutes.routes(),
+
+class {{ fqClass application.name }}Application extends StatelessWidget {
+
+    @override
+    Widget build(BuildContext context) => MaterialApp(
+        title: 'Northwind',
+        theme: ThemeData.light().copyWith(
+        primaryColor: kPrimaryColor,
         ),
-      );
+        home: {{ fqClass application.name }}ApplicationPage());
 }
 
-/// This class is used to build page transitions that don't have any animation
-class _InanimatePageTransitionsBuilder extends PageTransitionsBuilder {
-  const _InanimatePageTransitionsBuilder();
+class {{ fqClass application.name }}ApplicationPage extends StatefulWidget {
+    final String title;
 
-  @override
-  Widget buildTransitions<T>(PageRoute<T> route, BuildContext context, Animation<double> animation,
-      Animation<double> secondaryAnimation, Widget child) {
-    return child;
-  }
+    {{ fqClass application.name }}ApplicationPage({Key key, this.title}) : super(key: key);
+
+    @override
+    {{ fqClass application.name }}ApplicationPageState createState() => {{ fqClass application.name }}ApplicationPageState();
+}
+
+class {{ fqClass application.name }}ApplicationPageState extends State<{{ fqClass application.name }}ApplicationPage> {
+
+    @override
+    Widget build(BuildContext context) {
+        final navigation = locator<NavigationState>();
+
+            final menu = Container(
+                child: SafeArea(
+                    child: {{ fqClass application.name }}Drawer(),
+                    right: false,
+                ),
+            );
+
+        final screen = Row(
+            children: <Widget>[
+                if (navigation.isMenuFixed(context)) menu,
+                Expanded(
+                    child: ExtendedNavigator(
+                        key: navigation.navigatorKey,
+                        router: router.Router()
+                    ),
+                ),
+            ],
+        );
+
+        return Container(color: kSecondaryColor, child: screen);
+    }
+}
+
+class {{ fqClass application.name }}Drawer extends StatefulWidget {
+    @override
+    _{{ fqClass application.name }}DrawerState createState() => new _{{ fqClass application.name }}DrawerState();
+}
+
+class _{{ fqClass application.name }}DrawerState extends State<{{ fqClass application.name }}Drawer> {
+
+    @override
+    void initState() {
+        super.initState();
+    }
+
+    @override
+    Widget build(BuildContext context) {
+        NavigationState navigationState = locator<NavigationState>();
+
+        String _selected = navigationState.currentRoute; //widget.navigationState.currentRoute;
+        return Drawer(
+            child: Container(
+                color: Colors.black12,
+                child: Row(children: [
+                    Expanded(
+                        child: ListView(
+                            padding: EdgeInsets.zero,
+                            children: [
+                                Column(
+                                    children: [
+                                        UserAccountsDrawerHeader(
+                                            decoration: BoxDecoration(
+                                                color: kSecondaryColor
+                                            ),
+                                            accountName: Text('User'),
+                                            accountEmail: Text('user@email.com'),
+                                            currentAccountPicture: CircleAvatar(
+                                                child: IconButton(
+                                                    padding: EdgeInsets.zero,
+                                                    icon: Icon(Icons.settings),
+                                                    color: Colors.black54,
+                                                    onPressed: () => { navigationState.open(router.Routes.{{ fqVariable application.name }}SettingsPage)},
+                                                ),
+                                                backgroundColor: Colors.white,
+                                            ),
+                                        ),
+                                    ]
+                                ),
+                                ...{{ fqClass application.name }}NavigationItems.navigationItems
+                                    .map((e) => ListTile(
+                                    leading: e.leading,
+                                    title: e.title,
+                                    onTap: () {
+                                        navigationState.navigateTo(e.route);
+                                        setState(() => {});
+                                    },
+                                    selected: e.route == _selected))
+                                    .toList(),
+                                const Divider(),
+                            ],
+                        ),
+                    ),
+                    const VerticalDivider(
+                        width: 1,
+                    )
+                ]),
+            )
+        );
+    }
 }

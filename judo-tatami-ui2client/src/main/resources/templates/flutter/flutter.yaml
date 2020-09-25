@@ -14,13 +14,24 @@
   pathExpression: "'README.md'"
   templateName: flutter/README.md.hbs
 
-- overwriteExpression: false
+# ========================================
+# main
+# ========================================
+- overwriteExpression: true
   factoryExpression: "{#application}"
   pathExpression: >
     'lib/' +
     #path(#application.actor.name) + '/' +
     'main.dart'
   templateName: flutter/lib/main.dart.hbs
+
+- overwriteExpression: true
+  factoryExpression: "{#application}"
+  pathExpression: >
+    'lib/' +
+    #path(#application.actor.name) + '/' +
+    'main_release.dart'
+  templateName: flutter/lib/main_release.dart.hbs
 
 # ========================================
 # stores
@@ -246,35 +257,6 @@
   copy: true
 
 # ========================================
-# utilities
-# ========================================
-- overwriteExpression: false
-  factoryExpression: "{#application}"
-  pathExpression: >
-    'lib/' +
-    #path(#application.actor.name) + '/utilities/' +
-    'package.dart'
-  templateName: flutter/lib/utilities/package.dart.hbs
-
-- overwriteExpression: false
-  factoryExpression: "{#application}"
-  pathExpression: "'lib/' + #path(#application.actor.name) + '/utilities/app_route_observer.dart'"
-  templateName: flutter/lib/utilities/app_route_observer.dart
-  copy: true
-
-- overwriteExpression: false
-  factoryExpression: "{#application}"
-  pathExpression: "'lib/' + #path(#application.actor.name) + '/utilities/constants.dart'"
-  templateName: flutter/lib/utilities/constants.dart
-  copy: true
-
-- overwriteExpression: false
-  factoryExpression: "{#application}"
-  pathExpression: "'lib/' + #path(#application.actor.name) + '/utilities/route_names.dart'"
-  templateName: flutter/lib/utilities/route_names.dart
-  copy: true
-
-# ========================================
 # pages
 # ========================================
 - overwriteExpression: true
@@ -345,3 +327,79 @@
   templateContext:
     - name: layout
       expression: "#self"
+
+# ========================================
+# drawer
+# ========================================
+- overwriteExpression: true
+  factoryExpression: "{#application}"
+  pathExpression: >
+    'lib/' +
+    #path(#application.actor.name) +
+    '/ui/drawer_items.dart'
+  templateName: flutter/lib/ui/drawer_items.dart.hbs
+
+# ========================================
+# navigation state
+# ========================================
+- overwriteExpression: true
+  factoryExpression: "{#application}"
+  pathExpression: >
+    'lib/' +
+    #path(#application.actor.name) +
+    '/ui/navigation_state.dart'
+  templateName: flutter/lib/ui/navigation_state.dart.hbs
+
+# ========================================
+# scaffold
+# ========================================
+- overwriteExpression: true
+  factoryExpression: "{#application}"
+  pathExpression: >
+    'lib/' +
+    #path(#application.actor.name) +
+    '/ui/scaffold.dart'
+  templateName: flutter/lib/ui/scaffold.dart.hbs
+
+# ========================================
+# settings
+# ========================================
+- overwriteExpression: true
+  factoryExpression: "{#application}"
+  pathExpression: >
+    'lib/' +
+    #path(#application.actor.name) +
+    '/ui/settings.dart'
+  templateName: flutter/lib/ui/settings.dart.hbs
+
+# ========================================
+# injector
+# ========================================
+- overwriteExpression: true
+  factoryExpression: "{#application}"
+  pathExpression: >
+    'lib/' +
+    #path(#application.actor.name) +
+    '/injector/injector.dart'
+  templateName: flutter/lib/injector/injector.dart.hbs
+
+# ========================================
+# utilities
+# ========================================
+- overwriteExpression: false
+  factoryExpression: "{#application}"
+  pathExpression: "'lib/' + #path(#application.actor.name) + '/utilities/constants.dart'"
+  templateName: flutter/lib/utilities/constants.dart
+  copy: true
+
+- overwriteExpression: false
+  factoryExpression: "{#application}"
+  pathExpression: "'lib/' + #path(#application.actor.name) + '/utilities/navigation.dart'"
+  templateName: flutter/lib/utilities/navigation.dart
+  copy: true
+
+- overwriteExpression: false
+  factoryExpression: "{#application}"
+  pathExpression: "'lib/' + #path(#application.actor.name) + '/utilities/package.dart'"
+  templateName: flutter/lib/utilities/package.dart
+  copy: true

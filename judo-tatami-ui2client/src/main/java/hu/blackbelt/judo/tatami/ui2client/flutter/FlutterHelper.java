@@ -42,6 +42,7 @@ public class FlutterHelper {
         context.registerFunction("isViewButton", FlutterHelper.class.getDeclaredMethod("isViewButton", new Class[]{Action.class}));
         context.registerFunction("dartType", FlutterHelper.class.getDeclaredMethod("dartType", new Class[]{DataType.class}));
         context.registerFunction("isInstanceAction", FlutterHelper.class.getDeclaredMethod("isInstanceAction", new Class[]{PageDefinition.class}));
+        context.registerFunction("dashboardPageNameVariable", FlutterHelper.class.getDeclaredMethod("dashboardPageNameVariable", new Class[]{Application.class}));
     }
 
     public static void registerHandlebars(Handlebars handlebars) {

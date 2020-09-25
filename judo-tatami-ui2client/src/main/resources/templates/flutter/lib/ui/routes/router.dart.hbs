@@ -13,7 +13,7 @@ import '../pages/package.dart';
 
 @MaterialAutoRouter(preferRelativeImports: true, routes: <AutoRoute>[
     CustomRoute(
-        page: NorthwindExternalAPSettingsPage,
+        page: {{fqClass application.name}}SettingsPage,
         transitionsBuilder: TransitionsBuilders.slideLeftWithFade),
     {{# each layout.pageContainers as |container| }}
     CustomRoute(

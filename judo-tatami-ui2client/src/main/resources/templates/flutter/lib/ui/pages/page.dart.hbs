@@ -36,9 +36,9 @@ class {{ fqClass page.name }}Page extends StatefulWidget {
     Widget build(BuildContext context) {
         final navigation = locator<NavigationState>();
 
-        return NorthwindExternalAPScaffold(
-            pageTitle: {{ fqClass page.name }}Page.title,
-            {{# if isDirectionHorizontal }}
+        return {{fqClass application.name}}Scaffold(
+            pageTitle: {{fqClass page.name}}Page.title,
+            {{#if isDirectionHorizontal}}
             body: Column(
             {{ else }}
             body: Row(

@@ -15,7 +15,7 @@ Observer(builder: (_) {
                     var response = await navigation.open(Routes.{{fqVariable action.target.name}},
                     arguments: {{fqClass action.target.name}}Arguments({{ fqVariable page.targetClassType.name }}Store: element));
                     if (response != null) {
-                        {{ fqVariable page.targetClassType.name }}Store.get{{ getTargetDataTypeClass page.dataElement }}();
+                        {{ fqVariable page.targetClassType.name }}Store.get{{ fqVariable page.targetClassType.name }}();
                     }
                 },
                 {{/if}}

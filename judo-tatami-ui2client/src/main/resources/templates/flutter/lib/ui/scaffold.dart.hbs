@@ -1,0 +1,68 @@
+//////////////////////////////////////////////////////////////////////////////
+// G E N E R A T E D    C L A S S
+// ------------------------------
+// Factory expression: {{{ cleanup template.factoryExpression }}}
+// Path expression: {{{ cleanup template.pathExpression }}}
+// Overwrite: {{{ cleanup template.overwriteExpression }}}
+// Template name: {{ template.templateName }}
+// Application: {{ application.name }}
+
+import 'package:flutter/material.dart';
+import 'package:flutter_breadcrumb/flutter_breadcrumb.dart';
+import 'package:{{ modelPackage application.name }}/{{ path application.name }}/injector/injector.dart';
+import 'package:{{ modelPackage application.name }}/{{ path application.name }}/main.dart';
+import 'package:{{ modelPackage application.name }}/{{ path application.name }}/ui/navigation_state.dart';
+
+/// A responsive scaffold for our application.
+/// Displays the navigation drawer alongside the [Scaffold] if the screen/window size is large enough
+class {{ fqClass application.name }}Scaffold extends StatelessWidget {
+    const {{ fqClass application.name }}Scaffold({@required this.body, @required this.pageTitle, this.floatingActionButton, Key key}) : super(key: key);
+
+    final Widget body;
+
+    final String pageTitle;
+
+    final Widget floatingActionButton;
+
+    @override
+    Widget build(BuildContext context) {
+        final navigation = locator<NavigationState>();
+        final drawer = navigation.isMenuFixed(context) ? null : {{ fqClass application.name }}Drawer();
+
+        return Row(
+            children: [
+                Expanded(
+                    child: SafeArea(
+                        child: Scaffold(
+                            drawer: drawer,
+                            appBar: AppBar(
+                                automaticallyImplyLeading: drawer != null,
+                                title:
+                                Column(
+                                    children: [
+                                    Text(pageTitle),
+                                    navigation.stack.length > 0 ?
+                                        BreadCrumb(
+                                            items:
+                                                navigation.breadcumbItems,
+                                            divider: Icon(Icons.chevron_right, color: Colors.white54, size: 16,),
+                                            overflow: ScrollableOverflow(
+                                                keepLastDivider: false,
+                                                direction: Axis.horizontal,
+                                            )
+                                        ) : Container(),
+                                    ]
+                                )
+                            ),
+                            body: SingleChildScrollView(
+                                child:
+                                    body,
+                            ),
+                            floatingActionButton: floatingActionButton,
+                        ),
+                    ),
+                )
+            ],
+        );
+    }
+}

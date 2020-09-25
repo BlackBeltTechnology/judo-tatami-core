@@ -1,0 +1,122 @@
+//////////////////////////////////////////////////////////////////////////////
+// G E N E R A T E D    C L A S S
+// ------------------------------
+// Factory expression: {{{ cleanup template.factoryExpression }}}
+// Path expression: {{{ cleanup template.pathExpression }}}
+// Overwrite: {{{ cleanup template.overwriteExpression }}}
+// Template name: {{ template.templateName }}
+// Application: {{ application.name }}
+
+import 'package:flutter/material.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:mobx/mobx.dart';
+import 'package:{{ modelPackage application.name }}/{{ path application.name }}/injector/injector.dart';
+import 'package:{{ modelPackage application.name }}/{{ path application.name }}/components/package.dart';
+import 'package:{{ modelPackage application.name }}/{{ path application.name }}/ui/scaffold.dart';
+import 'package:{{ modelPackage application.name }}/{{ path application.name }}/ui/navigation_state.dart';
+import 'package:openapi_dart_common/openapi.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+part 'settings.g.dart';
+
+class {{ fqClass application.name }}SettingsPageStore extends _{{ fqClass application.name }}SettingsPageStore
+with _${{ fqClass application.name }}SettingsPageStore {}
+
+abstract class _{{ fqClass application.name }}SettingsPageStore with Store {
+    @observable
+    String apiUrl = "http://localhost:8181";
+
+    @observable
+    bool loading = true;
+
+    @action
+    Future<void> loadApiUrl() async {
+        SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+        this.apiUrl = sharedPreferences.getString("apiUrl") ?? apiUrl;
+        loadFinished();
+    }
+
+    @action
+    void setApiUrl(String apiUrl) {
+    this.apiUrl = apiUrl;
+    }
+
+    @action
+    void loadFinished() {
+    loading = false;
+    }
+}
+
+class {{ fqClass application.name }}SettingsPage extends StatefulWidget {
+    static const String title = 'Settings';
+
+    @override
+    _{{ fqClass application.name }}SettingsPageState createState() => _{{ fqClass application.name }}SettingsPageState();
+}
+
+class _{{ fqClass application.name }}SettingsPageState extends State<{{ fqClass application.name }}SettingsPage> {
+
+    final {{ fqClass application.name }}SettingsPageStore store = {{ fqClass application.name }}SettingsPageStore();
+
+    _{{ fqClass application.name }}SettingsPageState()  {
+        store.loadApiUrl();
+    }
+
+    @override
+    Widget build(BuildContext context) {
+        final navigation = locator<NavigationState>();
+
+        return {{ fqClass application.name }}Scaffold(
+            pageTitle: "Settings",
+            body: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                    Card(
+                        color: Colors.black12,
+                        child:
+                            Row(
+                                children: [
+                                    JudoButton(
+                                        col: 1,
+                                        onPressed: () => navigation.close(),
+                                        label: 'Back',
+                                        icon: Icon(Icons.arrow_back_ios),
+                                    ),
+                                    JudoButton(
+                                        col: 1,
+                                        onPressed: () async {
+                                            SharedPreferences prefs = await SharedPreferences.getInstance();
+                                            await prefs.setString('apiUrl', store.apiUrl);
+
+                                            ApiClient _apiClient = ApiClient(basePath: store.apiUrl + "/api/{{ modelPackage application.name }}", apiClientDelegate: DioClientDelegate());
+                                            locator.unregister(instance: locator<ApiClient>());
+                                            locator.registerSingleton<ApiClient>(_apiClient);
+                                            navigation.close();
+                                        },
+                                        label: 'Save',
+                                        icon: Icon(Icons.save),
+                                    ),
+                                ],
+                            ),
+                    ),
+                    Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                            Observer(builder: (_) =>
+                                store.loading ?
+                                JudoLoadingProgress() :
+                                JudoInputText(
+                                    col: 4,
+                                    icon: Icon(Icons.web),
+                                    label: 'API url',
+                                    initialValue: store.apiUrl.toString(),
+                                    onChanged: (value) => store.setApiUrl(value),
+                                ),
+                            ),
+                        ],
+                    ),
+                ],
+            ),
+        );
+    }
+}
