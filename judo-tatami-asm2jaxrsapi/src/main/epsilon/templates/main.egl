@@ -21,8 +21,8 @@ for (e in ASM!EEnum.all) {
 }
 
 var apServiceInstances : Map = new Map();
-for (clazz in ASM!EOperation.all.select(op | not asmUtils.getAccessPointsOfOperation(op).isEmpty()).collect(op | op.eContainingClass).asSet()) {
-    var operationsOfClazz = clazz.eOperations.select(op | not asmUtils.getAccessPointsOfOperation(op).isEmpty());
+for (clazz in ASM!EOperation.all.select(op | not asmUtils.getActorTypesOfOperation(op).isEmpty()).collect(op | op.eContainingClass).asSet()) {
+    var operationsOfClazz = clazz.eOperations.select(op | not asmUtils.getActorTypesOfOperation(op).isEmpty());
 
     log.debug("Exposed class: " + asmUtils.getClassifierFQName(clazz));
 
@@ -56,10 +56,10 @@ outputJavaClasses.add(getApplicationConfigJavaFileName());
 outputScrXmls.add(getApplicationConfigScrXmlFileName());
 
 
-/*for (ap in asmUtils.getAllAccessPoints()) {
+/*for (ap in asmUtils.getAllActorTypes()) {
 
     var apServiceInstances : Map = new Map();
-    var operationClasses = ASM!EOperation.all.select(op | asmUtils.getAccessPointsOfOperation(op).contains(ap)).collect(op | op.eContainer).asSet();
+    var operationClasses = ASM!EOperation.all.select(op | asmUtils.getActorTypesOfOperation(op).contains(ap)).collect(op | op.eContainer).asSet();
     
     for (clazz in operationClasses) {
         apServiceInstances.put((clazz.getExposedPackageName() + "." + clazz.name).normalizeName().replaceAll("\\.", "_"),

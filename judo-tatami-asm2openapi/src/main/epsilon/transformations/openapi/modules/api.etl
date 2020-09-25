@@ -1,9 +1,9 @@
 import "../../../operations/openapi/_importAll.eol";
 
-rule CreateOpenAPIAccessPoint
+rule CreateOpenAPIActorType
     transform s : ASM!EClass
     to t : OPENAPI!API {
-        guard: asmUtils.isAccessPoint(s)
+        guard: asmUtils.isActorType(s)
         
         t.swagger = "2.0";
 
@@ -15,31 +15,31 @@ rule CreateOpenAPIAccessPoint
         t.produces.add("application/json");
 }
 
-rule CreateOpenAPIAccessPointInfo
+rule CreateOpenAPIActorTypeInfo
     transform s : ASM!EClass
     to t : OPENAPI!Info {
-        guard: asmUtils.isAccessPoint(s)
+        guard: asmUtils.isActorType(s)
         
         t.version = "1.0.0"; // TODO
         t.title = s.name;
         
-        s.equivalent("CreateOpenAPIAccessPoint").info = t;
+        s.equivalent("CreateOpenAPIActorType").info = t;
 }
 
 rule CreateInternalServerErrorDeclaration
     transform s : ASM!EClass
     to t : OPENAPI!ResponseDeclaration {
-        guard: asmUtils.isAccessPoint(s)
+        guard: asmUtils.isActorType(s)
 
         t.name = "InternalServerError";
         
-        s.equivalent("CreateOpenAPIAccessPoint").responses.add(t);
+        s.equivalent("CreateOpenAPIActorType").responses.add(t);
 }
 
 rule CreateInternalServerErrorDefinition
     transform s : ASM!EClass
     to t : OPENAPI!ResponseDefinition {
-        guard: asmUtils.isAccessPoint(s)
+        guard: asmUtils.isActorType(s)
 
         t.description = "Internal server error";
         

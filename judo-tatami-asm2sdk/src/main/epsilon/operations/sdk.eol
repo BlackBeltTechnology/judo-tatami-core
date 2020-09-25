@@ -83,11 +83,6 @@ operation getAllEntities(): Collection {
     	(asmUtils.isEntityType(class)));
 }
 
-@cached
-operation getAccessPoints(): Collection {
-	return ASM!EClass.all.select(class | asmUtils.isAccessPoint(class));
-}
-
 operation genUtil(templateName : String) : String {
 	var utilPackageName = getInternalPrefix() + getModelPackageName() + ".util";	
 	var utilPackagePath = utilPackageName.replaceAll("\\.", "/");

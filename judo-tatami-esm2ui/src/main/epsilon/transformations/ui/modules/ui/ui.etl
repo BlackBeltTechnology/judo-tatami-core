@@ -1,0 +1,126 @@
+import "../namespace/namespace.etl";
+import "../../../../operations/_importAll.eol";
+
+/*
+@greedy
+rule CreateNavigationItemForMenuItemAccess
+    transform s : ESM!esm::ui::MenuItemAccess
+    to t : UI!ui::NavigationItem
+    extends CreateNamedElementFromNamedElement {
+
+        log.debug("CreateNavigationItemForAccessPointRelation: " + s.name);
+
+        t.name = s.access.fqName().anchor("NavigationItem");
+        t.label = s.getEffectiveLabel();
+        t.target = s.equivalent("CreateNavigationItemPageForMenuItemAccessTable");
+        if (t.target.isUndefined()) {
+            t.target = s.equivalent("CreateNavigationItemPageForMenuItemAccessView");
+        }
+        if (t.target.isUndefined()) {
+            t.target = s.equivalent("CreateNavigationItemPageForMenuItemAccessEdit");
+        }
+        s.eContainer.equivalent("CreateNavigationController").items.add(t);
+
+}
+
+@greedy
+rule CreateNavigationItemPageForMenuItemAccessView
+    transform s : ESM!esm::ui::MenuItemAccess
+    to t : UI!ui::PageDefinition
+    extends CreateNamedElementFromNamedElement {
+        guard: s.access.target.view.isDefined()
+        log.debug("CreateNavigationItemPageForAccessPointRelationForView: " + s.name);
+
+        var application = s.eContainer.equivalent("CreateApplication");
+
+        t.name = s.access.fqName().anchor("View");
+        t.dataElement = s.access.mapRelationType(application, s.eContainer.mapClassType(application));
+		t.pageType = UI!ui::PageType#VIEW;
+
+	 	var pageContainer = new UI!ui::PageContainer();
+	    pageContainer.layoutType = application.layoutTypes.first;
+		pageContainer.name = "default";
+		pageContainer.direction = UI!Axis#VERTICAL;
+		t.containers.add(pageContainer);
+
+        pageContainer.children.add(s.target.view.map(application));
+        application.pages.add(t);        
+}
+
+@greedy
+rule CreateNavigationItemPageForMenuItemAccessEdit
+    transform s : ESM!esm::ui::MenuItemAccess
+    to t : UI!ui::PageDefinition
+    extends CreateNamedElementFromNamedElement {
+        guard: s.access.target.form.isDefined()
+
+        log.debug("CreateNavigationItemPageForAccessPointRelationUpdateEdit: " + s.name);
+
+        var application = s.eContainer.equivalent("CreateApplication");
+
+        t.name = s.fqName().anchor("Edit");
+        t.dataElement = s.mapRelationType(application, s.eContainer.mapClassType(application));
+		t.pageType = UI!ui::PageType#UPDATE;
+
+	 	var pageContainer = new UI!ui::PageContainer();
+	    pageContainer.layoutType = application.layoutTypes.first;
+		pageContainer.name = "default";
+		pageContainer.direction = UI!Axis#VERTICAL;
+		t.containers.add(pageContainer);
+
+        pageContainer.children.add(s.target.form.map(application));
+        application.pages.add(t);
+}
+
+@greedy
+rule CreateNavigationItemPageForMenuItemAccessCreate
+    transform s : ESM!esm::ui::MenuItemAccess
+    to t : UI!ui::PageDefinition
+    extends CreateNamedElementFromNamedElement {
+        guard: s.access.target.form.isDefined()
+
+        log.debug("CreateNavigationItemPageForAccessPointRelationUpdateForm: " + s.name);
+
+        var application = s.eContainer.equivalent("CreateApplication");
+
+        t.name = s.fqName().anchor("Create");
+        t.dataElement = s.mapRelationType(application, s.eContainer.mapClassType(application));
+		t.pageType = UI!ui::PageType#CREATE;
+
+	 	var pageContainer = new UI!ui::PageContainer();
+	    pageContainer.layoutType = application.layoutTypes.first;
+		pageContainer.name = "default";
+		pageContainer.direction = UI!Axis#VERTICAL;
+		t.containers.add(pageContainer);
+
+        pageContainer.children.add(s.target.form.map(application));
+        application.pages.add(t);
+}
+
+@greedy
+rule CreateNavigationItemPageForMenuItemAccessTable
+    transform s : ESM!esm::ui::MenuItemAccess
+    to t : UI!ui::PageDefinition
+    extends CreateNamedElementFromNamedElement {
+        guard: s.access.target.table.isDefined()
+
+        log.debug("CreateNavigationItemPageForAccessPointRelationUpdateForm: " + s.name);
+
+        var application = s.eContainer.equivalent("CreateApplication");
+
+        t.name = s.fqName().anchor("Table");
+        t.dataElement = s.mapRelationType(application, s.eContainer.mapClassType(application));
+		t.pageType = UI!ui::PageType#TABLE;
+
+	 	var pageContainer = new UI!ui::PageContainer();
+	    pageContainer.layoutType = application.layoutTypes.first;
+		pageContainer.name = "default";
+		pageContainer.direction = UI!Axis#VERTICAL;
+		t.containers.add(pageContainer);
+
+        var table = s.target.table.createTableFromTransferObjectTable(application);
+        pageContainer.children.add(table);
+        application.pages.add(t);
+
+}
+*/

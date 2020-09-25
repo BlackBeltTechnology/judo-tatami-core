@@ -1,7 +1,11 @@
 import "../../operations/ui/_importUi.eol";
 
 import "modules/namespace/namespace.etl";
-import "modules/accesspoint/accesspoint.etl";
+import "modules/accesspoint/application.etl";
+import "modules/accesspoint/pageDefinition.etl";
+import "modules/accesspoint/navigation.etl";
+
+import "modules/ui/ui.etl";
 
 
 operation String anchor(anchor1 : String, anchor2 : String) : String {
@@ -30,8 +34,7 @@ post {
 			log.debug("==============================================================");
 			log.debug("APP ================== : " + application.name);
 			log.debug("==============================================================");
-		application.calculateAccessPointRelationsForRelations();
-		application.calculateRelationBehaviour();
+		//application.calculateRelationBehaviour();
 		application.resolveActionPageDefinitions();
 		application.calculatePageActions();
 	}

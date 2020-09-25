@@ -2,6 +2,37 @@ operation ESM!esm::structure::Class fqName() : String {
 	return esmUtils.getNamespaceElementFQName(self);
 }
 
+@cached
+operation ESM!esm::structure::Class getExposedTransferObjects() : Set {
+	return self.getExposedRelations.collect(r | r.target).asSet();
+}
+
+@cached
+operation ESM!esm::structure::Class getExposedRelations() : Set {
+	return self.collectExposedRelations(new Set());
+}
+
+operation ESM!esm::structure::Class collectExposedRelations(collected : Set) : Set {
+	for (relation in self.getAllRelations()) {
+		if (not collected.includes(relation)) {
+			collected.add(relation);
+			relation.target.collectExposedRelations(collected);		
+		}
+	}
+	return collected;
+}
+
+@cached
+operation ESM!esm::structure::Class getExposedOperations() : Set {
+	var ret = new Set();
+	for (cl in self.getExposedTransferObjects()) {
+		ret.addAll(cl.operations);
+	}
+	return ret;
+}
+
+
+
 operation ESM!esm::structure::Class createClassType(application : UI!ui::Application) : UI!ui::data::ClassType {
 	var clazz = new UI!ui::data::ClassType();	
 
@@ -11,15 +42,27 @@ operation ESM!esm::structure::Class createClassType(application : UI!ui::Applica
     
 	clazz.name = self.fqName();
 	clazz.isMapped = self.isMapped();
+
+	if (esmUtils.isRefreshSupported(self)) {
+		clazz.behaviours.add(UI!ui::data::ClassBehaviourType#REFRESH);
+	}
+	if (esmUtils.isUpdateSupported(self)) {
+		clazz.behaviours.add(UI!ui::data::ClassBehaviourType#UPDATE);
+	}
+	if (esmUtils.isValidateUpdateSupported(self)) {
+		clazz.behaviours.add(UI!ui::data::ClassBehaviourType#VALIDATE_UPDATE);
+	}
+
+	if (esmUtils.isDeleteSupported(self)) {
+		clazz.behaviours.add(UI!ui::data::ClassBehaviourType#DELETE);
+	}
+// TODO: Make it
+//	if (esmUtils.isTemplateSupported(self)) {
+//		clazz.behaviours.add(UI!ui::data::ClassBehaviourType#TEMPLATE);
+//	}
 					
 	application.dataElements.add(clazz);
-	
-    if (self.isAccesspoint()) {
-    	clazz.accessPoint = clazz;
-    	application.~apClass = clazz;
-    } else {
-    	clazz.accessPoint = application.~apClass;
-    }
+    clazz.isPrincipal = self.actorType.isDefined();
 
 	for (attribute in self.getAllAttributes()) {
 		attribute.mapAttributeType(application, clazz);

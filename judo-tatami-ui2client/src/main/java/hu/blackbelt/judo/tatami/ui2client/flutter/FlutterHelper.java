@@ -27,8 +27,6 @@ public class FlutterHelper {
         context.registerFunction("modelName", FlutterHelper.class.getDeclaredMethod("modelName", new Class[]{String.class}));
         context.registerFunction("modelPackage", FlutterHelper.class.getDeclaredMethod("modelPackage", new Class[]{String.class}));
         context.registerFunction("variable", FlutterHelper.class.getDeclaredMethod("variable", new Class[]{String.class}));
-        context.registerFunction("operations", RelationTuple.class.getDeclaredMethod("operations", new Class[]{Application.class}));
-        context.registerFunction("isEmbedded", FlutterHelper.class.getDeclaredMethod("isEmbedded", new Class[]{RelationType.class}));
         context.registerFunction("cleanup", FlutterHelper.class.getDeclaredMethod("cleanup", new Class[]{String.class}));
         context.registerFunction("getType", FlutterHelper.class.getDeclaredMethod("getType", new Class[]{VisualElement.class}));
         context.registerFunction("getWidgetTemplate", FlutterHelper.class.getDeclaredMethod("getWidgetTemplate", new Class[]{VisualElement.class}));
@@ -233,10 +231,6 @@ public class FlutterHelper {
         return StringUtils.uncapitalize(className(fqName));
     }
 
-    public static boolean isEmbedded(RelationType relationType) {
-        return (!relationType.isIsReadOnly()) && (relationType.getRelationKind() != RelationKind.ASSOCIATION);
-    }
-
     public static String dartType(DataType dataType) {
         if (dataType instanceof NumericType) {
             NumericType numericType = (NumericType) dataType;
@@ -253,23 +247,6 @@ public class FlutterHelper {
             return "String";
         } else {
             return "String";
-        }
-    }
-
-    @Getter
-    @Setter
-    @AllArgsConstructor
-    @EqualsAndHashCode
-    @ToString
-    public static class RelationTuple {
-        RelationType accessRelation;
-        RelationType relationType;
-
-        public static Collection<RelationTuple> operations(Application application) {
-            return ((Collection<RelationType>) application.getRelationTypes()).stream()
-                    .flatMap(r -> ((ClassType) (r.eContainer())).getAccessPointRelations().stream()
-                            .map(r2 -> new RelationTuple(r2, r)))
-                    .collect(Collectors.toSet());
         }
     }
 
