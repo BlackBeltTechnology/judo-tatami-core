@@ -19,7 +19,7 @@ rule Application
 
         t.name = s.fqName().anchor(applicationType);
         t.navigationController = s.equivalent("NavigationController");
-        t.dataElement = s.mapClassType(t);
+        t.classType = s.mapClassType(t);
 		
         var exposedRelations : Set = s.getExposedRelations();
        

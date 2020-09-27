@@ -1,15 +1,6 @@
 import "callOperationAction.eol";
 import "data/relationBehaviour.eol";
 
-// Iterate over all CallOperationAction to fix in/out parameters
-// It is done here to avoid endless loop.
-operation UI!ui::Application calculateAccessPointRelationsForRelations() {
-	for (cl : UI!ui::data::ClassType in UI!ui::data::ClassType.all().select(c | not c.isActor and c.~application == self)) {
-		cl.calculateAccessPointRelationsForRelation();
-	}
-}
-
-
 operation UI!ui::Application resolveActionPageDefinitions() {
 	for (callAction : UI!ui::CallOperationAction in UI!ui::CallOperationAction.all().select(a | a.~application = self )) {
 		callAction.resolveParameterPageDefinitions();
@@ -20,6 +11,10 @@ operation UI!ui::Application calculatePageActions() {
 
 	for (pageDefinition : UI!ui::PageDefinition in self.pages) {
 		pageDefinition.calculateActions(self);
+	}
+
+	for (table : UI!ui::Table in UI!ui::Table.all().select(t | t.getPageDefinition().eContainer() == self)) {
+		table.calculateActions(self);
 	}
 }
 	

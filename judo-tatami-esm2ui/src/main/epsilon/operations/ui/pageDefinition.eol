@@ -1,4 +1,6 @@
 operation UI!ui::PageDefinition calculateActions(application : UI!ui::Application) {
+	var relationType = self.getRelationType();
+	var classType = self.getTargetClassType();
 
 	if (self.pageType == UI!ui::PageType#CREATE) {
 		self.instanceActions.add(new UI!ui::BackAction());
@@ -9,10 +11,10 @@ operation UI!ui::PageDefinition calculateActions(application : UI!ui::Applicatio
 	} else if (self.pageType == UI!ui::PageType#VIEW) {
 		self.instanceActions.add(new UI!ui::BackAction());
 
-		if (self.dataElement.target.isDeletable()) {
+		if (classType.getIsDeletable()) {
 			self.instanceActions.add(new UI!ui::DeleteAction());	
 		}
-		if (self.dataElement.target.isUpdatable()) {
+		if (classType.getIsUpdatable()) {
 			var page = application.pages.selectOne(p | p.pageType = UI!ui::PageType#UPDATE 
 				and p.~source == self.~source);
 			if (page.isDefined()) {
@@ -23,10 +25,16 @@ operation UI!ui::PageDefinition calculateActions(application : UI!ui::Applicatio
 				log.warn("No update page defined for: " + self.name);
 			}
 		}
-	} else if (self.pageType == UI!ui::PageType#TABLE) {
-		self.instanceActions.add(new UI!ui::BackAction());
+	} else if (self.pageType == UI!ui::PageType#TABLE) {	
+		if (relationType.isUndefined()) {
+			throw "Table type have to be mapped to relation type";
+		}
 
-		if (self.dataElement.isCreatable()) {
+	    if (not relationType.isAccess) {
+			self.instanceActions.add(new UI!ui::BackAction());
+		}
+
+		if (relationType.getIsCreatable()) {
 			var page = application.pages.selectOne(p | p.pageType = UI!ui::PageType#CREATE 
 				and p.~source == self.~source);
 			if (page.isDefined()) {
@@ -37,6 +45,15 @@ operation UI!ui::PageDefinition calculateActions(application : UI!ui::Applicatio
 				log.warn("No update page defined for: " + self.name);
 			}
 		}
-		// TODO: Add
+		
+		if (relationType.getIsSetable()) {
+			self.instanceActions.add(new UI!ui::SetAction());
+		}
+		if (relationType.getIsUnsetable()) {
+			self.instanceActions.add(new UI!ui::UnsetAction());
+		}
+		if (relationType.getIsAddable()) {
+			self.instanceActions.add(new UI!ui::AddAction());
+		}
 	}
 }

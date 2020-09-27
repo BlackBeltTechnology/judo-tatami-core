@@ -1,0 +1,92 @@
+operation UI!ui::Action setIcon() {
+	if (self.icon.isUndefined()) {
+		self.icon = new UI!ui::Icon();
+		self.icon.name = 'texture';
+	} 
+}
+
+
+operation UI!ui::NavigationToPageAction setIcon() {
+	if (self.icon.isUndefined()) {
+		self.icon = new UI!ui::Icon();
+		self.icon.name = 'navigate_next';
+	} 
+}
+
+operation UI!ui::CreateAction setIcon() {
+	if (self.icon.isUndefined()) {
+		self.icon = new UI!ui::Icon();
+		self.icon.name = 'note_add';
+	} 
+}
+
+operation UI!ui::EditAction setIcon() {
+	if (self.icon.isUndefined()) {
+		self.icon = new UI!ui::Icon();
+		self.icon.name = 'edit';
+	} 
+}
+
+operation UI!ui::ViewAction setIcon() {
+	if (self.icon.isUndefined()) {
+		self.icon = new UI!ui::Icon();
+		self.icon.name = 'visibility';
+	} 
+}
+
+
+operation UI!ui::BackAction setIcon() {
+	if (self.icon.isUndefined()) {
+		self.icon = new UI!ui::Icon();
+		self.icon.name = 'arrow_back';
+	} 
+}
+
+operation UI!ui::SaveAction setIcon() {
+	if (self.icon.isUndefined()) {
+		self.icon = new UI!ui::Icon();
+		self.icon.name = 'save';
+	} 
+}
+
+operation UI!ui::AddAction setIcon() {
+	if (self.icon.isUndefined()) {
+		self.icon = new UI!ui::Icon();
+		self.icon.name = 'link';
+	} 
+}
+
+operation UI!ui::RemoveAction setIcon() {
+	if (self.icon.isUndefined()) {
+		self.icon = new UI!ui::Icon();
+		self.icon.name = 'link_off';
+	} 
+}
+
+operation UI!ui::DeleteAction setIcon() {
+	if (self.icon.isUndefined()) {
+		self.icon = new UI!ui::Icon();
+		self.icon.name = 'delete_forever';
+	} 
+}
+
+operation UI!ui::SetAction setIcon() {
+	if (self.icon.isUndefined()) {
+		self.icon = new UI!ui::Icon();
+		self.icon.name = 'link';
+	} 
+}
+
+operation UI!ui::UnsetAction setIcon() {
+	if (self.icon.isUndefined()) {
+		self.icon = new UI!ui::Icon();
+		self.icon.name = 'link_off';
+	} 
+}
+
+operation UI!ui::CallOperationAction setIcon() {
+	if (self.icon.isUndefined()) {
+		self.icon = new UI!ui::Icon();
+		self.icon.name = 'input';
+	} 
+}

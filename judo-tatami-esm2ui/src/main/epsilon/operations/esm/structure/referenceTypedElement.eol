@@ -94,8 +94,9 @@ operation ESM!esm::structure::ReferenceTypedElement mapTablePage(application : U
 	var page : UI!ui::PageDefinition = new UI!ui::PageDefinition();
 	page.~application = application;
 	page.~original = self;
+	var relation = self.mapRelationType(application, self.eContainer.mapClassType(application));
 
-	page.dataElement = self.mapRelationType(application, self.eContainer.mapClassType(application));
+	page.dataElement = relation;
 	page.name = self.fqName().anchor("Table");
 	page.pageType = UI!ui::PageType#TABLE;
 
@@ -111,7 +112,7 @@ operation ESM!esm::structure::ReferenceTypedElement mapTablePage(application : U
 	flex.col = applicationColumns;
 	pageContainer.children.add(flex);
     
-	var table = target.table.createTableFromTransferObjectTable(application);
+	var table = target.table.createTableFromTransferObjectTable(application, relation);
     flex.children.add(table);
     
     /*

@@ -20,6 +20,12 @@ rule AbstractNavigationItem
 		guard: not s.hidden
         t.name = s.eContainer.fqName().anchor("NavigationItem");
         t.label = s.getEffectiveLabel();
+        var icon = new UI!ui::Icon();
+        icon.name = s.iconName;
+        if (icon.name.isUndefined()) {
+        	icon.name = "texture";
+        }
+        t.icon = icon;
 }
 
 rule PrincipalMenuNavigationItem
