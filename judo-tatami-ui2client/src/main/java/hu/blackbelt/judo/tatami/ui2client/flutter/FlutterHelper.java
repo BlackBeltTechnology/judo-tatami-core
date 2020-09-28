@@ -205,6 +205,8 @@ public class FlutterHelper {
             return "bool";
         } else if (dataType instanceof DateType) {
             return "DateTime";
+        } else if (dataType instanceof TimestampType) {
+            return "DateTime";
         } else if (dataType instanceof StringType) {
             return "String";
         } else {
