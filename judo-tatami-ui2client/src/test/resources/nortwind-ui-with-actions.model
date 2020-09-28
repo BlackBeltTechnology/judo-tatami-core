@@ -6898,9 +6898,11 @@
         <pages xmi:id="_z6p3oP2DEeqL-KsKFDXuRQ" name="northwind::services::CategoryInfo.products#Table" dataElement="_z6Q2Ef2DEeqL-KsKFDXuRQ" pageType="TABLE">
             <instanceActions xsi:type="ui:BackAction" xmi:id="_0Gukxf2DEeqL-KsKFDXuRQ"/>
             <instanceActions xsi:type="ui:CreateAction" xmi:id="_0Gukxv2DEeqL-KsKFDXuRQ" target="_z6jJ8P2DEeqL-KsKFDXuRQ"/>
+            <instanceActions xsi:type="ui:AddAction" xmi:id="_0Guk772DEeqL-KsKFDXuRq"/>
             <containers xmi:id="_z6qesP2DEeqL-KsKFDXuRQ" name="default" direction="VERTICAL" layoutType="_z6OZ0P2DEeqL-KsKFDXuRQ">
                 <children xsi:type="ui:Flex" xmi:id="_z6qesf2DEeqL-KsKFDXuRQ" name="products" col="12" direction="VERTICAL">
                     <children xsi:type="ui:Table" xmi:id="_z6qesv2DEeqL-KsKFDXuRQ" name="ProductInfoTable" dataElement="_z6PA4v2DEeqL-KsKFDXuRQ" col="12">
+                        <rowActions xmi:id="viewAction" xsi:type="ui:ViewAction" target="_z6gGoP2DEeqL-KsKFDXuRQ"/>
                         <rowActions xmi:id="removeAction" xsi:type="ui:RemoveAction"/>
                         <columns xsi:type="ui:Formatted" xmi:id="_z6qes_2DEeqL-KsKFDXuRQ" name="unitPrice" dataElement="_z6Pn8P2DEeqL-KsKFDXuRQ" col="1" row="2" label="unitPrice" format="%s"/>
                         <columns xsi:type="ui:Formatted" xmi:id="_z6rFwP2DEeqL-KsKFDXuRQ" name="productName" dataElement="_z6Pn8v2DEeqL-KsKFDXuRQ" col="1" row="2" label="productName" format="%s"/>

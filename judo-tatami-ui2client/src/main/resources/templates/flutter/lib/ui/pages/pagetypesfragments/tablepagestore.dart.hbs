@@ -29,6 +29,19 @@ abstract class _{{ fqClass page.name }}PageStore with Store {
     }
     {{/ if }}
 
+	{{#if relation.isCollection}}
+    @action
+    Future<List<{{ fqClass relation.target.name }}Store>> add{{fqClass relation.name}}({{ fqClass relation.owner.name }}Store {{ variable relation.owner.name }}Store, {{ fqClass relation.target.name }}Store selected{{ className relation.target.name }}Store) async {
+        try {
+            await _{{ fqVariable relation.owner.name }}{{ fqClass relation.name }}Repository.{{ fqVariable relation.owner.name }}{{fqClass relation.name}}Add({{ variable relation.owner.name }}Store, [selected{{ className relation.target.name }}Store]);
+            {{ variable relation.owner.name }}Store.{{variable relation.name}}.addAll([selected{{ className relation.target.name }}Store]);
+            return {{ variable relation.owner.name }}Store.{{variable relation.name}};
+        } on ApiException {
+            errorMessage = "Could not add {{relation.name}}";
+        }
+    }
+    {{/if}}
+    
     {{# if selfbehaviour.removable }}
     @action
     Future<void> remove{{ fqClass relation.name }}({{ fqClass relation.target.name }}Store {{ fqVariable relation.target.name }}Store) async {

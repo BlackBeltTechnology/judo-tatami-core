@@ -1,5 +1,5 @@
 Observer(builder: (_) {
-    switch({{ fqVariable page.targetClassType.name }}Store.{{ fqClass page.targetClassType.name }}StoreFuture.status){
+    switch({{ fqVariable page.targetClassType.name }}PageStore.{{ fqClass page.targetClassType.name }}StoreFuture.status){
         case FutureStatus.pending:
             return JudoLoadingProgress();
         case FutureStatus.rejected:
@@ -12,15 +12,15 @@ Observer(builder: (_) {
                 {{#each this.rowActions as |action|}}
                 {{#if (isViewButton action)}}
                 navigateToViewPageAction: (element) async {
-                    var response = await navigation.open(Routes.{{fqVariable action.target.name}},
-                    arguments: {{fqClass action.target.name}}Arguments({{ fqVariable page.targetClassType.name }}Store: element));
+                    var response = await navigation.open(Routes.{{ fqVariable action.target.name }},
+                    arguments: {{ fqClass action.target.name }}Arguments({{ fqVariable page.targetClassType.name }}Store: element));
                     if (response != null) {
-                        {{ fqVariable page.targetClassType.name }}Store.get{{ fqVariable page.targetClassType.name }}();
+                        {{fqVariable page.targetClassType.name}}Store.get{{ fqClass page.dataElement.owner.name }}();
                     }
                 },
                 {{/if}}
                 {{#if (isRemoveButton action)}}
-                removeAction: (element) => {{ fqVariable page.targetClassType.name }}Store.remove{{ fqClass page.targetClassType.name }}({{ fqVariable page.targetClassType.name }}Store, element),
+                removeAction: (element) => {{fqVariable page.name}}PageStore.remove{{ fqClass page.dataElement.owner.name }}({{ variable page.dataElement.owner.name }}Store, element),
                 {{/if}}
                 {{/each}}
             );
