@@ -2,6 +2,7 @@ operation ESM!esm::ui::TransferObjectTable createTableFromTransferObjectTable(ap
 	var t : UI!ui::Table = new UI!ui::Table();
 	t.name = self.name;
 	t.dataElement = self.eContainer.mapClassType(application);
+	
 	t.col = applicationColumns;
 	
 	for (column in self.columns) {
@@ -9,6 +10,13 @@ operation ESM!esm::ui::TransferObjectTable createTableFromTransferObjectTable(ap
 	}
     return t;
 }
+
+operation ESM!esm::ui::TransferObjectTable createTableFromTransferObjectTable(application : UI!ui::Application, relation : UI!ui::data::RelationType) : UI!ui::Table {
+	var t : UI!ui::Table = self.createTableFromTransferObjectTable(application);
+	t.dataElement = relation;
+	return t;
+}
+
 
 operation ESM!esm::ui::TransferObjectTable map(application : UI!ui::Application) : UI!ui::Table {
 	var t : UI!ui::Table = self.createTableFromTransferObjectTable(application);

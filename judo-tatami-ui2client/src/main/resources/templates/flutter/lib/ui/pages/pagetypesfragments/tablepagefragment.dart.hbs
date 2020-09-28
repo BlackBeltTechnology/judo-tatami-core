@@ -1,11 +1,11 @@
     @override
-    State<StatefulWidget> createState() => _{{fqClass page.name}}PageState();
+    State<StatefulWidget> createState() => _{{ fqClass page.name }}PageState();
 }
 
-class _{{fqClass page.name}}PageState extends State<{{fqClass page.name}}Page> {
+class _{{ fqClass page.name }}PageState extends State<{{ fqClass page.name }}Page> {
 
-    final {{fqClass page.name}}PageStore {{fqVariable page.name}}PageStore = {{fqClass page.name}}PageStore();
+    final {{ fqClass page.name }}PageStore {{ fqVariable page.name }}PageStore = {{ fqClass page.name }}PageStore();
 
-    _{{fqClass page.name}}PageState(){
-        {{fqVariable page.name}}PageStore.get{{ getTargetDataTypeClass page.dataElement }}();
+    _{{ fqClass page.name }}PageState(){
+        {{ fqVariable page.name }}PageStore.get{{ fqClass page.targetClassType.name }}();
     }

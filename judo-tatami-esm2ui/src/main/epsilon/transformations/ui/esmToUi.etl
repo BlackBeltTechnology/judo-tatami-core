@@ -39,6 +39,14 @@ post {
 		application.calculatePageActions();
 	}
 	
+	for (action : UI!ui::Action in UI!ui::Action.all()) {
+		action.setIcon();
+	}
+
+	for (input : UI!ui::Input in UI!ui::Input.all()) {
+		input.setIcon();
+	}
+	
 	for (application : UI!ui::Application in UI!ui::Application.all()) {
 		uiUtils.organizeApplication(application, "mobile", 4);
     	uiUtils.organizeApplication(application, "tablet", 8);

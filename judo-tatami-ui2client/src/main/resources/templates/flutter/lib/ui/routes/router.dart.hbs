@@ -15,13 +15,13 @@ import '../pages/package.dart';
     CustomRoute(
         page: NorthwindExternalAPSettingsPage,
         transitionsBuilder: TransitionsBuilders.slideLeftWithFade),
-    {{# each layout.pageContainers as |container|}}
+    {{# each layout.pageContainers as |container| }}
     CustomRoute(
-        page: {{fqClass container.owner.name}}Page,
-        {{#if (isDashboardPage container.owner)}}
+        page: {{ fqClass container.owner.name }}Page,
+        {{# if container.owner.isPageTypeDashboard }}
         initial: true,
-        {{/if}}
+        {{/ if }}
         transitionsBuilder: TransitionsBuilders.slideLeftWithFade),
-    {{/each}}
+    {{/ each }}
 ])
     class $Router {}

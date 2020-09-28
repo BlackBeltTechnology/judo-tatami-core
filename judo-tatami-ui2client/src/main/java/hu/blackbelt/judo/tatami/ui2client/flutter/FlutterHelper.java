@@ -30,7 +30,6 @@ public class FlutterHelper {
         context.registerFunction("cleanup", FlutterHelper.class.getDeclaredMethod("cleanup", new Class[]{String.class}));
         context.registerFunction("getType", FlutterHelper.class.getDeclaredMethod("getType", new Class[]{VisualElement.class}));
         context.registerFunction("getWidgetTemplate", FlutterHelper.class.getDeclaredMethod("getWidgetTemplate", new Class[]{VisualElement.class}));
-        context.registerFunction("isHorizontal", FlutterHelper.class.getDeclaredMethod("isHorizontal", new Class[]{Flex.class}));
         context.registerFunction("mainAxisAlignment", FlutterHelper.class.getDeclaredMethod("mainAxisAlignment", new Class[]{Flex.class}));
         context.registerFunction("crossAxisAlignment", FlutterHelper.class.getDeclaredMethod("crossAxisAlignment", new Class[]{Flex.class}));
         context.registerFunction("mainAxisSize", FlutterHelper.class.getDeclaredMethod("mainAxisSize", new Class[]{Flex.class}));
@@ -40,13 +39,6 @@ public class FlutterHelper {
         context.registerFunction("isDeleteButton", FlutterHelper.class.getDeclaredMethod("isDeleteButton", new Class[]{Action.class}));
         context.registerFunction("isEditButton", FlutterHelper.class.getDeclaredMethod("isEditButton", new Class[]{Action.class}));
         context.registerFunction("dartType", FlutterHelper.class.getDeclaredMethod("dartType", new Class[]{DataType.class}));
-        context.registerFunction("getTargetDataTypeClass", FlutterHelper.class.getDeclaredMethod("getTargetDataTypeClass", new Class[]{DataElement.class}));
-        context.registerFunction("getTargetDataTypeVariable", FlutterHelper.class.getDeclaredMethod("getTargetDataTypeVariable", new Class[]{DataElement.class}));
-        context.registerFunction("isTablePage", FlutterHelper.class.getDeclaredMethod("isTablePage", new Class[]{PageDefinition.class}));
-        context.registerFunction("isViewPage", FlutterHelper.class.getDeclaredMethod("isViewPage", new Class[]{PageDefinition.class}));
-        context.registerFunction("isCreatePage", FlutterHelper.class.getDeclaredMethod("isCreatePage", new Class[]{PageDefinition.class}));
-        context.registerFunction("isEditPage", FlutterHelper.class.getDeclaredMethod("isEditPage", new Class[]{PageDefinition.class}));
-        context.registerFunction("isDashboardPage", FlutterHelper.class.getDeclaredMethod("isDashboardPage", new Class[]{PageDefinition.class}));
         context.registerFunction("isInstanceAction", FlutterHelper.class.getDeclaredMethod("isInstanceAction", new Class[]{PageDefinition.class}));
     }
 
@@ -56,46 +48,6 @@ public class FlutterHelper {
 
     public static boolean isInstanceAction (PageDefinition pageDefinition) {
         return pageDefinition.getInstanceActions()!= null && !pageDefinition.getInstanceActions().isEmpty();
-    }
-
-    public static boolean isDashboardPage(PageDefinition pageDefinition) {
-        return pageDefinition.getPageType().equals(PageType.DASHBOARD);
-    }
-
-    public static boolean isEditPage(PageDefinition pageDefinition) {
-        return pageDefinition.getPageType().equals(PageType.UPDATE);
-    }
-
-    public static boolean isCreatePage(PageDefinition pageDefinition) {
-        return pageDefinition.getPageType().equals(PageType.CREATE);
-    }
-
-    public static boolean isTablePage(PageDefinition pageDefinition) {
-        return pageDefinition.getPageType().equals(PageType.TABLE);
-    }
-
-    public static boolean isViewPage(PageDefinition pageDefinition) {
-        return pageDefinition.getPageType().equals(PageType.VIEW);
-    }
-
-    private static String getTargetDataTypeName(DataElement dataElement) {
-        if (dataElement instanceof RelationType) {
-            return ((RelationType) dataElement).getTarget().getName();
-        }
-        if (dataElement instanceof OperationParameterType) {
-            return ((OperationParameterType) dataElement).getTarget().getName();
-        }
-        return null;
-    }
-
-    public static String getTargetDataTypeClass(DataElement dataElement) {
-        String name = getTargetDataTypeName(dataElement);
-        return name != null ? fqClass(name) : null;
-    }
-
-    public static String getTargetDataTypeVariable(DataElement dataElement) {
-        String name = getTargetDataTypeName(dataElement);
-        return name != null ? fqVariable(name) : null;
     }
 
     public static boolean isSaveButton(Action action) {
@@ -123,7 +75,21 @@ public class FlutterHelper {
     }
 
     public static String crossAxisAlignment(Flex flex) {
-        return flex.getCrossAxisAlignment().getLiteral().toLowerCase();
+        switch (flex.getCrossAxisAlignment()) {
+            case CENTER:
+                return "center";
+            case END:
+                return "end";
+            case BASELINE:
+                return "baseline";
+            case STRETCH:
+                return "stretch";
+            case START:
+                return "start";
+            default:
+                return null;
+        }
+
     }
 
     public static String mainAxisAlignment(Flex flex) {
@@ -143,10 +109,6 @@ public class FlutterHelper {
             default:
                 return null;
         }
-    }
-
-    public static boolean isHorizontal(Flex flex) {
-        return Axis.HORIZONTAL.equals(flex.getDirection());
     }
 
     public static String getType(VisualElement visualElementType) {

@@ -9,20 +9,20 @@
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:{{ modelPackage application.dataElement.name }}/{{ path application.dataElement.name }}/utilities/package.dart';
-import 'package:{{ modelPackage application.dataElement.name }}/{{ path application.dataElement.name }}/store/package.dart';
-import 'package:{{ modelPackage application.dataElement.name }}/{{ path application.dataElement.name }}/ui/route_map.dart';
-import 'package:{{ modelPackage application.dataElement.name }}/{{ path application.dataElement.name }}/ui/dashboard.dart';
+import 'package:{{ modelPackage application.actor.name }}/{{ path application.actor.name }}/utilities/package.dart';
+import 'package:{{ modelPackage application.actor.name }}/{{ path application.actor.name }}/store/package.dart';
+import 'package:{{ modelPackage application.actor.name }}/{{ path application.actor.name }}/ui/route_map.dart';
+import 'package:{{ modelPackage application.actor.name }}/{{ path application.actor.name }}/ui/dashboard.dart';
 
 void main() {
-  runApp({{ fqClass application.dataElement.name }}Application());
+  runApp({{ fqClass application.actor.name }}Application());
 }
 
-class {{ fqClass application.dataElement.name }}Application extends StatelessWidget {
+class {{ fqClass application.actor.name }}Application extends StatelessWidget {
   @override
   Widget build(BuildContext context) => MultiProvider(
         providers: [
-          Provider<{{ fqClass application.dataElement.name }}GlobalStore>(create: (_) => {{ fqClass application.dataElement.name }}GlobalStore())
+          Provider<{{ fqClass application.actor.name }}GlobalStore>(create: (_) => {{ fqClass application.actor.name }}GlobalStore())
         ],
         child: MaterialApp(
           theme: ThemeData.light().copyWith(

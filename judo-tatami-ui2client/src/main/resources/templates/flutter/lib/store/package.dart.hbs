@@ -9,17 +9,13 @@
 
 library {{ variable ap.name }}.store;
 
-import 'dart:async';
-
 import 'package:mobx/mobx.dart';
 import 'package:uuid/uuid.dart';
-import 'package:{{ modelPackage ap.name }}/{{ path ap.name }}/repository/package.dart';
+import 'package:quiver/core.dart' show hash3;
 
 part 'package.g.dart';
 
-part '{{ path ap.name }}__global_store.dart';
-
-{{# each application.dataElements ~}}
+{{# each classes ~}}
 part '{{ fqPath name }}__store.dart';
 {{/ each }}
 

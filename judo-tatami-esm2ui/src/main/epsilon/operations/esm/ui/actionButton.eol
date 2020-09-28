@@ -1,10 +1,13 @@
 operation ESM!esm::ui::ActionButton createButtonFromActionButton(application : UI!ui::Application) : UI!ui::Button {
 	var ret : UI!ui::Button = new UI!ui::Button();
-	//ret.binding = modelAdapter.buildTypeNameFromNamedElement(self).get();
-	// TODO: Make some mapping for operation or our semantic
 	ret.name = self.name;
-	ret.label = self.label; //self.dataFeature.getMember().getDisplayLabel();
-	ret.action = new UI!ui::BackAction();
+	ret.label = self.label;
+
+	if (self.action == ESM!esm::ui::Action#SUBMIT) {
+		ret.action = new UI!ui::SaveAction();
+	} else if (self.action == ESM!esm::ui::Action#CANCEL) {
+		ret.action = new UI!ui::BackAction();
+	}
 	return ret;
 }
 
