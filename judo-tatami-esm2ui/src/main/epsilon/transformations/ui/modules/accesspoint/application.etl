@@ -17,7 +17,7 @@ rule Application
         defaultLayout.original = true;
         t.layoutTypes.add(defaultLayout);
 
-        t.name = s.fqName().anchor(applicationType);
+        t.name = s.fqName();
         t.navigationController = s.equivalent("NavigationController");
         t.actor = s.mapClassType(t);
         if (s.principal.isDefined()) {

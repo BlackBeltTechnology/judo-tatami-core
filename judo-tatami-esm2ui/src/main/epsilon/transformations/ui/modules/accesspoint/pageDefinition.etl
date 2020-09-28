@@ -5,16 +5,14 @@ rule ApplicationDashboardPage
     transform s: ESM!esm::accesspoint::ActorType
     to t : UI!ui::PageDefinition
     extends CreateNamedElementFromNamespaceElement {
-        guard: s.principal.isDefined() and s.kind = ESM!esm::accesspoint::ActorKind#HUMAN 
-        and s.principal.view.isDefined()
 
         log.debug("ApplicationDashboardPage: " + s.name);
 
         var application = s.equivalent("Application");
         log.debug("ApplicationDashboardPage: " + s.name);
         t.name = s.fqName().anchor("Dashboard");
-        t.dataElement = s.principal.mapClassType(application);
 		t.pageType = UI!ui::PageType#DASHBOARD;
+        t.dataElement = s.principal.mapClassType(application);
  
 	 	var pageContainer = new UI!ui::PageContainer();
 	    pageContainer.layoutType = application.layoutTypes.first;
@@ -22,7 +20,10 @@ rule ApplicationDashboardPage
 		pageContainer.direction = UI!Axis#VERTICAL;
 		t.containers.add(pageContainer);
 	 
-        pageContainer.children.add(s.principal.view.map(application));
+		if (s.principal.isDefined() and s.principal.view.isDefined()) {
+	        pageContainer.children.add(s.principal.view.map(application));
+        }
         application.pages.add(t);
+        application.dashboard = t;
 }
 
