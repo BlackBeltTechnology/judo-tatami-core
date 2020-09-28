@@ -1,42 +1,42 @@
-class {{fqClass page.name}}PageStore extends _{{fqClass page.name}}PageStore with _${{fqClass page.name}}PageStore {}
+class {{ fqClass page.name }}PageStore extends _{{ fqClass page.name }}PageStore with _${{ fqClass page.name }}PageStore {}
 
-abstract class _{{fqClass page.name}}PageStore with Store {
-    {{#with page.dataElement as |relation|}}
+abstract class _{{ fqClass page.name }}PageStore with Store {
+    {{# with page.relationType as |relation| }}
         {{ fqClass relation.owner.name }}{{ fqClass relation.name }}Repository _{{ fqVariable relation.owner.name }}{{ fqClass relation.name }}Repository = locator<{{ fqClass relation.owner.name }}{{ fqClass relation.name }}Repository>();
 
     @observable
     String errorMessage;
 
     @observable
-    ObservableFuture {{relation.name}}StoreFuture;
+    ObservableFuture {{ relation.name }}StoreFuture;
 
-    {{#with relation.behaviour as |selfbehaviour|}}
-    {{#if selfbehaviour.updateable}}
+    {{# with relation.behaviour as |selfbehaviour| }}
+    {{# if selfbehaviour.updateable }}
     @action
-    Future<{{ getTargetDataTypeClass relation }}Store> update{{fqClass relation.name}}({{ getTargetDataTypeClass relation }}Store {{ getTargetDataTypeVariable relation }}Store) async {
+    Future<{{ fqClass relation.target.name }}Store> update{{ fqClass relation.name }}({{ fqClass relation.target.name }}Store {{ fqVariable relation.target.name }}Store) async {
         try {
             errorMessage = null;
-            {{relation.name}}StoreFuture = ObservableFuture(_{{ fqVariable relation.owner.name }}{{ fqClass relation.name }}Repository.{{ getTargetDataTypeVariable relation }}Update({{ getTargetDataTypeVariable relation }}Store));
+            {{ relation.name }}StoreFuture = ObservableFuture(_{{ fqVariable relation.owner.name }}{{ fqClass relation.name }}Repository.{{ fqVariable relation.target.name }}Update({{ fqVariable relation.target.name }}Store));
             return await {{relation.name}}StoreFuture;
         } on ApiException {
-            errorMessage = "Could not update {{relation.name}}";
+            errorMessage = "Could not update {{ relation.name }}";
         }
     }
-    {{/if}}
+    {{/ if }}
 
-    {{#if selfbehaviour.deletable}}
+    {{# if selfbehaviour.deletable }}
     @action
-    Future<void> delete{{fqClass relation.name}}({{ getTargetDataTypeClass relation }}Store {{ getTargetDataTypeVariable relation }}Store) async {
+    Future<void> delete{{ fqClass relation.name }}({{ fqClass relation.target.name }}Store {{ fqVariable relation.target.name }}Store) async {
         try {
             errorMessage = null;
-            {{relation.name}}StoreFuture =
-            ObservableFuture(_{{ fqVariable relation.owner.name }}{{ fqClass relation.name }}Repository.{{ getTargetDataTypeVariable relation }}Delete({{ getTargetDataTypeVariable relation }}Store));
-            await {{relation.name}}Future;
+            {{ relation.name }}StoreFuture =
+            ObservableFuture(_{{ fqVariable relation.owner.name }}{{ fqClass relation.name }}Repository.{{ fqVariable relation.target.name }}Delete({{ fqVariable relation.target.name }}Store));
+            await {{ relation.name }}Future;
         } on ApiException {
-            errorMessage = "Could not delete {{relation.name}}";
+            errorMessage = "Could not delete {{ relation.name }}";
         }
     }
-    {{/if}}
-    {{/with}}
-    {{/with}}
+    {{/ if }}
+    {{/ with }}
+    {{/ with }}
 }

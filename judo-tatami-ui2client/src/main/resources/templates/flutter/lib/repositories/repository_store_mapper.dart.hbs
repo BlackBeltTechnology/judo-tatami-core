@@ -11,7 +11,7 @@ part of {{ variable ap.name }}.repository;
 
 class {{ fqClass ap.name }}RepositoryStoreMapper {
 
-{{# each application.dataElements }}
+{{# each classes }}
   static {{ fqClass name }}Store create{{ fqClass name }}StoreFrom{{ fqClass name }}({{ fqClass name }} {{ variable name }}) {
     if ({{ variable name }} == null) {
       return null;
@@ -24,8 +24,9 @@ class {{ fqClass ap.name }}RepositoryStoreMapper {
   static void map{{ fqClass name }}To{{ fqClass name }}Store({{ fqClass name }} {{ variable name }}, {{ fqClass name }}Store {{ variable name }}Store) {
     // Identifier
     {{# if isMapped ~}}
+    {{ variable name }}Store.identifier = {{ variable name }}.identifier;
     {{ variable name }}Store.signedIdentifier = {{ variable name }}.signedIdentifier;
-    {{ variable name }}Store.referenceIdentifier = {{ variable name }}.referenceIdentifier;
+    {{ variable name }}Store.referenceIdentifier = {{ variable name }}.referenceId;
     {{/ if }}
     // Attributes
     {{# each attributes ~}}
@@ -58,8 +59,9 @@ class {{ fqClass ap.name }}RepositoryStoreMapper {
 
   static void map{{ fqClass name }}StoreTo{{ fqClass name }}({{ fqClass name }}Store {{ variable name }}Store, {{ fqClass name }} {{ variable name }}) {
     {{# if isMapped ~}}
+    {{ variable name }}.identifier = {{ variable name }}Store.identifier;
     {{ variable name }}.signedIdentifier = {{ variable name }}Store.signedIdentifier;
-    {{ variable name }}.referenceIdentifier = {{ variable name }}Store.referenceIdentifier;
+    {{ variable name }}.referenceId = {{ variable name }}Store.referenceIdentifier;
     {{/ if }}
     // Attributes
     {{# each attributes ~}}

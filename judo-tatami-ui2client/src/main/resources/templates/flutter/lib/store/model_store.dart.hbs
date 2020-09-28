@@ -7,7 +7,7 @@
 // Template name: {{ template.templateName }}
 // Application: {{ application.name }}
 
-part of {{ variable application.dataElement.name }}.store;
+part of {{ variable application.actor.name }}.store;
 
 class {{ fqClass name }}Store extends _{{ fqClass name }}Store
     with _${{ fqClass name }}Store {
@@ -22,6 +22,7 @@ abstract class _{{ fqClass name }}Store with Store {
   _{{ fqClass name }}Store();
 
   _{{ fqClass name }}Store.clone({{ fqClass name }}Store {{ variable name }}Store) {
+    identifier = {{ variable name }}Store.identifier;
     signedIdentifier = {{ variable name }}Store.signedIdentifier;
     referenceIdentifier = {{ variable name }}Store.referenceIdentifier;
 
@@ -38,11 +39,14 @@ abstract class _{{ fqClass name }}Store with Store {
       {{ variable name }} = ObservableList.of([]);
     }
       {{ else }}
-    {{ variable name }} = {{ fqClass target.name }}Store.clone({{ variable name }});
+    if ({{ variable ../name }}Store.{{ variable name }} != null) {
+      {{ variable name }} = {{ fqClass target.name }}Store.clone({{ variable name }});
+    }
       {{/ if }}
     {{/ each }}
   }
 
+  String identifier;
   String signedIdentifier;
   String referenceIdentifier = Uuid().v1();
 
@@ -99,10 +103,67 @@ abstract class _{{ fqClass name }}Store with Store {
     identical(this, other) ||
     other is _{{ fqClass name }}Store &&
         runtimeType == other.runtimeType &&
-        signedIdentifier == other.signedIdentifier &&
-        signedIdentifier != null &&
-        other.signedIdentifier != null;
+        (
+          (
+            signedIdentifier == other.signedIdentifier &&
+            signedIdentifier != null &&
+            other.signedIdentifier != null
+          ) || (
+            identifier == other.identifier &&
+            identifier != null &&
+            other.identifier != null
+          ) || (
+            referenceIdentifier == other.referenceIdentifier &&
+            referenceIdentifier != null &&
+            other.referenceIdentifier != null
+          )
+        );
 
   @override
-  int get hashCode => signedIdentifier.hashCode;
+  int get hashCode => hash3(signedIdentifier, identifier, referenceIdentifier);
+
+  @action
+  void updateWith({{ fqClass name }}Store {{ variable name }}Store) {
+    identifier = {{ variable name }}Store.identifier;
+    signedIdentifier = {{ variable name }}Store.signedIdentifier;
+    referenceIdentifier = {{ variable name }}Store.referenceIdentifier;
+
+    {{# each attributes }}
+      {{ variable name }} = {{ variable ../name }}Store.{{ variable name }};
+    {{/ each }}
+
+    // Relations
+    {{# each relations }}
+      {{# if isCollection }}
+    if ({{ variable ../name }}Store.{{ variable name }} != null) {
+      {{ variable name }} = ObservableList.of({{ variable ../name }}Store.{{ variable name }});
+    } else {
+      {{ variable name }} = ObservableList.of([]);
+    }
+      {{ else }}
+    if ({{ variable ../name }}Store.{{ variable name }} != null) {
+      {{ variable name }} = {{ fqClass target.name }}Store.clone({{ variable name }});
+    }
+      {{/ if }}
+    {{/ each }}
+  }
+
+    ////
+
+    /*
+    @observable
+    ObservableFuture<NorthwindServicesProductInfoStore> _northwindServicesProductInfoStoreFuture;
+
+    @computed
+    StoreState get store__state {
+      if (_northwindServicesProductInfoStoreFuture == null ||
+       _northwindServicesProductInfoStoreFuture.status == FutureStatus.rejected) {
+        return StoreState.initial;
+      }
+      return _northwindServicesProductInfoStoreFuture.status == FutureStatus.pending
+        ? StoreState.loading
+        : StoreState.loaded;
+    }
+    */
+
 }

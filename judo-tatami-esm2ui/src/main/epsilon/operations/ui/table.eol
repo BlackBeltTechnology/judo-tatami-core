@@ -13,11 +13,11 @@ operation UI!ui::Table calculateActions(application : UI!ui::Application) {
 	}
 
 
-	if (classType.getIsDeletable()) {
+	if (classType.getIsClassBehaviourTypeDeletable()) {
 		self.rowActions.add(new UI!ui::DeleteAction());	
 	}
 
-	if (classType.getIsUpdatable()) {
+	if (classType.getIsClassBehaviourTypeUpdatable()) {
 		var page = application.pages.selectOne(p | p.pageType = UI!ui::PageType#UPDATE 
 			and p.~source == self.~source);
 		if (page.isDefined()) {
@@ -30,7 +30,7 @@ operation UI!ui::Table calculateActions(application : UI!ui::Application) {
 	}
 
 	if (relationType.isDefined()) {
-		if (self.dataElement.getIsCreatable()) {
+		if (relationType.getIsRelationBehaviourTypeCreatable()) {
 			var page = application.pages.selectOne(p | p.pageType = UI!ui::PageType#CREATE 
 				and p.~source == self.~source);
 			if (page.isDefined()) {
@@ -41,16 +41,16 @@ operation UI!ui::Table calculateActions(application : UI!ui::Application) {
 				log.warn("No update page defined for: " + self.name);
 			}
 		}
-		if (relationType.getIsRemovable()) {
+		if (relationType.getIsRelationBehaviourTypeRemovable()) {
 			self.rowActions.add(new UI!ui::RemoveAction());
 		}
-		if (relationType.getIsUnsetable()) {
+		if (relationType.getIsRelationBehaviourTypeUnsetable()) {
 			self.rowActions.add(new UI!ui::UnsetAction());
 		}	
-		if (relationType.getIsSetable()) {
+		if (relationType.getIsRelationBehaviourTypeSetable()) {
 			self.relationActions.add(new UI!ui::SetAction());
 		}
-		if (relationType.getIsAddable()) {
+		if (relationType.getIsRelationBehaviourTypeAddable()) {
 			self.relationActions.add(new UI!ui::AddAction());
 		}
 	}

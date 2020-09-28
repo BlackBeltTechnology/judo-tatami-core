@@ -10,6 +10,7 @@ operation ESM!esm::accesspoint::Access createRelationTypeForClass(application : 
 
 	relation.name = self.name;
 	relation.isCollection = (self.upper == -1);
+	relation.isAccess = true;
 	relation.memberType = UI!ui::data::MemberType#ACCESS;
 	relation.relationKind = UI!ui::data::RelationKind#STATIC;
 	

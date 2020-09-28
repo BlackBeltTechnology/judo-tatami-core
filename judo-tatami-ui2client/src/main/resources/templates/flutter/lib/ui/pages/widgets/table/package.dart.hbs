@@ -10,8 +10,8 @@
 library {{ variable application.name }}.ui.pages.tables;
 
 import 'package:flutter/material.dart';
-import 'package:{{modelPackage application.dataElement.name}}/{{path application.dataElement.name}}/components/package.dart';
+import 'package:{{ modelPackage application.actor.name }}/{{ path application.actor.name }}/components/package.dart';
 
-{{# each tables as |table|}}
-part '{{ fqPath table.pageDefinition.name }}__{{fqPath table.name }}__table.dart';
+{{# each tables as |table| }}
+part '{{ fqPath table.pageDefinition.name }}__{{ fqPath table.name }}__table.dart';
 {{/ each }}

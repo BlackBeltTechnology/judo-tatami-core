@@ -1,16 +1,16 @@
-{{#if (isHorizontal this)}}
+{{# if isDirectionHorizontal }}
 Row(
-{{else}}
+{{ else }}
 Column(
-{{/if}}
-    mainAxisAlignment: MainAxisAlignment.{{mainAxisAlignment this}},
-    crossAxisAlignment: CrossAxisAlignment.{{crossAxisAlignment this}},
-    mainAxisSize: MainAxisSize.{{mainAxisSize this}},
+{{/ if }}
+    mainAxisAlignment: MainAxisAlignment.{{ mainAxisAlignment this }},
+    crossAxisAlignment: CrossAxisAlignment.{{ crossAxisAlignment this }},
+    mainAxisSize: MainAxisSize.{{ mainAxisSize this }},
     children: [
-    {{# each children as |child|}}
-        {{#if child}}
-            {{> (getWidgetTemplate child)}}
-        {{/if}}
-    {{/each}}
+    {{# each children as |child| }}
+        {{# if child }}
+            {{> (getWidgetTemplate child) }}
+        {{/ if }}
+    {{/ each }}
     ],
 ),

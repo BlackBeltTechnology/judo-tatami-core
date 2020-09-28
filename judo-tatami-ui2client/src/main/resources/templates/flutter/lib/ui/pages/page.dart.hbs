@@ -9,59 +9,59 @@
 // Container: {{ container.name }}
 
 part of {{ variable application.name }}.ui.pages;
-{{#if (isViewPage page)}}
-{{> templates/flutter/lib/ui/pages/pagetypesfragments/viewpagestore.dart.hbs}}
-{{/if}}
-{{#if (isTablePage page)}}
-{{> templates/flutter/lib/ui/pages/pagetypesfragments/tablepagestore.dart.hbs}}
-{{/if}}
+{{# if page.isPageTypeView }}
+{{> templates/flutter/lib/ui/pages/pagetypesfragments/viewpagestore.dart.hbs }}
+{{/ if }}
+{{# if page.isPageTypeTable }}
+{{> templates/flutter/lib/ui/pages/pagetypesfragments/tablepagestore.dart.hbs }}
+{{/ if }}
 
-class {{fqClass page.name}}Page extends StatefulWidget {
-    static const String title = '{{page.label}}';
+class {{ fqClass page.name }}Page extends StatefulWidget {
+    static const String title = '{{ page.label }}';
 
-{{#if (isTablePage page)}}
-{{> templates/flutter/lib/ui/pages/pagetypesfragments/tablepagefragment.dart.hbs}}
-{{/if}}
-{{#if (isViewPage page)}}
-{{> templates/flutter/lib/ui/pages/pagetypesfragments/viewpagefragment.dart.hbs}}
-{{/if}}
-{{#if (isCreatePage page)}}
-{{> templates/flutter/lib/ui/pages/pagetypesfragments/createpagefragment.dart.hbs}}
-{{/if}}
-{{#if (isEditPage page)}}
-{{> templates/flutter/lib/ui/pages/pagetypesfragments/editpagefragment.dart.hbs}}
-{{/if}}
+{{# if page.isPageTypeTable }}
+{{> templates/flutter/lib/ui/pages/pagetypesfragments/tablepagefragment.dart.hbs }}
+{{/ if }}
+{{# if page.isPageTypeView }}
+{{> templates/flutter/lib/ui/pages/pagetypesfragments/viewpagefragment.dart.hbs }}
+{{/ if }}
+{{# if page.isPageTypeCreate }}
+{{> templates/flutter/lib/ui/pages/pagetypesfragments/createpagefragment.dart.hbs }}
+{{/ if }}
+{{# if page.isPageTypeEdit }}
+{{> templates/flutter/lib/ui/pages/pagetypesfragments/editpagefragment.dart.hbs }}
+{{/ if }}
 
     @override
     Widget build(BuildContext context) {
         final navigation = locator<NavigationState>();
 
         return NorthwindExternalAPScaffold(
-            pageTitle: {{fqClass page.name}}Page.title,
-            {{#if (isHorizontal this)}}
+            pageTitle: {{ fqClass page.name }}Page.title,
+            {{# if isDirectionHorizontal }}
             body: Column(
-            {{else}}
+            {{ else }}
             body: Row(
-            {{/if}}
+            {{/ if }}
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                {{#if (isInstanceAction page)}}
+                {{# if (isInstanceAction page) }}
                     Card(
                         color: Colors.black12,
                         child: Row(
                             children: [
-                            {{#each page.instanceActions as |instanceAction|}}
-                                {{> templates/flutter/lib/ui/pages/widgets/instanceAction.dart.hbs}}
-                            {{/each}}
+                            {{# each page.instanceActions as |instanceAction| }}
+                                {{> templates/flutter/lib/ui/pages/widgets/instanceAction.dart.hbs }}
+                            {{/ each }}
                             ],
                         ),
                     ),
-                {{/if}}
-                {{# each this.children as |child|}}
-                {{#if child}}
-                    {{> (getWidgetTemplate child)}}
-                {{/if}}
-                {{/each}}
+                {{/ if }}
+                {{# each this.children as |child| }}
+                {{# if child }}
+                    {{> (getWidgetTemplate child) }}
+                {{/ if }}
+                {{/ each }}
                 ],
             ),
         );
