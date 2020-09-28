@@ -630,6 +630,7 @@ public class SimpleOrderModel {
 					.withLabel(r.getName().toUpperCase())
 					.withMaxVisibleElements(5)
 					.withRelationFeature(r)
+					.withTargetDefinedTabular(false)
 					.build();
 			TransferObjectType target = (TransferObjectType)(r.getTarget());
 			target.getAllAttributes().stream().forEach(a -> {
@@ -712,8 +713,8 @@ public class SimpleOrderModel {
 		});
         TransferObjectTable table = newTransferObjectTableBuilder()
         		.withMasterDetail(masterDetail)
-				.withName("OrderTable")
-				.withLabel("Order")
+				.withName(transferObject.getName())
+				.withLabel(transferObject.getName().toUpperCase())
 				.withMaxVisibleElements(5)
 				.withColumns(columns)
 				.build();
