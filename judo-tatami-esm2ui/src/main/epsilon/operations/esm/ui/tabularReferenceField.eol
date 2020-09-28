@@ -60,7 +60,7 @@ operation ESM!esm::ui::TabularReferenceField createButtonFromTabularReferenceFie
 		page.containers.add(pageContainer);
 
 	    var flex = new UI!ui::Flex();
-		flex.name = slef.name.anchor("Flex");
+		flex.name = self.name.anchor("Flex");
 		flex.direction = UI!Axis#VERTICAL;
 		flex.col = applicationColumns;
 		pageContainer.children.add(flex);

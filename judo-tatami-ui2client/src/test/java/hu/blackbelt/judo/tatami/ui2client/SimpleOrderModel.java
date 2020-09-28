@@ -14,21 +14,13 @@ import static hu.blackbelt.judo.meta.esm.type.util.builder.TypeBuilders.newNumer
 import static hu.blackbelt.judo.meta.esm.type.util.builder.TypeBuilders.newDateTypeBuilder;
 import static hu.blackbelt.judo.meta.esm.accesspoint.util.builder.AccesspointBuilders.newActorTypeBuilder;
 import static hu.blackbelt.judo.meta.esm.namespace.util.builder.NamespaceBuilders.newModelBuilder;
-import static hu.blackbelt.judo.meta.esm.operation.util.builder.OperationBuilders.newOperationBuilder;
-import static hu.blackbelt.judo.meta.esm.operation.util.builder.OperationBuilders.newParameterBuilder;
-import static hu.blackbelt.judo.meta.esm.runtime.EsmModel.buildEsmModel;
 import static hu.blackbelt.judo.meta.esm.structure.util.builder.StructureBuilders.*;
-import static hu.blackbelt.judo.meta.ui.runtime.UiEpsilonValidator.calculateUiValidationScriptURI;
-import static hu.blackbelt.judo.meta.ui.runtime.UiEpsilonValidator.validateUi;
-import static hu.blackbelt.judo.meta.ui.runtime.UiModel.SaveArguments.uiSaveArgumentsBuilder;
 
 import java.util.Arrays;
 
-import static hu.blackbelt.judo.meta.ui.runtime.UiModel.buildUiModel;
 
 import hu.blackbelt.judo.meta.esm.accesspoint.ActorType;
 import hu.blackbelt.judo.meta.esm.namespace.Model;
-import hu.blackbelt.judo.meta.esm.runtime.EsmModel;
 import hu.blackbelt.judo.meta.esm.structure.DataMember;
 import hu.blackbelt.judo.meta.esm.structure.EntityType;
 import hu.blackbelt.judo.meta.esm.structure.MemberType;
@@ -39,7 +31,6 @@ import hu.blackbelt.judo.meta.esm.type.DateType;
 import hu.blackbelt.judo.meta.esm.type.NumericType;
 import hu.blackbelt.judo.meta.esm.type.StringType;
 import hu.blackbelt.judo.meta.esm.ui.Action;
-import hu.blackbelt.judo.meta.esm.ui.Group;
 import hu.blackbelt.judo.meta.esm.ui.Horizontal;
 import hu.blackbelt.judo.meta.esm.ui.Layout;
 import hu.blackbelt.judo.meta.esm.ui.TransferObjectForm;
@@ -188,6 +179,7 @@ public class SimpleOrderModel {
 												.withLabel("Items")
 												.withMaxVisibleElements(5)
 												.withRelationFeature(orderOrderItems)
+												.withTargetDefinedTabular(false)
 												.withColumns(Arrays.asList(
 														newDataColumnBuilder()
 																.withName("product")
@@ -291,6 +283,7 @@ public class SimpleOrderModel {
 								.withName("orderItems")
 								.withLabel("Items")
 								.withMaxVisibleElements(5)
+								.withTargetDefinedTabular(false)
 								.withRelationFeature(orderOrderItems)
 								.withColumns(Arrays.asList(
 										newDataColumnBuilder()
@@ -352,6 +345,7 @@ public class SimpleOrderModel {
 								.withLabel("orders")
 								.withMaxVisibleElements(5)
 								.withRelationFeature(applicationOrders)
+								.withTargetDefinedTabular(false)
 								.withColumns(Arrays.asList(
 										newDataColumnBuilder()
 												.withName("customer")
