@@ -6,10 +6,6 @@ rule CreateTransferObject
 	to t : ASM!EClass {
 		t.name = s.name;
 		s.eContainer.asmEquivalent().eClassifiers.add(t);
-
-		for (super in s.superTransferObjectTypes) {
-		    t.eSuperTypes.add(super.asmEquivalent());
-		}
 	}
 
 @greedy
@@ -354,7 +350,9 @@ rule CreateTransferObjectRelationPermissions
 rule CreateNavigationReferenceBinding
     transform s : JUDOPSM!TransferObjectRelation
     to t : ASM!EAnnotation {
-        guard: s.eContainer().isKindOf(JUDOPSM!UnmappedTransferObjectType) and s.binding.isDefined() and s.binding.isKindOf(JUDOPSM!ReferenceAccessor)
+        guard: s.binding.isDefined() and
+        	((s.eContainer().isKindOf(JUDOPSM!UnmappedTransferObjectType) and s.binding.isKindOf(JUDOPSM!ReferenceAccessor)) or
+        		(s.eContainer().isKindOf(JUDOPSM!MappedTransferObjectType) and s.binding.isKindOf(JUDOPSM!StaticNavigation)))
 
         t.source = asmUtils.getAnnotationUri("expression");
 
@@ -388,7 +386,9 @@ rule CreateNavigationReferenceBinding
 rule CreateDataReferenceBinding
 	transform s : JUDOPSM!TransferAttribute
 	to t : ASM!EAnnotation {
-		guard: s.eContainer().isKindOf(JUDOPSM!UnmappedTransferObjectType) and s.binding.isDefined() and s.binding.isKindOf(JUDOPSM!PrimitiveAccessor)
+		guard: s.binding.isDefined() and
+        	((s.eContainer().isKindOf(JUDOPSM!UnmappedTransferObjectType) and s.binding.isKindOf(JUDOPSM!PrimitiveAccessor)) or
+        		(s.eContainer().isKindOf(JUDOPSM!MappedTransferObjectType) and s.binding.isKindOf(JUDOPSM!StaticData)))
 		
 		t.source = asmUtils.getAnnotationUri("expression");
 	    
