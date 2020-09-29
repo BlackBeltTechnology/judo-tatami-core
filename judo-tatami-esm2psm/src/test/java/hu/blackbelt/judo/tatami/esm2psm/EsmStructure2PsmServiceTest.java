@@ -49,6 +49,7 @@ import static hu.blackbelt.judo.meta.psm.runtime.PsmModel.buildPsmModel;
 import static hu.blackbelt.judo.tatami.esm2psm.Esm2Psm.calculateEsm2PsmTransformationScriptURI;
 import static hu.blackbelt.judo.tatami.esm2psm.Esm2Psm.executeEsm2PsmTransformation;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -827,11 +828,31 @@ public class EsmStructure2PsmServiceTest {
 	void testDefaultTransferObjectInheritance() throws Exception {
 		testName = "DefaultTransferObjectInheritance";
 		
-		EntityType grandparentEntityType = newEntityTypeBuilder().withName("grandparentEntityType").withAbstract_(false)
+		// attributes
+		StringType stringType = newStringTypeBuilder().withName("stringType").withMaxLength(255).build();
+
+		DataMember attr1 = newDataMemberBuilder().withName("attr1").withRequired(false)
+				.withIdentifier(false).withDataType(stringType)
+				.withMemberType(MemberType.STORED)
+				.build();
+		
+		DataMember attr2 = newDataMemberBuilder().withName("attr2").withRequired(false)
+				.withIdentifier(false).withDataType(stringType)
+				.withMemberType(MemberType.DERIVED)
+				.withGetterExpression("self.attr1")
+				.build();
+		
+		EntityType grandparentEntityType = newEntityTypeBuilder()
+				.withName("grandparentEntityType")
+				.withAbstract_(false)
+				.withAttributes(attr1)
 				.build();
 		grandparentEntityType.setMapping(newMappingBuilder().withTarget(grandparentEntityType).build());
 
-		EntityType parentEntityType = newEntityTypeBuilder().withName("parentEntityType").withAbstract_(false)
+		EntityType parentEntityType = newEntityTypeBuilder()
+				.withName("parentEntityType")
+				.withAbstract_(false)
+				.withAttributes(attr2)
 				.withGeneralizations(newGeneralizationBuilder().withTarget(grandparentEntityType).build()).build();
 		parentEntityType.setMapping(newMappingBuilder().withTarget(parentEntityType).build());
 
@@ -841,7 +862,7 @@ public class EsmStructure2PsmServiceTest {
 
 		Package entitiesPackage = newPackageBuilder().withName("entities")
 				.withElements(ImmutableList.of(grandparentEntityType, parentEntityType, childEntityType)).build();
-		Model model = newModelBuilder().withName("Model").withElements(ImmutableList.of(entitiesPackage)).build();
+		Model model = newModelBuilder().withName("Model").withElements(entitiesPackage,stringType).build();
 
 		esmModel.addContent(model);
 
@@ -868,13 +889,9 @@ public class EsmStructure2PsmServiceTest {
 						.findAny();
 		assertTrue(psmDefaultChildTransferObject.isPresent());
 		assertThat(psmDefaultChildTransferObject.get().getName(), IsEqual.equalTo(childEntityType.getName()));
-
-		assertTrue(psmDefaultParentTransferObject.get().getSuperTransferObjectTypes()
-				.contains(psmDefaultGrandparentTransferObject.get()));
-		assertTrue(psmDefaultChildTransferObject.get().getSuperTransferObjectTypes()
-				.contains(psmDefaultParentTransferObject.get()));
-		assertTrue(psmDefaultChildTransferObject.get().getAllSuperTransferObjectTypes()
-				.contains(psmDefaultGrandparentTransferObject.get()));
+		
+		assertEquals(2, psmDefaultParentTransferObject.get().getAttributes().size());
+		assertEquals(2, psmDefaultChildTransferObject.get().getAttributes().size());
 	}
 
 	@Test
@@ -932,61 +949,85 @@ public class EsmStructure2PsmServiceTest {
 
 		esmModel.addContent(model);
 		transform();
-
-		// Namespaces
-		final Optional<hu.blackbelt.judo.meta.psm.namespace.Model> psmModel = allPsm(
-				hu.blackbelt.judo.meta.psm.namespace.Model.class).filter(m -> model.getName().equals(m.getName()))
-						.findAny();
-		assertTrue(psmModel.isPresent());
-
-		final Optional<hu.blackbelt.judo.meta.psm.namespace.Package> psmServicePackage = allPsm(
-				hu.blackbelt.judo.meta.psm.namespace.Package.class)
-						.filter(pkg -> servicePackage.getName().equals(pkg.getName())).findAny();
-		assertTrue(psmServicePackage.isPresent());
-
-		final Optional<hu.blackbelt.judo.meta.psm.namespace.Package> psmEntitiesPackage = allPsm(
-				hu.blackbelt.judo.meta.psm.namespace.Package.class)
-						.filter(pkg -> entitiesPackage.getName().equals(pkg.getName())).findAny();
-		assertTrue(psmEntitiesPackage.isPresent());
-
-		final Optional<hu.blackbelt.judo.meta.psm.namespace.Package> psmTypesPackage = allPsm(
-				hu.blackbelt.judo.meta.psm.namespace.Package.class)
-						.filter(pkg -> typesPackage.getName().equals(pkg.getName())).findAny();
-		assertTrue(psmTypesPackage.isPresent());
-
-		final Optional<hu.blackbelt.judo.meta.psm.service.MappedTransferObjectType> psmGrandparentMappedTransferObjectType = allPsm(
+		
+		final hu.blackbelt.judo.meta.psm.service.MappedTransferObjectType psmGrandparentMappedTransferObjectType = allPsm(
 				hu.blackbelt.judo.meta.psm.service.MappedTransferObjectType.class)
 						.filter(mappedTOT -> grandparentMappedTransferObjectType.getName().equals(mappedTOT.getName()))
-						.findAny();
-		assertTrue(psmGrandparentMappedTransferObjectType.isPresent());
-		final Optional<hu.blackbelt.judo.meta.psm.service.MappedTransferObjectType> psmParentMappedTransferObjectType = allPsm(
+						.findAny().get();
+		
+		final Optional<TransferAttribute> psmInheritedAttributeFromGrandparent = psmGrandparentMappedTransferObjectType.getAttributes().stream().filter(a -> a.getName().equals("inheritedAttributeFromGrandparent")).findAny();
+		assertTrue(psmInheritedAttributeFromGrandparent.isPresent());
+		
+		final hu.blackbelt.judo.meta.psm.service.MappedTransferObjectType psmParentMappedTransferObjectType = allPsm(
 				hu.blackbelt.judo.meta.psm.service.MappedTransferObjectType.class)
 						.filter(mappedTOT -> parentMappedTransferObjectType.getName().equals(mappedTOT.getName()))
-						.findAny();
-		assertTrue(psmParentMappedTransferObjectType.isPresent());
-		final Optional<hu.blackbelt.judo.meta.psm.service.MappedTransferObjectType> psmChildMappedTransferObjectType = allPsm(
+						.findAny().get();
+		assertEquals(2, psmParentMappedTransferObjectType.getAttributes().size());
+		
+		final Optional<TransferAttribute> psmInheritedAttributeFromParent = psmParentMappedTransferObjectType.getAttributes().stream().filter(a -> a.getName().equals("inheritedAttributeFromParent")).findAny();
+		assertTrue(psmInheritedAttributeFromParent.isPresent());
+		
+		final Optional<TransferAttribute> psmInheritedAttributeFromGrandparent2 = psmParentMappedTransferObjectType.getAttributes().stream().filter(a -> a.getName().equals("inheritedAttributeFromGrandparent")).findAny();
+		assertTrue(psmInheritedAttributeFromGrandparent2.isPresent());
+		
+		assertEquals(psmInheritedAttributeFromGrandparent.get().getName(), psmInheritedAttributeFromGrandparent2.get().getName());
+		assertEquals(psmInheritedAttributeFromGrandparent.get().getBinding(), psmInheritedAttributeFromGrandparent2.get().getBinding());
+		assertEquals(psmInheritedAttributeFromGrandparent.get().getClaimType(), psmInheritedAttributeFromGrandparent2.get().getClaimType());
+		assertEquals(psmInheritedAttributeFromGrandparent.get().getDataType(), psmInheritedAttributeFromGrandparent2.get().getDataType());
+		assertEquals(psmInheritedAttributeFromGrandparent.get().getDefaultValue(), psmInheritedAttributeFromGrandparent2.get().getDefaultValue());
+		assertEquals(psmInheritedAttributeFromGrandparent.get().isRequired(), psmInheritedAttributeFromGrandparent2.get().isRequired());
+		
+		final hu.blackbelt.judo.meta.psm.service.MappedTransferObjectType psmChildMappedTransferObjectType = allPsm(
 				hu.blackbelt.judo.meta.psm.service.MappedTransferObjectType.class)
 						.filter(mappedTOT -> childMappedTransferObjectType.getName().equals(mappedTOT.getName()))
-						.findAny();
-		assertTrue(psmChildMappedTransferObjectType.isPresent());
-		final Optional<hu.blackbelt.judo.meta.psm.service.MappedTransferObjectType> psmSecondChildMappedTransferObjectType = allPsm(
+						.findAny().get();
+		assertEquals(2, psmChildMappedTransferObjectType.getAttributes().size());
+		
+		final Optional<TransferAttribute> psmInheritedAttributeFromParent2 = psmChildMappedTransferObjectType.getAttributes().stream().filter(a -> a.getName().equals("inheritedAttributeFromParent")).findAny();
+		assertTrue(psmInheritedAttributeFromParent2.isPresent());
+		
+		assertEquals(psmInheritedAttributeFromParent.get().getName(), psmInheritedAttributeFromParent2.get().getName());
+		assertEquals(psmInheritedAttributeFromParent.get().getBinding(), psmInheritedAttributeFromParent2.get().getBinding());
+		assertEquals(psmInheritedAttributeFromParent.get().getClaimType(), psmInheritedAttributeFromParent2.get().getClaimType());
+		assertEquals(psmInheritedAttributeFromParent.get().getDataType(), psmInheritedAttributeFromParent2.get().getDataType());
+		assertEquals(psmInheritedAttributeFromParent.get().getDefaultValue(), psmInheritedAttributeFromParent2.get().getDefaultValue());
+		assertEquals(psmInheritedAttributeFromParent.get().isRequired(), psmInheritedAttributeFromParent2.get().isRequired());
+		
+		final Optional<TransferAttribute> psmInheritedAttributeFromGrandparent3 = psmChildMappedTransferObjectType.getAttributes().stream().filter(a -> a.getName().equals("inheritedAttributeFromGrandparent")).findAny();
+		assertTrue(psmInheritedAttributeFromGrandparent3.isPresent());
+		
+		assertEquals(psmInheritedAttributeFromGrandparent.get().getName(), psmInheritedAttributeFromGrandparent3.get().getName());
+		assertEquals(psmInheritedAttributeFromGrandparent.get().getBinding(), psmInheritedAttributeFromGrandparent3.get().getBinding());
+		assertEquals(psmInheritedAttributeFromGrandparent.get().getClaimType(), psmInheritedAttributeFromGrandparent3.get().getClaimType());
+		assertEquals(psmInheritedAttributeFromGrandparent.get().getDataType(), psmInheritedAttributeFromGrandparent3.get().getDataType());
+		assertEquals(psmInheritedAttributeFromGrandparent.get().getDefaultValue(), psmInheritedAttributeFromGrandparent3.get().getDefaultValue());
+		assertEquals(psmInheritedAttributeFromGrandparent.get().isRequired(), psmInheritedAttributeFromGrandparent3.get().isRequired());
+		
+		final hu.blackbelt.judo.meta.psm.service.MappedTransferObjectType psmSecondChildMappedTransferObjectType = allPsm(
 				hu.blackbelt.judo.meta.psm.service.MappedTransferObjectType.class)
 						.filter(mappedTOT -> secondChildMappedTransferObjectType.getName().equals(mappedTOT.getName()))
-						.findAny();
-		assertTrue(psmSecondChildMappedTransferObjectType.isPresent());
-
-		assertTrue(psmParentMappedTransferObjectType.get().getInheritedTransferAttributeNames()
-				.contains("inheritedAttributeFromGrandparent"));
-
-		assertTrue(psmChildMappedTransferObjectType.get().getInheritedTransferAttributeNames()
-				.contains("inheritedAttributeFromGrandparent"));
-		assertTrue(psmChildMappedTransferObjectType.get().getInheritedTransferAttributeNames()
-				.contains("inheritedAttributeFromParent"));
-
-		assertTrue(psmSecondChildMappedTransferObjectType.get().getInheritedTransferAttributeNames()
-				.contains("inheritedAttributeFromGrandparent"));
-		assertTrue(psmSecondChildMappedTransferObjectType.get().getInheritedTransferAttributeNames()
-				.contains("inheritedAttributeFromParent"));
+						.findAny().get();
+		assertEquals(2, psmSecondChildMappedTransferObjectType.getAttributes().size());
+		
+		final Optional<TransferAttribute> psmInheritedAttributeFromParent3 = psmSecondChildMappedTransferObjectType.getAttributes().stream().filter(a -> a.getName().equals("inheritedAttributeFromParent")).findAny();
+		assertTrue(psmInheritedAttributeFromParent3.isPresent());
+		
+		assertEquals(psmInheritedAttributeFromParent.get().getName(), psmInheritedAttributeFromParent3.get().getName());
+		assertEquals(psmInheritedAttributeFromParent.get().getBinding(), psmInheritedAttributeFromParent3.get().getBinding());
+		assertEquals(psmInheritedAttributeFromParent.get().getClaimType(), psmInheritedAttributeFromParent3.get().getClaimType());
+		assertEquals(psmInheritedAttributeFromParent.get().getDataType(), psmInheritedAttributeFromParent3.get().getDataType());
+		assertEquals(psmInheritedAttributeFromParent.get().getDefaultValue(), psmInheritedAttributeFromParent3.get().getDefaultValue());
+		assertEquals(psmInheritedAttributeFromParent.get().isRequired(), psmInheritedAttributeFromParent3.get().isRequired());
+		
+		final Optional<TransferAttribute> psmInheritedAttributeFromGrandparent4 = psmSecondChildMappedTransferObjectType.getAttributes().stream().filter(a -> a.getName().equals("inheritedAttributeFromGrandparent")).findAny();
+		assertTrue(psmInheritedAttributeFromGrandparent4.isPresent());
+		
+		assertEquals(psmInheritedAttributeFromGrandparent.get().getName(), psmInheritedAttributeFromGrandparent4.get().getName());
+		assertEquals(psmInheritedAttributeFromGrandparent.get().getBinding(), psmInheritedAttributeFromGrandparent4.get().getBinding());
+		assertEquals(psmInheritedAttributeFromGrandparent.get().getClaimType(), psmInheritedAttributeFromGrandparent4.get().getClaimType());
+		assertEquals(psmInheritedAttributeFromGrandparent.get().getDataType(), psmInheritedAttributeFromGrandparent4.get().getDataType());
+		assertEquals(psmInheritedAttributeFromGrandparent.get().getDefaultValue(), psmInheritedAttributeFromGrandparent4.get().getDefaultValue());
+		assertEquals(psmInheritedAttributeFromGrandparent.get().isRequired(), psmInheritedAttributeFromGrandparent4.get().isRequired());
 	}
 
 	@Test

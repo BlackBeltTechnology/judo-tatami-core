@@ -33,4 +33,105 @@ post {
             index = index + 1;
         }
     }
+    
+    var ecoreUtil = new Native("org.eclipse.emf.ecore.util.EcoreUtil");
+    
+    for (esmTransferObject in ESM!TransferObjectType.all) {
+    	var psmTransferObject : JUDOPSM!TransferObjectType = esmTransferObject.getPSMTransferObjectTypeEquivalent();
+    	
+    	for (esmSubClass in esmUtils.getAllDescendantsOfTransferObjectType(esmTransferObject)) {
+    		var psmSubClass : JUDOPSM!TransferObjectType = esmSubClass.getPSMTransferObjectTypeEquivalent();
+    	
+    		for (a in psmTransferObject.attributes) {
+    			if (not psmSubClass.attributes.exists(attr | attr.name.equals(a.name))) {
+    				
+    				var transferAttribute : JUDOPSM!TransferAttribute = ecoreUtil.copy(a);
+    				
+    				psmSubClass.attributes.add(transferAttribute);
+    				log.debug("Added attribute: [" + a.name + "] to subclass [" + psmSubClass.name + "] from [" + psmTransferObject.name + "]");
+    				
+    				if (psmTransferObject.isKindOf(JUDOPSM!UnmappedTransferObjectType)
+    					and a.binding.isDefined() and a.binding.isKindOf(JUDOPSM!StaticData)
+    					and esmSubClass.isMapped()) {
+    					
+	    				var t : JUDOPSM!DataProperty = new JUDOPSM!DataProperty();
+	    				t.name = "_" + a.name + "_" + esmUtils.getNamespaceElementFQName(esmTransferObject).replace("::","_");
+	    				t.required = a.binding.required;
+	      				t.dataType = a.binding.dataType;
+	    				t.getterExpression = ecoreUtil.copy(a.binding.getterExpression);
+		       			esmSubClass.mapping.target.getPSMEquivalent().dataProperties.add(t);
+		       			transferAttribute.binding = t;
+    				}
+    			}
+    		}
+    		
+    		for (r in psmTransferObject.relations) {
+    			if (not psmSubClass.relations.exists(rel | rel.name.equals(r.name))) {
+    				
+    				var transferObjectRelation : JUDOPSM!TransferObjectRelation = ecoreUtil.copy(r);
+    				
+    				psmSubClass.relations.add(transferObjectRelation);
+    				log.debug("Added relation: [" + r.name + "] to subclass [" + psmSubClass.name + "] from [" + psmTransferObject.name + "]");
+    				
+    				if (psmTransferObject.isKindOf(JUDOPSM!UnmappedTransferObjectType)
+    						and r.binding.isDefined() and r.binding.isKindOf(JUDOPSM!StaticNavigation)
+    						and esmSubClass.isMapped()) {
+    						
+	    				var t : JUDOPSM!NavigationProperty = new JUDOPSM!NavigationProperty();
+	    				t.name = "_" + r.name + "_" + esmUtils.getNamespaceElementFQName(esmTransferObject).replace("::","_");
+	    				t.target = r.binding.target;
+	    				t.getterExpression = ecoreUtil.copy(r.binding.getterExpression);
+	    				t.cardinality = ecoreUtil.copy(r.binding.cardinality);
+		       			esmSubClass.mapping.target.getPSMEquivalent().navigationProperties.add(t);
+		       			transferObjectRelation.binding = t;
+    				}
+    			}
+    		}
+    		
+    		var cloneableOperations = psmTransferObject.operations
+    											.select(o | o.behaviour.isUndefined() or 
+    												(o.behaviour.isDefined() and
+														o.behaviour.behaviourType <> JUDOPSM!TransferOperationBehaviourType#REFRESH
+														and o.behaviour.behaviourType <> JUDOPSM!TransferOperationBehaviourType#UPDATE_INSTANCE
+														and o.behaviour.behaviourType <> JUDOPSM!TransferOperationBehaviourType#VALIDATE_UPDATE
+														and o.behaviour.behaviourType <> JUDOPSM!TransferOperationBehaviourType#DELETE_INSTANCE
+														and o.behaviour.behaviourType <> JUDOPSM!TransferOperationBehaviourType#GET_PRINCIPAL
+														and o.behaviour.behaviourType <> JUDOPSM!TransferOperationBehaviourType#MAP_PRINCIPAL
+														and o.behaviour.behaviourType <> JUDOPSM!TransferOperationBehaviourType#GET_TEMPLATE
+													)
+												);
+    		
+    		for (o in cloneableOperations) {
+    			if (not psmSubClass.operations.exists(op | op.name.equals(o.name))) {
+	    			psmSubClass.operations.add(ecoreUtil.copy(o));
+	    			log.debug("Added operation: [" + o.name + "] to subclass [" + psmSubClass.name + "] from [" + psmTransferObject.name + "]");
+	    		}
+    		}
+    	}
+	}
+	
+	for (o in JUDOPSM!TransferOperation.all.select(op | op.behaviour.isDefined())) {
+		
+		if (o.behaviour.owner.isKindOf(JUDOPSM!TransferObjectRelation)) {
+			var newOwner : JUDOPSM!TransferObjectRelation = o.eContainer.relations.select(r | r.name.equals(o.behaviour.owner.name)).first();
+			o.behaviour.owner = newOwner;
+		}
+		
+		if (o.behaviour.behaviourType == JUDOPSM!TransferOperationBehaviourType#GET_RANGE) {
+			o.input.type = o.behaviour.owner.eContainer();
+		}
+		
+		//for deprecated operation behaviours
+		if (o.behaviour.owner.isKindOf(JUDOPSM!Parameter)) {
+			var newRelation : JUDOPSM!TransferObjectRelation = o.behaviour.owner.type.relations.select(r | r.name.equals(o.behaviour.relation.name)).first();
+			o.behaviour.relation = newRelation;
+		}
+		if (o.behaviour.relation.isDefined()
+				and o.behaviour.behaviourType <> JUDOPSM!TransferOperationBehaviourType#GET_RANGE_OF_RELATION
+				and o.behaviour.behaviourType <> JUDOPSM!TransferOperationBehaviourType#GET_TEMPLATE) {
+				
+			var newRelation : JUDOPSM!TransferObjectRelation = o.behaviour.owner.target.relations.select(r | r.name.equals(o.behaviour.relation.name)).first();
+			o.behaviour.relation = newRelation;
+		}
+	}
 }
