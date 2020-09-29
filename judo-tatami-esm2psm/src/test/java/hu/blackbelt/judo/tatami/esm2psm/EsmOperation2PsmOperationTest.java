@@ -349,6 +349,7 @@ public class EsmOperation2PsmOperationTest {
         final String NAME_OF_REMOVE_REFERENCE_MULTIPLE_CONTAINMENT_OPERATION = "_removeReferenceMultipleContainment";
 
         final String NAME_OF_LIST_E_OPERATION = "_listE";
+        final String NAME_OF_LIST_E_OPERATION_ET = "_listEFor" + MODEL_NAME + "_" + ENTITY_TYPE_D_NAME;
         final String NAME_OF_CREATE_INSTANCE_E_OPERATION = "_createInstanceE";
         final String NAME_OF_CREATE_INSTANCE_E_OPERATION_ET = "_createInstanceEFor" + MODEL_NAME + "_" + ENTITY_TYPE_D_NAME;
         final String NAME_OF_VALIDATE_CREATE_E_OPERATION = "_validateCreateInstanceE";
@@ -552,7 +553,7 @@ public class EsmOperation2PsmOperationTest {
                 o.getInput().getType() != null && (o.getInput().getType() instanceof UnmappedTransferObjectType) &&
                 o.getOutput().getCardinality().getLower() == LOWER && o.getOutput().getCardinality().getUpper() == UPPER &&
                 EcoreUtil.equals(o.getOutput().getType(), defaultE.get()) &&
-                NAME_OF_GET_E_OPERATION_ET.equals(((BoundTransferOperation) o).getBinding().getName()) &&
+                NAME_OF_LIST_E_OPERATION_ET.equals(((BoundTransferOperation) o).getBinding().getName()) &&
                 ((BoundTransferOperation) o).getBinding().getInput() != null && ((BoundTransferOperation) o).getBinding().getOutput() != null && ((BoundTransferOperation) o).getBinding().getFaults().isEmpty() &&
                 ((BoundTransferOperation) o).getBinding().getOutput().getCardinality().getLower() == LOWER && o.getOutput().getCardinality().getUpper() == UPPER &&
                 EcoreUtil.equals(((BoundTransferOperation) o).getBinding().getOutput().getType(), defaultE.get())
