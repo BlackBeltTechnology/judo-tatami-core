@@ -13,7 +13,38 @@ part of {{ variable ap.name }}.repository;
 
 class {{ fqClass class.name }}Repository {
 
+  //////////////////////////////////////////////////////////////////////////////
+  // TEMPLATE (Default)
+  //////////////////////////////////////////////////////////////////////////////
+  Future<{{ fqClass class.name }}Store> {{ fqVariable class.name }}Default() async {
+    // TODO: NOT SUPPORTED YET
+    // {{ fqClass class.name }} {{ variable class.name }}Response = await DefaultApi(locator<ApiClient>()).{{ fqVariable class.name }}TemplateInstance{{ fqClass name }}();
+    // return {{ fqClass ap.name }}RepositoryStoreMapper.create{{ fqClass class.name }}StoreFrom{{ fqClass class.name }}({{ variable class.name }}Response);
+    return {{ fqClass class.name }}Store();
+  }
+  {{# if class.isMapped }}
+
+  //////////////////////////////////////////////////////////////////////////////
+  // REFRESH (Reload with Signed ID)
+  //////////////////////////////////////////////////////////////////////////////
+  Future<{{ fqClass class.name }}Store> {{ fqVariable class.name }}GetByIdentifier({{ fqClass class.name }}Store target) async {
+    {{ fqClass class.name }} {{ variable class.name }}Response = await DefaultApi(locator<ApiClient>()).{{ fqVariable class.name }}RefreshInstance{{ fqClass name }}(target.signedIdentifier);
+    return {{ fqClass ap.name }}RepositoryStoreMapper.create{{ fqClass class.name }}StoreFrom{{ fqClass class.name }}({{ variable class.name }}Response);
+  }
+  {{/ if }}
+  {{# if class.isClassBehaviourTypeUpdateValidatable }}
+
+  //////////////////////////////////////////////////////////////////////////////
+  // VALIDATE UPDATE
+  //////////////////////////////////////////////////////////////////////////////
+  Future<{{ fqClass class.name }}Store> {{ fqVariable class.name }}ValidateForUpdate({{ fqClass class.name }}Store target) async {
+    {{ fqClass class.name }} {{ variable class.name }}Request = {{ fqClass ap.name }}RepositoryStoreMapper.create{{ fqClass class.name }}From{{ fqClass class.name }}Store(target);
+    {{ fqClass class.name }} {{ variable class.name }}Response = await DefaultApi(locator<ApiClient>()).{{ fqVariable class.name }}ValidateUpdateInstance{{ fqClass name }}(target.signedIdentifier, {{ variable class.name }}Request);
+    return {{ fqClass ap.name }}RepositoryStoreMapper.create{{ fqClass class.name }}StoreFrom{{ fqClass class.name }}({{ variable class.name }}Response);
+  }
+  {{/ if }}
   {{# if class.isClassBehaviourTypeDeletable }}
+
   //////////////////////////////////////////////////////////////////////////////
   // DELETE
   //////////////////////////////////////////////////////////////////////////////
@@ -22,6 +53,7 @@ class {{ fqClass class.name }}Repository {
   }
   {{/ if }}
   {{# if class.isClassBehaviourTypeUpdatable }}
+
   //////////////////////////////////////////////////////////////////////////////
   // UPDATE
   //////////////////////////////////////////////////////////////////////////////
@@ -31,9 +63,9 @@ class {{ fqClass class.name }}Repository {
     return {{ fqClass ap.name }}RepositoryStoreMapper.create{{ fqClass class.name }}StoreFrom{{ fqClass class.name }}({{ variable class.name }}Response);
   }
   {{/ if }}
-
   {{# each class.relations as |relation| }}
       {{# if relation.isRelationBehaviourTypeRangeable }}
+
   //////////////////////////////////////////////////////////////////////////////
   // GET CREATE RANGE FOR {{ variable relation.name }}
   //////////////////////////////////////////////////////////////////////////////
@@ -56,6 +88,7 @@ class {{ fqClass class.name }}Repository {
       {{/ if }}
       {{# if relation.isRelationBehaviourTypeSetable }}
         {{# if relation.isCollection }}
+
   //////////////////////////////////////////////////////////////////////////////
   // SET {{ variable relation.name }} (Collection)
   //////////////////////////////////////////////////////////////////////////////
@@ -64,6 +97,7 @@ class {{ fqClass class.name }}Repository {
     return await DefaultApi(locator<ApiClient>()).{{ fqVariable class.name }}SetReference{{ className relation.name }}(target.signedIdentifier, input: itemsToSet);
   }
         {{ else }}
+
   //////////////////////////////////////////////////////////////////////////////
   // SET {{ variable relation.name }} (Single)
   //////////////////////////////////////////////////////////////////////////////
@@ -73,6 +107,7 @@ class {{ fqClass class.name }}Repository {
         {{/ if }}
       {{/ if }}
       {{# if relation.isRelationBehaviourTypeUnsetable }}
+
   //////////////////////////////////////////////////////////////////////////////
   // UNSET {{ variable relation.name }}
   //////////////////////////////////////////////////////////////////////////////
@@ -81,6 +116,7 @@ class {{ fqClass class.name }}Repository {
   }
       {{/ if }}
       {{# if relation.isRelationBehaviourTypeAddable }}
+
   //////////////////////////////////////////////////////////////////////////////
   // ADD {{ variable relation.name }}
   //////////////////////////////////////////////////////////////////////////////
@@ -90,6 +126,7 @@ class {{ fqClass class.name }}Repository {
   }
       {{/ if }}
       {{# if relation.isRelationBehaviourTypeRemovable }}
+
   //////////////////////////////////////////////////////////////////////////////
   // REMOVE {{ variable relation.name }}
   //////////////////////////////////////////////////////////////////////////////
