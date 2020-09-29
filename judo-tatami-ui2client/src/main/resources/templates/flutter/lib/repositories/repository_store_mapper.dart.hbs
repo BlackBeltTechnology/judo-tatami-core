@@ -23,27 +23,31 @@ class {{ fqClass ap.name }}RepositoryStoreMapper {
 
   static void map{{ fqClass name }}To{{ fqClass name }}Store({{ fqClass name }} {{ variable name }}, {{ fqClass name }}Store {{ variable name }}Store) {
     // Identifier
-    {{# if isMapped ~}}
+    {{# if isMapped }}
     {{ variable name }}Store.identifier = {{ variable name }}.identifier;
     {{ variable name }}Store.signedIdentifier = {{ variable name }}.signedIdentifier;
     {{ variable name }}Store.referenceIdentifier = {{ variable name }}.referenceId;
     {{/ if }}
     // Attributes
-    {{# each attributes ~}}
+    {{# each attributes }}
     {{ variable ../name }}Store.{{ name }} = {{ variable ../name }}.{{ name }};
     {{/ each }}
     // Relations
-    {{# each relations ~}}
-        {{# if isEmbedded ~}}
-            {{# if isCollection ~}}
-    {{ variable ../name }}Store.{{ name }}.addAll({{ variable ../name }}.{{ name }}.map<{{ fqClass target.name }}Store>(({{ variable target.name }}) {
-      var {{ variable target.name }}Store = {{ fqClass target.name }}Store();
-      map{{ fqClass target.name }}To{{ fqClass target.name }}Store({{ variable target.name }}, {{ variable target.name }}Store);
-      return {{ variable target.name }}Store;
-    }).toList());
+    {{# each relations }}
+        {{# if isRelationEmbedded }}
+    if ({{ variable ../name }}.{{ name }} != null) {
+            {{# if isCollection }}
+      {{ variable ../name }}Store.{{ name }}.addAll({{ variable ../name }}.{{ name }}.map<{{ fqClass target.name }}Store>(({{ variable target.name }}) {
+        var {{ variable target.name }}Store = {{ fqClass target.name }}Store();
+        map{{ fqClass target.name }}To{{ fqClass target.name }}Store({{ variable target.name }}, {{ variable target.name }}Store);
+        return {{ variable target.name }}Store;
+      }).toList());
             {{ else }}
-      map{{ fqClass target.name }}To{{ fqClass target.name }}Store({{ variable ../name }}.{{ name }}, {{ variable ../name }}Store.{{ name }});
+      var {{ variable name }} = {{ fqClass target.name }}Store();
+      map{{ fqClass target.name }}To{{ fqClass target.name }}Store({{ variable ../name }}.{{ name }}, {{ variable name }});
+      {{ variable ../name }}Store.set{{ className name }}({{ variable name }});
             {{/ if }}
+    }
         {{/ if }}
     {{/ each }}
   }
@@ -58,29 +62,27 @@ class {{ fqClass ap.name }}RepositoryStoreMapper {
   }
 
   static void map{{ fqClass name }}StoreTo{{ fqClass name }}({{ fqClass name }}Store {{ variable name }}Store, {{ fqClass name }} {{ variable name }}) {
-    {{# if isMapped ~}}
+    {{# if isMapped }}
     {{ variable name }}.identifier = {{ variable name }}Store.identifier;
     {{ variable name }}.signedIdentifier = {{ variable name }}Store.signedIdentifier;
     {{ variable name }}.referenceId = {{ variable name }}Store.referenceIdentifier;
     {{/ if }}
     // Attributes
-    {{# each attributes ~}}
-        {{# unless isReadOnly ~}}
-            {{ variable ../name }}.{{ name }} = {{ variable ../name }}Store.{{ name }};
+    {{# each attributes }}
+        {{# unless isReadOnly }}
+    {{ variable ../name }}.{{ name }} = {{ variable ../name }}Store.{{ name }};
         {{/ unless }}
     {{/ each }}
     // Relations
-    {{# each relations ~}}
-        {{# if isEmbedded ~}}
-            {{# if isCollection ~}}
-    {{ variable ../name }}Store.{{ name }}.addAll({{ variable ../name }}.{{ name }}.map<{{ fqClass target.name }}Store>(({{ variable target.name }}) {
-      var {{ variable target.name }}Store = {{ fqClass target.name }}Store();
-      create{{ fqClass target.name }}From{{ fqClass target.name }}Store({{ variable target.name }}Store);
-      return {{ variable target.name }}Store;
-    }).toList());
+    {{# each relations }}
+        {{# if isRelationEmbedded }}
+    if ({{ variable ../name }}Store.{{ name }} != null) {
+            {{# if isCollection }}
+      {{ variable ../name }}.{{ name }} = {{ variable ../name }}Store.{{ name }}.map<{{ fqClass target.name }}>(create{{ fqClass target.name }}From{{ fqClass target.name }}Store).toList();
             {{ else }}
-      create{{ fqClass target.name }}From{{ fqClass target.name }}Store({{ variable ../name }}Store.{{ name }});
+      {{ variable ../name }}.{{ name }} = create{{ fqClass target.name }}From{{ fqClass target.name }}Store({{ variable ../name }}Store.{{ name }});
             {{/ if }}
+    }
         {{/ if }}
     {{/ each }}
 
@@ -94,25 +96,24 @@ class {{ fqClass ap.name }}RepositoryStoreMapper {
 
   static void map{{ fqClass name }}StoreTo{{ fqClass name }}Extended({{ fqClass name }}Store {{ variable name }}Store, {{ fqClass name }}Extended {{ variable name }}) {
     // Attributes
-    {{# each attributes ~}}
-        {{# unless isReadOnly ~}}
+    {{# each attributes }}
+        {{# unless isReadOnly }}
     {{ variable ../name }}.{{ name }} = {{ variable ../name }}Store.{{ name }};
         {{/ unless }}
     {{/ each }}
     // Relations
-    {{# each relations ~}}
-        {{# unless isReadOnly ~}}
-            {{# if isCollection ~}}
-    {{ variable ../name }}Store.{{ name }}.addAll({{ variable ../name }}Store.{{ name }}.map<{{ fqClass target.name }}Store>(({{ variable target.name }}Store) {
-      var {{ variable target.name }} = {{ fqClass target.name }}Store();
-      create{{ fqClass target.name }}ExtendedFrom{{ fqClass target.name }}Store({{ variable target.name }}Store);
-      return {{ variable target.name }};
-    }).toList());
+    {{# each relations }}
+        {{# unless isRelationEmbedded }}
+    if ({{ variable ../name }}Store.{{ name }} != null) {
+      // TODO: It have to be created by relation
+            {{# if isCollection }}
+      // {{ variable ../name }}.{{ name }} = {{ variable ../name }}Store.{{ name }}.map<{{ fqClass target.name }}Store>(({{ variable target.name }}Store) {
+      //   return create{{ fqClass target.name }}ExtendedFrom{{ fqClass target.name }}Store({{ variable target.name }}Store);
+      // }).toList();
             {{ else }}
-      if ({{ variable ../name }}Store.{{ name }} != null) {
-        create{{ fqClass target.name }}ExtendedFrom{{ fqClass target.name }}Store({{ variable ../name }}Store.{{ name }});
-      }
+      // {{ variable ../name }}.{{ name }} = create{{ fqClass target.name }}ExtendedFrom{{ fqClass target.name }}Store({{ variable ../name }}Store.{{ name }});
             {{/ if }}
+    }
         {{/ unless }}
     {{/ each }}
   }
