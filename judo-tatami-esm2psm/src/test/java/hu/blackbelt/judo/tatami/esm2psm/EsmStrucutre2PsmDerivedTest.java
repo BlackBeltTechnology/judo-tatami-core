@@ -29,6 +29,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
@@ -959,8 +960,10 @@ public class EsmStrucutre2PsmDerivedTest {
 		hu.blackbelt.judo.meta.psm.derived.StaticNavigation staticNavigation = (hu.blackbelt.judo.meta.psm.derived.StaticNavigation)psmTransferObjectRelation.get().getBinding();
 		assertTrue(staticNavigation.getGetterExpression().getExpression().equals(relation.getGetterExpression()));
 		
-		final Optional<UnboundOperation> psmOperation = allPsm(UnboundOperation.class).filter(o -> o.getName().equals("_createRelation")).findAny();
-		assertTrue(psmOperation.isPresent());
+		final Optional<UnboundOperation> psmPrincipal = allPsm(UnboundOperation.class).filter(o -> o.getName().equals("_principal")).findAny();
+		assertTrue(psmPrincipal.isPresent());
+		final Optional<UnboundOperation> psmMapPrincipal = allPsm(UnboundOperation.class).filter(o -> o.getName().equals("_map_principal")).findAny();
+		assertTrue(psmMapPrincipal.isPresent());
 		
 		final Optional<TransferAttribute> psmAttribute = allPsm(TransferAttribute.class).filter(a -> a.getName().equals(member.getName()) && a.eContainer().equals(psmTransferA.get())).findAny();
 		assertTrue(psmAttribute.isPresent());
