@@ -35,9 +35,10 @@ class {{ fqClass page.name }}Page extends StatefulWidget {
     @override
     Widget build(BuildContext context) {
         final navigation = locator<NavigationState>();
+        navigation.currentTitle = {{fqClass page.name}}Page.title;
 
         return {{fqClass application.name}}Scaffold(
-            pageTitle: {{fqClass page.name}}Page.title,
+            pageTitle: navigation.currentTitle,
             {{#if isDirectionHorizontal}}
             body: Column(
             {{ else }}
