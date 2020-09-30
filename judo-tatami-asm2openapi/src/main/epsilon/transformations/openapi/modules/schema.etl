@@ -79,6 +79,7 @@ rule CreateTransferObjectSingleSchemaDefinition
             id.property = new OPENAPI!Property;
             id.property.description = "ID of " + asmUtils.getMappedEntityType(s.eContainer).get().name + " instance";
             id.property.type = OPENAPI!JSONDataType#string;
+            id.property.readonly = true;
 
             t.properties.add(id);
 
@@ -105,6 +106,7 @@ rule CreateTransferObjectSingleSchemaDefinition
 
             updateable.property = new OPENAPI!Property;
             updateable.property.type = OPENAPI!JSONDataType#boolean;
+            updateable.property.readonly = true;
 
             t.properties.add(updateable);
 
@@ -113,6 +115,7 @@ rule CreateTransferObjectSingleSchemaDefinition
 
             deleteable.property = new OPENAPI!Property;
             deleteable.property.type = OPENAPI!JSONDataType#boolean;
+            deleteable.property.readonly = true;
 
             t.properties.add(deleteable);
         }
