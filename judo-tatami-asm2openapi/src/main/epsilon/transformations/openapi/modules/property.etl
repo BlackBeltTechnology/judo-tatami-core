@@ -130,7 +130,7 @@ rule CreateReferencePropertyDefinitionReference
 rule CreateDataPropertyDeclarationExtended
     transform s : ASM!EAnnotation
     to t : OPENAPI!PropertyDeclaration {
-        guard: s.eContainer.isKindOf(ASM!EAttribute) and s.source == asmUtils.getAnnotationUri("exposedBy")
+        guard: s.eContainer.isKindOf(ASM!EAttribute) and s.source == asmUtils.getAnnotationUri("exposedBy") and s.eContainer.changeable
 
         t.name = s.eContainer.name;
 
@@ -141,7 +141,7 @@ rule CreateDataPropertyDeclarationExtended
 rule CreateDataPropertyDefinitionExtended
     transform s : ASM!EAnnotation
     to t : OPENAPI!Property {
-        guard: s.eContainer.isKindOf(ASM!EAttribute) and s.source == asmUtils.getAnnotationUri("exposedBy")
+        guard: s.eContainer.isKindOf(ASM!EAttribute) and s.source == asmUtils.getAnnotationUri("exposedBy") and s.eContainer.changeable
 
         if (s.eContainer.many) {
             throw "Collection attributes are not supported";
@@ -215,7 +215,7 @@ rule CreateDataPropertyDefinitionExtended
 rule CreateReferencePropertyDeclarationExtended
     transform s : ASM!EAnnotation
     to t : OPENAPI!PropertyDeclaration {
-        guard: s.eContainer.isKindOf(ASM!EReference) and s.source == asmUtils.getAnnotationUri("exposedBy")
+        guard: s.eContainer.isKindOf(ASM!EReference) and s.source == asmUtils.getAnnotationUri("exposedBy") and s.eContainer.changeable
 
         t.name = s.eContainer.name;
 	    var transferObjectTypeExposedByAnnotation = asmUtils.getExtensionAnnotationListByName(s.eContainer.eContainer, "exposedBy").selectOne(a | a.details.get("value") == s.details.get("value"));
@@ -225,7 +225,7 @@ rule CreateReferencePropertyDeclarationExtended
 rule CreateReferencePropertyDefinitionExtended
     transform s : ASM!EAnnotation
     to t : OPENAPI!Property {
-        guard: s.eContainer.isKindOf(ASM!EReference) and s.source == asmUtils.getAnnotationUri("exposedBy")
+        guard: s.eContainer.isKindOf(ASM!EReference) and s.source == asmUtils.getAnnotationUri("exposedBy") and s.eContainer.changeable
 
         if (not s.eContainer.changeable) {
             t.readOnly = true;
@@ -258,7 +258,7 @@ rule CreateReferencePropertyDefinitionExtended
 rule CreateReferencePropertyDefinitionReferenceExtended
     transform s : ASM!EAnnotation
     to t : OPENAPI!SchemaReference {
-        guard: s.eContainer.isKindOf(ASM!EReference) and s.eContainer.containment and s.source == asmUtils.getAnnotationUri("exposedBy")
+        guard: s.eContainer.isKindOf(ASM!EReference) and s.eContainer.containment and s.source == asmUtils.getAnnotationUri("exposedBy") and s.eContainer.changeable
 
         var targetTypeExposedByAnnotation = asmUtils.getExtensionAnnotationListByName(s.eContainer.eReferenceType, "exposedBy").selectOne(a | a.details.get("value") == s.details.get("value"));
 
