@@ -3,10 +3,6 @@ import "../../../operations/openapi/_importAll.eol";
 import "api.etl";
 import "parameter.etl";
 
-pre {
-  var DEPRECATED_BEHAVIOURS : Collection = Sequence{"GET", "CREATE", "UPDATE", "DELETE", "SET", "UNSET", "ADD_ALL", "REMOVE_ALL", "GET_RANGE"};
-}
-
 rule CreateExposedServicePath
     transform s : ASM!EAnnotation
     to t : OPENAPI!Path {
@@ -47,11 +43,6 @@ rule CreateExposedServiceOperation
     transform s : ASM!EAnnotation
     to t : OPENAPI!Operation {
         t.`operationId` = asmUtils.getOperationFQName(s.eContainer);
-
-        var behaviour = asmUtils.getBehaviour(s.eContainer);
-        if (behaviour.present and DEPRECATED_BEHAVIOURS.contains(behaviour.get().toString())) {
-            t.deprecated = true;
-        }
 }
 
 rule CreateExposedServiceGetOperation

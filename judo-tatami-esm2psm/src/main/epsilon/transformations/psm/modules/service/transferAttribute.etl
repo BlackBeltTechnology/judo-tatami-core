@@ -11,7 +11,6 @@ rule CreateTransferAttributeFromAttribute
       guard: s.memberType == ESM!MemberType#TRANSIENT
             
       t.defaultValue = s.equivalent("CreateStaticDataForTransferAttributeDefaultValue");
-      //t.binding = s.equivalent("CreateDataPropertyForTransferAttributeBinding");
      
       s.eContainer.getPSMEquivalent().attributes.add(t);
       log.debug("Created TransferAttribute: [" + t.name + "] into [" + t.eContainer.name + "]");

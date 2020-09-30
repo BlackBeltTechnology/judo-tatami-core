@@ -553,7 +553,7 @@ public class Psm2AsmServiceTest {
 
 		BoundTransferOperation boundTransferOp1 = newBoundTransferOperationBuilder().withName("createRel")
 				.withBehaviour(newTransferOperationBehaviourBuilder()
-						.withBehaviourType(TransferOperationBehaviourType.CREATE_RELATION).withOwner(ownerRel).build())
+						.withBehaviourType(TransferOperationBehaviourType.CREATE_INSTANCE).withOwner(ownerRel).build())
 				.withOutput(newParameterBuilder().withName("output").withType(type)
 						.withCardinality(newCardinalityBuilder().withLower(1).withUpper(1).build()).build())
 				.withInput(newParameterBuilder().withName("input").withType(type)
@@ -682,7 +682,7 @@ public class Psm2AsmServiceTest {
 		assertThat(asmBoundTr1Annotation4, IsNull.notNullValue());
 		assertThat(asmBoundTr1Annotation4.getDetails().size(), IsEqual.equalTo(2));
 		assertTrue(asmBoundTr1Annotation4.getDetails().containsKey("type"));
-		assertTrue(asmBoundTr1Annotation4.getDetails().get("type").equals("create"));
+		assertTrue(asmBoundTr1Annotation4.getDetails().get("type").equals("createInstance"));
 		assertTrue(asmBoundTr1Annotation4.getDetails().containsKey("owner"));
 		assertTrue(asmBoundTr1Annotation4.getDetails().get("owner").equals(asmUtils.getReferenceFQName(asmTR1)));
 
