@@ -17,7 +17,7 @@ import 'package:{{ modelPackage application.name }}/{{ path application.name }}/
 @lazySingleton
 class NavigationState {
     final navigatorKey = GlobalKey<ExtendedNavigatorState>();
-    String currentRoute = Routes.{{ variable application.dashboard.name }}Page;
+    String currentRoute = Routes.{{ fqVariable application.dashboard.name }}Page;
     final List<BreadCrumbItem> breadcumbItems = [ BreadCrumbItem(content: Icon(Icons.home, color: Colors.white60, size: 16,))];
     final List<String> stack = [];
 
