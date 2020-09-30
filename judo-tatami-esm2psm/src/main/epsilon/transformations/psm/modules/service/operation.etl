@@ -131,32 +131,6 @@ rule CreateParameter
 }
 
 @greedy
-rule CreateGetOperationForRelation
-    transform s : ESM!RelationFeature
-    to t : JUDOPSM!BoundOperation {
-        guard: s.eContainer.isKindOf(ESM!TransferObjectType) and s.eContainer.mapping.isDefined() and s.target.isKindOf(ESM!TransferObjectType) and s.target.mapping.isDefined() and s.memberType <> ESM!MemberType#TRANSIENT
-
-        t.name = "_get" + s.name.firstToUpperCase() + "For" + esmUtils.getNamespaceElementFQName(s.eContainer).replace("::", "_").firstToUpperCase();
-        t.instanceRepresentation = s.eContainer.getPSMTransferObjectTypeEquivalent();
-
-        t.input = new JUDOPSM!Parameter;
-        t.input.name = "input";
-        t.input.type = s.target.equivalent("CreateQueryCustomizerType");
-        t.input.cardinality = new JUDOPSM!Cardinality;
-        t.input.cardinality.lower = 0;
-        t.input.cardinality.upper = 1;
-
-        t.output = new JUDOPSM!Parameter;
-        t.output.name = "output";
-        t.output.type = s.target.getPSMTransferObjectTypeEquivalent();
-        t.output.cardinality = new JUDOPSM!Cardinality;
-        t.output.cardinality.lower = s.lower;
-        t.output.cardinality.upper = s.upper;
-
-        s.eContainer.mapping.target.equivalent("CreateEntityType").operations.add(t);
-}
-
-@greedy
 rule CreateGetPrincipalOperationForActorType
     transform s : ESM!ActorType
     to t : JUDOPSM!UnboundOperation {
@@ -280,7 +254,7 @@ rule CreateListTransferOperationForRelation
         t.output.cardinality.lower = s.lower;
         t.output.cardinality.upper = s.upper;
 
-        t.binding = s.equivalent("CreateGetOperationForRelation");
+        t.binding = s.equivalent("CreateListOperationForRelation");
 
         s.eContainer.getPSMTransferObjectTypeEquivalent().operations.add(t);
 }
