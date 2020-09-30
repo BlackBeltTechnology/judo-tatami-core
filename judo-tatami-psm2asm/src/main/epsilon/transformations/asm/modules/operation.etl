@@ -102,6 +102,10 @@ rule CreateStatefulAnnotationOnOperationWithBehaviour
 		var stateful = new ASM!EStringToStringMapEntry;
         stateful.key = "value";
         switch (s.behaviour.behaviourType) {
+        	case JUDOPSM!TransferOperationBehaviourType#VALIDATE_CREATE:
+                stateful.value = "false";
+        	case JUDOPSM!TransferOperationBehaviourType#VALIDATE_UPDATE:
+                stateful.value = "false";
             case JUDOPSM!TransferOperationBehaviourType#LIST:
                 stateful.value = "false";
             case JUDOPSM!TransferOperationBehaviourType#GET_RANGE:
