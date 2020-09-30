@@ -210,6 +210,12 @@
 
 - overwriteExpression: false
   factoryExpression: "{#application}"
+  pathExpression: "'lib/' + #path(#application.actor.name) + '/components/judo_combobox.dart'"
+  templateName: flutter/lib/components/judo_combobox.dart
+  copy: true
+
+- overwriteExpression: false
+  factoryExpression: "{#application}"
   pathExpression: "'lib/' + #path(#application.actor.name) + '/components/judo_component.dart'"
   templateName: flutter/lib/components/judo_component.dart
   copy: true
@@ -222,8 +228,20 @@
 
 - overwriteExpression: false
   factoryExpression: "{#application}"
+  pathExpression: "'lib/' + #path(#application.actor.name) + '/components/judo_dialog.dart'"
+  templateName: flutter/lib/components/judo_dialog.dart
+  copy: true
+
+- overwriteExpression: false
+  factoryExpression: "{#application}"
   pathExpression: "'lib/' + #path(#application.actor.name) + '/components/judo_input_text.dart'"
   templateName: flutter/lib/components/judo_input_text.dart
+  copy: true
+
+- overwriteExpression: false
+  factoryExpression: "{#application}"
+  pathExpression: "'lib/' + #path(#application.actor.name) + '/components/judo_loading_circle.dart'"
+  templateName: flutter/lib/components/judo_loading_circle.dart
   copy: true
 
 - overwriteExpression: false
@@ -316,13 +334,11 @@
 # routes
 # ========================================
 - overwriteExpression: true
-  factoryExpression: "#application.layoutTypes"
+  factoryExpression: "#application.layoutTypes.?[original]"
   pathExpression: >
     'lib/' +
     #path(#application.actor.name) +
-    '/ui/routes/' +
-    #fqPath(#self.name) +
-    '/router.dart'
+    '/ui/routes/router.dart'
   templateName: flutter/lib/ui/routes/router.dart.hbs
   templateContext:
     - name: layout
