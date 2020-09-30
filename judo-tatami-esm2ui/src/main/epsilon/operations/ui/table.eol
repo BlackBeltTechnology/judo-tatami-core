@@ -2,56 +2,61 @@ operation UI!ui::Table calculateActions(application : UI!ui::Application) {
 	var relationType = self.getRelationType();
 	var classType = self.getTargetClassType();
 
-	var page = application.pages.selectOne(p | p.pageType = UI!ui::PageType#VIEW 
-		and p.~source == self.~source);
-	if (page.isDefined()) {
-	    var viewAction = new UI!ui::ViewAction();
-		viewAction.target = page;
-		self.rowActions.add(viewAction);
-	} else {
-		log.warn("No view page defined for: " + self.name);
-	}
-
-
-	if (classType.getIsClassBehaviourTypeDeletable()) {
-		self.rowActions.add(new UI!ui::DeleteAction());	
-	}
-
-	if (classType.getIsClassBehaviourTypeUpdatable()) {
-		var page = application.pages.selectOne(p | p.pageType = UI!ui::PageType#UPDATE 
-			and p.~source == self.~source);
-		if (page.isDefined()) {
-		    var editAction = new UI!ui::EditAction();
-			editAction.target = page;
-			self.rowActions.add(editAction);
-		} else {
-			log.warn("No update page defined for: " + self.name);
-		}
-	}
-
 	if (relationType.isDefined()) {
-		if (relationType.getIsRelationBehaviourTypeCreatable()) {
-			var page = application.pages.selectOne(p | p.pageType = UI!ui::PageType#CREATE 
-				and p.~source == self.~source);
+		var page = application.pages.selectOne(p | p.pageType = UI!ui::PageType#VIEW 
+				and p.getRelationType() == relationType);
+		if (page.isDefined()) {
+			log.debug(" ========= TABLE DEF: VIEW: " + relationType.name + " - " + page.name);
+		    var viewAction = new UI!ui::ViewAction();
+			viewAction.target = page;
+			self.rowActions.add(viewAction);
+		} else {
+			log.warn("No view page defined for: " + self.name + " - " + relationType.eContainer.name + "." + relationType.name);
+		}
+
+
+		if (classType.getIsClassBehaviourTypeDeletable()) {
+			self.rowActions.add(new UI!ui::DeleteAction());	
+		}
+	
+		if (classType.getIsClassBehaviourTypeUpdatable()) {
+			var page = application.pages.selectOne(p | p.pageType = UI!ui::PageType#UPDATE 
+				and p.getRelationType() == relationType);
 			if (page.isDefined()) {
-			    var createAction = new UI!ui::CreateAction();
-				createAction.target = page;
-				self.relationActions.add(createAction);	
+				log.debug(" ========= TABLE DEF: EDIT: " + relationType.name + " - " + page.name);
+			    var editAction = new UI!ui::EditAction();
+				editAction.target = page;
+				self.rowActions.add(editAction);
 			} else {
-				log.warn("No update page defined for: " + self.name);
+				log.warn("No update page defined for: " + self.name  + " - " + relationType.eContainer.name + "." + relationType.name);
 			}
 		}
-		if (relationType.getIsRelationBehaviourTypeRemovable()) {
-			self.rowActions.add(new UI!ui::RemoveAction());
-		}
-		if (relationType.getIsRelationBehaviourTypeUnsetable()) {
-			self.rowActions.add(new UI!ui::UnsetAction());
-		}	
-		if (relationType.getIsRelationBehaviourTypeSetable()) {
-			self.relationActions.add(new UI!ui::SetAction());
-		}
-		if (relationType.getIsRelationBehaviourTypeAddable()) {
-			self.relationActions.add(new UI!ui::AddAction());
+	
+		if (relationType.isDefined()) {
+			if (relationType.getIsRelationBehaviourTypeCreatable()) {
+				var page = application.pages.selectOne(p | p.pageType = UI!ui::PageType#CREATE 
+				and p.getRelationType() == relationType);
+				if (page.isDefined()) {
+					log.debug(" ========= TABLE DEF: CREATE: " + relationType.name + " - " + page.name);
+				    var createAction = new UI!ui::CreateAction();
+					createAction.target = page;
+					self.relationActions.add(createAction);	
+				} else {
+					log.warn("No update page defined for: " + self.name + " - " + relationType.eContainer.name + "." + relationType.name);
+				}
+			}
+			if (relationType.getIsRelationBehaviourTypeRemovable()) {
+				self.rowActions.add(new UI!ui::RemoveAction());
+			}
+			if (relationType.getIsRelationBehaviourTypeUnsetable()) {
+				self.rowActions.add(new UI!ui::UnsetAction());
+			}	
+			if (relationType.getIsRelationBehaviourTypeSetable()) {
+				self.relationActions.add(new UI!ui::SetAction());
+			}
+			if (relationType.getIsRelationBehaviourTypeAddable()) {
+				self.relationActions.add(new UI!ui::AddAction());
+			}
 		}
 	}
 	// TODO: Handling Input/Output operation parameters.

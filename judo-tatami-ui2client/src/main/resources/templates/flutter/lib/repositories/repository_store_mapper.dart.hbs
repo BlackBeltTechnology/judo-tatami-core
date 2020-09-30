@@ -110,6 +110,10 @@ class {{ fqClass ap.name }}RepositoryStoreMapper {
       // {{ variable ../name }}.{{ name }} = {{ variable ../name }}Store.{{ name }}.map<{{ fqClass target.name }}Store>(({{ variable target.name }}Store) {
       //   return create{{ fqClass target.name }}ExtendedFrom{{ fqClass target.name }}Store({{ variable target.name }}Store);
       // }).toList();
+//        internationalOrderInfoStore.categories.map<NorthwindServicesInternationalOrderInfoExtendedCategories>(
+//                    (element) => NorthwindServicesInternationalOrderInfoExtendedCategories().copyWith(referenceId: element.referenceIdentifier, signedIdentifier: element.signedIdentifier)
+//                    ).toList();
+//
             {{ else }}
       // {{ variable ../name }}.{{ name }} = create{{ fqClass target.name }}ExtendedFrom{{ fqClass target.name }}Store({{ variable ../name }}Store.{{ name }});
             {{/ if }}

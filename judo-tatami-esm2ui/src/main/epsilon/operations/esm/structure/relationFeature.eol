@@ -7,10 +7,11 @@ operation ESM!esm::structure::RelationFeature createRelationTypeForClass(applica
 
 	var relation = new UI!ui::data::RelationType();	
     relation.~application = application;
-    relation.~original = self;
+    relation.~originalRelation = self;
 
 	relation.name = self.name;
 	relation.isCollection = (self.upper == -1);
+	relation.isReadOnly = self.isReadOnly();
 	
 	if (self.memberType == ESM!esm::structure::MemberType#STORED) {
 		relation.memberType = UI!ui::data::MemberType#STORED;

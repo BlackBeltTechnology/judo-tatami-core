@@ -1,4 +1,3 @@
-import "data/_importData.eol";
 import "application.eol";
 import "callOperationAction.eol";
 import "pageDefinition.eol";

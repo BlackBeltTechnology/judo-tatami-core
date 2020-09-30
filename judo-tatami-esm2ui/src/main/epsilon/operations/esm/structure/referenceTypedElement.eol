@@ -1,14 +1,20 @@
+@cached
+operation ESM!esm::structure::ReferenceTypedElement fqName() {
+	return esmUtils.getNamespaceElementFQName(self.eContainer) + "." + self.name;
+}
+
+
 operation ESM!esm::structure::ReferenceTypedElement mapViewPage(application : UI!ui::Application, target : ESM!esm::structure::TransferObjectType) : UI!ui::PageDefinition {
-	var page = application.pages.selectOne(p | p.~original = self and p.pageType = UI!ui::PageType#VIEW);
+	var page = application.pages.selectOne(p | p.~originalRelation == self and p.pageType == UI!ui::PageType#VIEW);
 	if (page.isDefined()) {
 		return page;
 	}
 	
-	log.debug("Create page for relation for view: " + target.name + " (relation: " + self.name + ")");
+	log.debug("Create page for relation for view: " + target.name + " (relation: " + self.fqName() + ")");
 	
 	var page : UI!ui::PageDefinition = new UI!ui::PageDefinition();
 	page.~application = application;
-	page.~original = self;
+	page.~originalRelation = self;
 
 	page.dataElement = self.mapRelationType(application, self.eContainer.mapClassType(application));
 	page.name = self.fqName().anchor("View");
@@ -27,16 +33,16 @@ operation ESM!esm::structure::ReferenceTypedElement mapViewPage(application : UI
 }
 
 operation ESM!esm::structure::ReferenceTypedElement mapCreatePage(application : UI!ui::Application, target : ESM!esm::structure::TransferObjectType) : UI!ui::PageDefinition {
-	var page = application.pages.selectOne(p | p.~original = self and p.pageType = UI!ui::PageType#CREATE);
+	var page = application.pages.selectOne(p | p.~originalRelation == self and p.pageType == UI!ui::PageType#CREATE);
 	if (page.isDefined()) {
 		return page;
 	}
 
-	log.debug("Create page for relation for create: " + target.name + " (relation: " + self.name + ")");
+	log.debug("Create page for relation for create: " + target.name + " (relation: " + self.fqName() + ")");
 	
 	var page : UI!ui::PageDefinition = new UI!ui::PageDefinition();
 	page.~application = application;
-	page.~original = self;
+	page.~originalRelation = self;
 
 	page.dataElement = self.mapRelationType(application, self.eContainer.mapClassType(application));
 	page.name = self.fqName().anchor("Create");
@@ -55,16 +61,16 @@ operation ESM!esm::structure::ReferenceTypedElement mapCreatePage(application : 
 }
 
 operation ESM!esm::structure::ReferenceTypedElement mapUpdatePage(application : UI!ui::Application, target : ESM!esm::structure::TransferObjectType) : UI!ui::PageDefinition {
-	var page = application.pages.selectOne(p | p.~original = self and p.pageType = UI!ui::PageType#UPDATE);
+	var page = application.pages.selectOne(p | p.~originalRelation == self and p.pageType == UI!ui::PageType#UPDATE);
 	if (page.isDefined()) {
 		return page;
 	}
 
-	log.debug("Create page for relation for update: " + target.name + " (relation: " + self.name + ")");
+	log.debug("Create page for relation for update: " + target.name + " (relation: " + self.fqName() + ")");
 	
 	var page : UI!ui::PageDefinition = new UI!ui::PageDefinition();
 	page.~application = application;
-	page.~original = self;
+	page.~originalRelation = self;
 
 	page.dataElement = self.mapRelationType(application, self.eContainer.mapClassType(application));
 	page.name = self.fqName().anchor("Edit");
@@ -84,16 +90,16 @@ operation ESM!esm::structure::ReferenceTypedElement mapUpdatePage(application : 
 
 
 operation ESM!esm::structure::ReferenceTypedElement mapTablePage(application : UI!ui::Application, target : ESM!esm::structure::TransferObjectType) : UI!ui::PageDefinition {
-	var page = application.pages.selectOne(p | p.~original = self and p.pageType = UI!ui::PageType#TABLE);
+	var page = application.pages.selectOne(p | p.~originalRelation == self and p.pageType == UI!ui::PageType#TABLE);
 	if (page.isDefined()) {
 		return page;
 	}
 
-	log.debug("Create page for relation for table: " + target.name + " (relation: " + self.name + ")");
+	log.debug("Create page for relation for table: " + target.name + " (relation: " + self.fqName() + ")");
 	
 	var page : UI!ui::PageDefinition = new UI!ui::PageDefinition();
 	page.~application = application;
-	page.~original = self;
+	page.~originalRelation = self;
 	var relation = self.mapRelationType(application, self.eContainer.mapClassType(application));
 
 	page.dataElement = relation;

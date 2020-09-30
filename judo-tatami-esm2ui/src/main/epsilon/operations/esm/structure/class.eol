@@ -36,9 +36,8 @@ operation ESM!esm::structure::Class getExposedOperations() : Set {
 operation ESM!esm::structure::Class createClassType(application : UI!ui::Application) : UI!ui::data::ClassType {
 	var clazz = new UI!ui::data::ClassType();	
 
-    clazz.~srcClass = self;
     clazz.~application = application;
-    clazz.~original = self;
+    clazz.~originalClass = self;
     
 	clazz.name = self.fqName();
 	clazz.isMapped = self.isMapped();

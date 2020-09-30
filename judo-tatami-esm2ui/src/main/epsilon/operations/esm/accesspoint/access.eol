@@ -6,7 +6,7 @@ operation ESM!esm::accesspoint::Access fqName() {
 operation ESM!esm::accesspoint::Access createRelationTypeForClass(application : UI!ui::Application, clazz : UI!ui::data::ClassType) : UI!ui::data::RelationType {
 	var relation = new UI!ui::data::RelationType();	
     relation.~application = application;
-    relation.~original = self;
+    relation.~originalAccess = self;
 
 	relation.name = self.name;
 	relation.isCollection = (self.upper == -1);

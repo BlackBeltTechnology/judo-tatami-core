@@ -7,7 +7,7 @@ rule Application
     extends CreateNamedElementFromNamespaceElement {
         guard: s.principal.isDefined() and s.kind = ESM!esm::accesspoint::ActorKind#HUMAN 
 
-        t.~original = s;
+        t.~originalActorType = s;
 
         log.debug("Application: " + s.name);
 
@@ -25,6 +25,8 @@ rule Application
         }
 		
         var exposedRelations : Set = s.getExposedRelations();
+        
+        log.debug("Relations: " + exposedRelations.collect(r | r.fqName()));
        
         for (relation in exposedRelations) {
             if (relation.target.view.isDefined()) {
