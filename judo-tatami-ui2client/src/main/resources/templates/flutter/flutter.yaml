@@ -278,7 +278,7 @@
 # pages
 # ========================================
 - overwriteExpression: true
-  factoryExpression: "#application.pageContainers"
+  factoryExpression: "#application.pageContainers.?[!layoutType.original]"
   pathExpression: "'lib/' + #path(#application.actor.name) + '/ui/pages/' + #self.layoutType.name + '/' + #fqPath(#self.owner.name) + '__page.dart'"
   templateName: flutter/lib/ui/pages/page.dart.hbs
   templateContext:
@@ -290,7 +290,7 @@
       expression: "#application.actor"
 
 - overwriteExpression: true
-  factoryExpression: "#application.layoutTypes"
+  factoryExpression: "#application.layoutTypes.?[!original]"
   pathExpression: >
     'lib/' +
     #path(#application.actor.name) +
@@ -306,7 +306,7 @@
 # tables
 # ========================================
 - overwriteExpression: true
-  factoryExpression: "#application.tables"
+  factoryExpression: "#application.tables.?[!pageContainer.layoutType.original]"
   pathExpression: >
     'lib/' +
     #path(#application.actor.name) +
@@ -321,7 +321,7 @@
       expression: "#self"
 
 - overwriteExpression: true
-  factoryExpression: "#application.layoutTypes"
+  factoryExpression: "#application.layoutTypes.?[!original]"
   pathExpression: >
     'lib/' +
     #path(#application.actor.name) +
