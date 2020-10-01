@@ -560,9 +560,9 @@ public class Psm2AsmServiceTest {
 						.withCardinality(newCardinalityBuilder().withLower(1).withUpper(1).build()).build())
 				.withBinding(boundOp1).build();
 
-		UnboundOperation unbound1 = newUnboundOperationBuilder().withName("get")
+		UnboundOperation unbound1 = newUnboundOperationBuilder().withName("list")
 				.withBehaviour(newTransferOperationBehaviourBuilder()
-						.withBehaviourType(TransferOperationBehaviourType.GET).withOwner(owner).build())
+						.withBehaviourType(TransferOperationBehaviourType.LIST).withOwner(owner).build())
 				.withOutput(newParameterBuilder().withName("output").withType(t1)
 						.withCardinality(newCardinalityBuilder().withLower(owner.getCardinality().getLower())
 								.withUpper(ownerRel.getCardinality().getUpper()).build())
@@ -572,7 +572,8 @@ public class Psm2AsmServiceTest {
 		UnboundOperation unbound2Init = newUnboundOperationBuilder().withName("init").withInitializer(true)
 				.withImplementation(newOperationBodyBuilder().withBody("new p")).build();
 
-		t1.getOperations().addAll(ImmutableList.of(boundTransferOp1, unbound1, unbound2Init));
+		t1.getOperations().addAll(ImmutableList.of(boundTransferOp1, unbound2Init));
+		ap.getOperations().add(unbound1);
 
 		Model model = newModelBuilder().withName("M")
 				.withElements(ImmutableList.of(e1, e2, e3, t1, type, t3, ct, pt, ch, p, sn, ap, actorType)).build();
