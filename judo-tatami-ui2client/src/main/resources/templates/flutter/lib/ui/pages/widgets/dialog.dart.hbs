@@ -1,5 +1,5 @@
-await judoDialog<{{ fqClass page.dataElement.owner.name }}Store>(
+await judoDialog<{{ fqClass page.dataElement.target.name }}Store>(
     context: context,
-    selectableList: await {{fqVariable page.name}}PageStore.getRange{{ fqClass page.dataElement.owner.name }}({{ variable page.dataElement.owner.name }}Store),
+    selectableList: await {{fqVariable page.name}}PageStore.getRangeFor{{ fqClass page.relationType.name }}({{ variable page.dataElement.owner.name }}Store),
     toStringFunction: (element) => element.{{page.dataElement.target.representation}}.toString(), // TODO: check this line
 );

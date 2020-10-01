@@ -1,5 +1,6 @@
+// ignore: missing_return
 Observer(builder: (_) {
-    switch({{ fqVariable page.targetClassType.name }}PageStore.{{ fqClass page.targetClassType.name }}StoreFuture.status){
+    switch({{ fqVariable page.name }}PageStore.{{ fqVariable page.relationType.name }}StoreFuture.status){
         case FutureStatus.pending:
             return JudoLoadingProgress();
         case FutureStatus.rejected:
@@ -8,19 +9,19 @@ Observer(builder: (_) {
             return JudoTable(
                 col: {{col}},
                 dataInfo: {{fqClass pageDefinition.name}}{{fqClass name}}Table(),
-                rowList: {{ fqVariable page.targetClassType.name }}Store.{{ variable dataElement.name }},
+                rowList: {{# if page.dataElement.isAccess}}{{ fqVariable page.name }}PageStore.{{ fqVariable page.relationType.name }}StoreList{{else}}{{# if page.relationType.isCollection }}{{ variable page.relationType.owner.name }}Store.{{variable page.relationType.name}}{{else}}[{{ variable page.relationType.owner.name }}Store.{{variable page.relationType.name}}].asObservable(){{/ if}}{{/ if}},
                 {{#each this.rowActions as |action|}}
                 {{#if (isViewButton action)}}
                 navigateToViewPageAction: (element) async {
-                    var response = await navigation.open(Routes.{{ fqVariable action.target.name }},
-                    arguments: {{ fqClass action.target.name }}Arguments({{ fqVariable page.targetClassType.name }}Store: element));
+                    var response = await navigation.open(Routes.{{ fqVariable action.target.name }}Page,
+                    arguments: {{ fqClass action.target.name }}PageArguments({{# unless page.dataElement.isAccess}}{{ variable page.dataElement.owner.name }}Store: {{ variable page.dataElement.owner.name }}Store, {{/ unless}}{{ variable page.targetClassType.name }}Store: element));
                     if (response != null) {
-                        {{fqVariable page.targetClassType.name}}Store.get{{ fqClass page.dataElement.owner.name }}();
+                        {{ fqVariable page.name }}PageStore.get{{ fqClass page.relationType.name }}({{# unless page.dataElement.isAccess}}{{ variable page.dataElement.owner.name }}Store{{/ unless}});
                     }
                 },
                 {{/if}}
                 {{#if (isRemoveButton action)}}
-                removeAction: (element) => {{fqVariable page.name}}PageStore.remove{{ fqClass page.dataElement.owner.name }}({{ variable page.dataElement.owner.name }}Store, element),
+                removeAction: (element) => {{fqVariable page.name}}PageStore.remove{{ fqClass page.relationType.name }}({{ variable page.dataElement.owner.name }}Store, element),
                 {{/if}}
                 {{/each}}
             );

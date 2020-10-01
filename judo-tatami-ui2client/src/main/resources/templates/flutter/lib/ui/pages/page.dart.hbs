@@ -39,11 +39,7 @@ class {{ fqClass page.name }}Page extends StatefulWidget {
 
         return {{fqClass application.name}}Scaffold(
             pageTitle: navigation.currentTitle,
-            {{#if isDirectionHorizontal}}
             body: Column(
-            {{ else }}
-            body: Row(
-            {{/ if }}
                 mainAxisSize: MainAxisSize.min,
                 children: [
                 {{# if (isInstanceAction page) }}
@@ -58,11 +54,19 @@ class {{ fqClass page.name }}Page extends StatefulWidget {
                         ),
                     ),
                 {{/ if }}
-                {{# each this.children as |child| }}
-                {{# if child }}
-                    {{> (getWidgetTemplate child) }}
+                {{#if isDirectionHorizontal}}
+                    Column(
+                {{ else }}
+                    Row(
                 {{/ if }}
-                {{/ each }}
+                        children: [
+                        {{# each this.children as |child| }}
+                            {{# if child }}
+                                {{> (getWidgetTemplate child) }}
+                            {{/ if }}
+                        {{/ each }}
+                        ],
+                    ),
                 ],
             ),
         );
