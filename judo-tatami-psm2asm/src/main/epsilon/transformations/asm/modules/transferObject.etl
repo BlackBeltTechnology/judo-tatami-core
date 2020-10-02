@@ -111,6 +111,21 @@ rule CreateAnnotationOnReferenceClassForEntityType
         s.equivalent("CreateReferenceClassForEntityType").eAnnotations.add(t);
 }
 
+rule AddTransientAnnotationToTransferAttribute
+	transform s : JUDOPSM!TransferAttribute
+    to t : ASM!EAnnotation {
+    	guard: s.binding.isUndefined()
+    	
+        t.source = asmUtils.getAnnotationUri("transient");
+        
+        var entry = new ASM!EStringToStringMapEntry;
+        entry.key = "value";
+        entry.value = "true";
+        t.details.add(entry);
+        
+        s.equivalent("CreateTransferObjectAttribute").eAnnotations.add(t);
+    }
+
 @abstract
 rule AddTransferAttributeConstraints
 	transform s : JUDOPSM!TransferAttribute
@@ -197,6 +212,21 @@ rule CreateTransferObjectAttributeBindingAnnotation
         t.details.add(binding);
         
         s.equivalent("CreateTransferObjectAttribute").eAnnotations.add(t); 
+    }
+
+rule AddTransientAnnotationToTransferObjectRelation
+	transform s : JUDOPSM!TransferObjectRelation
+    to t : ASM!EAnnotation {
+    	guard: s.binding.isUndefined() and not s.isAccess()
+    	
+        t.source = asmUtils.getAnnotationUri("transient");
+        
+        var entry = new ASM!EStringToStringMapEntry;
+        entry.key = "value";
+        entry.value = "true";
+        t.details.add(entry);
+        
+        s.equivalent("CreateTransferObjectRelation").eAnnotations.add(t);
     }
 
 rule CreateTransferObjectRelationBindingAnnotation
