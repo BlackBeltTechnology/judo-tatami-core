@@ -3,7 +3,7 @@ part of judo.components;
 abstract class JudoTableDataInfo {
   List<DataColumn> getColumns(Function onAdd);
 
-  Function getRow({Function navigateToEditPageAction, Function navigateToViewPageAction, Function navigateToCreatePageAction, Function removeAction});
+  Function getRow({Function navigateToEditPageAction, Function navigateToViewPageAction, Function navigateToCreatePageAction, Function removeAction, Function deleteAction});
 }
 
 class JudoTable extends StatelessWidget implements IJudoComponent {
@@ -15,6 +15,7 @@ class JudoTable extends StatelessWidget implements IJudoComponent {
         this.navigateToViewPageAction,
         this.navigateToCreatePageAction,
         this.removeAction,
+        this.deleteAction,
         this.sortAscending = true,
         this.onAdd});
 
@@ -26,6 +27,7 @@ class JudoTable extends StatelessWidget implements IJudoComponent {
   final Function navigateToViewPageAction;
   final Function navigateToCreatePageAction;
   final Function removeAction;
+  final Function deleteAction;
   final Function onAdd;
 
   @override
@@ -67,10 +69,11 @@ class JudoTable extends StatelessWidget implements IJudoComponent {
 
   List<DataRow> dataRow() {
     List<DataRow> dataRowList = rowList.map<DataRow>(dataInfo.getRow(
-        navigateToEditPageAction: this.navigateToEditPageAction,
-        navigateToCreatePageAction: this.navigateToCreatePageAction,
-        navigateToViewPageAction: this.navigateToViewPageAction,
-        removeAction: this.removeAction
+      navigateToEditPageAction: this.navigateToEditPageAction,
+      navigateToCreatePageAction: this.navigateToCreatePageAction,
+      navigateToViewPageAction: this.navigateToViewPageAction,
+      deleteAction: this.deleteAction,
+      removeAction: this.removeAction
     )).toList();
     return dataRowList;
   }

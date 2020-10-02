@@ -1,1 +1,41 @@
-Date input {{ name }}
+{{#if page.isPageTypeView}}
+Observer(
+    builder: (_) => JudoDateInput(
+        key: UniqueKey(),
+        col: {{ col }},
+        use24HourFormat: true,
+        initialDate: this.{{ variable page.dataElement.name }}Store.{{ attributeType.name }}
+        label: '{{ label }}',
+        icon: Icon(Icons.{{ this.leadingIcon.name }}),
+        readOnly: true,
+    ),
+),
+{{/if}}
+{{#if page.isPageTypeCreate}}
+Observer(
+    builder: (_) => JudoDateInput(
+        key: UniqueKey(),
+        col: {{ col }},
+        initialDate: this.{{ variable page.dataElement.name }}Store.{{ attributeType.name }}
+        label: '{{ label }}',
+        icon: Icon(Icons.{{ this.leadingIcon.name }}),
+        onChanged: (value) => this.{{ variable page.dataElement.name }}Store.set{{ className attributeType.name }}(value),
+        firstDate: DateTime(DateTime.now().year - 5), // TODO: revisit this line
+        lastDate: DateTime(DateTime.now().year + 5), // TODO: revisit this line
+    ),
+),
+{{/if}}
+{{#if page.isPageTypeUpdate}}
+Observer(
+    builder: (_) => JudoDateInput(
+        key: UniqueKey(),
+        col: {{ col }},
+        initialDate: this.{{ variable page.dataElement.name }}Store.{{ attributeType.name }}
+        label: '{{ label }}',
+        icon: Icon(Icons.{{ this.leadingIcon.name }}),
+        onChanged: (value) => this.{{ variable page.dataElement.name }}Store.set{{ className attributeType.name }}(value),
+        firstDate: DateTime(DateTime.now().year - 5), // TODO: revisit this line
+        lastDate: DateTime(DateTime.now().year + 5), // TODO: revisit this line
+    ),
+),
+{{/if}}

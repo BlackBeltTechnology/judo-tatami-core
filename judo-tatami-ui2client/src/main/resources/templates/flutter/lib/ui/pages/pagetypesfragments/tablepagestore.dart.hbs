@@ -118,5 +118,29 @@ abstract class _{{ fqClass page.name }}PageStore with Store {
     }
 
     {{/if}}
+    {{# if relation.target.isClassBehaviourTypeDeletable }}
+    @action
+    Future<void> delete{{ className relation.target.name }}({{ fqClass relation.target.name }}Store {{ variable relation.target.name }}Store) async {
+        try {
+            errorMessage = null;
+            await _{{ fqVariable application.actor.name }}Repository.{{fqVariable relation.target.name}}Delete({{ variable relation.target.name }}Store);
+        } on ApiException {
+            errorMessage = "Could not delete {{ variable relation.target.name }}";
+        }
+    }
+
+    {{/if}}
+    {{# if relation.target.isClassBehaviourTypeUpdatable }}
+    @action
+    Future<{{ fqClass relation.target.name }}Store> update{{ className relation.target.name }}({{ fqClass relation.target.name }}Store {{ variable relation.target.name }}Store) async {
+        try {
+            errorMessage = null;
+            return await _{{ fqVariable application.actor.name }}Repository.{{fqVariable relation.target.name}}Update({{ variable relation.target.name }}Store);
+        } on ApiException {
+            errorMessage = "Could not update {{ variable relation.target.name }}";
+        }
+    }
+
+    {{/if}}
     {{/ with }}
 }

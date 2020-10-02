@@ -43,25 +43,23 @@ class {{ fqClass page.name }}Page extends StatefulWidget {
                     {{#each page.containers as |pageContainer|}}
                     {{#unless pageContainer.layoutType.original}}
                     if (constraints.maxWidth >= {{pageContainer.layoutType.minimumResolution}} && constraints.maxWidth < {{pageContainer.layoutType.maximumResolution}}) {
-                        return get{{ fqClass page.name }}Page{{fqClass pageContainer.layoutType.name}}Body(
-                            context
-                            {{# if page.isPageTypeTable }}
-                            {{#unless page.dataElement.isAccess}}
-                            ,{{ variable page.dataElement.owner.name }}Store
-                            {{/unless}}
-                            ,{{fqVariable page.name}}PageStore
-                            {{/if}}
+                        return get{{ fqClass page.name }}Page{{fqClass pageContainer.layoutType.name}}Body(context
+                            {{~# if page.isPageTypeTable }}
+                            {{~# unless page.dataElement.isAccess}}
+                            , {{ variable page.dataElement.owner.name }}Store
+                            {{~/ unless ~}}
+                            , {{ fqVariable page.name}}PageStore
+                            {{~/ if ~}}
                         );
                     }
                     {{#if (isDesktopLayout pageContainer.layoutType)}}
-                    return get{{ fqClass page.name }}Page{{fqClass pageContainer.layoutType.name}}Body(
-                        context
-                        {{# if page.isPageTypeTable }}
-                        {{#unless page.dataElement.isAccess}}
-                        ,{{ variable page.dataElement.owner.name }}Store
-                        {{/unless}}
-                        ,{{fqVariable page.name}}PageStore
-                        {{/if}}
+                    return get{{ fqClass page.name }}Page{{fqClass pageContainer.layoutType.name}}Body(context
+                        {{~# if page.isPageTypeTable }}
+                        {{~# unless page.dataElement.isAccess}}
+                        , {{ variable page.dataElement.owner.name }}Store
+                        {{~/ unless ~}}
+                        , {{fqVariable page.name}}PageStore
+                        {{~/ if ~}}
                     );
                     {{/if}}
                     {{/unless}}

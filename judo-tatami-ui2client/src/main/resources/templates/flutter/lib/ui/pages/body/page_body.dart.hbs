@@ -10,14 +10,13 @@
 
 part of {{ variable application.name }}.ui.pages.{{variable container.layoutType.name}};
 
-Widget get{{ fqClass page.name }}Page{{fqClass container.layoutType.name}}Body(
-    BuildContext context
-    {{# if page.isPageTypeTable }}
-    {{#unless page.dataElement.isAccess}}
-    ,{{ fqClass page.dataElement.owner.name }}Store {{ variable page.dataElement.owner.name }}Store
-    {{/unless}}
-    ,{{fqClass page.name}}PageStore {{fqVariable page.name}}PageStore
-    {{/if}}
+Widget get{{ fqClass page.name }}Page{{fqClass container.layoutType.name}}Body(BuildContext context
+    {{~# if page.isPageTypeTable ~}}
+    {{~# unless page.dataElement.isAccess ~}}
+    , {{ fqClass page.dataElement.owner.name }}Store {{ variable page.dataElement.owner.name }}Store
+    {{~/ unless ~}}
+    , {{fqClass page.name}}PageStore {{fqVariable page.name}}PageStore
+    {{~/ if ~}}
     ) {
     final navigation = locator<NavigationState>();
 

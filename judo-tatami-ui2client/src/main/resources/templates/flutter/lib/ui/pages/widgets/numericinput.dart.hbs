@@ -1,7 +1,29 @@
+{{#if page.isPageTypeView}}
+Observer(
+    builder: (_) => JudoInputText(
+        key: UniqueKey(),
+        col: {{ col }},
+        icon: Icon(Icons.{{ this.leadingIcon.name }}),
+        label: '{{ label }}',
+        initialValue: this.{{ variable page.dataElement.name }}Store.{{ attributeType.name }}.toString(),
+        readonly: true,
+    )
+),
+{{/if}}
+{{#if page.isPageTypeCreate}}
 JudoInputText(
     col: {{ col }},
-    icon: Icon(Icons.edit),
+    icon: Icon(Icons.{{ this.leadingIcon.name }}),
     label: '{{ label }}',
-    onChanged: (value) => this.{{ variable page.dataElement.name }}Store.{{ attributeType.name }} = double.parse(value),
+    onChanged: (value) => this.{{ variable page.dataElement.name }}Store.set{{ className attributeType.name }}(double.parse(value)),
 ),
-
+{{/if}}
+{{#if page.isPageTypeUpdate}}
+JudoInputText(
+    col: {{ col }},
+    icon: Icon(Icons.{{ this.leadingIcon.name }}),
+    label: '{{ label }}',
+    initialValue: this.{{ variable page.dataElement.name }}Store.{{ attributeType.name }}.toString(),
+    onChanged: (value) => this.{{ variable page.dataElement.name }}Store.set{{ className attributeType.name }}(double.parse(value)),
+),
+{{/if}}

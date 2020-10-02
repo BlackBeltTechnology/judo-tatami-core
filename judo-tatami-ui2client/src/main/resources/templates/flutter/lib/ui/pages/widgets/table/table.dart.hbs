@@ -24,7 +24,7 @@ class {{ fqClass table.pageDefinition.name }}{{ fqClass table.name }}{{ fqClass 
     }
 
     @override
-    Function getRow({Function navigateToEditPageAction, Function navigateToViewPageAction, Function navigateToCreatePageAction, Function removeAction}) {
+    Function getRow({Function navigateToEditPageAction, Function navigateToViewPageAction, Function navigateToCreatePageAction, Function removeAction, Function deleteAction}) {
         return ({{variable table.dataElement.name}}) => DataRow(
             cells: [
                 {{# each columns as |column|}}
@@ -41,11 +41,29 @@ class {{ fqClass table.pageDefinition.name }}{{ fqClass table.name }}{{ fqClass 
                     onTap: () => removeAction({{variable table.dataElement.name}}),
                 ),
                 {{/if}}
+                {{#if (isDeleteButton action)}}
+                DataCell(
+                    Icon(Icons.{{action.icon.name}}),
+                    onTap: () => deleteAction({{variable table.dataElement.name}}),
+                ),
+                {{/if}}
+                {{#if (isCreateButton action)}}
+                DataCell(
+                    Icon(Icons.{{action.icon.name}}),
+                    onTap: () => navigateToCreatePageAction({{variable table.dataElement.name}}),
+                ),
+                {{/if}}
+                {{#if (isEditButton action)}}
+                DataCell(
+                    Icon(Icons.{{action.icon.name}}),
+                    onTap: () => navigateToEditPageAction({{variable table.dataElement.name}}),
+                ),
+                {{/if}}
                 {{#if (isViewButton action)}}
                 DataCell(
                     Icon(Icons.{{action.icon.name}}),
                     onTap: () => navigateToViewPageAction({{variable table.dataElement.name}}),
-                )
+                ),
                 {{/if}}
                 {{/each}}
             ],

@@ -14,14 +14,46 @@ Observer(builder: (_) {
                 {{#if (isViewButton action)}}
                 navigateToViewPageAction: (element) async {
                     var response = await navigation.open(Routes.{{ fqVariable action.target.name }}Page,
-                    arguments: {{ fqClass action.target.name }}PageArguments({{# unless page.dataElement.isAccess}}{{ variable page.dataElement.owner.name }}Store: {{ variable page.dataElement.owner.name }}Store, {{/ unless}}{{ variable page.targetClassType.name }}Store: element));
+                        arguments: {{ fqClass action.target.name }}PageArguments({{# unless page.dataElement.isAccess}}{{ variable page.dataElement.owner.name }}Store: {{ variable page.dataElement.owner.name }}Store, {{/ unless}}{{ variable page.targetClassType.name }}Store: element));
                     if (response != null) {
                         {{ fqVariable page.name }}PageStore.get{{ fqClass page.relationType.name }}({{# unless page.dataElement.isAccess}}{{ variable page.dataElement.owner.name }}Store{{/ unless}});
                     }
                 },
                 {{/if}}
+                {{#if (isCreateButton action)}}
+                // TODO: not sure this rowAction need
+                navigateToCreatePageAction: (element) async {
+                    var created = await navigation.open(Routes.{{ fqVariable action.target.name }}Page);
+                    if (created != null) {
+                        await {{ fqVariable page.name }}PageStore.create{{ fqClass page.relationType.name }}({{# unless page.dataElement.isAccess}}{{ variable page.dataElement.owner.name }}Store ,{{/ unless}}created);
+                        {{fqVariable page.name}}PageStore.get{{ fqClass page.relationType.name }}({{# unless page.dataElement.isAccess}}{{ variable page.dataElement.owner.name }}Store{{/ unless}});
+                    }
+                },
+                {{/if}}
+                {{#if (isEditButton action)}}
+                navigateToEditPageAction: (element) async {
+                    {{ fqClass relationType.target.name }}Store cloned = {{ fqClass relationType.target.name }}Store();
+                    cloned.updateWith(element);
+                    var res = await navigation.open(Routes.{{ fqVariable action.target.name }}Page,
+                        arguments: {{ fqClass action.target.name }}PageArguments({{ variable page.targetClassType.name }}Store: cloned));
+                    if (res != null) {
+                        element.updateWith(cloned);
+                        var updated = await {{ fqVariable page.name }}PageStore.update{{ className page.relationType.target.name }}(element);
+                        if (updated != null) {
+                            element.updateWith(updated);
+                            {{ fqVariable page.name }}PageStore.get{{ fqClass page.relationType.name }}({{# unless page.dataElement.isAccess}}{{ variable page.dataElement.owner.name }}Store{{/ unless}});
+                        }
+                    }
+                },
+                {{/if}}
                 {{#if (isRemoveButton action)}}
                 removeAction: (element) => {{fqVariable page.name}}PageStore.remove{{ fqClass page.relationType.name }}({{ variable page.dataElement.owner.name }}Store, element),
+                {{/if}}
+                {{#if (isDeleteButton action)}}
+                deleteAction: (element) async {
+                    await {{fqVariable page.name}}PageStore.delete{{ className page.relationType.target.name }}(element);
+                    {{ fqVariable page.name }}PageStore.get{{ fqClass page.relationType.name }}({{# unless page.dataElement.isAccess}}{{ variable page.dataElement.owner.name }}Store{{/ unless}});
+                },
                 {{/if}}
                 {{/each}}
             );
