@@ -360,41 +360,6 @@ public class Psm2AsmDerivedTest {
 		
 		useUnmappedTransferObjectType(unmapped).withRelations(rel2).build();
 		
-		UnboundOperation getOp = newUnboundOperationBuilder().withName("_getAccessToM")
-				.withOutput(newParameterBuilder().withName("output")
-						.withCardinality(newCardinalityBuilder().withUpper(-1).build())
-						.withType(mapped)
-						.build())
-				.withBehaviour(newTransferOperationBehaviourBuilder().withBehaviourType(TransferOperationBehaviourType.GET)
-						.withOwner(rel).build())
-				.build();
-		
-		UnboundOperation createOp = newUnboundOperationBuilder().withName("_createAccessToM")
-				.withOutput(newParameterBuilder().withName("output")
-						.withCardinality(newCardinalityBuilder().withLower(1).build())
-						.withType(mapped)
-						.build())
-				.withInput(newParameterBuilder().withName("input")
-						.withCardinality(newCardinalityBuilder().withLower(1).build())
-						.withType(mapped)
-						.build())
-				.withBehaviour(newTransferOperationBehaviourBuilder().withBehaviourType(TransferOperationBehaviourType.CREATE)
-						.withOwner(rel).build())
-				.build();
-		
-		UnboundOperation updateOp = newUnboundOperationBuilder().withName("_updateAccessToM")
-				.withOutput(newParameterBuilder().withName("output")
-						.withCardinality(newCardinalityBuilder().withLower(1).build())
-						.withType(mapped)
-						.build())
-				.withInput(newParameterBuilder().withName("input")
-						.withCardinality(newCardinalityBuilder().withLower(1).build())
-						.withType(mapped)
-						.build())
-				.withBehaviour(newTransferOperationBehaviourBuilder().withBehaviourType(TransferOperationBehaviourType.UPDATE)
-						.withOwner(rel).build())
-				.build();
-		
 		usePackage(actorTypes).withElements(actorType).build();
 		usePackage(genNav).withElements(statNav,statNav2).build();
 		usePackage(defaultTo).withElements(defaultForEntity,defaultForEntity2).build();
