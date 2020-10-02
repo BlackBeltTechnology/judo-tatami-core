@@ -39,36 +39,34 @@ class {{ fqClass page.name }}Page extends StatefulWidget {
 
         return {{fqClass application.name}}Scaffold(
             pageTitle: navigation.currentTitle,
-            body: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                {{# if (isInstanceAction page) }}
-                    Card(
-                        color: Colors.black12,
-                        child: Row(
-                            children: [
-                            {{# each page.instanceActions as |instanceAction| }}
-                                {{> templates/flutter/lib/ui/pages/widgets/instanceAction.dart.hbs }}
-                            {{/ each }}
-                            ],
-                        ),
-                    ),
-                {{/ if }}
-                {{#if isDirectionHorizontal}}
-                    Column(
-                {{ else }}
-                    Row(
-                {{/ if }}
-                        children: [
-                        {{# each this.children as |child| }}
-                            {{# if child }}
-                                {{> (getWidgetTemplate child) }}
-                            {{/ if }}
-                        {{/ each }}
-                        ],
-                    ),
-                ],
-            ),
+            body: LayoutBuilder(builder: (context, constraints) {
+                    {{#each page.containers as |pageContainer|}}
+                    {{#unless pageContainer.layoutType.original}}
+                    if (constraints.maxWidth >= {{pageContainer.layoutType.minimumResolution}} && constraints.maxWidth < {{pageContainer.layoutType.maximumResolution}}) {
+                        return get{{ fqClass page.name }}Page{{fqClass pageContainer.layoutType.name}}Body(
+                            context
+                            {{# if page.isPageTypeTable }}
+                            {{#unless page.dataElement.isAccess}}
+                            ,{{ variable page.dataElement.owner.name }}Store
+                            {{/unless}}
+                            ,{{fqVariable page.name}}PageStore
+                            {{/if}}
+                        );
+                    }
+                    {{#if (isDesktopLayout pageContainer.layoutType)}}
+                    return get{{ fqClass page.name }}Page{{fqClass pageContainer.layoutType.name}}Body(
+                        context
+                        {{# if page.isPageTypeTable }}
+                        {{#unless page.dataElement.isAccess}}
+                        ,{{ variable page.dataElement.owner.name }}Store
+                        {{/unless}}
+                        ,{{fqVariable page.name}}PageStore
+                        {{/if}}
+                    );
+                    {{/if}}
+                    {{/unless}}
+                    {{/each}}
+                }),
         );
     }
 }

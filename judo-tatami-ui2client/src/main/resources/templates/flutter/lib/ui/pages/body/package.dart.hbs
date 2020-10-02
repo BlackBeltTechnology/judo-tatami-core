@@ -7,26 +7,21 @@
 // Template name: {{ template.templateName }}
 // Application: {{ application.name }}
 
-library {{ variable application.name }}.ui.pages;
+library {{ variable application.name }}.ui.pages.{{variable name}};
 
 import 'package:flutter/material.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:mobx/mobx.dart';
-import 'package:openapi_dart_common/openapi.dart';
+import 'tables/package.dart';
 
+import 'package:{{ modelPackage application.name }}/{{ path application.name }}/components/package.dart';
 import 'package:{{ modelPackage application.name }}/{{ path application.name }}/injector/injector.dart';
-import 'package:{{ modelPackage application.name }}/{{ path application.name }}/repository/package.dart';
 import 'package:{{ modelPackage application.name }}/{{ path application.name }}/store/package.dart';
 import 'package:{{ modelPackage application.name }}/{{ path application.name }}/ui/navigation_state.dart';
-import 'package:{{ modelPackage application.name }}/{{ path application.name }}/ui/scaffold.dart';
-
-{{#each application.layoutTypes as |layout|}}
-{{#unless layout.original}}
-import '{{variable layout.name}}/package.dart';
-{{/unless}}
-{{/each}}
+import 'package:{{ modelPackage application.name }}/{{ path application.name }}/ui/pages/package.dart';
+import 'package:{{ modelPackage application.name }}/{{ path application.name }}/ui/routes/router.gr.dart';
+import 'package:{{ modelPackage application.name }}/{{ path application.name }}/utilities/package.dart';
 
 {{# each layout.pageContainers as |container| }}
-part '{{ fqPath container.owner.name }}__page.dart';
+part '{{ fqPath container.owner.name }}__{{fqPath layout.name}}__body.dart';
 {{/ each }}
-
-part 'package.g.dart';

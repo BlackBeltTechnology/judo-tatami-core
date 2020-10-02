@@ -44,10 +44,16 @@ public class FlutterHelper {
         context.registerFunction("isSetButton", FlutterHelper.class.getDeclaredMethod("isAddButton", new Class[]{Action.class}));
         context.registerFunction("dartType", FlutterHelper.class.getDeclaredMethod("dartType", new Class[]{DataType.class}));
         context.registerFunction("isInstanceAction", FlutterHelper.class.getDeclaredMethod("isInstanceAction", new Class[]{PageDefinition.class}));
+        context.registerFunction("isDesktopLayout", FlutterHelper.class.getDeclaredMethod("isDesktopLayout", new Class[]{LayoutType.class}));
     }
 
     public static void registerHandlebars(Handlebars handlebars) {
         handlebars.registerHelpers(FlutterHelper.class);
+    }
+
+//    TODO find a better way for a default layout if not set
+    public static boolean isDesktopLayout(LayoutType layoutType) {
+        return layoutType.getName().equalsIgnoreCase("Desktop");
     }
 
     public static boolean isInstanceAction (PageDefinition pageDefinition) {

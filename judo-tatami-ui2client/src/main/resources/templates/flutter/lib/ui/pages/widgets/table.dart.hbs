@@ -8,7 +8,7 @@ Observer(builder: (_) {
         case FutureStatus.fulfilled:
             return JudoTable(
                 col: {{col}},
-                dataInfo: {{fqClass pageDefinition.name}}{{fqClass name}}Table(),
+                dataInfo: {{fqClass pageDefinition.name}}{{fqClass name}}{{ fqClass pageContainer.layoutType.name }}Table(),
                 rowList: {{# if page.dataElement.isAccess}}{{ fqVariable page.name }}PageStore.{{ fqVariable page.relationType.name }}StoreList{{else}}{{# if page.relationType.isCollection }}{{ variable page.relationType.owner.name }}Store.{{variable page.relationType.name}}{{else}}[{{ variable page.relationType.owner.name }}Store.{{variable page.relationType.name}}].asObservable(){{/ if}}{{/ if}},
                 {{#each this.rowActions as |action|}}
                 {{#if (isViewButton action)}}

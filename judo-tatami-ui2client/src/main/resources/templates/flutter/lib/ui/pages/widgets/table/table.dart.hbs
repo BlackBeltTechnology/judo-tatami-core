@@ -7,18 +7,18 @@
 // Template name: {{ template.templateName }}
 // Application: {{ application.name }}
 
-part of {{ variable application.name }}.ui.pages.tables;
+part of {{ variable application.name }}.ui.pages.{{ fqVariable table.pageContainer.layoutType.name }}.tables;
 
-class {{ fqClass table.pageDefinition.name }}{{ fqClass table.name }}Table implements JudoTableDataInfo {
+class {{ fqClass table.pageDefinition.name }}{{ fqClass table.name }}{{ fqClass table.pageContainer.layoutType.name }}Table implements JudoTableDataInfo {
 
     @override
-    List<DataColumn> getColumns() {
+    List<DataColumn> getColumns(Function onAdd) {
         return [
             {{# each columns}}
             DataColumn(label: Text('{{label}}')),
             {{/each}}
             {{#each table.rowActions}}
-            DataColumn(label: Text(""))
+            DataColumn(label: Text("")),
             {{/each}}
         ];
     }

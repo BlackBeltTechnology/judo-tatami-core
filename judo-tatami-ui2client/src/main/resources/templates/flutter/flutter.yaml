@@ -4,12 +4,12 @@
   templateName: flutter/gitignore
   copy: true
 
-- overwriteExpression: false
+- overwriteExpression: true
   factoryExpression: "{#application}"
   pathExpression: "'pubspec.yaml'"
   templateName: flutter/pubspec.yaml.hbs
 
-- overwriteExpression: false
+- overwriteExpression: true
   factoryExpression: "{#application}"
   pathExpression: "'README.md'"
   templateName: flutter/README.md.hbs
@@ -59,7 +59,7 @@
   templateName: flutter/lib/store/model_store.dart.hbs
 
 # ========================================
-# repositires
+# repositories
 # ========================================
 - overwriteExpression: true
   factoryExpression: "{#application}"
@@ -278,9 +278,48 @@
 # pages
 # ========================================
 - overwriteExpression: true
-  factoryExpression: "#application.pageContainers.?[!layoutType.original]"
-  pathExpression: "'lib/' + #path(#application.actor.name) + '/ui/pages/' + #self.layoutType.name + '/' + #fqPath(#self.owner.name) + '__page.dart'"
+  factoryExpression: "#application.pageContainers.?[layoutType.original]"
+  pathExpression: >
+    'lib/' +
+    #path(#application.actor.name) +
+    '/ui/pages/' +
+    #fqPath(#self.owner.name) +
+    '__page.dart'
   templateName: flutter/lib/ui/pages/page.dart.hbs
+  templateContext:
+    - name: container
+      expression: "#self"
+    - name: page
+      expression: "#self.owner"
+    - name: ap
+      expression: "#application.actor"
+
+- overwriteExpression: true
+  factoryExpression: "#application.layoutTypes.?[original]"
+  pathExpression: >
+    'lib/' +
+    #path(#application.actor.name) +
+    '/ui/pages/' +
+    'package.dart'
+  templateName: flutter/lib/ui/pages/package.dart.hbs
+  templateContext:
+    - name: layout
+      expression: "#self"
+
+# ========================================
+# page body
+# ========================================
+- overwriteExpression: true
+  factoryExpression: "#application.pageContainers.?[!layoutType.original]"
+  pathExpression: >
+    'lib/' +
+    #path(#application.actor.name) +
+    '/ui/pages/' +
+    #fqPath(#self.layoutType.name) +
+    '/' +
+    #fqPath(#self.owner.name) +
+    '__' + #fqPath(#self.layoutType.name) + '__body.dart'
+  templateName: flutter/lib/ui/pages/body/page_body.dart.hbs
   templateContext:
     - name: container
       expression: "#self"
@@ -297,7 +336,7 @@
     '/ui/pages/' +
     #fqPath(#self.name) +
     '/package.dart'
-  templateName: flutter/lib/ui/pages/package.dart.hbs
+  templateName: flutter/lib/ui/pages/body/package.dart.hbs
   templateContext:
     - name: layout
       expression: "#self"
@@ -314,6 +353,8 @@
     #fqPath(#self.pageDefinition.name) +
     '__'+
     #fqPath(#self.name) +
+    '__' +
+    #fqPath(#self.pageContainer.layoutType.name) +
     '__table.dart'
   templateName: flutter/lib/ui/pages/widgets/table/table.dart.hbs
   templateContext:
