@@ -76,13 +76,15 @@ class {{ fqClass ap.name }}RepositoryStoreMapper {
     // Relations
     {{# each relations }}
         {{# if isRelationEmbedded }}
+            {{# unless isReadOnly }}
     if ({{ variable ../name }}Store.{{ name }} != null) {
-            {{# if isCollection }}
+                {{# if isCollection }}
       {{ variable ../name }}.{{ name }} = {{ variable ../name }}Store.{{ name }}.map<{{ fqClass target.name }}>(create{{ fqClass target.name }}From{{ fqClass target.name }}Store).toList();
-            {{ else }}
+                {{ else }}
       {{ variable ../name }}.{{ name }} = create{{ fqClass target.name }}From{{ fqClass target.name }}Store({{ variable ../name }}Store.{{ name }});
-            {{/ if }}
+                {{/ if }}
     }
+            {{/ unless }}
         {{/ if }}
     {{/ each }}
 
@@ -104,9 +106,11 @@ class {{ fqClass ap.name }}RepositoryStoreMapper {
     // Relations
     {{# each relations }}
         {{# unless isRelationEmbedded }}
+            {{# unless isReadOnly }}
+
     if ({{ variable ../name }}Store.{{ name }} != null) {
       // TODO: It have to be created by relation
-            {{# if isCollection }}
+                {{# if isCollection }}
       // {{ variable ../name }}.{{ name }} = {{ variable ../name }}Store.{{ name }}.map<{{ fqClass target.name }}Store>(({{ variable target.name }}Store) {
       //   return create{{ fqClass target.name }}ExtendedFrom{{ fqClass target.name }}Store({{ variable target.name }}Store);
       // }).toList();
@@ -114,10 +118,11 @@ class {{ fqClass ap.name }}RepositoryStoreMapper {
 //                    (element) => NorthwindServicesInternationalOrderInfoExtendedCategories().copyWith(referenceId: element.referenceIdentifier, signedIdentifier: element.signedIdentifier)
 //                    ).toList();
 //
-            {{ else }}
+                {{ else }}
       // {{ variable ../name }}.{{ name }} = create{{ fqClass target.name }}ExtendedFrom{{ fqClass target.name }}Store({{ variable ../name }}Store.{{ name }});
-            {{/ if }}
+                {{/ if }}
     }
+            {{/ unless }}
         {{/ unless }}
     {{/ each }}
   }
