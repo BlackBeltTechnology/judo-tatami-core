@@ -4,7 +4,7 @@ operation ESM!esm::ui::DataField createInputFromDataField(application : UI!ui::A
 	ret.attributeType = self.dataFeature.getMember().mapAttributeType(application, self.dataFeature.getMember().eContainer.mapClassType(application));
 	
 	ret.name = self.name;
-	ret.label = self.label; //self.dataFeature.getMember().getDisplayLabel();
+	ret.label = self.getUiLabel();
 	return ret;
 }
 

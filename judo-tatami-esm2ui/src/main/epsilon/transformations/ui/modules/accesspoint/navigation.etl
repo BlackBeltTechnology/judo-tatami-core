@@ -19,7 +19,7 @@ rule AbstractNavigationItem
     extends CreateNamedElementFromNamedElement {
 		guard: not s.hidden
         t.name = s.eContainer.fqName().anchor("NavigationItem");
-        t.label = s.getEffectiveLabel();
+        t.label = s.getUiLabel();
         var icon = new UI!ui::Icon();
         icon.name = s.iconName;
         if (icon.name.isUndefined()) {

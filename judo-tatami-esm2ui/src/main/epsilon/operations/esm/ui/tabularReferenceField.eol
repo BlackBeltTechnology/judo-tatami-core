@@ -15,6 +15,7 @@ operation ESM!esm::ui::TabularReferenceField createTableFromTabularReferenceFiel
 		var table : UI!ui::Table = new UI!ui::Table();
 		self.~originalRelation = relation;
 		table.name = self.name;	
+	    table.label = self.getUiLabel();
 		table.dataElement = dataElement;
 		table.col = self.basis;
 		for (column in self.columns) {
@@ -33,6 +34,7 @@ operation ESM!esm::ui::TabularReferenceField createButtonFromTabularReferenceFie
 	
 	var button : UI!ui::Button = new UI!ui::Button();
 	button.name = self.name.anchor("TabularReferenceButton");
+    button.label = self.getUiLabel();
 	button.action = new UI!ui::NavigationToPageAction();
 	button.dataElement = dataElement;
 		
@@ -51,6 +53,8 @@ operation ESM!esm::ui::TabularReferenceField createButtonFromTabularReferenceFie
 		page.~originalRelation = relation;
 		page.dataElement = dataElement;
 		page.name = relation.fqName().anchor("TableForButton");
+	    page.label = self.getUiLabel();
+		
 		page.pageType = UI!ui::PageType#TABLE;
 
 		log.debug("Create page container for button based on tabular reference field: " + self.name);

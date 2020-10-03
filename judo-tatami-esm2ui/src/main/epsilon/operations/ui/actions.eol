@@ -90,3 +90,83 @@ operation UI!ui::CallOperationAction setIcon() {
 		self.icon.name = 'input';
 	} 
 }
+
+operation UI!ui::Action setLabel() {
+	if (self.label.isUndefined()) {
+		self.label = 'Action';
+	} 
+}
+
+
+operation UI!ui::NavigationToPageAction setLabel() {
+	if (self.label.isUndefined()) {
+		self.label = 'Navigate to ' + self.target.label;
+	} 
+}
+
+operation UI!ui::CreateAction setLabel() {
+	if (self.label.isUndefined()) {
+		self.label = 'Create';
+	} 
+}
+
+operation UI!ui::EditAction setLabel() {
+	if (self.label.isUndefined()) {
+		self.label = 'Edit';
+	} 
+}
+
+operation UI!ui::ViewAction setLabel() {
+	if (self.label.isUndefined()) {
+		self.label = 'View';
+	} 
+}
+
+
+operation UI!ui::BackAction setLabel() {
+	if (self.label.isUndefined()) {
+		self.label = 'Back';
+	} 
+}
+
+operation UI!ui::SaveAction setLabel() {
+	if (self.label.isUndefined()) {
+		self.label = 'Save';
+	} 
+}
+
+operation UI!ui::AddAction setLabel() {
+	if (self.label.isUndefined()) {
+		self.label = 'Add';
+	} 
+}
+
+operation UI!ui::RemoveAction setLabel() {
+	if (self.label.isUndefined()) {
+		self.label = 'Remove';
+	} 
+}
+
+operation UI!ui::DeleteAction setLabel() {
+	if (self.label.isUndefined()) {
+		self.label = 'Delete';
+	} 
+}
+
+operation UI!ui::SetAction setLabel() {
+	if (self.label.isUndefined()) {
+		self.label = 'Set';
+	} 
+}
+
+operation UI!ui::UnsetAction setLabel() {
+	if (self.label.isUndefined()) {
+		self.label = 'Unset';
+	} 
+}
+
+operation UI!ui::CallOperationAction setLabel() {
+	if (self.label.isUndefined()) {
+		self.label = 'Call ' + self.`operation`.name;
+	} 
+}
