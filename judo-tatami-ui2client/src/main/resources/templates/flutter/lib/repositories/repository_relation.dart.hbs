@@ -42,7 +42,7 @@ class {{ fqClass relation.owner.name }}{{ fqClass relation.name }}Repository {
     if (filter == null) {
       filter = {{ modelName relation.target.name }}Extension{{ fqClassWithoutModel relation.target.name}}QueryCustomizer();
     }
-    List<{{ fqClass relation.target.name }}> {{ variable relation.target.name }}ListResponse = await DefaultApi(locator<ApiClient>()).{{ fqVariable owner.name }}List{{ className relation.name }}(owner.signedIdentifier, input : filter);
+    List<{{ fqClass relation.target.name }}> {{ variable relation.target.name }}ListResponse = await DefaultApi(locator<ApiClient>()).{{ fqVariable owner.name }}List{{ className relation.name }}(owner.internal__signedIdentifier, input : filter);
     return {{ variable relation.target.name }}ListResponse.map<{{ fqClass relation.target.name }}Store>(
       {{ fqClass ap.name }}RepositoryStoreMapper.create{{ fqClass relation.target.name }}StoreFrom{{ fqClass relation.target.name }}).toList();
   }
@@ -69,7 +69,7 @@ class {{ fqClass relation.owner.name }}{{ fqClass relation.name }}Repository {
     if (filter == null) {
       filter = {{ modelName relation.target.name }}Extension{{ fqClassWithoutModel relation.target.name}}QueryCustomizer();
     }
-    {{ fqClass relation.target.name }} {{ variable relation.target.name }}Response = await DefaultApi(locator<ApiClient>()).{{ fqVariable owner.name }}List{{ className relation.name }}(owner.signedIdentifier, input : filter);
+    {{ fqClass relation.target.name }} {{ variable relation.target.name }}Response = await DefaultApi(locator<ApiClient>()).{{ fqVariable owner.name }}List{{ className relation.name }}(owner.internal__signedIdentifier, input : filter);
     return {{ fqClass ap.name }}RepositoryStoreMapper.create{{ fqClass relation.target.name }}StoreFrom{{ fqClass relation.target.name }}({{ variable relation.target.name }}Response);
   }
           {{/ if }}
@@ -93,7 +93,7 @@ class {{ fqClass relation.owner.name }}{{ fqClass relation.name }}Repository {
   //////////////////////////////////////////////////////////////////////////////
   Future<{{ fqClass relation.target.name }}Store> {{ fqVariable relation.owner.name }}{{ fqClass relation.name }}Create({{ fqClass relation.owner.name }}Store owner, {{ fqClass relation.target.name }}Store target) async {
     {{ fqClass relation.target.name }}Extended {{ variable relation.target.name }}ExtendedRequest = {{ fqClass ap.name }}RepositoryStoreMapper.create{{ fqClass relation.target.name }}ExtendedFrom{{ fqClass relation.target.name }}Store(target);
-    {{ fqClass relation.target.name }} {{ variable relation.target.name }}Response = await DefaultApi(locator<ApiClient>()).{{ fqVariable owner.name }}CreateInstance{{ className relation.name }}(owner.signedIdentifier, {{ variable relation.target.name }}ExtendedRequest);
+    {{ fqClass relation.target.name }} {{ variable relation.target.name }}Response = await DefaultApi(locator<ApiClient>()).{{ fqVariable owner.name }}CreateInstance{{ className relation.name }}(owner.internal__signedIdentifier, {{ variable relation.target.name }}ExtendedRequest);
     return {{ fqClass ap.name }}RepositoryStoreMapper.create{{ fqClass relation.target.name }}StoreFrom{{ fqClass relation.target.name }}({{ variable relation.target.name }}Response);
   }
       {{/ if }}
@@ -116,7 +116,7 @@ class {{ fqClass relation.owner.name }}{{ fqClass relation.name }}Repository {
   //////////////////////////////////////////////////////////////////////////////
   Future<{{ fqClass relation.target.name }}Store> {{ fqVariable relation.owner.name }}{{ fqClass relation.name }}ValidateForCreate({{ fqClass relation.owner.name }}Store owner, {{ fqClass relation.target.name }}Store target) async {
     {{ fqClass relation.target.name }}Extended {{ variable relation.target.name }}ExtendedRequest = {{ fqClass ap.name }}RepositoryStoreMapper.create{{ fqClass relation.target.name }}ExtendedFrom{{ fqClass relation.target.name }}Store(target);
-    {{ fqClass relation.target.name }} {{ variable relation.target.name }}Response = await DefaultApi(locator<ApiClient>()).{{ fqVariable owner.name }}CreateInstance{{ className relation.name }}(owner.signedIdentifier, {{ variable relation.target.name }}ExtendedRequest);
+    {{ fqClass relation.target.name }} {{ variable relation.target.name }}Response = await DefaultApi(locator<ApiClient>()).{{ fqVariable owner.name }}CreateInstance{{ className relation.name }}(owner.internal__signedIdentifier, {{ variable relation.target.name }}ExtendedRequest);
     return {{ fqClass ap.name }}RepositoryStoreMapper.create{{ fqClass relation.target.name }}StoreFrom{{ fqClass relation.target.name }}({{ variable relation.target.name }}Response);
   }
     {{/ if }}

@@ -24,9 +24,12 @@ class {{ fqClass ap.name }}RepositoryStoreMapper {
   static void map{{ fqClass name }}To{{ fqClass name }}Store({{ fqClass name }} {{ variable name }}, {{ fqClass name }}Store {{ variable name }}Store) {
     // Identifier
     {{# if isMapped }}
-    {{ variable name }}Store.identifier = {{ variable name }}.identifier;
-    {{ variable name }}Store.signedIdentifier = {{ variable name }}.signedIdentifier;
-    {{ variable name }}Store.referenceIdentifier = {{ variable name }}.referenceId;
+    {{ variable name }}Store.internal__identifier = {{ variable name }}.internal__identifier;
+    {{ variable name }}Store.internal__signedIdentifier = {{ variable name }}.internal__signedIdentifier;
+    {{ variable name }}Store.internal__referenceIdentifier = {{ variable name }}.internal__referenceId;
+    {{ variable name }}Store.internal__updatable = {{ variable name }}.internal__updatable;
+    {{ variable name }}Store.internal__deletable = {{ variable name }}.internal__deletable;
+
     {{/ if }}
     // Attributes
     {{# each attributes }}
@@ -63,9 +66,10 @@ class {{ fqClass ap.name }}RepositoryStoreMapper {
 
   static void map{{ fqClass name }}StoreTo{{ fqClass name }}({{ fqClass name }}Store {{ variable name }}Store, {{ fqClass name }} {{ variable name }}) {
     {{# if isMapped }}
-    {{ variable name }}.identifier = {{ variable name }}Store.identifier;
-    {{ variable name }}.signedIdentifier = {{ variable name }}Store.signedIdentifier;
-    {{ variable name }}.referenceId = {{ variable name }}Store.referenceIdentifier;
+    {{ variable name }}.internal__identifier = {{ variable name }}Store.internal__identifier;
+    {{ variable name }}.internal__signedIdentifier = {{ variable name }}Store.internal__signedIdentifier;
+    {{ variable name }}.internal__referenceId = {{ variable name }}Store.internal__referenceIdentifier;
+
     {{/ if }}
     // Attributes
     {{# each attributes }}
@@ -115,7 +119,7 @@ class {{ fqClass ap.name }}RepositoryStoreMapper {
       //   return create{{ fqClass target.name }}ExtendedFrom{{ fqClass target.name }}Store({{ variable target.name }}Store);
       // }).toList();
 //        internationalOrderInfoStore.categories.map<NorthwindServicesInternationalOrderInfoExtendedCategories>(
-//                    (element) => NorthwindServicesInternationalOrderInfoExtendedCategories().copyWith(referenceId: element.referenceIdentifier, signedIdentifier: element.signedIdentifier)
+//                    (element) => NorthwindServicesInternationalOrderInfoExtendedCategories().copyWith(internal__referenceId: element.internal__referenceIdentifier, internal__signedIdentifier: element.internal__signedIdentifier)
 //                    ).toList();
 //
                 {{ else }}

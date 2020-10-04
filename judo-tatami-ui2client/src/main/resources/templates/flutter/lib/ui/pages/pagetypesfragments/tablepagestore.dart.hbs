@@ -104,7 +104,7 @@ abstract class _{{ fqClass page.name }}PageStore with Store {
     @action
     Future<void> set{{ fqClass relation.name }}({{ fqClass relation.owner.name }}Store {{ variable relation.owner.name }}Store, {{ fqClass relation.target.name }}Store selected{{ className relation.target.name }}Store) async {
         try {
-            if (selected{{ className relation.target.name }}Store.signedIdentifier != null){
+            if (selected{{ className relation.target.name }}Store.internal__signedIdentifier != null){
                 await _{{ fqVariable application.actor.name }}Repository.{{ fqVariable relation.owner.name }}Set{{ fqClass relation.name }}({{ variable relation.owner.name }}Store, {{# if relation.isCollection }}[selected{{ className relation.target.name }}Store]{{else}}selected{{ className relation.target.name }}Store{{/ if}});
             {{# if relation.isRelationBehaviourTypeUnsetable }}
             } else {

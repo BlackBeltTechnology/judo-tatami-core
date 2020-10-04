@@ -22,9 +22,11 @@ abstract class _{{ fqClass name }}Store with Store {
   _{{ fqClass name }}Store();
 
   _{{ fqClass name }}Store.clone({{ fqClass name }}Store {{ variable name }}Store) {
-    identifier = {{ variable name }}Store.identifier;
-    signedIdentifier = {{ variable name }}Store.signedIdentifier;
-    referenceIdentifier = {{ variable name }}Store.referenceIdentifier;
+    internal__identifier = {{ variable name }}Store.internal__identifier;
+    internal__signedIdentifier = {{ variable name }}Store.internal__signedIdentifier;
+    internal__referenceIdentifier = {{ variable name }}Store.internal__referenceIdentifier;
+    internal__updatable = {{ variable name }}Store.internal__updatable;
+    internal__deletable = {{ variable name }}Store.internal__deletable;
 
     {{# each attributes }}
     {{ variable name }} = {{ variable ../name }}Store.{{ variable name }};
@@ -46,9 +48,11 @@ abstract class _{{ fqClass name }}Store with Store {
     {{/ each }}
   }
 
-  String identifier;
-  String signedIdentifier;
-  String referenceIdentifier = Uuid().v1();
+  String internal__identifier;
+  String internal__signedIdentifier;
+  String internal__referenceIdentifier = Uuid().v1();
+  bool internal__updatable;
+  bool internal__deletable;
 
   // Attributes
   {{# each attributes }}
@@ -105,28 +109,30 @@ abstract class _{{ fqClass name }}Store with Store {
         runtimeType == other.runtimeType &&
         (
           (
-            signedIdentifier == other.signedIdentifier &&
-            signedIdentifier != null &&
-            other.signedIdentifier != null
+            internal__signedIdentifier == other.internal__signedIdentifier &&
+            internal__signedIdentifier != null &&
+            other.internal__signedIdentifier != null
           ) || (
-            identifier == other.identifier &&
-            identifier != null &&
-            other.identifier != null
+            internal__identifier == other.internal__identifier &&
+            internal__identifier != null &&
+            other.internal__identifier != null
           ) || (
-            referenceIdentifier == other.referenceIdentifier &&
-            referenceIdentifier != null &&
-            other.referenceIdentifier != null
+            internal__referenceIdentifier == other.internal__referenceIdentifier &&
+            internal__referenceIdentifier != null &&
+            other.internal__referenceIdentifier != null
           )
         );
 
   @override
-  int get hashCode => hash3(signedIdentifier, identifier, referenceIdentifier);
+  int get hashCode => hash3(internal__signedIdentifier, internal__identifier, internal__referenceIdentifier);
 
   @action
   void updateWith({{ fqClass name }}Store {{ variable name }}Store) {
-    identifier = {{ variable name }}Store.identifier;
-    signedIdentifier = {{ variable name }}Store.signedIdentifier;
-    referenceIdentifier = {{ variable name }}Store.referenceIdentifier;
+    internal__identifier = {{ variable name }}Store.internal__identifier;
+    internal__signedIdentifier = {{ variable name }}Store.internal__signedIdentifier;
+    internal__referenceIdentifier = {{ variable name }}Store.internal__referenceIdentifier;
+    internal__updatable = {{ variable name }}Store.internal__updatable;
+    internal__deletable = {{ variable name }}Store.internal__deletable;
 
     {{# each attributes }}
       {{ variable name }} = {{ variable ../name }}Store.{{ variable name }};
