@@ -60,7 +60,7 @@ class {{ fqClass application.name }}ApplicationPageState extends State<{{ fqClas
 
         final screen = Row(
             children: <Widget>[
-                if (navigation.isMenuFixed(context)) menu,
+                if (!navigation.isMenuCollapsed(context)) menu,
                 Expanded(
                     child: ExtendedNavigator(
                         key: navigation.navigatorKey,

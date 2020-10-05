@@ -2,12 +2,12 @@ JudoButton(
     col: 1,
 {{# if (isSaveButton this) }}
     onPressed: () => navigation.close({{ fqVariable page.targetClassType.name }}Store),
-    icon: Icon(Icons.save),
-    label: 'Save',
+    icon: Icon(Icons.{{icon.name}}),
+    label: '{{label}}',
 {{/ if}}
 {{# if (isBackButton this) }}
     onPressed: () => navigation.close(),
-    icon: Icon(Icons.arrow_back_ios),
+    icon: Icon(Icons.{{icon.name}}),
 {{/ if }}
 {{# if (isCreateButton this) }}
     onPressed: () async {
@@ -17,16 +17,16 @@ JudoButton(
             {{fqVariable page.name}}PageStore.get{{ fqClass page.relationType.name }}({{# unless page.dataElement.isAccess}}{{ variable page.dataElement.owner.name }}Store{{/ unless}});
         }
     },
-    label: 'Create',
-    icon: Icon(Icons.add),
+    label: '{{label}}',
+    icon: Icon(Icons.{{icon.name}}),
 {{/ if }}
 {{# if (isDeleteButton this) }}
     onPressed: () async {
         await {{ fqVariable page.name }}PageStore.delete{{ fqClass page.targetClassType.name }}({{ fqVariable page.targetClassType.name }}Store);
         navigation.close({{ fqVariable page.targetClassType.name }}Store);
     },
-    label: 'Delete',
-    icon: Icon(Icons.delete),
+    label: '{{label}}',
+    icon: Icon(Icons.{{icon.name}}),
 {{/ if }}
 {{# if (isEditButton this) }}
     onPressed: () async {
@@ -42,8 +42,8 @@ JudoButton(
             }
         }
     },
-    label: 'Edit',
-    icon: Icon(Icons.edit),
+    label: '{{label}}',
+    icon: Icon(Icons.{{icon.name}}),
 {{/if}}
 {{#if (isAddButton this)}}
     onPressed: () async {
@@ -53,8 +53,8 @@ JudoButton(
             {{fqVariable page.name}}PageStore.add{{fqClass page.relationType.name}}({{ variable page.dataElement.owner.name }}Store, selected);
         }
     },
-    label: 'Add existing {{ variable page.relationType.name }}',
-    icon: Icon(Icons.link),
+    label: '{{label}}',
+    icon: Icon(Icons.{{icon.name}}),
 {{/if}}
 {{#if (isSetButton this)}}
     onPressed: () async {
@@ -64,8 +64,8 @@ JudoButton(
             {{fqVariable page.name}}PageStore.set{{fqClass page.relationType.name}}({{ variable page.dataElement.owner.name }}Store, selected);
         }
     },
-    label: 'Set existing {{ variable page.relationType.name }}',
-    icon: Icon(Icons.link),
+    label: '{{label}}',
+    icon: Icon(Icons.{{icon.name}}),
 {{/if}}
     rounded: true,
 ),

@@ -2,11 +2,15 @@ JudoButton(
     col: {{ col }},
 {{# if (isSaveButton this.action) }}
     onPressed: () => navigation.close({{ fqVariable page.targetClassType.name }}Store),
-    icon: Icon(Icons.save),
+    {{#if icon }}
+    icon: Icon(Icons.{{icon.name}}),
+    {{/if}}
 {{/ if }}
 {{# if (isBackButton this.action) }}
     onPressed: () => navigation.close(),
-    icon: Icon(Icons.arrow_back_ios),
+    {{#if icon}}
+    icon: Icon(Icons.{{icon.name}}),
+    {{/if}}
 {{/ if }}
     label: '{{ label }}',
     rounded: true,

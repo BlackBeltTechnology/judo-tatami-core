@@ -23,8 +23,15 @@ class NavigationState {
 
     String currentTitle = "";
 
-    bool isMenuFixed(BuildContext context) {
-        return MediaQuery.of(context).size.width > 900;
+    bool isMenuCollapsed(BuildContext context) {
+        {{#each application.layoutTypes as |layoutType|}}
+        {{#unless layoutType.original}}
+         if (MediaQuery.of(context).size.width >= {{layoutType.minimumResolution}} && MediaQuery.of(context).size.width <={{layoutType.maximumResolution}}) {
+            return {{layoutType.menuCollapsed}};
+         }
+        {{/unless}}
+        {{/each}}
+        return false;
     }
 
     void navigateTo(String route) {
