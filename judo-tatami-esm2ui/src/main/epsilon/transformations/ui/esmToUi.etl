@@ -59,10 +59,12 @@ post {
 		var mobile = application.layoutTypes.selectOne(l | l.name == "mobile");
 		mobile.minimumResolution = 0;
 		mobile.maximumResolution = 599;
+		mobile.menuCollapsed = true;
 
 		var tablet = application.layoutTypes.selectOne(l | l.name == "tablet");
 		tablet.minimumResolution = 600;
 		tablet.maximumResolution = 839;
+		tablet.menuCollapsed = true;
 		
 		var desktop = application.layoutTypes.selectOne(l | l.name == "desktop");
 		desktop.minimumResolution = 840;
