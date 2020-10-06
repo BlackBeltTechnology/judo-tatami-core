@@ -19,6 +19,7 @@ class JudoContainer extends StatelessWidget implements IJudoComponent {
   @override
   Widget build(BuildContext context) {
     return Flexible(
+      fit: FlexFit.loose,
       flex: col,
       child: Container(
         constraints: BoxConstraints(
