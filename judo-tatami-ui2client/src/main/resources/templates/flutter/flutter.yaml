@@ -441,6 +441,19 @@
   templateName: flutter/lib/injector/injector.dart.hbs
 
 # ========================================
+# openapi generator
+# ========================================
+- overwriteExpression: true
+  factoryExpression: "{#application}"
+  pathExpression: >
+    'lib/' +
+    #path(#application.actor.name) +
+    '/rest/' +
+    #path(#application.actor.name) +
+    '.dart'
+  templateName: flutter/lib/rest/openapi_generator_config.dart.hbs
+
+# ========================================
 # utilities
 # ========================================
 - overwriteExpression: false

@@ -1,0 +1,29 @@
+//////////////////////////////////////////////////////////////////////////////
+// G E N E R A T E D    C L A S S
+// ------------------------------
+// Factory expression: {{{ cleanup template.factoryExpression }}}
+// Path expression: {{{ cleanup template.pathExpression }}}
+// Overwrite: {{{ cleanup template.overwriteExpression }}}
+// Template name: {{ template.templateName }}
+// Application: {{ application.name }}
+
+import 'package:openapi_generator_annotations/openapi_generator_annotations.dart';
+
+@Openapi(
+    additionalProperties: AdditionalProperties(pubName: '{{ variable application.name }}', pubAuthor: 'Judo Generator'),
+    inputSpecFile: 'lib/{{ path application.name }}/rest/{{ path application.name }}.yaml',
+    alwaysRun: true,
+    overwriteExistingFiles: true,
+    generatorName: Generator.DART2_API,
+    outputDirectory: 'lib/{{ path application.name }}/rest',
+    reservedWordsMappings: {
+        '__identifier' : 'internal__identifier',
+        '__signedIdentifier' : 'internal__signedIdentifier',
+        '__referenceId' : 'internal__referenceId',
+        '__updateable' : 'internal__updatable',
+        '__deleteable' : 'internal__deletable'
+    },
+    fetchDependencies: false,
+    runSourceGenOnOutput: false
+)
+class {{ className application.name }} extends OpenapiGeneratorConfig {}
