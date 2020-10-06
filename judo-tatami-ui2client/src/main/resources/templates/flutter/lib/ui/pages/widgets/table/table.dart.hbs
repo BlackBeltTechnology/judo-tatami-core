@@ -25,44 +25,60 @@ class {{ fqClass table.pageDefinition.name }}{{ fqClass table.name }}{{ fqClass 
 
     @override
     Function getRow({Function navigateToEditPageAction, Function navigateToViewPageAction, Function navigateToCreatePageAction, Function removeAction, Function deleteAction}) {
-        return ({{variable table.dataElement.name}}) => DataRow(
+        return (target{{ className table.dataElement.target.name }}) => DataRow(
             cells: [
                 {{# each columns as |column|}}
                 DataCell(
                     {{#if column}}
-                    {{> (getWidgetTemplate column) column=column dataName=(variable table.dataElement.name)}}
+                    {{> (getWidgetTemplate column) column=column dataName=(className table.dataElement.target.name)}}
                     {{/if}}
                 ),
                 {{/each}}
                 {{#each table.rowActions as |action|}}
                 {{#if (isRemoveButton action)}}
-                DataCell(
-                    Icon(Icons.{{action.icon.name}}),
-                    onTap: () => removeAction({{variable table.dataElement.name}}),
-                ),
+                target{{ className table.dataElement.target.name }}.internal__updatable
+                ? DataCell(
+                        Icon(Icons.{{action.icon.name}}),
+                        onTap: () => removeAction(target{{ className table.dataElement.target.name }}),
+                  )
+                : DataCell(
+                    Text(''),
+                  ),
                 {{/if}}
                 {{#if (isDeleteButton action)}}
-                DataCell(
+                target{{ className table.dataElement.target.name }}.internal__deletable && deleteAction != null // function null if the owner is not updatable
+                ? DataCell(
                     Icon(Icons.{{action.icon.name}}),
-                    onTap: () => deleteAction({{variable table.dataElement.name}}),
-                ),
+                    onTap: () => deleteAction(target{{ className table.dataElement.target.name }}),
+                  )
+                : DataCell(
+                    Text(''),
+                  ),
                 {{/if}}
                 {{#if (isCreateButton action)}}
-                DataCell(
+                target{{ className table.dataElement.target.name }}.internal__updatable
+                ? DataCell(
                     Icon(Icons.{{action.icon.name}}),
-                    onTap: () => navigateToCreatePageAction({{variable table.dataElement.name}}),
-                ),
+                    onTap: () => navigateToCreatePageAction(target{{ className table.dataElement.target.name }}),
+                  )
+                : DataCell(
+                    Text(''),
+                  ),
                 {{/if}}
                 {{#if (isEditButton action)}}
-                DataCell(
+                target{{ className table.dataElement.target.name }}.internal__updatable
+                ? DataCell(
                     Icon(Icons.{{action.icon.name}}),
-                    onTap: () => navigateToEditPageAction({{variable table.dataElement.name}}),
-                ),
+                    onTap: () => navigateToEditPageAction(target{{ className table.dataElement.target.name }}),
+                  )
+                : DataCell(
+                    Text(''),
+                  ),
                 {{/if}}
                 {{#if (isViewButton action)}}
                 DataCell(
                     Icon(Icons.{{action.icon.name}}),
-                    onTap: () => navigateToViewPageAction({{variable table.dataElement.name}}),
+                    onTap: () => navigateToViewPageAction(target{{ className table.dataElement.target.name }}),
                 ),
                 {{/if}}
                 {{/each}}

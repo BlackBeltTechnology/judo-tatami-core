@@ -5,8 +5,8 @@ Observer(
         col: {{ col }},
         icon: Icon(Icons.{{ this.leadingIcon.name }}),
         label: '{{ label }}',
-        initialValue: this.{{ variable page.dataElement.name }}Store.{{ attributeType.name }},
-        readonly: true,
+        initialValue: target{{ className page.dataElement.target.name }}Store.{{ attributeType.name }},
+        readOnly: true,
     )
 ),
 {{/if}}
@@ -15,7 +15,7 @@ JudoInputText(
     col: {{ col }},
     icon: Icon(Icons.{{ this.leadingIcon.name }}),
     label: '{{ label }}',
-    onChanged: (value) => this.{{ variable page.dataElement.name }}Store.set{{ className attributeType.name }}(value.toString()),
+    onChanged: (value) => target{{ className page.dataElement.target.name }}Store.set{{ className attributeType.name }}(value.toString()),
 ),
 {{/if}}
 {{#if page.isPageTypeUpdate}}
@@ -23,7 +23,7 @@ JudoInputText(
     col: {{ col }},
     icon: Icon(Icons.{{ this.leadingIcon.name }}),
     label: '{{ label }}',
-    initialValue: this.{{ variable page.dataElement.name }}Store.{{ attributeType.name }},
-    onChanged: (value) => this.{{ variable page.dataElement.name }}Store.set{{ className attributeType.name }}(value.toString()),
+    initialValue: target{{ className page.dataElement.target.name }}Store.{{ attributeType.name }},
+    onChanged: (value) => target{{ className page.dataElement.target.name }}Store.set{{ className attributeType.name }}(value.toString()),
 ),
 {{/if}}

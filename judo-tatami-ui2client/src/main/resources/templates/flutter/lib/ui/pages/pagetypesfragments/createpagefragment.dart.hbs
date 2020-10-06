@@ -1,4 +1,4 @@
-    const {{ fqClass page.name }}({ Key key }) : super(key: key);
+    const {{fqClass page.name}}Page({ Key key }) : super(key: key);
 
     @override
     _{{ fqClass page.name }}PageState createState() => _{{ fqClass page.name }}PageState();
@@ -6,4 +6,6 @@
 
 class _{{ fqClass page.name }}PageState extends State<{{ fqClass page.name }}Page> {
 
-    final {{ fqClass page.targetClassType.name }}Store {{ fqVariable page.targetClassType.name }}Store = {{ fqClass page.targetClassType.name }}Store();
+    final {{ fqClass page.dataElement.target.name }}Store target{{ className page.dataElement.target.name }}Store = {{ fqClass page.dataElement.target.name }}Store();
+
+    final {{fqClass page.name}}PageStore {{fqVariable page.name}}PageStore = {{fqClass page.name}}PageStore();

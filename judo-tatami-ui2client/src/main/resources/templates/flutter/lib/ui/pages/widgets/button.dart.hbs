@@ -1,7 +1,7 @@
 JudoButton(
     col: {{ col }},
 {{# if (isSaveButton this.action) }}
-    onPressed: () => navigation.close({{ fqVariable page.targetClassType.name }}Store),
+    onPressed: () => navigation.close(target{{ className page.targetClassType.name }}Store),
     {{#if icon }}
     icon: Icon(Icons.{{icon.name}}),
     {{/if}}
