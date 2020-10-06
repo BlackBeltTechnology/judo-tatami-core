@@ -1,15 +1,15 @@
 JudoButton(
     col: 1,
-{{# if (isSaveButton this) }}
+{{# if this.isSaveAction }}
     onPressed: () => navigation.close(target{{ className page.dataElement.target.name }}Store),
     icon: Icon(Icons.{{icon.name}}),
     label: '{{label}}',
 {{/ if}}
-{{# if (isBackButton this) }}
+{{# if this.isBackAction }}
     onPressed: () => navigation.close(),
     icon: Icon(Icons.{{icon.name}}),
 {{/ if }}
-{{# if (isCreateButton this) }}
+{{# if this.isCreateAction }}
     onPressed:{{# unless page.dataElement.isAccess}}{{# unless page.dataElement.isRelationKindStatic}} owner{{ className page.dataElement.owner.name }}Store.internal__updatable ?{{/ unless}}{{/ unless}} () async {
         var created = await navigation.open(Routes.{{ fqVariable instanceAction.target.name }}Page);
         if (created != null) {
@@ -20,7 +20,7 @@ JudoButton(
     label: '{{label}}',
     icon: Icon(Icons.{{icon.name}}),
 {{/ if }}
-{{# if (isDeleteButton this) }}
+{{# if this.isDeleteAction }}
     onPressed:{{# unless page.dataElement.isAccess}}{{# unless page.dataElement.isRelationKindStatic}} owner{{ className page.dataElement.owner.name }}Store.internal__updatable &&{{/ unless}}{{/ unless}} target{{ className page.dataElement.target.name }}Store.internal__deletable ? () async {
         await {{ fqVariable page.name }}PageStore.delete{{ className page.relationType.target.name }}(target{{ className page.dataElement.target.name }}Store);
         navigation.close(target{{ className page.dataElement.target.name }}Store);
@@ -45,7 +45,7 @@ JudoButton(
     label: '{{label}}',
     icon: Icon(Icons.{{icon.name}}),
 {{/if}}
-{{#if (isAddButton this)}}
+{{#if this.isAddAction}}
     onPressed:{{# unless page.dataElement.isAccess}}{{# unless page.dataElement.isRelationKindStatic}} owner{{ className page.dataElement.owner.name }}Store.internal__updatable ?{{/ unless}}{{/ unless}} () async {
         var selected =
             {{> templates/flutter/lib/ui/pages/widgets/dialog.dart.hbs}}
@@ -56,7 +56,7 @@ JudoButton(
     label: '{{label}}',
     icon: Icon(Icons.{{icon.name}}),
 {{/if}}
-{{#if (isSetButton this)}}
+{{#if this.isSetAction}}
     onPressed:{{# unless page.dataElement.isAccess}}{{# unless page.dataElement.isRelationKindStatic}} owner{{ className page.dataElement.owner.name }}Store.internal__updatable ?{{/ unless}}{{/ unless}} () async {
         var selected =
             {{> templates/flutter/lib/ui/pages/widgets/dialog.dart.hbs}}

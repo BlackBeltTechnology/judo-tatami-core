@@ -1,12 +1,21 @@
 JudoButton(
     col: {{ col }},
-{{# if (isSaveButton this.action) }}
-    onPressed: () => navigation.close(target{{ className page.targetClassType.name }}Store),
+{{# if this.action.isNavigationToPageAction }}
+    onPressed: () async {
+        await navigation.open(Routes.{{ fqVariable this.action.target.name }}Page,
+        arguments: {{ fqClass this.action.target.name }}PageArguments(target{{ className page.dataElement.target.name }}Store: target{{ className page.dataElement.target.name }}Store));
+    },
     {{#if icon }}
     icon: Icon(Icons.{{icon.name}}),
     {{/if}}
 {{/ if }}
-{{# if (isBackButton this.action) }}
+{{# if this.action.isSaveAction }}
+    onPressed: () => navigation.close(target{{ className page.dataElement.target.name }}Store),
+    {{#if icon }}
+    icon: Icon(Icons.{{icon.name}}),
+    {{/if}}
+{{/ if }}
+{{# if this.action.isBackAction }}
     onPressed: () => navigation.close(),
     {{#if icon}}
     icon: Icon(Icons.{{icon.name}}),

@@ -1,6 +1,8 @@
 Flexible(
     fit: FlexFit.loose,
+    {{# if isDirectionHorizontal}}
     flex: {{col}},
+    {{/ if }}
     child:
         {{# if isDirectionHorizontal }}
         Row(
