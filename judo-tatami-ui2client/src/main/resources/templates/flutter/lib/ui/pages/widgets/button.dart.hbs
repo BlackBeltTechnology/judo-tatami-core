@@ -3,7 +3,7 @@ JudoButton(
 {{# if this.action.isNavigationToPageAction }}
     onPressed: () async {
         await navigation.open(Routes.{{ fqVariable this.action.target.name }}Page,
-        arguments: {{ fqClass this.action.target.name }}PageArguments(target{{ className page.dataElement.target.name }}Store: target{{ className page.dataElement.target.name }}Store));
+        arguments: {{ fqClass this.action.target.name }}PageArguments(owner{{ className page.dataElement.target.name }}Store: target{{ className page.dataElement.target.name }}Store));
     },
     {{#if icon }}
     icon: Icon(Icons.{{icon.name}}),

@@ -69,12 +69,12 @@ abstract class _{{ fqClass page.name }}PageStore with Store {
             return {{ relation.name }}StoreList;
             {{else}}
             {{# if relation.isCollection }}
-            {{ relation.name }}StoreFuture = ObservableFuture(_{{ fqVariable application.actor.name }}Repository.{{ fqVariable relation.owner.name }}{{ fqClass relation.name }}List(categoryInfoStore));
+            {{ relation.name }}StoreFuture = ObservableFuture(_{{ fqVariable application.actor.name }}Repository.{{ fqVariable relation.owner.name }}{{ fqClass relation.name }}List(owner{{ className relation.owner.name }}Store));
             owner{{ className relation.owner.name }}Store.{{ relation.name }}.clear();
             owner{{ className relation.owner.name }}Store.{{ relation.name }}.addAll(await {{ relation.name }}StoreFuture);
             return owner{{ className relation.owner.name }}Store.{{ relation.name }};
             {{else}}
-            {{ relation.name }}StoreFuture = ObservableFuture(_{{ fqVariable application.actor.name }}Repository.{{ fqVariable relation.owner.name }}{{ fqClass relation.name }}Get(productInfoStore));
+            {{ relation.name }}StoreFuture = ObservableFuture(_{{ fqVariable application.actor.name }}Repository.{{ fqVariable relation.owner.name }}{{ fqClass relation.name }}Get(owner{{ className relation.owner.name }}Store));
             owner{{ className relation.owner.name }}Store.{{ relation.name }} = await {{ relation.name }}StoreFuture;
             return owner{{ className relation.owner.name }}Store.{{ relation.name }};
             {{/if}}
