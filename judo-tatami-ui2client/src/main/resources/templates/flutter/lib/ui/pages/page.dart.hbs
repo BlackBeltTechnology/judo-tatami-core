@@ -25,6 +25,9 @@ part of {{ variable application.name }}.ui.pages;
 class {{ fqClass page.name }}Page extends StatefulWidget {
     static const String title = '{{ page.label }}';
 
+{{# if page.isPageTypeDashboard }}
+{{> templates/flutter/lib/ui/pages/pagetypesfragments/dashboardpagefragment.dart.hbs }}
+{{/ if }}
 {{# if page.isPageTypeTable }}
 {{> templates/flutter/lib/ui/pages/pagetypesfragments/tablepagefragment.dart.hbs }}
 {{/ if }}
