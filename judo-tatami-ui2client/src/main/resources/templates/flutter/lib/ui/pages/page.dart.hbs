@@ -79,8 +79,9 @@ class {{ fqClass page.name }}Page extends StatefulWidget {
 
                         );
                     }
-                    {{#if (isDesktopLayout pageContainer.layoutType)}}
-                    return get{{ fqClass page.name }}Page{{fqClass pageContainer.layoutType.name}}Body(context
+                    {{/unless}}
+                    {{/each}}
+                    return get{{ fqClass page.name }}Page{{fqClass application.defaultLayoutType.name}}Body(context
 
                         {{~# if page.isPageTypeTable ~}}
                         {{~# unless page.dataElement.isAccess ~}}
@@ -106,9 +107,6 @@ class {{ fqClass page.name }}Page extends StatefulWidget {
                         {{~/ if ~}}
 
                     );
-                    {{/if}}
-                    {{/unless}}
-                    {{/each}}
                 }),
         );
     }

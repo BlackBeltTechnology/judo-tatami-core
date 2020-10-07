@@ -35,7 +35,7 @@ class {{ fqClass table.pageDefinition.name }}{{ fqClass table.name }}{{ fqClass 
                 ),
                 {{/each}}
                 {{#each table.rowActions as |action|}}
-                {{#if (isRemoveButton action)}}
+                {{#if action.isRemoveAction}}
                 target{{ className table.dataElement.target.name }}.internal__updatable
                 ? DataCell(
                         Icon(Icons.{{action.icon.name}}),
@@ -45,7 +45,7 @@ class {{ fqClass table.pageDefinition.name }}{{ fqClass table.name }}{{ fqClass 
                     Text(''),
                   ),
                 {{/if}}
-                {{#if (isDeleteButton action)}}
+                {{#if action.isDeleteAction}}
                 target{{ className table.dataElement.target.name }}.internal__deletable && deleteAction != null // function null if the owner is not updatable
                 ? DataCell(
                     Icon(Icons.{{action.icon.name}}),
@@ -55,7 +55,7 @@ class {{ fqClass table.pageDefinition.name }}{{ fqClass table.name }}{{ fqClass 
                     Text(''),
                   ),
                 {{/if}}
-                {{#if (isCreateButton action)}}
+                {{#if action.isCreateAction}}
                 target{{ className table.dataElement.target.name }}.internal__updatable
                 ? DataCell(
                     Icon(Icons.{{action.icon.name}}),
@@ -65,7 +65,7 @@ class {{ fqClass table.pageDefinition.name }}{{ fqClass table.name }}{{ fqClass 
                     Text(''),
                   ),
                 {{/if}}
-                {{#if (isEditButton action)}}
+                {{#if action.isEditAction}}
                 target{{ className table.dataElement.target.name }}.internal__updatable
                 ? DataCell(
                     Icon(Icons.{{action.icon.name}}),
@@ -75,7 +75,7 @@ class {{ fqClass table.pageDefinition.name }}{{ fqClass table.name }}{{ fqClass 
                     Text(''),
                   ),
                 {{/if}}
-                {{#if (isViewButton action)}}
+                {{#if action.isViewAction}}
                 DataCell(
                     Icon(Icons.{{action.icon.name}}),
                     onTap: () => navigateToViewPageAction(target{{ className table.dataElement.target.name }}),

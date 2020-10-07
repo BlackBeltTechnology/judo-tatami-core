@@ -33,70 +33,19 @@ public class FlutterHelper {
         context.registerFunction("mainAxisAlignment", FlutterHelper.class.getDeclaredMethod("mainAxisAlignment", new Class[]{Flex.class}));
         context.registerFunction("crossAxisAlignment", FlutterHelper.class.getDeclaredMethod("crossAxisAlignment", new Class[]{Flex.class}));
         context.registerFunction("mainAxisSize", FlutterHelper.class.getDeclaredMethod("mainAxisSize", new Class[]{Flex.class}));
-        context.registerFunction("isSaveButton", FlutterHelper.class.getDeclaredMethod("isSaveButton", new Class[]{Action.class}));
-        context.registerFunction("isBackButton", FlutterHelper.class.getDeclaredMethod("isBackButton", new Class[]{Action.class}));
-        context.registerFunction("isCreateButton", FlutterHelper.class.getDeclaredMethod("isCreateButton", new Class[]{Action.class}));
-        context.registerFunction("isDeleteButton", FlutterHelper.class.getDeclaredMethod("isDeleteButton", new Class[]{Action.class}));
-        context.registerFunction("isEditButton", FlutterHelper.class.getDeclaredMethod("isEditButton", new Class[]{Action.class}));
-        context.registerFunction("isRemoveButton", FlutterHelper.class.getDeclaredMethod("isRemoveButton", new Class[]{Action.class}));
-        context.registerFunction("isViewButton", FlutterHelper.class.getDeclaredMethod("isViewButton", new Class[]{Action.class}));
-        context.registerFunction("isAddButton", FlutterHelper.class.getDeclaredMethod("isAddButton", new Class[]{Action.class}));
-        context.registerFunction("isSetButton", FlutterHelper.class.getDeclaredMethod("isAddButton", new Class[]{Action.class}));
         context.registerFunction("dartType", FlutterHelper.class.getDeclaredMethod("dartType", new Class[]{DataType.class}));
         context.registerFunction("isInstanceAction", FlutterHelper.class.getDeclaredMethod("isInstanceAction", new Class[]{PageDefinition.class}));
-        context.registerFunction("isDesktopLayout", FlutterHelper.class.getDeclaredMethod("isDesktopLayout", new Class[]{LayoutType.class}));
     }
 
     public static void registerHandlebars(Handlebars handlebars) {
         handlebars.registerHelpers(FlutterHelper.class);
     }
 
-//    TODO find a better way for a default layout if not set
-    public static boolean isDesktopLayout(LayoutType layoutType) {
-        return layoutType.getName().equalsIgnoreCase("Desktop");
-    }
-
     public static boolean isInstanceAction (PageDefinition pageDefinition) {
         return pageDefinition.getInstanceActions()!= null && !pageDefinition.getInstanceActions().isEmpty();
     }
 
-    public static boolean isSaveButton(Action action) {
-        return action != null && SaveAction.class.equals(action.eClass().getInstanceClass());
-    }
-
-    public static boolean isBackButton(Action action) {
-        return action != null && BackAction.class.equals(action.eClass().getInstanceClass());
-    }
-
-    public static boolean isEditButton(Action action) {
-        return action != null && EditAction.class.equals(action.eClass().getInstanceClass());
-    }
-
-    public static boolean isDeleteButton(Action action) {
-        return action != null && DeleteAction.class.equals(action.eClass().getInstanceClass());
-    }
-
-    public static boolean isCreateButton(Action action) {
-        return action != null && CreateAction.class.equals(action.eClass().getInstanceClass());
-    }
-
-    public static boolean isRemoveButton(Action action) {
-        return action != null && RemoveAction.class.equals(action.eClass().getInstanceClass());
-    }
-
-    public static boolean isViewButton(Action action) {
-        return action != null && ViewAction.class.equals(action.eClass().getInstanceClass());
-    }
-
-    public static boolean isAddButton(Action action) {
-        return action != null && AddAction.class.equals(action.eClass().getInstanceClass());
-    }
-
-    public static boolean isSetButton(Action action) {
-        return action != null && SetAction.class.equals(action.eClass().getInstanceClass());
-    }
-
-    public static String mainAxisSize(Flex flex) {
+       public static String mainAxisSize(Flex flex) {
         return flex.getMainAxisSize().getLiteral().toLowerCase();
     }
 

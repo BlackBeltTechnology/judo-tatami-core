@@ -47,7 +47,7 @@ Widget get{{ fqClass page.name }}Page{{fqClass container.layoutType.name}}Body(B
                 child: Row(
                     children: [
                     {{# each page.instanceActions as |instanceAction| }}
-                        {{> templates/flutter/lib/ui/pages/widgets/instanceAction.dart.hbs }}
+                        {{> templates/flutter/lib/ui/pages/widgets/instanceAction.dart.hbs action=instanceAction}}
                     {{/ each }}
                     ],
                 ),
