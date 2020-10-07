@@ -69,6 +69,7 @@ post {
 		var desktop = application.layoutTypes.selectOne(l | l.name == "desktop");
 		desktop.minimumResolution = 840;
 		desktop.maximumResolution = 32767;
+		desktop.`default` = true;
 
 	}
 }
