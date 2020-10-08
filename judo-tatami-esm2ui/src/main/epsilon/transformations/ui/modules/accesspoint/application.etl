@@ -34,11 +34,16 @@ rule Application
             }
 
             if (relation.target.form.isDefined()) {
-                relation.mapCreatePage(t, relation.target);
-                relation.mapUpdatePage(t, relation.target);
+                if (relation.isCreateAllowed()) {
+                	relation.mapCreatePage(t, relation.target);
+                }
+                if (relation.isUpdateAllowed()) {
+	                relation.mapUpdatePage(t, relation.target);
+                }
             }
 
-            if (relation.target.table.isDefined()) {
+            if (relation.target.table.isDefined() and ((not relation.isTypeOf(ESM!esm::accesspoint::Access) and relation.relationKind == ESM!esm::structure::RelationKind#ASSOCIATION) 
+            	or relation.isTypeOf(ESM!esm::accesspoint::Access))) {
                 relation.mapTablePage(t, relation.target);
             }
         }
