@@ -39,7 +39,6 @@ import static hu.blackbelt.judo.meta.esm.accesspoint.util.builder.AccesspointBui
 import static hu.blackbelt.judo.meta.esm.namespace.util.builder.NamespaceBuilders.newModelBuilder;
 import static hu.blackbelt.judo.meta.esm.operation.util.builder.OperationBuilders.newOperationBuilder;
 import static hu.blackbelt.judo.meta.esm.operation.util.builder.OperationBuilders.newParameterBuilder;
-import static hu.blackbelt.judo.meta.esm.ui.util.builder.UiBuilders.*;
 import static hu.blackbelt.judo.meta.esm.runtime.EsmModel.buildEsmModel;
 import static hu.blackbelt.judo.meta.esm.structure.util.builder.StructureBuilders.*;
 import static hu.blackbelt.judo.meta.esm.type.util.builder.TypeBuilders.newNumericTypeBuilder;
@@ -193,16 +192,10 @@ public class EsmOperation2PsmOperationTest {
 
         final TransferObjectType inputParameterType = newTransferObjectTypeBuilder()
                 .withName(INPUT_PARAMETER_TYPE_NAME)
-                .withTable(newTransferObjectTableBuilder().withName("Table").build())
-				.withForm(newTransferObjectFormBuilder().withName("Form").build())
-				.withView(newTransferObjectViewBuilder().withName("View").build())
                 .build();
 
         final TransferObjectType outputParameterType = newTransferObjectTypeBuilder()
                 .withName(OUTPUT_PARAMETER_TYPE_NAME)
-                .withTable(newTransferObjectTableBuilder().withName("Table").build())
-				.withForm(newTransferObjectFormBuilder().withName("Form").build())
-				.withView(newTransferObjectViewBuilder().withName("View").build())
                 .build();
 
         final TransferObjectType fault1Type = newTransferObjectTypeBuilder()
