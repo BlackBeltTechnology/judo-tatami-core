@@ -44,9 +44,6 @@ class {{ fqClass page.name }}Page extends StatefulWidget {
 {{# if page.isPageTypeUpdate }}
 {{> templates/flutter/lib/ui/pages/pagetypesfragments/editpagefragment.dart.hbs }}
 {{/ if }}
-{{# if page.isPageTypeDashboard }}
-{{> templates/flutter/lib/ui/pages/pagetypesfragments/dashboardpagefragment.dart.hbs }}
-{{/ if }}
 
     @override
     Widget build(BuildContext context) {
