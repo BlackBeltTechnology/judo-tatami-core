@@ -32,7 +32,11 @@ Widget get{{ fqClass page.name }}Page{{fqClass container.layoutType.name}}Body(B
         {{~/ if ~}}
 
         {{~# if page.isPageTypeCreate ~}}
-        , {{ fqClass page.dataElement.target.name }}Store target{{ className page.dataElement.target.name }}Store, {{fqClass page.name}}PageStore {{fqVariable page.name}}PageStore
+        , {{ fqClass page.dataElement.target.name }}Store target{{ className page.dataElement.target.name }}Store
+        {{~# unless page.dataElement.isAccess ~}}
+        , {{ fqClass page.dataElement.owner.name }}Store owner{{ className page.dataElement.owner.name }}Store
+        {{~/ unless ~}}
+        , {{fqClass page.name}}PageStore {{fqVariable page.name}}PageStore
         {{~/ if ~}}
 
     ) {

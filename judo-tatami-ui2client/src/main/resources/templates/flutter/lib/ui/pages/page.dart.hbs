@@ -21,6 +21,10 @@ part of {{ variable application.name }}.ui.pages;
 {{# if page.isPageTypeUpdate }}
 {{> templates/flutter/lib/ui/pages/pagetypesfragments/editpagestore.dart.hbs }}
 {{/ if }}
+{{# if page.isPageTypeDashboard }}
+{{> templates/flutter/lib/ui/pages/pagetypesfragments/dashboardpagestore.dart.hbs }}
+{{/ if }}
+
 
 class {{ fqClass page.name }}Page extends StatefulWidget {
     static const String title = '{{ page.label }}';
@@ -39,6 +43,9 @@ class {{ fqClass page.name }}Page extends StatefulWidget {
 {{/ if }}
 {{# if page.isPageTypeUpdate }}
 {{> templates/flutter/lib/ui/pages/pagetypesfragments/editpagefragment.dart.hbs }}
+{{/ if }}
+{{# if page.isPageTypeDashboard }}
+{{> templates/flutter/lib/ui/pages/pagetypesfragments/dashboardpagefragment.dart.hbs }}
 {{/ if }}
 
     @override
@@ -74,7 +81,11 @@ class {{ fqClass page.name }}Page extends StatefulWidget {
                             {{~/ if ~}}
 
                             {{~# if page.isPageTypeCreate ~}}
-                            , target{{ className page.dataElement.target.name }}Store, {{fqVariable page.name}}PageStore
+                            , target{{ className page.dataElement.target.name }}Store
+                            {{~# unless page.dataElement.isAccess ~}}
+                            , owner{{ className page.dataElement.owner.name }}Store
+                            {{~/ unless ~}}
+                            , {{fqVariable page.name}}PageStore
                             {{~/ if ~}}
 
                         );
@@ -103,7 +114,11 @@ class {{ fqClass page.name }}Page extends StatefulWidget {
                         {{~/ if ~}}
 
                         {{~# if page.isPageTypeCreate ~}}
-                        , target{{ className page.dataElement.target.name }}Store, {{fqVariable page.name}}PageStore
+                        , target{{ className page.dataElement.target.name }}Store
+                        {{~# unless page.dataElement.isAccess ~}}
+                        , owner{{ className page.dataElement.owner.name }}Store
+                        {{~/ unless ~}}
+                        , {{fqVariable page.name}}PageStore
                         {{~/ if ~}}
 
                     );

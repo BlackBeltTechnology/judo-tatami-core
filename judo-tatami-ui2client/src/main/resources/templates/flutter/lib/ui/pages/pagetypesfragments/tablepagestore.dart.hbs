@@ -22,8 +22,9 @@ abstract class _{{ fqClass page.name }}PageStore with Store {
     Future<{{ fqClass relation.target.name }}Store> create{{ fqClass relation.name }}({{# unless page.dataElement.isAccess}}{{ fqClass relation.owner.name }}Store owner{{ className relation.owner.name }}Store, {{/unless}}{{ fqClass relation.target.name }}Store target{{ className relation.target.name }}Store) async {
         try {
             errorMessage = null;
-            {{ relation.name }}StoreFuture = ObservableFuture(_{{ fqVariable application.actor.name }}Repository.{{ fqVariable relation.owner.name }}{{ fqClass relation.name }}Create({{# unless page.dataElement.isAccess}}owner{{ className relation.owner.name }}Store, {{/unless}}target{{ className relation.target.name }}Store));
-            return await {{ relation.name }}StoreFuture;
+            var created = await _{{ fqVariable application.actor.name }}Repository.{{ fqVariable relation.owner.name }}{{ fqClass relation.name }}Create({{# unless page.dataElement.isAccess}}owner{{ className relation.owner.name }}Store, {{/unless}}target{{ className relation.target.name }}Store);
+            get{{ fqClass relation.name }}({{# unless page.dataElement.isAccess}}owner{{ className relation.owner.name }}Store{{/unless}});
+            return created;
         } on ApiException {
             errorMessage = "Could not create {{ relation.name }}";
         }
@@ -111,7 +112,7 @@ abstract class _{{ fqClass page.name }}PageStore with Store {
                 await _{{ fqVariable application.actor.name }}Repository.{{ fqVariable relation.owner.name }}Unset{{ fqClass relation.name }}(owner{{ className relation.owner.name }}Store);
             {{/ if}}
             }
-            owner{{ className relation.owner.name }}Store.{{ relation.name }} = {{# if relation.isCollection }}[selected{{ className relation.target.name }}Store].asObservable(){{else}}selected{{ className relation.target.name }}Store{{/ if}};
+            get{{ fqClass relation.name }}({{# unless page.dataElement.isAccess}}owner{{ className relation.owner.name }}Store{{/unless}});
         } on ApiException {
             errorMessage = "Could not set {{ relation.name }}";
         }

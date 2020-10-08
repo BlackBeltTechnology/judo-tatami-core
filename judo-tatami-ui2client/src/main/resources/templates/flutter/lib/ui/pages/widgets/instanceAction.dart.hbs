@@ -1,17 +1,28 @@
 JudoButton(
     col: {{col}},
 {{# if action.isSaveAction }}
-    onPressed: () => navigation.close(target{{ className page.dataElement.target.name }}Store),
+    onPressed: () async {
+        var res = await {{ fqVariable page.name }}PageStore.
+        {{~# if page.isPageTypeUpdate ~}}
+            validate{{ className page.relationType.target.name }}(target{{ className page.relationType.target.name }}Store);
+        {{/ if }}
+        {{~# if page.isPageTypeCreate ~}}
+            validate{{ fqClass page.relationType.name }}({{# unless page.dataElement.isAccess}}owner{{ className page.relationType.owner.name }}Store, {{/unless}}target{{ className page.relationType.target.name }}Store);
+        {{/ if }}
+        if (res != null) {
+            navigation.close(target{{ className page.dataElement.target.name }}Store);
+        }
+    },
 {{/ if}}
 {{# if action.isBackAction }}
     onPressed: () => navigation.close(),
 {{/ if }}
 {{# if action.isCreateAction }}
     onPressed:{{# unless page.dataElement.isAccess}}{{# unless page.dataElement.isRelationKindStatic}} owner{{ className page.dataElement.owner.name }}Store.internal__updatable ?{{/ unless}}{{/ unless}} () async {
-        var created = await navigation.open(Routes.{{ fqVariable instanceAction.target.name }}Page);
+        var created = await navigation.open(Routes.{{ fqVariable instanceAction.target.name }}Page{{# unless page.dataElement.isAccess}},
+            arguments: {{ fqClass instanceAction.target.name }}PageArguments(owner{{ className page.dataElement.owner.name }}Store: owner{{ className page.dataElement.owner.name }}Store){{~/ unless}});
         if (created != null) {
-            await {{ fqVariable page.name }}PageStore.create{{ fqClass page.relationType.name }}({{# unless page.dataElement.isAccess}}owner{{ className page.dataElement.owner.name }}Store ,{{/ unless}}created);
-            {{fqVariable page.name}}PageStore.get{{ fqClass page.relationType.name }}({{# unless page.dataElement.isAccess}}owner{{ className page.dataElement.owner.name }}Store{{/ unless}});
+            {{ fqVariable page.name }}PageStore.create{{ fqClass page.relationType.name }}({{# unless page.dataElement.isAccess}}owner{{ className page.dataElement.owner.name }}Store ,{{/ unless}}created);
         }
     }{{# unless page.dataElement.isAccess}}{{# unless page.dataElement.isRelationKindStatic}} : null{{/ unless}}{{/ unless}},
 {{/ if }}
@@ -31,7 +42,7 @@ JudoButton(
             target{{ className page.dataElement.target.name }}Store.updateWith(cloned);
             var updated = await {{ fqVariable page.name }}PageStore.update{{ className page.relationType.target.name }}(target{{ className page.dataElement.target.name }}Store);
             if (updated != null) {
-            target{{ className page.dataElement.target.name }}Store.updateWith(updated);
+                target{{ className page.dataElement.target.name }}Store.updateWith(updated);
             }
         }
     }{{# unless page.dataElement.isAccess}}{{# unless page.dataElement.isRelationKindStatic}} : null{{/ unless}}{{/ unless}},
