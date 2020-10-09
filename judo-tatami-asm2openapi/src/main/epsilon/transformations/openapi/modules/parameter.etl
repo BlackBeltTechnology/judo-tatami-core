@@ -75,11 +75,11 @@ rule CreateParameterDefinitionSchemaReference
 		    if (transferObjectTypeExposedByAnnotation.isDefined()) {
 		        var behaviour = asmUtils.getBehaviour(s.eContainer.eOperation);
 
-		        if (behaviour.present and (behaviour.get().toString() == "CREATE_INSTANCE" or behaviour.get().toString() == "VALIDATE_CREATE")) {
+		        if (behaviour.present and (behaviour.get().toString() == "CREATE_INSTANCE" or behaviour.get().toString() == "VALIDATE_CREATE" or behaviour.get().toString() == "UPDATE_INSTANCE" or behaviour.get().toString() == "VALIDATE_UPDATE")) {
                     if (s.eContainer.many) {
-                        t.ref = transferObjectTypeExposedByAnnotation.equivalent("CreateTransferObjectArraySchemaDeclarationExtended").getReference();
+                        t.ref = transferObjectTypeExposedByAnnotation.equivalent("CreateTransferObjectArraySchemaDeclarationForCreateAndUpdate").getReference();
                     } else {
-                        t.ref = transferObjectTypeExposedByAnnotation.equivalent("CreateTransferObjectSingleSchemaDeclarationExtended").getReference();
+                        t.ref = transferObjectTypeExposedByAnnotation.equivalent("CreateTransferObjectSingleSchemaDeclarationForCreateAndUpdate").getReference();
                     }
                 } else if (behaviour.present and behaviour.get().toString() == "DELETE_INSTANCE") {
                     if (s.eContainer.many) {

@@ -113,6 +113,7 @@ public class Psm2AsmServiceTest {
 	public static final String INITIALIZER_SOURCE = AsmUtils.getAnnotationUri("initializer");
 	public static final String BEHAVIOUR_SOURCE = AsmUtils.getAnnotationUri("behaviour");
 	public static final String TRANSFER_OBJECT_TYPE = AsmUtils.getAnnotationUri("transferObjectType");
+	public static final String TRANSIENT_SOURCE = AsmUtils.getAnnotationUri("transient");
 
 	Log slf4jlog;
 	PsmModel psmModel;
@@ -398,6 +399,10 @@ public class Psm2AsmServiceTest {
 		assertTrue(asmStringTransferAttrAnnotation.getDetails().containsKey("maxLength"));
 		assertTrue(asmStringTransferAttrAnnotation.getDetails().get("maxLength")
 				.equals(String.valueOf(strType.getMaxLength())));
+		
+		final EAnnotation asmStringTransferAttrTransient = asmStringTransferAttr.get()
+				.getEAnnotation(TRANSIENT_SOURCE);
+		assertThat(asmStringTransferAttrTransient, IsNull.notNullValue());
 
 		final EAnnotation asmCustomTransferAttrAnnotation = asmCustomTransferAttr.get()
 				.getEAnnotation(CONSTRAINTS_SOURCE);
@@ -411,6 +416,9 @@ public class Psm2AsmServiceTest {
 		assertThat(asmBoolTransferAttrAttrAnnotation.getDetails().size(), IsEqual.equalTo(1));
 		assertTrue(asmBoolTransferAttrAttrAnnotation.getDetails().containsKey("value"));
 		assertTrue(asmBoolTransferAttrAttrAnnotation.getDetails().get("value").equals(boolAttr.getName()));
+		final EAnnotation asmBoolTransferAttrTransient = asmBoolTransferAttr.get()
+				.getEAnnotation(TRANSIENT_SOURCE);
+		assertThat(asmBoolTransferAttrTransient, IsNull.nullValue());
 
 		final EAnnotation asmIntTransferAttrAnnotation = asmIntTransferAttr.get().getEAnnotation(CONSTRAINTS_SOURCE);
 		assertThat(asmIntTransferAttrAnnotation, IsNull.notNullValue());
@@ -480,6 +488,13 @@ public class Psm2AsmServiceTest {
 		assertThat(asmTR1Annotation.getDetails().size(), IsEqual.equalTo(1));
 		assertTrue(asmTR1Annotation.getDetails().containsKey("value"));
 		assertTrue(asmTR1Annotation.getDetails().get("value").equals(association.getName()));
+		final EAnnotation asmTR1Transient = asmTR1.get()
+				.getEAnnotation(TRANSIENT_SOURCE);
+		assertThat(asmTR1Transient, IsNull.nullValue());
+		
+		final EAnnotation asmTR2Transient = asmTR2.get()
+				.getEAnnotation(TRANSIENT_SOURCE);
+		assertThat(asmTR2Transient, IsNull.notNullValue());
 
 		final EAnnotation asmTR3Annotation = asmTR3.get().getEAnnotation(EMBEDDED_SOURCE);
 		assertThat(asmTR3Annotation, IsNull.notNullValue());
@@ -489,7 +504,6 @@ public class Psm2AsmServiceTest {
 		assertTrue(asmTR3Annotation.getDetails().get("create").equals(String.valueOf(tr3.isEmbeddedCreate())));
 		assertTrue(asmTR3Annotation.getDetails().get("update").equals(String.valueOf(tr3.isEmbeddedUpdate())));
 		assertTrue(asmTR3Annotation.getDetails().get("delete").equals(String.valueOf(tr3.isEmbeddedDelete())));
-
 	}
 
 	@Test
