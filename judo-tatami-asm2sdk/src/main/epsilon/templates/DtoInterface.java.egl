@@ -21,11 +21,15 @@ public interface [%= dto.getClassName() %] {
 
     [%= dto.idType() %] get__identifier();
 
+    void set__identifier([%= dto.idType() %] __identifier);
+
+    String get__entityType();
+
+    void set__entiyType(String __entityType);
+
     [% for (field in dto.eAllAttributes.includingAll(dto.eAllReferences)) { %]
     [%= field.getTypeDefinition() %] [%= field.getterName() %]();
     [% } %]
-
-    void set__identifier([%= dto.idType() %] __identifier);
 
     [% for (field in dto.eAllAttributes.includingAll(dto.eAllReferences)) { %]
     void [%= field.setterName() %]([%= field.getTypeDefinition() %] [%= asmUtils.safeName(field.name.firstToLowerCase()) %]);

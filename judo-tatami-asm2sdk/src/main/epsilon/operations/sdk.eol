@@ -317,8 +317,8 @@ operation getOperationGenerationData(dto : ASM!EClass, op : ASM!EOperation) : Ma
 	} else {
 		exchangeInput = "";
 	}
-	if (opIsBound and opHasParam) {
-		var call = 'dispatcher.callOperation(fqName, asMap("__identifier", _this.get__identifier(), "{InputName}", asMap({InputName})));';
+	if (opIsBound and opHasParam) {		
+		var call = 'dispatcher.callOperation(fqName, asMap("__identifier", _this.get__identifier(), "__this", asMap(_this), "__entityType", _this.get__entityType(), "{InputName}", asMap({InputName})));';
 		if (not opHasReturn) {
 			extendedInterface = "java.util.function.BiConsumer<{ThisType}, {InputType}>";
 			extendedMethod = "void accept({ThisType} _this, {InputType} {InputName})";
@@ -340,7 +340,7 @@ operation getOperationGenerationData(dto : ASM!EClass, op : ASM!EOperation) : Ma
         }
         		
 	} else if (opIsBound and not opHasParam) {
-		var call= 'dispatcher.callOperation(fqName, asMap("__identifier", _this.get__identifier()));';
+		var call= 'dispatcher.callOperation(fqName, asMap("__identifier", _this.get__identifier(), "__this", asMap(_this), "__entityType", _this.get__entityType()));';
 		if (not opHasReturn) {
 			extendedInterface = "java.util.function.Consumer<{ThisType}>";
 			extendedMethod = "void accept({ThisType} _this)";		
