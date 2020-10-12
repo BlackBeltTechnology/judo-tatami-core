@@ -3,11 +3,11 @@
   out.setContentType("Java");
 %]
 
-package [%= getInternalPrefix() + dto.getDtoPackageName() %];
+package [%= getInternalPrefix() + dto.getClassifierPackageName() %];
 
 import static [%= getInternalPrefix() + getModelPackageName() %].util.SdkUtil.*;
 
-public class [%= dto.getClassName() %]OperationsDispatcherWrapper implements [%= getSdkPrefix() + dto.getDtoPackageName() %].[%= dto.getClassName() %].[%= dto.getClassName() %]Operations {
+public class [%= dto.getClassName() %]OperationsDispatcherWrapper implements [%= getSdkPrefix() + dto.getClassifierPackageName() %].[%= dto.getClassName() %].[%= dto.getClassName() %]Operations {
 
 	private hu.blackbelt.judo.dispatcher.api.Dispatcher dispatcher;
 		

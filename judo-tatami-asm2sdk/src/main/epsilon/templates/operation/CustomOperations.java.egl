@@ -3,7 +3,7 @@
   out.setContentType("Java");
 %]
 
-package [%= getCustomOperationsPrefix() + dto.getDtoPackageName() %];
+package [%= getCustomOperationsPrefix() + dto.getClassifierPackageName() %];
 
 public interface [%= dto.getClassName() %] {
 

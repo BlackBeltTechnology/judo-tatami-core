@@ -3,7 +3,7 @@
   out.setContentType("Java");
 %]
 
-package [%= getSdkPrefix() + dto.getDtoPackageName() %];
+package [%= getSdkPrefix() + dto.getClassifierPackageName() %];
 
 public interface [%= dto.getClassName() %] {
 
@@ -25,7 +25,7 @@ public interface [%= dto.getClassName() %] {
 
     String get__entityType();
 
-    void set__entiyType(String __entityType);
+    void set__entityType(String __entityType);
 
     [% for (field in dto.eAllAttributes.includingAll(dto.eAllReferences)) { %]
     [%= field.getTypeDefinition() %] [%= field.getterName() %]();
