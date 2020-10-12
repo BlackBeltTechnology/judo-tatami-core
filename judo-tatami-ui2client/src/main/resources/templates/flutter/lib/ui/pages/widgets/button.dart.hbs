@@ -1,13 +1,1 @@
-JudoButton(
-    col: {{ col }},
-{{# if (isSaveButton this.action) }}
-    onPressed: () => navigation.close({{ fqVariable page.targetClassType.name }}Store),
-    icon: Icon(Icons.save),
-{{/ if }}
-{{# if (isBackButton this.action) }}
-    onPressed: () => navigation.close(),
-    icon: Icon(Icons.arrow_back_ios),
-{{/ if }}
-    label: '{{ label }}',
-    rounded: true,
-),
+{{> templates/flutter/lib/ui/pages/widgets/instanceAction.dart.hbs action = this.action icon = this.icon label = this.label col = this.col}}

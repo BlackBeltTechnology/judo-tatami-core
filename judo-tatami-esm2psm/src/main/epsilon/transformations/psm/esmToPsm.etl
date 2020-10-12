@@ -120,18 +120,5 @@ post {
 		if (o.behaviour.behaviourType == JUDOPSM!TransferOperationBehaviourType#GET_RANGE) {
 			o.input.type = o.behaviour.owner.eContainer();
 		}
-		
-		//for deprecated operation behaviours
-		if (o.behaviour.owner.isKindOf(JUDOPSM!Parameter)) {
-			var newRelation : JUDOPSM!TransferObjectRelation = o.behaviour.owner.type.relations.select(r | r.name.equals(o.behaviour.relation.name)).first();
-			o.behaviour.relation = newRelation;
-		}
-		if (o.behaviour.relation.isDefined()
-				and o.behaviour.behaviourType <> JUDOPSM!TransferOperationBehaviourType#GET_RANGE_OF_RELATION
-				and o.behaviour.behaviourType <> JUDOPSM!TransferOperationBehaviourType#GET_TEMPLATE) {
-				
-			var newRelation : JUDOPSM!TransferObjectRelation = o.behaviour.owner.target.relations.select(r | r.name.equals(o.behaviour.relation.name)).first();
-			o.behaviour.relation = newRelation;
-		}
 	}
 }

@@ -22,6 +22,7 @@ rule ApplicationDashboardPage
 	 
 		if (s.principal.isDefined() and s.principal.view.isDefined()) {
 	        pageContainer.children.add(s.principal.view.map(application));
+	        t.label = s.principal.view.getUiLabel();
         }
         application.pages.add(t);
         application.dashboard = t;

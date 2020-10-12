@@ -15,14 +15,16 @@ operation UI!ui::PageDefinition calculateActions(application : UI!ui::Applicatio
 			self.instanceActions.add(new UI!ui::DeleteAction());	
 		}
 		if (classType.getIsClassBehaviourTypeUpdatable()) {
+		
 			var page = application.pages.selectOne(p | p.pageType = UI!ui::PageType#UPDATE 
-				and p.~source == self.~source);
+				and p.getRelationType() == relationType);
 			if (page.isDefined()) {
+				log.debug(" ========= PAGE DEF: UPDATE: " + relationType.eContainer.name + "." + relationType.name + " - " + page.name);
 			    var editAction = new UI!ui::EditAction();
 				editAction.target = page;
 				self.instanceActions.add(editAction);
 			} else {
-				log.warn("No update page defined for: " + self.name);
+				log.warn("No update page defined for: " + self.name + " - " + relationType.eContainer.name + "." + relationType.name);
 			}
 		}
 	} else if (self.pageType == UI!ui::PageType#TABLE) {	
@@ -36,13 +38,14 @@ operation UI!ui::PageDefinition calculateActions(application : UI!ui::Applicatio
 
 		if (relationType.getIsRelationBehaviourTypeCreatable()) {
 			var page = application.pages.selectOne(p | p.pageType = UI!ui::PageType#CREATE 
-				and p.~source == self.~source);
+				and p.getRelationType() == relationType);
 			if (page.isDefined()) {
+				log.debug(" ========= PAGE DEF: CREATE: " + relationType.eContainer.name + "." + relationType.name + " - " + page.name);
 			    var createAction = new UI!ui::CreateAction();
 				createAction.target = page;
 				self.instanceActions.add(createAction);	
 			} else {
-				log.warn("No update page defined for: " + self.name);
+				log.warn("No create page defined for: " + self.name + " - " + relationType.eContainer.name + "." + relationType.name);
 			}
 		}
 		

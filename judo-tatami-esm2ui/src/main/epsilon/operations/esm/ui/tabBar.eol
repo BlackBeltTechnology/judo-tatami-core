@@ -1,6 +1,7 @@
 operation ESM!esm::ui::TabBar createTabController(application : UI!ui::Application) : UI!ui::TabController {
 	var ret : UI!ui::TabController = new UI!ui::TabController();
 	ret.name = self.name;	
+    ret.label = self.getUiLabel();
 	
 	ret.col = applicationColumns;
 	

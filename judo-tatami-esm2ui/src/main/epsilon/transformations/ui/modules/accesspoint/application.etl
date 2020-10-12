@@ -7,7 +7,7 @@ rule Application
     extends CreateNamedElementFromNamespaceElement {
         guard: s.principal.isDefined() and s.kind = ESM!esm::accesspoint::ActorKind#HUMAN 
 
-        t.~original = s;
+        t.~originalActorType = s;
 
         log.debug("Application: " + s.name);
 
@@ -25,6 +25,8 @@ rule Application
         }
 		
         var exposedRelations : Set = s.getExposedRelations();
+        
+        log.debug("Relations: " + exposedRelations.collect(r | r.fqName()));
        
         for (relation in exposedRelations) {
             if (relation.target.view.isDefined()) {
@@ -32,11 +34,16 @@ rule Application
             }
 
             if (relation.target.form.isDefined()) {
-                relation.mapCreatePage(t, relation.target);
-                relation.mapUpdatePage(t, relation.target);
+                if (relation.isCreateAllowed()) {
+                	relation.mapCreatePage(t, relation.target);
+                }
+                if (relation.isUpdateAllowed()) {
+	                relation.mapUpdatePage(t, relation.target);
+                }
             }
 
-            if (relation.target.table.isDefined()) {
+            if (relation.target.table.isDefined() and ((not relation.isTypeOf(ESM!esm::accesspoint::Access) and relation.relationKind == ESM!esm::structure::RelationKind#ASSOCIATION) 
+            	or relation.isTypeOf(ESM!esm::accesspoint::Access))) {
                 relation.mapTablePage(t, relation.target);
             }
         }

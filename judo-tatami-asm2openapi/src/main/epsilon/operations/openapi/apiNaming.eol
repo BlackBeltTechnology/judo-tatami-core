@@ -6,7 +6,6 @@ operation ASM!EOperation toOpenAPIPath() : String {
     var behaviour = asmUtils.getBehaviour(self);
     if (behaviour.present) {
         var owner = asmUtils.getOwnerOfOperationWithDefaultBehaviour(self);
-        var relation = asmUtils.getRelationOfOperationWithDefaultBehaviour(self);
 
         switch (behaviour.get().toString()) {
             case "LIST":
@@ -38,16 +37,6 @@ operation ASM!EOperation toOpenAPIPath() : String {
             case "GET_REFERENCE_RANGE": path = asmUtils.getReferenceFQName(owner.get) + "/~range";
             case "GET_TEMPLATE": path = asmUtils.getClassifierFQName(owner.get) + "/~template";
             case "GET_PRINCIPAL": path = asmUtils.getClassifierFQName(owner.get) + "/~principal";
-
-            case "GET": path = asmUtils.getReferenceFQName(owner.get) + "/get";
-            case "CREATE": path = asmUtils.getReferenceFQName(owner.get) + "/create";
-            case "UPDATE": path = asmUtils.getReferenceFQName(owner.get) + "/update";
-            case "DELETE": path = asmUtils.getReferenceFQName(owner.get) + "/delete";
-            case "SET": path = asmUtils.getReferenceFQName(owner.get) + "/" + relation.get().name + "/set";
-            case "UNSET": path = asmUtils.getReferenceFQName(owner.get) + "/" + relation.get().name + "/unset";
-            case "ADD_ALL": path = asmUtils.getReferenceFQName(owner.get) + "/" + relation.get().name + "/add";
-            case "REMOVE_ALL": path = asmUtils.getReferenceFQName(owner.get) + "/" + relation.get().name + "/remove";
-            case "GET_RANGE": path = owner.get.eContainer.toOpenAPIPath() + "/" + owner.get.name + "/" + relation.get().name + "/range";
         }
     }
 

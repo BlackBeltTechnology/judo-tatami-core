@@ -127,21 +127,21 @@ rule CreateReferencePropertyDefinitionReference
         s.equivalent("CreateReferencePropertyDefinition").ref = t;
 }
 
-rule CreateDataPropertyDeclarationExtended
+rule CreateDataPropertyDeclarationForCreateAndUpdate
     transform s : ASM!EAnnotation
     to t : OPENAPI!PropertyDeclaration {
-        guard: s.eContainer.isKindOf(ASM!EAttribute) and s.source == asmUtils.getAnnotationUri("exposedBy")
+        guard: s.eContainer.isKindOf(ASM!EAttribute) and s.source == asmUtils.getAnnotationUri("exposedBy") and s.eContainer.changeable and not asmUtils.annotatedAsTrue(s.eContainer, "transient")
 
         t.name = s.eContainer.name;
 
 	    var transferObjectTypeExposedByAnnotation = asmUtils.getExtensionAnnotationListByName(s.eContainer.eContainer, "exposedBy").selectOne(a | a.details.get("value") == s.details.get("value"));
-	    transferObjectTypeExposedByAnnotation.equivalent("CreateTransferObjectSingleSchemaDefinitionExtended").properties.add(t);
+	    transferObjectTypeExposedByAnnotation.equivalent("CreateTransferObjectSingleSchemaDefinitionForCreateAndUpdate").properties.add(t);
 }
 
-rule CreateDataPropertyDefinitionExtended
+rule CreateDataPropertyDefinitionForCreateAndUpdate
     transform s : ASM!EAnnotation
     to t : OPENAPI!Property {
-        guard: s.eContainer.isKindOf(ASM!EAttribute) and s.source == asmUtils.getAnnotationUri("exposedBy")
+        guard: s.eContainer.isKindOf(ASM!EAttribute) and s.source == asmUtils.getAnnotationUri("exposedBy") and s.eContainer.changeable and not asmUtils.annotatedAsTrue(s.eContainer, "transient")
 
         if (s.eContainer.many) {
             throw "Collection attributes are not supported";
@@ -206,33 +206,33 @@ rule CreateDataPropertyDefinitionExtended
         } else if (s.eContainer.required) {
             // Read only properties cannot be marked as required by a schema
             var transferObjectTypeExposedByAnnotation = asmUtils.getExtensionAnnotationListByName(s.eContainer.eContainer, "exposedBy").selectOne(a | a.details.get("value") == s.details.get("value"));
-            transferObjectTypeExposedByAnnotation.equivalent("CreateTransferObjectSingleSchemaDefinitionExtended").required.add(s.eContainer.name);
+            transferObjectTypeExposedByAnnotation.equivalent("CreateTransferObjectSingleSchemaDefinitionForCreateAndUpdate").required.add(s.eContainer.name);
         }
 
-	    s.equivalent("CreateDataPropertyDeclarationExtended").property = t;
+	    s.equivalent("CreateDataPropertyDeclarationForCreateAndUpdate").property = t;
 }
 
-rule CreateReferencePropertyDeclarationExtended
+rule CreateReferencePropertyDeclarationForCreateAndUpdate
     transform s : ASM!EAnnotation
     to t : OPENAPI!PropertyDeclaration {
-        guard: s.eContainer.isKindOf(ASM!EReference) and s.source == asmUtils.getAnnotationUri("exposedBy")
+        guard: s.eContainer.isKindOf(ASM!EReference) and s.source == asmUtils.getAnnotationUri("exposedBy") and s.eContainer.changeable and not asmUtils.annotatedAsTrue(s.eContainer, "transient")
 
         t.name = s.eContainer.name;
 	    var transferObjectTypeExposedByAnnotation = asmUtils.getExtensionAnnotationListByName(s.eContainer.eContainer, "exposedBy").selectOne(a | a.details.get("value") == s.details.get("value"));
-	    transferObjectTypeExposedByAnnotation.equivalent("CreateTransferObjectSingleSchemaDefinitionExtended").properties.add(t);
+	    transferObjectTypeExposedByAnnotation.equivalent("CreateTransferObjectSingleSchemaDefinitionForCreateAndUpdate").properties.add(t);
 }
 
-rule CreateReferencePropertyDefinitionExtended
+rule CreateReferencePropertyDefinitionForCreateAndUpdate
     transform s : ASM!EAnnotation
     to t : OPENAPI!Property {
-        guard: s.eContainer.isKindOf(ASM!EReference) and s.source == asmUtils.getAnnotationUri("exposedBy")
+        guard: s.eContainer.isKindOf(ASM!EReference) and s.source == asmUtils.getAnnotationUri("exposedBy") and s.eContainer.changeable and not asmUtils.annotatedAsTrue(s.eContainer, "transient")
 
         if (not s.eContainer.changeable) {
             t.readOnly = true;
         } else if (s.eContainer.required) {
             // Read only properties cannot be marked as required by a schema
             var transferObjectTypeExposedByAnnotation = asmUtils.getExtensionAnnotationListByName(s.eContainer.eContainer, "exposedBy").selectOne(a | a.details.get("value") == s.details.get("value"));
-            transferObjectTypeExposedByAnnotation.equivalent("CreateTransferObjectSingleSchemaDefinitionExtended").required.add(s.eContainer.name);
+            transferObjectTypeExposedByAnnotation.equivalent("CreateTransferObjectSingleSchemaDefinitionForCreateAndUpdate").required.add(s.eContainer.name);
         }
 
         if (not s.eContainer.containment and asmUtils.isMappedTransferObjectType(s.eContainer.eReferenceType)) {
@@ -252,21 +252,21 @@ rule CreateReferencePropertyDefinitionExtended
             t.properties.add(referenceId);
         }
 
-        s.equivalent("CreateReferencePropertyDeclarationExtended").property = t;
+        s.equivalent("CreateReferencePropertyDeclarationForCreateAndUpdate").property = t;
 }
 
-rule CreateReferencePropertyDefinitionReferenceExtended
+rule CreateReferencePropertyDefinitionReferenceForCreateAndUpdate
     transform s : ASM!EAnnotation
     to t : OPENAPI!SchemaReference {
-        guard: s.eContainer.isKindOf(ASM!EReference) and s.eContainer.containment and s.source == asmUtils.getAnnotationUri("exposedBy")
+        guard: s.eContainer.isKindOf(ASM!EReference) and s.eContainer.containment and s.source == asmUtils.getAnnotationUri("exposedBy") and s.eContainer.changeable and not asmUtils.annotatedAsTrue(s.eContainer, "transient")
 
         var targetTypeExposedByAnnotation = asmUtils.getExtensionAnnotationListByName(s.eContainer.eReferenceType, "exposedBy").selectOne(a | a.details.get("value") == s.details.get("value"));
 
 		if (s.eContainer.many) {
-		    t.ref = targetTypeExposedByAnnotation.equivalent("CreateTransferObjectArraySchemaDeclarationExtended").getReference();
+		    t.ref = targetTypeExposedByAnnotation.equivalent("CreateTransferObjectArraySchemaDeclarationForCreateAndUpdate").getReference();
 		} else {
-		    t.ref = targetTypeExposedByAnnotation.equivalent("CreateTransferObjectSingleSchemaDeclarationExtended").getReference();
+		    t.ref = targetTypeExposedByAnnotation.equivalent("CreateTransferObjectSingleSchemaDeclarationForCreateAndUpdate").getReference();
 		}
 
-        s.equivalent("CreateReferencePropertyDefinitionExtended").ref = t;
+        s.equivalent("CreateReferencePropertyDefinitionForCreateAndUpdate").ref = t;
 }

@@ -7,45 +7,79 @@
 // Template name: {{ template.templateName }}
 // Application: {{ application.name }}
 
-part of {{ variable application.name }}.ui.pages.tables;
+part of {{ variable application.name }}.ui.pages.{{ fqVariable table.pageContainer.layoutType.name }}.tables;
 
-class {{ fqClass table.pageDefinition.name }}{{ fqClass table.name }}Table implements JudoTableDataInfo {
+class {{ fqClass table.pageDefinition.name }}{{ fqClass table.name }}{{ fqClass table.pageContainer.layoutType.name }}Table implements JudoTableDataInfo {
 
     @override
-    List<DataColumn> getColumns() {
+    List<DataColumn> getColumns(Function onAdd) {
         return [
             {{# each columns}}
             DataColumn(label: Text('{{label}}')),
             {{/each}}
             {{#each table.rowActions}}
-            DataColumn(label: Text(""))
+            DataColumn(label: Text("")),
             {{/each}}
         ];
     }
 
     @override
-    Function getRow({Function navigateToEditPageAction, Function navigateToViewPageAction, Function navigateToCreatePageAction, Function removeAction}) {
-        return ({{variable table.dataElement.name}}) => DataRow(
+    Function getRow({Function navigateToEditPageAction, Function navigateToViewPageAction, Function navigateToCreatePageAction, Function removeAction, Function deleteAction}) {
+        return (target{{ className table.dataElement.target.name }}) => DataRow(
             cells: [
                 {{# each columns as |column|}}
                 DataCell(
                     {{#if column}}
-                    {{> (getWidgetTemplate column) column=column dataName=(variable table.dataElement.name)}}
+                    {{> (getWidgetTemplate column) column=column dataName=(className table.dataElement.target.name)}}
                     {{/if}}
                 ),
                 {{/each}}
                 {{#each table.rowActions as |action|}}
-                {{#if (isRemoveButton action)}}
-                DataCell(
-                    Icon(Icons.{{action.icon.name}}),
-                    onTap: () => removeAction({{variable table.dataElement.name}}),
-                ),
+                {{#if action.isRemoveAction}}
+                target{{ className table.dataElement.target.name }}.internal__updatable
+                ? DataCell(
+                        Icon(Icons.{{action.icon.name}}),
+                        onTap: () => removeAction(target{{ className table.dataElement.target.name }}),
+                  )
+                : DataCell(
+                    Text(''),
+                  ),
                 {{/if}}
-                {{#if (isViewButton action)}}
+                {{#if action.isDeleteAction}}
+                target{{ className table.dataElement.target.name }}.internal__deletable && deleteAction != null // function null if the owner is not updatable
+                ? DataCell(
+                    Icon(Icons.{{action.icon.name}}),
+                    onTap: () => deleteAction(target{{ className table.dataElement.target.name }}),
+                  )
+                : DataCell(
+                    Text(''),
+                  ),
+                {{/if}}
+                {{#if action.isCreateAction}}
+                target{{ className table.dataElement.target.name }}.internal__updatable
+                ? DataCell(
+                    Icon(Icons.{{action.icon.name}}),
+                    onTap: () => navigateToCreatePageAction(target{{ className table.dataElement.target.name }}),
+                  )
+                : DataCell(
+                    Text(''),
+                  ),
+                {{/if}}
+                {{#if action.isEditAction}}
+                target{{ className table.dataElement.target.name }}.internal__updatable
+                ? DataCell(
+                    Icon(Icons.{{action.icon.name}}),
+                    onTap: () => navigateToEditPageAction(target{{ className table.dataElement.target.name }}),
+                  )
+                : DataCell(
+                    Text(''),
+                  ),
+                {{/if}}
+                {{#if action.isViewAction}}
                 DataCell(
                     Icon(Icons.{{action.icon.name}}),
-                    onTap: () => navigateToViewPageAction({{variable table.dataElement.name}}),
-                )
+                    onTap: () => navigateToViewPageAction(target{{ className table.dataElement.target.name }}),
+                ),
                 {{/if}}
                 {{/each}}
             ],

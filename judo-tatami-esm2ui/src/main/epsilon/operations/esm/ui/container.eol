@@ -2,8 +2,8 @@ operation ESM!esm::ui::Container createFlexFromContainer(application : UI!ui::Ap
 	var ret = new UI!ui::Flex();
 	
 	ret.name = self.name;
+    ret.label = self.getUiLabel();    
 	ret.col = applicationColumns;
-
 	if (self.layout == ESM!esm::ui::Layout#HORIZONTAL) {
 		ret.direction = UI!Axis#HORIZONTAL;
 	}

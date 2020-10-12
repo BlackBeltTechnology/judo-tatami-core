@@ -18,11 +18,10 @@
 part of {{ variable ap.name }}.repository;
 
 class {{ fqClass relation.owner.name }}{{ fqClass relation.name }}Repository {
-
-
   {{# if relation.isRelationBehaviourTypeListable }}
       {{# if relation.isCollection }}
           {{# if relation.isAccess }}
+
   //////////////////////////////////////////////////////////////////////////////
   // GET Collection (Access)
   //////////////////////////////////////////////////////////////////////////////
@@ -35,6 +34,7 @@ class {{ fqClass relation.owner.name }}{{ fqClass relation.name }}Repository {
       {{ fqClass ap.name }}RepositoryStoreMapper.create{{ fqClass relation.target.name }}StoreFrom{{ fqClass relation.target.name }}).toList();
   }
           {{ else }}
+
   //////////////////////////////////////////////////////////////////////////////
   // GET Collection
   //////////////////////////////////////////////////////////////////////////////
@@ -42,13 +42,14 @@ class {{ fqClass relation.owner.name }}{{ fqClass relation.name }}Repository {
     if (filter == null) {
       filter = {{ modelName relation.target.name }}Extension{{ fqClassWithoutModel relation.target.name}}QueryCustomizer();
     }
-    List<{{ fqClass relation.target.name }}> {{ variable relation.target.name }}ListResponse = await DefaultApi(locator<ApiClient>()).{{ fqVariable owner.name }}List{{ className relation.name }}(owner.signedIdentifier, input : filter);
+    List<{{ fqClass relation.target.name }}> {{ variable relation.target.name }}ListResponse = await DefaultApi(locator<ApiClient>()).{{ fqVariable owner.name }}List{{ className relation.name }}(owner.internal__signedIdentifier, input : filter);
     return {{ variable relation.target.name }}ListResponse.map<{{ fqClass relation.target.name }}Store>(
       {{ fqClass ap.name }}RepositoryStoreMapper.create{{ fqClass relation.target.name }}StoreFrom{{ fqClass relation.target.name }}).toList();
   }
           {{/ if }}
       {{ else }}
           {{# if relation.isAccess }}
+
   //////////////////////////////////////////////////////////////////////////////
   // GET SINGLE (Access)
   //////////////////////////////////////////////////////////////////////////////
@@ -60,6 +61,7 @@ class {{ fqClass relation.owner.name }}{{ fqClass relation.name }}Repository {
     return {{ fqClass ap.name }}RepositoryStoreMapper.create{{ fqClass relation.target.name }}StoreFrom{{ fqClass relation.target.name }}({{ variable relation.target.name }}Response);
   }
           {{ else }}
+
   //////////////////////////////////////////////////////////////////////////////
   // GET SINGLE
   //////////////////////////////////////////////////////////////////////////////
@@ -67,7 +69,7 @@ class {{ fqClass relation.owner.name }}{{ fqClass relation.name }}Repository {
     if (filter == null) {
       filter = {{ modelName relation.target.name }}Extension{{ fqClassWithoutModel relation.target.name}}QueryCustomizer();
     }
-    {{ fqClass relation.target.name }} {{ variable relation.target.name }}Response = await DefaultApi(locator<ApiClient>()).{{ fqVariable owner.name }}List{{ className relation.name }}(owner.signedIdentifier, input : filter);
+    {{ fqClass relation.target.name }} {{ variable relation.target.name }}Response = await DefaultApi(locator<ApiClient>()).{{ fqVariable owner.name }}List{{ className relation.name }}(owner.internal__signedIdentifier, input : filter);
     return {{ fqClass ap.name }}RepositoryStoreMapper.create{{ fqClass relation.target.name }}StoreFrom{{ fqClass relation.target.name }}({{ variable relation.target.name }}Response);
   }
           {{/ if }}
@@ -75,6 +77,7 @@ class {{ fqClass relation.owner.name }}{{ fqClass relation.name }}Repository {
   {{/ if }}
   {{# if relation.isRelationBehaviourTypeCreatable }}
       {{# if relation.isAccess }}
+
   //////////////////////////////////////////////////////////////////////////////
   // CREATE (Access)
   //////////////////////////////////////////////////////////////////////////////
@@ -84,18 +87,43 @@ class {{ fqClass relation.owner.name }}{{ fqClass relation.name }}Repository {
     return {{ fqClass ap.name }}RepositoryStoreMapper.create{{ fqClass relation.target.name }}StoreFrom{{ fqClass relation.target.name }}({{ variable relation.target.name }}Response);
   }
       {{ else }}
+
   //////////////////////////////////////////////////////////////////////////////
   // CREATE
   //////////////////////////////////////////////////////////////////////////////
   Future<{{ fqClass relation.target.name }}Store> {{ fqVariable relation.owner.name }}{{ fqClass relation.name }}Create({{ fqClass relation.owner.name }}Store owner, {{ fqClass relation.target.name }}Store target) async {
     {{ fqClass relation.target.name }}Extended {{ variable relation.target.name }}ExtendedRequest = {{ fqClass ap.name }}RepositoryStoreMapper.create{{ fqClass relation.target.name }}ExtendedFrom{{ fqClass relation.target.name }}Store(target);
-    {{ fqClass relation.target.name }} {{ variable relation.target.name }}Response = await DefaultApi(locator<ApiClient>()).{{ fqVariable owner.name }}CreateInstance{{ className relation.name }}(owner.signedIdentifier, {{ variable relation.target.name }}ExtendedRequest);
+    {{ fqClass relation.target.name }} {{ variable relation.target.name }}Response = await DefaultApi(locator<ApiClient>()).{{ fqVariable owner.name }}CreateInstance{{ className relation.name }}(owner.internal__signedIdentifier, {{ variable relation.target.name }}ExtendedRequest);
     return {{ fqClass ap.name }}RepositoryStoreMapper.create{{ fqClass relation.target.name }}StoreFrom{{ fqClass relation.target.name }}({{ variable relation.target.name }}Response);
   }
       {{/ if }}
   {{/ if }}
+  {{# if relation.isRelationBehaviourTypeCreateValidatable }}
+    {{# if relation.isAccess }}
+
+  //////////////////////////////////////////////////////////////////////////////
+  // VALIDATE CREATE (Access)
+  //////////////////////////////////////////////////////////////////////////////
+  Future<{{ fqClass relation.target.name }}Store> {{ fqVariable relation.owner.name }}{{ fqClass relation.name }}ValidateForCreate({{ fqClass relation.target.name }}Store target) async {
+    {{ fqClass relation.target.name }}Extended {{ variable relation.target.name }}ExtendedRequest = {{ fqClass ap.name }}RepositoryStoreMapper.create{{ fqClass relation.target.name }}ExtendedFrom{{ fqClass relation.target.name }}Store(target);
+    {{ fqClass relation.target.name }} {{ variable relation.target.name }}Response = await DefaultApi(locator<ApiClient>()).{{ fqVariable relation.owner.name }}ValidateCreateInstance{{ className relation.name }}({{ variable relation.target.name }}ExtendedRequest);
+    return {{ fqClass ap.name }}RepositoryStoreMapper.create{{ fqClass relation.target.name }}StoreFrom{{ fqClass relation.target.name }}({{ variable relation.target.name }}Response);
+  }
+    {{ else }}
+
+  //////////////////////////////////////////////////////////////////////////////
+  // VALIDATE CREATE
+  //////////////////////////////////////////////////////////////////////////////
+  Future<{{ fqClass relation.target.name }}Store> {{ fqVariable relation.owner.name }}{{ fqClass relation.name }}ValidateForCreate({{ fqClass relation.owner.name }}Store owner, {{ fqClass relation.target.name }}Store target) async {
+    {{ fqClass relation.target.name }}Extended {{ variable relation.target.name }}ExtendedRequest = {{ fqClass ap.name }}RepositoryStoreMapper.create{{ fqClass relation.target.name }}ExtendedFrom{{ fqClass relation.target.name }}Store(target);
+    {{ fqClass relation.target.name }} {{ variable relation.target.name }}Response = await DefaultApi(locator<ApiClient>()).{{ fqVariable owner.name }}ValidateCreateInstance{{ className relation.name }}(owner.internal__signedIdentifier, {{ variable relation.target.name }}ExtendedRequest);
+    return {{ fqClass ap.name }}RepositoryStoreMapper.create{{ fqClass relation.target.name }}StoreFrom{{ fqClass relation.target.name }}({{ variable relation.target.name }}Response);
+  }
+    {{/ if }}
+  {{/ if }}
   {{# if relation.target.isClassBehaviourTypeDeletable }}
       {{# if relation.isAccess }}
+
   //////////////////////////////////////////////////////////////////////////////
   // DELETE (Access)
   //////////////////////////////////////////////////////////////////////////////
@@ -103,6 +131,7 @@ class {{ fqClass relation.owner.name }}{{ fqClass relation.name }}Repository {
     return await locator<{{ fqClass application.actor.name }}Repository>().{{ fqVariable relation.target.name }}Delete(target);
   }
       {{ else }}
+
   //////////////////////////////////////////////////////////////////////////////
   // DELETE
   //////////////////////////////////////////////////////////////////////////////
@@ -113,6 +142,7 @@ class {{ fqClass relation.owner.name }}{{ fqClass relation.name }}Repository {
   {{/ if }}
   {{# if relation.target.isClassBehaviourTypeUpdatable }}
       {{# if relation.isAccess }}
+
   //////////////////////////////////////////////////////////////////////////////
   // UPDATE  (Access)
   //////////////////////////////////////////////////////////////////////////////
@@ -120,6 +150,7 @@ class {{ fqClass relation.owner.name }}{{ fqClass relation.name }}Repository {
     return await locator<{{ fqClass application.actor.name }}Repository>().{{ fqVariable relation.target.name }}Update(target);
   }
       {{ else }}
+
   //////////////////////////////////////////////////////////////////////////////
   // UPDATE
   //////////////////////////////////////////////////////////////////////////////
@@ -131,6 +162,7 @@ class {{ fqClass relation.owner.name }}{{ fqClass relation.name }}Repository {
 
   {{# each relation.target.relations as |targetRelation| }}
       {{# if targetRelation.isRelationBehaviourTypeRangeable }}
+
   //////////////////////////////////////////////////////////////////////////////
   // GET CREATE RANGE FOR {{ variable targetRelation.name }}
   //////////////////////////////////////////////////////////////////////////////
@@ -148,6 +180,7 @@ class {{ fqClass relation.owner.name }}{{ fqClass relation.name }}Repository {
       {{# if targetRelation.isRelationBehaviourTypeSetable }}
         {{# if targetRelation.isCollection }}
           {{# if relation.isAccess }}
+
   //////////////////////////////////////////////////////////////////////////////
   // SET {{ variable targetRelation.name }} (Access) Collection
   //////////////////////////////////////////////////////////////////////////////
@@ -155,6 +188,7 @@ class {{ fqClass relation.owner.name }}{{ fqClass relation.name }}Repository {
     return await locator<{{ fqClass application.actor.name }}Repository>().{{ fqVariable relation.target.name }}Set{{ fqClass targetRelation.name }}(target, selected);
   }
           {{ else }}
+
   //////////////////////////////////////////////////////////////////////////////
   // SET {{ variable targetRelation.name }} Collection
   //////////////////////////////////////////////////////////////////////////////
@@ -164,6 +198,7 @@ class {{ fqClass relation.owner.name }}{{ fqClass relation.name }}Repository {
           {{/ if }}
         {{ else }}
           {{# if relation.isAccess }}
+
   //////////////////////////////////////////////////////////////////////////////
   // SET {{ variable targetRelation.name }} (Access) Single
   //////////////////////////////////////////////////////////////////////////////
@@ -171,6 +206,7 @@ class {{ fqClass relation.owner.name }}{{ fqClass relation.name }}Repository {
     return await locator<{{ fqClass application.actor.name }}Repository>().{{ fqVariable relation.target.name }}Set{{ fqClass targetRelation.name }}(target, selected);
   }
           {{ else }}
+
   //////////////////////////////////////////////////////////////////////////////
   // SET {{ variable targetRelation.name }} Single
   //////////////////////////////////////////////////////////////////////////////
@@ -180,9 +216,9 @@ class {{ fqClass relation.owner.name }}{{ fqClass relation.name }}Repository {
           {{/ if }}
         {{/ if }}
       {{/ if }}
-
       {{# if targetRelation.isRelationBehaviourTypeUnsetable }}
           {{# if relation.isAccess }}
+
   //////////////////////////////////////////////////////////////////////////////
   // UNSET {{ variable targetRelation.name }} (Access)
   //////////////////////////////////////////////////////////////////////////////
@@ -190,6 +226,7 @@ class {{ fqClass relation.owner.name }}{{ fqClass relation.name }}Repository {
     return await locator<{{ fqClass application.actor.name }}Repository>().{{ fqVariable relation.target.name }}Unset{{ fqClass targetRelation.name }}(target);
   }
           {{ else }}
+
   //////////////////////////////////////////////////////////////////////////////
   // UNSET {{ variable targetRelation.name }}
   //////////////////////////////////////////////////////////////////////////////
@@ -200,6 +237,7 @@ class {{ fqClass relation.owner.name }}{{ fqClass relation.name }}Repository {
       {{/ if }}
       {{# if targetRelation.isRelationBehaviourTypeAddable }}
           {{# if relation.isAccess }}
+
   //////////////////////////////////////////////////////////////////////////////
   // ADD {{ variable targetRelation.name }} (Access)
   //////////////////////////////////////////////////////////////////////////////
@@ -207,6 +245,7 @@ class {{ fqClass relation.owner.name }}{{ fqClass relation.name }}Repository {
     return await locator<{{ fqClass application.actor.name }}Repository>().{{ fqVariable relation.target.name }}Add{{ fqClass targetRelation.name }}(target, selected);
   }
           {{ else }}
+
   //////////////////////////////////////////////////////////////////////////////
   // ADD {{ variable targetRelation.name }}
   //////////////////////////////////////////////////////////////////////////////
@@ -214,10 +253,10 @@ class {{ fqClass relation.owner.name }}{{ fqClass relation.name }}Repository {
     return await locator<{{ fqClass application.actor.name }}Repository>().{{ fqVariable relation.target.name }}Add{{ fqClass targetRelation.name }}(target, selected);
   }
           {{/ if }}
-
       {{/ if }}
       {{# if targetRelation.isRelationBehaviourTypeRemovable }}
           {{# if relation.isAccess }}
+
   //////////////////////////////////////////////////////////////////////////////
   // REMOVE {{ variable targetRelation.name }} (Access)
   //////////////////////////////////////////////////////////////////////////////
@@ -225,6 +264,7 @@ class {{ fqClass relation.owner.name }}{{ fqClass relation.name }}Repository {
     return await locator<{{ fqClass application.actor.name }}Repository>().{{ fqVariable relation.target.name }}Remove{{ fqClass targetRelation.name }}(target, selected);
   }
           {{ else }}
+
   //////////////////////////////////////////////////////////////////////////////
   // REMOVE {{ variable targetRelation.name }}
   //////////////////////////////////////////////////////////////////////////////
@@ -233,6 +273,5 @@ class {{ fqClass relation.owner.name }}{{ fqClass relation.name }}Repository {
   }
           {{/ if }}
       {{/ if }}
-
   {{/ each }}
 }

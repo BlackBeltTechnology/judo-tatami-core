@@ -27,7 +27,7 @@ class {{ fqClass application.name }}Scaffold extends StatelessWidget {
     @override
     Widget build(BuildContext context) {
         final navigation = locator<NavigationState>();
-        final drawer = navigation.isMenuFixed(context) ? null : {{ fqClass application.name }}Drawer();
+        final drawer = navigation.isMenuCollapsed(context) ? {{ fqClass application.name }}Drawer() : null;
 
         return Row(
             children: [

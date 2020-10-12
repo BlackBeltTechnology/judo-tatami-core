@@ -1,9 +1,21 @@
-    const {{ fqClass page.name }}({ Key key }) : super(key: key);
+    {{#unless page.dataElement.isAccess}}
+    final {{ fqClass page.dataElement.owner.name }}Store owner{{ className page.dataElement.owner.name }}Store;
+    {{/unless}}
+    const {{fqClass page.name}}Page({ Key key{{#unless page.dataElement.isAccess}}, @required this.owner{{ className page.dataElement.owner.name }}Store{{/unless}} }) : super(key: key);
 
     @override
-    _{{ fqClass page.name }}PageState createState() => _{{ fqClass page.name }}PageState();
+    _{{ fqClass page.name }}PageState createState() => _{{ fqClass page.name }}PageState({{#unless page.dataElement.isAccess}}owner{{ className page.dataElement.owner.name }}Store: owner{{ className page.dataElement.owner.name }}Store{{/unless}});
 }
 
 class _{{ fqClass page.name }}PageState extends State<{{ fqClass page.name }}Page> {
 
-    final {{ fqClass page.targetClassType.name }}Store {{ fqVariable page.targetClassType.name }}Store = {{ fqClass page.targetClassType.name }}Store();
+    final {{ fqClass page.dataElement.target.name }}Store target{{ className page.dataElement.target.name }}Store = {{ fqClass page.dataElement.target.name }}Store();
+    {{#unless page.dataElement.isAccess }}
+    final {{ fqClass page.dataElement.owner.name }}Store owner{{ className page.dataElement.owner.name }}Store;
+    {{/unless}}
+
+    final {{fqClass page.name}}PageStore {{fqVariable page.name}}PageStore = {{fqClass page.name}}PageStore();
+
+    {{#unless page.dataElement.isAccess}}
+    _{{ fqClass page.name }}PageState({ @required this.owner{{ className page.dataElement.owner.name }}Store });
+    {{/unless}}

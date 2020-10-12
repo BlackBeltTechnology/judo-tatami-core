@@ -74,25 +74,18 @@ rule CreateParameterDefinitionSchemaReference
             var transferObjectTypeExposedByAnnotation = asmUtils.getExtensionAnnotationListByName(s.eContainer.eType, "exposedBy").selectOne(a | a.details.get("value") == s.details.get("value"));
 		    if (transferObjectTypeExposedByAnnotation.isDefined()) {
 		        var behaviour = asmUtils.getBehaviour(s.eContainer.eOperation);
-		        var behaviourRelation = asmUtils.getRelationOfOperationWithDefaultBehaviour(s.eContainer.eOperation);
 
-		        if (behaviour.present and (behaviour.get().toString() == "CREATE" or behaviour.get().toString() == "CREATE_INSTANCE" or behaviour.get().toString() == "VALIDATE_INSTANCE")) {
+		        if (behaviour.present and (behaviour.get().toString() == "CREATE_INSTANCE" or behaviour.get().toString() == "VALIDATE_CREATE" or behaviour.get().toString() == "UPDATE_INSTANCE" or behaviour.get().toString() == "VALIDATE_UPDATE")) {
                     if (s.eContainer.many) {
-                        t.ref = transferObjectTypeExposedByAnnotation.equivalent("CreateTransferObjectArraySchemaDeclarationExtended").getReference();
+                        t.ref = transferObjectTypeExposedByAnnotation.equivalent("CreateTransferObjectArraySchemaDeclarationForCreateAndUpdate").getReference();
                     } else {
-                        t.ref = transferObjectTypeExposedByAnnotation.equivalent("CreateTransferObjectSingleSchemaDeclarationExtended").getReference();
+                        t.ref = transferObjectTypeExposedByAnnotation.equivalent("CreateTransferObjectSingleSchemaDeclarationForCreateAndUpdate").getReference();
                     }
-                } else if (behaviour.present and (behaviour.get().toString() == "DELETE" or behaviour.get().toString() == "UNSET" or behaviour.get().toString() == "DELETE_INSTANCE")) {
+                } else if (behaviour.present and behaviour.get().toString() == "DELETE_INSTANCE") {
                     if (s.eContainer.many) {
                         throw "Unsupported parameter";
                     } else {
                         t.ref = asmUtils.getAllActorTypes().selectOne(ap | asmUtils.getClassifierFQName(ap) == s.details.get("value")).equivalent("CreateTransferObjectSingleSchemaDeclarationForDelete").getReference();
-                    }
-                } else if (behaviour.present and (behaviour.get().toString() == "SET" or behaviour.get().toString() == "ADD_ALL" or behaviour.get().toString() == "REMOVE_ALL") and behaviourRelation.present) {
-                    if (s.eContainer.many) {
-                        throw "Unsupported parameter";
-                    } else {
-                        t.ref = s.equivalent("CreateParameterDefinitionSchemaReferenceForReferenceChange").getReference();
                     }
                 } else if (behaviour.present and (behaviour.get().toString() == "SET_REFERENCE" or behaviour.get().toString() == "UNSET_REFERENCE" or behaviour.get().toString() == "ADD_REFERENCE" or behaviour.get().toString() == "REMOVE_REFERENCE")) {
                     var ap = asmUtils.getAllActorTypes().selectOne(ap | asmUtils.getClassifierFQName(ap) == s.details.get("value"));

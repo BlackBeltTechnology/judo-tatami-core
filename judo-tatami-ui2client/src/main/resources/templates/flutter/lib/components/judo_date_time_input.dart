@@ -1,0 +1,103 @@
+part of judo.components;
+
+class JudoDateTimeInput extends StatelessWidget implements IJudoComponent {
+  JudoDateTimeInput({
+    this.key,
+    @required this.col,
+    this.label,
+    this.icon,
+    this.onChanged,
+    @required this.initialDate,
+    this.readOnly = false,
+    this.firstDate,
+    this.lastDate,
+    this.use24HourFormat,
+  });
+
+  final Key key;
+  final int col;
+  final String label;
+  final Icon icon;
+  final Function onChanged;
+  final DateTime initialDate;
+  final bool readOnly;
+  final DateTime firstDate;
+  final DateTime lastDate;
+  final bool use24HourFormat;
+
+  final DateFormat formatter = DateFormat('yyyy-MM-dd HH:mm');
+
+  @override
+  int getColSize() {
+    return this.col;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return JudoContainer(
+      padding: EdgeInsets.symmetric(horizontal: 10),
+      col: col,
+      child: TextFormField(
+        key: key,
+        readOnly: readOnly,
+        enabled: !readOnly,
+        initialValue: formatter.format(initialDate ?? DateTime.now()),
+        decoration: readOnly ?
+        InputDecoration(
+            labelText: label,
+            prefixIcon: icon,
+            border: InputBorder.none,
+            focusedBorder: InputBorder.none,
+            enabledBorder: InputBorder.none,
+            errorBorder: InputBorder.none,
+            disabledBorder: InputBorder.none,
+        )
+            :
+        InputDecoration(
+            labelText: label,
+            prefixIcon: icon,
+            suffixIcon: iconDatePicker(context),
+        ),
+        onChanged: (value) => onChangedHandler(DateTime.parse(value)),
+      ),
+    );
+  }
+
+  Widget iconDatePicker(BuildContext context) {
+    var tempDateTime = this.initialDate ?? DateTime.now();
+    var tempTimeOfDay = TimeOfDay.fromDateTime(this.initialDate ?? DateTime.now());
+    return IconButton(
+        icon: Icon(Icons.calendar_today),
+        onPressed: () async {
+          tempDateTime = await showDatePicker(
+            context: context,
+            initialDate: tempDateTime,
+            firstDate: this.firstDate ?? DateTime(1900),
+            lastDate: this.lastDate ?? DateTime(2100),
+          );
+          tempTimeOfDay = await showTimePicker(
+            context: context,
+            initialTime: TimeOfDay.fromDateTime(initialDate ?? DateTime.now()),
+            initialEntryMode: TimePickerEntryMode.input,
+            builder: use24HourFormat ? (BuildContext context, Widget child) {
+              return MediaQuery(
+                data: MediaQuery.of(context).copyWith(alwaysUse24HourFormat: true),
+                child: child,
+              );
+            }
+              :
+              null
+          );
+
+          onChangedHandler(DateTime(tempDateTime.year, tempDateTime.month, tempDateTime.day, tempTimeOfDay.hour, tempTimeOfDay.minute));
+        }
+    );
+
+  }
+
+  void onChangedHandler(DateTime value) {
+    if (this.onChanged != null) {
+      this.onChanged(value);
+    }
+  }
+}

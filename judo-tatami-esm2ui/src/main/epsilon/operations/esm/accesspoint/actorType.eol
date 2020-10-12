@@ -37,7 +37,7 @@ operation ESM!esm::accesspoint::ActorType createClassType(application : UI!ui::A
 	var clazz = new UI!ui::data::ClassType();	
 
     clazz.~application = application;
-    clazz.~original = self;
+    clazz.~originalActorType = self;
     
 	clazz.name = self.fqName();
 					

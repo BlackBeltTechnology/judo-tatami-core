@@ -1,6 +1,5 @@
 part of judo.components;
 
-// TODO: calculating own height to tab widget
 class JudoTab extends StatefulWidget {
   JudoTab({
     @required this.col,

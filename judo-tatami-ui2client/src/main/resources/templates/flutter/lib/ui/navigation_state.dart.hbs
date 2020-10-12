@@ -17,14 +17,21 @@ import 'package:{{ modelPackage application.name }}/{{ path application.name }}/
 @lazySingleton
 class NavigationState {
     final navigatorKey = GlobalKey<ExtendedNavigatorState>();
-    String currentRoute = Routes.{{ variable application.dashboard.name }}Page;
+    String currentRoute = Routes.{{ fqVariable application.dashboard.name }}Page;
     final List<BreadCrumbItem> breadcumbItems = [ BreadCrumbItem(content: Icon(Icons.home, color: Colors.white60, size: 16,))];
     final List<String> stack = [];
 
     String currentTitle = "";
 
-    bool isMenuFixed(BuildContext context) {
-        return MediaQuery.of(context).size.width > 900;
+    bool isMenuCollapsed(BuildContext context) {
+        {{#each application.layoutTypes as |layoutType|}}
+        {{#unless layoutType.original}}
+         if (MediaQuery.of(context).size.width >= {{layoutType.minimumResolution}} && MediaQuery.of(context).size.width <={{layoutType.maximumResolution}}) {
+            return {{layoutType.menuCollapsed}};
+         }
+        {{/unless}}
+        {{/each}}
+        return false;
     }
 
     void navigateTo(String route) {

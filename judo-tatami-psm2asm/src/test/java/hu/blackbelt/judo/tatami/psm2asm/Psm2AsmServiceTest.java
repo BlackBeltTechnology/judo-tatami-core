@@ -113,6 +113,7 @@ public class Psm2AsmServiceTest {
 	public static final String INITIALIZER_SOURCE = AsmUtils.getAnnotationUri("initializer");
 	public static final String BEHAVIOUR_SOURCE = AsmUtils.getAnnotationUri("behaviour");
 	public static final String TRANSFER_OBJECT_TYPE = AsmUtils.getAnnotationUri("transferObjectType");
+	public static final String TRANSIENT_SOURCE = AsmUtils.getAnnotationUri("transient");
 
 	Log slf4jlog;
 	PsmModel psmModel;
@@ -398,6 +399,10 @@ public class Psm2AsmServiceTest {
 		assertTrue(asmStringTransferAttrAnnotation.getDetails().containsKey("maxLength"));
 		assertTrue(asmStringTransferAttrAnnotation.getDetails().get("maxLength")
 				.equals(String.valueOf(strType.getMaxLength())));
+		
+		final EAnnotation asmStringTransferAttrTransient = asmStringTransferAttr.get()
+				.getEAnnotation(TRANSIENT_SOURCE);
+		assertThat(asmStringTransferAttrTransient, IsNull.notNullValue());
 
 		final EAnnotation asmCustomTransferAttrAnnotation = asmCustomTransferAttr.get()
 				.getEAnnotation(CONSTRAINTS_SOURCE);
@@ -411,6 +416,9 @@ public class Psm2AsmServiceTest {
 		assertThat(asmBoolTransferAttrAttrAnnotation.getDetails().size(), IsEqual.equalTo(1));
 		assertTrue(asmBoolTransferAttrAttrAnnotation.getDetails().containsKey("value"));
 		assertTrue(asmBoolTransferAttrAttrAnnotation.getDetails().get("value").equals(boolAttr.getName()));
+		final EAnnotation asmBoolTransferAttrTransient = asmBoolTransferAttr.get()
+				.getEAnnotation(TRANSIENT_SOURCE);
+		assertThat(asmBoolTransferAttrTransient, IsNull.nullValue());
 
 		final EAnnotation asmIntTransferAttrAnnotation = asmIntTransferAttr.get().getEAnnotation(CONSTRAINTS_SOURCE);
 		assertThat(asmIntTransferAttrAnnotation, IsNull.notNullValue());
@@ -480,6 +488,13 @@ public class Psm2AsmServiceTest {
 		assertThat(asmTR1Annotation.getDetails().size(), IsEqual.equalTo(1));
 		assertTrue(asmTR1Annotation.getDetails().containsKey("value"));
 		assertTrue(asmTR1Annotation.getDetails().get("value").equals(association.getName()));
+		final EAnnotation asmTR1Transient = asmTR1.get()
+				.getEAnnotation(TRANSIENT_SOURCE);
+		assertThat(asmTR1Transient, IsNull.nullValue());
+		
+		final EAnnotation asmTR2Transient = asmTR2.get()
+				.getEAnnotation(TRANSIENT_SOURCE);
+		assertThat(asmTR2Transient, IsNull.notNullValue());
 
 		final EAnnotation asmTR3Annotation = asmTR3.get().getEAnnotation(EMBEDDED_SOURCE);
 		assertThat(asmTR3Annotation, IsNull.notNullValue());
@@ -489,7 +504,6 @@ public class Psm2AsmServiceTest {
 		assertTrue(asmTR3Annotation.getDetails().get("create").equals(String.valueOf(tr3.isEmbeddedCreate())));
 		assertTrue(asmTR3Annotation.getDetails().get("update").equals(String.valueOf(tr3.isEmbeddedUpdate())));
 		assertTrue(asmTR3Annotation.getDetails().get("delete").equals(String.valueOf(tr3.isEmbeddedDelete())));
-
 	}
 
 	@Test
@@ -553,16 +567,16 @@ public class Psm2AsmServiceTest {
 
 		BoundTransferOperation boundTransferOp1 = newBoundTransferOperationBuilder().withName("createRel")
 				.withBehaviour(newTransferOperationBehaviourBuilder()
-						.withBehaviourType(TransferOperationBehaviourType.CREATE_RELATION).withOwner(ownerRel).build())
+						.withBehaviourType(TransferOperationBehaviourType.CREATE_INSTANCE).withOwner(ownerRel).build())
 				.withOutput(newParameterBuilder().withName("output").withType(type)
 						.withCardinality(newCardinalityBuilder().withLower(1).withUpper(1).build()).build())
 				.withInput(newParameterBuilder().withName("input").withType(type)
 						.withCardinality(newCardinalityBuilder().withLower(1).withUpper(1).build()).build())
 				.withBinding(boundOp1).build();
 
-		UnboundOperation unbound1 = newUnboundOperationBuilder().withName("get")
+		UnboundOperation unbound1 = newUnboundOperationBuilder().withName("list")
 				.withBehaviour(newTransferOperationBehaviourBuilder()
-						.withBehaviourType(TransferOperationBehaviourType.GET).withOwner(owner).build())
+						.withBehaviourType(TransferOperationBehaviourType.LIST).withOwner(owner).build())
 				.withOutput(newParameterBuilder().withName("output").withType(t1)
 						.withCardinality(newCardinalityBuilder().withLower(owner.getCardinality().getLower())
 								.withUpper(ownerRel.getCardinality().getUpper()).build())
@@ -572,7 +586,8 @@ public class Psm2AsmServiceTest {
 		UnboundOperation unbound2Init = newUnboundOperationBuilder().withName("init").withInitializer(true)
 				.withImplementation(newOperationBodyBuilder().withBody("new p")).build();
 
-		t1.getOperations().addAll(ImmutableList.of(boundTransferOp1, unbound1, unbound2Init));
+		t1.getOperations().addAll(ImmutableList.of(boundTransferOp1, unbound2Init));
+		ap.getOperations().add(unbound1);
 
 		Model model = newModelBuilder().withName("M")
 				.withElements(ImmutableList.of(e1, e2, e3, t1, type, t3, ct, pt, ch, p, sn, ap, actorType)).build();
@@ -682,7 +697,7 @@ public class Psm2AsmServiceTest {
 		assertThat(asmBoundTr1Annotation4, IsNull.notNullValue());
 		assertThat(asmBoundTr1Annotation4.getDetails().size(), IsEqual.equalTo(2));
 		assertTrue(asmBoundTr1Annotation4.getDetails().containsKey("type"));
-		assertTrue(asmBoundTr1Annotation4.getDetails().get("type").equals("create"));
+		assertTrue(asmBoundTr1Annotation4.getDetails().get("type").equals("createInstance"));
 		assertTrue(asmBoundTr1Annotation4.getDetails().containsKey("owner"));
 		assertTrue(asmBoundTr1Annotation4.getDetails().get("owner").equals(asmUtils.getReferenceFQName(asmTR1)));
 

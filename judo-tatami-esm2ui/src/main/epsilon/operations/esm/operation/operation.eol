@@ -9,7 +9,7 @@ operation ESM!esm::`operation`::Operation createViewPageForOperationOutput(appli
 	
 	var page : UI!ui::PageDefinition = new UI!ui::PageDefinition();
 	page.~application = application;
-	page.~original = self;
+	page.~originalOperation = self;
 
 	page.dataElement = self.mapOperationOutputType(application, self.eContainer().mapClassType(application));
 	page.name = self.fqName().anchor("OperationOutputPageView", self.eContainer().fqName());
@@ -35,7 +35,7 @@ operation ESM!esm::`operation`::Operation createViewPageForOperationOutput(appli
 }
 
 operation ESM!esm::`operation`::Operation mapViewPageForOperationOutput(application : UI!ui::Application) : UI!ui::PageDefinition {
-	var opOutputPage = application.pages.selectOne(p | p.~original = self and p.pageType = UI!ui::PageType#OPERATION_OUTPUT);
+	var opOutputPage = application.pages.selectOne(p | p.~originalOperation == self and p.pageType == UI!ui::PageType#OPERATION_OUTPUT);
 	if (opOutputPage.isUndefined()) {
 		opOutputPage = self.createViewPageForOperationOutput(application);
 		application.pages.add(opOutputPage);
@@ -48,7 +48,7 @@ operation ESM!esm::`operation`::Operation createFormPageForOperationInput(applic
 	
 	var page : UI!ui::PageDefinition = new UI!ui::PageDefinition();
 	page.~application = application;
-	page.~original = self;
+	page.~originalOperation = self;
 
 	page.dataElement = self.mapOperationInputType(application, self.eContainer().mapClassType(application));
 	page.name = self.fqName().anchor("OperationInputPageForm", self.eContainer().fqName());
@@ -74,7 +74,7 @@ operation ESM!esm::`operation`::Operation createFormPageForOperationInput(applic
 }
 
 operation ESM!esm::`operation`::Operation mapFormPageForOperationInput(application : UI!ui::Application) : UI!ui::PageDefinition {
-	var opInputPage = application.pages.selectOne(p | p.~original = self and p.pageType = UI!ui::PageType#OPERATION_INPUT);
+	var opInputPage = application.pages.selectOne(p | p.~originalOperation == self and p.pageType == UI!ui::PageType#OPERATION_INPUT);
 	if (opInputPage.isUndefined()) {
 		opInputPage = self.createFormPageForOperationInput(application);
 		application.pages.add(opInputPage);
@@ -88,7 +88,7 @@ operation ESM!esm::`operation`::Operation createTablePageForOperationInput(appli
 	var clazz : UI!ui::data::ClassType = self.eContainer().mapClassType(application);
 	var page : UI!ui::PageDefinition = new UI!ui::PageDefinition();
 	page.~application = application;
-	page.~original = self;
+	page.~originalOperation = self;
 	
 	page.dataElement = self.mapOperationInputType(application, clazz);
 	page.name = self.fqName().anchor("OperationInputPageTable", self.eContainer().fqName());
@@ -130,7 +130,7 @@ operation ESM!esm::`operation`::Operation createTablePageForOperationInput(appli
 }
 
 operation ESM!esm::`operation`::Operation mapTablePageForOperationInput(application : UI!ui::Application) : UI!ui::PageDefinition {
-	var opInputPage = application.pages.selectOne(p | p.~original = self and p.pageType = UI!ui::PageType#OPERATION_INPUT);
+	var opInputPage = application.pages.selectOne(p | p.~originalOperation == self and p.pageType == UI!ui::PageType#OPERATION_INPUT);
 	if (opInputPage.isUndefined()) {
 		opInputPage = self.createTablePageForOperationInput(application);
 		application.pages.add(opOutputPage);
@@ -146,7 +146,7 @@ operation ESM!esm::`operation`::Operation createTablePageForOperationOutput(appl
 
 	var page : UI!ui::PageDefinition = new UI!ui::PageDefinition();	
 	page.~application = application;
-	page.~original = self;
+	page.~originalOperation = self;
 
 	page.dataElement = self.mapOperationOutputType(application, clazz);
 	page.name = self.fqName().anchor("OperationOutputPageTable", self.eContainer().fqName());
@@ -187,7 +187,7 @@ operation ESM!esm::`operation`::Operation createTablePageForOperationOutput(appl
 }
 
 operation ESM!esm::`operation`::Operation mapTablePageForOperationOutput(application : UI!ui::Application) : UI!ui::PageDefinition {
-	var opOutputPage = application.pages.selectOne(p | p.~original = self and p.pageType = UI!ui::PageType#OPERATION_OUTPUT);
+	var opOutputPage = application.pages.selectOne(p | p.~originalOperation == self and p.pageType == UI!ui::PageType#OPERATION_OUTPUT);
 	if (opOutputPage.isUndefined()) {
 		opOutputPage = self.createTablePageForOperationOutput(application);
 		application.pages.add(opOutputPage);

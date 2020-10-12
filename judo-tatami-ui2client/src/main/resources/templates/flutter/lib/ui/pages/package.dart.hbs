@@ -10,10 +10,20 @@
 library {{ variable application.name }}.ui.pages;
 
 import 'package:flutter/material.dart';
-import 'widgets/table/package.dart';
-import '../../../store/package.dart';
-import '../../../utilities/package.dart';
-import '../../../components/package.dart';
+import 'package:mobx/mobx.dart';
+import 'package:openapi_dart_common/openapi.dart';
+
+import 'package:{{ modelPackage application.name }}/{{ path application.name }}/injector/injector.dart';
+import 'package:{{ modelPackage application.name }}/{{ path application.name }}/repository/package.dart';
+import 'package:{{ modelPackage application.name }}/{{ path application.name }}/store/package.dart';
+import 'package:{{ modelPackage application.name }}/{{ path application.name }}/ui/navigation_state.dart';
+import 'package:{{ modelPackage application.name }}/{{ path application.name }}/ui/scaffold.dart';
+
+{{#each application.layoutTypes as |layout|}}
+{{#unless layout.original}}
+import '{{variable layout.name}}/package.dart';
+{{/unless}}
+{{/each}}
 
 {{# each layout.pageContainers as |container| }}
 part '{{ fqPath container.owner.name }}__page.dart';

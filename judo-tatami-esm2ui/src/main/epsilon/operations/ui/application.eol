@@ -1,5 +1,4 @@
 import "callOperationAction.eol";
-import "data/relationBehaviour.eol";
 
 operation UI!ui::Application resolveActionPageDefinitions() {
 	for (callAction : UI!ui::CallOperationAction in UI!ui::CallOperationAction.all().select(a | a.~application = self )) {

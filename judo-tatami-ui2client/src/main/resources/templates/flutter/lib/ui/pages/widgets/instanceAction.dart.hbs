@@ -1,60 +1,81 @@
 JudoButton(
-    col: 1,
-{{# if (isSaveButton this) }}
-    onPressed: () => navigation.close({{ fqVariable page.targetClassType.name }}Store),
-    icon: Icon(Icons.save),
-    label: 'Save',
-{{/ if}}
-{{# if (isBackButton this) }}
-    onPressed: () => navigation.close(),
-    icon: Icon(Icons.arrow_back_ios),
-{{/ if }}
-{{# if (isCreateButton this) }}
+    col: {{col}},
+{{# if action.isSaveAction }}
     onPressed: () async {
-        var created = await navigation.open(Routes.{{ fqVariable this.target.name }}Page);
-        if (created != null) {
-            await {{ fqVariable page.name }}PageStore.create{{ fqClass page.targetClassType.name }}(created);
-            {{ fqVariable page.name }}PageStore.get{{ fqClass page.targetClassType.name }}();
+        var res = await {{ fqVariable page.name }}PageStore.
+        {{~# if page.isPageTypeUpdate ~}}
+            validate{{ className page.relationType.target.name }}(target{{ className page.relationType.target.name }}Store);
+        {{/ if }}
+        {{~# if page.isPageTypeCreate ~}}
+            validate{{ fqClass page.relationType.name }}({{# unless page.dataElement.isAccess}}owner{{ className page.relationType.owner.name }}Store, {{/unless}}target{{ className page.relationType.target.name }}Store);
+        {{/ if }}
+        if (res != null) {
+            navigation.close(target{{ className page.dataElement.target.name }}Store);
         }
     },
-    label: 'Create',
-    icon: Icon(Icons.add),
+{{/ if}}
+{{# if action.isBackAction }}
+    onPressed: () => navigation.close(),
 {{/ if }}
-{{# if (isDeleteButton this) }}
-    onPressed: () async {
-        await {{ fqVariable page.name }}PageStore.delete{{ fqClass page.targetClassType.name }}({{ fqVariable page.targetClassType.name }}Store);
-        navigation.close({{ fqVariable page.targetClassType.name }}Store);
-    },
-    label: 'Delete',
-    icon: Icon(Icons.delete),
+{{# if action.isCreateAction }}
+    onPressed:{{# unless page.dataElement.isAccess}}{{# unless page.dataElement.isRelationKindStatic}} owner{{ className page.dataElement.owner.name }}Store.internal__updatable ?{{/ unless}}{{/ unless}} () async {
+        var created = await navigation.open(Routes.{{ fqVariable instanceAction.target.name }}Page{{# unless page.dataElement.isAccess}},
+            arguments: {{ fqClass instanceAction.target.name }}PageArguments(owner{{ className page.dataElement.owner.name }}Store: owner{{ className page.dataElement.owner.name }}Store){{~/ unless}});
+        if (created != null) {
+            {{ fqVariable page.name }}PageStore.create{{ fqClass page.relationType.name }}({{# unless page.dataElement.isAccess}}owner{{ className page.dataElement.owner.name }}Store ,{{/ unless}}created);
+        }
+    }{{# unless page.dataElement.isAccess}}{{# unless page.dataElement.isRelationKindStatic}} : null{{/ unless}}{{/ unless}},
 {{/ if }}
-{{# if (isEditButton this) }}
-    onPressed: () async {
-        {{ fqClass page.targetClassType.name }}Store cloned = {{ fqClass page.targetClassType.name }}Store();
-        cloned.updateWith({{ fqVariable page.targetClassType.name }}Store);
-        var ret = await navigation.open(Routes.{{ fqVariable this.target.name }}Page,
-        arguments: {{ fqClass this.target.name }}PageArguments({{ fqVariable page.targetClassType.name }}Store: cloned));
+{{# if action.isDeleteAction }}
+    onPressed:{{# unless page.dataElement.isAccess}}{{# unless page.dataElement.isRelationKindStatic}} owner{{ className page.dataElement.owner.name }}Store.internal__updatable &&{{/ unless}}{{/ unless}} target{{ className page.dataElement.target.name }}Store.internal__deletable ? () async {
+        await {{ fqVariable page.name }}PageStore.delete{{ className page.relationType.target.name }}(target{{ className page.dataElement.target.name }}Store);
+        navigation.close(target{{ className page.dataElement.target.name }}Store);
+    } : null,
+{{/ if }}
+{{# if  action.isEditAction }}
+    onPressed:{{# unless page.dataElement.isAccess}}{{# unless page.dataElement.isRelationKindStatic}} owner{{ className page.dataElement.owner.name }}Store.internal__updatable ?{{/ unless}}{{/ unless}} () async {
+        {{ fqClass page.dataElement.target.name }}Store cloned = {{ fqClass page.dataElement.target.name }}Store();
+        cloned.updateWith(target{{ className page.dataElement.target.name }}Store);
+        var ret = await navigation.open(Routes.{{ fqVariable action.target.name }}Page,
+        arguments: {{ fqClass action.target.name }}PageArguments(target{{ className page.dataElement.target.name }}Store: cloned));
         if (ret != null) {
-            {{ fqVariable page.targetClassType.name }}Store.updateWith(cloned);
-            var updated = await {{ fqVariable page.name }}PageStore.update{{ fqClass page.targetClassType.name }}({{ fqVariable page.targetClassType.name }}Store);
+            target{{ className page.dataElement.target.name }}Store.updateWith(cloned);
+            var updated = await {{ fqVariable page.name }}PageStore.update{{ className page.relationType.target.name }}(target{{ className page.dataElement.target.name }}Store);
             if (updated != null) {
-            {{ fqVariable page.targetClassType.name }}Store.updateWith(updated);
+                target{{ className page.dataElement.target.name }}Store.updateWith(updated);
             }
         }
-    },
-    label: 'Edit',
-    icon: Icon(Icons.edit),
+    }{{# unless page.dataElement.isAccess}}{{# unless page.dataElement.isRelationKindStatic}} : null{{/ unless}}{{/ unless}},
 {{/if}}
-{{#if (isAddButton this)}}
-    onPressed: () async {
+{{#if action.isAddAction}}
+    onPressed:{{# unless page.dataElement.isAccess}}{{# unless page.dataElement.isRelationKindStatic}} owner{{ className page.dataElement.owner.name }}Store.internal__updatable ?{{/ unless}}{{/ unless}} () async {
         var selected =
             {{> templates/flutter/lib/ui/pages/widgets/dialog.dart.hbs}}
         if (selected != null) {
-            {{fqVariable page.name}}PageStore.add{{ fqClass page.dataElement.owner.name }}({{ variable page.dataElement.owner.name }}Store, selected);
+            {{fqVariable page.name}}PageStore.add{{ fqClass page.relationType.name }}(owner{{ className page.dataElement.owner.name }}Store, selected);
         }
+    }{{# unless page.dataElement.isAccess}}{{# unless page.dataElement.isRelationKindStatic}} : null{{/ unless}}{{/ unless}},
+{{/if}}
+{{#if action.isSetAction}}
+    onPressed:{{# unless page.dataElement.isAccess}}{{# unless page.dataElement.isRelationKindStatic}} owner{{ className page.dataElement.owner.name }}Store.internal__updatable ?{{/ unless}}{{/ unless}} () async {
+        var selected =
+            {{> templates/flutter/lib/ui/pages/widgets/dialog.dart.hbs}}
+        if (selected != null) {
+            {{fqVariable page.name}}PageStore.set{{ fqClass page.relationType.name }}(owner{{ className page.dataElement.owner.name }}Store, selected);
+        }
+    }{{# unless page.dataElement.isAccess}}{{# unless page.dataElement.isRelationKindStatic}} : null{{/ unless}}{{/ unless}},
+{{/if}}
+{{# if action.isNavigationToPageAction }}
+    onPressed: () async {
+        await navigation.open(Routes.{{ fqVariable action.target.name }}Page,
+            arguments: {{ fqClass action.target.name }}PageArguments(owner{{ className action.target.dataElement.owner.name }}Store: target{{ className action.target.dataElement.owner.name }}Store));
     },
-    label: 'Add existing',
-    icon: Icon(Icons.link),
+{{/ if }}
+{{#if label }}
+    label: '{{label}}',
+{{/if}}
+{{#if icon }}
+    icon: Icon(Icons.{{icon.name}}),
 {{/if}}
     rounded: true,
 ),

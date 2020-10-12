@@ -1,14 +1,16 @@
-    final {{ fqClass page.targetClassType.name }}Store {{ fqVariable page.targetClassType.name }}Store;
+    final {{ fqClass page.dataElement.target.name }}Store target{{ className page.dataElement.target.name }}Store;
 
-    const {{ fqClass page.name }}({Key key, @required this.{{ fqVariable page.targetClassType.name }}Store}) : super(key: key);
+    const {{fqClass page.name}}Page({Key key, @required this.target{{ className page.dataElement.target.name }}Store}) : super(key: key);
 
     @override
     State<StatefulWidget> createState() =>
-        _{{ fqClass page.name }}State({{ fqVariable page.targetClassType.name }}Store: {{ fqVariable page.targetClassType.name }}Store);
+        _{{ fqClass page.name }}PageState(target{{ className page.dataElement.target.name }}Store: target{{ className page.dataElement.target.name }}Store);
 }
 
 class _{{ fqClass page.name }}PageState extends State<{{ fqClass page.name }}Page> {
 
-    final {{ fqClass page.targetClassType.name }}Store {{ fqVariable page.targetClassType.name }}Store;
+    final {{ fqClass page.dataElement.target.name }}Store target{{ className page.dataElement.target.name }}Store;
 
-    _{{ fqClass page.name }}PageState({@required this.{{ fqVariable page.targetClassType.name }}Store});
+    final {{fqClass page.name}}PageStore {{fqVariable page.name}}PageStore = {{fqClass page.name}}PageStore();
+
+    _{{fqClass page.name}}PageState({@required this.target{{ className page.dataElement.target.name }}Store});
