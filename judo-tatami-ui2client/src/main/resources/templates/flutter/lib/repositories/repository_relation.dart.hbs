@@ -82,8 +82,8 @@ class {{ fqClass relation.owner.name }}{{ fqClass relation.name }}Repository {
   // CREATE (Access)
   //////////////////////////////////////////////////////////////////////////////
   Future<{{ fqClass relation.target.name }}Store> {{ fqVariable relation.owner.name }}{{ fqClass relation.name }}Create({{ fqClass relation.target.name }}Store target) async {
-    {{ fqClass relation.target.name }}Extended {{ variable relation.target.name }}ExtendedRequest = {{ fqClass ap.name }}RepositoryStoreMapper.create{{ fqClass relation.target.name }}ExtendedFrom{{ fqClass relation.target.name }}Store(target);
-    {{ fqClass relation.target.name }} {{ variable relation.target.name }}Response = await DefaultApi(locator<ApiClient>()).{{ fqVariable relation.owner.name }}CreateInstance{{ className relation.name }}({{ variable relation.target.name }}ExtendedRequest);
+    {{ fqClass relation.target.name }}ForCreateAndUpdate {{ variable relation.target.name }}ForCreateAndUpdateRequest = {{ fqClass ap.name }}RepositoryStoreMapper.create{{ fqClass relation.target.name }}ForCreateAndUpdateFrom{{ fqClass relation.target.name }}Store(target);
+    {{ fqClass relation.target.name }} {{ variable relation.target.name }}Response = await DefaultApi(locator<ApiClient>()).{{ fqVariable relation.owner.name }}CreateInstance{{ className relation.name }}({{ variable relation.target.name }}ForCreateAndUpdateRequest);
     return {{ fqClass ap.name }}RepositoryStoreMapper.create{{ fqClass relation.target.name }}StoreFrom{{ fqClass relation.target.name }}({{ variable relation.target.name }}Response);
   }
       {{ else }}
@@ -92,8 +92,8 @@ class {{ fqClass relation.owner.name }}{{ fqClass relation.name }}Repository {
   // CREATE
   //////////////////////////////////////////////////////////////////////////////
   Future<{{ fqClass relation.target.name }}Store> {{ fqVariable relation.owner.name }}{{ fqClass relation.name }}Create({{ fqClass relation.owner.name }}Store owner, {{ fqClass relation.target.name }}Store target) async {
-    {{ fqClass relation.target.name }}Extended {{ variable relation.target.name }}ExtendedRequest = {{ fqClass ap.name }}RepositoryStoreMapper.create{{ fqClass relation.target.name }}ExtendedFrom{{ fqClass relation.target.name }}Store(target);
-    {{ fqClass relation.target.name }} {{ variable relation.target.name }}Response = await DefaultApi(locator<ApiClient>()).{{ fqVariable owner.name }}CreateInstance{{ className relation.name }}(owner.internal__signedIdentifier, {{ variable relation.target.name }}ExtendedRequest);
+    {{ fqClass relation.target.name }}ForCreateAndUpdate {{ variable relation.target.name }}ForCreateAndUpdateRequest = {{ fqClass ap.name }}RepositoryStoreMapper.create{{ fqClass relation.target.name }}ForCreateAndUpdateFrom{{ fqClass relation.target.name }}Store(target);
+    {{ fqClass relation.target.name }} {{ variable relation.target.name }}Response = await DefaultApi(locator<ApiClient>()).{{ fqVariable owner.name }}CreateInstance{{ className relation.name }}(owner.internal__signedIdentifier, {{ variable relation.target.name }}ForCreateAndUpdateRequest);
     return {{ fqClass ap.name }}RepositoryStoreMapper.create{{ fqClass relation.target.name }}StoreFrom{{ fqClass relation.target.name }}({{ variable relation.target.name }}Response);
   }
       {{/ if }}
@@ -105,8 +105,8 @@ class {{ fqClass relation.owner.name }}{{ fqClass relation.name }}Repository {
   // VALIDATE CREATE (Access)
   //////////////////////////////////////////////////////////////////////////////
   Future<{{ fqClass relation.target.name }}Store> {{ fqVariable relation.owner.name }}{{ fqClass relation.name }}ValidateForCreate({{ fqClass relation.target.name }}Store target) async {
-    {{ fqClass relation.target.name }}Extended {{ variable relation.target.name }}ExtendedRequest = {{ fqClass ap.name }}RepositoryStoreMapper.create{{ fqClass relation.target.name }}ExtendedFrom{{ fqClass relation.target.name }}Store(target);
-    {{ fqClass relation.target.name }} {{ variable relation.target.name }}Response = await DefaultApi(locator<ApiClient>()).{{ fqVariable relation.owner.name }}ValidateCreateInstance{{ className relation.name }}({{ variable relation.target.name }}ExtendedRequest);
+    {{ fqClass relation.target.name }}ForCreateAndUpdate {{ variable relation.target.name }}ForCreateAndUpdateRequest = {{ fqClass ap.name }}RepositoryStoreMapper.create{{ fqClass relation.target.name }}ForCreateAndUpdateFrom{{ fqClass relation.target.name }}Store(target);
+    {{ fqClass relation.target.name }} {{ variable relation.target.name }}Response = await DefaultApi(locator<ApiClient>()).{{ fqVariable relation.owner.name }}ValidateCreateInstance{{ className relation.name }}({{ variable relation.target.name }}ForCreateAndUpdateRequest);
     return {{ fqClass ap.name }}RepositoryStoreMapper.create{{ fqClass relation.target.name }}StoreFrom{{ fqClass relation.target.name }}({{ variable relation.target.name }}Response);
   }
     {{ else }}
@@ -115,8 +115,8 @@ class {{ fqClass relation.owner.name }}{{ fqClass relation.name }}Repository {
   // VALIDATE CREATE
   //////////////////////////////////////////////////////////////////////////////
   Future<{{ fqClass relation.target.name }}Store> {{ fqVariable relation.owner.name }}{{ fqClass relation.name }}ValidateForCreate({{ fqClass relation.owner.name }}Store owner, {{ fqClass relation.target.name }}Store target) async {
-    {{ fqClass relation.target.name }}Extended {{ variable relation.target.name }}ExtendedRequest = {{ fqClass ap.name }}RepositoryStoreMapper.create{{ fqClass relation.target.name }}ExtendedFrom{{ fqClass relation.target.name }}Store(target);
-    {{ fqClass relation.target.name }} {{ variable relation.target.name }}Response = await DefaultApi(locator<ApiClient>()).{{ fqVariable owner.name }}ValidateCreateInstance{{ className relation.name }}(owner.internal__signedIdentifier, {{ variable relation.target.name }}ExtendedRequest);
+    {{ fqClass relation.target.name }}ForCreateAndUpdate {{ variable relation.target.name }}ForCreateAndUpdateRequest = {{ fqClass ap.name }}RepositoryStoreMapper.create{{ fqClass relation.target.name }}ForCreateAndUpdateFrom{{ fqClass relation.target.name }}Store(target);
+    {{ fqClass relation.target.name }} {{ variable relation.target.name }}Response = await DefaultApi(locator<ApiClient>()).{{ fqVariable owner.name }}ValidateCreateInstance{{ className relation.name }}(owner.internal__signedIdentifier, {{ variable relation.target.name }}ForCreateAndUpdateRequest);
     return {{ fqClass ap.name }}RepositoryStoreMapper.create{{ fqClass relation.target.name }}StoreFrom{{ fqClass relation.target.name }}({{ variable relation.target.name }}Response);
   }
     {{/ if }}
