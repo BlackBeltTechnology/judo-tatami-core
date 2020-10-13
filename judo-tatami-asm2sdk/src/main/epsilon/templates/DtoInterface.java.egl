@@ -8,15 +8,15 @@ package [%= getSdkPrefix() + dto.getClassifierPackageName() %];
 public interface [%= dto.getClassName() %] {
 
     static [%= dto.getClassName() %] create() {
-        return hu.blackbelt.structured.map.proxy.MapProxy.newInstance([%= dto.getClassName() %].class);
+        return hu.blackbelt.structured.map.proxy.MapProxy.builder([%= dto.getClassName() %].class).withEnumMappingMethod("getOrdinal").newInstance();
     }
 
     static [%= dto.getClassName() %]Builder builder() {
-        return hu.blackbelt.structured.map.proxy.MapBuilderProxy.newInstance([%= dto.getClassName() %]Builder.class, [%= dto.getClassName() %].class, "with");
+        return hu.blackbelt.structured.map.proxy.MapBuilderProxy.builder([%= dto.getClassName() %]Builder.class, [%= dto.getClassName() %].class).withEnumMappingMethod("getOrdinal").withBuilderMethodPrefix("with").newInstance();
     }
     
     static [%= dto.getClassName() %]Builder builderFrom([%= dto.getClassName() %] instance) {
-        return hu.blackbelt.structured.map.proxy.MapBuilderProxy.newInstance([%= dto.getClassName() %]Builder.class, instance, "with");
+        return hu.blackbelt.structured.map.proxy.MapBuilderProxy.builder([%= dto.getClassName() %]Builder.class, instance).withEnumMappingMethod("getOrdinal").withBuilderMethodPrefix("with").newInstance();
     }
 
     [%= dto.idType() %] get__identifier();
