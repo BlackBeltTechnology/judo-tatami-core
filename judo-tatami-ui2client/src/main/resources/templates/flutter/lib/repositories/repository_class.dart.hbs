@@ -38,7 +38,7 @@ class {{ fqClass class.name }}Repository {
   // VALIDATE UPDATE
   //////////////////////////////////////////////////////////////////////////////
   Future<{{ fqClass class.name }}Store> {{ fqVariable class.name }}ValidateForUpdate({{ fqClass class.name }}Store target) async {
-    {{ fqClass class.name }} {{ variable class.name }}Request = {{ fqClass ap.name }}RepositoryStoreMapper.create{{ fqClass class.name }}From{{ fqClass class.name }}Store(target);
+    {{ fqClass class.name }}ForCreateAndUpdate {{ variable class.name }}Request = {{ fqClass ap.name }}RepositoryStoreMapper.create{{ fqClass class.name }}ForCreateAndUpdateFrom{{ fqClass class.name }}Store(target);
     {{ fqClass class.name }} {{ variable class.name }}Response = await DefaultApi(locator<ApiClient>()).{{ fqVariable class.name }}ValidateUpdateInstance{{ fqClass name }}(target.internal__signedIdentifier, {{ variable class.name }}Request);
     return {{ fqClass ap.name }}RepositoryStoreMapper.create{{ fqClass class.name }}StoreFrom{{ fqClass class.name }}({{ variable class.name }}Response);
   }
@@ -58,7 +58,7 @@ class {{ fqClass class.name }}Repository {
   // UPDATE
   //////////////////////////////////////////////////////////////////////////////
   Future<{{ fqClass class.name }}Store> {{ fqVariable class.name }}Update({{ fqClass class.name }}Store target) async {
-    {{ fqClass class.name }} {{ variable class.name }}Request = {{ fqClass ap.name }}RepositoryStoreMapper.create{{ fqClass class.name }}From{{ fqClass class.name }}Store(target);
+    {{ fqClass class.name }}ForCreateAndUpdate {{ variable class.name }}Request = {{ fqClass ap.name }}RepositoryStoreMapper.create{{ fqClass class.name }}ForCreateAndUpdateFrom{{ fqClass class.name }}Store(target);
     {{ fqClass class.name }} {{ variable class.name }}Response = await DefaultApi(locator<ApiClient>()).{{ fqVariable class.name }}UpdateInstance{{ fqClass name }}(target.internal__signedIdentifier, {{ variable class.name }}Request);
     return {{ fqClass ap.name }}RepositoryStoreMapper.create{{ fqClass class.name }}StoreFrom{{ fqClass class.name }}({{ variable class.name }}Response);
   }
