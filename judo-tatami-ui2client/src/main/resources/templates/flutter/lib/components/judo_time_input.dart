@@ -9,6 +9,7 @@ class JudoTimeInput extends StatelessWidget implements IJudoComponent {
     this.onChanged,
     @required this.initialDate,
     this.readOnly = false,
+    this.disabled = false,
     this.use24HourFormat,
   });
 
@@ -19,6 +20,7 @@ class JudoTimeInput extends StatelessWidget implements IJudoComponent {
   final Function onChanged;
   final TimeOfDay initialDate;
   final bool readOnly;
+  final bool disabled;
   final bool use24HourFormat;
 
   @override
@@ -33,10 +35,16 @@ class JudoTimeInput extends StatelessWidget implements IJudoComponent {
       col: col,
       child: TextFormField(
         key: key,
-        readOnly: readOnly,
-        enabled: !readOnly,
+        readOnly: disabled ? true : readOnly,
+        enabled: disabled ? false : !readOnly,
         initialValue: initialDate != null ? initialDate.toString() : TimeOfDay.now().toString() ,
-        decoration: readOnly ?
+        decoration: disabled ?
+        InputDecoration(
+          labelText: label,
+          prefixIcon: icon,
+          suffixIcon: iconDatePicker(context),
+        )
+            : readOnly ?
         InputDecoration(
           labelText: label,
           prefixIcon: icon,
@@ -61,8 +69,11 @@ class JudoTimeInput extends StatelessWidget implements IJudoComponent {
   Widget iconDatePicker(BuildContext context) {
     var tempTime = this.initialDate ?? DateTime.now();
     return IconButton(
-        icon: Icon(Icons.alarm),
-        onPressed: () async {
+        icon: Icon(
+          Icons.calendar_today,
+          color: disabled ? kDisabledColor : null,
+        ),
+        onPressed: disabled ? null : () async {
           tempTime = await showTimePicker(
             context: context,
             initialTime: tempTime,

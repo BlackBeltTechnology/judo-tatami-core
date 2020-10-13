@@ -9,6 +9,7 @@ class JudoInputText extends StatelessWidget implements IJudoComponent {
     this.onChanged,
     this.initialValue,
     this.readOnly = false,
+    this.disabled = false,
   });
 
   final Key key;
@@ -18,6 +19,7 @@ class JudoInputText extends StatelessWidget implements IJudoComponent {
   final Function onChanged;
   final String initialValue;
   final bool readOnly;
+  final bool disabled;
 
   @override
   int getColSize() {
@@ -27,14 +29,20 @@ class JudoInputText extends StatelessWidget implements IJudoComponent {
   @override
   Widget build(BuildContext context) {
     return JudoContainer(
+      color: disabled ? kDisabledColor : null,
       padding: EdgeInsets.symmetric(horizontal: 10),
       col: col,
       child: TextFormField(
         key: key,
-        readOnly: readOnly,
-        enabled: !readOnly,
+        readOnly: disabled ? true : readOnly,
+        enabled: disabled ? false : !readOnly,
         initialValue: initialValue,
-        decoration: readOnly ?
+        decoration: disabled ?
+        InputDecoration(
+          labelText: label,
+          prefixIcon: icon,
+        )
+            : readOnly ?
             InputDecoration(
                 labelText: label,
                 prefixIcon: icon,

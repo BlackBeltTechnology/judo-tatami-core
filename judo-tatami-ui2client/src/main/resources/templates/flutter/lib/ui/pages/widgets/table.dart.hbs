@@ -7,8 +7,9 @@ Observer(builder: (_) {
             return Container();
         case FutureStatus.fulfilled:
             return JudoTable(
+                disabled: {{disabled}},
                 col: {{col}},
-                dataInfo: {{fqClass pageDefinition.name}}{{fqClass name}}{{ fqClass pageContainer.layoutType.name }}Table(),
+                dataInfo: {{fqClass pageDefinition.name}}{{fqClass name}}{{ fqClass pageContainer.layoutType.name }}Table(disabled: {{disabled}}),
                 rowList: {{# if page.dataElement.isAccess}}{{ fqVariable page.name }}PageStore.{{ fqVariable page.relationType.name }}StoreList{{else}}{{# if page.relationType.isCollection }}owner{{ className page.relationType.owner.name }}Store.{{variable page.relationType.name}}{{else}}[owner{{ className page.relationType.owner.name }}Store.{{variable page.relationType.name}}].asObservable(){{/ if}}{{/ if}},
                 {{#each this.rowActions as |action|}}
                 {{#if action.isViewAction}}

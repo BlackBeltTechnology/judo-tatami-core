@@ -11,6 +11,12 @@ part of {{ variable application.name }}.ui.pages.{{ fqVariable table.pageContain
 
 class {{ fqClass table.pageDefinition.name }}{{ fqClass table.name }}{{ fqClass table.pageContainer.layoutType.name }}Table implements JudoTableDataInfo {
 
+    const {{ fqClass table.pageDefinition.name }}{{ fqClass table.name }}{{ fqClass table.pageContainer.layoutType.name }}Table({
+        this.disabled = false,
+    });
+
+    final bool disabled;
+
     @override
     List<DataColumn> getColumns(Function onAdd) {
         return [
@@ -38,8 +44,11 @@ class {{ fqClass table.pageDefinition.name }}{{ fqClass table.name }}{{ fqClass 
                 {{#if action.isRemoveAction}}
                 target{{ className table.dataElement.target.name }}.internal__updatable
                 ? DataCell(
-                        Icon(Icons.{{action.icon.name}}),
-                        onTap: () => removeAction(target{{ className table.dataElement.target.name }}),
+                        Icon(
+                            Icons.{{action.icon.name}},
+                            color: disabled ? kDisabledColor : null,
+                        ),
+                        onTap: disabled ? null : () => removeAction(target{{ className table.dataElement.target.name }}),
                   )
                 : DataCell(
                     Text(''),
@@ -48,8 +57,11 @@ class {{ fqClass table.pageDefinition.name }}{{ fqClass table.name }}{{ fqClass 
                 {{#if action.isDeleteAction}}
                 target{{ className table.dataElement.target.name }}.internal__deletable && deleteAction != null // function null if the owner is not updatable
                 ? DataCell(
-                    Icon(Icons.{{action.icon.name}}),
-                    onTap: () => deleteAction(target{{ className table.dataElement.target.name }}),
+                    Icon(
+                        Icons.{{action.icon.name}},
+                        color: disabled ? kDisabledColor : null,
+                    ),
+                    onTap: disabled ? null : () => deleteAction(target{{ className table.dataElement.target.name }}),
                   )
                 : DataCell(
                     Text(''),
@@ -58,8 +70,11 @@ class {{ fqClass table.pageDefinition.name }}{{ fqClass table.name }}{{ fqClass 
                 {{#if action.isCreateAction}}
                 target{{ className table.dataElement.target.name }}.internal__updatable
                 ? DataCell(
-                    Icon(Icons.{{action.icon.name}}),
-                    onTap: () => navigateToCreatePageAction(target{{ className table.dataElement.target.name }}),
+                    Icon(
+                        Icons.{{action.icon.name}},
+                        color: disabled ? kDisabledColor : null,
+                    ),
+                    onTap: disabled ? null : () => navigateToCreatePageAction(target{{ className table.dataElement.target.name }}),
                   )
                 : DataCell(
                     Text(''),
@@ -68,8 +83,11 @@ class {{ fqClass table.pageDefinition.name }}{{ fqClass table.name }}{{ fqClass 
                 {{#if action.isEditAction}}
                 target{{ className table.dataElement.target.name }}.internal__updatable
                 ? DataCell(
-                    Icon(Icons.{{action.icon.name}}),
-                    onTap: () => navigateToEditPageAction(target{{ className table.dataElement.target.name }}),
+                    Icon(
+                        Icons.{{action.icon.name}},
+                        color: disabled ? kDisabledColor : null,
+                    ),
+                    onTap: disabled ? null : () => navigateToEditPageAction(target{{ className table.dataElement.target.name }}),
                   )
                 : DataCell(
                     Text(''),
@@ -77,8 +95,11 @@ class {{ fqClass table.pageDefinition.name }}{{ fqClass table.name }}{{ fqClass 
                 {{/if}}
                 {{#if action.isViewAction}}
                 DataCell(
-                    Icon(Icons.{{action.icon.name}}),
-                    onTap: () => navigateToViewPageAction(target{{ className table.dataElement.target.name }}),
+                    Icon(
+                        Icons.{{action.icon.name}},
+                        color: disabled ? kDisabledColor : null,
+                    ),
+                    onTap: disabled ? null : () => navigateToViewPageAction(target{{ className table.dataElement.target.name }}),
                 ),
                 {{/if}}
                 {{/each}}

@@ -8,6 +8,7 @@ class JudoButton extends StatelessWidget implements IJudoComponent {
     this.onPressed,
     this.rounded = true,
     this.color = kPrimaryColor,
+    this.disabled = false,
     this.disabledColor = Colors.black26,
     this.textColor = Colors.white,
     this.disabledTextColor = Colors.black26
@@ -19,6 +20,7 @@ class JudoButton extends StatelessWidget implements IJudoComponent {
   final Icon icon;
   final bool rounded;
   final Color color;
+  final bool disabled;
   final Color disabledColor;
   final Color textColor;
   final Color disabledTextColor;
@@ -40,7 +42,7 @@ class JudoButton extends StatelessWidget implements IJudoComponent {
               ),
               icon: icon,
               label: label != null ? Text(label) : Text(''),
-              onPressed: onPressed,
+              onPressed: disabled ? null : onPressed,
               color: color,
               disabledColor: disabledColor,
               textColor: textColor,
@@ -51,7 +53,7 @@ class JudoButton extends StatelessWidget implements IJudoComponent {
                   borderRadius: rounded ? BorderRadius.circular(16.0) : BorderRadius.zero
               ),
               child: label != null ? Text(label) : Text(''),
-              onPressed: onPressed,
+              onPressed: disabled ? null : onPressed,
               color: color,
               disabledColor: disabledColor,
               textColor: textColor,
