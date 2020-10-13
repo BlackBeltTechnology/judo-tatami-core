@@ -65,6 +65,22 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class SimpleOrderModel {
+	
+	private static TransferObjectView viewForTest;
+	private static TransferObjectForm formForTest;
+	private static TransferObjectTable tableForTest;
+
+	public static TransferObjectForm getFormForTest() {
+		return formForTest;
+	}
+
+	public static TransferObjectTable getTableForTest() {
+		return tableForTest;
+	}
+
+	public static TransferObjectView getViewForTest() {
+		return viewForTest;
+	}
 
 	public static Model createSimpleOrderModel() {
 		
@@ -498,13 +514,13 @@ public class SimpleOrderModel {
         createViewForTransferObjectType(orderItem);
             
         //International Order Form
-        createFormForTransferObjectType(internationalOrder);
+        formForTest = createFormForTransferObjectType(internationalOrder);
             
         //International Order Table
-        createTableForTransferObject(internationalOrder,true);        
+        tableForTest = createTableForTransferObject(internationalOrder,true);        
 
         //International Order View
-        createViewForTransferObjectType(internationalOrder);
+        viewForTest = createViewForTransferObjectType(internationalOrder);
         
         //Archiver Form
         createFormForTransferObjectType(archiver);
@@ -608,7 +624,7 @@ public class SimpleOrderModel {
         return model;
 	}
 	
-	private static void createFormForTransferObjectType(TransferObjectType transferObject) {
+	private static TransferObjectForm createFormForTransferObjectType(TransferObjectType transferObject) {
 		
 		ArrayList<DataField> dataFields = new ArrayList<>();
 		ArrayList<TabularReferenceField> tables = new ArrayList<>();
@@ -683,6 +699,8 @@ public class SimpleOrderModel {
 				))
         		.build();
         transferObject.setForm(form);
+        
+        return form;
 	}
 
 	private static String getIconName(DataFeature a) {
@@ -701,7 +719,7 @@ public class SimpleOrderModel {
 		}
 	}
 	
-	private static void createTableForTransferObject(TransferObjectType transferObject, boolean masterDetail) {
+	private static TransferObjectTable createTableForTransferObject(TransferObjectType transferObject, boolean masterDetail) {
 		ArrayList<DataColumn> columns = new ArrayList<>();
 		transferObject.getAllAttributes().stream().forEach(a -> {
 			columns.add(newDataColumnBuilder()
@@ -718,7 +736,9 @@ public class SimpleOrderModel {
 				.withMaxVisibleElements(5)
 				.withColumns(columns)
 				.build();
-        transferObject.setTable(table); 
+        transferObject.setTable(table);
+        
+        return table;
 	}
 	
 	private static TransferObjectView getViewForTransferObjectType(TransferObjectType transferObject) {
@@ -783,8 +803,9 @@ public class SimpleOrderModel {
         return view;
 	}
 	
-	private static void createViewForTransferObjectType(TransferObjectType transferObject) {
+	private static TransferObjectView createViewForTransferObjectType(TransferObjectType transferObject) {
 		TransferObjectView view = getViewForTransferObjectType(transferObject);
         transferObject.setView(view);
+        return view;
 	}
 }

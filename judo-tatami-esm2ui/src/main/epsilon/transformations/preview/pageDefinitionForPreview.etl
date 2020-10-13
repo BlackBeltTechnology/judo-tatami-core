@@ -1,0 +1,91 @@
+import "../../operations/_importAll.eol";
+
+@abstract
+rule CreatePageDefinitionForPreview
+	transform s : ESM!esm::ui::VisualElement
+	to t : UI!ui::PageDefinition {
+		guard: s == rootElement
+		
+		var pageContainer = new UI!ui::PageContainer();
+    	pageContainer.layoutType = application.layoutTypes.first;
+		pageContainer.name = "default";
+		pageContainer.direction = UI!Axis#VERTICAL;
+	
+		t.containers.add(pageContainer);
+
+		var flex = new UI!ui::Flex();
+		
+		flex.name = s.name;
+	    flex.label = s.name;    
+		flex.col = applicationColumns;
+		
+		if (s.layout == ESM!esm::ui::Layout#HORIZONTAL) {
+			flex.direction = UI!Axis#HORIZONTAL;
+		}
+		if (s.layout == ESM!esm::ui::Layout#VERTICAL) {
+			flex.direction = UI!Axis#VERTICAL;
+		}
+	
+		for (component in s.components) {
+			flex.children.add(component.map(application));
+		}
+	
+		pageContainer.children.add(flex);
+		application.pages.add(t);	
+}
+
+rule CreatePageDefinitionForPreviewFromView
+    transform s: ESM!esm::ui::TransferObjectView
+    to t: UI!ui::PageDefinition 
+    	extends CreatePageDefinitionForPreview {
+
+	t.name = s.getName().anchor("Preview");
+	t.pageType = UI!ui::PageType#VIEW;
+	t.label = s.getUiLabel() + " View";
+	
+	log.debug("Created view to preview: " + s.getFQName());
+}
+
+rule CreatePageDefinitionForPreviewFromForm
+    transform s: ESM!esm::ui::TransferObjectForm
+    to t: UI!ui::PageDefinition
+        extends CreatePageDefinitionForPreview {
+	
+	t.name = s.getName().anchor("Preview");
+	t.pageType = UI!ui::PageType#CREATE;
+	t.label = s.getUiLabel() + " Create/Update";
+	
+	log.debug("Created form to preview: " + s.getFQName());
+}
+
+rule CreatePageDefinitionForPreviewFromTable
+    transform s: ESM!esm::ui::TransferObjectTable
+    to t: UI!ui::PageDefinition {
+		guard: s == rootElement
+	
+	t.name = s.getName().anchor("Preview");
+	t.pageType = UI!ui::PageType#TABLE;
+	t.label = s.getUiLabel() + " Browse";
+	
+	var pageContainer = new UI!ui::PageContainer();
+	pageContainer.layoutType = application.layoutTypes.first;
+	pageContainer.name = "default";
+	pageContainer.direction = UI!Axis#VERTICAL;
+
+	t.containers.add(pageContainer);
+
+	var flex = new UI!ui::Flex();
+	flex.name = s.name;
+    flex.label = s.name;
+    flex.direction = UI!Axis#VERTICAL;
+	flex.col = applicationColumns;
+
+	var table = s.createTableFromTransferObjectTable(application);
+    flex.children.add(table);
+
+	pageContainer.children.add(flex);
+	
+	application.pages.add(t);	
+	
+	log.debug("Created table to preview: " + s.getFQName());
+}

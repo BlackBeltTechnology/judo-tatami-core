@@ -1,0 +1,20 @@
+import "../../operations/_importAll.eol";
+import "pageDefinitionForPreview.etl";
+
+pre {
+	var rootElement = previewElement.getRoot();
+    var application : UI!ui::Application = createBlankApplicationForPreview();
+}
+
+post {
+
+	for (input : UI!ui::Input in UI!ui::Input.all()) {
+		input.setIcon();
+	}
+	
+	for (application : UI!ui::Application in UI!ui::Application.all()) {
+		uiUtils.organizeApplication(application, "mobile", 4);
+    	uiUtils.organizeApplication(application, "tablet", 8);
+    	uiUtils.organizeApplication(application, "desktop", 12);
+	}
+}

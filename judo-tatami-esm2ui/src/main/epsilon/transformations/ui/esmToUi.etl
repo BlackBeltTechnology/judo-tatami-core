@@ -1,31 +1,11 @@
-import "../../operations/ui/_importUi.eol";
+import "../../operations/_importAll.eol";
 
 import "modules/namespace/namespace.etl";
+import "modules/type/type.etl";
 import "modules/accesspoint/application.etl";
 import "modules/accesspoint/pageDefinition.etl";
 import "modules/accesspoint/navigation.etl";
-
 import "modules/ui/ui.etl";
-
-operation String anchor(anchor1 : String, anchor2 : String) : String {
-	if (anchor1.isUndefined()) {
-		return self;
-	} else {
-		if (anchor2.isUndefined()) {
-			return self + "#" + anchor1;
-		} else {
-			return self.anchor(anchor1, null) + "/" + anchor2;
-		}
-	}
-} 
-
-operation String anchor(anchor1 : String) : String {
-	return self.anchor(anchor1, null);
-}
-
-pre {
-  var uiUtils = new Native("hu.blackbelt.judo.meta.ui.runtime.UiUtils");
-}
 
 post {
 
