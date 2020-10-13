@@ -5,11 +5,13 @@ class JudoContainer extends StatelessWidget implements IJudoComponent {
     this.child,
     @required this.col,
     this.padding,
+    this.color,
   });
 
   final Widget child;
   final EdgeInsets padding;
   final int col;
+  final Color color;
 
   @override
   int getColSize() {
@@ -19,9 +21,9 @@ class JudoContainer extends StatelessWidget implements IJudoComponent {
   @override
   Widget build(BuildContext context) {
     return Flexible(
-      fit: FlexFit.loose,
       flex: col,
       child: Container(
+        color: color,
         constraints: BoxConstraints(
           maxHeight: kJudoHeight,
         ),

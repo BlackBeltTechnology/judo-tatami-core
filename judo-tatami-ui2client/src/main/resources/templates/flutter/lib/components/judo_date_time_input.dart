@@ -9,6 +9,7 @@ class JudoDateTimeInput extends StatelessWidget implements IJudoComponent {
     this.onChanged,
     @required this.initialDate,
     this.readOnly = false,
+    this.disabled = false,
     this.firstDate,
     this.lastDate,
     this.use24HourFormat,
@@ -21,6 +22,7 @@ class JudoDateTimeInput extends StatelessWidget implements IJudoComponent {
   final Function onChanged;
   final DateTime initialDate;
   final bool readOnly;
+  final bool disabled;
   final DateTime firstDate;
   final DateTime lastDate;
   final bool use24HourFormat;
@@ -35,14 +37,21 @@ class JudoDateTimeInput extends StatelessWidget implements IJudoComponent {
   @override
   Widget build(BuildContext context) {
     return JudoContainer(
+      color: disabled ? kDisabledColor : null,
       padding: EdgeInsets.symmetric(horizontal: 10),
       col: col,
       child: TextFormField(
         key: key,
-        readOnly: readOnly,
-        enabled: !readOnly,
+        readOnly: disabled ? true : readOnly,
+        enabled: disabled ? false : !readOnly,
         initialValue: formatter.format(initialDate ?? DateTime.now()),
-        decoration: readOnly ?
+        decoration: disabled ?
+        InputDecoration(
+          labelText: label,
+          prefixIcon: icon,
+          suffixIcon: iconDatePicker(context),
+        )
+            : readOnly ?
         InputDecoration(
             labelText: label,
             prefixIcon: icon,
@@ -67,8 +76,11 @@ class JudoDateTimeInput extends StatelessWidget implements IJudoComponent {
     var tempDateTime = this.initialDate ?? DateTime.now();
     var tempTimeOfDay = TimeOfDay.fromDateTime(this.initialDate ?? DateTime.now());
     return IconButton(
-        icon: Icon(Icons.calendar_today),
-        onPressed: () async {
+        icon: Icon(
+          Icons.calendar_today,
+          color: disabled ? kDisabledColor : null,
+        ),
+        onPressed: disabled ? null : () async {
           tempDateTime = await showDatePicker(
             context: context,
             initialDate: tempDateTime,

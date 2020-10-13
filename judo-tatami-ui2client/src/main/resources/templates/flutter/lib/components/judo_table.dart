@@ -17,10 +17,12 @@ class JudoTable extends StatelessWidget implements IJudoComponent {
         this.removeAction,
         this.deleteAction,
         this.sortAscending = true,
+        this.disabled = false,
         this.onAdd});
 
   final int col;
   final bool sortAscending;
+  final bool disabled;
   final JudoTableDataInfo dataInfo;
   final List rowList;
   final Function navigateToEditPageAction;
@@ -45,6 +47,8 @@ class JudoTable extends StatelessWidget implements IJudoComponent {
           height: rowList.length * kJudoHeight + kJudoHeight,
           child: Observer(
             builder: (_) => DataTable(
+              dataRowColor: disabled ? MaterialStateProperty.resolveWith((_) => kDisabledColor) : null,
+              headingRowColor: disabled ? MaterialStateProperty.resolveWith((_) => kDisabledColor) : null,
               onSelectAll: (b) {},
               sortAscending: sortAscending,
               columns: dataInfo.getColumns(onAdd),
@@ -57,6 +61,8 @@ class JudoTable extends StatelessWidget implements IJudoComponent {
         height: rowList.length * kJudoHeight + kJudoHeight,
         child: Observer(
           builder: (_) => DataTable(
+            dataRowColor: disabled ? MaterialStateProperty.resolveWith((_) => kDisabledColor) : null,
+            headingRowColor: disabled ? MaterialStateProperty.resolveWith((_) => kDisabledColor) : null,
             onSelectAll: (b) {},
             sortAscending: sortAscending,
             columns: dataInfo.getColumns(onAdd),
@@ -69,11 +75,11 @@ class JudoTable extends StatelessWidget implements IJudoComponent {
 
   List<DataRow> dataRow() {
     List<DataRow> dataRowList = rowList.map<DataRow>(dataInfo.getRow(
-      navigateToEditPageAction: this.navigateToEditPageAction,
-      navigateToCreatePageAction: this.navigateToCreatePageAction,
-      navigateToViewPageAction: this.navigateToViewPageAction,
-      deleteAction: this.deleteAction,
-      removeAction: this.removeAction
+      navigateToEditPageAction: disabled ? null : this.navigateToEditPageAction,
+      navigateToCreatePageAction: disabled ? null : this.navigateToCreatePageAction,
+      navigateToViewPageAction: disabled ? null : this.navigateToViewPageAction,
+      deleteAction: disabled ? null : this.deleteAction,
+      removeAction: disabled ? null : this.removeAction
     )).toList();
     return dataRowList;
   }

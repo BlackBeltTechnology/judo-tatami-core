@@ -1,5 +1,6 @@
 JudoButton(
     col: {{col}},
+    disabled: {{disabled}},
 {{# if action.isSaveAction }}
     onPressed: () async {
         var res = await {{ fqVariable page.name }}PageStore.

@@ -3,6 +3,7 @@ Observer(
     builder: (_) => JudoDateInput(
         key: UniqueKey(),
         col: {{ col }},
+        disabled: {{ disabled }},
         use24HourFormat: true,
         initialDate: target{{ className page.dataElement.target.name }}Store.{{ attributeType.name }}
         label: '{{ label }}',
@@ -16,6 +17,7 @@ Observer(
     builder: (_) => JudoDateInput(
         key: UniqueKey(),
         col: {{ col }},
+        disabled: {{ disabled }},
         initialDate: target{{ className page.dataElement.target.name }}Store.{{ attributeType.name }}
         label: '{{ label }}',
         icon: Icon(Icons.{{ this.leadingIcon.name }}),
@@ -30,6 +32,7 @@ Observer(
     builder: (_) => JudoDateInput(
         key: UniqueKey(),
         col: {{ col }},
+        disabled: {{ disabled }},
         initialDate: target{{ className page.dataElement.target.name }}Store.{{ attributeType.name }}
         label: '{{ label }}',
         icon: Icon(Icons.{{ this.leadingIcon.name }}),

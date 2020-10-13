@@ -3,6 +3,7 @@ Observer(
     builder: (_) => JudoInputText(
         key: UniqueKey(),
         col: {{ col }},
+        disabled: {{ disabled }},
         icon: Icon(Icons.{{ this.leadingIcon.name }}),
         label: '{{ label }}',
         initialValue: target{{ className page.dataElement.target.name }}Store.{{ attributeType.name }},
@@ -13,6 +14,7 @@ Observer(
 {{#if page.isPageTypeCreate}}
 JudoInputText(
     col: {{ col }},
+    disabled: {{ disabled }},
     icon: Icon(Icons.{{ this.leadingIcon.name }}),
     label: '{{ label }}',
     onChanged: (value) => target{{ className page.dataElement.target.name }}Store.set{{ className attributeType.name }}(value.toString()),
@@ -21,6 +23,7 @@ JudoInputText(
 {{#if page.isPageTypeUpdate}}
 JudoInputText(
     col: {{ col }},
+    disabled: {{ disabled }},
     icon: Icon(Icons.{{ this.leadingIcon.name }}),
     label: '{{ label }}',
     initialValue: target{{ className page.dataElement.target.name }}Store.{{ attributeType.name }},
