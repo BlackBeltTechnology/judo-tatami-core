@@ -8,7 +8,7 @@
 	var name = dto.getClassName() + "Dao"; 	
 %]
 
-package [%= getInternalPrefix() + dto.getDtoPackageName() %];
+package [%= getInternalPrefix() + dto.getClassifierPackageName() %];
 
 import static [%= getInternalPrefix() + getModelPackageName() %].util.SdkUtil.*;
 

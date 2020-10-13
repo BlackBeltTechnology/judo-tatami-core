@@ -46,7 +46,7 @@ public class Asm2SDKOperationTest {
 
     public static final String MODEL_NAME = "Test";
     public static final String TARGET_TEST_CLASSES = "target/test-classes";
-    public static final String GENERATED_JAVA = "/tmp/judo-sdk/demo";
+    public static final String GENERATED_JAVA = "/asm2sdk-operation-test";
 
     private Log slf4jlog;
     private AsmModel asmModel;
@@ -100,7 +100,8 @@ public class Asm2SDKOperationTest {
     	modelBuilder.addEntity("OutputEntity").withAttribute("String", "name");
     	modelBuilder.addEntity("Entity").withAttribute("String", "text")
     		.withAggregation("RelatedEntity", "related", cardinality(0, 1))
-    		.withAggregation("RelatedEntity", "relateds", cardinality(0, -1));
+    		.withAggregation("RelatedEntity", "relateds", cardinality(0, -1))
+    		.withAttribute("Country", "country");
 		modelBuilder.addMappedTransferObject("EntityInfo", "Entity");
     	modelBuilder.addUnmappedTransferObject("Initializer");
     	modelBuilder
