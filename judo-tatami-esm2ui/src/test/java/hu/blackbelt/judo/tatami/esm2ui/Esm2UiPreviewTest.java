@@ -49,7 +49,6 @@ public class Esm2UiPreviewTest {
     String testName;
     Map<EObject, List<EObject>> resolvedTrace;
     UiModel uiModel;
-    Esm2UiTransformationTrace esm2UiTransformationTrace;
 
     @BeforeEach
     void setUp() throws Exception {
@@ -60,8 +59,6 @@ public class Esm2UiPreviewTest {
 
     @AfterEach
     void tearDown() throws Exception {
-        final String traceFileName = testName + "-esm2ui.model";
-        esm2UiTransformationTrace.save(new File(TARGET_TEST_CLASSES, traceFileName));
         uiModel.saveUiModel(uiSaveArgumentsBuilder().file(new File(TARGET_TEST_CLASSES, testName + "-ui.model")));
         esmModel.saveEsmModel(esmSaveArgumentsBuilder().file(new File(TARGET_TEST_CLASSES, testName + "-esm.model")));
     }
@@ -80,19 +77,19 @@ public class Esm2UiPreviewTest {
 
     private void transformViewForPreview() throws Exception {
     	validateEsmTestModel();
-        esm2UiTransformationTrace = executeEsm2UiTransformation(esmModel, SimpleOrderModel.getViewForTest(), "default", 12, uiModel, new Slf4jLog(log));
+    	log.info(executeEsm2UiTransformation(esmModel, SimpleOrderModel.getViewForTest(), "default", 12, uiModel, new Slf4jLog(log)));
         validateUiTestModel();
     }
     
     private void transformFormForPreview() throws Exception {
     	validateEsmTestModel();
-        esm2UiTransformationTrace = executeEsm2UiTransformation(esmModel, SimpleOrderModel.getFormForTest(), "default", 12, uiModel, new Slf4jLog(log));
+    	log.info(executeEsm2UiTransformation(esmModel, SimpleOrderModel.getFormForTest(), "default", 12, uiModel, new Slf4jLog(log)));
         validateUiTestModel();
     }
     
     private void transformTableForPreview() throws Exception {
     	validateEsmTestModel();
-        esm2UiTransformationTrace = executeEsm2UiTransformation(esmModel, SimpleOrderModel.getTableForTest(), "default", 12, uiModel, new Slf4jLog(log));
+    	log.info(executeEsm2UiTransformation(esmModel, SimpleOrderModel.getTableForTest(), "default", 12, uiModel, new Slf4jLog(log)));
         validateUiTestModel();
     }
     

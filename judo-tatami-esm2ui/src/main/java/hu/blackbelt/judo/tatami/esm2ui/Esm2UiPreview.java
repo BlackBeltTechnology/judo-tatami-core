@@ -1,5 +1,10 @@
 package hu.blackbelt.judo.tatami.esm2ui;
 
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonSerializer;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializerProvider;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import hu.blackbelt.epsilon.runtime.execution.ExecutionContext;
@@ -10,23 +15,28 @@ import hu.blackbelt.judo.meta.esm.runtime.EsmModel;
 import hu.blackbelt.judo.meta.esm.runtime.EsmUtils;
 import hu.blackbelt.judo.meta.esm.ui.VisualElement;
 import hu.blackbelt.judo.meta.ui.runtime.UiUtils;
+import hu.blackbelt.judo.meta.ui.PageDefinition;
 import hu.blackbelt.judo.meta.ui.runtime.UiModel;
 import hu.blackbelt.judo.tatami.core.TransformationTraceUtil;
 import lombok.extern.slf4j.Slf4j;
 
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.resource.Resource;
+import org.eclipse.emf.ecore.resource.ResourceSet;
+import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.epsilon.common.util.UriUtil;
+import org.emfjson.jackson.module.EMFModule;
+import org.emfjson.jackson.resource.JsonResourceFactory;
 
+import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import static hu.blackbelt.epsilon.runtime.execution.ExecutionContext.executionContextBuilder;
 import static hu.blackbelt.epsilon.runtime.execution.contexts.EtlExecutionContext.etlExecutionContextBuilder;
 import static hu.blackbelt.epsilon.runtime.execution.model.emf.WrappedEmfModelContext.wrappedEmfModelContextBuilder;
-import static hu.blackbelt.judo.tatami.core.TransformationTraceUtil.getTransformationTraceFromEtlExecutionContext;
-import static hu.blackbelt.judo.tatami.esm2ui.Esm2UiTransformationTrace.ESM_2_UI_URI_POSTFIX;
-import static hu.blackbelt.judo.tatami.esm2ui.Esm2UiTransformationTrace.resolveEsm2UiTrace;
 
 @Slf4j
 public class Esm2UiPreview {
@@ -39,10 +49,10 @@ public class Esm2UiPreview {
      * @param esmModel  The ESM model definition and loaded resources
      * @param previewElement The element of which the preview shall be generated
      * @param uiModel  The UI model definition transformed to
-     * @return The trace object list of the transformation conforms the meta model defined in {@link TransformationTraceUtil}.
+     * @return The JSON String representation of the Page Definition as a result of the transformation of the preview element
      * @throws Exception
      */
-    public static Esm2UiTransformationTrace executeEsm2UiTransformation(EsmModel esmModel, VisualElement previewElement, String applicationType, Integer applicationColumns, UiModel uiModel) throws Exception {
+    public static String executeEsm2UiTransformation(EsmModel esmModel, VisualElement previewElement, String applicationType, Integer applicationColumns, UiModel uiModel) throws Exception {
     	return executeEsm2UiTransformation(esmModel, previewElement, applicationType, applicationColumns, uiModel, new Slf4jLog(log), calculateEsm2UiPreviewTransformationScriptURI());
     }
 
@@ -53,10 +63,10 @@ public class Esm2UiPreview {
      * @param previewElement The element of which the preview shall be generated
      * @param uiModel  The UI model definition transformed to
      * @param log       The log instance used in scripts
-     * @return The trace object list of the transformation conforms the meta model defined in {@link TransformationTraceUtil}.
+     * @return The JSON String representation of the Page Definition as a result of the transformation of the preview element
      * @throws Exception
      */
-    public static Esm2UiTransformationTrace executeEsm2UiTransformation(EsmModel esmModel, VisualElement previewElement, String applicationType, Integer applicationColumns, UiModel uiModel, Log log) throws Exception {
+    public static String executeEsm2UiTransformation(EsmModel esmModel, VisualElement previewElement, String applicationType, Integer applicationColumns, UiModel uiModel, Log log) throws Exception {
     	return executeEsm2UiTransformation(esmModel, previewElement, applicationType, applicationColumns, uiModel, log, calculateEsm2UiPreviewTransformationScriptURI());
     }
 
@@ -67,10 +77,10 @@ public class Esm2UiPreview {
      * @param previewElement The element of which the preview shall be generated
      * @param uiModel  The UI model definition transformed to
      * @param scriptDir The physical filesystem directory where the script root is
-     * @return The trace object list of the transformation conforms the meta model defined in {@link TransformationTraceUtil}.
+     * @return The JSON String representation of the Page Definition as a result of the transformation of the preview element
      * @throws Exception
      */
-    public static Esm2UiTransformationTrace executeEsm2UiTransformation(EsmModel esmModel, VisualElement previewElement, String applicationType, Integer applicationColumns, UiModel uiModel, URI scriptDir) throws Exception {
+    public static String executeEsm2UiTransformation(EsmModel esmModel, VisualElement previewElement, String applicationType, Integer applicationColumns, UiModel uiModel, URI scriptDir) throws Exception {
     	return executeEsm2UiTransformation(esmModel, previewElement, applicationType, applicationColumns, uiModel, new Slf4jLog(log), scriptDir);
     }
 
@@ -81,13 +91,15 @@ public class Esm2UiPreview {
      * @param uiModel  The UI model definition transformed to
      * @param log       The log instance used in scripts
      * @param scriptDir The physical filesystem directory where the script root is
-     * @return The trace object list of the transformation conforms the meta model defined in {@link TransformationTraceUtil}.
+     * @return The JSON String representation of the Page Definition as a result of the transformation of the preview element
      * @throws Exception
      */
-    public static Esm2UiTransformationTrace executeEsm2UiTransformation(EsmModel esmModel, VisualElement previewElement, String applicationType, Integer applicationColumns, UiModel uiModel, Log log,
+    public static String executeEsm2UiTransformation(EsmModel esmModel, VisualElement previewElement, String applicationType, Integer applicationColumns, UiModel uiModel, Log log,
                                                                           URI scriptDir) throws Exception {
 
-        // Execution context
+    	Set<PageDefinition> previewPage = new HashSet<>();
+    	
+    	// Execution context
         ExecutionContext executionContext = executionContextBuilder()
                 .log(log)
                 .modelContexts(ImmutableList.of(
@@ -101,13 +113,13 @@ public class Esm2UiPreview {
                                 .name("UI")
                                 .resource(uiModel.getResource())
                                 .build()))
-                .injectContexts(ImmutableMap.of(
-                        "esmUtils", new EsmUtils(),
-                        "uiUtils", new UiUtils(),
-                        "applicationType", applicationType,
-                        "applicationColumns", applicationColumns,
-                        "previewElement", previewElement
-                ))
+                .injectContexts(ImmutableMap.<String, Object>builder()
+                		.put("esmUtils", new EsmUtils())
+                		.put("uiUtils", new UiUtils())
+                		.put("applicationType", applicationType)
+                		.put("applicationColumns", applicationColumns)
+                		.put("previewElement", previewElement)
+                		.put("previewPage", previewPage).build())
                 .build();
 
         // run the model / metadata loading
@@ -122,11 +134,11 @@ public class Esm2UiPreview {
         executionContext.commit();
         executionContext.close();
 
-        List<EObject> traceModel = getTransformationTraceFromEtlExecutionContext(ESM_2_UI_URI_POSTFIX, etlExecutionContext);
-        return Esm2UiTransformationTrace.esm2UiTransformationTraceBuilder()
-                .esmModel(esmModel)
-                .uiModel(uiModel)
-                .trace(resolveEsm2UiTrace(traceModel, esmModel, uiModel)).build();
+        if (previewPage.size() != 1) {
+        	throw new IllegalStateException("One and only one page definition should be created for preview.");
+        }
+        
+        return exportPageDefinitionToJson(previewPage.iterator().next());
     }
 
     public static URI calculateEsm2UiPreviewTransformationScriptURI() throws URISyntaxException {
@@ -140,4 +152,36 @@ public class Esm2UiPreview {
         }
         return uiRoot;
     }
+    
+    /**
+     * Create a JSON String representation of a given Page Definition
+     *
+     * @param page  The Page Definition to be transformed to a JSON String
+     * @return The JSON String representation of the Page Definition
+     * @throws JsonProcessingException
+     */
+	public static String exportPageDefinitionToJson(hu.blackbelt.judo.meta.ui.PageDefinition page) throws JsonProcessingException {
+		ResourceSet resourceSet = new ResourceSetImpl();
+		resourceSet.getResourceFactoryRegistry()
+						.getExtensionToFactoryMap()
+						.put("json", new JsonResourceFactory());
+		
+		Resource resource = resourceSet.createResource
+				  (org.eclipse.emf.common.util.URI.createFileURI("preview.json"));
+		
+		resource.getContents().add(page);
+
+		ObjectMapper mapper = new ObjectMapper();
+		EMFModule module = new EMFModule();
+		module.setReferenceSerializer(new JsonSerializer<EObject>() {
+			  @Override
+			  public void serialize(EObject v, JsonGenerator g, SerializerProvider s)
+			  throws IOException {
+				  mapper.writeValue(g, v);
+			  }
+			});
+		mapper.registerModule(module);
+		
+		return mapper.writerWithDefaultPrettyPrinter().writeValueAsString(resource);
+	}
 }
