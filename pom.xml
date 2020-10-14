@@ -74,7 +74,7 @@
         <judo-script-codegen-version>1.1.0.20201009_153825_4ade2d1_develop</judo-script-codegen-version>
         <judo-operation-utils-version>1.1.0.20201009_143547_1bb4657_develop</judo-operation-utils-version>
 
-        <structured-map-proxy-version>1.0.4</structured-map-proxy-version>
+        <structured-map-proxy-version>1.0.5</structured-map-proxy-version>
 
 
         <!-- Xtend / Xcore -->
