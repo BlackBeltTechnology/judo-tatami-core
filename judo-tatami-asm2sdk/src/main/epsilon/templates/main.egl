@@ -12,6 +12,10 @@ executionContext.getContext().put("internalScrXmls", internalScrXmls);
 internalJavaClasses.add(genUtil("AbstractSdkDao"));
 internalJavaClasses.add(genUtil("SdkUtil"));
 
+for (c in getAllEnums()) {
+    sdkJavaClasses.add(genEnum(c));
+}
+
 for (dto in getAllDTOs()) {
     sdkJavaClasses.add(genDtoInterface(dto));
     
