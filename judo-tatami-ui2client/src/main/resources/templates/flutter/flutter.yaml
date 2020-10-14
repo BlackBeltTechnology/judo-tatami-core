@@ -356,7 +356,7 @@
     '__' +
     #fqPath(#self.pageContainer.layoutType.name) +
     '__table.dart'
-  templateName: flutter/lib/ui/pages/widgets/table/table.dart.hbs
+  templateName: flutter/lib/ui/pages/widgets/table/tabledatainfo.dart.hbs
   templateContext:
     - name: table
       expression: "#self"
