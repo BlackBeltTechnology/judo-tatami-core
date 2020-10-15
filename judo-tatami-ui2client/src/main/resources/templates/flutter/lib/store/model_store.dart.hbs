@@ -58,10 +58,10 @@ abstract class _{{ fqClass name }}Store with Store {
   String internal__referenceIdentifier = Uuid().v1();
 
   // ignore: non_constant_identifier_names
-  bool internal__updatable;
+  bool internal__updatable = true;
 
   // ignore: non_constant_identifier_names
-  bool internal__deletable;
+  bool internal__deletable = true;
 
   // Attributes
   {{# each attributes }}

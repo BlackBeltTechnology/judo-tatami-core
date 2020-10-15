@@ -26,8 +26,7 @@ Observer(builder: (_) {
                 navigateToCreatePageAction: (element) async {
                     var created = await navigation.open(Routes.{{ fqVariable action.target.name }}Page);
                     if (created != null) {
-                        await {{ fqVariable page.name }}PageStore.create{{ fqClass page.relationType.name }}({{# unless page.dataElement.isAccess}}owner{{ className page.dataElement.owner.name }}Store ,{{/ unless}}created);
-                        {{fqVariable page.name}}PageStore.get{{ fqClass page.relationType.name }}({{# unless page.dataElement.isAccess}}owner{{ className page.dataElement.owner.name }}Store{{/ unless}});
+                        {{ fqVariable page.name }}PageStore.create{{ fqClass page.relationType.name }}({{# unless page.dataElement.isAccess}}owner{{ className page.dataElement.owner.name }}Store ,{{/ unless}}created);
                     }
                 },
                 {{/if}}
@@ -52,8 +51,7 @@ Observer(builder: (_) {
                 {{/if}}
                 {{#if action.isDeleteAction}}
                 deleteAction:{{# unless page.dataElement.isAccess}} owner{{ className page.dataElement.owner.name }}Store.internal__updatable ?{{/ unless}} (element) async {
-                    await {{fqVariable page.name}}PageStore.delete{{ className page.relationType.target.name }}(element);
-                    {{ fqVariable page.name }}PageStore.get{{ fqClass page.relationType.name }}({{# unless page.dataElement.isAccess}}owner{{ className page.dataElement.owner.name }}Store{{/ unless}});
+                    {{fqVariable page.name}}PageStore.delete{{ className page.relationType.target.name }}(element);
                 }{{# unless page.dataElement.isAccess}} : null{{/ unless}},
                 {{/if}}
                 {{/each}}

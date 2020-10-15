@@ -42,7 +42,7 @@ class {{ fqClass table.pageDefinition.name }}{{ fqClass table.name }}{{ fqClass 
                 {{/each}}
                 {{#each table.rowActions as |action|}}
                 {{#if action.isRemoveAction}}
-                target{{ className table.dataElement.target.name }}.internal__updatable
+                target{{ className table.dataElement.target.name }}?.internal__updatable == true
                 ? DataCell(
                         Icon(
                             Icons.{{action.icon.name}},
@@ -55,7 +55,7 @@ class {{ fqClass table.pageDefinition.name }}{{ fqClass table.name }}{{ fqClass 
                   ),
                 {{/if}}
                 {{#if action.isDeleteAction}}
-                target{{ className table.dataElement.target.name }}.internal__deletable && deleteAction != null // function null if the owner is not updatable
+                target{{ className table.dataElement.target.name }}?.internal__deletable == true && deleteAction != null // function null if the owner is not updatable
                 ? DataCell(
                     Icon(
                         Icons.{{action.icon.name}},
@@ -68,7 +68,7 @@ class {{ fqClass table.pageDefinition.name }}{{ fqClass table.name }}{{ fqClass 
                   ),
                 {{/if}}
                 {{#if action.isCreateAction}}
-                target{{ className table.dataElement.target.name }}.internal__updatable
+                target{{ className table.dataElement.target.name }}?.internal__updatable == true
                 ? DataCell(
                     Icon(
                         Icons.{{action.icon.name}},
@@ -81,7 +81,7 @@ class {{ fqClass table.pageDefinition.name }}{{ fqClass table.name }}{{ fqClass 
                   ),
                 {{/if}}
                 {{#if action.isEditAction}}
-                target{{ className table.dataElement.target.name }}.internal__updatable
+                target{{ className table.dataElement.target.name }}?.internal__updatable == true
                 ? DataCell(
                     Icon(
                         Icons.{{action.icon.name}},
@@ -94,13 +94,17 @@ class {{ fqClass table.pageDefinition.name }}{{ fqClass table.name }}{{ fqClass 
                   ),
                 {{/if}}
                 {{#if action.isViewAction}}
-                DataCell(
+                target{{ className table.dataElement.target.name }} != null
+                ? DataCell(
                     Icon(
                         Icons.{{action.icon.name}},
                         color: disabled ? kDisabledColor : null,
                     ),
                     onTap: disabled ? null : () => navigateToViewPageAction(target{{ className table.dataElement.target.name }}),
-                ),
+                  )
+                : DataCell(
+                    Text(''),
+                  ),
                 {{/if}}
                 {{/each}}
             ],
