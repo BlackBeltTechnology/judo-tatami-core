@@ -4,40 +4,61 @@ operation ESM!esm::namespace::NamedElement fillInput(input : UI!ui::Input, row :
 	return input;
 }
 
-operation ESM!esm::type::PasswordType input(basis : Integer): UI!ui::Input {
-	return self.fillInput(new UI!ui::PasswordInput(), 2, basis);
+operation ESM!esm::type::PasswordType input(dataField : ESM!esm::ui::DataField, application : UI!ui::Application): UI!ui::Input {
+	return self.fillInput(new UI!ui::PasswordInput(), 2, dataField.basis);
 }
 
-operation ESM!esm::type::StringType input(basis : Integer): UI!ui::Input {
-	return self.fillInput(new UI!ui::TextInput(), 2, basis);
-}
-
-operation ESM!esm::type::NumericType input(basis : Integer): UI!ui::Input {
-	return self.fillInput(new UI!ui::NumericInput(), 2, basis);
-}
-
-operation ESM!esm::type::BooleanType input(basis : Integer): UI!ui::Input {
-	return self.fillInput(new UI!ui::Switch(), 2, basis);
-}
-
-operation ESM!esm::type::DateType input(basis : Integer): UI!ui::Input {
-	return self.fillInput(new UI!ui::DateInput(), 2, basis);
-}
-
-operation ESM!esm::type::TimestampType input(basis : Integer): UI!ui::Input {
-	return self.fillInput(new UI!ui::DateTimeInput(), 2, basis);
-}
-
-operation ESM!esm::type::EnumerationType input(basis : Integer): UI!ui::Input {
-	var radio = new UI!ui::Radio();
+operation ESM!esm::type::StringType input(dataField : ESM!esm::ui::DataField, application : UI!ui::Application): UI!ui::Input {
 	
-	for (m in self.members) {
-		var opt = new UI!ui::Option();
-		opt.selected = false;
-		radio.options.add(opt);
+	if (dataField.textMultiLine) {
+		var textArea : UI!ui::TextArea = new UI!ui::TextArea();
+		textArea.lines = 3;
+		return self.fillInput(textArea, 3, dataField.basis);
+	} else {
+		return self.fillInput(new UI!ui::TextInput(), 2, dataField.basis);
 	}
+}
+
+operation ESM!esm::type::NumericType input(dataField : ESM!esm::ui::DataField, application : UI!ui::Application): UI!ui::Input {
+	return self.fillInput(new UI!ui::NumericInput(), 2, dataField.basis);
+}
+
+operation ESM!esm::type::BooleanType input(dataField : ESM!esm::ui::DataField, application : UI!ui::Application): UI!ui::Input {
+	return self.fillInput(new UI!ui::Switch(), 2, dataField.basis);
+}
+
+operation ESM!esm::type::DateType input(dataField : ESM!esm::ui::DataField, application : UI!ui::Application): UI!ui::Input {
+	return self.fillInput(new UI!ui::DateInput(), 2, dataField.basis);
+}
+
+operation ESM!esm::type::TimestampType input(dataField : ESM!esm::ui::DataField, application : UI!ui::Application): UI!ui::Input {
+	return self.fillInput(new UI!ui::DateTimeInput(), 2, dataField.basis);
+}
+
+operation ESM!esm::type::EnumerationType input(dataField : ESM!esm::ui::DataField, application : UI!ui::Application): UI!ui::Input {
 	
-	return self.fillInput(radio, 2, basis);
+	if (dataField.enumWidget == ESM!esm::ui::EnumWidget#RADIO) {
+		var radio = new UI!ui::EnumerationRadio();
+		for (m in self.mapDataType(application).members) {
+			var opt = new UI!ui::Option();
+			opt.selected = false;
+			opt.name = m.name;
+			opt.enumerationMember = m;
+			radio.options.add(opt);
+		}
+		return self.fillInput(radio, 2, dataField.basis);
+		
+	} else {
+		var combo = new UI!ui::EnumerationCombo();
+		for (m in self.mapDataType(application).members) {
+			var opt = new UI!ui::Option();
+			opt.selected = false;
+			opt.name = m.name;
+			opt.enumerationMember = m;
+			combo.options.add(opt);
+		}
+		return self.fillInput(combo, 2, dataField.basis);
+	}
 }
 
 operation ESM!esm::namespace::NamedElement fillFormatted(formatted : UI!ui::Formatted, format : String, row : Integer, col : Integer): UI!ui::Formatted {

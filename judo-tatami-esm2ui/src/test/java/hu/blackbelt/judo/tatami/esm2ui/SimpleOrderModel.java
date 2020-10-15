@@ -50,6 +50,8 @@ import hu.blackbelt.judo.meta.esm.type.StringType;
 import hu.blackbelt.judo.meta.esm.type.TimestampType;
 import hu.blackbelt.judo.meta.esm.ui.Action;
 import hu.blackbelt.judo.meta.esm.ui.DataField;
+import hu.blackbelt.judo.meta.esm.ui.EnumWidget;
+import hu.blackbelt.judo.meta.esm.ui.Group;
 import hu.blackbelt.judo.meta.esm.ui.DataColumn;
 import hu.blackbelt.judo.meta.esm.ui.Horizontal;
 import hu.blackbelt.judo.meta.esm.ui.Layout;
@@ -194,9 +196,17 @@ public class SimpleOrderModel {
         		.build();
         orderCountry.setBinding(orderCountry);
         
+        DataMember review = newDataMemberBuilder()
+        		.withName("review")
+        		.withMemberType(MemberType.STORED)
+        		.withDataType(stringType)
+        		.withRequired(false)
+        		.build();
+        review.setBinding(review);
+        
         EntityType internationalOrder = newEntityTypeBuilder().withName("InternationalOrder")
         		.withGeneralizations(newGeneralizationBuilder().withTarget(order).build())
-        		.withAttributes(internationalOrderDuty,orderCountry)
+        		.withAttributes(internationalOrderDuty,orderCountry,review)
         		.build();
         internationalOrder.setMapping(newMappingBuilder().withTarget(internationalOrder).build());
         
@@ -515,12 +525,35 @@ public class SimpleOrderModel {
             
         //International Order Form
         formForTest = createFormForTransferObjectType(internationalOrder);
+        DataField fieldForReview1 = (DataField) formForTest.getComponents().stream()
+        		.filter(c -> c instanceof Group && c.getName().equals("Content"))
+        		.flatMap(c -> ((Group)c).getComponents().stream())
+        		.filter(c -> c instanceof DataField)
+        		.filter(c -> ((DataField)c).getDataFeature().equals(review))
+        		.findAny()
+        		.get();
+        fieldForReview1.setTextMultiLine(true);
+        
+        DataField fieldForEnum = (DataField) formForTest.getComponents().stream()
+        		.filter(c -> c instanceof Group && c.getName().equals("Content"))
+        		.flatMap(c -> ((Group)c).getComponents().stream())
+        		.filter(c -> c instanceof DataField)
+        		.filter(c -> ((DataField)c).getDataFeature().equals(orderCountry))
+        		.findAny()
+        		.get();
+        fieldForEnum.setEnumWidget(EnumWidget.COMBO);
             
         //International Order Table
         tableForTest = createTableForTransferObject(internationalOrder,true);        
 
         //International Order View
         viewForTest = createViewForTransferObjectType(internationalOrder);
+        DataField fieldForReview2 = (DataField) viewForTest.getComponents().stream()
+        		.filter(c -> c instanceof DataField)
+        		.filter(c -> ((DataField)c).getDataFeature().equals(review))
+        		.findAny()
+        		.get();
+        fieldForReview2.setTextMultiLine(true);
         
         //Archiver Form
         createFormForTransferObjectType(archiver);
