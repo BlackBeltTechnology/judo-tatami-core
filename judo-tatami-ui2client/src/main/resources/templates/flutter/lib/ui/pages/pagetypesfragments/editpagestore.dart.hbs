@@ -21,4 +21,12 @@ abstract class _{{ fqClass page.name }}PageStore with Store {
     }
 
     {{/ with }}
+    {{# each page.dataElement.target.relations as |relation| }}
+    {{# if isRelationKindAggregation }}
+        {{> templates/flutter/lib/ui/pages/pagetypesfragments/storeactions/aggregationactions.dart.hbs relation=relation}}
+    {{/ if}}
+    {{# if isRelationKindComposition }}
+        {{> templates/flutter/lib/ui/pages/pagetypesfragments/storeactions/compositionactions.dart.hbs relation=relation}}
+    {{/ if}}
+    {{/ each}}
 }

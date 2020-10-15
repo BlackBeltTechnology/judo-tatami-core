@@ -51,7 +51,7 @@ JudoButton(
 {{#if action.isAddAction}}
     onPressed:{{# unless page.dataElement.isAccess}}{{# unless page.dataElement.isRelationKindStatic}} owner{{ className page.dataElement.owner.name }}Store.internal__updatable ?{{/ unless}}{{/ unless}} () async {
         var selected =
-            {{> templates/flutter/lib/ui/pages/widgets/dialog.dart.hbs}}
+            {{> templates/flutter/lib/ui/pages/widgets/dialog.dart.hbs relation=page.dataElement}}
         if (selected != null) {
             {{fqVariable page.name}}PageStore.add{{ fqClass page.relationType.name }}(owner{{ className page.dataElement.owner.name }}Store, selected);
         }
@@ -60,7 +60,7 @@ JudoButton(
 {{#if action.isSetAction}}
     onPressed:{{# unless page.dataElement.isAccess}}{{# unless page.dataElement.isRelationKindStatic}} owner{{ className page.dataElement.owner.name }}Store.internal__updatable ?{{/ unless}}{{/ unless}} () async {
         var selected =
-            {{> templates/flutter/lib/ui/pages/widgets/dialog.dart.hbs}}
+            {{> templates/flutter/lib/ui/pages/widgets/dialog.dart.hbs relation=page.dataElement}}
         if (selected != null) {
             {{fqVariable page.name}}PageStore.set{{ fqClass page.relationType.name }}(owner{{ className page.dataElement.owner.name }}Store, selected);
         }
