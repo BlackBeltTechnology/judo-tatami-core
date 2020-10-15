@@ -228,6 +228,18 @@
 
 - overwriteExpression: false
   factoryExpression: "{#application}"
+  pathExpression: "'lib/' + #path(#application.actor.name) + '/components/judo_date_input.dart'"
+  templateName: flutter/lib/components/judo_date_input.dart
+  copy: true
+
+- overwriteExpression: false
+  factoryExpression: "{#application}"
+  pathExpression: "'lib/' + #path(#application.actor.name) + '/components/judo_date_time_input.dart'"
+  templateName: flutter/lib/components/judo_date_time_input.dart
+  copy: true
+
+- overwriteExpression: false
+  factoryExpression: "{#application}"
   pathExpression: "'lib/' + #path(#application.actor.name) + '/components/judo_dialog.dart'"
   templateName: flutter/lib/components/judo_dialog.dart
   copy: true
@@ -266,6 +278,12 @@
   factoryExpression: "{#application}"
   pathExpression: "'lib/' + #path(#application.actor.name) + '/components/judo_table.dart'"
   templateName: flutter/lib/components/judo_table.dart
+  copy: true
+
+- overwriteExpression: false
+  factoryExpression: "{#application}"
+  pathExpression: "'lib/' + #path(#application.actor.name) + '/components/judo_time_input.dart'"
+  templateName: flutter/lib/components/judo_time_input.dart
   copy: true
 
 - overwriteExpression: false
@@ -456,19 +474,19 @@
 # ========================================
 # utilities
 # ========================================
-- overwriteExpression: false
+- overwriteExpression: true
   factoryExpression: "{#application}"
   pathExpression: "'lib/' + #path(#application.actor.name) + '/utilities/constants.dart'"
   templateName: flutter/lib/utilities/constants.dart
   copy: true
 
-- overwriteExpression: false
+- overwriteExpression: true
   factoryExpression: "{#application}"
   pathExpression: "'lib/' + #path(#application.actor.name) + '/utilities/navigation.dart'"
   templateName: flutter/lib/utilities/navigation.dart
   copy: true
 
-- overwriteExpression: false
+- overwriteExpression: true
   factoryExpression: "{#application}"
   pathExpression: "'lib/' + #path(#application.actor.name) + '/utilities/package.dart'"
   templateName: flutter/lib/utilities/package.dart
