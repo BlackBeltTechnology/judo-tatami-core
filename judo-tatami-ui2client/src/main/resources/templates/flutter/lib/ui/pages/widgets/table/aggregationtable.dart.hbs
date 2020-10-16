@@ -118,7 +118,7 @@ Flexible(
                                 {{/if}}
                                 {{#if relationAction.isDeleteAction}}
                                 deleteAction:{{# unless relation.isAccess}} target{{ className relation.owner.name }}Store.internal__updatable ?{{/ unless}} (element) async {
-                                    await {{fqVariable page.name}}PageStore.delete{{ className relation.target.name }}(element);
+                                    await {{fqVariable page.name}}PageStore.delete{{ className relation.target.name }}(element {{# unless relation.isAccess}}, target{{ className relation.owner.name }}Store{{/unless}});
                                     {{ fqVariable page.name }}PageStore.get{{ fqClass relation.name }}({{# unless relation.isAccess}}target{{ className relation.owner.name }}Store{{/ unless}});
                                 }{{# unless relation.isAccess}} : null{{/ unless}},
                                 {{/if}}

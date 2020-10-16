@@ -121,7 +121,7 @@ abstract class _{{ fqClass page.name }}PageStore with Store {
     {{/if}}
     {{# if relation.target.isClassBehaviourTypeDeletable }}
     @action
-    Future<void> delete{{ className relation.target.name }}({{ fqClass relation.target.name }}Store target{{ className relation.target.name }}Store) async {
+    Future<void> delete{{ className relation.target.name }}({{ fqClass relation.target.name }}Store target{{ className relation.target.name }}Store{{# unless relation.isAccess}}, {{ fqClass relation.owner.name }}Store owner{{ className relation.owner.name }}Store{{/unless}}) async {
         try {
             errorMessage = null;
             await _{{ fqVariable application.actor.name }}Repository.{{fqVariable relation.target.name}}Delete(target{{ className relation.target.name }}Store);

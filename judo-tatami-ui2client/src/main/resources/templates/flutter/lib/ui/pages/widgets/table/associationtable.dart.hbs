@@ -51,7 +51,7 @@ Observer(builder: (_) {
                 {{/if}}
                 {{#if action.isDeleteAction}}
                 deleteAction:{{# unless page.dataElement.isAccess}} owner{{ className page.dataElement.owner.name }}Store.internal__updatable ?{{/ unless}} (element) async {
-                    {{fqVariable page.name}}PageStore.delete{{ className page.relationType.target.name }}(element);
+                    {{fqVariable page.name}}PageStore.delete{{ className page.relationType.target.name }}(element{{# unless page.dataElement.isAccess}}, owner{{ className page.dataElement.owner.name }}Store{{/unless}});
                 }{{# unless page.dataElement.isAccess}} : null{{/ unless}},
                 {{/if}}
                 {{/each}}
