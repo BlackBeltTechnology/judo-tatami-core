@@ -16,7 +16,9 @@ Future<{{ fqClass relation.target.name }}Store> create{{ fqClass relation.name }
 @action
 Future<List<{{ fqClass relation.target.name }}Store>> add{{fqClass relation.name}}({{ fqClass relation.owner.name }}Store owner{{ className relation.owner.name }}Store, {{ fqClass relation.target.name }}Store selected{{ className relation.target.name }}Store) async {
     try {
+        {{# if page.isPageTypeView }}
         await _{{ fqVariable application.actor.name }}Repository.{{ fqVariable relation.owner.name }}Add{{fqClass relation.name}}(owner{{ className relation.owner.name }}Store, [selected{{ className relation.target.name }}Store]);
+        {{/ if}}
         owner{{ className relation.owner.name }}Store.{{variable relation.name}}.addAll([selected{{ className relation.target.name }}Store]);
         return owner{{ className relation.owner.name }}Store.{{variable relation.name}};
     } on ApiException {
@@ -30,7 +32,9 @@ Future<List<{{ fqClass relation.target.name }}Store>> add{{fqClass relation.name
 Future<void> remove{{ fqClass relation.name }}({{ fqClass relation.owner.name }}Store owner{{ className relation.owner.name }}Store, {{ fqClass relation.target.name }}Store selected{{ className relation.target.name }}Store) async {
     try {
         errorMessage = null;
+        {{# if page.isPageTypeView }}
         await _{{ fqVariable application.actor.name }}Repository.{{ fqVariable relation.owner.name }}Remove{{fqClass relation.name}}(owner{{ className relation.owner.name }}Store, [selected{{ className relation.target.name }}Store]);
+        {{/ if}}
         owner{{ className relation.owner.name }}Store.{{variable relation.name}}.remove(selected{{ className relation.target.name }}Store); // TODO: fix with remove more than 1 element
     } on ApiException {
         errorMessage = "Could not remove {{ relation.name }}";
@@ -81,6 +85,7 @@ Future<List<{{fqClass relation.target.name}}Store>> getRangeFor{{ fqClass relati
 @action
 Future<void> set{{ fqClass relation.name }}({{ fqClass relation.owner.name }}Store owner{{ className relation.owner.name }}Store, {{ fqClass relation.target.name }}Store selected{{ className relation.target.name }}Store) async {
     try {
+        {{# if page.isPageTypeView }}
         if (selected{{ className relation.target.name }}Store.internal__signedIdentifier != null){
             await _{{ fqVariable application.actor.name }}Repository.{{ fqVariable relation.owner.name }}Set{{ fqClass relation.name }}(owner{{ className relation.owner.name }}Store, {{# if relation.isCollection }}[selected{{ className relation.target.name }}Store]{{else}}selected{{ className relation.target.name }}Store{{/ if}});
         {{# if relation.isRelationBehaviourTypeUnsetable }}
@@ -89,6 +94,9 @@ Future<void> set{{ fqClass relation.name }}({{ fqClass relation.owner.name }}Sto
         {{/ if}}
         }
         get{{ fqClass relation.name }}({{# unless relation.isAccess}}owner{{ className relation.owner.name }}Store{{/unless}});
+        {{else}}
+        owner{{ className relation.owner.name }}Store.{{variable relation.name}} = {{# if relation.isCollection }}[selected{{ className relation.target.name }}Store]{{else}}selected{{ className relation.target.name }}Store{{/ if}};
+        {{/ if}}
     } on ApiException {
         errorMessage = "Could not set {{ relation.name }}";
     }
