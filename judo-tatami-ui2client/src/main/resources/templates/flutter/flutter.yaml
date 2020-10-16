@@ -140,65 +140,6 @@
   copy: true
 
 # ========================================
-# lib/components/parser
-# ========================================
-- overwriteExpression: false
-  factoryExpression: "{#application}"
-  pathExpression: >
-    'lib/' +
-    #path(#application.actor.name) + '/components/' +
-    'package.dart'
-  templateName: flutter/lib/components/package.dart.hbs
-
-- overwriteExpression: false
-  factoryExpression: "{#application}"
-  pathExpression: "'lib/' + #path(#application.actor.name) + '/components/parsers/flexible_parser.dart'"
-  templateName: flutter/lib/components/parsers/flexible_parser.dart
-  copy: true
-
-- overwriteExpression: false
-  factoryExpression: "{#application}"
-  pathExpression: "'lib/' + #path(#application.actor.name) + '/components/parsers/judo_button_parser.dart'"
-  templateName: flutter/lib/components/parsers/judo_button_parser.dart
-  copy: true
-
-- overwriteExpression: false
-  factoryExpression: "{#application}"
-  pathExpression: "'lib/' + #path(#application.actor.name) + '/components/parsers/judo_group_parser.dart'"
-  templateName: flutter/lib/components/parsers/judo_group_parser.dart
-  copy: true
-
-- overwriteExpression: false
-  factoryExpression: "{#application}"
-  pathExpression: "'lib/' + #path(#application.actor.name) + '/components/parsers/judo_input_text_parser.dart'"
-  templateName: flutter/lib/components/parsers/judo_input_text_parser.dart
-  copy: true
-
-- overwriteExpression: false
-  factoryExpression: "{#application}"
-  pathExpression: "'lib/' + #path(#application.actor.name) + '/components/parsers/judo_radio_parser.dart'"
-  templateName: flutter/lib/components/parsers/judo_radio_parser.dart
-  copy: true
-
-- overwriteExpression: false
-  factoryExpression: "{#application}"
-  pathExpression: "'lib/' + #path(#application.actor.name) + '/components/parsers/judo_tab_parser.dart'"
-  templateName: flutter/lib/components/parsers/judo_tab_parser.dart
-  copy: true
-
-- overwriteExpression: false
-  factoryExpression: "{#application}"
-  pathExpression: "'lib/' + #path(#application.actor.name) + '/components/parsers/judo_title_parser.dart'"
-  templateName: flutter/lib/components/parsers/judo_title_parser.dart
-  copy: true
-
-- overwriteExpression: false
-  factoryExpression: "{#application}"
-  pathExpression: "'lib/' + #path(#application.actor.name) + '/components/parsers/tab_parser.dart'"
-  templateName: flutter/lib/components/parsers/tab_parser.dart
-  copy: true
-
-# ========================================
 # lib/components
 # ========================================
 

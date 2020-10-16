@@ -5,7 +5,7 @@ Observer(
         col: {{ col }},
         disabled: {{ disabled }},
         use24HourFormat: true,
-        initialDate: target{{ className page.dataElement.target.name }}Store.{{ attributeType.name }}
+        initialDate: target{{ className page.dataElement.target.name }}Store.{{ attributeType.name }},
         label: '{{ label }}',
         icon: Icon(Icons.{{ this.leadingIcon.name }}),
         readOnly: true,
@@ -19,7 +19,7 @@ Observer(
         col: {{ col }},
         disabled: {{ disabled }},
         use24HourFormat: true,
-        initialDate: target{{ className page.dataElement.target.name }}Store.{{ attributeType.name }}
+        initialDate: target{{ className page.dataElement.target.name }}Store.{{ attributeType.name }},
         label: '{{ label }}',
         icon: Icon(Icons.{{ this.leadingIcon.name }}),
         onChanged: (value) => target{{ className page.dataElement.target.name }}Store.set{{ className attributeType.name }}(value),
@@ -35,7 +35,7 @@ Observer(
         col: {{ col }},
         disabled: {{ disabled }},
         use24HourFormat: true,
-        initialDate: target{{ className page.dataElement.target.name }}Store.{{ attributeType.name }}
+        initialDate: target{{ className page.dataElement.target.name }}Store.{{ attributeType.name }},
         label: '{{ label }}',
         icon: Icon(Icons.{{ this.leadingIcon.name }}),
         onChanged: (value) => target{{ className page.dataElement.target.name }}Store.set{{ className attributeType.name }}(value),

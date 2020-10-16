@@ -17,7 +17,7 @@ JudoInputText(
     disabled: {{ disabled }},
     icon: Icon(Icons.{{ this.leadingIcon.name }}),
     label: '{{ label }}',
-    onChanged: (value) => target{{ className page.dataElement.target.name }}Store.set{{ className attributeType.name }}(double.parse(value)),
+    onChanged: (value) => target{{ className page.dataElement.target.name }}Store.set{{ className attributeType.name }}({{ dartType attributeType.dataType }}.parse(value)),
 ),
 {{/if}}
 {{#if page.isPageTypeUpdate}}
@@ -27,6 +27,6 @@ JudoInputText(
     icon: Icon(Icons.{{ this.leadingIcon.name }}),
     label: '{{ label }}',
     initialValue: target{{ className page.dataElement.target.name }}Store.{{ attributeType.name }}.toString(),
-    onChanged: (value) => target{{ className page.dataElement.target.name }}Store.set{{ className attributeType.name }}(double.parse(value)),
+    onChanged: (value) => target{{ className page.dataElement.target.name }}Store.set{{ className attributeType.name }}({{ dartType attributeType.dataType }}.parse(value)),
 ),
 {{/if}}
