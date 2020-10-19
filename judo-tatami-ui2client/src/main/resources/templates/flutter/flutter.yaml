@@ -142,6 +142,13 @@
 # ========================================
 # lib/components
 # ========================================
+- overwriteExpression: false
+  factoryExpression: "{#application}"
+  pathExpression: >
+    'lib/' +
+    #path(#application.actor.name) + '/components/' +
+    'package.dart'
+  templateName: flutter/lib/components/package.dart.hbs
 
 - overwriteExpression: false
   factoryExpression: "{#application}"
