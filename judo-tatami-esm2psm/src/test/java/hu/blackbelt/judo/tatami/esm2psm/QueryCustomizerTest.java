@@ -54,7 +54,7 @@ public class QueryCustomizerTest {
     private final String TARGET_TEST_CLASSES = "target/test-classes";
 
     private static final String EXTENSION_PACKAGE_NAME = "_extension";
-    private static final String QUERY_CUSTOMIZER_NAME_POSTFIX = "QueryCustomizer";
+    private static final String QUERY_CUSTOMIZER_NAME_PREFIX = "_QueryCustomizer";
 
     Log slf4jlog;
     EsmModel esmModel;
@@ -207,18 +207,18 @@ public class QueryCustomizerTest {
         transform();
 
         final Optional<UnmappedTransferObjectType> eCustomizer = allPsm(UnmappedTransferObjectType.class)
-                .filter(u -> (PERSON_TYPE_NAME + QUERY_CUSTOMIZER_NAME_POSTFIX).equals(u.getName()))
+                .filter(u -> (QUERY_CUSTOMIZER_NAME_PREFIX + PERSON_TYPE_NAME).equals(u.getName()))
                 .findAny();
         assertTrue(eCustomizer.isPresent());
-        assertThat(PsmUtils.namespaceElementToString(eCustomizer.get()), equalTo(MODEL_NAME + "::" + EXTENSION_PACKAGE_NAME + "::" + PERSON_TYPE_NAME + QUERY_CUSTOMIZER_NAME_POSTFIX));
-        assertThat(eCustomizer.get().getRelations().stream().map(a -> a.getName()).collect(Collectors.toSet()), equalTo(ImmutableSet.of("name", "birthDate", "ageAt2020", "sex", "_orderBy")));
+        assertThat(PsmUtils.namespaceElementToString(eCustomizer.get()), equalTo(MODEL_NAME + "::" + EXTENSION_PACKAGE_NAME + "::" + QUERY_CUSTOMIZER_NAME_PREFIX + PERSON_TYPE_NAME));
+        assertThat(eCustomizer.get().getRelations().stream().map(a -> a.getName()).collect(Collectors.toSet()), equalTo(ImmutableSet.of("name", "birthDate", "ageAt2020", "sex", "_orderBy", "_seek")));
 
         final Optional<UnmappedTransferObjectType> tCustomizer = allPsm(UnmappedTransferObjectType.class)
-                .filter(u -> (PERSON_DTO_TYPE_NAME + QUERY_CUSTOMIZER_NAME_POSTFIX).equals(u.getName()))
+                .filter(u -> (QUERY_CUSTOMIZER_NAME_PREFIX + PERSON_DTO_TYPE_NAME).equals(u.getName()))
                 .findAny();
         assertTrue(tCustomizer.isPresent());
-        assertThat(PsmUtils.namespaceElementToString(tCustomizer.get()), equalTo(MODEL_NAME + "::" + EXTENSION_PACKAGE_NAME + "::" + PERSON_DTO_TYPE_NAME + QUERY_CUSTOMIZER_NAME_POSTFIX));
-        assertThat(tCustomizer.get().getRelations().stream().map(a -> a.getName()).collect(Collectors.toSet()), equalTo(ImmutableSet.of("name", "birthDate", "age", "sex", "_orderBy")));
+        assertThat(PsmUtils.namespaceElementToString(tCustomizer.get()), equalTo(MODEL_NAME + "::" + EXTENSION_PACKAGE_NAME + "::" + QUERY_CUSTOMIZER_NAME_PREFIX + PERSON_DTO_TYPE_NAME));
+        assertThat(tCustomizer.get().getRelations().stream().map(a -> a.getName()).collect(Collectors.toSet()), equalTo(ImmutableSet.of("name", "birthDate", "age", "sex", "_orderBy", "_seek")));
     }
 
     static <T> Stream<T> asStream(Iterator<T> sourceIterator, boolean parallel) {
