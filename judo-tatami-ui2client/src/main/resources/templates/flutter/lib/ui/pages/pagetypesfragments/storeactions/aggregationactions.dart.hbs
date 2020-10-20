@@ -4,7 +4,11 @@ Future<{{ fqClass relation.target.name }}Store> create{{ fqClass relation.name }
     try {
         errorMessage = null;
         var created = await _{{ fqVariable application.actor.name }}Repository.{{ fqVariable relation.owner.name }}{{ fqClass relation.name }}Create({{# unless relation.isAccess}}owner{{ className relation.owner.name }}Store, {{/unless}}target{{ className relation.target.name }}Store);
+        {{# if page.isPageTypeView }}
+        refresh{{ className relation.owner.name }}(owner{{ className relation.owner.name }}Store);
+        {{ else }}
         get{{ fqClass relation.name }}({{# unless relation.isAccess}}owner{{ className relation.owner.name }}Store{{/unless}});
+        {{/ if }}
         return created;
     } on ApiException {
         errorMessage = "Could not create {{ relation.name }}";
@@ -18,8 +22,10 @@ Future<List<{{ fqClass relation.target.name }}Store>> add{{fqClass relation.name
     try {
         {{# if page.isPageTypeView }}
         await _{{ fqVariable application.actor.name }}Repository.{{ fqVariable relation.owner.name }}Add{{fqClass relation.name}}(owner{{ className relation.owner.name }}Store, [selected{{ className relation.target.name }}Store]);
-        {{/ if}}
+        refresh{{ className relation.owner.name }}(owner{{ className relation.owner.name }}Store);
+        {{ else }}
         owner{{ className relation.owner.name }}Store.{{variable relation.name}}.addAll([selected{{ className relation.target.name }}Store]);
+        {{/ if }}
         return owner{{ className relation.owner.name }}Store.{{variable relation.name}};
     } on ApiException {
         errorMessage = "Could not add {{relation.name}}";
@@ -34,8 +40,10 @@ Future<void> remove{{ fqClass relation.name }}({{ fqClass relation.owner.name }}
         errorMessage = null;
         {{# if page.isPageTypeView }}
         await _{{ fqVariable application.actor.name }}Repository.{{ fqVariable relation.owner.name }}Remove{{fqClass relation.name}}(owner{{ className relation.owner.name }}Store, [selected{{ className relation.target.name }}Store]);
-        {{/ if}}
+        refresh{{ className relation.owner.name }}(owner{{ className relation.owner.name }}Store);
+        {{ else }}
         owner{{ className relation.owner.name }}Store.{{variable relation.name}}.remove(selected{{ className relation.target.name }}Store); // TODO: fix with remove more than 1 element
+        {{/ if}}
     } on ApiException {
         errorMessage = "Could not remove {{ relation.name }}";
     }
@@ -93,12 +101,28 @@ Future<void> set{{ fqClass relation.name }}({{ fqClass relation.owner.name }}Sto
             await _{{ fqVariable application.actor.name }}Repository.{{ fqVariable relation.owner.name }}Unset{{ fqClass relation.name }}(owner{{ className relation.owner.name }}Store);
         {{/ if}}
         }
-        get{{ fqClass relation.name }}({{# unless relation.isAccess}}owner{{ className relation.owner.name }}Store{{/unless}});
+        refresh{{ className relation.owner.name }}(owner{{ className relation.owner.name }}Store);
         {{else}}
         owner{{ className relation.owner.name }}Store.{{variable relation.name}} = {{# if relation.isCollection }}[selected{{ className relation.target.name }}Store]{{else}}selected{{ className relation.target.name }}Store{{/ if}};
         {{/ if}}
     } on ApiException {
         errorMessage = "Could not set {{ relation.name }}";
+    }
+}
+
+{{/if}}
+{{# if relation.isRelationBehaviourTypeUnsetable }}
+@action
+Future<void> unset{{ fqClass relation.name }}({{ fqClass relation.owner.name }}Store owner{{ className relation.owner.name }}Store) async {
+    try {
+        {{# if page.isPageTypeView }}
+            await _{{ fqVariable application.actor.name }}Repository.{{ fqVariable relation.owner.name }}Unset{{ fqClass relation.name }}(owner{{ className relation.owner.name }}Store);
+            refresh{{ className relation.owner.name }}(owner{{ className relation.owner.name }}Store);
+        {{else}}
+            owner{{ className relation.owner.name }}Store.{{variable relation.name}} = null;
+        {{/ if}}
+    } on ApiException {
+        errorMessage = "Could not unset {{ relation.name }}";
     }
 }
 
@@ -109,7 +133,11 @@ Future<void> delete{{ className relation.target.name }}({{ fqClass relation.targ
     try {
         errorMessage = null;
         await _{{ fqVariable application.actor.name }}Repository.{{fqVariable relation.target.name}}Delete(target{{ className relation.target.name }}Store);
-        get{{ fqClass relation.name }}({{# unless relation.isAccess}}owner{{ className relation.owner.name }}Store{{/unless}});
+        {{# if page.isPageTypeView }}
+        refresh{{ className relation.owner.name }}(owner{{ className relation.owner.name }}Store);
+        {{ else }}
+        get{{ fqClass relation.name }}(owner{{ className relation.owner.name }}Store);
+        {{/ if}}
     } on ApiException {
         errorMessage = "Could not delete {{ variable relation.target.name }}";
     }

@@ -30,7 +30,7 @@ class {{ fqClass table.pageDefinition.name }}{{ fqClass table.name }}{{ fqClass 
     }
 
     @override
-    Function getRow({Function navigateToEditPageAction, Function navigateToViewPageAction, Function navigateToCreatePageAction, Function removeAction, Function deleteAction}) {
+    Function getRow({Function navigateToEditPageAction, Function navigateToViewPageAction, Function navigateToCreatePageAction, Function removeAction, Function unsetAction, Function deleteAction}) {
         return (target{{ className table.dataElement.target.name }}) => DataRow(
             cells: [
                 {{# each columns as |column|}}
@@ -42,17 +42,22 @@ class {{ fqClass table.pageDefinition.name }}{{ fqClass table.name }}{{ fqClass 
                 {{/each}}
                 {{#each table.rowActions as |action|}}
                 {{#if action.isRemoveAction}}
-                target{{ className table.dataElement.target.name }}?.internal__updatable == true
-                ? DataCell(
-                        Icon(
-                            Icons.{{action.icon.name}},
-                            color: disabled ? kDisabledColor : null,
-                        ),
-                        onTap: disabled ? null : () => removeAction(target{{ className table.dataElement.target.name }}),
-                  )
-                : DataCell(
-                    Text(''),
-                  ),
+                DataCell(
+                    Icon(
+                        Icons.{{action.icon.name}},
+                        color: disabled ? kDisabledColor : null,
+                    ),
+                    onTap: disabled ? null : () => removeAction(target{{ className table.dataElement.target.name }}),
+                ),
+                {{/if}}
+                {{#if action.isUnsetAction}}
+                DataCell(
+                    Icon(
+                        Icons.{{action.icon.name}},
+                        color: disabled ? kDisabledColor : null,
+                    ),
+                    onTap: disabled ? null : () => unsetAction(target{{ className table.dataElement.target.name }}),
+                ),
                 {{/if}}
                 {{#if action.isDeleteAction}}
                 target{{ className table.dataElement.target.name }}?.internal__deletable == true && deleteAction != null // function null if the owner is not updatable
@@ -68,17 +73,13 @@ class {{ fqClass table.pageDefinition.name }}{{ fqClass table.name }}{{ fqClass 
                   ),
                 {{/if}}
                 {{#if action.isCreateAction}}
-                target{{ className table.dataElement.target.name }}?.internal__updatable == true
-                ? DataCell(
+                DataCell(
                     Icon(
                         Icons.{{action.icon.name}},
                         color: disabled ? kDisabledColor : null,
                     ),
                     onTap: disabled ? null : () => navigateToCreatePageAction(target{{ className table.dataElement.target.name }}),
-                  )
-                : DataCell(
-                    Text(''),
-                  ),
+                ),
                 {{/if}}
                 {{#if action.isEditAction}}
                 target{{ className table.dataElement.target.name }}?.internal__updatable == true

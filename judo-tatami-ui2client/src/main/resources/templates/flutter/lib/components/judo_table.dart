@@ -3,7 +3,7 @@ part of judo.components;
 abstract class JudoTableDataInfo {
   List<DataColumn> getColumns(Function onAdd);
 
-  Function getRow({Function navigateToEditPageAction, Function navigateToViewPageAction, Function navigateToCreatePageAction, Function removeAction, Function deleteAction});
+  Function getRow({Function navigateToEditPageAction, Function navigateToViewPageAction, Function navigateToCreatePageAction, Function removeAction, Function unsetAction, Function deleteAction});
 }
 
 class JudoTable extends StatelessWidget implements IJudoComponent {
@@ -15,6 +15,7 @@ class JudoTable extends StatelessWidget implements IJudoComponent {
         this.navigateToViewPageAction,
         this.navigateToCreatePageAction,
         this.removeAction,
+        this.unsetAction,
         this.deleteAction,
         this.sortAscending = true,
         this.disabled = false,
@@ -29,6 +30,7 @@ class JudoTable extends StatelessWidget implements IJudoComponent {
   final Function navigateToViewPageAction;
   final Function navigateToCreatePageAction;
   final Function removeAction;
+  final Function unsetAction;
   final Function deleteAction;
   final Function onAdd;
 
@@ -79,7 +81,8 @@ class JudoTable extends StatelessWidget implements IJudoComponent {
       navigateToCreatePageAction: disabled ? null : this.navigateToCreatePageAction,
       navigateToViewPageAction: disabled ? null : this.navigateToViewPageAction,
       deleteAction: disabled ? null : this.deleteAction,
-      removeAction: disabled ? null : this.removeAction
+      removeAction: disabled ? null : this.removeAction,
+      unsetAction: disabled ? null : this.unsetAction
     )).toList();
     return dataRowList;
   }

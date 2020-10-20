@@ -69,7 +69,7 @@ JudoButton(
 {{# if action.isNavigationToPageAction }}
     onPressed: () async {
         await navigation.open(Routes.{{ fqVariable action.target.name }}Page,
-            arguments: {{ fqClass action.target.name }}PageArguments(owner{{ className action.target.dataElement.owner.name }}Store: target{{ className action.target.dataElement.owner.name }}Store));
+            arguments: {{ fqClass action.target.name }}PageArguments(owner{{ className action.target.dataElement.owner.name }}Store: target{{ className page.dataElement.target.name }}Store));
     },
 {{/ if }}
 {{#if label }}

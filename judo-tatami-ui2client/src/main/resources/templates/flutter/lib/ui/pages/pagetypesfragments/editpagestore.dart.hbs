@@ -10,6 +10,18 @@ abstract class _{{ fqClass page.name }}PageStore with Store {
     @observable
     ObservableFuture {{ fqVariable relation.name }}StoreFuture;
 
+    {{# if relation.target.isClassBehaviourTypeRefreshable }}
+    @action
+    Future<void> refresh{{ className relation.target.name }}({{ fqClass relation.target.name }}Store target{{ className page.dataElement.target.name }}Store) async {
+        try {
+            errorMessage = null;
+            target{{ className page.dataElement.target.name }}Store.updateWith(await _{{ fqVariable application.actor.name }}Repository.{{fqVariable relation.target.name}}GetByIdentifier(target{{ className page.dataElement.target.name }}Store));
+        } on ApiException {
+            errorMessage = "Could not refresh {{ variable relation.target.name }}";
+        }
+    }
+
+    {{/ if}}
     @action
     Future<{{ fqClass relation.target.name }}Store> validate{{ className relation.target.name }}({{ fqClass relation.target.name }}Store target{{ className relation.target.name }}Store) async {
             try {

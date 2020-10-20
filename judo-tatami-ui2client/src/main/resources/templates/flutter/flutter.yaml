@@ -142,7 +142,7 @@
 # ========================================
 # lib/components
 # ========================================
-- overwriteExpression: false
+- overwriteExpression: true
   factoryExpression: "{#application}"
   pathExpression: >
     'lib/' +
@@ -150,91 +150,91 @@
     'package.dart'
   templateName: flutter/lib/components/package.dart.hbs
 
-- overwriteExpression: false
+- overwriteExpression: true
   factoryExpression: "{#application}"
   pathExpression: "'lib/' + #path(#application.actor.name) + '/components/judo_button.dart'"
   templateName: flutter/lib/components/judo_button.dart
   copy: true
 
-- overwriteExpression: false
+- overwriteExpression: true
   factoryExpression: "{#application}"
   pathExpression: "'lib/' + #path(#application.actor.name) + '/components/judo_combobox.dart'"
   templateName: flutter/lib/components/judo_combobox.dart
   copy: true
 
-- overwriteExpression: false
+- overwriteExpression: true
   factoryExpression: "{#application}"
   pathExpression: "'lib/' + #path(#application.actor.name) + '/components/judo_component.dart'"
   templateName: flutter/lib/components/judo_component.dart
   copy: true
 
-- overwriteExpression: false
+- overwriteExpression: true
   factoryExpression: "{#application}"
   pathExpression: "'lib/' + #path(#application.actor.name) + '/components/judo_container.dart'"
   templateName: flutter/lib/components/judo_container.dart
   copy: true
 
-- overwriteExpression: false
+- overwriteExpression: true
   factoryExpression: "{#application}"
   pathExpression: "'lib/' + #path(#application.actor.name) + '/components/judo_date_input.dart'"
   templateName: flutter/lib/components/judo_date_input.dart
   copy: true
 
-- overwriteExpression: false
+- overwriteExpression: true
   factoryExpression: "{#application}"
   pathExpression: "'lib/' + #path(#application.actor.name) + '/components/judo_date_time_input.dart'"
   templateName: flutter/lib/components/judo_date_time_input.dart
   copy: true
 
-- overwriteExpression: false
+- overwriteExpression: true
   factoryExpression: "{#application}"
   pathExpression: "'lib/' + #path(#application.actor.name) + '/components/judo_dialog.dart'"
   templateName: flutter/lib/components/judo_dialog.dart
   copy: true
 
-- overwriteExpression: false
+- overwriteExpression: true
   factoryExpression: "{#application}"
   pathExpression: "'lib/' + #path(#application.actor.name) + '/components/judo_input_text.dart'"
   templateName: flutter/lib/components/judo_input_text.dart
   copy: true
 
-- overwriteExpression: false
+- overwriteExpression: true
   factoryExpression: "{#application}"
   pathExpression: "'lib/' + #path(#application.actor.name) + '/components/judo_loading_circle.dart'"
   templateName: flutter/lib/components/judo_loading_circle.dart
   copy: true
 
-- overwriteExpression: false
+- overwriteExpression: true
   factoryExpression: "{#application}"
   pathExpression: "'lib/' + #path(#application.actor.name) + '/components/judo_radio.dart'"
   templateName: flutter/lib/components/judo_radio.dart
   copy: true
 
-- overwriteExpression: false
+- overwriteExpression: true
   factoryExpression: "{#application}"
   pathExpression: "'lib/' + #path(#application.actor.name) + '/components/judo_radio_group.dart'"
   templateName: flutter/lib/components/judo_radio_group.dart
   copy: true
 
-- overwriteExpression: false
+- overwriteExpression: true
   factoryExpression: "{#application}"
   pathExpression: "'lib/' + #path(#application.actor.name) + '/components/judo_tab.dart'"
   templateName: flutter/lib/components/judo_tab.dart
   copy: true
 
-- overwriteExpression: false
+- overwriteExpression: true
   factoryExpression: "{#application}"
   pathExpression: "'lib/' + #path(#application.actor.name) + '/components/judo_table.dart'"
   templateName: flutter/lib/components/judo_table.dart
   copy: true
 
-- overwriteExpression: false
+- overwriteExpression: true
   factoryExpression: "{#application}"
   pathExpression: "'lib/' + #path(#application.actor.name) + '/components/judo_time_input.dart'"
   templateName: flutter/lib/components/judo_time_input.dart
   copy: true
 
-- overwriteExpression: false
+- overwriteExpression: true
   factoryExpression: "{#application}"
   pathExpression: "'lib/' + #path(#application.actor.name) + '/components/judo_title.dart'"
   templateName: flutter/lib/components/judo_title.dart
