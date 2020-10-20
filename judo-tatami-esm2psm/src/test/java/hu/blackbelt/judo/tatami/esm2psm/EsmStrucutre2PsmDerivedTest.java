@@ -455,6 +455,7 @@ public class EsmStrucutre2PsmDerivedTest {
         
         OneWayRelationMember navigationProperty = newOneWayRelationMemberBuilder().withName("navigationProperty")
         		.withMemberType(MemberType.DERIVED)
+        		.withRelationKind(RelationKind.AGGREGATION)
                 .withGetterExpression("self.navigationProperty.target")
                 .withDefaultExpression("self.navigationProperty.target")
                 .withLower(0).withUpper(-1)
@@ -1043,7 +1044,7 @@ public class EsmStrucutre2PsmDerivedTest {
                         .withCreateable(true)
                         .withUpdateable(true)
                         .withMemberType(MemberType.DERIVED)
-                        .withRelationKind(RelationKind.ASSOCIATION)
+                        .withRelationKind(RelationKind.AGGREGATION)
                         .withGetterExpression(
                                 "TestModel::E")
                         .build())
