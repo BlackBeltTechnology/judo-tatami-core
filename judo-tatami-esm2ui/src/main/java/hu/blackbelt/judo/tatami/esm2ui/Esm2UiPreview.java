@@ -182,6 +182,6 @@ public class Esm2UiPreview {
 			});
 		mapper.registerModule(module);
 		
-		return mapper.writerWithDefaultPrettyPrinter().writeValueAsString(resource);
+		return mapper.writeValueAsString(resource);
 	}
 }

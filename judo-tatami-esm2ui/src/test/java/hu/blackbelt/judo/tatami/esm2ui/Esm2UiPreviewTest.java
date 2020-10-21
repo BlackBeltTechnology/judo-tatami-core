@@ -16,6 +16,10 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import java.io.File;
 import java.util.Iterator;
 import java.util.List;
@@ -77,19 +81,22 @@ public class Esm2UiPreviewTest {
 
     private void transformViewForPreview() throws Exception {
     	validateEsmTestModel();
-    	log.info(executeEsm2UiTransformation(esmModel, SimpleOrderModel.getViewForTest(), "default", 12, uiModel, new Slf4jLog(log)));
+    	String pretty = prettyPrintJson(executeEsm2UiTransformation(esmModel, SimpleOrderModel.getViewForTest(), "default", 12, uiModel, new Slf4jLog(log)));
+    	log.info("View preview JSON:\n{}",pretty);
         validateUiTestModel();
     }
     
     private void transformFormForPreview() throws Exception {
     	validateEsmTestModel();
-    	log.info(executeEsm2UiTransformation(esmModel, SimpleOrderModel.getFormForTest(), "default", 12, uiModel, new Slf4jLog(log)));
+    	String pretty = prettyPrintJson(executeEsm2UiTransformation(esmModel, SimpleOrderModel.getViewForTest(), "default", 12, uiModel, new Slf4jLog(log)));
+    	log.info("View preview JSON:\n{}",pretty);
         validateUiTestModel();
     }
     
     private void transformTableForPreview() throws Exception {
     	validateEsmTestModel();
-    	log.info(executeEsm2UiTransformation(esmModel, SimpleOrderModel.getTableForTest(), "default", 12, uiModel, new Slf4jLog(log)));
+    	String pretty = prettyPrintJson(executeEsm2UiTransformation(esmModel, SimpleOrderModel.getViewForTest(), "default", 12, uiModel, new Slf4jLog(log)));
+    	log.info("View preview JSON:\n{}",pretty);
         validateUiTestModel();
     }
     
@@ -218,5 +225,11 @@ public class Esm2UiPreviewTest {
           sb.append("\n");
         }
         return sb.toString();
+    }
+    
+    private String prettyPrintJson(String notPretty) throws JsonMappingException, JsonProcessingException {
+    	ObjectMapper mapper = new ObjectMapper();
+		Object json = mapper.readValue(notPretty, Object.class);
+    	return mapper.writerWithDefaultPrettyPrinter().writeValueAsString(json);
     }
 }
