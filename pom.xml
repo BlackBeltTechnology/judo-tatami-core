@@ -54,27 +54,27 @@
 
         <epsilon-runtime-version>1.2.2</epsilon-runtime-version>
 
-        <judo-framework-version>2.0.0.20200708_094205_24fdc8e_develop</judo-framework-version>
+        <judo-framework-version>2.0.0.20201013_134603_d407007_develop</judo-framework-version>
 
         <!-- Model versions -->
         <judo-meta-rdbms-version>1.0.0.20201009_141638_3f12aa2_develop</judo-meta-rdbms-version>
-        <judo-meta-esm-version>1.1.0.20201020_154635_56d86ac_develop</judo-meta-esm-version>
+        <judo-meta-esm-version>1.1.0.20201020_205613_b45291c_develop</judo-meta-esm-version>
         <judo-meta-psm-version>1.1.0.20201001_105005_43299d9_develop</judo-meta-psm-version>
         <judo-meta-jql-version>1.0.1.20201009_140430_1d6f14c_develop</judo-meta-jql-version>
         <judo-meta-jcl-version>1.0.1.20201009_150422_5f4875e_develop</judo-meta-jcl-version>
-        <judo-meta-script-version>1.0.1.20201009_152946_c828b96_develop</judo-meta-script-version>
+        <judo-meta-script-version>1.0.1.20201021_064634_ec8d75b_develop</judo-meta-script-version>
         <judo-meta-asm-version>1.1.0.20201009_135744_e2ee8ed_develop</judo-meta-asm-version>
-        <judo-meta-expression-version>1.0.1.20201014_144337_502dace_develop</judo-meta-expression-version>
+        <judo-meta-expression-version>1.0.1.20201020_220811_d5ff47e_develop</judo-meta-expression-version>
         <judo-meta-measure-version>1.0.0.20201009_141245_f1a287b_develop</judo-meta-measure-version>
         <judo-meta-liquibase-version>1.0.0.20201009_140916_789dba3_develop</judo-meta-liquibase-version>
         <judo-meta-openapi-version>1.0.0.20201009_141648_21cde71_develop</judo-meta-openapi-version>
         <judo-meta-ui-version>1.0.0.20201020_230213_939ff41_develop</judo-meta-ui-version>
         <judo-dao-api-version>1.0.2.20201019_175250_82201ef_develop</judo-dao-api-version>
         <judo-dispatcher-api-version>1.0.2.20200709_172739_726a3b9_develop</judo-dispatcher-api-version>
-        <judo-script-codegen-version>1.1.0.20201009_153825_4ade2d1_develop</judo-script-codegen-version>
-        <judo-operation-utils-version>1.1.0.20201009_143547_1bb4657_develop</judo-operation-utils-version>
+        <judo-script-codegen-version>1.1.0.20201021_074535_e539485_develop</judo-script-codegen-version>
+        <judo-operation-utils-version>1.1.0.20201020_220851_979266f_develop</judo-operation-utils-version>
 
-        <structured-map-proxy-version>1.0.5</structured-map-proxy-version>
+        <structured-map-proxy-version>1.0.4</structured-map-proxy-version>
 
 
         <!-- Xtend / Xcore -->
