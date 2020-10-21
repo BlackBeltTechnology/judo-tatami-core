@@ -139,6 +139,9 @@ public class FlutterHelper {
     }
 
     public static String className(String fqName) {
+        if (fqName == null) {
+            return null;
+        }
         String[] splitted = fqName.split("::");
         return fqClass(stream(splitted)
                 .map(s -> StringUtils.capitalize(s))
