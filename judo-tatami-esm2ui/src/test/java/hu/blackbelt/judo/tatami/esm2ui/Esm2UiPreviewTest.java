@@ -88,15 +88,15 @@ public class Esm2UiPreviewTest {
     
     private void transformFormForPreview() throws Exception {
     	validateEsmTestModel();
-    	String pretty = prettyPrintJson(executeEsm2UiTransformation(esmModel, SimpleOrderModel.getViewForTest(), "default", 12, uiModel, new Slf4jLog(log)));
-    	log.info("View preview JSON:\n{}",pretty);
+    	String pretty = prettyPrintJson(executeEsm2UiTransformation(esmModel, SimpleOrderModel.getFormForTest(), "default", 12, uiModel, new Slf4jLog(log)));
+    	log.info("Form preview JSON:\n{}",pretty);
         validateUiTestModel();
     }
     
     private void transformTableForPreview() throws Exception {
     	validateEsmTestModel();
-    	String pretty = prettyPrintJson(executeEsm2UiTransformation(esmModel, SimpleOrderModel.getViewForTest(), "default", 12, uiModel, new Slf4jLog(log)));
-    	log.info("View preview JSON:\n{}",pretty);
+    	String pretty = prettyPrintJson(executeEsm2UiTransformation(esmModel, SimpleOrderModel.getTableForTest(), "default", 12, uiModel, new Slf4jLog(log)));
+    	log.info("Table preview JSON:\n{}",pretty);
         validateUiTestModel();
     }
     
