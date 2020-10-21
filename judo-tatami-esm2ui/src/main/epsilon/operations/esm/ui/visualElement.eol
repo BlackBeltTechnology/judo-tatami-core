@@ -1,0 +1,25 @@
+@cached
+operation ESM!esm::ui::VisualElement getUiLabel() : String {
+	var lab = self.getEffectiveLabel();
+	if (lab.isUndefined() and self.name.isDefined()) {
+		lab = self.name.firstToUpperCase();
+	}
+	if (lab.isUndefined()) {
+		return "";
+	} else {
+		return lab.firstToUpperCase().replaceAll(
+         "(?<=[A-Z])(?=[A-Z][a-z])|" +
+         "(?<=[^A-Z])(?=[A-Z])|" +
+         "(?<=[A-Za-z])(?=[^A-Za-z])",
+      " ");
+	}
+}
+
+@cached
+operation ESM!esm::ui::VisualElement getTransferObjectType() : ESM!esm::structure::TransferObjectType {
+	var to = self.eContainer;
+	while (to.isDefined() and not to.isKindOf(ESM!esm::structure::TransferObjectType)) {
+		to = to.eContainer;
+	}
+	return to;
+}

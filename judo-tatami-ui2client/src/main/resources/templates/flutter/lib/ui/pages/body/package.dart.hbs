@@ -1,0 +1,27 @@
+//////////////////////////////////////////////////////////////////////////////
+// G E N E R A T E D    C L A S S
+// ------------------------------
+// Factory expression: {{{ cleanup template.factoryExpression }}}
+// Path expression: {{{ cleanup template.pathExpression }}}
+// Overwrite: {{{ cleanup template.overwriteExpression }}}
+// Template name: {{ template.templateName }}
+// Application: {{ application.name }}
+
+library {{ variable application.name }}.ui.pages.{{variable name}};
+
+import 'package:flutter/material.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:mobx/mobx.dart';
+import 'tables/package.dart';
+
+import 'package:{{ modelPackage application.name }}/{{ path application.name }}/components/package.dart';
+import 'package:{{ modelPackage application.name }}/{{ path application.name }}/injector/injector.dart';
+import 'package:{{ modelPackage application.name }}/{{ path application.name }}/store/package.dart';
+import 'package:{{ modelPackage application.name }}/{{ path application.name }}/ui/navigation_state.dart';
+import 'package:{{ modelPackage application.name }}/{{ path application.name }}/ui/pages/package.dart';
+import 'package:{{ modelPackage application.name }}/{{ path application.name }}/ui/routes/router.gr.dart';
+import 'package:{{ modelPackage application.name }}/{{ path application.name }}/utilities/package.dart';
+
+{{# each layout.pageContainers as |container| }}
+part '{{ fqPath container.owner.name }}__{{fqPath layout.name}}__body.dart';
+{{/ each }}

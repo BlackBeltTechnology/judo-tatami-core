@@ -1,0 +1,114 @@
+//////////////////////////////////////////////////////////////////////////////
+// G E N E R A T E D    C L A S S
+// ------------------------------
+// Factory expression: {{{ cleanup template.factoryExpression }}}
+// Path expression: {{{ cleanup template.pathExpression }}}
+// Overwrite: {{{ cleanup template.overwriteExpression }}}
+// Template name: {{ template.templateName }}
+// Application: {{ application.name }}
+
+part of {{ variable application.name }}.ui.pages.{{ fqVariable table.pageContainer.layoutType.name }}.tables;
+
+class {{ fqClass table.pageDefinition.name }}{{ fqClass table.name }}{{ fqClass table.pageContainer.layoutType.name }}Table implements JudoTableDataInfo {
+
+    const {{ fqClass table.pageDefinition.name }}{{ fqClass table.name }}{{ fqClass table.pageContainer.layoutType.name }}Table({
+        this.disabled = false,
+    });
+
+    final bool disabled;
+
+    @override
+    List<DataColumn> getColumns(Function onAdd) {
+        return [
+            {{# each columns}}
+            DataColumn(label: Text('{{label}}')),
+            {{/each}}
+            {{#each table.rowActions}}
+            DataColumn(label: Text("")),
+            {{/each}}
+        ];
+    }
+
+    @override
+    Function getRow({Function navigateToEditPageAction, Function navigateToViewPageAction, Function navigateToCreatePageAction, Function removeAction, Function unsetAction, Function deleteAction}) {
+        return (target{{ className table.dataElement.target.name }}) => DataRow(
+            cells: [
+                {{# each columns as |column|}}
+                DataCell(
+                    {{#if column}}
+                    {{> (getWidgetTemplate column) column=column dataName=(className table.dataElement.target.name)}}
+                    {{/if}}
+                ),
+                {{/each}}
+                {{#each table.rowActions as |action|}}
+                {{#if action.isRemoveAction}}
+                DataCell(
+                    Icon(
+                        Icons.{{action.icon.name}},
+                        color: disabled ? kDisabledColor : null,
+                    ),
+                    onTap: disabled ? null : () => removeAction(target{{ className table.dataElement.target.name }}),
+                ),
+                {{/if}}
+                {{#if action.isUnsetAction}}
+                DataCell(
+                    Icon(
+                        Icons.{{action.icon.name}},
+                        color: disabled ? kDisabledColor : null,
+                    ),
+                    onTap: disabled ? null : () => unsetAction(target{{ className table.dataElement.target.name }}),
+                ),
+                {{/if}}
+                {{#if action.isDeleteAction}}
+                target{{ className table.dataElement.target.name }}?.internal__deletable == true && deleteAction != null // function null if the owner is not updatable
+                ? DataCell(
+                    Icon(
+                        Icons.{{action.icon.name}},
+                        color: disabled ? kDisabledColor : null,
+                    ),
+                    onTap: disabled ? null : () => deleteAction(target{{ className table.dataElement.target.name }}),
+                  )
+                : DataCell(
+                    Text(''),
+                  ),
+                {{/if}}
+                {{#if action.isCreateAction}}
+                DataCell(
+                    Icon(
+                        Icons.{{action.icon.name}},
+                        color: disabled ? kDisabledColor : null,
+                    ),
+                    onTap: disabled ? null : () => navigateToCreatePageAction(target{{ className table.dataElement.target.name }}),
+                ),
+                {{/if}}
+                {{#if action.isEditAction}}
+                target{{ className table.dataElement.target.name }}?.internal__updatable == true
+                ? DataCell(
+                    Icon(
+                        Icons.{{action.icon.name}},
+                        color: disabled ? kDisabledColor : null,
+                    ),
+                    onTap: disabled ? null : () => navigateToEditPageAction(target{{ className table.dataElement.target.name }}),
+                  )
+                : DataCell(
+                    Text(''),
+                  ),
+                {{/if}}
+                {{#if action.isViewAction}}
+                target{{ className table.dataElement.target.name }} != null
+                ? DataCell(
+                    Icon(
+                        Icons.{{action.icon.name}},
+                        color: disabled ? kDisabledColor : null,
+                    ),
+                    onTap: disabled ? null : () => navigateToViewPageAction(target{{ className table.dataElement.target.name }}),
+                  )
+                : DataCell(
+                    Text(''),
+                  ),
+                {{/if}}
+                {{/each}}
+            ],
+        );
+    }
+}

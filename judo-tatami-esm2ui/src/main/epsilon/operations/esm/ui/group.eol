@@ -1,0 +1,8 @@
+operation ESM!esm::ui::Group createFlexFromGroup(application : UI!ui::Application) : UI!ui::Flex {
+	var ret : UI!ui::Flex = self.createFlexFromContainer(application);
+	return ret;
+}
+
+operation ESM!esm::ui::Group map(application : UI!ui::Application) : UI!ui::Flex {
+	return self.createFlexFromGroup(application);
+}

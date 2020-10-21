@@ -1,0 +1,30 @@
+import "../namespace/namespace.etl";
+import "../../../../operations/_importAll.eol";
+
+rule ApplicationDashboardPage
+    transform s: ESM!esm::accesspoint::ActorType
+    to t : UI!ui::PageDefinition
+    extends CreateNamedElementFromNamespaceElement {
+
+        log.debug("ApplicationDashboardPage: " + s.name);
+
+        var application = s.equivalent("Application");
+        log.debug("ApplicationDashboardPage: " + s.name);
+        t.name = s.fqName().anchor("Dashboard");
+		t.pageType = UI!ui::PageType#DASHBOARD;
+        t.dataElement = s.principal.mapClassType(application);
+ 
+	 	var pageContainer = new UI!ui::PageContainer();
+	    pageContainer.layoutType = application.layoutTypes.first;
+		pageContainer.name = "default";
+		pageContainer.direction = UI!Axis#VERTICAL;
+		t.containers.add(pageContainer);
+	 
+		if (s.principal.isDefined() and s.principal.view.isDefined()) {
+	        pageContainer.children.add(s.principal.view.map(application));
+	        t.label = s.principal.view.getUiLabel();
+        }
+        application.pages.add(t);
+        application.dashboard = t;
+}
+

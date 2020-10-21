@@ -1,0 +1,32 @@
+//////////////////////////////////////////////////////////////////////////////
+// G E N E R A T E D    C L A S S
+// ------------------------------
+// Factory expression: {{{ cleanup template.factoryExpression }}}
+// Path expression: {{{ cleanup template.pathExpression }}}
+// Overwrite: {{{ cleanup template.overwriteExpression }}}
+// Template name: {{ template.templateName }}
+// Application: {{ application.name }}
+
+import 'package:flutter/material.dart';
+import 'package:openapi_dart_common/openapi.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:universal_html/html.dart';
+import 'package:universal_platform/universal_platform.dart';
+import 'package:{{ modelPackage application.name }}/{{ path application.name }}/injector/injector.dart';
+import 'package:{{ modelPackage application.name }}/{{ path application.name }}/main.dart';
+
+void main() async {
+    configureDependencies();
+    var url = "http://localhost:8181";
+    if (UniversalPlatform.isWeb) {
+        url = window.location.protocol ?? "http" + "//" + window.location.host;
+    }
+
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    var urlPref = (prefs.getString('apiUrl') ?? url);
+    await prefs.setString('apiUrl', urlPref);
+
+    ApiClient _apiClient = ApiClient(basePath: url + "/api/{{ modelPackage application.actor.name }}", apiClientDelegate: DioClientDelegate());
+    locator.registerSingleton<ApiClient>(_apiClient);
+    runApp({{ fqClass application.name }}Application());
+}

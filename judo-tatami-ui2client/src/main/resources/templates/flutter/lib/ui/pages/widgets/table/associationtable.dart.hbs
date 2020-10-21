@@ -1,0 +1,65 @@
+// ignore: missing_return
+Observer(builder: (_) {
+    switch({{ fqVariable page.name }}PageStore.{{ fqVariable page.relationType.name }}StoreFuture.status){
+        case FutureStatus.pending:
+            return JudoLoadingProgress();
+        case FutureStatus.rejected:
+            return Container();
+        case FutureStatus.fulfilled:
+            return JudoTable(
+                disabled: {{disabled}},
+                col: {{col}},
+                dataInfo: {{ fqClass pageDefinition.name }}{{ fqClass table.name }}{{ fqClass pageContainer.layoutType.name }}Table(disabled: {{disabled}}),
+                rowList: {{# if page.dataElement.isAccess}}{{ fqVariable page.name }}PageStore.{{ fqVariable page.relationType.name }}StoreList{{else}}{{# if page.relationType.isCollection }}owner{{ className page.relationType.owner.name }}Store.{{variable page.relationType.name}}{{else}}[owner{{ className page.relationType.owner.name }}Store.{{variable page.relationType.name}}].asObservable(){{/ if}}{{/ if}},
+                {{#each table.rowActions as |action|}}
+                {{#if action.isViewAction}}
+                navigateToViewPageAction: (element) async {
+                    var response = await navigation.open(Routes.{{ fqVariable action.target.name }}Page,
+                        arguments: {{ fqClass action.target.name }}PageArguments({{# unless page.dataElement.isAccess}}owner{{ className page.dataElement.owner.name }}Store: owner{{ className page.dataElement.owner.name }}Store, {{/ unless}}target{{ className page.dataElement.target.name }}Store: element));
+                    if (response != null) {
+                        {{ fqVariable page.name }}PageStore.get{{ fqClass page.relationType.name }}({{# unless page.dataElement.isAccess}}owner{{ className page.dataElement.owner.name }}Store{{/ unless}});
+                    }
+                },
+                {{/if}}
+                {{#if action.isCreateAction}}
+                // TODO: not sure this rowAction needed
+                navigateToCreatePageAction:{{# unless page.dataElement.isAccess}} target{{ className page.dataElement.owner.name }}Store.internal__updatable ?{{/ unless}} (element) async {
+                    var created = await navigation.open(Routes.{{ fqVariable action.target.name }}Page);
+                    if (created != null) {
+                        {{ fqVariable page.name }}PageStore.create{{ fqClass page.relationType.name }}({{# unless page.dataElement.isAccess}}owner{{ className page.dataElement.owner.name }}Store ,{{/ unless}}created);
+                    }
+                }{{# unless page.dataElement.isAccess}} : null{{/ unless}},
+                {{/if}}
+                {{#if action.isEditAction}}
+                navigateToEditPageAction: (element) async {
+                    {{ fqClass relationType.target.name }}Store cloned = {{ fqClass relationType.target.name }}Store();
+                    cloned.updateWith(element);
+                    var res = await navigation.open(Routes.{{ fqVariable action.target.name }}Page,
+                        arguments: {{ fqClass action.target.name }}PageArguments(target{{ className page.dataElement.target.name }}Store: cloned));
+                    if (res != null) {
+                        element.updateWith(cloned);
+                        var updated = await {{ fqVariable page.name }}PageStore.update{{ className page.relationType.target.name }}(element);
+                        if (updated != null) {
+                            element.updateWith(updated);
+                            {{ fqVariable page.name }}PageStore.get{{ fqClass page.relationType.name }}({{# unless page.dataElement.isAccess}}owner{{ className page.dataElement.owner.name }}Store{{/ unless}});
+                        }
+                    }
+                },
+                {{/if}}
+                {{#if action.isRemoveAction}}
+                removeAction:{{# unless page.dataElement.isAccess}} owner{{ className page.dataElement.owner.name }}Store.internal__updatable ?{{/ unless}} (element) => {{fqVariable page.name}}PageStore.remove{{ fqClass page.relationType.name }}(owner{{ className page.dataElement.owner.name }}Store, element){{# unless page.dataElement.isAccess}} : null{{/ unless}},
+                {{/if}}
+                {{#if relationAction.isUnsetAction}}
+                unsetAction:{{# unless page.dataElement.isAccess}}{{# unless page.dataElement.isRelationKindStatic}} target{{ className page.dataElement.owner.name }}Store.internal__updatable ?{{/ unless}}{{/ unless}} () async {
+                    {{fqVariable page.name}}PageStore.unset{{ fqClass page.dataElement.name }}(target{{ className page.dataElement.owner.name }}Store);
+                }{{# unless page.dataElement.isAccess}}{{# unless page.dataElement.isRelationKindStatic}} : null{{/ unless}}{{/ unless}},
+                {{/if}}
+                {{#if action.isDeleteAction}}
+                deleteAction:{{# unless page.dataElement.isAccess}} owner{{ className page.dataElement.owner.name }}Store.internal__updatable ?{{/ unless}} (element) async {
+                    {{fqVariable page.name}}PageStore.delete{{ className page.relationType.target.name }}(element{{# unless page.dataElement.isAccess}}, owner{{ className page.dataElement.owner.name }}Store{{/unless}});
+                }{{# unless page.dataElement.isAccess}} : null{{/ unless}},
+                {{/if}}
+                {{/each}}
+            );
+    }
+}),

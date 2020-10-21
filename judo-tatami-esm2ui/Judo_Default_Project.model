@@ -1,0 +1,228 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<namespace:Model xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:measure="http://blackbelt.hu/judo/meta/esm/measure" xmlns:namespace="http://blackbelt.hu/judo/meta/esm/namespace" xmlns:structure="http://blackbelt.hu/judo/meta/esm/structure" xmlns:type="http://blackbelt.hu/judo/meta/esm/type" xmlns:ui="http://blackbelt.hu/judo/meta/esm/ui" xsi:schemaLocation="http://blackbelt.hu/judo/meta/esm/measure http://blackbelt.hu/judo/meta/esm#//measure http://blackbelt.hu/judo/meta/esm/namespace http://blackbelt.hu/judo/meta/esm#//namespace http://blackbelt.hu/judo/meta/esm/structure http://blackbelt.hu/judo/meta/esm#//structure http://blackbelt.hu/judo/meta/esm/type http://blackbelt.hu/judo/meta/esm#//type http://blackbelt.hu/judo/meta/esm/ui http://blackbelt.hu/judo/meta/esm#//ui" xmi:id="_v-K7EMEWEeqXIOAnxqEioQ" demoAccessPoint="true" name="Judo_Default_Project" metaVersion="1.1.0.20200702_134819_321333e_develop">
+  <elements xsi:type="namespace:Package" xmi:id="_v-K7EcEWEeqXIOAnxqEioQ" demoAccessPoint="false" name="types">
+    <elements xsi:type="type:StringType" xmi:id="_v-LiIMEWEeqXIOAnxqEioQ" name="String" maxLength="255"/>
+    <elements xsi:type="type:NumericType" xmi:id="_v-LiIcEWEeqXIOAnxqEioQ" name="Long" precision="18"/>
+    <elements xsi:type="type:NumericType" xmi:id="_v-LiIsEWEeqXIOAnxqEioQ" name="Integer" precision="9"/>
+    <elements xsi:type="type:NumericType" xmi:id="_v-LiI8EWEeqXIOAnxqEioQ" name="Double" precision="15" scale="4"/>
+    <elements xsi:type="type:NumericType" xmi:id="_v-LiJMEWEeqXIOAnxqEioQ" name="Float" precision="7" scale="4"/>
+    <elements xsi:type="type:BooleanType" xmi:id="_v-LiJcEWEeqXIOAnxqEioQ" name="Boolean"/>
+    <elements xsi:type="type:DateType" xmi:id="_v-LiJsEWEeqXIOAnxqEioQ" name="Date"/>
+    <elements xsi:type="type:TimestampType" xmi:id="_v-LiJ8EWEeqXIOAnxqEioQ" name="Timestamp" baseUnit="second"/>
+    <elements xsi:type="type:StringType" xmi:id="_v-LiKMEWEeqXIOAnxqEioQ" name="Phone" maxLength="20"/>
+    <elements xsi:type="type:StringType" xmi:id="_v-LiKcEWEeqXIOAnxqEioQ" name="Text" maxLength="250"/>
+    <elements xsi:type="type:StringType" xmi:id="_v-LiKsEWEeqXIOAnxqEioQ" name="URL" maxLength="1024"/>
+    <elements xsi:type="type:StringType" xmi:id="_v-LiK8EWEeqXIOAnxqEioQ" name="Email" maxLength="255" regExp="^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\\.[A-Za-z0-9-]+)*(\\.[A-Za-z]{2,})$"/>
+  </elements>
+  <elements xsi:type="namespace:Package" xmi:id="_v-LiLMEWEeqXIOAnxqEioQ" demoAccessPoint="false" name="measures">
+    <elements xsi:type="measure:Measure" xmi:id="_v-LiLcEWEeqXIOAnxqEioQ" name="Mass">
+      <units xmi:id="_v-LiLsEWEeqXIOAnxqEioQ" name="milligram" rateDividend="1.0E-6" rateDivisor="1.0" symbol="mg"/>
+      <units xmi:id="_v-LiL8EWEeqXIOAnxqEioQ" name="gram" rateDividend="0.001" rateDivisor="1.0" symbol="g"/>
+      <units xmi:id="_v-LiMMEWEeqXIOAnxqEioQ" name="dekagram" rateDividend="0.01" rateDivisor="1.0" symbol="dkg"/>
+      <units xmi:id="_v-LiMcEWEeqXIOAnxqEioQ" name="kilogram" rateDividend="1.0" rateDivisor="1.0" symbol="kg"/>
+      <units xmi:id="_v-LiMsEWEeqXIOAnxqEioQ" name="quintal" rateDividend="100.0" rateDivisor="1.0" symbol="q"/>
+      <units xmi:id="_v-LiM8EWEeqXIOAnxqEioQ" name="tonne" rateDividend="1000.0" rateDivisor="1.0" symbol="t"/>
+    </elements>
+    <elements xsi:type="measure:Measure" xmi:id="_v-LiNMEWEeqXIOAnxqEioQ" name="Time">
+      <units xsi:type="measure:DurationUnit" xmi:id="_v-LiNcEWEeqXIOAnxqEioQ" name="millisecond" rateDividend="0.001" rateDivisor="1.0" symbol="ms" unitType="millisecond"/>
+      <units xsi:type="measure:DurationUnit" xmi:id="_v-LiNsEWEeqXIOAnxqEioQ" name="second" rateDividend="1.0" rateDivisor="1.0" symbol="s" unitType="second"/>
+      <units xsi:type="measure:DurationUnit" xmi:id="_v-LiN8EWEeqXIOAnxqEioQ" name="minute" rateDividend="60.0" rateDivisor="1.0" symbol="min" unitType="minute"/>
+      <units xsi:type="measure:DurationUnit" xmi:id="_v-LiOMEWEeqXIOAnxqEioQ" name="hour" rateDividend="3600.0" rateDivisor="1.0" symbol="h" unitType="hour"/>
+      <units xsi:type="measure:DurationUnit" xmi:id="_v-LiOcEWEeqXIOAnxqEioQ" name="day" rateDividend="86400.0" rateDivisor="1.0" symbol="" unitType="day"/>
+      <units xsi:type="measure:DurationUnit" xmi:id="_v-LiOsEWEeqXIOAnxqEioQ" name="week" rateDividend="604800.0" rateDivisor="1.0" symbol=""/>
+    </elements>
+    <elements xsi:type="measure:Measure" xmi:id="_v-LiO8EWEeqXIOAnxqEioQ" name="Length">
+      <units xmi:id="_v-LiPMEWEeqXIOAnxqEioQ" name="nanometre" rateDividend="1.0E-9" rateDivisor="1.0" symbol="nm"/>
+      <units xmi:id="_v-LiPcEWEeqXIOAnxqEioQ" name="micrometre" rateDividend="1.0E-6" rateDivisor="1.0" symbol="μm"/>
+      <units xmi:id="_v-LiPsEWEeqXIOAnxqEioQ" name="millimetre" rateDividend="0.001" rateDivisor="1.0" symbol="mm"/>
+      <units xmi:id="_v-LiP8EWEeqXIOAnxqEioQ" name="centimetre" rateDividend="0.01" rateDivisor="1.0" symbol="cm"/>
+      <units xmi:id="_v-LiQMEWEeqXIOAnxqEioQ" name="decimetre" rateDividend="0.1" rateDivisor="1.0" symbol="dm"/>
+      <units xmi:id="_v-LiQcEWEeqXIOAnxqEioQ" name="metre" rateDividend="1.0" rateDivisor="1.0" symbol="m"/>
+      <units xmi:id="_v-LiQsEWEeqXIOAnxqEioQ" name="kilometre" rateDividend="1000.0" rateDivisor="1.0" symbol="km"/>
+      <units xmi:id="_v-LiQ8EWEeqXIOAnxqEioQ" name="inch" rateDividend="0.0254" rateDivisor="1.0" symbol="&quot;"/>
+      <units xmi:id="_v-LiRMEWEeqXIOAnxqEioQ" name="foot" rateDividend="0.3048" rateDivisor="1.0" symbol="ft"/>
+      <units xmi:id="_v-LiRcEWEeqXIOAnxqEioQ" name="mile" rateDividend="1609.344" rateDivisor="1.0" symbol="mi"/>
+    </elements>
+    <elements xsi:type="measure:Measure" xmi:id="_v-LiRsEWEeqXIOAnxqEioQ" name="Temperature">
+      <units xmi:id="_v-LiR8EWEeqXIOAnxqEioQ" name="celsius" rateDividend="1.0" rateDivisor="1.0" symbol="°C"/>
+    </elements>
+    <elements xsi:type="measure:Measure" xmi:id="_v-LiSMEWEeqXIOAnxqEioQ" name="Area">
+      <units xmi:id="_v-LiScEWEeqXIOAnxqEioQ" name="squareMillimetre" rateDividend="1.0E-6" rateDivisor="1.0" symbol="mm²"/>
+      <units xmi:id="_v-LiSsEWEeqXIOAnxqEioQ" name="squareCentimetre" rateDividend="1.0E-4" rateDivisor="1.0" symbol="cm²"/>
+      <units xmi:id="_v-LiS8EWEeqXIOAnxqEioQ" name="squareDecimetre" rateDividend="0.01" rateDivisor="1.0" symbol="dm²"/>
+      <units xmi:id="_v-LiTMEWEeqXIOAnxqEioQ" name="squareMetre" rateDividend="1.0" rateDivisor="1.0" symbol="m²"/>
+      <units xmi:id="_v-LiTcEWEeqXIOAnxqEioQ" name="hectare" rateDividend="10000.0" rateDivisor="1.0" symbol="ha"/>
+      <units xmi:id="_v-LiTsEWEeqXIOAnxqEioQ" name="squareKilometre" rateDividend="1000000.0" rateDivisor="1.0" symbol="km²"/>
+      <terms xmi:id="_v-LiT8EWEeqXIOAnxqEioQ" exponent="2" unit="_v-LiQcEWEeqXIOAnxqEioQ"/>
+    </elements>
+    <elements xsi:type="measure:Measure" xmi:id="_v-LiUMEWEeqXIOAnxqEioQ" name="Volume">
+      <units xmi:id="_v-LiUcEWEeqXIOAnxqEioQ" name="cubicMillimetre" rateDividend="1.0E-9" rateDivisor="1.0" symbol="mm³"/>
+      <units xmi:id="_v-LiUsEWEeqXIOAnxqEioQ" name="cubicCentimetre" rateDividend="1.0E-6" rateDivisor="1.0" symbol="cm³"/>
+      <units xmi:id="_v-LiU8EWEeqXIOAnxqEioQ" name="cubicDecimetre" rateDividend="0.001" rateDivisor="1.0" symbol="dm³"/>
+      <units xmi:id="_v-LiVMEWEeqXIOAnxqEioQ" name="cubicMetre" rateDividend="1.0" rateDivisor="1.0" symbol="m³"/>
+      <units xmi:id="_v-LiVcEWEeqXIOAnxqEioQ" name="millilitre" rateDividend="1.0E-6" rateDivisor="1.0" symbol="ml"/>
+      <units xmi:id="_v-LiVsEWEeqXIOAnxqEioQ" name="centilitre" rateDividend="1.0E-5" rateDivisor="1.0" symbol="cl"/>
+      <units xmi:id="_v-LiV8EWEeqXIOAnxqEioQ" name="decilitre" rateDividend="1.0E-4" rateDivisor="1.0" symbol="dl"/>
+      <units xmi:id="_v-LiWMEWEeqXIOAnxqEioQ" name="litre" rateDividend="0.001" rateDivisor="1.0" symbol="l"/>
+      <units xmi:id="_v-LiWcEWEeqXIOAnxqEioQ" name="hectolitre" rateDividend="0.1" rateDivisor="1.0" symbol="hl"/>
+      <terms xmi:id="_v-LiWsEWEeqXIOAnxqEioQ" exponent="3" unit="_v-LiQcEWEeqXIOAnxqEioQ"/>
+    </elements>
+    <elements xsi:type="measure:Measure" xmi:id="_v-LiW8EWEeqXIOAnxqEioQ" name="Velocity">
+      <units xmi:id="_v-LiXMEWEeqXIOAnxqEioQ" name="kilometrePerHour" rateDividend="1.0" rateDivisor="3.6" symbol="km/h"/>
+      <units xmi:id="_v-LiXcEWEeqXIOAnxqEioQ" name="metrePerSecond" rateDividend="1.0" rateDivisor="1.0" symbol="m/s"/>
+      <terms xmi:id="_v-LiXsEWEeqXIOAnxqEioQ" exponent="1" unit="_v-LiQcEWEeqXIOAnxqEioQ"/>
+      <terms xmi:id="_v-LiX8EWEeqXIOAnxqEioQ" exponent="-1" unit="_v-LiNsEWEeqXIOAnxqEioQ"/>
+    </elements>
+    <elements xsi:type="measure:Measure" xmi:id="_v-LiYMEWEeqXIOAnxqEioQ" name="Acceleration">
+      <units xmi:id="_v-LiYcEWEeqXIOAnxqEioQ" name="metrePerSecondSquared" rateDividend="1.0" rateDivisor="1.0" symbol="m/s²"/>
+      <terms xmi:id="_v-LiYsEWEeqXIOAnxqEioQ" exponent="1" unit="_v-LiXcEWEeqXIOAnxqEioQ"/>
+      <terms xmi:id="_v-LiY8EWEeqXIOAnxqEioQ" exponent="-1" unit="_v-LiNsEWEeqXIOAnxqEioQ"/>
+    </elements>
+    <elements xsi:type="measure:Measure" xmi:id="_v-LiZMEWEeqXIOAnxqEioQ" name="Momentum">
+      <units xmi:id="_v-LiZcEWEeqXIOAnxqEioQ" name="kilogramMetrePerSecond" rateDividend="1.0" rateDivisor="1.0" symbol="kg*m/s"/>
+      <terms xmi:id="_v-LiZsEWEeqXIOAnxqEioQ" exponent="1" unit="_v-LiMcEWEeqXIOAnxqEioQ"/>
+      <terms xmi:id="_v-LiZ8EWEeqXIOAnxqEioQ" exponent="1" unit="_v-LiXcEWEeqXIOAnxqEioQ"/>
+    </elements>
+    <elements xsi:type="measure:Measure" xmi:id="_v-LiaMEWEeqXIOAnxqEioQ" name="Force">
+      <units xmi:id="_v-LiacEWEeqXIOAnxqEioQ" name="newton" rateDividend="1.0" rateDivisor="1.0" symbol="N"/>
+      <terms xmi:id="_v-LiasEWEeqXIOAnxqEioQ" exponent="1" unit="_v-LiMcEWEeqXIOAnxqEioQ"/>
+      <terms xmi:id="_v-Lia8EWEeqXIOAnxqEioQ" exponent="1" unit="_v-LiYcEWEeqXIOAnxqEioQ"/>
+    </elements>
+    <elements xsi:type="measure:Measure" xmi:id="_v-LibMEWEeqXIOAnxqEioQ" name="Work">
+      <units xmi:id="_v-LibcEWEeqXIOAnxqEioQ" name="joule" rateDividend="1.0" rateDivisor="1.0" symbol="J"/>
+      <units xmi:id="_v-LibsEWEeqXIOAnxqEioQ" name="kilojoule" rateDividend="1000.0" rateDivisor="1.0" symbol="kJ"/>
+      <units xmi:id="_v-Lib8EWEeqXIOAnxqEioQ" name="megajoule" rateDividend="1000000.0" rateDivisor="1.0" symbol="MJ"/>
+      <units xmi:id="_v-LicMEWEeqXIOAnxqEioQ" name="watthour" rateDividend="3600.0" rateDivisor="1.0"/>
+      <units xmi:id="_v-LiccEWEeqXIOAnxqEioQ" name="kilowatthour" rateDividend="3600000.0" rateDivisor="1.0" symbol="kWh"/>
+      <terms xmi:id="_v-LicsEWEeqXIOAnxqEioQ" exponent="1" unit="_v-LiacEWEeqXIOAnxqEioQ"/>
+      <terms xmi:id="_v-Lic8EWEeqXIOAnxqEioQ" exponent="1" unit="_v-LiQcEWEeqXIOAnxqEioQ"/>
+    </elements>
+    <elements xsi:type="measure:Measure" xmi:id="_v-LidMEWEeqXIOAnxqEioQ" name="Power">
+      <units xmi:id="_v-LidcEWEeqXIOAnxqEioQ" name="watt" rateDividend="1.0" rateDivisor="1.0" symbol="W"/>
+      <units xmi:id="_v-LidsEWEeqXIOAnxqEioQ" name="kilowatt" rateDividend="1000.0" rateDivisor="1.0" symbol="kW"/>
+      <units xmi:id="_v-Lid8EWEeqXIOAnxqEioQ" name="megawatt" rateDividend="1000000.0" rateDivisor="1.0" symbol="MW"/>
+      <terms xmi:id="_v-LieMEWEeqXIOAnxqEioQ" exponent="1" unit="_v-LibcEWEeqXIOAnxqEioQ"/>
+      <terms xmi:id="_v-LiecEWEeqXIOAnxqEioQ" exponent="-1" unit="_v-LiNsEWEeqXIOAnxqEioQ"/>
+    </elements>
+    <elements xsi:type="measure:Measure" xmi:id="_v-LiesEWEeqXIOAnxqEioQ" name="Frequency">
+      <units xmi:id="_v-Lie8EWEeqXIOAnxqEioQ" name="hertz" rateDividend="1.0" rateDivisor="1.0" symbol="Hz"/>
+      <units xmi:id="_v-LifMEWEeqXIOAnxqEioQ" name="kilohertz" rateDividend="1000.0" rateDivisor="1.0" symbol="kHz"/>
+      <units xmi:id="_v-LifcEWEeqXIOAnxqEioQ" name="megahertz" rateDividend="1000000.0" rateDivisor="1.0" symbol="Mhz"/>
+      <units xmi:id="_v-LifsEWEeqXIOAnxqEioQ" name="gigahertz" rateDividend="1.0E9" rateDivisor="1.0" symbol="Ghz"/>
+      <terms xmi:id="_v-Lif8EWEeqXIOAnxqEioQ" exponent="-1" unit="_v-LiNsEWEeqXIOAnxqEioQ"/>
+    </elements>
+    <elements xsi:type="measure:Measure" xmi:id="_v-LigMEWEeqXIOAnxqEioQ" name="Pressure">
+      <units xmi:id="_v-LigcEWEeqXIOAnxqEioQ" name="pascal" rateDividend="1.0" rateDivisor="1.0" symbol="Pa"/>
+      <units xmi:id="_v-LigsEWEeqXIOAnxqEioQ" name="hectopascal" rateDividend="100.0" rateDivisor="1.0" symbol="hPa"/>
+      <terms xmi:id="_v-Lig8EWEeqXIOAnxqEioQ" exponent="1" unit="_v-LiacEWEeqXIOAnxqEioQ"/>
+      <terms xmi:id="_v-LihMEWEeqXIOAnxqEioQ" exponent="-1" unit="_v-LiTMEWEeqXIOAnxqEioQ"/>
+    </elements>
+    <elements xsi:type="measure:Measure" xmi:id="_v-LihcEWEeqXIOAnxqEioQ" name="Density">
+      <units xmi:id="_v-LihsEWEeqXIOAnxqEioQ" name="kilogramPerCubicMetre" rateDividend="1.0" rateDivisor="1.0" symbol="kg/m³"/>
+      <units xmi:id="_v-Lih8EWEeqXIOAnxqEioQ" name="gramPerCubicCentimetre" rateDividend="1000.0" rateDivisor="1.0" symbol="g/cm³"/>
+      <terms xmi:id="_v-LiiMEWEeqXIOAnxqEioQ" exponent="1" unit="_v-LiMcEWEeqXIOAnxqEioQ"/>
+      <terms xmi:id="_v-LiicEWEeqXIOAnxqEioQ" exponent="-1" unit="_v-LiVMEWEeqXIOAnxqEioQ"/>
+    </elements>
+    <elements xsi:type="measure:Measure" xmi:id="_v-LiisEWEeqXIOAnxqEioQ" name="ElectricCurrent">
+      <units xmi:id="_v-Lii8EWEeqXIOAnxqEioQ" name="milliampere" rateDividend="0.001" rateDivisor="1.0" symbol="mA"/>
+      <units xmi:id="_v-LijMEWEeqXIOAnxqEioQ" name="ampere" rateDividend="1.0" rateDivisor="1.0" symbol="A"/>
+    </elements>
+    <elements xsi:type="measure:Measure" xmi:id="_v-LijcEWEeqXIOAnxqEioQ" name="ThermodynamicTemperature">
+      <units xmi:id="_v-LijsEWEeqXIOAnxqEioQ" name="kelvin" rateDividend="1.0" rateDivisor="1.0" symbol="K"/>
+    </elements>
+    <elements xsi:type="measure:Measure" xmi:id="_v-Lij8EWEeqXIOAnxqEioQ" name="AmountOfSubstance">
+      <units xmi:id="_v-LikMEWEeqXIOAnxqEioQ" name="mol" rateDividend="1.0" rateDivisor="1.0" symbol="mol"/>
+    </elements>
+    <elements xsi:type="measure:Measure" xmi:id="_v-LikcEWEeqXIOAnxqEioQ" name="LuminousIntensity">
+      <units xmi:id="_v-LiksEWEeqXIOAnxqEioQ" name="candela" rateDividend="1.0" rateDivisor="1.0" symbol="cd"/>
+    </elements>
+    <elements xsi:type="measure:Measure" xmi:id="_v-Lik8EWEeqXIOAnxqEioQ" name="ElectricCharge">
+      <units xmi:id="_v-LilMEWEeqXIOAnxqEioQ" name="coulomb" rateDividend="1.0" rateDivisor="1.0" symbol="C"/>
+      <terms xmi:id="_v-LilcEWEeqXIOAnxqEioQ" exponent="1" unit="_v-LijMEWEeqXIOAnxqEioQ"/>
+      <terms xmi:id="_v-LilsEWEeqXIOAnxqEioQ" exponent="1" unit="_v-LiNsEWEeqXIOAnxqEioQ"/>
+    </elements>
+    <elements xsi:type="measure:Measure" xmi:id="_v-Lil8EWEeqXIOAnxqEioQ" name="ElectricPotential">
+      <units xmi:id="_v-LimMEWEeqXIOAnxqEioQ" name="volt" rateDividend="1.0" rateDivisor="1.0" symbol="V"/>
+      <units xmi:id="_v-LimcEWEeqXIOAnxqEioQ" name="kilovolt" rateDividend="1000.0" rateDivisor="1.0" symbol="kV"/>
+      <terms xmi:id="_v-LimsEWEeqXIOAnxqEioQ" exponent="1" unit="_v-LibcEWEeqXIOAnxqEioQ"/>
+      <terms xmi:id="_v-Lim8EWEeqXIOAnxqEioQ" exponent="-1" unit="_v-LilMEWEeqXIOAnxqEioQ"/>
+    </elements>
+    <elements xsi:type="measure:Measure" xmi:id="_v-LinMEWEeqXIOAnxqEioQ" name="Capacitance">
+      <units xmi:id="_v-LincEWEeqXIOAnxqEioQ" name="pikofarad" rateDividend="1.0E-12" rateDivisor="1.0" symbol="pF"/>
+      <units xmi:id="_v-LinsEWEeqXIOAnxqEioQ" name="nanofarad" rateDividend="1.0E-9" rateDivisor="1.0" symbol="nF"/>
+      <units xmi:id="_v-Lin8EWEeqXIOAnxqEioQ" name="microfarad" rateDividend="1.0E-6" rateDivisor="1.0" symbol="μF"/>
+      <units xmi:id="_v-LioMEWEeqXIOAnxqEioQ" name="farad" rateDividend="1.0" rateDivisor="1.0" symbol="F"/>
+      <terms xmi:id="_v-LiocEWEeqXIOAnxqEioQ" exponent="1" unit="_v-LilMEWEeqXIOAnxqEioQ"/>
+      <terms xmi:id="_v-LiosEWEeqXIOAnxqEioQ" exponent="-1" unit="_v-LimMEWEeqXIOAnxqEioQ"/>
+    </elements>
+    <elements xsi:type="measure:Measure" xmi:id="_v-Lio8EWEeqXIOAnxqEioQ" name="ElectricalResistance">
+      <units xmi:id="_v-LipMEWEeqXIOAnxqEioQ" name="microohm" rateDividend="1.0E-6" rateDivisor="1.0" symbol="μΩ"/>
+      <units xmi:id="_v-LipcEWEeqXIOAnxqEioQ" name="milliohm" rateDividend="0.001" rateDivisor="1.0" symbol="mΩ"/>
+      <units xmi:id="_v-LipsEWEeqXIOAnxqEioQ" name="ohm" rateDividend="1.0" rateDivisor="1.0" symbol="Ω"/>
+      <terms xmi:id="_v-Lip8EWEeqXIOAnxqEioQ" exponent="1" unit="_v-LimMEWEeqXIOAnxqEioQ"/>
+      <terms xmi:id="_v-LiqMEWEeqXIOAnxqEioQ" exponent="-1" unit="_v-LijMEWEeqXIOAnxqEioQ"/>
+    </elements>
+    <elements xsi:type="measure:Measure" xmi:id="_v-LiqcEWEeqXIOAnxqEioQ" name="ElectricalConductance">
+      <units xmi:id="_v-LiqsEWEeqXIOAnxqEioQ" name="siemens" rateDividend="1.0" rateDivisor="1.0" symbol="S"/>
+      <terms xmi:id="_v-Liq8EWEeqXIOAnxqEioQ" exponent="-1" unit="_v-LipsEWEeqXIOAnxqEioQ"/>
+    </elements>
+    <elements xsi:type="measure:Measure" xmi:id="_v-LirMEWEeqXIOAnxqEioQ" name="MagneticFlux">
+      <units xmi:id="_v-LircEWEeqXIOAnxqEioQ" name="weber" rateDividend="1.0" rateDivisor="1.0" symbol="Wb"/>
+      <terms xmi:id="_v-LirsEWEeqXIOAnxqEioQ" exponent="1" unit="_v-LimMEWEeqXIOAnxqEioQ"/>
+      <terms xmi:id="_v-Lir8EWEeqXIOAnxqEioQ" exponent="1" unit="_v-LiNsEWEeqXIOAnxqEioQ"/>
+    </elements>
+    <elements xsi:type="measure:Measure" xmi:id="_v-LisMEWEeqXIOAnxqEioQ" name="MagneticFluxDensity">
+      <units xmi:id="_v-LiscEWEeqXIOAnxqEioQ" name="tesla" rateDividend="1.0" rateDivisor="1.0" symbol="T"/>
+      <terms xmi:id="_v-LissEWEeqXIOAnxqEioQ" exponent="1" unit="_v-LircEWEeqXIOAnxqEioQ"/>
+      <terms xmi:id="_v-Lis8EWEeqXIOAnxqEioQ" exponent="-1" unit="_v-LiTMEWEeqXIOAnxqEioQ"/>
+    </elements>
+    <elements xsi:type="measure:Measure" xmi:id="_v-LitMEWEeqXIOAnxqEioQ" name="Inductance">
+      <units xmi:id="_v-LitcEWEeqXIOAnxqEioQ" name="henry" rateDividend="1.0" rateDivisor="1.0" symbol="H"/>
+      <terms xmi:id="_v-LitsEWEeqXIOAnxqEioQ" exponent="1" unit="_v-LircEWEeqXIOAnxqEioQ"/>
+      <terms xmi:id="_v-Lit8EWEeqXIOAnxqEioQ" exponent="-1" unit="_v-LijMEWEeqXIOAnxqEioQ"/>
+    </elements>
+    <elements xsi:type="measure:Measure" xmi:id="_v-LiuMEWEeqXIOAnxqEioQ" name="Illuminance">
+      <units xmi:id="_v-LiucEWEeqXIOAnxqEioQ" name="lux" rateDividend="1.0" rateDivisor="1.0" symbol="lx"/>
+      <terms xmi:id="_v-LiusEWEeqXIOAnxqEioQ" exponent="1" unit="_v-LiksEWEeqXIOAnxqEioQ"/>
+      <terms xmi:id="_v-Liu8EWEeqXIOAnxqEioQ" exponent="-1" unit="_v-LiTMEWEeqXIOAnxqEioQ"/>
+    </elements>
+  </elements>
+  <elements xsi:type="structure:EntityType" name="Order">
+    <relations xsi:type="structure:OneWayRelationMember" lower="0" upper="-1" name="orderItem" target="//@elements.4" reverseCascadeDelete="false" createable="false" updateable="false" deleteable="false" relationKind="COMPOSITION" memberType="STORED" binding="//@elements.2/@relations.0" getterExpression="">
+      <inherited/>
+    </relations>
+    <attributes xsi:type="structure:DataMember" name="customer" dataType="_v-LiIMEWEeqXIOAnxqEioQ" defaultExpression="" binding="//@elements.2/@attributes.0" getterExpression="" identifier="false" memberType="STORED">
+      <inherited/>
+    </attributes>
+    <mapping target="//@elements.2"/>
+    <form name="Form" label="Form" layout="HORIZONTAL" wrap="true" horizontal="LEFT" vertical="TOP" frame="true">
+      <components xsi:type="ui:Group" name="Content" layout="HORIZONTAL" wrap="true" horizontal="LEFT" vertical="TOP" frame="true" basis="15" stretch="BOTH">
+        <components xsi:type="ui:DataField" name="customer" label="customer" iconName="text_fields" basis="15" stretch="BOTH" dataFeature="//@elements.2/@attributes.0" enumWidget="RADIO" textMultiLine="false"/>
+        <components xsi:type="ui:TabularReferenceField" name="orderItem" label="orderItem" maxVisibleElements="5" basis="15" stretch="BOTH" relationFeature="//@elements.2/@relations.0">
+          <columns xsi:type="ui:DataColumn" name="quantity" label="quantity" visible="true" dataFeature="//@elements.4/@attributes.0/@inherited"/>
+        </components>
+      </components>
+      <components xsi:type="ui:Group" name="Buttons" layout="HORIZONTAL" wrap="true" horizontal="SPACE_AROUND" vertical="TOP" frame="true" basis="15" stretch="HORIZONTAL">
+        <components xsi:type="ui:ActionButton" name="cancelButton" label="Cancel" iconName="clear" basis="15" stretch="BOTH" action="CANCEL"/>
+        <components xsi:type="ui:ActionButton" name="submitButton" label="Submit" iconName="done" basis="15" stretch="BOTH" action="SUBMIT"/>
+      </components>
+    </form>
+    <view name="View" label="View" layout="HORIZONTAL" wrap="true" horizontal="LEFT" vertical="TOP" frame="true">
+      <components xsi:type="ui:DataField" name="customer" label="customer" iconName="text_fields" basis="15" stretch="BOTH" dataFeature="//@elements.2/@attributes.0" enumWidget="RADIO" textMultiLine="false"/>
+      <components xsi:type="ui:TabularReferenceField" name="orderItem" label="orderItem" maxVisibleElements="5" basis="15" stretch="BOTH" relationFeature="//@elements.2/@relations.0">
+        <columns xsi:type="ui:DataColumn" name="quantity" label="quantity" visible="true" dataFeature="//@elements.4/@attributes.0/@inherited"/>
+      </components>
+    </view>
+  </elements>
+  <elements xsi:type="structure:TransferObjectType" name="demo_ap">
+    <relations xsi:type="structure:OneWayRelationMember" lower="0" upper="-1" name="Order" target="//@elements.2" reverseCascadeDelete="false" createable="true" updateable="true" deleteable="true" relationKind="ASSOCIATION" memberType="DERIVED" getterExpression="Judo_Default_Project::Order"/>
+    <relations xsi:type="structure:OneWayRelationMember" lower="0" upper="-1" name="OrderItem" target="//@elements.4" reverseCascadeDelete="false" createable="true" updateable="true" deleteable="true" relationKind="ASSOCIATION" memberType="DERIVED" getterExpression="Judo_Default_Project::OrderItem"/>
+    <actorType demo="true" realm="PUBLIC"/>
+  </elements>
+  <elements xsi:type="structure:EntityType" name="OrderItem">
+    <attributes xsi:type="structure:DataMember" name="quantity" dataType="_v-LiIsEWEeqXIOAnxqEioQ" defaultExpression="" binding="//@elements.4/@attributes.0" getterExpression="" identifier="false" memberType="STORED">
+      <inherited/>
+    </attributes>
+    <mapping target="//@elements.4"/>
+  </elements>
+</namespace:Model>

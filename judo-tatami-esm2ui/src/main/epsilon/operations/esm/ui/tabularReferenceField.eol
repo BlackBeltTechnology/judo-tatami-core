@@ -1,0 +1,113 @@
+operation ESM!esm::ui::TabularReferenceField createTableFromTabularReferenceField(application : UI!ui::Application) : UI!ui::Table {
+	
+	var relation : ESM!esm::structure::ReferenceTypedElement = self.relationFeature.getMember();
+	var dataElement = relation.mapRelationType(application, self.getTransferObjectType().mapClassType(application));
+	
+	if (self.targetDefinedTabular) {
+	
+		log.debug("Create table based on reference target: " + relation.target.table.name);
+		var table : UI!ui::Table = relation.target.table.map(application);
+		table.dataElement = dataElement;
+		return table;
+		
+	} else {
+		
+		log.debug("Create table based on tabular reference field: " + self.name);
+		var table : UI!ui::Table = new UI!ui::Table();
+		self.~originalRelation = relation;
+		table.name = self.name;	
+	    table.label = self.getUiLabel();
+		table.dataElement = dataElement;
+		table.col = self.basis;
+		for (column in self.columns) {
+			table.columns.add(column.map(application));
+		}
+		return table;
+	}
+}
+
+operation ESM!esm::ui::TabularReferenceField createButtonFromTabularReferenceField(application : UI!ui::Application) : UI!ui::Button {
+	
+	var relation : ESM!esm::structure::ReferenceTypedElement = self.relationFeature.getMember();
+	var dataElement = relation.mapRelationType(application, self.getTransferObjectType().mapClassType(application));
+		
+	log.debug("Create button for association: " + relation.name);
+	
+	var button : UI!ui::Button = new UI!ui::Button();
+	button.name = self.name.anchor("TabularReferenceButton");
+    button.label = self.getUiLabel();
+	button.action = new UI!ui::NavigationToPageAction();
+	button.dataElement = dataElement;
+		
+	if (self.targetDefinedTabular) {
+
+		button.action.target = relation.mapTablePage(application, relation.target);
+		log.debug("Create button action target: " + button.action.target.name);			
+		return button;
+
+	} else {
+		
+		log.debug("Create page for button based on tabular reference field: " + self.name);
+		
+		var page : UI!ui::PageDefinition = new UI!ui::PageDefinition();
+		page.~application = application;
+		page.~originalRelation = relation;
+		page.dataElement = dataElement;
+		page.name = relation.fqName().anchor("TableForButton");
+	    page.label = self.getUiLabel();
+		
+		page.pageType = UI!ui::PageType#TABLE;
+
+		log.debug("Create page container for button based on tabular reference field: " + self.name);
+		var pageContainer = new UI!ui::PageContainer();
+		pageContainer.layoutType = application.layoutTypes.first;
+		pageContainer.name = "default";
+		pageContainer.direction = UI!Axis#VERTICAL;
+		page.containers.add(pageContainer);
+
+	    var flex = new UI!ui::Flex();
+		flex.name = self.name.anchor("Flex");
+		flex.direction = UI!Axis#VERTICAL;
+		flex.col = applicationColumns;
+		pageContainer.children.add(flex);
+
+		log.debug("Create table for button based on tabular reference field: " + self.name);
+		var table : UI!ui::Table = new UI!ui::Table();
+		table.name = self.name;	
+		self.~originalRelation = relation;
+		table.dataElement = dataElement;
+		table.col = self.basis;
+		for (column in self.columns) {
+			table.columns.add(column.map(application));
+		}
+		
+		flex.children.add(table);
+		application.pages.add(page);
+		
+		button.action.target = page;
+		
+		return button;
+	}
+}
+
+operation ESM!esm::ui::TabularReferenceField map(application : UI!ui::Application) : UI!ui::VisualElement {
+	var relation : ESM!esm::structure::ReferenceTypedElement = self.relationFeature.getMember();
+	
+	if (relation.isAssociation() and 
+		((self.targetDefinedTabular and relation.target.table.isDefined()) or
+			not self.targetDefinedTabular)) {
+		
+		return self.createButtonFromTabularReferenceField(application);
+	
+	} else if ((self.targetDefinedTabular and relation.target.table.isDefined()) or
+			not self.targetDefinedTabular) {
+			
+		return self.createTableFromTabularReferenceField(application);
+		
+	} else {
+		log.debug("Create spacer for button");
+		var spacer : UI!ui::Spacer = new UI!ui::Spacer();
+		spacer.name = self.name.anchor("PlaceHolderForTargetDefinedTable");
+		return spacer;
+	}
+}

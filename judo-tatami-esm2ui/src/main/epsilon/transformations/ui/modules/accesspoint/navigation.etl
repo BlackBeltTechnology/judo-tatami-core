@@ -1,0 +1,68 @@
+import "../namespace/namespace.etl";
+import "../../../../operations/_importAll.eol";
+
+rule NavigationController
+    transform s: ESM!esm::accesspoint::ActorType
+    to t: UI!ui::NavigationController
+    extends CreateNamedElementFromNamespaceElement {
+        guard: s.principal.isDefined() and s.kind = ESM!esm::accesspoint::ActorKind#HUMAN 
+
+        log.debug("NavigationController: " + s.name);
+
+        t.name = s.fqName().anchor("NavigationController");
+}
+
+@abstract
+rule AbstractNavigationItem
+    transform s: ESM!esm::ui::MenuItem
+    to t : UI!ui::NavigationItem
+    extends CreateNamedElementFromNamedElement {
+		guard: not s.hidden
+        t.name = s.eContainer.fqName().anchor("NavigationItem");
+        t.label = s.getUiLabel();
+        var icon = new UI!ui::Icon();
+        icon.name = s.iconName;
+        if (icon.name.isUndefined()) {
+        	icon.name = "texture";
+        }
+        t.icon = icon;
+}
+
+rule PrincipalMenuNavigationItem
+    transform s: ESM!esm::ui::MenuItemPrincipal
+    to t : UI!ui::NavigationItem
+    extends AbstractNavigationItem {
+		guard: not s.hidden
+        
+        log.debug("Create Dashboard Navigation: " + s.transferObjectType.name);
+        t.target = s.eContainer.equivalent("ApplicationDashboardPage");
+        s.eContainer.equivalent("NavigationController").items.add(t);
+}
+
+rule AccessMenuNavigationItem
+    transform s: ESM!esm::ui::MenuItemAccess
+    to t : UI!ui::NavigationItem
+    extends AbstractNavigationItem {
+		guard: not s.hidden and s.access.target.table.isDefined()
+    
+        log.debug("Create Access Navigation: " + s.access.fqName() );
+        var application = s.access.eContainer.equivalent("Application");
+
+        t.name = s.access.fqName().anchor("NavigationItem");
+        t.target = s.access.mapTablePage(application, s.access.target);
+        s.eContainer.equivalent("NavigationController").items.add(t);
+}
+
+rule RelationNavigationItem
+    transform s: ESM!esm::ui::MenuItemRelation
+    to t : UI!ui::NavigationItem
+    extends AbstractNavigationItem {
+		guard: not s.hidden and s.relationFeature.target.table.isDefined()
+    
+        log.debug("Create Relation Navigation: " + s.relationFeature.fqName() );
+        var application = s.eContainer.equivalent("Application");
+
+        t.name = s.relationFeature.fqName().anchor("NavigationItem");
+        t.target = s.relationFeature.mapTablePage(application, s.relationFeature.target);
+        s.eContainer.equivalent("NavigationController").items.add(t);
+}

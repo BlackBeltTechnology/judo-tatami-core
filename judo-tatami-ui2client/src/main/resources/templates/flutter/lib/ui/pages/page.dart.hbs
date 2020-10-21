@@ -1,0 +1,125 @@
+//////////////////////////////////////////////////////////////////////////////
+// G E N E R A T E D    C L A S S
+// ------------------------------
+// Factory expression: {{{ cleanup template.factoryExpression }}}
+// Path expression: {{{ cleanup template.pathExpression }}}
+// Overwrite: {{{ cleanup template.overwriteExpression }}}
+// Template name: {{ template.templateName }}
+// Application: {{ application.name }}
+// Container: {{ container.name }}
+
+part of {{ variable application.name }}.ui.pages;
+{{# if page.isPageTypeView }}
+{{> templates/flutter/lib/ui/pages/pagetypesfragments/viewpagestore.dart.hbs }}
+{{/ if }}
+{{# if page.isPageTypeTable }}
+{{> templates/flutter/lib/ui/pages/pagetypesfragments/tablepagestore.dart.hbs }}
+{{/ if }}
+{{# if page.isPageTypeCreate }}
+{{> templates/flutter/lib/ui/pages/pagetypesfragments/createpagestore.dart.hbs }}
+{{/ if }}
+{{# if page.isPageTypeUpdate }}
+{{> templates/flutter/lib/ui/pages/pagetypesfragments/editpagestore.dart.hbs }}
+{{/ if }}
+{{# if page.isPageTypeDashboard }}
+{{> templates/flutter/lib/ui/pages/pagetypesfragments/dashboardpagestore.dart.hbs }}
+{{/ if }}
+
+
+class {{ fqClass page.name }}Page extends StatefulWidget {
+    static const String title = '{{ page.label }}';
+
+{{# if page.isPageTypeDashboard }}
+{{> templates/flutter/lib/ui/pages/pagetypesfragments/dashboardpagefragment.dart.hbs }}
+{{/ if }}
+{{# if page.isPageTypeTable }}
+{{> templates/flutter/lib/ui/pages/pagetypesfragments/tablepagefragment.dart.hbs }}
+{{/ if }}
+{{# if page.isPageTypeView }}
+{{> templates/flutter/lib/ui/pages/pagetypesfragments/viewpagefragment.dart.hbs }}
+{{/ if }}
+{{# if page.isPageTypeCreate }}
+{{> templates/flutter/lib/ui/pages/pagetypesfragments/createpagefragment.dart.hbs }}
+{{/ if }}
+{{# if page.isPageTypeUpdate }}
+{{> templates/flutter/lib/ui/pages/pagetypesfragments/editpagefragment.dart.hbs }}
+{{/ if }}
+
+    @override
+    Widget build(BuildContext context) {
+        final navigation = locator<NavigationState>();
+        navigation.currentTitle = {{fqClass page.name}}Page.title;
+
+        return {{fqClass application.name}}Scaffold(
+            pageTitle: navigation.currentTitle,
+            body: LayoutBuilder(builder: (context, constraints) {
+                    {{#each page.containers as |pageContainer|}}
+                    {{#unless pageContainer.layoutType.original}}
+                    if (constraints.maxWidth >= {{pageContainer.layoutType.minimumResolution}} && constraints.maxWidth <= {{pageContainer.layoutType.maximumResolution}}) {
+                        return get{{ fqClass page.name }}Page{{fqClass pageContainer.layoutType.name}}Body(context
+                            
+                            {{~# if page.isPageTypeTable ~}}
+                            {{~# unless page.dataElement.isAccess ~}}
+                            , owner{{ className page.dataElement.owner.name }}Store
+                            {{~/ unless ~}}
+                            , {{fqVariable page.name}}PageStore
+                            {{~/ if ~}}
+
+                            {{~# if page.isPageTypeView ~}}
+                            , target{{ className page.dataElement.target.name }}Store
+                            {{~# unless page.dataElement.isAccess ~}}
+                            , owner{{ className page.dataElement.owner.name }}Store
+                            {{~/ unless ~}}
+                            , {{fqVariable page.name}}PageStore
+                            {{~/ if ~}}
+
+                            {{~# if page.isPageTypeUpdate ~}}
+                            , target{{ className page.dataElement.target.name }}Store, {{fqVariable page.name}}PageStore
+                            {{~/ if ~}}
+
+                            {{~# if page.isPageTypeCreate ~}}
+                            , target{{ className page.dataElement.target.name }}Store
+                            {{~# unless page.dataElement.isAccess ~}}
+                            , owner{{ className page.dataElement.owner.name }}Store
+                            {{~/ unless ~}}
+                            , {{fqVariable page.name}}PageStore
+                            {{~/ if ~}}
+
+                        );
+                    }
+                    {{/unless}}
+                    {{/each}}
+                    return get{{ fqClass page.name }}Page{{fqClass application.defaultLayoutType.name}}Body(context
+
+                        {{~# if page.isPageTypeTable ~}}
+                        {{~# unless page.dataElement.isAccess ~}}
+                        , owner{{ className page.dataElement.owner.name }}Store
+                        {{~/ unless ~}}
+                        , {{fqVariable page.name}}PageStore
+                        {{~/ if ~}}
+
+                        {{~# if page.isPageTypeView ~}}
+                        , target{{ className page.dataElement.target.name }}Store
+                        {{~# unless page.dataElement.isAccess ~}}
+                        , owner{{ className page.dataElement.owner.name }}Store
+                        {{~/ unless ~}}
+                        , {{fqVariable page.name}}PageStore
+                        {{~/ if ~}}
+
+                        {{~# if page.isPageTypeUpdate ~}}
+                        , target{{ className page.dataElement.target.name }}Store, {{fqVariable page.name}}PageStore
+                        {{~/ if ~}}
+
+                        {{~# if page.isPageTypeCreate ~}}
+                        , target{{ className page.dataElement.target.name }}Store
+                        {{~# unless page.dataElement.isAccess ~}}
+                        , owner{{ className page.dataElement.owner.name }}Store
+                        {{~/ unless ~}}
+                        , {{fqVariable page.name}}PageStore
+                        {{~/ if ~}}
+
+                    );
+                }),
+        );
+    }
+}

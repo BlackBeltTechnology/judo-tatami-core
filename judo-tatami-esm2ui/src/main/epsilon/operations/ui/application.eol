@@ -1,0 +1,19 @@
+import "callOperationAction.eol";
+
+operation UI!ui::Application resolveActionPageDefinitions() {
+	for (callAction : UI!ui::CallOperationAction in UI!ui::CallOperationAction.all().select(a | a.~application = self )) {
+		callAction.resolveParameterPageDefinitions();
+	}
+}
+
+operation UI!ui::Application calculatePageActions() {
+
+	for (pageDefinition : UI!ui::PageDefinition in self.pages) {
+		pageDefinition.calculateActions(self);
+	}
+
+	for (table : UI!ui::Table in UI!ui::Table.all().select(t | t.getPageDefinition().eContainer() == self)) {
+		table.calculateActions(self);
+	}
+}
+	

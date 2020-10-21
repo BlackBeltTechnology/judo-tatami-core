@@ -1,0 +1,22 @@
+    {{#unless page.dataElement.isAccess}}
+    final {{ fqClass page.dataElement.owner.name }}Store owner{{ className page.dataElement.owner.name }}Store;
+    {{/unless}}
+
+    {{#unless page.dataElement.isAccess}}
+    const {{fqClass page.name}}Page({Key key, @required this.owner{{ className page.dataElement.owner.name }}Store}) : super(key: key);
+    {{/unless}}
+
+    @override
+    State<StatefulWidget> createState() => _{{fqClass page.name}}PageState({{#unless page.dataElement.isAccess}}owner{{ className page.dataElement.owner.name }}Store: owner{{ className page.dataElement.owner.name }}Store{{/unless}});
+}
+
+class _{{fqClass page.name}}PageState extends State<{{fqClass page.name}}Page> {
+    {{#unless page.dataElement.isAccess}}
+    final {{ fqClass page.dataElement.owner.name }}Store owner{{ className page.dataElement.owner.name }}Store;
+    {{/unless}}
+
+    final {{fqClass page.name}}PageStore {{fqVariable page.name}}PageStore = {{fqClass page.name}}PageStore();
+
+    _{{fqClass page.name}}PageState({{#unless page.dataElement.isAccess}}{@required this.owner{{ className page.dataElement.owner.name }}Store}{{/unless}}){
+        {{fqVariable page.name}}PageStore.get{{ fqClass page.dataElement.name }}({{#unless page.dataElement.isAccess}} owner{{ className page.dataElement.owner.name }}Store {{/unless}});
+    }

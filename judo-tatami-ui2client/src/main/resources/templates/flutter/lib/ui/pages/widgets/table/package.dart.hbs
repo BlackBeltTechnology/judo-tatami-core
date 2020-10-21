@@ -1,0 +1,18 @@
+//////////////////////////////////////////////////////////////////////////////
+// G E N E R A T E D    C L A S S
+// ------------------------------
+// Factory expression: {{{ cleanup template.factoryExpression }}}
+// Path expression: {{{ cleanup template.pathExpression }}}
+// Overwrite: {{{ cleanup template.overwriteExpression }}}
+// Template name: {{ template.templateName }}
+// Application: {{ application.name }}
+
+library {{ variable application.name }}.ui.pages.{{ variable name }}.tables;
+
+import 'package:flutter/material.dart';
+import 'package:{{ modelPackage application.actor.name }}/{{ path application.actor.name }}/components/package.dart';
+import 'package:{{ modelPackage application.actor.name }}/{{ path application.actor.name }}/utilities/package.dart';
+
+{{# each tables as |table| }}
+part '{{ fqPath table.pageDefinition.name }}__{{ fqPath table.name }}__{{fqPath table.pageContainer.layoutType.name}}__table.dart';
+{{/ each }}

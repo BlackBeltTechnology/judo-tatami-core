@@ -68,7 +68,7 @@
         <judo-meta-measure-version>1.0.0.20201009_141245_f1a287b_develop</judo-meta-measure-version>
         <judo-meta-liquibase-version>1.0.0.20201009_140916_789dba3_develop</judo-meta-liquibase-version>
         <judo-meta-openapi-version>1.0.0.20201009_141648_21cde71_develop</judo-meta-openapi-version>
-        <judo-meta-ui-version>1.0.0.20201009_143715_39eaf03_develop</judo-meta-ui-version>
+        <judo-meta-ui-version>1.0.0.20201020_230213_939ff41_develop</judo-meta-ui-version>
         <judo-dao-api-version>1.0.2.20201019_175250_82201ef_develop</judo-dao-api-version>
         <judo-dispatcher-api-version>1.0.2.20200709_172739_726a3b9_develop</judo-dispatcher-api-version>
         <judo-script-codegen-version>1.1.0.20201009_153825_4ade2d1_develop</judo-script-codegen-version>
@@ -439,7 +439,7 @@
                 <artifactId>hu.blackbelt.judo.meta.ui.model</artifactId>
                 <version>${judo-meta-ui-version}</version>
             </dependency>
-
+            
             <dependency>
                 <groupId>hu.blackbelt.judo.framework</groupId>
                 <artifactId>compiler-api</artifactId>
@@ -521,6 +521,12 @@
             <dependency>
                 <groupId>hu.blackbelt.judo.tatami</groupId>
                 <artifactId>judo-tatami-esm2psm</artifactId>
+                <version>1.1.0-SNAPSHOT</version>
+            </dependency>
+
+            <dependency>
+                <groupId>hu.blackbelt.judo.tatami</groupId>
+                <artifactId>judo-tatami-esm2ui</artifactId>
                 <version>1.1.0-SNAPSHOT</version>
             </dependency>
 
@@ -748,6 +754,7 @@
             <modules>
                 <module>judo-tatami-core</module>
                 <module>judo-tatami-esm2psm</module>
+                <module>judo-tatami-esm2ui</module>
                 <module>judo-tatami-psm2asm</module>
                 <module>judo-tatami-psm2measure</module>
                 <module>judo-tatami-asm2rdbms</module>
@@ -757,6 +764,7 @@
                 <module>judo-tatami-asm2expression</module>
                 <module>judo-tatami-asm2script</module>
                 <module>judo-tatami-asm2sdk</module>
+                <module>judo-tatami-ui2client</module>
                 <module>judo-tatami-script2operation</module>
                 <module>judo-tatami-openapi2restclient</module>
                 <module>judo-tatami-esm-validation</module>

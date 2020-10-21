@@ -1,0 +1,16 @@
+operation ESM!esm::ui::ActionButton createButtonFromActionButton(application : UI!ui::Application) : UI!ui::Button {
+	var ret : UI!ui::Button = new UI!ui::Button();
+	ret.name = self.name;
+	ret.label = self.getUiLabel();
+
+	if (self.action == ESM!esm::ui::Action#SUBMIT) {
+		ret.action = new UI!ui::SaveAction();
+	} else if (self.action == ESM!esm::ui::Action#CANCEL) {
+		ret.action = new UI!ui::BackAction();
+	}
+	return ret;
+}
+
+operation ESM!esm::ui::ActionButton map(application : UI!ui::Application) : UI!ui::Button {
+	return self.createButtonFromActionButton(application);
+}

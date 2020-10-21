@@ -1,0 +1,46 @@
+operation UI!ui::Input setIcon() {
+}
+
+operation UI!ui::TextArea setIcon() {
+	if (self.leadingIcon.isUndefined()) {
+		self.leadingIcon = new UI!ui::Icon();
+		self.leadingIcon.name = 'subject';
+	} 
+}
+
+operation UI!ui::TextInput setIcon() {
+	if (self.leadingIcon.isUndefined()) {
+		self.leadingIcon = new UI!ui::Icon();
+		self.leadingIcon.name = 'description';
+	} 
+}
+
+operation UI!ui::PasswordInput setIcon() {
+	if (self.leadingIcon.isUndefined()) {
+		self.leadingIcon = new UI!ui::Icon();
+		self.leadingIcon.name = 'lock';
+	} 
+}
+
+operation UI!ui::NumericInput setIcon() {
+	if (self.leadingIcon.isUndefined()) {
+		self.leadingIcon = new UI!ui::Icon();
+		self.leadingIcon.name = 'format_list_numbered';
+	} 
+}
+
+operation UI!ui::DateInput setIcon() {
+	if (self.leadingIcon.isUndefined()) {
+		self.leadingIcon = new UI!ui::Icon();
+		self.leadingIcon.name = 'today';
+	} 
+}
+
+operation UI!ui::DateTimeInput setIcon() {
+	if (self.leadingIcon.isUndefined()) {
+		self.leadingIcon = new UI!ui::Icon();
+		self.leadingIcon.name = 'access_time';
+	} 
+}
+
+

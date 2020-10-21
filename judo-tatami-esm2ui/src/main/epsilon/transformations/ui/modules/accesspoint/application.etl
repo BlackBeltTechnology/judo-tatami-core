@@ -1,0 +1,72 @@
+import "../namespace/namespace.etl";
+import "../../../../operations/_importAll.eol";
+
+rule Application
+    transform s: ESM!esm::accesspoint::ActorType
+    to t: UI!ui::Application
+    extends CreateNamedElementFromNamespaceElement {
+        guard: s.principal.isDefined() and s.kind = ESM!esm::accesspoint::ActorKind#HUMAN 
+
+        t.~originalActorType = s;
+
+        log.debug("Application: " + s.name);
+
+		var defaultLayout = new UI!ui::LayoutType();
+        defaultLayout.cols = applicationColumns;
+        defaultLayout.name = "default";
+        defaultLayout.original = true;
+        t.layoutTypes.add(defaultLayout);
+
+        t.name = s.fqName();
+        t.navigationController = s.equivalent("NavigationController");
+        t.actor = s.mapClassType(t);
+        if (s.principal.isDefined()) {
+	        t.principal = s.principal.mapClassType(t);
+        }
+		
+        var exposedRelations : Set = s.getExposedRelations();
+        
+        log.debug("Relations: " + exposedRelations.collect(r | r.fqName()));
+       
+        for (relation in exposedRelations) {
+            if (relation.target.view.isDefined()) {
+                relation.mapViewPage(t, relation.target);
+            }
+
+            if (relation.target.form.isDefined()) {
+                if (relation.isCreateAllowed()) {
+                	relation.mapCreatePage(t, relation.target);
+                }
+                if (relation.isUpdateAllowed()) {
+	                relation.mapUpdatePage(t, relation.target);
+                }
+            }
+
+            if (relation.target.table.isDefined() and ((not relation.isTypeOf(ESM!esm::accesspoint::Access) and relation.relationKind == ESM!esm::structure::RelationKind#ASSOCIATION) 
+            	or relation.isTypeOf(ESM!esm::accesspoint::Access))) {
+                relation.mapTablePage(t, relation.target);
+            }
+        }
+        
+        var exposedOperations : Set = s.getExposedOperations();
+        
+        for (op in exposedOperations) {
+        	if (op.input.isDefined()) {
+        		//if (op.input.target.table.isDefined() and op.input.upper = -1) {
+        		//	t.pages.add(op.createPageForOperationInputForTable(t));
+        		//}
+        		if (op.input.target.form.isDefined()) {
+        			op.mapFormPageForOperationInput(t);
+        		}
+        	}
+        	if (op.output.isDefined()) {
+        		if (op.output.target.view.isDefined()) {
+        			op.mapViewPageForOperationOutput(t);
+        		}
+        		//if (op.output.target.table.isDefined() and op.output.upper = -1) {
+        		//	t.pages.add(op.createPageForOperationOutputForTable(t));
+        		//}
+        	}
+        }
+}
+

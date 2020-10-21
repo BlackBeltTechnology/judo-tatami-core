@@ -1,0 +1,24 @@
+operation ESM!esm::ui::TransferObjectTable createTableFromTransferObjectTable(application : UI!ui::Application) : UI!ui::Table {
+	var t : UI!ui::Table = new UI!ui::Table();
+	t.name = self.name;
+	
+	t.col = applicationColumns;
+	
+	for (column in self.columns) {
+		t.columns.add(column.map(application));
+	}
+    return t;
+}
+
+operation ESM!esm::ui::TransferObjectTable createTableFromTransferObjectTable(application : UI!ui::Application, relation : UI!ui::data::RelationType) : UI!ui::Table {
+	var t : UI!ui::Table = self.createTableFromTransferObjectTable(application);
+	t.~originalRelation = relation.~originalRelation;
+	t.dataElement = relation;
+	return t;
+}
+
+
+operation ESM!esm::ui::TransferObjectTable map(application : UI!ui::Application) : UI!ui::Table {
+	var t : UI!ui::Table = self.createTableFromTransferObjectTable(application);
+    return t;
+}

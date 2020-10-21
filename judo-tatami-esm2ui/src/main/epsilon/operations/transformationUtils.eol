@@ -1,0 +1,46 @@
+operation String anchor(anchor1 : String, anchor2 : String) : String {
+	if (anchor1.isUndefined()) {
+		return self;
+	} else {
+		if (anchor2.isUndefined()) {
+			return self + "#" + anchor1;
+		} else {
+			return self.anchor(anchor1, null) + "/" + anchor2;
+		}
+	}
+} 
+
+operation String anchor(anchor1 : String) : String {
+	return self.anchor(anchor1, null);
+}
+
+operation createBlankApplicationForPreview() : UI!ui::Application {
+	
+	var application : UI!ui::Application = new UI!ui::Application();
+	
+	var defaultLayout = new UI!ui::LayoutType();
+    defaultLayout.cols = applicationColumns;
+    defaultLayout.name = "default";
+    defaultLayout.original = true;
+    
+    var dashboardForPreview = new UI!ui::PageDefinition();
+    dashboardForPreview.name = previewElement.getName().anchor("preview","dashboard");
+    
+    var pageContainerForPreview : UI!ui::PageContainer = new UI!ui::PageContainer();
+    pageContainerForPreview.name = previewElement.getName().anchor("preview","pageContainer");
+    pageContainerForPreview.layoutType = defaultLayout;
+    
+    dashboardForPreview.containers.add(pageContainerForPreview);
+    
+    application.layoutTypes.add(defaultLayout);
+    application.name = previewElement.getName().anchor("preview","application");
+    application.navigationController = new UI!ui::NavigationController();
+    application.navigationController.name = previewElement.getName().anchor("preview","navigationController");
+    application.dashboard = dashboardForPreview;
+    application.pages.add(dashboardForPreview);
+    
+    application.actor = new UI!ui::data::ClassType();
+    application.actor.name = previewElement.getName().anchor("preview","classType");
+    
+    return application;
+}
