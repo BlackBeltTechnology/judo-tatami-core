@@ -107,10 +107,12 @@ public class Esm2UiPreview {
                                 .log(log)
                                 .name("ESM")
                                 .resource(esmModel.getResource())
+                                .validateModel(false)
                                 .build(),
                         wrappedEmfModelContextBuilder()
                                 .log(log)
                                 .name("UI")
+                                .validateModel(false)
                                 .resource(uiModel.getResource())
                                 .build()))
                 .injectContexts(ImmutableMap.<String, Object>builder()
@@ -122,7 +124,7 @@ public class Esm2UiPreview {
                 		.put("previewPage", previewPage).build())
                 .build();
 
-        // run the model / metadata loading
+        // run the model / metadata loadingexecutionContext.
         executionContext.load();
 
         EtlExecutionContext etlExecutionContext = etlExecutionContextBuilder()
