@@ -19,6 +19,7 @@ operation ESM!esm::ui::TabularReferenceField createTableFromTabularReferenceFiel
 	    table.label = self.getUiLabel();
 		table.dataElement = dataElement;
 		table.col = self.basis;
+		table.row = self.maxVisibleElements;
 		for (column in self.columns) {
 			table.columns.add(column.map(application));
 		}
