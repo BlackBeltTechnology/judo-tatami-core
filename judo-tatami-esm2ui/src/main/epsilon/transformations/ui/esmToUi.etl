@@ -7,6 +7,10 @@ import "modules/accesspoint/pageDefinition.etl";
 import "modules/accesspoint/navigation.etl";
 import "modules/ui/ui.etl";
 
+pre {
+	var preview = false;
+}
+
 post {
 
 	for (application : UI!ui::Application in UI!ui::Application.all()) {

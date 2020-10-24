@@ -15,8 +15,7 @@ operation ESM!esm::structure::ReferenceTypedElement mapViewPage(application : UI
 	var page : UI!ui::PageDefinition = new UI!ui::PageDefinition();
 	page.~application = application;
 	page.~originalRelation = self;
-
-	page.dataElement = self.mapRelationType(application, self.eContainer.mapClassType(application));
+	
 	page.name = self.fqName().anchor("View");
 	page.pageType = UI!ui::PageType#VIEW;
 	page.label = target.view.getUiLabel() + " View";
@@ -30,6 +29,11 @@ operation ESM!esm::structure::ReferenceTypedElement mapViewPage(application : UI
 	pageContainer.children.add(target.view.map(application));
 	
 	application.pages.add(page);
+	
+	if (preview) {
+		return page;	
+	}
+	page.dataElement = self.mapRelationType(application, self.eContainer.mapClassType(application));
 	return page;
 }
 
@@ -44,8 +48,7 @@ operation ESM!esm::structure::ReferenceTypedElement mapCreatePage(application : 
 	var page : UI!ui::PageDefinition = new UI!ui::PageDefinition();
 	page.~application = application;
 	page.~originalRelation = self;
-
-	page.dataElement = self.mapRelationType(application, self.eContainer.mapClassType(application));
+	
 	page.name = self.fqName().anchor("Create");
 	page.pageType = UI!ui::PageType#CREATE;
 	page.label = target.form.getUiLabel() + " Create";
@@ -59,6 +62,10 @@ operation ESM!esm::structure::ReferenceTypedElement mapCreatePage(application : 
     pageContainer.children.add(target.form.map(application));
 	application.pages.add(page);
     
+	if (preview) {
+		return page;
+	}
+	page.dataElement = self.mapRelationType(application, self.eContainer.mapClassType(application));
     return page;
 }
 
@@ -73,8 +80,7 @@ operation ESM!esm::structure::ReferenceTypedElement mapUpdatePage(application : 
 	var page : UI!ui::PageDefinition = new UI!ui::PageDefinition();
 	page.~application = application;
 	page.~originalRelation = self;
-
-	page.dataElement = self.mapRelationType(application, self.eContainer.mapClassType(application));
+	
 	page.name = self.fqName().anchor("Edit");
 	page.pageType = UI!ui::PageType#UPDATE;
 	page.label = target.form.getUiLabel() + " Edit";
@@ -88,6 +94,11 @@ operation ESM!esm::structure::ReferenceTypedElement mapUpdatePage(application : 
     pageContainer.children.add(target.form.map(application));
 	application.pages.add(page);
     
+    if (preview) {
+		return page;
+	}
+	
+	page.dataElement = self.mapRelationType(application, self.eContainer.mapClassType(application));
     return page;
 }
 

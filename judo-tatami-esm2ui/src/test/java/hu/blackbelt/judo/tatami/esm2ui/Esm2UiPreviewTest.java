@@ -3,15 +3,22 @@ package hu.blackbelt.judo.tatami.esm2ui;
 import hu.blackbelt.epsilon.runtime.execution.api.Log;
 import hu.blackbelt.epsilon.runtime.execution.impl.Slf4jLog;
 import hu.blackbelt.judo.meta.esm.runtime.EsmModel;
+import hu.blackbelt.judo.meta.esm.ui.TransferObjectForm;
+import hu.blackbelt.judo.meta.esm.ui.TransferObjectTable;
+import hu.blackbelt.judo.meta.esm.ui.TransferObjectView;
 import hu.blackbelt.judo.meta.ui.Application;
 import hu.blackbelt.judo.meta.ui.Tab;
 import hu.blackbelt.judo.meta.ui.TabController;
 import hu.blackbelt.judo.meta.ui.VisualElement;
 import hu.blackbelt.judo.meta.ui.runtime.UiModel;
 import hu.blackbelt.judo.meta.ui.runtime.UiUtils;
+import hu.blackbelt.model.northwind.esm.NorthwindEsmModel;
 import lombok.extern.slf4j.Slf4j;
+
+import org.eclipse.emf.common.notify.Notifier;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -80,37 +87,17 @@ public class Esm2UiPreviewTest {
         validateUi(new Slf4jLog(log), uiModel, calculateUiValidationScriptURI());
     }
 
-    private void transformViewForPreview() throws Exception {
-    	validateEsmTestModel();
-    	String json = executeEsm2UiTransformation(esmModel, SimpleOrderModel.getViewForTest(), "default", 12, uiModel, new Slf4jLog(log));
-    	saveJson(json, SimpleOrderModel.getViewForTest().getName());
-    	savePrettyJson(json, SimpleOrderModel.getViewForTest().getName());
-        validateUiTestModel();
-    }
-    
-    private void transformFormForPreview() throws Exception {
-    	validateEsmTestModel();
-    	String json = executeEsm2UiTransformation(esmModel, SimpleOrderModel.getFormForTest(), "default", 12, uiModel, new Slf4jLog(log));
-    	saveJson(json, SimpleOrderModel.getFormForTest().getName());
-    	savePrettyJson(json, SimpleOrderModel.getFormForTest().getName());
-        validateUiTestModel();
-    }
-    
-    private void transformTableForPreview() throws Exception {
-    	validateEsmTestModel();
-    	String json = executeEsm2UiTransformation(esmModel, SimpleOrderModel.getTableForTest(), "default", 12, uiModel, new Slf4jLog(log));
-    	saveJson(json, SimpleOrderModel.getTableForTest().getName());
-    	savePrettyJson(json, SimpleOrderModel.getTableForTest().getName());
-        validateUiTestModel();
-    }
-    
     @Test
     void testTransformViewForPreview() throws Exception {
         testName = "ViewForPreview";
 
         esmModel.addContent(SimpleOrderModel.createSimpleOrderModel());
 
-        transformViewForPreview();
+        validateEsmTestModel();
+    	String json = executeEsm2UiTransformation(esmModel, SimpleOrderModel.getViewForTest(), "default", 12, uiModel, new Slf4jLog(log));
+    	saveJson(json, SimpleOrderModel.getViewForTest().getName());
+    	savePrettyJson(json, SimpleOrderModel.getViewForTest().getName());
+        validateUiTestModel();
 
         final Optional<Application> application = allUi(Application.class)
                 .findAny();
@@ -131,7 +118,11 @@ public class Esm2UiPreviewTest {
 
         esmModel.addContent(SimpleOrderModel.createSimpleOrderModel());
 
-        transformFormForPreview();
+        validateEsmTestModel();
+    	String json = executeEsm2UiTransformation(esmModel, SimpleOrderModel.getFormForTest(), "default", 12, uiModel, new Slf4jLog(log));
+    	saveJson(json, SimpleOrderModel.getFormForTest().getName());
+    	savePrettyJson(json, SimpleOrderModel.getFormForTest().getName());
+        validateUiTestModel();
 
         final Optional<Application> application = allUi(Application.class)
                 .findAny();
@@ -152,7 +143,11 @@ public class Esm2UiPreviewTest {
 
         esmModel.addContent(SimpleOrderModel.createSimpleOrderModel());
 
-        transformTableForPreview();
+        validateEsmTestModel();
+    	String json = executeEsm2UiTransformation(esmModel, SimpleOrderModel.getTableForTest(), "default", 12, uiModel, new Slf4jLog(log));
+    	saveJson(json, SimpleOrderModel.getTableForTest().getName());
+    	savePrettyJson(json, SimpleOrderModel.getTableForTest().getName());
+        validateUiTestModel();
 
         final Optional<Application> application = allUi(Application.class)
                 .findAny();
@@ -165,6 +160,35 @@ public class Esm2UiPreviewTest {
         				slf4jlog.debug("Printing UI model page " + testName + "::" + p.getName() + ": \n" + printElement(c))
         			)
         	);
+    }
+    
+    @Test
+    void testNorthwindPreview() throws Exception {
+        testName = "NorthwindPreview";
+
+        esmModel = NorthwindEsmModel.fullDemo();
+
+        validateEsmTestModel();
+        
+        final ResourceSet resourceSet = esmModel.getResourceSet();
+        final Iterable<Notifier> esmContents = resourceSet::getAllContents;
+
+        Optional<TransferObjectView> view = StreamSupport.stream(esmContents.spliterator(), true)
+        		.filter(e -> (TransferObjectView.class).isAssignableFrom(e.getClass()))
+                .map(e -> (TransferObjectView) e).filter(v -> v.getName().equals("InternationalOrderInfoView")).findAny();
+        
+        Optional<TransferObjectForm> form = StreamSupport.stream(esmContents.spliterator(), true)
+        		.filter(e -> (TransferObjectForm.class).isAssignableFrom(e.getClass()))
+                .map(e -> (TransferObjectForm) e).filter(v -> v.getName().equals("ShipperInfoForm")).findAny();
+        
+        Optional<TransferObjectTable> table = StreamSupport.stream(esmContents.spliterator(), true)
+        		.filter(e -> (TransferObjectTable.class).isAssignableFrom(e.getClass()))
+                .map(e -> (TransferObjectTable) e).filter(v -> v.getName().equals("InternationalOrderInfoTable")).findAny();
+        
+    	String json = executeEsm2UiTransformation(esmModel, form.get(), "default", 12, uiModel, new Slf4jLog(log));
+    	saveJson(json, "northwind" + form.get().getName());
+    	savePrettyJson(json, "northwind" + form.get().getName());
+        validateUiTestModel();
     }
         
     static <T> Stream<T> asStream(Iterator<T> sourceIterator, boolean parallel) {

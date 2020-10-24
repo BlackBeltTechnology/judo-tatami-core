@@ -10,8 +10,7 @@ operation ESM!esm::`operation`::Operation createViewPageForOperationOutput(appli
 	var page : UI!ui::PageDefinition = new UI!ui::PageDefinition();
 	page.~application = application;
 	page.~originalOperation = self;
-
-	page.dataElement = self.mapOperationOutputType(application, self.eContainer().mapClassType(application));
+		
 	page.name = self.fqName().anchor("OperationOutputPageView", self.eContainer().fqName());
 	page.pageType = UI!ui::PageType#OPERATION_OUTPUT;
 	
@@ -30,7 +29,12 @@ operation ESM!esm::`operation`::Operation createViewPageForOperationOutput(appli
 	} else {
 		pageContainer.children.add(self.output.target.view.map(application));
 	}
-
+	
+	if (preview) {
+		return page;	
+	}
+	
+	page.dataElement = self.mapOperationOutputType(application, self.eContainer().mapClassType(application));
     return page;
 }
 
@@ -49,8 +53,7 @@ operation ESM!esm::`operation`::Operation createFormPageForOperationInput(applic
 	var page : UI!ui::PageDefinition = new UI!ui::PageDefinition();
 	page.~application = application;
 	page.~originalOperation = self;
-
-	page.dataElement = self.mapOperationInputType(application, self.eContainer().mapClassType(application));
+		
 	page.name = self.fqName().anchor("OperationInputPageForm", self.eContainer().fqName());
 	page.pageType = UI!ui::PageType#OPERATION_INPUT;
 
@@ -70,6 +73,11 @@ operation ESM!esm::`operation`::Operation createFormPageForOperationInput(applic
 		pageContainer.children.add(self.input.target.form.map(application));
 	}
 	
+	if (preview) {
+		return page;
+	}
+	
+	page.dataElement = self.mapOperationInputType(application, self.eContainer().mapClassType(application));
     return page;
 }
 
@@ -90,7 +98,6 @@ operation ESM!esm::`operation`::Operation createTablePageForOperationInput(appli
 	page.~application = application;
 	page.~originalOperation = self;
 	
-	page.dataElement = self.mapOperationInputType(application, clazz);
 	page.name = self.fqName().anchor("OperationInputPageTable", self.eContainer().fqName());
 	page.pageType = UI!ui::PageType#OPERATION_INPUT;
 	
@@ -125,7 +132,12 @@ operation ESM!esm::`operation`::Operation createTablePageForOperationInput(appli
 	  	detailPageContainer.children.add(self.input.target.view.map(application));
 	  	table.detail = detail;        
     } */
-    
+    	
+	if (preview) {
+		return page;
+	}
+	
+	page.dataElement = self.mapOperationInputType(application, clazz);
     return page;
 }
 
@@ -147,8 +159,7 @@ operation ESM!esm::`operation`::Operation createTablePageForOperationOutput(appl
 	var page : UI!ui::PageDefinition = new UI!ui::PageDefinition();	
 	page.~application = application;
 	page.~originalOperation = self;
-
-	page.dataElement = self.mapOperationOutputType(application, clazz);
+	
 	page.name = self.fqName().anchor("OperationOutputPageTable", self.eContainer().fqName());
 	page.pageType = UI!ui::PageType#OPERATION_OUTPUT;
     
@@ -183,6 +194,11 @@ operation ESM!esm::`operation`::Operation createTablePageForOperationOutput(appl
 	  	table.detail = detail;        
     } */
     
+	if (preview) {
+		return page;
+	}
+	
+	page.dataElement = self.mapOperationOutputType(application, clazz);
     return page;
 }
 

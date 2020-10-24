@@ -1,15 +1,18 @@
 operation ESM!esm::ui::TabularReferenceField createTableFromTabularReferenceField(application : UI!ui::Application) : UI!ui::Table {
 	
 	var relation : ESM!esm::structure::ReferenceTypedElement = self.relationFeature.getMember();
-	var dataElement = relation.mapRelationType(application, self.getTransferObjectType().mapClassType(application));
-	
+
 	if (self.targetDefinedTabular) {
 	
 		log.debug("Create table based on reference target: " + relation.target.table.name);
 		var table : UI!ui::Table = relation.target.table.map(application);
-		table.dataElement = dataElement;
-		return table;
 		
+		if (preview) {
+			return table;
+		}
+		
+		table.dataElement = relation.mapRelationType(application, self.getTransferObjectType().mapClassType(application));
+		return table;
 	} else {
 		
 		log.debug("Create table based on tabular reference field: " + self.name);
@@ -17,12 +20,17 @@ operation ESM!esm::ui::TabularReferenceField createTableFromTabularReferenceFiel
 		self.~originalRelation = relation;
 		table.name = self.name;	
 	    table.label = self.getUiLabel();
-		table.dataElement = dataElement;
+		
 		table.col = self.basis;
 		table.row = self.maxVisibleElements;
 		for (column in self.columns) {
 			table.columns.add(column.map(application));
 		}
+		
+		if (preview) {
+			return table;
+		}
+		table.dataElement = relation.mapRelationType(application, self.getTransferObjectType().mapClassType(application));
 		return table;
 	}
 }
@@ -30,13 +38,18 @@ operation ESM!esm::ui::TabularReferenceField createTableFromTabularReferenceFiel
 operation ESM!esm::ui::TabularReferenceField createButtonFromTabularReferenceField(application : UI!ui::Application) : UI!ui::Button {
 	
 	var relation : ESM!esm::structure::ReferenceTypedElement = self.relationFeature.getMember();
-	var dataElement = relation.mapRelationType(application, self.getTransferObjectType().mapClassType(application));
-		
 	log.debug("Create button for association: " + relation.name);
 	
 	var button : UI!ui::Button = new UI!ui::Button();
 	button.name = self.name.anchor("TabularReferenceButton");
     button.label = self.getUiLabel();
+	
+	if (preview) {
+		return button;
+	}
+	
+	var dataElement = relation.mapRelationType(application, self.getTransferObjectType().mapClassType(application));
+
 	button.action = new UI!ui::NavigationToPageAction();
 	button.dataElement = dataElement;
 		
@@ -78,6 +91,7 @@ operation ESM!esm::ui::TabularReferenceField createButtonFromTabularReferenceFie
 		self.~originalRelation = relation;
 		table.dataElement = dataElement;
 		table.col = self.basis;
+		
 		for (column in self.columns) {
 			table.columns.add(column.map(application));
 		}
