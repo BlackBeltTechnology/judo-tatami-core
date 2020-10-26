@@ -4,6 +4,7 @@ import "pageDefinitionForPreview.etl";
 pre {
 	var rootElement = previewElement.getRoot();
     var application : UI!ui::Application = createBlankApplicationForPreview();
+    var preview = true;
 }
 
 post {

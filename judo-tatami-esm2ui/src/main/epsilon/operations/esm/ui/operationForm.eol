@@ -1,16 +1,17 @@
 operation ESM!esm::ui::OperationForm createButtonFromOperationForm(application : UI!ui::Application) : UI!ui::Button {
 	var t : UI!ui::Button = new UI!ui::Button();
 	
-	
 	t.name = self.name;
     t.label = self.getUiLabel();
-
-	var op : ESM!esm::`operation`::Operation = self.getOperationReference.getMember();
-
-	log.debug("Create operation form: " + self.name);
-
-	t.dataElement = op.mapOperationType(application, op.eContainer.mapClassType(application));
+    
+    if (preview) {
+    	return t;
+    }
 	
+	log.debug("Create operation form: " + self.name);
+	var op : ESM!esm::`operation`::Operation = self.getOperationReference.getMember();
+	t.dataElement = op.mapOperationType(application, op.eContainer.mapClassType(application));
+
 	var callAction = new UI!ui::CallOperationAction();
 	callAction.`operation` = op.mapOperationType(application, op.eContainer.mapClassType(application));
 

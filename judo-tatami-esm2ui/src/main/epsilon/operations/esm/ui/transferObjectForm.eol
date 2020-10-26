@@ -1,5 +1,8 @@
 operation ESM!esm::ui::TransferObjectForm createFlexFromTransferObjectForm(application : UI!ui::Application) : UI!ui::Flex {
 	var t : UI!ui::Flex = self.createFlexFromContainer(application);
+	if (preview) {
+		return t;
+	}
 	t.dataElement = self.eContainer.mapClassType(application);	
     return t;
 }

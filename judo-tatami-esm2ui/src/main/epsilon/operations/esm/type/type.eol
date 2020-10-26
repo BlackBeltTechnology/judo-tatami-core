@@ -15,24 +15,24 @@ operation ESM!esm::type::StringType input(dataField : ESM!esm::ui::DataField, ap
 		textArea.lines = 3;
 		return self.fillInput(textArea, 3, dataField.basis);
 	} else {
-		return self.fillInput(new UI!ui::TextInput(), 2, dataField.basis);
+		return self.fillInput(new UI!ui::TextInput(), 1, dataField.basis);
 	}
 }
 
 operation ESM!esm::type::NumericType input(dataField : ESM!esm::ui::DataField, application : UI!ui::Application): UI!ui::Input {
-	return self.fillInput(new UI!ui::NumericInput(), 2, dataField.basis);
+	return self.fillInput(new UI!ui::NumericInput(), 1, dataField.basis);
 }
 
 operation ESM!esm::type::BooleanType input(dataField : ESM!esm::ui::DataField, application : UI!ui::Application): UI!ui::Input {
-	return self.fillInput(new UI!ui::Switch(), 2, dataField.basis);
+	return self.fillInput(new UI!ui::Switch(), 1, dataField.basis);
 }
 
 operation ESM!esm::type::DateType input(dataField : ESM!esm::ui::DataField, application : UI!ui::Application): UI!ui::Input {
-	return self.fillInput(new UI!ui::DateInput(), 2, dataField.basis);
+	return self.fillInput(new UI!ui::DateInput(), 1, dataField.basis);
 }
 
 operation ESM!esm::type::TimestampType input(dataField : ESM!esm::ui::DataField, application : UI!ui::Application): UI!ui::Input {
-	return self.fillInput(new UI!ui::DateTimeInput(), 2, dataField.basis);
+	return self.fillInput(new UI!ui::DateTimeInput(), 1, dataField.basis);
 }
 
 operation ESM!esm::type::EnumerationType input(dataField : ESM!esm::ui::DataField, application : UI!ui::Application): UI!ui::Input {
@@ -46,7 +46,7 @@ operation ESM!esm::type::EnumerationType input(dataField : ESM!esm::ui::DataFiel
 			opt.enumerationMember = m;
 			radio.options.add(opt);
 		}
-		return self.fillInput(radio, 2, dataField.basis);
+		return self.fillInput(radio, 1, dataField.basis);
 		
 	} else {
 		var combo = new UI!ui::EnumerationCombo();
@@ -57,7 +57,7 @@ operation ESM!esm::type::EnumerationType input(dataField : ESM!esm::ui::DataFiel
 			opt.enumerationMember = m;
 			combo.options.add(opt);
 		}
-		return self.fillInput(combo, 2, dataField.basis);
+		return self.fillInput(combo, 1, dataField.basis);
 	}
 }
 
@@ -70,32 +70,32 @@ operation ESM!esm::namespace::NamedElement fillFormatted(formatted : UI!ui::Form
 }
 
 operation ESM!esm::type::PasswordType formatted(): UI!ui::Formatted {
-	return self.fillFormatted(new UI!ui::Formatted(), "%s", 2, 1);
+	return self.fillFormatted(new UI!ui::Formatted(), "%s", 1, 2);
 }
 
 operation ESM!esm::type::StringType formatted(): UI!ui::Formatted {
-	return self.fillFormatted(new UI!ui::Formatted(), "%s", 2, 1);
+	return self.fillFormatted(new UI!ui::Formatted(), "%s", 1, 2);
 }
 
 // TODO: sprinf numberic format
 operation ESM!esm::type::NumericType formatted(): UI!ui::Formatted {
-	return self.fillFormatted(new UI!ui::Formatted(), "%s", 2, 1);
+	return self.fillFormatted(new UI!ui::Formatted(), "%s", 1, 2);
 }
 
 operation ESM!esm::type::BooleanType formatted(): UI!ui::Formatted {
-	return self.fillFormatted(new UI!ui::Formatted(), "%s", 2, 1);
+	return self.fillFormatted(new UI!ui::Formatted(), "%s", 1, 2);
 }
 
 operation ESM!esm::type::DateType formatted(): UI!ui::Formatted {
-	return self.fillFormatted(new UI!ui::Formatted(), "%s", 2, 1);
+	return self.fillFormatted(new UI!ui::Formatted(), "%s", 1, 2);
 }
 
 operation ESM!esm::type::TimestampType formatted(): UI!ui::Formatted {
-	return self.fillFormatted(new UI!ui::Formatted(), "%s", 2, 1);
+	return self.fillFormatted(new UI!ui::Formatted(), "%s", 1, 2);
 }
 
 operation ESM!esm::type::EnumerationType formatted(): UI!ui::Formatted {
-	return self.fillFormatted(new UI!ui::Formatted(), "%s", 2, 1);
+	return self.fillFormatted(new UI!ui::Formatted(), "%s", 1, 2);
 }
 
 @cached

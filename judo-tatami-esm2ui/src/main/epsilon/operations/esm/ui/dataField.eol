@@ -1,10 +1,11 @@
 operation ESM!esm::ui::DataField createInputFromDataField(application : UI!ui::Application) : UI!ui::Input {
 	var ret : UI!ui::Input = self.dataFeature.getMember().getDataType().input(self, application);
-
-	ret.attributeType = self.dataFeature.getMember().mapAttributeType(application, self.getTransferObjectType().mapClassType(application));
-	
 	ret.name = self.name;
 	ret.label = self.getUiLabel();
+	if (preview) {
+		return ret;
+	}
+	ret.attributeType = self.dataFeature.getMember().mapAttributeType(application, self.getTransferObjectType().mapClassType(application));
 	return ret;
 }
 
