@@ -22,6 +22,7 @@ import com.google.common.collect.Lists;
 
 import hu.blackbelt.judo.meta.asm.runtime.AsmModel;
 import hu.blackbelt.judo.meta.expression.runtime.ExpressionModel;
+import hu.blackbelt.judo.meta.keycloak.runtime.KeycloakModel;
 import hu.blackbelt.judo.meta.liquibase.runtime.LiquibaseModel;
 import hu.blackbelt.judo.meta.measure.runtime.MeasureModel;
 import hu.blackbelt.judo.meta.openapi.runtime.OpenapiModel;
@@ -29,6 +30,7 @@ import hu.blackbelt.judo.meta.psm.runtime.PsmModel;
 import hu.blackbelt.judo.meta.rdbms.runtime.RdbmsModel;
 import hu.blackbelt.judo.meta.script.runtime.ScriptModel;
 import hu.blackbelt.judo.tatami.asm2jaxrsapi.Asm2JAXRSAPIWork;
+import hu.blackbelt.judo.tatami.asm2keycloak.Asm2KeycloakWork;
 import hu.blackbelt.judo.tatami.asm2openapi.Asm2OpenAPITransformationTrace;
 import hu.blackbelt.judo.tatami.asm2openapi.Asm2OpenAPIWork;
 import hu.blackbelt.judo.tatami.asm2rdbms.Asm2RdbmsTransformationTrace;
@@ -143,6 +145,9 @@ public class PsmDefaultWorkflow {
 			if (!parameters.getIgnoreScript2Operation() && !parameters.getIgnoreAsm2Script() && !parameters.getIgnorePsm2Measure()) {
 				scriptWorks.add(new Script2OperationWork(transformationContext));
 			}
+			if (!parameters.getIgnoreAsm2Keycloak()) {
+				asmWorks.add(new Asm2KeycloakWork(transformationContext));
+			}
 		}
 
 		WorkFlow workflow = aNewConditionalFlow()
@@ -217,6 +222,9 @@ public class PsmDefaultWorkflow {
 			}
 			if (!parameters.getIgnoreScript2Operation() && !parameters.getIgnoreAsm2Script() && !parameters.getIgnorePsm2Measure()) {
 				verifier.isKeyExists(InputStream.class, OPERATION_OUTPUT);
+			}
+			if (!parameters.getIgnoreAsm2Keycloak()) {
+				verifier.isClassExists(KeycloakModel.class);
 			}
 		}
 		if (!verifier.isAllExists()) {

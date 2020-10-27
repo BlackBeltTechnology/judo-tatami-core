@@ -509,6 +509,12 @@
 
             <dependency>
                 <groupId>hu.blackbelt.judo.tatami</groupId>
+                <artifactId>judo-tatami-asm2keycloak</artifactId>
+                <version>1.1.0-SNAPSHOT</version>
+            </dependency>
+
+            <dependency>
+                <groupId>hu.blackbelt.judo.tatami</groupId>
                 <artifactId>judo-tatami-asm2sdk</artifactId>
                 <version>1.1.0-SNAPSHOT</version>
             </dependency>
