@@ -5,15 +5,15 @@ operation ESM!esm::namespace::NamedElement fillInput(input : UI!ui::Input, row :
 }
 
 operation ESM!esm::type::PasswordType input(dataField : ESM!esm::ui::DataField, application : UI!ui::Application): UI!ui::Input {
-	return self.fillInput(new UI!ui::PasswordInput(), 2, dataField.basis);
+	return self.fillInput(new UI!ui::PasswordInput(), 1, dataField.basis);
 }
 
 operation ESM!esm::type::StringType input(dataField : ESM!esm::ui::DataField, application : UI!ui::Application): UI!ui::Input {
 	
 	if (dataField.textMultiLine) {
 		var textArea : UI!ui::TextArea = new UI!ui::TextArea();
-		textArea.lines = 3;
-		return self.fillInput(textArea, 3, dataField.basis);
+		textArea.lines = dataField.lines;
+		return self.fillInput(textArea, textArea.lines, dataField.basis);
 	} else {
 		return self.fillInput(new UI!ui::TextInput(), 1, dataField.basis);
 	}
