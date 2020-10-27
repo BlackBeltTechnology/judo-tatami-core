@@ -1,0 +1,42 @@
+import "realm.etl";
+
+rule CreateKeycloakClient
+    transform s : ASM!EClass
+    to t : KEYCLOAK!Client {
+        guard: asmUtils.isActorType(s) and asmUtils.getExtensionAnnotationValue(s, "realm", false).present and asmUtils.getExtensionAnnotationValue(s, "realm", false).get.trim() <> ''
+
+        var realmName = asmUtils.getExtensionAnnotationValue(s, "realm", false).get.trim();
+        var realm = KEYCLOAK!Realm.all.selectOne(r | r.name == realmName);
+
+        t.name = asmUtils.getClassifierFQName(s).replace("\\.", "-");
+        t.enabled = true;
+        t.directAccessGrantsEnabled = true;
+        t.redirectUris.add("http://localhost:8181/api/" + asmUtils.getClassifierFQName(s).replace("\\.", "/") + "/*");
+        t.accessType = KEYCLOAK!AccessType#PUBLIC;
+        t.userManager = false; // not supported yet
+
+        realm.clients.add(t);
+        log.debug("Client created: " + t.name);
+}
+
+rule CreateKeycloakClientClaim
+    transform s : ASM!EAttribute
+    to t : KEYCLOAK!Mapper {
+        guard: asmUtils.isActorType(s.eContainer) and asmUtils.getExtensionAnnotationValue(s.eContainer, "realm", false).present and asmUtils.getExtensionAnnotationValue(s.eContainer, "realm", false).get.trim() <> ''
+
+        var claimType = asmUtils.getExtensionAnnotationValue(s, "claim", false);
+
+        if (claimType.present and claimType.get == "EMAIL") {
+            t.tokenClaimName = "email";
+        } else if (claimType.present and claimType.get == "USERNAME") {
+            t.tokenClaimName = "preferred_username";
+        } else if (s.name == "email") {
+            t.tokenClaimName = "_email";
+        } else if (s.name == "preferred_username") {
+            t.tokenClaimName = "_preferred_username";
+        } else {
+            t.tokenClaimName = s.name;
+        }
+
+        s.eContainer.equivalent("CreateKeycloakClient").mappers.add(t);
+}
