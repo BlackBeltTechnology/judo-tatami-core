@@ -44,3 +44,48 @@ operation createBlankApplicationForPreview() : UI!ui::Application {
     
     return application;
 }
+
+operation clonePagesOfInheritedRelations(application : UI!ui::Application) {
+
+	var classTypes = application.dataElements.select(d | d.isKindOf(UI!ui::data::ClassType));
+	
+	for (classType : UI!ui::data::ClassType in classTypes) {
+		for (relation : UI!ui::data::RelationType in classType.relations) {
+			if (relation.~originalRelation.isDefined() and relation.~originalRelation.eContainer() <> classType.~originalClass) {
+	
+				var viewPage = application.pages.selectOne(p | p.~originalRelation == relation.~originalRelation and p.pageType == UI!ui::PageType#VIEW);
+				if (viewPage.isDefined()) {
+					var clone = ecoreUtil.copy(viewPage);
+					clone.name = (esmUtils.getNamespaceElementFQName(classType.~originalClass) + "." + relation.~originalRelation.name).anchor("View");
+					clone.dataElement = relation;
+					application.pages.add(clone);
+				}
+				
+				var createPage = application.pages.selectOne(p | p.~originalRelation == relation.~originalRelation and p.pageType == UI!ui::PageType#CREATE);
+				if (createPage.isDefined()) {
+					var clone = ecoreUtil.copy(createPage);
+					clone.name = (esmUtils.getNamespaceElementFQName(classType.~originalClass) + "." + relation.~originalRelation.name).anchor("Create");
+					clone.dataElement = relation;
+					application.pages.add(clone);
+				}
+				
+				var updatePage = application.pages.selectOne(p | p.~originalRelation == relation.~originalRelation and p.pageType == UI!ui::PageType#UPDATE);
+				if (updatePage.isDefined()) {
+					var clone = ecoreUtil.copy(updatePage);
+					clone.name = (esmUtils.getNamespaceElementFQName(classType.~originalClass) + "." + relation.~originalRelation.name).anchor("Edit");
+					clone.dataElement = relation;
+					application.pages.add(clone);
+				}
+				
+				var tablePage = application.pages.selectOne(p | p.~originalRelation == relation.~originalRelation and p.pageType == UI!ui::PageType#TABLE);
+				if (tablePage.isDefined()) {
+					var clone = ecoreUtil.copy(tablePage);
+					clone.name = (esmUtils.getNamespaceElementFQName(classType.~originalClass) + "." + relation.~originalRelation.name).anchor("Table");
+					clone.dataElement = relation;
+					application.pages.add(clone);
+				}
+			}
+		}
+	}
+}
+

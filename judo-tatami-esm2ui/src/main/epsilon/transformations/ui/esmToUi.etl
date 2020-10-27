@@ -13,6 +13,12 @@ pre {
 
 post {
 
+	var ecoreUtil = new Native("org.eclipse.emf.ecore.util.EcoreUtil");
+	
+	for (application : UI!ui::Application in UI!ui::Application.all()) {
+		clonePagesOfInheritedRelations(application);
+	}
+
 	for (application : UI!ui::Application in UI!ui::Application.all()) {
 			log.debug("==============================================================");
 			log.debug("APP ================== : " + application.name);
