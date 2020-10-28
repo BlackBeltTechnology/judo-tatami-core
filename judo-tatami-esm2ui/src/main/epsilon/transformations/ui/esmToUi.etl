@@ -19,13 +19,13 @@ post {
 		clonePagesOfInheritedRelations(application);
 	}
 	
-	for (button : UI!ui::Button in UI!ui::Button.all()) {
-		if (button.action.isDefined() and button.action.isKindOf(UI!ui::NavigationToPageAction) and button.dataElement <> button.action.target.dataElement) {
-			var application = button.action.target.~application;
-			var clonedPage = application.pages.selectOne(p | p.~original.isDefined() and p.~original == button.action.target);
+	for (action : UI!ui::PageAction in UI!ui::PageAction.all()) {
+		if (action.eContainer.dataElement <> action.target.dataElement) {
+			var application = action.target.~application;
+			var clonedPage = application.pages.selectOne(p | p.~original.isDefined() and p.~original == action.target);
 			if (clonedPage.isDefined()) {
-				button.action.target = clonedPage;
-			}			
+				action.target = clonedPage;
+			}	
 		}
 	}
 
