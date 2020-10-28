@@ -58,6 +58,7 @@ operation clonePagesOfInheritedRelations(application : UI!ui::Application) {
 					var clone = ecoreUtil.copy(viewPage);
 					clone.name = (esmUtils.getNamespaceElementFQName(classType.~originalClass) + "." + relation.~originalRelation.name).anchor("View");
 					clone.dataElement = relation;
+					clone.~original = viewPage;
 					application.pages.add(clone);
 				}
 				
@@ -66,6 +67,7 @@ operation clonePagesOfInheritedRelations(application : UI!ui::Application) {
 					var clone = ecoreUtil.copy(createPage);
 					clone.name = (esmUtils.getNamespaceElementFQName(classType.~originalClass) + "." + relation.~originalRelation.name).anchor("Create");
 					clone.dataElement = relation;
+					clone.~original = createPage;
 					application.pages.add(clone);
 				}
 				
@@ -74,6 +76,7 @@ operation clonePagesOfInheritedRelations(application : UI!ui::Application) {
 					var clone = ecoreUtil.copy(updatePage);
 					clone.name = (esmUtils.getNamespaceElementFQName(classType.~originalClass) + "." + relation.~originalRelation.name).anchor("Edit");
 					clone.dataElement = relation;
+					clone.~original = updatePage;
 					application.pages.add(clone);
 				}
 				
@@ -82,10 +85,10 @@ operation clonePagesOfInheritedRelations(application : UI!ui::Application) {
 					var clone = ecoreUtil.copy(tablePage);
 					clone.name = (esmUtils.getNamespaceElementFQName(classType.~originalClass) + "." + relation.~originalRelation.name).anchor("Table");
 					clone.dataElement = relation;
+					clone.~original = tablePage;
 					application.pages.add(clone);
 				}
 			}
 		}
 	}
 }
-

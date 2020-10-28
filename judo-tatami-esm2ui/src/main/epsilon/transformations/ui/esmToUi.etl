@@ -18,6 +18,16 @@ post {
 	for (application : UI!ui::Application in UI!ui::Application.all()) {
 		clonePagesOfInheritedRelations(application);
 	}
+	
+	for (button : UI!ui::Button in UI!ui::Button.all()) {
+		if (button.action.isDefined() and button.action.isKindOf(UI!ui::NavigationToPageAction) and button.dataElement <> button.action.target.dataElement) {
+			var application = button.action.target.~application;
+			var clonedPage = application.pages.selectOne(p | p.~original.isDefined() and p.~original == button.action.target);
+			if (clonedPage.isDefined()) {
+				button.action.target = clonedPage;
+			}			
+		}
+	}
 
 	for (application : UI!ui::Application in UI!ui::Application.all()) {
 			log.debug("==============================================================");
