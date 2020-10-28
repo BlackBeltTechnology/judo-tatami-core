@@ -212,12 +212,6 @@
 
 - overwriteExpression: true
   factoryExpression: "{#application}"
-  pathExpression: "'lib/' + #path(#application.actor.name) + '/components/judo_radio_group.dart'"
-  templateName: flutter/lib/components/judo_radio_group.dart
-  copy: true
-
-- overwriteExpression: true
-  factoryExpression: "{#application}"
   pathExpression: "'lib/' + #path(#application.actor.name) + '/components/judo_tab.dart'"
   templateName: flutter/lib/components/judo_tab.dart
   copy: true
@@ -238,6 +232,18 @@
   factoryExpression: "{#application}"
   pathExpression: "'lib/' + #path(#application.actor.name) + '/components/judo_title.dart'"
   templateName: flutter/lib/components/judo_title.dart
+  copy: true
+
+- overwriteExpression: true
+  factoryExpression: "{#application}"
+  pathExpression: "'lib/' + #path(#application.actor.name) + '/components/judo_row.dart'"
+  templateName: flutter/lib/components/judo_row.dart
+  copy: true
+
+- overwriteExpression: true
+  factoryExpression: "{#application}"
+  pathExpression: "'lib/' + #path(#application.actor.name) + '/components/judo_column.dart'"
+  templateName: flutter/lib/components/judo_column.dart
   copy: true
 
 # ========================================

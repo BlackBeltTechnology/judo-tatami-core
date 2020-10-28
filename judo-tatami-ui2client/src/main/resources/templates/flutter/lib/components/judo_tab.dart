@@ -2,12 +2,12 @@ part of judo.components;
 
 class JudoTab extends StatefulWidget {
   JudoTab({
-    @required this.col,
+    @required this.flex,
     @required this.tabs,
     @required this.tabContent,
   });
 
-  final int col;
+  final int flex;
   final List<Tab> tabs;
   final List<Widget> tabContent;
   TabController tabController;
@@ -46,7 +46,7 @@ class _JudoTabState extends State<JudoTab> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     return Expanded(
-      flex: widget.col,
+      flex: widget.flex,
       child: Column(
         children: [
           Container(
@@ -62,7 +62,7 @@ class _JudoTabState extends State<JudoTab> with TickerProviderStateMixin {
             child: TabBarView(
               controller: widget.tabController,
               children:
-                  widget.tabContent.map((e) => Column(children: [e])).toList(),
+              widget.tabContent.map((e) => Column(children: [e])).toList(),
             ),
           ),
         ],
