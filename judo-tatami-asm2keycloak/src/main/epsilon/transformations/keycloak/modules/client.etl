@@ -6,14 +6,16 @@ rule CreateKeycloakClient
         guard: asmUtils.isActorType(s) and asmUtils.getExtensionAnnotationValue(s, "realm", false).present and asmUtils.getExtensionAnnotationValue(s, "realm", false).get.trim() <> ''
 
         var realmName = asmUtils.getExtensionAnnotationValue(s, "realm", false).get.trim();
-        var realm = KEYCLOAK!Realm.all.selectOne(r | r.name == realmName);
+        var realm = KEYCLOAK!Realm.all.selectOne(r | r.realm == realmName);
 
         t.name = asmUtils.getClassifierFQName(s).replace("\\.", "-");
+        t.clientId = t.name;
         t.enabled = true;
         t.directAccessGrantsEnabled = true;
         t.redirectUris.add("http://localhost:8181/api/" + asmUtils.getClassifierFQName(s).replace("\\.", "/") + "/*");
-        t.accessType = KEYCLOAK!AccessType#PUBLIC;
-        t.userManager = false; // not supported yet
+        t.publicClient = true;
+        t.bearerOnly = false;
+        t._userManager = true; // not supported yet in ESM
 
         realm.clients.add(t);
         log.debug("Client created: " + t.name);
@@ -29,11 +31,11 @@ rule CreateKeycloakClientClaim
         if (claimType.present and claimType.get == "EMAIL") {
             t.tokenClaimName = "email";
         } else if (claimType.present and claimType.get == "USERNAME") {
-            t.tokenClaimName = "preferred_username";
+            t.tokenClaimName = "username";
         } else if (s.name == "email") {
             t.tokenClaimName = "_email";
-        } else if (s.name == "preferred_username") {
-            t.tokenClaimName = "_preferred_username";
+        } else if (s.name == "username") {
+            t.tokenClaimName = "_username";
         } else {
             t.tokenClaimName = s.name;
         }

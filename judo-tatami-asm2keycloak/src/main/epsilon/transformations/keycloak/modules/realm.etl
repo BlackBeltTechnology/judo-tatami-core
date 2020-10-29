@@ -9,11 +9,12 @@ pre {
     }
 
     for (realmName in realms) {
-        var realm = new KEYCLOAK!Realm;
-        realm.name = realmName;
-        realm.enabled = true;
-        realm.loginWithEmailAllowed = true;
+        var r = new KEYCLOAK!Realm;
+        r.id = realmName;
+        r.realm = realmName;
+        r.enabled = true;
+        r.loginWithEmailAllowed = true;
 
-        log.debug("Realm created: " + realm.name);
+        log.debug("Realm created: " + r.realm);
     }
 }

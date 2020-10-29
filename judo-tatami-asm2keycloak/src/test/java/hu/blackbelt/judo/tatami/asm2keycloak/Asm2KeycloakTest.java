@@ -232,8 +232,8 @@ public class Asm2KeycloakTest {
         final KeycloakUtils keycloakUtils = new KeycloakUtils(keycloakModel.getResourceSet());
         final Set<Realm> realms = keycloakUtils.all(Realm.class).collect(Collectors.toSet());
 
-        assertTrue(realms.stream().anyMatch(r -> "protected1".equals(r.getName()) && r.isEnabled() && r.isLoginWithEmailAllowed()));
-        assertTrue(realms.stream().anyMatch(r -> "protected2".equals(r.getName()) && r.isEnabled() && r.isLoginWithEmailAllowed()));
+        assertTrue(realms.stream().anyMatch(r -> "protected1".equals(r.getRealm()) && r.getEnabled() && r.getLoginWithEmailAllowed()));
+        assertTrue(realms.stream().anyMatch(r -> "protected2".equals(r.getRealm()) && r.getEnabled() && r.getLoginWithEmailAllowed()));
 
         asmUtils.getAllActorTypes().stream()
                 .filter(actorType -> AsmUtils.getExtensionAnnotationValue(actorType, "realm", false).isPresent())
