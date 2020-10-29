@@ -43,6 +43,8 @@ abstract class _{{ fqClass name }}Store with Store {
       {{ else }}
     if ({{ variable ../name }}Store.{{ variable name }} != null) {
       {{ variable name }} = {{ fqClass target.name }}Store.clone({{ variable ../name }}Store.{{ variable name }});
+    } else {
+      {{ variable name }} = null;
     }
       {{/ if }}
     {{/ each }}
@@ -158,6 +160,8 @@ abstract class _{{ fqClass name }}Store with Store {
       {{ else }}
     if ({{ variable ../name }}Store.{{ variable name }} != null) {
       {{ variable name }} = {{ fqClass target.name }}Store.clone({{ variable ../name }}Store.{{ variable name }});
+    } else {
+      {{ variable name }} = null;
     }
       {{/ if }}
     {{/ each }}
