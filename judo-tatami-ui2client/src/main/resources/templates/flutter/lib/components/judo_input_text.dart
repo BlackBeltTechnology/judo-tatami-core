@@ -1,6 +1,6 @@
 part of judo.components;
 
-class JudoInputText extends StatelessWidget implements IJudoComponent {
+class JudoInputText extends StatelessWidget {
   JudoInputText({
     this.key,
     @required this.col,
@@ -22,11 +22,6 @@ class JudoInputText extends StatelessWidget implements IJudoComponent {
   final bool disabled;
 
   @override
-  int getColSize() {
-    return this.col;
-  }
-
-  @override
   Widget build(BuildContext context) {
     return JudoContainer(
       color: disabled ? kDisabledColor : null,
@@ -43,18 +38,18 @@ class JudoInputText extends StatelessWidget implements IJudoComponent {
           prefixIcon: icon,
         )
             : readOnly ?
-            InputDecoration(
-                labelText: label,
-                prefixIcon: icon,
-                border: InputBorder.none,
-                focusedBorder: InputBorder.none,
-                enabledBorder: InputBorder.none,
-                errorBorder: InputBorder.none,
-                disabledBorder: InputBorder.none)
+        InputDecoration(
+            labelText: label,
+            prefixIcon: icon,
+            border: InputBorder.none,
+            focusedBorder: InputBorder.none,
+            enabledBorder: InputBorder.none,
+            errorBorder: InputBorder.none,
+            disabledBorder: InputBorder.none)
             :
-            InputDecoration(
-                labelText: label,
-                prefixIcon: icon),
+        InputDecoration(
+            labelText: label,
+            prefixIcon: icon),
         onChanged: onChanged,
       ),
     );

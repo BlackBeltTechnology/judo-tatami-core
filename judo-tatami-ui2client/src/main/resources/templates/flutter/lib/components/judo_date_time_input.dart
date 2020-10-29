@@ -1,6 +1,6 @@
 part of judo.components;
 
-class JudoDateTimeInput extends StatelessWidget implements IJudoComponent {
+class JudoDateTimeInput extends StatelessWidget {
   JudoDateTimeInput({
     this.key,
     @required this.col,
@@ -30,11 +30,6 @@ class JudoDateTimeInput extends StatelessWidget implements IJudoComponent {
   final DateFormat formatter = DateFormat('yyyy-MM-dd HH:mm');
 
   @override
-  int getColSize() {
-    return this.col;
-  }
-
-  @override
   Widget build(BuildContext context) {
     return JudoContainer(
       color: disabled ? kDisabledColor : null,
@@ -53,19 +48,19 @@ class JudoDateTimeInput extends StatelessWidget implements IJudoComponent {
         )
             : readOnly ?
         InputDecoration(
-            labelText: label,
-            prefixIcon: icon,
-            border: InputBorder.none,
-            focusedBorder: InputBorder.none,
-            enabledBorder: InputBorder.none,
-            errorBorder: InputBorder.none,
-            disabledBorder: InputBorder.none,
+          labelText: label,
+          prefixIcon: icon,
+          border: InputBorder.none,
+          focusedBorder: InputBorder.none,
+          enabledBorder: InputBorder.none,
+          errorBorder: InputBorder.none,
+          disabledBorder: InputBorder.none,
         )
             :
         InputDecoration(
-            labelText: label,
-            prefixIcon: icon,
-            suffixIcon: iconDatePicker(context),
+          labelText: label,
+          prefixIcon: icon,
+          suffixIcon: iconDatePicker(context),
         ),
         onChanged: (value) => onChangedHandler(DateTime.parse(value)),
       ),
@@ -88,16 +83,16 @@ class JudoDateTimeInput extends StatelessWidget implements IJudoComponent {
             lastDate: this.lastDate ?? DateTime(2100),
           );
           tempTimeOfDay = await showTimePicker(
-            context: context,
-            initialTime: TimeOfDay.fromDateTime(initialDate ?? DateTime.now()),
-            initialEntryMode: TimePickerEntryMode.input,
-            builder: use24HourFormat ? (BuildContext context, Widget child) {
-              return MediaQuery(
-                data: MediaQuery.of(context).copyWith(alwaysUse24HourFormat: true),
-                child: child,
-              );
-            }
-              :
+              context: context,
+              initialTime: TimeOfDay.fromDateTime(initialDate ?? DateTime.now()),
+              initialEntryMode: TimePickerEntryMode.input,
+              builder: use24HourFormat ? (BuildContext context, Widget child) {
+                return MediaQuery(
+                  data: MediaQuery.of(context).copyWith(alwaysUse24HourFormat: true),
+                  child: child,
+                );
+              }
+                  :
               null
           );
 

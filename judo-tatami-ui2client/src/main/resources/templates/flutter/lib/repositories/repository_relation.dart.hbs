@@ -25,9 +25,9 @@ class {{ fqClass relation.owner.name }}{{ fqClass relation.name }}Repository {
   //////////////////////////////////////////////////////////////////////////////
   // GET Collection (Access)
   //////////////////////////////////////////////////////////////////////////////
-  Future<List<{{ fqClass relation.target.name }}Store>> {{ fqVariable relation.owner.name }}{{ fqClass relation.name }}List({ {{ modelName relation.target.name }}Extension{{ fqClassWithoutModel relation.target.name}}QueryCustomizer filter }) async {
+  Future<List<{{ fqClass relation.target.name }}Store>> {{ fqVariable relation.owner.name }}{{ fqClass relation.name }}List({ {{ modelName relation.target.name }}Extension{{ packageName relation.target.name}}QueryCustomizer{{ className relation.target.name}} filter }) async {
     if (filter == null) {
-      filter = {{ modelName relation.target.name }}Extension{{ fqClassWithoutModel relation.target.name}}QueryCustomizer();
+      filter = {{ modelName relation.target.name }}Extension{{ packageName relation.target.name}}QueryCustomizer{{ className relation.target.name}}();
     }
     List<{{ fqClass relation.target.name }}> {{ variable relation.target.name }}ListResponse = await DefaultApi(locator<ApiClient>()).{{ fqVariable relation.owner.name }}List{{ className relation.name }}(input : filter);
     return {{ variable relation.target.name }}ListResponse.map<{{ fqClass relation.target.name }}Store>(
@@ -38,9 +38,9 @@ class {{ fqClass relation.owner.name }}{{ fqClass relation.name }}Repository {
   //////////////////////////////////////////////////////////////////////////////
   // GET Collection
   //////////////////////////////////////////////////////////////////////////////
-  Future<List<{{ fqClass relation.target.name }}Store>> {{ fqVariable relation.owner.name }}{{ fqClass relation.name }}List({{ fqClass relation.owner.name }}Store owner, { {{ modelName relation.target.name }}Extension{{ fqClassWithoutModel relation.target.name}}QueryCustomizer filter }) async {
+  Future<List<{{ fqClass relation.target.name }}Store>> {{ fqVariable relation.owner.name }}{{ fqClass relation.name }}List({{ fqClass relation.owner.name }}Store owner, { {{ modelName relation.target.name }}Extension{{ packageName relation.target.name}}QueryCustomizer{{ className relation.target.name}} filter }) async {
     if (filter == null) {
-      filter = {{ modelName relation.target.name }}Extension{{ fqClassWithoutModel relation.target.name}}QueryCustomizer();
+      filter = {{ modelName relation.target.name }}Extension{{ packageName relation.target.name}}QueryCustomizer{{ className relation.target.name}}();
     }
     List<{{ fqClass relation.target.name }}> {{ variable relation.target.name }}ListResponse = await DefaultApi(locator<ApiClient>()).{{ fqVariable owner.name }}List{{ className relation.name }}(owner.internal__signedIdentifier, input : filter);
     return {{ variable relation.target.name }}ListResponse.map<{{ fqClass relation.target.name }}Store>(
@@ -53,9 +53,9 @@ class {{ fqClass relation.owner.name }}{{ fqClass relation.name }}Repository {
   //////////////////////////////////////////////////////////////////////////////
   // GET SINGLE (Access)
   //////////////////////////////////////////////////////////////////////////////
-  Future<{{ fqClass relation.target.name }}Store> {{ fqVariable relation.owner.name }}{{ fqClass relation.name }}Get({ {{ modelName relation.target.name }}Extension{{ fqClassWithoutModel relation.target.name}}QueryCustomizer filter }) async {
+  Future<{{ fqClass relation.target.name }}Store> {{ fqVariable relation.owner.name }}{{ fqClass relation.name }}Get({ {{ modelName relation.target.name }}Extension{{ packageName relation.target.name}}QueryCustomizer{{ className relation.target.name}} filter }) async {
     if (filter == null) {
-      filter = {{ modelName relation.target.name }}Extension{{ fqClassWithoutModel relation.target.name}}QueryCustomizer();
+      filter = {{ modelName relation.target.name }}Extension{{ packageName relation.target.name}}QueryCustomizer{{ className relation.target.name}}();
     }
     {{ fqClass relation.target.name }} {{ variable relation.target.name }}Response = await DefaultApi(locator<ApiClient>()).{{ fqVariable relation.owner.name }}List{{ className relation.name }}(input : filter);
     return {{ fqClass ap.name }}RepositoryStoreMapper.create{{ fqClass relation.target.name }}StoreFrom{{ fqClass relation.target.name }}({{ variable relation.target.name }}Response);
@@ -65,9 +65,9 @@ class {{ fqClass relation.owner.name }}{{ fqClass relation.name }}Repository {
   //////////////////////////////////////////////////////////////////////////////
   // GET SINGLE
   //////////////////////////////////////////////////////////////////////////////
-  Future<{{ fqClass relation.target.name }}Store> {{ fqVariable relation.owner.name }}{{ fqClass relation.name }}Get({{ fqClass relation.owner.name }}Store owner, { {{ modelName relation.target.name }}Extension{{ fqClassWithoutModel relation.target.name}}QueryCustomizer filter }) async {
+  Future<{{ fqClass relation.target.name }}Store> {{ fqVariable relation.owner.name }}{{ fqClass relation.name }}Get({{ fqClass relation.owner.name }}Store owner, { {{ modelName relation.target.name }}Extension{{ packageName relation.target.name}}QueryCustomizer{{ className relation.target.name}} filter }) async {
     if (filter == null) {
-      filter = {{ modelName relation.target.name }}Extension{{ fqClassWithoutModel relation.target.name}}QueryCustomizer();
+      filter = {{ modelName relation.target.name }}Extension{{ packageName relation.target.name}}QueryCustomizer{{ className relation.target.name}}();
     }
     {{ fqClass relation.target.name }} {{ variable relation.target.name }}Response = await DefaultApi(locator<ApiClient>()).{{ fqVariable owner.name }}List{{ className relation.name }}(owner.internal__signedIdentifier, input : filter);
     return {{ fqClass ap.name }}RepositoryStoreMapper.create{{ fqClass relation.target.name }}StoreFrom{{ fqClass relation.target.name }}({{ variable relation.target.name }}Response);

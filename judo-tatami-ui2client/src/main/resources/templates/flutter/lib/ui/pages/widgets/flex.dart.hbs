@@ -1,23 +1,18 @@
-Flexible(
-    fit: FlexFit.loose,
-    {{# if isDirectionHorizontal}}
-    flex: {{col}},
-    {{/ if }}
-    child:
-        {{# if isDirectionHorizontal }}
-        Row(
-        {{ else }}
-        Column(
+{{# if isDirectionHorizontal }}
+JudoRow(
+{{ else }}
+JudoColumn(
+{{/ if }}
+    col: {{ col }},
+    row: {{ row }},
+    mainAxisAlignment: MainAxisAlignment.{{ mainAxisAlignment this }},
+    crossAxisAlignment: CrossAxisAlignment.{{ crossAxisAlignment this }},
+    mainAxisSize: MainAxisSize.{{ mainAxisSize this }},
+    children: [
+    {{# each children as |child| }}
+        {{# if child }}
+            {{> (getWidgetTemplate child) }}
         {{/ if }}
-            mainAxisAlignment: MainAxisAlignment.{{ mainAxisAlignment this }},
-            crossAxisAlignment: CrossAxisAlignment.{{ crossAxisAlignment this }},
-            mainAxisSize: MainAxisSize.{{ mainAxisSize this }},
-            children: [
-            {{# each children as |child| }}
-                {{# if child }}
-                    {{> (getWidgetTemplate child) }}
-                {{/ if }}
-            {{/ each }}
-            ],
-        ),
+    {{/ each }}
+    ],
 ),

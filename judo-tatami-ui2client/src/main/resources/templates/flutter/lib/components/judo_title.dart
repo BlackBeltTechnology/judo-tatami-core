@@ -1,6 +1,6 @@
 part of judo.components;
 
-class JudoTitle extends StatelessWidget implements IJudoComponent {
+class JudoTitle extends StatelessWidget {
   JudoTitle({
     @required this.col,
     @required this.text,
@@ -8,11 +8,6 @@ class JudoTitle extends StatelessWidget implements IJudoComponent {
 
   final String text;
   final int col;
-
-  @override
-  int getColSize() {
-    return this.col;
-  }
 
   @override
   Widget build(BuildContext context) {

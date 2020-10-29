@@ -1,6 +1,6 @@
 part of judo.components;
 
-class JudoDateInput extends StatelessWidget implements IJudoComponent {
+class JudoDateInput extends StatelessWidget {
   JudoDateInput({
     this.key,
     @required this.col,
@@ -28,11 +28,6 @@ class JudoDateInput extends StatelessWidget implements IJudoComponent {
   final DateFormat formatter = DateFormat('yyyy-MM-dd');
 
   @override
-  int getColSize() {
-    return this.col;
-  }
-
-  @override
   Widget build(BuildContext context) {
 
     return JudoContainer(
@@ -40,35 +35,35 @@ class JudoDateInput extends StatelessWidget implements IJudoComponent {
       padding: EdgeInsets.symmetric(horizontal: 10),
       col: col,
       child: TextFormField(
-          key: key,
-          readOnly: disabled ? true : readOnly,
-          enabled: disabled ? false : !readOnly,
-          initialValue: formatter.format(initialDate ?? DateTime.now()),
-          decoration: disabled ?
-          InputDecoration(
-            labelText: label,
-            prefixIcon: icon,
-            suffixIcon: iconDatePicker(context),
-          )
-              : readOnly ?
-          InputDecoration(
-              labelText: label,
-              prefixIcon: icon,
-              border: InputBorder.none,
-              focusedBorder: InputBorder.none,
-              enabledBorder: InputBorder.none,
-              errorBorder: InputBorder.none,
-              disabledBorder: InputBorder.none,
+        key: key,
+        readOnly: disabled ? true : readOnly,
+        enabled: disabled ? false : !readOnly,
+        initialValue: formatter.format(initialDate ?? DateTime.now()),
+        decoration: disabled ?
+        InputDecoration(
+          labelText: label,
+          prefixIcon: icon,
+          suffixIcon: iconDatePicker(context),
+        )
+            : readOnly ?
+        InputDecoration(
+          labelText: label,
+          prefixIcon: icon,
+          border: InputBorder.none,
+          focusedBorder: InputBorder.none,
+          enabledBorder: InputBorder.none,
+          errorBorder: InputBorder.none,
+          disabledBorder: InputBorder.none,
 
-          )
-              :
-          InputDecoration(
-              labelText: label,
-              prefixIcon: icon,
-              suffixIcon: iconDatePicker(context),
-          ),
-          onChanged: (value) => onChangedHandler(DateTime.parse(value)),
+        )
+            :
+        InputDecoration(
+          labelText: label,
+          prefixIcon: icon,
+          suffixIcon: iconDatePicker(context),
         ),
+        onChanged: (value) => onChangedHandler(DateTime.parse(value)),
+      ),
     );
   }
 
@@ -76,8 +71,8 @@ class JudoDateInput extends StatelessWidget implements IJudoComponent {
     var tempDateTime = this.initialDate ?? DateTime.now();
     return IconButton(
         icon: Icon(
-            Icons.calendar_today,
-            color: disabled ? kDisabledColor : null,
+          Icons.calendar_today,
+          color: disabled ? kDisabledColor : null,
         ),
         onPressed: disabled ? null : () async {
           tempDateTime = await showDatePicker(

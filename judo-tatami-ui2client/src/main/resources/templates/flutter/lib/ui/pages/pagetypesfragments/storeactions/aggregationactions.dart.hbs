@@ -115,12 +115,12 @@ Future<void> set{{ fqClass relation.name }}({{ fqClass relation.owner.name }}Sto
 @action
 Future<void> unset{{ fqClass relation.name }}({{ fqClass relation.owner.name }}Store owner{{ className relation.owner.name }}Store) async {
     try {
-        {{# if page.isPageTypeView }}
-            await _{{ fqVariable application.actor.name }}Repository.{{ fqVariable relation.owner.name }}Unset{{ fqClass relation.name }}(owner{{ className relation.owner.name }}Store);
-            refresh{{ className relation.owner.name }}(owner{{ className relation.owner.name }}Store);
-        {{else}}
-            owner{{ className relation.owner.name }}Store.{{variable relation.name}} = null;
-        {{/ if}}
+    {{# if page.isPageTypeView }}
+        await _{{ fqVariable application.actor.name }}Repository.{{ fqVariable relation.owner.name }}Unset{{ fqClass relation.name }}(owner{{ className relation.owner.name }}Store);
+        refresh{{ className relation.owner.name }}(owner{{ className relation.owner.name }}Store);
+    {{else}}
+        owner{{ className relation.owner.name }}Store.{{variable relation.name}} = null;
+    {{/ if}}
     } on ApiException {
         errorMessage = "Could not unset {{ relation.name }}";
     }

@@ -1,29 +1,75 @@
 part of judo.components;
 
-class JudoRadio extends StatelessWidget implements IJudoComponent {
+class JudoRadio<T> extends StatefulWidget {
   JudoRadio({
-    this.label,
-    this.value,
-    this.groupValue,
+    @required this.col,
+    @required this.items,
     this.onChanged,
-    this.colSize,
+    this.groupValue,
+    @required this.getLabel,
+    this.getValue,
   });
 
-  final String label;
-  final int value;
-  final int groupValue;
+  final int col;
+  T groupValue;
+  T value;
+  final List items;
   final Function onChanged;
-  final int colSize;
+  final Function getLabel;
+  final Function getValue;
 
   @override
-  int getColSize() {
-    return this.colSize;
-  }
+  _JudoRadioState<T> createState() => _JudoRadioState<T>();
+}
+
+class _JudoRadioState<T> extends State<JudoRadio> {
 
   @override
   Widget build(BuildContext context) {
     return JudoContainer(
-      col: colSize,
+      col: widget.col,
+      child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: widget.items.map<JudoRadioButton<T>>((e) => JudoRadioButton<T>(
+            label: widget.getLabel(e),
+            col: (widget.col / widget.items.length).round(),
+            onChanged: widget.onChanged ??
+              (newValue) {
+                setState(() {
+                  widget.groupValue = newValue;
+                });
+              },
+            value: widget.getValue(e),
+            groupValue: widget.groupValue,
+          )).toList()),
+    );
+  }
+}
+
+class JudoRadioButton<T> extends StatelessWidget {
+  JudoRadioButton({
+    this.label,
+    this.value,
+    this.groupValue,
+    this.onChanged,
+    this.col,
+  });
+
+  final String label;
+  final T value;
+  final T groupValue;
+  final Function onChanged;
+  final int col;
+
+  @override
+  Widget build(BuildContext context) {
+
+    print('GROUP VALUE: ${groupValue.toString()}');
+    print('VALUE: ${value.toString()}');
+
+    return Flexible(
+      flex: col,
+      fit: FlexFit.loose,
       child: Row(
         children: [
           Radio(

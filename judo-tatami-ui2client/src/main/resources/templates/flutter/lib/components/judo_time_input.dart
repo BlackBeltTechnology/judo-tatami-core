@@ -1,6 +1,6 @@
 part of judo.components;
 
-class JudoTimeInput extends StatelessWidget implements IJudoComponent {
+class JudoTimeInput extends StatelessWidget {
   JudoTimeInput({
     this.key,
     @required this.col,
@@ -22,11 +22,6 @@ class JudoTimeInput extends StatelessWidget implements IJudoComponent {
   final bool readOnly;
   final bool disabled;
   final bool use24HourFormat;
-
-  @override
-  int getColSize() {
-    return this.col;
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -57,9 +52,9 @@ class JudoTimeInput extends StatelessWidget implements IJudoComponent {
         )
             :
         InputDecoration(
-            labelText: label,
-            prefixIcon: icon,
-            suffixIcon: iconDatePicker(context),
+          labelText: label,
+          prefixIcon: icon,
+          suffixIcon: iconDatePicker(context),
         ),
         onChanged: (value) => onChangedHandler(TimeOfDay.fromDateTime(DateTime.parse(value))),
       ),
@@ -75,22 +70,21 @@ class JudoTimeInput extends StatelessWidget implements IJudoComponent {
         ),
         onPressed: disabled ? null : () async {
           tempTime = await showTimePicker(
-            context: context,
-            initialTime: tempTime,
-            initialEntryMode: TimePickerEntryMode.input,
-            builder: use24HourFormat ? (BuildContext context, Widget child) {
-              return MediaQuery(
-                data: MediaQuery.of(context).copyWith(alwaysUse24HourFormat: true),
-                child: child,
-              );
-            }
-              :
-            null
+              context: context,
+              initialTime: tempTime,
+              initialEntryMode: TimePickerEntryMode.input,
+              builder: use24HourFormat ? (BuildContext context, Widget child) {
+                return MediaQuery(
+                  data: MediaQuery.of(context).copyWith(alwaysUse24HourFormat: true),
+                  child: child,
+                );
+              }
+                  :
+              null
           );
           onChangedHandler(tempTime);
         }
     );
-
   }
 
   void onChangedHandler(TimeOfDay value) {
