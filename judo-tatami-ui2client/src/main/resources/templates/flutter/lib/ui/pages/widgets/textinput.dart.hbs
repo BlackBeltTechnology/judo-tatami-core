@@ -18,6 +18,7 @@ JudoInputText(
     icon: Icon(Icons.{{ this.leadingIcon.name }}),
     label: '{{ label }}',
     onChanged: (value) => target{{ className page.dataElement.target.name }}Store.set{{ className attributeType.name }}(value.toString()),
+    readOnly: {{attributeType.isReadOnly}},
 ),
 {{/if}}
 {{#if page.isPageTypeUpdate}}
@@ -28,5 +29,6 @@ JudoInputText(
     label: '{{ label }}',
     initialValue: target{{ className page.dataElement.target.name }}Store.{{ attributeType.name }},
     onChanged: (value) => target{{ className page.dataElement.target.name }}Store.set{{ className attributeType.name }}(value.toString()),
+    readOnly: {{attributeType.isReadOnly}},
 ),
 {{/if}}
