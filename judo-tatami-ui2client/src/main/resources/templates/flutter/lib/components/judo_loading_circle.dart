@@ -1,31 +1,22 @@
 part of judo.components;
 
-class JudoLoadingProgress extends StatelessWidget implements IJudoComponent {
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        JudoContainer(
-          col: 1,
-          padding: EdgeInsets.all(8.0),
-          child: Center(
-              child: SizedBox(
-                width: 32,
-                height: 32,
-                child: Center(
-                  child: CircularProgressIndicator(
-                    backgroundColor: kPrimaryColor,
-                    strokeWidth: 8,
-                  ),
-                ))
-        )),
-      ],
-    );
-  }
+class JudoLoadingProgress extends StatelessWidget {
 
   @override
-  int getColSize() {
-    return 1;
+  Widget build(BuildContext context) {
+    return JudoContainer(
+      col: 1,
+      row: 1,
+      child: Center(
+        child: SizedBox(
+            width: 32,
+            height: 32,
+            child: CircularProgressIndicator(
+              backgroundColor: kPrimaryColor,
+              strokeWidth: 8,
+            )
+        ),
+      ),
+    );
   }
 }

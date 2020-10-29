@@ -1,6 +1,6 @@
 part of judo.components;
 
-class JudoButton extends StatelessWidget implements IJudoComponent {
+class JudoButton extends StatelessWidget {
   JudoButton({
     @required this.col,
     this.label,
@@ -26,39 +26,34 @@ class JudoButton extends StatelessWidget implements IJudoComponent {
   final Color disabledTextColor;
 
   @override
-  int getColSize() {
-    return this.col;
-  }
-
-  @override
   Widget build(BuildContext context) {
     return JudoContainer(
       padding: EdgeInsets.symmetric(horizontal: 10),
       col: col,
       child: icon != null
           ? RaisedButton.icon(
-              shape: RoundedRectangleBorder(
-                borderRadius: rounded ? BorderRadius.circular(16.0) : BorderRadius.zero
-              ),
-              icon: icon,
-              label: label != null ? Text(label) : Text(''),
-              onPressed: disabled ? null : onPressed,
-              color: color,
-              disabledColor: disabledColor,
-              textColor: textColor,
-              disabledTextColor: disabledTextColor,
-            )
+        shape: RoundedRectangleBorder(
+            borderRadius: rounded ? BorderRadius.circular(16.0) : BorderRadius.zero
+        ),
+        icon: icon,
+        label: label != null ? Text(label) : Text(''),
+        onPressed: disabled ? null : onPressed,
+        color: color,
+        disabledColor: disabledColor,
+        textColor: textColor,
+        disabledTextColor: disabledTextColor,
+      )
           : RaisedButton(
-              shape: RoundedRectangleBorder(
-                  borderRadius: rounded ? BorderRadius.circular(16.0) : BorderRadius.zero
-              ),
-              child: label != null ? Text(label) : Text(''),
-              onPressed: disabled ? null : onPressed,
-              color: color,
-              disabledColor: disabledColor,
-              textColor: textColor,
-              disabledTextColor: disabledTextColor,
-            ),
+        shape: RoundedRectangleBorder(
+            borderRadius: rounded ? BorderRadius.circular(16.0) : BorderRadius.zero
+        ),
+        child: label != null ? Text(label) : Text(''),
+        onPressed: disabled ? null : onPressed,
+        color: color,
+        disabledColor: disabledColor,
+        textColor: textColor,
+        disabledTextColor: disabledTextColor,
+      ),
     );
   }
 }
