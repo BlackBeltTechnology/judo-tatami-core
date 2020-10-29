@@ -92,3 +92,51 @@ operation clonePagesOfInheritedRelations(application : UI!ui::Application) {
 		}
 	}
 }
+
+operation UI!ui::PageDefinition updateRelationPageContent() {
+	log.debug("Updating page definition: " + self.name);
+	
+	for (container : UI!ui::PageContainer in self.containers) {
+		container.update(self);
+	}
+}
+
+operation UI!ui::VisualElement update(pageDef : UI!ui::PageDefinition) {
+	
+	log.debug("Updating visual element: " + self.name);
+	
+	var relation : UI!ui::data::RelationType = pageDef.dataElement;
+	
+	if (self.isKindOf(UI!ui::Container)) {
+		for (child in self.children) {
+			child.update(pageDef);
+		}
+	} else if (self.isKindOf(UI!ui::TabController)) {
+		for (tab in self.tabs) {
+			tab.element.update(pageDef);
+		}
+	} else if (self.isKindOf(UI!ui::Table)) {
+		
+		var old = self.dataElement; 
+		
+		if (pageDef.pageType == UI!ui::PageType#TABLE) {
+			if (relation <> self.dataElement) {
+				self.dataElement = relation;
+				log.debug("Changed table page's data element from " + old.eContainer.name + "." + old.name + " to " + self.dataElement.eContainer.name + "." + self.dataElement.name );
+			}
+		}
+		for (col in self.columns) {
+			col.update(pageDef);
+		}
+	} else if (self.isKindOf(UI!ui::Button)) {
+		if (self.action.isKindOf(UI!ui::PageAction)) {
+			if (self.dataElement <> self.action.target.dataElement) {
+				var application = self.action.target.~application;
+				var clonedPage = application.pages.selectOne(p | p.~original.isDefined() and p.~original == self.action.target);
+				if (clonedPage.isDefined()) {
+					self.action.target = clonedPage;
+				}	
+			}
+		}
+	}
+}

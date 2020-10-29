@@ -19,14 +19,8 @@ post {
 		clonePagesOfInheritedRelations(application);
 	}
 	
-	for (action : UI!ui::PageAction in UI!ui::PageAction.all()) {
-		if (action.eContainer.dataElement <> action.target.dataElement) {
-			var application = action.target.~application;
-			var clonedPage = application.pages.selectOne(p | p.~original.isDefined() and p.~original == action.target);
-			if (clonedPage.isDefined()) {
-				action.target = clonedPage;
-			}	
-		}
+	for (page : UI!ui::PageDefinition in UI!ui::PageDefinition.all().select(p | p.dataElement.isDefined() and p.dataElement.isKindOf(UI!ui::data::RelationType))) {
+		page.updateRelationPageContent();
 	}
 
 	for (application : UI!ui::Application in UI!ui::Application.all()) {
