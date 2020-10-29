@@ -80,9 +80,11 @@ JudoColumn(
                         navigateToViewPageAction: (element) async {
                             var response = await navigation.open(Routes.{{ fqVariable relationAction.target.name }}Page,
                             arguments: {{ fqClass relationAction.target.name }}PageArguments({{# unless relation.isAccess}}owner{{ className relation.owner.name }}Store: target{{ className relation.owner.name }}Store, {{/ unless}}target{{ className relation.target.name }}Store: element));
+                            {{# unless relation.isMemberTypeTransient }}
                             if (response != null) {
                                 {{ fqVariable page.name }}PageStore.get{{ fqClass relation.name }}({{# unless relation.isAccess}}target{{ className relation.owner.name }}Store{{/ unless}});
                             }
+                            {{/ unless }}
                         },
                         {{/if}}
                         {{#if relationAction.isCreateAction}}
@@ -95,7 +97,7 @@ JudoColumn(
                         }{{# unless relation.isAccess}} : null{{/ unless}},
                         {{/if}}
                         {{#if relationAction.isEditAction}}
-                        navigateToEditPageAction: (element) async {
+                        navigateToEditPageAction:{{# unless relation.isAccess}} target{{ className relation.owner.name }}Store.internal__updatable ?{{/ unless}} (element) async {
                             {{ fqClass relationType.target.name }}Store cloned = {{ fqClass relationType.target.name }}Store();
                             cloned.updateWith(element);
                             var res = await navigation.open(Routes.{{ fqVariable relationAction.target.name }}Page,
@@ -108,7 +110,7 @@ JudoColumn(
                                     {{ fqVariable page.name }}PageStore.get{{ fqClass relation.name }}({{# unless relation.isAccess}}target{{ className relation.owner.name }}Store{{/ unless}});
                                 }
                             }
-                        },
+                        }{{# unless relation.isAccess}} : null{{/ unless}},
                         {{/if}}
                         {{#if relationAction.isRemoveAction}}
                         removeAction:{{# unless relation.isAccess}} target{{ className relation.owner.name }}Store.internal__updatable ?{{/ unless}} (element) => {{fqVariable page.name}}PageStore.remove{{ fqClass relation.name }}(target{{ className relation.owner.name }}Store, element){{# unless relation.isAccess}} : null{{/ unless}},

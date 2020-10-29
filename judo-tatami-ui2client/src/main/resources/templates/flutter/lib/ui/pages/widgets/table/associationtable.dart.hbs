@@ -17,9 +17,11 @@ Observer(builder: (_) {
                 navigateToViewPageAction: (element) async {
                     var response = await navigation.open(Routes.{{ fqVariable action.target.name }}Page,
                         arguments: {{ fqClass action.target.name }}PageArguments({{# unless page.dataElement.isAccess}}owner{{ className page.dataElement.owner.name }}Store: owner{{ className page.dataElement.owner.name }}Store, {{/ unless}}target{{ className page.dataElement.target.name }}Store: element));
+                    {{# unless relation.isMemberTypeTransient }}
                     if (response != null) {
                         {{ fqVariable page.name }}PageStore.get{{ fqClass page.relationType.name }}({{# unless page.dataElement.isAccess}}owner{{ className page.dataElement.owner.name }}Store{{/ unless}});
                     }
+                    {{/ unless }}
                 },
                 {{/if}}
                 {{#if action.isCreateAction}}
@@ -32,7 +34,7 @@ Observer(builder: (_) {
                 }{{# unless page.dataElement.isAccess}} : null{{/ unless}},
                 {{/if}}
                 {{#if action.isEditAction}}
-                navigateToEditPageAction: (element) async {
+                navigateToEditPageAction:{{# unless page.dataElement.isAccess}} owner{{ className page.dataElement.owner.name }}Store.internal__updatable ?{{/ unless}} (element) async {
                     {{ fqClass relationType.target.name }}Store cloned = {{ fqClass relationType.target.name }}Store();
                     cloned.updateWith(element);
                     var res = await navigation.open(Routes.{{ fqVariable action.target.name }}Page,
@@ -45,7 +47,7 @@ Observer(builder: (_) {
                             {{ fqVariable page.name }}PageStore.get{{ fqClass page.relationType.name }}({{# unless page.dataElement.isAccess}}owner{{ className page.dataElement.owner.name }}Store{{/ unless}});
                         }
                     }
-                },
+                }{{# unless page.dataElement.isAccess}}{{# unless page.dataElement.isRelationKindStatic}} : null{{/ unless}}{{/ unless}},
                 {{/if}}
                 {{#if action.isRemoveAction}}
                 removeAction:{{# unless page.dataElement.isAccess}} owner{{ className page.dataElement.owner.name }}Store.internal__updatable ?{{/ unless}} (element) => {{fqVariable page.name}}PageStore.remove{{ fqClass page.relationType.name }}(owner{{ className page.dataElement.owner.name }}Store, element){{# unless page.dataElement.isAccess}} : null{{/ unless}},
