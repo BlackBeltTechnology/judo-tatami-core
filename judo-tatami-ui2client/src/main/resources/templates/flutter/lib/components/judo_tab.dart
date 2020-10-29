@@ -62,7 +62,7 @@ class _JudoTabState extends State<JudoTab> with TickerProviderStateMixin {
             child: TabBarView(
               controller: widget.tabController,
               children:
-                  widget.tabContent.map((e) => Column(children: [e])).toList(),
+              widget.tabContent.map((e) => Column(children: [e])).toList(),
             ),
           ),
         ],

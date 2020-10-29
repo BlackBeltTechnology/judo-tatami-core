@@ -1,9 +1,10 @@
 part of judo.components;
 
-class JudoContainer extends StatelessWidget implements IJudoComponent {
+class JudoContainer extends StatelessWidget {
   JudoContainer({
     this.child,
     @required this.col,
+    this.row = 1,
     this.padding,
     this.color,
   });
@@ -11,47 +12,21 @@ class JudoContainer extends StatelessWidget implements IJudoComponent {
   final Widget child;
   final EdgeInsets padding;
   final int col;
+  final int row;
   final Color color;
 
   @override
-  int getColSize() {
-    return this.col;
-  }
-
-  @override
   Widget build(BuildContext context) {
-    return Flexible(
+    return Expanded(
       flex: col,
       child: Container(
         color: color,
         constraints: BoxConstraints(
-          maxHeight: kJudoHeight,
+          maxHeight: row * kJudoHeight,
         ),
         padding: padding,
         child: child,
       ),
-    );
-  }
-}
-
-class JudoExample extends StatelessWidget implements IJudoComponent {
-  JudoExample({
-    @required this.col,
-  });
-
-  final int col;
-
-  @override
-  int getColSize() {
-    return this.col;
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return JudoInputText(
-      col: col,
-      label: 'col',
-      icon: Icon(Icons.print),
     );
   }
 }
