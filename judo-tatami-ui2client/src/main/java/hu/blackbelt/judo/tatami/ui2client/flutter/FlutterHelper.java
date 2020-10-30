@@ -9,6 +9,7 @@ import lombok.extern.java.Log;
 import org.springframework.expression.spel.support.StandardEvaluationContext;
 
 import java.util.*;
+import java.util.List;
 import java.util.stream.Collectors;
 
 import static java.util.Arrays.stream;
@@ -26,6 +27,7 @@ public class FlutterHelper {
         context.registerFunction("className", FlutterHelper.class.getDeclaredMethod("className", new Class[]{String.class}));
         context.registerFunction("modelName", FlutterHelper.class.getDeclaredMethod("modelName", new Class[]{String.class}));
         context.registerFunction("modelPackage", FlutterHelper.class.getDeclaredMethod("modelPackage", new Class[]{String.class}));
+        context.registerFunction("packageName", FlutterHelper.class.getDeclaredMethod("packageName", new Class[]{String.class}));
         context.registerFunction("variable", FlutterHelper.class.getDeclaredMethod("variable", new Class[]{String.class}));
         context.registerFunction("cleanup", FlutterHelper.class.getDeclaredMethod("cleanup", new Class[]{String.class}));
         context.registerFunction("getType", FlutterHelper.class.getDeclaredMethod("getType", new Class[]{VisualElement.class}));
@@ -128,6 +130,16 @@ public class FlutterHelper {
                 .skip(1)
                 .map(s -> StringUtils.capitalize(s))
                 .collect(Collectors.joining());
+    }
+
+    public static String packageName(String packageName) {
+        return stream(packageName.replaceAll("#", "::")
+                .replaceAll("\\.", "::")
+                .replaceAll("/", "::")
+                .split("::"))
+                .skip(1)
+                .map(s -> StringUtils.capitalize(s))
+                .findFirst().orElse(null);
     }
 
     public static String fqVariable(String fqName) {
