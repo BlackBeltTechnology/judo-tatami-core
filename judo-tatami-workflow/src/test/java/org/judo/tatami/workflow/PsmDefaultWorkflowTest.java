@@ -47,6 +47,7 @@ public class PsmDefaultWorkflowTest {
     private File measureModel;
     private List<File> rdbmsModels = new ArrayList<>();
     private File openapiModel;
+    private File keycloakModel;
     private List<File> liquibaseModels = new ArrayList<>();
     private File psm2asmTransformationTrace;
     private File psm2measureTransformationTrace;
@@ -68,6 +69,8 @@ public class PsmDefaultWorkflowTest {
 		rdbmsModels.forEach(rdbmsModel -> rdbmsModel.delete());
 		openapiModel = new File(TARGET_CLASSES, MODEL_NAME + "-openapi.model");
 		openapiModel.delete();
+		keycloakModel = new File(TARGET_CLASSES, MODEL_NAME + "-keycloak.model");
+		keycloakModel.delete();
 		DIALECT_LIST.forEach(dialect -> liquibaseModels.add(new File(TARGET_CLASSES, MODEL_NAME + "-liquibase_" + dialect + ".changelog.xml")));
 		liquibaseModels.forEach(liquibaseModel -> liquibaseModel.delete());
 		psm2asmTransformationTrace = new File(TARGET_CLASSES, MODEL_NAME + "-psm2asm.model");
@@ -100,6 +103,7 @@ public class PsmDefaultWorkflowTest {
 		assertTrue(measureModel.exists());
 		rdbmsModels.forEach(rdbmsModel -> assertTrue(rdbmsModel.exists()));
 		assertTrue(openapiModel.exists());
+		assertTrue(keycloakModel.exists());
 		liquibaseModels.forEach(liquibaseModel -> assertTrue(liquibaseModel.exists()));
 
 		assertTrue(psm2asmTransformationTrace.exists());

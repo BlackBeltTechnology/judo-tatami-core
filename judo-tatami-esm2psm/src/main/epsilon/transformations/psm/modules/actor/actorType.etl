@@ -16,9 +16,10 @@ rule CreateAbstractActorType
 
 rule CreateActorTypeClaim
     transform s : ESM!Claim
-    to t : JUDOPSM!TransferAttribute
-    extends CreateNamedElement {
+    to t : JUDOPSM!TransferAttribute {
     	guard: not s.eContainer.isEffectiveAnonymous()
+
+        t.name = s.attribute.name;
         t.claimType = s.claimType.asString();
         t.dataType = s.attribute.dataType.getPSMEquivalent();
         t.required = s.attribute.required;
@@ -48,6 +49,8 @@ rule CreateMappedActorType
 	  guard: s.principal.isDefined() and s.principal.isMapped()
 
 	  t.entityType = s.principal.mapping.target.getPSMEquivalent();
+	  t.managed = true; // TODO - copy flag from ESM model (JNG-1786)
+	  t.kind = s.kind.asString();
 
 	  log.debug("Created ActorType: " + t.name);
 }

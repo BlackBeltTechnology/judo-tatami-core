@@ -61,6 +61,7 @@ public class PsmWorkflowProcess {
         workflowSetupParameters.ignoreAsm2jaxrsapi(config.ignoreAsm2jaxrsapi());
         workflowSetupParameters.ignoreAsm2Openapi(config.ignoreAsm2Openapi());
         workflowSetupParameters.ignoreAsm2Rdbms(config.ignoreAsm2Rdbms());
+        workflowSetupParameters.ignoreAsm2Keycloak(config.ignoreAsm2Keycloak());
         workflowSetupParameters.ignoreAsm2Script(config.ignoreAsm2Script());
         workflowSetupParameters.ignoreAsm2sdk(config.ignoreAsm2Sdk());
 

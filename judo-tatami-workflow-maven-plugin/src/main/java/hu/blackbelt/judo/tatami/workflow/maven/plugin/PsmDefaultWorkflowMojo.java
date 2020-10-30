@@ -73,6 +73,9 @@ public class PsmDefaultWorkflowMojo extends AbstractMojo {
 	@Parameter(property = "ignoreAsm2Rdbms", defaultValue = "false")
 	private Boolean ignoreAsm2Rdbms = false;
 
+	@Parameter(property = "ignoreAsm2Keycloak", defaultValue = "false")
+	private Boolean ignoreAsm2Keycloak = false;
+
 	@Parameter(property = "ignoreRdbms2Liquibase", defaultValue = "false")
 	private Boolean ignoreRdbms2Liquibase = false;
 
@@ -147,6 +150,7 @@ public class PsmDefaultWorkflowMojo extends AbstractMojo {
 					.ignoreAsm2jaxrsapi(ignoreAsm2jaxrsapi)
 					.ignoreAsm2Openapi(ignoreAsm2Openapi)
 					.ignoreAsm2Rdbms(ignoreAsm2Rdbms)
+					.ignoreAsm2Keycloak(ignoreAsm2Keycloak)
 					.ignoreAsm2sdk(ignoreAsm2sdk)
 					.ignoreAsm2Expression(ignoreAsm2Expression)
 					.ignoreAsm2Script(ignoreAsm2Script)
