@@ -81,6 +81,13 @@
         <bundle>mvn:hu.blackbelt.judo.meta/hu.blackbelt.judo.meta.rdbms.osgi/${judo-meta-rdbms-version}</bundle>
     </feature>
 
+    <feature name="judo-tatami-meta-keycloak" version="${project.version}" description="JUDO Tatami, Keycloak Model " install="false">
+        <feature dependency="true">epsilon-runtime</feature>
+        <feature dependency="true">osgi-utils</feature>
+        <feature dependency="true">guava-27</feature>
+        <bundle>mvn:hu.blackbelt.judo.meta/hu.blackbelt.judo.meta.keycloak.osgi/${judo-meta-keycloak-version}</bundle>
+    </feature>
+
     <feature name="judo-tatami-meta-liquibase" version="${project.version}" description="JUDO Tatami, Liquibase Model " install="false">
         <feature dependency="true">epsilon-runtime</feature>
         <feature dependency="true">osgi-utils</feature>
@@ -128,6 +135,7 @@
         <feature>judo-tatami-meta-measure</feature>
         <feature>judo-tatami-meta-openapi</feature>
         <feature>judo-tatami-meta-rdbms</feature>
+        <feature>judo-tatami-meta-keycloak</feature>
         <feature>judo-tatami-meta-liquibase</feature>
         <feature>judo-tatami-meta-script</feature>
         <feature>judo-tatami-meta-jcl</feature>
@@ -234,6 +242,14 @@
         <bundle>mvn:hu.blackbelt.judo.tatami/judo-tatami-asm2rdbms/${project.version}</bundle>
     </feature>
 
+    <feature name="judo-tatami-asm2keycloak" version="${project.version}" description="JUDO Tatami, ASM to Keycloak" install="false">
+        <capability>osgi.service;effective:=active;objectClass=hu.blackbelt.judo.meta.keycloak.runtime.KeycloakModel</capability>
+        <feature>judo-tatami-meta-asm</feature>
+        <feature>judo-tatami-meta-keycloak</feature>
+        <feature>judo-tatami-core</feature>
+        <bundle>mvn:hu.blackbelt.judo.tatami/judo-tatami-asm2keycloak/${project.version}</bundle>
+    </feature>
+
     <feature name="judo-tatami-rdbms2liquibase" version="${project.version}" description="JUDO Tatami, RDBMS to Liquibase" install="false">
         <capability>osgi.service;effective:=active;objectClass=hu.blackbelt.judo.meta.liquibase.runtime.LiquibaseModel</capability>
         <feature>judo-tatami-meta-rdbms</feature>
@@ -325,6 +341,7 @@
         <feature>judo-tatami-asm2sdk</feature>
         <feature>judo-tatami-asm2rdbms</feature>
         <feature>judo-tatami-rdbms2liquibase</feature>
+        <feature>judo-tatami-asm2keycloak</feature>
         <feature>judo-tatami-script2operation</feature>
 
         <feature>judo-tatami-validation-asm</feature>
