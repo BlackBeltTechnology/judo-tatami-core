@@ -1,5 +1,15 @@
 operation ESM!esm::structure::Class fqName() : String {
+	if (self.isKindOf(ESM!esm::structure::EntityType)) {
+		self.entityTypeFqName();
+	}
 	return esmUtils.getNamespaceElementFQName(self);
+}
+
+operation ESM!esm::structure::Class entityTypeFqName() : String {
+	var fqName = esmUtils.getNamespaceElementFQName(self);
+	var split = fqName.split("::", 2);
+	var defaultPackageName = split.get(0) + "::" + "_default_transferobjecttypes" + "::";
+	return defaultPackageName + split.get(1);
 }
 
 @cached
@@ -39,7 +49,8 @@ operation ESM!esm::structure::Class createClassType(application : UI!ui::Applica
     clazz.~application = application;
     clazz.~originalClass = self;
     
-	clazz.name = self.fqName();
+    clazz.name = self.fqName();
+	
 	clazz.isMapped = self.isMapped();
 
 	if (esmUtils.isRefreshSupported(self)) {
