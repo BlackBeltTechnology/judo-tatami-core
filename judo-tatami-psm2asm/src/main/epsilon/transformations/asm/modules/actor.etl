@@ -37,6 +37,20 @@ rule CreateActorTypeAnnotation
         actorType.value = "true";
         t.details.add(actorType);
 
+        if (s.isKindOf(JUDOPSM!MappedActorType)) {
+            var managed = new ASM!EStringToStringMapEntry;
+            managed.key = "managed";
+            managed.value = s.managed.asString();
+            t.details.add(managed);
+        }
+
+        if (s.kind.isDefined()) {
+            var kind = new ASM!EStringToStringMapEntry;
+            kind.key = "kind";
+            kind.value = s.kind.asString();
+            t.details.add(kind);
+        }
+
         s.asmEquivalent().eAnnotations.add(t);
 }
 

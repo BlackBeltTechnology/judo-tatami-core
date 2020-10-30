@@ -15,7 +15,6 @@ rule CreateKeycloakClient
         t.redirectUris.add("http://localhost:8181/api/" + asmUtils.getClassifierFQName(s).replace("\\.", "/") + "/*");
         t.publicClient = true;
         t.bearerOnly = false;
-        t._userManager = true; // not supported yet in ESM
 
         realm.clients.add(t);
         log.debug("Client created: " + t.name);
@@ -23,22 +22,22 @@ rule CreateKeycloakClient
 
 rule CreateKeycloakClientClaim
     transform s : ASM!EAttribute
-    to t : KEYCLOAK!Mapper {
+    to t : KEYCLOAK!AttributeBinding {
         guard: asmUtils.isActorType(s.eContainer) and asmUtils.getExtensionAnnotationValue(s.eContainer, "realm", false).present and asmUtils.getExtensionAnnotationValue(s.eContainer, "realm", false).get.trim() <> ''
 
         var claimType = asmUtils.getExtensionAnnotationValue(s, "claim", false);
 
         if (claimType.present and claimType.get == "EMAIL") {
-            t.tokenClaimName = "email";
+            t.attributeName = "email";
         } else if (claimType.present and claimType.get == "USERNAME") {
-            t.tokenClaimName = "username";
+            t.attributeName = "username";
         } else if (s.name == "email") {
-            t.tokenClaimName = "_email";
+            t.attributeName = "_email";
         } else if (s.name == "username") {
-            t.tokenClaimName = "_username";
+            t.attributeName = "_username";
         } else {
-            t.tokenClaimName = s.name;
+            t.attributeName = s.name;
         }
 
-        s.eContainer.equivalent("CreateKeycloakClient").mappers.add(t);
+        s.eContainer.equivalent("CreateKeycloakClient").attributeBindings.add(t);
 }
