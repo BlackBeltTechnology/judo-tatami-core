@@ -1,6 +1,6 @@
 operation ESM!esm::structure::Class fqName() : String {
 	if (self.isKindOf(ESM!esm::structure::EntityType)) {
-		self.entityTypeFqName();
+		return self.entityTypeFqName();
 	}
 	return esmUtils.getNamespaceElementFQName(self);
 }
