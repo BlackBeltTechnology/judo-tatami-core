@@ -170,3 +170,9 @@ operation UI!ui::CallOperationAction setLabel() {
 		self.label = 'Call ' + self.`operation`.name;
 	} 
 }
+
+operation UI!ui::Action setIsNested() {
+	if (self.eContainer.dataElement.isDefined() and self.eContainer.dataElement.isKindOf(UI!ui::data::RelationType)) {
+		self.isNested = self.eContainer.dataElement.getIsRelationKindAggregation() or self.eContainer.dataElement.getIsRelationKindComposition();
+	}
+}
