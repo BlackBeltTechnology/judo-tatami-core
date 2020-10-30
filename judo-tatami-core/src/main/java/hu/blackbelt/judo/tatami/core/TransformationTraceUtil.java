@@ -134,7 +134,12 @@ public class TransformationTraceUtil {
                 URI targetURI = URI.createURI(t);
                 for (ResourceSet rs : resourcesToResolve) {
 
-                    target = rs.getEObject(targetURI, false);
+                    try {
+                        target = rs.getEObject(targetURI, false);
+                    } catch (IllegalArgumentException ex) {
+                        // TODO - fix invalid feature exception (JNG-1760)
+                        log.warn("Unable to get object by URI: {}", targetURI, ex);
+                    }
                     if (target != null) {
                         break;
                     }

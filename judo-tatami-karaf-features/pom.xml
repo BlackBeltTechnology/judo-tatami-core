@@ -104,6 +104,7 @@
                                         <feature>judo-tatami-meta-measure</feature>
                                         <feature>judo-tatami-meta-openapi</feature>
                                         <feature>judo-tatami-meta-rdbms</feature>
+                                        <feature>judo-tatami-meta-keycloak</feature>
                                         <feature>judo-tatami-meta-liquibase</feature>
                                         <feature>judo-tatami-core</feature>
                                         <feature>judo-tatami-esm2psm</feature>
@@ -112,6 +113,7 @@
                                         <feature>judo-tatami-asm2jaxrsapi</feature>
                                         <feature>judo-tatami-asm2openapi</feature>
                                         <feature>judo-tatami-asm2rdbms</feature>
+                                        <feature>judo-tatami-asm2keycloak</feature>
                                         <feature>judo-tatami-asm2expression</feature>
                                         <feature>judo-tatami-asm2script</feature>
                                         <feature>judo-tatami-asm2sdk</feature>
@@ -342,6 +344,12 @@
             <groupId>hu.blackbelt.judo.meta</groupId>
             <artifactId>hu.blackbelt.judo.meta.rdbms.osgi</artifactId>
             <version>${judo-meta-rdbms-version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>hu.blackbelt.judo.meta</groupId>
+            <artifactId>hu.blackbelt.judo.meta.keycloak.osgi</artifactId>
+            <version>${judo-meta-keycloak-version}</version>
         </dependency>
 
         <dependency>

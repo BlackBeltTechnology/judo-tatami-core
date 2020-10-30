@@ -1,7 +1,32 @@
 package hu.blackbelt.judo.tatami.workflow;
 
+import hu.blackbelt.judo.meta.asm.runtime.AsmModel;
+import hu.blackbelt.judo.meta.expression.runtime.ExpressionModel;
+import hu.blackbelt.judo.meta.keycloak.runtime.KeycloakModel;
+import hu.blackbelt.judo.meta.liquibase.runtime.LiquibaseModel;
+import hu.blackbelt.judo.meta.measure.runtime.MeasureModel;
+import hu.blackbelt.judo.meta.openapi.API;
+import hu.blackbelt.judo.meta.openapi.runtime.OpenapiModel;
+import hu.blackbelt.judo.meta.openapi.runtime.exporter.OpenAPIExporter;
+import hu.blackbelt.judo.meta.psm.runtime.PsmModel;
+import hu.blackbelt.judo.meta.rdbms.runtime.RdbmsModel;
+import hu.blackbelt.judo.meta.script.runtime.ScriptModel;
+import hu.blackbelt.judo.tatami.asm2keycloak.Asm2KeycloakTransformationTrace;
+import hu.blackbelt.judo.tatami.asm2openapi.Asm2OpenAPITransformationTrace;
+import hu.blackbelt.judo.tatami.asm2rdbms.Asm2RdbmsTransformationTrace;
+import hu.blackbelt.judo.tatami.core.workflow.work.TransformationContext;
+import hu.blackbelt.judo.tatami.esm2psm.Esm2PsmTransformationTrace;
+import hu.blackbelt.judo.tatami.psm2asm.Psm2AsmTransformationTrace;
+import hu.blackbelt.judo.tatami.psm2measure.Psm2MeasureTransformationTrace;
+
+import java.io.File;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.util.List;
+
 import static hu.blackbelt.judo.meta.asm.runtime.AsmModel.SaveArguments.asmSaveArgumentsBuilder;
 import static hu.blackbelt.judo.meta.expression.runtime.ExpressionModel.SaveArguments.expressionSaveArgumentsBuilder;
+import static hu.blackbelt.judo.meta.keycloak.runtime.KeycloakModel.SaveArguments.keycloakSaveArgumentsBuilder;
 import static hu.blackbelt.judo.meta.liquibase.runtime.LiquibaseModel.SaveArguments.liquibaseSaveArgumentsBuilder;
 import static hu.blackbelt.judo.meta.measure.runtime.MeasureModel.SaveArguments.measureSaveArgumentsBuilder;
 import static hu.blackbelt.judo.meta.openapi.runtime.OpenapiModel.SaveArguments.openapiSaveArgumentsBuilder;
@@ -14,28 +39,6 @@ import static hu.blackbelt.judo.tatami.asm2sdk.Asm2SDKWork.SDK_OUTPUT;
 import static hu.blackbelt.judo.tatami.asm2sdk.Asm2SDKWork.SDK_OUTPUT_INTERNAL;
 import static hu.blackbelt.judo.tatami.core.ThrowingConsumer.executeWrapper;
 import static hu.blackbelt.judo.tatami.script2operation.Script2OperationWork.OPERATION_OUTPUT;
-
-import java.io.File;
-import java.io.InputStream;
-import java.nio.file.Files;
-import java.util.List;
-
-import hu.blackbelt.judo.meta.asm.runtime.AsmModel;
-import hu.blackbelt.judo.meta.expression.runtime.ExpressionModel;
-import hu.blackbelt.judo.meta.liquibase.runtime.LiquibaseModel;
-import hu.blackbelt.judo.meta.measure.runtime.MeasureModel;
-import hu.blackbelt.judo.meta.openapi.API;
-import hu.blackbelt.judo.meta.openapi.runtime.OpenapiModel;
-import hu.blackbelt.judo.meta.openapi.runtime.exporter.OpenAPIExporter;
-import hu.blackbelt.judo.meta.psm.runtime.PsmModel;
-import hu.blackbelt.judo.meta.rdbms.runtime.RdbmsModel;
-import hu.blackbelt.judo.meta.script.runtime.ScriptModel;
-import hu.blackbelt.judo.tatami.asm2openapi.Asm2OpenAPITransformationTrace;
-import hu.blackbelt.judo.tatami.asm2rdbms.Asm2RdbmsTransformationTrace;
-import hu.blackbelt.judo.tatami.core.workflow.work.TransformationContext;
-import hu.blackbelt.judo.tatami.esm2psm.Esm2PsmTransformationTrace;
-import hu.blackbelt.judo.tatami.psm2asm.Psm2AsmTransformationTrace;
-import hu.blackbelt.judo.tatami.psm2measure.Psm2MeasureTransformationTrace;
 
 public class DefaultWorkflowSave {
 
@@ -76,6 +79,9 @@ public class DefaultWorkflowSave {
 		transformationContext.getByClass(OpenapiModel.class).ifPresent(executeWrapper(catchError, (m) ->
 			m.saveOpenapiModel(openapiSaveArgumentsBuilder().validateModel(VALIDATE_MODELS_ON_SAVE).file(deleteFileIfExists(new File(dest, transformationContext.getModelName() + "-openapi.model"))))));
 
+		transformationContext.getByClass(KeycloakModel.class).ifPresent(executeWrapper(catchError, (m) ->
+				m.saveKeycloakModel(keycloakSaveArgumentsBuilder().validateModel(VALIDATE_MODELS_ON_SAVE).file(deleteFileIfExists(new File(dest, transformationContext.getModelName() + "-keycloak.model"))))));
+
 		transformationContext.getByClass(OpenapiModel.class).ifPresent(executeWrapper(catchError, (m) -> m.getResourceSet().getResource(m.getUri(), false).getContents().forEach(api -> {
 			convertModelToFile((API) api, deleteFileIfExists(new File(dest, transformationContext.getModelName() + "-" + ((API) api).getInfo().getTitle() + "-openapi.yaml")).getAbsolutePath(), OpenAPIExporter.Format.YAML);
 			convertModelToFile((API) api, deleteFileIfExists(new File(dest, transformationContext.getModelName() + "-" + ((API) api).getInfo().getTitle() + "-openapi.json")).getAbsolutePath(), OpenAPIExporter.Format.JSON);
@@ -101,6 +107,9 @@ public class DefaultWorkflowSave {
 
 		transformationContext.getByClass(Asm2OpenAPITransformationTrace.class).ifPresent(executeWrapper(catchError, (m) ->
 			m.save(deleteFileIfExists(new File(dest, transformationContext.getModelName() + "-" + "asm2openapi.model")))));
+
+		transformationContext.getByClass(Asm2KeycloakTransformationTrace.class).ifPresent(executeWrapper(catchError, (m) ->
+				m.save(deleteFileIfExists(new File(dest, transformationContext.getModelName() + "-" + "asm2keycloak.model")))));
 
 		transformationContext.get(InputStream.class, SDK_OUTPUT).ifPresent(executeWrapper(catchError, (m) -> {
 			Files.copy(m, deleteFileIfExists(new File(dest, transformationContext.getModelName() + "-" + "asm2sdk.jar")).toPath());

@@ -30,6 +30,9 @@ public @interface PsmWorkflowProcessConfiguration {
     boolean ignoreAsm2Rdbms() default false;
 
     @AttributeDefinition
+    boolean ignoreAsm2Keycloak() default false;
+
+    @AttributeDefinition
     boolean ignoreAsm2Script() default false;
 
     @AttributeDefinition

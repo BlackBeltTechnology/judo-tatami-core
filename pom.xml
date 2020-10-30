@@ -60,7 +60,7 @@
         <!-- Model versions -->
         <judo-meta-rdbms-version>1.0.0.20201022_125547_f7c97de_develop</judo-meta-rdbms-version>
         <judo-meta-esm-version>1.1.0.20201027_154313_322ddec_develop</judo-meta-esm-version>
-        <judo-meta-psm-version>1.1.0.20201022_120942_1b9bdff_develop</judo-meta-psm-version>
+        <judo-meta-psm-version>1.1.0.20201030_122450_9d9ccda_develop</judo-meta-psm-version>
         <judo-meta-jql-version>1.0.1.20201022_124948_eab0a7e_develop</judo-meta-jql-version>
         <judo-meta-jcl-version>1.0.1.20201022_130550_28b989b_develop</judo-meta-jcl-version>
         <judo-meta-script-version>1.0.1.20201022_131901_feb9b19_develop</judo-meta-script-version>
@@ -70,6 +70,7 @@
         <judo-meta-liquibase-version>1.0.0.20201022_125601_e27525c_develop</judo-meta-liquibase-version>
         <judo-meta-openapi-version>1.0.0.20201022_125544_e392ecc_develop</judo-meta-openapi-version>
         <judo-meta-ui-version>1.0.0.20201026_113926_fdf81c3_develop</judo-meta-ui-version>
+        <judo-meta-keycloak-version>1.0.0.20201030_124658_beea690_develop</judo-meta-keycloak-version>
         <judo-dao-api-version>1.0.2.20201019_175250_82201ef_develop</judo-dao-api-version>
         <judo-dispatcher-api-version>1.0.2.20200709_172739_726a3b9_develop</judo-dispatcher-api-version>
         <judo-script-codegen-version>1.1.0.20201022_133115_56db73f_develop</judo-script-codegen-version>
@@ -410,6 +411,11 @@
                 <artifactId>hu.blackbelt.judo.meta.rdbms.model</artifactId>
                 <version>${judo-meta-rdbms-version}</version>
             </dependency>
+            <dependency>
+                <groupId>hu.blackbelt.judo.meta</groupId>
+                <artifactId>hu.blackbelt.judo.meta.keycloak.model</artifactId>
+                <version>${judo-meta-keycloak-version}</version>
+            </dependency>
             <!--
              <dependency>
              <groupId>hu.blackbelt.judo.meta</groupId>
@@ -440,7 +446,7 @@
                 <artifactId>hu.blackbelt.judo.meta.ui.model</artifactId>
                 <version>${judo-meta-ui-version}</version>
             </dependency>
-            
+
             <dependency>
                 <groupId>hu.blackbelt.judo.framework</groupId>
                 <artifactId>compiler-api</artifactId>
@@ -498,6 +504,12 @@
             <dependency>
                 <groupId>hu.blackbelt.judo.tatami</groupId>
                 <artifactId>judo-tatami-asm2rdbms</artifactId>
+                <version>1.1.0-SNAPSHOT</version>
+            </dependency>
+
+            <dependency>
+                <groupId>hu.blackbelt.judo.tatami</groupId>
+                <artifactId>judo-tatami-asm2keycloak</artifactId>
                 <version>1.1.0-SNAPSHOT</version>
             </dependency>
 
@@ -759,6 +771,7 @@
                 <module>judo-tatami-psm2asm</module>
                 <module>judo-tatami-psm2measure</module>
                 <module>judo-tatami-asm2rdbms</module>
+                <module>judo-tatami-asm2keycloak</module>
                 <module>judo-tatami-rdbms2liquibase</module>
                 <module>judo-tatami-asm2openapi</module>
                 <module>judo-tatami-asm2jaxrsapi</module>
