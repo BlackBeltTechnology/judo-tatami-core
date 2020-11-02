@@ -35,6 +35,7 @@ post {
 	for (action : UI!ui::Action in UI!ui::Action.all()) {
 		action.setIcon();
 		action.setLabel();
+		action.setIsNested();
 	}
 
 	for (input : UI!ui::Input in UI!ui::Input.all()) {
