@@ -16,4 +16,32 @@ operation UI!ui::Application calculatePageActions() {
 		table.calculateActions(self);
 	}
 }
+
+operation UI!ui::Application clonePagesOfInheritedRelations() {
+
+	var classTypes = self.dataElements.select(d | d.isKindOf(UI!ui::data::ClassType));
 	
+	for (classType : UI!ui::data::ClassType in classTypes) {
+		for (relation : UI!ui::data::RelationType in classType.relations) {
+			if (relation.~originalRelation.isDefined() and relation.~originalRelation.eContainer() <> classType.~originalClass) {
+	
+				var viewPage = self.pages.selectOne(p | p.~originalRelation == relation.~originalRelation and p.pageType == UI!ui::PageType#VIEW);
+				if (viewPage.isDefined()) {
+					self.pages.add(viewPage.clonePage(classType, relation, "View"));
+				}
+				var createPage = self.pages.selectOne(p | p.~originalRelation == relation.~originalRelation and p.pageType == UI!ui::PageType#CREATE);
+				if (createPage.isDefined()) {
+					self.pages.add(createPage.clonePage(classType, relation, "Create"));
+				}
+				var updatePage = self.pages.selectOne(p | p.~originalRelation == relation.~originalRelation and p.pageType == UI!ui::PageType#UPDATE);
+				if (updatePage.isDefined()) {
+					self.pages.add(updatePage.clonePage(classType, relation, "Edit"));
+				}
+				var tablePage = self.pages.selectOne(p | p.~originalRelation == relation.~originalRelation and p.pageType == UI!ui::PageType#TABLE);
+				if (tablePage.isDefined()) {
+					self.pages.add(tablePage.clonePage(classType, relation, "Table"));
+				}
+			}
+		}
+	}
+}

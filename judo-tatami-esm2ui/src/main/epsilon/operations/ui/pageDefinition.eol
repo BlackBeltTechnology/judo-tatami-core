@@ -60,3 +60,19 @@ operation UI!ui::PageDefinition calculateActions(application : UI!ui::Applicatio
 		}
 	}
 }
+
+operation UI!ui::PageDefinition clonePage(classType : UI!ui::data::ClassType, relation : UI!ui::data::RelationType, anchor : String) {
+	var clone = ecoreUtil.copy(self);
+	clone.name = (esmUtils.getNamespaceElementFQName(classType.~originalClass) + "." + relation.~originalRelation.name).anchor(anchor);
+	clone.dataElement = relation;
+	clone.~original = self;
+	return clone;
+}
+
+operation UI!ui::PageDefinition updateRelationPageContent() {
+	log.debug("Updating page definition: " + self.name);
+	
+	for (container : UI!ui::PageContainer in self.containers) {
+		container.updateInheritedReferences(self);
+	}
+}

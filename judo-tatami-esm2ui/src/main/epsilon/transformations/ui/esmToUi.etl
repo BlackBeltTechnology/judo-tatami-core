@@ -16,7 +16,7 @@ post {
 	var ecoreUtil = new Native("org.eclipse.emf.ecore.util.EcoreUtil");
 	
 	for (application : UI!ui::Application in UI!ui::Application.all()) {
-		clonePagesOfInheritedRelations(application);
+		application.clonePagesOfInheritedRelations();
 	}
 	
 	for (page : UI!ui::PageDefinition in UI!ui::PageDefinition.all().select(p | p.dataElement.isDefined() and p.dataElement.isKindOf(UI!ui::data::RelationType))) {
