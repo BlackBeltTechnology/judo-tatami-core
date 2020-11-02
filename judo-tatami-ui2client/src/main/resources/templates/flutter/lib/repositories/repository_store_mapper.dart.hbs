@@ -12,7 +12,7 @@ part of {{ variable ap.name }}.repository;
 class {{ fqClass ap.name }}RepositoryStoreMapper {
 
 {{# each classes }}
-  static {{ fqClass name }}Store create{{ fqClass name }}StoreFrom{{ fqClass name }}({{ fqClass name }} {{ variable name }}) {
+  static {{ fqClass name }}Store create{{ fqClass name }}StoreFrom{{ fqClass name }}({{ fqClass transferObjectTypeName }} {{ variable name }}) {
     if ({{ variable name }} == null) {
       return null;
     }
@@ -21,7 +21,7 @@ class {{ fqClass ap.name }}RepositoryStoreMapper {
     return {{ variable name }}Store;
   }
 
-  static void map{{ fqClass name }}To{{ fqClass name }}Store({{ fqClass name }} {{ variable name }}, {{ fqClass name }}Store {{ variable name }}Store) {
+  static void map{{ fqClass name }}To{{ fqClass name }}Store({{ fqClass transferObjectTypeName }} {{ variable name }}, {{ fqClass name }}Store {{ variable name }}Store) {
     // Identifier
     {{# if isMapped }}
     {{ variable name }}Store.internal__identifier = {{ variable name }}.internal__identifier;
@@ -57,16 +57,16 @@ class {{ fqClass ap.name }}RepositoryStoreMapper {
     {{/ each }}
   }
 
-  static {{ fqClass name }} create{{ fqClass name }}From{{ fqClass name }}Store({{ fqClass name }}Store {{ variable name }}Store) {
+  static {{ fqClass transferObjectTypeName }} create{{ fqClass name }}From{{ fqClass name }}Store({{ fqClass name }}Store {{ variable name }}Store) {
     if ({{ variable name }}Store == null) {
       return null;
     }
-    var {{ variable name }} = {{ fqClass name }}();
+    var {{ variable name }} = {{ fqClass transferObjectTypeName }}();
     map{{ fqClass name }}StoreTo{{ fqClass name }}({{ variable name }}Store, {{ variable name }});
     return {{ variable name }};
   }
 
-  static void map{{ fqClass name }}StoreTo{{ fqClass name }}({{ fqClass name }}Store {{ variable name }}Store, {{ fqClass name }} {{ variable name }}) {
+  static void map{{ fqClass name }}StoreTo{{ fqClass name }}({{ fqClass name }}Store {{ variable name }}Store, {{ fqClass transferObjectTypeName }} {{ variable name }}) {
     {{# if isMapped }}
     {{ variable name }}.internal__identifier = {{ variable name }}Store.internal__identifier;
     {{ variable name }}.internal__signedIdentifier = {{ variable name }}Store.internal__signedIdentifier;
@@ -100,13 +100,13 @@ class {{ fqClass ap.name }}RepositoryStoreMapper {
 
   {{# unless isPrincipal}}
   {{# if isMapped}}
-  static {{ fqClass name }}ForCreateAndUpdate create{{ fqClass name }}ForCreateAndUpdateFrom{{ fqClass name }}Store({{ fqClass name }}Store {{ variable name }}Store) {
-    var {{ variable name }} = {{ fqClass name }}ForCreateAndUpdate();
+  static {{ fqClass transferObjectTypeName }}ForCreateAndUpdate create{{ fqClass name }}ForCreateAndUpdateFrom{{ fqClass name }}Store({{ fqClass name }}Store {{ variable name }}Store) {
+    var {{ variable name }} = {{ fqClass transferObjectTypeName }}ForCreateAndUpdate();
     map{{ fqClass name }}StoreTo{{ fqClass name }}ForCreateAndUpdate({{ variable name }}Store, {{ variable name }});
     return {{ variable name }};
   }
 
-  static void map{{ fqClass name }}StoreTo{{ fqClass name }}ForCreateAndUpdate({{ fqClass name }}Store {{ variable name }}Store, {{ fqClass name }}ForCreateAndUpdate {{ variable name }}) {
+  static void map{{ fqClass name }}StoreTo{{ fqClass name }}ForCreateAndUpdate({{ fqClass name }}Store {{ variable name }}Store, {{ fqClass transferObjectTypeName }}ForCreateAndUpdate {{ variable name }}) {
     // Identifier
     {{ variable name }}.internal__referenceId = {{ variable name }}Store.internal__referenceIdentifier;
 

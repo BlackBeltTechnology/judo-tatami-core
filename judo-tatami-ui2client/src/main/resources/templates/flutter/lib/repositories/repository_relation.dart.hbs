@@ -29,7 +29,7 @@ class {{ fqClass relation.owner.name }}{{ fqClass relation.name }}Repository {
     if (filter == null) {
       filter = {{ modelName relation.target.name }}Extension{{ packageName relation.target.name}}QueryCustomizer{{ className relation.target.name}}();
     }
-    List<{{ fqClass relation.target.name }}> {{ variable relation.target.name }}ListResponse = await DefaultApi(locator<ApiClient>()).{{ fqVariable relation.owner.name }}List{{ className relation.name }}(input : filter);
+    List<{{ fqClass relation.target.transferObjectTypeName }}> {{ variable relation.target.name }}ListResponse = await DefaultApi(locator<ApiClient>()).{{ fqVariable relation.owner.name }}List{{ className relation.name }}(input : filter);
     return {{ variable relation.target.name }}ListResponse.map<{{ fqClass relation.target.name }}Store>(
       {{ fqClass ap.name }}RepositoryStoreMapper.create{{ fqClass relation.target.name }}StoreFrom{{ fqClass relation.target.name }}).toList();
   }
@@ -82,8 +82,8 @@ class {{ fqClass relation.owner.name }}{{ fqClass relation.name }}Repository {
   // CREATE (Access)
   //////////////////////////////////////////////////////////////////////////////
   Future<{{ fqClass relation.target.name }}Store> {{ fqVariable relation.owner.name }}{{ fqClass relation.name }}Create({{ fqClass relation.target.name }}Store target) async {
-    {{ fqClass relation.target.name }}ForCreateAndUpdate {{ variable relation.target.name }}ForCreateAndUpdateRequest = {{ fqClass ap.name }}RepositoryStoreMapper.create{{ fqClass relation.target.name }}ForCreateAndUpdateFrom{{ fqClass relation.target.name }}Store(target);
-    {{ fqClass relation.target.name }} {{ variable relation.target.name }}Response = await DefaultApi(locator<ApiClient>()).{{ fqVariable relation.owner.name }}CreateInstance{{ className relation.name }}({{ variable relation.target.name }}ForCreateAndUpdateRequest);
+    {{ fqClass relation.target.transferObjectTypeName }}ForCreateAndUpdate {{ variable relation.target.name }}ForCreateAndUpdateRequest = {{ fqClass ap.name }}RepositoryStoreMapper.create{{ fqClass relation.target.name }}ForCreateAndUpdateFrom{{ fqClass relation.target.name }}Store(target);
+    {{ fqClass relation.target.transferObjectTypeName }} {{ variable relation.target.name }}Response = await DefaultApi(locator<ApiClient>()).{{ fqVariable relation.owner.name }}CreateInstance{{ className relation.name }}({{ variable relation.target.name }}ForCreateAndUpdateRequest);
     return {{ fqClass ap.name }}RepositoryStoreMapper.create{{ fqClass relation.target.name }}StoreFrom{{ fqClass relation.target.name }}({{ variable relation.target.name }}Response);
   }
       {{ else }}
@@ -105,8 +105,8 @@ class {{ fqClass relation.owner.name }}{{ fqClass relation.name }}Repository {
   // VALIDATE CREATE (Access)
   //////////////////////////////////////////////////////////////////////////////
   Future<{{ fqClass relation.target.name }}Store> {{ fqVariable relation.owner.name }}{{ fqClass relation.name }}ValidateForCreate({{ fqClass relation.target.name }}Store target) async {
-    {{ fqClass relation.target.name }}ForCreateAndUpdate {{ variable relation.target.name }}ForCreateAndUpdateRequest = {{ fqClass ap.name }}RepositoryStoreMapper.create{{ fqClass relation.target.name }}ForCreateAndUpdateFrom{{ fqClass relation.target.name }}Store(target);
-    {{ fqClass relation.target.name }} {{ variable relation.target.name }}Response = await DefaultApi(locator<ApiClient>()).{{ fqVariable relation.owner.name }}ValidateCreateInstance{{ className relation.name }}({{ variable relation.target.name }}ForCreateAndUpdateRequest);
+    {{ fqClass relation.target.transferObjectTypeName }}ForCreateAndUpdate {{ variable relation.target.name }}ForCreateAndUpdateRequest = {{ fqClass ap.name }}RepositoryStoreMapper.create{{ fqClass relation.target.name }}ForCreateAndUpdateFrom{{ fqClass relation.target.name }}Store(target);
+    {{ fqClass relation.target.transferObjectTypeName }} {{ variable relation.target.name }}Response = await DefaultApi(locator<ApiClient>()).{{ fqVariable relation.owner.name }}ValidateCreateInstance{{ className relation.name }}({{ variable relation.target.name }}ForCreateAndUpdateRequest);
     return {{ fqClass ap.name }}RepositoryStoreMapper.create{{ fqClass relation.target.name }}StoreFrom{{ fqClass relation.target.name }}({{ variable relation.target.name }}Response);
   }
     {{ else }}
