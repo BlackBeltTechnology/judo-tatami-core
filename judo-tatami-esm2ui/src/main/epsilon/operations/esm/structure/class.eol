@@ -1,15 +1,5 @@
 operation ESM!esm::structure::Class fqName() : String {
-	if (self.isKindOf(ESM!esm::structure::EntityType)) {
-		return self.entityTypeFqName();
-	}
 	return esmUtils.getNamespaceElementFQName(self);
-}
-
-operation ESM!esm::structure::Class entityTypeFqName() : String {
-	var fqName = esmUtils.getNamespaceElementFQName(self);
-	var split = fqName.split("::", 2);
-	var defaultPackageName = split.get(0) + "::" + "_default_transferobjecttypes" + "::";
-	return defaultPackageName + split.get(1);
 }
 
 @cached
@@ -50,6 +40,7 @@ operation ESM!esm::structure::Class createClassType(application : UI!ui::Applica
     clazz.~originalClass = self;
     
     clazz.name = self.fqName();
+    clazz.transferObjectTypeName = self.transferObjectTypeName();
 	
 	clazz.isMapped = self.isMapped();
 
@@ -98,4 +89,15 @@ operation ESM!esm::structure::Class mapClassType(application : UI!ui::Applicatio
 		clazz = self.createClassType(application);
 	}
 	return clazz;
+}
+
+operation ESM!esm::structure::Class transferObjectTypeName() : String {
+	if (self.isKindOf(ESM!esm::structure::EntityType)) {
+		var fqName = esmUtils.getNamespaceElementFQName(self);
+		var splitAtFirstSeparator = fqName.split("::", 2);
+		var defaultPackageName = splitAtFirstSeparator.get(0) + "::" + "_default_transferobjecttypes" + "::";
+		return defaultPackageName + splitAtFirstSeparator.get(1);
+	}
+	
+	return esmUtils.getNamespaceElementFQName(self);
 }
