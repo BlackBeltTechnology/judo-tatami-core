@@ -61,7 +61,7 @@ operation UI!ui::PageDefinition calculateActions(application : UI!ui::Applicatio
 	}
 }
 
-operation UI!ui::PageDefinition clonePage(classType : UI!ui::data::ClassType, relation : UI!ui::data::RelationType, anchor : String) {
+operation UI!ui::PageDefinition clonePage(classType : UI!ui::data::ClassType, relation : UI!ui::data::RelationType, anchor : String) : UI!ui::PageDefinition {
 	var clone = ecoreUtil.copy(self);
 	clone.name = (esmUtils.getNamespaceElementFQName(classType.~originalClass) + "." + relation.~originalRelation.name).anchor(anchor);
 	clone.dataElement = relation;
