@@ -2,7 +2,9 @@ package hu.blackbelt.judo.tatami.workflow;
 
 import hu.blackbelt.judo.meta.asm.runtime.AsmModel;
 import hu.blackbelt.judo.meta.expression.runtime.ExpressionModel;
+import hu.blackbelt.judo.meta.keycloak.Realm;
 import hu.blackbelt.judo.meta.keycloak.runtime.KeycloakModel;
+import hu.blackbelt.judo.meta.keycloak.runtime.exporter.KeycloakConfigurationExporter;
 import hu.blackbelt.judo.meta.liquibase.runtime.LiquibaseModel;
 import hu.blackbelt.judo.meta.measure.runtime.MeasureModel;
 import hu.blackbelt.judo.meta.openapi.API;
@@ -86,6 +88,9 @@ public class DefaultWorkflowSave {
 			convertModelToFile((API) api, deleteFileIfExists(new File(dest, transformationContext.getModelName() + "-" + ((API) api).getInfo().getTitle() + "-openapi.yaml")).getAbsolutePath(), OpenAPIExporter.Format.YAML);
 			convertModelToFile((API) api, deleteFileIfExists(new File(dest, transformationContext.getModelName() + "-" + ((API) api).getInfo().getTitle() + "-openapi.json")).getAbsolutePath(), OpenAPIExporter.Format.JSON);
 		})));
+
+		transformationContext.getByClass(KeycloakModel.class).ifPresent(executeWrapper(catchError, (m) -> m.getResourceSet().getResource(m.getUri(), false).getContents().stream().forEach(realm ->
+				new KeycloakConfigurationExporter((Realm) realm).writeConfigurationToFile(deleteFileIfExists(new File(dest, transformationContext.getModelName() + "-" + ((Realm) realm).getRealm() + "-keycloak.json"))))));
 
 		dialectList.forEach(dialect -> transformationContext.get(LiquibaseModel.class, "liquibase:" + dialect)
 				.ifPresent(executeWrapper(catchError, (m) -> m.saveLiquibaseModel(liquibaseSaveArgumentsBuilder().validateModel(VALIDATE_MODELS_ON_SAVE)
