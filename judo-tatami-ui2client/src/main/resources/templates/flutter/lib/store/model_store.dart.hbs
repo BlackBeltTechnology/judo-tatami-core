@@ -25,8 +25,8 @@ abstract class _{{ fqClass name }}Store with Store {
     internal__identifier = {{ variable name }}Store.internal__identifier;
     internal__signedIdentifier = {{ variable name }}Store.internal__signedIdentifier;
     internal__referenceIdentifier = {{ variable name }}Store.internal__referenceIdentifier;
-    internal__updatable = {{ variable name }}Store.internal__updatable;
-    internal__deletable = {{ variable name }}Store.internal__deletable;
+    internal__updatable = {{ variable name }}Store.internal__updatable ?? true;
+    internal__deletable = {{ variable name }}Store.internal__deletable ?? true;
 
     {{# each attributes }}
     {{ variable name }} = {{ variable ../name }}Store.{{ variable name }};
@@ -142,8 +142,8 @@ abstract class _{{ fqClass name }}Store with Store {
     internal__identifier = {{ variable name }}Store.internal__identifier;
     internal__signedIdentifier = {{ variable name }}Store.internal__signedIdentifier;
     internal__referenceIdentifier = {{ variable name }}Store.internal__referenceIdentifier;
-    internal__updatable = {{ variable name }}Store.internal__updatable;
-    internal__deletable = {{ variable name }}Store.internal__deletable;
+    internal__updatable = {{ variable name }}Store.internal__updatable ?? true;
+    internal__deletable = {{ variable name }}Store.internal__deletable ?? true;
 
     {{# each attributes }}
       {{ variable name }} = {{ variable ../name }}Store.{{ variable name }};

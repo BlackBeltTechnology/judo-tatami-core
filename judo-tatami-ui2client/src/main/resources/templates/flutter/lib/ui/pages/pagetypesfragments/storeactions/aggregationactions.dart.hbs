@@ -1,15 +1,15 @@
+// {{ className relation.name }} aggregation actions
 {{# if relation.isRelationBehaviourTypeCreatable }}
 @action
-Future<{{ fqClass relation.target.name }}Store> create{{ fqClass relation.name }}({{# unless relation.isAccess}}{{ fqClass relation.owner.name }}Store owner{{ className relation.owner.name }}Store, {{/unless}}{{ fqClass relation.target.name }}Store target{{ className relation.target.name }}Store) async {
+Future<void> create{{ fqClass relation.name }}({{# unless relation.isAccess}}{{ fqClass relation.owner.name }}Store owner{{ className relation.owner.name }}Store, {{/unless}}{{ fqClass relation.target.name }}Store target{{ className relation.target.name }}Store) async {
     try {
         errorMessage = null;
-        var created = await _{{ fqVariable application.actor.name }}Repository.{{ fqVariable relation.owner.name }}{{ fqClass relation.name }}Create({{# unless relation.isAccess}}owner{{ className relation.owner.name }}Store, {{/unless}}target{{ className relation.target.name }}Store);
         {{# if page.isPageTypeView }}
+        await _{{ fqVariable application.actor.name }}Repository.{{ fqVariable relation.owner.name }}{{ fqClass relation.name }}Create({{# unless relation.isAccess}}owner{{ className relation.owner.name }}Store, {{/unless}}target{{ className relation.target.name }}Store);
         refresh{{ className relation.owner.name }}(owner{{ className relation.owner.name }}Store);
         {{ else }}
-        get{{ fqClass relation.name }}({{# unless relation.isAccess}}owner{{ className relation.owner.name }}Store{{/unless}});
+        owner{{ className relation.owner.name }}Store.{{variable relation.name}}{{# if relation.isCollection }}.add(target{{ className relation.target.name }}Store){{ else }} = target{{ className relation.target.name }}Store{{/ if }};
         {{/ if }}
-        return created;
     } on ApiException {
         errorMessage = "Could not create {{ relation.name }}";
     }
@@ -132,12 +132,12 @@ Future<void> unset{{ fqClass relation.name }}({{ fqClass relation.owner.name }}S
 Future<void> delete{{ className relation.target.name }}({{ fqClass relation.target.name }}Store target{{ className relation.target.name }}Store{{# unless relation.isAccess}}, {{ fqClass relation.owner.name }}Store owner{{ className relation.owner.name }}Store{{/unless}}) async {
     try {
         errorMessage = null;
+    {{# if page.isPageTypeView }}
         await _{{ fqVariable application.actor.name }}Repository.{{fqVariable relation.target.name}}Delete(target{{ className relation.target.name }}Store);
-        {{# if page.isPageTypeView }}
         refresh{{ className relation.owner.name }}(owner{{ className relation.owner.name }}Store);
-        {{ else }}
-        get{{ fqClass relation.name }}(owner{{ className relation.owner.name }}Store);
-        {{/ if}}
+    {{ else }}
+        {{# if relation.isCollection }}owner{{ className relation.owner.name }}Store.{{variable relation.name}}.remove(target{{ className relation.target.name }}Store){{ else }}owner{{ className relation.owner.name }}Store.{{variable relation.name}} = null{{/ if }};
+    {{/ if}}
     } on ApiException {
         errorMessage = "Could not delete {{ variable relation.target.name }}";
     }
@@ -149,7 +149,11 @@ Future<void> delete{{ className relation.target.name }}({{ fqClass relation.targ
 Future<{{ fqClass relation.target.name }}Store> update{{ className relation.target.name }}({{ fqClass relation.target.name }}Store target{{ className relation.target.name }}Store) async {
     try {
         errorMessage = null;
+    {{# if page.isPageTypeView }}
         return await _{{ fqVariable application.actor.name }}Repository.{{fqVariable relation.target.name}}Update(target{{ className relation.target.name }}Store);
+    {{ else }}
+        return target{{ className relation.target.name }}Store;
+    {{/ if }}
     } on ApiException {
         errorMessage = "Could not update {{ variable relation.target.name }}";
     }
