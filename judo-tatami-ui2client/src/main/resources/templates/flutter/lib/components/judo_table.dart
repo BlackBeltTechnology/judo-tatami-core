@@ -39,8 +39,6 @@ class JudoTable extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-    print('TABLE HEIGHT: ${row * kJudoHeight} ');
-
     return JudoContainer(
       col: col,
       row: row,
