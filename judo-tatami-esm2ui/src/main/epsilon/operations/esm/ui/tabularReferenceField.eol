@@ -24,7 +24,16 @@ operation ESM!esm::ui::TabularReferenceField createTableFromTabularReferenceFiel
 		table.col = self.basis;
 		table.row = self.maxVisibleElements;
 		for (column in self.columns) {
-			table.columns.add(column.map(application));
+
+			var col : UI!ui::Formatted = column.dataFeature.getMember().getDataType().formatted();
+			col.name = column.name;
+			col.label = column.getUiLabel();
+			
+			if (not preview) {
+				col.attributeType = column.dataFeature.getMember().mapAttributeType(application, relation.target.mapClassType(application));
+			}
+			
+			table.columns.add(col);
 		}
 		
 		if (preview) {

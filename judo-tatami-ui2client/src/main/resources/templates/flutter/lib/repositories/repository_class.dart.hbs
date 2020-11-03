@@ -28,7 +28,7 @@ class {{ fqClass class.name }}Repository {
   // REFRESH (Reload with Signed ID)
   //////////////////////////////////////////////////////////////////////////////
   Future<{{ fqClass class.name }}Store> {{ fqVariable class.name }}GetByIdentifier({{ fqClass class.name }}Store target) async {
-    {{ fqClass class.name }} {{ variable class.name }}Response = await DefaultApi(locator<ApiClient>()).{{ fqVariable class.name }}RefreshInstance{{ fqClass name }}(target.internal__signedIdentifier);
+    {{ fqClass class.transferObjectTypeName }} {{ variable class.name }}Response = await DefaultApi(locator<ApiClient>()).{{ fqVariable class.transferObjectTypeName }}RefreshInstance{{ fqClass name }}(target.internal__signedIdentifier);
     return {{ fqClass ap.name }}RepositoryStoreMapper.create{{ fqClass class.name }}StoreFrom{{ fqClass class.name }}({{ variable class.name }}Response);
   }
   {{/ if }}
@@ -38,8 +38,8 @@ class {{ fqClass class.name }}Repository {
   // VALIDATE UPDATE
   //////////////////////////////////////////////////////////////////////////////
   Future<{{ fqClass class.name }}Store> {{ fqVariable class.name }}ValidateForUpdate({{ fqClass class.name }}Store target) async {
-    {{ fqClass class.name }}ForCreateAndUpdate {{ variable class.name }}Request = {{ fqClass ap.name }}RepositoryStoreMapper.create{{ fqClass class.name }}ForCreateAndUpdateFrom{{ fqClass class.name }}Store(target);
-    {{ fqClass class.name }} {{ variable class.name }}Response = await DefaultApi(locator<ApiClient>()).{{ fqVariable class.name }}ValidateUpdateInstance{{ fqClass name }}(target.internal__signedIdentifier, {{ variable class.name }}Request);
+    {{ fqClass class.transferObjectTypeName }}ForCreateAndUpdate {{ variable class.name }}Request = {{ fqClass ap.name }}RepositoryStoreMapper.create{{ fqClass class.name }}ForCreateAndUpdateFrom{{ fqClass class.name }}Store(target);
+    {{ fqClass class.transferObjectTypeName }} {{ variable class.name }}Response = await DefaultApi(locator<ApiClient>()).{{ fqVariable class.transferObjectTypeName }}ValidateUpdateInstance{{ fqClass name }}(target.internal__signedIdentifier, {{ variable class.name }}Request);
     return {{ fqClass ap.name }}RepositoryStoreMapper.create{{ fqClass class.name }}StoreFrom{{ fqClass class.name }}({{ variable class.name }}Response);
   }
   {{/ if }}
@@ -49,7 +49,7 @@ class {{ fqClass class.name }}Repository {
   // DELETE
   //////////////////////////////////////////////////////////////////////////////
   Future<void> {{ fqVariable class.name }}Delete({{ fqClass class.name }}Store target) async {
-    return await DefaultApi(locator<ApiClient>()).{{ fqVariable class.name }}DeleteInstance{{ fqClass name }}(target.internal__signedIdentifier);
+    return await DefaultApi(locator<ApiClient>()).{{ fqVariable class.transferObjectTypeName }}DeleteInstance{{ fqClass name }}(target.internal__signedIdentifier);
   }
   {{/ if }}
   {{# if class.isClassBehaviourTypeUpdatable }}
@@ -58,8 +58,8 @@ class {{ fqClass class.name }}Repository {
   // UPDATE
   //////////////////////////////////////////////////////////////////////////////
   Future<{{ fqClass class.name }}Store> {{ fqVariable class.name }}Update({{ fqClass class.name }}Store target) async {
-    {{ fqClass class.name }}ForCreateAndUpdate {{ variable class.name }}Request = {{ fqClass ap.name }}RepositoryStoreMapper.create{{ fqClass class.name }}ForCreateAndUpdateFrom{{ fqClass class.name }}Store(target);
-    {{ fqClass class.name }} {{ variable class.name }}Response = await DefaultApi(locator<ApiClient>()).{{ fqVariable class.name }}UpdateInstance{{ fqClass name }}(target.internal__signedIdentifier, {{ variable class.name }}Request);
+    {{ fqClass class.transferObjectTypeName }}ForCreateAndUpdate {{ variable class.name }}Request = {{ fqClass ap.name }}RepositoryStoreMapper.create{{ fqClass class.name }}ForCreateAndUpdateFrom{{ fqClass class.name }}Store(target);
+    {{ fqClass class.transferObjectTypeName }} {{ variable class.name }}Response = await DefaultApi(locator<ApiClient>()).{{ fqVariable class.transferObjectTypeName }}UpdateInstance{{ fqClass name }}(target.internal__signedIdentifier, {{ variable class.name }}Request);
     return {{ fqClass ap.name }}RepositoryStoreMapper.create{{ fqClass class.name }}StoreFrom{{ fqClass class.name }}({{ variable class.name }}Response);
   }
   {{/ if }}
