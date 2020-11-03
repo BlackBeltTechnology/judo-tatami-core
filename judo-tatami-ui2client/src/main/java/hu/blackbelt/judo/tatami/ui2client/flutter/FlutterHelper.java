@@ -117,6 +117,7 @@ public class FlutterHelper {
         return stream(fqName.replaceAll("#", "::")
                 .replaceAll("\\.", "::")
                 .replaceAll("/", "::")
+                .replaceAll("_", "::")
                 .split("::"))
                 .map(s -> StringUtils.capitalize(s))
                 .collect(Collectors.joining());
