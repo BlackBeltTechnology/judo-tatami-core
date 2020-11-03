@@ -55,6 +55,17 @@ rule CreateMappedActorType
 	  log.debug("Created ActorType: " + t.name);
 }
 
+rule CreateActorTypeWithoutPrincipal
+	transform s: ESM!ActorType
+	to t: JUDOPSM!ActorType
+	extends CreateNamespaceElement {
+	  guard: s.principal.isUndefined()
+	  
+      if (not s.isEffectiveAnonymous()) {
+          t.realm = s.realm;
+	  }
+}
+
 rule CreateTransferObjectRelationFromAccess
 	transform s: ESM!Access
 	to t: JUDOPSM!TransferObjectRelation

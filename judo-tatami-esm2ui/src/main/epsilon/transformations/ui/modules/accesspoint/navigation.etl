@@ -5,7 +5,7 @@ rule NavigationController
     transform s: ESM!esm::accesspoint::ActorType
     to t: UI!ui::NavigationController
     extends CreateNamedElementFromNamespaceElement {
-        guard: s.principal.isDefined() and s.kind = ESM!esm::accesspoint::ActorKind#HUMAN 
+        guard: s.kind = ESM!esm::accesspoint::ActorKind#HUMAN 
 
         log.debug("NavigationController: " + s.name);
 
@@ -34,7 +34,8 @@ rule PrincipalMenuNavigationItem
     extends AbstractNavigationItem {
 		guard: not s.hidden
         
-        log.debug("Create Dashboard Navigation: " + s.transferObjectType.name);
+        //log.debug("Create Dashboard Navigation: " + s.transferObjectType.name);
+        log.debug("Create Dashboard Navigation");
         t.target = s.eContainer.equivalent("ApplicationDashboardPage");
         s.eContainer.equivalent("NavigationController").items.add(t);
 }
