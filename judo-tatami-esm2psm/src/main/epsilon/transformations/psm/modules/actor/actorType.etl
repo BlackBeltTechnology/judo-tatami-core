@@ -49,7 +49,7 @@ rule CreateMappedActorType
 	  guard: s.principal.isDefined() and s.principal.isMapped()
 
 	  t.entityType = s.principal.mapping.target.getPSMEquivalent();
-	  t.managed = true; // TODO - copy flag from ESM model (JNG-1786)
+	  t.managed = s.managed;
 	  t.kind = s.kind.asString();
 
 	  log.debug("Created ActorType: " + t.name);
