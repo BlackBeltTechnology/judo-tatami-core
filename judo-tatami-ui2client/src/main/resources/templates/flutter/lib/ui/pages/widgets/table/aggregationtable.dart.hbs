@@ -26,16 +26,18 @@ JudoColumn(
                         arguments: {{ fqClass relationAction.target.name }}PageArguments(owner{{ className relation.owner.name }}Store: target{{ className relation.owner.name }}Store){{~/ unless}});
                         if (created != null) {
                             {{ fqVariable page.name }}PageStore.create{{ fqClass relation.name }}({{# unless relation.isAccess}}target{{ className relation.owner.name }}Store ,{{/ unless}}created);
-                        {{# unless page.dataElement.isRelationKindAggregation }}
-                            {{# unless page.dataElement.isRelationKindComposition }}
-                            var validate = await {{ fqVariable page.name }}PageStore.validate{{ fqClass page.dataElement.name }}({{# unless page.dataElement.isAccess}}owner{{ className page.dataElement.owner.name }}Store, {{/unless}}target{{ className page.dataElement.target.name }}Store);
+                        {{# unless page.isPageTypeUpdate }}
+                            {{# unless page.dataElement.isRelationKindAggregation }}
+                                {{# unless page.dataElement.isRelationKindComposition }}
+                            var validate = await {{ fqVariable page.name }}PageStore.validate({{# unless page.dataElement.isAccess}}owner{{ className page.dataElement.owner.name }}Store, {{/unless}}target{{ className page.dataElement.target.name }}Store);
                             if (validate != null) {
                                 target{{ className relation.owner.name }}Store.updateWith(validate);
                             } else {
                                 // validate message
                             }
-                            {{/unless}}
-                        {{/ unless }}
+                                {{/unless}}
+                            {{/ unless }}
+                        {{/unless}}
                         }
                     }{{# unless relation.isAccess}}{{# unless relation.isRelationKindStatic}} : null{{/ unless}}{{/ unless}},
                 {{/ if }}

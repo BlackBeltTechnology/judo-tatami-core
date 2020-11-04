@@ -46,6 +46,18 @@ abstract class _{{ fqClass page.name }}PageStore with Store {
     }
 
     {{/ if }}
+    {{# if relation.isRelationBehaviourTypeCreateValidatable }}
+    @action
+    Future<{{ fqClass relation.target.name }}Store> validate({{# unless page.dataElement.isAccess}}{{ fqClass relation.owner.name }}Store owner{{ className relation.owner.name }}Store, {{/unless}}{{ fqClass relation.target.name }}Store target{{ className relation.target.name }}Store) async {
+        try {
+            errorMessage = null;
+            return await _{{ fqVariable application.actor.name }}Repository.{{ fqVariable relation.owner.name }}{{ fqClass relation.name }}ValidateForCreate({{# unless page.dataElement.isAccess}}owner{{ className relation.owner.name }}Store, {{/unless}}target{{ className relation.target.name }}Store);
+        } on ApiException {
+            errorMessage = "Could not validate {{ relation.name }}";
+        }
+    }
+
+    {{/ if }}
     {{/ with }}
     {{# each page.dataElement.target.relations as |relation| }}
         {{# unless isMemberTypeTransient }}
