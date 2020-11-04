@@ -10,10 +10,9 @@ operation ESM!esm::ui::OperationForm createButtonFromOperationForm(application :
 	
 	log.debug("Create operation form: " + self.name);
 	var op : ESM!esm::`operation`::Operation = self.getOperationReference.getMember();
-	t.dataElement = op.mapOperationType(application, op.eContainer.mapClassType(application));
-
+	t.dataElement = op.mapOperationType(application, self.getRoot().eContainer.mapClassType(application));
 	var callAction = new UI!ui::CallOperationAction();
-	callAction.`operation` = op.mapOperationType(application, op.eContainer.mapClassType(application));
+	callAction.`operation` = op.mapOperationType(application, self.getRoot().eContainer.mapClassType(application));
 
 	// Deal the mapping later, to avoid endless loop
 	callAction.~originalOperationForm = self;
