@@ -29,11 +29,11 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
                         <Export-Package>
                             hu.blackbelt.judo.tatami.workflow.osgi.*;version=${project.version}
                         </Export-Package>
-
                         <Import-Package>
                             ${osgi-default-import},
                             *
                         </Import-Package>
+                        <Provide-Capability>osgi.service;effective:=active;objectClass=hu.blackbelt.judo.tatami.core.TransformationTrace</Provide-Capability>
                     </instructions>
                 </configuration>
             </plugin>

@@ -10,6 +10,7 @@ import hu.blackbelt.judo.meta.psm.runtime.PsmModel;
 import hu.blackbelt.judo.meta.rdbms.runtime.RdbmsModel;
 import hu.blackbelt.judo.meta.script.runtime.ScriptModel;
 import hu.blackbelt.judo.tatami.asm2jaxrsapi.Asm2JAXRSAPIWork;
+import hu.blackbelt.judo.tatami.asm2keycloak.Asm2KeycloakTransformationTrace;
 import hu.blackbelt.judo.tatami.asm2openapi.Asm2OpenAPITransformationTrace;
 import hu.blackbelt.judo.tatami.asm2rdbms.Asm2RdbmsTransformationTrace;
 import hu.blackbelt.judo.tatami.asm2sdk.Asm2SDKWork;
@@ -164,6 +165,7 @@ public class DefaultTransformationContextRegistrationService extends AbstractTra
         transformationContext.getByClass(Psm2MeasureTransformationTrace.class).ifPresent(t -> registerTrace(t));
         transformationContext.get(Asm2RdbmsTransformationTrace.class, "asm2rdbmstrace:" + sqlDialect).ifPresent(t -> registerTrace(t));
         transformationContext.getByClass(Asm2OpenAPITransformationTrace.class).ifPresent(t -> registerTrace(t));
+        transformationContext.getByClass(Asm2KeycloakTransformationTrace.class).ifPresent(t -> registerTrace(t));
         registerTransformationContext(transformationContext);
 
     }
@@ -189,5 +191,6 @@ public class DefaultTransformationContextRegistrationService extends AbstractTra
         transformationContext.getByClass(Psm2MeasureTransformationTrace.class).ifPresent(t -> unregisterTrace(t));
         transformationContext.getByClass(Asm2RdbmsTransformationTrace.class).ifPresent(t -> unregisterTrace(t));
         transformationContext.getByClass(Asm2OpenAPITransformationTrace.class).ifPresent(t -> unregisterTrace(t));
+        transformationContext.getByClass(Asm2KeycloakTransformationTrace.class).ifPresent(t -> unregisterTrace(t));
     }
 }
