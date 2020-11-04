@@ -32,9 +32,9 @@ rule PrincipalMenuNavigationItem
     transform s: ESM!esm::ui::MenuItemPrincipal
     to t : UI!ui::NavigationItem
     extends AbstractNavigationItem {
-		guard: not s.hidden
+		guard: not s.hidden and s.eContainer.principal.isDefined()
         
-        //log.debug("Create Dashboard Navigation: " + s.transferObjectType.name);
+        log.debug("Create Dashboard Navigation: " + s.transferObjectType.name);
         log.debug("Create Dashboard Navigation");
         t.target = s.eContainer.equivalent("ApplicationDashboardPage");
         s.eContainer.equivalent("NavigationController").items.add(t);
