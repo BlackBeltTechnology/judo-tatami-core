@@ -64,7 +64,7 @@ public class Script2Operation {
                         "    <service>\n" +
                         "        <provide interface=\"java.util.function.Function\"/>\n" +
                         "    </service>\n" +
-                        "    <reference name=\"dao\" interface=\"hu.blackbelt.judo.dao.api.DAO\" field=\"dao\" target=\"(judo.model.name=" + modelName + ")\"/>\n" +
+                        "    <reference name=\"dao\" interface=\"hu.blackbelt.judo.dao.api.DAO\" field=\"dao\" target=\"(&amp;(judo.model.name=" + modelName + ")(type=composite))\"/>\n" +
                         "    <reference name=\"dispatcher\" interface=\"hu.blackbelt.judo.dispatcher.api.Dispatcher\" field=\"dispatcher\" target=\"(judo.model.name=" + modelName + ")\"/>\n" +
                         "    <reference name=\"asmModel\" interface=\"hu.blackbelt.judo.meta.asm.runtime.AsmModel\" bind=\"setAsmModel\" target=\"(name=" + modelName + ")\"/>\n" +
                         "    <reference name=\"identifierProvider\" interface=\"hu.blackbelt.judo.dao.api.IdentifierProvider\" field=\"idProvider\"/>\n" +

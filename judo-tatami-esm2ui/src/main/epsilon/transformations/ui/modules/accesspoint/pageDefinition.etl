@@ -12,7 +12,6 @@ rule ApplicationDashboardPage
         log.debug("ApplicationDashboardPage: " + s.name);
         t.name = s.fqName().anchor("Dashboard");
 		t.pageType = UI!ui::PageType#DASHBOARD;
-        t.dataElement = s.principal.mapClassType(application);
  
 	 	var pageContainer = new UI!ui::PageContainer();
 	    pageContainer.layoutType = application.layoutTypes.first;
@@ -21,10 +20,10 @@ rule ApplicationDashboardPage
 		t.containers.add(pageContainer);
 	 
 		if (s.principal.isDefined() and s.principal.view.isDefined()) {
+			t.dataElement = s.principal.mapClassType(application);
 	        pageContainer.children.add(s.principal.view.map(application));
 	        t.label = s.principal.view.getUiLabel();
         }
         application.pages.add(t);
         application.dashboard = t;
 }
-

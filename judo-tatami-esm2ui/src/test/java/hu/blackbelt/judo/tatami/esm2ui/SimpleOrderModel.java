@@ -660,7 +660,6 @@ public class SimpleOrderModel {
 						returnedItem, donatedItem,
 						deliverer,
 						complaint,damagedProduct)
-				.withDemoAccessPoint(false)
 				.build();
 
         return model;

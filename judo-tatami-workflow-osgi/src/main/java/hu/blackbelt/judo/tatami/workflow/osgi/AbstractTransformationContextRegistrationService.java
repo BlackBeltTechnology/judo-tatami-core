@@ -11,6 +11,7 @@ import org.osgi.framework.ServiceRegistration;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Collections;
 import java.util.Dictionary;
 import java.util.Hashtable;
 import java.util.Map;
@@ -47,8 +48,11 @@ public abstract class AbstractTransformationContextRegistrationService implement
 
     public void registerTrace(TransformationTrace trace) {
         log.info("\u001B[33mRegistering trace model: {}\u001B[0m", trace);
+        Dictionary<String, Object> props = new Hashtable<>();
+        props.put("modelName", trace.getModelName());
+        props.put("traceName", trace.getTransformationTraceName());
         ServiceRegistration<?> modelServiceRegistration =
-                bundleContext.registerService(TransformationTrace.class, trace, new Hashtable<>());
+                bundleContext.registerService(TransformationTrace.class, trace, props);
         serviceRegistrationMap.put(trace, modelServiceRegistration);
     }
 

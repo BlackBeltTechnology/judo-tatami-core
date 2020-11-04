@@ -4,6 +4,6 @@ operation ESM!ActorType getPSMEquivalent(): JUDOPSM!TransferObjectType {
 	} else if (self.principal.isDefined() and self.principal.isMapped()) {
         return self.equivalent("CreateMappedActorType");
 	} else {
-	    throw "Unsupported actor type";
+	    return self.equivalent("CreateActorTypeWithoutPrincipal");
 	}
 }
