@@ -381,7 +381,6 @@ public class SimpleOrderModel {
 						order, orderItem,
 						application, actor
 				))
-				.withDemoAccessPoint(false)
 				.build();
 
 		return model;
