@@ -91,6 +91,22 @@ JudoButton(
             arguments: {{ fqClass action.target.name }}PageArguments(owner{{ className action.target.dataElement.owner.name }}Store: target{{ className page.dataElement.target.name }}Store));
     },
 {{/ if }}
+{{# if action.isCallOperationAction }}
+    onPressed: () async {
+        {{#if action.operation.isStatic}}
+        {{#if action.operation.output}}{{fqClass action.operation.output.target.name}}Store {{fqVariable action.operation.output.target.name}}Store = {{/if}}await {{fqVariable page.name}}PageStore.{{fqVariable action.operation.owner.name}}{{className action.operation.name}}();
+        {{else}}
+        {{# if action.operation.input}}
+        {{fqClass action.operation.input.target.name}}Store {{fqVariable action.operation.input.target.name}}Store = {{fqClass action.operation.input.target.name}}Store();
+        // TODO open the input page and pass the store
+        {{/if}}
+        {{#if action.operation.output}}{{fqClass action.operation.output.target.name}}Store {{fqVariable action.operation.output.target.name}}Store = {{/if}}await {{fqVariable page.name}}PageStore.{{fqVariable action.operation.owner.name}}{{className action.operation.name}}({{# if action.operation.input}}{{fqVariable action.operation.input.target.name}}Store, {{/if}}target{{ className page.dataElement.target.name }}Store);
+        {{/if}}
+        {{#if action.operation.output}}
+        // TODO open the output view page with passing the result
+        {{/if}}
+    },
+{{/if}}
 {{#if label }}
     label: '{{label}}',
 {{/if}}
