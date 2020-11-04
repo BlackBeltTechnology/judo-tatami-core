@@ -32,7 +32,7 @@ class JudoTimeInput extends StatelessWidget {
         key: key,
         readOnly: disabled ? true : readOnly,
         enabled: disabled ? false : !readOnly,
-        initialValue: initialDate != null ? initialDate.toString() : TimeOfDay.now().toString() ,
+        initialValue: initialDate != null ? initialDate.toString() : null ,
         decoration: disabled ?
         InputDecoration(
           labelText: label,

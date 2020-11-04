@@ -39,7 +39,7 @@ class JudoDateTimeInput extends StatelessWidget {
         key: key,
         readOnly: disabled ? true : readOnly,
         enabled: disabled ? false : !readOnly,
-        initialValue: formatter.format(initialDate ?? DateTime.now()),
+        initialValue: initialDate != null ? formatter.format(initialDate) : null,
         decoration: disabled ?
         InputDecoration(
           labelText: label,
