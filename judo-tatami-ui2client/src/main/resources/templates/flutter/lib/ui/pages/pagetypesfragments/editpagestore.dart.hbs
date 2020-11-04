@@ -22,8 +22,9 @@ abstract class _{{ fqClass page.name }}PageStore with Store {
     }
 
     {{/ if}}
+    {{# if relation.target.isClassBehaviourTypeUpdateValidatable }}
     @action
-    Future<{{ fqClass relation.target.name }}Store> validate{{ className relation.target.name }}({{ fqClass relation.target.name }}Store target{{ className relation.target.name }}Store) async {
+    Future<{{ fqClass relation.target.name }}Store> validate({{ fqClass relation.target.name }}Store target{{ className relation.target.name }}Store) async {
             try {
             errorMessage = null;
             return await _{{ fqVariable application.actor.name }}Repository.{{fqVariable relation.target.name}}ValidateForUpdate(target{{ className relation.target.name }}Store);
@@ -32,6 +33,7 @@ abstract class _{{ fqClass page.name }}PageStore with Store {
         }
     }
 
+    {{/ if }}
     {{/ with }}
     {{# each page.dataElement.target.relations as |relation| }}
         {{# unless isMemberTypeTransient }}

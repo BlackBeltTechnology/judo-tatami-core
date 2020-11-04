@@ -4,7 +4,7 @@ JudoButton(
 {{# if action.isSaveAction }}
     onPressed: () async {
     {{# if page.isPageTypeUpdate }}
-        var res = await {{ fqVariable page.name }}PageStore.validate{{ className page.relationType.target.name }}(target{{ className page.relationType.target.name }}Store);
+        var res = await {{ fqVariable page.name }}PageStore.validate(target{{ className page.relationType.target.name }}Store);
         if (res != null) {
             navigation.close(target{{ className page.dataElement.target.name }}Store);
         }
@@ -12,7 +12,7 @@ JudoButton(
     {{# if page.isPageTypeCreate }}
         {{# unless page.dataElement.isRelationKindAggregation }}
             {{# unless page.dataElement.isRelationKindComposition }}
-        var res = await {{ fqVariable page.name }}PageStore.validate{{ fqClass page.relationType.name }}({{# unless page.dataElement.isAccess}}owner{{ className page.relationType.owner.name }}Store, {{/unless}}target{{ className page.relationType.target.name }}Store);
+        var res = await {{ fqVariable page.name }}PageStore.validate({{# unless page.dataElement.isAccess}}owner{{ className page.dataElement.owner.name }}Store, {{/unless}}target{{ className page.relationType.target.name }}Store);
         if (res != null) {
             navigation.close(target{{ className page.dataElement.target.name }}Store);
         }
