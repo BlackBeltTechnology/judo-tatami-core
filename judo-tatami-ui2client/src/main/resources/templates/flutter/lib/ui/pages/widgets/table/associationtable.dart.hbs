@@ -19,7 +19,8 @@ Observer(builder: (_) {
                         arguments: {{ fqClass action.target.name }}PageArguments({{# unless page.dataElement.isAccess}}owner{{ className page.dataElement.owner.name }}Store: owner{{ className page.dataElement.owner.name }}Store, {{/ unless}}target{{ className page.dataElement.target.name }}Store: element));
                     {{# unless relation.isMemberTypeTransient }}
                     if (response != null) {
-                        {{ fqVariable page.name }}PageStore.get{{ fqClass page.relationType.name }}({{# unless page.dataElement.isAccess}}owner{{ className page.dataElement.owner.name }}Store{{/ unless}});
+                        {{ fqVariable page.name }}PageStore.get{{ fqClass page.relationType.name }}({{# unless page.dataElement.isAccess}}owner{{ className page.dataElement.owner.name }}Store{{/ unless}})
+                            .catchError((onError) => judoAlert(context: context, title: 'Error', text: onError.toString()));
                     }
                     {{/ unless }}
                 },
@@ -29,7 +30,8 @@ Observer(builder: (_) {
                 navigateToCreatePageAction:{{# unless page.dataElement.isAccess}} target{{ className page.dataElement.owner.name }}Store.internal__updatable ?{{/ unless}} (element) async {
                     var created = await navigation.open(Routes.{{ fqVariable action.target.name }}Page);
                     if (created != null) {
-                        {{ fqVariable page.name }}PageStore.create{{ fqClass page.relationType.name }}({{# unless page.dataElement.isAccess}}owner{{ className page.dataElement.owner.name }}Store ,{{/ unless}}created);
+                        {{ fqVariable page.name }}PageStore.create{{ fqClass page.relationType.name }}({{# unless page.dataElement.isAccess}}owner{{ className page.dataElement.owner.name }}Store ,{{/ unless}}created)
+                            .catchError((onError) => judoAlert(context: context, title: 'Error', text: onError.toString()));
                     }
                 }{{# unless page.dataElement.isAccess}} : null{{/ unless}},
                 {{/if}}
@@ -41,10 +43,12 @@ Observer(builder: (_) {
                         arguments: {{ fqClass action.target.name }}PageArguments(target{{ className page.dataElement.target.name }}Store: cloned));
                     if (res != null) {
                         element.updateWith(cloned);
-                        var updated = await {{ fqVariable page.name }}PageStore.update{{ className page.relationType.target.name }}(element);
+                        var updated = await {{ fqVariable page.name }}PageStore.update{{ className page.relationType.target.name }}(element)
+                            .catchError((onError) => judoAlert(context: context, title: 'Error', text: onError.toString()));
                         if (updated != null) {
                             element.updateWith(updated);
-                            {{ fqVariable page.name }}PageStore.get{{ fqClass page.relationType.name }}({{# unless page.dataElement.isAccess}}owner{{ className page.dataElement.owner.name }}Store{{/ unless}});
+                            {{ fqVariable page.name }}PageStore.get{{ fqClass page.relationType.name }}({{# unless page.dataElement.isAccess}}owner{{ className page.dataElement.owner.name }}Store{{/ unless}})
+                                .catchError((onError) => judoAlert(context: context, title: 'Error', text: onError.toString()));
                         }
                     }
                 }{{# unless page.dataElement.isAccess}}{{# unless page.dataElement.isRelationKindStatic}} : null{{/ unless}}{{/ unless}},
@@ -54,12 +58,14 @@ Observer(builder: (_) {
                 {{/if}}
                 {{#if relationAction.isUnsetAction}}
                 unsetAction:{{# unless page.dataElement.isAccess}}{{# unless page.dataElement.isRelationKindStatic}} target{{ className page.dataElement.owner.name }}Store.internal__updatable ?{{/ unless}}{{/ unless}} () async {
-                    {{fqVariable page.name}}PageStore.unset{{ fqClass page.dataElement.name }}(target{{ className page.dataElement.owner.name }}Store);
+                    {{fqVariable page.name}}PageStore.unset{{ fqClass page.dataElement.name }}(target{{ className page.dataElement.owner.name }}Store)
+                        .catchError((onError) => judoAlert(context: context, title: 'Error', text: onError.toString()));
                 }{{# unless page.dataElement.isAccess}}{{# unless page.dataElement.isRelationKindStatic}} : null{{/ unless}}{{/ unless}},
                 {{/if}}
                 {{#if action.isDeleteAction}}
                 deleteAction:{{# unless page.dataElement.isAccess}} owner{{ className page.dataElement.owner.name }}Store.internal__updatable ?{{/ unless}} (element) async {
-                    {{fqVariable page.name}}PageStore.delete{{ className page.relationType.target.name }}(element{{# unless page.dataElement.isAccess}}, owner{{ className page.dataElement.owner.name }}Store{{/unless}});
+                    {{fqVariable page.name}}PageStore.delete{{ className page.relationType.target.name }}(element{{# unless page.dataElement.isAccess}}, owner{{ className page.dataElement.owner.name }}Store{{/unless}})
+                        .catchError((onError) => judoAlert(context: context, title: 'Error', text: onError.toString()));
                 }{{# unless page.dataElement.isAccess}} : null{{/ unless}},
                 {{/if}}
                 {{/each}}

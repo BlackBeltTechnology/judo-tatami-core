@@ -25,11 +25,13 @@ JudoColumn(
                         var created = await navigation.open(Routes.{{ fqVariable relationAction.target.name }}Page{{# unless relation.isAccess}},
                         arguments: {{ fqClass relationAction.target.name }}PageArguments(owner{{ className relation.owner.name }}Store: target{{ className relation.owner.name }}Store){{~/ unless}});
                         if (created != null) {
-                            {{ fqVariable page.name }}PageStore.create{{ fqClass relation.name }}({{# unless relation.isAccess}}target{{ className relation.owner.name }}Store ,{{/ unless}}created);
+                            {{ fqVariable page.name }}PageStore.create{{ fqClass relation.name }}({{# unless relation.isAccess}}target{{ className relation.owner.name }}Store ,{{/ unless}}created)
+                                .catchError((onError) => judoAlert(context: context, title: 'Error', text: onError.toString()));
                         {{# unless page.isPageTypeUpdate }}
                             {{# unless page.dataElement.isRelationKindAggregation }}
                                 {{# unless page.dataElement.isRelationKindComposition }}
-                            var validate = await {{ fqVariable page.name }}PageStore.validate({{# unless page.dataElement.isAccess}}owner{{ className page.dataElement.owner.name }}Store, {{/unless}}target{{ className page.dataElement.target.name }}Store);
+                            var validate = await {{ fqVariable page.name }}PageStore.validate({{# unless page.dataElement.isAccess}}owner{{ className page.dataElement.owner.name }}Store, {{/unless}}target{{ className page.dataElement.target.name }}Store)
+                                .catchError((onError) => judoAlert(context: context, title: 'Error', text: onError.toString()));
                             if (validate != null) {
                                 target{{ className relation.owner.name }}Store.updateWith(validate);
                             } else {
@@ -46,7 +48,8 @@ JudoColumn(
                         var selected =
                             {{> templates/flutter/lib/ui/pages/widgets/dialog.dart.hbs relation=relation}}
                         if (selected != null) {
-                            {{fqVariable page.name}}PageStore.add{{ fqClass relation.name }}(target{{ className relation.owner.name }}Store, selected);
+                            {{fqVariable page.name}}PageStore.add{{ fqClass relation.name }}(target{{ className relation.owner.name }}Store, selected)
+                                .catchError((onError) => judoAlert(context: context, title: 'Error', text: onError.toString()));
                         }
                     }{{# unless relation.isAccess}}{{# unless relation.isRelationKindStatic}} : null{{/ unless}}{{/ unless}},
                 {{/if}}
@@ -55,7 +58,8 @@ JudoColumn(
                         var selected =
                             {{> templates/flutter/lib/ui/pages/widgets/dialog.dart.hbs relation=relation}}
                         if (selected != null) {
-                            {{fqVariable page.name}}PageStore.set{{ fqClass relation.name }}(target{{ className relation.owner.name }}Store, selected);
+                            {{fqVariable page.name}}PageStore.set{{ fqClass relation.name }}(target{{ className relation.owner.name }}Store, selected)
+                                .catchError((onError) => judoAlert(context: context, title: 'Error', text: onError.toString()));
                         }
                     }{{# unless relation.isAccess}}{{# unless relation.isRelationKindStatic}} : null{{/ unless}}{{/ unless}},
                 {{/if}}
@@ -94,7 +98,8 @@ JudoColumn(
                             arguments: {{ fqClass rowAction.target.name }}PageArguments({{# unless relation.isAccess}}owner{{ className relation.owner.name }}Store: target{{ className relation.owner.name }}Store, {{/ unless}}target{{ className relation.target.name }}Store: element));
                             {{# unless relation.isMemberTypeTransient }}
                             if (response != null) {
-                                {{ fqVariable page.name }}PageStore.get{{ fqClass relation.name }}({{# unless relation.isAccess}}target{{ className relation.owner.name }}Store{{/ unless}});
+                                {{ fqVariable page.name }}PageStore.get{{ fqClass relation.name }}({{# unless relation.isAccess}}target{{ className relation.owner.name }}Store{{/ unless}})
+                                    .catchError((onError) => judoAlert(context: context, title: 'Error', text: onError.toString()));
                             }
                             {{/ unless }}
                         },
@@ -103,7 +108,8 @@ JudoColumn(
                         {{# unless relation.isAccess}} target{{ className relation.owner.name }}Store.internal__updatable ?{{/ unless}} (element) async {
                             var created = await navigation.open(Routes.{{ fqVariable rowAction.target.name }}Page);
                             if (created != null) {
-                                {{ fqVariable page.name }}PageStore.create{{ fqClass relation.name }}({{# unless relation.isAccess}}target{{ className relation.owner.name }}Store ,{{/ unless}}created);
+                                {{ fqVariable page.name }}PageStore.create{{ fqClass relation.name }}({{# unless relation.isAccess}}target{{ className relation.owner.name }}Store ,{{/ unless}}created)
+                                    .catchError((onError) => judoAlert(context: context, title: 'Error', text: onError.toString()));
                             }
                         }{{# unless relation.isAccess}} : null{{/ unless}},
                         {{/if}}
@@ -115,10 +121,12 @@ JudoColumn(
                             arguments: {{ fqClass rowAction.target.name }}PageArguments(target{{ className relation.target.name }}Store: cloned));
                             if (res != null) {
                                 element.updateWith(cloned);
-                                var updated = await {{ fqVariable page.name }}PageStore.update{{ className relation.target.name }}(element);
+                                var updated = await {{ fqVariable page.name }}PageStore.update{{ className relation.target.name }}(element)
+                                    .catchError((onError) => judoAlert(context: context, title: 'Error', text: onError.toString()));
                                 if (updated != null) {
                                     element.updateWith(updated);
-                                    {{ fqVariable page.name }}PageStore.get{{ fqClass relation.name }}({{# unless relation.isAccess}}target{{ className relation.owner.name }}Store{{/ unless}});
+                                    {{ fqVariable page.name }}PageStore.get{{ fqClass relation.name }}({{# unless relation.isAccess}}target{{ className relation.owner.name }}Store{{/ unless}})
+                                        .catchError((onError) => judoAlert(context: context, title: 'Error', text: onError.toString()));
                                 }
                             }
                         }{{# unless relation.isAccess}} : null{{/ unless}},
@@ -128,12 +136,14 @@ JudoColumn(
                         {{/if}}
                         {{#if rowAction.isUnsetAction}}
                         unsetAction:{{# unless relation.isAccess}}{{# unless relation.isRelationKindStatic}} target{{ className relation.owner.name }}Store.internal__updatable ?{{/ unless}}{{/ unless}} () async {
-                            {{fqVariable page.name}}PageStore.unset{{ fqClass relation.name }}(target{{ className relation.owner.name }}Store);
+                            {{fqVariable page.name}}PageStore.unset{{ fqClass relation.name }}(target{{ className relation.owner.name }}Store)
+                                .catchError((onError) => judoAlert(context: context, title: 'Error', text: onError.toString()));
                         }{{# unless relation.isAccess}}{{# unless relation.isRelationKindStatic}} : null{{/ unless}}{{/ unless}},
                         {{/if}}
                         {{#if rowAction.isDeleteAction}}
                         deleteAction:{{# unless relation.isAccess}} target{{ className relation.owner.name }}Store.internal__updatable ?{{/ unless}} (element) async {
-                            {{fqVariable page.name}}PageStore.delete{{ className relation.target.name }}(element{{# unless relation.isAccess}}, target{{ className relation.owner.name }}Store{{/unless}});
+                            {{fqVariable page.name}}PageStore.delete{{ className relation.target.name }}(element{{# unless relation.isAccess}}, target{{ className relation.owner.name }}Store{{/unless}})
+                                .catchError((onError) => judoAlert(context: context, title: 'Error', text: onError.toString()));
                         }{{# unless relation.isAccess}} : null{{/ unless}},
                         {{/if}}
                         {{/each}}
