@@ -16,8 +16,9 @@ abstract class _{{ fqClass page.name }}PageStore with Store {
         try {
             errorMessage = null;
             target{{ className page.dataElement.target.name }}Store.updateWith(await _{{ fqVariable application.actor.name }}Repository.{{fqVariable relation.target.name}}GetByIdentifier(target{{ className page.dataElement.target.name }}Store));
-        } on ApiException {
+        } on ApiException catch (error) {
             errorMessage = "Could not refresh {{ variable relation.target.name }}";
+            throw error;
         }
     }
 
@@ -28,8 +29,9 @@ abstract class _{{ fqClass page.name }}PageStore with Store {
             try {
             errorMessage = null;
             return await _{{ fqVariable application.actor.name }}Repository.{{fqVariable relation.target.name}}ValidateForUpdate(target{{ className relation.target.name }}Store);
-        } on ApiException {
+        } on ApiException catch (error) {
             errorMessage = "Could not validate {{ variable relation.target.name }}";
+            throw error;
         }
     }
 
