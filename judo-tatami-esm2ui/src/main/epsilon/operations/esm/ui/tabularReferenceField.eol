@@ -20,6 +20,7 @@ operation ESM!esm::ui::TabularReferenceField createTableFromTabularReferenceFiel
 		self.~originalRelation = relation;
 		table.name = self.name;	
 	    table.label = self.getUiLabel();
+	    table.icon = self.iconName;
 		
 		table.col = self.basis;
 		table.row = self.maxVisibleElements;
@@ -100,6 +101,8 @@ operation ESM!esm::ui::TabularReferenceField createButtonFromTabularReferenceFie
 		self.~originalRelation = relation;
 		table.dataElement = dataElement;
 		table.col = self.basis;
+		table.label = self.getUiLabel();
+	    table.icon = self.iconName;
 		
 		for (column in self.columns) {
 			table.columns.add(column.map(application));

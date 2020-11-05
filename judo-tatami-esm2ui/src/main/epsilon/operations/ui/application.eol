@@ -13,6 +13,7 @@ operation UI!ui::Application calculatePageActions() {
 	}
 
 	for (table : UI!ui::Table in UI!ui::Table.all().select(t | t.getPageDefinition().eContainer() == self)) {
+		uiUtils.wrapAndLabelTable(table);
 		uiUtils.addActionsToTable(table,self);
 	}
 }
