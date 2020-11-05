@@ -1,4 +1,4 @@
-operation UI!ui::Table calculateActions(application : UI!ui::Application) {
+/*operation UI!ui::Table calculateActions(application : UI!ui::Application) {
 	var relationType = self.getRelationType();
 	var classType = self.getTargetClassType();
 
@@ -32,32 +32,30 @@ operation UI!ui::Table calculateActions(application : UI!ui::Application) {
 			}
 		}
 	
-		if (relationType.isDefined()) {
-			if (relationType.getIsRelationBehaviourTypeCreatable()) {
-				var page = application.pages.selectOne(p | p.pageType = UI!ui::PageType#CREATE 
-				and p.getRelationType() == relationType);
-				if (page.isDefined()) {
-					log.debug(" ========= TABLE DEF: CREATE: " + relationType.name + " - " + page.name);
-				    var createAction = new UI!ui::CreateAction();
-					createAction.target = page;
-					self.relationActions.add(createAction);	
-				} else {
-					log.warn("No update page defined for: " + self.name + " - " + relationType.eContainer.name + "." + relationType.name);
-				}
+		if (relationType.getIsRelationBehaviourTypeCreatable()) {
+			var page = application.pages.selectOne(p | p.pageType = UI!ui::PageType#CREATE 
+			and p.getRelationType() == relationType);
+			if (page.isDefined()) {
+				log.debug(" ========= TABLE DEF: CREATE: " + relationType.name + " - " + page.name);
+			    var createAction = new UI!ui::CreateAction();
+				createAction.target = page;
+				self.relationActions.add(createAction);	
+			} else {
+				log.warn("No update page defined for: " + self.name + " - " + relationType.eContainer.name + "." + relationType.name);
 			}
-			if (relationType.getIsRelationBehaviourTypeRemovable()) {
-				self.rowActions.add(new UI!ui::RemoveAction());
-			}
-			if (relationType.getIsRelationBehaviourTypeUnsetable()) {
-				self.rowActions.add(new UI!ui::UnsetAction());
-			}	
-			if (relationType.getIsRelationBehaviourTypeSetable()) {
-				self.relationActions.add(new UI!ui::SetAction());
-			}
-			if (relationType.getIsRelationBehaviourTypeAddable()) {
-				self.relationActions.add(new UI!ui::AddAction());
-			}
+		}
+		if (relationType.getIsRelationBehaviourTypeRemovable()) {
+			self.rowActions.add(new UI!ui::RemoveAction());
+		}
+		if (relationType.getIsRelationBehaviourTypeUnsetable()) {
+			self.rowActions.add(new UI!ui::UnsetAction());
+		}	
+		if (relationType.getIsRelationBehaviourTypeSetable()) {
+			self.relationActions.add(new UI!ui::SetAction());
+		}
+		if (relationType.getIsRelationBehaviourTypeAddable()) {
+			self.relationActions.add(new UI!ui::AddAction());
 		}
 	}
 	// TODO: Handling Input/Output operation parameters.
-}
+}*/

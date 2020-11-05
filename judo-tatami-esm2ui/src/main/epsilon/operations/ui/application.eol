@@ -9,11 +9,11 @@ operation UI!ui::Application resolveActionPageDefinitions() {
 operation UI!ui::Application calculatePageActions() {
 
 	for (pageDefinition : UI!ui::PageDefinition in self.pages) {
-		pageDefinition.calculateActions(self);
+		uiUtils.addInstanceActionsToPage(pageDefinition,self);
 	}
 
 	for (table : UI!ui::Table in UI!ui::Table.all().select(t | t.getPageDefinition().eContainer() == self)) {
-		table.calculateActions(self);
+		uiUtils.addActionsToTable(table,self);
 	}
 }
 

@@ -1,4 +1,4 @@
-operation UI!ui::PageDefinition calculateActions(application : UI!ui::Application) {
+/*operation UI!ui::PageDefinition calculateActions(application : UI!ui::Application) {
 	var relationType = self.getRelationType();
 	var classType = self.getTargetClassType();
 
@@ -59,7 +59,7 @@ operation UI!ui::PageDefinition calculateActions(application : UI!ui::Applicatio
 			self.instanceActions.add(new UI!ui::AddAction());
 		}
 	}
-}
+}*/
 
 operation UI!ui::PageDefinition clonePage(classType : UI!ui::data::ClassType, relation : UI!ui::data::RelationType, anchor : String) : UI!ui::PageDefinition {
 	var clone = ecoreUtil.copy(self);
