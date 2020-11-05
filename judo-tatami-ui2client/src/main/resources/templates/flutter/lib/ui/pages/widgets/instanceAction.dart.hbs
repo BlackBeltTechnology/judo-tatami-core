@@ -4,7 +4,8 @@ JudoButton(
 {{# if action.isSaveAction }}
     onPressed: () async {
     {{# if page.isPageTypeUpdate }}
-        var res = await {{ fqVariable page.name }}PageStore.validate(target{{ className page.relationType.target.name }}Store);
+        var res = await {{ fqVariable page.name }}PageStore.validate(target{{ className page.relationType.target.name }}Store)
+            .catchError((onError) => judoAlert(context: context, title: 'Error', text: onError.toString()));
         if (res != null) {
             navigation.close(target{{ className page.dataElement.target.name }}Store);
         }
@@ -12,7 +13,8 @@ JudoButton(
     {{# if page.isPageTypeCreate }}
         {{# unless page.dataElement.isRelationKindAggregation }}
             {{# unless page.dataElement.isRelationKindComposition }}
-        var res = await {{ fqVariable page.name }}PageStore.validate({{# unless page.dataElement.isAccess}}owner{{ className page.dataElement.owner.name }}Store, {{/unless}}target{{ className page.relationType.target.name }}Store);
+        var res = await {{ fqVariable page.name }}PageStore.validate({{# unless page.dataElement.isAccess}}owner{{ className page.dataElement.owner.name }}Store, {{/unless}}target{{ className page.relationType.target.name }}Store)
+            .catchError((onError) => judoAlert(context: context, title: 'Error', text: onError.toString()));
         if (res != null) {
             navigation.close(target{{ className page.dataElement.target.name }}Store);
         }
@@ -35,13 +37,15 @@ JudoButton(
         var created = await navigation.open(Routes.{{ fqVariable action.target.name }}Page{{# unless page.dataElement.isAccess}},
             arguments: {{ fqClass action.target.name }}PageArguments(owner{{ className page.dataElement.owner.name }}Store: owner{{ className page.dataElement.owner.name }}Store){{~/ unless}});
         if (created != null) {
-            {{ fqVariable page.name }}PageStore.create{{ fqClass page.relationType.name }}({{# unless page.dataElement.isAccess}}owner{{ className page.dataElement.owner.name }}Store ,{{/ unless}}created);
+            {{ fqVariable page.name }}PageStore.create{{ fqClass page.relationType.name }}({{# unless page.dataElement.isAccess}}owner{{ className page.dataElement.owner.name }}Store ,{{/ unless}}created)
+                .catchError((onError) => judoAlert(context: context, title: 'Error', text: onError.toString()));
         }
     }{{# unless page.dataElement.isAccess}}{{# unless page.dataElement.isRelationKindStatic}} : null{{/ unless}}{{/ unless}},
 {{/ if }}
 {{# if action.isDeleteAction }}
     onPressed:{{# unless page.dataElement.isAccess}}{{# unless page.dataElement.isRelationKindStatic}} owner{{ className page.dataElement.owner.name }}Store.internal__updatable &&{{/ unless}}{{/ unless}} target{{ className page.dataElement.target.name }}Store.internal__deletable ? () async {
-        await {{ fqVariable page.name }}PageStore.delete{{ className page.relationType.target.name }}(target{{ className page.dataElement.target.name }}Store);
+        await {{ fqVariable page.name }}PageStore.delete{{ className page.relationType.target.name }}(target{{ className page.dataElement.target.name }}Store)
+            .catchError((onError) => judoAlert(context: context, title: 'Error', text: onError.toString()));
         navigation.close(target{{ className page.dataElement.target.name }}Store);
     } : null,
 {{/ if }}
@@ -53,7 +57,8 @@ JudoButton(
         arguments: {{ fqClass action.target.name }}PageArguments(target{{ className page.dataElement.target.name }}Store: cloned));
         if (ret != null) {
             target{{ className page.dataElement.target.name }}Store.updateWith(cloned);
-            var updated = await {{ fqVariable page.name }}PageStore.update{{ className page.relationType.target.name }}(target{{ className page.dataElement.target.name }}Store);
+            var updated = await {{ fqVariable page.name }}PageStore.update{{ className page.relationType.target.name }}(target{{ className page.dataElement.target.name }}Store)
+                .catchError((onError) => judoAlert(context: context, title: 'Error', text: onError.toString()));
             if (updated != null) {
                 target{{ className page.dataElement.target.name }}Store.updateWith(updated);
             }
@@ -65,7 +70,8 @@ JudoButton(
         var selected =
             {{> templates/flutter/lib/ui/pages/widgets/dialog.dart.hbs relation=page.dataElement}}
         if (selected != null) {
-            {{fqVariable page.name}}PageStore.add{{ fqClass page.relationType.name }}(owner{{ className page.dataElement.owner.name }}Store, selected);
+            {{fqVariable page.name}}PageStore.add{{ fqClass page.relationType.name }}(owner{{ className page.dataElement.owner.name }}Store, selected)
+                .catchError((onError) => judoAlert(context: context, title: 'Error', text: onError.toString()));
         }
     }{{# unless page.dataElement.isAccess}}{{# unless page.dataElement.isRelationKindStatic}} : null{{/ unless}}{{/ unless}},
 {{/if}}
@@ -74,7 +80,8 @@ JudoButton(
         var selected =
             {{> templates/flutter/lib/ui/pages/widgets/dialog.dart.hbs relation=page.dataElement}}
         if (selected != null) {
-            {{fqVariable page.name}}PageStore.set{{ fqClass page.relationType.name }}(owner{{ className page.dataElement.owner.name }}Store, selected);
+            {{fqVariable page.name}}PageStore.set{{ fqClass page.relationType.name }}(owner{{ className page.dataElement.owner.name }}Store, selected)
+                .catchError((onError) => judoAlert(context: context, title: 'Error', text: onError.toString()));
         }
     }{{# unless page.dataElement.isAccess}}{{# unless page.dataElement.isRelationKindStatic}} : null{{/ unless}}{{/ unless}},
 {{/if}}

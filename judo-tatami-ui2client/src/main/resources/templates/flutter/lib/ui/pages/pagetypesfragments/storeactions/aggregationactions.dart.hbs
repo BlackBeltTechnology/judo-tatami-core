@@ -10,8 +10,9 @@ Future<void> create{{ fqClass relation.name }}({{# unless relation.isAccess}}{{ 
         {{ else }}
         owner{{ className relation.owner.name }}Store.{{variable relation.name}}{{# if relation.isCollection }}.add(target{{ className relation.target.name }}Store){{ else }} = target{{ className relation.target.name }}Store{{/ if }};
         {{/ if }}
-    } on ApiException {
+    } on ApiException catch (error) {
         errorMessage = "Could not create {{ relation.name }}";
+        throw error;
     }
 }
 
@@ -27,8 +28,9 @@ Future<List<{{ fqClass relation.target.name }}Store>> add{{fqClass relation.name
         owner{{ className relation.owner.name }}Store.{{variable relation.name}}.addAll([selected{{ className relation.target.name }}Store]);
         {{/ if }}
         return owner{{ className relation.owner.name }}Store.{{variable relation.name}};
-    } on ApiException {
+    } on ApiException catch (error) {
         errorMessage = "Could not add {{relation.name}}";
+        throw error;
     }
 }
 
@@ -44,8 +46,9 @@ Future<void> remove{{ fqClass relation.name }}({{ fqClass relation.owner.name }}
         {{ else }}
         owner{{ className relation.owner.name }}Store.{{variable relation.name}}.remove(selected{{ className relation.target.name }}Store); // TODO: fix with remove more than 1 element
         {{/ if}}
-    } on ApiException {
+    } on ApiException catch (error) {
         errorMessage = "Could not remove {{ relation.name }}";
+        throw error;
     }
 }
 
@@ -69,8 +72,9 @@ Future<void> remove{{ fqClass relation.name }}({{ fqClass relation.owner.name }}
         return owner{{ className relation.owner.name }}Store.{{ relation.name }};
     {{/if}}
     {{/if}}
-    } on ApiException {
+    } on ApiException catch (error) {
         errorMessage = "Could not load {{ relation.name }}";
+        throw error;
     }
 }
 
@@ -83,8 +87,9 @@ Future<List<{{fqClass relation.target.name}}Store>> getRangeFor{{ fqClass relati
         var temporaryRangeList = List<{{fqClass relation.target.name}}Store>();
         temporaryRangeList.addAll(await _{{ fqVariable application.actor.name }}Repository.{{ fqVariable relation.owner.name }}RangeOf{{ fqClass relation.name }}ToUpdate(owner{{ className relation.owner.name }}Store));
         return temporaryRangeList;
-    } on ApiException {
+    } on ApiException catch (error) {
         errorMessage = "Could not get range of {{ relation.name }}";
+        throw error;
     }
 }
 
@@ -105,8 +110,9 @@ Future<void> set{{ fqClass relation.name }}({{ fqClass relation.owner.name }}Sto
         {{else}}
         owner{{ className relation.owner.name }}Store.{{variable relation.name}} = {{# if relation.isCollection }}[selected{{ className relation.target.name }}Store]{{else}}selected{{ className relation.target.name }}Store{{/ if}};
         {{/ if}}
-    } on ApiException {
+    } on ApiException catch (error) {
         errorMessage = "Could not set {{ relation.name }}";
+        throw error;
     }
 }
 
@@ -121,8 +127,9 @@ Future<void> unset{{ fqClass relation.name }}({{ fqClass relation.owner.name }}S
     {{else}}
         owner{{ className relation.owner.name }}Store.{{variable relation.name}} = null;
     {{/ if}}
-    } on ApiException {
+    } on ApiException catch (error) {
         errorMessage = "Could not unset {{ relation.name }}";
+        throw error;
     }
 }
 
@@ -138,8 +145,9 @@ Future<void> delete{{ className relation.target.name }}({{ fqClass relation.targ
     {{ else }}
         {{# if relation.isCollection }}owner{{ className relation.owner.name }}Store.{{variable relation.name}}.remove(target{{ className relation.target.name }}Store){{ else }}owner{{ className relation.owner.name }}Store.{{variable relation.name}} = null{{/ if }};
     {{/ if}}
-    } on ApiException {
+    } on ApiException catch (error) {
         errorMessage = "Could not delete {{ variable relation.target.name }}";
+        throw error;
     }
 }
 
@@ -154,8 +162,9 @@ Future<{{ fqClass relation.target.name }}Store> update{{ className relation.targ
     {{ else }}
         return target{{ className relation.target.name }}Store;
     {{/ if }}
-    } on ApiException {
+    } on ApiException catch (error) {
         errorMessage = "Could not update {{ variable relation.target.name }}";
+        throw error;
     }
 }
 

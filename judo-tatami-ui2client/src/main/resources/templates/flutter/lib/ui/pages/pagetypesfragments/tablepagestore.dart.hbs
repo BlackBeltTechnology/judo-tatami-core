@@ -25,8 +25,9 @@ abstract class _{{ fqClass page.name }}PageStore with Store {
             var created = await _{{ fqVariable application.actor.name }}Repository.{{ fqVariable relation.owner.name }}{{ fqClass relation.name }}Create({{# unless page.dataElement.isAccess}}owner{{ className relation.owner.name }}Store, {{/unless}}target{{ className relation.target.name }}Store);
             get{{ fqClass relation.name }}({{# unless page.dataElement.isAccess}}owner{{ className relation.owner.name }}Store{{/unless}});
             return created;
-        } on ApiException {
+        } on ApiException catch (error) {
             errorMessage = "Could not create {{ relation.name }}";
+            throw error;
         }
     }
 
@@ -38,8 +39,9 @@ abstract class _{{ fqClass page.name }}PageStore with Store {
             await _{{ fqVariable application.actor.name }}Repository.{{ fqVariable relation.owner.name }}Add{{fqClass relation.name}}(owner{{ className relation.owner.name }}Store, [selected{{ className relation.target.name }}Store]);
             owner{{ className relation.owner.name }}Store.{{variable relation.name}}.addAll([selected{{ className relation.target.name }}Store]);
             return owner{{ className relation.owner.name }}Store.{{variable relation.name}};
-        } on ApiException {
+        } on ApiException catch (error) {
             errorMessage = "Could not add {{relation.name}}";
+            throw error;
         }
     }
 
@@ -52,8 +54,9 @@ abstract class _{{ fqClass page.name }}PageStore with Store {
             {{ relation.name }}StoreFuture = ObservableFuture(_{{ fqVariable application.actor.name }}Repository.{{ fqVariable relation.owner.name }}Remove{{fqClass relation.name}}(owner{{ className relation.owner.name }}Store, [selected{{ className relation.target.name }}Store]));
             await {{ relation.name }}StoreFuture;
             owner{{ className relation.owner.name }}Store.{{variable relation.name}}.remove(selected{{ className relation.target.name }}Store); // TODO: fix with remove more than 1 element
-        } on ApiException {
+        } on ApiException catch (error) {
             errorMessage = "Could not remove {{ relation.name }}";
+            throw error;
         }
     }
 
@@ -80,8 +83,9 @@ abstract class _{{ fqClass page.name }}PageStore with Store {
             return owner{{ className relation.owner.name }}Store.{{ relation.name }};
             {{/if}}
             {{/if}}
-        } on ApiException {
+        } on ApiException catch (error) {
             errorMessage = "Could not load {{ relation.name }}";
+            throw error;
         }
     }
 
@@ -95,8 +99,9 @@ abstract class _{{ fqClass page.name }}PageStore with Store {
             {{ fqVariable relation.name }}StoreFuture = ObservableFuture(_{{ fqVariable application.actor.name }}Repository.{{ fqVariable relation.owner.name }}RangeOf{{ fqClass relation.name }}ToUpdate(owner{{ className relation.owner.name }}Store));
             temporaryRangeList.addAll(await {{ fqVariable relation.name }}StoreFuture);
             return temporaryRangeList;
-        } on ApiException {
+        } on ApiException catch (error) {
             errorMessage = "Could not get range of {{ relation.name }}";
+            throw error;
         }
     }
 
@@ -113,8 +118,9 @@ abstract class _{{ fqClass page.name }}PageStore with Store {
             {{/ if}}
             }
             get{{ fqClass relation.name }}({{# unless page.dataElement.isAccess}}owner{{ className relation.owner.name }}Store{{/unless}});
-        } on ApiException {
+        } on ApiException catch (error) {
             errorMessage = "Could not set {{ relation.name }}";
+            throw error;
         }
     }
 
@@ -129,8 +135,9 @@ abstract class _{{ fqClass page.name }}PageStore with Store {
         {{else}}
             owner{{ className relation.owner.name }}Store.{{variable relation.name}} = null;
         {{/ if}}
-        } on ApiException {
+        } on ApiException catch (error) {
             errorMessage = "Could not unset {{ relation.name }}";
+            throw error;
         }
     }
 
@@ -142,8 +149,9 @@ abstract class _{{ fqClass page.name }}PageStore with Store {
             errorMessage = null;
             await _{{ fqVariable application.actor.name }}Repository.{{fqVariable relation.target.name}}Delete(target{{ className relation.target.name }}Store);
             get{{ fqClass relation.name }}({{# unless page.dataElement.isAccess}}owner{{ className relation.owner.name }}Store{{/unless}});
-        } on ApiException {
+        } on ApiException catch (error) {
             errorMessage = "Could not delete {{ variable relation.target.name }}";
+            throw error;
         }
     }
 
@@ -154,8 +162,9 @@ abstract class _{{ fqClass page.name }}PageStore with Store {
         try {
             errorMessage = null;
             return await _{{ fqVariable application.actor.name }}Repository.{{fqVariable relation.target.name}}Update(target{{ className relation.target.name }}Store);
-        } on ApiException {
+        } on ApiException catch (error) {
             errorMessage = "Could not update {{ variable relation.target.name }}";
+            throw error;
         }
     }
 
