@@ -16,8 +16,9 @@ abstract class _{{ fqClass page.name }}PageStore with Store {
         try {
             errorMessage = null;
             target{{ className page.dataElement.target.name }}Store.updateWith(await _{{ fqVariable application.actor.name }}Repository.{{fqVariable relation.target.name}}GetByIdentifier(target{{ className page.dataElement.target.name }}Store));
-        } on ApiException {
+        } on ApiException catch (error) {
             errorMessage = "Could not refresh {{ variable relation.target.name }}";
+            throw error;
         }
     }
 
@@ -28,8 +29,9 @@ abstract class _{{ fqClass page.name }}PageStore with Store {
         try {
             errorMessage = null;
             return await _{{ fqVariable application.actor.name }}Repository.{{fqVariable relation.target.name}}Update(target{{ className page.dataElement.target.name }}Store);
-        } on ApiException {
+        } on ApiException catch (error) {
             errorMessage = "Could not update {{ variable relation.target.name }}";
+            throw error;
         }
     }
 
@@ -40,8 +42,9 @@ abstract class _{{ fqClass page.name }}PageStore with Store {
         try {
             errorMessage = null;
             await _{{ fqVariable application.actor.name }}Repository.{{fqVariable relation.target.name}}Delete(target{{ className page.dataElement.target.name }}Store);
-        } on ApiException {
+        } on ApiException catch (error) {
             errorMessage = "Could not delete {{ variable relation.name }}";
+            throw error;
         }
     }
 
@@ -52,8 +55,9 @@ abstract class _{{ fqClass page.name }}PageStore with Store {
         try {
             errorMessage = null;
             return await _{{ fqVariable application.actor.name }}Repository.{{ fqVariable relation.owner.name }}{{ fqClass relation.name }}ValidateForCreate({{# unless page.dataElement.isAccess}}owner{{ className relation.owner.name }}Store, {{/unless}}target{{ className relation.target.name }}Store);
-        } on ApiException {
+        } on ApiException catch (error) {
             errorMessage = "Could not validate {{ relation.name }}";
+            throw error;
         }
     }
 
