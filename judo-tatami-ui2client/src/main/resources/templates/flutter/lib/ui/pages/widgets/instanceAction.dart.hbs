@@ -97,12 +97,15 @@ JudoButton(
 {{# if action.isCallOperationAction }}
     onPressed: () async {
         {{#if action.operation.isStatic}}
-        {{#if action.operation.output}}{{fqClass action.operation.output.target.name}}Store {{fqVariable action.operation.output.target.name}}Store = {{/if}}await {{fqVariable page.name}}PageStore.{{fqVariable action.operation.owner.name}}{{className action.operation.name}}();
+        {{#if action.operation.output}}{{fqClass action.operation.output.target.name}}Store {{fqVariable action.operation.output.target.name}}Store = {{/if}}await {{fqVariable page.name}}PageStore.{{fqVariable action.operation.owner.name}}{{className action.operation.name}}()
+            .whenComplete(() => judoAlert(context: context, title: 'Successful operation', text: '{{label}} called successfully.'))
+            .catchError((onError) => judoAlert(context: context, title: 'Error', text: onError.toString()));
         {{else}}
         {{# if action.operation.input}}
         var ret = await navigation.open(Routes.{{ fqVariable action.inputParameterPage.name }}Page);
         if (ret != null) {
-            {{#if action.operation.output}}{{fqClass action.operation.output.target.name}}Store {{fqVariable action.operation.output.target.name}}Store = {{/if}}await {{fqVariable page.name}}PageStore.{{fqVariable action.operation.owner.name}}{{className action.operation.name}}({{# if action.operation.input}}ret, {{/if}}target{{ className page.dataElement.target.name }}Store);
+            {{#if action.operation.output}}{{fqClass action.operation.output.target.name}}Store {{fqVariable action.operation.output.target.name}}Store = {{/if}}await {{fqVariable page.name}}PageStore.{{fqVariable action.operation.owner.name}}{{className action.operation.name}}({{# if action.operation.input}}ret, {{/if}}target{{ className page.dataElement.target.name }}Store)
+                .catchError((onError) => judoAlert(context: context, title: 'Error', text: onError.toString()));
             {{#if action.operation.output}}
             if ({{fqVariable action.operation.output.target.name}}Store != null) {
                 await navigation.open(Routes.{{ fqVariable action.outputParameterPage.name }}Page,
@@ -112,14 +115,17 @@ JudoButton(
             {{/if}}
         {{else}}
             {{#if action.operation.output}}
-            {{#if action.operation.output}}{{fqClass action.operation.output.target.name}}Store {{fqVariable action.operation.output.target.name}}Store = {{/if}}await {{fqVariable page.name}}PageStore.{{fqVariable action.operation.owner.name}}{{className action.operation.name}}({{# if action.operation.input}}ret, {{/if}}target{{ className page.dataElement.target.name }}Store);
+            {{#if action.operation.output}}{{fqClass action.operation.output.target.name}}Store {{fqVariable action.operation.output.target.name}}Store = {{/if}}await {{fqVariable page.name}}PageStore.{{fqVariable action.operation.owner.name}}{{className action.operation.name}}({{# if action.operation.input}}ret, {{/if}}target{{ className page.dataElement.target.name }}Store)
+                .catchError((onError) => judoAlert(context: context, title: 'Error', text: onError.toString()));
             if ({{fqVariable action.operation.output.target.name}}Store != null) {
                 await navigation.open(Routes.{{ fqVariable action.outputParameterPage.name }}Page,
                     arguments: {{ fqClass action.outputParameterPage.name }}PageArguments(target{{className action.operation.output.target.name}}Store: {{fqVariable action.operation.output.target.name}}Store));
             }
         }
             {{else}}
-        {{#if action.operation.output}}{{fqClass action.operation.output.target.name}}Store {{fqVariable action.operation.output.target.name}}Store = {{/if}}await {{fqVariable page.name}}PageStore.{{fqVariable action.operation.owner.name}}{{className action.operation.name}}({{# if action.operation.input}}ret, {{/if}}target{{ className page.dataElement.target.name }}Store);
+        {{#if action.operation.output}}{{fqClass action.operation.output.target.name}}Store {{fqVariable action.operation.output.target.name}}Store = {{/if}}await {{fqVariable page.name}}PageStore.{{fqVariable action.operation.owner.name}}{{className action.operation.name}}({{# if action.operation.input}}ret, {{/if}}target{{ className page.dataElement.target.name }}Store)
+            .whenComplete(() => judoAlert(context: context, title: 'Successful operation', text: '{{label}} called successfully.'))
+            .catchError((onError) => judoAlert(context: context, title: 'Error', text: onError.toString()));
             {{/if}}
         {{/if}}
         {{/if}}
