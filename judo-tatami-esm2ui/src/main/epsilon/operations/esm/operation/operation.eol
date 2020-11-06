@@ -30,10 +30,6 @@ operation ESM!esm::`operation`::Operation createViewPageForOperationOutput(appli
 		pageContainer.children.add(self.output.target.view.map(application));
 	}
 	
-	if (preview) {
-		return page;	
-	}
-	
 	page.dataElement = self.mapOperationOutputType(application, self.eContainer().mapClassType(application));
     return page;
 }
@@ -71,10 +67,6 @@ operation ESM!esm::`operation`::Operation createFormPageForOperationInput(applic
 		log.warn(self.input.target.fqName() + " has no form defined");
 	} else {
 		pageContainer.children.add(self.input.target.form.map(application));
-	}
-	
-	if (preview) {
-		return page;
 	}
 	
 	page.dataElement = self.mapOperationInputType(application, self.eContainer().mapClassType(application));
@@ -132,10 +124,6 @@ operation ESM!esm::`operation`::Operation createTablePageForOperationInput(appli
 	  	detailPageContainer.children.add(self.input.target.view.map(application));
 	  	table.detail = detail;        
     } */
-    	
-	if (preview) {
-		return page;
-	}
 	
 	page.dataElement = self.mapOperationInputType(application, clazz);
     return page;
@@ -193,10 +181,6 @@ operation ESM!esm::`operation`::Operation createTablePageForOperationOutput(appl
 	  	detailPageContainer.children.add(self.output.target.view.map(application));
 	  	table.detail = detail;        
     } */
-    
-	if (preview) {
-		return page;
-	}
 	
 	page.dataElement = self.mapOperationOutputType(application, clazz);
     return page;

@@ -7,10 +7,6 @@ import "modules/accesspoint/pageDefinition.etl";
 import "modules/accesspoint/navigation.etl";
 import "modules/ui/ui.etl";
 
-pre {
-	var preview = false;
-}
-
 post {
 
 	var ecoreUtil = new Native("org.eclipse.emf.ecore.util.EcoreUtil");
@@ -29,7 +25,7 @@ post {
 			log.debug("==============================================================");
 		//application.calculateRelationBehaviour();
 		application.resolveActionPageDefinitions();
-		application.calculatePageActions();
+		application.calculatePageActions(false);
 	}
 	
 	for (action : UI!ui::Action in UI!ui::Action.all()) {

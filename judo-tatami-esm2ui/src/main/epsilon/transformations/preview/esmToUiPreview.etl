@@ -4,10 +4,16 @@ import "pageDefinitionForPreview.etl";
 pre {
 	var rootElement = previewElement.getRoot();
     var application : UI!ui::Application = createBlankApplicationForPreview();
-    var preview = true;
 }
 
 post {
+
+	var relation : UI!ui::data::RelationType = application.actor.relations.selectOne(r | r.name == "actorRelation");
+	relation.target = previewElement.getRoot().eContainer().mapClassType(application);
+
+	for (application : UI!ui::Application in UI!ui::Application.all()) {
+		application.calculatePageActions(true);
+	}
 
 	for (input : UI!ui::Input in UI!ui::Input.all()) {
 		input.setIcon();

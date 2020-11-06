@@ -179,7 +179,7 @@ public class Esm2UiPreviewTest {
         
         Optional<TransferObjectForm> form = StreamSupport.stream(esmContents.spliterator(), true)
         		.filter(e -> (TransferObjectForm.class).isAssignableFrom(e.getClass()))
-                .map(e -> (TransferObjectForm) e).filter(v -> v.getName().equals("ShipperInfoForm")).findAny();
+                .map(e -> (TransferObjectForm) e).filter(v -> v.getName().equals("InternationalOrderInfoForm")).findAny();
         
         Optional<TransferObjectTable> table = StreamSupport.stream(esmContents.spliterator(), true)
         		.filter(e -> (TransferObjectTable.class).isAssignableFrom(e.getClass()))
