@@ -40,7 +40,7 @@ operation ASM!EOperation toOpenAPIPath() : String {
         }
     }
 
-    return path.replaceFirst("^" + asmUtils.getModel().get().name + "\\.", "").replace("[#\\.]", "/").replace("[^0-9a-zA-Z_~/]", "_").replace("/_default_transferobjecttypes","");
+    return path.replaceFirst("^" + asmUtils.getModel().get().name + "\\.", "").replace("[#\\.]", "/").replace("[^0-9a-zA-Z_~/]", "_").replace("_default_transferobjecttypes/","");
 }
 
 // convert a string (ie. name) to OpenAPI name (key)
