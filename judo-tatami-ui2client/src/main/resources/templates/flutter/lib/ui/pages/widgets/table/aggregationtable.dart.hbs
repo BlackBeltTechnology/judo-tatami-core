@@ -28,6 +28,7 @@ JudoColumn(
                             {{ fqVariable page.name }}PageStore.create{{ fqClass relation.name }}({{# unless relation.isAccess}}target{{ className relation.owner.name }}Store ,{{/ unless}}created)
                                 .catchError((onError) => judoAlert(context: context, title: 'Error', text: onError.toString()));
                         {{# unless page.isPageTypeUpdate }}
+                        {{# unless page.isPageTypeOperationOutput}}
                             {{# unless page.dataElement.isRelationKindAggregation }}
                                 {{# unless page.dataElement.isRelationKindComposition }}
                             var validate = await {{ fqVariable page.name }}PageStore.validate({{# unless page.dataElement.isAccess}}owner{{ className page.dataElement.owner.name }}Store, {{/unless}}target{{ className page.dataElement.target.name }}Store)
@@ -38,7 +39,8 @@ JudoColumn(
                                 // validate message
                             }
                                 {{/unless}}
-                            {{/ unless }}
+                            {{/unless}}
+                        {{/ unless }}
                         {{/unless}}
                         }
                     }{{# unless relation.isAccess}}{{# unless relation.isRelationKindStatic}} : null{{/ unless}}{{/ unless}},

@@ -27,6 +27,9 @@ JudoButton(
         navigation.close(target{{ className page.dataElement.target.name }}Store);
         {{/ if }}
     {{/ if }}
+    {{# if page.isPageTypeOperationInput }}
+        navigation.close(target{{ className page.dataElement.target.name }}Store);
+    {{/if}}
     },
 {{/ if}}
 {{# if action.isBackAction }}
@@ -97,13 +100,28 @@ JudoButton(
         {{#if action.operation.output}}{{fqClass action.operation.output.target.name}}Store {{fqVariable action.operation.output.target.name}}Store = {{/if}}await {{fqVariable page.name}}PageStore.{{fqVariable action.operation.owner.name}}{{className action.operation.name}}();
         {{else}}
         {{# if action.operation.input}}
-        {{fqClass action.operation.input.target.name}}Store {{fqVariable action.operation.input.target.name}}Store = {{fqClass action.operation.input.target.name}}Store();
-        // TODO open the input page and pass the store
+        var ret = await navigation.open(Routes.{{ fqVariable action.inputParameterPage.name }}Page);
+        if (ret != null) {
+            {{#if action.operation.output}}{{fqClass action.operation.output.target.name}}Store {{fqVariable action.operation.output.target.name}}Store = {{/if}}await {{fqVariable page.name}}PageStore.{{fqVariable action.operation.owner.name}}{{className action.operation.name}}({{# if action.operation.input}}ret, {{/if}}target{{ className page.dataElement.target.name }}Store);
+            {{#if action.operation.output}}
+            if ({{fqVariable action.operation.output.target.name}}Store != null) {
+                await navigation.open(Routes.{{ fqVariable action.outputParameterPage.name }}Page,
+                    arguments: {{ fqClass action.outputParameterPage.name }}PageArguments(target{{className action.operation.output.target.name}}Store: {{fqVariable action.operation.output.target.name}}Store));
+            }
+        }
+            {{/if}}
+        {{else}}
+            {{#if action.operation.output}}
+            {{#if action.operation.output}}{{fqClass action.operation.output.target.name}}Store {{fqVariable action.operation.output.target.name}}Store = {{/if}}await {{fqVariable page.name}}PageStore.{{fqVariable action.operation.owner.name}}{{className action.operation.name}}({{# if action.operation.input}}ret, {{/if}}target{{ className page.dataElement.target.name }}Store);
+            if ({{fqVariable action.operation.output.target.name}}Store != null) {
+                await navigation.open(Routes.{{ fqVariable action.outputParameterPage.name }}Page,
+                    arguments: {{ fqClass action.outputParameterPage.name }}PageArguments(target{{className action.operation.output.target.name}}Store: {{fqVariable action.operation.output.target.name}}Store));
+            }
+        }
+            {{else}}
+        {{#if action.operation.output}}{{fqClass action.operation.output.target.name}}Store {{fqVariable action.operation.output.target.name}}Store = {{/if}}await {{fqVariable page.name}}PageStore.{{fqVariable action.operation.owner.name}}{{className action.operation.name}}({{# if action.operation.input}}ret, {{/if}}target{{ className page.dataElement.target.name }}Store);
+            {{/if}}
         {{/if}}
-        {{#if action.operation.output}}{{fqClass action.operation.output.target.name}}Store {{fqVariable action.operation.output.target.name}}Store = {{/if}}await {{fqVariable page.name}}PageStore.{{fqVariable action.operation.owner.name}}{{className action.operation.name}}({{# if action.operation.input}}{{fqVariable action.operation.input.target.name}}Store, {{/if}}target{{ className page.dataElement.target.name }}Store);
-        {{/if}}
-        {{#if action.operation.output}}
-        // TODO open the output view page with passing the result
         {{/if}}
     },
 {{/if}}
