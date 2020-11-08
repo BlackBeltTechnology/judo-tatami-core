@@ -1,0 +1,17 @@
+class {{ fqClass page.name }}PageStore extends _{{ fqClass page.name }}PageStore with _${{ fqClass page.name }}PageStore {}
+
+abstract class _{{ fqClass page.name }}PageStore with Store {
+    @observable
+    String errorMessage;
+
+    {{# each page.dataElement.target.relations as |relation| }}
+        {{# unless isMemberTypeTransient }}
+            {{# if isRelationKindAggregation }}
+    {{> templates/flutter/lib/ui/pages/pagetypesfragments/storeactions/aggregationactions.dart.hbs page=page relation=relation}}
+            {{/ if}}
+            {{# if isRelationKindComposition }}
+    {{> templates/flutter/lib/ui/pages/pagetypesfragments/storeactions/aggregationactions.dart.hbs page=page relation=relation}}
+            {{/ if}}
+        {{/ unless }}
+    {{/ each}}
+}

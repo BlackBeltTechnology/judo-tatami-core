@@ -33,9 +33,7 @@ class {{ fqClass ap.name }}RepositoryStoreMapper {
     {{/ if }}
     // Attributes
     {{# each attributes }}
-        {{# unless (isTransientAttribute this) }}
     {{ variable ../name }}Store.{{ name }} = {{ variable ../name }}.{{ name }};
-        {{/ unless }}
     {{/ each }}
     // Relations
     {{# each relations }}
@@ -76,9 +74,7 @@ class {{ fqClass ap.name }}RepositoryStoreMapper {
     // Attributes
     {{# each attributes }}
         {{# unless isReadOnly }}
-            {{# unless (isTransientAttribute this) }}
     {{ variable ../name }}.{{ name }} = {{ variable ../name }}Store.{{ name }};
-            {{/ unless }}
         {{/ unless }}
     {{/ each }}
     // Relations
@@ -113,9 +109,7 @@ class {{ fqClass ap.name }}RepositoryStoreMapper {
     // Attributes
     {{# each attributes }}
         {{# unless isReadOnly }}
-            {{# unless (isTransientAttribute this) }}
     {{ variable ../name }}.{{ name }} = {{ variable ../name }}Store.{{ name }};
-            {{/ unless}}
         {{/ unless }}
     {{/ each }}
     // Relations
