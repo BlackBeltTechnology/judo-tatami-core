@@ -24,6 +24,12 @@ part of {{ variable application.name }}.ui.pages;
 {{# if page.isPageTypeDashboard }}
 {{> templates/flutter/lib/ui/pages/pagetypesfragments/dashboardpagestore.dart.hbs }}
 {{/ if }}
+{{# if page.isPageTypeOperationInput }}
+{{> templates/flutter/lib/ui/pages/pagetypesfragments/operationinputpagestore.dart.hbs }}
+{{/ if }}
+{{# if page.isPageTypeOperationOutput }}
+{{> templates/flutter/lib/ui/pages/pagetypesfragments/operationoutputpagestore.dart.hbs }}
+{{/ if }}
 
 
 class {{ fqClass page.name }}Page extends StatefulWidget {
@@ -43,6 +49,12 @@ class {{ fqClass page.name }}Page extends StatefulWidget {
 {{/ if }}
 {{# if page.isPageTypeUpdate }}
 {{> templates/flutter/lib/ui/pages/pagetypesfragments/editpagefragment.dart.hbs }}
+{{/ if }}
+{{# if page.isPageTypeOperationInput }}
+{{> templates/flutter/lib/ui/pages/pagetypesfragments/operationinputpagefragment.dart.hbs }}
+{{/ if }}
+{{# if page.isPageTypeOperationOutput }}
+{{> templates/flutter/lib/ui/pages/pagetypesfragments/operationoutputpagefragment.dart.hbs }}
 {{/ if }}
 
     @override
@@ -85,6 +97,16 @@ class {{ fqClass page.name }}Page extends StatefulWidget {
                             , {{fqVariable page.name}}PageStore
                             {{~/ if ~}}
 
+                            {{~# if page.isPageTypeOperationInput ~}}
+                            , target{{ className page.dataElement.target.name }}Store
+                            , {{fqVariable page.name}}PageStore
+                            {{~/ if ~}}
+
+                            {{~# if page.isPageTypeOperationOutput ~}}
+                            , target{{ className page.dataElement.target.name }}Store
+                            , {{fqVariable page.name}}PageStore
+                            {{~/ if ~}}
+
                         );
                     }
                     {{/unless}}
@@ -118,6 +140,15 @@ class {{ fqClass page.name }}Page extends StatefulWidget {
                         , {{fqVariable page.name}}PageStore
                         {{~/ if ~}}
 
+                        {{~# if page.isPageTypeOperationInput ~}}
+                        , target{{ className page.dataElement.target.name }}Store
+                        , {{fqVariable page.name}}PageStore
+                        {{~/ if ~}}
+
+                        {{~# if page.isPageTypeOperationOutput ~}}
+                        , target{{ className page.dataElement.target.name }}Store
+                        , {{fqVariable page.name}}PageStore
+                        {{~/ if ~}}
                     );
                 }),
         );

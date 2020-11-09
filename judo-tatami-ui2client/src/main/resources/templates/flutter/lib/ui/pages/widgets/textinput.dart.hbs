@@ -21,6 +21,16 @@ JudoInputText(
     readOnly: {{attributeType.isReadOnly}},
 ),
 {{/if}}
+{{#if page.isPageTypeOperationInput}}
+JudoInputText(
+    col: {{ col }},
+    disabled: {{ disabled }},
+    icon: Icon(Icons.{{ this.leadingIcon.name }}),
+    label: '{{ label }}',
+    onChanged: (value) => target{{ className page.dataElement.target.name }}Store.set{{ className attributeType.name }}(value.toString()),
+    readOnly: {{attributeType.isReadOnly}},
+    ),
+{{/if}}
 {{#if page.isPageTypeUpdate}}
 JudoInputText(
     col: {{ col }},

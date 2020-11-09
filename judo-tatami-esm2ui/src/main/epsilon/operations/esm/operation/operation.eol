@@ -223,6 +223,13 @@ operation ESM!esm::`operation`::Operation mapOperationOutputType(application : U
 operation ESM!esm::`operation`::Operation createOperationTypeForClass(application : UI!ui::Application, clazz : UI!ui::data::ClassType) : UI!ui::data::OperationType {
 	var operationType = new UI!ui::data::OperationType();	
 	operationType.name = self.name;
+
+	if (self.operationType == ESM!esm::`operation`::OperationType#MAPPED) {
+    		operationType.operationType = UI!ui::data::OperationTypeEnum#MAPPED;
+    } else if (self.operationType == ESM!esm::`operation`::OperationType#STATIC) {
+    		operationType.operationType = UI!ui::data::OperationTypeEnum#STATIC;
+    }
+
 	clazz.operations.add(operationType);
 	
 	if (self.input.isDefined()) {
