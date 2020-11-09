@@ -9,12 +9,12 @@ operation UI!ui::Application resolveActionPageDefinitions() {
 operation UI!ui::Application calculatePageActions(preview : Boolean) {
 
 	for (pageDefinition : UI!ui::PageDefinition in self.pages) {
-		uiUtils.addInstanceActionsToPage(pageDefinition,self,preview);
+		pageDefinition.calculateActions(self, preview);
 	}
 
 	for (table : UI!ui::Table in UI!ui::Table.all().select(t | t.getPageDefinition().eContainer() == self)) {
-		uiUtils.wrapAndLabelTable(table);
-		uiUtils.addActionsToTable(table,self,preview);
+		table.wrapAndLabelTable();
+		table.calculateActions(self, preview);
 	}
 }
 

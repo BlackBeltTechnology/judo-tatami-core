@@ -1,65 +1,116 @@
-/*operation UI!ui::PageDefinition calculateActions(application : UI!ui::Application) {
+operation UI!ui::PageDefinition calculateActions(application : UI!ui::Application, preview : Boolean) {
 	var relationType = self.getRelationType();
 	var classType = self.getTargetClassType();
 
-	if (self.pageType == UI!ui::PageType#CREATE) {
-		self.instanceActions.add(new UI!ui::BackAction());
-		self.instanceActions.add(new UI!ui::SaveAction());
-	} else if (self.pageType == UI!ui::PageType#UPDATE) {
-		self.instanceActions.add(new UI!ui::BackAction());
-		self.instanceActions.add(new UI!ui::SaveAction());
-	} else if (self.pageType == UI!ui::PageType#VIEW) {
-		self.instanceActions.add(new UI!ui::BackAction());
-
-		if (classType.getIsClassBehaviourTypeDeletable()) {
-			self.instanceActions.add(new UI!ui::DeleteAction());	
-		}
-		if (classType.getIsClassBehaviourTypeUpdatable()) {
+	if (self.pageType == UI!ui::PageType#CREATE or self.pageType == UI!ui::PageType#UPDATE) {
 		
-			var page = application.pages.selectOne(p | p.pageType = UI!ui::PageType#UPDATE 
-				and p.getRelationType() == relationType);
-			if (page.isDefined()) {
-				log.debug(" ========= PAGE DEF: UPDATE: " + relationType.eContainer.name + "." + relationType.name + " - " + page.name);
-			    var editAction = new UI!ui::EditAction();
-				editAction.target = page;
-				self.instanceActions.add(editAction);
+		for (container in self.containers) {
+			var buttonGroup : UI!ui::Flex = container.createGroupForInstanceActionButtons();
+			if (preview) {
+				buttonGroup.children.add(createPreviewButton("back", "BACK", 2));
+				buttonGroup.children.add(createPreviewButton("save", "SAVE", 2));
 			} else {
-				log.warn("No update page defined for: " + self.name + " - " + relationType.eContainer.name + "." + relationType.name);
+				buttonGroup.children.add(createButton("back", "BACK", 2, new UI!ui::BackAction()));
+				buttonGroup.children.add(createButton("save", "SAVE", 2, new UI!ui::SaveAction()));
+			}
+		}
+		
+	} else if (self.pageType == UI!ui::PageType#VIEW) {
+		if (classType.isUndefined()) {
+			throw "View type page: " + pageDefinition.name + " have to be mapped to a class tpye or a relation type or an operation parameter type.";
+		}
+		
+		for (container in self.containers) {
+			var buttonGroup : UI!ui::Flex = container.createGroupForInstanceActionButtons();
+			if (preview) {
+				buttonGroup.children.add(createPreviewButton("back", "BACK", 2));
+			} else {
+				buttonGroup.children.add(createButton("back", "BACK", 2, new UI!ui::BackAction()));
+			}
+			
+			if (classType.getIsClassBehaviourTypeDeletable()) {
+				if (preview) {
+					buttonGroup.children.add(createPreviewButton("delete", "DELETE", 2));
+				} else {
+					buttonGroup.children.add(createButton("delete", "DELETE", 2, new UI!ui::DeleteAction()));
+				}	
+			}
+			
+			if (classType.getIsClassBehaviourTypeUpdatable()) {
+				if (preview) {
+					buttonGroup.children.add(createPreviewButton("edit","EDIT",2));
+				} else {
+					var page = application.pages.selectOne(p | p.pageType = UI!ui::PageType#UPDATE and p.getRelationType() == relationType);
+					if (page.isDefined()) {
+						log.debug(" ========= PAGE DEF: UPDATE: " + relationType.eContainer.name + "." + relationType.name + " - " + page.name);
+					    var button : UI!ui::Button = createButton("edit","EDIT",2,new UI!ui::EditAction());
+					    button.action.target = page;
+					    buttonGroup.children.add(button);
+					} else {
+						log.warn("No update page defined for: " + self.name + " - " + relationType.eContainer.name + "." + relationType.name);
+					}
+				}
 			}
 		}
 	} else if (self.pageType == UI!ui::PageType#TABLE) {	
 		if (relationType.isUndefined()) {
 			throw "Table type have to be mapped to relation type";
 		}
-
-	    if (not relationType.isAccess) {
-			self.instanceActions.add(new UI!ui::BackAction());
-		}
-
-		if (relationType.getIsRelationBehaviourTypeCreatable()) {
-			var page = application.pages.selectOne(p | p.pageType = UI!ui::PageType#CREATE 
-				and p.getRelationType() == relationType);
-			if (page.isDefined()) {
-				log.debug(" ========= PAGE DEF: CREATE: " + relationType.eContainer.name + "." + relationType.name + " - " + page.name);
-			    var createAction = new UI!ui::CreateAction();
-				createAction.target = page;
-				self.instanceActions.add(createAction);	
-			} else {
-				log.warn("No create page defined for: " + self.name + " - " + relationType.eContainer.name + "." + relationType.name);
+		
+		if (self.hasInstanceActions()) {
+		
+			for (container in self.containers) {
+				var buttonGroup : UI!ui::Flex = container.createGroupForInstanceActionButtons();
+			
+				if (not relationType.isAccess) {
+					if (preview) {
+						buttonGroup.children.add(createPreviewButton("back", "BACK", 2));
+					} else {
+						buttonGroup.children.add(createButton("back", "BACK", 2, new UI!ui::BackAction()));
+					}
+				}
+		
+				if (relationType.getIsRelationBehaviourTypeCreatable()) {
+					if (preview) {
+						buttonGroup.children.add(createPreviewButton("create", "CREATE", 2));
+					} else {
+						var page = application.pages.selectOne(p | p.pageType = UI!ui::PageType#CREATE and p.getRelationType() == relationType);
+						if (page.isDefined()) {
+							log.debug(" ========= PAGE DEF: CREATE: " + relationType.eContainer.name + "." + relationType.name + " - " + page.name);
+						    var button : UI!ui::Button = createButton("create", "CREATE", 2, new UI!ui::CreateAction());
+						    button.action.target = page;
+						    buttonGroup.children.add(button);
+						} else {
+							log.warn("No create page defined for: " + self.name + " - " + relationType.eContainer.name + "." + relationType.name);
+						}
+					}
+				}
+				
+				if (relationType.getIsRelationBehaviourTypeSetable()) {
+					if (preview) {
+						buttonGroup.children.add(createPreviewButton("set", "SET", 2));
+					} else {
+						buttonGroup.children.add(createButton("set", "SET", 2, new UI!ui::SetAction()));
+					}
+				}
+				if (relationType.getIsRelationBehaviourTypeUnsetable()) {
+					if (preview) {
+						buttonGroup.children.add(createPreviewButton("unset", "UNSET", 2));
+					} else {
+						buttonGroup.children.add(createButton("unset", "UNSET", 2, new UI!ui::UnsetAction()));
+					}
+				}
+				if (relationType.getIsRelationBehaviourTypeAddable()) {
+					if (preview) {
+						buttonGroup.children.add(createPreviewButton("add", "ADD", 2));
+					} else {
+						buttonGroup.children.add(createButton("add", "ADD", 2, new UI!ui::AddAction()));
+					}
+				}
 			}
 		}
-		
-		if (relationType.getIsRelationBehaviourTypeSetable()) {
-			self.instanceActions.add(new UI!ui::SetAction());
-		}
-		if (relationType.getIsRelationBehaviourTypeUnsetable()) {
-			self.instanceActions.add(new UI!ui::UnsetAction());
-		}
-		if (relationType.getIsRelationBehaviourTypeAddable()) {
-			self.instanceActions.add(new UI!ui::AddAction());
-		}
 	}
-}*/
+}
 
 operation UI!ui::PageDefinition clonePage(classType : UI!ui::data::ClassType, relation : UI!ui::data::RelationType, anchor : String) : UI!ui::PageDefinition {
 	var clone = ecoreUtil.copy(self);
@@ -76,3 +127,13 @@ operation UI!ui::PageDefinition updateRelationPageContent() {
 		container.updateInheritedReferences(self);
 	}
 }
+
+operation UI!ui::PageDefinition hasInstanceActions() : Boolean {
+	var relationType = self.getRelationType();
+	return not relationType.isAccess or
+		relationType.getIsRelationBehaviourTypeCreatable() or
+		relationType.getIsRelationBehaviourTypeSetable() or
+		relationType.getIsRelationBehaviourTypeUnsetable() or
+		relationType.getIsRelationBehaviourTypeAddable();
+}
+

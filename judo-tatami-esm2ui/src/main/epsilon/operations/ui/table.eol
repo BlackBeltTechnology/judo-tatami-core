@@ -1,10 +1,9 @@
-/*operation UI!ui::Table calculateActions(application : UI!ui::Application) {
+operation UI!ui::Table calculateActions(application : UI!ui::Application, preview : Boolean) {
 	var relationType = self.getRelationType();
 	var classType = self.getTargetClassType();
 
 	if (relationType.isDefined()) {
-		var page = application.pages.selectOne(p | p.pageType = UI!ui::PageType#VIEW 
-				and p.getRelationType() == relationType);
+		var page = application.pages.selectOne(p | p.pageType = UI!ui::PageType#VIEW and p.getRelationType() == relationType);
 		if (page.isDefined()) {
 			log.debug(" ========= TABLE DEF: VIEW: " + relationType.name + " - " + page.name);
 		    var viewAction = new UI!ui::ViewAction();
@@ -14,48 +13,128 @@
 			log.warn("No view page defined for: " + self.name + " - " + relationType.eContainer.name + "." + relationType.name);
 		}
 
-
 		if (classType.getIsClassBehaviourTypeDeletable()) {
-			self.rowActions.add(new UI!ui::DeleteAction());	
-		}
-	
-		if (classType.getIsClassBehaviourTypeUpdatable()) {
-			var page = application.pages.selectOne(p | p.pageType = UI!ui::PageType#UPDATE 
-				and p.getRelationType() == relationType);
-			if (page.isDefined()) {
-				log.debug(" ========= TABLE DEF: EDIT: " + relationType.name + " - " + page.name);
-			    var editAction = new UI!ui::EditAction();
-				editAction.target = page;
-				self.rowActions.add(editAction);
-			} else {
-				log.warn("No update page defined for: " + self.name  + " - " + relationType.eContainer.name + "." + relationType.name);
+			if (not preview) {
+				self.rowActions.add(new UI!ui::DeleteAction());	
 			}
 		}
 	
-		if (relationType.getIsRelationBehaviourTypeCreatable()) {
-			var page = application.pages.selectOne(p | p.pageType = UI!ui::PageType#CREATE 
-			and p.getRelationType() == relationType);
+		if (classType.getIsClassBehaviourTypeUpdatable()) {
+			if (not preview) {
+				var page = application.pages.selectOne(p | p.pageType = UI!ui::PageType#UPDATE and p.getRelationType() == relationType);
+				if (page.isDefined()) {
+					log.debug(" ========= TABLE DEF: EDIT: " + relationType.name + " - " + page.name);
+				    var editAction = new UI!ui::EditAction();
+					editAction.target = page;
+					self.rowActions.add(editAction);
+				} else {
+					log.warn("No update page defined for: " + self.name  + " - " + relationType.eContainer.name + "." + relationType.name);
+				}
+			}
+		}
+		
+		if (relationType.getIsRelationBehaviourTypeRemovable()) {
+			if (not preview) {
+				self.rowActions.add(new UI!ui::RemoveAction());
+			}
+		}
+		
+		if (relationType.getIsRelationBehaviourTypeUnsetable()) {
+			if (not preview) {
+				self.rowActions.add(new UI!ui::UnsetAction());
+			}
+		}
+		
+		if (relationType.getIsRelationBehaviourTypeCreatable() or relationType.getIsRelationBehaviourTypeSetable() or relationType.getIsRelationBehaviourTypeAddable()) {
+			self.createRelationActionButtonsForTable(application, preview);
+		}
+	}
+	// TODO: Handling Input/Output operation parameters.
+}
+
+operation UI!ui::Table createRelationActionButtonsForTable(application : UI!ui::Application, preview : Boolean) {
+	
+	var relationType = self.getRelationType();
+	var tableContainer : UI!ui::Flex = self.eContainer();
+	var tableIndex : Integer = tableContainer.children.indexOf(self);
+	
+	var buttonGroup : UI!ui::Flex = createHorizontalFlex("instanceActions", self.col);
+
+	if (tableContainer.children.size() == 2 and tableContainer.children.get(0).isKindOf(UI!ui::Text)) {
+		tableContainer.children.add(1, buttonGroup);
+	} else if (tableContainer.children.size() == 1 and tableContainer.children.get(0).isKindOf(UI!ui::Table)) {
+		tableContainer.children.add(0, buttonGroup);
+	} else {
+		tableContainer.children.add(tableIndex, buttonGroup);
+	}
+	
+	if (relationType.getIsRelationBehaviourTypeCreatable()) {
+		if (preview) {
+			buttonGroup.children.add(createPreviewButton("create", "CREATE", 2));
+		} else {
+			var page = application.pages.selectOne(p | p.pageType = UI!ui::PageType#CREATE and p.getRelationType() == relationType);
 			if (page.isDefined()) {
-				log.debug(" ========= TABLE DEF: CREATE: " + relationType.name + " - " + page.name);
-			    var createAction = new UI!ui::CreateAction();
-				createAction.target = page;
-				self.relationActions.add(createAction);	
+				log.debug(" ========= PAGE DEF: CREATE: " + relationType.eContainer.name + "." + relationType.name + " - " + page.name);
+			    var button : UI!ui::Button = createButton("create", "CREATE", 2, new UI!ui::CreateAction());
+			    button.action.target = page;
+			    button.action.dataElement = relationType;
+			    buttonGroup.children.add(button);
 			} else {
 				log.warn("No update page defined for: " + self.name + " - " + relationType.eContainer.name + "." + relationType.name);
 			}
 		}
-		if (relationType.getIsRelationBehaviourTypeRemovable()) {
-			self.rowActions.add(new UI!ui::RemoveAction());
-		}
-		if (relationType.getIsRelationBehaviourTypeUnsetable()) {
-			self.rowActions.add(new UI!ui::UnsetAction());
-		}	
-		if (relationType.getIsRelationBehaviourTypeSetable()) {
-			self.relationActions.add(new UI!ui::SetAction());
-		}
-		if (relationType.getIsRelationBehaviourTypeAddable()) {
-			self.relationActions.add(new UI!ui::AddAction());
+	}
+	
+	if (relationType.getIsRelationBehaviourTypeSetable()) {
+		if (preview) {
+			buttonGroup.children.add(createPreviewButton("set", "SET", 2));
+		} else {
+			var button : UI!ui::Button = createButton("set", "SET", 2, new UI!ui::SetAction());
+		    button.action.dataElement = relationType;
+		    buttonGroup.children.add(button);
 		}
 	}
-	// TODO: Handling Input/Output operation parameters.
-}*/
+
+	if (relationType.getIsRelationBehaviourTypeAddable()) {
+		if (preview) {
+			buttonGroup.children.add(createPreviewButton("add", "ADD", 2));
+		} else {
+			var button : UI!ui::Button = createButton("add", "ADD", 2, new UI!ui::AddAction());
+		    button.action.dataElement = relationType;
+		    buttonGroup.children.add(button);
+		}
+	}
+}
+
+operation UI!ui::Table isTablePage() : Boolean {
+	if (self.getPageDefinition().isDefined()) {
+		return self.getPageDefinition().pageType == UI!ui::PageType#TABLE;
+	} 
+	return false;
+}
+
+operation UI!ui::Table wrapAndLabelTable() {
+	var tableContainer : UI!ui::Container = self.eContainer();
+	var tableIndex : Integer = tableContainer.children.indexOf(self);
+	var wrapper = createVerticalFlex(self.name, self.col);
+	wrapper.children.add(self);
+	tableContainer.children.add(tableIndex, wrapper);
+	
+	if (not self.isTablePage() and (self.label.isDefined() or self.icon.isDefined())) {
+		var tableIndex : Integer = wrapper.children.indexOf(self);
+		var label : UI!ui::Text = new UI!ui::Text();
+		label.name = self.name.anchor("Label");
+
+		if (self.label.isDefined()) {
+			label.label = self.label;
+		}
+		
+		if (self.icon.isDefined()) {
+			var icon : UI!ui::Icon = new UI!ui::Icon;
+			icon.name = self.icon;
+			label.leadingIcon = icon;
+		}
+		
+		wrapper.children.add(tableIndex, label);
+	}
+}

@@ -55,3 +55,36 @@ operation createBlankApplicationForPreview() : UI!ui::Application {
     return application;
 }
 
+operation createHorizontalFlex(name : String, col : Integer) : UI!ui::Flex {
+	var ret : UI!ui::Flex = new UI!ui::Flex();
+	ret.name = name;
+	ret.col = col;
+	ret.direction = UI!ui::Axis#HORIZONTAL;
+	return ret;
+}
+
+operation createVerticalFlex(name : String, col : Integer) : UI!ui::Flex {
+	var ret : UI!ui::Flex = new UI!ui::Flex();
+	ret.name = name;
+	ret.col = col;
+	ret.direction = UI!ui::Axis#VERTICAL;
+	return ret;
+}
+
+operation createButton(name : String, label : String, col : Integer, action : UI!ui::Action) : UI!ui::Button {
+	var ret : UI!ui::Button = new UI!ui::Button();
+	ret.name = name;
+	ret.label = label;
+	ret.col = col;
+	ret.action = action;
+	return ret;
+}
+
+operation createPreviewButton(name : String, label : String, col : Integer) {
+	var ret : UI!ui::Button = new UI!ui::Button();
+	ret.name = name;
+	ret.label = label;
+	ret.col = col;
+	ret.action = new UI!ui::BackAction();
+	return ret;
+}
