@@ -44,16 +44,14 @@ operation createBlankApplicationForPreview() : UI!ui::Application {
     application.actor.name = previewElement.getName().anchor("preview","classType");
     application.dataElements.add(application.actor);
 
-    // TODO - Collect possible behaviours
     var relation : UI!ui::data::RelationType = new UI!ui::data::RelationType();
-    relation.name = "actorRelation";
-    relation.behaviours.add(UI!ui::data::RelationBehaviourType#LIST);
-    relation.behaviours.add(UI!ui::data::RelationBehaviourType#CREATE);
-    relation.behaviours.add(UI!ui::data::RelationBehaviourType#SET);
-    relation.behaviours.add(UI!ui::data::RelationBehaviourType#UNSET);
-    relation.behaviours.add(UI!ui::data::RelationBehaviourType#ADD);
-    relation.behaviours.add(UI!ui::data::RelationBehaviourType#REMOVE);
+    relation.name = "previewRelation";
     application.actor.relations.add(relation);
     
+    for (b in rootElement.eContainer().getAllPossibleRelationBehaviours()){
+    	relation.behaviours.add(b);
+    }
+
     return application;
 }
+
