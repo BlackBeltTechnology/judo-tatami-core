@@ -8,9 +8,6 @@ pre {
 
 post {
 
-	var relation : UI!ui::data::RelationType = application.actor.relations.selectOne(r | r.name == "previewRelation");
-	relation.target = previewElement.getRoot().eContainer().mapClassType(application);
-
 	for (application : UI!ui::Application in UI!ui::Application.all()) {
 		application.calculatePageActions(true);
 	}
