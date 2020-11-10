@@ -61,7 +61,6 @@ class _JudoNumericInputState extends State<JudoNumericInput> {
             } else {
               correctTextEditingValue = TextEditingValue().copyWith(text: oldValue.text, composing: oldValue.composing, selection: oldValue.selection);
             }
-            _controller.value = correctTextEditingValue;
             return correctTextEditingValue;
           }),
         ],
