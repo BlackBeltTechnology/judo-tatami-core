@@ -79,12 +79,3 @@ operation createButton(name : String, label : String, col : Integer, action : UI
 	ret.action = action;
 	return ret;
 }
-
-operation createPreviewButton(name : String, label : String, col : Integer) {
-	var ret : UI!ui::Button = new UI!ui::Button();
-	ret.name = name;
-	ret.label = label;
-	ret.col = col;
-	ret.action = new UI!ui::BackAction();
-	return ret;
-}
