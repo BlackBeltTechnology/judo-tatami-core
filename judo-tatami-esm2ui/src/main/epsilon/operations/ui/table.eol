@@ -3,24 +3,32 @@ operation UI!ui::Table calculateActions(application : UI!ui::Application, previe
 	var classType = self.getTargetClassType();
 
 	if (relationType.isDefined()) {
-		var page = application.pages.selectOne(p | p.pageType = UI!ui::PageType#VIEW and p.getRelationType() == relationType);
-		if (page.isDefined()) {
-			log.debug(" ========= TABLE DEF: VIEW: " + relationType.name + " - " + page.name);
-		    var viewAction = new UI!ui::ViewAction();
-			viewAction.target = page;
+		if (preview) {
+			var viewAction = new UI!ui::ViewAction();
+			viewAction.target = application.pages.selectOne(p | p.pageType = UI!ui::PageType#DASHBOARD);
 			self.rowActions.add(viewAction);
 		} else {
-			log.warn("No view page defined for: " + self.name + " - " + relationType.eContainer.name + "." + relationType.name);
+			var page = application.pages.selectOne(p | p.pageType = UI!ui::PageType#VIEW and p.getRelationType() == relationType);
+			if (page.isDefined()) {
+				log.debug(" ========= TABLE DEF: VIEW: " + relationType.name + " - " + page.name);
+			    var viewAction = new UI!ui::ViewAction();
+				viewAction.target = page;
+				self.rowActions.add(viewAction);
+			} else {
+				log.warn("No view page defined for: " + self.name + " - " + relationType.eContainer.name + "." + relationType.name);
+			}
 		}
 
 		if (classType.getIsClassBehaviourTypeDeletable()) {
-			if (not preview) {
-				self.rowActions.add(new UI!ui::DeleteAction());	
-			}
+			self.rowActions.add(new UI!ui::DeleteAction());	
 		}
 	
 		if (classType.getIsClassBehaviourTypeUpdatable()) {
-			if (not preview) {
+			if (preview) {
+				var editAction = new UI!ui::EditAction();
+				editAction.target = application.pages.selectOne(p | p.pageType = UI!ui::PageType#DASHBOARD);
+				self.rowActions.add(editAction);
+			} else {
 				var page = application.pages.selectOne(p | p.pageType = UI!ui::PageType#UPDATE and p.getRelationType() == relationType);
 				if (page.isDefined()) {
 					log.debug(" ========= TABLE DEF: EDIT: " + relationType.name + " - " + page.name);
@@ -34,15 +42,11 @@ operation UI!ui::Table calculateActions(application : UI!ui::Application, previe
 		}
 		
 		if (relationType.getIsRelationBehaviourTypeRemovable()) {
-			if (not preview) {
-				self.rowActions.add(new UI!ui::RemoveAction());
-			}
+			self.rowActions.add(new UI!ui::RemoveAction());
 		}
 		
 		if (relationType.getIsRelationBehaviourTypeUnsetable()) {
-			if (not preview) {
-				self.rowActions.add(new UI!ui::UnsetAction());
-			}
+			self.rowActions.add(new UI!ui::UnsetAction());
 		}
 		
 		if (relationType.getIsRelationBehaviourTypeCreatable() or relationType.getIsRelationBehaviourTypeSetable() or relationType.getIsRelationBehaviourTypeAddable()) {
@@ -70,7 +74,10 @@ operation UI!ui::Table createRelationActionButtonsForTable(application : UI!ui::
 	
 	if (relationType.getIsRelationBehaviourTypeCreatable()) {
 		if (preview) {
-			buttonGroup.children.add(createPreviewButton("create", "CREATE", 2));
+			var button : UI!ui::Button = createButton("create", "CREATE", 2, new UI!ui::CreateAction());
+		    button.action.target = application.pages.selectOne(p | p.pageType = UI!ui::PageType#DASHBOARD);
+		    button.action.dataElement = relationType;
+		    buttonGroup.children.add(button);
 		} else {
 			var page = application.pages.selectOne(p | p.pageType = UI!ui::PageType#CREATE and p.getRelationType() == relationType);
 			if (page.isDefined()) {
@@ -86,23 +93,15 @@ operation UI!ui::Table createRelationActionButtonsForTable(application : UI!ui::
 	}
 	
 	if (relationType.getIsRelationBehaviourTypeSetable()) {
-		if (preview) {
-			buttonGroup.children.add(createPreviewButton("set", "SET", 2));
-		} else {
-			var button : UI!ui::Button = createButton("set", "SET", 2, new UI!ui::SetAction());
-		    button.action.dataElement = relationType;
-		    buttonGroup.children.add(button);
-		}
+		var button : UI!ui::Button = createButton("set", "SET", 2, new UI!ui::SetAction());
+	    button.action.dataElement = relationType;
+	    buttonGroup.children.add(button);
 	}
 
 	if (relationType.getIsRelationBehaviourTypeAddable()) {
-		if (preview) {
-			buttonGroup.children.add(createPreviewButton("add", "ADD", 2));
-		} else {
-			var button : UI!ui::Button = createButton("add", "ADD", 2, new UI!ui::AddAction());
-		    button.action.dataElement = relationType;
-		    buttonGroup.children.add(button);
-		}
+		var button : UI!ui::Button = createButton("add", "ADD", 2, new UI!ui::AddAction());
+		button.action.dataElement = relationType;
+		buttonGroup.children.add(button);
 	}
 }
 

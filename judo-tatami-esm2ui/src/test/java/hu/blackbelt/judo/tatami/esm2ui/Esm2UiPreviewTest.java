@@ -178,8 +178,8 @@ public class Esm2UiPreviewTest {
                 .map(e -> (TransferObjectView) e).filter(v -> v.getName().equals("InternationalOrderInfoView")).findAny();
         
     	String json = executeEsm2UiTransformation(esmModel, view.get(), "default", 12, uiModel, new Slf4jLog(log));
-    	saveJson(json, "northwind" + view.get().getName());
-    	savePrettyJson(json, "northwind" + view.get().getName());
+    	saveJson(json, testName);
+    	savePrettyJson(json, testName);
         validateUiTestModel();
     }
     
@@ -199,8 +199,8 @@ public class Esm2UiPreviewTest {
                 .map(e -> (TransferObjectForm) e).filter(v -> v.getName().equals("InternationalOrderInfoForm")).findAny();
         
     	String json = executeEsm2UiTransformation(esmModel, form.get(), "default", 12, uiModel, new Slf4jLog(log));
-    	saveJson(json, "northwind" + form.get().getName());
-    	savePrettyJson(json, "northwind" + form.get().getName());
+    	saveJson(json, testName);
+    	savePrettyJson(json, testName);
         validateUiTestModel();
     }
     
@@ -220,8 +220,8 @@ public class Esm2UiPreviewTest {
                 .map(e -> (TransferObjectTable) e).filter(v -> v.getName().equals("InternationalOrderInfoTable")).findAny();
         
     	String json = executeEsm2UiTransformation(esmModel, table.get(), "default", 12, uiModel, new Slf4jLog(log));
-    	saveJson(json, "northwind" + table.get().getName());
-    	savePrettyJson(json, "northwind" + table.get().getName());
+    	saveJson(json, testName);
+    	savePrettyJson(json, testName);
         validateUiTestModel();
     }
         

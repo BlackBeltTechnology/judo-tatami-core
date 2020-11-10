@@ -18,7 +18,6 @@ import hu.blackbelt.judo.meta.ui.runtime.UiUtils;
 import hu.blackbelt.judo.meta.ui.PageDefinition;
 import hu.blackbelt.judo.meta.ui.data.DataElement;
 import hu.blackbelt.judo.meta.ui.runtime.UiModel;
-import hu.blackbelt.judo.tatami.core.TransformationTraceUtil;
 import lombok.extern.slf4j.Slf4j;
 
 import org.eclipse.emf.ecore.EObject;
@@ -29,7 +28,6 @@ import org.eclipse.epsilon.common.util.UriUtil;
 import org.emfjson.jackson.module.EMFModule;
 import org.emfjson.jackson.resource.JsonResourceFactory;
 
-import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -41,7 +39,6 @@ import java.util.stream.Collectors;
 import static hu.blackbelt.epsilon.runtime.execution.ExecutionContext.executionContextBuilder;
 import static hu.blackbelt.epsilon.runtime.execution.contexts.EtlExecutionContext.etlExecutionContextBuilder;
 import static hu.blackbelt.epsilon.runtime.execution.model.emf.WrappedEmfModelContext.wrappedEmfModelContextBuilder;
-import static hu.blackbelt.judo.meta.ui.runtime.UiModel.SaveArguments.uiSaveArgumentsBuilder;
 
 @Slf4j
 public class Esm2UiPreview {
@@ -187,6 +184,8 @@ public class Esm2UiPreview {
 				  List<String> superTypeNames = v.eClass().getEAllSuperTypes().stream().map(t -> t.getName()).collect(Collectors.toList());
 				  if (superTypeNames.contains("DataElement")) {
 					  mapper.writeValue(g, ((DataElement)v).getName());
+				  } else if (v.eClass().getName().equals("PageDefinition")) {
+					  mapper.writeValue(g, ((PageDefinition)v).getName());
 				  } else {
 					  mapper.writeValue(g, v);
 				  }

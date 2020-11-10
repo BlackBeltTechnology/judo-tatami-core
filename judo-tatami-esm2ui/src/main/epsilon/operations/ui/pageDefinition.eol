@@ -6,13 +6,8 @@ operation UI!ui::PageDefinition calculateActions(application : UI!ui::Applicatio
 		
 		for (container in self.containers) {
 			var buttonGroup : UI!ui::Flex = container.createGroupForInstanceActionButtons();
-			if (preview) {
-				buttonGroup.children.add(createPreviewButton("back", "BACK", 2));
-				buttonGroup.children.add(createPreviewButton("save", "SAVE", 2));
-			} else {
-				buttonGroup.children.add(createButton("back", "BACK", 2, new UI!ui::BackAction()));
-				buttonGroup.children.add(createButton("save", "SAVE", 2, new UI!ui::SaveAction()));
-			}
+			buttonGroup.children.add(createButton("back", "BACK", 2, new UI!ui::BackAction()));
+			buttonGroup.children.add(createButton("save", "SAVE", 2, new UI!ui::SaveAction()));
 		}
 		
 	} else if (self.pageType == UI!ui::PageType#VIEW) {
@@ -22,28 +17,22 @@ operation UI!ui::PageDefinition calculateActions(application : UI!ui::Applicatio
 		
 		for (container in self.containers) {
 			var buttonGroup : UI!ui::Flex = container.createGroupForInstanceActionButtons();
-			if (preview) {
-				buttonGroup.children.add(createPreviewButton("back", "BACK", 2));
-			} else {
-				buttonGroup.children.add(createButton("back", "BACK", 2, new UI!ui::BackAction()));
-			}
+			buttonGroup.children.add(createButton("back", "BACK", 2, new UI!ui::BackAction()));
 			
 			if (classType.getIsClassBehaviourTypeDeletable()) {
-				if (preview) {
-					buttonGroup.children.add(createPreviewButton("delete", "DELETE", 2));
-				} else {
-					buttonGroup.children.add(createButton("delete", "DELETE", 2, new UI!ui::DeleteAction()));
-				}	
+				buttonGroup.children.add(createButton("delete", "DELETE", 2, new UI!ui::DeleteAction()));
 			}
 			
 			if (classType.getIsClassBehaviourTypeUpdatable()) {
 				if (preview) {
-					buttonGroup.children.add(createPreviewButton("edit","EDIT",2));
+					var button : UI!ui::Button = createButton("edit", "EDIT", 2, new UI!ui::EditAction());
+				    button.action.target = application.pages.selectOne(p | p.pageType = UI!ui::PageType#DASHBOARD);
+				    buttonGroup.children.add(button);
 				} else {
 					var page = application.pages.selectOne(p | p.pageType = UI!ui::PageType#UPDATE and p.getRelationType() == relationType);
 					if (page.isDefined()) {
 						log.debug(" ========= PAGE DEF: UPDATE: " + relationType.eContainer.name + "." + relationType.name + " - " + page.name);
-					    var button : UI!ui::Button = createButton("edit","EDIT",2,new UI!ui::EditAction());
+					    var button : UI!ui::Button = createButton("edit", "EDIT", 2, new UI!ui::EditAction());
 					    button.action.target = page;
 					    buttonGroup.children.add(button);
 					} else {
@@ -63,16 +52,14 @@ operation UI!ui::PageDefinition calculateActions(application : UI!ui::Applicatio
 				var buttonGroup : UI!ui::Flex = container.createGroupForInstanceActionButtons();
 			
 				if (not relationType.isAccess) {
-					if (preview) {
-						buttonGroup.children.add(createPreviewButton("back", "BACK", 2));
-					} else {
-						buttonGroup.children.add(createButton("back", "BACK", 2, new UI!ui::BackAction()));
-					}
+					buttonGroup.children.add(createButton("back", "BACK", 2, new UI!ui::BackAction()));
 				}
 		
 				if (relationType.getIsRelationBehaviourTypeCreatable()) {
 					if (preview) {
-						buttonGroup.children.add(createPreviewButton("create", "CREATE", 2));
+						var button : UI!ui::Button = createButton("create", "CREATE", 2, new UI!ui::CreateAction());
+					    button.action.target = application.pages.selectOne(p | p.pageType = UI!ui::PageType#DASHBOARD);
+					    buttonGroup.children.add(button);
 					} else {
 						var page = application.pages.selectOne(p | p.pageType = UI!ui::PageType#CREATE and p.getRelationType() == relationType);
 						if (page.isDefined()) {
@@ -87,25 +74,13 @@ operation UI!ui::PageDefinition calculateActions(application : UI!ui::Applicatio
 				}
 				
 				if (relationType.getIsRelationBehaviourTypeSetable()) {
-					if (preview) {
-						buttonGroup.children.add(createPreviewButton("set", "SET", 2));
-					} else {
-						buttonGroup.children.add(createButton("set", "SET", 2, new UI!ui::SetAction()));
-					}
+					buttonGroup.children.add(createButton("set", "SET", 2, new UI!ui::SetAction()));
 				}
 				if (relationType.getIsRelationBehaviourTypeUnsetable()) {
-					if (preview) {
-						buttonGroup.children.add(createPreviewButton("unset", "UNSET", 2));
-					} else {
-						buttonGroup.children.add(createButton("unset", "UNSET", 2, new UI!ui::UnsetAction()));
-					}
+					buttonGroup.children.add(createButton("unset", "UNSET", 2, new UI!ui::UnsetAction()));
 				}
 				if (relationType.getIsRelationBehaviourTypeAddable()) {
-					if (preview) {
-						buttonGroup.children.add(createPreviewButton("add", "ADD", 2));
-					} else {
-						buttonGroup.children.add(createButton("add", "ADD", 2, new UI!ui::AddAction()));
-					}
+					buttonGroup.children.add(createButton("add", "ADD", 2, new UI!ui::AddAction()));
 				}
 			}
 		}
