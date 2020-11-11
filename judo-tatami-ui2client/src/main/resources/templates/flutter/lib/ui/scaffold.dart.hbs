@@ -29,40 +29,34 @@ class {{ fqClass application.name }}Scaffold extends StatelessWidget {
         final navigation = locator<NavigationState>();
         final drawer = navigation.isMenuCollapsed(context) ? {{ fqClass application.name }}Drawer() : null;
 
-        return Row(
-            children: [
-                Expanded(
-                    child: SafeArea(
-                        child: Scaffold(
-                            drawer: drawer,
-                            appBar: AppBar(
-                                automaticallyImplyLeading: drawer != null,
-                                title:
-                                Column(
-                                    children: [
-                                    Text(pageTitle),
-                                    navigation.stack.length > 0 ?
-                                        BreadCrumb(
-                                            items:
-                                                navigation.breadcumbItems,
-                                            divider: Icon(Icons.chevron_right, color: Colors.white54, size: 16,),
-                                            overflow: ScrollableOverflow(
-                                                keepLastDivider: false,
-                                                direction: Axis.horizontal,
-                                            )
-                                        ) : Container(),
-                                    ]
+        return SafeArea(
+            child: Scaffold(
+                drawer: drawer,
+                appBar: AppBar(
+                    automaticallyImplyLeading: drawer != null,
+                    title:
+                    Column(
+                        children: [
+                        Text(pageTitle),
+                        navigation.stack.length > 0 ?
+                            BreadCrumb(
+                                items:
+                                    navigation.breadcumbItems,
+                                divider: Icon(Icons.chevron_right, color: Colors.white54, size: 16,),
+                                overflow: ScrollableOverflow(
+                                    keepLastDivider: false,
+                                    direction: Axis.horizontal,
                                 )
-                            ),
-                            body: SingleChildScrollView(
-                                child:
-                                    body,
-                            ),
-                            floatingActionButton: floatingActionButton,
-                        ),
-                    ),
-                )
-            ],
+                            ) : Container(),
+                        ]
+                    )
+                ),
+                body: SingleChildScrollView(
+                    child:
+                        body,
+                ),
+                floatingActionButton: floatingActionButton,
+            ),
         );
     }
 }

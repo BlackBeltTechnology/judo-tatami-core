@@ -1,0 +1,65 @@
+JudoButton(
+    col: {{col}},
+    disabled: {{disabled}},
+{{# if action.isBackAction }}
+    onPressed: () => navigation.close(),
+{{/ if }}
+{{# if action.isCreateAction }}
+    onPressed:{{# unless relation.isAccess}}{{# unless relation.isRelationKindStatic}} target{{ className relation.owner.name }}Store.internal__updatable ?{{/ unless}}{{/ unless}} () async {
+        var created = await navigation.open(Routes.{{ fqVariable action.target.name }}Page{{# unless relation.isAccess}},
+        arguments: {{ fqClass action.target.name }}PageArguments(owner{{ className relation.owner.name }}Store: target{{ className relation.owner.name }}Store){{~/ unless}});
+        if (created != null) {
+            {{ fqVariable page.name }}PageStore.create{{ fqClass relation.name }}({{# unless relation.isAccess}}target{{ className relation.owner.name }}Store ,{{/ unless}}created)
+            .catchError((onError) => judoAlert(context: context, title: 'Error', text: onError.toString()));
+    {{# unless page.isPageTypeUpdate }}
+        {{# unless page.isPageTypeOperationOutput}}
+            {{# unless page.dataElement.isRelationKindAggregation }}
+                {{# unless page.dataElement.isRelationKindComposition }}
+                    var validate = await {{ fqVariable page.name }}PageStore.validate({{# unless page.dataElement.isAccess}}owner{{ className page.dataElement.owner.name }}Store, {{/unless}}target{{ className page.dataElement.target.name }}Store)
+                        .catchError((onError) => judoAlert(context: context, title: 'Error', text: onError.toString()));
+                    if (validate != null) {
+                        target{{ className relation.owner.name }}Store.updateWith(validate);
+                    } else {
+                        // validate message
+                    }
+                {{/unless}}
+            {{/unless}}
+        {{/ unless }}
+    {{/unless}}
+        }
+    }{{# unless relation.isAccess}}{{# unless relation.isRelationKindStatic}} : null{{/ unless}}{{/ unless}},
+{{/ if }}
+{{#if relationAction.isAddAction}}
+    onPressed:{{# unless relation.isAccess}}{{# unless relation.isRelationKindStatic}} target{{ className relation.owner.name }}Store.internal__updatable ?{{/ unless}}{{/ unless}} () async {
+        var selected =
+        {{> templates/flutter/lib/ui/pages/widgets/dialog.dart.hbs relation=relation}}
+        if (selected != null) {
+            {{fqVariable page.name}}PageStore.add{{ fqClass relation.name }}(target{{ className relation.owner.name }}Store, selected)
+            .catchError((onError) => judoAlert(context: context, title: 'Error', text: onError.toString()));
+        }
+    }{{# unless relation.isAccess}}{{# unless relation.isRelationKindStatic}} : null{{/ unless}}{{/ unless}},
+{{/if}}
+{{#if action.isSetAction}}
+    onPressed:{{# unless relation.isAccess}}{{# unless relation.isRelationKindStatic}} target{{ className relation.owner.name }}Store.internal__updatable ?{{/ unless}}{{/ unless}} () async {
+        var selected =
+        {{> templates/flutter/lib/ui/pages/widgets/dialog.dart.hbs relation=relation}}
+        if (selected != null) {
+            {{fqVariable page.name}}PageStore.set{{ fqClass relation.name }}(target{{ className relation.owner.name }}Store, selected)
+            .catchError((onError) => judoAlert(context: context, title: 'Error', text: onError.toString()));
+        }
+    }{{# unless relation.isAccess}}{{# unless relation.isRelationKindStatic}} : null{{/ unless}}{{/ unless}},
+{{/if}}
+{{# if relationAction.isNavigationToPageAction }}
+    onPressed: () async {
+        await navigation.open(Routes.{{ fqVariable action.target.name }}Page,
+        arguments: {{ fqClass action.target.name }}PageArguments(owner{{ className action.target.dataElement.owner.name }}Store: target{{ className action.target.dataElement.owner.name }}Store));
+    },
+{{/ if }}
+{{#if label }}
+    label: '{{label}}',
+{{/if}}
+{{#if icon }}
+    icon: Icon(Icons.{{icon.name}}),
+{{/if}}
+    rounded: true,
+),

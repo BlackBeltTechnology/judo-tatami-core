@@ -1,1 +1,9 @@
+{{#if this.action.dataElement.isRelationKindComposition}}
+{{> templates/flutter/lib/ui/pages/widgets/aggregationAction.dart.hbs action = this.action relation = this.action.dataElement icon = this.icon label = this.label col = this.col}}
+{{else}}
+{{#if this.action.dataElement.isRelationKindAggregation}}
+{{> templates/flutter/lib/ui/pages/widgets/aggregationAction.dart.hbs action = this.action relation = this.action.dataElement icon = this.icon label = this.label col = this.col}}
+{{else}}
 {{> templates/flutter/lib/ui/pages/widgets/instanceAction.dart.hbs action = this.action icon = this.icon label = this.label col = this.col}}
+{{/if}}
+{{/if}}

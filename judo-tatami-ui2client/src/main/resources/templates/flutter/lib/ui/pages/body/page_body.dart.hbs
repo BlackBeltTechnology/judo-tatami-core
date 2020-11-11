@@ -53,25 +53,17 @@ Widget get{{ fqClass page.name }}Page{{fqClass container.layoutType.name}}Body(B
     final navigation = locator<NavigationState>();
 
     return Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [
-        {{# if (isInstanceAction page) }}
-            Card(
-                color: Colors.black12,
-                child: Row(
-                    children: [
-                    {{# each page.instanceActions as |instanceAction| }}
-                        {{> templates/flutter/lib/ui/pages/widgets/instanceAction.dart.hbs action=instanceAction}}
-                    {{/ each }}
-                    ],
-                ),
-            ),
-            {{/ if }}
             {{#if isDirectionHorizontal}}
             Column(
             {{ else }}
             Row(
             {{/ if }}
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisSize: MainAxisSize.min,
                 children: [
                 {{# each this.children as |child| }}
