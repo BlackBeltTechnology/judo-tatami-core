@@ -1,6 +1,6 @@
 {{#if page.isPageTypeView}}
 Observer(
-    builder: (_) => JudoInputText(
+    builder: (_) => JudoNumericInput(
         key: UniqueKey(),
         col: {{ col }},
         disabled: {{ disabled }},
@@ -12,7 +12,7 @@ Observer(
 ),
 {{/if}}
 {{#if page.isPageTypeCreate}}
-JudoInputText(
+JudoNumericInput(
     col: {{ col }},
     disabled: {{ disabled }},
     icon: Icon(Icons.{{ this.leadingIcon.name }}),
@@ -22,7 +22,7 @@ JudoInputText(
 ),
 {{/if}}
 {{#if page.isPageTypeUpdate}}
-JudoInputText(
+JudoNumericInput(
     col: {{ col }},
     disabled: {{ disabled }},
     icon: Icon(Icons.{{ this.leadingIcon.name }}),

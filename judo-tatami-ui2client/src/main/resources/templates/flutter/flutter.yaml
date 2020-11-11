@@ -152,6 +152,12 @@
 
 - overwriteExpression: true
   factoryExpression: "{#application}"
+  pathExpression: "'lib/' + #path(#application.actor.name) + '/components/judo_numeric_input.dart'"
+  templateName: flutter/lib/components/judo_numeric_input.dart
+  copy: true
+
+- overwriteExpression: true
+  factoryExpression: "{#application}"
   pathExpression: "'lib/' + #path(#application.actor.name) + '/components/judo_alert.dart'"
   templateName: flutter/lib/components/judo_alert.dart
   copy: true
