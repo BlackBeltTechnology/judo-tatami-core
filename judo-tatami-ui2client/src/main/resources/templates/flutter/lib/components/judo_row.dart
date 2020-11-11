@@ -23,9 +23,9 @@ class JudoRow extends StatelessWidget {
       col: col,
       row: row,
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: mainAxisAlignment ?? MainAxisAlignment.center,
+        crossAxisAlignment: crossAxisAlignment ?? CrossAxisAlignment.start,
+        mainAxisSize: mainAxisSize ?? MainAxisSize.min,
         children: children,
       ),
     );

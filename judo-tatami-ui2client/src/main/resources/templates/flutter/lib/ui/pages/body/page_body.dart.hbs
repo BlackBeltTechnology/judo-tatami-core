@@ -52,27 +52,24 @@ Widget get{{ fqClass page.name }}Page{{fqClass container.layoutType.name}}Body(B
     ) {
     final navigation = locator<NavigationState>();
 
-    return Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-            {{#if isDirectionHorizontal}}
-            Column(
-            {{ else }}
-            Row(
-            {{/ if }}
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                {{# each this.children as |child| }}
-                {{# if child }}
-                    {{> (getWidgetTemplate child) }}
-                {{/ if }}
-                {{/ each }}
-                ],
-            ),
-        ],
+    return SizedBox(
+        height: kJudoHeight * {{ row }},
+        child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+                JudoColumn(
+                    col: {{ col }},
+                    row: {{ row }},
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                    {{# each this.children as |child| }}
+                    {{# if child }}
+                        {{> (getWidgetTemplate child) }}
+                    {{/ if }}
+                    {{/ each }}
+                    ],
+                )
+            ]
+        ),
     );
 }
