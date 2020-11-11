@@ -24,6 +24,10 @@ import java.io.*;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
@@ -180,7 +184,7 @@ public class Ui2Client {
 
     private static Consumer<Map.Entry<Application, Collection<GeneratedFile>>> getDirectoryWriter(File directory) {
         return e -> {
-            File output = new File(directory, e.getKey().getName().replaceAll("[^\\.A-Za-z0-9_]", "_"));
+            File output = new File(directory, e.getKey().getName().replaceAll("[^\\.A-Za-z0-9_]", "_").toLowerCase());
             e.getValue().stream().forEach(f -> {
                 File outFile = new File(output, f.getPath());
                 outFile.getParentFile().mkdirs();
@@ -259,27 +263,64 @@ public class Ui2Client {
         File targetDirectory = new File(args[2]);
         String clientTemplate = args[3];
         List<String> actors = Collections.emptyList();
-        if (args.length > 4) {
-            actors = Arrays.stream(args[4].split(",")).map(s -> s.trim()).collect(Collectors.toList());
+        if (args.length > 4 && !args[4].equals("*")) {
+            actors = Arrays.stream(args[4].split(","))
+                    .map(s -> s.trim())
+                    .filter(s -> s != null && s.length() > 0)
+                    .collect(Collectors.toList());
         }
 
-        targetDirectory.mkdirs();
+        String projectSkeleton = null;
+        if (args.length > 5) {
+            projectSkeleton = args[5];
+        }
 
         UiModel uiModel = UiModel.loadUiModel(
                 UiModel.LoadArguments.uiLoadArgumentsBuilder().file(uiModelFile).name(modelName));
 
         List<String> finalActors = actors;
+
+        Map<Application, Collection<GeneratedFile>> generatedApps =
         executeUi2ClientGeneration(uiModel,
                 GeneratorTemplate.loadYamlURL(Ui2Client.calculateUi2ClientTemplateScriptURI(clientTemplate).toURL()),
                 new Slf4jLog(log),
-                calculateUi2ClientTemplateScriptURI()).entrySet()
+                calculateUi2ClientTemplateScriptURI());
+
+
+        String finalProjectSkeleton = projectSkeleton;
+        generatedApps.entrySet()
                     .stream().filter(e -> finalActors.isEmpty() || finalActors.contains(e.getKey().getActor().getName()))
-                .forEach(getDirectoryWriter(targetDirectory));
+                .forEach(getDirectoryWriter(targetDirectory).andThen(e -> {
+                    if (finalProjectSkeleton != null) {
+                        File mergeDirectory =  new File(finalProjectSkeleton);
+                        if (!mergeDirectory.exists() || !mergeDirectory.isDirectory()) {
+                            throw new RuntimeException(finalProjectSkeleton + " does not exists or not directory");
+                        }
 
+                        Path sourceDir = mergeDirectory.toPath();
+                        Path destinationDir = new File(targetDirectory, e.getKey().getName().replaceAll("[^\\.A-Za-z0-9_]", "_").toLowerCase()).toPath();
 
-        executeUi2ClientGenerationToDirectory(uiModel,
-                GeneratorTemplate.loadYamlURL(Ui2Client.calculateUi2ClientTemplateScriptURI(clientTemplate).toURL()),
-                targetDirectory, new Slf4jLog(log), calculateUi2ClientTemplateScriptURI());
+                        log.info("Merge " + sourceDir.toString() + " to " + destinationDir.toString());
+
+                        // Traverse the file tree and copy each file/directory.
+                        try {
+                            Files.walk(sourceDir)
+                                    .forEach(sourcePath -> {
+                                        try {
+                                            Path targetPath = destinationDir.resolve(sourceDir.relativize(sourcePath));
+                                            if (!Files.exists(targetPath)) {
+                                                Files.copy(sourcePath, targetPath, StandardCopyOption.REPLACE_EXISTING);
+                                            }
+                                        } catch (IOException e1) {
+                                            throw new RuntimeException(e1);
+                                        }
+                                    });
+                        } catch (IOException e2) {
+                            throw new RuntimeException(e2);
+                        }
+                    }
+                }));
+
 
     }
 

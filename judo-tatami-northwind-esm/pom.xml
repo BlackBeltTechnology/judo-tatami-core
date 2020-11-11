@@ -98,6 +98,10 @@
                                 <argument>northwind</argument>
                                 <argument>${basedir}/target/classes/model/client</argument>
                                 <argument>flutter/flutter.yaml</argument>
+                                <!--
+                                <argument>*</argument>
+                                <argument>/Users/robson/Project/judo-ng/eclipse/judo-epp-designer/designer-product/target/products/hu.blackbelt.judo.eclipse.epp.package.designer.product/macosx/cocoa/x86_64/JudoDesigner.app/Contents/MacOS/judo-designer-workspace/Judo_Default_Project/flutter-client</argument>
+                                -->
                             </arguments>
                             <includeProjectDependencies>true</includeProjectDependencies>
                             <includePluginDependencies>true</includePluginDependencies>
