@@ -49,7 +49,11 @@ operation UI!ui::Table calculateActions(application : UI!ui::Application, previe
 			self.rowActions.add(new UI!ui::UnsetAction());
 		}
 		
-		if (relationType.getIsRelationBehaviourTypeCreatable() or relationType.getIsRelationBehaviourTypeSetable() or relationType.getIsRelationBehaviourTypeAddable()) {
+		if (not self.isTablePage() and
+				(relationType.getIsRelationBehaviourTypeCreatable() or
+				relationType.getIsRelationBehaviourTypeSetable() or
+				relationType.getIsRelationBehaviourTypeAddable())
+			) {
 			self.createRelationActionButtonsForTable(application, preview);
 		}
 	}
