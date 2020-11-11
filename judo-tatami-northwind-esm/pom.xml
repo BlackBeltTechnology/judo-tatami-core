@@ -65,11 +65,61 @@
                             <cleanupDaemonThreads>false</cleanupDaemonThreads>
                         </configuration>
                     </execution>
+
+                    <execution>
+                        <id>generate-ui</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>java</goal>
+                        </goals>
+                        <configuration>
+                            <mainClass>hu.blackbelt.judo.tatami.esm2ui.Esm2UiWork</mainClass>
+                            <arguments>
+                                <argument>${basedir}/target/classes/model/northwind-esm.model</argument>
+                                <argument>northwind</argument>
+                                <argument>${basedir}/target/classes/model/northwind-ui.model</argument>
+                            </arguments>
+                            <includeProjectDependencies>true</includeProjectDependencies>
+                            <includePluginDependencies>true</includePluginDependencies>
+                            <cleanupDaemonThreads>false</cleanupDaemonThreads>
+                        </configuration>
+                    </execution>
+
+                    <execution>
+                        <id>generate-client-flutter</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>java</goal>
+                        </goals>
+                        <configuration>
+                            <mainClass>hu.blackbelt.judo.tatami.ui2client.Ui2Client</mainClass>
+                            <arguments>
+                                <argument>${basedir}/target/classes/model/northwind-ui.model</argument>
+                                <argument>northwind</argument>
+                                <argument>${basedir}/target/classes/model/client</argument>
+                                <argument>flutter/flutter.yaml</argument>
+                            </arguments>
+                            <includeProjectDependencies>true</includeProjectDependencies>
+                            <includePluginDependencies>true</includePluginDependencies>
+                            <cleanupDaemonThreads>false</cleanupDaemonThreads>
+                        </configuration>
+                    </execution>
+
                 </executions>
                 <dependencies>
                     <dependency>
                         <groupId>hu.blackbelt.judo.tatami</groupId>
                         <artifactId>judo-tatami-esm2psm</artifactId>
+                        <version>${project.version}</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>hu.blackbelt.judo.tatami</groupId>
+                        <artifactId>judo-tatami-esm2ui</artifactId>
+                        <version>${project.version}</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>hu.blackbelt.judo.tatami</groupId>
+                        <artifactId>judo-tatami-ui2client</artifactId>
                         <version>${project.version}</version>
                     </dependency>
                 </dependencies>

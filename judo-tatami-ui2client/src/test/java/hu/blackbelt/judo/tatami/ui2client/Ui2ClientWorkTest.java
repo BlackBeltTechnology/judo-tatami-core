@@ -32,7 +32,6 @@ public class Ui2ClientWorkTest {
 
 		// Create empty UI model
         uiModel = UiModel.buildUiModel().name(TEST).build();
-
         executeEsm2UiTransformation(esmModel, "desktop", 12, uiModel);
 		transformationContext = new TransformationContext(TEST);
 		transformationContext.put(uiModel);

@@ -101,5 +101,11 @@
 			<artifactId>judo-tatami-workflow</artifactId>
 		</dependency>
 
+		<dependency>
+			<groupId>io.swagger</groupId>
+			<artifactId>swagger-core</artifactId>
+			<version>1.5.21</version>
+		</dependency>
+
 	</dependencies>
 </project>
