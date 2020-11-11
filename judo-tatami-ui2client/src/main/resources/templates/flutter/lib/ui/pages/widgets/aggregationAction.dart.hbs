@@ -19,8 +19,6 @@ JudoButton(
                         .catchError((onError) => judoAlert(context: context, title: 'Error', text: onError.toString()));
                     if (validate != null) {
                         target{{ className relation.owner.name }}Store.updateWith(validate);
-                    } else {
-                        // validate message
                     }
                 {{/unless}}
             {{/unless}}
