@@ -135,8 +135,13 @@ public class Ui2Client {
                                 location = scriptDirectoryTemplateLoader.resolve(location);
                                 try {
                                     URL resource = scriptDirectoryTemplateLoader.getResource(location);
-                                    generatedFile.setContent(ByteStreams.toByteArray(resource.openStream()));
+                                    if (resource != null) {
+                                        generatedFile.setContent(ByteStreams.toByteArray(resource.openStream()));
+                                    }  else {
+                                        log.error("Could not locate: " + location);
+                                    }
                                 } catch (IOException e) {
+                                    log.error("Could not resolve: " + location);
                                 }
                             } else {
                                 StringWriter sourceFile = new StringWriter();
@@ -219,6 +224,19 @@ public class Ui2Client {
         return uiRoot;
     }
 
+    @SneakyThrows(URISyntaxException.class)
+    public static URI calculateUi2ClientTemplateScriptURI(String template) {
+        URI uiRoot = Ui2Client.class.getProtectionDomain().getCodeSource().getLocation().toURI();
+        if (uiRoot.toString().endsWith(".jar")) {
+            uiRoot = new URI("jar:" + uiRoot.toString() + "!/" + TEMPLATE_ROOT_TATAMI_UI_2_CLIENT + template);
+        } else if (uiRoot.toString().startsWith("jar:bundle:")) {
+            uiRoot = new URI(uiRoot.toString().substring(4, uiRoot.toString().indexOf("!")) + TEMPLATE_ROOT_TATAMI_UI_2_CLIENT + template);
+        } else {
+            uiRoot = new URI(uiRoot.toString() + "/" + TEMPLATE_ROOT_TATAMI_UI_2_CLIENT + template);
+        }
+        return uiRoot;
+    }
+
     @SneakyThrows(IOException.class)
     public static InputStream getGeneratedFilesAsZip(Collection<GeneratedFile> generatedFiles) {
         ByteArrayOutputStream generatedZip = new ByteArrayOutputStream();
@@ -233,4 +251,36 @@ public class Ui2Client {
         zipOutputStream.close();
         return new ByteArrayInputStream(generatedZip.toByteArray());
     }
+
+    public static void main(String[] args) throws Exception {
+
+        File uiModelFile = new File(args[0]);
+        String modelName = args[1];
+        File targetDirectory = new File(args[2]);
+        String clientTemplate = args[3];
+        List<String> actors = Collections.emptyList();
+        if (args.length > 4) {
+            actors = Arrays.stream(args[4].split(",")).map(s -> s.trim()).collect(Collectors.toList());
+        }
+
+        targetDirectory.mkdirs();
+
+        UiModel uiModel = UiModel.loadUiModel(
+                UiModel.LoadArguments.uiLoadArgumentsBuilder().file(uiModelFile).name(modelName));
+
+        List<String> finalActors = actors;
+        executeUi2ClientGeneration(uiModel,
+                GeneratorTemplate.loadYamlURL(Ui2Client.calculateUi2ClientTemplateScriptURI(clientTemplate).toURL()),
+                new Slf4jLog(log),
+                calculateUi2ClientTemplateScriptURI()).entrySet()
+                    .stream().filter(e -> finalActors.isEmpty() || finalActors.contains(e.getKey().getActor().getName()))
+                .forEach(getDirectoryWriter(targetDirectory));
+
+
+        executeUi2ClientGenerationToDirectory(uiModel,
+                GeneratorTemplate.loadYamlURL(Ui2Client.calculateUi2ClientTemplateScriptURI(clientTemplate).toURL()),
+                targetDirectory, new Slf4jLog(log), calculateUi2ClientTemplateScriptURI());
+
+    }
+
 }

@@ -1,6 +1,5 @@
 package hu.blackbelt.judo.tatami.ui2client;
 
-import static hu.blackbelt.judo.tatami.ui2client.Ui2Client.executeUi2ClientGeneration;
 import static hu.blackbelt.judo.tatami.esm2ui.Esm2Ui.executeEsm2UiTransformation;
 import static hu.blackbelt.judo.tatami.ui2client.Ui2Client.getGeneratedFilesAsZip;
 
@@ -59,5 +58,17 @@ public class Ui2ClientTest {
 
         }
     }
+
+
+    @Test
+    void testMain() throws Exception {
+        Ui2Client.main(new String[] {
+                new File(TARGET_TEST_CLASSES, TEST + "-ui.model").toString(),
+                TEST,
+                new File(TARGET_TEST_CLASSES, TEST + "_client").toString(),
+                "flutter/flutter.yaml"
+        });
+    }
+
 
 }
