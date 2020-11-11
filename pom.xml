@@ -59,11 +59,11 @@
 
         <!-- Model versions -->
         <judo-meta-rdbms-version>1.0.0.20201106_191834_8442041_develop</judo-meta-rdbms-version>
-        <judo-meta-esm-version>1.1.0.20201106_174102_2698258_develop</judo-meta-esm-version>
+        <judo-meta-esm-version>1.1.0.20201110_193542_78cec03_develop</judo-meta-esm-version>
         <judo-meta-psm-version>1.1.0.20201106_174128_b89fd6f_develop</judo-meta-psm-version>
         <judo-meta-jql-version>1.0.1.20201106_190924_7405a00_develop</judo-meta-jql-version>
-        <judo-meta-jcl-version>1.0.1.20201106_192754_255efa7_develop</judo-meta-jcl-version>
-        <judo-meta-script-version>1.0.1.20201106_194140_b87c672_develop</judo-meta-script-version>
+        <judo-meta-jcl-version>1.0.1.20201111_082947_5f7273d_develop</judo-meta-jcl-version>
+        <judo-meta-script-version>1.0.1.20201111_171637_d6b7e55_develop</judo-meta-script-version>
         <judo-meta-asm-version>1.1.0.20201106_190250_00d6b74_develop</judo-meta-asm-version>
         <judo-meta-expression-version>1.0.1.20201111_090716_dac6115_develop</judo-meta-expression-version>
         <judo-meta-measure-version>1.0.0.20201106_191635_909995e_develop</judo-meta-measure-version>
@@ -73,8 +73,8 @@
         <judo-meta-keycloak-version>1.0.0.20201106_175644_0659ac3_develop</judo-meta-keycloak-version>
         <judo-dao-api-version>1.0.2.20201019_175250_82201ef_develop</judo-dao-api-version>
         <judo-dispatcher-api-version>1.0.2.20201111_092312_06a0a9f_develop</judo-dispatcher-api-version>
-        <judo-script-codegen-version>1.1.0.20201109_105329_2dfad7c_develop</judo-script-codegen-version>
-        <judo-operation-utils-version>1.1.0.20201109_105534_01bf55f_develop</judo-operation-utils-version>
+        <judo-script-codegen-version>1.1.0.20201111_173036_6cbfb0e_develop</judo-script-codegen-version>
+        <judo-operation-utils-version>1.1.0.20201111_134225_8f88dc7_develop</judo-operation-utils-version>
 
         <structured-map-proxy-version>1.0.5</structured-map-proxy-version>
 
