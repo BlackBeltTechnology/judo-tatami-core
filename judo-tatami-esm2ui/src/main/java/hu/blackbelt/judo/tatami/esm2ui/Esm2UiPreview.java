@@ -16,8 +16,8 @@ import hu.blackbelt.judo.meta.esm.runtime.EsmUtils;
 import hu.blackbelt.judo.meta.esm.ui.VisualElement;
 import hu.blackbelt.judo.meta.ui.runtime.UiUtils;
 import hu.blackbelt.judo.meta.ui.PageDefinition;
+import hu.blackbelt.judo.meta.ui.data.DataElement;
 import hu.blackbelt.judo.meta.ui.runtime.UiModel;
-import hu.blackbelt.judo.tatami.core.TransformationTraceUtil;
 import lombok.extern.slf4j.Slf4j;
 
 import org.eclipse.emf.ecore.EObject;
@@ -32,7 +32,9 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import static hu.blackbelt.epsilon.runtime.execution.ExecutionContext.executionContextBuilder;
 import static hu.blackbelt.epsilon.runtime.execution.contexts.EtlExecutionContext.etlExecutionContextBuilder;
@@ -42,7 +44,7 @@ import static hu.blackbelt.epsilon.runtime.execution.model.emf.WrappedEmfModelCo
 public class Esm2UiPreview {
 
     public static final String SCRIPT_ROOT_TATAMI_ESM_2_UI_PREVIEW = "tatami/esm2ui/transformations/preview/";
-
+    private final static String TARGET_TEST_CLASSES = "target/test-classes";
     /**
      * Execute ESM to UI model transformation to preview one visual element
      *
@@ -179,7 +181,14 @@ public class Esm2UiPreview {
 			  @Override
 			  public void serialize(EObject v, JsonGenerator g, SerializerProvider s)
 			  throws IOException {
-				  mapper.writeValue(g, v);
+				  List<String> superTypeNames = v.eClass().getEAllSuperTypes().stream().map(t -> t.getName()).collect(Collectors.toList());
+				  if (superTypeNames.contains("DataElement")) {
+					  mapper.writeValue(g, ((DataElement)v).getName());
+				  } else if (v.eClass().getName().equals("PageDefinition")) {
+					  mapper.writeValue(g, ((PageDefinition)v).getName());
+				  } else {
+					  mapper.writeValue(g, v);
+				  }
 			  }
 			});
 		mapper.registerModule(module);

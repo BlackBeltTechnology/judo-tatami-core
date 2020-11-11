@@ -7,10 +7,6 @@ operation ESM!esm::ui::TabularReferenceField createTableFromTabularReferenceFiel
 		log.debug("Create table based on reference target: " + relation.target.table.name);
 		var table : UI!ui::Table = relation.target.table.map(application);
 		
-		if (preview) {
-			return table;
-		}
-		
 		table.dataElement = relation.mapRelationType(application, self.getTransferObjectType().mapClassType(application));
 		return table;
 	} else {
@@ -20,6 +16,7 @@ operation ESM!esm::ui::TabularReferenceField createTableFromTabularReferenceFiel
 		self.~originalRelation = relation;
 		table.name = self.name;	
 	    table.label = self.getUiLabel();
+	    table.icon = self.iconName;
 		
 		table.col = self.basis;
 		table.row = self.maxVisibleElements;
@@ -28,16 +25,9 @@ operation ESM!esm::ui::TabularReferenceField createTableFromTabularReferenceFiel
 			var col : UI!ui::Formatted = column.dataFeature.getMember().getDataType().formatted();
 			col.name = column.name;
 			col.label = column.getUiLabel();
-			
-			if (not preview) {
-				col.attributeType = column.dataFeature.getMember().mapAttributeType(application, relation.target.mapClassType(application));
-			}
+			col.attributeType = column.dataFeature.getMember().mapAttributeType(application, relation.target.mapClassType(application));
 			
 			table.columns.add(col);
-		}
-		
-		if (preview) {
-			return table;
 		}
 		table.dataElement = relation.mapRelationType(application, self.getTransferObjectType().mapClassType(application));
 		return table;
@@ -52,10 +42,6 @@ operation ESM!esm::ui::TabularReferenceField createButtonFromTabularReferenceFie
 	var button : UI!ui::Button = new UI!ui::Button();
 	button.name = self.name.anchor("TabularReferenceButton");
     button.label = self.getUiLabel();
-	
-	if (preview) {
-		return button;
-	}
 	
 	var dataElement = relation.mapRelationType(application, self.getTransferObjectType().mapClassType(application));
 
@@ -100,6 +86,8 @@ operation ESM!esm::ui::TabularReferenceField createButtonFromTabularReferenceFie
 		self.~originalRelation = relation;
 		table.dataElement = dataElement;
 		table.col = self.basis;
+		table.label = self.getUiLabel();
+	    table.icon = self.iconName;
 		
 		for (column in self.columns) {
 			table.columns.add(column.map(application));

@@ -30,8 +30,12 @@ rule CreatePageDefinitionForPreview
 			flex.children.add(component.map(application));
 		}
 	
+		var relation : UI!ui::data::RelationType = application.actor.relations.selectOne(r | r.name == "previewRelation");
+		relation.target = previewElement.getRoot().eContainer().mapClassType(application);
+		t.dataElement = relation;
+		
 		pageContainer.children.add(flex);
-		application.pages.add(t);	
+		application.pages.add(t);
 }
 
 rule CreatePageDefinitionForPreviewFromView
@@ -68,6 +72,10 @@ rule CreatePageDefinitionForPreviewFromTable
 	t.name = s.getName().anchor("Preview");
 	t.pageType = UI!ui::PageType#TABLE;
 	t.label = s.getUiLabel() + " Browse";
+
+	var relation : UI!ui::data::RelationType = application.actor.relations.selectOne(r | r.name == "previewRelation");
+	relation.target = previewElement.getRoot().eContainer().mapClassType(application);
+	t.dataElement = relation;
 	
 	var pageContainer = new UI!ui::PageContainer();
 	pageContainer.layoutType = application.layoutTypes.first;

@@ -29,10 +29,6 @@ operation ESM!esm::structure::ReferenceTypedElement mapViewPage(application : UI
 	pageContainer.children.add(target.view.map(application));
 	
 	application.pages.add(page);
-	
-	if (preview) {
-		return page;	
-	}
 	page.dataElement = self.mapRelationType(application, self.eContainer.mapClassType(application));
 	return page;
 }
@@ -61,10 +57,6 @@ operation ESM!esm::structure::ReferenceTypedElement mapCreatePage(application : 
 
     pageContainer.children.add(target.form.map(application));
 	application.pages.add(page);
-    
-	if (preview) {
-		return page;
-	}
 	page.dataElement = self.mapRelationType(application, self.eContainer.mapClassType(application));
     return page;
 }
@@ -93,10 +85,6 @@ operation ESM!esm::structure::ReferenceTypedElement mapUpdatePage(application : 
 
     pageContainer.children.add(target.form.map(application));
 	application.pages.add(page);
-    
-    if (preview) {
-		return page;
-	}
 	
 	page.dataElement = self.mapRelationType(application, self.eContainer.mapClassType(application));
     return page;

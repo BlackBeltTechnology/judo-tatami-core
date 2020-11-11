@@ -163,8 +163,8 @@ public class Esm2UiPreviewTest {
     }
     
     @Test
-    void testNorthwindPreview() throws Exception {
-        testName = "NorthwindPreview";
+    void testNorthwindViewPreview() throws Exception {
+        testName = "NorthwindViewPreview";
 
         esmModel = NorthwindEsmModel.fullDemo();
 
@@ -177,17 +177,51 @@ public class Esm2UiPreviewTest {
         		.filter(e -> (TransferObjectView.class).isAssignableFrom(e.getClass()))
                 .map(e -> (TransferObjectView) e).filter(v -> v.getName().equals("InternationalOrderInfoView")).findAny();
         
+    	String json = executeEsm2UiTransformation(esmModel, view.get(), "default", 12, uiModel, new Slf4jLog(log));
+    	saveJson(json, testName);
+    	savePrettyJson(json, testName);
+        validateUiTestModel();
+    }
+    
+    @Test
+    void testNorthwindFormPreview() throws Exception {
+        testName = "NorthwindFormPreview";
+
+        esmModel = NorthwindEsmModel.fullDemo();
+
+        validateEsmTestModel();
+        
+        final ResourceSet resourceSet = esmModel.getResourceSet();
+        final Iterable<Notifier> esmContents = resourceSet::getAllContents;
+
         Optional<TransferObjectForm> form = StreamSupport.stream(esmContents.spliterator(), true)
         		.filter(e -> (TransferObjectForm.class).isAssignableFrom(e.getClass()))
-                .map(e -> (TransferObjectForm) e).filter(v -> v.getName().equals("ShipperInfoForm")).findAny();
+                .map(e -> (TransferObjectForm) e).filter(v -> v.getName().equals("InternationalOrderInfoForm")).findAny();
+        
+    	String json = executeEsm2UiTransformation(esmModel, form.get(), "default", 12, uiModel, new Slf4jLog(log));
+    	saveJson(json, testName);
+    	savePrettyJson(json, testName);
+        validateUiTestModel();
+    }
+    
+    @Test
+    void testNorthwindTablePreview() throws Exception {
+        testName = "NorthwindTablePreview";
+
+        esmModel = NorthwindEsmModel.fullDemo();
+
+        validateEsmTestModel();
+        
+        final ResourceSet resourceSet = esmModel.getResourceSet();
+        final Iterable<Notifier> esmContents = resourceSet::getAllContents;
         
         Optional<TransferObjectTable> table = StreamSupport.stream(esmContents.spliterator(), true)
         		.filter(e -> (TransferObjectTable.class).isAssignableFrom(e.getClass()))
                 .map(e -> (TransferObjectTable) e).filter(v -> v.getName().equals("InternationalOrderInfoTable")).findAny();
         
-    	String json = executeEsm2UiTransformation(esmModel, form.get(), "default", 12, uiModel, new Slf4jLog(log));
-    	saveJson(json, "northwind" + form.get().getName());
-    	savePrettyJson(json, "northwind" + form.get().getName());
+    	String json = executeEsm2UiTransformation(esmModel, table.get(), "default", 12, uiModel, new Slf4jLog(log));
+    	saveJson(json, testName);
+    	savePrettyJson(json, testName);
         validateUiTestModel();
     }
         

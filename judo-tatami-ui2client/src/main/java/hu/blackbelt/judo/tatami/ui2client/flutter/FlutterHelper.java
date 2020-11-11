@@ -45,7 +45,8 @@ public class FlutterHelper {
     }
 
     public static boolean isInstanceAction (PageDefinition pageDefinition) {
-        return pageDefinition.getInstanceActions()!= null && !pageDefinition.getInstanceActions().isEmpty();
+        //return pageDefinition.getInstanceActions()!= null && !pageDefinition.getInstanceActions().isEmpty();
+    	return false;
     }
 
 

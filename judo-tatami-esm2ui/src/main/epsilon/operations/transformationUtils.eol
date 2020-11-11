@@ -25,6 +25,7 @@ operation createBlankApplicationForPreview() : UI!ui::Application {
     
     var dashboardForPreview = new UI!ui::PageDefinition();
     dashboardForPreview.name = previewElement.getName().anchor("preview","dashboard");
+    dashboardForPreview.pageType = UI!ui::PageType#DASHBOARD;
     
     var pageContainerForPreview : UI!ui::PageContainer = new UI!ui::PageContainer();
     pageContainerForPreview.name = previewElement.getName().anchor("preview","pageContainer");
@@ -41,6 +42,40 @@ operation createBlankApplicationForPreview() : UI!ui::Application {
     
     application.actor = new UI!ui::data::ClassType();
     application.actor.name = previewElement.getName().anchor("preview","classType");
+    application.dataElements.add(application.actor);
+
+    var relation : UI!ui::data::RelationType = new UI!ui::data::RelationType();
+    relation.name = "previewRelation";
+    application.actor.relations.add(relation);
     
+    for (b in rootElement.eContainer().getAllPossibleRelationBehaviours()){
+    	relation.behaviours.add(b);
+    }
+
     return application;
+}
+
+operation createHorizontalFlex(name : String, col : Integer) : UI!ui::Flex {
+	var ret : UI!ui::Flex = new UI!ui::Flex();
+	ret.name = name;
+	ret.col = col;
+	ret.direction = UI!ui::Axis#HORIZONTAL;
+	return ret;
+}
+
+operation createVerticalFlex(name : String, col : Integer) : UI!ui::Flex {
+	var ret : UI!ui::Flex = new UI!ui::Flex();
+	ret.name = name;
+	ret.col = col;
+	ret.direction = UI!ui::Axis#VERTICAL;
+	return ret;
+}
+
+operation createButton(name : String, label : String, col : Integer, action : UI!ui::Action) : UI!ui::Button {
+	var ret : UI!ui::Button = new UI!ui::Button();
+	ret.name = name;
+	ret.label = label;
+	ret.col = col;
+	ret.action = action;
+	return ret;
 }

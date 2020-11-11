@@ -31,8 +31,6 @@ operation ESM!esm::structure::Class getExposedOperations() : Set {
 	return ret;
 }
 
-
-
 operation ESM!esm::structure::Class createClassType(application : UI!ui::Application) : UI!ui::data::ClassType {
 	var clazz = new UI!ui::data::ClassType();	
 
@@ -100,4 +98,48 @@ operation ESM!esm::structure::Class transferObjectTypeName() : String {
 	}
 	
 	return esmUtils.getNamespaceElementFQName(self);
+}
+
+operation ESM!esm::structure::Class getAllPossibleRelationBehaviours() : Set {
+	
+	var references : Set = ESM!esm::structure::RelationFeature.all().select(r | r.target == self).asSet()
+		.includingAll(ESM!esm::accesspoint::Access.all().select(a | a.target == self).asSet());
+	var behaviours : Set = new Set;
+	for (ref in references) {
+		if (esmUtils.isListSupported(ref)) {
+			behaviours.add(UI!ui::data::RelationBehaviourType#LIST);
+		}
+		if (esmUtils.isCreateSupported(ref)) {
+			behaviours.add(UI!ui::data::RelationBehaviourType#CREATE);
+		}
+
+		if (ref.isKindOf(ESM!esm::accesspoint::Access)){
+			if (esmUtils.isValidateCreateSupported(ref)) {
+				behaviours.add(UI!ui::data::RelationBehaviourType#VALIDATE_CREATE);
+			}
+		}
+		
+		if (ref.isKindOf(ESM!esm::structure::RelationFeature)) {
+			if (esmUtils.isSetReferenceSupported(ref)) {
+				behaviours.add(UI!ui::data::RelationBehaviourType#SET);
+			}
+			if (esmUtils.isUnsetReferenceSupported(ref)) {
+				behaviours.add(UI!ui::data::RelationBehaviourType#UNSET);
+			}
+			if (esmUtils.isAddReferenceSupported(ref)) {
+				behaviours.add(UI!ui::data::RelationBehaviourType#ADD);
+			}
+			if (esmUtils.isRemoveReferenceSupported(ref)) {
+				behaviours.add(UI!ui::data::RelationBehaviourType#REMOVE);
+			}
+			if (esmUtils.isGetRangeSupported(ref)) {
+				behaviours.add(UI!ui::data::RelationBehaviourType#RANGE);
+			}
+			if (esmUtils.isValidateCreateSupported(ref)) {
+				behaviours.add(UI!ui::data::RelationBehaviourType#VALIDATE_CREATE);
+			}
+		}
+	}
+	
+	return behaviours;
 }
