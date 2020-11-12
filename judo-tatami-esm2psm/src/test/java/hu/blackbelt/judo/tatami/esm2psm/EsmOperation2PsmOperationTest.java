@@ -659,7 +659,7 @@ public class EsmOperation2PsmOperationTest {
         ));
 
         assertEquals(10L, defaultD.get().getOperations().stream().filter(o -> o instanceof BoundTransferOperation).count());
-        assertEquals(1L, defaultD.get().getOperations().stream().filter(o -> o instanceof UnboundOperation).count());
+        assertEquals(2L, defaultD.get().getOperations().stream().filter(o -> o instanceof UnboundOperation).count());
 
         assertTrue(defaultD.get().getOperations().stream().anyMatch(o -> NAME_OF_DELETE_INSTANCE_D_OPERATION.equals(o.getName()) && (o instanceof BoundTransferOperation) &&
                 EcoreUtil.equals(((BoundTransferOperation) o).getBinding().getInstanceRepresentation().getEntityType(), d.get()) &&

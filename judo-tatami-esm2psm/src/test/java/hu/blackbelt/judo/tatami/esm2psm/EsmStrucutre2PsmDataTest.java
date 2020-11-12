@@ -160,19 +160,19 @@ public class EsmStrucutre2PsmDataTest {
         transform();
 
         final Set<hu.blackbelt.judo.meta.psm.data.EntityType> psmEntityTypes = allPsm(hu.blackbelt.judo.meta.psm.data.EntityType.class).collect(Collectors.toSet());
-        assertTrue(psmEntityTypes.size() == 6);
+        assertTrue(psmEntityTypes.size() == 3);
         assertTrue(psmEntityTypes.stream().allMatch(e -> !e.isAbstract()));
 
-//        final Set<String> psmEntityTypeNames = psmEntityTypes.stream().map(e -> e.getName()).collect(Collectors.toSet());
-//        final Set<String> esmEntityTypeNames = ImmutableSet.of(entityType1.getName(), entityType2.getName(), entityType3.getName());
-//        assertThat(psmEntityTypeNames, IsEqual.equalTo(esmEntityTypeNames));
-//
-//        final Optional<hu.blackbelt.judo.meta.psm.data.EntityType> psmEntityType3 = psmEntityTypes.stream().filter(e -> e.getName().equals(entityType3.getName())).findAny();
-//        assertTrue(psmEntityType3.isPresent());
-//
-//        final Set<String> psmEntityType3SuperTypeNames = psmEntityType3.get().getSuperEntityTypes().stream().map(s -> s.getName()).collect(Collectors.toSet());
-//        final Set<String> esmEntityType3SuperTypeNames = ImmutableSet.of(entityType2.getName());
-//        assertThat(psmEntityType3SuperTypeNames, IsEqual.equalTo(esmEntityType3SuperTypeNames));
+        final Set<String> psmEntityTypeNames = psmEntityTypes.stream().map(e -> e.getName()).collect(Collectors.toSet());
+        final Set<String> esmEntityTypeNames = ImmutableSet.of(entityType1.getName(), entityType2.getName(), entityType3.getName());
+        assertThat(psmEntityTypeNames, IsEqual.equalTo(esmEntityTypeNames));
+
+        final Optional<hu.blackbelt.judo.meta.psm.data.EntityType> psmEntityType3 = psmEntityTypes.stream().filter(e -> e.getName().equals(entityType3.getName())).findAny();
+        assertTrue(psmEntityType3.isPresent());
+
+        final Set<String> psmEntityType3SuperTypeNames = psmEntityType3.get().getSuperEntityTypes().stream().map(s -> s.getName()).collect(Collectors.toSet());
+        final Set<String> esmEntityType3SuperTypeNames = ImmutableSet.of(entityType2.getName());
+        assertThat(psmEntityType3SuperTypeNames, IsEqual.equalTo(esmEntityType3SuperTypeNames));
     }
 
     @Test

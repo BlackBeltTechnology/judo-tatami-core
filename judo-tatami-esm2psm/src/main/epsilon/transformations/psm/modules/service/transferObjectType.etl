@@ -377,22 +377,56 @@ rule CreateQuerySeekingType
 //optional transfer object types
 @greedy
 rule CreateOptionalMappedTransferObjectType
-	transform s: ESM!TransferObjectType
-	to t: JUDOPSM!MappedTransferObjectType {
-		guard: s.isMapped()
-	  t.name = "_OptionalTransferObjectType" + s.name.firstToUpperCase();
+    transform s: ESM!TransferObjectType
+    to t: JUDOPSM!MappedTransferObjectType {
+        guard: s.isMapped()
+      t.name = s.name;
       s.eContainer.getPSMGeneratedOptionalTransferObjectNamespaceEquivalent().elements.add(t);
-
-	  t.entityType = s.mapping.target.equivalent("CreateOptionalEntityType");
-	  log.debug("Created Optional MappedTransferObjectType: " + t.name);
+      t.optional = true;
+      t.entityType = s.mapping.target.getPSMEquivalent();
+      log.debug("Created Optional MappedTransferObjectType: " + t.name);
 }
+
 @greedy
 rule CreateOptionalUnmappedTransferObjectType
-	transform s: ESM!TransferObjectType
-	to t: JUDOPSM!UnmappedTransferObjectType {
-		guard: not s.isMapped()
-	  t.name = "_OptionalTransferObjectType" + s.name.firstToUpperCase();
+    transform s: ESM!TransferObjectType
+    to t: JUDOPSM!UnmappedTransferObjectType {
+        guard: not s.isMapped()
+      t.name = s.name;
       s.eContainer.getPSMGeneratedOptionalTransferObjectNamespaceEquivalent().elements.add(t);
+      t.optional = true;
+      log.debug("Created Optional UnmappedTransferObjectType: " + t.name);
+}
 
-	  log.debug("Created Optional UnmappedTransferObjectType: " + t.name);
+@lazy
+@greedy
+rule CreateGetRangeInputType
+    transform s: ESM!TransferObjectType
+    to t: JUDOPSM!UnmappedTransferObjectType { 
+
+      t.name = "_GetRangeInput" + s.name.firstToUpperCase();
+
+      var owner = new JUDOPSM!TransferObjectRelation;
+      owner.name = "owner";
+      owner.target = s.getPSMOptionalEquivalent();
+      owner.embedded = true;
+      owner.cardinality = new JUDOPSM!Cardinality;
+      owner.cardinality.lower = 0;
+      owner.cardinality.upper = -1;
+
+      t.relations.add(owner);
+
+      if (s.mapping.isDefined()) {
+          var queryCustomizer = new JUDOPSM!TransferObjectRelation;
+          queryCustomizer.name = "queryCustomizer";
+          queryCustomizer.target = s.equivalent("CreateQueryCustomizerType");
+          queryCustomizer.embedded = true;
+          queryCustomizer.cardinality = new JUDOPSM!Cardinality;
+          queryCustomizer.cardinality.lower = 0;
+          queryCustomizer.cardinality.upper = 1;
+          t.relations.add(queryCustomizer);
+      }
+      
+      s.eContainer.getPSMExtensionNamespaceEquivalent().elements.add(t);
+      log.debug("Get range input type created: " + t.name);
 }

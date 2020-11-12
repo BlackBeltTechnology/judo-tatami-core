@@ -19,18 +19,3 @@ rule CreateAttribute
       s.eContainer.getPSMEquivalent().attributes.add(t);
       log.debug("Created Attribute: " + t.name);
 }
-
-//optional attribute
-
-rule CreateOptionalAttribute
-    transform s: ESM!DataMember
-    to t: JUDOPSM!Attribute {
-      guard: s.memberType == ESM!MemberType#STORED
-      t.name = "_Optional" + s.name.firstToUpperCase();
-      t.dataType = s.dataType.getPSMEquivalent();
-      t.identifier = s.identifier;
-      t.required = false;
-      s.eContainer.equivalent("CreateOptionalEntityType").attributes.add(t);
-      log.debug("Created Optional Attribute: " + t.name);
-}
-

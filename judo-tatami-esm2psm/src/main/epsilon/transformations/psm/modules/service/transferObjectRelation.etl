@@ -186,13 +186,21 @@ rule CreateTransferObjectRelationForDefaultTransferObjectTypeFromTwoWayRelationM
 }
 
 //for optional types
+@lazy
+@greedy
+rule CreateCardinalityForOptionalReferenceTypedElement
+    transform s: ESM!ReferenceTypedElement
+    to t: JUDOPSM!Cardinality {
+      t.upper = s.upper;
+      t.lower = 0;
+}
 
 @abstract
 rule CreateOptionalTransferObjectRelation
     transform s: ESM!RelationFeature
     to t: JUDOPSM!TransferObjectRelation
     extends CreateNamedElement {
-      t.name = "_Optional" + s.name.firstToUpperCase();
+
       t.target = s.target.getPSMOptionalEquivalent();
       t.embedded = s.isAggregation();
       
@@ -205,9 +213,9 @@ rule CreateOptionalTransferObjectRelation
       if (s.isDeleteAllowed()) {
           t.embeddedDelete = true;
       }
+      
       t.cardinality = s.equivalent("CreateCardinalityForOptionalReferenceTypedElement");
-      t.defaultValue = s.equivalent("CreateStaticNavigationForOptionalTransferObjectRelationDefaultValue");
-      t.range = s.equivalent("CreateNavigationPropertyForOptionalTransferObjectRelationRange");
+      //t.cardinality = s.equivalent("CreateCardinalityOfOptionalTransferObjectRelationForOptionalEntityType");
       
       s.eContainer.getPSMOptionalEquivalent().relations.add(t);
 }
@@ -216,15 +224,12 @@ rule CreateOptionalTransferObjectRelationFromRelationOrProperty
     transform s: ESM!OneWayRelationMember
     to t: JUDOPSM!TransferObjectRelation
     extends CreateOptionalTransferObjectRelation {
-      guard: s.eContainer.isKindOf(ESM!TransferObjectType) 
-            and not s.eContainer.isTypeOf(ESM!EntityType)
-            and s.memberType <> ESM!MemberType#MAPPED
-            and s.isAggregation()
+      guard: s.memberType == ESM!MemberType#TRANSIENT
 
       if(s.eContainer.isMapped()) {
-      	t.binding = s.equivalent("CreateNavigationPropertyForOptionalTransferObjectRelationBinding");
+        t.binding = s.equivalent("CreateNavigationPropertyForTransferObjectRelationBinding");
       } else {
-      	t.binding = s.equivalent("CreateOptionalStaticNavigationForExposedGraph");
+        t.binding = s.equivalent("CreateStaticNavigationForExposedGraph");
       }
         
       log.debug("Created Optional TransferObjectRelation (from OneWayRelationMember): [" + t.name + "] into [" + t.eContainer.name + "]");
@@ -238,16 +243,14 @@ rule CreateOptionalTransferObjectRelationFromBoundToOneWayRelationMember
             and not s.eContainer.isTypeOf(ESM!EntityType)
             and s.memberType == ESM!MemberType#MAPPED
             and s.binding.isKindOf(ESM!OneWayRelationMember)
-            and s.isAggregation()
+            and s.binding.memberType == ESM!MemberType#STORED
             
-      if (s.binding.memberType = ESM!MemberType#STORED and s.binding.isComposition()) {
+      if (s.binding.isComposition()) {
         t.binding = s.binding.equivalent("CreateOptionalContainment");
-      } else if (s.binding.memberType = ESM!MemberType#STORED and not s.binding.isComposition()) {
+      } else if (not s.binding.isComposition()) {
         t.binding = s.binding.equivalent("CreateOptionalAssociationEndWithoutPartner");
-      } else if (s.binding.memberType = ESM!MemberType#DERIVED) {
-        t.binding = s.binding.equivalent("CreateOptionalNavigationProperty");
-      }
-     
+      } 
+      
       log.debug("Created Optional TransferObjectRelation (from OneWayRelationMember): [" + t.name + "] into [" + t.eContainer.name + "]");
 }
 
@@ -259,81 +262,31 @@ rule CreateOptionalTransferObjectRelationFromBoundToTwoWayRelationMember
             and not s.eContainer.isTypeOf(ESM!EntityType)
             and s.memberType == ESM!MemberType#MAPPED
             and s.binding.isKindOf(ESM!TwoWayRelationMember)
-            and (s.binding.isAggregation() or s.binding.partner.isAggregation())
             
         t.binding = s.binding.equivalent("CreateOptionalAssociationEndWithPartner");
 
       log.debug("Created Optional TransferObjectRelation (from OneWayRelationMember): [" + t.name + "] into [" + t.eContainer.name + "]");
 }
 
-@lazy
-@greedy
-rule CreateCardinalityOfOptionalTransferObjectRelationForOptionalEntityType
-    transform s: ESM!ReferenceTypedElement
-    to t: JUDOPSM!Cardinality {
-      t.upper = s.upper;
-      t.lower = 0;
-}
-
-@abstract
-rule CreateOptionalTransferObjectRelationForOptionalEntityType
-    transform s: ESM!ReferenceTypedElement
-    to t: JUDOPSM!TransferObjectRelation {
-      t.name = "_Optional" + s.name.firstToUpperCase();
-      t.cardinality = s.equivalent("CreateCardinalityOfOptionalTransferObjectRelationForOptionalEntityType");
-      t.target = s.target.getPSMOptionalEquivalent();
-      s.eContainer.getPSMOptionalEquivalent().relations.add(t);
-      t.defaultValue = s.equivalent("CreateStaticNavigationForOptionalTransferObjectRelationDefaultValue");
-      t.range = s.equivalent("CreateNavigationPropertyForOptionalTransferObjectRelationRange");
-      t.embedded = s.isAggregation();
-      
-      if (s.isCreateAllowed()) {
-          t.embeddedCreate = true;
-      }
-      if (s.isUpdateAllowed()) {
-          t.embeddedUpdate = true;
-      }
-      if (s.isDeleteAllowed()) {
-          t.embeddedDelete = true;
-      }
-
-      log.debug("Created Optional TransferObjectRelation for Optional TransferObjectType: [" + t.name + "] into [" + t.eContainer.name + "]");
-}
-
 rule CreateOptionalTransferObjectRelationForOptionalEntityTypeFromContainment
     transform s: ESM!OneWayRelationMember
     to t: JUDOPSM!TransferObjectRelation
-    extends CreateOptionalTransferObjectRelationForOptionalEntityType {
+    extends CreateOptionalTransferObjectRelation {
       guard: s.memberType == ESM!MemberType#STORED
-           and s.isComposition()
            
       t.embedded = s.isComposition();
       
-      t.binding = s.equivalent("CreateOptionalContainment");
+      t.binding = s.equivalent("CreateContainment");
       
       log.debug("Created Optional TransferObjectRelation for Optional TransferObjectType: [" + t.name + "] into [" + t.eContainer.name + "]");
-}
-
-rule CreateOptionalTransferObjectRelationForOptionalEntityTypeFromOneWayRelationMemberProperty
-    transform s: ESM!OneWayRelationMember
-    to t: JUDOPSM!TransferObjectRelation
-    extends CreateOptionalTransferObjectRelationForOptionalEntityType {
-      guard: s.eContainer.isKindOf(ESM!EntityType)
-           and s.memberType == ESM!MemberType#DERIVED
-           and s.isAggregation()
-           
-      t.binding = s.equivalent("CreateOptionalNavigationProperty");
-      
-      log.debug("Created Optional TransferObjectRelation From TwoWayRelationMember: [" + t.name + "] into [" + t.eContainer.name + "]");
 }
 
 rule CreateOptionalTransferObjectRelationForForOptionalEntityTypeFromTwoWayRelationMember
     transform s: ESM!TwoWayRelationMember
     to t: JUDOPSM!TransferObjectRelation
-    extends CreateOptionalTransferObjectRelationForOptionalEntityType {
-    	guard: s.isAggregation() or s.partner.isAggregation()
+    extends CreateOptionalTransferObjectRelation {
       
-      t.binding = s.equivalent("CreateOptionalAssociationEndWithPartner");
+      t.binding = s.equivalent("CreateAssociationEndWithPartner");
       
       log.debug("Created Optional TransferObjectRelation From TwoWayRelationMember: [" + t.name + "] into [" + t.eContainer.name + "]");
 }
