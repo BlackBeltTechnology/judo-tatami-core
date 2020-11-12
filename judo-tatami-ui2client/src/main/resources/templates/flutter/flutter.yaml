@@ -17,6 +17,12 @@
 # ========================================
 # main
 # ========================================
+- overwriteExpression: false
+  factoryExpression: "{#application}"
+  pathExpression: >
+    'lib/main.dart'
+  templateName: flutter/main.dart.hbs
+
 - overwriteExpression: true
   factoryExpression: "{#application}"
   pathExpression: >
