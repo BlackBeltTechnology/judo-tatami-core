@@ -1,3 +1,4 @@
+{{log 'Formatted text generation for' (variable application.name) '-' (fqClass table.name)'table' (variable dataName) (variable column.attributeType.name) level='debug'}}
 Text(
     target{{ dataName }}?.{{ column.attributeType.name }} != null ? target{{ dataName }}.{{ column.attributeType.name }}.toString() : '< None >',
 ),

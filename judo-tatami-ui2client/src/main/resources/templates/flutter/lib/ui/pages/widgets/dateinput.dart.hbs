@@ -1,3 +1,4 @@
+{{log 'Date field generation for' (variable application.name) '-' (fqClass page.name)'page'(variable page.dataElement.target.name) attributeType.name level='debug'}}
 {{#if page.isPageTypeView}}
 Observer(
     builder: (_) => JudoDateInput(
