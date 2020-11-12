@@ -7,18 +7,6 @@ var outputScrXmls = new Set();
 executionContext.getContext().put("outputJavaClasses", outputJavaClasses);
 executionContext.getContext().put("outputScrXmls", outputScrXmls);
 
-for (dto in ASM!EClass.all.select(c | c.eAnnotations.exists(a | asmUtils.getResolvedExposedBy(a).isPresent()) and (asmUtils.getMappedEntityType(c).isPresent() or (not asmUtils.getMappedEntityType(c).isPresent() and not asmUtils.isEntityType(c))))) {
-    log.debug("DTO: " + asmUtils.getClassifierFQName(dto));
-
-    genDto(dto);
-	outputJavaClasses.add(dto.getDtoJavaFileName());
-}
-
-for (e in ASM!EEnum.all) {
-    log.debug("ENUMERATION: " + e.name);
-    genEnumeration(e);
-    outputJavaClasses.add(e.getEnumerationJavaFileName());
-}
 
 var apServiceInstances : Map = new Map();
 for (clazz in ASM!EOperation.all.select(op | not asmUtils.getActorTypesOfOperation(op).isEmpty()).collect(op | op.eContainingClass).asSet()) {
@@ -55,20 +43,4 @@ genApplication(apServiceInstances);
 outputJavaClasses.add(getApplicationConfigJavaFileName());
 outputScrXmls.add(getApplicationConfigScrXmlFileName());
 
-
-/*for (ap in asmUtils.getAllActorTypes()) {
-
-    var apServiceInstances : Map = new Map();
-    var operationClasses = ASM!EOperation.all.select(op | asmUtils.getActorTypesOfOperation(op).contains(ap)).collect(op | op.eContainer).asSet();
-    
-    for (clazz in operationClasses) {
-        apServiceInstances.put((clazz.getExposedPackageName() + "." + clazz.name).normalizeName().replaceAll("\\.", "_"),
-            (clazz.getExposedPackageName() + "." + clazz.name).normalizeName());
-    }
-    
-    // Generate ApplicationConfigs
-    genApplication(ap, apServiceInstances);
-	outputJavaClasses.add(ap.getApplicationConfigJavaFileName());
-	outputScrXmls.add(ap.getApplicationConfigScrXmlFileName());
-} */
 %]
