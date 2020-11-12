@@ -275,6 +275,11 @@ public class Ui2Client {
             projectSkeleton = args[5];
         }
 
+        String openapiYamlNameTemplate = null;
+        if (args.length > 6) {
+            openapiYamlNameTemplate = args[6];
+        }
+
         UiModel uiModel = UiModel.loadUiModel(
                 UiModel.LoadArguments.uiLoadArgumentsBuilder().file(uiModelFile).name(modelName));
 
@@ -288,9 +293,48 @@ public class Ui2Client {
 
 
         String finalProjectSkeleton = projectSkeleton;
+        String finalOpenapiYamlNameTemplate = openapiYamlNameTemplate;
         generatedApps.entrySet()
                     .stream().filter(e -> finalActors.isEmpty() || finalActors.contains(e.getKey().getActor().getName()))
                 .forEach(getDirectoryWriter(targetDirectory).andThen(e -> {
+
+                    String clientName = e.getKey().getName().replaceAll("[^\\.A-Za-z0-9_]", "_").toLowerCase();
+                    if (finalOpenapiYamlNameTemplate != null) {
+                        /*
+                        String sourceFileName = finalOpenapiYamlNameTemplate
+                                .replaceAll("__applicationName__", e.getKey().getName())
+                                .replaceAll("__actorName__", e.getKey().getActor().getName());
+                        */
+
+                        String actorFqName = e.getKey().getActor().getName().replaceAll("::", "-");
+                        String actorName = e.getKey().getName();
+
+                        String sourceFileName = finalOpenapiYamlNameTemplate + File.separator + actorFqName
+                                + "-openapi.yaml";
+
+                        Path sourceFile = new File(sourceFileName).toPath();
+
+                        if (!Files.exists(sourceFile)) {
+                            throw new RuntimeException("File does not exists: " + sourceFileName);
+                        }
+
+                        Path destinationFile = new File(targetDirectory,
+                                (clientName + File.separator +
+                                        "lib" + File.separator +
+                                         FlutterHelper.path(actorName) + File.separator +
+                                        "rest" + File.separator +
+                                        FlutterHelper.path(actorName) + ".yaml"))
+                                .toPath();
+
+                        if (Files.exists(sourceFile) && !Files.isDirectory(sourceFile)) {
+                            try {
+                                Files.copy(sourceFile, destinationFile, StandardCopyOption.REPLACE_EXISTING);
+                            } catch (IOException e2) {
+                                throw new RuntimeException(e2);
+                            }
+                        }
+                    }
+
                     if (finalProjectSkeleton != null) {
                         File mergeDirectory =  new File(finalProjectSkeleton);
                         if (!mergeDirectory.exists() || !mergeDirectory.isDirectory()) {
@@ -298,7 +342,7 @@ public class Ui2Client {
                         }
 
                         Path sourceDir = mergeDirectory.toPath();
-                        Path destinationDir = new File(targetDirectory, e.getKey().getName().replaceAll("[^\\.A-Za-z0-9_]", "_").toLowerCase()).toPath();
+                        Path destinationDir = new File(targetDirectory, clientName).toPath();
 
                         log.info("Merge " + sourceDir.toString() + " to " + destinationDir.toString());
 

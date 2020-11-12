@@ -8,9 +8,17 @@
 // Application: {{ application.name }}
 
 import 'package:flutter/material.dart';
+import 'package:openapi_dart_common/openapi.dart';
 
+import '{{ path application.name }}/injector/injector.dart';
 import '{{ path application.name }}/main.dart';
 
 void main() async {
+    configureDependencies();
+    const bool kIsWeb = identical(0, 0.0);
+
+    ApiClient _apiClient = ApiClient(basePath: "http://localhost:8181/api/{{ modelPackage application.name }}", apiClientDelegate: DioClientDelegate());
+    locator.registerSingleton<ApiClient>(_apiClient);
+
     runApp({{ fqClass application.name }}Application());
 }
