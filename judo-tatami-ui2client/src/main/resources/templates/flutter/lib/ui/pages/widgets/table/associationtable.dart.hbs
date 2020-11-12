@@ -1,3 +1,4 @@
+{{log 'Table generation for' (variable application.name) '-' (fqClass page.name) (variable dataElement.name) level='debug'}}
 // ignore: missing_return
 Observer(builder: (_) {
     switch({{ fqVariable page.name }}PageStore.{{ fqVariable page.relationType.name }}StoreFuture.status){
