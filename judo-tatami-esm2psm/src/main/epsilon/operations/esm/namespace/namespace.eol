@@ -21,3 +21,11 @@ operation ESM!Model getPSMExtensionNamespaceEquivalent(): JUDOPSM!Package {
 operation ESM!Package getPSMExtensionNamespaceEquivalent(): JUDOPSM!Package {
     return self.equivalent("CreateExtensionPackage");
 }
+
+operation ESM!Model getPSMGeneratedOptionalTransferObjectNamespaceEquivalent(): JUDOPSM!Package {
+    return self.equivalent("CreateGeneratedOptionalTransferObjectTypeRootPackage");
+}
+
+operation ESM!Package getPSMGeneratedOptionalTransferObjectNamespaceEquivalent(): JUDOPSM!Package {
+    return self.equivalent("CreateGeneratedOptionalTransferObjectTypePackage");
+}

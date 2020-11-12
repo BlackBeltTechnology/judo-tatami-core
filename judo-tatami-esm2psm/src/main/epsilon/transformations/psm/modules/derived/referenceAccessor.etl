@@ -139,3 +139,133 @@ rule CreateStaticNavigationForExposedGraph
 
 	  log.debug("Created StaticNavigation for ExposedGraph: " + t.name);
 }
+
+//optional references
+rule CreateOptionalNavigationProperty
+    transform s : ESM!OneWayRelationMember
+    to t : JUDOPSM!NavigationProperty {
+      guard: s.eContainer.isKindOf(ESM!EntityType)
+            and s.memberType == ESM!MemberType#DERIVED
+            and s.isAggregation()
+            
+       t.name = "_Optional_" + s.name.firstToUpperCase();
+       t.cardinality = s.equivalent("CreateCardinalityForOptionalReferenceTypedElement");
+       s.eContainer.equivalent("CreateOptionalEntityType").navigationProperties.add(t);
+       t.getterExpression = s.equivalent("CreateGetterExpressionForOptionalNavigationProperty");
+       t.target = s.target.equivalent("CreateOptionalEntityType");
+       
+       log.debug("Created Optional Navigation Property: " + t.name);
+}
+
+@lazy
+@greedy
+rule CreateCardinalityForOptionalTransferObjectRelationBinding
+    transform s: ESM!ReferenceTypedElement
+    to t: JUDOPSM!Cardinality {
+      t.upper = s.upper;
+      t.lower = 0;
+}
+
+@lazy
+rule CreateNavigationPropertyForOptionalTransferObjectRelationBinding
+    transform s : ESM!OneWayRelationMember
+    to t : JUDOPSM!NavigationProperty
+    extends CreateNamedElement {
+        guard:  s.eContainer.mapping.isDefined()
+                and s.target.mapping.isDefined()
+                and s.getterExpression.isDefined() and
+                    s.getterExpression.trim().length() > 0
+		t.name = "_Optional_" + s.name.firstToUpperCase();
+        t.target = s.target.mapping.target.equivalent("CreateOptionalEntityType");
+        t.cardinality = s.equivalent("CreateCardinalityForOptionalTransferObjectRelationBinding");
+        t.getterExpression = s.equivalent("CreateGetterExpressionForOptionalTransferObjectRelationBinding");
+        t.name = "_" + s.name + "_" + esmUtils.getNamespaceElementFQName(s.eContainer).replace("::","_");
+        s.eContainer.mapping.target.equivalent("CreateOptionalEntityType").navigationProperties.add(t);
+        
+        log.debug("Created Navigation Property for optional transfer object relation binding: " + t.name);
+}
+
+@lazy
+@greedy
+rule CreateCardinalityForOptionalTransferObjectRelationRange
+    transform s: ESM!ReferenceTypedElement
+    to t: JUDOPSM!Cardinality {
+	    t.lower = 0;
+	    t.upper = -1;
+}
+
+@lazy
+@greedy
+rule CreateNavigationPropertyForOptionalTransferObjectRelationRange 
+    transform s : ESM!RelationFeature
+    to t : JUDOPSM!NavigationProperty
+    extends CreateNamedElement {
+        guard: s.eContainer.mapping.isDefined()
+                and s.target.mapping.isDefined()
+                and s.rangeExpression.isDefined() and
+                    s.rangeExpression.trim().length() > 0
+            t.name = "_Optional" + s.name.firstToUpperCase();
+            t.target = s.target.mapping.target.equivalent("CreateOptionalEntityType");
+            t.cardinality = s.equivalent("CreateCardinalityForOptionalTransferObjectRelationRange");
+            t.getterExpression = s.equivalent("CreateGetterExpressionForOptionalTransferObjectRelationRange");
+            t.name = "_" + s.name + "_optional_range_" + esmUtils.getNamespaceElementFQName(s.eContainer).replace("::","_");
+            s.eContainer.mapping.target.equivalent("CreateOptionalEntityType").navigationProperties.add(t);
+            
+            log.debug("Created Navigation Property for optional transfer object relation range: " + t.name);
+}
+
+@lazy
+@greedy
+rule CreateCardinalityForOptionalExposedGraphSelector
+    transform s: ESM!ReferenceTypedElement
+    to t: JUDOPSM!Cardinality {
+      t.upper = s.upper;
+      t.lower = 0;
+}
+
+@lazy
+rule CreateOptionalStaticNavigationForExposedGraph
+	transform s : ESM!OneWayRelationMember
+	to t : JUDOPSM!StaticNavigation
+	extends CreateNamedElement {
+	  guard: not s.eContainer.isMapped() and
+	  	s.target.mapping.isDefined() and
+	  	s.getterExpression.isDefined() and
+	  	s.getterExpression.trim() <> '' and
+	  	s.isAggregation()
+	  t.name = "_Optional" + s.name.firstToUpperCase();
+	  (s.eContainer).eContainer.getPSMGeneratedOptionalTransferObjectNamespaceEquivalent().elements.add(t);
+	  t.name = "_" + s.name + "_optional_selector_" + s.eContainer.name;
+	  t.cardinality = s.equivalent("CreateCardinalityForOptionalExposedGraphSelector");
+	  t.getterExpression = s.equivalent("CreateGetterExpressionForOptionalExposedGraphSelector");
+	  t.target = s.target.mapping.target.equivalent("CreateOptionalEntityType");
+
+	  log.debug("Created StaticNavigation for ExposedGraph: " + t.name + " with target: " + t.target.eContainer.name + "." + t.target.name);
+}
+
+@lazy
+@greedy
+rule CreateCardinalityForStaticNavigationForOptionalDefault
+    transform s: ESM!ReferenceTypedElement
+    to t: JUDOPSM!Cardinality {
+      t.upper = s.upper;
+      t.lower = 0;
+}
+
+@lazy
+rule CreateStaticNavigationForOptionalTransferObjectRelationDefaultValue 
+    transform s : ESM!OneWayRelationMember
+    to t : JUDOPSM!StaticNavigation
+    extends CreateNamedElement {
+        guard:  s.defaultExpression.isDefined()
+                and s.defaultExpression.trim().length() > 0
+                and s.target.mapping.isDefined()
+                
+            t.target = s.target.mapping.target.equivalent("CreateOptionalEntityType");
+            t.cardinality = s.equivalent("CreateCardinalityForStaticNavigationForOptionalDefault");
+            t.getterExpression = s.equivalent("CreateGetterExpressionForOptionalTransferObjectRelationDefault");
+            t.name = "_" + s.name + "_optional_default_" + s.eContainer.name;
+            (s.eContainer).eContainer.getPSMGeneratedOptionalTransferObjectNamespaceEquivalent().elements.add(t);
+            
+            log.debug("Created Static Navigation for optional transfer object relation default: " + t.name);
+}

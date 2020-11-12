@@ -17,3 +17,11 @@ operation ESM!TransferObjectType getPSMTransferObjectTypeEquivalent() : JUDOPSM!
 operation ESM!Class getAllRelations() : Set {
     return esmUtils.getAllSuperTypes(self).including(self).collect(c | c.relations).flatten().asSet();
 }
+
+operation ESM!TransferObjectType getPSMOptionalEquivalent() : JUDOPSM!TransferObjectType {
+	if(self.isMapped()) {
+		return self.equivalent("CreateOptionalMappedTransferObjectType");
+	} else {
+		return self.equivalent("CreateOptionalUnmappedTransferObjectType");
+	}
+}

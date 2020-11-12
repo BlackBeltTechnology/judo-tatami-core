@@ -11,3 +11,20 @@ rule CreateEntityType
     }
     log.debug("Created EntityType: " + t.name);
 }
+
+//optional entity type
+
+rule CreateOptionalEntityType
+  transform s : ESM!EntityType
+  to t : JUDOPSM!EntityType {
+  	t.name = "_OptionalEntityType" + s.name.firstToUpperCase();
+    t.`abstract` = s.`abstract`;
+    
+    for (super in s.generalizations) {
+        t.superEntityTypes.add(super.target.equivalent("CreateOptionalEntityType"));
+    }
+    
+   s.eContainer().getPSMGeneratedOptionalTransferObjectNamespaceEquivalent().elements.add(t);
+    
+   log.debug("Created Optional Entity Type: " + t.name);
+}

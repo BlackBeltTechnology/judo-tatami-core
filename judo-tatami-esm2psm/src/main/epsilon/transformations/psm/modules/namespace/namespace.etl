@@ -77,3 +77,22 @@ rule CreatePackage
     s.eContainer.getPSMEquivalent().packages.add(t);
     log.debug("Created namespace: " + t.name);
 }
+
+@lazy
+rule CreateGeneratedOptionalTransferObjectTypeRootPackage
+  transform s : ESM!Model
+  to t: JUDOPSM!Package {
+    t.name = "_optional_transferobjecttypes";
+    s.equivalent("CreateModel").packages.add(t);
+    log.debug("Created OptionalTransferObjectTypePackage: " + t.name);
+}
+
+@lazy
+rule CreateGeneratedOptionalTransferObjectTypePackage
+  transform s : ESM!Package
+  to t: JUDOPSM!Package {
+    t.name = s.name;
+    s.eContainer.getPSMGeneratedOptionalTransferObjectNamespaceEquivalent().packages.add(t);
+    
+    log.debug("Created Generated Package for OptionalTransferObjectType: " + t.name);
+}

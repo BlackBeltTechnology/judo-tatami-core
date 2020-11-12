@@ -82,3 +82,90 @@ rule CreateTransferAttributeFromPropertyForDefaultTransferObjectType
       s.eContainer.equivalent("CreateDefaultMappedTransferObjectTypeForEntity").attributes.add(t);
       log.debug("Created TransferAttribute for DefaultTransferObjectType: [" + t.name + "] into [" + t.eContainer.name + "]");
 }
+
+//for optional types
+rule CreateOptionalTransferAttributeFromAttribute
+    transform s: ESM!DataMember
+    to t: JUDOPSM!TransferAttribute {
+      guard: s.memberType == ESM!MemberType#TRANSIENT
+      
+      t.dataType = s.dataType.getPSMEquivalent();
+      t.name = "_Optional" + s.name.firstToUpperCase();
+      t.required = false;
+      t.defaultValue = s.equivalent("CreateStaticDataForTransferAttributeDefaultValue");
+      
+      s.eContainer.getPSMOptionalEquivalent().attributes.add(t);
+      log.debug("Created Optional Transfer Attribute: [" + t.name + "] into [" + t.eContainer.name + "]");
+}
+
+rule CreateOptionalTransferAttributeFromBound
+    transform s: ESM!DataMember
+    to t: JUDOPSM!TransferAttribute {
+      guard: s.memberType == ESM!MemberType#MAPPED
+      
+      t.dataType = s.dataType.getPSMEquivalent();
+      t.name = "_Optional" + s.name.firstToUpperCase();
+      t.required = false; 
+      t.defaultValue = s.equivalent("CreateStaticDataForTransferAttributeDefaultValue");
+      
+      if (s.binding.memberType = ESM!MemberType#STORED){
+         t.binding = s.binding.equivalent("CreateOptionalAttribute");
+      } else if (s.binding.memberType = ESM!MemberType#DERIVED) {
+         t.binding = s.binding.equivalent("CreateOptionalDataProperty");
+      }
+     
+      s.eContainer.getPSMOptionalEquivalent().attributes.add(t);
+      
+      log.debug("Created Optional Transfer Attribute: [" + t.name + "] into [" + t.eContainer.name + "]");
+}
+
+rule CreateOptionalTransferAttributeFromProperty
+    transform s: ESM!DataMember
+    to t: JUDOPSM!TransferAttribute {
+      guard: s.eContainer.isKindOf(ESM!TransferObjectType)
+            and not s.eContainer.isKindOf(ESM!EntityType) 
+            and s.memberType == ESM!MemberType#DERIVED
+            
+      t.dataType = s.dataType.getPSMEquivalent();
+      t.name = "_Optional" + s.name.firstToUpperCase();
+      t.required = false; 
+      t.defaultValue = s.equivalent("CreateStaticDataForTransferAttributeDefaultValue");
+      
+      if (s.eContainer.mapping.isDefined()){
+         t.binding = s.equivalent("CreateDataPropertyForOptionalTransferAttributeBinding");
+      } else {
+         t.binding = s.equivalent("CreateStaticDataForTransferAttributeBinding");
+      }
+      
+      s.eContainer.getPSMOptionalEquivalent().attributes.add(t);
+      log.debug("Created Optional Transfer Attribute: [" + t.name + "] into [" + t.eContainer.name + "]");
+}
+
+rule CreateOptionalTransferAttributeForOptionalEntityTypeFromStored
+    transform s: ESM!DataMember
+    to t: JUDOPSM!TransferAttribute {
+      guard: s.memberType == ESM!MemberType#STORED
+      t.name = "_Optional" + s.name.firstToUpperCase();
+      t.required = false;
+      t.dataType = s.dataType.getPSMEquivalent();
+      t.defaultValue = s.equivalent("CreateStaticDataForTransferAttributeDefaultValue");
+      t.binding = s.equivalent("CreateOptionalAttribute");
+      
+      s.eContainer.getPSMOptionalEquivalent().attributes.add(t);
+      log.debug("Created Optional Transfer Attribute for Optional TransferObjectType: [" + t.name + "] into [" + t.eContainer.name + "]");
+}
+
+rule CreateOptionalTransferAttributeForOptionalEntityTypeFromDerived
+    transform s: ESM!DataMember
+    to t: JUDOPSM!TransferAttribute {
+      guard: s.eContainer.isKindOf(ESM!EntityType)
+            and s.memberType == ESM!MemberType#DERIVED
+      t.name = "_Optional" + s.name.firstToUpperCase();
+      t.required = false; 
+      t.dataType = s.dataType.getPSMEquivalent();
+      t.defaultValue = s.equivalent("CreateStaticDataForTransferAttributeDefaultValue");
+      t.binding = s.equivalent("CreateOptionalDataProperty");
+      
+      s.eContainer.getPSMOptionalEquivalent().attributes.add(t);
+      log.debug("Created Optional Transfer Attribute for Optional TransferObjectType: [" + t.name + "] into [" + t.eContainer.name + "]");
+}

@@ -91,3 +91,64 @@ rule CreateGetterExpressionForStaticDataAsTransferAttributeBinding
      t.expression = s.getterExpression;
      log.debug("Created Data Expression Type for Static Data for Transfer Attribute Binding: " + s.name);
 }
+
+//optional expressions
+@lazy
+rule CreateGetterExpressionForOptionalNavigationProperty
+    transform s : ESM!OneWayRelationMember
+    to t : JUDOPSM!ReferenceExpressionType {
+        t.expression = s.getterExpression;
+        log.debug("Created Reference Expression Type for Optional Navigation Property: " + s.name);
+}
+
+@lazy
+rule CreateGetterExpressionForOptionalTransferObjectRelationBinding
+    transform s : ESM!OneWayRelationMember
+    to t : JUDOPSM!ReferenceExpressionType {
+        t.expression = s.getterExpression;
+        log.debug("Created Reference Expression Type for OptionalTransfer Object Relation Binding: " + s.name);
+}
+
+@lazy
+rule CreateGetterExpressionForOptionalDataProperty
+    transform s : ESM!DataMember
+    to t: JUDOPSM!DataExpressionType {
+    guard: s.getterExpression.isDefined()
+            and s.getterExpression.trim().length() > 0   
+        t.expression = s.getterExpression;
+        log.debug("Created Data Expression Type for Optional Data Property: " + s.name);
+}
+
+@lazy
+rule CreateGetterExpressionForStaticDataAsOptionalTransferAttributeDefaultValue
+    transform s : ESM!DataMember
+       to t: JUDOPSM!DataExpressionType {
+     t.expression = s.defaultExpression;
+     log.debug("Created Data Expression Type for Static Data for Transfer Attribute Default: " + s.name);
+}
+
+@lazy
+@greedy
+rule CreateGetterExpressionForOptionalTransferObjectRelationRange
+    transform s : ESM!RelationFeature
+    to t : JUDOPSM!ReferenceExpressionType {
+        t.expression = s.rangeExpression;
+        log.debug("Created Reference Expression Type for Transfer Object Relation Range: " + s.name);
+}
+
+@greedy
+@lazy
+rule CreateGetterExpressionForOptionalExposedGraphSelector
+    transform s : ESM!OneWayRelationMember
+    to t : JUDOPSM!ReferenceExpressionType {
+        t.expression = s.getterExpression;
+        log.debug("Created Reference Expression Type for Exposed Graph Selector: " + s.name);    
+}
+
+@lazy
+rule CreateGetterExpressionForOptionalTransferObjectRelationDefault
+    transform s : ESM!OneWayRelationMember
+    to t : JUDOPSM!ReferenceExpressionType {
+        t.expression = s.defaultExpression;
+        log.debug("Created Reference Expression Type for Transfer Object Relation Default: " + s.name);
+}

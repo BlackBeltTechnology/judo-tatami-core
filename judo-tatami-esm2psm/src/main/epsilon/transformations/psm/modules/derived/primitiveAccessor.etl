@@ -82,3 +82,41 @@ rule CreateStaticDataForTransferAttributeBinding
             
             log.debug("Created Static Data for transfer attribute binding: " + t.name);
 }
+
+//optional
+
+rule CreateOptionalDataProperty
+	transform s : ESM!DataMember
+	to t : JUDOPSM!DataProperty {
+	  guard: s.eContainer.isKindOf(ESM!EntityType)
+	           and s.memberType == ESM!MemberType#DERIVED
+	  
+	  t.name = "_Optional" + s.name.firstToUpperCase();
+	  t.dataType = s.dataType.getPSMEquivalent();
+	  t.required = false;
+	    
+	  t.getterExpression = s.equivalent("CreateGetterExpressionForOptionalDataProperty");
+	  
+	  s.eContainer.equivalent("CreateOptionalEntityType").dataProperties.add(t);
+	  
+	  log.debug("Created Optional Data Property: " + t.name);
+}
+
+@lazy
+rule CreateDataPropertyForOptionalTransferAttributeBinding
+    transform s : ESM!DataMember
+    to t : JUDOPSM!DataProperty {
+        guard: s.eContainer.isKindOf(ESM!TransferObjectType)
+            and not s.eContainer.isKindOf(ESM!EntityType) 
+            and s.memberType == ESM!MemberType#DERIVED
+            and s.getterExpression.isDefined() and s.getterExpression.trim().length() > 0
+       t.name = "_Optional" + s.name.firstToUpperCase();
+       t.required = false;
+       t.dataType = s.dataType.getPSMEquivalent();
+       t.getterExpression = s.equivalent("CreateGetterExpressionForStaticDataAsTransferAttributeBinding");
+       t.name = "_" + s.name + "_" + esmUtils.getNamespaceElementFQName(s.eContainer).replace("::","_");
+       s.eContainer.mapping.target.equivalent("CreateOptionalEntityType").dataProperties.add(t);
+       
+       log.debug("Created Optional Data Property for optional transfer attribute binding: " + t.name); 
+}
+
