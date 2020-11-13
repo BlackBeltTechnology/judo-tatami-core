@@ -1,4 +1,4 @@
-{{log 'Aggregation action button generation for' (variable application.name) '-' (fqClass page.name)'page'(variable relation.name)'relation' level='debug'}}
+{{ log 'Aggregation action button generation for' (variable application.name) '-' (fqClass page.name)'page'(variable relation.name)'relation' level='debug' ~}}
 JudoButton(
     col: {{col}},
     disabled: {{disabled}},
@@ -57,8 +57,8 @@ JudoButton(
 {{#if label }}
     label: '{{label}}',
 {{/if}}
-{{#if icon }}
-    icon: Icon(Icons.{{icon.name}}),
+{{#if action.icon }}
+    icon: Icon(Icons.{{ action.icon.name }}),
 {{/if}}
     rounded: true,
 ),

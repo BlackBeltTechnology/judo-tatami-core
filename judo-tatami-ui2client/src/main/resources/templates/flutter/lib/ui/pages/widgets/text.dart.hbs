@@ -1,7 +1,10 @@
-{{log 'Text generation for' (variable application.name) '-' (fqClass page.name)'page' label level='debug'}}
-Text('{{label}}',
-    style: TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 25,
-    ),
+{{ log 'Label generation for' (variable application.name) '-' (fqClass page.name)'page' label level='debug' ~}}
+JudoLabel(
+    text: '{{label}}',
+{{#if this.leadingIcon }}
+    leadingIcon: Icon(Icons.{{ this.leadingIcon.name }}),
+{{/if}}
+{{#if this.trailingIcon }}
+    trailingIcon: Icon(Icons.{{ this.trailingIcon.name }}),
+{{/if}}
 ),

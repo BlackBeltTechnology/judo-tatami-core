@@ -1,4 +1,4 @@
-{{log 'Instance action button generation for' (variable application.name) '-' (fqClass page.name)'page'(variable page.dataElement.target.name) level='debug'}}
+{{ log 'Instance action button generation for' (variable application.name) '-' (fqClass page.name)'page'(variable page.dataElement.target.name) level='debug' ~}}
 JudoButton(
     col: {{col}},
     disabled: {{disabled}},
@@ -135,8 +135,8 @@ JudoButton(
 {{#if label }}
     label: '{{label}}',
 {{/if}}
-{{#if icon }}
-    icon: Icon(Icons.{{icon.name}}),
+{{#if action.icon }}
+    icon: Icon(Icons.{{ action.icon.name }}),
 {{/if}}
     rounded: true,
 ),
