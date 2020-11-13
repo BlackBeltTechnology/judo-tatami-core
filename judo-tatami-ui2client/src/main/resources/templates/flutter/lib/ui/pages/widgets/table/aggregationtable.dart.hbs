@@ -1,4 +1,4 @@
-{{log 'Table generation for' (variable application.name) '-' (fqClass page.name) (variable dataElement.name) level='debug'}}
+{{~ log 'Table generation for' (variable application.name) '-' (fqClass page.name) (variable dataElement.name) level='debug' ~}}
 {{# with dataElement as |relation|}}
 Observer(builder: (_) {
     return JudoTable(
