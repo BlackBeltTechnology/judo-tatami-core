@@ -6,7 +6,6 @@ import hu.blackbelt.judo.meta.esm.namespace.Model;
 import hu.blackbelt.judo.meta.esm.operation.OperationType;
 import hu.blackbelt.judo.meta.esm.runtime.EsmModel;
 import hu.blackbelt.judo.meta.esm.runtime.EsmUtils;
-import hu.blackbelt.judo.meta.esm.structure.DataMember;
 import hu.blackbelt.judo.meta.esm.structure.EntityType;
 import hu.blackbelt.judo.meta.esm.structure.MemberType;
 import hu.blackbelt.judo.meta.esm.structure.OneWayRelationMember;
@@ -14,7 +13,6 @@ import hu.blackbelt.judo.meta.esm.structure.RelationKind;
 import hu.blackbelt.judo.meta.esm.structure.TransferObjectType;
 import hu.blackbelt.judo.meta.esm.accesspoint.Access;
 import hu.blackbelt.judo.meta.esm.accesspoint.ActorType;
-import hu.blackbelt.judo.meta.psm.namespace.Package;
 import hu.blackbelt.judo.meta.psm.runtime.PsmModel;
 import hu.blackbelt.judo.meta.psm.service.*;
 import lombok.extern.slf4j.Slf4j;
@@ -26,7 +24,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
-import java.nio.file.DirectoryStream.Filter;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
@@ -37,7 +34,6 @@ import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 import static hu.blackbelt.judo.meta.esm.accesspoint.util.builder.AccesspointBuilders.newActorTypeBuilder;
-import static hu.blackbelt.judo.meta.esm.accesspoint.util.builder.AccesspointBuilders.newClaimBuilder;
 import static hu.blackbelt.judo.meta.esm.accesspoint.util.builder.AccesspointBuilders.newAccessBuilder;
 import static hu.blackbelt.judo.meta.esm.namespace.util.builder.NamespaceBuilders.newModelBuilder;
 import static hu.blackbelt.judo.meta.esm.operation.util.builder.OperationBuilders.newOperationBuilder;
@@ -260,15 +256,8 @@ public class EsmAccesspoint2PsmAccesspointTest {
         assertTrue(psmAccess1.get().isAccess());
         assertEquals(actorType.get(), psmAccess1.get().eContainer());
         
-        final Optional<Package> defaultPackage = allPsm(Package.class)
-                .filter(t -> t.getName().contains("default"))
-                .findAny();
-        assertTrue(defaultPackage.isPresent());
-        
-        final Optional<hu.blackbelt.judo.meta.psm.service.TransferObjectType> psmAccess1Target = defaultPackage.get().getElements().stream()
-        		.filter(e -> e instanceof hu.blackbelt.judo.meta.psm.service.TransferObjectType)
-        		.map(t -> (hu.blackbelt.judo.meta.psm.service.TransferObjectType)t)
-        		.filter(t -> t.getName().contains(entityTypeForAccess1.getName()))
+        final Optional<hu.blackbelt.judo.meta.psm.service.TransferObjectType> psmAccess1Target = allPsm(hu.blackbelt.judo.meta.psm.service.TransferObjectType.class)
+                .filter(t -> t.getName().contains(entityTypeForAccess1.getName()))
                 .findAny();
         assertTrue(psmAccess1Target.isPresent());
         
@@ -279,10 +268,8 @@ public class EsmAccesspoint2PsmAccesspointTest {
         assertTrue(psmAccess2.get().isAccess());
         assertEquals(actorType.get(), psmAccess2.get().eContainer());
         
-        final Optional<hu.blackbelt.judo.meta.psm.service.TransferObjectType> psmAccess2Target = defaultPackage.get().getElements().stream()
-        		.filter(e -> e instanceof hu.blackbelt.judo.meta.psm.service.TransferObjectType)
-        		.map(t -> (hu.blackbelt.judo.meta.psm.service.TransferObjectType)t)
-        		.filter(t -> t.getName().contains(entityTypeForAccess2.getName()))
+        final Optional<hu.blackbelt.judo.meta.psm.service.TransferObjectType> psmAccess2Target = allPsm(hu.blackbelt.judo.meta.psm.service.TransferObjectType.class)
+                .filter(t -> t.getName().contains(entityTypeForAccess2.getName()))
                 .findAny();
         assertTrue(psmAccess2Target.isPresent());
         

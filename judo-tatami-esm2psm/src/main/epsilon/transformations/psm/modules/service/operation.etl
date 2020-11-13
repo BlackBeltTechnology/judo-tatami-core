@@ -830,7 +830,6 @@ rule CreateGetRangeReferenceTransferOperationForRelationFeature
         s.eContainer.getPSMTransferObjectTypeEquivalent().operations.add(t);
 }
 
-//getTemplate operation
 @greedy
 rule CreateGetTemplateTransferOperation
     transform s : ESM!TransferObjectType

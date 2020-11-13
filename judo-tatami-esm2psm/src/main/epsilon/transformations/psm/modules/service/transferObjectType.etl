@@ -374,16 +374,17 @@ rule CreateQuerySeekingType
 	  log.debug("Query seeking type created: " + t.name);
 }
 
-//optional transfer object types
 @greedy
 rule CreateOptionalMappedTransferObjectType
     transform s: ESM!TransferObjectType
     to t: JUDOPSM!MappedTransferObjectType {
         guard: s.isMapped()
+        
       t.name = s.name;
-      s.eContainer.getPSMGeneratedOptionalTransferObjectNamespaceEquivalent().elements.add(t);
       t.optional = true;
       t.entityType = s.mapping.target.getPSMEquivalent();
+      
+      s.eContainer.getPSMGeneratedOptionalTransferObjectNamespaceEquivalent().elements.add(t);
       log.debug("Created Optional MappedTransferObjectType: " + t.name);
 }
 
@@ -392,9 +393,11 @@ rule CreateOptionalUnmappedTransferObjectType
     transform s: ESM!TransferObjectType
     to t: JUDOPSM!UnmappedTransferObjectType {
         guard: not s.isMapped()
+        
       t.name = s.name;
-      s.eContainer.getPSMGeneratedOptionalTransferObjectNamespaceEquivalent().elements.add(t);
       t.optional = true;
+      
+      s.eContainer.getPSMGeneratedOptionalTransferObjectNamespaceEquivalent().elements.add(t);
       log.debug("Created Optional UnmappedTransferObjectType: " + t.name);
 }
 

@@ -185,7 +185,6 @@ rule CreateTransferObjectRelationForDefaultTransferObjectTypeFromTwoWayRelationM
       log.debug("Created TransferObjectRelationFromTwoWayRelationMember: [" + t.name + "] into [" + t.eContainer.name + "]");
 }
 
-//for optional types
 @lazy
 @greedy
 rule CreateCardinalityForOptionalReferenceTypedElement
@@ -215,8 +214,6 @@ rule CreateOptionalTransferObjectRelation
       }
       
       t.cardinality = s.equivalent("CreateCardinalityForOptionalReferenceTypedElement");
-      //t.cardinality = s.equivalent("CreateCardinalityOfOptionalTransferObjectRelationForOptionalEntityType");
-      
       s.eContainer.getPSMOptionalEquivalent().relations.add(t);
 }
 
@@ -263,7 +260,7 @@ rule CreateOptionalTransferObjectRelationFromBoundToTwoWayRelationMember
             and s.memberType == ESM!MemberType#MAPPED
             and s.binding.isKindOf(ESM!TwoWayRelationMember)
             
-        t.binding = s.binding.equivalent("CreateOptionalAssociationEndWithPartner");
+      t.binding = s.binding.equivalent("CreateOptionalAssociationEndWithPartner");
 
       log.debug("Created Optional TransferObjectRelation (from OneWayRelationMember): [" + t.name + "] into [" + t.eContainer.name + "]");
 }
@@ -273,10 +270,9 @@ rule CreateOptionalTransferObjectRelationForOptionalEntityTypeFromContainment
     to t: JUDOPSM!TransferObjectRelation
     extends CreateOptionalTransferObjectRelation {
       guard: s.memberType == ESM!MemberType#STORED
-           
-      t.embedded = s.isComposition();
       
       t.binding = s.equivalent("CreateContainment");
+      t.embedded = s.isComposition();
       
       log.debug("Created Optional TransferObjectRelation for Optional TransferObjectType: [" + t.name + "] into [" + t.eContainer.name + "]");
 }

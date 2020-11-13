@@ -83,14 +83,13 @@ rule CreateTransferAttributeFromPropertyForDefaultTransferObjectType
       log.debug("Created TransferAttribute for DefaultTransferObjectType: [" + t.name + "] into [" + t.eContainer.name + "]");
 }
 
-//for optional types
 rule CreateOptionalTransferAttributeFromAttribute
     transform s: ESM!DataMember
     to t: JUDOPSM!TransferAttribute {
       guard: s.memberType == ESM!MemberType#TRANSIENT
       
-      t.dataType = s.dataType.getPSMEquivalent();
       t.name = s.name;
+      t.dataType = s.dataType.getPSMEquivalent();
       t.required = false;
       
       s.eContainer.getPSMOptionalEquivalent().attributes.add(t);
@@ -103,14 +102,12 @@ rule CreateOptionalTransferAttributeFromBound
       guard: not s.eContainer.isKindOf(ESM!EntityType)
       and s.memberType == ESM!MemberType#MAPPED and s.binding.memberType == ESM!MemberType#STORED
       
-      t.dataType = s.dataType.getPSMEquivalent();
       t.name = s.name;
+      t.dataType = s.dataType.getPSMEquivalent();
       t.required = false; 
-      
       t.binding = s.binding.equivalent("CreateAttribute");
      
       s.eContainer.getPSMOptionalEquivalent().attributes.add(t);
-      
       log.debug("Created Optional Transfer Attribute: [" + t.name + "] into [" + t.eContainer.name + "]");
 }
 
@@ -120,8 +117,8 @@ rule CreateOptionalTransferAttributeForOptionalEntityTypeFromStored
       guard: s.memberType == ESM!MemberType#STORED
       
       t.name = s.name;
-      t.required = false;
       t.dataType = s.dataType.getPSMEquivalent();
+      t.required = false;
       t.binding = s.equivalent("CreateAttribute");
       
       s.eContainer.getPSMOptionalEquivalent().attributes.add(t);
