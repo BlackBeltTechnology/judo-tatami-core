@@ -57,8 +57,8 @@ JudoButton(
 {{#if label }}
     label: '{{label}}',
 {{/if}}
-{{#if icon }}
-    icon: Icon(Icons.{{icon.name}}),
+{{#if action.icon }}
+    icon: Icon(Icons.{{ action.icon.name }}),
 {{/if}}
     rounded: true,
 ),
