@@ -14,6 +14,7 @@ import hu.blackbelt.judo.meta.esm.structure.RelationKind;
 import hu.blackbelt.judo.meta.esm.structure.TransferObjectType;
 import hu.blackbelt.judo.meta.esm.type.NumericType;
 import hu.blackbelt.judo.meta.psm.PsmUtils;
+import hu.blackbelt.judo.meta.psm.namespace.Package;
 import hu.blackbelt.judo.meta.psm.runtime.PsmModel;
 import hu.blackbelt.judo.meta.psm.service.*;
 import lombok.extern.slf4j.Slf4j;
@@ -294,7 +295,7 @@ public class EsmOperation2PsmOperationTest {
         assertTrue(u.get().getOperations().stream().anyMatch(o -> STATIC_OPERATION_NAME_IN_UNMAPPED_TRANSFER_OBJECT_TYPE.equals(o.getName()) && EXPECTED_INPUT_AND_OUTPUT_PARAMETERS.test(o)));
 
         final Optional<hu.blackbelt.judo.meta.psm.service.MappedTransferObjectType> detaultE = allPsm(hu.blackbelt.judo.meta.psm.service.MappedTransferObjectType.class)
-                .filter(t -> ENTITY_TYPE_NAME.equals(t.getName()))
+                .filter(t -> ENTITY_TYPE_NAME.equals(t.getName()) && !t.isOptional())
                 .findAny();
         assertTrue(detaultE.isPresent());
         assertTrue(detaultE.get().getOperations().stream().anyMatch(o -> BOUND_OPERATION_NAME.equals(o.getName()) && EXPECTED_INPUT_AND_OUTPUT_PARAMETERS.test(o)));
@@ -370,6 +371,7 @@ public class EsmOperation2PsmOperationTest {
         final String NAME_OF_REMOVE_REFERENCE_E_OPERATION = "_removeReferenceE";
         final String NAME_OF_REMOVE_REFERENCE_E_OPERATION_ET = "_removeReferenceEFor" + MODEL_NAME + "_" + ENTITY_TYPE_D_NAME;
         final String NAME_OF_GET_RANGE_E_OPERATION = "_getRangeReferenceE";
+        final String NAME_OF_GET_TEMPLATE_D_OPERATION = "_getTemplateD";
 
         final EntityType entityTypeF = newEntityTypeBuilder()
                 .withName(ENTITY_TYPE_F_NAME)
@@ -474,14 +476,19 @@ public class EsmOperation2PsmOperationTest {
         assertTrue(e.isPresent());
 
         final Optional<hu.blackbelt.judo.meta.psm.service.MappedTransferObjectType> defaultD = allPsm(MappedTransferObjectType.class)
-                .filter(t -> ENTITY_TYPE_D_NAME.equals(t.getName()))
+                .filter(t -> ENTITY_TYPE_D_NAME.equals(t.getName()) && !t.isOptional())
                 .findAny();
         assertTrue(defaultD.isPresent());
 
         log.debug("List of generated operations (D):{}", defaultD.get().getOperations().stream().map(o -> "\n - " + o.getName() + ": " + (o.getBehaviour() != null ? o.getBehaviour().getBehaviourType() : "-")).sorted().collect(Collectors.joining()));
 
         final Optional<hu.blackbelt.judo.meta.psm.service.MappedTransferObjectType> defaultE = allPsm(MappedTransferObjectType.class)
-                .filter(t -> ENTITY_TYPE_E_NAME.equals(t.getName()))
+                .filter(t -> ENTITY_TYPE_E_NAME.equals(t.getName()) && !t.isOptional())
+                .findAny();
+        assertTrue(defaultE.isPresent());
+        
+        final Optional<hu.blackbelt.judo.meta.psm.service.MappedTransferObjectType> optionalD = allPsm(MappedTransferObjectType.class)
+                .filter(t -> ENTITY_TYPE_D_NAME.equals(t.getName()) && t.isOptional())
                 .findAny();
         assertTrue(defaultE.isPresent());
 
@@ -656,6 +663,14 @@ public class EsmOperation2PsmOperationTest {
                 EcoreUtil.equals(o.getInput().getType(), defaultD.get()) &&
                 o.getOutput().getCardinality().getLower() == 0 && o.getOutput().getCardinality().getUpper() == -1 &&
                 EcoreUtil.equals(o.getOutput().getType(), defaultE.get())
+        ));
+        
+        assertTrue(defaultD.get().getOperations().stream().anyMatch(o -> NAME_OF_GET_TEMPLATE_D_OPERATION.equals(o.getName()) && (o instanceof UnboundOperation) &&
+                o.getBehaviour() != null && o.getBehaviour().getBehaviourType() == TransferOperationBehaviourType.GET_TEMPLATE &&
+                EcoreUtil.equals(o.getBehaviour().getOwner(), defaultD.get()) &&
+                o.getInput() == null && o.getOutput() != null && o.getFaults().isEmpty() &&
+                o.getOutput().getCardinality().getLower() == 0 && o.getOutput().getCardinality().getUpper() == 1 &&
+                EcoreUtil.equals(o.getOutput().getType(), optionalD.get())
         ));
 
         assertEquals(10L, defaultD.get().getOperations().stream().filter(o -> o instanceof BoundTransferOperation).count());
