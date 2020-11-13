@@ -1,4 +1,4 @@
-{{log 'Flex generation for' (variable application.name) '-' (fqClass page.name)'page' (variable name) level='debug'}}
+{{~ log 'Flex generation for' (variable application.name) '-' (fqClass page.name)'page' (variable name) level='debug' ~}}
 {{# if isDirectionHorizontal }}
 JudoRow(
 {{ else }}
@@ -12,7 +12,7 @@ JudoColumn(
     children: [
     {{# each children as |child| }}
         {{# if child }}
-            {{> (getWidgetTemplate child) }}
+        {{> (getWidgetTemplate child) }}
         {{/ if }}
     {{/ each }}
     ],

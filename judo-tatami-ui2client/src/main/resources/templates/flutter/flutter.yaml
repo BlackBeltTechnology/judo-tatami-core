@@ -264,6 +264,12 @@
   templateName: flutter/lib/components/judo_column.dart
   copy: true
 
+- overwriteExpression: true
+  factoryExpression: "{#application}"
+  pathExpression: "'lib/' + #path(#application.actor.name) + '/components/judo_label.dart'"
+  templateName: flutter/lib/components/judo_label.dart
+  copy: true
+
 # ========================================
 # pages
 # ========================================
