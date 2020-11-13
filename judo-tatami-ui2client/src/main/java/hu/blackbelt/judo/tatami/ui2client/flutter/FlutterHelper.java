@@ -2,13 +2,13 @@ package hu.blackbelt.judo.tatami.ui2client.flutter;
 
 import com.github.jknack.handlebars.Handlebars;
 import com.github.jknack.handlebars.internal.lang3.StringUtils;
-import hu.blackbelt.judo.meta.ui.*;
+import hu.blackbelt.judo.meta.ui.Flex;
+import hu.blackbelt.judo.meta.ui.VisualElement;
 import hu.blackbelt.judo.meta.ui.data.*;
-import lombok.*;
+import lombok.SneakyThrows;
 import lombok.extern.java.Log;
 import org.springframework.expression.spel.support.StandardEvaluationContext;
 
-import java.util.*;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -36,19 +36,12 @@ public class FlutterHelper {
         context.registerFunction("crossAxisAlignment", FlutterHelper.class.getDeclaredMethod("crossAxisAlignment", new Class[]{Flex.class}));
         context.registerFunction("mainAxisSize", FlutterHelper.class.getDeclaredMethod("mainAxisSize", new Class[]{Flex.class}));
         context.registerFunction("dartType", FlutterHelper.class.getDeclaredMethod("dartType", new Class[]{DataType.class}));
-        context.registerFunction("isInstanceAction", FlutterHelper.class.getDeclaredMethod("isInstanceAction", new Class[]{PageDefinition.class}));
         context.registerFunction("isTransientAttribute", FlutterHelper.class.getDeclaredMethod("isTransientAttribute", new Class[]{AttributeType.class}));
     }
 
     public static void registerHandlebars(Handlebars handlebars) {
         handlebars.registerHelpers(FlutterHelper.class);
     }
-
-    public static boolean isInstanceAction (PageDefinition pageDefinition) {
-        //return pageDefinition.getInstanceActions()!= null && !pageDefinition.getInstanceActions().isEmpty();
-    	return false;
-    }
-
 
     public static boolean isTransientAttribute (AttributeType attributeType) {
         return MemberType.TRANSIENT == attributeType.getMemberType();
@@ -135,13 +128,19 @@ public class FlutterHelper {
     }
 
     public static String packageName(String packageName) {
-        return stream(packageName.replaceAll("#", "::")
+        List<String> nameTokens = stream(packageName.replaceAll("#", "::")
                 .replaceAll("\\.", "::")
                 .replaceAll("/", "::")
                 .split("::"))
-                .skip(1)
-                .map(s -> StringUtils.capitalize(s))
-                .findFirst().orElse(null);
+                .collect(Collectors.toList());
+        if (nameTokens.size() > 2) {
+            nameTokens.remove(0);
+            nameTokens.remove(nameTokens.size() - 1);
+            return nameTokens.stream()
+                    .map(s -> StringUtils.capitalize(s))
+                    .collect(Collectors.joining());
+        }
+        return null;
     }
 
     public static String fqVariable(String fqName) {
