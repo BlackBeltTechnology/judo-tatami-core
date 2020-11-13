@@ -10,6 +10,7 @@ rule CreateTransferObjectType
 	transform s: ESM!TransferObjectType
 	to t: JUDOPSM!TransferObjectType 
 	extends CreateNamespaceElement {
+	t.~source = s;
 }
 
 rule CreateMappedTransferObjectType
@@ -44,6 +45,7 @@ rule CreateUnmappedTransferObjectType
 rule CreateDefaultMappedTransferObjectTypeForEntity
 	transform s: ESM!EntityType
 	to t: JUDOPSM!MappedTransferObjectType {
+	  t.~source = s;
 	  t.name = s.name;
 
       s.eContainer.getPSMGeneratedDefaultTransferObjectNamespaceEquivalent().elements.add(t);

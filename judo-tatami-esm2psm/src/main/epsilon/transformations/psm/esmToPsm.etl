@@ -118,7 +118,7 @@ post {
 		}
 		
 		if (o.behaviour.behaviourType == JUDOPSM!TransferOperationBehaviourType#GET_RANGE) {
-			o.input.type = o.behaviour.owner.eContainer();
+			o.input.type = o.behaviour.owner.eContainer().~source.equivalent("CreateGetRangeInputType");
 		}
 	}
 }
