@@ -1,9 +1,7 @@
-@cached
 operation ASM!EReference isForCreateOrUpdate(ap : String) : Boolean {
     return self.eContainer.isForCreateOrUpdate(ap);
 }
 
-@cached
 operation ASM!EReference isTargetForCreateOrUpdate(ap : String) : Boolean {
     return asmUtils.getExtensionAnnotationListByName(self.eReferenceType, "exposedBy")
             .exists(a | a.details.get("value") == ap and a.eContainer.isForCreateOrUpdate(ap));

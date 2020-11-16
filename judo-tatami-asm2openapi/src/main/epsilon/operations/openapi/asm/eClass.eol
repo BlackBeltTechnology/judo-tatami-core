@@ -1,10 +1,9 @@
-@cached
 operation ASM!EClass isForCreateOrUpdate(ap : String) : Boolean {
         
-    var behaviours = getExposedByAnnotationsOfParameters()
+    var annotations = getExposedByAnnotationsOfParameters()
     .select(a | a.details.get("value") == ap
-                and a.eContainer.eType == self)
-    .collect(a | asmUtils.getBehaviour(a.eContainer.eOperation));
-                    
-    return behaviours.exists(b | b.present and (b.get().toString() == "CREATE_INSTANCE" or b.get().toString() == "VALIDATE_CREATE" or b.get().toString() == "UPDATE_INSTANCE" or b.get().toString() == "VALIDATE_UPDATE"));
+                and (a.eContainer.eType == self
+                or a.eContainer.eType.eAllContainments.includes(self)));
+
+    return annotations.notEmpty();
 }
