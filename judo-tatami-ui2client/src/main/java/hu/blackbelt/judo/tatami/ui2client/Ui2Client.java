@@ -305,8 +305,7 @@ public class Ui2Client {
                                 .replaceAll("__applicationName__", e.getKey().getName())
                                 .replaceAll("__actorName__", e.getKey().getActor().getName());
                         */
-
-                        String actorFqName = e.getKey().getActor().getName().replaceAll("::", "-");
+                        String actorFqName = modelName + "-"+ FlutterHelper.className(e.getKey().getActor().getName());
                         String actorName = e.getKey().getName();
 
                         String sourceFileName = finalOpenapiYamlNameTemplate + File.separator + actorFqName
