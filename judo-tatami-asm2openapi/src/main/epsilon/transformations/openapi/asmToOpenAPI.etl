@@ -5,3 +5,17 @@ import "modules/parameter.etl";
 import "modules/operation.etl";
 import "modules/security.etl";
 import "../../operations/openapi/_importAll.eol";
+
+pre {
+    var forCreateAndUpdateMap : Map = new Map;
+    var actorNames : Set = asmUtils.getAllActorTypes().collect(a | asmUtils.getClassifierFQName(a)).asSet();
+    
+    for (actor in actorNames) {
+        var classes : Set = new Set;
+        
+        for (class in ASM!EClass.all().select(c | c.isForCreateOrUpdate(actor))) {
+	        classes.add(class);
+        }
+        forCreateAndUpdateMap.put(actor, classes);
+    }
+}

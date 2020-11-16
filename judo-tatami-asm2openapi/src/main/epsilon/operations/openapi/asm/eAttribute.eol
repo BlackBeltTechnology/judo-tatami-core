@@ -1,3 +1,0 @@
-operation ASM!EAttribute isForCreateOrUpdate(ap : String) : Boolean {
-    return self.eContainer.isForCreateOrUpdate(ap);
-}
