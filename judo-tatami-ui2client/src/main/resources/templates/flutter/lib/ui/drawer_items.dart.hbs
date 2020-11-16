@@ -21,7 +21,7 @@ class {{ fqClass application.name }}NavigationItems {
         NavigationItem(
             route: Routes.{{ fqVariable item.target.name }}Page,
             leading: Icon(Icons.{{item.icon.name}}),
-            title: Text({{ fqClass item.target.name }}Page.title),
+            title: Text('{{ item.label }}'),
         ),
 
         {{/each}}
