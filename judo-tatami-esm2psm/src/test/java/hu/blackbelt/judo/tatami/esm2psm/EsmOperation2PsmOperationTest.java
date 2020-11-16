@@ -447,7 +447,7 @@ public class EsmOperation2PsmOperationTest {
                         .withLower(0).withUpper(-1)
                         .withCreateable(true)
                         .withUpdateable(true)
-                        .withCreateable(true)
+                        .withDeleteable(true)
                         .withTargetDefinedCRUD(false)
                         .build())
                 .build();
