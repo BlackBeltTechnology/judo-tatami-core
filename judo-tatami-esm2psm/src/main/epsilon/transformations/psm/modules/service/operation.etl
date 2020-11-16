@@ -614,7 +614,7 @@ rule CreateValidateUpdateTransferOperationForTransferObjectType
 rule CreateDeleteOperationForTransferObjectType
     transform s : ESM!TransferObjectType
     to t : JUDOPSM!BoundOperation {
-        guard: esmUtils.isUpdateSupported(s)
+        guard: esmUtils.isDeleteSupported(s)
 
         t.name = "_deleteInstance" + "For" + esmUtils.getNamespaceElementFQName(s).replace("::", "_").firstToUpperCase();
         t.instanceRepresentation = s.getPSMTransferObjectTypeEquivalent();
@@ -626,7 +626,7 @@ rule CreateDeleteOperationForTransferObjectType
 rule CreateDeleteTransferOperationForTransferObjectType
     transform s : ESM!TransferObjectType
     to t : JUDOPSM!BoundTransferOperation {
-        guard: esmUtils.isUpdateSupported(s)
+        guard: esmUtils.isDeleteSupported(s)
 
         t.name = "_deleteInstance" + esmUtils.getNamespaceElementFQName(s).replace("::", "_").firstToUpperCase();
         t.behaviour = new JUDOPSM!TransferOperationBehaviour;
