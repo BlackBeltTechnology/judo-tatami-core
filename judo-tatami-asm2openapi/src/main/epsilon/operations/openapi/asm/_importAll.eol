@@ -1,0 +1,4 @@
+import "eAnnotation.eol";
+import "eAttribute.eol";
+import "eClass.eol";
+import "eReference.eol";

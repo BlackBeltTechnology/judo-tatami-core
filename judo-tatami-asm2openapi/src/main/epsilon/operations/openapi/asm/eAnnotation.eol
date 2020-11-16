@@ -1,0 +1,5 @@
+@cached
+operation getExposedByAnnotationsOfParameters() : Set {
+    return ASM!EAnnotation.all()
+        .select(a | a.source == asmUtils.getAnnotationUri("exposedBy") and a.eContainer.isKindOf(ASM!EParameter) and a.eContainer.eType.isDefined()).asSet();
+}

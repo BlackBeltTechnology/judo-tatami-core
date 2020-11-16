@@ -417,7 +417,7 @@ rule CreateGetRangeInputType
       owner.embedded = true;
       owner.cardinality = new JUDOPSM!Cardinality;
       owner.cardinality.lower = 0;
-      owner.cardinality.upper = -1;
+      owner.cardinality.upper = 1;
 
       t.relations.add(owner);
 
