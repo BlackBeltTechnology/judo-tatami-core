@@ -59,14 +59,14 @@ build:
       goals: clean deploy
       profiles: ${BUILD_PROFILES}
       settings: .maven.xml
-      maven_opts: -Dorg.ops4j.pax.url.mvn.settings=${WERCKER_ROOT}/.maven.xml -DuseCustomSettings=true
+      maven_opts: -Dorg.ops4j.pax.url.mvn.settings=${WERCKER_ROOT}/.maven.xml -DuseCustomSettings=true -Dbuildtime.output.log
       cache_repo: true
 
     - wercker/maven:
       name: Deploy
       goals: deploy
       settings: .maven.xml
-      maven_opts: -Dtycho.mode=maven -DdeployOnly -Dgithub_release=true -Dgithub.prerelease=true -Dgithub.commitish=${WERCKER_GIT_COMMIT}
+      maven_opts: -Dtycho.mode=maven -DdeployOnly -Dgithub_release=true -Dgithub.prerelease=true -Dgithub.commitish=${WERCKER_GIT_COMMIT} -Dbuildtime.output.log
       profiles: ${DEPLOY_PROFILES}
       cache_repo: true
 
