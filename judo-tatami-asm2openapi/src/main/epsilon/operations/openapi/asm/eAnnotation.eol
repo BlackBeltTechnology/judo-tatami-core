@@ -14,7 +14,7 @@ operation ASM!EAnnotation isForCreateOrUpdate() : Boolean {
         return false;
     }
     
-    var annotations = getExposedByAnnotationsOfParameters().select(a | a.details.get("value") == self.details.get("value"));
+    var annotations = self.details.get("value").getAnnotationsOfParameters();
     
     if (self.eContainer.isKindOf(ASM!EClass)) {
         return annotations.select(a | a.eContainer.eType == self.eContainer
@@ -27,4 +27,9 @@ operation ASM!EAnnotation isForCreateOrUpdate() : Boolean {
     }
     
     return false;
+}
+
+@cached
+operation String getAnnotationsOfParameters() : Sequence {
+    return getExposedByAnnotationsOfParameters().select(a | a.details.get("value") == self);
 }
