@@ -26,6 +26,9 @@ public class DefaultWorkflowSetupParameters {
 	private List<String> dialectList;
 
 	@Builder.Default
+	private Boolean enableMetrics = true;
+
+	@Builder.Default
 	private Boolean ignorePsm2Asm = false;
 
 	@Builder.Default

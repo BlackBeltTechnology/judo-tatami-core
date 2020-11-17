@@ -61,6 +61,9 @@ public class PsmDefaultWorkflowMojo extends AbstractMojo {
 	@Parameter(property = "dialectList")
 	private List<String> dialectList;
 
+	@Parameter(property = "enableMetrics", defaultValue = "true")
+	private Boolean enableMetrics = true;
+
 	@Parameter(property = "ignorePsm2Asm", defaultValue = "false")
 	private Boolean ignorePsm2Asm = false;
 
@@ -146,6 +149,7 @@ public class PsmDefaultWorkflowMojo extends AbstractMojo {
 			DefaultWorkflowSetupParameters.DefaultWorkflowSetupParametersBuilder parameters =
 					DefaultWorkflowSetupParameters
 					.defaultWorkflowSetupParameters()
+					.enableMetrics(enableMetrics)
 					.ignorePsm2Asm(ignorePsm2Asm)
 					.ignoreAsm2jaxrsapi(ignoreAsm2jaxrsapi)
 					.ignoreAsm2Openapi(ignoreAsm2Openapi)

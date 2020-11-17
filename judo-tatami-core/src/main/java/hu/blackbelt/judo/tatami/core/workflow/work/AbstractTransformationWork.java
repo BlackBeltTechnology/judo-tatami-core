@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 public abstract class AbstractTransformationWork implements Work {
 
     TransformationContext transformationContext;
+    MetricsCollector metricsCollector;
 
     public AbstractTransformationWork(TransformationContext transformationContext) {
         this.transformationContext = transformationContext;
@@ -22,12 +23,24 @@ public abstract class AbstractTransformationWork implements Work {
         return transformationContext;
     }
 
+    public AbstractTransformationWork withMetricsCollector(MetricsCollector metricsCollector) {
+        this.metricsCollector = metricsCollector;
+        return this;
+    }
+
     public WorkReport call() {
+        final Long startTs = System.nanoTime();
+        boolean failed = false;
         try {
             execute();
             return new DefaultWorkReport(WorkStatus.COMPLETED);
         } catch (Exception e) {
+            failed = true;
             return new DefaultWorkReport(WorkStatus.FAILED, e);
+        } finally {
+            if (metricsCollector != null) {
+                metricsCollector.stoppedTransformation(getClass().getName(), System.nanoTime() - startTs, failed);
+            }
         }
     }
 }

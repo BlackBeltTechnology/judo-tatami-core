@@ -54,6 +54,7 @@ public class PsmWorkflowProcess {
                 .psmModel(psmModel)
                 .dialectList(ImmutableList.of(config.sqlDialect()));
 
+        workflowSetupParameters.enableMetrics(config.enableMetrics());
         workflowSetupParameters.ignorePsm2Asm(config.ignorePsm2Asm());
         workflowSetupParameters.ignorePsm2Measure(config.ignorePsm2Measure());
 
