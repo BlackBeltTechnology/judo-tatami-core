@@ -20,7 +20,7 @@ import 'package:{{ modelPackage application.name }}/{{ path application.name }}/
 
 void main() {
     configureDependencies();
-    ApiClient _apiClient = ApiClient(basePath: "http://localhost:8181/api/{{ modelName application.name }}", apiClientDelegate: DioClientDelegate());
+    ApiClient _apiClient = ApiClient(basePath: "http://localhost:8181/api/{{ baseUrl application.name }}", apiClientDelegate: DioClientDelegate());
     locator.registerSingleton<ApiClient>(_apiClient);
     runApp({{ fqClass application.name }}Application());
 }
@@ -30,7 +30,7 @@ class {{ fqClass application.name }}Application extends StatelessWidget {
 
     @override
     Widget build(BuildContext context) => MaterialApp(
-        title: 'Northwind',
+        title: '{{ modelName application.name }}',
         theme: ThemeData.light().copyWith(
         primaryColor: kPrimaryColor,
         ),

@@ -25,6 +25,7 @@ public class FlutterHelper {
         context.registerFunction("fqClassWithoutModel", FlutterHelper.class.getDeclaredMethod("fqClassWithoutModel", new Class[]{String.class}));
         context.registerFunction("path", FlutterHelper.class.getDeclaredMethod("path", new Class[]{String.class}));
         context.registerFunction("className", FlutterHelper.class.getDeclaredMethod("className", new Class[]{String.class}));
+        context.registerFunction("baseUrl", FlutterHelper.class.getDeclaredMethod("baseUrl", new Class[]{String.class}));
         context.registerFunction("modelName", FlutterHelper.class.getDeclaredMethod("modelName", new Class[]{String.class}));
         context.registerFunction("modelPackage", FlutterHelper.class.getDeclaredMethod("modelPackage", new Class[]{String.class}));
         context.registerFunction("packageName", FlutterHelper.class.getDeclaredMethod("packageName", new Class[]{String.class}));
@@ -166,6 +167,11 @@ public class FlutterHelper {
                 .map(s -> StringUtils.capitalize(s))
                 .skip(Math.max(0, splitted.length - 1))
                 .collect(Collectors.joining()));
+    }
+
+    public static String baseUrl(String fqName) {
+        String[] splitted = fqName.split("::");
+        return stream(splitted).findFirst().get();
     }
 
     public static String modelName(String fqName) {
