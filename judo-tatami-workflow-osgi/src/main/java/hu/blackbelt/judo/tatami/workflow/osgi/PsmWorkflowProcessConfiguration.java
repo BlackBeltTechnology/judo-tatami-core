@@ -12,6 +12,9 @@ public @interface PsmWorkflowProcessConfiguration {
     String sqlDialect() default "hsqldb";
 
     @AttributeDefinition
+    boolean enableMetrics() default true;
+
+    @AttributeDefinition
     boolean ignorePsm2Asm() default false;
 
     @AttributeDefinition

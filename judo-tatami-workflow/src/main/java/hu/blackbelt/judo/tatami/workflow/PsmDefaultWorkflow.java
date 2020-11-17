@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import com.google.common.collect.Lists;
 
@@ -39,11 +40,7 @@ import hu.blackbelt.judo.tatami.asm2script.Asm2ScriptWork;
 import hu.blackbelt.judo.tatami.asm2sdk.Asm2SDKWork;
 import hu.blackbelt.judo.tatami.core.workflow.engine.WorkFlowEngine;
 import hu.blackbelt.judo.tatami.core.workflow.flow.WorkFlow;
-import hu.blackbelt.judo.tatami.core.workflow.work.AbstractTransformationWork;
-import hu.blackbelt.judo.tatami.core.workflow.work.TransformationContext;
-import hu.blackbelt.judo.tatami.core.workflow.work.WorkReport;
-import hu.blackbelt.judo.tatami.core.workflow.work.WorkReportPredicate;
-import hu.blackbelt.judo.tatami.core.workflow.work.WorkStatus;
+import hu.blackbelt.judo.tatami.core.workflow.work.*;
 import hu.blackbelt.judo.tatami.expression.asm.validation.ExpressionValidationOnAsmWork;
 import hu.blackbelt.judo.tatami.psm.validation.PsmValidationWork;
 import hu.blackbelt.judo.tatami.psm2asm.Psm2AsmTransformationTrace;
@@ -54,7 +51,9 @@ import hu.blackbelt.judo.tatami.rdbms2liquibase.Rdbms2LiquibaseWork;
 import hu.blackbelt.judo.tatami.script2operation.Script2OperationWork;
 import hu.blackbelt.judo.tatami.asm2expression.Asm2ExpressionWork;
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public class PsmDefaultWorkflow {
 
 	@Getter
@@ -63,6 +62,8 @@ public class PsmDefaultWorkflow {
 	private DefaultWorkflowSetupParameters parameters;
 
 	private WorkReport workReport;
+
+	private WorkflowMetrics defaultMetrics = new DefaultWorkflowMetricsCollector();
 
 	public PsmDefaultWorkflow(DefaultWorkflowSetupParameters.DefaultWorkflowSetupParametersBuilder builder)
 			throws IOException, PsmModel.PsmValidationException {
@@ -97,56 +98,57 @@ public class PsmDefaultWorkflow {
 		List<AbstractTransformationWork> asm2RdbmsWorks = new ArrayList<>();
 		List<AbstractTransformationWork> scriptWorks = new ArrayList<>();
 
+		WorkflowMetrics metrics = parameters.getEnableMetrics() ? defaultMetrics : null;
 
 		if (parameters.getIgnorePsm2Asm() && parameters.getIgnorePsm2Measure()) {
 			throw new IllegalArgumentException("All transformation path are ignored");
 		}
 
 		if (parameters.getValidateModels()) {
-			psmWorks.add(new PsmValidationWork(transformationContext));
+			psmWorks.add(new PsmValidationWork(transformationContext).withMetricsCollector(metrics));
 		}
 
 		if (!parameters.getIgnorePsm2Measure()) {
-			psmWorks.add(new Psm2MeasureWork(transformationContext));
+			psmWorks.add(new Psm2MeasureWork(transformationContext).withMetricsCollector(metrics));
 		}
 
 		if (!parameters.getIgnorePsm2Asm()) {
-			psmWorks.add(new Psm2AsmWork(transformationContext));
+			psmWorks.add(new Psm2AsmWork(transformationContext).withMetricsCollector(metrics));
 
 			if (!parameters.getIgnoreAsm2Rdbms()) {
 				parameters.getDialectList().forEach(dialect -> {
-					asm2RdbmsWorks.add(new Asm2RdbmsWork(transformationContext, dialect));
+					asm2RdbmsWorks.add(new Asm2RdbmsWork(transformationContext, dialect).withMetricsCollector(metrics));
 				});
 				asmWorks.addAll(asm2RdbmsWorks);
 				if (!parameters.getIgnoreRdbms2Liquibase()) {
 					parameters.getDialectList()
-							.forEach(dialect -> rdbmsWorks.add(new Rdbms2LiquibaseWork(transformationContext, dialect)));
+							.forEach(dialect -> rdbmsWorks.add(new Rdbms2LiquibaseWork(transformationContext, dialect).withMetricsCollector(metrics)));
 				}
 			}
 			if (!parameters.getIgnoreAsm2Expression() && !parameters.getIgnorePsm2Measure()) {
-				asmWorks.add(new Asm2ExpressionWork(transformationContext));
+				asmWorks.add(new Asm2ExpressionWork(transformationContext).withMetricsCollector(metrics));
 				if (parameters.getValidateModels()) {
-					asmWorks.add(new ExpressionValidationOnAsmWork(transformationContext));
+					asmWorks.add(new ExpressionValidationOnAsmWork(transformationContext).withMetricsCollector(metrics));
 				}
 			}
 			if (!parameters.getIgnoreAsm2Script() && !parameters.getIgnorePsm2Measure()) {
-				asmWorks.add(new Asm2ScriptWork(transformationContext));
+				asmWorks.add(new Asm2ScriptWork(transformationContext).withMetricsCollector(metrics));
 			}
 
 			if (!parameters.getIgnoreAsm2Openapi()) {
-				asmWorks.add(new Asm2OpenAPIWork(transformationContext));
+				asmWorks.add(new Asm2OpenAPIWork(transformationContext).withMetricsCollector(metrics));
 			}
 			if (!parameters.getIgnoreAsm2jaxrsapi()) {
-				asmWorks.add(new Asm2JAXRSAPIWork(transformationContext));
+				asmWorks.add(new Asm2JAXRSAPIWork(transformationContext).withMetricsCollector(metrics));
 			}
 			if (!parameters.getIgnoreAsm2sdk()) {
-				asmWorks.add(new Asm2SDKWork(transformationContext));
+				asmWorks.add(new Asm2SDKWork(transformationContext).withMetricsCollector(metrics));
 			}
 			if (!parameters.getIgnoreScript2Operation() && !parameters.getIgnoreAsm2Script() && !parameters.getIgnorePsm2Measure()) {
-				scriptWorks.add(new Script2OperationWork(transformationContext));
+				scriptWorks.add(new Script2OperationWork(transformationContext).withMetricsCollector(metrics));
 			}
 			if (!parameters.getIgnoreAsm2Keycloak()) {
-				asmWorks.add(new Asm2KeycloakWork(transformationContext));
+				asmWorks.add(new Asm2KeycloakWork(transformationContext).withMetricsCollector(metrics));
 			}
 		}
 
@@ -230,6 +232,12 @@ public class PsmDefaultWorkflow {
 		if (!verifier.isAllExists()) {
 			throw new IllegalStateException("One or more models are missing for the transformation context.");
 		}
+
+		if (parameters.getEnableMetrics()) {
+			log.info("PSM default workflow summary: {}", metrics.getExecutionTimes().entrySet().stream()
+					.map(e -> "\n  - " + e.getKey() + ": " + e.getValue()).collect(Collectors.joining()));
+		}
+
 		return workReport;
 	}
 }
