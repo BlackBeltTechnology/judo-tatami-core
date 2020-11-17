@@ -41,7 +41,7 @@ abstract class _{{ fqClass page.name }}PageStore with Store {
             owner{{ className relation.owner.name }}Store.{{variable relation.name}}.addAll([selected{{ className relation.target.name }}Store]);
             return owner{{ className relation.owner.name }}Store.{{variable relation.name}};
         } on ApiException catch (error) {
-            errorMessage = "Could not add {{relation.name}}";
+            errorMessage = "Could not add {{ relation.name}}";
             throw error;
         }
     }
@@ -52,8 +52,8 @@ abstract class _{{ fqClass page.name }}PageStore with Store {
     Future<void> remove{{ fqClass relation.name }}({{ fqClass relation.owner.name }}Store owner{{ className relation.owner.name }}Store, {{ fqClass relation.target.name }}Store selected{{ className relation.target.name }}Store) async {
         try {
             errorMessage = null;
-            {{ relation.name }}StoreFuture = ObservableFuture(_{{ fqVariable application.actor.name }}Repository.{{ fqVariable relation.owner.name }}Remove{{fqClass relation.name}}(owner{{ className relation.owner.name }}Store, [selected{{ className relation.target.name }}Store]));
-            await {{ relation.name }}StoreFuture;
+            {{ fqVariable relation.name }}StoreFuture = ObservableFuture(_{{ fqVariable application.actor.name }}Repository.{{ fqVariable relation.owner.name }}Remove{{fqClass relation.name}}(owner{{ className relation.owner.name }}Store, [selected{{ className relation.target.name }}Store]));
+            await {{ fqVariable relation.name }}StoreFuture;
             owner{{ className relation.owner.name }}Store.{{variable relation.name}}.remove(selected{{ className relation.target.name }}Store); // TODO: fix with remove more than 1 element
         } on ApiException catch (error) {
             errorMessage = "Could not remove {{ relation.name }}";
@@ -68,20 +68,20 @@ abstract class _{{ fqClass page.name }}PageStore with Store {
         try {
             errorMessage = null;
             {{# if page.dataElement.isAccess}}
-            {{ relation.name }}StoreFuture = ObservableFuture(_{{ fqVariable application.actor.name }}Repository.{{ fqVariable relation.owner.name }}{{ fqClass relation.name }}List());
-            {{ relation.name }}StoreList.clear();
-            {{ relation.name }}StoreList.addAll(await {{ relation.name }}StoreFuture);
-            return {{ relation.name }}StoreList;
+            {{ fqVariable relation.name }}StoreFuture = ObservableFuture(_{{ fqVariable application.actor.name }}Repository.{{ fqVariable relation.owner.name }}{{ fqClass relation.name }}List());
+            {{ fqVariable relation.name }}StoreList.clear();
+            {{ fqVariable relation.name }}StoreList.addAll(await {{ fqVariable relation.name }}StoreFuture);
+            return {{ fqVariable relation.name }}StoreList;
             {{else}}
             {{# if relation.isCollection }}
-            {{ relation.name }}StoreFuture = ObservableFuture(_{{ fqVariable application.actor.name }}Repository.{{ fqVariable relation.owner.name }}{{ fqClass relation.name }}List(owner{{ className relation.owner.name }}Store));
-            owner{{ className relation.owner.name }}Store.{{ relation.name }}.clear();
-            owner{{ className relation.owner.name }}Store.{{ relation.name }}.addAll(await {{ relation.name }}StoreFuture);
-            return owner{{ className relation.owner.name }}Store.{{ relation.name }};
+            {{ fqVariable relation.name }}StoreFuture = ObservableFuture(_{{ fqVariable application.actor.name }}Repository.{{ fqVariable relation.owner.name }}{{ fqClass relation.name }}List(owner{{ className relation.owner.name }}Store));
+            owner{{ className relation.owner.name }}Store.{{ variable relation.name }}.clear();
+            owner{{ className relation.owner.name }}Store.{{ variable relation.name }}.addAll(await {{ fqVariable relation.name }}StoreFuture);
+            return owner{{ className relation.owner.name }}Store.{{ variable relation.name }};
             {{else}}
-            {{ relation.name }}StoreFuture = ObservableFuture(_{{ fqVariable application.actor.name }}Repository.{{ fqVariable relation.owner.name }}{{ fqClass relation.name }}Get(owner{{ className relation.owner.name }}Store));
-            owner{{ className relation.owner.name }}Store.{{ relation.name }} = await {{ relation.name }}StoreFuture;
-            return owner{{ className relation.owner.name }}Store.{{ relation.name }};
+            {{ fqVariable relation.name }}StoreFuture = ObservableFuture(_{{ fqVariable application.actor.name }}Repository.{{ fqVariable relation.owner.name }}{{ fqClass relation.name }}Get(owner{{ className relation.owner.name }}Store));
+            owner{{ className relation.owner.name }}Store.{{ variable relation.name }} = await {{ fqVariable relation.name }}StoreFuture;
+            return owner{{ className relation.owner.name }}Store.{{ variable relation.name }};
             {{/if}}
             {{/if}}
         } on ApiException catch (error) {
@@ -151,7 +151,7 @@ abstract class _{{ fqClass page.name }}PageStore with Store {
             await _{{ fqVariable application.actor.name }}Repository.{{fqVariable relation.target.name}}Delete(target{{ className relation.target.name }}Store);
             get{{ fqClass relation.name }}({{# unless page.dataElement.isAccess}}owner{{ className relation.owner.name }}Store{{/unless}});
         } on ApiException catch (error) {
-            errorMessage = "Could not delete {{ variable relation.target.name }}";
+            errorMessage = "Could not delete {{ relation.target.name }}";
             throw error;
         }
     }
@@ -164,7 +164,7 @@ abstract class _{{ fqClass page.name }}PageStore with Store {
             errorMessage = null;
             return await _{{ fqVariable application.actor.name }}Repository.{{fqVariable relation.target.name}}Update(target{{ className relation.target.name }}Store);
         } on ApiException catch (error) {
-            errorMessage = "Could not update {{ variable relation.target.name }}";
+            errorMessage = "Could not update {{ relation.target.name }}";
             throw error;
         }
     }
