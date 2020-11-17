@@ -18,7 +18,7 @@ void main() async {
     configureDependencies();
     const bool kIsWeb = identical(0, 0.0);
 
-    ApiClient _apiClient = ApiClient(basePath: "http://localhost:8181/api/{{ modelName application.name }}", apiClientDelegate: DioClientDelegate());
+    ApiClient _apiClient = ApiClient(basePath: "http://localhost:8181/api/{{ baseUrl application.name }}", apiClientDelegate: DioClientDelegate());
     locator.registerSingleton<ApiClient>(_apiClient);
 
     runApp({{ fqClass application.name }}Application());
