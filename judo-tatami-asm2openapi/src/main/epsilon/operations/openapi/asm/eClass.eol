@@ -1,9 +1,0 @@
-operation ASM!EClass isForCreateOrUpdate(ap : String) : Boolean {
-        
-    var annotations = getExposedByAnnotationsOfParameters()
-    .select(a | a.details.get("value") == ap
-                and (a.eContainer.eType == self
-                or a.eContainer.eType.eAllContainments.includes(self)));
-
-    return annotations.notEmpty();
-}
