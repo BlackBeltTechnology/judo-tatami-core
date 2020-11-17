@@ -130,7 +130,10 @@ rule CreateReferencePropertyDefinitionReference
 rule CreateDataPropertyDeclarationForCreateAndUpdate
     transform s : ASM!EAnnotation
     to t : OPENAPI!PropertyDeclaration {
-        guard: s.eContainer.isKindOf(ASM!EAttribute) and s.source == asmUtils.getAnnotationUri("exposedBy") and s.eContainer.changeable and not asmUtils.annotatedAsTrue(s.eContainer, "transient")
+        guard: s.eContainer.isKindOf(ASM!EAttribute) and
+            s.isForCreateOrUpdate() and
+            s.eContainer.changeable and
+            not asmUtils.annotatedAsTrue(s.eContainer, "transient")
 
         t.name = s.eContainer.name;
 
@@ -141,7 +144,10 @@ rule CreateDataPropertyDeclarationForCreateAndUpdate
 rule CreateDataPropertyDefinitionForCreateAndUpdate
     transform s : ASM!EAnnotation
     to t : OPENAPI!Property {
-        guard: s.eContainer.isKindOf(ASM!EAttribute) and s.source == asmUtils.getAnnotationUri("exposedBy") and s.eContainer.changeable and not asmUtils.annotatedAsTrue(s.eContainer, "transient")
+        guard: s.eContainer.isKindOf(ASM!EAttribute) and
+            s.isForCreateOrUpdate() and
+            s.eContainer.changeable and
+            not asmUtils.annotatedAsTrue(s.eContainer, "transient")
 
         if (s.eContainer.many) {
             throw "Collection attributes are not supported";
@@ -215,7 +221,10 @@ rule CreateDataPropertyDefinitionForCreateAndUpdate
 rule CreateReferencePropertyDeclarationForCreateAndUpdate
     transform s : ASM!EAnnotation
     to t : OPENAPI!PropertyDeclaration {
-        guard: s.eContainer.isKindOf(ASM!EReference) and s.source == asmUtils.getAnnotationUri("exposedBy") and s.eContainer.changeable and not asmUtils.annotatedAsTrue(s.eContainer, "transient")
+        guard: s.eContainer.isKindOf(ASM!EReference) and
+            s.isForCreateOrUpdate() and
+            s.eContainer.changeable and
+            not asmUtils.annotatedAsTrue(s.eContainer, "transient")
 
         t.name = s.eContainer.name;
 	    var transferObjectTypeExposedByAnnotation = asmUtils.getExtensionAnnotationListByName(s.eContainer.eContainer, "exposedBy").selectOne(a | a.details.get("value") == s.details.get("value"));
@@ -225,7 +234,10 @@ rule CreateReferencePropertyDeclarationForCreateAndUpdate
 rule CreateReferencePropertyDefinitionForCreateAndUpdate
     transform s : ASM!EAnnotation
     to t : OPENAPI!Property {
-        guard: s.eContainer.isKindOf(ASM!EReference) and s.source == asmUtils.getAnnotationUri("exposedBy") and s.eContainer.changeable and not asmUtils.annotatedAsTrue(s.eContainer, "transient")
+        guard: s.eContainer.isKindOf(ASM!EReference) and
+            s.isForCreateOrUpdate() and
+            s.eContainer.changeable and
+            not asmUtils.annotatedAsTrue(s.eContainer, "transient")
 
         if (not s.eContainer.changeable) {
             t.readOnly = true;
@@ -258,9 +270,14 @@ rule CreateReferencePropertyDefinitionForCreateAndUpdate
 rule CreateReferencePropertyDefinitionReferenceForCreateAndUpdate
     transform s : ASM!EAnnotation
     to t : OPENAPI!SchemaReference {
-        guard: s.eContainer.isKindOf(ASM!EReference) and s.eContainer.containment and s.source == asmUtils.getAnnotationUri("exposedBy") and s.eContainer.changeable and not asmUtils.annotatedAsTrue(s.eContainer, "transient")
+        guard: s.eContainer.isKindOf(ASM!EReference) and
+            s.eContainer.containment and
+            s.isForCreateOrUpdate() and
+            s.eContainer.changeable and
+            not asmUtils.annotatedAsTrue(s.eContainer, "transient")
 
-        var targetTypeExposedByAnnotation = asmUtils.getExtensionAnnotationListByName(s.eContainer.eReferenceType, "exposedBy").selectOne(a | a.details.get("value") == s.details.get("value"));
+        var targetTypeExposedByAnnotation = asmUtils.getExtensionAnnotationListByName(s.eContainer.eReferenceType, "exposedBy")
+            .selectOne(a | a.details.get("value") == s.details.get("value"));
 
 		if (s.eContainer.many) {
 		    t.ref = targetTypeExposedByAnnotation.equivalent("CreateTransferObjectArraySchemaDeclarationForCreateAndUpdate").getReference();

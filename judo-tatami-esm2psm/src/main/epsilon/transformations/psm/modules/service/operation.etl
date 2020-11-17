@@ -815,7 +815,7 @@ rule CreateGetRangeReferenceTransferOperationForRelationFeature
 
         t.input = new JUDOPSM!Parameter;
         t.input.name = "input";
-        t.input.type = s.eContainer.getPSMTransferObjectTypeEquivalent();
+        t.input.type = s.eContainer.equivalent("CreateGetRangeInputType");
         t.input.cardinality = new JUDOPSM!Cardinality;
         t.input.cardinality.lower = 0;
         t.input.cardinality.upper = 1;
@@ -828,4 +828,24 @@ rule CreateGetRangeReferenceTransferOperationForRelationFeature
         t.output.cardinality.upper = -1;
 
         s.eContainer.getPSMTransferObjectTypeEquivalent().operations.add(t);
+}
+
+@greedy
+rule CreateGetTemplateTransferOperation
+    transform s : ESM!TransferObjectType
+    to t : JUDOPSM!UnboundOperation {
+
+        t.name = "_getTemplate" + s.name.firstToUpperCase();
+        t.behaviour = new JUDOPSM!TransferOperationBehaviour;
+        t.behaviour.behaviourType = JUDOPSM!TransferOperationBehaviourType#GET_TEMPLATE;
+        t.behaviour.owner = s.getPSMTransferObjectTypeEquivalent();
+
+        t.output = new JUDOPSM!Parameter;
+        t.output.name = "output";
+        t.output.type = s.getPSMOptionalEquivalent();
+        t.output.cardinality = new JUDOPSM!Cardinality;
+        t.output.cardinality.lower = 0;
+        t.output.cardinality.upper = 1;
+
+        s.getPSMTransferObjectTypeEquivalent().operations.add(t);
 }

@@ -115,10 +115,10 @@ post {
 		if (o.behaviour.owner.isKindOf(JUDOPSM!TransferObjectRelation)) {
 			var newOwner : JUDOPSM!TransferObjectRelation = o.eContainer.relations.select(r | r.name.equals(o.behaviour.owner.name)).first();
 			o.behaviour.owner = newOwner;
-		}
-		
-		if (o.behaviour.behaviourType == JUDOPSM!TransferOperationBehaviourType#GET_RANGE) {
-			o.input.type = o.behaviour.owner.eContainer();
+			
+			if (o.behaviour.behaviourType == JUDOPSM!TransferOperationBehaviourType#GET_RANGE) {
+                o.input.type = o.behaviour.owner.eContainer().~source.equivalent("CreateGetRangeInputType");
+            }
 		}
 	}
 }

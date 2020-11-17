@@ -43,7 +43,9 @@ rule CreateTransferObjectSingleSchemaDeclarationForDelete
 rule CreateTransferObjectSingleSchemaDefinitionForCreateAndUpdate
     transform s : ASM!EAnnotation
     to t : OPENAPI!Schema {
-        guard: s.eContainer.isKindOf(ASM!EClass) and s.source == asmUtils.getAnnotationUri("exposedBy") and (not asmUtils.isEntityType(s.eContainer) or asmUtils.isMappedTransferObjectType(s.eContainer))
+        guard: s.eContainer.isKindOf(ASM!EClass) and
+            s.isForCreateOrUpdate() and
+            (not asmUtils.isEntityType(s.eContainer) or asmUtils.isMappedTransferObjectType(s.eContainer))
 
         t.description = "Schema of " + s.eContainer.name + " instance (for creation and updating)";
         t.type = OPENAPI!JSONDataType#object;
@@ -162,7 +164,9 @@ rule CreateTransferObjectArrayItemsDefinition
 rule CreateTransferObjectSingleSchemaDeclarationForCreateAndUpdate
     transform s : ASM!EAnnotation
     to t : OPENAPI!SchemaDeclaration {
-        guard: s.eContainer.isKindOf(ASM!EClass) and s.source == asmUtils.getAnnotationUri("exposedBy") and (not asmUtils.isEntityType(s.eContainer) or asmUtils.isMappedTransferObjectType(s.eContainer))
+        guard: s.eContainer.isKindOf(ASM!EClass) and
+            s.isForCreateOrUpdate() and
+            (not asmUtils.isEntityType(s.eContainer) or asmUtils.isMappedTransferObjectType(s.eContainer))
 
         t.name = asmUtils.getClassifierFQName(s.eContainer).toOpenAPIName() + "__forCreateAndUpdate";
 
@@ -177,7 +181,9 @@ rule CreateTransferObjectSingleSchemaDeclarationForCreateAndUpdate
 rule CreateTransferObjectArraySchemaDeclarationForCreateAndUpdate
     transform s : ASM!EAnnotation
     to t : OPENAPI!SchemaDeclaration {
-        guard: s.eContainer.isKindOf(ASM!EClass) and s.source == asmUtils.getAnnotationUri("exposedBy") and (not asmUtils.isEntityType(s.eContainer) or asmUtils.isMappedTransferObjectType(s.eContainer))
+        guard: s.eContainer.isKindOf(ASM!EClass) and
+            s.isForCreateOrUpdate() and
+            (not asmUtils.isEntityType(s.eContainer) or asmUtils.isMappedTransferObjectType(s.eContainer))
 
         t.name = "arrayOf__" + asmUtils.getClassifierFQName(s.eContainer).toOpenAPIName() + "__forCreateAndUpdate";
 
@@ -192,7 +198,9 @@ rule CreateTransferObjectArraySchemaDeclarationForCreateAndUpdate
 rule CreateTransferObjectArraySchemaDefinitionForCreateAndUpdate
     transform s : ASM!EAnnotation
     to t : OPENAPI!Schema {
-        guard: s.eContainer.isKindOf(ASM!EClass) and s.source == asmUtils.getAnnotationUri("exposedBy") and (not asmUtils.isEntityType(s.eContainer) or asmUtils.isMappedTransferObjectType(s.eContainer))
+        guard: s.eContainer.isKindOf(ASM!EClass) and
+            s.isForCreateOrUpdate() and
+            (not asmUtils.isEntityType(s.eContainer) or asmUtils.isMappedTransferObjectType(s.eContainer))
 
         t.description = "Array of " + s.eContainer.name + " instances (for creation and updating)";
         t.type = OPENAPI!JSONDataType#array;
@@ -203,7 +211,9 @@ rule CreateTransferObjectArraySchemaDefinitionForCreateAndUpdate
 rule CreateTransferObjectArrayItemsDefinitionForCreateAndUpdate
     transform s : ASM!EAnnotation
     to t : OPENAPI!Property {
-        guard: s.eContainer.isKindOf(ASM!EClass) and s.source == asmUtils.getAnnotationUri("exposedBy") and (not asmUtils.isEntityType(s.eContainer) or asmUtils.isMappedTransferObjectType(s.eContainer))
+        guard: s.eContainer.isKindOf(ASM!EClass) and
+            s.isForCreateOrUpdate() and
+            (not asmUtils.isEntityType(s.eContainer) or asmUtils.isMappedTransferObjectType(s.eContainer))
 
         t.ref = new OPENAPI!SchemaReference;
         t.ref.ref = s.equivalent("CreateTransferObjectSingleSchemaDeclarationForCreateAndUpdate").getReference();
