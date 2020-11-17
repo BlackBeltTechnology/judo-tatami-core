@@ -131,10 +131,9 @@ rule CreateDataPropertyDeclarationForCreateAndUpdate
     transform s : ASM!EAnnotation
     to t : OPENAPI!PropertyDeclaration {
         guard: s.eContainer.isKindOf(ASM!EAttribute) and
-            s.source == asmUtils.getAnnotationUri("exposedBy") and
+            s.isForCreateOrUpdate() and
             s.eContainer.changeable and
-            not asmUtils.annotatedAsTrue(s.eContainer, "transient") and
-            forCreateAndUpdateMap.get(s.details.get("value")).contains(s.eContainer.eContainer)
+            not asmUtils.annotatedAsTrue(s.eContainer, "transient")
 
         t.name = s.eContainer.name;
 
@@ -146,10 +145,9 @@ rule CreateDataPropertyDefinitionForCreateAndUpdate
     transform s : ASM!EAnnotation
     to t : OPENAPI!Property {
         guard: s.eContainer.isKindOf(ASM!EAttribute) and
-            s.source == asmUtils.getAnnotationUri("exposedBy") and
+            s.isForCreateOrUpdate() and
             s.eContainer.changeable and
-            not asmUtils.annotatedAsTrue(s.eContainer, "transient") and
-            forCreateAndUpdateMap.get(s.details.get("value")).contains(s.eContainer.eContainer)
+            not asmUtils.annotatedAsTrue(s.eContainer, "transient")
 
         if (s.eContainer.many) {
             throw "Collection attributes are not supported";
@@ -224,10 +222,9 @@ rule CreateReferencePropertyDeclarationForCreateAndUpdate
     transform s : ASM!EAnnotation
     to t : OPENAPI!PropertyDeclaration {
         guard: s.eContainer.isKindOf(ASM!EReference) and
-            s.source == asmUtils.getAnnotationUri("exposedBy") and
+            s.isForCreateOrUpdate() and
             s.eContainer.changeable and
-            not asmUtils.annotatedAsTrue(s.eContainer, "transient") and
-            forCreateAndUpdateMap.get(s.details.get("value")).contains(s.eContainer.eContainer)
+            not asmUtils.annotatedAsTrue(s.eContainer, "transient")
 
         t.name = s.eContainer.name;
 	    var transferObjectTypeExposedByAnnotation = asmUtils.getExtensionAnnotationListByName(s.eContainer.eContainer, "exposedBy").selectOne(a | a.details.get("value") == s.details.get("value"));
@@ -238,10 +235,9 @@ rule CreateReferencePropertyDefinitionForCreateAndUpdate
     transform s : ASM!EAnnotation
     to t : OPENAPI!Property {
         guard: s.eContainer.isKindOf(ASM!EReference) and
-            s.source == asmUtils.getAnnotationUri("exposedBy") and
+            s.isForCreateOrUpdate() and
             s.eContainer.changeable and
-            not asmUtils.annotatedAsTrue(s.eContainer, "transient") and
-            forCreateAndUpdateMap.get(s.details.get("value")).contains(s.eContainer.eContainer)
+            not asmUtils.annotatedAsTrue(s.eContainer, "transient")
 
         if (not s.eContainer.changeable) {
             t.readOnly = true;
@@ -276,11 +272,9 @@ rule CreateReferencePropertyDefinitionReferenceForCreateAndUpdate
     to t : OPENAPI!SchemaReference {
         guard: s.eContainer.isKindOf(ASM!EReference) and
             s.eContainer.containment and
-            s.source == asmUtils.getAnnotationUri("exposedBy") and
+            s.isForCreateOrUpdate() and
             s.eContainer.changeable and
-            not asmUtils.annotatedAsTrue(s.eContainer, "transient") and
-            forCreateAndUpdateMap.get(s.details.get("value")).contains(s.eContainer.eContainer) and
-            forCreateAndUpdateMap.get(s.details.get("value")).contains(s.eContainer.eReferenceType)
+            not asmUtils.annotatedAsTrue(s.eContainer, "transient")
 
         var targetTypeExposedByAnnotation = asmUtils.getExtensionAnnotationListByName(s.eContainer.eReferenceType, "exposedBy")
             .selectOne(a | a.details.get("value") == s.details.get("value"));
