@@ -18,7 +18,7 @@ abstract class _{{ fqClass page.name }}PageStore with Store {
             errorMessage = null;
             target{{ className page.dataElement.target.name }}Store.updateWith(await _{{ fqVariable application.actor.name }}Repository.{{fqVariable relation.target.name}}GetByIdentifier(target{{ className page.dataElement.target.name }}Store));
         } on ApiException catch (error) {
-            errorMessage = "Could not refresh {{ variable relation.target.name }}";
+            errorMessage = "Could not refresh {{ relation.target.name }}";
             throw error;
         }
     }
@@ -31,7 +31,7 @@ abstract class _{{ fqClass page.name }}PageStore with Store {
             errorMessage = null;
             return await _{{ fqVariable application.actor.name }}Repository.{{fqVariable relation.target.name}}Update(target{{ className page.dataElement.target.name }}Store);
         } on ApiException catch (error) {
-            errorMessage = "Could not update {{ variable relation.target.name }}";
+            errorMessage = "Could not update {{ relation.target.name }}";
             throw error;
         }
     }
@@ -44,7 +44,7 @@ abstract class _{{ fqClass page.name }}PageStore with Store {
             errorMessage = null;
             await _{{ fqVariable application.actor.name }}Repository.{{fqVariable relation.target.name}}Delete(target{{ className page.dataElement.target.name }}Store);
         } on ApiException catch (error) {
-            errorMessage = "Could not delete {{ variable relation.name }}";
+            errorMessage = "Could not delete {{ relation.name }}";
             throw error;
         }
     }

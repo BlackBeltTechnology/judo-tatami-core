@@ -17,7 +17,7 @@
 # ========================================
 # main
 # ========================================
-- overwriteExpression: false
+- overwriteExpression: true
   factoryExpression: "{#application}"
   pathExpression: >
     'lib/main.dart'
