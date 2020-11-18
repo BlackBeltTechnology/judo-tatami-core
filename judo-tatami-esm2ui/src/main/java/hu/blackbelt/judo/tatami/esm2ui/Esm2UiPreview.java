@@ -177,6 +177,7 @@ public class Esm2UiPreview {
 
 		ObjectMapper mapper = new ObjectMapper();
 		EMFModule module = new EMFModule();
+		module.configure(EMFModule.Feature.OPTION_SERIALIZE_DEFAULT_VALUE, true);
 		module.setReferenceSerializer(new JsonSerializer<EObject>() {
 			  @Override
 			  public void serialize(EObject v, JsonGenerator g, SerializerProvider s)
