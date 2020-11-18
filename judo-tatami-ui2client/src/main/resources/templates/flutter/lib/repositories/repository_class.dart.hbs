@@ -93,8 +93,8 @@ class {{ fqClass class.name }}Repository {
   // SET {{ variable relation.name }} (Collection)
   //////////////////////////////////////////////////////////////////////////////
   Future<void> {{ fqVariable class.name }}Set{{ fqClass relation.name }}({{ fqClass class.name }}Store target, List<{{ fqClass relation.target.name }}Store> selected) async {
-    List<SingleReference> itemsToSet = selected.map<SingleReference>((s) => SingleReference().copyWith(internal__signedIdentifier: s.internal__signedIdentifier)).toList();
-    return await DefaultApi(locator<ApiClient>()).{{ fqVariable class.name }}SetReference{{ className relation.name }}(target.internal__signedIdentifier, input: itemsToSet);
+    List<dynamic> itemsToSet = selected.map<dynamic>((s) => {"__signedIdentifier": s.internal__signedIdentifier}).toList();
+    return await DefaultApi(locator<ApiClient>()).{{ fqVariable class.transferObjectTypeName }}SetReference{{ className relation.name }}(target.internal__signedIdentifier, input: itemsToSet);
   }
         {{ else }}
 
@@ -102,7 +102,7 @@ class {{ fqClass class.name }}Repository {
   // SET {{ variable relation.name }} (Single)
   //////////////////////////////////////////////////////////////////////////////
   Future<void> {{ fqVariable class.name }}Set{{ fqClass relation.name }}({{ fqClass class.name }}Store target, {{ fqClass relation.target.name }}Store selected) async {
-    return await DefaultApi(locator<ApiClient>()).{{ fqVariable class.name }}SetReference{{ className relation.name }}(target.internal__signedIdentifier, SingleReference().copyWith(internal__signedIdentifier: selected.internal__signedIdentifier));
+    return await DefaultApi(locator<ApiClient>()).{{ fqVariable class.transferObjectTypeName }}SetReference{{ className relation.name }}(target.internal__signedIdentifier, SingleReference().copyWith(internal__signedIdentifier: selected.internal__signedIdentifier));
   }
         {{/ if }}
       {{/ if }}
@@ -112,7 +112,7 @@ class {{ fqClass class.name }}Repository {
   // UNSET {{ variable relation.name }}
   //////////////////////////////////////////////////////////////////////////////
   Future<void> {{ fqVariable class.name }}Unset{{ fqClass relation.name }}({{ fqClass class.name }}Store target) async {
-    return await DefaultApi(locator<ApiClient>()).{{ fqVariable class.name }}UnsetReference{{ className relation.name }}(target.internal__signedIdentifier);
+    return await DefaultApi(locator<ApiClient>()).{{ fqVariable class.transferObjectTypeName }}UnsetReference{{ className relation.name }}(target.internal__signedIdentifier);
   }
       {{/ if }}
       {{# if relation.isRelationBehaviourTypeAddable }}
@@ -121,8 +121,8 @@ class {{ fqClass class.name }}Repository {
   // ADD {{ variable relation.name }}
   //////////////////////////////////////////////////////////////////////////////
   Future<void> {{ fqVariable class.name }}Add{{ fqClass relation.name }}({{ fqClass class.name }}Store target, List<{{ fqClass relation.target.name }}Store> selected) async {
-    List<SingleReference> itemsToAdd = selected.map<SingleReference>((s) => SingleReference().copyWith(internal__signedIdentifier: s.internal__signedIdentifier)).toList();
-    return await DefaultApi(locator<ApiClient>()).{{ fqVariable class.name }}AddReference{{ className relation.name }}(target.internal__signedIdentifier, itemsToAdd);
+    List<dynamic> itemsToAdd = selected.map<dynamic>((s) => {"__signedIdentifier": s.internal__signedIdentifier}).toList();
+    return await DefaultApi(locator<ApiClient>()).{{ fqVariable class.transferObjectTypeName }}AddReference{{ className relation.name }}(target.internal__signedIdentifier, itemsToAdd);
   }
       {{/ if }}
       {{# if relation.isRelationBehaviourTypeRemovable }}
@@ -131,8 +131,8 @@ class {{ fqClass class.name }}Repository {
   // REMOVE {{ variable relation.name }}
   //////////////////////////////////////////////////////////////////////////////
   Future<void> {{ fqVariable class.name }}Remove{{ fqClass relation.name }}({{ fqClass class.name }}Store target, List<{{ fqClass relation.target.name }}Store> selected) async {
-    List<SingleReference> itemsToRemove = selected.map<SingleReference>((s) => SingleReference().copyWith(internal__signedIdentifier: s.internal__signedIdentifier)).toList();
-    return await DefaultApi(locator<ApiClient>()).{{ fqVariable class.name }}RemoveReference{{ className relation.name }}(target.internal__signedIdentifier, itemsToRemove);
+    List<dynamic> itemsToRemove = selected.map<dynamic>((s) => {"__signedIdentifier": s.internal__signedIdentifier}).toList();
+    return await DefaultApi(locator<ApiClient>()).{{ fqVariable class.transferObjectTypeName }}RemoveReference{{ className relation.name }}(target.internal__signedIdentifier, itemsToRemove);
   }
       {{/ if }}
   {{/ each }}
