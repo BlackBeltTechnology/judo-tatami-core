@@ -35,7 +35,7 @@ rule EAttributeToTableValueField
 rule EAttributeToUniqueKey
 	transform s : ASM!EAttribute
 	to u : RDBMS!RdbmsUniqueConstraint {
-		guard : asmUtils.isEntityType(s.eContainingClass) and s.ID and not s.derived
+		guard : asmUtils.isEntityType(s.eContainingClass) and asmUtils.isIdentifier(s) and not s.derived
 		log.debug("    Add uniquie constraint: " + asmUtils.getAttributeFQName(s));
 	    
 	    u.uuid = asmUtils.getAttributeFQName(s) + "@uniqueConstraint";

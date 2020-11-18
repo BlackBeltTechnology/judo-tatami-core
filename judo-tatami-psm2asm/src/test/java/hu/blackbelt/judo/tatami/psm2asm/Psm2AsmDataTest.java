@@ -24,6 +24,7 @@ import static hu.blackbelt.judo.tatami.psm2asm.Psm2Asm.calculatePsm2AsmTransform
 import static hu.blackbelt.judo.tatami.psm2asm.Psm2Asm.executePsm2AsmTransformation;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
@@ -71,6 +72,7 @@ public class Psm2AsmDataTest {
 
 	public static final String ENTITY_SOURCE = AsmUtils.getAnnotationUri("entity");
 	public static final String CONSTRAINTS_SOURCE = AsmUtils.getAnnotationUri("constraints");
+	public static final String ID_SOURCE = AsmUtils.getAnnotationUri("identifier");
 
 	Log slf4jlog;
 	PsmModel psmModel;
@@ -231,11 +233,22 @@ public class Psm2AsmDataTest {
 		assertThat(asmIntAttr.get().getLowerBound(), IsEqual.equalTo(1));
 		assertThat(asmMeasuredAttr.get().getLowerBound(), IsEqual.equalTo(0));
 
-		assertFalse(asmStrAttr.get().isID());
-		assertFalse(asmCustomAttr.get().isID());
-		assertFalse(asmBoolAttr.get().isID());
-		assertTrue(asmIntAttr.get().isID());
-		assertFalse(asmMeasuredAttr.get().isID());
+		final EAnnotation asmStrAttrIdAnnotation = asmStrAttr.get().getEAnnotation(ID_SOURCE);
+		assertNull(asmStrAttrIdAnnotation);
+		
+		final EAnnotation asmCustomAttrIdAnnotation = asmCustomAttr.get().getEAnnotation(ID_SOURCE);
+		assertNull(asmCustomAttrIdAnnotation);
+		
+		final EAnnotation asmBoolAttrIdAnnotation = asmBoolAttr.get().getEAnnotation(ID_SOURCE);
+		assertNull(asmBoolAttrIdAnnotation);
+		
+		final EAnnotation asmIntAttrIdAnnotation = asmIntAttr.get().getEAnnotation(ID_SOURCE);
+		assertTrue(asmIntAttrIdAnnotation.getDetails().containsKey("value"));
+		assertTrue(asmIntAttrIdAnnotation.getDetails().get("value").equals("true"));
+		assertTrue(asmIntAttrIdAnnotation.getEModelElement().equals(asmIntAttr.get()));
+		
+		final EAnnotation asmMeasuredAttrIdAnnotation = asmMeasuredAttr.get().getEAnnotation(ID_SOURCE);
+		assertNull(asmMeasuredAttrIdAnnotation);
 
 		assertTrue(asmStrAttr.get().getEType().equals(asmStr));
 		assertTrue(asmCustomAttr.get().getEType().equals(asmCustom));

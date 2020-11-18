@@ -109,13 +109,21 @@ rule CreateAttribute
 			t.lowerBound = 0;
 		}
 
-		if (s.identifier) {
-			t.iD = true;
-		}
-
 		t.eType = s.dataType.asmEquivalent();
 		s.getEntityType().equivalent("CreateEntityClass").eStructuralFeatures.add(t);
 	}
+
+rule CreateIdentifierAnnotationForAttribute
+    transform s : JUDOPSM!Attribute
+    to t : ASM!EAnnotation {
+        guard: s.identifier
+        t.source = asmUtils.getAnnotationUri("identifier");
+        var identifier = new ASM!EStringToStringMapEntry;
+        identifier.key = "value";
+        identifier.value = "true";
+        t.details.add(identifier);
+        s.equivalent("CreateAttribute").eAnnotations.add(t);
+    }
 
 @abstract
 rule CreateRelation
