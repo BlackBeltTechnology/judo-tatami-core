@@ -151,7 +151,7 @@ rule CreateNavigationPropertyForAccessTransferObjectRelationWithBinding
         t.cardinality = s.equivalent("CreateCardinalityForTransferObjectRelationBinding");
         t.getterExpression = s.equivalent("CreateGetterExpressionForAccessTransferObjectRelationWithBinding");
         t.name = "_" + s.name + "_" + esmUtils.getNamespaceElementFQName(s.eContainer).replace("::","_");
-        s.eContainer.mapping.target.getPSMEquivalent().navigationProperties.add(t);
+        s.eContainer.principal.mapping.target.getPSMEquivalent().navigationProperties.add(t);
 
         log.debug("Created Navigation Property for access transfer object relation binding: " + t.name);
 }
