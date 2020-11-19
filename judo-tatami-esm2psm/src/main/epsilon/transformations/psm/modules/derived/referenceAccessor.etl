@@ -140,11 +140,12 @@ rule CreateStaticNavigationForExposedGraph
 	  log.debug("Created StaticNavigation for ExposedGraph: " + t.name);
 }
 
-@lazy
 rule CreateNavigationPropertyForAccessTransferObjectRelationWithBinding
     transform s : ESM!Access
     to t : JUDOPSM!NavigationProperty
     extends CreateNamedElement {
+        guard: s.eContainer.principal.isDefined() and s.eContainer.principal.isMapped()
+            and s.accessType == ESM!AccessType#DERIVED
 
         t.target = s.target.mapping.target.getPSMEquivalent();
         t.cardinality = s.equivalent("CreateCardinalityForTransferObjectRelationBinding");
@@ -155,11 +156,13 @@ rule CreateNavigationPropertyForAccessTransferObjectRelationWithBinding
         log.debug("Created Navigation Property for access transfer object relation binding: " + t.name);
 }
 
-@lazy
 rule CreateStaticNavigationForAccessTransferObjectRelationWithBinding
     transform s : ESM!Access
     to t : JUDOPSM!StaticNavigation
     extends CreateNamedElement {
+        guard: (not s.eContainer.principal.isDefined() or
+            (s.eContainer.principal.isDefined() and not s.eContainer.principal.isMapped()))
+            and s.accessType == ESM!AccessType#DERIVED
 
         var ecoreUtil = new Native("org.eclipse.emf.ecore.util.EcoreUtil");
         ecoreUtil.getRootContainer(s).equivalent("CreateGeneratedNavigationRootPackage").elements.add(t);

@@ -92,18 +92,14 @@ rule CreateAccessTransferObjectRelationWithoutBinding
     transform s: ESM!Access
     to t: JUDOPSM!TransferObjectRelation
     extends CreateTransferObjectRelationFromAccess {
-        guard: s.getterExpression.isUndefined() or s.getterExpression.trim().length() == 0
+        guard: s.accessType == ESM!AccessType#ALL
 }
 
 rule CreateAccessTransferObjectRelationWithBinding
     transform s: ESM!Access
     to t: JUDOPSM!TransferObjectRelation
     extends CreateTransferObjectRelationFromAccess {
-        guard: s.getterExpression.isDefined() and s.getterExpression.trim().length() > 0
+        guard: s.accessType == ESM!AccessType#DERIVED
 
-    if (s.eContainer.isMapped()) {
-        t.binding = s.equivalent("CreateNavigationPropertyForAccessTransferObjectRelationWithBinding");
-    } else {
-        t.binding = s.equivalent("CreateStaticNavigationForAccessTransferObjectRelationWithBinding");
-    }
+    t.binding = s.getPSMTransferObjectRelationBindingEquivalent();
 }
