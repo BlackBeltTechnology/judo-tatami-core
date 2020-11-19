@@ -16,7 +16,7 @@ operation ESM!Access getPSMTransferObjectRelationEquivalent() : JUDOPSM!Transfer
 	}
 }
 
-operation ESM!Access getPSMTransferObjectRelationBindingEquivalent() : JUDOPSM!TransferObjectRelation {
+operation ESM!Access getPSMTransferObjectRelationBindingEquivalent() : JUDOPSM!ReferenceTypedElement {
 	if (self.eContainer.principal.isDefined() and self.eContainer.principal.isMapped()) {
 	    return self.equivalent("CreateNavigationPropertyForAccessTransferObjectRelationWithBinding");
 	} else {
