@@ -66,6 +66,7 @@ rule CreateActorTypeWithoutPrincipal
 	  }
 }
 
+@abstract
 rule CreateTransferObjectRelationFromAccess
 	transform s: ESM!Access
 	to t: JUDOPSM!TransferObjectRelation
@@ -73,8 +74,8 @@ rule CreateTransferObjectRelationFromAccess
 		t.cardinality = s.equivalent("CreateCardinalityForReferenceTypedElement");
 		t.access = true;
 		t.target = s.target.getPSMTransferObjectTypeEquivalent();
-		s.eContainer.getPSMEquivalent().relations.add(t);	
-	
+		s.eContainer.getPSMEquivalent().relations.add(t);
+
     if (s.isCreateAllowed()) {
         t.embeddedCreate = true;
     }
@@ -85,4 +86,24 @@ rule CreateTransferObjectRelationFromAccess
         t.embeddedDelete = true;
     }
 	log.debug("Created access relation: " + t.name + " for actor type: " + t.eContainer.name);
+}
+
+rule CreateAccessTransferObjectRelationWithoutBinding
+    transform s: ESM!Access
+    to t: JUDOPSM!TransferObjectRelation
+    extends CreateTransferObjectRelationFromAccess {
+        guard: s.getterExpression.isUndefined() or s.getterExpression.trim().length() == 0
+}
+
+rule CreateAccessTransferObjectRelationWithBinding
+    transform s: ESM!Access
+    to t: JUDOPSM!TransferObjectRelation
+    extends CreateTransferObjectRelationFromAccess {
+        guard: s.getterExpression.isDefined() and s.getterExpression.trim().length() > 0
+
+    if (s.eContainer.isMapped()) {
+        t.binding = s.equivalent("CreateNavigationPropertyForAccessTransferObjectRelationWithBinding");
+    } else {
+        t.binding = s.equivalent("CreateStaticNavigationForAccessTransferObjectRelationWithBinding");
+    }
 }

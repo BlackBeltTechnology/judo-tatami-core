@@ -269,7 +269,7 @@ rule CreateListUnboundOperation
         t.behaviour = new JUDOPSM!TransferOperationBehaviour;
         t.behaviour.behaviourType = JUDOPSM!TransferOperationBehaviourType#LIST;
 
-	    t.behaviour.owner = s.equivalent("CreateTransferObjectRelationFromAccess");
+	    t.behaviour.owner = s.getPSMTransferObjectRelationEquivalent();
 
         t.input = new JUDOPSM!Parameter;
         t.input.name = "input";
@@ -353,7 +353,7 @@ rule CreateCreateUnboundOperationForAccess
         t.name = "_createInstance" + s.name.firstToUpperCase();
         t.behaviour = new JUDOPSM!TransferOperationBehaviour;
         t.behaviour.behaviourType = JUDOPSM!TransferOperationBehaviourType#CREATE_INSTANCE;
-        t.behaviour.owner = s.equivalent("CreateTransferObjectRelationFromAccess");
+        t.behaviour.owner = s.getPSMTransferObjectRelationEquivalent();
 
         t.input = new JUDOPSM!Parameter;
         t.input.name = "input";
@@ -437,7 +437,7 @@ rule CreateValidateCreateUnboundOperationForAccess
         t.name = "_validateCreateInstance" + s.name.firstToUpperCase();
         t.behaviour = new JUDOPSM!TransferOperationBehaviour;
         t.behaviour.behaviourType = JUDOPSM!TransferOperationBehaviourType#VALIDATE_CREATE;
-        t.behaviour.owner = s.equivalent("CreateTransferObjectRelationFromAccess");
+        t.behaviour.owner = s.getPSMTransferObjectRelationEquivalent();
 
         t.input = new JUDOPSM!Parameter;
         t.input.name = "input";

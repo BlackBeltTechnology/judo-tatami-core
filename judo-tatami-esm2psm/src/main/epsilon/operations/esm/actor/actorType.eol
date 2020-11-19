@@ -7,3 +7,11 @@ operation ESM!ActorType getPSMEquivalent(): JUDOPSM!TransferObjectType {
 	    return self.equivalent("CreateActorTypeWithoutPrincipal");
 	}
 }
+
+operation ESM!Access getPSMTransferObjectRelationEquivalent() : JUDOPSM!TransferObjectRelation {
+	if (self.getterExpression.isDefined() and self.getterExpression.trim().length() > 0) {
+	    return self.equivalent("CreateAccessTransferObjectRelationWithBinding");
+	} else {
+        return self.equivalent("CreateAccessTransferObjectRelationWithoutBinding");
+	}
+}
