@@ -61,11 +61,11 @@
         <judo-meta-rdbms-version>1.0.0.20201106_191834_8442041_develop</judo-meta-rdbms-version>
         <judo-meta-esm-version>1.1.0.20201119_161535_991a9d9_feature_JNG_1939_Acces_relation_shall_have_getter_expression</judo-meta-esm-version>
         <judo-meta-psm-version>1.1.0.20201117_091035_b032b49_develop</judo-meta-psm-version>
-        <judo-meta-jql-version>1.0.1.20201106_190924_7405a00_develop</judo-meta-jql-version>
-        <judo-meta-jcl-version>1.0.1.20201111_082947_5f7273d_develop</judo-meta-jcl-version>
-        <judo-meta-script-version>1.0.1.20201111_171637_d6b7e55_develop</judo-meta-script-version>
+        <judo-meta-jql-version>1.0.1.20201116_123832_5f6e0e8_develop</judo-meta-jql-version>
+        <judo-meta-jcl-version>1.0.1.20201116_124956_cfa1e64_develop</judo-meta-jcl-version>
+        <judo-meta-script-version>1.0.1.20201119_175036_6517909_develop</judo-meta-script-version>
         <judo-meta-asm-version>1.1.0.20201118_105350_5ca3be1_develop</judo-meta-asm-version>
-        <judo-meta-expression-version>1.0.1.20201111_090716_dac6115_develop</judo-meta-expression-version>
+        <judo-meta-expression-version>1.0.1.20201119_173419_13963fa_develop</judo-meta-expression-version>
         <judo-meta-measure-version>1.0.0.20201106_191635_909995e_develop</judo-meta-measure-version>
         <judo-meta-liquibase-version>1.0.0.20201106_191241_4132d7d_develop</judo-meta-liquibase-version>
         <judo-meta-openapi-version>1.0.0.20201106_191844_db2acee_develop</judo-meta-openapi-version>
