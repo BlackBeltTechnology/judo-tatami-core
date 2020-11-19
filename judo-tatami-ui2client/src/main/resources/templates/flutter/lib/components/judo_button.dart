@@ -31,9 +31,16 @@ class JudoButton extends StatelessWidget {
       padding: EdgeInsets.symmetric(horizontal: 10),
       col: col,
       child: icon != null
-          ? RaisedButton.icon(
+          ? Align(
+            alignment: Alignment.centerLeft,
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Flexible(
+                  fit: FlexFit.loose,
+                  child: RaisedButton.icon(
         shape: RoundedRectangleBorder(
-            borderRadius: rounded ? BorderRadius.circular(16.0) : BorderRadius.zero
+                    borderRadius: rounded ? BorderRadius.circular(16.0) : BorderRadius.zero
         ),
         icon: icon,
         label: label != null ? Text(label) : Text(''),
@@ -42,10 +49,21 @@ class JudoButton extends StatelessWidget {
         disabledColor: disabledColor,
         textColor: textColor,
         disabledTextColor: disabledTextColor,
-      )
-          : RaisedButton(
+      ),
+                ),
+              ],
+            ),
+          )
+          : Align(
+            alignment: Alignment.centerLeft,
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Flexible(
+                  fit: FlexFit.loose,
+                  child: RaisedButton(
         shape: RoundedRectangleBorder(
-            borderRadius: rounded ? BorderRadius.circular(16.0) : BorderRadius.zero
+                    borderRadius: rounded ? BorderRadius.circular(16.0) : BorderRadius.zero
         ),
         child: label != null ? Text(label) : Text(''),
         onPressed: disabled ? null : onPressed,
@@ -54,6 +72,10 @@ class JudoButton extends StatelessWidget {
         textColor: textColor,
         disabledTextColor: disabledTextColor,
       ),
+                ),
+              ],
+            ),
+          ),
     );
   }
 }

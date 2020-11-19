@@ -21,11 +21,20 @@ class JudoContainer extends StatelessWidget {
       flex: col,
       child: Container(
         color: color,
-        constraints: BoxConstraints(
-          maxHeight: row * kJudoHeight,
-        ),
+        height: row * kJudoHeight,
         padding: padding,
-        child: child,
+        child: Align(
+          alignment: Alignment.topLeft,
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Flexible(
+                fit: FlexFit.loose,
+                child: child
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
