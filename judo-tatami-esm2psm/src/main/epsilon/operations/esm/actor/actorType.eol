@@ -9,7 +9,7 @@ operation ESM!ActorType getPSMEquivalent(): JUDOPSM!TransferObjectType {
 }
 
 operation ESM!Access getPSMTransferObjectRelationEquivalent() : JUDOPSM!TransferObjectRelation {
-	if (self.getterExpression.isDefined() and self.getterExpression.trim().length() > 0) {
+	if (s.accessType == ESM!AccessType#DERIVED) {
 	    return self.equivalent("CreateAccessTransferObjectRelationWithBinding");
 	} else {
         return self.equivalent("CreateAccessTransferObjectRelationWithoutBinding");
