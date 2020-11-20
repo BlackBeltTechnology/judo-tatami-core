@@ -7,3 +7,19 @@ operation ESM!ActorType getPSMEquivalent(): JUDOPSM!TransferObjectType {
 	    return self.equivalent("CreateActorTypeWithoutPrincipal");
 	}
 }
+
+operation ESM!Access getPSMTransferObjectRelationEquivalent() : JUDOPSM!TransferObjectRelation {
+	if (self.accessType == ESM!AccessType#DERIVED) {
+	    return self.equivalent("CreateAccessTransferObjectRelationWithBinding");
+	} else {
+        return self.equivalent("CreateAccessTransferObjectRelationWithoutBinding");
+	}
+}
+
+operation ESM!Access getPSMTransferObjectRelationBindingEquivalent() : JUDOPSM!ReferenceTypedElement {
+	if (self.eContainer.principal.isDefined() and self.eContainer.principal.isMapped()) {
+	    return self.equivalent("CreateNavigationPropertyForAccessTransferObjectRelationWithBinding");
+	} else {
+        return self.equivalent("CreateStaticNavigationForAccessTransferObjectRelationWithBinding");
+	}
+}
