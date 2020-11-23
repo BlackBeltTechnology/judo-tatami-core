@@ -68,6 +68,7 @@ public class Script2Operation {
                         "    <reference name=\"dispatcher\" interface=\"hu.blackbelt.judo.dispatcher.api.Dispatcher\" field=\"dispatcher\" target=\"(judo.model.name=" + modelName + ")\"/>\n" +
                         "    <reference name=\"asmModel\" interface=\"hu.blackbelt.judo.meta.asm.runtime.AsmModel\" bind=\"setAsmModel\" target=\"(name=" + modelName + ")\"/>\n" +
                         "    <reference name=\"identifierProvider\" interface=\"hu.blackbelt.judo.dao.api.IdentifierProvider\" field=\"idProvider\"/>\n" +
+                        "    <reference name=\"variableResolver\" interface=\"hu.blackbelt.judo.dispatcher.api.VariableResolver\" field=\"variableResolver\"/>\n" +
                         "\n" +
                         "</scr:component>\n"
                     );
