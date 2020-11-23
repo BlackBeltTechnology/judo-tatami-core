@@ -10,6 +10,9 @@ class JudoComboBox<T> extends StatefulWidget {
     @required this.value,
     @required this.dropdownMenuShow,
     this.onTap,
+    this.stretch = false,
+    this.alignment = Alignment.centerLeft,
+    this.padding,
   });
 
   final int col;
@@ -25,6 +28,9 @@ class JudoComboBox<T> extends StatefulWidget {
   ///    );
   ///  }
   final Function dropdownMenuShow;
+  final bool stretch;
+  final Alignment alignment;
+  final EdgeInsets padding;
 
   final Function onTap;
 
@@ -37,8 +43,10 @@ class _JudoComboBoxState<T> extends State<JudoComboBox<T>> {
   @override
   Widget build(BuildContext context) {
     return JudoContainer(
+          padding: widget.padding ?? EdgeInsets.symmetric(horizontal: 10),
           col: widget.col,
-          padding: EdgeInsets.symmetric(horizontal: 10),
+          stretch: widget.stretch,
+          alignment: widget.alignment,
           child: DropdownButton<T>(
               onTap: widget.onTap,
               hint: Text(widget.hintText ?? 'Select'),
