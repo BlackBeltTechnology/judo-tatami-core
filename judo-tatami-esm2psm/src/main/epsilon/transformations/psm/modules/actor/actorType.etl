@@ -26,6 +26,8 @@ rule CreateActorTypeClaim
 
         if (s.attribute.binding.isDefined() and s.attribute.memberType == ESM!MemberType#MAPPED) {
             t.binding = s.attribute.equivalent("CreateTransferAttributeFromBound").binding;
+        } else if (s.attribute.binding.isDefined() and s.attribute.binding.eContainer.isKindOf(ESM!EntityType) and s.attribute.memberType == ESM!MemberType#STORED) {
+            t.binding = s.attribute.equivalent("CreateTransferAttributeFromAttributeForDefaultTransferObjectType").binding;
         }
 
         s.eContainer.getPSMEquivalent().attributes.add(t);
