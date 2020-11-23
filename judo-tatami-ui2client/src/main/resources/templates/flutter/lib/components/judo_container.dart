@@ -3,10 +3,12 @@ part of judo.components;
 class JudoContainer extends StatelessWidget {
   JudoContainer({
     this.child,
-    @required this.col,
+    this.col = 4,
     this.row = 1,
     this.padding,
     this.color,
+    this.stretch = false,
+    this.alignment,
   });
 
   final Widget child;
@@ -14,6 +16,8 @@ class JudoContainer extends StatelessWidget {
   final int col;
   final int row;
   final Color color;
+  final bool stretch;
+  final Alignment alignment;
 
   @override
   Widget build(BuildContext context) {
@@ -24,12 +28,12 @@ class JudoContainer extends StatelessWidget {
         height: row * kJudoHeight,
         padding: padding,
         child: Align(
-          alignment: Alignment.topLeft,
+          alignment: alignment,
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
               Flexible(
-                fit: FlexFit.loose,
+                fit: stretch ? FlexFit.tight : FlexFit.loose,
                 child: child
               ),
             ],

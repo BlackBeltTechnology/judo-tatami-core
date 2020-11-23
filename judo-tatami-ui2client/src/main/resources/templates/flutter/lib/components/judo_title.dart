@@ -2,17 +2,25 @@ part of judo.components;
 
 class JudoTitle extends StatelessWidget {
   JudoTitle({
-    @required this.col,
+    this.col,
     @required this.text,
+    this.padding,
+    this.stretch = false,
+    this.alignment = Alignment.centerLeft,
   });
 
   final String text;
   final int col;
+  final bool stretch;
+  final Alignment alignment;
+  final EdgeInsets padding;
 
   @override
   Widget build(BuildContext context) {
     return JudoContainer(
-      padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+      padding: padding ?? EdgeInsets.symmetric(horizontal: 10),
+      stretch: stretch,
+      alignment: alignment,
       col: col,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

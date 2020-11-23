@@ -3,8 +3,8 @@ part of judo.components;
 class JudoColumn extends StatelessWidget {
   JudoColumn({
     this.children,
-    this.col,
-    this.row,
+    this.col = 12,
+    this.row = 1,
     this.mainAxisAlignment,
     this.crossAxisAlignment,
     this.mainAxisSize,
@@ -19,18 +19,20 @@ class JudoColumn extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return JudoContainer(
-      col: col,
-      row: row,
-      child: Column(
-        mainAxisAlignment: mainAxisAlignment ?? MainAxisAlignment.start,
-        crossAxisAlignment: crossAxisAlignment ?? CrossAxisAlignment.center,
-        mainAxisSize: mainAxisSize ?? MainAxisSize.min,
-        children: children.map((e) => Row(
-          children: [
-            e
-          ],
-        )).toList(),
+    return Expanded(
+      flex: col,
+      child: Container(
+        height: row * kJudoHeight,
+        child: Column(
+          mainAxisAlignment: mainAxisAlignment ?? MainAxisAlignment.start,
+          crossAxisAlignment: crossAxisAlignment ?? CrossAxisAlignment.center,
+          mainAxisSize: mainAxisSize ?? MainAxisSize.min,
+          children: children.map((e) => Row(
+            children: [
+              e
+            ],
+          )).toList(),
+        ),
       ),
     );
   }

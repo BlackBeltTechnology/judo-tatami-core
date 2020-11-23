@@ -3,7 +3,7 @@ part of judo.components;
 class JudoDateTimeInput extends StatelessWidget {
   JudoDateTimeInput({
     this.key,
-    @required this.col,
+    this.col,
     this.label,
     this.icon,
     this.onChanged,
@@ -13,6 +13,9 @@ class JudoDateTimeInput extends StatelessWidget {
     this.firstDate,
     this.lastDate,
     this.use24HourFormat,
+    this.padding,
+    this.stretch = false,
+    this.alignment = Alignment.centerLeft,
   });
 
   final Key key;
@@ -26,6 +29,9 @@ class JudoDateTimeInput extends StatelessWidget {
   final DateTime firstDate;
   final DateTime lastDate;
   final bool use24HourFormat;
+  final bool stretch;
+  final Alignment alignment;
+  final EdgeInsets padding;
 
   final DateFormat formatter = DateFormat('yyyy-MM-dd HH:mm');
 
@@ -33,8 +39,10 @@ class JudoDateTimeInput extends StatelessWidget {
   Widget build(BuildContext context) {
     return JudoContainer(
       color: disabled ? kDisabledColor : null,
-      padding: EdgeInsets.symmetric(horizontal: 10),
+      padding: padding ?? EdgeInsets.symmetric(horizontal: 10),
       col: col,
+      stretch: stretch,
+      alignment: alignment,
       child: TextFormField(
         key: key,
         readOnly: disabled ? true : readOnly,

@@ -11,6 +11,9 @@ class JudoNumericInput extends StatefulWidget {
     this.initialValue,
     this.readOnly = false,
     this.disabled = false,
+    this.padding,
+    this.stretch = false,
+    this.alignment = Alignment.centerLeft,
   });
 
   final Key key;
@@ -21,6 +24,9 @@ class JudoNumericInput extends StatefulWidget {
   final String initialValue;
   final bool readOnly;
   final bool disabled;
+  final bool stretch;
+  final Alignment alignment;
+  final EdgeInsets padding;
 
   @override
   _JudoNumericInputState createState() => _JudoNumericInputState();
@@ -45,8 +51,10 @@ class _JudoNumericInputState extends State<JudoNumericInput> {
   Widget build(BuildContext context) {
     return JudoContainer(
       color: widget.disabled ? kDisabledColor : null,
-      padding: EdgeInsets.symmetric(horizontal: 10),
+      padding: widget.padding ?? EdgeInsets.symmetric(horizontal: 10),
       col: widget.col,
+      stretch: widget.stretch,
+      alignment: widget.alignment,
       child: TextField(
         key: widget.key,
         controller: _controller,
