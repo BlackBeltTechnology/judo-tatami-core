@@ -11,6 +11,9 @@ class JudoTimeInput extends StatelessWidget {
     this.readOnly = false,
     this.disabled = false,
     this.use24HourFormat,
+    this.padding,
+    this.stretch = false,
+    this.alignment = Alignment.centerLeft,
   });
 
   final Key key;
@@ -22,12 +25,18 @@ class JudoTimeInput extends StatelessWidget {
   final bool readOnly;
   final bool disabled;
   final bool use24HourFormat;
+  final bool stretch;
+  final Alignment alignment;
+  final EdgeInsets padding;
 
   @override
   Widget build(BuildContext context) {
     return JudoContainer(
-      padding: EdgeInsets.symmetric(horizontal: 10),
+      color: disabled ? kDisabledColor : null,
+      padding: padding ?? EdgeInsets.symmetric(horizontal: 10),
       col: col,
+      stretch: stretch,
+      alignment: alignment,
       child: TextFormField(
         key: key,
         readOnly: disabled ? true : readOnly,

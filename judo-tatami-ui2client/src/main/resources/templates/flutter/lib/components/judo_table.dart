@@ -19,7 +19,10 @@ class JudoTable extends StatelessWidget {
     this.deleteAction,
     this.sortAscending = true,
     this.disabled = false,
-    this.onAdd
+    this.onAdd,
+    this.padding,
+    this.stretch = false,
+    this.alignment = Alignment.centerLeft,
   });
 
   final int col;
@@ -35,6 +38,9 @@ class JudoTable extends StatelessWidget {
   final Function unsetAction;
   final Function deleteAction;
   final Function onAdd;
+  final bool stretch;
+  final Alignment alignment;
+  final EdgeInsets padding;
 
   @override
   Widget build(BuildContext context) {
@@ -42,6 +48,9 @@ class JudoTable extends StatelessWidget {
     return JudoContainer(
       col: col,
       row: row,
+      padding: padding ?? EdgeInsets.symmetric(horizontal: 10),
+      stretch: stretch,
+      alignment: alignment,
       child: SizedBox(
         height: row * kJudoHeight,
         child: SingleChildScrollView(

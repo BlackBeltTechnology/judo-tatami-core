@@ -3,13 +3,16 @@ part of judo.components;
 class JudoInputText extends StatelessWidget {
   JudoInputText({
     this.key,
-    @required this.col,
+    this.col,
     this.label,
     this.icon,
     this.onChanged,
     this.initialValue,
     this.readOnly = false,
     this.disabled = false,
+    this.padding,
+    this.stretch = false,
+    this.alignment = Alignment.centerLeft,
   });
 
   final Key key;
@@ -20,13 +23,18 @@ class JudoInputText extends StatelessWidget {
   final String initialValue;
   final bool readOnly;
   final bool disabled;
+  final bool stretch;
+  final Alignment alignment;
+  final EdgeInsets padding;
 
   @override
   Widget build(BuildContext context) {
     return JudoContainer(
       color: disabled ? kDisabledColor : null,
-      padding: EdgeInsets.symmetric(horizontal: 10),
+      padding: padding ?? EdgeInsets.symmetric(horizontal: 10),
       col: col,
+      stretch: stretch,
+      alignment: alignment,
       child: TextFormField(
         key: key,
         readOnly: disabled ? true : readOnly,

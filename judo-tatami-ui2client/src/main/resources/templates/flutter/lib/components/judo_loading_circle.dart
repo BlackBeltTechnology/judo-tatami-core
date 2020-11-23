@@ -7,6 +7,9 @@ class JudoLoadingProgress extends StatelessWidget {
     return JudoContainer(
       col: 1,
       row: 1,
+      stretch: false,
+      padding: EdgeInsets.symmetric(horizontal: 10),
+      alignment: Alignment.center,
       child: Center(
         child: SizedBox(
             width: 32,

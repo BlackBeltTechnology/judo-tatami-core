@@ -8,6 +8,9 @@ class JudoRadio<T> extends StatefulWidget {
     this.groupValue,
     @required this.getLabel,
     this.getValue,
+    this.padding,
+    this.stretch = false,
+    this.alignment = Alignment.centerLeft,
   });
 
   final int col;
@@ -17,6 +20,9 @@ class JudoRadio<T> extends StatefulWidget {
   final Function onChanged;
   final Function getLabel;
   final Function getValue;
+  final bool stretch;
+  final Alignment alignment;
+  final EdgeInsets padding;
 
   @override
   _JudoRadioState<T> createState() => _JudoRadioState<T>();
@@ -27,7 +33,10 @@ class _JudoRadioState<T> extends State<JudoRadio> {
   @override
   Widget build(BuildContext context) {
     return JudoContainer(
+      padding: widget.padding ?? EdgeInsets.symmetric(horizontal: 10),
       col: widget.col,
+      stretch: widget.stretch,
+      alignment: widget.alignment,
       child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: widget.items.map<JudoRadioButton<T>>((e) => JudoRadioButton<T>(

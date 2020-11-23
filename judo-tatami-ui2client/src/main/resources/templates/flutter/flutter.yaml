@@ -182,12 +182,6 @@
 
 - overwriteExpression: true
   factoryExpression: "{#application}"
-  pathExpression: "'lib/' + #path(#application.actor.name) + '/components/judo_component.dart'"
-  templateName: flutter/lib/components/judo_component.dart
-  copy: true
-
-- overwriteExpression: true
-  factoryExpression: "{#application}"
   pathExpression: "'lib/' + #path(#application.actor.name) + '/components/judo_container.dart'"
   templateName: flutter/lib/components/judo_container.dart
   copy: true

@@ -2,7 +2,8 @@ part of judo.components;
 
 class JudoButton extends StatelessWidget {
   JudoButton({
-    @required this.col,
+    this.col = 4,
+    this.padding,
     this.label,
     this.icon,
     this.onPressed,
@@ -11,10 +12,13 @@ class JudoButton extends StatelessWidget {
     this.disabled = false,
     this.disabledColor = Colors.black26,
     this.textColor = Colors.white,
-    this.disabledTextColor = Colors.black26
+    this.disabledTextColor = Colors.black26,
+    this.stretch = false,
+    this.alignment = Alignment.centerLeft,
   });
 
   final int col;
+  final EdgeInsets padding;
   final String label;
   final Function onPressed;
   final Icon icon;
@@ -24,57 +28,39 @@ class JudoButton extends StatelessWidget {
   final Color disabledColor;
   final Color textColor;
   final Color disabledTextColor;
+  final bool stretch;
+  final Alignment alignment;
 
   @override
   Widget build(BuildContext context) {
     return JudoContainer(
-      padding: EdgeInsets.symmetric(horizontal: 10),
+      padding: padding ?? EdgeInsets.symmetric(horizontal: 10),
       col: col,
+      stretch: stretch,
+      alignment: alignment,
       child: icon != null
-          ? Align(
-            alignment: Alignment.centerLeft,
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Flexible(
-                  fit: FlexFit.loose,
-                  child: RaisedButton.icon(
-        shape: RoundedRectangleBorder(
-                    borderRadius: rounded ? BorderRadius.circular(16.0) : BorderRadius.zero
-        ),
-        icon: icon,
-        label: label != null ? Text(label) : Text(''),
-        onPressed: disabled ? null : onPressed,
-        color: color,
-        disabledColor: disabledColor,
-        textColor: textColor,
-        disabledTextColor: disabledTextColor,
-      ),
-                ),
-              ],
+          ? RaisedButton.icon(
+            shape: RoundedRectangleBorder(
+                borderRadius: rounded ? BorderRadius.circular(16.0) : BorderRadius.zero
             ),
+            icon: icon,
+            label: label != null ? Text(label) : Text(''),
+            onPressed: disabled ? null : onPressed,
+            color: color,
+            disabledColor: disabledColor,
+            textColor: textColor,
+            disabledTextColor: disabledTextColor,
           )
-          : Align(
-            alignment: Alignment.centerLeft,
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Flexible(
-                  fit: FlexFit.loose,
-                  child: RaisedButton(
-        shape: RoundedRectangleBorder(
-                    borderRadius: rounded ? BorderRadius.circular(16.0) : BorderRadius.zero
-        ),
-        child: label != null ? Text(label) : Text(''),
-        onPressed: disabled ? null : onPressed,
-        color: color,
-        disabledColor: disabledColor,
-        textColor: textColor,
-        disabledTextColor: disabledTextColor,
-      ),
-                ),
-              ],
+          : RaisedButton(
+            shape: RoundedRectangleBorder(
+                borderRadius: rounded ? BorderRadius.circular(16.0) : BorderRadius.zero
             ),
+            child: label != null ? Text(label) : Text(''),
+            onPressed: disabled ? null : onPressed,
+            color: color,
+            disabledColor: disabledColor,
+            textColor: textColor,
+            disabledTextColor: disabledTextColor,
           ),
     );
   }
