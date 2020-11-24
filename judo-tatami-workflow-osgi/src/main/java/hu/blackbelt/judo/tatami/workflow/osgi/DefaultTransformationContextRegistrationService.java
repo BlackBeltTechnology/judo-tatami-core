@@ -3,6 +3,7 @@ package hu.blackbelt.judo.tatami.workflow.osgi;
 import hu.blackbelt.judo.meta.asm.runtime.AsmModel;
 import hu.blackbelt.judo.meta.esm.runtime.EsmModel;
 import hu.blackbelt.judo.meta.expression.runtime.ExpressionModel;
+import hu.blackbelt.judo.meta.keycloak.runtime.KeycloakModel;
 import hu.blackbelt.judo.meta.liquibase.runtime.LiquibaseModel;
 import hu.blackbelt.judo.meta.measure.runtime.MeasureModel;
 import hu.blackbelt.judo.meta.openapi.runtime.OpenapiModel;
@@ -113,6 +114,14 @@ public class DefaultTransformationContextRegistrationService extends AbstractTra
         unregisterModel(openapiModel);
     }
 
+    public void registerKeycloakModel(KeycloakModel keycloakModel) {
+        registerModel(keycloakModel, keycloakModel.toDictionary());
+    }
+
+    public void unregisterKeycloakModel(KeycloakModel keycloakModel) {
+        unregisterModel(keycloakModel);
+    }
+
     public void registerJaxrsApi(InputStream jaxrsApiBundle) throws IOException, BundleException {
         registerInputStreamAsBundle(jaxrsApiBundle);
     }
@@ -155,6 +164,7 @@ public class DefaultTransformationContextRegistrationService extends AbstractTra
         transformationContext.getByClass(OpenapiModel.class).ifPresent(m -> registerOpenapiModel(m));
         transformationContext.get(LiquibaseModel.class, "liquibase:" + sqlDialect).ifPresent(m -> registerLiquibaseModel(m));
 
+        transformationContext.getByClass(KeycloakModel.class).ifPresent(m -> registerKeycloakModel(m));
 
         transformationContext.get(InputStream.class, Asm2JAXRSAPIWork.JAXRSAPI_OUTPUT).ifPresent(throwingConsumerWrapper(m -> registerJaxrsApi(m)));
         transformationContext.get(InputStream.class, Asm2SDKWork.SDK_OUTPUT).ifPresent(throwingConsumerWrapper(m -> registerSDK(m)));
@@ -181,6 +191,7 @@ public class DefaultTransformationContextRegistrationService extends AbstractTra
         transformationContext.get(RdbmsModel.class, "rdbms:" + sqlDialect).ifPresent(m -> unregisterRdbmsModel(m));
         transformationContext.getByClass(OpenapiModel.class).ifPresent(m -> unregisterOpenapiModel(m));
         transformationContext.get(LiquibaseModel.class, "liquibase:" + sqlDialect).ifPresent(m -> unregisterLiquibaseModel(m));
+        transformationContext.getByClass(KeycloakModel.class).ifPresent(m -> unregisterKeycloakModel(m));
 
         transformationContext.get(InputStream.class, Asm2JAXRSAPIWork.JAXRSAPI_OUTPUT).ifPresent(throwingConsumerWrapper(m -> unregisterJaxrsApi(m)));
         transformationContext.get(InputStream.class, Asm2SDKWork.SDK_OUTPUT).ifPresent(throwingConsumerWrapper(m -> unregisterSDK(m)));
