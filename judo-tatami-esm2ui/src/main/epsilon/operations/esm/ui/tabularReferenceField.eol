@@ -8,6 +8,13 @@ operation ESM!esm::ui::TabularReferenceField createTableFromTabularReferenceFiel
 		var table : UI!ui::Table = relation.target.table.map(application);
 		
 		table.dataElement = relation.mapRelationType(application, self.getTransferObjectType().mapClassType(application));
+		
+		if (table.dataElement.isCollection) {
+			table.row = self.maxVisibleElements;
+		} else {
+			table.row = 1;
+		}
+		
 		return table;
 	} else {
 		
@@ -19,7 +26,7 @@ operation ESM!esm::ui::TabularReferenceField createTableFromTabularReferenceFiel
 	    table.icon = self.iconName;
 		
 		table.col = self.basis;
-		table.row = self.maxVisibleElements;
+
 		for (column in self.columns) {
 
 			var col : UI!ui::Formatted = column.dataFeature.getMember().getDataType().formatted();
@@ -30,6 +37,13 @@ operation ESM!esm::ui::TabularReferenceField createTableFromTabularReferenceFiel
 			table.columns.add(col);
 		}
 		table.dataElement = relation.mapRelationType(application, self.getTransferObjectType().mapClassType(application));
+		
+		if (table.dataElement.isCollection) {
+			table.row = self.maxVisibleElements;
+		} else {
+			table.row = 1;
+		}
+		
 		return table;
 	}
 }
@@ -85,6 +99,13 @@ operation ESM!esm::ui::TabularReferenceField createButtonFromTabularReferenceFie
 		table.name = self.name;	
 		self.~originalRelation = relation;
 		table.dataElement = dataElement;
+		
+		if (table.dataElement.isCollection) {
+			table.row = self.maxVisibleElements;
+		} else {
+			table.row = 1;
+		}
+		
 		table.col = self.basis;
 		table.label = self.getUiLabel();
 	    table.icon = self.iconName;
