@@ -3,7 +3,6 @@ operation ESM!esm::ui::TransferObjectTable createTableFromTransferObjectTable(ap
 	t.name = self.name;
 	
 	t.col = applicationColumns;
-	t.row = self.maxVisibleElements;
 	t.label = self.getUiLabel();
 	
 	for (column in self.columns) {
@@ -16,6 +15,13 @@ operation ESM!esm::ui::TransferObjectTable createTableFromTransferObjectTable(ap
 	var t : UI!ui::Table = self.createTableFromTransferObjectTable(application);
 	t.~originalRelation = relation.~originalRelation;
 	t.dataElement = relation;
+	
+	if (t.dataElement.isCollection) {
+		t.row = self.maxVisibleElements;
+	} else {
+		t.row = 1;
+	}
+	
 	return t;
 }
 
