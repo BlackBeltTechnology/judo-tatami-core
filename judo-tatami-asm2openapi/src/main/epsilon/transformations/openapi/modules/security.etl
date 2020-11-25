@@ -3,11 +3,11 @@ rule CreateSecuritySchemeDeclarationForActorType
     to t : OPENAPI!SecuritySchemeDeclaration {
         guard: s.eContainer.isKindOf(ASM!EClass) 
 	        and asmUtils.isActorType(s.eContainer)
-	        and s.source == asmUtils.getAnnotationUri("actor")
-	        and s.details.containsKey("realm")
+	        and s.source == asmUtils.getAnnotationUri("realm")
 
-        t.name = s.details.get("realm");
+        t.name = s.details.get("value");
         s.eContainer.equivalent("CreateOpenAPIActorType").securityDefinitions.add(t);
+
 }
 
 rule CreateSecuritySchemeForActorType
@@ -15,8 +15,7 @@ rule CreateSecuritySchemeForActorType
     to t : OPENAPI!SecurityScheme {
         guard: s.eContainer.isKindOf(ASM!EClass) 
 	        and asmUtils.isActorType(s.eContainer)
-	        and s.source == asmUtils.getAnnotationUri("actor")
-	        and s.details.containsKey("realm")
+	        and s.source == asmUtils.getAnnotationUri("realm")
 
         t.type = OPENAPI!SecuritySchemeType#oauth2;
         t.flow = OPENAPI!OAuth2FlowType#implicit;
@@ -29,8 +28,7 @@ rule CreateSecurityRequirementOption
 	to t : OPENAPI!SecurityRequirementOption {
 		guard: s.eContainer.isKindOf(ASM!EClass) 
 	        and asmUtils.isActorType(s.eContainer)
-	        and s.source == asmUtils.getAnnotationUri("actor")
-	        and s.details.containsKey("realm")
+	        and s.source == asmUtils.getAnnotationUri("realm")
 	
 	s.eContainer.equivalent("CreateOpenAPIActorType").security.add(t);
 }
@@ -40,9 +38,8 @@ rule CreateSecurityRequirement
 	to t : OPENAPI!SecurityRequirement {
 		guard: s.eContainer.isKindOf(ASM!EClass) 
 	        and asmUtils.isActorType(s.eContainer)
-	        and s.source == asmUtils.getAnnotationUri("actor")
-	        and s.details.containsKey("realm")
+	        and s.source == asmUtils.getAnnotationUri("realm")
 	
-	t.securitySchemeName = s.details.get("realm");
+	t.securitySchemeName = s.details.get("value");
 	s.equivalent("CreateSecurityRequirementOption").securityRequirements.add(t);
 }
