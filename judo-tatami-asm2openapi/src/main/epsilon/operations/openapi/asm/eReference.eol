@@ -1,0 +1,26 @@
+@cached
+operation ASM!EReference isCreateReference() : Boolean {
+    var permissions = asmUtils.getExtensionAnnotationByName(self, "permissions", false);
+    if (permissions.present) {
+        return permissions.get().details.get("create") == "true";
+    }
+    return false;
+}
+
+@cached
+operation ASM!EReference isUpdateReference() : Boolean {
+    var permissions = asmUtils.getExtensionAnnotationByName(self, "permissions", false);
+    if (permissions.present) {
+        return permissions.get().details.get("update") == "true";
+    }
+    return false;
+}
+
+@cached
+operation ASM!EReference isDeleteReference() : Boolean {
+    var permissions = asmUtils.getExtensionAnnotationByName(self, "permissions", false);
+    if (permissions.present) {
+        return permissions.get().details.get("delete") == "true";
+    }
+    return false;
+}
