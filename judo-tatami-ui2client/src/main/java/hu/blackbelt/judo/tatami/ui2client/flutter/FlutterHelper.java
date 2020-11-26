@@ -38,10 +38,15 @@ public class FlutterHelper {
         context.registerFunction("mainAxisSize", FlutterHelper.class.getDeclaredMethod("mainAxisSize", new Class[]{Flex.class}));
         context.registerFunction("dartType", FlutterHelper.class.getDeclaredMethod("dartType", new Class[]{DataType.class}));
         context.registerFunction("isTransientAttribute", FlutterHelper.class.getDeclaredMethod("isTransientAttribute", new Class[]{AttributeType.class}));
+        context.registerFunction("hasRangeableRelation", FlutterHelper.class.getDeclaredMethod("hasRangeableRelation", new Class[]{ClassType.class}));
     }
 
     public static void registerHandlebars(Handlebars handlebars) {
         handlebars.registerHelpers(FlutterHelper.class);
+    }
+
+    public static boolean hasRangeableRelation(ClassType classType) {
+        return classType.getRelations().stream().anyMatch(RelationType::getIsRelationBehaviourTypeRangeable);
     }
 
     public static boolean isTransientAttribute (AttributeType attributeType) {

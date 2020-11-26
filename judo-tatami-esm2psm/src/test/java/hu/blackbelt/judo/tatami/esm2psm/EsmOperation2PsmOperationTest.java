@@ -492,14 +492,14 @@ public class EsmOperation2PsmOperationTest {
                 .findAny();
         assertTrue(defaultE.isPresent());
         //Re-add when JNG-2003 is done
-//        final Optional<UnmappedTransferObjectType> getRangeInputType = allPsm(UnmappedTransferObjectType.class)
-//                .filter(t -> t.getName().equals("_GetRangeInputD"))
-//                .findAny();
-//        assertTrue(getRangeInputType.isPresent());
-//
-//        final Optional<TransferObjectRelation> getRangeInputOwner = getRangeInputType.get().getRelations().stream()
-//        		.filter(r -> r.getTarget().equals(optionalD.get())).findAny();
-//        assertTrue(getRangeInputOwner.isPresent());
+        final Optional<UnmappedTransferObjectType> getRangeInputType = allPsm(UnmappedTransferObjectType.class)
+                .filter(t -> t.getName().equals("_GetRangeInputD"))
+                .findAny();
+        assertTrue(getRangeInputType.isPresent());
+
+        final Optional<TransferObjectRelation> getRangeInputOwner = getRangeInputType.get().getRelations().stream()
+        		.filter(r -> r.getTarget().equals(optionalD.get())).findAny();
+        assertTrue(getRangeInputOwner.isPresent());
 
         final Optional<hu.blackbelt.judo.meta.psm.service.MappedTransferObjectType> defaultF = allPsm(MappedTransferObjectType.class)
                 .filter(t -> ENTITY_TYPE_F_NAME.equals(t.getName()))
