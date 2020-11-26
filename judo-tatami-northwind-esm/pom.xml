@@ -159,6 +159,7 @@
                             <destination>${basedir}/target/classes/model</destination>
                             <psmModelFile>${basedir}/target/classes/model/northwind-psm.model</psmModelFile>
                             <dialectList>hsqldb,postgresql,oracle</dialectList>
+                            <validateModels>true</validateModels>
                         </configuration>
                     </execution>
                 </executions>
