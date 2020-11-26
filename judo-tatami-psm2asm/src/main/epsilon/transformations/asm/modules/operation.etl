@@ -114,8 +114,6 @@ rule CreateStatefulAnnotationOnOperationWithBehaviour
                 stateful.value = "false";
             case JUDOPSM!TransferOperationBehaviourType#GET_PRINCIPAL:
                 stateful.value = "false";
-            case JUDOPSM!TransferOperationBehaviourType#MAP_PRINCIPAL:
-                stateful.value = "false";
             default:
                 stateful.value = "true";
         }
@@ -283,7 +281,6 @@ rule AddBehaviourAnnotation
             case JUDOPSM!TransferOperationBehaviourType#GET_RANGE: typeEntry.value = "getReferenceRange";
             case JUDOPSM!TransferOperationBehaviourType#GET_TEMPLATE: typeEntry.value = "getTemplate";
             case JUDOPSM!TransferOperationBehaviourType#GET_PRINCIPAL: typeEntry.value = "getPrincipal";
-            case JUDOPSM!TransferOperationBehaviourType#MAP_PRINCIPAL: typeEntry.value = "mapPrincipal";
         }
         t.details.add(typeEntry);
         
@@ -293,8 +290,6 @@ rule AddBehaviourAnnotation
             case JUDOPSM!TransferOperationBehaviourType#GET_TEMPLATE:
                 ownerEntry.value = asmUtils.getClassifierFQName(s.behaviour.owner.asmEquivalent());
             case JUDOPSM!TransferOperationBehaviourType#GET_PRINCIPAL:
-                ownerEntry.value = asmUtils.getClassifierFQName(s.behaviour.owner.asmEquivalent());
-            case JUDOPSM!TransferOperationBehaviourType#MAP_PRINCIPAL:
                 ownerEntry.value = asmUtils.getClassifierFQName(s.behaviour.owner.asmEquivalent());
             case JUDOPSM!TransferOperationBehaviourType#REFRESH:
                 ownerEntry.value = asmUtils.getClassifierFQName(s.behaviour.owner.asmEquivalent());
