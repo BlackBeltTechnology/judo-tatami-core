@@ -63,8 +63,13 @@ post {
 		desktop.`default` = true;
 
 	}
+	
+	var optionals = UI!ui::data::ClassType.all().select(c | c.isOptional);
+	
+    for (classType : UI!ui::data::ClassType in optionals) {
+        classType.setRelationTargetsOptional();
+    }
 }
-
 
 /*
 
