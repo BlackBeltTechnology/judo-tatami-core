@@ -17,8 +17,9 @@ rule CreateSecuritySchemeForActorType
 	        and asmUtils.isActorType(s.eContainer)
 	        and s.source == asmUtils.getAnnotationUri("realm")
 
-        t.type = OPENAPI!SecuritySchemeType#oauth2;
-        t.flow = OPENAPI!OAuth2FlowType#implicit;
+        t.type = OPENAPI!SecuritySchemeType#apiKey;
+        t.name = "Authorization";
+        t.`in` = OPENAPI!APIKeyLocation#header;
         
         s.equivalent("CreateSecuritySchemeDeclarationForActorType").securityScheme = t;
 }
