@@ -954,9 +954,7 @@ public class EsmStrucutre2PsmDerivedTest {
 		
 		final Optional<UnboundOperation> psmPrincipal = allPsm(UnboundOperation.class).filter(o -> o.getName().equals("_principal")).findAny();
 		assertTrue(psmPrincipal.isPresent());
-		final Optional<UnboundOperation> psmMapPrincipal = allPsm(UnboundOperation.class).filter(o -> o.getName().equals("_map_principal")).findAny();
-		assertTrue(psmMapPrincipal.isPresent());
-		
+
 		final Optional<TransferAttribute> psmAttribute = allPsm(TransferAttribute.class).filter(a -> a.getName().equals(member.getName()) && a.eContainer().equals(psmTransferA.get())).findAny();
 		assertTrue(psmAttribute.isPresent());
 		assertNotNull(psmAttribute.get().getBinding());
