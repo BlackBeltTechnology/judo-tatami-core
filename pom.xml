@@ -60,11 +60,11 @@
         <!-- Model versions -->
         <judo-meta-rdbms-version>1.0.0.20201125_144445_6d5bee4_develop</judo-meta-rdbms-version>
         <judo-meta-esm-version>1.1.0.20201125_111542_2c0aa4b_develop</judo-meta-esm-version>
-        <judo-meta-psm-version>1.1.0-SNAPSHOT</judo-meta-psm-version>
+        <judo-meta-psm-version>1.1.0.20201126_131032_ab2d907_feature_JNG_2008_check_mapped_actor_existence</judo-meta-psm-version>
         <judo-meta-jql-version>1.0.1.20201125_143435_95a0f3e_develop</judo-meta-jql-version>
         <judo-meta-jcl-version>1.0.1.20201125_150252_d132ba3_develop</judo-meta-jcl-version>
         <judo-meta-script-version>1.0.1.20201125_151847_bdd3e15_develop</judo-meta-script-version>
-        <judo-meta-asm-version>1.1.0-SNAPSHOT</judo-meta-asm-version>
+        <judo-meta-asm-version>1.1.0.20201126_130414_e63f279_feature_JNG_2008_check_mapped_actor_existence</judo-meta-asm-version>
         <judo-meta-expression-version>1.0.1.20201125_150218_503d3e2_develop</judo-meta-expression-version>
         <judo-meta-measure-version>1.0.0.20201125_145544_8742a08_develop</judo-meta-measure-version>
         <judo-meta-liquibase-version>1.0.0.20201125_143843_8381a44_develop</judo-meta-liquibase-version>
