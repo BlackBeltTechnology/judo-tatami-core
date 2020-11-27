@@ -59,7 +59,9 @@ rule CreateTransferObjectRelationFromRelationOrProperty
             and not s.eContainer.isTypeOf(ESM!EntityType)
             and s.memberType <> ESM!MemberType#MAPPED
 
-      t.defaultValue = s.equivalent("CreateStaticNavigationForTransferObjectRelationDefaultValue");
+      if (s.memberType <> ESM!MemberType#DERIVED) {
+        t.defaultValue = s.equivalent("CreateStaticNavigationForTransferObjectRelationDefaultValue");
+      }
 
       if(s.eContainer.isMapped()) {
       	t.binding = s.equivalent("CreateNavigationPropertyForTransferObjectRelationBinding");
@@ -78,7 +80,7 @@ rule CreateTransferObjectRelationFromBoundToOneWayRelationMember
       guard: s.memberType == ESM!MemberType#MAPPED
             and s.binding.isKindOf(ESM!OneWayRelationMember)
 
-      if (s.binding.memberType = ESM!MemberType#STORED) {
+      if (s.binding.memberType == ESM!MemberType#STORED) {
         t.defaultValue = s.equivalent("CreateStaticNavigationForTransferObjectRelationDefaultValue");
         t.range = s.equivalent("CreateNavigationPropertyForTransferObjectRelationRange");
           if (s.binding.isComposition()) {
@@ -86,7 +88,7 @@ rule CreateTransferObjectRelationFromBoundToOneWayRelationMember
           } else {
             t.binding = s.binding.equivalent("CreateAssociationEndWithoutPartner");
           }
-      } else if (s.binding.memberType = ESM!MemberType#DERIVED) {
+      } else if (s.binding.memberType == ESM!MemberType#DERIVED) {
         t.binding = s.binding.equivalent("CreateNavigationProperty");
       }
      
