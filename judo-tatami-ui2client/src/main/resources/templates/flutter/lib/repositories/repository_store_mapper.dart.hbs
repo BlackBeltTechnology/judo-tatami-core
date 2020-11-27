@@ -84,7 +84,7 @@ class {{ fqClass ap.name }}RepositoryStoreMapper {
             {{# unless isReadOnly }}
     if ({{ variable ../name }}Store.{{ name }} != null) {
                 {{# if isCollection }}
-      {{ variable ../name }}.{{ name }} = {{ variable ../name }}Store.{{ name }}.map<{{ fqClass target.name }}>(create{{ fqClass target.name }}From{{ fqClass target.name }}Store).toList();
+      {{ variable ../name }}.{{ name }} = {{ variable ../name }}Store.{{ name }}.map<{{ fqClass target.transferObjectTypeName }}>(create{{ fqClass target.name }}From{{ fqClass target.name }}Store).toList();
                 {{ else }}
       {{ variable ../name }}.{{ name }} = create{{ fqClass target.name }}From{{ fqClass target.name }}Store({{ variable ../name }}Store.{{ name }});
                 {{/ if }}
@@ -122,7 +122,7 @@ class {{ fqClass ap.name }}RepositoryStoreMapper {
 
     if ({{ variable ../name }}Store.{{ name }} != null) {
                 {{# if isCollection }}
-      {{ variable ../name }}.{{ name }} = {{ variable ../name }}Store.{{ name }}.map<{{ fqClass target.name }}ForCreateAndUpdate>(({{ variable target.name }}Store) {
+      {{ variable ../name }}.{{ name }} = {{ variable ../name }}Store.{{ name }}.map<{{ fqClass target.transferObjectTypeName }}ForCreateAndUpdate>(({{ variable target.name }}Store) {
         return create{{ fqClass target.name }}ForCreateAndUpdateFrom{{ fqClass target.name }}Store({{ variable target.name }}Store);
       }).toList();
                 {{ else }}
