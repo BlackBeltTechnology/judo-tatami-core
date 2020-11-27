@@ -836,6 +836,7 @@ rule CreateGetRangeReferenceTransferOperationForRelationFeature
 rule CreateGetTemplateTransferOperation
     transform s : ESM!TransferObjectType
     to t : JUDOPSM!UnboundOperation {
+        guard: esmUtils.isGetTemplateSupported(s)
 
         t.name = "_getTemplate" + s.name.firstToUpperCase();
         t.behaviour = new JUDOPSM!TransferOperationBehaviour;

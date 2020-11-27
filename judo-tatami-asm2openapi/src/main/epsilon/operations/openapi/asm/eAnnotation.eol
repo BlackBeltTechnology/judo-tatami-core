@@ -9,23 +9,23 @@ operation getExposedByAnnotationsOfParameters() : Sequence {
 
 @cached
 operation ASM!EAnnotation isForCreateOrUpdate() : Boolean {
-    
+
     if (self.source <> asmUtils.getAnnotationUri("exposedBy")) {
         return false;
     }
-    
+
     var annotations = self.details.get("value").getAnnotationsOfParameters();
-    
+
     if (self.eContainer.isKindOf(ASM!EClass)) {
         return annotations.select(a | a.eContainer.eType == self.eContainer
                 or a.eContainer.eType.eAllContainments.collect(c | c.eReferenceType).includes(self.eContainer)).notEmpty();
     }
-    
+
     if (self.eContainer.isKindOf(ASM!EReference) or self.eContainer.isKindOf(ASM!EAttribute)) {
         return annotations.select(a | a.eContainer.eType == self.eContainer.eContainer
                 or a.eContainer.eType.eAllContainments.collect(c | c.eReferenceType).includes(self.eContainer.eContainer)).notEmpty();
     }
-    
+
     return false;
 }
 
