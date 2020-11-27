@@ -23,8 +23,6 @@ rule CreateTransferObjectRelation
           t.embeddedDelete = true;
       }
       t.cardinality = s.equivalent("CreateCardinalityForReferenceTypedElement");
-      t.defaultValue = s.equivalent("CreateStaticNavigationForTransferObjectRelationDefaultValue");
-      t.range = s.equivalent("CreateNavigationPropertyForTransferObjectRelationRange");
       
 //      t.get = s.equivalent("CreateGetOperationForTransferObjectRelation");
 //      t.create = s.equivalent("CreateCreateOperationForTransferObjectRelation");
@@ -40,6 +38,8 @@ rule CreateRangeTransferObjectRelation
     to t : JUDOPSM!TransferObjectRelation {
         guard: s.eContainer.isKindOf(ESM!TransferObjectType) and s.eContainer.mapping.isDefined()
             and s.target.mapping.isDefined() and s.rangeExpression.isDefined() and s.rangeExpression.trim().length() > 0
+            and s.memberType <> ESM!MemberType#DERIVED
+            and not (s.memberType == ESM!MemberType#MAPPED and s.binding.memberType == ESM!MemberType#DERIVED)
 
         t.name = s.equivalent("CreateNavigationPropertyForTransferObjectRelationRange").name;
         t.cardinality = new JUDOPSM!Cardinality;
@@ -59,8 +59,11 @@ rule CreateTransferObjectRelationFromRelationOrProperty
             and not s.eContainer.isTypeOf(ESM!EntityType)
             and s.memberType <> ESM!MemberType#MAPPED
 
+      t.defaultValue = s.equivalent("CreateStaticNavigationForTransferObjectRelationDefaultValue");
+
       if(s.eContainer.isMapped()) {
       	t.binding = s.equivalent("CreateNavigationPropertyForTransferObjectRelationBinding");
+      	t.range = s.equivalent("CreateNavigationPropertyForTransferObjectRelationRange");
       } else {
       	t.binding = s.equivalent("CreateStaticNavigationForExposedGraph");
       }
@@ -74,11 +77,15 @@ rule CreateTransferObjectRelationFromBoundToOneWayRelationMember
     extends CreateTransferObjectRelation {
       guard: s.memberType == ESM!MemberType#MAPPED
             and s.binding.isKindOf(ESM!OneWayRelationMember)
-            
-      if (s.binding.memberType = ESM!MemberType#STORED and s.binding.isComposition()) {
-        t.binding = s.binding.equivalent("CreateContainment");
-      } else if (s.binding.memberType = ESM!MemberType#STORED and not s.binding.isComposition()) {
-        t.binding = s.binding.equivalent("CreateAssociationEndWithoutPartner");
+
+      if (s.binding.memberType = ESM!MemberType#STORED) {
+        t.defaultValue = s.equivalent("CreateStaticNavigationForTransferObjectRelationDefaultValue");
+        t.range = s.equivalent("CreateNavigationPropertyForTransferObjectRelationRange");
+          if (s.binding.isComposition()) {
+            t.binding = s.binding.equivalent("CreateContainment");
+          } else {
+            t.binding = s.binding.equivalent("CreateAssociationEndWithoutPartner");
+          }
       } else if (s.binding.memberType = ESM!MemberType#DERIVED) {
         t.binding = s.binding.equivalent("CreateNavigationProperty");
       }
@@ -92,10 +99,12 @@ rule CreateTransferObjectRelationFromBoundToTwoWayRelationMember
     extends CreateTransferObjectRelation {
       guard: s.memberType == ESM!MemberType#MAPPED
             and s.binding.isKindOf(ESM!TwoWayRelationMember)
-            
+
+        t.defaultValue = s.equivalent("CreateStaticNavigationForTransferObjectRelationDefaultValue");
+        t.range = s.equivalent("CreateNavigationPropertyForTransferObjectRelationRange");
         t.binding = s.binding.equivalent("CreateAssociationEndWithPartner");
 
-      log.debug("Created TransferObjectRelation (from OneWayRelationMember): [" + t.name + "] into [" + t.eContainer.name + "]");
+        log.debug("Created TransferObjectRelation (from OneWayRelationMember): [" + t.name + "] into [" + t.eContainer.name + "]");
 }
 
 @lazy
@@ -115,8 +124,6 @@ rule CreateTransferObjectRelationForDefaultTransferObjectType
       t.cardinality = s.equivalent("CreateCardinalityOfTransferObjectRelationForDefaultTransferObjectType");
       t.target = s.target.equivalent("CreateDefaultMappedTransferObjectTypeForEntity");
       s.eContainer.equivalent("CreateDefaultMappedTransferObjectTypeForEntity").relations.add(t);
-      t.defaultValue = s.equivalent("CreateStaticNavigationForTransferObjectRelationDefaultValue");
-      t.range = s.equivalent("CreateNavigationPropertyForTransferObjectRelationRange");
       t.embedded = s.isAggregation();
       
       if (s.isCreateAllowed()) {
@@ -143,9 +150,10 @@ rule CreateTransferObjectRelationForDefaultTransferObjectTypeFromOneWayRelationM
     extends CreateTransferObjectRelationForDefaultTransferObjectType {
       guard: s.memberType == ESM!MemberType#STORED
            and s.isComposition()
-           
+
+      t.defaultValue = s.equivalent("CreateStaticNavigationForTransferObjectRelationDefaultValue");
+      t.range = s.equivalent("CreateNavigationPropertyForTransferObjectRelationRange");
       t.embedded = s.isComposition();
-      
       t.binding = s.equivalent("CreateContainment");
       
       log.debug("Created TransferObjectRelation for DefaultTransferObjectType: [" + t.name + "] into [" + t.eContainer.name + "]");
@@ -157,10 +165,12 @@ rule CreateTransferObjectRelationForDefaultTransferObjectTypeFromOneWayRelationM
     extends CreateTransferObjectRelationForDefaultTransferObjectType {
       guard: s.memberType == ESM!MemberType#STORED
            and not s.isComposition()
-           
+
+      t.defaultValue = s.equivalent("CreateStaticNavigationForTransferObjectRelationDefaultValue");
+      t.range = s.equivalent("CreateNavigationPropertyForTransferObjectRelationRange");
       t.binding = s.equivalent("CreateAssociationEndWithoutPartner");
-      
-      log.debug("Created TransferObjectRelationFromTwoWayRelationMember: [" + t.name + "] into [" + t.eContainer.name + "]");
+
+      log.debug("Created TransferObjectRelation for DefaultTransferObjectType: [" + t.name + "] into [" + t.eContainer.name + "]");
 }
 
 rule CreateTransferObjectRelationForDefaultTransferObjectTypeFromOneWayRelationMemberProperty
@@ -179,7 +189,9 @@ rule CreateTransferObjectRelationForDefaultTransferObjectTypeFromTwoWayRelationM
     transform s: ESM!TwoWayRelationMember
     to t: JUDOPSM!TransferObjectRelation
     extends CreateTransferObjectRelationForDefaultTransferObjectType {
-      
+
+      t.defaultValue = s.equivalent("CreateStaticNavigationForTransferObjectRelationDefaultValue");
+      t.range = s.equivalent("CreateNavigationPropertyForTransferObjectRelationRange");
       t.binding = s.equivalent("CreateAssociationEndWithPartner");
       
       log.debug("Created TransferObjectRelationFromTwoWayRelationMember: [" + t.name + "] into [" + t.eContainer.name + "]");

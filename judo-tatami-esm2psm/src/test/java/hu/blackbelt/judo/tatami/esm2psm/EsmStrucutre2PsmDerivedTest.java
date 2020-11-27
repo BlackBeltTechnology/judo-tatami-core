@@ -48,10 +48,7 @@ import static hu.blackbelt.judo.meta.psm.runtime.PsmModel.buildPsmModel;
 import static hu.blackbelt.judo.tatami.esm2psm.Esm2Psm.calculateEsm2PsmTransformationScriptURI;
 import static hu.blackbelt.judo.tatami.esm2psm.Esm2Psm.executeEsm2PsmTransformation;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 @Slf4j
 public class EsmStrucutre2PsmDerivedTest {
@@ -564,9 +561,7 @@ public class EsmStrucutre2PsmDerivedTest {
                 .map(e -> (hu.blackbelt.judo.meta.psm.derived.StaticData) e)
                 .findAny();
 
-        assertTrue(psmDataProperty.isPresent());
-        assertThat(psmDataProperty.get().getGetterExpression().getExpression(), IsEqual.equalTo(dataProperty.getDefaultExpression()));
-        assertNull(psmDataProperty.get().getSetterExpression());
+        assertFalse(psmDataProperty.isPresent());
     }
 
     @Test
@@ -704,9 +699,7 @@ public class EsmStrucutre2PsmDerivedTest {
                 .map(e -> (hu.blackbelt.judo.meta.psm.derived.StaticNavigation) e)
                 .findAny();
 
-        assertTrue(psmNavigationProperty.isPresent());
-        assertThat(psmNavigationProperty.get().getGetterExpression().getExpression(), IsEqual.equalTo(associationEnd.getDefaultExpression()));
-        assertNull(psmNavigationProperty.get().getSetterExpression());
+        assertFalse(psmNavigationProperty.isPresent());
     }
 
     @Test
@@ -827,14 +820,12 @@ public class EsmStrucutre2PsmDerivedTest {
         final hu.blackbelt.judo.meta.psm.data.EntityType psmEntityType = allPsm(hu.blackbelt.judo.meta.psm.data.EntityType.class)
                 .filter(e -> e.getName().equals(entityType.getName())).findAny().get();
 
-        assertTrue(psmEntityType.getNavigationProperties().size() == 2);
+        assertEquals(1, psmEntityType.getNavigationProperties().size());
 
         final Optional<NavigationProperty> psmNavigationProperty = psmEntityType.getNavigationProperties().stream()
                 .filter(p -> p.getName().equals("_" + associationEnd.getName() + "_range_TestModel_entityType")).findAny();
 
-        assertTrue(psmNavigationProperty.isPresent());
-        assertThat(psmNavigationProperty.get().getGetterExpression().getExpression(), IsEqual.equalTo(associationEnd.getRangeExpression()));
-        assertNull(psmNavigationProperty.get().getSetterExpression());
+        assertFalse(psmNavigationProperty.isPresent());
     }
 
     @Test

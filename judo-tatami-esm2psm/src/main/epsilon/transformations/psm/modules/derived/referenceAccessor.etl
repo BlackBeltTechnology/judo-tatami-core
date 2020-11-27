@@ -17,7 +17,7 @@ rule CreateCardinalityForTransferObjectRelationDefault
     transform s: ESM!ReferenceTypedElement
     to t: JUDOPSM!Cardinality {
       t.upper = s.upper;
-      t.lower = s.lower;
+      t.lower = 0;
 }
 
 @lazy

@@ -45,6 +45,7 @@ rule CreateStaticDataForTransferAttributeDefaultValue
             t.getterExpression = s.equivalent("CreateGetterExpressionForStaticDataAsTransferAttributeDefaultValue");
             t.name = "_" + s.name + "_default_" + s.eContainer.name;
             (s.eContainer).eContainer.getPSMEquivalent().elements.add(t);
+            t.required = false;
             
             log.debug("Created Static Data for transfer attribute default value: " + t.name);
 }
