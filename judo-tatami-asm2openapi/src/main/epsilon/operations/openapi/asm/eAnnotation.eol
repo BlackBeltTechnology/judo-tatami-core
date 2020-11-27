@@ -1,15 +1,5 @@
 @cached
-operation String getSpecificExposedByAnnotationsOfParameters() : Sequence {
-    return getAllExposedByAnnotationsOfParameters().select(a | a.details.get("value") == self);
-}
-
-@cached
-operation String getSpecificExposedByAnnotationsOfReferences() : Sequence {
-    return getAllExposedByAnnotationsOfReferences().select(a | a.details.get("value") == self);
-}
-
-@cached
-operation getAllExposedByAnnotationsOfParameters() : Sequence {
+operation getExposedByAnnotationsOfParameters() : Sequence {
     return ASM!EParameter.all()
         .select(p | p.eOperation.isCreateOrUpdateBehaviour())
         .select(p | asmUtils.getExtensionAnnotationByName(p, "exposedBy", false).present)
@@ -18,105 +8,28 @@ operation getAllExposedByAnnotationsOfParameters() : Sequence {
 }
 
 @cached
-operation getAllExposedByAnnotationsOfReferences() : Sequence {
-    return ASM!EReference.all()
-        .select(r | asmUtils.getExtensionAnnotationByName(r, "exposedBy", false).present)
-        .collect(r | asmUtils.getExtensionAnnotationListByName(r, "exposedBy"))
-        .flatten();
-}
-
-@cached
 operation ASM!EAnnotation isForCreateOrUpdate() : Boolean {
-    
+
     if (self.source <> asmUtils.getAnnotationUri("exposedBy")) {
         return false;
     }
-    
-    var annotations = self.details.get("value").getSpecificExposedByAnnotationsOfParameters();
-    
+
+    var annotations = self.details.get("value").getAnnotationsOfParameters();
+
     if (self.eContainer.isKindOf(ASM!EClass)) {
         return annotations.select(a | a.eContainer.eType == self.eContainer
                 or a.eContainer.eType.eAllContainments.collect(c | c.eReferenceType).includes(self.eContainer)).notEmpty();
     }
-    
+
     if (self.eContainer.isKindOf(ASM!EReference) or self.eContainer.isKindOf(ASM!EAttribute)) {
         return annotations.select(a | a.eContainer.eType == self.eContainer.eContainer
                 or a.eContainer.eType.eAllContainments.collect(c | c.eReferenceType).includes(self.eContainer.eContainer)).notEmpty();
     }
-    
+
     return false;
 }
 
 @cached
-operation ASM!EAnnotation isAnnotationOfExposedOperation() : Boolean {
-    if (self.source <> asmUtils.getAnnotationUri("exposedBy") or not self.eContainer.isKindOf(ASM!EOperation)) {
-        return false;
-    }
-
-    var behaviour = asmUtils.getBehaviour(self.eContainer);
-    
-    if (behaviour.present) {
-        var b = behaviour.get().toString();
-        
-        switch (b) {
-            case "LIST": return self.isExposedByListRelation();
-            case "REFRESH": return self.isExposedByListRelation();
-            
-            case "CREATE_INSTANCE": return self.isExposedByCreateRelation();
-            case "VALIDATE_CREATE": return self.isExposedByCreateRelation();
-            case "GET_TEMPLATE": return self.isExposedByCreateRelation();
-            
-            case "UPDATE_INSTANCE": return self.isExposedByUpdateRelation();
-            case "VALIDATE_UPDATE": return self.isExposedByUpdateRelation();
-            
-            case "DELETE_INSTANCE": return self.isExposedByDeleteRelation();
-            
-            case "SET_REFERENCE": return self.isExposedByUpdateRelation();
-            case "UNSET_REFERENCE": return self.isExposedByUpdateRelation();
-            case "ADD_REFERENCE": return self.isExposedByUpdateRelation();
-            case "REMOVE_REFERENCE": return self.isExposedByUpdateRelation();
-            
-            case "GET_REFERENCE_RANGE": return self.isExposedByCreateRelation() or self.isExposedByUpdateRelation();
-             
-            case "GET_PRINCIPAL": return true;
-        }
-    }
-    return false;
-}
-
-@cached
-operation ASM!EAnnotation isAnnotationOfExposedParameter() : Boolean {
-    if (self.eContainer.isKindOf(ASM!EParameter) and self.source == asmUtils.getAnnotationUri("exposedBy") and
-               self.eContainer.eContainer.isDefined() and self.eContainer.eContainer.isKindOf(ASM!EOperation)) {
-        var op = self.eContainer.eContainer;
-        var exposedAnnotation =  asmUtils.getExtensionAnnotationListByName(op, "exposedBy").selectOne(a | a.details.get("value") == self.details.get("value"));
-        if (exposedAnnotation.isDefined()) {
-            return exposedAnnotation.isAnnotationOfExposedOperation();
-        }
-    }
-    return false;
-}
-
-@cached
-operation ASM!EAnnotation isExposedByCreateRelation() : Boolean {
-    var annotations = self.details.get("value").getSpecificExposedByAnnotationsOfReferences();
-    return annotations.exists(a | a.eContainer.isCreateReference() and a.eContainer.eReferenceType == self.eContainer.eType);
-}
-
-@cached
-operation ASM!EAnnotation isExposedByUpdateRelation() : Boolean {
-    var annotations = self.details.get("value").getSpecificExposedByAnnotationsOfReferences();
-    return annotations.exists(a | a.eContainer.isUpdateReference() and a.eContainer.eReferenceType == self.eContainer.eType);
-}
-
-@cached
-operation ASM!EAnnotation isExposedByDeleteRelation() : Boolean {
-    var annotations = self.details.get("value").getSpecificExposedByAnnotationsOfReferences();
-    return annotations.exists(a | a.eContainer.isDeleteReference() and a.eContainer.eReferenceType == self.eContainer.eType);
-}
-
-@cached
-operation ASM!EAnnotation isExposedByListRelation() : Boolean {
-    var annotations = self.details.get("value").getSpecificExposedByAnnotationsOfReferences();
-    return annotations.exists(a | a.eContainer.eReferenceType == self.eContainer.eType);
+operation String getAnnotationsOfParameters() : Sequence {
+    return getExposedByAnnotationsOfParameters().select(a | a.details.get("value") == self);
 }
