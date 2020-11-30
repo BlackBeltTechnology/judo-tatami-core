@@ -2,13 +2,13 @@ package hu.blackbelt.judo.tatami.ui2client.flutter;
 
 import com.github.jknack.handlebars.Handlebars;
 import com.github.jknack.handlebars.internal.lang3.StringUtils;
-import hu.blackbelt.judo.meta.ui.Flex;
-import hu.blackbelt.judo.meta.ui.VisualElement;
+import hu.blackbelt.judo.meta.ui.*;
 import hu.blackbelt.judo.meta.ui.data.*;
 import lombok.SneakyThrows;
 import lombok.extern.java.Log;
 import org.springframework.expression.spel.support.StandardEvaluationContext;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -39,6 +39,8 @@ public class FlutterHelper {
         context.registerFunction("dartType", FlutterHelper.class.getDeclaredMethod("dartType", new Class[]{DataType.class}));
         context.registerFunction("isTransientAttribute", FlutterHelper.class.getDeclaredMethod("isTransientAttribute", new Class[]{AttributeType.class}));
         context.registerFunction("hasRangeableRelation", FlutterHelper.class.getDeclaredMethod("hasRangeableRelation", new Class[]{ClassType.class}));
+        context.registerFunction("isInputWidgetMapNeed", FlutterHelper.class.getDeclaredMethod("isInputWidgetMapNeed", new Class[]{PageDefinition.class}));
+        context.registerFunction("getInputWidgets", FlutterHelper.class.getDeclaredMethod("getInputWidgets", new Class[]{Container.class}));
     }
 
     public static void registerHandlebars(Handlebars handlebars) {
@@ -219,6 +221,38 @@ public class FlutterHelper {
             return "String";
         } else {
             return "String";
+        }
+    }
+
+    public static boolean isInputWidgetMapNeed (PageDefinition page) {
+        return page.getIsPageTypeUpdate() || page.getIsPageTypeCreate() || page.getIsPageTypeCustom() || page.getIsPageTypeOperationInput() ;
+    }
+
+    public static List<VisualElement> getInputWidgets(Container container) {
+        List<VisualElement> children = container.getChildren();
+
+        List<VisualElement> inputList = new ArrayList<VisualElement>();
+
+        for (VisualElement element : children ) {
+            if (element instanceof Container ) {
+                getInputWidgetsFromContainers((Container) element, inputList);
+            } else if (element instanceof Input) {
+                inputList.add(element);
+            }
+
+        }
+        return inputList;
+    }
+
+    public static void getInputWidgetsFromContainers(Container container, List<VisualElement> inputList) {
+        List<VisualElement> children = container.getChildren();
+
+        for (VisualElement element : children ) {
+            if (element instanceof Container ) {
+                getInputWidgetsFromContainers((Container) element, inputList);
+            } else if (element instanceof Input) {
+                inputList.add(element);
+            }
         }
     }
 
