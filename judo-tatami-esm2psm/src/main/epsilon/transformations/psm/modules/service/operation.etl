@@ -160,50 +160,6 @@ rule CreateGetPrincipalOperationOutputParameterForActorType
 }
 
 @greedy
-rule CreateMapPrincipalOperationForActoryType
-    transform s : ESM!ActorType
-    to t : JUDOPSM!UnboundOperation {
-        guard: s.principal.isDefined()
-
-        t.name = "_map_principal";
-        t.behaviour = new JUDOPSM!TransferOperationBehaviour;
-        t.behaviour.behaviourType = JUDOPSM!TransferOperationBehaviourType#MAP_PRINCIPAL;
-        t.behaviour.owner = s.getPSMEquivalent();
-        
-        s.getPSMEquivalent().operations.add(t);
-}
-
-@greedy
-rule CreateMapPrincipalOperationInputParameterForActorType
-    transform s : ESM!ActorType
-    to t : JUDOPSM!Parameter {
-        guard: s.principal.isDefined() and s.realm.isDefined() and s.realm.trim() <> ''
-
-        t.name = "input";
-        t.type = s.getPSMEquivalent();
-        t.cardinality = new JUDOPSM!Cardinality;
-        t.cardinality.lower = 0;
-        t.cardinality.upper = 1;
-
-        s.equivalent("CreateMapPrincipalOperationForActoryType").input = t;
-}
-
-@greedy
-rule CreateMapPrincipalOperationOutputParameterForActorType
-    transform s : ESM!ActorType
-    to t : JUDOPSM!Parameter {
-        guard: s.principal.isDefined() and s.principal.isDefined()
-
-        t.name = "output";
-        t.type = s.principal.getPSMTransferObjectTypeEquivalent();
-        t.cardinality = new JUDOPSM!Cardinality;
-        t.cardinality.lower = 0;
-        t.cardinality.upper = 1;
-
-        s.equivalent("CreateMapPrincipalOperationForActoryType").output = t;
-}
-
-@greedy
 rule CreateListOperationForRelation
     transform s : ESM!RelationFeature
     to t : JUDOPSM!BoundOperation {
@@ -836,6 +792,7 @@ rule CreateGetRangeReferenceTransferOperationForRelationFeature
 rule CreateGetTemplateTransferOperation
     transform s : ESM!TransferObjectType
     to t : JUDOPSM!UnboundOperation {
+        guard: esmUtils.isGetTemplateSupported(s)
 
         t.name = "_getTemplate" + s.name.firstToUpperCase();
         t.behaviour = new JUDOPSM!TransferOperationBehaviour;

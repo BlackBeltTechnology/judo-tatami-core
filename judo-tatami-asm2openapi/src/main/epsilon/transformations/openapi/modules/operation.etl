@@ -23,9 +23,9 @@ rule CreateExposedServiceOperationParameter
     to t : OPENAPI!ParameterReference {
         guard: s.eContainer.isKindOf(ASM!EParameter) and s.source == asmUtils.getAnnotationUri("exposedBy") and
                s.eContainer.eContainer.isDefined() and s.eContainer.eContainer.isKindOf(ASM!EOperation)
-        
+
         t.ref = s.equivalent("CreateParameterDeclaration").getReference();
-        
+
         var operationExposedByAnnotation = asmUtils.getExtensionAnnotationListByName(s.eContainer.eContainer, "exposedBy").selectOne(a | a.details.get("value") == s.details.get("value"));
 	    if (operationExposedByAnnotation.isDefined()) {
 	        if (s.eContainer.eContainer.eParameters.isEmpty and asmUtils.annotatedAsFalse(s.eContainer.eContainer, "stateful")) {
@@ -50,7 +50,7 @@ rule CreateExposedServiceGetOperation
     to t : OPENAPI!Operation
     extends CreateExposedServiceOperation {
         guard: s.eContainer.isKindOf(ASM!EOperation) and s.source == asmUtils.getAnnotationUri("exposedBy") and s.eContainer.eParameters.isEmpty and asmUtils.annotatedAsFalse(s.eContainer, "stateful")
-        
+
         s.equivalent("CreateExposedServicePath").`get` = t;
 }
 
@@ -59,7 +59,7 @@ rule CreateExposedServicePostOperation
     to t : OPENAPI!Operation
     extends CreateExposedServiceOperation {
         guard: s.eContainer.isKindOf(ASM!EOperation) and s.source == asmUtils.getAnnotationUri("exposedBy") and (not s.eContainer.eParameters.isEmpty or asmUtils.annotatedAsTrue(s.eContainer, "stateful"))
-        
+
         s.equivalent("CreateExposedServicePath").`post` = t;
 }
 
@@ -123,7 +123,7 @@ rule CreateExposedServiceOperationResponseDefinitionSchema
     transform s : ASM!EAnnotation
     to t : OPENAPI!Schema {
         guard: s.eContainer.isKindOf(ASM!EOperation) and s.source == asmUtils.getAnnotationUri("exposedBy") and s.eContainer.eType.isDefined()
-        
+
         if (s.eContainer.eParameters.isEmpty and asmUtils.annotatedAsFalse(s.eContainer, "stateful")) {
             s.equivalent("CreateExposedServiceGetOperationResponseDefinition").schema = t;
         } else if (not s.eContainer.eParameters.isEmpty or asmUtils.annotatedAsTrue(s.eContainer, "stateful")) {
@@ -142,7 +142,7 @@ rule CreateExposedServiceOperationResponseDefinitionSchemaReference
         } else {
             t.ref = operationTypeExposedByAnnotation.equivalent("CreateTransferObjectSingleSchemaDeclaration").getReference();
         }
-        
+
         s.equivalent("CreateExposedServiceOperationResponseDefinitionSchema").ref = t;
 }
 

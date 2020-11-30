@@ -295,7 +295,6 @@ public class EsmAccesspoint2PsmAccesspointTest {
         final int UPPER = -1;
 
         final String NAME_OF_GET_PRINCIPAL_OPERATION = "_principal";
-        final String NAME_OF_MAP_PRINCIPAL_OPERATION = "_map_principal";
 
         final String NAME_OF_LIST_E = "_listAllEs";
         final String NAME_OF_CREATE_INSTANCE_E = "_createInstanceAllEs";
@@ -430,15 +429,6 @@ public class EsmAccesspoint2PsmAccesspointTest {
                 EcoreUtil.equals(o.getOutput().getType(), ap.get())
         ));
 
-        assertTrue(actorType.get().getOperations().stream().anyMatch(o -> NAME_OF_MAP_PRINCIPAL_OPERATION.equals(o.getName()) && (o instanceof UnboundOperation) &&
-                o.getBehaviour() != null && o.getBehaviour().getBehaviourType() == TransferOperationBehaviourType.MAP_PRINCIPAL && EcoreUtil.equals(o.getBehaviour().getOwner(), actorType.get()) &&
-                o.getInput() != null && o.getOutput() != null && o.getFaults().isEmpty() &&
-                o.getInput().getCardinality().getLower() == 0 && o.getInput().getCardinality().getUpper() == 1 &&
-                EcoreUtil.equals(o.getInput().getType(), actorType.get()) &&
-                o.getOutput().getCardinality().getLower() == 0 && o.getOutput().getCardinality().getUpper() == 1 &&
-                EcoreUtil.equals(o.getOutput().getType(), ap.get())
-        ));
-
         assertTrue(actorType.get().getOperations().stream().anyMatch(o -> NAME_OF_LIST_E.equals(o.getName()) && (o instanceof UnboundOperation) &&
                 o.getBehaviour() != null && o.getBehaviour().getBehaviourType() == TransferOperationBehaviourType.LIST && EcoreUtil.equals(o.getBehaviour().getOwner(), allEs.get()) &&
                 o.getInput() != null && o.getOutput() != null && o.getFaults().isEmpty() &&
@@ -468,7 +458,7 @@ public class EsmAccesspoint2PsmAccesspointTest {
                 EcoreUtil.equals(o.getOutput().getType(), defaultE.get())
         ));
 
-        assertEquals(5L, actorType.get().getOperations().stream().filter(o -> o instanceof UnboundOperation).count());
+        assertEquals(4L, actorType.get().getOperations().stream().filter(o -> o instanceof UnboundOperation).count());
     }
 
     static <T> Stream<T> asStream(Iterator<T> sourceIterator, boolean parallel) {
