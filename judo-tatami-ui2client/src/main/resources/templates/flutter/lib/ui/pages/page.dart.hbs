@@ -58,6 +58,14 @@ class {{ fqClass page.name }}Page extends StatefulWidget {
 {{> templates/flutter/lib/ui/pages/pagetypesfragments/operationoutputpagefragment.dart.hbs }}
 {{/ if }}
 
+    {{# if (isInputWidgetMapNeed page) }}
+    var inputWidgetKeyMap = {
+    {{# each (getInputWidgets page.containers.[0]) as |input|}}
+        '{{ variable input.name }}' : GlobalKey(),
+    {{/each}}
+    };
+    {{/ if }}
+
     @override
     Widget build(BuildContext context) {
         final navigation = locator<NavigationState>();
@@ -68,7 +76,7 @@ class {{ fqClass page.name }}Page extends StatefulWidget {
             body: LayoutBuilder(builder: (context, constraints) {
                     {{#each page.containers as |pageContainer|}}
                     {{#unless pageContainer.layoutType.original}}
-                    if (constraints.maxWidth >= {{pageContainer.layoutType.minimumResolution}} && constraints.maxWidth <= {{pageContainer.layoutType.maximumResolution}}) {
+                    if (MediaQuery.of(context).size.width >= {{pageContainer.layoutType.minimumResolution}} && MediaQuery.of(context).size.width <= {{pageContainer.layoutType.maximumResolution}}) {
                         return get{{ fqClass page.name }}Page{{fqClass pageContainer.layoutType.name}}Body(context
                             
                             {{~# if page.isPageTypeTable ~}}
@@ -108,6 +116,9 @@ class {{ fqClass page.name }}Page extends StatefulWidget {
                             , {{fqVariable page.name}}PageStore
                             {{~/ if ~}}
 
+                            {{~# if (isInputWidgetMapNeed page) ~}}
+                            , inputWidgetKeyMap
+                            {{~/ if ~}}
                         );
                     }
                     {{/unless}}
@@ -149,6 +160,10 @@ class {{ fqClass page.name }}Page extends StatefulWidget {
                         {{~# if page.isPageTypeOperationOutput ~}}
                         , target{{ className page.dataElement.target.name }}Store
                         , {{fqVariable page.name}}PageStore
+                        {{~/ if ~}}
+
+                        {{~# if (isInputWidgetMapNeed page) ~}}
+                        , inputWidgetKeyMap
                         {{~/ if ~}}
                     );
                 }),

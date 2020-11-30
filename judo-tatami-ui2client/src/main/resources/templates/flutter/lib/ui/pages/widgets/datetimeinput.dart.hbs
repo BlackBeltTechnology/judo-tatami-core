@@ -16,7 +16,7 @@ Observer(
 {{#if page.isPageTypeCreate}}
 Observer(
     builder: (_) => JudoDateTimeInput(
-        key: UniqueKey(),
+        key: inputWidgetKeyMap['{{ name }}'],
         col: {{ col }},
         disabled: {{ disabled }},
         use24HourFormat: true,
@@ -33,7 +33,7 @@ Observer(
 {{#if page.isPageTypeOperationInput}}
 Observer(
     builder: (_) => JudoDateTimeInput(
-        key: UniqueKey(),
+        key: inputWidgetKeyMap['{{ name }}'],
         col: {{ col }},
         disabled: {{ disabled }},
         use24HourFormat: true,
@@ -50,7 +50,7 @@ Observer(
 {{#if page.isPageTypeUpdate}}
 Observer(
     builder: (_) => JudoDateTimeInput(
-        key: UniqueKey(),
+        key: inputWidgetKeyMap['{{ name }}'],
         col: {{ col }},
         disabled: {{ disabled }},
         use24HourFormat: true,
