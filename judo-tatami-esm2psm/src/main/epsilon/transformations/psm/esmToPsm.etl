@@ -156,9 +156,7 @@ post {
 			o.behaviour.owner = newOwner;
 			
 			if (o.behaviour.behaviourType == JUDOPSM!TransferOperationBehaviourType#GET_RANGE) {
-			    //JNG-2003: TODO make ui templates handle get range input type
                 o.input.type = o.behaviour.owner.eContainer().~source.equivalent("CreateGetRangeInputType");
-                //o.input.type = o.behaviour.owner.eContainer();
             }
 		}
 	}
