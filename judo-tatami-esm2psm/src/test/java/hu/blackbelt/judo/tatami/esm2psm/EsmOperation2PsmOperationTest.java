@@ -491,15 +491,15 @@ public class EsmOperation2PsmOperationTest {
                 .filter(t -> ENTITY_TYPE_D_NAME.equals(t.getName()) && t.isOptional())
                 .findAny();
         assertTrue(defaultE.isPresent());
-        //Re-add when JNG-2003 is done
-//        final Optional<UnmappedTransferObjectType> getRangeInputType = allPsm(UnmappedTransferObjectType.class)
-//                .filter(t -> t.getName().equals("_GetRangeInputD"))
-//                .findAny();
-//        assertTrue(getRangeInputType.isPresent());
-//
-//        final Optional<TransferObjectRelation> getRangeInputOwner = getRangeInputType.get().getRelations().stream()
-//        		.filter(r -> r.getTarget().equals(optionalD.get())).findAny();
-//        assertTrue(getRangeInputOwner.isPresent());
+
+        final Optional<UnmappedTransferObjectType> getRangeInputType = allPsm(UnmappedTransferObjectType.class)
+                .filter(t -> t.getName().equals("_GetRangeInputD"))
+                .findAny();
+        assertTrue(getRangeInputType.isPresent());
+
+        final Optional<TransferObjectRelation> getRangeInputOwner = getRangeInputType.get().getRelations().stream()
+        		.filter(r -> r.getTarget().equals(optionalD.get())).findAny();
+        assertTrue(getRangeInputOwner.isPresent());
 
         final Optional<hu.blackbelt.judo.meta.psm.service.MappedTransferObjectType> defaultF = allPsm(MappedTransferObjectType.class)
                 .filter(t -> ENTITY_TYPE_F_NAME.equals(t.getName()))
@@ -664,15 +664,15 @@ public class EsmOperation2PsmOperationTest {
                 ((BoundTransferOperation) o).getBinding().getInput().getCardinality().getLower() == 1 && o.getInput().getCardinality().getUpper() == -1 &&
                 EcoreUtil.equals(((BoundTransferOperation) o).getBinding().getInput().getType(), defaultE.get())
         ));
-//Re-add when JNG-2003 is done
-//        assertTrue(defaultD.get().getOperations().stream().anyMatch(o -> NAME_OF_GET_RANGE_E_OPERATION.equals(o.getName()) && (o instanceof UnboundOperation) &&
-//                o.getBehaviour() != null && o.getBehaviour().getBehaviourType() == TransferOperationBehaviourType.GET_RANGE && EcoreUtil.equals(o.getBehaviour().getOwner(), dToE.get()) &&
-//                o.getInput() != null && o.getOutput() != null && o.getFaults().isEmpty() &&
-//                o.getInput().getCardinality().getLower() == 0 && o.getInput().getCardinality().getUpper() == 1 &&
-//                EcoreUtil.equals(o.getInput().getType(), getRangeInputType.get()) &&
-//                o.getOutput().getCardinality().getLower() == 0 && o.getOutput().getCardinality().getUpper() == -1 &&
-//                EcoreUtil.equals(o.getOutput().getType(), defaultE.get())
-//        ));
+
+        assertTrue(defaultD.get().getOperations().stream().anyMatch(o -> NAME_OF_GET_RANGE_E_OPERATION.equals(o.getName()) && (o instanceof UnboundOperation) &&
+                o.getBehaviour() != null && o.getBehaviour().getBehaviourType() == TransferOperationBehaviourType.GET_RANGE && EcoreUtil.equals(o.getBehaviour().getOwner(), dToE.get()) &&
+                o.getInput() != null && o.getOutput() != null && o.getFaults().isEmpty() &&
+                o.getInput().getCardinality().getLower() == 0 && o.getInput().getCardinality().getUpper() == 1 &&
+                EcoreUtil.equals(o.getInput().getType(), getRangeInputType.get()) &&
+                o.getOutput().getCardinality().getLower() == 0 && o.getOutput().getCardinality().getUpper() == -1 &&
+                EcoreUtil.equals(o.getOutput().getType(), defaultE.get())
+        ));
         
         assertTrue(defaultD.get().getOperations().stream().anyMatch(o -> NAME_OF_GET_TEMPLATE_D_OPERATION.equals(o.getName()) && (o instanceof UnboundOperation) &&
                 o.getBehaviour() != null && o.getBehaviour().getBehaviourType() == TransferOperationBehaviourType.GET_TEMPLATE &&

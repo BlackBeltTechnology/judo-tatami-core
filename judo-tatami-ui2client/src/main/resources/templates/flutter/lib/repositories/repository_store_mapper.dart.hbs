@@ -12,6 +12,7 @@ part of {{ variable ap.name }}.repository;
 class {{ fqClass ap.name }}RepositoryStoreMapper {
 
 {{# each classes }}
+  // MAPPERS FOR {{className name}}
   static {{ fqClass name }}Store create{{ fqClass name }}StoreFrom{{ fqClass name }}({{ fqClass transferObjectTypeName }} {{ variable name }}) {
     if ({{ variable name }} == null) {
       return null;
@@ -83,7 +84,7 @@ class {{ fqClass ap.name }}RepositoryStoreMapper {
             {{# unless isReadOnly }}
     if ({{ variable ../name }}Store.{{ name }} != null) {
                 {{# if isCollection }}
-      {{ variable ../name }}.{{ name }} = {{ variable ../name }}Store.{{ name }}.map<{{ fqClass target.name }}>(create{{ fqClass target.name }}From{{ fqClass target.name }}Store).toList();
+      {{ variable ../name }}.{{ name }} = {{ variable ../name }}Store.{{ name }}.map<{{ fqClass target.transferObjectTypeName }}>(create{{ fqClass target.name }}From{{ fqClass target.name }}Store).toList();
                 {{ else }}
       {{ variable ../name }}.{{ name }} = create{{ fqClass target.name }}From{{ fqClass target.name }}Store({{ variable ../name }}Store.{{ name }});
                 {{/ if }}
@@ -121,7 +122,7 @@ class {{ fqClass ap.name }}RepositoryStoreMapper {
 
     if ({{ variable ../name }}Store.{{ name }} != null) {
                 {{# if isCollection }}
-      {{ variable ../name }}.{{ name }} = {{ variable ../name }}Store.{{ name }}.map<{{ fqClass target.name }}ForCreateAndUpdate>(({{ variable target.name }}Store) {
+      {{ variable ../name }}.{{ name }} = {{ variable ../name }}Store.{{ name }}.map<{{ fqClass target.transferObjectTypeName }}ForCreateAndUpdate>(({{ variable target.name }}Store) {
         return create{{ fqClass target.name }}ForCreateAndUpdateFrom{{ fqClass target.name }}Store({{ variable target.name }}Store);
       }).toList();
                 {{ else }}
@@ -136,5 +137,62 @@ class {{ fqClass ap.name }}RepositoryStoreMapper {
           {{/ if }}
       {{/ if}}
   {{/ unless}}
+
+  // For rangeable handling
+  {{# if isOptional}}
+  {{# if (hasRangeableRelation this)}}
+  static {{modelName ap.name}}Extension{{packageName name}}GetRangeInput{{className name}} create{{modelName ap.name}}Extension{{packageName name}}GetRangeInput{{className name}}From{{ fqClass name }}Store({{ fqClass name }}Store {{variable name}}Store) {
+    if ({{variable name}}Store == null) {
+      return null;
+    }
+    var {{variable name}} = {{modelName ap.name}}Extension{{packageName name}}GetRangeInput{{className name}}();
+    map{{ fqClass name }}StoreTo{{modelName ap.name}}Extension{{packageName name}}GetRangeInput{{className name}}({{variable name}}, {{variable name}}Store);
+    return {{variable name}};
+  }
+
+  static void map{{ fqClass name }}StoreTo{{modelName ap.name}}Extension{{packageName name}}GetRangeInput{{className name}}({{modelName ap.name}}Extension{{packageName name}}GetRangeInput{{className name}} {{variable name}}, {{ fqClass name }}Store {{variable name}}Store) {
+    var optional{{className name}} = create{{modelName ap.name}}OptionalTransferobjecttypes{{packageName name}}{{className name}}({{variable name}}Store);
+
+    {{variable name}}.owner = optional{{className name}};
+  }
+  {{/if}}
+  static {{modelName ap.name}}OptionalTransferobjecttypes{{packageName name}}{{className name}} create{{modelName ap.name}}OptionalTransferobjecttypes{{packageName name}}{{className name}}({{ fqClass name }}Store {{variable name}}Store) {
+    if ({{variable name}}Store == null) {
+      return null;
+    }
+    var optional{{ className name }} = {{modelName ap.name}}OptionalTransferobjecttypes{{packageName name}}{{className name}}();
+    {{# if isMapped }}
+    optional{{ className name }}.internal__identifier = {{ variable name }}Store.internal__identifier;
+    optional{{ className name }}.internal__signedIdentifier = {{ variable name }}Store.internal__signedIdentifier;
+    optional{{ className name }}.internal__referenceId = {{ variable name }}Store.internal__referenceIdentifier;
+
+    {{/ if }}
+    // Attributes
+    {{# each attributes }}
+    {{# unless isReadOnly }}
+    optional{{ className ../name }}.{{ name }} = {{ variable ../name }}Store.{{ name }};
+    {{/ unless }}
+    {{/ each }}
+
+    // Relations
+    {{# each relations }}
+    {{# if isRelationEmbedded }}
+    {{# unless isReadOnly }}
+    if ({{ variable ../name }}Store.{{ name }} != null) {
+    {{# if isCollection }}
+        optional{{ className ../name }}.{{ name }} = {{ variable ../name }}Store.{{ name }}.map<{{modelName ap.name}}OptionalTransferobjecttypes{{packageName target.name}}{{className target.name}}>(create{{modelName ap.name}}OptionalTransferobjecttypes{{packageName target.name}}{{className target.name}}).toList();
+    {{ else }}
+        optional{{ className ../name }}.{{ name }} = create{{modelName ap.name}}OptionalTransferobjecttypes{{packageName target.name}}{{className target.name}}({{ variable ../name }}Store.{{ name }});
+    {{/ if }}
+    }
+    {{/ unless }}
+    {{/ if }}
+    {{/ each }}
+    return optional{{ className name }};
+  }
+
+  {{/if}}
+  //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 {{/ each }}
 }

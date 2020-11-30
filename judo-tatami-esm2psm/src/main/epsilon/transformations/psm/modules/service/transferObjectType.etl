@@ -384,6 +384,7 @@ rule CreateOptionalMappedTransferObjectType
         
       t.name = s.name;
       t.optional = true;
+      t.override = s.getPSMTransferObjectTypeEquivalent();
       t.entityType = s.mapping.target.getPSMEquivalent();
       
       s.eContainer.getPSMGeneratedOptionalTransferObjectNamespaceEquivalent().elements.add(t);
@@ -398,7 +399,8 @@ rule CreateOptionalUnmappedTransferObjectType
         
       t.name = s.name;
       t.optional = true;
-      
+      t.override = s.getPSMTransferObjectTypeEquivalent();
+
       s.eContainer.getPSMGeneratedOptionalTransferObjectNamespaceEquivalent().elements.add(t);
       log.debug("Created Optional UnmappedTransferObjectType: " + t.name);
 }

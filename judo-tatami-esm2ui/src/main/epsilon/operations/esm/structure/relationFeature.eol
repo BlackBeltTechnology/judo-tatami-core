@@ -55,6 +55,7 @@ operation ESM!esm::structure::RelationFeature createRelationTypeForClass(applica
 	}
 	if (esmUtils.isGetRangeSupported(self)) {
 		relation.behaviours.add(UI!ui::data::RelationBehaviourType#RANGE);
+		clazz.isOptional = true;
 	}
 	if (esmUtils.isValidateCreateSupported(self)) {
 		relation.behaviours.add(UI!ui::data::RelationBehaviourType#VALIDATE_CREATE);
