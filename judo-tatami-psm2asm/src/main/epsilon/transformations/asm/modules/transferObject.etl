@@ -449,3 +449,20 @@ rule CreateDataReferenceBinding
         s.asmEquivalent().eAnnotations.add(t);
         
     }
+
+@greedy
+rule CreateOverrideAnnotationClassForOptionalClass
+	transform s : JUDOPSM!TransferObjectType
+	to t : ASM!EAnnotation {
+	    guard: s.optional and s.override.isDefined()
+
+        t.source = asmUtils.getAnnotationUri("override");
+
+        var override = new ASM!EStringToStringMapEntry;
+        override.key = "value";
+        override.value = asmUtils.getClassifierFQName(s.override.asmEquivalent());
+        t.details.add(override);
+
+        s.asmEquivalent().eAnnotations.add(t);
+
+	}
