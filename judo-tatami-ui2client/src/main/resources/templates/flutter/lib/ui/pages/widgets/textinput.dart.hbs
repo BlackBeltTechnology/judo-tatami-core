@@ -14,6 +14,7 @@ Observer(
 {{/if}}
 {{#if page.isPageTypeCreate}}
 JudoInputText(
+    key: inputWidgetKeyMap['{{ name }}'],
     col: {{ col }},
     disabled: {{ disabled }},
     icon: Icon(Icons.{{ this.leadingIcon.name }}),
@@ -24,6 +25,7 @@ JudoInputText(
 {{/if}}
 {{#if page.isPageTypeOperationInput}}
 JudoInputText(
+    key: inputWidgetKeyMap['{{ name }}'],
     col: {{ col }},
     disabled: {{ disabled }},
     icon: Icon(Icons.{{ this.leadingIcon.name }}),
@@ -34,6 +36,7 @@ JudoInputText(
 {{/if}}
 {{#if page.isPageTypeUpdate}}
 JudoInputText(
+    key: inputWidgetKeyMap['{{ name }}'],
     col: {{ col }},
     disabled: {{ disabled }},
     icon: Icon(Icons.{{ this.leadingIcon.name }}),

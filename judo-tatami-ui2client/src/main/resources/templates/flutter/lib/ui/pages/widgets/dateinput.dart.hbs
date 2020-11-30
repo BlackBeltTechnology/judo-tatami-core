@@ -16,7 +16,7 @@ Observer(
 {{#if page.isPageTypeCreate}}
 Observer(
     builder: (_) => JudoDateInput(
-        key: UniqueKey(),
+        key: inputWidgetKeyMap['{{ name }}'],
         col: {{ col }},
         disabled: {{ disabled }},
         initialDate: target{{ className page.dataElement.target.name }}Store.{{ attributeType.name }},
@@ -32,7 +32,7 @@ Observer(
 {{#if page.isPageTypeUpdate}}
 Observer(
     builder: (_) => JudoDateInput(
-        key: UniqueKey(),
+        key: inputWidgetKeyMap['{{ name }}'],
         col: {{ col }},
         disabled: {{ disabled }},
         initialDate: target{{ className page.dataElement.target.name }}Store.{{ attributeType.name }}
