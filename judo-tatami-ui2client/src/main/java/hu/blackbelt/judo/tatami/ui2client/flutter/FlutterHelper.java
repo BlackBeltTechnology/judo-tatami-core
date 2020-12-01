@@ -6,7 +6,6 @@ import hu.blackbelt.judo.meta.ui.*;
 import hu.blackbelt.judo.meta.ui.data.*;
 import lombok.SneakyThrows;
 import lombok.extern.java.Log;
-import org.eclipse.emf.common.util.EList;
 import org.springframework.expression.spel.support.StandardEvaluationContext;
 
 import java.util.ArrayList;
@@ -39,6 +38,7 @@ public class FlutterHelper {
         context.registerFunction("mainAxisSize", FlutterHelper.class.getDeclaredMethod("mainAxisSize", new Class[]{Flex.class}));
         context.registerFunction("dartType", FlutterHelper.class.getDeclaredMethod("dartType", new Class[]{DataType.class}));
         context.registerFunction("isTransientAttribute", FlutterHelper.class.getDeclaredMethod("isTransientAttribute", new Class[]{AttributeType.class}));
+        context.registerFunction("hasRangeableRelation", FlutterHelper.class.getDeclaredMethod("hasRangeableRelation", new Class[]{ClassType.class}));
         context.registerFunction("isInputWidgetMapNeed", FlutterHelper.class.getDeclaredMethod("isInputWidgetMapNeed", new Class[]{PageDefinition.class}));
         context.registerFunction("getInputWidgets", FlutterHelper.class.getDeclaredMethod("getInputWidgets", new Class[]{Container.class}));
     }
@@ -47,11 +47,15 @@ public class FlutterHelper {
         handlebars.registerHelpers(FlutterHelper.class);
     }
 
+    public static boolean hasRangeableRelation(ClassType classType) {
+        return classType.getRelations().stream().anyMatch(RelationType::getIsRelationBehaviourTypeRangeable);
+    }
+
     public static boolean isTransientAttribute (AttributeType attributeType) {
         return MemberType.TRANSIENT == attributeType.getMemberType();
     }
 
-    public static String mainAxisSize(Flex flex) {
+   public static String mainAxisSize(Flex flex) {
         return flex.getMainAxisSize().getLiteral().toLowerCase();
     }
 
@@ -251,7 +255,5 @@ public class FlutterHelper {
             }
         }
     }
-
-
 
 }
