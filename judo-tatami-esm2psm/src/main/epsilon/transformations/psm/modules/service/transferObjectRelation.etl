@@ -24,8 +24,11 @@ rule CreateTransferObjectRelation
       }
       t.cardinality = s.equivalent("CreateCardinalityForReferenceTypedElement");
       t.defaultValue = s.equivalent("CreateStaticNavigationForTransferObjectRelationDefaultValue");
-      t.range = s.equivalent("CreateNavigationPropertyForTransferObjectRelationRange");
-      
+
+      if (s.isRangeExpressionSupported()) {
+        t.range = s.getPSMRangeEquivalent();
+      }
+
 //      t.get = s.equivalent("CreateGetOperationForTransferObjectRelation");
 //      t.create = s.equivalent("CreateCreateOperationForTransferObjectRelation");
 //      t.update = s.equivalent("CreateUpdateOperationForTransferObjectRelation");
@@ -38,15 +41,14 @@ rule CreateTransferObjectRelation
 rule CreateRangeTransferObjectRelation
     transform s : ESM!RelationFeature
     to t : JUDOPSM!TransferObjectRelation {
-        guard: s.eContainer.isKindOf(ESM!TransferObjectType) and s.eContainer.mapping.isDefined()
-            and s.target.mapping.isDefined() and s.rangeExpression.isDefined() and s.rangeExpression.trim().length() > 0
+        guard: s.eContainer.isKindOf(ESM!TransferObjectType) and s.isRangeExpressionSupported()
 
-        t.name = s.equivalent("CreateNavigationPropertyForTransferObjectRelationRange").name;
+        t.name = s.getPSMRangeEquivalent().name;
         t.cardinality = new JUDOPSM!Cardinality;
         t.cardinality.lower = 0;
         t.cardinality.upper = -1;
         t.target = s.target.getPSMTransferObjectTypeEquivalent();
-        t.binding = s.equivalent("CreateNavigationPropertyForTransferObjectRelationRange");
+        t.binding = s.getPSMRangeEquivalent();
 
         s.eContainer.getPSMTransferObjectTypeEquivalent().relations.add(t);
 }
@@ -116,7 +118,9 @@ rule CreateTransferObjectRelationForDefaultTransferObjectType
       t.target = s.target.equivalent("CreateDefaultMappedTransferObjectTypeForEntity");
       s.eContainer.equivalent("CreateDefaultMappedTransferObjectTypeForEntity").relations.add(t);
       t.defaultValue = s.equivalent("CreateStaticNavigationForTransferObjectRelationDefaultValue");
-      t.range = s.equivalent("CreateNavigationPropertyForTransferObjectRelationRange");
+      if (s.isRangeExpressionSupported()) {
+        t.range = s.getPSMRangeEquivalent();
+      }
       t.embedded = s.isAggregation();
       
       if (s.isCreateAllowed()) {
