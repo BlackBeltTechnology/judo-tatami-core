@@ -1,0 +1,7 @@
+operation ESM!RelationFeature getPSMRangeEquivalent(): JUDOPSM!NavigationProperty {
+      if (self.isAnyRangeExpressionSupported()) {
+            return self.equivalent("CreateNavigationPropertyForTransferObjectRelationAnyRange");
+      } else if (self.isDerivedRangeExpressionSupported()) {
+            return self.equivalent("CreateNavigationPropertyForTransferObjectRelationDerivedRange");
+      }
+}

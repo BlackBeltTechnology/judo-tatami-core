@@ -60,10 +60,19 @@ rule CreateGetterExpressionForTransferObjectRelationDefault
 
 @lazy
 @greedy
-rule CreateGetterExpressionForTransferObjectRelationRange
+rule CreateGetterExpressionForTransferObjectRelationDerivedRange
     transform s : ESM!RelationFeature
     to t : JUDOPSM!ReferenceExpressionType {
         t.expression = s.rangeExpression;
+        log.debug("Created Reference Expression Type for Transfer Object Relation Range: " + s.name);
+}
+
+@lazy
+@greedy
+rule CreateGetterExpressionForTransferObjectRelationAnyRange
+    transform s : ESM!RelationFeature
+    to t : JUDOPSM!ReferenceExpressionType {
+        t.expression = esmUtils.getNamespaceElementFQName(s.target.mapping.target);
         log.debug("Created Reference Expression Type for Transfer Object Relation Range: " + s.name);
 }
 

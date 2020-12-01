@@ -50,27 +50,34 @@ Widget get{{ fqClass page.name }}Page{{fqClass container.layoutType.name}}Body(B
         , {{fqClass page.name}}PageStore {{fqVariable page.name}}PageStore
         {{~/ if ~}}
 
+        {{~# if (isInputWidgetMapNeed page) ~}}
+        , Map inputWidgetKeyMap
+        {{~/ if ~}}
     ) {
     final navigation = locator<NavigationState>();
 
-    return SizedBox(
-        height: kJudoHeight * {{ row }},
-        child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-                JudoColumn(
-                    col: {{ col }},
-                    row: {{ row }},
+    return CustomScrollView(
+        slivers: [
+            SliverFillRemaining(
+                hasScrollBody: false,
+                child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                    {{# each this.children as |child| }}
-                    {{# if child }}
-                        {{> (getWidgetTemplate child) }}
-                    {{/ if }}
-                    {{/ each }}
-                    ],
-                )
-            ]
-        ),
+                        JudoColumn(
+                            col: {{ col }},
+                            row: {{ row }},
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                            {{# each this.children as |child| }}
+                            {{# if child }}
+                                {{> (getWidgetTemplate child) }}
+                            {{/ if }}
+                            {{/ each }}
+                            ],
+                        )
+                    ]
+                ),
+            )
+        ]
     );
 }

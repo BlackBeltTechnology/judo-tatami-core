@@ -14,6 +14,7 @@ Observer(
 {{/if}}
 {{#if page.isPageTypeCreate}}
 JudoNumericInput(
+    key: inputWidgetKeyMap['{{ name }}'],
     col: {{ col }},
     disabled: {{ disabled }},
     icon: Icon(Icons.{{ this.leadingIcon.name }}),
@@ -24,6 +25,7 @@ JudoNumericInput(
 {{/if}}
 {{#if page.isPageTypeUpdate}}
 JudoNumericInput(
+    key: inputWidgetKeyMap['{{ name }}'],
     col: {{ col }},
     disabled: {{ disabled }},
     icon: Icon(Icons.{{ this.leadingIcon.name }}),

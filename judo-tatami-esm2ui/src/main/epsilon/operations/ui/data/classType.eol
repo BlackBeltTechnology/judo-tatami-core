@@ -9,3 +9,10 @@ operation UI!ui::data::ClassType calculateRepresentation() {
 		}
 	}
 }
+
+operation UI!ui::data::ClassType setRelationTargetsOptional() {
+    for (target in self.relations.select(r | not r.target.isOptional).collect(r | r.target)) {
+        target.isOptional = true;
+        target.setRelationTargetsOptional();
+    }
+}

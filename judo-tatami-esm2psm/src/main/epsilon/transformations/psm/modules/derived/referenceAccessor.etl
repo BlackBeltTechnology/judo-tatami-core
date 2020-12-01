@@ -95,23 +95,38 @@ rule CreateStaticNavigationForTransferObjectRelationDefaultValue
             log.debug("Created Static Navigation for transfer object relation default: " + t.name);
 }
 
-@lazy
-@greedy
-rule CreateNavigationPropertyForTransferObjectRelationRange 
+@abstract
+rule CreateNavigationPropertyForTransferObjectRelationRange
     transform s : ESM!RelationFeature
     to t : JUDOPSM!NavigationProperty
     extends CreateNamedElement {
-        guard: s.eContainer.mapping.isDefined()
-                and s.target.mapping.isDefined()
-                and s.rangeExpression.isDefined() and
-                    s.rangeExpression.trim().length() > 0
+        t.target = s.target.mapping.target.getPSMEquivalent();
+        t.cardinality = s.equivalent("CreateCardinalityForTransferObjectRelationRange");
+        t.name = "_" + s.name + "_range_" + esmUtils.getNamespaceElementFQName(s.eContainer).replace("::","_");
+        s.eContainer.mapping.target.getPSMEquivalent().navigationProperties.add(t);
+}
+
+@lazy
+@greedy
+rule CreateNavigationPropertyForTransferObjectRelationDerivedRange
+    transform s : ESM!RelationFeature
+    to t : JUDOPSM!NavigationProperty
+    extends CreateNavigationPropertyForTransferObjectRelationRange {
+        guard: s.isDerivedRangeExpressionSupported()
             
-            t.target = s.target.mapping.target.getPSMEquivalent();
-            t.cardinality = s.equivalent("CreateCardinalityForTransferObjectRelationRange");
-            t.getterExpression = s.equivalent("CreateGetterExpressionForTransferObjectRelationRange");
-            t.name = "_" + s.name + "_range_" + esmUtils.getNamespaceElementFQName(s.eContainer).replace("::","_");
-            s.eContainer.mapping.target.getPSMEquivalent().navigationProperties.add(t);
-            
+            t.getterExpression = s.equivalent("CreateGetterExpressionForTransferObjectRelationDerivedRange");
+            log.debug("Created Navigation Property for transfer object relation range: " + t.name);
+}
+
+@lazy
+@greedy
+rule CreateNavigationPropertyForTransferObjectRelationAnyRange
+    transform s : ESM!RelationFeature
+    to t : JUDOPSM!NavigationProperty
+    extends CreateNavigationPropertyForTransferObjectRelationRange {
+        guard: s.isAnyRangeExpressionSupported()
+
+            t.getterExpression = s.equivalent("CreateGetterExpressionForTransferObjectRelationAnyRange");
             log.debug("Created Navigation Property for transfer object relation range: " + t.name);
 }
 
