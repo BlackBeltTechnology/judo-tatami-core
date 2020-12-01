@@ -1,3 +1,11 @@
+operation ESM!RelationFeature getPSMRangeEquivalent(): JUDOPSM!NavigationProperty {
+      if (self.isAnyRangeExpressionSupported()) {
+            return self.equivalent("CreateNavigationPropertyForTransferObjectRelationAnyRange");
+      } else if (self.isDerivedRangeExpressionSupported()) {
+            return self.equivalent("CreateNavigationPropertyForTransferObjectRelationDerivedRange");
+      }
+}
+
 @cached
 operation ESM!RelationFeature isRangeExpressionSupported() : Boolean {
     return self.isAnyRangeExpressionSupported() or self.isDerivedRangeExpressionSupported();
@@ -21,4 +29,9 @@ operation ESM!RelationFeature isNotDerived() : Boolean {
 @cached
 operation ESM!RelationFeature isContainerAndTargetMapped() : Boolean {
     return self.eContainer.isMapped() and self.target.isMapped();
+}
+
+@cached
+operation ESM!RelationFeature isDefaultExpressionSupported() : Boolean {
+    return self.isNotDerived() and self.target.isMapped() and self.defaultExpression.isDefined() and self.defaultExpression.trim().length() > 0;
 }

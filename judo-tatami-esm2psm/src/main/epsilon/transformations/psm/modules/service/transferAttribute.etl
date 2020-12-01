@@ -22,10 +22,10 @@ rule CreateTransferAttributeFromBound
     extends CreatePrimitiveTypedElement {
       guard: s.memberType == ESM!MemberType#MAPPED
             
-      if (s.binding.memberType = ESM!MemberType#STORED){
+      if (s.binding.memberType == ESM!MemberType#STORED){
          t.defaultValue = s.equivalent("CreateStaticDataForTransferAttributeDefaultValue");
          t.binding = s.binding.equivalent("CreateAttribute");
-      } else if (s.binding.memberType = ESM!MemberType#DERIVED) {
+      } else if (s.binding.memberType == ESM!MemberType#DERIVED) {
          t.binding = s.binding.equivalent("CreateDataProperty");
       }
      
