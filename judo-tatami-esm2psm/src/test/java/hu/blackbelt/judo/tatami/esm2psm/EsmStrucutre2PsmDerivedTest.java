@@ -390,51 +390,6 @@ public class EsmStrucutre2PsmDerivedTest {
     }
 
     @Test
-    void testCreateStaticNavigationForTransferObjectRelationDefault() throws Exception {
-        testName = "CreateStaticNavigationForTransferObjectRelationDefault";
-
-        EntityType navigationTarget = newEntityTypeBuilder().withName("target").build();
-        navigationTarget.setMapping(newMappingBuilder().withTarget(navigationTarget).build());
-        
-        OneWayRelationMember navigationProperty = newOneWayRelationMemberBuilder().withName("navigationProperty")
-        		.withMemberType(MemberType.DERIVED)
-        		.withRelationKind(RelationKind.AGGREGATION)
-                .withGetterExpression("self.navigationProperty.target")
-                .withDefaultExpression("self.navigationProperty.target")
-                .withLower(0).withUpper(-1)
-                .withTarget(navigationTarget)
-                .build();
-
-        TransferObjectType container = newTransferObjectTypeBuilder().withName("container")
-                .withRelations(navigationProperty).build();
-
-        final Model model = newModelBuilder()
-                .withName("TestModel")
-                .withElements(ImmutableList.of(navigationTarget, container))
-                .build();
-
-        esmModel.addContent(model);
-        
-        transform();
-
-        final Optional<hu.blackbelt.judo.meta.psm.derived.StaticNavigation> psmStaticNavigationAsDefault = allPsm(hu.blackbelt.judo.meta.psm.derived.StaticNavigation.class).findAny();
-        final hu.blackbelt.judo.meta.psm.data.EntityType psmNavigationTarget = allPsm(hu.blackbelt.judo.meta.psm.data.EntityType.class)
-                .filter(e -> e.getName().equals(navigationTarget.getName())).findAny().get();
-        final hu.blackbelt.judo.meta.psm.namespace.Model psmModel = allPsm(hu.blackbelt.judo.meta.psm.namespace.Model.class).findAny().get();
-
-        assertTrue(psmStaticNavigationAsDefault.isPresent());
-
-        String psmName = "_" + navigationProperty.getName() + "_default_container";
-        assertThat(psmStaticNavigationAsDefault.get().getName(), IsEqual.equalTo(psmName));
-
-        assertThat(psmStaticNavigationAsDefault.get().eContainer(), IsEqual.equalTo(psmModel));
-        assertThat(psmStaticNavigationAsDefault.get().getTarget(), IsEqual.equalTo(psmNavigationTarget));
-
-        assertThat(psmStaticNavigationAsDefault.get().getGetterExpression().getExpression(), IsEqual.equalTo(navigationProperty.getDefaultExpression()));
-        assertNull(psmStaticNavigationAsDefault.get().getSetterExpression());
-    }
-
-    @Test
     void testCreateDataPropertyForEntityTypeDefaultTransferObjectTypeTransferAttributeDefaultAttribute() throws Exception {
         testName = "CreateDataPropertyForEntityTypeDefaultTransferObjectTypeTransferAttributeDefault";
 
@@ -470,45 +425,6 @@ public class EsmStrucutre2PsmDerivedTest {
         assertTrue(psmDataProperty.isPresent());
         assertTrue(psmDataProperty.get().getName().equals(psmDataPropertyName));
         assertThat(psmDataProperty.get().getGetterExpression().getExpression(), IsEqual.equalTo(attribute.getDefaultExpression()));
-        assertNull(psmDataProperty.get().getSetterExpression());
-    }
-
-    @Test
-    void testCreateDataPropertyForEntityTypeDefaultTransferObjectTypeTransferAttributeDefaultDataProperty() throws Exception {
-        testName = "CreateDataPropertyForEntityTypeDefaultTransferObjectTypeTransferAttributeDefault";
-
-        StringType string = newStringTypeBuilder().withName("string").withMaxLength(256).build();
-        DataMember dataProperty = newDataMemberBuilder().withName("attribute").withDataType(string).withMemberType(MemberType.DERIVED)
-                .withGetterExpression("getterExpression")
-                .withDefaultExpression("defaultExpression")
-                .build();
-        dataProperty.setBinding(dataProperty);
-
-        EntityType entityType = newEntityTypeBuilder().withName("entityType").withAttributes(dataProperty).build();
-        entityType.setMapping(newMappingBuilder().withTarget(entityType).build());
-
-        final Model model = newModelBuilder()
-                .withName("TestModel")
-                .withElements(ImmutableList.of(entityType, string))
-                .build();
-
-        esmModel.addContent(model);
-        transform();
-
-        final hu.blackbelt.judo.meta.psm.data.EntityType psmEntityType = allPsm(hu.blackbelt.judo.meta.psm.data.EntityType.class)
-                .filter(e -> e.getName().equals(entityType.getName())).findAny().get();
-        assertTrue(psmEntityType.getDataProperties().size() == 1);
-
-        String psmDataPropertyName = "_" + dataProperty.getName() + "_default_entityType";
-
-        final Namespace namespaceOfPsmEntityType = (Namespace) psmEntityType.eContainer();
-        final Optional<hu.blackbelt.judo.meta.psm.derived.StaticData> psmDataProperty = namespaceOfPsmEntityType.getElements().stream()
-                .filter(e -> psmDataPropertyName.equals(e.getName()))
-                .map(e -> (hu.blackbelt.judo.meta.psm.derived.StaticData) e)
-                .findAny();
-
-        assertTrue(psmDataProperty.isPresent());
-        assertThat(psmDataProperty.get().getGetterExpression().getExpression(), IsEqual.equalTo(dataProperty.getDefaultExpression()));
         assertNull(psmDataProperty.get().getSetterExpression());
     }
 
@@ -601,53 +517,6 @@ public class EsmStrucutre2PsmDerivedTest {
 
         assertTrue(psmNavigationProperty.isPresent());
         assertTrue(psmNavigationProperty.get().getName().equals(psmNavigationPropertyName));
-        assertThat(psmNavigationProperty.get().getGetterExpression().getExpression(), IsEqual.equalTo(associationEnd.getDefaultExpression()));
-        assertNull(psmNavigationProperty.get().getSetterExpression());
-    }
-
-    @Test
-    void testCreateNavigationPropertyFromOneWayRelationMemberForEntityTypeDefaultTransferObjectTypeTransferObjectRelationDefaultNavigationProperty() throws Exception {
-        testName = "CreateNavigationPropertyFromOneWayRelationMemberForEntityTypeDefaultTransferObjectTypeTransferObjectRelationDefault";
-
-        EntityType target = newEntityTypeBuilder().withName("target").build();
-        target.setMapping(newMappingBuilder().withTarget(target).build());
-
-        OneWayRelationMember associationEnd = newOneWayRelationMemberBuilder().withName("associationEnd")
-        		.withRelationKind(RelationKind.ASSOCIATION)
-        		.withMemberType(MemberType.DERIVED)
-                .withGetterExpression("getterExpression")
-                .withDefaultExpression("defaultExpression")
-                .withLower(0)
-                .withUpper(-1)
-                .withTarget(target)
-                .build();
-        associationEnd.setBinding(associationEnd);
-
-        EntityType entityType = newEntityTypeBuilder().withName("entityType").withRelations(associationEnd).build();
-        entityType.setMapping(newMappingBuilder().withTarget(entityType).build());
-
-        final Model model = newModelBuilder()
-                .withName("TestModel")
-                .withElements(ImmutableList.of(entityType, target))
-                .build();
-
-        esmModel.addContent(model);
-        transform();
-
-        final hu.blackbelt.judo.meta.psm.data.EntityType psmEntityType = allPsm(hu.blackbelt.judo.meta.psm.data.EntityType.class)
-                .filter(e -> e.getName().equals(entityType.getName())).findAny().get();
-
-        assertTrue(psmEntityType.getNavigationProperties().size() == 1);
-
-        String psmNavigationPropertyName = "_" + associationEnd.getName() + "_default_entityType";
-
-        final Namespace namespaceOfPsmEntityType = (Namespace) psmEntityType.eContainer();
-        final Optional<hu.blackbelt.judo.meta.psm.derived.StaticNavigation> psmNavigationProperty = namespaceOfPsmEntityType.getElements().stream()
-                .filter(e -> psmNavigationPropertyName.equals(e.getName()))
-                .map(e -> (hu.blackbelt.judo.meta.psm.derived.StaticNavigation) e)
-                .findAny();
-
-        assertTrue(psmNavigationProperty.isPresent());
         assertThat(psmNavigationProperty.get().getGetterExpression().getExpression(), IsEqual.equalTo(associationEnd.getDefaultExpression()));
         assertNull(psmNavigationProperty.get().getSetterExpression());
     }
