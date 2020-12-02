@@ -883,14 +883,14 @@ public class EsmStrucutre2PsmDerivedTest {
         assertEquals(1, psmTransferB.get().getRelations().size());
         
         TransferAttribute psmAttribute2 = psmTransferB.get().getAttributes().get(0);
-        assertTrue(psmAttribute2.getBinding() instanceof hu.blackbelt.judo.meta.psm.derived.DataProperty);
-		hu.blackbelt.judo.meta.psm.derived.DataProperty dataProperty = (hu.blackbelt.judo.meta.psm.derived.DataProperty)psmAttribute2.getBinding();
-		assertTrue(staticData.getGetterExpression().getExpression().equals(dataProperty.getGetterExpression().getExpression()));
+        assertTrue(psmAttribute2.getBinding() instanceof hu.blackbelt.judo.meta.psm.derived.StaticData);
+		hu.blackbelt.judo.meta.psm.derived.StaticData staticData1 = (hu.blackbelt.judo.meta.psm.derived.StaticData)psmAttribute2.getBinding();
+		assertTrue(staticData.getGetterExpression().getExpression().equals(staticData1.getGetterExpression().getExpression()));
         
         TransferObjectRelation psmTransferObjectRelation2 = psmTransferB.get().getRelations().get(0);
-        assertTrue(psmTransferObjectRelation2.getBinding() instanceof hu.blackbelt.judo.meta.psm.derived.NavigationProperty);
-		hu.blackbelt.judo.meta.psm.derived.NavigationProperty navigationProperty = (hu.blackbelt.judo.meta.psm.derived.NavigationProperty)psmTransferObjectRelation2.getBinding();
-		assertTrue(staticNavigation.getGetterExpression().getExpression().equals(navigationProperty.getGetterExpression().getExpression()));
+        assertTrue(psmTransferObjectRelation2.getBinding() instanceof hu.blackbelt.judo.meta.psm.derived.StaticNavigation);
+		hu.blackbelt.judo.meta.psm.derived.StaticNavigation staticNavigation1 = (hu.blackbelt.judo.meta.psm.derived.StaticNavigation)psmTransferObjectRelation2.getBinding();
+		assertTrue(staticNavigation.getGetterExpression().getExpression().equals(staticNavigation1.getGetterExpression().getExpression()));
         
         assertEquals(psmAttribute.get().getName(), psmAttribute2.getName());
 		assertEquals(psmAttribute.get().getClaimType(), psmAttribute2.getClaimType());
@@ -985,9 +985,9 @@ public class EsmStrucutre2PsmDerivedTest {
         assertEquals(1, psmMapped.get().getAttributes().size());
         
         TransferAttribute psmAttribute2 = psmMapped.get().getAttributes().get(0);
-        assertTrue(psmAttribute2.getBinding() instanceof hu.blackbelt.judo.meta.psm.derived.DataProperty);
-		hu.blackbelt.judo.meta.psm.derived.DataProperty dataProperty = (hu.blackbelt.judo.meta.psm.derived.DataProperty)psmAttribute2.getBinding();
-		assertTrue(staticData.getGetterExpression().getExpression().equals(dataProperty.getGetterExpression().getExpression()));
+        assertTrue(psmAttribute2.getBinding() instanceof hu.blackbelt.judo.meta.psm.derived.StaticData);
+		hu.blackbelt.judo.meta.psm.derived.StaticData staticData2 = (hu.blackbelt.judo.meta.psm.derived.StaticData)psmAttribute2.getBinding();
+		assertTrue(staticData.getGetterExpression().getExpression().equals(staticData2.getGetterExpression().getExpression()));
         
         assertEquals(psmAttribute.get().getName(), psmAttribute2.getName());
 		assertEquals(psmAttribute.get().getClaimType(), psmAttribute2.getClaimType());

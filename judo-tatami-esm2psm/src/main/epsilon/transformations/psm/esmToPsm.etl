@@ -46,85 +46,33 @@ post {
     	
     		for (a in psmTransferObject.attributes) {
     			if (not psmSubClass.attributes.exists(attr | attr.name.equals(a.name))) {
-    				
     				var transferAttribute : JUDOPSM!TransferAttribute = ecoreUtil.copy(a);
-    				
     				psmSubClass.attributes.add(transferAttribute);
     				log.debug("Added attribute: [" + a.name + "] to subclass [" + psmSubClass.name + "] from [" + psmTransferObject.name + "]");
-    				
-    				if (psmTransferObject.isKindOf(JUDOPSM!UnmappedTransferObjectType)
-    					and a.binding.isDefined() and a.binding.isKindOf(JUDOPSM!StaticData)
-    					and esmSubClass.isMapped()) {
-    					
-	    				var t : JUDOPSM!DataProperty = new JUDOPSM!DataProperty();
-	    				t.name = "_" + a.name + "_" + esmUtils.getNamespaceElementFQName(esmTransferObject).replace("::","_");
-	    				t.required = a.binding.required;
-	      				t.dataType = a.binding.dataType;
-	    				t.getterExpression = ecoreUtil.copy(a.binding.getterExpression);
-		       			esmSubClass.mapping.target.getPSMEquivalent().dataProperties.add(t);
-		       			transferAttribute.binding = t;
-    				}
     			}
     		}
     		
     		for (a in psmOptionalTransferObject.attributes) {
                 if (not psmOptionalSubClass.attributes.exists(attr | attr.name.equals(a.name))) {
-                    
                     var transferAttribute : JUDOPSM!TransferAttribute = ecoreUtil.copy(a);
-                    
                     psmOptionalSubClass.attributes.add(transferAttribute);
                     log.debug("Added attribute: [" + a.name + "] to optional subclass [" + psmSubClass.name + "] from [" + psmTransferObject.name + "]");
-                    
-                    if (psmOptionalTransferObject.isKindOf(JUDOPSM!UnmappedTransferObjectType)
-                        and a.binding.isDefined() and a.binding.isKindOf(JUDOPSM!StaticData)
-                        and esmSubClass.isMapped()) {
-                        
-                        var t : JUDOPSM!DataProperty = esmSubClass.mapping.target.getPSMEquivalent().dataProperties
-                            .selectOne(a | a.name == "_" + a.name + "_" + esmUtils.getNamespaceElementFQName(esmTransferObject).replace("::","_"));
-                        transferAttribute.binding = t;
-                    }
                 }
             }
     		
     		for (r in psmTransferObject.relations) {
     			if (not psmSubClass.relations.exists(rel | rel.name.equals(r.name))) {
-    				
     				var transferObjectRelation : JUDOPSM!TransferObjectRelation = ecoreUtil.copy(r);
-    				
     				psmSubClass.relations.add(transferObjectRelation);
     				log.debug("Added relation: [" + r.name + "] to subclass [" + psmSubClass.name + "] from [" + psmTransferObject.name + "]");
-    				
-    				if (psmTransferObject.isKindOf(JUDOPSM!UnmappedTransferObjectType)
-    						and r.binding.isDefined() and r.binding.isKindOf(JUDOPSM!StaticNavigation)
-    						and esmSubClass.isMapped()) {
-    						
-	    				var t : JUDOPSM!NavigationProperty = new JUDOPSM!NavigationProperty();
-	    				t.name = "_" + r.name + "_" + esmUtils.getNamespaceElementFQName(esmTransferObject).replace("::","_");
-	    				t.target = r.binding.target;
-	    				t.getterExpression = ecoreUtil.copy(r.binding.getterExpression);
-	    				t.cardinality = ecoreUtil.copy(r.binding.cardinality);
-		       			esmSubClass.mapping.target.getPSMEquivalent().navigationProperties.add(t);
-		       			transferObjectRelation.binding = t;
-    				}
     			}
     		}
     		
     		for (r in psmOptionalTransferObject.relations) {
                 if (not psmOptionalSubClass.relations.exists(rel | rel.name.equals(r.name))) {
-                    
                     var transferObjectRelation : JUDOPSM!TransferObjectRelation = ecoreUtil.copy(r);
-                    
                     psmOptionalSubClass.relations.add(transferObjectRelation);
                     log.debug("Added relation: [" + r.name + "] to optional subclass [" + psmSubClass.name + "] from [" + psmTransferObject.name + "]");
-                    
-                    if (psmOptionalTransferObject.isKindOf(JUDOPSM!UnmappedTransferObjectType)
-                            and r.binding.isDefined() and r.binding.isKindOf(JUDOPSM!StaticNavigation)
-                            and esmSubClass.isMapped()) {
-                            
-                        var t : JUDOPSM!NavigationProperty = esmSubClass.mapping.target.getPSMEquivalent().navigationProperties
-                            .selectOne(n | n.name == "_" + n.name + "_" + esmUtils.getNamespaceElementFQName(esmTransferObject).replace("::","_"));
-                        transferObjectRelation.binding = t;
-                    }
                 }
             }
     		
