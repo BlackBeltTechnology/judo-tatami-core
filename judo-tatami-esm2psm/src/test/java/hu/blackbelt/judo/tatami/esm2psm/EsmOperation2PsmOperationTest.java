@@ -441,6 +441,7 @@ public class EsmOperation2PsmOperationTest {
         		.withAnonymous(false)
         		.withRealm("sandbox")
         		.withPrincipal(entityTypeD)
+        		.withManaged(false)
                 .withAccesses(newAccessBuilder()
                         .withName("dList")
                         .withTarget(entityTypeD)

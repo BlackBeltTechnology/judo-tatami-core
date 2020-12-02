@@ -645,6 +645,7 @@ public class SimpleOrderModel {
 				.withName("actor")
 				.withPrincipal(application)
 				.withRealm("sandbox")
+				.withManaged(false)
 				.build();
 		useTransferObjectType(application).withActorType(actor).build();
 
