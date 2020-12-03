@@ -160,7 +160,7 @@ post {
 			    
 			    if (inputTypeOwner.target <> o.eContainer.~source.getPSMOptionalEquivalent()) {
 			         var newInputType = ecoreUtil.copy(o.input.type);
-			         newInputType.name = "_inputForGetRangeReference" + esmUtils.getNamespaceElementFQName(o.eContainer.~source).replace("::", "_").firstToUpperCase() + "_" + o.behaviour.owner.name.firstToUpperCase();
+			         newInputType.name = "_GetRangeInput" + o.eContainer.~source.name.firstToUpperCase() + o.behaviour.owner.name.firstToUpperCase();
 			         var newInputTypeOwner = newInputType.relations.selectOne(r | r.name == "owner");
                      newInputTypeOwner.target = o.eContainer.~source.getPSMOptionalEquivalent();
                      o.input.type.eContainer.elements.add(newInputType);

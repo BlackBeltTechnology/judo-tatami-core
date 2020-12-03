@@ -411,7 +411,7 @@ rule CreateGetRangeInputType
     transform s: ESM!RelationFeature
     to t: JUDOPSM!UnmappedTransferObjectType { 
 
-      t.name = "_inputForGetRangeReference" + esmUtils.getNamespaceElementFQName(s.eContainer).replace("::", "_").firstToUpperCase() + "_" + s.name.firstToUpperCase();
+      t.name = "_GetRangeInput" + s.eContainer.name.firstToUpperCase() + s.name.firstToUpperCase();
 
       var owner = new JUDOPSM!TransferObjectRelation;
       owner.name = "owner";
