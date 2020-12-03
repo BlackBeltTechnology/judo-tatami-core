@@ -156,7 +156,16 @@ post {
 			o.behaviour.owner = newOwner;
 			
 			if (o.behaviour.behaviourType == JUDOPSM!TransferOperationBehaviourType#GET_RANGE) {
-                o.input.type = o.behaviour.owner.eContainer().~source.equivalent("CreateGetRangeInputType");
+			    var inputTypeOwner = o.input.type.relations.selectOne(r | r.name == "owner");
+			    
+			    if (inputTypeOwner.target <> o.eContainer.~source.getPSMOptionalEquivalent()) {
+			         var newInputType = ecoreUtil.copy(o.input.type);
+			         newInputType.name = "_inputForGetRangeReference" + esmUtils.getNamespaceElementFQName(o.eContainer.~source).replace("::", "_").firstToUpperCase() + "_" + o.behaviour.owner.name.firstToUpperCase();
+			         var newInputTypeOwner = newInputType.relations.selectOne(r | r.name == "owner");
+                     newInputTypeOwner.target = o.eContainer.~source.getPSMOptionalEquivalent();
+                     o.input.type.eContainer.elements.add(newInputType);
+                     o.input.type = newInputType;
+			    }
             }
 		}
 	}
