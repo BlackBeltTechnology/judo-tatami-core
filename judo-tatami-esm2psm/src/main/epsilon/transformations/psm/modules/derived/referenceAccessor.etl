@@ -17,7 +17,7 @@ rule CreateCardinalityForTransferObjectRelationDefault
     transform s: ESM!ReferenceTypedElement
     to t: JUDOPSM!Cardinality {
       t.upper = s.upper;
-      t.lower = s.lower;
+      t.lower = 0;
 }
 
 @lazy
@@ -78,13 +78,12 @@ rule CreateNavigationPropertyForTransferObjectRelationBinding
 }
 
 @lazy
+@greedy
 rule CreateStaticNavigationForTransferObjectRelationDefaultValue 
-    transform s : ESM!OneWayRelationMember
+    transform s : ESM!RelationFeature
     to t : JUDOPSM!StaticNavigation
     extends CreateNamedElement {
-        guard:  s.defaultExpression.isDefined()
-                and s.defaultExpression.trim().length() > 0
-                and s.target.mapping.isDefined()
+        guard:  s.isDefaultExpressionSupported()
                 
             t.target = s.target.mapping.target.getPSMEquivalent();
             t.cardinality = s.equivalent("CreateCardinalityForTransferObjectRelationDefault");

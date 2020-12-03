@@ -4,4 +4,3 @@ import "type/_importType.eol";
 import "measure/_importMeasure.eol";
 import "service/_importService.eol";
 import "namespace/_importNamespace.eol";
-import "derived/_importDerived.eol";
