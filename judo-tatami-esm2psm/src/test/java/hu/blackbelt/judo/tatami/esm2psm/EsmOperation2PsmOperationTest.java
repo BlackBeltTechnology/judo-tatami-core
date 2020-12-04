@@ -494,7 +494,7 @@ public class EsmOperation2PsmOperationTest {
         assertTrue(defaultE.isPresent());
 
         final Optional<UnmappedTransferObjectType> getRangeInputType = allPsm(UnmappedTransferObjectType.class)
-                .filter(t -> t.getName().equals("_GetRangeInputD"))
+                .filter(t -> t.getName().equals("_GetRangeInputDE"))
                 .findAny();
         assertTrue(getRangeInputType.isPresent());
 

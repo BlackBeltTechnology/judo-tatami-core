@@ -408,14 +408,14 @@ rule CreateOptionalUnmappedTransferObjectType
 @lazy
 @greedy
 rule CreateGetRangeInputType
-    transform s: ESM!TransferObjectType
+    transform s: ESM!RelationFeature
     to t: JUDOPSM!UnmappedTransferObjectType { 
 
-      t.name = "_GetRangeInput" + s.name.firstToUpperCase();
+      t.name = "_GetRangeInput" + s.eContainer.name.firstToUpperCase() + s.name.firstToUpperCase();
 
       var owner = new JUDOPSM!TransferObjectRelation;
       owner.name = "owner";
-      owner.target = s.getPSMOptionalEquivalent();
+      owner.target = s.eContainer.getPSMOptionalEquivalent();
       owner.embedded = true;
       owner.cardinality = new JUDOPSM!Cardinality;
       owner.cardinality.lower = 0;
@@ -423,10 +423,10 @@ rule CreateGetRangeInputType
 
       t.relations.add(owner);
 
-      if (s.mapping.isDefined()) {
+      if (s.target.mapping.isDefined()) {
           var queryCustomizer = new JUDOPSM!TransferObjectRelation;
           queryCustomizer.name = "queryCustomizer";
-          queryCustomizer.target = s.equivalent("CreateQueryCustomizerType");
+          queryCustomizer.target = s.target.equivalent("CreateQueryCustomizerType");
           queryCustomizer.embedded = true;
           queryCustomizer.cardinality = new JUDOPSM!Cardinality;
           queryCustomizer.cardinality.lower = 0;
@@ -434,6 +434,6 @@ rule CreateGetRangeInputType
           t.relations.add(queryCustomizer);
       }
       
-      s.eContainer.getPSMExtensionNamespaceEquivalent().elements.add(t);
+      s.eContainer.eContainer.getPSMExtensionNamespaceEquivalent().elements.add(t);
       log.debug("Get range input type created: " + t.name);
 }
