@@ -12,3 +12,8 @@ import "transferObjectForm.eol";
 import "transferObjectView.eol";
 import "transferObjectTable.eol";
 import "operationForm.eol";
+
+import "textField.eol";
+import "divider.eol";
+import "icon.eol";
+import "placeholder.eol";
