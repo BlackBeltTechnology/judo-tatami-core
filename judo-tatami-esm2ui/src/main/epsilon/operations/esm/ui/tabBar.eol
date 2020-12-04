@@ -4,7 +4,8 @@ operation ESM!esm::ui::TabBar createTabController(application : UI!ui::Applicati
     ret.label = self.getUiLabel();
 	
 	ret.col = applicationColumns;
-	
+    ret.sourceId = self.getID();
+
 	for (t in self.tabs) {
 	
 		var tab : UI!ui::Tab = new UI!ui::Tab();

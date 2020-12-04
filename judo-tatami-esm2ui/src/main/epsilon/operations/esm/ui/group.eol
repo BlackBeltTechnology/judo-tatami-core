@@ -1,5 +1,6 @@
 operation ESM!esm::ui::Group createFlexFromGroup(application : UI!ui::Application) : UI!ui::Flex {
 	var ret : UI!ui::Flex = self.createFlexFromContainer(application);
+	ret.sourceId = self.getID();
 	return ret;
 }
 
