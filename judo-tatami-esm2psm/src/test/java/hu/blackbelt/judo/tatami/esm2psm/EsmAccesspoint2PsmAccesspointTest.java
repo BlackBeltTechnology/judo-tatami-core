@@ -150,6 +150,7 @@ public class EsmAccesspoint2PsmAccesspointTest {
     			.withName("actor")
     			.withPrincipal(accessPoint)
     			.withAnonymous(false)
+    			.withManaged(false)
     			.withRealm("sandbox")
     			.build();
     	useTransferObjectType(accessPoint).withActorType(actor).build();
@@ -206,6 +207,7 @@ public class EsmAccesspoint2PsmAccesspointTest {
         		.withName("actor")
     			.withPrincipal(accessPoint)
     			.withAnonymous(true)
+    			.withManaged(false)
     			.build();
     	useTransferObjectType(accessPoint).withActorType(actor).build();
     	
@@ -364,6 +366,7 @@ public class EsmAccesspoint2PsmAccesspointTest {
         ActorType actor = newActorTypeBuilder()
                 .withName("actor")
                 .withPrincipal(accessPoint)
+                .withManaged(false)
                 .withAccesses(newAccessBuilder()
                         .withName(ACCESS_NAME)
                         .withCreateable(true)
