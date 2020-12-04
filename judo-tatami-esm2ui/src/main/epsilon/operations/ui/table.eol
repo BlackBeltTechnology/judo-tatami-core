@@ -68,7 +68,7 @@ operation UI!ui::Table createRelationActionButtonsForTable(application : UI!ui::
 	
 	var buttonGroup : UI!ui::Flex = createHorizontalFlex("instanceActions", self.col);
 
-	if (tableContainer.children.size() == 2 and tableContainer.children.get(0).isKindOf(UI!ui::Text)) {
+	if (tableContainer.children.size() == 2 and tableContainer.children.get(0).isKindOf(UI!ui::Label)) {
 		tableContainer.children.add(1, buttonGroup);
 	} else if (tableContainer.children.size() == 1 and tableContainer.children.get(0).isKindOf(UI!ui::Table)) {
 		tableContainer.children.add(0, buttonGroup);
@@ -125,17 +125,17 @@ operation UI!ui::Table wrapAndLabelTable() {
 	
 	if (not self.isTablePage() and (self.label.isDefined() or self.icon.isDefined())) {
 		var tableIndex : Integer = wrapper.children.indexOf(self);
-		var label : UI!ui::Text = new UI!ui::Text();
+		var label : UI!ui::Label = new UI!ui::Label();
 		label.name = self.name.anchor("Label");
 
 		if (self.label.isDefined()) {
 			label.label = self.label;
 		}
 		
-		if (self.icon.isDefined()) {
+		if (self.icon.isDefined() and self.icon.trim().length() > 0) {
 			var icon : UI!ui::Icon = new UI!ui::Icon;
 			icon.name = self.icon;
-			label.leadingIcon = icon;
+			label.icon = icon;
 		}
 		
 		wrapper.children.add(tableIndex, label);
