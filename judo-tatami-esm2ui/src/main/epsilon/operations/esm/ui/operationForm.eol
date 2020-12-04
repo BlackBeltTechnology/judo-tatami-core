@@ -3,6 +3,12 @@ operation ESM!esm::ui::OperationForm createButtonFromOperationForm(application :
 	
 	t.name = self.name;
     t.label = self.getUiLabel();
+    
+    if (self.getEffectiveGrow()) {
+        t.stretch = true;
+    } else {
+        t.stretch = false;
+    }
 	
 	log.debug("Create operation form: " + self.name);
 	var op : ESM!esm::`operation`::Operation = self.getOperationReference.getMember();

@@ -15,6 +15,12 @@ operation ESM!esm::ui::TabularReferenceField createTableFromTabularReferenceFiel
 			table.row = 1;
 		}
 		
+		if (self.getEffectiveGrow()) {
+            table.stretch = true;
+        } else {
+            table.stretch = false;
+        }
+		
 		return table;
 	} else {
 		
@@ -44,6 +50,12 @@ operation ESM!esm::ui::TabularReferenceField createTableFromTabularReferenceFiel
 			table.row = 1;
 		}
 		
+		if (self.getEffectiveGrow()) {
+            table.stretch = true;
+        } else {
+            table.stretch = false;
+        }
+		
 		return table;
 	}
 }
@@ -56,6 +68,12 @@ operation ESM!esm::ui::TabularReferenceField createButtonFromTabularReferenceFie
 	var button : UI!ui::Button = new UI!ui::Button();
 	button.name = self.name.anchor("TabularReferenceButton");
     button.label = self.getUiLabel();
+    
+    if (self.getEffectiveGrow()) {
+        button.stretch = true;
+    } else {
+        button.stretch = false;
+    }
 	
 	var dataElement = relation.mapRelationType(application, self.getTransferObjectType().mapClassType(application));
 
