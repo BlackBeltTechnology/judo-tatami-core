@@ -11,7 +11,7 @@ rule EReferenceToRdbmsTableForeignKey
     	fk.referenceKey = s.eReferenceType.equivalent("EClassToRdbmsTable").primaryKey;
 		
 		fk.fromType(fk.referenceKey);
-		fk.mandatory = s.isMandatory();
+		fk.mandatory = false; // s.isMandatory();
 		fk.sqlName = s.referenceIdentifierSqlName();
 	    fk.foreignKeySqlName = s.referenceFkSqlName(); 
 
@@ -38,7 +38,7 @@ rule EReferenceToRdbmsTableInverseForeignKey
     	
     	fk.referenceKey = s.eContainingClass.equivalent("EClassToRdbmsTable").primaryKey;
 		fk.fromType(fk.referenceKey);
-		fk.mandatory = s.isMandatory();
+		fk.mandatory = false; // s.isMandatory();
 		fk.sqlName = s.referenceInverseIdentifierSqlName();
 	    fk.foreignKeySqlName = s.referenceInvFkSqlName(); 
 

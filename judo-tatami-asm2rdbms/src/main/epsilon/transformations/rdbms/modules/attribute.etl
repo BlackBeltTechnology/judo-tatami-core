@@ -19,7 +19,7 @@ rule EAttributeToRdbmsField
 			}
 		}
 		t.sqlName = s.fieldSqlName();
-		t.mandatory = s.required;
+		t.mandatory = false; // s.required;
 		t.name = asmUtils.getAttributeFQName(s);
 }
 
@@ -32,19 +32,19 @@ rule EAttributeToTableValueField
 		log.debug("    Add attribute: " + asmUtils.getAttributeFQName(s));
 }
 
-rule EAttributeToUniqueKey
-	transform s : ASM!EAttribute
-	to u : RDBMS!RdbmsUniqueConstraint {
-		guard : asmUtils.isEntityType(s.eContainingClass) and asmUtils.isIdentifier(s) and not s.derived
-		log.debug("    Add uniquie constraint: " + asmUtils.getAttributeFQName(s));
-	    
-	    u.uuid = asmUtils.getAttributeFQName(s) + "@uniqueConstraint";
-		s.eContainingClass.equivalent("EClassToRdbmsTable").uniqueConstraints.add(u);
-		
-		u.sqlName = ("UQ_" + md5(u.uuid));
-		u.name = asmUtils.getAttributeFQName(s); 
-		u.fields.add(s.equivalent("EAttributeToTableValueField"));
-}
+// rule EAttributeToUniqueKey
+//	transform s : ASM!EAttribute
+//	to u : RDBMS!RdbmsUniqueConstraint {
+//		guard : asmUtils.isEntityType(s.eContainingClass) and asmUtils.isIdentifier(s) and not s.derived
+//		log.debug("    Add uniquie constraint: " + asmUtils.getAttributeFQName(s));
+//
+//	    u.uuid = asmUtils.getAttributeFQName(s) + "@uniqueConstraint";
+//		s.eContainingClass.equivalent("EClassToRdbmsTable").uniqueConstraints.add(u);
+//
+//		u.sqlName = ("UQ_" + md5(u.uuid));
+//		u.name = asmUtils.getAttributeFQName(s);
+//		u.fields.add(s.equivalent("EAttributeToTableValueField"));
+//}
 
 rule EAttributeToIndex
 	transform s : ASM!EAttribute
