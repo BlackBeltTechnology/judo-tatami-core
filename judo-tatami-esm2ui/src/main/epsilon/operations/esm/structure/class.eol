@@ -61,7 +61,7 @@ operation ESM!esm::structure::Class createClassType(application : UI!ui::Applica
 //	}
 					
 	application.dataElements.add(clazz);
-    clazz.isPrincipal = self.actorType.isDefined();
+    clazz.isPrincipal = self.actorType.isDefined() and self.actorType == application.~originalActorType;
 
 	for (attribute in self.getAllAttributes()) {
 		attribute.mapAttributeType(application, clazz);
