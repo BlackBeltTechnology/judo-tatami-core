@@ -4,6 +4,8 @@ operation ESM!esm::ui::Icon createIconImageFromIcon() : UI!ui::IconImage {
 	//ret.iconName = self.iconName
 	ret.label = self.getUiLabel();
 	ret.col = self.basis;
+    ret.sourceId = self.getID();
+
 	if (self.getEffectiveGrow()) {
         ret.stretch = true;
     } else {

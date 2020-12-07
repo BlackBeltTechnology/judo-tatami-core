@@ -30,7 +30,8 @@ operation ESM!esm::ui::TabularReferenceField createTableFromTabularReferenceFiel
 		table.name = self.name;	
 	    table.label = self.getUiLabel();
 	    table.icon = self.iconName;
-		
+        table.sourceId = self.getID();
+
 		table.col = self.basis;
 
 		for (column in self.columns) {
@@ -75,6 +76,8 @@ operation ESM!esm::ui::TabularReferenceField createButtonFromTabularReferenceFie
         button.stretch = false;
     }
 	
+	button.sourceId = (self.eResource).getID(self);
+
 	var dataElement = relation.mapRelationType(application, self.getTransferObjectType().mapClassType(application));
 
 	button.action = new UI!ui::NavigationToPageAction();

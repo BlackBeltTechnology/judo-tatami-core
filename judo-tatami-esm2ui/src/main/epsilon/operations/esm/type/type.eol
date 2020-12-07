@@ -121,7 +121,7 @@ operation ESM!esm::type::PasswordType fqName() {
 operation ESM!esm::type::PasswordType createPasswordType(application : UI!ui::Application) : UI!ui::data::PasswordType {
 	var type = new UI!ui::data::PasswordType();
 	type.name = self.fqName();
-	application.dataTypes.add(type);	
+	application.dataTypes.add(type);
 	return type;
 }
 
