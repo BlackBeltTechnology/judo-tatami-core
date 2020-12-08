@@ -1,5 +1,6 @@
 {{ log 'Label generation for' (variable application.name) '-' (fqClass page.name)'page' label level='debug' ~}}
 JudoLabel(
+    col: {{ col }},
     text: '{{label}}',
 {{#if this.icon }}
     icon: Icon(Icons.{{ this.icon.name }}),

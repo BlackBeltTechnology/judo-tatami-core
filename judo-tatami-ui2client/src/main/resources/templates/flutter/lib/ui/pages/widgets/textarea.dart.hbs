@@ -1,0 +1,56 @@
+{{~ log 'Text area input field generation for' (variable application.name) '-' (fqClass page.name)'page'(variable page.dataElement.target.name) attributeType.name level='debug' ~}}
+{{#if page.isPageTypeView}}
+    Observer(
+    builder: (_) => JudoInputText(
+    key: UniqueKey(),
+    col: {{ col }},
+    multiline: true,
+    row: {{ row }},
+    disabled: {{ disabled }},
+    icon: Icon(Icons.{{ this.leadingIcon.name }}),
+    label: '{{ label }}',
+    initialValue: target{{ className page.dataElement.target.name }}Store.{{ attributeType.name }},
+    readOnly: true,
+    )
+    ),
+{{/if}}
+{{#if page.isPageTypeCreate}}
+    JudoInputText(
+    key: inputWidgetKeyMap['{{ name }}'],
+    col: {{ col }},
+    multiline: true,
+    row: {{ row }},
+    disabled: {{ disabled }},
+    icon: Icon(Icons.{{ this.leadingIcon.name }}),
+    label: '{{ label }}',
+    onChanged: (value) => target{{ className page.dataElement.target.name }}Store.set{{ className attributeType.name }}(value.toString()),
+    readOnly: {{attributeType.isReadOnly}},
+    ),
+{{/if}}
+{{#if page.isPageTypeOperationInput}}
+    JudoInputText(
+    key: inputWidgetKeyMap['{{ name }}'],
+    col: {{ col }},
+    multiline: true,
+    row: {{ row }},
+    disabled: {{ disabled }},
+    icon: Icon(Icons.{{ this.leadingIcon.name }}),
+    label: '{{ label }}',
+    onChanged: (value) => target{{ className page.dataElement.target.name }}Store.set{{ className attributeType.name }}(value.toString()),
+    readOnly: {{attributeType.isReadOnly}},
+    ),
+{{/if}}
+{{#if page.isPageTypeUpdate}}
+    JudoInputText(
+    key: inputWidgetKeyMap['{{ name }}'],
+    col: {{ col }},
+    multiline: true,
+    row: {{ row }},
+    disabled: {{ disabled }},
+    icon: Icon(Icons.{{ this.leadingIcon.name }}),
+    label: '{{ label }}',
+    initialValue: target{{ className page.dataElement.target.name }}Store.{{ attributeType.name }},
+    onChanged: (value) => target{{ className page.dataElement.target.name }}Store.set{{ className attributeType.name }}(value.toString()),
+    readOnly: {{attributeType.isReadOnly}},
+    ),
+{{/if}}
