@@ -1,0 +1,19 @@
+operation ESM!esm::ui::TextField createTextFromTextField() : UI!ui::Text {
+	var ret : UI!ui::Text = new UI!ui::Text();
+	ret.name = self.name;
+	ret.label = self.getUiLabel();
+	ret.col = self.basis;
+    ret.sourceId = self.getID();
+
+	if (self.getEffectiveGrow()) {
+        ret.stretch = true;
+    } else {
+        ret.stretch = false;
+    }
+    //ret.text = self.text;
+	return ret;
+}
+
+operation ESM!esm::ui::TextField map(application : UI!ui::Application) : UI!ui::Text {
+	return self.createTextFromTextField();
+}

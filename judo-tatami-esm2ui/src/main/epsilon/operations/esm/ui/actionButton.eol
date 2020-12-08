@@ -2,6 +2,7 @@ operation ESM!esm::ui::ActionButton createButtonFromActionButton(application : U
 	var ret : UI!ui::Button = new UI!ui::Button();
 	ret.name = self.name;
 	ret.label = self.getUiLabel();
+	ret.sourceId = self.getID();
 
 	if (self.action == ESM!esm::ui::Action#SUBMIT) {
 		ret.action = new UI!ui::SaveAction();

@@ -689,10 +689,10 @@ public class EsmStrucutre2PsmDerivedTest {
         transferB.getGeneralizations().add(newGeneralizationBuilder().withTarget(transferA).build());
 
         TransferObjectType ap = newTransferObjectTypeBuilder()
-                .withName("ap").build();
-
-        hu.blackbelt.judo.meta.esm.accesspoint.ActorType actor = newActorTypeBuilder().withName("actor").withPrincipal(ap).build();
-        useTransferObjectType(ap).withActorType(actor).build();
+        		.withName("ap").build();
+        
+        hu.blackbelt.judo.meta.esm.accesspoint.ActorType actor = newActorTypeBuilder().withName("actor").withPrincipal(ap).withManaged(false).build();
+    	useTransferObjectType(ap).withActorType(actor).build();
 
         OneWayRelationMember relation = newOneWayRelationMemberBuilder().withName("relation")
                 .withLower(0)
@@ -820,10 +820,10 @@ public class EsmStrucutre2PsmDerivedTest {
                                 "TestModel::E")
                         .build())
                 .build();
-
-        hu.blackbelt.judo.meta.esm.accesspoint.ActorType actor = newActorTypeBuilder().withName("actor").withPrincipal(accessPoint).build();
-        useTransferObjectType(accessPoint).withActorType(actor).build();
-
+       
+        hu.blackbelt.judo.meta.esm.accesspoint.ActorType actor = newActorTypeBuilder().withName("actor").withPrincipal(accessPoint).withManaged(false).build();
+    	useTransferObjectType(accessPoint).withActorType(actor).build();
+        
         final Model model = newModelBuilder()
                 .withName("TestModel")
                 .withElements(ImmutableList.of(entity,unmapped,accessPoint,mapped,string,actor))

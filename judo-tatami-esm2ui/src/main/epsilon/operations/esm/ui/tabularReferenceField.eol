@@ -15,6 +15,12 @@ operation ESM!esm::ui::TabularReferenceField createTableFromTabularReferenceFiel
 			table.row = 1;
 		}
 		
+		if (self.getEffectiveGrow()) {
+            table.stretch = true;
+        } else {
+            table.stretch = false;
+        }
+		
 		return table;
 	} else {
 		
@@ -24,7 +30,8 @@ operation ESM!esm::ui::TabularReferenceField createTableFromTabularReferenceFiel
 		table.name = self.name;	
 	    table.label = self.getUiLabel();
 	    table.icon = self.iconName;
-		
+        table.sourceId = self.getID();
+
 		table.col = self.basis;
 
 		for (column in self.columns) {
@@ -44,6 +51,12 @@ operation ESM!esm::ui::TabularReferenceField createTableFromTabularReferenceFiel
 			table.row = 1;
 		}
 		
+		if (self.getEffectiveGrow()) {
+            table.stretch = true;
+        } else {
+            table.stretch = false;
+        }
+		
 		return table;
 	}
 }
@@ -56,7 +69,16 @@ operation ESM!esm::ui::TabularReferenceField createButtonFromTabularReferenceFie
 	var button : UI!ui::Button = new UI!ui::Button();
 	button.name = self.name.anchor("TabularReferenceButton");
     button.label = self.getUiLabel();
+    button.col = self.basis;
+    
+    if (self.getEffectiveGrow()) {
+        button.stretch = true;
+    } else {
+        button.stretch = false;
+    }
 	
+	button.sourceId = (self.eResource).getID(self);
+
 	var dataElement = relation.mapRelationType(application, self.getTransferObjectType().mapClassType(application));
 
 	button.action = new UI!ui::NavigationToPageAction();
@@ -86,6 +108,7 @@ operation ESM!esm::ui::TabularReferenceField createButtonFromTabularReferenceFie
 		pageContainer.layoutType = application.layoutTypes.first;
 		pageContainer.name = "default";
 		pageContainer.direction = UI!Axis#VERTICAL;
+		pageContainer.col = applicationColumns;
 		page.containers.add(pageContainer);
 
 	    var flex = new UI!ui::Flex();

@@ -72,7 +72,7 @@ class {{ fqClass class.name }}Repository {
   Future<List<{{ fqClass relation.target.name }}Store>> {{ fqVariable class.name }}RangeOf{{ fqClass relation.name }}ToCreate({{ fqClass class.name }}Store target) async {
     // Use this when JNG-2028 is done
     // {{modelName ap.name}}Extension{{packageName class.name}}GetRangeInput{{className class.name}} {{ variable class.name }}Request = {{ fqClass ap.name }}RepositoryStoreMapper.create{{modelName ap.name}}Extension{{packageName class.name}}GetRangeInput{{className class.name}}From{{ fqClass class.name }}Store(target);
-    {{modelName ap.name}}Extension{{packageName class.name}}GetRangeInput{{className class.name}} {{ variable class.name }}Request = {{modelName ap.name}}Extension{{packageName class.name}}GetRangeInput{{className class.name}}();
+    var {{ variable class.name }}Request = {{modelName ap.name}}Extension{{packageName class.name}}GetRangeInput{{className class.name}}{{ className relation.name }}();
     List<{{ fqClass relation.target.transferObjectTypeName }}> {{ variable relation.target.name }}ListResponse = await DefaultApi(locator<ApiClient>()).{{ fqVariable class.transferObjectTypeName }}GetRangeReference{{ fqClass relation.name }}(input: {{ variable class.name }}Request);
     return {{ variable relation.target.name }}ListResponse.map<{{ fqClass relation.target.name }}Store>(
       {{ fqClass ap.name }}RepositoryStoreMapper.create{{ fqClass relation.target.name }}StoreFrom{{ fqClass relation.target.name }}).toList();
@@ -84,7 +84,7 @@ class {{ fqClass class.name }}Repository {
   Future<List<{{ fqClass relation.target.name }}Store>> {{ fqVariable class.name }}RangeOf{{ fqClass relation.name }}ToUpdate({{ fqClass class.name }}Store target) async {
     // Use this when JNG-2028 is done
     // {{modelName ap.name}}Extension{{packageName class.name}}GetRangeInput{{className class.name}} {{ variable class.name }}Request = {{ fqClass ap.name }}RepositoryStoreMapper.create{{modelName ap.name}}Extension{{packageName class.name}}GetRangeInput{{className class.name}}From{{ fqClass class.name }}Store(target);
-    {{modelName ap.name}}Extension{{packageName class.name}}GetRangeInput{{className class.name}} {{ variable class.name }}Request = {{modelName ap.name}}Extension{{packageName class.name}}GetRangeInput{{className class.name}}();
+    var {{ variable class.name }}Request = {{modelName ap.name}}Extension{{packageName class.name}}GetRangeInput{{className class.name}}{{ className relation.name }}();
     List<{{ fqClass relation.target.transferObjectTypeName }}> {{ variable relation.target.name }}ListResponse = await DefaultApi(locator<ApiClient>()).{{ fqVariable class.transferObjectTypeName }}GetRangeReference{{ fqClass relation.name }}(input: {{ variable class.name }}Request);
     return {{ variable relation.target.name }}ListResponse.map<{{ fqClass relation.target.name }}Store>(
       {{ fqClass ap.name }}RepositoryStoreMapper.create{{ fqClass relation.target.name }}StoreFrom{{ fqClass relation.target.name }}).toList();

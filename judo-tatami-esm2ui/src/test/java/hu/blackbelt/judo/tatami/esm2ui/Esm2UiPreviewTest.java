@@ -288,6 +288,7 @@ public class Esm2UiPreviewTest {
         ActorType actor = newActorTypeBuilder()
                 .withName("actor")
                 .withAccesses(access)
+                .withManaged(false)
                 .withMenuItems(newMenuItemAccessBuilder().withName("order").withAccess(access).build())
                 .build();
 

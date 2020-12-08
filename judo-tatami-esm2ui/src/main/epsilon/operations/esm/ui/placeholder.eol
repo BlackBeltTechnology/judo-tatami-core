@@ -1,0 +1,18 @@
+operation ESM!esm::ui::Placeholder createSpacerFromPlaceholder() : UI!ui::Spacer {
+	var ret : UI!ui::Spacer = new UI!ui::Spacer();
+	ret.name = self.name;
+	ret.label = self.getUiLabel();
+	ret.col = self.basis;
+    ret.sourceId = self.getID();
+
+	if (self.getEffectiveGrow()) {
+        ret.stretch = true;
+    } else {
+        ret.stretch = false;
+    }
+	return ret;
+}
+
+operation ESM!esm::ui::Placeholder map(application : UI!ui::Application) : UI!ui::Spacer {
+	return self.createSpacerFromPlaceholder();
+}

@@ -1,8 +1,10 @@
 operation UI!ui::PageContainer createGroupForInstanceActionButtons() : UI!ui::Flex {
-	var newGroupForButtons : UI!ui::Flex = createHorizontalFlex("instanceActions", 12);
+	var newGroupForButtons : UI!ui::Flex = createHorizontalFlex("instanceActions", applicationColumns);
+	newGroupForButtons.mainAxisAlignment = UI!ui::MainAxisAlignment#CENTER;
+	newGroupForButtons.crossAxisAlignment = UI!ui::CrossAxisAlignment#CENTER;
 	
 	if (self.direction == UI!ui::Axis#HORIZONTAL) {
-		var newGroup : UI!ui::Flex = createVerticalFlex(self.name, 12);
+		var newGroup : UI!ui::Flex = createVerticalFlex(self.name, applicationColumns);
 		var newGroupForChildren : UI!ui::Flex = createHorizontalFlex(self.name, self.col);
 		var childList : List = new List;
 		

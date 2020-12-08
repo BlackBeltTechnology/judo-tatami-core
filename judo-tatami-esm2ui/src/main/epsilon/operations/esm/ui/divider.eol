@@ -1,0 +1,18 @@
+operation ESM!esm::ui::Divider createDividerFromDivider() : UI!ui::Divider {
+	var ret : UI!ui::Divider = new UI!ui::Divider();
+	ret.name = self.name;
+	ret.label = self.getUiLabel();
+	ret.col = self.basis;
+	ret.sourceId = self.getID();
+
+	if (self.getEffectiveGrow()) {
+        ret.stretch = true;
+    } else {
+        ret.stretch = false;
+    }
+	return ret;
+}
+
+operation ESM!esm::ui::Divider map(application : UI!ui::Application) : UI!ui::Divider {
+	return self.createDividerFromDivider();
+}

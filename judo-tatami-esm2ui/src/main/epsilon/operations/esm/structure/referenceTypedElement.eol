@@ -24,6 +24,7 @@ operation ESM!esm::structure::ReferenceTypedElement mapViewPage(application : UI
     pageContainer.layoutType = application.layoutTypes.first;
 	pageContainer.name = "default";
 	pageContainer.direction = UI!Axis#VERTICAL;
+	pageContainer.col = applicationColumns;
 	page.containers.add(pageContainer);
 
 	pageContainer.children.add(target.view.map(application));
@@ -53,6 +54,7 @@ operation ESM!esm::structure::ReferenceTypedElement mapCreatePage(application : 
     pageContainer.layoutType = application.layoutTypes.first;
 	pageContainer.name = "default";
 	pageContainer.direction = UI!Axis#VERTICAL;
+	pageContainer.col = applicationColumns;
 	page.containers.add(pageContainer);
 
     pageContainer.children.add(target.form.map(application));
@@ -81,6 +83,7 @@ operation ESM!esm::structure::ReferenceTypedElement mapUpdatePage(application : 
     pageContainer.layoutType = application.layoutTypes.first;
 	pageContainer.name = "default";
 	pageContainer.direction = UI!Axis#VERTICAL;
+	pageContainer.col = applicationColumns;
 	page.containers.add(pageContainer);
 
     pageContainer.children.add(target.form.map(application));
@@ -113,6 +116,7 @@ operation ESM!esm::structure::ReferenceTypedElement mapTablePage(application : U
     pageContainer.layoutType = application.layoutTypes.first;
 	pageContainer.name = "default";
 	pageContainer.direction = UI!Axis#VERTICAL;
+	pageContainer.col = applicationColumns;
 	page.containers.add(pageContainer);
 
     var flex = new UI!ui::Flex();

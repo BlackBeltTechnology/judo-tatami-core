@@ -27,6 +27,7 @@ import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.epsilon.common.util.UriUtil;
 import org.emfjson.jackson.module.EMFModule;
 import org.emfjson.jackson.resource.JsonResourceFactory;
+import org.emfjson.jackson.resource.JsonUuidResource;
 
 import java.io.IOException;
 import java.net.URI;
@@ -165,19 +166,10 @@ public class Esm2UiPreview {
      * @throws JsonProcessingException
      */
 	public static String exportPageDefinitionToJson(hu.blackbelt.judo.meta.ui.PageDefinition page) throws JsonProcessingException {
-		ResourceSet resourceSet = new ResourceSetImpl();
-		resourceSet.getResourceFactoryRegistry()
-						.getExtensionToFactoryMap()
-						.put("json", new JsonResourceFactory());
-		
-		Resource resource = resourceSet.createResource
-				  (org.eclipse.emf.common.util.URI.createFileURI("preview.json"));
-		
-		resource.getContents().add(page);
-
 		ObjectMapper mapper = new ObjectMapper();
 		EMFModule module = new EMFModule();
 		module.configure(EMFModule.Feature.OPTION_SERIALIZE_DEFAULT_VALUE, true);
+		module.configure(EMFModule.Feature.OPTION_USE_ID, true);
 		module.setReferenceSerializer(new JsonSerializer<EObject>() {
 			  @Override
 			  public void serialize(EObject v, JsonGenerator g, SerializerProvider s)
@@ -193,7 +185,10 @@ public class Esm2UiPreview {
 			  }
 			});
 		mapper.registerModule(module);
-		
+
+		Resource resource = new JsonUuidResource(org.eclipse.emf.common.util.URI.createFileURI("preview.json"), mapper);
+		resource.getContents().add(page);
+
 		return mapper.writeValueAsString(resource);
 	}
 }

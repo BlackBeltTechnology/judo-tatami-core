@@ -23,3 +23,8 @@ operation ESM!esm::ui::VisualElement getTransferObjectType() : ESM!esm::structur
 	}
 	return to;
 }
+
+@cached
+operation ESM!esm::ui::VisualElement getID() : String {
+	return (self.eResource()).getID(self);
+}

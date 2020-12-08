@@ -1,0 +1,19 @@
+operation ESM!esm::ui::Icon createIconImageFromIcon() : UI!ui::IconImage {
+	var ret : UI!ui::IconImage = new UI!ui::IconImage();
+	ret.name = self.name;
+	//ret.iconName = self.iconName
+	ret.label = self.getUiLabel();
+	ret.col = self.basis;
+    ret.sourceId = self.getID();
+
+	if (self.getEffectiveGrow()) {
+        ret.stretch = true;
+    } else {
+        ret.stretch = false;
+    }
+	return ret;
+}
+
+operation ESM!esm::ui::Icon map(application : UI!ui::Application) : UI!ui::IconImage {
+	return self.createIconImageFromIcon();
+}

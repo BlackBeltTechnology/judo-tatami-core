@@ -3,8 +3,9 @@ operation ESM!esm::ui::TabBar createTabController(application : UI!ui::Applicati
 	ret.name = self.name;	
     ret.label = self.getUiLabel();
 	
-	ret.col = applicationColumns;
-	
+	ret.col = self.basis;
+    ret.sourceId = self.getID();
+
 	for (t in self.tabs) {
 	
 		var tab : UI!ui::Tab = new UI!ui::Tab();
@@ -12,7 +13,7 @@ operation ESM!esm::ui::TabBar createTabController(application : UI!ui::Applicati
 		
 		var flex = new UI!ui::Flex();
 		flex.name = tab.name.anchor("Flex");
-		flex.col = applicationColumns;
+		flex.col = self.basis;
 		tab.element = flex;
 		
 		flex.children.add(t.map(application));

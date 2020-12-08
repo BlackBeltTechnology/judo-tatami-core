@@ -2,15 +2,50 @@ operation ESM!esm::ui::Container createFlexFromContainer(application : UI!ui::Ap
 	var ret = new UI!ui::Flex();
 	
 	ret.name = self.name;
-    ret.label = self.getUiLabel();    
-	ret.col = applicationColumns;
+    ret.label = self.getUiLabel();
+    if (self.isKindOf(ESM!esm::ui::Component)) {
+    	ret.col = self.basis;
+    } else {
+    	ret.col = applicationColumns;
+    }
+	
+	ret.sourceId = self.getID();
+
 	if (self.layout == ESM!esm::ui::Layout#HORIZONTAL) {
 		ret.direction = UI!Axis#HORIZONTAL;
 	}
 	if (self.layout == ESM!esm::ui::Layout#VERTICAL) {
 		ret.direction = UI!Axis#VERTICAL;
 	}
-
+	
+    if (self.getEffectiveJustify() == ESM!esm::ui::Justify#START) {
+        ret.mainAxisAlignment = UI!ui::MainAxisAlignment#START;
+    } else if (self.getEffectiveJustify() == ESM!esm::ui::Justify#END) {
+        ret.mainAxisAlignment = UI!ui::MainAxisAlignment#END;
+    } else if (self.getEffectiveJustify() == ESM!esm::ui::Justify#SPACE_AROUND) {
+        ret.mainAxisAlignment = UI!ui::MainAxisAlignment#SPACEAROUND;
+    } else if (self.getEffectiveJustify() == ESM!esm::ui::Justify#SPACE_BETWEEN) {
+        ret.mainAxisAlignment = UI!ui::MainAxisAlignment#SPACEBETWEEN;
+    } else {
+        ret.mainAxisAlignment = UI!ui::MainAxisAlignment#CENTER;
+    }
+    
+    if (self.getEffectiveAlign() == ESM!esm::ui::Align#END) {
+        ret.crossAxisAlignment = UI!ui::CrossAxisAlignment#END;
+    } else if (self.getEffectiveAlign() == ESM!esm::ui::Align#STRETCH) {
+        ret.crossAxisAlignment = UI!ui::CrossAxisAlignment#STRETCH;
+    } else if (self.getEffectiveAlign() == ESM!esm::ui::Align#CENTER) {
+        ret.crossAxisAlignment = UI!ui::CrossAxisAlignment#CENTER;
+    } else {
+        ret.crossAxisAlignment = UI!ui::CrossAxisAlignment#START;
+    }
+    
+    if (self.isKindOf(ESM!esm::ui::Component) and self.getEffectiveGrow()) {
+        ret.stretch = true;
+    } else {
+        ret.stretch = false;
+    }
+	
 	for (component in self.components) {
 		ret.children.add(component.map(application));
 	}
