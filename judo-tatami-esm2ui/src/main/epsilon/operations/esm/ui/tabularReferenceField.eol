@@ -69,6 +69,7 @@ operation ESM!esm::ui::TabularReferenceField createButtonFromTabularReferenceFie
 	var button : UI!ui::Button = new UI!ui::Button();
 	button.name = self.name.anchor("TabularReferenceButton");
     button.label = self.getUiLabel();
+    button.col = self.basis;
     
     if (self.getEffectiveGrow()) {
         button.stretch = true;
@@ -107,6 +108,7 @@ operation ESM!esm::ui::TabularReferenceField createButtonFromTabularReferenceFie
 		pageContainer.layoutType = application.layoutTypes.first;
 		pageContainer.name = "default";
 		pageContainer.direction = UI!Axis#VERTICAL;
+		pageContainer.col = applicationColumns;
 		page.containers.add(pageContainer);
 
 	    var flex = new UI!ui::Flex();
