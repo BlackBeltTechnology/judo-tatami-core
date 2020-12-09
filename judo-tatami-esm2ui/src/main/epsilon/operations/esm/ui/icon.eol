@@ -1,7 +1,10 @@
 operation ESM!esm::ui::Icon createIconImageFromIcon() : UI!ui::IconImage {
 	var ret : UI!ui::IconImage = new UI!ui::IconImage();
 	ret.name = self.name;
-	//ret.iconName = self.iconName
+	if (self.iconName.isDefined() and self.iconName.trim().length() > 0) {
+		ret.icon = new UI!ui::Icon();
+		ret.icon.name = self.iconName;
+	}
 	ret.label = self.getUiLabel();
 	ret.col = self.basis;
     ret.sourceId = self.getID();

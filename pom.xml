@@ -69,7 +69,7 @@
         <judo-meta-measure-version>1.0.0.20201125_145544_8742a08_develop</judo-meta-measure-version>
         <judo-meta-liquibase-version>1.0.0.20201125_143843_8381a44_develop</judo-meta-liquibase-version>
         <judo-meta-openapi-version>1.0.0.20201125_144526_6fedd97_develop</judo-meta-openapi-version>
-        <judo-meta-ui-version>1.0.0.20201204_222204_9b5ebf0_develop</judo-meta-ui-version>
+        <judo-meta-ui-version>1.0.0.20201209_065820_b83676e_feature_JNG_2075_add_card_flag_to_flex</judo-meta-ui-version>
         <judo-meta-keycloak-version>1.0.0.20201120_162544_dd5281d_develop</judo-meta-keycloak-version>
         <judo-dao-api-version>1.0.2.20201124_180615_6b8c898_develop</judo-dao-api-version>
         <judo-dispatcher-api-version>1.0.2.20201127_140200_d1428f4_develop</judo-dispatcher-api-version>
