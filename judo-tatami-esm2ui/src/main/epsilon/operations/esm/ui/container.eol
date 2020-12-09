@@ -3,6 +3,7 @@ operation ESM!esm::ui::Container createFlexFromContainer(application : UI!ui::Ap
 	
 	ret.name = self.name;
     ret.label = self.getUiLabel();
+    ret.card = self.frame;
     if (self.isKindOf(ESM!esm::ui::Component)) {
     	ret.col = self.basis;
     } else {
