@@ -78,7 +78,7 @@ operation UI!ui::Table createRelationActionButtonsForTable(application : UI!ui::
 	
 	if (relationType.getIsRelationBehaviourTypeCreatable()) {
 		if (preview) {
-			var button : UI!ui::Button = createButton("create", "CREATE", 1, new UI!ui::CreateAction());
+			var button : UI!ui::Button = createButton("create", "CREATE", 1d, new UI!ui::CreateAction());
 		    button.action.target = application.pages.selectOne(p | p.pageType = UI!ui::PageType#DASHBOARD);
 		    button.action.dataElement = relationType;
 		    buttonGroup.children.add(button);
@@ -86,7 +86,7 @@ operation UI!ui::Table createRelationActionButtonsForTable(application : UI!ui::
 			var page = application.pages.selectOne(p | p.pageType = UI!ui::PageType#CREATE and p.getRelationType() == relationType);
 			if (page.isDefined()) {
 				log.debug(" ========= PAGE DEF: CREATE: " + relationType.eContainer.name + "." + relationType.name + " - " + page.name);
-			    var button : UI!ui::Button = createButton("create", "CREATE", 1, new UI!ui::CreateAction());
+			    var button : UI!ui::Button = createButton("create", "CREATE", 1d, new UI!ui::CreateAction());
 			    button.action.target = page;
 			    button.action.dataElement = relationType;
 			    buttonGroup.children.add(button);
@@ -97,13 +97,13 @@ operation UI!ui::Table createRelationActionButtonsForTable(application : UI!ui::
 	}
 	
 	if (relationType.getIsRelationBehaviourTypeSetable()) {
-		var button : UI!ui::Button = createButton("set", "SET", 1, new UI!ui::SetAction());
+		var button : UI!ui::Button = createButton("set", "SET", 1d, new UI!ui::SetAction());
 	    button.action.dataElement = relationType;
 	    buttonGroup.children.add(button);
 	}
 
 	if (relationType.getIsRelationBehaviourTypeAddable()) {
-		var button : UI!ui::Button = createButton("add", "ADD", 1, new UI!ui::AddAction());
+		var button : UI!ui::Button = createButton("add", "ADD", 1d, new UI!ui::AddAction());
 		button.action.dataElement = relationType;
 		buttonGroup.children.add(button);
 	}

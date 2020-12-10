@@ -5,9 +5,9 @@ operation ESM!esm::ui::Container createFlexFromContainer(application : UI!ui::Ap
     ret.label = self.getUiLabel();
     ret.frame = self.frame;
     if (self.isKindOf(ESM!esm::ui::Component)) {
-    	ret.col = self.basis;
+    	ret.col = self.basis.asReal();
     } else {
-    	ret.col = applicationColumns;
+    	ret.col = applicationColumns.asReal();
     }
 	
 	ret.sourceId = self.getID();

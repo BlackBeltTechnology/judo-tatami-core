@@ -23,7 +23,7 @@ operation ESM!esm::`operation`::Operation createViewPageForOperationOutput(appli
 	if (self.output.target.view.isUndefined()) {
 		var flex = new UI!ui::Flex();
 		flex.name = self.name;
-		flex.col = applicationColumns;
+		flex.col = applicationColumns.asReal();
 		pageContainer.children.add(flex);
 		log.warn(self.output.target.fqName() + " has no view defined");
 	} else {
@@ -62,7 +62,7 @@ operation ESM!esm::`operation`::Operation createFormPageForOperationInput(applic
     if (self.input.target.form.isUndefined()) {
     	var flex = new UI!ui::Flex();
 		flex.name = self.name;
-		flex.col = applicationColumns;
+		flex.col = applicationColumns.asReal();
 		pageContainer.children.add(flex);
 		log.warn(self.input.target.fqName() + " has no form defined");
 	} else {
@@ -101,7 +101,7 @@ operation ESM!esm::`operation`::Operation createTablePageForOperationInput(appli
 	
 	var flex = new UI!ui::Flex();
 	flex.name = self.name;
-	flex.col = applicationColumns;
+	flex.col = applicationColumns.asReal();
 	flex.direction = UI!Axis#VERTICAL;
 	pageContainer.children.add(flex);
 	
@@ -160,7 +160,7 @@ operation ESM!esm::`operation`::Operation createTablePageForOperationOutput(appl
     var flex = new UI!ui::Flex();
 	flex.name = self.name;
 	flex.direction = UI!Axis#VERTICAL;
-	flex.col = applicationColumns;
+	flex.col = applicationColumns.asReal();
 	pageContainer.children.add(flex);
     
 	var table = self.output.target.table.createTableFromTransferObjectTable(application);

@@ -10,9 +10,9 @@ operation ESM!esm::ui::TabularReferenceField createTableFromTabularReferenceFiel
 		table.dataElement = relation.mapRelationType(application, self.getTransferObjectType().mapClassType(application));
 		
 		if (table.dataElement.isCollection) {
-			table.row = self.maxVisibleElements;
+			table.row = self.maxVisibleElements.asReal();
 		} else {
-			table.row = 1;
+			table.row = 1d;
 		}
 		
 		if (self.getEffectiveGrow()) {
@@ -32,7 +32,7 @@ operation ESM!esm::ui::TabularReferenceField createTableFromTabularReferenceFiel
 	    table.icon = self.iconName;
         table.sourceId = self.getID();
 
-		table.col = self.basis;
+		table.col = self.basis.asReal();
 
 		for (column in self.columns) {
 
@@ -46,9 +46,9 @@ operation ESM!esm::ui::TabularReferenceField createTableFromTabularReferenceFiel
 		table.dataElement = relation.mapRelationType(application, self.getTransferObjectType().mapClassType(application));
 		
 		if (table.dataElement.isCollection) {
-			table.row = self.maxVisibleElements;
+			table.row = self.maxVisibleElements.asReal();
 		} else {
-			table.row = 1;
+			table.row = 1d;
 		}
 		
 		if (self.getEffectiveGrow()) {
@@ -69,7 +69,7 @@ operation ESM!esm::ui::TabularReferenceField createButtonFromTabularReferenceFie
 	var button : UI!ui::Button = new UI!ui::Button();
 	button.name = self.name.anchor("TabularReferenceButton");
     button.label = self.getUiLabel();
-    button.col = self.basis;
+    button.col = self.basis.asReal();
     
     if (self.getEffectiveGrow()) {
         button.stretch = true;
@@ -108,13 +108,13 @@ operation ESM!esm::ui::TabularReferenceField createButtonFromTabularReferenceFie
 		pageContainer.layoutType = application.layoutTypes.first;
 		pageContainer.name = "default";
 		pageContainer.direction = UI!Axis#VERTICAL;
-		pageContainer.col = applicationColumns;
+		pageContainer.col = applicationColumns.asReal();
 		page.containers.add(pageContainer);
 
 	    var flex = new UI!ui::Flex();
 		flex.name = self.name.anchor("Flex");
 		flex.direction = UI!Axis#VERTICAL;
-		flex.col = applicationColumns;
+		flex.col = applicationColumns.asReal();
 		pageContainer.children.add(flex);
 
 		log.debug("Create table for button based on tabular reference field: " + self.name);
@@ -124,12 +124,12 @@ operation ESM!esm::ui::TabularReferenceField createButtonFromTabularReferenceFie
 		table.dataElement = dataElement;
 		
 		if (table.dataElement.isCollection) {
-			table.row = self.maxVisibleElements;
+			table.row = self.maxVisibleElements.asReal();
 		} else {
-			table.row = 1;
+			table.row = 1d;
 		}
 		
-		table.col = self.basis;
+		table.col = self.basis.asReal();
 		table.label = self.getUiLabel();
 	    table.icon = self.iconName;
 		

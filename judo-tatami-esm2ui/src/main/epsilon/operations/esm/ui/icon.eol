@@ -6,7 +6,7 @@ operation ESM!esm::ui::Icon createIconImageFromIcon() : UI!ui::IconImage {
 		ret.icon.name = self.iconName;
 	}
 	ret.label = self.getUiLabel();
-	ret.col = self.basis;
+	ret.col = self.basis.asReal();
     ret.sourceId = self.getID();
 
 	if (self.getEffectiveGrow()) {

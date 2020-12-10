@@ -2,7 +2,7 @@ operation ESM!esm::ui::Placeholder createSpacerFromPlaceholder() : UI!ui::Spacer
 	var ret : UI!ui::Spacer = new UI!ui::Spacer();
 	ret.name = self.name;
 	ret.label = self.getUiLabel();
-	ret.col = self.basis;
+	ret.col = self.basis.asReal();
     ret.sourceId = self.getID();
 
 	if (self.getEffectiveGrow()) {
