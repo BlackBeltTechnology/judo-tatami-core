@@ -46,3 +46,16 @@ rule EAttributeToTableValueField
 //		u.fields.add(s.equivalent("EAttributeToTableValueField"));
 //}
 
+rule EAttributeToIndex
+	transform s : ASM!EAttribute
+	to u : RDBMS!RdbmsIndex {
+		guard : asmUtils.isEntityType(s.eContainingClass) and asmUtils.isIdentifier(s) and not s.derived
+		log.debug("    Add index: " + asmUtils.getAttributeFQName(s));
+
+	    u.uuid = asmUtils.getAttributeFQName(s) + "@uniqueConstraint";
+		s.eContainingClass.equivalent("EClassToRdbmsTable").indexes.add(u);
+
+		u.sqlName = ("IDX_" + md5(u.uuid));
+		u.name = asmUtils.getAttributeFQName(s);
+		u.fields.add(s.equivalent("EAttributeToTableValueField"));
+}
