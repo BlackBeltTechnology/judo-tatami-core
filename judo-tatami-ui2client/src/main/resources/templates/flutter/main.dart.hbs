@@ -10,16 +10,18 @@
 
 import 'package:flutter/material.dart';
 import 'package:openapi_dart_common/openapi.dart';
-
 import '{{ path application.name }}/injector/injector.dart';
 import '{{ path application.name }}/main.dart';
+import '{{ path application.name }}/oauth.dart';
 
 void main() async {
     configureDependencies();
     const bool kIsWeb = identical(0, 0.0);
 
-    ApiClient _apiClient = ApiClient(basePath: "http://localhost:8181/api/{{ baseUrl application.name }}", apiClientDelegate: DioClientDelegate());
+    ApiClient _apiClient = ApiClient(basePath: "http://localhost:8181/api/{{ baseUrl application.name }}", apiClientDelegate: Oauth.getDioDelegate());
     locator.registerSingleton<ApiClient>(_apiClient);
 
+    var token = await Oauth.processLogin();
+    Oauth.addTokenToApiClient(token);
     runApp({{ fqClass application.name }}Application());
 }
