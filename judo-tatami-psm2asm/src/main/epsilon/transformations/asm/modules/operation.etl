@@ -60,18 +60,34 @@ rule CreateFaultParameter
 }
 
 @greedy
+rule CreateCustomImplementationAnnotationOnOperation
+    transform s : JUDOPSM!TransferOperation
+    to t : ASM!EAnnotation {
+        guard: s.implementation.isDefined()
+
+        t.source = asmUtils.getAnnotationUri("customImplementation");
+
+		var customImplementation = new ASM!EStringToStringMapEntry;
+        customImplementation.key = "value";
+        customImplementation.value = s.implementation.customImplementation.asString();
+        t.details.add(customImplementation);
+
+        s.asmEquivalent().eAnnotations.add(t);
+}
+
+@greedy
 rule CreateStatefulAnnotationOnOperation
     transform s : JUDOPSM!TransferOperation
     to t : ASM!EAnnotation {
         guard: s.implementation.isDefined()
 
         t.source = asmUtils.getAnnotationUri("stateful");
-		
-		var stateful = new ASM!EStringToStringMapEntry;
+
+        var stateful = new ASM!EStringToStringMapEntry;
         stateful.key = "value";
         stateful.value = s.implementation.stateful.asString();
         t.details.add(stateful);
-        
+
         s.asmEquivalent().eAnnotations.add(t);
 }
 
@@ -305,4 +321,21 @@ rule AddBehaviourAnnotation
         t.details.add(ownerEntry);
         
         s.asmEquivalent().eAnnotations.add(t); 
+
+        if (s.isKindOf(JUDOPSM!BoundTransferOperation)) {
+            var bindingAnnotation = new ASM!EAnnotation();
+            bindingAnnotation.source = asmUtils.getAnnotationUri("behaviour");
+
+            var bindingTypeEntry = new ASM!EStringToStringMapEntry;
+            bindingTypeEntry.key = "type";
+            bindingTypeEntry.value = typeEntry.value;
+            bindingAnnotation.details.add(bindingTypeEntry);
+
+            var bindingOwnerEntry = new ASM!EStringToStringMapEntry;
+            bindingOwnerEntry.key = "owner";
+            bindingOwnerEntry.value = ownerEntry.value;
+            bindingAnnotation.details.add(bindingOwnerEntry);
+
+            s.binding.asmEquivalent().eAnnotations.add(bindingAnnotation);
+        }
 }

@@ -200,7 +200,7 @@ public class DefaultTransformationContextRegistrationService extends AbstractTra
         transformationContext.getByClass(Esm2PsmTransformationTrace.class).ifPresent(t -> unregisterTrace(t));
         transformationContext.getByClass(Psm2AsmTransformationTrace.class).ifPresent(t -> unregisterTrace(t));
         transformationContext.getByClass(Psm2MeasureTransformationTrace.class).ifPresent(t -> unregisterTrace(t));
-        transformationContext.getByClass(Asm2RdbmsTransformationTrace.class).ifPresent(t -> unregisterTrace(t));
+        transformationContext.get(Asm2RdbmsTransformationTrace.class, "asm2rdbmstrace:" + sqlDialect).ifPresent(t -> unregisterTrace(t));
         transformationContext.getByClass(Asm2OpenAPITransformationTrace.class).ifPresent(t -> unregisterTrace(t));
         transformationContext.getByClass(Asm2KeycloakTransformationTrace.class).ifPresent(t -> unregisterTrace(t));
     }
