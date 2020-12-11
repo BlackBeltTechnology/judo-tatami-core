@@ -12,7 +12,7 @@ rule CreateKeycloakClient
         t.clientId = t.name;
         t.enabled = true;
         t.directAccessGrantsEnabled = true;
-        t.redirectUris.add("http://localhost:8181/api/" + asmUtils.getClassifierFQName(s).replace("\\.", "/") + "/*");
+        t.redirectUris.add("*");
         t.publicClient = true;
         t.bearerOnly = false;
 

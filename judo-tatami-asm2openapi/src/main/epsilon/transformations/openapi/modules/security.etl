@@ -24,6 +24,7 @@ rule CreateSecuritySchemeForActorType
         s.equivalent("CreateSecuritySchemeDeclarationForActorType").securityScheme = t;
 }
 
+// TODO - remove global security
 rule CreateSecurityRequirementOption
 	transform s : ASM!EAnnotation
 	to t : OPENAPI!SecurityRequirementOption {

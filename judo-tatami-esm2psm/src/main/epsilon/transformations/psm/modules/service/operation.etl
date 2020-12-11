@@ -131,6 +131,31 @@ rule CreateParameter
 }
 
 @greedy
+rule CreateGetMetadataOperationForActorType
+    transform s : ESM!ActorType
+    to t : JUDOPSM!UnboundOperation {
+        t.name = "_metadata";
+        t.behaviour = new JUDOPSM!TransferOperationBehaviour;
+        t.behaviour.behaviourType = JUDOPSM!TransferOperationBehaviourType#GET_METADATA;
+        t.behaviour.owner = s.getPSMEquivalent();
+
+        s.getPSMEquivalent().operations.add(t);
+}
+
+@greedy
+rule CreateGetMetadataOperationOutputParameterForActorType
+    transform s : ESM!ActorType
+    to t : JUDOPSM!Parameter {
+        t.name = "output";
+        t.type = s.equivalent("CreateMetadataType");
+        t.cardinality = new JUDOPSM!Cardinality;
+        t.cardinality.lower = 0;
+        t.cardinality.upper = 1;
+
+        s.equivalent("CreateGetMetadataOperationForActorType").output = t;
+}
+
+@greedy
 rule CreateGetPrincipalOperationForActorType
     transform s : ESM!ActorType
     to t : JUDOPSM!UnboundOperation {
