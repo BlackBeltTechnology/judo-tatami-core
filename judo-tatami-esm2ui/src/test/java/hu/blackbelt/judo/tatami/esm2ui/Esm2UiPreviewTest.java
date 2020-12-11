@@ -262,7 +262,6 @@ public class Esm2UiPreviewTest {
                 .withName(order.getName() + "View")
                 .withLabel(order.getName() + "View")
                 .withLayout(Layout.HORIZONTAL)
-                .withWrap(true)
                 .withHorizontal(Horizontal.LEFT)
                 .withVertical(Vertical.TOP)
                 .withFrame(true)
@@ -271,7 +270,7 @@ public class Esm2UiPreviewTest {
                         .withLabel(orderCustomer.getName().toUpperCase())
                         .withIconName("text_fields")
                         .withDataFeature(orderCustomer)
-                        .withBasis(2)
+                        .withCol(2)
                         .build())
                 .build();
 

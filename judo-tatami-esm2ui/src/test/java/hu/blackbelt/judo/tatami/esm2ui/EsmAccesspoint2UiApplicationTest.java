@@ -252,7 +252,6 @@ public class EsmAccesspoint2UiApplicationTest {
         final String EXPOSED_GRAPH_TABLE_NAME = "ExposedGraphTableName";
 
         final TransferObjectTable exposedEntityTable = newTransferObjectTableBuilder()
-        		.withMaxVisibleElements(5)
         		.withMasterDetail(true)
         		.withName(EXPOSED_GRAPH_TABLE_NAME)
         		.withColumns(newDataColumnBuilder()

@@ -3,10 +3,14 @@ operation ESM!esm::ui::DataField createInputFromDataField(application : UI!ui::A
 	ret.name = self.name;
 	ret.label = self.getUiLabel();
 
-	if (self.getEffectiveGrow()) {
-        ret.stretch = true;
+	if (self.stretch == ESM!esm::ui::Stretch#NONE) {
+    	ret.stretch = UI!ui::Stretch#NONE;
+    } else if (self.stretch == ESM!esm::ui::Stretch#HORIZONTAL) {
+        ret.stretch = UI!ui::Stretch#HORIZONTAL;
+    } else if (self.stretch == ESM!esm::ui::Stretch#VERTICAL) {
+        ret.stretch = UI!ui::Stretch#VERTICAL;
     } else {
-        ret.stretch = false;
+        ret.stretch = UI!ui::Stretch#BOTH;
     }
 
 	ret.sourceId = self.getID();

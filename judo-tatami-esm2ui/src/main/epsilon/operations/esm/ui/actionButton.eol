@@ -3,6 +3,8 @@ operation ESM!esm::ui::ActionButton createButtonFromActionButton(application : U
 	ret.name = self.name;
 	ret.label = self.getUiLabel();
 	ret.sourceId = self.getID();
+	ret.col = self.col.asReal();
+	ret.row = self.row.asReal();
 
 	if (self.action == ESM!esm::ui::Action#SUBMIT) {
 		ret.action = new UI!ui::SaveAction();

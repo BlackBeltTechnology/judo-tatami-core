@@ -55,18 +55,20 @@ operation createBlankApplicationForPreview() : UI!ui::Application {
     return application;
 }
 
-operation createHorizontalFlex(name : String, col : Real) : UI!ui::Flex {
+operation createHorizontalFlex(name : String, col : Real, row : Real) : UI!ui::Flex {
 	var ret : UI!ui::Flex = new UI!ui::Flex();
 	ret.name = name;
 	ret.col = col;
+	ret.row = row;
 	ret.direction = UI!ui::Axis#HORIZONTAL;
 	return ret;
 }
 
-operation createVerticalFlex(name : String, col : Real) : UI!ui::Flex {
+operation createVerticalFlex(name : String, col : Real, row : Real) : UI!ui::Flex {
 	var ret : UI!ui::Flex = new UI!ui::Flex();
 	ret.name = name;
 	ret.col = col;
+	ret.row = row;
 	ret.direction = UI!ui::Axis#VERTICAL;
 	return ret;
 }
@@ -77,5 +79,6 @@ operation createButton(name : String, label : String, col : Real, action : UI!ui
 	ret.label = label;
 	ret.col = col;
 	ret.action = action;
+	ret.stretch = UI!ui::Stretch#NONE;
 	return ret;
 }

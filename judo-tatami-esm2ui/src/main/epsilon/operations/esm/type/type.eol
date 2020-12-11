@@ -16,34 +16,34 @@ operation ESM!esm::namespace::NamedElement fillInput(input : UI!ui::Input, row :
 }
 
 operation ESM!esm::type::PasswordType input(dataField : ESM!esm::ui::DataField, application : UI!ui::Application): UI!ui::Input {
-	return self.fillInput(new UI!ui::PasswordInput(), 1, dataField.basis, dataField.iconName);
+	return self.fillInput(new UI!ui::PasswordInput(), dataField.row.asReal(), dataField.col.asReal(), dataField.iconName);
 }
 
 operation ESM!esm::type::StringType input(dataField : ESM!esm::ui::DataField, application : UI!ui::Application): UI!ui::Input {
 	
 	if (dataField.textMultiLine) {
 		var textArea : UI!ui::TextArea = new UI!ui::TextArea();
-		textArea.lines = dataField.lines;
-		return self.fillInput(textArea, textArea.lines.asReal(), dataField.basis.asReal(), dataField.iconName);
+		textArea.lines = dataField.row;
+		return self.fillInput(textArea, textArea.row.asReal(), dataField.col.asReal(), dataField.iconName);
 	} else {
-		return self.fillInput(new UI!ui::TextInput(), 1d, dataField.basis.asReal(), dataField.iconName);
+		return self.fillInput(new UI!ui::TextInput(), dataField.row.asReal(), dataField.col.asReal(), dataField.iconName);
 	}
 }
 
 operation ESM!esm::type::NumericType input(dataField : ESM!esm::ui::DataField, application : UI!ui::Application): UI!ui::Input {
-	return self.fillInput(new UI!ui::NumericInput(), 1d, dataField.basis.asReal(), dataField.iconName);
+	return self.fillInput(new UI!ui::NumericInput(), dataField.row.asReal(), dataField.col.asReal(), dataField.iconName);
 }
 
 operation ESM!esm::type::BooleanType input(dataField : ESM!esm::ui::DataField, application : UI!ui::Application): UI!ui::Input {
-	return self.fillInput(new UI!ui::Switch(), 1d, dataField.basis.asReal());
+	return self.fillInput(new UI!ui::Switch(), dataField.row.asReal(), dataField.col.asReal());
 }
 
 operation ESM!esm::type::DateType input(dataField : ESM!esm::ui::DataField, application : UI!ui::Application): UI!ui::Input {
-	return self.fillInput(new UI!ui::DateInput(), 1d, dataField.basis.asReal(), dataField.iconName);
+	return self.fillInput(new UI!ui::DateInput(), dataField.row.asReal(), dataField.col.asReal(), dataField.iconName);
 }
 
 operation ESM!esm::type::TimestampType input(dataField : ESM!esm::ui::DataField, application : UI!ui::Application): UI!ui::Input {
-	return self.fillInput(new UI!ui::DateTimeInput(), 1d, dataField.basis.asReal(), dataField.iconName);
+	return self.fillInput(new UI!ui::DateTimeInput(), dataField.row.asReal(), dataField.col.asReal(), dataField.iconName);
 }
 
 operation ESM!esm::type::EnumerationType input(dataField : ESM!esm::ui::DataField, application : UI!ui::Application): UI!ui::Input {
@@ -57,7 +57,7 @@ operation ESM!esm::type::EnumerationType input(dataField : ESM!esm::ui::DataFiel
 			opt.enumerationMember = m;
 			radio.options.add(opt);
 		}
-		return self.fillInput(radio, 1d, dataField.basis.asReal());
+		return self.fillInput(radio, dataField.row.asReal(), dataField.col.asReal());
 		
 	} else {
 		var combo = new UI!ui::EnumerationCombo();
@@ -68,7 +68,7 @@ operation ESM!esm::type::EnumerationType input(dataField : ESM!esm::ui::DataFiel
 			opt.enumerationMember = m;
 			combo.options.add(opt);
 		}
-		return self.fillInput(combo, 1d, dataField.basis.asReal());
+		return self.fillInput(combo, dataField.row.asReal(), dataField.col.asReal());
 	}
 }
 

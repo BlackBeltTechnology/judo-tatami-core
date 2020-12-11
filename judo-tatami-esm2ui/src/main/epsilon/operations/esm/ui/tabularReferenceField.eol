@@ -10,16 +10,20 @@ operation ESM!esm::ui::TabularReferenceField createTableFromTabularReferenceFiel
 		table.dataElement = relation.mapRelationType(application, self.getTransferObjectType().mapClassType(application));
 		
 		if (table.dataElement.isCollection) {
-			table.row = self.maxVisibleElements.asReal();
+			table.row = self.row.asReal();
 		} else {
 			table.row = 1d;
 		}
 		
-		if (self.getEffectiveGrow()) {
-            table.stretch = true;
-        } else {
-            table.stretch = false;
-        }
+		if (self.stretch == ESM!esm::ui::Stretch#NONE) {
+	    	table.stretch = UI!ui::Stretch#NONE;
+	    } else if (self.stretch == ESM!esm::ui::Stretch#HORIZONTAL) {
+	        table.stretch = UI!ui::Stretch#HORIZONTAL;
+	    } else if (self.stretch == ESM!esm::ui::Stretch#VERTICAL) {
+	        table.stretch = UI!ui::Stretch#VERTICAL;
+	    } else {
+	        table.stretch = UI!ui::Stretch#BOTH;
+	    }
 		
 		return table;
 	} else {
@@ -32,7 +36,7 @@ operation ESM!esm::ui::TabularReferenceField createTableFromTabularReferenceFiel
 	    table.icon = self.iconName;
         table.sourceId = self.getID();
 
-		table.col = self.basis.asReal();
+		table.col = self.col.asReal();
 
 		for (column in self.columns) {
 
@@ -46,16 +50,20 @@ operation ESM!esm::ui::TabularReferenceField createTableFromTabularReferenceFiel
 		table.dataElement = relation.mapRelationType(application, self.getTransferObjectType().mapClassType(application));
 		
 		if (table.dataElement.isCollection) {
-			table.row = self.maxVisibleElements.asReal();
+			table.row = self.row.asReal();
 		} else {
 			table.row = 1d;
 		}
 		
-		if (self.getEffectiveGrow()) {
-            table.stretch = true;
-        } else {
-            table.stretch = false;
-        }
+		if (self.stretch == ESM!esm::ui::Stretch#NONE) {
+	    	table.stretch = UI!ui::Stretch#NONE;
+	    } else if (self.stretch == ESM!esm::ui::Stretch#HORIZONTAL) {
+	        table.stretch = UI!ui::Stretch#HORIZONTAL;
+	    } else if (self.stretch == ESM!esm::ui::Stretch#VERTICAL) {
+	        table.stretch = UI!ui::Stretch#VERTICAL;
+	    } else {
+	        table.stretch = UI!ui::Stretch#BOTH;
+	    }
 		
 		return table;
 	}
@@ -69,12 +77,16 @@ operation ESM!esm::ui::TabularReferenceField createButtonFromTabularReferenceFie
 	var button : UI!ui::Button = new UI!ui::Button();
 	button.name = self.name.anchor("TabularReferenceButton");
     button.label = self.getUiLabel();
-    button.col = self.basis.asReal();
+    button.col = self.col.asReal();
     
-    if (self.getEffectiveGrow()) {
-        button.stretch = true;
+    if (self.stretch == ESM!esm::ui::Stretch#NONE) {
+    	button.stretch = UI!ui::Stretch#NONE;
+    } else if (self.stretch == ESM!esm::ui::Stretch#HORIZONTAL) {
+        button.stretch = UI!ui::Stretch#HORIZONTAL;
+    } else if (self.stretch == ESM!esm::ui::Stretch#VERTICAL) {
+        button.stretch = UI!ui::Stretch#VERTICAL;
     } else {
-        button.stretch = false;
+        button.stretch = UI!ui::Stretch#BOTH;
     }
 	
 	button.sourceId = (self.eResource).getID(self);
@@ -124,12 +136,12 @@ operation ESM!esm::ui::TabularReferenceField createButtonFromTabularReferenceFie
 		table.dataElement = dataElement;
 		
 		if (table.dataElement.isCollection) {
-			table.row = self.maxVisibleElements.asReal();
+			table.row = self.row.asReal();
 		} else {
 			table.row = 1d;
 		}
 		
-		table.col = self.basis.asReal();
+		table.col = self.col.asReal();
 		table.label = self.getUiLabel();
 	    table.icon = self.iconName;
 		

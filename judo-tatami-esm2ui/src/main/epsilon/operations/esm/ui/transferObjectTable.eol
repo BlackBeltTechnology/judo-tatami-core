@@ -19,7 +19,7 @@ operation ESM!esm::ui::TransferObjectTable createTableFromTransferObjectTable(ap
 	t.dataElement = relation;
 	
 	if (t.dataElement.isCollection) {
-		t.row = self.maxVisibleElements.asReal();
+		t.row = 5d;//self.maxVisibleElements.asReal();
 	} else {
 		t.row = 1d;
 	}

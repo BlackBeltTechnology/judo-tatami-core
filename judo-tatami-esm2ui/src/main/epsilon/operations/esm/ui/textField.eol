@@ -2,14 +2,20 @@ operation ESM!esm::ui::TextField createTextFromTextField() : UI!ui::Text {
 	var ret : UI!ui::Text = new UI!ui::Text();
 	ret.name = self.name;
 	ret.label = self.text;
-	ret.col = self.basis.asReal();
+	ret.col = self.col.asReal();
+	ret.row = self.row.asReal();
     ret.sourceId = self.getID();
 
-	if (self.getEffectiveGrow()) {
-        ret.stretch = true;
+	if (self.stretch == ESM!esm::ui::Stretch#NONE) {
+    	ret.stretch = UI!ui::Stretch#NONE;
+    } else if (self.stretch == ESM!esm::ui::Stretch#HORIZONTAL) {
+        ret.stretch = UI!ui::Stretch#HORIZONTAL;
+    } else if (self.stretch == ESM!esm::ui::Stretch#VERTICAL) {
+        ret.stretch = UI!ui::Stretch#VERTICAL;
     } else {
-        ret.stretch = false;
+        ret.stretch = UI!ui::Stretch#BOTH;
     }
+    
 	return ret;
 }
 

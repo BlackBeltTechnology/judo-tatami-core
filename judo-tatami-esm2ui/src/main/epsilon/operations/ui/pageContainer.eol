@@ -1,11 +1,18 @@
 operation UI!ui::PageContainer createGroupForInstanceActionButtons() : UI!ui::Flex {
-	var newGroupForButtons : UI!ui::Flex = createHorizontalFlex("instanceActions", applicationColumns.asReal());
-	newGroupForButtons.mainAxisAlignment = UI!ui::MainAxisAlignment#CENTER;
+	var newGroupForButtons : UI!ui::Flex = createHorizontalFlex("instanceActions", applicationColumns.asReal(), 1d);
+	newGroupForButtons.mainAxisAlignment = UI!ui::MainAxisAlignment#START;
 	newGroupForButtons.crossAxisAlignment = UI!ui::CrossAxisAlignment#CENTER;
+	newGroupForButtons.stretch = UI!ui::Stretch#BOTH;
 	
 	if (self.direction == UI!ui::Axis#HORIZONTAL) {
-		var newGroup : UI!ui::Flex = createVerticalFlex(self.name, applicationColumns.asReal());
-		var newGroupForChildren : UI!ui::Flex = createHorizontalFlex(self.name, self.col);
+		var newGroup : UI!ui::Flex = createVerticalFlex(self.name, applicationColumns.asReal(), self.row + 1d);
+		newGroupForButtons.mainAxisAlignment = UI!ui::MainAxisAlignment#START;
+		newGroupForButtons.crossAxisAlignment = UI!ui::CrossAxisAlignment#CENTER;
+		newGroupForButtons.stretch = UI!ui::Stretch#BOTH;
+		var newGroupForChildren : UI!ui::Flex = createHorizontalFlex(self.name, self.col, self.row);
+		newGroupForChildren.mainAxisAlignment = self.mainAxisAlignment;
+		newGroupForChildren.crossAxisAlignment = self.crossAxisAlignment;
+		newGroupForChildren.stretch = UI!ui::Stretch#BOTH;
 		var childList : List = new List;
 		
 		for (child in self.children) {

@@ -6,14 +6,20 @@ operation ESM!esm::ui::Icon createIconImageFromIcon() : UI!ui::IconImage {
 		ret.icon.name = self.iconName;
 	}
 	ret.label = self.getUiLabel();
-	ret.col = self.basis.asReal();
+	ret.col = self.col.asReal();
+	ret.row = self.row.asReal();
     ret.sourceId = self.getID();
 
-	if (self.getEffectiveGrow()) {
-        ret.stretch = true;
+	if (self.stretch == ESM!esm::ui::Stretch#NONE) {
+    	ret.stretch = UI!ui::Stretch#NONE;
+    } else if (self.stretch == ESM!esm::ui::Stretch#HORIZONTAL) {
+        ret.stretch = UI!ui::Stretch#HORIZONTAL;
+    } else if (self.stretch == ESM!esm::ui::Stretch#VERTICAL) {
+        ret.stretch = UI!ui::Stretch#VERTICAL;
     } else {
-        ret.stretch = false;
+        ret.stretch = UI!ui::Stretch#BOTH;
     }
+    
 	return ret;
 }
 
