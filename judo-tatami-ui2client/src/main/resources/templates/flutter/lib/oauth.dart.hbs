@@ -1,12 +1,17 @@
 // ignore: avoid_web_libraries_in_flutter
+import 'dart:convert';
 import 'dart:html' as html;
 
+import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_appauth_platform_interface/flutter_appauth_platform_interface.dart';
 import 'package:flutter_appauth_web/flutter_appauth_web.dart';
 import 'package:openapi_dart_common/openapi.dart';
 import 'injector/injector.dart';
 import 'dart:async';
+import 'package:http/http.dart' as http;
+
+import 'package:{{ modelPackage application.name }}/{{ path application.name }}/rest/lib/api.dart';
 
 class Oauth {
   static const AUTH_CODE_VERIFIER_KEY = "auth_code_verifier";
@@ -19,20 +24,46 @@ class Oauth {
   static const GRANT_REFRESH = "refresh_token";
 
   //Judo specific
-  static const ISSUER = "http://localhost:8080/auth/realms/JUDO";
-  static const SCOPES = ["email"];
-  static const CALLBACK_URL = "http://localhost:8888/";
-  static const CLIENT_ID = "Judo_Default_Project-User";
-  static const REALM = "JUDO";
-  static const LOGOUT_URL = "http://localhost:8080/auth/realms/JUDO/protocol/openid-connect/logout?redirect_uri=http%3A%2F%2Flocalhost%3A8888%2F";
+  //static const ISSUER = "http://localhost:8080/auth/realms/JUDO";
+  //static const SCOPES = ["email"];
+  //static const CALLBACK_URL = "http://localhost:8888/";
+  //static const CLIENT_ID = "Judo_Default_Project-User";
+  //static const REALM = "JUDO";
+  //static const LOGOUT_URL = "http://localhost:8080/auth/realms/JUDO/protocol/openid-connect/logout?redirect_uri=http%3A%2F%2Flocalhost%3A8888%2F";
 
-  static loadBackendMetaData() {
-  //TODO implement load meta data from backend
+  static var callbackUrl = html.window.location.protocol  + "//" + html.window.location.host;
+  static {{ modelName application.name }}MetadataSecurityFor{{ className application.name }} securitySettings = {{ modelName application.name }}MetadataSecurityFor{{ className application.name }}();
+
+  static loadClientMetaData() async {
+    try {
+        //TODO remove when openAPI security is set correctly
+        var response = await http.get("http://localhost:8181/api/{{ modelPackage application.name }}/{{ className application.name }}/~meta");
+        final Map<String, dynamic> jsonResponse = jsonDecode(response.body);
+        if (response.statusCode == 200) {
+        var securities =  cast<List>(jsonResponse["security"]);
+        if(securities.isNotEmpty) {
+            var securityMeta = securities.first;
+            securitySettings.clientId = securityMeta["clientId"].toString();
+            securitySettings.clientBaseUrl = securityMeta["clientBaseUrl"].toString();
+            securitySettings.defaultScopes = securityMeta["defaultScopes"].toString();
+            securitySettings.issuer = securityMeta["issuer"].toString();
+            securitySettings.name = securityMeta["name"].toString();
+            print("security settings: $securitySettings");
+        }
+    }
+
+        //TODO add when openAPI security is set correctly
+        // NorthwindMetadataForAuthInternalUser meta = await DefaultApi(
+        //     locator<ApiClient>()).northwindAuthInternalUserMetadata();
+        // securitySettings =  meta.security.first;
+    } on ApiException catch (error) {
+        print(error);
+        throw error;
+    }
   }
 
   static bool isAuthenticationRequired() {
-    // TODO add meta response check
-    return true;
+        return securitySettings.clientId != null;
   }
 
   static Future<String> processLogin() async {
@@ -54,10 +85,10 @@ class Oauth {
     if (html.window.sessionStorage[AUTH_CODE_VERIFIER_KEY] == null || html.window.sessionStorage[AUTH_CODE_VERIFIER_KEY].isEmpty) {
       var auth = AppAuthWebPlugin();
       var request = AuthorizationTokenRequest(
-          CLIENT_ID,
-          CALLBACK_URL,
-          issuer: ISSUER,
-          scopes: SCOPES);
+          securitySettings.clientId,
+          callbackUrl,
+          issuer: securitySettings.issuer,
+          scopes: [securitySettings.defaultScopes]);
       await auth.authorizeAndExchangeCode(request);
     }
   }
@@ -65,14 +96,14 @@ class Oauth {
   static Future<String> requestToken(String grantType) async {
         // print("authResponse: ${authResponse.authorizationCode}");
         var tokenRequest = TokenRequest(
-            CLIENT_ID,
-            CALLBACK_URL,
-            scopes: SCOPES,
+            securitySettings.clientId,
+            callbackUrl,
+            scopes: [securitySettings.defaultScopes],
             grantType: grantType,
             authorizationCode: html.window.sessionStorage[AUTH_CODE_KEY],
             codeVerifier: html.window.sessionStorage[AUTH_CODE_VERIFIER_KEY],
             refreshToken: grantType == GRANT_REFRESH ? html.window.sessionStorage[AUTH_REFRESH_TOKEN_KEY]: null,
-            issuer: ISSUER);
+            issuer: securitySettings.issuer);
 
         var token = await AppAuthWebPlugin.requestToken(tokenRequest);
         html.window.sessionStorage[AUTH_ACCESS_TOKEN_KEY] = token.accessToken;
@@ -88,7 +119,7 @@ class Oauth {
 
   static bool addTokenToApiClient(String token) {
     if (token != null) {
-      locator<ApiClient>().setAuthentication(REALM, OAuth(accessToken: token));
+      locator<ApiClient>().setAuthentication(securitySettings.name, OAuth(accessToken: token));
       return true;
     }
     return false;
@@ -101,9 +132,10 @@ class Oauth {
     html.window.sessionStorage.remove(AUTH_ACCESS_TOKEN_EXPIRE);
     html.window.sessionStorage.remove(AUTH_REFRESH_TOKEN_KEY);
     html.window.sessionStorage.remove(AUTH_DESTINATION_URL);
-    locator<ApiClient>().setAuthentication(REALM, null);
+    securitySettings = {{ modelName application.name }}MetadataSecurityFor{{ className application.name }}();
+    locator<ApiClient>().setAuthentication(securitySettings.name, null);
     // var logoutUri = LOGOUT_URL + "?redirect_uri=${Uri.encodeQueryComponent(CALLBACK_URL)}";
-    html.window.location.assign(LOGOUT_URL);
+    html.window.location.assign(securitySettings.logoutEndpoint + "?redirect_uri=${Uri.encodeQueryComponent(callbackUrl)}");
   }
 
   static refreshToken() async {
