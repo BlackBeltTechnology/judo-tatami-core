@@ -1,4 +1,14 @@
+{{# if column }}
 {{ log 'Formatted text generation for' (variable application.name) '-' (fqClass table.name)'table' (variable dataName) (variable column.attributeType.name) level='debug' ~}}
 Text(
     target{{ dataName }}?.{{ column.attributeType.name }} != null ? target{{ dataName }}.{{ column.attributeType.name }}.toString() : '< None >',
 ),
+{{ else }}
+{{ log 'Formatted text generation for' (variable application.name) '-' (fqClass page.name)'page'(variable page.dataElement.target.name) attributeType.name level='debug' ~}}
+JudoText(
+    col: {{ multiplyCol col }},
+    row: {{ row }},
+    label: '{{ label }}',
+    text: target{{ className page.dataElement.target.name }}Store.{{ attributeType.name }}.toString(),
+),
+{{/ if }}

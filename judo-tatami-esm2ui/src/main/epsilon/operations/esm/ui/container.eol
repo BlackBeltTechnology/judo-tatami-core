@@ -5,9 +5,25 @@ operation ESM!esm::ui::Container createFlexFromContainer(application : UI!ui::Ap
     ret.label = self.getUiLabel();
     ret.frame = self.frame;
     if (self.isKindOf(ESM!esm::ui::Component)) {
-    	ret.col = self.basis;
+    	ret.col = self.col.asReal();
+    	ret.row = self.row.asReal();
+    	if (self.stretch == ESM!esm::ui::Stretch#NONE) {
+        	ret.stretch = UI!ui::Stretch#NONE;
+	    } else if (self.stretch == ESM!esm::ui::Stretch#HORIZONTAL) {
+	        ret.stretch = UI!ui::Stretch#HORIZONTAL;
+	    } else if (self.stretch == ESM!esm::ui::Stretch#VERTICAL) {
+	        ret.stretch = UI!ui::Stretch#VERTICAL;
+	    } else {
+	        ret.stretch = UI!ui::Stretch#BOTH;
+	    }
+	    if (self.fit == ESM!esm::ui::Fit#LOOSE) {
+			ret.fit = UI!ui::Fit#LOOSE;
+		} else if (self.action == ESM!esm::ui::Fit#TIGHT) {
+			ret.fit = UI!ui::Fit#TIGHT;
+		}
     } else {
-    	ret.col = applicationColumns;
+    	ret.col = applicationColumns.asReal();
+    	ret.stretch = UI!ui::Stretch#BOTH;
     }
 	
 	ret.sourceId = self.getID();
@@ -41,10 +57,11 @@ operation ESM!esm::ui::Container createFlexFromContainer(application : UI!ui::Ap
         ret.crossAxisAlignment = UI!ui::CrossAxisAlignment#START;
     }
     
-    if (self.isKindOf(ESM!esm::ui::Component) and self.getEffectiveGrow()) {
-        ret.stretch = true;
-    } else {
-        ret.stretch = false;
+    if (self.layout == ESM!esm::ui::Layout#HORIZONTAL and self.components.forAll(c | c.isVerticalGrow())) {
+    	ret.crossAxisAlignment = UI!ui::CrossAxisAlignment#STRETCH;
+    }
+    if (self.layout == ESM!esm::ui::Layout#VERTICAL and self.components.forAll(c | c.isHorizontalGrow())) {
+    	ret.crossAxisAlignment = UI!ui::CrossAxisAlignment#STRETCH;
     }
 	
 	for (component in self.components) {

@@ -10,16 +10,26 @@ operation ESM!esm::ui::TabularReferenceField createTableFromTabularReferenceFiel
 		table.dataElement = relation.mapRelationType(application, self.getTransferObjectType().mapClassType(application));
 		
 		if (table.dataElement.isCollection) {
-			table.row = self.maxVisibleElements;
+			table.row = self.row.asReal();
 		} else {
-			table.row = 1;
+			table.row = 2d;
 		}
 		
-		if (self.getEffectiveGrow()) {
-            table.stretch = true;
-        } else {
-            table.stretch = false;
-        }
+		if (self.stretch == ESM!esm::ui::Stretch#NONE) {
+	    	table.stretch = UI!ui::Stretch#NONE;
+	    } else if (self.stretch == ESM!esm::ui::Stretch#HORIZONTAL) {
+	        table.stretch = UI!ui::Stretch#HORIZONTAL;
+	    } else if (self.stretch == ESM!esm::ui::Stretch#VERTICAL) {
+	        table.stretch = UI!ui::Stretch#VERTICAL;
+	    } else {
+	        table.stretch = UI!ui::Stretch#BOTH;
+	    }
+	    
+	    if (self.fit == ESM!esm::ui::Fit#LOOSE) {
+			table.fit = UI!ui::Fit#LOOSE;
+		} else if (self.action == ESM!esm::ui::Fit#TIGHT) {
+			table.fit = UI!ui::Fit#TIGHT;
+		}
 		
 		return table;
 	} else {
@@ -32,7 +42,7 @@ operation ESM!esm::ui::TabularReferenceField createTableFromTabularReferenceFiel
 	    table.icon = self.iconName;
         table.sourceId = self.getID();
 
-		table.col = self.basis;
+		table.col = self.col.asReal();
 
 		for (column in self.columns) {
 
@@ -46,16 +56,26 @@ operation ESM!esm::ui::TabularReferenceField createTableFromTabularReferenceFiel
 		table.dataElement = relation.mapRelationType(application, self.getTransferObjectType().mapClassType(application));
 		
 		if (table.dataElement.isCollection) {
-			table.row = self.maxVisibleElements;
+			table.row = self.row.asReal();
 		} else {
-			table.row = 1;
+			table.row = 2d;
 		}
 		
-		if (self.getEffectiveGrow()) {
-            table.stretch = true;
-        } else {
-            table.stretch = false;
-        }
+		if (self.stretch == ESM!esm::ui::Stretch#NONE) {
+	    	table.stretch = UI!ui::Stretch#NONE;
+	    } else if (self.stretch == ESM!esm::ui::Stretch#HORIZONTAL) {
+	        table.stretch = UI!ui::Stretch#HORIZONTAL;
+	    } else if (self.stretch == ESM!esm::ui::Stretch#VERTICAL) {
+	        table.stretch = UI!ui::Stretch#VERTICAL;
+	    } else {
+	        table.stretch = UI!ui::Stretch#BOTH;
+	    }
+	    
+	    if (self.fit == ESM!esm::ui::Fit#LOOSE) {
+			table.fit = UI!ui::Fit#LOOSE;
+		} else if (self.action == ESM!esm::ui::Fit#TIGHT) {
+			table.fit = UI!ui::Fit#TIGHT;
+		}
 		
 		return table;
 	}
@@ -69,13 +89,23 @@ operation ESM!esm::ui::TabularReferenceField createButtonFromTabularReferenceFie
 	var button : UI!ui::Button = new UI!ui::Button();
 	button.name = self.name.anchor("TabularReferenceButton");
     button.label = self.getUiLabel();
-    button.col = self.basis;
+    button.col = self.col.asReal();
     
-    if (self.getEffectiveGrow()) {
-        button.stretch = true;
+    if (self.stretch == ESM!esm::ui::Stretch#NONE) {
+    	button.stretch = UI!ui::Stretch#NONE;
+    } else if (self.stretch == ESM!esm::ui::Stretch#HORIZONTAL) {
+        button.stretch = UI!ui::Stretch#HORIZONTAL;
+    } else if (self.stretch == ESM!esm::ui::Stretch#VERTICAL) {
+        button.stretch = UI!ui::Stretch#VERTICAL;
     } else {
-        button.stretch = false;
+        button.stretch = UI!ui::Stretch#BOTH;
     }
+    
+    if (self.fit == ESM!esm::ui::Fit#LOOSE) {
+		button.fit = UI!ui::Fit#LOOSE;
+	} else if (self.action == ESM!esm::ui::Fit#TIGHT) {
+		button.fit = UI!ui::Fit#TIGHT;
+	}
 	
 	button.sourceId = (self.eResource).getID(self);
 
@@ -108,13 +138,13 @@ operation ESM!esm::ui::TabularReferenceField createButtonFromTabularReferenceFie
 		pageContainer.layoutType = application.layoutTypes.first;
 		pageContainer.name = "default";
 		pageContainer.direction = UI!Axis#VERTICAL;
-		pageContainer.col = applicationColumns;
+		pageContainer.col = applicationColumns.asReal();
 		page.containers.add(pageContainer);
 
 	    var flex = new UI!ui::Flex();
 		flex.name = self.name.anchor("Flex");
 		flex.direction = UI!Axis#VERTICAL;
-		flex.col = applicationColumns;
+		flex.col = applicationColumns.asReal();
 		pageContainer.children.add(flex);
 
 		log.debug("Create table for button based on tabular reference field: " + self.name);
@@ -124,12 +154,12 @@ operation ESM!esm::ui::TabularReferenceField createButtonFromTabularReferenceFie
 		table.dataElement = dataElement;
 		
 		if (table.dataElement.isCollection) {
-			table.row = self.maxVisibleElements;
+			table.row = self.row.asReal();
 		} else {
-			table.row = 1;
+			table.row = 2d;
 		}
 		
-		table.col = self.basis;
+		table.col = self.col.asReal();
 		table.label = self.getUiLabel();
 	    table.icon = self.iconName;
 		

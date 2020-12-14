@@ -1,6 +1,7 @@
 {{ log 'Aggregation action button generation for' (variable application.name) '-' (fqClass page.name)'page'(variable relation.name)'relation' level='debug' ~}}
 JudoButton(
-    col: {{col}},
+    col: {{ multiplyCol col }},
+    row: {{ row }},
     disabled: {{disabled}},
 {{# if action.isBackAction }}
     onPressed: () => navigation.close(),

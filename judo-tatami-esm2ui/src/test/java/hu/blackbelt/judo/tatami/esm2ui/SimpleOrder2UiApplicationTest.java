@@ -138,8 +138,8 @@ public class SimpleOrder2UiApplicationTest {
         
         if(UiUtils.isHorizontalFlex(element)) {
           sb.append("---HORIZONTAL---");
-          int sumCol = UiUtils.getSumOfCols((Container) element);
-          int maxRow = UiUtils.getMaxOfRows((Container) element);
+          double sumCol = UiUtils.getSumOfCols((Container) element);
+          double maxRow = UiUtils.getMaxOfRows((Container) element);
           sb.append(maxRow + " rows in " + element.getRow());
           if (maxRow <= element.getRow()) sb.append(" ***FITS*** //////// ");
           else sb.append(" ===WRONG=== //////// ");
@@ -149,8 +149,8 @@ public class SimpleOrder2UiApplicationTest {
         }
         else if(UiUtils.isVerticalFlex(element)) {
           sb.append("|||VERTICAL||| ");
-          int sumRow = UiUtils.getSumOfRows((Container) element);
-          int maxCol = UiUtils.getMaxOfCols((Container) element);
+          double sumRow = UiUtils.getSumOfRows((Container) element);
+          double maxCol = UiUtils.getMaxOfCols((Container) element);
 
           sb.append(sumRow + " rows in " + element.getRow());
           if (sumRow <= element.getRow()) sb.append(" ***FITS*** //////// ");

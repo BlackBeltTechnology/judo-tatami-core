@@ -2,7 +2,7 @@ operation ESM!esm::ui::TransferObjectTable createTableFromTransferObjectTable(ap
 	var t : UI!ui::Table = new UI!ui::Table();
 	t.name = self.name;
 
-	t.col = applicationColumns;
+	t.col = applicationColumns.asReal();
 	t.label = self.getUiLabel();
 	t.icon = self.iconName;
 	t.sourceId = self.getID();
@@ -19,9 +19,9 @@ operation ESM!esm::ui::TransferObjectTable createTableFromTransferObjectTable(ap
 	t.dataElement = relation;
 	
 	if (t.dataElement.isCollection) {
-		t.row = self.maxVisibleElements;
+		t.row = 31d;
 	} else {
-		t.row = 1;
+		t.row = 2d;
 	}
 	
 	return t;

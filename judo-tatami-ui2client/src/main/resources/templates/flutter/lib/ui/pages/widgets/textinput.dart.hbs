@@ -3,7 +3,8 @@
 Observer(
     builder: (_) => JudoInputText(
         key: UniqueKey(),
-        col: {{ col }},
+        col: {{ multiplyCol col }},
+        row: {{ row }},
         disabled: {{ disabled }},
         icon: Icon(Icons.{{ this.leadingIcon.name }}),
         label: '{{ label }}',
@@ -15,7 +16,8 @@ Observer(
 {{#if page.isPageTypeCreate}}
 JudoInputText(
     key: inputWidgetKeyMap['{{ name }}'],
-    col: {{ col }},
+    col: {{ multiplyCol col }},
+    row: {{ row }},
     disabled: {{ disabled }},
     icon: Icon(Icons.{{ this.leadingIcon.name }}),
     label: '{{ label }}',
@@ -26,7 +28,8 @@ JudoInputText(
 {{#if page.isPageTypeOperationInput}}
 JudoInputText(
     key: inputWidgetKeyMap['{{ name }}'],
-    col: {{ col }},
+    col: {{ multiplyCol col }},
+    row: {{ row }},
     disabled: {{ disabled }},
     icon: Icon(Icons.{{ this.leadingIcon.name }}),
     label: '{{ label }}',
@@ -37,7 +40,8 @@ JudoInputText(
 {{#if page.isPageTypeUpdate}}
 JudoInputText(
     key: inputWidgetKeyMap['{{ name }}'],
-    col: {{ col }},
+    col: {{ multiplyCol col }},
+    row: {{ row }},
     disabled: {{ disabled }},
     icon: Icon(Icons.{{ this.leadingIcon.name }}),
     label: '{{ label }}',

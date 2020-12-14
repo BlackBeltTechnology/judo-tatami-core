@@ -3,7 +3,8 @@
     Observer(
     builder: (_) => JudoInputText(
     key: UniqueKey(),
-    col: {{ col }},
+    col: {{ multiplyCol col }},
+    row: {{ row }},
     multiline: true,
     row: {{ row }},
     disabled: {{ disabled }},
@@ -17,7 +18,8 @@
 {{#if page.isPageTypeCreate}}
     JudoInputText(
     key: inputWidgetKeyMap['{{ name }}'],
-    col: {{ col }},
+    col: {{ multiplyCol col }},
+    row: {{ row }},
     multiline: true,
     row: {{ row }},
     disabled: {{ disabled }},
@@ -30,7 +32,8 @@
 {{#if page.isPageTypeOperationInput}}
     JudoInputText(
     key: inputWidgetKeyMap['{{ name }}'],
-    col: {{ col }},
+    col: {{ multiplyCol col }},
+    row: {{ row }},
     multiline: true,
     row: {{ row }},
     disabled: {{ disabled }},
@@ -43,7 +46,8 @@
 {{#if page.isPageTypeUpdate}}
     JudoInputText(
     key: inputWidgetKeyMap['{{ name }}'],
-    col: {{ col }},
+    col: {{ multiplyCol col }},
+    row: {{ row }},
     multiline: true,
     row: {{ row }},
     disabled: {{ disabled }},

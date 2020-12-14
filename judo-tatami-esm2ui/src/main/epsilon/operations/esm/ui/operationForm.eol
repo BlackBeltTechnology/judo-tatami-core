@@ -3,12 +3,24 @@ operation ESM!esm::ui::OperationForm createButtonFromOperationForm(application :
 	
 	t.name = self.name;
     t.label = self.getUiLabel();
+    t.col = self.col.asReal();
+	t.row = self.row.asReal();
     
-    if (self.getEffectiveGrow()) {
-        t.stretch = true;
+	if (self.stretch == ESM!esm::ui::Stretch#NONE) {
+    	t.stretch = UI!ui::Stretch#NONE;
+    } else if (self.stretch == ESM!esm::ui::Stretch#HORIZONTAL) {
+        t.stretch = UI!ui::Stretch#HORIZONTAL;
+    } else if (self.stretch == ESM!esm::ui::Stretch#VERTICAL) {
+        t.stretch = UI!ui::Stretch#VERTICAL;
     } else {
-        t.stretch = false;
+        t.stretch = UI!ui::Stretch#BOTH;
     }
+    
+    if (self.fit == ESM!esm::ui::Fit#LOOSE) {
+		t.fit = UI!ui::Fit#LOOSE;
+	} else if (self.action == ESM!esm::ui::Fit#TIGHT) {
+		t.fit = UI!ui::Fit#TIGHT;
+	}
 	
 	t.sourceId = self.getID();
 

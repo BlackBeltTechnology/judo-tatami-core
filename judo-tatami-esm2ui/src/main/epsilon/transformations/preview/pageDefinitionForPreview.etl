@@ -17,7 +17,7 @@ rule CreatePageDefinitionForPreview
 		
 		flex.name = s.name;
 	    flex.label = s.name;    
-		flex.col = applicationColumns;
+		flex.col = applicationColumns.asReal();
 		
 		if (s.layout == ESM!esm::ui::Layout#HORIZONTAL) {
 			flex.direction = UI!Axis#HORIZONTAL;
@@ -88,9 +88,14 @@ rule CreatePageDefinitionForPreviewFromTable
 	flex.name = s.name;
     flex.label = s.name;
     flex.direction = UI!Axis#VERTICAL;
-	flex.col = applicationColumns;
+	flex.col = applicationColumns.asReal();
 
 	var table = s.createTableFromTransferObjectTable(application);
+	if (t.dataElement.isCollection) {
+		table.row = 30d;
+	} else {
+		table.row = 2d;
+	}
     flex.children.add(table);
 
 	pageContainer.children.add(flex);

@@ -1,6 +1,7 @@
 {{ log 'Instance action button generation for' (variable application.name) '-' (fqClass page.name)'page'(variable page.dataElement.target.name) level='debug' ~}}
 JudoButton(
-    col: {{col}},
+    col: {{ multiplyCol col }},
+    row: {{ row }},
     disabled: {{disabled}},
 {{# if action.isSaveAction }}
     onPressed: () async {

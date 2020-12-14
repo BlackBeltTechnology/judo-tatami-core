@@ -262,7 +262,6 @@ public class Esm2UiPreviewTest {
                 .withName(order.getName() + "View")
                 .withLabel(order.getName() + "View")
                 .withLayout(Layout.HORIZONTAL)
-                .withWrap(true)
                 .withHorizontal(Horizontal.LEFT)
                 .withVertical(Vertical.TOP)
                 .withFrame(true)
@@ -271,7 +270,7 @@ public class Esm2UiPreviewTest {
                         .withLabel(orderCustomer.getName().toUpperCase())
                         .withIconName("text_fields")
                         .withDataFeature(orderCustomer)
-                        .withBasis(2)
+                        .withCol(2)
                         .build())
                 .build();
 
@@ -339,8 +338,8 @@ public class Esm2UiPreviewTest {
         
         if(UiUtils.isHorizontalFlex(element)) {
           sb.append("---HORIZONTAL---");
-          int sumCol = UiUtils.getSumOfCols((hu.blackbelt.judo.meta.ui.Container) element);
-          int maxRow = UiUtils.getMaxOfRows((hu.blackbelt.judo.meta.ui.Container) element);
+          double sumCol = UiUtils.getSumOfCols((hu.blackbelt.judo.meta.ui.Container) element);
+          double maxRow = UiUtils.getMaxOfRows((hu.blackbelt.judo.meta.ui.Container) element);
           sb.append(maxRow + " rows in " + element.getRow());
           if (maxRow <= element.getRow()) sb.append(" ***FITS*** //////// ");
           else sb.append(" ===WRONG=== //////// ");
@@ -350,8 +349,8 @@ public class Esm2UiPreviewTest {
         }
         else if(UiUtils.isVerticalFlex(element)) {
           sb.append("|||VERTICAL||| ");
-          int sumRow = UiUtils.getSumOfRows((hu.blackbelt.judo.meta.ui.Container) element);
-          int maxCol = UiUtils.getMaxOfCols((hu.blackbelt.judo.meta.ui.Container) element);
+          double sumRow = UiUtils.getSumOfRows((hu.blackbelt.judo.meta.ui.Container) element);
+          double maxCol = UiUtils.getMaxOfCols((hu.blackbelt.judo.meta.ui.Container) element);
 
           sb.append(sumRow + " rows in " + element.getRow());
           if (sumRow <= element.getRow()) sb.append(" ***FITS*** //////// ");

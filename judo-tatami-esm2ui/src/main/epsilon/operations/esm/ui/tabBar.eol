@@ -2,18 +2,24 @@ operation ESM!esm::ui::TabBar createTabController(application : UI!ui::Applicati
 	var ret : UI!ui::TabController = new UI!ui::TabController();
 	ret.name = self.name;	
     ret.label = self.getUiLabel();
-	
-	ret.col = self.basis;
+    
+	ret.col = self.col.asReal();
+	ret.row = self.row.asReal();
     ret.sourceId = self.getID();
 
 	for (t in self.tabs) {
 	
 		var tab : UI!ui::Tab = new UI!ui::Tab();
 		tab.name = t.name;
+		if (t.iconName.isDefined() and t.iconName.trim().length() > 0) {
+			tab.icon = new UI!ui::Icon();
+			tab.icon.name = t.iconName;
+		}
 		
 		var flex = new UI!ui::Flex();
 		flex.name = tab.name.anchor("Flex");
-		flex.col = self.basis;
+		flex.label = t.getUiLabel();
+		flex.col = self.col.asReal();
 		tab.element = flex;
 		
 		flex.children.add(t.map(application));
