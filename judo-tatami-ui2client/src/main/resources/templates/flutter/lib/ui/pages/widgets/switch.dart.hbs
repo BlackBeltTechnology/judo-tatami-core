@@ -1,0 +1,56 @@
+{{ log 'Switch generation for' (variable application.name) '-' (fqClass page.name)'page' label level='debug' ~}}
+JudoSwitch(
+    col: {{ multiplyCol col }},
+    row: {{ row }},
+    disabled: {{ disabled }},
+    {{# if icon }}
+        icon: Icon(Icons.{{ this.icon.name }}),
+    {{/if}}
+    label: '{{ label }}',
+    initialValue: target{{ className page.dataElement.target.name }}Store.{{ attributeType.name }},
+    onChanged: (value) => target{{ className page.dataElement.target.name }}Store.set{{ className attributeType.name }}(value),
+    readOnly: {{attributeType.isReadOnly}},
+),
+{{#if page.isPageTypeView}}
+    Observer(
+        builder: (_) => JudoSwitch(
+            col: {{ multiplyCol col }},
+            row: {{ row }},
+            disabled: {{ disabled }},
+            {{# if icon }}
+                icon: Icon(Icons.{{ this.icon.name }}),
+            {{/if}}
+            label: '{{ label }}',
+            initialValue: target{{ className page.dataElement.target.name }}Store.{{ attributeType.name }},
+            readOnly: {{attributeType.isReadOnly}},
+        ),
+    ),
+{{/if}}
+{{#if page.isPageTypeCreate}}
+    JudoSwitch(
+        col: {{ multiplyCol col }},
+        row: {{ row }},
+        disabled: {{ disabled }},
+        {{# if icon }}
+            icon: Icon(Icons.{{ this.icon.name }}),
+        {{/if}}
+        label: '{{ label }}',
+        initialValue: target{{ className page.dataElement.target.name }}Store.{{ attributeType.name }},
+        onChanged: (value) => target{{ className page.dataElement.target.name }}Store.set{{ className attributeType.name }}(value),
+        readOnly: {{attributeType.isReadOnly}},
+    ),
+{{/if}}
+{{#if page.isPageTypeUpdate}}
+    JudoSwitch(
+        col: {{ multiplyCol col }},
+        row: {{ row }},
+        disabled: {{ disabled }},
+        {{# if icon }}
+            icon: Icon(Icons.{{ this.icon.name }}),
+        {{/if}}
+        label: '{{ label }}',
+        initialValue: target{{ className page.dataElement.target.name }}Store.{{ attributeType.name }},
+        onChanged: (value) => target{{ className page.dataElement.target.name }}Store.set{{ className attributeType.name }}(value),
+        readOnly: {{attributeType.isReadOnly}},
+    ),
+{{/if}}

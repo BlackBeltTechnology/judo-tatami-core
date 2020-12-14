@@ -1,5 +1,6 @@
 {{ log 'Text generation for' (variable application.name) '-' (fqClass page.name)'page' label level='debug' ~}}
 JudoText(
-    col: {{ col }},
+    col: {{ multiplyCol col }},
+    row: {{ row }},
     text: '{{label}}',
 ),

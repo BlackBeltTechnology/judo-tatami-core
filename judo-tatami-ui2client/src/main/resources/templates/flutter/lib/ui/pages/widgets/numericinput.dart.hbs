@@ -3,7 +3,8 @@
 Observer(
     builder: (_) => JudoNumericInput(
         key: UniqueKey(),
-        col: {{ col }},
+        col: {{ multiplyCol col }},
+        row: {{ row }},
         disabled: {{ disabled }},
         icon: Icon(Icons.{{ this.leadingIcon.name }}),
         label: '{{ label }}',
@@ -15,7 +16,8 @@ Observer(
 {{#if page.isPageTypeCreate}}
 JudoNumericInput(
     key: inputWidgetKeyMap['{{ name }}'],
-    col: {{ col }},
+    col: {{ multiplyCol col }},
+    row: {{ row }},
     disabled: {{ disabled }},
     icon: Icon(Icons.{{ this.leadingIcon.name }}),
     label: '{{ label }}',
@@ -26,7 +28,8 @@ JudoNumericInput(
 {{#if page.isPageTypeUpdate}}
 JudoNumericInput(
     key: inputWidgetKeyMap['{{ name }}'],
-    col: {{ col }},
+    col: {{ multiplyCol col }},
+    row: {{ row }},
     disabled: {{ disabled }},
     icon: Icon(Icons.{{ this.leadingIcon.name }}),
     label: '{{ label }}',

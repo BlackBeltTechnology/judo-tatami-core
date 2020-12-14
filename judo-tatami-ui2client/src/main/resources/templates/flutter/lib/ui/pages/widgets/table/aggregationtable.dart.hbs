@@ -3,7 +3,7 @@
 Observer(builder: (_) {
     return JudoTable(
         disabled: {{disabled}},
-        col: {{col}},
+        col: {{ multiplyCol col }},
         row: {{row}},
         dataInfo: {{ fqClass pageDefinition.name }}{{ fqClass table.name }}{{ fqClass pageContainer.layoutType.name }}Table(disabled: {{disabled}}),
         rowList: {{# if relation.isCollection }}target{{ className relation.owner.name }}Store.{{variable relation.name}}{{else}}[target{{ className relation.owner.name }}Store.{{variable relation.name}}].asObservable(){{/ if}},

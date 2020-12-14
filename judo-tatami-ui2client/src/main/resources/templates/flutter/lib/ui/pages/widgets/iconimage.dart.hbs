@@ -1,5 +1,6 @@
 {{ log 'Icon generation for' (variable application.name) '-' (fqClass page.name)'page' label level='debug' ~}}
 JudoIcon(
-    col: {{ col }},
+    col: {{ multiplyCol col }},
+    row: {{ row }},
     icon: Icon(Icons.{{ name }}),
 ),
