@@ -91,6 +91,11 @@ rule CreatePageDefinitionForPreviewFromTable
 	flex.col = applicationColumns.asReal();
 
 	var table = s.createTableFromTransferObjectTable(application);
+	if (t.dataElement.isCollection) {
+		table.row = 30d;
+	} else {
+		table.row = 1d;
+	}
     flex.children.add(table);
 
 	pageContainer.children.add(flex);

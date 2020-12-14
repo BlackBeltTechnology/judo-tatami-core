@@ -143,7 +143,7 @@ operation UI!ui::Table wrapAndLabelTable() {
 		}
 		
 		if (self.icon.isDefined() and self.icon.trim().length() > 0) {
-			var icon : UI!ui::Icon = new UI!ui::Icon;
+			var icon : UI!ui::Icon = new UI!ui::Icon();
 			icon.name = self.icon;
 			label.icon = icon;
 		}
