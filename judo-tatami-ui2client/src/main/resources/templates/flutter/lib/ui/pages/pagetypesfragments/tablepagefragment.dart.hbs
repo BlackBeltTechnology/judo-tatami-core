@@ -18,5 +18,5 @@ class _{{fqClass page.name}}PageState extends State<{{fqClass page.name}}Page> {
     final {{fqClass page.name}}PageStore {{fqVariable page.name}}PageStore = {{fqClass page.name}}PageStore();
 
     _{{fqClass page.name}}PageState({{#unless page.dataElement.isAccess}}{@required this.owner{{ className page.dataElement.owner.name }}Store}{{/unless}}){
-        {{fqVariable page.name}}PageStore.get{{ fqClass page.dataElement.name }}({{#unless page.dataElement.isAccess}} owner{{ className page.dataElement.owner.name }}Store {{/unless}});
+        {{fqVariable page.name}}PageStore.get{{ fqClass page.dataElement.name }}({{#unless page.dataElement.isAccess}} owner{{ className page.dataElement.owner.name }}Store {{/unless}}).catchError((onError) => judoAlert(context: context, title: 'Error', text: onError.toString()));
     }

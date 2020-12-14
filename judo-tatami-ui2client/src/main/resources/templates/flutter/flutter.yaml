@@ -40,6 +40,17 @@
   templateName: flutter/lib/main_release.dart.hbs
 
 # ========================================
+# authentication
+# ========================================
+- overwriteExpression: true
+  factoryExpression: "{#application}"
+  pathExpression: >
+    'lib/' +
+    #path(#application.actor.name) + '/' +
+    'oauth.dart'
+  templateName: flutter/lib/oauth.dart.hbs
+
+# ========================================
 # stores
 # ========================================
 - overwriteExpression: true

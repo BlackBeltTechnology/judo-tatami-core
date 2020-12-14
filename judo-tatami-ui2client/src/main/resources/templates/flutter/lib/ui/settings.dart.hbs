@@ -13,6 +13,7 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:mobx/mobx.dart';
 import 'package:judo_flutter_components/judo_flutter_components.dart';
 
+import 'package:{{ modelPackage application.name }}/{{ path application.name }}/oauth.dart';
 import 'package:{{ modelPackage application.name }}/{{ path application.name }}/injector/injector.dart';
 import 'package:{{ modelPackage application.name }}/{{ path application.name }}/ui/scaffold.dart';
 import 'package:{{ modelPackage application.name }}/{{ path application.name }}/ui/navigation_state.dart';
@@ -90,7 +91,7 @@ class _{{ fqClass application.name }}SettingsPageState extends State<{{ fqClass 
                                             SharedPreferences prefs = await SharedPreferences.getInstance();
                                             await prefs.setString('apiUrl', store.apiUrl);
 
-                                            ApiClient _apiClient = ApiClient(basePath: store.apiUrl + "/api/{{ modelPackage application.name }}", apiClientDelegate: DioClientDelegate());
+                                            ApiClient _apiClient = ApiClient(basePath: store.apiUrl + "/api/{{ modelPackage application.name }}", apiClientDelegate: Oauth.getDioDelegate());
                                             locator.unregister(instance: locator<ApiClient>());
                                             locator.registerSingleton<ApiClient>(_apiClient);
                                             navigation.close();

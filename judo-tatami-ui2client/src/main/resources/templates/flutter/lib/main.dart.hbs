@@ -11,16 +11,16 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:openapi_dart_common/openapi.dart';
+import 'oauth.dart';
 import 'package:{{ modelPackage application.name }}/{{ path application.name }}/ui/routes/router.gr.dart' as router;
 import 'package:{{ modelPackage application.name }}/{{ path application.name }}/ui/drawer_items.dart';
 import 'package:{{ modelPackage application.name }}/{{ path application.name }}/ui/navigation_state.dart';
 import 'package:{{ modelPackage application.name }}/{{ path application.name }}/utilities/package.dart';
 import 'package:{{ modelPackage application.name }}/{{ path application.name }}/injector/injector.dart';
 
-
 void main() {
     configureDependencies();
-    ApiClient _apiClient = ApiClient(basePath: "http://localhost:8181/api/{{ baseUrl application.name }}", apiClientDelegate: DioClientDelegate());
+    ApiClient _apiClient = ApiClient(basePath: "http://localhost:8181/api/{{ baseUrl application.name }}", apiClientDelegate: Oauth.getDioDelegate());
     locator.registerSingleton<ApiClient>(_apiClient);
     runApp({{ fqClass application.name }}Application());
 }
@@ -117,6 +117,24 @@ class _{{ fqClass application.name }}DrawerState extends State<{{ fqClass applic
                                                 ),
                                                 backgroundColor: Colors.white,
                                             ),
+                                            otherAccountsPictures: [
+                                                (Oauth.isAuthenticationRequired()) ?
+                                                (Oauth.isLoggedIn()) ?
+                                                IconButton(
+                                                    onPressed: () async {
+                                                        Oauth.logout();
+                                                    },
+                                                    color: Colors.white,
+                                                    icon: Icon(Icons.logout),
+                                                ) :
+                                                IconButton(
+                                                    onPressed: () async {
+                                                        Oauth.loginAuthorizeAndExchangeCode();
+                                                    },
+                                                    color: Colors.white,
+                                                    icon: Icon(Icons.login),
+                                                ): null,
+                                            ],
                                         ),
                                     ]
                                 ),

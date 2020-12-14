@@ -1,0 +1,182 @@
+// ignore: avoid_web_libraries_in_flutter
+import 'dart:convert';
+import 'dart:html' as html;
+
+import 'package:dartz/dartz.dart';
+import 'package:dio/dio.dart';
+import 'package:flutter_appauth_platform_interface/flutter_appauth_platform_interface.dart';
+import 'package:flutter_appauth_web/flutter_appauth_web.dart';
+import 'package:openapi_dart_common/openapi.dart';
+import 'injector/injector.dart';
+import 'dart:async';
+import 'package:http/http.dart' as http;
+
+import 'package:{{ modelPackage application.name }}/{{ path application.name }}/rest/lib/api.dart';
+
+class Oauth {
+  static const AUTH_CODE_VERIFIER_KEY = "auth_code_verifier";
+  static const AUTH_CODE_KEY = "auth_code";
+  static const AUTH_ACCESS_TOKEN_KEY = "auth_access_token";
+  static const AUTH_ACCESS_TOKEN_EXPIRE = "auth_access_token_expire";
+  static const AUTH_REFRESH_TOKEN_KEY = "auth_refresh_token";
+  static const AUTH_DESTINATION_URL = "auth_destination_url";
+  static const GRANT_AUTHORIZATION = "authorization_code";
+  static const GRANT_REFRESH = "refresh_token";
+
+  //Judo specific
+  //static const ISSUER = "http://localhost:8080/auth/realms/JUDO";
+  //static const SCOPES = ["email"];
+  //static const CALLBACK_URL = "http://localhost:8888/";
+  //static const CLIENT_ID = "Judo_Default_Project-User";
+  //static const REALM = "JUDO";
+  //static const LOGOUT_URL = "http://localhost:8080/auth/realms/JUDO/protocol/openid-connect/logout?redirect_uri=http%3A%2F%2Flocalhost%3A8888%2F";
+
+  static var callbackUrl = html.window.location.protocol  + "//" + html.window.location.host;
+  static {{ modelName application.name }}MetadataSecurityFor{{ className application.name }} securitySettings = {{ modelName application.name }}MetadataSecurityFor{{ className application.name }}();
+
+  static loadClientMetaData() async {
+    try {
+        //TODO remove when openAPI security is set correctly
+       // var response = await http.get("http://localhost:8181/api/{{ modelPackage application.name }}/{{ className application.name }}/~meta");
+       // final Map<String, dynamic> jsonResponse = jsonDecode(response.body);
+       //if (response.statusCode == 200) {
+       // var securities =  cast<List>(jsonResponse["security"]);
+       // if(securities.isNotEmpty) {
+       //     var securityMeta = securities.first;
+       //     securitySettings.clientId = securityMeta["clientId"].toString();
+       //     securitySettings.clientBaseUrl = securityMeta["clientBaseUrl"].toString();
+       //     securitySettings.defaultScopes = securityMeta["defaultScopes"].toString();
+       //     securitySettings.issuer = securityMeta["issuer"].toString();
+       //     securitySettings.name = securityMeta["name"].toString();
+       //     print("security settings: $securitySettings");
+       // }
+   // }
+        try {
+            await DefaultApi(
+            locator<ApiClient>()).{{ modelPackage application.name }}{{ className application.name }}Metadata();
+        } on ArgumentError catch (error) {
+            var realm = error.message.toString().substring(26);
+            locator<ApiClient>().setAuthentication(realm, NoopAuth());
+        }
+
+            {{ modelName application.name }}MetadataFor{{ className application.name }} meta = await DefaultApi(
+            locator<ApiClient>()).{{ modelPackage application.name }}{{ className application.name }}Metadata();
+        if (meta.security.isNotEmpty) {
+            securitySettings = meta.security.first;
+        }
+        print("Security settings: $securitySettings");
+
+    } on ApiException catch (error) {
+        print(error);
+        throw error;
+    }
+  }
+
+  static bool isAuthenticationRequired() {
+        return securitySettings.clientId != null;
+  }
+
+  static Future<String> processLogin() async {
+    if (!isLoggedIn()) {
+      var authResponse = AppAuthWebPlugin.processLoginResult(
+          html.window.location.href,
+          html.window.sessionStorage[AUTH_CODE_VERIFIER_KEY]);
+
+      if (authResponse != null) {
+          html.window.sessionStorage[AUTH_CODE_KEY] = authResponse.authorizationCode;
+          return await requestToken(GRANT_AUTHORIZATION);
+      }
+      return null;
+    }
+    return html.window.sessionStorage[AUTH_ACCESS_TOKEN_KEY];
+  }
+
+  static Future loginAuthorizeAndExchangeCode() async {
+    if (html.window.sessionStorage[AUTH_CODE_VERIFIER_KEY] == null || html.window.sessionStorage[AUTH_CODE_VERIFIER_KEY].isEmpty) {
+      var auth = AppAuthWebPlugin();
+      var request = AuthorizationTokenRequest(
+          securitySettings.clientId,
+          callbackUrl,
+          issuer: securitySettings.issuer,
+          scopes: [securitySettings.defaultScopes]);
+      await auth.authorizeAndExchangeCode(request);
+    }
+  }
+
+  static Future<String> requestToken(String grantType) async {
+        // print("authResponse: ${authResponse.authorizationCode}");
+        var tokenRequest = TokenRequest(
+            securitySettings.clientId,
+            callbackUrl,
+            scopes: [securitySettings.defaultScopes],
+            grantType: grantType,
+            authorizationCode: html.window.sessionStorage[AUTH_CODE_KEY],
+            codeVerifier: html.window.sessionStorage[AUTH_CODE_VERIFIER_KEY],
+            refreshToken: grantType == GRANT_REFRESH ? html.window.sessionStorage[AUTH_REFRESH_TOKEN_KEY]: null,
+            issuer: securitySettings.issuer);
+
+        var token = await AppAuthWebPlugin.requestToken(tokenRequest);
+        html.window.sessionStorage[AUTH_ACCESS_TOKEN_KEY] = token.accessToken;
+        html.window.sessionStorage[AUTH_ACCESS_TOKEN_EXPIRE] = token.accessTokenExpirationDateTime.toString();
+        html.window.sessionStorage[AUTH_REFRESH_TOKEN_KEY] = token.refreshToken;
+
+        // print('Access token: ${token.accessToken}');
+        // print('Refresh token: ${token.refreshToken}');
+        // print(token.accessTokenExpirationDateTime);
+
+        return token.accessToken;
+  }
+
+  static bool addTokenToApiClient(String token) {
+    if (token != null) {
+      locator<ApiClient>().setAuthentication(securitySettings.name, OAuth(accessToken: token));
+      return true;
+    }
+    return false;
+  }
+
+  static logout() {
+    html.window.sessionStorage.remove(AUTH_CODE_VERIFIER_KEY);
+    html.window.sessionStorage.remove(AUTH_CODE_KEY);
+    html.window.sessionStorage.remove(AUTH_ACCESS_TOKEN_KEY);
+    html.window.sessionStorage.remove(AUTH_ACCESS_TOKEN_EXPIRE);
+    html.window.sessionStorage.remove(AUTH_REFRESH_TOKEN_KEY);
+    html.window.sessionStorage.remove(AUTH_DESTINATION_URL);
+    securitySettings = {{ modelName application.name }}MetadataSecurityFor{{ className application.name }}();
+    locator<ApiClient>().setAuthentication(securitySettings.name, null);
+    // var logoutUri = LOGOUT_URL + "?redirect_uri=${Uri.encodeQueryComponent(CALLBACK_URL)}";
+    html.window.location.assign(securitySettings.logoutEndpoint + "?redirect_uri=${Uri.encodeQueryComponent(callbackUrl)}");
+  }
+
+  static refreshToken() async {
+    var tokenExpiration = DateTime.parse(html.window.sessionStorage[AUTH_ACCESS_TOKEN_EXPIRE]);
+    var expireIn = tokenExpiration.difference(DateTime.now());
+
+    // print("Token expires in ${expireIn}");
+
+    if (expireIn.inMinutes < 1) {
+      var token = await requestToken(GRANT_REFRESH);
+      addTokenToApiClient(token);
+    }
+  }
+
+  static getDioDelegate() {
+    var dioDelegate = DioClientDelegate();
+    dioDelegate.client.interceptors.add(InterceptorsWrapper(
+        onRequest: (options) async {
+          await Oauth.refreshToken();
+        }
+    ));
+  }
+
+  static bool isLoggedIn() {
+    return html.window.sessionStorage[AUTH_ACCESS_TOKEN_KEY] != null && html.window.sessionStorage[AUTH_ACCESS_TOKEN_KEY].isNotEmpty;
+  }
+}
+
+class NoopAuth implements Authentication {
+    void applyToParams(
+    List<QueryParam> queryParams, Map<String, dynamic> headerParams) {
+        headerParams["Authorization"] = null;
+    }
+}
