@@ -155,7 +155,6 @@ public class SimpleOrderModel {
 								.withName("Content")
 								.withLabel("Order details")
 								.withLayout(Layout.HORIZONTAL)
-								.withWrap(true)
 								.withHorizontal(Horizontal.LEFT)
 								.withVertical(Vertical.TOP)
 								.withFrame(true)
@@ -177,7 +176,7 @@ public class SimpleOrderModel {
 										newTabularReferenceFieldBuilder()
 												.withName("orderItems")
 												.withLabel("Items")
-												.withMaxVisibleElements(5)
+												.withRow(5)
 												.withRelationFeature(orderOrderItems)
 												.withTargetDefinedTabular(false)
 												.withColumns(Arrays.asList(
@@ -208,7 +207,6 @@ public class SimpleOrderModel {
 								.withName("Buttons")
 								.withLabel("Order details")
 								.withLayout(Layout.HORIZONTAL)
-								.withWrap(true)
 								.withHorizontal(Horizontal.LEFT)
 								.withVertical(Vertical.TOP)
 								.withFrame(true)
@@ -235,7 +233,6 @@ public class SimpleOrderModel {
 				.withMasterDetail(true)
 				.withName("OrderTable")
 				.withLabel("Order")
-				.withMaxVisibleElements(5)
 				.withColumns(Arrays.asList(
 						newDataColumnBuilder()
 								.withName("product")
@@ -282,7 +279,7 @@ public class SimpleOrderModel {
 						newTabularReferenceFieldBuilder()
 								.withName("orderItems")
 								.withLabel("Items")
-								.withMaxVisibleElements(5)
+								.withRow(5)
 								.withTargetDefinedTabular(false)
 								.withRelationFeature(orderOrderItems)
 								.withColumns(Arrays.asList(
@@ -343,7 +340,7 @@ public class SimpleOrderModel {
 						newTabularReferenceFieldBuilder()
 								.withName("All Order")
 								.withLabel("orders")
-								.withMaxVisibleElements(5)
+								.withRow(5)
 								.withRelationFeature(applicationOrders)
 								.withTargetDefinedTabular(false)
 								.withColumns(Arrays.asList(
