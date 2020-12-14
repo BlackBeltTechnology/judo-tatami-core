@@ -37,25 +37,35 @@ class Oauth {
   static loadClientMetaData() async {
     try {
         //TODO remove when openAPI security is set correctly
-        var response = await http.get("http://localhost:8181/api/{{ modelPackage application.name }}/{{ className application.name }}/~meta");
-        final Map<String, dynamic> jsonResponse = jsonDecode(response.body);
-        if (response.statusCode == 200) {
-        var securities =  cast<List>(jsonResponse["security"]);
-        if(securities.isNotEmpty) {
-            var securityMeta = securities.first;
-            securitySettings.clientId = securityMeta["clientId"].toString();
-            securitySettings.clientBaseUrl = securityMeta["clientBaseUrl"].toString();
-            securitySettings.defaultScopes = securityMeta["defaultScopes"].toString();
-            securitySettings.issuer = securityMeta["issuer"].toString();
-            securitySettings.name = securityMeta["name"].toString();
-            print("security settings: $securitySettings");
+       // var response = await http.get("http://localhost:8181/api/{{ modelPackage application.name }}/{{ className application.name }}/~meta");
+       // final Map<String, dynamic> jsonResponse = jsonDecode(response.body);
+       //if (response.statusCode == 200) {
+       // var securities =  cast<List>(jsonResponse["security"]);
+       // if(securities.isNotEmpty) {
+       //     var securityMeta = securities.first;
+       //     securitySettings.clientId = securityMeta["clientId"].toString();
+       //     securitySettings.clientBaseUrl = securityMeta["clientBaseUrl"].toString();
+       //     securitySettings.defaultScopes = securityMeta["defaultScopes"].toString();
+       //     securitySettings.issuer = securityMeta["issuer"].toString();
+       //     securitySettings.name = securityMeta["name"].toString();
+       //     print("security settings: $securitySettings");
+       // }
+   // }
+        try {
+            await DefaultApi(
+            locator<ApiClient>()).{{ modelPackage application.name }}{{ className application.name }}Metadata();
+        } on ArgumentError catch (error) {
+            var realm = error.message.toString().substring(26);
+            locator<ApiClient>().setAuthentication(realm, NoopAuth());
         }
-    }
 
-        //TODO add when openAPI security is set correctly
-        // NorthwindMetadataForAuthInternalUser meta = await DefaultApi(
-        //     locator<ApiClient>()).northwindAuthInternalUserMetadata();
-        // securitySettings =  meta.security.first;
+            {{ modelName application.name }}MetadataFor{{ className application.name }} meta = await DefaultApi(
+            locator<ApiClient>()).{{ modelPackage application.name }}{{ className application.name }}Metadata();
+        if (meta.security.isNotEmpty) {
+            securitySettings = meta.security.first;
+        }
+        print("Security settings: $securitySettings");
+
     } on ApiException catch (error) {
         print(error);
         throw error;
@@ -162,4 +172,11 @@ class Oauth {
   static bool isLoggedIn() {
     return html.window.sessionStorage[AUTH_ACCESS_TOKEN_KEY] != null && html.window.sessionStorage[AUTH_ACCESS_TOKEN_KEY].isNotEmpty;
   }
+}
+
+class NoopAuth implements Authentication {
+    void applyToParams(
+    List<QueryParam> queryParams, Map<String, dynamic> headerParams) {
+        headerParams["Authorization"] = null;
+    }
 }
