@@ -503,14 +503,20 @@ public class SimpleOrderModel {
         		newGroupBuilder().withName("group").withComponents(
         				newDataFieldBuilder().withName("orderDate").withLabel("orderDate").withIconName("calendar_today").withDataFeature(orderDate).build(),
         				newDataFieldBuilder().withName("customer").withLabel("customer").withIconName("text_fields").withDataFeature(orderCustomer).build()
-        				).build(),
+        				)
+        			.withFrame(false)
+        			.build(),
         		newGroupBuilder().withName("group2").withComponents(
         				newDataFieldBuilder().withName("received").withLabel("received").withIconName("schedule").withDataFeature(orderReceived).build(),
         				newOperationFormBuilder().withName("returnDamagedItems").withLabel("returnDamagedItems").withOperation("returnDamagedItems").build()
-        				).build(),
+        				)
+        			.withFrame(false)
+        			.build(),
         		newGroupBuilder().withName("group3").withComponents(
         				newOperationFormBuilder().withName("archive").withLabel("archive").withOperation("archive").build()
-        				).build()
+        				)
+        			.withFrame(false)
+        			.build()
         		).build();
         orderView.getComponents().add(tab);
         order.setView(orderView);
@@ -732,6 +738,7 @@ public class SimpleOrderModel {
 		
 		TransferObjectForm form = newTransferObjectFormBuilder()
         		.withName(transferObject.getName() + "Form")
+        		.withFrame(false)
         		.withComponents(newTabBarBuilder()
         			.withCol(12)
         			.withName("TABS")
@@ -740,6 +747,7 @@ public class SimpleOrderModel {
         					newGroupBuilder()
 		    					.withName("TAB1")
 		    					.withLabel("One")
+		    					.withFrame(false)
 		    					.withComponents(Arrays.asList(
 		    							newGroupBuilder()
 		        							.withName("Content")
@@ -783,7 +791,7 @@ public class SimpleOrderModel {
 					                		.withLayout(Layout.HORIZONTAL)
 					                		.withHorizontal(Horizontal.LEFT)
 					                		.withVertical(Vertical.TOP)
-					                		.withFrame(true)
+					                		.withFrame(false)
 					                		.withComponents(dataFields2)
 					                		.withComponents(tables2)
 					                		.build(),
@@ -793,7 +801,7 @@ public class SimpleOrderModel {
 					                		.withLayout(Layout.HORIZONTAL)
 					                		.withHorizontal(Horizontal.LEFT)
 					                		.withVertical(Vertical.TOP)
-					                		.withFrame(true)
+					                		.withFrame(false)
 					                		.withComponents(Arrays.asList(
 					                				newActionButtonBuilder()
 					                					.withName("cancel")
@@ -885,6 +893,7 @@ public class SimpleOrderModel {
 					.withName(r.getName())
 					.withLabel(r.getName().toUpperCase())
 					.withRelationFeature(r)
+					.withIconName(getIconName(((TransferObjectType)(r.getTarget())).getAttributes().get(0)))
 					.withCol(12)
 					.build();
 			TransferObjectType target = (TransferObjectType)(r.getTarget());
@@ -916,10 +925,11 @@ public class SimpleOrderModel {
 				.withLayout(Layout.HORIZONTAL)
 				.withHorizontal(Horizontal.LEFT)
 				.withVertical(Vertical.TOP)
-				.withFrame(true)
+				.withFrame(false)
 				.withComponents(newGroupBuilder().withName("datafieldsHorizontal")
 						.withRow(10).withCol(30).withComponents(dataFields2).withLayout(Layout.VERTICAL)
-						.withHorizontal(Horizontal.CENTER).withVertical(Vertical.SPACE_AROUND).build())
+						.withHorizontal(Horizontal.CENTER).withVertical(Vertical.SPACE_AROUND)
+						.withFrame(true).build())
 				.withComponents(dataFields)
 				.withComponents(tables)
         		.withComponents(operations)
