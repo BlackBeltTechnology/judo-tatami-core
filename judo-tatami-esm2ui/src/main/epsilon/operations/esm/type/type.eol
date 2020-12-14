@@ -23,7 +23,6 @@ operation ESM!esm::type::StringType input(dataField : ESM!esm::ui::DataField, ap
 	
 	if (dataField.textMultiLine) {
 		var textArea : UI!ui::TextArea = new UI!ui::TextArea();
-		textArea.lines = dataField.row;
 		return self.fillInput(textArea, textArea.row.asReal(), dataField.col.asReal(), dataField.iconName);
 	} else {
 		return self.fillInput(new UI!ui::TextInput(), dataField.row.asReal(), dataField.col.asReal(), dataField.iconName);
@@ -86,6 +85,10 @@ operation ESM!esm::type::PasswordType formatted(): UI!ui::Formatted {
 
 operation ESM!esm::type::StringType formatted(): UI!ui::Formatted {
 	return self.fillFormatted(new UI!ui::Formatted(), "%s", 1d, 2d);
+}
+
+operation ESM!esm::type::StringType formatted(dataField : ESM!esm::ui::DataField): UI!ui::Formatted {
+	return self.fillFormatted(new UI!ui::Formatted(), "%s", dataField.row.asReal(), dataField.col.asReal());
 }
 
 // TODO: sprinf numberic format
