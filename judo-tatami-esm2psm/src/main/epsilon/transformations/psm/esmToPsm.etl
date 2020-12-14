@@ -141,6 +141,7 @@ post {
 														and o.behaviour.behaviourType <> JUDOPSM!TransferOperationBehaviourType#VALIDATE_UPDATE
 														and o.behaviour.behaviourType <> JUDOPSM!TransferOperationBehaviourType#DELETE_INSTANCE
 														and o.behaviour.behaviourType <> JUDOPSM!TransferOperationBehaviourType#GET_PRINCIPAL
+														and o.behaviour.behaviourType <> JUDOPSM!TransferOperationBehaviourType#GET_METADATA
 														and o.behaviour.behaviourType <> JUDOPSM!TransferOperationBehaviourType#GET_TEMPLATE
 													)
 												);

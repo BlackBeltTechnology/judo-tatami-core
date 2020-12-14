@@ -41,6 +41,7 @@ operation ASM!EOperation toJAXRSPath() : String {
             case "GET_REFERENCE_RANGE": path = asmUtils.getReferenceFQName(owner.get) + "/~range";
             case "GET_TEMPLATE": path = asmUtils.getClassifierFQName(owner.get) + "/~template";
             case "GET_PRINCIPAL": path = asmUtils.getClassifierFQName(owner.get) + "/~principal";
+            case "GET_METADATA": path = asmUtils.getClassifierFQName(owner.get) + "/~meta";
         }
     }
 

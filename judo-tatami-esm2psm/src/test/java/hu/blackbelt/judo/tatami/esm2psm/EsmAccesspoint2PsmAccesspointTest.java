@@ -461,7 +461,7 @@ public class EsmAccesspoint2PsmAccesspointTest {
                 EcoreUtil.equals(o.getOutput().getType(), defaultE.get())
         ));
 
-        assertEquals(4L, actorType.get().getOperations().stream().filter(o -> o instanceof UnboundOperation).count());
+        assertEquals(5L, actorType.get().getOperations().stream().filter(o -> o instanceof UnboundOperation).count());
     }
 
     static <T> Stream<T> asStream(Iterator<T> sourceIterator, boolean parallel) {

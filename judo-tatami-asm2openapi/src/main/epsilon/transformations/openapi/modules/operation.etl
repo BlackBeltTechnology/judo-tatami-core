@@ -43,6 +43,14 @@ rule CreateExposedServiceOperation
     transform s : ASM!EAnnotation
     to t : OPENAPI!Operation {
         t.`operationId` = asmUtils.getOperationFQName(s.eContainer);
+
+        var behaviour = asmUtils.getBehaviour(s.eContainer);
+        if (behaviour.present and behaviour.get().toString() == "GET_METADATA") {
+            // TODO - remove
+            t.security = Set{};
+        } else {
+            // TODO - replace CreateSecurityRequirementOption, add security for each operations
+        }
 }
 
 rule CreateExposedServiceGetOperation
