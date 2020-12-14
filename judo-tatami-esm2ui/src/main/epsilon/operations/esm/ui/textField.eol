@@ -16,6 +16,12 @@ operation ESM!esm::ui::TextField createTextFromTextField() : UI!ui::Text {
         ret.stretch = UI!ui::Stretch#BOTH;
     }
     
+    if (self.fit == ESM!esm::ui::Fit#LOOSE) {
+		button.fit = UI!ui::Fit#LOOSE;
+	} else if (self.action == ESM!esm::ui::Fit#TIGHT) {
+		button.fit = UI!ui::Fit#TIGHT;
+	}
+    
 	return ret;
 }
 

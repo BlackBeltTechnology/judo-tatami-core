@@ -15,6 +15,12 @@ operation ESM!esm::ui::OperationForm createButtonFromOperationForm(application :
     } else {
         t.stretch = UI!ui::Stretch#BOTH;
     }
+    
+    if (self.fit == ESM!esm::ui::Fit#LOOSE) {
+		t.fit = UI!ui::Fit#LOOSE;
+	} else if (self.action == ESM!esm::ui::Fit#TIGHT) {
+		t.fit = UI!ui::Fit#TIGHT;
+	}
 	
 	t.sourceId = self.getID();
 

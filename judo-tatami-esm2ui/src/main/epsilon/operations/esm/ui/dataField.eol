@@ -21,6 +21,12 @@ operation ESM!esm::ui::DataField createInputFromDataField(application : UI!ui::A
     } else {
         ret.stretch = UI!ui::Stretch#BOTH;
     }
+    
+    if (self.fit == ESM!esm::ui::Fit#LOOSE) {
+		ret.fit = UI!ui::Fit#LOOSE;
+	} else if (self.action == ESM!esm::ui::Fit#TIGHT) {
+		ret.fit = UI!ui::Fit#TIGHT;
+	}
 
 	ret.sourceId = self.getID();
 	ret.attributeType = self.dataFeature.getMember().mapAttributeType(application, self.getTransferObjectType().mapClassType(application));

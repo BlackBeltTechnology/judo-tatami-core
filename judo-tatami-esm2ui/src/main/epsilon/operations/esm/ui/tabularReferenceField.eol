@@ -24,6 +24,12 @@ operation ESM!esm::ui::TabularReferenceField createTableFromTabularReferenceFiel
 	    } else {
 	        table.stretch = UI!ui::Stretch#BOTH;
 	    }
+	    
+	    if (self.fit == ESM!esm::ui::Fit#LOOSE) {
+			table.fit = UI!ui::Fit#LOOSE;
+		} else if (self.action == ESM!esm::ui::Fit#TIGHT) {
+			table.fit = UI!ui::Fit#TIGHT;
+		}
 		
 		return table;
 	} else {
@@ -64,6 +70,12 @@ operation ESM!esm::ui::TabularReferenceField createTableFromTabularReferenceFiel
 	    } else {
 	        table.stretch = UI!ui::Stretch#BOTH;
 	    }
+	    
+	    if (self.fit == ESM!esm::ui::Fit#LOOSE) {
+			table.fit = UI!ui::Fit#LOOSE;
+		} else if (self.action == ESM!esm::ui::Fit#TIGHT) {
+			table.fit = UI!ui::Fit#TIGHT;
+		}
 		
 		return table;
 	}
@@ -88,6 +100,12 @@ operation ESM!esm::ui::TabularReferenceField createButtonFromTabularReferenceFie
     } else {
         button.stretch = UI!ui::Stretch#BOTH;
     }
+    
+    if (self.fit == ESM!esm::ui::Fit#LOOSE) {
+		button.fit = UI!ui::Fit#LOOSE;
+	} else if (self.action == ESM!esm::ui::Fit#TIGHT) {
+		button.fit = UI!ui::Fit#TIGHT;
+	}
 	
 	button.sourceId = (self.eResource).getID(self);
 
