@@ -94,7 +94,7 @@ rule CreatePageDefinitionForPreviewFromTable
 	if (t.dataElement.isCollection) {
 		table.row = 30d;
 	} else {
-		table.row = 1d;
+		table.row = 2d;
 	}
     flex.children.add(table);
 

@@ -12,7 +12,7 @@ operation ESM!esm::ui::TabularReferenceField createTableFromTabularReferenceFiel
 		if (table.dataElement.isCollection) {
 			table.row = self.row.asReal();
 		} else {
-			table.row = 1d;
+			table.row = 2d;
 		}
 		
 		if (self.stretch == ESM!esm::ui::Stretch#NONE) {
@@ -58,7 +58,7 @@ operation ESM!esm::ui::TabularReferenceField createTableFromTabularReferenceFiel
 		if (table.dataElement.isCollection) {
 			table.row = self.row.asReal();
 		} else {
-			table.row = 1d;
+			table.row = 2d;
 		}
 		
 		if (self.stretch == ESM!esm::ui::Stretch#NONE) {
@@ -156,7 +156,7 @@ operation ESM!esm::ui::TabularReferenceField createButtonFromTabularReferenceFie
 		if (table.dataElement.isCollection) {
 			table.row = self.row.asReal();
 		} else {
-			table.row = 1d;
+			table.row = 2d;
 		}
 		
 		table.col = self.col.asReal();

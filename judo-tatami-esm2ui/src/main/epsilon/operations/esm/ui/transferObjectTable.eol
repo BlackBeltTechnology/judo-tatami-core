@@ -19,9 +19,9 @@ operation ESM!esm::ui::TransferObjectTable createTableFromTransferObjectTable(ap
 	t.dataElement = relation;
 	
 	if (t.dataElement.isCollection) {
-		t.row = 30d;
+		t.row = 31d;
 	} else {
-		t.row = 1d;
+		t.row = 2d;
 	}
 	
 	return t;
