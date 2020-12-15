@@ -9,11 +9,7 @@ operation ESM!esm::ui::TabularReferenceField createTableFromTabularReferenceFiel
 		
 		table.dataElement = relation.mapRelationType(application, self.getTransferObjectType().mapClassType(application));
 		
-		if (table.dataElement.isCollection) {
-			table.row = self.row.asReal();
-		} else {
-			table.row = 2d;
-		}
+		table.row = self.row.asReal();
 		
 		if (self.stretch == ESM!esm::ui::Stretch#NONE) {
 	    	table.stretch = UI!ui::Stretch#NONE;
@@ -55,11 +51,7 @@ operation ESM!esm::ui::TabularReferenceField createTableFromTabularReferenceFiel
 		}
 		table.dataElement = relation.mapRelationType(application, self.getTransferObjectType().mapClassType(application));
 		
-		if (table.dataElement.isCollection) {
-			table.row = self.row.asReal();
-		} else {
-			table.row = 2d;
-		}
+		table.row = self.row.asReal();
 		
 		if (self.stretch == ESM!esm::ui::Stretch#NONE) {
 	    	table.stretch = UI!ui::Stretch#NONE;
@@ -153,11 +145,7 @@ operation ESM!esm::ui::TabularReferenceField createButtonFromTabularReferenceFie
 		self.~originalRelation = relation;
 		table.dataElement = dataElement;
 		
-		if (table.dataElement.isCollection) {
-			table.row = self.row.asReal();
-		} else {
-			table.row = 2d;
-		}
+		table.row = self.row.asReal();
 		
 		table.col = self.col.asReal();
 		table.label = self.getUiLabel();
@@ -174,6 +162,7 @@ operation ESM!esm::ui::TabularReferenceField createButtonFromTabularReferenceFie
 		
 		return button;
 	}
+	
 }
 
 operation ESM!esm::ui::TabularReferenceField map(application : UI!ui::Application) : UI!ui::VisualElement {
