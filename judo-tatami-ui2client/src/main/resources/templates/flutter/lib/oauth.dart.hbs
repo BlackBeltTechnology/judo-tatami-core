@@ -53,14 +53,14 @@ class Oauth {
    // }
         try {
             await DefaultApi(
-            locator<ApiClient>()).{{ modelPackage application.name }}{{ className application.name }}Metadata();
+            locator<ApiClient>()).{{ modelNameVariable application.name }}{{ className application.name }}Metadata();
         } on ArgumentError catch (error) {
             var realm = error.message.toString().substring(26);
             locator<ApiClient>().setAuthentication(realm, NoopAuth());
         }
 
             {{ modelName application.name }}MetadataFor{{ className application.name }} meta = await DefaultApi(
-            locator<ApiClient>()).{{ modelPackage application.name }}{{ className application.name }}Metadata();
+            locator<ApiClient>()).{{ modelNameVariable application.name }}{{ className application.name }}Metadata();
         if (meta.security.isNotEmpty) {
             securitySettings = meta.security.first;
         }
@@ -127,12 +127,10 @@ class Oauth {
         return token.accessToken;
   }
 
-  static bool addTokenToApiClient(String token) {
+  static addTokenToApiClient(String token) {
     if (token != null) {
       locator<ApiClient>().setAuthentication(securitySettings.name, OAuth(accessToken: token));
-      return true;
     }
-    return false;
   }
 
   static logout() {
@@ -142,10 +140,10 @@ class Oauth {
     html.window.sessionStorage.remove(AUTH_ACCESS_TOKEN_EXPIRE);
     html.window.sessionStorage.remove(AUTH_REFRESH_TOKEN_KEY);
     html.window.sessionStorage.remove(AUTH_DESTINATION_URL);
-    securitySettings = {{ modelName application.name }}MetadataSecurityFor{{ className application.name }}();
     locator<ApiClient>().setAuthentication(securitySettings.name, null);
     // var logoutUri = LOGOUT_URL + "?redirect_uri=${Uri.encodeQueryComponent(CALLBACK_URL)}";
     html.window.location.assign(securitySettings.logoutEndpoint + "?redirect_uri=${Uri.encodeQueryComponent(callbackUrl)}");
+    securitySettings = {{ modelName application.name }}MetadataSecurityFor{{ className application.name }}();
   }
 
   static refreshToken() async {
@@ -156,17 +154,18 @@ class Oauth {
 
     if (expireIn.inMinutes < 1) {
       var token = await requestToken(GRANT_REFRESH);
-      addTokenToApiClient(token);
+      await addTokenToApiClient(token);
     }
   }
 
-  static getDioDelegate() {
+  static DioClientDelegate getDioDelegate() {
     var dioDelegate = DioClientDelegate();
     dioDelegate.client.interceptors.add(InterceptorsWrapper(
         onRequest: (options) async {
           await Oauth.refreshToken();
         }
     ));
+    return dioDelegate;
   }
 
   static bool isLoggedIn() {
