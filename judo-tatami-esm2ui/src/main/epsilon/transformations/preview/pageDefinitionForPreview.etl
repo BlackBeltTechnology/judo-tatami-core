@@ -2,7 +2,7 @@ import "../../operations/_importAll.eol";
 
 @abstract
 rule CreatePageDefinitionForPreview
-	transform s : ESM!esm::ui::VisualElement
+	transform s : ESM!esm::ui::Container
 	to t : UI!ui::PageDefinition {
 		guard: s == rootElement
 		
@@ -18,6 +18,8 @@ rule CreatePageDefinitionForPreview
 		flex.name = s.name;
 	    flex.label = s.name;    
 		flex.col = applicationColumns.asReal();
+		flex.stretch = UI!ui::Stretch#BOTH;
+		flex.sourceId = s.getID();
 		
 		if (s.layout == ESM!esm::ui::Layout#HORIZONTAL) {
 			flex.direction = UI!Axis#HORIZONTAL;
@@ -25,6 +27,35 @@ rule CreatePageDefinitionForPreview
 		if (s.layout == ESM!esm::ui::Layout#VERTICAL) {
 			flex.direction = UI!Axis#VERTICAL;
 		}
+		
+		if (s.getEffectiveJustify() == ESM!esm::ui::Justify#START) {
+        	flex.mainAxisAlignment = UI!ui::MainAxisAlignment#START;
+	    } else if (s.getEffectiveJustify() == ESM!esm::ui::Justify#END) {
+	        flex.mainAxisAlignment = UI!ui::MainAxisAlignment#END;
+	    } else if (s.getEffectiveJustify() == ESM!esm::ui::Justify#SPACE_AROUND) {
+	        flex.mainAxisAlignment = UI!ui::MainAxisAlignment#SPACEAROUND;
+	    } else if (s.getEffectiveJustify() == ESM!esm::ui::Justify#SPACE_BETWEEN) {
+	        flex.mainAxisAlignment = UI!ui::MainAxisAlignment#SPACEBETWEEN;
+	    } else {
+	        flex.mainAxisAlignment = UI!ui::MainAxisAlignment#CENTER;
+	    }
+    
+	    if (s.getEffectiveAlign() == ESM!esm::ui::Align#END) {
+	        flex.crossAxisAlignment = UI!ui::CrossAxisAlignment#END;
+	    } else if (s.getEffectiveAlign() == ESM!esm::ui::Align#STRETCH) {
+	        flex.crossAxisAlignment = UI!ui::CrossAxisAlignment#STRETCH;
+	    } else if (s.getEffectiveAlign() == ESM!esm::ui::Align#CENTER) {
+	        flex.crossAxisAlignment = UI!ui::CrossAxisAlignment#CENTER;
+	    } else {
+	        flex.crossAxisAlignment = UI!ui::CrossAxisAlignment#START;
+	    }
+	    
+	    if (s.layout == ESM!esm::ui::Layout#HORIZONTAL and s.components.forAll(c | c.isVerticalGrow())) {
+	    	flex.crossAxisAlignment = UI!ui::CrossAxisAlignment#STRETCH;
+	    }
+	    if (s.layout == ESM!esm::ui::Layout#VERTICAL and s.components.forAll(c | c.isHorizontalGrow())) {
+	    	flex.crossAxisAlignment = UI!ui::CrossAxisAlignment#STRETCH;
+	    }
 	
 		for (component in s.components) {
 			flex.children.add(component.map(application));
