@@ -18,7 +18,7 @@ operation ESM!esm::ui::OperationForm createButtonFromOperationForm(application :
     
     if (self.fit == ESM!esm::ui::Fit#LOOSE) {
 		t.fit = UI!ui::Fit#LOOSE;
-	} else if (self.action == ESM!esm::ui::Fit#TIGHT) {
+	} else if (self.fit == ESM!esm::ui::Fit#TIGHT) {
 		t.fit = UI!ui::Fit#TIGHT;
 	}
 	

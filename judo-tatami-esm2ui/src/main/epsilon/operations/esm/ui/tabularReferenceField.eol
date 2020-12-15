@@ -27,7 +27,7 @@ operation ESM!esm::ui::TabularReferenceField createTableFromTabularReferenceFiel
 	    
 	    if (self.fit == ESM!esm::ui::Fit#LOOSE) {
 			table.fit = UI!ui::Fit#LOOSE;
-		} else if (self.action == ESM!esm::ui::Fit#TIGHT) {
+		} else if (self.fit == ESM!esm::ui::Fit#TIGHT) {
 			table.fit = UI!ui::Fit#TIGHT;
 		}
 		
@@ -73,7 +73,7 @@ operation ESM!esm::ui::TabularReferenceField createTableFromTabularReferenceFiel
 	    
 	    if (self.fit == ESM!esm::ui::Fit#LOOSE) {
 			table.fit = UI!ui::Fit#LOOSE;
-		} else if (self.action == ESM!esm::ui::Fit#TIGHT) {
+		} else if (self.fit == ESM!esm::ui::Fit#TIGHT) {
 			table.fit = UI!ui::Fit#TIGHT;
 		}
 		
@@ -103,7 +103,7 @@ operation ESM!esm::ui::TabularReferenceField createButtonFromTabularReferenceFie
     
     if (self.fit == ESM!esm::ui::Fit#LOOSE) {
 		button.fit = UI!ui::Fit#LOOSE;
-	} else if (self.action == ESM!esm::ui::Fit#TIGHT) {
+	} else if (self.fit == ESM!esm::ui::Fit#TIGHT) {
 		button.fit = UI!ui::Fit#TIGHT;
 	}
 	
