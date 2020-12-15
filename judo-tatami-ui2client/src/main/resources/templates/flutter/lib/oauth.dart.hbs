@@ -140,10 +140,10 @@ class Oauth {
     html.window.sessionStorage.remove(AUTH_ACCESS_TOKEN_EXPIRE);
     html.window.sessionStorage.remove(AUTH_REFRESH_TOKEN_KEY);
     html.window.sessionStorage.remove(AUTH_DESTINATION_URL);
-    securitySettings = {{ modelName application.name }}MetadataSecurityFor{{ className application.name }}();
     locator<ApiClient>().setAuthentication(securitySettings.name, null);
     // var logoutUri = LOGOUT_URL + "?redirect_uri=${Uri.encodeQueryComponent(CALLBACK_URL)}";
     html.window.location.assign(securitySettings.logoutEndpoint + "?redirect_uri=${Uri.encodeQueryComponent(callbackUrl)}");
+    securitySettings = {{ modelName application.name }}MetadataSecurityFor{{ className application.name }}();
   }
 
   static refreshToken() async {
