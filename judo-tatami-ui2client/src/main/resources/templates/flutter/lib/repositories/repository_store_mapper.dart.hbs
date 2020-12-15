@@ -142,16 +142,16 @@ class {{ fqClass ap.name }}RepositoryStoreMapper {
   {{# if isOptional}}
       {{# each relations as |relation| }}
           {{# if relation.isRelationBehaviourTypeRangeable }}
-  static {{modelName ap.name}}Extension{{packageName ../../name}}GetRangeInput{{className ../../name}}{{ className relation.name }} create{{modelName ap.name}}Extension{{packageName ../../name}}GetRangeInput{{className ../../name}}From{{ fqClass ../../name }}Store({{ fqClass ../../name }}Store {{variable ../../name}}Store) {
+  static {{modelName ap.name}}Extension{{packageName ../../name}}GetRangeInput{{className ../../name}}{{ className relation.name }} create{{modelName ap.name}}Extension{{packageName ../../name}}GetRangeInput{{className ../../name}}{{ className relation.name }}From{{ fqClass ../../name }}Store({{ fqClass ../../name }}Store {{variable ../../name}}Store) {
     if ({{variable ../../name}}Store == null) {
       return null;
     }
     var {{variable ../../name}} = {{modelName ap.name}}Extension{{packageName ../../name}}GetRangeInput{{className ../../name}}{{ className relation.name }}();
-    map{{ fqClass ../../name }}StoreTo{{modelName ap.name}}Extension{{packageName ../../name}}GetRangeInput{{className ../../name}}({{variable ../../name}}, {{variable ../../name}}Store);
+    map{{ fqClass ../../name }}StoreTo{{modelName ap.name}}Extension{{packageName ../../name}}GetRangeInput{{className ../../name}}{{ className relation.name }}({{variable ../../name}}, {{variable ../../name}}Store);
     return {{variable ../../name}};
   }
 
-  static void map{{ fqClass ../../name }}StoreTo{{modelName ap.name}}Extension{{packageName ../../name}}GetRangeInput{{className ../../name}}({{modelName ap.name}}Extension{{packageName ../../name}}GetRangeInput{{className ../../name}}{{ className relation.name }} {{variable ../../name}}, {{ fqClass ../../name }}Store {{variable ../../name}}Store) {
+  static void map{{ fqClass ../../name }}StoreTo{{modelName ap.name}}Extension{{packageName ../../name}}GetRangeInput{{className ../../name}}{{ className relation.name }}({{modelName ap.name}}Extension{{packageName ../../name}}GetRangeInput{{className ../../name}}{{ className relation.name }} {{variable ../../name}}, {{ fqClass ../../name }}Store {{variable ../../name}}Store) {
     var optional{{className ../../name}} = create{{modelName ap.name}}OptionalTransferobjecttypes{{packageName ../../name}}{{className ../../name}}({{variable ../../name}}Store);
 
     {{variable ../../name}}.owner = optional{{className ../../name}};
