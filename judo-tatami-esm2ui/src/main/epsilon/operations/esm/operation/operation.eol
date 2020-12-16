@@ -18,6 +18,7 @@ operation ESM!esm::`operation`::Operation createViewPageForOperationOutput(appli
     pageContainer.layoutType = application.layoutTypes.first;
 	pageContainer.name = "default";
 	pageContainer.direction = UI!Axis#VERTICAL;
+	pageContainer.col = applicationColumns.asReal();
 	page.containers.add(pageContainer);
 		
 	if (self.output.target.view.isUndefined()) {
@@ -57,6 +58,7 @@ operation ESM!esm::`operation`::Operation createFormPageForOperationInput(applic
     pageContainer.layoutType = application.layoutTypes.first;
 	pageContainer.name = "default";
 	pageContainer.direction = UI!Axis#VERTICAL;
+	pageContainer.col = applicationColumns.asReal();
 	page.containers.add(pageContainer);
     
     if (self.input.target.form.isUndefined()) {
@@ -97,6 +99,7 @@ operation ESM!esm::`operation`::Operation createTablePageForOperationInput(appli
     pageContainer.layoutType = application.layoutTypes.first;
 	pageContainer.name = "default";
 	pageContainer.direction = UI!Axis#VERTICAL;
+	pageContainer.col = applicationColumns.asReal();
 	page.containers.add(pageContainer);
 	
 	var flex = new UI!ui::Flex();
@@ -155,6 +158,7 @@ operation ESM!esm::`operation`::Operation createTablePageForOperationOutput(appl
     pageContainer.layoutType = application.layoutTypes.first;
 	pageContainer.name = "default";
 	pageContainer.direction = UI!Axis#VERTICAL;
+	pageContainer.col = applicationColumns.asReal();
 	page.containers.add(pageContainer);
     
     var flex = new UI!ui::Flex();
