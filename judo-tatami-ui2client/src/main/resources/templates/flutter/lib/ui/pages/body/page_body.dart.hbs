@@ -68,11 +68,13 @@ Widget get{{ fqClass page.name }}Page{{fqClass container.layoutType.name}}Body(B
                             row: {{ row }},
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                            {{# each this.children as |child| }}
-                            {{# if child }}
+                            {{# unless page.isPageTypeDashboard }}
+                                {{# each this.children as |child| }}
+                                    {{# if child }}
                                 {{> (getWidgetTemplate child) }}
-                            {{/ if }}
-                            {{/ each }}
+                                    {{/ if }}
+                                {{/ each }}
+                            {{/unless}}
                             ],
                         )
                     ]
