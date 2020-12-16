@@ -42,7 +42,7 @@ rule Application
                 }
             }
 
-            if (relation.target.table.isDefined() and ((not relation.isTypeOf(ESM!esm::accesspoint::Access) and relation.relationKind == ESM!esm::structure::RelationKind#ASSOCIATION) 
+            if (relation.target.isTableDefined() and ((not relation.isTypeOf(ESM!esm::accesspoint::Access) and relation.relationKind == ESM!esm::structure::RelationKind#ASSOCIATION) 
             	or relation.isTypeOf(ESM!esm::accesspoint::Access))) {
                 relation.mapTablePage(t, relation.target);
             }
