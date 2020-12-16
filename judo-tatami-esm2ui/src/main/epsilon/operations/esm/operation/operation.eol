@@ -105,8 +105,10 @@ operation ESM!esm::`operation`::Operation createTablePageForOperationInput(appli
 	flex.direction = UI!Axis#VERTICAL;
 	pageContainer.children.add(flex);
 	
-	var table = self.input.target.table.createTableFromTransferObjectTable(application);
-    flex.children.add(table);
+	if (self.input.target.isTableDefined()) {
+		var table = self.input.target.table.createTableFromTransferObjectTable(application);
+    	flex.children.add(table);
+	}
     
     /*
     if (self.input.target.table.masterDetail and self.input.target.view.isDefined()) {
@@ -163,8 +165,10 @@ operation ESM!esm::`operation`::Operation createTablePageForOperationOutput(appl
 	flex.col = applicationColumns.asReal();
 	pageContainer.children.add(flex);
     
-	var table = self.output.target.table.createTableFromTransferObjectTable(application);
-    flex.children.add(table);
+    if (self.output.target.isTableDefined()) {
+		var table = self.output.target.table.createTableFromTransferObjectTable(application);
+    	flex.children.add(table);
+    }
     /*
     if (self.output.target.table.masterDetail and self.output.target.view.isDefined()) {
 		var detail : UI!ui::PageDefinition = new UI!ui::PageDefinition();

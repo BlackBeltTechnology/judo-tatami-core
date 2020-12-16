@@ -125,8 +125,10 @@ operation ESM!esm::structure::ReferenceTypedElement mapTablePage(application : U
 	flex.col = applicationColumns.asReal();
 	pageContainer.children.add(flex);
     
-	var table = target.table.createTableFromTransferObjectTable(application, relation);
-    flex.children.add(table);
+    if (target.target.isTableDefined()) {
+		var table = target.table.createTableFromTransferObjectTable(application, relation);
+    	flex.children.add(table);
+    }
     
     /*
     if (target.table.masterDetail and target.view.isDefined()) {
