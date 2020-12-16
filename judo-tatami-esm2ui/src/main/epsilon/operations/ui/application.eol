@@ -1,7 +1,7 @@
 import "callOperationAction.eol";
 
 operation UI!ui::Application resolveActionPageDefinitions() {
-	for (callAction : UI!ui::CallOperationAction in UI!ui::CallOperationAction.all().select(a | a.~application = self )) {
+	for (callAction : UI!ui::CallOperationAction in UI!ui::CallOperationAction.all().select(a | a.~application == self )) {
 		callAction.resolveParameterPageDefinitions();
 	}
 }
