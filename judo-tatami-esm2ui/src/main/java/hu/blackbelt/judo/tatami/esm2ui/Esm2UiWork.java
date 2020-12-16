@@ -65,20 +65,36 @@ public class Esm2UiWork extends AbstractTransformationWork {
 		getTransformationContext().put(esm2UiTransformationTrace);
 	}
 
-	public static void main(String[] args) throws IOException, EsmModel.EsmValidationException, URISyntaxException, UiModel.UiValidationException {
+	public static void main(String[] args) throws Exception {
 
 		File esmModelFile = new File(args[0]);
 		String modelName = args[1];
 		File uiModelFile = new File(args[2]);
 
+		EsmModel esmModel = EsmModel.loadEsmModel(
+				esmLoadArgumentsBuilder().validateModel(true).file(esmModelFile).name(modelName));
+
+		UiModel uiModel = buildUiModel().name(esmModel.getName()).build();
+
+		executeEsm2UiTransformation(esmModel,
+				"default",
+				 new Integer(12),
+				uiModel,
+				new Slf4jLog(log),
+				Esm2Ui.calculateEsm2UiTransformationScriptURI());
+
+		uiModel.saveUiModel(uiSaveArgumentsBuilder().file(uiModelFile).build());
+
+		/*
 		Esm2UiWork esm2UiWork;
 		TransformationContext transformationContext;
 
 		EsmModel esmModel = EsmModel.loadEsmModel(
-				esmLoadArgumentsBuilder().file(esmModelFile).name(modelName));
+				esmLoadArgumentsBuilder().validateModel(true).file(esmModelFile).name(modelName));
 
 		transformationContext = new TransformationContext(modelName);
 		transformationContext.put(esmModel);
+		transformationContext.put(new Slf4jLog(LoggerFactory.getLogger(Esm2UiWork.class)));
 
 		esm2UiWork = new Esm2UiWork(transformationContext, Esm2Ui.calculateEsm2UiTransformationScriptURI());
 
@@ -87,7 +103,7 @@ public class Esm2UiWork extends AbstractTransformationWork {
 		WorkReport workReport = workFlowEngine.run(workflow);
 
 		UiModel uiModel = transformationContext.getByClass(UiModel.class).get();
-		uiModel.saveUiModel(uiSaveArgumentsBuilder().file(uiModelFile).build());
+		uiModel.saveUiModel(uiSaveArgumentsBuilder().file(uiModelFile).build()); */
 	}
 
 }
