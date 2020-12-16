@@ -121,7 +121,7 @@ rule CreatePageDefinitionForPreviewFromTable
     flex.direction = UI!Axis#VERTICAL;
 	flex.col = applicationColumns.asReal();
 
-	if (s.eContainer.table.isDefined() and s.eContainer.table.columns.size() > 0) {
+	if (s.eContainer.isTableDefined()) {
 		var table = s.createTableFromTransferObjectTable(application);
 		table.dataElement = t.dataElement;
 		if (t.dataElement.isCollection) {

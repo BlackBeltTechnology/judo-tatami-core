@@ -184,6 +184,7 @@ operation ESM!esm::ui::TabularReferenceField map(application : UI!ui::Applicatio
 		log.debug("Create spacer for button");
 		var spacer : UI!ui::Spacer = new UI!ui::Spacer();
 		spacer.name = self.name.anchor("PlaceHolderForTargetDefinedTable");
+		spacer.sourceId = self.getID();
 		return spacer;
 	}
 }
