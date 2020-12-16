@@ -18,12 +18,20 @@ void main() async {
     configureDependencies();
     const bool kIsWeb = identical(0, 0.0);
 
-    ApiClient _apiClient = ApiClient(basePath: "http://localhost:8181/api/{{ baseUrl application.name }}", apiClientDelegate: Oauth.getDioDelegate());
+    // Call the meta data with no token refresh interceptor
+    ApiClient _apiClient = ApiClient(basePath: "http://localhost:8181/api/{{ baseUrl application.name }}", apiClientDelegate: DioClientDelegate());
     locator.registerSingleton<ApiClient>(_apiClient);
-
     await Oauth.loadClientMetaData();
 
-    var token = await Oauth.processLogin();
-    Oauth.addTokenToApiClient(token);
+    if (Oauth.isAuthenticationRequired()) {
+        locator.unregister(instance: _apiClient);
+
+        // Add the token refresh interceptor for the rest of the api calls
+        _apiClient = ApiClient(basePath: "http://localhost:8181/api/{{ baseUrl application.name }}", apiClientDelegate: Oauth.getDioDelegate());
+        locator.registerSingleton<ApiClient>(_apiClient);
+
+        var token = await Oauth.processLogin();
+        await Oauth.addTokenToApiClient(token);
+    }
     runApp({{ fqClass application.name }}Application());
 }
