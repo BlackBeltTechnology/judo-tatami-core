@@ -89,10 +89,44 @@ operation UI!ui::PageDefinition calculateActions(application : UI!ui::Applicatio
 
 operation UI!ui::PageDefinition clonePage(classType : UI!ui::data::ClassType, relation : UI!ui::data::RelationType, anchor : String) : UI!ui::PageDefinition {
 	var clone = ecoreUtil.copy(self);
+	
+	var origButtons = self.getAllCallOperationActionButtonsOfPageDefinition();
+	var clonedButtons = clone.getAllCallOperationActionButtonsOfPageDefinition();
+	
+	for (button in origButtons) {
+		var buttonFqName = button.getFQName();
+		var clonedButton = clonedButtons.selectOne(a | buttonFqName.endsWith(a.getFQName()));
+		clonedButton.action.~originalOperationForm = button.action.~originalOperationForm;
+		clonedButton.action.~application = button.action.~application;
+	}
+	
 	clone.name = (esmUtils.getNamespaceElementFQName(classType.~originalClass) + "." + relation.~originalRelation.name).anchor(anchor);
 	clone.dataElement = relation;
 	clone.~original = self;
 	return clone;
+}
+
+operation UI!ui::PageDefinition getAllCallOperationActionButtonsOfPageDefinition() : Set {
+	var buttons : Set = new Set();
+	for (container in self.containers) {
+		buttons.addAll(container.getAllCallOperationActionButtonsOfContainer());
+	}
+	return buttons;
+}
+
+operation UI!ui::Container getAllCallOperationActionButtonsOfContainer() : Set {
+	var buttons : Set = new Set();
+	self.addCallOperationActionButtonsOfContainer(buttons);
+	return buttons;
+}
+
+operation UI!ui::Container addCallOperationActionButtonsOfContainer(foundButtons : Set) {
+	var newButtons : Set = self.children
+		.select(c | c.isKindOf(UI!ui::Button) and c.action.isDefined() and c.action.isKindOf(UI!ui::CallOperationAction)).asSet();
+	foundButtons.addAll(newButtons);
+	for (container in self.children.select(c | c.isKindOf(UI!ui::Container))) {
+		container.addCallOperationActionButtonsOfContainer(foundButtons);
+	}
 }
 
 operation UI!ui::PageDefinition updateRelationPageContent() {

@@ -6,6 +6,7 @@ operation ESM!esm::ui::TabularReferenceField createTableFromTabularReferenceFiel
 	
 		log.debug("Create table based on reference target: " + relation.target.table.name);
 		var table : UI!ui::Table = relation.target.table.map(application);
+		table.name = self.name;
 		
 		table.dataElement = relation.mapRelationType(application, self.getTransferObjectType().mapClassType(application));
 		
