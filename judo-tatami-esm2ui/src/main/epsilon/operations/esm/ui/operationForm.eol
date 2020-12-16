@@ -25,7 +25,7 @@ operation ESM!esm::ui::OperationForm createButtonFromOperationForm(application :
 	t.sourceId = self.getID();
 
 	log.debug("Create operation form: " + self.name);
-	var op : ESM!esm::`operation`::Operation = self.getOperationReference.getMember();
+	var op : ESM!esm::`operation`::Operation = self.getOperationReference().getMember();
 	t.dataElement = op.mapOperationType(application, self.getRoot().eContainer.mapClassType(application));
 	var callAction = new UI!ui::CallOperationAction();
 	callAction.`operation` = op.mapOperationType(application, self.getRoot().eContainer.mapClassType(application));
