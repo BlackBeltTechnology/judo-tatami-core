@@ -121,15 +121,17 @@ rule CreatePageDefinitionForPreviewFromTable
     flex.direction = UI!Axis#VERTICAL;
 	flex.col = applicationColumns.asReal();
 
-	var table = s.createTableFromTransferObjectTable(application);
-	table.dataElement = t.dataElement;
-	if (t.dataElement.isCollection) {
-		table.row = 31d;
-	} else {
-		table.row = 2d;
+	if (s.eContainer.isTableDefined()) {
+		var table = s.createTableFromTransferObjectTable(application);
+		table.dataElement = t.dataElement;
+		if (t.dataElement.isCollection) {
+			table.row = 31d;
+		} else {
+			table.row = 2d;
+		}
+	    flex.children.add(table);
 	}
-    flex.children.add(table);
-
+	
 	pageContainer.children.add(flex);
 	
 	application.pages.add(t);	
