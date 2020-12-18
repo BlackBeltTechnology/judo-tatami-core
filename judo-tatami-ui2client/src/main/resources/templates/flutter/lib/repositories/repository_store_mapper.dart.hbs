@@ -191,7 +191,7 @@ class {{ fqClass ap.name }}RepositoryStoreMapper {
         {{# unless isReadOnly }}
             {{~# if (isEnumType attribute.dataType) }}
     if ({{ variable class.name }}Store.{{ attribute.name }} != null) {
-        optional{{ className class.name }}.{{ attribute.name }} = optional{{ className class.name }}.{{ attribute.name }}Enum.values[{{ variable class.name }}Store.{{ attribute.name }}.index];
+        optional{{ className class.name }}.{{ attribute.name }} = {{modelName ../../name}}OptionalTransferobjecttypes{{packageName name}}{{className name}}{{ className attribute.name }}Enum.values[{{ variable class.name }}Store.{{ attribute.name }}.index];
     }
             {{ else }}
     optional{{ className class.name }}.{{ attribute.name }} = {{ variable class.name }}Store.{{ attribute.name }};
