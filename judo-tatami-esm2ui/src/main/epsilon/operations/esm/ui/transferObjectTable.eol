@@ -32,3 +32,7 @@ operation ESM!esm::ui::TransferObjectTable map(application : UI!ui::Application)
 	var t : UI!ui::Table = self.createTableFromTransferObjectTable(application);
     return t;
 }
+
+operation ESM!esm::structure::TransferObjectType isTableDefined() : Boolean {
+	return self.table.isDefined() and self.table.columns.size() > 0;
+}

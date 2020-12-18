@@ -44,7 +44,7 @@ rule AccessMenuNavigationItem
     transform s: ESM!esm::ui::MenuItemAccess
     to t : UI!ui::NavigationItem
     extends AbstractNavigationItem {
-		guard: not s.hidden and s.access.target.table.isDefined()
+		guard: not s.hidden and s.access.target.isTableDefined()
     
         log.debug("Create Access Navigation: " + s.access.fqName() );
         var application = s.access.eContainer.equivalent("Application");
@@ -58,7 +58,7 @@ rule RelationNavigationItem
     transform s: ESM!esm::ui::MenuItemRelation
     to t : UI!ui::NavigationItem
     extends AbstractNavigationItem {
-		guard: not s.hidden and s.relationFeature.target.table.isDefined()
+		guard: not s.hidden and s.relationFeature.target.isTableDefined()
     
         log.debug("Create Relation Navigation: " + s.relationFeature.fqName() );
         var application = s.eContainer.equivalent("Application");
