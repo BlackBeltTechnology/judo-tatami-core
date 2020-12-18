@@ -1,8 +1,14 @@
 {{# if column }}
 {{ log 'Formatted text generation for' (variable application.name) '-' (fqClass table.name)'table' (variable dataName) (variable column.attributeType.name) level='debug' ~}}
+{{# if (isEnumType column.attributeType.dataType) }}
+Text(
+    target{{ dataName }}?.{{ column.attributeType.name }} != null ? target{{ dataName }}.{{ column.attributeType.name }}.toString().split('.').last : '< None >',
+),
+{{ else }}
 Text(
     target{{ dataName }}?.{{ column.attributeType.name }} != null ? target{{ dataName }}.{{ column.attributeType.name }}.toString() : '< None >',
 ),
+{{/ if }}
 {{ else }}
 {{ log 'Formatted text generation for' (variable application.name) '-' (fqClass page.name)'page'(variable page.dataElement.target.name) attributeType.name level='debug' ~}}
 JudoText(

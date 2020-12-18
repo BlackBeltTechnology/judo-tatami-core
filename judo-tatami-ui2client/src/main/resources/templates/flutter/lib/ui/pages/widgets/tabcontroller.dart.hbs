@@ -1,6 +1,7 @@
 {{~ log 'Tab generation for' (variable application.name) '-' (fqClass page.name)'page' (variable name) level='debug' ~}}
 JudoTab(
     col: {{ multiplyCol col }},
+    row: {{ row }},
     tabContent: [
     {{# each tabs as |tab| }}
         {{# if tab }}
