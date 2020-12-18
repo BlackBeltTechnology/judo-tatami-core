@@ -877,6 +877,104 @@ public class EsmOperation2PsmOperationTest {
 
         assertEquals(2, initializers.size());
     }
+    
+    @Test
+    void testInitializerFlagInheritance() throws Exception {
+        testName = "TestInitializerFlagInheritance";
+
+        final TransferObjectType parent = newTransferObjectTypeBuilder()
+                .withName("parent")
+                .withOperations(newOperationBuilder()
+                        .withName("init")
+                        .withOperationType(OperationType.STATIC)
+                        .withBody("// TODO")
+                        .withBinding("")
+                        .withInitializer(true)
+                        .build())
+                .build();
+
+        final TransferObjectType child = newTransferObjectTypeBuilder()
+                .withName("child")
+                .withGeneralizations(newGeneralizationBuilder().withTarget(parent).build())
+                .build();
+        final TransferObjectType grandChild = newTransferObjectTypeBuilder()
+                .withName("grandChild")
+                .withGeneralizations(newGeneralizationBuilder().withTarget(child).build())
+                .build();
+
+        final EntityType entityParent = newEntityTypeBuilder()
+                .withName("entityParent")
+                .withOperations(newOperationBuilder()
+                        .withName("init")
+                        .withOperationType(OperationType.STATIC)
+                        .withBody("// TODO")
+                        .withBinding("")
+                        .withInitializer(true)
+                        .build())
+                .build();
+        entityParent.setMappedEntity(entityParent);
+
+        final EntityType entityChild = newEntityTypeBuilder()
+                .withName("entityChild")
+                .withGeneralizations(newGeneralizationBuilder().withTarget(entityParent).build())
+                .build();
+        entityChild.setMappedEntity(entityChild);
+        final EntityType entityGrandChild = newEntityTypeBuilder()
+                .withName("entityGrandChild")
+                .withGeneralizations(newGeneralizationBuilder().withTarget(entityChild).build())
+                .build();
+        entityGrandChild.setMappedEntity(entityGrandChild);
+
+        final Model model = newModelBuilder().withName(MODEL_NAME)
+                .withElements(Arrays.asList(parent, child, grandChild, entityParent, entityChild, entityGrandChild))
+                .build();
+
+        esmModel.addContent(model);
+
+        transform();
+
+        Optional<MappedTransferObjectType> psmParent1 = allPsm(MappedTransferObjectType.class).filter(o -> o.getName().equals(entityParent.getName())).findAny();
+        assertTrue(psmParent1.isPresent());
+        Optional<TransferOperation> bound1 = psmParent1.get().getOperations().stream().filter(o -> o.getName().equals("init")).findAny();
+        assertTrue(bound1.isPresent());
+        assertTrue(bound1.get() instanceof UnboundOperation);
+        assertTrue(((UnboundOperation) bound1.get()).isInitializer());
+        
+        Optional<MappedTransferObjectType> mapped1 = allPsm(MappedTransferObjectType.class).filter(o -> o.getName().equals(entityChild.getName())).findAny();
+        assertTrue(mapped1.isPresent());
+        Optional<TransferOperation> unbound1 = mapped1.get().getOperations().stream().filter(o -> o.getName().equals("init")).findAny();
+        assertTrue(unbound1.isPresent());
+        assertTrue(unbound1.get() instanceof UnboundOperation);
+        assertFalse(((UnboundOperation) unbound1.get()).isInitializer());
+        
+        Optional<MappedTransferObjectType> mapped2 = allPsm(MappedTransferObjectType.class).filter(o -> o.getName().equals(entityGrandChild.getName())).findAny();
+        assertTrue(mapped2.isPresent());
+        Optional<TransferOperation> unbound2 = mapped2.get().getOperations().stream().filter(o -> o.getName().equals("init")).findAny();
+        assertTrue(unbound2.isPresent());
+        assertTrue(unbound2.get() instanceof UnboundOperation);
+        assertFalse(((UnboundOperation) unbound2.get()).isInitializer());
+        
+        Optional<UnmappedTransferObjectType> psmParent2 = allPsm(UnmappedTransferObjectType.class).filter(o -> o.getName().equals(parent.getName())).findAny();
+        assertTrue(psmParent2.isPresent());
+        Optional<TransferOperation> bound2 = psmParent2.get().getOperations().stream().filter(o -> o.getName().equals("init")).findAny();
+        assertTrue(bound2.isPresent());
+        assertTrue(bound2.get() instanceof UnboundOperation);
+        assertTrue(((UnboundOperation) bound2.get()).isInitializer());
+        
+        Optional<UnmappedTransferObjectType> unmapped1 = allPsm(UnmappedTransferObjectType.class).filter(o -> o.getName().equals(child.getName())).findAny();
+        assertTrue(unmapped1.isPresent());
+        Optional<TransferOperation> unbound3 = unmapped1.get().getOperations().stream().filter(o -> o.getName().equals("init")).findAny();
+        assertTrue(unbound3.isPresent());
+        assertTrue(unbound3.get() instanceof UnboundOperation);
+        assertFalse(((UnboundOperation) unbound3.get()).isInitializer());
+        
+        Optional<UnmappedTransferObjectType> unmapped2 = allPsm(UnmappedTransferObjectType.class).filter(o -> o.getName().equals(grandChild.getName())).findAny();
+        assertTrue(unmapped2.isPresent());
+        Optional<TransferOperation> unbound4 = unmapped2.get().getOperations().stream().filter(o -> o.getName().equals("init")).findAny();
+        assertTrue(unbound4.isPresent());
+        assertTrue(unbound4.get() instanceof UnboundOperation);
+        assertFalse(((UnboundOperation) unbound4.get()).isInitializer());
+    }
 
     static <T> Stream<T> asStream(Iterator<T> sourceIterator, boolean parallel) {
         Iterable<T> iterable = () -> sourceIterator;

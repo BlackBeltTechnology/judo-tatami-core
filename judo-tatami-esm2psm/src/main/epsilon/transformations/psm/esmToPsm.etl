@@ -148,7 +148,11 @@ post {
     		
     		for (o in cloneableOperations) {
     			if (not psmSubClass.operations.exists(op | op.name.equals(o.name))) {
-	    			psmSubClass.operations.add(ecoreUtil.copy(o));
+    			    var clone = ecoreUtil.copy(o);
+    			    if (o.isKindOf(JUDOPSM!UnboundOperation) and o.initializer) {
+    			         clone.initializer = false;
+    			    }
+	    			psmSubClass.operations.add(clone);
 	    			log.debug("Added operation: [" + o.name + "] to subclass [" + psmSubClass.name + "] from [" + psmTransferObject.name + "]");
 	    		}
     		}
