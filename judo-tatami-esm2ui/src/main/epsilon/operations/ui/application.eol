@@ -47,27 +47,53 @@ operation UI!ui::Application clonePagesOfInheritedRelations() {
 	}
 }
 
-operation UI!ui::Application collectUnreferencedClassTypes() : Set {
-	var referenceTargets = self.dataElements.select(d | d.isKindOf(UI!ui::data::ClassType)).collect(c | c.relations).flatten().collect(r | r.target).asSet();
-	var inputTargets = self.dataElements.select(d | d.isKindOf(UI!ui::data::ClassType)).collect(c | c.operations).flatten()
-							.select(o | o.input.isDefined()).collect(r | r.input.target).asSet();
-	var outputTargets = self.dataElements.select(d | d.isKindOf(UI!ui::data::ClassType)).collect(c | c.operations).flatten()
-							.select(o | o.output.isDefined()).collect(r | r.output.target).asSet();
-	var actorsAndPrincipals = self.dataElements.select(d | d.isKindOf(UI!ui::data::ClassType) and (d.isPrincipal or d.isActor)).asSet();
-							
-	var allReferenced = new Set();
-	allReferenced.addAll(referenceTargets);
-	allReferenced.addAll(inputTargets);
-	allReferenced.addAll(outputTargets);
-	allReferenced.addAll(actorsAndPrincipals);
+operation UI!ui::data::ClassType collectExposedTransferObjects(collected : Set) {
+	var newObjects = new Set();
+	for (relation in self.relations) {
+		if (not collected.includes(relation.target)) {
+			newObjects.add(relation.target);	
+		}
+	}
+	for (op in self.operations) {
+		if (op.input.isDefined() and not collected.includes(op.input.target)) {
+			newObjects.add(op.input.target);
+		}
+		if (op.output.isDefined() and not collected.includes(op.output.target)) {
+			newObjects.add(op.output.target);
+		}
+	}
 	
-	var allClassTypes = self.dataElements.select(d | d.isKindOf(UI!ui::data::ClassType)).asSet();
+	collected.addAll(newObjects);
 	
-	return allClassTypes.excludingAll(allReferenced);
+	for (o in newObjects) {
+		o.collectExposedTransferObjects(collected);
+	}
+}
+
+@cached
+operation UI!ui::Application getExposedTransferObjects() : Set {
+	var actor = self.dataElements.selectOne(d | d.isKindOf(UI!ui::data::ClassType) and d.isActor);
+	var principal = self.dataElements.selectOne(d | d.isKindOf(UI!ui::data::ClassType) and d.isPrincipal);
+	
+	var collected = new Set();
+	
+	if (actor.isDefined()) {
+		collected.add(actor);
+		actor.collectExposedTransferObjects(collected);
+	}
+	if (principal.isDefined()) {
+		collected.add(principal);
+		principal.collectExposedTransferObjects(collected);
+	}
+	return collected;
 }
 
 operation UI!ui::Application removeUnexposedElements() {
-	var unexposedClassTypes = self.collectUnreferencedClassTypes();
+	
+	var allReferenced = self.getExposedTransferObjects();
+	var allClassTypes = self.dataElements.select(d | d.isKindOf(UI!ui::data::ClassType)).asSet();
+	var unexposedClassTypes = allClassTypes.excludingAll(allReferenced);
+
 	var unexposedRelations = unexposedClassTypes.collect(c | c.relations).flatten().asSet();
 	var unexposedInputs = unexposedClassTypes.collect(c | c.operations).flatten().select(o | o.input.isDefined()).collect(r | r.input).asSet();
 	var unexposedOutputs = unexposedClassTypes.collect(c | c.operations).flatten().select(o | o.output.isDefined()).collect(r | r.output).asSet();
@@ -88,5 +114,4 @@ operation UI!ui::Application removeUnexposedElements() {
 		iterator.remove();
 		delete c;
 	}
-	
 }
