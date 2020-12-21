@@ -6,7 +6,22 @@ operation ESM!esm::ui::TabBar createTabController(application : UI!ui::Applicati
 	ret.col = self.col.asReal();
 	ret.row = self.row.asReal();
     ret.sourceId = self.getID();
-
+    
+    if (self.stretch == ESM!esm::ui::Stretch#NONE) {
+    	ret.stretch = UI!ui::Stretch#NONE;
+    } else if (self.stretch == ESM!esm::ui::Stretch#HORIZONTAL) {
+        ret.stretch = UI!ui::Stretch#HORIZONTAL;
+    } else if (self.stretch == ESM!esm::ui::Stretch#VERTICAL) {
+        ret.stretch = UI!ui::Stretch#VERTICAL;
+    } else {
+        ret.stretch = UI!ui::Stretch#BOTH;
+    }
+    if (self.fit == ESM!esm::ui::Fit#LOOSE) {
+		ret.fit = UI!ui::Fit#LOOSE;
+	} else if (self.fit == ESM!esm::ui::Fit#TIGHT) {
+		ret.fit = UI!ui::Fit#TIGHT;
+	}
+    
 	for (t in self.tabs) {
 	
 		var tab : UI!ui::Tab = new UI!ui::Tab();
@@ -16,13 +31,8 @@ operation ESM!esm::ui::TabBar createTabController(application : UI!ui::Applicati
 			tab.icon.name = t.iconName;
 		}
 		
-		var flex = new UI!ui::Flex();
-		flex.name = tab.name.anchor("Flex");
-		flex.label = t.getUiLabel();
-		flex.col = self.col.asReal();
-		tab.element = flex;
+		tab.element = t.map(application);
 		
-		flex.children.add(t.map(application));
 		ret.tabs.add(tab);
 	}
 
