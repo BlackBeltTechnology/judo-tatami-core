@@ -75,6 +75,19 @@
     #fqPath(#self.name) + '__store.dart'
   templateName: flutter/lib/store/model_store.dart.hbs
 
+- overwriteExpression: true
+  factoryExpression: "{#application}"
+  pathExpression: >
+    'lib/' +
+    #path(#application.actor.name) + '/store/' +
+    'enum_types.dart'
+  templateName: flutter/lib/store/enum_types.dart.hbs
+  templateContext:
+    - name: ap
+      expression: "#application.actor"
+    - name: dataTypes
+      expression: "#application.dataTypes"
+
 # ========================================
 # repositories
 # ========================================
