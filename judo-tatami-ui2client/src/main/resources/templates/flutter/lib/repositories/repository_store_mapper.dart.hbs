@@ -45,16 +45,16 @@ class {{ fqClass ap.name }}RepositoryStoreMapper {
     // Relations
     {{# each relations as |relation| }}
         {{# if isRelationEmbedded }}
-    if ({{ variable class.name }}.{{ relation.name }} != null) {
+    if ({{ variable class.name }}.{{ variable relation.name }} != null) {
             {{# if isCollection }}
-      {{ variable class.name }}Store.{{ relation.name }}.addAll({{ variable class.name }}.{{ relation.name }}.map<{{ fqClass target.name }}Store>(({{ variable target.name }}) {
+      {{ variable class.name }}Store.{{ variable relation.name }}.addAll({{ variable class.name }}.{{ variable relation.name }}.map<{{ fqClass target.name }}Store>(({{ variable target.name }}) {
         var {{ variable target.name }}Store = {{ fqClass target.name }}Store();
         map{{ fqClass target.name }}To{{ fqClass target.name }}Store({{ variable target.name }}, {{ variable target.name }}Store);
         return {{ variable target.name }}Store;
       }).toList());
             {{ else }}
       var {{ variable name }} = {{ fqClass target.name }}Store();
-      map{{ fqClass target.name }}To{{ fqClass target.name }}Store({{ variable class.name }}.{{ relation.name }}, {{ variable name }});
+      map{{ fqClass target.name }}To{{ fqClass target.name }}Store({{ variable class.name }}.{{ variable relation.name }}, {{ variable name }});
       {{ variable class.name }}Store.set{{ className name }}({{ variable name }});
             {{/ if }}
     }
@@ -94,11 +94,11 @@ class {{ fqClass ap.name }}RepositoryStoreMapper {
     {{# each relations as |relation| }}
         {{# if isRelationEmbedded }}
             {{# unless isReadOnly }}
-    if ({{ variable class.name }}Store.{{ relation.name }} != null) {
+    if ({{ variable class.name }}Store.{{ variable relation.name }} != null) {
                 {{# if isCollection }}
-      {{ variable class.name }}.{{ relation.name }} = {{ variable class.name }}Store.{{ relation.name }}.map<{{ fqClass target.transferObjectTypeName }}>(create{{ fqClass target.name }}From{{ fqClass target.name }}Store).toList();
+      {{ variable class.name }}.{{ variable relation.name }} = {{ variable class.name }}Store.{{ variable relation.name }}.map<{{ fqClass target.transferObjectTypeName }}>(create{{ fqClass target.name }}From{{ fqClass target.name }}Store).toList();
                 {{ else }}
-      {{ variable class.name }}.{{ relation.name }} = create{{ fqClass target.name }}From{{ fqClass target.name }}Store({{ variable class.name }}Store.{{ relation.name }});
+      {{ variable class.name }}.{{ variable relation.name }} = create{{ fqClass target.name }}From{{ fqClass target.name }}Store({{ variable class.name }}Store.{{ variable relation.name }});
                 {{/ if }}
     }
             {{/ unless }}
@@ -137,13 +137,13 @@ class {{ fqClass ap.name }}RepositoryStoreMapper {
         {{# if isRelationEmbedded }}
             {{# unless isReadOnly }}
                 {{# unless isMemberTypeTransient}}
-    if ({{ variable class.name }}Store.{{ relation.name }} != null) {
+    if ({{ variable class.name }}Store.{{ variable relation.name }} != null) {
                     {{# if isCollection }}
-      {{ variable class.name }}.{{ relation.name }} = {{ variable class.name }}Store.{{ relation.name }}.map<{{ fqClass target.transferObjectTypeName }}ForCreateAndUpdate>(({{ variable target.name }}Store) {
+      {{ variable class.name }}.{{ variable relation.name }} = {{ variable class.name }}Store.{{ variable relation.name }}.map<{{ fqClass target.transferObjectTypeName }}ForCreateAndUpdate>(({{ variable target.name }}Store) {
         return create{{ fqClass target.name }}ForCreateAndUpdateFrom{{ fqClass target.name }}Store({{ variable target.name }}Store);
       }).toList();
                     {{ else }}
-      {{ variable class.name }}.{{ relation.name }} = create{{ fqClass target.name }}ForCreateAndUpdateFrom{{ fqClass target.name }}Store({{ variable class.name }}Store.{{ relation.name }});
+      {{ variable class.name }}.{{ variable relation.name }} = create{{ fqClass target.name }}ForCreateAndUpdateFrom{{ fqClass target.name }}Store({{ variable class.name }}Store.{{ variable relation.name }});
                     {{/ if }}
     }
                 {{/ unless }}
@@ -191,7 +191,7 @@ class {{ fqClass ap.name }}RepositoryStoreMapper {
         {{# unless isReadOnly }}
             {{~# if (isEnumType attribute.dataType) }}
     if ({{ variable class.name }}Store.{{ attribute.name }} != null) {
-        optional{{ className class.name }}.{{ attribute.name }} = {{modelName ../../name}}OptionalTransferobjecttypes{{packageName name}}{{className name}}{{ className attribute.name }}Enum.values[{{ variable class.name }}Store.{{ attribute.name }}.index];
+        optional{{ className class.name }}.{{ attribute.name }} = {{modelName ../../name}}OptionalTransferobjecttypes{{packageName name}}{{className class.name}}{{ className attribute.name }}Enum.values[{{ variable class.name }}Store.{{ attribute.name }}.index];
     }
             {{ else }}
     optional{{ className class.name }}.{{ attribute.name }} = {{ variable class.name }}Store.{{ attribute.name }};
@@ -203,11 +203,11 @@ class {{ fqClass ap.name }}RepositoryStoreMapper {
     {{# each relations as |relation| }}
         {{# if isRelationEmbedded }}
             {{# unless isReadOnly }}
-    if ({{ variable class.name }}Store.{{ relation.name }} != null) {
+    if ({{ variable class.name }}Store.{{ variable relation.name }} != null) {
     {{# if isCollection }}
-        optional{{ className class.name }}.{{ relation.name }} = {{ variable class.name }}Store.{{ relation.name }}.map<{{modelName ../../name}}OptionalTransferobjecttypes{{packageName target.name}}{{className target.name}}>(create{{modelName ../../name}}OptionalTransferobjecttypes{{packageName target.name}}{{className target.name}}).toList();
+        optional{{ className class.name }}.{{ variable relation.name }} = {{ variable class.name }}Store.{{ variable relation.name }}.map<{{modelName ../../name}}OptionalTransferobjecttypes{{packageName target.name}}{{className target.name}}>(create{{modelName ../../name}}OptionalTransferobjecttypes{{packageName target.name}}{{className target.name}}).toList();
     {{ else }}
-        optional{{ className class.name }}.{{ relation.name }} = create{{modelName ../../name}}OptionalTransferobjecttypes{{packageName target.name}}{{className target.name}}({{ variable class.name }}Store.{{ relation.name }});
+        optional{{ className class.name }}.{{ variable relation.name }} = create{{modelName ../../name}}OptionalTransferobjecttypes{{packageName target.name}}{{className target.name}}({{ variable class.name }}Store.{{ variable relation.name }});
     {{/ if }}
     }
             {{/ unless }}
