@@ -1,2 +1,48 @@
-{{ log 'Enumeration radio generation for' (variable application.name) '-' (fqClass page.name)'page' label level='debug' ~}}
-//TODO implement enum radio
+{{~ log 'Radio generation for' (variable application.name) '-' (fqClass page.name)'page' level='debug' ~}}
+{{#if page.isPageTypeView}}
+Observer(
+    builder: (_) => JudoRadio<{{ className attributeType.dataType.name }}>(
+        key: UniqueKey(),
+        col: {{ multiplyCol col }},
+        row: {{ row }},
+        disabled: {{ disabled }},
+        items: {{ className attributeType.dataType.name }}.values,
+        getLabel: (element) => element.toString().split('.').last,
+        getValue: (element) => element,
+        groupValue: target{{ className page.dataElement.target.name }}Store.{{ attributeType.name }},
+        readOnly: true,
+    )
+),
+{{/if}}
+{{#if page.isPageTypeCreate}}
+Observer(
+    builder: (_) => JudoRadio<{{ className attributeType.dataType.name }}>(
+        key: inputWidgetKeyMap['{{ name }}'],
+        col: {{ multiplyCol col }},
+        row: {{ row }},
+        disabled: {{ disabled }},
+        items: {{ className attributeType.dataType.name }}.values,
+        getLabel: (element) => element.toString().split('.').last,
+        getValue: (element) => element,
+        groupValue: target{{ className page.dataElement.target.name }}Store.{{ attributeType.name }},
+        onChanged: (value) => target{{ className page.dataElement.target.name }}Store.set{{ className attributeType.name }}(value),
+        readOnly: {{attributeType.isReadOnly}},
+    )
+),
+{{/if}}
+{{#if page.isPageTypeUpdate}}
+Observer(
+    builder: (_) => JudoRadio<{{ className attributeType.dataType.name }}>(
+        key: inputWidgetKeyMap['{{ name }}'],
+        col: {{ multiplyCol col }},
+        row: {{ row }},
+        disabled: {{ disabled }},
+        items: {{ className attributeType.dataType.name }}.values,
+        getLabel: (element) => element.toString().split('.').last,
+        getValue: (element) => element,
+        groupValue: target{{ className page.dataElement.target.name }}Store.{{ attributeType.name }},
+        onChanged: (value) => target{{ className page.dataElement.target.name }}Store.set{{ className attributeType.name }}(value),
+        readOnly: {{attributeType.isReadOnly}},
+    )
+),
+{{/if}}

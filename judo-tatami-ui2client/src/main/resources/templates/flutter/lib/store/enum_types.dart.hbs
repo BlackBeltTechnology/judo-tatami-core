@@ -7,15 +7,14 @@
 // Template name: {{ template.templateName }}
 // Application: {{ application.name }}
 
-library {{ variable ap.name }}.store;
+part of {{ variable ap.name }}.store;
 
-import 'package:mobx/mobx.dart';
-import 'package:uuid/uuid.dart';
-import 'package:quiver/core.dart' show hash3;
-
-part 'package.g.dart';
-
-part 'enum_types.dart';
-{{# each classes ~}}
-part '{{ fqPath name }}__store.dart';
-{{/ each }}
+{{# each dataTypes as |dataType| }}
+    {{# if (isEnumType dataType) }}
+enum {{ className dataType.name }} {
+{{# each dataType.members as |member| }}
+    {{ className member.name }},
+{{/each}}
+}
+    {{/ if }}
+{{/each}}
