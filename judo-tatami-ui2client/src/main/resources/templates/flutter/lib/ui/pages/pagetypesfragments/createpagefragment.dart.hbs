@@ -1,10 +1,19 @@
     {{#unless page.dataElement.isAccess}}
     final {{ fqClass page.dataElement.owner.name }}Store owner{{ className page.dataElement.owner.name }}Store;
     {{/unless}}
-    const {{fqClass page.name}}Page({ Key key{{#unless page.dataElement.isAccess}}, @required this.owner{{ className page.dataElement.owner.name }}Store{{/unless}} }) : super(key: key);
+    {{# if (validatableFlagNeed page.dataElement) }}
+    final bool validatable;
+    {{/ if }}
 
+    const {{fqClass page.name}}Page({ Key key{{#unless page.dataElement.isAccess}}, @required this.owner{{ className page.dataElement.owner.name }}Store{{/unless}}{{# if (validatableFlagNeed page.dataElement) }}, this.validatable{{/ if }} }) : super(key: key);
+
+    {{#unless page.dataElement.isAccess}}
     @override
-    _{{ fqClass page.name }}PageState createState() => _{{ fqClass page.name }}PageState({{#unless page.dataElement.isAccess}}owner{{ className page.dataElement.owner.name }}Store: owner{{ className page.dataElement.owner.name }}Store{{/unless}});
+    _{{ fqClass page.name }}PageState createState() => _{{ fqClass page.name }}PageState(owner{{ className page.dataElement.owner.name }}Store: owner{{ className page.dataElement.owner.name }}Store{{# if (validatableFlagNeed page.dataElement) }}, validatable: validatable{{/ if }});
+    {{ else }}
+    @override
+    _{{ fqClass page.name }}PageState createState() => _{{ fqClass page.name }}PageState({{# if (validatableFlagNeed page.dataElement) }}validatable: validatable{{/ if }});
+    {{/unless}}
 }
 
 class _{{ fqClass page.name }}PageState extends State<{{ fqClass page.name }}Page> {
@@ -13,9 +22,32 @@ class _{{ fqClass page.name }}PageState extends State<{{ fqClass page.name }}Pag
     {{#unless page.dataElement.isAccess }}
     final {{ fqClass page.dataElement.owner.name }}Store owner{{ className page.dataElement.owner.name }}Store;
     {{/unless}}
+    {{# if (validatableFlagNeed page.dataElement) }}
+    final bool validatable;
+    {{/ if }}
 
     final {{fqClass page.name}}PageStore {{fqVariable page.name}}PageStore = {{fqClass page.name}}PageStore();
 
     {{#unless page.dataElement.isAccess}}
-    _{{ fqClass page.name }}PageState({ @required this.owner{{ className page.dataElement.owner.name }}Store });
+    _{{ fqClass page.name }}PageState({ @required this.owner{{ className page.dataElement.owner.name }}Store{{# if (validatableFlagNeed page.dataElement) }}, this.validatable{{/ if }} })
+        {{~# if (validatableFlagNeed page.dataElement) ~}}
+    {
+        if (this.validatable != null) {
+            {{fqVariable page.name}}PageStore.validatable = this.validatable;
+        }
+    }
+        {{~ else ~}}
+        ;
+        {{/ if }}
+    {{ else }}
+    _{{ fqClass page.name }}PageState({{# if (validatableFlagNeed page.dataElement) }}{ this.validatable }{{/ if }})
+        {{~# if (validatableFlagNeed page.dataElement) ~}}
+    {
+        if (this.validatable != null) {
+            {{fqVariable page.name}}PageStore.validatable = this.validatable;
+        }
+    }
+        {{~ else ~}}
+            ;
+        {{/ if }}
     {{/unless}}

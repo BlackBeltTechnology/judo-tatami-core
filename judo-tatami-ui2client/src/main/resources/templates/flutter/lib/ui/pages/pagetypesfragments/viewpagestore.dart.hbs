@@ -11,6 +11,10 @@ abstract class _{{ fqClass page.name }}PageStore with Store {
     @observable
     ObservableFuture {{ fqVariable relation.name }}StoreFuture;
 
+    {{# if (validatableFlagNeed relation)}}
+    bool validatable = true;
+    {{/if}}
+
     {{# if relation.target.isClassBehaviourTypeRefreshable }}
     @action
     Future<void> refresh{{ className relation.target.name }}({{ fqClass relation.target.name }}Store target{{ className page.dataElement.target.name }}Store) async {
@@ -50,12 +54,12 @@ abstract class _{{ fqClass page.name }}PageStore with Store {
     }
 
     {{/ if }}
-    {{# if relation.target.isRelationBehaviourTypeUpdateValidatable }}
+    {{# if relation.target.isClassBehaviourTypeUpdateValidatable }}
     @action
     Future<{{ fqClass relation.target.name }}Store> validate({{# unless page.dataElement.isAccess}}{{ fqClass relation.owner.name }}Store owner{{ className relation.owner.name }}Store, {{/unless}}{{ fqClass relation.target.name }}Store target{{ className relation.target.name }}Store) async {
         try {
             errorMessage = null;
-            return await _{{ fqVariable application.actor.name }}Repository.{{fqVariable relation.target.name}}ValidateForUpdate({{# unless page.dataElement.isAccess}}owner{{ className relation.owner.name }}Store, {{/unless}}target{{ className relation.target.name }}Store);
+            return await _{{ fqVariable application.actor.name }}Repository.{{fqVariable relation.target.name}}ValidateForUpdate(target{{ className relation.target.name }}Store);
         } on ApiException catch (error) {
             errorMessage = "Could not validate {{ relation.target.name }}";
             throw error;

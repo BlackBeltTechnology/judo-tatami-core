@@ -11,6 +11,10 @@ abstract class _{{ fqClass page.name }}PageStore with Store {
     @observable
     ObservableFuture {{ fqVariable relation.name }}StoreFuture;
 
+    {{# if (validatableFlagNeed relation)}}
+    bool validatable = false;
+    {{/ if }}
+
     {{# if relation.isRelationBehaviourTypeCreateValidatable }}
     @action
     Future<{{ fqClass relation.target.name }}Store> validate({{# unless page.dataElement.isAccess}}{{ fqClass relation.owner.name }}Store owner{{ className relation.owner.name }}Store, {{/unless}}{{ fqClass relation.target.name }}Store target{{ className relation.target.name }}Store) async {

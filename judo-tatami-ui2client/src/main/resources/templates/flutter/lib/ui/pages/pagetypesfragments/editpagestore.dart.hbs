@@ -11,6 +11,10 @@ abstract class _{{ fqClass page.name }}PageStore with Store {
     @observable
     ObservableFuture {{ fqVariable relation.name }}StoreFuture;
 
+    {{# if (validatableFlagNeed relation)}}
+    bool validatable = true;
+    {{/if}}
+
     {{# if relation.target.isClassBehaviourTypeRefreshable }}
     @action
     Future<void> refresh{{ className relation.target.name }}({{ fqClass relation.target.name }}Store target{{ className page.dataElement.target.name }}Store) async {
