@@ -29,7 +29,8 @@ operation UI!ui::VisualElement updateInheritedReferences(pageDef : UI!ui::PageDe
 		if (self.action.isKindOf(UI!ui::PageAction)) {
 			if (self.dataElement <> self.action.target.dataElement) {
 				var application = self.action.target.~application;
-				var clonedPage = application.pages.selectOne(p | p.~original.isDefined() and p.~original == self.action.target);
+				var clonedPage = application.pages.selectOne(p | p.~original.isDefined() and p.~original == self.action.target and 
+				                                                relation.target == p.dataElement.eContainer());
 				if (clonedPage.isDefined()) {
 					self.action.target = clonedPage;
 				}	

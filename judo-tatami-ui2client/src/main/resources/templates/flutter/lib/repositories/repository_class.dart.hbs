@@ -151,7 +151,7 @@ class {{ fqClass class.name }}Repository {
       {{fqClass operation.output.target.name}} {{fqVariable operation.output.target.name}} = await DefaultApi(locator<ApiClient>()).{{fqVariable operation.owner.name}}{{className operation.name}}({{#if operation.isMapped }}{{ fqVariable class.name }}Store.internal__signedIdentifier, {{/if}}{{#if operation.input}}{{fqVariable operation.input.target.name}}{{/if}});
       return {{ fqClass ap.name }}RepositoryStoreMapper.create{{ fqClass operation.output.target.name }}StoreFrom{{ fqClass operation.output.target.name }}({{fqVariable operation.output.target.name}});
       {{else}}
-      return await DefaultApi(locator<ApiClient>()).{{fqVariable operation.owner.name}}{{className operation.name}}({{#if operation.isMapped }}{{ fqVariable class.name }}Store.internal__signedIdentifier, {{/if}}{{#if operation.input}}{{fqVariable operation.input.target.name}}{{/if}});
+      return await DefaultApi(locator<ApiClient>()).{{fqVariable operation.owner.transferObjectTypeName}}{{className operation.name}}({{#if operation.isMapped }}{{ fqVariable class.name }}Store.internal__signedIdentifier, {{/if}}{{#if operation.input}}{{fqVariable operation.input.target.name}}{{/if}});
       {{/if}}
   }
 

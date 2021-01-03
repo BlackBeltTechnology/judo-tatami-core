@@ -55,10 +55,11 @@ operation ESM!esm::structure::Class createClassType(application : UI!ui::Applica
 	if (esmUtils.isDeleteSupported(self)) {
 		clazz.behaviours.add(UI!ui::data::ClassBehaviourType#DELETE);
 	}
-// TODO: Make it
-//	if (esmUtils.isTemplateSupported(self)) {
-//		clazz.behaviours.add(UI!ui::data::ClassBehaviourType#TEMPLATE);
-//	}
+
+	if (esmUtils.isGetTemplateSupported(self)) {
+		clazz.behaviours.add(UI!ui::data::ClassBehaviourType#TEMPLATE);
+		clazz.isOptional = true;
+	}
 					
 	application.dataElements.add(clazz);
     clazz.isPrincipal = self.actorType.isDefined() and self.actorType == application.~originalActorType;

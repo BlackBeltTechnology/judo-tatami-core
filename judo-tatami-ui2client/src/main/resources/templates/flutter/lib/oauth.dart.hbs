@@ -32,7 +32,7 @@ class Oauth {
   //static const LOGOUT_URL = "http://localhost:8080/auth/realms/JUDO/protocol/openid-connect/logout?redirect_uri=http%3A%2F%2Flocalhost%3A8888%2F";
 
   static var callbackUrl = html.window.location.protocol  + "//" + html.window.location.host;
-  static {{ modelName application.name }}MetadataSecurityFor{{ className application.name }} securitySettings = {{ modelName application.name }}MetadataSecurityFor{{ className application.name }}();
+  static {{ modelName application.name }}{{ packageName application.name }}MetadataSecurityFor{{ className application.name }} securitySettings = {{ modelName application.name }}{{ packageName application.name }}MetadataSecurityFor{{ className application.name }}();
 
   static loadClientMetaData() async {
     try {
@@ -53,14 +53,14 @@ class Oauth {
    // }
         try {
             await DefaultApi(
-            locator<ApiClient>()).{{ modelNameVariable application.name }}{{ className application.name }}Metadata();
+            locator<ApiClient>()).{{ modelNameVariable application.name }}{{ packageName application.name }}{{ className application.name }}Metadata();
         } on ArgumentError catch (error) {
             var realm = error.message.toString().substring(26);
             locator<ApiClient>().setAuthentication(realm, NoopAuth());
         }
 
-            {{ modelName application.name }}MetadataFor{{ className application.name }} meta = await DefaultApi(
-            locator<ApiClient>()).{{ modelNameVariable application.name }}{{ className application.name }}Metadata();
+            {{ modelName application.name }}{{ packageName application.name }}MetadataFor{{ className application.name }} meta = await DefaultApi(
+            locator<ApiClient>()).{{ modelNameVariable application.name }}{{ packageName application.name }}{{ className application.name }}Metadata();
         if (meta.security.isNotEmpty) {
             securitySettings = meta.security.first;
         }
@@ -143,7 +143,7 @@ class Oauth {
     locator<ApiClient>().setAuthentication(securitySettings.name, null);
     // var logoutUri = LOGOUT_URL + "?redirect_uri=${Uri.encodeQueryComponent(CALLBACK_URL)}";
     html.window.location.assign(securitySettings.logoutEndpoint + "?redirect_uri=${Uri.encodeQueryComponent(callbackUrl)}");
-    securitySettings = {{ modelName application.name }}MetadataSecurityFor{{ className application.name }}();
+    securitySettings = {{ modelName application.name }}{{ packageName application.name }}MetadataSecurityFor{{ className application.name }}();
   }
 
   static refreshToken() async {

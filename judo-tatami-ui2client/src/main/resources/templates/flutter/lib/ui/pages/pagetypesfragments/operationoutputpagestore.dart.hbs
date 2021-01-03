@@ -11,6 +11,9 @@ abstract class _{{ fqClass page.name }}PageStore with Store {
     @observable
     ObservableFuture {{ fqVariable data.name }}StoreFuture;
 
+    // TODO: review that this is necessary in all cases
+    bool validatable = false;
+
     {{# if data.target.isClassBehaviourTypeRefreshable }}
     @action
     Future<void> refresh{{ className data.target.name }}({{ fqClass data.target.name }}Store target{{ className page.dataElement.target.name }}Store) async {
