@@ -40,6 +40,8 @@ public class FlutterHelper {
         context.registerFunction("dartType", FlutterHelper.class.getDeclaredMethod("dartType", new Class[]{DataType.class}));
         context.registerFunction("isTransientAttribute", FlutterHelper.class.getDeclaredMethod("isTransientAttribute", new Class[]{AttributeType.class}));
         context.registerFunction("multiplyCol", FlutterHelper.class.getDeclaredMethod("multiplyCol", new Class[]{Double.class}));
+        context.registerFunction("validatableFlagNeed", FlutterHelper.class.getDeclaredMethod("validatableFlagNeed", new Class[]{RelationType.class}));
+        context.registerFunction("isEnumType", FlutterHelper.class.getDeclaredMethod("isEnumType", new Class[]{DataType.class}));
         context.registerFunction("isInputWidgetMapNeed", FlutterHelper.class.getDeclaredMethod("isInputWidgetMapNeed", new Class[]{PageDefinition.class}));
         context.registerFunction("getInputWidgets", FlutterHelper.class.getDeclaredMethod("getInputWidgets", new Class[]{Container.class}));
     }
@@ -223,9 +225,23 @@ public class FlutterHelper {
             return "DateTime";
         } else if (dataType instanceof StringType) {
             return "String";
+        } else if (dataType instanceof EnumerationType) {
+            return className(dataType.getName());
         } else {
             return "String";
         }
+    }
+
+    public static boolean validatableFlagNeed (RelationType relationType) {
+        return relationType.getIsRelationKindComposition() || relationType.getIsRelationKindAggregation() || relationType.getTarget().getRelations()
+                .stream()
+                .anyMatch(
+                        relationTypeElement -> relationTypeElement.getIsRelationKindAggregation() || relationTypeElement.getIsRelationKindComposition()
+                );
+    }
+
+    public static boolean isEnumType (DataType type) {
+        return type instanceof EnumerationType;
     }
 
     public static boolean isInputWidgetMapNeed (PageDefinition page) {

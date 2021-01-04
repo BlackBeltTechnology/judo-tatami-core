@@ -5,6 +5,9 @@ abstract class _{{ fqClass page.name }}PageStore with Store {
     @observable
     String errorMessage;
 
+    // TODO: review that this is necessary in all cases
+    bool validatable = false;
+
     {{# each page.dataElement.target.relations as |relation| }}
         {{# unless isMemberTypeTransient }}
             {{# if isRelationKindAggregation }}

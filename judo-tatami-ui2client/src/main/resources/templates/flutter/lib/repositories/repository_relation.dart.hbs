@@ -160,6 +160,7 @@ class {{ fqClass relation.owner.name }}{{ fqClass relation.name }}Repository {
       {{/ if }}
   {{/ if }}
 
+  // Target relations
   {{# each relation.target.relations as |targetRelation| }}
       {{# if targetRelation.isRelationBehaviourTypeRangeable }}
 

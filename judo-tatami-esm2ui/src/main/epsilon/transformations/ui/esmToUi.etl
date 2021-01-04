@@ -69,6 +69,10 @@ post {
     for (classType : UI!ui::data::ClassType in optionals) {
         classType.setRelationTargetsOptional();
     }
+    
+    for (application : UI!ui::Application in UI!ui::Application.all()) {
+		application.removeUnexposedElements();
+	}
 }
 
 /*
