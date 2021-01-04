@@ -189,14 +189,12 @@ public class Esm2PsmTwoWayRelationOperationTest {
     }
 
     @Test
-    @Disabled // TODO JNG-2009
     public void testTwoWaySingleToSingleRequired() {
         createEsmModelAndTransform(1);
         checkOperations();
     }
 
     @Test
-    @Disabled // TODO JNG-2009
     public void testTwoWaySingleToCollectionRequired() {
         createEsmModelAndTransform(5);
         checkOperations();
