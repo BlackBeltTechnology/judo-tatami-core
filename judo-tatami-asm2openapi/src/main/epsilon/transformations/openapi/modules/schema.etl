@@ -59,6 +59,15 @@ rule CreateTransferObjectSingleSchemaDefinitionForCreateAndUpdate
             referenceId.property.type = OPENAPI!JSONDataType#string;
 
             t.properties.add(referenceId);
+            
+            var signedId = new OPENAPI!PropertyDeclaration;
+            signedId.name = "__signedIdentifier";
+
+            signedId.property = new OPENAPI!Property;
+            signedId.property.description = "Signed ID of " + asmUtils.getMappedEntityType(s.eContainer).get().name + " instance";
+            signedId.property.type = OPENAPI!JSONDataType#string;
+
+            t.properties.add(signedId);
         }
 
         s.equivalent("CreateTransferObjectSingleSchemaDeclarationForCreateAndUpdate").schema = t;
