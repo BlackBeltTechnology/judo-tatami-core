@@ -119,6 +119,7 @@ class {{ fqClass ap.name }}RepositoryStoreMapper {
   static void map{{ fqClass name }}StoreTo{{ fqClass name }}ForCreateAndUpdate({{ fqClass name }}Store {{ variable name }}Store, {{ fqClass transferObjectTypeName }}ForCreateAndUpdate {{ variable name }}) {
     // Identifier
     {{ variable name }}.internal__referenceId = {{ variable name }}Store.internal__referenceIdentifier;
+    {{ variable name }}.internal__signedIdentifier = {{ variable name }}Store.internal__signedIdentifier;
 
     // Attributes
     {{# each attributes as |attribute|}}
