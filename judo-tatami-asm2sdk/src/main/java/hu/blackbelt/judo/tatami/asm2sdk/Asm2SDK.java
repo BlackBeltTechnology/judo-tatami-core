@@ -13,6 +13,7 @@ import hu.blackbelt.judo.framework.compiler.api.FullyQualifiedName;
 import hu.blackbelt.judo.meta.asm.runtime.AsmModel;
 import hu.blackbelt.judo.meta.asm.runtime.AsmUtils;
 import hu.blackbelt.judo.tatami.core.CachingInputStream;
+import hu.blackbelt.judo.tatami.core.workflow.work.MetricsCollector;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.epsilon.common.util.UriUtil;
@@ -22,7 +23,6 @@ import javax.tools.JavaFileObject;
 import java.io.*;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
@@ -50,7 +50,12 @@ public class Asm2SDK {
     }
 
     public static Asm2SDKBundleStreams executeAsm2SDKGeneration(AsmModel asmModel, Log log,
-                                                       URI scriptUri, File sourceCodeOutputDir) throws Exception {
+                                                                URI scriptUri, File sourceCodeOutputDir) throws Exception {
+        return executeAsm2SDKGeneration(asmModel, log, scriptUri, sourceCodeOutputDir, null);
+    }
+
+    public static Asm2SDKBundleStreams executeAsm2SDKGeneration(AsmModel asmModel, Log log,
+                                                                URI scriptUri, File sourceCodeOutputDir, MetricsCollector metricsCollector) throws Exception {
 
         ExecutionContext executionContext = executionContextBuilder()
                 .log(log)
@@ -90,13 +95,52 @@ public class Asm2SDK {
         executionContext.commit();
         executionContext.close();
 
-        return generateBundlesAsStream(
-                asmModel.getName(),
-                asmModel.getVersion(),
-                sourceCodeOutputDir,
-                sdkJavaFileNames,
-                internalJavaFileNames,
-                internalXmlFileNames);
+        Set<String> allJavaFiles = new HashSet<>();
+        allJavaFiles.addAll(sdkJavaFileNames);
+        allJavaFiles.addAll(internalJavaFileNames);
+
+        Iterable<JavaFileObject> compiled;
+        final Long compilerStartTs = System.nanoTime();
+        boolean compilerFailed = false;
+        try {
+            if (metricsCollector != null) {
+                metricsCollector.invokedTransformation("SDK-compile");
+            }
+
+            compiled = compile(sourceCodeOutputDir, allJavaFiles);
+        } catch (Exception ex) {
+            compilerFailed = true;
+            throw ex;
+        } finally {
+            if (metricsCollector != null) {
+                metricsCollector.stoppedTransformation("SDK-compile", System.nanoTime() - compilerStartTs, compilerFailed);
+            }
+        }
+
+        final Long packagingStartTs = System.nanoTime();
+        boolean packagingFailed = false;
+        try {
+            if (metricsCollector != null) {
+                metricsCollector.invokedTransformation("SDK-package");
+            }
+
+            // Generating bundle
+            return generateBundlesAsStream(
+                    asmModel.getName(),
+                    asmModel.getVersion(),
+                    sourceCodeOutputDir,
+                    sdkJavaFileNames,
+                    internalJavaFileNames,
+                    internalXmlFileNames,
+                    compiled);
+        } catch (Exception ex) {
+            packagingFailed = true;
+            throw ex;
+        } finally {
+            if (metricsCollector != null) {
+                metricsCollector.stoppedTransformation("SDK-package", System.nanoTime() - packagingStartTs, packagingFailed);
+            }
+        }
     }
 
 	private static Iterable<JavaFileObject> compile(File sourceDir, Set<String> sourceCodeFiles) throws Exception {
@@ -116,18 +160,13 @@ public class Asm2SDK {
     }
 
     private static Asm2SDKBundleStreams generateBundlesAsStream(String name, String version, File sourceCodeOutputDir,
-			Set<String> sdkJavaFileNames, Set<String> internalJavaFileNames, Set<String> internalXmlFileNames) throws Exception {
+			Set<String> sdkJavaFileNames, Set<String> internalJavaFileNames, Set<String> internalXmlFileNames, Iterable<JavaFileObject> compiled) throws Exception {
         TinyBundle sdkBundle = bundle();
         TinyBundle internalBundle = bundle();
         
         Set<String> sdkExportedPackages = Sets.newHashSet();
         Set<String> internalExportedPackages = Sets.newHashSet();
     	
-        Set<String> allJavaFiles = new HashSet<>();
-        allJavaFiles.addAll(sdkJavaFileNames);
-        allJavaFiles.addAll(internalJavaFileNames);
-        
-        Iterable<JavaFileObject> compiled = compile(sourceCodeOutputDir, allJavaFiles);
         compiled.forEach(c -> {
             FullyQualifiedName fullyQualifiedName = (FullyQualifiedName) c;
             try {

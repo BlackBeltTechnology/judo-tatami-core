@@ -9,6 +9,7 @@ import hu.blackbelt.judo.meta.script.runtime.ScriptModel;
 import hu.blackbelt.judo.meta.script.support.ScriptModelResourceSupport;
 import hu.blackbelt.judo.script.codegen.generator.Script2JavaGenerator;
 import hu.blackbelt.judo.tatami.core.CachingInputStream;
+import hu.blackbelt.judo.tatami.core.workflow.work.MetricsCollector;
 import org.ops4j.pax.tinybundles.core.TinyBundle;
 import org.osgi.framework.Constants;
 import org.slf4j.Logger;
@@ -32,6 +33,10 @@ public class Script2Operation {
     static Logger log = LoggerFactory.getLogger(Script2Operation.class);
 
     public static InputStream executeScript2OperationGeneration(ScriptModel scriptModel) throws Exception {
+        return executeScript2OperationGeneration(scriptModel, null);
+    }
+
+    public static InputStream executeScript2OperationGeneration(ScriptModel scriptModel, MetricsCollector metricsCollector) throws Exception {
 
         ScriptModelResourceSupport scriptModelResourceSupport =
                 scriptModelResourceSupportBuilder().resourceSet(scriptModel.getResourceSet()).build();
@@ -80,16 +85,47 @@ public class Script2Operation {
             });
         }
 
+        Iterable<JavaFileObject> compiled;
+        final Long compilerStartTs = System.nanoTime();
+        boolean compilerFailed = false;
+        try {
+            if (metricsCollector != null) {
+                metricsCollector.invokedTransformation("script-compile");
+            }
 
+            compiled = compile(sourceCodesByFqName);
+        } catch (Exception ex) {
+            compilerFailed = true;
+            throw ex;
+        } finally {
+            if (metricsCollector != null) {
+                metricsCollector.stoppedTransformation("script-compile", System.nanoTime() - compilerStartTs, compilerFailed);
+            }
+        }
 
-        // Generating bundle
-        return generateBundle(
-                scriptModel.getName(),
-                scriptModel.getVersion(),
-                compile(sourceCodesByFqName),
-                sourceCodesByFqName,
-                scrXmlFilesByFqName
-        );
+        final Long packagingStartTs = System.nanoTime();
+        boolean packagingFailed = false;
+        try {
+            if (metricsCollector != null) {
+                metricsCollector.invokedTransformation("script-package");
+            }
+
+            // Generating bundle
+            return generateBundle(
+                    scriptModel.getName(),
+                    scriptModel.getVersion(),
+                    compiled,
+                    sourceCodesByFqName,
+                    scrXmlFilesByFqName
+            );
+        } catch (Exception ex) {
+            packagingFailed = true;
+            throw ex;
+        } finally {
+            if (metricsCollector != null) {
+                metricsCollector.stoppedTransformation("script-package", System.nanoTime() - packagingStartTs, packagingFailed);
+            }
+        }
     }
 
     private static Iterable<JavaFileObject> compile(Map<String, String> sourceCodeByFqName) throws Exception {

@@ -50,7 +50,8 @@ public class Asm2SDKWork extends AbstractTransformationWork {
 		Asm2SDKBundleStreams bundleStreams = executeAsm2SDKGeneration(asmModel.get(),
 				getTransformationContext().getByClass(Log.class).orElseGet(() -> new Slf4jLog(log)),
 				transformationScriptRoot,
-				temporaryDirectory);
+				temporaryDirectory,
+				metricsCollector);
 
 		checkState(bundleStreams != null, "No InputStream created");
 		getTransformationContext().put(SDK_OUTPUT, bundleStreams.getSdkBundleStream());

@@ -13,6 +13,7 @@ import hu.blackbelt.judo.framework.compiler.api.FullyQualifiedName;
 import hu.blackbelt.judo.meta.asm.runtime.AsmModel;
 import hu.blackbelt.judo.meta.asm.runtime.AsmUtils;
 import hu.blackbelt.judo.tatami.core.CachingInputStream;
+import hu.blackbelt.judo.tatami.core.workflow.work.MetricsCollector;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.epsilon.common.util.UriUtil;
@@ -50,6 +51,11 @@ public class Asm2JAXRSAPI {
 
     public static InputStream executeAsm2JAXRSAPIGeneration(AsmModel asmModel, Log log,
                                                             URI scriptDir, File sourceCodeOutputDir) throws Exception {
+        return executeAsm2JAXRSAPIGeneration(asmModel, log, scriptDir, sourceCodeOutputDir, null);
+    }
+
+    public static InputStream executeAsm2JAXRSAPIGeneration(AsmModel asmModel, Log log,
+                                                            URI scriptDir, File sourceCodeOutputDir, MetricsCollector metricsCollector) throws Exception {
 
         // Execution context
         ExecutionContext executionContext = executionContextBuilder()
@@ -88,15 +94,48 @@ public class Asm2JAXRSAPI {
         executionContext.commit();
         executionContext.close();
 
-        // Generating bundle
-        return generateBundle(
-                asmModel.getName(),
-                asmModel.getVersion(),
-                compile(sourceCodeOutputDir, javaFileNames),
-                sourceCodeOutputDir,
-                javaFileNames,
-                scrXmlFileNames
-        );
+        Iterable<JavaFileObject> compiled;
+        final Long compilerStartTs = System.nanoTime();
+        boolean compilerFailed = false;
+        try {
+            if (metricsCollector != null) {
+                metricsCollector.invokedTransformation("JAXRS-compile");
+            }
+
+            compiled = compile(sourceCodeOutputDir, javaFileNames);
+        } catch (Exception ex) {
+            compilerFailed = true;
+            throw ex;
+        } finally {
+            if (metricsCollector != null) {
+                metricsCollector.stoppedTransformation("JAXRS-compile", System.nanoTime() - compilerStartTs, compilerFailed);
+            }
+        }
+
+        final Long packagingStartTs = System.nanoTime();
+        boolean packagingFailed = false;
+        try {
+            if (metricsCollector != null) {
+                metricsCollector.invokedTransformation("JAXRS-package");
+            }
+
+            // Generating bundle
+            return generateBundle(
+                    asmModel.getName(),
+                    asmModel.getVersion(),
+                    compiled,
+                    sourceCodeOutputDir,
+                    javaFileNames,
+                    scrXmlFileNames
+            );
+        } catch (Exception ex) {
+            packagingFailed = true;
+            throw ex;
+        } finally {
+            if (metricsCollector != null) {
+                metricsCollector.stoppedTransformation("JAXRS-package", System.nanoTime() - packagingStartTs, packagingFailed);
+            }
+        }
     }
 
     private static Iterable<JavaFileObject> compile(File sourceDir, Set<String> sourceCodeFiles) throws Exception {
