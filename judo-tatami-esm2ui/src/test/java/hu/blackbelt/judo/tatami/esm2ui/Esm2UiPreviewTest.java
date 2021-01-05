@@ -6,19 +6,13 @@ import hu.blackbelt.judo.meta.esm.accesspoint.Access;
 import hu.blackbelt.judo.meta.esm.accesspoint.ActorType;
 import hu.blackbelt.judo.meta.esm.namespace.Model;
 import hu.blackbelt.judo.meta.esm.runtime.EsmModel;
-import hu.blackbelt.judo.meta.esm.runtime.EsmUtils;
 import hu.blackbelt.judo.meta.esm.structure.DataMember;
 import hu.blackbelt.judo.meta.esm.structure.EntityType;
 import hu.blackbelt.judo.meta.esm.structure.MemberType;
-import hu.blackbelt.judo.meta.esm.structure.TransferObjectType;
 import hu.blackbelt.judo.meta.esm.type.StringType;
 import hu.blackbelt.judo.meta.esm.ui.*;
 import hu.blackbelt.judo.meta.ui.Application;
-import hu.blackbelt.judo.meta.ui.Tab;
-import hu.blackbelt.judo.meta.ui.TabController;
-import hu.blackbelt.judo.meta.ui.VisualElement;
 import hu.blackbelt.judo.meta.ui.runtime.UiModel;
-import hu.blackbelt.judo.meta.ui.runtime.UiUtils;
 import hu.blackbelt.model.northwind.esm.NorthwindEsmModel;
 import lombok.extern.slf4j.Slf4j;
 
@@ -109,17 +103,8 @@ public class Esm2UiPreviewTest {
     	savePrettyJson(json, SimpleOrderModel.getViewForTest().getName());
         validateUiTestModel();
 
-        final Optional<Application> application = allUi(Application.class)
-                .findAny();
+        final Optional<Application> application = allUi(Application.class).findAny();
         assertTrue(application.isPresent());
-
-        application.get().getPages().stream()
-        	.forEach(p -> 
-        		p.getContainers().stream()
-        			.forEach(c -> 
-        				slf4jlog.debug("Printing UI model page " + testName + "::" + p.getName() + ": \n" + printElement(c))
-        			)
-        	);
     }
     
     @Test
@@ -137,14 +122,6 @@ public class Esm2UiPreviewTest {
         final Optional<Application> application = allUi(Application.class)
                 .findAny();
         assertTrue(application.isPresent());
-
-        application.get().getPages().stream()
-        	.forEach(p -> 
-        		p.getContainers().stream()
-        			.forEach(c -> 
-        				slf4jlog.debug("Printing UI model page " + testName + "::" + p.getName() + ": \n" + printElement(c))
-        			)
-        	);
     }
     
     @Test
@@ -162,14 +139,6 @@ public class Esm2UiPreviewTest {
         final Optional<Application> application = allUi(Application.class)
                 .findAny();
         assertTrue(application.isPresent());
-
-        application.get().getPages().stream()
-        	.forEach(p -> 
-        		p.getContainers().stream()
-        			.forEach(c -> 
-        				slf4jlog.debug("Printing UI model page " + testName + "::" + p.getName() + ": \n" + printElement(c))
-        			)
-        	);
     }
     
     @Test
@@ -302,9 +271,6 @@ public class Esm2UiPreviewTest {
 
         validateEsmTestModel();
 
-        final ResourceSet resourceSet = esmModel.getResourceSet();
-        final Iterable<Notifier> esmContents = resourceSet::getAllContents;
-
         String json = executeEsm2UiTransformation(esmModel, view, "default", 12, uiModel, new Slf4jLog(log));
         saveJson(json, testName);
         savePrettyJson(json, testName);
@@ -322,57 +288,6 @@ public class Esm2UiPreviewTest {
 
     private <T> Stream<T> allUi(final Class<T> clazz) {
         return allUi().filter(e -> clazz.isAssignableFrom(e.getClass())).map(e -> (T) e);
-    }
-
-    private static String printElement(VisualElement element) {
-        StringBuilder sb = new StringBuilder();
-        sb.append(print(element,0,false));
-        return sb.toString();
-    }
-      
-    private static String print(VisualElement element, int level, boolean isTab) {
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < level; ++i) sb.append("  ");
-        if (isTab) sb.append("TAB: ");
-        sb.append(element.getName());
-        
-        if(UiUtils.isHorizontalFlex(element)) {
-          sb.append("---HORIZONTAL---");
-          double sumCol = UiUtils.getSumOfCols((hu.blackbelt.judo.meta.ui.Container) element);
-          double maxRow = UiUtils.getMaxOfRows((hu.blackbelt.judo.meta.ui.Container) element);
-          sb.append(maxRow + " rows in " + element.getRow());
-          if (maxRow <= element.getRow()) sb.append(" ***FITS*** //////// ");
-          else sb.append(" ===WRONG=== //////// ");
-          sb.append(sumCol + " cols in " + element.getCol());
-          if (sumCol <= element.getCol()) sb.append(" ***FITS*** ");
-          else sb.append(" ===WRONG=== ");
-        }
-        else if(UiUtils.isVerticalFlex(element)) {
-          sb.append("|||VERTICAL||| ");
-          double sumRow = UiUtils.getSumOfRows((hu.blackbelt.judo.meta.ui.Container) element);
-          double maxCol = UiUtils.getMaxOfCols((hu.blackbelt.judo.meta.ui.Container) element);
-
-          sb.append(sumRow + " rows in " + element.getRow());
-          if (sumRow <= element.getRow()) sb.append(" ***FITS*** //////// ");
-          else sb.append(" ===WRONG=== //////// ");
-          
-          sb.append(maxCol + " cols in " + element.getCol());
-          if (maxCol <= element.getCol()) sb.append(" ***FITS*** ");
-          else sb.append(" ===WRONG=== ");
-        } else {
-          sb.append(" (" + element.getRow() + "*" + element.getCol() + ")");
-        }
-        
-        if (element instanceof hu.blackbelt.judo.meta.ui.Container) {
-          sb.append("\n");
-          for (VisualElement c : ((hu.blackbelt.judo.meta.ui.Container) element).getChildren()) sb.append(print(c,level+1,false));
-        } else if (element instanceof TabController) {
-        	sb.append("\n");
-            for (Tab c : ((TabController) element).getTabs()) sb.append(print(c.getElement(),level+1,true));
-        } else {
-          sb.append("\n");
-        }
-        return sb.toString();
     }
     
     private void saveJson(String json, String name) {
@@ -393,8 +308,6 @@ public class Esm2UiPreviewTest {
 			Object jsonObject = mapper.readValue(json, Object.class);
 	    	String pretty = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(jsonObject);
 	        targetFileWriter.append(pretty);
-	        log.info("JSON of {}:\n{}",name,pretty);
-	        
 	     } catch (IOException ex) {
 	        log.error("Unable to create JSON output", ex);
 	     }

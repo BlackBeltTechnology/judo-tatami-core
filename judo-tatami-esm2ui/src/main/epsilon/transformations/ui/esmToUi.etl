@@ -1,7 +1,5 @@
 import "../../operations/_importAll.eol";
 
-import "modules/namespace/namespace.etl";
-import "modules/type/type.etl";
 import "modules/accesspoint/application.etl";
 import "modules/accesspoint/pageDefinition.etl";
 import "modules/accesspoint/navigation.etl";

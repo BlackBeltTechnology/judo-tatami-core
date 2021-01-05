@@ -1,10 +1,8 @@
-import "../namespace/namespace.etl";
 import "../../../../operations/_importAll.eol";
 
 rule NavigationController
     transform s: ESM!esm::accesspoint::ActorType
-    to t: UI!ui::NavigationController
-    extends CreateNamedElementFromNamespaceElement {
+    to t: UI!ui::NavigationController {
         guard: s.kind = ESM!esm::accesspoint::ActorKind#HUMAN 
 
         log.debug("NavigationController: " + s.name);
@@ -15,8 +13,7 @@ rule NavigationController
 @abstract
 rule AbstractNavigationItem
     transform s: ESM!esm::ui::MenuItem
-    to t : UI!ui::NavigationItem
-    extends CreateNamedElementFromNamedElement {
+    to t : UI!ui::NavigationItem {
 		guard: not s.hidden
         t.name = s.eContainer.fqName().anchor("NavigationItem");
         t.label = s.getUiLabel();

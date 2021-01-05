@@ -1,10 +1,8 @@
-import "../namespace/namespace.etl";
 import "../../../../operations/_importAll.eol";
 
 rule Application
     transform s: ESM!esm::accesspoint::ActorType
-    to t: UI!ui::Application
-    extends CreateNamedElementFromNamespaceElement {
+    to t: UI!ui::Application {
         guard: s.kind = ESM!esm::accesspoint::ActorKind#HUMAN 
 
         t.~originalActorType = s;
@@ -46,27 +44,6 @@ rule Application
             	or relation.isTypeOf(ESM!esm::accesspoint::Access))) {
                 relation.mapTablePage(t, relation.target);
             }
-        }
-        
-        var exposedOperations : Set = s.getExposedOperations();
-        
-        for (op in exposedOperations) {
-        	if (op.input.isDefined()) {
-        		//if (op.input.target.table.isDefined() and op.input.upper = -1) {
-        		//	t.pages.add(op.createPageForOperationInputForTable(t));
-        		//}
-        		if (op.input.target.form.isDefined()) {
-        			op.mapFormPageForOperationInput(t);
-        		}
-        	}
-        	if (op.output.isDefined()) {
-        		if (op.output.target.view.isDefined()) {
-        			op.mapViewPageForOperationOutput(t);
-        		}
-        		//if (op.output.target.table.isDefined() and op.output.upper = -1) {
-        		//	t.pages.add(op.createPageForOperationOutputForTable(t));
-        		//}
-        	}
         }
 }
 
