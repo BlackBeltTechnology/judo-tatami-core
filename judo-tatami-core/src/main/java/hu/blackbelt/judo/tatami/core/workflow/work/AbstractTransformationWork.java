@@ -7,7 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 public abstract class AbstractTransformationWork implements Work {
 
     TransformationContext transformationContext;
-    MetricsCollector metricsCollector;
+    protected MetricsCollector metricsCollector;
 
     public AbstractTransformationWork(TransformationContext transformationContext) {
         this.transformationContext = transformationContext;
@@ -29,6 +29,9 @@ public abstract class AbstractTransformationWork implements Work {
     }
 
     public WorkReport call() {
+        if (metricsCollector != null) {
+            metricsCollector.invokedTransformation(getClass().getName());
+        }
         final Long startTs = System.nanoTime();
         boolean failed = false;
         try {

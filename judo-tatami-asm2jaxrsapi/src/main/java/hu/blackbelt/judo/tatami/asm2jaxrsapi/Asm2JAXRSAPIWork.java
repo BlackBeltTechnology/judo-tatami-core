@@ -11,7 +11,6 @@ import java.util.Optional;
 import hu.blackbelt.epsilon.runtime.execution.api.Log;
 import hu.blackbelt.epsilon.runtime.execution.impl.Slf4jLog;
 import hu.blackbelt.judo.meta.asm.runtime.AsmModel;
-import hu.blackbelt.judo.tatami.asm2jaxrsapi.Asm2JAXRSAPI;
 import hu.blackbelt.judo.tatami.core.workflow.work.AbstractTransformationWork;
 import hu.blackbelt.judo.tatami.core.workflow.work.TransformationContext;
 import lombok.extern.slf4j.Slf4j;
@@ -48,7 +47,8 @@ public class Asm2JAXRSAPIWork extends AbstractTransformationWork {
 		InputStream asm2JAXRSBundle = executeAsm2JAXRSAPIGeneration(asmModel.get(),
 				getTransformationContext().getByClass(Log.class).orElseGet(() -> new Slf4jLog(log)),
 				transformationScriptRoot,
-				temporaryDirectory);
+				temporaryDirectory,
+				metricsCollector);
 		
 		checkState(asm2JAXRSBundle != null, "No InputStream created");
 

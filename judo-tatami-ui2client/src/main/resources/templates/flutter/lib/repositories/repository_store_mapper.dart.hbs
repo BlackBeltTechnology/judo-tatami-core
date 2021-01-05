@@ -107,9 +107,8 @@ class {{ fqClass ap.name }}RepositoryStoreMapper {
 
   }
 
-  {{# unless isPrincipal}}
-      {{# if isMapped}}
-          {{# if isClassBehaviourTypeUpdatable }}
+  {{# if isMapped}}
+      {{# if isClassBehaviourTypeUpdatable }}
   static {{ fqClass transferObjectTypeName }}ForCreateAndUpdate create{{ fqClass name }}ForCreateAndUpdateFrom{{ fqClass name }}Store({{ fqClass name }}Store {{ variable name }}Store) {
     var {{ variable name }} = {{ fqClass transferObjectTypeName }}ForCreateAndUpdate();
     map{{ fqClass name }}StoreTo{{ fqClass name }}ForCreateAndUpdate({{ variable name }}Store, {{ variable name }});
@@ -119,6 +118,7 @@ class {{ fqClass ap.name }}RepositoryStoreMapper {
   static void map{{ fqClass name }}StoreTo{{ fqClass name }}ForCreateAndUpdate({{ fqClass name }}Store {{ variable name }}Store, {{ fqClass transferObjectTypeName }}ForCreateAndUpdate {{ variable name }}) {
     // Identifier
     {{ variable name }}.internal__referenceId = {{ variable name }}Store.internal__referenceIdentifier;
+    {{ variable name }}.internal__signedIdentifier = {{ variable name }}Store.internal__signedIdentifier;
 
     // Attributes
     {{# each attributes as |attribute|}}
@@ -151,9 +151,8 @@ class {{ fqClass ap.name }}RepositoryStoreMapper {
         {{/ if }}
     {{/ each }}
   }
-          {{/ if }}
-      {{/ if}}
-  {{/ unless}}
+      {{/ if }}
+  {{/ if}}
 
   // For rangeable handling
   {{# if isOptional}}

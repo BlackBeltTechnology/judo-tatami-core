@@ -102,7 +102,7 @@
     - name: ap
       expression: "#application.actor"
     - name: classes
-      expression: "#application.dataElements.?[!isActor].?[!isPrincipal]"
+      expression: "#application.dataElements.?[!isActor]"
 
 - overwriteExpression: true
   factoryExpression: "#application.relationTypes"
@@ -120,7 +120,7 @@
       expression: "#self"
 
 - overwriteExpression: true
-  factoryExpression: "#application.dataElements.?[!isActor].?[!isPrincipal]"
+  factoryExpression: "#application.dataElements.?[!isActor]"
   pathExpression: >
     'lib/' +
     #path(#application.actor.name) + '/repository/' +
@@ -144,7 +144,7 @@
     - name: ap
       expression: "#application.actor"
     - name: classes
-      expression: "#application.dataElements.?[!isActor].?[!isPrincipal]"
+      expression: "#application.dataElements.?[!isActor]"
 
 
 - overwriteExpression: true
