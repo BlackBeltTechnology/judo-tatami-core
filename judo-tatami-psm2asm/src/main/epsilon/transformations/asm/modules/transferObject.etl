@@ -244,7 +244,7 @@ rule CreateDefaultEAttribute
         t.eType = s.dataType.asmEquivalent();
         t.derived = true;
         t.changeable = false;
-        t.required = false;
+        t.lowerBound = 0;
 
         s.eContainer.asmEquivalent().eStructuralFeatures.add(t);
     }
