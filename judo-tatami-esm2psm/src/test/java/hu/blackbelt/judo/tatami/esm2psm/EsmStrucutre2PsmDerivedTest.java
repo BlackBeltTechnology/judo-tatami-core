@@ -522,49 +522,6 @@ public class EsmStrucutre2PsmDerivedTest {
     }
 
     @Test
-    void testCreateNavigationPropertyFromOneWayRelationMemberForEntityTypeDefaultTransferObjectTypeTransferObjectRelationRangeContainment() throws Exception {
-        testName = "CreateNavigationPropertyFromOneWayRelationMemberForEntityTypeDefaultTransferObjectTypeTransferObjectRelationRange";
-
-        EntityType target = newEntityTypeBuilder().withName("target").build();
-        target.setMapping(newMappingBuilder().withTarget(target).build());
-
-        OneWayRelationMember containment = newOneWayRelationMemberBuilder().withName("containment")
-                .withRelationKind(RelationKind.COMPOSITION)
-                .withRangeType(RangeType.DERIVED)
-                .withRangeExpression("rangeExpression")
-                .withLower(1)
-                .withUpper(-1)
-                .withTarget(target)
-                .build();
-        containment.setBinding(containment);
-
-        EntityType entityType = newEntityTypeBuilder().withName("entityType").withRelations(containment).build();
-        entityType.setMapping(newMappingBuilder().withTarget(entityType).build());
-
-        final Model model = newModelBuilder()
-                .withName("TestModel")
-                .withElements(ImmutableList.of(entityType, target))
-                .build();
-
-        esmModel.addContent(model);
-        transform();
-
-        final hu.blackbelt.judo.meta.psm.data.EntityType psmEntityType = allPsm(hu.blackbelt.judo.meta.psm.data.EntityType.class)
-                .filter(e -> e.getName().equals(entityType.getName())).findAny().get();
-
-        assertTrue(psmEntityType.getRelations().size() == 1);
-        assertTrue(psmEntityType.getNavigationProperties().size() == 1);
-
-        final NavigationProperty psmNavigationProperty = psmEntityType.getNavigationProperties().get(0);
-
-        String psmNavigationPropertyName = "_" + containment.getName() + "_range_TestModel_entityType";
-
-        assertTrue(psmNavigationProperty.getName().equals(psmNavigationPropertyName));
-        assertThat(psmNavigationProperty.getGetterExpression().getExpression(), IsEqual.equalTo(containment.getRangeExpression()));
-        assertNull(psmNavigationProperty.getSetterExpression());
-    }
-
-    @Test
     void testCreateNavigationPropertyFromOneWayRelationMemberForEntityTypeDefaultTransferObjectTypeTransferObjectRelationRangeAssociationEndWithoutPartner() throws Exception {
         testName = "CreateNavigationPropertyFromOneWayRelationMemberForEntityTypeDefaultTransferObjectTypeTransferObjectRelationRange";
 

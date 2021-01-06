@@ -8,7 +8,7 @@ operation ESM!RelationFeature getPSMRangeEquivalent(): JUDOPSM!NavigationPropert
 
 @cached
 operation ESM!RelationFeature isRangeExpressionSupported() : Boolean {
-    return self.isAnyRangeExpressionSupported() or self.isDerivedRangeExpressionSupported();
+    return (self.isAnyRangeExpressionSupported() or self.isDerivedRangeExpressionSupported()) and not esmUtils.isContainment(self);
 }
 
 @cached
