@@ -520,6 +520,41 @@ public class EsmStrucutre2PsmDerivedTest {
         assertThat(psmNavigationProperty.get().getGetterExpression().getExpression(), IsEqual.equalTo(associationEnd.getDefaultExpression()));
         assertNull(psmNavigationProperty.get().getSetterExpression());
     }
+    
+    @Test
+    void testCreateNavigationPropertyFromOneWayRelationMemberForEntityTypeDefaultTransferObjectTypeTransferObjectRelationRangeContainment() throws Exception {
+        testName = "CreateNavigationPropertyFromOneWayRelationMemberForEntityTypeDefaultTransferObjectTypeTransferObjectRelationRange";
+
+        EntityType target = newEntityTypeBuilder().withName("target").build();
+        target.setMapping(newMappingBuilder().withTarget(target).build());
+
+        OneWayRelationMember containment = newOneWayRelationMemberBuilder().withName("containment")
+                .withRelationKind(RelationKind.COMPOSITION)
+                .withRangeType(RangeType.DERIVED)
+                .withRangeExpression("rangeExpression")
+                .withLower(1)
+                .withUpper(-1)
+                .withTarget(target)
+                .build();
+        containment.setBinding(containment);
+
+        EntityType entityType = newEntityTypeBuilder().withName("entityType").withRelations(containment).build();
+        entityType.setMapping(newMappingBuilder().withTarget(entityType).build());
+
+        final Model model = newModelBuilder()
+                .withName("TestModel")
+                .withElements(ImmutableList.of(entityType, target))
+                .build();
+
+        esmModel.addContent(model);
+        transform();
+
+        final hu.blackbelt.judo.meta.psm.data.EntityType psmEntityType = allPsm(hu.blackbelt.judo.meta.psm.data.EntityType.class)
+                .filter(e -> e.getName().equals(entityType.getName())).findAny().get();
+
+        assertEquals(1, psmEntityType.getRelations().size());
+        assertTrue(psmEntityType.getNavigationProperties().isEmpty());
+    }
 
     @Test
     void testCreateNavigationPropertyFromOneWayRelationMemberForEntityTypeDefaultTransferObjectTypeTransferObjectRelationRangeAssociationEndWithoutPartner() throws Exception {
