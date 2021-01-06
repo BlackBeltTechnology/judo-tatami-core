@@ -214,6 +214,27 @@ rule CreateTransferObjectAttributeBindingAnnotation
         s.equivalent("CreateTransferObjectAttribute").eAnnotations.add(t); 
     }
 
+rule AddDefaultAnnotationToTransferAttribute
+    transform s : JUDOPSM!TransferAttribute
+    to t : ASM!EAnnotation {
+        guard: s.defaultValue.isDefined()
+        
+        t.source = asmUtils.getAnnotationUri("default");
+
+        var getter = new ASM!EStringToStringMapEntry;
+        getter.key = "getter";
+        getter.value = s.defaultValue.getterExpression.expression;
+
+        var getterDialect = new ASM!EStringToStringMapEntry;
+        getterDialect.key = "getter.dialect";
+        getterDialect.value = s.defaultValue.getterExpression.dialect.asString();
+
+        t.details.add(getter);
+        t.details.add(getterDialect);
+        
+        s.equivalent("CreateTransferObjectAttribute").eAnnotations.add(t);
+    }
+
 rule AddTransientAnnotationToTransferObjectRelation
 	transform s : JUDOPSM!TransferObjectRelation
     to t : ASM!EAnnotation {
@@ -374,6 +395,27 @@ rule CreateTransferObjectRelationPermissions
         deleteEntry.value = s.embeddedDelete.asString();
         t.details.add(deleteEntry);
 
+        s.equivalent("CreateTransferObjectRelation").eAnnotations.add(t);
+    }
+    
+rule AddDefaultAnnotationToTransferObjectRelation
+    transform s : JUDOPSM!TransferObjectRelation
+    to t : ASM!EAnnotation {
+        guard: s.defaultValue.isDefined()
+        
+        t.source = asmUtils.getAnnotationUri("default");
+
+        var getter = new ASM!EStringToStringMapEntry;
+        getter.key = "getter";
+        getter.value = s.defaultValue.getterExpression.expression;
+
+        var getterDialect = new ASM!EStringToStringMapEntry;
+        getterDialect.key = "getter.dialect";
+        getterDialect.value = s.defaultValue.getterExpression.dialect.asString();
+
+        t.details.add(getter);
+        t.details.add(getterDialect);
+        
         s.equivalent("CreateTransferObjectRelation").eAnnotations.add(t);
     }
     
