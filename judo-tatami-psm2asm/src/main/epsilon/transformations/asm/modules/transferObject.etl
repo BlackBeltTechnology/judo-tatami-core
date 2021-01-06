@@ -243,6 +243,8 @@ rule CreateDefaultEAttribute
         t.name = "_default_" + s.name;
         t.eType = s.dataType.asmEquivalent();
         t.derived = true;
+        t.changeable = false;
+        t.required = false;
 
         s.eContainer.asmEquivalent().eStructuralFeatures.add(t);
     }
@@ -451,13 +453,14 @@ rule CreateDefaultEReference
     to t : ASM!EReference {
         guard: s.defaultValue.isDefined()
         t.name = "_default_" + s.name;
-        t.containment = s.embedded;
+        t.containment = false;
 
-        t.lowerBound = s.cardinality.lower;
+        t.lowerBound = 0;
         t.upperBound = s.cardinality.upper;
         
         t.eType = s.target.asmEquivalent();
         t.derived = true;
+        t.changeable = false;
         
         s.eContainer.asmEquivalent().eStructuralFeatures.add(t);
     }
