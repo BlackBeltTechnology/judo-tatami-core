@@ -35,7 +35,7 @@ operation ASM!EReference referenceFkSqlName() : String {
 
 @cached
 operation ASM!EReference referenceUniFkSqlName() : String {
-	return "FK_" + self.eReferenceType.classSqlName() + "_" + self.sqlName();
+	return "FK_" + self.eContainingClass.classSqlName() + "_" + self.sqlName();
 }
 
 
