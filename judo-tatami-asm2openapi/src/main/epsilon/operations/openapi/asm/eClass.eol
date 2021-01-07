@@ -1,0 +1,10 @@
+operation ASM!EClass isContainedBy(container : ASM!EClass) : Boolean {
+    for (c in container.eAllContainments) {
+        if (c.eReferenceType == self) {
+            return true;
+        } else {
+            self.isContainedBy(c.eReferenceType);
+        }
+    }
+    return false;
+}

@@ -1,4 +1,5 @@
 import "callOperationAction.eol";
+import "data/classType.eol";
 
 operation UI!ui::Application resolveActionPageDefinitions() {
 	for (callAction : UI!ui::CallOperationAction in UI!ui::CallOperationAction.all().select(a | a.~application == self )) {
@@ -47,29 +48,6 @@ operation UI!ui::Application clonePagesOfInheritedRelations() {
 	}
 }
 
-operation UI!ui::data::ClassType collectExposedTransferObjects(collected : Set) {
-	var newObjects = new Set();
-	for (relation in self.relations) {
-		if (not collected.includes(relation.target)) {
-			newObjects.add(relation.target);	
-		}
-	}
-	for (op in self.operations) {
-		if (op.input.isDefined() and not collected.includes(op.input.target)) {
-			newObjects.add(op.input.target);
-		}
-		if (op.output.isDefined() and not collected.includes(op.output.target)) {
-			newObjects.add(op.output.target);
-		}
-	}
-	
-	collected.addAll(newObjects);
-	
-	for (o in newObjects) {
-		o.collectExposedTransferObjects(collected);
-	}
-}
-
 @cached
 operation UI!ui::Application getExposedTransferObjects() : Set {
 	var actor = self.dataElements.selectOne(d | d.isKindOf(UI!ui::data::ClassType) and d.isActor);
@@ -114,4 +92,11 @@ operation UI!ui::Application removeUnexposedElements() {
 		iterator.remove();
 		delete c;
 	}
+}
+
+operation UI!ui::Application setIsForCreateOrUpdateTypeFlag() {
+    var classes = self.dataElements.select(e | e.isKindOf(UI!ui::data::ClassType) and e.isForCreateOrUpdateType);
+    for (c in classes) {
+        c.setIsForCreateOrUpdateTypeFlag();   
+    }   
 }

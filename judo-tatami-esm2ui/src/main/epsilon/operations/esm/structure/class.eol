@@ -47,9 +47,11 @@ operation ESM!esm::structure::Class createClassType(application : UI!ui::Applica
 	}
 	if (esmUtils.isUpdateSupported(self)) {
 		clazz.behaviours.add(UI!ui::data::ClassBehaviourType#UPDATE);
+		clazz.isForCreateOrUpdateType = true;
 	}
 	if (esmUtils.isValidateUpdateSupported(self)) {
 		clazz.behaviours.add(UI!ui::data::ClassBehaviourType#VALIDATE_UPDATE);
+		clazz.isForCreateOrUpdateType = true;
 	}
 
 	if (esmUtils.isDeleteSupported(self)) {
