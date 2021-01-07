@@ -213,53 +213,18 @@ rule CreateTransferObjectAttributeBindingAnnotation
         
         s.equivalent("CreateTransferObjectAttribute").eAnnotations.add(t); 
     }
-
-rule CreateDefaultEAttributeExpressionAnnotation
-    transform s : JUDOPSM!TransferAttribute
-    to t : ASM!EAnnotation {
-        guard: s.defaultValue.isDefined()
-        
-        t.source = asmUtils.getAnnotationUri("expression");
-
-        var getter = new ASM!EStringToStringMapEntry;
-        getter.key = "getter";
-        getter.value = s.defaultValue.getterExpression.expression;
-
-        var getterDialect = new ASM!EStringToStringMapEntry;
-        getterDialect.key = "getter.dialect";
-        getterDialect.value = s.defaultValue.getterExpression.dialect.asString();
-
-        t.details.add(getter);
-        t.details.add(getterDialect);
-        
-        s.equivalent("CreateDefaultEAttribute").eAnnotations.add(t);
-    }
-    
-rule CreateDefaultEAttribute
-    transform s : JUDOPSM!TransferAttribute
-    to t : ASM!EAttribute {
-        guard: s.defaultValue.isDefined()
-        
-        t.name = "_default_" + s.name;
-        t.eType = s.dataType.asmEquivalent();
-        t.derived = true;
-        t.changeable = false;
-        t.lowerBound = 0;
-
-        s.eContainer.asmEquivalent().eStructuralFeatures.add(t);
-    }
     
 rule AddDefaultAnnotationToTransferAttribute
     transform s : JUDOPSM!TransferAttribute
     to t : ASM!EAnnotation {
-        guard: s.defaultValue.isDefined()
+        guard: s.defaultValue.isDefined() and s.eContainer().isKindOf(JUDOPSM!MappedTransferObjectType)
         
         t.source = asmUtils.getAnnotationUri("default");
 
-        var binding = new ASM!EStringToStringMapEntry;
-        binding.key = "value";
-        binding.value = s.equivalent("CreateDefaultEAttribute").name;
-        t.details.add(binding);
+        var defaultValue = new ASM!EStringToStringMapEntry;
+        defaultValue.key = "value";
+        defaultValue.value = s.defaultValue.name;
+        t.details.add(defaultValue);
         
         s.equivalent("CreateTransferObjectAttribute").eAnnotations.add(t);
     }
@@ -427,55 +392,17 @@ rule CreateTransferObjectRelationPermissions
         s.equivalent("CreateTransferObjectRelation").eAnnotations.add(t);
     }
     
-rule CreateDefaultEReferenceExpressionAnnotation
-    transform s : JUDOPSM!TransferObjectRelation
-    to t : ASM!EAnnotation {
-        guard: s.defaultValue.isDefined()
-        
-        t.source = asmUtils.getAnnotationUri("expression");
-
-        var getter = new ASM!EStringToStringMapEntry;
-        getter.key = "getter";
-        getter.value = s.defaultValue.getterExpression.expression;
-
-        var getterDialect = new ASM!EStringToStringMapEntry;
-        getterDialect.key = "getter.dialect";
-        getterDialect.value = s.defaultValue.getterExpression.dialect.asString();
-
-        t.details.add(getter);
-        t.details.add(getterDialect);
-        
-        s.equivalent("CreateDefaultEReference").eAnnotations.add(t);
-    }
-    
-rule CreateDefaultEReference
-    transform s : JUDOPSM!TransferObjectRelation
-    to t : ASM!EReference {
-        guard: s.defaultValue.isDefined()
-        t.name = "_default_" + s.name;
-        t.containment = false;
-
-        t.lowerBound = 0;
-        t.upperBound = s.cardinality.upper;
-        
-        t.eType = s.target.asmEquivalent();
-        t.derived = true;
-        t.changeable = false;
-        
-        s.eContainer.asmEquivalent().eStructuralFeatures.add(t);
-    }
-    
 rule AddDefaultAnnotationToTransferObjectRelation
     transform s : JUDOPSM!TransferObjectRelation
     to t : ASM!EAnnotation {
-        guard: s.defaultValue.isDefined()
+        guard: s.defaultValue.isDefined() and s.eContainer().isKindOf(JUDOPSM!MappedTransferObjectType)
         
         t.source = asmUtils.getAnnotationUri("default");
 
-        var binding = new ASM!EStringToStringMapEntry;
-        binding.key = "value";
-        binding.value = s.equivalent("CreateDefaultEReference").name;
-        t.details.add(binding);
+        var defaultValue = new ASM!EStringToStringMapEntry;
+        defaultValue.key = "value";
+        defaultValue.value = s.defaultValue.name;
+        t.details.add(defaultValue);
         
         s.equivalent("CreateTransferObjectRelation").eAnnotations.add(t);
     }

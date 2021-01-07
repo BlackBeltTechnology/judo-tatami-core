@@ -6,6 +6,7 @@ import hu.blackbelt.epsilon.runtime.execution.impl.Slf4jLog;
 import hu.blackbelt.judo.meta.esm.namespace.Model;
 import hu.blackbelt.judo.meta.esm.namespace.Package;
 import hu.blackbelt.judo.meta.esm.runtime.EsmModel;
+import hu.blackbelt.judo.meta.esm.runtime.EsmUtils;
 import hu.blackbelt.judo.meta.esm.structure.*;
 import hu.blackbelt.judo.meta.esm.type.StringType;
 import hu.blackbelt.judo.meta.psm.derived.NavigationProperty;
@@ -414,12 +415,10 @@ public class EsmStrucutre2PsmDerivedTest {
                 .filter(e -> e.getName().equals(entityType.getName())).findAny().get();
         assertTrue(psmEntityType.getAttributes().size() == 1);
 
-        String psmDataPropertyName = "_" + attribute.getName() + "_default_entityType";
+        String psmDataPropertyName = "_" + attribute.getName() + "_default_" + EsmUtils.getNamespaceElementFQName(entityType).replace("::","_");
 
-        final Namespace namespaceOfPsmEntityType = (Namespace) psmEntityType.eContainer();
-        final Optional<hu.blackbelt.judo.meta.psm.derived.StaticData> psmDataProperty = namespaceOfPsmEntityType.getElements().stream()
+        final Optional<hu.blackbelt.judo.meta.psm.derived.DataProperty> psmDataProperty = psmEntityType.getDataProperties().stream()
                 .filter(e -> psmDataPropertyName.equals(e.getName()))
-                .map(e -> (hu.blackbelt.judo.meta.psm.derived.StaticData) e)
                 .findAny();
 
         assertTrue(psmDataProperty.isPresent());
@@ -460,12 +459,10 @@ public class EsmStrucutre2PsmDerivedTest {
 
         assertTrue(psmEntityType.getRelations().size() == 1);
 
-        String psmNavigationPropertyName = "_" + containment.getName() + "_default_entityType";
+        String psmNavigationPropertyName = "_" + containment.getName() + "_default_" + EsmUtils.getNamespaceElementFQName(entityType).replace("::", "_");
 
-        final Namespace namespaceOfPsmEntityType = (Namespace) psmEntityType.eContainer();
-        final Optional<hu.blackbelt.judo.meta.psm.derived.StaticNavigation> psmNavigationProperty = namespaceOfPsmEntityType.getElements().stream()
+        final Optional<hu.blackbelt.judo.meta.psm.derived.NavigationProperty> psmNavigationProperty = psmEntityType.getNavigationProperties().stream()
                 .filter(e -> psmNavigationPropertyName.equals(e.getName()))
-                .map(e -> (hu.blackbelt.judo.meta.psm.derived.StaticNavigation) e)
                 .findAny();
 
         assertTrue(psmNavigationProperty.isPresent());
@@ -507,12 +504,10 @@ public class EsmStrucutre2PsmDerivedTest {
 
         assertTrue(psmEntityType.getRelations().size() == 1);
 
-        String psmNavigationPropertyName = "_" + associationEnd.getName() + "_default_entityType";
+        String psmNavigationPropertyName = "_" + associationEnd.getName() + "_default_" + EsmUtils.getNamespaceElementFQName(entityType).replace("::", "_");
 
-        final Namespace namespaceOfPsmEntityType = (Namespace) psmEntityType.eContainer();
-        final Optional<hu.blackbelt.judo.meta.psm.derived.StaticNavigation> psmNavigationProperty = namespaceOfPsmEntityType.getElements().stream()
+        final Optional<hu.blackbelt.judo.meta.psm.derived.NavigationProperty> psmNavigationProperty = psmEntityType.getNavigationProperties().stream()
                 .filter(e -> psmNavigationPropertyName.equals(e.getName()))
-                .map(e -> (hu.blackbelt.judo.meta.psm.derived.StaticNavigation) e)
                 .findAny();
 
         assertTrue(psmNavigationProperty.isPresent());

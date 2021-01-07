@@ -1,0 +1,7 @@
+operation ESM!DataMember getPSMDefaultEquivalent(): JUDOPSM!PrimitiveAccessor {
+      if (self.eContainer().isMapped()) {
+            return self.equivalent("CreateDataPropertyForTransferAttributeDefaultValue");
+      } else {
+            return self.equivalent("CreateStaticDataForTransferAttributeDefaultValue");
+      }
+}

@@ -10,7 +10,7 @@ rule CreateTransferAttributeFromAttribute
     extends CreatePrimitiveTypedElement {
       guard: s.memberType == ESM!MemberType#TRANSIENT
             
-      t.defaultValue = s.equivalent("CreateStaticDataForTransferAttributeDefaultValue");
+      t.defaultValue = s.getPSMDefaultEquivalent();
      
       s.eContainer.getPSMEquivalent().attributes.add(t);
       log.debug("Created TransferAttribute: [" + t.name + "] into [" + t.eContainer.name + "]");
@@ -23,7 +23,7 @@ rule CreateTransferAttributeFromBound
       guard: s.memberType == ESM!MemberType#MAPPED
             
       if (s.binding.memberType == ESM!MemberType#STORED){
-         t.defaultValue = s.equivalent("CreateStaticDataForTransferAttributeDefaultValue");
+         t.defaultValue = s.getPSMDefaultEquivalent();
          t.binding = s.binding.equivalent("CreateAttribute");
       } else if (s.binding.memberType == ESM!MemberType#DERIVED) {
          t.binding = s.binding.equivalent("CreateDataProperty");
@@ -59,7 +59,7 @@ rule CreateTransferAttributeFromAttributeForDefaultTransferObjectType
     extends CreatePrimitiveTypedElement {
       guard: s.memberType == ESM!MemberType#STORED
       
-      t.defaultValue = s.equivalent("CreateStaticDataForTransferAttributeDefaultValue");
+      t.defaultValue = s.getPSMDefaultEquivalent();
       t.binding = s.equivalent("CreateAttribute");
       
       s.eContainer.getPSMTransferObjectTypeEquivalent().attributes.add(t);
