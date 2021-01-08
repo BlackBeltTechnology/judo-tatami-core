@@ -5,6 +5,9 @@ operation ASM!EClass isContainedBy(container : ASM!EClass) : Boolean {
     } else {
         for (c in container.eAllContainments) {
 	        contains = self.isContainedBy(c.eReferenceType);
+	        if (contains) {
+	           break;
+	        }
 	    }
     }
     return contains;
