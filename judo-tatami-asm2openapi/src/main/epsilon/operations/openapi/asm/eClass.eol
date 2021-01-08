@@ -1,10 +1,11 @@
 operation ASM!EClass isContainedBy(container : ASM!EClass) : Boolean {
-    for (c in container.eAllContainments) {
-        if (c.eReferenceType == self) {
-            return true;
-        } else {
-            return self.isContainedBy(c.eReferenceType);
-        }
+    var contains = false;
+    if (container.eAllContainments.collect(c | c.eReferenceType).includes(self)) {
+        contains = true;
+    } else {
+        for (c in container.eAllContainments) {
+	        contains = self.isContainedBy(c.eReferenceType);
+	    }
     }
-    return false;
+    return contains;
 }
