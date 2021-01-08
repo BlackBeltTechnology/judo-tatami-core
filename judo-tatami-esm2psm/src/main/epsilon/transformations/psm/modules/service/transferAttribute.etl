@@ -16,6 +16,22 @@ rule CreateTransferAttributeFromAttribute
       log.debug("Created TransferAttribute: [" + t.name + "] into [" + t.eContainer.name + "]");
 }
 
+rule CreateTransferAttributeForDefaultValue
+    transform s: ESM!DataMember
+    to t: JUDOPSM!TransferAttribute {
+      guard: s.defaultExpression.isDefined() and
+               s.defaultExpression.trim().length() > 0 and
+               s.eContainer.isMapped()
+      
+      t.name = s.getPSMDefaultEquivalent().name;
+      t.required = false;
+      t.dataType = s.dataType.getPSMEquivalent();
+      t.binding = s.getPSMDefaultEquivalent();
+     
+      s.eContainer.getPSMTransferObjectTypeEquivalent().attributes.add(t);
+      log.debug("Created Default TransferAttribute: [" + t.name + "] into [" + t.eContainer.name + "]");
+}
+
 rule CreateTransferAttributeFromBound
     transform s: ESM!DataMember
     to t: JUDOPSM!TransferAttribute 
