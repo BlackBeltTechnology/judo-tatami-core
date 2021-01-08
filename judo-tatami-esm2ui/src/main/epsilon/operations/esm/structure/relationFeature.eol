@@ -13,6 +13,8 @@ operation ESM!esm::structure::RelationFeature createRelationTypeForClass(applica
 	relation.isCollection = (self.upper == -1);
 	relation.isReadOnly = self.isReadOnly();
 	
+	relation.target = self.target.mapClassType(application);
+	
 	if (self.memberType == ESM!esm::structure::MemberType#STORED) {
 		relation.memberType = UI!ui::data::MemberType#STORED;
 	} else if (self.memberType == ESM!esm::structure::MemberType#DERIVED) {
@@ -40,6 +42,7 @@ operation ESM!esm::structure::RelationFeature createRelationTypeForClass(applica
 	}
 	if (esmUtils.isCreateSupported(self)) {
 		relation.behaviours.add(UI!ui::data::RelationBehaviourType#CREATE);
+		relation.target.isForCreateOrUpdateType = true;
 	}
 	if (esmUtils.isSetReferenceSupported(self)) {
 		relation.behaviours.add(UI!ui::data::RelationBehaviourType#SET);
@@ -59,10 +62,11 @@ operation ESM!esm::structure::RelationFeature createRelationTypeForClass(applica
 	}
 	if (esmUtils.isValidateCreateSupported(self)) {
 		relation.behaviours.add(UI!ui::data::RelationBehaviourType#VALIDATE_CREATE);
+		relation.target.isForCreateOrUpdateType = true;
 	}
 		
 	clazz.relations.add(relation);
-	relation.target = self.target.mapClassType(application);
+	
 	log.debug("Create relation " + relation.name + " in class type: " + clazz.name);
 	return relation;
 }

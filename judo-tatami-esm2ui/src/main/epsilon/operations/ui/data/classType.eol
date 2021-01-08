@@ -17,3 +17,33 @@ operation UI!ui::data::ClassType setRelationTargetsOptional() {
         target.setRelationTargetsOptional();
     }
 }
+operation UI!ui::data::ClassType setIsForCreateOrUpdateTypeFlag() {
+    for (r in self.relations.select(r | r.relationKind == UI!ui::data::RelationKind#COMPOSITION or r.relationKind == UI!ui::data::RelationKind#AGGREGATION)) {
+        r.target.isForCreateOrUpdateType = true;
+        r.target.setIsForCreateOrUpdateTypeFlag();
+    }
+    return false;
+}
+
+operation UI!ui::data::ClassType collectExposedTransferObjects(collected : Set) {
+    var newObjects = new Set();
+    for (relation in self.relations) {
+        if (not collected.includes(relation.target)) {
+            newObjects.add(relation.target);    
+        }
+    }
+    for (op in self.operations) {
+        if (op.input.isDefined() and not collected.includes(op.input.target)) {
+            newObjects.add(op.input.target);
+        }
+        if (op.output.isDefined() and not collected.includes(op.output.target)) {
+            newObjects.add(op.output.target);
+        }
+    }
+    
+    collected.addAll(newObjects);
+    
+    for (o in newObjects) {
+        o.collectExposedTransferObjects(collected);
+    }
+}
