@@ -3,7 +3,7 @@ operation ASM!EClass isContainedBy(container : ASM!EClass) : Boolean {
         if (c.eReferenceType == self) {
             return true;
         } else {
-            self.isContainedBy(c.eReferenceType);
+            return self.isContainedBy(c.eReferenceType);
         }
     }
     return false;
