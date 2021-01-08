@@ -1,5 +1,6 @@
 import "actor/_importActor.eol";
 import "data/_importData.eol";
+import "derived/_importDerived.eol";
 import "type/_importType.eol";
 import "measure/_importMeasure.eol";
 import "service/_importService.eol";

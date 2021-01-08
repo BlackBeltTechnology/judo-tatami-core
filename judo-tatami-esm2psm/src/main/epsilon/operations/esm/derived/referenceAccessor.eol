@@ -6,9 +6,17 @@ operation ESM!RelationFeature getPSMRangeEquivalent(): JUDOPSM!NavigationPropert
       }
 }
 
+operation ESM!RelationFeature getPSMDefaultEquivalent(): JUDOPSM!ReferenceAccessor {
+      if (self.eContainer().isMapped()) {
+            return self.equivalent("CreateNavigationPropertyForTransferObjectRelationDefaultValue");
+      } else {
+            return self.equivalent("CreateStaticNavigationForTransferObjectRelationDefaultValue");
+      }
+}
+
 @cached
 operation ESM!RelationFeature isRangeExpressionSupported() : Boolean {
-    return self.isAnyRangeExpressionSupported() or self.isDerivedRangeExpressionSupported();
+    return (self.isAnyRangeExpressionSupported() or self.isDerivedRangeExpressionSupported()) and not esmUtils.isContainment(self);
 }
 
 @cached

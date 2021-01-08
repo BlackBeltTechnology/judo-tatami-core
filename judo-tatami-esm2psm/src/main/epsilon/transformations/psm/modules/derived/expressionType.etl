@@ -27,7 +27,7 @@ rule CreateGetterExpressionForStaticData
 }
 
 @lazy
-rule CreateGetterExpressionForStaticDataAsTransferAttributeDefaultValue
+rule CreateGetterExpressionForTransferAttributeDefaultValue
     transform s : ESM!DataMember
        to t: JUDOPSM!DataExpressionType {
      t.expression = s.defaultExpression;
