@@ -109,7 +109,7 @@ Future<void> set{{ fqClass relation.name }}({{ fqClass relation.owner.name }}Sto
         }
         refresh{{ className relation.owner.name }}(owner{{ className relation.owner.name }}Store);
         {{else}}
-        owner{{ className relation.owner.name }}Store.{{variable relation.name}} = {{# if relation.isCollection }}[selected{{ className relation.target.name }}Store]{{else}}selected{{ className relation.target.name }}Store{{/ if}};
+        owner{{ className relation.owner.name }}Store.{{variable relation.name}} = {{# if relation.isCollection }}[selected{{ className relation.target.name }}Store].asObservable(){{else}}selected{{ className relation.target.name }}Store{{/ if}};
         {{/ if}}
     } on ApiException catch (error) {
         errorMessage = "Could not set {{ relation.name }}";
