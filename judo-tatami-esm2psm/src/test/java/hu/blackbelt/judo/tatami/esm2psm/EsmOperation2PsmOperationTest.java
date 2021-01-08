@@ -2,6 +2,7 @@ package hu.blackbelt.judo.tatami.esm2psm;
 
 import hu.blackbelt.epsilon.runtime.execution.api.Log;
 import hu.blackbelt.epsilon.runtime.execution.impl.Slf4jLog;
+import hu.blackbelt.judo.meta.esm.accesspoint.ClaimType;
 import hu.blackbelt.judo.meta.esm.namespace.Model;
 import hu.blackbelt.judo.meta.esm.operation.OperationType;
 import hu.blackbelt.judo.meta.esm.operation.util.builder.OperationBuilder;
@@ -437,7 +438,7 @@ public class EsmOperation2PsmOperationTest {
     	entityTypeD.getAttributes().add(id);
     	
         hu.blackbelt.judo.meta.esm.accesspoint.ActorType actor = newActorTypeBuilder().withName("actor")
-        		.withClaims(newClaimBuilder().withAttribute(id).build())
+        		.withClaims(newClaimBuilder().withAttribute(id).withClaimType(ClaimType.USERNAME).build())
         		.withAnonymous(false)
         		.withRealm("sandbox")
         		.withPrincipal(entityTypeD)
