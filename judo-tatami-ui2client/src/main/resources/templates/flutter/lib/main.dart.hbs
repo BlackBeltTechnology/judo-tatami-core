@@ -143,8 +143,12 @@ class _{{ fqClass application.name }}DrawerState extends State<{{ fqClass applic
                                     leading: e.leading,
                                     title: e.title,
                                     onTap: () {
-                                        navigationState.navigateTo(e.route);
-                                        setState(() => {});
+                                        if (Oauth.isAuthenticationRequired() && !Oauth.isLoggedIn()) {
+                                            Oauth.loginAuthorizeAndExchangeCode();
+                                        } else {
+                                            navigationState.navigateTo(e.route);
+                                            setState(() => {});
+                                        }
                                     },
                                     selected: e.route == _selected))
                                     .toList(),
