@@ -1,14 +1,30 @@
 operation ASM!EClass isContainedBy(container : ASM!EClass) : Boolean {
-    var contains = false;
-    if (container.eAllContainments.collect(c | c.eReferenceType).includes(self)) {
-        contains = true;
-    } else {
-        for (c in container.eAllContainments) {
-	        contains = self.isContainedBy(c.eReferenceType);
-	        if (contains) {
-	           break;
-	        }
-	    }
+    return container.getContainedEClasses().includes(self);
+}
+
+@cached
+operation ASM!EClass getContainedEClasses() : Set {
+    var containments = self.eAllContainments.collect(c | c.eReferenceType).asSet();
+    var collected = new Set();
+    
+    collected.addAll(containments);
+    
+    for (c in containments) {
+        c.collectContainedEClasses(collected);
     }
-    return contains;
+    
+    return collected;
+}
+
+operation ASM!EClass collectContainedEClasses(collected : Set) {
+    var newContainments = new Set();
+    for (c in self.eAllContainments) {
+        if (not collected.includes(c.eReferenceType)) {
+            newContainments.add(c.eReferenceType);    
+        }
+    } 
+    collected.addAll(newContainments);
+    for (c in newContainments) {
+        c.collectContainedEClasses(collected);
+    }
 }
