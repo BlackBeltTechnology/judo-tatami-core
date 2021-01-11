@@ -116,11 +116,3 @@ rule CreateFilterExpressionForMappedActorType
      t.expression = s.isActiveExpression;
      log.debug("Created Logical Expression Type for Mapped Actor Type filter: " + s.name);
 }
-
-@lazy
-rule CreateGetterExpressionFromIsActiveExpression
-    transform s : ESM!ActorType
-       to t: JUDOPSM!LogicalExpressionType {
-     t.expression = s.isActiveExpression;
-     log.debug("Created Logical Expression Type for Mapped Actor Type filter: " + s.name);
-}

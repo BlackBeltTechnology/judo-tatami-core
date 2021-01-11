@@ -140,7 +140,7 @@ rule CreateMappedActorType
 	  t.kind = s.kind.asString();
 	  
 	  if (s.isActiveExpression.isDefined() and s.isActiveExpression.trim().length() > 0) {
-	   t.filter = s.equivalent("CreateFilterExpressionForMappedActorType");
+	      t.filter = s.equivalent("CreateFilterExpressionForMappedActorType");
 	  }
 
 	  log.debug("Created ActorType: " + t.name);
@@ -193,20 +193,4 @@ rule CreateAccessTransferObjectRelationWithBinding
         guard: s.accessType == ESM!AccessType#DERIVED
 
     t.binding = s.getPSMTransferObjectRelationBindingEquivalent();
-}
-
-rule CreateTransferAttributeForIsActiveExpression
-    transform s: ESM!ActorType
-    to t: JUDOPSM!TransferAttribute {
-      guard: s.principal.isDefined() and s.principal.isMapped()
-            and s.isActiveExpression.isDefined() and
-               s.isActiveExpression.trim().length() > 0
-      
-      t.name = "_" + s.name + "_condition_";
-      t.required = false;
-      t.dataType = JUDOPSM!BooleanType;
-      t.binding = s.equivalent("CreateDataPropertyForIsActiveExpression");
-     
-      s.eContainer.equivalent("CreateMappedActorType").attributes.add(t);
-      log.debug("Created TransferAttribute for Actor Type filter: [" + t.name + "] into [" + t.eContainer.name + "]");
 }
