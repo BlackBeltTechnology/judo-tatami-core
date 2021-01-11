@@ -138,6 +138,10 @@ rule CreateMappedActorType
 	  t.entityType = s.principal.mapping.target.getPSMEquivalent();
 	  t.managed = s.managed;
 	  t.kind = s.kind.asString();
+	  
+	  if (s.isActiveExpression.isDefined() and s.isActiveExpression.trim().length() > 0) {
+	      t.filter = s.equivalent("CreateFilterExpressionForMappedActorType");
+	  }
 
 	  log.debug("Created ActorType: " + t.name);
 }
