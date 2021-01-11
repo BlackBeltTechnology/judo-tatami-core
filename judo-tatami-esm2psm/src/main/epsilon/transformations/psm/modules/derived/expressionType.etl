@@ -108,3 +108,19 @@ rule CreateGetterExpressionForStaticDataAsTransferAttributeBinding
      t.expression = s.getterExpression;
      log.debug("Created Data Expression Type for Static Data for Transfer Attribute Binding: " + s.name);
 }
+
+@lazy
+rule CreateFilterExpressionForMappedActorType
+    transform s : ESM!ActorType
+       to t: JUDOPSM!LogicalExpressionType {
+     t.expression = s.isActiveExpression;
+     log.debug("Created Logical Expression Type for Mapped Actor Type filter: " + s.name);
+}
+
+@lazy
+rule CreateGetterExpressionFromIsActiveExpression
+    transform s : ESM!ActorType
+       to t: JUDOPSM!LogicalExpressionType {
+     t.expression = s.isActiveExpression;
+     log.debug("Created Logical Expression Type for Mapped Actor Type filter: " + s.name);
+}

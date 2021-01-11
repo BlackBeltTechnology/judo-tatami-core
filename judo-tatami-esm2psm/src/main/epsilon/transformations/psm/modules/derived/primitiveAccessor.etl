@@ -101,3 +101,17 @@ rule CreateStaticDataForTransferAttributeBinding
             
             log.debug("Created Static Data for transfer attribute binding: " + t.name);
 }
+
+@lazy
+rule CreateDataPropertyForIsActiveExpression
+    transform s : ESM!ActorType
+    to t : JUDOPSM!DataProperty {
+            
+            t.getterExpression = s.equivalent("CreateGetterExpressionFromIsActiveExpression");
+            t.name = "_" + s.name + "_condition_";
+            s.principal.mapping.target.getPSMEquivalent().dataProperties.add(t);
+            t.required = false;
+            t.dataType = JUDOPSM!BooleanType;
+            
+            log.debug("Created Data Property for transfer attribute default value: " + t.name);
+}
