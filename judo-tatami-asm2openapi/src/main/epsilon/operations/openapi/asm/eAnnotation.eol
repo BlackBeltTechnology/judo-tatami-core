@@ -18,12 +18,12 @@ operation ASM!EAnnotation isForCreateOrUpdate() : Boolean {
 
     if (self.eContainer.isKindOf(ASM!EClass)) {
         return annotations.select(a | a.eContainer.eType == self.eContainer
-                or a.eContainer.eType.eAllContainments.collect(c | c.eReferenceType).includes(self.eContainer)).notEmpty();
+                or self.eContainer.isContainedBy(a.eContainer.eType)).notEmpty();
     }
 
     if (self.eContainer.isKindOf(ASM!EReference) or self.eContainer.isKindOf(ASM!EAttribute)) {
         return annotations.select(a | a.eContainer.eType == self.eContainer.eContainer
-                or a.eContainer.eType.eAllContainments.collect(c | c.eReferenceType).includes(self.eContainer.eContainer)).notEmpty();
+                or self.eContainer.eContainer.isContainedBy(a.eContainer.eType)).notEmpty();
     }
 
     return false;

@@ -1,2 +1,2 @@
 import "entityType.eol";
-import "referenceTypedElement.eol";
+import "associationEnd.eol";

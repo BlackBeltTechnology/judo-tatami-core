@@ -6,7 +6,6 @@ Observer(
         col: {{ multiplyCol col }},
         row: {{ row }},
         disabled: {{ disabled }},
-        use24HourFormat: true,
         initialDate: target{{ className page.dataElement.target.name }}Store.{{ attributeType.name }},
         label: '{{ label }}',
         icon: Icon(Icons.{{ this.leadingIcon.name }}),
@@ -38,7 +37,7 @@ Observer(
         col: {{ multiplyCol col }},
         row: {{ row }},
         disabled: {{ disabled }},
-        initialDate: target{{ className page.dataElement.target.name }}Store.{{ attributeType.name }}
+        initialDate: target{{ className page.dataElement.target.name }}Store.{{ attributeType.name }},
         label: '{{ label }}',
         icon: Icon(Icons.{{ this.leadingIcon.name }}),
         onChanged: (value) => target{{ className page.dataElement.target.name }}Store.set{{ className attributeType.name }}(value),

@@ -108,7 +108,7 @@ class {{ fqClass ap.name }}RepositoryStoreMapper {
   }
 
   {{# if isMapped}}
-      {{# if isClassBehaviourTypeUpdatable }}
+      {{# if isForCreateOrUpdateType }}
   static {{ fqClass transferObjectTypeName }}ForCreateAndUpdate create{{ fqClass name }}ForCreateAndUpdateFrom{{ fqClass name }}Store({{ fqClass name }}Store {{ variable name }}Store) {
     var {{ variable name }} = {{ fqClass transferObjectTypeName }}ForCreateAndUpdate();
     map{{ fqClass name }}StoreTo{{ fqClass name }}ForCreateAndUpdate({{ variable name }}Store, {{ variable name }});

@@ -40,14 +40,32 @@ rule CreateStaticDataForTransferAttributeDefaultValue
     to t : JUDOPSM!StaticData
     extends CreatePrimitiveTypedElement {
         guard: s.defaultExpression.isDefined() and
-               s.defaultExpression.trim().length() > 0
+               s.defaultExpression.trim().length() > 0 and
+               not s.eContainer.isMapped()
             
-            t.getterExpression = s.equivalent("CreateGetterExpressionForStaticDataAsTransferAttributeDefaultValue");
+            t.getterExpression = s.equivalent("CreateGetterExpressionForTransferAttributeDefaultValue");
             t.name = "_" + s.name + "_default_" + s.eContainer.name;
             (s.eContainer).eContainer.getPSMEquivalent().elements.add(t);
             t.required = false;
             
             log.debug("Created Static Data for transfer attribute default value: " + t.name);
+}
+
+@lazy
+rule CreateDataPropertyForTransferAttributeDefaultValue 
+    transform s : ESM!DataMember
+    to t : JUDOPSM!DataProperty
+    extends CreatePrimitiveTypedElement {
+        guard: s.defaultExpression.isDefined() and
+               s.defaultExpression.trim().length() > 0 and
+               s.eContainer().isMapped()
+            
+            t.getterExpression = s.equivalent("CreateGetterExpressionForTransferAttributeDefaultValue");
+            t.name = "_" + s.name + "_default_" + esmUtils.getNamespaceElementFQName(s.eContainer).replace("::","_");
+            s.eContainer.mapping.target.getPSMEquivalent().dataProperties.add(t);
+            t.required = false;
+            
+            log.debug("Created Data Property for transfer attribute default value: " + t.name);
 }
 
 @lazy

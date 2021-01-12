@@ -213,6 +213,21 @@ rule CreateTransferObjectAttributeBindingAnnotation
         
         s.equivalent("CreateTransferObjectAttribute").eAnnotations.add(t); 
     }
+    
+rule AddDefaultAnnotationToTransferAttribute
+    transform s : JUDOPSM!TransferAttribute
+    to t : ASM!EAnnotation {
+        guard: s.defaultValue.isDefined() and s.eContainer().isKindOf(JUDOPSM!MappedTransferObjectType)
+        
+        t.source = asmUtils.getAnnotationUri("default");
+
+        var defaultValue = new ASM!EStringToStringMapEntry;
+        defaultValue.key = "value";
+        defaultValue.value = s.defaultValue.name;
+        t.details.add(defaultValue);
+        
+        s.equivalent("CreateTransferObjectAttribute").eAnnotations.add(t);
+    }
 
 rule AddTransientAnnotationToTransferObjectRelation
 	transform s : JUDOPSM!TransferObjectRelation
@@ -374,6 +389,21 @@ rule CreateTransferObjectRelationPermissions
         deleteEntry.value = s.embeddedDelete.asString();
         t.details.add(deleteEntry);
 
+        s.equivalent("CreateTransferObjectRelation").eAnnotations.add(t);
+    }
+    
+rule AddDefaultAnnotationToTransferObjectRelation
+    transform s : JUDOPSM!TransferObjectRelation
+    to t : ASM!EAnnotation {
+        guard: s.defaultValue.isDefined() and s.eContainer().isKindOf(JUDOPSM!MappedTransferObjectType)
+        
+        t.source = asmUtils.getAnnotationUri("default");
+
+        var defaultValue = new ASM!EStringToStringMapEntry;
+        defaultValue.key = "value";
+        defaultValue.value = s.defaultValue.name;
+        t.details.add(defaultValue);
+        
         s.equivalent("CreateTransferObjectRelation").eAnnotations.add(t);
     }
     
