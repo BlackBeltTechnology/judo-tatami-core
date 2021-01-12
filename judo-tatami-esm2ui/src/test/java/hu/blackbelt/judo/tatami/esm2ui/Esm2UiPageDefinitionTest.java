@@ -10,6 +10,10 @@ import hu.blackbelt.judo.meta.esm.runtime.EsmModel;
 import hu.blackbelt.judo.meta.esm.runtime.EsmUtils;
 import hu.blackbelt.judo.meta.esm.structure.DataMember;
 import hu.blackbelt.judo.meta.esm.structure.EntityType;
+import hu.blackbelt.judo.meta.esm.structure.MemberType;
+import hu.blackbelt.judo.meta.esm.structure.OneWayRelationMember;
+import hu.blackbelt.judo.meta.esm.structure.RelationKind;
+import hu.blackbelt.judo.meta.esm.structure.TransferObjectType;
 import hu.blackbelt.judo.meta.esm.type.StringType;
 import hu.blackbelt.judo.meta.ui.Application;
 import hu.blackbelt.judo.meta.ui.PageDefinition;
@@ -24,6 +28,8 @@ import org.eclipse.emf.ecore.EObject;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import com.google.common.collect.ImmutableList;
 
 import java.io.File;
 import java.util.Iterator;
@@ -364,6 +370,255 @@ public class Esm2UiPageDefinitionTest {
         assertTrue(e3op3OutputPage.isPresent());
         assertTrue(e3op3OutputPage.get().getDataElement() instanceof OperationParameterType);
         assertTrue(e3op3OutputPage.get().getDataElement().eContainer().eContainer().equals(uiE3.get()));
+    }
+    
+    @Test
+    void testCreatePageDefinitionFromReferenceTypedElement() throws Exception {
+        testName = "CreatePageDefinitionFromReferenceTypedElement";
+        
+        StringType str = newStringTypeBuilder().withName("string").withMaxLength(8).build();
+        
+        final String MODEL_NAME = "Model";
+        final String ENTITY_TYPE_NAME_1 = "E1";
+        final String ENTITY_TYPE_NAME_2 = "E2";
+        final String ENTITY_TYPE_NAME_3 = "E3";
+        final String ENTITY_TYPE_NAME_4 = "E4";
+        final String ENTITY_TYPE_NAME_5 = "E5";
+        final String ENTITY_TYPE_NAME_6 = "E6";
+        final String ACTOR_TYPE_NAME = "Actor";
+        
+        ActorType actor = newActorTypeBuilder()
+                .withName(ACTOR_TYPE_NAME)
+                .withRealm("sandbox")
+                .build();
+        
+        final EntityType e1 = newEntityTypeBuilder()
+                .withName(ENTITY_TYPE_NAME_1)
+                .withCreateable(false)
+                .withUpdateable(false)
+                .withDeleteable(false)
+                .withAttributes(
+                		newDataMemberBuilder().withName("id")
+                			.withDataType(str)
+                			.withMemberType(MemberType.STORED)
+                			.build())
+                .build();
+        useEntityType(e1).withMappedEntity(e1).build();
+        final EntityType e2 = newEntityTypeBuilder()
+                .withName(ENTITY_TYPE_NAME_2)
+                .withCreateable(false)
+                .withUpdateable(false)
+                .withDeleteable(false)
+                .withGeneralizations(newGeneralizationBuilder().withTarget(e1).build())
+                .build();
+        useEntityType(e2).withMappedEntity(e2).build();
+        final EntityType e3 = newEntityTypeBuilder()
+                .withName(ENTITY_TYPE_NAME_3)
+                .withCreateable(false)
+                .withUpdateable(false)
+                .withDeleteable(false)
+                .withAttributes(
+                		newDataMemberBuilder().withName("id")
+                			.withDataType(str)
+                			.withMemberType(MemberType.STORED)
+                			.build())
+                .build();
+        useEntityType(e3).withMappedEntity(e3).build();
+        
+        final EntityType e4 = newEntityTypeBuilder()
+                .withName(ENTITY_TYPE_NAME_4)
+                .withCreateable(false)
+                .withUpdateable(false)
+                .withDeleteable(false)
+                .withAttributes(
+                		newDataMemberBuilder().withName("id")
+                			.withDataType(str)
+                			.withMemberType(MemberType.STORED)
+                			.build())
+                .build();
+        useEntityType(e4).withMappedEntity(e4).build();
+        
+        final EntityType e5 = newEntityTypeBuilder()
+                .withName(ENTITY_TYPE_NAME_5)
+                .withCreateable(false)
+                .withUpdateable(false)
+                .withDeleteable(false)
+                .withAttributes(
+                		newDataMemberBuilder().withName("id")
+                			.withDataType(str)
+                			.withMemberType(MemberType.STORED)
+                			.build())
+                .build();
+        useEntityType(e5).withMappedEntity(e5).build();
+        
+        final EntityType e6 = newEntityTypeBuilder()
+                .withName(ENTITY_TYPE_NAME_6)
+                .withCreateable(false)
+                .withUpdateable(false)
+                .withDeleteable(false)
+                .withAttributes(
+                		newDataMemberBuilder().withName("id")
+                			.withDataType(str)
+                			.withMemberType(MemberType.STORED)
+                			.build())
+                .build();
+        useEntityType(e6).withMappedEntity(e6).build();
+
+        Access access1 = newAccessBuilder().withName("e2")
+        		.withTarget(e2)
+        		.withLower(0)
+        		.withUpper(-1)
+        		.withCreateable(true)
+        		.withTargetDefinedCRUD(false)
+        		.build();
+        
+        OneWayRelationMember relation1 = newOneWayRelationMemberBuilder()
+        		.withName("relation1")
+        		.withLower(0)
+        		.withUpper(-1)
+        		.withTarget(e3)
+        		.withMemberType(MemberType.STORED)
+        		.withRelationKind(RelationKind.ASSOCIATION)
+        		.withCreateable(true)
+        		.build();
+        OneWayRelationMember relation2 = newOneWayRelationMemberBuilder()
+        		.withName("relation2")
+        		.withLower(0)
+        		.withUpper(-1)
+        		.withTarget(e4)
+        		.withMemberType(MemberType.STORED)
+        		.withRelationKind(RelationKind.COMPOSITION)
+        		.build();
+        OneWayRelationMember relation3 = newOneWayRelationMemberBuilder()
+        		.withName("relation3")
+        		.withLower(0)
+        		.withUpper(-1)
+        		.withTarget(e5)
+        		.withMemberType(MemberType.DERIVED)
+        		.withRelationKind(RelationKind.ASSOCIATION)
+        		.withDeleteable(true)
+        		.withGetterExpression(MODEL_NAME + "::" + ENTITY_TYPE_NAME_5)
+        		.build();
+        OneWayRelationMember relation4 = newOneWayRelationMemberBuilder()
+        		.withName("relation4")
+        		.withLower(0)
+        		.withUpper(1)
+        		.withTarget(e6)
+        		.withMemberType(MemberType.DERIVED)
+        		.withRelationKind(RelationKind.AGGREGATION)
+        		.withCreateable(true)
+        		.withUpdateable(true)
+        		.withGetterExpression(MODEL_NAME + "::" + ENTITY_TYPE_NAME_6)
+        		.build();
+        useEntityType(e1).withRelations(relation1, relation2, relation3).build();
+        useEntityType(e2).withRelations(relation4).build();
+
+        useActorType(actor).withAccesses(access1).build();
+       
+        final Model model = newModelBuilder().withName(MODEL_NAME)
+                .withElements(actor, e1, e2, e3, e4, e5, e6, str).build();
+        SimpleOrderModel.addUiElementsToTransferObjects(model);
+        
+        esmModel.addContent(model);
+
+        transform();
+        
+        final Optional<Application> application = allUi(Application.class).filter(a -> a.getName().equals(actor.getFQName()))
+                .findAny();
+        assertTrue(application.isPresent());
+        final Optional<ClassType> uiE1 = application.get().getDataElements().stream().filter(e -> e instanceof ClassType)
+        		.map(e -> (ClassType) e).filter(c -> c.getName().equals(EsmUtils.getNamespaceElementFQName(e1))).findAny();
+        assertFalse(uiE1.isPresent());
+        final Optional<ClassType> uiE2 = application.get().getDataElements().stream().filter(e -> e instanceof ClassType)
+        		.map(e -> (ClassType) e).filter(c -> c.getName().equals(EsmUtils.getNamespaceElementFQName(e2))).findAny();
+        assertTrue(uiE2.isPresent());
+        final Optional<ClassType> uiE3 = application.get().getDataElements().stream().filter(e -> e instanceof ClassType)
+        		.map(e -> (ClassType) e).filter(c -> c.getName().equals(EsmUtils.getNamespaceElementFQName(e3))).findAny();
+        assertTrue(uiE3.isPresent());
+        final Optional<ClassType> uiE4 = application.get().getDataElements().stream().filter(e -> e instanceof ClassType)
+        		.map(e -> (ClassType) e).filter(c -> c.getName().equals(EsmUtils.getNamespaceElementFQName(e4))).findAny();
+        assertTrue(uiE4.isPresent());
+        final Optional<ClassType> uiE5 = application.get().getDataElements().stream().filter(e -> e instanceof ClassType)
+        		.map(e -> (ClassType) e).filter(c -> c.getName().equals(EsmUtils.getNamespaceElementFQName(e5))).findAny();
+        assertTrue(uiE5.isPresent());
+        final Optional<ClassType> uiE6 = application.get().getDataElements().stream().filter(e -> e instanceof ClassType)
+        		.map(e -> (ClassType) e).filter(c -> c.getName().equals(EsmUtils.getNamespaceElementFQName(e6))).findAny();
+        assertTrue(uiE6.isPresent());
+        
+        //exposed stored creatable association: view, create, table
+        final Optional<PageDefinition> rel1Page = application.get().getPages().stream()
+        		.filter(c -> c.getPageType().equals(PageType.VIEW) && c.getName().equals(EsmUtils.getNamespaceElementFQName(e2) + "." + relation1.getName() + "#View")).findAny();
+        assertTrue(rel1Page.isPresent());
+        assertTrue(uiE2.get().getRelations().contains(rel1Page.get().getDataElement()) && rel1Page.get().getDataElement().getName().equals(relation1.getName()));
+        
+        final Optional<PageDefinition> rel1PageCreate = application.get().getPages().stream()
+        		.filter(c -> c.getPageType().equals(PageType.CREATE) && c.getName().equals(EsmUtils.getNamespaceElementFQName(e2) + "." + relation1.getName() + "#Create")).findAny();
+        assertTrue(rel1PageCreate.isPresent());
+        assertTrue(uiE2.get().getRelations().contains(rel1PageCreate.get().getDataElement()) && rel1PageCreate.get().getDataElement().getName().equals(relation1.getName()));
+        
+        final Optional<PageDefinition> rel1PageUpdate = application.get().getPages().stream()
+        		.filter(c -> c.getPageType().equals(PageType.UPDATE) && c.getName().equals(EsmUtils.getNamespaceElementFQName(e2) + "." + relation1.getName() + "#Update")).findAny();
+        assertFalse(rel1PageUpdate.isPresent());
+        
+        final Optional<PageDefinition> rel1PageTable = application.get().getPages().stream()
+        		.filter(c -> c.getPageType().equals(PageType.TABLE) && c.getName().equals(EsmUtils.getNamespaceElementFQName(e2) + "." + relation1.getName() + "#Table")).findAny();
+        assertTrue(rel1PageTable.isPresent());
+        assertTrue(uiE2.get().getRelations().contains(rel1PageTable.get().getDataElement()) && rel1PageTable.get().getDataElement().getName().equals(relation1.getName()));
+        
+      //exposed stored composition: view
+        final Optional<PageDefinition> rel2Page = application.get().getPages().stream()
+        		.filter(c -> c.getPageType().equals(PageType.VIEW) && c.getName().equals(EsmUtils.getNamespaceElementFQName(e2) + "." + relation2.getName() + "#View")).findAny();
+        assertTrue(rel2Page.isPresent());
+        assertTrue(uiE2.get().getRelations().contains(rel2Page.get().getDataElement()) && rel2Page.get().getDataElement().getName().equals(relation2.getName()));
+        
+        final Optional<PageDefinition> rel2PageCreate = application.get().getPages().stream()
+        		.filter(c -> c.getPageType().equals(PageType.CREATE) && c.getName().equals(EsmUtils.getNamespaceElementFQName(e2) + "." + relation2.getName() + "#Create")).findAny();
+        assertFalse(rel2PageCreate.isPresent());
+        
+        final Optional<PageDefinition> rel2PageUpdate = application.get().getPages().stream()
+        		.filter(c -> c.getPageType().equals(PageType.UPDATE) && c.getName().equals(EsmUtils.getNamespaceElementFQName(e2) + "." + relation2.getName() + "#Update")).findAny();
+        assertFalse(rel2PageUpdate.isPresent());
+        
+        final Optional<PageDefinition> rel2PageTable = application.get().getPages().stream()
+        		.filter(c -> c.getPageType().equals(PageType.TABLE) && c.getName().equals(EsmUtils.getNamespaceElementFQName(e2) + "." + relation2.getName() + "#Table")).findAny();
+        assertFalse(rel2PageTable.isPresent());
+        
+        //exposed derived deletable aggregation: view
+        final Optional<PageDefinition> rel3Page = application.get().getPages().stream()
+        		.filter(c -> c.getPageType().equals(PageType.VIEW) && c.getName().equals(EsmUtils.getNamespaceElementFQName(e2) + "." + relation3.getName() + "#View")).findAny();
+        assertTrue(rel3Page.isPresent());
+        assertTrue(uiE2.get().getRelations().contains(rel3Page.get().getDataElement()) && rel3Page.get().getDataElement().getName().equals(relation3.getName()));
+        
+        final Optional<PageDefinition> rel3PageCreate = application.get().getPages().stream()
+        		.filter(c -> c.getPageType().equals(PageType.CREATE) && c.getName().equals(EsmUtils.getNamespaceElementFQName(e2) + "." + relation3.getName() + "#Create")).findAny();
+        assertFalse(rel3PageCreate.isPresent());
+        
+        final Optional<PageDefinition> rel3PageUpdate = application.get().getPages().stream()
+        		.filter(c -> c.getPageType().equals(PageType.UPDATE) && c.getName().equals(EsmUtils.getNamespaceElementFQName(e2) + "." + relation3.getName() + "#Update")).findAny();
+        assertFalse(rel3PageUpdate.isPresent());
+        
+        final Optional<PageDefinition> rel3PageTable = application.get().getPages().stream()
+        		.filter(c -> c.getPageType().equals(PageType.TABLE) && c.getName().equals(EsmUtils.getNamespaceElementFQName(e2) + "." + relation3.getName() + "#Table")).findAny();
+        assertTrue(rel3PageTable.isPresent());
+        assertTrue(uiE2.get().getRelations().contains(rel3PageTable.get().getDataElement()) && rel3PageTable.get().getDataElement().getName().equals(relation3.getName()));
+        
+        //exposed derived updateable association: view, create, update, table
+        final Optional<PageDefinition> rel4Page = application.get().getPages().stream()
+        		.filter(c -> c.getPageType().equals(PageType.VIEW) && c.getName().equals(EsmUtils.getNamespaceElementFQName(e2) + "." + relation4.getName() + "#View")).findAny();
+        assertTrue(rel4Page.isPresent());
+        assertTrue(uiE2.get().getRelations().contains(rel4Page.get().getDataElement()) && rel4Page.get().getDataElement().getName().equals(relation4.getName()));
+        
+        final Optional<PageDefinition> rel4PageCreate = application.get().getPages().stream()
+        		.filter(c -> c.getPageType().equals(PageType.CREATE) && c.getName().equals(EsmUtils.getNamespaceElementFQName(e2) + "." + relation4.getName() + "#Create")).findAny();
+        assertFalse(rel4PageCreate.isPresent());
+        
+        final Optional<PageDefinition> rel4PageUpdate = application.get().getPages().stream()
+        		.filter(c -> c.getPageType().equals(PageType.UPDATE) && c.getName().equals(EsmUtils.getNamespaceElementFQName(e2) + "." + relation4.getName() + "#Update")).findAny();
+        assertFalse(rel4PageUpdate.isPresent());
+        
+        final Optional<PageDefinition> rel4PageTable = application.get().getPages().stream()
+        		.filter(c -> c.getPageType().equals(PageType.TABLE) && c.getName().equals(EsmUtils.getNamespaceElementFQName(e2) + "." + relation4.getName() + "#Table")).findAny();
+        assertFalse(rel4PageTable.isPresent());
     }
     
     static <T> Stream<T> asStream(Iterator<T> sourceIterator, boolean parallel) {

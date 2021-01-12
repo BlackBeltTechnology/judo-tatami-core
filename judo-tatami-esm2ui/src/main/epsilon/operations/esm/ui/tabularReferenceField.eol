@@ -121,7 +121,7 @@ operation ESM!esm::ui::TabularReferenceField createButtonFromTabularReferenceFie
 		page.~application = application;
 		page.~originalRelation = relation;
 		page.dataElement = dataElement;
-		page.name = relation.fqName().anchor("TableForButton");
+		page.name = (dataElement.eContainer.name + "." + dataElement.name).anchor("TableForButton");
 	    page.label = self.getUiLabel();
 		
 		page.pageType = UI!ui::PageType#TABLE;

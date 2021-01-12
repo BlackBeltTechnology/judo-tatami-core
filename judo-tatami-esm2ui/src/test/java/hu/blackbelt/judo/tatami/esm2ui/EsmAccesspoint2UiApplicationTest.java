@@ -162,8 +162,7 @@ public class EsmAccesspoint2UiApplicationTest {
         final Optional<NavigationController> navigationController = allUi(NavigationController.class)
                 .findAny();
         assertTrue(navigationController.isPresent());
-
-        assertTrue(navigationController.get() == application.get().getNavigationController());
+        assertEquals(navigationController.get(), application.get().getNavigationController());
     }
 
     
@@ -291,8 +290,7 @@ public class EsmAccesspoint2UiApplicationTest {
         final Optional<NavigationController> navigationController = allUi(NavigationController.class)
                 .findAny();
         assertTrue(navigationController.isPresent());
-
-        assertTrue(navigationController.get() == application.get().getNavigationController());
+        assertEquals(navigationController.get(), application.get().getNavigationController());
     }
 
     

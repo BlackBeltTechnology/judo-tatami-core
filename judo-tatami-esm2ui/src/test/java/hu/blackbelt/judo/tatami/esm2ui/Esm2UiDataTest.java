@@ -14,6 +14,7 @@ import hu.blackbelt.judo.meta.esm.structure.MemberType;
 import hu.blackbelt.judo.meta.esm.structure.OneWayRelationMember;
 import hu.blackbelt.judo.meta.esm.structure.RelationKind;
 import hu.blackbelt.judo.meta.esm.structure.TransferObjectType;
+import hu.blackbelt.judo.meta.esm.type.NumericType;
 import hu.blackbelt.judo.meta.esm.type.StringType;
 import hu.blackbelt.judo.meta.ui.Application;
 import hu.blackbelt.judo.meta.ui.data.ClassType;
@@ -46,6 +47,7 @@ import static hu.blackbelt.judo.meta.esm.runtime.EsmEpsilonValidator.validateEsm
 import static hu.blackbelt.judo.meta.esm.runtime.EsmModel.buildEsmModel;
 import static hu.blackbelt.judo.meta.esm.structure.util.builder.StructureBuilders.*;
 import static hu.blackbelt.judo.meta.esm.type.util.builder.TypeBuilders.newStringTypeBuilder;
+import static hu.blackbelt.judo.meta.esm.type.util.builder.TypeBuilders.newNumericTypeBuilder;
 
 import static hu.blackbelt.judo.meta.esm.ui.util.builder.UiBuilders.newTransferObjectTableBuilder;
 import static hu.blackbelt.judo.meta.esm.ui.util.builder.UiBuilders.newTransferObjectFormBuilder;
@@ -62,6 +64,7 @@ import static hu.blackbelt.judo.meta.ui.runtime.UiModel.SaveArguments.uiSaveArgu
 import static hu.blackbelt.judo.meta.ui.runtime.UiModel.buildUiModel;
 import static hu.blackbelt.judo.tatami.esm2ui.Esm2Ui.calculateEsm2UiTransformationScriptURI;
 import static hu.blackbelt.judo.tatami.esm2ui.Esm2Ui.executeEsm2UiTransformation;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -435,7 +438,7 @@ public class Esm2UiDataTest {
         		.map(e -> (ClassType) e).filter(c -> c.isIsActor()).findAny();
         assertTrue(uiActor.isPresent());
         assertTrue(uiActor.get().getName().equals(EsmUtils.getNamespaceElementFQName(actor)));
-        assertTrue(uiActor.get().getRelations().size() == actor.getAccesses().size());
+        assertEquals(actor.getAccesses().size(), uiActor.get().getRelations().size());
     }
     
     @Test
@@ -576,7 +579,7 @@ public class Esm2UiDataTest {
         final Optional<ClassType> uiE3 = application.get().getDataElements().stream().filter(e -> e instanceof ClassType)
         		.map(e -> (ClassType) e).filter(c -> c.getName().equals(EsmUtils.getNamespaceElementFQName(e3))).findAny();
         assertTrue(uiE3.isPresent());
-        assertTrue(uiE3.get().getOperations().size() == 3);
+        assertEquals(3, uiE3.get().getOperations().size());
         
         final Optional<OperationType> uiOp1 = uiE3.get().getOperations().stream().filter(o -> o.getName().equals(operation1.getName())).findFirst();
         assertTrue(uiOp1.isPresent());
@@ -757,7 +760,7 @@ public class Esm2UiDataTest {
         final Optional<ClassType> uiE3 = application.get().getDataElements().stream().filter(e -> e instanceof ClassType)
         		.map(e -> (ClassType) e).filter(c -> c.getName().equals(EsmUtils.getNamespaceElementFQName(e3))).findAny();
         assertTrue(uiE3.isPresent());
-        assertTrue(uiE3.get().getOperations().size() == 3);
+        assertEquals(3, uiE3.get().getOperations().size());
         
         final Optional<OperationType> uiOp1 = uiE3.get().getOperations().stream().filter(o -> o.getName().equals(operation1.getName())).findFirst();
         assertTrue(uiOp1.isPresent());
@@ -781,7 +784,7 @@ public class Esm2UiDataTest {
         final Optional<ClassType> uiE2 = application.get().getDataElements().stream().filter(e -> e instanceof ClassType)
         		.map(e -> (ClassType) e).filter(c -> c.getName().equals(EsmUtils.getNamespaceElementFQName(e2))).findAny();
         assertTrue(uiE2.isPresent());
-        assertTrue(uiE2.get().getOperations().size() == 2);
+        assertEquals(2, uiE2.get().getOperations().size());
         
         final Optional<OperationType> uiOp4 = uiE2.get().getOperations().stream().filter(o -> o.getName().equals(operation1.getName())).findFirst();
         assertTrue(uiOp4.isPresent());
@@ -798,6 +801,220 @@ public class Esm2UiDataTest {
         final Optional<ClassType> uiE1 = application.get().getDataElements().stream().filter(e -> e instanceof ClassType)
         		.map(e -> (ClassType) e).filter(c -> c.getName().equals(EsmUtils.getNamespaceElementFQName(e1))).findAny();
         assertFalse(uiE1.isPresent());
+    }
+    
+    @Test
+    void testCreateClassTypeFromClassWithAttributes() throws Exception {
+        testName = "CreateClassTypeFromClass";
+
+        StringType str = newStringTypeBuilder().withName("string").withMaxLength(8).build();
+        NumericType number = newNumericTypeBuilder().withName("number").withPrecision(2).withScale(1).build();
+        final String MODEL_NAME = "Model";
+        final String TRANSFER_OBJECT_TYPE_NAME_1 = "T1";
+        final String TRANSFER_OBJECT_TYPE_NAME_2 = "T2";
+        final String TRANSFER_OBJECT_TYPE_NAME_3 = "T3";
+        final String ENTITY_TYPE_NAME_1 = "E1";
+        final String ENTITY_TYPE_NAME_2 = "E2";
+        final String ENTITY_TYPE_NAME_3 = "E3";
+        final String ENTITY_TYPE_NAME_4 = "E4";
+        final String ENTITY_TYPE_NAME_5 = "E5";
+        final String ENTITY_TYPE_NAME_6 = "E6";
+        final String ACTOR_TYPE_NAME = "Actor";
+        
+        ActorType actor = newActorTypeBuilder()
+                .withName(ACTOR_TYPE_NAME)
+                .withRealm("sandbox")
+                .build();
+        
+        DataMember stored1 = newDataMemberBuilder().withName("stored").withDataType(str).withMemberType(MemberType.STORED).build();
+        DataMember derived1 = newDataMemberBuilder().withName("derived").withDataType(number).withGetterExpression("1+1").withMemberType(MemberType.DERIVED).build();
+        final EntityType e1 = newEntityTypeBuilder()
+                .withName(ENTITY_TYPE_NAME_1)
+                .withCreateable(false)
+                .withUpdateable(false)
+                .withDeleteable(false)
+                .withAttributes(stored1, derived1)
+                .build();
+        useEntityType(e1).withMappedEntity(e1)
+        	.withAttributes(stored1, derived1).build();
+        final EntityType e2 = newEntityTypeBuilder()
+                .withName(ENTITY_TYPE_NAME_2)
+                .withCreateable(false)
+                .withUpdateable(false)
+                .withDeleteable(false)
+                .withGeneralizations(newGeneralizationBuilder().withTarget(e1).build())
+                .build();
+        useEntityType(e2).withMappedEntity(e2).build();
+        DataMember stored2 = newDataMemberBuilder().withName("stored2").withDataType(str).withMemberType(MemberType.STORED).build();
+        DataMember derived2 = newDataMemberBuilder().withName("derived2").withDataType(number).withGetterExpression("1+1").withMemberType(MemberType.DERIVED).build();
+        final EntityType e3 = newEntityTypeBuilder()
+                .withName(ENTITY_TYPE_NAME_3)
+                .withCreateable(false)
+                .withUpdateable(false)
+                .withDeleteable(false)
+                .withGeneralizations(newGeneralizationBuilder().withTarget(e2).build())
+                .build();
+        useEntityType(e3).withMappedEntity(e3)
+        	.withAttributes(stored2, derived2).build();
+        
+        DataMember stored3 = newDataMemberBuilder().withName("stored").withDataType(str).withMemberType(MemberType.STORED).build();
+        DataMember derived3 = newDataMemberBuilder().withName("derived").withDataType(number).withGetterExpression("1+1").withMemberType(MemberType.DERIVED).build();
+        final EntityType e4 = newEntityTypeBuilder()
+                .withName(ENTITY_TYPE_NAME_4)
+                .withCreateable(false)
+                .withUpdateable(false)
+                .withDeleteable(false)
+                .build();
+        useEntityType(e4).withMappedEntity(e4)
+        	.withAttributes(stored3, derived3).build();
+        
+        final EntityType e5 = newEntityTypeBuilder()
+                .withName(ENTITY_TYPE_NAME_5)
+                .withCreateable(false)
+                .withUpdateable(false)
+                .withDeleteable(false)
+                .build();
+        useEntityType(e5).withMappedEntity(e5).build();
+        
+        final EntityType e6 = newEntityTypeBuilder()
+                .withName(ENTITY_TYPE_NAME_6)
+                .withCreateable(false)
+                .withUpdateable(false)
+                .withDeleteable(false)
+                .withGeneralizations(newGeneralizationBuilder().withTarget(e5).build())
+                .build();
+        useEntityType(e6).withMappedEntity(e6).build();
+        
+        OneWayRelationMember relation = newOneWayRelationMemberBuilder()
+        		.withName("e5s")
+        		.withLower(0)
+        		.withUpper(-1)
+        		.withTarget(e5)
+        		.withMemberType(MemberType.STORED)
+        		.withRelationKind(RelationKind.ASSOCIATION)
+        		.build();
+        useEntityType(e4).withRelations(relation).build();
+
+        DataMember stored1mapping = newDataMemberBuilder().withName("stored").withDataType(str).withMemberType(MemberType.MAPPED)
+        		.withBinding(stored1).build();
+        final TransferObjectType t1 = newTransferObjectTypeBuilder()
+                .withName(TRANSFER_OBJECT_TYPE_NAME_1)
+                .withCreateable(false)
+                .withUpdateable(false)
+                .withDeleteable(false)
+                .build();
+        useTransferObjectType(t1).withMappedEntity(e1)
+        	.withAttributes(stored1mapping).build();
+        final TransferObjectType t2 = newTransferObjectTypeBuilder()
+                .withName(TRANSFER_OBJECT_TYPE_NAME_2)
+                .withCreateable(false)
+                .withUpdateable(false)
+                .withDeleteable(false)
+                .withGeneralizations(newGeneralizationBuilder().withTarget(t1).build())
+                .build();
+        useTransferObjectType(t2).withMappedEntity(e2).build();
+        DataMember stored2mapping = newDataMemberBuilder().withName("stored2").withDataType(str).withMemberType(MemberType.MAPPED)
+        		.withBinding(stored2).build();
+        DataMember derived2mapping = newDataMemberBuilder().withName("derived2").withDataType(number).withGetterExpression("1+1").withMemberType(MemberType.MAPPED)
+        		.withBinding(derived2).build();
+        DataMember transientMember = newDataMemberBuilder().withName("transient").withDataType(str).withMemberType(MemberType.TRANSIENT)
+        		.withBinding(stored2).build();
+        final TransferObjectType t3 = newTransferObjectTypeBuilder()
+                .withName(TRANSFER_OBJECT_TYPE_NAME_3)
+                .withCreateable(false)
+                .withUpdateable(false)
+                .withDeleteable(false)
+                .withGeneralizations(newGeneralizationBuilder().withTarget(t2).build())
+                .build();
+        useTransferObjectType(t3).withMappedEntity(e3)
+        	.withAttributes(stored2mapping, derived2mapping, transientMember).build();
+        
+        Access access1 = newAccessBuilder().withName("t1")
+        		.withTarget(t1)
+        		.withLower(0)
+        		.withUpper(-1)
+        		.withCreateable(true)
+        		.withTargetDefinedCRUD(false)
+        		.build();
+        
+        Access access2 = newAccessBuilder().withName("t3")
+        		.withTarget(t3)
+        		.withLower(0)
+        		.withUpper(-1)
+        		.withCreateable(false)
+        		.withTargetDefinedCRUD(false)
+        		.build();
+        
+        Access access3 = newAccessBuilder().withName("e4")
+        		.withTarget(e4)
+        		.withLower(0)
+        		.withUpper(-1)
+        		.withCreateable(false)
+        		.withTargetDefinedCRUD(false)
+        		.build();
+
+        useActorType(actor).withAccesses(access1, access2, access3).build();
+        
+        final Model model = newModelBuilder().withName(MODEL_NAME)
+                .withElements(actor, t1, t2, t3, e1, e2, e3, e4, e5, e6, str, number).build();
+
+        esmModel.addContent(model);
+
+        transform();
+
+        final Optional<Application> application = allUi(Application.class).filter(a -> a.getName().equals(actor.getFQName()))
+                .findAny();
+        assertTrue(application.isPresent());
+        
+        final Optional<ClassType> uiT1 = application.get().getDataElements().stream().filter(e -> e instanceof ClassType)
+        		.map(e -> (ClassType) e).filter(c -> c.getName().equals(EsmUtils.getNamespaceElementFQName(t1))).findAny();
+        assertTrue(uiT1.isPresent());
+        assertTrue(uiT1.get().isIsMapped());
+        assertEquals(1, uiT1.get().getAttributes().size());
+        assertTrue(uiT1.get().getAttributes().get(0).getIsMemberTypeMapped());
+        assertTrue(uiT1.get().getAttributes().get(0).getName().equals(stored1mapping.getName()));
+        
+        final Optional<ClassType> uiT2 = application.get().getDataElements().stream().filter(e -> e instanceof ClassType)
+        		.map(e -> (ClassType) e).filter(c -> c.getName().equals(EsmUtils.getNamespaceElementFQName(t2))).findAny();
+        assertFalse(uiT2.isPresent());
+        
+        final Optional<ClassType> uiT3 = application.get().getDataElements().stream().filter(e -> e instanceof ClassType)
+        		.map(e -> (ClassType) e).filter(c -> c.getName().equals(EsmUtils.getNamespaceElementFQName(t3))).findAny();
+        assertTrue(uiT3.isPresent());
+        assertTrue(uiT3.get().isIsMapped());
+        assertEquals(4, uiT3.get().getAttributes().size());
+        assertTrue(uiT3.get().getAttributes().stream().anyMatch(a -> a.getName().equals(stored1mapping.getName()) && a.getIsMemberTypeMapped()));
+        assertTrue(uiT3.get().getAttributes().stream().anyMatch(a -> a.getName().equals(stored2mapping.getName()) && a.getIsMemberTypeMapped()));
+        assertTrue(uiT3.get().getAttributes().stream().anyMatch(a -> a.getName().equals(derived2mapping.getName()) && a.getIsMemberTypeMapped()));
+        assertTrue(uiT3.get().getAttributes().stream().anyMatch(a -> a.getName().equals(transientMember.getName()) && a.getIsMemberTypeTransient()));
+        
+        final Optional<ClassType> uiE1 = application.get().getDataElements().stream().filter(e -> e instanceof ClassType)
+        		.map(e -> (ClassType) e).filter(c -> c.getName().equals(EsmUtils.getNamespaceElementFQName(e1))).findAny();
+        assertFalse(uiE1.isPresent());
+        
+        final Optional<ClassType> uiE2 = application.get().getDataElements().stream().filter(e -> e instanceof ClassType)
+        		.map(e -> (ClassType) e).filter(c -> c.getName().equals(EsmUtils.getNamespaceElementFQName(e2))).findAny();
+        assertFalse(uiE2.isPresent());
+        
+        final Optional<ClassType> uiE3 = application.get().getDataElements().stream().filter(e -> e instanceof ClassType)
+        		.map(e -> (ClassType) e).filter(c -> c.getName().equals(EsmUtils.getNamespaceElementFQName(e3))).findAny();
+        assertFalse(uiE3.isPresent());
+        
+        final Optional<ClassType> uiE4 = application.get().getDataElements().stream().filter(e -> e instanceof ClassType)
+        		.map(e -> (ClassType) e).filter(c -> c.getName().equals(EsmUtils.getNamespaceElementFQName(e4))).findAny();
+        assertTrue(uiE4.isPresent());
+        assertTrue(uiE4.get().isIsMapped());
+        assertEquals(2, uiE4.get().getAttributes().size());
+        assertTrue(uiE4.get().getAttributes().stream().anyMatch(a -> a.getName().equals(stored3.getName()) && a.getIsMemberTypeStored()));
+        assertTrue(uiE4.get().getAttributes().stream().anyMatch(a -> a.getName().equals(derived3.getName()) && a.getIsMemberTypeDerived()));
+        
+        final Optional<ClassType> uiE5 = application.get().getDataElements().stream().filter(e -> e instanceof ClassType)
+        		.map(e -> (ClassType) e).filter(c -> c.getName().equals(EsmUtils.getNamespaceElementFQName(e5))).findAny();
+        assertTrue(uiE5.isPresent());
+        
+        final Optional<ClassType> uiE6 = application.get().getDataElements().stream().filter(e -> e instanceof ClassType)
+        		.map(e -> (ClassType) e).filter(c -> c.getName().equals(EsmUtils.getNamespaceElementFQName(e6))).findAny();
+        assertFalse(uiE6.isPresent());
     }
     
     static <T> Stream<T> asStream(Iterator<T> sourceIterator, boolean parallel) {

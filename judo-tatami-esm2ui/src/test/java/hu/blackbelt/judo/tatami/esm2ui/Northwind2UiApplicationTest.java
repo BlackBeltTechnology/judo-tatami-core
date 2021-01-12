@@ -35,6 +35,7 @@ import static hu.blackbelt.judo.meta.ui.runtime.UiModel.SaveArguments.uiSaveArgu
 import static hu.blackbelt.judo.meta.ui.runtime.UiModel.buildUiModel;
 import static hu.blackbelt.judo.tatami.esm2ui.Esm2Ui.calculateEsm2UiTransformationScriptURI;
 import static hu.blackbelt.judo.tatami.esm2ui.Esm2Ui.executeEsm2UiTransformation;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @Slf4j
@@ -95,7 +96,7 @@ public class Northwind2UiApplicationTest {
         final Optional<NavigationController> navigationController = allUi(NavigationController.class)
                 .findAny();
         assertTrue(navigationController.isPresent());
-        assertTrue(navigationController.get() == application.get().getNavigationController());
+        assertEquals(navigationController.get(), application.get().getNavigationController());
     }
 
         
