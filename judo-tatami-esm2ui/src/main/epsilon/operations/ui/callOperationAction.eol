@@ -6,16 +6,17 @@ operation UI!ui::CallOperationAction resolveParameterPageDefinitions() {
 
 		var op : ESM!esm::`operation`::Operation = callAction.~originalOperationForm.getOperationReference().getMember();
 		var application = callAction.~application;
+		var clazz : UI!ui::data::ClassType = callAction.~originalOperationForm.getRoot().eContainer().mapClassType(application);
 		
 		if (op.input.isDefined()) {
 			if (op.input.target.form.isDefined()) {
-				callAction.inputParameterPage = op.mapFormPageForOperationInput(application);
+				callAction.inputParameterPage = op.mapFormPageForOperationInput(application, clazz);
 			}
 		}
 	
 		if (op.output.isDefined()) {
 			if (op.output.target.view.isDefined()) {
-		    	callAction.outputParameterPage = op.mapViewPageForOperationOutput(application);
+		    	callAction.outputParameterPage = op.mapViewPageForOperationOutput(application, clazz);
 	      }
 		}	
 	}

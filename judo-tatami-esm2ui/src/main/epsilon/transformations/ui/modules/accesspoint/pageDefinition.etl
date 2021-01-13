@@ -1,10 +1,8 @@
-import "../namespace/namespace.etl";
 import "../../../../operations/_importAll.eol";
 
 rule ApplicationDashboardPage
     transform s: ESM!esm::accesspoint::ActorType
-    to t : UI!ui::PageDefinition
-    extends CreateNamedElementFromNamespaceElement {
+    to t : UI!ui::PageDefinition {
 
         log.debug("ApplicationDashboardPage: " + s.name);
 

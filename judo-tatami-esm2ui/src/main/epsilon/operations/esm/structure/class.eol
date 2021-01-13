@@ -74,10 +74,8 @@ operation ESM!esm::structure::Class createClassType(application : UI!ui::Applica
 		relation.createRelationTypeForClass(application, clazz);
 	}
 	
-	for (op in esmUtils.getAllOperations(self).asSet()) {
-		if (op.operationType <> ESM!OperationType#ABSTRACT) {
-			op.createOperationTypeForClass(application, clazz);
-		}
+	for (op in esmUtils.getAllOperations(self)) {
+		op.createOperationTypeForClass(application, clazz);
 	}
 
 	log.debug("Create class type: " + clazz.name);

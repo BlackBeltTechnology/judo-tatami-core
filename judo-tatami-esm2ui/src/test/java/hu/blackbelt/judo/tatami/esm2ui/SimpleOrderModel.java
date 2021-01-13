@@ -1,30 +1,11 @@
 package hu.blackbelt.judo.tatami.esm2ui;
 
-import static hu.blackbelt.judo.meta.esm.accesspoint.util.builder.AccesspointBuilders.newActorTypeBuilder;
-import static hu.blackbelt.judo.meta.esm.namespace.util.builder.NamespaceBuilders.newModelBuilder;
-import static hu.blackbelt.judo.meta.esm.namespace.util.builder.NamespaceBuilders.newPackageBuilder;
-import static hu.blackbelt.judo.meta.esm.operation.util.builder.OperationBuilders.newInheritedOperationReferenceBuilder;
-import static hu.blackbelt.judo.meta.esm.operation.util.builder.OperationBuilders.newOperationBuilder;
-import static hu.blackbelt.judo.meta.esm.operation.util.builder.OperationBuilders.newParameterBuilder;
-import static hu.blackbelt.judo.meta.esm.structure.util.builder.StructureBuilders.newDataMemberBuilder;
-import static hu.blackbelt.judo.meta.esm.structure.util.builder.StructureBuilders.newEntityTypeBuilder;
-import static hu.blackbelt.judo.meta.esm.structure.util.builder.StructureBuilders.newGeneralizationBuilder;
-import static hu.blackbelt.judo.meta.esm.structure.util.builder.StructureBuilders.newMappingBuilder;
-import static hu.blackbelt.judo.meta.esm.structure.util.builder.StructureBuilders.newOneWayRelationMemberBuilder;
-import static hu.blackbelt.judo.meta.esm.structure.util.builder.StructureBuilders.newTransferObjectTypeBuilder;
-import static hu.blackbelt.judo.meta.esm.structure.util.builder.StructureBuilders.useEntityType;
-import static hu.blackbelt.judo.meta.esm.structure.util.builder.StructureBuilders.useTransferObjectType;
+import static hu.blackbelt.judo.meta.esm.accesspoint.util.builder.AccesspointBuilders.*;
+import static hu.blackbelt.judo.meta.esm.namespace.util.builder.NamespaceBuilders.*;
+import static hu.blackbelt.judo.meta.esm.operation.util.builder.OperationBuilders.*;
+import static hu.blackbelt.judo.meta.esm.structure.util.builder.StructureBuilders.*;
 import static hu.blackbelt.judo.meta.esm.type.util.builder.TypeBuilders.*;
-import static hu.blackbelt.judo.meta.esm.ui.util.builder.UiBuilders.newActionButtonBuilder;
-import static hu.blackbelt.judo.meta.esm.ui.util.builder.UiBuilders.newDataColumnBuilder;
-import static hu.blackbelt.judo.meta.esm.ui.util.builder.UiBuilders.newDataFieldBuilder;
-import static hu.blackbelt.judo.meta.esm.ui.util.builder.UiBuilders.newGroupBuilder;
-import static hu.blackbelt.judo.meta.esm.ui.util.builder.UiBuilders.newOperationFormBuilder;
-import static hu.blackbelt.judo.meta.esm.ui.util.builder.UiBuilders.newTabularReferenceFieldBuilder;
-import static hu.blackbelt.judo.meta.esm.ui.util.builder.UiBuilders.newTransferObjectFormBuilder;
-import static hu.blackbelt.judo.meta.esm.ui.util.builder.UiBuilders.newTransferObjectTableBuilder;
-import static hu.blackbelt.judo.meta.esm.ui.util.builder.UiBuilders.newTransferObjectViewBuilder;
-import static hu.blackbelt.judo.meta.esm.ui.util.builder.UiBuilders.newTabBarBuilder;
+import static hu.blackbelt.judo.meta.esm.ui.util.builder.UiBuilders.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -488,163 +469,6 @@ public class SimpleOrderModel {
         		.build();
         useTransferObjectType(application).withRelations(applicationIntOrders).build();
         
-        //Order Form
-        createFormForTransferObjectType(order);
-            
-        //Order Table
-        createTableForTransferObject(order,true);        
-
-        //Order View
-        //createViewForTransferObjectType(order);
-        
-        TransferObjectView orderView = getViewForTransferObjectType(order);
-        
-        TabBar tab = newTabBarBuilder().withName("tabBar").withLabel("TabBar").withTabs(
-        		newGroupBuilder().withName("group").withComponents(
-        				newDataFieldBuilder().withName("orderDate").withLabel("orderDate").withIconName("calendar_today").withDataFeature(orderDate).build(),
-        				newDataFieldBuilder().withName("customer").withLabel("customer").withIconName("text_fields").withDataFeature(orderCustomer).build()
-        				)
-        			.withFrame(false)
-        			.build(),
-        		newGroupBuilder().withName("group2").withComponents(
-        				newDataFieldBuilder().withName("received").withLabel("received").withIconName("schedule").withDataFeature(orderReceived).build(),
-        				newOperationFormBuilder().withName("returnDamagedItems").withLabel("returnDamagedItems").withOperation("returnDamagedItems").build()
-        				)
-        			.withFrame(false)
-        			.build(),
-        		newGroupBuilder().withName("group3").withComponents(
-        				newOperationFormBuilder().withName("archive").withLabel("archive").withOperation("archive").build()
-        				)
-        			.withFrame(false)
-        			.build()
-        		).build();
-        orderView.getComponents().add(tab);
-        order.setView(orderView);
-            
-        //Order Item Form
-        createFormForTransferObjectType(orderItem);
-            
-        //Order Item Table
-        createTableForTransferObject(orderItem,true);        
-
-        //Order Item View
-        createViewForTransferObjectType(orderItem);
-            
-        //International Order Form
-        formForTest = createFormForTransferObjectType(internationalOrder);
-        
-        TabBar tabBar = (TabBar) formForTest.getComponents().stream()
-        		.filter(c -> c instanceof TabBar).findFirst().get();
-        
-        tabBar.getTabs().stream().forEach(t -> {
-			((DataField) t.getComponents().stream()
-				.filter(c -> c instanceof Group && c.getName().equals("Content"))
-				.flatMap(c -> ((Group)c).getComponents().stream())
-				.filter(c -> c instanceof DataField)
-				.filter(c -> ((DataField)c).getDataFeature().equals(review))
-				.findAny()
-				.get())
-			.setTextMultiLine(true);
-        });
-
-        tabBar.getTabs().stream().forEach(t -> {
-			((DataField) t.getComponents().stream()
-				.filter(c -> c instanceof Group && c.getName().equals("Content"))
-		        .flatMap(c -> ((Group)c).getComponents().stream())
-		        .filter(c -> c instanceof DataField)
-		        .filter(c -> ((DataField)c).getDataFeature().equals(orderCountry))
-		        .findAny()
-		        .get())
-			.setEnumWidget(EnumWidget.COMBO);
-		});
-            
-        //International Order Table
-        tableForTest = createTableForTransferObject(internationalOrder,true);        
-
-        //International Order View
-        viewForTest = createViewForTransferObjectType(internationalOrder);
-        DataField fieldForReview2 = (DataField) viewForTest.getComponents().stream()
-        		.filter(c -> c instanceof DataField)
-        		.filter(c -> ((DataField)c).getDataFeature().equals(review))
-        		.findAny()
-        		.get();
-        fieldForReview2.setTextMultiLine(true);
-        
-        //Archiver Form
-        createFormForTransferObjectType(archiver);
-            
-        //Archiver Table
-        createTableForTransferObject(archiver,true);        
-
-        //Archiver View
-        createViewForTransferObjectType(archiver);
-        
-        //Archived Order Form
-        createFormForTransferObjectType(archivedOrder);
-            
-        //Archived Order Table
-        createTableForTransferObject(archivedOrder,true);        
-
-        //Archived Order View
-        createViewForTransferObjectType(archivedOrder);
-        
-        //Archived Order Item Form
-        createFormForTransferObjectType(archivedOrderItem);
-            
-        //Archived Order Item Table
-        createTableForTransferObject(archivedOrderItem,true);        
-
-        //Archived Order Item View
-        createViewForTransferObjectType(archivedOrderItem);
-        
-        //Returned Item Form
-        createFormForTransferObjectType(returnedItem);
-            
-        //Returned Item Table
-        createTableForTransferObject(returnedItem,true);        
-
-        //Returned Item View
-        createViewForTransferObjectType(returnedItem);
-        
-        //Deliverer Form
-        createFormForTransferObjectType(deliverer);
-            
-        //Deliverer Table
-        createTableForTransferObject(deliverer,true);        
-
-        //Deliverer View
-        createViewForTransferObjectType(deliverer);
-        
-        //Complaint Form
-        createFormForTransferObjectType(complaint);
-            
-        //Complaint Table
-        createTableForTransferObject(complaint,true);        
-
-        //Complaint View
-        createViewForTransferObjectType(complaint);
-
-        //Damaged Product Form
-        createFormForTransferObjectType(damagedProduct);
-            
-        //Damaged Product Table
-        createTableForTransferObject(damagedProduct,true);        
-
-        //Damaged Product View
-        createViewForTransferObjectType(damagedProduct);
-        
-        //Donated Item Form
-        createFormForTransferObjectType(donatedItem);
-            
-        //Donated Item Table
-        createTableForTransferObject(donatedItem,true);        
-
-        //Donated Item View
-        createViewForTransferObjectType(donatedItem);
-         
-        // Application View
-        createViewForTransferObjectType(application);
-        
         Package types = newPackageBuilder().withName("types").withElements(stringType,integerType,floatType,dateType,boolType,tsType,enumType).build();
 
 		ActorType actor = newActorTypeBuilder()
@@ -669,159 +493,100 @@ public class SimpleOrderModel {
 						complaint,damagedProduct)
 				.build();
 
+		addUiElementsToTransferObjects(model);
+		
+        //Order Form
+        setFormForTransferObjectType(order);
+            
+        //Order Table
+        setTableForTransferObjectType(order,true);        
+
+        //Order View
+        TransferObjectView orderView = setViewForTransferObjectType(order);
+        
+        TabBar tab = newTabBarBuilder().withName("tabBar").withLabel("TabBar").withTabs(
+        		newGroupBuilder().withName("group").withComponents(
+        				newDataFieldBuilder().withName("orderDate").withLabel("orderDate").withIconName("calendar_today").withDataFeature(orderDate).build(),
+        				newDataFieldBuilder().withName("customer").withLabel("customer").withIconName("text_fields").withDataFeature(orderCustomer).build()
+        				)
+        			.withFrame(false)
+        			.build(),
+        		newGroupBuilder().withName("group2").withComponents(
+        				newDataFieldBuilder().withName("received").withLabel("received").withIconName("schedule").withDataFeature(orderReceived).build(),
+        				newOperationFormBuilder().withName("returnDamagedItems").withLabel("returnDamagedItems").withOperation("returnDamagedItems").build()
+        				)
+        			.withFrame(false)
+        			.build(),
+        		newGroupBuilder().withName("group3").withComponents(
+        				newOperationFormBuilder().withName("archive").withLabel("archive").withOperation("archive").build()
+        				)
+        			.withFrame(false)
+        			.build()
+        		).build();
+        orderView.getComponents().add(tab);
+            
+        //International Order Form
+        formForTest = internationalOrder.getForm();
+            
+        //International Order Table
+        tableForTest = internationalOrder.getTable();    
+
+        //International Order View
+        viewForTest = internationalOrder.getView();
+        DataField fieldForReview2 = (DataField) viewForTest.getComponents().stream()
+        		.filter(c -> c instanceof DataField)
+        		.filter(c -> ((DataField)c).getDataFeature().equals(review))
+        		.findAny()
+        		.get();
+        fieldForReview2.setTextMultiLine(true);
+		
         return model;
 	}
 	
 	private static TransferObjectForm createFormForTransferObjectType(TransferObjectType transferObject) {
 		
-		List<DataField> dataFields1 = new ArrayList<>();
-		List<TabularReferenceField> tables1 = new ArrayList<>();
-		List<DataField> dataFields2 = new ArrayList<>();
-		List<TabularReferenceField> tables2 = new ArrayList<>();
-		
-		transferObject.getAllAttributes().stream().forEach(a -> {
-			dataFields1.add(newDataFieldBuilder()
-					.withName(a.getName())
-					.withLabel(a.getName().toUpperCase())
-					.withIconName(getIconName(a))
-					.withDataFeature(a)
-					.withCol(3)
-					.build());
-			dataFields2.add(newDataFieldBuilder()
-					.withName(a.getName())
-					.withLabel(a.getName().toUpperCase())
-					.withIconName(getIconName(a))
-					.withDataFeature(a)
-					.withCol(3)
-					.build());
-		});
-		
-		transferObject.getAllRelations().stream().forEach(r -> {
-			ArrayList<DataColumn> columns1 = new ArrayList<>();
-			ArrayList<DataColumn> columns2 = new ArrayList<>();
-			
-			TabularReferenceField tabular1 = newTabularReferenceFieldBuilder()
-					.withName(r.getName())
-					.withLabel(r.getName().toUpperCase())
-					.withRelationFeature(r)
-					.withCol(12)
-					.withTargetDefinedTabular(false)
-					.build();
-			TabularReferenceField tabular2 = newTabularReferenceFieldBuilder()
-					.withName(r.getName())
-					.withLabel(r.getName().toUpperCase())
-					.withRelationFeature(r)
-					.withCol(12)
-					.withTargetDefinedTabular(false)
-					.build();
-			TransferObjectType target = (TransferObjectType)(r.getTarget());
-			
-			target.getAllAttributes().stream().forEach(a -> {
-				columns1.add(newDataColumnBuilder()
-						.withName(a.getName())
-						.withLabel(a.getName().toUpperCase())
-						.withVisible(true)
-						.withDataFeature(a)
-						.build());
-				columns2.add(newDataColumnBuilder()
-						.withName(a.getName())
-						.withLabel(a.getName().toUpperCase())
-						.withVisible(true)
-						.withDataFeature(a)
-						.build());
-			});
-			tabular1.getColumns().addAll(columns1);
-			tables1.add(tabular1);
-			tabular2.getColumns().addAll(columns2);
-			tables2.add(tabular2);
-		});
-		
 		TransferObjectForm form = newTransferObjectFormBuilder()
         		.withName(transferObject.getName() + "Form")
         		.withFrame(false)
-        		.withComponents(newTabBarBuilder()
-        			.withCol(12)
-        			.withName("TABS")
-        			.withTabs(
-        				Arrays.asList(
-        					newGroupBuilder()
-		    					.withName("TAB1")
-		    					.withLabel("One")
-		    					.withFrame(false)
-		    					.withComponents(Arrays.asList(
-		    							newGroupBuilder()
-		        							.withName("Content")
-		        							.withLabel(transferObject.getName().toUpperCase())
-		        							.withLayout(Layout.HORIZONTAL)
-		        							.withHorizontal(Horizontal.LEFT)
-					                		.withVertical(Vertical.TOP)
-					                		.withFrame(true)
-					                		.withComponents(dataFields1)
-					                		.withComponents(tables1)
-					                		.build(),
-					            		newGroupBuilder()
-					                		.withName("Buttons")
-					                		.withLabel(transferObject.getName().toUpperCase())
-					                		.withLayout(Layout.HORIZONTAL)
-					                		.withHorizontal(Horizontal.LEFT)
-					                		.withVertical(Vertical.TOP)
-					                		.withFrame(true)
-					                		.withComponents(Arrays.asList(
-					                			newActionButtonBuilder()
-					                				.withName("cancel")
-					                				.withLabel("Cancel")
-					                				.withAction(Action.CANCEL)
-					                				.build(),
-					                			newActionButtonBuilder()
-					                				.withName("ok")
-					                				.withLabel("Ok")
-					                				.withAction(Action.SUBMIT)
-					                				.build()
-					                		))
-					                		.build()
-		    						))
-		    						.build(),
-        						newGroupBuilder()
-									.withName("TAB2")
-									.withLabel("Two")
-									.withComponents(Arrays.asList(
-					    				newGroupBuilder()
-					                		.withName("Content")
-					                		.withLabel(transferObject.getName().toUpperCase())
-					                		.withLayout(Layout.HORIZONTAL)
-					                		.withHorizontal(Horizontal.LEFT)
-					                		.withVertical(Vertical.TOP)
-					                		.withFrame(false)
-					                		.withComponents(dataFields2)
-					                		.withComponents(tables2)
-					                		.build(),
-					            		newGroupBuilder()
-					                		.withName("Buttons")
-					                		.withLabel(transferObject.getName().toUpperCase())
-					                		.withLayout(Layout.HORIZONTAL)
-					                		.withHorizontal(Horizontal.LEFT)
-					                		.withVertical(Vertical.TOP)
-					                		.withFrame(false)
-					                		.withComponents(Arrays.asList(
-					                				newActionButtonBuilder()
-					                					.withName("cancel")
-					                					.withLabel("Cancel")
-					                					.withAction(Action.CANCEL)
-					                					.build(),
-					                				newActionButtonBuilder()
-					                					.withName("ok")
-					                					.withLabel("Ok")
-					                					.withAction(Action.SUBMIT)
-					                					.build()
-					                		))
-					                		.build()
-									))
-        							.build()
-        			))
-        			.build())
         		.build();
-        transferObject.setForm(form);
+
+		if (!transferObject.getAllAttributes().isEmpty()) {
+			List<DataField> dataFields = new ArrayList<>();
+			transferObject.getAllAttributes().stream().forEach(a -> {
+				dataFields.add(newDataFieldBuilder().withName(a.getName()).withLabel(a.getName().toUpperCase())
+						.withIconName(getIconName(a)).withDataFeature(a).withCol(3).build());
+			});
+			
+			useTransferObjectForm(form).withComponents(dataFields).build();
+		}
+
+		if (!transferObject.getAllRelations().isEmpty()) {
+			ArrayList<TabularReferenceField> tables = new ArrayList<>();
+			transferObject.getAllRelations().stream().forEach(r -> {
+				ArrayList<DataColumn> columns = new ArrayList<>();
+
+				TabularReferenceField tabular = newTabularReferenceFieldBuilder().withName(r.getName())
+						.withLabel(r.getName().toUpperCase()).withRelationFeature(r).withCol(12)
+						.withTargetDefinedTabular(false).build();
+				TransferObjectType target = (TransferObjectType) (r.getTarget());
+
+				target.getAllAttributes().stream().forEach(a -> {
+					columns.add(newDataColumnBuilder().withName(a.getName()).withLabel(a.getName().toUpperCase())
+							.withVisible(true).withDataFeature(a).build());
+				});
+				tabular.getColumns().addAll(columns);
+				tables.add(tabular);
+			});
+			
+			useTransferObjectForm(form).withComponents(tables).build();
+		}
         
+        return form;
+	}
+	
+	public static TransferObjectForm setFormForTransferObjectType(TransferObjectType transferObject) {
+		TransferObjectForm form = createFormForTransferObjectType(transferObject);
+		transferObject.setForm(form);
         return form;
 	}
 
@@ -841,84 +606,31 @@ public class SimpleOrderModel {
 		}
 	}
 	
-	private static TransferObjectTable createTableForTransferObject(TransferObjectType transferObject, boolean masterDetail) {
-		ArrayList<DataColumn> columns = new ArrayList<>();
-		transferObject.getAllAttributes().stream().forEach(a -> {
-			columns.add(newDataColumnBuilder()
-					.withName(a.getName())
-					.withLabel(a.getName().toUpperCase())
-					.withVisible(true)
-					.withDataFeature(a)
-					.build());
-		});
+	private static TransferObjectTable createTableForTransferObjectType(TransferObjectType transferObject, boolean masterDetail) {
         TransferObjectTable table = newTransferObjectTableBuilder()
         		.withMasterDetail(masterDetail)
 				.withName(transferObject.getName())
 				.withLabel(transferObject.getName().toUpperCase())
-				.withColumns(columns)
 				.build();
-        transferObject.setTable(table);
-        
+		
+		if (!transferObject.getAllAttributes().isEmpty()) {
+			ArrayList<DataColumn> columns = new ArrayList<>();
+			transferObject.getAllAttributes().stream().forEach(a -> {
+				columns.add(newDataColumnBuilder().withName(a.getName()).withLabel(a.getName().toUpperCase())
+						.withVisible(true).withDataFeature(a).build());
+			});
+			useTransferObjectTable(table).withColumns(columns);
+		}
+		return table;
+	}
+	
+	public static TransferObjectTable setTableForTransferObjectType(TransferObjectType transferObject, boolean masterDetail) {
+		TransferObjectTable table = createTableForTransferObjectType(transferObject, masterDetail);
+		transferObject.setTable(table);
         return table;
 	}
 	
-	private static TransferObjectView getViewForTransferObjectType(TransferObjectType transferObject) {
-		ArrayList<DataField> dataFields = new ArrayList<>();
-		ArrayList<DataField> dataFields2 = new ArrayList<>();
-		ArrayList<TabularReferenceField> tables = new ArrayList<>();
-		ArrayList<OperationForm> operations = new ArrayList<>();
-		
-		transferObject.getAllAttributes().stream().forEach(a -> {
-			dataFields.add(newDataFieldBuilder()
-					.withName(a.getName())
-					.withLabel(a.getName().toUpperCase())
-					.withIconName(getIconName(a))
-					.withDataFeature(a)
-					.withCol(3)
-					.build());
-			dataFields2.add(newDataFieldBuilder()
-					.withName(a.getName())
-					.withLabel(a.getName().toUpperCase())
-					.withIconName(getIconName(a))
-					.withDataFeature(a)
-					.withCol(3)
-					.withStretch(Stretch.NONE)
-					.build());
-		});
-		
-		transferObject.getAllRelations().stream().forEach(r -> {
-			ArrayList<DataColumn> columns = new ArrayList<>();
-			
-			TabularReferenceField tabular = newTabularReferenceFieldBuilder()
-					.withName(r.getName())
-					.withLabel(r.getName().toUpperCase())
-					.withRelationFeature(r)
-					.withIconName(getIconName(((TransferObjectType)(r.getTarget())).getAttributes().get(0)))
-					.withCol(12)
-					.build();
-			TransferObjectType target = (TransferObjectType)(r.getTarget());
-			target.getAllAttributes().stream().forEach(a -> {
-				columns.add(newDataColumnBuilder()
-						.withName(a.getName())
-						.withLabel(a.getName().toUpperCase())
-						.withVisible(true)
-						.withDataFeature(a)
-						.build());
-			});
-			tabular.getColumns().addAll(columns);
-			tables.add(tabular);
-		});
-		
-		EsmUtils.getAllOperations(transferObject).stream().forEach(o -> {
-			operations.add(newOperationFormBuilder()
-					.withName(o.getName())
-					.withLabel(o.getName().toUpperCase())
-					.withCol(15)
-					.withStretch(Stretch.BOTH)
-					.withOperation(o.getName())
-					.build());
-		});
-		
+	private static TransferObjectView createViewForTransferObjectType(TransferObjectType transferObject) {
         TransferObjectView view = newTransferObjectViewBuilder()
 				.withName(transferObject.getName() + "View")
 				.withLabel(transferObject.getName() + "View")
@@ -926,21 +638,57 @@ public class SimpleOrderModel {
 				.withHorizontal(Horizontal.LEFT)
 				.withVertical(Vertical.TOP)
 				.withFrame(false)
-				.withComponents(newGroupBuilder().withName("datafieldsHorizontal")
-						.withRow(10).withCol(30).withComponents(dataFields2).withLayout(Layout.VERTICAL)
-						.withHorizontal(Horizontal.CENTER).withVertical(Vertical.SPACE_AROUND)
-						.withFrame(true).build())
-				.withComponents(dataFields)
-				.withComponents(tables)
-        		.withComponents(operations)
         		.build();
-        
-        return view;
+		
+		
+		if (!transferObject.getAllAttributes().isEmpty()) {
+			ArrayList<DataField> dataFields = new ArrayList<>();
+			transferObject.getAllAttributes().stream().forEach(a -> {
+				dataFields.add(newDataFieldBuilder().withName(a.getName()).withLabel(a.getName().toUpperCase())
+						.withIconName(getIconName(a)).withDataFeature(a).withCol(3).build());
+			});
+			useTransferObjectView(view).withComponents(dataFields).build();
+		}
+		if (!transferObject.getAllRelations().isEmpty()) {
+			ArrayList<TabularReferenceField> tables = new ArrayList<>();
+			transferObject.getAllRelations().stream().forEach(r -> {
+				ArrayList<DataColumn> columns = new ArrayList<>();
+
+				TabularReferenceField tabular = newTabularReferenceFieldBuilder().withName(r.getName())
+						.withLabel(r.getName().toUpperCase()).withRelationFeature(r)
+						.withCol(12).build();
+				TransferObjectType target = (TransferObjectType) (r.getTarget());
+				target.getAllAttributes().stream().forEach(a -> {
+					columns.add(newDataColumnBuilder().withName(a.getName()).withLabel(a.getName().toUpperCase())
+							.withVisible(true).withDataFeature(a).build());
+				});
+				tabular.getColumns().addAll(columns);
+				tables.add(tabular);
+			});
+			useTransferObjectView(view).withComponents(tables).build();
+		}
+		if (!EsmUtils.getAllOperations(transferObject).isEmpty()) {
+			ArrayList<OperationForm> operations = new ArrayList<>();
+			EsmUtils.getAllOperations(transferObject).stream().forEach(o -> {
+				operations.add(newOperationFormBuilder().withName(o.getName()).withLabel(o.getName().toUpperCase())
+						.withCol(15).withStretch(Stretch.BOTH).withOperation(o.getName()).build());
+			});
+			useTransferObjectView(view).withComponents(operations).build();
+		}
+		return view;
 	}
 	
-	private static TransferObjectView createViewForTransferObjectType(TransferObjectType transferObject) {
-		TransferObjectView view = getViewForTransferObjectType(transferObject);
+	public static TransferObjectView setViewForTransferObjectType(TransferObjectType transferObject) {
+		TransferObjectView view = createViewForTransferObjectType(transferObject);
         transferObject.setView(view);
         return view;
 	}
+	
+    public static void addUiElementsToTransferObjects(Model model) {
+    	model.getElements().stream().filter(e -> e instanceof TransferObjectType).forEach(t -> {
+    		setViewForTransferObjectType((TransferObjectType) t);
+    		setFormForTransferObjectType((TransferObjectType) t);
+    		setTableForTransferObjectType((TransferObjectType) t, false);
+    	});
+    }
 }

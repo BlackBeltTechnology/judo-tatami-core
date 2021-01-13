@@ -1,12 +1,10 @@
-import "../namespace/namespace.etl";
 import "../../../../operations/_importAll.eol";
 
 /*
 @greedy
 rule CreateNavigationItemForMenuItemAccess
     transform s : ESM!esm::ui::MenuItemAccess
-    to t : UI!ui::NavigationItem
-    extends CreateNamedElementFromNamedElement {
+    to t : UI!ui::NavigationItem {
 
         log.debug("CreateNavigationItemForAccessPointRelation: " + s.name);
 
@@ -26,8 +24,7 @@ rule CreateNavigationItemForMenuItemAccess
 @greedy
 rule CreateNavigationItemPageForMenuItemAccessView
     transform s : ESM!esm::ui::MenuItemAccess
-    to t : UI!ui::PageDefinition
-    extends CreateNamedElementFromNamedElement {
+    to t : UI!ui::PageDefinition {
         guard: s.access.target.view.isDefined()
         log.debug("CreateNavigationItemPageForAccessPointRelationForView: " + s.name);
 
@@ -50,8 +47,7 @@ rule CreateNavigationItemPageForMenuItemAccessView
 @greedy
 rule CreateNavigationItemPageForMenuItemAccessEdit
     transform s : ESM!esm::ui::MenuItemAccess
-    to t : UI!ui::PageDefinition
-    extends CreateNamedElementFromNamedElement {
+    to t : UI!ui::PageDefinition {
         guard: s.access.target.form.isDefined()
 
         log.debug("CreateNavigationItemPageForAccessPointRelationUpdateEdit: " + s.name);
@@ -75,8 +71,7 @@ rule CreateNavigationItemPageForMenuItemAccessEdit
 @greedy
 rule CreateNavigationItemPageForMenuItemAccessCreate
     transform s : ESM!esm::ui::MenuItemAccess
-    to t : UI!ui::PageDefinition
-    extends CreateNamedElementFromNamedElement {
+    to t : UI!ui::PageDefinition {
         guard: s.access.target.form.isDefined()
 
         log.debug("CreateNavigationItemPageForAccessPointRelationUpdateForm: " + s.name);
@@ -100,8 +95,7 @@ rule CreateNavigationItemPageForMenuItemAccessCreate
 @greedy
 rule CreateNavigationItemPageForMenuItemAccessTable
     transform s : ESM!esm::ui::MenuItemAccess
-    to t : UI!ui::PageDefinition
-    extends CreateNamedElementFromNamedElement {
+    to t : UI!ui::PageDefinition {
         guard: s.access.target.table.isDefined()
 
         log.debug("CreateNavigationItemPageForAccessPointRelationUpdateForm: " + s.name);
