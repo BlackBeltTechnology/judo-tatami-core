@@ -39,7 +39,11 @@ class {{ fqClass ap.name }}RepositoryStoreMapper {
         {{ variable class.name }}Store.{{ attribute.name }} = {{ className attribute.dataType.name }}.values[{{ variable class.name }}.{{ attribute.name }}.index];
     }
         {{ else }}
+            {{#if (isTimestampType attribute.dataType)}}
+    {{ variable class.name }}Store.{{ attribute.name }} = {{ variable class.name }}.{{ attribute.name }} != null ? {{ variable class.name }}.{{ attribute.name }}.toLocal() : null;
+            {{else}}
     {{ variable class.name }}Store.{{ attribute.name }} = {{ variable class.name }}.{{ attribute.name }};
+            {{/if}}
         {{/if}}
     {{/ each }}
     // Relations
