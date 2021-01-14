@@ -12,6 +12,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:openapi_dart_common/openapi.dart';
 import 'oauth.dart';
+import 'dart:async';
 import 'package:{{ modelPackage application.name }}/{{ path application.name }}/ui/routes/router.gr.dart' as router;
 import 'package:{{ modelPackage application.name }}/{{ path application.name }}/ui/drawer_items.dart';
 import 'package:{{ modelPackage application.name }}/{{ path application.name }}/ui/navigation_state.dart';
@@ -29,12 +30,18 @@ void main() {
 class {{ fqClass application.name }}Application extends StatelessWidget {
 
     @override
-    Widget build(BuildContext context) => MaterialApp(
-        title: '{{ modelName application.name }}',
-        theme: ThemeData.light().copyWith(
-        primaryColor: kPrimaryColor,
-        ),
-        home: {{ fqClass application.name }}ApplicationPage());
+    Widget build(BuildContext context) {
+        final navigation = locator<NavigationState>();
+        scheduleMicrotask(() => afterBuild(navigation)); // execute after main build methods are executed
+
+        return MaterialApp(
+            title: '{{ modelName application.name }}',
+            theme: ThemeData.light().copyWith(
+                primaryColor: kPrimaryColor,
+            ),
+            home: {{ fqClass application.name }}ApplicationPage()
+        );
+    }
 }
 
 class {{ fqClass application.name }}ApplicationPage extends StatefulWidget {
@@ -162,5 +169,30 @@ class _{{ fqClass application.name }}DrawerState extends State<{{ fqClass applic
                 ]),
             )
         );
+    }
+}
+
+void afterBuild(NavigationState navigation) {
+    if(Info.serverDown) {
+        navigation.open(router.Routes.{{ fqVariable application.name }}ErrorPage,
+            arguments: router.{{ fqClass application.name }}ErrorPageArguments(
+                icon: Icon(Icons.error_outline),
+                title: 'Server offline',
+                errorMessage: 'Server is unavailable.',
+            )
+        );
+        return;
+    }
+
+    if(Oauth.isAuthenticationRequired()) {
+        if (!Oauth.isLoggedIn()) {
+            navigation.open(router.Routes.{{ fqVariable application.name }}ErrorPage,
+                arguments: router.{{ fqClass application.name }}ErrorPageArguments(
+                    icon: Icon(Icons.login),
+                    title: 'Login required',
+                    errorMessage: 'Please login to continue.',
+                )
+            );
+        }
     }
 }
