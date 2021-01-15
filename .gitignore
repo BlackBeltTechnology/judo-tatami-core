@@ -58,3 +58,4 @@ wercker.env
 
 /**/*.orig
 .vscode
+.release
