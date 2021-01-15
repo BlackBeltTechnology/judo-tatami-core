@@ -70,13 +70,13 @@
         <judo-meta-liquibase-version>1.0.0.20210106_210719_fa99b46_develop</judo-meta-liquibase-version>
         <judo-meta-openapi-version>1.0.0.20210106_211329_9d4a7ba_develop</judo-meta-openapi-version>
         <judo-meta-ui-version>1.0.0.20210110_194428_39c7a21_develop</judo-meta-ui-version>
-        <judo-meta-keycloak-version>1.0.0.20201208_133623_c6e81d5_develop</judo-meta-keycloak-version>
+        <judo-meta-keycloak-version>1.0.0.20210115_095614_a12a35c_develop</judo-meta-keycloak-version>
         <judo-dao-api-version>1.0.2.20210108_170215_95b8892_develop</judo-dao-api-version>
         <judo-dispatcher-api-version>1.0.2.20201127_140200_d1428f4_develop</judo-dispatcher-api-version>
         <judo-script-codegen-version>1.1.0.20210112_155407_6efa025_develop</judo-script-codegen-version>
         <judo-operation-utils-version>1.1.0.20210110_194243_775b019_develop</judo-operation-utils-version>
 
-        <structured-map-proxy-version>1.0.5</structured-map-proxy-version>
+        <structured-map-proxy-version>1.0.6.20210115_095510_fc6895f_develop</structured-map-proxy-version>
 
 
         <!-- Xtend / Xcore -->
