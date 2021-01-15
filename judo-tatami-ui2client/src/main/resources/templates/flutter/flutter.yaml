@@ -325,6 +325,17 @@
   templateName: flutter/lib/ui/settings.dart.hbs
 
 # ========================================
+# error page
+# ========================================
+- overwriteExpression: true
+  factoryExpression: "{#application}"
+  pathExpression: >
+    'lib/' +
+    #path(#application.actor.name) +
+    '/ui/error_page.dart'
+  templateName: flutter/lib/ui/error_page.dart.hbs
+
+# ========================================
 # injector
 # ========================================
 - overwriteExpression: true
@@ -355,6 +366,12 @@
   factoryExpression: "{#application}"
   pathExpression: "'lib/' + #path(#application.actor.name) + '/utilities/constants.dart'"
   templateName: flutter/lib/utilities/constants.dart
+  copy: true
+
+- overwriteExpression: true
+  factoryExpression: "{#application}"
+  pathExpression: "'lib/' + #path(#application.actor.name) + '/utilities/info.dart'"
+  templateName: flutter/lib/utilities/info.dart
   copy: true
 
 - overwriteExpression: true

@@ -13,6 +13,7 @@ import 'package:openapi_dart_common/openapi.dart';
 import '{{ path application.name }}/injector/injector.dart';
 import '{{ path application.name }}/main.dart';
 import '{{ path application.name }}/oauth.dart';
+import '{{ path application.name }}/utilities/package.dart';
 
 void main() async {
     configureDependencies();
@@ -21,7 +22,14 @@ void main() async {
     // Call the meta data with no token refresh interceptor
     ApiClient _apiClient = ApiClient(basePath: "http://localhost:8181/api/{{ baseUrl application.name }}", apiClientDelegate: DioClientDelegate());
     locator.registerSingleton<ApiClient>(_apiClient);
-    await Oauth.loadClientMetaData();
+    try {
+        await Oauth.loadClientMetaData();
+        Info.serverDown = false;
+    } on ApiException catch (error){
+        if (error.code == 500 && error.message.contains('Connection')) {
+            Info.serverDown = true;
+        }
+    }
 
     if (Oauth.isAuthenticationRequired()) {
         locator.unregister(instance: _apiClient);

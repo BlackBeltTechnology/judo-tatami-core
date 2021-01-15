@@ -1,0 +1,60 @@
+{{log 'Error page generation for' (variable application.name) level='info'}}
+//////////////////////////////////////////////////////////////////////////////
+// G E N E R A T E D    C L A S S
+// ------------------------------
+// Factory expression: {{{ cleanup template.factoryExpression }}}
+// Path expression: {{{ cleanup template.pathExpression }}}
+// Overwrite: {{{ cleanup template.overwriteExpression }}}
+// Template name: {{ template.templateName }}
+// Application: {{ application.name }}
+
+import 'package:flutter/material.dart';
+import 'package:{{ modelPackage application.name }}/{{ path application.name }}/ui/scaffold.dart';
+
+class {{ fqClass application.name }}ErrorPage extends StatefulWidget {
+
+  final int errorCode;
+  final String errorMessage;
+  final String errorDescription;
+  final Icon icon;
+  final String title;
+
+
+  {{ fqClass application.name }}ErrorPage({this.errorCode, @required this.errorMessage, this.errorDescription, this.icon, this.title});
+
+  @override
+  _ErrorPageState createState() => _ErrorPageState();
+}
+
+class _ErrorPageState extends State<{{ fqClass application.name }}ErrorPage> {
+
+  @override
+  Widget build(BuildContext context) {
+    return {{ fqClass application.name }}Scaffold(
+      pageTitle: widget.title ?? 'Error',
+      body: CustomScrollView(
+          slivers: [
+            SliverFillRemaining(
+              hasScrollBody: false,
+              child: Center(
+                child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      if(widget.icon != null)
+                        widget.icon,
+                      if(widget.errorCode != null)
+                        Text(widget.errorCode.toString()),
+                      if (widget.errorMessage != null)
+                        Text(widget.errorMessage),
+                      if (widget.errorDescription != null)
+                        Text(widget.errorDescription),
+                    ]
+                ),
+              ),
+            )
+          ]
+      ),
+    );
+  }
+}
