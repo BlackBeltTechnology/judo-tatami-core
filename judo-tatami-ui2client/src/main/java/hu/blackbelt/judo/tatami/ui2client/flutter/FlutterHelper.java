@@ -42,6 +42,8 @@ public class FlutterHelper {
         context.registerFunction("multiplyCol", FlutterHelper.class.getDeclaredMethod("multiplyCol", new Class[]{Double.class}));
         context.registerFunction("validatableFlagNeed", FlutterHelper.class.getDeclaredMethod("validatableFlagNeed", new Class[]{RelationType.class}));
         context.registerFunction("isEnumType", FlutterHelper.class.getDeclaredMethod("isEnumType", new Class[]{DataType.class}));
+        context.registerFunction("isTimestampType", FlutterHelper.class.getDeclaredMethod("isTimestampType", new Class[]{DataType.class}));
+        context.registerFunction("isDateType", FlutterHelper.class.getDeclaredMethod("isDateType", new Class[]{DataType.class}));
         context.registerFunction("isInputWidgetMapNeed", FlutterHelper.class.getDeclaredMethod("isInputWidgetMapNeed", new Class[]{PageDefinition.class}));
         context.registerFunction("getInputWidgets", FlutterHelper.class.getDeclaredMethod("getInputWidgets", new Class[]{Container.class}));
     }
@@ -242,6 +244,14 @@ public class FlutterHelper {
 
     public static boolean isEnumType (DataType type) {
         return type instanceof EnumerationType;
+    }
+
+    public static boolean isTimestampType (DataType type) {
+        return type instanceof TimestampType;
+    }
+
+    public static boolean isDateType (DataType type) {
+        return type instanceof DateType;
     }
 
     public static boolean isInputWidgetMapNeed (PageDefinition page) {

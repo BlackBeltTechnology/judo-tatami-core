@@ -5,9 +5,21 @@ Text(
     target{{ dataName }}?.{{ column.attributeType.name }} != null ? target{{ dataName }}.{{ column.attributeType.name }}.toString().split('.').last : '< None >',
 ),
 {{ else }}
+{{#if (isTimestampType column.attributeType.dataType) }}
+Text(
+    target{{ dataName }}?.{{ column.attributeType.name }} != null ? DateFormat('yyyy-MM-dd HH:mm').format(target{{ dataName }}.{{ column.attributeType.name }}) : '< None >',
+),
+{{else}}
+{{#if (isDateType column.attributeType.dataType) }}
+Text(
+target{{ dataName }}?.{{ column.attributeType.name }} != null ? DateFormat('yyyy-MM-dd').format(target{{ dataName }}.{{ column.attributeType.name }}) : '< None >',
+),
+{{else}}
 Text(
     target{{ dataName }}?.{{ column.attributeType.name }} != null ? target{{ dataName }}.{{ column.attributeType.name }}.toString() : '< None >',
 ),
+{{/if}}
+{{/if}}
 {{/ if }}
 {{ else }}
 {{ log 'Formatted text generation for' (variable application.name) '-' (fqClass page.name)'page'(variable page.dataElement.target.name) attributeType.name level='debug' ~}}
