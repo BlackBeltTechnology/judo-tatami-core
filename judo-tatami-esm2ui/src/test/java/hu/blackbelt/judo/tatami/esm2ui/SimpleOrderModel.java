@@ -590,7 +590,7 @@ public class SimpleOrderModel {
         return form;
 	}
 
-	private static String getIconName(DataFeature a) {
+	public static String getIconName(DataFeature a) {
 		if (a.getDataType() instanceof DateType) {
 			return "calendar_today";
 		} else if (a.getDataType() instanceof TimestampType) {
