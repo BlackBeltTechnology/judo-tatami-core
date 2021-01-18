@@ -30,6 +30,12 @@ rule CreateActorTypeClaim
             t.binding = s.attribute.equivalent("CreateAttribute");
         } else if (s.attribute.binding.isDefined() and s.attribute.binding.eContainer.isKindOf(ESM!EntityType) and s.attribute.memberType == ESM!MemberType#STORED) {
             t.binding = s.attribute.equivalent("CreateTransferAttributeFromAttributeForDefaultTransferObjectType").binding;
+        } else if (s.attribute.eContainer.isKindOf(ESM!EntityType) and s.attribute.memberType == ESM!MemberType#DERIVED) {
+            t.binding = s.attribute.equivalent("CreateDataProperty");
+        } else if (s.attribute.eContainer.isTypeOf(ESM!TransferObjectType) and s.attribute.memberType == ESM!MemberType#DERIVED) {
+            t.binding = s.attribute.equivalent("CreateDataPropertyForTransferAttributeBinding");
+        } else if (s.attribute.memberType <> ESM!MemberType#TRANSIENT) {
+            log.error("Unsupported claim attribute: " + esmUtils.getNamespaceElementFQName(s.attribute.eContainer) + "." + s.attribute.name);
         }
 
         s.eContainer.getPSMEquivalent().attributes.add(t);
