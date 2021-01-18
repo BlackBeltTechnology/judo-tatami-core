@@ -502,28 +502,7 @@ public class SimpleOrderModel {
         setTableForTransferObjectType(order,true);        
 
         //Order View
-        TransferObjectView orderView = setViewForTransferObjectType(order);
-        
-        TabBar tab = newTabBarBuilder().withName("tabBar").withLabel("TabBar").withTabs(
-        		newGroupBuilder().withName("group").withComponents(
-        				newDataFieldBuilder().withName("orderDate").withLabel("orderDate").withIconName("calendar_today").withDataFeature(orderDate).build(),
-        				newDataFieldBuilder().withName("customer").withLabel("customer").withIconName("text_fields").withDataFeature(orderCustomer).build()
-        				)
-        			.withFrame(false)
-        			.build(),
-        		newGroupBuilder().withName("group2").withComponents(
-        				newDataFieldBuilder().withName("received").withLabel("received").withIconName("schedule").withDataFeature(orderReceived).build(),
-        				newOperationFormBuilder().withName("returnDamagedItems").withLabel("returnDamagedItems").withOperation("returnDamagedItems").build()
-        				)
-        			.withFrame(false)
-        			.build(),
-        		newGroupBuilder().withName("group3").withComponents(
-        				newOperationFormBuilder().withName("archive").withLabel("archive").withOperation("archive").build()
-        				)
-        			.withFrame(false)
-        			.build()
-        		).build();
-        orderView.getComponents().add(tab);
+        setViewForTransferObjectType(order);
             
         //International Order Form
         formForTest = internationalOrder.getForm();
