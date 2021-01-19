@@ -106,77 +106,22 @@ operation ESM!esm::ui::TabularReferenceField createButtonFromTabularReferenceFie
 
 	button.action = new UI!ui::NavigationToPageAction();
 	button.dataElement = dataElement;
-		
-	if (self.targetDefinedTabular) {
 
-		button.action.target = relation.mapTablePage(application, relation.target);
-		log.debug("Create button action target: " + button.action.target.name);			
-		return button;
-
-	} else {
-		
-		log.debug("Create page for button based on tabular reference field: " + self.name);
-		
-		var page : UI!ui::PageDefinition = new UI!ui::PageDefinition();
-		page.~application = application;
-		page.~originalRelation = relation;
-		page.dataElement = dataElement;
-		page.name = (dataElement.eContainer.name + "." + dataElement.name).anchor("TableForButton");
-	    page.label = self.getUiLabel();
-		
-		page.pageType = UI!ui::PageType#TABLE;
-
-		log.debug("Create page container for button based on tabular reference field: " + self.name);
-		var pageContainer = new UI!ui::PageContainer();
-		pageContainer.layoutType = application.layoutTypes.first;
-		pageContainer.name = "default";
-		pageContainer.direction = UI!Axis#VERTICAL;
-		pageContainer.col = applicationColumns.asReal();
-		page.containers.add(pageContainer);
-
-	    var flex = new UI!ui::Flex();
-		flex.name = self.name.anchor("Flex");
-		flex.direction = UI!Axis#VERTICAL;
-		flex.col = applicationColumns.asReal();
-		pageContainer.children.add(flex);
-
-		log.debug("Create table for button based on tabular reference field: " + self.name);
-		var table : UI!ui::Table = new UI!ui::Table();
-		table.name = self.name;	
-		self.~originalRelation = relation;
-		table.dataElement = dataElement;
-		
-		table.row = self.row.asReal();
-		
-		table.col = self.col.asReal();
-		table.label = self.getUiLabel();
-	    table.icon = self.iconName;
-		
-		for (column in self.columns) {
-			table.columns.add(column.map(application));
-		}
-		
-		flex.children.add(table);
-		application.pages.add(page);
-		
-		button.action.target = page;
-		
-		return button;
-	}
-	
+	button.action.target = relation.mapTablePage(application, relation.target);
+	log.debug("Create button action target: " + button.action.target.name);			
+	return button;
 }
 
 operation ESM!esm::ui::TabularReferenceField map(application : UI!ui::Application) : UI!ui::VisualElement {
 	var relation : ESM!esm::structure::ReferenceTypedElement = self.relationFeature.getMember();
 	
-	if (relation.isAssociation() and 
-		((self.targetDefinedTabular and relation.target.isTableDefined()) or
-			(not self.targetDefinedTabular and self.columns.size() > 0))) {
+	if (self.isNavigation() and relation.target.isTableDefined()) {
 		
 		return self.createButtonFromTabularReferenceField(application);
 	
-	} else if ((self.targetDefinedTabular and relation.target.isTableDefined()) or
-			(not self.targetDefinedTabular and self.columns.size() > 0)) {
+	} else if (not self.isNavigation() and
+	       ((self.targetDefinedTabular and relation.target.isTableDefined()) or
+		   (not self.targetDefinedTabular and self.columns.size() > 0))) {
 			
 		return self.createTableFromTabularReferenceField(application);
 		
