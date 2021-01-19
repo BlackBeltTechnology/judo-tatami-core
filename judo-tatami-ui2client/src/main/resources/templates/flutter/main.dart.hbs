@@ -38,7 +38,9 @@ void main() async {
         _apiClient = ApiClient(basePath: "http://localhost:8181/api/{{ baseUrl application.name }}", apiClientDelegate: Oauth.getDioDelegate());
         locator.registerSingleton<ApiClient>(_apiClient);
 
-        Oauth.loginAuthorizeAndExchangeCode();
+        if (!isNavigateToSettingsPage) {
+            Oauth.loginAuthorizeAndExchangeCode();
+        }
 
         var token = await Oauth.processLogin();
         await Oauth.addTokenToApiClient(token);
