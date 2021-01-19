@@ -306,11 +306,6 @@ public class Esm2UiVisualElementTest {
                 .build();
         useEntityType(e2).withMappedEntity(e2).build();
         
-        OneWayRelationMember composition = newOneWayRelationMemberBuilder().withName("e2s").withMemberType(MemberType.STORED)
-        		.withRelationKind(RelationKind.COMPOSITION).withTargetDefinedCRUD(true).withTarget(e2)
-        		.withLower(0).withUpper(-1).build();
-        useEntityType(e1).withRelations(composition).build();
-        
         Access access1 = newAccessBuilder().withName("e1")
         		.withTarget(e1)
         		.withLower(0)
@@ -318,52 +313,137 @@ public class Esm2UiVisualElementTest {
         		.withCreateable(true)
         		.withTargetDefinedCRUD(false)
         		.build();
+        
+        Access access2 = newAccessBuilder().withName("e2")
+        		.withTarget(e2)
+        		.withLower(0)
+        		.withUpper(-1)
+        		.withCreateable(true)
+        		.withTargetDefinedCRUD(false)
+        		.build();
 
-        useActorType(actor).withAccesses(access1).build();
+        useActorType(actor).withAccesses(access1, access2).build();
         
         final Model model = newModelBuilder().withName(MODEL_NAME)
                 .withElements(actor, e1, numeric, password, string, e2).build();
-        
-		TabularReferenceField tabular = newTabularReferenceFieldBuilder().withName(composition.getName())
-				.withLabel(composition.getName().toUpperCase()).withRelationFeature(composition).withCol(12)
-				.withTargetDefinedTabular(false)
-				.withColumns(newDataColumnBuilder().withName(stringAttribute2.getName()).withLabel(stringAttribute2.getName().toUpperCase())
-					.withVisible(true).withDataFeature(stringAttribute2).build())
-				.build();
 
 		DataField dataField1 = newDataFieldBuilder().withName(stringAttribute.getName()).withLabel(stringAttribute.getName().toUpperCase())
-					.withIconName(SimpleOrderModel.getIconName(stringAttribute)).withDataFeature(stringAttribute).withCol(3).build();
+					.withIconName(SimpleOrderModel.getIconName(stringAttribute)).withDataFeature(stringAttribute).withCol(3).withStretch(Stretch.BOTH).build();
 		DataField dataField2 = newDataFieldBuilder().withName(numericAttribute.getName()).withLabel(numericAttribute.getName().toUpperCase())
-				.withIconName(SimpleOrderModel.getIconName(numericAttribute)).withDataFeature(numericAttribute).withCol(3).build();
+				.withIconName(SimpleOrderModel.getIconName(numericAttribute)).withDataFeature(numericAttribute).withCol(3).withStretch(Stretch.BOTH).build();
 		DataField dataField3 = newDataFieldBuilder().withName(passwordAttribute.getName()).withLabel(passwordAttribute.getName().toUpperCase())
-				.withIconName(SimpleOrderModel.getIconName(passwordAttribute)).withDataFeature(passwordAttribute).withCol(3).build();
+				.withIconName(SimpleOrderModel.getIconName(passwordAttribute)).withDataFeature(passwordAttribute).withCol(3).withStretch(Stretch.BOTH).build();
 		
+		//stretch NONE, HORIZONTAL, VERTICAL, BOTH
+		//fit LOOSE, TIGHT
         Group group1 = newGroupBuilder().withName("group1").withLabel("G1").withCol(4).withRow(6)
         		.withFrame(true)
-        		.withStretch(Stretch.BOTH)
+        		.withStretch(Stretch.NONE)
         		.withFit(Fit.LOOSE)
-        		.withLayout(Layout.HORIZONTAL)
-        		.withHorizontal(Horizontal.CENTER)
-        		.withVertical(Vertical.CENTER)
-        		.withComponents(dataField1, dataField2)
+        		.withComponents(newPlaceholderBuilder().withName("ph").build())
         		.build();
         
         Group group2 = newGroupBuilder().withName("group2").withLabel("G2").withCol(8).withRow(2)
         		.withFrame(false)
         		.withStretch(Stretch.HORIZONTAL)
+        		.withFit(Fit.LOOSE)
+        		.withComponents(newPlaceholderBuilder().withName("ph").build())
+        		.build();
+        
+        Group group3 = newGroupBuilder().withName("group3").withLabel("G3").withCol(4).withRow(6)
+        		.withFrame(true)
+        		.withStretch(Stretch.VERTICAL)
         		.withFit(Fit.TIGHT)
+        		.withComponents(newPlaceholderBuilder().withName("ph").build())
+        		.build();
+        
+        Group group4 = newGroupBuilder().withName("group4").withLabel("G4").withCol(8).withRow(2)
+        		.withFrame(false)
+        		.withStretch(Stretch.BOTH)
+        		.withFit(Fit.TIGHT)
+        		.withComponents(newPlaceholderBuilder().withName("ph").build())
+        		.build();
+        
+        //direction HORIZONTAL / VERTICAL / DEFAULT (gets the root's direction, which is horizontal if default)
+        
+        Group group5 = newGroupBuilder().withName("group5").withLabel("G5").withCol(4).withRow(6)
+        		.withFrame(true)
+        		.withLayout(Layout.HORIZONTAL)
+        		.build();
+        
+        Group group6 = newGroupBuilder().withName("group6").withLabel("G6").withCol(8).withRow(2)
+        		.withFrame(false)
         		.withLayout(Layout.VERTICAL)
-        		.withHorizontal(Horizontal.RIGHT)
-        		.withComponents(dataField3, tabular)
+        		.build();
+        
+        Group group7 = newGroupBuilder().withName("group7").withLabel("G7").withCol(8).withRow(2)
+        		.withFrame(false)
+        		.withLayout(Layout.DEFAULT)
+        		.build();
+        
+        Group group8 = newGroupBuilder().withName("group8").withLabel("G8").withCol(8).withRow(2)
+        		.withFrame(false)
+        		.withLayout(Layout.VERTICAL)
+        		.withComponents(newGroupBuilder().withName("group").withLayout(Layout.DEFAULT).build())
+        		.build();
+        
+        TransferObjectView view2 = newTransferObjectViewBuilder().withName("VIEW").withLabel(e2.getName())
+        		.withComponents(group1, group2, group3, group4).build();
+        TransferObjectForm form2 = newTransferObjectFormBuilder().withName("FORM").withLabel(e2.getName())
+        		.withComponents(group5, group6, group7, group8).build();
+        
+        useEntityType(e2).withForm(form2).withView(view2).build();
+        
+        //justify  START, END, SPACE_A, SPACE-B, CENTER
+        //align  START, END, STRETCH, CENTER
+        
+        Group group9 = newGroupBuilder().withName("group9").withLabel("G9").withCol(4).withRow(6)
+        		.withFrame(true)
+        		.withLayout(Layout.HORIZONTAL)
+        		.withHorizontal(Horizontal.LEFT)
         		.withVertical(Vertical.TOP)
         		.build();
         
-        TransferObjectView view = newTransferObjectViewBuilder().withName("VIEW").withLabel(e1.getName())
-        		.withComponents(group1).build();
-        TransferObjectForm form = newTransferObjectFormBuilder().withName("FORM").withLabel(e1.getName())
-        		.withComponents(group2).build();
+        Group group10 = newGroupBuilder().withName("group10").withLabel("G10").withCol(8).withRow(2)
+        		.withFrame(false)
+        		.withLayout(Layout.VERTICAL)
+        		.withHorizontal(Horizontal.RIGHT)
+        		.withVertical(Vertical.BOTTOM)
+        		.build();
         
-        useEntityType(e1).withForm(form).withView(view).build();
+        Group group11 = newGroupBuilder().withName("group11").withLabel("G11").withCol(8).withRow(2)
+        		.withFrame(false)
+        		.withLayout(Layout.DEFAULT)
+        		.withHorizontal(Horizontal.CENTER)
+        		.withVertical(Vertical.CENTER)
+        		.build();
+        
+        Group group12 = newGroupBuilder().withName("group12").withLabel("G12").withCol(8).withRow(2)
+        		.withFrame(false)
+        		.withLayout(Layout.VERTICAL)
+        		.withHorizontal(Horizontal.CENTER)
+        		.withVertical(Vertical.CENTER)
+        		.withComponents(dataField1, dataField2, dataField3)
+        		.build();
+        
+        Group group13 = newGroupBuilder().withName("group13").withLabel("G13").withCol(8).withRow(2)
+        		.withFrame(false)
+        		.withLayout(Layout.VERTICAL)
+        		.withHorizontal(Horizontal.SPACE_AROUND)
+        		.withVertical(Vertical.SPACE_AROUND)
+        		.build();
+        
+        Group group14 = newGroupBuilder().withName("group14").withLabel("G14").withCol(8).withRow(2)
+        		.withFrame(false)
+        		.withLayout(Layout.HORIZONTAL)
+        		.withHorizontal(Horizontal.SPACE_BETWEEN)
+        		.withVertical(Vertical.SPACE_BETWEEN)
+        		.build();
+        
+        TransferObjectView view1 = newTransferObjectViewBuilder().withName("VIEW").withLabel(e1.getName())
+        		.withComponents(group9, group10, group11, group12, group13, group14).build();
+        
+        useEntityType(e1).withView(view1).build();
         
         esmModel.addContent(model);
         
@@ -378,40 +458,136 @@ public class Esm2UiVisualElementTest {
         
         final Optional<PageContainer> defaultContainer1 = e1ViewPage.get().getContainers().stream().filter(c -> c.getName().equals("default")).findAny();
         assertTrue(defaultContainer1.isPresent());
-        final Optional<VisualElement> flexFromView = defaultContainer1.get().getChildren().stream().filter(c -> c instanceof Flex && c.getName().equals(view.getName())).findAny();
-        assertTrue(flexFromView.isPresent());
-        assertEquals(1, ((Flex) flexFromView.get()).getChildren().size());
-        assertEquals(group1.getName(), ((Flex) flexFromView.get()).getChildren().get(0).getName());
-        assertTrue(((Flex) flexFromView.get()).getChildren().get(0) instanceof Flex);
-        Flex group1Flex = (Flex)((Flex) flexFromView.get()).getChildren().get(0);
-        assertEquals(2, group1Flex.getChildren().size());
-        assertEquals(4d, group1Flex.getCol());
-        assertEquals(6d, group1Flex.getRow());
-        assertEquals("G 1", group1Flex.getLabel());
-        assertEquals(hu.blackbelt.judo.meta.ui.Fit.LOOSE, group1Flex.getFit());
-        assertEquals(hu.blackbelt.judo.meta.ui.Axis.HORIZONTAL, group1Flex.getDirection());
-        assertEquals(hu.blackbelt.judo.meta.ui.MainAxisAlignment.CENTER, group1Flex.getMainAxisAlignment());
-        assertEquals(hu.blackbelt.judo.meta.ui.CrossAxisAlignment.CENTER, group1Flex.getCrossAxisAlignment());
+        final Optional<VisualElement> flexFromView1 = defaultContainer1.get().getChildren().stream().filter(c -> c instanceof Flex && c.getName().equals(view1.getName())).findAny();
+        assertTrue(flexFromView1.isPresent());
+        assertEquals(6, ((Flex) flexFromView1.get()).getChildren().size());
+        Optional<Flex> uiGroup9 = ((Flex) flexFromView1.get()).getChildren().stream().filter(c -> c instanceof Flex && c.getName().equals(group9.getName())).map(c -> (Flex)c).findAny();
+        assertTrue(uiGroup9.isPresent());
+        assertTrue(uiGroup9.get().getChildren().isEmpty());
+        assertEquals(4d, uiGroup9.get().getCol());
+        assertEquals(6d, uiGroup9.get().getRow());
+        assertEquals("G 9", uiGroup9.get().getLabel());
+        assertEquals(hu.blackbelt.judo.meta.ui.Fit.LOOSE, uiGroup9.get().getFit());
+        assertEquals(hu.blackbelt.judo.meta.ui.Axis.HORIZONTAL, uiGroup9.get().getDirection());
+        assertEquals(hu.blackbelt.judo.meta.ui.MainAxisAlignment.START, uiGroup9.get().getMainAxisAlignment());
+        assertEquals(hu.blackbelt.judo.meta.ui.CrossAxisAlignment.START, uiGroup9.get().getCrossAxisAlignment());
         
-        final Optional<PageDefinition> e1CreatePage = application.get().getPages().stream().filter(p -> p.getPageType().equals(PageType.CREATE) && p.getDataElement().getName().equals(access1.getName())).findAny();
-        assertTrue(e1CreatePage.isPresent());
+        Optional<Flex> uiGroup10 = ((Flex) flexFromView1.get()).getChildren().stream().filter(c -> c instanceof Flex && c.getName().equals(group10.getName())).map(c -> (Flex)c).findAny();
+        assertTrue(uiGroup10.isPresent());
+        assertTrue(uiGroup10.get().getChildren().isEmpty());
+        assertEquals(8d, uiGroup10.get().getCol());
+        assertEquals(2d, uiGroup10.get().getRow());
+        assertEquals("G 10", uiGroup10.get().getLabel());
+        assertEquals(hu.blackbelt.judo.meta.ui.Fit.LOOSE, uiGroup10.get().getFit());
+        assertEquals(hu.blackbelt.judo.meta.ui.Axis.VERTICAL, uiGroup10.get().getDirection());
+        assertEquals(hu.blackbelt.judo.meta.ui.MainAxisAlignment.END, uiGroup10.get().getMainAxisAlignment());
+        assertEquals(hu.blackbelt.judo.meta.ui.CrossAxisAlignment.END, uiGroup10.get().getCrossAxisAlignment());
         
-        final Optional<PageContainer> defaultContainer2 = e1CreatePage.get().getContainers().stream().filter(c -> c.getName().equals("default")).findAny();
+        Optional<Flex> uiGroup11 = ((Flex) flexFromView1.get()).getChildren().stream().filter(c -> c instanceof Flex && c.getName().equals(group11.getName())).map(c -> (Flex)c).findAny();
+        assertTrue(uiGroup11.isPresent());
+        assertTrue(uiGroup11.get().getChildren().isEmpty());
+        assertEquals(8d, uiGroup11.get().getCol());
+        assertEquals(2d, uiGroup11.get().getRow());
+        assertEquals("G 11", uiGroup11.get().getLabel());
+        assertEquals(hu.blackbelt.judo.meta.ui.Fit.LOOSE, uiGroup11.get().getFit());
+        assertEquals(hu.blackbelt.judo.meta.ui.Axis.HORIZONTAL, uiGroup11.get().getDirection());
+        assertEquals(hu.blackbelt.judo.meta.ui.MainAxisAlignment.CENTER, uiGroup11.get().getMainAxisAlignment());
+        assertEquals(hu.blackbelt.judo.meta.ui.CrossAxisAlignment.CENTER, uiGroup11.get().getCrossAxisAlignment());
+        
+        Optional<Flex> uiGroup12 = ((Flex) flexFromView1.get()).getChildren().stream().filter(c -> c instanceof Flex && c.getName().equals(group12.getName())).map(c -> (Flex)c).findAny();
+        assertTrue(uiGroup12.isPresent());
+        assertEquals(3, uiGroup12.get().getChildren().size());
+        assertEquals(8d, uiGroup12.get().getCol());
+        assertEquals(2d, uiGroup12.get().getRow());
+        assertEquals("G 12", uiGroup12.get().getLabel());
+        assertEquals(hu.blackbelt.judo.meta.ui.Fit.LOOSE, uiGroup12.get().getFit());
+        assertEquals(hu.blackbelt.judo.meta.ui.Axis.VERTICAL, uiGroup12.get().getDirection());
+        assertEquals(hu.blackbelt.judo.meta.ui.MainAxisAlignment.CENTER, uiGroup12.get().getMainAxisAlignment());
+        assertEquals(hu.blackbelt.judo.meta.ui.CrossAxisAlignment.STRETCH, uiGroup12.get().getCrossAxisAlignment());
+        
+        Optional<Flex> uiGroup13 = ((Flex) flexFromView1.get()).getChildren().stream().filter(c -> c instanceof Flex && c.getName().equals(group13.getName())).map(c -> (Flex)c).findAny();
+        assertTrue(uiGroup13.isPresent());
+        assertTrue(uiGroup13.get().getChildren().isEmpty());
+        assertEquals(8d, uiGroup13.get().getCol());
+        assertEquals(2d, uiGroup13.get().getRow());
+        assertEquals("G 13", uiGroup13.get().getLabel());
+        assertEquals(hu.blackbelt.judo.meta.ui.Fit.LOOSE, uiGroup13.get().getFit());
+        assertEquals(hu.blackbelt.judo.meta.ui.Axis.VERTICAL, uiGroup13.get().getDirection());
+        assertEquals(hu.blackbelt.judo.meta.ui.MainAxisAlignment.SPACEAROUND, uiGroup13.get().getMainAxisAlignment());
+        assertEquals(hu.blackbelt.judo.meta.ui.CrossAxisAlignment.CENTER, uiGroup13.get().getCrossAxisAlignment());
+        
+        Optional<Flex> uiGroup14 = ((Flex) flexFromView1.get()).getChildren().stream().filter(c -> c instanceof Flex && c.getName().equals(group14.getName())).map(c -> (Flex)c).findAny();
+        assertTrue(uiGroup14.isPresent());
+        assertTrue(uiGroup14.get().getChildren().isEmpty());
+        assertEquals(8d, uiGroup14.get().getCol());
+        assertEquals(2d, uiGroup14.get().getRow());
+        assertEquals("G 14", uiGroup14.get().getLabel());
+        assertEquals(hu.blackbelt.judo.meta.ui.Fit.LOOSE, uiGroup14.get().getFit());
+        assertEquals(hu.blackbelt.judo.meta.ui.Axis.HORIZONTAL, uiGroup14.get().getDirection());
+        assertEquals(hu.blackbelt.judo.meta.ui.MainAxisAlignment.SPACEBETWEEN, uiGroup14.get().getMainAxisAlignment());
+        assertEquals(hu.blackbelt.judo.meta.ui.CrossAxisAlignment.CENTER, uiGroup14.get().getCrossAxisAlignment());
+        
+        final Optional<PageDefinition> e2ViewPage = application.get().getPages().stream().filter(p -> p.getPageType().equals(PageType.VIEW) && p.getDataElement().getName().equals(access2.getName())).findAny();
+        assertTrue(e2ViewPage.isPresent());
+        final Optional<PageContainer> defaultContainer2 = e2ViewPage.get().getContainers().stream().filter(c -> c.getName().equals("default")).findAny();
         assertTrue(defaultContainer2.isPresent());
-        final Optional<VisualElement> flexFromForm = defaultContainer2.get().getChildren().stream().filter(c -> c instanceof Flex && c.getName().equals(form.getName())).findAny();
+        final Optional<VisualElement> flexFromView2 = defaultContainer2.get().getChildren().stream().filter(c -> c instanceof Flex && c.getName().equals(view2.getName())).findAny();
+        assertTrue(flexFromView2.isPresent());
+        assertEquals(4, ((Flex) flexFromView2.get()).getChildren().size());
+        
+        Optional<Flex> uiGroup1 = ((Flex) flexFromView2.get()).getChildren().stream().filter(c -> c instanceof Flex && c.getName().equals(group1.getName())).map(c -> (Flex)c).findAny();
+        assertTrue(uiGroup1.isPresent());
+        assertEquals(1, uiGroup1.get().getChildren().size());
+        assertEquals(hu.blackbelt.judo.meta.ui.Fit.LOOSE, uiGroup1.get().getFit());
+        assertEquals(hu.blackbelt.judo.meta.ui.Stretch.NONE, uiGroup1.get().getStretch());
+        
+        Optional<Flex> uiGroup2 = ((Flex) flexFromView2.get()).getChildren().stream().filter(c -> c instanceof Flex && c.getName().equals(group2.getName())).map(c -> (Flex)c).findAny();
+        assertTrue(uiGroup2.isPresent());
+        assertEquals(1, uiGroup2.get().getChildren().size());
+        assertEquals(hu.blackbelt.judo.meta.ui.Fit.LOOSE, uiGroup2.get().getFit());
+        assertEquals(hu.blackbelt.judo.meta.ui.Stretch.HORIZONTAL, uiGroup2.get().getStretch());
+        
+        Optional<Flex> uiGroup3 = ((Flex) flexFromView2.get()).getChildren().stream().filter(c -> c instanceof Flex && c.getName().equals(group3.getName())).map(c -> (Flex)c).findAny();
+        assertTrue(uiGroup3.isPresent());
+        assertEquals(1, uiGroup3.get().getChildren().size());
+        assertEquals(hu.blackbelt.judo.meta.ui.Fit.TIGHT, uiGroup3.get().getFit());
+        assertEquals(hu.blackbelt.judo.meta.ui.Stretch.VERTICAL, uiGroup3.get().getStretch());
+        
+        Optional<Flex> uiGroup4 = ((Flex) flexFromView2.get()).getChildren().stream().filter(c -> c instanceof Flex && c.getName().equals(group4.getName())).map(c -> (Flex)c).findAny();
+        assertTrue(uiGroup4.isPresent());
+        assertEquals(1, uiGroup4.get().getChildren().size());
+        assertEquals(hu.blackbelt.judo.meta.ui.Fit.TIGHT, uiGroup4.get().getFit());
+        assertEquals(hu.blackbelt.judo.meta.ui.Stretch.BOTH, uiGroup4.get().getStretch());
+
+        
+        final Optional<PageDefinition> e2CreatePage = application.get().getPages().stream().filter(p -> p.getPageType().equals(PageType.CREATE) && p.getDataElement().getName().equals(access2.getName())).findAny();
+        assertTrue(e2CreatePage.isPresent());
+        final Optional<PageContainer> defaultContainer3 = e2CreatePage.get().getContainers().stream().filter(c -> c.getName().equals("default")).findAny();
+        assertTrue(defaultContainer3.isPresent());
+        final Optional<VisualElement> flexFromForm = defaultContainer3.get().getChildren().stream().filter(c -> c instanceof Flex && c.getName().equals(form2.getName())).findAny();
         assertTrue(flexFromForm.isPresent());
-        assertEquals(1, ((Flex) flexFromForm.get()).getChildren().size());
-        assertEquals(group2.getName(), ((Flex) flexFromForm.get()).getChildren().get(0).getName());
-        assertTrue(((Flex) flexFromForm.get()).getChildren().get(0) instanceof Flex);
-        Flex group2Flex = (Flex)((Flex) flexFromForm.get()).getChildren().get(0);
-        assertEquals(2, group2Flex.getChildren().size());
-        assertEquals(8d, group2Flex.getCol());
-        assertEquals(2d, group2Flex.getRow());
-        assertEquals("G 2", group2Flex.getLabel());
-        assertEquals(hu.blackbelt.judo.meta.ui.Fit.TIGHT, group2Flex.getFit());
-        assertEquals(hu.blackbelt.judo.meta.ui.Axis.VERTICAL, group2Flex.getDirection());
-        assertEquals(hu.blackbelt.judo.meta.ui.MainAxisAlignment.START, group2Flex.getMainAxisAlignment());
-        assertEquals(hu.blackbelt.judo.meta.ui.CrossAxisAlignment.END, group2Flex.getCrossAxisAlignment());
+        assertEquals(4, ((Flex) flexFromForm.get()).getChildren().size());
+        
+        Optional<Flex> uiGroup5 = ((Flex) flexFromForm.get()).getChildren().stream().filter(c -> c instanceof Flex && c.getName().equals(group5.getName())).map(c -> (Flex)c).findAny();
+        assertTrue(uiGroup5.isPresent());
+        assertTrue(uiGroup5.get().getChildren().isEmpty());
+        assertEquals(hu.blackbelt.judo.meta.ui.Axis.HORIZONTAL, uiGroup5.get().getDirection());
+        
+        Optional<Flex> uiGroup6 = ((Flex) flexFromForm.get()).getChildren().stream().filter(c -> c instanceof Flex && c.getName().equals(group6.getName())).map(c -> (Flex)c).findAny();
+        assertTrue(uiGroup6.isPresent());
+        assertTrue(uiGroup6.get().getChildren().isEmpty());
+        assertEquals(hu.blackbelt.judo.meta.ui.Axis.VERTICAL, uiGroup6.get().getDirection());
+        
+        Optional<Flex> uiGroup7 = ((Flex) flexFromForm.get()).getChildren().stream().filter(c -> c instanceof Flex && c.getName().equals(group7.getName())).map(c -> (Flex)c).findAny();
+        assertTrue(uiGroup7.isPresent());
+        assertTrue(uiGroup7.get().getChildren().isEmpty());
+        assertEquals(hu.blackbelt.judo.meta.ui.Axis.HORIZONTAL, uiGroup7.get().getDirection());
+        
+        Optional<Flex> uiGroup8 = ((Flex) flexFromForm.get()).getChildren().stream().filter(c -> c instanceof Flex && c.getName().equals(group8.getName())).map(c -> (Flex)c).findAny();
+        assertTrue(uiGroup8.isPresent());
+        assertEquals(1, uiGroup8.get().getChildren().size());
+        assertEquals(hu.blackbelt.judo.meta.ui.Axis.VERTICAL, uiGroup8.get().getDirection());
+        assertEquals(hu.blackbelt.judo.meta.ui.Axis.VERTICAL, ((Flex) uiGroup8.get().getChildren().get(0)).getDirection());
     }
     
     @Test
