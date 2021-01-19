@@ -32,6 +32,8 @@ import static hu.blackbelt.judo.meta.ui.runtime.UiModel.SaveArguments.uiSaveArgu
 import static hu.blackbelt.judo.tatami.esm2ui.Esm2Ui.calculateEsm2UiTransformationScriptURI;
 import static hu.blackbelt.judo.tatami.esm2ui.Esm2Ui.executeEsm2UiTransformation;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
@@ -83,6 +85,7 @@ import hu.blackbelt.judo.meta.esm.ui.Layout;
 import hu.blackbelt.judo.meta.esm.ui.OperationForm;
 import hu.blackbelt.judo.meta.esm.ui.Placeholder;
 import hu.blackbelt.judo.meta.esm.ui.Stretch;
+import hu.blackbelt.judo.meta.esm.ui.TabBar;
 import hu.blackbelt.judo.meta.esm.ui.TabularReferenceField;
 import hu.blackbelt.judo.meta.esm.ui.TextField;
 import hu.blackbelt.judo.meta.esm.ui.TextWidget;
@@ -110,6 +113,7 @@ import hu.blackbelt.judo.meta.ui.PasswordInput;
 import hu.blackbelt.judo.meta.ui.SaveAction;
 import hu.blackbelt.judo.meta.ui.Spacer;
 import hu.blackbelt.judo.meta.ui.Switch;
+import hu.blackbelt.judo.meta.ui.TabController;
 import hu.blackbelt.judo.meta.ui.Table;
 import hu.blackbelt.judo.meta.ui.Text;
 import hu.blackbelt.judo.meta.ui.TextArea;
@@ -1074,6 +1078,153 @@ public class Esm2UiVisualElementTest {
         assertEquals(2d, uiText.get().getRow());
         assertEquals(hu.blackbelt.judo.meta.ui.Fit.LOOSE, uiText.get().getFit());
         assertEquals(hu.blackbelt.judo.meta.ui.Stretch.HORIZONTAL, uiText.get().getStretch());
+    }
+    
+    @Test 
+    void testCreateTabBar() throws Exception {
+        testName = "createTabBar";
+
+        final String MODEL_NAME = "Model";
+        final String ENTITY_TYPE_NAME_1 = "E1";
+        final String ACTOR_TYPE_NAME = "Actor";
+        
+        PasswordType password = newPasswordTypeBuilder().withName("password").build();
+        StringType string = newStringTypeBuilder().withName("string")
+        		.withMaxLength(256)
+        		.withRegExp(".*")
+        		.build();
+        NumericType numeric = newNumericTypeBuilder().withName("numeric")
+        		.withPrecision(2)
+        		.withScale(1)
+        		.build();
+        
+        DataMember passwordAttribute = newDataMemberBuilder().withName("password").withDataType(password)
+        		.withMemberType(MemberType.STORED).build();
+        DataMember stringAttribute1 = newDataMemberBuilder().withName("string1").withDataType(string)
+        		.withMemberType(MemberType.STORED).build();
+        DataMember stringAttribute2 = newDataMemberBuilder().withName("string2").withDataType(string)
+        		.withMemberType(MemberType.STORED).build();
+        DataMember stringAttribute3 = newDataMemberBuilder().withName("string3").withDataType(string)
+        		.withMemberType(MemberType.STORED).build();
+        DataMember stringAttribute4 = newDataMemberBuilder().withName("string4").withDataType(string)
+        		.withMemberType(MemberType.STORED).build();
+        DataMember numericAttribute = newDataMemberBuilder().withName("numeric").withDataType(numeric)
+        		.withMemberType(MemberType.STORED).build();
+        
+        ActorType actor = newActorTypeBuilder()
+                .withName(ACTOR_TYPE_NAME)
+                .withRealm("sandbox")
+                .build();
+        
+        final EntityType e1 = newEntityTypeBuilder()
+                .withName(ENTITY_TYPE_NAME_1)
+                .withCreateable(false)
+                .withUpdateable(false)
+                .withDeleteable(false)
+                .withAttributes(passwordAttribute, stringAttribute1, stringAttribute2, stringAttribute3, stringAttribute4, numericAttribute)
+                .build();
+        e1.setMappedEntity(e1);
+        
+        Access access1 = newAccessBuilder().withName("e1")
+        		.withTarget(e1)
+        		.withLower(0)
+        		.withUpper(-1)
+        		.withCreateable(true)
+        		.withTargetDefinedCRUD(false)
+        		.build();
+
+        useActorType(actor).withAccesses(access1).build();
+        
+        DataField dataFieldTextInput = newDataFieldBuilder().withName("TextInput").withLabel(stringAttribute1.getName().toUpperCase())
+				.withIconName(SimpleOrderModel.getIconName(stringAttribute1)).withDataFeature(stringAttribute1).withTextWidget(TextWidget.INPUT)
+				.withTextMultiLine(false).withCol(2).withRow(4)
+				.withStretch(Stretch.NONE).withFit(Fit.LOOSE).build();
+        DataField dataFieldText = newDataFieldBuilder().withName("Text").withLabel(stringAttribute2.getName().toUpperCase())
+				.withIconName(SimpleOrderModel.getIconName(stringAttribute2)).withDataFeature(stringAttribute2).withTextWidget(TextWidget.TEXT)
+				.withTextMultiLine(false).withCol(2).withRow(4)
+				.withStretch(Stretch.HORIZONTAL).withFit(Fit.TIGHT).build();
+        DataField dataFieldTextAreaInput = newDataFieldBuilder().withName("TextAreaInput").withLabel(stringAttribute3.getName().toUpperCase())
+				.withIconName(SimpleOrderModel.getIconName(stringAttribute3)).withDataFeature(stringAttribute3).withTextWidget(TextWidget.INPUT)
+				.withTextMultiLine(true).withCol(2).withRow(6)
+				.withStretch(Stretch.HORIZONTAL).withFit(Fit.LOOSE).build();
+        DataField dataFieldTextArea = newDataFieldBuilder().withName("TextArea").withLabel(stringAttribute4.getName().toUpperCase())
+				.withIconName(SimpleOrderModel.getIconName(stringAttribute4)).withDataFeature(stringAttribute4).withTextWidget(TextWidget.TEXT)
+				.withTextMultiLine(true).withCol(2).withRow(6)
+				.withStretch(Stretch.VERTICAL).withFit(Fit.TIGHT).build();
+        DataField dataFieldNumeric = newDataFieldBuilder().withName(numericAttribute.getName()).withLabel(numericAttribute.getName().toUpperCase())
+				.withIconName(SimpleOrderModel.getIconName(numericAttribute)).withDataFeature(numericAttribute).withCol(3)
+				.withStretch(Stretch.HORIZONTAL).withFit(Fit.LOOSE).build();
+        DataField dataFieldPassword = newDataFieldBuilder().withName(passwordAttribute.getName()).withLabel(passwordAttribute.getName().toUpperCase())
+ 				.withIconName(SimpleOrderModel.getIconName(passwordAttribute)).withDataFeature(passwordAttribute).withCol(3)
+ 				.withStretch(Stretch.NONE).withFit(Fit.LOOSE).build();
+        
+        Divider divider = newDividerBuilder().withName("divider").withCol(4).withRow(2).withStretch(Stretch.HORIZONTAL).withFit(Fit.TIGHT).withLabel("label").build();
+        Icon icon = newIconBuilder().withName("icon").withCol(2).withRow(2).withIconName("basket").withStretch(Stretch.NONE).withFit(Fit.LOOSE).build();
+        Placeholder placeholder = newPlaceholderBuilder().withName("placeholder").withCol(4).withRow(2).withStretch(Stretch.BOTH).withFit(Fit.TIGHT).build();
+        TextField textField = newTextFieldBuilder().withName("textField").withText("hello").withCol(3).withRow(2).withStretch(Stretch.HORIZONTAL).withFit(Fit.LOOSE).build();
+        
+        Group group1 = newGroupBuilder().withName("Tab1").withLabel("Tab1").withIconName("gesture")
+			.withComponents(dataFieldTextInput, dataFieldText, dataFieldTextAreaInput, dataFieldTextArea).build();
+        Group group2 = newGroupBuilder().withName("Tab2").withLabel("Tab2").withIconName(" ")
+			.withComponents(dataFieldNumeric, dataFieldPassword, divider).build();
+        Group group3 = newGroupBuilder().withName("Tab3").withLabel("Tab3")
+			.withComponents(icon, placeholder, textField).build();
+        
+        TabBar tabBar = newTabBarBuilder().withName("tabbar").withCol(8).withRow(10)
+        		.withTabs(group1, group2, group3)
+        		.build();
+        
+        useEntityType(e1).withView(
+        			newTransferObjectViewBuilder().withName("View")
+        				.withComponents(tabBar)
+        				.build()
+        		).build();
+        
+        final Model model = newModelBuilder().withName(MODEL_NAME)
+                .withElements(actor, e1, password, string, numeric).build();
+
+        esmModel.addContent(model);
+        
+        transform();
+
+        final Optional<Application> application = allUi(Application.class).filter(a -> a.getName().equals(actor.getFQName()))
+                .findAny();
+        assertTrue(application.isPresent());
+        final Optional<ClassType> uiE1 = application.get().getDataElements().stream().filter(e -> e instanceof ClassType && e.getName().equals(e1.getFQName()))
+        		.map(e -> (ClassType) e).findAny();
+        assertTrue(uiE1.isPresent());
+        
+        final Optional<PageDefinition> e1ViewPage = application.get().getPages().stream().filter(p -> p.getPageType().equals(PageType.VIEW) && p.getDataElement().getName().equals(access1.getName())).findAny();
+        assertTrue(e1ViewPage.isPresent());
+        final Optional<PageContainer> defaultContainer = e1ViewPage.get().getContainers().stream().filter(c -> c.getName().equals("default")).findAny();
+        assertTrue(defaultContainer.isPresent());
+        final Optional<VisualElement> flexFromViewOpt = defaultContainer.get().getChildren().stream().filter(c -> c instanceof Flex && c.getName().equals(e1.getView().getName())).findAny();
+        assertTrue(flexFromViewOpt.isPresent());
+        Flex flexFromView = (Flex) flexFromViewOpt.get();
+        
+        final Optional<TabController> tabController = flexFromView.getChildren().stream().filter(c -> c instanceof TabController)
+        		.map(f -> (TabController) f).filter(f -> f.getName().equals(tabBar.getName())).findAny();
+        assertTrue(tabController.isPresent());
+        assertEquals(8d, tabController.get().getCol());
+        assertEquals(10d, tabController.get().getRow());
+        assertEquals(3, tabController.get().getTabs().size());
+        
+        final Optional<Flex> tab1 = tabController.get().getTabs().stream().map(t -> (Flex) t.getElement())
+        		.filter(t -> t.getName().equals("Tab1")).findAny();
+        assertTrue(tab1.isPresent());
+        assertNotNull(((hu.blackbelt.judo.meta.ui.Tab) tab1.get().eContainer()).getIcon());
+        assertEquals(group1.getIconName(), ((hu.blackbelt.judo.meta.ui.Tab) tab1.get().eContainer()).getIcon().getName());
+        assertEquals(4, tab1.get().getChildren().size());
+        final Optional<Flex> tab2 = tabController.get().getTabs().stream().map(t -> (Flex) t.getElement())
+        		.filter(t -> t.getName().equals("Tab2")).findAny();
+        assertTrue(tab2.isPresent());
+        assertNull(((hu.blackbelt.judo.meta.ui.Tab) tab2.get().eContainer()).getIcon());
+        assertEquals(3, tab2.get().getChildren().size());
+        final Optional<Flex> tab3 = tabController.get().getTabs().stream().map(t -> (Flex) t.getElement())
+        		.filter(t -> t.getName().equals("Tab3")).findAny();
+        assertTrue(tab3.isPresent());
+        assertNull(((hu.blackbelt.judo.meta.ui.Tab) tab3.get().eContainer()).getIcon());
+        assertEquals(3, tab3.get().getChildren().size());
     }
     
     static <T> Stream<T> asStream(Iterator<T> sourceIterator, boolean parallel) {
