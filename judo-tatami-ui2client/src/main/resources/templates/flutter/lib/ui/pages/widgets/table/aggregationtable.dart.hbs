@@ -15,7 +15,7 @@ Observer(builder: (_) {
             {{# unless relation.isMemberTypeTransient }}
             if (response != null) {
                 {{ fqVariable page.name }}PageStore.get{{ fqClass relation.name }}({{# unless relation.isAccess}}target{{ className relation.owner.name }}Store{{/ unless}})
-                    .catchError((onError) => judoAlert(context: context, title: 'Error', text: onError.toString()));
+                    .catchError((error) => ErrorHandler.errorDialog(context, error));
             }
             {{/ unless }}
         },
@@ -25,7 +25,7 @@ Observer(builder: (_) {
             var created = await navigation.open(Routes.{{ fqVariable rowAction.target.name }}Page);
             if (created != null) {
                 {{ fqVariable page.name }}PageStore.create{{ fqClass relation.name }}({{# unless relation.isAccess}}target{{ className relation.owner.name }}Store ,{{/ unless}}created)
-                    .catchError((onError) => judoAlert(context: context, title: 'Error', text: onError.toString()));
+                    .catchError((error) => ErrorHandler.errorDialog(context, error));
             }
         }{{# unless relation.isAccess}} : null{{/ unless}},
         {{/if}}
@@ -38,11 +38,11 @@ Observer(builder: (_) {
             if (res != null) {
                 element.updateWith(cloned);
                 var updated = await {{ fqVariable page.name }}PageStore.update{{ className relation.target.name }}(element)
-                    .catchError((onError) => judoAlert(context: context, title: 'Error', text: onError.toString()));
+                    .catchError((error) => ErrorHandler.errorDialog(context, error));
                 if (updated != null) {
                     element.updateWith(updated);
                     {{ fqVariable page.name }}PageStore.get{{ fqClass relation.name }}({{# unless relation.isAccess}}target{{ className relation.owner.name }}Store{{/ unless}})
-                        .catchError((onError) => judoAlert(context: context, title: 'Error', text: onError.toString()));
+                        .catchError((error) => ErrorHandler.errorDialog(context, error));
                 }
             }
         }{{# unless relation.isAccess}} : null{{/ unless}},
@@ -53,13 +53,13 @@ Observer(builder: (_) {
         {{#if rowAction.isUnsetAction}}
         unsetAction:{{# unless relation.isAccess}}{{# unless relation.isRelationKindStatic}} target{{ className relation.owner.name }}Store.internal__updatable ?{{/ unless}}{{/ unless}} () async {
             {{fqVariable page.name}}PageStore.unset{{ fqClass relation.name }}(target{{ className relation.owner.name }}Store)
-                .catchError((onError) => judoAlert(context: context, title: 'Error', text: onError.toString()));
+                .catchError((error) => ErrorHandler.errorDialog(context, error));
         }{{# unless relation.isAccess}}{{# unless relation.isRelationKindStatic}} : null{{/ unless}}{{/ unless}},
         {{/if}}
         {{#if rowAction.isDeleteAction}}
         deleteAction:{{# unless relation.isAccess}} target{{ className relation.owner.name }}Store.internal__updatable ?{{/ unless}} (element) async {
             {{fqVariable page.name}}PageStore.delete{{ className relation.target.name }}(element{{# unless relation.isAccess}}, target{{ className relation.owner.name }}Store{{/unless}})
-                .catchError((onError) => judoAlert(context: context, title: 'Error', text: onError.toString()));
+                .catchError((error) => ErrorHandler.errorDialog(context, error));
         }{{# unless relation.isAccess}} : null{{/ unless}},
         {{/if}}
         {{/each}}

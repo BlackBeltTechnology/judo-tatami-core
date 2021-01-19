@@ -1,0 +1,67 @@
+{{log 'Error handler generation for' (variable application.name) level='info'}}
+//////////////////////////////////////////////////////////////////////////////
+// G E N E R A T E D    C L A S S
+// ------------------------------
+// Factory expression: {{{ cleanup template.factoryExpression }}}
+// Path expression: {{{ cleanup template.pathExpression }}}
+// Overwrite: {{{ cleanup template.overwriteExpression }}}
+// Template name: {{ template.templateName }}
+// Application: {{ application.name }}
+
+import 'package:{{ modelPackage application.name }}/{{ path application.name }}/injector/injector.dart';
+import 'package:{{ modelPackage application.name }}/{{ path application.name }}/oauth.dart';
+import 'package:{{ modelPackage application.name }}/{{ path application.name }}/ui/navigation_state.dart';
+import 'package:{{ modelPackage application.name }}/{{ path application.name }}/utilities/package.dart';
+import 'package:{{ modelPackage application.name }}/{{ path application.name }}/ui/routes/router.gr.dart' as router;
+import 'package:flutter/material.dart';
+import 'package:judo_flutter_components/judo_flutter_components.dart';
+import 'package:openapi_dart_common/openapi.dart';
+
+class ErrorHandler {
+
+    static void errorDialog(BuildContext context, ApiException error) {
+        judoAlert(context: context, title: 'Error', text: error.toString());
+    }
+
+    static void navigateToErrorPage(ApiException error) {
+        NavigationState navigation = locator<NavigationState>();
+        navigation.open(router.Routes.{{ fqVariable application.name }}ErrorPage,
+            arguments: router.{{ fqClass application.name }}ErrorPageArguments(
+                icon: Icon(Icons.error_outline),
+                title: 'Error',
+                errorCode: error.code,
+                errorMessage: error.message,
+                stackTrace: error.stackTrace.toString(),
+            )
+        );
+    }
+
+    static void navigateToBuiltInPage() {
+        NavigationState navigation = locator<NavigationState>();
+        if (isNavigateToSettingsPage) {
+            navigation.open(router.Routes.{{ fqVariable application.name }}SettingsPage);
+        } else {
+            if(Info.serverDown) {
+                navigation.open(router.Routes.{{ fqVariable application.name }}ErrorPage,
+                    arguments: router.{{ fqClass application.name }}ErrorPageArguments(
+                        icon: Icon(Icons.error_outline),
+                        title: 'Server offline',
+                        errorMessage: 'Server is unavailable.',
+                    )
+                );
+            } else {
+                if(Oauth.isAuthenticationRequired()) {
+                    if (!Oauth.isLoggedIn()) {
+                        navigation.open(router.Routes.{{ fqVariable application.name }}ErrorPage,
+                            arguments: router.{{ fqClass application.name }}ErrorPageArguments(
+                                icon: Icon(Icons.login),
+                                title: 'Login required',
+                                errorMessage: 'Please login to continue.',
+                            )
+                        );
+                    }
+                }
+            }
+        }
+    }
+}

@@ -40,6 +40,17 @@
   templateName: flutter/lib/main_release.dart.hbs
 
 # ========================================
+# error handler
+# ========================================
+- overwriteExpression: true
+  factoryExpression: "{#application}"
+  pathExpression: >
+    'lib/' +
+    #path(#application.actor.name) + '/error/' +
+    'error_handler.dart'
+  templateName: flutter/lib/error/error_handler.dart.hbs
+
+# ========================================
 # authentication
 # ========================================
 - overwriteExpression: true
