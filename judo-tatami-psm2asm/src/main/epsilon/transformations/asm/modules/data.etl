@@ -24,6 +24,21 @@ rule CreateEntityClass
 		s.eContainer.asmEquivalent().eClassifiers.add(t);
 	}
 
+rule CreateEntityDefaultRepresentationAnnotation
+    transform s : JUDOPSM!EntityType
+    to t : ASM!EAnnotation {
+        guard: s.defaultRepresentation.isDefined()
+
+        t.source = asmUtils.getAnnotationUri("defaultRepresentation");
+
+        var defaultRepresentation = new ASM!EStringToStringMapEntry;
+        defaultRepresentation.key = "value";
+        defaultRepresentation.value = asmUtils.getClassifierFQName(s.defaultRepresentation.asmEquivalent());
+        t.details.add(defaultRepresentation);
+
+        s.equivalent("CreateEntityClass").eAnnotations.add(t);
+    }
+
 @abstract
 rule AddAttributeConstraints
 	transform s : JUDOPSM!Attribute
@@ -153,3 +168,33 @@ rule CreateContainmentRelation
 	extends CreateRelation {
 		t.containment = true;
 }
+
+rule AddUnmappedDefaultOnlyAttributeAnnotation
+	transform s : JUDOPSM!Attribute
+    to t : ASM!EAnnotation {
+        guard: s.eContainer.isDefined() and s.eContainer.defaultRepresentation.isDefined() and s.eContainer.defaultRepresentation.attributes.exists(a | a.binding == s and a.defaultValue.isDefined())
+
+        t.source = asmUtils.getAnnotationUri("unmappedDefaultOnly");
+
+        var unmappedDefaultOnly = new ASM!EStringToStringMapEntry;
+        unmappedDefaultOnly.key = "value";
+        unmappedDefaultOnly.value = s.unmappedDefaultOnly.asString();
+        t.details.add(unmappedDefaultOnly);
+
+        s.equivalent("CreateAttribute").eAnnotations.add(t);
+    }
+
+rule AddUnmappedDefaultOnlyReferenceAnnotation
+	transform s : JUDOPSM!AssociationEnd
+    to t : ASM!EAnnotation {
+        guard: s.eContainer.isDefined() and s.eContainer.defaultRepresentation.isDefined() and s.eContainer.defaultRepresentation.relations.exists(r | r.binding == s and r.defaultValue.isDefined())
+
+        t.source = asmUtils.getAnnotationUri("unmappedDefaultOnly");
+
+        var unmappedDefaultOnly = new ASM!EStringToStringMapEntry;
+        unmappedDefaultOnly.key = "value";
+        unmappedDefaultOnly.value = s.unmappedDefaultOnly.asString();
+        t.details.add(unmappedDefaultOnly);
+
+        s.equivalent("CreateAssociationEndRelation").eAnnotations.add(t);
+    }

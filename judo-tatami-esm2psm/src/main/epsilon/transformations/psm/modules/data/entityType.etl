@@ -9,5 +9,6 @@ rule CreateEntityType
     for (super in s.generalizations) {
         t.superEntityTypes.add(super.target.getPSMEquivalent());
     }
+    t.defaultRepresentation = s.equivalent("CreateDefaultMappedTransferObjectTypeForEntity");
     log.debug("Created EntityType: " + t.name);
 }
