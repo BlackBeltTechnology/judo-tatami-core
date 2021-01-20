@@ -18,9 +18,10 @@ class {{ fqClass application.name }}ErrorPage extends StatefulWidget {
   final String errorDescription;
   final Icon icon;
   final String title;
+  final String stackTrace;
 
 
-  {{ fqClass application.name }}ErrorPage({this.errorCode, @required this.errorMessage, this.errorDescription, this.icon, this.title});
+  {{ fqClass application.name }}ErrorPage({this.errorCode, @required this.errorMessage, this.errorDescription, this.stackTrace, this.icon, this.title});
 
   @override
   _ErrorPageState createState() => _ErrorPageState();
@@ -49,6 +50,8 @@ class _ErrorPageState extends State<{{ fqClass application.name }}ErrorPage> {
                         Text(widget.errorMessage),
                       if (widget.errorDescription != null)
                         Text(widget.errorDescription),
+                      if (widget.stackTrace != null)
+                        Text(widget.stackTrace),
                     ]
                 ),
               ),

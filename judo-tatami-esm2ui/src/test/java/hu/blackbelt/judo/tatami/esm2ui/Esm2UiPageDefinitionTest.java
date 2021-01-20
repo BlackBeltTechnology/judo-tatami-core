@@ -559,12 +559,7 @@ public class Esm2UiPageDefinitionTest {
         final Optional<PageDefinition> rel1PageUpdate = application.get().getPages().stream()
         		.filter(c -> c.getPageType().equals(PageType.UPDATE) && c.getName().equals(EsmUtils.getNamespaceElementFQName(e2) + "." + relation1.getName() + "#Update")).findAny();
         assertFalse(rel1PageUpdate.isPresent());
-        
-        final Optional<PageDefinition> rel1PageTable = application.get().getPages().stream()
-        		.filter(c -> c.getPageType().equals(PageType.TABLE) && c.getName().equals(EsmUtils.getNamespaceElementFQName(e2) + "." + relation1.getName() + "#Table")).findAny();
-        assertTrue(rel1PageTable.isPresent());
-        assertTrue(uiE2.get().getRelations().contains(rel1PageTable.get().getDataElement()) && rel1PageTable.get().getDataElement().getName().equals(relation1.getName()));
-        
+
       //exposed stored composition: view
         final Optional<PageDefinition> rel2Page = application.get().getPages().stream()
         		.filter(c -> c.getPageType().equals(PageType.VIEW) && c.getName().equals(EsmUtils.getNamespaceElementFQName(e2) + "." + relation2.getName() + "#View")).findAny();
@@ -596,11 +591,6 @@ public class Esm2UiPageDefinitionTest {
         final Optional<PageDefinition> rel3PageUpdate = application.get().getPages().stream()
         		.filter(c -> c.getPageType().equals(PageType.UPDATE) && c.getName().equals(EsmUtils.getNamespaceElementFQName(e2) + "." + relation3.getName() + "#Update")).findAny();
         assertFalse(rel3PageUpdate.isPresent());
-        
-        final Optional<PageDefinition> rel3PageTable = application.get().getPages().stream()
-        		.filter(c -> c.getPageType().equals(PageType.TABLE) && c.getName().equals(EsmUtils.getNamespaceElementFQName(e2) + "." + relation3.getName() + "#Table")).findAny();
-        assertTrue(rel3PageTable.isPresent());
-        assertTrue(uiE2.get().getRelations().contains(rel3PageTable.get().getDataElement()) && rel3PageTable.get().getDataElement().getName().equals(relation3.getName()));
         
         //exposed derived updateable association: view, create, update, table
         final Optional<PageDefinition> rel4Page = application.get().getPages().stream()

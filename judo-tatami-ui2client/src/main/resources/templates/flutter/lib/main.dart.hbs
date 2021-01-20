@@ -13,6 +13,7 @@ import 'package:flutter/material.dart';
 import 'package:openapi_dart_common/openapi.dart';
 import 'oauth.dart';
 import 'dart:async';
+import 'package:{{ modelPackage application.name }}/{{ path application.name }}/error/error_handler.dart';
 import 'package:{{ modelPackage application.name }}/{{ path application.name }}/ui/routes/router.gr.dart' as router;
 import 'package:{{ modelPackage application.name }}/{{ path application.name }}/ui/drawer_items.dart';
 import 'package:{{ modelPackage application.name }}/{{ path application.name }}/ui/navigation_state.dart';
@@ -32,7 +33,7 @@ class {{ fqClass application.name }}Application extends StatelessWidget {
     @override
     Widget build(BuildContext context) {
         final navigation = locator<NavigationState>();
-        scheduleMicrotask(() => navigateToBuiltInPage(navigation)); // execute after main build methods are executed
+        scheduleMicrotask(() => ErrorHandler.navigateToBuiltInPage()); // execute after main build methods are executed
 
         return MaterialApp(
             title: '{{ modelName application.name }}',
@@ -151,7 +152,7 @@ class _{{ fqClass application.name }}DrawerState extends State<{{ fqClass applic
                                     title: e.title,
                                     onTap: () {
                                         if (Info.serverDown) {
-                                            navigateToBuiltInPage(navigationState);
+                                            ErrorHandler.navigateToBuiltInPage();
                                         } else {
                                             if (Oauth.isAuthenticationRequired() && !Oauth.isLoggedIn()) {
                                                 Oauth.loginAuthorizeAndExchangeCode();
@@ -173,35 +174,5 @@ class _{{ fqClass application.name }}DrawerState extends State<{{ fqClass applic
                 ]),
             )
         );
-    }
-}
-
-const bool navigateToSettingsPage = bool.fromEnvironment("TO_SETTINGS_PAGE");
-void navigateToBuiltInPage(NavigationState navigation) {
-    if (navigateToSettingsPage) {
-        navigation.open(router.Routes.{{ fqVariable application.name }}SettingsPage);
-    } else {
-        if(Info.serverDown) {
-            navigation.open(router.Routes.{{ fqVariable application.name }}ErrorPage,
-                arguments: router.{{ fqClass application.name }}ErrorPageArguments(
-                    icon: Icon(Icons.error_outline),
-                    title: 'Server offline',
-                    errorMessage: 'Server is unavailable.',
-                )
-            );
-            return;
-        } else {
-            if(Oauth.isAuthenticationRequired()) {
-                if (!Oauth.isLoggedIn()) {
-                    navigation.open(router.Routes.{{ fqVariable application.name }}ErrorPage,
-                        arguments: router.{{ fqClass application.name }}ErrorPageArguments(
-                            icon: Icon(Icons.login),
-                            title: 'Login required',
-                            errorMessage: 'Please login to continue.',
-                        )
-                    );
-                }
-            }
-        }
     }
 }

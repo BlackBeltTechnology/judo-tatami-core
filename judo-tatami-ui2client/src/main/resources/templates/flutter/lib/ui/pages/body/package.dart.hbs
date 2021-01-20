@@ -22,6 +22,7 @@ import 'package:{{ modelPackage application.name }}/{{ path application.name }}/
 import 'package:{{ modelPackage application.name }}/{{ path application.name }}/ui/pages/package.dart';
 import 'package:{{ modelPackage application.name }}/{{ path application.name }}/ui/routes/router.gr.dart';
 import 'package:{{ modelPackage application.name }}/{{ path application.name }}/utilities/package.dart';
+import 'package:{{ modelPackage application.name }}/{{ path application.name }}/error/error_handler.dart';
 
 {{# each layout.pageContainers as |container| }}
 part '{{ fqPath container.owner.name }}__{{fqPath layout.name}}__body.dart';
