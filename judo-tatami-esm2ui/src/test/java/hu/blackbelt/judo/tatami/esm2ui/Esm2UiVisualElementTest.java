@@ -880,18 +880,6 @@ public class Esm2UiVisualElementTest {
         assertEquals(2, flexFromView2.getChildren().size());
         assertTrue(flexFromView2.getChildren().stream().allMatch(c -> c instanceof Button));
         
-        final Optional<VisualElement> button1opt = flexFromView2.getChildren().stream().filter(b -> b.getName().equals(tabular5.getName() + "#TabularReferenceButton")).findAny();
-        assertTrue(button1opt.isPresent());
-        Button button1 = (Button) button1opt.get();
-        assertTrue(button1.getAction() instanceof NavigationToPageAction);
-        assertTrue(((NavigationToPageAction)button1.getAction()).getTarget().getName().endsWith("TableForButton"));
-        
-        final Optional<VisualElement> button2opt = flexFromView2.getChildren().stream().filter(b -> b.getName().equals(tabular6.getName() + "#TabularReferenceButton")).findAny();
-        assertTrue(button2opt.isPresent());
-        Button button2 = (Button) button2opt.get();
-        assertTrue(button2.getAction() instanceof NavigationToPageAction);
-        assertTrue(((NavigationToPageAction)button2.getAction()).getTarget().getName().endsWith("Table"));
-        
         final Optional<PageDefinition> e3ViewPage = application.get().getPages().stream().filter(p -> p.getPageType().equals(PageType.VIEW) && p.getDataElement().getName().equals(access3.getName())).findAny();
         assertTrue(e3ViewPage.isPresent());
         final Optional<PageContainer> defaultContainer3 = e3ViewPage.get().getContainers().stream().filter(c -> c.getName().equals("default")).findAny();
