@@ -23,17 +23,28 @@ class ErrorHandler {
         judoAlert(context: context, title: 'Error', text: error.toString());
     }
 
-    static void navigateToErrorPage(ApiException error) {
-        NavigationState navigation = locator<NavigationState>();
-        navigation.open(router.Routes.{{ fqVariable application.name }}ErrorPage,
-            arguments: router.{{ fqClass application.name }}ErrorPageArguments(
-                icon: Icon(Icons.error_outline),
-                title: 'Error',
-                errorCode: error.code,
-                errorMessage: error.message,
-                stackTrace: error.stackTrace.toString(),
-            )
-        );
+    static void navigateToErrorPage(dynamic error) {
+        if (error is ApiException) {
+            NavigationState navigation = locator<NavigationState>();
+            navigation.open(router.Routes.{{ fqVariable application.name }}ErrorPage,
+                arguments: router.{{ fqClass application.name }}ErrorPageArguments(
+                    icon: Icon(Icons.error_outline),
+                    title: 'Error',
+                    errorCode: error.code,
+                    errorMessage: error.message,
+                    stackTrace: error.stackTrace.toString(),
+                )
+            );
+        } else {
+            NavigationState navigation = locator<NavigationState>();
+            navigation.open(router.Routes.dateTimeTestUserErrorPage,
+                arguments: router.DateTimeTestUserErrorPageArguments(
+                    icon: Icon(Icons.error_outline),
+                    title: 'Error',
+                    errorMessage: error.toString(),
+                )
+            );
+        }
     }
 
     static void navigateToBuiltInPage() {
