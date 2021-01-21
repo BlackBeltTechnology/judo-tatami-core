@@ -4,6 +4,7 @@ import 'dart:html' as html;
 
 import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
+import 'package:{{ modelPackage application.name }}/{{ path application.name }}/error/error_handler.dart';
 import 'package:flutter_appauth_platform_interface/flutter_appauth_platform_interface.dart';
 import 'package:flutter_appauth_web/flutter_appauth_web.dart';
 import 'package:openapi_dart_common/openapi.dart';
@@ -115,16 +116,26 @@ class Oauth {
             refreshToken: grantType == GRANT_REFRESH ? html.window.sessionStorage[AUTH_REFRESH_TOKEN_KEY]: null,
             issuer: securitySettings.issuer);
 
-        var token = await AppAuthWebPlugin.requestToken(tokenRequest);
-        html.window.sessionStorage[AUTH_ACCESS_TOKEN_KEY] = token.accessToken;
-        html.window.sessionStorage[AUTH_ACCESS_TOKEN_EXPIRE] = token.accessTokenExpirationDateTime.toString();
-        html.window.sessionStorage[AUTH_REFRESH_TOKEN_KEY] = token.refreshToken;
+        var token = await AppAuthWebPlugin.requestToken(tokenRequest).catchError((onError) {
+            if (onError is ArgumentError && onError.message.toString().contains('token_failed')) {
+                logout();
+                loginAuthorizeAndExchangeCode();
+            } else {
+                ErrorHandler.navigateToErrorPage(onError);
+            }
+        });
+        if (token != null) {
+            html.window.sessionStorage[AUTH_ACCESS_TOKEN_KEY] = token.accessToken;
+            html.window.sessionStorage[AUTH_ACCESS_TOKEN_EXPIRE] = token.accessTokenExpirationDateTime.toString();
+            html.window.sessionStorage[AUTH_REFRESH_TOKEN_KEY] = token.refreshToken;
 
-        // print('Access token: ${token.accessToken}');
-        // print('Refresh token: ${token.refreshToken}');
-        // print(token.accessTokenExpirationDateTime);
+            // print('Access token: ${token.accessToken}');
+            // print('Refresh token: ${token.refreshToken}');
+            // print(token.accessTokenExpirationDateTime);
 
-        return token.accessToken;
+            return token.accessToken;
+        }
+        return null;
   }
 
   static addTokenToApiClient(String token) {
