@@ -10,7 +10,7 @@
 import 'package:openapi_generator_annotations/openapi_generator_annotations.dart';
 
 @Openapi(
-    additionalProperties: AdditionalProperties(pubName: '{{ variable application.name }}', pubAuthor: 'Judo Generator'),
+    additionalProperties: AdditionalProperties(pubName: '{{ variable application.name }}', pubAuthor: 'Judo Generator', generateNullValuesToJson: true),
     inputSpecFile: 'lib/{{ path application.name }}/rest/{{ path application.name }}.yaml',
     alwaysRun: true,
     overwriteExistingFiles: true,

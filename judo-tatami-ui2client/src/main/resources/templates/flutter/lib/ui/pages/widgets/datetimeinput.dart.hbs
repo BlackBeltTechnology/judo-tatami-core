@@ -64,7 +64,7 @@ Observer(
         onChanged: (value) => target{{ className page.dataElement.target.name }}Store.set{{ className attributeType.name }}(value),
         firstDate: DateTime(DateTime.now().year - 5), // TODO: revisit this line
         lastDate: DateTime(DateTime.now().year + 5), // TODO: revisit this line
-    readOnly: {{attributeType.isReadOnly}},
+        readOnly: {{attributeType.isReadOnly}},
     ),
 ),
 {{/if}}

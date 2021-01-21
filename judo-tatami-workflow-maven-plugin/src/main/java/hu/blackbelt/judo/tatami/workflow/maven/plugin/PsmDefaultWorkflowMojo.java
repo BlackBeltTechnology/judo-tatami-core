@@ -186,6 +186,10 @@ public class PsmDefaultWorkflowMojo extends AbstractMojo {
 		try {
 			defaultWorkflow.startDefaultWorkflow();
 		} catch (IllegalStateException e) {
+			try {
+				DefaultWorkflowSave.saveModels(defaultWorkflow.getTransformationContext(), destination, dialectList);
+			} catch (Exception e2) {
+			}
 			throw new MojoFailureException("An error occurred during the execution phase of the workflow.", e);
 		}
 
