@@ -43,6 +43,7 @@ public class FlutterHelper {
         context.registerFunction("validatableFlagNeed", FlutterHelper.class.getDeclaredMethod("validatableFlagNeed", new Class[]{RelationType.class}));
         context.registerFunction("isEnumType", FlutterHelper.class.getDeclaredMethod("isEnumType", new Class[]{DataType.class}));
         context.registerFunction("isTimestampType", FlutterHelper.class.getDeclaredMethod("isTimestampType", new Class[]{DataType.class}));
+        context.registerFunction("isBooleanDataType", FlutterHelper.class.getDeclaredMethod("isBooleanDataType", new Class[]{DataType.class}));
         context.registerFunction("isDateType", FlutterHelper.class.getDeclaredMethod("isDateType", new Class[]{DataType.class}));
         context.registerFunction("isInputWidgetMapNeed", FlutterHelper.class.getDeclaredMethod("isInputWidgetMapNeed", new Class[]{PageDefinition.class}));
         context.registerFunction("getInputWidgets", FlutterHelper.class.getDeclaredMethod("getInputWidgets", new Class[]{Container.class}));
@@ -52,6 +53,9 @@ public class FlutterHelper {
         handlebars.registerHelpers(FlutterHelper.class);
     }
 
+    public static boolean isBooleanDataType (DataType dataType) {
+        return dataType instanceof BooleanType;
+    }
     public static boolean isTransientAttribute (AttributeType attributeType) {
         return MemberType.TRANSIENT == attributeType.getMemberType();
     }
