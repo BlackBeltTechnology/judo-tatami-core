@@ -598,7 +598,7 @@ public class SimpleOrderModel {
 				columns.add(newDataColumnBuilder().withName(a.getName()).withLabel(a.getName().toUpperCase())
 						.withVisible(true).withDataFeature(a).build());
 			});
-			useTransferObjectTable(table).withColumns(columns);
+			useTransferObjectTable(table).withColumns(columns).build();
 		}
 		return table;
 	}
