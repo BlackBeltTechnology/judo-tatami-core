@@ -5,17 +5,19 @@ JudoTab(
     tabContent: [
     {{# each tabs as |tab| }}
         {{# if tab }}
-        {{> (getWidgetTemplate tab) }}
+            {{# with tab.element as |child|}}
+                {{> (getWidgetTemplate child) }}
+            {{/ with }}
         {{/ if }}
     {{/ each }}
-    ]
-    tab: [
+    ],
+    tabs: [
     {{# each tabs as |tab| }}
         Tab(
         {{#if tab.icon }}
             icon: Icon(Icons.{{ tab.icon.name }}),
         {{/if}}
-            text: {{ tab.label }},
+            text: "{{ tab.element.label }}",
         ),
     {{/ each }}
     ]

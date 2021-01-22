@@ -37,8 +37,8 @@ class ErrorHandler {
             );
         } else {
             NavigationState navigation = locator<NavigationState>();
-            navigation.open(router.Routes.dateTimeTestUserErrorPage,
-                arguments: router.DateTimeTestUserErrorPageArguments(
+            navigation.open(router.Routes.{{ fqVariable application.name }}ErrorPage,
+            arguments: router.{{ fqClass application.name }}ErrorPageArguments(
                     icon: Icon(Icons.error_outline),
                     title: 'Error',
                     errorMessage: error.toString(),
