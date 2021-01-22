@@ -3,8 +3,8 @@ operation UI!ui::Table calculateActions(application : UI!ui::Application, previe
 	var classType = self.getTargetClassType();
 	
 	var pageDefinition = self.getPageDefinition();
-	var isChangeable = not (relationType.relationKind == UI!ui::data::RelationKind#COMPOSITION or relationType.relationKind == UI!ui::data::RelationKind#AGGREGATION)
-	               and not (pageDefinition.pageType == UI!ui::PageType#VIEW or pageDefinition.pageType == UI!ui::PageType#OPERATION_OUTPUT);
+	var isChangeable = not ((relationType.relationKind == UI!ui::data::RelationKind#COMPOSITION or relationType.relationKind == UI!ui::data::RelationKind#AGGREGATION)
+	               and (pageDefinition.pageType == UI!ui::PageType#VIEW or pageDefinition.pageType == UI!ui::PageType#OPERATION_OUTPUT));
 
 	if (relationType.isDefined()) {
 		if (preview) {
