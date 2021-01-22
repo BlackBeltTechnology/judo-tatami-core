@@ -1,23 +1,15 @@
 package hu.blackbelt.judo.tatami.esm2ui;
 
-import hu.blackbelt.epsilon.runtime.execution.api.Log;
-import hu.blackbelt.epsilon.runtime.execution.impl.Slf4jLog;
-import hu.blackbelt.judo.meta.esm.runtime.EsmModel;
-import hu.blackbelt.judo.meta.ui.Application;
-import hu.blackbelt.judo.meta.ui.Container;
-import hu.blackbelt.judo.meta.ui.NavigationController;
-import hu.blackbelt.judo.meta.ui.Tab;
-import hu.blackbelt.judo.meta.ui.TabController;
-import hu.blackbelt.judo.meta.ui.VisualElement;
-import hu.blackbelt.judo.meta.ui.runtime.UiModel;
-import hu.blackbelt.judo.meta.ui.runtime.UiUtils;
-import hu.blackbelt.model.northwind.esm.NorthwindEsmModel;
-import lombok.extern.slf4j.Slf4j;
-import org.eclipse.emf.common.util.URI;
-import org.eclipse.emf.ecore.EObject;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import static hu.blackbelt.judo.meta.esm.runtime.EsmModel.buildEsmModel;
+import static hu.blackbelt.judo.meta.esm.runtime.EsmModel.SaveArguments.esmSaveArgumentsBuilder;
+import static hu.blackbelt.judo.meta.ui.runtime.UiEpsilonValidator.calculateUiValidationScriptURI;
+import static hu.blackbelt.judo.meta.ui.runtime.UiEpsilonValidator.validateUi;
+import static hu.blackbelt.judo.meta.ui.runtime.UiModel.buildUiModel;
+import static hu.blackbelt.judo.meta.ui.runtime.UiModel.SaveArguments.uiSaveArgumentsBuilder;
+import static hu.blackbelt.judo.tatami.esm2ui.Esm2Ui.calculateEsm2UiTransformationScriptURI;
+import static hu.blackbelt.judo.tatami.esm2ui.Esm2Ui.executeEsm2UiTransformation;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.util.Iterator;
@@ -27,16 +19,20 @@ import java.util.Optional;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
-import static hu.blackbelt.judo.meta.esm.runtime.EsmModel.SaveArguments.esmSaveArgumentsBuilder;
-import static hu.blackbelt.judo.meta.esm.runtime.EsmModel.buildEsmModel;
-import static hu.blackbelt.judo.meta.ui.runtime.UiEpsilonValidator.calculateUiValidationScriptURI;
-import static hu.blackbelt.judo.meta.ui.runtime.UiEpsilonValidator.validateUi;
-import static hu.blackbelt.judo.meta.ui.runtime.UiModel.SaveArguments.uiSaveArgumentsBuilder;
-import static hu.blackbelt.judo.meta.ui.runtime.UiModel.buildUiModel;
-import static hu.blackbelt.judo.tatami.esm2ui.Esm2Ui.calculateEsm2UiTransformationScriptURI;
-import static hu.blackbelt.judo.tatami.esm2ui.Esm2Ui.executeEsm2UiTransformation;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import org.eclipse.emf.common.util.URI;
+import org.eclipse.emf.ecore.EObject;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import hu.blackbelt.epsilon.runtime.execution.api.Log;
+import hu.blackbelt.epsilon.runtime.execution.impl.Slf4jLog;
+import hu.blackbelt.judo.meta.esm.runtime.EsmModel;
+import hu.blackbelt.judo.meta.ui.Application;
+import hu.blackbelt.judo.meta.ui.NavigationController;
+import hu.blackbelt.judo.meta.ui.runtime.UiModel;
+import hu.blackbelt.model.northwind.esm.NorthwindEsmModel;
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class Northwind2UiApplicationTest {
