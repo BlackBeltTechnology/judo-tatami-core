@@ -166,14 +166,20 @@ class Oauth {
     if (expireIn.inMinutes < 1) {
       var token = await requestToken(GRANT_REFRESH);
       await addTokenToApiClient(token);
+      return token;
     }
+    return null;
   }
 
   static DioClientDelegate getDioDelegate() {
     var dioDelegate = DioClientDelegate();
     dioDelegate.client.interceptors.add(InterceptorsWrapper(
         onRequest: (options) async {
-          await Oauth.refreshToken();
+          var token = await Oauth.refreshToken();
+          if (token != null) {
+            options.headers.remove('Authorization');
+            options.headers.putIfAbsent('Authorization', () => 'Bearer $token');
+          }
         }
     ));
     return dioDelegate;
