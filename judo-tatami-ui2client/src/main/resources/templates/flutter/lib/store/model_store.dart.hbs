@@ -69,8 +69,11 @@ abstract class _{{ fqClass name }}Store with Store {
   {{# each attributes }}
 
   @observable
+  {{#if (isBooleanDataType dataType)}}
+  {{ dartType dataType }} {{ variable name }} = false;
+  {{else}}
   {{ dartType dataType }} {{ variable name }};
-
+  {{/if}}
   {{/ each }}
 
   // Relations

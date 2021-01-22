@@ -1,6 +1,10 @@
 operation UI!ui::Table calculateActions(application : UI!ui::Application, preview : Boolean) {
 	var relationType = self.getRelationType();
 	var classType = self.getTargetClassType();
+	
+	var pageDefinition = self.getPageDefinition();
+	var isChangeable = not ((relationType.relationKind == UI!ui::data::RelationKind#COMPOSITION or relationType.relationKind == UI!ui::data::RelationKind#AGGREGATION)
+	               and (pageDefinition.pageType == UI!ui::PageType#VIEW or pageDefinition.pageType == UI!ui::PageType#OPERATION_OUTPUT));
 
 	if (relationType.isDefined()) {
 		if (preview) {
@@ -19,43 +23,47 @@ operation UI!ui::Table calculateActions(application : UI!ui::Application, previe
 			}
 		}
 
-		if (classType.getIsClassBehaviourTypeDeletable()) {
-			self.rowActions.add(new UI!ui::DeleteAction());	
-		}
-	
-		if (classType.getIsClassBehaviourTypeUpdatable()) {
-			if (preview) {
-				var editAction = new UI!ui::EditAction();
-				editAction.target = application.pages.selectOne(p | p.pageType = UI!ui::PageType#DASHBOARD);
-				self.rowActions.add(editAction);
-			} else {
-				var page = application.pages.selectOne(p | p.pageType = UI!ui::PageType#UPDATE and p.getRelationType() == relationType);
-				if (page.isDefined()) {
-					log.debug(" ========= TABLE DEF: EDIT: " + relationType.name + " - " + page.name);
-				    var editAction = new UI!ui::EditAction();
-					editAction.target = page;
-					self.rowActions.add(editAction);
-				} else {
-					log.warn("No update page defined for: " + self.name  + " - " + relationType.eContainer.name + "." + relationType.name);
-				}
-			}
-		}
-		
-		if (relationType.getIsRelationBehaviourTypeRemovable()) {
-			self.rowActions.add(new UI!ui::RemoveAction());
-		}
-		
-		if (relationType.getIsRelationBehaviourTypeUnsetable()) {
-			self.rowActions.add(new UI!ui::UnsetAction());
-		}
-		
-		if (not self.isTablePage() and
-				(relationType.getIsRelationBehaviourTypeCreatable() or
-				relationType.getIsRelationBehaviourTypeSetable() or
-				relationType.getIsRelationBehaviourTypeAddable())
-			) {
-			self.createRelationActionButtonsForTable(application, preview);
-		}
+	    if (isChangeable) {
+	        if (classType.getIsClassBehaviourTypeDeletable()) {
+	            self.rowActions.add(new UI!ui::DeleteAction()); 
+	        }
+	    
+	        if (classType.getIsClassBehaviourTypeUpdatable()) {
+	            if (preview) {
+	                var editAction = new UI!ui::EditAction();
+	                editAction.target = application.pages.selectOne(p | p.pageType = UI!ui::PageType#DASHBOARD);
+	                self.rowActions.add(editAction);
+	            } else {
+	                var page = application.pages.selectOne(p | p.pageType = UI!ui::PageType#UPDATE and p.getRelationType() == relationType);
+	                if (page.isDefined()) {
+	                    log.debug(" ========= TABLE DEF: EDIT: " + relationType.name + " - " + page.name);
+	                    var editAction = new UI!ui::EditAction();
+	                    editAction.target = page;
+	                    self.rowActions.add(editAction);
+	                } else {
+	                    log.warn("No update page defined for: " + self.name  + " - " + relationType.eContainer.name + "." + relationType.name);
+	                }
+	            }
+	        }
+	        
+	        if (relationType.getIsRelationBehaviourTypeRemovable()) {
+	            self.rowActions.add(new UI!ui::RemoveAction());
+	        }
+	        
+	        if (relationType.getIsRelationBehaviourTypeUnsetable()) {
+	            self.rowActions.add(new UI!ui::UnsetAction());
+	        }
+	        
+	        if (not self.isTablePage() and
+	                (relationType.getIsRelationBehaviourTypeCreatable() or
+	                relationType.getIsRelationBehaviourTypeSetable() or
+	                relationType.getIsRelationBehaviourTypeAddable())
+	            ) {
+	            self.createRelationActionButtonsForTable(application, preview);
+	        }
+	    
+	    }
+
 	}
 	// TODO: Handling Input/Output operation parameters.
 }
