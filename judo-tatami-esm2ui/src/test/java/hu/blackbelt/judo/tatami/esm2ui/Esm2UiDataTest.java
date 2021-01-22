@@ -357,10 +357,27 @@ public class Esm2UiDataTest {
         assertTrue(uiRelation3.get().getTarget().equals(uiT4.get()));
         assertTrue(uiRelation3.get().getMemberType().equals(hu.blackbelt.judo.meta.ui.data.MemberType.DERIVED));
         assertTrue(uiRelation3.get().getRelationKind().equals(hu.blackbelt.judo.meta.ui.data.RelationKind.AGGREGATION));
+
+        Optional<RelationType> uiRelation1inherited = uiT3.get().getRelations().stream().filter(r -> r.getName().equals(relation1.getName())).findAny();
+        assertTrue(uiRelation1inherited.isPresent());
+        assertTrue(uiRelation1inherited.get().isIsCollection());
+        assertTrue(uiRelation1inherited.get().getTarget().equals(uiT4.get()));
+        assertTrue(uiRelation1inherited.get().getMemberType().equals(hu.blackbelt.judo.meta.ui.data.MemberType.TRANSIENT));
+        assertTrue(uiRelation1inherited.get().getRelationKind().equals(hu.blackbelt.judo.meta.ui.data.RelationKind.AGGREGATION));
         
-        assertTrue(uiT3.get().getRelations().stream().anyMatch(r -> r.getName().equals(uiRelation1.get().getName())));
-        assertTrue(uiT3.get().getRelations().stream().anyMatch(r -> r.getName().equals(uiRelation2.get().getName())));
-        assertTrue(uiT3.get().getRelations().stream().anyMatch(r -> r.getName().equals(uiRelation3.get().getName())));
+        Optional<RelationType> uiRelation2inherited = uiT3.get().getRelations().stream().filter(r -> r.getName().equals(relation3.getName())).findAny();
+        assertTrue(uiRelation2inherited.isPresent());
+        assertTrue(uiRelation2inherited.get().isIsCollection());
+        assertTrue(uiRelation2inherited.get().getTarget().equals(uiT4.get()));
+        assertTrue(uiRelation2inherited.get().getMemberType().equals(hu.blackbelt.judo.meta.ui.data.MemberType.MAPPED));
+        assertTrue(uiRelation2inherited.get().getRelationKind().equals(hu.blackbelt.judo.meta.ui.data.RelationKind.ASSOCIATION));
+        
+        Optional<RelationType> uiRelation3inherited = uiT3.get().getRelations().stream().filter(r -> r.getName().equals(relation4.getName())).findAny();
+        assertTrue(uiRelation3inherited.isPresent());
+        assertFalse(uiRelation3inherited.get().isIsCollection());
+        assertTrue(uiRelation3inherited.get().getTarget().equals(uiT4.get()));
+        assertTrue(uiRelation3inherited.get().getMemberType().equals(hu.blackbelt.judo.meta.ui.data.MemberType.DERIVED));
+        assertTrue(uiRelation3inherited.get().getRelationKind().equals(hu.blackbelt.judo.meta.ui.data.RelationKind.AGGREGATION));
     }
     
     @Test
@@ -859,8 +876,7 @@ public class Esm2UiDataTest {
                 .withDeleteable(false)
                 .withAttributes(stored1, derived1)
                 .build();
-        useEntityType(e1).withMappedEntity(e1)
-        	.withAttributes(stored1, derived1).build();
+        useEntityType(e1).withMappedEntity(e1).build();
         final EntityType e2 = newEntityTypeBuilder()
                 .withName(ENTITY_TYPE_NAME_2)
                 .withCreateable(false)
@@ -877,9 +893,9 @@ public class Esm2UiDataTest {
                 .withUpdateable(false)
                 .withDeleteable(false)
                 .withGeneralizations(newGeneralizationBuilder().withTarget(e2).build())
+            	.withAttributes(stored2, derived2)
                 .build();
-        useEntityType(e3).withMappedEntity(e3)
-        	.withAttributes(stored2, derived2).build();
+        useEntityType(e3).withMappedEntity(e3).build();
         
         DataMember stored3 = newDataMemberBuilder().withName("stored").withDataType(str).withMemberType(MemberType.STORED).build();
         DataMember derived3 = newDataMemberBuilder().withName("derived").withDataType(number).withGetterExpression("1+1").withMemberType(MemberType.DERIVED).build();
@@ -888,9 +904,9 @@ public class Esm2UiDataTest {
                 .withCreateable(false)
                 .withUpdateable(false)
                 .withDeleteable(false)
+            	.withAttributes(stored3, derived3)
                 .build();
-        useEntityType(e4).withMappedEntity(e4)
-        	.withAttributes(stored3, derived3).build();
+        useEntityType(e4).withMappedEntity(e4).build();
         
         final EntityType e5 = newEntityTypeBuilder()
                 .withName(ENTITY_TYPE_NAME_5)

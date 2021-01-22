@@ -561,7 +561,7 @@ public class Esm2UiPageDefinitionTest {
         assertTrue(uiE2.get().getRelations().contains(rel1PageCreate.get().getDataElement()) && rel1PageCreate.get().getDataElement().getName().equals(relation1.getName()));
         
         final Optional<PageDefinition> rel1PageUpdate = application.get().getPages().stream()
-        		.filter(c -> c.getPageType().equals(PageType.UPDATE) && c.getName().equals(EsmUtils.getNamespaceElementFQName(e2) + "." + relation1.getName() + "#Update")).findAny();
+        		.filter(c -> c.getPageType().equals(PageType.UPDATE) && c.getName().equals(EsmUtils.getNamespaceElementFQName(e2) + "." + relation1.getName() + "#Edit")).findAny();
         assertFalse(rel1PageUpdate.isPresent());
 
       //exposed stored composition: view
@@ -575,7 +575,7 @@ public class Esm2UiPageDefinitionTest {
         assertFalse(rel2PageCreate.isPresent());
         
         final Optional<PageDefinition> rel2PageUpdate = application.get().getPages().stream()
-        		.filter(c -> c.getPageType().equals(PageType.UPDATE) && c.getName().equals(EsmUtils.getNamespaceElementFQName(e2) + "." + relation2.getName() + "#Update")).findAny();
+        		.filter(c -> c.getPageType().equals(PageType.UPDATE) && c.getName().equals(EsmUtils.getNamespaceElementFQName(e2) + "." + relation2.getName() + "#Edit")).findAny();
         assertFalse(rel2PageUpdate.isPresent());
         
         final Optional<PageDefinition> rel2PageTable = application.get().getPages().stream()
@@ -593,7 +593,7 @@ public class Esm2UiPageDefinitionTest {
         assertFalse(rel3PageCreate.isPresent());
         
         final Optional<PageDefinition> rel3PageUpdate = application.get().getPages().stream()
-        		.filter(c -> c.getPageType().equals(PageType.UPDATE) && c.getName().equals(EsmUtils.getNamespaceElementFQName(e2) + "." + relation3.getName() + "#Update")).findAny();
+        		.filter(c -> c.getPageType().equals(PageType.UPDATE) && c.getName().equals(EsmUtils.getNamespaceElementFQName(e2) + "." + relation3.getName() + "#Edit")).findAny();
         assertFalse(rel3PageUpdate.isPresent());
         
         //exposed derived updateable association: view, create, update, table
@@ -607,8 +607,9 @@ public class Esm2UiPageDefinitionTest {
         assertFalse(rel4PageCreate.isPresent());
         
         final Optional<PageDefinition> rel4PageUpdate = application.get().getPages().stream()
-        		.filter(c -> c.getPageType().equals(PageType.UPDATE) && c.getName().equals(EsmUtils.getNamespaceElementFQName(e2) + "." + relation4.getName() + "#Update")).findAny();
-        assertFalse(rel4PageUpdate.isPresent());
+        		.filter(c -> c.getPageType().equals(PageType.UPDATE) && c.getName().equals(EsmUtils.getNamespaceElementFQName(e2) + "." + relation4.getName() + "#Edit")).findAny();
+        assertTrue(rel4PageUpdate.isPresent());
+        assertTrue(uiE2.get().getRelations().contains(rel4PageUpdate.get().getDataElement()) && rel4PageUpdate.get().getDataElement().getName().equals(relation4.getName()));
         
         final Optional<PageDefinition> rel4PageTable = application.get().getPages().stream()
         		.filter(c -> c.getPageType().equals(PageType.TABLE) && c.getName().equals(EsmUtils.getNamespaceElementFQName(e2) + "." + relation4.getName() + "#Table")).findAny();

@@ -15,7 +15,9 @@ import static hu.blackbelt.judo.meta.esm.structure.util.builder.StructureBuilder
 import static hu.blackbelt.judo.meta.esm.structure.util.builder.StructureBuilders.newEntityTypeBuilder;
 import static hu.blackbelt.judo.meta.esm.structure.util.builder.StructureBuilders.newGeneralizationBuilder;
 import static hu.blackbelt.judo.meta.esm.structure.util.builder.StructureBuilders.newOneWayRelationMemberBuilder;
+import static hu.blackbelt.judo.meta.esm.structure.util.builder.StructureBuilders.newTransferObjectTypeBuilder;
 import static hu.blackbelt.judo.meta.esm.structure.util.builder.StructureBuilders.useEntityType;
+import static hu.blackbelt.judo.meta.esm.structure.util.builder.StructureBuilders.useTransferObjectType;
 import static hu.blackbelt.judo.meta.esm.type.util.builder.TypeBuilders.newNumericTypeBuilder;
 import static hu.blackbelt.judo.meta.esm.type.util.builder.TypeBuilders.newStringTypeBuilder;
 import static hu.blackbelt.judo.meta.esm.ui.util.builder.UiBuilders.newDataColumnBuilder;
@@ -62,6 +64,7 @@ import hu.blackbelt.judo.meta.esm.structure.EntityType;
 import hu.blackbelt.judo.meta.esm.structure.MemberType;
 import hu.blackbelt.judo.meta.esm.structure.OneWayRelationMember;
 import hu.blackbelt.judo.meta.esm.structure.RelationKind;
+import hu.blackbelt.judo.meta.esm.structure.TransferObjectType;
 import hu.blackbelt.judo.meta.esm.type.NumericType;
 import hu.blackbelt.judo.meta.esm.type.StringType;
 import hu.blackbelt.judo.meta.ui.AddAction;
@@ -687,6 +690,282 @@ public class Esm2UiOperationsTest {
         assertEquals(e3op3OutputPage.get(), callOp5.get().getOutputParameterPage());
         assertEquals(e3op3InputPage.get(), callOp5.get().getInputParameterPage());
         assertEquals(uiE3Op3.get(), ((Button)callOp5.get().eContainer()).getDataElement());
+    }
+    
+    @Test
+    void testClonePages() throws Exception {
+        testName = "testClonePages";
+        StringType str = newStringTypeBuilder().withName("string").withMaxLength(8).build();
+        NumericType number = newNumericTypeBuilder().withName("number").withPrecision(2).withScale(1).build();
+        final String MODEL_NAME = "Model";
+        final String TRANSFER_OBJECT_TYPE_NAME_1 = "T1";
+        final String TRANSFER_OBJECT_TYPE_NAME_2 = "T2";
+        final String TRANSFER_OBJECT_TYPE_NAME_3 = "T3";
+        final String TRANSFER_OBJECT_TYPE_NAME_4 = "T4";
+        final String ENTITY_TYPE_NAME_1 = "E1";
+        final String ENTITY_TYPE_NAME_2 = "E2";
+        final String ENTITY_TYPE_NAME_3 = "E3";
+        final String ENTITY_TYPE_NAME_4 = "E4";
+        final String ACTOR_TYPE_NAME = "Actor";
+        
+        ActorType actor = newActorTypeBuilder()
+                .withName(ACTOR_TYPE_NAME)
+                .withRealm("sandbox")
+                .build();
+        
+        DataMember stored1 = newDataMemberBuilder().withName("stored").withDataType(str).withMemberType(MemberType.STORED).build();
+        DataMember derived1 = newDataMemberBuilder().withName("derived").withDataType(number).withGetterExpression("1+1").withMemberType(MemberType.DERIVED).build();
+        final EntityType e1 = newEntityTypeBuilder()
+                .withName(ENTITY_TYPE_NAME_1)
+                .withCreateable(false)
+                .withUpdateable(false)
+                .withDeleteable(false)
+                .withAttributes(stored1, derived1)
+                .build();
+        useEntityType(e1).withMappedEntity(e1).build();
+        
+        final EntityType e2 = newEntityTypeBuilder()
+                .withName(ENTITY_TYPE_NAME_2)
+                .withCreateable(false)
+                .withUpdateable(false)
+                .withDeleteable(false)
+                .withGeneralizations(newGeneralizationBuilder().withTarget(e1).build())
+                .build();
+        useEntityType(e2).withMappedEntity(e2).build();
+        
+        DataMember stored2 = newDataMemberBuilder().withName("stored2").withDataType(str).withMemberType(MemberType.STORED).build();
+        DataMember derived2 = newDataMemberBuilder().withName("derived2").withDataType(number).withGetterExpression("1+1").withMemberType(MemberType.DERIVED).build();
+        final EntityType e3 = newEntityTypeBuilder()
+                .withName(ENTITY_TYPE_NAME_3)
+                .withCreateable(false)
+                .withUpdateable(false)
+                .withDeleteable(false)
+                .withGeneralizations(newGeneralizationBuilder().withTarget(e2).build())
+            	.withAttributes(stored2, derived2)
+                .build();
+        useEntityType(e3).withMappedEntity(e3).build();
+        
+        DataMember stored3 = newDataMemberBuilder().withName("stored").withDataType(str).withMemberType(MemberType.STORED).build();
+        DataMember derived3 = newDataMemberBuilder().withName("derived").withDataType(number).withGetterExpression("1+1").withMemberType(MemberType.DERIVED).build();
+        final EntityType e4 = newEntityTypeBuilder()
+                .withName(ENTITY_TYPE_NAME_4)
+                .withCreateable(false)
+                .withUpdateable(false)
+                .withDeleteable(false)
+            	.withAttributes(stored3, derived3)
+                .build();
+        useEntityType(e4).withMappedEntity(e4).build();
+        
+        DataMember stored1mapping = newDataMemberBuilder().withName("stored").withDataType(str).withMemberType(MemberType.MAPPED)
+        		.withBinding(stored1).build();
+        final TransferObjectType t1 = newTransferObjectTypeBuilder()
+                .withName(TRANSFER_OBJECT_TYPE_NAME_1)
+                .withCreateable(false)
+                .withUpdateable(false)
+                .withDeleteable(false)
+                .build();
+        useTransferObjectType(t1).withMappedEntity(e1)
+        	.withAttributes(stored1mapping).build();
+        final TransferObjectType t2 = newTransferObjectTypeBuilder()
+                .withName(TRANSFER_OBJECT_TYPE_NAME_2)
+                .withCreateable(false)
+                .withUpdateable(false)
+                .withDeleteable(false)
+                .withGeneralizations(newGeneralizationBuilder().withTarget(t1).build())
+                .build();
+        useTransferObjectType(t2).withMappedEntity(e2).build();
+        DataMember stored2mapping = newDataMemberBuilder().withName("stored2").withDataType(str).withMemberType(MemberType.MAPPED)
+        		.withBinding(stored2).build();
+        DataMember derived2mapping = newDataMemberBuilder().withName("derived2").withDataType(number).withGetterExpression("1+1").withMemberType(MemberType.MAPPED)
+        		.withBinding(derived2).build();
+        DataMember transientMember = newDataMemberBuilder().withName("transient").withDataType(str).withMemberType(MemberType.TRANSIENT)
+        		.withBinding(stored2).build();
+        final TransferObjectType t3 = newTransferObjectTypeBuilder()
+                .withName(TRANSFER_OBJECT_TYPE_NAME_3)
+                .withCreateable(false)
+                .withUpdateable(false)
+                .withDeleteable(false)
+                .withGeneralizations(newGeneralizationBuilder().withTarget(t2).build())
+                .build();
+        useTransferObjectType(t3).withMappedEntity(e3)
+        	.withAttributes(stored2mapping, derived2mapping, transientMember).build();
+        final TransferObjectType t4 = newTransferObjectTypeBuilder()
+                .withName(TRANSFER_OBJECT_TYPE_NAME_4)
+                .withCreateable(false)
+                .withUpdateable(false)
+                .withDeleteable(false)
+                .build();
+        useTransferObjectType(t4).withMappedEntity(e4).build();
+        
+        Access access1 = newAccessBuilder().withName("t1")
+        		.withTarget(t1)
+        		.withLower(0)
+        		.withUpper(-1)
+        		.withCreateable(true)
+        		.withUpdateable(true)
+        		.withDeleteable(true)
+        		.withTargetDefinedCRUD(false)
+        		.build();
+        
+        Access access2 = newAccessBuilder().withName("t3")
+        		.withTarget(t3)
+        		.withLower(0)
+        		.withUpper(-1)
+        		.withCreateable(true)
+        		.withUpdateable(true)
+        		.withDeleteable(true)
+        		.withTargetDefinedCRUD(false)
+        		.build();
+        
+        OneWayRelationMember relation1 = newOneWayRelationMemberBuilder()
+        		.withName("transientRelation")
+        		.withLower(0)
+        		.withUpper(-1)
+        		.withTarget(t4)
+        		.withMemberType(MemberType.TRANSIENT)
+        		.withRelationKind(RelationKind.AGGREGATION)
+        		.build();
+        OneWayRelationMember relation2 = newOneWayRelationMemberBuilder()
+        		.withName("binding")
+        		.withLower(0)
+        		.withUpper(-1)
+        		.withTarget(e4)
+        		.withMemberType(MemberType.STORED)
+        		.withRelationKind(RelationKind.ASSOCIATION)
+        		.withCreateable(true)
+        		.withUpdateable(true)
+        		.withDeleteable(true)
+        		.withTargetDefinedCRUD(false)
+        		.build();
+        OneWayRelationMember relation3 = newOneWayRelationMemberBuilder()
+        		.withName("mapped")
+        		.withLower(0)
+        		.withUpper(-1)
+        		.withTarget(t4)
+        		.withMemberType(MemberType.MAPPED)
+        		.withRelationKind(RelationKind.ASSOCIATION)
+        		.withCreateable(true)
+        		.withUpdateable(true)
+        		.withDeleteable(true)
+        		.withTargetDefinedCRUD(false)
+        		.withBinding(relation2)
+        		.build();
+        OneWayRelationMember relation4 = newOneWayRelationMemberBuilder()
+        		.withName("derived")
+        		.withLower(0)
+        		.withUpper(1)
+        		.withTarget(t4)
+        		.withMemberType(MemberType.DERIVED)
+        		.withRelationKind(RelationKind.AGGREGATION)
+        		.withCreateable(true)
+        		.withUpdateable(true)
+        		.withDeleteable(true)
+        		.withTargetDefinedCRUD(false)
+        		.withGetterExpression("self.mapped!head()")
+        		.build();
+        useEntityType(e1).withRelations(relation2).build();
+        useTransferObjectType(t1).withRelations(relation1, relation3, relation4).build();
+
+        useActorType(actor).withAccesses(access1, access2).build();
+        
+        final Model model = newModelBuilder().withName(MODEL_NAME)
+                .withElements(actor, t1, t2, t3, t4, e1, e2, e3, e4, str, number).build();
+
+        SimpleOrderModel.addUiElementsToTransferObjects(model);
+        
+        esmModel.addContent(model);
+        
+        transform();
+        
+        final Optional<Application> application = allUi(Application.class).filter(a -> a.getName().equals(actor.getFQName()))
+                .findAny();
+        assertTrue(application.isPresent());
+        
+        final Optional<ClassType> uiT1 = application.get().getDataElements().stream().filter(e -> e instanceof ClassType)
+        		.map(e -> (ClassType) e).filter(c -> c.getName().equals(EsmUtils.getNamespaceElementFQName(t1))).findAny();
+        assertTrue(uiT1.isPresent());
+        
+        final Optional<ClassType> uiT3 = application.get().getDataElements().stream().filter(e -> e instanceof ClassType)
+        		.map(e -> (ClassType) e).filter(c -> c.getName().equals(EsmUtils.getNamespaceElementFQName(t3))).findAny();
+        assertTrue(uiT3.isPresent());
+        
+        Optional<RelationType> uiRelation1 = uiT1.get().getRelations().stream().filter(r -> r.getName().equals(relation1.getName())).findAny();
+        assertTrue(uiRelation1.isPresent());
+        
+        Optional<RelationType> uiRelation2 = uiT1.get().getRelations().stream().filter(r -> r.getName().equals(relation3.getName())).findAny();
+        assertTrue(uiRelation2.isPresent());
+        
+        Optional<RelationType> uiRelation3 = uiT1.get().getRelations().stream().filter(r -> r.getName().equals(relation4.getName())).findAny();
+        assertTrue(uiRelation3.isPresent());
+
+        Optional<RelationType> uiRelation1inherited = uiT3.get().getRelations().stream().filter(r -> r.getName().equals(relation1.getName())).findAny();
+        assertTrue(uiRelation1inherited.isPresent());
+        
+        Optional<RelationType> uiRelation2inherited = uiT3.get().getRelations().stream().filter(r -> r.getName().equals(relation3.getName())).findAny();
+        assertTrue(uiRelation2inherited.isPresent());
+        
+        Optional<RelationType> uiRelation3inherited = uiT3.get().getRelations().stream().filter(r -> r.getName().equals(relation4.getName())).findAny();
+        assertTrue(uiRelation3inherited.isPresent());
+        
+        final Optional<PageDefinition> rel1Page = application.get().getPages().stream()
+        		.filter(c -> c.getPageType().equals(PageType.VIEW) && c.getName().equals(EsmUtils.getNamespaceElementFQName(t1) + "." + relation1.getName() + "#View")).findAny();
+        assertTrue(rel1Page.isPresent());
+        assertEquals(uiRelation1.get(), rel1Page.get().getDataElement());
+        
+        final Optional<PageDefinition> rel3Page = application.get().getPages().stream()
+        		.filter(c -> c.getPageType().equals(PageType.VIEW) && c.getName().equals(EsmUtils.getNamespaceElementFQName(t1) + "." + relation3.getName() + "#View")).findAny();
+        assertTrue(rel3Page.isPresent());
+        assertEquals(uiRelation2.get(), rel3Page.get().getDataElement());
+        
+        final Optional<PageDefinition> rel3PageCreate = application.get().getPages().stream()
+        		.filter(c -> c.getPageType().equals(PageType.CREATE) && c.getName().equals(EsmUtils.getNamespaceElementFQName(t1) + "." + relation3.getName() + "#Create")).findAny();
+        assertTrue(rel3PageCreate.isPresent());
+        assertEquals(uiRelation2.get(), rel3PageCreate.get().getDataElement());
+        
+        final Optional<PageDefinition> rel3PageUpdate = application.get().getPages().stream()
+        		.filter(c -> c.getPageType().equals(PageType.UPDATE) && c.getName().equals(EsmUtils.getNamespaceElementFQName(t1) + "." + relation3.getName() + "#Edit")).findAny();
+        assertTrue(rel3PageUpdate.isPresent());
+        assertEquals(uiRelation2.get(), rel3PageUpdate.get().getDataElement());
+        
+        final Optional<PageDefinition> rel4Page = application.get().getPages().stream()
+        		.filter(c -> c.getPageType().equals(PageType.VIEW) && c.getName().equals(EsmUtils.getNamespaceElementFQName(t1) + "." + relation4.getName() + "#View")).findAny();
+        assertTrue(rel4Page.isPresent());
+        assertEquals(uiRelation3.get(), rel4Page.get().getDataElement());
+        
+        final Optional<PageDefinition> rel4PageUpdate = application.get().getPages().stream()
+        		.filter(c -> c.getPageType().equals(PageType.UPDATE) && c.getName().equals(EsmUtils.getNamespaceElementFQName(t1) + "." + relation4.getName() + "#Edit")).findAny();
+        assertTrue(rel4PageUpdate.isPresent());
+        assertEquals(uiRelation3.get(), rel4PageUpdate.get().getDataElement());
+        
+        final Optional<PageDefinition> rel1PageInherited = application.get().getPages().stream()
+        		.filter(c -> c.getPageType().equals(PageType.VIEW) && c.getName().equals(EsmUtils.getNamespaceElementFQName(t3) + "." + relation1.getName() + "#View")).findAny();
+        assertTrue(rel1PageInherited.isPresent());
+        assertEquals(uiRelation1inherited.get(), rel1PageInherited.get().getDataElement());
+        
+        final Optional<PageDefinition> rel3PageInherited = application.get().getPages().stream()
+        		.filter(c -> c.getPageType().equals(PageType.VIEW) && c.getName().equals(EsmUtils.getNamespaceElementFQName(t3) + "." + relation3.getName() + "#View")).findAny();
+        assertTrue(rel3PageInherited.isPresent());
+        assertEquals(uiRelation2inherited.get(), rel3PageInherited.get().getDataElement());
+        
+        final Optional<PageDefinition> rel3PageInheritedCreate = application.get().getPages().stream()
+        		.filter(c -> c.getPageType().equals(PageType.CREATE) && c.getName().equals(EsmUtils.getNamespaceElementFQName(t3) + "." + relation3.getName() + "#Create")).findAny();
+        assertTrue(rel3PageInheritedCreate.isPresent());
+        assertEquals(uiRelation2inherited.get(), rel3PageInheritedCreate.get().getDataElement());
+        
+        final Optional<PageDefinition> rel3PageInheritedUpdate = application.get().getPages().stream()
+        		.filter(c -> c.getPageType().equals(PageType.UPDATE) && c.getName().equals(EsmUtils.getNamespaceElementFQName(t3) + "." + relation3.getName() + "#Edit")).findAny();
+        assertTrue(rel3PageInheritedUpdate.isPresent());
+        assertEquals(uiRelation2inherited.get(), rel3PageInheritedUpdate.get().getDataElement());
+        
+        final Optional<PageDefinition> rel4PageInherited = application.get().getPages().stream()
+        		.filter(c -> c.getPageType().equals(PageType.VIEW) && c.getName().equals(EsmUtils.getNamespaceElementFQName(t3) + "." + relation4.getName() + "#View")).findAny();
+        assertTrue(rel4PageInherited.isPresent());
+        assertEquals(uiRelation3inherited.get(), rel4PageInherited.get().getDataElement());
+        
+        final Optional<PageDefinition> rel4PageInheritedUpdate = application.get().getPages().stream()
+        		.filter(c -> c.getPageType().equals(PageType.UPDATE) && c.getName().equals(EsmUtils.getNamespaceElementFQName(t3) + "." + relation4.getName() + "#Edit")).findAny();
+        assertTrue(rel4PageInheritedUpdate.isPresent());
+        assertEquals(uiRelation3inherited.get(), rel4PageInheritedUpdate.get().getDataElement());
     }
     
     static <T> Stream<T> asStream(Iterator<T> sourceIterator, boolean parallel) {
