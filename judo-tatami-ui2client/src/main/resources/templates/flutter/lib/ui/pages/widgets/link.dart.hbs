@@ -1,0 +1,11 @@
+// {{dataElement.relationKind}} LINK
+{{# if dataElement.isRelationKindStatic }}
+{{/ if }}
+{{# if dataElement.isRelationKindAssociation }}
+{{/ if }}
+{{# if dataElement.isRelationKindAggregation }}
+{{> templates/flutter/lib/ui/pages/widgets/link/aggregationlink.dart.hbs link=this}}
+{{/ if }}
+{{# if dataElement.isRelationKindComposition }}
+{{> templates/flutter/lib/ui/pages/widgets/link/aggregationlink.dart.hbs link=this}}
+{{/ if }}

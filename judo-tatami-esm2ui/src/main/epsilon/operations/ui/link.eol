@@ -1,0 +1,84 @@
+operation UI!ui::Link calculateActions(application : UI!ui::Application, preview : Boolean) {
+	var relationType = self.getRelationType();
+	var classType = self.getTargetClassType();
+	
+	var pageDefinition = self.getPageDefinition();
+
+	var isChangeable = not ((relationType.relationKind == UI!ui::data::RelationKind#COMPOSITION or relationType.relationKind == UI!ui::data::RelationKind#AGGREGATION)
+	               and (pageDefinition.pageType == UI!ui::PageType#VIEW or pageDefinition.pageType == UI!ui::PageType#OPERATION_OUTPUT));
+
+	if (relationType.isDefined()) {
+		if (preview) {
+			var viewAction = new UI!ui::ViewAction();
+			viewAction.target = application.pages.selectOne(p | p.pageType = UI!ui::PageType#DASHBOARD);
+			self.actions.add(viewAction);
+		} else {
+			var page = application.pages.selectOne(p | p.pageType = UI!ui::PageType#VIEW and p.getRelationType() == relationType);
+			if (page.isDefined()) {
+				log.debug(" ========= LINK DEF: VIEW: " + relationType.name + " - " + page.name);
+			    var viewAction = new UI!ui::ViewAction();
+				viewAction.target = page;
+				self.actions.add(viewAction);
+			} else {
+				log.warn("No view page defined for: " + self.name + " - " + relationType.eContainer.name + "." + relationType.name);
+			}
+		}
+
+	    if (isChangeable) {
+	        if (classType.getIsClassBehaviourTypeDeletable()) {
+	            self.actions.add(new UI!ui::DeleteAction());
+	        }
+	    
+	        if (classType.getIsClassBehaviourTypeUpdatable()) {
+	            if (preview) {
+	                var editAction = new UI!ui::EditAction();
+	                editAction.target = application.pages.selectOne(p | p.pageType = UI!ui::PageType#DASHBOARD);
+	                self.actions.add(editAction);
+	            } else {
+	                var page = application.pages.selectOne(p | p.pageType = UI!ui::PageType#UPDATE and p.getRelationType() == relationType);
+	                if (page.isDefined()) {
+	                    log.debug(" ========= TABLE DEF: EDIT: " + relationType.name + " - " + page.name);
+	                    var editAction = new UI!ui::EditAction();
+	                    editAction.target = page;
+	                    self.actions.add(editAction);
+	                } else {
+	                    log.warn("No update page defined for: " + self.name  + " - " + relationType.eContainer.name + "." + relationType.name);
+	                }
+	            }
+	        }
+            if (relationType.getIsRelationBehaviourTypeCreatable()) {
+                if (preview) {
+	                var createAction = new UI!ui::CreateAction();
+	                createAction.target = application.pages.selectOne(p | p.pageType = UI!ui::PageType#DASHBOARD);
+	                self.actions.add(editAction);
+                } else {
+                    var page = application.pages.selectOne(p | p.pageType = UI!ui::PageType#CREATE and p.getRelationType() == relationType);
+                    if (page.isDefined()) {
+                        log.debug(" ========= PAGE DEF: CREATE: " + relationType.eContainer.name + "." + relationType.name + " - " + page.name);
+	                    var createAction = new UI!ui::CreateAction();
+	                    createAction.target = page;
+	                    self.actions.add(createAction);
+                    } else {
+                        log.warn("No create page defined for: " + self.name + " - " + relationType.eContainer.name + "." + relationType.name);
+                    }
+                }
+            }
+
+	        if (relationType.getIsRelationBehaviourTypeRemovable()) {
+	            self.actions.add(new UI!ui::RemoveAction());
+	        }
+
+	        if (relationType.getIsRelationBehaviourTypeUnsetable()) {
+	            self.actions.add(new UI!ui::UnsetAction());
+	        }
+	        
+            if (relationType.getIsRelationBehaviourTypeSetable()) {
+                self.actions.add(new UI!ui::SetAction());
+            }
+
+            if (relationType.getIsRelationBehaviourTypeAddable()) {
+                self.actions.add(new UI!ui::AddAction());
+            }
+	    }
+	}
+}
