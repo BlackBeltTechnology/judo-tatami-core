@@ -15,6 +15,32 @@ JudoButton(
         }
             {{/ unless }}
         {{/ unless }}
+        {{# if page.dataElement.isRelationKindAggregation }}
+            {{# if page.dataElement.target.isClassBehaviourTypeUpdateValidatable }}
+        if ({{ fqVariable page.name }}PageStore.validatable){
+            var res = await {{ fqVariable page.name }}PageStore.validate(target{{ className page.relationType.target.name }}Store)
+                .catchError((error) => ErrorHandler.errorDialog(context, error));
+            if (res != null) {
+                navigation.close(target{{ className page.dataElement.target.name }}Store);
+            }
+        } else {
+            navigation.close(target{{ className page.dataElement.target.name }}Store);
+        }
+            {{/ if }}
+        {{/ if }}
+        {{# if page.dataElement.isRelationKindComposition }}
+            {{# if page.dataElement.target.isClassBehaviourTypeUpdateValidatable }}
+        if ({{ fqVariable page.name }}PageStore.validatable){
+            var res = await {{ fqVariable page.name }}PageStore.validate(target{{ className page.relationType.target.name }}Store)
+                .catchError((error) => ErrorHandler.errorDialog(context, error));
+            if (res != null) {
+                navigation.close(target{{ className page.dataElement.target.name }}Store);
+            }
+        } else {
+            navigation.close(target{{ className page.dataElement.target.name }}Store);
+        }
+            {{/ if }}
+        {{/ if }}
     {{/ if }}
     {{# if page.isPageTypeCreate }}
         {{# unless page.dataElement.isRelationKindAggregation }}
