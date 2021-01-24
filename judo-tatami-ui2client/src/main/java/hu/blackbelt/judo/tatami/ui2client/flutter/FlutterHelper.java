@@ -48,6 +48,8 @@ public class FlutterHelper {
         context.registerFunction("isInputWidgetMapNeed", FlutterHelper.class.getDeclaredMethod("isInputWidgetMapNeed", new Class[]{PageDefinition.class}));
         context.registerFunction("isValidateHere", FlutterHelper.class.getDeclaredMethod("isValidateHere", new Class[]{PageDefinition.class}));
         context.registerFunction("getInputWidgets", FlutterHelper.class.getDeclaredMethod("getInputWidgets", new Class[]{Container.class}));
+        context.registerFunction("safe", FlutterHelper.class.getDeclaredMethod("safe", new Class[]{String.class, String.class}));
+
     }
 
     public static void registerHandlebars(Handlebars handlebars) {
@@ -61,7 +63,7 @@ public class FlutterHelper {
         return MemberType.TRANSIENT == attributeType.getMemberType();
     }
 
-   public static String mainAxisSize(Flex flex) {
+    public static String mainAxisSize(Flex flex) {
         return flex.getMainAxisSize().getLiteral().toLowerCase();
     }
 
@@ -298,5 +300,10 @@ public class FlutterHelper {
             }
         }
     }
+
+    public static String safe(String input, String defaultValue) {
+        return input == null || "".equals(input.trim()) ? defaultValue : input;
+    }
+
 
 }

@@ -12,7 +12,7 @@ operation UI!ui::VisualElement updateInheritedReferences(pageDef : UI!ui::PageDe
 		for (tab in self.tabs) {
 			tab.element.updateInheritedReferences(pageDef);
 		}
-	} else if (self.isKindOf(UI!ui::Table)) {
+	} else if (self.isKindOf(UI!ui::Table) or self.isKindOf(UI!ui::Link)) {
 		
 		var old = self.dataElement; 
 		
@@ -22,9 +22,16 @@ operation UI!ui::VisualElement updateInheritedReferences(pageDef : UI!ui::PageDe
 				log.debug("Changed table page's data element from " + old.eContainer.name + "." + old.name + " to " + self.dataElement.eContainer.name + "." + self.dataElement.name );
 			}
 		}
-		for (col in self.columns) {
-			col.updateInheritedReferences(pageDef);
+		if (self.isKindOf(UI!ui::Table)) {
+            for (col in self.columns) {
+                col.updateInheritedReferences(pageDef);
+            }
+		} else {
+            for (part in self.parts) {
+                part.updateInheritedReferences(pageDef);
+            }
 		}
+
 	} else if (self.isKindOf(UI!ui::Button)) {
 		if (self.action.isKindOf(UI!ui::PageAction)) {
 			if (self.dataElement <> self.action.target.dataElement) {
