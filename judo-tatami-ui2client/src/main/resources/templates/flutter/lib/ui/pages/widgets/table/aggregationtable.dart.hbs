@@ -20,30 +20,33 @@ Observer(builder: (_) {
             {{/ unless }}
         },
         {{/if}}
-        {{#if rowAction.isCreateAction}}
-        {{# unless relation.isAccess}} target{{ className relation.owner.name }}Store.internal__updatable ?{{/ unless}} (element) async {
-            var created = await navigation.open(Routes.{{ fqVariable rowAction.target.name }}Page);
-            if (created != null) {
-                {{ fqVariable page.name }}PageStore.create{{ fqClass relation.name }}({{# unless relation.isAccess}}target{{ className relation.owner.name }}Store ,{{/ unless}}created)
-                    .catchError((error) => ErrorHandler.errorDialog(context, error));
-            }
-        }{{# unless relation.isAccess}} : null{{/ unless}},
-        {{/if}}
         {{#if rowAction.isEditAction}}
         navigateToEditPageAction:{{# unless relation.isAccess}} target{{ className relation.owner.name }}Store.internal__updatable ?{{/ unless}} (element) async {
             {{ fqClass relationType.target.name }}Store cloned = {{ fqClass relationType.target.name }}Store();
             cloned.updateWith(element);
             var res = await navigation.open(Routes.{{ fqVariable rowAction.target.name }}Page,
-            arguments: {{ fqClass rowAction.target.name }}PageArguments(target{{ className relation.target.name }}Store: cloned));
+            arguments: {{ fqClass rowAction.target.name }}PageArguments(target{{ className relation.target.name }}Store: cloned, validatable: {{ fqVariable page.name }}PageStore.validatable));
             if (res != null) {
                 element.updateWith(cloned);
                 var updated = await {{ fqVariable page.name }}PageStore.update{{ className relation.target.name }}(element)
                     .catchError((error) => ErrorHandler.errorDialog(context, error));
+                {{# if (isValidateHere page) }}
+                    {{# unless page.dataElement.isRelationKindAggregation }}
+                        {{# unless page.dataElement.isRelationKindComposition }}
+                var validate = await {{ fqVariable page.name }}PageStore.validate({{# unless page.dataElement.isAccess}}owner{{ className page.dataElement.owner.name }}Store, {{/unless}}target{{ className page.dataElement.target.name }}Store)
+                    .catchError((error) => ErrorHandler.errorDialog(context, error));
+                if (validate != null) {
+                    target{{ className relation.owner.name }}Store.updateWith(validate);
+                }
+                        {{/unless}}
+                    {{/unless}}
+                {{ else }}
                 if (updated != null) {
                     element.updateWith(updated);
                     {{ fqVariable page.name }}PageStore.get{{ fqClass relation.name }}({{# unless relation.isAccess}}target{{ className relation.owner.name }}Store{{/ unless}})
                         .catchError((error) => ErrorHandler.errorDialog(context, error));
                 }
+                {{/if}}
             }
         }{{# unless relation.isAccess}} : null{{/ unless}},
         {{/if}}
