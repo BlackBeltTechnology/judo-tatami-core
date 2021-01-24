@@ -3,7 +3,7 @@
 Observer(builder: (_) {
     return JudoLink(
         label: '{{ label }}',
-        icon: Icon(Icons.{{ icon }}),
+        icon: Icon(Icons.{{ safe icon 'texture' }}),
         disabled: {{ disabled }},
         {{# if page.isPageTypeView }}
         readOnly: true,
