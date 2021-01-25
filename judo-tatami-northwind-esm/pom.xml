@@ -259,10 +259,11 @@
             <properties>
                 <script.executor>powershell.exe</script.executor>
                 <flutter.create.execute>-c .\flutterw.ps1 create -t app --project-name ${client-project-name.fixed} --platforms web --org ${project.groupId} .\\</flutter.create.execute>
-                <flutter.clean.execute>-c .\flutterw.ps1 clean .\\</flutter.clean.execute>
-                <flutter.get.execute>-c .\flutterw.ps1 pub get .\\</flutter.get.execute>
-                <flutter.buildrunner.execute>-c .\flutterw.ps1 pub run build_runner build --delete-conflicting-outputs .\\</flutter.buildrunner.execute>
-                <flutter.build.execute>-c .\flutterw.ps1 build web .\\</flutter.build.execute>
+                <flutter.config.web.execute>-c .\flutterw.ps1 config --enable-web</flutter.config.web.execute>
+                <flutter.clean.execute>-c .\flutterw.ps1 clean</flutter.clean.execute>
+                <flutter.get.execute>-c .\flutterw.ps1 pub get</flutter.get.execute>
+                <flutter.buildrunner.execute>-c .\flutterw.ps1 pub run build_runner build --delete-conflicting-outputs</flutter.buildrunner.execute>
+                <flutter.build.execute>-c .\flutterw.ps1 build web</flutter.build.execute>
             </properties>
         </profile>
         <profile>
@@ -275,6 +276,7 @@
             <properties>
                 <script.executor>bash</script.executor>
                 <flutter.create.execute>-c "chmod +x ./flutterw;./flutterw create -t app --project-name ${client-project-name.fixed} --platforms web --org ${project.groupId} ./"</flutter.create.execute>
+                <flutter.config.web.execute>-c "chmod +x ./flutterw;./flutterw config --enable-web"</flutter.config.web.execute>
                 <flutter.clean.execute>-c "chmod +x ./flutterw;./flutterw clean"</flutter.clean.execute>
                 <flutter.get.execute>-c "chmod +x ./flutterw;./flutterw pub get"</flutter.get.execute>
                 <flutter.buildrunner.execute>-c "chmod +x ./flutterw;./flutterw pub run build_runner build --delete-conflicting-outputs"</flutter.buildrunner.execute>
@@ -369,6 +371,20 @@
                                     <commandlineArgs>${flutter.create.execute}</commandlineArgs>
                                 </configuration>
                             </execution>
+
+                            <execution>
+                                <id>flutter-config-web-enable</id>
+                                <goals>
+                                    <goal>exec</goal>
+                                </goals>
+                                <phase>compile</phase>
+                                <configuration>
+                                    <workingDirectory>${client-target-dir}/.skeleton</workingDirectory>
+                                    <executable>${script.executor}</executable>
+                                    <commandlineArgs>${flutter.config.web.execute}</commandlineArgs>
+                                </configuration>
+                            </execution>
+                            
 
                             <!-- INTERNAL USER -->
                             <execution>
