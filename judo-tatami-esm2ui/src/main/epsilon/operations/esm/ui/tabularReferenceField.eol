@@ -46,12 +46,12 @@ operation ESM!esm::ui::TabularReferenceField createTableFromTabularReferenceFiel
             table = new UI!ui::Link();
             for (column in self.columns) {
         		table.row = 1.0d;
-                var col : UI!ui::Formatted = column.dataFeature.getMember().getDataType().formatted();
-                col.name = column.name;
-                col.label = column.getUiLabel();
-                col.attributeType = column.dataFeature.getMember().mapAttributeType(application, relation.target.mapClassType(application));
+                var part : UI!ui::Formatted = column.dataFeature.getMember().getDataType().formatted();
+                part.name = column.name;
+                part.label = column.getUiLabel();
+                part.attributeType = column.dataFeature.getMember().mapAttributeType(application, relation.target.mapClassType(application));
 
-                table.parts.add(col);
+                table.parts.add(part);
             }
         } else {
             table = new UI!ui::Table();

@@ -76,6 +76,7 @@ import hu.blackbelt.judo.meta.ui.CreateAction;
 import hu.blackbelt.judo.meta.ui.DeleteAction;
 import hu.blackbelt.judo.meta.ui.EditAction;
 import hu.blackbelt.judo.meta.ui.Flex;
+import hu.blackbelt.judo.meta.ui.Link;
 import hu.blackbelt.judo.meta.ui.PageContainer;
 import hu.blackbelt.judo.meta.ui.PageDefinition;
 import hu.blackbelt.judo.meta.ui.PageType;
@@ -281,15 +282,11 @@ public class Esm2UiOperationsTest {
         assertEquals(1, ((Table)uiTable1Table.get()).getRowActions().size());
         assertTrue(((Table)uiTable1Table.get()).getRowActions().stream().anyMatch(a -> a instanceof ViewAction));
         
-        final Optional<VisualElement> uiTable2 = ((Flex)viewContainerE1View.get()).getChildren().stream()
-        		.filter(c -> c instanceof Flex && c.getName().equals(relation5.getName())).findAny();
-        assertTrue(uiTable2.isPresent());
-        final Optional<VisualElement> instanceActionsUiTable2 = ((Flex)uiTable2.get()).getChildren().stream().filter(c -> c instanceof Flex && c.getName().equals("instanceActions")).findAny();
-        assertFalse(instanceActionsUiTable2.isPresent());
-        final Optional<VisualElement> uiTable2Table = ((Flex)uiTable2.get()).getChildren().stream().filter(c -> c instanceof Table).findAny();
-        assertTrue(uiTable2Table.isPresent());
-        assertEquals(1, ((Table)uiTable2Table.get()).getRowActions().size());
-        assertTrue(((Table)uiTable2Table.get()).getRowActions().stream().anyMatch(a -> a instanceof ViewAction));
+        final Optional<VisualElement> uiLink1 = ((Flex)viewContainerE1View.get()).getChildren().stream()
+        		.filter(c -> c instanceof Link && c.getName().equals(relation5.getName())).findAny();
+        assertTrue(uiLink1.isPresent());
+        assertEquals(1, ((Link)uiLink1.get()).getActions().size());
+        assertTrue(((Link)uiLink1.get()).getActions().stream().anyMatch(a -> a instanceof ViewAction));
         
         final Optional<PageDefinition> e1CreatePage = application.get().getPages().stream()
         		.filter(p -> p.getPageType().equals(PageType.CREATE) && p.getDataElement().getName().equals(access1.getName())).findAny();
@@ -319,19 +316,14 @@ public class Esm2UiOperationsTest {
         assertTrue(((Table)uiTable3Table.get()).getRowActions().stream().anyMatch(a -> a instanceof DeleteAction));
         assertTrue(((Table)uiTable3Table.get()).getRowActions().stream().anyMatch(a -> a instanceof EditAction));
         
-        final Optional<VisualElement> uiTable4 = ((Flex)viewContainerE1Create.get()).getChildren().stream()
-        		.filter(c -> c instanceof Flex && c.getName().equals(relation5.getName())).findAny();
-        assertTrue(uiTable4.isPresent());
-        final Optional<VisualElement> instanceActionsUiTable4 = ((Flex)uiTable4.get()).getChildren().stream().filter(c -> c instanceof Flex && c.getName().equals("instanceActions")).findAny();
-        assertTrue(instanceActionsUiTable4.isPresent());
-        assertEquals(1, ((Flex)instanceActionsUiTable4.get()).getChildren().size());
-        assertTrue(((Flex)instanceActionsUiTable4.get()).getChildren().stream().anyMatch(b -> b instanceof Button && ((Button)b).getAction() != null && ((Button)b).getAction() instanceof CreateAction));
-        final Optional<VisualElement> uiTable4Table = ((Flex)uiTable4.get()).getChildren().stream().filter(c -> c instanceof Table).findAny();
-        assertTrue(uiTable4Table.isPresent());
-        assertEquals(3, ((Table)uiTable4Table.get()).getRowActions().size());
-        assertTrue(((Table)uiTable4Table.get()).getRowActions().stream().anyMatch(a -> a instanceof ViewAction));
-        assertTrue(((Table)uiTable4Table.get()).getRowActions().stream().anyMatch(a -> a instanceof DeleteAction));
-        assertTrue(((Table)uiTable4Table.get()).getRowActions().stream().anyMatch(a -> a instanceof EditAction));
+        final Optional<VisualElement> uiLink2 = ((Flex)viewContainerE1Create.get()).getChildren().stream()
+        		.filter(c -> c instanceof Link && c.getName().equals(relation5.getName())).findAny();
+        assertTrue(uiLink2.isPresent());
+        assertEquals(4, ((Link)uiLink2.get()).getActions().size());
+        assertTrue(((Link)uiLink2.get()).getActions().stream().anyMatch(a -> a instanceof ViewAction));
+        assertTrue(((Link)uiLink2.get()).getActions().stream().anyMatch(a -> a instanceof DeleteAction));
+        assertTrue(((Link)uiLink2.get()).getActions().stream().anyMatch(a -> a instanceof EditAction));
+        assertTrue(((Link)uiLink2.get()).getActions().stream().anyMatch(a -> a instanceof CreateAction));
         
         final Optional<PageDefinition> e1EditPage = application.get().getPages().stream()
         		.filter(p -> p.getPageType().equals(PageType.UPDATE) && p.getDataElement().getName().equals(access1.getName())).findAny();
