@@ -1,21 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-
+    
     <parent>
         <groupId>hu.blackbelt.judo.tatami</groupId>
         <artifactId>judo-tatami-parent</artifactId>
         <version>1.1.0-SNAPSHOT</version>
         <relativePath>..</relativePath>
     </parent>
-
+    
     <artifactId>judo-tatami-northwind-esm</artifactId>
     <packaging>bundle</packaging>
     <name>Judo :: Tatami :: Northwind Model Deployable ESM</name>
+    
+    <properties>
+        <modelFile>${project.basedir}/target/classes/model/northwind-esm.model</modelFile>
+        <modelName>northwind</modelName>
+        <client-target-dir>${project.basedir}/target/frontend</client-target-dir>
+        <client-project-name>${project.artifactId}</client-project-name>
+        <client-generated-actors>*</client-generated-actors>
+        <flutter-home>${project.basedir}/.flutter</flutter-home>
+    </properties>
+
 
     <build>
         <plugins>
-
+            
             <!-- 1. Unpack ESM model -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -48,7 +58,8 @@
                     </dependency>
                 </dependencies>
             </plugin>
-
+            
+            <!-- -->
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>exec-maven-plugin</artifactId>
@@ -72,7 +83,7 @@
                             <cleanupDaemonThreads>false</cleanupDaemonThreads>
                         </configuration>
                     </execution>
-
+                    
                     <execution>
                         <id>generate-ui</id>
                         <phase>generate-sources</phase>
@@ -91,7 +102,7 @@
                             <cleanupDaemonThreads>false</cleanupDaemonThreads>
                         </configuration>
                     </execution>
-
+                    
                     <execution>
                         <id>generate-client-flutter</id>
                         <phase>compile</phase>
@@ -106,9 +117,6 @@
                                 <argument>${basedir}/target/classes/model/client</argument>
                                 <argument>flutter/flutter.yaml</argument>
                                 <argument>*</argument>
-                                <!--
-                                <argument>/Users/robson/Project/judo-ng/eclipse/judo-epp-designer/designer-product/target/products/hu.blackbelt.judo.eclipse.epp.package.designer.product/macosx/cocoa/x86_64/JudoDesigner.app/Contents/MacOS/judo-designer-workspace/Judo_Default_Project/flutter-client</argument>
-                                -->
                                 <argument>${basedir}/target/classes/model/META-INF</argument>
                                 <argument>${basedir}/target/classes/model</argument>
                             </arguments>
@@ -117,7 +125,7 @@
                             <cleanupDaemonThreads>false</cleanupDaemonThreads>
                         </configuration>
                     </execution>
-
+                    
                 </executions>
                 <dependencies>
                     <dependency>
@@ -142,7 +150,7 @@
                     </dependency>
                 </dependencies>
             </plugin>
-
+            
             <plugin>
                 <groupId>hu.blackbelt.judo.tatami</groupId>
                 <artifactId>judo-tatami-workflow-maven-plugin</artifactId>
@@ -171,7 +179,7 @@
                     </dependency>
                 </dependencies>
             </plugin>
-
+            <!-- -->
             <plugin>
                 <groupId>org.apache.felix</groupId>
                 <artifactId>maven-bundle-plugin</artifactId>
@@ -181,13 +189,13 @@
                     <instructions>
                         <Judo-Models>name=northwind</Judo-Models>
                         <Include-Resource>
-                          {maven-resources},
-                          target/classes
+                            {maven-resources},
+                            target/classes
                         </Include-Resource>
                     </instructions>
                 </configuration>
             </plugin>
-
+            
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>build-helper-maven-plugin</artifactId>
@@ -211,10 +219,10 @@
                     </execution>
                 </executions>
             </plugin>
-
+            
         </plugins>
     </build>
-
+    
     <dependencies>
         <dependency>
             <groupId>org.slf4j</groupId>
@@ -227,5 +235,313 @@
             <version>${project.version}</version>
         </dependency>
     </dependencies>
+    
+    <profiles>
+        <profile>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+                <property>
+                    <name>!myproperty</name>
+                </property>
+            </activation>
+            <properties>
+                <myproperty>some value</myproperty>
+            </properties>
+        </profile>
+        
+        <profile>
+            <id>Windows</id>
+            <activation>
+                <os>
+                    <family>Windows</family>
+                </os>
+            </activation>
+            <properties>
+                <script.executor>powershell.exe</script.executor>
+                <flutter.create.execute>-c .\flutterw.ps1 create -t app --project-name ${client-project-name.fixed} --platforms web --org ${project.groupId} .\\</flutter.create.execute>
+                <flutter.clean.execute>-c .\flutterw.ps1 clean .\\</flutter.clean.execute>
+                <flutter.get.execute>-c .\flutterw.ps1 pub get .\\</flutter.get.execute>
+                <flutter.buildrunner.execute>-c .\flutterw.ps1 pub run build_runner build --delete-conflicting-outputs .\\</flutter.buildrunner.execute>
+                <flutter.build.execute>-c .\flutterw.ps1 build web .\\</flutter.build.execute>
+            </properties>
+        </profile>
+        <profile>
+            <id>unix</id>
+            <activation>
+                <os>
+                    <family>unix</family>
+                </os>
+            </activation>
+            <properties>
+                <script.executor>bash</script.executor>
+                <flutter.create.execute>-c "chmod +x ./flutterw;./flutterw create -t app --project-name ${client-project-name.fixed} --platforms web --org ${project.groupId} ./"</flutter.create.execute>
+                <flutter.clean.execute>-c "chmod +x ./flutterw;./flutterw clean"</flutter.clean.execute>
+                <flutter.get.execute>-c "chmod +x ./flutterw;./flutterw pub get"</flutter.get.execute>
+                <flutter.buildrunner.execute>-c "chmod +x ./flutterw;./flutterw pub run build_runner build --delete-conflicting-outputs"</flutter.buildrunner.execute>
+                <flutter.build.execute>-c "chmod +x ./flutterw;./flutterw build web"</flutter.build.execute>
+            </properties>
+        </profile>
+        
+        <profile>
+            <id>compile-flutter-client</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <!-- Correct project name in dart -->
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>build-helper-maven-plugin</artifactId>
+                        <version>3.2.0</version>
+                        <executions>
+                            <execution>
+                                <phase>validate</phase>
+                                <id>fix-client-project-name</id>
+                                <goals>
+                                    <goal>regex-property</goal>
+                                </goals>
+                                <configuration>
+                                    <name>client-project-name.fixed</name>
+                                    <value>${client-project-name}</value>
+                                    <regex>[^A-Za-z0-9_]</regex>
+                                    <replacement>_</replacement>
+                                    <toLowerCase>true</toLowerCase>
+                                    <failIfNoMatch>false</failIfNoMatch>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    
+                    <!-- Download flutter wrapper -->
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>wagon-maven-plugin</artifactId>
+                        <version>1.0</version>
+                        <executions>
+                            <execution>
+                                <id>download-flutter-wrapper-bash</id>
+                                <phase>generate-sources</phase>
+                                <goals>
+                                    <goal>download-single</goal>
+                                </goals>
+                                <configuration>
+                                    <url>https://raw.githubusercontent.com</url>
+                                    <fromFile>BlackbeltTechnology/flutter-wrapper/master/dist/flutterw</fromFile>
+                                    <toDir>${client-target-dir}/.skeleton</toDir>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>download-flutter-wrapper-ps1</id>
+                                <phase>generate-sources</phase>
+                                <goals>
+                                    <goal>download-single</goal>
+                                </goals>
+                                <configuration>
+                                    <url>https://raw.githubusercontent.com</url>
+                                    <fromFile>BlackbeltTechnology/flutter-wrapper/master/dist/flutterw.ps1</fromFile>
+                                    <toDir>${client-target-dir}/.skeleton</toDir>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
 
+                    <!-- Execute flutter installer and generate default flutter project skeleton -->
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>exec-maven-plugin</artifactId>
+                        <version>1.6.0</version>
+                        <configuration>
+                            <environmentVariables>
+                                <FLUTTER_HOME>${flutter-home}</FLUTTER_HOME>
+                            </environmentVariables>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>install-flutter-and-create-skeleton</id>
+                                <goals>
+                                    <goal>exec</goal>
+                                </goals>
+                                <phase>generate-sources</phase>
+                                <configuration>
+                                    <workingDirectory>${client-target-dir}/.skeleton</workingDirectory>
+                                    <executable>${script.executor}</executable>
+                                    <commandlineArgs>${flutter.create.execute}</commandlineArgs>
+                                </configuration>
+                            </execution>
+
+                            <!-- INTERNAL USER -->
+                            <execution>
+                                <id>frontend-clean-northwind-internal-user</id>
+                                <goals>
+                                    <goal>exec</goal>
+                                </goals>
+                                <phase>compile</phase>
+                                <configuration>
+                                    <workingDirectory>${client-target-dir}/northwind__internaluser</workingDirectory>
+                                    <executable>${script.executor}</executable>
+                                    <commandlineArgs>${flutter.clean.execute}</commandlineArgs>
+                                </configuration>
+                            </execution>
+
+                            <execution>
+                                <id>frontend-get-northwind-internal-user</id>
+                                <goals>
+                                    <goal>exec</goal>
+                                </goals>
+                                <phase>compile</phase>
+                                <configuration>
+                                    <workingDirectory>${client-target-dir}/northwind__internaluser</workingDirectory>
+                                    <executable>${script.executor}</executable>
+                                    <commandlineArgs>${flutter.get.execute}</commandlineArgs>
+                                </configuration>
+                            </execution>
+
+                            <execution>
+                                <id>frontend-buildrunner-northwind-internal-user</id>
+                                <goals>
+                                    <goal>exec</goal>
+                                </goals>
+                                <phase>compile</phase>
+                                <configuration>
+                                    <workingDirectory>${client-target-dir}/northwind__internaluser</workingDirectory>
+                                    <executable>${script.executor}</executable>
+                                    <commandlineArgs>${flutter.buildrunner.execute}</commandlineArgs>
+                                </configuration>
+                            </execution>
+
+                            <execution>
+                                <id>frontend-build-northwind-internal-user</id>
+                                <goals>
+                                    <goal>exec</goal>
+                                </goals>
+                                <phase>compile</phase>
+                                <configuration>
+                                    <workingDirectory>${client-target-dir}/northwind__internaluser</workingDirectory>
+                                    <executable>${script.executor}</executable>
+                                    <commandlineArgs>${flutter.build.execute}</commandlineArgs>
+                                </configuration>
+                            </execution>
+
+                            <!-- EXTERNAL USER -->
+                            <execution>
+                                <id>frontend-clean-northwind-external-user</id>
+                                <goals>
+                                    <goal>exec</goal>
+                                </goals>
+                                <phase>compile</phase>
+                                <configuration>
+                                    <workingDirectory>${client-target-dir}/northwind__externaluser</workingDirectory>
+                                    <executable>${script.executor}</executable>
+                                    <commandlineArgs>${flutter.clean.execute}</commandlineArgs>
+                                </configuration>
+                            </execution>
+
+                            <execution>
+                                <id>frontend-get-northwind-external-user</id>
+                                <goals>
+                                    <goal>exec</goal>
+                                </goals>
+                                <phase>compile</phase>
+                                <configuration>
+                                    <workingDirectory>${client-target-dir}/northwind__externaluser</workingDirectory>
+                                    <executable>${script.executor}</executable>
+                                    <commandlineArgs>${flutter.get.execute}</commandlineArgs>
+                                </configuration>
+                            </execution>
+
+                            <execution>
+                                <id>frontend-buildrunner-northwind-external-user</id>
+                                <goals>
+                                    <goal>exec</goal>
+                                </goals>
+                                <phase>compile</phase>
+                                <configuration>
+                                    <workingDirectory>${client-target-dir}/northwind__externaluser</workingDirectory>
+                                    <executable>${script.executor}</executable>
+                                    <commandlineArgs>${flutter.buildrunner.execute}</commandlineArgs>
+                                </configuration>
+                            </execution>
+
+                            <execution>
+                                <id>frontend-build-northwind-external-user</id>
+                                <goals>
+                                    <goal>exec</goal>
+                                </goals>
+                                <phase>compile</phase>
+                                <configuration>
+                                    <workingDirectory>${client-target-dir}/northwind__externaluser</workingDirectory>
+                                    <executable>${script.executor}</executable>
+                                    <commandlineArgs>${flutter.build.execute}</commandlineArgs>
+                                </configuration>
+                            </execution>
+
+                            <execution>
+                                <id>generate-ui</id>
+                                <phase>generate-resources</phase>
+                                <goals>
+                                    <goal>java</goal>
+                                </goals>
+                                <configuration>
+                                    <mainClass>hu.blackbelt.judo.tatami.esm2ui.Esm2UiWork</mainClass>
+                                    <arguments>
+                                        <argument>${modelFile}</argument>
+                                        <argument>${modelName}</argument>
+                                        <argument>${basedir}/target/classes/model/${modelName}-ui.model</argument>
+                                    </arguments>
+                                    <includeProjectDependencies>true</includeProjectDependencies>
+                                    <includePluginDependencies>true</includePluginDependencies>
+                                    <cleanupDaemonThreads>false</cleanupDaemonThreads>
+                                </configuration>
+                            </execution>
+                            
+                            <execution>
+                                <id>generate-client-flutter</id>
+                                <phase>generate-resources</phase>
+                                <goals>
+                                    <goal>java</goal>
+                                </goals>
+                                <configuration>
+                                    <mainClass>hu.blackbelt.judo.tatami.ui2client.Ui2Client</mainClass>
+                                    <arguments>
+                                        <argument>${basedir}/target/classes/model/${modelName}-ui.model</argument>
+                                        <argument>${modelName}</argument>
+                                        <argument>${client-target-dir}</argument>
+                                        <argument>flutter/flutter.yaml</argument>
+                                        <argument>${client-generated-actors}</argument>
+                                        <argument>${client-target-dir}/.skeleton</argument>
+                                        <argument>${basedir}/target/classes/model</argument>
+                                    </arguments>
+                                    <includeProjectDependencies>true</includeProjectDependencies>
+                                    <includePluginDependencies>true</includePluginDependencies>
+                                    <cleanupDaemonThreads>false</cleanupDaemonThreads>
+                                </configuration>
+                            </execution>
+                        </executions>
+                        <dependencies>
+                            
+                            <dependency>
+                                <groupId>hu.blackbelt.judo.tatami</groupId>
+                                <artifactId>judo-tatami-esm2ui</artifactId>
+                                <version>${project.version}</version>
+                            </dependency>
+                            
+                            <dependency>
+                                <groupId>hu.blackbelt.judo.tatami</groupId>
+                                <artifactId>judo-tatami-ui2client</artifactId>
+                                <version>${project.version}</version>
+                            </dependency>
+                            
+                            <dependency>
+                                <groupId>org.slf4j</groupId>
+                                <artifactId>slf4j-simple</artifactId>
+                                <version>1.6.2</version>
+                            </dependency>
+                            
+                        </dependencies>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 </project>

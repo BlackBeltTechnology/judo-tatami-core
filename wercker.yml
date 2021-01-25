@@ -55,9 +55,9 @@ build:
     - wercker/maven:
       name: Build
       goals: clean deploy
-      profiles: ${BUILD_PROFILES}
+      profiles: ${BUILD_PROFILES},compile-flutter-client
       settings: .maven.xml
-      maven_opts: -Dorg.ops4j.pax.url.mvn.settings=${WERCKER_ROOT}/.maven.xml -DuseCustomSettings=true -Dbuildtime.output.log
+      maven_opts: -Dflutter-home=${WERCKER_CACHE}/flutter -Dorg.ops4j.pax.url.mvn.settings=${WERCKER_ROOT}/.maven.xml -DuseCustomSettings=true -Dbuildtime.output.log
       cache_repo: true
 
     - wercker/maven:
@@ -199,9 +199,9 @@ release:
     - wercker/maven:
       name: Build
       goals: clean deploy
-      profiles: ${RELEASE_PROFILES}
+      profiles: ${RELEASE_PROFILES},compile-flutter-client
       settings: .maven.xml
-      maven_opts: -Dorg.ops4j.pax.url.mvn.settings=${WERCKER_ROOT}/.maven.xml -DuseCustomSettings=true
+      maven_opts: -Dflutter-home=${WERCKER_CACHE}/flutter -Dorg.ops4j.pax.url.mvn.settings=${WERCKER_ROOT}/.maven.xml -DuseCustomSettings=true -Dbuildtime.output.log
       cache_repo: true
 
     - wercker/maven:
