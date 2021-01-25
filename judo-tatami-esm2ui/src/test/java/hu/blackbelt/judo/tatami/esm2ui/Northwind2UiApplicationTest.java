@@ -75,7 +75,6 @@ public class Northwind2UiApplicationTest {
         assertTrue(uiModel.isValid());
         validateUi(new Slf4jLog(log), uiModel, calculateUiValidationScriptURI());
     }
-
     
     @Test
     void testCreateApplication() throws Exception {
