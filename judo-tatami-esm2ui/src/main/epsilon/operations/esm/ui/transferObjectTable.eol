@@ -17,7 +17,7 @@ operation ESM!esm::ui::TransferObjectTable createTableFromTransferObjectTable(ap
 	var t : UI!ui::Table = self.createTableFromTransferObjectTable(application);
 	t.~originalRelation = relation.~originalRelation;
 	t.dataElement = relation;
-	
+
 	if (t.dataElement.isCollection) {
 		t.row = 31d;
 	} else {
@@ -27,6 +27,28 @@ operation ESM!esm::ui::TransferObjectTable createTableFromTransferObjectTable(ap
 	return t;
 }
 
+operation ESM!esm::ui::TransferObjectTable createLinkFromTransferObjectTable(application : UI!ui::Application) : UI!ui::Link {
+	var t : UI!ui::Link = new UI!ui::Link();
+	t.name = self.name;
+
+	t.col = applicationColumns.asReal();
+	t.label = self.getUiLabel();
+	t.icon = self.iconName;
+	t.sourceId = self.getID();
+
+	for (column in self.columns) {
+		t.parts.add(column.map(application));
+	}
+    return t;
+}
+
+operation ESM!esm::ui::TransferObjectTable createLinkFromTransferObjectTable(application : UI!ui::Application, relation : UI!ui::data::RelationType) : UI!ui::Link {
+	var t : UI!ui::Link = self.createLinkFromTransferObjectTable(application);
+	t.~originalRelation = relation.~originalRelation;
+	t.dataElement = relation;
+    t.row = 1;
+	return t;
+}
 
 operation ESM!esm::ui::TransferObjectTable map(application : UI!ui::Application) : UI!ui::Table {
 	var t : UI!ui::Table = self.createTableFromTransferObjectTable(application);

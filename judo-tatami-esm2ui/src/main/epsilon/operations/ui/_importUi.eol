@@ -3,6 +3,7 @@ import "application.eol";
 import "callOperationAction.eol";
 import "pageDefinition.eol";
 import "table.eol";
+import "link.eol";
 import "actions.eol";
 import "input.eol";
 import "visualElement.eol";

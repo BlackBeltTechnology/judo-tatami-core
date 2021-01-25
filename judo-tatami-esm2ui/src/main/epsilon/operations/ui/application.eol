@@ -17,6 +17,10 @@ operation UI!ui::Application calculatePageActions(preview : Boolean) {
 		table.wrapAndLabelTable();
 		table.calculateActions(self, preview);
 	}
+
+	for (table : UI!ui::Link in UI!ui::Link.all().select(t | t.getPageDefinition().eContainer() == self)) {
+		table.calculateActions(self, preview);
+	}
 }
 
 operation UI!ui::Application clonePagesOfInheritedRelations() {
