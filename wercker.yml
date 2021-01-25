@@ -201,7 +201,7 @@ release:
       goals: clean deploy
       profiles: ${RELEASE_PROFILES},compile-flutter-client
       settings: .maven.xml
-      maven_opts: -Dflutter-home=${WERCKER_CACHE}/flutter -Dorg.ops4j.pax.url.mvn.settings=${WERCKER_ROOT}/.maven.xml -DuseCustomSettings=true -Dbuildtime.output.log
+      maven_opts: -Dflutter-home=${WERCKER_CACHE_DIR}/flutter -Dorg.ops4j.pax.url.mvn.settings=${WERCKER_ROOT}/.maven.xml -DuseCustomSettings=true -Dbuildtime.output.log
       cache_repo: true
 
     - wercker/maven:
