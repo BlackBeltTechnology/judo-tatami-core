@@ -179,7 +179,7 @@ public class Psm2AsmTypeTest {
         assertTrue(asmStr.get().getInstanceClassName().equals(STRING));
         final Optional<EAnnotation> pattern = AsmUtils.getExtensionAnnotationByName(asmStr.get(), "pattern", false);
         assertThat(pattern.isPresent(), equalTo(Boolean.TRUE));
-        assertThat(pattern.get().getDetails().get("regExp"), equalTo(".*"));
+        assertThat(pattern.get().getDetails().get("value"), equalTo(".*"));
         
         final Optional<EDataType> asmInt = asmUtils.all(EDataType.class).filter(e -> e.getName().equals(intType.getName())).findAny();
         assertTrue(asmInt.isPresent());
