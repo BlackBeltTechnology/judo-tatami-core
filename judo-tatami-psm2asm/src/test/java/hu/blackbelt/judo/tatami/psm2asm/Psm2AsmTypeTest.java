@@ -22,11 +22,13 @@ import static hu.blackbelt.judo.meta.psm.type.util.builder.TypeBuilders.newXMLTy
 import static hu.blackbelt.judo.tatami.psm2asm.Psm2Asm.calculatePsm2AsmTransformationScriptURI;
 import static hu.blackbelt.judo.tatami.psm2asm.Psm2Asm.executePsm2AsmTransformation;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.util.Optional;
 
+import org.eclipse.emf.ecore.EAnnotation;
 import org.eclipse.emf.ecore.EDataType;
 import org.eclipse.emf.ecore.EEnum;
 import org.eclipse.emf.ecore.EPackage;
@@ -122,7 +124,7 @@ public class Psm2AsmTypeTest {
         
     	EnumerationType enumType = newEnumerationTypeBuilder().withName("enum")
     			.withMembers(ImmutableList.of(a,b,c)).build();
-    	StringType strType = newStringTypeBuilder().withName("string").withMaxLength(256).build();
+    	StringType strType = newStringTypeBuilder().withName("string").withMaxLength(256).withRegExp(".*").build();
     	
     	NumericType intType = newNumericTypeBuilder().withName("int").withPrecision(6).withScale(0).build();
     	NumericType longType = newNumericTypeBuilder().withName("long").withPrecision(16).withScale(0).build();
@@ -175,6 +177,9 @@ public class Psm2AsmTypeTest {
         assertTrue(asmStr.isPresent());
         assertTrue(asmStr.get().getEPackage().equals(asmTestModel));
         assertTrue(asmStr.get().getInstanceClassName().equals(STRING));
+        final Optional<EAnnotation> pattern = AsmUtils.getExtensionAnnotationByName(asmStr.get(), "pattern", false);
+        assertThat(pattern.isPresent(), equalTo(Boolean.TRUE));
+        assertThat(pattern.get().getDetails().get("value"), equalTo(".*"));
         
         final Optional<EDataType> asmInt = asmUtils.all(EDataType.class).filter(e -> e.getName().equals(intType.getName())).findAny();
         assertTrue(asmInt.isPresent());

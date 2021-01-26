@@ -33,7 +33,7 @@ rule CreateEntityDefaultRepresentationAnnotation
 
         var defaultRepresentation = new ASM!EStringToStringMapEntry;
         defaultRepresentation.key = "value";
-        defaultRepresentation.value = asmUtils.getClassifierFQName(s.defaultRepresentation.asmEquivalent());
+        defaultRepresentation.value = psmUtils.namespaceElementToString(s.defaultRepresentation).replace("::",".");
         t.details.add(defaultRepresentation);
 
         s.equivalent("CreateEntityClass").eAnnotations.add(t);
