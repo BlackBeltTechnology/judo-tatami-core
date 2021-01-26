@@ -91,7 +91,7 @@ rule CreateRegexpAnnotationOfStringType
         t.source = asmUtils.getAnnotationUri("pattern");
 
         var regExp = new ASM!EStringToStringMapEntry;
-        regExp.key = "regExp";
+        regExp.key = "value";
         regExp.value = s.regExp;
         t.details.add(regExp);
 
