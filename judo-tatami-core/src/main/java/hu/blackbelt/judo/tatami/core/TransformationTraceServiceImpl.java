@@ -5,6 +5,7 @@ import static org.eclipse.emf.common.util.ECollections.newBasicEList;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
@@ -67,7 +68,7 @@ public class TransformationTraceServiceImpl implements TransformationTraceServic
     @Override
     public TransformationTrace getParentTransformationTraceByInstance(String modelName, EObject targetElement) {
         if (!modelNameCache.containsKey(modelName)) {
-            throw new IllegalArgumentException("No model definied: " + modelName);
+            throw new IllegalArgumentException("No model defined: " + modelName);
         }
 
         // Find target element's model
@@ -76,7 +77,7 @@ public class TransformationTraceServiceImpl implements TransformationTraceServic
         for (TransformationTrace t : modelNameCache.get(modelName)) {
             for (Resource r : t.getTargetResourceSet().getResources()) {
                 //if (r.getContents().contains(sourceRoot)) {
-                if (r.getContents().stream().filter(c -> EcoreUtil.equals(c, sourceRoot)).count() > 0) {
+                if (r.getContents().stream().filter(c -> equals(c, sourceRoot)).count() > 0) {
                     return t;
                 }
             }
@@ -87,7 +88,7 @@ public class TransformationTraceServiceImpl implements TransformationTraceServic
     // @Override
     public List<TransformationTrace> getChildTransformationTracesByInstance(String modelName, EObject instance) {
         if (!modelNameCache.containsKey(modelName)) {
-            throw new IllegalArgumentException("No model definied: " + modelName);
+            throw new IllegalArgumentException("No model defined: " + modelName);
         }
         // Find target element's model
         EObject sourceRoot = EcoreUtil.getRootContainer(instance);
@@ -97,7 +98,7 @@ public class TransformationTraceServiceImpl implements TransformationTraceServic
             for (Class sourceModelClass : t.getSourceModelTypes()) {
                 for (Resource r : t.getSourceResourceSet(sourceModelClass).getResources()) {
 //                    if  (r.getContents().contains(sourceRoot)) {
-                    if (r.getContents().stream().filter(c -> EcoreUtil.equals(c, sourceRoot)).count() > 0) {
+                    if (r.getContents().stream().filter(c -> equals(c, sourceRoot)).count() > 0) {
                         transformationTraceList.add(t);
                     }
                 }
@@ -110,7 +111,7 @@ public class TransformationTraceServiceImpl implements TransformationTraceServic
     @Override
     public EObject getAscendantOfInstanceByModelType(String modelName, Class modelType, EObject instance) {
         if (!modelNameCache.containsKey(modelName)) {
-            throw new IllegalArgumentException("No model definied: " + modelName);
+            throw new IllegalArgumentException("No model defined: " + modelName);
         }
 
         EObject current = instance;
@@ -135,7 +136,7 @@ public class TransformationTraceServiceImpl implements TransformationTraceServic
     @Override
     public Map<TransformationTrace, EObject> getAllAscendantOfInstance(String modelName, EObject instance) {
         if (!modelNameCache.containsKey(modelName)) {
-            throw new IllegalArgumentException("No model definied: " + modelName);
+            throw new IllegalArgumentException("No model defined: " + modelName);
         }
 
         EObject current = instance;
@@ -155,7 +156,7 @@ public class TransformationTraceServiceImpl implements TransformationTraceServic
     @Override
     public List<TransformationTrace> getTransformationTraceAscendantsByInstance(String modelName, EObject instance) {
         if (!modelNameCache.containsKey(modelName)) {
-            throw new IllegalArgumentException("No model definied: " + modelName);
+            throw new IllegalArgumentException("No model defined: " + modelName);
         }
 
         return Lists.newArrayList(getAllAscendantOfInstance(modelName, instance).keySet());
@@ -165,7 +166,7 @@ public class TransformationTraceServiceImpl implements TransformationTraceServic
     @Override
     public EObject getRootAscendantOfInstance(String modelName, EObject targetElement) {
         if (!modelNameCache.containsKey(modelName)) {
-            throw new IllegalArgumentException("No model definied: " + modelName);
+            throw new IllegalArgumentException("No model defined: " + modelName);
         }
 
         return getAscendantOfInstanceByModelType(modelName, null, targetElement);
@@ -174,7 +175,7 @@ public class TransformationTraceServiceImpl implements TransformationTraceServic
     @Override
     public Map<TransformationTrace, List<EObject>> getAllDescendantOfInstance(String modelName, EObject instance) {
         if (!modelNameCache.containsKey(modelName)) {
-            throw new IllegalArgumentException("No model definied: " + modelName);
+            throw new IllegalArgumentException("No model defined: " + modelName);
         }
 
         List<EObject> currentList = asEList(instance); // ImmutableList.of(instance);
@@ -210,7 +211,7 @@ public class TransformationTraceServiceImpl implements TransformationTraceServic
     @Override
     public List<EObject> getDescendantOfInstanceByModelType(String modelName, Class modelType, EObject instance) {
         if (!modelNameCache.containsKey(modelName)) {
-            throw new IllegalArgumentException("No model definied: " + modelName);
+            throw new IllegalArgumentException("No model defined: " + modelName);
         }
 
         List<EObject> currentList = asEList(instance); // ImmutableList.of(instance);
@@ -241,7 +242,7 @@ public class TransformationTraceServiceImpl implements TransformationTraceServic
 //                    log.error("EEEEE");
 //                }
 //                if (eo.equals(targetElement)) {
-                if (EcoreUtil.equals(eo, targetElement)) {
+                if (equals(eo, targetElement)) {
                     return e.getKey();
                 }
             }
@@ -255,4 +256,21 @@ public class TransformationTraceServiceImpl implements TransformationTraceServic
         //        constructor.getTransformationTrace().keySet().stream().filter(se -> EcoreUtil.equals(sourceElement, se)).findFirst().get());
     }
 
+    public static boolean equals(EObject o1, EObject o2) {
+        final Resource resource1 = o1.eResource();
+        final Resource resource2 = o2.eResource();
+
+        if (resource1 != null && resource2 != null && Objects.equals(resource1.getURI(), resource2.getURI())) {
+            final String fragment1 = resource1.getURIFragment(o1);
+            final String fragment2 = resource2.getURIFragment(o2);
+
+            if (fragment1 != null && fragment2 != null) {
+                return Objects.equals(fragment1, fragment2);
+            } else {
+                return EcoreUtil.equals(o1, o2);
+            }
+        } else {
+            return EcoreUtil.equals(o1, o2);
+        }
+    }
 }
