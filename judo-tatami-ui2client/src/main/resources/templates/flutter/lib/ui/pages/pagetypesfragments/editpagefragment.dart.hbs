@@ -1,3 +1,4 @@
+//START editpagefragment.dart.hbs-----{{page.name}}----------------------------------------------------------------------------------------
     final {{ fqClass page.dataElement.target.name }}Store target{{ className page.dataElement.target.name }}Store;
     {{# if (validatableFlagNeed page.dataElement) }}
     final bool validatable;
@@ -29,3 +30,4 @@ class _{{ fqClass page.name }}PageState extends State<{{ fqClass page.name }}Pag
     {{~ else ~}}
         ;
     {{/ if }}
+//END editpagefragment.dart.hbs-----{{page.name}}------------------------------------------------------------------------------------------

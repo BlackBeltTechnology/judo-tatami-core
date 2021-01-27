@@ -1,3 +1,4 @@
+//START tablepagefragment.dart.hbs-----{{page.name}}---------------------------------------------------------------------------------------
     {{#unless page.dataElement.isAccess}}
     final {{ fqClass page.dataElement.owner.name }}Store owner{{ className page.dataElement.owner.name }}Store;
     {{/unless}}
@@ -20,3 +21,4 @@ class _{{fqClass page.name}}PageState extends State<{{fqClass page.name}}Page> {
     _{{fqClass page.name}}PageState({{#unless page.dataElement.isAccess}}{@required this.owner{{ className page.dataElement.owner.name }}Store}{{/unless}}){
         {{fqVariable page.name}}PageStore.get{{ fqClass page.dataElement.name }}({{#unless page.dataElement.isAccess}} owner{{ className page.dataElement.owner.name }}Store {{/unless}}).catchError((error) => ErrorHandler.errorDialog(context, error));
     }
+//END tablepagefragment.dart.hbs-----{{page.name}}-----------------------------------------------------------------------------------------

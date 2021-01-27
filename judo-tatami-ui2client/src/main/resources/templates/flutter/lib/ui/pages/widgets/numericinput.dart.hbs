@@ -1,4 +1,5 @@
 {{~ log 'Numeric field generation for' (variable application.name) '-' (fqClass page.name)'page'(variable page.dataElement.target.name) attributeType.name level='debug' ~}}
+//START numericinput.dart.hbs-----{{page.dataElement.target.name}}-------------------------------------------------------------------------
 {{#if page.isPageTypeView}}
 Observer(
     builder: (_) => JudoNumericInput(
@@ -38,3 +39,4 @@ JudoNumericInput(
     readOnly: {{attributeType.isReadOnly}},
 ),
 {{/if}}
+//END numericinput.dart.hbs-----{{page.dataElement.target.name}}---------------------------------------------------------------------------

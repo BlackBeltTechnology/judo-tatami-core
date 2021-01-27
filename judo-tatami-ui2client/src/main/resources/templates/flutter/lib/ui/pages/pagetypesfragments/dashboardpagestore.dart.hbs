@@ -1,4 +1,5 @@
 {{log 'Pagestore generation for' (variable application.name) '-' (fqClass page.name) level='debug'}}
+//START dashboardpagestore.dart.hbs-----{{page.name}}--------------------------------------------------------------------------------------
 class {{ fqClass page.name }}PageStore extends _{{ fqClass page.name }}PageStore with _${{ fqClass page.name }}PageStore {}
 
 abstract class _{{ fqClass page.name }}PageStore with Store {
@@ -10,3 +11,4 @@ abstract class _{{ fqClass page.name }}PageStore with Store {
 
     {{/ with }}
 }
+//END dashboardpagestore.dart.hbs-----{{page.name}}----------------------------------------------------------------------------------------
