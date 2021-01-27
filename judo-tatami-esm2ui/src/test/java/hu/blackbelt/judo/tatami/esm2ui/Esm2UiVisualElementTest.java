@@ -1125,7 +1125,7 @@ public class Esm2UiVisualElementTest {
         		.map(f -> (TextArea) f).filter(f -> f.getName().equals(dataFieldTextAreaInput.getName())).findAny();
         assertTrue(uiText4.isPresent());
         assertEquals(2d, uiText4.get().getCol());
-        assertEquals(1d, uiText4.get().getRow());
+        assertEquals(6d, uiText4.get().getRow());
         assertEquals(model.getName() + "." + string.getName(), uiText4.get().getAttributeType().getDataType().getName());
         assertEquals(stringAttribute3.getName(), uiText4.get().getAttributeType().getName());
         assertEquals(uiE1.get(), uiText4.get().getAttributeType().eContainer());
