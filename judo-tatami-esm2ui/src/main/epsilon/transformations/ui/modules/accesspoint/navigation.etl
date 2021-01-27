@@ -13,7 +13,7 @@ rule AccessMenuNavigationItem
     transform s: ESM!esm::ui::MenuItemAccess
     to t : UI!ui::NavigationItem {
 		guard: not s.hidden and s.access.target.isTableDefined()
-    
+
         log.debug("Create Access Navigation: " + s.access.fqName() );
         var application = s.access.eContainer.equivalent("Application");
 
