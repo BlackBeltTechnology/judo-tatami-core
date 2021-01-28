@@ -13,7 +13,9 @@ abstract class _{{ fqClass page.name }}PageStore with Store {
     {{# if relation.isCollection }}
     @observable
     List<{{ fqClass relation.target.name }}Store> {{ fqVariable relation.name }}StoreList = ObservableList<{{ fqClass relation.target.name }}Store>();
-
+    {{ else }}
+    @observable
+    {{ fqClass relation.target.name }}Store {{ fqVariable relation.name }}Store;
     {{/ if }}
     {{/ if }}
     @observable
@@ -69,21 +71,27 @@ abstract class _{{ fqClass page.name }}PageStore with Store {
         try {
             errorMessage = null;
             {{# if page.dataElement.isAccess}}
+                {{# if relation.isCollection }}
             {{ fqVariable relation.name }}StoreFuture = ObservableFuture(_{{ fqVariable application.actor.name }}Repository.{{ fqVariable relation.owner.name }}{{ fqClass relation.name }}List());
             {{ fqVariable relation.name }}StoreList.clear();
             {{ fqVariable relation.name }}StoreList.addAll(await {{ fqVariable relation.name }}StoreFuture);
             return {{ fqVariable relation.name }}StoreList;
+                {{else}}
+            {{ fqVariable relation.name }}StoreFuture = ObservableFuture(_{{ fqVariable application.actor.name }}Repository.{{ fqVariable relation.owner.name }}{{ fqClass relation.name }}Get());
+            {{ fqVariable relation.name }}Store = await {{ fqVariable relation.name }}StoreFuture;
+            return {{ fqVariable relation.name }}Store;
+                {{/if}}
             {{else}}
-            {{# if relation.isCollection }}
+                {{# if relation.isCollection }}
             {{ fqVariable relation.name }}StoreFuture = ObservableFuture(_{{ fqVariable application.actor.name }}Repository.{{ fqVariable relation.owner.name }}{{ fqClass relation.name }}List(owner{{ className relation.owner.name }}Store));
             owner{{ className relation.owner.name }}Store.{{ variable relation.name }}.clear();
             owner{{ className relation.owner.name }}Store.{{ variable relation.name }}.addAll(await {{ fqVariable relation.name }}StoreFuture);
             return owner{{ className relation.owner.name }}Store.{{ variable relation.name }};
-            {{else}}
+                {{else}}
             {{ fqVariable relation.name }}StoreFuture = ObservableFuture(_{{ fqVariable application.actor.name }}Repository.{{ fqVariable relation.owner.name }}{{ fqClass relation.name }}Get(owner{{ className relation.owner.name }}Store));
             owner{{ className relation.owner.name }}Store.{{ variable relation.name }} = await {{ fqVariable relation.name }}StoreFuture;
             return owner{{ className relation.owner.name }}Store.{{ variable relation.name }};
-            {{/if}}
+                {{/if}}
             {{/if}}
         } on ApiException catch (error) {
             errorMessage = "Could not load {{ relation.name }}";

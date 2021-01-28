@@ -9,13 +9,13 @@ rule NavigationController
         t.name = s.fqName().anchor("NavigationController");
 }
 
+@abstract
 rule AccessMenuNavigationItem
     transform s: ESM!esm::ui::MenuItemAccess
     to t : UI!ui::NavigationItem {
-		guard: not s.hidden and s.access.target.isTableDefined()
+		guard: not s.hidden
 
         log.debug("Create Access Navigation: " + s.access.fqName() );
-        var application = s.access.eContainer.equivalent("Application");
 
         t.name = s.access.fqName().anchor("NavigationItem");
         t.label = s.getUiLabel();
@@ -25,8 +25,26 @@ rule AccessMenuNavigationItem
             icon.name = "texture";
         }
         t.icon = icon;
-
-        t.target = s.access.mapTablePage(application, s.access.target);
-
+        
         s.eContainer.equivalent("NavigationController").items.add(t);
+}
+
+rule AccessMenuNavigationItemTable
+    transform s: ESM!esm::ui::MenuItemAccess
+    to t : UI!ui::NavigationItem
+    	extends AccessMenuNavigationItem {
+		guard: s.access.target.isTableDefined() and (s.access.upper == -1 or s.access.upper > 1)
+
+		var application = s.access.eContainer.equivalent("Application");
+        t.target = s.access.mapTablePage(application, s.access.target);
+}
+
+rule AccessMenuNavigationItemView
+    transform s: ESM!esm::ui::MenuItemAccess
+    to t : UI!ui::NavigationItem
+    	extends AccessMenuNavigationItem {
+		guard: s.access.target.view.isDefined() and s.access.upper == 1
+	
+		var application = s.access.eContainer.equivalent("Application");
+        t.target = s.access.mapViewPage(application, s.access.target);
 }
