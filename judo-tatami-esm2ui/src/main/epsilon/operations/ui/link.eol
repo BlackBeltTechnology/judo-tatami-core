@@ -64,19 +64,23 @@ operation UI!ui::Link calculateActions(application : UI!ui::Application, preview
                 }
             }
 
-	        if (relationType.getIsRelationBehaviourTypeRemovable()) {
+	        if (relationType.getIsRelationBehaviourTypeRemovable() or
+	                (relationType.eContainer.isMapped and (pageDefinition.pageType == UI!ui::PageType#OPERATION_INPUT or pageDefinition.pageType == UI!ui::PageType#CREATE))) {
 	            self.actions.add(new UI!ui::RemoveAction());
 	        }
 
-	        if (relationType.getIsRelationBehaviourTypeUnsetable()) {
+	        if (relationType.getIsRelationBehaviourTypeUnsetable() or
+	                (relationType.eContainer.isMapped and (pageDefinition.pageType == UI!ui::PageType#OPERATION_INPUT or pageDefinition.pageType == UI!ui::PageType#CREATE))) {
 	            self.actions.add(new UI!ui::UnsetAction());
 	        }
 	        
-            if (relationType.getIsRelationBehaviourTypeSetable()) {
+            if (relationType.getIsRelationBehaviourTypeSetable() or
+	                (relationType.eContainer.isMapped and (pageDefinition.pageType == UI!ui::PageType#OPERATION_INPUT or pageDefinition.pageType == UI!ui::PageType#CREATE))) {
                 self.actions.add(new UI!ui::SetAction());
             }
 
-            if (relationType.getIsRelationBehaviourTypeAddable()) {
+            if (relationType.getIsRelationBehaviourTypeAddable() or
+	                (relationType.eContainer.isMapped and (pageDefinition.pageType == UI!ui::PageType#OPERATION_INPUT or pageDefinition.pageType == UI!ui::PageType#CREATE))) {
                 self.actions.add(new UI!ui::AddAction());
             }
 	    }
