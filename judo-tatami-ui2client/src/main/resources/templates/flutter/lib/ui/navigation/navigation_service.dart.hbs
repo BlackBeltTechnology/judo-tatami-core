@@ -1,0 +1,48 @@
+{{log 'Navigation service generation for' (variable application.name) level='info'}}
+//////////////////////////////////////////////////////////////////////////////
+// G E N E R A T E D    C L A S S
+// ------------------------------
+// Factory expression: {{{ cleanup template.factoryExpression }}}
+// Path expression: {{{ cleanup template.pathExpression }}}
+// Overwrite: {{{ cleanup template.overwriteExpression }}}
+// Template name: {{ template.templateName }}
+// Application: {{ application.name }}
+
+import 'package:{{ modelPackage application.name }}/{{ path application.name }}/injector/injector.dart';
+import 'page_navigation.dart';
+
+import 'navigation_state.dart';
+
+class NavigationService {
+  static Future<PageNavigation> whereToGo(PageNavigation pageNavigation, [Object target, Object owner]) async {
+    NavigationState navigationState = locator<NavigationState>();
+    if(pageNavigation == null) return null;
+
+    if(pageNavigation.pageType == PageType.View) {
+      if (pageNavigation.crudFunctions[Crud.Read] != null) {
+        var result = await pageNavigation.crudFunctions[Crud.Read]();
+        if (result != null) {
+          pageNavigation.targetStore = await result;
+          return pageNavigation;
+        }
+      }
+      return pageNavigation.createPage;
+    }
+
+    if(pageNavigation.pageType == PageType.Create) {
+      if(target != null) {
+        if (pageNavigation.crudFunctions[Crud.Create] != null) {
+          var result = await pageNavigation.crudFunctions[Crud.Create](target);
+          if (result != null) {
+            navigationState.navigateTo(pageNavigation.viewPage.route);
+            return pageNavigation.viewPage;
+          }
+        }
+      }
+      return pageNavigation.createPage;
+    }
+
+    return null;
+
+  }
+}

@@ -14,11 +14,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_breadcrumb/flutter_breadcrumb.dart';
 import 'package:injectable/injectable.dart';
 import 'package:{{ modelPackage application.name }}/{{ path application.name }}/ui/routes/router.gr.dart';
+import 'package:{{ modelPackage application.name }}/{{ path application.name }}/injector/injector.dart';
+import 'navigation_registry.dart';
+import 'navigation_service.dart';
+import 'page_navigation.dart';
 
 @lazySingleton
 class NavigationState {
     final navigatorKey = GlobalKey<ExtendedNavigatorState>();
     String currentRoute = Routes.{{ fqVariable application.dashboard.name }}Page;
+    PageNavigation currentPageNavigation;
     final List<BreadCrumbItem> breadcumbItems = [ BreadCrumbItem(content: Icon(Icons.home, color: Colors.white60, size: 16,))];
     final List<String> stack = [];
 
@@ -35,14 +40,31 @@ class NavigationState {
         return false;
     }
 
-    void navigateTo(String route) {
+    void navigateTo(String route) async {
+        NavigationRegistry navigationRegistry = locator<NavigationRegistry>();
         if (currentRoute != route) {
             currentRoute = route;
+            currentPageNavigation = navigationRegistry.getPageNavigationByRoute(currentRoute);
 
             breadcumbItems.clear();
             breadcumbItems.add(BreadCrumbItem(content: Icon(Icons.home, color: Colors.white60, size: 16,)));
 
+
             stack.clear();
+
+            var targetPageNavigation = await NavigationService.whereToGo(currentPageNavigation);
+            if(targetPageNavigation != null) {
+                currentRoute = targetPageNavigation.route;
+                currentTitle = targetPageNavigation.route;
+                navigatorKey.currentState.pushAndRemoveUntil(targetPageNavigation.route, (route) => false, arguments: targetPageNavigation.getPageArgumentObject());
+                return;
+            } else if(targetPageNavigation == null && currentPageNavigation?.pageType == PageType.View) { // if create page is not existing, but we need to go to the empty view page
+                currentRoute = Routes.{{ fqVariable application.name }}BlankPage;
+                currentTitle = 'Empty';
+                navigatorKey.currentState.pushAndRemoveUntil(Routes.{{ fqVariable application.name }}BlankPage, (route) => false);
+                return;
+            }
+
             currentTitle = route;
             navigatorKey.currentState.pushAndRemoveUntil(route, (route) => false);
         }
@@ -74,9 +96,19 @@ class NavigationState {
     }
 
     @optionalTypeArgs
-    void close<T extends Object>([T result]) {
-        currentTitle = stack.removeLast();
-        breadcumbItems.removeLast();
-        navigatorKey.currentState.pop<T>(result);
+    void close<T extends Object>([T result, bool access = false]) async {
+        NavigationRegistry navigationRegistry = locator<NavigationRegistry>();
+        currentPageNavigation = navigationRegistry.getPageNavigationByRoute(currentRoute);
+
+        var targetPageNavigation = await NavigationService.whereToGo(currentPageNavigation, result);
+        if(targetPageNavigation != null) {
+            navigateTo(targetPageNavigation.route);
+        }
+
+        if (navigatorKey.currentState.canPop()) {
+            currentTitle = stack.removeLast();
+            breadcumbItems.removeLast();
+            navigatorKey.currentState.pop<T>(result);
+        }
     }
 }
