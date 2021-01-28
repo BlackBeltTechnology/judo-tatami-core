@@ -46,28 +46,32 @@ operation UI!ui::Table calculateActions(application : UI!ui::Application, previe
 	            }
 	        }
 	        
-	        if (relationType.getIsRelationBehaviourTypeRemovable() or (relationType.eContainer.isMapped and (pageDefinition.pageType == UI!ui::PageType#OPERATION_INPUT or pageDefinition.pageType == UI!ui::PageType#CREATE))) {
+	        if (relationType.getIsRelationBehaviourTypeRemovable()
+	        	//or (relationType.eContainer.isMapped and (pageDefinition.pageType == UI!ui::PageType#OPERATION_INPUT or pageDefinition.pageType == UI!ui::PageType#CREATE))
+	        	) {
 	            self.rowActions.add(new UI!ui::RemoveAction());
 	            
-	            if (not relationType.getIsRelationBehaviourTypeRemovable()) {
+	            /*if (not relationType.getIsRelationBehaviourTypeRemovable()) {
 	            	relationType.behaviours.add(UI!ui::data::RelationBehaviourType#REMOVE);
-	            }
+	            }*/
 	        }
 	        
-	        if (relationType.getIsRelationBehaviourTypeUnsetable() or (relationType.eContainer.isMapped and (pageDefinition.pageType == UI!ui::PageType#OPERATION_INPUT or pageDefinition.pageType == UI!ui::PageType#CREATE))) {
+	        if (relationType.getIsRelationBehaviourTypeUnsetable()
+	        	//or (relationType.eContainer.isMapped and (pageDefinition.pageType == UI!ui::PageType#OPERATION_INPUT or pageDefinition.pageType == UI!ui::PageType#CREATE))
+	        	) {
 	            self.rowActions.add(new UI!ui::UnsetAction());
 	            
-	            if (not relationType.getIsRelationBehaviourTypeUnsetable()) {
+	            /*if (not relationType.getIsRelationBehaviourTypeUnsetable()) {
 	            	relationType.behaviours.add(UI!ui::data::RelationBehaviourType#UNSET);
-	            }
+	            }*/
 	        }
 	        
 	        if (not self.isTablePage() and
 	                (
 	                relationType.getIsRelationBehaviourTypeCreatable() or
 	                relationType.getIsRelationBehaviourTypeSetable() or
-	                relationType.getIsRelationBehaviourTypeAddable() or
-	                (relationType.eContainer.isMapped and (pageDefinition.pageType == UI!ui::PageType#OPERATION_INPUT or pageDefinition.pageType == UI!ui::PageType#CREATE))
+	                relationType.getIsRelationBehaviourTypeAddable()
+	                //or (relationType.eContainer.isMapped and (pageDefinition.pageType == UI!ui::PageType#OPERATION_INPUT or pageDefinition.pageType == UI!ui::PageType#CREATE))
 	                )
 	            ) {
 	            self.createRelationActionButtonsForTable(application, preview);
@@ -98,7 +102,7 @@ operation UI!ui::Table createRelationActionButtonsForTable(application : UI!ui::
 		tableContainer.children.add(tableIndex, buttonGroup);
 	}
 	
-	var pageDefinition = self.getPageDefinition();
+	//var pageDefinition = self.getPageDefinition();
 	
 	if (relationType.getIsRelationBehaviourTypeCreatable()) {
 		if (preview) {
@@ -120,26 +124,30 @@ operation UI!ui::Table createRelationActionButtonsForTable(application : UI!ui::
 		}
 	}
 	
-	if (relationType.getIsRelationBehaviourTypeSetable() or (relationType.eContainer.isMapped and (pageDefinition.pageType == UI!ui::PageType#OPERATION_INPUT or pageDefinition.pageType == UI!ui::PageType#CREATE))) {
+	if (relationType.getIsRelationBehaviourTypeSetable()
+		//or (relationType.eContainer.isMapped and (pageDefinition.pageType == UI!ui::PageType#OPERATION_INPUT or pageDefinition.pageType == UI!ui::PageType#CREATE))
+		) {
 		var button : UI!ui::Button = createButton("set", "SET", 2d, new UI!ui::SetAction());
 	    button.action.dataElement = relationType;
 	    buttonGroup.children.add(button);
 	    
-	    if (not relationType.getIsRelationBehaviourTypeSetable()) {
+	    /*if (not relationType.getIsRelationBehaviourTypeSetable()) {
 	        relationType.behaviours.add(UI!ui::data::RelationBehaviourType#SET);
 	        relationType.behaviours.add(UI!ui::data::RelationBehaviourType#RANGE);
-	    }
+	    }*/
 	}
 
-	if (relationType.getIsRelationBehaviourTypeAddable() or (relationType.eContainer.isMapped and (pageDefinition.pageType == UI!ui::PageType#OPERATION_INPUT or pageDefinition.pageType == UI!ui::PageType#CREATE))) {
+	if (relationType.getIsRelationBehaviourTypeAddable()
+		//or (relationType.eContainer.isMapped and (pageDefinition.pageType == UI!ui::PageType#OPERATION_INPUT or pageDefinition.pageType == UI!ui::PageType#CREATE))
+		) {
 		var button : UI!ui::Button = createButton("add", "ADD", 2d, new UI!ui::AddAction());
 		button.action.dataElement = relationType;
 		buttonGroup.children.add(button);
 		
-		if (not relationType.getIsRelationBehaviourTypeAddable()) {
+		/*if (not relationType.getIsRelationBehaviourTypeAddable()) {
 	         relationType.behaviours.add(UI!ui::data::RelationBehaviourType#ADD);
 	         relationType.behaviours.add(UI!ui::data::RelationBehaviourType#RANGE);
-	    }
+	    }*/
 	}
 }
 
