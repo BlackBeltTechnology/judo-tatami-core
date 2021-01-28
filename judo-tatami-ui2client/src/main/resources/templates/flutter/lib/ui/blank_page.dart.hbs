@@ -1,0 +1,36 @@
+{{log 'Blank page generation for' (variable application.name) level='info'}}
+//////////////////////////////////////////////////////////////////////////////
+// G E N E R A T E D    C L A S S
+// ------------------------------
+// Factory expression: {{{ cleanup template.factoryExpression }}}
+// Path expression: {{{ cleanup template.pathExpression }}}
+// Overwrite: {{{ cleanup template.overwriteExpression }}}
+// Template name: {{ template.templateName }}
+// Application: {{ application.name }}
+
+import 'package:flutter/material.dart';
+import 'package:{{ modelPackage application.name }}/{{ path application.name }}/ui/scaffold.dart';
+
+class {{ fqClass application.name }}BlankPage extends StatelessWidget {
+
+  @override
+  Widget build(BuildContext context) {
+    return {{ fqClass application.name }}Scaffold(
+      pageTitle: 'Empty',
+      body: CustomScrollView(
+          slivers: [
+            SliverFillRemaining(
+              hasScrollBody: false,
+              child: Center(
+                child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisSize: MainAxisSize.min,
+                    children: []
+                ),
+              ),
+            )
+          ]
+      ),
+    );
+  }
+}

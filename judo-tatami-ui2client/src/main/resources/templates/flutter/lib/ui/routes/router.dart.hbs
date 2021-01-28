@@ -13,6 +13,7 @@ import 'package:auto_route/auto_route_annotations.dart';
 import '../pages/package.dart';
 import '../settings.dart';
 import '../error_page.dart';
+import '../blank_page.dart';
 
 @MaterialAutoRouter(preferRelativeImports: true, routes: <AutoRoute>[
     CustomRoute(
@@ -20,6 +21,9 @@ import '../error_page.dart';
         transitionsBuilder: TransitionsBuilders.slideLeftWithFade),
     CustomRoute(
         page: {{fqClass application.name}}ErrorPage,
+        transitionsBuilder: TransitionsBuilders.slideLeftWithFade),
+    CustomRoute(
+        page: {{fqClass application.name}}BlankPage,
         transitionsBuilder: TransitionsBuilders.slideLeftWithFade),
     {{# each layout.pageContainers as |container| }}
     CustomRoute(
