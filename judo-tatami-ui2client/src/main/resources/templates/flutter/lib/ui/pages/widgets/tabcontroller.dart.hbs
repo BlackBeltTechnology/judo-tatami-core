@@ -1,4 +1,5 @@
 {{~ log 'Tab generation for' (variable application.name) '-' (fqClass page.name)'page' (variable name) level='debug' ~}}
+//START tabcontroller.dart.hbs-----{{name}}------------------------------------------------------------------------------------------------
 JudoTab(
     col: {{ multiplyCol col }},
     row: {{ row }},
@@ -22,3 +23,4 @@ JudoTab(
     {{/ each }}
     ]
 ),
+//END tabcontroller.dart.hbs-----{{name}}--------------------------------------------------------------------------------------------------

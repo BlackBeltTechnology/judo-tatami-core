@@ -1,4 +1,5 @@
 {{log 'Aggregation action generation for' (variable application.name) '-' (fqClass page.name)'page'(variable relation.name)'relation' level='debug'}}
+//START aggregationactions.dart.hbs-----{{relaltion.name}}---------------------------------------------------------------------------------
 // {{ className relation.name }} aggregation actions
 {{# if relation.isRelationBehaviourTypeCreatable }}
 @action
@@ -170,3 +171,4 @@ Future<{{ fqClass relation.target.name }}Store> update{{ className relation.targ
 }
 
 {{/if}}
+//END aggregationactions.dart.hbs-----{{relaltion.name}}-----------------------------------------------------------------------------------
