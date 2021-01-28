@@ -126,7 +126,8 @@ operation UI!ui::Table createRelationActionButtonsForTable(application : UI!ui::
 	    buttonGroup.children.add(button);
 	    
 	    if (not relationType.getIsRelationBehaviourTypeSetable()) {
-	            	relationType.behaviours.add(UI!ui::data::RelationBehaviourType#SET);
+	        relationType.behaviours.add(UI!ui::data::RelationBehaviourType#SET);
+	        relationType.behaviours.add(UI!ui::data::RelationBehaviourType#RANGE);
 	    }
 	}
 
@@ -136,7 +137,8 @@ operation UI!ui::Table createRelationActionButtonsForTable(application : UI!ui::
 		buttonGroup.children.add(button);
 		
 		if (not relationType.getIsRelationBehaviourTypeAddable()) {
-	            	relationType.behaviours.add(UI!ui::data::RelationBehaviourType#ADD);
+	         relationType.behaviours.add(UI!ui::data::RelationBehaviourType#ADD);
+	         relationType.behaviours.add(UI!ui::data::RelationBehaviourType#RANGE);
 	    }
 	}
 }
