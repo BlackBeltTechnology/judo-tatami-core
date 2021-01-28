@@ -1,4 +1,5 @@
 {{~ log 'Text area input field generation for' (variable application.name) '-' (fqClass page.name)'page'(variable page.dataElement.target.name) attributeType.name level='debug' ~}}
+//START textarea.dart.hbs-----{{page.dataElement.target.name}}-----------------------------------------------------------------------------
 {{#if page.isPageTypeView}}
     Observer(
     builder: (_) => JudoInputText(
@@ -54,3 +55,4 @@
     readOnly: {{attributeType.isReadOnly}},
     ),
 {{/if}}
+//END textarea.dart.hbs-----{{page.dataElement.target.name}}-------------------------------------------------------------------------------

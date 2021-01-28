@@ -1,6 +1,8 @@
 {{ log 'Dialog generation for' (variable application.name) '-' (fqClass page.name)'page' (fqClass container.layoutType.name) (variable relation.name) level='debug' ~}}
+//START dialog.dart.hbs-----{{relation.name}}----------------------------------------------------------------------------------------------
 await judoDialog<{{ fqClass relation.target.name }}Store>(
     context: context,
     selectableList: await {{fqVariable page.name}}PageStore.getRangeFor{{ fqClass relation.name }}({{# if relation.isRelationKindAssociation}}owner{{else}}target{{/if}}{{ className relation.owner.name }}Store),
     toStringFunction: (element) => element.{{relation.target.representation.name}}.toString(),
 );
+//END dialog.dart.hbs-----{{relation.name}}----------------------------------------------------------------------------------------------

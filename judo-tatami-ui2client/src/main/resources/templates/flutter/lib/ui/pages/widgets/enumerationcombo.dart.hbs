@@ -1,4 +1,5 @@
 {{~ log 'Enumeration combo generation for' (variable application.name) '-' (fqClass page.name)'page' label level='debug' }}
+//START enumerationcombo.dart.hbs-----{{page.name}}----------------------------------------------------------------------------------------
 {{#if page.isPageTypeView}}
     Observer(
         builder: (_) => JudoComboBox<{{ className attributeType.dataType.name }}>(
@@ -52,3 +53,4 @@
         )
     ),
 {{/if}}
+//END enumerationcombo.dart.hbs-----{{page.name}}------------------------------------------------------------------------------------------

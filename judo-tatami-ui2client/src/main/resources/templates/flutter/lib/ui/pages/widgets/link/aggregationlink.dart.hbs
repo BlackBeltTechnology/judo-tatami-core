@@ -1,4 +1,5 @@
 {{~ log 'Link generation for' (variable application.name) '-' (fqClass page.name) (variable dataElement.name) level='debug' ~}}
+//START aggregationlink.dart.hbs-----{{dataElement.name}}----------------------------------------------------------------------------------
 {{# with dataElement as |relation|}}
 Observer(builder: (_) {
     return JudoLink(
@@ -183,3 +184,4 @@ Observer(builder: (_) {
     );
 }),
 {{/ with}}
+//END aggregationlink.dart.hbs-----{{dataElement.name}}------------------------------------------------------------------------------------

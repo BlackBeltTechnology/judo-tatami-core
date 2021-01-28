@@ -1,4 +1,5 @@
 {{ log 'Instance action button generation for' (variable application.name) '-' (fqClass page.name)'page'(variable page.dataElement.target.name) level='debug' ~}}
+//START instanceAction.dart.hbs-----{{page.dataElement.target.name}}-----------------------------------------------------------------------
 JudoButton(
     col: {{ multiplyCol col }},
     row: {{ row }},
@@ -185,3 +186,4 @@ JudoButton(
 {{/if}}
     rounded: true,
 ),
+//END instanceAction.dart.hbs-----{{page.dataElement.target.name}}-------------------------------------------------------------------------
