@@ -13,6 +13,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_breadcrumb/flutter_breadcrumb.dart';
 import 'package:injectable/injectable.dart';
+import 'package:judo_flutter_components/judo_flutter_components.dart';
 import 'package:{{ modelPackage application.name }}/{{ path application.name }}/ui/routes/router.gr.dart';
 import 'package:{{ modelPackage application.name }}/{{ path application.name }}/injector/injector.dart';
 import 'navigation_registry.dart';
@@ -29,7 +30,7 @@ class NavigationState {
 
     String currentTitle = "";
 
-    bool isMenuCollapsed(BuildContext context) {
+   bool isMenuCollapsed(BuildContext context) {
         {{#each application.layoutTypes as |layoutType|}}
         {{#unless layoutType.original}}
          if (MediaQuery.of(context).size.width >= {{layoutType.minimumResolution}} && MediaQuery.of(context).size.width <={{layoutType.maximumResolution}}) {
@@ -39,6 +40,7 @@ class NavigationState {
         {{/each}}
         return false;
     }
+    
 
     void navigateTo(String route) async {
         NavigationRegistry navigationRegistry = locator<NavigationRegistry>();
@@ -47,7 +49,14 @@ class NavigationState {
             currentPageNavigation = navigationRegistry.getPageNavigationByRoute(currentRoute);
 
             breadcumbItems.clear();
-            breadcumbItems.add(BreadCrumbItem(content: Icon(Icons.home, color: Colors.white60, size: 16,)));
+            breadcumbItems.add(BreadCrumbItem(content:
+            Padding(
+                padding: EdgeInsets.fromLTRB(0, 0, 16, 0),
+                child:
+                  Icon(Icons.home, color: Color(0xffdcdcdc), size: 16,)
+                )
+              )
+            );
 
 
             stack.clear();
@@ -78,12 +87,14 @@ class NavigationState {
 
         breadcumbItems.add(
             BreadCrumbItem(
-                content: Text(currentTitle,
-                    style: TextStyle(
-                        color: Colors.white70,
-                        fontSize: 14
-                    ),
-                )
+                content:
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                      child:
+                      Text(currentTitle,
+                        style: JudoComponentCustomizer.get().getBreadcumbTextStyle(),
+                      ),
+                    )
             )
         );
 
