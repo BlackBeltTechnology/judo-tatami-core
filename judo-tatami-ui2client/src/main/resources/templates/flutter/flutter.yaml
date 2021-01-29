@@ -28,6 +28,20 @@
   pathExpression: >
     'lib/' +
     #path(#application.actor.name) + '/' +
+    'app_theme.dart'
+  templateName: flutter/lib/app_theme.dart.hbs
+
+- overwriteExpression: true
+  factoryExpression: "{#application}"
+  pathExpression: "'full-build.sh'"
+  templateName: flutter/full-build.sh
+  copy: true
+
+- overwriteExpression: false
+  factoryExpression: "{#application}"
+  pathExpression: >
+    'lib/' +
+    #path(#application.actor.name) + '/' +
     'main.dart'
   templateName: flutter/lib/main.dart.hbs
 
@@ -180,6 +194,78 @@
   templateName: flutter/fonts/Roboto-Regular.ttf
   copy: true
 
+- overwriteExpression: false
+  factoryExpression: "{#application}"
+  pathExpression: "'fonts/SourceSansPro-Black.ttf'"
+  templateName: flutter/fonts/SourceSansPro-Black.ttf
+  copy: true
+
+- overwriteExpression: false
+  factoryExpression: "{#application}"
+  pathExpression: "'fonts/SourceSansPro-BlackItalic.ttf'"
+  templateName: flutter/fonts/SourceSansPro-BlackItalic.ttf
+  copy: true
+
+- overwriteExpression: false
+  factoryExpression: "{#application}"
+  pathExpression: "'fonts/SourceSansPro-Bold.ttf'"
+  templateName: flutter/fonts/SourceSansPro-Bold.ttf
+  copy: true
+
+- overwriteExpression: false
+  factoryExpression: "{#application}"
+  pathExpression: "'fonts/SourceSansPro-BoldItalic.ttf'"
+  templateName: flutter/fonts/SourceSansPro-BoldItalic.ttf
+  copy: true
+
+- overwriteExpression: false
+  factoryExpression: "{#application}"
+  pathExpression: "'fonts/SourceSansPro-ExtraLight.ttf'"
+  templateName: flutter/fonts/SourceSansPro-ExtraLight.ttf
+  copy: true
+
+- overwriteExpression: false
+  factoryExpression: "{#application}"
+  pathExpression: "'fonts/SourceSansPro-ExtraLightItalic.ttf'"
+  templateName: flutter/fonts/SourceSansPro-ExtraLightItalic.ttf
+  copy: true
+
+- overwriteExpression: false
+  factoryExpression: "{#application}"
+  pathExpression: "'fonts/SourceSansPro-Italic.ttf'"
+  templateName: flutter/fonts/SourceSansPro-Italic.ttf
+  copy: true
+
+- overwriteExpression: false
+  factoryExpression: "{#application}"
+  pathExpression: "'fonts/SourceSansPro-Light.ttf'"
+  templateName: flutter/fonts/SourceSansPro-Light.ttf
+  copy: true
+
+- overwriteExpression: false
+  factoryExpression: "{#application}"
+  pathExpression: "'fonts/SourceSansPro-LightItalic.ttf'"
+  templateName: flutter/fonts/SourceSansPro-LightItalic.ttf
+  copy: true
+
+- overwriteExpression: false
+  factoryExpression: "{#application}"
+  pathExpression: "'fonts/SourceSansPro-Regular.ttf'"
+  templateName: flutter/fonts/SourceSansPro-Regular.ttf
+  copy: true
+
+- overwriteExpression: false
+  factoryExpression: "{#application}"
+  pathExpression: "'fonts/SourceSansPro-SemiBold.ttf'"
+  templateName: flutter/fonts/SourceSansPro-SemiBold.ttf
+  copy: true
+
+- overwriteExpression: false
+  factoryExpression: "{#application}"
+  pathExpression: "'fonts/SourceSansPro-SemiBoldItalic.ttf'"
+  templateName: flutter/fonts/SourceSansPro-SemiBoldItalic.ttf
+  copy: true
+
 # ========================================
 # pages
 # ========================================
@@ -303,6 +389,56 @@
   templateName: flutter/lib/ui/drawer_items.dart.hbs
 
 # ========================================
+# navigation registry
+# ========================================
+- overwriteExpression: true
+  factoryExpression: "#application.layoutTypes.?[original]"
+  pathExpression: >
+    'lib/' +
+    #path(#application.actor.name) +
+    '/ui/navigation/navigation_registry.dart'
+  templateName: flutter/lib/ui/navigation/navigation_registry.dart.hbs
+  templateContext:
+    - name: layout
+      expression: "#self"
+
+# ========================================
+# navigation store
+# ========================================
+- overwriteExpression: true
+  factoryExpression: "#application.layoutTypes.?[original]"
+  pathExpression: >
+    'lib/' +
+    #path(#application.actor.name) +
+    '/ui/navigation/navigation_store.dart'
+  templateName: flutter/lib/ui/navigation/navigation_store.dart.hbs
+  templateContext:
+    - name: layout
+      expression: "#self"
+
+# ========================================
+# navigation service
+# ========================================
+- overwriteExpression: true
+  factoryExpression: "{#application}"
+  pathExpression: >
+    'lib/' +
+    #path(#application.actor.name) +
+    '/ui/navigation/navigation_service.dart'
+  templateName: flutter/lib/ui/navigation/navigation_service.dart.hbs
+
+# ========================================
+# page navigation
+# ========================================
+- overwriteExpression: true
+  factoryExpression: "{#application}"
+  pathExpression: >
+    'lib/' +
+    #path(#application.actor.name) +
+    '/ui/navigation/page_navigation.dart'
+  templateName: flutter/lib/ui/navigation/page_navigation.dart.hbs
+
+# ========================================
 # navigation state
 # ========================================
 - overwriteExpression: true
@@ -310,8 +446,8 @@
   pathExpression: >
     'lib/' +
     #path(#application.actor.name) +
-    '/ui/navigation_state.dart'
-  templateName: flutter/lib/ui/navigation_state.dart.hbs
+    '/ui/navigation/navigation_state.dart'
+  templateName: flutter/lib/ui/navigation/navigation_state.dart.hbs
 
 # ========================================
 # scaffold
@@ -345,6 +481,17 @@
     #path(#application.actor.name) +
     '/ui/error_page.dart'
   templateName: flutter/lib/ui/error_page.dart.hbs
+
+# ========================================
+# blank page
+# ========================================
+- overwriteExpression: true
+  factoryExpression: "{#application}"
+  pathExpression: >
+    'lib/' +
+    #path(#application.actor.name) +
+    '/ui/blank_page.dart'
+  templateName: flutter/lib/ui/blank_page.dart.hbs
 
 # ========================================
 # injector

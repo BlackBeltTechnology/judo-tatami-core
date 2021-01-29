@@ -21,10 +21,10 @@ rule CreatePageDefinitionForPreview
 		flex.stretch = UI!ui::Stretch#BOTH;
 		flex.sourceId = s.getID();
 		
-		if (s.layout == ESM!esm::ui::Layout#HORIZONTAL) {
+		if (s.getEffectiveLayout() == ESM!esm::ui::Layout#HORIZONTAL) {
 			flex.direction = UI!Axis#HORIZONTAL;
 		}
-		if (s.layout == ESM!esm::ui::Layout#VERTICAL) {
+		if (s.getEffectiveLayout() == ESM!esm::ui::Layout#VERTICAL) {
 			flex.direction = UI!Axis#VERTICAL;
 		}
 		
@@ -50,10 +50,10 @@ rule CreatePageDefinitionForPreview
 	        flex.crossAxisAlignment = UI!ui::CrossAxisAlignment#START;
 	    }
 	    
-	    if (s.layout == ESM!esm::ui::Layout#HORIZONTAL and s.components.forAll(c | c.isVerticalGrow())) {
+	    if (s.getEffectiveLayout() == ESM!esm::ui::Layout#HORIZONTAL and s.components.forAll(c | c.isVerticalGrow())) {
 	    	flex.crossAxisAlignment = UI!ui::CrossAxisAlignment#STRETCH;
 	    }
-	    if (s.layout == ESM!esm::ui::Layout#VERTICAL and s.components.forAll(c | c.isHorizontalGrow())) {
+	    if (s.getEffectiveLayout() == ESM!esm::ui::Layout#VERTICAL and s.components.forAll(c | c.isHorizontalGrow())) {
 	    	flex.crossAxisAlignment = UI!ui::CrossAxisAlignment#STRETCH;
 	    }
 	

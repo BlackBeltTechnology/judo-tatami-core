@@ -1,4 +1,5 @@
 {{~ log 'Date time field generation for' (variable application.name) '-' (fqClass page.name)'page'(fqClass page.dataElement.target.name) attributeType.name level='debug' ~}}
+//START datetimeinput.dart.hbs-----{{page.dataElement.target.name}}------------------------------------------------------------------------
 {{#if page.isPageTypeView}}
 Observer(
     builder: (_) => JudoDateTimeInput(
@@ -68,3 +69,4 @@ Observer(
     ),
 ),
 {{/if}}
+//END datetimeinput.dart.hbs-----{{page.dataElement.target.name}}--------------------------------------------------------------------------

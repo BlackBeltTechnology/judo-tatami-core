@@ -1,20 +1,37 @@
 package hu.blackbelt.judo.tatami.esm2ui;
 
-import hu.blackbelt.epsilon.runtime.execution.api.Log;
-import hu.blackbelt.epsilon.runtime.execution.impl.Slf4jLog;
-import hu.blackbelt.judo.meta.esm.accesspoint.Access;
-import hu.blackbelt.judo.meta.esm.accesspoint.ActorType;
-import hu.blackbelt.judo.meta.esm.namespace.Model;
-import hu.blackbelt.judo.meta.esm.runtime.EsmModel;
-import hu.blackbelt.judo.meta.esm.structure.DataMember;
-import hu.blackbelt.judo.meta.esm.structure.EntityType;
-import hu.blackbelt.judo.meta.esm.structure.MemberType;
-import hu.blackbelt.judo.meta.esm.type.StringType;
-import hu.blackbelt.judo.meta.esm.ui.*;
-import hu.blackbelt.judo.meta.ui.Application;
-import hu.blackbelt.judo.meta.ui.runtime.UiModel;
-import hu.blackbelt.model.northwind.esm.NorthwindEsmModel;
-import lombok.extern.slf4j.Slf4j;
+import static hu.blackbelt.judo.meta.esm.accesspoint.util.builder.AccesspointBuilders.newAccessBuilder;
+import static hu.blackbelt.judo.meta.esm.accesspoint.util.builder.AccesspointBuilders.newActorTypeBuilder;
+import static hu.blackbelt.judo.meta.esm.namespace.util.builder.NamespaceBuilders.newModelBuilder;
+import static hu.blackbelt.judo.meta.esm.runtime.EsmEpsilonValidator.calculateEsmValidationScriptURI;
+import static hu.blackbelt.judo.meta.esm.runtime.EsmEpsilonValidator.validateEsm;
+import static hu.blackbelt.judo.meta.esm.runtime.EsmModel.buildEsmModel;
+import static hu.blackbelt.judo.meta.esm.runtime.EsmModel.SaveArguments.esmSaveArgumentsBuilder;
+import static hu.blackbelt.judo.meta.esm.structure.util.builder.StructureBuilders.newDataMemberBuilder;
+import static hu.blackbelt.judo.meta.esm.structure.util.builder.StructureBuilders.newEntityTypeBuilder;
+import static hu.blackbelt.judo.meta.esm.structure.util.builder.StructureBuilders.newMappingBuilder;
+import static hu.blackbelt.judo.meta.esm.structure.util.builder.StructureBuilders.useTransferObjectType;
+import static hu.blackbelt.judo.meta.esm.type.util.builder.TypeBuilders.newStringTypeBuilder;
+import static hu.blackbelt.judo.meta.esm.ui.util.builder.UiBuilders.newDataFieldBuilder;
+import static hu.blackbelt.judo.meta.esm.ui.util.builder.UiBuilders.newMenuItemAccessBuilder;
+import static hu.blackbelt.judo.meta.esm.ui.util.builder.UiBuilders.newTransferObjectViewBuilder;
+import static hu.blackbelt.judo.meta.ui.runtime.UiEpsilonValidator.calculateUiValidationScriptURI;
+import static hu.blackbelt.judo.meta.ui.runtime.UiEpsilonValidator.validateUi;
+import static hu.blackbelt.judo.meta.ui.runtime.UiModel.buildUiModel;
+import static hu.blackbelt.judo.meta.ui.runtime.UiModel.SaveArguments.uiSaveArgumentsBuilder;
+import static hu.blackbelt.judo.tatami.esm2ui.Esm2UiPreview.executeEsm2UiTransformation;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.Writer;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 import org.eclipse.emf.common.notify.Notifier;
 import org.eclipse.emf.common.util.URI;
@@ -26,32 +43,26 @@ import org.junit.jupiter.api.Test;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.Writer;
-import java.util.*;
-import java.util.stream.Stream;
-import java.util.stream.StreamSupport;
-
-import static hu.blackbelt.judo.meta.esm.accesspoint.util.builder.AccesspointBuilders.newAccessBuilder;
-import static hu.blackbelt.judo.meta.esm.accesspoint.util.builder.AccesspointBuilders.newActorTypeBuilder;
-import static hu.blackbelt.judo.meta.esm.namespace.util.builder.NamespaceBuilders.newModelBuilder;
-import static hu.blackbelt.judo.meta.esm.runtime.EsmEpsilonValidator.calculateEsmValidationScriptURI;
-import static hu.blackbelt.judo.meta.esm.runtime.EsmEpsilonValidator.validateEsm;
-import static hu.blackbelt.judo.meta.esm.runtime.EsmModel.buildEsmModel;
-
-import static hu.blackbelt.judo.meta.esm.runtime.EsmModel.SaveArguments.esmSaveArgumentsBuilder;
-
-import static hu.blackbelt.judo.meta.esm.structure.util.builder.StructureBuilders.*;
-import static hu.blackbelt.judo.meta.esm.type.util.builder.TypeBuilders.newStringTypeBuilder;
-import static hu.blackbelt.judo.meta.esm.ui.util.builder.UiBuilders.*;
-import static hu.blackbelt.judo.meta.ui.runtime.UiEpsilonValidator.calculateUiValidationScriptURI;
-import static hu.blackbelt.judo.meta.ui.runtime.UiEpsilonValidator.validateUi;
-import static hu.blackbelt.judo.meta.ui.runtime.UiModel.SaveArguments.uiSaveArgumentsBuilder;
-import static hu.blackbelt.judo.meta.ui.runtime.UiModel.buildUiModel;
-import static hu.blackbelt.judo.tatami.esm2ui.Esm2UiPreview.executeEsm2UiTransformation;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import hu.blackbelt.epsilon.runtime.execution.api.Log;
+import hu.blackbelt.epsilon.runtime.execution.impl.Slf4jLog;
+import hu.blackbelt.judo.meta.esm.accesspoint.Access;
+import hu.blackbelt.judo.meta.esm.accesspoint.ActorType;
+import hu.blackbelt.judo.meta.esm.namespace.Model;
+import hu.blackbelt.judo.meta.esm.runtime.EsmModel;
+import hu.blackbelt.judo.meta.esm.structure.DataMember;
+import hu.blackbelt.judo.meta.esm.structure.EntityType;
+import hu.blackbelt.judo.meta.esm.structure.MemberType;
+import hu.blackbelt.judo.meta.esm.type.StringType;
+import hu.blackbelt.judo.meta.esm.ui.Horizontal;
+import hu.blackbelt.judo.meta.esm.ui.Layout;
+import hu.blackbelt.judo.meta.esm.ui.TransferObjectForm;
+import hu.blackbelt.judo.meta.esm.ui.TransferObjectTable;
+import hu.blackbelt.judo.meta.esm.ui.TransferObjectView;
+import hu.blackbelt.judo.meta.esm.ui.Vertical;
+import hu.blackbelt.judo.meta.ui.Application;
+import hu.blackbelt.judo.meta.ui.runtime.UiModel;
+import hu.blackbelt.model.northwind.esm.NorthwindEsmModel;
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class Esm2UiPreviewTest {

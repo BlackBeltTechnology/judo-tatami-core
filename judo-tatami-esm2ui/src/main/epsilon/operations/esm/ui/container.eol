@@ -28,10 +28,10 @@ operation ESM!esm::ui::Container createFlexFromContainer(application : UI!ui::Ap
 	
 	ret.sourceId = self.getID();
 
-	if (self.layout == ESM!esm::ui::Layout#HORIZONTAL) {
+	if (self.getEffectiveLayout() == ESM!esm::ui::Layout#HORIZONTAL) {
 		ret.direction = UI!Axis#HORIZONTAL;
 	}
-	if (self.layout == ESM!esm::ui::Layout#VERTICAL) {
+	if (self.getEffectiveLayout() == ESM!esm::ui::Layout#VERTICAL) {
 		ret.direction = UI!Axis#VERTICAL;
 	}
 	
@@ -57,10 +57,10 @@ operation ESM!esm::ui::Container createFlexFromContainer(application : UI!ui::Ap
         ret.crossAxisAlignment = UI!ui::CrossAxisAlignment#START;
     }
     
-    if (self.layout == ESM!esm::ui::Layout#HORIZONTAL and self.components.forAll(c | c.isVerticalGrow())) {
+    if (self.getEffectiveLayout() == ESM!esm::ui::Layout#HORIZONTAL and not self.components.isEmpty() and self.components.forAll(c | c.isVerticalGrow())) {
     	ret.crossAxisAlignment = UI!ui::CrossAxisAlignment#STRETCH;
     }
-    if (self.layout == ESM!esm::ui::Layout#VERTICAL and self.components.forAll(c | c.isHorizontalGrow())) {
+    if (self.getEffectiveLayout() == ESM!esm::ui::Layout#VERTICAL and not self.components.isEmpty() and self.components.forAll(c | c.isHorizontalGrow())) {
     	ret.crossAxisAlignment = UI!ui::CrossAxisAlignment#STRETCH;
     }
 	

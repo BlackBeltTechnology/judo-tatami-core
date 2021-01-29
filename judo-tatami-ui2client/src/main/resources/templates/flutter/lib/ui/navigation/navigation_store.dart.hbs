@@ -1,0 +1,100 @@
+{{log 'Navigation store generation for' (variable application.name) level='info'}}
+//////////////////////////////////////////////////////////////////////////////
+// G E N E R A T E D    C L A S S
+// ------------------------------
+// Factory expression: {{{ cleanup template.factoryExpression }}}
+// Path expression: {{{ cleanup template.pathExpression }}}
+// Overwrite: {{{ cleanup template.overwriteExpression }}}
+// Template name: {{ template.templateName }}
+// Application: {{ application.name }}
+
+import 'package:{{ modelPackage application.name }}/{{ path application.name }}/injector/injector.dart';
+import 'package:{{ modelPackage application.name }}/{{ path application.name }}/repository/package.dart';
+import 'package:{{ modelPackage application.name }}/{{ path application.name }}/store/package.dart';
+import '../routes/router.gr.dart';
+import 'package:mobx/mobx.dart';
+import 'package:openapi_dart_common/openapi.dart';
+
+part 'navigation_store.g.dart';
+
+class NavigationStore extends _NavigationStore with _$NavigationStore {}
+
+abstract class _NavigationStore with Store {
+    {{ fqClass application.actor.name }}Repository _{{ fqVariable application.actor.name }}Repository = locator<{{ fqClass application.actor.name }}Repository>();
+
+    @observable
+    String errorMessage;
+
+{{# each layout.pageContainers as |container| }}
+    {{# with container.owner as |page| }}
+        {{# with page.relationType as |relation| }}
+            {{# if page.dataElement.isAccess }}
+                {{# unless page.dataElement.isCollection }}
+                    {{# if page.isPageTypeView }}
+                        {{# if relation.isRelationBehaviourTypeListable }}
+    @action
+    Future<{{ fqClass relation.target.name }}Store> get{{ fqClass relation.name }}() async {
+        try {
+            errorMessage = null;
+            return await _{{ fqVariable application.actor.name }}Repository.{{ fqVariable relation.owner.name }}{{ fqClass relation.name }}Get();
+        } on ApiException catch (error) {
+            errorMessage = "Could not load {{ relation.name }}";
+            throw error;
+        }
+    }
+
+                        {{/ if }}
+                    {{/ if }}
+                    {{# if page.isPageTypeUpdate }}
+                        {{# if relation.target.isClassBehaviourTypeUpdatable }}
+    @action
+    Future<{{ fqClass relation.target.name }}Store> update{{ fqClass relation.target.name }}({{ fqClass relation.target.name }}Store target{{ className page.dataElement.target.name }}Store) async {
+        try {
+            errorMessage = null;
+            return await _{{ fqVariable application.actor.name }}Repository.{{fqVariable relation.target.name}}Update(target{{ className page.dataElement.target.name }}Store);
+        } on ApiException catch (error) {
+            errorMessage = "Could not update {{ relation.target.name }}";
+            throw error;
+        }
+    }
+
+                        {{/ if }}
+                    {{/ if }}
+                    {{# if page.isPageTypeView }}
+                        {{# if relation.target.isClassBehaviourTypeDeletable }}
+    @action
+    Future<void> delete{{ fqClass relation.target.name }}({{ fqClass relation.target.name }}Store target{{ className page.dataElement.target.name }}Store) async {
+        try {
+            errorMessage = null;
+            return await _{{ fqVariable application.actor.name }}Repository.{{fqVariable relation.target.name}}Delete(target{{ className page.dataElement.target.name }}Store);
+        } on ApiException catch (error) {
+            errorMessage = "Could not delete {{ relation.name }}";
+            throw error;
+        }
+    }
+
+                        {{/ if }}
+                    {{/ if }}
+                    {{# if page.isPageTypeCreate }}
+                        {{# if relation.isRelationBehaviourTypeCreatable }}
+    @action
+    Future<{{ fqClass relation.target.name }}Store> create{{ fqClass relation.name }}({{ fqClass relation.target.name }}Store target{{ className relation.target.name }}Store) async {
+        try {
+            errorMessage = null;
+            return await _{{ fqVariable application.actor.name }}Repository.{{ fqVariable relation.owner.name }}{{ fqClass relation.name }}Create(target{{ className relation.target.name }}Store);
+        } on ApiException catch (error) {
+            errorMessage = "Could not create {{ relation.name }}";
+            throw error;
+        }
+    }
+
+
+                        {{/ if }}
+                    {{/ if }}
+                {{/unless}}
+            {{/if}}
+        {{/ with }}
+    {{/ with }}
+{{/ each }}
+
+}

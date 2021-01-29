@@ -1,5 +1,52 @@
 package hu.blackbelt.judo.tatami.esm2ui;
 
+import static hu.blackbelt.judo.meta.esm.accesspoint.util.builder.AccesspointBuilders.newAccessBuilder;
+import static hu.blackbelt.judo.meta.esm.accesspoint.util.builder.AccesspointBuilders.newActorTypeBuilder;
+import static hu.blackbelt.judo.meta.esm.accesspoint.util.builder.AccesspointBuilders.useActorType;
+import static hu.blackbelt.judo.meta.esm.namespace.util.builder.NamespaceBuilders.newModelBuilder;
+import static hu.blackbelt.judo.meta.esm.operation.util.builder.OperationBuilders.newInheritedOperationReferenceBuilder;
+import static hu.blackbelt.judo.meta.esm.operation.util.builder.OperationBuilders.newOperationBuilder;
+import static hu.blackbelt.judo.meta.esm.operation.util.builder.OperationBuilders.newParameterBuilder;
+import static hu.blackbelt.judo.meta.esm.runtime.EsmEpsilonValidator.calculateEsmValidationScriptURI;
+import static hu.blackbelt.judo.meta.esm.runtime.EsmEpsilonValidator.validateEsm;
+import static hu.blackbelt.judo.meta.esm.runtime.EsmModel.buildEsmModel;
+import static hu.blackbelt.judo.meta.esm.runtime.EsmModel.SaveArguments.esmSaveArgumentsBuilder;
+import static hu.blackbelt.judo.meta.esm.structure.util.builder.StructureBuilders.newDataMemberBuilder;
+import static hu.blackbelt.judo.meta.esm.structure.util.builder.StructureBuilders.newEntityTypeBuilder;
+import static hu.blackbelt.judo.meta.esm.structure.util.builder.StructureBuilders.newGeneralizationBuilder;
+import static hu.blackbelt.judo.meta.esm.structure.util.builder.StructureBuilders.newOneWayRelationMemberBuilder;
+import static hu.blackbelt.judo.meta.esm.structure.util.builder.StructureBuilders.useEntityType;
+import static hu.blackbelt.judo.meta.esm.type.util.builder.TypeBuilders.newStringTypeBuilder;
+import static hu.blackbelt.judo.meta.esm.ui.util.builder.UiBuilders.newDataColumnBuilder;
+import static hu.blackbelt.judo.meta.esm.ui.util.builder.UiBuilders.newDataFieldBuilder;
+import static hu.blackbelt.judo.meta.esm.ui.util.builder.UiBuilders.newGroupBuilder;
+import static hu.blackbelt.judo.meta.esm.ui.util.builder.UiBuilders.newOperationFormBuilder;
+import static hu.blackbelt.judo.meta.esm.ui.util.builder.UiBuilders.newTransferObjectFormBuilder;
+import static hu.blackbelt.judo.meta.esm.ui.util.builder.UiBuilders.newTransferObjectTableBuilder;
+import static hu.blackbelt.judo.meta.esm.ui.util.builder.UiBuilders.newTransferObjectViewBuilder;
+import static hu.blackbelt.judo.meta.ui.runtime.UiEpsilonValidator.calculateUiValidationScriptURI;
+import static hu.blackbelt.judo.meta.ui.runtime.UiEpsilonValidator.validateUi;
+import static hu.blackbelt.judo.meta.ui.runtime.UiModel.buildUiModel;
+import static hu.blackbelt.judo.meta.ui.runtime.UiModel.SaveArguments.uiSaveArgumentsBuilder;
+import static hu.blackbelt.judo.tatami.esm2ui.Esm2Ui.calculateEsm2UiTransformationScriptURI;
+import static hu.blackbelt.judo.tatami.esm2ui.Esm2Ui.executeEsm2UiTransformation;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.io.File;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
+
+import org.eclipse.emf.common.util.URI;
+import org.eclipse.emf.ecore.EObject;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
 import hu.blackbelt.epsilon.runtime.execution.api.Log;
 import hu.blackbelt.epsilon.runtime.execution.impl.Slf4jLog;
 import hu.blackbelt.judo.meta.esm.accesspoint.Access;
@@ -13,57 +60,14 @@ import hu.blackbelt.judo.meta.esm.structure.EntityType;
 import hu.blackbelt.judo.meta.esm.structure.MemberType;
 import hu.blackbelt.judo.meta.esm.structure.OneWayRelationMember;
 import hu.blackbelt.judo.meta.esm.structure.RelationKind;
-import hu.blackbelt.judo.meta.esm.structure.TransferObjectType;
 import hu.blackbelt.judo.meta.esm.type.StringType;
 import hu.blackbelt.judo.meta.ui.Application;
 import hu.blackbelt.judo.meta.ui.PageDefinition;
 import hu.blackbelt.judo.meta.ui.PageType;
 import hu.blackbelt.judo.meta.ui.data.ClassType;
 import hu.blackbelt.judo.meta.ui.data.OperationParameterType;
-import hu.blackbelt.judo.meta.ui.data.OperationType;
 import hu.blackbelt.judo.meta.ui.runtime.UiModel;
 import lombok.extern.slf4j.Slf4j;
-import org.eclipse.emf.common.util.URI;
-import org.eclipse.emf.ecore.EObject;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
-import com.google.common.collect.ImmutableList;
-
-import java.io.File;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.stream.Stream;
-import java.util.stream.StreamSupport;
-
-import static hu.blackbelt.judo.meta.esm.accesspoint.util.builder.AccesspointBuilders.newActorTypeBuilder;
-import static hu.blackbelt.judo.meta.esm.accesspoint.util.builder.AccesspointBuilders.newAccessBuilder;
-import static hu.blackbelt.judo.meta.esm.accesspoint.util.builder.AccesspointBuilders.useActorType;
-import static hu.blackbelt.judo.meta.esm.namespace.util.builder.NamespaceBuilders.newModelBuilder;
-import static hu.blackbelt.judo.meta.esm.operation.util.builder.OperationBuilders.*;
-import static hu.blackbelt.judo.meta.esm.runtime.EsmEpsilonValidator.calculateEsmValidationScriptURI;
-import static hu.blackbelt.judo.meta.esm.runtime.EsmEpsilonValidator.validateEsm;
-import static hu.blackbelt.judo.meta.esm.runtime.EsmModel.buildEsmModel;
-import static hu.blackbelt.judo.meta.esm.structure.util.builder.StructureBuilders.*;
-import static hu.blackbelt.judo.meta.esm.type.util.builder.TypeBuilders.newStringTypeBuilder;
-
-import static hu.blackbelt.judo.meta.esm.ui.util.builder.UiBuilders.*;
-
-import static hu.blackbelt.judo.meta.esm.runtime.EsmModel.SaveArguments.esmSaveArgumentsBuilder;
-
-import static hu.blackbelt.judo.meta.ui.runtime.UiEpsilonValidator.calculateUiValidationScriptURI;
-import static hu.blackbelt.judo.meta.ui.runtime.UiEpsilonValidator.validateUi;
-import static hu.blackbelt.judo.meta.ui.runtime.UiModel.SaveArguments.uiSaveArgumentsBuilder;
-import static hu.blackbelt.judo.meta.ui.runtime.UiModel.buildUiModel;
-import static hu.blackbelt.judo.tatami.esm2ui.Esm2Ui.calculateEsm2UiTransformationScriptURI;
-import static hu.blackbelt.judo.tatami.esm2ui.Esm2Ui.executeEsm2UiTransformation;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @Slf4j
 public class Esm2UiPageDefinitionTest {
@@ -557,7 +561,7 @@ public class Esm2UiPageDefinitionTest {
         assertTrue(uiE2.get().getRelations().contains(rel1PageCreate.get().getDataElement()) && rel1PageCreate.get().getDataElement().getName().equals(relation1.getName()));
         
         final Optional<PageDefinition> rel1PageUpdate = application.get().getPages().stream()
-        		.filter(c -> c.getPageType().equals(PageType.UPDATE) && c.getName().equals(EsmUtils.getNamespaceElementFQName(e2) + "." + relation1.getName() + "#Update")).findAny();
+        		.filter(c -> c.getPageType().equals(PageType.UPDATE) && c.getName().equals(EsmUtils.getNamespaceElementFQName(e2) + "." + relation1.getName() + "#Edit")).findAny();
         assertFalse(rel1PageUpdate.isPresent());
 
       //exposed stored composition: view
@@ -571,7 +575,7 @@ public class Esm2UiPageDefinitionTest {
         assertFalse(rel2PageCreate.isPresent());
         
         final Optional<PageDefinition> rel2PageUpdate = application.get().getPages().stream()
-        		.filter(c -> c.getPageType().equals(PageType.UPDATE) && c.getName().equals(EsmUtils.getNamespaceElementFQName(e2) + "." + relation2.getName() + "#Update")).findAny();
+        		.filter(c -> c.getPageType().equals(PageType.UPDATE) && c.getName().equals(EsmUtils.getNamespaceElementFQName(e2) + "." + relation2.getName() + "#Edit")).findAny();
         assertFalse(rel2PageUpdate.isPresent());
         
         final Optional<PageDefinition> rel2PageTable = application.get().getPages().stream()
@@ -589,7 +593,7 @@ public class Esm2UiPageDefinitionTest {
         assertFalse(rel3PageCreate.isPresent());
         
         final Optional<PageDefinition> rel3PageUpdate = application.get().getPages().stream()
-        		.filter(c -> c.getPageType().equals(PageType.UPDATE) && c.getName().equals(EsmUtils.getNamespaceElementFQName(e2) + "." + relation3.getName() + "#Update")).findAny();
+        		.filter(c -> c.getPageType().equals(PageType.UPDATE) && c.getName().equals(EsmUtils.getNamespaceElementFQName(e2) + "." + relation3.getName() + "#Edit")).findAny();
         assertFalse(rel3PageUpdate.isPresent());
         
         //exposed derived updateable association: view, create, update, table
@@ -603,8 +607,9 @@ public class Esm2UiPageDefinitionTest {
         assertFalse(rel4PageCreate.isPresent());
         
         final Optional<PageDefinition> rel4PageUpdate = application.get().getPages().stream()
-        		.filter(c -> c.getPageType().equals(PageType.UPDATE) && c.getName().equals(EsmUtils.getNamespaceElementFQName(e2) + "." + relation4.getName() + "#Update")).findAny();
-        assertFalse(rel4PageUpdate.isPresent());
+        		.filter(c -> c.getPageType().equals(PageType.UPDATE) && c.getName().equals(EsmUtils.getNamespaceElementFQName(e2) + "." + relation4.getName() + "#Edit")).findAny();
+        assertTrue(rel4PageUpdate.isPresent());
+        assertTrue(uiE2.get().getRelations().contains(rel4PageUpdate.get().getDataElement()) && rel4PageUpdate.get().getDataElement().getName().equals(relation4.getName()));
         
         final Optional<PageDefinition> rel4PageTable = application.get().getPages().stream()
         		.filter(c -> c.getPageType().equals(PageType.TABLE) && c.getName().equals(EsmUtils.getNamespaceElementFQName(e2) + "." + relation4.getName() + "#Table")).findAny();

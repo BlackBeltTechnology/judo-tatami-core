@@ -1,4 +1,5 @@
 {{ log 'Table generation for' (variable application.name) '-' (fqClass page.name) (variable dataElement.name) level='debug' ~}}
+//START associationtable.dart.hbs-----{{dataElement.name}}---------------------------------------------------------------------------------
 // ignore: missing_return
 Observer(builder: (_) {
     switch({{ fqVariable page.name }}PageStore.{{ fqVariable page.relationType.name }}StoreFuture.status){
@@ -12,7 +13,7 @@ Observer(builder: (_) {
                 col: {{ multiplyCol col }},
                 row: {{row}},
                 dataInfo: {{ fqClass pageDefinition.name }}{{ fqClass table.name }}{{ fqClass pageContainer.layoutType.name }}Table(disabled: {{disabled}}),
-                rowList: {{# if page.dataElement.isAccess}}{{ fqVariable page.name }}PageStore.{{ fqVariable page.relationType.name }}StoreList{{else}}{{# if page.relationType.isCollection }}owner{{ className page.relationType.owner.name }}Store.{{variable page.relationType.name}}{{else}}[owner{{ className page.relationType.owner.name }}Store.{{variable page.relationType.name}}].asObservable(){{/ if}}{{/ if}},
+                rowList: {{# if page.dataElement.isAccess}}{{# if page.relationType.isCollection }}{{ fqVariable page.name }}PageStore.{{ fqVariable page.relationType.name }}StoreList{{else}}[{{ fqVariable page.name }}PageStore.{{variable page.relationType.name}}Store].asObservable(){{/ if}}{{else}}{{# if page.relationType.isCollection }}owner{{ className page.relationType.owner.name }}Store.{{variable page.relationType.name}}{{else}}[owner{{ className page.relationType.owner.name }}Store.{{variable page.relationType.name}}].asObservable(){{/ if}}{{/ if}},
                 {{#each table.rowActions as |action|}}
                 {{#if action.isViewAction}}
                 navigateToViewPageAction: (element) async {
@@ -73,3 +74,4 @@ Observer(builder: (_) {
             );
     }
 }),
+//END associationtable.dart.hbs-----{{dataElement.name}}---------------------------------------------------------------------------------

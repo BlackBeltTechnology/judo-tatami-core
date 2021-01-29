@@ -1,4 +1,5 @@
 {{~ log 'Flex generation for' (variable application.name) '-' (fqClass page.name)'page' (variable name) level='debug' ~}}
+//START flex.dart.hbs-----{{page.name}}----------------------------------------------------------------------------------------------------
 {{# if isDirectionHorizontal }}
 JudoRow(
 {{ else }}
@@ -18,3 +19,4 @@ JudoColumn(
     {{/ each }}
     ],
 ),
+//END flex.dart.hbs-----{{page.name}}------------------------------------------------------------------------------------------------------

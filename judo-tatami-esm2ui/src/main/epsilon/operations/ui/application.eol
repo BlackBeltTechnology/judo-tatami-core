@@ -18,8 +18,8 @@ operation UI!ui::Application calculatePageActions(preview : Boolean) {
 		table.calculateActions(self, preview);
 	}
 
-	for (table : UI!ui::Link in UI!ui::Link.all().select(t | t.getPageDefinition().eContainer() == self)) {
-		table.calculateActions(self, preview);
+	for (link : UI!ui::Link in UI!ui::Link.all().select(t | t.getPageDefinition().eContainer() == self)) {
+		link.calculateActions(self, preview);
 	}
 }
 

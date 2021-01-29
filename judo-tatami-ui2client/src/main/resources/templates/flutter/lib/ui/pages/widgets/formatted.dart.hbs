@@ -1,3 +1,4 @@
+//START formatted.dart.hbs-----{{page.name}}-----------------------------------------------------------------------------------------------
 {{# if column }}
 {{ log 'Formatted text generation for' (variable application.name) '-' (fqClass table.name)'table' (variable dataName) (variable column.attributeType.name) level='debug' ~}}
 {{# if (isEnumType column.attributeType.dataType) }}
@@ -30,3 +31,4 @@ JudoText(
     text: target{{ className page.dataElement.target.name }}Store.{{ attributeType.name }}.toString(),
 ),
 {{/ if }}
+//END formatted.dart.hbs-----{{page.name}}-------------------------------------------------------------------------------------------------

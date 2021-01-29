@@ -10,12 +10,17 @@
 
 import 'package:flutter/material.dart';
 import 'package:openapi_dart_common/openapi.dart';
+import 'package:judo_flutter_components/judo_flutter_components.dart';
+
+import '{{ path application.name }}/app_theme.dart';
 import '{{ path application.name }}/injector/injector.dart';
 import '{{ path application.name }}/main.dart';
 import '{{ path application.name }}/oauth.dart';
 import '{{ path application.name }}/utilities/package.dart';
 
 void main() async {
+    JudoComponentCustomizer.set(new AppDesignCustomizer());
+
     configureDependencies();
     const bool kIsWeb = identical(0, 0.0);
 

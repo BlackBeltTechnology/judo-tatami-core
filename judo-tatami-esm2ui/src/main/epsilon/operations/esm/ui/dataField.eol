@@ -1,14 +1,13 @@
 operation ESM!esm::ui::DataField createInputFromDataField(application : UI!ui::Application) : UI!ui::VisualElement {
 	var dataType = self.dataFeature.getMember().getDataType();
+	var ret : UI!ui::VisualElement;
+	
 	if (dataType.isKindOf(ESM!esm::type::StringType) and self.textWidget == ESM!esm::ui::TextWidget#TEXT) {
-		var ret : UI!ui::Formatted = dataType.formatted(self);
-		ret.name = self.name;
-		ret.label = self.getUiLabel();
-		ret.attributeType = self.dataFeature.getMember().mapAttributeType(application, self.getTransferObjectType().mapClassType(application));
-		return ret;
+		ret = dataType.formatted(self);
+	} else {
+	   ret = self.dataFeature.getMember().getDataType().input(self, application);
 	}
 	
-	var ret : UI!ui::Input = self.dataFeature.getMember().getDataType().input(self, application);
 	ret.name = self.name;
 	ret.label = self.getUiLabel();
 

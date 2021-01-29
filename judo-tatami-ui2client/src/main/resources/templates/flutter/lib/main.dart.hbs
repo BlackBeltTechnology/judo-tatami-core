@@ -13,10 +13,12 @@ import 'package:flutter/material.dart';
 import 'package:openapi_dart_common/openapi.dart';
 import 'oauth.dart';
 import 'dart:async';
+
+import 'package:{{ modelPackage application.name }}/{{ path application.name }}/app_theme.dart';
 import 'package:{{ modelPackage application.name }}/{{ path application.name }}/error/error_handler.dart';
 import 'package:{{ modelPackage application.name }}/{{ path application.name }}/ui/routes/router.gr.dart' as router;
 import 'package:{{ modelPackage application.name }}/{{ path application.name }}/ui/drawer_items.dart';
-import 'package:{{ modelPackage application.name }}/{{ path application.name }}/ui/navigation_state.dart';
+import 'package:{{ modelPackage application.name }}/{{ path application.name }}/ui/navigation/navigation_state.dart';
 import 'package:{{ modelPackage application.name }}/{{ path application.name }}/utilities/package.dart';
 import 'package:{{ modelPackage application.name }}/{{ path application.name }}/injector/injector.dart';
 
@@ -34,12 +36,9 @@ class {{ fqClass application.name }}Application extends StatelessWidget {
     Widget build(BuildContext context) {
         final navigation = locator<NavigationState>();
         scheduleMicrotask(() => ErrorHandler.navigateToBuiltInPage()); // execute after main build methods are executed
-
         return MaterialApp(
             title: '{{ modelName application.name }}',
-            theme: ThemeData.light().copyWith(
-                primaryColor: kPrimaryColor,
-            ),
+            theme: AppTheme.of(context),
             home: {{ fqClass application.name }}ApplicationPage()
         );
     }
@@ -79,7 +78,9 @@ class {{ fqClass application.name }}ApplicationPageState extends State<{{ fqClas
             ],
         );
 
-        return Container(color: kSecondaryColor, child: screen);
+        return Container(color: AppTheme.of(context).primaryColor,
+            child: screen,
+        );
     }
 }
 
@@ -98,80 +99,132 @@ class _{{ fqClass application.name }}DrawerState extends State<{{ fqClass applic
     @override
     Widget build(BuildContext context) {
         NavigationState navigationState = locator<NavigationState>();
+        ThemeData theme = Theme.of(context);
 
         String _selected = navigationState.currentRoute; //widget.navigationState.currentRoute;
         return Drawer(
             child: Container(
-                color: Colors.black12,
-                child: Row(children: [
-                    Expanded(
-                        child: ListView(
-                            padding: EdgeInsets.zero,
-                            children: [
-                                Column(
+                color: theme.cardColor,
+                child: Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 10),
+                    child: Row(
+                        children: [
+                            Expanded(
+                                child: ListView(
+                                    padding: EdgeInsets.zero,
                                     children: [
-                                        UserAccountsDrawerHeader(
-                                            decoration: BoxDecoration(
-                                                color: kSecondaryColor
-                                            ),
-                                            accountName: Text('User'),
-                                            accountEmail: Text('user@email.com'),
-                                            currentAccountPicture: CircleAvatar(
-                                                child: IconButton(
-                                                    padding: EdgeInsets.zero,
-                                                    icon: Icon(Icons.settings),
-                                                    color: Colors.black54,
-                                                    onPressed: () => { navigationState.open(router.Routes.{{ fqVariable application.name }}SettingsPage)},
+                                        Column(
+                                            children: [
+                                                Container(
+                                                    alignment: Alignment.centerLeft,
+                                                    child:
+                                                        Padding(
+                                                            child:
+                                                                Column(
+                                                                    children: [
+                                                                        Row(
+                                                                            mainAxisAlignment: MainAxisAlignment.start,
+                                                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                                                            children: [
+                                                                                Container(
+                                                                                    alignment: Alignment.topLeft,
+                                                                                    child:
+                                                                                        Column(
+                                                                                            mainAxisAlignment: MainAxisAlignment.start,
+                                                                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                                                                            children: [
+                                                                                                Text("{{ modelPackage application.name }}", style: Theme.of(context).textTheme.headline6.copyWith(fontWeight: FontWeight.w900),),
+                                                                                                Text("{{ path application.name }}", style: Theme.of(context).textTheme.subtitle1.copyWith(fontWeight: FontWeight.w100)),
+                                                                                            ],
+                                                                                        )
+                                                                                ),
+
+                                                                                Expanded(child: Text("")),
+
+                                                                                Column(
+                                                                                    children: [
+                                                                                        Container(
+                                                                                            alignment: Alignment.topRight,
+                                                                                            child:
+                                                                                            (Oauth.isAuthenticationRequired()) ?
+                                                                                            (Oauth.isLoggedIn()) ?
+                                                                                            IconButton(
+                                                                                                onPressed: () async {
+                                                                                                    Oauth.logout();
+                                                                                                },
+                                                                                                color: Colors.black38,
+                                                                                                icon: Icon(Icons.logout),
+                                                                                            ) :
+                                                                                            IconButton(
+                                                                                                onPressed: () async {
+                                                                                                    Oauth.loginAuthorizeAndExchangeCode();
+                                                                                                },
+                                                                                                color: Colors.black38,
+                                                                                                icon: Icon(Icons.login),
+                                                                                            ) : null,
+                                                                                        ),
+
+                                                                                        Container(
+                                                                                            alignment: Alignment.topRight,
+                                                                                            child:
+                                                                                            IconButton(
+                                                                                                onPressed: () => { navigationState.open(router.Routes.{{ fqVariable application.name }}SettingsPage)},
+                                                                                                color: Colors.black38,
+                                                                                                icon: Icon(Icons.settings),
+                                                                                            )
+                                                                                        ),
+                                                                                    ],
+                                                                                )
+                                                                            ]),
+
+                                                                        const Divider(
+                                                                            color: Color(0xffdcdcdc),
+                                                                            height: 16,
+                                                                            thickness: 1,
+                                                                            indent: 10,
+                                                                            endIndent: 10,
+                                                                        )
+
+                                                                        ],
+                                                                ),
+                                                            padding: EdgeInsets.symmetric(vertical: 24, horizontal: 16),
+                                                        ),
                                                 ),
-                                                backgroundColor: Colors.white,
-                                            ),
-                                            otherAccountsPictures: [
-                                                (Oauth.isAuthenticationRequired()) ?
-                                                (Oauth.isLoggedIn()) ?
-                                                IconButton(
-                                                    onPressed: () async {
-                                                        Oauth.logout();
-                                                    },
-                                                    color: Colors.white,
-                                                    icon: Icon(Icons.logout),
-                                                ) :
-                                                IconButton(
-                                                    onPressed: () async {
-                                                        Oauth.loginAuthorizeAndExchangeCode();
-                                                    },
-                                                    color: Colors.white,
-                                                    icon: Icon(Icons.login),
-                                                ): null,
-                                            ],
+
+                                                Row(
+                                                    children: [
+                                                    ],
+                                                )
+                                            ]
                                         ),
-                                    ]
-                                ),
-                                ...{{ fqClass application.name }}NavigationItems.navigationItems
-                                    .map((e) => ListTile(
-                                    leading: e.leading,
-                                    title: e.title,
-                                    onTap: () {
-                                        if (Info.serverDown) {
-                                            ErrorHandler.navigateToBuiltInPage();
-                                        } else {
-                                            if (Oauth.isAuthenticationRequired() && !Oauth.isLoggedIn()) {
-                                                Oauth.loginAuthorizeAndExchangeCode();
-                                            } else {
-                                                navigationState.navigateTo(e.route);
-                                                setState(() => {});
-                                            }
-                                        }
-                                    },
-                                    selected: e.route == _selected))
-                                    .toList(),
-                                const Divider(),
-                            ],
+                                        ...{{ fqClass application.name }}NavigationItems.navigationItems
+                                            .map((e) => ListTile(
+                                            leading: e.leading,
+                                            title: e.title,
+                                            onTap: () {
+                                                if (Info.serverDown) {
+                                                    ErrorHandler.navigateToBuiltInPage();
+                                                } else {
+                                                    if (Oauth.isAuthenticationRequired() && !Oauth.isLoggedIn()) {
+                                                        Oauth.loginAuthorizeAndExchangeCode();
+                                                    } else {
+                                                        navigationState.navigateTo(e.route);
+                                                        setState(() => {});
+                                                    }
+                                                }
+                                            },
+                                            selected: e.route == _selected))
+                                            .toList(),
+                                        const Divider(),
+                                ],
+                            ),
                         ),
+                        const VerticalDivider(
+                            width: 1,
+                        )
+                        ]
                     ),
-                    const VerticalDivider(
-                        width: 1,
-                    )
-                ]),
+                ),
             )
         );
     }
