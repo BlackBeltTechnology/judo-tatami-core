@@ -19,7 +19,7 @@ operation UI!ui::CallOperationAction resolveParameterPageDefinitions() {
 		}
 		
 		if (origOpForm.confirmationCondition.isDefined()) {
-			var condition = clazz.attributes.selectOne(a | a.name == origOpForm.confirmationConditio.name);
+			var condition = clazz.attributes.selectOne(a | a.name == origOpForm.confirmationCondition.name);
 			if (condition.isDefined()) {
 				callAction.confirmationCondition = condition;
 			}
