@@ -21,12 +21,12 @@ operation ESM!RelationFeature isRangeExpressionSupported() : Boolean {
 
 @cached
 operation ESM!RelationFeature isAnyRangeExpressionSupported() : Boolean {
-    return self.isNotDerived() and self.isContainerAndTargetMapped() and self.rangeType == ESM!RangeType#ANY and esmUtils.isExposedByHumanActorKind(self.eContainer);
+    return self.isNotDerived() and (self.isContainerAndTargetMapped() or esmUtils.isUiInputType(self.eContainer)) and self.rangeType == ESM!RangeType#ANY and esmUtils.isExposedByHumanActorKind(self.eContainer);
 }
 
 @cached
 operation ESM!RelationFeature isDerivedRangeExpressionSupported() : Boolean {
-    return self.isNotDerived() and self.isContainerAndTargetMapped() and self.rangeType == ESM!RangeType#DERIVED and self.rangeExpression.isDefined() and self.rangeExpression.trim().length() > 0;
+    return self.isNotDerived() and (self.isContainerAndTargetMapped() or esmUtils.isUiInputType(self.eContainer)) and self.rangeType == ESM!RangeType#DERIVED and self.rangeExpression.isDefined() and self.rangeExpression.trim().length() > 0;
 }
 
 @cached
