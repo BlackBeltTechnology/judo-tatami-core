@@ -3,20 +3,37 @@ operation UI!ui::CallOperationAction resolveParameterPageDefinitions() {
 	// Iterate over all CallOperationAction to fix in/out parameters
 	// It is done here to avoid endless loop.
 	for (callAction : UI!ui::CallOperationAction in UI!ui::CallOperationAction.all()) {
-
-		var op : ESM!esm::`operation`::Operation = callAction.~originalOperationForm.getOperationReference().getMember();
-		var application = callAction.~application;
-		var clazz : UI!ui::data::ClassType = callAction.~originalOperationForm.getRoot().eContainer().mapClassType(application);
 		
-		if (op.input.isDefined()) {
-			if (op.input.target.form.isDefined()) {
-				callAction.inputParameterPage = op.mapFormPageForOperationInput(application, clazz);
+		var origOpForm : ESM!esm::ui::OperationForm = callAction.~originalOperationForm;
+		
+		var origOp : ESM!esm::`operation`::Operation = origOpForm.getOperationReference().getMember();
+		var application = callAction.~application;
+		var clazz : UI!ui::data::ClassType = origOpForm.getRoot().eContainer().mapClassType(application);
+		
+		callAction.confirmationMessage = origOpForm.confirmationMessage;
+		
+		if (origOpForm.confirmationType == ESM!esm::ui::ConfirmationType#CONDITIONAL) {
+			callAction.confirmationType = UI!ui::ConfirmationType#CONDITIONAL;
+		} else if (origOpForm.confirmationType == ESM!esm::ui::ConfirmationType#MANDATORY) {
+			callAction.confirmationType = UI!ui::ConfirmationType#MANDATORY;
+		}
+		
+		if (origOpForm.confirmationCondition.isDefined()) {
+			var condition = clazz.attributes.selectOne(a | a.name == origOpForm.confirmationCondition.name);
+			if (condition.isDefined()) {
+				callAction.confirmationCondition = condition;
+			}
+		}
+		
+		if (origOp.input.isDefined()) {
+			if (origOp.input.target.form.isDefined()) {
+				callAction.inputParameterPage = origOp.mapFormPageForOperationInput(application, clazz);
 			}
 		}
 	
-		if (op.output.isDefined()) {
-			if (op.output.target.view.isDefined()) {
-		    	callAction.outputParameterPage = op.mapViewPageForOperationOutput(application, clazz);
+		if (origOp.output.isDefined()) {
+			if (origOp.output.target.view.isDefined()) {
+		    	callAction.outputParameterPage = origOp.mapViewPageForOperationOutput(application, clazz);
 	      }
 		}	
 	}

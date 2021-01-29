@@ -149,6 +149,12 @@ JudoButton(
 {{/ if }}
 {{# if action.isCallOperationAction }}
     onPressed: () async {
+        {{# if action.isConfirmationTypeMandatory }}
+        {{> templates/flutter/lib/ui/pages/widgets/confirmationDialog.dart.hbs}}
+        {{/ if }}
+        {{# if action.isConfirmationTypeConditional }}
+        {{> templates/flutter/lib/ui/pages/widgets/confirmationDialog.dart.hbs}}
+        {{/ if }}
         {{# if action.operation.input}}
         var ret = await navigation.open(Routes.{{ fqVariable action.inputParameterPage.name }}Page);
         if (ret != null) {
