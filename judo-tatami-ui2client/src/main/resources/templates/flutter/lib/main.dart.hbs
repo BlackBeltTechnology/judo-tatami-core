@@ -198,22 +198,26 @@ class _{{ fqClass application.name }}DrawerState extends State<{{ fqClass applic
                                             ]
                                         ),
                                         ...{{ fqClass application.name }}NavigationItems.navigationItems
-                                            .map((e) => ListTile(
-                                            leading: e.leading,
-                                            title: e.title,
-                                            onTap: () {
-                                                if (Info.serverDown) {
-                                                    ErrorHandler.navigateToBuiltInPage();
-                                                } else {
-                                                    if (Oauth.isAuthenticationRequired() && !Oauth.isLoggedIn()) {
-                                                        Oauth.loginAuthorizeAndExchangeCode();
-                                                    } else {
-                                                        navigationState.navigateTo(e.route);
-                                                        setState(() => {});
-                                                    }
-                                                }
-                                            },
-                                            selected: e.route == _selected))
+                                            .map((e) => Theme(
+                                                child: ListTile(
+                                                        leading: e.leading,
+                                                        title: e.title,
+                                                        onTap: () {
+                                                            if (Info.serverDown) {
+                                                                ErrorHandler.navigateToBuiltInPage();
+                                                            } else {
+                                                                if (Oauth.isAuthenticationRequired() && !Oauth.isLoggedIn()) {
+                                                                    Oauth.loginAuthorizeAndExchangeCode();
+                                                                } else {
+                                                                    navigationState.navigateTo(e.route);
+                                                                    setState(() => {});
+                                                                }
+                                                            }
+                                                        },
+                                                        selected: e.route == _selected
+                                                ),
+                                                data: Theme.of(context).copyWith(primaryColor: theme.colorScheme.secondary))
+                                            )
                                             .toList(),
                                         const Divider(),
                                 ],
