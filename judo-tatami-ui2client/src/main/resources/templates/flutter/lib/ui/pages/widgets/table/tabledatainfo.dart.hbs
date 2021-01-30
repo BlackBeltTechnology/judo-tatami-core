@@ -24,14 +24,24 @@ class {{ fqClass table.pageDefinition.name }}{{ fqClass table.name }}{{ fqClass 
             {{# each columns}}
             DataColumn(label: Text('{{label}}')),
             {{/each}}
-            {{#each table.rowActions}}
-            DataColumn(label: Text("")),
+            {{#each table.rowActions as |action|}}
+                {{#unless action.isViewAction}}
+                    DataColumn(label: Text("")),
+                {{/ unless}}
             {{/each}}
         ];
     }
 
     @override
-    Function getRow({Function navigateToEditPageAction, Function navigateToViewPageAction, Function navigateToCreatePageAction, Function removeAction, Function unsetAction, Function deleteAction}) {
+    Function getRow({BuildContext context,
+            Function navigateToEditPageAction,
+            Function navigateToViewPageAction,
+            Function navigateToCreatePageAction,
+            Function removeAction,
+            Function unsetAction,
+            Function deleteAction}) {
+
+        ThemeData theme =  Theme.of(context);
         return (target{{ className table.dataElement.target.name }}) => DataRow(
             cells: [
                 {{# each columns as |column|}}
@@ -46,7 +56,7 @@ class {{ fqClass table.pageDefinition.name }}{{ fqClass table.name }}{{ fqClass 
                 DataCell(
                     Icon(
                         Icons.{{action.icon.name}},
-                        color: disabled ? kDisabledColor : null,
+                        color: disabled ? theme.disabledColor : theme.colorScheme.secondary,
                     ),
                     onTap: disabled ? null : () => removeAction(target{{ className table.dataElement.target.name }}),
                 ),
@@ -56,7 +66,7 @@ class {{ fqClass table.pageDefinition.name }}{{ fqClass table.name }}{{ fqClass 
                 ? DataCell(
                     Icon(
                         Icons.{{action.icon.name}},
-                        color: disabled ? kDisabledColor : null,
+                        color: disabled ? theme.disabledColor : theme.colorScheme.secondary,
                     ),
                     onTap: disabled ? null : () => unsetAction(),
                   )
@@ -69,7 +79,7 @@ class {{ fqClass table.pageDefinition.name }}{{ fqClass table.name }}{{ fqClass 
                 ? DataCell(
                     Icon(
                         Icons.{{action.icon.name}},
-                        color: disabled ? kDisabledColor : null,
+                        color: disabled ? theme.disabledColor : theme.colorScheme.secondary,
                     ),
                     onTap: disabled ? null : () => deleteAction(target{{ className table.dataElement.target.name }}),
                   )
@@ -81,7 +91,7 @@ class {{ fqClass table.pageDefinition.name }}{{ fqClass table.name }}{{ fqClass 
                 DataCell(
                     Icon(
                         Icons.{{action.icon.name}},
-                        color: disabled ? kDisabledColor : null,
+                        color: disabled ? theme.disabledColor : theme.colorScheme.secondary,
                     ),
                     onTap: disabled ? null : () => navigateToCreatePageAction(target{{ className table.dataElement.target.name }}),
                 ),
@@ -91,22 +101,9 @@ class {{ fqClass table.pageDefinition.name }}{{ fqClass table.name }}{{ fqClass 
                 ? DataCell(
                     Icon(
                         Icons.{{action.icon.name}},
-                        color: disabled ? kDisabledColor : null,
+                        color: disabled ? theme.disabledColor : theme.colorScheme.secondary,
                     ),
                     onTap: disabled ? null : () => navigateToEditPageAction(target{{ className table.dataElement.target.name }}),
-                  )
-                : DataCell(
-                    Text(''),
-                  ),
-                {{/if}}
-                {{#if action.isViewAction}}
-                target{{ className table.dataElement.target.name }} != null
-                ? DataCell(
-                    Icon(
-                        Icons.{{action.icon.name}},
-                        color: disabled ? kDisabledColor : null,
-                    ),
-                    onTap: disabled ? null : () => navigateToViewPageAction(target{{ className table.dataElement.target.name }}),
                   )
                 : DataCell(
                     Text(''),
