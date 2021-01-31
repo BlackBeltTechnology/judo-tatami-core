@@ -16,6 +16,40 @@ abstract class _{{ fqClass page.name }}PageStore with Store {
     bool validatable = true;
     {{/if}}
 
+    /*
+    {{# if relation.isCollection }}
+    @observable
+    int {{ fqVariable relation.name }}SortColumnIndex;
+
+    @observable
+    String {{ fqVariable relation.name }}SortColumnName;
+
+    @observable
+    bool {{ fqVariable relation.name }}SortAsc;
+
+    @observable
+    Comparator {{ fqVariable relation.name }}SortCompare;
+
+    @action
+    void {{ fqVariable relation.name }}SetSort(BuildContext context, String sortColumnName, int sortColumnIndex, bool asc, Comparator sortCompare) {
+
+        if ({{ fqVariable relation.name }}SortColumnIndex != sortColumnIndex) {
+            {{ fqVariable relation.name }}SortAsc = true;
+        } else {
+            {{ fqVariable relation.name }}SortAsc = !{{ fqVariable relation.name }}SortAsc;
+        }
+        {{ fqVariable relation.name }}SortColumnIndex = sortColumnIndex;
+        {{ fqVariable relation.name }}SortColumnName = sortColumnName;
+        {{ fqVariable relation.name }}SortCompare = sortCompare;
+        {{#if relation.isOrderable }}
+        get{{ fqClass relation.name }}().catchError((error) => ErrorHandler.errorDialog(context, error));
+    {{ else }}
+        {{ fqVariable relation.name }}StoreList.sort(sortCompare);
+    {{/if}}
+    }
+    {{/ if }}
+    */
+
     {{# if relation.target.isClassBehaviourTypeRefreshable }}
     @action
     Future<void> refresh{{ className relation.target.name }}({{ fqClass relation.target.name }}Store target{{ className page.dataElement.target.name }}Store) async {

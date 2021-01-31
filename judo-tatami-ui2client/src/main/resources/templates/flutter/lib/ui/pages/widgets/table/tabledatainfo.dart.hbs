@@ -19,17 +19,56 @@ class {{ fqClass table.pageDefinition.name }}{{ fqClass table.name }}{{ fqClass 
     final bool disabled;
 
     @override
-    List<DataColumn> getColumns(Function onAdd) {
+    List<DataColumn> getColumns(Function onAdd, Function onSort) {
         return [
             {{# each columns}}
-            DataColumn(label: Text('{{label}}')),
+            DataColumn(
+                label: Text('{{label}}'),
+                {{# unless (isBooleanDataType dataType) }}
+                    {{# unless (isEnumType dataType) }}
+                onSort: onSort,
+                    {{/ unless }}
+                {{/ unless }}
+            ),
             {{/each}}
             {{#each table.rowActions as |action|}}
                 {{#unless action.isViewAction}}
-                    DataColumn(label: Text("")),
+                    DataColumn(
+                        label: Text("")
+                    ),
                 {{/ unless}}
             {{/each}}
         ];
+    }
+
+    @override
+    Comparator getSortComparator(int columnIndex, bool asc) {
+        {{# each columns}}
+            {{# unless (isBooleanDataType dataType) }}
+                {{# unless (isEnumType dataType) }}
+        if (columnIndex == {{@index}}) {
+            if (asc) {
+                return (a, b) => a.{{ attributeType.name }}.compareTo(b.{{ attributeType.name }});
+            } else {
+                return (a, b) => b.{{ attributeType.name }}.compareTo(a.{{ attributeType.name }});
+            }
+                {{/ unless }}
+            {{/ unless }}
+        }
+        {{/each}}
+    }
+
+    @override
+    String getColumnFieldByIndex(int columnIndex, bool asc) {
+    {{# each columns}}
+        {{# unless (isBooleanDataType dataType) }}
+            {{# unless (isEnumType dataType) }}
+        if (columnIndex == {{@index}}) {
+            return "{{ attributeType.name }}";
+        }
+            {{/ unless }}
+        {{/ unless }}
+    {{/each}}
     }
 
     @override
