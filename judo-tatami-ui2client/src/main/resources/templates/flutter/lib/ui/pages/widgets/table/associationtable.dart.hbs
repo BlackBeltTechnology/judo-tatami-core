@@ -20,6 +20,9 @@ Observer(builder: (_) {
                 sortColumnIndex: {{ fqVariable page.name }}PageStore.{{ fqVariable page.relationType.name }}SortColumnIndex,
                 onSort: (int columnIndex, bool asc) {
                     {{ fqVariable page.name }}PageStore.{{ fqVariable page.relationType.name }}SetSort(
+                        {{# unless page.dataElement.isAccess }}
+                        owner{{ className page.relationType.owner.name }}Store,
+                        {{/unless}}
                         context,
                         dataInfo.getColumnFieldByIndex(columnIndex, asc),
                         columnIndex,
