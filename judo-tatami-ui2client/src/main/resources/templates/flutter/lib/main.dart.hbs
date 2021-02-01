@@ -10,6 +10,7 @@
 
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:openapi_dart_common/openapi.dart';
 import 'oauth.dart';
 import 'dart:async';
@@ -119,75 +120,21 @@ class _{{ fqClass application.name }}DrawerState extends State<{{ fqClass applic
                                                     alignment: Alignment.centerLeft,
                                                     child:
                                                         Padding(
+                                                            padding: EdgeInsets.symmetric(vertical: 24, horizontal: 16),
                                                             child:
                                                                 Column(
                                                                     children: [
-                                                                        Row(
-                                                                            mainAxisAlignment: MainAxisAlignment.start,
-                                                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                                                            children: [
-                                                                                Container(
-                                                                                    alignment: Alignment.topLeft,
-                                                                                    child:
-                                                                                        Column(
-                                                                                            mainAxisAlignment: MainAxisAlignment.start,
-                                                                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                                                                            children: [
-                                                                                                Text("{{ modelPackage application.name }}", style: Theme.of(context).textTheme.headline6.copyWith(fontWeight: FontWeight.w900),),
-                                                                                                Text("{{ path application.name }}", style: Theme.of(context).textTheme.subtitle1.copyWith(fontWeight: FontWeight.w100)),
-                                                                                            ],
-                                                                                        )
-                                                                                ),
-
-                                                                                Expanded(child: Text("")),
-
-                                                                                Column(
-                                                                                    children: [
-                                                                                        Container(
-                                                                                            alignment: Alignment.topRight,
-                                                                                            child:
-                                                                                            (Oauth.isAuthenticationRequired()) ?
-                                                                                            (Oauth.isLoggedIn()) ?
-                                                                                            IconButton(
-                                                                                                onPressed: () async {
-                                                                                                    Oauth.logout();
-                                                                                                },
-                                                                                                color: Colors.black38,
-                                                                                                icon: Icon(Icons.logout),
-                                                                                            ) :
-                                                                                            IconButton(
-                                                                                                onPressed: () async {
-                                                                                                    Oauth.loginAuthorizeAndExchangeCode();
-                                                                                                },
-                                                                                                color: Colors.black38,
-                                                                                                icon: Icon(Icons.login),
-                                                                                            ) : null,
-                                                                                        ),
-
-                                                                                        Container(
-                                                                                            alignment: Alignment.topRight,
-                                                                                            child:
-                                                                                            IconButton(
-                                                                                                onPressed: () => { navigationState.open(router.Routes.{{ fqVariable application.name }}SettingsPage)},
-                                                                                                color: Colors.black38,
-                                                                                                icon: Icon(Icons.settings),
-                                                                                            )
-                                                                                        ),
-                                                                                    ],
-                                                                                )
-                                                                            ]),
-
+                                                                        appNameAndSlogan(context),
+                                                                        Container(height: 32,),
+                                                                        user(context),
                                                                         const Divider(
-                                                                            color: Color(0xffdcdcdc),
                                                                             height: 16,
                                                                             thickness: 1,
                                                                             indent: 10,
                                                                             endIndent: 10,
-                                                                        )
-
-                                                                        ],
+                                                                        ),
+                                                                    ],
                                                                 ),
-                                                            padding: EdgeInsets.symmetric(vertical: 24, horizontal: 16),
                                                         ),
                                                 ),
 
@@ -197,39 +144,138 @@ class _{{ fqClass application.name }}DrawerState extends State<{{ fqClass applic
                                                 )
                                             ]
                                         ),
-                                        ...{{ fqClass application.name }}NavigationItems.navigationItems
-                                            .map((e) => Theme(
-                                                child: ListTile(
-                                                        leading: e.leading,
-                                                        title: e.title,
+
+                                        Observer(
+                                            builder: (_) =>
+                                                Theme(
+                                                    child: Oauth.authInfo.loggedIn ? Column(
+                                                        children: [
+                                                            ...{{ fqClass application.name }}NavigationItems.navigationItems
+                                                                .map((e) => ListTile(
+                                                                leading: e.leading,
+                                                                title: e.title,
+                                                                onTap: () {
+                                                                    if (Info.serverDown) {
+                                                                        ErrorHandler.navigateToBuiltInPage();
+                                                                    } else {
+                                                                        if (Oauth.isAuthenticationRequired() && !Oauth.isLoggedIn()) {
+                                                                            Oauth.loginAuthorizeAndExchangeCode();
+                                                                        } else {
+                                                                            navigationState.navigateTo(e.route);
+                                                                            setState(() => {});
+                                                                        }
+                                                                    }
+                                                                },
+                                                                selected: e.route == _selected
+                                                            ),
+                                                            ).toList(),
+                                                        ],)
+                                                        :
+                                                        Container(),
+                                                    data: Theme.of(context).copyWith(primaryColor: theme.colorScheme.secondary)
+                                                )
+                                        ),
+                                        const Divider(
+                                            height: 16,
+                                            thickness: 1,
+                                            indent: 10,
+                                            endIndent: 10,
+                                        ),
+                                        Theme(
+                                            child: Column(
+                                                children: [
+                                                    ListTile(
+                                                        leading: Icon(Icons.settings),
+                                                        title: Text("Settings"),
                                                         onTap: () {
-                                                            if (Info.serverDown) {
-                                                                ErrorHandler.navigateToBuiltInPage();
-                                                            } else {
-                                                                if (Oauth.isAuthenticationRequired() && !Oauth.isLoggedIn()) {
-                                                                    Oauth.loginAuthorizeAndExchangeCode();
-                                                                } else {
-                                                                    navigationState.navigateTo(e.route);
-                                                                    setState(() => {});
-                                                                }
-                                                            }
+                                                            navigationState.open(router.Routes.{{ fqVariable application.name }}SettingsPage);
                                                         },
-                                                        selected: e.route == _selected
-                                                ),
-                                                data: Theme.of(context).copyWith(primaryColor: theme.colorScheme.secondary))
-                                            )
-                                            .toList(),
-                                        const Divider(),
-                                ],
+                                                    ),
+
+                                                    Observer(
+                                                        builder: (_) =>
+                                                        ListTile(
+                                                            leading: Icon(Icons.logout),
+                                                            title: Text(Oauth.authInfo.loggedIn  ? "Logout" : "Login"),
+                                                            onTap: () {
+                                                                if (Oauth.authInfo.loggedIn) {
+                                                                    Oauth.logout();
+                                                                }
+                                                            },
+                                                        )
+                                                    ),
+                                                ]
+                                            ),
+                                            data: Theme.of(context).copyWith(primaryColor: theme.colorScheme.secondary)
+                                        )
+                                    ],
                             ),
                         ),
                         const VerticalDivider(
                             width: 1,
                         )
-                        ]
-                    ),
+                        ]),
                 ),
             )
+        );
+    }
+
+
+    Widget appNameAndSlogan(BuildContext context) {
+        return Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+                Container(
+                    alignment: Alignment.topLeft,
+                    child:
+                    Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                            Text("{{ modelPackage application.name }}", style: Theme.of(context).textTheme.headline6.copyWith(fontWeight: FontWeight.w900),),
+                            Text("{{ path application.name }}", style: Theme.of(context).textTheme.subtitle1.copyWith(fontWeight: FontWeight.w100)),
+                        ],
+                    )
+                ),
+
+                Expanded(child: Text("")),
+            ]);
+    }
+
+    Widget user(BuildContext context) {
+        return Row(
+            children: [
+                Image(
+                    width: 64,
+                    height: 64,
+                    image: AssetImage('ninja.png')
+                ),
+
+                Container(width: 16,),
+
+                Column(children: [
+                    Observer(
+                        builder: (_) => Text(Oauth.authInfo.userName == null ? "" : Oauth.authInfo.userName,
+                            style: Theme.of(context).textTheme.subtitle1.copyWith(fontWeight: FontWeight.w900),
+                        ),
+                    ),
+
+                    Observer(
+                        builder: (_) => Text(Oauth.authInfo.email == null ? "" : Oauth.authInfo.email,
+                            style: Theme.of(context).textTheme.subtitle1.copyWith(fontWeight: FontWeight.w100),
+                        ),
+                    )
+                ],)
+
+            ],
+        );
+
+
+        Observer(
+            builder: (_) => Text(Oauth.authInfo.userName == null ? " - " : Oauth.authInfo.userName,
+                style: Theme.of(context).textTheme.subtitle1.copyWith(fontWeight: FontWeight.w100),
+            ),
         );
     }
 }
