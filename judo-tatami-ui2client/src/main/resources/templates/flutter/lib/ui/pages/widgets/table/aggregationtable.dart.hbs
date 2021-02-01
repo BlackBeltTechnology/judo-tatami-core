@@ -2,12 +2,28 @@
 //START aggregationtable.dart.hbs-----{{dataElement.name}}---------------------------------------------------------------------------------
 {{# with dataElement as |relation|}}
 Observer(builder: (_) {
+    var dataInfo = {{ fqClass pageDefinition.name }}{{ fqClass table.name }}{{ fqClass pageContainer.layoutType.name }}Table(disabled: {{disabled}});
     return JudoTable(
         disabled: {{disabled}},
         col: {{ multiplyCol col }},
         row: {{row}},
-        dataInfo: {{ fqClass pageDefinition.name }}{{ fqClass table.name }}{{ fqClass pageContainer.layoutType.name }}Table(disabled: {{disabled}}),
+        dataInfo: dataInfo,
         rowList: {{# if relation.isCollection }}target{{ className relation.owner.name }}Store.{{variable relation.name}}{{else}}[target{{ className relation.owner.name }}Store.{{variable relation.name}}].asObservable(){{/ if}},
+        /*
+        {{# if relation.isCollection }}
+        sortAscending: target{{ className relation.owner.name }}Store.{{ fqVariable relation.name }}__sortAsc,
+        sortColumnIndex: target{{ className relation.owner.name }}Store.{{ fqVariable relation.name }}__sortColumnIndex,
+        onSort: (int columnIndex, bool asc) {
+            target{{ className relation.owner.name }}Store.{{ fqVariable relation.name }}SetSort(
+            context,
+            dataInfo.getColumnFieldByIndex(columnIndex, asc),
+            columnIndex,
+            asc,
+            dataInfo.getSortComparator(columnIndex, asc)
+          );
+        },
+        */
+        {{/if}}
         {{#each table.rowActions as |rowAction|}}
         {{#if rowAction.isViewAction}}
         navigateToViewPageAction: (element) async {

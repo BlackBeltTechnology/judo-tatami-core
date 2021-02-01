@@ -76,7 +76,7 @@ rule CreatePageDefinitionForPreviewFromView
 
 	t.name = s.getName().anchor("Preview");
 	t.pageType = UI!ui::PageType#VIEW;
-	t.label = s.getUiLabel() + " View";
+	t.label = s.getUiLabel();
 	
 	previewPage.add(t);
 	log.debug("Created view to preview: " + s.getFQName());
@@ -89,7 +89,7 @@ rule CreatePageDefinitionForPreviewFromForm
 	
 	t.name = s.getName().anchor("Preview");
 	t.pageType = UI!ui::PageType#CREATE;
-	t.label = s.getUiLabel() + " Create/Update";
+	t.label = s.getUiLabel();
 	
 	previewPage.add(t);
 	log.debug("Created form to preview: " + s.getFQName());
@@ -102,7 +102,7 @@ rule CreatePageDefinitionForPreviewFromTable
 	
 	t.name = s.getName().anchor("Preview");
 	t.pageType = UI!ui::PageType#TABLE;
-	t.label = s.getUiLabel() + " Browse";
+	t.label = s.getUiLabel();
 
 	var relation : UI!ui::data::RelationType = application.actor.relations.selectOne(r | r.name == "previewRelation");
 	relation.target = previewElement.getRoot().eContainer().mapClassType(application);

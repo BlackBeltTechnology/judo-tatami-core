@@ -37,7 +37,7 @@
   templateName: flutter/full-build.sh
   copy: true
 
-- overwriteExpression: false
+- overwriteExpression: true
   factoryExpression: "{#application}"
   pathExpression: >
     'lib/' +
@@ -184,6 +184,15 @@
       expression: "#application.actor"
     - name: classes
       expression: "#application.dataElements.?[!isActor]"
+
+# ========================================
+# assets
+# ========================================
+- overwriteExpression: false
+  factoryExpression: "{#application}"
+  pathExpression: "'assets/ninja.png'"
+  templateName: flutter/assets/ninja.png
+  copy: true
 
 # ========================================
 # fonts
