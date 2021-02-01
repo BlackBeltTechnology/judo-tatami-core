@@ -22,7 +22,7 @@ rule CreateTransferObjectRelation
       if (s.isDeleteAllowed()) {
           t.embeddedDelete = true;
       }
-      if (s.isRangeExpressionSupported()) {
+      if (esmUtils.isGetRangeSupported(s) and s.target.isMapped()) {
         t.range = s.getPSMRangeEquivalent();
       }
       if (s.isDefaultExpressionSupported()) {
@@ -40,7 +40,7 @@ rule CreateTransferObjectRelation
 rule CreateRangeTransferObjectRelation
     transform s : ESM!RelationFeature
     to t : JUDOPSM!TransferObjectRelation {
-        guard: s.eContainer.isKindOf(ESM!TransferObjectType) and s.isRangeExpressionSupported()
+        guard: s.eContainer.isKindOf(ESM!TransferObjectType) and esmUtils.isGetRangeSupported(s) and s.target.isMapped()
 
         t.name = s.getPSMRangeEquivalent().name;
         t.cardinality = new JUDOPSM!Cardinality;
@@ -153,7 +153,7 @@ rule CreateTransferObjectRelationForDefaultTransferObjectType
       if (s.isDeleteAllowed()) {
           t.embeddedDelete = true;
       }
-      if (s.isRangeExpressionSupported()) {
+      if (esmUtils.isGetRangeSupported(s) and s.target.isMapped()) {
           t.range = s.getPSMRangeEquivalent();
       }
       if (s.isDefaultExpressionSupported()) {

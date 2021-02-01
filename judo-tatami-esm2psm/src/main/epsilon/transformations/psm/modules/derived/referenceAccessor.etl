@@ -146,6 +146,42 @@ rule CreateNavigationPropertyForTransferObjectRelationAnyRange
             log.debug("Created Navigation Property for transfer object relation range: " + t.name);
 }
 
+@abstract
+rule CreateStaticNavigationForTransferObjectRelationRange
+    transform s : ESM!RelationFeature
+    to t : JUDOPSM!StaticNavigation
+    extends CreateNamedElement {
+        t.target = s.target.mapping.target.getPSMEquivalent();
+        t.cardinality = s.equivalent("CreateCardinalityForTransferObjectRelationRange");
+        t.name = "_" + s.name + "_range_" + esmUtils.getNamespaceElementFQName(s.eContainer).replace("::","_");
+        var ecoreUtil = new Native("org.eclipse.emf.ecore.util.EcoreUtil");
+        ecoreUtil.getRootContainer(s).equivalent("CreateGeneratedNavigationRootPackage").elements.add(t);
+}
+
+@lazy
+@greedy
+rule CreateStaticNavigationForTransferObjectRelationDerivedRange
+    transform s : ESM!RelationFeature
+    to t : JUDOPSM!StaticNavigation
+    extends CreateStaticNavigationForTransferObjectRelationRange {
+        guard: s.isDerivedRangeExpressionSupported()
+
+            t.getterExpression = s.equivalent("CreateGetterExpressionForTransferObjectRelationDerivedRange");
+            log.debug("Created Static Navigation for transfer object relation range: " + t.name);
+}
+
+@lazy
+@greedy
+rule CreateStaticNavigationForTransferObjectRelationAnyRange
+    transform s : ESM!RelationFeature
+    to t : JUDOPSM!StaticNavigation
+    extends CreateStaticNavigationForTransferObjectRelationRange {
+        guard: s.isAnyRangeExpressionSupported()
+
+            t.getterExpression = s.equivalent("CreateGetterExpressionForTransferObjectRelationAnyRange");
+            log.debug("Created Static Navigation for transfer object relation range: " + t.name);
+}
+
 @lazy
 @greedy
 rule CreateCardinalityForExposedGraphSelector
