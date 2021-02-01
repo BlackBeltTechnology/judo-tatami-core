@@ -1,0 +1,11 @@
+operation RDBMS!RdbmsTable fieldExists(field : RDBMS!RdbmsField) : Boolean {
+	return self.fieldOf(field).isDefined();
+}
+
+operation RDBMS!RdbmsTable fieldOf(field : RDBMS!RdbmsField) : RDBMS!RdbmsField {
+	return self.fields.selectOne(f | f.uuid == field.uuid);
+}
+
+operation RDBMS!RdbmsTable isSqlNameChanged(field : RDBMS!RdbmsTable) : Boolean {
+	return self.sqlName <> field.sqlName;
+}

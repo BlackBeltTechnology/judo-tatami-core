@@ -1,0 +1,111 @@
+import "model.eol";
+import "table.eol";
+import "field.eol";
+
+pre {
+	var previousModel = PREVIOUS!RdbmsModel.all.first();
+	var newModel = NEW!RdbmsModel.all.first();
+	
+}
+
+// flattening is not needed, as we don't have separate fieldtypes any more
+
+rule OperationModel 
+	transform s : NEW!RdbmsModel
+	to t : INCREMENTAL!RdbmsModel {
+	    t.version = previousModel.version + "_" + newModel.version;
+	    t.configuration = new INCREMENTAL!RdbmsConfiguration();
+   		t.configuration.dialect = "hsqldb";
+		("Created operation model: " + t.version).println();
+	}
+	
+rule CreateOperationMeta 
+	transform s : NEW!RdbmsModel
+	to t : INCREMENTAL!RdbmsOperationMeta {
+		t.previousModel = previousModel;
+		t.currentModel = newModel;
+		("Created operation meta for " + s.version).println();
+}
+
+rule CreateNewTable 
+	transform s : NEW!RdbmsTable
+	to t : INCREMENTAL!RdbmsCreateTableOperation {
+	// create table only if not yet exists and has at least one field
+	guard : not previousModel.tableExists(s) and s.fields.size() > 0
+	    newModel.equivalent("OperationModel").tableOperations.add(t);
+		t.name = "Create " + s.name;
+	    t.uuid =  s.uuid + "-CreateTable";
+	    t.table = s;
+		s.uuid.println("Created table: ");
+}
+
+rule CreateNewJunctionTable
+	transform s : NEW!RdbmsJunctionTable
+	to t : INCREMENTAL!RdbmsCreateTableOperation {
+	guard : not previousModel.tableExists(s) and s.fields.size() > 0
+	    newModel.equivalent("OperationModel").tableOperations.add(t);
+		t.name = "Create " + s.name;
+	    t.uuid =  s.uuid + "-CreateTable";
+	    t.table = s;
+		s.uuid.println("Created table: ");
+}
+
+rule DeletePreviousTable 
+	transform s : PREVIOUS!RdbmsTable
+	to t : INCREMENTAL!RdbmsDeleteTableOperation {
+	guard : not newModel.tableExists(s) or newModel.tableOf(s).fields.size() == 0
+	    newModel.equivalent("OperationModel").tableOperations.add(t);
+		t.name = "Delete " + s.name;
+	    t.uuid =  s.uuid + "-DeleteTable";
+	    t.table = s;
+		s.uuid.println("Deleted table: ");
+}
+
+rule DeletePreviousJunctionTable
+	transform s : PREVIOUS!RdbmsJunctionTable
+	to t : INCREMENTAL!RdbmsDeleteTableOperation {
+	guard : not newModel.tableExists(s) or newModel.tableOf(s).fields.size() == 0
+	    newModel.equivalent("OperationModel").tableOperations.add(t);
+		t.name = "Delete " + s.name;
+	    t.uuid =  s.uuid + "-DeleteTable";
+	    t.table = s;
+		s.uuid.println("Deleted table: ");
+}
+
+@lazy
+rule ModifyTableOperationForExistingTable
+	transform s : RDBMS!RdbmsTable
+	to t : INCREMENTAL!RdbmsModifyTableOperation {
+	guard : s.fields.size() > 0
+	    newModel.equivalent("OperationModel").tableOperations.add(t);
+		t.name = "Modify " + s.name;
+	    t.uuid =  s.uuid + "-ModifyTable";
+	    t.table = s;
+	    t.previousTable = previousModel.tableOf(s);
+		s.uuid.println("Modified table: ");
+}
+
+@lazy
+rule ModifyJunctionTableOperationForExistingTable
+	transform s : RDBMS!RdbmsJunctionTable
+	to t : INCREMENTAL!RdbmsModifyTableOperation {
+	guard : s.fields.size() > 0
+	    newModel.equivalent("OperationModel").tableOperations.add(t);
+		t.name = "Modify " + s.name;
+	    t.uuid =  s.uuid + "-ModifyTable";
+	    t.table = s;
+	    t.previousTable = previousModel.tableOf(s);
+		s.uuid.println("Modified table: ");
+}
+
+rule CreateNewValueFieldOnExistingTable
+	transform f : NEW!RdbmsValueField
+	to t : INCREMENTAL!RdbmsCreateFieldOperation {
+		guard : previousModel.tableExists(f.table) and (not previousModel.tableOf(f.table).fieldExists(f))
+	    newModel.tableOf(f.table).equivalent("ModifyTableOperationForExistingTable").createFieldOperations.add(t);
+	    t.uuid =  f.uuid + "-CreateValueField";
+	    t.name = "Create " + f.name;
+	    t.field = f;
+		f.uuid.println("Create new field on existing table: ");
+}
+

@@ -59,3 +59,4 @@ wercker.env
 /**/*.orig
 .vscode
 .release
+/build.log
