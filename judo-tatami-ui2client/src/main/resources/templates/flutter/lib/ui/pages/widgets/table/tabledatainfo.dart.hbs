@@ -33,9 +33,14 @@ class {{ fqClass table.pageDefinition.name }}{{ fqClass table.name }}{{ fqClass 
             {{/each}}
             {{#each table.rowActions as |action|}}
                 {{#unless action.isViewAction}}
+                    {{#unless action.isDeleteAction}}
+                        {{#unless action.isEditAction}}
+
                     DataColumn(
                         label: Text("")
                     ),
+                        {{/ unless}}
+                    {{/ unless}}
                 {{/ unless}}
             {{/each}}
         ];
@@ -113,6 +118,8 @@ class {{ fqClass table.pageDefinition.name }}{{ fqClass table.name }}{{ fqClass 
                     Text(''),
                   ),
                 {{/if}}
+
+/*
                 {{#if action.isDeleteAction}}
                 target{{ className table.dataElement.target.name }}?.internal__deletable == true && deleteAction != null // function null if the owner is not updatable
                 ? DataCell(
@@ -126,6 +133,7 @@ class {{ fqClass table.pageDefinition.name }}{{ fqClass table.name }}{{ fqClass 
                     Text(''),
                   ),
                 {{/if}}
+*/
                 {{#if action.isCreateAction}}
                 DataCell(
                     Icon(
@@ -135,6 +143,7 @@ class {{ fqClass table.pageDefinition.name }}{{ fqClass table.name }}{{ fqClass 
                     onTap: disabled ? null : () => navigateToCreatePageAction(target{{ className table.dataElement.target.name }}),
                 ),
                 {{/if}}
+/*
                 {{#if action.isEditAction}}
                 target{{ className table.dataElement.target.name }}?.internal__updatable == true && navigateToEditPageAction != null
                 ? DataCell(
@@ -148,6 +157,7 @@ class {{ fqClass table.pageDefinition.name }}{{ fqClass table.name }}{{ fqClass 
                     Text(''),
                   ),
                 {{/if}}
+ */
                 {{/each}}
             ],
         );
