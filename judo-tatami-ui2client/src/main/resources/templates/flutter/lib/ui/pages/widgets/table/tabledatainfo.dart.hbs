@@ -19,19 +19,73 @@ class {{ fqClass table.pageDefinition.name }}{{ fqClass table.name }}{{ fqClass 
     final bool disabled;
 
     @override
-    List<DataColumn> getColumns(Function onAdd) {
+    List<DataColumn> getColumns(Function onAdd, Function onSort) {
         return [
             {{# each columns}}
-            DataColumn(label: Text('{{label}}')),
+            DataColumn(
+                label: Text('{{label}}'),
+                {{# unless (isBooleanDataType dataType) }}
+                    {{# unless (isEnumType dataType) }}
+                onSort: onSort,
+                    {{/ unless }}
+                {{/ unless }}
+            ),
             {{/each}}
-            {{#each table.rowActions}}
-            DataColumn(label: Text("")),
+            {{#each table.rowActions as |action|}}
+                {{#unless action.isViewAction}}
+                    {{#unless action.isDeleteAction}}
+                        {{#unless action.isEditAction}}
+
+                    DataColumn(
+                        label: Text("")
+                    ),
+                        {{/ unless}}
+                    {{/ unless}}
+                {{/ unless}}
             {{/each}}
         ];
     }
 
     @override
-    Function getRow({Function navigateToEditPageAction, Function navigateToViewPageAction, Function navigateToCreatePageAction, Function removeAction, Function unsetAction, Function deleteAction}) {
+    Comparator getSortComparator(int columnIndex, bool asc) {
+        {{# each columns}}
+            {{# unless (isBooleanDataType dataType) }}
+                {{# unless (isEnumType dataType) }}
+        if (columnIndex == {{@index}}) {
+            if (asc) {
+                return (a, b) => a.{{ attributeType.name }}.compareTo(b.{{ attributeType.name }});
+            } else {
+                return (a, b) => b.{{ attributeType.name }}.compareTo(a.{{ attributeType.name }});
+            }
+                {{/ unless }}
+            {{/ unless }}
+        }
+        {{/each}}
+    }
+
+    @override
+    String getColumnFieldByIndex(int columnIndex, bool asc) {
+    {{# each columns}}
+        {{# unless (isBooleanDataType dataType) }}
+            {{# unless (isEnumType dataType) }}
+        if (columnIndex == {{@index}}) {
+            return "{{ attributeType.name }}";
+        }
+            {{/ unless }}
+        {{/ unless }}
+    {{/each}}
+    }
+
+    @override
+    Function getRow({BuildContext context,
+            Function navigateToEditPageAction,
+            Function navigateToViewPageAction,
+            Function navigateToCreatePageAction,
+            Function removeAction,
+            Function unsetAction,
+            Function deleteAction}) {
+
+        ThemeData theme =  Theme.of(context);
         return (target{{ className table.dataElement.target.name }}) => DataRow(
             cells: [
                 {{# each columns as |column|}}
@@ -46,7 +100,7 @@ class {{ fqClass table.pageDefinition.name }}{{ fqClass table.name }}{{ fqClass 
                 DataCell(
                     Icon(
                         Icons.{{action.icon.name}},
-                        color: disabled ? kDisabledColor : null,
+                        color: disabled ? theme.disabledColor : theme.colorScheme.secondary,
                     ),
                     onTap: disabled ? null : () => removeAction(target{{ className table.dataElement.target.name }}),
                 ),
@@ -56,7 +110,7 @@ class {{ fqClass table.pageDefinition.name }}{{ fqClass table.name }}{{ fqClass 
                 ? DataCell(
                     Icon(
                         Icons.{{action.icon.name}},
-                        color: disabled ? kDisabledColor : null,
+                        color: disabled ? theme.disabledColor : theme.colorScheme.secondary,
                     ),
                     onTap: disabled ? null : () => unsetAction(),
                   )
@@ -64,12 +118,14 @@ class {{ fqClass table.pageDefinition.name }}{{ fqClass table.name }}{{ fqClass 
                     Text(''),
                   ),
                 {{/if}}
+
+/*
                 {{#if action.isDeleteAction}}
                 target{{ className table.dataElement.target.name }}?.internal__deletable == true && deleteAction != null // function null if the owner is not updatable
                 ? DataCell(
                     Icon(
                         Icons.{{action.icon.name}},
-                        color: disabled ? kDisabledColor : null,
+                        color: disabled ? theme.disabledColor : theme.colorScheme.secondary,
                     ),
                     onTap: disabled ? null : () => deleteAction(target{{ className table.dataElement.target.name }}),
                   )
@@ -77,21 +133,23 @@ class {{ fqClass table.pageDefinition.name }}{{ fqClass table.name }}{{ fqClass 
                     Text(''),
                   ),
                 {{/if}}
+*/
                 {{#if action.isCreateAction}}
                 DataCell(
                     Icon(
                         Icons.{{action.icon.name}},
-                        color: disabled ? kDisabledColor : null,
+                        color: disabled ? theme.disabledColor : theme.colorScheme.secondary,
                     ),
                     onTap: disabled ? null : () => navigateToCreatePageAction(target{{ className table.dataElement.target.name }}),
                 ),
                 {{/if}}
+/*
                 {{#if action.isEditAction}}
                 target{{ className table.dataElement.target.name }}?.internal__updatable == true && navigateToEditPageAction != null
                 ? DataCell(
                     Icon(
                         Icons.{{action.icon.name}},
-                        color: disabled ? kDisabledColor : null,
+                        color: disabled ? theme.disabledColor : theme.colorScheme.secondary,
                     ),
                     onTap: disabled ? null : () => navigateToEditPageAction(target{{ className table.dataElement.target.name }}),
                   )
@@ -99,19 +157,7 @@ class {{ fqClass table.pageDefinition.name }}{{ fqClass table.name }}{{ fqClass 
                     Text(''),
                   ),
                 {{/if}}
-                {{#if action.isViewAction}}
-                target{{ className table.dataElement.target.name }} != null
-                ? DataCell(
-                    Icon(
-                        Icons.{{action.icon.name}},
-                        color: disabled ? kDisabledColor : null,
-                    ),
-                    onTap: disabled ? null : () => navigateToViewPageAction(target{{ className table.dataElement.target.name }}),
-                  )
-                : DataCell(
-                    Text(''),
-                  ),
-                {{/if}}
+ */
                 {{/each}}
             ],
         );

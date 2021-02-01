@@ -8,12 +8,29 @@ Observer(builder: (_) {
         case FutureStatus.rejected:
             return Container();
         case FutureStatus.fulfilled:
+            var dataInfo = {{ fqClass pageDefinition.name }}{{ fqClass table.name }}{{ fqClass pageContainer.layoutType.name }}Table(disabled: {{disabled}});
             return JudoTable(
                 disabled: {{disabled}},
                 col: {{ multiplyCol col }},
                 row: {{row}},
-                dataInfo: {{ fqClass pageDefinition.name }}{{ fqClass table.name }}{{ fqClass pageContainer.layoutType.name }}Table(disabled: {{disabled}}),
-                rowList: {{# if page.dataElement.isAccess}}{{# if page.relationType.isCollection }}{{ fqVariable page.name }}PageStore.{{ fqVariable page.relationType.name }}StoreList{{else}}[{{ fqVariable page.name }}PageStore.{{variable page.relationType.name}}Store].asObservable(){{/ if}}{{else}}{{# if page.relationType.isCollection }}owner{{ className page.relationType.owner.name }}Store.{{variable page.relationType.name}}{{else}}[owner{{ className page.relationType.owner.name }}Store.{{variable page.relationType.name}}].asObservable(){{/ if}}{{/ if}},
+                dataInfo: dataInfo,
+                rowList: {{# if page.dataElement.isAccess}}{{# if page.relationType.isCollection }}{{ fqVariable page.name }}PageStore.{{ fqVariable page.relationType.name }}StoreList.asObservable(){{else}}[{{ fqVariable page.name }}PageStore.{{variable page.relationType.name}}Store].asObservable(){{/ if}}{{else}}{{# if page.relationType.isCollection }}owner{{ className page.relationType.owner.name }}Store.{{variable page.relationType.name}}{{else}}[owner{{ className page.relationType.owner.name }}Store.{{variable page.relationType.name}}].asObservable(){{/ if}}{{/ if}},
+                {{# if page.relationType.isCollection }}
+                sortAscending: {{ fqVariable page.name }}PageStore.{{ fqVariable page.relationType.name }}SortAsc,
+                sortColumnIndex: {{ fqVariable page.name }}PageStore.{{ fqVariable page.relationType.name }}SortColumnIndex,
+                onSort: (int columnIndex, bool asc) {
+                    {{ fqVariable page.name }}PageStore.{{ fqVariable page.relationType.name }}SetSort(
+                        {{# unless page.dataElement.isAccess }}
+                        owner{{ className page.relationType.owner.name }}Store,
+                        {{/unless}}
+                        context,
+                        dataInfo.getColumnFieldByIndex(columnIndex, asc),
+                        columnIndex,
+                        asc,
+                        dataInfo.getSortComparator(columnIndex, asc)
+                    );
+                },
+                {{/if}}
                 {{#each table.rowActions as |action|}}
                 {{#if action.isViewAction}}
                 navigateToViewPageAction: (element) async {

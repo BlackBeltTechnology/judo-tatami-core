@@ -64,7 +64,22 @@ operation ESM!esm::structure::RelationFeature createRelationTypeForClass(applica
 		relation.behaviours.add(UI!ui::data::RelationBehaviourType#VALIDATE_CREATE);
 		relation.target.isForCreateOrUpdateType = true;
 	}
-		
+
+	relation.isOrderable =
+	    self.target.mapping.isDefined() and
+	    self.target.attributes.exists(a |
+	        a.memberType <> ESM!MemberType#TRANSIENT and
+	        (a.memberType == ESM!MemberType#MAPPED implies
+	            (a.binding.isDefined() and
+	            a.binding.memberType <> ESM!MemberType#TRANSIENT)) and
+	        (a.dataType.isKindOf(ESM!StringType) or
+	            a.dataType.isKindOf(ESM!NumericType) or
+	            a.dataType.isKindOf(ESM!DateType) or
+	            a.dataType.isKindOf(ESM!TimestampType)));
+
+
+	relation.isFilterable = self.target.mapping.isDefined();
+
 	clazz.relations.add(relation);
 	
 	log.debug("Create relation " + relation.name + " in class type: " + clazz.name);
