@@ -123,32 +123,6 @@ class AppTheme {
             centerTitle: false
         ),
 
-        /*
-      appBarTheme: theme.appBarTheme.copyWith(
-          //color: Color(0xfffafafa),
-
-          foregroundColor: Colors.red,
-          backgroundColor: Colors.red,
-          titleTextStyle: theme.textTheme.headline1.copyWith(
-            fontFamily: 'SourceSansPro', fontSize: 32, color: Colors.red,
-          ),
-          elevation: 0,
-      ), */
-        /*
-        appBarTheme: AppBarTheme(
-          titleTextStyle: TextStyle(color: Colors.red, backgroundColor: Colors.blue),
-          textTheme: TextTheme(
-              headline1: TextStyle(color: Colors.red)
-              headline1: TextStyle(color: Colors.red)
-              headline1: TextStyle(color: Colors.red)
-              headline1: TextStyle(color: Colors.red)
-          ),
-          color: Color(0xFFffffff),
-          elevation: 0
-        ), */
-
-
-
         buttonTheme: theme.buttonTheme.copyWith(
           buttonColor: original.primaryColor,
           disabledColor: Color(0xdcffffff),
@@ -156,10 +130,6 @@ class AppTheme {
           textTheme: ButtonTextTheme.primary,
           shape: StadiumBorder(),
           padding: EdgeInsets.symmetric(horizontal: 16),
-        ),
-
-        iconTheme: theme.iconTheme.copyWith(
-          color: Color(0xff434448),
         ),
 
         dividerColor: Color(0xffdcdcdc),
@@ -172,12 +142,8 @@ class AppTheme {
           labelStyle: TextStyle(fontWeight: FontWeight.w100),
           enabledBorder: InputBorder.none,
           focusedBorder: UnderlineInputBorder(borderSide: BorderSide(width: 2.0, color:theme.colorScheme.secondary)),
-          disabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: Color(0xfff0f0f0))),
+          disabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.transparent)),
         ),
-
-//      switchTheme: theme.switchTheme.copyWith(
-//        trackColor: Colors.red
-//      ),
 
         indicatorColor: Color(0xffe7501d),
 
