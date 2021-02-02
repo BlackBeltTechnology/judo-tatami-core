@@ -1,31 +1,16 @@
 operation ESM!esm::ui::Container createFlexFromContainer(application : UI!ui::Application) : UI!ui::Flex {
 	var ret = new UI!ui::Flex();
 	
-	ret.name = self.name;
-    ret.label = self.getUiLabel();
-    ret.frame = self.frame;
     if (self.isKindOf(ESM!esm::ui::Component)) {
-    	ret.col = self.col.asReal();
-    	ret.row = self.row.asReal();
-    	if (self.stretch == ESM!esm::ui::Stretch#NONE) {
-        	ret.stretch = UI!ui::Stretch#NONE;
-	    } else if (self.stretch == ESM!esm::ui::Stretch#HORIZONTAL) {
-	        ret.stretch = UI!ui::Stretch#HORIZONTAL;
-	    } else if (self.stretch == ESM!esm::ui::Stretch#VERTICAL) {
-	        ret.stretch = UI!ui::Stretch#VERTICAL;
-	    } else {
-	        ret.stretch = UI!ui::Stretch#BOTH;
-	    }
-	    if (self.fit == ESM!esm::ui::Fit#LOOSE) {
-			ret.fit = UI!ui::Fit#LOOSE;
-		} else if (self.fit == ESM!esm::ui::Fit#TIGHT) {
-			ret.fit = UI!ui::Fit#TIGHT;
-		}
+		ret.setVisualProperties(self, application);
     } else {
+	    ret.name = self.name;
+	    ret.label = self.getUiLabel();
     	ret.col = applicationColumns.asReal();
     	ret.stretch = UI!ui::Stretch#BOTH;
     }
-	
+    
+	ret.frame = self.frame;
 	ret.sourceId = self.getID();
 
 	if (self.getEffectiveLayout() == ESM!esm::ui::Layout#HORIZONTAL) {
@@ -67,6 +52,7 @@ operation ESM!esm::ui::Container createFlexFromContainer(application : UI!ui::Ap
 	for (component in self.components) {
 		ret.children.add(component.map(application));
 	}
+	
 	return ret;
 }
 
