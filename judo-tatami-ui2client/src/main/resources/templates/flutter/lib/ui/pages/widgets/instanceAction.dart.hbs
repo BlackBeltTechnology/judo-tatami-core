@@ -165,10 +165,10 @@ JudoButton(
                 await navigation.open(Routes.{{ fqVariable action.outputParameterPage.name }}Page,
                     arguments: {{ fqClass action.outputParameterPage.name }}PageArguments(target{{className action.operation.output.target.name}}Store: {{fqVariable action.operation.output.target.name}}Store));
             }
-                {{# if page.relationType.target.isClassBehaviourTypeRefreshable }}
-            await {{ fqVariable page.name }}PageStore.refresh{{ className page.relationType.target.name }}(target{{ className page.dataElement.target.name }}Store);
-                {{/ if }}
             {{/if}}
+            {{# if page.relationType.target.isClassBehaviourTypeRefreshable }}
+            await {{ fqVariable page.name }}PageStore.refresh{{ className page.relationType.target.name }}(target{{ className page.dataElement.target.name }}Store);
+            {{/ if }}
         }
         {{else}}
             {{# if action.isConfirmationTypeMandatory }}
