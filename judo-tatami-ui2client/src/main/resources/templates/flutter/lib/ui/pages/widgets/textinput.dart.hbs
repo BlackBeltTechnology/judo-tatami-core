@@ -38,6 +38,20 @@ JudoInputText(
     readOnly: {{attributeType.isReadOnly}},
     ),
 {{/if}}
+{{#if page.isPageTypeOperationOutput}}
+Observer(
+    builder: (_) => JudoInputText(
+        key: UniqueKey(),
+        col: {{ multiplyCol col }},
+        row: {{ row }},
+        disabled: {{ disabled }},
+        icon: Icon(Icons.{{ this.leadingIcon.name }}),
+        label: '{{ label }}',
+        initialValue: target{{ className page.dataElement.target.name }}Store.{{ attributeType.name }},
+        readOnly: true,
+    )
+),
+{{/ if }}
 {{#if page.isPageTypeUpdate}}
 JudoInputText(
     key: inputWidgetKeyMap['{{ name }}'],

@@ -22,6 +22,7 @@ import 'package:{{ modelPackage application.name }}/{{ path application.name }}/
 import 'package:{{ modelPackage application.name }}/{{ path application.name }}/ui/navigation/navigation_state.dart';
 import 'package:{{ modelPackage application.name }}/{{ path application.name }}/utilities/package.dart';
 import 'package:{{ modelPackage application.name }}/{{ path application.name }}/injector/injector.dart';
+import 'package:{{ modelPackage application.name }}/{{ path application.name }}/oauth.dart';
 
 void main() {
     configureDependencies();
@@ -126,7 +127,7 @@ class _{{ fqClass application.name }}DrawerState extends State<{{ fqClass applic
                                                                     children: [
                                                                         appNameAndSlogan(context),
                                                                         Container(height: 32,),
-                                                                        user(context),
+                                                                        Oauth.isAuthenticationRequired() ? user(context) : Container(),
                                                                         const Divider(
                                                                             height: 16,
                                                                             thickness: 1,
@@ -148,7 +149,7 @@ class _{{ fqClass application.name }}DrawerState extends State<{{ fqClass applic
                                         Observer(
                                             builder: (_) =>
                                                 Theme(
-                                                    child: Oauth.authInfo.loggedIn ? Column(
+                                                    child: !Oauth.isAuthenticationRequired() || Oauth.authInfo.loggedIn ? Column(
                                                         children: [
                                                             ...{{ fqClass application.name }}NavigationItems.navigationItems
                                                                 .map((e) => ListTile(
@@ -191,19 +192,22 @@ class _{{ fqClass application.name }}DrawerState extends State<{{ fqClass applic
                                                             navigationState.open(router.Routes.{{ fqVariable application.name }}SettingsPage);
                                                         },
                                                     ),
-
-                                                    Observer(
+                                                    Oauth.isAuthenticationRequired() ? Observer(
                                                         builder: (_) =>
-                                                        ListTile(
-                                                            leading: Icon(Icons.logout),
-                                                            title: Text(Oauth.authInfo.loggedIn  ? "Logout" : "Login"),
-                                                            onTap: () {
-                                                                if (Oauth.authInfo.loggedIn) {
+                                                            Oauth.authInfo.loggedIn ? ListTile(
+                                                                leading: Icon(Icons.logout),
+                                                                title: Text("Logout"),
+                                                                onTap: () {
                                                                     Oauth.logout();
-                                                                }
-                                                            },
-                                                        )
-                                                    ),
+                                                                },
+                                                            ) : ListTile(
+                                                                leading: Icon(Icons.login),
+                                                                title: Text("Login"),
+                                                                onTap: () {
+                                                                    Oauth.loginAuthorizeAndExchangeCode();
+                                                                },
+                                                            )
+                                                    ) : Container(),
                                                 ]
                                             ),
                                             data: Theme.of(context).copyWith(primaryColor: theme.colorScheme.secondary)

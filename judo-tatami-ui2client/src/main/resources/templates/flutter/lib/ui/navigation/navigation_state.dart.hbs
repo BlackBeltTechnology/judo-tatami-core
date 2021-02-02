@@ -58,7 +58,6 @@ class NavigationState {
               )
             );
 
-
             stack.clear();
 
             var targetPageNavigation = await NavigationService.whereToGo(currentPageNavigation);
@@ -84,6 +83,8 @@ class NavigationState {
         {Object arguments,
             Map<String, String> queryParams,
             OnNavigationRejected onReject}) async {
+
+        currentRoute = routeName;
 
         breadcumbItems.add(
             BreadCrumbItem(

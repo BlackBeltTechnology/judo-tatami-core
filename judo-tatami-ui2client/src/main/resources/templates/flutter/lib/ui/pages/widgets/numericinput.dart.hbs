@@ -39,4 +39,30 @@ JudoNumericInput(
     readOnly: {{attributeType.isReadOnly}},
 ),
 {{/if}}
+{{#if page.isPageTypeOperationInput}}
+JudoNumericInput(
+    key: inputWidgetKeyMap['{{ name }}'],
+    col: {{ multiplyCol col }},
+    row: {{ row }},
+    disabled: {{ disabled }},
+    icon: Icon(Icons.{{ this.leadingIcon.name }}),
+    label: '{{ label }}',
+    onChanged: (value) => target{{ className page.dataElement.target.name }}Store.set{{ className attributeType.name }}({{ dartType attributeType.dataType }}.parse(value)),
+    readOnly: {{attributeType.isReadOnly}},
+),
+{{/if}}
+{{#if page.isPageTypeOperationOutput}}
+Observer(
+    builder: (_) => JudoNumericInput(
+        key: UniqueKey(),
+        col: {{ multiplyCol col }},
+        row: {{ row }},
+        disabled: {{ disabled }},
+        icon: Icon(Icons.{{ this.leadingIcon.name }}),
+        label: '{{ label }}',
+        initialValue: target{{ className page.dataElement.target.name }}Store.{{ attributeType.name }}.toString(),
+        readOnly: true,
+    )
+),
+{{/if}}
 //END numericinput.dart.hbs-----{{page.dataElement.target.name}}---------------------------------------------------------------------------
