@@ -33,6 +33,21 @@ Observer(
     ),
 ),
 {{/if}}
+{{#if page.isPageTypeOperationOutput}}
+Observer(
+    builder: (_) => JudoDateTimeInput(
+        key: UniqueKey(),
+        col: {{ multiplyCol col }},
+        row: {{ row }},
+        disabled: {{ disabled }},
+        use24HourFormat: true,
+        initialDate: target{{ className page.dataElement.target.name }}Store.{{ attributeType.name }},
+        label: '{{ label }}',
+        icon: Icon(Icons.{{ this.leadingIcon.name }}),
+        readOnly: true,
+    ),
+),
+{{/if}}
 {{#if page.isPageTypeOperationInput}}
 Observer(
     builder: (_) => JudoDateTimeInput(

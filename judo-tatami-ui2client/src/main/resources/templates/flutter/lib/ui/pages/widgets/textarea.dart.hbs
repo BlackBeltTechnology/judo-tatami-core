@@ -1,22 +1,22 @@
 {{~ log 'Text area input field generation for' (variable application.name) '-' (fqClass page.name)'page'(variable page.dataElement.target.name) attributeType.name level='debug' ~}}
 //START textarea.dart.hbs-----{{page.dataElement.target.name}}-----------------------------------------------------------------------------
 {{#if page.isPageTypeView}}
-    Observer(
+Observer(
     builder: (_) => JudoInputText(
-    key: UniqueKey(),
-    col: {{ multiplyCol col }},
-    row: {{ row }},
-    multiline: true,
-    disabled: {{ disabled }},
-    icon: Icon(Icons.{{ this.leadingIcon.name }}),
-    label: '{{ label }}',
-    initialValue: target{{ className page.dataElement.target.name }}Store.{{ attributeType.name }},
-    readOnly: true,
+        key: UniqueKey(),
+        col: {{ multiplyCol col }},
+        row: {{ row }},
+        multiline: true,
+        disabled: {{ disabled }},
+        icon: Icon(Icons.{{ this.leadingIcon.name }}),
+        label: '{{ label }}',
+        initialValue: target{{ className page.dataElement.target.name }}Store.{{ attributeType.name }},
+        readOnly: true,
     )
-    ),
+),
 {{/if}}
 {{#if page.isPageTypeCreate}}
-    JudoInputText(
+JudoInputText(
     key: inputWidgetKeyMap['{{ name }}'],
     col: {{ multiplyCol col }},
     row: {{ row }},
@@ -26,10 +26,25 @@
     label: '{{ label }}',
     onChanged: (value) => target{{ className page.dataElement.target.name }}Store.set{{ className attributeType.name }}(value.toString()),
     readOnly: {{attributeType.isReadOnly}},
-    ),
+),
+{{/if}}
+{{#if page.isPageTypeOperationOutput}}
+Observer(
+    builder: (_) => JudoInputText(
+        key: UniqueKey(),
+        col: {{ multiplyCol col }},
+        row: {{ row }},
+        multiline: true,
+        disabled: {{ disabled }},
+        icon: Icon(Icons.{{ this.leadingIcon.name }}),
+        label: '{{ label }}',
+        initialValue: target{{ className page.dataElement.target.name }}Store.{{ attributeType.name }},
+        readOnly: true,
+    )
+),
 {{/if}}
 {{#if page.isPageTypeOperationInput}}
-    JudoInputText(
+JudoInputText(
     key: inputWidgetKeyMap['{{ name }}'],
     col: {{ multiplyCol col }},
     row: {{ row }},
@@ -39,10 +54,10 @@
     label: '{{ label }}',
     onChanged: (value) => target{{ className page.dataElement.target.name }}Store.set{{ className attributeType.name }}(value.toString()),
     readOnly: {{attributeType.isReadOnly}},
-    ),
+),
 {{/if}}
 {{#if page.isPageTypeUpdate}}
-    JudoInputText(
+JudoInputText(
     key: inputWidgetKeyMap['{{ name }}'],
     col: {{ multiplyCol col }},
     row: {{ row }},
@@ -53,6 +68,6 @@
     initialValue: target{{ className page.dataElement.target.name }}Store.{{ attributeType.name }},
     onChanged: (value) => target{{ className page.dataElement.target.name }}Store.set{{ className attributeType.name }}(value.toString()),
     readOnly: {{attributeType.isReadOnly}},
-    ),
+),
 {{/if}}
 //END textarea.dart.hbs-----{{page.dataElement.target.name}}-------------------------------------------------------------------------------

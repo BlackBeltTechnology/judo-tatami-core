@@ -45,3 +45,32 @@ operation UI!ui::VisualElement updateInheritedReferences(pageDef : UI!ui::PageDe
 		}
 	}
 }
+
+operation UI!ui::VisualElement setVisualProperties(component : ESM!esm::ui::Component, application : UI!ui::Application) {
+
+	self.name = component.name;
+	self.label = component.getUiLabel();
+
+	self.col = component.col.asReal();
+	self.row = component.row.asReal();
+	
+	if (component.fit == ESM!esm::ui::Fit#LOOSE) {
+		self.fit = UI!ui::Fit#LOOSE;
+	} else if (component.fit == ESM!esm::ui::Fit#TIGHT) {
+		self.fit = UI!ui::Fit#TIGHT;
+	}
+	
+	if (component.stretch == ESM!esm::ui::Stretch#NONE) {
+    	self.stretch = UI!ui::Stretch#NONE;
+    } else if (component.stretch == ESM!esm::ui::Stretch#HORIZONTAL) {
+        self.stretch = UI!ui::Stretch#HORIZONTAL;
+    } else if (component.stretch == ESM!esm::ui::Stretch#VERTICAL) {
+        self.stretch = UI!ui::Stretch#VERTICAL;
+    } else {
+        self.stretch = UI!ui::Stretch#BOTH;
+    }
+	
+	if (component.enabledBy.isDefined()) {
+		self.enabledBy = component.enabledBy.mapAttributeType(application, component.getRoot().eContainer.mapClassType(application));
+	}
+}
