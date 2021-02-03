@@ -58,7 +58,7 @@ class {{ fqClass application.name }}Scaffold extends StatelessWidget {
                                                         Padding(
                                                             padding: EdgeInsets.symmetric(vertical: 1),
                                                             child:
-                                                            navigation.stack.length > 0 ?
+                                                            // navigation.stack.length > 0 ?
                                                             BreadCrumb(
                                                                 items:
                                                                 navigation.breadcumbItems,
@@ -67,7 +67,8 @@ class {{ fqClass application.name }}Scaffold extends StatelessWidget {
                                                                     keepLastDivider: false,
                                                                     direction: Axis.horizontal,
                                                                 )
-                                                            ) : Container(),
+                                                            )
+                                                            // : Container(),
                                                         ),
                                                         Text(pageTitle, style: Theme.of(context).textTheme.headline4,),
                                                         /*

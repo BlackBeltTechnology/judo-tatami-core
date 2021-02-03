@@ -1,189 +1,212 @@
 {{ log 'Instance action button generation for' (variable application.name) '-' (fqClass page.name)'page'(variable page.dataElement.target.name) level='debug' ~}}
 //START instanceAction.dart.hbs-----{{page.dataElement.target.name}}-----------------------------------------------------------------------
-JudoButton(
-    col: {{ multiplyCol col }},
-    row: {{ row }},
-    disabled: {{disabled}},
-{{# if action.isSaveAction }}
-    onPressed: () async {
-    {{# if page.isPageTypeUpdate }}
-        {{# unless page.dataElement.isRelationKindAggregation }}
-            {{# unless page.dataElement.isRelationKindComposition }}
-        var res = await {{ fqVariable page.name }}PageStore.validate(target{{ className page.relationType.target.name }}Store)
-            .catchError((error) => ErrorHandler.errorDialog(context, error));
-        if (res != null) {
-            navigation.close(target{{ className page.dataElement.target.name }}Store);
-        }
-            {{/ unless }}
-        {{/ unless }}
-        {{# if page.dataElement.isRelationKindAggregation }}
-            {{# if page.dataElement.target.isClassBehaviourTypeUpdateValidatable }}
-        if ({{ fqVariable page.name }}PageStore.validatable){
+{{# if enabledBy }}Observer(
+    builder: (_) => {{/ if }}JudoButton(
+        row: {{ row }},
+        col: {{ multiplyCol col }},
+        disabled: {{disabled}}{{# if enabledBy }} || !((target{{ className page.relationType.target.name }}Store?.{{ variable enabledBy.name }}) ?? false){{/ if }},
+    {{# if action.isSaveAction }}
+        onPressed: () async {
+        {{# if page.isPageTypeUpdate }}
+            {{# unless page.dataElement.isRelationKindAggregation }}
+                {{# unless page.dataElement.isRelationKindComposition }}
             var res = await {{ fqVariable page.name }}PageStore.validate(target{{ className page.relationType.target.name }}Store)
                 .catchError((error) => ErrorHandler.errorDialog(context, error));
             if (res != null) {
                 navigation.close(target{{ className page.dataElement.target.name }}Store);
             }
-        } else {
-            navigation.close(target{{ className page.dataElement.target.name }}Store);
-        }
-            {{/ if }}
-        {{/ if }}
-        {{# if page.dataElement.isRelationKindComposition }}
-            {{# if page.dataElement.target.isClassBehaviourTypeUpdateValidatable }}
-        if ({{ fqVariable page.name }}PageStore.validatable){
-            var res = await {{ fqVariable page.name }}PageStore.validate(target{{ className page.relationType.target.name }}Store)
-                .catchError((error) => ErrorHandler.errorDialog(context, error));
-            if (res != null) {
-                navigation.close(target{{ className page.dataElement.target.name }}Store);
-            }
-        } else {
-            navigation.close(target{{ className page.dataElement.target.name }}Store);
-        }
-            {{/ if }}
-        {{/ if }}
-    {{/ if }}
-    {{# if page.isPageTypeCreate }}
-        {{# unless page.dataElement.isRelationKindAggregation }}
-            {{# unless page.dataElement.isRelationKindComposition }}
-        var res = await {{ fqVariable page.name }}PageStore.validate({{# unless page.dataElement.isAccess}}owner{{ className page.dataElement.owner.name }}Store, {{/unless}}target{{ className page.relationType.target.name }}Store)
-            .catchError((error) => ErrorHandler.errorDialog(context, error));
-        if (res != null) {
-            navigation.close(target{{ className page.dataElement.target.name }}Store);
-        }
+                {{/ unless }}
             {{/ unless }}
-        {{/ unless }}
-        {{# if page.dataElement.isRelationKindAggregation }}
-            {{# if page.dataElement.isRelationBehaviourTypeCreateValidatable }}
-        if ({{ fqVariable page.name }}PageStore.validatable){
+            {{# if page.dataElement.isRelationKindAggregation }}
+                {{# if page.dataElement.target.isClassBehaviourTypeUpdateValidatable }}
+            if ({{ fqVariable page.name }}PageStore.validatable){
+                var res = await {{ fqVariable page.name }}PageStore.validate(target{{ className page.relationType.target.name }}Store)
+                    .catchError((error) => ErrorHandler.errorDialog(context, error));
+                if (res != null) {
+                    navigation.close(target{{ className page.dataElement.target.name }}Store);
+                }
+            } else {
+                navigation.close(target{{ className page.dataElement.target.name }}Store);
+            }
+                {{/ if }}
+            {{/ if }}
+            {{# if page.dataElement.isRelationKindComposition }}
+                {{# if page.dataElement.target.isClassBehaviourTypeUpdateValidatable }}
+            if ({{ fqVariable page.name }}PageStore.validatable){
+                var res = await {{ fqVariable page.name }}PageStore.validate(target{{ className page.relationType.target.name }}Store)
+                    .catchError((error) => ErrorHandler.errorDialog(context, error));
+                if (res != null) {
+                    navigation.close(target{{ className page.dataElement.target.name }}Store);
+                }
+            } else {
+                navigation.close(target{{ className page.dataElement.target.name }}Store);
+            }
+                {{/ if }}
+            {{/ if }}
+        {{/ if }}
+        {{# if page.isPageTypeCreate }}
+            {{# unless page.dataElement.isRelationKindAggregation }}
+                {{# unless page.dataElement.isRelationKindComposition }}
             var res = await {{ fqVariable page.name }}PageStore.validate({{# unless page.dataElement.isAccess}}owner{{ className page.dataElement.owner.name }}Store, {{/unless}}target{{ className page.relationType.target.name }}Store)
                 .catchError((error) => ErrorHandler.errorDialog(context, error));
             if (res != null) {
                 navigation.close(target{{ className page.dataElement.target.name }}Store);
             }
-        } else {
-            navigation.close(target{{ className page.dataElement.target.name }}Store);
-        }
-            {{/ if }}
-        {{/ if }}
-        {{# if page.dataElement.isRelationKindComposition }}
-            {{# if page.dataElement.isRelationBehaviourTypeCreateValidatable }}
-        if ({{ fqVariable page.name }}PageStore.validatable){
-            var res = await {{ fqVariable page.name }}PageStore.validate({{# unless page.dataElement.isAccess}}owner{{ className page.dataElement.owner.name }}Store, {{/unless}}target{{ className page.relationType.target.name }}Store)
-                .catchError((error) => ErrorHandler.errorDialog(context, error));
-            if (res != null) {
+                {{/ unless }}
+            {{/ unless }}
+            {{# if page.dataElement.isRelationKindAggregation }}
+                {{# if page.dataElement.isRelationBehaviourTypeCreateValidatable }}
+            if ({{ fqVariable page.name }}PageStore.validatable){
+                var res = await {{ fqVariable page.name }}PageStore.validate({{# unless page.dataElement.isAccess}}owner{{ className page.dataElement.owner.name }}Store, {{/unless}}target{{ className page.relationType.target.name }}Store)
+                    .catchError((error) => ErrorHandler.errorDialog(context, error));
+                if (res != null) {
+                    navigation.close(target{{ className page.dataElement.target.name }}Store);
+                }
+            } else {
                 navigation.close(target{{ className page.dataElement.target.name }}Store);
             }
-        } else {
-            navigation.close(target{{ className page.dataElement.target.name }}Store);
-        }
+                {{/ if }}
+            {{/ if }}
+            {{# if page.dataElement.isRelationKindComposition }}
+                {{# if page.dataElement.isRelationBehaviourTypeCreateValidatable }}
+            if ({{ fqVariable page.name }}PageStore.validatable){
+                var res = await {{ fqVariable page.name }}PageStore.validate({{# unless page.dataElement.isAccess}}owner{{ className page.dataElement.owner.name }}Store, {{/unless}}target{{ className page.relationType.target.name }}Store)
+                    .catchError((error) => ErrorHandler.errorDialog(context, error));
+                if (res != null) {
+                    navigation.close(target{{ className page.dataElement.target.name }}Store);
+                }
+            } else {
+                navigation.close(target{{ className page.dataElement.target.name }}Store);
+            }
+                {{/ if }}
             {{/ if }}
         {{/ if }}
-    {{/ if }}
-    {{# if page.isPageTypeOperationInput }}
-        navigation.close(target{{ className page.dataElement.target.name }}Store);
-    {{/if}}
-    },
-{{/ if}}
-{{# if action.isBackAction }}
-    onPressed: () => navigation.close(),
-{{/ if }}
-{{# if action.isCreateAction }}
-    onPressed:{{# unless page.dataElement.isAccess}}{{# unless page.dataElement.isRelationKindStatic}} owner{{ className page.dataElement.owner.name }}Store.internal__updatable ?{{/ unless}}{{/ unless}} () async {
-        var created = await navigation.open(Routes.{{ fqVariable action.target.name }}Page{{# unless page.dataElement.isAccess}},
-            arguments: {{ fqClass action.target.name }}PageArguments(owner{{ className page.dataElement.owner.name }}Store: owner{{ className page.dataElement.owner.name }}Store){{~/ unless}});
-        if (created != null) {
-            {{ fqVariable page.name }}PageStore.create{{ fqClass page.relationType.name }}({{# unless page.dataElement.isAccess}}owner{{ className page.dataElement.owner.name }}Store ,{{/ unless}}created)
-                .catchError((error) => ErrorHandler.errorDialog(context, error));
-        }
-    }{{# unless page.dataElement.isAccess}}{{# unless page.dataElement.isRelationKindStatic}} : null{{/ unless}}{{/ unless}},
-{{/ if }}
-{{# if action.isDeleteAction }}
-    onPressed:{{# unless page.dataElement.isAccess}}{{# unless page.dataElement.isRelationKindStatic}} owner{{ className page.dataElement.owner.name }}Store.internal__updatable &&{{/ unless}}{{/ unless}} target{{ className page.dataElement.target.name }}Store.internal__deletable ? () async {
-        await {{ fqVariable page.name }}PageStore.delete{{ className page.relationType.target.name }}(target{{ className page.dataElement.target.name }}Store)
-            .catchError((error) => ErrorHandler.errorDialog(context, error));
-        navigation.close(target{{ className page.dataElement.target.name }}Store);
-    } : null,
-{{/ if }}
-{{# if  action.isEditAction }}
-    onPressed:{{# unless page.dataElement.isAccess}}{{# unless page.dataElement.isRelationKindStatic}} owner{{ className page.dataElement.owner.name }}Store.internal__updatable ?{{/ unless}}{{/ unless}} () async {
-        {{ fqClass page.dataElement.target.name }}Store cloned = {{ fqClass page.dataElement.target.name }}Store();
-        cloned.updateWith(target{{ className page.dataElement.target.name }}Store);
-        var ret = await navigation.open(Routes.{{ fqVariable action.target.name }}Page,
-        arguments: {{ fqClass action.target.name }}PageArguments(target{{ className page.dataElement.target.name }}Store: cloned));
-        if (ret != null) {
-            target{{ className page.dataElement.target.name }}Store.updateWith(cloned);
-            var updated = await {{ fqVariable page.name }}PageStore.update{{ className page.relationType.target.name }}(target{{ className page.dataElement.target.name }}Store)
-                .catchError((error) => ErrorHandler.errorDialog(context, error));
-            if (updated != null) {
-                target{{ className page.dataElement.target.name }}Store.updateWith(updated);
-            }
-        }
-    }{{# unless page.dataElement.isAccess}}{{# unless page.dataElement.isRelationKindStatic}} : null{{/ unless}}{{/ unless}},
-{{/if}}
-{{#if action.isAddAction}}
-    onPressed:{{# unless page.dataElement.isAccess}}{{# unless page.dataElement.isRelationKindStatic}} owner{{ className page.dataElement.owner.name }}Store.internal__updatable ?{{/ unless}}{{/ unless}} () async {
-        var selected =
-            {{> templates/flutter/lib/ui/pages/widgets/dialog.dart.hbs relation=page.dataElement}}
-        if (selected != null) {
-            {{fqVariable page.name}}PageStore.add{{ fqClass page.relationType.name }}(owner{{ className page.dataElement.owner.name }}Store, selected)
-                .catchError((error) => ErrorHandler.errorDialog(context, error));
-        }
-    }{{# unless page.dataElement.isAccess}}{{# unless page.dataElement.isRelationKindStatic}} : null{{/ unless}}{{/ unless}},
-{{/if}}
-{{#if action.isSetAction}}
-    onPressed:{{# unless page.dataElement.isAccess}}{{# unless page.dataElement.isRelationKindStatic}} owner{{ className page.dataElement.owner.name }}Store.internal__updatable ?{{/ unless}}{{/ unless}} () async {
-        var selected =
-            {{> templates/flutter/lib/ui/pages/widgets/dialog.dart.hbs relation=page.dataElement}}
-        if (selected != null) {
-            {{fqVariable page.name}}PageStore.set{{ fqClass page.relationType.name }}(owner{{ className page.dataElement.owner.name }}Store, selected)
-                .catchError((error) => ErrorHandler.errorDialog(context, error));
-        }
-    }{{# unless page.dataElement.isAccess}}{{# unless page.dataElement.isRelationKindStatic}} : null{{/ unless}}{{/ unless}},
-{{/if}}
-{{# if action.isNavigationToPageAction }}
-    onPressed: () async {
-        await navigation.open(Routes.{{ fqVariable action.target.name }}Page,
-            arguments: {{ fqClass action.target.name }}PageArguments(owner{{ className action.target.dataElement.owner.name }}Store: target{{ className page.dataElement.target.name }}Store));
-    },
-{{/ if }}
-{{# if action.isCallOperationAction }}
-    onPressed: () async {
-        {{# if action.operation.input}}
-        var ret = await navigation.open(Routes.{{ fqVariable action.inputParameterPage.name }}Page);
-        if (ret != null) {
-        {{#if action.operation.output}}{{fqClass action.operation.output.target.name}}Store {{fqVariable action.operation.output.target.name}}Store = {{/if}}await {{fqVariable page.name}}PageStore.{{fqVariable action.operation.owner.name}}{{className action.operation.name}}({{# if action.operation.input}}ret, {{/if}}{{#if action.operation.isMapped }}target{{ className page.dataElement.target.name }}Store{{/if}})
-                .catchError((error) => ErrorHandler.errorDialog(context, error));
-            {{#if action.operation.output}}
-            if ({{fqVariable action.operation.output.target.name}}Store != null) {
-                await navigation.open(Routes.{{ fqVariable action.outputParameterPage.name }}Page,
-                    arguments: {{ fqClass action.outputParameterPage.name }}PageArguments(target{{className action.operation.output.target.name}}Store: {{fqVariable action.operation.output.target.name}}Store));
-            }
-            {{/if}}
-        }
-        {{else}}
-            {{#if action.operation.output}}
-                {{#if action.operation.output}}{{fqClass action.operation.output.target.name}}Store {{fqVariable action.operation.output.target.name}}Store = {{/if}}await {{fqVariable page.name}}PageStore.{{fqVariable action.operation.owner.name}}{{className action.operation.name}}({{# if action.operation.input}}ret, {{/if}}{{#if action.operation.isMapped }}target{{ className page.dataElement.target.name }}Store{{/if}})
-                .catchError((error) => ErrorHandler.errorDialog(context, error));
-            if ({{fqVariable action.operation.output.target.name}}Store != null) {
-                await navigation.open(Routes.{{ fqVariable action.outputParameterPage.name }}Page,
-                    arguments: {{ fqClass action.outputParameterPage.name }}PageArguments(target{{className action.operation.output.target.name}}Store: {{fqVariable action.operation.output.target.name}}Store));
-            }
-        }
-            {{else}}
-                {{#if action.operation.output}}{{fqClass action.operation.output.target.name}}Store {{fqVariable action.operation.output.target.name}}Store = {{/if}}await {{fqVariable page.name}}PageStore.{{fqVariable action.operation.owner.name}}{{className action.operation.name}}({{# if action.operation.input}}ret, {{/if}}{{#if action.operation.isMapped }}target{{ className page.dataElement.target.name }}Store{{/if}})
-            .whenComplete(() => judoAlert(context: context, title: 'Successful operation', text: '{{label}} called successfully.'))
-            .catchError((error) => ErrorHandler.errorDialog(context, error));
-            {{/if}}
+        {{# if page.isPageTypeOperationInput }}
+            navigation.close(target{{ className page.dataElement.target.name }}Store);
         {{/if}}
-    },
-{{/if}}
-{{#if label }}
-    label: '{{label}}',
-{{/if}}
-{{#if action.icon }}
-    icon: Icon(Icons.{{ action.icon.name }}),
-{{/if}}
-    rounded: true,
-),
+        },
+    {{/ if}}
+    {{# if action.isBackAction }}
+        onPressed: () => navigation.close(),
+    {{/ if }}
+    {{# if action.isCreateAction }}
+        onPressed:{{# unless page.dataElement.isAccess}}{{# unless page.dataElement.isRelationKindStatic}} owner{{ className page.dataElement.owner.name }}Store.internal__updatable ?{{/ unless}}{{/ unless}} () async {
+            var created = await navigation.open(Routes.{{ fqVariable action.target.name }}Page{{# unless page.dataElement.isAccess}},
+                arguments: {{ fqClass action.target.name }}PageArguments(owner{{ className page.dataElement.owner.name }}Store: owner{{ className page.dataElement.owner.name }}Store){{~/ unless}});
+            if (created != null) {
+                {{ fqVariable page.name }}PageStore.create{{ fqClass page.relationType.name }}({{# unless page.dataElement.isAccess}}owner{{ className page.dataElement.owner.name }}Store ,{{/ unless}}created)
+                    .catchError((error) => ErrorHandler.errorDialog(context, error));
+            }
+        }{{# unless page.dataElement.isAccess}}{{# unless page.dataElement.isRelationKindStatic}} : null{{/ unless}}{{/ unless}},
+    {{/ if }}
+    {{# if action.isDeleteAction }}
+        onPressed:{{# unless page.dataElement.isAccess}}{{# unless page.dataElement.isRelationKindStatic}} owner{{ className page.dataElement.owner.name }}Store.internal__updatable &&{{/ unless}}{{/ unless}} target{{ className page.dataElement.target.name }}Store.internal__deletable ? () async {
+            await {{ fqVariable page.name }}PageStore.delete{{ className page.relationType.target.name }}(target{{ className page.dataElement.target.name }}Store)
+                .catchError((error) => ErrorHandler.errorDialog(context, error));
+            navigation.close(target{{ className page.dataElement.target.name }}Store);
+        } : null,
+    {{/ if }}
+    {{# if  action.isEditAction }}
+        onPressed:{{# unless page.dataElement.isAccess}}{{# unless page.dataElement.isRelationKindStatic}} owner{{ className page.dataElement.owner.name }}Store.internal__updatable ?{{/ unless}}{{/ unless}} () async {
+            {{ fqClass page.dataElement.target.name }}Store cloned = {{ fqClass page.dataElement.target.name }}Store();
+            cloned.updateWith(target{{ className page.dataElement.target.name }}Store);
+            var ret = await navigation.open(Routes.{{ fqVariable action.target.name }}Page,
+            arguments: {{ fqClass action.target.name }}PageArguments(target{{ className page.dataElement.target.name }}Store: cloned));
+            if (ret != null) {
+                target{{ className page.dataElement.target.name }}Store.updateWith(cloned);
+                var updated = await {{ fqVariable page.name }}PageStore.update{{ className page.relationType.target.name }}(target{{ className page.dataElement.target.name }}Store)
+                    .catchError((error) => ErrorHandler.errorDialog(context, error));
+                if (updated != null) {
+                    target{{ className page.dataElement.target.name }}Store.updateWith(updated);
+                }
+            }
+        }{{# unless page.dataElement.isAccess}}{{# unless page.dataElement.isRelationKindStatic}} : null{{/ unless}}{{/ unless}},
+    {{/if}}
+    {{#if action.isAddAction}}
+        onPressed:{{# unless page.dataElement.isAccess}}{{# unless page.dataElement.isRelationKindStatic}} owner{{ className page.dataElement.owner.name }}Store.internal__updatable ?{{/ unless}}{{/ unless}} () async {
+            var selected =
+                {{> templates/flutter/lib/ui/pages/widgets/dialog.dart.hbs relation=page.dataElement}}
+            if (selected != null) {
+                {{fqVariable page.name}}PageStore.add{{ fqClass page.relationType.name }}(owner{{ className page.dataElement.owner.name }}Store, selected)
+                    .catchError((error) => ErrorHandler.errorDialog(context, error));
+            }
+        }{{# unless page.dataElement.isAccess}}{{# unless page.dataElement.isRelationKindStatic}} : null{{/ unless}}{{/ unless}},
+    {{/if}}
+    {{#if action.isSetAction}}
+        onPressed:{{# unless page.dataElement.isAccess}}{{# unless page.dataElement.isRelationKindStatic}} owner{{ className page.dataElement.owner.name }}Store.internal__updatable ?{{/ unless}}{{/ unless}} () async {
+            var selected =
+                {{> templates/flutter/lib/ui/pages/widgets/dialog.dart.hbs relation=page.dataElement}}
+            if (selected != null) {
+                {{fqVariable page.name}}PageStore.set{{ fqClass page.relationType.name }}(owner{{ className page.dataElement.owner.name }}Store, selected)
+                    .catchError((error) => ErrorHandler.errorDialog(context, error));
+            }
+        }{{# unless page.dataElement.isAccess}}{{# unless page.dataElement.isRelationKindStatic}} : null{{/ unless}}{{/ unless}},
+    {{/if}}
+    {{# if action.isNavigationToPageAction }}
+        onPressed: () async {
+            await navigation.open(Routes.{{ fqVariable action.target.name }}Page,
+                arguments: {{ fqClass action.target.name }}PageArguments(owner{{ className action.target.dataElement.owner.name }}Store: target{{ className page.dataElement.target.name }}Store));
+        },
+    {{/ if }}
+    {{# if action.isCallOperationAction }}
+        onPressed: () async {
+            {{# if action.operation.input}}
+            var ret = await navigation.open(Routes.{{ fqVariable action.inputParameterPage.name }}Page);
+            if (ret != null) {
+                {{# if action.isConfirmationTypeMandatory }}
+                {{> templates/flutter/lib/ui/pages/widgets/confirmationDialog.dart.hbs}}
+                {{/ if }}
+                {{# if action.isConfirmationTypeConditional }}
+                {{> templates/flutter/lib/ui/pages/widgets/confirmationDialog.dart.hbs}}
+                {{/ if }}
+                {{#if action.operation.output}}{{fqClass action.operation.output.target.name}}Store {{fqVariable action.operation.output.target.name}}Store = {{/if}}await {{fqVariable page.name}}PageStore.{{fqVariable action.operation.owner.name}}{{className action.operation.name}}({{# if action.operation.input}}ret, {{/if}}{{#if action.operation.isMapped }}target{{ className page.dataElement.target.name }}Store{{/if}})
+                    .catchError((error) => ErrorHandler.errorDialog(context, error));
+                {{#if action.operation.output}}
+                if ({{fqVariable action.operation.output.target.name}}Store != null) {
+                    await navigation.open(Routes.{{ fqVariable action.outputParameterPage.name }}Page,
+                        arguments: {{ fqClass action.outputParameterPage.name }}PageArguments(target{{className action.operation.output.target.name}}Store: {{fqVariable action.operation.output.target.name}}Store));
+                }
+                {{/if}}
+                {{# if page.relationType.target.isClassBehaviourTypeRefreshable }}
+                    await {{ fqVariable page.name }}PageStore.refresh{{ className page.relationType.target.name }}(target{{ className page.dataElement.target.name }}Store);
+                {{/ if }}
+            }
+            {{else}}
+                {{# if action.isConfirmationTypeMandatory }}
+                {{> templates/flutter/lib/ui/pages/widgets/confirmationDialog.dart.hbs}}
+                {{/ if }}
+                {{# if action.isConfirmationTypeConditional }}
+                {{> templates/flutter/lib/ui/pages/widgets/confirmationDialog.dart.hbs}}
+                {{/ if }}
+                {{#if action.operation.output}}
+                    {{#if action.operation.output}}{{fqClass action.operation.output.target.name}}Store {{fqVariable action.operation.output.target.name}}Store = {{/if}}await {{fqVariable page.name}}PageStore.{{fqVariable action.operation.owner.name}}{{className action.operation.name}}({{# if action.operation.input}}ret, {{/if}}{{#if action.operation.isMapped }}target{{ className page.dataElement.target.name }}Store{{/if}})
+                        .catchError((error) => ErrorHandler.errorDialog(context, error));
+                    if ({{fqVariable action.operation.output.target.name}}Store != null) {
+                        await navigation.open(Routes.{{ fqVariable action.outputParameterPage.name }}Page,
+                            arguments: {{ fqClass action.outputParameterPage.name }}PageArguments(target{{className action.operation.output.target.name}}Store: {{fqVariable action.operation.output.target.name}}Store));
+                    }
+                    {{# if page.relationType.target.isClassBehaviourTypeRefreshable }}
+                    await {{ fqVariable page.name }}PageStore.refresh{{ className page.relationType.target.name }}(target{{ className page.dataElement.target.name }}Store);
+                    {{/ if }}
+            }
+                {{else}}
+            {{#if action.operation.output}}{{fqClass action.operation.output.target.name}}Store {{fqVariable action.operation.output.target.name}}Store = {{/if}}await {{fqVariable page.name}}PageStore.{{fqVariable action.operation.owner.name}}{{className action.operation.name}}({{# if action.operation.input}}ret, {{/if}}{{#if action.operation.isMapped }}target{{ className page.dataElement.target.name }}Store{{/if}})
+                .whenComplete(() => judoAlert(context: context, title: 'Successful operation', text: '{{label}} called successfully.'))
+                .catchError((error) => ErrorHandler.errorDialog(context, error));
+                    {{# if page.relationType.target.isClassBehaviourTypeRefreshable }}
+            await {{ fqVariable page.name }}PageStore.refresh{{ className page.relationType.target.name }}(target{{ className page.dataElement.target.name }}Store);
+                    {{/ if }}
+                {{/if}}
+            {{/if}}
+        },
+    {{/if}}
+    {{#if label }}
+        label: '{{label}}',
+    {{/if}}
+    {{#if action.icon }}
+        icon: Icon(Icons.{{ action.icon.name }}),
+    {{/if}}
+        rounded: true,
+    ){{# if enabledBy }}
+){{/ if }},
 //END instanceAction.dart.hbs-----{{page.dataElement.target.name}}-------------------------------------------------------------------------

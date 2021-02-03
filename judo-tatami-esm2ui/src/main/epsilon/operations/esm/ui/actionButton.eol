@@ -1,21 +1,13 @@
 operation ESM!esm::ui::ActionButton createButtonFromActionButton(application : UI!ui::Application) : UI!ui::Button {
 	var ret : UI!ui::Button = new UI!ui::Button();
-	ret.name = self.name;
-	ret.label = self.getUiLabel();
+	
+	ret.setVisualProperties(self, application);
 	ret.sourceId = self.getID();
-	ret.col = self.col.asReal();
-	ret.row = self.row.asReal();
 
 	if (self.action == ESM!esm::ui::Action#SUBMIT) {
 		ret.action = new UI!ui::SaveAction();
 	} else if (self.action == ESM!esm::ui::Action#CANCEL) {
 		ret.action = new UI!ui::BackAction();
-	}
-	
-	if (self.fit == ESM!esm::ui::Fit#LOOSE) {
-		ret.fit = UI!ui::Fit#LOOSE;
-	} else if (self.fit == ESM!esm::ui::Fit#TIGHT) {
-		ret.fit = UI!ui::Fit#TIGHT;
 	}
 	
 	return ret;
