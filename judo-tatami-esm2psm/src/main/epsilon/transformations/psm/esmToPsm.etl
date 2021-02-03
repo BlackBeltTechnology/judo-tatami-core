@@ -153,22 +153,21 @@ post {
             var psmQueryCustomizerSubClass : JUDOPSM!TransferObjectType = esmSubClass.equivalent("CreateQueryCustomizerType");
             var psmQueryOrderingEnumSubClass : JUDOPSM!EnumerationType = esmSubClass.equivalent("CreateQueryOrderingEnumeration");
 
-    		if (psmQueryCustomizerSubClass.isDefined() and psmQueryOrderingEnumSubClass.isDefined()) {
-    		    if (psmQueryCustomizerTransferObject.isDefined() and psmQueryOrderingEnumTransferObject.isDefined()) {
-    		        for (member in psmQueryOrderingEnumTransferObject.members) {
-                        if (not psmQueryOrderingEnumSubClass.members.exists(m | m.name == member.name)) {
-                            var clone = ecoreUtil.copy(member);
-                            psmQueryOrderingEnumSubClass.members.add(clone);
-                        }
+    		if (psmQueryCustomizerSubClass.isDefined() and psmQueryOrderingEnumSubClass.isDefined() and
+    		    psmQueryCustomizerTransferObject.isDefined() and psmQueryOrderingEnumTransferObject.isDefined()) {
+                for (member in psmQueryOrderingEnumTransferObject.members) {
+                    if (not psmQueryOrderingEnumSubClass.members.exists(m | m.name == member.name)) {
+                        var clone = ecoreUtil.copy(member);
+                        psmQueryOrderingEnumSubClass.members.add(clone);
                     }
+                }
 
-                    for (relation in psmQueryCustomizerTransferObject.relations) {
-                        if (not psmQueryCustomizerSubClass.relations.exists(r | r.name == relation.name)) {
-                            var clone = ecoreUtil.copy(relation);
-                            psmQueryCustomizerSubClass.relations.add(clone);
-                        }
+                for (relation in psmQueryCustomizerTransferObject.relations) {
+                    if (not psmQueryCustomizerSubClass.relations.exists(r | r.name == relation.name)) {
+                        var clone = ecoreUtil.copy(relation);
+                        psmQueryCustomizerSubClass.relations.add(clone);
                     }
-    		    }
+                }
     		}
     	}
 	}
