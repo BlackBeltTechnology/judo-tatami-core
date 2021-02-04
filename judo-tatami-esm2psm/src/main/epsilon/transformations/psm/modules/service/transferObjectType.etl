@@ -94,7 +94,11 @@ rule CreateQueryCustomizerType
 rule CreateQueryOrderingEnumeration
 	transform s: ESM!TransferObjectType
 	to t: JUDOPSM!EnumerationType {
-	  guard: s.mapping.isDefined() and s.attributes.exists(a | a.memberType <> ESM!MemberType#TRANSIENT and (a.memberType == ESM!MemberType#MAPPED implies (a.binding.isDefined() and a.binding.memberType <> ESM!MemberType#TRANSIENT)) and (a.dataType.isKindOf(ESM!StringType) or a.dataType.isKindOf(ESM!NumericType) or a.dataType.isKindOf(ESM!DateType) or a.dataType.isKindOf(ESM!TimestampType)))
+	  guard: s.mapping.isDefined() and
+	    s.getAllAttributes().exists(a | a.memberType <> ESM!MemberType#TRANSIENT and
+	                    (a.memberType == ESM!MemberType#MAPPED implies (a.binding.isDefined() and a.binding.memberType <> ESM!MemberType#TRANSIENT)) and
+	                    (a.memberType == ESM!MemberType#DERIVED implies a.eContainer.mapping.isDefined()) and
+	                    (a.dataType.isKindOf(ESM!StringType) or a.dataType.isKindOf(ESM!NumericType) or a.dataType.isKindOf(ESM!DateType) or a.dataType.isKindOf(ESM!TimestampType)))
 
 	  t.name = "_OrderingAttribute" + s.name;
 
@@ -122,7 +126,11 @@ rule CreateQueryOrderingEnumerationMember
 rule CreateQueryOrderingType
 	transform s: ESM!TransferObjectType
 	to t: JUDOPSM!UnmappedTransferObjectType {
-	  guard: s.mapping.isDefined() and s.attributes.exists(a | a.memberType <> ESM!MemberType#TRANSIENT and (a.memberType == ESM!MemberType#MAPPED implies (a.binding.isDefined() and a.binding.memberType <> ESM!MemberType#TRANSIENT)) and (a.dataType.isKindOf(ESM!StringType) or a.dataType.isKindOf(ESM!NumericType) or a.dataType.isKindOf(ESM!DateType) or a.dataType.isKindOf(ESM!TimestampType)))
+	  guard: s.mapping.isDefined() and
+	  s.getAllAttributes().exists(a | a.memberType <> ESM!MemberType#TRANSIENT and
+	                        (a.memberType == ESM!MemberType#MAPPED implies (a.binding.isDefined() and a.binding.memberType <> ESM!MemberType#TRANSIENT)) and
+	                        (a.memberType == ESM!MemberType#DERIVED implies a.eContainer.mapping.isDefined()) and
+	                        (a.dataType.isKindOf(ESM!StringType) or a.dataType.isKindOf(ESM!NumericType) or a.dataType.isKindOf(ESM!DateType) or a.dataType.isKindOf(ESM!TimestampType)))
 
 	  t.name = "_OrderingType" + s.name;
 

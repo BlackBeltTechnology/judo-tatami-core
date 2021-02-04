@@ -120,6 +120,8 @@ public class QueryCustomizerTest {
         final String MODEL_NAME = "Model";
         final String PERSON_TYPE_NAME = "Person";
         final String PERSON_DTO_TYPE_NAME = "PersonDTO";
+        final String PERSON_TYPE_NAME_2 = "Employee";
+        final String PERSON_DTO_TYPE_NAME_2 = "EmployeeDTO";
 
         final Measure time = newMeasureBuilder()
                 .withName("Time")
@@ -161,12 +163,26 @@ public class QueryCustomizerTest {
                 .withDataType(sexType)
                 .withMemberType(MemberType.STORED)
                 .build();
+        final DataMember firstDayAtWork = newDataMemberBuilder()
+                .withName("firstDayAtWork")
+                .withDataType(dateType)
+                .withMemberType(MemberType.STORED)
+                .build();
         final EntityType e = newEntityTypeBuilder()
                 .withName(PERSON_TYPE_NAME)
                 .withAttributes(Arrays.asList(nameOfPerson, birthDateOfPerson, ageAt2020OfPerson, sexOfPerson))
                 .build();
         useEntityType(e)
                 .withMapping(newMappingBuilder().withTarget(e).build())
+                .build();
+        
+        final EntityType e2 = newEntityTypeBuilder()
+                .withName(PERSON_TYPE_NAME_2)
+                .withGeneralizations(newGeneralizationBuilder().withTarget(e).build())
+                .withAttributes(firstDayAtWork)
+                .build();
+        useEntityType(e2)
+                .withMapping(newMappingBuilder().withTarget(e2).build())
                 .build();
 
         final TransferObjectType t = newTransferObjectTypeBuilder()
@@ -198,9 +214,21 @@ public class QueryCustomizerTest {
                         .withBinding(sexOfPerson)
                         .build())
                 .build();
+        
+        final TransferObjectType t2 = newTransferObjectTypeBuilder()
+                .withMapping(newMappingBuilder().withTarget(e2).build())
+                .withName(PERSON_DTO_TYPE_NAME_2)
+                .withGeneralizations(newGeneralizationBuilder().withTarget(t).build())
+                .withAttributes(newDataMemberBuilder()
+                        .withName("firstDayAtWork")
+                        .withDataType(dateType)
+                        .withMemberType(MemberType.MAPPED)
+                        .withBinding(firstDayAtWork)
+                        .build())
+                .build();
 
         final Model model = newModelBuilder().withName(MODEL_NAME)
-                .withElements(Arrays.asList(time, stringType, integerType, doubleType, booleanType, dateType, timestampType, sexType, e, t)).build();
+                .withElements(Arrays.asList(time, stringType, integerType, doubleType, booleanType, dateType, timestampType, sexType, e, e2, t, t2)).build();
 
         esmModel.addContent(model);
 
@@ -219,6 +247,20 @@ public class QueryCustomizerTest {
         assertTrue(tCustomizer.isPresent());
         assertThat(PsmUtils.namespaceElementToString(tCustomizer.get()), equalTo(MODEL_NAME + "::" + EXTENSION_PACKAGE_NAME + "::" + QUERY_CUSTOMIZER_NAME_PREFIX + PERSON_DTO_TYPE_NAME));
         assertThat(tCustomizer.get().getRelations().stream().map(a -> a.getName()).collect(Collectors.toSet()), equalTo(ImmutableSet.of("name", "birthDate", "age", "sex", "_orderBy", "_seek")));
+        
+        final Optional<UnmappedTransferObjectType> e2Customizer = allPsm(UnmappedTransferObjectType.class)
+                .filter(u -> (QUERY_CUSTOMIZER_NAME_PREFIX + PERSON_TYPE_NAME_2).equals(u.getName()))
+                .findAny();
+        assertTrue(e2Customizer.isPresent());
+        assertThat(PsmUtils.namespaceElementToString(e2Customizer.get()), equalTo(MODEL_NAME + "::" + EXTENSION_PACKAGE_NAME + "::" + QUERY_CUSTOMIZER_NAME_PREFIX + PERSON_TYPE_NAME_2));
+        assertThat(e2Customizer.get().getRelations().stream().map(a -> a.getName()).collect(Collectors.toSet()), equalTo(ImmutableSet.of("name", "birthDate", "ageAt2020", "sex", "_orderBy", "_seek", "firstDayAtWork")));
+
+        final Optional<UnmappedTransferObjectType> t2Customizer = allPsm(UnmappedTransferObjectType.class)
+                .filter(u -> (QUERY_CUSTOMIZER_NAME_PREFIX + PERSON_DTO_TYPE_NAME_2).equals(u.getName()))
+                .findAny();
+        assertTrue(t2Customizer.isPresent());
+        assertThat(PsmUtils.namespaceElementToString(t2Customizer.get()), equalTo(MODEL_NAME + "::" + EXTENSION_PACKAGE_NAME + "::" + QUERY_CUSTOMIZER_NAME_PREFIX + PERSON_DTO_TYPE_NAME_2));
+        assertThat(t2Customizer.get().getRelations().stream().map(a -> a.getName()).collect(Collectors.toSet()), equalTo(ImmutableSet.of("name", "birthDate", "age", "sex", "_orderBy", "_seek", "firstDayAtWork")));
     }
 
     static <T> Stream<T> asStream(Iterator<T> sourceIterator, boolean parallel) {
