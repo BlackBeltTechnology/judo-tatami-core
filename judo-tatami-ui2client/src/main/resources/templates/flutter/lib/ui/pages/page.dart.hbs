@@ -23,7 +23,11 @@ part of {{ variable application.name }}.ui.pages;
 {{> templates/flutter/lib/ui/pages/pagetypesfragments/editpagestore.dart.hbs }}
 {{/ if }}
 {{# if page.isPageTypeDashboard }}
-{{> templates/flutter/lib/ui/pages/pagetypesfragments/dashboardpagestore.dart.hbs }}
+    {{# if page.relationType.isCollection }}
+{{> templates/flutter/lib/ui/pages/pagetypesfragments/tablepagestore.dart.hbs }}
+    {{ else }}
+{{> templates/flutter/lib/ui/pages/pagetypesfragments/viewpagestore.dart.hbs }}
+    {{/if}}
 {{/ if }}
 {{# if page.isPageTypeOperationInput }}
 {{> templates/flutter/lib/ui/pages/pagetypesfragments/operationinputpagestore.dart.hbs }}
