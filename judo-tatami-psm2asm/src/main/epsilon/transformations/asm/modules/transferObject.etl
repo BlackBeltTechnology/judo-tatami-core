@@ -247,7 +247,7 @@ rule AddTransientAnnotationToTransferObjectRelation
 rule CreateTransferObjectRelationBindingAnnotation
 	transform s : JUDOPSM!TransferObjectRelation
 	to t : ASM!EAnnotation {
-		guard: s.binding.isDefined() //and not s.binding.isKindOf(JUDOPSM!StaticNavigation)
+		guard: s.binding.isDefined() and not s.binding.isKindOf(JUDOPSM!StaticNavigation)
 		
 		t.source = asmUtils.getAnnotationUri("binding");
 		
@@ -262,7 +262,7 @@ rule CreateTransferObjectRelationBindingAnnotation
 rule CreateTransferObjectRelationRangeAnnotation
 	transform s : JUDOPSM!TransferObjectRelation
 	to t : ASM!EAnnotation {
-		guard: s.range.isDefined() //and not s.range.isKindOf(JUDOPSM!StaticNavigation)
+		guard: s.range.isDefined()
 
 		t.source = asmUtils.getAnnotationUri("range");
 

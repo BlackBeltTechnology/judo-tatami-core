@@ -1,16 +1,8 @@
 operation ESM!RelationFeature getPSMRangeEquivalent(): JUDOPSM!ReferenceAccessor {
-      if (self.isContainerAndTargetMapped()) {
-          if (self.isAnyRangeExpressionSupported()) {
-                return self.equivalent("CreateNavigationPropertyForTransferObjectRelationAnyRange");
-          } else if (self.isDerivedRangeExpressionSupported()) {
-                return self.equivalent("CreateNavigationPropertyForTransferObjectRelationDerivedRange");
-          }
+      if (self.eContainer().isMapped()) {
+          return self.equivalent("CreateNavigationPropertyForTransferObjectRelationRange");
       } else {
-          if (self.isAnyRangeExpressionSupported()) {
-                return self.equivalent("CreateStaticNavigationForTransferObjectRelationAnyRange");
-          } else if (self.isDerivedRangeExpressionSupported()) {
-                return self.equivalent("CreateStaticNavigationForTransferObjectRelationDerivedRange");
-          }
+          return self.equivalent("CreateStaticNavigationForTransferObjectRelationRange");
       }
 }
 
