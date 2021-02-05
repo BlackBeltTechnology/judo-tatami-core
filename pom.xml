@@ -59,22 +59,22 @@
 
         <!-- Model versions -->
         <judo-meta-rdbms-version>1.0.0.20210129_173124_1a8dd50_develop</judo-meta-rdbms-version>
-        <judo-meta-esm-version>1.1.0.20210201_163238_9c6f20f_feature_JNG_2358_change_get_range_supported_util_to_support_input_types</judo-meta-esm-version>
+        <judo-meta-esm-version>1.1.0.20210204_081949_3bc9ff5_develop</judo-meta-esm-version>
         <judo-meta-psm-version>1.1.0.20210126_163622_69b92a0_develop</judo-meta-psm-version>
         <judo-meta-jql-version>1.0.1.20210129_171757_a2b08df_develop</judo-meta-jql-version>
         <judo-meta-jcl-version>1.0.1.20210129_174009_36f07a6_develop</judo-meta-jcl-version>
-        <judo-meta-script-version>1.0.1.20210129_175736_ac96bd4_develop</judo-meta-script-version>
+        <judo-meta-script-version>1.0.1.20210204_111914_19890bd_develop</judo-meta-script-version>
         <judo-meta-asm-version>1.1.0.20210129_171507_d597724_develop</judo-meta-asm-version>
-        <judo-meta-expression-version>1.0.1.20210129_173831_0deeb47_develop</judo-meta-expression-version>
+        <judo-meta-expression-version>1.0.1.20210204_110207_48a027d_develop</judo-meta-expression-version>
         <judo-meta-measure-version>1.0.0.20210129_172521_435b80c_develop</judo-meta-measure-version>
         <judo-meta-liquibase-version>1.0.0.20210129_172209_0c3e7a7_develop</judo-meta-liquibase-version>
         <judo-meta-openapi-version>1.0.0.20210129_172917_5d80f49_develop</judo-meta-openapi-version>
-        <judo-meta-ui-version>1.0.0.20210131_135536_ae4414b_develop</judo-meta-ui-version>
+        <judo-meta-ui-version>1.0.0.20210202_191604_60383f6_develop</judo-meta-ui-version>
         <judo-meta-keycloak-version>1.0.0.20210116_100528_3543c98_develop</judo-meta-keycloak-version>
-        <judo-dao-api-version>1.0.2.20210114_210648_3821c43_develop</judo-dao-api-version>
+        <judo-dao-api-version>1.0.2.20210203_105639_cea28b8_develop</judo-dao-api-version>
         <judo-dispatcher-api-version>1.0.2.20210114_213608_d1b0b9f_develop</judo-dispatcher-api-version>
-        <judo-script-codegen-version>1.1.0.20210129_180926_96ee306_develop</judo-script-codegen-version>
-        <judo-operation-utils-version>1.1.0.20210129_175059_c3b19e4_develop</judo-operation-utils-version>
+        <judo-script-codegen-version>1.1.0.20210204_113921_2a4cf78_develop</judo-script-codegen-version>
+        <judo-operation-utils-version>1.1.0.20210202_153207_e7a98b5_develop</judo-operation-utils-version>
 
         <structured-map-proxy-version>1.0.6.20210119_121627_130c6ee_develop</structured-map-proxy-version>
 

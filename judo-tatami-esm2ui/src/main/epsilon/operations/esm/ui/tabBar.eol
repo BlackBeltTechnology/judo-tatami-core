@@ -1,26 +1,8 @@
 operation ESM!esm::ui::TabBar createTabController(application : UI!ui::Application) : UI!ui::TabController {
 	var ret : UI!ui::TabController = new UI!ui::TabController();
-	ret.name = self.name;	
-    ret.label = self.getUiLabel();
-    
-	ret.col = self.col.asReal();
-	ret.row = self.row.asReal();
-    ret.sourceId = self.getID();
-    
-    if (self.stretch == ESM!esm::ui::Stretch#NONE) {
-    	ret.stretch = UI!ui::Stretch#NONE;
-    } else if (self.stretch == ESM!esm::ui::Stretch#HORIZONTAL) {
-        ret.stretch = UI!ui::Stretch#HORIZONTAL;
-    } else if (self.stretch == ESM!esm::ui::Stretch#VERTICAL) {
-        ret.stretch = UI!ui::Stretch#VERTICAL;
-    } else {
-        ret.stretch = UI!ui::Stretch#BOTH;
-    }
-    if (self.fit == ESM!esm::ui::Fit#LOOSE) {
-		ret.fit = UI!ui::Fit#LOOSE;
-	} else if (self.fit == ESM!esm::ui::Fit#TIGHT) {
-		ret.fit = UI!ui::Fit#TIGHT;
-	}
+	
+	ret.setVisualProperties(self, application);
+	ret.sourceId = self.getID();
     
 	for (t in self.tabs) {
 	
@@ -32,7 +14,6 @@ operation ESM!esm::ui::TabBar createTabController(application : UI!ui::Applicati
 		}
 		
 		tab.element = t.map(application);
-		
 		ret.tabs.add(tab);
 	}
 

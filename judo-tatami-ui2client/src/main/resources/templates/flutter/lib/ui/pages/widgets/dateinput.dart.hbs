@@ -48,4 +48,35 @@ Observer(
     ),
 ),
 {{/if}}
+{{#if page.isPageTypeOperationOutput}}
+Observer(
+    builder: (_) => JudoDateInput(
+        key: UniqueKey(),
+        col: {{ multiplyCol col }},
+        row: {{ row }},
+        disabled: {{ disabled }},
+        initialDate: target{{ className page.dataElement.target.name }}Store.{{ attributeType.name }},
+        label: '{{ label }}',
+        icon: Icon(Icons.{{ this.leadingIcon.name }}),
+        readOnly: true,
+    ),
+),
+{{/if}}
+{{#if page.isPageTypeOperationInput}}
+Observer(
+    builder: (_) => JudoDateInput(
+        key: inputWidgetKeyMap['{{ name }}'],
+        col: {{ multiplyCol col }},
+        row: {{ row }},
+        disabled: {{ disabled }},
+        initialDate: target{{ className page.dataElement.target.name }}Store.{{ attributeType.name }},
+        label: '{{ label }}',
+        icon: Icon(Icons.{{ this.leadingIcon.name }}),
+        onChanged: (value) => target{{ className page.dataElement.target.name }}Store.set{{ className attributeType.name }}(value),
+        firstDate: DateTime(DateTime.now().year - 5), // TODO: revisit this line
+        lastDate: DateTime(DateTime.now().year + 5), // TODO: revisit this line
+        readOnly: {{attributeType.isReadOnly}},
+    ),
+),
+{{/if}}
 //END dateinput.dart.hbs-----{{page.dataElement.target.name}}------------------------------------------------------------------------------

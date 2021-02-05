@@ -6,13 +6,10 @@ operation ESM!esm::ui::TabularReferenceField createTableFromTabularReferenceFiel
 	if (self.targetDefinedTabular) {
 
 		log.debug("Create table based on reference target: " + relation.target.table.name);
-
 		if (relation.upper == 1) {
     		table = relation.target.table.createLinkFromTransferObjectTable(application);
-    		table.row = 1.0d;
 		} else {
     		table = relation.target.table.createTableFromTransferObjectTable(application);
-    		table.row = self.row.asReal();
 		}
 		
 	} else {
@@ -23,7 +20,6 @@ operation ESM!esm::ui::TabularReferenceField createTableFromTabularReferenceFiel
 
         if (relation.upper == 1) {
             table = new UI!ui::Link();
-            table.row = 1.0d;
             for (column in self.columns) {
                 var part : UI!ui::Formatted = column.dataFeature.getMember().getDataType().formatted();
                 part.name = column.name;
@@ -33,7 +29,6 @@ operation ESM!esm::ui::TabularReferenceField createTableFromTabularReferenceFiel
             }
         } else {
             table = new UI!ui::Table();
-            table.row = self.row.asReal();
             for (column in self.columns) {
                 var col : UI!ui::Formatted = column.dataFeature.getMember().getDataType().formatted();
                 col.name = column.name;
@@ -43,29 +38,18 @@ operation ESM!esm::ui::TabularReferenceField createTableFromTabularReferenceFiel
             }
         }
 	}
-	
-	table.name = self.name;
-    table.label = self.getUiLabel();
+    
+    table.setVisualProperties(self, application);
+    
+    if (relation.upper == 1) {
+		table.row = 1.0d;
+	} else {
+		table.row = self.row.asReal();
+	}
+    
     table.icon = self.iconName;
     table.sourceId = self.getID();
-    table.col = self.col.asReal();
     table.dataElement = relation.mapRelationType(application, self.getTransferObjectType().mapClassType(application));
-    
-    if (self.stretch == ESM!esm::ui::Stretch#NONE) {
-        table.stretch = UI!ui::Stretch#NONE;
-    } else if (self.stretch == ESM!esm::ui::Stretch#HORIZONTAL) {
-        table.stretch = UI!ui::Stretch#HORIZONTAL;
-    } else if (self.stretch == ESM!esm::ui::Stretch#VERTICAL) {
-        table.stretch = UI!ui::Stretch#VERTICAL;
-    } else {
-        table.stretch = UI!ui::Stretch#BOTH;
-    }
-
-    if (self.fit == ESM!esm::ui::Fit#LOOSE) {
-        table.fit = UI!ui::Fit#LOOSE;
-    } else if (self.fit == ESM!esm::ui::Fit#TIGHT) {
-        table.fit = UI!ui::Fit#TIGHT;
-    }
     
     return table;
 }
@@ -76,26 +60,11 @@ operation ESM!esm::ui::TabularReferenceField createButtonFromTabularReferenceFie
 	log.debug("Create button for association: " + relation.name);
 
 	var button : UI!ui::Button = new UI!ui::Button();
+	
+	button.setVisualProperties(self, application);
 	button.name = self.name.anchor("TabularReferenceButton");
-    button.label = self.getUiLabel();
-    button.col = self.col.asReal();
+
     button.sourceId = self.getID();
-
-    if (self.stretch == ESM!esm::ui::Stretch#NONE) {
-    	button.stretch = UI!ui::Stretch#NONE;
-    } else if (self.stretch == ESM!esm::ui::Stretch#HORIZONTAL) {
-        button.stretch = UI!ui::Stretch#HORIZONTAL;
-    } else if (self.stretch == ESM!esm::ui::Stretch#VERTICAL) {
-        button.stretch = UI!ui::Stretch#VERTICAL;
-    } else {
-        button.stretch = UI!ui::Stretch#BOTH;
-    }
-
-    if (self.fit == ESM!esm::ui::Fit#LOOSE) {
-		button.fit = UI!ui::Fit#LOOSE;
-	} else if (self.fit == ESM!esm::ui::Fit#TIGHT) {
-		button.fit = UI!ui::Fit#TIGHT;
-	}
 
 	var dataElement = relation.mapRelationType(application, self.getTransferObjectType().mapClassType(application));
 
