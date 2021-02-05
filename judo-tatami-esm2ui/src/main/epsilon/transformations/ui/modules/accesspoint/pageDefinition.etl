@@ -26,7 +26,7 @@ rule ApplicationDashboardPage
 	 	} else if (dashboard.isDefined() and (dashboard.upper > 1 or dashboard.upper == -1) and dashboard.target.isTableDefined()) {
 	 		var clazz = s.mapClassType(application);
 	 		t.dataElement = dashboard.mapRelationType(application, clazz);
-	        pageContainer.children.add(dashboard.target.table.map(application, dashboard));
+	        pageContainer.children.add(dashboard.target.table.createTableFromTransferObjectTable(application, dashboard));
 	        t.label = dashboard.target.table.getUiLabel();
 	 	}
 	 	
