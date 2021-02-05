@@ -13,6 +13,15 @@ part of {{ variable application.name }}.ui.pages.{{variable container.layoutType
 
 Widget get{{ fqClass page.name }}Page{{fqClass container.layoutType.name}}Body(BuildContext context
 
+        {{~# if page.isPageTypeDashboard ~}}
+            {{~# unless page.dataElement.isCollection ~}}
+                {{~# if page.dataElement ~}}
+        , {{ fqClass page.dataElement.target.name }}Store target{{ className page.dataElement.target.name }}Store
+                {{~/ if ~}}
+            {{~/ unless ~}}
+        , {{fqClass page.name}}PageStore {{fqVariable page.name}}PageStore
+        {{~/ if ~}}
+
         {{~# if page.isPageTypeTable ~}}
         {{~# unless page.dataElement.isAccess ~}}
         , {{ fqClass page.dataElement.owner.name }}Store owner{{ className page.dataElement.owner.name }}Store

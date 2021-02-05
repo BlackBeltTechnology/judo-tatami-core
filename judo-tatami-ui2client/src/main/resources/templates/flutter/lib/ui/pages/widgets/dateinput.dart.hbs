@@ -1,6 +1,6 @@
 {{~ log 'Date field generation for' (variable application.name) '-' (fqClass page.name)'page'(variable page.dataElement.target.name) attributeType.name level='debug' ~}}
 //START dateinput.dart.hbs-----{{page.dataElement.target.name}}----------------------------------------------------------------------------
-{{#if page.isPageTypeView}}
+{{#if (isViewTypePage page) }}
 Observer(
     builder: (_) => JudoDateInput(
         key: UniqueKey(),
@@ -45,20 +45,6 @@ Observer(
         firstDate: DateTime(DateTime.now().year - 5), // TODO: revisit this line
         lastDate: DateTime(DateTime.now().year + 5), // TODO: revisit this line
         readOnly: {{attributeType.isReadOnly}},
-    ),
-),
-{{/if}}
-{{#if page.isPageTypeOperationOutput}}
-Observer(
-    builder: (_) => JudoDateInput(
-        key: UniqueKey(),
-        col: {{ multiplyCol col }},
-        row: {{ row }},
-        disabled: {{ disabled }},
-        initialDate: target{{ className page.dataElement.target.name }}Store.{{ attributeType.name }},
-        label: '{{ label }}',
-        icon: Icon(Icons.{{ this.leadingIcon.name }}),
-        readOnly: true,
     ),
 ),
 {{/if}}

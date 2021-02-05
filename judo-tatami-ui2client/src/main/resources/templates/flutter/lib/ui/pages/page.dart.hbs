@@ -41,7 +41,11 @@ class {{ fqClass page.name }}Page extends StatefulWidget {
     static const String title = '{{ page.label }}';
 
 {{# if page.isPageTypeDashboard }}
+    {{# if page.relationType.isCollection }}
+{{> templates/flutter/lib/ui/pages/pagetypesfragments/tablepagefragment.dart.hbs }}
+    {{ else }}
 {{> templates/flutter/lib/ui/pages/pagetypesfragments/dashboardpagefragment.dart.hbs }}
+    {{/if}}
 {{/ if }}
 {{# if page.isPageTypeTable }}
 {{> templates/flutter/lib/ui/pages/pagetypesfragments/tablepagefragment.dart.hbs }}
@@ -75,6 +79,9 @@ class {{ fqClass page.name }}Page extends StatefulWidget {
         final navigation = locator<NavigationState>();
         navigation.currentTitle = {{fqClass page.name}}Page.title;
 
+        {{# if (isSingleRelationDashboardPage page)  }}
+        {{> templates/flutter/lib/ui/pages/pagetypesfragments/dashboardlayoutbuilder.dart.hbs }}
+        {{else}}
         return {{fqClass application.name}}Scaffold(
             pageTitle: navigation.currentTitle,
             body: LayoutBuilder(builder: (context, constraints) {
@@ -82,7 +89,11 @@ class {{ fqClass page.name }}Page extends StatefulWidget {
                     {{#unless pageContainer.layoutType.original}}
                     if (MediaQuery.of(context).size.width >= {{pageContainer.layoutType.minimumResolution}} && MediaQuery.of(context).size.width <= {{pageContainer.layoutType.maximumResolution}}) {
                         return get{{ fqClass page.name }}Page{{fqClass pageContainer.layoutType.name}}Body(context
-                            
+
+                            {{~# if page.isPageTypeDashboard ~}}
+                            , {{fqVariable page.name}}PageStore
+                            {{~/ if ~}}
+
                             {{~# if page.isPageTypeTable ~}}
                             {{~# unless page.dataElement.isAccess ~}}
                             , owner{{ className page.dataElement.owner.name }}Store
@@ -129,6 +140,10 @@ class {{ fqClass page.name }}Page extends StatefulWidget {
                     {{/each}}
                     return get{{ fqClass page.name }}Page{{fqClass application.defaultLayoutType.name}}Body(context
 
+                        {{~# if page.isPageTypeDashboard ~}}
+                        , {{fqVariable page.name}}PageStore
+                        {{~/ if ~}}
+
                         {{~# if page.isPageTypeTable ~}}
                         {{~# unless page.dataElement.isAccess ~}}
                         , owner{{ className page.dataElement.owner.name }}Store
@@ -172,5 +187,6 @@ class {{ fqClass page.name }}Page extends StatefulWidget {
                     );
                 }),
         );
+        {{/ if }}
     }
 }

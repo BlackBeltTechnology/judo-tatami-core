@@ -50,6 +50,8 @@ public class FlutterHelper {
         context.registerFunction("isDateType", FlutterHelper.class.getDeclaredMethod("isDateType", new Class[]{DataType.class}));
         context.registerFunction("isInputWidgetMapNeed", FlutterHelper.class.getDeclaredMethod("isInputWidgetMapNeed", new Class[]{PageDefinition.class}));
         context.registerFunction("isValidateHere", FlutterHelper.class.getDeclaredMethod("isValidateHere", new Class[]{PageDefinition.class}));
+        context.registerFunction("isSingleRelationDashboardPage", FlutterHelper.class.getDeclaredMethod("isSingleRelationDashboardPage", new Class[]{PageDefinition.class}));
+        context.registerFunction("isViewTypePage", FlutterHelper.class.getDeclaredMethod("isViewTypePage", new Class[]{PageDefinition.class}));
         context.registerFunction("getInputWidgets", FlutterHelper.class.getDeclaredMethod("getInputWidgets", new Class[]{Container.class}));
         context.registerFunction("getPagesByRelation", FlutterHelper.class.getDeclaredMethod("getPagesByRelation", new Class[]{EList.class, DataElement.class}));
         context.registerFunction("safe", FlutterHelper.class.getDeclaredMethod("safe", new Class[]{String.class, String.class}));
@@ -291,6 +293,15 @@ public class FlutterHelper {
 
     public static boolean isValidateHere(PageDefinition page){
         return !page.getIsPageTypeUpdate() && !page.getIsPageTypeView() && !page.getIsPageTypeOperationOutput();
+    }
+
+    public static boolean isSingleRelationDashboardPage(PageDefinition page){
+        if (page.getRelationType() == null) return false;
+        return page.getIsPageTypeDashboard() && !page.getRelationType().isIsCollection();
+    }
+
+    public static boolean isViewTypePage(PageDefinition page) {
+        return page.getIsPageTypeView() || page.getIsPageTypeOperationOutput() || page.getIsPageTypeDashboard();
     }
 
     public static void getInputWidgetsFromContainers(Container container, List<VisualElement> inputList) {
