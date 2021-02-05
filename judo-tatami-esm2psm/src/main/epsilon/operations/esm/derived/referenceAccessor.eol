@@ -15,23 +15,8 @@ operation ESM!RelationFeature getPSMDefaultEquivalent(): JUDOPSM!ReferenceAccess
 }
 
 @cached
-operation ESM!RelationFeature isAnyRangeExpressionSupported() : Boolean {
-    return self.rangeType == ESM!RangeType#ANY and esmUtils.isGetRangeSupported(self);
-}
-
-@cached
-operation ESM!RelationFeature isDerivedRangeExpressionSupported() : Boolean {
-    return self.rangeType == ESM!RangeType#DERIVED and esmUtils.isGetRangeSupported(self);
-}
-
-@cached
 operation ESM!RelationFeature isNotDerived() : Boolean {
     return self.memberType <> ESM!MemberType#DERIVED and not (self.memberType == ESM!MemberType#MAPPED and self.binding.memberType == ESM!MemberType#DERIVED);
-}
-
-@cached
-operation ESM!RelationFeature isContainerAndTargetMapped() : Boolean {
-    return self.eContainer.isMapped() and self.target.isMapped();
 }
 
 @cached

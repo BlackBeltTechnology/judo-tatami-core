@@ -122,7 +122,7 @@ rule CreateNavigationPropertyForTransferObjectRelationRange
         t.cardinality = s.equivalent("CreateCardinalityForTransferObjectRelationRange");
         t.name = "_" + s.name + "_range_" + esmUtils.getNamespaceElementFQName(s.eContainer).replace("::","_");
 
-        if (s.isAnyRangeExpressionSupported()) {
+        if (s.rangeType == ESM!RangeType#ANY) {
             t.getterExpression = s.equivalent("CreateGetterExpressionForTransferObjectRelationAnyRange");
         } else {
             t.getterExpression = s.equivalent("CreateGetterExpressionForTransferObjectRelationDerivedRange");
@@ -144,7 +144,7 @@ rule CreateStaticNavigationForTransferObjectRelationRange
 	  t.name = "_" + s.name + "_range_" + esmUtils.getNamespaceElementFQName(s.eContainer).replace("::","_");
 	  t.cardinality = s.equivalent("CreateCardinalityForTransferObjectRelationRange");
 
-	  if (s.isAnyRangeExpressionSupported()) {
+	  if (s.rangeType == ESM!RangeType#ANY) {
 	      t.getterExpression = s.equivalent("CreateGetterExpressionForTransferObjectRelationAnyRange");
 	  } else {
 	      t.getterExpression = s.equivalent("CreateGetterExpressionForTransferObjectRelationDerivedRange");
