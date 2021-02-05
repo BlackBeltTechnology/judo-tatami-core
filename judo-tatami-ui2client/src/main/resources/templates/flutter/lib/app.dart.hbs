@@ -24,14 +24,6 @@ import 'package:{{ modelPackage application.name }}/{{ path application.name }}/
 import 'package:{{ modelPackage application.name }}/{{ path application.name }}/injector/injector.dart';
 import 'package:{{ modelPackage application.name }}/{{ path application.name }}/oauth.dart';
 
-void main() {
-    configureDependencies();
-    ApiClient _apiClient = ApiClient(basePath: "http://localhost:8181/api/{{ baseUrl application.name }}", apiClientDelegate: Oauth.getDioDelegate());
-    locator.registerSingleton<ApiClient>(_apiClient);
-    runApp({{ fqClass application.name }}Application());
-}
-
-
 class {{ fqClass application.name }}Application extends StatelessWidget {
 
     @override
@@ -253,7 +245,7 @@ class _{{ fqClass application.name }}DrawerState extends State<{{ fqClass applic
                 Image(
                     width: 64,
                     height: 64,
-                    image: AssetImage('ninja.png')
+                    image: AssetImage('assets/ninja.png')
                 ),
 
                 Container(width: 16,),
