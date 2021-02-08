@@ -566,7 +566,8 @@ public class EsmStrucutre2PsmDerivedTest {
         OneWayRelationMember relationMember = newOneWayRelationMemberBuilder().withName("relationMember")
                 .withRelationKind(RelationKind.AGGREGATION)
                 .withMemberType(MemberType.TRANSIENT)
-                .withRangeType(RangeType.ANY)
+                .withRangeType(RangeType.DERIVED)
+                .withRangeExpression("TestModel::target")
                 .withLower(0)
                 .withUpper(-1)
                 .withTarget(target)
@@ -589,6 +590,15 @@ public class EsmStrucutre2PsmDerivedTest {
                         .build())
                 .build();
         entityWithOperation.setMappedEntity(entityWithOperation);
+        TransferObjectType mapping = newTransferObjectTypeBuilder()
+                .withName("mapping")
+                .withMappedEntity(entityWithOperation)
+                .withOperations(OperationBuilders.newOperationBuilder().withName("operationWithInput")
+                        .withBinding("operationWithInput")
+                        .withOperationType(OperationType.MAPPED)
+                        .withInput(newParameterBuilder().withLower(1).withUpper(1).withName("input").withTarget(transferObjectType).build())
+                        .build())
+                .build();
 
         ActorType actor = newActorTypeBuilder().withName("Actor").withAccesses(
                 newAccessBuilder().withName("entityTypes").withTarget(entityWithOperation).withUpper(-1).withTargetDefinedCRUD(false).withCreateable(true).build()
@@ -596,18 +606,28 @@ public class EsmStrucutre2PsmDerivedTest {
         
         final Model model = newModelBuilder()
                 .withName("TestModel")
-                .withElements(ImmutableList.of(transferObjectType, target, entityWithOperation, actor))
+                .withElements(ImmutableList.of(transferObjectType, target, entityWithOperation, actor, mapping))
                 .build();
 
         esmModel.addContent(model);
         transform();
 
         assertTrue(EsmUtils.isGetRangeSupported(relationMember));
-//        final hu.blackbelt.judo.meta.psm.data.EntityType psmEntityType = allPsm(hu.blackbelt.judo.meta.psm.data.EntityType.class)
-//                .filter(e -> e.getName().equals(transferObjectType.getName())).findAny().get();
-//
-//        assertEquals(1, psmEntityType.getRelations().size());
-//        assertTrue(psmEntityType.getNavigationProperties().isEmpty());
+        final hu.blackbelt.judo.meta.psm.service.TransferObjectType psmUnmapped = allPsm(hu.blackbelt.judo.meta.psm.service.TransferObjectType.class)
+                .filter(e -> e.getName().equals(transferObjectType.getName())).findAny().get();
+
+        assertEquals(2, psmUnmapped.getRelations().size());
+
+        final Optional<hu.blackbelt.judo.meta.psm.derived.StaticNavigation> psmStaticNavigation =
+                allPsm(hu.blackbelt.judo.meta.psm.derived.StaticNavigation.class)
+                        .filter(e -> e.getName().equals("_" + relationMember.getName() + "_range_" + EsmUtils.getNamespaceElementFQName(transferObjectType).replace("::","_"))).findAny();
+        assertTrue(psmStaticNavigation.isPresent());
+        assertTrue(psmUnmapped.getRelations().stream()
+                .anyMatch(r -> r.getName().equals("_" + relationMember.getName() + "_range_" + EsmUtils.getNamespaceElementFQName(transferObjectType).replace("::","_"))
+                        && r.getBinding().equals(psmStaticNavigation.get())));
+        assertTrue(psmUnmapped.getRelations().stream()
+                .anyMatch(r -> r.getName().equals(relationMember.getName())
+                        && r.getRange().equals(psmStaticNavigation.get())));
     }
 
     @Test
