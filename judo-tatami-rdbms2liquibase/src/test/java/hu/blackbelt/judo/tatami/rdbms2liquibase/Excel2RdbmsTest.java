@@ -3,11 +3,21 @@ package hu.blackbelt.judo.tatami.rdbms2liquibase;
 import static hu.blackbelt.epsilon.runtime.execution.ExecutionContext.executionContextBuilder;
 import static hu.blackbelt.epsilon.runtime.execution.contexts.EtlExecutionContext.etlExecutionContextBuilder;
 import static hu.blackbelt.epsilon.runtime.execution.model.emf.WrappedEmfModelContext.wrappedEmfModelContextBuilder;
+import static hu.blackbelt.judo.meta.liquibase.runtime.LiquibaseModel.buildLiquibaseModel;
+import static java.lang.String.format;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.sql.Connection;
+import java.sql.DriverManager;
 import java.util.Arrays;
+import java.util.Set;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.eclipse.emf.ecore.EObject;
@@ -18,18 +28,29 @@ import com.google.common.collect.ImmutableList;
 
 import hu.blackbelt.epsilon.runtime.execution.ExecutionContext;
 import hu.blackbelt.epsilon.runtime.execution.model.excel.ExcelModelContext;
+import hu.blackbelt.judo.meta.liquibase.runtime.LiquibaseModel;
+import hu.blackbelt.judo.meta.liquibase.runtime.LiquibaseNamespaceFixUriHandler;
 import hu.blackbelt.judo.meta.rdbms.RdbmsElement;
 import hu.blackbelt.judo.meta.rdbms.runtime.RdbmsModel;
+import liquibase.Liquibase;
+import liquibase.database.Database;
+import liquibase.database.core.HsqlDatabase;
+import liquibase.database.jvm.HsqlConnection;
+import liquibase.resource.FileSystemResourceAccessor;
+import liquibase.resource.ResourceAccessor;
 
 public class Excel2RdbmsTest {
 
+	private static final String INCREMENTAL_MODEL_NAME = "IncrementalModel";
+	private static final String ORIGINAL_MODEL_NAME = "OriginalModel";
+	private static final String TARGET_TEST_CLASSES = "target/test-classes";
 	public static final String SCRIPT_ROOT_TATAMI_TRANSFORMATION = "tatami/rdbms2liquibase/transformations/";
 
 	@Test
 	public void executeExcel2RdbmsModel() throws Exception {
 
         RdbmsModel originalModel = RdbmsModel.buildRdbmsModel()
-                .name("OriginalModel")
+                .name(ORIGINAL_MODEL_NAME)
                 .build();
         
         RdbmsModel newModel = RdbmsModel.buildRdbmsModel()
@@ -70,18 +91,18 @@ public class Excel2RdbmsTest {
 		excelToRdbmsEtlContext.commit();
 		excelToRdbmsEtlContext.close();
 		
-    	File originalRdbmsFile = new File("target/test-classes", String.format("testContents-%s-rdbms.model",  originalModel.getName()));
+    	File originalRdbmsFile = new File(TARGET_TEST_CLASSES, String.format("testContents-%s-rdbms.model",  originalModel.getName()));
 		originalModel.saveRdbmsModel(
     			RdbmsModel.SaveArguments.rdbmsSaveArgumentsBuilder().file(originalRdbmsFile)
     			);
     	
-    	File newRdbmsFile = new File("target/test-classes", String.format("testContents-%s-rdbms.model",  newModel.getName()));
+    	File newRdbmsFile = new File(TARGET_TEST_CLASSES, String.format("testContents-%s-rdbms.model",  newModel.getName()));
 		newModel.saveRdbmsModel(
     			RdbmsModel.SaveArguments.rdbmsSaveArgumentsBuilder().file(newRdbmsFile)
     			);
     	
         RdbmsModel incrementalModel = RdbmsModel.buildRdbmsModel()
-                .name("IncrementalModel")
+                .name(INCREMENTAL_MODEL_NAME)
                 .build();
 
         ExecutionContext incrementalOperationEtlContext = executionContextBuilder()
@@ -112,10 +133,55 @@ public class Excel2RdbmsTest {
 		incrementalOperationEtlContext.commit();
 		incrementalOperationEtlContext.close();
 
-    	File incrementalRdbmsFile = new File("target/test-classes", String.format("testContents-%s-rdbms.model",  incrementalModel.getName()));
+    	File incrementalRdbmsFile = new File(TARGET_TEST_CLASSES, String.format("testContents-%s-rdbms.model",  incrementalModel.getName()));
     	incrementalModel.saveRdbmsModel(
     			RdbmsModel.SaveArguments.rdbmsSaveArgumentsBuilder().file(incrementalRdbmsFile)
     			);
+
+    	// save old rdmbs model to liquibase changelog
+    	LiquibaseModel originalLiquibaseModel = buildLiquibaseModel()
+                .name(ORIGINAL_MODEL_NAME)
+                .build();
+    	
+    	Rdbms2Liquibase.executeRdbms2LiquibaseTransformation(originalModel, originalLiquibaseModel, "hsqldb");
+    	
+        ByteArrayOutputStream originalLiquibaseStream = new ByteArrayOutputStream();
+        originalLiquibaseModel.saveLiquibaseModel(LiquibaseModel.SaveArguments.liquibaseSaveArgumentsBuilder()
+                .outputStream(LiquibaseNamespaceFixUriHandler.fixUriOutputStream(originalLiquibaseStream)));
+        String originalLiquibaseName = format("testContents-%s-liquibase.xml", originalLiquibaseModel.getName());
+        originalLiquibaseStream.writeTo(new FileOutputStream(new File(TARGET_TEST_CLASSES, originalLiquibaseName)));
+
+        Connection connection = DriverManager.getConnection("jdbc:hsqldb:hsql://localhost:9001", "SA", "");
+        Database liquibaseDb = new HsqlDatabase();
+        liquibaseDb.setConnection(new HsqlConnection(connection));
+        
+        Liquibase originalLiquibase = new Liquibase(originalLiquibaseName,
+        		new FileSystemResourceAccessor(TARGET_TEST_CLASSES), liquibaseDb);
+        originalLiquibase.update("");
+        liquibaseDb.close();
+
+    	// save incremental model to liquibase changelog
+        
+    	LiquibaseModel incrementalLiquibaseModel = buildLiquibaseModel()
+                .name(INCREMENTAL_MODEL_NAME)
+                .build();
+
+    	Rdbms2Liquibase.executeRdbms2LiquibaseTransformation(incrementalModel, incrementalLiquibaseModel, "hsqldb");
+        
+        ByteArrayOutputStream incrementalLiquibaseStream = new ByteArrayOutputStream();
+        incrementalLiquibaseModel.saveLiquibaseModel(LiquibaseModel.SaveArguments.liquibaseSaveArgumentsBuilder()
+                .outputStream(LiquibaseNamespaceFixUriHandler.fixUriOutputStream(incrementalLiquibaseStream)));
+        String incrementalLiquibaseName = format("testContents-%s-liquibase.xml", incrementalLiquibaseModel.getName());
+        incrementalLiquibaseStream.writeTo(new FileOutputStream(new File(TARGET_TEST_CLASSES, incrementalLiquibaseName)));
+
+        connection = DriverManager.getConnection("jdbc:hsqldb:hsql://localhost:9001", "SA", "");
+        liquibaseDb = new HsqlDatabase();
+        liquibaseDb.setConnection(new HsqlConnection(connection));
+        
+        Liquibase incrementalLiquibase = new Liquibase(incrementalLiquibaseName,
+        		new FileSystemResourceAccessor(TARGET_TEST_CLASSES), liquibaseDb);
+        incrementalLiquibase.update("");
+        liquibaseDb.close();
 
     	
 	}
