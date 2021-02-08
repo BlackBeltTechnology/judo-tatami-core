@@ -19,27 +19,29 @@ class NavigationService {
     if(pageNavigation == null) return null;
 
     if(pageNavigation.pageType == PageType.View) {
-      if (pageNavigation.crudFunctions[Crud.Read] != null) {
-        var result = await pageNavigation.crudFunctions[Crud.Read]();
-        if (result != null) {
-          pageNavigation.targetStore = await result;
-          return pageNavigation;
+        if (target == null) {
+            if (pageNavigation.crudFunctions[Crud.Read] != null) {
+                var result = await pageNavigation.crudFunctions[Crud.Read]();
+                if (result != null) {
+                    pageNavigation.targetStore = result;
+                    return pageNavigation;
+                }
+            }
         }
-      }
-      return pageNavigation.createPage;
+        return pageNavigation.createPage;
     }
 
     if(pageNavigation.pageType == PageType.Create) {
-      if(target != null) {
-        if (pageNavigation.crudFunctions[Crud.Create] != null) {
-          var result = await pageNavigation.crudFunctions[Crud.Create](target);
-          if (result != null) {
-            navigationState.navigateTo(pageNavigation.viewPage.route);
-            return pageNavigation.viewPage;
-          }
+        if(target != null) {
+            if (pageNavigation.crudFunctions[Crud.Create] != null) {
+                var result = await pageNavigation.crudFunctions[Crud.Create](target);
+                if (result != null) {
+                    navigationState.navigateTo(pageNavigation.viewPage.route);
+                    return pageNavigation.viewPage;
+                }
+            }
         }
-      }
-      return pageNavigation.createPage;
+        return pageNavigation.createPage;
     }
 
     return null;
