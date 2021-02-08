@@ -1,6 +1,6 @@
 {{~ log 'Enumeration combo generation for' (variable application.name) '-' (fqClass page.name)'page' label level='debug' }}
 //START enumerationcombo.dart.hbs-----{{page.name}}----------------------------------------------------------------------------------------
-{{#if page.isPageTypeView}}
+{{#if (isViewTypePage page) }}
     Observer(
         builder: (_) => JudoComboBox<{{ className attributeType.dataType.name }}>(
             key: UniqueKey(),
@@ -52,23 +52,6 @@
             readOnly: {{attributeType.isReadOnly}},
         )
     ),
-{{/if}}
-{{#if page.isPageTypeOperationOutput}}
-Observer(
-    builder: (_) => JudoComboBox<{{ className attributeType.dataType.name }}>(
-        key: UniqueKey(),
-        col: {{ multiplyCol col }},
-        row: {{ row }},
-        disabled: {{ disabled }},
-        items: {{ className attributeType.dataType.name }}.values,
-        value: target{{ className page.dataElement.target.name }}Store.{{ attributeType.name }},
-        dropdownMenuShow: (value) => new DropdownMenuItem<{{ className attributeType.dataType.name }}>(
-            value: value,
-            child: new Text(value.toString().split('.').last)
-        ),
-        readOnly: true,
-    )
-),
 {{/if}}
 {{#if page.isPageTypeOperationInput}}
 Observer(

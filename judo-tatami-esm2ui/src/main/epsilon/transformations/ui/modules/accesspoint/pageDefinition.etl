@@ -17,11 +17,18 @@ rule ApplicationDashboardPage
 		pageContainer.direction = UI!Axis#VERTICAL;
 		t.containers.add(pageContainer);
 	 	
-	 	var dashboard = s.accesses.selectOne(a | a.upper == 1 and a.appliedAnnotations.exists(annotation | annotation.name == "dashboard"));
-	 	if (dashboard.isDefined() and dashboard.target.view.isDefined()) {
-	 		t.dataElement = dashboard.target.mapClassType(application);
+	 	var dashboard = s.accesses.selectOne(a | a.appliedAnnotations.exists(annotation | annotation.name == "dashboard"));
+	 	if (dashboard.isDefined() and dashboard.upper == 1 and dashboard.target.view.isDefined()) {
+	 		var clazz = s.mapClassType(application);
+	 		t.dataElement = dashboard.mapRelationType(application, clazz);
 	        pageContainer.children.add(dashboard.target.view.map(application));
 	        t.label = dashboard.target.view.getUiLabel();
+	 	} else if (dashboard.isDefined() and (dashboard.upper > 1 or dashboard.upper == -1) and dashboard.target.isTableDefined()) {
+	 		var clazz = s.mapClassType(application);
+	 		var relation = dashboard.mapRelationType(application, clazz);
+	 		t.dataElement = relation;
+	        pageContainer.children.add(dashboard.target.table.createTableFromTransferObjectTable(application, relation));
+	        t.label = dashboard.target.table.getUiLabel();
 	 	}
 	 	
         application.pages.add(t);

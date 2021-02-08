@@ -3,7 +3,32 @@
     State<StatefulWidget> createState() => _{{fqClass page.name}}PageState();
 }
 
-class _{{fqClass page.name}}PageState extends State<{{fqClass page.name}}Page> {
+class _{{ fqClass page.name }}PageState extends State<{{ fqClass page.name }}Page> {
+        final {{fqClass page.name}}PageStore {{fqVariable page.name}}PageStore = {{fqClass page.name}}PageStore();
 
-    final {{fqClass page.name}}PageStore {{fqVariable page.name}}PageStore = {{fqClass page.name}}PageStore();
+    {{# if page.dataElement }}
+        {{ fqClass page.dataElement.target.name }}Store target{{ className page.dataElement.target.name }}Store;
+
+
+        _{{ fqClass page.name }}PageState(){
+            final navigation = locator<NavigationState>();
+            final navigationRegistry = locator<NavigationRegistry>();
+            {{fqVariable page.name}}PageStore.get{{ fqClass page.relationType.name }}()
+                .then((res) {
+                    if (res != null) {
+                        target{{ className page.dataElement.name }}Store = res;
+                        {{fqVariable page.name}}PageStore.getterStatusSetFulfilled();
+                    } else {
+                        var currentPageNavigation = navigationRegistry.getPageNavigationByRoute(Routes.{{ fqVariable application.name }}DashboardPage);
+                        if (currentPageNavigation.createPage != null) {
+                            navigation.navigateTo(currentPageNavigation.createPage.route);
+                        } else {
+                            navigation.navigateTo(Routes.{{ fqVariable application.name }}BlankPage);
+                        }
+                        {{fqVariable page.name}}PageStore.getterStatusSetRejected();
+                    }
+                })
+                .catchError((error) => ErrorHandler.errorDialog(context, error));
+        }
+    {{/if}}
 //END dashboardpagefragment.dart.hbs-----{{page.name}}-------------------------------------------------------------------------------------

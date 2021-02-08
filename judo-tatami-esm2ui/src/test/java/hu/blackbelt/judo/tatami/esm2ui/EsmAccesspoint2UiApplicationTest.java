@@ -42,6 +42,7 @@ import java.util.Optional;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
+import hu.blackbelt.judo.meta.ui.data.RelationType;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
 import org.junit.jupiter.api.AfterEach;
@@ -310,6 +311,12 @@ public class EsmAccesspoint2UiApplicationTest {
 
         final Optional<Application> application = allUi(Application.class).filter(a -> a.getName().equals(EsmUtils.getNamespaceElementFQName(actor))).findAny();
         assertTrue(application.isPresent());
+        final Optional<ClassType> uiActor = application.get().getDataElements().stream()
+                .filter(d -> d instanceof  ClassType && d.getName().equals(actor.getFQName())).map(c -> (ClassType)c).findAny();
+        assertTrue(uiActor.isPresent());
+        final Optional<RelationType> uiRelation = uiActor.get().getRelations().stream()
+                .filter(r -> r.getName().equals(EXPOSED_GRAPH_SINGLE_NAME)).findAny();
+        assertTrue(uiRelation.isPresent());
         
         final Optional<ClassType> uiEntity = application.get().getDataElements().stream().filter(e -> e instanceof ClassType)
         		.map(e -> (ClassType) e).filter(c -> c.getName().equals(EsmUtils.getNamespaceElementFQName(exposedEntity))).findAny();
@@ -318,7 +325,7 @@ public class EsmAccesspoint2UiApplicationTest {
         final Optional<PageDefinition> uiDashboard = application.get().getPages().stream()
         		.filter(d -> d.getName().equals(EsmUtils.getNamespaceElementFQName(actor) + "#Dashboard") && d.getIsPageTypeDashboard()).findAny();
         assertTrue(uiDashboard.isPresent());
-        assertEquals(uiEntity.get(), uiDashboard.get().getDataElement());
+        assertEquals(uiRelation.get(), uiDashboard.get().getDataElement());
         assertTrue(uiDashboard.get().getContainers().stream().filter(c -> c.getLayoutType().isOriginal()).findFirst().isPresent());
         assertTrue(uiDashboard.get().getContainers().stream().filter(c -> c.getLayoutType().isOriginal()).findFirst().get().getChildren().stream().anyMatch(c -> c instanceof Flex && c.getName().equals(exposedEntity.getView().getName())));
 
