@@ -1,27 +1,7 @@
 operation ESM!esm::ui::OperationForm createButtonFromOperationForm(application : UI!ui::Application) : UI!ui::Button {
 	var t : UI!ui::Button = new UI!ui::Button();
 	
-	t.name = self.name;
-    t.label = self.getUiLabel();
-    t.col = self.col.asReal();
-	t.row = self.row.asReal();
-    
-	if (self.stretch == ESM!esm::ui::Stretch#NONE) {
-    	t.stretch = UI!ui::Stretch#NONE;
-    } else if (self.stretch == ESM!esm::ui::Stretch#HORIZONTAL) {
-        t.stretch = UI!ui::Stretch#HORIZONTAL;
-    } else if (self.stretch == ESM!esm::ui::Stretch#VERTICAL) {
-        t.stretch = UI!ui::Stretch#VERTICAL;
-    } else {
-        t.stretch = UI!ui::Stretch#BOTH;
-    }
-    
-    if (self.fit == ESM!esm::ui::Fit#LOOSE) {
-		t.fit = UI!ui::Fit#LOOSE;
-	} else if (self.fit == ESM!esm::ui::Fit#TIGHT) {
-		t.fit = UI!ui::Fit#TIGHT;
-	}
-	
+	t.setVisualProperties(self, application);
 	t.sourceId = self.getID();
 
 	log.debug("Create operation form: " + self.name);
@@ -29,7 +9,12 @@ operation ESM!esm::ui::OperationForm createButtonFromOperationForm(application :
 	t.dataElement = op.mapOperationType(application, self.getRoot().eContainer.mapClassType(application));
 	var callAction = new UI!ui::CallOperationAction();
 	callAction.`operation` = op.mapOperationType(application, self.getRoot().eContainer.mapClassType(application));
-
+	
+	if (self.iconName.isDefined()) {
+		callAction.icon = new UI!ui::Icon();
+		callAction.icon.name = self.iconName;
+	}
+	
 	// Deal the mapping later, to avoid endless loop
 	callAction.~originalOperationForm = self;
 	callAction.~application = application;

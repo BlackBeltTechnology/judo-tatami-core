@@ -21,10 +21,10 @@ rule CreatePageDefinitionForPreview
 		flex.stretch = UI!ui::Stretch#BOTH;
 		flex.sourceId = s.getID();
 		
-		if (s.layout == ESM!esm::ui::Layout#HORIZONTAL) {
+		if (s.getEffectiveLayout() == ESM!esm::ui::Layout#HORIZONTAL) {
 			flex.direction = UI!Axis#HORIZONTAL;
 		}
-		if (s.layout == ESM!esm::ui::Layout#VERTICAL) {
+		if (s.getEffectiveLayout() == ESM!esm::ui::Layout#VERTICAL) {
 			flex.direction = UI!Axis#VERTICAL;
 		}
 		
@@ -50,10 +50,10 @@ rule CreatePageDefinitionForPreview
 	        flex.crossAxisAlignment = UI!ui::CrossAxisAlignment#START;
 	    }
 	    
-	    if (s.layout == ESM!esm::ui::Layout#HORIZONTAL and s.components.forAll(c | c.isVerticalGrow())) {
+	    if (s.getEffectiveLayout() == ESM!esm::ui::Layout#HORIZONTAL and s.components.forAll(c | c.isVerticalGrow())) {
 	    	flex.crossAxisAlignment = UI!ui::CrossAxisAlignment#STRETCH;
 	    }
-	    if (s.layout == ESM!esm::ui::Layout#VERTICAL and s.components.forAll(c | c.isHorizontalGrow())) {
+	    if (s.getEffectiveLayout() == ESM!esm::ui::Layout#VERTICAL and s.components.forAll(c | c.isHorizontalGrow())) {
 	    	flex.crossAxisAlignment = UI!ui::CrossAxisAlignment#STRETCH;
 	    }
 	
@@ -76,7 +76,7 @@ rule CreatePageDefinitionForPreviewFromView
 
 	t.name = s.getName().anchor("Preview");
 	t.pageType = UI!ui::PageType#VIEW;
-	t.label = s.getUiLabel() + " View";
+	t.label = s.getUiLabel();
 	
 	previewPage.add(t);
 	log.debug("Created view to preview: " + s.getFQName());
@@ -89,7 +89,7 @@ rule CreatePageDefinitionForPreviewFromForm
 	
 	t.name = s.getName().anchor("Preview");
 	t.pageType = UI!ui::PageType#CREATE;
-	t.label = s.getUiLabel() + " Create/Update";
+	t.label = s.getUiLabel();
 	
 	previewPage.add(t);
 	log.debug("Created form to preview: " + s.getFQName());
@@ -102,7 +102,7 @@ rule CreatePageDefinitionForPreviewFromTable
 	
 	t.name = s.getName().anchor("Preview");
 	t.pageType = UI!ui::PageType#TABLE;
-	t.label = s.getUiLabel() + " Browse";
+	t.label = s.getUiLabel();
 
 	var relation : UI!ui::data::RelationType = application.actor.relations.selectOne(r | r.name == "previewRelation");
 	relation.target = previewElement.getRoot().eContainer().mapClassType(application);

@@ -1,5 +1,6 @@
 {{~ log 'Numeric field generation for' (variable application.name) '-' (fqClass page.name)'page'(variable page.dataElement.target.name) attributeType.name level='debug' ~}}
-{{#if page.isPageTypeView}}
+//START numericinput.dart.hbs-----{{page.dataElement.target.name}}-------------------------------------------------------------------------
+{{#if (isViewTypePage page) }}
 Observer(
     builder: (_) => JudoNumericInput(
         key: UniqueKey(),
@@ -38,3 +39,16 @@ JudoNumericInput(
     readOnly: {{attributeType.isReadOnly}},
 ),
 {{/if}}
+{{#if page.isPageTypeOperationInput}}
+JudoNumericInput(
+    key: inputWidgetKeyMap['{{ name }}'],
+    col: {{ multiplyCol col }},
+    row: {{ row }},
+    disabled: {{ disabled }},
+    icon: Icon(Icons.{{ this.leadingIcon.name }}),
+    label: '{{ label }}',
+    onChanged: (value) => target{{ className page.dataElement.target.name }}Store.set{{ className attributeType.name }}({{ dartType attributeType.dataType }}.parse(value)),
+    readOnly: {{attributeType.isReadOnly}},
+),
+{{/if}}
+//END numericinput.dart.hbs-----{{page.dataElement.target.name}}---------------------------------------------------------------------------

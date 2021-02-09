@@ -1,3 +1,4 @@
+//START createpagefragment.dart.hbs-----{{page.name}}--------------------------------------------------------------------------------------
     {{#unless page.dataElement.isAccess}}
     final {{ fqClass page.dataElement.owner.name }}Store owner{{ className page.dataElement.owner.name }}Store;
     {{/unless}}
@@ -51,3 +52,4 @@ class _{{ fqClass page.name }}PageState extends State<{{ fqClass page.name }}Pag
             ;
         {{/ if }}
     {{/unless}}
+//END createpagefragment.dart.hbs-----{{page.name}}----------------------------------------------------------------------------------------

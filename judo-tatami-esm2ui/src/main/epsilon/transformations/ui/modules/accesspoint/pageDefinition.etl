@@ -16,12 +16,21 @@ rule ApplicationDashboardPage
 		pageContainer.name = "default";
 		pageContainer.direction = UI!Axis#VERTICAL;
 		t.containers.add(pageContainer);
-	 
-		if (s.principal.isDefined() and s.principal.view.isDefined()) {
-			t.dataElement = s.principal.mapClassType(application);
-	        pageContainer.children.add(s.principal.view.map(application));
-	        t.label = s.principal.view.getUiLabel();
-        }
+	 	
+	 	var dashboard = s.accesses.selectOne(a | a.appliedAnnotations.exists(annotation | annotation.name == "dashboard"));
+	 	if (dashboard.isDefined() and dashboard.upper == 1 and dashboard.target.view.isDefined()) {
+	 		var clazz = s.mapClassType(application);
+	 		t.dataElement = dashboard.mapRelationType(application, clazz);
+	        pageContainer.children.add(dashboard.target.view.map(application));
+	        t.label = dashboard.target.view.getUiLabel();
+	 	} else if (dashboard.isDefined() and (dashboard.upper > 1 or dashboard.upper == -1) and dashboard.target.isTableDefined()) {
+	 		var clazz = s.mapClassType(application);
+	 		var relation = dashboard.mapRelationType(application, clazz);
+	 		t.dataElement = relation;
+	        pageContainer.children.add(dashboard.target.table.createTableFromTransferObjectTable(application, relation));
+	        t.label = dashboard.target.table.getUiLabel();
+	 	}
+	 	
         application.pages.add(t);
         application.dashboard = t;
 }

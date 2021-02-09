@@ -24,22 +24,15 @@ import "modules/service/operation.etl";
 import "modules/actor/actorType.etl";
 
 post {
-    var enumsWithoutOrdinal = JUDOPSM!EnumerationMember.all.select(m | m.ordinal == -1).collect(m | m.eContainer).flatten().asSet();
-    for (e in enumsWithoutOrdinal) {
-        log.debug("Set/overwrite ordinals of enumeration: " + e.name);
-        var index = 0;
-        for (m in e.members) {
-            m.ordinal = index;
-            index = index + 1;
-        }
-    }
     
     var ecoreUtil = new Native("org.eclipse.emf.ecore.util.EcoreUtil");
     
     for (esmTransferObject in ESM!TransferObjectType.all) {
     	var psmTransferObject : JUDOPSM!TransferObjectType = esmTransferObject.getPSMTransferObjectTypeEquivalent();
     	var psmOptionalTransferObject : JUDOPSM!TransferObjectType = esmTransferObject.getPSMOptionalEquivalent();
-    	
+    	var psmQueryCustomizerTransferObject : JUDOPSM!TransferObjectType = esmTransferObject.equivalent("CreateQueryCustomizerType");
+    	var psmQueryOrderingEnumTransferObject : JUDOPSM!EnumerationType = esmTransferObject.equivalent("CreateQueryOrderingEnumeration");
+
     	for (esmSubClass in esmUtils.getAllDescendantsOfTransferObjectType(esmTransferObject)) {
     		var psmSubClass : JUDOPSM!TransferObjectType = esmSubClass.getPSMTransferObjectTypeEquivalent();
     		var psmOptionalSubClass : JUDOPSM!TransferObjectType = esmSubClass.getPSMOptionalEquivalent();
@@ -156,6 +149,26 @@ post {
 	    			log.debug("Added operation: [" + o.name + "] to subclass [" + psmSubClass.name + "] from [" + psmTransferObject.name + "]");
 	    		}
     		}
+
+            var psmQueryCustomizerSubClass : JUDOPSM!TransferObjectType = esmSubClass.equivalent("CreateQueryCustomizerType");
+            var psmQueryOrderingEnumSubClass : JUDOPSM!EnumerationType = esmSubClass.equivalent("CreateQueryOrderingEnumeration");
+
+    		if (psmQueryCustomizerSubClass.isDefined() and psmQueryOrderingEnumSubClass.isDefined() and
+    		    psmQueryCustomizerTransferObject.isDefined() and psmQueryOrderingEnumTransferObject.isDefined()) {
+                for (member in psmQueryOrderingEnumTransferObject.members) {
+                    if (not psmQueryOrderingEnumSubClass.members.exists(m | m.name == member.name)) {
+                        var clone = ecoreUtil.copy(member);
+                        psmQueryOrderingEnumSubClass.members.add(clone);
+                    }
+                }
+
+                for (relation in psmQueryCustomizerTransferObject.relations) {
+                    if (not psmQueryCustomizerSubClass.relations.exists(r | r.name == relation.name)) {
+                        var clone = ecoreUtil.copy(relation);
+                        psmQueryCustomizerSubClass.relations.add(clone);
+                    }
+                }
+    		}
     	}
 	}
 	
@@ -179,4 +192,14 @@ post {
             }
 		}
 	}
+
+    var enumsWithoutOrdinal = JUDOPSM!EnumerationMember.all.select(m | m.ordinal == -1).collect(m | m.eContainer).flatten().asSet();
+    for (e in enumsWithoutOrdinal) {
+        log.debug("Set/overwrite ordinals of enumeration: " + e.name);
+        var index = 0;
+        for (m in e.members) {
+            m.ordinal = index;
+            index = index + 1;
+        }
+    }
 }

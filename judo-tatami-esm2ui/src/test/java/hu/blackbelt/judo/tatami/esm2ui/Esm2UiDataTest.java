@@ -1,9 +1,71 @@
 package hu.blackbelt.judo.tatami.esm2ui;
 
+import static hu.blackbelt.judo.meta.esm.accesspoint.util.builder.AccesspointBuilders.newAccessBuilder;
+import static hu.blackbelt.judo.meta.esm.accesspoint.util.builder.AccesspointBuilders.newActorTypeBuilder;
+import static hu.blackbelt.judo.meta.esm.accesspoint.util.builder.AccesspointBuilders.useActorType;
+import static hu.blackbelt.judo.meta.esm.namespace.util.builder.NamespaceBuilders.newModelBuilder;
+import static hu.blackbelt.judo.meta.esm.operation.util.builder.OperationBuilders.newOperationBuilder;
+import static hu.blackbelt.judo.meta.esm.operation.util.builder.OperationBuilders.newParameterBuilder;
+import static hu.blackbelt.judo.meta.esm.runtime.EsmEpsilonValidator.calculateEsmValidationScriptURI;
+import static hu.blackbelt.judo.meta.esm.runtime.EsmEpsilonValidator.validateEsm;
+import static hu.blackbelt.judo.meta.esm.runtime.EsmModel.buildEsmModel;
+import static hu.blackbelt.judo.meta.esm.runtime.EsmModel.SaveArguments.esmSaveArgumentsBuilder;
+import static hu.blackbelt.judo.meta.esm.structure.util.builder.StructureBuilders.newDataMemberBuilder;
+import static hu.blackbelt.judo.meta.esm.structure.util.builder.StructureBuilders.newEntityTypeBuilder;
+import static hu.blackbelt.judo.meta.esm.structure.util.builder.StructureBuilders.newGeneralizationBuilder;
+import static hu.blackbelt.judo.meta.esm.structure.util.builder.StructureBuilders.newOneWayRelationMemberBuilder;
+import static hu.blackbelt.judo.meta.esm.structure.util.builder.StructureBuilders.newTransferObjectTypeBuilder;
+import static hu.blackbelt.judo.meta.esm.structure.util.builder.StructureBuilders.useEntityType;
+import static hu.blackbelt.judo.meta.esm.structure.util.builder.StructureBuilders.useTransferObjectType;
+import static hu.blackbelt.judo.meta.esm.type.util.builder.TypeBuilders.newBooleanTypeBuilder;
+import static hu.blackbelt.judo.meta.esm.type.util.builder.TypeBuilders.newCustomTypeBuilder;
+import static hu.blackbelt.judo.meta.esm.type.util.builder.TypeBuilders.newDateTypeBuilder;
+import static hu.blackbelt.judo.meta.esm.type.util.builder.TypeBuilders.newEnumerationMemberBuilder;
+import static hu.blackbelt.judo.meta.esm.type.util.builder.TypeBuilders.newEnumerationTypeBuilder;
+import static hu.blackbelt.judo.meta.esm.type.util.builder.TypeBuilders.newNumericTypeBuilder;
+import static hu.blackbelt.judo.meta.esm.type.util.builder.TypeBuilders.newPasswordTypeBuilder;
+import static hu.blackbelt.judo.meta.esm.type.util.builder.TypeBuilders.newStringTypeBuilder;
+import static hu.blackbelt.judo.meta.esm.type.util.builder.TypeBuilders.newTimestampTypeBuilder;
+import static hu.blackbelt.judo.meta.esm.type.util.builder.TypeBuilders.newXMLTypeBuilder;
+import static hu.blackbelt.judo.meta.esm.ui.util.builder.UiBuilders.newDataColumnBuilder;
+import static hu.blackbelt.judo.meta.esm.ui.util.builder.UiBuilders.newDataFieldBuilder;
+import static hu.blackbelt.judo.meta.esm.ui.util.builder.UiBuilders.newGroupBuilder;
+import static hu.blackbelt.judo.meta.esm.ui.util.builder.UiBuilders.newTransferObjectFormBuilder;
+import static hu.blackbelt.judo.meta.esm.ui.util.builder.UiBuilders.newTransferObjectTableBuilder;
+import static hu.blackbelt.judo.meta.esm.ui.util.builder.UiBuilders.newTransferObjectViewBuilder;
+import static hu.blackbelt.judo.meta.ui.runtime.UiEpsilonValidator.calculateUiValidationScriptURI;
+import static hu.blackbelt.judo.meta.ui.runtime.UiEpsilonValidator.validateUi;
+import static hu.blackbelt.judo.meta.ui.runtime.UiModel.buildUiModel;
+import static hu.blackbelt.judo.meta.ui.runtime.UiModel.SaveArguments.uiSaveArgumentsBuilder;
+import static hu.blackbelt.judo.tatami.esm2ui.Esm2Ui.calculateEsm2UiTransformationScriptURI;
+import static hu.blackbelt.judo.tatami.esm2ui.Esm2Ui.executeEsm2UiTransformation;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.io.File;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
+
+import org.eclipse.emf.common.util.URI;
+import org.eclipse.emf.ecore.EObject;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import com.google.common.collect.ImmutableList;
+
 import hu.blackbelt.epsilon.runtime.execution.api.Log;
 import hu.blackbelt.epsilon.runtime.execution.impl.Slf4jLog;
 import hu.blackbelt.judo.meta.esm.accesspoint.Access;
 import hu.blackbelt.judo.meta.esm.accesspoint.ActorType;
+import hu.blackbelt.judo.meta.esm.measure.DurationType;
 import hu.blackbelt.judo.meta.esm.namespace.Model;
 import hu.blackbelt.judo.meta.esm.operation.Operation;
 import hu.blackbelt.judo.meta.esm.runtime.EsmModel;
@@ -14,61 +76,23 @@ import hu.blackbelt.judo.meta.esm.structure.MemberType;
 import hu.blackbelt.judo.meta.esm.structure.OneWayRelationMember;
 import hu.blackbelt.judo.meta.esm.structure.RelationKind;
 import hu.blackbelt.judo.meta.esm.structure.TransferObjectType;
+import hu.blackbelt.judo.meta.esm.type.BooleanType;
+import hu.blackbelt.judo.meta.esm.type.CustomType;
+import hu.blackbelt.judo.meta.esm.type.DateType;
+import hu.blackbelt.judo.meta.esm.type.EnumerationType;
 import hu.blackbelt.judo.meta.esm.type.NumericType;
+import hu.blackbelt.judo.meta.esm.type.PasswordType;
 import hu.blackbelt.judo.meta.esm.type.StringType;
+import hu.blackbelt.judo.meta.esm.type.TimestampType;
+import hu.blackbelt.judo.meta.esm.type.XMLType;
 import hu.blackbelt.judo.meta.ui.Application;
 import hu.blackbelt.judo.meta.ui.data.ClassType;
+import hu.blackbelt.judo.meta.ui.data.DataType;
 import hu.blackbelt.judo.meta.ui.data.OperationType;
 import hu.blackbelt.judo.meta.ui.data.RelationBehaviourType;
 import hu.blackbelt.judo.meta.ui.data.RelationType;
 import hu.blackbelt.judo.meta.ui.runtime.UiModel;
 import lombok.extern.slf4j.Slf4j;
-import org.eclipse.emf.common.util.URI;
-import org.eclipse.emf.ecore.EObject;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
-import java.io.File;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.stream.Stream;
-import java.util.stream.StreamSupport;
-
-import static hu.blackbelt.judo.meta.esm.accesspoint.util.builder.AccesspointBuilders.newActorTypeBuilder;
-import static hu.blackbelt.judo.meta.esm.accesspoint.util.builder.AccesspointBuilders.newAccessBuilder;
-import static hu.blackbelt.judo.meta.esm.accesspoint.util.builder.AccesspointBuilders.useActorType;
-import static hu.blackbelt.judo.meta.esm.namespace.util.builder.NamespaceBuilders.newModelBuilder;
-import static hu.blackbelt.judo.meta.esm.operation.util.builder.OperationBuilders.*;
-import static hu.blackbelt.judo.meta.esm.runtime.EsmEpsilonValidator.calculateEsmValidationScriptURI;
-import static hu.blackbelt.judo.meta.esm.runtime.EsmEpsilonValidator.validateEsm;
-import static hu.blackbelt.judo.meta.esm.runtime.EsmModel.buildEsmModel;
-import static hu.blackbelt.judo.meta.esm.structure.util.builder.StructureBuilders.*;
-import static hu.blackbelt.judo.meta.esm.type.util.builder.TypeBuilders.newStringTypeBuilder;
-import static hu.blackbelt.judo.meta.esm.type.util.builder.TypeBuilders.newNumericTypeBuilder;
-
-import static hu.blackbelt.judo.meta.esm.ui.util.builder.UiBuilders.newTransferObjectTableBuilder;
-import static hu.blackbelt.judo.meta.esm.ui.util.builder.UiBuilders.newTransferObjectFormBuilder;
-import static hu.blackbelt.judo.meta.esm.ui.util.builder.UiBuilders.newTransferObjectViewBuilder;
-import static hu.blackbelt.judo.meta.esm.ui.util.builder.UiBuilders.newDataColumnBuilder;
-import static hu.blackbelt.judo.meta.esm.ui.util.builder.UiBuilders.newGroupBuilder;
-import static hu.blackbelt.judo.meta.esm.ui.util.builder.UiBuilders.newDataFieldBuilder;
-
-import static hu.blackbelt.judo.meta.esm.runtime.EsmModel.SaveArguments.esmSaveArgumentsBuilder;
-
-import static hu.blackbelt.judo.meta.ui.runtime.UiEpsilonValidator.calculateUiValidationScriptURI;
-import static hu.blackbelt.judo.meta.ui.runtime.UiEpsilonValidator.validateUi;
-import static hu.blackbelt.judo.meta.ui.runtime.UiModel.SaveArguments.uiSaveArgumentsBuilder;
-import static hu.blackbelt.judo.meta.ui.runtime.UiModel.buildUiModel;
-import static hu.blackbelt.judo.tatami.esm2ui.Esm2Ui.calculateEsm2UiTransformationScriptURI;
-import static hu.blackbelt.judo.tatami.esm2ui.Esm2Ui.executeEsm2UiTransformation;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @Slf4j
 public class Esm2UiDataTest {
@@ -333,10 +357,27 @@ public class Esm2UiDataTest {
         assertTrue(uiRelation3.get().getTarget().equals(uiT4.get()));
         assertTrue(uiRelation3.get().getMemberType().equals(hu.blackbelt.judo.meta.ui.data.MemberType.DERIVED));
         assertTrue(uiRelation3.get().getRelationKind().equals(hu.blackbelt.judo.meta.ui.data.RelationKind.AGGREGATION));
+
+        Optional<RelationType> uiRelation1inherited = uiT3.get().getRelations().stream().filter(r -> r.getName().equals(relation1.getName())).findAny();
+        assertTrue(uiRelation1inherited.isPresent());
+        assertTrue(uiRelation1inherited.get().isIsCollection());
+        assertTrue(uiRelation1inherited.get().getTarget().equals(uiT4.get()));
+        assertTrue(uiRelation1inherited.get().getMemberType().equals(hu.blackbelt.judo.meta.ui.data.MemberType.TRANSIENT));
+        assertTrue(uiRelation1inherited.get().getRelationKind().equals(hu.blackbelt.judo.meta.ui.data.RelationKind.AGGREGATION));
         
-        assertTrue(uiT3.get().getRelations().stream().anyMatch(r -> r.getName().equals(uiRelation1.get().getName())));
-        assertTrue(uiT3.get().getRelations().stream().anyMatch(r -> r.getName().equals(uiRelation2.get().getName())));
-        assertTrue(uiT3.get().getRelations().stream().anyMatch(r -> r.getName().equals(uiRelation3.get().getName())));
+        Optional<RelationType> uiRelation2inherited = uiT3.get().getRelations().stream().filter(r -> r.getName().equals(relation3.getName())).findAny();
+        assertTrue(uiRelation2inherited.isPresent());
+        assertTrue(uiRelation2inherited.get().isIsCollection());
+        assertTrue(uiRelation2inherited.get().getTarget().equals(uiT4.get()));
+        assertTrue(uiRelation2inherited.get().getMemberType().equals(hu.blackbelt.judo.meta.ui.data.MemberType.MAPPED));
+        assertTrue(uiRelation2inherited.get().getRelationKind().equals(hu.blackbelt.judo.meta.ui.data.RelationKind.ASSOCIATION));
+        
+        Optional<RelationType> uiRelation3inherited = uiT3.get().getRelations().stream().filter(r -> r.getName().equals(relation4.getName())).findAny();
+        assertTrue(uiRelation3inherited.isPresent());
+        assertFalse(uiRelation3inherited.get().isIsCollection());
+        assertTrue(uiRelation3inherited.get().getTarget().equals(uiT4.get()));
+        assertTrue(uiRelation3inherited.get().getMemberType().equals(hu.blackbelt.judo.meta.ui.data.MemberType.DERIVED));
+        assertTrue(uiRelation3inherited.get().getRelationKind().equals(hu.blackbelt.judo.meta.ui.data.RelationKind.AGGREGATION));
     }
     
     @Test
@@ -835,8 +876,7 @@ public class Esm2UiDataTest {
                 .withDeleteable(false)
                 .withAttributes(stored1, derived1)
                 .build();
-        useEntityType(e1).withMappedEntity(e1)
-        	.withAttributes(stored1, derived1).build();
+        useEntityType(e1).withMappedEntity(e1).build();
         final EntityType e2 = newEntityTypeBuilder()
                 .withName(ENTITY_TYPE_NAME_2)
                 .withCreateable(false)
@@ -853,9 +893,9 @@ public class Esm2UiDataTest {
                 .withUpdateable(false)
                 .withDeleteable(false)
                 .withGeneralizations(newGeneralizationBuilder().withTarget(e2).build())
+            	.withAttributes(stored2, derived2)
                 .build();
-        useEntityType(e3).withMappedEntity(e3)
-        	.withAttributes(stored2, derived2).build();
+        useEntityType(e3).withMappedEntity(e3).build();
         
         DataMember stored3 = newDataMemberBuilder().withName("stored").withDataType(str).withMemberType(MemberType.STORED).build();
         DataMember derived3 = newDataMemberBuilder().withName("derived").withDataType(number).withGetterExpression("1+1").withMemberType(MemberType.DERIVED).build();
@@ -864,9 +904,9 @@ public class Esm2UiDataTest {
                 .withCreateable(false)
                 .withUpdateable(false)
                 .withDeleteable(false)
+            	.withAttributes(stored3, derived3)
                 .build();
-        useEntityType(e4).withMappedEntity(e4)
-        	.withAttributes(stored3, derived3).build();
+        useEntityType(e4).withMappedEntity(e4).build();
         
         final EntityType e5 = newEntityTypeBuilder()
                 .withName(ENTITY_TYPE_NAME_5)
@@ -1015,6 +1055,147 @@ public class Esm2UiDataTest {
         final Optional<ClassType> uiE6 = application.get().getDataElements().stream().filter(e -> e instanceof ClassType)
         		.map(e -> (ClassType) e).filter(c -> c.getName().equals(EsmUtils.getNamespaceElementFQName(e6))).findAny();
         assertFalse(uiE6.isPresent());
+    }
+    
+    @Test
+    void testCreateTypes() throws Exception {
+        testName = "MapDataType";
+
+        final String MODEL_NAME = "Model";
+        final String ENTITY_TYPE_NAME_1 = "E1";
+        final String ACTOR_TYPE_NAME_1 = "A1";
+        final String ACTOR_TYPE_NAME_2 = "A2";
+        //TODO JNG-2228
+        XMLType xmlType = newXMLTypeBuilder().withName("xml").withXmlNamespace("namespace").withXmlElement("element").build();
+        //TODO JNG-2229
+        CustomType custom = newCustomTypeBuilder().withName("custom").build();
+        
+        PasswordType password = newPasswordTypeBuilder().withName("password").build();
+        StringType string = newStringTypeBuilder().withName("string")
+        		.withMaxLength(256)
+        		.withRegExp(".*")
+        		.build();
+        NumericType numeric = newNumericTypeBuilder().withName("numeric")
+        		.withPrecision(2)
+        		.withScale(1)
+        		.build();
+        BooleanType booleanType = newBooleanTypeBuilder().withName("boolean").build();
+        DateType dateType = newDateTypeBuilder().withName("date").build();
+        TimestampType timestamp = newTimestampTypeBuilder().withName("timestamp").withBaseUnit(DurationType.HOUR)
+        		.build();
+        EnumerationType enumeration = newEnumerationTypeBuilder().withName("enum")
+        		.withMembers(ImmutableList.of(
+        				newEnumerationMemberBuilder().withName("m1").withOrdinal(1).build(),
+        				newEnumerationMemberBuilder().withName("m2").withOrdinal(2).build()
+        				))
+        		.build();
+//TODO JNG-2228
+//        DataMember xmlAttribute = newDataMemberBuilder().withName("xml").withDataType(xmlType)
+//        		.withMemberType(MemberType.STORED).build();
+//TODO JNG-2229
+//        DataMember customAttribute = newDataMemberBuilder().withName("custom").withDataType(custom)
+//        		.withMemberType(MemberType.STORED).build();
+        DataMember passwordAttribute = newDataMemberBuilder().withName("password").withDataType(password)
+        		.withMemberType(MemberType.STORED).build();
+        DataMember stringAttribute = newDataMemberBuilder().withName("string").withDataType(string)
+        		.withMemberType(MemberType.STORED).build();
+        DataMember numericAttribute = newDataMemberBuilder().withName("numeric").withDataType(numeric)
+        		.withMemberType(MemberType.STORED).build();
+        DataMember booleanAttribute = newDataMemberBuilder().withName("boolean").withDataType(booleanType)
+        		.withMemberType(MemberType.STORED).build();
+        DataMember dateAttribute = newDataMemberBuilder().withName("date").withDataType(dateType)
+        		.withMemberType(MemberType.STORED).build();
+        DataMember timestampAttribute = newDataMemberBuilder().withName("timestamp").withDataType(timestamp)
+        		.withMemberType(MemberType.STORED).build();
+        DataMember enumerationAttribute = newDataMemberBuilder().withName("enumeration").withDataType(enumeration)
+        		.withMemberType(MemberType.STORED).build();
+        
+        ActorType actor = newActorTypeBuilder()
+                .withName(ACTOR_TYPE_NAME_1)
+                .withRealm("sandbox")
+                .build();
+        ActorType actor2 = newActorTypeBuilder()
+                .withName(ACTOR_TYPE_NAME_2)
+                .withRealm("sandbox")
+                .build();
+        
+        final EntityType e1 = newEntityTypeBuilder()
+                .withName(ENTITY_TYPE_NAME_1)
+                .build();
+        useEntityType(e1).withMappedEntity(e1).build();
+        useEntityType(e1).withAttributes(passwordAttribute, stringAttribute, numericAttribute, booleanAttribute, dateAttribute, timestampAttribute, enumerationAttribute).build();
+        
+        Access access1 = newAccessBuilder().withName("e1")
+        		.withTarget(e1)
+        		.withLower(0)
+        		.withUpper(-1)
+        		.withCreateable(true).withUpdateable(true).withDeleteable(true)
+        		.withTargetDefinedCRUD(false)
+        		.build();
+        useActorType(actor).withAccesses(access1).build();
+        Access access2 = newAccessBuilder().withName("e1")
+        		.withTarget(e1)
+        		.withLower(0)
+        		.withUpper(-1)
+        		.withCreateable(true).withUpdateable(true).withDeleteable(true)
+        		.withTargetDefinedCRUD(false)
+        		.build();
+        useActorType(actor2).withAccesses(access2).build();
+        
+        SimpleOrderModel.setFormForTransferObjectType(e1);
+        
+        final Model model = newModelBuilder().withName(MODEL_NAME)
+                .withElements(actor, actor2, e1, xmlType, password, string, numeric, dateType, custom, booleanType, enumeration, timestamp).build();
+
+        esmModel.addContent(model);
+
+        transform();
+        
+        final Optional<Application> application = allUi(Application.class).filter(a -> a.getName().equals(actor.getFQName()))
+                .findAny();
+        assertTrue(application.isPresent());
+        
+        Optional<DataType> uiPassword = application.get().getDataTypes().stream().filter(e -> e instanceof hu.blackbelt.judo.meta.ui.data.PasswordType).findAny();
+        assertTrue(uiPassword.isPresent());
+        Optional<DataType> uiString = application.get().getDataTypes().stream().filter(e -> e instanceof hu.blackbelt.judo.meta.ui.data.StringType).findAny();
+        assertTrue(uiString.isPresent());
+        assertEquals(string.getMaxLength(), ((hu.blackbelt.judo.meta.ui.data.StringType)uiString.get()).getMaxLength());
+        assertEquals(string.getRegExp(), ((hu.blackbelt.judo.meta.ui.data.StringType)uiString.get()).getRegExp());
+        Optional<DataType> uiNumeric = application.get().getDataTypes().stream().filter(e -> e instanceof hu.blackbelt.judo.meta.ui.data.NumericType).findAny();
+        assertTrue(uiNumeric.isPresent());
+        assertEquals(numeric.getPrecision(), ((hu.blackbelt.judo.meta.ui.data.NumericType) uiNumeric.get()).getPrecision());
+        assertEquals(numeric.getScale(), ((hu.blackbelt.judo.meta.ui.data.NumericType) uiNumeric.get()).getScale());
+        Optional<DataType> uiBbooleanType = application.get().getDataTypes().stream().filter(e -> e instanceof hu.blackbelt.judo.meta.ui.data.BooleanType).findAny();
+        assertTrue(uiBbooleanType.isPresent());
+        Optional<DataType> uiDateType = application.get().getDataTypes().stream().filter(e -> e instanceof hu.blackbelt.judo.meta.ui.data.DateType).findAny();
+        assertTrue(uiDateType.isPresent());
+        Optional<DataType> uiTimestamp = application.get().getDataTypes().stream().filter(e -> e instanceof hu.blackbelt.judo.meta.ui.data.TimestampType).findAny();
+        assertTrue(uiTimestamp.isPresent());
+        Optional<DataType> uiEnumeration = application.get().getDataTypes().stream().filter(e -> e instanceof hu.blackbelt.judo.meta.ui.data.EnumerationType).findAny();
+        assertTrue(uiEnumeration.isPresent());
+        
+        final Optional<Application> application2 = allUi(Application.class).filter(a -> a.getName().equals(actor2.getFQName()))
+                .findAny();
+        assertTrue(application2.isPresent());
+        
+        Optional<DataType> uiPassword2 = application2.get().getDataTypes().stream().filter(e -> e instanceof hu.blackbelt.judo.meta.ui.data.PasswordType).findAny();
+        assertTrue(uiPassword2.isPresent());
+        Optional<DataType> uiString2 = application2.get().getDataTypes().stream().filter(e -> e instanceof hu.blackbelt.judo.meta.ui.data.StringType).findAny();
+        assertTrue(uiString2.isPresent());
+        assertEquals(string.getMaxLength(), ((hu.blackbelt.judo.meta.ui.data.StringType)uiString2.get()).getMaxLength());
+        assertEquals(string.getRegExp(), ((hu.blackbelt.judo.meta.ui.data.StringType)uiString2.get()).getRegExp());
+        Optional<DataType> uiNumeric2 = application2.get().getDataTypes().stream().filter(e -> e instanceof hu.blackbelt.judo.meta.ui.data.NumericType).findAny();
+        assertTrue(uiNumeric2.isPresent());
+        assertEquals(numeric.getPrecision(), ((hu.blackbelt.judo.meta.ui.data.NumericType) uiNumeric2.get()).getPrecision());
+        assertEquals(numeric.getScale(), ((hu.blackbelt.judo.meta.ui.data.NumericType) uiNumeric2.get()).getScale());
+        Optional<DataType> uiBbooleanType2 = application2.get().getDataTypes().stream().filter(e -> e instanceof hu.blackbelt.judo.meta.ui.data.BooleanType).findAny();
+        assertTrue(uiBbooleanType2.isPresent());
+        Optional<DataType> uiDateType2 = application2.get().getDataTypes().stream().filter(e -> e instanceof hu.blackbelt.judo.meta.ui.data.DateType).findAny();
+        assertTrue(uiDateType2.isPresent());
+        Optional<DataType> uiTimestamp2 = application2.get().getDataTypes().stream().filter(e -> e instanceof hu.blackbelt.judo.meta.ui.data.TimestampType).findAny();
+        assertTrue(uiTimestamp2.isPresent());
+        Optional<DataType> uiEnumeration2 = application2.get().getDataTypes().stream().filter(e -> e instanceof hu.blackbelt.judo.meta.ui.data.EnumerationType).findAny();
+        assertTrue(uiEnumeration2.isPresent());
     }
     
     static <T> Stream<T> asStream(Iterator<T> sourceIterator, boolean parallel) {

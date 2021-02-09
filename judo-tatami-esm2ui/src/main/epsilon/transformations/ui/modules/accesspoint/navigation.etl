@@ -6,61 +6,45 @@ rule NavigationController
         guard: s.kind = ESM!esm::accesspoint::ActorKind#HUMAN 
 
         log.debug("NavigationController: " + s.name);
-
         t.name = s.fqName().anchor("NavigationController");
 }
 
 @abstract
-rule AbstractNavigationItem
-    transform s: ESM!esm::ui::MenuItem
+rule AccessMenuNavigationItem
+    transform s: ESM!esm::ui::MenuItemAccess
     to t : UI!ui::NavigationItem {
 		guard: not s.hidden
-        t.name = s.eContainer.fqName().anchor("NavigationItem");
+
+        log.debug("Create Access Navigation: " + s.access.fqName() );
+
+        t.name = s.access.fqName().anchor("NavigationItem");
         t.label = s.getUiLabel();
         var icon = new UI!ui::Icon();
         icon.name = s.iconName;
         if (icon.name.isUndefined()) {
-        	icon.name = "texture";
+            icon.name = "texture";
         }
         t.icon = icon;
-}
-
-rule PrincipalMenuNavigationItem
-    transform s: ESM!esm::ui::MenuItemPrincipal
-    to t : UI!ui::NavigationItem
-    extends AbstractNavigationItem {
-		guard: not s.hidden and s.eContainer.principal.isDefined()
         
-        log.debug("Create Dashboard Navigation: " + s.transferObjectType.name);
-        log.debug("Create Dashboard Navigation");
-        t.target = s.eContainer.equivalent("ApplicationDashboardPage");
         s.eContainer.equivalent("NavigationController").items.add(t);
 }
 
-rule AccessMenuNavigationItem
+rule AccessMenuNavigationItemTable
     transform s: ESM!esm::ui::MenuItemAccess
     to t : UI!ui::NavigationItem
-    extends AbstractNavigationItem {
-		guard: not s.hidden and s.access.target.isTableDefined()
-    
-        log.debug("Create Access Navigation: " + s.access.fqName() );
-        var application = s.access.eContainer.equivalent("Application");
+    	extends AccessMenuNavigationItem {
+		guard: s.access.target.isTableDefined() and (s.access.upper == -1 or s.access.upper > 1)
 
-        t.name = s.access.fqName().anchor("NavigationItem");
+		var application = s.access.eContainer.equivalent("Application");
         t.target = s.access.mapTablePage(application, s.access.target);
-        s.eContainer.equivalent("NavigationController").items.add(t);
 }
 
-rule RelationNavigationItem
-    transform s: ESM!esm::ui::MenuItemRelation
+rule AccessMenuNavigationItemView
+    transform s: ESM!esm::ui::MenuItemAccess
     to t : UI!ui::NavigationItem
-    extends AbstractNavigationItem {
-		guard: not s.hidden and s.relationFeature.target.isTableDefined()
-    
-        log.debug("Create Relation Navigation: " + s.relationFeature.fqName() );
-        var application = s.eContainer.equivalent("Application");
-
-        t.name = s.relationFeature.fqName().anchor("NavigationItem");
-        t.target = s.relationFeature.mapTablePage(application, s.relationFeature.target);
-        s.eContainer.equivalent("NavigationController").items.add(t);
+    	extends AccessMenuNavigationItem {
+		guard: s.access.target.view.isDefined() and s.access.upper == 1
+	
+		var application = s.access.eContainer.equivalent("Application");
+        t.target = s.access.mapViewPage(application, s.access.target);
 }

@@ -84,6 +84,20 @@ rule CreateMeasuredAnnotationOfIntegerType
         }
     }
 
+rule CreateRegexpAnnotationOfStringType
+    transform s : JUDOPSM!StringType
+    to t : ASM!EAnnotation {
+        guard: s.regExp.isDefined() and s.regExp.trim().length() > 0
+        t.source = asmUtils.getAnnotationUri("pattern");
+
+        var regExp = new ASM!EStringToStringMapEntry;
+        regExp.key = "value";
+        regExp.value = s.regExp;
+        t.details.add(regExp);
+
+        s.equivalent("CreateStringType").eAnnotations.add(t);
+    }
+
 @greedy
 rule CreateBooleanType
     transform s : JUDOPSM!BooleanType

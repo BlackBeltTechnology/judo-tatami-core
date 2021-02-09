@@ -1,0 +1,139 @@
+{{log 'Navigation registry generation for' (variable application.name) level='info'}}
+//////////////////////////////////////////////////////////////////////////////
+// G E N E R A T E D    C L A S S
+// ------------------------------
+// Factory expression: {{{ cleanup template.factoryExpression }}}
+// Path expression: {{{ cleanup template.pathExpression }}}
+// Overwrite: {{{ cleanup template.overwriteExpression }}}
+// Template name: {{ template.templateName }}
+// Application: {{ application.name }}
+
+import 'package:injectable/injectable.dart';
+import 'page_navigation.dart';
+import '../pages/package.dart';
+import 'navigation_store.dart';
+import '../routes/router.gr.dart';
+
+@lazySingleton
+class NavigationRegistry {
+{{# each layout.pageContainers as |container| }}
+    {{# with container.owner as |page| }}
+    {{# with page.relationType as |relation| }}
+        {{# if page.dataElement.isAccess }}
+            {{# unless page.dataElement.isCollection }}
+    PageNavigation {{ fqVariable page.name }}Page = PageNavigation(
+        route: Routes.{{ fqVariable page.name }}Page,
+        isAccess: true,
+        pageType:
+            {{~# if page.isPageTypeDashboard ~}}
+                PageType.View
+            {{~/ if ~}}
+            {{~# if page.isPageTypeView ~}}
+                PageType.View
+            {{~/ if ~}}
+            {{~# if page.isPageTypeCreate ~}}
+                PageType.Create
+            {{~/ if ~}}
+            {{~# if page.isPageTypeUpdate ~}}
+                PageType.Edit
+            {{~/ if ~}}
+            {{~# if page.isPageTypeTable ~}}
+                PageType.Table
+            {{~/ if ~}},
+        page: {{ fqClass page.name }}Page,
+        crudFunctions: {
+            Crud.Read: {{# if relation.isRelationBehaviourTypeListable }}NavigationStore().get{{ fqClass relation.name }}{{ else }}null{{/ if }},
+            Crud.Create: {{# if relation.isRelationBehaviourTypeCreatable }}NavigationStore().create{{ fqClass relation.name }}{{ else }}null{{/ if }},
+            Crud.Delete: {{# if relation.target.isClassBehaviourTypeDeletable }}NavigationStore().delete{{ fqClass relation.target.name }}{{ else }}null{{/ if }},
+            Crud.Update: {{# if relation.target.isClassBehaviourTypeUpdatable }}NavigationStore().update{{ fqClass relation.target.name }}{{ else }}null{{/ if }},
+        }
+    );
+            {{/unless}}
+        {{/if}}
+    {{/ with }}
+    {{/ with }}
+{{/ each }}
+
+  NavigationRegistry() {
+    init();
+  }
+
+  void init() {
+    {{# each layout.pageContainers as |container| }}
+        {{# with container.owner as |page| }}
+        {{# with page.relationType as |relation| }}
+                {{# if page.dataElement.isAccess }}
+                    {{# unless page.dataElement.isCollection }}
+    {{ fqVariable page.name }}Page.setPages(
+        {{# each (getPagesByRelation application.pages page.dataElement) as |relationPage| }}
+                {{# if relationPage.isPageTypeView }}
+                    {{# if page.isPageTypeDashboard }}
+        viewPage: {{ fqVariable page.name }}Page,
+                    {{ else }}
+        viewPage: {{ fqVariable relationPage.name }}Page,
+                    {{/if}}
+                {{/ if }}
+                {{# if relationPage.isPageTypeCreate }}
+        createPage: {{ fqVariable relationPage.name }}Page,
+                {{/ if }}
+                {{# if relationPage.isPageTypeUpdate }}
+        editPage: {{ fqVariable relationPage.name }}Page,
+                {{/ if }}
+                {{# if relationPage.isPageTypeTable }}
+        tablePage: {{ fqVariable relationPage.name }}Page,
+                {{/ if }}
+        {{/ each }}
+    );
+                    {{/unless}}
+                {{/if}}
+        {{/ with }}
+        {{/ with }}
+    {{/ each }}
+  }
+
+  PageNavigation getPageNavigationByRoute (String route) {
+    switch(route) {
+    {{# each layout.pageContainers as |container| }}
+        {{# with container.owner as |page| }}
+            {{# with page.relationType as |relation| }}
+                {{# if page.dataElement.isAccess }}
+                    {{# unless page.dataElement.isCollection }}
+        case Routes.{{ fqVariable page.name }}Page:
+            return {{ fqVariable page.name }}Page;
+                    {{/unless}}
+                {{/if}}
+            {{/ with }}
+        {{/ with }}
+    {{/ each }}
+        default:
+            return null;
+    }
+  }
+
+  static Object pageNavigationArgumentObject({PageNavigation pageNavigation, Object target, Object owner}) {
+    switch(pageNavigation.route) {
+    {{# each layout.pageContainers as |container| }}
+        {{# with container.owner as |page| }}
+            {{# with page.relationType as |relation| }}
+                {{# if page.dataElement.isAccess }}
+                    {{# unless page.dataElement.isCollection }}
+                        {{# if page.isPageTypeView }}
+        case Routes.{{ fqVariable page.name }}Page:
+            return {{ fqClass page.name }}PageArguments(target{{ className page.dataElement.target.name }}Store: target);
+                        {{/ if }}
+                        {{# if page.isPageTypeView }}
+        case Routes.{{ fqVariable page.name }}Page:
+            return {{ fqClass page.name }}PageArguments(target{{ className page.dataElement.target.name }}Store: target);
+                        {{/ if }}
+                    {{/unless}}
+                {{/if}}
+            {{/ with }}
+        {{/ with }}
+    {{/ each }}
+        default:
+            return null;
+    }
+
+  }
+
+}

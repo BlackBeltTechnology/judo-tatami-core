@@ -1,30 +1,12 @@
-operation ESM!esm::ui::Divider createDividerFromDivider() : UI!ui::Divider {
+operation ESM!esm::ui::Divider createDividerFromDivider(application : UI!ui::Application) : UI!ui::Divider {
 	var ret : UI!ui::Divider = new UI!ui::Divider();
-	ret.name = self.name;
-	ret.label = self.getUiLabel();
-	ret.col = self.col.asReal();
-	ret.row = self.row.asReal();
+	
+	ret.setVisualProperties(self, application);
 	ret.sourceId = self.getID();
-
-	if (self.stretch == ESM!esm::ui::Stretch#NONE) {
-    	ret.stretch = UI!ui::Stretch#NONE;
-    } else if (self.stretch == ESM!esm::ui::Stretch#HORIZONTAL) {
-        ret.stretch = UI!ui::Stretch#HORIZONTAL;
-    } else if (self.stretch == ESM!esm::ui::Stretch#VERTICAL) {
-        ret.stretch = UI!ui::Stretch#VERTICAL;
-    } else {
-        ret.stretch = UI!ui::Stretch#BOTH;
-    }
-    
-    if (self.fit == ESM!esm::ui::Fit#LOOSE) {
-		ret.fit = UI!ui::Fit#LOOSE;
-	} else if (self.fit == ESM!esm::ui::Fit#TIGHT) {
-		ret.fit = UI!ui::Fit#TIGHT;
-	}
     
 	return ret;
 }
 
 operation ESM!esm::ui::Divider map(application : UI!ui::Application) : UI!ui::Divider {
-	return self.createDividerFromDivider();
+	return self.createDividerFromDivider(application);
 }

@@ -1,4 +1,5 @@
 {{~ log 'Link generation for' (variable application.name) '-' (fqClass page.name) (variable dataElement.name) level='debug' ~}}
+//START aggregationlink.dart.hbs-----{{dataElement.name}}----------------------------------------------------------------------------------
 {{# with dataElement as |relation|}}
 Observer(builder: (_) {
     return JudoLink(
@@ -84,7 +85,7 @@ Observer(builder: (_) {
                     arguments: {{ fqClass action.target.name }}PageArguments(target{{ className relation.target.name }}Store: cloned, validatable: {{ fqVariable page.name }}PageStore.validatable));
                     if (res != null) {
                         target{{ className relation.owner.name }}Store.{{variable relation.name}}.updateWith(cloned);
-                        var updated = await {{ fqVariable page.name }}PageStore.update{{ className relation.target.name }}(target{{ className relation.owner.name }}Store.{{variable relation.name}})
+                        var updated = await {{ fqVariable page.name }}PageStore.update{{ className relation.name }}{{ className relation.target.name }}(target{{ className relation.owner.name }}Store.{{variable relation.name}})
                             .catchError((error) => ErrorHandler.errorDialog(context, error));
                         {{# if (isValidateHere page) }}
                             {{# unless page.dataElement.isRelationKindAggregation }}
@@ -157,7 +158,7 @@ Observer(builder: (_) {
                     color: false ? JudoComponentsSettings.disabledColor : null,
                 ),
                 onPressed:{{# unless relation.isAccess}} target{{ className relation.owner.name }}Store.internal__updatable ?{{/ unless}} () async {
-                    {{fqVariable page.name}}PageStore.delete{{ className relation.target.name }}(target{{ className relation.owner.name }}Store.{{variable relation.name}}{{# unless relation.isAccess}}, target{{ className relation.owner.name }}Store{{/unless}})
+                    {{fqVariable page.name}}PageStore.delete{{ className relation.name }}{{ className relation.target.name }}(target{{ className relation.owner.name }}Store.{{variable relation.name}}{{# unless relation.isAccess}}, target{{ className relation.owner.name }}Store{{/unless}})
                         .catchError((error) => ErrorHandler.errorDialog(context, error));
                 }{{# unless relation.isAccess}} : null{{/ unless}}
             ) : null,
@@ -183,3 +184,4 @@ Observer(builder: (_) {
     );
 }),
 {{/ with}}
+//END aggregationlink.dart.hbs-----{{dataElement.name}}------------------------------------------------------------------------------------

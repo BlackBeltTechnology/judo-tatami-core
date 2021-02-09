@@ -1,0 +1,277 @@
+{{log 'Main generation for' (variable application.name) level='info'}}
+//////////////////////////////////////////////////////////////////////////////
+// G E N E R A T E D    C L A S S
+// ------------------------------
+// Factory expression: {{{ cleanup template.factoryExpression }}}
+// Path expression: {{{ cleanup template.pathExpression }}}
+// Overwrite: {{{ cleanup template.overwriteExpression }}}
+// Template name: {{ template.templateName }}
+// Application: {{ application.name }}
+
+import 'package:auto_route/auto_route.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:openapi_dart_common/openapi.dart';
+import 'oauth.dart';
+import 'dart:async';
+
+import 'package:{{ modelPackage application.name }}/{{ path application.name }}/app_theme.dart';
+import 'package:{{ modelPackage application.name }}/{{ path application.name }}/error/error_handler.dart';
+import 'package:{{ modelPackage application.name }}/{{ path application.name }}/ui/routes/router.gr.dart' as router;
+import 'package:{{ modelPackage application.name }}/{{ path application.name }}/ui/drawer_items.dart';
+import 'package:{{ modelPackage application.name }}/{{ path application.name }}/ui/navigation/navigation_state.dart';
+import 'package:{{ modelPackage application.name }}/{{ path application.name }}/utilities/package.dart';
+import 'package:{{ modelPackage application.name }}/{{ path application.name }}/injector/injector.dart';
+import 'package:{{ modelPackage application.name }}/{{ path application.name }}/oauth.dart';
+
+class {{ fqClass application.name }}Application extends StatelessWidget {
+
+    @override
+    Widget build(BuildContext context) {
+        final navigation = locator<NavigationState>();
+        scheduleMicrotask(() => ErrorHandler.navigateToBuiltInPage()); // execute after main build methods are executed
+        return MaterialApp(
+            title: '{{ modelName application.name }}',
+            theme: AppTheme.of(context),
+            home: {{ fqClass application.name }}ApplicationPage()
+        );
+    }
+}
+
+class {{ fqClass application.name }}ApplicationPage extends StatefulWidget {
+    final String title;
+
+    {{ fqClass application.name }}ApplicationPage({Key key, this.title}) : super(key: key);
+
+    @override
+    {{ fqClass application.name }}ApplicationPageState createState() => {{ fqClass application.name }}ApplicationPageState();
+}
+
+class {{ fqClass application.name }}ApplicationPageState extends State<{{ fqClass application.name }}ApplicationPage> {
+
+    @override
+    Widget build(BuildContext context) {
+        final navigation = locator<NavigationState>();
+
+            final menu = Container(
+                child: SafeArea(
+                    child: {{ fqClass application.name }}Drawer(),
+                    right: false,
+                ),
+            );
+
+        final screen = Row(
+            children: <Widget>[
+                if (!navigation.isMenuCollapsed(context)) menu,
+                Expanded(
+                    child: ExtendedNavigator(
+                        key: navigation.navigatorKey,
+                        router: router.Router()
+                    ),
+                ),
+            ],
+        );
+
+        return Container(color: AppTheme.of(context).primaryColor,
+            child: screen,
+        );
+    }
+}
+
+class {{ fqClass application.name }}Drawer extends StatefulWidget {
+    @override
+    _{{ fqClass application.name }}DrawerState createState() => new _{{ fqClass application.name }}DrawerState();
+}
+
+class _{{ fqClass application.name }}DrawerState extends State<{{ fqClass application.name }}Drawer> {
+
+    @override
+    void initState() {
+        super.initState();
+    }
+
+    @override
+    Widget build(BuildContext context) {
+        NavigationState navigationState = locator<NavigationState>();
+        ThemeData theme = Theme.of(context);
+
+        String _selected = navigationState.currentRoute; //widget.navigationState.currentRoute;
+        return Drawer(
+            child: Container(
+                color: theme.cardColor,
+                child: Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 10),
+                    child: Row(
+                        children: [
+                            Expanded(
+                                child: ListView(
+                                    padding: EdgeInsets.zero,
+                                    children: [
+                                        Column(
+                                            children: [
+                                                Container(
+                                                    alignment: Alignment.centerLeft,
+                                                    child:
+                                                        Padding(
+                                                            padding: EdgeInsets.symmetric(vertical: 24, horizontal: 16),
+                                                            child:
+                                                                Column(
+                                                                    children: [
+                                                                        appNameAndSlogan(context),
+                                                                        Container(height: 32,),
+                                                                        Oauth.isAuthenticationRequired() ? user(context) : Container(),
+                                                                        const Divider(
+                                                                            height: 16,
+                                                                            thickness: 1,
+                                                                            indent: 10,
+                                                                            endIndent: 10,
+                                                                        ),
+                                                                    ],
+                                                                ),
+                                                        ),
+                                                ),
+
+                                                Row(
+                                                    children: [
+                                                    ],
+                                                )
+                                            ]
+                                        ),
+
+                                        Observer(
+                                            builder: (_) =>
+                                                Theme(
+                                                    child: !Oauth.isAuthenticationRequired() || Oauth.authInfo.loggedIn ? Column(
+                                                        children: [
+                                                            ...{{ fqClass application.name }}NavigationItems.navigationItems
+                                                                .map((e) => ListTile(
+                                                                leading: e.leading,
+                                                                title: e.title,
+                                                                onTap: () {
+                                                                    if (Info.serverDown) {
+                                                                        ErrorHandler.navigateToBuiltInPage();
+                                                                    } else {
+                                                                        if (Oauth.isAuthenticationRequired() && !Oauth.isLoggedIn()) {
+                                                                            Oauth.loginAuthorizeAndExchangeCode();
+                                                                        } else {
+                                                                            navigationState.navigateTo(e.route);
+                                                                            setState(() => {});
+                                                                        }
+                                                                    }
+                                                                },
+                                                                selected: e.route == _selected
+                                                            ),
+                                                            ).toList(),
+                                                        ],)
+                                                        :
+                                                        Container(),
+                                                    data: Theme.of(context).copyWith(primaryColor: theme.colorScheme.secondary)
+                                                )
+                                        ),
+                                        const Divider(
+                                            height: 16,
+                                            thickness: 1,
+                                            indent: 10,
+                                            endIndent: 10,
+                                        ),
+                                        Theme(
+                                            child: Column(
+                                                children: [
+                                                    ListTile(
+                                                        leading: Icon(Icons.settings),
+                                                        title: Text("Settings"),
+                                                        onTap: () {
+                                                            navigationState.open(router.Routes.{{ fqVariable application.name }}SettingsPage);
+                                                        },
+                                                    ),
+                                                    Oauth.isAuthenticationRequired() ? Observer(
+                                                        builder: (_) =>
+                                                            Oauth.authInfo.loggedIn ? ListTile(
+                                                                leading: Icon(Icons.logout),
+                                                                title: Text("Logout"),
+                                                                onTap: () {
+                                                                    Oauth.logout();
+                                                                },
+                                                            ) : ListTile(
+                                                                leading: Icon(Icons.login),
+                                                                title: Text("Login"),
+                                                                onTap: () {
+                                                                    Oauth.loginAuthorizeAndExchangeCode();
+                                                                },
+                                                            )
+                                                    ) : Container(),
+                                                ]
+                                            ),
+                                            data: Theme.of(context).copyWith(primaryColor: theme.colorScheme.secondary)
+                                        )
+                                    ],
+                            ),
+                        ),
+                        const VerticalDivider(
+                            width: 1,
+                        )
+                        ]),
+                ),
+            )
+        );
+    }
+
+
+    Widget appNameAndSlogan(BuildContext context) {
+        return Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+                Container(
+                    alignment: Alignment.topLeft,
+                    child:
+                    Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                            Text("{{ modelPackage application.name }}", style: Theme.of(context).textTheme.headline6.copyWith(fontWeight: FontWeight.w900),),
+                            Text("{{ path application.name }}", style: Theme.of(context).textTheme.subtitle1.copyWith(fontWeight: FontWeight.w100)),
+                        ],
+                    )
+                ),
+
+                Expanded(child: Text("")),
+            ]);
+    }
+
+    Widget user(BuildContext context) {
+        return Row(
+            children: [
+                Image(
+                    width: 64,
+                    height: 64,
+                    image: AssetImage('assets/ninja.png')
+                ),
+
+                Container(width: 16,),
+
+                Column(children: [
+                    Observer(
+                        builder: (_) => Text(Oauth.authInfo.userName == null ? "" : Oauth.authInfo.userName,
+                            style: Theme.of(context).textTheme.subtitle1.copyWith(fontWeight: FontWeight.w900),
+                        ),
+                    ),
+
+                    Observer(
+                        builder: (_) => Text(Oauth.authInfo.email == null ? "" : Oauth.authInfo.email,
+                            style: Theme.of(context).textTheme.subtitle1.copyWith(fontWeight: FontWeight.w100),
+                        ),
+                    )
+                ],)
+
+            ],
+        );
+
+
+        Observer(
+            builder: (_) => Text(Oauth.authInfo.userName == null ? " - " : Oauth.authInfo.userName,
+                style: Theme.of(context).textTheme.subtitle1.copyWith(fontWeight: FontWeight.w100),
+            ),
+        );
+    }
+}

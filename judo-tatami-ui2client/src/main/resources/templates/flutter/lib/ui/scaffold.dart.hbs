@@ -10,9 +10,10 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_breadcrumb/flutter_breadcrumb.dart';
+import 'package:judo_flutter_components/judo_flutter_components.dart';
 import 'package:{{ modelPackage application.name }}/{{ path application.name }}/injector/injector.dart';
-import 'package:{{ modelPackage application.name }}/{{ path application.name }}/main.dart';
-import 'package:{{ modelPackage application.name }}/{{ path application.name }}/ui/navigation_state.dart';
+import 'package:{{ modelPackage application.name }}/{{ path application.name }}/app.dart';
+import 'package:{{ modelPackage application.name }}/{{ path application.name }}/ui/navigation/navigation_state.dart';
 
 /// A responsive scaffold for our application.
 /// Displays the navigation drawer alongside the [Scaffold] if the screen/window size is large enough
@@ -33,26 +34,94 @@ class {{ fqClass application.name }}Scaffold extends StatelessWidget {
         return SafeArea(
             child: Scaffold(
                 drawer: drawer,
-                appBar: AppBar(
-                    automaticallyImplyLeading: drawer != null,
-                    title:
-                    Column(
-                        children: [
-                        Text(pageTitle),
-                        navigation.stack.length > 0 ?
-                            BreadCrumb(
-                                items:
-                                    navigation.breadcumbItems,
-                                divider: Icon(Icons.chevron_right, color: Colors.white54, size: 16,),
-                                overflow: ScrollableOverflow(
-                                    keepLastDivider: false,
-                                    direction: Axis.horizontal,
+                appBar: PreferredSize(
+                    preferredSize: Size.fromHeight(105),
+                    child:
+                        Column(
+                            children: [
+                                Padding(
+                                    padding: EdgeInsets.fromLTRB(115, 16, 0, 10),
+                                    child:
+                                    AppBar(
+                                        automaticallyImplyLeading: drawer != null,
+                                        title:
+                                        Theme(
+                                            child:
+                                            Container(child:
+                                            PreferredSize(
+                                                preferredSize: Size.fromHeight(105),
+                                                child:
+                                                Column(
+                                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                    children: [
+                                                        Padding(
+                                                            padding: EdgeInsets.symmetric(vertical: 1),
+                                                            child:
+                                                            // navigation.stack.length > 0 ?
+                                                            BreadCrumb(
+                                                                items:
+                                                                navigation.breadcumbItems,
+                                                                divider: Icon(Icons.chevron_right, size: 16, color: Color(0xffdcdcdc),),
+                                                                overflow: ScrollableOverflow(
+                                                                    keepLastDivider: false,
+                                                                    direction: Axis.horizontal,
+                                                                )
+                                                            )
+                                                            // : Container(),
+                                                        ),
+                                                        Text(pageTitle, style: Theme.of(context).textTheme.headline4,),
+                                                        /*
+                                                            Row(
+                                                                children: [
+                                                                    Expanded(
+                                                                        child: new Container(
+                                                                            margin: const EdgeInsets.only(left: 116.0, right: 116.0),
+                                                                            child: Divider(
+                                                                                color: Colors.black,
+                                                                                height: 1,
+                                                                            )),
+                                                                    )
+                                                                ]
+                                                            )
+                     */
+                                                    ]
+                                                )
+                                            ),
+                                            ),
+                                            data: JudoComponentCustomizer.get().getBreadcumbThemeCustomizer(Theme.of(context)),
+                                        ),
+                                    ),
+                                ),
+
+                                const Divider(
+                                    color: Color(0xffdcdcdc),
+                                    height: 16,
+                                    thickness: 1,
+                                    indent: 0,
+                                    endIndent: 0,
                                 )
-                            ) : Container(),
-                        ]
-                    )
+                            ],
+                        )
+
                 ),
-                body: body,
+                body:  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 116),
+                        child: body,
+//                    child: Column(
+//                        children: [
+//                            Expanded(
+//                                child: new Container(
+//                                margin: const EdgeInsets.only(left: 116.0, right: 116.0),
+//                                child: Divider(
+//                                    color: Colors.black,
+//                                    height: 1,
+//                                )),
+//                            ),
+//                            body
+//                        ],
+//                    )
+                ),
                 floatingActionButton: floatingActionButton,
             ),
         );

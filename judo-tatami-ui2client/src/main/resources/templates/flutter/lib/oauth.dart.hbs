@@ -1,3 +1,13 @@
+{{log 'Oauth generation for' (variable application.name) level='info'}}
+//////////////////////////////////////////////////////////////////////////////
+// G E N E R A T E D    C L A S S
+// ------------------------------
+// Factory expression: {{{ cleanup template.factoryExpression }}}
+// Path expression: {{{ cleanup template.pathExpression }}}
+// Overwrite: {{{ cleanup template.overwriteExpression }}}
+// Template name: {{ template.templateName }}
+// Application: {{ application.name }}
+
 // ignore: avoid_web_libraries_in_flutter
 import 'dart:convert';
 import 'dart:html' as html;
@@ -7,12 +17,15 @@ import 'package:dio/dio.dart';
 import 'package:{{ modelPackage application.name }}/{{ path application.name }}/error/error_handler.dart';
 import 'package:flutter_appauth_platform_interface/flutter_appauth_platform_interface.dart';
 import 'package:flutter_appauth_web/flutter_appauth_web.dart';
+import 'package:mobx/mobx.dart';
 import 'package:openapi_dart_common/openapi.dart';
 import 'injector/injector.dart';
 import 'dart:async';
 import 'package:http/http.dart' as http;
 
 import 'package:{{ modelPackage application.name }}/{{ path application.name }}/rest/lib/api.dart';
+
+part 'oauth.g.dart';
 
 class Oauth {
   static const AUTH_CODE_VERIFIER_KEY = "auth_code_verifier";
@@ -32,8 +45,15 @@ class Oauth {
   //static const REALM = "JUDO";
   //static const LOGOUT_URL = "http://localhost:8080/auth/realms/JUDO/protocol/openid-connect/logout?redirect_uri=http%3A%2F%2Flocalhost%3A8888%2F";
 
-  static var callbackUrl = html.window.location.protocol  + "//" + html.window.location.host;
   static {{ modelName application.name }}{{ packageName application.name }}MetadataSecurityFor{{ className application.name }} securitySettings = {{ modelName application.name }}{{ packageName application.name }}MetadataSecurityFor{{ className application.name }}();
+  static var authInfo = AuthInfoStore();
+
+  static String calculateRedirectUri() {
+    var callbackUrl = html.window.location.href; //protocol  + "//" + html.window.location.host;
+    var uri = Uri.parse(callbackUrl);
+    var strippedUri = Uri(scheme: uri.scheme, userInfo: uri.userInfo, host: uri.host, port: uri.port, path: uri.path);
+    return strippedUri.toString();
+  }
 
   static loadClientMetaData() async {
     try {
@@ -97,7 +117,7 @@ class Oauth {
       var auth = AppAuthWebPlugin();
       var request = AuthorizationTokenRequest(
           securitySettings.clientId,
-          callbackUrl,
+          calculateRedirectUri(),
           issuer: securitySettings.issuer,
           scopes: [securitySettings.defaultScopes]);
       await auth.authorizeAndExchangeCode(request);
@@ -108,7 +128,7 @@ class Oauth {
         // print("authResponse: ${authResponse.authorizationCode}");
         var tokenRequest = TokenRequest(
             securitySettings.clientId,
-            callbackUrl,
+            calculateRedirectUri(),
             scopes: [securitySettings.defaultScopes],
             grantType: grantType,
             authorizationCode: html.window.sessionStorage[AUTH_CODE_KEY],
@@ -118,6 +138,7 @@ class Oauth {
 
         var token = await AppAuthWebPlugin.requestToken(tokenRequest).catchError((onError) {
             if (onError is ArgumentError && onError.message.toString().contains('token_failed')) {
+                authInfo.setAuthenticated(false);
                 logout();
                 loginAuthorizeAndExchangeCode();
             } else {
@@ -129,7 +150,9 @@ class Oauth {
             html.window.sessionStorage[AUTH_ACCESS_TOKEN_EXPIRE] = token.accessTokenExpirationDateTime.toString();
             html.window.sessionStorage[AUTH_REFRESH_TOKEN_KEY] = token.refreshToken;
 
-            // print('Access token: ${token.accessToken}');
+            udpateAuthInfo(token.accessToken);
+
+              // print('Access token: ${token.accessToken}');
             // print('Refresh token: ${token.refreshToken}');
             // print(token.accessTokenExpirationDateTime);
 
@@ -144,7 +167,22 @@ class Oauth {
     }
   }
 
+  static udpateAuthInfo(String token) {
+    if (token != null) {
+      authInfo.setAuthenticated(true);
+      var parsed = parseJwt(token);
+      print("Access Token: " + parsed.toString());
+      authInfo.setUserName(parsed['preferred_username']);
+      authInfo.setEmail(parsed['email']);
+    } else {
+      authInfo.setAuthenticated(false);
+      authInfo.setUserName(null);
+      authInfo.setEmail(null);
+    }
+  }
+
   static logout() {
+    authInfo.setAuthenticated(false);
     html.window.sessionStorage.remove(AUTH_CODE_VERIFIER_KEY);
     html.window.sessionStorage.remove(AUTH_CODE_KEY);
     html.window.sessionStorage.remove(AUTH_ACCESS_TOKEN_KEY);
@@ -153,7 +191,7 @@ class Oauth {
     html.window.sessionStorage.remove(AUTH_DESTINATION_URL);
     locator<ApiClient>().setAuthentication(securitySettings.name, null);
     // var logoutUri = LOGOUT_URL + "?redirect_uri=${Uri.encodeQueryComponent(CALLBACK_URL)}";
-    html.window.location.assign(securitySettings.logoutEndpoint + "?redirect_uri=${Uri.encodeQueryComponent(callbackUrl)}");
+    html.window.location.assign(securitySettings.logoutEndpoint + "?redirect_uri=${Uri.encodeQueryComponent(calculateRedirectUri())}");
     securitySettings = {{ modelName application.name }}{{ packageName application.name }}MetadataSecurityFor{{ className application.name }}();
   }
 
@@ -195,4 +233,82 @@ class NoopAuth implements Authentication {
     List<QueryParam> queryParams, Map<String, dynamic> headerParams) {
         headerParams["Authorization"] = null;
     }
+}
+
+
+class AuthInfoStore extends _AuthInfoStore
+    with _$AuthInfoStore {
+  AuthInfoStore() : super();
+}
+
+abstract class _AuthInfoStore with Store {
+
+
+  @observable
+  bool authenticated ;
+
+  @observable
+  String userName;
+
+  @observable
+  String email;
+
+  @computed
+  bool get loggedIn {
+    if (authenticated != null && authenticated) {
+      return true;
+    }
+    return false;
+  }
+
+  @action
+  void setAuthenticated(bool authenticated) {
+    this.authenticated = authenticated;
+  }
+
+  @action
+  void setUserName(String userName) {
+    this.userName = userName;
+  }
+
+  @action
+  void setEmail(String email) {
+    this.email = email;
+  }
+
+}
+
+
+Map<String, dynamic> parseJwt(String token) {
+  final parts = token.split('.');
+  if (parts.length != 3) {
+    throw Exception('invalid token');
+  }
+
+  final payload = _decodeBase64(parts[1]);
+  final payloadMap = json.decode(payload);
+  if (payloadMap is! Map<String, dynamic>) {
+    print('invalid payload');
+  }
+
+  return payloadMap;
+}
+
+String _decodeBase64(String str) {
+  String output = str.replaceAll('-', '+').replaceAll('_', '/');
+
+  switch (output.length % 4) {
+    case 0:
+      break;
+    case 2:
+      output += '==';
+      break;
+    case 3:
+      output += '=';
+      break;
+    default:
+      print('Illegal base64url string!"');
+  }
+
+  return utf8.decode(base64Url.decode(output));
 }

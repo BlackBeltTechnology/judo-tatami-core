@@ -144,3 +144,8 @@ operation ESM!esm::structure::Class getAllPossibleRelationBehaviours() : Set {
 	
 	return behaviours;
 }
+
+operation ESM!esm::structure::TransferObjectType isTableDefined() : Boolean {
+	return self.table.isDefined() and self.table.columns.size() > 0;
+}
+

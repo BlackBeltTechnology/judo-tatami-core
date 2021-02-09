@@ -1,4 +1,5 @@
 {{log 'Pagestore generation for' (variable application.name) '-' (fqClass page.name) level='debug'}}
+//START tablepagestore.dart.hbs-----{{page.name}}------------------------------------------------------------------------------------------
 class {{ fqClass page.name }}PageStore extends _{{ fqClass page.name }}PageStore with _${{ fqClass page.name }}PageStore {}
 
 abstract class _{{ fqClass page.name }}PageStore with Store {
@@ -8,13 +9,49 @@ abstract class _{{ fqClass page.name }}PageStore with Store {
     @observable
     String errorMessage;
 
-    {{# if page.dataElement.isAccess}}
     {{# if relation.isCollection }}
+    {{# if page.dataElement.isAccess}}
     @observable
     List<{{ fqClass relation.target.name }}Store> {{ fqVariable relation.name }}StoreList = ObservableList<{{ fqClass relation.target.name }}Store>();
+    {{/ if }}
 
+    @observable
+    int {{ fqVariable relation.name }}SortColumnIndex;
+
+    @observable
+    String {{ fqVariable relation.name }}SortColumnName;
+
+    @observable
+    bool {{ fqVariable relation.name }}SortAsc;
+
+    @observable
+    Comparator {{ fqVariable relation.name }}SortCompare;
+
+    @action
+    void {{ fqVariable relation.name }}SetSort({{# unless page.dataElement.isAccess}}{{ fqClass relation.owner.name }}Store owner{{ className relation.owner.name }}Store, {{/unless}}BuildContext context, String sortColumnName, int sortColumnIndex, bool asc, Comparator sortCompare) {
+
+        if ({{ fqVariable relation.name }}SortColumnIndex != sortColumnIndex) {
+          {{ fqVariable relation.name }}SortAsc = true;
+        } else {
+          {{ fqVariable relation.name }}SortAsc = !{{ fqVariable relation.name }}SortAsc;
+        }
+
+        {{ fqVariable relation.name }}SortColumnIndex = sortColumnIndex;
+        {{ fqVariable relation.name }}SortColumnName = sortColumnName;
+        {{ fqVariable relation.name }}SortCompare = sortCompare;
+        {{#if relation.isOrderable }}
+        get{{ fqClass relation.name }}({{# unless page.dataElement.isAccess}}owner{{ className relation.owner.name }}Store{{/unless}}).catchError((error) => ErrorHandler.errorDialog(context, error));
+        {{ else }}
+        {{ fqVariable relation.name }}StoreList.sort(sortCompare);
+        {{/if}}
+    }
+    {{ else }}
+    {{# if page.dataElement.isAccess}}
+    @observable
+    {{ fqClass relation.target.name }}Store {{ fqVariable relation.name }}Store;
     {{/ if }}
     {{/ if }}
+
     @observable
     ObservableFuture {{ fqVariable relation.name }}StoreFuture;
 
@@ -68,21 +105,46 @@ abstract class _{{ fqClass page.name }}PageStore with Store {
         try {
             errorMessage = null;
             {{# if page.dataElement.isAccess}}
-            {{ fqVariable relation.name }}StoreFuture = ObservableFuture(_{{ fqVariable application.actor.name }}Repository.{{ fqVariable relation.owner.name }}{{ fqClass relation.name }}List());
+                {{# if relation.isCollection }}
+            {{ fqVariable relation.name }}StoreFuture = ObservableFuture(_{{ fqVariable application.actor.name }}Repository.{{ fqVariable relation.owner.name }}{{ fqClass relation.name }}List(
+                sortColumn: {{ fqVariable relation.name }}SortColumnName,
+                sortAscending: {{ fqVariable relation.name }}SortAsc
+            ));
             {{ fqVariable relation.name }}StoreList.clear();
             {{ fqVariable relation.name }}StoreList.addAll(await {{ fqVariable relation.name }}StoreFuture);
+
+            {{# unless relation.isOrderable }}
+            if ({{ fqVariable relation.name }}SortCompare != null) {
+                {{ fqVariable relation.name }}StoreList.sort({{ fqVariable relation.name }}SortCompare);
+            }
+            {{/ unless }}
+
             return {{ fqVariable relation.name }}StoreList;
+                {{else}}
+            {{ fqVariable relation.name }}StoreFuture = ObservableFuture(_{{ fqVariable application.actor.name }}Repository.{{ fqVariable relation.owner.name }}{{ fqClass relation.name }}Get());
+            {{ fqVariable relation.name }}Store = await {{ fqVariable relation.name }}StoreFuture;
+            return {{ fqVariable relation.name }}Store;
+                {{/if}}
             {{else}}
-            {{# if relation.isCollection }}
-            {{ fqVariable relation.name }}StoreFuture = ObservableFuture(_{{ fqVariable application.actor.name }}Repository.{{ fqVariable relation.owner.name }}{{ fqClass relation.name }}List(owner{{ className relation.owner.name }}Store));
+                {{# if relation.isCollection }}
+            {{ fqVariable relation.name }}StoreFuture = ObservableFuture(_{{ fqVariable application.actor.name }}Repository.{{ fqVariable relation.owner.name }}{{ fqClass relation.name }}List(
+                owner{{ className relation.owner.name }}Store,
+                sortColumn: {{ fqVariable relation.name }}SortColumnName,
+                sortAscending: {{ fqVariable relation.name }}SortAsc
+            ));
             owner{{ className relation.owner.name }}Store.{{ variable relation.name }}.clear();
             owner{{ className relation.owner.name }}Store.{{ variable relation.name }}.addAll(await {{ fqVariable relation.name }}StoreFuture);
+            {{# unless relation.isOrderable }}
+            if ({{ fqVariable relation.name }}SortCompare != null) {
+                    owner{{ className relation.owner.name }}Store.{{ variable relation.name }}.sort({{ fqVariable relation.name }}SortCompare);
+            }
+            {{/ unless }}
             return owner{{ className relation.owner.name }}Store.{{ variable relation.name }};
-            {{else}}
+                {{else}}
             {{ fqVariable relation.name }}StoreFuture = ObservableFuture(_{{ fqVariable application.actor.name }}Repository.{{ fqVariable relation.owner.name }}{{ fqClass relation.name }}Get(owner{{ className relation.owner.name }}Store));
             owner{{ className relation.owner.name }}Store.{{ variable relation.name }} = await {{ fqVariable relation.name }}StoreFuture;
             return owner{{ className relation.owner.name }}Store.{{ variable relation.name }};
-            {{/if}}
+                {{/if}}
             {{/if}}
         } on ApiException catch (error) {
             errorMessage = "Could not load {{ relation.name }}";
@@ -172,3 +234,4 @@ abstract class _{{ fqClass page.name }}PageStore with Store {
     {{/if}}
     {{/ with }}
 }
+//END tablepagestore.dart.hbs-----{{page.name}}--------------------------------------------------------------------------------------------

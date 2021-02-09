@@ -1,0 +1,286 @@
+{{log 'App Theme generation for' (variable application.name) level='info'}}
+//////////////////////////////////////////////////////////////////////////////
+// G E N E R A T E D    C L A S S
+// ------------------------------
+// Factory expression: {{{ cleanup template.factoryExpression }}}
+// Path expression: {{{ cleanup template.pathExpression }}}
+// Overwrite: {{{ cleanup template.overwriteExpression }}}
+// Template name: {{ template.templateName }}
+// Application: {{ application.name }}
+
+import 'package:flutter/material.dart';
+import 'package:judo_flutter_components/judo_flutter_components.dart';
+
+class AppTheme {
+
+  static ThemeData of(BuildContext context) {
+    ThemeData original = Theme.of(context).copyWith(
+      primaryColor: Color(0xff3c4166),
+    );
+
+    final ThemeData theme = Theme.of(context).copyWith(
+        primaryColor: Color(0xff3c4166),
+        backgroundColor: Color(0xffe9e9e9),
+        dividerColor: Color(0x13000000),
+        cardColor: Color(0xffffffff),
+
+        colorScheme: original.colorScheme.copyWith(
+          primary: Color(0xff3c4166),
+          primaryVariant: Color(0xc03c4166),
+          background: Color(0xffe9e9e9),
+          secondary: Color(0xffe7501d),
+          secondaryVariant: Color(0xc0e7501d),
+        )
+    );
+
+    return theme.copyWith(
+
+      /// The Material Design typography scheme was significantly changed in the
+      /// current (2018) version of the specification
+      /// ([https://material.io/design/typography](https://material.io/design/typography)).
+      ///
+      /// The 2018 spec has thirteen text styles:
+      /// ```
+      /// NAME         SIZE  WEIGHT  SPACING
+      /// headline1    96.0  light   -1.5
+      /// headline2    60.0  light   -0.5
+      /// headline3    48.0  regular  0.0
+      /// headline4    34.0  regular  0.25
+      /// headline5    24.0  regular  0.0
+      /// headline6    20.0  medium   0.15
+      /// subtitle1    16.0  regular  0.15
+      /// subtitle2    14.0  medium   0.1
+      /// body1        16.0  regular  0.5   (bodyText1)
+      /// body2        14.0  regular  0.25  (bodyText2)
+      /// button       14.0  medium   1.25
+      /// caption      12.0  regular  0.4
+      /// overline     10.0  regular  1.5
+      /// ```
+      ///
+      /// ...where "light" is `FontWeight.w300`, "regular" is `FontWeight.w400` and
+      /// "medium" is `FontWeight.w500`.
+      ///
+        textTheme: theme.textTheme.copyWith(
+          headline1: theme.textTheme.headline1.copyWith(fontFamily: 'SourceSansPro'),
+          headline2: theme.textTheme.headline2.copyWith(fontFamily: 'SourceSansPro'),
+          headline3: theme.textTheme.headline3.copyWith(fontFamily: 'SourceSansPro'),
+          headline4: theme.textTheme.headline4.copyWith(fontFamily: 'SourceSansPro', fontWeight: FontWeight.w500, color: Color(0xff17191d)),
+          headline5: theme.textTheme.headline5.copyWith(fontFamily: 'SourceSansPro'),
+          headline6: theme.textTheme.headline6.copyWith(fontFamily: 'SourceSansPro', color: Color(0xff434448)),
+          subtitle1: theme.textTheme.subtitle1.copyWith(fontFamily: 'SourceSansPro', fontWeight: FontWeight.w500, color: Color(0xff434448)),
+          subtitle2: theme.textTheme.subtitle2.copyWith(fontFamily: 'SourceSansPro', fontWeight: FontWeight.w300, color: Color(0xff8f8f8f)),
+          bodyText1: theme.textTheme.bodyText1.copyWith(fontFamily: 'SourceSansPro'),
+          bodyText2: theme.textTheme.bodyText2.copyWith(fontFamily: 'SourceSansPro'),
+          button: theme.textTheme.button.copyWith(fontFamily: 'SourceSansPro'),
+          caption: theme.textTheme.caption.copyWith(fontFamily: 'SourceSansPro'),
+          overline: theme.textTheme.caption.copyWith(fontFamily: 'SourceSansPro'),
+        ),
+
+
+        primaryTextTheme: theme.primaryTextTheme.copyWith(
+          headline1: theme.primaryTextTheme.headline1.copyWith(fontFamily: 'SourceSansPro'),
+          headline2: theme.primaryTextTheme.headline2.copyWith(fontFamily: 'SourceSansPro'),
+          headline3: theme.primaryTextTheme.headline3.copyWith(fontFamily: 'SourceSansPro'),
+          headline4: theme.primaryTextTheme.headline4.copyWith(fontFamily: 'SourceSansPro'),
+          headline5: theme.primaryTextTheme.headline5.copyWith(fontFamily: 'SourceSansPro'),
+          headline6: theme.primaryTextTheme.headline6.copyWith(fontFamily: 'SourceSansPro'),
+          subtitle1: theme.primaryTextTheme.subtitle1.copyWith(fontFamily: 'SourceSansPro'),
+          subtitle2: theme.primaryTextTheme.subtitle2.copyWith(fontFamily: 'SourceSansPro'),
+          bodyText1: theme.primaryTextTheme.bodyText1.copyWith(fontFamily: 'SourceSansPro'),
+          bodyText2: theme.primaryTextTheme.bodyText2.copyWith(fontFamily: 'SourceSansPro'),
+          button: theme.primaryTextTheme.button.copyWith(fontFamily: 'SourceSansPro'),
+          caption: theme.primaryTextTheme.caption.copyWith(fontFamily: 'SourceSansPro'),
+          overline: theme.primaryTextTheme.caption.copyWith(fontFamily: 'SourceSansPro'),
+        ),
+
+        accentTextTheme: theme.accentTextTheme.copyWith(
+          headline1: theme.accentTextTheme.headline1.copyWith(fontFamily: 'SourceSansPro'),
+          headline2: theme.accentTextTheme.headline2.copyWith(fontFamily: 'SourceSansPro'),
+          headline3: theme.accentTextTheme.headline3.copyWith(fontFamily: 'SourceSansPro'),
+          headline4: theme.accentTextTheme.headline4.copyWith(fontFamily: 'SourceSansPro'),
+          headline5: theme.accentTextTheme.headline5.copyWith(fontFamily: 'SourceSansPro'),
+          headline6: theme.accentTextTheme.headline6.copyWith(fontFamily: 'SourceSansPro'),
+          subtitle1: theme.accentTextTheme.subtitle1.copyWith(fontFamily: 'SourceSansPro'),
+          subtitle2: theme.accentTextTheme.subtitle2.copyWith(fontFamily: 'SourceSansPro'),
+          bodyText1: theme.accentTextTheme.bodyText1.copyWith(fontFamily: 'SourceSansPro'),
+          bodyText2: theme.accentTextTheme.bodyText2.copyWith(fontFamily: 'SourceSansPro'),
+          button: theme.accentTextTheme.button.copyWith(fontFamily: 'SourceSansPro'),
+          caption: theme.accentTextTheme.caption.copyWith(fontFamily: 'SourceSansPro'),
+          overline: theme.accentTextTheme.caption.copyWith(fontFamily: 'SourceSansPro'),
+        ),
+
+        appBarTheme: AppBarTheme(
+            color: Color(0x00151026),
+            elevation: 0,
+            textTheme: TextTheme(
+              headline6: TextStyle(
+                color: Color(0xff17191d),
+                fontFamily: 'SourceSansPro',
+                fontWeight: FontWeight.bold,
+                fontSize: 32.0,
+              ),
+            ),
+            centerTitle: false
+        ),
+
+        buttonTheme: theme.buttonTheme.copyWith(
+          buttonColor: original.primaryColor,
+          disabledColor: Color(0xdcffffff),
+          hoverColor: Color(0x3fffffff),
+          textTheme: ButtonTextTheme.primary,
+          shape: StadiumBorder(),
+          padding: EdgeInsets.symmetric(horizontal: 16),
+        ),
+
+        dividerColor: Color(0xffdcdcdc),
+
+        inputDecorationTheme: theme.inputDecorationTheme.copyWith(
+          filled: true,
+          fillColor: theme.cardColor,
+          focusColor: theme.colorScheme.secondary,
+          border: UnderlineInputBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(10.0)), borderSide: BorderSide(color: Colors.transparent)),
+          labelStyle: TextStyle(fontWeight: FontWeight.w100),
+          enabledBorder: UnderlineInputBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(10.0)), borderSide: BorderSide(color: Colors.transparent)),
+          focusedBorder: UnderlineInputBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(10.0)), borderSide: BorderSide(width: 2.0, color:theme.colorScheme.secondary)),
+          disabledBorder: UnderlineInputBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(10.0)), borderSide: BorderSide(color: Colors.black12)),
+        ),
+
+        indicatorColor: Color(0xffe7501d),
+
+        tabBarTheme: theme.tabBarTheme.copyWith(
+          labelColor: Color(0xffe7501d),
+        )
+    );
+  }
+
+}
+
+
+class AppDesignCustomizer with DefaultJudoComponentsCustomizer {
+
+  @override
+  double getLineHeight() {
+    return kToolbarHeight;
+  }
+
+  @override
+  EdgeInsets getDefaultPadding() {
+    return EdgeInsets.symmetric(horizontal: 10);
+  }
+
+  @override
+  Decoration getInputBoxCustomizer(bool disabled, bool readOnly) {
+    return (disabled || readOnly) ? null :
+    BoxDecoration(
+        boxShadow: [
+          BoxShadow(
+              color: Colors.black12,
+              blurRadius: 10,
+              offset: const Offset(0, 0)
+          )
+        ]
+    );
+  }
+
+  @override
+  InputDecoration getInputDecoration(String label, Widget prefixIcon, Widget suffixIcon) {
+    return InputDecoration(
+        labelText: label,
+        prefixIcon: prefixIcon,
+        suffixIcon: suffixIcon
+    );
+  }
+
+  @override
+  InputDecoration getInputTextDecoration(String label, Widget prefixIcon, Widget suffixIcon) {
+    return getInputDecoration(label, prefixIcon, suffixIcon);
+  }
+
+  @override
+  InputDecoration getInputDateDecoration(String label, Widget prefixIcon, Widget suffixIcon) {
+    return getInputDecoration(label, prefixIcon, suffixIcon);
+  }
+
+  @override
+  InputDecoration getInputDateTimeDecoration(String label, Widget prefixIcon, Widget suffixIcon) {
+    return getInputDecoration(label, prefixIcon, suffixIcon);
+  }
+
+  @override
+  InputDecoration getInputLinkDecoration(String label, Widget prefixIcon, Widget suffixIcon) {
+    return InputDecoration(
+      enabled: false,
+      labelText: label,
+      prefixIcon: prefixIcon,
+    );
+  }
+
+  @override
+  InputDecoration getInputNumericDecoration(String label, Widget prefixIcon, Widget suffixIcon) {
+    return getInputDecoration(label, prefixIcon, suffixIcon);
+  }
+
+  @override
+  ThemeData getInputThemeCustomizer(ThemeData theme, bool disabled, bool readOnly) {
+    return theme.copyWith(
+      primaryColor:  (disabled || readOnly) ?
+      theme.iconTheme.color : theme.colorScheme.secondary,
+      inputDecorationTheme:
+      (disabled || readOnly) ?
+      theme.inputDecorationTheme.copyWith(
+        filled: false,
+      ) : null,
+    );
+  }
+
+  @override
+  ThemeData getInputTextThemeCustomizer(ThemeData theme, bool disabled, bool readOnly) {
+    return getInputThemeCustomizer(theme, disabled, readOnly);
+  }
+
+  @override
+  ThemeData getInputDateThemeCustomizer(ThemeData theme, bool disabled, bool readOnly) {
+    return getInputThemeCustomizer(theme, disabled, readOnly);
+  }
+
+  @override
+  ThemeData getInputDateTimeThemeCustomizer(ThemeData theme, bool disabled, bool readOnly) {
+    return getInputThemeCustomizer(theme, disabled, readOnly);
+  }
+
+  @override
+  ThemeData getInputLinkThemeCustomizer(ThemeData theme, bool disabled, bool readOnly) {
+    return theme.copyWith(
+        primaryColor:  theme.colorScheme.secondary,
+        iconTheme: theme.iconTheme.copyWith(
+            color: theme.colorScheme.secondary
+        ),
+        inputDecorationTheme:
+        (disabled || readOnly) ?
+        theme.inputDecorationTheme.copyWith(
+            filled: false
+        ) : null
+    );
+  }
+
+  @override
+  ThemeData getInputNumericTimeThemeCustomizer(ThemeData theme, bool disabled, bool readOnly) {
+    return getInputThemeCustomizer(theme, disabled, readOnly);
+  }
+
+  @override
+  ThemeData getBreadcumbTheme(ThemeData theme) {
+    return theme.copyWith(
+      primaryColor: Colors.white,
+    );
+  }
+
+  TextStyle getBreadcumbTextStyle() {
+    return TextStyle(
+        color: Color(0xff434448),
+        fontSize: 16,
+        fontFamily: 'SourceSansPro',
+        fontWeight: FontWeight.w500
+    );
+  }
+}

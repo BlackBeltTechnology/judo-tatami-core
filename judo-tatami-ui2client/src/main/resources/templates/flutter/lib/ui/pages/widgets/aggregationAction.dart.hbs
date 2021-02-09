@@ -1,4 +1,5 @@
 {{ log 'Aggregation action button generation for' (variable application.name) '-' (fqClass page.name)'page'(variable relation.name)'relation' level='debug' ~}}
+//START aggregationAction.dart.hbs-----{{relation.name}}-----------------------------------------------------------------------------------
 JudoButton(
     col: {{ multiplyCol col }},
     row: {{ row }},
@@ -65,3 +66,4 @@ JudoButton(
 {{/if}}
     rounded: true,
 ),
+//END aggregationAction.dart.hbs-----{{relation.name}}-------------------------------------------------------------------------------------

@@ -18,7 +18,7 @@ operation ESM!esm::structure::ReferenceTypedElement mapViewPage(application : UI
 	
 	page.name = self.fqName().anchor("View");
 	page.pageType = UI!ui::PageType#VIEW;
-	page.label = target.view.getUiLabel() + " View";
+	page.label = target.view.getUiLabel();
 
 	var pageContainer = new UI!ui::PageContainer();
     pageContainer.layoutType = application.layoutTypes.first;
@@ -48,7 +48,7 @@ operation ESM!esm::structure::ReferenceTypedElement mapCreatePage(application : 
 	
 	page.name = self.fqName().anchor("Create");
 	page.pageType = UI!ui::PageType#CREATE;
-	page.label = target.form.getUiLabel() + " Create";
+	page.label = target.form.getUiLabel();
 
 	var pageContainer = new UI!ui::PageContainer();
     pageContainer.layoutType = application.layoutTypes.first;
@@ -77,7 +77,7 @@ operation ESM!esm::structure::ReferenceTypedElement mapUpdatePage(application : 
 	
 	page.name = self.fqName().anchor("Edit");
 	page.pageType = UI!ui::PageType#UPDATE;
-	page.label = target.form.getUiLabel() + " Edit";
+	page.label = target.form.getUiLabel();
 
 	var pageContainer = new UI!ui::PageContainer();
     pageContainer.layoutType = application.layoutTypes.first;
@@ -110,7 +110,7 @@ operation ESM!esm::structure::ReferenceTypedElement mapTablePage(application : U
 	page.dataElement = relation;
 	page.name = self.fqName().anchor("Table");
 	page.pageType = UI!ui::PageType#TABLE;
-	page.label = target.table.getUiLabel() + " Browse";
+	page.label = target.table.getUiLabel();
 
 	var pageContainer = new UI!ui::PageContainer();
     pageContainer.layoutType = application.layoutTypes.first;

@@ -1,5 +1,6 @@
 {{~ log 'Radio generation for' (variable application.name) '-' (fqClass page.name)'page' level='debug' ~}}
-{{#if page.isPageTypeView}}
+//START enumerationradio.dart.hbs-----{{page.name}}----------------------------------------------------------------------------------------
+{{#if (isViewTypePage page) }}
 Observer(
     builder: (_) => JudoRadio<{{ className attributeType.dataType.name }}>(
         key: UniqueKey(),
@@ -46,3 +47,20 @@ Observer(
     )
 ),
 {{/if}}
+{{#if page.isPageTypeOperationInput}}
+Observer(
+    builder: (_) => JudoRadio<{{ className attributeType.dataType.name }}>(
+        key: inputWidgetKeyMap['{{ name }}'],
+        col: {{ multiplyCol col }},
+        row: {{ row }},
+        disabled: {{ disabled }},
+        items: {{ className attributeType.dataType.name }}.values,
+        getLabel: (element) => element.toString().split('.').last,
+        getValue: (element) => element,
+        groupValue: target{{ className page.dataElement.target.name }}Store.{{ attributeType.name }},
+        onChanged: (value) => target{{ className page.dataElement.target.name }}Store.set{{ className attributeType.name }}(value),
+        readOnly: {{attributeType.isReadOnly}},
+    )
+),
+{{/if}}
+//END enumerationradio.dart.hbs-----{{page.name}}------------------------------------------------------------------------------------------

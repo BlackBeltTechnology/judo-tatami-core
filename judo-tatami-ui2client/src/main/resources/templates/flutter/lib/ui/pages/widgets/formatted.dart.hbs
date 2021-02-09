@@ -1,25 +1,33 @@
+//START formatted.dart.hbs-----{{page.name}}-----------------------------------------------------------------------------------------------
 {{# if column }}
 {{ log 'Formatted text generation for' (variable application.name) '-' (fqClass table.name)'table' (variable dataName) (variable column.attributeType.name) level='debug' ~}}
 {{# if (isEnumType column.attributeType.dataType) }}
-Text(
-    target{{ dataName }}?.{{ column.attributeType.name }} != null ? target{{ dataName }}.{{ column.attributeType.name }}.toString().split('.').last : '< None >',
-),
+target{{ dataName }}?.{{ column.attributeType.name }} != null ? Text(
+    target{{ dataName }}.{{ column.attributeType.name }}.toString().split('.').last,
+) : Center(child: Icon(Icons.block, color: Colors.grey.shade200,)),
 {{ else }}
 {{#if (isTimestampType column.attributeType.dataType) }}
-Text(
-    target{{ dataName }}?.{{ column.attributeType.name }} != null ? DateFormat('yyyy-MM-dd HH:mm').format(target{{ dataName }}.{{ column.attributeType.name }}) : '< None >',
-),
+target{{ dataName }}?.{{ column.attributeType.name }} != null ? Text(
+    DateFormat('yyyy-MM-dd HH:mm').format(target{{ dataName }}.{{ column.attributeType.name }}),
+) : Center(child: Icon(Icons.block, color: Colors.grey.shade200,)),
 {{else}}
 {{#if (isDateType column.attributeType.dataType) }}
-Text(
-target{{ dataName }}?.{{ column.attributeType.name }} != null ? DateFormat('yyyy-MM-dd').format(target{{ dataName }}.{{ column.attributeType.name }}) : '< None >',
-),
+target{{ dataName }}?.{{ column.attributeType.name }} != null ? Text(
+    DateFormat('yyyy-MM-dd').format(target{{ dataName }}.{{ column.attributeType.name }}),
+) : Center(child: Icon(Icons.block, color: Colors.grey.shade200,)),
 {{else}}
-Text(
-    target{{ dataName }}?.{{ column.attributeType.name }} != null ? target{{ dataName }}.{{ column.attributeType.name }}.toString() : '< None >',
-),
-{{/if}}
-{{/if}}
+{{#if (isBooleanDataType column.attributeType.dataType) }}
+Center(child: Icon(
+    target{{ dataName }}?.{{ column.attributeType.name }} != null ? (target{{ dataName }}?.{{ column.attributeType.name }} ? Icons.check_circle : Icons.cancel) : Icons.block,
+    color: target{{ dataName }}?.{{ column.attributeType.name }} != null ? (target{{ dataName }}?.{{ column.attributeType.name }} ? Colors.green.shade500.withOpacity(0.7) : Colors.red.shade500.withOpacity(0.7)) : Colors.grey.shade200,
+)),
+{{else}}
+target{{ dataName }}?.{{ column.attributeType.name }} != null ? Text(
+    target{{ dataName }}?.{{ column.attributeType.name }} != null ? target{{ dataName }}.{{ column.attributeType.name }}.toString() : '',
+) : Center(child: Icon(Icons.block, color: Colors.grey.shade200,)),
+{{/ if}}
+{{/ if}}
+{{/ if}}
 {{/ if }}
 {{ else }}
 {{ log 'Formatted text generation for' (variable application.name) '-' (fqClass page.name)'page'(variable page.dataElement.target.name) attributeType.name level='debug' ~}}
@@ -30,3 +38,4 @@ JudoText(
     text: target{{ className page.dataElement.target.name }}Store.{{ attributeType.name }}.toString(),
 ),
 {{/ if }}
+//END formatted.dart.hbs-----{{page.name}}-------------------------------------------------------------------------------------------------

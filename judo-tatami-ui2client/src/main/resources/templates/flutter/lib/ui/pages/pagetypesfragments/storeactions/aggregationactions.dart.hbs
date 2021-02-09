@@ -1,4 +1,5 @@
 {{log 'Aggregation action generation for' (variable application.name) '-' (fqClass page.name)'page'(variable relation.name)'relation' level='debug'}}
+//START aggregationactions.dart.hbs-----{{relaltion.name}}---------------------------------------------------------------------------------
 // {{ className relation.name }} aggregation actions
 {{# if relation.isRelationBehaviourTypeCreatable }}
 @action
@@ -137,7 +138,7 @@ Future<void> unset{{ fqClass relation.name }}({{ fqClass relation.owner.name }}S
 {{/if}}
 {{# if relation.target.isClassBehaviourTypeDeletable }}
 @action
-Future<void> delete{{ className relation.target.name }}({{ fqClass relation.target.name }}Store target{{ className relation.target.name }}Store{{# unless relation.isAccess}}, {{ fqClass relation.owner.name }}Store owner{{ className relation.owner.name }}Store{{/unless}}) async {
+Future<void> delete{{ className relation.name }}{{ className relation.target.name }}({{ fqClass relation.target.name }}Store target{{ className relation.target.name }}Store{{# unless relation.isAccess}}, {{ fqClass relation.owner.name }}Store owner{{ className relation.owner.name }}Store{{/unless}}) async {
     try {
         errorMessage = null;
     {{# if page.isPageTypeView }}
@@ -155,7 +156,7 @@ Future<void> delete{{ className relation.target.name }}({{ fqClass relation.targ
 {{/if}}
 {{# if relation.target.isClassBehaviourTypeUpdatable }}
 @action
-Future<{{ fqClass relation.target.name }}Store> update{{ className relation.target.name }}({{ fqClass relation.target.name }}Store target{{ className relation.target.name }}Store) async {
+Future<{{ fqClass relation.target.name }}Store> update{{ className relation.name }}{{ className relation.target.name }}({{ fqClass relation.target.name }}Store target{{ className relation.target.name }}Store) async {
     try {
         errorMessage = null;
     {{# if page.isPageTypeView }}
@@ -170,3 +171,4 @@ Future<{{ fqClass relation.target.name }}Store> update{{ className relation.targ
 }
 
 {{/if}}
+//END aggregationactions.dart.hbs-----{{relaltion.name}}-----------------------------------------------------------------------------------
