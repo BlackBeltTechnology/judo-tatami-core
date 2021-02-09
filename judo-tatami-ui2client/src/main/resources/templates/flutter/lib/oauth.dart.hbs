@@ -45,9 +45,15 @@ class Oauth {
   //static const REALM = "JUDO";
   //static const LOGOUT_URL = "http://localhost:8080/auth/realms/JUDO/protocol/openid-connect/logout?redirect_uri=http%3A%2F%2Flocalhost%3A8888%2F";
 
-  static var callbackUrl = html.window.location.protocol  + "//" + html.window.location.host;
   static {{ modelName application.name }}{{ packageName application.name }}MetadataSecurityFor{{ className application.name }} securitySettings = {{ modelName application.name }}{{ packageName application.name }}MetadataSecurityFor{{ className application.name }}();
   static var authInfo = AuthInfoStore();
+
+  static String calculateRedirectUri() {
+    var callbackUrl = html.window.location.href; //protocol  + "//" + html.window.location.host;
+    var uri = Uri.parse(callbackUrl);
+    var strippedUri = Uri(scheme: uri.scheme, userInfo: uri.userInfo, host: uri.host, port: uri.port, path: uri.path);
+    return strippedUri.toString();
+  }
 
   static loadClientMetaData() async {
     try {
@@ -111,7 +117,7 @@ class Oauth {
       var auth = AppAuthWebPlugin();
       var request = AuthorizationTokenRequest(
           securitySettings.clientId,
-          callbackUrl,
+          calculateRedirectUri(),
           issuer: securitySettings.issuer,
           scopes: [securitySettings.defaultScopes]);
       await auth.authorizeAndExchangeCode(request);
@@ -122,7 +128,7 @@ class Oauth {
         // print("authResponse: ${authResponse.authorizationCode}");
         var tokenRequest = TokenRequest(
             securitySettings.clientId,
-            callbackUrl,
+            calculateRedirectUri(),
             scopes: [securitySettings.defaultScopes],
             grantType: grantType,
             authorizationCode: html.window.sessionStorage[AUTH_CODE_KEY],
@@ -185,7 +191,7 @@ class Oauth {
     html.window.sessionStorage.remove(AUTH_DESTINATION_URL);
     locator<ApiClient>().setAuthentication(securitySettings.name, null);
     // var logoutUri = LOGOUT_URL + "?redirect_uri=${Uri.encodeQueryComponent(CALLBACK_URL)}";
-    html.window.location.assign(securitySettings.logoutEndpoint + "?redirect_uri=${Uri.encodeQueryComponent(callbackUrl)}");
+    html.window.location.assign(securitySettings.logoutEndpoint + "?redirect_uri=${Uri.encodeQueryComponent(calculateRedirectUri())}");
     securitySettings = {{ modelName application.name }}{{ packageName application.name }}MetadataSecurityFor{{ className application.name }}();
   }
 
