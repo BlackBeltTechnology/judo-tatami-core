@@ -5,7 +5,6 @@ operation UI!ui::Action setIcon() {
 	} 
 }
 
-
 operation UI!ui::NavigationToPageAction setIcon() {
 	if (self.icon.isUndefined()) {
 		self.icon = new UI!ui::Icon();
@@ -33,7 +32,6 @@ operation UI!ui::ViewAction setIcon() {
 		self.icon.name = 'visibility';
 	} 
 }
-
 
 operation UI!ui::BackAction setIcon() {
 	if (self.icon.isUndefined()) {

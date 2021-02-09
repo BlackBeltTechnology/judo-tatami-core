@@ -1,4 +1,3 @@
-
 @cached
 operation ESM!esm::`operation`::Operation fqName() {
 	return esmUtils.getNamespaceElementFQName(self.eContainer) + "." + self.name;
@@ -28,7 +27,7 @@ operation ESM!esm::`operation`::Operation createViewPageForOperationOutput(appli
 		pageContainer.children.add(flex);
 		log.warn(self.output.target.fqName() + " has no view defined");
 	} else {
-		pageContainer.children.add(self.output.target.view.map(application));
+		pageContainer.children.add(self.output.target.view.map(application, page));
 	}
 	
 	page.dataElement = self.mapOperationOutputType(application, clazz);
@@ -68,7 +67,7 @@ operation ESM!esm::`operation`::Operation createFormPageForOperationInput(applic
 		pageContainer.children.add(flex);
 		log.warn(self.input.target.fqName() + " has no form defined");
 	} else {
-		pageContainer.children.add(self.input.target.form.map(application));
+		pageContainer.children.add(self.input.target.form.map(application, page));
 	}
 	
 	page.dataElement = self.mapOperationInputType(application, clazz);
@@ -109,7 +108,7 @@ operation ESM!esm::`operation`::Operation createTablePageForOperationInput(appli
 	pageContainer.children.add(flex);
 	
 	if (self.input.target.isTableDefined()) {
-		var table = self.input.target.table.createTableFromTransferObjectTable(application);
+		var table = self.input.target.table.createTableFromTransferObjectTable(application, page);
     	flex.children.add(table);
 	}
     
@@ -170,7 +169,7 @@ operation ESM!esm::`operation`::Operation createTablePageForOperationOutput(appl
 	pageContainer.children.add(flex);
     
     if (self.output.target.isTableDefined()) {
-		var table = self.output.target.table.createTableFromTransferObjectTable(application);
+		var table = self.output.target.table.createTableFromTransferObjectTable(application, page);
     	flex.children.add(table);
     }
     /*

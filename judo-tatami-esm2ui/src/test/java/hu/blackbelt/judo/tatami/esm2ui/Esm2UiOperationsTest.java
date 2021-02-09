@@ -770,8 +770,7 @@ public class Esm2UiOperationsTest {
         		.withBinding(stored2).build();
         DataMember derived2mapping = newDataMemberBuilder().withName("derived2").withDataType(number).withGetterExpression("1+1").withMemberType(MemberType.MAPPED)
         		.withBinding(derived2).build();
-        DataMember transientMember = newDataMemberBuilder().withName("transient").withDataType(str).withMemberType(MemberType.TRANSIENT)
-        		.withBinding(stored2).build();
+        DataMember transientMember = newDataMemberBuilder().withName("transient").withDataType(str).withMemberType(MemberType.TRANSIENT).build();
         final TransferObjectType t3 = newTransferObjectTypeBuilder()
                 .withName(TRANSFER_OBJECT_TYPE_NAME_3)
                 .withCreateable(false)

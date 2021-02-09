@@ -81,7 +81,7 @@ abstract class _{{ fqClass page.name }}PageStore with Store {
 
         {{/ if }}
     {{/ if }}
-    {{# if relation.target.isClassBehaviourTypeRefreshable }}
+    {{# if relation.isRelationBehaviourTypeRefreshable }}
     @action
     Future<void> refresh{{ className relation.target.name }}({{ fqClass relation.target.name }}Store target{{ className page.dataElement.target.name }}Store) async {
         try {
@@ -94,7 +94,7 @@ abstract class _{{ fqClass page.name }}PageStore with Store {
     }
 
     {{/ if}}
-    {{# if relation.target.isClassBehaviourTypeUpdatable }}
+    {{# if relation.isRelationBehaviourTypeUpdatable }}
     @action
     Future<{{ fqClass relation.target.name }}Store> update{{ className relation.target.name }}({{ fqClass relation.target.name }}Store target{{ className page.dataElement.target.name }}Store) async {
         try {
@@ -107,7 +107,7 @@ abstract class _{{ fqClass page.name }}PageStore with Store {
     }
 
     {{/ if }}
-    {{# if relation.target.isClassBehaviourTypeDeletable }}
+    {{# if relation.isRelationBehaviourTypeDeletable }}
     @action
     Future<void> delete{{ className relation.target.name }}({{ fqClass relation.target.name }}Store target{{ className page.dataElement.target.name }}Store) async {
         try {
@@ -120,7 +120,7 @@ abstract class _{{ fqClass page.name }}PageStore with Store {
     }
 
     {{/ if }}
-    {{# if relation.target.isClassBehaviourTypeUpdateValidatable }}
+    {{# if relation.isRelationBehaviourTypeUpdateValidatable }}
     @action
     Future<{{ fqClass relation.target.name }}Store> validate({{# unless page.dataElement.isAccess}}{{ fqClass relation.owner.name }}Store owner{{ className relation.owner.name }}Store, {{/unless}}{{ fqClass relation.target.name }}Store target{{ className relation.target.name }}Store) async {
         try {

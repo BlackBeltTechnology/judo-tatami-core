@@ -1,6 +1,5 @@
 operation UI!ui::PageDefinition calculateActions(application : UI!ui::Application, preview : Boolean) {
 	var relationType = self.getRelationType();
-	var classType = self.getTargetClassType();
 
 	if (self.pageType == UI!ui::PageType#CREATE or self.pageType == UI!ui::PageType#UPDATE) {
 		
@@ -11,19 +10,16 @@ operation UI!ui::PageDefinition calculateActions(application : UI!ui::Applicatio
 		}
 		
 	} else if (self.pageType == UI!ui::PageType#VIEW) {
-		if (classType.isUndefined()) {
-			throw "View type page: " + pageDefinition.name + " have to be mapped to a class tpye or a relation type or an operation parameter type.";
-		}
 		
 		for (container in self.containers) {
 			var buttonGroup : UI!ui::Flex = container.createGroupForInstanceActionButtons();
 			buttonGroup.children.add(createButton("back", "BACK", 2d, new UI!ui::BackAction()));
 			
-			if (classType.getIsClassBehaviourTypeDeletable()) {
+			if (relationType.getIsRelationBehaviourTypeDeletable()) {
 				buttonGroup.children.add(createButton("delete", "DELETE", 2d, new UI!ui::DeleteAction()));
 			}
 			
-			if (classType.getIsClassBehaviourTypeUpdatable()) {
+			if (relationType.getIsRelationBehaviourTypeUpdatable()) {
 				if (preview) {
 					var button : UI!ui::Button = createButton("edit", "EDIT", 2d, new UI!ui::EditAction());
 				    button.action.target = application.pages.selectOne(p | p.pageType = UI!ui::PageType#DASHBOARD);

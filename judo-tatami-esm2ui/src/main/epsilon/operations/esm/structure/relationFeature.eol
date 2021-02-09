@@ -64,6 +64,18 @@ operation ESM!esm::structure::RelationFeature createRelationTypeForClass(applica
 		relation.behaviours.add(UI!ui::data::RelationBehaviourType#VALIDATE_CREATE);
 		relation.target.isForCreateOrUpdateType = true;
 	}
+	if (self.isRefreshSupported()) {
+		relation.behaviours.add(UI!ui::data::RelationBehaviourType#REFRESH);
+	}
+	if (self.isUpdateSupported()) {
+		relation.behaviours.add(UI!ui::data::RelationBehaviourType#UPDATE);
+	}
+	if (self.isValidateUpdateSupported()) {
+		relation.behaviours.add(UI!ui::data::RelationBehaviourType#VALIDATE_UPDATE);
+	}
+	if (self.isDeleteSupported()) {
+		relation.behaviours.add(UI!ui::data::RelationBehaviourType#DELETE);
+	}
 
     relation.isOrderable =
         self.target.mapping.isDefined() and

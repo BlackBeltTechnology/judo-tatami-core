@@ -7,6 +7,6 @@ operation ESM!esm::ui::TextField createTextFromTextField(application : UI!ui::Ap
 	return ret;
 }
 
-operation ESM!esm::ui::TextField map(application : UI!ui::Application) : UI!ui::Text {
+operation ESM!esm::ui::TextField map(application : UI!ui::Application, page : UI!ui::PageDefinition) : UI!ui::Text {
 	return self.createTextFromTextField(application);
 }

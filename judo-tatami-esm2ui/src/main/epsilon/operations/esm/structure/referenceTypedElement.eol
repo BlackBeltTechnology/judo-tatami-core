@@ -3,7 +3,6 @@ operation ESM!esm::structure::ReferenceTypedElement fqName() {
 	return esmUtils.getNamespaceElementFQName(self.eContainer) + "." + self.name;
 }
 
-
 operation ESM!esm::structure::ReferenceTypedElement mapViewPage(application : UI!ui::Application, target : ESM!esm::structure::TransferObjectType) : UI!ui::PageDefinition {
 	var page = application.pages.selectOne(p | p.~originalRelation == self and p.pageType == UI!ui::PageType#VIEW);
 	if (page.isDefined()) {
@@ -27,7 +26,7 @@ operation ESM!esm::structure::ReferenceTypedElement mapViewPage(application : UI
 	pageContainer.col = applicationColumns.asReal();
 	page.containers.add(pageContainer);
 
-	pageContainer.children.add(target.view.map(application));
+	pageContainer.children.add(target.view.map(application, page));
 	
 	application.pages.add(page);
 	page.dataElement = self.mapRelationType(application, self.eContainer.mapClassType(application));
@@ -57,7 +56,7 @@ operation ESM!esm::structure::ReferenceTypedElement mapCreatePage(application : 
 	pageContainer.col = applicationColumns.asReal();
 	page.containers.add(pageContainer);
 
-    pageContainer.children.add(target.form.map(application));
+    pageContainer.children.add(target.form.map(application, page));
 	application.pages.add(page);
 	page.dataElement = self.mapRelationType(application, self.eContainer.mapClassType(application));
     return page;
@@ -86,7 +85,7 @@ operation ESM!esm::structure::ReferenceTypedElement mapUpdatePage(application : 
 	pageContainer.col = applicationColumns.asReal();
 	page.containers.add(pageContainer);
 
-    pageContainer.children.add(target.form.map(application));
+    pageContainer.children.add(target.form.map(application, page));
 	application.pages.add(page);
 	
 	page.dataElement = self.mapRelationType(application, self.eContainer.mapClassType(application));
@@ -126,7 +125,7 @@ operation ESM!esm::structure::ReferenceTypedElement mapTablePage(application : U
 	pageContainer.children.add(flex);
     
     if (target.isTableDefined()) {
-		var table = target.table.createTableFromTransferObjectTable(application, relation);
+		var table = target.table.createTableFromTransferObjectTable(application, relation, page);
     	flex.children.add(table);
     }
     
@@ -150,3 +149,20 @@ operation ESM!esm::structure::ReferenceTypedElement mapTablePage(application : U
     
     return page;
 }
+
+operation ESM!esm::structure::ReferenceTypedElement isRefreshSupported() : Boolean {
+	return self.target.mapping.isDefined();
+}
+
+operation ESM!esm::structure::ReferenceTypedElement isUpdateSupported() : Boolean {
+	return self.target.mapping.isDefined() and self.isUpdateAllowed();
+}
+
+operation ESM!esm::structure::ReferenceTypedElement isValidateUpdateSupported() : Boolean {
+	return self.isUpdateSupported();
+}
+
+operation ESM!esm::structure::ReferenceTypedElement isDeleteSupported() : Boolean {
+	return self.target.mapping.isDefined() and self.isDeleteAllowed() and (self.lower < self.upper or self.upper == -1);
+}
+

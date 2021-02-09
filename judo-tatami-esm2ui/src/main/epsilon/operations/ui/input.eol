@@ -42,5 +42,3 @@ operation UI!ui::DateTimeInput setIcon() {
 		self.leadingIcon.name = 'access_time';
 	} 
 }
-
-

@@ -18,7 +18,7 @@
                 {{/ unless }}
             {{/ unless }}
             {{# if page.dataElement.isRelationKindAggregation }}
-                {{# if page.dataElement.target.isClassBehaviourTypeUpdateValidatable }}
+                {{# if page.dataElement.isRelationBehaviourTypeUpdateValidatable }}
             if ({{ fqVariable page.name }}PageStore.validatable){
                 var res = await {{ fqVariable page.name }}PageStore.validate(target{{ className page.relationType.target.name }}Store)
                     .catchError((error) => ErrorHandler.errorDialog(context, error));
@@ -31,7 +31,7 @@
                 {{/ if }}
             {{/ if }}
             {{# if page.dataElement.isRelationKindComposition }}
-                {{# if page.dataElement.target.isClassBehaviourTypeUpdateValidatable }}
+                {{# if page.dataElement.isRelationBehaviourTypeUpdateValidatable }}
             if ({{ fqVariable page.name }}PageStore.validatable){
                 var res = await {{ fqVariable page.name }}PageStore.validate(target{{ className page.relationType.target.name }}Store)
                     .catchError((error) => ErrorHandler.errorDialog(context, error));
@@ -167,7 +167,7 @@
                         arguments: {{ fqClass action.outputParameterPage.name }}PageArguments(target{{className action.operation.output.target.name}}Store: {{fqVariable action.operation.output.target.name}}Store));
                 }
                 {{/if}}
-                {{# if page.relationType.target.isClassBehaviourTypeRefreshable }}
+                {{# if page.relationType.isRelationBehaviourTypeRefreshable }}
                     await {{ fqVariable page.name }}PageStore.refresh{{ className page.relationType.target.name }}(target{{ className page.dataElement.target.name }}Store);
                 {{/ if }}
             }
@@ -185,14 +185,14 @@
                         await navigation.open(Routes.{{ fqVariable action.outputParameterPage.name }}Page,
                             arguments: {{ fqClass action.outputParameterPage.name }}PageArguments(target{{className action.operation.output.target.name}}Store: {{fqVariable action.operation.output.target.name}}Store));
                     }
-                    {{# if page.relationType.target.isClassBehaviourTypeRefreshable }}
+                    {{# if page.relationType.isRelationBehaviourTypeRefreshable }}
                     await {{ fqVariable page.name }}PageStore.refresh{{ className page.relationType.target.name }}(target{{ className page.dataElement.target.name }}Store);
                     {{/ if }}
                 {{else}}
             {{#if action.operation.output}}{{fqClass action.operation.output.target.name}}Store {{fqVariable action.operation.output.target.name}}Store = {{/if}}await {{fqVariable page.name}}PageStore.{{fqVariable action.operation.owner.name}}{{className action.operation.name}}({{# if action.operation.input}}ret, {{/if}}{{#if action.operation.isMapped }}target{{ className page.dataElement.target.name }}Store{{/if}})
                 .whenComplete(() => judoAlert(context: context, title: 'Successful operation', text: '{{label}} called successfully.'))
                 .catchError((error) => ErrorHandler.errorDialog(context, error));
-                    {{# if page.relationType.target.isClassBehaviourTypeRefreshable }}
+                    {{# if page.relationType.isRelationBehaviourTypeRefreshable }}
             await {{ fqVariable page.name }}PageStore.refresh{{ className page.relationType.target.name }}(target{{ className page.dataElement.target.name }}Store);
                     {{/ if }}
                 {{/if}}

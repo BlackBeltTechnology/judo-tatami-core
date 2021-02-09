@@ -1,10 +1,10 @@
-operation ESM!esm::ui::TransferObjectView createFlexFromTransferObjectView(application : UI!ui::Application) : UI!ui::Flex {
-	var t : UI!ui::Flex = self.createFlexFromContainer(application);
+operation ESM!esm::ui::TransferObjectView createFlexFromTransferObjectView(application : UI!ui::Application, page : UI!ui::PageDefinition) : UI!ui::Flex {
+	var t : UI!ui::Flex = self.createFlexFromContainer(application, page);
     t.dataElement = self.eContainer.mapClassType(application);	
     return t;
 }
 
-operation ESM!esm::ui::TransferObjectView map(application : UI!ui::Application) : UI!ui::Flex {
-	var t : UI!ui::Flex = self.createFlexFromTransferObjectView(application);
+operation ESM!esm::ui::TransferObjectView map(application : UI!ui::Application, page : UI!ui::PageDefinition) : UI!ui::Flex {
+	var t : UI!ui::Flex = self.createFlexFromTransferObjectView(application, page);
     return t;
 }

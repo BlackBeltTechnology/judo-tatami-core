@@ -7,6 +7,6 @@ operation ESM!esm::ui::Divider createDividerFromDivider(application : UI!ui::App
 	return ret;
 }
 
-operation ESM!esm::ui::Divider map(application : UI!ui::Application) : UI!ui::Divider {
+operation ESM!esm::ui::Divider map(application : UI!ui::Application, page : UI!ui::PageDefinition) : UI!ui::Divider {
 	return self.createDividerFromDivider(application);
 }

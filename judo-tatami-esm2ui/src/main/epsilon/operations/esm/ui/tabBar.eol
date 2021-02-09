@@ -1,4 +1,4 @@
-operation ESM!esm::ui::TabBar createTabController(application : UI!ui::Application) : UI!ui::TabController {
+operation ESM!esm::ui::TabBar createTabController(application : UI!ui::Application, page : UI!ui::PageDefinition) : UI!ui::TabController {
 	var ret : UI!ui::TabController = new UI!ui::TabController();
 	
 	ret.setVisualProperties(self, application);
@@ -13,13 +13,13 @@ operation ESM!esm::ui::TabBar createTabController(application : UI!ui::Applicati
 			tab.icon.name = t.iconName;
 		}
 		
-		tab.element = t.map(application);
+		tab.element = t.map(application, page);
 		ret.tabs.add(tab);
 	}
 
 	return ret;
 }
 
-operation ESM!esm::ui::TabBar map(application : UI!ui::Application) : UI!ui::TabController {
-	return self.createTabController(application);
+operation ESM!esm::ui::TabBar map(application : UI!ui::Application, page : UI!ui::PageDefinition) : UI!ui::TabController {
+	return self.createTabController(application, page);
 }

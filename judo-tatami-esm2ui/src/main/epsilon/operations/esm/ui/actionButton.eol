@@ -13,6 +13,6 @@ operation ESM!esm::ui::ActionButton createButtonFromActionButton(application : U
 	return ret;
 }
 
-operation ESM!esm::ui::ActionButton map(application : UI!ui::Application) : UI!ui::Button {
+operation ESM!esm::ui::ActionButton map(application : UI!ui::Application, page : UI!ui::PageDefinition) : UI!ui::Button {
 	return self.createButtonFromActionButton(application);
 }

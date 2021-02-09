@@ -1,4 +1,4 @@
-operation ESM!esm::ui::Container createFlexFromContainer(application : UI!ui::Application) : UI!ui::Flex {
+operation ESM!esm::ui::Container createFlexFromContainer(application : UI!ui::Application, page : UI!ui::PageDefinition) : UI!ui::Flex {
 	var ret = new UI!ui::Flex();
 	
     if (self.isKindOf(ESM!esm::ui::Component)) {
@@ -50,12 +50,12 @@ operation ESM!esm::ui::Container createFlexFromContainer(application : UI!ui::Ap
     }
 	
 	for (component in self.components) {
-		ret.children.add(component.map(application));
+		ret.children.add(component.map(application, page));
 	}
 	
 	return ret;
 }
 
-operation ESM!esm::ui::Container map(application : UI!ui::Application) : UI!ui::Flex {
-	return self.createFlexFromContainer(application);
+operation ESM!esm::ui::Container map(application : UI!ui::Application, page : UI!ui::PageDefinition) : UI!ui::Flex {
+	return self.createFlexFromContainer(application, page);
 }

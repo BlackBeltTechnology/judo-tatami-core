@@ -58,7 +58,7 @@ rule CreatePageDefinitionForPreview
 	    }
 	
 		for (component in s.components) {
-			flex.children.add(component.map(application));
+			flex.children.add(component.map(application, t));
 		}
 	
 		var relation : UI!ui::data::RelationType = application.actor.relations.selectOne(r | r.name == "previewRelation");
@@ -122,7 +122,7 @@ rule CreatePageDefinitionForPreviewFromTable
 	flex.col = applicationColumns.asReal();
 
 	if (s.eContainer.isTableDefined()) {
-		var table = s.createTableFromTransferObjectTable(application);
+		var table = s.createTableFromTransferObjectTable(application, t);
 		table.dataElement = t.dataElement;
 		if (t.dataElement.isCollection) {
 			table.row = 31d;

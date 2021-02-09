@@ -7,6 +7,7 @@ operation ESM!esm::ui::Placeholder createSpacerFromPlaceholder(application : UI!
 	return ret;
 }
 
-operation ESM!esm::ui::Placeholder map(application : UI!ui::Application) : UI!ui::Spacer {
+operation ESM!esm::ui::Placeholder map(application : UI!ui::Application, page : UI!ui::PageDefinition) : UI!ui::Spacer {
 	return self.createSpacerFromPlaceholder(application);
 }
+
