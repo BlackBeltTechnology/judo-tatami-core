@@ -17,4 +17,4 @@ const USE_REQUEST_BASE_URL_FOR_API = bool.fromEnvironment('USE_REQUEST_BASE_URL'
 const USE_REQUEST_BASE_URL_FROM_SETTINGS = bool.fromEnvironment('USE_REQUEST_BASE_URL_FROM_SETTINGS', defaultValue: false);
 
 const API_DEFAULT_BASE_URL = String.fromEnvironment('API_DEFAULT_BASE_URL', defaultValue:  'http://localhost:8181');
-const API_RELATIVE_PATH = String.fromEnvironment('API_RELATIVE_PATH', defaultValue: '/api/{{ modelPackage application.name }}');
+const API_RELATIVE_PATH = String.fromEnvironment('API_RELATIVE_PATH', defaultValue: '/api/{{ baseUrl application.name }}');
