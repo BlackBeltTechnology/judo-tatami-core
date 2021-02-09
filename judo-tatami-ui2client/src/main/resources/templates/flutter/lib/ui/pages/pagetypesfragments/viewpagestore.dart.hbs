@@ -49,7 +49,38 @@ abstract class _{{ fqClass page.name }}PageStore with Store {
     }
     {{/ if }}
     */
+    {{# if page.isPageTypeDashboard }}
+        {{# if relation.isRelationBehaviourTypeListable }}
 
+    @observable
+    FutureStatus getterStatus = FutureStatus.pending;
+
+    @action
+    void getterStatusSetFulfilled(){
+        if({{ fqVariable relation.name }}StoreFuture.status == FutureStatus.fulfilled){
+            getterStatus = FutureStatus.fulfilled;
+        }
+    }
+
+    @action
+    void getterStatusSetRejected(){
+        getterStatus = FutureStatus.rejected;
+    }
+
+    @action
+    Future<{{ fqClass relation.target.name }}Store> get{{ fqClass relation.name }}() async {
+        try {
+            errorMessage = null;
+            {{ fqVariable relation.name }}StoreFuture = ObservableFuture(_{{ fqVariable application.actor.name }}Repository.{{ fqVariable relation.owner.name }}{{ fqClass relation.name }}Get());
+            return await {{ fqVariable relation.name }}StoreFuture;
+        } on ApiException catch (error) {
+            errorMessage = "Could not load {{ relation.name }}";
+            throw error;
+        }
+    }
+
+        {{/ if }}
+    {{/ if }}
     {{# if relation.target.isClassBehaviourTypeRefreshable }}
     @action
     Future<void> refresh{{ className relation.target.name }}({{ fqClass relation.target.name }}Store target{{ className page.dataElement.target.name }}Store) async {

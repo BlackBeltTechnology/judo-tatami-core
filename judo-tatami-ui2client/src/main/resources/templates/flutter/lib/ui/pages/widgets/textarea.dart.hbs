@@ -1,6 +1,6 @@
 {{~ log 'Text area input field generation for' (variable application.name) '-' (fqClass page.name)'page'(variable page.dataElement.target.name) attributeType.name level='debug' ~}}
 //START textarea.dart.hbs-----{{page.dataElement.target.name}}-----------------------------------------------------------------------------
-{{#if page.isPageTypeView}}
+{{#if (isViewTypePage page) }}
 Observer(
     builder: (_) => JudoInputText(
         key: UniqueKey(),
@@ -26,21 +26,6 @@ JudoInputText(
     label: '{{ label }}',
     onChanged: (value) => target{{ className page.dataElement.target.name }}Store.set{{ className attributeType.name }}(value.toString()),
     readOnly: {{attributeType.isReadOnly}},
-),
-{{/if}}
-{{#if page.isPageTypeOperationOutput}}
-Observer(
-    builder: (_) => JudoInputText(
-        key: UniqueKey(),
-        col: {{ multiplyCol col }},
-        row: {{ row }},
-        multiline: true,
-        disabled: {{ disabled }},
-        icon: Icon(Icons.{{ this.leadingIcon.name }}),
-        label: '{{ label }}',
-        initialValue: target{{ className page.dataElement.target.name }}Store.{{ attributeType.name }},
-        readOnly: true,
-    )
 ),
 {{/if}}
 {{#if page.isPageTypeOperationInput}}

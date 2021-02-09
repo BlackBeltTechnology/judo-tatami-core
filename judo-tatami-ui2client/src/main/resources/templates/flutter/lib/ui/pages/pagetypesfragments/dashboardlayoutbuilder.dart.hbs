@@ -1,0 +1,59 @@
+//START dashboardlayoutbuilder.dart.hbs-----{{page.name}}-----------------------------------------------------------------------------------
+return {{fqClass application.name}}Scaffold(
+    pageTitle: navigation.currentTitle,
+    // ignore: missing_return
+    body: Observer(builder: (_) {
+        switch({{fqVariable page.name}}PageStore.getterStatus){
+            case FutureStatus.pending:
+                return CustomScrollView(
+                    slivers: [
+                        SliverFillRemaining(
+                            hasScrollBody: false,
+                            child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                    JudoLoadingProgress(),
+                                ],
+                            ),
+                        ),
+                    ]
+                );
+            case FutureStatus.rejected:
+                return Container();
+            case FutureStatus.fulfilled:
+                return LayoutBuilder(builder: (context, constraints) {
+                {{#each page.containers as |pageContainer|}}
+                    {{#unless pageContainer.layoutType.original}}
+                    if (MediaQuery.of(context).size.width >= {{pageContainer.layoutType.minimumResolution}} && MediaQuery.of(context).size.width <= {{pageContainer.layoutType.maximumResolution}}) {
+                        return get{{ fqClass page.name }}Page{{fqClass pageContainer.layoutType.name}}Body(context
+
+                            {{~# if page.dataElement ~}}
+                            , target{{ className page.dataElement.name }}Store
+                            {{~/ if ~}}
+
+                            , {{fqVariable page.name}}PageStore
+
+                            {{~# if (isInputWidgetMapNeed page) ~}}
+                            , inputWidgetKeyMap
+                            {{~/ if ~}}
+                        );
+                    }
+                        {{/unless}}
+                    {{/each}}
+                    return get{{ fqClass page.name }}Page{{fqClass application.defaultLayoutType.name}}Body(context
+
+                            {{~# if page.dataElement ~}}
+                            , target{{ className page.dataElement.name }}Store
+                            {{~/ if ~}}
+
+                            , {{fqVariable page.name}}PageStore
+
+                            {{~# if (isInputWidgetMapNeed page) ~}}
+                            , inputWidgetKeyMap
+                            {{~/ if ~}}
+                    );
+                });
+        }
+    }),
+);
+//END dashboardlayoutbuilder.dart.hbs-----{{page.name}}-------------------------------------------------------------------------------------
