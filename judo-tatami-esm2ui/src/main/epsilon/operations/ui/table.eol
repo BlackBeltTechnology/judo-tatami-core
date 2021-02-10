@@ -41,7 +41,7 @@ operation UI!ui::Table calculateActions(application : UI!ui::Application, previe
 	        }
 		}
 		
-		if (pageType == UI!ui::PageType#OPERATION_INPUT) {
+		if (pageType == UI!ui::PageType#OPERATION_INPUT and (relationType.getIsRelationKindAggregation() or relationType.getIsRelationKindComposition())) {
 			self.createUpdateAction(relationType, application, preview);
 			self.createRemoveAction();
 			self.createUnsetAction();
@@ -49,9 +49,6 @@ operation UI!ui::Table calculateActions(application : UI!ui::Application, previe
 	        self.createCreateAction(relationType, application, preview, buttonGroup);
 			self.createSetAction(relationType, buttonGroup);
 			self.createAddAction(relationType, buttonGroup);
-			
-			relationType.target.behaviours.add(UI!ui::data::ClassBehaviourType#UPDATE);
-			relationType.target.behaviours.add(UI!ui::data::ClassBehaviourType#VALIDATE_UPDATE);	
 		}
 	
 		if (pageType == UI!ui::PageType#TABLE or (pageType == UI!ui::PageType#DASHBOARD and relationType.isCollection)) {

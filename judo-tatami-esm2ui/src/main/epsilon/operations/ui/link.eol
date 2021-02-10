@@ -35,16 +35,13 @@ operation UI!ui::Link calculateActions(application : UI!ui::Application, preview
 			}
 		}
 		
-		if (pageType == UI!ui::PageType#OPERATION_INPUT) {
+		if (pageType == UI!ui::PageType#OPERATION_INPUT and (relationType.getIsRelationKindAggregation() or relationType.getIsRelationKindComposition())) {
 			self.createUpdateAction(relationType, application, preview);
 			self.createRemoveAction();
 			self.createUnsetAction();
 	        self.createCreateAction(relationType, application, preview);
 			self.createSetAction(relationType);
 			self.createAddAction(relationType);
-			
-			relationType.target.behaviours.add(UI!ui::data::ClassBehaviourType#UPDATE);
-			relationType.target.behaviours.add(UI!ui::data::ClassBehaviourType#VALIDATE_UPDATE);
 		}
 	
 		if (pageType == UI!ui::PageType#TABLE or (pageType == UI!ui::PageType#DASHBOARD and relationType.isCollection)) {

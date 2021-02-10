@@ -165,4 +165,3 @@ operation ESM!esm::structure::ReferenceTypedElement isValidateUpdateSupported() 
 operation ESM!esm::structure::ReferenceTypedElement isDeleteSupported() : Boolean {
 	return self.target.mapping.isDefined() and self.isDeleteAllowed() and (self.lower < self.upper or self.upper == -1);
 }
-
