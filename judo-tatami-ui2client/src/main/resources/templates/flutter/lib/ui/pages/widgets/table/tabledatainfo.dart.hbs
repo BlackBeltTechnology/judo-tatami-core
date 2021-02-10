@@ -53,9 +53,9 @@ class {{ fqClass table.pageDefinition.name }}{{ fqClass table.name }}{{ fqClass 
                 {{# unless (isEnumType dataType) }}
         if (columnIndex == {{@index}}) {
             if (asc) {
-                return (a, b) => a.{{ attributeType.name }}.compareTo(b.{{ attributeType.name }});
+                return (a, b) => a.{{ variable attributeType.name }}.compareTo(b.{{ variable attributeType.name }});
             } else {
-                return (a, b) => b.{{ attributeType.name }}.compareTo(a.{{ attributeType.name }});
+                return (a, b) => b.{{ variable attributeType.name }}.compareTo(a.{{ variable attributeType.name }});
             }
                 {{/ unless }}
             {{/ unless }}
@@ -69,7 +69,7 @@ class {{ fqClass table.pageDefinition.name }}{{ fqClass table.name }}{{ fqClass 
         {{# unless (isBooleanDataType dataType) }}
             {{# unless (isEnumType dataType) }}
         if (columnIndex == {{@index}}) {
-            return "{{ attributeType.name }}";
+            return "{{ variable attributeType.name }}";
         }
             {{/ unless }}
         {{/ unless }}

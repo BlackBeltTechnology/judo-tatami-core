@@ -7,52 +7,45 @@ Observer(
         col: {{ multiplyCol col }},
         row: {{ row }},
         multiline: true,
-        disabled: {{ disabled }},
+        disabled: {{ disabled }}{{# if enabledBy }} || !((target{{ className page.relationType.target.name }}Store?.{{ variable enabledBy.name }}) ?? false){{/ if }},
         icon: Icon(Icons.{{ this.leadingIcon.name }}),
         label: '{{ label }}',
-        initialValue: target{{ className page.dataElement.target.name }}Store.{{ attributeType.name }},
+        initialValue: target{{ className page.dataElement.target.name }}Store.{{ variable attributeType.name }},
         readOnly: true,
     )
 ),
 {{/if}}
-{{#if page.isPageTypeCreate}}
-JudoInputText(
-    key: inputWidgetKeyMap['{{ name }}'],
-    col: {{ multiplyCol col }},
-    row: {{ row }},
-    multiline: true,
-    disabled: {{ disabled }},
-    icon: Icon(Icons.{{ this.leadingIcon.name }}),
-    label: '{{ label }}',
-    onChanged: (value) => target{{ className page.dataElement.target.name }}Store.set{{ className attributeType.name }}(value.toString()),
-    readOnly: {{attributeType.isReadOnly}},
-),
+
+{{#if (isCreateTypePage page) }}
+{{# if enabledBy }}Observer(
+    builder: (_) => {{/ if }}JudoInputText(
+        key: inputWidgetKeyMap['{{ name }}'],
+        col: {{ multiplyCol col }},
+        row: {{ row }},
+        multiline: true,
+        disabled: {{ disabled }}{{# if enabledBy }} || !((target{{ className page.relationType.target.name }}Store?.{{ variable enabledBy.name }}) ?? false){{/ if }},
+        icon: Icon(Icons.{{ this.leadingIcon.name }}),
+        label: '{{ label }}',
+        onChanged: (value) => target{{ className page.dataElement.target.name }}Store.set{{ className attributeType.name }}(value.toString()),
+        readOnly: {{attributeType.isReadOnly}},
+    ){{# if enabledBy }}
+){{/ if }},
 {{/if}}
-{{#if page.isPageTypeOperationInput}}
-JudoInputText(
-    key: inputWidgetKeyMap['{{ name }}'],
-    col: {{ multiplyCol col }},
-    row: {{ row }},
-    multiline: true,
-    disabled: {{ disabled }},
-    icon: Icon(Icons.{{ this.leadingIcon.name }}),
-    label: '{{ label }}',
-    onChanged: (value) => target{{ className page.dataElement.target.name }}Store.set{{ className attributeType.name }}(value.toString()),
-    readOnly: {{attributeType.isReadOnly}},
-),
-{{/if}}
+
 {{#if page.isPageTypeUpdate}}
-JudoInputText(
-    key: inputWidgetKeyMap['{{ name }}'],
-    col: {{ multiplyCol col }},
-    row: {{ row }},
-    multiline: true,
-    disabled: {{ disabled }},
-    icon: Icon(Icons.{{ this.leadingIcon.name }}),
-    label: '{{ label }}',
-    initialValue: target{{ className page.dataElement.target.name }}Store.{{ attributeType.name }},
-    onChanged: (value) => target{{ className page.dataElement.target.name }}Store.set{{ className attributeType.name }}(value.toString()),
-    readOnly: {{attributeType.isReadOnly}},
-),
+{{# if enabledBy }}Observer(
+    builder: (_) => {{/ if }}JudoInputText(
+        key: inputWidgetKeyMap['{{ name }}'],
+        col: {{ multiplyCol col }},
+        row: {{ row }},
+        multiline: true,
+        disabled: {{ disabled }}{{# if enabledBy }} || !((target{{ className page.relationType.target.name }}Store?.{{ variable enabledBy.name }}) ?? false){{/ if }},
+        icon: Icon(Icons.{{ this.leadingIcon.name }}),
+        label: '{{ label }}',
+        initialValue: target{{ className page.dataElement.target.name }}Store.{{ variable attributeType.name }},
+        onChanged: (value) => target{{ className page.dataElement.target.name }}Store.set{{ className attributeType.name }}(value.toString()),
+        readOnly: {{attributeType.isReadOnly}},
+    ){{# if enabledBy }}
+){{/ if }},
 {{/if}}
 //END textarea.dart.hbs-----{{page.dataElement.target.name}}-------------------------------------------------------------------------------
