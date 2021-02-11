@@ -103,6 +103,7 @@
                         </configuration>
                     </execution>
                     
+                    <!--
                     <execution>
                         <id>generate-client-flutter</id>
                         <phase>compile</phase>
@@ -125,6 +126,7 @@
                             <cleanupDaemonThreads>false</cleanupDaemonThreads>
                         </configuration>
                     </execution>
+                    -->
                     
                 </executions>
                 <dependencies>
@@ -237,6 +239,7 @@
     </dependencies>
     
     <profiles>
+        <!--
         <profile>
             <activation>
                 <activeByDefault>true</activeByDefault>
@@ -248,7 +251,7 @@
                 <myproperty>some value</myproperty>
             </properties>
         </profile>
-        
+        -->
         <profile>
             <id>Windows</id>
             <activation>
@@ -287,7 +290,7 @@
         <profile>
             <id>compile-flutter-client</id>
             <activation>
-                <activeByDefault>false</activeByDefault>
+                 <file><exists>.</exists></file>
             </activation>
             <build>
                 <plugins>
