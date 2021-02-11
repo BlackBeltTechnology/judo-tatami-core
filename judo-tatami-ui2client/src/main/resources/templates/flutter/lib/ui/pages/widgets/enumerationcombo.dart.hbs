@@ -1,67 +1,51 @@
 {{~ log 'Enumeration combo generation for' (variable application.name) '-' (fqClass page.name)'page' label level='debug' }}
 //START enumerationcombo.dart.hbs-----{{page.name}}----------------------------------------------------------------------------------------
 {{#if (isViewTypePage page) }}
-    Observer(
-        builder: (_) => JudoComboBox<{{ className attributeType.dataType.name }}>(
-            key: UniqueKey(),
-            col: {{ multiplyCol col }},
-            row: {{ row }},
-            disabled: {{ disabled }},
-            items: {{ className attributeType.dataType.name }}.values,
-            value: target{{ className page.dataElement.target.name }}Store.{{ attributeType.name }},
-            dropdownMenuShow: (value) => new DropdownMenuItem<{{ className attributeType.dataType.name }}>(
-                value: value,
-                child: new Text(value.toString().split('.').last)
-            ),
-            readOnly: true,
-        )
-    ),
+Observer(
+    builder: (_) => JudoComboBox<{{ className attributeType.dataType.name }}>(
+        key: UniqueKey(),
+        col: {{ multiplyCol col }},
+        row: {{ row }},
+        disabled: {{ disabled }}{{# if enabledBy }} || !((target{{ className page.relationType.target.name }}Store?.{{ variable enabledBy.name }}) ?? false){{/ if }},
+        items: {{ className attributeType.dataType.name }}.values,
+        value: target{{ className page.dataElement.target.name }}Store.{{ variable attributeType.name }},
+        dropdownMenuShow: (value) => new DropdownMenuItem<{{ className attributeType.dataType.name }}>(
+            value: value,
+            child: new Text(value.toString().split('.').last)
+        ),
+        readOnly: true,
+    )
+),
 {{/if}}
-{{#if page.isPageTypeCreate}}
-    Observer(
-        builder: (_) => JudoComboBox<{{ className attributeType.dataType.name }}>(
-            key: inputWidgetKeyMap['{{ name }}'],
-            col: {{ multiplyCol col }},
-            row: {{ row }},
-            disabled: {{ disabled }},
-            items: {{ className attributeType.dataType.name }}.values,
-            value: target{{ className page.dataElement.target.name }}Store.{{ attributeType.name }},
-            onChanged: (value) => target{{ className page.dataElement.target.name }}Store.set{{ className attributeType.name }}(value),
-            dropdownMenuShow: (value) => new DropdownMenuItem<{{ className attributeType.dataType.name }}>(
-                value: value,
-                child: new Text(value.toString().split('.').last)
-            ),
-            readOnly: {{attributeType.isReadOnly}},
-        )
-    ),
-{{/if}}
-{{#if page.isPageTypeUpdate}}
-    Observer(
-        builder: (_) => JudoComboBox<{{ className attributeType.dataType.name }}>(
-            key: inputWidgetKeyMap['{{ name }}'],
-            col: {{ multiplyCol col }},
-            row: {{ row }},
-            disabled: {{ disabled }},
-            items: {{ className attributeType.dataType.name }}.values,
-            value: target{{ className page.dataElement.target.name }}Store.{{ attributeType.name }},
-            onChanged: (value) => target{{ className page.dataElement.target.name }}Store.set{{ className attributeType.name }}(value),
-            dropdownMenuShow: (value) => new DropdownMenuItem<{{ className attributeType.dataType.name }}>(
-                value: value,
-                child: new Text(value.toString().split('.').last)
-            ),
-            readOnly: {{attributeType.isReadOnly}},
-        )
-    ),
-{{/if}}
-{{#if page.isPageTypeOperationInput}}
+
+{{#if (isCreateTypePage page) }}
 Observer(
     builder: (_) => JudoComboBox<{{ className attributeType.dataType.name }}>(
         key: inputWidgetKeyMap['{{ name }}'],
         col: {{ multiplyCol col }},
         row: {{ row }},
-        disabled: {{ disabled }},
+        disabled: {{ disabled }}{{# if enabledBy }} || !((target{{ className page.relationType.target.name }}Store?.{{ variable enabledBy.name }}) ?? false){{/ if }},
         items: {{ className attributeType.dataType.name }}.values,
-        value: target{{ className page.dataElement.target.name }}Store.{{ attributeType.name }},
+        value: target{{ className page.dataElement.target.name }}Store.{{ variable attributeType.name }},
+        onChanged: (value) => target{{ className page.dataElement.target.name }}Store.set{{ className attributeType.name }}(value),
+        dropdownMenuShow: (value) => new DropdownMenuItem<{{ className attributeType.dataType.name }}>(
+            value: value,
+            child: new Text(value.toString().split('.').last)
+        ),
+        readOnly: {{attributeType.isReadOnly}},
+    )
+),
+{{/if}}
+
+{{#if page.isPageTypeUpdate}}
+Observer(
+    builder: (_) => JudoComboBox<{{ className attributeType.dataType.name }}>(
+        key: inputWidgetKeyMap['{{ name }}'],
+        col: {{ multiplyCol col }},
+        row: {{ row }},
+        disabled: {{ disabled }}{{# if enabledBy }} || !((target{{ className page.relationType.target.name }}Store?.{{ variable enabledBy.name }}) ?? false){{/ if }},
+        items: {{ className attributeType.dataType.name }}.values,
+        value: target{{ className page.dataElement.target.name }}Store.{{ variable attributeType.name }},
         onChanged: (value) => target{{ className page.dataElement.target.name }}Store.set{{ className attributeType.name }}(value),
         dropdownMenuShow: (value) => new DropdownMenuItem<{{ className attributeType.dataType.name }}>(
             value: value,
