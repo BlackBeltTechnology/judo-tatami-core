@@ -35,14 +35,14 @@ class {{ fqClass ap.name }}RepositoryStoreMapper {
     // Attributes
     {{# each attributes as |attribute| }}
         {{~# if (isEnumType attribute.dataType) }}
-    if ({{ variable class.name }}.{{ attribute.name }} != null) {
-        {{ variable class.name }}Store.{{ attribute.name }} = {{ className attribute.dataType.name }}.values[{{ variable class.name }}.{{ attribute.name }}.index];
+    if ({{ variable class.name }}.{{ variable attribute.name }} != null) {
+        {{ variable class.name }}Store.{{ variable attribute.name }} = {{ className attribute.dataType.name }}.values[{{ variable class.name }}.{{ variable attribute.name }}.index];
     }
         {{ else }}
             {{#if (isTimestampType attribute.dataType)}}
-    {{ variable class.name }}Store.{{ attribute.name }} = {{ variable class.name }}.{{ attribute.name }} != null ? {{ variable class.name }}.{{ attribute.name }}.toLocal() : null;
+    {{ variable class.name }}Store.{{ variable attribute.name }} = {{ variable class.name }}.{{ variable attribute.name }} != null ? {{ variable class.name }}.{{ variable attribute.name }}.toLocal() : null;
             {{else}}
-    {{ variable class.name }}Store.{{ attribute.name }} = {{ variable class.name }}.{{ attribute.name }};
+    {{ variable class.name }}Store.{{ variable attribute.name }} = {{ variable class.name }}.{{ variable attribute.name }};
             {{/if}}
         {{/if}}
     {{/ each }}
@@ -86,11 +86,11 @@ class {{ fqClass ap.name }}RepositoryStoreMapper {
     {{# each attributes as |attribute| }}
         {{# unless isReadOnly }}
             {{~# if (isEnumType attribute.dataType) }}
-    if ({{ variable class.name }}Store.{{ attribute.name }} != null) {
-        {{ variable class.name }}.{{ attribute.name }} = {{ fqClass transferObjectTypeName }}{{ className attribute.name }}Enum.values[{{ variable class.name }}Store.{{ attribute.name }}.index];
+    if ({{ variable class.name }}Store.{{ variable attribute.name }} != null) {
+        {{ variable class.name }}.{{ variable attribute.name }} = {{ fqClass transferObjectTypeName }}{{ className attribute.name }}Enum.values[{{ variable class.name }}Store.{{ variable attribute.name }}.index];
     }
             {{ else }}
-    {{ variable class.name }}.{{ attribute.name }} = {{ variable class.name }}Store.{{ attribute.name }};
+    {{ variable class.name }}.{{ variable attribute.name }} = {{ variable class.name }}Store.{{ variable attribute.name }};
             {{/ if }}
         {{/ unless }}
     {{/ each }}
@@ -128,11 +128,11 @@ class {{ fqClass ap.name }}RepositoryStoreMapper {
     {{# each attributes as |attribute|}}
         {{# unless isReadOnly }}
             {{~# if (isEnumType attribute.dataType) }}
-    if ({{ variable class.name }}Store.{{ attribute.name }} != null) {
-        {{ variable class.name }}.{{ attribute.name }} = {{ fqClass transferObjectTypeName }}ForCreateAndUpdate{{ className attribute.name }}Enum.values[{{ variable class.name }}Store.{{ attribute.name }}.index];
+    if ({{ variable class.name }}Store.{{ variable attribute.name }} != null) {
+        {{ variable class.name }}.{{ variable attribute.name }} = {{ fqClass transferObjectTypeName }}ForCreateAndUpdate{{ className attribute.name }}Enum.values[{{ variable class.name }}Store.{{ variable attribute.name }}.index];
     }
             {{ else }}
-    {{ variable class.name }}.{{ attribute.name }} = {{ variable class.name }}Store.{{ attribute.name }};
+    {{ variable class.name }}.{{ variable attribute.name }} = {{ variable class.name }}Store.{{ variable attribute.name }};
             {{/ if }}
         {{/ unless }}
     {{/ each }}
@@ -193,11 +193,11 @@ class {{ fqClass ap.name }}RepositoryStoreMapper {
     {{# each attributes as |attribute|}}
         {{# unless isReadOnly }}
             {{~# if (isEnumType attribute.dataType) }}
-    if ({{ variable class.name }}Store.{{ attribute.name }} != null) {
-        optional{{ className class.name }}.{{ attribute.name }} = {{modelName ../../name}}OptionalTransferobjecttypes{{packageName class.name}}{{className class.name}}{{ className attribute.name }}Enum.values[{{ variable class.name }}Store.{{ attribute.name }}.index];
+    if ({{ variable class.name }}Store.{{ variable attribute.name }} != null) {
+        optional{{ className class.name }}.{{ variable attribute.name }} = {{modelName ../../name}}OptionalTransferobjecttypes{{packageName class.name}}{{className class.name}}{{ className attribute.name }}Enum.values[{{ variable class.name }}Store.{{ variable attribute.name }}.index];
     }
             {{ else }}
-    optional{{ className class.name }}.{{ attribute.name }} = {{ variable class.name }}Store.{{ attribute.name }};
+    optional{{ className class.name }}.{{ variable attribute.name }} = {{ variable class.name }}Store.{{ variable attribute.name }};
             {{/ if }}
         {{/ unless }}
     {{/ each }}

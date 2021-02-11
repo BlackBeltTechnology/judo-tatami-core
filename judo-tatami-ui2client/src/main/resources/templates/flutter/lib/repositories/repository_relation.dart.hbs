@@ -37,8 +37,8 @@ class {{ fqClass relation.owner.name }}{{ fqClass relation.name }}Repository {
               {{# each relation.target.attributes as |attribute| }}
                   {{# unless (isEnumType attribute.dataType) }}
                       {{# unless (isBooleanDataType attribute.dataType) }}
-      if (sortColumn == "{{ attribute.name }}" ) {
-        orderBy.attribute = {{ modelName relation.target.name }}Extension{{ packageName relation.target.name}}OrderingType{{ className relation.target.name}}AttributeEnum.{{ attribute.name }};
+      if (sortColumn == "{{ variable attribute.name }}" ) {
+        orderBy.attribute = {{ modelName relation.target.name }}Extension{{ packageName relation.target.name}}OrderingType{{ className relation.target.name}}AttributeEnum.{{ variable attribute.name }};
       }
                       {{/ unless }}
                   {{/ unless }}
@@ -69,8 +69,8 @@ class {{ fqClass relation.owner.name }}{{ fqClass relation.name }}Repository {
                 {{# each relation.target.attributes as |attribute| }}
                     {{# unless (isEnumType attribute.dataType) }}
                         {{# unless (isBooleanDataType attribute.dataType) }}
-      if (sortColumn == "{{ attribute.name }}" ) {
-        orderBy.attribute = {{ modelName relation.target.name }}Extension{{ packageName relation.target.name}}OrderingType{{ className relation.target.name}}AttributeEnum.{{ attribute.name }};
+      if (sortColumn == "{{ variable attribute.name }}" ) {
+        orderBy.attribute = {{ modelName relation.target.name }}Extension{{ packageName relation.target.name}}OrderingType{{ className relation.target.name}}AttributeEnum.{{ variable attribute.name }};
       }
                         {{/ unless }}
                     {{/ unless }}

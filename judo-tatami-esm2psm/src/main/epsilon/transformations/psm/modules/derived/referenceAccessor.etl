@@ -111,39 +111,46 @@ rule CreateNavigationPropertyForTransferObjectRelationDefaultValue
 	        log.debug("Created Navigation Property for transfer object relation default value: " + t.name);
 }
 
-@abstract
+@lazy
+@greedy
 rule CreateNavigationPropertyForTransferObjectRelationRange
     transform s : ESM!RelationFeature
     to t : JUDOPSM!NavigationProperty
     extends CreateNamedElement {
+        guard: esmUtils.isGetRangeSupported(s) and s.eContainer.isMapped()
         t.target = s.target.mapping.target.getPSMEquivalent();
         t.cardinality = s.equivalent("CreateCardinalityForTransferObjectRelationRange");
         t.name = "_" + s.name + "_range_" + esmUtils.getNamespaceElementFQName(s.eContainer).replace("::","_");
+
+        if (s.rangeType == ESM!RangeType#ANY) {
+            t.getterExpression = s.equivalent("CreateGetterExpressionForTransferObjectRelationAnyRange");
+        } else {
+            t.getterExpression = s.equivalent("CreateGetterExpressionForTransferObjectRelationDerivedRange");
+        }
+
         s.eContainer.mapping.target.getPSMEquivalent().navigationProperties.add(t);
 }
 
 @lazy
 @greedy
-rule CreateNavigationPropertyForTransferObjectRelationDerivedRange
-    transform s : ESM!RelationFeature
-    to t : JUDOPSM!NavigationProperty
-    extends CreateNavigationPropertyForTransferObjectRelationRange {
-        guard: s.isDerivedRangeExpressionSupported()
-            
-            t.getterExpression = s.equivalent("CreateGetterExpressionForTransferObjectRelationDerivedRange");
-            log.debug("Created Navigation Property for transfer object relation range: " + t.name);
-}
+rule CreateStaticNavigationForTransferObjectRelationRange
+	transform s: ESM!RelationFeature
+	to t : JUDOPSM!StaticNavigation
+	extends CreateNamedElement {
+	  guard: esmUtils.isGetRangeSupported(s) and not s.eContainer.isMapped()
 
-@lazy
-@greedy
-rule CreateNavigationPropertyForTransferObjectRelationAnyRange
-    transform s : ESM!RelationFeature
-    to t : JUDOPSM!NavigationProperty
-    extends CreateNavigationPropertyForTransferObjectRelationRange {
-        guard: s.isAnyRangeExpressionSupported()
+	  var ecoreUtil = new Native("org.eclipse.emf.ecore.util.EcoreUtil");
+	  ecoreUtil.getRootContainer(s).equivalent("CreateGeneratedNavigationRootPackage").elements.add(t);
+	  t.name = "_" + s.name + "_range_" + esmUtils.getNamespaceElementFQName(s.eContainer).replace("::","_");
+	  t.cardinality = s.equivalent("CreateCardinalityForTransferObjectRelationRange");
 
-            t.getterExpression = s.equivalent("CreateGetterExpressionForTransferObjectRelationAnyRange");
-            log.debug("Created Navigation Property for transfer object relation range: " + t.name);
+	  if (s.rangeType == ESM!RangeType#ANY) {
+	      t.getterExpression = s.equivalent("CreateGetterExpressionForTransferObjectRelationAnyRange");
+	  } else {
+	      t.getterExpression = s.equivalent("CreateGetterExpressionForTransferObjectRelationDerivedRange");
+	  }
+	  t.target = s.target.mapping.target.equivalent("CreateEntityType");
+	  log.debug("Created StaticNavigation for range relation of unmapped transfer object: " + t.name);
 }
 
 @lazy

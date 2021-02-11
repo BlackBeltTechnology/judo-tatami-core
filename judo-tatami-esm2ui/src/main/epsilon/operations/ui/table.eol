@@ -152,9 +152,17 @@ operation UI!ui::Table createRelationActionButtonsForTable(application : UI!ui::
 }
 
 operation UI!ui::Table isTablePage() : Boolean {
-	if (self.getPageDefinition().isDefined()) {
-		return self.getPageDefinition().pageType == UI!ui::PageType#TABLE;
-	} 
+	
+	var pageDef = self.getPageDefinition();
+	
+	if (pageDef.isDefined()) {
+		var dataElement = self.getPageDefinition().dataElement;
+		if (dataElement.isDefined() and dataElement.isKindOf(UI!ui::data::RelationType)) {
+			return pageDef.pageType == UI!ui::PageType#TABLE or	(pageDef.pageType == UI!ui::PageType#DASHBOARD and dataElement.isCollection);
+		}
+		return pageDef.pageType == UI!ui::PageType#TABLE; 
+	}
+	
 	return false;
 }
 
