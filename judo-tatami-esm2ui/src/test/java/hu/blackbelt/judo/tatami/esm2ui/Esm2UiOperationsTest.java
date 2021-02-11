@@ -195,6 +195,7 @@ public class Esm2UiOperationsTest {
                 .withCreateable(false)
                 .withUpdateable(false)
                 .withDeleteable(false)
+                .withAttributes(newDataMemberBuilder().withName("name").withDataType(numeric).build())
                 .build();
         useEntityType(e2).withMappedEntity(e2).build();
         
@@ -358,7 +359,7 @@ public class Esm2UiOperationsTest {
         
         final Optional<PageDefinition> e2TablePage = application.get().getPages().stream()
         		.filter(p -> p.getPageType().equals(PageType.TABLE) && p.getDataElement().getName().equals(relation.getName())).findAny();
-        assertFalse(e2TablePage.isPresent());
+        assertTrue(e2TablePage.isPresent());
         
         final Optional<PageDefinition> e3TablePage = application.get().getPages().stream()
         		.filter(p -> p.getPageType().equals(PageType.TABLE) && p.getDataElement().getName().equals(relation2.getName())).findAny();
@@ -786,6 +787,7 @@ public class Esm2UiOperationsTest {
                 .withCreateable(false)
                 .withUpdateable(false)
                 .withDeleteable(false)
+                .withAttributes(newDataMemberBuilder().withName("mapped").withBinding(stored3).withMemberType(MemberType.MAPPED).withDataType(str).build())
                 .build();
         useTransferObjectType(t4).withMappedEntity(e4).build();
         
