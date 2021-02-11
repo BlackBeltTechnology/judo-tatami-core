@@ -362,6 +362,20 @@
                             </environmentVariables>
                         </configuration>
                         <executions>
+
+                            <execution>
+                                <id>flutter-config-web-enable</id>
+                                <goals>
+                                    <goal>exec</goal>
+                                </goals>
+                                <phase>generate-sources</phase>
+                                <configuration>
+                                    <workingDirectory>${client-target-dir}/.skeleton</workingDirectory>
+                                    <executable>${script.executor}</executable>
+                                    <commandlineArgs>${flutter.config.web.execute}</commandlineArgs>
+                                </configuration>
+                            </execution>
+                            
                             <execution>
                                 <id>install-flutter-and-create-skeleton</id>
                                 <goals>
@@ -375,19 +389,6 @@
                                 </configuration>
                             </execution>
 
-                            <execution>
-                                <id>flutter-config-web-enable</id>
-                                <goals>
-                                    <goal>exec</goal>
-                                </goals>
-                                <phase>compile</phase>
-                                <configuration>
-                                    <workingDirectory>${client-target-dir}/.skeleton</workingDirectory>
-                                    <executable>${script.executor}</executable>
-                                    <commandlineArgs>${flutter.config.web.execute}</commandlineArgs>
-                                </configuration>
-                            </execution>
-                            
 
                             <!-- INTERNAL USER -->
                             <execution>
