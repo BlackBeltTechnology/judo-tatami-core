@@ -2,6 +2,7 @@ package hu.blackbelt.judo.tatami.ui2client.flutter;
 
 import com.github.jknack.handlebars.Handlebars;
 import com.github.jknack.handlebars.internal.lang3.StringUtils;
+import com.google.common.collect.Sets;
 import hu.blackbelt.judo.meta.ui.*;
 import hu.blackbelt.judo.meta.ui.data.*;
 import lombok.SneakyThrows;
@@ -12,13 +13,97 @@ import org.eclipse.emf.ecore.xmi.XMIResource;
 import org.springframework.expression.spel.support.StandardEvaluationContext;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import static java.util.Arrays.stream;
 
 @Log
 public class FlutterHelper {
+
+    final static Set<String> RESERVED_WORDS =
+            Sets.newHashSet(
+                    "abstract",
+                    "as",
+                    "assert",
+                    "async",
+                    "await",
+                    "break",
+                    "case",
+                    "catch",
+                    "class",
+                    "const",
+                    "continue",
+                    "covariant",
+                    "default",
+                    "deferred",
+                    "do",
+                    "dynamic",
+                    "else",
+                    "enum",
+                    "export",
+                    "extends",
+                    "extension",
+                    "external",
+                    "factory",
+                    "false",
+                    "final",
+                    "finally",
+                    "for",
+                    "Function",
+                    "get",
+                    "hide",
+                    "if",
+                    "implements",
+                    "import",
+                    "in",
+                    "inout",
+                    "interface",
+                    "is",
+                    "late",
+                    "library",
+                    "mixin",
+                    "native",
+                    "new",
+                    "null",
+                    "of",
+                    "on",
+                    "operator",
+                    "out",
+                    "part",
+                    "patch",
+                    "required",
+                    "rethrow",
+                    "return",
+                    "set",
+                    "show",
+                    "source",
+                    "static",
+                    "super",
+                    "switch",
+                    "sync",
+                    "this",
+                    "throw",
+                    "true",
+                    "try",
+                    "typedef",
+                    "var",
+                    "void",
+                    "while",
+                    "with",
+                    "yield",
+                    "String",
+                    "bool",
+                    "int",
+                    "num",
+                    "double",
+                    "dynamic",
+                    "List",
+                    "Map",
+                    "Object"
+            );
 
     @SneakyThrows
     public static void registerSpEL(StandardEvaluationContext context) {
@@ -222,7 +307,7 @@ public class FlutterHelper {
     }
 
     public static String variable(String fqName) {
-        return StringUtils.uncapitalize(className(fqName));
+        return reserved(StringUtils.uncapitalize(className(fqName)));
     }
 
     public static String dartType(DataType dataType) {
@@ -333,5 +418,11 @@ public class FlutterHelper {
         return input == null || "".equals(input.trim()) ? defaultValue : input;
     }
 
-
+    public static String reserved(String input) {
+        if (RESERVED_WORDS.contains(input)) {
+            return input + "_";
+        } else {
+            return input;
+        }
+    }
 }

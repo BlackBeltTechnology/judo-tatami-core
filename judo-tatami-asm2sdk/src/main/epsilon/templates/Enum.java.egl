@@ -9,7 +9,7 @@ public enum [%= e.getClassName() %] {
 
     [% for (literal in e.eLiterals) { %]
     	[% var enumerator = literal.instance; %]
-    	[%= enumerator.literal%]([%= enumerator.value %], "[%= enumerator.name%]")[% if (hasMore) {%],[% }%]
+    	[%= asmUtils.safeName(enumerator.literal)%]([%= enumerator.value %], "[%= enumerator.name%]")[% if (hasMore) {%],[% }%]
     	
     [% } %]
     ;
