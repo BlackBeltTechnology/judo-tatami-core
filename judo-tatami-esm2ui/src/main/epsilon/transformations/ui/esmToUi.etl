@@ -74,6 +74,10 @@ post {
     for (application : UI!ui::Application in UI!ui::Application.all()) {
         application.setIsForCreateOrUpdateTypeFlag();
     }
+
+    for (navigationController : UI!ui::NavigationController in UI!ui::NavigationController.all()) {
+        navigationController.items = navigationController.items.sortBy(e | e.~pos);
+    }
 }
 
 /*
