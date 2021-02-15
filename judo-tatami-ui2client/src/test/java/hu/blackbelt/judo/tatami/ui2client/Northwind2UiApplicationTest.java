@@ -9,6 +9,7 @@ import hu.blackbelt.judo.meta.ui.data.NumericType;
 import hu.blackbelt.judo.meta.ui.runtime.UiModel;
 import hu.blackbelt.judo.meta.ui.support.UiModelResourceSupport;
 import hu.blackbelt.judo.tatami.esm2ui.Esm2UiTransformationTrace;
+import hu.blackbelt.judo.tatami.ui2client.flutter.FlutterHelper;
 import hu.blackbelt.model.northwind.esm.NorthwindEsmModel;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.emf.common.util.URI;
@@ -73,7 +74,7 @@ public class Northwind2UiApplicationTest {
 
     
     @Test
-    void testCreateApplication() throws Exception {
+    void testCreateFlutterApplication() throws Exception {
         testName = "Northwind";
 
         esmModel = NorthwindEsmModel.fullDemo();
@@ -96,9 +97,9 @@ public class Northwind2UiApplicationTest {
                 ByteStreams.copy(getGeneratedFilesAsZip(generatedFiles.get(app)), zipOutputStream);
             }
         } */
-        Ui2Client.executeUi2ClientGenerationToDirectory(uiModel,
-                GeneratorTemplate.loadYamlURL(Ui2Client.calculateUi2ClientTemplateScriptURI().resolve("flutter/flutter.yaml").toURL()),
-                new File(TARGET_TEST_CLASSES));
+
+        Ui2Client.executeUi2ClientGenerationToDirectory(Ui2FlutterClient.getFlutterClientGenerator(uiModel),
+                new File(TARGET_TEST_CLASSES), Ui2FlutterClient.OUTPUT_NAME_GENERATOR_FUNCTION);
 
         final Optional<Application> application = allUi(Application.class)
                 .findAny();
