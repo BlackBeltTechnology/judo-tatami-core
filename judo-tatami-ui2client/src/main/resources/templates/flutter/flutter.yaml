@@ -283,13 +283,13 @@
 - overwriteExpression: false
   factoryExpression: "{#application}"
   pathExpression: "'web/icons/Icon-192.png'"
-  templateName: flutter/web/web/icons/Icon-192.png
+  templateName: flutter/web/icons/Icon-192.png
   copy: true
 
 - overwriteExpression: false
   factoryExpression: "{#application}"
   pathExpression: "'web/icons/Icon-512.png'"
-  templateName: flutter/web/web/icons/Icon-512.png
+  templateName: flutter/web/icons/Icon-512.png
   copy: true
 
 # ========================================
