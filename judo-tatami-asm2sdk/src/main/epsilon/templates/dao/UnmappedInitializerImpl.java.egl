@@ -5,12 +5,12 @@
 
 [% 
 	var dtoTypeName = getSdkPrefix() + dto.getDtoTypeName();
-	var name = dto.getClassName() + "StaticInitializer"; 	
+	var name = dto.getClassName() + "StaticInitializer";
+	
+	var sdkUtil =  getInternalPrefix() + getModelPackageName() + ".util.SdkUtil";	
 %]
 
 package [%= getInternalPrefix() + dto.getClassifierPackageName() %];
-
-import static [%= getInternalPrefix() + getModelPackageName() %].util.SdkUtil.*;
 
 public class [%= name%]Impl extends [%= getInternalPrefix() + getModelPackageName() %].util.AbstractSdkDao implements [%= dtoTypeName %].[%= name %] {
 
@@ -20,7 +20,7 @@ public class [%= name%]Impl extends [%= getInternalPrefix() + getModelPackageNam
 	public [%= dtoTypeName %].[%= dto.getClassName() %]Builder initBuilder() {
 		org.eclipse.emf.ecore.EClass eClass = getEClass(FQ_NAME);
 		hu.blackbelt.judo.dao.api.Payload resultPayload = dao.getStaticFeatures(eClass);
-		[%= dtoTypeName %] obj = fromPayload([%= dtoTypeName %].class, resultPayload);
+		[%= dtoTypeName %] obj = [%= sdkUtil %].fromPayload([%= dtoTypeName %].class, resultPayload);
 		return [%= dtoTypeName %].builderFrom(obj);
 	}
 

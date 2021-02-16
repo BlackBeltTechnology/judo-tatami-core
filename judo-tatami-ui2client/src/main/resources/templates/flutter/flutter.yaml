@@ -42,16 +42,8 @@
   pathExpression: >
     'lib/' +
     #path(#application.actor.name) + '/' +
-    'main.dart'
-  templateName: flutter/lib/main.dart.hbs
-
-- overwriteExpression: true
-  factoryExpression: "{#application}"
-  pathExpression: >
-    'lib/' +
-    #path(#application.actor.name) + '/' +
-    'main_release.dart'
-  templateName: flutter/lib/main_release.dart.hbs
+    'app.dart'
+  templateName: flutter/lib/app.dart.hbs
 
 # ========================================
 # error handler
@@ -533,7 +525,6 @@
   factoryExpression: "{#application}"
   pathExpression: "'lib/' + #path(#application.actor.name) + '/utilities/constants.dart'"
   templateName: flutter/lib/utilities/constants.dart
-  copy: true
 
 - overwriteExpression: true
   factoryExpression: "{#application}"

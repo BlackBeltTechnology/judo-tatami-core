@@ -3,8 +3,11 @@ package hu.blackbelt.judo.tatami.esm2psm;
 import com.google.common.collect.ImmutableList;
 import hu.blackbelt.epsilon.runtime.execution.api.Log;
 import hu.blackbelt.epsilon.runtime.execution.impl.Slf4jLog;
+import hu.blackbelt.judo.meta.esm.accesspoint.ActorType;
 import hu.blackbelt.judo.meta.esm.namespace.Model;
 import hu.blackbelt.judo.meta.esm.namespace.Package;
+import hu.blackbelt.judo.meta.esm.operation.OperationType;
+import hu.blackbelt.judo.meta.esm.operation.util.builder.OperationBuilders;
 import hu.blackbelt.judo.meta.esm.runtime.EsmModel;
 import hu.blackbelt.judo.meta.esm.runtime.EsmUtils;
 import hu.blackbelt.judo.meta.esm.structure.*;
@@ -41,6 +44,8 @@ import static hu.blackbelt.judo.meta.esm.runtime.EsmEpsilonValidator.validateEsm
 import static hu.blackbelt.judo.meta.esm.runtime.EsmModel.buildEsmModel;
 import static hu.blackbelt.judo.meta.esm.accesspoint.util.builder.AccesspointBuilders.*;
 import static hu.blackbelt.judo.meta.esm.structure.util.builder.StructureBuilders.*;
+import static hu.blackbelt.judo.meta.esm.operation.util.builder.OperationBuilders.*;
+import static hu.blackbelt.judo.meta.esm.ui.util.builder.UiBuilders.*;
 import static hu.blackbelt.judo.meta.esm.type.util.builder.TypeBuilders.newStringTypeBuilder;
 import static hu.blackbelt.judo.meta.psm.runtime.PsmModel.SaveArguments.psmSaveArgumentsBuilder;
 import static hu.blackbelt.judo.meta.psm.PsmEpsilonValidator.calculatePsmValidationScriptURI;
@@ -107,7 +112,7 @@ public class EsmStrucutre2PsmDerivedTest {
                 log.trace(e.toString() + " -> " + t.toString());
             }
         }
-
+        esmModel.saveEsmModel(EsmModel.SaveArguments.esmSaveArgumentsBuilder().file(new File(TARGET_TEST_CLASSES, testName + "-esm.model")));
         psmModel.savePsmModel(psmSaveArgumentsBuilder().file(new File(TARGET_TEST_CLASSES, testName + "-psm.model")));
     }
 
@@ -552,6 +557,80 @@ public class EsmStrucutre2PsmDerivedTest {
     }
 
     @Test
+    void testCreateRange() throws Exception {
+        testName = "CreateRange";
+
+        EntityType target = newEntityTypeBuilder().withName("target").build();
+        target.setMapping(newMappingBuilder().withTarget(target).build());
+
+        OneWayRelationMember relationMember = newOneWayRelationMemberBuilder().withName("relationMember")
+                .withRelationKind(RelationKind.AGGREGATION)
+                .withMemberType(MemberType.TRANSIENT)
+                .withRangeType(RangeType.DERIVED)
+                .withRangeExpression("TestModel::target")
+                .withLower(0)
+                .withUpper(-1)
+                .withTarget(target)
+                .build();
+        relationMember.setBinding(relationMember);
+
+        TransferObjectType transferObjectType = newTransferObjectTypeBuilder()
+        		.withName("transferObjectType")
+        		.withRelations(relationMember)
+        		.withForm(newTransferObjectFormBuilder().withName("form").build())
+        		.withTable(newTransferObjectTableBuilder().withName("table").build())
+        		.build();
+
+        EntityType entityWithOperation = newEntityTypeBuilder().withName("entityWithOperation")
+                .withOperations(OperationBuilders.newOperationBuilder().withName("operationWithInput")
+                        .withBinding("operationWithInput")
+                        .withOperationType(OperationType.INSTANCE)
+                        .withInput(newParameterBuilder().withLower(1).withUpper(1).withName("input").withTarget(transferObjectType).build())
+                        .withBody("//todo")
+                        .build())
+                .build();
+        entityWithOperation.setMappedEntity(entityWithOperation);
+        TransferObjectType mapping = newTransferObjectTypeBuilder()
+                .withName("mapping")
+                .withMappedEntity(entityWithOperation)
+                .withOperations(OperationBuilders.newOperationBuilder().withName("operationWithInput")
+                        .withBinding("operationWithInput")
+                        .withOperationType(OperationType.MAPPED)
+                        .withInput(newParameterBuilder().withLower(1).withUpper(1).withName("input").withTarget(transferObjectType).build())
+                        .build())
+                .build();
+
+        ActorType actor = newActorTypeBuilder().withName("Actor").withAccesses(
+                newAccessBuilder().withName("entityTypes").withTarget(entityWithOperation).withUpper(-1).withTargetDefinedCRUD(false).withCreateable(true).build()
+        ).build();
+        
+        final Model model = newModelBuilder()
+                .withName("TestModel")
+                .withElements(ImmutableList.of(transferObjectType, target, entityWithOperation, actor, mapping))
+                .build();
+
+        esmModel.addContent(model);
+        transform();
+
+        assertTrue(EsmUtils.isGetRangeSupported(relationMember));
+        final hu.blackbelt.judo.meta.psm.service.TransferObjectType psmUnmapped = allPsm(hu.blackbelt.judo.meta.psm.service.TransferObjectType.class)
+                .filter(e -> e.getName().equals(transferObjectType.getName())).findAny().get();
+
+        assertEquals(2, psmUnmapped.getRelations().size());
+
+        final Optional<hu.blackbelt.judo.meta.psm.derived.StaticNavigation> psmStaticNavigation =
+                allPsm(hu.blackbelt.judo.meta.psm.derived.StaticNavigation.class)
+                        .filter(e -> e.getName().equals("_" + relationMember.getName() + "_range_" + EsmUtils.getNamespaceElementFQName(transferObjectType).replace("::","_"))).findAny();
+        assertTrue(psmStaticNavigation.isPresent());
+        assertTrue(psmUnmapped.getRelations().stream()
+                .anyMatch(r -> r.getName().equals("_" + relationMember.getName() + "_range_" + EsmUtils.getNamespaceElementFQName(transferObjectType).replace("::","_"))
+                        && r.getBinding().equals(psmStaticNavigation.get())));
+        assertTrue(psmUnmapped.getRelations().stream()
+                .anyMatch(r -> r.getName().equals(relationMember.getName())
+                        && r.getRange().equals(psmStaticNavigation.get())));
+    }
+
+    @Test
     void testCreateNavigationPropertyFromOneWayRelationMemberForEntityTypeDefaultTransferObjectTypeTransferObjectRelationRangeAssociationEndWithoutPartner() throws Exception {
         testName = "CreateNavigationPropertyFromOneWayRelationMemberForEntityTypeDefaultTransferObjectTypeTransferObjectRelationRange";
 
@@ -560,10 +639,11 @@ public class EsmStrucutre2PsmDerivedTest {
 
         OneWayRelationMember associationEnd = newOneWayRelationMemberBuilder().withName("associationEnd")
                 .withRelationKind(RelationKind.ASSOCIATION)
+                .withMemberType(MemberType.STORED)
                 .withRangeType(RangeType.DERIVED)
                 .withRangeExpression("rangeExpression")
                 .withReverseCascadeDelete(false)
-                .withLower(1)
+                .withLower(0)
                 .withUpper(-1)
                 .withTarget(target)
                 .build();
@@ -572,9 +652,13 @@ public class EsmStrucutre2PsmDerivedTest {
         EntityType entityType = newEntityTypeBuilder().withName("entityType").withRelations(associationEnd).build();
         entityType.setMapping(newMappingBuilder().withTarget(entityType).build());
 
+        ActorType actor = newActorTypeBuilder().withName("Actor").withAccesses(
+                newAccessBuilder().withName("entityTypes").withTarget(entityType).withUpper(-1).withTargetDefinedCRUD(false).withCreateable(true).build()
+        ).build();
+
         final Model model = newModelBuilder()
                 .withName("TestModel")
-                .withElements(ImmutableList.of(entityType, target))
+                .withElements(ImmutableList.of(entityType, target, actor))
                 .build();
 
         esmModel.addContent(model);
@@ -625,9 +709,14 @@ public class EsmStrucutre2PsmDerivedTest {
         associationEnd1.setPartner(associationEnd2);
         associationEnd2.setPartner(associationEnd1);
 
+        ActorType actor = newActorTypeBuilder().withName("Actor").withAccesses(
+                newAccessBuilder().withName("entityTypes").withTarget(entityType).withUpper(-1).withTargetDefinedCRUD(false).withCreateable(true).build(),
+                newAccessBuilder().withName("targets").withTarget(target).withUpper(-1).withTargetDefinedCRUD(false).withCreateable(true).build()
+        ).build();
+
         final Model model = newModelBuilder()
                 .withName("TestModel")
-                .withElements(ImmutableList.of(entityType, target))
+                .withElements(ImmutableList.of(entityType, target, actor))
                 .build();
 
         esmModel.addContent(model);

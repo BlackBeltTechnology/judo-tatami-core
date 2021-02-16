@@ -1,68 +1,48 @@
 {{~ log 'Numeric field generation for' (variable application.name) '-' (fqClass page.name)'page'(variable page.dataElement.target.name) attributeType.name level='debug' ~}}
 //START numericinput.dart.hbs-----{{page.dataElement.target.name}}-------------------------------------------------------------------------
-{{#if page.isPageTypeView}}
+{{#if (isViewTypePage page) }}
 Observer(
     builder: (_) => JudoNumericInput(
         key: UniqueKey(),
         col: {{ multiplyCol col }},
         row: {{ row }},
-        disabled: {{ disabled }},
+        disabled: {{ disabled }}{{# if enabledBy }} || !((target{{ className page.relationType.target.name }}Store?.{{ variable enabledBy.name }}) ?? false){{/ if }},
         icon: Icon(Icons.{{ this.leadingIcon.name }}),
         label: '{{ label }}',
-        initialValue: target{{ className page.dataElement.target.name }}Store.{{ attributeType.name }}.toString(),
+        initialValue: target{{ className page.dataElement.target.name }}Store.{{ variable attributeType.name }}.toString(),
         readOnly: true,
     )
 ),
 {{/if}}
-{{#if page.isPageTypeCreate}}
-JudoNumericInput(
-    key: inputWidgetKeyMap['{{ name }}'],
-    col: {{ multiplyCol col }},
-    row: {{ row }},
-    disabled: {{ disabled }},
-    icon: Icon(Icons.{{ this.leadingIcon.name }}),
-    label: '{{ label }}',
-    onChanged: (value) => target{{ className page.dataElement.target.name }}Store.set{{ className attributeType.name }}({{ dartType attributeType.dataType }}.parse(value)),
-    readOnly: {{attributeType.isReadOnly}},
-),
+
+{{#if (isCreateTypePage page) }}
+{{# if enabledBy }}Observer(
+    builder: (_) => {{/ if }}JudoNumericInput(
+        key: inputWidgetKeyMap['{{ name }}'],
+        col: {{ multiplyCol col }},
+        row: {{ row }},
+        disabled: {{ disabled }}{{# if enabledBy }} || !((target{{ className page.relationType.target.name }}Store?.{{ variable enabledBy.name }}) ?? false){{/ if }},
+        icon: Icon(Icons.{{ this.leadingIcon.name }}),
+        label: '{{ label }}',
+        onChanged: (value) => target{{ className page.dataElement.target.name }}Store.set{{ className attributeType.name }}({{ dartType attributeType.dataType }}.parse(value)),
+        readOnly: {{attributeType.isReadOnly}},
+    ){{# if enabledBy }}
+){{/ if }},
 {{/if}}
+
 {{#if page.isPageTypeUpdate}}
-JudoNumericInput(
-    key: inputWidgetKeyMap['{{ name }}'],
-    col: {{ multiplyCol col }},
-    row: {{ row }},
-    disabled: {{ disabled }},
-    icon: Icon(Icons.{{ this.leadingIcon.name }}),
-    label: '{{ label }}',
-    initialValue: target{{ className page.dataElement.target.name }}Store.{{ attributeType.name }}.toString(),
-    onChanged: (value) => target{{ className page.dataElement.target.name }}Store.set{{ className attributeType.name }}({{ dartType attributeType.dataType }}.parse(value)),
-    readOnly: {{attributeType.isReadOnly}},
-),
-{{/if}}
-{{#if page.isPageTypeOperationInput}}
-JudoNumericInput(
-    key: inputWidgetKeyMap['{{ name }}'],
-    col: {{ multiplyCol col }},
-    row: {{ row }},
-    disabled: {{ disabled }},
-    icon: Icon(Icons.{{ this.leadingIcon.name }}),
-    label: '{{ label }}',
-    onChanged: (value) => target{{ className page.dataElement.target.name }}Store.set{{ className attributeType.name }}({{ dartType attributeType.dataType }}.parse(value)),
-    readOnly: {{attributeType.isReadOnly}},
-),
-{{/if}}
-{{#if page.isPageTypeOperationOutput}}
-Observer(
-    builder: (_) => JudoNumericInput(
-        key: UniqueKey(),
+{{# if enabledBy }}Observer(
+    builder: (_) => {{/ if }}JudoNumericInput(
+        key: inputWidgetKeyMap['{{ name }}'],
         col: {{ multiplyCol col }},
         row: {{ row }},
-        disabled: {{ disabled }},
+        disabled: {{ disabled }}{{# if enabledBy }} || !((target{{ className page.relationType.target.name }}Store?.{{ variable enabledBy.name }}) ?? false){{/ if }},
         icon: Icon(Icons.{{ this.leadingIcon.name }}),
         label: '{{ label }}',
-        initialValue: target{{ className page.dataElement.target.name }}Store.{{ attributeType.name }}.toString(),
-        readOnly: true,
-    )
-),
+        initialValue: target{{ className page.dataElement.target.name }}Store.{{ variable attributeType.name }}.toString(),
+        onChanged: (value) => target{{ className page.dataElement.target.name }}Store.set{{ className attributeType.name }}({{ dartType attributeType.dataType }}.parse(value)),
+        readOnly: {{attributeType.isReadOnly}},
+    ){{# if enabledBy }}
+){{/ if }},
 {{/if}}
 //END numericinput.dart.hbs-----{{page.dataElement.target.name}}---------------------------------------------------------------------------

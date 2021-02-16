@@ -25,6 +25,9 @@ class NavigationRegistry {
         route: Routes.{{ fqVariable page.name }}Page,
         isAccess: true,
         pageType:
+            {{~# if page.isPageTypeDashboard ~}}
+                PageType.View
+            {{~/ if ~}}
             {{~# if page.isPageTypeView ~}}
                 PageType.View
             {{~/ if ~}}
@@ -64,7 +67,11 @@ class NavigationRegistry {
     {{ fqVariable page.name }}Page.setPages(
         {{# each (getPagesByRelation application.pages page.dataElement) as |relationPage| }}
                 {{# if relationPage.isPageTypeView }}
+                    {{# if page.isPageTypeDashboard }}
+        viewPage: {{ fqVariable page.name }}Page,
+                    {{ else }}
         viewPage: {{ fqVariable relationPage.name }}Page,
+                    {{/if}}
                 {{/ if }}
                 {{# if relationPage.isPageTypeCreate }}
         createPage: {{ fqVariable relationPage.name }}Page,
@@ -110,10 +117,6 @@ class NavigationRegistry {
             {{# with page.relationType as |relation| }}
                 {{# if page.dataElement.isAccess }}
                     {{# unless page.dataElement.isCollection }}
-                        {{# if page.isPageTypeView }}
-        case Routes.{{ fqVariable page.name }}Page:
-            return {{ fqClass page.name }}PageArguments(target{{ className page.dataElement.target.name }}Store: target);
-                        {{/ if }}
                         {{# if page.isPageTypeView }}
         case Routes.{{ fqVariable page.name }}Page:
             return {{ fqClass page.name }}PageArguments(target{{ className page.dataElement.target.name }}Store: target);

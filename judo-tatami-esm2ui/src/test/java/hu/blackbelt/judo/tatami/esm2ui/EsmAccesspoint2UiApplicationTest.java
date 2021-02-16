@@ -42,6 +42,7 @@ import java.util.Optional;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
+import hu.blackbelt.judo.meta.ui.data.RelationType;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
 import org.junit.jupiter.api.AfterEach;
@@ -299,8 +300,24 @@ public class EsmAccesspoint2UiApplicationTest {
                 .build();
         useTransferObjectType(exposedEntity).withActorType(actor2).build();
         
+        ActorType actor3 = newActorTypeBuilder()
+                .withName("actor3")
+                .withKind(ActorKind.HUMAN)
+                .build();
+        
+        final Access exposedRelationMultiple2 = newAccessBuilder()
+                .withName(EXPOSED_GRAPH_MULTIPLE_NAME)
+                .withTarget(exposedEntity)
+                .withGetterExpression(MODEL_NAME + EsmUtils.NAMESPACE_SEPARATOR + EXPOSED_ENTITY_TYPE_NAME)
+                .withLower(0)
+                .withUpper(-1)
+                .withAppliedAnnotations(dashboardAnnotation)
+                .withCreateable(true).withUpdateable(true).withDeleteable(true)
+                .build();
+        useActorType(actor3).withAccesses(exposedRelationMultiple2).build();
+        
         final Model model = newModelBuilder().withName(MODEL_NAME)
-                .withElements(Arrays.asList(string, exposedEntity, actor, actor2))
+                .withElements(Arrays.asList(string, exposedEntity, actor, actor2, actor3))
                 .withAnnotations(dashboardAnnotation)
                 .build();
 
@@ -310,6 +327,12 @@ public class EsmAccesspoint2UiApplicationTest {
 
         final Optional<Application> application = allUi(Application.class).filter(a -> a.getName().equals(EsmUtils.getNamespaceElementFQName(actor))).findAny();
         assertTrue(application.isPresent());
+        final Optional<ClassType> uiActor = application.get().getDataElements().stream()
+                .filter(d -> d instanceof  ClassType && d.getName().equals(actor.getFQName())).map(c -> (ClassType)c).findAny();
+        assertTrue(uiActor.isPresent());
+        final Optional<RelationType> uiRelation = uiActor.get().getRelations().stream()
+                .filter(r -> r.getName().equals(EXPOSED_GRAPH_SINGLE_NAME)).findAny();
+        assertTrue(uiRelation.isPresent());
         
         final Optional<ClassType> uiEntity = application.get().getDataElements().stream().filter(e -> e instanceof ClassType)
         		.map(e -> (ClassType) e).filter(c -> c.getName().equals(EsmUtils.getNamespaceElementFQName(exposedEntity))).findAny();
@@ -318,7 +341,7 @@ public class EsmAccesspoint2UiApplicationTest {
         final Optional<PageDefinition> uiDashboard = application.get().getPages().stream()
         		.filter(d -> d.getName().equals(EsmUtils.getNamespaceElementFQName(actor) + "#Dashboard") && d.getIsPageTypeDashboard()).findAny();
         assertTrue(uiDashboard.isPresent());
-        assertEquals(uiEntity.get(), uiDashboard.get().getDataElement());
+        assertEquals(uiRelation.get(), uiDashboard.get().getDataElement());
         assertTrue(uiDashboard.get().getContainers().stream().filter(c -> c.getLayoutType().isOriginal()).findFirst().isPresent());
         assertTrue(uiDashboard.get().getContainers().stream().filter(c -> c.getLayoutType().isOriginal()).findFirst().get().getChildren().stream().anyMatch(c -> c instanceof Flex && c.getName().equals(exposedEntity.getView().getName())));
 
@@ -344,6 +367,22 @@ public class EsmAccesspoint2UiApplicationTest {
         		.filter(d -> d.getName().equals(EsmUtils.getNamespaceElementFQName(actor2) + "#Dashboard") && d.getIsPageTypeDashboard()).findAny();
         assertTrue(uiDashboard2.isPresent());
         assertNull(uiDashboard2.get().getDataElement());
+        
+                
+        final Optional<Application> application3 = allUi(Application.class).filter(a -> a.getName().equals(EsmUtils.getNamespaceElementFQName(actor3))).findAny();
+        assertTrue(application3.isPresent());
+        final Optional<ClassType> uiActor3 = application3.get().getDataElements().stream()
+                .filter(d -> d instanceof ClassType && d.getName().equals(actor3.getFQName())).map(c -> (ClassType)c).findAny();
+        assertTrue(uiActor3.isPresent());
+        final Optional<RelationType> uiRelation3 = uiActor3.get().getRelations().stream()
+                .filter(r -> r.getName().equals(EXPOSED_GRAPH_MULTIPLE_NAME)).findAny();
+        assertTrue(uiRelation3.isPresent());
+        
+        final Optional<PageDefinition> uiDashboard3 = application3.get().getPages().stream()
+        		.filter(d -> d.getName().equals(EsmUtils.getNamespaceElementFQName(actor3) + "#Dashboard") && d.getIsPageTypeDashboard()).findAny();
+        assertTrue(uiDashboard3.isPresent());
+        assertEquals(uiRelation3.get(), uiDashboard3.get().getDataElement());
+       
     }
     
     static <T> Stream<T> asStream(Iterator<T> sourceIterator, boolean parallel) {

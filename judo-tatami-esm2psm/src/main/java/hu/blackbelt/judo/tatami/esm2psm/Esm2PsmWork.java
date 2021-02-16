@@ -1,5 +1,7 @@
 package hu.blackbelt.judo.tatami.esm2psm;
 
+import hu.blackbelt.epsilon.runtime.execution.exceptions.ScriptExecutionException;
+import hu.blackbelt.judo.meta.esm.runtime.EsmEpsilonValidator;
 import hu.blackbelt.judo.tatami.core.workflow.engine.WorkFlowEngine;
 import hu.blackbelt.judo.tatami.core.workflow.flow.WorkFlow;
 import hu.blackbelt.judo.tatami.core.workflow.work.AbstractTransformationWork;
@@ -52,17 +54,29 @@ public class Esm2PsmWork extends AbstractTransformationWork {
 		getTransformationContext().put(esm2PsmTransformationTrace);
 	}
 
-	public static void main(String[] args) throws IOException, EsmModel.EsmValidationException, URISyntaxException, PsmModel.PsmValidationException {
+	public static void main(String[] args) throws IOException, EsmModel.EsmValidationException, URISyntaxException, PsmModel.PsmValidationException, ScriptExecutionException {
 
 		File esmModelFile = new File(args[0]);
 		String modelName = args[1];
 		File psmModelFile = new File(args[2]);
+		Boolean validate = true;
+
+		if (args.length >= 4) {
+			try {
+				validate = Boolean.parseBoolean(args[3]);
+			} catch (Exception e) {
+			}
+		}
 
 		Esm2PsmWork esm2PsmWork;
 		TransformationContext transformationContext;
 
 		EsmModel esmModel = EsmModel.loadEsmModel(
 				esmLoadArgumentsBuilder().file(esmModelFile).name(modelName));
+
+		if (validate) {
+			EsmEpsilonValidator.validateEsm(new Slf4jLog(log), esmModel, EsmEpsilonValidator.calculateEsmValidationScriptURI());
+		}
 
 		transformationContext = new TransformationContext(modelName);
 		transformationContext.put(esmModel);

@@ -1,8 +1,8 @@
-operation ESM!RelationFeature getPSMRangeEquivalent(): JUDOPSM!NavigationProperty {
-      if (self.isAnyRangeExpressionSupported()) {
-            return self.equivalent("CreateNavigationPropertyForTransferObjectRelationAnyRange");
-      } else if (self.isDerivedRangeExpressionSupported()) {
-            return self.equivalent("CreateNavigationPropertyForTransferObjectRelationDerivedRange");
+operation ESM!RelationFeature getPSMRangeEquivalent(): JUDOPSM!ReferenceAccessor {
+      if (self.eContainer().isMapped()) {
+          return self.equivalent("CreateNavigationPropertyForTransferObjectRelationRange");
+      } else {
+          return self.equivalent("CreateStaticNavigationForTransferObjectRelationRange");
       }
 }
 
@@ -15,28 +15,8 @@ operation ESM!RelationFeature getPSMDefaultEquivalent(): JUDOPSM!ReferenceAccess
 }
 
 @cached
-operation ESM!RelationFeature isRangeExpressionSupported() : Boolean {
-    return (self.isAnyRangeExpressionSupported() or self.isDerivedRangeExpressionSupported()) and not esmUtils.isContainment(self);
-}
-
-@cached
-operation ESM!RelationFeature isAnyRangeExpressionSupported() : Boolean {
-    return self.isNotDerived() and self.isContainerAndTargetMapped() and self.rangeType == ESM!RangeType#ANY and esmUtils.isExposedByHumanActorKind(self.eContainer);
-}
-
-@cached
-operation ESM!RelationFeature isDerivedRangeExpressionSupported() : Boolean {
-    return self.isNotDerived() and self.isContainerAndTargetMapped() and self.rangeType == ESM!RangeType#DERIVED and self.rangeExpression.isDefined() and self.rangeExpression.trim().length() > 0;
-}
-
-@cached
 operation ESM!RelationFeature isNotDerived() : Boolean {
     return self.memberType <> ESM!MemberType#DERIVED and not (self.memberType == ESM!MemberType#MAPPED and self.binding.memberType == ESM!MemberType#DERIVED);
-}
-
-@cached
-operation ESM!RelationFeature isContainerAndTargetMapped() : Boolean {
-    return self.eContainer.isMapped() and self.target.isMapped();
 }
 
 @cached

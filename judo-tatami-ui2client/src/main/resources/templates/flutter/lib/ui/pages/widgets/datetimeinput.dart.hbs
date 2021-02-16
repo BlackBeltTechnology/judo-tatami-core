@@ -1,29 +1,30 @@
 {{~ log 'Date time field generation for' (variable application.name) '-' (fqClass page.name)'page'(fqClass page.dataElement.target.name) attributeType.name level='debug' ~}}
 //START datetimeinput.dart.hbs-----{{page.dataElement.target.name}}------------------------------------------------------------------------
-{{#if page.isPageTypeView}}
+{{#if (isViewTypePage page) }}
 Observer(
     builder: (_) => JudoDateTimeInput(
         key: UniqueKey(),
         col: {{ multiplyCol col }},
         row: {{ row }},
-        disabled: {{ disabled }},
+        disabled: {{ disabled }}{{# if enabledBy }} || !((target{{ className page.relationType.target.name }}Store?.{{ variable enabledBy.name }}) ?? false){{/ if }},
         use24HourFormat: true,
-        initialDate: target{{ className page.dataElement.target.name }}Store.{{ attributeType.name }},
+        initialDate: target{{ className page.dataElement.target.name }}Store.{{ variable attributeType.name }},
         label: '{{ label }}',
         icon: Icon(Icons.{{ this.leadingIcon.name }}),
         readOnly: true,
     ),
 ),
 {{/if}}
-{{#if page.isPageTypeCreate}}
+
+{{#if (isCreateTypePage page) }}
 Observer(
     builder: (_) => JudoDateTimeInput(
         key: inputWidgetKeyMap['{{ name }}'],
         col: {{ multiplyCol col }},
         row: {{ row }},
-        disabled: {{ disabled }},
+        disabled: {{ disabled }}{{# if enabledBy }} || !((target{{ className page.relationType.target.name }}Store?.{{ variable enabledBy.name }}) ?? false){{/ if }},
         use24HourFormat: true,
-        initialDate: target{{ className page.dataElement.target.name }}Store.{{ attributeType.name }},
+        initialDate: target{{ className page.dataElement.target.name }}Store.{{ variable attributeType.name }},
         label: '{{ label }}',
         icon: Icon(Icons.{{ this.leadingIcon.name }}),
         onChanged: (value) => target{{ className page.dataElement.target.name }}Store.set{{ className attributeType.name }}(value),
@@ -33,48 +34,16 @@ Observer(
     ),
 ),
 {{/if}}
-{{#if page.isPageTypeOperationOutput}}
-Observer(
-    builder: (_) => JudoDateTimeInput(
-        key: UniqueKey(),
-        col: {{ multiplyCol col }},
-        row: {{ row }},
-        disabled: {{ disabled }},
-        use24HourFormat: true,
-        initialDate: target{{ className page.dataElement.target.name }}Store.{{ attributeType.name }},
-        label: '{{ label }}',
-        icon: Icon(Icons.{{ this.leadingIcon.name }}),
-        readOnly: true,
-    ),
-),
-{{/if}}
-{{#if page.isPageTypeOperationInput}}
-Observer(
-    builder: (_) => JudoDateTimeInput(
-        key: inputWidgetKeyMap['{{ name }}'],
-        col: {{ multiplyCol col }},
-        row: {{ row }},
-        disabled: {{ disabled }},
-        use24HourFormat: true,
-        initialDate: target{{ className page.dataElement.target.name }}Store.{{ attributeType.name }},
-        label: '{{ label }}',
-        icon: Icon(Icons.{{ this.leadingIcon.name }}),
-        onChanged: (value) => target{{ className page.dataElement.target.name }}Store.set{{ className attributeType.name }}(value),
-        firstDate: DateTime(DateTime.now().year - 5), // TODO: revisit this line
-        lastDate: DateTime(DateTime.now().year + 5), // TODO: revisit this line
-        readOnly: {{attributeType.isReadOnly}},
-    ),
-),
-{{/if}}
+
 {{#if page.isPageTypeUpdate}}
 Observer(
     builder: (_) => JudoDateTimeInput(
         key: inputWidgetKeyMap['{{ name }}'],
         col: {{ multiplyCol col }},
         row: {{ row }},
-        disabled: {{ disabled }},
+        disabled: {{ disabled }}{{# if enabledBy }} || !((target{{ className page.relationType.target.name }}Store?.{{ variable enabledBy.name }}) ?? false){{/ if }},
         use24HourFormat: true,
-        initialDate: target{{ className page.dataElement.target.name }}Store.{{ attributeType.name }},
+        initialDate: target{{ className page.dataElement.target.name }}Store.{{ variable attributeType.name }},
         label: '{{ label }}',
         icon: Icon(Icons.{{ this.leadingIcon.name }}),
         onChanged: (value) => target{{ className page.dataElement.target.name }}Store.set{{ className attributeType.name }}(value),

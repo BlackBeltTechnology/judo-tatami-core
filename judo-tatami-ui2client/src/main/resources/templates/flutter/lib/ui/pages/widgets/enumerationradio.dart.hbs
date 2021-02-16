@@ -1,31 +1,32 @@
 {{~ log 'Radio generation for' (variable application.name) '-' (fqClass page.name)'page' level='debug' ~}}
 //START enumerationradio.dart.hbs-----{{page.name}}----------------------------------------------------------------------------------------
-{{#if page.isPageTypeView}}
+{{#if (isViewTypePage page) }}
 Observer(
     builder: (_) => JudoRadio<{{ className attributeType.dataType.name }}>(
         key: UniqueKey(),
         col: {{ multiplyCol col }},
         row: {{ row }},
-        disabled: {{ disabled }},
+        disabled: {{ disabled }}{{# if enabledBy }} || !((target{{ className page.relationType.target.name }}Store?.{{ variable enabledBy.name }}) ?? false){{/ if }},
         items: {{ className attributeType.dataType.name }}.values,
         getLabel: (element) => element.toString().split('.').last,
         getValue: (element) => element,
-        groupValue: target{{ className page.dataElement.target.name }}Store.{{ attributeType.name }},
+        groupValue: target{{ className page.dataElement.target.name }}Store.{{ variable attributeType.name }},
         readOnly: true,
     )
 ),
 {{/if}}
-{{#if page.isPageTypeCreate}}
+
+{{#if (isCreateTypePage page) }}
 Observer(
     builder: (_) => JudoRadio<{{ className attributeType.dataType.name }}>(
         key: inputWidgetKeyMap['{{ name }}'],
         col: {{ multiplyCol col }},
         row: {{ row }},
-        disabled: {{ disabled }},
+        disabled: {{ disabled }}{{# if enabledBy }} || !((target{{ className page.relationType.target.name }}Store?.{{ variable enabledBy.name }}) ?? false){{/ if }},
         items: {{ className attributeType.dataType.name }}.values,
         getLabel: (element) => element.toString().split('.').last,
         getValue: (element) => element,
-        groupValue: target{{ className page.dataElement.target.name }}Store.{{ attributeType.name }},
+        groupValue: target{{ className page.dataElement.target.name }}Store.{{ variable attributeType.name }},
         onChanged: (value) => target{{ className page.dataElement.target.name }}Store.set{{ className attributeType.name }}(value),
         readOnly: {{attributeType.isReadOnly}},
     )
@@ -37,42 +38,11 @@ Observer(
         key: inputWidgetKeyMap['{{ name }}'],
         col: {{ multiplyCol col }},
         row: {{ row }},
-        disabled: {{ disabled }},
+        disabled: {{ disabled }}{{# if enabledBy }} || !((target{{ className page.relationType.target.name }}Store?.{{ variable enabledBy.name }}) ?? false){{/ if }},
         items: {{ className attributeType.dataType.name }}.values,
         getLabel: (element) => element.toString().split('.').last,
         getValue: (element) => element,
-        groupValue: target{{ className page.dataElement.target.name }}Store.{{ attributeType.name }},
-        onChanged: (value) => target{{ className page.dataElement.target.name }}Store.set{{ className attributeType.name }}(value),
-        readOnly: {{attributeType.isReadOnly}},
-    )
-),
-{{/if}}
-{{#if page.isPageTypeOperationOutput}}
-Observer(
-    builder: (_) => JudoRadio<{{ className attributeType.dataType.name }}>(
-        key: UniqueKey(),
-        col: {{ multiplyCol col }},
-        row: {{ row }},
-        disabled: {{ disabled }},
-        items: {{ className attributeType.dataType.name }}.values,
-        getLabel: (element) => element.toString().split('.').last,
-        getValue: (element) => element,
-        groupValue: target{{ className page.dataElement.target.name }}Store.{{ attributeType.name }},
-        readOnly: true,
-    )
-),
-{{/if}}
-{{#if page.isPageTypeOperationInput}}
-Observer(
-    builder: (_) => JudoRadio<{{ className attributeType.dataType.name }}>(
-        key: inputWidgetKeyMap['{{ name }}'],
-        col: {{ multiplyCol col }},
-        row: {{ row }},
-        disabled: {{ disabled }},
-        items: {{ className attributeType.dataType.name }}.values,
-        getLabel: (element) => element.toString().split('.').last,
-        getValue: (element) => element,
-        groupValue: target{{ className page.dataElement.target.name }}Store.{{ attributeType.name }},
+        groupValue: target{{ className page.dataElement.target.name }}Store.{{ variable attributeType.name }},
         onChanged: (value) => target{{ className page.dataElement.target.name }}Store.set{{ className attributeType.name }}(value),
         readOnly: {{attributeType.isReadOnly}},
     )

@@ -15,7 +15,7 @@
 part of {{ variable ap.name }}.repository;
 
 @lazySingleton
-class {{ fqClass ap.name }}Repository{{# if application.relationTypes }} with{{/ if }}
+class {{ fqClass ap.name }}Repository{{# if application.relationTypes }} with {{else}}{{# if classes}} with {{/if}}{{/ if }}
 {{# each application.relationTypes ~}}
     {{ fqClass owner.name }}{{ className name }}Repository{{# unless @last}},{{/ unless}} {{# if @last}}{{# if classes ~}}, {{/ if }} {{/ if }}
 {{/ each }}
