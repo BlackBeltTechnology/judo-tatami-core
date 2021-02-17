@@ -6,11 +6,6 @@ import hu.blackbelt.epsilon.runtime.execution.model.excel.ExcelModelContext;
 import hu.blackbelt.judo.meta.liquibase.runtime.LiquibaseModel;
 import hu.blackbelt.judo.meta.liquibase.runtime.LiquibaseNamespaceFixUriHandler;
 import hu.blackbelt.judo.meta.rdbms.runtime.RdbmsModel;
-import liquibase.Liquibase;
-import liquibase.database.Database;
-import liquibase.database.core.HsqlDatabase;
-import liquibase.database.jvm.HsqlConnection;
-import liquibase.resource.FileSystemResourceAccessor;
 import org.eclipse.epsilon.common.util.UriUtil;
 import org.junit.jupiter.api.Test;
 
@@ -19,8 +14,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.sql.Connection;
-import java.sql.DriverManager;
 import java.util.Arrays;
 
 import static hu.blackbelt.epsilon.runtime.execution.ExecutionContext.executionContextBuilder;
@@ -134,14 +127,14 @@ public class Excel2RdbmsTest {
         String originalLiquibaseName = format("testContents-%s-liquibase.xml", originalLiquibaseModel.getName());
         originalLiquibaseStream.writeTo(new FileOutputStream(new File(TARGET_TEST_CLASSES, originalLiquibaseName)));
 
-        Connection connection = DriverManager.getConnection("jdbc:hsqldb:hsql://localhost:9001", "SA", "");
-        Database liquibaseDb = new HsqlDatabase();
-        liquibaseDb.setConnection(new HsqlConnection(connection));
-
-        Liquibase originalLiquibase = new Liquibase(originalLiquibaseName,
-                                                    new FileSystemResourceAccessor(TARGET_TEST_CLASSES), liquibaseDb);
-        originalLiquibase.update("");
-        liquibaseDb.close();
+//        Connection connection = DriverManager.getConnection("jdbc:hsqldb:hsql://localhost:9001", "SA", "");
+//        Database liquibaseDb = new HsqlDatabase();
+//        liquibaseDb.setConnection(new HsqlConnection(connection));
+//
+//        Liquibase originalLiquibase = new Liquibase(originalLiquibaseName,
+//                                                    new FileSystemResourceAccessor(TARGET_TEST_CLASSES), liquibaseDb);
+//        originalLiquibase.update("");
+//        liquibaseDb.close();
 
         // save incremental model to liquibase changelog
 
@@ -158,15 +151,14 @@ public class Excel2RdbmsTest {
         String incrementalLiquibaseName = format("testContents-%s-liquibase.xml", incrementalLiquibaseModel.getName());
         incrementalLiquibaseStream.writeTo(new FileOutputStream(new File(TARGET_TEST_CLASSES, incrementalLiquibaseName)));
 
-        connection = DriverManager.getConnection("jdbc:hsqldb:hsql://localhost:9001", "SA", "");
-        liquibaseDb = new HsqlDatabase();
-        liquibaseDb.setConnection(new HsqlConnection(connection));
-
-        Liquibase incrementalLiquibase = new Liquibase(incrementalLiquibaseName,
-                                                       new FileSystemResourceAccessor(TARGET_TEST_CLASSES), liquibaseDb);
-        incrementalLiquibase.update("");
-        liquibaseDb.close();
-
+//        connection = DriverManager.getConnection("jdbc:hsqldb:hsql://localhost:9001", "SA", "");
+//        liquibaseDb = new HsqlDatabase();
+//        liquibaseDb.setConnection(new HsqlConnection(connection));
+//
+//        Liquibase incrementalLiquibase = new Liquibase(incrementalLiquibaseName,
+//                                                       new FileSystemResourceAccessor(TARGET_TEST_CLASSES), liquibaseDb);
+//        incrementalLiquibase.update("");
+//        liquibaseDb.close();
 
     }
 
