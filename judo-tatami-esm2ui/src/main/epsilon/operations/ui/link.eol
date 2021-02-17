@@ -4,60 +4,39 @@ operation UI!ui::Link calculateActions(application : UI!ui::Application, preview
 	var pageType = pageDefinition.pageType;
 
 	if (relationType.isDefined()) {
+	
+		// **** VIEW: view, create, update, delete (add, set, remove - optional) ****
 		if (pageType == UI!ui::PageType#VIEW or
 			pageType == UI!ui::PageType#OPERATION_OUTPUT or
 			(pageType == UI!ui::PageType#DASHBOARD and not relationType.isCollection)) {
-			self.createViewAction(relationType, application, preview);
+			
+			self.createViewCreateUpdateDeleteActions(relationType, application, preview);
+	        
+	        if (allActions) {
+	        	self.createSetUnsetActions(relationType);
+	        }
 		}
 		
 		if (pageType == UI!ui::PageType#CREATE or pageType == UI!ui::PageType#UPDATE) {
-			self.createViewAction(relationType, application, preview);
-			if (relationType.getIsRelationBehaviourTypeDeletable()) {
-	        	self.createDeleteAction(relationType);
-	        }
-	        if (relationType.getIsRelationBehaviourTypeUpdatable()) {
-	        	self.createUpdateAction(relationType, application, preview);
-	        }
-	        if (relationType.getIsRelationBehaviourTypeRemovable()) {
-	            self.createRemoveAction();
-	        }
-	        if (relationType.getIsRelationBehaviourTypeUnsetable()) {
-	            self.createUnsetAction();
-	        }
-	        if (relationType.getIsRelationBehaviourTypeCreatable()) {
-				self.createCreateAction(relationType, application, preview);
-			}
-			if (relationType.getIsRelationBehaviourTypeSetable()) {
-				self.createSetAction(relationType);
-			}
-			if (relationType.getIsRelationBehaviourTypeAddable()) {
-				self.createAddAction(relationType);
+			if (not self.disabled) {
+		        self.createSetUnsetActions(relationType);
 			}
 		}
 		
-		if (pageType == UI!ui::PageType#OPERATION_INPUT and (relationType.getIsRelationKindAggregation() or relationType.getIsRelationKindComposition())) {
-			self.createUpdateAction(relationType, application, preview);
-			self.createRemoveAction();
-			self.createUnsetAction();
-	        self.createCreateAction(relationType, application, preview);
-			self.createSetAction(relationType);
-			self.createAddAction(relationType);
+		if (pageType == UI!ui::PageType#OPERATION_INPUT) {
+			if (not self.disabled and relationType.memberType <> ESM!esm::structure::MemberType#TRANSIENT) {
+				self.createSetUnsetActions(relationType);
+			}
+			
+			if (relationType.memberType == ESM!esm::structure::MemberType#TRANSIENT) {
+				self.createCreateAction(relationType, application, preview);
+				self.createUpdateAction(relationType, application, preview);
+				self.createUnsetAction();
+			}
 		}
-	
+
 		if (pageType == UI!ui::PageType#TABLE or (pageType == UI!ui::PageType#DASHBOARD and relationType.isCollection)) {
-			self.createViewAction(relationType, application, preview);
-			if (relationType.getIsRelationBehaviourTypeDeletable()) {
-	        	self.createDeleteAction(relationType);
-	        }
-	        if (relationType.getIsRelationBehaviourTypeUpdatable()) {
-	        	self.createUpdateAction(relationType, application, preview);
-	        }
-	        if (relationType.getIsRelationBehaviourTypeRemovable()) {
-	            self.createRemoveAction();
-	        }
-	        if (relationType.getIsRelationBehaviourTypeUnsetable()) {
-	            self.createUnsetAction();
-	        }
+			//TABLE pages don't contain Link elements
 		}
 	
 		if (pageType == UI!ui::PageType#CUSTOM) {
@@ -66,6 +45,22 @@ operation UI!ui::Link calculateActions(application : UI!ui::Application, preview
 	}
 }
 
+//creating view, create, update, delete actions 
+operation UI!ui::Link createViewCreateUpdateDeleteActions(relationType : UI!ui::data::RelationType, application : UI!ui::Application, preview : Boolean) {
+
+	self.createViewAction(relationType, application, preview);
+	if (relationType.getIsRelationBehaviourTypeCreatable()) {
+		self.createCreateAction(relationType, application, preview);
+	}
+	if (relationType.getIsRelationBehaviourTypeUpdatable()) {
+		self.createUpdateAction(relationType, application, preview);
+	}
+	if (relationType.getIsRelationBehaviourTypeDeletable()) {
+		self.createDeleteAction(relationType);
+	}
+}
+
+//create view action
 operation UI!ui::Link createViewAction(relationType : UI!ui::data::RelationType, application : UI!ui::Application, preview : Boolean) {
 	if (preview) {
 		var viewAction = new UI!ui::ViewAction();
@@ -86,12 +81,35 @@ operation UI!ui::Link createViewAction(relationType : UI!ui::data::RelationType,
 	}
 }
 
+//create create action
+operation UI!ui::Link createCreateAction(relationType : UI!ui::data::RelationType, application : UI!ui::Application, preview : Boolean) {
+	if (preview) {
+		var action = new UI!ui::CreateAction();
+	    action.target = application.pages.selectOne(p | p.pageType = UI!ui::PageType#DASHBOARD);
+	    action.dataElement = relationType;
+	    self.actions.add(action);
+	} else {
+		var page = application.pages.selectOne(p | p.pageType = UI!ui::PageType#CREATE and p.getRelationType() == relationType);
+		if (page.isDefined()) {
+			log.debug(" ========= PAGE DEF: CREATE: " + relationType.eContainer.name + "." + relationType.name + " - " + page.name);
+		    var action = new UI!ui::CreateAction();
+		    action.target = page;
+		    action.dataElement = relationType;
+		    self.actions.add(action);
+		} else {
+			log.warn("No update page defined for: " + self.name + " - " + relationType.eContainer.name + "." + relationType.name);
+		}
+	}
+}
+
+//create delete action
 operation UI!ui::Link createDeleteAction(relationType : UI!ui::data::RelationType) {
 	var deleteAction = new UI!ui::DeleteAction();
     deleteAction.isTransient = relationType.memberType == UI!ui::data::MemberType#TRANSIENT;
     self.actions.add(deleteAction);
 }
 
+//create update action
 operation UI!ui::Link createUpdateAction(relationType : UI!ui::data::RelationType, application : UI!ui::Application, preview : Boolean) {
 	if (preview) {
         var editAction = new UI!ui::EditAction();
@@ -112,42 +130,25 @@ operation UI!ui::Link createUpdateAction(relationType : UI!ui::data::RelationTyp
     }
 }
 
-operation UI!ui::Link createRemoveAction() {
-	self.actions.add(new UI!ui::RemoveAction());
+//create set and unset actions (add and remove is not applicable to single relations)
+operation UI!ui::Link createSetUnsetActions(relationType : UI!ui::data::RelationType) {
+
+	if (relationType.getIsRelationBehaviourTypeUnsetable()) {
+        self.createUnsetAction();
+    }
+	if (relationType.getIsRelationBehaviourTypeSetable()) {
+		self.createSetAction(relationType);
+	}
 }
 
+//create unset action
 operation UI!ui::Link createUnsetAction() {
 	self.actions.add(new UI!ui::UnsetAction());
 }
 
+//create set action
 operation UI!ui::Link createSetAction(relationType : UI!ui::data::RelationType) {
 	var action = new UI!ui::SetAction();
 	action.dataElement = relationType;
 	self.actions.add(action);
-}
-
-operation UI!ui::Link createAddAction(relationType : UI!ui::data::RelationType) {
-	var action = new UI!ui::AddAction();
-	action.dataElement = relationType;
-	self.actions.add(action);
-}
-
-operation UI!ui::Link createCreateAction(relationType : UI!ui::data::RelationType, application : UI!ui::Application, preview : Boolean) {
-	if (preview) {
-		var action = new UI!ui::CreateAction();
-	    action.target = application.pages.selectOne(p | p.pageType = UI!ui::PageType#DASHBOARD);
-	    action.dataElement = relationType;
-	    self.actions.add(action);
-	} else {
-		var page = application.pages.selectOne(p | p.pageType = UI!ui::PageType#CREATE and p.getRelationType() == relationType);
-		if (page.isDefined()) {
-			log.debug(" ========= PAGE DEF: CREATE: " + relationType.eContainer.name + "." + relationType.name + " - " + page.name);
-		    var action = new UI!ui::CreateAction();
-		    action.target = page;
-		    action.dataElement = relationType;
-		    self.actions.add(action);
-		} else {
-			log.warn("No update page defined for: " + self.name + " - " + relationType.eContainer.name + "." + relationType.name);
-		}
-	}
 }

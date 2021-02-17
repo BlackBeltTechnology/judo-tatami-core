@@ -2,6 +2,7 @@ import "../../operations/_importAll.eol";
 import "pageDefinitionForPreview.etl";
 
 pre {
+	var allActions : Boolean = false;
 	var rootElement = previewElement.getRoot();
     var application : UI!ui::Application = createBlankApplicationForPreview();
 }

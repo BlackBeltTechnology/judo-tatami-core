@@ -74,6 +74,7 @@ import hu.blackbelt.judo.meta.ui.Application;
 import hu.blackbelt.judo.meta.ui.BackAction;
 import hu.blackbelt.judo.meta.ui.Button;
 import hu.blackbelt.judo.meta.ui.CallOperationAction;
+import hu.blackbelt.judo.meta.ui.Container;
 import hu.blackbelt.judo.meta.ui.CreateAction;
 import hu.blackbelt.judo.meta.ui.DeleteAction;
 import hu.blackbelt.judo.meta.ui.EditAction;
@@ -279,17 +280,22 @@ public class Esm2UiOperationsTest {
         		.filter(c -> c instanceof Flex && c.getName().equals(relation4.getName())).findAny();
         assertTrue(uiTable1.isPresent());
         final Optional<VisualElement> instanceActionsUiTable1 = ((Flex)uiTable1.get()).getChildren().stream().filter(c -> c instanceof Flex && c.getName().equals("instanceActions")).findAny();
-        assertFalse(instanceActionsUiTable1.isPresent());
+        assertTrue(instanceActionsUiTable1.isPresent());
+        assertEquals(1, ((Flex) instanceActionsUiTable1.get()).getChildren().size());
+        assertTrue(((Flex) instanceActionsUiTable1.get()).getChildren().stream().anyMatch(b -> b instanceof Button && ((Button)b).getAction() instanceof CreateAction));
         final Optional<VisualElement> uiTable1Table = ((Flex)uiTable1.get()).getChildren().stream().filter(c -> c instanceof Table).findAny();
         assertTrue(uiTable1Table.isPresent());
-        assertEquals(1, ((Table)uiTable1Table.get()).getRowActions().size());
+        assertEquals(3, ((Table)uiTable1Table.get()).getRowActions().size());
         assertTrue(((Table)uiTable1Table.get()).getRowActions().stream().anyMatch(a -> a instanceof ViewAction));
         
         final Optional<VisualElement> uiLink1 = ((Flex)viewContainerE1View.get()).getChildren().stream()
         		.filter(c -> c instanceof Link && c.getName().equals(relation5.getName())).findAny();
         assertTrue(uiLink1.isPresent());
-        assertEquals(1, ((Link)uiLink1.get()).getActions().size());
+        assertEquals(4, ((Link)uiLink1.get()).getActions().size());
         assertTrue(((Link)uiLink1.get()).getActions().stream().anyMatch(a -> a instanceof ViewAction));
+        assertTrue(((Link)uiLink1.get()).getActions().stream().anyMatch(a -> a instanceof CreateAction));
+        assertTrue(((Link)uiLink1.get()).getActions().stream().anyMatch(a -> a instanceof EditAction));
+        assertTrue(((Link)uiLink1.get()).getActions().stream().anyMatch(a -> a instanceof DeleteAction));
         
         final Optional<PageDefinition> e1CreatePage = application.get().getPages().stream()
         		.filter(p -> p.getPageType().equals(PageType.CREATE) && p.getDataElement().getName().equals(access1.getName())).findAny();
@@ -309,24 +315,16 @@ public class Esm2UiOperationsTest {
         		.filter(c -> c instanceof Flex && c.getName().equals(relation4.getName())).findAny();
         assertTrue(uiTable3.isPresent());
         final Optional<VisualElement> instanceActionsUiTable3 = ((Flex)uiTable3.get()).getChildren().stream().filter(c -> c instanceof Flex && c.getName().equals("instanceActions")).findAny();
-        assertTrue(instanceActionsUiTable3.isPresent());
-        assertEquals(1, ((Flex)instanceActionsUiTable3.get()).getChildren().size());
-        assertTrue(((Flex)instanceActionsUiTable3.get()).getChildren().stream().anyMatch(b -> b instanceof Button && ((Button)b).getAction() != null && ((Button)b).getAction() instanceof CreateAction));
+        assertFalse(instanceActionsUiTable3.isPresent());
+        
         final Optional<VisualElement> uiTable3Table = ((Flex)uiTable3.get()).getChildren().stream().filter(c -> c instanceof Table).findAny();
         assertTrue(uiTable3Table.isPresent());
-        assertEquals(3, ((Table)uiTable3Table.get()).getRowActions().size());
-        assertTrue(((Table)uiTable3Table.get()).getRowActions().stream().anyMatch(a -> a instanceof ViewAction));
-        assertTrue(((Table)uiTable3Table.get()).getRowActions().stream().anyMatch(a -> a instanceof DeleteAction));
-        assertTrue(((Table)uiTable3Table.get()).getRowActions().stream().anyMatch(a -> a instanceof EditAction));
+        assertTrue(((Table)uiTable3Table.get()).getRowActions().isEmpty());
         
         final Optional<VisualElement> uiLink2 = ((Flex)viewContainerE1Create.get()).getChildren().stream()
         		.filter(c -> c instanceof Link && c.getName().equals(relation5.getName())).findAny();
         assertTrue(uiLink2.isPresent());
-        assertEquals(4, ((Link)uiLink2.get()).getActions().size());
-        assertTrue(((Link)uiLink2.get()).getActions().stream().anyMatch(a -> a instanceof ViewAction));
-        assertTrue(((Link)uiLink2.get()).getActions().stream().anyMatch(a -> a instanceof DeleteAction));
-        assertTrue(((Link)uiLink2.get()).getActions().stream().anyMatch(a -> a instanceof EditAction));
-        assertTrue(((Link)uiLink2.get()).getActions().stream().anyMatch(a -> a instanceof CreateAction));
+        assertTrue(((Link)uiLink2.get()).getActions().isEmpty());
         
         final Optional<PageDefinition> e1EditPage = application.get().getPages().stream()
         		.filter(p -> p.getPageType().equals(PageType.UPDATE) && p.getDataElement().getName().equals(access1.getName())).findAny();
@@ -398,15 +396,13 @@ public class Esm2UiOperationsTest {
         final Optional<VisualElement> instanceActionsContainerE3TableSingle = defaultContainer6.get().getChildren().stream()
         		.filter(c -> c instanceof Flex && c.getName().equals("instanceActions")).findAny();
         assertTrue(instanceActionsContainerE3TableSingle.isPresent());
-        assertEquals(4, ((Flex)instanceActionsContainerE3TableSingle.get()).getChildren().size());
+        assertEquals(3, ((Flex)instanceActionsContainerE3TableSingle.get()).getChildren().size());
         assertTrue(((Flex)instanceActionsContainerE3TableSingle.get()).getChildren().stream()
         		.anyMatch(b -> b instanceof Button && ((Button)b).getAction() != null && ((Button)b).getAction() instanceof BackAction));
         assertTrue(((Flex)instanceActionsContainerE3TableSingle.get()).getChildren().stream()
         		.anyMatch(b -> b instanceof Button && ((Button)b).getAction() != null && ((Button)b).getAction() instanceof CreateAction));
         assertTrue(((Flex)instanceActionsContainerE3TableSingle.get()).getChildren().stream()
         		.anyMatch(b -> b instanceof Button && ((Button)b).getAction() != null && ((Button)b).getAction() instanceof SetAction));
-        assertTrue(((Flex)instanceActionsContainerE3TableSingle.get()).getChildren().stream()
-        		.anyMatch(b -> b instanceof Button && ((Button)b).getAction() != null && ((Button)b).getAction() instanceof UnsetAction));
         
     }
     

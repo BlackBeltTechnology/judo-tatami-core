@@ -52,6 +52,9 @@ operation ESM!esm::ui::TabularReferenceField createTableFromTabularReferenceFiel
     table.icon = self.iconName;
     table.sourceId = self.getID();
     table.dataElement = relation.mapRelationType(application, self.getTransferObjectType().mapClassType(application));
+    table.disabled = ((page.pageType == UI!ui::PageType#CREATE or page.pageType == UI!ui::PageType#UPDATE) and
+            			not (table.dataElement.memberType == UI!ui::data::MemberType#STORED and table.dataElement.relationKind == UI!ui::data::RelationKind#AGGREGATION)) or
+            			(page.pageType == UI!ui::PageType#OPERATION_INPUT and table.dataElement.relationKind == UI!ui::data::RelationKind#COMPOSITION);
     
     return table;
 }
@@ -62,6 +65,7 @@ operation ESM!esm::ui::TabularReferenceField createButtonFromTabularReferenceFie
 	log.debug("Create button for association: " + relation.name);
 
 	var button : UI!ui::Button = new UI!ui::Button();
+	button.disabled = (page.pageType == UI!ui::PageType#CREATE or page.pageType == UI!ui::PageType#UPDATE or page.pageType == UI!ui::PageType#OPERATION_INPUT);
 	
 	button.setVisualProperties(self, application);
 	button.name = self.name.anchor("TabularReferenceButton");

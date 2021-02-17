@@ -348,7 +348,7 @@ public class Esm2UiDataTest {
         assertTrue(uiRelation2.isPresent());
         assertTrue(uiRelation2.get().isIsCollection());
         assertTrue(uiRelation2.get().getTarget().equals(uiT4.get()));
-        assertTrue(uiRelation2.get().getMemberType().equals(hu.blackbelt.judo.meta.ui.data.MemberType.MAPPED));
+        assertTrue(uiRelation2.get().getMemberType().equals(hu.blackbelt.judo.meta.ui.data.MemberType.STORED));
         assertTrue(uiRelation2.get().getRelationKind().equals(hu.blackbelt.judo.meta.ui.data.RelationKind.ASSOCIATION));
         
         Optional<RelationType> uiRelation3 = uiT1.get().getRelations().stream().filter(r -> r.getName().equals(relation4.getName())).findAny();
@@ -369,7 +369,7 @@ public class Esm2UiDataTest {
         assertTrue(uiRelation2inherited.isPresent());
         assertTrue(uiRelation2inherited.get().isIsCollection());
         assertTrue(uiRelation2inherited.get().getTarget().equals(uiT4.get()));
-        assertTrue(uiRelation2inherited.get().getMemberType().equals(hu.blackbelt.judo.meta.ui.data.MemberType.MAPPED));
+        assertTrue(uiRelation2inherited.get().getMemberType().equals(hu.blackbelt.judo.meta.ui.data.MemberType.STORED));
         assertTrue(uiRelation2inherited.get().getRelationKind().equals(hu.blackbelt.judo.meta.ui.data.RelationKind.ASSOCIATION));
         
         Optional<RelationType> uiRelation3inherited = uiT3.get().getRelations().stream().filter(r -> r.getName().equals(relation4.getName())).findAny();

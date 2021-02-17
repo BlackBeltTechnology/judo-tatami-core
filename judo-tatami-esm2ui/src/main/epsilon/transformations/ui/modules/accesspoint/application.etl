@@ -29,14 +29,14 @@ rule Application
         for (relation in exposedRelations) {
             if (relation.target.view.isDefined()) {
                 relation.mapViewPage(t, relation.target);
+                if (relation.isUpdateAllowed()) {
+	                relation.mapUpdatePage(t, relation.target);
+                }
             }
 
             if (relation.target.form.isDefined()) {
                 if (relation.isCreateAllowed()) {
                 	relation.mapCreatePage(t, relation.target);
-                }
-                if (relation.isUpdateAllowed()) {
-	                relation.mapUpdatePage(t, relation.target);
                 }
             }
 

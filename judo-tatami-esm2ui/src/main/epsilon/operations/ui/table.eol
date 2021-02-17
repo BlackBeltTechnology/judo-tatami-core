@@ -4,61 +4,49 @@ operation UI!ui::Table calculateActions(application : UI!ui::Application, previe
 	var pageType = pageDefinition.pageType;
 
 	if (relationType.isDefined()) {
+		
+		// **** VIEW: view, create, update, delete (add, set, remove - optional) ****
 		if (pageType == UI!ui::PageType#VIEW or
 			pageType == UI!ui::PageType#OPERATION_OUTPUT or
 			(pageType == UI!ui::PageType#DASHBOARD and not relationType.isCollection)) {
-			self.createViewAction(relationType, application, preview);
-		}
-		
-		if (pageType == UI!ui::PageType#CREATE or pageType == UI!ui::PageType#UPDATE) {
-			self.createViewAction(relationType, application, preview);
-			if (relationType.getIsRelationBehaviourTypeDeletable()) {
-	        	self.createDeleteAction(relationType);
-	        }
-	        if (relationType.getIsRelationBehaviourTypeUpdatable()) {
-	        	self.createUpdateAction(relationType, application, preview);
-	        }
-	        if (relationType.getIsRelationBehaviourTypeRemovable()) {
-	            self.createRemoveAction();
-	        }
-	        if (relationType.getIsRelationBehaviourTypeUnsetable()) {
-	            self.createUnsetAction();
-	        }
-	        if (relationType.getIsRelationBehaviourTypeCreatable() or
-	                relationType.getIsRelationBehaviourTypeSetable() or
-	                relationType.getIsRelationBehaviourTypeAddable()){
+			
+			self.createViewUpdateDeleteActions(relationType, application, preview);
+			
+	        if (relationType.getIsRelationBehaviourTypeCreatable()){
 	         	var buttonGroup : UI!ui::Flex = self.createActionButtonGroupForTable();
-	         	
-	         	if (relationType.getIsRelationBehaviourTypeCreatable()) {
-					self.createCreateAction(relationType, application, preview, buttonGroup);
-				}
-				if (relationType.getIsRelationBehaviourTypeSetable()) {
-					self.createSetAction(relationType, buttonGroup);
-				}
-				if (relationType.getIsRelationBehaviourTypeAddable()) {
-					self.createAddAction(relationType, buttonGroup);
-				}
+	         	self.createCreateAction(relationType, application, preview, buttonGroup);
+	        }
+	        
+	        if (allActions) {
+	        	self.createRemoveAddSetActions(relationType);
 	        }
 		}
 		
-		if (pageType == UI!ui::PageType#OPERATION_INPUT and (relationType.getIsRelationKindAggregation() or relationType.getIsRelationKindComposition())) {
-			self.createUpdateAction(relationType, application, preview);
-			self.createRemoveAction();
-			self.createUnsetAction();
-			var buttonGroup : UI!ui::Flex = self.createActionButtonGroupForTable();
-	        self.createCreateAction(relationType, application, preview, buttonGroup);
-			self.createSetAction(relationType, buttonGroup);
-			self.createAddAction(relationType, buttonGroup);
+		// **** CREATE/UPDATE: add, set, remove (for stored aggregations - disabled flag is set in 'tabularReferenceField.eol') ****
+		if (pageType == UI!ui::PageType#CREATE or pageType == UI!ui::PageType#UPDATE) {
+			if (not self.disabled) {
+		        self.createRemoveAddSetActions(relationType);
+			}
+		}
+		
+		if (pageType == UI!ui::PageType#OPERATION_INPUT) {
+			if (not self.disabled and relationType.memberType <> ESM!esm::structure::MemberType#TRANSIENT) {
+				self.createRemoveAddSetActions(relationType);
+			}
+			
+			if (relationType.memberType == ESM!esm::structure::MemberType#TRANSIENT) {
+				var buttonGroup : UI!ui::Flex = self.createActionButtonGroupForTable();
+	        	self.createCreateAction(relationType, application, preview, buttonGroup);
+				self.createUpdateAction(relationType, application, preview);
+				self.createRemoveAction();
+			}
 		}
 	
+		// **** CREATE/UPDATE: view, update, delete, remove (create, add, set buttons are created for the Table Page - see 'pageDefinition.eol') ****
 		if (pageType == UI!ui::PageType#TABLE or (pageType == UI!ui::PageType#DASHBOARD and relationType.isCollection)) {
-			self.createViewAction(relationType, application, preview);
-			if (relationType.getIsRelationBehaviourTypeDeletable()) {
-	        	self.createDeleteAction(relationType);
-	        }
-	        if (relationType.getIsRelationBehaviourTypeUpdatable()) {
-	        	self.createUpdateAction(relationType, application, preview);
-	        }
+			
+			self.createViewUpdateDeleteActions(relationType, application, preview);
+	        
 	        if (relationType.getIsRelationBehaviourTypeRemovable()) {
 	            self.createRemoveAction();
 	        }
@@ -73,6 +61,59 @@ operation UI!ui::Table calculateActions(application : UI!ui::Application, previe
 	}
 }
 
+//to many relations Set, Remove, Add actions are applicable (Unset is only applicable to single relation)
+operation UI!ui::Table createRemoveAddSetActions(relationType : UI!ui::data::RelationType) {
+	if (relationType.getIsRelationBehaviourTypeRemovable()) {
+	    self.createRemoveAction();
+	}
+	if (relationType.getIsRelationBehaviourTypeSetable() or
+	        relationType.getIsRelationBehaviourTypeAddable()){
+	 	var buttonGroup : UI!ui::Flex = self.createActionButtonGroupForTable();
+		if (relationType.getIsRelationBehaviourTypeSetable()) {
+			self.createSetAction(relationType, buttonGroup);
+		}
+		if (relationType.getIsRelationBehaviourTypeAddable()) {
+			self.createAddAction(relationType, buttonGroup);
+		}
+	}
+}
+
+//adding remove action to table
+operation UI!ui::Table createRemoveAction() {
+	self.rowActions.add(new UI!ui::RemoveAction());
+}
+
+//adding set action to table
+operation UI!ui::Table createSetAction(relationType : UI!ui::data::RelationType, buttonGroup : UI!ui::Flex) {
+	var button : UI!ui::Button = createButton("set", "SET", 2d, new UI!ui::SetAction());
+	button.action.dataElement = relationType;
+	buttonGroup.children.add(button);
+}
+
+//create unset for single relations
+operation UI!ui::Table createUnsetAction() {
+	self.rowActions.add(new UI!ui::UnsetAction());
+}
+
+//adding add action to table
+operation UI!ui::Table createAddAction(relationType : UI!ui::data::RelationType, buttonGroup : UI!ui::Flex) {
+	var button : UI!ui::Button = createButton("add", "ADD", 2d, new UI!ui::AddAction());
+	button.action.dataElement = relationType;
+	buttonGroup.children.add(button);
+}
+
+//creating View, Update and Delete Actions - row actions applicable to View and Table pages
+operation UI!ui::Table createViewUpdateDeleteActions(relationType : UI!ui::data::RelationType, application : UI!ui::Application, preview : Boolean) {
+	self.createViewAction(relationType, application, preview);
+	if (relationType.getIsRelationBehaviourTypeUpdatable()) {
+    	self.createUpdateAction(relationType, application, preview);
+    }
+	if (relationType.getIsRelationBehaviourTypeDeletable()) {
+    	self.createDeleteAction(relationType);
+    }
+}
+
+//create view action button
 operation UI!ui::Table createViewAction(relationType : UI!ui::data::RelationType, application : UI!ui::Application, preview : Boolean) {
 	if (preview) {
 		var viewAction = new UI!ui::ViewAction();
@@ -93,12 +134,14 @@ operation UI!ui::Table createViewAction(relationType : UI!ui::data::RelationType
 	}
 }
 
+//create delete action button
 operation UI!ui::Table createDeleteAction(relationType : UI!ui::data::RelationType) {
 	var deleteAction = new UI!ui::DeleteAction();
     deleteAction.isTransient = relationType.memberType == UI!ui::data::MemberType#TRANSIENT;
     self.rowActions.add(deleteAction);
 }
 
+//create update action button
 operation UI!ui::Table createUpdateAction(relationType : UI!ui::data::RelationType, application : UI!ui::Application, preview : Boolean) {
 	if (preview) {
         var editAction = new UI!ui::EditAction();
@@ -119,26 +162,7 @@ operation UI!ui::Table createUpdateAction(relationType : UI!ui::data::RelationTy
     }
 }
 
-operation UI!ui::Table createRemoveAction() {
-	self.rowActions.add(new UI!ui::RemoveAction());
-}
-
-operation UI!ui::Table createUnsetAction() {
-	self.rowActions.add(new UI!ui::UnsetAction());
-}
-
-operation UI!ui::Table createSetAction(relationType : UI!ui::data::RelationType, buttonGroup : UI!ui::Flex) {
-	var button : UI!ui::Button = createButton("set", "SET", 2d, new UI!ui::SetAction());
-	button.action.dataElement = relationType;
-	buttonGroup.children.add(button);
-}
-
-operation UI!ui::Table createAddAction(relationType : UI!ui::data::RelationType, buttonGroup : UI!ui::Flex) {
-	var button : UI!ui::Button = createButton("add", "ADD", 2d, new UI!ui::AddAction());
-	button.action.dataElement = relationType;
-	buttonGroup.children.add(button);
-}
-
+//create create action - applicable to view page only
 operation UI!ui::Table createCreateAction(relationType : UI!ui::data::RelationType, application : UI!ui::Application, preview : Boolean, buttonGroup : UI!ui::Flex) {
 	if (preview) {
 		var button : UI!ui::Button = createButton("create", "CREATE", 2d, new UI!ui::CreateAction());
@@ -159,6 +183,7 @@ operation UI!ui::Table createCreateAction(relationType : UI!ui::data::RelationTy
 	}
 }
 
+//creating a flex for instance action buttons
 operation UI!ui::Table createActionButtonGroupForTable() : UI!ui::Flex {
 
 	var tableContainer : UI!ui::Flex = self.eContainer();

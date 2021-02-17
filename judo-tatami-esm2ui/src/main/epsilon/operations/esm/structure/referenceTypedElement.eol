@@ -76,7 +76,7 @@ operation ESM!esm::structure::ReferenceTypedElement mapUpdatePage(application : 
 	
 	page.name = self.fqName().anchor("Edit");
 	page.pageType = UI!ui::PageType#UPDATE;
-	page.label = target.form.getUiLabel();
+	page.label = target.view.getUiLabel();
 
 	var pageContainer = new UI!ui::PageContainer();
     pageContainer.layoutType = application.layoutTypes.first;
@@ -85,7 +85,7 @@ operation ESM!esm::structure::ReferenceTypedElement mapUpdatePage(application : 
 	pageContainer.col = applicationColumns.asReal();
 	page.containers.add(pageContainer);
 
-    pageContainer.children.add(target.form.map(application, page));
+    pageContainer.children.add(target.view.map(application, page));
 	application.pages.add(page);
 	
 	page.dataElement = self.mapRelationType(application, self.eContainer.mapClassType(application));

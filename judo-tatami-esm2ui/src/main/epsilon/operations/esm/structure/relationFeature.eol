@@ -20,7 +20,12 @@ operation ESM!esm::structure::RelationFeature createRelationTypeForClass(applica
 	} else if (self.memberType == ESM!esm::structure::MemberType#DERIVED) {
 		relation.memberType = UI!ui::data::MemberType#DERIVED;
 	} else if (self.memberType == ESM!esm::structure::MemberType#MAPPED) {
-		relation.memberType = UI!ui::data::MemberType#MAPPED;
+		if (self.binding.memberType == ESM!esm::structure::MemberType#STORED) {
+			relation.memberType = UI!ui::data::MemberType#STORED;
+		}
+		if (self.binding.memberType == ESM!esm::structure::MemberType#DERIVED) {
+			relation.memberType = UI!ui::data::MemberType#DERIVED;
+		} 
 	} else if (self.memberType == ESM!esm::structure::MemberType#TRANSIENT) {
 		relation.memberType = UI!ui::data::MemberType#TRANSIENT;
 	} else {
@@ -32,7 +37,11 @@ operation ESM!esm::structure::RelationFeature createRelationTypeForClass(applica
 	} else if (self.relationKind == ESM!esm::structure::RelationKind#COMPOSITION) {
 		relation.relationKind = UI!ui::data::RelationKind#COMPOSITION;
 	} else if (self.relationKind == ESM!esm::structure::RelationKind#AGGREGATION) {
-		relation.relationKind = UI!ui::data::RelationKind#AGGREGATION;
+		if (self.memberType == ESM!esm::structure::MemberType#MAPPED and self.binding.relationKind == ESM!esm::structure::RelationKind#COMPOSITION) {
+			relation.relationKind = UI!ui::data::RelationKind#COMPOSITION;
+		} else {
+			relation.relationKind = UI!ui::data::RelationKind#AGGREGATION;
+		}
 	} else {
 		relation.relationKind = UI!ui::data::RelationKind#ASSOCIATION;
 	}
