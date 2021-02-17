@@ -78,9 +78,9 @@ public class [%= className %] {
         [% if (op.eType.isUndefined()) {%]
         Response.ResponseBuilder responseBuilder = Response.status(Response.Status.NO_CONTENT);
         [% } else { %]
-        Response.ResponseBuilder responseBuilder = result.containsKey("[%= asmUtils.getOutputParameterName(op).get() %]") ? Response.ok(result.get("[%= asmUtils.getOutputParameterName(op).get() %]")) : Response.ok();
+        Response.ResponseBuilder responseBuilder = result != null && result.containsKey("[%= asmUtils.getOutputParameterName(op).get() %]") ? Response.ok(result.get("[%= asmUtils.getOutputParameterName(op).get() %]")) : Response.ok();
         [% } %]
-        if (result.containsKey(Dispatcher.HEADERS_KEY)) {
+        if (result != null && result.containsKey(Dispatcher.HEADERS_KEY)) {
             ((Map<String, Object>) result.get(Dispatcher.HEADERS_KEY)).forEach((k, v) -> responseBuilder.header(k, v));
         }
         return responseBuilder.build();
