@@ -121,10 +121,6 @@ class NavigationRegistry {
         case Routes.{{ fqVariable page.name }}Page:
             return {{ fqClass page.name }}PageArguments(target{{ className page.dataElement.target.name }}Store: target);
                         {{/ if }}
-                        {{# if page.isPageTypeView }}
-        case Routes.{{ fqVariable page.name }}Page:
-            return {{ fqClass page.name }}PageArguments(target{{ className page.dataElement.target.name }}Store: target);
-                        {{/ if }}
                     {{/unless}}
                 {{/if}}
             {{/ with }}

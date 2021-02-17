@@ -706,71 +706,7 @@ public class Esm2UiVisualElementTest {
         		.withCreateable(false)
         		.withTargetDefinedCRUD(false)
         		.build();
-        
-        /*
-         * 1. if no columns are defined - placeholder is created
-         */
-        OneWayRelationMember aggregationNotTargetDefinedNoColumns = newOneWayRelationMemberBuilder()
-        		.withName("aggregationNotTargetDefinedNoColumns")
-        		.withLower(0)
-        		.withUpper(-1)
-        		.withTarget(e5)
-        		.withMemberType(MemberType.STORED)
-        		.withRelationKind(RelationKind.AGGREGATION)
-        		.build();
-        OneWayRelationMember associationNotTargetDefinedNoColumns = newOneWayRelationMemberBuilder()
-        		.withName("associationNotTargetDefinedNoColumns")
-        		.withLower(0)
-        		.withUpper(-1)
-        		.withTarget(e5)
-        		.withMemberType(MemberType.STORED)
-        		.withRelationKind(RelationKind.ASSOCIATION)
-        		.build();
-        OneWayRelationMember aggregationTargetDefinedNoColumns = newOneWayRelationMemberBuilder()
-        		.withName("aggregationTargetDefinedNoColumns")
-        		.withLower(0)
-        		.withUpper(-1)
-        		.withTarget(e5)
-        		.withMemberType(MemberType.STORED)
-        		.withRelationKind(RelationKind.AGGREGATION)
-        		.build();
-        OneWayRelationMember associationTargetDefinedNoColumns = newOneWayRelationMemberBuilder()
-        		.withName("associationTargetDefinedNoColumns")
-        		.withLower(0)
-        		.withUpper(-1)
-        		.withTarget(e5)
-        		.withMemberType(MemberType.STORED)
-        		.withRelationKind(RelationKind.ASSOCIATION)
-        		.build();
-        
-        useEntityType(e1).withRelations(associationNotTargetDefinedNoColumns, associationTargetDefinedNoColumns, aggregationNotTargetDefinedNoColumns, aggregationTargetDefinedNoColumns).build();
-        
-        TabularReferenceField tabular1 = newTabularReferenceFieldBuilder().withName(aggregationNotTargetDefinedNoColumns.getName())
-				.withLabel(aggregationNotTargetDefinedNoColumns.getName().toUpperCase()).withRelationFeature(aggregationNotTargetDefinedNoColumns).withCol(12)
-				.withTargetDefinedTabular(false)
-				.build();
-        TabularReferenceField tabular2 = newTabularReferenceFieldBuilder().withName(associationNotTargetDefinedNoColumns.getName())
-				.withLabel(associationNotTargetDefinedNoColumns.getName().toUpperCase()).withRelationFeature(associationNotTargetDefinedNoColumns).withCol(12)
-				.withTargetDefinedTabular(false)
-				.build();
-        TabularReferenceField tabular3 = newTabularReferenceFieldBuilder().withName(aggregationTargetDefinedNoColumns.getName())
-				.withLabel(aggregationTargetDefinedNoColumns.getName().toUpperCase()).withRelationFeature(aggregationTargetDefinedNoColumns).withCol(12)
-				.withTargetDefinedTabular(true)
-				.build();
-        TabularReferenceField tabular4 = newTabularReferenceFieldBuilder().withName(associationTargetDefinedNoColumns.getName())
-				.withLabel(associationTargetDefinedNoColumns.getName().toUpperCase()).withRelationFeature(associationTargetDefinedNoColumns).withCol(12)
-				.withTargetDefinedTabular(true)
-				.build();
-        
-        useEntityType(e5).withTable(
-        		newTransferObjectTableBuilder().withName(e5.getName() + "TABLE").build()
-        		).build();
-        
-        useEntityType(e1).withView(
-        		newTransferObjectViewBuilder().withName(e1.getName() + "VIEW")
-        			.withComponents(tabular1, tabular2, tabular3, tabular4)
-        		).build();
-        
+
         /*
          * 2. if the relation represented by the tabular ref field is association - button is created, button action target is the table page of the relation target
          */
@@ -872,15 +808,6 @@ public class Esm2UiVisualElementTest {
         
         final Optional<Application> application = allUi(Application.class).filter(a -> a.getName().equals(actor.getFQName())).findAny();
         assertTrue(application.isPresent());
-        final Optional<PageDefinition> e1ViewPage = application.get().getPages().stream().filter(p -> p.getPageType().equals(PageType.VIEW) && p.getDataElement().getName().equals(access1.getName())).findAny();
-        assertTrue(e1ViewPage.isPresent());
-        final Optional<PageContainer> defaultContainer1 = e1ViewPage.get().getContainers().stream().filter(c -> c.getName().equals("default")).findAny();
-        assertTrue(defaultContainer1.isPresent());
-        final Optional<VisualElement> flexFromViewOpt1 = defaultContainer1.get().getChildren().stream().filter(c -> c instanceof Flex && c.getName().equals(e1.getView().getName())).findAny();
-        assertTrue(flexFromViewOpt1.isPresent());
-        Flex flexFromView1 = (Flex) flexFromViewOpt1.get();
-        assertEquals(4, flexFromView1.getChildren().size());
-        assertTrue(flexFromView1.getChildren().stream().allMatch(c -> c instanceof Spacer));
 
         final Optional<PageDefinition> e2ViewPage = application.get().getPages().stream().filter(p -> p.getPageType().equals(PageType.VIEW) && p.getDataElement().getName().equals(access2.getName())).findAny();
         assertTrue(e2ViewPage.isPresent());

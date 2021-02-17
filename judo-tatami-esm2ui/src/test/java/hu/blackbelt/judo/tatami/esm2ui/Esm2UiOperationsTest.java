@@ -45,6 +45,8 @@ import java.util.Optional;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
+import hu.blackbelt.judo.meta.ui.data.OperationParameterType;
+import hu.blackbelt.judo.meta.ui.data.impl.OperationParameterTypeImpl;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
 import org.junit.jupiter.api.AfterEach;
@@ -195,6 +197,7 @@ public class Esm2UiOperationsTest {
                 .withCreateable(false)
                 .withUpdateable(false)
                 .withDeleteable(false)
+                .withAttributes(newDataMemberBuilder().withName("name").withDataType(numeric).build())
                 .build();
         useEntityType(e2).withMappedEntity(e2).build();
         
@@ -358,7 +361,7 @@ public class Esm2UiOperationsTest {
         
         final Optional<PageDefinition> e2TablePage = application.get().getPages().stream()
         		.filter(p -> p.getPageType().equals(PageType.TABLE) && p.getDataElement().getName().equals(relation.getName())).findAny();
-        assertFalse(e2TablePage.isPresent());
+        assertTrue(e2TablePage.isPresent());
         
         final Optional<PageDefinition> e3TablePage = application.get().getPages().stream()
         		.filter(p -> p.getPageType().equals(PageType.TABLE) && p.getDataElement().getName().equals(relation2.getName())).findAny();
@@ -480,18 +483,18 @@ public class Esm2UiOperationsTest {
         useEntityType(outputType).withMappedEntity(outputType).build();
         
         Operation operation1 = newOperationBuilder().withName("op1")
-        		.withInput(newParameterBuilder().withName("input").withTarget(inputType).withUpper(-1).build())
+        		.withInput(newParameterBuilder().withName("input").withTarget(inputType).withLower(0).withUpper(-1).build())
         		.withInherited(newInheritedOperationReferenceBuilder().build())
         		.withBinding("op1")
         		.build();
         Operation operation2 = newOperationBuilder().withName("op2")
-        		.withOutput(newParameterBuilder().withName("output").withTarget(outputType).withUpper(-1).build())
+        		.withOutput(newParameterBuilder().withName("output").withTarget(outputType).withLower(0).withUpper(1).build())
         		.withInherited(newInheritedOperationReferenceBuilder().build())
         		.withBinding("op2")
         		.build();
         Operation operation3 = newOperationBuilder().withName("op3")
-        		.withInput(newParameterBuilder().withName("input").withTarget(inputType).withUpper(-1).build())
-        		.withOutput(newParameterBuilder().withName("output").withTarget(outputType).withUpper(-1).build())
+        		.withInput(newParameterBuilder().withName("input").withTarget(inputType).withLower(1).withUpper(1).build())
+        		.withOutput(newParameterBuilder().withName("output").withTarget(outputType).withLower(0).withUpper(-1).build())
         		.withInherited(newInheritedOperationReferenceBuilder().build())
         		.withBinding("op3")
         		.build();
@@ -631,26 +634,56 @@ public class Esm2UiOperationsTest {
         final Optional<PageDefinition> e2op1InputPage = application.get().getPages().stream()
         		.filter(c -> c.getPageType().equals(PageType.OPERATION_INPUT) && c.getName().endsWith(e2.getName()) && c.getName().contains(operation1.getName())).findAny();
         assertTrue(e2op1InputPage.isPresent());
-        
+        assertTrue(e2op1InputPage.get().getDataElement() instanceof OperationParameterType);
+        OperationParameterType param1 = (OperationParameterType) e2op1InputPage.get().getDataElement();
+        assertEquals(uiE2Op1.get().getInput(), param1);
+        assertTrue(param1.isIsCollection());
+        assertTrue(param1.isIsOptional());
+
         final Optional<PageDefinition> e2op2OutputPage = application.get().getPages().stream()
         		.filter(c -> c.getPageType().equals(PageType.OPERATION_OUTPUT) && c.getName().endsWith(e2.getName()) && c.getName().contains(operation2.getName())).findAny();
         assertTrue(e2op2OutputPage.isPresent());
+        assertTrue(e2op2OutputPage.get().getDataElement() instanceof OperationParameterType);
+        OperationParameterType param2 = (OperationParameterType) e2op2OutputPage.get().getDataElement();
+        assertEquals(uiE2Op2.get().getOutput(), param2);
+        assertFalse(param2.isIsCollection());
+        assertTrue(param2.isIsOptional());
         
         final Optional<PageDefinition> e3op1InputPage = application.get().getPages().stream()
         		.filter(c -> c.getPageType().equals(PageType.OPERATION_INPUT) && c.getName().endsWith(e3.getName()) && c.getName().contains(operation1.getName())).findAny();
         assertTrue(e3op1InputPage.isPresent());
+        assertTrue(e2op1InputPage.get().getDataElement() instanceof OperationParameterType);
+        OperationParameterType param3 = (OperationParameterType) e3op1InputPage.get().getDataElement();
+        assertEquals(uiE3Op1.get().getInput(), param3);
+        assertTrue(param3.isIsCollection());
+        assertTrue(param3.isIsOptional());
         
         final Optional<PageDefinition> e3op2OutputPage = application.get().getPages().stream()
         		.filter(c -> c.getPageType().equals(PageType.OPERATION_OUTPUT) && c.getName().endsWith(e3.getName()) && c.getName().contains(operation2.getName())).findAny();
         assertTrue(e3op2OutputPage.isPresent());
+        assertTrue(e2op2OutputPage.get().getDataElement() instanceof OperationParameterType);
+        OperationParameterType param4 = (OperationParameterType) e3op2OutputPage.get().getDataElement();
+        assertEquals(uiE3Op2.get().getOutput(), param4);
+        assertFalse(param4.isIsCollection());
+        assertTrue(param4.isIsOptional());
         
         final Optional<PageDefinition> e3op3InputPage = application.get().getPages().stream()
         		.filter(c -> c.getPageType().equals(PageType.OPERATION_INPUT) && c.getName().endsWith(e3.getName()) && c.getName().contains(operation3.getName())).findAny();
         assertTrue(e3op3InputPage.isPresent());
+        assertTrue(e3op3InputPage.get().getDataElement() instanceof OperationParameterType);
+        OperationParameterType param5 = (OperationParameterType) e3op3InputPage.get().getDataElement();
+        assertEquals(uiE3Op3.get().getInput(), param5);
+        assertFalse(param5.isIsCollection());
+        assertFalse(param5.isIsOptional());
         
         final Optional<PageDefinition> e3op3OutputPage = application.get().getPages().stream()
         		.filter(c -> c.getPageType().equals(PageType.OPERATION_OUTPUT) && c.getName().endsWith(e3.getName()) && c.getName().contains(operation3.getName())).findAny();
         assertTrue(e3op3OutputPage.isPresent());
+        assertTrue(e3op3OutputPage.get().getDataElement() instanceof OperationParameterType);
+        OperationParameterType param6 = (OperationParameterType) e3op3OutputPage.get().getDataElement();
+        assertEquals(uiE3Op3.get().getOutput(), param6);
+        assertTrue(param6.isIsCollection());
+        assertTrue(param6.isIsOptional());
         
         final Optional<CallOperationAction> callOp1 = allUi(CallOperationAction.class).filter(o -> o.getOperation().equals(uiE2Op1.get()))
                 .findAny();
@@ -785,6 +818,7 @@ public class Esm2UiOperationsTest {
                 .withCreateable(false)
                 .withUpdateable(false)
                 .withDeleteable(false)
+                .withAttributes(newDataMemberBuilder().withName("mapped").withBinding(stored3).withMemberType(MemberType.MAPPED).withDataType(str).build())
                 .build();
         useTransferObjectType(t4).withMappedEntity(e4).build();
         

@@ -74,13 +74,16 @@ public class [%= className %] {
         }
         [% } %]
 
+        Map<String, Object> result = __dispatcher.get().callOperation("[%= asmUtils.getOperationFQName(op) %]", parameters);
         [% if (op.eType.isUndefined()) {%]
-        __dispatcher.get().callOperation("[%= asmUtils.getOperationFQName(op) %]", parameters);
-        return Response.status(Response.Status.NO_CONTENT).build();
+        Response.ResponseBuilder responseBuilder = Response.status(Response.Status.NO_CONTENT);
         [% } else { %]
-        Object output = __dispatcher.get().callOperation("[%= asmUtils.getOperationFQName(op) %]", parameters).get("[%= asmUtils.getOutputParameterName(op).get() %]");
-        return output == null ? Response.ok().build() : Response.ok(output).build();
+        Response.ResponseBuilder responseBuilder = result != null && result.containsKey("[%= asmUtils.getOutputParameterName(op).get() %]") ? Response.ok(result.get("[%= asmUtils.getOutputParameterName(op).get() %]")) : Response.ok();
         [% } %]
+        if (result != null && result.containsKey(Dispatcher.HEADERS_KEY)) {
+            ((Map<String, Object>) result.get(Dispatcher.HEADERS_KEY)).forEach((k, v) -> responseBuilder.header(k, v));
+        }
+        return responseBuilder.build();
     }
 [% } %]
 }

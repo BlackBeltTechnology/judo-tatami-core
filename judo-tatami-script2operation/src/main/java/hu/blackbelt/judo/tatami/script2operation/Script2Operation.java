@@ -193,7 +193,7 @@ public class Script2Operation {
                         "org.eclipse.emf.ecore," +
                         "org.eclipse.emf.common," +
                         "org.eclipse.emf.common.util," +
-                        "org.slf4j;version=\"1.7.2\""
+                        "org.slf4j"
                 );
 
         if (exportedPackages.size() > 0) {
