@@ -45,3 +45,24 @@ rule TableToAddNotNullChangeSet
 	    t.context = RDBMS!RdbmsModel.all.first.version;
 		t.logicalFilePath = "add-not-null";
 }
+
+////////////////////
+// RDBMS OPERATIONS
+
+@greedy
+rule RdbmsDeleteTableOperationToDropTable
+    transform s : RDBMS!RdbmsDeleteTableOperation
+    to t : LIQUIBASE!DropTable {
+        t.tableName = s.sqlName;
+}
+
+@greedy
+rule RdbmsDeleteTableOperationToChangeSet
+    transform s : RDBMS!RdbmsDeleteTableOperation
+    to t : LIQUIBASE!ChangeSet {
+        targetModel.changeSet.add(t);
+	    t.id = "delete_table_" + s.sqlName;
+	    t.author = "tatami-rdbms2liquibase";
+	    t.dbms = dialect;
+	    t.dropTable.add(s.equivalent("RdbmsDeleteTableOperationToDropTable"));
+}

@@ -92,3 +92,35 @@ operation RDBMS!RdbmsField toFieldDefinition () : String {
 		return self.type.toString();
 	}
 }
+
+////////////////////
+// RDBMS OPERATIONS
+
+@greedy
+rule RdbmsDeleteFieldOperationToDropColumn
+    transform s : RDBMS!RdbmsDeleteFieldOperation
+    to t : LIQUIBASE!DropColumn {
+        t.tableName = s.eContainer().sqlName;
+        t.columnName = s.sqlName;
+}
+
+@greedy
+rule RdbmsDeleteFieldOperationToChangeSet
+    transform s : RDBMS!RdbmsDeleteFieldOperation
+    to t : LIQUIBASE!ChangeSet {
+        var idPrefix = "delete_field_fromtable_";
+        t.id = idPrefix + s.eContainer().sqlName;
+        t.author = "tatami-rdbms2liquibase";
+        t.dbms = dialect;
+
+        var i = 0;
+        var size = targetModel.changeSet.size();
+        while (i < size and targetModel.changeSet[i].id <> idPrefix + s.eContainer().sqlName) i++;
+
+        if (i == size) {
+            t.dropColumn.add(s.equivalent("RdbmsDeleteFieldOperationToDropColumn"));
+            targetModel.changeSet.add(t);
+        } else {
+            targetModel.changeSet[i].dropColumn.add(s.equivalent("RdbmsDeleteFieldOperationToDropColumn"));
+        }
+}
