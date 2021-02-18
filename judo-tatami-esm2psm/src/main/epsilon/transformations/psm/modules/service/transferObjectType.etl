@@ -61,6 +61,7 @@ rule CreateQueryCustomizerType
 	  guard: s.mapping.isDefined()
 
 	  t.name = "_QueryCustomizer" + s.name;
+      t.queryCustomizer = true;
 
       var orderByTarget = s.equivalent("CreateQueryOrderingType");
       // do not add _orderBy relation if there is no attribute used by order by clause
@@ -133,6 +134,7 @@ rule CreateQueryOrderingType
 	                        (a.dataType.isKindOf(ESM!StringType) or a.dataType.isKindOf(ESM!NumericType) or a.dataType.isKindOf(ESM!DateType) or a.dataType.isKindOf(ESM!TimestampType)))
 
 	  t.name = "_OrderingType" + s.name;
+	  t.orderingType = true;
 
 	  var attribute = new JUDOPSM!TransferAttribute;
 	  attribute.name = "attribute";
@@ -296,6 +298,7 @@ rule CreateQueryFilterType
   transform s : ESM!Primitive
   to t: JUDOPSM!UnmappedTransferObjectType {
     t.name = "_FilterBy" + s.name;
+    t.filterBy = true;
 
     var m : ESM!Model = ESM!Model.all.first();
 
@@ -355,6 +358,7 @@ rule CreateQuerySeekingType
 	transform s: ESM!TransferObjectType
 	to t: JUDOPSM!UnmappedTransferObjectType {
 	  t.name = "_Seek" + s.name;
+	  t.seek = true;
 
 	  var m : ESM!Model = ESM!Model.all.first();
 
@@ -420,6 +424,7 @@ rule CreateGetRangeInputType
     to t: JUDOPSM!UnmappedTransferObjectType { 
 
       t.name = "_GetRangeInput" + s.eContainer.name.firstToUpperCase() + s.name.firstToUpperCase();
+      t.getRangeInput = true;
 
       var owner = new JUDOPSM!TransferObjectRelation;
       owner.name = "owner";
