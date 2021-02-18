@@ -55,7 +55,7 @@
 
         <epsilon-runtime-version>1.2.2</epsilon-runtime-version>
 
-        <judo-framework-version>2.0.0.20210114_214630_306d8db_develop</judo-framework-version>
+        <judo-framework-version>2.0.0.20210218_001133_ed90077_develop</judo-framework-version>
 
         <!-- Model versions -->
         <judo-meta-rdbms-version>1.0.0.20210129_173124_1a8dd50_develop</judo-meta-rdbms-version>
