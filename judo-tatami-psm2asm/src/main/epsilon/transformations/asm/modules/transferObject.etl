@@ -528,51 +528,6 @@ rule CreateQueryCustomizerAnnotationForQueryCustomizerClass
 	}
 
 @greedy
-rule CreateOrderingTypeAnnotationForOrderingTypeClass
-    transform s : JUDOPSM!TransferObjectType
-    to t : ASM!EAnnotation {
-        guard: s.orderingType
-        t.source = asmUtils.getAnnotationUri("orderingType");
-
-        var orderingType = new ASM!EStringToStringMapEntry;
-        orderingType.key = "value";
-        orderingType.value = "true";
-        t.details.add(orderingType);
-
-        s.asmEquivalent().eAnnotations.add(t);
-    }
-
-@greedy
-rule CreateSeekAnnotationForSeekClass
-    transform s : JUDOPSM!TransferObjectType
-    to t : ASM!EAnnotation {
-        guard: s.seek
-        t.source = asmUtils.getAnnotationUri("seek");
-
-        var seek = new ASM!EStringToStringMapEntry;
-        seek.key = "value";
-        seek.value = "true";
-        t.details.add(seek);
-
-        s.asmEquivalent().eAnnotations.add(t);
-    }
-
-@greedy
-rule CreateFilterByAnnotationForFilterByClass
-    transform s : JUDOPSM!TransferObjectType
-    to t : ASM!EAnnotation {
-        guard: s.filterBy
-        t.source = asmUtils.getAnnotationUri("filterBy");
-
-        var filterBy = new ASM!EStringToStringMapEntry;
-        filterBy.key = "value";
-        filterBy.value = "true";
-        t.details.add(filterBy);
-
-        s.asmEquivalent().eAnnotations.add(t);
-    }
-
-@greedy
 rule CreateMetadataAnnotationForMetadataClass
     transform s : JUDOPSM!TransferObjectType
     to t : ASM!EAnnotation {
@@ -587,32 +542,3 @@ rule CreateMetadataAnnotationForMetadataClass
         s.asmEquivalent().eAnnotations.add(t);
     }
 
-@greedy
-rule CreateMetadataSecurityAnnotationForMetadataSecurityClass
-    transform s : JUDOPSM!TransferObjectType
-    to t : ASM!EAnnotation {
-        guard: s.metadataSecurity
-        t.source = asmUtils.getAnnotationUri("metadataSecurity");
-
-        var metadataSecurity = new ASM!EStringToStringMapEntry;
-        metadataSecurity.key = "value";
-        metadataSecurity.value = "true";
-        t.details.add(metadataSecurity);
-
-        s.asmEquivalent().eAnnotations.add(t);
-    }
-
-@greedy
-rule CreateGetRangeInputAnnotationForGetRangeInputClass
-    transform s : JUDOPSM!TransferObjectType
-    to t : ASM!EAnnotation {
-        guard: s.getRangeInput
-        t.source = asmUtils.getAnnotationUri("getRangeInput");
-
-        var getRangeInput = new ASM!EStringToStringMapEntry;
-        getRangeInput.key = "value";
-        getRangeInput.value = "true";
-        t.details.add(getRangeInput);
-
-        s.asmEquivalent().eAnnotations.add(t);
-    }

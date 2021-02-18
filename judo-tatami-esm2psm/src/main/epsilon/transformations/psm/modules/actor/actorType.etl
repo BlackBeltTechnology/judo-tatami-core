@@ -76,7 +76,7 @@ rule CreateMetadataSecurityType
 	to t: JUDOPSM!UnmappedTransferObjectType
 	extends CreateNamespaceElement {
 	  t.name = "_MetadataSecurityFor" + s.name;
-	  t.metadataSecurity = true;
+	  t.metadata = true;
 
 	  var m : ESM!Model = ESM!Model.all.first();
 
