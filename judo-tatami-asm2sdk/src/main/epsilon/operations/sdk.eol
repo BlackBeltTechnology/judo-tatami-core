@@ -65,7 +65,14 @@ operation ASM!EReference getTypeDefinition() : String {
 @cached
 operation getAllDTOs(): Collection {
     return ASM!EClass.all.select(class | 
-    	((asmUtils.isMappedTransferObjectType(class) or not asmUtils.isEntityType(class))) and not asmUtils.annotatedAsTrue(class, "referenceHolder"));
+    	        (asmUtils.isMappedTransferObjectType(class) or not asmUtils.isEntityType(class)) and
+    	        not asmUtils.annotatedAsTrue(class, "referenceHolder") and
+    	        not asmUtils.annotatedAsTrue(class, "optional") and
+    	        not asmUtils.annotatedAsTrue(class, "queryCustomizer") and
+    	        not asmUtils.annotatedAsTrue(class, "metadata") and
+    	        not asmUtils.annotatedAsTrue(class, "getRangeInput") and
+    	        not asmUtils.annotatedAsTrue(class, "actorType")
+    	    );
 }
 
 operation getAllEntities(): Collection {
