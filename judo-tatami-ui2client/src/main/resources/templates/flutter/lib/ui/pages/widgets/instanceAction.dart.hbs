@@ -1,6 +1,6 @@
 {{ log 'Instance action button generation for' (variable application.name) '-' (fqClass page.name)'page'(variable page.dataElement.target.name) level='debug' ~}}
 //START instanceAction.dart.hbs-----{{page.dataElement.target.name}}-----------------------------------------------------------------------
-{{# if enabledBy }}Observer(
+{{# if (isObserverButton this page.dataElement action) }}Observer(
     builder: (_) => {{/ if }}JudoButton(
         row: {{ row }},
         col: {{ multiplyCol col }},
@@ -90,7 +90,7 @@
         onPressed: () => navigation.close(),
     {{/ if }}
     {{# if action.isCreateAction }}
-        onPressed:{{# unless page.dataElement.isAccess}}{{# unless page.dataElement.isRelationKindStatic}} owner{{ className page.dataElement.owner.name }}Store.internal__updatable ?{{/ unless}}{{/ unless}} () async {
+        onPressed:{{# unless page.dataElement.isCollection }} owner{{ className page.dataElement.owner.name }}Store.{{ variable page.dataElement.name }} == null{{/ unless }}{{# unless page.dataElement.isAccess}}{{# unless page.dataElement.isRelationKindStatic}}{{# unless page.dataElement.isCollection }} &&{{/ unless }} owner{{ className page.dataElement.owner.name }}Store.internal__updatable ?{{/ unless}}{{/ unless}} () async {
             var created = await navigation.open(Routes.{{ fqVariable action.target.name }}Page{{# unless page.dataElement.isAccess}},
                 arguments: {{ fqClass action.target.name }}PageArguments(owner{{ className page.dataElement.owner.name }}Store: owner{{ className page.dataElement.owner.name }}Store){{~/ unless}});
             if (created != null) {
@@ -206,6 +206,6 @@
         icon: Icon(Icons.{{ action.icon.name }}),
     {{/if}}
         rounded: true,
-    ){{# if enabledBy }}
+    ){{# if (isObserverButton this page.dataElement action) }}
 ){{/ if }},
 //END instanceAction.dart.hbs-----{{page.dataElement.target.name}}-------------------------------------------------------------------------

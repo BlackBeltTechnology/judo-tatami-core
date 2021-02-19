@@ -107,7 +107,7 @@ Observer(builder: (_) {
             ) : null,
         {{/if}}
         {{#if action.isCreateAction}}
-            target{{ className relation.owner.name }}Store.internal__updatable ?
+            target{{ className relation.owner.name }}Store.internal__updatable && target{{ className relation.owner.name }}Store.{{variable relation.name}} == null ?
             IconButton(
                 icon: Icon(
                     Icons.{{ action.icon.name }},
