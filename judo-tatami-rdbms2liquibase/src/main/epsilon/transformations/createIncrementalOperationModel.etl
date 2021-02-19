@@ -5,12 +5,11 @@ import "field.eol";
 pre {
 	var previousModel = PREVIOUS!RdbmsModel.all.first();
 	var newModel = NEW!RdbmsModel.all.first();
-	
 }
 
 // flattening is not needed, as we don't have separate fieldtypes any more
 
-rule OperationModel 
+rule OperationModel
 	transform s : NEW!RdbmsModel
 	to t : INCREMENTAL!RdbmsModel {
 	    t.version = previousModel.version + "_" + newModel.version;
@@ -18,8 +17,8 @@ rule OperationModel
    		t.configuration.dialect = "hsqldb";
 		("Created operation model: " + t.version).println();
 	}
-	
-rule CreateOperationMeta 
+
+rule CreateOperationMeta
 	transform s : NEW!RdbmsModel
 	to t : INCREMENTAL!RdbmsOperationMeta {
 		t.previousModel = previousModel;
@@ -27,7 +26,7 @@ rule CreateOperationMeta
 		("Created operation meta for " + s.version).println();
 }
 
-rule CreateNewTable 
+rule CreateNewTable
 	transform s : NEW!RdbmsTable
 	to t : INCREMENTAL!RdbmsCreateTableOperation {
 	// create table only if not yet exists and has at least one field
@@ -104,6 +103,18 @@ rule ModifyJunctionTableOperationForExistingTable
 		s.uuid.println("Modified table: ");
 }
 
+rule CreateNewValueFieldOnNewTable
+	transform f : NEW!RdbmsValueField
+	to t : INCREMENTAL!RdbmsCreateFieldOperation {
+		guard : not previousModel.tableExists(f.eContainer)
+        newModel.tableOf(f.eContainer).equivalent("CreateNewTable").createFieldOperations.add(t);
+	    t.uuid =  f.uuid + "-CreateValueField";
+	    t.name = "Create " + f.name;
+	    t.sqlName = f.sqlName;
+	    t.field = f;
+		f.uuid.println("Create new field on new table: ");
+}
+
 rule CreateNewValueFieldOnExistingTable
 	transform f : NEW!RdbmsValueField
 	to t : INCREMENTAL!RdbmsCreateFieldOperation {
@@ -129,6 +140,19 @@ rule DeletePreviousValueFieldOnExistingTable
 		f.uuid.println("Delete field on existing table: ");
 }
 
+rule CreateNewForeignKeyOnNewTable
+	transform f : NEW!RdbmsForeignKey
+	to t : INCREMENTAL!RdbmsCreateFieldOperation {
+		guard : not previousModel.tableExists(f.eContainer)
+        newModel.tableOf(f.eContainer).equivalent("CreateNewTable").createFieldOperations.add(t);
+	    t.uuid =  f.uuid + "-CreateForeignKey";
+	    t.name = "Create " + f.name;
+	    t.sqlName = f.sqlName;
+	    t.field = f;
+	    t.isForeignKey = true;
+		f.uuid.println("Create new foreign key on new table: ");
+}
+
 rule CreateNewForeignKeyOnExistingTable
 	transform f : NEW!RdbmsForeignKey
 	to t : INCREMENTAL!RdbmsCreateFieldOperation {
@@ -138,6 +162,7 @@ rule CreateNewForeignKeyOnExistingTable
 	    t.name = "Create " + f.name;
 	    t.sqlName = f.sqlName;
 	    t.field = f;
+	    t.isForeignKey = true;
 		f.uuid.println("Create new foreign key on existing table: ");
 }
 
@@ -147,6 +172,45 @@ rule DeletePreviousForeignKeyOnExistingTable
 		guard : newModel.tableExists(f.eContainer) and not newModel.tableOf(f.eContainer).fieldExists(f)
 	    newModel.tableOf(f.eContainer).equivalent("ModifyTableOperationForExistingTable").deleteFieldOperations.add(t);
 	    t.uuid =  f.uuid + "-DeleteForeignKey";
+	    t.field = f;
+	    t.name = "Delete " + f.name;
+		t.sqlName = f.sqlName;
+
+		f.uuid.println("Delete foreign key on existing table: ");
+}
+
+rule CreateNewIdentifierFieldOnNewTable
+	transform f : NEW!RdbmsIdentifierField
+	to t : INCREMENTAL!RdbmsCreateFieldOperation {
+		guard : not previousModel.tableExists(f.eContainer)
+        newModel.tableOf(f.eContainer).equivalent("CreateNewTable").createFieldOperations.add(t);
+	    t.uuid =  f.uuid + "-CreateIdentifierField";
+	    t.name = "Create " + f.name;
+	    t.sqlName = f.sqlName;
+	    t.field = f;
+	    t.isIdentifierField = true;
+		f.uuid.println("Create new identifier field on new table: ");
+}
+
+rule CreateNewIdentifierFieldOnExistingTable
+	transform f : NEW!RdbmsIdentifierField
+	to t : INCREMENTAL!RdbmsCreateFieldOperation {
+		guard : previousModel.tableExists(f.eContainer) and not previousModel.tableOf(f.eContainer).fieldExists(f)
+	    newModel.tableOf(f.eContainer).equivalent("ModifyTableOperationForExistingTable").createFieldOperations.add(t);
+	    t.uuid =  f.uuid + "-CreateIdentifierField";
+	    t.name = "Create " + f.name;
+	    t.sqlName = f.sqlName;
+	    t.field = f;
+	    t.isIdentifierField = true;
+		f.uuid.println("Create new identifier key on existing table: ");
+}
+
+rule DeletePreviousIdentifierFieldOnExistingTable
+	transform f : PREVIOUS!RdbmsIdentifierField
+	to t : INCREMENTAL!RdbmsDeleteFieldOperation {
+		guard : newModel.tableExists(f.eContainer) and not newModel.tableOf(f.eContainer).fieldExists(f)
+	    newModel.tableOf(f.eContainer).equivalent("ModifyTableOperationForExistingTable").deleteFieldOperations.add(t);
+	    t.uuid =  f.uuid + "-DeleteIdentifierField";
 	    t.field = f;
 	    t.name = "Delete " + f.name;
 		t.sqlName = f.sqlName;
