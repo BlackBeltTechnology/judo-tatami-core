@@ -159,30 +159,14 @@ rule CreateFieldOperationToAddColumnDefOnExistingTable
 
 // CREATE FIELDS (NO FOREIGN KEY)
 /////////////////////////////////////////
+// TODO MODIFY
+/////////////////////////////////////////
 // CREATE FIELDS: FOREIGN KEY
-
-rule CreateFieldOperationWithForeignKeyToColumnOnNewTable
-    transform s : RDBMS!RdbmsCreateFieldOperation
-    to t : LIQUIBASE!Column {
-        guard: s.isForeignKey and s.eContainer.isNewTable
-        var i = 0;
-        var size = targetModel.changeSet.size();
-        while (i < size and targetModel.changeSet[i].id <> "create-table-" + s.eContainer.table.sqlName) i++;
-
-        t.name = s.sqlName;
-        t.type = s.field.toFieldDefinition();
-        t.constraints = new LIQUIBASE!Constraints(referencedTableName = s.field.referenceKey.eContainer.sqlName,
-                                                  referencedColumnNames = s.field.referenceKey.sqlName);
-        if (i < size) {
-            targetModel.changeSet[i].createTable[0].column.add(t);
-            ("Column " + t.name + " created in " + targetModel.changeSet[i].createTable[0].tableName + "").println();
-        }
-}
 
 rule CreateFieldOperationWithForeignKeyToChangeSetOnExistingTable
     transform s : RDBMS!RdbmsCreateFieldOperation
     to t : LIQUIBASE!ChangeSet {
-        guard: s.isForeignKey and not s.eContainer.isNewTable
+        guard: s.isForeignKey
         t.id = "create-foreign-key-for-" + s.eContainer.table.sqlName;
         t.author = "tatami-rdbms2liquibase";
         t.dbms = dialect;
@@ -201,7 +185,7 @@ rule CreateFieldOperationWithForeignKeyToChangeSetOnExistingTable
 rule CreateFieldOperationWithForeignKeyToAddColumnDefOnExistingTable
     transform s : RDBMS!RdbmsCreateFieldOperation
     to t : LIQUIBASE!AddColumnDef {
-        guard: s.isForeignKey and not s.eContainer.isNewTable
+        guard: s.isForeignKey
 
         t.name = s.sqlName;
         t.type = s.field.toFieldDefinition();
@@ -217,6 +201,73 @@ rule CreateFieldOperationWithForeignKeyToAddColumnDefOnExistingTable
             }
             targetModel.changeSet[i].addColumn[0].column.add(t);
             ("AddColumnDef created in " + targetModel.changeSet[i].id).println();
+        }
+}
+
+// CREATE FIELDS: FOREIGN KEY
+/////////////////////////////////////////
+// DELETE
+
+rule DeleteFieldOperationToChangeSet
+    transform s : RDBMS!RdbmsDeleteFieldOperation
+    to t : LIQUIBASE!ChangeSet {
+        t.id = "drop-fields";
+        t.author = "tatami-rdbms2liquibase";
+        t.dbms = dialect;
+        t.context = RDBMS!RdbmsModel.all.first.version;
+        t.logicalFilePath = "drop-fields";
+
+        var i = 0;
+        var size = targetModel.changeSet.size();
+        while (i < size and targetModel.changeSet[i].id <> "drop-fields") i++;
+        if (i == size) {
+            targetModel.changeSet.add(t);
+            ("ChangeSet " + t.id + " created").println();
+        }
+}
+
+rule DeleteFieldOperationToDropColumn
+    transform s : RDBMS!RdbmsDeleteFieldOperation
+    to t : LIQUIBASE!DropColumn {
+        t.tableName = s.eContainer.table.sqlName;
+        t.columnName = s.sqlName;
+
+        var i = 0;
+        var size = targetModel.changeSet.size();
+        while (i < size and targetModel.changeSet[i].id <> "drop-fields") i++;
+        if (i < size) {
+            targetModel.changeSet[i].dropColumn.add(t);
+        }
+}
+
+rule DeleteTableOperationToChangeSet
+    transform s : RDBMS!RdbmsDeleteTableOperation
+    to t : LIQUIBASE!ChangeSet {
+        t.id = "drop-tables";
+        t.author = "tatami-rdbms2liquibase";
+        t.dbms = dialect;
+        t.context = RDBMS!RdbmsModel.all.first.version;
+        t.logicalFilePath = "drop-tables";
+
+        var i = 0;
+        var size = targetModel.changeSet.size();
+        while (i < size and targetModel.changeSet[i].id <> "drop-tables") i++;
+        if (i == size) {
+            targetModel.changeSet.add(t);
+            ("ChangeSet " + t.id + " created").println();
+        }
+}
+
+rule DeleteTableOperationToDropTable
+    transform s : RDBMS!RdbmsDeleteTableOperation
+    to t : LIQUIBASE!DropTable {
+        t.tableName = s.sqlName;
+
+        var i = 0;
+        var size = targetModel.changeSet.size();
+        while (i < size and targetModel.changeSet[i].id <> "drop-tables") i++;
+        if (i < size) {
+            targetModel.changeSet[i].dropTable.add(t);
         }
 }
 
