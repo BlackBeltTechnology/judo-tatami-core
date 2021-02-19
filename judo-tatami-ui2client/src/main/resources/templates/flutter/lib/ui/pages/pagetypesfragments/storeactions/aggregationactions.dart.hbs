@@ -138,7 +138,7 @@ Future<void> unset{{ fqClass relation.name }}({{ fqClass relation.owner.name }}S
 {{/if}}
 {{# if relation.isRelationBehaviourTypeDeletable }}
 @action
-Future<void> delete{{ className relation.name }}{{ className relation.target.name }}({{ fqClass relation.target.name }}Store target{{ className relation.target.name }}Store{{# unless relation.isAccess}}, {{ fqClass relation.owner.name }}Store owner{{ className relation.owner.name }}Store{{/unless}}) async {
+Future<void> delete{{ className relation.name }}{{ className relation.target.name }}({{ fqClass relation.target.name }}Store target{{ className relation.target.name }}Store, {{ fqClass relation.owner.name }}Store owner{{ className relation.owner.name }}Store) async {
     try {
         errorMessage = null;
     {{# if page.isPageTypeView }}
@@ -156,11 +156,13 @@ Future<void> delete{{ className relation.name }}{{ className relation.target.nam
 {{/if}}
 {{# if relation.isRelationBehaviourTypeUpdatable }}
 @action
-Future<{{ fqClass relation.target.name }}Store> update{{ className relation.name }}{{ className relation.target.name }}({{ fqClass relation.target.name }}Store target{{ className relation.target.name }}Store) async {
+Future<{{ fqClass relation.target.name }}Store> update{{ className relation.name }}{{ className relation.target.name }}({{ fqClass relation.target.name }}Store target{{ className relation.target.name }}Store, {{ fqClass relation.owner.name }}Store owner{{ className relation.owner.name }}Store) async {
     try {
         errorMessage = null;
     {{# if page.isPageTypeView }}
-        return await _{{ fqVariable application.actor.name }}Repository.{{fqVariable relation.target.name}}Update(target{{ className relation.target.name }}Store);
+        var result = await _{{ fqVariable application.actor.name }}Repository.{{fqVariable relation.target.name}}Update(target{{ className relation.target.name }}Store);
+        refresh{{ className relation.owner.name }}(owner{{ className relation.owner.name }}Store);
+        return result;
     {{ else }}
         return target{{ className relation.target.name }}Store;
     {{/ if }}

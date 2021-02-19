@@ -62,7 +62,7 @@ Observer(builder: (_) {
                     arguments: {{ fqClass action.target.name }}PageArguments({{# unless relation.isAccess}}owner{{ className relation.owner.name }}Store: target{{ className relation.owner.name }}Store, {{/ unless}}target{{ className relation.target.name }}Store: target{{ className relation.owner.name }}Store.{{variable relation.name}}));
                     {{# unless relation.isMemberTypeTransient }}
                     if (response != null) {
-                        {{ fqVariable page.name }}PageStore.get{{ fqClass relation.name }}({{# unless relation.isAccess}}target{{ className relation.owner.name }}Store{{/ unless}})
+                        {{ fqVariable page.name }}PageStore.refresh{{ className relation.owner.name }}(target{{ className relation.owner.name }}Store)
                             .catchError((error) => ErrorHandler.errorDialog(context, error));
                     }
                     {{/ unless }}
@@ -83,7 +83,7 @@ Observer(builder: (_) {
                     arguments: {{ fqClass action.target.name }}PageArguments(target{{ className relation.target.name }}Store: cloned, validatable: {{ fqVariable page.name }}PageStore.validatable));
                     if (res != null) {
                         target{{ className relation.owner.name }}Store.{{variable relation.name}}.updateWith(cloned);
-                        var updated = await {{ fqVariable page.name }}PageStore.update{{ className relation.name }}{{ className relation.target.name }}(target{{ className relation.owner.name }}Store.{{variable relation.name}})
+                        var updated = await {{ fqVariable page.name }}PageStore.update{{ className relation.name }}{{ className relation.target.name }}(target{{ className relation.owner.name }}Store.{{variable relation.name}}{{# unless page.dataElement.isRelationKindAssociation }}, target{{ className relation.owner.name }}Store{{/ unless }})
                             .catchError((error) => ErrorHandler.errorDialog(context, error));
                         {{# if (isValidateHere page) }}
                             {{# unless page.dataElement.isRelationKindAggregation }}
