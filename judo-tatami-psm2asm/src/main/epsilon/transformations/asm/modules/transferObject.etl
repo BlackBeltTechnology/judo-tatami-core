@@ -531,13 +531,28 @@ rule CreateQueryCustomizerAnnotationForQueryCustomizerClass
 rule CreateMetadataAnnotationForMetadataClass
     transform s : JUDOPSM!TransferObjectType
     to t : ASM!EAnnotation {
-        guard: s.metadata
+        guard: s.isMetadataType()
         t.source = asmUtils.getAnnotationUri("metadata");
 
         var metadata = new ASM!EStringToStringMapEntry;
         metadata.key = "value";
         metadata.value = "true";
         t.details.add(metadata);
+
+        s.asmEquivalent().eAnnotations.add(t);
+    }
+
+@greedy
+rule CreateGetRangeInputAnnotationForGetRangeInputClass
+    transform s : JUDOPSM!TransferObjectType
+    to t : ASM!EAnnotation {
+        guard: s.isGetRangeInputType()
+        t.source = asmUtils.getAnnotationUri("getRangeInput");
+
+        var getRangeInput = new ASM!EStringToStringMapEntry;
+        getRangeInput.key = "value";
+        getRangeInput.value = "true";
+        t.details.add(getRangeInput);
 
         s.asmEquivalent().eAnnotations.add(t);
     }

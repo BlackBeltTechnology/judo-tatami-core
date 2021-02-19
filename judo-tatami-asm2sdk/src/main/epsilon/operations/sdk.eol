@@ -69,11 +69,7 @@ operation getAllDTOs(): Collection {
     	        not asmUtils.annotatedAsTrue(class, "referenceHolder") and
     	        not asmUtils.annotatedAsTrue(class, "optional") and
     	        not asmUtils.annotatedAsTrue(class, "queryCustomizer") and
-    	        not asmUtils.annotatedAsTrue(class, "orderingType") and
-    	        not asmUtils.annotatedAsTrue(class, "seek") and
-    	        not asmUtils.annotatedAsTrue(class, "filterBy") and
     	        not asmUtils.annotatedAsTrue(class, "metadata") and
-    	        not asmUtils.annotatedAsTrue(class, "metadataSecurity") and
     	        not asmUtils.annotatedAsTrue(class, "getRangeInput") and
     	        not asmUtils.annotatedAsTrue(class, "actorType")
     	    );

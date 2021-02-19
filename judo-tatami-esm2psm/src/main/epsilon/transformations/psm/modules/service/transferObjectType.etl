@@ -424,7 +424,6 @@ rule CreateGetRangeInputType
     to t: JUDOPSM!UnmappedTransferObjectType { 
 
       t.name = "_GetRangeInput" + s.eContainer.name.firstToUpperCase() + s.name.firstToUpperCase();
-      t.optional = true;
 
       var owner = new JUDOPSM!TransferObjectRelation;
       owner.name = "owner";
