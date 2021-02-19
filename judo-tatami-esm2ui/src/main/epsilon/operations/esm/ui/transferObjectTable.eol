@@ -1,5 +1,6 @@
 operation ESM!esm::ui::TransferObjectTable createTableFromTransferObjectTable(application : UI!ui::Application, page : UI!ui::PageDefinition) : UI!ui::Table {
 	var inputPage : Boolean = page.pageType == UI!ui::PageType#OPERATION_INPUT;
+	var outputPage : Boolean = page.pageType == UI!ui::PageType#OPERATION_OUTPUT;
 	var t : UI!ui::Table = new UI!ui::Table();
 	t.name = self.name;
 
@@ -8,7 +9,7 @@ operation ESM!esm::ui::TransferObjectTable createTableFromTransferObjectTable(ap
 	t.icon = self.iconName;
 	t.sourceId = self.getID();
 
-	for (column in self.columns.select(c | (c.dataFeature.getMember().memberType == ESM!esm::structure::MemberType#TRANSIENT implies inputPage))) {
+	for (column in self.columns.select(c | (c.dataFeature.getMember().memberType == ESM!esm::structure::MemberType#TRANSIENT implies (inputPage or outputPage)))) {
 		t.columns.add(column.map(application));
 	}
     return t;
@@ -30,6 +31,7 @@ operation ESM!esm::ui::TransferObjectTable createTableFromTransferObjectTable(ap
 
 operation ESM!esm::ui::TransferObjectTable createLinkFromTransferObjectTable(application : UI!ui::Application, page : UI!ui::PageDefinition) : UI!ui::Link {
 	var inputPage : Boolean = page.pageType == UI!ui::PageType#OPERATION_INPUT;
+	var outputPage : Boolean = page.pageType == UI!ui::PageType#OPERATION_OUTPUT;
 	var t : UI!ui::Link = new UI!ui::Link();
 	t.name = self.name;
 
@@ -38,7 +40,7 @@ operation ESM!esm::ui::TransferObjectTable createLinkFromTransferObjectTable(app
 	t.icon = self.iconName;
 	t.sourceId = self.getID();
 
-	for (column in self.columns.select(c | (c.dataFeature.getMember().memberType == ESM!esm::structure::MemberType#TRANSIENT implies inputPage))) {
+	for (column in self.columns.select(c | (c.dataFeature.getMember().memberType == ESM!esm::structure::MemberType#TRANSIENT implies (inputPage or outputPage)))) {
 		t.parts.add(column.map(application));
 	}
     return t;

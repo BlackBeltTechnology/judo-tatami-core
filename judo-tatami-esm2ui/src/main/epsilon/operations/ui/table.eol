@@ -7,7 +7,6 @@ operation UI!ui::Table calculateActions(application : UI!ui::Application, previe
 		
 		// **** VIEW: view, create, update, delete (add, set, remove - optional) ****
 		if (pageType == UI!ui::PageType#VIEW or
-			pageType == UI!ui::PageType#OPERATION_OUTPUT or
 			(pageType == UI!ui::PageType#DASHBOARD and not relationType.isCollection)) {
 			
 			self.createViewUpdateDeleteActions(relationType, application, preview);
@@ -40,6 +39,10 @@ operation UI!ui::Table calculateActions(application : UI!ui::Application, previe
 				self.createUpdateAction(relationType, application, preview);
 				self.createRemoveAction();
 			}
+		}
+		
+		if (pageType == UI!ui::PageType#OPERATION_OUTPUT) {
+			self.createViewAction(relationType, application, preview);
 		}
 	
 		// **** CREATE/UPDATE: view, update, delete, remove (create, add, set buttons are created for the Table Page - see 'pageDefinition.eol') ****

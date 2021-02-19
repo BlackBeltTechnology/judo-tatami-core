@@ -72,13 +72,18 @@ operation UI!ui::PageDefinition calculateActions(application : UI!ui::Applicatio
 				if (relationType.getIsRelationBehaviourTypeSetable()) {
 					buttonGroup.children.add(createButton("set", "SET", 2d, new UI!ui::SetAction()));
 				}
-				/*if (relationType.getIsRelationBehaviourTypeUnsetable()) {
+				if (relationType.getIsRelationBehaviourTypeUnsetable()) {
 					buttonGroup.children.add(createButton("unset", "UNSET", 2d, new UI!ui::UnsetAction()));
-				}*/
+				}
 				if (relationType.getIsRelationBehaviourTypeAddable()) {
 					buttonGroup.children.add(createButton("add", "ADD", 2d, new UI!ui::AddAction()));
 				}
 			}
+		}
+	} else if (self.pageType == UI!ui::PageType#OPERATION_OUTPUT) {
+		for (container in self.containers) {
+			var buttonGroup : UI!ui::Flex = container.createGroupForInstanceActionButtons();
+			buttonGroup.children.add(createButton("ok", "OK", 2d, new UI!ui::BackAction()));
 		}
 	}
 }

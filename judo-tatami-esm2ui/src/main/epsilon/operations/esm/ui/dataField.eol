@@ -2,7 +2,7 @@ operation ESM!esm::ui::DataField createInputFromDataField(application : UI!ui::A
 	var dataType = self.dataFeature.getMember().getDataType();
 	var attributeType = self.dataFeature.getMember().mapAttributeType(application, self.getTransferObjectType().mapClassType(application));
 	
-	if (attributeType.memberType == UI!ui::data::MemberType#TRANSIENT and page.pageType <> UI!ui::PageType#OPERATION_INPUT) {
+	if (attributeType.memberType == UI!ui::data::MemberType#TRANSIENT and not (page.pageType == UI!ui::PageType#OPERATION_INPUT or page.pageType == UI!ui::PageType#OPERATION_OUTPUT)) {
 		var ret = new UI!ui::Spacer();
 		ret.setVisualProperties(self, application);
 		ret.name = self.name.anchor("SpacerForTransientMember");

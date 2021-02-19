@@ -1,4 +1,4 @@
-operation ESM!esm::ui::OperationForm createButtonFromOperationForm(application : UI!ui::Application) : UI!ui::Button {
+operation ESM!esm::ui::OperationForm createButtonFromOperationForm(application : UI!ui::Application, page : UI!ui::PageDefinition) : UI!ui::Button {
 	var t : UI!ui::Button = new UI!ui::Button();
 	
 	t.setVisualProperties(self, application);
@@ -20,9 +20,13 @@ operation ESM!esm::ui::OperationForm createButtonFromOperationForm(application :
 	callAction.~application = application;
 	
 	t.action = callAction;
+	
+	t.disabled = (page.pageType == UI!ui::PageType#UPDATE or page.pageType == UI!ui::PageType#OPERATION_INPUT or 
+			(page.pageType == UI!ui::PageType#OPERATION_OUTPUT and op.isStateful));
+	
     return t;
 }
 
 operation ESM!esm::ui::OperationForm map(application : UI!ui::Application, page : UI!ui::PageDefinition) : UI!ui::Button {
-    return self.createButtonFromOperationForm(application);
+    return self.createButtonFromOperationForm(application, page);
 }

@@ -396,13 +396,15 @@ public class Esm2UiOperationsTest {
         final Optional<VisualElement> instanceActionsContainerE3TableSingle = defaultContainer6.get().getChildren().stream()
         		.filter(c -> c instanceof Flex && c.getName().equals("instanceActions")).findAny();
         assertTrue(instanceActionsContainerE3TableSingle.isPresent());
-        assertEquals(3, ((Flex)instanceActionsContainerE3TableSingle.get()).getChildren().size());
+        assertEquals(4, ((Flex)instanceActionsContainerE3TableSingle.get()).getChildren().size());
         assertTrue(((Flex)instanceActionsContainerE3TableSingle.get()).getChildren().stream()
         		.anyMatch(b -> b instanceof Button && ((Button)b).getAction() != null && ((Button)b).getAction() instanceof BackAction));
         assertTrue(((Flex)instanceActionsContainerE3TableSingle.get()).getChildren().stream()
         		.anyMatch(b -> b instanceof Button && ((Button)b).getAction() != null && ((Button)b).getAction() instanceof CreateAction));
         assertTrue(((Flex)instanceActionsContainerE3TableSingle.get()).getChildren().stream()
         		.anyMatch(b -> b instanceof Button && ((Button)b).getAction() != null && ((Button)b).getAction() instanceof SetAction));
+        assertTrue(((Flex)instanceActionsContainerE3TableSingle.get()).getChildren().stream()
+                .anyMatch(b -> b instanceof Button && ((Button)b).getAction() != null && ((Button)b).getAction() instanceof UnsetAction));
         
     }
     

@@ -7,7 +7,6 @@ operation UI!ui::Link calculateActions(application : UI!ui::Application, preview
 	
 		// **** VIEW: view, create, update, delete (add, set, remove - optional) ****
 		if (pageType == UI!ui::PageType#VIEW or
-			pageType == UI!ui::PageType#OPERATION_OUTPUT or
 			(pageType == UI!ui::PageType#DASHBOARD and not relationType.isCollection)) {
 			
 			self.createViewCreateUpdateDeleteActions(relationType, application, preview);
@@ -33,6 +32,10 @@ operation UI!ui::Link calculateActions(application : UI!ui::Application, preview
 				self.createUpdateAction(relationType, application, preview);
 				self.createUnsetAction();
 			}
+		}
+		
+		if (pageType == UI!ui::PageType#OPERATION_OUTPUT) {
+			self.createViewAction(relationType, application, preview);
 		}
 
 		if (pageType == UI!ui::PageType#TABLE or (pageType == UI!ui::PageType#DASHBOARD and relationType.isCollection)) {
