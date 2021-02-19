@@ -45,3 +45,30 @@ rule TableToAddNotNullChangeSet
 	    t.context = RDBMS!RdbmsModel.all.first.version;
 		t.logicalFilePath = "add-not-null";
 }
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Rdbms Operations
+
+@lazy
+rule CreateTableOperationToChangeSet
+    transform s : RDBMS!RdbmsCreateTableOperation
+    to t : LIQUIBASE!ChangeSet {
+        t.id = "create-table-" + s.sqlName;
+        t.author = "tatami-rdbms2liquibase";
+        t.dbms = dialect;
+        t.context = RDBMS!RdbmsModel.all.first.version;
+        t.logicalFilePath = "create-table";
+        targetModel.changeSet.add(t);
+        ("ChangeSet " + t.id + " created").println();
+}
+
+rule CreateTableOperationToCreateTable
+    transform s : RDBMS!RdbmsCreateTableOperation
+    to t : LIQUIBASE!CreateTable {
+        t.tableName = s.sqlName;
+        s.equivalent("CreateTableOperationToChangeSet").createTable.add(t);
+        ("CreateTable " + t.tableName + " created").println();
+}
+
+// Rdbms Operations
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

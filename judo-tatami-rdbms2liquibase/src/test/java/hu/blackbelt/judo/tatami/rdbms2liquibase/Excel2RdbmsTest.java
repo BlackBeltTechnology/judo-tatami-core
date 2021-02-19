@@ -4,8 +4,10 @@ import com.google.common.collect.ImmutableList;
 import hu.blackbelt.epsilon.runtime.execution.ExecutionContext;
 import hu.blackbelt.epsilon.runtime.execution.model.excel.ExcelModelContext;
 import hu.blackbelt.judo.meta.liquibase.runtime.LiquibaseModel;
+import hu.blackbelt.judo.meta.liquibase.runtime.LiquibaseModel.LiquibaseValidationException;
 import hu.blackbelt.judo.meta.liquibase.runtime.LiquibaseNamespaceFixUriHandler;
 import hu.blackbelt.judo.meta.rdbms.runtime.RdbmsModel;
+import hu.blackbelt.judo.meta.rdbms.runtime.RdbmsModel.RdbmsValidationException;
 import org.eclipse.epsilon.common.util.UriUtil;
 import org.junit.jupiter.api.Test;
 
@@ -22,6 +24,7 @@ import static hu.blackbelt.epsilon.runtime.execution.model.emf.WrappedEmfModelCo
 import static hu.blackbelt.judo.meta.liquibase.runtime.LiquibaseModel.buildLiquibaseModel;
 import static java.lang.String.format;
 import static java.util.Collections.singletonList;
+import static org.junit.jupiter.api.Assertions.fail;
 
 public class Excel2RdbmsTest {
 
@@ -74,10 +77,18 @@ public class Excel2RdbmsTest {
         excelToRdbmsEtlContext.close();
 
         File originalRdbmsFile = new File(TARGET_TEST_CLASSES, String.format("testContents-%s-rdbms.model", originalModel.getName()));
-        originalModel.saveRdbmsModel(RdbmsModel.SaveArguments.rdbmsSaveArgumentsBuilder().file(originalRdbmsFile));
+        try {
+            originalModel.saveRdbmsModel(RdbmsModel.SaveArguments.rdbmsSaveArgumentsBuilder().file(originalRdbmsFile));
+        } catch (RdbmsValidationException ex) {
+            fail(format("Model:\n%s\nDiagnostic:\n%s", originalModel.asString(), originalModel.getDiagnosticsAsString()));
+        }
 
         File newRdbmsFile = new File(TARGET_TEST_CLASSES, String.format("testContents-%s-rdbms.model", newModel.getName()));
-        newModel.saveRdbmsModel(RdbmsModel.SaveArguments.rdbmsSaveArgumentsBuilder().file(newRdbmsFile));
+        try {
+            newModel.saveRdbmsModel(RdbmsModel.SaveArguments.rdbmsSaveArgumentsBuilder().file(newRdbmsFile));
+        } catch (RdbmsValidationException ex) {
+            fail(format("Model:\n%s\nDiagnostic:\n%s", newModel.asString(), newModel.getDiagnosticsAsString()));
+        }
 
         RdbmsModel incrementalModel = RdbmsModel.buildRdbmsModel()
                 .name(INCREMENTAL_MODEL_NAME)
@@ -111,7 +122,11 @@ public class Excel2RdbmsTest {
         incrementalOperationEtlContext.close();
 
         File incrementalRdbmsFile = new File(TARGET_TEST_CLASSES, String.format("testContents-%s-rdbms.model", incrementalModel.getName()));
-        incrementalModel.saveRdbmsModel(RdbmsModel.SaveArguments.rdbmsSaveArgumentsBuilder().file(incrementalRdbmsFile));
+        try {
+            incrementalModel.saveRdbmsModel(RdbmsModel.SaveArguments.rdbmsSaveArgumentsBuilder().file(incrementalRdbmsFile));
+        } catch (RdbmsValidationException ex) {
+            fail(format("Model:\n%s\nDiagnostic:\n%s", incrementalModel.asString(), incrementalModel.getDiagnosticsAsString()));
+        }
 
         // save old rdmbs model to liquibase changelog
         LiquibaseModel originalLiquibaseModel = buildLiquibaseModel()
@@ -121,9 +136,13 @@ public class Excel2RdbmsTest {
         Rdbms2Liquibase.executeRdbms2LiquibaseTransformation(originalModel, originalLiquibaseModel, "hsqldb");
 
         ByteArrayOutputStream originalLiquibaseStream = new ByteArrayOutputStream();
-        originalLiquibaseModel.saveLiquibaseModel(
-                LiquibaseModel.SaveArguments.liquibaseSaveArgumentsBuilder()
-                        .outputStream(LiquibaseNamespaceFixUriHandler.fixUriOutputStream(originalLiquibaseStream)));
+        try {
+            originalLiquibaseModel.saveLiquibaseModel(
+                    LiquibaseModel.SaveArguments.liquibaseSaveArgumentsBuilder()
+                            .outputStream(LiquibaseNamespaceFixUriHandler.fixUriOutputStream(originalLiquibaseStream)));
+        } catch (LiquibaseValidationException ex) {
+            fail(format("Model:\n%s\nDiagnostic:\n%s", originalLiquibaseModel.asString(), originalLiquibaseModel.getDiagnosticsAsString()));
+        }
         String originalLiquibaseName = format("testContents-%s-liquibase.xml", originalLiquibaseModel.getName());
         originalLiquibaseStream.writeTo(new FileOutputStream(new File(TARGET_TEST_CLASSES, originalLiquibaseName)));
 
@@ -145,9 +164,13 @@ public class Excel2RdbmsTest {
         Rdbms2Liquibase.executeRdbms2LiquibaseTransformation(incrementalModel, incrementalLiquibaseModel, "hsqldb");
 
         ByteArrayOutputStream incrementalLiquibaseStream = new ByteArrayOutputStream();
-        incrementalLiquibaseModel.saveLiquibaseModel(
-                LiquibaseModel.SaveArguments.liquibaseSaveArgumentsBuilder()
-                        .outputStream(LiquibaseNamespaceFixUriHandler.fixUriOutputStream(incrementalLiquibaseStream)));
+        try {
+            incrementalLiquibaseModel.saveLiquibaseModel(
+                    LiquibaseModel.SaveArguments.liquibaseSaveArgumentsBuilder()
+                            .outputStream(LiquibaseNamespaceFixUriHandler.fixUriOutputStream(incrementalLiquibaseStream)));
+        } catch (LiquibaseValidationException ex) {
+            fail(format("Model:\n%s\nDiagnostic:\n%s", incrementalLiquibaseModel.asString(), incrementalLiquibaseModel.getDiagnosticsAsString()));
+        }
         String incrementalLiquibaseName = format("testContents-%s-liquibase.xml", incrementalLiquibaseModel.getName());
         incrementalLiquibaseStream.writeTo(new FileOutputStream(new File(TARGET_TEST_CLASSES, incrementalLiquibaseName)));
 

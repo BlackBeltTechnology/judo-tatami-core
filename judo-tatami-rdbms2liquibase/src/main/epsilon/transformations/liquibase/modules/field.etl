@@ -92,3 +92,133 @@ operation RDBMS!RdbmsField toFieldDefinition () : String {
 		return self.type.toString();
 	}
 }
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Rdbms Operations
+
+rule CreateFieldOperationToColumnOnNewTable
+    transform s : RDBMS!RdbmsCreateFieldOperation
+    to t : LIQUIBASE!Column {
+        guard: not s.isForeignKey and s.eContainer.isNewTable
+        var i = 0;
+        var size = targetModel.changeSet.size();
+        while (i < size and targetModel.changeSet[i].id <> "create-table-" + s.eContainer.table.sqlName) i++;
+
+        t.name = s.sqlName;
+        t.type = s.field.toFieldDefinition();
+        if (i < size) {
+            targetModel.changeSet[i].createTable[0].column.add(t);
+            if (s.isIdentifierField) {
+                t.constraints = new LIQUIBASE!Constraints(primaryKey = true, nullable = not s.field.mandatory);
+            }
+            ("Column " + t.name + " created in " + targetModel.changeSet[i].createTable[0].tableName + "").println();
+        }
+}
+
+rule CreateFieldOperationToChangeSetOnExistingTable
+    transform s : RDBMS!RdbmsCreateFieldOperation
+    to t : LIQUIBASE!ChangeSet {
+        guard: not s.isForeignKey and not s.eContainer.isNewTable
+        t.id = "create-field-for-" + s.eContainer.table.sqlName;
+        t.author = "tatami-rdbms2liquibase";
+        t.dbms = dialect;
+        t.context = RDBMS!RdbmsModel.all.first.version;
+        t.logicalFilePath = "create-field";
+
+        var i = 0;
+        var size = targetModel.changeSet.size();
+        while (i < size and targetModel.changeSet[i].id <> "create-field-for-" + s.eContainer.table.sqlName) i++;
+        if (i == size) {
+            targetModel.changeSet.add(t);
+            ("ChangeSet " + t.id + " created").println();
+        }
+}
+
+rule CreateFieldOperationToAddColumnDefOnExistingTable
+    transform s : RDBMS!RdbmsCreateFieldOperation
+    to t : LIQUIBASE!AddColumnDef {
+        guard: not s.isForeignKey and not s.eContainer.isNewTable
+
+        t.name = s.sqlName;
+        t.type = s.field.toFieldDefinition();
+        if (s.isIdentifierField) {
+            t.constraints = new LIQUIBASE!Constraints(primaryKey = true, nullable = not s.field.mandatory);
+        }
+        var i = 0;
+        var size = targetModel.changeSet.size();
+        while (i < size and targetModel.changeSet[i].id <> "create-field-for-" + s.eContainer.table.sqlName) i++;
+        if (i < size) {
+            if (targetModel.changeSet[i].addColumn.size == 0) {
+                targetModel.changeSet[i].addColumn.add(new LIQUIBASE!AddColumn(tableName = s.eContainer.table.sqlName));
+                ("AddColumn created in " + targetModel.changeSet[i].id).println();
+            }
+            targetModel.changeSet[i].addColumn[0].column.add(t);
+            ("AddColumnDef created in " + targetModel.changeSet[i].id).println();
+        }
+}
+
+// CREATE FIELDS (NO FOREIGN KEY)
+/////////////////////////////////////////
+// CREATE FIELDS: FOREIGN KEY
+
+rule CreateFieldOperationWithForeignKeyToColumnOnNewTable
+    transform s : RDBMS!RdbmsCreateFieldOperation
+    to t : LIQUIBASE!Column {
+        guard: s.isForeignKey and s.eContainer.isNewTable
+        var i = 0;
+        var size = targetModel.changeSet.size();
+        while (i < size and targetModel.changeSet[i].id <> "create-table-" + s.eContainer.table.sqlName) i++;
+
+        t.name = s.sqlName;
+        t.type = s.field.toFieldDefinition();
+        t.constraints = new LIQUIBASE!Constraints(referencedTableName = s.field.referenceKey.eContainer.sqlName,
+                                                  referencedColumnNames = s.field.referenceKey.sqlName);
+        if (i < size) {
+            targetModel.changeSet[i].createTable[0].column.add(t);
+            ("Column " + t.name + " created in " + targetModel.changeSet[i].createTable[0].tableName + "").println();
+        }
+}
+
+rule CreateFieldOperationWithForeignKeyToChangeSetOnExistingTable
+    transform s : RDBMS!RdbmsCreateFieldOperation
+    to t : LIQUIBASE!ChangeSet {
+        guard: s.isForeignKey and not s.eContainer.isNewTable
+        t.id = "create-foreign-key-for-" + s.eContainer.table.sqlName;
+        t.author = "tatami-rdbms2liquibase";
+        t.dbms = dialect;
+        t.context = RDBMS!RdbmsModel.all.first.version;
+        t.logicalFilePath = "create-foreign-key";
+
+        var i = 0;
+        var size = targetModel.changeSet.size();
+        while (i < size and targetModel.changeSet[i].id <> "create-foreign-key-for-" + s.eContainer.table.sqlName) i++;
+        if (i == size) {
+            targetModel.changeSet.add(t);
+            ("ChangeSet " + t.id + " created").println();
+        }
+}
+
+rule CreateFieldOperationWithForeignKeyToAddColumnDefOnExistingTable
+    transform s : RDBMS!RdbmsCreateFieldOperation
+    to t : LIQUIBASE!AddColumnDef {
+        guard: s.isForeignKey and not s.eContainer.isNewTable
+
+        t.name = s.sqlName;
+        t.type = s.field.toFieldDefinition();
+        t.constraints = new LIQUIBASE!Constraints(referencedTableName = s.field.referenceKey.eContainer.sqlName,
+                                                  referencedColumnNames = s.field.referenceKey.sqlName);
+        var i = 0;
+        var size = targetModel.changeSet.size();
+        while (i < size and targetModel.changeSet[i].id <> "create-foreign-key-for-" + s.eContainer.table.sqlName) i++;
+        if (i < size) {
+            if (targetModel.changeSet[i].addColumn.size == 0) {
+                targetModel.changeSet[i].addColumn.add(new LIQUIBASE!AddColumn(tableName = s.eContainer.table.sqlName));
+                ("AddColumn created in " + targetModel.changeSet[i].id).println();
+            }
+            targetModel.changeSet[i].addColumn[0].column.add(t);
+            ("AddColumnDef created in " + targetModel.changeSet[i].id).println();
+        }
+}
+
+// Rdbms Operations
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
