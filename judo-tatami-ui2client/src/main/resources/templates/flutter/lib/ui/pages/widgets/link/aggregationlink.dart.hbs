@@ -69,9 +69,7 @@ Observer(builder: (_) {
                 }
             ) : null,
         {{/if}}
-        {{# unless page.isPageTypeView }}
-            {{# unless attributeType.isReadOnly }}
-                {{#if action.isEditAction}}
+        {{#if action.isEditAction}}
             (target{{ className relation.owner.name }}Store.internal__updatable && target{{ className relation.owner.name }}Store.{{variable relation.name}} != null) ?
             IconButton(
                 icon: Icon(
@@ -107,8 +105,8 @@ Observer(builder: (_) {
                     }
                 }{{# unless relation.isAccess}} : null{{/ unless}}
             ) : null,
-                {{/if}}
-                {{#if action.isCreateAction}}
+        {{/if}}
+        {{#if action.isCreateAction}}
             target{{ className relation.owner.name }}Store.internal__updatable ?
             IconButton(
                 icon: Icon(
@@ -139,8 +137,8 @@ Observer(builder: (_) {
                     }
                 }{{# unless relation.isAccess}} : null{{/ unless}}
             ) : null,
-                {{/if}}
-                {{#if action.isRemoveAction}}
+        {{/if}}
+        {{#if action.isRemoveAction}}
             (target{{ className relation.owner.name }}Store.internal__updatable && target{{ className relation.owner.name }}Store.{{variable relation.name}} != null) ?
             IconButton(
                 icon: Icon(
@@ -175,9 +173,7 @@ Observer(builder: (_) {
                      .catchError((error) => ErrorHandler.errorDialog(context, error));
                 }{{# unless relation.isAccess}}{{# unless relation.isRelationKindStatic}}: null{{/ unless}}{{/ unless}}
             ) : null,
-                {{/if}}
-            {{/ unless }}
-        {{/ unless }}
+        {{/if}}
 
         {{/each}}
         ],
