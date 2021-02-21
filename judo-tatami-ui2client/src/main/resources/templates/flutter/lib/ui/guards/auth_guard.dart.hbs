@@ -1,0 +1,53 @@
+{{log 'Blank page generation for' (variable application.name) level='info'}}
+//////////////////////////////////////////////////////////////////////////////
+// G E N E R A T E D    C L A S S
+// ------------------------------
+// Factory expression: {{{ cleanup template.factoryExpression }}}
+// Path expression: {{{ cleanup template.pathExpression }}}
+// Overwrite: {{{ cleanup template.overwriteExpression }}}
+// Template name: {{ template.templateName }}
+// Application: {{ application.name }}
+
+import 'package:auto_route/auto_route.dart';
+import 'package:flutter/material.dart';
+import 'package:{{ modelPackage application.name }}/{{ path application.name }}/injector/injector.dart';
+import 'package:{{ modelPackage application.name }}/{{ path application.name }}/repository/package.dart';
+import 'package:{{ modelPackage application.name }}/{{ path application.name }}/ui/routes/router.gr.dart' as router;
+
+class AuthGuard extends RouteGuard {
+  {{# if application.principal }}
+  {{ fqClass application.name }}Repository _actorRepository = locator<{{ fqClass application.name }}Repository>();
+
+  @override
+  Future<bool> canNavigate(ExtendedNavigatorState navigator, String routeName, Object arguments) async {
+    try {
+      var principal = await _actorRepository.getPrincipal();
+      if (principal.email.isNotEmpty) {
+        return true;
+      } else {
+        _navigateToErrorPage(navigator, routeName);
+        return false;
+      }
+    } catch(error) {
+      _navigateToErrorPage(navigator, routeName);
+      return false;
+    }
+  }
+
+  void _navigateToErrorPage(ExtendedNavigatorState navigation, String routeName) {
+    navigation.push(router.Routes.{{ fqVariable application.name }}ErrorPage,
+      arguments: router.{{ fqClass application.name }}ErrorPageArguments(
+        icon: Icon(Icons.error_outline),
+        title: 'Unauthorized',
+        errorMessage: 'You don\'t have permission to access Page: $routeName!',
+      )
+    );
+  }
+  {{else}}
+  @override
+  Future<bool> canNavigate(ExtendedNavigatorState navigator, String routeName, Object arguments) async {
+    // Anonymous access allowed
+    return true;
+  }
+  {{/if}}
+}
