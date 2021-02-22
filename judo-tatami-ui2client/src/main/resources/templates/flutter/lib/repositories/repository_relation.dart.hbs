@@ -39,7 +39,7 @@ class {{ fqClass relation.owner.name }}{{ fqClass relation.name }}Repository {
                         {{# unless (isEnumType attribute.dataType) }}
                             {{# unless (isBooleanDataType attribute.dataType) }}
         if (sortColumn == "{{ variable attribute.name }}" ) {
-            orderBy.attribute = {{ modelName relation.target.name }}Extension{{ packageName relation.target.name}}OrderingType{{ className relation.target.name}}AttributeEnum.{{ attribute.name }};
+            orderBy.attribute = {{ modelName relation.target.name }}Extension{{ packageName relation.target.name}}OrderingType{{ className relation.target.name}}AttributeEnum.{{ variable attribute.name }};
         }
                             {{/ unless }}
                         {{/ unless }}

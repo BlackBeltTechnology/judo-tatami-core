@@ -64,7 +64,7 @@ public class Northwind2UiApplicationTest {
 
     private void transformEsm2Ui() throws Exception {
         // Make transformation which returns the trace with the serialized URI's
-        esm2UiTransformationTrace = executeEsm2UiTransformation(esmModel, "default", 12, uiModel, new Slf4jLog(log),
+        esm2UiTransformationTrace = executeEsm2UiTransformation(esmModel, "default", 12,true, uiModel, new Slf4jLog(log),
                 calculateEsm2UiTransformationScriptURI());
 
         assertTrue(uiModel.isValid());

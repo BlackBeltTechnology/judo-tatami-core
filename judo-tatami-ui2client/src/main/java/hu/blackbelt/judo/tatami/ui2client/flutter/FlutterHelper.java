@@ -141,7 +141,7 @@ public class FlutterHelper {
         context.registerFunction("getInputWidgets", FlutterHelper.class.getDeclaredMethod("getInputWidgets", new Class[]{Container.class}));
         context.registerFunction("getPagesByRelation", FlutterHelper.class.getDeclaredMethod("getPagesByRelation", new Class[]{EList.class, DataElement.class}));
         context.registerFunction("safe", FlutterHelper.class.getDeclaredMethod("safe", new Class[]{String.class, String.class}));
-        context.registerFunction("isObserverButton", FlutterHelper.class.getDeclaredMethod("isObserverButton", new Class[]{VisualElement.class, RelationType.class, Action.class}));
+        context.registerFunction("isObserverButton", FlutterHelper.class.getDeclaredMethod("isObserverButton", new Class[]{VisualElement.class, DataElement.class, Action.class}));
 
     }
 
@@ -427,7 +427,18 @@ public class FlutterHelper {
         }
     }
 
-    public static boolean isObserverButton(VisualElement visualElement, RelationType relationType, Action action){
-        return (visualElement.getEnabledBy() != null) || (!relationType.isIsCollection() && action.getIsCreateAction());
+    public static boolean isObserverButton(VisualElement visualElement, DataElement relationType, Action action){
+        if (visualElement == null || relationType == null || action == null ) {
+            return false;
+        }
+
+        if (relationType instanceof OperationParameterType){
+            return (visualElement.getEnabledBy() != null) || (!((OperationParameterType) relationType).isIsCollection() && action.getIsCreateAction());
+        } else if (relationType instanceof RelationType){
+            return (visualElement.getEnabledBy() != null) || (!((RelationType) relationType).isIsCollection() && action.getIsCreateAction());
+        } else {
+            return false;
+        }
+
     }
 }

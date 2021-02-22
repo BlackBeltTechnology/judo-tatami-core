@@ -38,7 +38,7 @@ public class Ui2ClientTest {
         
         GeneratorTemplate generatorTemplate;
 
-        executeEsm2UiTransformation(esmModel, "desktop", 12, uiModel);
+        executeEsm2UiTransformation(esmModel, "desktop", 12, true, uiModel);
 
         uiModel.saveUiModel(UiModel.SaveArguments.uiSaveArgumentsBuilder().file(new File(TARGET_TEST_CLASSES, TEST + "-ui.model")).build());
 
