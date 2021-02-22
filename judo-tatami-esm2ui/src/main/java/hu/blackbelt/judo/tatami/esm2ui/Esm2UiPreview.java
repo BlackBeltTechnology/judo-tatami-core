@@ -55,8 +55,8 @@ public class Esm2UiPreview {
      * @return The JSON String representation of the Page Definition as a result of the transformation of the preview element
      * @throws Exception
      */
-    public static String executeEsm2UiTransformation(EsmModel esmModel, VisualElement previewElement, String applicationType, Integer applicationColumns, UiModel uiModel) throws Exception {
-    	return executeEsm2UiTransformation(esmModel, previewElement, applicationType, applicationColumns, uiModel, new Slf4jLog(log), calculateEsm2UiPreviewTransformationScriptURI());
+    public static String executeEsm2UiTransformation(EsmModel esmModel, VisualElement previewElement, String applicationType, Integer applicationColumns, boolean allRowActions, UiModel uiModel) throws Exception {
+        return executeEsm2UiTransformation(esmModel, previewElement, applicationType, applicationColumns, allRowActions, uiModel, new Slf4jLog(log), calculateEsm2UiPreviewTransformationScriptURI());
     }
 
     /**
@@ -69,8 +69,8 @@ public class Esm2UiPreview {
      * @return The JSON String representation of the Page Definition as a result of the transformation of the preview element
      * @throws Exception
      */
-    public static String executeEsm2UiTransformation(EsmModel esmModel, VisualElement previewElement, String applicationType, Integer applicationColumns, UiModel uiModel, Log log) throws Exception {
-    	return executeEsm2UiTransformation(esmModel, previewElement, applicationType, applicationColumns, uiModel, log, calculateEsm2UiPreviewTransformationScriptURI());
+    public static String executeEsm2UiTransformation(EsmModel esmModel, VisualElement previewElement, String applicationType, Integer applicationColumns, boolean allRowActions, UiModel uiModel, Log log) throws Exception {
+        return executeEsm2UiTransformation(esmModel, previewElement, applicationType, applicationColumns, allRowActions, uiModel, log, calculateEsm2UiPreviewTransformationScriptURI());
     }
 
     /**
@@ -83,8 +83,8 @@ public class Esm2UiPreview {
      * @return The JSON String representation of the Page Definition as a result of the transformation of the preview element
      * @throws Exception
      */
-    public static String executeEsm2UiTransformation(EsmModel esmModel, VisualElement previewElement, String applicationType, Integer applicationColumns, UiModel uiModel, URI scriptDir) throws Exception {
-    	return executeEsm2UiTransformation(esmModel, previewElement, applicationType, applicationColumns, uiModel, new Slf4jLog(log), scriptDir);
+    public static String executeEsm2UiTransformation(EsmModel esmModel, VisualElement previewElement, String applicationType, Integer applicationColumns, boolean allRowActions, UiModel uiModel, URI scriptDir) throws Exception {
+        return executeEsm2UiTransformation(esmModel, previewElement, applicationType, applicationColumns, allRowActions, uiModel, new Slf4jLog(log), scriptDir);
     }
 
     /**
@@ -97,12 +97,12 @@ public class Esm2UiPreview {
      * @return The JSON String representation of the Page Definition as a result of the transformation of the preview element
      * @throws Exception
      */
-    public static String executeEsm2UiTransformation(EsmModel esmModel, VisualElement previewElement, String applicationType, Integer applicationColumns, UiModel uiModel, Log log,
-                                                                          URI scriptDir) throws Exception {
+    public static String executeEsm2UiTransformation(EsmModel esmModel, VisualElement previewElement, String applicationType, Integer applicationColumns,
+            boolean allRowActions, UiModel uiModel, Log log, URI scriptDir) throws Exception {
 
-    	Set<PageDefinition> previewPage = new HashSet<>();
-    	
-    	// Execution context
+        Set<PageDefinition> previewPage = new HashSet<>();
+        
+        // Execution context
         ExecutionContext executionContext = executionContextBuilder()
                 .log(log)
                 .modelContexts(ImmutableList.of(
@@ -119,12 +119,14 @@ public class Esm2UiPreview {
                                 .resource(uiModel.getResource())
                                 .build()))
                 .injectContexts(ImmutableMap.<String, Object>builder()
-                		.put("esmUtils", new EsmUtils())
-                		.put("uiUtils", new UiUtils())
-                		.put("applicationType", applicationType)
-                		.put("applicationColumns", applicationColumns)
-                		.put("previewElement", previewElement)
-                		.put("previewPage", previewPage).build())
+                        .put("esmUtils", new EsmUtils())
+                        .put("uiUtils", new UiUtils())
+                        .put("applicationType", applicationType)
+                        .put("applicationColumns", applicationColumns)
+                        .put("previewElement", previewElement)
+                        .put("previewPage", previewPage)
+                        .put("allRowActions", allRowActions)
+                        .build())
                 .build();
 
         // run the model / metadata loadingexecutionContext.
@@ -140,7 +142,7 @@ public class Esm2UiPreview {
         executionContext.close();
 
         if (previewPage.size() != 1) {
-        	throw new IllegalStateException("One and only one page definition should be created for preview.");
+            throw new IllegalStateException("One and only one page definition should be created for preview.");
         }
         
         return exportPageDefinitionToJson(previewPage.iterator().next());
@@ -165,30 +167,30 @@ public class Esm2UiPreview {
      * @return The JSON String representation of the Page Definition
      * @throws JsonProcessingException
      */
-	public static String exportPageDefinitionToJson(hu.blackbelt.judo.meta.ui.PageDefinition page) throws JsonProcessingException {
-		ObjectMapper mapper = new ObjectMapper();
-		EMFModule module = new EMFModule();
-		module.configure(EMFModule.Feature.OPTION_SERIALIZE_DEFAULT_VALUE, true);
-		module.configure(EMFModule.Feature.OPTION_USE_ID, true);
-		module.setReferenceSerializer(new JsonSerializer<EObject>() {
-			  @Override
-			  public void serialize(EObject v, JsonGenerator g, SerializerProvider s)
-			  throws IOException {
-				  List<String> superTypeNames = v.eClass().getEAllSuperTypes().stream().map(t -> t.getName()).collect(Collectors.toList());
-				  if (superTypeNames.contains("DataElement")) {
-					  mapper.writeValue(g, ((DataElement)v).getName());
-				  } else if (v.eClass().getName().equals("PageDefinition")) {
-					  mapper.writeValue(g, ((PageDefinition)v).getName());
-				  } else {
-					  mapper.writeValue(g, v);
-				  }
-			  }
-			});
-		mapper.registerModule(module);
+    public static String exportPageDefinitionToJson(hu.blackbelt.judo.meta.ui.PageDefinition page) throws JsonProcessingException {
+        ObjectMapper mapper = new ObjectMapper();
+        EMFModule module = new EMFModule();
+        module.configure(EMFModule.Feature.OPTION_SERIALIZE_DEFAULT_VALUE, true);
+        module.configure(EMFModule.Feature.OPTION_USE_ID, true);
+        module.setReferenceSerializer(new JsonSerializer<EObject>() {
+              @Override
+              public void serialize(EObject v, JsonGenerator g, SerializerProvider s)
+              throws IOException {
+                  List<String> superTypeNames = v.eClass().getEAllSuperTypes().stream().map(t -> t.getName()).collect(Collectors.toList());
+                  if (superTypeNames.contains("DataElement")) {
+                      mapper.writeValue(g, ((DataElement)v).getName());
+                  } else if (v.eClass().getName().equals("PageDefinition")) {
+                      mapper.writeValue(g, ((PageDefinition)v).getName());
+                  } else {
+                      mapper.writeValue(g, v);
+                  }
+              }
+            });
+        mapper.registerModule(module);
 
-		Resource resource = new JsonUuidResource(org.eclipse.emf.common.util.URI.createFileURI("preview.json"), mapper);
-		resource.getContents().add(page);
+        Resource resource = new JsonUuidResource(org.eclipse.emf.common.util.URI.createFileURI("preview.json"), mapper);
+        resource.getContents().add(page);
 
-		return mapper.writeValueAsString(resource);
-	}
+        return mapper.writeValueAsString(resource);
+    }
 }

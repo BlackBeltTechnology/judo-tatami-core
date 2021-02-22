@@ -1,120 +1,129 @@
 operation UI!ui::Link calculateActions(application : UI!ui::Application, preview : Boolean) {
-	var relationType = self.getRelationType();
-	var pageDefinition = self.getPageDefinition();
-	var pageType = pageDefinition.pageType;
+    var relationType = self.getRelationType();
+    var pageDefinition = self.getPageDefinition();
+    var pageType = pageDefinition.pageType;
 
-	if (relationType.isDefined()) {
-	
-		// **** VIEW: view, create, update, delete (add, set, remove - optional) ****
-		if (pageType == UI!ui::PageType#VIEW or
-			(pageType == UI!ui::PageType#DASHBOARD and not relationType.isCollection)) {
-			
-			self.createViewCreateUpdateDeleteActions(relationType, application, preview);
-	        
-	        if (allActions) {
-	        	self.createSetUnsetActions(relationType);
-	        }
-		}
-		
-		if (pageType == UI!ui::PageType#CREATE or pageType == UI!ui::PageType#UPDATE) {
-			if (not self.disabled) {
-		        self.createSetUnsetActions(relationType);
-			}
-		}
-		
-		if (pageType == UI!ui::PageType#OPERATION_INPUT) {
-			if (not self.disabled and relationType.memberType <> ESM!esm::structure::MemberType#TRANSIENT) {
-				self.createSetUnsetActions(relationType);
-			}
-			
-			if (relationType.memberType == ESM!esm::structure::MemberType#TRANSIENT) {
-				self.createCreateAction(relationType, application, preview);
-				self.createUpdateAction(relationType, application, preview);
-				self.createUnsetAction();
-			}
-		}
-		
-		if (pageType == UI!ui::PageType#OPERATION_OUTPUT) {
-			self.createViewAction(relationType, application, preview);
-		}
+    if (relationType.isDefined()) {
+    
+        // **** VIEW: view, create, update, delete (add, set, remove - optional) ****
+        if (pageType == UI!ui::PageType#VIEW or
+            (pageType == UI!ui::PageType#DASHBOARD and not relationType.isCollection)) {
+            
+            self.createViewCreateUpdateDeleteActions(relationType, application, preview);
+            
+            if (allRowActions) {
+                self.createSetUnsetActions(relationType);
+            }
+        }
+        
+        if (pageType == UI!ui::PageType#CREATE or pageType == UI!ui::PageType#UPDATE) {
+            if (not self.disabled) {
+                self.createSetAction(relationType);
+                self.createUnsetAction();
+            }
+        }
+        
+        if (pageType == UI!ui::PageType#OPERATION_INPUT) {
+            if (not self.disabled and relationType.memberType <> UI!ui::data::MemberType#TRANSIENT) {
+                self.createSetUnsetActions(relationType);
+            }
+            
+            if (relationType.memberType == UI!ui::data::MemberType#TRANSIENT) {
+                self.createCreateAction(relationType, application, preview);
+                self.createUpdateAction(relationType, application, preview);
+                self.createDeleteAction(relationType);
+            }
+        }
+        
+        if (pageType == UI!ui::PageType#OPERATION_OUTPUT) {
+            self.createViewAction(relationType, application, preview);
+        }
 
-		if (pageType == UI!ui::PageType#TABLE or (pageType == UI!ui::PageType#DASHBOARD and relationType.isCollection)) {
-			//TABLE pages don't contain Link elements
-		}
-	
-		if (pageType == UI!ui::PageType#CUSTOM) {
-		
-		}
-	}
+        if (pageType == UI!ui::PageType#TABLE or (pageType == UI!ui::PageType#DASHBOARD and relationType.isCollection)) {
+            //TABLE pages don't contain Link elements
+        }
+    
+        if (pageType == UI!ui::PageType#CUSTOM) {
+        
+        }
+    }
 }
 
 //creating view, create, update, delete actions 
 operation UI!ui::Link createViewCreateUpdateDeleteActions(relationType : UI!ui::data::RelationType, application : UI!ui::Application, preview : Boolean) {
 
-	self.createViewAction(relationType, application, preview);
-	if (relationType.getIsRelationBehaviourTypeCreatable()) {
-		self.createCreateAction(relationType, application, preview);
-	}
-	if (relationType.getIsRelationBehaviourTypeUpdatable()) {
-		self.createUpdateAction(relationType, application, preview);
-	}
-	if (relationType.getIsRelationBehaviourTypeDeletable()) {
-		self.createDeleteAction(relationType);
-	}
+    self.createViewAction(relationType, application, preview);
+    if (relationType.getIsRelationBehaviourTypeCreatable()) {
+        self.createCreateAction(relationType, application, preview);
+    }
+    if (relationType.getIsRelationBehaviourTypeUpdatable()) {
+        self.createUpdateAction(relationType, application, preview);
+    }
+    if (relationType.getIsRelationBehaviourTypeDeletable()) {
+        self.createDeleteAction(relationType);
+    }
 }
 
 //create view action
 operation UI!ui::Link createViewAction(relationType : UI!ui::data::RelationType, application : UI!ui::Application, preview : Boolean) {
-	if (preview) {
-		var viewAction = new UI!ui::ViewAction();
-		viewAction.target = application.pages.selectOne(p | p.pageType = UI!ui::PageType#DASHBOARD);
-		viewAction.isTransient = relationType.memberType == UI!ui::data::MemberType#TRANSIENT;
-		self.actions.add(viewAction);
-	} else {
-		var page = application.pages.selectOne(p | p.pageType = UI!ui::PageType#VIEW and p.getRelationType() == relationType);
-		if (page.isDefined()) {
-			log.debug(" ========= LINK DEF: VIEW: " + relationType.name + " - " + page.name);
-		    var viewAction = new UI!ui::ViewAction();
-			viewAction.target = page;
-			viewAction.isTransient = relationType.memberType == UI!ui::data::MemberType#TRANSIENT;
-			self.actions.add(viewAction);
-		} else {
-			log.warn("No view page defined for: " + self.name + " - " + relationType.eContainer.name + "." + relationType.name);
-		}
-	}
+    if (preview) {
+        var viewAction = new UI!ui::ViewAction();
+        viewAction.target = application.pages.selectOne(p | p.pageType = UI!ui::PageType#DASHBOARD);
+        viewAction.isTransient = relationType.memberType == UI!ui::data::MemberType#TRANSIENT;
+        self.actions.add(viewAction);
+    } else {
+        var page = application.pages.selectOne(p | p.pageType = UI!ui::PageType#VIEW and p.getRelationType() == relationType);
+        if (page.isDefined()) {
+            log.debug(" ========= LINK DEF: VIEW: " + relationType.name + " - " + page.name);
+            var viewAction = new UI!ui::ViewAction();
+            viewAction.target = page;
+            viewAction.isTransient = relationType.memberType == UI!ui::data::MemberType#TRANSIENT;
+            self.actions.add(viewAction);
+        } else {
+            log.warn("No view page defined for: " + self.name + " - " + relationType.eContainer.name + "." + relationType.name);
+        }
+    }
 }
 
 //create create action
 operation UI!ui::Link createCreateAction(relationType : UI!ui::data::RelationType, application : UI!ui::Application, preview : Boolean) {
-	if (preview) {
-		var action = new UI!ui::CreateAction();
-	    action.target = application.pages.selectOne(p | p.pageType = UI!ui::PageType#DASHBOARD);
-	    action.dataElement = relationType;
-	    self.actions.add(action);
-	} else {
-		var page = application.pages.selectOne(p | p.pageType = UI!ui::PageType#CREATE and p.getRelationType() == relationType);
-		if (page.isDefined()) {
-			log.debug(" ========= PAGE DEF: CREATE: " + relationType.eContainer.name + "." + relationType.name + " - " + page.name);
-		    var action = new UI!ui::CreateAction();
-		    action.target = page;
-		    action.dataElement = relationType;
-		    self.actions.add(action);
-		} else {
-			log.warn("No update page defined for: " + self.name + " - " + relationType.eContainer.name + "." + relationType.name);
-		}
-	}
+    if (preview) {
+        var action = new UI!ui::CreateAction();
+        action.target = application.pages.selectOne(p | p.pageType = UI!ui::PageType#DASHBOARD);
+        action.dataElement = relationType;
+        self.actions.add(action);
+    } else {
+        var page = application.pages.selectOne(p | p.pageType = UI!ui::PageType#CREATE and p.getRelationType() == relationType);
+        if (page.isDefined()) {
+            log.debug(" ========= PAGE DEF: CREATE: " + relationType.eContainer.name + "." + relationType.name + " - " + page.name);
+            var action = new UI!ui::CreateAction();
+            action.target = page;
+            action.dataElement = relationType;
+            action.isTransient = relationType.memberType == UI!ui::data::MemberType#TRANSIENT;
+            self.actions.add(action);
+        } else if (relationType.memberType == UI!ui::data::MemberType#TRANSIENT) {
+            page = relationType.~originalRelation.mapCreatePage(application, relationType.~originalRelation.target);
+            var action = new UI!ui::CreateAction();
+            action.target = page;
+            action.dataElement = relationType;
+            action.isTransient = true;
+            self.actions.add(action);
+        } else {
+            log.warn("No update page defined for: " + self.name + " - " + relationType.eContainer.name + "." + relationType.name);
+        }
+    }
 }
 
 //create delete action
 operation UI!ui::Link createDeleteAction(relationType : UI!ui::data::RelationType) {
-	var deleteAction = new UI!ui::DeleteAction();
+    var deleteAction = new UI!ui::DeleteAction();
     deleteAction.isTransient = relationType.memberType == UI!ui::data::MemberType#TRANSIENT;
     self.actions.add(deleteAction);
 }
 
 //create update action
 operation UI!ui::Link createUpdateAction(relationType : UI!ui::data::RelationType, application : UI!ui::Application, preview : Boolean) {
-	if (preview) {
+    if (preview) {
         var editAction = new UI!ui::EditAction();
         editAction.target = application.pages.selectOne(p | p.pageType = UI!ui::PageType#DASHBOARD);
         editAction.isTransient = relationType.memberType == UI!ui::data::MemberType#TRANSIENT;
@@ -127,6 +136,13 @@ operation UI!ui::Link createUpdateAction(relationType : UI!ui::data::RelationTyp
             editAction.target = page;
             editAction.isTransient = relationType.memberType == UI!ui::data::MemberType#TRANSIENT;
             self.actions.add(editAction);
+        } else if (relationType.memberType == UI!ui::data::MemberType#TRANSIENT) {
+            page = relationType.~originalRelation.mapUpdatePage(application, relationType.~originalRelation.target);
+            var action = new UI!ui::EditAction();
+            action.target = page;
+            action.dataElement = relationType;
+            action.isTransient = true;
+            self.actions.add(action);
         } else {
             log.warn("No update page defined for: " + self.name  + " - " + relationType.eContainer.name + "." + relationType.name);
         }
@@ -136,22 +152,22 @@ operation UI!ui::Link createUpdateAction(relationType : UI!ui::data::RelationTyp
 //create set and unset actions (add and remove is not applicable to single relations)
 operation UI!ui::Link createSetUnsetActions(relationType : UI!ui::data::RelationType) {
 
-	if (relationType.getIsRelationBehaviourTypeUnsetable()) {
+    if (relationType.getIsRelationBehaviourTypeUnsetable()) {
         self.createUnsetAction();
     }
-	if (relationType.getIsRelationBehaviourTypeSetable()) {
-		self.createSetAction(relationType);
-	}
+    if (relationType.getIsRelationBehaviourTypeSetable()) {
+        self.createSetAction(relationType);
+    }
 }
 
 //create unset action
 operation UI!ui::Link createUnsetAction() {
-	self.actions.add(new UI!ui::UnsetAction());
+    self.actions.add(new UI!ui::UnsetAction());
 }
 
 //create set action
 operation UI!ui::Link createSetAction(relationType : UI!ui::data::RelationType) {
-	var action = new UI!ui::SetAction();
-	action.dataElement = relationType;
-	self.actions.add(action);
+    var action = new UI!ui::SetAction();
+    action.dataElement = relationType;
+    self.actions.add(action);
 }

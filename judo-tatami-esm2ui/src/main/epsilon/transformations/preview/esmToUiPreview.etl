@@ -2,29 +2,28 @@ import "../../operations/_importAll.eol";
 import "pageDefinitionForPreview.etl";
 
 pre {
-	var allActions : Boolean = false;
-	var rootElement = previewElement.getRoot();
+    var rootElement = previewElement.getRoot();
     var application : UI!ui::Application = createBlankApplicationForPreview();
 }
 
 post {
 
-	for (application : UI!ui::Application in UI!ui::Application.all()) {
-		application.calculatePageActions(true);
-	}
+    for (application : UI!ui::Application in UI!ui::Application.all()) {
+        application.calculatePageActions(true);
+    }
 
-	for (input : UI!ui::Input in UI!ui::Input.all()) {
-		input.setIcon();
-	}
-	
-	for (action : UI!ui::Action in UI!ui::Action.all()) {
-		action.setIcon();
-		action.setLabel();
-	}
-	
-	for (application : UI!ui::Application in UI!ui::Application.all()) {
-		uiUtils.organizeApplication(application, "mobile", 4);
-    	uiUtils.organizeApplication(application, "tablet", 8);
-    	uiUtils.organizeApplication(application, "desktop", 12);
-	}
+    for (input : UI!ui::Input in UI!ui::Input.all()) {
+        input.setIcon();
+    }
+    
+    for (action : UI!ui::Action in UI!ui::Action.all()) {
+        action.setIcon();
+        action.setLabel();
+    }
+    
+    for (application : UI!ui::Application in UI!ui::Application.all()) {
+        uiUtils.organizeApplication(application, "mobile", 4);
+        uiUtils.organizeApplication(application, "tablet", 8);
+        uiUtils.organizeApplication(application, "desktop", 12);
+    }
 }
