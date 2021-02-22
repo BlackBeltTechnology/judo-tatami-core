@@ -496,3 +496,64 @@ rule CreateOverrideAnnotationClassForOptionalClass
         s.asmEquivalent().eAnnotations.add(t);
 
 	}
+
+@greedy
+rule CreateOptionalAnnotationForOptionalClass
+	transform s : JUDOPSM!TransferObjectType
+	to t : ASM!EAnnotation {
+	    guard: s.optional
+        t.source = asmUtils.getAnnotationUri("optional");
+
+        var optional = new ASM!EStringToStringMapEntry;
+        optional.key = "value";
+        optional.value = "true";
+        t.details.add(optional);
+
+        s.asmEquivalent().eAnnotations.add(t);
+	}
+
+@greedy
+rule CreateQueryCustomizerAnnotationForQueryCustomizerClass
+	transform s : JUDOPSM!TransferObjectType
+	to t : ASM!EAnnotation {
+	    guard: s.queryCustomizer
+        t.source = asmUtils.getAnnotationUri("queryCustomizer");
+
+        var queryCustomizer = new ASM!EStringToStringMapEntry;
+        queryCustomizer.key = "value";
+        queryCustomizer.value = "true";
+        t.details.add(queryCustomizer);
+
+        s.asmEquivalent().eAnnotations.add(t);
+	}
+
+@greedy
+rule CreateMetadataAnnotationForMetadataClass
+    transform s : JUDOPSM!TransferObjectType
+    to t : ASM!EAnnotation {
+        guard: s.isMetadataType()
+        t.source = asmUtils.getAnnotationUri("metadata");
+
+        var metadata = new ASM!EStringToStringMapEntry;
+        metadata.key = "value";
+        metadata.value = "true";
+        t.details.add(metadata);
+
+        s.asmEquivalent().eAnnotations.add(t);
+    }
+
+@greedy
+rule CreateGetRangeInputAnnotationForGetRangeInputClass
+    transform s : JUDOPSM!TransferObjectType
+    to t : ASM!EAnnotation {
+        guard: s.isGetRangeInputType()
+        t.source = asmUtils.getAnnotationUri("getRangeInput");
+
+        var getRangeInput = new ASM!EStringToStringMapEntry;
+        getRangeInput.key = "value";
+        getRangeInput.value = "true";
+        t.details.add(getRangeInput);
+
+        s.asmEquivalent().eAnnotations.add(t);
+    }
+
