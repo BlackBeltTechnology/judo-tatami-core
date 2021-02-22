@@ -33,7 +33,7 @@ public class Esm2UiTransformationService {
         this.bundleContext = bundleContext;
     }
 
-    public UiModel install(EsmModel esmModel, String applicationType, Integer applicationColumns) throws Exception {
+    public UiModel install(EsmModel esmModel, String applicationType, Integer applicationColumns, boolean allRowActions) throws Exception {
         UiModel uiModel = UiModel.buildUiModel()
                 .name(esmModel.getName())
                 .version(esmModel.getVersion())
@@ -54,6 +54,7 @@ public class Esm2UiTransformationService {
                     esmModel,
                     applicationType,
                     applicationColumns,
+                    allRowActions,
                     uiModel,
                     logger,
                     scriptUri);

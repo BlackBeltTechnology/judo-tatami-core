@@ -30,35 +30,35 @@ import hu.blackbelt.model.northwind.esm.NorthwindEsmModel;
 @Disabled("JNG-1406 Work in progress")
 class Esm2UiWorkTest {
 
-	public static final String NORTHWIND = "northwind";
-	public static final String NORTHWIND_ESM_MODEL = NORTHWIND + "-esm.model";
-	public static final String NORTHWIND_UI_MODEL = NORTHWIND + "-ui.model";
-	public static final String TARGET_TEST_CLASSES = "target/test-classes";
+    public static final String NORTHWIND = "northwind";
+    public static final String NORTHWIND_ESM_MODEL = NORTHWIND + "-esm.model";
+    public static final String NORTHWIND_UI_MODEL = NORTHWIND + "-ui.model";
+    public static final String TARGET_TEST_CLASSES = "target/test-classes";
 
-	Esm2UiWork esm2UiWork;
-	TransformationContext transformationContext;
+    Esm2UiWork esm2UiWork;
+    TransformationContext transformationContext;
 
-	@BeforeEach
-	void setUp() throws IOException, EsmModel.EsmValidationException, URISyntaxException, ScriptExecutionException {
-		EsmModel esmModel = NorthwindEsmModel.fullDemo();
-		transformationContext = new TransformationContext(NORTHWIND);
-		transformationContext.put(esmModel);
+    @BeforeEach
+    void setUp() throws IOException, EsmModel.EsmValidationException, URISyntaxException, ScriptExecutionException {
+        EsmModel esmModel = NorthwindEsmModel.fullDemo();
+        transformationContext = new TransformationContext(NORTHWIND);
+        transformationContext.put(esmModel);
 
-		esm2UiWork = new Esm2UiWork(transformationContext, calculateEsm2UiTransformationScriptURI());
-	}
+        esm2UiWork = new Esm2UiWork(transformationContext, calculateEsm2UiTransformationScriptURI());
+    }
 
-	@Test
-	void testSimpleWorkflow() throws IOException, UiModel.UiValidationException {
-		WorkFlow workflow = aNewSequentialFlow().execute(esm2UiWork).build();
+    @Test
+    void testSimpleWorkflow() throws IOException, UiModel.UiValidationException {
+        WorkFlow workflow = aNewSequentialFlow().execute(esm2UiWork).build();
 
-		WorkFlowEngine workFlowEngine = aNewWorkFlowEngine().build();
-		WorkReport workReport = workFlowEngine.run(workflow);
+        WorkFlowEngine workFlowEngine = aNewWorkFlowEngine().build();
+        WorkReport workReport = workFlowEngine.run(workflow);
 
-		assertThat(workReport.getStatus(), equalTo(WorkStatus.COMPLETED));
+        assertThat(workReport.getStatus(), equalTo(WorkStatus.COMPLETED));
 
-		Optional<UiModel> uiModel = transformationContext.getByClass(UiModel.class);
-		assertTrue(uiModel.isPresent());
-		uiModel.get().saveUiModel(uiSaveArgumentsBuilder().file(new File(TARGET_TEST_CLASSES, NORTHWIND_UI_MODEL)));
-	}
+        Optional<UiModel> uiModel = transformationContext.getByClass(UiModel.class);
+        assertTrue(uiModel.isPresent());
+        uiModel.get().saveUiModel(uiSaveArgumentsBuilder().file(new File(TARGET_TEST_CLASSES, NORTHWIND_UI_MODEL)));
+    }
 
 }

@@ -132,11 +132,11 @@ public class EsmAccesspoint2UiApplicationTest {
     }
 
     private void transform() throws Exception {
-    	log.info(esmModel.getDiagnosticsAsString());
-    	assertTrue(esmModel.isValid());
-    	validateEsm(new Slf4jLog(log), esmModel, calculateEsmValidationScriptURI());
+        log.info(esmModel.getDiagnosticsAsString());
+        assertTrue(esmModel.isValid());
+        validateEsm(new Slf4jLog(log), esmModel, calculateEsmValidationScriptURI());
         // Make transformation which returns the trace with the serialized URI's
-        esm2UiTransformationTrace = executeEsm2UiTransformation(esmModel, "default", 12, uiModel, new Slf4jLog(log),
+        esm2UiTransformationTrace = executeEsm2UiTransformation(esmModel, "default", 12, false, uiModel, new Slf4jLog(log),
                 calculateEsm2UiTransformationScriptURI());
 
         log.info(uiModel.getDiagnosticsAsString());
@@ -182,18 +182,18 @@ public class EsmAccesspoint2UiApplicationTest {
 
     
     private Component createContainerTree(String prefix, DataMember dataMember) {
-    	return newGroupBuilder()
-    			.withLayout(Layout.VERTICAL)
-    			.withName(prefix + "_grp1")
-    			.withComponents(newGroupBuilder()
-    					.withLayout(Layout.VERTICAL)
-    					.withName(prefix + "_grp2")
-    					.withComponents(
-    							newDataFieldBuilder()
-    								.withLabel("Label - " + dataMember.getName())
-    								.withDataFeature(dataMember).build())
-    					.build())
-    			.build();
+        return newGroupBuilder()
+                .withLayout(Layout.VERTICAL)
+                .withName(prefix + "_grp1")
+                .withComponents(newGroupBuilder()
+                        .withLayout(Layout.VERTICAL)
+                        .withName(prefix + "_grp2")
+                        .withComponents(
+                                newDataFieldBuilder()
+                                    .withLabel("Label - " + dataMember.getName())
+                                    .withDataFeature(dataMember).build())
+                        .build())
+                .build();
     }
     
 
@@ -217,11 +217,11 @@ public class EsmAccesspoint2UiApplicationTest {
         final String EXPOSED_ENTITY_TYPE_NAME = "ExposedEntity";
 
         DataMember attribute = newDataMemberBuilder()
-        		.withName("email")
-        		.withMemberType(MemberType.STORED)
-        		.withDataType(string)
-        		.withRequired(true)
-        		.withIdentifier(true)
+                .withName("email")
+                .withMemberType(MemberType.STORED)
+                .withDataType(string)
+                .withRequired(true)
+                .withIdentifier(true)
                 .build();
         attribute.setBinding(attribute);
 
@@ -232,7 +232,7 @@ public class EsmAccesspoint2UiApplicationTest {
         exposedEntity.setMapping(newMappingBuilder().withTarget(exposedEntity).build());
 
         final Annotation dashboardAnnotation = newAnnotationBuilder().withClassName("hu.blackbelt.judo.meta.esm.accesspoint.Access")
-        		.withName("dashboard").build();
+                .withName("dashboard").build();
         
         // Create multiple reference relation to mapped entity
         final String EXPOSED_GRAPH_MULTIPLE_NAME = "ExposedGraphMultiple";
@@ -263,28 +263,28 @@ public class EsmAccesspoint2UiApplicationTest {
         final String EXPOSED_GRAPH_TABLE_NAME = "ExposedGraphTableName";
 
         final TransferObjectTable exposedEntityTable = newTransferObjectTableBuilder()
-        		.withMasterDetail(true)
-        		.withName(EXPOSED_GRAPH_TABLE_NAME)
-        		.withColumns(newDataColumnBuilder()
-        				.withDataFeature(attribute)
-        				.build())
-        		.build();
+                .withMasterDetail(true)
+                .withName(EXPOSED_GRAPH_TABLE_NAME)
+                .withColumns(newDataColumnBuilder()
+                        .withDataFeature(attribute)
+                        .build())
+                .build();
         exposedEntity.setTable(exposedEntityTable);
 
         // Add view representation for exposed relation
         final String EXPOSED_GRAPH_VIEW_NAME = "ExposedGraphViewName";
         final TransferObjectView exposedEntityView = newTransferObjectViewBuilder()
-        		.withName(EXPOSED_GRAPH_VIEW_NAME)
-        		.withComponents(createContainerTree("group_view", attribute))
-        		.build();
+                .withName(EXPOSED_GRAPH_VIEW_NAME)
+                .withComponents(createContainerTree("group_view", attribute))
+                .build();
         exposedEntity.setView(exposedEntityView);
 
         // Add form representation for exposed relation
         final String EXPOSED_GRAPH_FORM_NAME = "ExposedGraphFormName";
         final TransferObjectForm exposedEntityForm = newTransferObjectFormBuilder()
-        		.withName(EXPOSED_GRAPH_FORM_NAME)
-        		.withComponents(createContainerTree("group_form", attribute))
-        		.build();
+                .withName(EXPOSED_GRAPH_FORM_NAME)
+                .withComponents(createContainerTree("group_form", attribute))
+                .build();
         exposedEntity.setForm(exposedEntityForm);
 
         final MenuItemAccess menu1 = newMenuItemAccessBuilder().withName("menu1").withAccess(exposedRelationSingle).build();
@@ -335,11 +335,11 @@ public class EsmAccesspoint2UiApplicationTest {
         assertTrue(uiRelation.isPresent());
         
         final Optional<ClassType> uiEntity = application.get().getDataElements().stream().filter(e -> e instanceof ClassType)
-        		.map(e -> (ClassType) e).filter(c -> c.getName().equals(EsmUtils.getNamespaceElementFQName(exposedEntity))).findAny();
+                .map(e -> (ClassType) e).filter(c -> c.getName().equals(EsmUtils.getNamespaceElementFQName(exposedEntity))).findAny();
         assertTrue(uiEntity.isPresent());
         
         final Optional<PageDefinition> uiDashboard = application.get().getPages().stream()
-        		.filter(d -> d.getName().equals(EsmUtils.getNamespaceElementFQName(actor) + "#Dashboard") && d.getIsPageTypeDashboard()).findAny();
+                .filter(d -> d.getName().equals(EsmUtils.getNamespaceElementFQName(actor) + "#Dashboard") && d.getIsPageTypeDashboard()).findAny();
         assertTrue(uiDashboard.isPresent());
         assertEquals(uiRelation.get(), uiDashboard.get().getDataElement());
         assertTrue(uiDashboard.get().getContainers().stream().filter(c -> c.getLayoutType().isOriginal()).findFirst().isPresent());
@@ -350,21 +350,21 @@ public class EsmAccesspoint2UiApplicationTest {
         assertTrue(navigationController.isPresent());
         assertEquals(navigationController.get(), application.get().getNavigationController());
         assertTrue(navigationController.get().getItems().stream()
-        		.anyMatch(item -> item.getName().equals(EsmUtils.getNamespaceElementFQName(actor) + "." + exposedRelationSingle.getName() + "#NavigationItem")
-        		&& item.getTarget().getIsPageTypeView()));
+                .anyMatch(item -> item.getName().equals(EsmUtils.getNamespaceElementFQName(actor) + "." + exposedRelationSingle.getName() + "#NavigationItem")
+                && item.getTarget().getIsPageTypeView()));
         assertTrue(navigationController.get().getItems().stream()
-        		.anyMatch(item -> item.getName().equals(EsmUtils.getNamespaceElementFQName(actor) + "." + exposedRelationMultiple.getName() + "#NavigationItem")
-        		&& item.getTarget().getIsPageTypeTable()));
+                .anyMatch(item -> item.getName().equals(EsmUtils.getNamespaceElementFQName(actor) + "." + exposedRelationMultiple.getName() + "#NavigationItem")
+                && item.getTarget().getIsPageTypeTable()));
         
         final Optional<Application> application2 = allUi(Application.class).filter(a -> a.getName().equals(EsmUtils.getNamespaceElementFQName(actor2))).findAny();
         assertTrue(application.isPresent());
 
         final Optional<ClassType> uiEntity2 = application2.get().getDataElements().stream().filter(e -> e instanceof ClassType)
-        		.map(e -> (ClassType) e).filter(c -> c.getName().equals(EsmUtils.getNamespaceElementFQName(exposedEntity))).findAny();
+                .map(e -> (ClassType) e).filter(c -> c.getName().equals(EsmUtils.getNamespaceElementFQName(exposedEntity))).findAny();
         assertTrue(uiEntity2.isPresent());
         
         final Optional<PageDefinition> uiDashboard2 = application2.get().getPages().stream()
-        		.filter(d -> d.getName().equals(EsmUtils.getNamespaceElementFQName(actor2) + "#Dashboard") && d.getIsPageTypeDashboard()).findAny();
+                .filter(d -> d.getName().equals(EsmUtils.getNamespaceElementFQName(actor2) + "#Dashboard") && d.getIsPageTypeDashboard()).findAny();
         assertTrue(uiDashboard2.isPresent());
         assertNull(uiDashboard2.get().getDataElement());
         
@@ -379,7 +379,7 @@ public class EsmAccesspoint2UiApplicationTest {
         assertTrue(uiRelation3.isPresent());
         
         final Optional<PageDefinition> uiDashboard3 = application3.get().getPages().stream()
-        		.filter(d -> d.getName().equals(EsmUtils.getNamespaceElementFQName(actor3) + "#Dashboard") && d.getIsPageTypeDashboard()).findAny();
+                .filter(d -> d.getName().equals(EsmUtils.getNamespaceElementFQName(actor3) + "#Dashboard") && d.getIsPageTypeDashboard()).findAny();
         assertTrue(uiDashboard3.isPresent());
         assertEquals(uiRelation3.get(), uiDashboard3.get().getDataElement());
        

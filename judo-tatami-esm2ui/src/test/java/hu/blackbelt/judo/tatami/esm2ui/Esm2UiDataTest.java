@@ -148,11 +148,11 @@ public class Esm2UiDataTest {
     }
 
     private void transform() throws Exception {
-    	log.info(esmModel.getDiagnosticsAsString());
-    	assertTrue(esmModel.isValid());
-    	validateEsm(new Slf4jLog(log), esmModel, calculateEsmValidationScriptURI());
+    log.info(esmModel.getDiagnosticsAsString());
+    assertTrue(esmModel.isValid());
+    validateEsm(new Slf4jLog(log), esmModel, calculateEsmValidationScriptURI());
         // Make transformation which returns the trace with the serialized URI's
-        esm2UiTransformationTrace = executeEsm2UiTransformation(esmModel, "default", 12, uiModel, new Slf4jLog(log),
+        esm2UiTransformationTrace = executeEsm2UiTransformation(esmModel, "default", 12, false, uiModel, new Slf4jLog(log),
                 calculateEsm2UiTransformationScriptURI());
 
         log.info(uiModel.getDiagnosticsAsString());
@@ -244,55 +244,55 @@ public class Esm2UiDataTest {
         useTransferObjectType(t4).withMappedEntity(e4).build();
         
         Access access1 = newAccessBuilder().withName("t1")
-        		.withTarget(t1)
-        		.withLower(0)
-        		.withUpper(-1)
-        		.withCreateable(true)
-        		.withTargetDefinedCRUD(false)
-        		.build();
+            .withTarget(t1)
+            .withLower(0)
+            .withUpper(-1)
+            .withCreateable(true)
+            .withTargetDefinedCRUD(false)
+            .build();
         
         Access access2 = newAccessBuilder().withName("t3")
-        		.withTarget(t3)
-        		.withLower(0)
-        		.withUpper(-1)
-        		.withCreateable(false)
-        		.withTargetDefinedCRUD(false)
-        		.build();
+            .withTarget(t3)
+            .withLower(0)
+            .withUpper(-1)
+            .withCreateable(false)
+            .withTargetDefinedCRUD(false)
+            .build();
         
         OneWayRelationMember relation1 = newOneWayRelationMemberBuilder()
-        		.withName("transient")
-        		.withLower(0)
-        		.withUpper(-1)
-        		.withTarget(t4)
-        		.withMemberType(MemberType.TRANSIENT)
-        		.withRelationKind(RelationKind.AGGREGATION)
-        		.build();
+            .withName("transient")
+            .withLower(0)
+            .withUpper(-1)
+            .withTarget(t4)
+            .withMemberType(MemberType.TRANSIENT)
+            .withRelationKind(RelationKind.AGGREGATION)
+            .build();
         OneWayRelationMember relation2 = newOneWayRelationMemberBuilder()
-        		.withName("binding")
-        		.withLower(0)
-        		.withUpper(-1)
-        		.withTarget(e4)
-        		.withMemberType(MemberType.STORED)
-        		.withRelationKind(RelationKind.ASSOCIATION)
-        		.build();
+            .withName("binding")
+            .withLower(0)
+            .withUpper(-1)
+            .withTarget(e4)
+            .withMemberType(MemberType.STORED)
+            .withRelationKind(RelationKind.ASSOCIATION)
+            .build();
         OneWayRelationMember relation3 = newOneWayRelationMemberBuilder()
-        		.withName("mapped")
-        		.withLower(0)
-        		.withUpper(-1)
-        		.withTarget(t4)
-        		.withMemberType(MemberType.MAPPED)
-        		.withRelationKind(RelationKind.ASSOCIATION)
-        		.withBinding(relation2)
-        		.build();
+            .withName("mapped")
+            .withLower(0)
+            .withUpper(-1)
+            .withTarget(t4)
+            .withMemberType(MemberType.MAPPED)
+            .withRelationKind(RelationKind.ASSOCIATION)
+            .withBinding(relation2)
+            .build();
         OneWayRelationMember relation4 = newOneWayRelationMemberBuilder()
-        		.withName("derived")
-        		.withLower(0)
-        		.withUpper(1)
-        		.withTarget(t4)
-        		.withMemberType(MemberType.DERIVED)
-        		.withRelationKind(RelationKind.AGGREGATION)
-        		.withGetterExpression("self.mapped!head()")
-        		.build();
+            .withName("derived")
+            .withLower(0)
+            .withUpper(1)
+            .withTarget(t4)
+            .withMemberType(MemberType.DERIVED)
+            .withRelationKind(RelationKind.AGGREGATION)
+            .withGetterExpression("self.mapped!head()")
+            .build();
         useEntityType(e1).withRelations(relation2).build();
         useTransferObjectType(t1).withRelations(relation1, relation3, relation4).build();
 
@@ -309,16 +309,16 @@ public class Esm2UiDataTest {
                 .findAny();
         assertTrue(application.isPresent());
         final Optional<ClassType> uiActor = application.get().getDataElements().stream().filter(e -> e instanceof ClassType)
-        		.map(e -> (ClassType) e).filter(c -> c.isIsActor()).findAny();
+            .map(e -> (ClassType) e).filter(c -> c.isIsActor()).findAny();
         assertTrue(uiActor.isPresent());
         final Optional<ClassType> uiT1 = application.get().getDataElements().stream().filter(e -> e instanceof ClassType && e.getName().equals(t1.getFQName()))
-        		.map(e -> (ClassType) e).findAny();
+            .map(e -> (ClassType) e).findAny();
         assertTrue(uiT1.isPresent());
         final Optional<ClassType> uiT3 = application.get().getDataElements().stream().filter(e -> e instanceof ClassType && e.getName().equals(t3.getFQName()))
-        		.map(e -> (ClassType) e).findAny();
+            .map(e -> (ClassType) e).findAny();
         assertTrue(uiT3.isPresent());
         final Optional<ClassType> uiT4 = application.get().getDataElements().stream().filter(e -> e instanceof ClassType && e.getName().equals(t4.getFQName()))
-        		.map(e -> (ClassType) e).findAny();
+            .map(e -> (ClassType) e).findAny();
         assertTrue(uiT4.isPresent());
         
         Optional<RelationType> uiAccess1 = uiActor.get().getRelations().stream().filter(r -> r.isIsAccess() && r.getTarget().equals(uiT1.get())).findAny();
@@ -447,20 +447,20 @@ public class Esm2UiDataTest {
         useTransferObjectType(t3).withMappedEntity(e3).build();
         
         Access access1 = newAccessBuilder().withName("t1")
-        		.withTarget(t1)
-        		.withLower(0)
-        		.withUpper(-1)
-        		.withCreateable(true)
-        		.withTargetDefinedCRUD(false)
-        		.build();
+            .withTarget(t1)
+            .withLower(0)
+            .withUpper(-1)
+            .withCreateable(true)
+            .withTargetDefinedCRUD(false)
+            .build();
         
         Access access2 = newAccessBuilder().withName("t3")
-        		.withTarget(t3)
-        		.withLower(0)
-        		.withUpper(-1)
-        		.withCreateable(false)
-        		.withTargetDefinedCRUD(false)
-        		.build();
+            .withTarget(t3)
+            .withLower(0)
+            .withUpper(-1)
+            .withCreateable(false)
+            .withTargetDefinedCRUD(false)
+            .build();
 
         useActorType(actor).withAccesses(access1, access2).build();
         
@@ -476,7 +476,7 @@ public class Esm2UiDataTest {
         assertTrue(application.isPresent());
         
         final Optional<ClassType> uiActor = application.get().getDataElements().stream().filter(e -> e instanceof ClassType)
-        		.map(e -> (ClassType) e).filter(c -> c.isIsActor()).findAny();
+                .map(e -> (ClassType) e).filter(c -> c.isIsActor()).findAny();
         assertTrue(uiActor.isPresent());
         assertTrue(uiActor.get().getName().equals(EsmUtils.getNamespaceElementFQName(actor)));
         assertEquals(actor.getAccesses().size(), uiActor.get().getRelations().size());
@@ -506,23 +506,23 @@ public class Esm2UiDataTest {
                 .withDeleteable(true)
                 .withAttributes(inputID)
                 .withTable(
-                		newTransferObjectTableBuilder()
-                		.withName("inputTable")
-                		.withColumns(
-                				newDataColumnBuilder()
-                				.withName("id")
-                				.withLabel("id")
-                				.withDataFeature(inputID).build()))
+                    newTransferObjectTableBuilder()
+                    .withName("inputTable")
+                    .withColumns(
+                        newDataColumnBuilder()
+                        .withName("id")
+                        .withLabel("id")
+                        .withDataFeature(inputID).build()))
                 .withForm(
-                		newTransferObjectFormBuilder()
-                		.withName("inputForm")
-                		.withComponents(
-                				newGroupBuilder()
-                				.withName("g")
-                				.withComponents(
-                						newDataFieldBuilder()
-                						.withName("id")
-                						.withDataFeature(inputID).build()).build()))
+                    newTransferObjectFormBuilder()
+                    .withName("inputForm")
+                    .withComponents(
+                        newGroupBuilder()
+                            .withName("g")
+                            .withComponents(
+                                newDataFieldBuilder()
+                                    .withName("id")
+                                    .withDataFeature(inputID).build()).build()))
                 .build();
         useEntityType(inputType).withMappedEntity(inputType).build();
         
@@ -534,24 +534,24 @@ public class Esm2UiDataTest {
                 .withDeleteable(true)
                 .withAttributes(outputID)
                 .withTable(
-                		newTransferObjectTableBuilder()
-                		.withName("outputTable")
-                		.withColumns(
-                				newDataColumnBuilder()
-                				.withName("id")
-                				.withLabel("id")
-                				.withDataFeature(outputID).build()))
+                    newTransferObjectTableBuilder()
+                        .withName("outputTable")
+                        .withColumns(
+                            newDataColumnBuilder()
+                                .withName("id")
+                                .withLabel("id")
+                                .withDataFeature(outputID).build()))
                 .withView(
-                		newTransferObjectViewBuilder()
-                		.withName("outputView")
-                		.withComponents(
-                				newGroupBuilder()
-                				.withName("g")
-                				.withComponents(
-                						newDataFieldBuilder()
-                						.withName("id")
-                						.withDataFeature(outputID).build()).build()))
-                .build();
+                    newTransferObjectViewBuilder()
+                        .withName("outputView")
+                        .withComponents(
+                            newGroupBuilder()
+                                .withName("g")
+                                .withComponents(
+                                    newDataFieldBuilder()
+                                        .withName("id")
+                                        .withDataFeature(outputID).build()).build()))
+                                        .build();
         useEntityType(outputType).withMappedEntity(outputType).build();
         
         final EntityType e1 = newEntityTypeBuilder()
@@ -563,18 +563,18 @@ public class Esm2UiDataTest {
         useEntityType(e1).withMappedEntity(e1).build();
         
         Operation operation1 = newOperationBuilder().withName("op1")
-        		.withInput(newParameterBuilder().withName("input").withTarget(inputType).withUpper(-1).build())
-        		.withBinding("op1")
-        		.build();
+            .withInput(newParameterBuilder().withName("input").withTarget(inputType).withUpper(-1).build())
+            .withBinding("op1")
+            .build();
         Operation operation2 = newOperationBuilder().withName("op2")
-        		.withOutput(newParameterBuilder().withName("output").withTarget(outputType).withUpper(-1).build())
-        		.withBinding("op2")
-        		.build();
+            .withOutput(newParameterBuilder().withName("output").withTarget(outputType).withUpper(-1).build())
+            .withBinding("op2")
+            .build();
         Operation operation3 = newOperationBuilder().withName("op3")
-        		.withInput(newParameterBuilder().withName("input").withTarget(inputType).withUpper(-1).build())
-        		.withOutput(newParameterBuilder().withName("output").withTarget(outputType).withUpper(-1).build())
-        		.withBinding("op3")
-        		.build();
+            .withInput(newParameterBuilder().withName("input").withTarget(inputType).withUpper(-1).build())
+            .withOutput(newParameterBuilder().withName("output").withTarget(outputType).withUpper(-1).build())
+            .withBinding("op3")
+            .build();
         
         useEntityType(e1).withOperations(operation1,operation2).build();
         
@@ -597,12 +597,12 @@ public class Esm2UiDataTest {
         useEntityType(e3).withOperations(operation3).build();
         
         Access access2 = newAccessBuilder().withName("t3")
-        		.withTarget(e3)
-        		.withLower(0)
-        		.withUpper(-1)
-        		.withCreateable(false)
-        		.withTargetDefinedCRUD(false)
-        		.build();
+            .withTarget(e3)
+            .withLower(0)
+            .withUpper(-1)
+            .withCreateable(false)
+            .withTargetDefinedCRUD(false)
+            .build();
 
         useActorType(actor).withAccesses(access2).build();
         
@@ -618,7 +618,7 @@ public class Esm2UiDataTest {
         assertTrue(application.isPresent());
         
         final Optional<ClassType> uiE3 = application.get().getDataElements().stream().filter(e -> e instanceof ClassType)
-        		.map(e -> (ClassType) e).filter(c -> c.getName().equals(EsmUtils.getNamespaceElementFQName(e3))).findAny();
+                .map(e -> (ClassType) e).filter(c -> c.getName().equals(EsmUtils.getNamespaceElementFQName(e3))).findAny();
         assertTrue(uiE3.isPresent());
         assertEquals(3, uiE3.get().getOperations().size());
         
@@ -667,23 +667,23 @@ public class Esm2UiDataTest {
                 .withAbstract_(true)
                 .withAttributes(inputID)
                 .withTable(
-                		newTransferObjectTableBuilder()
-                		.withName("inputTable")
-                		.withColumns(
-                				newDataColumnBuilder()
-                				.withName("id")
-                				.withLabel("id")
-                				.withDataFeature(inputID).build()))
+                newTransferObjectTableBuilder()
+                .withName("inputTable")
+                .withColumns(
+                newDataColumnBuilder()
+                .withName("id")
+                .withLabel("id")
+                .withDataFeature(inputID).build()))
                 .withForm(
-                		newTransferObjectFormBuilder()
-                		.withName("inputForm")
-                		.withComponents(
-                				newGroupBuilder()
-                				.withName("g")
-                				.withComponents(
-                						newDataFieldBuilder()
-                						.withName("id")
-                						.withDataFeature(inputID).build()).build()))
+                newTransferObjectFormBuilder()
+                .withName("inputForm")
+                .withComponents(
+                newGroupBuilder()
+                .withName("g")
+                .withComponents(
+                newDataFieldBuilder()
+                .withName("id")
+                .withDataFeature(inputID).build()).build()))
                 .build();
         useEntityType(inputType).withMappedEntity(inputType).build();
         
@@ -696,23 +696,23 @@ public class Esm2UiDataTest {
                 .withAbstract_(true)
                 .withAttributes(outputID)
                 .withTable(
-                		newTransferObjectTableBuilder()
-                		.withName("outputTable")
-                		.withColumns(
-                				newDataColumnBuilder()
-                				.withName("id")
-                				.withLabel("id")
-                				.withDataFeature(outputID).build()))
+                newTransferObjectTableBuilder()
+                .withName("outputTable")
+                .withColumns(
+                newDataColumnBuilder()
+                .withName("id")
+                .withLabel("id")
+                .withDataFeature(outputID).build()))
                 .withView(
-                		newTransferObjectViewBuilder()
-                		.withName("outputView")
-                		.withComponents(
-                				newGroupBuilder()
-                				.withName("g")
-                				.withComponents(
-                						newDataFieldBuilder()
-                						.withName("id")
-                						.withDataFeature(outputID).build()).build()))
+                newTransferObjectViewBuilder()
+                .withName("outputView")
+                .withComponents(
+                newGroupBuilder()
+                .withName("g")
+                .withComponents(
+                newDataFieldBuilder()
+                .withName("id")
+                .withDataFeature(outputID).build()).build()))
                 .build();
         useEntityType(outputType).withMappedEntity(outputType).build();
         
@@ -726,28 +726,28 @@ public class Esm2UiDataTest {
         useEntityType(e1).withMappedEntity(e1).build();
         
         Operation operation1 = newOperationBuilder().withName("op1")
-        		.withInput(newParameterBuilder().withName("input").withTarget(inputType).withUpper(-1).build())
-        		.withOperationType(hu.blackbelt.judo.meta.esm.operation.OperationType.ABSTRACT)
-        		.withBinding("op1")
-        		.build();
+        .withInput(newParameterBuilder().withName("input").withTarget(inputType).withUpper(-1).build())
+        .withOperationType(hu.blackbelt.judo.meta.esm.operation.OperationType.ABSTRACT)
+        .withBinding("op1")
+        .build();
         Operation operation2 = newOperationBuilder().withName("op2")
-        		.withOutput(newParameterBuilder().withName("output").withTarget(outputType).withUpper(-1).build())
-        		.withOperationType(hu.blackbelt.judo.meta.esm.operation.OperationType.ABSTRACT)
-        		.withBinding("op2")
-        		.build();
+        .withOutput(newParameterBuilder().withName("output").withTarget(outputType).withUpper(-1).build())
+        .withOperationType(hu.blackbelt.judo.meta.esm.operation.OperationType.ABSTRACT)
+        .withBinding("op2")
+        .build();
         Operation operation3 = newOperationBuilder().withName("op3")
-        		.withInput(newParameterBuilder().withName("input").withTarget(inputType).withUpper(-1).build())
-        		.withOutput(newParameterBuilder().withName("output").withTarget(outputType).withUpper(-1).build())
-        		.withBinding("op3")
-        		.build();
+        .withInput(newParameterBuilder().withName("input").withTarget(inputType).withUpper(-1).build())
+        .withOutput(newParameterBuilder().withName("output").withTarget(outputType).withUpper(-1).build())
+        .withBinding("op3")
+        .build();
         Operation operation1impl = newOperationBuilder().withName("op1")
-        		.withInput(newParameterBuilder().withName("input").withTarget(inputType).withUpper(-1).build())
-        		.withBinding("op1")
-        		.build();
+        .withInput(newParameterBuilder().withName("input").withTarget(inputType).withUpper(-1).build())
+        .withBinding("op1")
+        .build();
         Operation operation2impl = newOperationBuilder().withName("op2")
-        		.withOutput(newParameterBuilder().withName("output").withTarget(outputType).withUpper(-1).build())
-        		.withBinding("op2")
-        		.build();
+        .withOutput(newParameterBuilder().withName("output").withTarget(outputType).withUpper(-1).build())
+        .withBinding("op2")
+        .build();
         
         useEntityType(e1).withOperations(operation1,operation2).build();
         
@@ -771,19 +771,19 @@ public class Esm2UiDataTest {
         useEntityType(e3).withOperations(operation3, operation1impl, operation2impl).build();
         
         Access access3 = newAccessBuilder().withName("e3")
-        		.withTarget(e3)
-        		.withLower(0)
-        		.withUpper(-1)
-        		.withCreateable(false)
-        		.withTargetDefinedCRUD(false)
-        		.build();
+        .withTarget(e3)
+        .withLower(0)
+        .withUpper(-1)
+        .withCreateable(false)
+        .withTargetDefinedCRUD(false)
+        .build();
         Access access2 = newAccessBuilder().withName("e2")
-        		.withTarget(e2)
-        		.withLower(0)
-        		.withUpper(-1)
-        		.withCreateable(false)
-        		.withTargetDefinedCRUD(false)
-        		.build();
+        .withTarget(e2)
+        .withLower(0)
+        .withUpper(-1)
+        .withCreateable(false)
+        .withTargetDefinedCRUD(false)
+        .build();
 
         useActorType(actor).withAccesses(access2, access3).build();
         
@@ -799,7 +799,7 @@ public class Esm2UiDataTest {
         assertTrue(application.isPresent());
         
         final Optional<ClassType> uiE3 = application.get().getDataElements().stream().filter(e -> e instanceof ClassType)
-        		.map(e -> (ClassType) e).filter(c -> c.getName().equals(EsmUtils.getNamespaceElementFQName(e3))).findAny();
+        .map(e -> (ClassType) e).filter(c -> c.getName().equals(EsmUtils.getNamespaceElementFQName(e3))).findAny();
         assertTrue(uiE3.isPresent());
         assertEquals(3, uiE3.get().getOperations().size());
         
@@ -823,7 +823,7 @@ public class Esm2UiDataTest {
         assertTrue(uiOp3.get().getOutput().getTarget().getName().equals(EsmUtils.getNamespaceElementFQName(outputType)));
         
         final Optional<ClassType> uiE2 = application.get().getDataElements().stream().filter(e -> e instanceof ClassType)
-        		.map(e -> (ClassType) e).filter(c -> c.getName().equals(EsmUtils.getNamespaceElementFQName(e2))).findAny();
+        .map(e -> (ClassType) e).filter(c -> c.getName().equals(EsmUtils.getNamespaceElementFQName(e2))).findAny();
         assertTrue(uiE2.isPresent());
         assertEquals(2, uiE2.get().getOperations().size());
         
@@ -840,7 +840,7 @@ public class Esm2UiDataTest {
         assertNull(uiOp5.get().getInput());
         
         final Optional<ClassType> uiE1 = application.get().getDataElements().stream().filter(e -> e instanceof ClassType)
-        		.map(e -> (ClassType) e).filter(c -> c.getName().equals(EsmUtils.getNamespaceElementFQName(e1))).findAny();
+        .map(e -> (ClassType) e).filter(c -> c.getName().equals(EsmUtils.getNamespaceElementFQName(e1))).findAny();
         assertFalse(uiE1.isPresent());
     }
     
@@ -893,7 +893,7 @@ public class Esm2UiDataTest {
                 .withUpdateable(false)
                 .withDeleteable(false)
                 .withGeneralizations(newGeneralizationBuilder().withTarget(e2).build())
-            	.withAttributes(stored2, derived2)
+            .withAttributes(stored2, derived2)
                 .build();
         useEntityType(e3).withMappedEntity(e3).build();
         
@@ -904,7 +904,7 @@ public class Esm2UiDataTest {
                 .withCreateable(false)
                 .withUpdateable(false)
                 .withDeleteable(false)
-            	.withAttributes(stored3, derived3)
+            .withAttributes(stored3, derived3)
                 .build();
         useEntityType(e4).withMappedEntity(e4).build();
         
@@ -926,17 +926,17 @@ public class Esm2UiDataTest {
         useEntityType(e6).withMappedEntity(e6).build();
         
         OneWayRelationMember relation = newOneWayRelationMemberBuilder()
-        		.withName("e5s")
-        		.withLower(0)
-        		.withUpper(-1)
-        		.withTarget(e5)
-        		.withMemberType(MemberType.STORED)
-        		.withRelationKind(RelationKind.ASSOCIATION)
-        		.build();
+        .withName("e5s")
+        .withLower(0)
+        .withUpper(-1)
+        .withTarget(e5)
+        .withMemberType(MemberType.STORED)
+        .withRelationKind(RelationKind.ASSOCIATION)
+        .build();
         useEntityType(e4).withRelations(relation).build();
 
         DataMember stored1mapping = newDataMemberBuilder().withName("stored").withDataType(str).withMemberType(MemberType.MAPPED)
-        		.withBinding(stored1).build();
+        .withBinding(stored1).build();
         final TransferObjectType t1 = newTransferObjectTypeBuilder()
                 .withName(TRANSFER_OBJECT_TYPE_NAME_1)
                 .withCreateable(false)
@@ -944,7 +944,7 @@ public class Esm2UiDataTest {
                 .withDeleteable(false)
                 .build();
         useTransferObjectType(t1).withMappedEntity(e1)
-        	.withAttributes(stored1mapping).build();
+        .withAttributes(stored1mapping).build();
         final TransferObjectType t2 = newTransferObjectTypeBuilder()
                 .withName(TRANSFER_OBJECT_TYPE_NAME_2)
                 .withCreateable(false)
@@ -954,11 +954,11 @@ public class Esm2UiDataTest {
                 .build();
         useTransferObjectType(t2).withMappedEntity(e2).build();
         DataMember stored2mapping = newDataMemberBuilder().withName("stored2").withDataType(str).withMemberType(MemberType.MAPPED)
-        		.withBinding(stored2).build();
+        .withBinding(stored2).build();
         DataMember derived2mapping = newDataMemberBuilder().withName("derived2").withDataType(number).withGetterExpression("1+1").withMemberType(MemberType.MAPPED)
-        		.withBinding(derived2).build();
+        .withBinding(derived2).build();
         DataMember transientMember = newDataMemberBuilder().withName("transient").withDataType(str).withMemberType(MemberType.TRANSIENT)
-        		.withBinding(stored2).build();
+        .withBinding(stored2).build();
         final TransferObjectType t3 = newTransferObjectTypeBuilder()
                 .withName(TRANSFER_OBJECT_TYPE_NAME_3)
                 .withCreateable(false)
@@ -967,31 +967,31 @@ public class Esm2UiDataTest {
                 .withGeneralizations(newGeneralizationBuilder().withTarget(t2).build())
                 .build();
         useTransferObjectType(t3).withMappedEntity(e3)
-        	.withAttributes(stored2mapping, derived2mapping, transientMember).build();
+        .withAttributes(stored2mapping, derived2mapping, transientMember).build();
         
         Access access1 = newAccessBuilder().withName("t1")
-        		.withTarget(t1)
-        		.withLower(0)
-        		.withUpper(-1)
-        		.withCreateable(true)
-        		.withTargetDefinedCRUD(false)
-        		.build();
+        .withTarget(t1)
+        .withLower(0)
+        .withUpper(-1)
+        .withCreateable(true)
+        .withTargetDefinedCRUD(false)
+        .build();
         
         Access access2 = newAccessBuilder().withName("t3")
-        		.withTarget(t3)
-        		.withLower(0)
-        		.withUpper(-1)
-        		.withCreateable(false)
-        		.withTargetDefinedCRUD(false)
-        		.build();
+        .withTarget(t3)
+        .withLower(0)
+        .withUpper(-1)
+        .withCreateable(false)
+        .withTargetDefinedCRUD(false)
+        .build();
         
         Access access3 = newAccessBuilder().withName("e4")
-        		.withTarget(e4)
-        		.withLower(0)
-        		.withUpper(-1)
-        		.withCreateable(false)
-        		.withTargetDefinedCRUD(false)
-        		.build();
+        .withTarget(e4)
+        .withLower(0)
+        .withUpper(-1)
+        .withCreateable(false)
+        .withTargetDefinedCRUD(false)
+        .build();
 
         useActorType(actor).withAccesses(access1, access2, access3).build();
         
@@ -1007,7 +1007,7 @@ public class Esm2UiDataTest {
         assertTrue(application.isPresent());
         
         final Optional<ClassType> uiT1 = application.get().getDataElements().stream().filter(e -> e instanceof ClassType)
-        		.map(e -> (ClassType) e).filter(c -> c.getName().equals(EsmUtils.getNamespaceElementFQName(t1))).findAny();
+        .map(e -> (ClassType) e).filter(c -> c.getName().equals(EsmUtils.getNamespaceElementFQName(t1))).findAny();
         assertTrue(uiT1.isPresent());
         assertTrue(uiT1.get().isIsMapped());
         assertEquals(1, uiT1.get().getAttributes().size());
@@ -1015,11 +1015,11 @@ public class Esm2UiDataTest {
         assertTrue(uiT1.get().getAttributes().get(0).getName().equals(stored1mapping.getName()));
         
         final Optional<ClassType> uiT2 = application.get().getDataElements().stream().filter(e -> e instanceof ClassType)
-        		.map(e -> (ClassType) e).filter(c -> c.getName().equals(EsmUtils.getNamespaceElementFQName(t2))).findAny();
+        .map(e -> (ClassType) e).filter(c -> c.getName().equals(EsmUtils.getNamespaceElementFQName(t2))).findAny();
         assertFalse(uiT2.isPresent());
         
         final Optional<ClassType> uiT3 = application.get().getDataElements().stream().filter(e -> e instanceof ClassType)
-        		.map(e -> (ClassType) e).filter(c -> c.getName().equals(EsmUtils.getNamespaceElementFQName(t3))).findAny();
+        .map(e -> (ClassType) e).filter(c -> c.getName().equals(EsmUtils.getNamespaceElementFQName(t3))).findAny();
         assertTrue(uiT3.isPresent());
         assertTrue(uiT3.get().isIsMapped());
         assertEquals(4, uiT3.get().getAttributes().size());
@@ -1029,19 +1029,19 @@ public class Esm2UiDataTest {
         assertTrue(uiT3.get().getAttributes().stream().anyMatch(a -> a.getName().equals(transientMember.getName()) && a.getIsMemberTypeTransient()));
         
         final Optional<ClassType> uiE1 = application.get().getDataElements().stream().filter(e -> e instanceof ClassType)
-        		.map(e -> (ClassType) e).filter(c -> c.getName().equals(EsmUtils.getNamespaceElementFQName(e1))).findAny();
+        .map(e -> (ClassType) e).filter(c -> c.getName().equals(EsmUtils.getNamespaceElementFQName(e1))).findAny();
         assertFalse(uiE1.isPresent());
         
         final Optional<ClassType> uiE2 = application.get().getDataElements().stream().filter(e -> e instanceof ClassType)
-        		.map(e -> (ClassType) e).filter(c -> c.getName().equals(EsmUtils.getNamespaceElementFQName(e2))).findAny();
+        .map(e -> (ClassType) e).filter(c -> c.getName().equals(EsmUtils.getNamespaceElementFQName(e2))).findAny();
         assertFalse(uiE2.isPresent());
         
         final Optional<ClassType> uiE3 = application.get().getDataElements().stream().filter(e -> e instanceof ClassType)
-        		.map(e -> (ClassType) e).filter(c -> c.getName().equals(EsmUtils.getNamespaceElementFQName(e3))).findAny();
+        .map(e -> (ClassType) e).filter(c -> c.getName().equals(EsmUtils.getNamespaceElementFQName(e3))).findAny();
         assertFalse(uiE3.isPresent());
         
         final Optional<ClassType> uiE4 = application.get().getDataElements().stream().filter(e -> e instanceof ClassType)
-        		.map(e -> (ClassType) e).filter(c -> c.getName().equals(EsmUtils.getNamespaceElementFQName(e4))).findAny();
+        .map(e -> (ClassType) e).filter(c -> c.getName().equals(EsmUtils.getNamespaceElementFQName(e4))).findAny();
         assertTrue(uiE4.isPresent());
         assertTrue(uiE4.get().isIsMapped());
         assertEquals(2, uiE4.get().getAttributes().size());
@@ -1049,11 +1049,11 @@ public class Esm2UiDataTest {
         assertTrue(uiE4.get().getAttributes().stream().anyMatch(a -> a.getName().equals(derived3.getName()) && a.getIsMemberTypeDerived()));
         
         final Optional<ClassType> uiE5 = application.get().getDataElements().stream().filter(e -> e instanceof ClassType)
-        		.map(e -> (ClassType) e).filter(c -> c.getName().equals(EsmUtils.getNamespaceElementFQName(e5))).findAny();
+        .map(e -> (ClassType) e).filter(c -> c.getName().equals(EsmUtils.getNamespaceElementFQName(e5))).findAny();
         assertTrue(uiE5.isPresent());
         
         final Optional<ClassType> uiE6 = application.get().getDataElements().stream().filter(e -> e instanceof ClassType)
-        		.map(e -> (ClassType) e).filter(c -> c.getName().equals(EsmUtils.getNamespaceElementFQName(e6))).findAny();
+        .map(e -> (ClassType) e).filter(c -> c.getName().equals(EsmUtils.getNamespaceElementFQName(e6))).findAny();
         assertFalse(uiE6.isPresent());
     }
     
@@ -1072,43 +1072,43 @@ public class Esm2UiDataTest {
         
         PasswordType password = newPasswordTypeBuilder().withName("password").build();
         StringType string = newStringTypeBuilder().withName("string")
-        		.withMaxLength(256)
-        		.withRegExp(".*")
-        		.build();
+        .withMaxLength(256)
+        .withRegExp(".*")
+        .build();
         NumericType numeric = newNumericTypeBuilder().withName("numeric")
-        		.withPrecision(2)
-        		.withScale(1)
-        		.build();
+        .withPrecision(2)
+        .withScale(1)
+        .build();
         BooleanType booleanType = newBooleanTypeBuilder().withName("boolean").build();
         DateType dateType = newDateTypeBuilder().withName("date").build();
         TimestampType timestamp = newTimestampTypeBuilder().withName("timestamp").withBaseUnit(DurationType.HOUR)
-        		.build();
+        .build();
         EnumerationType enumeration = newEnumerationTypeBuilder().withName("enum")
-        		.withMembers(ImmutableList.of(
-        				newEnumerationMemberBuilder().withName("m1").withOrdinal(1).build(),
-        				newEnumerationMemberBuilder().withName("m2").withOrdinal(2).build()
-        				))
-        		.build();
+        .withMembers(ImmutableList.of(
+        newEnumerationMemberBuilder().withName("m1").withOrdinal(1).build(),
+        newEnumerationMemberBuilder().withName("m2").withOrdinal(2).build()
+        ))
+        .build();
 //TODO JNG-2228
 //        DataMember xmlAttribute = newDataMemberBuilder().withName("xml").withDataType(xmlType)
-//        		.withMemberType(MemberType.STORED).build();
+//        .withMemberType(MemberType.STORED).build();
 //TODO JNG-2229
 //        DataMember customAttribute = newDataMemberBuilder().withName("custom").withDataType(custom)
-//        		.withMemberType(MemberType.STORED).build();
+//        .withMemberType(MemberType.STORED).build();
         DataMember passwordAttribute = newDataMemberBuilder().withName("password").withDataType(password)
-        		.withMemberType(MemberType.STORED).build();
+            .withMemberType(MemberType.STORED).build();
         DataMember stringAttribute = newDataMemberBuilder().withName("string").withDataType(string)
-        		.withMemberType(MemberType.STORED).build();
+        .withMemberType(MemberType.STORED).build();
         DataMember numericAttribute = newDataMemberBuilder().withName("numeric").withDataType(numeric)
-        		.withMemberType(MemberType.STORED).build();
+        .withMemberType(MemberType.STORED).build();
         DataMember booleanAttribute = newDataMemberBuilder().withName("boolean").withDataType(booleanType)
-        		.withMemberType(MemberType.STORED).build();
+        .withMemberType(MemberType.STORED).build();
         DataMember dateAttribute = newDataMemberBuilder().withName("date").withDataType(dateType)
-        		.withMemberType(MemberType.STORED).build();
+        .withMemberType(MemberType.STORED).build();
         DataMember timestampAttribute = newDataMemberBuilder().withName("timestamp").withDataType(timestamp)
-        		.withMemberType(MemberType.STORED).build();
+        .withMemberType(MemberType.STORED).build();
         DataMember enumerationAttribute = newDataMemberBuilder().withName("enumeration").withDataType(enumeration)
-        		.withMemberType(MemberType.STORED).build();
+        .withMemberType(MemberType.STORED).build();
         
         ActorType actor = newActorTypeBuilder()
                 .withName(ACTOR_TYPE_NAME_1)
@@ -1126,20 +1126,20 @@ public class Esm2UiDataTest {
         useEntityType(e1).withAttributes(passwordAttribute, stringAttribute, numericAttribute, booleanAttribute, dateAttribute, timestampAttribute, enumerationAttribute).build();
         
         Access access1 = newAccessBuilder().withName("e1")
-        		.withTarget(e1)
-        		.withLower(0)
-        		.withUpper(-1)
-        		.withCreateable(true).withUpdateable(true).withDeleteable(true)
-        		.withTargetDefinedCRUD(false)
-        		.build();
+        .withTarget(e1)
+        .withLower(0)
+        .withUpper(-1)
+        .withCreateable(true).withUpdateable(true).withDeleteable(true)
+        .withTargetDefinedCRUD(false)
+        .build();
         useActorType(actor).withAccesses(access1).build();
         Access access2 = newAccessBuilder().withName("e1")
-        		.withTarget(e1)
-        		.withLower(0)
-        		.withUpper(-1)
-        		.withCreateable(true).withUpdateable(true).withDeleteable(true)
-        		.withTargetDefinedCRUD(false)
-        		.build();
+        .withTarget(e1)
+        .withLower(0)
+        .withUpper(-1)
+        .withCreateable(true).withUpdateable(true).withDeleteable(true)
+        .withTargetDefinedCRUD(false)
+        .build();
         useActorType(actor2).withAccesses(access2).build();
         
         SimpleOrderModel.setFormForTransferObjectType(e1);
