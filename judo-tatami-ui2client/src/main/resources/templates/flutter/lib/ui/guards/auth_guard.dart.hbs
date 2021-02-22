@@ -14,24 +14,18 @@ import 'package:{{ modelPackage application.name }}/{{ path application.name }}/
 import 'package:{{ modelPackage application.name }}/{{ path application.name }}/repository/package.dart';
 import 'package:{{ modelPackage application.name }}/{{ path application.name }}/ui/routes/router.gr.dart' as router;
 
+import '../../oauth.dart';
+
 class AuthGuard extends RouteGuard {
-  {{# if application.principal }}
-  {{ fqClass application.name }}Repository _actorRepository = locator<{{ fqClass application.name }}Repository>();
 
   @override
   Future<bool> canNavigate(ExtendedNavigatorState navigator, String routeName, Object arguments) async {
-    try {
-      var principal = await _actorRepository.getPrincipal();
-      if (principal.email.isNotEmpty) {
-        return true;
-      } else {
-        _navigateToErrorPage(navigator, routeName);
-        return false;
-      }
-    } catch(error) {
-      _navigateToErrorPage(navigator, routeName);
-      return false;
+    if (Oauth.authInfo.isPrincipalAllowed) {
+      return true;
     }
+
+    _navigateToErrorPage(navigator, routeName);
+    return false;
   }
 
   void _navigateToErrorPage(ExtendedNavigatorState navigation, String routeName) {
@@ -43,11 +37,4 @@ class AuthGuard extends RouteGuard {
       )
     );
   }
-  {{else}}
-  @override
-  Future<bool> canNavigate(ExtendedNavigatorState navigator, String routeName, Object arguments) async {
-    // Anonymous access allowed
-    return true;
-  }
-  {{/if}}
 }

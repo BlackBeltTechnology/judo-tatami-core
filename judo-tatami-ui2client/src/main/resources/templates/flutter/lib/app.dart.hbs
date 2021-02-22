@@ -219,38 +219,27 @@ class _{{ fqClass application.name }}DrawerState extends State<{{ fqClass applic
     }
 
     Widget actorMenuEntries(BuildContext context, NavigationState navigationState, String _selected) {
-        return !Oauth.isAuthenticationRequired() || Oauth.authInfo.loggedIn ? Container(
-            child: FutureBuilder<bool>(
-                future: _hasActorMenuAccess,
-                builder: (context, snapshot) {
-                    if (snapshot.hasData && snapshot.data == true) {
-                        return Column(
-                            children: {{ fqClass application.name }}NavigationItems.navigationItems.map(
-                                (e) => ListTile(
-                                    leading: e.leading,
-                                    title: e.title,
-                                    onTap: () {
-                                        if (Info.serverDown) {
-                                            ErrorHandler.navigateToBuiltInPage();
-                                        } else {
-                                            if (Oauth.isAuthenticationRequired() && !Oauth.isLoggedIn()) {
-                                                Oauth.loginAuthorizeAndExchangeCode();
-                                            } else {
-                                                navigationState.navigateTo(e.route);
-                                                setState(() => {});
-                                            }
-                                        }
-                                    },
-                                    selected: e.route == _selected,
-                                ),
-                            )
-                            .toList(),
-                        );
-                    } else {
-                        return Container();
-                    }
-                },
-            ),
+        return !Oauth.isAuthenticationRequired() || (Oauth.authInfo.loggedIn && Oauth.authInfo.isPrincipalAllowed) ? Column(
+            children: {{ fqClass application.name }}NavigationItems.navigationItems.map(
+                (e) => ListTile(
+                    leading: e.leading,
+                    title: e.title,
+                    onTap: () {
+                        if (Info.serverDown) {
+                            ErrorHandler.navigateToBuiltInPage();
+                        } else {
+                            if (Oauth.isAuthenticationRequired() && !Oauth.isLoggedIn()) {
+                                Oauth.loginAuthorizeAndExchangeCode();
+                            } else {
+                                navigationState.navigateTo(e.route);
+                                setState(() => {});
+                            }
+                        }
+                    },
+                    selected: e.route == _selected,
+                ),
+            )
+            .toList(),
         ) : Container();
     }
 
