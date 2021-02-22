@@ -24,15 +24,16 @@ operation UI!ui::Link calculateActions(application : UI!ui::Application, preview
         }
         
         if (pageType == UI!ui::PageType#OPERATION_INPUT) {
-            if (not self.disabled and relationType.memberType <> UI!ui::data::MemberType#TRANSIENT) {
+            if (not self.disabled and relationType.memberType <> UI!ui::data::MemberType#TRANSIENT
+                and relationType.memberType <> UI!ui::data::MemberType#DERIVED) {
                 self.createSetUnsetActions(relationType);
             }
-            
-            if (relationType.memberType == UI!ui::data::MemberType#TRANSIENT) {
+            // TODO - flutter template refactor
+            /*if (relationType.memberType == UI!ui::data::MemberType#TRANSIENT) {
                 self.createCreateAction(relationType, application, preview);
                 self.createUpdateAction(relationType, application, preview);
                 self.createDeleteAction(relationType);
-            }
+            }*/
         }
         
         if (pageType == UI!ui::PageType#OPERATION_OUTPUT) {

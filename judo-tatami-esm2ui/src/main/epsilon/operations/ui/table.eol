@@ -29,18 +29,21 @@ operation UI!ui::Table calculateActions(application : UI!ui::Application, previe
         }
         // **** INPUT PAGE:
         if (pageType == UI!ui::PageType#OPERATION_INPUT) {
-            if (not self.disabled and relationType.memberType <> UI!ui::data::MemberType#TRANSIENT) {
+            if (not self.disabled and relationType.memberType <> UI!ui::data::MemberType#TRANSIENT
+            and relationType.memberType <> UI!ui::data::MemberType#DERIVED) {
+                var buttonGroup : UI!ui::Flex = self.createActionButtonGroupForTable();
                 self.createRemoveAction();
                 self.createSetAction(relationType, buttonGroup);
                 self.createAddAction(relationType, buttonGroup);
             }
             
-            if (relationType.memberType == UI!ui::data::MemberType#TRANSIENT) {
+            // TODO - flutter template refactor
+            /*if (relationType.memberType == UI!ui::data::MemberType#TRANSIENT) {
                 var buttonGroup : UI!ui::Flex = self.createActionButtonGroupForTable();
                 self.createCreateAction(relationType, application, preview, buttonGroup);
                 self.createUpdateAction(relationType, application, preview);
                 self.createDeleteAction(relationType);
-            }
+            }*/
         }
         // **** OUTPUT PAGE:
         if (pageType == UI!ui::PageType#OPERATION_OUTPUT) {
@@ -223,7 +226,7 @@ operation UI!ui::Table isTablePage() : Boolean {
     if (pageDef.isDefined()) {
         var dataElement = self.getPageDefinition().dataElement;
         if (dataElement.isDefined() and dataElement.isKindOf(UI!ui::data::RelationType)) {
-            return pageDef.pageType == UI!ui::PageType#TABLE or    (pageDef.pageType == UI!ui::PageType#DASHBOARD and dataElement.isCollection);
+            return pageDef.pageType == UI!ui::PageType#TABLE or (pageDef.pageType == UI!ui::PageType#DASHBOARD and dataElement.isCollection);
         }
         return pageDef.pageType == UI!ui::PageType#TABLE; 
     }
