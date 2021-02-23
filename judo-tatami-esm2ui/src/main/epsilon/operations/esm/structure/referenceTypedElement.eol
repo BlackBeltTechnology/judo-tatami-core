@@ -23,6 +23,8 @@ operation ESM!esm::structure::ReferenceTypedElement mapViewPage(application : UI
     pageContainer.layoutType = application.layoutTypes.first;
     pageContainer.name = "default";
     pageContainer.direction = UI!Axis#VERTICAL;
+    pageContainer.mainAxisAlignment = UI!ui::MainAxisAlignment#START;
+    pageContainer.crossAxisAlignment = UI!ui::CrossAxisAlignment#START;
     pageContainer.col = applicationColumns.asReal();
     page.containers.add(pageContainer);
 
@@ -53,6 +55,8 @@ operation ESM!esm::structure::ReferenceTypedElement mapCreatePage(application : 
     pageContainer.layoutType = application.layoutTypes.first;
     pageContainer.name = "default";
     pageContainer.direction = UI!Axis#VERTICAL;
+    pageContainer.mainAxisAlignment = UI!ui::MainAxisAlignment#START;
+    pageContainer.crossAxisAlignment = UI!ui::CrossAxisAlignment#START;
     pageContainer.col = applicationColumns.asReal();
     page.containers.add(pageContainer);
 
@@ -82,6 +86,8 @@ operation ESM!esm::structure::ReferenceTypedElement mapUpdatePage(application : 
     pageContainer.layoutType = application.layoutTypes.first;
     pageContainer.name = "default";
     pageContainer.direction = UI!Axis#VERTICAL;
+    pageContainer.mainAxisAlignment = UI!ui::MainAxisAlignment#START;
+    pageContainer.crossAxisAlignment = UI!ui::CrossAxisAlignment#START;
     pageContainer.col = applicationColumns.asReal();
     page.containers.add(pageContainer);
 
@@ -114,12 +120,16 @@ operation ESM!esm::structure::ReferenceTypedElement mapTablePage(application : U
     pageContainer.layoutType = application.layoutTypes.first;
     pageContainer.name = "default";
     pageContainer.direction = UI!Axis#VERTICAL;
+    pageContainer.mainAxisAlignment = UI!ui::MainAxisAlignment#START;
+    pageContainer.crossAxisAlignment = UI!ui::CrossAxisAlignment#START;
     pageContainer.col = applicationColumns.asReal();
     page.containers.add(pageContainer);
 
     var flex = new UI!ui::Flex();
     flex.name = self.name;
     flex.direction = UI!Axis#VERTICAL;
+    flex.mainAxisAlignment = UI!ui::MainAxisAlignment#START;
+    flex.crossAxisAlignment = UI!ui::CrossAxisAlignment#START;
     flex.col = applicationColumns.asReal();
     pageContainer.children.add(flex);
     
