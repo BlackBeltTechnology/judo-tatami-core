@@ -1,6 +1,7 @@
 {{log 'Stored aggregation action generation for' (variable application.name) '-' (fqClass page.name)'page'(variable relation.name)'relation' level='debug'}}
 //START input_page_stored_aggregation_actions.dart.hbs-----{{relaltion.name}}---------------------------------------------------------------------------------
 // {{ className relation.name }} stored aggregation in-memory actions
+{{# if relation.isCollection }}
 @action
 Future<List<{{ fqClass relation.target.name }}Store>> add{{fqClass relation.name}}({{ fqClass relation.owner.name }}Store owner{{ className relation.owner.name }}Store, {{ fqClass relation.target.name }}Store selected{{ className relation.target.name }}Store) async {
     try {
@@ -23,6 +24,7 @@ Future<void> remove{{ fqClass relation.name }}({{ fqClass relation.owner.name }}
     }
 }
 
+{{/if}}
 {{# if relation.isRelationBehaviourTypeRangeable }}
 @action
 Future<List<{{fqClass relation.target.name}}Store>> getRangeFor{{ fqClass relation.name }}({{ fqClass relation.owner.name }}Store owner{{ className relation.owner.name }}Store) async {

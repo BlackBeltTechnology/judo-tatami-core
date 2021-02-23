@@ -66,6 +66,8 @@
             } else {
                 navigation.close(target{{ className page.dataElement.target.name }}Store);
             }
+                {{ else }}
+            navigation.close(target{{ className page.dataElement.target.name }}Store);
                 {{/ if }}
             {{/ if }}
             {{# if page.dataElement.isRelationKindComposition }}
@@ -79,6 +81,8 @@
             } else {
                 navigation.close(target{{ className page.dataElement.target.name }}Store);
             }
+                {{ else }}
+            navigation.close(target{{ className page.dataElement.target.name }}Store);
                 {{/ if }}
             {{/ if }}
         {{/ if }}

@@ -20,11 +20,13 @@
                 {{# unless page.isPageTypeOperationOutput}}
                     {{# unless page.dataElement.isRelationKindAggregation }}
                         {{# unless page.dataElement.isRelationKindComposition }}
+                            {{# unless relation.isMemberTypeTransient }}
                 var validate = await {{ fqVariable page.name }}PageStore.validate({{# unless page.dataElement.isAccess}}owner{{ className page.dataElement.owner.name }}Store, {{/unless}}target{{ className page.dataElement.target.name }}Store)
                     .catchError((error) => ErrorHandler.errorDialog(context, error));
                 if (validate != null) {
                     target{{ className relation.owner.name }}Store.updateWith(validate);
                 }
+                            {{/unless}}
                         {{/unless}}
                     {{/unless}}
                 {{/ unless }}
