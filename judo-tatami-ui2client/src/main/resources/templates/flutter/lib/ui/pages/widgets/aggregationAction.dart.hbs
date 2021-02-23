@@ -1,69 +1,71 @@
 {{ log 'Aggregation action button generation for' (variable application.name) '-' (fqClass page.name)'page'(variable relation.name)'relation' level='debug' ~}}
 //START aggregationAction.dart.hbs-----{{relation.name}}-----------------------------------------------------------------------------------
-JudoButton(
-    col: {{ multiplyCol col }},
-    row: {{ row }},
-    disabled: {{disabled}},
-{{# if action.isBackAction }}
-    onPressed: () => navigation.close(),
-{{/ if }}
-{{# if action.isCreateAction }}
-    onPressed:{{# unless relation.isAccess}}{{# unless relation.isRelationKindStatic}} target{{ className relation.owner.name }}Store.internal__updatable ?{{/ unless}}{{/ unless}} () async {
-        var created = await navigation.open(Routes.{{ fqVariable action.target.name }}Page{{# unless relation.isAccess}},
-        arguments: {{ fqClass action.target.name }}PageArguments(owner{{ className relation.owner.name }}Store: target{{ className relation.owner.name }}Store, validatable: {{ fqVariable page.name }}PageStore.validatable){{~/ unless}});
-        if (created != null) {
-            {{ fqVariable page.name }}PageStore.create{{ fqClass relation.name }}({{# unless relation.isAccess}}target{{ className relation.owner.name }}Store ,{{/ unless}}created)
-            .catchError((error) => ErrorHandler.errorDialog(context, error));
-    {{# unless page.isPageTypeUpdate }}
-        {{# unless page.isPageTypeView }}
-            {{# unless page.isPageTypeOperationOutput}}
-                {{# unless page.dataElement.isRelationKindAggregation }}
-                    {{# unless page.dataElement.isRelationKindComposition }}
-            var validate = await {{ fqVariable page.name }}PageStore.validate({{# unless page.dataElement.isAccess}}owner{{ className page.dataElement.owner.name }}Store, {{/unless}}target{{ className page.dataElement.target.name }}Store)
+{{# if (isObserverButton this page.dataElement action) }}Observer(
+    builder: (_) => {{/ if }}JudoButton(
+        col: {{ multiplyCol col }},
+        row: {{ row }},
+        disabled: {{disabled}}{{# if enabledBy }} || !((target{{ className page.relationType.target.name }}Store?.{{ variable enabledBy.name }}) ?? false){{/ if }},
+    {{# if action.isBackAction }}
+        onPressed: () => navigation.close(),
+    {{/ if }}
+    {{# if action.isCreateAction }}
+        onPressed:{{# unless relation.isAccess}}{{# unless relation.isRelationKindStatic}} target{{ className relation.owner.name }}Store.internal__updatable ?{{/ unless}}{{/ unless}} () async {
+            var created = await navigation.open(Routes.{{ fqVariable action.target.name }}Page{{# unless relation.isAccess}},
+            arguments: {{ fqClass action.target.name }}PageArguments(owner{{ className relation.owner.name }}Store: target{{ className relation.owner.name }}Store, validatable: {{ fqVariable page.name }}PageStore.validatable){{~/ unless}});
+            if (created != null) {
+                {{ fqVariable page.name }}PageStore.create{{ fqClass relation.name }}({{# unless relation.isAccess}}target{{ className relation.owner.name }}Store ,{{/ unless}}created)
                 .catchError((error) => ErrorHandler.errorDialog(context, error));
-            if (validate != null) {
-                target{{ className relation.owner.name }}Store.updateWith(validate);
-            }
+        {{# unless page.isPageTypeUpdate }}
+            {{# unless page.isPageTypeView }}
+                {{# unless page.isPageTypeOperationOutput}}
+                    {{# unless page.dataElement.isRelationKindAggregation }}
+                        {{# unless page.dataElement.isRelationKindComposition }}
+                var validate = await {{ fqVariable page.name }}PageStore.validate({{# unless page.dataElement.isAccess}}owner{{ className page.dataElement.owner.name }}Store, {{/unless}}target{{ className page.dataElement.target.name }}Store)
+                    .catchError((error) => ErrorHandler.errorDialog(context, error));
+                if (validate != null) {
+                    target{{ className relation.owner.name }}Store.updateWith(validate);
+                }
+                        {{/unless}}
                     {{/unless}}
-                {{/unless}}
-            {{/ unless }}
+                {{/ unless }}
+            {{/unless}}
         {{/unless}}
-    {{/unless}}
-        }
-    }{{# unless relation.isAccess}}{{# unless relation.isRelationKindStatic}} : null{{/ unless}}{{/ unless}},
-{{/ if }}
-{{#if action.isAddAction}}
-    onPressed:{{# unless relation.isAccess}}{{# unless relation.isRelationKindStatic}} target{{ className relation.owner.name }}Store.internal__updatable ?{{/ unless}}{{/ unless}} () async {
-        var selected =
-        {{> templates/flutter/lib/ui/pages/widgets/dialog.dart.hbs relation=relation}}
-        if (selected != null) {
-            {{fqVariable page.name}}PageStore.add{{ fqClass relation.name }}(target{{ className relation.owner.name }}Store, selected)
-            .catchError((error) => ErrorHandler.errorDialog(context, error));
-        }
-    }{{# unless relation.isAccess}}{{# unless relation.isRelationKindStatic}} : null{{/ unless}}{{/ unless}},
-{{/if}}
-{{#if action.isSetAction}}
-    onPressed:{{# unless relation.isAccess}}{{# unless relation.isRelationKindStatic}} target{{ className relation.owner.name }}Store.internal__updatable ?{{/ unless}}{{/ unless}} () async {
-        var selected =
-        {{> templates/flutter/lib/ui/pages/widgets/dialog.dart.hbs relation=relation}}
-        if (selected != null) {
-            {{fqVariable page.name}}PageStore.set{{ fqClass relation.name }}(target{{ className relation.owner.name }}Store, selected)
-            .catchError((error) => ErrorHandler.errorDialog(context, error));
-        }
-    }{{# unless relation.isAccess}}{{# unless relation.isRelationKindStatic}} : null{{/ unless}}{{/ unless}},
-{{/if}}
-{{# if action.isNavigationToPageAction }}
-    onPressed: () async {
-        await navigation.open(Routes.{{ fqVariable action.target.name }}Page,
-        arguments: {{ fqClass action.target.name }}PageArguments(owner{{ className action.target.dataElement.owner.name }}Store: target{{ className action.target.dataElement.owner.name }}Store));
-    },
-{{/ if }}
-{{#if label }}
-    label: '{{label}}',
-{{/if}}
-{{#if action.icon }}
-    icon: Icon(Icons.{{ action.icon.name }}),
-{{/if}}
-    rounded: true,
-),
+            }
+        }{{# unless relation.isAccess}}{{# unless relation.isRelationKindStatic}} : null{{/ unless}}{{/ unless}},
+    {{/ if }}
+    {{#if action.isAddAction}}
+        onPressed:{{# unless relation.isAccess}}{{# unless relation.isRelationKindStatic}} target{{ className relation.owner.name }}Store.internal__updatable ?{{/ unless}}{{/ unless}} () async {
+            var selected =
+            {{> templates/flutter/lib/ui/pages/widgets/dialog.dart.hbs relation=relation}}
+            if (selected != null) {
+                {{fqVariable page.name}}PageStore.add{{ fqClass relation.name }}(target{{ className relation.owner.name }}Store, selected)
+                .catchError((error) => ErrorHandler.errorDialog(context, error));
+            }
+        }{{# unless relation.isAccess}}{{# unless relation.isRelationKindStatic}} : null{{/ unless}}{{/ unless}},
+    {{/if}}
+    {{#if action.isSetAction}}
+        onPressed:{{# unless relation.isAccess}}{{# unless relation.isRelationKindStatic}} target{{ className relation.owner.name }}Store.internal__updatable ?{{/ unless}}{{/ unless}} () async {
+            var selected =
+            {{> templates/flutter/lib/ui/pages/widgets/dialog.dart.hbs relation=relation}}
+            if (selected != null) {
+                {{fqVariable page.name}}PageStore.set{{ fqClass relation.name }}(target{{ className relation.owner.name }}Store, selected)
+                .catchError((error) => ErrorHandler.errorDialog(context, error));
+            }
+        }{{# unless relation.isAccess}}{{# unless relation.isRelationKindStatic}} : null{{/ unless}}{{/ unless}},
+    {{/if}}
+    {{# if action.isNavigationToPageAction }}
+        onPressed: () async {
+            await navigation.open(Routes.{{ fqVariable action.target.name }}Page,
+            arguments: {{ fqClass action.target.name }}PageArguments(owner{{ className action.target.dataElement.owner.name }}Store: target{{ className action.target.dataElement.owner.name }}Store));
+        },
+    {{/ if }}
+    {{#if label }}
+        label: '{{label}}',
+    {{/if}}
+    {{#if action.icon }}
+        icon: Icon(Icons.{{ action.icon.name }}),
+    {{/if}}
+        rounded: true,
+    ){{# if (isObserverButton this page.dataElement action) }}
+){{/ if }},
 //END aggregationAction.dart.hbs-----{{relation.name}}-------------------------------------------------------------------------------------

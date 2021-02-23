@@ -12,12 +12,17 @@ abstract class _{{ fqClass page.name }}PageStore with Store {
     bool validatable = false;
 
     {{# each page.dataElement.target.relations as |relation| }}
-            {{# if isRelationKindAggregation }}
-    {{> templates/flutter/lib/ui/pages/pagetypesfragments/storeactions/aggregationactions.dart.hbs page=page relation=relation}}
+        {{# if isRelationKindAggregation }}
+            {{# if isMemberTypeTransient }}
+    {{> templates/flutter/lib/ui/pages/pagetypesfragments/storeactions/input_page_transient_actions.dart.hbs page=page relation=relation}}
+            {{/if}}
+            {{# if isMemberTypeStored }}
+    {{> templates/flutter/lib/ui/pages/pagetypesfragments/storeactions/input_page_stored_aggregation_actions.dart.hbs page=page relation=relation}}
             {{/ if}}
-            {{# if isRelationKindComposition }}
+        {{/ if}}
+        {{# if isRelationKindComposition }}
     {{> templates/flutter/lib/ui/pages/pagetypesfragments/storeactions/aggregationactions.dart.hbs page=page relation=relation}}
-            {{/ if}}
+        {{/ if}}
     {{/ each}}
 }
 //END operationinputpagestore.dart.hbs-----{{page.name}}-----------------------------------------------------------------------------------
