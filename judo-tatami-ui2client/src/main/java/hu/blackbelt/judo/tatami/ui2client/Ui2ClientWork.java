@@ -23,7 +23,9 @@ import hu.blackbelt.judo.tatami.core.workflow.flow.WorkFlow;
 import hu.blackbelt.judo.tatami.core.workflow.work.AbstractTransformationWork;
 import hu.blackbelt.judo.tatami.core.workflow.work.TransformationContext;
 import hu.blackbelt.judo.tatami.core.workflow.work.WorkReport;
+import hu.blackbelt.judo.tatami.ui2client.flutter.FlutterHelper;
 import lombok.extern.slf4j.Slf4j;
+import org.checkerframework.checker.units.qual.C;
 
 @Slf4j
 public class Ui2ClientWork extends AbstractTransformationWork {
@@ -47,11 +49,8 @@ public class Ui2ClientWork extends AbstractTransformationWork {
 		UiModel uiModel = getTransformationContext().getByClass(UiModel.class)
 				.orElseThrow(() -> new IllegalArgumentException("UI Model does not found in transformation context"));
 
-		Map<Application, InputStream> ui2flutterZip = executeUi2ClientGenerationAsZip(uiModel,
-//				getTransformationContext().getByClass(ClientTemplateProvider.class).orElseGet(() -> new FlutterTemplateProvider()).get(),
-				GeneratorTemplate.loadYamlURL(Ui2Client.calculateUi2ClientTemplateScriptURI().resolve("flutter/flutter.yaml").toURL()),
-				getTransformationContext().getByClass(Log.class).orElseGet(() -> new Slf4jLog(log)),
-				transformationScriptRoot);
+		Map<Application, InputStream> ui2flutterZip = executeUi2ClientGenerationAsZip(Ui2FlutterClient.getFlutterClientGenerator(uiModel),
+				getTransformationContext().getByClass(Log.class).orElseGet(() -> new Slf4jLog(log)));
 		
 		checkState(ui2flutterZip != null, "No InputStream created");
 

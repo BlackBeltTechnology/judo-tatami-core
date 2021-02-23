@@ -1,6 +1,7 @@
 package hu.blackbelt.judo.tatami.ui2client;
 
 import static hu.blackbelt.judo.tatami.esm2ui.Esm2Ui.executeEsm2UiTransformation;
+import static hu.blackbelt.judo.tatami.ui2client.Ui2Client.calculateUi2ClientTemplateScriptURI;
 import static hu.blackbelt.judo.tatami.ui2client.Ui2Client.getGeneratedFilesAsZip;
 
 import java.io.File;
@@ -12,6 +13,7 @@ import java.util.Map;
 import hu.blackbelt.judo.meta.esm.runtime.EsmModel;
 import hu.blackbelt.judo.meta.ui.Application;
 import hu.blackbelt.judo.meta.ui.runtime.UiModel;
+import hu.blackbelt.judo.tatami.ui2client.flutter.FlutterHelper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -46,8 +48,8 @@ public class Ui2ClientTest {
 
     @Test
     public void testExecuteUi2FlutterGeneration() throws Exception {
-        Map<Application, Collection<GeneratedFile>> generatedFiles = Ui2Client.executeUi2ClientGeneration(uiModel,
-                GeneratorTemplate.loadYamlURL(Ui2Client.calculateUi2ClientTemplateScriptURI().resolve("flutter/flutter.yaml").toURL()));
+        Map<Application, Collection<GeneratedFile>> generatedFiles =
+                Ui2Client.executeUi2ClientGenerationByApplication(Ui2FlutterClient.getFlutterClientGenerator(uiModel));
         for (Application app : generatedFiles.keySet()) {
             try (OutputStream zipOutputStream =
                          new FileOutputStream(new File(TARGET_TEST_CLASSES, TEST + "-" +
