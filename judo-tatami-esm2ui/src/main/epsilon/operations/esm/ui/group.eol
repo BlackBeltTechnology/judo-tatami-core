@@ -1,9 +1,9 @@
 operation ESM!esm::ui::Group createFlexFromGroup(application : UI!ui::Application, page : UI!ui::PageDefinition) : UI!ui::Flex {
-	var ret : UI!ui::Flex = self.createFlexFromContainer(application, page);
-	ret.sourceId = self.getID();
-	return ret;
+    var ret : UI!ui::Flex = self.createFlexFromContainer(application, page);
+    ret.sourceId = self.getID();
+    return ret;
 }
 
 operation ESM!esm::ui::Group map(application : UI!ui::Application, page : UI!ui::PageDefinition) : UI!ui::Flex {
-	return self.createFlexFromGroup(application, page);
+    return self.createFlexFromGroup(application, page);
 }

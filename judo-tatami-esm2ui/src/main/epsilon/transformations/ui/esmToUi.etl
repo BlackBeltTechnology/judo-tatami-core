@@ -3,7 +3,6 @@ import "../../operations/_importAll.eol";
 import "modules/accesspoint/application.etl";
 import "modules/accesspoint/pageDefinition.etl";
 import "modules/accesspoint/navigation.etl";
-import "modules/ui/ui.etl";
 
 post {
 

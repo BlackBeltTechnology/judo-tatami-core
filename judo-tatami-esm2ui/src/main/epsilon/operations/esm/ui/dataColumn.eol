@@ -1,11 +1,11 @@
 operation ESM!esm::ui::DataColumn createFormattedFromDataColumn(application : UI!ui::Application) : UI!ui::Formatted {
-	var ret : UI!ui::Formatted = self.dataFeature.getMember().getDataType().formatted();
-	ret.name = self.name;
-	ret.label = self.getUiLabel();
-	ret.attributeType = self.dataFeature.getMember().mapAttributeType(application, self.getTransferObjectType().mapClassType(application));
-	return ret;
+    var ret : UI!ui::Formatted = self.dataFeature.getMember().getDataType().formatted();
+    ret.name = self.name;
+    ret.label = self.getUiLabel();
+    ret.attributeType = self.dataFeature.getMember().mapAttributeType(application, self.getTransferObjectType().mapClassType(application));
+    return ret;
 }
 
 operation ESM!esm::ui::DataColumn map(application : UI!ui::Application) : UI!ui::VisualElement {
-	return self.createFormattedFromDataColumn(application);
+    return self.createFormattedFromDataColumn(application);
 }

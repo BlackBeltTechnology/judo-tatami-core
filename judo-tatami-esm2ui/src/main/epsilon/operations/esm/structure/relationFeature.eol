@@ -1,90 +1,90 @@
 @cached
 operation ESM!esm::structure::RelationFeature fqName() {
-	return esmUtils.getNamespaceElementFQName(self.eContainer) + "." + self.name;
+    return esmUtils.getNamespaceElementFQName(self.eContainer) + "." + self.name;
 }
 
 operation ESM!esm::structure::RelationFeature createRelationTypeForClass(application : UI!ui::Application, clazz : UI!ui::data::ClassType) : UI!ui::data::RelationType {
 
-	var relation = new UI!ui::data::RelationType();	
+    var relation = new UI!ui::data::RelationType();    
     relation.~application = application;
     relation.~originalRelation = self;
 
-	relation.name = self.name;
-	relation.isCollection = (self.upper == -1);
-	relation.isReadOnly = self.isReadOnly();
-	
-	relation.target = self.target.mapClassType(application);
-	
-	if (self.memberType == ESM!esm::structure::MemberType#STORED) {
-		relation.memberType = UI!ui::data::MemberType#STORED;
-	} else if (self.memberType == ESM!esm::structure::MemberType#DERIVED) {
-		relation.memberType = UI!ui::data::MemberType#DERIVED;
-	} else if (self.memberType == ESM!esm::structure::MemberType#MAPPED) {
-		if (self.binding.memberType == ESM!esm::structure::MemberType#STORED) {
-			relation.memberType = UI!ui::data::MemberType#STORED;
-		}
-		if (self.binding.memberType == ESM!esm::structure::MemberType#DERIVED) {
-			relation.memberType = UI!ui::data::MemberType#DERIVED;
-		} 
-	} else if (self.memberType == ESM!esm::structure::MemberType#TRANSIENT) {
-		relation.memberType = UI!ui::data::MemberType#TRANSIENT;
-	} else {
-		relation.memberType = UI!ui::data::MemberType#STORED;
-	}
+    relation.name = self.name;
+    relation.isCollection = (self.upper == -1);
+    relation.isReadOnly = self.isReadOnly();
+    
+    relation.target = self.target.mapClassType(application);
+    
+    if (self.memberType == ESM!esm::structure::MemberType#STORED) {
+        relation.memberType = UI!ui::data::MemberType#STORED;
+    } else if (self.memberType == ESM!esm::structure::MemberType#DERIVED) {
+        relation.memberType = UI!ui::data::MemberType#DERIVED;
+    } else if (self.memberType == ESM!esm::structure::MemberType#MAPPED) {
+        if (self.binding.memberType == ESM!esm::structure::MemberType#STORED) {
+            relation.memberType = UI!ui::data::MemberType#STORED;
+        }
+        if (self.binding.memberType == ESM!esm::structure::MemberType#DERIVED) {
+            relation.memberType = UI!ui::data::MemberType#DERIVED;
+        } 
+    } else if (self.memberType == ESM!esm::structure::MemberType#TRANSIENT) {
+        relation.memberType = UI!ui::data::MemberType#TRANSIENT;
+    } else {
+        relation.memberType = UI!ui::data::MemberType#STORED;
+    }
 
-	if (self.relationKind == ESM!esm::structure::RelationKind#ASSOCIATION) {
-		relation.relationKind = UI!ui::data::RelationKind#ASSOCIATION;
-	} else if (self.relationKind == ESM!esm::structure::RelationKind#COMPOSITION) {
-		relation.relationKind = UI!ui::data::RelationKind#COMPOSITION;
-	} else if (self.relationKind == ESM!esm::structure::RelationKind#AGGREGATION) {
-		if (self.memberType == ESM!esm::structure::MemberType#MAPPED and self.binding.relationKind == ESM!esm::structure::RelationKind#COMPOSITION) {
-			relation.relationKind = UI!ui::data::RelationKind#COMPOSITION;
-		} else {
-			relation.relationKind = UI!ui::data::RelationKind#AGGREGATION;
-		}
-	} else {
-		relation.relationKind = UI!ui::data::RelationKind#ASSOCIATION;
-	}
+    if (self.relationKind == ESM!esm::structure::RelationKind#ASSOCIATION) {
+        relation.relationKind = UI!ui::data::RelationKind#ASSOCIATION;
+    } else if (self.relationKind == ESM!esm::structure::RelationKind#COMPOSITION) {
+        relation.relationKind = UI!ui::data::RelationKind#COMPOSITION;
+    } else if (self.relationKind == ESM!esm::structure::RelationKind#AGGREGATION) {
+        if (self.memberType == ESM!esm::structure::MemberType#MAPPED and self.binding.relationKind == ESM!esm::structure::RelationKind#COMPOSITION) {
+            relation.relationKind = UI!ui::data::RelationKind#COMPOSITION;
+        } else {
+            relation.relationKind = UI!ui::data::RelationKind#AGGREGATION;
+        }
+    } else {
+        relation.relationKind = UI!ui::data::RelationKind#ASSOCIATION;
+    }
 
-	if (esmUtils.isListSupported(self)) {
-		relation.behaviours.add(UI!ui::data::RelationBehaviourType#LIST);
-	}
-	if (esmUtils.isCreateSupported(self)) {
-		relation.behaviours.add(UI!ui::data::RelationBehaviourType#CREATE);
-		relation.target.isForCreateOrUpdateType = true;
-	}
-	if (esmUtils.isSetReferenceSupported(self)) {
-		relation.behaviours.add(UI!ui::data::RelationBehaviourType#SET);
-	}
-	if (esmUtils.isUnsetReferenceSupported(self)) {
-		relation.behaviours.add(UI!ui::data::RelationBehaviourType#UNSET);
-	}
-	if (esmUtils.isAddReferenceSupported(self)) {
-		relation.behaviours.add(UI!ui::data::RelationBehaviourType#ADD);
-	}
-	if (esmUtils.isRemoveReferenceSupported(self)) {
-		relation.behaviours.add(UI!ui::data::RelationBehaviourType#REMOVE);
-	}
-	if (esmUtils.isGetRangeSupported(self)) {
-		relation.behaviours.add(UI!ui::data::RelationBehaviourType#RANGE);
-		clazz.isOptional = true;
-	}
-	if (esmUtils.isValidateCreateSupported(self)) {
-		relation.behaviours.add(UI!ui::data::RelationBehaviourType#VALIDATE_CREATE);
-		relation.target.isForCreateOrUpdateType = true;
-	}
-	if (self.isRefreshSupported()) {
-		relation.behaviours.add(UI!ui::data::RelationBehaviourType#REFRESH);
-	}
-	if (self.isUpdateSupported()) {
-		relation.behaviours.add(UI!ui::data::RelationBehaviourType#UPDATE);
-	}
-	if (self.isValidateUpdateSupported()) {
-		relation.behaviours.add(UI!ui::data::RelationBehaviourType#VALIDATE_UPDATE);
-	}
-	if (self.isDeleteSupported()) {
-		relation.behaviours.add(UI!ui::data::RelationBehaviourType#DELETE);
-	}
+    if (esmUtils.isListSupported(self)) {
+        relation.behaviours.add(UI!ui::data::RelationBehaviourType#LIST);
+    }
+    if (esmUtils.isCreateSupported(self)) {
+        relation.behaviours.add(UI!ui::data::RelationBehaviourType#CREATE);
+        relation.target.isForCreateOrUpdateType = true;
+    }
+    if (esmUtils.isSetReferenceSupported(self)) {
+        relation.behaviours.add(UI!ui::data::RelationBehaviourType#SET);
+    }
+    if (esmUtils.isUnsetReferenceSupported(self)) {
+        relation.behaviours.add(UI!ui::data::RelationBehaviourType#UNSET);
+    }
+    if (esmUtils.isAddReferenceSupported(self)) {
+        relation.behaviours.add(UI!ui::data::RelationBehaviourType#ADD);
+    }
+    if (esmUtils.isRemoveReferenceSupported(self)) {
+        relation.behaviours.add(UI!ui::data::RelationBehaviourType#REMOVE);
+    }
+    if (esmUtils.isGetRangeSupported(self)) {
+        relation.behaviours.add(UI!ui::data::RelationBehaviourType#RANGE);
+        clazz.isOptional = true;
+    }
+    if (esmUtils.isValidateCreateSupported(self)) {
+        relation.behaviours.add(UI!ui::data::RelationBehaviourType#VALIDATE_CREATE);
+        relation.target.isForCreateOrUpdateType = true;
+    }
+    if (self.isRefreshSupported()) {
+        relation.behaviours.add(UI!ui::data::RelationBehaviourType#REFRESH);
+    }
+    if (self.isUpdateSupported()) {
+        relation.behaviours.add(UI!ui::data::RelationBehaviourType#UPDATE);
+    }
+    if (self.isValidateUpdateSupported()) {
+        relation.behaviours.add(UI!ui::data::RelationBehaviourType#VALIDATE_UPDATE);
+    }
+    if (self.isDeleteSupported()) {
+        relation.behaviours.add(UI!ui::data::RelationBehaviourType#DELETE);
+    }
 
     relation.isOrderable =
         self.target.mapping.isDefined() and
@@ -97,18 +97,18 @@ operation ESM!esm::structure::RelationFeature createRelationTypeForClass(applica
                         a.dataType.isKindOf(ESM!DateType) or
                         a.dataType.isKindOf(ESM!TimestampType)));
 
-	relation.isFilterable = self.target.mapping.isDefined();
+    relation.isFilterable = self.target.mapping.isDefined();
 
-	clazz.relations.add(relation);
-	
-	log.debug("Create relation " + relation.name + " in class type: " + clazz.name);
-	return relation;
+    clazz.relations.add(relation);
+    
+    log.debug("Create relation " + relation.name + " in class type: " + clazz.name);
+    return relation;
 }
 
 operation ESM!esm::structure::RelationFeature mapRelationType(application : UI!ui::Application, clazz : UI!ui::data::ClassType) : UI!ui::data::RelationType {
-	var relation = clazz.relations.selectOne(r | r.name = self.name);
-	if (relation.isUndefined()) {
-		relation = self.createRelationTypeForClass(application, clazz);
-	}
-	return relation;
+    var relation = clazz.relations.selectOne(r | r.name = self.name);
+    if (relation.isUndefined()) {
+        relation = self.createRelationTypeForClass(application, clazz);
+    }
+    return relation;
 }

@@ -2,140 +2,140 @@ import "../../operations/_importAll.eol";
 
 @abstract
 rule CreatePageDefinitionForPreview
-	transform s : ESM!esm::ui::Container
-	to t : UI!ui::PageDefinition {
-		guard: s == rootElement
-		
-		var pageContainer = new UI!ui::PageContainer();
-    	pageContainer.layoutType = application.layoutTypes.first;
-		pageContainer.name = "default";
-		pageContainer.direction = UI!Axis#VERTICAL;
-	
-		t.containers.add(pageContainer);
-
-		var flex = new UI!ui::Flex();
-		
-		flex.name = s.name;
-	    flex.label = s.name;    
-		flex.col = applicationColumns.asReal();
-		flex.stretch = UI!ui::Stretch#BOTH;
-		flex.sourceId = s.getID();
-		
-		if (s.getEffectiveLayout() == ESM!esm::ui::Layout#HORIZONTAL) {
-			flex.direction = UI!Axis#HORIZONTAL;
-		}
-		if (s.getEffectiveLayout() == ESM!esm::ui::Layout#VERTICAL) {
-			flex.direction = UI!Axis#VERTICAL;
-		}
-		
-		if (s.getEffectiveJustify() == ESM!esm::ui::Justify#START) {
-        	flex.mainAxisAlignment = UI!ui::MainAxisAlignment#START;
-	    } else if (s.getEffectiveJustify() == ESM!esm::ui::Justify#END) {
-	        flex.mainAxisAlignment = UI!ui::MainAxisAlignment#END;
-	    } else if (s.getEffectiveJustify() == ESM!esm::ui::Justify#SPACE_AROUND) {
-	        flex.mainAxisAlignment = UI!ui::MainAxisAlignment#SPACEAROUND;
-	    } else if (s.getEffectiveJustify() == ESM!esm::ui::Justify#SPACE_BETWEEN) {
-	        flex.mainAxisAlignment = UI!ui::MainAxisAlignment#SPACEBETWEEN;
-	    } else {
-	        flex.mainAxisAlignment = UI!ui::MainAxisAlignment#CENTER;
-	    }
+    transform s : ESM!esm::ui::Container
+    to t : UI!ui::PageDefinition {
+        guard: s == rootElement
+        
+        var pageContainer = new UI!ui::PageContainer();
+        pageContainer.layoutType = application.layoutTypes.first;
+        pageContainer.name = "default";
+        pageContainer.direction = UI!Axis#VERTICAL;
     
-	    if (s.getEffectiveAlign() == ESM!esm::ui::Align#END) {
-	        flex.crossAxisAlignment = UI!ui::CrossAxisAlignment#END;
-	    } else if (s.getEffectiveAlign() == ESM!esm::ui::Align#STRETCH) {
-	        flex.crossAxisAlignment = UI!ui::CrossAxisAlignment#STRETCH;
-	    } else if (s.getEffectiveAlign() == ESM!esm::ui::Align#CENTER) {
-	        flex.crossAxisAlignment = UI!ui::CrossAxisAlignment#CENTER;
-	    } else {
-	        flex.crossAxisAlignment = UI!ui::CrossAxisAlignment#START;
-	    }
-	    
-	    if (s.getEffectiveLayout() == ESM!esm::ui::Layout#HORIZONTAL and s.components.forAll(c | c.isVerticalGrow())) {
-	    	flex.crossAxisAlignment = UI!ui::CrossAxisAlignment#STRETCH;
-	    }
-	    if (s.getEffectiveLayout() == ESM!esm::ui::Layout#VERTICAL and s.components.forAll(c | c.isHorizontalGrow())) {
-	    	flex.crossAxisAlignment = UI!ui::CrossAxisAlignment#STRETCH;
-	    }
-	
-		for (component in s.components) {
-			flex.children.add(component.map(application, t));
-		}
-	
-		var relation : UI!ui::data::RelationType = application.actor.relations.selectOne(r | r.name == "previewRelation");
-		relation.target = previewElement.getRoot().eContainer().mapClassType(application);
-		t.dataElement = relation;
-		
-		pageContainer.children.add(flex);
-		application.pages.add(t);
+        t.containers.add(pageContainer);
+
+        var flex = new UI!ui::Flex();
+        
+        flex.name = s.name;
+        flex.label = s.name;    
+        flex.col = applicationColumns.asReal();
+        flex.stretch = UI!ui::Stretch#BOTH;
+        flex.sourceId = s.getID();
+        
+        if (s.getEffectiveLayout() == ESM!esm::ui::Layout#HORIZONTAL) {
+            flex.direction = UI!Axis#HORIZONTAL;
+        }
+        if (s.getEffectiveLayout() == ESM!esm::ui::Layout#VERTICAL) {
+            flex.direction = UI!Axis#VERTICAL;
+        }
+        
+        if (s.getEffectiveJustify() == ESM!esm::ui::Justify#START) {
+            flex.mainAxisAlignment = UI!ui::MainAxisAlignment#START;
+        } else if (s.getEffectiveJustify() == ESM!esm::ui::Justify#END) {
+            flex.mainAxisAlignment = UI!ui::MainAxisAlignment#END;
+        } else if (s.getEffectiveJustify() == ESM!esm::ui::Justify#SPACE_AROUND) {
+            flex.mainAxisAlignment = UI!ui::MainAxisAlignment#SPACEAROUND;
+        } else if (s.getEffectiveJustify() == ESM!esm::ui::Justify#SPACE_BETWEEN) {
+            flex.mainAxisAlignment = UI!ui::MainAxisAlignment#SPACEBETWEEN;
+        } else {
+            flex.mainAxisAlignment = UI!ui::MainAxisAlignment#CENTER;
+        }
+    
+        if (s.getEffectiveAlign() == ESM!esm::ui::Align#END) {
+            flex.crossAxisAlignment = UI!ui::CrossAxisAlignment#END;
+        } else if (s.getEffectiveAlign() == ESM!esm::ui::Align#STRETCH) {
+            flex.crossAxisAlignment = UI!ui::CrossAxisAlignment#STRETCH;
+        } else if (s.getEffectiveAlign() == ESM!esm::ui::Align#CENTER) {
+            flex.crossAxisAlignment = UI!ui::CrossAxisAlignment#CENTER;
+        } else {
+            flex.crossAxisAlignment = UI!ui::CrossAxisAlignment#START;
+        }
+        
+        if (s.getEffectiveLayout() == ESM!esm::ui::Layout#HORIZONTAL and s.components.forAll(c | c.isVerticalGrow())) {
+            flex.crossAxisAlignment = UI!ui::CrossAxisAlignment#STRETCH;
+        }
+        if (s.getEffectiveLayout() == ESM!esm::ui::Layout#VERTICAL and s.components.forAll(c | c.isHorizontalGrow())) {
+            flex.crossAxisAlignment = UI!ui::CrossAxisAlignment#STRETCH;
+        }
+    
+        for (component in s.components) {
+            flex.children.add(component.map(application, t));
+        }
+    
+        var relation : UI!ui::data::RelationType = application.actor.relations.selectOne(r | r.name == "previewRelation");
+        relation.target = previewElement.getRoot().eContainer().mapClassType(application);
+        t.dataElement = relation;
+        
+        pageContainer.children.add(flex);
+        application.pages.add(t);
 }
 
 rule CreatePageDefinitionForPreviewFromView
     transform s: ESM!esm::ui::TransferObjectView
     to t: UI!ui::PageDefinition 
-    	extends CreatePageDefinitionForPreview {
+        extends CreatePageDefinitionForPreview {
 
-	t.name = s.getName().anchor("Preview");
-	t.pageType = UI!ui::PageType#VIEW;
-	t.label = s.getUiLabel();
-	
-	previewPage.add(t);
-	log.debug("Created view to preview: " + s.getFQName());
+    t.name = s.getName().anchor("Preview");
+    t.pageType = UI!ui::PageType#VIEW;
+    t.label = s.getUiLabel();
+    
+    previewPage.add(t);
+    log.debug("Created view to preview: " + s.getFQName());
 }
 
 rule CreatePageDefinitionForPreviewFromForm
     transform s: ESM!esm::ui::TransferObjectForm
     to t: UI!ui::PageDefinition
         extends CreatePageDefinitionForPreview {
-	
-	t.name = s.getName().anchor("Preview");
-	t.pageType = UI!ui::PageType#CREATE;
-	t.label = s.getUiLabel();
-	
-	previewPage.add(t);
-	log.debug("Created form to preview: " + s.getFQName());
+    
+    t.name = s.getName().anchor("Preview");
+    t.pageType = UI!ui::PageType#CREATE;
+    t.label = s.getUiLabel();
+    
+    previewPage.add(t);
+    log.debug("Created form to preview: " + s.getFQName());
 }
 
 rule CreatePageDefinitionForPreviewFromTable
     transform s: ESM!esm::ui::TransferObjectTable
     to t: UI!ui::PageDefinition {
-		guard: s == rootElement
-	
-	t.name = s.getName().anchor("Preview");
-	t.pageType = UI!ui::PageType#TABLE;
-	t.label = s.getUiLabel();
+        guard: s == rootElement
+    
+    t.name = s.getName().anchor("Preview");
+    t.pageType = UI!ui::PageType#TABLE;
+    t.label = s.getUiLabel();
 
-	var relation : UI!ui::data::RelationType = application.actor.relations.selectOne(r | r.name == "previewRelation");
-	relation.target = previewElement.getRoot().eContainer().mapClassType(application);
-	t.dataElement = relation;
-	
-	var pageContainer = new UI!ui::PageContainer();
-	pageContainer.layoutType = application.layoutTypes.first;
-	pageContainer.name = "default";
-	pageContainer.direction = UI!Axis#VERTICAL;
+    var relation : UI!ui::data::RelationType = application.actor.relations.selectOne(r | r.name == "previewRelation");
+    relation.target = previewElement.getRoot().eContainer().mapClassType(application);
+    t.dataElement = relation;
+    
+    var pageContainer = new UI!ui::PageContainer();
+    pageContainer.layoutType = application.layoutTypes.first;
+    pageContainer.name = "default";
+    pageContainer.direction = UI!Axis#VERTICAL;
 
-	t.containers.add(pageContainer);
+    t.containers.add(pageContainer);
 
-	var flex = new UI!ui::Flex();
-	flex.name = s.name;
+    var flex = new UI!ui::Flex();
+    flex.name = s.name;
     flex.label = s.name;
     flex.direction = UI!Axis#VERTICAL;
-	flex.col = applicationColumns.asReal();
+    flex.col = applicationColumns.asReal();
 
-	if (s.eContainer.isTableDefined()) {
-		var table = s.createTableFromTransferObjectTable(application, t);
-		table.dataElement = t.dataElement;
-		if (t.dataElement.isCollection) {
-			table.row = 31d;
-		} else {
-			table.row = 2d;
-		}
-	    flex.children.add(table);
-	}
-	
-	pageContainer.children.add(flex);
-	
-	application.pages.add(t);	
-	previewPage.add(t);
-	
-	log.debug("Created table to preview: " + s.getFQName());
+    if (s.eContainer.isTableDefined()) {
+        var table = s.createTableFromTransferObjectTable(application, relation, t);
+
+        if (t.dataElement.isCollection) {
+            table.row = 31d;
+        } else {
+            table.row = 2d;
+        }
+        flex.children.add(table);
+    }
+    
+    pageContainer.children.add(flex);
+    
+    application.pages.add(t);    
+    previewPage.add(t);
+    
+    log.debug("Created table to preview: " + s.getFQName());
 }

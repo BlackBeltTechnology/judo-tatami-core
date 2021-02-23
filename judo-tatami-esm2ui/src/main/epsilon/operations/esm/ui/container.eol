@@ -1,25 +1,25 @@
 operation ESM!esm::ui::Container createFlexFromContainer(application : UI!ui::Application, page : UI!ui::PageDefinition) : UI!ui::Flex {
-	var ret = new UI!ui::Flex();
-	
+    var ret = new UI!ui::Flex();
+    
     if (self.isKindOf(ESM!esm::ui::Component)) {
-		ret.setVisualProperties(self, application);
+        ret.setVisualProperties(self, application);
     } else {
-	    ret.name = self.name;
-	    ret.label = self.getUiLabel();
-    	ret.col = applicationColumns.asReal();
-    	ret.stretch = UI!ui::Stretch#BOTH;
+        ret.name = self.name;
+        ret.label = self.getUiLabel();
+        ret.col = applicationColumns.asReal();
+        ret.stretch = UI!ui::Stretch#BOTH;
     }
     
-	ret.frame = self.frame;
-	ret.sourceId = self.getID();
+    ret.frame = self.frame;
+    ret.sourceId = self.getID();
 
-	if (self.getEffectiveLayout() == ESM!esm::ui::Layout#HORIZONTAL) {
-		ret.direction = UI!Axis#HORIZONTAL;
-	}
-	if (self.getEffectiveLayout() == ESM!esm::ui::Layout#VERTICAL) {
-		ret.direction = UI!Axis#VERTICAL;
-	}
-	
+    if (self.getEffectiveLayout() == ESM!esm::ui::Layout#HORIZONTAL) {
+        ret.direction = UI!Axis#HORIZONTAL;
+    }
+    if (self.getEffectiveLayout() == ESM!esm::ui::Layout#VERTICAL) {
+        ret.direction = UI!Axis#VERTICAL;
+    }
+    
     if (self.getEffectiveJustify() == ESM!esm::ui::Justify#START) {
         ret.mainAxisAlignment = UI!ui::MainAxisAlignment#START;
     } else if (self.getEffectiveJustify() == ESM!esm::ui::Justify#END) {
@@ -43,19 +43,19 @@ operation ESM!esm::ui::Container createFlexFromContainer(application : UI!ui::Ap
     }
     
     if (self.getEffectiveLayout() == ESM!esm::ui::Layout#HORIZONTAL and not self.components.isEmpty() and self.components.forAll(c | c.isVerticalGrow())) {
-    	ret.crossAxisAlignment = UI!ui::CrossAxisAlignment#STRETCH;
+        ret.crossAxisAlignment = UI!ui::CrossAxisAlignment#STRETCH;
     }
     if (self.getEffectiveLayout() == ESM!esm::ui::Layout#VERTICAL and not self.components.isEmpty() and self.components.forAll(c | c.isHorizontalGrow())) {
-    	ret.crossAxisAlignment = UI!ui::CrossAxisAlignment#STRETCH;
+        ret.crossAxisAlignment = UI!ui::CrossAxisAlignment#STRETCH;
     }
-	
-	for (component in self.components) {
-		ret.children.add(component.map(application, page));
-	}
-	
-	return ret;
+    
+    for (component in self.components) {
+        ret.children.add(component.map(application, page));
+    }
+    
+    return ret;
 }
 
 operation ESM!esm::ui::Container map(application : UI!ui::Application, page : UI!ui::PageDefinition) : UI!ui::Flex {
-	return self.createFlexFromContainer(application, page);
+    return self.createFlexFromContainer(application, page);
 }

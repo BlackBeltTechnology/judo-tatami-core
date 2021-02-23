@@ -29,8 +29,7 @@ operation UI!ui::Table calculateActions(application : UI!ui::Application, previe
         }
         // **** INPUT PAGE:
         if (pageType == UI!ui::PageType#OPERATION_INPUT) {
-            if (not self.disabled and relationType.memberType <> UI!ui::data::MemberType#TRANSIENT
-            and relationType.memberType <> UI!ui::data::MemberType#DERIVED) {
+            if (not self.disabled and relationType.memberType <> UI!ui::data::MemberType#TRANSIENT) {
                 var buttonGroup : UI!ui::Flex = self.createActionButtonGroupForTable();
                 self.createRemoveAction();
                 self.createSetAction(relationType, buttonGroup);
@@ -71,9 +70,8 @@ operation UI!ui::Table createRemoveAddSetActions(relationType : UI!ui::data::Rel
     if (relationType.getIsRelationBehaviourTypeRemovable()) {
         self.createRemoveAction();
     }
-    if (relationType.getIsRelationBehaviourTypeSetable() or
-            relationType.getIsRelationBehaviourTypeAddable()){
-         var buttonGroup : UI!ui::Flex = self.createActionButtonGroupForTable();
+    if (relationType.getIsRelationBehaviourTypeSetable() or relationType.getIsRelationBehaviourTypeAddable()){
+        var buttonGroup : UI!ui::Flex = self.createActionButtonGroupForTable();
         if (relationType.getIsRelationBehaviourTypeSetable()) {
             self.createSetAction(relationType, buttonGroup);
         }
@@ -116,18 +114,20 @@ operation UI!ui::Table createViewUpdateDeleteActions(relationType : UI!ui::data:
 //create view action button
 operation UI!ui::Table createViewAction(relationType : UI!ui::data::RelationType, application : UI!ui::Application, preview : Boolean) {
     if (preview) {
-        var viewAction = new UI!ui::ViewAction();
-        viewAction.target = application.pages.selectOne(p | p.pageType = UI!ui::PageType#DASHBOARD);
-        viewAction.isTransient = relationType.memberType == UI!ui::data::MemberType#TRANSIENT;
-        self.rowActions.add(viewAction);
+        var action = createViewAction(application.pages.selectOne(p | p.pageType = UI!ui::PageType#DASHBOARD),
+                relationType, relationType.memberType == UI!ui::data::MemberType#TRANSIENT);
+        self.rowActions.add(action);
     } else {
         var page = application.pages.selectOne(p | p.pageType = UI!ui::PageType#VIEW and p.getRelationType() == relationType);
         if (page.isDefined()) {
             log.debug(" ========= TABLE DEF: VIEW: " + relationType.name + " - " + page.name);
-            var viewAction = new UI!ui::ViewAction();
-            viewAction.target = page;
-            viewAction.isTransient = relationType.memberType == UI!ui::data::MemberType#TRANSIENT;
-            self.rowActions.add(viewAction);
+            var action = createViewAction(page, relationType, relationType.memberType == UI!ui::data::MemberType#TRANSIENT);
+            self.rowActions.add(action);
+        } else if (relationType.memberType == UI!ui::data::MemberType#TRANSIENT) {
+            // view action is navigating to edit action !!
+            page = relationType.~originalRelation.mapUpdatePage(application, relationType.~originalRelation.target);
+            var action = createViewAction(page, relationType, true);
+            self.rowActions.add(action);
         } else {
             log.warn("No view page defined for: " + self.name + " - " + relationType.eContainer.name + "." + relationType.name);
         }
@@ -144,24 +144,19 @@ operation UI!ui::Table createDeleteAction(relationType : UI!ui::data::RelationTy
 //create update action button
 operation UI!ui::Table createUpdateAction(relationType : UI!ui::data::RelationType, application : UI!ui::Application, preview : Boolean) {
     if (preview) {
-        var editAction = new UI!ui::EditAction();
-        editAction.target = application.pages.selectOne(p | p.pageType = UI!ui::PageType#DASHBOARD);
-        editAction.isTransient = relationType.memberType == UI!ui::data::MemberType#TRANSIENT;
-        self.rowActions.add(editAction);
+        var action = createEditAction(application.pages.selectOne(p | p.pageType = UI!ui::PageType#DASHBOARD),
+                relationType, relationType.memberType == UI!ui::data::MemberType#TRANSIENT);
+        self.rowActions.add(action);
     } else {
         var page = application.pages.selectOne(p | p.pageType = UI!ui::PageType#UPDATE and p.getRelationType() == relationType);
         if (page.isDefined()) {
             log.debug(" ========= TABLE DEF: EDIT: " + relationType.name + " - " + page.name);
-            var editAction = new UI!ui::EditAction();
-            editAction.target = page;
-            editAction.isTransient = relationType.memberType == UI!ui::data::MemberType#TRANSIENT;
-            self.rowActions.add(editAction);
+            var action = createEditAction(page, relationType, relationType.memberType == UI!ui::data::MemberType#TRANSIENT);
+            self.rowActions.add(action);
         } else if (relationType.memberType == UI!ui::data::MemberType#TRANSIENT) {
             page = relationType.~originalRelation.mapUpdatePage(application, relationType.~originalRelation.target);
-            var editAction = new UI!ui::EditAction();
-            editAction.target = page;
-            editAction.isTransient = true;
-            self.rowActions.add(editAction);
+            var action = createEditAction(page, relationType, true);
+            self.rowActions.add(action);
         } else {
             log.warn("No update page defined for: " + self.name  + " - " + relationType.eContainer.name + "." + relationType.name);
         }
@@ -171,25 +166,21 @@ operation UI!ui::Table createUpdateAction(relationType : UI!ui::data::RelationTy
 //create create action - applicable to view page only
 operation UI!ui::Table createCreateAction(relationType : UI!ui::data::RelationType, application : UI!ui::Application, preview : Boolean, buttonGroup : UI!ui::Flex) {
     if (preview) {
-        var button : UI!ui::Button = createButton("create", "CREATE", 2d, new UI!ui::CreateAction());
-        button.action.target = application.pages.selectOne(p | p.pageType = UI!ui::PageType#DASHBOARD);
-        button.action.dataElement = relationType;
+        var action = createCreateAction(application.pages.selectOne(p | p.pageType = UI!ui::PageType#DASHBOARD),
+                relationType, relationType.memberType == UI!ui::data::MemberType#TRANSIENT);
+        var button : UI!ui::Button = createButton("create", "CREATE", 2d, action);
         buttonGroup.children.add(button);
     } else {
         var page = application.pages.selectOne(p | p.pageType = UI!ui::PageType#CREATE and p.getRelationType() == relationType);
         if (page.isDefined()) {
             log.debug(" ========= PAGE DEF: CREATE: " + relationType.eContainer.name + "." + relationType.name + " - " + page.name);
-            var button : UI!ui::Button = createButton("create", "CREATE", 2d, new UI!ui::CreateAction());
-            button.action.target = page;
-            button.action.dataElement = relationType;
-            button.action.isTransient = relationType.memberType == UI!ui::data::MemberType#TRANSIENT;
+            var action = createCreateAction(page, relationType, relationType.memberType == UI!ui::data::MemberType#TRANSIENT);
+            var button : UI!ui::Button = createButton("create", "CREATE", 2d, action);
             buttonGroup.children.add(button);
         } else if (relationType.memberType == UI!ui::data::MemberType#TRANSIENT) {
             page = relationType.~originalRelation.mapCreatePage(application, relationType.~originalRelation.target);
-            var button : UI!ui::Button = createButton("create", "CREATE", 2d, new UI!ui::CreateAction());
-            button.action.target = page;
-            button.action.dataElement = relationType;
-            button.action.isTransient = true;
+            var action = createCreateAction(page, relationType, true);
+            var button : UI!ui::Button = createButton("create", "CREATE", 2d, action);
             buttonGroup.children.add(button);
         } else {
             log.warn("No update page defined for: " + self.name + " - " + relationType.eContainer.name + "." + relationType.name);

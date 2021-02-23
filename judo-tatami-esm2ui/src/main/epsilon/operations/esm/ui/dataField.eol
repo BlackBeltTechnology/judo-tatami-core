@@ -1,28 +1,29 @@
 operation ESM!esm::ui::DataField createInputFromDataField(application : UI!ui::Application, page : UI!ui::PageDefinition) : UI!ui::VisualElement {
-	var dataType = self.dataFeature.getMember().getDataType();
-	var attributeType = self.dataFeature.getMember().mapAttributeType(application, self.getTransferObjectType().mapClassType(application));
-	
-	if (attributeType.memberType == UI!ui::data::MemberType#TRANSIENT and not (page.pageType == UI!ui::PageType#OPERATION_INPUT or page.pageType == UI!ui::PageType#OPERATION_OUTPUT)) {
-		var ret = new UI!ui::Spacer();
-		ret.setVisualProperties(self, application);
-		ret.name = self.name.anchor("SpacerForTransientMember");
-		ret.sourceId = self.getID();
-		return ret;
-	} if (dataType.isKindOf(ESM!esm::type::StringType) and self.textWidget == ESM!esm::ui::TextWidget#TEXT) {
-		var ret = dataType.formatted(self);
-		ret.setVisualProperties(self, application);
-		ret.attributeType = attributeType;
-		ret.sourceId = self.getID();
-		return ret;
-	} else {
-	    var ret = self.dataFeature.getMember().getDataType().input(self, application);
-	    ret.setVisualProperties(self, application);
-	    ret.attributeType = attributeType;
-	    ret.sourceId = self.getID();
-	    return ret;
-	}
+    var dataType = self.dataFeature.getMember().getDataType();
+    var attributeType = self.dataFeature.getMember().mapAttributeType(application, self.getTransferObjectType().mapClassType(application));
+    
+    if (attributeType.memberType == UI!ui::data::MemberType#TRANSIENT and
+        not (page.pageType == UI!ui::PageType#OPERATION_INPUT or page.pageType == UI!ui::PageType#OPERATION_OUTPUT)) {
+	        var ret = new UI!ui::Spacer();
+	        ret.setVisualProperties(self, application);
+	        ret.name = self.name.anchor("SpacerForTransientMember");
+	        ret.sourceId = self.getID();
+	        return ret;
+    } if (dataType.isKindOf(ESM!esm::type::StringType) and self.textWidget == ESM!esm::ui::TextWidget#TEXT) {
+	        var ret = dataType.formatted(self);
+	        ret.setVisualProperties(self, application);
+	        ret.attributeType = attributeType;
+	        ret.sourceId = self.getID();
+	        return ret;
+    } else {
+	        var ret = self.dataFeature.getMember().getDataType().input(self, application);
+	        ret.setVisualProperties(self, application);
+	        ret.attributeType = attributeType;
+	        ret.sourceId = self.getID();
+	        return ret;
+    }
 }
 
 operation ESM!esm::ui::DataField map(application : UI!ui::Application, page : UI!ui::PageDefinition) : UI!ui::VisualElement {
-	return self.createInputFromDataField(application, page);
+    return self.createInputFromDataField(application, page);
 }

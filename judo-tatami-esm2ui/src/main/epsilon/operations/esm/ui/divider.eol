@@ -1,12 +1,12 @@
 operation ESM!esm::ui::Divider createDividerFromDivider(application : UI!ui::Application) : UI!ui::Divider {
-	var ret : UI!ui::Divider = new UI!ui::Divider();
-	
-	ret.setVisualProperties(self, application);
-	ret.sourceId = self.getID();
+    var ret : UI!ui::Divider = new UI!ui::Divider();
     
-	return ret;
+    ret.setVisualProperties(self, application);
+    ret.sourceId = self.getID();
+    
+    return ret;
 }
 
 operation ESM!esm::ui::Divider map(application : UI!ui::Application, page : UI!ui::PageDefinition) : UI!ui::Divider {
-	return self.createDividerFromDivider(application);
+    return self.createDividerFromDivider(application);
 }

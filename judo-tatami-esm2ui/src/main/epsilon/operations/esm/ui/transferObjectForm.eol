@@ -1,6 +1,6 @@
 operation ESM!esm::ui::TransferObjectForm createFlexFromTransferObjectForm(application : UI!ui::Application, page : UI!ui::PageDefinition) : UI!ui::Flex {
-	var t : UI!ui::Flex = self.createFlexFromContainer(application, page);
-	t.dataElement = self.eContainer.mapClassType(application);	
+    var t : UI!ui::Flex = self.createFlexFromContainer(application, page);
+    t.dataElement = self.eContainer.mapClassType(application);
     return t;
 }
 

@@ -1,265 +1,232 @@
 @cached
 operation ESM!esm::`operation`::Operation fqName() {
-	return esmUtils.getNamespaceElementFQName(self.eContainer) + "." + self.name;
+    return esmUtils.getNamespaceElementFQName(self.eContainer) + "." + self.name;
 }
 
 operation ESM!esm::`operation`::Operation createViewPageForOperationOutput(application : UI!ui::Application, clazz : UI!ui::data::ClassType) : UI!ui::PageDefinition {
-	log.debug("Create page for operation output for view: " + self.output.target.name);
-	
-	var page : UI!ui::PageDefinition = new UI!ui::PageDefinition();
-	page.~application = application;
-	page.~originalOperation = self;
-		
-	page.name = self.name.anchor("OperationOutputPageView", clazz.name);
-	page.pageType = UI!ui::PageType#OPERATION_OUTPUT;
-	
-	var pageContainer = new UI!ui::PageContainer();
+    log.debug("Create page for operation output for view: " + self.output.target.name);
+    
+    var page : UI!ui::PageDefinition = new UI!ui::PageDefinition();
+    page.~application = application;
+    page.~originalOperation = self;
+        
+    page.name = self.name.anchor("OperationOutputPageView", clazz.name);
+    page.pageType = UI!ui::PageType#OPERATION_OUTPUT;
+    
+    var pageContainer = new UI!ui::PageContainer();
     pageContainer.layoutType = application.layoutTypes.first;
-	pageContainer.name = "default";
-	pageContainer.direction = UI!Axis#VERTICAL;
-	pageContainer.col = applicationColumns.asReal();
-	page.containers.add(pageContainer);
-		
-	if (self.output.target.view.isUndefined()) {
-		var flex = new UI!ui::Flex();
-		flex.name = self.name;
-		flex.col = applicationColumns.asReal();
-		pageContainer.children.add(flex);
-		log.warn(self.output.target.fqName() + " has no view defined");
-	} else {
-		pageContainer.children.add(self.output.target.view.map(application, page));
-	}
-	
-	page.dataElement = self.mapOperationOutputType(application, clazz);
+    pageContainer.name = "default";
+    pageContainer.direction = UI!Axis#VERTICAL;
+    pageContainer.col = applicationColumns.asReal();
+    page.containers.add(pageContainer);
+        
+    if (self.output.target.view.isUndefined()) {
+        var flex = new UI!ui::Flex();
+        flex.name = self.name;
+        flex.col = applicationColumns.asReal();
+        pageContainer.children.add(flex);
+        log.warn(self.output.target.fqName() + " has no view defined");
+    } else {
+        pageContainer.children.add(self.output.target.view.map(application, page));
+    }
+    
+    page.dataElement = self.mapOperationOutputType(application, clazz);
     return page;
 }
 
 operation ESM!esm::`operation`::Operation mapViewPageForOperationOutput(application : UI!ui::Application, clazz : UI!ui::data::ClassType) : UI!ui::PageDefinition {
-	var opOutputPage = application.pages.selectOne(p | p.~originalOperation == self and p.pageType == UI!ui::PageType#OPERATION_OUTPUT and p.dataElement.eContainer().eContainer() == clazz);
-	if (opOutputPage.isUndefined()) {
-		opOutputPage = self.createViewPageForOperationOutput(application, clazz);
-		application.pages.add(opOutputPage);
-	}
-	return opOutputPage;
+    var opOutputPage = application.pages.selectOne(p | p.~originalOperation == self and p.pageType == UI!ui::PageType#OPERATION_OUTPUT and p.dataElement.eContainer().eContainer() == clazz);
+    if (opOutputPage.isUndefined()) {
+        opOutputPage = self.createViewPageForOperationOutput(application, clazz);
+        application.pages.add(opOutputPage);
+    }
+    return opOutputPage;
 }
 
 operation ESM!esm::`operation`::Operation createFormPageForOperationInput(application : UI!ui::Application, clazz : UI!ui::data::ClassType) : UI!ui::PageDefinition {
-	log.debug("Create page for operation input for form: " + self.input.target.name);
-	
-	var page : UI!ui::PageDefinition = new UI!ui::PageDefinition();
-	page.~application = application;
-	page.~originalOperation = self;
-		
-	page.name = self.name.anchor("OperationInputPageForm", clazz.name);
-	page.pageType = UI!ui::PageType#OPERATION_INPUT;
+    log.debug("Create page for operation input for form: " + self.input.target.name);
+    
+    var page : UI!ui::PageDefinition = new UI!ui::PageDefinition();
+    page.~application = application;
+    page.~originalOperation = self;
+        
+    page.name = self.name.anchor("OperationInputPageForm", clazz.name);
+    page.pageType = UI!ui::PageType#OPERATION_INPUT;
 
-	var pageContainer = new UI!ui::PageContainer();
+    var pageContainer = new UI!ui::PageContainer();
     pageContainer.layoutType = application.layoutTypes.first;
-	pageContainer.name = "default";
-	pageContainer.direction = UI!Axis#VERTICAL;
-	pageContainer.col = applicationColumns.asReal();
-	page.containers.add(pageContainer);
+    pageContainer.name = "default";
+    pageContainer.direction = UI!Axis#VERTICAL;
+    pageContainer.col = applicationColumns.asReal();
+    page.containers.add(pageContainer);
     
     if (self.input.target.form.isUndefined()) {
-    	var flex = new UI!ui::Flex();
-		flex.name = self.name;
-		flex.col = applicationColumns.asReal();
-		pageContainer.children.add(flex);
-		log.warn(self.input.target.fqName() + " has no form defined");
-	} else {
-		pageContainer.children.add(self.input.target.form.map(application, page));
-	}
-	
-	page.dataElement = self.mapOperationInputType(application, clazz);
+        var flex = new UI!ui::Flex();
+        flex.name = self.name;
+        flex.col = applicationColumns.asReal();
+        pageContainer.children.add(flex);
+        log.warn(self.input.target.fqName() + " has no form defined");
+    } else {
+        pageContainer.children.add(self.input.target.form.map(application, page));
+    }
+    
+    page.dataElement = self.mapOperationInputType(application, clazz);
     return page;
 }
 
 operation ESM!esm::`operation`::Operation mapFormPageForOperationInput(application : UI!ui::Application, clazz : UI!ui::data::ClassType) : UI!ui::PageDefinition {
-	var opInputPage = application.pages.selectOne(p | p.~originalOperation == self and p.pageType == UI!ui::PageType#OPERATION_INPUT and p.dataElement.eContainer().eContainer() == clazz);
-	if (opInputPage.isUndefined()) {
-		opInputPage = self.createFormPageForOperationInput(application, clazz);
-		application.pages.add(opInputPage);
-	}
-	return opInputPage;
+    var opInputPage = application.pages.selectOne(p | p.~originalOperation == self and p.pageType == UI!ui::PageType#OPERATION_INPUT and p.dataElement.eContainer().eContainer() == clazz);
+    if (opInputPage.isUndefined()) {
+        opInputPage = self.createFormPageForOperationInput(application, clazz);
+        application.pages.add(opInputPage);
+    }
+    return opInputPage;
 }
 
 operation ESM!esm::`operation`::Operation createTablePageForOperationInput(application : UI!ui::Application, clazz : UI!ui::data::ClassType) : UI!ui::PageDefinition {
-	log.debug("Create page for operation input for table: " + self.input.target.name);
-	
-	var clazz : UI!ui::data::ClassType = self.eContainer().mapClassType(application);
-	var page : UI!ui::PageDefinition = new UI!ui::PageDefinition();
-	page.~application = application;
-	page.~originalOperation = self;
-	
-	page.name = self.name.anchor("OperationInputPageTable", clazz.name);
-	page.pageType = UI!ui::PageType#OPERATION_INPUT;
-	
-	var pageContainer = new UI!ui::PageContainer();
-    pageContainer.layoutType = application.layoutTypes.first;
-	pageContainer.name = "default";
-	pageContainer.direction = UI!Axis#VERTICAL;
-	pageContainer.col = applicationColumns.asReal();
-	page.containers.add(pageContainer);
-	
-	var flex = new UI!ui::Flex();
-	flex.name = self.name;
-	flex.col = applicationColumns.asReal();
-	flex.direction = UI!Axis#VERTICAL;
-	pageContainer.children.add(flex);
-	
-	if (self.input.target.isTableDefined()) {
-		var table = self.input.target.table.createTableFromTransferObjectTable(application, page);
-    	flex.children.add(table);
-	}
+    log.debug("Create page for operation input for table: " + self.input.target.name);
     
-    /*
-    if (self.input.target.table.masterDetail and self.input.target.view.isDefined()) {
-		var detail : UI!ui::PageDefinition = new UI!ui::PageDefinition();
-		detail.name = self.name.anchor("OperationInputPageTableMasterDetail", self.input.target.fqName());
-		detail.dataElement = self.mapOperationInputType(application, clazz);
-		application.pages.add(detail);
-
-		var detailPageContainer = new UI!ui::PageContainer();
-	    detailPageContainer.layoutType = application.layoutTypes.first;
-		detailPageContainer.name = "default";
-		detailPageContainer.direction = UI!Axis#VERTICAL;
-		detail.containers.add(detailPageContainer);
-
-	  	detailPageContainer.children.add(self.input.target.view.map(application));
-	  	table.detail = detail;        
-    } */
-	
-	page.dataElement = self.mapOperationInputType(application, clazz);
+    var clazz : UI!ui::data::ClassType = self.eContainer().mapClassType(application);
+    var page : UI!ui::PageDefinition = new UI!ui::PageDefinition();
+    page.~application = application;
+    page.~originalOperation = self;
+    
+    page.name = self.name.anchor("OperationInputPageTable", clazz.name);
+    page.pageType = UI!ui::PageType#OPERATION_INPUT;
+    
+    var pageContainer = new UI!ui::PageContainer();
+    pageContainer.layoutType = application.layoutTypes.first;
+    pageContainer.name = "default";
+    pageContainer.direction = UI!Axis#VERTICAL;
+    pageContainer.col = applicationColumns.asReal();
+    page.containers.add(pageContainer);
+    
+    var flex = new UI!ui::Flex();
+    flex.name = self.name;
+    flex.col = applicationColumns.asReal();
+    flex.direction = UI!Axis#VERTICAL;
+    pageContainer.children.add(flex);
+    
+    //is this needed??? - what will be the data element of the table
+    /*if (self.input.target.isTableDefined()) {
+        var table = self.input.target.table.createTableFromTransferObjectTable(application, page);
+        flex.children.add(table);
+    }*/
+    
+    page.dataElement = self.mapOperationInputType(application, clazz);
     return page;
 }
 
 operation ESM!esm::`operation`::Operation mapTablePageForOperationInput(application : UI!ui::Application, clazz : UI!ui::data::ClassType) : UI!ui::PageDefinition {
-	var opInputPage = application.pages.selectOne(p | p.~originalOperation == self and p.pageType == UI!ui::PageType#OPERATION_INPUT and p.dataElement.eContainer().eContainer() == clazz);
-	if (opInputPage.isUndefined()) {
-		opInputPage = self.createTablePageForOperationInput(application, clazz);
-		application.pages.add(opOutputPage);
-	}
-	return opInputPage;
+    var opInputPage = application.pages.selectOne(p | p.~originalOperation == self and p.pageType == UI!ui::PageType#OPERATION_INPUT and p.dataElement.eContainer().eContainer() == clazz);
+    if (opInputPage.isUndefined()) {
+        opInputPage = self.createTablePageForOperationInput(application, clazz);
+        application.pages.add(opOutputPage);
+    }
+    return opInputPage;
 }
 
 
 operation ESM!esm::`operation`::Operation createTablePageForOperationOutput(application : UI!ui::Application, clazz : UI!ui::data::ClassType) : UI!ui::PageDefinition {
-	log.debug("Create page for operation output for table: " + self.output.target.name);
-	
-	//var clazz : UI!ui::data::ClassType = self.eContainer().mapClassType(application);
+    log.debug("Create page for operation output for table: " + self.output.target.name);
 
-	var page : UI!ui::PageDefinition = new UI!ui::PageDefinition();	
-	page.~application = application;
-	page.~originalOperation = self;
-	
-	page.name = self.name.anchor("OperationOutputPageTable", clazz.name);
-	page.pageType = UI!ui::PageType#OPERATION_OUTPUT;
+    var page : UI!ui::PageDefinition = new UI!ui::PageDefinition();    
+    page.~application = application;
+    page.~originalOperation = self;
+    
+    page.name = self.name.anchor("OperationOutputPageTable", clazz.name);
+    page.pageType = UI!ui::PageType#OPERATION_OUTPUT;
     
     var pageContainer = new UI!ui::PageContainer();
     pageContainer.layoutType = application.layoutTypes.first;
-	pageContainer.name = "default";
-	pageContainer.direction = UI!Axis#VERTICAL;
-	pageContainer.col = applicationColumns.asReal();
-	page.containers.add(pageContainer);
+    pageContainer.name = "default";
+    pageContainer.direction = UI!Axis#VERTICAL;
+    pageContainer.col = applicationColumns.asReal();
+    page.containers.add(pageContainer);
     
     var flex = new UI!ui::Flex();
-	flex.name = self.name;
-	flex.direction = UI!Axis#VERTICAL;
-	flex.col = applicationColumns.asReal();
-	pageContainer.children.add(flex);
+    flex.name = self.name;
+    flex.direction = UI!Axis#VERTICAL;
+    flex.col = applicationColumns.asReal();
+    pageContainer.children.add(flex);
     
-    if (self.output.target.isTableDefined()) {
-		var table = self.output.target.table.createTableFromTransferObjectTable(application, page);
-    	flex.children.add(table);
-    }
-    /*
-    if (self.output.target.table.masterDetail and self.output.target.view.isDefined()) {
-		var detail : UI!ui::PageDefinition = new UI!ui::PageDefinition();
-		detail.name = self.name.anchor("OperationOutputPageTableMasterDetail", self.output.target.fqName()); 
-		detail.dataElement = self.mapOperationOutputType(application, clazz);
-		application.pages.add(detail);
-
-		var detailPageContainer = new UI!ui::PageContainer();
-	    detailPageContainer.layoutType = application.layoutTypes.first;
-		detailPageContainer.layoutType = "default";
-		detailPageContainer.direction = UI!Axis#VERTICAL;
-		detail.containers.add(detailPageContainer);
-
-	  	detailPageContainer.children.add(self.output.target.view.map(application));
-	  	table.detail = detail;        
-    } */
-	
-	page.dataElement = self.mapOperationOutputType(application, clazz);
+    //is this needed??? - what will be the data element of the table
+    /*if (self.output.target.isTableDefined()) {
+        var table = self.output.target.table.createTableFromTransferObjectTable(application, page);
+        flex.children.add(table);
+    }*/
+    
+    page.dataElement = self.mapOperationOutputType(application, clazz);
     return page;
 }
 
 operation ESM!esm::`operation`::Operation mapTablePageForOperationOutput(application : UI!ui::Application, clazz : UI!ui::data::ClassType) : UI!ui::PageDefinition {
-	var opOutputPage = application.pages.selectOne(p | p.~originalOperation == self and p.pageType == UI!ui::PageType#OPERATION_OUTPUT and p.dataElement.eContainer().eContainer() == clazz);
-	if (opOutputPage.isUndefined()) {
-		opOutputPage = self.createTablePageForOperationOutput(application, clazz);
-		application.pages.add(opOutputPage);
-	}
-	return opOutputPage;
+    var opOutputPage = application.pages.selectOne(p | p.~originalOperation == self and p.pageType == UI!ui::PageType#OPERATION_OUTPUT and p.dataElement.eContainer().eContainer() == clazz);
+    if (opOutputPage.isUndefined()) {
+        opOutputPage = self.createTablePageForOperationOutput(application, clazz);
+        application.pages.add(opOutputPage);
+    }
+    return opOutputPage;
 }
 
 
 operation ESM!esm::`operation`::Operation mapOperationType(application : UI!ui::Application, clazz : UI!ui::data::ClassType) : UI!ui::data::OperationType {
-	var operationType = clazz.operations.selectOne(o | o.name.equals(self.name));
-	if (operationType.isUndefined()) {
-		operationType = self.createOperationTypeForClass(application, clazz);
-	}
-	return operationType;
+    var operationType = clazz.operations.selectOne(o | o.name.equals(self.name));
+    if (operationType.isUndefined()) {
+        operationType = self.createOperationTypeForClass(application, clazz);
+    }
+    return operationType;
 }
 
 operation ESM!esm::`operation`::Operation mapOperationInputType(application : UI!ui::Application, clazz : UI!ui::data::ClassType) : UI!ui::data::OperationParameterType {
-	var operationType = self.mapOperationType(application, clazz);
-	if (operationType.isUndefined()) {
-		operationType = self.createOperationTypeForClass(application, clazz);
-	}
-	return operationType.input;
+    var operationType = self.mapOperationType(application, clazz);
+    if (operationType.isUndefined()) {
+        operationType = self.createOperationTypeForClass(application, clazz);
+    }
+    return operationType.input;
 }
 
 operation ESM!esm::`operation`::Operation mapOperationOutputType(application : UI!ui::Application, clazz : UI!ui::data::ClassType) : UI!ui::data::OperationParameterType {
-	var operationType = self.mapOperationType(application, clazz);
-	if (operationType.isUndefined()) {
-		operationType = self.createOperationTypeForClass(application, clazz);
-	}
-	return operationType.output;
+    var operationType = self.mapOperationType(application, clazz);
+    if (operationType.isUndefined()) {
+        operationType = self.createOperationTypeForClass(application, clazz);
+    }
+    return operationType.output;
 }
 
 operation ESM!esm::`operation`::Operation createOperationTypeForClass(application : UI!ui::Application, clazz : UI!ui::data::ClassType) : UI!ui::data::OperationType {
-	var operationType = new UI!ui::data::OperationType();	
-	operationType.name = self.name;
-	operationType.isStateful = self.stateful;
+    var operationType = new UI!ui::data::OperationType();    
+    operationType.name = self.name;
+    operationType.isStateful = self.stateful;
 
-	if (self.operationType == ESM!esm::`operation`::OperationType#MAPPED) {
-    	operationType.operationType = UI!ui::data::OperationTypeEnum#MAPPED;
+    if (self.operationType == ESM!esm::`operation`::OperationType#MAPPED) {
+        operationType.operationType = UI!ui::data::OperationTypeEnum#MAPPED;
     } else if (self.operationType == ESM!esm::`operation`::OperationType#STATIC) {
-    	operationType.operationType = UI!ui::data::OperationTypeEnum#STATIC;
+        operationType.operationType = UI!ui::data::OperationTypeEnum#STATIC;
     }
 
-	clazz.operations.add(operationType);
-	
-	if (self.input.isDefined()) {
-		var type : UI!ui::data::OperationParameterType = new UI!ui::data::OperationParameterType();	
-		type.name = self.input.target.fqName().anchor("Input");
-		var targetClass = self.input.target.mapClassType(application);
-		type.isCollection = (self.input.upper > 1 or self.input.upper == -1);
-		type.isOptional = (self.input.lower == 0);
-		type.target = targetClass;		
-		operationType.input = type;
-	}
-	
-	if (self.output.isDefined()) {
-		var type : UI!ui::data::OperationParameterType = new UI!ui::data::OperationParameterType();	
-		type.name = self.output.target.fqName().anchor("Output");
-		var targetClass = self.output.target.mapClassType(application);
-		type.isCollection = (self.output.upper > 1 or self.output.upper == -1);
-		type.isOptional = (self.output.lower == 0);
-		type.target = targetClass;
-		operationType.output = type;
-	}
+    clazz.operations.add(operationType);
+    
+    if (self.input.isDefined()) {
+        var type : UI!ui::data::OperationParameterType = new UI!ui::data::OperationParameterType();    
+        type.name = self.input.target.fqName().anchor("Input");
+        var targetClass = self.input.target.mapClassType(application);
+        type.isCollection = (self.input.upper > 1 or self.input.upper == -1);
+        type.isOptional = (self.input.lower == 0);
+        type.target = targetClass;        
+        operationType.input = type;
+    }
+    
+    if (self.output.isDefined()) {
+        var type : UI!ui::data::OperationParameterType = new UI!ui::data::OperationParameterType();    
+        type.name = self.output.target.fqName().anchor("Output");
+        var targetClass = self.output.target.mapClassType(application);
+        type.isCollection = (self.output.upper > 1 or self.output.upper == -1);
+        type.isOptional = (self.output.lower == 0);
+        type.target = targetClass;
+        operationType.output = type;
+    }
 
-	log.debug("Create operation " + operationType.name + " in class type: " + clazz.name);
-	return operationType;
+    log.debug("Create operation " + operationType.name + " in class type: " + clazz.name);
+    return operationType;
 }

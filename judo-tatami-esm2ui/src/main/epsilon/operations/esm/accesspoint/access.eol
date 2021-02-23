@@ -1,41 +1,41 @@
 @cached
 operation ESM!esm::accesspoint::Access fqName() {
-	return esmUtils.getNamespaceElementFQName(self.eContainer) + "." + self.name;
+    return esmUtils.getNamespaceElementFQName(self.eContainer) + "." + self.name;
 }
 
 operation ESM!esm::accesspoint::Access createRelationTypeForClass(application : UI!ui::Application, clazz : UI!ui::data::ClassType) : UI!ui::data::RelationType {
-	var relation = new UI!ui::data::RelationType();	
+    var relation = new UI!ui::data::RelationType();    
     relation.~application = application;
     relation.~originalAccess = self;
 
-	relation.name = self.name;
-	relation.isCollection = (self.upper == -1);
-	relation.isAccess = true;
-	relation.memberType = UI!ui::data::MemberType#ACCESS;
-	relation.relationKind = UI!ui::data::RelationKind#STATIC;
-	
-	if (esmUtils.isListSupported(self)) {
-		relation.behaviours.add(UI!ui::data::RelationBehaviourType#LIST);
-	}
-	if (esmUtils.isCreateSupported(self)) {
-		relation.behaviours.add(UI!ui::data::RelationBehaviourType#CREATE);
-	}
-	if (esmUtils.isValidateCreateSupported(self)) {
-		relation.behaviours.add(UI!ui::data::RelationBehaviourType#VALIDATE_CREATE);
-	}
-		if (self.isRefreshSupported()) {
-		relation.behaviours.add(UI!ui::data::RelationBehaviourType#REFRESH);
-	}
-	if (self.isUpdateSupported()) {
-		relation.behaviours.add(UI!ui::data::RelationBehaviourType#UPDATE);
-	}
-	if (self.isValidateUpdateSupported()) {
-		relation.behaviours.add(UI!ui::data::RelationBehaviourType#VALIDATE_UPDATE);
-	}
-	if (self.isDeleteSupported()) {
-		relation.behaviours.add(UI!ui::data::RelationBehaviourType#DELETE);
-	}
-	
+    relation.name = self.name;
+    relation.isCollection = (self.upper == -1);
+    relation.isAccess = true;
+    relation.memberType = UI!ui::data::MemberType#ACCESS;
+    relation.relationKind = UI!ui::data::RelationKind#STATIC;
+    
+    if (esmUtils.isListSupported(self)) {
+        relation.behaviours.add(UI!ui::data::RelationBehaviourType#LIST);
+    }
+    if (esmUtils.isCreateSupported(self)) {
+        relation.behaviours.add(UI!ui::data::RelationBehaviourType#CREATE);
+    }
+    if (esmUtils.isValidateCreateSupported(self)) {
+        relation.behaviours.add(UI!ui::data::RelationBehaviourType#VALIDATE_CREATE);
+    }
+        if (self.isRefreshSupported()) {
+        relation.behaviours.add(UI!ui::data::RelationBehaviourType#REFRESH);
+    }
+    if (self.isUpdateSupported()) {
+        relation.behaviours.add(UI!ui::data::RelationBehaviourType#UPDATE);
+    }
+    if (self.isValidateUpdateSupported()) {
+        relation.behaviours.add(UI!ui::data::RelationBehaviourType#VALIDATE_UPDATE);
+    }
+    if (self.isDeleteSupported()) {
+        relation.behaviours.add(UI!ui::data::RelationBehaviourType#DELETE);
+    }
+    
     relation.isOrderable =
         self.target.mapping.isDefined() and
                 self.target.getAllAttributes().exists(a |
@@ -47,18 +47,18 @@ operation ESM!esm::accesspoint::Access createRelationTypeForClass(application : 
                         a.dataType.isKindOf(ESM!DateType) or
                         a.dataType.isKindOf(ESM!TimestampType)));
 
-	relation.isFilterable = self.target.mapping.isDefined();
+    relation.isFilterable = self.target.mapping.isDefined();
 
-	clazz.relations.add(relation);
-	relation.target = self.target.mapClassType(application);
-	log.debug("Create relation " + relation.name + " in class type: " + clazz.name);
-	return relation;
+    clazz.relations.add(relation);
+    relation.target = self.target.mapClassType(application);
+    log.debug("Create relation " + relation.name + " in class type: " + clazz.name);
+    return relation;
 }
 
 operation ESM!esm::accesspoint::Access mapRelationType(application : UI!ui::Application, clazz : UI!ui::data::ClassType) : UI!ui::data::RelationType {
-	var relation = clazz.relations.selectOne(r | r.name = self.name);
-	if (relation.isUndefined()) {
-		relation = self.createRelationTypeForClass(application, clazz);
-	}
-	return relation;
+    var relation = clazz.relations.selectOne(r | r.name = self.name);
+    if (relation.isUndefined()) {
+        relation = self.createRelationTypeForClass(application, clazz);
+    }
+    return relation;
 }

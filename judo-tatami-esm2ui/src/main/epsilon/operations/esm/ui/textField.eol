@@ -1,12 +1,12 @@
 operation ESM!esm::ui::TextField createTextFromTextField(application : UI!ui::Application) : UI!ui::Text {
-	var ret : UI!ui::Text = new UI!ui::Text();
-	
-	ret.setVisualProperties(self, application);
-	ret.sourceId = self.getID();
+    var ret : UI!ui::Text = new UI!ui::Text();
     
-	return ret;
+    ret.setVisualProperties(self, application);
+    ret.sourceId = self.getID();
+    
+    return ret;
 }
 
 operation ESM!esm::ui::TextField map(application : UI!ui::Application, page : UI!ui::PageDefinition) : UI!ui::Text {
-	return self.createTextFromTextField(application);
+    return self.createTextFromTextField(application);
 }
