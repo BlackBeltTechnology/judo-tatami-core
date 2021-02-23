@@ -36,13 +36,12 @@ operation UI!ui::Table calculateActions(application : UI!ui::Application, previe
                 self.createAddAction(relationType, buttonGroup);
             }
             
-            // TODO - flutter template refactor
-            /*if (relationType.memberType == UI!ui::data::MemberType#TRANSIENT) {
+            if (relationType.memberType == UI!ui::data::MemberType#TRANSIENT) {
                 var buttonGroup : UI!ui::Flex = self.createActionButtonGroupForTable();
                 self.createCreateAction(relationType, application, preview, buttonGroup);
                 self.createUpdateAction(relationType, application, preview);
                 self.createDeleteAction(relationType);
-            }*/
+            }
         }
         // **** OUTPUT PAGE:
         if (pageType == UI!ui::PageType#OPERATION_OUTPUT) {

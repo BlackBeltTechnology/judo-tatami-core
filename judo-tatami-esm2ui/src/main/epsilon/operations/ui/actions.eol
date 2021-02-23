@@ -50,7 +50,7 @@ operation UI!ui::SaveAction setIcon() {
 operation UI!ui::AddAction setIcon() {
     if (self.icon.isUndefined()) {
         self.icon = new UI!ui::Icon();
-        self.icon.name = 'link';
+        self.icon.name = 'add_link';
     } 
 }
 
