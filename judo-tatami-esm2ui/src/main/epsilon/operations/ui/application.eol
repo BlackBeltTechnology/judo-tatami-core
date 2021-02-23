@@ -9,17 +9,15 @@ operation UI!ui::Application resolveActionPageDefinitions() {
 
 operation UI!ui::Application calculatePageActions(preview : Boolean) {
 
-    for (pageDefinition : UI!ui::PageDefinition in self.pages) {
-        pageDefinition.calculateActions(self, preview);
-    }
-
     for (table : UI!ui::Table in UI!ui::Table.all().select(t | t.getPageDefinition().eContainer() == self)) {
         table.wrapAndLabelTable();
         table.calculateActions(self, preview);
     }
-
     for (link : UI!ui::Link in UI!ui::Link.all().select(t | t.getPageDefinition().eContainer() == self)) {
         link.calculateActions(self, preview);
+    }
+    for (pageDefinition : UI!ui::PageDefinition in self.pages) {
+        pageDefinition.calculateActions(self, preview);
     }
 }
 
