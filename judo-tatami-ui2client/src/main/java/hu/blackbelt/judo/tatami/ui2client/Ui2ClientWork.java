@@ -11,6 +11,8 @@ import java.io.*;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 import com.google.common.io.ByteStreams;
@@ -25,22 +27,15 @@ import hu.blackbelt.judo.tatami.core.workflow.work.TransformationContext;
 import hu.blackbelt.judo.tatami.core.workflow.work.WorkReport;
 import hu.blackbelt.judo.tatami.ui2client.flutter.FlutterHelper;
 import lombok.extern.slf4j.Slf4j;
-import org.checkerframework.checker.units.qual.C;
 
 @Slf4j
 public class Ui2ClientWork extends AbstractTransformationWork {
 	
 	public static final String CLIENT_OUTPUT = "ui2client:output";
-
-	final URI transformationScriptRoot;
-
-	public Ui2ClientWork(TransformationContext transformationContext, URI transformationScriptRoot) {
-		super(transformationContext);
-		this.transformationScriptRoot = transformationScriptRoot;
-	}
+	public static final String OVERRDED_URIS = "ui2client:overrided-uris";
 
 	public Ui2ClientWork(TransformationContext transformationContext) {
-		this(transformationContext, Ui2Client.calculateUi2ClientTemplateScriptURI());
+		super(transformationContext);
 	}
 
 	@Override
@@ -49,7 +44,10 @@ public class Ui2ClientWork extends AbstractTransformationWork {
 		UiModel uiModel = getTransformationContext().getByClass(UiModel.class)
 				.orElseThrow(() -> new IllegalArgumentException("UI Model does not found in transformation context"));
 
-		Map<Application, InputStream> ui2flutterZip = executeUi2ClientGenerationAsZip(Ui2FlutterClient.getFlutterClientGenerator(uiModel),
+		List<URI> overridedURIS = getTransformationContext().get(List.class, OVERRDED_URIS)
+				.orElseGet(() -> Collections.EMPTY_LIST);
+
+		Map<Application, InputStream> ui2flutterZip = executeUi2ClientGenerationAsZip(Ui2FlutterClient.getFlutterClientGenerator(uiModel, overridedURIS),
 				getTransformationContext().getByClass(Log.class).orElseGet(() -> new Slf4jLog(log)));
 		
 		checkState(ui2flutterZip != null, "No InputStream created");

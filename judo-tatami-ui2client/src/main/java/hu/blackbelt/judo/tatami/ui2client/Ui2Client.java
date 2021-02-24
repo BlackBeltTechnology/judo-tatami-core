@@ -185,28 +185,12 @@ public class Ui2Client {
 
     @SneakyThrows(URISyntaxException.class)
     public static URI calculateUi2ClientTemplateScriptURI() {
-        URI uiRoot = Ui2Client.class.getProtectionDomain().getCodeSource().getLocation().toURI();
-        if (uiRoot.toString().endsWith(".jar")) {
-            uiRoot = new URI("jar:" + uiRoot.toString() + "!/" + TEMPLATE_ROOT_TATAMI_UI_2_CLIENT);
-        } else if (uiRoot.toString().startsWith("jar:bundle:")) {
-            uiRoot = new URI(uiRoot.toString().substring(4, uiRoot.toString().indexOf("!")) + TEMPLATE_ROOT_TATAMI_UI_2_CLIENT);
-        } else {
-            uiRoot = new URI(uiRoot.toString() + "/" + TEMPLATE_ROOT_TATAMI_UI_2_CLIENT);
-        }
-        return uiRoot;
+        return UriHelper.calculateRelativeURI(Ui2Client.class.getProtectionDomain().getCodeSource().getLocation().toURI(), TEMPLATE_ROOT_TATAMI_UI_2_CLIENT);
     }
 
     @SneakyThrows(URISyntaxException.class)
     public static URI calculateUi2ClientTemplateScriptURI(String template) {
-        URI uiRoot = Ui2Client.class.getProtectionDomain().getCodeSource().getLocation().toURI();
-        if (uiRoot.toString().endsWith(".jar")) {
-            uiRoot = new URI("jar:" + uiRoot.toString() + "!/" + TEMPLATE_ROOT_TATAMI_UI_2_CLIENT + template);
-        } else if (uiRoot.toString().startsWith("jar:bundle:")) {
-            uiRoot = new URI(uiRoot.toString().substring(4, uiRoot.toString().indexOf("!")) + TEMPLATE_ROOT_TATAMI_UI_2_CLIENT + template);
-        } else {
-            uiRoot = new URI(uiRoot.toString() + "/" + TEMPLATE_ROOT_TATAMI_UI_2_CLIENT + template);
-        }
-        return uiRoot;
+        return UriHelper.calculateRelativeURI(Ui2Client.class.getProtectionDomain().getCodeSource().getLocation().toURI(), TEMPLATE_ROOT_TATAMI_UI_2_CLIENT + template);
     }
 
     @SneakyThrows(IOException.class)
