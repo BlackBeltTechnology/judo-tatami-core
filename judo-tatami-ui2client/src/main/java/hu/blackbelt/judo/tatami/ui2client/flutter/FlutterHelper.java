@@ -141,6 +141,7 @@ public class FlutterHelper {
         context.registerFunction("getInputWidgets", FlutterHelper.class.getDeclaredMethod("getInputWidgets", new Class[]{Container.class}));
         context.registerFunction("getPagesByRelation", FlutterHelper.class.getDeclaredMethod("getPagesByRelation", new Class[]{EList.class, DataElement.class}));
         context.registerFunction("safe", FlutterHelper.class.getDeclaredMethod("safe", new Class[]{String.class, String.class}));
+        context.registerFunction("dart", FlutterHelper.class.getDeclaredMethod("dart", new Class[]{String.class}));
 
     }
 
@@ -424,5 +425,11 @@ public class FlutterHelper {
         } else {
             return input;
         }
+    }
+
+    public static String dart(String input) {
+        return input
+//                .replaceAll("[^\\\\u(\\p{XDigit}{4})]", "_")
+                .replaceAll("[^\\.A-Za-z0-9_]", "_").toLowerCase();
     }
 }
