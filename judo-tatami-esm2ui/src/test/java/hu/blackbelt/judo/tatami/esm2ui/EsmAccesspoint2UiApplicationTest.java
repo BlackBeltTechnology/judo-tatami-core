@@ -230,6 +230,28 @@ public class EsmAccesspoint2UiApplicationTest {
                 .withAttributes(attribute)
                 .build();
         exposedEntity.setMapping(newMappingBuilder().withTarget(exposedEntity).build());
+        
+        DataMember attribute2 = newDataMemberBuilder()
+                .withName("email")
+                .withMemberType(MemberType.STORED)
+                .withDataType(string)
+                .build();
+        attribute2.setBinding(attribute2);
+        
+        final EntityType exposedEntity2 = newEntityTypeBuilder()
+                .withName(EXPOSED_ENTITY_TYPE_NAME + "2")
+                .withAttributes(attribute2)
+                .withTable(newTransferObjectTableBuilder().withName("table").withColumns(
+                        newDataColumnBuilder().withName("col").withDataFeature(attribute2).build()
+                        ).build())
+                .withView(newTransferObjectViewBuilder().withName("view")
+                        .withComponents(newDataFieldBuilder().withName("data").withDataFeature(attribute2).build())
+                        .build())
+                .withForm(newTransferObjectFormBuilder().withName("form")
+                        .withComponents(newDataFieldBuilder().withName("data").withDataFeature(attribute2).build())
+                        .build())
+                .build();
+        exposedEntity2.setMapping(newMappingBuilder().withTarget(exposedEntity2).build());
 
         final Annotation dashboardAnnotation = newAnnotationBuilder().withClassName("hu.blackbelt.judo.meta.esm.accesspoint.Access")
                 .withName("dashboard").build();
@@ -258,6 +280,18 @@ public class EsmAccesspoint2UiApplicationTest {
                 .withCreateable(true).withUpdateable(true).withDeleteable(true)
                 .build();
         useActorType(actor).withAccesses(exposedRelationSingle).build();
+        
+        final Access exposedRelationForEntity2 = newAccessBuilder()
+                .withName("entity2s")
+                .withTarget(exposedEntity2)
+                .withGetterExpression(MODEL_NAME + EsmUtils.NAMESPACE_SEPARATOR + EXPOSED_ENTITY_TYPE_NAME + "2")
+                .withLower(0)
+                .withUpper(1)
+                .withAppliedAnnotations(dashboardAnnotation)
+                .withCreateable(true).withUpdateable(false).withDeleteable(false)
+                .withTargetDefinedCRUD(false)
+                .build();
+        useActorType(actor).withAccesses(exposedRelationForEntity2).build();
         
         // Add table representation for exposed relation
         final String EXPOSED_GRAPH_TABLE_NAME = "ExposedGraphTableName";
@@ -317,7 +351,7 @@ public class EsmAccesspoint2UiApplicationTest {
         useActorType(actor3).withAccesses(exposedRelationMultiple2).build();
         
         final Model model = newModelBuilder().withName(MODEL_NAME)
-                .withElements(Arrays.asList(string, exposedEntity, actor, actor2, actor3))
+                .withElements(Arrays.asList(string, exposedEntity, exposedEntity2, actor, actor2, actor3))
                 .withAnnotations(dashboardAnnotation)
                 .build();
 
@@ -337,6 +371,11 @@ public class EsmAccesspoint2UiApplicationTest {
         final Optional<ClassType> uiEntity = application.get().getDataElements().stream().filter(e -> e instanceof ClassType)
                 .map(e -> (ClassType) e).filter(c -> c.getName().equals(EsmUtils.getNamespaceElementFQName(exposedEntity))).findAny();
         assertTrue(uiEntity.isPresent());
+        
+        final Optional<ClassType> uiEntityForCreateAndUpdate = application.get().getDataElements().stream().filter(e -> e instanceof ClassType)
+                .map(e -> (ClassType) e).filter(c -> c.getName().equals(EsmUtils.getNamespaceElementFQName(exposedEntity2))).findAny();
+        assertTrue(uiEntityForCreateAndUpdate.isPresent());
+        assertTrue(uiEntityForCreateAndUpdate.get().isIsForCreateOrUpdateType());
         
         final Optional<PageDefinition> uiDashboard = application.get().getPages().stream()
                 .filter(d -> d.getName().equals(EsmUtils.getNamespaceElementFQName(actor) + "#Dashboard") && d.getIsPageTypeDashboard()).findAny();

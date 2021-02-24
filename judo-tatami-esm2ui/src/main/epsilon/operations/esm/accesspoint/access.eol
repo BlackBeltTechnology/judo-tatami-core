@@ -8,34 +8,39 @@ operation ESM!esm::accesspoint::Access createRelationTypeForClass(application : 
     relation.~application = application;
     relation.~originalAccess = self;
 
-    relation.name = self.name;
-    relation.isCollection = (self.upper == -1);
-    relation.isAccess = true;
-    relation.memberType = UI!ui::data::MemberType#ACCESS;
-    relation.relationKind = UI!ui::data::RelationKind#STATIC;
-    
-    if (esmUtils.isListSupported(self)) {
-        relation.behaviours.add(UI!ui::data::RelationBehaviourType#LIST);
-    }
-    if (esmUtils.isCreateSupported(self)) {
-        relation.behaviours.add(UI!ui::data::RelationBehaviourType#CREATE);
-    }
-    if (esmUtils.isValidateCreateSupported(self)) {
-        relation.behaviours.add(UI!ui::data::RelationBehaviourType#VALIDATE_CREATE);
-    }
-        if (self.isRefreshSupported()) {
+	relation.name = self.name;
+	relation.isCollection = (self.upper == -1);
+	relation.isAccess = true;
+	relation.memberType = UI!ui::data::MemberType#ACCESS;
+	relation.relationKind = UI!ui::data::RelationKind#STATIC;
+	relation.target = self.target.mapClassType(application);
+	
+	if (esmUtils.isListSupported(self)) {
+		relation.behaviours.add(UI!ui::data::RelationBehaviourType#LIST);
+	}
+	if (esmUtils.isCreateSupported(self)) {
+		relation.behaviours.add(UI!ui::data::RelationBehaviourType#CREATE);
+		relation.target.isForCreateOrUpdateType = true;
+	}
+	if (esmUtils.isValidateCreateSupported(self)) {
+		relation.behaviours.add(UI!ui::data::RelationBehaviourType#VALIDATE_CREATE);
+		relation.target.isForCreateOrUpdateType = true;
+	}
+	if (self.isRefreshSupported()) {
         relation.behaviours.add(UI!ui::data::RelationBehaviourType#REFRESH);
     }
     if (self.isUpdateSupported()) {
         relation.behaviours.add(UI!ui::data::RelationBehaviourType#UPDATE);
+        relation.target.isForCreateOrUpdateType = true;
     }
     if (self.isValidateUpdateSupported()) {
         relation.behaviours.add(UI!ui::data::RelationBehaviourType#VALIDATE_UPDATE);
+        relation.target.isForCreateOrUpdateType = true;
     }
     if (self.isDeleteSupported()) {
         relation.behaviours.add(UI!ui::data::RelationBehaviourType#DELETE);
     }
-    
+	
     relation.isOrderable =
         self.target.mapping.isDefined() and
                 self.target.getAllAttributes().exists(a |
@@ -49,10 +54,9 @@ operation ESM!esm::accesspoint::Access createRelationTypeForClass(application : 
 
     relation.isFilterable = self.target.mapping.isDefined();
 
-    clazz.relations.add(relation);
-    relation.target = self.target.mapClassType(application);
-    log.debug("Create relation " + relation.name + " in class type: " + clazz.name);
-    return relation;
+	clazz.relations.add(relation);
+	log.debug("Create relation " + relation.name + " in class type: " + clazz.name);
+	return relation;
 }
 
 operation ESM!esm::accesspoint::Access mapRelationType(application : UI!ui::Application, clazz : UI!ui::data::ClassType) : UI!ui::data::RelationType {
