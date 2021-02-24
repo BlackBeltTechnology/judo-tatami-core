@@ -47,7 +47,7 @@ operation UI!ui::Table calculateActions(application : UI!ui::Application, previe
         if (pageType == UI!ui::PageType#OPERATION_OUTPUT) {
             self.createViewAction(relationType, application, preview);
         }
-    
+        
         // **** CREATE/UPDATE: view, update, delete, remove (create, add, set buttons are created for the Table Page - see 'pageDefinition.eol') ****
         if (pageType == UI!ui::PageType#TABLE or (pageType == UI!ui::PageType#DASHBOARD and relationType.isCollection)) {
             

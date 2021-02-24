@@ -37,7 +37,7 @@ operation UI!ui::PageDefinition calculateActions(application : UI!ui::Applicatio
                 }
             }
         }
-    } else if (self.pageType == UI!ui::PageType#TABLE) {    
+    } else if (self.pageType == UI!ui::PageType#TABLE) {
         if (relationType.isUndefined()) {
             throw "Table type have to be mapped to relation type";
         }

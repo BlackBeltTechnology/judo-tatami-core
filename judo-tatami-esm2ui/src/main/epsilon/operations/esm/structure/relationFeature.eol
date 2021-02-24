@@ -78,9 +78,11 @@ operation ESM!esm::structure::RelationFeature createRelationTypeForClass(applica
     }
     if (self.isUpdateSupported()) {
         relation.behaviours.add(UI!ui::data::RelationBehaviourType#UPDATE);
+        relation.target.isForCreateOrUpdateType = true;
     }
     if (self.isValidateUpdateSupported()) {
         relation.behaviours.add(UI!ui::data::RelationBehaviourType#VALIDATE_UPDATE);
+        relation.target.isForCreateOrUpdateType = true;
     }
     if (self.isDeleteSupported()) {
         relation.behaviours.add(UI!ui::data::RelationBehaviourType#DELETE);
