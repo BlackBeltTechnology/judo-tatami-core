@@ -11,6 +11,7 @@ import hu.blackbelt.judo.tatami.ui2client.flutter.FlutterHelper;
 import org.slf4j.LoggerFactory;
 
 import java.io.*;
+import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
@@ -28,15 +29,37 @@ public class Ui2FlutterClient {
     public static final String ACTOR_FQ_NAME = "actorFqName";
 
     public static final Log log = new Slf4jLog(LoggerFactory.getLogger(Ui2FlutterClient.class));
+    public static final String FLUTTER_FLUTTER_YAML = "flutter/flutter.yaml";
 
     public static Function<Application, String> OUTPUT_NAME_GENERATOR_FUNCTION = (Application a) -> FlutterHelper.dart(a.getName());
 
-    public static ClientGenerator getFlutterClientGenerator(UiModel uiModel) throws IOException, UiModelResourceSupport.UiValidationException {
-        ClientGenerator clientGenerator = new ClientGenerator(uiModel, calculateUi2ClientTemplateScriptURI(),
-                GeneratorTemplate.loadYamlURL(Ui2Client.calculateUi2ClientTemplateScriptURI("flutter/flutter.yaml").toURL()));
+
+
+    public static ClientGenerator getFlutterClientGenerator(UiModel uiModel, List<URI> overridedScriptUris) throws IOException, UiModelResourceSupport.UiValidationException {
+        List<URI> scriptUris = new ArrayList<>();
+        scriptUris.add(calculateUi2ClientTemplateScriptURI());
+        scriptUris.addAll(overridedScriptUris);
+
+        List<GeneratorTemplate> generatorTemplates = new ArrayList<>();
+        generatorTemplates.addAll(GeneratorTemplate.loadYamlURL(Ui2Client.calculateUi2ClientTemplateScriptURI(FLUTTER_FLUTTER_YAML).toURL()));
+        // Search for overrided flutter yaml files
+        for (URI uri : overridedScriptUris) {
+            Collection<GeneratorTemplate> overridedTemplates = GeneratorTemplate.loadYamlURL(UriHelper.calculateRelativeURI(uri, FLUTTER_FLUTTER_YAML).toURL());
+            Collection<GeneratorTemplate> replaceableTemplates = new HashSet<>();
+            generatorTemplates.forEach(t -> {
+                overridedTemplates.stream().filter(o -> o.getTemplateName().equals(t.getTemplateName())).forEach(f -> replaceableTemplates.add(f));
+            });
+            generatorTemplates.removeAll(replaceableTemplates);
+            generatorTemplates.addAll(overridedTemplates);
+        }
+        ClientGenerator clientGenerator = new ClientGenerator(uiModel, scriptUris, generatorTemplates);
         clientGenerator.getHandlebars().registerHelpers(FlutterHelper.class);
         FlutterHelper.registerSpEL(clientGenerator.getSpelEvaulationContext());
         return clientGenerator;
+    }
+
+    public static ClientGenerator getFlutterClientGenerator(UiModel uiModel) throws IOException, UiModelResourceSupport.UiValidationException {
+        return getFlutterClientGenerator(uiModel, Collections.EMPTY_LIST);
     }
 
     public static void generateFlutterClient(File uiModelFile,
@@ -44,15 +67,23 @@ public class Ui2FlutterClient {
                                              File targetDirectory,
                                              Predicate<Application> applicationPredicate,
                                              String projectSkeleton,
-                                             String openapiYamlNameTemplate
+                                             String openapiYamlNameTemplate,
+                                             File overridePath
     ) throws Exception {
 
         UiModel uiModel = UiModel.loadUiModel(
                 UiModel.LoadArguments.uiLoadArgumentsBuilder().file(uiModelFile).name(modelName));
 
+        List<URI> overridedUris = new ArrayList<>();
+        if (overridePath !=null) {
+            if (!overridePath.exists()) {
+                throw new IllegalArgumentException("Overrided path does not exists: " + overridePath);
+            }
+            overridedUris.add(overridePath.toURI());
+        }
         Map<Application, Collection<GeneratedFile>> generatedApps =
                 executeUi2ClientGenerationByApplication(
-                        getFlutterClientGenerator(uiModel),
+                        getFlutterClientGenerator(uiModel, overridedUris),
                         applicationPredicate,
                         log);
 
@@ -140,7 +171,7 @@ public class Ui2FlutterClient {
         File uiModelFile = new File(args[0]);
         String modelName = args[1];
         File targetDirectory = new File(args[2]);
-        String clientTemplate = args[3];
+        String overridePath = args[3];
         Predicate<Application> applicationPredicate = (a) -> true;
 
         if (args.length > 4 && !args[4].equals("*")) {
@@ -166,7 +197,15 @@ public class Ui2FlutterClient {
             targetDirectory.mkdirs();
         }
 
-        generateFlutterClient(uiModelFile, modelName, targetDirectory, applicationPredicate, projectSkeleton, openapiYamlNameTemplate);
+        File overrideDirectory = null;
+        if (overridePath != null) {
+            overrideDirectory = new File(overridePath);
+            if (!overrideDirectory.exists()) {
+                overrideDirectory = null;
+            }
+        }
+
+        generateFlutterClient(uiModelFile, modelName, targetDirectory, applicationPredicate, projectSkeleton, openapiYamlNameTemplate, overrideDirectory);
 
     }
 }
