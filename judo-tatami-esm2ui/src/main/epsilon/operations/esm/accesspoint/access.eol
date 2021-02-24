@@ -41,7 +41,6 @@ operation ESM!esm::accesspoint::Access createRelationTypeForClass(application : 
 	relation.isFilterable = self.target.mapping.isDefined();
 
 	clazz.relations.add(relation);
-	relation.target = self.target.mapClassType(application);
 	log.debug("Create relation " + relation.name + " in class type: " + clazz.name);
 	return relation;
 }
