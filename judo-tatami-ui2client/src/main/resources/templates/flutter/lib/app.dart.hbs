@@ -14,15 +14,37 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:openapi_dart_common/openapi.dart';
 import 'oauth.dart';
 import 'dart:async';
+import 'repository/package.dart';
 
 import 'package:{{ modelPackage application.name }}/{{ path application.name }}/app_theme.dart';
 import 'package:{{ modelPackage application.name }}/{{ path application.name }}/error/error_handler.dart';
 import 'package:{{ modelPackage application.name }}/{{ path application.name }}/ui/routes/router.gr.dart' as router;
 import 'package:{{ modelPackage application.name }}/{{ path application.name }}/ui/drawer_items.dart';
 import 'package:{{ modelPackage application.name }}/{{ path application.name }}/ui/navigation/navigation_state.dart';
+import 'package:{{ modelPackage application.name }}/{{ path application.name }}/ui/guards/auth_guard.dart';
 import 'package:{{ modelPackage application.name }}/{{ path application.name }}/utilities/package.dart';
 import 'package:{{ modelPackage application.name }}/{{ path application.name }}/injector/injector.dart';
 import 'package:{{ modelPackage application.name }}/{{ path application.name }}/oauth.dart';
+
+Future<bool> hasActorMenuAccess() async {
+{{# if application.principal }}
+    {{ fqClass application.name }}Repository _actorRepository = locator<{{ fqClass application.name }}Repository>();
+
+    try {
+        var principal = await _actorRepository.getPrincipal();
+        if (principal.email.isNotEmpty) {
+            return true;
+        } else {
+            return false;
+        }
+    } catch(error) {
+        return false;
+    }
+{{else}}
+    // Anonymous access allowed
+    return true;
+{{/if}}
+}
 
 class {{ fqClass application.name }}Application extends StatelessWidget {
 
@@ -66,7 +88,8 @@ class {{ fqClass application.name }}ApplicationPageState extends State<{{ fqClas
                 Expanded(
                     child: ExtendedNavigator(
                         key: navigation.navigatorKey,
-                        router: router.Router()
+                        router: router.Router(),
+                        guards: [AuthGuard()],
                     ),
                 ),
             ],
@@ -84,10 +107,12 @@ class {{ fqClass application.name }}Drawer extends StatefulWidget {
 }
 
 class _{{ fqClass application.name }}DrawerState extends State<{{ fqClass application.name }}Drawer> {
+    Future<bool> _hasActorMenuAccess;
 
     @override
     void initState() {
         super.initState();
+        _hasActorMenuAccess = hasActorMenuAccess();
     }
 
     @override
@@ -141,30 +166,7 @@ class _{{ fqClass application.name }}DrawerState extends State<{{ fqClass applic
                                         Observer(
                                             builder: (_) =>
                                                 Theme(
-                                                    child: !Oauth.isAuthenticationRequired() || Oauth.authInfo.loggedIn ? Column(
-                                                        children: [
-                                                            ...{{ fqClass application.name }}NavigationItems.navigationItems
-                                                                .map((e) => ListTile(
-                                                                leading: e.leading,
-                                                                title: e.title,
-                                                                onTap: () {
-                                                                    if (Info.serverDown) {
-                                                                        ErrorHandler.navigateToBuiltInPage();
-                                                                    } else {
-                                                                        if (Oauth.isAuthenticationRequired() && !Oauth.isLoggedIn()) {
-                                                                            Oauth.loginAuthorizeAndExchangeCode();
-                                                                        } else {
-                                                                            navigationState.navigateTo(e.route);
-                                                                            setState(() => {});
-                                                                        }
-                                                                    }
-                                                                },
-                                                                selected: e.route == _selected
-                                                            ),
-                                                            ).toList(),
-                                                        ],)
-                                                        :
-                                                        Container(),
+                                                    child: actorMenuEntries(context, navigationState, _selected),
                                                     data: Theme.of(context).copyWith(primaryColor: theme.colorScheme.secondary)
                                                 )
                                         ),
@@ -216,6 +218,30 @@ class _{{ fqClass application.name }}DrawerState extends State<{{ fqClass applic
         );
     }
 
+    Widget actorMenuEntries(BuildContext context, NavigationState navigationState, String _selected) {
+        return !Oauth.isAuthenticationRequired() || (Oauth.authInfo.loggedIn && Oauth.authInfo.isPrincipalAllowed) ? Column(
+            children: {{ fqClass application.name }}NavigationItems.navigationItems.map(
+                (e) => ListTile(
+                    leading: e.leading,
+                    title: e.title,
+                    onTap: () {
+                        if (Info.serverDown) {
+                            ErrorHandler.navigateToBuiltInPage();
+                        } else {
+                            if (Oauth.isAuthenticationRequired() && !Oauth.isLoggedIn()) {
+                                Oauth.loginAuthorizeAndExchangeCode();
+                            } else {
+                                navigationState.navigateTo(e.route);
+                                setState(() => {});
+                            }
+                        }
+                    },
+                    selected: e.route == _selected,
+                ),
+            )
+            .toList(),
+        ) : Container();
+    }
 
     Widget appNameAndSlogan(BuildContext context) {
         return Row(
