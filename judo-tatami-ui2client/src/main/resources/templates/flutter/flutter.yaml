@@ -404,6 +404,17 @@
       expression: "#self"
 
 # ========================================
+# guards
+# ========================================
+- overwriteExpression: true
+  factoryExpression: "{#application}"
+  pathExpression: >
+    'lib/' +
+    #path(#application.actor.name) +
+    '/ui/guards/auth_guard.dart'
+  templateName: flutter/lib/ui/guards/auth_guard.dart.hbs
+
+# ========================================
 # drawer
 # ========================================
 - overwriteExpression: true
