@@ -107,13 +107,12 @@ operation ESM!esm::`operation`::Operation createTablePageForOperationInput(appli
     flex.direction = UI!Axis#VERTICAL;
     pageContainer.children.add(flex);
     
-    //is this needed??? - what will be the data element of the table
-    /*if (self.input.target.isTableDefined()) {
-        var table = self.input.target.table.createTableFromTransferObjectTable(application, page);
-        flex.children.add(table);
-    }*/
-    
     page.dataElement = self.mapOperationInputType(application, clazz);
+    
+    if (self.input.target.isTableDefined()) {
+        var table = self.input.target.table.createTableFromTransferObjectTable(application, page.dataElement, page);
+        flex.children.add(table);
+    }
     return page;
 }
 
@@ -150,13 +149,13 @@ operation ESM!esm::`operation`::Operation createTablePageForOperationOutput(appl
     flex.col = applicationColumns.asReal();
     pageContainer.children.add(flex);
     
-    //is this needed??? - what will be the data element of the table
-    /*if (self.output.target.isTableDefined()) {
-        var table = self.output.target.table.createTableFromTransferObjectTable(application, page);
-        flex.children.add(table);
-    }*/
-    
     page.dataElement = self.mapOperationOutputType(application, clazz);
+    
+    if (self.input.target.isTableDefined()) {
+        var table = self.output.target.table.createTableFromTransferObjectTable(application, page.dataElement, page);
+        flex.children.add(table);
+    }
+
     return page;
 }
 

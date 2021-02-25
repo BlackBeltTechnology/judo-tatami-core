@@ -28,12 +28,14 @@ operation UI!ui::CallOperationAction resolveParameterPageDefinitions() {
             if (origOp.input.target.form.isDefined()) {
                 callAction.inputParameterPage = origOp.mapFormPageForOperationInput(application, clazz);
             }
+            //to do: navigate to input table page if input is collection
         }
     
         if (origOp.output.isDefined()) {
             if (origOp.output.target.view.isDefined()) {
                 callAction.outputParameterPage = origOp.mapViewPageForOperationOutput(application, clazz);
-          }
+            }
+            //to do: navigate to output table page if input is collection
         }
     }
 }

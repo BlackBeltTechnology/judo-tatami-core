@@ -119,13 +119,8 @@ operation UI!ui::Table createViewAction(relationType : UI!ui::data::RelationType
     } else {
         var page = application.pages.selectOne(p | p.pageType = UI!ui::PageType#VIEW and p.getRelationType() == relationType);
         if (page.isDefined()) {
-            log.debug(" ========= TABLE DEF: VIEW: " + relationType.name + " - " + page.name);
+            log.debug(" ========= Found view page for TABLE " + relationType.name + " - " + page.name);
             var action = createViewAction(page, relationType, relationType.memberType == UI!ui::data::MemberType#TRANSIENT);
-            self.rowActions.add(action);
-        } else if (relationType.memberType == UI!ui::data::MemberType#TRANSIENT) {
-            // view action is navigating to edit action !!
-            page = relationType.~originalRelation.mapUpdatePage(application, relationType.~originalRelation.target);
-            var action = createViewAction(page, relationType, true);
             self.rowActions.add(action);
         } else {
             log.warn("No view page defined for: " + self.name + " - " + relationType.eContainer.name + "." + relationType.name);
@@ -149,12 +144,8 @@ operation UI!ui::Table createUpdateAction(relationType : UI!ui::data::RelationTy
     } else {
         var page = application.pages.selectOne(p | p.pageType = UI!ui::PageType#UPDATE and p.getRelationType() == relationType);
         if (page.isDefined()) {
-            log.debug(" ========= TABLE DEF: EDIT: " + relationType.name + " - " + page.name);
+            log.debug(" ========= Found update page for TABLE " + relationType.name + " - " + page.name);
             var action = createEditAction(page, relationType, relationType.memberType == UI!ui::data::MemberType#TRANSIENT);
-            self.rowActions.add(action);
-        } else if (relationType.memberType == UI!ui::data::MemberType#TRANSIENT) {
-            page = relationType.~originalRelation.mapUpdatePage(application, relationType.~originalRelation.target);
-            var action = createEditAction(page, relationType, true);
             self.rowActions.add(action);
         } else {
             log.warn("No update page defined for: " + self.name  + " - " + relationType.eContainer.name + "." + relationType.name);
@@ -172,13 +163,8 @@ operation UI!ui::Table createCreateAction(relationType : UI!ui::data::RelationTy
     } else {
         var page = application.pages.selectOne(p | p.pageType = UI!ui::PageType#CREATE and p.getRelationType() == relationType);
         if (page.isDefined()) {
-            log.debug(" ========= PAGE DEF: CREATE: " + relationType.eContainer.name + "." + relationType.name + " - " + page.name);
+            log.debug(" ========= Found create page for TABLE " + relationType.name + " - " + page.name);
             var action = createCreateAction(page, relationType, relationType.memberType == UI!ui::data::MemberType#TRANSIENT);
-            var button : UI!ui::Button = createButton("create", "CREATE", 2d, action);
-            buttonGroup.children.add(button);
-        } else if (relationType.memberType == UI!ui::data::MemberType#TRANSIENT) {
-            page = relationType.~originalRelation.mapCreatePage(application, relationType.~originalRelation.target);
-            var action = createCreateAction(page, relationType, true);
             var button : UI!ui::Button = createButton("create", "CREATE", 2d, action);
             buttonGroup.children.add(button);
         } else {

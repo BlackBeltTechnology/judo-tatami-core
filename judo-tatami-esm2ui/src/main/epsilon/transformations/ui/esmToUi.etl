@@ -20,9 +20,8 @@ post {
             log.debug("==============================================================");
             log.debug("APP ================== : " + application.name);
             log.debug("==============================================================");
-        //application.calculateRelationBehaviour();
-        application.resolveActionPageDefinitions();
-        application.calculatePageActions(false);
+        application.resolveActionPageDefinitions(); //resolve custom operation pages
+        application.calculatePageActions(false); //resolve generated actions
     }
     
     for (action : UI!ui::Action in UI!ui::Action.all()) {

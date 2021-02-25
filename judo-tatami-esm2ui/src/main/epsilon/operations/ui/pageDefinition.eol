@@ -8,8 +8,9 @@ operation UI!ui::PageDefinition calculateActions(application : UI!ui::Applicatio
             buttonGroup.children.add(createButton("back", "BACK", 2d, new UI!ui::BackAction()));
             buttonGroup.children.add(createButton("save", "SAVE", 2d, new UI!ui::SaveAction()));
         }
-        
-    } else if (self.pageType == UI!ui::PageType#VIEW) {
+    }
+    
+    if (self.pageType == UI!ui::PageType#VIEW) {
         
         for (container in self.containers) {
             var buttonGroup : UI!ui::Flex = container.createGroupForInstanceActionButtons();
@@ -37,10 +38,13 @@ operation UI!ui::PageDefinition calculateActions(application : UI!ui::Applicatio
                 }
             }
         }
-    } else if (self.pageType == UI!ui::PageType#TABLE) {
+    }
+    
+    if (self.pageType == UI!ui::PageType#TABLE) {
         if (relationType.isUndefined()) {
             throw "Table type have to be mapped to relation type";
-        }
+        } 
+        // to do: if data element of table is not relation type, data element is parameter type - review this case
         
         if (self.hasInstanceActions()) {
         
@@ -80,11 +84,21 @@ operation UI!ui::PageDefinition calculateActions(application : UI!ui::Applicatio
                 }
             }
         }
-    } else if (self.pageType == UI!ui::PageType#OPERATION_OUTPUT) {
+    }
+    
+    if (self.pageType == UI!ui::PageType#OPERATION_OUTPUT) {
         for (container in self.containers) {
             var buttonGroup : UI!ui::Flex = container.createGroupForInstanceActionButtons();
             buttonGroup.children.add(createButton("ok", "OK", 2d, new UI!ui::BackAction()));
         }
+    }
+    
+    if (self.pageType == UI!ui::PageType#OPERATION_INPUT) {
+        // to do ?? - generate submit and cancel buttons ?? 
+    }
+    
+     if (self.pageType == UI!ui::PageType#CUSTOM) {
+        
     }
 }
 

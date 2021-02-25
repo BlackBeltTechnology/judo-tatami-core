@@ -13,7 +13,11 @@ operation ESM!esm::structure::Class getExposedRelations() : Set {
 }
 
 operation ESM!esm::structure::Class collectExposedRelations(collected : Set) : Set {
-    for (relation in self.getAllRelations()) {
+    var relations = self.getAllRelations();
+    relations.addAll(self.getAllOperations().select(o | o.input.isDefined()).collect(o | o.input.target).collect(i | i.getAllRelations()).flatten());
+    relations.addAll(self.getAllOperations().select(o | o.output.isDefined()).collect(o | o.output.target).collect(o | o.getAllRelations()).flatten());
+
+    for (relation in relations) {
         if (not collected.includes(relation)) {
             collected.add(relation);
             relation.target.collectExposedRelations(collected);
