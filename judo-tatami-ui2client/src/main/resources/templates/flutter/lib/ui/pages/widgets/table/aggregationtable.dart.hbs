@@ -30,10 +30,12 @@ Observer(builder: (_) {
             var response = await navigation.open(Routes.{{ fqVariable rowAction.target.name }}Page,
             arguments: {{ fqClass rowAction.target.name }}PageArguments({{# unless relation.isAccess}}owner{{ className relation.owner.name }}Store: target{{ className relation.owner.name }}Store, {{/ unless}}target{{ className relation.target.name }}Store: element));
             {{# unless relation.isMemberTypeTransient }}
+                {{# unless page.isPageTypeOperationOutput}}
             if (response != null) {
                 {{ fqVariable page.name }}PageStore.refresh{{ className relation.owner.name }}(target{{ className relation.owner.name }}Store)
                     .catchError((error) => ErrorHandler.errorDialog(context, error));
             }
+                {{/ unless }}
             {{/ unless }}
         },
         {{/if}}
