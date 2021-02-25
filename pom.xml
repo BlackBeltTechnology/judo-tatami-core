@@ -73,7 +73,7 @@
         <judo-meta-keycloak-version>1.0.0.20210116_100528_3543c98_develop</judo-meta-keycloak-version>
         <judo-dao-api-version>1.0.2.20210223_122846_195d971_develop</judo-dao-api-version>
         <judo-dispatcher-api-version>1.0.2.20210217_113157_7b339b9_develop</judo-dispatcher-api-version>
-        <judo-meta-script-version>1.0.1.20210225_122548_f8e502f_develop</judo-meta-script-version>
+        <judo-script-codegen-version>1.1.0.20210225_125052_cf3bc63_develop</judo-script-codegen-version>
         <judo-operation-utils-version>1.1.0.20210225_120634_2ed4a0d_develop</judo-operation-utils-version>
 
         <structured-map-proxy-version>1.0.6.20210119_121627_130c6ee_develop</structured-map-proxy-version>
