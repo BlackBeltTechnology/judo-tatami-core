@@ -86,6 +86,7 @@ void main() async {
         var token = await Oauth.processLogin();
         Oauth.udpateAuthInfo(token);
         await Oauth.addTokenToApiClient(token);
+        await Oauth.checkPrincipal();
     }
     runApp({{ fqClass application.name }}Application());
 }
