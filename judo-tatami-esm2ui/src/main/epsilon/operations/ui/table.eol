@@ -35,13 +35,13 @@ operation UI!ui::Table calculateActions(application : UI!ui::Application, previe
                 self.createSetAction(relationType, buttonGroup);
                 self.createAddAction(relationType, buttonGroup);
             }
-            
-            if (relationType.memberType == UI!ui::data::MemberType#TRANSIENT) {
+            //TODO: review behaviour of transient relations on input pages
+            /*if (relationType.memberType == UI!ui::data::MemberType#TRANSIENT) {
                 var buttonGroup : UI!ui::Flex = self.createActionButtonGroupForTable();
                 self.createCreateAction(relationType, application, preview, buttonGroup);
                 self.createViewActionForTransientInput(relationType, application);
                 self.createDeleteAction(relationType);
-            }
+            }*/
         }
         // **** OUTPUT PAGE:
         if (pageType == UI!ui::PageType#OPERATION_OUTPUT) {

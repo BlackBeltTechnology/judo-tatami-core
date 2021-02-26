@@ -27,11 +27,12 @@ operation UI!ui::Link calculateActions(application : UI!ui::Application, preview
                 self.createSetAction(relationType);
                 self.createUnsetAction();
             }
-            if (relationType.memberType == UI!ui::data::MemberType#TRANSIENT) {
+            //TODO: review behaviour of transient relations on input pages
+            /*if (relationType.memberType == UI!ui::data::MemberType#TRANSIENT) {
                 self.createCreateAction(relationType, application, preview);
                 self.createViewActionForTransientInput(relationType, application);
                 self.createDeleteAction(relationType);
-            }
+            }*/
         }
         
         if (pageType == UI!ui::PageType#OPERATION_OUTPUT) {
