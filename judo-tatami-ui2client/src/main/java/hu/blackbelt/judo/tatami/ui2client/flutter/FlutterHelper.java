@@ -440,9 +440,9 @@ public class FlutterHelper {
         }
 
         if (relationType instanceof OperationParameterType){
-            return (visualElement.getEnabledBy() != null) || (!((OperationParameterType) relationType).isIsCollection() && action.getIsCreateAction());
+            return (visualElement.getEnabledBy() != null) || (!((OperationParameterType) relationType).isIsCollection() && action.getIsCreateAction()) || action.getIsUnsetAction();
         } else if (relationType instanceof RelationType){
-            return (visualElement.getEnabledBy() != null) || (!((RelationType) relationType).isIsCollection() && action.getIsCreateAction());
+            return (visualElement.getEnabledBy() != null) || (!((RelationType) relationType).isIsCollection() && action.getIsCreateAction()) || action.getIsUnsetAction();
         } else {
             return false;
         }
