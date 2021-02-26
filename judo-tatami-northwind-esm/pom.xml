@@ -340,6 +340,33 @@
 
                         </executions>
                     </plugin>
+
+
+                    <!-- Execute flutter installer and generate default flutter project skeleton -->
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>exec-maven-plugin</artifactId>
+                        <version>1.6.0</version>
+                        <configuration>
+                            <environmentVariables>
+                                <FLUTTER_HOME>${flutter-home}</FLUTTER_HOME>
+                            </environmentVariables>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>flutter-config-web-enable</id>
+                                <goals>
+                                    <goal>exec</goal>
+                                </goals>
+                                <phase>generate-sources</phase>
+                                <configuration>
+                                    <workingDirectory>${project.basedir}/target/classes/model/client/northwind__admin</workingDirectory>
+                                    <executable>${script.executor}</executable>
+                                    <commandlineArgs>${flutter.config.web.execute}</commandlineArgs>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
                 </plugins>
             </build>
         </profile>
