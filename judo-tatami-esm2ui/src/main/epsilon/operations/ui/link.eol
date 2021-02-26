@@ -29,7 +29,7 @@ operation UI!ui::Link calculateActions(application : UI!ui::Application, preview
             }
             if (relationType.memberType == UI!ui::data::MemberType#TRANSIENT) {
                 self.createCreateAction(relationType, application, preview);
-                self.createUpdateAction(relationType, application, preview);
+                self.createViewActionForTransientInput(relationType, application);
                 self.createDeleteAction(relationType);
             }
         }
@@ -78,6 +78,17 @@ operation UI!ui::Link createViewAction(relationType : UI!ui::data::RelationType,
         } else {
             log.warn("No view page defined for: " + self.name + " - " + relationType.eContainer.name + "." + relationType.name);
         }
+    }
+}
+
+operation UI!ui::Link createViewActionForTransientInput(relationType : UI!ui::data::RelationType, application : UI!ui::Application) {
+    var page = application.pages.selectOne(p | p.pageType = UI!ui::PageType#UPDATE and p.getRelationType() == relationType);
+    if (page.isDefined()) {
+        log.debug(" ========= Found edit page for transient LINK " + relationType.name + " - " + page.name);
+        var action = createViewAction(page, relationType, relationType.memberType == UI!ui::data::MemberType#TRANSIENT);
+        self.actions.add(action);
+    } else {
+        log.warn("No edit page defined for transient input: " + self.name + " - " + relationType.eContainer.name + "." + relationType.name);
     }
 }
 
