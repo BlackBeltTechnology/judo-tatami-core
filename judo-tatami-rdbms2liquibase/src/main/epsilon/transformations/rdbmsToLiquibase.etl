@@ -1,5 +1,6 @@
 import "liquibase/modules/table.etl";
 import "liquibase/modules/field.etl";
+import "liquibase/modules/changes.etl";
 
 pre {
 	var targetModel : LIQUIBASE!databaseChangeLog = new LIQUIBASE!databaseChangeLog();
