@@ -147,6 +147,12 @@
             }
         }{{# unless page.dataElement.isAccess}}{{# unless page.dataElement.isRelationKindStatic}} : null{{/ unless}}{{/ unless}},
     {{/if}}
+    {{#if action.isUnsetAction}}
+        onPressed:{{# unless page.relationType.isAccess}}{{# unless page.relationType.isRelationKindStatic}} owner{{ className page.relationType.owner.name }}Store.internal__updatable ?{{/ unless}}{{/ unless}} () async {
+            {{fqVariable page.name}}PageStore.unset{{ fqClass page.relationType.name }}(owner{{ className page.relationType.owner.name }}Store)
+                .catchError((error) => ErrorHandler.errorDialog(context, error));
+        }{{# unless page.relationType.isAccess}}{{# unless page.relationType.isRelationKindStatic}} : null{{/ unless}}{{/ unless}},
+    {{/if}}
     {{# if action.isNavigationToPageAction }}
         onPressed: () async {
             await navigation.open(Routes.{{ fqVariable action.target.name }}Page,

@@ -196,12 +196,8 @@ abstract class _{{ fqClass page.name }}PageStore with Store {
     @action
     Future<void> unset{{ fqClass relation.name }}({{ fqClass relation.owner.name }}Store owner{{ className relation.owner.name }}Store) async {
         try {
-        {{# if page.isPageTypeView }}
             await _{{ fqVariable application.actor.name }}Repository.{{ fqVariable relation.owner.name }}Unset{{ fqClass relation.name }}(owner{{ className relation.owner.name }}Store);
             get{{ fqClass relation.name }}({{# unless relation.isAccess}}owner{{ className relation.owner.name }}Store{{/unless}});
-        {{else}}
-            owner{{ className relation.owner.name }}Store.{{variable relation.name}} = null;
-        {{/ if}}
         } on ApiException catch (error) {
             errorMessage = "Could not unset {{ relation.name }}";
             throw error;
