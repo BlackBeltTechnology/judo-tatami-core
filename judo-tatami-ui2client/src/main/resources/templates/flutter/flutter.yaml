@@ -268,6 +268,31 @@
   copy: true
 
 # ========================================
+# web
+# ========================================
+- overwriteExpression: true
+  factoryExpression: "{#application}"
+  pathExpression: "'web/index.html'"
+  templateName: flutter/web/index.html.hbs
+
+- overwriteExpression: true
+  factoryExpression: "{#application}"
+  pathExpression: "'web/manifest.json'"
+  templateName: flutter/web/manifest.json.hbs
+
+- overwriteExpression: false
+  factoryExpression: "{#application}"
+  pathExpression: "'web/icons/Icon-192.png'"
+  templateName: flutter/web/icons/Icon-192.png
+  copy: true
+
+- overwriteExpression: false
+  factoryExpression: "{#application}"
+  pathExpression: "'web/icons/Icon-512.png'"
+  templateName: flutter/web/icons/Icon-512.png
+  copy: true
+
+# ========================================
 # pages
 # ========================================
 - overwriteExpression: true
@@ -377,6 +402,17 @@
   templateContext:
     - name: layout
       expression: "#self"
+
+# ========================================
+# guards
+# ========================================
+- overwriteExpression: true
+  factoryExpression: "{#application}"
+  pathExpression: >
+    'lib/' +
+    #path(#application.actor.name) +
+    '/ui/guards/auth_guard.dart'
+  templateName: flutter/lib/ui/guards/auth_guard.dart.hbs
 
 # ========================================
 # drawer

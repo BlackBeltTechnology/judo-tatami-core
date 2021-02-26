@@ -42,7 +42,11 @@ abstract class _{{ fqClass page.name }}PageStore with Store {
         {{#if relation.isOrderable }}
         get{{ fqClass relation.name }}({{# unless page.dataElement.isAccess}}owner{{ className relation.owner.name }}Store{{/unless}}).catchError((error) => ErrorHandler.errorDialog(context, error));
         {{ else }}
+            {{# unless page.dataElement.isAccess}}
+        owner{{ className relation.owner.name }}Store.{{variable relation.name}}.sort(sortCompare);
+            {{ else }}
         {{ fqVariable relation.name }}StoreList.sort(sortCompare);
+            {{/unless}}
         {{/if}}
     }
     {{ else }}
@@ -113,11 +117,11 @@ abstract class _{{ fqClass page.name }}PageStore with Store {
             {{ fqVariable relation.name }}StoreList.clear();
             {{ fqVariable relation.name }}StoreList.addAll(await {{ fqVariable relation.name }}StoreFuture);
 
-            {{# unless relation.isOrderable }}
+                    {{# unless relation.isOrderable }}
             if ({{ fqVariable relation.name }}SortCompare != null) {
                 {{ fqVariable relation.name }}StoreList.sort({{ fqVariable relation.name }}SortCompare);
             }
-            {{/ unless }}
+                    {{/ unless }}
 
             return {{ fqVariable relation.name }}StoreList;
                 {{else}}
@@ -134,11 +138,11 @@ abstract class _{{ fqClass page.name }}PageStore with Store {
             ));
             owner{{ className relation.owner.name }}Store.{{ variable relation.name }}.clear();
             owner{{ className relation.owner.name }}Store.{{ variable relation.name }}.addAll(await {{ fqVariable relation.name }}StoreFuture);
-            {{# unless relation.isOrderable }}
+                    {{# unless relation.isOrderable }}
             if ({{ fqVariable relation.name }}SortCompare != null) {
                     owner{{ className relation.owner.name }}Store.{{ variable relation.name }}.sort({{ fqVariable relation.name }}SortCompare);
             }
-            {{/ unless }}
+                    {{/ unless }}
             return owner{{ className relation.owner.name }}Store.{{ variable relation.name }};
                 {{else}}
             {{ fqVariable relation.name }}StoreFuture = ObservableFuture(_{{ fqVariable application.actor.name }}Repository.{{ fqVariable relation.owner.name }}{{ fqClass relation.name }}Get(owner{{ className relation.owner.name }}Store));

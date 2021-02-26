@@ -13,15 +13,18 @@ operation ESM!esm::accesspoint::Access createRelationTypeForClass(application : 
 	relation.isAccess = true;
 	relation.memberType = UI!ui::data::MemberType#ACCESS;
 	relation.relationKind = UI!ui::data::RelationKind#STATIC;
+	relation.target = self.target.mapClassType(application);
 	
 	if (esmUtils.isListSupported(self)) {
 		relation.behaviours.add(UI!ui::data::RelationBehaviourType#LIST);
 	}
 	if (esmUtils.isCreateSupported(self)) {
 		relation.behaviours.add(UI!ui::data::RelationBehaviourType#CREATE);
+		relation.target.isForCreateOrUpdateType = true;
 	}
 	if (esmUtils.isValidateCreateSupported(self)) {
 		relation.behaviours.add(UI!ui::data::RelationBehaviourType#VALIDATE_CREATE);
+		relation.target.isForCreateOrUpdateType = true;
 	}
 	
     relation.isOrderable =
@@ -38,7 +41,6 @@ operation ESM!esm::accesspoint::Access createRelationTypeForClass(application : 
 	relation.isFilterable = self.target.mapping.isDefined();
 
 	clazz.relations.add(relation);
-	relation.target = self.target.mapClassType(application);
 	log.debug("Create relation " + relation.name + " in class type: " + clazz.name);
 	return relation;
 }

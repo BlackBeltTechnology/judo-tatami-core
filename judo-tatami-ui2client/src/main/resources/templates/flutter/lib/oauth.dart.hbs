@@ -15,6 +15,7 @@ import 'dart:html' as html;
 import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
 import 'package:{{ modelPackage application.name }}/{{ path application.name }}/error/error_handler.dart';
+import 'package:{{ modelPackage application.name }}/{{ path application.name }}/repository/package.dart';
 import 'package:flutter_appauth_platform_interface/flutter_appauth_platform_interface.dart';
 import 'package:flutter_appauth_web/flutter_appauth_web.dart';
 import 'package:mobx/mobx.dart';
@@ -226,6 +227,25 @@ class Oauth {
   static bool isLoggedIn() {
     return html.window.sessionStorage[AUTH_ACCESS_TOKEN_KEY] != null && html.window.sessionStorage[AUTH_ACCESS_TOKEN_KEY].isNotEmpty;
   }
+
+  static Future<void> checkPrincipal() async {
+    {{# if application.principal }}
+    {{ fqClass application.name }}Repository _actorRepository = locator<{{ fqClass application.name }}Repository>();
+
+    try {
+      var principal = await _actorRepository.getPrincipal();
+      if (principal.email.isNotEmpty) {
+        authInfo.setIsPrincipalAllowed(true);
+      } else {
+        authInfo.setIsPrincipalAllowed(false);
+      }
+    } catch(error) {
+      authInfo.setIsPrincipalAllowed(false);
+    }
+    {{else}}
+    authInfo.setIsPrincipalAllowed(true);
+    {{/if}}
+  }
 }
 
 class NoopAuth implements Authentication {
@@ -253,6 +273,9 @@ abstract class _AuthInfoStore with Store {
   @observable
   String email;
 
+  @observable
+  bool isPrincipalAllowed;
+
   @computed
   bool get loggedIn {
     if (authenticated != null && authenticated) {
@@ -274,6 +297,11 @@ abstract class _AuthInfoStore with Store {
   @action
   void setEmail(String email) {
     this.email = email;
+  }
+
+  @action
+  void setIsPrincipalAllowed(bool allowed) {
+    this.isPrincipalAllowed = allowed;
   }
 
 }

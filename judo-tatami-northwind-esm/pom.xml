@@ -58,8 +58,7 @@
                     </dependency>
                 </dependencies>
             </plugin>
-            
-            <!-- -->
+
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>exec-maven-plugin</artifactId>
@@ -103,7 +102,6 @@
                         </configuration>
                     </execution>
                     
-                    <!--
                     <execution>
                         <id>generate-client-flutter</id>
                         <phase>compile</phase>
@@ -126,7 +124,6 @@
                             <cleanupDaemonThreads>false</cleanupDaemonThreads>
                         </configuration>
                     </execution>
-                    -->
                     
                 </executions>
                 <dependencies>
@@ -181,7 +178,7 @@
                     </dependency>
                 </dependencies>
             </plugin>
-            <!-- -->
+
             <plugin>
                 <groupId>org.apache.felix</groupId>
                 <artifactId>maven-bundle-plugin</artifactId>
@@ -239,19 +236,6 @@
     </dependencies>
     
     <profiles>
-        <!--
-        <profile>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-                <property>
-                    <name>!myproperty</name>
-                </property>
-            </activation>
-            <properties>
-                <myproperty>some value</myproperty>
-            </properties>
-        </profile>
-        -->
         <profile>
             <id>Windows</id>
             <activation>
@@ -261,12 +245,13 @@
             </activation>
             <properties>
                 <script.executor>powershell.exe</script.executor>
-                <flutter.create.execute>-c .\flutterw.ps1 create -t app --project-name ${client-project-name.fixed} --platforms web --org ${project.groupId} .\\</flutter.create.execute>
-                <flutter.config.web.execute>-c .\flutterw.ps1 config --enable-web</flutter.config.web.execute>
-                <flutter.clean.execute>-c .\flutterw.ps1 clean</flutter.clean.execute>
-                <flutter.get.execute>-c .\flutterw.ps1 pub get</flutter.get.execute>
-                <flutter.buildrunner.execute>-c .\flutterw.ps1 pub run build_runner build --delete-conflicting-outputs</flutter.buildrunner.execute>
-                <flutter.build.execute>-c .\flutterw.ps1 build web</flutter.build.execute>
+                <flutter.create.execute>-c ${basedir}\flutterw.ps1</flutter.create.execute>
+                <flutter.config.web.execute>-c ${basedir}\flutterw.ps1 config --enable-web</flutter.config.web.execute>
+                <flutter.clean.execute>-c ${basedir}\flutterw.ps1 clean</flutter.clean.execute>
+                <flutter.pub.get.execute>-c ${basedir}\flutterw.ps1 pub get</flutter.pub.get.execute>
+                <flutter.pub.upgrade.execute>-c ${basedir}\flutterw.ps1 pub upgrade</flutter.pub.upgrade.execute>
+                <flutter.buildrunner.execute>-c ${basedir}\flutterw.ps1 pub run build_runner build --delete-conflicting-outputs</flutter.buildrunner.execute>
+                <flutter.build.execute>-c ${basedir}\flutterw.ps1 build web --release --dart-define=USE_REQUEST_BASE_URL_FOR_API=true --dart-define=USE_REQUEST_BASE_URL_FROM_SETTINGS=true</flutter.build.execute>
             </properties>
         </profile>
         <profile>
@@ -278,46 +263,26 @@
             </activation>
             <properties>
                 <script.executor>bash</script.executor>
-                <flutter.create.execute>-c "chmod +x ./flutterw;./flutterw create -t app --project-name ${client-project-name.fixed} --platforms web --org ${project.groupId} ./"</flutter.create.execute>
-                <flutter.config.web.execute>-c "chmod +x ./flutterw;./flutterw config --enable-web"</flutter.config.web.execute>
-                <flutter.clean.execute>-c "chmod +x ./flutterw;./flutterw clean"</flutter.clean.execute>
-                <flutter.get.execute>-c "chmod +x ./flutterw;./flutterw pub get"</flutter.get.execute>
-                <flutter.buildrunner.execute>-c "chmod +x ./flutterw;./flutterw pub run build_runner build --delete-conflicting-outputs"</flutter.buildrunner.execute>
-                <flutter.build.execute>-c "chmod +x ./flutterw;./flutterw build web"</flutter.build.execute>
+                <flutter.create.execute>-c "chmod +x ${basedir}/flutterw"</flutter.create.execute>
+                <flutter.config.web.execute>-c "chmod +x ${basedir}/flutterw;${basedir}/flutterw config --enable-web"</flutter.config.web.execute>
+                <flutter.clean.execute>-c "chmod +x ${basedir}/flutterw;${basedir}/flutterw clean"</flutter.clean.execute>
+                <flutter.get.execute>-c "chmod +x ${basedir}/flutterw;${basedir}/flutterw pub get"</flutter.get.execute>
+                <flutter.pub.get.execute>-c "chmod +x ${basedir}/flutterw;${basedir}/flutterw pub get"</flutter.pub.get.execute>
+                <flutter.pub.upgrade.execute>-c "chmod +x ${basedir}/flutterw;${basedir}/flutterw pub upgrade"</flutter.pub.upgrade.execute>
+                <flutter.buildrunner.execute>-c "chmod +x ${basedir}/flutterw;${basedir}/flutterw pub run build_runner build --delete-conflicting-outputs"</flutter.buildrunner.execute>
+                <flutter.build.execute>-c "chmod +x ${basedir}/flutterw;${basedir}/flutterw build web --release --dart-define=USE_REQUEST_BASE_URL_FOR_API=true --dart-define=USE_REQUEST_BASE_URL_FROM_SETTINGS=true"</flutter.build.execute>
             </properties>
         </profile>
-        
+
         <profile>
-            <id>compile-flutter-client</id>
+            <id>download-flutter-wrapper</id>
             <activation>
-                 <file><exists>.</exists></file>
+                 <file>
+                     <missing>flutterw</missing>
+                 </file>
             </activation>
             <build>
                 <plugins>
-                    <plugin>
-                        <!-- Correct project name in dart -->
-                        <groupId>org.codehaus.mojo</groupId>
-                        <artifactId>build-helper-maven-plugin</artifactId>
-                        <version>3.2.0</version>
-                        <executions>
-                            <execution>
-                                <phase>validate</phase>
-                                <id>fix-client-project-name</id>
-                                <goals>
-                                    <goal>regex-property</goal>
-                                </goals>
-                                <configuration>
-                                    <name>client-project-name.fixed</name>
-                                    <value>${client-project-name}</value>
-                                    <regex>[^A-Za-z0-9_]</regex>
-                                    <replacement>_</replacement>
-                                    <toLowerCase>true</toLowerCase>
-                                    <failIfNoMatch>false</failIfNoMatch>
-                                </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
-                    
                     <!-- Download flutter wrapper -->
                     <plugin>
                         <groupId>org.codehaus.mojo</groupId>
@@ -325,31 +290,57 @@
                         <version>1.0</version>
                         <executions>
                             <execution>
-                                <id>download-flutter-wrapper-bash</id>
-                                <phase>generate-sources</phase>
+                                <id>download-flutter-wrapper-bash-preclean</id>
+                                <phase>pre-clean</phase>
                                 <goals>
                                     <goal>download-single</goal>
                                 </goals>
                                 <configuration>
                                     <url>https://raw.githubusercontent.com</url>
                                     <fromFile>BlackbeltTechnology/flutter-wrapper/master/dist/flutterw</fromFile>
-                                    <toDir>${client-target-dir}/.skeleton</toDir>
+                                    <toDir>${basedir}</toDir>
                                 </configuration>
                             </execution>
                             <execution>
-                                <id>download-flutter-wrapper-ps1</id>
-                                <phase>generate-sources</phase>
+                                <id>download-flutter-wrapper-ps1-preclean</id>
+                                <phase>pre-clean</phase>
                                 <goals>
                                     <goal>download-single</goal>
                                 </goals>
                                 <configuration>
                                     <url>https://raw.githubusercontent.com</url>
                                     <fromFile>BlackbeltTechnology/flutter-wrapper/master/dist/flutterw.ps1</fromFile>
-                                    <toDir>${client-target-dir}/.skeleton</toDir>
+                                    <toDir>${basedir}</toDir>
                                 </configuration>
                             </execution>
+                            <execution>
+                                <id>download-flutter-wrapper-bash-validate</id>
+                                <phase>pre-clean</phase>
+                                <goals>
+                                    <goal>download-single</goal>
+                                </goals>
+                                <configuration>
+                                    <url>https://raw.githubusercontent.com</url>
+                                    <fromFile>BlackbeltTechnology/flutter-wrapper/master/dist/flutterw</fromFile>
+                                    <toDir>${basedir}</toDir>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>download-flutter-wrapper-ps1-validate</id>
+                                <phase>pre-clean</phase>
+                                <goals>
+                                    <goal>download-single</goal>
+                                </goals>
+                                <configuration>
+                                    <url>https://raw.githubusercontent.com</url>
+                                    <fromFile>BlackbeltTechnology/flutter-wrapper/master/dist/flutterw.ps1</fromFile>
+                                    <toDir>${basedir}</toDir>
+                                </configuration>
+                            </execution>
+
                         </executions>
                     </plugin>
+
 
                     <!-- Execute flutter installer and generate default flutter project skeleton -->
                     <plugin>
@@ -362,7 +353,6 @@
                             </environmentVariables>
                         </configuration>
                         <executions>
-
                             <execution>
                                 <id>flutter-config-web-enable</id>
                                 <goals>
@@ -370,195 +360,663 @@
                                 </goals>
                                 <phase>generate-sources</phase>
                                 <configuration>
-                                    <workingDirectory>${client-target-dir}/.skeleton</workingDirectory>
+                                    <workingDirectory>${project.basedir}/target/classes/model/client/northwind__admin</workingDirectory>
                                     <executable>${script.executor}</executable>
                                     <commandlineArgs>${flutter.config.web.execute}</commandlineArgs>
                                 </configuration>
                             </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        <!-- northwind__admin -->
+        <profile>
+            <id>create-flutter-client-northwind__admin</id>
+            <activation>
+                 <file><exists>.</exists></file>
+            </activation>
+            <build>
+                <plugins>
+                    
+                    <plugin>
+                        <artifactId>maven-clean-plugin</artifactId>
+                        <version>3.1.0</version>
+                        <executions>
                             
                             <execution>
-                                <id>install-flutter-and-create-skeleton</id>
+                                <id>clean-generated-northwind__admin</id>
+                                <phase>pre-clean</phase>
                                 <goals>
-                                    <goal>exec</goal>
+                                    <goal>clean</goal>
                                 </goals>
-                                <phase>generate-sources</phase>
                                 <configuration>
-                                    <workingDirectory>${client-target-dir}/.skeleton</workingDirectory>
-                                    <executable>${script.executor}</executable>
-                                    <commandlineArgs>${flutter.create.execute}</commandlineArgs>
-                                </configuration>
-                            </execution>
+                                    <filesets>
+                                        <fileset>
+                                            <directory>${project.basedir}/target/classes/model/client/northwind__admin/build</directory>
+                                            <includes>
+                                                <include>**/*</include>
+                                            </includes>
+                                            <followSymlinks>false</followSymlinks>
+                                        </fileset>
 
+                                        <fileset>
+                                            <directory>${project.basedir}/target/classes/model/client/northwind__admin</directory>
+                                            <includes>
+                                                <include>**/*.g.dart</include>
+                                            </includes>
+                                            <followSymlinks>false</followSymlinks>
+                                        </fileset>
 
-                            <!-- INTERNAL USER -->
-                            <execution>
-                                <id>frontend-clean-northwind-internal-user</id>
-                                <goals>
-                                    <goal>exec</goal>
-                                </goals>
-                                <phase>compile</phase>
-                                <configuration>
-                                    <workingDirectory>${client-target-dir}/northwind__internaluser</workingDirectory>
-                                    <executable>${script.executor}</executable>
-                                    <commandlineArgs>${flutter.clean.execute}</commandlineArgs>
-                                </configuration>
-                            </execution>
-
-                            <execution>
-                                <id>frontend-get-northwind-internal-user</id>
-                                <goals>
-                                    <goal>exec</goal>
-                                </goals>
-                                <phase>compile</phase>
-                                <configuration>
-                                    <workingDirectory>${client-target-dir}/northwind__internaluser</workingDirectory>
-                                    <executable>${script.executor}</executable>
-                                    <commandlineArgs>${flutter.get.execute}</commandlineArgs>
-                                </configuration>
-                            </execution>
-
-                            <execution>
-                                <id>frontend-buildrunner-northwind-internal-user</id>
-                                <goals>
-                                    <goal>exec</goal>
-                                </goals>
-                                <phase>compile</phase>
-                                <configuration>
-                                    <workingDirectory>${client-target-dir}/northwind__internaluser</workingDirectory>
-                                    <executable>${script.executor}</executable>
-                                    <commandlineArgs>${flutter.buildrunner.execute}</commandlineArgs>
-                                </configuration>
-                            </execution>
-
-                            <execution>
-                                <id>frontend-build-northwind-internal-user</id>
-                                <goals>
-                                    <goal>exec</goal>
-                                </goals>
-                                <phase>compile</phase>
-                                <configuration>
-                                    <workingDirectory>${client-target-dir}/northwind__internaluser</workingDirectory>
-                                    <executable>${script.executor}</executable>
-                                    <commandlineArgs>${flutter.build.execute}</commandlineArgs>
-                                </configuration>
-                            </execution>
-
-                            <!-- EXTERNAL USER -->
-                            <execution>
-                                <id>frontend-clean-northwind-external-user</id>
-                                <goals>
-                                    <goal>exec</goal>
-                                </goals>
-                                <phase>compile</phase>
-                                <configuration>
-                                    <workingDirectory>${client-target-dir}/northwind__externaluser</workingDirectory>
-                                    <executable>${script.executor}</executable>
-                                    <commandlineArgs>${flutter.clean.execute}</commandlineArgs>
-                                </configuration>
-                            </execution>
-
-                            <execution>
-                                <id>frontend-get-northwind-external-user</id>
-                                <goals>
-                                    <goal>exec</goal>
-                                </goals>
-                                <phase>compile</phase>
-                                <configuration>
-                                    <workingDirectory>${client-target-dir}/northwind__externaluser</workingDirectory>
-                                    <executable>${script.executor}</executable>
-                                    <commandlineArgs>${flutter.get.execute}</commandlineArgs>
-                                </configuration>
-                            </execution>
-
-                            <execution>
-                                <id>frontend-buildrunner-northwind-external-user</id>
-                                <goals>
-                                    <goal>exec</goal>
-                                </goals>
-                                <phase>compile</phase>
-                                <configuration>
-                                    <workingDirectory>${client-target-dir}/northwind__externaluser</workingDirectory>
-                                    <executable>${script.executor}</executable>
-                                    <commandlineArgs>${flutter.buildrunner.execute}</commandlineArgs>
-                                </configuration>
-                            </execution>
-
-                            <execution>
-                                <id>frontend-build-northwind-external-user</id>
-                                <goals>
-                                    <goal>exec</goal>
-                                </goals>
-                                <phase>compile</phase>
-                                <configuration>
-                                    <workingDirectory>${client-target-dir}/northwind__externaluser</workingDirectory>
-                                    <executable>${script.executor}</executable>
-                                    <commandlineArgs>${flutter.build.execute}</commandlineArgs>
-                                </configuration>
-                            </execution>
-
-                            <execution>
-                                <id>generate-ui</id>
-                                <phase>generate-resources</phase>
-                                <goals>
-                                    <goal>java</goal>
-                                </goals>
-                                <configuration>
-                                    <mainClass>hu.blackbelt.judo.tatami.esm2ui.Esm2UiWork</mainClass>
-                                    <arguments>
-                                        <argument>${modelFile}</argument>
-                                        <argument>${modelName}</argument>
-                                        <argument>${basedir}/target/classes/model/${modelName}-ui.model</argument>
-                                    </arguments>
-                                    <includeProjectDependencies>true</includeProjectDependencies>
-                                    <includePluginDependencies>true</includePluginDependencies>
-                                    <cleanupDaemonThreads>false</cleanupDaemonThreads>
-                                </configuration>
-                            </execution>
-                            
-                            <execution>
-                                <id>generate-client-flutter</id>
-                                <phase>generate-resources</phase>
-                                <goals>
-                                    <goal>java</goal>
-                                </goals>
-                                <configuration>
-                                    <mainClass>hu.blackbelt.judo.tatami.ui2client.Ui2Client</mainClass>
-                                    <arguments>
-                                        <argument>${basedir}/target/classes/model/${modelName}-ui.model</argument>
-                                        <argument>${modelName}</argument>
-                                        <argument>${client-target-dir}</argument>
-                                        <argument>flutter/flutter.yaml</argument>
-                                        <argument>${client-generated-actors}</argument>
-                                        <argument>${client-target-dir}/.skeleton</argument>
-                                        <argument>${basedir}/target/classes/model</argument>
-                                    </arguments>
-                                    <includeProjectDependencies>true</includeProjectDependencies>
-                                    <includePluginDependencies>true</includePluginDependencies>
-                                    <cleanupDaemonThreads>false</cleanupDaemonThreads>
+                                    </filesets>
                                 </configuration>
                             </execution>
                         </executions>
-                        <dependencies>
+                        
+                    </plugin>
+                    
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>exec-maven-plugin</artifactId>
+                        <version>1.6.0</version>
+                        <configuration>
+                            <environmentVariables>
+                                <FLUTTER_HOME>${flutter-home}</FLUTTER_HOME>
+                            </environmentVariables>
+                        </configuration>
+                        
+                        <executions>
+
+                            <!--
+                            <execution>
+                                <id>frontend-clean-northwind__admin</id>
+                                <goals>
+                                    <goal>exec</goal>
+                                </goals>
+                                <phase>clean</phase>
+                                <configuration>
+                                    <workingDirectory>${project.basedir}/northwind__admin</workingDirectory>
+                                    <executable>${script.executor}</executable>
+                                    <commandlineArgs>${flutter.clean.execute}</commandlineArgs>
+                                </configuration>
+                            </execution>
+                            -->
+                            <execution>
+                                <id>frontend-pub-get-northwind__admin</id>
+                                <goals>
+                                    <goal>exec</goal>
+                                </goals>
+                                <phase>compile</phase>
+                                <configuration>
+                                    <workingDirectory>${project.basedir}/target/classes/model/client/northwind__admin</workingDirectory>
+                                    <executable>${script.executor}</executable>
+                                    <commandlineArgs>${flutter.pub.get.execute}</commandlineArgs>
+                                </configuration>
+                            </execution>
+
+                            <!--
+                            <execution>
+                                <id>frontend-pub-upgrade-northwind__admin</id>
+                                <goals>
+                                    <goal>exec</goal>
+                                </goals>
+                                <phase>generate-resources</phase>
+                                <configuration>
+                                    <workingDirectory>${project.basedir}/northwind__admin</workingDirectory>
+                                    <executable>${script.executor}</executable>
+                                    <commandlineArgs>${flutter.pub.upgrade.execute}</commandlineArgs>
+                                </configuration>
+                            </execution>
+                            -->
+
+                            <execution>
+                                <id>frontend-buildrunner-northwind__admin</id>
+                                <goals>
+                                    <goal>exec</goal>
+                                </goals>
+                                <phase>compile</phase>
+                                <configuration>
+                                    <workingDirectory>${project.basedir}/target/classes/model/client/northwind__admin</workingDirectory>
+                                    <executable>${script.executor}</executable>
+                                    <commandlineArgs>${flutter.buildrunner.execute}</commandlineArgs>
+                                </configuration>
+                            </execution>
+
+                            <execution>
+                                <id>frontend-build-northwind__admin</id>
+                                <goals>
+                                    <goal>exec</goal>
+                                </goals>
+                                <phase>compile</phase>
+                                <configuration>
+                                    <workingDirectory>${project.basedir}/target/classes/model/client/northwind__admin</workingDirectory>
+                                    <executable>${script.executor}</executable>
+                                    <commandlineArgs>${flutter.build.execute}</commandlineArgs>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        <!-- northwind__authexternaluser -->
+        <profile>
+            <id>create-flutter-client-northwind__authexternaluser</id>
+            <activation>
+                 <file><exists>.</exists></file>
+            </activation>
+            <build>
+                <plugins>
+                    
+                    <plugin>
+                        <artifactId>maven-clean-plugin</artifactId>
+                        <version>3.1.0</version>
+                        <executions>
                             
-                            <dependency>
-                                <groupId>hu.blackbelt.judo.tatami</groupId>
-                                <artifactId>judo-tatami-esm2ui</artifactId>
-                                <version>${project.version}</version>
-                            </dependency>
+                            <execution>
+                                <id>clean-generated-northwind__authexternaluser</id>
+                                <phase>pre-clean</phase>
+                                <goals>
+                                    <goal>clean</goal>
+                                </goals>
+                                <configuration>
+                                    <filesets>
+                                        <fileset>
+                                            <directory>${project.basedir}/target/classes/model/client/northwind__authexternaluser/build</directory>
+                                            <includes>
+                                                <include>**/*</include>
+                                            </includes>
+                                            <followSymlinks>false</followSymlinks>
+                                        </fileset>
+
+                                        <fileset>
+                                            <directory>${project.basedir}/target/classes/model/client/northwind__authexternaluser</directory>
+                                            <includes>
+                                                <include>**/*.g.dart</include>
+                                            </includes>
+                                            <followSymlinks>false</followSymlinks>
+                                        </fileset>
+
+                                    </filesets>
+                                </configuration>
+                            </execution>
+                        </executions>
+                        
+                    </plugin>
+                    
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>exec-maven-plugin</artifactId>
+                        <version>1.6.0</version>
+                        <configuration>
+                            <environmentVariables>
+                                <FLUTTER_HOME>${flutter-home}</FLUTTER_HOME>
+                            </environmentVariables>
+                        </configuration>
+                        
+                        <executions>
+
+                            <!--
+                            <execution>
+                                <id>frontend-clean-northwind__authexternaluser</id>
+                                <goals>
+                                    <goal>exec</goal>
+                                </goals>
+                                <phase>clean</phase>
+                                <configuration>
+                                    <workingDirectory>${project.basedir}/northwind__authexternaluser</workingDirectory>
+                                    <executable>${script.executor}</executable>
+                                    <commandlineArgs>${flutter.clean.execute}</commandlineArgs>
+                                </configuration>
+                            </execution>
+                            -->
+                            <execution>
+                                <id>frontend-pub-get-northwind__authexternaluser</id>
+                                <goals>
+                                    <goal>exec</goal>
+                                </goals>
+                                <phase>compile</phase>
+                                <configuration>
+                                    <workingDirectory>${project.basedir}/target/classes/model/client/northwind__authexternaluser</workingDirectory>
+                                    <executable>${script.executor}</executable>
+                                    <commandlineArgs>${flutter.pub.get.execute}</commandlineArgs>
+                                </configuration>
+                            </execution>
+
+                            <!--
+                            <execution>
+                                <id>frontend-pub-upgrade-northwind__authexternaluser</id>
+                                <goals>
+                                    <goal>exec</goal>
+                                </goals>
+                                <phase>generate-resources</phase>
+                                <configuration>
+                                    <workingDirectory>${project.basedir}/northwind__authexternaluser</workingDirectory>
+                                    <executable>${script.executor}</executable>
+                                    <commandlineArgs>${flutter.pub.upgrade.execute}</commandlineArgs>
+                                </configuration>
+                            </execution>
+                            -->
+
+                            <execution>
+                                <id>frontend-buildrunner-northwind__authexternaluser</id>
+                                <goals>
+                                    <goal>exec</goal>
+                                </goals>
+                                <phase>compile</phase>
+                                <configuration>
+                                    <workingDirectory>${project.basedir}/target/classes/model/client/northwind__authexternaluser</workingDirectory>
+                                    <executable>${script.executor}</executable>
+                                    <commandlineArgs>${flutter.buildrunner.execute}</commandlineArgs>
+                                </configuration>
+                            </execution>
+
+                            <execution>
+                                <id>frontend-build-northwind__authexternaluser</id>
+                                <goals>
+                                    <goal>exec</goal>
+                                </goals>
+                                <phase>compile</phase>
+                                <configuration>
+                                    <workingDirectory>${project.basedir}/target/classes/model/client/northwind__authexternaluser</workingDirectory>
+                                    <executable>${script.executor}</executable>
+                                    <commandlineArgs>${flutter.build.execute}</commandlineArgs>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+
+        <!-- northwind__authinternaluser -->
+        <profile>
+            <id>create-flutter-client-northwind__authinternaluser</id>
+            <activation>
+                 <file><exists>.</exists></file>
+            </activation>
+            <build>
+                <plugins>
+                    
+                    <plugin>
+                        <artifactId>maven-clean-plugin</artifactId>
+                        <version>3.1.0</version>
+                        <executions>
                             
-                            <dependency>
-                                <groupId>hu.blackbelt.judo.tatami</groupId>
-                                <artifactId>judo-tatami-ui2client</artifactId>
-                                <version>${project.version}</version>
-                            </dependency>
+                            <execution>
+                                <id>clean-generated-northwind__authinternaluser</id>
+                                <phase>pre-clean</phase>
+                                <goals>
+                                    <goal>clean</goal>
+                                </goals>
+                                <configuration>
+                                    <filesets>
+                                        <fileset>
+                                            <directory>${project.basedir}/target/classes/model/client/northwind__authinternaluser/build</directory>
+                                            <includes>
+                                                <include>**/*</include>
+                                            </includes>
+                                            <followSymlinks>false</followSymlinks>
+                                        </fileset>
+
+                                        <fileset>
+                                            <directory>${project.basedir}/target/classes/model/client/northwind__authinternaluser</directory>
+                                            <includes>
+                                                <include>**/*.g.dart</include>
+                                            </includes>
+                                            <followSymlinks>false</followSymlinks>
+                                        </fileset>
+
+                                    </filesets>
+                                </configuration>
+                            </execution>
+                        </executions>
+                        
+                    </plugin>
+                    
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>exec-maven-plugin</artifactId>
+                        <version>1.6.0</version>
+                        <configuration>
+                            <environmentVariables>
+                                <FLUTTER_HOME>${flutter-home}</FLUTTER_HOME>
+                            </environmentVariables>
+                        </configuration>
+                        
+                        <executions>
+
+                            <!--
+                            <execution>
+                                <id>frontend-clean-northwind__authinternaluser</id>
+                                <goals>
+                                    <goal>exec</goal>
+                                </goals>
+                                <phase>clean</phase>
+                                <configuration>
+                                    <workingDirectory>${project.basedir}/northwind__authinternaluser</workingDirectory>
+                                    <executable>${script.executor}</executable>
+                                    <commandlineArgs>${flutter.clean.execute}</commandlineArgs>
+                                </configuration>
+                            </execution>
+                            -->
+                            <execution>
+                                <id>frontend-pub-get-northwind__authinternaluser</id>
+                                <goals>
+                                    <goal>exec</goal>
+                                </goals>
+                                <phase>compile</phase>
+                                <configuration>
+                                    <workingDirectory>${project.basedir}/target/classes/model/client/northwind__authinternaluser</workingDirectory>
+                                    <executable>${script.executor}</executable>
+                                    <commandlineArgs>${flutter.pub.get.execute}</commandlineArgs>
+                                </configuration>
+                            </execution>
+
+                            <!--
+                            <execution>
+                                <id>frontend-pub-upgrade-northwind__authinternaluser</id>
+                                <goals>
+                                    <goal>exec</goal>
+                                </goals>
+                                <phase>generate-resources</phase>
+                                <configuration>
+                                    <workingDirectory>${project.basedir}/northwind__authinternaluser</workingDirectory>
+                                    <executable>${script.executor}</executable>
+                                    <commandlineArgs>${flutter.pub.upgrade.execute}</commandlineArgs>
+                                </configuration>
+                            </execution>
+                            -->
+
+                            <execution>
+                                <id>frontend-buildrunner-northwind__authinternaluser</id>
+                                <goals>
+                                    <goal>exec</goal>
+                                </goals>
+                                <phase>compile</phase>
+                                <configuration>
+                                    <workingDirectory>${project.basedir}/target/classes/model/client/northwind__authinternaluser</workingDirectory>
+                                    <executable>${script.executor}</executable>
+                                    <commandlineArgs>${flutter.buildrunner.execute}</commandlineArgs>
+                                </configuration>
+                            </execution>
+
+                            <execution>
+                                <id>frontend-build-northwind__authinternaluser</id>
+                                <goals>
+                                    <goal>exec</goal>
+                                </goals>
+                                <phase>compile</phase>
+                                <configuration>
+                                    <workingDirectory>${project.basedir}/target/classes/model/client/northwind__authinternaluser</workingDirectory>
+                                    <executable>${script.executor}</executable>
+                                    <commandlineArgs>${flutter.build.execute}</commandlineArgs>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        <!-- northwind__externaluser -->
+        <profile>
+            <id>create-flutter-client-northwind__externaluser</id>
+            <activation>
+                 <file><exists>.</exists></file>
+            </activation>
+            <build>
+                <plugins>
+                    
+                    <plugin>
+                        <artifactId>maven-clean-plugin</artifactId>
+                        <version>3.1.0</version>
+                        <executions>
                             
-                            <dependency>
-                                <groupId>org.slf4j</groupId>
-                                <artifactId>slf4j-simple</artifactId>
-                                <version>1.6.2</version>
-                            </dependency>
+                            <execution>
+                                <id>clean-generated-northwind__externaluser</id>
+                                <phase>pre-clean</phase>
+                                <goals>
+                                    <goal>clean</goal>
+                                </goals>
+                                <configuration>
+                                    <filesets>
+                                        <fileset>
+                                            <directory>${project.basedir}/target/classes/model/client/northwind__externaluser/build</directory>
+                                            <includes>
+                                                <include>**/*</include>
+                                            </includes>
+                                            <followSymlinks>false</followSymlinks>
+                                        </fileset>
+
+                                        <fileset>
+                                            <directory>${project.basedir}/target/classes/model/client/northwind__externaluser</directory>
+                                            <includes>
+                                                <include>**/*.g.dart</include>
+                                            </includes>
+                                            <followSymlinks>false</followSymlinks>
+                                        </fileset>
+
+                                    </filesets>
+                                </configuration>
+                            </execution>
+                        </executions>
+                        
+                    </plugin>
+                    
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>exec-maven-plugin</artifactId>
+                        <version>1.6.0</version>
+                        <configuration>
+                            <environmentVariables>
+                                <FLUTTER_HOME>${flutter-home}</FLUTTER_HOME>
+                            </environmentVariables>
+                        </configuration>
+                        
+                        <executions>
+
+                            <!--
+                            <execution>
+                                <id>frontend-clean-northwind__externaluser</id>
+                                <goals>
+                                    <goal>exec</goal>
+                                </goals>
+                                <phase>clean</phase>
+                                <configuration>
+                                    <workingDirectory>${project.basedir}/northwind__externaluser</workingDirectory>
+                                    <executable>${script.executor}</executable>
+                                    <commandlineArgs>${flutter.clean.execute}</commandlineArgs>
+                                </configuration>
+                            </execution>
+                            -->
+                            <execution>
+                                <id>frontend-pub-get-northwind__externaluser</id>
+                                <goals>
+                                    <goal>exec</goal>
+                                </goals>
+                                <phase>compile</phase>
+                                <configuration>
+                                    <workingDirectory>${project.basedir}/target/classes/model/client/northwind__externaluser</workingDirectory>
+                                    <executable>${script.executor}</executable>
+                                    <commandlineArgs>${flutter.pub.get.execute}</commandlineArgs>
+                                </configuration>
+                            </execution>
+
+                            <!--
+                            <execution>
+                                <id>frontend-pub-upgrade-northwind__externaluser</id>
+                                <goals>
+                                    <goal>exec</goal>
+                                </goals>
+                                <phase>generate-resources</phase>
+                                <configuration>
+                                    <workingDirectory>${project.basedir}/northwind__externaluser</workingDirectory>
+                                    <executable>${script.executor}</executable>
+                                    <commandlineArgs>${flutter.pub.upgrade.execute}</commandlineArgs>
+                                </configuration>
+                            </execution>
+                            -->
+
+                            <execution>
+                                <id>frontend-buildrunner-northwind__externaluser</id>
+                                <goals>
+                                    <goal>exec</goal>
+                                </goals>
+                                <phase>compile</phase>
+                                <configuration>
+                                    <workingDirectory>${project.basedir}/target/classes/model/client/northwind__externaluser</workingDirectory>
+                                    <executable>${script.executor}</executable>
+                                    <commandlineArgs>${flutter.buildrunner.execute}</commandlineArgs>
+                                </configuration>
+                            </execution>
+
+                            <execution>
+                                <id>frontend-build-northwind__externaluser</id>
+                                <goals>
+                                    <goal>exec</goal>
+                                </goals>
+                                <phase>compile</phase>
+                                <configuration>
+                                    <workingDirectory>${project.basedir}/target/classes/model/client/northwind__externaluser</workingDirectory>
+                                    <executable>${script.executor}</executable>
+                                    <commandlineArgs>${flutter.build.execute}</commandlineArgs>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        <!-- northwind__internaluser -->
+        <profile>
+            <id>create-flutter-client-northwind__internaluser</id>
+            <activation>
+                 <file><exists>.</exists></file>
+            </activation>
+            <build>
+                <plugins>
+                    
+                    <plugin>
+                        <artifactId>maven-clean-plugin</artifactId>
+                        <version>3.1.0</version>
+                        <executions>
                             
-                        </dependencies>
+                            <execution>
+                                <id>clean-generated-northwind__internaluser</id>
+                                <phase>pre-clean</phase>
+                                <goals>
+                                    <goal>clean</goal>
+                                </goals>
+                                <configuration>
+                                    <filesets>
+                                        <fileset>
+                                            <directory>${project.basedir}/target/classes/model/client/northwind__internaluser/build</directory>
+                                            <includes>
+                                                <include>**/*</include>
+                                            </includes>
+                                            <followSymlinks>false</followSymlinks>
+                                        </fileset>
+
+                                        <fileset>
+                                            <directory>${project.basedir}/target/classes/model/client/northwind__internaluser</directory>
+                                            <includes>
+                                                <include>**/*.g.dart</include>
+                                            </includes>
+                                            <followSymlinks>false</followSymlinks>
+                                        </fileset>
+
+                                    </filesets>
+                                </configuration>
+                            </execution>
+                        </executions>
+                        
+                    </plugin>
+                    
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>exec-maven-plugin</artifactId>
+                        <version>1.6.0</version>
+                        <configuration>
+                            <environmentVariables>
+                                <FLUTTER_HOME>${flutter-home}</FLUTTER_HOME>
+                            </environmentVariables>
+                        </configuration>
+                        
+                        <executions>
+
+                            <!--
+                            <execution>
+                                <id>frontend-clean-northwind__internaluser</id>
+                                <goals>
+                                    <goal>exec</goal>
+                                </goals>
+                                <phase>clean</phase>
+                                <configuration>
+                                    <workingDirectory>${project.basedir}/northwind__internaluser</workingDirectory>
+                                    <executable>${script.executor}</executable>
+                                    <commandlineArgs>${flutter.clean.execute}</commandlineArgs>
+                                </configuration>
+                            </execution>
+                            -->
+                            <execution>
+                                <id>frontend-pub-get-northwind__internaluser</id>
+                                <goals>
+                                    <goal>exec</goal>
+                                </goals>
+                                <phase>compile</phase>
+                                <configuration>
+                                    <workingDirectory>${project.basedir}/target/classes/model/client/northwind__internaluser</workingDirectory>
+                                    <executable>${script.executor}</executable>
+                                    <commandlineArgs>${flutter.pub.get.execute}</commandlineArgs>
+                                </configuration>
+                            </execution>
+
+                            <!--
+                            <execution>
+                                <id>frontend-pub-upgrade-northwind__internaluser</id>
+                                <goals>
+                                    <goal>exec</goal>
+                                </goals>
+                                <phase>generate-resources</phase>
+                                <configuration>
+                                    <workingDirectory>${project.basedir}/northwind__internaluser</workingDirectory>
+                                    <executable>${script.executor}</executable>
+                                    <commandlineArgs>${flutter.pub.upgrade.execute}</commandlineArgs>
+                                </configuration>
+                            </execution>
+                            -->
+
+                            <execution>
+                                <id>frontend-buildrunner-northwind__internaluser</id>
+                                <goals>
+                                    <goal>exec</goal>
+                                </goals>
+                                <phase>compile</phase>
+                                <configuration>
+                                    <workingDirectory>${project.basedir}/target/classes/model/client/northwind__internaluser</workingDirectory>
+                                    <executable>${script.executor}</executable>
+                                    <commandlineArgs>${flutter.buildrunner.execute}</commandlineArgs>
+                                </configuration>
+                            </execution>
+
+                            <execution>
+                                <id>frontend-build-northwind__internaluser</id>
+                                <goals>
+                                    <goal>exec</goal>
+                                </goals>
+                                <phase>compile</phase>
+                                <configuration>
+                                    <workingDirectory>${project.basedir}/target/classes/model/client/northwind__internaluser</workingDirectory>
+                                    <executable>${script.executor}</executable>
+                                    <commandlineArgs>${flutter.build.execute}</commandlineArgs>
+                                </configuration>
+                            </execution>
+                        </executions>
                     </plugin>
                 </plugins>
             </build>
