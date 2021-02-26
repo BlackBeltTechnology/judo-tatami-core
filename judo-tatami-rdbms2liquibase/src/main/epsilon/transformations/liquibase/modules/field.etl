@@ -99,12 +99,12 @@ operation RDBMS!RdbmsField toFieldDefinition () : String {
 rule CreateFieldOperationToColumnOnNewTable
     transform s : RDBMS!RdbmsCreateFieldOperation
     to t : LIQUIBASE!Column {
-        guard: not s.isForeignKey and s.eContainer.isNewTable
+        guard: not s.isForeignKey and s.eContainer.isTypeOf(RDBMS!RdbmsCreateTableOperation)
         var i = 0;
         var size = targetModel.changeSet.size();
         while (i < size and targetModel.changeSet[i].id <> "create-table-" + s.eContainer.table.sqlName) i++;
 
-        t.name = s.sqlName;
+        t.name = s.field.sqlName;
         t.type = s.field.toFieldDefinition();
         if (i < size) {
             targetModel.changeSet[i].createTable[0].column.add(t);
@@ -118,7 +118,7 @@ rule CreateFieldOperationToColumnOnNewTable
 rule CreateFieldOperationToChangeSetOnExistingTable
     transform s : RDBMS!RdbmsCreateFieldOperation
     to t : LIQUIBASE!ChangeSet {
-        guard: not s.isForeignKey and not s.eContainer.isNewTable
+        guard: not s.isForeignKey and s.eContainer.isTypeOf(RDBMS!RdbmsModifyTableOperation)
         t.id = "create-field-for-" + s.eContainer.table.sqlName;
         t.author = "tatami-rdbms2liquibase";
         t.dbms = dialect;
@@ -137,9 +137,9 @@ rule CreateFieldOperationToChangeSetOnExistingTable
 rule CreateFieldOperationToAddColumnDefOnExistingTable
     transform s : RDBMS!RdbmsCreateFieldOperation
     to t : LIQUIBASE!AddColumnDef {
-        guard: not s.isForeignKey and not s.eContainer.isNewTable
+        guard: not s.isForeignKey and s.eContainer.isTypeOf(RDBMS!RdbmsModifyTableOperation)
 
-        t.name = s.sqlName;
+        t.name = s.field.sqlName;
         t.type = s.field.toFieldDefinition();
         if (s.isIdentifierField) {
             t.constraints = new LIQUIBASE!Constraints(primaryKey = true, nullable = not s.field.mandatory);
@@ -163,7 +163,7 @@ rule CreateFieldOperationToAddColumnDefOnExistingTable
 /////////////////////////////////////////
 // CREATE FIELDS: FOREIGN KEY
 
-rule CreateFieldOperationWithForeignKeyToChangeSetOnExistingTable
+rule CreateFieldOperationWithForeignKeyToChangeSet
     transform s : RDBMS!RdbmsCreateFieldOperation
     to t : LIQUIBASE!ChangeSet {
         guard: s.isForeignKey
@@ -182,12 +182,12 @@ rule CreateFieldOperationWithForeignKeyToChangeSetOnExistingTable
         }
 }
 
-rule CreateFieldOperationWithForeignKeyToAddColumnDefOnExistingTable
+rule CreateFieldOperationWithForeignKeyToAddColumnDef
     transform s : RDBMS!RdbmsCreateFieldOperation
     to t : LIQUIBASE!AddColumnDef {
         guard: s.isForeignKey
 
-        t.name = s.sqlName;
+        t.name = s.field.sqlName;
         t.type = s.field.toFieldDefinition();
         t.constraints = new LIQUIBASE!Constraints(referencedTableName = s.field.referenceKey.eContainer.sqlName,
                                                   referencedColumnNames = s.field.referenceKey.sqlName);
@@ -230,7 +230,7 @@ rule DeleteFieldOperationToDropColumn
     transform s : RDBMS!RdbmsDeleteFieldOperation
     to t : LIQUIBASE!DropColumn {
         t.tableName = s.eContainer.table.sqlName;
-        t.columnName = s.sqlName;
+        t.columnName = s.field.sqlName;
 
         var i = 0;
         var size = targetModel.changeSet.size();
@@ -240,6 +240,8 @@ rule DeleteFieldOperationToDropColumn
         }
 }
 
+// delete table operations are located here in order to guarantee that this part is
+// executed last
 rule DeleteTableOperationToChangeSet
     transform s : RDBMS!RdbmsDeleteTableOperation
     to t : LIQUIBASE!ChangeSet {
@@ -261,7 +263,7 @@ rule DeleteTableOperationToChangeSet
 rule DeleteTableOperationToDropTable
     transform s : RDBMS!RdbmsDeleteTableOperation
     to t : LIQUIBASE!DropTable {
-        t.tableName = s.sqlName;
+        t.tableName = s.table.sqlName;
 
         var i = 0;
         var size = targetModel.changeSet.size();

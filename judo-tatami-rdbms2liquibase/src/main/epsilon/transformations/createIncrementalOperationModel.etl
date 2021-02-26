@@ -112,19 +112,19 @@ rule CreateNewValueFieldOnNewTable
 	    t.name = "Create " + f.name;
 	    t.sqlName = f.sqlName;
 	    t.field = f;
-		f.uuid.println("Create new field on new table: ");
+		f.uuid.println("Create new value field on new table: ");
 }
 
 rule CreateNewValueFieldOnExistingTable
 	transform f : NEW!RdbmsValueField
 	to t : INCREMENTAL!RdbmsCreateFieldOperation {
-		guard : previousModel.tableExists(f.eContainer) and (not previousModel.tableOf(f.eContainer).fieldExists(f))
+		guard : previousModel.tableExists(f.eContainer) and not previousModel.tableOf(f.eContainer).fieldExists(f)
 	    newModel.tableOf(f.eContainer).equivalent("ModifyTableOperationForExistingTable").createFieldOperations.add(t);
 	    t.uuid =  f.uuid + "-CreateValueField";
 	    t.name = "Create " + f.name;
 	    t.sqlName = f.sqlName;
 	    t.field = f;
-		f.uuid.println("Create new field on existing table: ");
+		f.uuid.println("Create new value field on existing table: ");
 }
 
 rule DeletePreviousValueFieldOnExistingTable
@@ -137,7 +137,7 @@ rule DeletePreviousValueFieldOnExistingTable
 	    t.sqlName = f.sqlName;
 
 	    t.field = f;
-		f.uuid.println("Delete field on existing table: ");
+		f.uuid.println("Delete value field on existing table: ");
 }
 
 rule CreateNewForeignKeyOnNewTable
@@ -202,7 +202,7 @@ rule CreateNewIdentifierFieldOnExistingTable
 	    t.sqlName = f.sqlName;
 	    t.field = f;
 	    t.isIdentifierField = true;
-		f.uuid.println("Create new identifier key on existing table: ");
+		f.uuid.println("Create new identifier field on existing table: ");
 }
 
 rule DeletePreviousIdentifierFieldOnExistingTable
@@ -215,7 +215,7 @@ rule DeletePreviousIdentifierFieldOnExistingTable
 	    t.name = "Delete " + f.name;
 		t.sqlName = f.sqlName;
 
-		f.uuid.println("Delete foreign key on existing table: ");
+		f.uuid.println("Delete identifier field on existing table: ");
 }
 
 rule ModifyExistingValueField
@@ -247,8 +247,8 @@ rule ModifyExistingValueField
         }
 
         if (f.isSqlNameChanged(n)) {
-            t.nameChanged = true;
-            (f.sqlName + " -> " + n.sqlName).println("    Name changed: ");
+            t.sqlNameChanged = true;
+            (f.sqlName + " -> " + n.sqlName).println("    Sql name changed: ");
         }
 
         if (f.isMandatoryChanged(n)) {
@@ -292,8 +292,8 @@ rule ModifyExistingForeignKeyField
         }
 
         if (f.isSqlNameChanged(n)) {
-            t.nameChanged = true;
-            (f.sqlName + " -> " + n.sqlName).println("    Name changed: ");
+            t.sqlNameChanged = true;
+            (f.sqlName + " -> " + n.sqlName).println("    Sql name changed: ");
         }
 
         if (f.isMandatoryChanged(n)) {
@@ -301,13 +301,13 @@ rule ModifyExistingForeignKeyField
         }
 }
 
+// todo: rename existing id field
+
 rule RenameExistingTable
 	transform s : NEW!RdbmsTable
 	to t : INCREMENTAL!RdbmsModifyTableOperation
 	extends ModifyTableOperationForExistingTable {
     	guard : previousModel.tableExists(s) and previousModel.tableOf(s).isSqlNameChanged(s)
-
-        t.nameChanged = true;
-        (previousModel.tableOf(s).sqlName + " -> " + s.sqlName).println("    Name changed: ");
-
+        t.sqlNameChanged = true;
+        (previousModel.tableOf(s).sqlName + " -> " + s.sqlName).println("    Sql name changed: ");
 }

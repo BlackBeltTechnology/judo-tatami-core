@@ -53,7 +53,7 @@ rule TableToAddNotNullChangeSet
 rule CreateTableOperationToChangeSet
     transform s : RDBMS!RdbmsCreateTableOperation
     to t : LIQUIBASE!ChangeSet {
-        t.id = "create-table-" + s.sqlName;
+        t.id = "create-table-" + s.table.sqlName;
         t.author = "tatami-rdbms2liquibase";
         t.dbms = dialect;
         t.context = RDBMS!RdbmsModel.all.first.version;
@@ -65,9 +65,48 @@ rule CreateTableOperationToChangeSet
 rule CreateTableOperationToCreateTable
     transform s : RDBMS!RdbmsCreateTableOperation
     to t : LIQUIBASE!CreateTable {
-        t.tableName = s.sqlName;
+        t.tableName = s.table.sqlName;
         s.equivalent("CreateTableOperationToChangeSet").createTable.add(t);
         ("CreateTable " + t.tableName + " created").println();
+}
+
+// CREATE
+/////////////////////////////////////////
+// MODIFY
+
+rule ModifyTableOperationToChangeSet // rename
+    transform s : RDBMS!RdbmsModifyTableOperation
+    to t : LIQUIBASE!ChangeSet {
+        guard: s.sqlNameChanged
+        t.id = "rename-tables";
+        t.author = "tatami-rdbms2liquibase";
+        t.dbms = dialect;
+        t.context = RDBMS!RdbmsModel.all.first.version;
+        t.logicalFilePath = "rename-tables";
+
+        var i = 0;
+        var size = targetModel.changeSet.size();
+        while (i < size and targetModel.changeSet[i].id <> t.id) i++;
+        if (i == size) {
+            targetModel.changeSet.add(t);
+            ("ChangeSet " + t.id + " created").println();
+        }
+}
+
+rule ModifyTableOperationToRanameTable
+    transform s : RDBMS!RdbmsModifyTableOperation
+    to t : LIQUIBASE!RenameTable {
+        guard: s.sqlNameChanged
+        t.oldTableName = s.previousTable.sqlName;
+        t.newTableName = s.table.sqlName;
+
+        var i = 0;
+        var size = targetModel.changeSet.size();
+        while (i < size and targetModel.changeSet[i].id <> "rename-tables") i++;
+        if (i < size) {
+            targetModel.changeSet[i].renameTable.add(t);
+            ("RenameTable (" + t.oldTableName + " -> " + t.newTableName + ") added to " + targetModel.changeSet[i].id).println();
+        }
 }
 
 // Rdbms Operations
