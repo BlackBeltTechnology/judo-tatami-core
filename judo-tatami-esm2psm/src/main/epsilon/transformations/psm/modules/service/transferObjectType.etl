@@ -213,6 +213,11 @@ rule CreateStringOperationEnumeration
     matches.name = "matches";
     t.members.add(matches);
 
+    var like = new JUDOPSM!EnumerationMember;
+    like.ordinal = 7;
+    like.name = "like";
+    t.members.add(like);
+
     s.getPSMExtensionNamespaceEquivalent().elements.add(t);
     log.debug("Created enumeration of String operations: " + t.name);
 }
