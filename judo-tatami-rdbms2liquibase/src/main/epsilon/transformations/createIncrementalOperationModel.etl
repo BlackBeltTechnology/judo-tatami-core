@@ -257,6 +257,40 @@ rule ModifyExistingValueField
 
 }
 
+rule ModifyExistingIdentifierField
+	transform f : PREVIOUS!RdbmsIdentifierField
+	to t : INCREMENTAL!RdbmsModifyFieldOperation {
+		guard : newModel.tableExists(f.eContainer) and newModel.tableOf(f.eContainer).fieldExists(f) and (f.isAnyChanged(newModel.tableOf(f.eContainer).fieldOf(f)) or not newModel.tableOf(f.eContainer).fieldOf(f).isTypeOf(NEW!RdbmsIdentifierField))
+		var n : RDBMS!RdbmsField = newModel.tableOf(f.eContainer).fieldOf(f);
+
+	    newModel.tableOf(f.eContainer).equivalent("ModifyTableOperationForExistingTable").modifyFieldOperations.add(t);
+	    t.uuid =  f.uuid + "-ModifyField";
+	    t.field = n;
+	    t.previousField = f;
+	    t.name = "Modify " + f.name;
+		t.sqlName = f.sqlName;
+
+		f.uuid.println("Modify field: ");
+
+        if (f.isSqlTypeChanged(n)) {
+            t.typeChanged = true;
+            (f.rdbmsTypeName + " -> " + n.rdbmsTypeName).println("    Type changed: ");
+        } else if (f.isSizeChanged(n) or f.isPrecisionChanged(n) or f.isScaleChanged(n) or f.isStorageByteChanged(n)) {
+            t.sizeChanged = true;
+            ("Size: " + f.size  + " -> " + n.size + " Precision: " + f.precision  + " -> " + n.precision + " Scale: " + f.scale  + " -> " + n.scale + " StorageByte: " + f.storageByte  + " -> " + n.storageByte).println("    Type changed: ");
+        }
+
+        if (f.isSqlNameChanged(n)) {
+            t.sqlNameChanged = true;
+            (f.sqlName + " -> " + n.sqlName).println("    Sql name changed: ");
+        }
+
+        if (f.isMandatoryChanged(n)) {
+            t.mandatoryChanged = true;
+        }
+
+}
+
 rule ModifyExistingForeignKeyField
 	transform f : PREVIOUS!RdbmsForeignKey
 	to t : INCREMENTAL!RdbmsModifyFieldOperation {
@@ -300,8 +334,6 @@ rule ModifyExistingForeignKeyField
             t.mandatoryChanged = true;
         }
 }
-
-// todo: rename existing id field
 
 rule RenameExistingTable
 	transform s : NEW!RdbmsTable

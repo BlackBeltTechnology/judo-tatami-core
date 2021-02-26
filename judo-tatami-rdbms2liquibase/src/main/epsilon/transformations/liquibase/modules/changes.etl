@@ -1,4 +1,45 @@
 /////////////////////////////////////////
+// RENAME TABLES
+
+rule ModifyTableOperationToChangeSet
+    transform s : RDBMS!RdbmsModifyTableOperation
+    to t : LIQUIBASE!ChangeSet {
+        guard: s.sqlNameChanged
+        t.id = "rename-tables";
+        t.author = "tatami-rdbms2liquibase";
+        t.dbms = dialect;
+        t.context = RDBMS!RdbmsModel.all.first.version;
+        t.logicalFilePath = "rename-tables";
+
+        var i = 0;
+        var size = targetModel.changeSet.size();
+        while (i < size and targetModel.changeSet[i].id <> t.id) i++;
+        if (i == size) {
+            targetModel.changeSet.add(t);
+            ("ChangeSet " + t.id + " created").println();
+        }
+}
+
+rule ModifyTableOperationToRanameTable
+    transform s : RDBMS!RdbmsModifyTableOperation
+    to t : LIQUIBASE!RenameTable {
+        guard: s.sqlNameChanged
+        t.oldTableName = s.previousTable.sqlName;
+        t.newTableName = s.table.sqlName;
+
+        var i = 0;
+        var size = targetModel.changeSet.size();
+        while (i < size and targetModel.changeSet[i].id <> "rename-tables") i++;
+        if (i < size) {
+            targetModel.changeSet[i].renameTable.add(t);
+            ("RenameTable (" + t.oldTableName + " -> " + t.newTableName + ") added to " + targetModel.changeSet[i].id).println();
+        }
+}
+
+// RENAME TABLES
+/////////////////////////////////////////
+// TODO RENAME FIELDS
+/////////////////////////////////////////
 // CREATE TABLES
 
 @lazy
@@ -25,7 +66,7 @@ rule CreateTableOperationToCreateTable
 
 // CREATE TABLES
 /////////////////////////////////////////
-// CREATE FIELDS
+// CREATE FIELDS (NEW, NO FOREIGN KEY)
 
 rule CreateFieldOperationToColumnOnNewTable
     transform s : RDBMS!RdbmsCreateFieldOperation
@@ -46,6 +87,10 @@ rule CreateFieldOperationToColumnOnNewTable
             ("Column " + t.name + " created in " + targetModel.changeSet[i].createTable[0].tableName + "").println();
         }
 }
+
+// CREATE FIELDS (NEW, NO FOREIGN KEY)
+/////////////////////////////////////////
+// CREATE FIELDS (EXISTING, NO FOREIGN KEY)
 
 rule CreateFieldOperationToChangeSetOnExistingTable
     transform s : RDBMS!RdbmsCreateFieldOperation
@@ -90,50 +135,14 @@ rule CreateFieldOperationToAddColumnDefOnExistingTable
         }
 }
 
-// CREATE FIELDS (NO FOREIGN KEY)
+// CREATE FIELDS (EXISTING, NO FOREIGN KEY)
 /////////////////////////////////////////
-// RENAME TABLES
-
-rule ModifyTableOperationToChangeSet
-    transform s : RDBMS!RdbmsModifyTableOperation
-    to t : LIQUIBASE!ChangeSet {
-        guard: s.sqlNameChanged
-        t.id = "rename-tables";
-        t.author = "tatami-rdbms2liquibase";
-        t.dbms = dialect;
-        t.context = RDBMS!RdbmsModel.all.first.version;
-        t.logicalFilePath = "rename-tables";
-
-        var i = 0;
-        var size = targetModel.changeSet.size();
-        while (i < size and targetModel.changeSet[i].id <> t.id) i++;
-        if (i == size) {
-            targetModel.changeSet.add(t);
-            ("ChangeSet " + t.id + " created").println();
-        }
-}
-
-rule ModifyTableOperationToRanameTable
-    transform s : RDBMS!RdbmsModifyTableOperation
-    to t : LIQUIBASE!RenameTable {
-        guard: s.sqlNameChanged
-        t.oldTableName = s.previousTable.sqlName;
-        t.newTableName = s.table.sqlName;
-
-        var i = 0;
-        var size = targetModel.changeSet.size();
-        while (i < size and targetModel.changeSet[i].id <> "rename-tables") i++;
-        if (i < size) {
-            targetModel.changeSet[i].renameTable.add(t);
-            ("RenameTable (" + t.oldTableName + " -> " + t.newTableName + ") added to " + targetModel.changeSet[i].id).println();
-        }
-}
-
-// RENAME TABLES
+// TODO change type of fields
+// TODO change size of fields
+// TODO change not null constraint
+// TODO change foreign key constraint
 /////////////////////////////////////////
-// TODO MODIFY FIELDS/TABLES
-/////////////////////////////////////////
-// CREATE FIELDS: FOREIGN KEY
+// CREATE FIELDS (FOREIGN KEY)
 
 rule CreateFieldOperationWithForeignKeyToChangeSet
     transform s : RDBMS!RdbmsCreateFieldOperation
@@ -177,9 +186,9 @@ rule CreateFieldOperationWithForeignKeyToAddColumnDef
         }
 }
 
-// CREATE FIELDS: FOREIGN KEY
+// CREATE FIELDS (FOREIGN KEY)
 /////////////////////////////////////////
-// DELETE FIELDS
+// DROP FIELDS
 
 rule DeleteFieldOperationToChangeSet
     transform s : RDBMS!RdbmsDeleteFieldOperation
@@ -213,9 +222,9 @@ rule DeleteFieldOperationToDropColumn
         }
 }
 
-// DELETE FIELDS
+// DROP FIELDS
 /////////////////////////////////////////
-// DELETE TABLES
+// DROP TABLES
 
 rule DeleteTableOperationToChangeSet
     transform s : RDBMS!RdbmsDeleteTableOperation
