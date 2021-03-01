@@ -89,6 +89,13 @@ operation UI!ui::CallOperationAction setIcon() {
     } 
 }
 
+operation UI!ui::RefreshAction setIcon() {
+    if (self.icon.isUndefined()) {
+        self.icon = new UI!ui::Icon();
+        self.icon.name = 'refresh';
+    }
+}
+
 operation UI!ui::Action setLabel() {
     if (self.label.isUndefined()) {
         self.label = 'Action';
@@ -160,6 +167,12 @@ operation UI!ui::SetAction setLabel() {
 operation UI!ui::UnsetAction setLabel() {
     if (self.label.isUndefined()) {
         self.label = 'Unset';
+    } 
+}
+
+operation UI!ui::RefreshAction setLabel() {
+    if (self.label.isUndefined()) {
+        self.label = 'Refresh';
     } 
 }
 

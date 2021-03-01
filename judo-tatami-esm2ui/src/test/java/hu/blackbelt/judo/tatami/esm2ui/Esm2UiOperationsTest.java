@@ -78,6 +78,7 @@ import hu.blackbelt.judo.meta.ui.Container;
 import hu.blackbelt.judo.meta.ui.CreateAction;
 import hu.blackbelt.judo.meta.ui.DeleteAction;
 import hu.blackbelt.judo.meta.ui.EditAction;
+import hu.blackbelt.judo.meta.ui.RefreshAction;
 import hu.blackbelt.judo.meta.ui.Flex;
 import hu.blackbelt.judo.meta.ui.Link;
 import hu.blackbelt.judo.meta.ui.PageContainer;
@@ -268,10 +269,11 @@ public class Esm2UiOperationsTest {
         assertTrue(defaultContainer1.isPresent());
         final Optional<VisualElement> instanceActionsContainerE1View = defaultContainer1.get().getChildren().stream().filter(c -> c instanceof Flex && c.getName().equals("instanceActions")).findAny();
         assertTrue(instanceActionsContainerE1View.isPresent());
-        assertEquals(3, ((Flex)instanceActionsContainerE1View.get()).getChildren().size());
+        assertEquals(4, ((Flex)instanceActionsContainerE1View.get()).getChildren().size());
         assertTrue(((Flex)instanceActionsContainerE1View.get()).getChildren().stream().anyMatch(b -> b instanceof Button && ((Button)b).getAction() != null && ((Button)b).getAction() instanceof BackAction));
         assertTrue(((Flex)instanceActionsContainerE1View.get()).getChildren().stream().anyMatch(b -> b instanceof Button && ((Button)b).getAction() != null && ((Button)b).getAction() instanceof DeleteAction));
         assertTrue(((Flex)instanceActionsContainerE1View.get()).getChildren().stream().anyMatch(b -> b instanceof Button && ((Button)b).getAction() != null && ((Button)b).getAction() instanceof EditAction));
+        assertTrue(((Flex)instanceActionsContainerE1View.get()).getChildren().stream().anyMatch(b -> b instanceof Button && ((Button)b).getAction() != null && ((Button)b).getAction() instanceof RefreshAction));
         
         final Optional<VisualElement> viewContainerE1View = defaultContainer1.get().getChildren().stream()
                 .filter(c -> c instanceof Flex && c.getName().equals(e1.getName() + "View")).findAny();

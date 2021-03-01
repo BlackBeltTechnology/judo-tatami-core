@@ -1,6 +1,7 @@
 operation UI!ui::PageDefinition calculateActions(application : UI!ui::Application, preview : Boolean) {
     var relationType = self.getRelationType();
-
+    var dashboard = relationType.isDefined() and self.pageType == UI!ui::PageType#DASHBOARD;
+    
     if (self.pageType == UI!ui::PageType#CREATE or self.pageType == UI!ui::PageType#UPDATE) {
         
         for (container in self.containers) {
@@ -10,11 +11,16 @@ operation UI!ui::PageDefinition calculateActions(application : UI!ui::Applicatio
         }
     }
     
-    if (self.pageType == UI!ui::PageType#VIEW) {
+    if (self.pageType == UI!ui::PageType#VIEW or (dashboard and not relationType.isCollection)) {
         
         for (container in self.containers) {
             var buttonGroup : UI!ui::Flex = container.createGroupForInstanceActionButtons();
-            buttonGroup.children.add(createButton("back", "BACK", 2d, new UI!ui::BackAction()));
+            
+            if (self.pageType == UI!ui::PageType#VIEW) {
+                buttonGroup.children.add(createButton("back", "BACK", 2d, new UI!ui::BackAction()));
+            }
+            
+            buttonGroup.children.add(createButton("refresh", "REFRESH", 2d, new UI!ui::RefreshAction()));
             
             if (relationType.getIsRelationBehaviourTypeDeletable()) {
                 buttonGroup.children.add(createButton("delete", "DELETE", 2d, new UI!ui::DeleteAction()));
@@ -40,7 +46,7 @@ operation UI!ui::PageDefinition calculateActions(application : UI!ui::Applicatio
         }
     }
     
-    if (self.pageType == UI!ui::PageType#TABLE) {
+    if (self.pageType == UI!ui::PageType#TABLE or (dashboard and relationType.isCollection)) {
         if (relationType.isUndefined()) {
             throw "Table type have to be mapped to relation type";
         } 
@@ -51,7 +57,7 @@ operation UI!ui::PageDefinition calculateActions(application : UI!ui::Applicatio
             for (container in self.containers) {
                 var buttonGroup : UI!ui::Flex = container.createGroupForInstanceActionButtons();
             
-                if (not relationType.isAccess) {
+                if (not relationType.isAccess and self.pageType == UI!ui::PageType#TABLE) {
                     buttonGroup.children.add(createButton("back", "BACK", 2d, new UI!ui::BackAction()));
                 }
         
