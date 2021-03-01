@@ -35,7 +35,9 @@ import '../settings.dart';
         {{# if container.owner.isPageTypeDashboard }}
         initial: true,
         {{/ if }}
+        {{# unless container.owner.isPageTypeUpdate }}
         transitionsBuilder: TransitionsBuilders.slideLeftWithFade,
+        {{/ unless }}
         guards: [AuthGuard],
     ),
     {{/ each }}
