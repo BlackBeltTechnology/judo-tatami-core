@@ -7,13 +7,11 @@ import hu.blackbelt.judo.tatami.core.workflow.work.WorkReportPredicate;
 import hu.blackbelt.judo.tatami.core.workflow.work.WorkStatus;
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 
 /**
@@ -83,6 +81,16 @@ public class SequentialFlow extends AbstractWorkFlow {
         
         public SequentialFlow.Builder execute(Work... works) {
             this.works.addAll(Arrays.asList(works));
+            return this;
+        }
+
+        public SequentialFlow.Builder execute(Optional<Work>... works) {
+            this.works.addAll(Arrays.stream(works).filter(Optional::isPresent).map(Optional::get).collect(Collectors.toList()));
+            return this;
+        }
+
+        public SequentialFlow.Builder execute(Stream<Optional<Work>> works) {
+            this.works.addAll(works.filter(Optional::isPresent).map(Optional::get).collect(Collectors.toList()));
             return this;
         }
 

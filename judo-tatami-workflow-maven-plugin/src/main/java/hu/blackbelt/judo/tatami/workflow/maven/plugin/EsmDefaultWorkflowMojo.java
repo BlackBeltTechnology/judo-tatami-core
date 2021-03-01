@@ -1,16 +1,9 @@
 package hu.blackbelt.judo.tatami.workflow.maven.plugin;
 
-import java.io.File;
-import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.net.*;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
-import hu.blackbelt.judo.meta.psm.runtime.PsmModel;
+import hu.blackbelt.judo.meta.esm.runtime.EsmModel;
+import hu.blackbelt.judo.tatami.workflow.DefaultWorkflowSave;
+import hu.blackbelt.judo.tatami.workflow.DefaultWorkflowSetupParameters;
+import hu.blackbelt.judo.tatami.workflow.EsmDefaultWorkflow;
 import org.apache.maven.artifact.DependencyResolutionRequiredException;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -22,17 +15,25 @@ import org.codehaus.plexus.classworlds.realm.ClassRealm;
 import org.eclipse.aether.RepositorySystem;
 import org.eclipse.aether.RepositorySystemSession;
 import org.eclipse.aether.repository.RemoteRepository;
-import hu.blackbelt.judo.meta.psm.runtime.PsmModel.PsmValidationException;
-import hu.blackbelt.judo.tatami.workflow.PsmDefaultWorkflow;
-import hu.blackbelt.judo.tatami.workflow.DefaultWorkflowSave;
-import hu.blackbelt.judo.tatami.workflow.DefaultWorkflowSetupParameters;
+
+import java.io.File;
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLClassLoader;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import static com.google.common.base.Strings.isNullOrEmpty;
 
-@Mojo(name = "psm-default-workflow",
+@Mojo(name = "esm-default-workflow",
 		defaultPhase = LifecyclePhase.COMPILE,
 		requiresDependencyResolution = ResolutionScope.COMPILE)
-public class PsmDefaultWorkflowMojo extends AbstractMojo {
+public class EsmDefaultWorkflowMojo extends AbstractMojo {
 
 	@Parameter(defaultValue = "${project}", readonly = true, required = true)
 	private MavenProject project;
@@ -49,8 +50,8 @@ public class PsmDefaultWorkflowMojo extends AbstractMojo {
 	@Parameter( defaultValue = "${plugin}", readonly = true )
 	private PluginDescriptor pluginDescriptor;
 
-	@Parameter(property = "psmModelFile")
-	private File psmModelFile;
+	@Parameter(property = "esmModelFile")
+	private File esmModelFile;
 
 	@Parameter(property = "destination")
 	private File destination;
@@ -66,6 +67,12 @@ public class PsmDefaultWorkflowMojo extends AbstractMojo {
 
 	@Parameter(property = "enableMetrics", defaultValue = "true")
 	private Boolean enableMetrics = true;
+
+	@Parameter(property = "ignoreEsm2Psm", defaultValue = "false")
+	private Boolean ignoreEsm2Psm = false;
+
+	@Parameter(property = "ignoreEsm2Ui", defaultValue = "false")
+	private Boolean ignoreEsm2Ui = false;
 
 	@Parameter(property = "ignorePsm2Asm", defaultValue = "false")
 	private Boolean ignorePsm2Asm = false;
@@ -100,11 +107,11 @@ public class PsmDefaultWorkflowMojo extends AbstractMojo {
 	@Parameter(property = "ignoreScript2Operation", defaultValue = "false")
 	private Boolean ignoreScript2Operation = false;
 
-	@Parameter(property = "psmGeneratorClassName")
-	private String psmGeneratorClassName;
+	@Parameter(property = "esmGeneratorClassName")
+	private String esmGeneratorClassName;
 
-	@Parameter(property = "psmGeneratorMethodName")
-	private String psmGeneratorMethodName;
+	@Parameter(property = "esmGeneratorMethodName")
+	private String esmGeneratorMethodName;
 
 	@Parameter(property = "validateModels", defaultValue = "false")
 	private Boolean validateModels = false;
@@ -128,7 +135,7 @@ public class PsmDefaultWorkflowMojo extends AbstractMojo {
 		getLog().debug("Set urls for URLClassLoader: " + Arrays.asList(urlsForClassLoader));
 
 		// need to define parent classloader which knows all dependencies of the plugin
-		ClassLoader classLoader = new URLClassLoader(urlsForClassLoader, PsmDefaultWorkflowMojo.class.getClassLoader());
+		ClassLoader classLoader = new URLClassLoader(urlsForClassLoader, EsmDefaultWorkflowMojo.class.getClassLoader());
 		Thread.currentThread().setContextClassLoader(classLoader);
 	}
 
@@ -147,39 +154,40 @@ public class PsmDefaultWorkflowMojo extends AbstractMojo {
 			throw new MojoExecutionException("Failed to set classloader", e);
 		}
 
-		PsmDefaultWorkflow defaultWorkflow;
+		EsmDefaultWorkflow defaultWorkflow;
 		try {
 			DefaultWorkflowSetupParameters.DefaultWorkflowSetupParametersBuilder parameters =
 					DefaultWorkflowSetupParameters
 					.defaultWorkflowSetupParameters()
-						.runInParallel(runInParallel)
-						.enableMetrics(enableMetrics)
-						.ignorePsm2Asm(ignorePsm2Asm)
-						.ignoreAsm2jaxrsapi(ignoreAsm2jaxrsapi)
-						.ignoreAsm2Openapi(ignoreAsm2Openapi)
-						.ignoreAsm2Rdbms(ignoreAsm2Rdbms)
-						.ignoreAsm2Keycloak(ignoreAsm2Keycloak)
-						.ignoreAsm2sdk(ignoreAsm2sdk)
-						.ignoreAsm2Expression(ignoreAsm2Expression)
-						.ignoreAsm2Script(ignoreAsm2Script)
-						.ignorePsm2Measure(ignorePsm2Measure)
-						.ignoreScript2Operation(ignoreScript2Operation)
-						.ignoreRdbms2Liquibase(ignoreRdbms2Liquibase)
-						.validateModels(validateModels)
-						.modelName(modelName)
-						.dialectList(dialectList);
-
+					.runInParallel(runInParallel)
+					.enableMetrics(enableMetrics)
+					.ignoreEsm2Psm(ignoreEsm2Psm)
+					.ignoreEsm2Ui(ignoreEsm2Ui)
+					.ignorePsm2Asm(ignorePsm2Asm)
+					.ignoreAsm2jaxrsapi(ignoreAsm2jaxrsapi)
+					.ignoreAsm2Openapi(ignoreAsm2Openapi)
+					.ignoreAsm2Rdbms(ignoreAsm2Rdbms)
+					.ignoreAsm2Keycloak(ignoreAsm2Keycloak)
+					.ignoreAsm2sdk(ignoreAsm2sdk)
+					.ignoreAsm2Expression(ignoreAsm2Expression)
+					.ignoreAsm2Script(ignoreAsm2Script)
+					.ignorePsm2Measure(ignorePsm2Measure)
+					.ignoreScript2Operation(ignoreScript2Operation)
+					.ignoreRdbms2Liquibase(ignoreRdbms2Liquibase)
+					.validateModels(validateModels)
+					.modelName(modelName)
+					.dialectList(dialectList);
 			//DefaultWorkflowSetupParameters.addTransformerCalculatedUris(parameters);
 
-			if (!isNullOrEmpty(psmGeneratorClassName) && !isNullOrEmpty(psmGeneratorMethodName)) {
-				Class generatorClass = Thread.currentThread().getContextClassLoader().loadClass(psmGeneratorClassName);
-				Method generatorMethod = generatorClass.getMethod(psmGeneratorMethodName);
-				PsmModel psmModel = (PsmModel) generatorMethod.invoke(generatorClass.newInstance());
-				parameters.psmModel(psmModel);
+			if (!isNullOrEmpty(esmGeneratorClassName) && !isNullOrEmpty(esmGeneratorMethodName)) {
+				Class generatorClass = Thread.currentThread().getContextClassLoader().loadClass(esmGeneratorClassName);
+				Method generatorMethod = generatorClass.getMethod(esmGeneratorMethodName);
+				EsmModel esmModel = (EsmModel) generatorMethod.invoke(generatorClass.newInstance());
+				parameters.esmModel(esmModel);
 			} else {
-				parameters.psmModelSourceURI(psmModelFile.toURI());
+				parameters.esmModelSourceURI(esmModelFile.toURI());
 			}
-			defaultWorkflow = new PsmDefaultWorkflow(parameters);
+			defaultWorkflow = new EsmDefaultWorkflow(parameters);
 		} catch (ClassNotFoundException | NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
 			throw new MojoFailureException("An error occurred during the setup phase of the workflow.", e);
 		}

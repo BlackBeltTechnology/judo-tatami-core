@@ -53,8 +53,6 @@ public class Ui2FlutterClient {
             generatorTemplates.addAll(overridedTemplates);
         }
         ClientGenerator clientGenerator = new ClientGenerator(uiModel, scriptUris, generatorTemplates);
-        clientGenerator.getHandlebars().registerHelpers(FlutterHelper.class);
-        FlutterHelper.registerSpEL(clientGenerator.getSpelEvaulationContext());
         return clientGenerator;
     }
 
@@ -98,7 +96,7 @@ public class Ui2FlutterClient {
 
         String finalProjectSkeleton = projectSkeleton;
         String finalOpenapiYamlNameTemplate = openapiYamlNameTemplate;
-        generatedApps.entrySet()
+        generatedApps.entrySet().stream()
                 .forEach(getDirectoryWriter(targetDirectory, OUTPUT_NAME_GENERATOR_FUNCTION, log).andThen(e -> {
 
                     String clientName = clientNames.get(e.getKey().getFQName()).get(CLIENT_NAME);

@@ -59,49 +59,41 @@
                 </dependencies>
             </plugin>
 
+            <!-- Create models -->
+            <plugin>
+                <groupId>hu.blackbelt.judo.tatami</groupId>
+                <artifactId>judo-tatami-workflow-maven-plugin</artifactId>
+                <version>${project.version}</version>
+                <executions>
+                    <execution>
+                        <id>execute-model-from-file</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>esm-default-workflow</goal>
+                        </goals>
+                        <configuration>
+                            <modelName>northwind</modelName>
+                            <destination>${basedir}/target/classes/model</destination>
+                            <esmModelFile>${basedir}/target/classes/model/northwind-esm.model</esmModelFile>
+                            <dialectList>hsqldb,postgresql,oracle</dialectList>
+                            <validateModels>true</validateModels>
+                        </configuration>
+                    </execution>
+                </executions>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.slf4j</groupId>
+                        <artifactId>slf4j-simple</artifactId>
+                        <version>${slf4j-version}</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
+            
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>exec-maven-plugin</artifactId>
                 <version>3.0.0</version>
                 <executions>
-                    <execution>
-                        <id>generate-psm</id>
-                        <phase>generate-sources</phase>
-                        <goals>
-                            <goal>java</goal>
-                        </goals>
-                        <configuration>
-                            <mainClass>hu.blackbelt.judo.tatami.esm2psm.Esm2PsmWork</mainClass>
-                            <arguments>
-                                <argument>${basedir}/target/classes/model/northwind-esm.model</argument>
-                                <argument>northwind</argument>
-                                <argument>${basedir}/target/classes/model/northwind-psm.model</argument>
-                            </arguments>
-                            <includeProjectDependencies>true</includeProjectDependencies>
-                            <includePluginDependencies>true</includePluginDependencies>
-                            <cleanupDaemonThreads>false</cleanupDaemonThreads>
-                        </configuration>
-                    </execution>
-                    
-                    <execution>
-                        <id>generate-ui</id>
-                        <phase>generate-sources</phase>
-                        <goals>
-                            <goal>java</goal>
-                        </goals>
-                        <configuration>
-                            <mainClass>hu.blackbelt.judo.tatami.esm2ui.Esm2UiWork</mainClass>
-                            <arguments>
-                                <argument>${basedir}/target/classes/model/northwind-esm.model</argument>
-                                <argument>northwind</argument>
-                                <argument>${basedir}/target/classes/model/northwind-ui.model</argument>
-                            </arguments>
-                            <includeProjectDependencies>true</includeProjectDependencies>
-                            <includePluginDependencies>true</includePluginDependencies>
-                            <cleanupDaemonThreads>false</cleanupDaemonThreads>
-                        </configuration>
-                    </execution>
-                    
                     <execution>
                         <id>generate-client-flutter</id>
                         <phase>compile</phase>
@@ -129,16 +121,6 @@
                 <dependencies>
                     <dependency>
                         <groupId>hu.blackbelt.judo.tatami</groupId>
-                        <artifactId>judo-tatami-esm2psm</artifactId>
-                        <version>${project.version}</version>
-                    </dependency>
-                    <dependency>
-                        <groupId>hu.blackbelt.judo.tatami</groupId>
-                        <artifactId>judo-tatami-esm2ui</artifactId>
-                        <version>${project.version}</version>
-                    </dependency>
-                    <dependency>
-                        <groupId>hu.blackbelt.judo.tatami</groupId>
                         <artifactId>judo-tatami-ui2client</artifactId>
                         <version>${project.version}</version>
                     </dependency>
@@ -150,35 +132,6 @@
                 </dependencies>
             </plugin>
             
-            <plugin>
-                <groupId>hu.blackbelt.judo.tatami</groupId>
-                <artifactId>judo-tatami-workflow-maven-plugin</artifactId>
-                <version>${project.version}</version>
-                <executions>
-                    <execution>
-                        <id>execute-model-from-file</id>
-                        <phase>generate-sources</phase>
-                        <goals>
-                            <goal>psm-default-workflow</goal>
-                        </goals>
-                        <configuration>
-                            <modelName>northwind</modelName>
-                            <destination>${basedir}/target/classes/model</destination>
-                            <psmModelFile>${basedir}/target/classes/model/northwind-psm.model</psmModelFile>
-                            <dialectList>hsqldb,postgresql,oracle</dialectList>
-                            <validateModels>true</validateModels>
-                        </configuration>
-                    </execution>
-                </executions>
-                <dependencies>
-                    <dependency>
-                        <groupId>org.slf4j</groupId>
-                        <artifactId>slf4j-simple</artifactId>
-                        <version>${slf4j-version}</version>
-                    </dependency>
-                </dependencies>
-            </plugin>
-
             <plugin>
                 <groupId>org.apache.felix</groupId>
                 <artifactId>maven-bundle-plugin</artifactId>

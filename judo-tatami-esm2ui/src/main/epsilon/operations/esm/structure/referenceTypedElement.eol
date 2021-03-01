@@ -12,7 +12,7 @@ operation ESM!esm::structure::ReferenceTypedElement mapViewPage(application : UI
 	
 	log.debug("Create page for relation for view: " + target.name + " (relation: " + self.fqName() + ")");
 	
-	var page : UI!ui::PageDefinition = new UI!ui::PageDefinition();
+	page = new UI!ui::PageDefinition();
 	page.~application = application;
 	page.~originalRelation = self;
 	
@@ -42,7 +42,7 @@ operation ESM!esm::structure::ReferenceTypedElement mapCreatePage(application : 
 
 	log.debug("Create page for relation for create: " + target.name + " (relation: " + self.fqName() + ")");
 	
-	var page : UI!ui::PageDefinition = new UI!ui::PageDefinition();
+	page = new UI!ui::PageDefinition();
 	page.~application = application;
 	page.~originalRelation = self;
 	
@@ -71,7 +71,7 @@ operation ESM!esm::structure::ReferenceTypedElement mapUpdatePage(application : 
 
 	log.debug("Create page for relation for update: " + target.name + " (relation: " + self.fqName() + ")");
 	
-	var page : UI!ui::PageDefinition = new UI!ui::PageDefinition();
+	page = new UI!ui::PageDefinition();
 	page.~application = application;
 	page.~originalRelation = self;
 	
@@ -102,7 +102,7 @@ operation ESM!esm::structure::ReferenceTypedElement mapTablePage(application : U
 
 	log.debug("Create page for relation for table: " + target.name + " (relation: " + self.fqName() + ")");
 	
-	var page : UI!ui::PageDefinition = new UI!ui::PageDefinition();
+	page = new UI!ui::PageDefinition();
 	page.~application = application;
 	page.~originalRelation = self;
 	var relation = self.mapRelationType(application, self.eContainer.mapClassType(application));
