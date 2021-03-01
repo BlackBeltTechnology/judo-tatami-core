@@ -63,18 +63,18 @@
         <judo-meta-psm-version>1.1.0.20210219_121045_4177fd4_develop</judo-meta-psm-version>
         <judo-meta-jql-version>1.0.1.20210222_023942_9019c24_develop</judo-meta-jql-version>
         <judo-meta-jcl-version>1.0.1.20210222_025953_e0b43d4_develop</judo-meta-jcl-version>
-        <judo-meta-script-version>1.0.1-SNAPSHOT</judo-meta-script-version>
+        <judo-meta-script-version>1.0.1.20210301_101346_ba612d3_feature_JNG_2532_support_asString</judo-meta-script-version>
         <judo-meta-asm-version>1.1.0.20210222_023933_c11700f_develop</judo-meta-asm-version>
-        <judo-meta-expression-version>1.0.1-SNAPSHOT</judo-meta-expression-version>
+        <judo-meta-expression-version>1.0.1.20210301_085239_493ae56_feature_JNG_2532_support_asString</judo-meta-expression-version>
         <judo-meta-measure-version>1.0.0.20210222_024736_61927e8_develop</judo-meta-measure-version>
         <judo-meta-liquibase-version>1.0.0.20210222_024614_de57ff9_develop</judo-meta-liquibase-version>
         <judo-meta-openapi-version>1.0.0.20210222_024752_4a53290_develop</judo-meta-openapi-version>
         <judo-meta-ui-version>1.0.0.20210225_185704_5becb12_develop</judo-meta-ui-version>
         <judo-meta-keycloak-version>1.0.0.20210116_100528_3543c98_develop</judo-meta-keycloak-version>
         <judo-dao-api-version>1.0.2.20210223_122846_195d971_develop</judo-dao-api-version>
-        <judo-dispatcher-api-version>1.0.2-SNAPSHOT</judo-dispatcher-api-version>
-        <judo-script-codegen-version>1.1.0-SNAPSHOT</judo-script-codegen-version>
-        <judo-operation-utils-version>1.1.0-SNAPSHOT</judo-operation-utils-version>
+        <judo-dispatcher-api-version>1.0.2.20210226_181700_a9b5c54_feature_JNG_2532_support_asString</judo-dispatcher-api-version>
+        <judo-script-codegen-version>1.1.0.20210301_103144_3d1ead9_feature_JNG_2532_support_asString</judo-script-codegen-version>
+        <judo-operation-utils-version>1.1.0.20210301_103024_49fd015_feature_JNG_2532_support_asString</judo-operation-utils-version>
 
         <structured-map-proxy-version>1.0.6.20210119_121627_130c6ee_develop</structured-map-proxy-version>
 
