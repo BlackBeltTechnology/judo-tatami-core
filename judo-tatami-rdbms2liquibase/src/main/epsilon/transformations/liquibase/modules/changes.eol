@@ -1,0 +1,7 @@
+operation LIQUIBASE!databaseChangeLog changeSetOf(changeSetId : String) : LIQUIBASE!ChangeSet {
+    return self.changeSet.selectOne(cs | cs.id == changeSetId);
+}
+
+operation LIQUIBASE!databaseChangeLog changeSetExists(changeSetId : String) : Boolean {
+    return self.changeSetOf(changeSetId).isDefined();
+}

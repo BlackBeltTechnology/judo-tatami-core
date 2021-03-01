@@ -1,3 +1,5 @@
+import "changes.eol";
+
 /////////////////////////////////////////
 // RENAME TABLES
 
@@ -11,10 +13,7 @@ rule ModifyTableOperationToChangeSet
         t.context = RDBMS!RdbmsModel.all.first.version;
         t.logicalFilePath = "rename-tables";
 
-        var i = 0;
-        var size = targetModel.changeSet.size();
-        while (i < size and targetModel.changeSet[i].id <> t.id) i++;
-        if (i == size) {
+        if (not targetModel.changeSetExists(t.id)) {
             targetModel.changeSet.add(t);
             ("ChangeSet " + t.id + " created").println();
         }
@@ -27,13 +26,8 @@ rule ModifyTableOperationToRanameTable
         t.oldTableName = s.previousTable.sqlName;
         t.newTableName = s.table.sqlName;
 
-        var i = 0;
-        var size = targetModel.changeSet.size();
-        while (i < size and targetModel.changeSet[i].id <> "rename-tables") i++;
-        if (i < size) {
-            targetModel.changeSet[i].renameTable.add(t);
-            ("RenameTable (" + t.oldTableName + " -> " + t.newTableName + ") added to " + targetModel.changeSet[i].id).println();
-        }
+        targetModel.changeSetOf("rename-tables").renameTable.add(t);
+        ("RenameTable (" + t.oldTableName + " -> " + t.newTableName + ") added to " + targetModel.changeSetOf("rename-tables").id).println();
 }
 
 // RENAME TABLES
@@ -72,20 +66,18 @@ rule CreateFieldOperationToColumnOnNewTable
     transform s : RDBMS!RdbmsCreateFieldOperation
     to t : LIQUIBASE!Column {
         guard: not s.isForeignKey and s.eContainer.isTypeOf(RDBMS!RdbmsCreateTableOperation)
-        var i = 0;
-        var size = targetModel.changeSet.size();
-        while (i < size and targetModel.changeSet[i].id <> "create-table-" + s.eContainer.table.sqlName) i++;
 
         t.name = s.field.sqlName;
         t.type = s.field.toFieldDefinition();
         t.remarks = s.field.uuid;
-        if (i < size) {
-            targetModel.changeSet[i].createTable[0].column.add(t);
-            if (s.isIdentifierField) {
-                t.constraints = new LIQUIBASE!Constraints(primaryKey = true, nullable = not s.field.mandatory);
-            }
-            ("Column " + t.name + " created in " + targetModel.changeSet[i].createTable[0].tableName + "").println();
+
+        var createTable = targetModel.changeSetOf("create-table-" + s.eContainer.table.sqlName).createTable[0];
+
+        createTable.column.add(t);
+        if (s.isIdentifierField) {
+            t.constraints = new LIQUIBASE!Constraints(primaryKey = true, nullable = not s.field.mandatory);
         }
+        ("Column " + t.name + " created in " + createTable.tableName + "").println();
 }
 
 // CREATE FIELDS (NEW, NO FOREIGN KEY)
@@ -102,10 +94,7 @@ rule CreateFieldOperationToChangeSetOnExistingTable
         t.context = RDBMS!RdbmsModel.all.first.version;
         t.logicalFilePath = "create-field";
 
-        var i = 0;
-        var size = targetModel.changeSet.size();
-        while (i < size and targetModel.changeSet[i].id <> "create-field-for-" + s.eContainer.table.sqlName) i++;
-        if (i == size) {
+        if (not targetModel.changeSetExists("create-field-for-" + s.eContainer.table.sqlName)) {
             targetModel.changeSet.add(t);
             ("ChangeSet " + t.id + " created").println();
         }
@@ -122,17 +111,14 @@ rule CreateFieldOperationToAddColumnDefOnExistingTable
         if (s.isIdentifierField) {
             t.constraints = new LIQUIBASE!Constraints(primaryKey = true, nullable = not s.field.mandatory);
         }
-        var i = 0;
-        var size = targetModel.changeSet.size();
-        while (i < size and targetModel.changeSet[i].id <> "create-field-for-" + s.eContainer.table.sqlName) i++;
-        if (i < size) {
-            if (targetModel.changeSet[i].addColumn.size == 0) {
-                targetModel.changeSet[i].addColumn.add(new LIQUIBASE!AddColumn(tableName = s.eContainer.table.sqlName));
-                ("AddColumn created in " + targetModel.changeSet[i].id).println();
-            }
-            targetModel.changeSet[i].addColumn[0].column.add(t);
-            ("AddColumnDef created in " + targetModel.changeSet[i].id).println();
+
+        var changeSet = targetModel.changeSetOf("create-field-for-" + s.eContainer.table.sqlName);
+        if (changeSet.addColumn.size == 0) {
+            changeSet.addColumn.add(new LIQUIBASE!AddColumn(tableName = s.eContainer.table.sqlName));
+            ("AddColumn created in " + changeSet.id).println();
         }
+        changeSet.addColumn[0].column.add(t);
+        ("AddColumnDef created in " + changeSet.id).println();
 }
 
 // CREATE FIELDS (EXISTING, NO FOREIGN KEY)
@@ -154,10 +140,7 @@ rule CreateFieldOperationWithForeignKeyToChangeSet
         t.context = RDBMS!RdbmsModel.all.first.version;
         t.logicalFilePath = "create-foreign-key";
 
-        var i = 0;
-        var size = targetModel.changeSet.size();
-        while (i < size and targetModel.changeSet[i].id <> "create-foreign-key-for-" + s.eContainer.table.sqlName) i++;
-        if (i == size) {
+        if (not targetModel.changeSetExists("create-foreign-key-for-" + s.eContainer.table.sqlName)) {
             targetModel.changeSet.add(t);
             ("ChangeSet " + t.id + " created").println();
         }
@@ -173,17 +156,15 @@ rule CreateFieldOperationWithForeignKeyToAddColumnDef
         t.remarks = s.field.uuid;
         t.constraints = new LIQUIBASE!Constraints(referencedTableName = s.field.referenceKey.eContainer.sqlName,
                                                   referencedColumnNames = s.field.referenceKey.sqlName);
-        var i = 0;
-        var size = targetModel.changeSet.size();
-        while (i < size and targetModel.changeSet[i].id <> "create-foreign-key-for-" + s.eContainer.table.sqlName) i++;
-        if (i < size) {
-            if (targetModel.changeSet[i].addColumn.size == 0) {
-                targetModel.changeSet[i].addColumn.add(new LIQUIBASE!AddColumn(tableName = s.eContainer.table.sqlName));
-                ("AddColumn created in " + targetModel.changeSet[i].id).println();
-            }
-            targetModel.changeSet[i].addColumn[0].column.add(t);
-            ("AddColumnDef created in " + targetModel.changeSet[i].id).println();
+
+        var changeSet = targetModel.changeSetOf("create-foreign-key-for-" + s.eContainer.table.sqlName);
+
+        if (changeSet.addColumn.size == 0) {
+            changeSet.addColumn.add(new LIQUIBASE!AddColumn(tableName = s.eContainer.table.sqlName));
+            ("AddColumn created in " + changeSet.id).println();
         }
+        changeSet.addColumn[0].column.add(t);
+        ("AddColumnDef created in " + changeSet.id).println();
 }
 
 // CREATE FIELDS (FOREIGN KEY)
@@ -199,10 +180,7 @@ rule DeleteFieldOperationToChangeSet
         t.context = RDBMS!RdbmsModel.all.first.version;
         t.logicalFilePath = "drop-fields";
 
-        var i = 0;
-        var size = targetModel.changeSet.size();
-        while (i < size and targetModel.changeSet[i].id <> "drop-fields") i++;
-        if (i == size) {
+        if (not targetModel.changeSetExists("drop-fields")) {
             targetModel.changeSet.add(t);
             ("ChangeSet " + t.id + " created").println();
         }
@@ -214,12 +192,7 @@ rule DeleteFieldOperationToDropColumn
         t.tableName = s.eContainer.table.sqlName;
         t.columnName = s.field.sqlName;
 
-        var i = 0;
-        var size = targetModel.changeSet.size();
-        while (i < size and targetModel.changeSet[i].id <> "drop-fields") i++;
-        if (i < size) {
-            targetModel.changeSet[i].dropColumn.add(t);
-        }
+        targetModel.changeSetOf("drop-fields").dropColumn.add(t);
 }
 
 // DROP FIELDS
@@ -235,10 +208,7 @@ rule DeleteTableOperationToChangeSet
         t.context = RDBMS!RdbmsModel.all.first.version;
         t.logicalFilePath = "drop-tables";
 
-        var i = 0;
-        var size = targetModel.changeSet.size();
-        while (i < size and targetModel.changeSet[i].id <> "drop-tables") i++;
-        if (i == size) {
+        if (not targetModel.changeSetExists("drop-tables")) {
             targetModel.changeSet.add(t);
             ("ChangeSet " + t.id + " created").println();
         }
@@ -249,10 +219,5 @@ rule DeleteTableOperationToDropTable
     to t : LIQUIBASE!DropTable {
         t.tableName = s.table.sqlName;
 
-        var i = 0;
-        var size = targetModel.changeSet.size();
-        while (i < size and targetModel.changeSet[i].id <> "drop-tables") i++;
-        if (i < size) {
-            targetModel.changeSet[i].dropTable.add(t);
-        }
+        targetModel.changeSetOf("drop-tables").dropTable.add(t);
 }

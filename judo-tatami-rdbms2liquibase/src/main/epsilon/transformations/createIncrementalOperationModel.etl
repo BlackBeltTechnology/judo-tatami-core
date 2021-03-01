@@ -291,7 +291,7 @@ rule ModifyExistingIdentifierField
 
 }
 
-rule ModifyExistingForeignKeyField
+rule ModifyExistingForeignKey
 	transform f : PREVIOUS!RdbmsForeignKey
 	to t : INCREMENTAL!RdbmsModifyFieldOperation {
 		guard : newModel.tableExists(f.eContainer) and newModel.tableOf(f.eContainer).fieldExists(f) and (f.isAnyChanged(newModel.tableOf(f.eContainer).fieldOf(f)) or not newModel.tableOf(f.eContainer).fieldOf(f).isTypeOf(NEW!RdbmsForeignKey))
