@@ -33,7 +33,6 @@ rule CreateNewTable
 	guard : not previousModel.tableExists(s) and s.fields.size() > 0
 	    newModel.equivalent("OperationModel").tableOperations.add(t);
 		t.name = "Create " + s.name;
-	    t.sqlName = s.sqlName;
 	    t.uuid =  s.uuid + "-CreateTable";
 	    t.table = s;
 		s.uuid.println("Created table: ");
@@ -45,7 +44,6 @@ rule CreateNewJunctionTable
 	guard : not previousModel.tableExists(s) and s.fields.size() > 0
 	    newModel.equivalent("OperationModel").tableOperations.add(t);
 		t.name = "Create " + s.name;
-	    t.sqlName = s.sqlName;
 	    t.uuid =  s.uuid + "-CreateTable";
 	    t.table = s;
 		s.uuid.println("Created table: ");
@@ -57,7 +55,6 @@ rule DeletePreviousTable
 	guard : not newModel.tableExists(s) or newModel.tableOf(s).fields.size() == 0
 	    newModel.equivalent("OperationModel").tableOperations.add(t);
 		t.name = "Delete " + s.name;
-	    t.sqlName = s.sqlName;
 	    t.uuid =  s.uuid + "-DeleteTable";
 	    t.table = s;
 		s.uuid.println("Deleted table: ");
@@ -69,7 +66,6 @@ rule DeletePreviousJunctionTable
 	guard : not newModel.tableExists(s) or newModel.tableOf(s).fields.size() == 0
 	    newModel.equivalent("OperationModel").tableOperations.add(t);
 		t.name = "Delete " + s.name;
-	    t.sqlName = s.sqlName;
 	    t.uuid =  s.uuid + "-DeleteTable";
 	    t.table = s;
 		s.uuid.println("Deleted table: ");
@@ -82,7 +78,6 @@ rule ModifyTableOperationForExistingTable
 	guard : s.fields.size() > 0
 	    newModel.equivalent("OperationModel").tableOperations.add(t);
 		t.name = "Modify " + s.name;
-	    t.sqlName = s.sqlName;
 	    t.uuid =  s.uuid + "-ModifyTable";
 	    t.table = s;
 	    t.previousTable = previousModel.tableOf(s);
@@ -96,7 +91,6 @@ rule ModifyJunctionTableOperationForExistingTable
 	guard : s.fields.size() > 0
 	    newModel.equivalent("OperationModel").tableOperations.add(t);
 		t.name = "Modify " + s.name;
-	    t.sqlName = s.sqlName;
 	    t.uuid =  s.uuid + "-ModifyTable";
 	    t.table = s;
 	    t.previousTable = previousModel.tableOf(s);
@@ -110,7 +104,6 @@ rule CreateNewValueFieldOnNewTable
         newModel.tableOf(f.eContainer).equivalent("CreateNewTable").createFieldOperations.add(t);
 	    t.uuid =  f.uuid + "-CreateValueField";
 	    t.name = "Create " + f.name;
-	    t.sqlName = f.sqlName;
 	    t.field = f;
 		f.uuid.println("Create new value field on new table: ");
 }
@@ -122,7 +115,6 @@ rule CreateNewValueFieldOnExistingTable
 	    newModel.tableOf(f.eContainer).equivalent("ModifyTableOperationForExistingTable").createFieldOperations.add(t);
 	    t.uuid =  f.uuid + "-CreateValueField";
 	    t.name = "Create " + f.name;
-	    t.sqlName = f.sqlName;
 	    t.field = f;
 		f.uuid.println("Create new value field on existing table: ");
 }
@@ -134,7 +126,6 @@ rule DeletePreviousValueFieldOnExistingTable
 	    newModel.tableOf(f.eContainer).equivalent("ModifyTableOperationForExistingTable").deleteFieldOperations.add(t);
 	    t.uuid =  f.uuid + "-DeleteValueField";
 	    t.name = "Delete " + f.name;
-	    t.sqlName = f.sqlName;
 
 	    t.field = f;
 		f.uuid.println("Delete value field on existing table: ");
@@ -147,7 +138,6 @@ rule CreateNewForeignKeyOnNewTable
         newModel.tableOf(f.eContainer).equivalent("CreateNewTable").createFieldOperations.add(t);
 	    t.uuid =  f.uuid + "-CreateForeignKey";
 	    t.name = "Create " + f.name;
-	    t.sqlName = f.sqlName;
 	    t.field = f;
 	    t.isForeignKey = true;
 		f.uuid.println("Create new foreign key on new table: ");
@@ -160,7 +150,6 @@ rule CreateNewForeignKeyOnExistingTable
 	    newModel.tableOf(f.eContainer).equivalent("ModifyTableOperationForExistingTable").createFieldOperations.add(t);
 	    t.uuid =  f.uuid + "-CreateForeignKey";
 	    t.name = "Create " + f.name;
-	    t.sqlName = f.sqlName;
 	    t.field = f;
 	    t.isForeignKey = true;
 		f.uuid.println("Create new foreign key on existing table: ");
@@ -174,7 +163,6 @@ rule DeletePreviousForeignKeyOnExistingTable
 	    t.uuid =  f.uuid + "-DeleteForeignKey";
 	    t.field = f;
 	    t.name = "Delete " + f.name;
-		t.sqlName = f.sqlName;
 
 		f.uuid.println("Delete foreign key on existing table: ");
 }
@@ -186,7 +174,6 @@ rule CreateNewIdentifierFieldOnNewTable
         newModel.tableOf(f.eContainer).equivalent("CreateNewTable").createFieldOperations.add(t);
 	    t.uuid =  f.uuid + "-CreateIdentifierField";
 	    t.name = "Create " + f.name;
-	    t.sqlName = f.sqlName;
 	    t.field = f;
 	    t.isIdentifierField = true;
 		f.uuid.println("Create new identifier field on new table: ");
@@ -199,7 +186,6 @@ rule CreateNewIdentifierFieldOnExistingTable
 	    newModel.tableOf(f.eContainer).equivalent("ModifyTableOperationForExistingTable").createFieldOperations.add(t);
 	    t.uuid =  f.uuid + "-CreateIdentifierField";
 	    t.name = "Create " + f.name;
-	    t.sqlName = f.sqlName;
 	    t.field = f;
 	    t.isIdentifierField = true;
 		f.uuid.println("Create new identifier field on existing table: ");
@@ -213,7 +199,6 @@ rule DeletePreviousIdentifierFieldOnExistingTable
 	    t.uuid =  f.uuid + "-DeleteIdentifierField";
 	    t.field = f;
 	    t.name = "Delete " + f.name;
-		t.sqlName = f.sqlName;
 
 		f.uuid.println("Delete identifier field on existing table: ");
 }
@@ -229,7 +214,6 @@ rule ModifyExistingValueField
 	    t.field = n;
 	    t.previousField = f;
 	    t.name = "Modify " + f.name;
-		t.sqlName = f.sqlName;
 
 		f.uuid.println("Modify field: ");
 
@@ -268,7 +252,6 @@ rule ModifyExistingIdentifierField
 	    t.field = n;
 	    t.previousField = f;
 	    t.name = "Modify " + f.name;
-		t.sqlName = f.sqlName;
 
 		f.uuid.println("Modify field: ");
 
@@ -308,7 +291,6 @@ rule ModifyExistingForeignKey
 	    t.field = n;
 	    t.previousField = f;
 	    t.name = "Modify " + f.name;
-		t.sqlName = f.sqlName;
 
 		f.uuid.println("Modify field: ");
 

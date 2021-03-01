@@ -1,6 +1,38 @@
 import "changes.eol";
 
 /////////////////////////////////////////
+// RENAME FIELDS
+rule RenameToChangeSet
+    transform s : RDBMS!RdbmsModifyFieldOperation
+    to t : LIQUIBASE!ChangeSet {
+        guard: s.sqlNameChanged
+        t.id = "rename-fields";
+        t.author = "tatami-rdbms2liquibase";
+        t.dbms = dialect;
+        t.context = RDBMS!RdbmsModel.all.first.version;
+        t.logicalFilePath = "rename-fields";
+
+        if (not targetModel.changeSetExists(t.id)) {
+            targetModel.changeSet.add(t);
+            ("ChangeSet " + t.id + " created").println();
+        }
+}
+
+rule RenameToRenameColumn
+    transform s : RDBMS!RdbmsModifyFieldOperation
+    to t : LIQUIBASE!RenameColumn {
+        guard: s.sqlNameChanged
+        t.newColumnName = s.field.sqlName;
+        t.oldColumnName = s.previousField.sqlName;
+        t.tableName = s.eContainer.table.sqlName;
+        t.remarks = s.field.uuid;
+
+        targetModel.changeSetOf("rename-fields").renameColumn.add(t);
+        ("Rename column added in table " + t.tableName + ": " + t.oldColumnName + " -> " + t.newColumnName).println();
+}
+
+// RENAME FIELDS
+/////////////////////////////////////////
 // RENAME TABLES
 
 rule ModifyTableOperationToChangeSet
@@ -31,8 +63,6 @@ rule ModifyTableOperationToRanameTable
 }
 
 // RENAME TABLES
-/////////////////////////////////////////
-// TODO RENAME FIELDS
 /////////////////////////////////////////
 // CREATE TABLES
 
@@ -193,6 +223,7 @@ rule DeleteFieldOperationToDropColumn
         t.columnName = s.field.sqlName;
 
         targetModel.changeSetOf("drop-fields").dropColumn.add(t);
+        ("Drop field added: " + t.columnName).println();
 }
 
 // DROP FIELDS
@@ -220,4 +251,5 @@ rule DeleteTableOperationToDropTable
         t.tableName = s.table.sqlName;
 
         targetModel.changeSetOf("drop-tables").dropTable.add(t);
+        ("Drop table added: " + t.tableName).println();
 }
