@@ -89,7 +89,10 @@ operation UI!ui::PageDefinition calculateActions(application : UI!ui::Applicatio
     if (self.pageType == UI!ui::PageType#OPERATION_OUTPUT) {
         for (container in self.containers) {
             var buttonGroup : UI!ui::Flex = container.createGroupForInstanceActionButtons();
-            buttonGroup.children.add(createButton("ok", "OK", 2d, new UI!ui::BackAction()));
+            var okAction = new UI!ui::BackAction();
+            okAction.icon = new UI!ui::Icon();
+            okAction.icon.name = 'check';
+            buttonGroup.children.add(createButton("ok", "OK", 2d, okAction));
         }
     }
     
