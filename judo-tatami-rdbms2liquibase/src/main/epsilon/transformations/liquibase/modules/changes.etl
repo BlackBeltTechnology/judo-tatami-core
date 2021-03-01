@@ -159,7 +159,7 @@ rule CreateFieldOperationToAddColumnDefOnExistingTable
 rule RdbmsModifyFieldOperationToModifyDataTypeChangeSet
     transform s : RDBMS!RdbmsModifyFieldOperation
     to t : LIQUIBASE!ChangeSet {
-        guard: s.typeChanged or s.sizeChanged
+        guard: s.typeChanged or s.sizeChanged or s.mandatoryChanged or s.changedForeignKeyToValueField or s.changedValueFieldToForeignKey
         t.id = "modify-fields-for-" + s.eContainer.table.sqlName;
         t.author = "tatami-rdbms2liquibase";
         t.dbms = dialect;
@@ -186,8 +186,56 @@ rule RdbmsModifyFieldOperationToModifyDataType
 
 // MODIFY TYPE/SIZE
 /////////////////////////////////////////
-// TODO change not null constraint
-// TODO change foreign key constraint
+// CHANGE NOT NULL CONSTRAINT
+
+rule RdbmsModifyFieldOperationToAddNotNullConstraint
+    transform s : RDBMS!RdbmsModifyFieldOperation
+    to t : LIQUIBASE!AddNotNullConstraint {
+        guard: s.mandatoryChanged and s.field.mandatory
+        t.tableName = s.eContainer.table.sqlName;
+        t.columnName = s.field.sqlName;
+
+        targetModel.changeSetOf("modify-fields-for-" + s.eContainer.table.sqlName).addNotNullConstraint.add(t);
+}
+
+rule RdbmsModifyFieldOperationToDropNotNullConstraint
+    transform s : RDBMS!RdbmsModifyFieldOperation
+    to t : LIQUIBASE!DropNotNullConstraint {
+        guard: s.mandatoryChanged and not s.field.mandatory
+        t.tableName = s.eContainer.table.sqlName;
+        t.columnName = s.field.sqlName;
+
+        targetModel.changeSetOf("modify-fields-for-" + s.eContainer.table.sqlName).dropNotNullConstraint.add(t);
+}
+
+// CHANGE NOT NULL CONSTRAINT
+/////////////////////////////////////////
+// CHANGE FOREIGN KEY CONSTRAINT
+
+rule RdbmsModifyFieldOperationToAddForeignKeyConstraint
+    transform s : RDBMS!RdbmsModifyFieldOperation
+    to t : LIQUIBASE!AddForeignKeyConstraint {
+        guard: s.changedValueFieldToForeignKey
+        t.baseColumnNames = s.field.sqlName;
+        t.baseTableName = s.eContainer.table.sqlName;
+        t.referencedColumnNames = s.field.referenceKey.sqlName;
+        t.referencedTableName = s.field.referenceKey.eContainer.sqlName;
+        t.constraintName = "FK_" + s.field.sqlName;
+
+        targetModel.changeSetOf("modify-fields-for-" + s.eContainer.table.sqlName).addForeignKeyConstraint.add(t);
+}
+
+rule RdbmsModifyFieldOperationToDropForeignKeyConstraint
+    transform s : RDBMS!RdbmsModifyFieldOperation
+    to t : LIQUIBASE!DropForeignKeyConstraint {
+        guard: s.changedForeignKeyToValueField
+        t.baseTableName = s.eContainer.table.sqlName;
+        t.constraintName = "FK_" + s.field.sqlName;
+
+        targetModel.changeSetOf("modify-fields-for-" + s.eContainer.table.sqlName).dropForeignKeyConstraint.add(t);
+}
+
+// CHANGE FOREIGN KEY CONSTRAINT
 /////////////////////////////////////////
 // CREATE FIELDS (FOREIGN KEY)
 
@@ -284,3 +332,6 @@ rule DeleteTableOperationToDropTable
         targetModel.changeSetOf("drop-tables").dropTable.add(t);
         ("Drop table added: " + t.tableName).println();
 }
+
+// DROP TABLES
+/////////////////////////////////////////
