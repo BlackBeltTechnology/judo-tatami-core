@@ -91,4 +91,6 @@ operation RDBMS!RdbmsField toFieldDefinition () : String {
 	} else if (self.type.isDefined()) {
 		return self.type.toString();
 	}
+
+	return "";
 }
