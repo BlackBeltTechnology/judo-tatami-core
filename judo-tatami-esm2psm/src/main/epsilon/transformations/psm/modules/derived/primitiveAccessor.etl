@@ -39,8 +39,7 @@ rule CreateStaticDataForTransferAttributeDefaultValue
     transform s : ESM!DataMember
     to t : JUDOPSM!StaticData
     extends CreatePrimitiveTypedElement {
-        guard: s.defaultExpression.isDefined() and
-               s.defaultExpression.trim().length() > 0 and
+        guard: s.isDefaultExpressionSupported() and
                not s.eContainer.isMapped()
             
             t.getterExpression = s.equivalent("CreateGetterExpressionForTransferAttributeDefaultValue");
@@ -56,8 +55,7 @@ rule CreateDataPropertyForTransferAttributeDefaultValue
     transform s : ESM!DataMember
     to t : JUDOPSM!DataProperty
     extends CreatePrimitiveTypedElement {
-        guard: s.defaultExpression.isDefined() and
-               s.defaultExpression.trim().length() > 0 and
+        guard: s.isDefaultExpressionSupported() and
                s.eContainer().isMapped()
             
             t.getterExpression = s.equivalent("CreateGetterExpressionForTransferAttributeDefaultValue");
