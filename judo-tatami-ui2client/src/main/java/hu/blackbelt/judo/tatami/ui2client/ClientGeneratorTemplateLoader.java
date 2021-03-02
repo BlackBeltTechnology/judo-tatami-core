@@ -121,7 +121,11 @@ public class ClientGeneratorTemplateLoader extends URLTemplateLoader {
         } catch (Exception e) {
         }
 
-        URL url = getClass().getResource(location);
+        URL url = null;
+        try {
+            url = getClass().getResource(location);
+        } catch (Exception e) {
+        }
 
         if (parent != null && url == null) {
             url = parent.getResource(location);
