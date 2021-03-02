@@ -1,4 +1,4 @@
-import "changes.eol";
+import "../../liquibase.eol";
 
 /////////////////////////////////////////
 // RENAME FIELDS
@@ -6,7 +6,7 @@ import "changes.eol";
 rule RenameToChangeSet
     transform s : RDBMS!RdbmsModifyFieldOperation
     to t : LIQUIBASE!ChangeSet {
-        guard: s.sqlNameChanged
+        guard: s.nameChanged
         t.id = "rename-fields-for-" + s.eContainer.table.sqlName;
         t.author = "tatami-rdbms2liquibase";
         t.dbms = dialect;
@@ -22,7 +22,7 @@ rule RenameToChangeSet
 rule RenameToRenameColumn
     transform s : RDBMS!RdbmsModifyFieldOperation
     to t : LIQUIBASE!RenameColumn {
-        guard: s.sqlNameChanged
+        guard: s.nameChanged
         t.newColumnName = s.field.sqlName;
         t.oldColumnName = s.previousField.sqlName;
         t.tableName = s.eContainer.table.sqlName;
@@ -39,7 +39,7 @@ rule RenameToRenameColumn
 rule ModifyTableOperationToChangeSet
     transform s : RDBMS!RdbmsModifyTableOperation
     to t : LIQUIBASE!ChangeSet {
-        guard: s.sqlNameChanged
+        guard: s.nameChanged
         t.id = "rename-tables";
         t.author = "tatami-rdbms2liquibase";
         t.dbms = dialect;
@@ -55,7 +55,7 @@ rule ModifyTableOperationToChangeSet
 rule ModifyTableOperationToRanameTable
     transform s : RDBMS!RdbmsModifyTableOperation
     to t : LIQUIBASE!RenameTable {
-        guard: s.sqlNameChanged
+        guard: s.nameChanged
         t.oldTableName = s.previousTable.sqlName;
         t.newTableName = s.table.sqlName;
 
@@ -85,40 +85,32 @@ rule CreateTableOperationToCreateTable
     to t : LIQUIBASE!CreateTable {
         t.tableName = s.table.sqlName;
         t.remarks = s.table.uuid;
+
+        for(field in s.table.fields) {
+            var column : new LIQUIBASE!Column;
+            var constraint : new LIQUIBASE!Constraints;
+            column.name = field.sqlName;
+            column.remarks = field.uuid;
+            column.type = field.toFieldDefinition();
+            if (field == field.eContainer.primaryKey or field.mandatory) {
+                constraint.primaryKey = field == field.eContainer.primaryKey;
+                constraint.nullable = not field.mandatory;
+                column.constraints = constraint;
+            }
+            t.column.add(column);
+        }
+
         s.equivalent("CreateTableOperationToChangeSet").createTable.add(t);
         ("CreateTable " + t.tableName + " created").println();
 }
 
 // CREATE TABLES
 /////////////////////////////////////////
-// CREATE FIELDS (NEW, NO FOREIGN KEY)
-
-rule CreateFieldOperationToColumnOnNewTable
-    transform s : RDBMS!RdbmsCreateFieldOperation
-    to t : LIQUIBASE!Column {
-        guard: not s.isForeignKey and s.eContainer.isTypeOf(RDBMS!RdbmsCreateTableOperation)
-
-        t.name = s.field.sqlName;
-        t.type = s.field.toFieldDefinition();
-        t.remarks = s.field.uuid;
-
-        var createTable = targetModel.changeSetOf("create-table-" + s.eContainer.table.sqlName).createTable[0];
-
-        createTable.column.add(t);
-        if (s.isIdentifierField) {
-            t.constraints = new LIQUIBASE!Constraints(primaryKey = true, nullable = not s.field.mandatory);
-        }
-        ("Column " + t.name + " created in " + createTable.tableName + "").println();
-}
-
-// CREATE FIELDS (NEW, NO FOREIGN KEY)
-/////////////////////////////////////////
-// CREATE FIELDS (EXISTING, NO FOREIGN KEY)
+// CREATE FIELDS
 
 rule CreateFieldOperationToChangeSetOnExistingTable
     transform s : RDBMS!RdbmsCreateFieldOperation
     to t : LIQUIBASE!ChangeSet {
-        guard: not s.isForeignKey and s.eContainer.isTypeOf(RDBMS!RdbmsModifyTableOperation)
         t.id = "create-fields-for-" + s.eContainer.table.sqlName;
         t.author = "tatami-rdbms2liquibase";
         t.dbms = dialect;
@@ -134,12 +126,10 @@ rule CreateFieldOperationToChangeSetOnExistingTable
 rule CreateFieldOperationToAddColumnDefOnExistingTable
     transform s : RDBMS!RdbmsCreateFieldOperation
     to t : LIQUIBASE!AddColumnDef {
-        guard: not s.isForeignKey and s.eContainer.isTypeOf(RDBMS!RdbmsModifyTableOperation)
-
         t.name = s.field.sqlName;
         t.type = s.field.toFieldDefinition();
         t.remarks = s.field.uuid;
-        if (s.isIdentifierField) {
+        if (s.field == s.field.eContainer.primaryKey) {
             t.constraints = new LIQUIBASE!Constraints(primaryKey = true, nullable = not s.field.mandatory);
         }
 
@@ -152,7 +142,7 @@ rule CreateFieldOperationToAddColumnDefOnExistingTable
         ("AddColumnDef created in " + changeSet.id).println();
 }
 
-// CREATE FIELDS (EXISTING, NO FOREIGN KEY)
+// CREATE FIELDS
 /////////////////////////////////////////
 // MODIFY TYPE/SIZE
 
@@ -209,74 +199,6 @@ rule RdbmsModifyFieldOperationToDropNotNullConstraint
 }
 
 // CHANGE NOT NULL CONSTRAINT
-/////////////////////////////////////////
-// CHANGE FOREIGN KEY CONSTRAINT
-
-rule RdbmsModifyFieldOperationToAddForeignKeyConstraint
-    transform s : RDBMS!RdbmsModifyFieldOperation
-    to t : LIQUIBASE!AddForeignKeyConstraint {
-        guard: s.changedValueFieldToForeignKey
-        t.baseColumnNames = s.field.sqlName;
-        t.baseTableName = s.eContainer.table.sqlName;
-        t.referencedColumnNames = s.field.referenceKey.sqlName;
-        t.referencedTableName = s.field.referenceKey.eContainer.sqlName;
-        t.constraintName = "FK_" + s.field.sqlName;
-
-        targetModel.changeSetOf("modify-fields-for-" + s.eContainer.table.sqlName).addForeignKeyConstraint.add(t);
-}
-
-rule RdbmsModifyFieldOperationToDropForeignKeyConstraint
-    transform s : RDBMS!RdbmsModifyFieldOperation
-    to t : LIQUIBASE!DropForeignKeyConstraint {
-        guard: s.changedForeignKeyToValueField
-        t.baseTableName = s.eContainer.table.sqlName;
-        t.constraintName = "FK_" + s.field.sqlName;
-
-        targetModel.changeSetOf("modify-fields-for-" + s.eContainer.table.sqlName).dropForeignKeyConstraint.add(t);
-}
-
-// CHANGE FOREIGN KEY CONSTRAINT
-/////////////////////////////////////////
-// CREATE FIELDS (FOREIGN KEY)
-
-rule CreateFieldOperationWithForeignKeyToChangeSet
-    transform s : RDBMS!RdbmsCreateFieldOperation
-    to t : LIQUIBASE!ChangeSet {
-        guard: s.isForeignKey
-        t.id = "create-foreign-keys-for-" + s.eContainer.table.sqlName;
-        t.author = "tatami-rdbms2liquibase";
-        t.dbms = dialect;
-        t.context = RDBMS!RdbmsModel.all.first.version;
-        t.logicalFilePath = "create-foreign-keys";
-
-        if (not targetModel.changeSetExists(t.id)) {
-            targetModel.changeSet.add(t);
-            ("ChangeSet " + t.id + " created").println();
-        }
-}
-
-rule CreateFieldOperationWithForeignKeyToAddColumnDef
-    transform s : RDBMS!RdbmsCreateFieldOperation
-    to t : LIQUIBASE!AddColumnDef {
-        guard: s.isForeignKey
-
-        t.name = s.field.sqlName;
-        t.type = s.field.toFieldDefinition();
-        t.remarks = s.field.uuid;
-        t.constraints = new LIQUIBASE!Constraints(referencedTableName = s.field.referenceKey.eContainer.sqlName,
-                                                  referencedColumnNames = s.field.referenceKey.sqlName);
-
-        var changeSet = targetModel.changeSetOf("create-foreign-keys-for-" + s.eContainer.table.sqlName);
-
-        if (changeSet.addColumn.size == 0) {
-            changeSet.addColumn.add(new LIQUIBASE!AddColumn(tableName = s.eContainer.table.sqlName));
-            ("AddColumn created in " + changeSet.id).println();
-        }
-        changeSet.addColumn[0].column.add(t);
-        ("AddColumnDef created in " + changeSet.id).println();
-}
-
-// CREATE FIELDS (FOREIGN KEY)
 /////////////////////////////////////////
 // DROP FIELDS
 

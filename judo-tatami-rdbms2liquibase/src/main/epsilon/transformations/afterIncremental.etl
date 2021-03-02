@@ -1,0 +1,87 @@
+import "liquibase.eol";
+
+rule AddAllForeignKeysChangeSet
+    transform s : NEW!RdbmsForeignKey
+    to t : AFTER!ChangeSet {
+        t.id = "add-foreign-keys-to-" + s.eContainer.sqlName;
+        t.author = "tatami-rdbms2liquibase";
+        t.dbms = dialect;
+        t.context = RDBMS!RdbmsModel.all.first.version;
+        t.logicalFilePath = "add-foreign-keys";
+
+        if (not afterIncrementalModel.changeSetExists(t.id)) {
+            afterIncrementalModel.changeSet.add(t);
+            ("ChangeSet " + t.id + " created").println();
+        }
+}
+
+rule AddAllForeignKeys
+    transform s : NEW!RdbmsForeignKey
+    to t : AFTER!AddForeignKeyConstraint {
+        t.baseTableName = s.eContainer.sqlName;
+        t.baseColumnNames = s.sqlName;
+        t.constraintName = s.foreignKeySqlName;
+        t.referencedTableName = s.referenceKey.eContainer.sqlName;
+        t.referencedColumnNames = s.referenceKey.sqlName;
+
+        afterIncrementalModel.changeSetOf("add-foreign-keys-to-" + s.eContainer.sqlName).addForeignKeyConstraint.add(t);
+        ("AddForeignKeyConstraint added: " + t.constraintName + "(" + t.baseTableName + ")").println();
+}
+
+rule CreateAllIndexesChangeSet
+    transform s : NEW!RdbmsIndex
+    to t : AFTER!ChangeSet {
+        t.id = "create-indexes-for-" + s.eContainer.sqlName;
+        t.author = "tatami-rdbms2liquibase";
+        t.dbms = dialect;
+        t.context = RDBMS!RdbmsModel.all.first.version;
+        t.logicalFilePath = "create-indexes";
+
+        if (not afterIncrementalModel.changeSetExists(t.id)) {
+            afterIncrementalModel.changeSet.add(t);
+            ("ChangeSet " + t.id + " created").println();
+        }
+}
+
+rule CreateAllIndexes
+    transform s : NEW!RdbmsIndex
+    to t : AFTER!CreateIndex {
+        t.tableName = s.eContainer.sqlName;
+        t.indexName = s.sqlName;
+        t.column = s.fields.collect(f | new AFTER!Column(name = f.sqlName));
+
+        afterIncrementalModel.changeSetOf("create-indexes-for-" + s.eContainer.sqlName).createIndex.add(t);
+        ("CreateIndex added: " + t.indexName + "(" + t.tableName + ")").println();
+}
+
+rule AddAllUniqueConstraintsChangeSet
+    transform s : NEW!RdbmsUniqueConstraint
+    to t : AFTER!ChangeSet {
+        t.id = "add-unique-constraint-to-" + s.eContainer.sqlName;
+        t.author = "tatami-rdbms2liquibase";
+        t.dbms = dialect;
+        t.context = RDBMS!RdbmsModel.all.first.version;
+        t.logicalFilePath = "add-unique-constraint";
+
+        if (not afterIncrementalModel.changeSetExists(t.id)) {
+            afterIncrementalModel.changeSet.add(t);
+            ("ChangeSet " + t.id + " created").println();
+        }
+}
+
+rule AddAllUniqueConstraints
+    transform s : NEW!RdbmsUniqueConstraint
+    to t : AFTER!AddUniqueConstraint {
+        t.tableName = s.eContainer.sqlName;
+        t.columnNames = s.fields[0].sqlName;
+        if (s.fields.size() > 1) {
+            var i = 1;
+            while (i < s.fields.size()) {
+                t.columnNames += "," + s.fields[i].sqlName;
+                i++;
+            }
+        }
+
+        afterIncrementalModel.changeSetOf("add-unique-constraint-to-" + s.eContainer.sqlName).addUniqueConstraint.add(t);
+        ("AddUniqueConstraint added: " + t.columnNames + "(" + t.tableName + ")").println();
+}
