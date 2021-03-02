@@ -1,29 +1,7 @@
 import "liquibase.eol";
 
-rule DropAllForeignKeysChangeSet
-    transform s : PREVIOUS!RdbmsForeignKey
-    to t : BEFORE!ChangeSet {
-        t.id = "drop-foreign-keys-from-" + s.eContainer.sqlName;
-        t.author = "tatami-rdbms2liquibase";
-        t.dbms = dialect;
-        t.context = RDBMS!RdbmsModel.all.first.version;
-        t.logicalFilePath = "drop-foreign-keys";
-
-        if (not beforeIncrementalModel.changeSetExists(t.id)) {
-            beforeIncrementalModel.changeSet.add(t);
-            ("ChangeSet " + t.id + " created").println();
-        }
-}
-
-rule DropAllForeignKeys
-    transform s : PREVIOUS!RdbmsForeignKey
-    to t : BEFORE!DropForeignKeyConstraint {
-        t.baseTableName = s.eContainer.sqlName;
-        t.constraintName = s.foreignKeySqlName;
-
-        beforeIncrementalModel.changeSetOf("drop-foreign-keys-from-" + s.eContainer.sqlName).dropForeignKeyConstraint.add(t);
-        ("DropForeignKeyConstraint added: " + t.constraintName + "(" + t.baseTableName + ")").println();
-}
+/////////////////////////////////////////
+// INDEX
 
 rule DropAllIndexesChangeSet
     transform s : PREVIOUS!RdbmsIndex
@@ -49,6 +27,10 @@ rule DropAllIndexes
         beforeIncrementalModel.changeSetOf("drop-indexes-from-" + s.eContainer.sqlName).dropIndex.add(t);
         ("DropIndex added: " + t.indexName + "(" + t.tableName + ")").println();
 }
+
+// INDEX
+/////////////////////////////////////////
+// UNIQUE CONSTRAINT
 
 rule DropAllUniqueConstraintsChangeSet
     transform s : PREVIOUS!RdbmsUniqueConstraint
@@ -80,4 +62,33 @@ rule DropAllUniqueConstraints
 
         beforeIncrementalModel.changeSetOf("drop-unique-constraint-from-" + s.eContainer.sqlName).dropUniqueConstraint.add(t);
         ("DropUniqueConstraint added: " + t.uniqueColumns + "(" + t.tableName + ")").println();
+}
+
+// UNIQUE CONSTRAINT
+/////////////////////////////////////////
+// FOREIGN KEY
+
+rule DropAllForeignKeysChangeSet
+    transform s : PREVIOUS!RdbmsForeignKey
+    to t : BEFORE!ChangeSet {
+        t.id = "drop-foreign-keys-from-" + s.eContainer.sqlName;
+        t.author = "tatami-rdbms2liquibase";
+        t.dbms = dialect;
+        t.context = RDBMS!RdbmsModel.all.first.version;
+        t.logicalFilePath = "drop-foreign-keys";
+
+        if (not beforeIncrementalModel.changeSetExists(t.id)) {
+            beforeIncrementalModel.changeSet.add(t);
+            ("ChangeSet " + t.id + " created").println();
+        }
+}
+
+rule DropAllForeignKeys
+    transform s : PREVIOUS!RdbmsForeignKey
+    to t : BEFORE!DropForeignKeyConstraint {
+        t.baseTableName = s.eContainer.sqlName;
+        t.constraintName = s.foreignKeySqlName;
+
+        beforeIncrementalModel.changeSetOf("drop-foreign-keys-from-" + s.eContainer.sqlName).dropForeignKeyConstraint.add(t);
+        ("DropForeignKeyConstraint added: " + t.constraintName + "(" + t.baseTableName + ")").println();
 }

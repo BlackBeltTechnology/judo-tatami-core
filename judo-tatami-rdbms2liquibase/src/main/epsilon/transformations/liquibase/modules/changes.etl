@@ -1,70 +1,6 @@
 import "../../liquibase.eol";
 
 /////////////////////////////////////////
-// RENAME FIELDS
-
-rule RenameToChangeSet
-    transform s : RDBMS!RdbmsModifyFieldOperation
-    to t : LIQUIBASE!ChangeSet {
-        guard: s.nameChanged
-        t.id = "rename-fields-for-" + s.eContainer.table.sqlName;
-        t.author = "tatami-rdbms2liquibase";
-        t.dbms = dialect;
-        t.context = RDBMS!RdbmsModel.all.first.version;
-        t.logicalFilePath = "rename-fields";
-
-        if (not targetModel.changeSetExists(t.id)) {
-            targetModel.changeSet.add(t);
-            ("ChangeSet " + t.id + " created").println();
-        }
-}
-
-rule RenameToRenameColumn
-    transform s : RDBMS!RdbmsModifyFieldOperation
-    to t : LIQUIBASE!RenameColumn {
-        guard: s.nameChanged
-        t.newColumnName = s.field.sqlName;
-        t.oldColumnName = s.previousField.sqlName;
-        t.tableName = s.eContainer.table.sqlName;
-        t.remarks = s.field.uuid;
-
-        targetModel.changeSetOf("rename-fields-for-" + s.eContainer.table.sqlName).renameColumn.add(t);
-        ("Rename column added in table " + t.tableName + ": " + t.oldColumnName + " -> " + t.newColumnName).println();
-}
-
-// RENAME FIELDS
-/////////////////////////////////////////
-// RENAME TABLES
-
-rule ModifyTableOperationToChangeSet
-    transform s : RDBMS!RdbmsModifyTableOperation
-    to t : LIQUIBASE!ChangeSet {
-        guard: s.nameChanged
-        t.id = "rename-tables";
-        t.author = "tatami-rdbms2liquibase";
-        t.dbms = dialect;
-        t.context = RDBMS!RdbmsModel.all.first.version;
-        t.logicalFilePath = "rename-tables";
-
-        if (not targetModel.changeSetExists(t.id)) {
-            targetModel.changeSet.add(t);
-            ("ChangeSet " + t.id + " created").println();
-        }
-}
-
-rule ModifyTableOperationToRanameTable
-    transform s : RDBMS!RdbmsModifyTableOperation
-    to t : LIQUIBASE!RenameTable {
-        guard: s.nameChanged
-        t.oldTableName = s.previousTable.sqlName;
-        t.newTableName = s.table.sqlName;
-
-        targetModel.changeSetOf("rename-tables").renameTable.add(t);
-        ("RenameTable (" + t.oldTableName + " -> " + t.newTableName + ") added to " + targetModel.changeSetOf("rename-tables").id).println();
-}
-
-// RENAME TABLES
-/////////////////////////////////////////
 // CREATE TABLES
 
 @lazy
@@ -105,6 +41,99 @@ rule CreateTableOperationToCreateTable
 }
 
 // CREATE TABLES
+/////////////////////////////////////////
+// RENAME TABLES
+
+rule ModifyTableOperationToChangeSet
+    transform s : RDBMS!RdbmsModifyTableOperation
+    to t : LIQUIBASE!ChangeSet {
+        guard: s.nameChanged
+        t.id = "rename-tables";
+        t.author = "tatami-rdbms2liquibase";
+        t.dbms = dialect;
+        t.context = RDBMS!RdbmsModel.all.first.version;
+        t.logicalFilePath = "rename-tables";
+
+        if (not targetModel.changeSetExists(t.id)) {
+            targetModel.changeSet.add(t);
+            ("ChangeSet " + t.id + " created").println();
+        }
+}
+
+rule ModifyTableOperationToRanameTable
+    transform s : RDBMS!RdbmsModifyTableOperation
+    to t : LIQUIBASE!RenameTable {
+        guard: s.nameChanged
+        t.oldTableName = s.previousTable.sqlName;
+        t.newTableName = s.table.sqlName;
+
+        targetModel.changeSetOf("rename-tables").renameTable.add(t);
+        ("RenameTable (" + t.oldTableName + " -> " + t.newTableName + ") added to " + targetModel.changeSetOf("rename-tables").id).println();
+}
+
+// RENAME TABLES
+/////////////////////////////////////////
+// RENAME FIELDS
+
+rule RenameToChangeSet
+    transform s : RDBMS!RdbmsModifyFieldOperation
+    to t : LIQUIBASE!ChangeSet {
+        guard: s.nameChanged
+        t.id = "rename-fields-for-" + s.eContainer.table.sqlName;
+        t.author = "tatami-rdbms2liquibase";
+        t.dbms = dialect;
+        t.context = RDBMS!RdbmsModel.all.first.version;
+        t.logicalFilePath = "rename-fields";
+
+        if (not targetModel.changeSetExists(t.id)) {
+            targetModel.changeSet.add(t);
+            ("ChangeSet " + t.id + " created").println();
+        }
+}
+
+rule RenameToRenameColumn
+    transform s : RDBMS!RdbmsModifyFieldOperation
+    to t : LIQUIBASE!RenameColumn {
+        guard: s.nameChanged
+        t.newColumnName = s.field.sqlName;
+        t.oldColumnName = s.previousField.sqlName;
+        t.tableName = s.eContainer.table.sqlName;
+        t.remarks = s.field.uuid;
+
+        targetModel.changeSetOf("rename-fields-for-" + s.eContainer.table.sqlName).renameColumn.add(t);
+        ("Rename column added in table " + t.tableName + ": " + t.oldColumnName + " -> " + t.newColumnName).println();
+}
+
+// RENAME FIELDS
+/////////////////////////////////////////
+// DROP FIELDS
+
+rule DeleteFieldOperationToChangeSet
+    transform s : RDBMS!RdbmsDeleteFieldOperation
+    to t : LIQUIBASE!ChangeSet {
+        t.id = "drop-fields-from-" + s.eContainer.table.sqlName;
+        t.author = "tatami-rdbms2liquibase";
+        t.dbms = dialect;
+        t.context = RDBMS!RdbmsModel.all.first.version;
+        t.logicalFilePath = "drop-fields";
+
+        if (not targetModel.changeSetExists(t.id)) {
+            targetModel.changeSet.add(t);
+            ("ChangeSet " + t.id + " created").println();
+        }
+}
+
+rule DeleteFieldOperationToDropColumn
+    transform s : RDBMS!RdbmsDeleteFieldOperation
+    to t : LIQUIBASE!DropColumn {
+        t.tableName = s.eContainer.table.sqlName;
+        t.columnName = s.field.sqlName;
+
+        targetModel.changeSetOf("drop-fields-from-" + s.eContainer.table.sqlName).dropColumn.add(t);
+        ("Drop field added: " + t.columnName).println();
+}
+
+// DROP FIELDS
 /////////////////////////////////////////
 // CREATE FIELDS
 
@@ -149,12 +178,12 @@ rule CreateFieldOperationToAddColumnDefOnExistingTable
 rule RdbmsModifyFieldOperationToModifyDataTypeChangeSet
     transform s : RDBMS!RdbmsModifyFieldOperation
     to t : LIQUIBASE!ChangeSet {
-        guard: s.typeChanged or s.sizeChanged or s.mandatoryChanged or s.changedForeignKeyToValueField or s.changedValueFieldToForeignKey
-        t.id = "modify-fields-for-" + s.eContainer.table.sqlName;
+        guard: s.typeChanged or s.sizeChanged
+        t.id = "modify-data-types-in-" + s.eContainer.table.sqlName;
         t.author = "tatami-rdbms2liquibase";
         t.dbms = dialect;
         t.context = RDBMS!RdbmsModel.all.first.version;
-        t.logicalFilePath = "modify-fields";
+        t.logicalFilePath = "modify-data-types";
 
         if (not targetModel.changeSetExists(t.id)) {
             targetModel.changeSet.add(t);
@@ -170,13 +199,29 @@ rule RdbmsModifyFieldOperationToModifyDataType
         t.columnName = s.field.sqlName;
         t.newDataType = s.field.toFieldDefinition();
 
-        targetModel.changeSetOf("modify-fields-for-" + s.eContainer.table.sqlName).modifyDataType.add(t);
+        targetModel.changeSetOf("modify-data-types-in--" + s.eContainer.table.sqlName).modifyDataType.add(t);
         ("ModifyDataType added: " + s.previousField.toFieldDefinition() + " -> " + s.field.toFieldDefinition()).println();
 }
 
 // MODIFY TYPE/SIZE
 /////////////////////////////////////////
 // CHANGE NOT NULL CONSTRAINT
+
+rule RdbmsModifyFieldOperationToModifyNotNullConstraintsChangeSet
+    transform s : RDBMS!RdbmsModifyFieldOperation
+    to t : LIQUIBASE!ChangeSet {
+        guard: s.mandatoryChanged
+        t.id = "modify-not-null-constraints-for-" + s.eContainer.table.sqlName;
+        t.author = "tatami-rdbms2liquibase";
+        t.dbms = dialect;
+        t.context = RDBMS!RdbmsModel.all.first.version;
+        t.logicalFilePath = "modify-not-null-constraints";
+
+        if (not targetModel.changeSetExists(t.id)) {
+            targetModel.changeSet.add(t);
+            ("ChangeSet " + t.id + " created").println();
+        }
+}
 
 rule RdbmsModifyFieldOperationToAddNotNullConstraint
     transform s : RDBMS!RdbmsModifyFieldOperation
@@ -185,7 +230,7 @@ rule RdbmsModifyFieldOperationToAddNotNullConstraint
         t.tableName = s.eContainer.table.sqlName;
         t.columnName = s.field.sqlName;
 
-        targetModel.changeSetOf("modify-fields-for-" + s.eContainer.table.sqlName).addNotNullConstraint.add(t);
+        targetModel.changeSetOf("modify-not-null-constraints-for-" + s.eContainer.table.sqlName).addNotNullConstraint.add(t);
 }
 
 rule RdbmsModifyFieldOperationToDropNotNullConstraint
@@ -195,39 +240,10 @@ rule RdbmsModifyFieldOperationToDropNotNullConstraint
         t.tableName = s.eContainer.table.sqlName;
         t.columnName = s.field.sqlName;
 
-        targetModel.changeSetOf("modify-fields-for-" + s.eContainer.table.sqlName).dropNotNullConstraint.add(t);
+        targetModel.changeSetOf("modify-not-null-constraints-for-" + s.eContainer.table.sqlName).dropNotNullConstraint.add(t);
 }
 
 // CHANGE NOT NULL CONSTRAINT
-/////////////////////////////////////////
-// DROP FIELDS
-
-rule DeleteFieldOperationToChangeSet
-    transform s : RDBMS!RdbmsDeleteFieldOperation
-    to t : LIQUIBASE!ChangeSet {
-        t.id = "drop-fields-from-" + s.eContainer.table.sqlName;
-        t.author = "tatami-rdbms2liquibase";
-        t.dbms = dialect;
-        t.context = RDBMS!RdbmsModel.all.first.version;
-        t.logicalFilePath = "drop-fields";
-
-        if (not targetModel.changeSetExists(t.id)) {
-            targetModel.changeSet.add(t);
-            ("ChangeSet " + t.id + " created").println();
-        }
-}
-
-rule DeleteFieldOperationToDropColumn
-    transform s : RDBMS!RdbmsDeleteFieldOperation
-    to t : LIQUIBASE!DropColumn {
-        t.tableName = s.eContainer.table.sqlName;
-        t.columnName = s.field.sqlName;
-
-        targetModel.changeSetOf("drop-fields-from-" + s.eContainer.table.sqlName).dropColumn.add(t);
-        ("Drop field added: " + t.columnName).println();
-}
-
-// DROP FIELDS
 /////////////////////////////////////////
 // DROP TABLES
 
