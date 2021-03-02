@@ -1,4 +1,4 @@
-import "../../liquibase.eol";
+import "../utils/changeset.eol";
 
 /////////////////////////////////////////
 // CREATE TABLES
@@ -199,7 +199,7 @@ rule RdbmsModifyFieldOperationToModifyDataType
         t.columnName = s.field.sqlName;
         t.newDataType = s.field.toFieldDefinition();
 
-        targetModel.changeSetOf("modify-data-types-in--" + s.eContainer.table.sqlName).modifyDataType.add(t);
+        targetModel.changeSetOf("modify-data-types-in-" + s.eContainer.table.sqlName).modifyDataType.add(t);
         ("ModifyDataType added: " + s.previousField.toFieldDefinition() + " -> " + s.field.toFieldDefinition()).println();
 }
 

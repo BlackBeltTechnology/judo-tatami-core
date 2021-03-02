@@ -1,4 +1,4 @@
-import "liquibase.eol";
+import "liquibase/utils/changeset.eol";
 
 /////////////////////////////////////////
 // FOREIGN KEY

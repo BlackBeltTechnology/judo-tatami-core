@@ -1,9 +1,9 @@
-import "model.eol";
-import "liquibase.eol";
-import "table.eol";
-import "field.eol";
-import "beforeIncremental.etl";
 import "afterIncremental.etl";
+import "beforeIncremental.etl";
+import "liquibase/utils/changeset.eol";
+import "rdbms/utils/field.eol";
+import "rdbms/utils/model.eol";
+import "rdbms/utils/table.eol";
 
 pre {
 	var previousModel = PREVIOUS!RdbmsModel.all.first();
