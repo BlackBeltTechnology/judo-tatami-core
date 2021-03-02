@@ -49,7 +49,7 @@ operation UI!ui::PageDefinition calculateActions(application : UI!ui::Applicatio
     if (self.pageType == UI!ui::PageType#TABLE or (dashboard and relationType.isCollection)) {
         if (relationType.isUndefined()) {
             throw "Table type have to be mapped to relation type";
-        } 
+        }
         // to do: if data element of table is not relation type, data element is parameter type - review this case
         
         if (self.hasInstanceActions()) {
@@ -60,6 +60,8 @@ operation UI!ui::PageDefinition calculateActions(application : UI!ui::Applicatio
                 if (not relationType.isAccess and self.pageType == UI!ui::PageType#TABLE) {
                     buttonGroup.children.add(createButton("back", "BACK", 2d, new UI!ui::BackAction()));
                 }
+                
+                buttonGroup.children.add(createButton("refresh", "REFRESH", 2d, new UI!ui::RefreshAction()));
         
                 if (relationType.getIsRelationBehaviourTypeCreatable()) {
                     if (preview) {
