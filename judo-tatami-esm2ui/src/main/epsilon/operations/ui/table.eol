@@ -21,8 +21,16 @@ operation UI!ui::Table calculateActions(application : UI!ui::Application, previe
             }
         }
         
-        // **** CREATE/UPDATE: add, set, remove (for stored aggregations - disabled flag is set in 'tabularReferenceField.eol') ****
-        if (pageType == UI!ui::PageType#CREATE or pageType == UI!ui::PageType#UPDATE) {
+        if (pageType == UI!ui::PageType#CREATE) {
+            if (not self.disabled) {
+                var buttonGroup : UI!ui::Flex = self.createActionButtonGroupForTable();
+                self.createRemoveAction();
+                self.createSetAction(relationType, buttonGroup);
+                self.createAddAction(relationType, buttonGroup);
+            }
+        }
+        
+        if (pageType == UI!ui::PageType#UPDATE) {
             if (not self.disabled) {
                 self.createRemoveAddSetActions(relationType);
             }

@@ -16,7 +16,14 @@ operation UI!ui::Link calculateActions(application : UI!ui::Application, preview
             }
         }
         
-        if (pageType == UI!ui::PageType#CREATE or pageType == UI!ui::PageType#UPDATE) {
+        if (pageType == UI!ui::PageType#CREATE) {
+            if (not self.disabled) {
+                self.createSetAction(relationType);
+                self.createUnsetAction();
+            }
+        }
+        
+        if (pageType == UI!ui::PageType#UPDATE) {
             if (not self.disabled) {
                 self.createSetUnsetActions(relationType);
             }

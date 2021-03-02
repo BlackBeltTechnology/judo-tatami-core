@@ -50,46 +50,42 @@ operation UI!ui::PageDefinition calculateActions(application : UI!ui::Applicatio
         if (relationType.isUndefined()) {
             throw "Table type have to be mapped to relation type";
         }
-        // to do: if data element of table is not relation type, data element is parameter type - review this case
+        // TO-DO if data element of table is not relation type, data element is parameter type - review this case
         
-        if (self.hasInstanceActions()) {
-        
-            for (container in self.containers) {
-                var buttonGroup : UI!ui::Flex = container.createGroupForInstanceActionButtons();
+        for (container in self.containers) {
+            var buttonGroup : UI!ui::Flex = container.createGroupForInstanceActionButtons();
+            buttonGroup.children.add(createButton("refresh", "REFRESH", 2d, new UI!ui::RefreshAction()));
+
+            if (not relationType.isAccess and self.pageType == UI!ui::PageType#TABLE) {
+                buttonGroup.children.add(createButton("back", "BACK", 2d, new UI!ui::BackAction()));
+            }
             
-                if (not relationType.isAccess and self.pageType == UI!ui::PageType#TABLE) {
-                    buttonGroup.children.add(createButton("back", "BACK", 2d, new UI!ui::BackAction()));
-                }
-                
-                buttonGroup.children.add(createButton("refresh", "REFRESH", 2d, new UI!ui::RefreshAction()));
-        
-                if (relationType.getIsRelationBehaviourTypeCreatable()) {
-                    if (preview) {
+            if (relationType.getIsRelationBehaviourTypeCreatable()) {
+                if (preview) {
+                    var button : UI!ui::Button = createButton("create", "CREATE", 2d, new UI!ui::CreateAction());
+                    button.action.target = application.pages.selectOne(p | p.pageType = UI!ui::PageType#DASHBOARD);
+                    buttonGroup.children.add(button);
+                } else {
+                    var page = application.pages.selectOne(p | p.pageType = UI!ui::PageType#CREATE and p.getRelationType() == relationType);
+                    if (page.isDefined()) {
+                        log.debug(" ========= PAGE DEF: CREATE: " + relationType.eContainer.name + "." + relationType.name + " - " + page.name);
                         var button : UI!ui::Button = createButton("create", "CREATE", 2d, new UI!ui::CreateAction());
-                        button.action.target = application.pages.selectOne(p | p.pageType = UI!ui::PageType#DASHBOARD);
+                        button.action.target = page;
                         buttonGroup.children.add(button);
                     } else {
-                        var page = application.pages.selectOne(p | p.pageType = UI!ui::PageType#CREATE and p.getRelationType() == relationType);
-                        if (page.isDefined()) {
-                            log.debug(" ========= PAGE DEF: CREATE: " + relationType.eContainer.name + "." + relationType.name + " - " + page.name);
-                            var button : UI!ui::Button = createButton("create", "CREATE", 2d, new UI!ui::CreateAction());
-                            button.action.target = page;
-                            buttonGroup.children.add(button);
-                        } else {
-                            log.warn("No create page defined for: " + self.name + " - " + relationType.eContainer.name + "." + relationType.name);
-                        }
+                        log.warn("No create page defined for: " + self.name + " - " + relationType.eContainer.name + "." + relationType.name);
                     }
                 }
-                
-                if (relationType.getIsRelationBehaviourTypeSetable()) {
-                    buttonGroup.children.add(createButton("set", "SET", 2d, new UI!ui::SetAction()));
-                }
-                if (relationType.getIsRelationBehaviourTypeUnsetable()) {
-                    buttonGroup.children.add(createButton("unset", "UNSET", 2d, new UI!ui::UnsetAction()));
-                }
-                if (relationType.getIsRelationBehaviourTypeAddable()) {
-                    buttonGroup.children.add(createButton("add", "ADD", 2d, new UI!ui::AddAction()));
-                }
+            }
+            
+            if (relationType.getIsRelationBehaviourTypeSetable()) {
+                buttonGroup.children.add(createButton("set", "SET", 2d, new UI!ui::SetAction()));
+            }
+            if (relationType.getIsRelationBehaviourTypeUnsetable()) {
+                buttonGroup.children.add(createButton("unset", "UNSET", 2d, new UI!ui::UnsetAction()));
+            }
+            if (relationType.getIsRelationBehaviourTypeAddable()) {
+                buttonGroup.children.add(createButton("add", "ADD", 2d, new UI!ui::AddAction()));
             }
         }
     }
