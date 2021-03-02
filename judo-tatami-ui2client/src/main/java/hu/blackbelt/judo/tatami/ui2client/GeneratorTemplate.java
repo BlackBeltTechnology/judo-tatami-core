@@ -10,11 +10,10 @@ import com.github.jknack.handlebars.internal.lang3.builder.ReflectionToStringBui
 import com.github.jknack.handlebars.internal.lang3.builder.ToStringStyle;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.expression.Expression;
 import org.springframework.expression.ExpressionParser;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
+import org.springframework.expression.spel.support.StandardEvaluationContext;
 
-import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.*;
@@ -92,17 +91,17 @@ public class GeneratorTemplate {
 		return templates;
 	}
 
-	public TemplateEvaulator getTemplateEvalulator(ClientGenerator clientGenerator) throws IOException {
-		return new TemplateEvaulator(clientGenerator, this);
+	public TemplateEvaulator getTemplateEvalulator(ClientGenerator clientGenerator, StandardEvaluationContext standardEvaluationContext) throws IOException {
+		return new TemplateEvaulator(clientGenerator, this, standardEvaluationContext);
 	}
 
-	public void evalToContextBuilder(TemplateEvaulator templateEvaulator, Context.Builder contextBuilder) {
+	public void evalToContextBuilder(TemplateEvaulator templateEvaulator, Context.Builder contextBuilder, StandardEvaluationContext templateExpressionContext) {
 		templateContext.stream().forEach(ctx -> {
 
-			Class type = templateEvaulator.getTemplateExpressions().get(ctx.getName()).getValueType(templateEvaulator.getClientGenerator().getSpelEvaulationContext());
+			Class type = templateEvaulator.getTemplateExpressions().get(ctx.getName()).getValueType(templateExpressionContext);
 			contextBuilder.combine(ctx.getName(),
-					templateEvaulator.getTemplateExpressions().get(ctx.getName()).getValue(templateEvaulator.getClientGenerator().getSpelEvaulationContext(),
-							templateEvaulator.getTemplateExpressions().get(ctx.getName()).getValue(templateEvaulator.getClientGenerator().getSpelEvaulationContext(), type)));
+					templateEvaulator.getTemplateExpressions().get(ctx.getName()).getValue(templateExpressionContext,
+							templateEvaulator.getTemplateExpressions().get(ctx.getName()).getValue(templateExpressionContext, type)));
 		});
 	}
 
@@ -114,9 +113,11 @@ public class GeneratorTemplate {
 		final Template template;
 		final Map<String, org.springframework.expression.Expression> templateExpressions;
 		final ClientGenerator clientGenerator;
+		final StandardEvaluationContext standardEvaluationContext;
 
-		public TemplateEvaulator(ClientGenerator clientGenerator, GeneratorTemplate generatorTemplate) throws IOException {
+		public TemplateEvaulator(ClientGenerator clientGenerator, GeneratorTemplate generatorTemplate, StandardEvaluationContext standardEvaluationContext) throws IOException {
 			this.clientGenerator = clientGenerator;
+			this.standardEvaluationContext = standardEvaluationContext;
 			ExpressionParser parser = generatorTemplate.getParser();
 			templateExpressions = generatorTemplate.parseExpressions();
 			factoryExpression = parser.parseExpression(generatorTemplate.getFactoryExpression());
@@ -126,16 +127,16 @@ public class GeneratorTemplate {
 			if (generatorTemplate.isCopy()) {
 				template = null;
 			} else if (generatorTemplate.getTemplate() != null && !"".equals(generatorTemplate.getTemplate().trim())) {
-				template = clientGenerator.getHandlebars().compileInline(generatorTemplate.getTemplate());
+				template = clientGenerator.createHandlebars().compileInline(generatorTemplate.getTemplate());
 			} else if (generatorTemplate.getTemplateName() != null && !"".equals(generatorTemplate.getTemplateName().trim())) {
-				template = clientGenerator.getHandlebars().compile(generatorTemplate.getTemplateName());
+				template = clientGenerator.createHandlebars().compile(generatorTemplate.getTemplateName());
 			} else {
 				template = null;
 			}
 		}
 
 		public <C> C getFactoryExpressionResult(Object value, Class<C> type) {
-			return getFactoryExpression().getValue(getClientGenerator().getSpelEvaulationContext(), value, type);
+			return getFactoryExpression().getValue(standardEvaluationContext, value, type);
 		}
 
 	}

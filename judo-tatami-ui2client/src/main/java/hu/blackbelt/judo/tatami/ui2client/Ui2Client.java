@@ -9,12 +9,14 @@ import hu.blackbelt.judo.meta.ui.Application;
 import hu.blackbelt.judo.tatami.ui2client.GeneratorTemplate.TemplateEvaulator;
 import lombok.SneakyThrows;
 import org.slf4j.LoggerFactory;
+import org.springframework.expression.spel.support.StandardEvaluationContext;
 
 import java.io.*;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.*;
+import java.util.concurrent.*;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -39,84 +41,123 @@ public class Ui2Client {
 
     public static Map<Application, Collection<GeneratedFile>> executeUi2ClientGenerationByApplication(ClientGenerator clientGenerator, Predicate<Application> applicationPredicate, Log log) throws Exception {
 
-        Map<Application, Collection<GeneratedFile>> sourcesByApplication = new HashMap<>();
-        clientGenerator.getModelResourceSupport().getStreamOfUiApplication().forEach(app -> { sourcesByApplication.put(app, new HashSet<>()); });
+        Map<Application, Collection<GeneratedFile>> sourcesByApplication = new ConcurrentHashMap<>();
+        clientGenerator.getModelResourceSupport().getStreamOfUiApplication().forEach(app -> { sourcesByApplication.put(app, ConcurrentHashMap.newKeySet()); });
 
         Set<Application> applications = clientGenerator.getModelResourceSupport().getStreamOfUiApplication().filter(applicationPredicate).collect(Collectors.toSet());
 
-        for (GeneratorTemplate generatorTemplate : clientGenerator.getGeneratorTemplates()) {
+        List<CompletableFuture<GeneratedFile>> tasks = new ArrayList<>();
+        clientGenerator.getGeneratorTemplates().stream().forEach(generatorTemplate -> {
+
+            StandardEvaluationContext evaulationContext = clientGenerator.createSpringEvaulationContext();
             if (generatorTemplate.getFactoryExpression() != null) {
-                TemplateEvaulator templateEvaulator = generatorTemplate.getTemplateEvalulator(clientGenerator);
+                final TemplateEvaulator templateEvaulator;
+                try {
+                    templateEvaulator = generatorTemplate.getTemplateEvalulator(clientGenerator, evaulationContext);
+                } catch (IOException e) {
+                    throw new RuntimeException("Could not evaulate template", e);
+                }
 
                 if (templateEvaulator.getTemplate() != null || generatorTemplate.isCopy()) {
-                   applications.forEach(application -> {
-                        clientGenerator.setVariable("applications", applications);
-                        clientGenerator.setVariable("application", application);
-                        clientGenerator.setVariable("template", generatorTemplate);
-
+                    applications.forEach(application -> {
+                        evaulationContext.setVariable("applications", applications);
+                        evaulationContext.setVariable("application", application);
                         templateEvaulator.getFactoryExpressionResult(application, Collection.class).stream().forEach(element -> {
-                            clientGenerator.setVariable("self", element);
+                            tasks.add(CompletableFuture.supplyAsync(() -> {
+                                StandardEvaluationContext templateContext = clientGenerator.createSpringEvaulationContext();
+                                templateContext.setVariable("applications", applications);
+                                templateContext.setVariable("application", application);
+                                templateContext.setVariable("template", generatorTemplate);
+                                templateContext.setVariable("self", element);
 
-                            Context.Builder contextBuilder = Context
-                                    .newBuilder(element)
-                                    .combine("application", application)
-                                    .combine("template", generatorTemplate);
+                                Context.Builder contextBuilder = Context
+                                        .newBuilder(element)
+                                        .combine("applications", applications)
+                                        .combine("application", application)
+                                        .combine("template", generatorTemplate)
+                                        .combine("self", element);
 
-                            generatorTemplate.evalToContextBuilder(templateEvaulator, contextBuilder);
-                            GeneratedFile generatedFile = generateFile(clientGenerator, templateEvaulator, generatorTemplate, contextBuilder, log);
-                            sourcesByApplication.get(application).add(generatedFile);
+                                generatorTemplate.evalToContextBuilder(templateEvaulator, contextBuilder, templateContext);
+                                GeneratedFile generatedFile = generateFile(clientGenerator, templateContext, templateEvaulator, generatorTemplate, contextBuilder, log);
+                                sourcesByApplication.get(application).add(generatedFile);
+                                return generatedFile;
+                            }));
+
                         });
-
                     });
                 }
             }
-        }
+        });
+
+        allFuture(tasks).get();
+
         return sourcesByApplication;
     }
 
 
     public static Collection<GeneratedFile> executeUi2ClientGeneration(ClientGenerator clientGenerator, Predicate<Application> applicationPredicate, Log log) throws Exception {
 
-        Collection<GeneratedFile> sources = new HashSet<>();
+        Collection<GeneratedFile> sources = ConcurrentHashMap.newKeySet();
 
         Set<Application> applications = clientGenerator.getModelResourceSupport().getStreamOfUiApplication().filter(applicationPredicate).collect(Collectors.toSet());
 
-        for (GeneratorTemplate generatorTemplate : clientGenerator.getGeneratorTemplates()) {
+        List<CompletableFuture<GeneratedFile>> tasks = new ArrayList<>();
+
+        clientGenerator.getGeneratorTemplates().stream().forEach(generatorTemplate -> {
+            StandardEvaluationContext evaulationContext = clientGenerator.createSpringEvaulationContext();
             if (generatorTemplate.getFactoryExpression() != null) {
-                TemplateEvaulator templateEvaulator = generatorTemplate.getTemplateEvalulator(clientGenerator);
+                final TemplateEvaulator templateEvaulator;
+                try {
+                    templateEvaulator = generatorTemplate.getTemplateEvalulator(clientGenerator, evaulationContext);
+                } catch (IOException e) {
+                    throw new RuntimeException("Could not evaulate template", e);
+                }
 
                 if (templateEvaulator.getTemplate() != null || generatorTemplate.isCopy()) {
-                    clientGenerator.setVariable("applications", applications);
-                    clientGenerator.setVariable("template", generatorTemplate);
+
+                    evaulationContext.setVariable("applications", applications);
+                    evaulationContext.setVariable("template", generatorTemplate);
 
                     templateEvaulator.getFactoryExpressionResult(applications, Collection.class).stream().forEach(element -> {
-                        clientGenerator.setVariable("self", element);
+                        tasks.add(CompletableFuture.supplyAsync(() -> {
 
-                        Context.Builder contextBuilder = Context
-                                .newBuilder(element)
-                                .combine("applications", applications)
-                                .combine("template", generatorTemplate);
+                            StandardEvaluationContext templateContext = clientGenerator.createSpringEvaulationContext();
+                            templateContext.setVariable("applications", applications);
+                            templateContext.setVariable("template", generatorTemplate);
+                            templateContext.setVariable("self", element);
 
-                        generatorTemplate.evalToContextBuilder(templateEvaulator, contextBuilder);
-                        GeneratedFile generatedFile = generateFile(clientGenerator, templateEvaulator, generatorTemplate, contextBuilder, log);
-                        sources.add(generatedFile);
+                            Context.Builder contextBuilder = Context
+                                    .newBuilder(element)
+                                    .combine("applications", applications)
+                                    .combine("template", generatorTemplate)
+                                    .combine("self", element);
+
+                            generatorTemplate.evalToContextBuilder(templateEvaulator, contextBuilder, evaulationContext);
+                            GeneratedFile generatedFile = generateFile(clientGenerator, templateContext, templateEvaulator, generatorTemplate, contextBuilder, log);
+                            sources.add(generatedFile);
+                            return generatedFile;
+                        }));
                     });
                 }
             }
-        }
+        });
+
+        allFuture(tasks).get();
+
         return sources;
     }
 
 
     private static GeneratedFile generateFile(final ClientGenerator clientGenerator,
+                                              final StandardEvaluationContext evaluationContext,
                                               final TemplateEvaulator templateEvaulator,
                                               final GeneratorTemplate generatorTemplate,
                                               final Context.Builder contextBuilder,
                                               final Log log) {
 
         GeneratedFile generatedFile = new GeneratedFile();
-        generatedFile.setOverwrite(templateEvaulator.getOverWriteExpression().getValue(clientGenerator.getSpelEvaulationContext(), Boolean.class));
-        generatedFile.setPath(templateEvaulator.getPathExpression().getValue(clientGenerator.getSpelEvaulationContext(), String.class));
+        generatedFile.setOverwrite(templateEvaulator.getOverWriteExpression().getValue(evaluationContext, Boolean.class));
+        generatedFile.setPath(templateEvaulator.getPathExpression().getValue(evaluationContext, String.class));
 
         if (generatorTemplate.isCopy()) {
             String location = generatorTemplate.getTemplateName();
@@ -131,7 +172,7 @@ public class Ui2Client {
                 }  else {
                     log.error("Could not locate: " + location);
                 }
-            } catch (IOException e) {
+            } catch (Exception e) {
                 log.error("Could not resolve: " + location);
             }
         } else {
@@ -165,8 +206,8 @@ public class Ui2Client {
                 if (!outFile.exists() || (f.getOverwrite())) {
                     try {
                         ByteStreams.copy(new ByteArrayInputStream(f.getContent()), new FileOutputStream(outFile));
-                    } catch (IOException ioException) {
-                        log.error("Could not write file: " + outFile.getAbsolutePath(), ioException);
+                    } catch (Exception exception) {
+                        log.error("Could not write file: " + outFile.getAbsolutePath(), exception);
                     }
                 }
             });
@@ -208,6 +249,16 @@ public class Ui2Client {
         return new ByteArrayInputStream(generatedZip.toByteArray());
     }
 
+
+    public static <T> CompletableFuture<List<T>> allFuture(List<CompletableFuture<T>> futures) {
+        CompletableFuture[] cfs = futures.toArray(new CompletableFuture[futures.size()]);
+
+        return CompletableFuture.allOf(cfs)
+                .thenApply(ignored -> futures.stream()
+                        .map(CompletableFuture::join)
+                        .collect(Collectors.toList())
+                );
+    }
     @Deprecated
     // TODO: Compatibiliyu reasons
     public static void main(String[] args) throws Exception {

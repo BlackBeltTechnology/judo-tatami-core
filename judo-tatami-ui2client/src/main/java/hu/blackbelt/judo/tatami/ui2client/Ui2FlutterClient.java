@@ -29,7 +29,7 @@ public class Ui2FlutterClient {
     public static final String ACTOR_FQ_NAME = "actorFqName";
 
     public static final Log log = new Slf4jLog(LoggerFactory.getLogger(Ui2FlutterClient.class));
-    public static final String FLUTTER_FLUTTER_YAML = "flutter/flutter.yaml";
+    public static final String FLUTTER_YAML = "flutter.yaml";
 
     public static Function<Application, String> OUTPUT_NAME_GENERATOR_FUNCTION = (Application a) -> FlutterHelper.dart(a.getName());
 
@@ -41,10 +41,10 @@ public class Ui2FlutterClient {
         scriptUris.addAll(overridedScriptUris);
 
         List<GeneratorTemplate> generatorTemplates = new ArrayList<>();
-        generatorTemplates.addAll(GeneratorTemplate.loadYamlURL(Ui2Client.calculateUi2ClientTemplateScriptURI(FLUTTER_FLUTTER_YAML).toURL()));
+        generatorTemplates.addAll(GeneratorTemplate.loadYamlURL(Ui2Client.calculateUi2ClientTemplateScriptURI("flutter/" + FLUTTER_YAML).toURL()));
         // Search for overrided flutter yaml files
         for (URI uri : overridedScriptUris) {
-            Collection<GeneratorTemplate> overridedTemplates = GeneratorTemplate.loadYamlURL(UriHelper.calculateRelativeURI(uri, FLUTTER_FLUTTER_YAML).toURL());
+            Collection<GeneratorTemplate> overridedTemplates = GeneratorTemplate.loadYamlURL(UriHelper.calculateRelativeURI(uri, FLUTTER_YAML).toURL());
             Collection<GeneratorTemplate> replaceableTemplates = new HashSet<>();
             generatorTemplates.forEach(t -> {
                 overridedTemplates.stream().filter(o -> o.getTemplateName().equals(t.getTemplateName())).forEach(f -> replaceableTemplates.add(f));
@@ -53,8 +53,6 @@ public class Ui2FlutterClient {
             generatorTemplates.addAll(overridedTemplates);
         }
         ClientGenerator clientGenerator = new ClientGenerator(uiModel, scriptUris, generatorTemplates);
-        clientGenerator.getHandlebars().registerHelpers(FlutterHelper.class);
-        FlutterHelper.registerSpEL(clientGenerator.getSpelEvaulationContext());
         return clientGenerator;
     }
 
@@ -98,7 +96,7 @@ public class Ui2FlutterClient {
 
         String finalProjectSkeleton = projectSkeleton;
         String finalOpenapiYamlNameTemplate = openapiYamlNameTemplate;
-        generatedApps.entrySet()
+        generatedApps.entrySet().stream()
                 .forEach(getDirectoryWriter(targetDirectory, OUTPUT_NAME_GENERATOR_FUNCTION, log).andThen(e -> {
 
                     String clientName = clientNames.get(e.getKey().getFQName()).get(CLIENT_NAME);
