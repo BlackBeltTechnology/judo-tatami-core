@@ -346,8 +346,9 @@ public class Esm2UiOperationsTest {
         assertTrue(defaultContainer4.isPresent());
         final Optional<VisualElement> instanceActionsContainerE1Table = defaultContainer4.get().getChildren().stream().filter(c -> c instanceof Flex && c.getName().equals("instanceActions")).findAny();
         assertTrue(instanceActionsContainerE1Table.isPresent());
-        assertEquals(1, ((Flex)instanceActionsContainerE1Table.get()).getChildren().size());
+        assertEquals(2, ((Flex)instanceActionsContainerE1Table.get()).getChildren().size());
         assertTrue(((Flex)instanceActionsContainerE1Table.get()).getChildren().stream().anyMatch(b -> b instanceof Button && ((Button)b).getAction() != null && ((Button)b).getAction() instanceof CreateAction));
+        assertTrue(((Flex)instanceActionsContainerE1Table.get()).getChildren().stream().anyMatch(b -> b instanceof Button && ((Button)b).getAction() != null && ((Button)b).getAction() instanceof RefreshAction));
         
         final Optional<Table> uiTable5 = allUi(Table.class)
                 .filter(a -> a.getName().equals(e3.getName()) && a.getPageDefinition().getIsPageTypeTable() && a.getRelationType().equals(uiRelation2.get()))
@@ -370,7 +371,7 @@ public class Esm2UiOperationsTest {
         assertTrue(defaultContainer5.isPresent());
         final Optional<VisualElement> instanceActionsContainerE3Table = defaultContainer5.get().getChildren().stream().filter(c -> c instanceof Flex && c.getName().equals("instanceActions")).findAny();
         assertTrue(instanceActionsContainerE3Table.isPresent());
-        assertEquals(4, ((Flex)instanceActionsContainerE3Table.get()).getChildren().size());
+        assertEquals(5, ((Flex)instanceActionsContainerE3Table.get()).getChildren().size());
         assertTrue(((Flex)instanceActionsContainerE3Table.get()).getChildren().stream()
                 .anyMatch(b -> b instanceof Button && ((Button)b).getAction() != null && ((Button)b).getAction() instanceof BackAction));
         assertTrue(((Flex)instanceActionsContainerE3Table.get()).getChildren().stream()
@@ -379,6 +380,8 @@ public class Esm2UiOperationsTest {
                 .anyMatch(b -> b instanceof Button && ((Button)b).getAction() != null && ((Button)b).getAction() instanceof SetAction));
         assertTrue(((Flex)instanceActionsContainerE3Table.get()).getChildren().stream()
                 .anyMatch(b -> b instanceof Button && ((Button)b).getAction() != null && ((Button)b).getAction() instanceof AddAction));
+        assertTrue(((Flex)instanceActionsContainerE3Table.get()).getChildren().stream()
+                .anyMatch(b -> b instanceof Button && ((Button)b).getAction() != null && ((Button)b).getAction() instanceof RefreshAction));
         
         final Optional<Table> uiTable6 = allUi(Table.class)
                 .filter(a -> a.getName().equals(e3.getName()) && a.getPageDefinition().getIsPageTypeTable() && a.getRelationType().equals(uiRelation3.get()))
@@ -397,7 +400,7 @@ public class Esm2UiOperationsTest {
         final Optional<VisualElement> instanceActionsContainerE3TableSingle = defaultContainer6.get().getChildren().stream()
                 .filter(c -> c instanceof Flex && c.getName().equals("instanceActions")).findAny();
         assertTrue(instanceActionsContainerE3TableSingle.isPresent());
-        assertEquals(4, ((Flex)instanceActionsContainerE3TableSingle.get()).getChildren().size());
+        assertEquals(5, ((Flex)instanceActionsContainerE3TableSingle.get()).getChildren().size());
         assertTrue(((Flex)instanceActionsContainerE3TableSingle.get()).getChildren().stream()
                 .anyMatch(b -> b instanceof Button && ((Button)b).getAction() != null && ((Button)b).getAction() instanceof BackAction));
         assertTrue(((Flex)instanceActionsContainerE3TableSingle.get()).getChildren().stream()
@@ -406,6 +409,8 @@ public class Esm2UiOperationsTest {
                 .anyMatch(b -> b instanceof Button && ((Button)b).getAction() != null && ((Button)b).getAction() instanceof SetAction));
         assertTrue(((Flex)instanceActionsContainerE3TableSingle.get()).getChildren().stream()
                 .anyMatch(b -> b instanceof Button && ((Button)b).getAction() != null && ((Button)b).getAction() instanceof UnsetAction));
+        assertTrue(((Flex)instanceActionsContainerE3TableSingle.get()).getChildren().stream()
+                .anyMatch(b -> b instanceof Button && ((Button)b).getAction() != null && ((Button)b).getAction() instanceof RefreshAction));
         
     }
     
