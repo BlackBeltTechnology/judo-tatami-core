@@ -94,6 +94,20 @@
     {{# if action.isBackAction }}
         onPressed: () => navigation.close(),
     {{/ if }}
+    {{# if action.isRefreshAction}}
+        {{# if page.dataElement.isRelationBehaviourTypeRefreshable }}
+            {{# if page.isPageTypeView }}
+        onPressed: () async {
+            await {{ fqVariable page.name }}PageStore.refresh{{ className page.relationType.target.name }}(target{{ className page.dataElement.target.name }}Store);
+        },
+            {{/if}}
+            {{# if page.isPageTypeTable }}
+        onPressed: () async {
+            await {{ fqVariable page.name }}PageStore.get{{ className page.relationType.name }}({{# unless page.dataElement.isAccess}}owner{{ className page.relationType.owner.name }}Store{{/unless}});
+        },
+            {{/if}}
+        {{/ if }}
+    {{/ if }}
     {{# if action.isCreateAction }}
         onPressed:{{# unless page.dataElement.isCollection }} owner{{ className page.dataElement.owner.name }}Store.{{ variable page.dataElement.name }} == null{{/ unless }}{{# unless page.dataElement.isAccess}}{{# unless page.dataElement.isRelationKindStatic}}{{# unless page.dataElement.isCollection }} &&{{/ unless }} owner{{ className page.dataElement.owner.name }}Store.internal__updatable ?{{/ unless}}{{/ unless}} () async {
             var created = await navigation.open(Routes.{{ fqVariable action.target.name }}Page{{# unless page.dataElement.isAccess}},
