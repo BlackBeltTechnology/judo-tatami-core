@@ -40,8 +40,13 @@ Observer(builder: (_) {
             var selected =
             {{> templates/flutter/lib/ui/pages/widgets/dialog.dart.hbs relation=relation}}
             if (selected != null) {
+                        {{# if relation.isRelationBehaviourTypeSetable }}
+                            // {{ relation.name }} - {{ relation.isRelationBehaviourTypeSetable }}
                 {{fqVariable page.name}}PageStore.set{{ fqClass relation.name }}(target{{ className relation.owner.name }}Store, selected)
-                .catchError((error) => ErrorHandler.errorDialog(context, error));
+                    .catchError((error) => ErrorHandler.errorDialog(context, error));
+                        {{ else }}
+                target{{ className relation.owner.name }}Store.set{{ fqClass relation.name }}(selected);
+                        {{/ if }}
             }
         } : null,
                     {{/ unless }}
@@ -175,8 +180,12 @@ Observer(builder: (_) {
                     color: false ? JudoComponentsSettings.disabledColor : null,
                 ),
                 onPressed: {{# unless relation.isAccess}}{{# unless relation.isRelationKindStatic}} target{{ className relation.owner.name }}Store.internal__updatable ?{{/ unless}}{{/ unless}} () async {
+                    {{# if relation.isRelationBehaviourTypeUnsetable }}
                     {{fqVariable page.name}}PageStore.unset{{ fqClass relation.name }}(target{{ className relation.owner.name }}Store)
-                     .catchError((error) => ErrorHandler.errorDialog(context, error));
+                        .catchError((error) => ErrorHandler.errorDialog(context, error));
+                    {{ else }}
+                    target{{ className relation.owner.name }}Store.set{{ fqClass relation.name }}(null);
+                    {{/ if }}
                 }{{# unless relation.isAccess}}{{# unless relation.isRelationKindStatic}}: null{{/ unless}}{{/ unless}}
             ) : null,
         {{/if}}

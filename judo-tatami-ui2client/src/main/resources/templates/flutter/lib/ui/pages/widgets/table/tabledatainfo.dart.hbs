@@ -33,11 +33,17 @@ class {{ fqClass table.pageDefinition.name }}{{ fqClass table.name }}{{ fqClass 
             {{/each}}
             {{#each table.rowActions as |action|}}
                 {{#unless action.isViewAction}}
-                    {{# unless table.pageDefinition.isPageTypeOperationInput }}
+                    {{#if action.isEditAction}}
+                        {{# unless table.pageDefinition.isPageTypeOperationInput }}
                     DataColumn(
                         label: Text("")
                     ),
-                    {{/ unless}}
+                        {{/ unless }}
+                    {{ else }}
+                    DataColumn(
+                        label: Text("")
+                    ),
+                    {{/ if }}
                 {{/ unless}}
             {{/each}}
         ];
