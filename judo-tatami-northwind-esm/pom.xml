@@ -20,165 +20,28 @@
         <client-project-name>${project.artifactId}</client-project-name>
         <client-generated-actors>*</client-generated-actors>
         <flutter-home>${project.basedir}/.flutter</flutter-home>
+        <slf4j-version>1.6.2</slf4j-version>
     </properties>
 
 
     <build>
         <plugins>
-            
-            <!-- 1. Unpack ESM model -->
+            <!-- Report active profiles on console. -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-dependency-plugin</artifactId>
-                <version>3.1.2</version>
+                <artifactId>maven-help-plugin</artifactId>
+                <version>3.2.0</version>
                 <executions>
                     <execution>
-                        <id>unpack-northwind-esm-model</id>
-                        <phase>generate-sources</phase>
+                        <id>show-profiles</id>
+                        <phase>initialize</phase>
                         <goals>
-                            <goal>unpack</goal>
+                            <goal>active-profiles</goal>
                         </goals>
-                        <configuration>
-                            <artifactItems>
-                                <artifactItem>
-                                    <groupId>hu.blackbelt.judo.meta</groupId>
-                                    <artifactId>hu.blackbelt.judo.meta.esm.model.northwind</artifactId>
-                                    <version>${judo-meta-esm-version}</version>
-                                    <outputDirectory>${basedir}/target/classes/model</outputDirectory>
-                                </artifactItem>
-                            </artifactItems>
-                        </configuration>
                     </execution>
                 </executions>
-                <dependencies>
-                    <dependency>
-                        <groupId>org.slf4j</groupId>
-                        <artifactId>slf4j-simple</artifactId>
-                        <version>${slf4j-version}</version>
-                    </dependency>
-                </dependencies>
-            </plugin>
-
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>exec-maven-plugin</artifactId>
-                <version>3.0.0</version>
-                <executions>
-                    <execution>
-                        <id>generate-psm</id>
-                        <phase>generate-sources</phase>
-                        <goals>
-                            <goal>java</goal>
-                        </goals>
-                        <configuration>
-                            <mainClass>hu.blackbelt.judo.tatami.esm2psm.Esm2PsmWork</mainClass>
-                            <arguments>
-                                <argument>${basedir}/target/classes/model/northwind-esm.model</argument>
-                                <argument>northwind</argument>
-                                <argument>${basedir}/target/classes/model/northwind-psm.model</argument>
-                            </arguments>
-                            <includeProjectDependencies>true</includeProjectDependencies>
-                            <includePluginDependencies>true</includePluginDependencies>
-                            <cleanupDaemonThreads>false</cleanupDaemonThreads>
-                        </configuration>
-                    </execution>
-                    
-                    <execution>
-                        <id>generate-ui</id>
-                        <phase>generate-sources</phase>
-                        <goals>
-                            <goal>java</goal>
-                        </goals>
-                        <configuration>
-                            <mainClass>hu.blackbelt.judo.tatami.esm2ui.Esm2UiWork</mainClass>
-                            <arguments>
-                                <argument>${basedir}/target/classes/model/northwind-esm.model</argument>
-                                <argument>northwind</argument>
-                                <argument>${basedir}/target/classes/model/northwind-ui.model</argument>
-                            </arguments>
-                            <includeProjectDependencies>true</includeProjectDependencies>
-                            <includePluginDependencies>true</includePluginDependencies>
-                            <cleanupDaemonThreads>false</cleanupDaemonThreads>
-                        </configuration>
-                    </execution>
-                    
-                    <execution>
-                        <id>generate-client-flutter</id>
-                        <phase>compile</phase>
-                        <goals>
-                            <goal>java</goal>
-                        </goals>
-                        <configuration>
-                            <mainClass>hu.blackbelt.judo.tatami.ui2client.Ui2Client</mainClass>
-                            <arguments>
-                                <argument>${basedir}/target/classes/model/northwind-ui.model</argument>
-                                <argument>northwind</argument>
-                                <argument>${basedir}/target/classes/model/client</argument>
-                                <argument>flutter/flutter.yaml</argument>
-                                <argument>*</argument>
-                                <argument>${basedir}/target/classes/model/META-INF</argument>
-                                <argument>${basedir}/target/classes/model</argument>
-                            </arguments>
-                            <includeProjectDependencies>true</includeProjectDependencies>
-                            <includePluginDependencies>true</includePluginDependencies>
-                            <cleanupDaemonThreads>false</cleanupDaemonThreads>
-                        </configuration>
-                    </execution>
-                    
-                </executions>
-                <dependencies>
-                    <dependency>
-                        <groupId>hu.blackbelt.judo.tatami</groupId>
-                        <artifactId>judo-tatami-esm2psm</artifactId>
-                        <version>${project.version}</version>
-                    </dependency>
-                    <dependency>
-                        <groupId>hu.blackbelt.judo.tatami</groupId>
-                        <artifactId>judo-tatami-esm2ui</artifactId>
-                        <version>${project.version}</version>
-                    </dependency>
-                    <dependency>
-                        <groupId>hu.blackbelt.judo.tatami</groupId>
-                        <artifactId>judo-tatami-ui2client</artifactId>
-                        <version>${project.version}</version>
-                    </dependency>
-                    <dependency>
-                        <groupId>org.slf4j</groupId>
-                        <artifactId>slf4j-simple</artifactId>
-                        <version>${slf4j-version}</version>
-                    </dependency>
-                </dependencies>
             </plugin>
             
-            <plugin>
-                <groupId>hu.blackbelt.judo.tatami</groupId>
-                <artifactId>judo-tatami-workflow-maven-plugin</artifactId>
-                <version>${project.version}</version>
-                <executions>
-                    <execution>
-                        <id>execute-model-from-file</id>
-                        <phase>generate-sources</phase>
-                        <goals>
-                            <goal>psm-default-workflow</goal>
-                        </goals>
-                        <configuration>
-                            <modelName>northwind</modelName>
-                            <destination>${basedir}/target/classes/model</destination>
-                            <psmModelFile>${basedir}/target/classes/model/northwind-psm.model</psmModelFile>
-                            <dialectList>hsqldb,postgresql,oracle</dialectList>
-                            <validateModels>true</validateModels>
-                        </configuration>
-                    </execution>
-                </executions>
-                <dependencies>
-                    <dependency>
-                        <groupId>org.slf4j</groupId>
-                        <artifactId>slf4j-simple</artifactId>
-                        <version>${slf4j-version}</version>
-                    </dependency>
-                </dependencies>
-            </plugin>
-
             <plugin>
                 <groupId>org.apache.felix</groupId>
                 <artifactId>maven-bundle-plugin</artifactId>
@@ -186,39 +49,12 @@
                 <extensions>true</extensions>
                 <configuration>
                     <instructions>
-                        <Judo-Models>name=northwind</Judo-Models>
                         <Include-Resource>
-                            {maven-resources},
-                            target/classes
+                            {maven-resources}
                         </Include-Resource>
                     </instructions>
                 </configuration>
             </plugin>
-            
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>build-helper-maven-plugin</artifactId>
-                <version>3.2.0</version>
-                <executions>
-                    <execution>
-                        <id>attach-artifacts</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>attach-artifact</goal>
-                        </goals>
-                        <configuration>
-                            <artifacts>
-                                <artifact>
-                                    <file>${basedir}/target/classes/model/northwind-asm2sdk.jar</file>
-                                    <type>jar</type>
-                                    <classifier>sdk</classifier>
-                                </artifact>
-                            </artifacts>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            
         </plugins>
     </build>
     
@@ -226,16 +62,227 @@
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
-            <version>1.6.2</version>
+            <version>${slf4j-version}</version>
         </dependency>
         <dependency>
-            <groupId>hu.blackbelt.judo.tatami</groupId>
-            <artifactId>judo-tatami-esm2psm</artifactId>
-            <version>${project.version}</version>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+            <version>${slf4j-version}</version>
         </dependency>
+
     </dependencies>
     
     <profiles>
+        <profile>
+            <id>esm-transformation-pipeline</id>
+            <activation>
+                <property>
+                    <name>[ACTIVATOR:GROOVYSCRIPT]</name>
+                    <value>
+                        <![CDATA[
+                            return !value["skipTests"] || value["northwindEsm"]
+                        ]]>
+                    </value>
+                </property>
+            </activation>
+
+            <build>
+                <plugins>
+                    <!-- 1. Unpack ESM model -->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-dependency-plugin</artifactId>
+                        <version>3.1.2</version>
+                        <executions>
+                            <execution>
+                                <id>unpack-northwind-esm-model</id>
+                                <phase>generate-sources</phase>
+                                <goals>
+                                    <goal>unpack</goal>
+                                </goals>
+                                <configuration>
+                                    <artifactItems>
+                                        <artifactItem>
+                                            <groupId>hu.blackbelt.judo.meta</groupId>
+                                            <artifactId>hu.blackbelt.judo.meta.esm.model.northwind</artifactId>
+                                            <version>${judo-meta-esm-version}</version>
+                                            <outputDirectory>${basedir}/target/classes/model</outputDirectory>
+                                        </artifactItem>
+                                    </artifactItems>
+                                </configuration>
+                            </execution>
+                        </executions>
+                        <dependencies>
+                            <dependency>
+                                <groupId>org.slf4j</groupId>
+                                <artifactId>slf4j-simple</artifactId>
+                                <version>${slf4j-version}</version>
+                            </dependency>
+                        </dependencies>
+                    </plugin>
+
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>exec-maven-plugin</artifactId>
+                        <version>3.0.0</version>
+                        <executions>
+                            <execution>
+                                <id>generate-psm</id>
+                                <phase>generate-sources</phase>
+                                <goals>
+                                    <goal>java</goal>
+                                </goals>
+                                <configuration>
+                                    <mainClass>hu.blackbelt.judo.tatami.esm2psm.Esm2PsmWork</mainClass>
+                                    <arguments>
+                                        <argument>${basedir}/target/classes/model/northwind-esm.model</argument>
+                                        <argument>northwind</argument>
+                                        <argument>${basedir}/target/classes/model/northwind-psm.model</argument>
+                                    </arguments>
+                                    <includeProjectDependencies>true</includeProjectDependencies>
+                                    <includePluginDependencies>true</includePluginDependencies>
+                                    <cleanupDaemonThreads>false</cleanupDaemonThreads>
+                                </configuration>
+                            </execution>
+                            
+                            <execution>
+                                <id>generate-ui</id>
+                                <phase>generate-sources</phase>
+                                <goals>
+                                    <goal>java</goal>
+                                </goals>
+                                <configuration>
+                                    <mainClass>hu.blackbelt.judo.tatami.esm2ui.Esm2UiWork</mainClass>
+                                    <arguments>
+                                        <argument>${basedir}/target/classes/model/northwind-esm.model</argument>
+                                        <argument>northwind</argument>
+                                        <argument>${basedir}/target/classes/model/northwind-ui.model</argument>
+                                    </arguments>
+                                    <includeProjectDependencies>true</includeProjectDependencies>
+                                    <includePluginDependencies>true</includePluginDependencies>
+                                    <cleanupDaemonThreads>false</cleanupDaemonThreads>
+                                </configuration>
+                            </execution>
+                            
+                            <execution>
+                                <id>generate-client-flutter</id>
+                                <phase>compile</phase>
+                                <goals>
+                                    <goal>java</goal>
+                                </goals>
+                                <configuration>
+                                    <mainClass>hu.blackbelt.judo.tatami.ui2client.Ui2Client</mainClass>
+                                    <arguments>
+                                        <argument>${basedir}/target/classes/model/northwind-ui.model</argument>
+                                        <argument>northwind</argument>
+                                        <argument>${basedir}/target/classes/model/client</argument>
+                                        <argument>flutter/flutter.yaml</argument>
+                                        <argument>*</argument>
+                                        <argument>${basedir}/target/classes/model/META-INF</argument>
+                                        <argument>${basedir}/target/classes/model</argument>
+                                    </arguments>
+                                    <includeProjectDependencies>true</includeProjectDependencies>
+                                    <includePluginDependencies>true</includePluginDependencies>
+                                    <cleanupDaemonThreads>false</cleanupDaemonThreads>
+                                </configuration>
+                            </execution>
+                            
+                        </executions>
+                        <dependencies>
+                            <dependency>
+                                <groupId>hu.blackbelt.judo.tatami</groupId>
+                                <artifactId>judo-tatami-esm2psm</artifactId>
+                                <version>${project.version}</version>
+                            </dependency>
+                            <dependency>
+                                <groupId>hu.blackbelt.judo.tatami</groupId>
+                                <artifactId>judo-tatami-esm2ui</artifactId>
+                                <version>${project.version}</version>
+                            </dependency>
+                            <dependency>
+                                <groupId>hu.blackbelt.judo.tatami</groupId>
+                                <artifactId>judo-tatami-ui2client</artifactId>
+                                <version>${project.version}</version>
+                            </dependency>
+                            <dependency>
+                                <groupId>org.slf4j</groupId>
+                                <artifactId>slf4j-simple</artifactId>
+                                <version>${slf4j-version}</version>
+                            </dependency>
+                        </dependencies>
+                    </plugin>
+                    
+                    <plugin>
+                        <groupId>hu.blackbelt.judo.tatami</groupId>
+                        <artifactId>judo-tatami-workflow-maven-plugin</artifactId>
+                        <version>${project.version}</version>
+                        <executions>
+                            <execution>
+                                <id>execute-model-from-file</id>
+                                <phase>generate-sources</phase>
+                                <goals>
+                                    <goal>psm-default-workflow</goal>
+                                </goals>
+                                <configuration>
+                                    <modelName>northwind</modelName>
+                                    <destination>${basedir}/target/classes/model</destination>
+                                    <psmModelFile>${basedir}/target/classes/model/northwind-psm.model</psmModelFile>
+                                    <dialectList>hsqldb,postgresql,oracle</dialectList>
+                                    <validateModels>true</validateModels>
+                                </configuration>
+                            </execution>
+                        </executions>
+                        <dependencies>
+                            <dependency>
+                                <groupId>org.slf4j</groupId>
+                                <artifactId>slf4j-simple</artifactId>
+                                <version>${slf4j-version}</version>
+                            </dependency>
+                        </dependencies>
+                    </plugin>
+
+                    <plugin>
+                        <groupId>org.apache.felix</groupId>
+                        <artifactId>maven-bundle-plugin</artifactId>
+                        <version>3.5.1</version>
+                        <extensions>true</extensions>
+                        <configuration>
+                            <instructions>
+                                <Judo-Models>name=northwind</Judo-Models>
+                                <Include-Resource>
+                                    {maven-resources},
+                                    target/classes
+                                </Include-Resource>
+                            </instructions>
+                        </configuration>
+                    </plugin>
+
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>build-helper-maven-plugin</artifactId>
+                        <version>3.2.0</version>
+                        <executions>
+                            <execution>
+                                <id>attach-artifacts</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>attach-artifact</goal>
+                                </goals>
+                                <configuration>
+                                    <artifacts>
+                                        <artifact>
+                                            <file>${basedir}/target/classes/model/northwind-asm2sdk.jar</file>
+                                            <type>jar</type>
+                                            <classifier>sdk</classifier>
+                                        </artifact>
+                                    </artifacts>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
         <profile>
             <id>Windows</id>
             <activation>
@@ -246,6 +293,7 @@
             <properties>
                 <script.executor>powershell.exe</script.executor>
                 <flutter.create.execute>-c ${basedir}\flutterw.ps1</flutter.create.execute>
+                <flutter.create.skeleton>-c .\flutterw.ps1 create -t app --project-name ${client-project-name.fixed} --platforms web --org ${project.groupId} .\\</flutter.create.skeleton>
                 <flutter.config.web.execute>-c ${basedir}\flutterw.ps1 config --enable-web</flutter.config.web.execute>
                 <flutter.clean.execute>-c ${basedir}\flutterw.ps1 clean</flutter.clean.execute>
                 <flutter.pub.get.execute>-c ${basedir}\flutterw.ps1 pub get</flutter.pub.get.execute>
@@ -264,6 +312,7 @@
             <properties>
                 <script.executor>bash</script.executor>
                 <flutter.create.execute>-c "chmod +x ${basedir}/flutterw"</flutter.create.execute>
+                <flutter.create.skeleton>-c "chmod +x ./flutterw;./flutterw create -t app --project-name ${client-project-name.fixed} --platforms web --org ${project.groupId} ./"</flutter.create.skeleton>
                 <flutter.config.web.execute>-c "chmod +x ${basedir}/flutterw;${basedir}/flutterw config --enable-web"</flutter.config.web.execute>
                 <flutter.clean.execute>-c "chmod +x ${basedir}/flutterw;${basedir}/flutterw clean"</flutter.clean.execute>
                 <flutter.get.execute>-c "chmod +x ${basedir}/flutterw;${basedir}/flutterw pub get"</flutter.get.execute>
@@ -275,11 +324,23 @@
         </profile>
 
         <profile>
-            <id>download-flutter-wrapper</id>
+            <id>download-flutter-wrapper-unix</id>
             <activation>
-                 <file>
-                     <missing>flutterw</missing>
-                 </file>
+                <property>
+                    <name>[ACTIVATOR:GROOVYSCRIPT]</name>
+                    <value>
+                        <![CDATA[
+                            // This is Groovy.
+                            def flutterwUnix = new File(project.pomFile.parentFile, 'flutterw' )
+                            def flutterwWindows = new File(project.pomFile.parentFile, 'flutterw.ps1' )
+
+                            println("Checking flutter wrapper: " + flutterwUnix)
+                            println("Checking flutter wrapper: " + flutterwWindows)
+                            
+                            !flutterwUnix.exists()
+                        ]]>
+                    </value>
+                </property>
             </activation>
             <build>
                 <plugins>
@@ -302,20 +363,8 @@
                                 </configuration>
                             </execution>
                             <execution>
-                                <id>download-flutter-wrapper-ps1-preclean</id>
-                                <phase>pre-clean</phase>
-                                <goals>
-                                    <goal>download-single</goal>
-                                </goals>
-                                <configuration>
-                                    <url>https://raw.githubusercontent.com</url>
-                                    <fromFile>BlackbeltTechnology/flutter-wrapper/master/dist/flutterw.ps1</fromFile>
-                                    <toDir>${basedir}</toDir>
-                                </configuration>
-                            </execution>
-                            <execution>
                                 <id>download-flutter-wrapper-bash-validate</id>
-                                <phase>pre-clean</phase>
+                                <phase>validate</phase>
                                 <goals>
                                     <goal>download-single</goal>
                                 </goals>
@@ -325,19 +374,6 @@
                                     <toDir>${basedir}</toDir>
                                 </configuration>
                             </execution>
-                            <execution>
-                                <id>download-flutter-wrapper-ps1-validate</id>
-                                <phase>pre-clean</phase>
-                                <goals>
-                                    <goal>download-single</goal>
-                                </goals>
-                                <configuration>
-                                    <url>https://raw.githubusercontent.com</url>
-                                    <fromFile>BlackbeltTechnology/flutter-wrapper/master/dist/flutterw.ps1</fromFile>
-                                    <toDir>${basedir}</toDir>
-                                </configuration>
-                            </execution>
-
                         </executions>
                     </plugin>
 
@@ -360,7 +396,7 @@
                                 </goals>
                                 <phase>generate-sources</phase>
                                 <configuration>
-                                    <workingDirectory>${project.basedir}/target/classes/model/client/northwind__admin</workingDirectory>
+                                    <workingDirectory>${project.basedir}</workingDirectory>
                                     <executable>${script.executor}</executable>
                                     <commandlineArgs>${flutter.config.web.execute}</commandlineArgs>
                                 </configuration>
@@ -371,11 +407,99 @@
             </build>
         </profile>
 
+        <profile>
+            <id>download-flutter-wrapper-windows</id>
+            <activation>
+                <property>
+                    <name>[ACTIVATOR:GROOVYSCRIPT]</name>
+                    <value>
+                        <![CDATA[
+                            // This is Groovy.
+                            def flutterwWindows = new File(project.pomFile.parentFile, 'flutterw.ps1' )
+                            println("Checking flutter wrapper windows: " + flutterwWindows)
+                            !flutterwWindows.exists()
+                        ]]>
+                    </value>
+                </property>
+            </activation>
+            <build>
+                <plugins>
+                    <!-- Download flutter wrapper -->
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>wagon-maven-plugin</artifactId>
+                        <version>1.0</version>
+                        <executions>
+                            <execution>
+                                <id>download-flutter-wrapper-ps1-preclean</id>
+                                <phase>pre-clean</phase>
+                                <goals>
+                                    <goal>download-single</goal>
+                                </goals>
+                                <configuration>
+                                    <url>https://raw.githubusercontent.com</url>
+                                    <fromFile>BlackbeltTechnology/flutter-wrapper/master/dist/flutterw.ps1</fromFile>
+                                    <toDir>${basedir}</toDir>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>download-flutter-wrapper-ps1-validate</id>
+                                <phase>validate</phase>
+                                <goals>
+                                    <goal>download-single</goal>
+                                </goals>
+                                <configuration>
+                                    <url>https://raw.githubusercontent.com</url>
+                                    <fromFile>BlackbeltTechnology/flutter-wrapper/master/dist/flutterw.ps1</fromFile>
+                                    <toDir>${basedir}</toDir>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+
+
+                    <!-- Execute flutter installer and generate default flutter project skeleton -->
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>exec-maven-plugin</artifactId>
+                        <version>1.6.0</version>
+                        <configuration>
+                            <environmentVariables>
+                                <FLUTTER_HOME>${flutter-home}</FLUTTER_HOME>
+                            </environmentVariables>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>flutter-config-web-enable</id>
+                                <goals>
+                                    <goal>exec</goal>
+                                </goals>
+                                <phase>generate-sources</phase>
+                                <configuration>
+                                    <workingDirectory>${project.basedir}</workingDirectory>
+                                    <executable>${script.executor}</executable>
+                                    <commandlineArgs>${flutter.config.web.execute}</commandlineArgs>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        
         <!-- northwind__admin -->
         <profile>
             <id>create-flutter-client-northwind__admin</id>
             <activation>
-                 <file><exists>.</exists></file>
+                <property>
+                    <name>[ACTIVATOR:GROOVYSCRIPT]</name>
+                    <value>
+                        <![CDATA[
+                            value["smokeTests"] || value["allActors"] || value["adminActor"]
+                        ]]>
+                    </value>
+                </property>
             </activation>
             <build>
                 <plugins>
@@ -505,7 +629,14 @@
         <profile>
             <id>create-flutter-client-northwind__authexternaluser</id>
             <activation>
-                 <file><exists>.</exists></file>
+                <property>
+                    <name>[ACTIVATOR:GROOVYSCRIPT]</name>
+                    <value>
+                        <![CDATA[
+                            value["smokeTests"] || value["allActors"] || value["authexternaluserActor"]
+                        ]]>
+                    </value>
+                </property>
             </activation>
             <build>
                 <plugins>
@@ -636,7 +767,14 @@
         <profile>
             <id>create-flutter-client-northwind__authinternaluser</id>
             <activation>
-                 <file><exists>.</exists></file>
+                <property>
+                    <name>[ACTIVATOR:GROOVYSCRIPT]</name>
+                    <value>
+                        <![CDATA[
+                            value["smokeTests"] || value["allActors"] || value["authinternaluserActor"]
+                        ]]>
+                    </value>
+                </property>
             </activation>
             <build>
                 <plugins>
@@ -766,7 +904,14 @@
         <profile>
             <id>create-flutter-client-northwind__externaluser</id>
             <activation>
-                 <file><exists>.</exists></file>
+                <property>
+                    <name>[ACTIVATOR:GROOVYSCRIPT]</name>
+                    <value>
+                        <![CDATA[
+                            value["smokeTests"] || value["allActors"] || value["externaluserActor"]
+                        ]]>
+                    </value>
+                </property>
             </activation>
             <build>
                 <plugins>
@@ -896,7 +1041,14 @@
         <profile>
             <id>create-flutter-client-northwind__internaluser</id>
             <activation>
-                 <file><exists>.</exists></file>
+                <property>
+                    <name>[ACTIVATOR:GROOVYSCRIPT]</name>
+                    <value>
+                        <![CDATA[
+                            value["smokeTests"] || value["allActors"] || value["internaluserActor"]
+                        ]]>
+                    </value>
+                </property>
             </activation>
             <build>
                 <plugins>
