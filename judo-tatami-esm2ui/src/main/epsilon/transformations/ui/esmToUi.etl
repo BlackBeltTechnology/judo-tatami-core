@@ -64,9 +64,8 @@ post {
         application.removeUnexposedElements();
     }
     
-    var optionals = UI!ui::data::ClassType.all().select(c | c.isOptional);
-    for (classType : UI!ui::data::ClassType in optionals) {
-        classType.setRelationTargetsOptional();
+    for (application : UI!ui::Application in UI!ui::Application.all()) {
+        application.setIsOptionalFlag();
     }
     
     for (application : UI!ui::Application in UI!ui::Application.all()) {

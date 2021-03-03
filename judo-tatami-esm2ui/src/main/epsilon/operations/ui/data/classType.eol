@@ -10,7 +10,7 @@ operation UI!ui::data::ClassType calculateRepresentation() {
     }
 }
 
-operation UI!ui::data::ClassType setRelationTargetsOptional() {
+operation UI!ui::data::ClassType setIsOptionalFlag() {
     for (target in
             self.relations
                 .select(r | 
@@ -19,7 +19,7 @@ operation UI!ui::data::ClassType setRelationTargetsOptional() {
                     not r.target.isOptional)
                 .collect(r | r.target)) {
         target.isOptional = true;
-        target.setRelationTargetsOptional();
+        target.setIsOptionalFlag();
     }
 }
 operation UI!ui::data::ClassType setIsForCreateOrUpdateTypeFlag() {

@@ -99,6 +99,14 @@ operation UI!ui::Application removeUnexposedElements() {
 operation UI!ui::Application setIsForCreateOrUpdateTypeFlag() {
     var classes = self.dataElements.select(e | e.isKindOf(UI!ui::data::ClassType) and e.isForCreateOrUpdateType);
     for (c in classes) {
-        c.setIsForCreateOrUpdateTypeFlag();   
+        c.setIsForCreateOrUpdateTypeFlag();
     }   
 }
+
+operation UI!ui::Application setIsOptionalFlag() {
+    var classes = self.dataElements.select(e | e.isKindOf(UI!ui::data::ClassType) and e.isOptional);
+    for (c in classes) {
+        c.setIsOptionalFlag();
+    }
+}
+
