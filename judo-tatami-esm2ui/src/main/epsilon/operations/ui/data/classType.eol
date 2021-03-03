@@ -23,12 +23,14 @@ operation UI!ui::data::ClassType setRelationTargetsOptional() {
     }
 }
 operation UI!ui::data::ClassType setIsForCreateOrUpdateTypeFlag() {
-    for (r in self.relations
+    for (target in self.relations
                 .select(r | 
                     (r.relationKind == UI!ui::data::RelationKind#COMPOSITION or r.relationKind == UI!ui::data::RelationKind#AGGREGATION) and
-                    not (r.memberType == UI!ui::data::MemberType#TRANSIENT or r.memberType == UI!ui::data::MemberType#DERIVED))) {
-        r.target.isForCreateOrUpdateType = true;
-        r.target.setIsForCreateOrUpdateTypeFlag();
+                    not (r.memberType == UI!ui::data::MemberType#TRANSIENT or r.memberType == UI!ui::data::MemberType#DERIVED) and
+                    not r.target.isForCreateOrUpdateType)
+                .collect(r | r.target)) {
+        target.isForCreateOrUpdateType = true;
+        target.setIsForCreateOrUpdateTypeFlag();
     }
     return false;
 }
