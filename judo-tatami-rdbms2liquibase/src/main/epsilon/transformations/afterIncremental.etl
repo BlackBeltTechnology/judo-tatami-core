@@ -5,7 +5,7 @@ import "liquibase/utils/changeset.eol";
 
 rule AddAllForeignKeysChangeSet
     transform s : NEW!RdbmsForeignKey
-    to t : AFTER!ChangeSet {
+    to t : AFTER_INCREMENTAL!ChangeSet {
         t.id = "add-foreign-keys-to-" + s.eContainer.sqlName;
         t.author = "tatami-rdbms2liquibase";
         t.dbms = dialect;
@@ -20,7 +20,7 @@ rule AddAllForeignKeysChangeSet
 
 rule AddAllForeignKeys
     transform s : NEW!RdbmsForeignKey
-    to t : AFTER!AddForeignKeyConstraint {
+    to t : AFTER_INCREMENTAL!AddForeignKeyConstraint {
         t.baseTableName = s.eContainer.sqlName;
         t.baseColumnNames = s.sqlName;
         t.constraintName = s.foreignKeySqlName;
@@ -37,7 +37,7 @@ rule AddAllForeignKeys
 
 rule AddAllUniqueConstraintsChangeSet
     transform s : NEW!RdbmsUniqueConstraint
-    to t : AFTER!ChangeSet {
+    to t : AFTER_INCREMENTAL!ChangeSet {
         t.id = "add-unique-constraint-to-" + s.eContainer.sqlName;
         t.author = "tatami-rdbms2liquibase";
         t.dbms = dialect;
@@ -52,7 +52,7 @@ rule AddAllUniqueConstraintsChangeSet
 
 rule AddAllUniqueConstraints
     transform s : NEW!RdbmsUniqueConstraint
-    to t : AFTER!AddUniqueConstraint {
+    to t : AFTER_INCREMENTAL!AddUniqueConstraint {
         t.tableName = s.eContainer.sqlName;
         t.columnNames = s.fields[0].sqlName;
         if (s.fields.size() > 1) {
@@ -73,7 +73,7 @@ rule AddAllUniqueConstraints
 
 rule CreateAllIndexesChangeSet
     transform s : NEW!RdbmsIndex
-    to t : AFTER!ChangeSet {
+    to t : AFTER_INCREMENTAL!ChangeSet {
         t.id = "create-indexes-for-" + s.eContainer.sqlName;
         t.author = "tatami-rdbms2liquibase";
         t.dbms = dialect;
@@ -88,10 +88,10 @@ rule CreateAllIndexesChangeSet
 
 rule CreateAllIndexes
     transform s : NEW!RdbmsIndex
-    to t : AFTER!CreateIndex {
+    to t : AFTER_INCREMENTAL!CreateIndex {
         t.tableName = s.eContainer.sqlName;
         t.indexName = s.sqlName;
-        t.column = s.fields.collect(f | new AFTER!Column(name = f.sqlName));
+        t.column = s.fields.collect(f | new AFTER_INCREMENTAL!Column(name = f.sqlName));
 
         afterIncrementalModel.changeSetOf("create-indexes-for-" + s.eContainer.sqlName).createIndex.add(t);
         ("CreateIndex added: " + t.indexName + "(" + t.tableName + ")").println();

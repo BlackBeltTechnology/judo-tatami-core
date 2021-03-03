@@ -8,8 +8,8 @@ import "rdbms/utils/table.eol";
 pre {
 	var previousModel = PREVIOUS!RdbmsModel.all.first();
 	var newModel = NEW!RdbmsModel.all.first();
-	var beforeIncrementalModel : BEFORE!databaseChangeLog = new BEFORE!databaseChangeLog();
-	var afterIncrementalModel : AFTER!databaseChangeLog = new AFTER!databaseChangeLog();
+	var beforeIncrementalModel : BEFORE_INCREMENTAL!databaseChangeLog = new BEFORE_INCREMENTAL!databaseChangeLog();
+	var afterIncrementalModel : AFTER_INCREMENTAL!databaseChangeLog = new AFTER_INCREMENTAL!databaseChangeLog();
 }
 
 // flattening is not needed, as we don't have separate fieldtypes any more

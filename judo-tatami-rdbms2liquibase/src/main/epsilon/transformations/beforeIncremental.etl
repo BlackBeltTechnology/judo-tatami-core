@@ -5,7 +5,7 @@ import "liquibase/utils/changeset.eol";
 
 rule DropAllIndexesChangeSet
     transform s : PREVIOUS!RdbmsIndex
-    to t : BEFORE!ChangeSet {
+    to t : BEFORE_INCREMENTAL!ChangeSet {
         t.id = "drop-indexes-from-" + s.eContainer.sqlName;
         t.author = "tatami-rdbms2liquibase";
         t.dbms = dialect;
@@ -20,7 +20,7 @@ rule DropAllIndexesChangeSet
 
 rule DropAllIndexes
     transform s : PREVIOUS!RdbmsIndex
-    to t : BEFORE!DropIndex {
+    to t : BEFORE_INCREMENTAL!DropIndex {
         t.tableName = s.eContainer.sqlName;
         t.indexName = s.sqlName;
 
@@ -34,7 +34,7 @@ rule DropAllIndexes
 
 rule DropAllUniqueConstraintsChangeSet
     transform s : PREVIOUS!RdbmsUniqueConstraint
-    to t : BEFORE!ChangeSet {
+    to t : BEFORE_INCREMENTAL!ChangeSet {
         t.id = "drop-unique-constraint-from-" + s.eContainer.sqlName;
         t.author = "tatami-rdbms2liquibase";
         t.dbms = dialect;
@@ -49,7 +49,7 @@ rule DropAllUniqueConstraintsChangeSet
 
 rule DropAllUniqueConstraints
     transform s : PREVIOUS!RdbmsUniqueConstraint
-    to t : BEFORE!DropUniqueConstraint {
+    to t : BEFORE_INCREMENTAL!DropUniqueConstraint {
         t.tableName = s.eContainer.sqlName;
         t.uniqueColumns = s.fields[0].sqlName;
         if (s.fields.size() > 1) {
@@ -70,7 +70,7 @@ rule DropAllUniqueConstraints
 
 rule DropAllForeignKeysChangeSet
     transform s : PREVIOUS!RdbmsForeignKey
-    to t : BEFORE!ChangeSet {
+    to t : BEFORE_INCREMENTAL!ChangeSet {
         t.id = "drop-foreign-keys-from-" + s.eContainer.sqlName;
         t.author = "tatami-rdbms2liquibase";
         t.dbms = dialect;
@@ -85,7 +85,7 @@ rule DropAllForeignKeysChangeSet
 
 rule DropAllForeignKeys
     transform s : PREVIOUS!RdbmsForeignKey
-    to t : BEFORE!DropForeignKeyConstraint {
+    to t : BEFORE_INCREMENTAL!DropForeignKeyConstraint {
         t.baseTableName = s.eContainer.sqlName;
         t.constraintName = s.foreignKeySqlName;
 
