@@ -74,7 +74,15 @@ Observer(builder: (_) {
         }{{# unless relation.isAccess}} : null{{/ unless}},
         {{/if}}
         {{#if rowAction.isRemoveAction}}
-        removeAction:{{# unless relation.isAccess}} target{{ className relation.owner.name }}Store.internal__updatable ?{{/ unless}} (element) => {{fqVariable page.name}}PageStore.remove{{ fqClass relation.name }}(target{{ className relation.owner.name }}Store, element){{# unless relation.isAccess}} : null{{/ unless}},
+        removeAction:{{# unless relation.isAccess}}{{# unless relation.isRelationKindStatic}} target{{ className relation.owner.name }}Store.internal__updatable ?{{/ unless}}{{/ unless}} (element) {
+            {{# if relation.isRelationBehaviourTypeRemovable }}
+            {{fqVariable page.name}}PageStore.remove{{ fqClass relation.name }}(target{{ className relation.owner.name }}Store, element);
+            {{ else }}
+            var temporaryList = List<{{ fqClass relation.target.name }}Store>.from(target{{ className relation.owner.name }}Store.{{ variable relation.name }})
+                ..remove(element);
+            target{{ className relation.owner.name }}Store.set{{ fqClass relation.name }}(temporaryList);
+            {{/ if }}
+        }{{# unless relation.isAccess}}{{# unless relation.isRelationKindStatic}} : null{{/ unless}}{{/ unless}},
         {{/if}}
         {{#if rowAction.isUnsetAction}}
         unsetAction:{{# unless relation.isAccess}}{{# unless relation.isRelationKindStatic}} target{{ className relation.owner.name }}Store.internal__updatable ?{{/ unless}}{{/ unless}} () async {

@@ -40,8 +40,14 @@
             var selected =
             {{> templates/flutter/lib/ui/pages/widgets/dialog.dart.hbs relation=relation}}
             if (selected != null) {
+        {{# if relation.isRelationBehaviourTypeAddable }}
                 {{fqVariable page.name}}PageStore.add{{ fqClass relation.name }}(target{{ className relation.owner.name }}Store, selected)
-                .catchError((error) => ErrorHandler.errorDialog(context, error));
+                    .catchError((error) => ErrorHandler.errorDialog(context, error));
+        {{ else }}
+            var temporaryList = List<{{ fqClass relation.target.name }}Store>.from(target{{ className relation.owner.name }}Store.{{ variable relation.name }})
+                ..addAll([selected]); // Need to revise after LIST selection
+            target{{ className relation.owner.name }}Store.set{{ fqClass relation.name }}(temporaryList);
+        {{/ if }}
             }
         }{{# unless relation.isAccess}}{{# unless relation.isRelationKindStatic}} : null{{/ unless}}{{/ unless}},
     {{/if}}
@@ -50,8 +56,12 @@
             var selected =
             {{> templates/flutter/lib/ui/pages/widgets/dialog.dart.hbs relation=relation}}
             if (selected != null) {
+        {{# if relation.isRelationBehaviourTypeSetable }}
                 {{fqVariable page.name}}PageStore.set{{ fqClass relation.name }}(target{{ className relation.owner.name }}Store, selected)
-                .catchError((error) => ErrorHandler.errorDialog(context, error));
+                    .catchError((error) => ErrorHandler.errorDialog(context, error));
+        {{ else }}
+                target{{ className relation.owner.name }}Store.set{{ fqClass relation.name }}([selected]); // Need to revise after LIST selection
+        {{/ if }}
             }
         }{{# unless relation.isAccess}}{{# unless relation.isRelationKindStatic}} : null{{/ unless}}{{/ unless}},
     {{/if}}

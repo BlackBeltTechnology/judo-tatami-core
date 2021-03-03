@@ -41,7 +41,6 @@ Observer(builder: (_) {
             {{> templates/flutter/lib/ui/pages/widgets/dialog.dart.hbs relation=relation}}
             if (selected != null) {
                         {{# if relation.isRelationBehaviourTypeSetable }}
-                            // {{ relation.name }} - {{ relation.isRelationBehaviourTypeSetable }}
                 {{fqVariable page.name}}PageStore.set{{ fqClass relation.name }}(target{{ className relation.owner.name }}Store, selected)
                     .catchError((error) => ErrorHandler.errorDialog(context, error));
                         {{ else }}
