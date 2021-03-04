@@ -20,9 +20,10 @@ operation RDBMS!RdbmsField fromType(type : RDBMS!RdbmsField) {
 }
 
 operation RDBMS!RdbmsField fillConstraintsFromAttribute(attribute : ASM!EAttribute) {
-    var maxLength = asmUtils.getExtensionAnnotationValue(attribute, "maxLength", false);
-    var precision = asmUtils.getExtensionAnnotationValue(attribute, "precision", false);
-    var scale = asmUtils.getExtensionAnnotationValue(attribute, "scale", false);
+    var maxLength = asmUtils.getExtensionAnnotationCustomValue(attribute, "constraints", "maxLength", false);
+    var precision = asmUtils.getExtensionAnnotationCustomValue(attribute, "constraints", "precision", false);
+    var scale = asmUtils.getExtensionAnnotationCustomValue(attribute, "constraints", "scale", false);
+
     if (maxLength.isPresent()) {
         self.size = maxLength.get().asInteger();
     }
