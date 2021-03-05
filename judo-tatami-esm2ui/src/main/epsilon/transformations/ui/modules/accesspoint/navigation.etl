@@ -33,7 +33,7 @@ rule AccessMenuNavigationItemTable
     transform s: ESM!esm::ui::MenuItemAccess
     to t : UI!ui::NavigationItem
         extends AccessMenuNavigationItem {
-        guard: s.access.target.isTableDefined() and (s.access.upper == -1 or s.access.upper > 1)
+        guard: s.access.target.isTableDefined() and s.access.upper <> 1
 
         var application = s.access.eContainer.equivalent("Application");
         t.target = s.access.mapTablePage(application, s.access.target);

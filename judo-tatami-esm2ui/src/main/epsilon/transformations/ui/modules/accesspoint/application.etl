@@ -41,7 +41,7 @@ rule Application
             }
 
             if (relation.target.isTableDefined() and ((not relation.isTypeOf(ESM!esm::accesspoint::Access) and relation.relationKind == ESM!esm::structure::RelationKind#ASSOCIATION) 
-                or relation.isTypeOf(ESM!esm::accesspoint::Access))) {
+                or (relation.isTypeOf(ESM!esm::accesspoint::Access) and relation.upper <> 1))) {
                 relation.mapTablePage(t, relation.target);
             }
         }
