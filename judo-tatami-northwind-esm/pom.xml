@@ -337,7 +337,14 @@
                             println("Checking flutter wrapper: " + flutterwUnix)
                             println("Checking flutter wrapper: " + flutterwWindows)
                             
-                            !flutterwUnix.exists()
+                            !flutterwUnix.exists() &&
+                            ( value["smokeTests"] ||
+                                value["allActors"] ||
+                                value["adminActor"] ||
+                                value["authexternaluserActor"] ||
+                                value["authinternaluserActor"] ||
+                                value["externaluserActor"] ||
+                                value["internaluserActor"] )
                         ]]>
                     </value>
                 </property>
@@ -417,7 +424,14 @@
                             // This is Groovy.
                             def flutterwWindows = new File(project.pomFile.parentFile, 'flutterw.ps1' )
                             println("Checking flutter wrapper windows: " + flutterwWindows)
-                            !flutterwWindows.exists()
+                            !flutterwWindows.exists() &&
+                            ( value["smokeTests"] ||
+                                value["allActors"] ||
+                                value["adminActor"] ||
+                                value["authexternaluserActor"] ||
+                                value["authinternaluserActor"] ||
+                                value["externaluserActor"] ||
+                                value["internaluserActor"] )
                         ]]>
                     </value>
                 </property>
