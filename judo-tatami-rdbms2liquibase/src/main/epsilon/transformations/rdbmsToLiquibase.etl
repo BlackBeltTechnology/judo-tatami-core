@@ -1,6 +1,10 @@
+import "liquibase/utils/changeset.eol";
+import "rdbms/utils/field.eol";
+import "rdbms/utils/model.eol";
+import "rdbms/utils/table.eol";
+
 import "liquibase/modules/table.etl";
 import "liquibase/modules/field.etl";
-import "liquibase/modules/changes.etl";
 
 pre {
 	var targetModel : LIQUIBASE!databaseChangeLog = new LIQUIBASE!databaseChangeLog();

@@ -5,3 +5,4 @@ operation LIQUIBASE!databaseChangeLog changeSetOf(changeSetId : String) : LIQUIB
 operation LIQUIBASE!databaseChangeLog changeSetExists(changeSetId : String) : Boolean {
     return self.changeSetOf(changeSetId).isDefined();
 }
+

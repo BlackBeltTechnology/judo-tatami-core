@@ -1,0 +1,21 @@
+import "liquibase/utils/changeset.eol";
+import "rdbms/utils/field.eol";
+import "rdbms/utils/model.eol";
+import "rdbms/utils/table.eol";
+
+import "liquibase/modules/changes.etl";
+
+import "afterIncremental.etl";
+import "beforeIncremental.etl";
+
+pre {
+//	var previousModel = PREVIOUS!RdbmsModel.all.first();
+//	var newModel = NEW!RdbmsModel.all.first();
+	var operationMeta = RDBMS!RdbmsOperationMeta.all.first();
+    var previousModel = operationMeta.previousModel;
+    var newModel = operationMeta.currentModel;
+
+    var targetModel : LIQUIBASE!databaseChangeLog = new LIQUIBASE!databaseChangeLog();
+	var beforeIncrementalModel : BEFORE_INCREMENTAL!databaseChangeLog = new BEFORE_INCREMENTAL!databaseChangeLog();
+	var afterIncrementalModel : AFTER_INCREMENTAL!databaseChangeLog = new AFTER_INCREMENTAL!databaseChangeLog();
+}

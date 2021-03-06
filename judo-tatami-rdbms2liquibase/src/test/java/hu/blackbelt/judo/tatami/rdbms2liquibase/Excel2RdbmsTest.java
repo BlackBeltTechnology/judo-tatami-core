@@ -7,17 +7,17 @@ import hu.blackbelt.judo.meta.liquibase.runtime.LiquibaseModel;
 import hu.blackbelt.judo.meta.liquibase.runtime.LiquibaseModel.LiquibaseValidationException;
 import hu.blackbelt.judo.meta.liquibase.runtime.LiquibaseNamespaceFixUriHandler;
 import hu.blackbelt.judo.meta.rdbms.RdbmsTable;
+import hu.blackbelt.judo.meta.rdbms.runtime.RdbmsInremental;
 import hu.blackbelt.judo.meta.rdbms.runtime.RdbmsModel;
 import hu.blackbelt.judo.meta.rdbms.runtime.RdbmsModel.RdbmsValidationException;
 import hu.blackbelt.judo.meta.rdbms.runtime.RdbmsUtils;
 import hu.blackbelt.judo.meta.rdbms.util.builder.RdbmsIndexBuilder;
 import hu.blackbelt.judo.meta.rdbms.util.builder.RdbmsUniqueConstraintBuilder;
 import org.eclipse.epsilon.common.util.UriUtil;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
+import java.io.*;
 import java.net.URI;
 import java.net.URISyntaxException;
 
@@ -27,8 +27,10 @@ import static hu.blackbelt.epsilon.runtime.execution.model.emf.WrappedEmfModelCo
 import static hu.blackbelt.epsilon.runtime.execution.model.excel.ExcelModelContext.excelModelContextBuilder;
 import static hu.blackbelt.judo.meta.liquibase.runtime.LiquibaseModel.SaveArguments.liquibaseSaveArgumentsBuilder;
 import static hu.blackbelt.judo.meta.liquibase.runtime.LiquibaseModel.buildLiquibaseModel;
+import static hu.blackbelt.judo.meta.rdbms.runtime.RdbmsInremental.transformRdbmsIncrementalModel;
 import static hu.blackbelt.judo.meta.rdbms.runtime.RdbmsModel.SaveArguments.rdbmsSaveArgumentsBuilder;
 import static hu.blackbelt.judo.meta.rdbms.runtime.RdbmsModel.buildRdbmsModel;
+import static hu.blackbelt.judo.tatami.rdbms2liquibase.Rdbms2Liquibase.executeRdbms2LiquibaseTransformation;
 import static hu.blackbelt.judo.tatami.rdbms2liquibase.Rdbms2LiquibaseIncremental.executeRdbms2LiquibaseIncrementalTransformation;
 import static java.lang.String.format;
 import static java.util.Collections.singletonList;
@@ -39,8 +41,9 @@ public class Excel2RdbmsTest {
     private static final String INCREMENTAL_MODEL_NAME = "IncrementalModel";
     private static final String ORIGINAL_MODEL_NAME = "OriginalModel";
     private static final String TARGET_TEST_CLASSES = "target/test-classes";
-    public static final String SCRIPT_ROOT_TATAMI_TRANSFORMATION = "tatami/rdbms2liquibase/transformations/";
 
+
+    @Disabled
     @Test
     public void executeExcel2RdbmsModel() throws Exception {
 
@@ -72,9 +75,9 @@ public class Excel2RdbmsTest {
 
         excelToRdbmsEtlContext.load();
 
-        URI psmRoot = getUri(Rdbms2Liquibase.class, SCRIPT_ROOT_TATAMI_TRANSFORMATION);
+        URI testRoot = getUri(Excel2RdbmsTest.class, "/");
 
-        excelToRdbmsEtlContext.executeProgram(etlExecutionContextBuilder().source(UriUtil.resolve("createExcelModel.etl", psmRoot)).build());
+        excelToRdbmsEtlContext.executeProgram(etlExecutionContextBuilder().source(UriUtil.resolve("createExcelModel.etl", testRoot)).build());
 
         excelToRdbmsEtlContext.commit();
         excelToRdbmsEtlContext.close();
@@ -113,90 +116,65 @@ public class Excel2RdbmsTest {
                         .withSqlName("TestUniqueConstraint".toUpperCase())
                         .build());
 
-        File originalRdbmsFile = new File(TARGET_TEST_CLASSES, String.format("testContents-%s-rdbms.model", originalModel.getName()));
-        try {
-            originalModel.saveRdbmsModel(rdbmsSaveArgumentsBuilder().file(originalRdbmsFile));
-        } catch (RdbmsValidationException ex) {
-            fail(format("Model:\n%s\nDiagnostic:\n%s", originalModel.asString(), originalModel.getDiagnosticsAsString()));
-        }
-
-        File newRdbmsFile = new File(TARGET_TEST_CLASSES, String.format("testContents-%s-rdbms.model", newModel.getName()));
-        try {
-            newModel.saveRdbmsModel(rdbmsSaveArgumentsBuilder().file(newRdbmsFile));
-        } catch (RdbmsValidationException ex) {
-            fail(format("Model:\n%s\nDiagnostic:\n%s", newModel.asString(), newModel.getDiagnosticsAsString()));
-        }
+        saveRdbms(originalModel);
+        saveRdbms(newModel);
 
         // fill models
         /////////////////////////////////////////
         // rdbms2liquibase (original)
-
         LiquibaseModel originalLiquibaseModel = buildLiquibaseModel().name(ORIGINAL_MODEL_NAME).build();
+        executeRdbms2LiquibaseTransformation(originalModel, originalLiquibaseModel, "hsqldb");
 
-        Rdbms2Liquibase.executeRdbms2LiquibaseTransformation(originalModel, originalLiquibaseModel, "hsqldb");
-
-        ByteArrayOutputStream originalLiquibaseStream = new ByteArrayOutputStream();
-        try {
-            originalLiquibaseModel.saveLiquibaseModel(
-                    liquibaseSaveArgumentsBuilder()
-                            .outputStream(LiquibaseNamespaceFixUriHandler.fixUriOutputStream(originalLiquibaseStream)));
-        } catch (LiquibaseValidationException ex) {
-            fail(format("Model:\n%s\nDiagnostic:\n%s", originalLiquibaseModel.asString(), originalLiquibaseModel.getDiagnosticsAsString()));
-        }
-        String originalLiquibaseName = format("testContents-%s-liquibase.xml", originalLiquibaseModel.getName());
-        originalLiquibaseStream.writeTo(new FileOutputStream(new File(TARGET_TEST_CLASSES, originalLiquibaseName)));
+        saveLiquibase(originalLiquibaseModel);
 
         // rdbms2liquibase (original)
         /////////////////////////////////////////
         // delta model
 
-        RdbmsModel incrementalModel = buildRdbmsModel().name(INCREMENTAL_MODEL_NAME).build();
+        RdbmsModel incrementalModel = buildRdbmsModel().name("IncrementalModel").build();
+        transformRdbmsIncrementalModel(originalModel, newModel, incrementalModel, "hsqldb", true);
+
+        saveRdbms(incrementalModel);
+
         LiquibaseModel beforeIncrementalModel = buildLiquibaseModel().name("BeforeIncremental").build();
         LiquibaseModel afterIncrementalModel = buildLiquibaseModel().name("AfterIncremental").build();
         LiquibaseModel incrementalLiquibaseModel = buildLiquibaseModel().name(INCREMENTAL_MODEL_NAME).build();
 
         executeRdbms2LiquibaseIncrementalTransformation(
-                originalModel, newModel, incrementalModel, beforeIncrementalModel, afterIncrementalModel, incrementalLiquibaseModel, "hsqldb");
+                incrementalModel,
+                beforeIncrementalModel,
+                afterIncrementalModel,
+                incrementalLiquibaseModel,
+                "hsqldb");
 
-        File incrementalRdbmsFile = new File(TARGET_TEST_CLASSES, String.format("testContents-%s-rdbms.model", incrementalModel.getName()));
+
+        saveLiquibase(beforeIncrementalModel);
+        saveLiquibase(afterIncrementalModel);
+        saveLiquibase(incrementalLiquibaseModel);
+
+    }
+
+    private void saveRdbms(RdbmsModel rdbmsModel) {
+        File incrementalRdbmsFile = new File(TARGET_TEST_CLASSES, String.format("testContents-%s-rdbms.model", rdbmsModel.getName()));
         try {
-            incrementalModel.saveRdbmsModel(rdbmsSaveArgumentsBuilder().file(incrementalRdbmsFile));
-        } catch (RdbmsValidationException ex) {
-            fail(format("Model:\n%s\nDiagnostic:\n%s", incrementalModel.asString(), incrementalModel.getDiagnosticsAsString()));
+            rdbmsModel.saveRdbmsModel(rdbmsSaveArgumentsBuilder().file(incrementalRdbmsFile));
+        } catch (RdbmsValidationException | IOException ex) {
+            fail(format("Model:\n%s\nDiagnostic:\n%s", rdbmsModel.asString(), rdbmsModel.getDiagnosticsAsString()));
         }
 
-        ByteArrayOutputStream beforeIncrementalLiquibaseStream = new ByteArrayOutputStream();
+    }
+
+    private void saveLiquibase(LiquibaseModel liquibaseModel) throws IOException {
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
         try {
-            beforeIncrementalModel.saveLiquibaseModel(
+            liquibaseModel.saveLiquibaseModel(
                     liquibaseSaveArgumentsBuilder()
-                            .outputStream(LiquibaseNamespaceFixUriHandler.fixUriOutputStream(beforeIncrementalLiquibaseStream)));
-        } catch (LiquibaseValidationException ex) {
-            fail(format("Model:\n%s\nDiagnostic:\n%s", beforeIncrementalModel.asString(), beforeIncrementalModel.getDiagnosticsAsString()));
+                            .outputStream(LiquibaseNamespaceFixUriHandler.fixUriOutputStream(stream)));
+        } catch (LiquibaseValidationException | IOException ex) {
+            fail(format("Model:\n%s\nDiagnostic:\n%s", liquibaseModel.asString(), liquibaseModel.getDiagnosticsAsString()));
         }
-        String beforeIncrementalLiquibaseName = format("testContents-%s-liquibase.xml", beforeIncrementalModel.getName());
-        beforeIncrementalLiquibaseStream.writeTo(new FileOutputStream(new File(TARGET_TEST_CLASSES, beforeIncrementalLiquibaseName)));
-
-        ByteArrayOutputStream afterIncrementalLiquibaseStream = new ByteArrayOutputStream();
-        try {
-            afterIncrementalModel.saveLiquibaseModel(
-                    liquibaseSaveArgumentsBuilder()
-                            .outputStream(LiquibaseNamespaceFixUriHandler.fixUriOutputStream(afterIncrementalLiquibaseStream)));
-        } catch (LiquibaseValidationException ex) {
-            fail(format("Model:\n%s\nDiagnostic:\n%s", afterIncrementalModel.asString(), afterIncrementalModel.getDiagnosticsAsString()));
-        }
-        String afterIncrementalLiquibaseName = format("testContents-%s-liquibase.xml", afterIncrementalModel.getName());
-        afterIncrementalLiquibaseStream.writeTo(new FileOutputStream(new File(TARGET_TEST_CLASSES, afterIncrementalLiquibaseName)));
-
-        ByteArrayOutputStream incrementalLiquibaseStream = new ByteArrayOutputStream();
-        try {
-            incrementalLiquibaseModel.saveLiquibaseModel(
-                    liquibaseSaveArgumentsBuilder()
-                            .outputStream(LiquibaseNamespaceFixUriHandler.fixUriOutputStream(incrementalLiquibaseStream)));
-        } catch (LiquibaseValidationException ex) {
-            fail(format("Model:\n%s\nDiagnostic:\n%s", incrementalLiquibaseModel.asString(), incrementalLiquibaseModel.getDiagnosticsAsString()));
-        }
-        String incrementalLiquibaseName = format("testContents-%s-liquibase.xml", incrementalLiquibaseModel.getName());
-        incrementalLiquibaseStream.writeTo(new FileOutputStream(new File(TARGET_TEST_CLASSES, incrementalLiquibaseName)));
+        String name = format("testContents-%s-liquibase.xml", liquibaseModel.getName());
+        stream.writeTo(new FileOutputStream(new File(TARGET_TEST_CLASSES, name)));
 
     }
 

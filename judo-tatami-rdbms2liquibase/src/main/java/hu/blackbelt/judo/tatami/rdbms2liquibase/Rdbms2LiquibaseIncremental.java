@@ -25,31 +25,25 @@ public class Rdbms2LiquibaseIncremental {
 
     public static final String SCRIPT_ROOT_TATAMI_RDBMS_2_LIQUIBASE = "tatami/rdbms2liquibase/transformations/";
 
-    public static void executeRdbms2LiquibaseIncrementalTransformation(RdbmsModel originalModel,
-                                                                       RdbmsModel newModel,
-                                                                       RdbmsModel incrementalRdbmsModel,
+    public static void executeRdbms2LiquibaseIncrementalTransformation(RdbmsModel incrementalRdbmsModel,
                                                                        LiquibaseModel beforeIncrementalModel,
                                                                        LiquibaseModel afterIncrementalModel,
                                                                        LiquibaseModel incrementalLiquibaseModel,
                                                                        String dialect) throws Exception {
-        executeRdbms2LiquibaseIncrementalTransformation(originalModel, newModel, incrementalRdbmsModel, beforeIncrementalModel, afterIncrementalModel, incrementalLiquibaseModel, new Slf4jLog(log), calculateRdbms2LiquibaseTransformationScriptURI(), dialect);
+        executeRdbms2LiquibaseIncrementalTransformation(incrementalRdbmsModel, beforeIncrementalModel, afterIncrementalModel, incrementalLiquibaseModel, new Slf4jLog(log), calculateRdbms2LiquibaseTransformationScriptURI(), dialect);
     }
 
-    public static void executeRdbms2LiquibaseIncrementalTransformation(RdbmsModel originalModel,
-                                                                       RdbmsModel newModel,
-                                                                       RdbmsModel incrementalRdbmsModel,
+    public static void executeRdbms2LiquibaseIncrementalTransformation(RdbmsModel incrementalRdbmsModel,
                                                                        LiquibaseModel beforeIncrementalModel,
                                                                        LiquibaseModel afterIncrementalModel,
                                                                        LiquibaseModel incrementalLiquibaseModel,
                                                                        Log log,
                                                                        String dialect) throws Exception {
-        executeRdbms2LiquibaseIncrementalTransformation(originalModel, newModel, incrementalRdbmsModel, beforeIncrementalModel, afterIncrementalModel, incrementalLiquibaseModel, log, calculateRdbms2LiquibaseTransformationScriptURI(), dialect);
+        executeRdbms2LiquibaseIncrementalTransformation(incrementalRdbmsModel, beforeIncrementalModel, afterIncrementalModel, incrementalLiquibaseModel, log, calculateRdbms2LiquibaseTransformationScriptURI(), dialect);
     }
 
 
-    public static void executeRdbms2LiquibaseIncrementalTransformation(RdbmsModel originalModel,
-                                                                       RdbmsModel newModel,
-                                                                       RdbmsModel incrementalRdbmsModel,
+    public static void executeRdbms2LiquibaseIncrementalTransformation(RdbmsModel incrementalRdbmsModel,
                                                                        LiquibaseModel beforeIncrementalModel,
                                                                        LiquibaseModel afterIncrementalModel,
                                                                        LiquibaseModel incrementalLiquibaseModel,
@@ -63,29 +57,23 @@ public class Rdbms2LiquibaseIncremental {
                 .resourceSet(incrementalRdbmsModel.getResourceSet())
                 .modelContexts(ImmutableList.of(
                         wrappedEmfModelContextBuilder()
-                                .name("PREVIOUS")
-                                .aliases(asList("SOURCE", "RDBMS"))
-                                .resource(originalModel.getResource())
-                                .build(),
-                        wrappedEmfModelContextBuilder()
-                                .name("NEW")
-                                .aliases(asList("SOURCE", "RDBMS"))
-                                .resource(newModel.getResource())
-                                .build(),
-                        wrappedEmfModelContextBuilder()
-                                .name("INCREMENTAL")
+                                .name("RDBMS")
                                 .resource(incrementalRdbmsModel.getResource())
                                 .build(),
                         wrappedEmfModelContextBuilder()
                                 .name("BEFORE_INCREMENTAL")
-                                .aliases(singletonList("LIQUIBASE"))
                                 .resource(beforeIncrementalModel.getResource())
                                 .build(),
                         wrappedEmfModelContextBuilder()
                                 .name("AFTER_INCREMENTAL")
                                 .aliases(singletonList("LIQUIBASE"))
                                 .resource(afterIncrementalModel.getResource())
-                                .build()))
+                                .build(),
+                        wrappedEmfModelContextBuilder()
+                                .name("LIQUIBASE")
+                                .resource(incrementalLiquibaseModel.getResource())
+                                .build()
+                        ))
                 .build();
 
         // run the model / metadata loading
@@ -94,7 +82,7 @@ public class Rdbms2LiquibaseIncremental {
         // Transformation script
         executionContext.executeProgram(
                 etlExecutionContextBuilder()
-                        .source(UriUtil.resolve("createIncrementalOperationModel.etl", scriptUri))
+                        .source(UriUtil.resolve("rdbmsIncrementalToLiquibase.etl", scriptUri))
                         .parameters(ImmutableList.of(
                                 ProgramParameter.programParameterBuilder().name("dialect").value(dialect).build()
                         ))

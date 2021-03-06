@@ -4,8 +4,9 @@ import "liquibase/utils/changeset.eol";
 // INDEX
 
 rule DropAllIndexesChangeSet
-    transform s : PREVIOUS!RdbmsIndex
+    transform s : RDBMS!RdbmsIndex
     to t : BEFORE_INCREMENTAL!ChangeSet {
+        guard: previousModel.contains(s.eContainer)
         t.id = "drop-indexes-from-" + s.eContainer.sqlName;
         t.author = "tatami-rdbms2liquibase";
         t.dbms = dialect;
@@ -19,8 +20,9 @@ rule DropAllIndexesChangeSet
 }
 
 rule DropAllIndexes
-    transform s : PREVIOUS!RdbmsIndex
+    transform s : RDBMS!RdbmsIndex
     to t : BEFORE_INCREMENTAL!DropIndex {
+        guard: previousModel.contains(s.eContainer)
         t.tableName = s.eContainer.sqlName;
         t.indexName = s.sqlName;
 
@@ -33,8 +35,9 @@ rule DropAllIndexes
 // UNIQUE CONSTRAINT
 
 rule DropAllUniqueConstraintsChangeSet
-    transform s : PREVIOUS!RdbmsUniqueConstraint
+    transform s : RDBMS!RdbmsUniqueConstraint
     to t : BEFORE_INCREMENTAL!ChangeSet {
+        guard: previousModel.contains(s.eContainer)
         t.id = "drop-unique-constraint-from-" + s.eContainer.sqlName;
         t.author = "tatami-rdbms2liquibase";
         t.dbms = dialect;
@@ -48,8 +51,9 @@ rule DropAllUniqueConstraintsChangeSet
 }
 
 rule DropAllUniqueConstraints
-    transform s : PREVIOUS!RdbmsUniqueConstraint
+    transform s : RDBMS!RdbmsUniqueConstraint
     to t : BEFORE_INCREMENTAL!DropUniqueConstraint {
+        guard: previousModel.contains(s.eContainer)
         t.tableName = s.eContainer.sqlName;
         t.uniqueColumns = s.fields[0].sqlName;
         if (s.fields.size() > 1) {
@@ -69,8 +73,9 @@ rule DropAllUniqueConstraints
 // FOREIGN KEY
 
 rule DropAllForeignKeysChangeSet
-    transform s : PREVIOUS!RdbmsForeignKey
+    transform s : RDBMS!RdbmsForeignKey
     to t : BEFORE_INCREMENTAL!ChangeSet {
+        guard: previousModel.contains(s.eContainer)
         t.id = "drop-foreign-keys-from-" + s.eContainer.sqlName;
         t.author = "tatami-rdbms2liquibase";
         t.dbms = dialect;
@@ -84,8 +89,9 @@ rule DropAllForeignKeysChangeSet
 }
 
 rule DropAllForeignKeys
-    transform s : PREVIOUS!RdbmsForeignKey
+    transform s : RDBMS!RdbmsForeignKey
     to t : BEFORE_INCREMENTAL!DropForeignKeyConstraint {
+        guard: previousModel.contains(s.eContainer)
         t.baseTableName = s.eContainer.sqlName;
         t.constraintName = s.foreignKeySqlName;
 
