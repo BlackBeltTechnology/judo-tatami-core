@@ -35,6 +35,74 @@ rule AddAllForeignKeys
 
 // FOREIGN KEY
 /////////////////////////////////////////
+// NOT NULL CONSTRAINT
+
+@abstract
+rule AddAllNotNullConstraintsChangeSet
+    transform s : RDBMS!RdbmsField
+    to t : AFTER_INCREMENTAL!ChangeSet {
+        guard: newModel.contains(s.eContainer) and s.mandatory and newModel.tableOf(s.eContainer).isDefined() and newModel.tableOf(s.eContainer).fieldOf(s).isDefined()
+        t.id = "add-not-null-constraints-to-" + s.eContainer.sqlName;
+        t.author = "tatami-rdbms2liquibase";
+        t.dbms = dialect;
+        t.context = RDBMS!RdbmsModel.all.first.version;
+        t.logicalFilePath = "add-not-null-constraints";
+
+        if (not afterIncrementalModel.changeSetExists(t.id)) {
+            afterIncrementalModel.changeSet.add(t);
+            log.info("ChangeSet " + t.id + " created");
+        }
+}
+
+rule AddAllNotNullConstraintsToValueFieldChangeSet
+    transform s : RDBMS!RdbmsValueField
+    to t : AFTER_INCREMENTAL!ChangeSet
+    extends AddAllNotNullConstraintsChangeSet {
+}
+
+rule AddAllNotNullConstraintsToIdentifierFieldChangeSet
+    transform s : RDBMS!RdbmsIdentifierField
+    to t : AFTER_INCREMENTAL!ChangeSet
+    extends AddAllNotNullConstraintsChangeSet {
+}
+
+rule AddAllNotNullConstraintsToForeignKeyChangeSet
+    transform s : RDBMS!RdbmsForeignKey
+    to t : AFTER_INCREMENTAL!ChangeSet
+    extends AddAllNotNullConstraintsChangeSet {
+}
+
+@abstract
+rule AddAllNotNullConstraints
+    transform s : RDBMS!RdbmsField
+    to t : AFTER_INCREMENTAL!AddNotNullConstraint {
+        guard: newModel.contains(s.eContainer) and s.mandatory and newModel.tableOf(s.eContainer).isDefined() and newModel.tableOf(s.eContainer).fieldOf(s).isDefined()
+        t.tableName = s.eContainer.sqlName;
+        t.columnName = s.sqlName;
+
+        afterIncrementalModel.changeSetOf("add-not-null-constraints-to-" + s.eContainer.sqlName).addNotNullConstraint.add(t);
+}
+
+rule AddAllNotNullConstraintsToValueField
+    transform s : RDBMS!RdbmsValueField
+    to t : AFTER_INCREMENTAL!AddNotNullConstraint
+    extends AddAllNotNullConstraints {
+}
+
+rule AddAllNotNullConstraintsToIdentifierField
+    transform s : RDBMS!RdbmsIdentifierField
+    to t : AFTER_INCREMENTAL!AddNotNullConstraint
+    extends AddAllNotNullConstraints {
+}
+
+rule AddAllNotNullConstraintsToForeignKey
+    transform s : RDBMS!RdbmsForeignKey
+    to t : AFTER_INCREMENTAL!AddNotNullConstraint
+    extends AddAllNotNullConstraints {
+}
+
+// NOT NULL CONSTRAINT
+/////////////////////////////////////////
 // UNIQUE CONSTRAINT
 
 rule AddAllUniqueConstraintsChangeSet

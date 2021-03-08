@@ -70,6 +70,75 @@ rule DropAllUniqueConstraints
 
 // UNIQUE CONSTRAINT
 /////////////////////////////////////////
+// NOT NULL CONSTRAINT
+
+@abstract
+rule DropAllNotNullConstraintsChangeSet
+    transform s : RDBMS!RdbmsField
+    to t : BEFORE_INCREMENTAL!ChangeSet {
+        guard: previousModel.contains(s.eContainer) and s.mandatory
+        t.id = "drop-not-null-constraints-from-" + s.eContainer.sqlName;
+        t.author = "tatami-rdbms2liquibase";
+        t.dbms = dialect;
+        t.context = RDBMS!RdbmsModel.all.first.version;
+        t.logicalFilePath = "drop-not-null-constraints";
+
+        if (not beforeIncrementalModel.changeSetExists(t.id)) {
+            beforeIncrementalModel.changeSet.add(t);
+            log.info("ChangeSet " + t.id + " created");
+        }
+}
+
+rule DropAllNotNullConstraintsFromValueFieldChangeSet
+    transform s : RDBMS!RdbmsValueField
+    to t : BEFORE_INCREMENTAL!ChangeSet
+    extends DropAllNotNullConstraintsChangeSet {
+}
+
+rule DropAllNotNullConstraintsFromIdentifierFieldChangeSet
+    transform s : RDBMS!RdbmsIdentifierField
+    to t : BEFORE_INCREMENTAL!ChangeSet
+    extends DropAllNotNullConstraintsChangeSet {
+}
+
+rule DropAllNotNullConstraintsFromForeignKeyChangeSet
+    transform s : RDBMS!RdbmsForeignKey
+    to t : BEFORE_INCREMENTAL!ChangeSet
+    extends DropAllNotNullConstraintsChangeSet {
+}
+
+@abstract
+rule DropAllNotNullConstraints
+    transform s : RDBMS!RdbmsField
+    to t : BEFORE_INCREMENTAL!DropNotNullConstraint {
+        guard: previousModel.contains(s.eContainer) and s.mandatory
+        t.tableName = s.eContainer.sqlName;
+        t.columnName = s.sqlName;
+
+        beforeIncrementalModel.changeSetOf("drop-not-null-constraints-from-" + s.eContainer.sqlName).dropNotNullConstraint.add(t);
+}
+
+rule DropAllNotNullConstraintsFromValueField
+    transform s : RDBMS!RdbmsValueField
+    to t : BEFORE_INCREMENTAL!DropNotNullConstraint
+    extends DropAllNotNullConstraints {
+}
+
+rule DropAllNotNullConstraintsFromIdentifierField
+    transform s : RDBMS!RdbmsIdentifierField
+    to t : BEFORE_INCREMENTAL!DropNotNullConstraint
+    extends DropAllNotNullConstraints {
+}
+
+rule DropAllNotNullConstraintsFromForeignKey
+    transform s : RDBMS!RdbmsForeignKey
+    to t : BEFORE_INCREMENTAL!DropNotNullConstraint
+    extends DropAllNotNullConstraints {
+}
+
+
+// NOT NULL CONSTRAINT
+/////////////////////////////////////////
 // FOREIGN KEY
 
 rule DropAllForeignKeysChangeSet
