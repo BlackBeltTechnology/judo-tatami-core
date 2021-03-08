@@ -18,3 +18,5 @@ const USE_REQUEST_BASE_URL_FROM_SETTINGS = bool.fromEnvironment('USE_REQUEST_BAS
 
 const API_DEFAULT_BASE_URL = String.fromEnvironment('API_DEFAULT_BASE_URL', defaultValue:  'http://localhost:8181');
 const API_RELATIVE_PATH = String.fromEnvironment('API_RELATIVE_PATH', defaultValue: '/api/{{ baseUrl application.name }}');
+
+const SHOW_TABLE_ROW_ACTIONS = bool.fromEnvironment('SHOW_TABLE_ROW_ACTIONS', defaultValue: false);

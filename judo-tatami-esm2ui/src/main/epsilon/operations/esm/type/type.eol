@@ -1,12 +1,12 @@
 operation ESM!esm::namespace::NamedElement fillInput(input : UI!ui::Input, row : Real, col : Real, leadingIcon: String): UI!ui::Input {
-	input.col = col;
-	input.row  = row;
-	
-	if (leadingIcon.isDefined() and leadingIcon.trim().length() > 0) {
-	   input.leadingIcon = new UI!ui::Icon();
+    input.col = col;
+    input.row  = row;
+    
+    if (leadingIcon.isDefined() and leadingIcon.trim().length() > 0) {
+       input.leadingIcon = new UI!ui::Icon();
        input.leadingIcon.name = leadingIcon;
-	}
-	return input;
+    }
+    return input;
 }
 
 operation ESM!esm::namespace::NamedElement fillInput(input : UI!ui::Input, row : Real, col : Real): UI!ui::Input {
@@ -16,281 +16,281 @@ operation ESM!esm::namespace::NamedElement fillInput(input : UI!ui::Input, row :
 }
 
 operation ESM!esm::type::PasswordType input(dataField : ESM!esm::ui::DataField, application : UI!ui::Application): UI!ui::Input {
-	return self.fillInput(new UI!ui::PasswordInput(), dataField.row.asReal(), dataField.col.asReal(), dataField.iconName);
+    return self.fillInput(new UI!ui::PasswordInput(), dataField.row.asReal(), dataField.col.asReal(), dataField.iconName);
 }
 
 operation ESM!esm::type::StringType input(dataField : ESM!esm::ui::DataField, application : UI!ui::Application): UI!ui::Input {
-	
-	if (dataField.textMultiLine) {
-		return self.fillInput(new UI!ui::TextArea(), dataField.row.asReal(), dataField.col.asReal(), dataField.iconName);
-	} else {
-		return self.fillInput(new UI!ui::TextInput(), dataField.row.asReal(), dataField.col.asReal(), dataField.iconName);
-	}
+    
+    if (dataField.textMultiLine) {
+        return self.fillInput(new UI!ui::TextArea(), dataField.row.asReal(), dataField.col.asReal(), dataField.iconName);
+    } else {
+        return self.fillInput(new UI!ui::TextInput(), dataField.row.asReal(), dataField.col.asReal(), dataField.iconName);
+    }
 }
 
 operation ESM!esm::type::NumericType input(dataField : ESM!esm::ui::DataField, application : UI!ui::Application): UI!ui::Input {
-	return self.fillInput(new UI!ui::NumericInput(), dataField.row.asReal(), dataField.col.asReal(), dataField.iconName);
+    return self.fillInput(new UI!ui::NumericInput(), dataField.row.asReal(), dataField.col.asReal(), dataField.iconName);
 }
 
 operation ESM!esm::type::BooleanType input(dataField : ESM!esm::ui::DataField, application : UI!ui::Application): UI!ui::Input {
-	return self.fillInput(new UI!ui::Switch(), dataField.row.asReal(), dataField.col.asReal());
+    return self.fillInput(new UI!ui::Switch(), dataField.row.asReal(), dataField.col.asReal());
 }
 
 operation ESM!esm::type::DateType input(dataField : ESM!esm::ui::DataField, application : UI!ui::Application): UI!ui::Input {
-	return self.fillInput(new UI!ui::DateInput(), dataField.row.asReal(), dataField.col.asReal(), dataField.iconName);
+    return self.fillInput(new UI!ui::DateInput(), dataField.row.asReal(), dataField.col.asReal(), dataField.iconName);
 }
 
 operation ESM!esm::type::TimestampType input(dataField : ESM!esm::ui::DataField, application : UI!ui::Application): UI!ui::Input {
-	return self.fillInput(new UI!ui::DateTimeInput(), dataField.row.asReal(), dataField.col.asReal(), dataField.iconName);
+    return self.fillInput(new UI!ui::DateTimeInput(), dataField.row.asReal(), dataField.col.asReal(), dataField.iconName);
 }
 
 operation ESM!esm::type::EnumerationType input(dataField : ESM!esm::ui::DataField, application : UI!ui::Application): UI!ui::Input {
-	
-	if (dataField.enumWidget == ESM!esm::ui::EnumWidget#RADIO) {
-		var radio = new UI!ui::EnumerationRadio();
-		for (m in self.mapDataType(application).members) {
-			var opt = new UI!ui::Option();
-			opt.selected = false;
-			opt.name = m.name;
-			opt.enumerationMember = m;
-			radio.options.add(opt);
-		}
-		return self.fillInput(radio, dataField.row.asReal(), dataField.col.asReal());
-		
-	} else {
-		var combo = new UI!ui::EnumerationCombo();
-		for (m in self.mapDataType(application).members) {
-			var opt = new UI!ui::Option();
-			opt.selected = false;
-			opt.name = m.name;
-			opt.enumerationMember = m;
-			combo.options.add(opt);
-		}
-		return self.fillInput(combo, dataField.row.asReal(), dataField.col.asReal());
-	}
+    
+    if (dataField.enumWidget == ESM!esm::ui::EnumWidget#RADIO) {
+        var radio = new UI!ui::EnumerationRadio();
+        for (m in self.mapDataType(application).members) {
+            var opt = new UI!ui::Option();
+            opt.selected = false;
+            opt.name = m.name;
+            opt.enumerationMember = m;
+            radio.options.add(opt);
+        }
+        return self.fillInput(radio, dataField.row.asReal(), dataField.col.asReal());
+        
+    } else {
+        var combo = new UI!ui::EnumerationCombo();
+        for (m in self.mapDataType(application).members) {
+            var opt = new UI!ui::Option();
+            opt.selected = false;
+            opt.name = m.name;
+            opt.enumerationMember = m;
+            combo.options.add(opt);
+        }
+        return self.fillInput(combo, dataField.row.asReal(), dataField.col.asReal());
+    }
 }
 
 operation ESM!esm::namespace::NamedElement fillFormatted(formatted : UI!ui::Formatted, format : String, row : Real, col : Real): UI!ui::Formatted {
-	formatted.name = self.name;
-	formatted.col = col;
-	formatted.row  = row;
-	formatted.format = format;
-	return formatted;
+    formatted.name = self.name;
+    formatted.col = col;
+    formatted.row  = row;
+    formatted.format = format;
+    return formatted;
 }
 
 operation ESM!esm::type::PasswordType formatted(): UI!ui::Formatted {
-	return self.fillFormatted(new UI!ui::Formatted(), "%s", 1d, 2d);
+    return self.fillFormatted(new UI!ui::Formatted(), "%s", 1d, 2d);
 }
 
 operation ESM!esm::type::StringType formatted(): UI!ui::Formatted {
-	return self.fillFormatted(new UI!ui::Formatted(), "%s", 1d, 2d);
+    return self.fillFormatted(new UI!ui::Formatted(), "%s", 1d, 2d);
 }
 
 operation ESM!esm::type::StringType formatted(dataField : ESM!esm::ui::DataField): UI!ui::Formatted {
-	return self.fillFormatted(new UI!ui::Formatted(), "%s", dataField.row.asReal(), dataField.col.asReal());
+    return self.fillFormatted(new UI!ui::Formatted(), "%s", dataField.row.asReal(), dataField.col.asReal());
 }
 
 // TODO: sprinf numberic format
 operation ESM!esm::type::NumericType formatted(): UI!ui::Formatted {
-	return self.fillFormatted(new UI!ui::Formatted(), "%s", 1d, 2d);
+    return self.fillFormatted(new UI!ui::Formatted(), "%s", 1d, 2d);
 }
 
 operation ESM!esm::type::BooleanType formatted(): UI!ui::Formatted {
-	return self.fillFormatted(new UI!ui::Formatted(), "%s", 1d, 2d);
+    return self.fillFormatted(new UI!ui::Formatted(), "%s", 1d, 2d);
 }
 
 operation ESM!esm::type::DateType formatted(): UI!ui::Formatted {
-	return self.fillFormatted(new UI!ui::Formatted(), "%s", 1d, 2d);
+    return self.fillFormatted(new UI!ui::Formatted(), "%s", 1d, 2d);
 }
 
 operation ESM!esm::type::TimestampType formatted(): UI!ui::Formatted {
-	return self.fillFormatted(new UI!ui::Formatted(), "%s", 1d, 2d);
+    return self.fillFormatted(new UI!ui::Formatted(), "%s", 1d, 2d);
 }
 
 operation ESM!esm::type::EnumerationType formatted(): UI!ui::Formatted {
-	return self.fillFormatted(new UI!ui::Formatted(), "%s", 1d, 2d);
+    return self.fillFormatted(new UI!ui::Formatted(), "%s", 1d, 2d);
 }
 
 @cached
 operation ESM!esm::type::PasswordType fqName() {
-	if (self.eContainer.isKindOf(ESM!esm::namespace::NamespaceElement)) {
-		return esmUtils.getNamespaceElementFQName(self.eContainer) + "." + self.name;
-	} else {
-		return self.eContainer.name + "." + self.name;
-	}
+    if (self.eContainer.isKindOf(ESM!esm::namespace::NamespaceElement)) {
+        return esmUtils.getNamespaceElementFQName(self.eContainer) + "." + self.name;
+    } else {
+        return self.eContainer.name + "." + self.name;
+    }
 }
 
 operation ESM!esm::type::PasswordType createPasswordType(application : UI!ui::Application) : UI!ui::data::PasswordType {
-	var type = new UI!ui::data::PasswordType();
-	type.name = self.fqName();
-	application.dataTypes.add(type);
-	return type;
+    var type = new UI!ui::data::PasswordType();
+    type.name = self.fqName();
+    application.dataTypes.add(type);
+    return type;
 }
 
 operation ESM!esm::type::PasswordType mapDataType(application : UI!ui::Application) : UI!ui::data::PasswordType {
-	var type = application.dataTypes.selectOne(t | t.name = self.fqName());
-	if (type.isUndefined()) {
-		type = self.createPasswordType(application);
-	}
-	return type;
+    var type = application.dataTypes.selectOne(t | t.name = self.fqName());
+    if (type.isUndefined()) {
+        type = self.createPasswordType(application);
+    }
+    return type;
 }
 
 @cached
 operation ESM!esm::type::DateType fqName() {
-	if (self.eContainer.isKindOf(ESM!esm::namespace::NamespaceElement)) {
-		return esmUtils.getNamespaceElementFQName(self.eContainer) + "." + self.name;
-	} else {
-		return self.eContainer.name + "." + self.name;
-	}
+    if (self.eContainer.isKindOf(ESM!esm::namespace::NamespaceElement)) {
+        return esmUtils.getNamespaceElementFQName(self.eContainer) + "." + self.name;
+    } else {
+        return self.eContainer.name + "." + self.name;
+    }
 }
 
 operation ESM!esm::type::DateType createDateType(application : UI!ui::Application) : UI!ui::data::DateType {
-	var type = new UI!ui::data::DateType();
-	type.name = self.fqName();
-	application.dataTypes.add(type);	
-	return type;
+    var type = new UI!ui::data::DateType();
+    type.name = self.fqName();
+    application.dataTypes.add(type);
+    return type;
 }
 
 operation ESM!esm::type::DateType mapDataType(application : UI!ui::Application) : UI!ui::data::DateType {
-	var type = application.dataTypes.selectOne(t | t.name = self.fqName());
-	if (type.isUndefined()) {
-		type = self.createDateType(application);
-	}
-	return type;
+    var type = application.dataTypes.selectOne(t | t.name = self.fqName());
+    if (type.isUndefined()) {
+        type = self.createDateType(application);
+    }
+    return type;
 }
 
 @cached
 operation ESM!esm::type::BooleanType fqName() {
-	if (self.eContainer.isKindOf(ESM!esm::namespace::NamespaceElement)) {
-		return esmUtils.getNamespaceElementFQName(self.eContainer) + "." + self.name;
-	} else {
-		return self.eContainer.name + "." + self.name;
-	}
+    if (self.eContainer.isKindOf(ESM!esm::namespace::NamespaceElement)) {
+        return esmUtils.getNamespaceElementFQName(self.eContainer) + "." + self.name;
+    } else {
+        return self.eContainer.name + "." + self.name;
+    }
 }
 
 operation ESM!esm::type::BooleanType createBooleanType(application : UI!ui::Application) : UI!ui::data::BooleanType {
-	var type = new UI!ui::data::BooleanType();
-	type.name = self.fqName();
-	application.dataTypes.add(type);	
-	return type;
+    var type = new UI!ui::data::BooleanType();
+    type.name = self.fqName();
+    application.dataTypes.add(type);
+    return type;
 }
 
 operation ESM!esm::type::BooleanType mapDataType(application : UI!ui::Application) : UI!ui::data::BooleanType {
-	var type = application.dataTypes.selectOne(t | t.name = self.fqName());
-	if (type.isUndefined()) {
-		type = self.createBooleanType(application);
-	}
-	return type;
+    var type = application.dataTypes.selectOne(t | t.name = self.fqName());
+    if (type.isUndefined()) {
+        type = self.createBooleanType(application);
+    }
+    return type;
 }
 
 @cached
 operation ESM!esm::type::StringType fqName() {
-	if (self.eContainer.isKindOf(ESM!esm::namespace::NamespaceElement)) {
-		return esmUtils.getNamespaceElementFQName(self.eContainer) + "." + self.name;
-	} else {
-		return self.eContainer.name + "." + self.name;
-	}
+    if (self.eContainer.isKindOf(ESM!esm::namespace::NamespaceElement)) {
+        return esmUtils.getNamespaceElementFQName(self.eContainer) + "." + self.name;
+    } else {
+        return self.eContainer.name + "." + self.name;
+    }
 }
 
 operation ESM!esm::type::StringType createStringType(application : UI!ui::Application) : UI!ui::data::StringType {
-	var type = new UI!ui::data::StringType();
-	type.name = self.fqName();
-	type.regExp = self.regExp;
-	type.maxLength = self.maxLength;
-	application.dataTypes.add(type);	
-	return type;
+    var type = new UI!ui::data::StringType();
+    type.name = self.fqName();
+    type.regExp = self.regExp;
+    type.maxLength = self.maxLength;
+    application.dataTypes.add(type);
+    return type;
 }
 
 operation ESM!esm::type::StringType mapDataType(application : UI!ui::Application) : UI!ui::data::StringType {
-	var type = application.dataTypes.selectOne(t | t.name = self.fqName());
-	if (type.isUndefined()) {
-		type = self.createStringType(application);
-	}
-	return type;
+    var type = application.dataTypes.selectOne(t | t.name = self.fqName());
+    if (type.isUndefined()) {
+        type = self.createStringType(application);
+    }
+    return type;
 }
 
 @cached
 operation ESM!esm::type::NumericType fqName() {
-	if (self.eContainer.isKindOf(ESM!esm::namespace::NamespaceElement)) {
-		return esmUtils.getNamespaceElementFQName(self.eContainer) + "." + self.name;
-	} else {
-		return self.eContainer.name + "." + self.name;
-	}
+    if (self.eContainer.isKindOf(ESM!esm::namespace::NamespaceElement)) {
+        return esmUtils.getNamespaceElementFQName(self.eContainer) + "." + self.name;
+    } else {
+        return self.eContainer.name + "." + self.name;
+    }
 }
 
 operation ESM!esm::type::NumericType createNumericType(application : UI!ui::Application) : UI!ui::data::NumericType {
-	var type = new UI!ui::data::NumericType();
-	type.name = self.fqName();
-	type.precision = self.precision;
-	type.scale = self.scale;
-	application.dataTypes.add(type);	
-	return type;
+    var type = new UI!ui::data::NumericType();
+    type.name = self.fqName();
+    type.precision = self.precision;
+    type.scale = self.scale;
+    application.dataTypes.add(type);
+    return type;
 }
 
 operation ESM!esm::type::NumericType mapDataType(application : UI!ui::Application) : UI!ui::data::NumericType {
-	var type = application.dataTypes.selectOne(t | t.name = self.fqName());
-	if (type.isUndefined()) {
-		type = self.createNumericType(application);
-	}
-	return type;
+    var type = application.dataTypes.selectOne(t | t.name = self.fqName());
+    if (type.isUndefined()) {
+        type = self.createNumericType(application);
+    }
+    return type;
 }
 
 @cached
 operation ESM!esm::type::TimestampType fqName() {
-	if (self.eContainer.isKindOf(ESM!esm::namespace::NamespaceElement)) {
-		return esmUtils.getNamespaceElementFQName(self.eContainer) + "." + self.name;
-	} else {
-		return self.eContainer.name + "." + self.name;
-	}
+    if (self.eContainer.isKindOf(ESM!esm::namespace::NamespaceElement)) {
+        return esmUtils.getNamespaceElementFQName(self.eContainer) + "." + self.name;
+    } else {
+        return self.eContainer.name + "." + self.name;
+    }
 }
 
 operation ESM!esm::type::TimestampType createTimestampType(application : UI!ui::Application) : UI!ui::data::TimestampType {
-	var type = new UI!ui::data::TimestampType();
-	type.name = self.fqName();
-	application.dataTypes.add(type);	
-	return type;
+    var type = new UI!ui::data::TimestampType();
+    type.name = self.fqName();
+    application.dataTypes.add(type);
+    return type;
 }
 
 operation ESM!esm::type::TimestampType mapDataType(application : UI!ui::Application) : UI!ui::data::TimestampType {
-	var type = application.dataTypes.selectOne(t | t.name = self.fqName());
-	if (type.isUndefined()) {
-		type = self.createTimestampType(application);
-	}
-	return type;
+    var type = application.dataTypes.selectOne(t | t.name = self.fqName());
+    if (type.isUndefined()) {
+        type = self.createTimestampType(application);
+    }
+    return type;
 }
 
 @cached
 operation ESM!esm::type::EnumerationType fqName() {
-	if (self.eContainer.isKindOf(ESM!esm::namespace::NamespaceElement)) {
-		return esmUtils.getNamespaceElementFQName(self.eContainer) + "." + self.name;
-	} else {
-		return self.eContainer.name + "." + self.name;
-	}
+    if (self.eContainer.isKindOf(ESM!esm::namespace::NamespaceElement)) {
+        return esmUtils.getNamespaceElementFQName(self.eContainer) + "." + self.name;
+    } else {
+        return self.eContainer.name + "." + self.name;
+    }
 }
 
 operation ESM!esm::type::EnumerationType createEnumerationType(application : UI!ui::Application) : UI!ui::data::EnumerationType {
-	var type = new UI!ui::data::EnumerationType();
-	type.name = self.fqName();
-	
-	for (m in self.members) {
-		type.members.add(m.createEnumerationMember());
-	}
-	
-	application.dataTypes.add(type);	
-	return type;
+    var type = new UI!ui::data::EnumerationType();
+    type.name = self.fqName();
+    
+    for (m in self.members) {
+        type.members.add(m.createEnumerationMember());
+    }
+    
+    application.dataTypes.add(type);
+    return type;
 }
 
 operation ESM!esm::type::EnumerationMember createEnumerationMember() : UI!ui::data::EnumerationMember {
-	var member = new UI!ui::data::EnumerationMember();
-	member.name = self.name;
-	member.ordinal = self.ordinal;
-	return member;
+    var member = new UI!ui::data::EnumerationMember();
+    member.name = self.name;
+    member.ordinal = self.ordinal;
+    return member;
 }
 
 operation ESM!esm::type::EnumerationType mapDataType(application : UI!ui::Application) : UI!ui::data::EnumerationType {
-	var type = application.dataTypes.selectOne(t | t.name = self.fqName());
-	if (type.isUndefined()) {
-		type = self.createEnumerationType(application);
-	}
-	return type;
+    var type = application.dataTypes.selectOne(t | t.name = self.fqName());
+    if (type.isUndefined()) {
+        type = self.createEnumerationType(application);
+    }
+    return type;
 }

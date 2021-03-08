@@ -28,7 +28,7 @@ return {{fqClass application.name}}Scaffold(
                         return get{{ fqClass page.name }}Page{{fqClass pageContainer.layoutType.name}}Body(context
 
                             {{~# if page.dataElement ~}}
-                            , target{{ className page.dataElement.name }}Store
+                            , target{{ className page.dataElement.target.name }}Store
                             {{~/ if ~}}
 
                             , {{fqVariable page.name}}PageStore
@@ -43,7 +43,7 @@ return {{fqClass application.name}}Scaffold(
                     return get{{ fqClass page.name }}Page{{fqClass application.defaultLayoutType.name}}Body(context
 
                             {{~# if page.dataElement ~}}
-                            , target{{ className page.dataElement.name }}Store
+                            , target{{ className page.dataElement.target.name }}Store
                             {{~/ if ~}}
 
                             , {{fqVariable page.name}}PageStore

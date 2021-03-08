@@ -16,7 +16,7 @@ class _{{ fqClass page.name }}PageState extends State<{{ fqClass page.name }}Pag
             {{fqVariable page.name}}PageStore.get{{ fqClass page.relationType.name }}()
                 .then((res) {
                     if (res != null) {
-                        target{{ className page.dataElement.name }}Store = res;
+                        target{{ className page.dataElement.target.name }}Store = res;
                         {{fqVariable page.name}}PageStore.getterStatusSetFulfilled();
                     } else {
                         var currentPageNavigation = navigationRegistry.getPageNavigationByRoute(Routes.{{ fqVariable application.name }}DashboardPage);

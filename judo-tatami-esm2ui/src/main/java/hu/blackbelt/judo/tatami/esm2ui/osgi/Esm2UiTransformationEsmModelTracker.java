@@ -49,7 +49,7 @@ public class Esm2UiTransformationEsmModelTracker extends AbstractModelTracker<Es
 
         try {
             // TODO: Handling application type and columns
-        	uiModel = esm2UiTransformationService.install(esmModel, "default", 12);
+        uiModel = esm2UiTransformationService.install(esmModel, "default", 12, false);
             log.info("Registering model: " + uiModel);
             ServiceRegistration<UiModel> modelServiceRegistration =
                     componentContext.getBundleContext()

@@ -105,9 +105,11 @@ class {{ fqClass application.name }}Scaffold extends StatelessWidget {
                         )
 
                 ),
-                body:  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 116),
-                        child: body,
+                body: GestureDetector(
+                    onTap: () => FocusScope.of(context).requestFocus(new FocusNode()),
+                    child: Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 116),
+                            child: body,
 //                    child: Column(
 //                        children: [
 //                            Expanded(
@@ -121,6 +123,7 @@ class {{ fqClass application.name }}Scaffold extends StatelessWidget {
 //                            body
 //                        ],
 //                    )
+                    ),
                 ),
                 floatingActionButton: floatingActionButton,
             ),

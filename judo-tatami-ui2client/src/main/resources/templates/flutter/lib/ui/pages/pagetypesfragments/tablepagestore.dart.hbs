@@ -196,12 +196,8 @@ abstract class _{{ fqClass page.name }}PageStore with Store {
     @action
     Future<void> unset{{ fqClass relation.name }}({{ fqClass relation.owner.name }}Store owner{{ className relation.owner.name }}Store) async {
         try {
-        {{# if page.isPageTypeView }}
             await _{{ fqVariable application.actor.name }}Repository.{{ fqVariable relation.owner.name }}Unset{{ fqClass relation.name }}(owner{{ className relation.owner.name }}Store);
             get{{ fqClass relation.name }}({{# unless relation.isAccess}}owner{{ className relation.owner.name }}Store{{/unless}});
-        {{else}}
-            owner{{ className relation.owner.name }}Store.{{variable relation.name}} = null;
-        {{/ if}}
         } on ApiException catch (error) {
             errorMessage = "Could not unset {{ relation.name }}";
             throw error;
@@ -209,7 +205,7 @@ abstract class _{{ fqClass page.name }}PageStore with Store {
     }
 
     {{/if}}
-    {{# if relation.target.isClassBehaviourTypeDeletable }}
+    {{# if relation.isRelationBehaviourTypeDeletable }}
     @action
     Future<void> delete{{ className relation.target.name }}({{ fqClass relation.target.name }}Store target{{ className relation.target.name }}Store{{# unless relation.isAccess}}, {{ fqClass relation.owner.name }}Store owner{{ className relation.owner.name }}Store{{/unless}}) async {
         try {
@@ -223,7 +219,7 @@ abstract class _{{ fqClass page.name }}PageStore with Store {
     }
 
     {{/if}}
-    {{# if relation.target.isClassBehaviourTypeUpdatable }}
+    {{# if relation.isRelationBehaviourTypeUpdatable }}
     @action
     Future<{{ fqClass relation.target.name }}Store> update{{ className relation.target.name }}({{ fqClass relation.target.name }}Store target{{ className relation.target.name }}Store) async {
         try {

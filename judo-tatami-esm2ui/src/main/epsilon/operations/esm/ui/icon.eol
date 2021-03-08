@@ -1,17 +1,17 @@
 operation ESM!esm::ui::Icon createIconImageFromIcon(application : UI!ui::Application) : UI!ui::IconImage {
-	var ret : UI!ui::IconImage = new UI!ui::IconImage();
-	
-	ret.setVisualProperties(self, application);
-	ret.sourceId = self.getID();
-	
-	if (self.iconName.isDefined() and self.iconName.trim().length() > 0) {
-		ret.icon = new UI!ui::Icon();
-		ret.icon.name = self.iconName;
-	}
-	
-	return ret;
+    var ret : UI!ui::IconImage = new UI!ui::IconImage();
+    
+    ret.setVisualProperties(self, application);
+    ret.sourceId = self.getID();
+    
+    if (self.iconName.isDefined() and self.iconName.trim().length() > 0) {
+        ret.icon = new UI!ui::Icon();
+        ret.icon.name = self.iconName;
+    }
+    
+    return ret;
 }
 
-operation ESM!esm::ui::Icon map(application : UI!ui::Application) : UI!ui::IconImage {
-	return self.createIconImageFromIcon(application);
+operation ESM!esm::ui::Icon map(application : UI!ui::Application, page : UI!ui::PageDefinition) : UI!ui::IconImage {
+    return self.createIconImageFromIcon(application);
 }

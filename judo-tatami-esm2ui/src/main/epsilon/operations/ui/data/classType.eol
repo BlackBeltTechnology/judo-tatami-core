@@ -1,26 +1,36 @@
 operation UI!ui::data::ClassType calculateRepresentation() {
-	if (self.representation.isUndefined()) {
-		var rep = self.attributes.selectOne(a | a.dataType.isKindOf(UI!ui::data::StringType));
-		if (rep.isUndefined()) {
-			rep = self.attributes.first;
-		}
-		if (rep.isDefined()) {
-			self.representation = rep;
-		}
-	}
+    if (self.representation.isUndefined()) {
+        var rep = self.attributes.selectOne(a | a.dataType.isKindOf(UI!ui::data::StringType));
+        if (rep.isUndefined()) {
+            rep = self.attributes.first;
+        }
+        if (rep.isDefined()) {
+            self.representation = rep;
+        }
+    }
 }
 
-operation UI!ui::data::ClassType setRelationTargetsOptional() {
-    for (target in self.relations.select(r | (r.relationKind == UI!ui::data::RelationKind#AGGREGATION or r.relationKind == UI!ui::data::RelationKind#COMPOSITION)
-                                                and not r.target.isOptional).collect(r | r.target)) {
+operation UI!ui::data::ClassType setIsOptionalFlag() {
+    for (target in
+            self.relations
+                .select(r | 
+                    (r.relationKind == UI!ui::data::RelationKind#AGGREGATION or r.relationKind == UI!ui::data::RelationKind#COMPOSITION) and
+                    r.memberType <> UI!ui::data::MemberType#DERIVED and
+                    not r.target.isOptional)
+                .collect(r | r.target)) {
         target.isOptional = true;
-        target.setRelationTargetsOptional();
+        target.setIsOptionalFlag();
     }
 }
 operation UI!ui::data::ClassType setIsForCreateOrUpdateTypeFlag() {
-    for (r in self.relations.select(r | r.relationKind == UI!ui::data::RelationKind#COMPOSITION or r.relationKind == UI!ui::data::RelationKind#AGGREGATION)) {
-        r.target.isForCreateOrUpdateType = true;
-        r.target.setIsForCreateOrUpdateTypeFlag();
+    for (target in self.relations
+                .select(r | 
+                    (r.relationKind == UI!ui::data::RelationKind#COMPOSITION or r.relationKind == UI!ui::data::RelationKind#AGGREGATION) and
+                    not (r.memberType == UI!ui::data::MemberType#TRANSIENT or r.memberType == UI!ui::data::MemberType#DERIVED) and
+                    not r.target.isForCreateOrUpdateType)
+                .collect(r | r.target)) {
+        target.isForCreateOrUpdateType = true;
+        target.setIsForCreateOrUpdateTypeFlag();
     }
     return false;
 }
@@ -29,7 +39,7 @@ operation UI!ui::data::ClassType collectExposedTransferObjects(collected : Set) 
     var newObjects = new Set();
     for (relation in self.relations) {
         if (not collected.includes(relation.target)) {
-            newObjects.add(relation.target);    
+            newObjects.add(relation.target);
         }
     }
     for (op in self.operations) {

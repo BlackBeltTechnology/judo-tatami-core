@@ -44,8 +44,8 @@ class NavigationRegistry {
         crudFunctions: {
             Crud.Read: {{# if relation.isRelationBehaviourTypeListable }}NavigationStore().get{{ fqClass relation.name }}{{ else }}null{{/ if }},
             Crud.Create: {{# if relation.isRelationBehaviourTypeCreatable }}NavigationStore().create{{ fqClass relation.name }}{{ else }}null{{/ if }},
-            Crud.Delete: {{# if relation.target.isClassBehaviourTypeDeletable }}NavigationStore().delete{{ fqClass relation.target.name }}{{ else }}null{{/ if }},
-            Crud.Update: {{# if relation.target.isClassBehaviourTypeUpdatable }}NavigationStore().update{{ fqClass relation.target.name }}{{ else }}null{{/ if }},
+            Crud.Delete: {{# if relation.isRelationBehaviourTypeDeletable }}NavigationStore().delete{{ fqClass relation.target.name }}{{ else }}null{{/ if }},
+            Crud.Update: {{# if relation.isRelationBehaviourTypeUpdatable }}NavigationStore().update{{ fqClass relation.target.name }}{{ else }}null{{/ if }},
         }
     );
             {{/unless}}

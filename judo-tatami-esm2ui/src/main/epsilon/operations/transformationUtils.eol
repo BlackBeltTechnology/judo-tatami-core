@@ -1,24 +1,24 @@
 operation String anchor(anchor1 : String, anchor2 : String) : String {
-	if (anchor1.isUndefined()) {
-		return self;
-	} else {
-		if (anchor2.isUndefined()) {
-			return self + "#" + anchor1;
-		} else {
-			return self.anchor(anchor1, null) + "/" + anchor2;
-		}
-	}
+    if (anchor1.isUndefined()) {
+        return self;
+    } else {
+        if (anchor2.isUndefined()) {
+            return self + "#" + anchor1;
+        } else {
+            return self.anchor(anchor1, null) + "/" + anchor2;
+        }
+    }
 } 
 
 operation String anchor(anchor1 : String) : String {
-	return self.anchor(anchor1, null);
+    return self.anchor(anchor1, null);
 }
 
 operation createBlankApplicationForPreview() : UI!ui::Application {
-	
-	var application : UI!ui::Application = new UI!ui::Application();
-	
-	var defaultLayout = new UI!ui::LayoutType();
+    
+    var application : UI!ui::Application = new UI!ui::Application();
+    
+    var defaultLayout = new UI!ui::LayoutType();
     defaultLayout.cols = applicationColumns;
     defaultLayout.name = "default";
     defaultLayout.original = true;
@@ -49,36 +49,60 @@ operation createBlankApplicationForPreview() : UI!ui::Application {
     application.actor.relations.add(relation);
     
     for (b in rootElement.eContainer().getAllPossibleRelationBehaviours()){
-    	relation.behaviours.add(b);
+        relation.behaviours.add(b);
     }
 
     return application;
 }
 
 operation createHorizontalFlex(name : String, col : Real, row : Real) : UI!ui::Flex {
-	var ret : UI!ui::Flex = new UI!ui::Flex();
-	ret.name = name;
-	ret.col = col;
-	ret.row = row;
-	ret.direction = UI!ui::Axis#HORIZONTAL;
-	return ret;
+    var ret : UI!ui::Flex = new UI!ui::Flex();
+    ret.name = name;
+    ret.col = col;
+    ret.row = row;
+    ret.direction = UI!ui::Axis#HORIZONTAL;
+    return ret;
 }
 
 operation createVerticalFlex(name : String, col : Real, row : Real) : UI!ui::Flex {
-	var ret : UI!ui::Flex = new UI!ui::Flex();
-	ret.name = name;
-	ret.col = col;
-	ret.row = row;
-	ret.direction = UI!ui::Axis#VERTICAL;
-	return ret;
+    var ret : UI!ui::Flex = new UI!ui::Flex();
+    ret.name = name;
+    ret.col = col;
+    ret.row = row;
+    ret.direction = UI!ui::Axis#VERTICAL;
+    return ret;
 }
 
 operation createButton(name : String, label : String, col : Real, action : UI!ui::Action) : UI!ui::Button {
-	var ret : UI!ui::Button = new UI!ui::Button();
-	ret.name = name;
-	ret.label = label;
-	ret.col = col;
-	ret.action = action;
-	ret.stretch = UI!ui::Stretch#NONE;
-	return ret;
+    var ret : UI!ui::Button = new UI!ui::Button();
+    ret.name = name;
+    ret.label = label;
+    ret.col = col;
+    ret.action = action;
+    ret.stretch = UI!ui::Stretch#NONE;
+    return ret;
+}
+
+operation createCreateAction(target : UI!ui::PageDefinition, dataElement : UI!ui::data::DataElement, isTransient : Boolean) : UI!ui::CreateAction {
+    var action = new UI!ui::CreateAction();
+    action.target = target;
+    action.dataElement = dataElement;
+    action.isTransient = isTransient;
+    return action;
+}
+
+operation createEditAction(target : UI!ui::PageDefinition, dataElement : UI!ui::data::DataElement, isTransient : Boolean) : UI!ui::EditAction {
+    var action = new UI!ui::EditAction();
+    action.target = target;
+    action.dataElement = dataElement;
+    action.isTransient = isTransient;
+    return action;
+}
+
+operation createViewAction(target : UI!ui::PageDefinition, dataElement : UI!ui::data::DataElement, isTransient : Boolean) : UI!ui::ViewAction {
+    var action = new UI!ui::ViewAction();
+    action.target = target;
+    action.dataElement = dataElement;
+    action.isTransient = isTransient;
+    return action;
 }

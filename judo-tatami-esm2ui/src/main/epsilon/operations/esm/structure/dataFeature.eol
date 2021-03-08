@@ -1,33 +1,33 @@
 import "../type/_importType.eol";
 
 operation ESM!esm::structure::DataFeature createAttributeTypeForClass(application : UI!ui::Application, clazz : UI!ui::data::ClassType) : UI!ui::data::AttributeType {
-	var attribute = new UI!ui::data::AttributeType();	
-	attribute.name = self.name;
+    var attribute = new UI!ui::data::AttributeType();    
+    attribute.name = self.name;
 
-	if (self.memberType == ESM!esm::structure::MemberType#STORED) {
-		attribute.memberType = UI!ui::data::MemberType#STORED;
-	} else if (self.memberType == ESM!esm::structure::MemberType#DERIVED) {
-		attribute.memberType = UI!ui::data::MemberType#DERIVED;
-	} else if (self.memberType == ESM!esm::structure::MemberType#MAPPED) {
-		attribute.memberType = UI!ui::data::MemberType#MAPPED;
-	} else if (self.memberType == ESM!esm::structure::MemberType#TRANSIENT) {
-		attribute.memberType = UI!ui::data::MemberType#TRANSIENT;
-	} else {
-		attribute.memberType = UI!ui::data::MemberType#STORED;
-	}
-	attribute.isReadOnly = self.isReadOnly();
-	
-	attribute.dataType = self.dataType.mapDataType(application);
+    if (self.memberType == ESM!esm::structure::MemberType#STORED) {
+        attribute.memberType = UI!ui::data::MemberType#STORED;
+    } else if (self.memberType == ESM!esm::structure::MemberType#DERIVED) {
+        attribute.memberType = UI!ui::data::MemberType#DERIVED;
+    } else if (self.memberType == ESM!esm::structure::MemberType#MAPPED) {
+        attribute.memberType = UI!ui::data::MemberType#MAPPED;
+    } else if (self.memberType == ESM!esm::structure::MemberType#TRANSIENT) {
+        attribute.memberType = UI!ui::data::MemberType#TRANSIENT;
+    } else {
+        attribute.memberType = UI!ui::data::MemberType#STORED;
+    }
+    attribute.isReadOnly = self.isReadOnly();
+    
+    attribute.dataType = self.dataType.mapDataType(application);
 
-	clazz.attributes.add(attribute);
-	log.debug("Create attribute " + attribute.name + " in class type: " + clazz.name);
-	return attribute;
+    clazz.attributes.add(attribute);
+    log.debug("Create attribute " + attribute.name + " in class type: " + clazz.name);
+    return attribute;
 }
 
 operation ESM!esm::structure::DataFeature mapAttributeType(application : UI!ui::Application, clazz : UI!ui::data::ClassType) : UI!ui::data::AttributeType {
-	var attribute = clazz.attributes.selectOne(r | r.name = self.name);
-	if (attribute.isUndefined()) {
-		attribute = self.createAttributeTypeForClass(application, clazz);
-	}
-	return attribute;
+    var attribute = clazz.attributes.selectOne(r | r.name = self.name);
+    if (attribute.isUndefined()) {
+        attribute = self.createAttributeTypeForClass(application, clazz);
+    }
+    return attribute;
 }

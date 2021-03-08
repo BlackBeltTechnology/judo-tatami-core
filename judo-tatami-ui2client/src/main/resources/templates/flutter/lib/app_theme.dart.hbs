@@ -139,7 +139,7 @@ class AppTheme {
           fillColor: theme.cardColor,
           focusColor: theme.colorScheme.secondary,
           border: UnderlineInputBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(10.0)), borderSide: BorderSide(color: Colors.transparent)),
-          labelStyle: TextStyle(fontWeight: FontWeight.w100),
+          labelStyle: TextStyle(fontWeight: FontWeight.bold),
           enabledBorder: UnderlineInputBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(10.0)), borderSide: BorderSide(color: Colors.transparent)),
           focusedBorder: UnderlineInputBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(10.0)), borderSide: BorderSide(width: 2.0, color:theme.colorScheme.secondary)),
           disabledBorder: UnderlineInputBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(10.0)), borderSide: BorderSide(color: Colors.black12)),
@@ -187,7 +187,8 @@ class AppDesignCustomizer with DefaultJudoComponentsCustomizer {
     return InputDecoration(
         labelText: label,
         prefixIcon: prefixIcon,
-        suffixIcon: suffixIcon
+        suffixIcon: suffixIcon,
+        counterText: ""
     );
   }
 
@@ -209,7 +210,6 @@ class AppDesignCustomizer with DefaultJudoComponentsCustomizer {
   @override
   InputDecoration getInputLinkDecoration(String label, Widget prefixIcon, Widget suffixIcon) {
     return InputDecoration(
-      enabled: false,
       labelText: label,
       prefixIcon: prefixIcon,
     );
@@ -223,13 +223,16 @@ class AppDesignCustomizer with DefaultJudoComponentsCustomizer {
   @override
   ThemeData getInputThemeCustomizer(ThemeData theme, bool disabled, bool readOnly) {
     return theme.copyWith(
-      primaryColor:  (disabled || readOnly) ?
+      primaryColor: (disabled || readOnly) ?
       theme.iconTheme.color : theme.colorScheme.secondary,
       inputDecorationTheme:
       (disabled || readOnly) ?
       theme.inputDecorationTheme.copyWith(
-        filled: false,
-      ) : null,
+          labelStyle: theme.inputDecorationTheme.labelStyle.copyWith(
+              color: Colors.black
+          ),
+          filled: false
+      ) : null
     );
   }
 
@@ -258,8 +261,16 @@ class AppDesignCustomizer with DefaultJudoComponentsCustomizer {
         inputDecorationTheme:
         (disabled || readOnly) ?
         theme.inputDecorationTheme.copyWith(
-            filled: false
-        ) : null
+          labelStyle: theme.inputDecorationTheme.labelStyle.copyWith(
+            color: Colors.black
+          ),
+        filled: false
+        ) :
+        theme.inputDecorationTheme.copyWith(
+            labelStyle: theme.inputDecorationTheme.labelStyle.copyWith(
+              color: Color(0xdc434448)
+          )
+        )
     );
   }
 
