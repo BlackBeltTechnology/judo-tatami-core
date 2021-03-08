@@ -1,6 +1,83 @@
 import "../utils/changeset.eol";
 
 /////////////////////////////////////////
+// BACKUP TABLES
+
+@abstract
+rule BackupTablesChangeSet
+    transform s : RDBMS!RdbmsTableOperation
+    to t : LIQUIBASE!ChangeSet {
+        var useTable;
+        if (s.isTypeOf(RDBMS!RdbmsModifyTableOperation)) useTable = s.previousTable;
+        else useTable = s.table;
+
+        t.id = "backup-table-" + useTable.sqlName;
+        t.author = "tatami-rdbms2liquibase";
+        t.dbms = dialect;
+        t.context = RDBMS!RdbmsModel.all.first.version;
+        t.logicalFilePath = "backup-tables";
+
+        if (not targetModel.changeSetExists(t.id)) {
+            targetModel.changeSet.add(t);
+            log.info("ChangeSet " + t.id + " created");
+        }
+}
+
+rule BackupDeletedTablesChangeSet
+    transform s : RDBMS!RdbmsDeleteTableOperation
+    to t : LIQUIBASE!ChangeSet
+    extends BackupTablesChangeSet {
+}
+
+rule BackupModifiedTablesChangeSet
+    transform s : RDBMS!RdbmsModifyTableOperation
+    to t : LIQUIBASE!ChangeSet
+    extends BackupTablesChangeSet {
+}
+
+@abstract
+rule BackupTables
+    transform s : RDBMS!RdbmsTableOperation
+    to t : LIQUIBASE!CreateTable {
+        var useTable;
+        if (s.isTypeOf(RDBMS!RdbmsModifyTableOperation)) useTable = s.previousTable;
+        else useTable = s.table;
+
+        t.tableName = useTable.sqlName;
+        t.remarks = useTable.uuid;
+
+        for(field in useTable.fields) {
+            var column : new LIQUIBASE!Column;
+            var constraint : new LIQUIBASE!Constraints;
+            column.name = field.sqlName;
+            column.remarks = field.uuid;
+            column.type = field.toFieldDefinition();
+            if (field == field.eContainer.primaryKey or field.mandatory) {
+                constraint.primaryKey = field == field.eContainer.primaryKey;
+                constraint.nullable = not field.mandatory;
+                column.constraints = constraint;
+            }
+            t.column.add(column);
+        }
+
+        targetModel.changeSetOf("backup-table-" + useTable.sqlName).createTable.add(t);
+        log.info("(Backup) CreateTable " + t.tableName + " created");
+}
+
+rule BackupDeletedTables
+    transform s : RDBMS!RdbmsDeleteTableOperation
+    to t : LIQUIBASE!CreateTable
+    extends BackupTables {
+}
+
+rule BackupModifiedTables
+    transform s : RDBMS!RdbmsModifyTableOperation
+    to t : LIQUIBASE!CreateTable
+    extends BackupTables {
+}
+
+// BACKUP TABLES
+/////////////////////////////////////////
 // CREATE TABLES
 
 @lazy
@@ -130,7 +207,7 @@ rule DeleteFieldOperationToDropColumn
         t.columnName = s.field.sqlName;
 
         targetModel.changeSetOf("drop-fields-from-" + s.eContainer.table.sqlName).dropColumn.add(t);
-        log.info("Drop field added: " + t.columnName);
+        log.info("Drop field added: " + t.columnName + "(" + t.tableName + ")");
 }
 
 // DROP FIELDS
@@ -168,7 +245,7 @@ rule CreateFieldOperationToAddColumnDefOnExistingTable
             log.info("AddColumn created in " + changeSet.id);
         }
         changeSet.addColumn[0].column.add(t);
-        log.info("AddColumnDef created in " + changeSet.id);
+        log.info("AddColumnDef created in " + changeSet.id + ": " + t.name);
 }
 
 // CREATE FIELDS
@@ -200,7 +277,7 @@ rule RdbmsModifyFieldOperationToModifyDataType
         t.newDataType = s.field.toFieldDefinition();
 
         targetModel.changeSetOf("modify-data-types-in-" + s.eContainer.table.sqlName).modifyDataType.add(t);
-        log.info("ModifyDataType added: " + s.previousField.toFieldDefinition() + " -> " + s.field.toFieldDefinition());
+        log.info("ModifyDataType added for " + t.columnName + "(" + t.tableName + "): " + s.previousField.toFieldDefinition() + " -> " + s.field.toFieldDefinition());
 }
 
 // MODIFY TYPE/SIZE

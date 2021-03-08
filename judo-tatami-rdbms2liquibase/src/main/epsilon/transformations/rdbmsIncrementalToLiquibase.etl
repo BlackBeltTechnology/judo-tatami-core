@@ -10,9 +10,11 @@ import "beforeIncremental.etl";
 
 pre {
     var operationMeta = RDBMS!RdbmsOperationMeta.all.first();
-    if (operationMeta.isDefined()) {
-        var previousModel = operationMeta.previousModel;
-        var newModel = operationMeta.currentModel;
+    var previousModel;
+    var newModel;
+    if (operationMeta.isDefined()) { // if defined in "if" block, transformations fail.....
+        previousModel = operationMeta.previousModel;
+        newModel = operationMeta.currentModel;
     }
 
     var targetModel : LIQUIBASE!databaseChangeLog = new LIQUIBASE!databaseChangeLog();

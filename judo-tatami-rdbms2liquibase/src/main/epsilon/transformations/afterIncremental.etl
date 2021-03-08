@@ -30,7 +30,7 @@ rule AddAllForeignKeys
         t.referencedColumnNames = s.referenceKey.sqlName;
 
         afterIncrementalModel.changeSetOf("add-foreign-keys-to-" + s.eContainer.sqlName).addForeignKeyConstraint.add(t);
-        log.info("AddForeignKeyConstraint added: " + t.constraintName + "(" + t.baseTableName + ")");
+        log.info("AddForeignKeyConstraint added to " + t.baseColumnNames + "(" + t.baseTableName + "): " + t.constraintName + "(" + t.baseTableName + ")");
 }
 
 // FOREIGN KEY
@@ -81,6 +81,7 @@ rule AddAllNotNullConstraints
         t.columnName = s.sqlName;
 
         afterIncrementalModel.changeSetOf("add-not-null-constraints-to-" + s.eContainer.sqlName).addNotNullConstraint.add(t);
+        log.info("AddNotNullConstraint added to " + t.columnName + "(" + t.tableName + ")");
 }
 
 rule AddAllNotNullConstraintsToValueField

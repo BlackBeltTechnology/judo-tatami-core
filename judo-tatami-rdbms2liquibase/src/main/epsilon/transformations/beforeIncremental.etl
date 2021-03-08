@@ -116,6 +116,7 @@ rule DropAllNotNullConstraints
         t.columnName = s.sqlName;
 
         beforeIncrementalModel.changeSetOf("drop-not-null-constraints-from-" + s.eContainer.sqlName).dropNotNullConstraint.add(t);
+        log.info("DropNotNullConstraint added to " + t.columnName + "(" + t.tableName + ")");
 }
 
 rule DropAllNotNullConstraintsFromValueField
