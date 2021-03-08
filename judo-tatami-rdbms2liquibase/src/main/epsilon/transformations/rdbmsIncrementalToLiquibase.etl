@@ -9,11 +9,13 @@ import "afterIncremental.etl";
 import "beforeIncremental.etl";
 
 pre {
-	var operationMeta = RDBMS!RdbmsOperationMeta.all.first();
-    var previousModel = operationMeta.previousModel;
-    var newModel = operationMeta.currentModel;
+    var operationMeta = RDBMS!RdbmsOperationMeta.all.first();
+    if (operationMeta.isDefined()) {
+        var previousModel = operationMeta.previousModel;
+        var newModel = operationMeta.currentModel;
+    }
 
     var targetModel : LIQUIBASE!databaseChangeLog = new LIQUIBASE!databaseChangeLog();
-	var beforeIncrementalModel : BEFORE_INCREMENTAL!databaseChangeLog = new BEFORE_INCREMENTAL!databaseChangeLog();
-	var afterIncrementalModel : AFTER_INCREMENTAL!databaseChangeLog = new AFTER_INCREMENTAL!databaseChangeLog();
+    var beforeIncrementalModel : BEFORE_INCREMENTAL!databaseChangeLog = new BEFORE_INCREMENTAL!databaseChangeLog();
+    var afterIncrementalModel : AFTER_INCREMENTAL!databaseChangeLog = new AFTER_INCREMENTAL!databaseChangeLog();
 }
