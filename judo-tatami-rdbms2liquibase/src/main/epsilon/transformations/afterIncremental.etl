@@ -15,7 +15,7 @@ rule AddAllForeignKeysChangeSet
 
         if (not afterIncrementalModel.changeSetExists(t.id)) {
             afterIncrementalModel.changeSet.add(t);
-            ("ChangeSet " + t.id + " created").println();
+            log.info("ChangeSet " + t.id + " created");
         }
 }
 
@@ -30,7 +30,7 @@ rule AddAllForeignKeys
         t.referencedColumnNames = s.referenceKey.sqlName;
 
         afterIncrementalModel.changeSetOf("add-foreign-keys-to-" + s.eContainer.sqlName).addForeignKeyConstraint.add(t);
-        ("AddForeignKeyConstraint added: " + t.constraintName + "(" + t.baseTableName + ")").println();
+        log.info("AddForeignKeyConstraint added: " + t.constraintName + "(" + t.baseTableName + ")");
 }
 
 // FOREIGN KEY
@@ -49,7 +49,7 @@ rule AddAllUniqueConstraintsChangeSet
 
         if (not afterIncrementalModel.changeSetExists(t.id)) {
             afterIncrementalModel.changeSet.add(t);
-            ("ChangeSet " + t.id + " created").println();
+            log.info("ChangeSet " + t.id + " created");
         }
 }
 
@@ -68,7 +68,7 @@ rule AddAllUniqueConstraints
         }
 
         afterIncrementalModel.changeSetOf("add-unique-constraint-to-" + s.eContainer.sqlName).addUniqueConstraint.add(t);
-        ("AddUniqueConstraint added: " + t.columnNames + "(" + t.tableName + ")").println();
+        log.info("AddUniqueConstraint added: " + t.columnNames + "(" + t.tableName + ")");
 }
 
 // UNIQUE CONSTRAINT
@@ -87,7 +87,7 @@ rule CreateAllIndexesChangeSet
 
         if (not afterIncrementalModel.changeSetExists(t.id)) {
             afterIncrementalModel.changeSet.add(t);
-            ("ChangeSet " + t.id + " created").println();
+            log.info("ChangeSet " + t.id + " created");
         }
 }
 
@@ -100,7 +100,7 @@ rule CreateAllIndexes
         t.column = s.fields.collect(f | new AFTER_INCREMENTAL!Column(name = f.sqlName));
 
         afterIncrementalModel.changeSetOf("create-indexes-for-" + s.eContainer.sqlName).createIndex.add(t);
-        ("CreateIndex added: " + t.indexName + "(" + t.tableName + ")").println();
+        log.info("CreateIndex added: " + t.indexName + "(" + t.tableName + ")");
 }
 
 // INDEX

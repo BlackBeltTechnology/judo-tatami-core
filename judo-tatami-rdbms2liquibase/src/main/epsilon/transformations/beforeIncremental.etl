@@ -15,7 +15,7 @@ rule DropAllIndexesChangeSet
 
         if (not beforeIncrementalModel.changeSetExists(t.id)) {
             beforeIncrementalModel.changeSet.add(t);
-            ("ChangeSet " + t.id + " created").println();
+            log.info("ChangeSet " + t.id + " created");
         }
 }
 
@@ -27,7 +27,7 @@ rule DropAllIndexes
         t.indexName = s.sqlName;
 
         beforeIncrementalModel.changeSetOf("drop-indexes-from-" + s.eContainer.sqlName).dropIndex.add(t);
-        ("DropIndex added: " + t.indexName + "(" + t.tableName + ")").println();
+        log.info("DropIndex added: " + t.indexName + "(" + t.tableName + ")");
 }
 
 // INDEX
@@ -46,7 +46,7 @@ rule DropAllUniqueConstraintsChangeSet
 
         if (not beforeIncrementalModel.changeSetExists(t.id)) {
             beforeIncrementalModel.changeSet.add(t);
-            ("ChangeSet " + t.id + " created").println();
+            log.info("ChangeSet " + t.id + " created");
         }
 }
 
@@ -65,7 +65,7 @@ rule DropAllUniqueConstraints
         }
 
         beforeIncrementalModel.changeSetOf("drop-unique-constraint-from-" + s.eContainer.sqlName).dropUniqueConstraint.add(t);
-        ("DropUniqueConstraint added: " + t.uniqueColumns + "(" + t.tableName + ")").println();
+        log.info("DropUniqueConstraint added: " + t.uniqueColumns + "(" + t.tableName + ")");
 }
 
 // UNIQUE CONSTRAINT
@@ -84,7 +84,7 @@ rule DropAllForeignKeysChangeSet
 
         if (not beforeIncrementalModel.changeSetExists(t.id)) {
             beforeIncrementalModel.changeSet.add(t);
-            ("ChangeSet " + t.id + " created").println();
+            log.info("ChangeSet " + t.id + " created");
         }
 }
 
@@ -96,7 +96,7 @@ rule DropAllForeignKeys
         t.constraintName = s.foreignKeySqlName;
 
         beforeIncrementalModel.changeSetOf("drop-foreign-keys-from-" + s.eContainer.sqlName).dropForeignKeyConstraint.add(t);
-        ("DropForeignKeyConstraint added: " + t.constraintName + "(" + t.baseTableName + ")").println();
+        log.info("DropForeignKeyConstraint added: " + t.constraintName + "(" + t.baseTableName + ")");
 }
 
 // FOREIGN KEY

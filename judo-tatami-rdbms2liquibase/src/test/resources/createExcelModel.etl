@@ -60,7 +60,7 @@ rule transformOriginalForeignKey
 		t.name = f.name;
 		t.sqlName = f.sql_name;
 		t.uuid = f.uuid;
-		(f.uuid + " " + f.mandatory).println("Test: ");
+		log.info("Test: " + f.uuid + " " + f.mandatory);
 		t.mandatory = f.mandatory.asBoolean();
 		t.rdbmsTypeName = f.type_name;
 		t.size = f.size.asInteger();
@@ -80,7 +80,7 @@ rule transformNewTable
 		t.name = f.name;
 		t.uuid = f.uuid;
 		t.sqlName = f.sql_name;
-		t.name.println("NEW!RdbmsTable created: "+f.uuid+" ");
+		log.info("NEW!RdbmsTable created: " + f.uuid + ", " + t.name);
 }
 
 rule transformNewValue

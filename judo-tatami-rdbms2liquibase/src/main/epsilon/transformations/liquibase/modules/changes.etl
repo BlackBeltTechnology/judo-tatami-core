@@ -13,7 +13,7 @@ rule CreateTableOperationToChangeSet
         t.context = RDBMS!RdbmsModel.all.first.version;
         t.logicalFilePath = "create-tables";
         targetModel.changeSet.add(t);
-        ("ChangeSet " + t.id + " created").println();
+        log.info("ChangeSet " + t.id + " created");
 }
 
 rule CreateTableOperationToCreateTable
@@ -38,7 +38,7 @@ rule CreateTableOperationToCreateTable
         }
 
         s.equivalent("CreateTableOperationToChangeSet").createTable.add(t);
-        ("CreateTable " + t.tableName + " created").println();
+        log.info("CreateTable " + t.tableName + " created");
 }
 
 // CREATE TABLES
@@ -57,7 +57,7 @@ rule ModifyTableOperationToChangeSet
 
         if (not targetModel.changeSetExists(t.id)) {
             targetModel.changeSet.add(t);
-            ("ChangeSet " + t.id + " created").println();
+            log.info("ChangeSet " + t.id + " created");
         }
 }
 
@@ -69,7 +69,7 @@ rule ModifyTableOperationToRanameTable
         t.newTableName = s.table.sqlName;
 
         targetModel.changeSetOf("rename-tables").renameTable.add(t);
-        ("RenameTable (" + t.oldTableName + " -> " + t.newTableName + ") added to " + targetModel.changeSetOf("rename-tables").id).println();
+        log.info("RenameTable (" + t.oldTableName + " -> " + t.newTableName + ") added to " + targetModel.changeSetOf("rename-tables").id);
 }
 
 // RENAME TABLES
@@ -88,7 +88,7 @@ rule RenameToChangeSet
 
         if (not targetModel.changeSetExists(t.id)) {
             targetModel.changeSet.add(t);
-            ("ChangeSet " + t.id + " created").println();
+            log.info("ChangeSet " + t.id + " created");
         }
 }
 
@@ -102,7 +102,7 @@ rule RenameToRenameColumn
         t.remarks = s.field.uuid;
 
         targetModel.changeSetOf("rename-fields-for-" + s.eContainer.table.sqlName).renameColumn.add(t);
-        ("Rename column added in table " + t.tableName + ": " + t.oldColumnName + " -> " + t.newColumnName).println();
+        log.info("Rename column added in table " + t.tableName + ": " + t.oldColumnName + " -> " + t.newColumnName);
 }
 
 // RENAME FIELDS
@@ -120,7 +120,7 @@ rule DeleteFieldOperationToChangeSet
 
         if (not targetModel.changeSetExists(t.id)) {
             targetModel.changeSet.add(t);
-            ("ChangeSet " + t.id + " created").println();
+            log.info("ChangeSet " + t.id + " created");
         }
 }
 
@@ -131,7 +131,7 @@ rule DeleteFieldOperationToDropColumn
         t.columnName = s.field.sqlName;
 
         targetModel.changeSetOf("drop-fields-from-" + s.eContainer.table.sqlName).dropColumn.add(t);
-        ("Drop field added: " + t.columnName).println();
+        log.info("Drop field added: " + t.columnName);
 }
 
 // DROP FIELDS
@@ -149,7 +149,7 @@ rule CreateFieldOperationToChangeSetOnExistingTable
 
         if (not targetModel.changeSetExists(t.id)) {
             targetModel.changeSet.add(t);
-            ("ChangeSet " + t.id + " created").println();
+            log.info("ChangeSet " + t.id + " created");
         }
 }
 
@@ -166,10 +166,10 @@ rule CreateFieldOperationToAddColumnDefOnExistingTable
         var changeSet = targetModel.changeSetOf("create-fields-for-" + s.eContainer.table.sqlName);
         if (changeSet.addColumn.size == 0) {
             changeSet.addColumn.add(new LIQUIBASE!AddColumn(tableName = s.eContainer.table.sqlName));
-            ("AddColumn created in " + changeSet.id).println();
+            log.info("AddColumn created in " + changeSet.id);
         }
         changeSet.addColumn[0].column.add(t);
-        ("AddColumnDef created in " + changeSet.id).println();
+        log.info("AddColumnDef created in " + changeSet.id);
 }
 
 // CREATE FIELDS
@@ -188,7 +188,7 @@ rule RdbmsModifyFieldOperationToModifyDataTypeChangeSet
 
         if (not targetModel.changeSetExists(t.id)) {
             targetModel.changeSet.add(t);
-            ("ChangeSet " + t.id + " created").println();
+            log.info("ChangeSet " + t.id + " created");
         }
 }
 
@@ -201,7 +201,7 @@ rule RdbmsModifyFieldOperationToModifyDataType
         t.newDataType = s.field.toFieldDefinition();
 
         targetModel.changeSetOf("modify-data-types-in-" + s.eContainer.table.sqlName).modifyDataType.add(t);
-        ("ModifyDataType added: " + s.previousField.toFieldDefinition() + " -> " + s.field.toFieldDefinition()).println();
+        log.info("ModifyDataType added: " + s.previousField.toFieldDefinition() + " -> " + s.field.toFieldDefinition());
 }
 
 // MODIFY TYPE/SIZE
@@ -220,7 +220,7 @@ rule RdbmsModifyFieldOperationToModifyNotNullConstraintsChangeSet
 
         if (not targetModel.changeSetExists(t.id)) {
             targetModel.changeSet.add(t);
-            ("ChangeSet " + t.id + " created").println();
+            log.info("ChangeSet " + t.id + " created");
         }
 }
 
@@ -259,7 +259,7 @@ rule DeleteTableOperationToChangeSet
 
         if (not targetModel.changeSetExists(t.id)) {
             targetModel.changeSet.add(t);
-            ("ChangeSet " + t.id + " created").println();
+            log.info("ChangeSet " + t.id + " created");
         }
 }
 
@@ -269,7 +269,7 @@ rule DeleteTableOperationToDropTable
         t.tableName = s.table.sqlName;
 
         targetModel.changeSetOf("drop-tables").dropTable.add(t);
-        ("Drop table added: " + t.tableName).println();
+        log.info("Drop table added: " + t.tableName);
 }
 
 // DROP TABLES
