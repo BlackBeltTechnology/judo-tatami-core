@@ -98,3 +98,6 @@ rule DropAllForeignKeys
         beforeIncrementalModel.changeSetOf("drop-foreign-keys-from-" + s.eContainer.sqlName).dropForeignKeyConstraint.add(t);
         ("DropForeignKeyConstraint added: " + t.constraintName + "(" + t.baseTableName + ")").println();
 }
+
+// FOREIGN KEY
+/////////////////////////////////////////

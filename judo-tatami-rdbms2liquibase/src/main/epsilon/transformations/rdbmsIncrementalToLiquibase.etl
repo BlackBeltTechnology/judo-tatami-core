@@ -9,8 +9,6 @@ import "afterIncremental.etl";
 import "beforeIncremental.etl";
 
 pre {
-//	var previousModel = PREVIOUS!RdbmsModel.all.first();
-//	var newModel = NEW!RdbmsModel.all.first();
 	var operationMeta = RDBMS!RdbmsOperationMeta.all.first();
     var previousModel = operationMeta.previousModel;
     var newModel = operationMeta.currentModel;

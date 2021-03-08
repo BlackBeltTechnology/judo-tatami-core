@@ -157,8 +157,7 @@ rule CreateFieldOperationToAddColumnDefOnExistingTable
     transform s : RDBMS!RdbmsCreateFieldOperation
     to t : LIQUIBASE!AddColumnDef {
         t.name = s.field.sqlName;
-        // TODO:Develop
-        // t.type = s.field.toFieldDefinition();
+        t.type = s.field.toFieldDefinition();
         t.remarks = s.field.uuid;
         if (s.field == s.field.eContainer.primaryKey) {
             t.constraints = new LIQUIBASE!Constraints(primaryKey = true, nullable = not s.field.mandatory);
@@ -199,8 +198,7 @@ rule RdbmsModifyFieldOperationToModifyDataType
         guard: s.typeChanged or s.sizeChanged
         t.tableName = s.eContainer.table.sqlName;
         t.columnName = s.field.sqlName;
-        // TODO:Develop
-        // t.newDataType = s.field.toFieldDefinition();
+        t.newDataType = s.field.toFieldDefinition();
 
         targetModel.changeSetOf("modify-data-types-in-" + s.eContainer.table.sqlName).modifyDataType.add(t);
         ("ModifyDataType added: " + s.previousField.toFieldDefinition() + " -> " + s.field.toFieldDefinition()).println();

@@ -52,8 +52,6 @@ operation RDBMS!RdbmsField toFieldDefinition () : String {
 			typedef += "(" + self.size + ")";
 		}
 		return typedef;
-	} else if (self.type.isDefined()) {
-		return self.type.toString();
 	}
 
 	return "";

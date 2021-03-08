@@ -102,3 +102,6 @@ rule CreateAllIndexes
         afterIncrementalModel.changeSetOf("create-indexes-for-" + s.eContainer.sqlName).createIndex.add(t);
         ("CreateIndex added: " + t.indexName + "(" + t.tableName + ")").println();
 }
+
+// INDEX
+/////////////////////////////////////////

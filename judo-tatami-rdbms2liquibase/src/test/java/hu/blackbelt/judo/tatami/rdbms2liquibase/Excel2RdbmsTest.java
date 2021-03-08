@@ -5,17 +5,22 @@ import hu.blackbelt.epsilon.runtime.execution.ExecutionContext;
 import hu.blackbelt.judo.meta.liquibase.runtime.LiquibaseModel;
 import hu.blackbelt.judo.meta.liquibase.runtime.LiquibaseModel.LiquibaseValidationException;
 import hu.blackbelt.judo.meta.liquibase.runtime.LiquibaseNamespaceFixUriHandler;
+import hu.blackbelt.judo.meta.rdbms.RdbmsIndex;
 import hu.blackbelt.judo.meta.rdbms.RdbmsTable;
 import hu.blackbelt.judo.meta.rdbms.runtime.RdbmsModel;
 import hu.blackbelt.judo.meta.rdbms.runtime.RdbmsModel.RdbmsValidationException;
 import hu.blackbelt.judo.meta.rdbms.runtime.RdbmsUtils;
+import hu.blackbelt.judo.meta.rdbms.util.builder.RdbmsBuilders;
 import hu.blackbelt.judo.meta.rdbms.util.builder.RdbmsIndexBuilder;
 import hu.blackbelt.judo.meta.rdbms.util.builder.RdbmsUniqueConstraintBuilder;
 import org.eclipse.epsilon.common.util.UriUtil;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
-import java.io.*;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 
@@ -40,8 +45,6 @@ public class Excel2RdbmsTest {
     private static final String ORIGINAL_MODEL_NAME = "OriginalModel";
     private static final String TARGET_TEST_CLASSES = "target/test-classes";
 
-
-    @Disabled
     @Test
     public void executeExcel2RdbmsModel() throws Exception {
 
@@ -187,7 +190,6 @@ public class Excel2RdbmsTest {
         }
         return psmRoot;
     }
-
 
     //// EMF Compare experiment
 	/*
