@@ -6,6 +6,22 @@ operation RDBMS!RdbmsTable fieldOf(field : RDBMS!RdbmsField) : RDBMS!RdbmsField 
 	return self.fields.selectOne(f | f.uuid == field.uuid);
 }
 
+operation RDBMS!RdbmsTable contains(field : RDBMS!RdbmsField) : Boolean {
+	return self.fieldExists(field) and self.fieldOf(field) == field;
+}
+
+operation RDBMS!RdbmsTable indexExists(index : RDBMS!RdbmsIndex) : Boolean {
+	return self.indexOf(index).isDefined();
+}
+
+operation RDBMS!RdbmsTable indexOf(index : RDBMS!RdbmsIndex) : RDBMS!RdbmsIndex {
+	return self.indexes.selectOne(i | i.uuid == index.uuid);
+}
+
+operation RDBMS!RdbmsTable contains(index : RDBMS!RdbmsIndex) : Boolean {
+	return self.indexExists(index) and self.indexOf(index) == index;
+}
+
 operation RDBMS!RdbmsTable isSqlNameChanged(field : RDBMS!RdbmsTable) : Boolean {
 	return self.sqlName <> field.sqlName;
 }

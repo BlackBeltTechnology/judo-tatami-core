@@ -1,0 +1,96 @@
+/////////////////////////////////////////
+// TABLES
+
+rule CheckTables
+    transform s : RDBMS!RdbmsTable
+    to t : DBCHECKUP!TableExists {
+        guard: previousModel.contains(s)
+        t.tableName = s.sqlName;
+
+        dbCheckupModel.preConditions.tableExists.add(t);
+        log.info("TableExists added: " + t.tableName);
+}
+
+rule CheckJunctionTables
+    transform s : RDBMS!RdbmsJunctionTable
+    to t : DBCHECKUP!TableExists
+    extends CheckTables {
+}
+
+// TABLES
+/////////////////////////////////////////
+// FIELDS
+
+rule CheckFields
+    transform s : RDBMS!RdbmsField
+    to t : DBCHECKUP!ColumnExists {
+        guard: previousModel.contains(s.eContainer) and previousModel.tableOf(s.eContainer).contains(s)
+        t.tableName = s.eContainer.sqlName;
+        t.columnName = s.sqlName;
+
+        dbCheckupModel.preConditions.columnExists.add(t);
+        log.info("ColumnExists added: " + t.columnName + " (" + t.tableName + ")");
+}
+
+rule CheckValueFields
+    transform s : RDBMS!RdbmsValueField
+    to t : DBCHECKUP!ColumnExists
+    extends CheckFields {
+}
+
+rule CheckIdentifierFields
+    transform s : RDBMS!RdbmsIdentifierField
+    to t : DBCHECKUP!ColumnExists
+    extends CheckFields {
+}
+
+rule CheckForeignKeys
+    transform s : RDBMS!RdbmsForeignKey
+    to t : DBCHECKUP!ColumnExists
+    extends CheckFields {
+}
+
+// FIELDS
+/////////////////////////////////////////
+// TODO PRIMARY KEY CONSTRAINTS
+/////////////////////////////////////////
+// FOREIGN KEY CONSTRAINTS
+
+rule CheckForeignKeyConstraints
+    transform s : RDBMS!RdbmsForeignKey
+    to t : DBCHECKUP!ForeignKeyConstraintExists {
+        guard: previousModel.contains(s.eContainer) and previousModel.tableOf(s.eContainer).contains(s)
+        t.foreignKeyTableName = s.eContainer.sqlName;
+        t.foreignKeyName = s.foreignKeySqlName;
+
+        dbCheckupModel.preConditions.foreignKeyConstraintExists.add(t);
+        log.info("ForeignKeyConstraintExists added: " + t.foreignKeyName + " (" + t.foreignKeyTableName + ")");
+}
+
+// FOREIGN KEY CONSTRAINTS
+/////////////////////////////////////////
+// INDEX
+
+rule CheckIndexes
+    transform s : RDBMS!RdbmsIndex
+    to t : DBCHECKUP!IndexExists {
+        guard: previousModel.contains(s.eContainer) and previousModel.tableOf(s.eContainer).contains(s)
+        t.tableName = s.eContainer.sqlName;
+        t.indexName = s.sqlName;
+        t.columnNames = s.fields[0].sqlName;
+        if (s.fields.size() > 1) {
+            var i = 1;
+            while (i < s.fields.size()) {
+                t.columnNames += "," + s.fields[i].sqlName;
+                i++;
+            }
+        }
+
+        dbCheckupModel.preConditions.indexExists.add(t);
+        log.info("IndexExists added: " + t.indexName + " (" + t.tableName + ": " + t.columnNames + ")");
+}
+
+// INDEX
+/////////////////////////////////////////
+// TODO UNIQUE CONSTRAINT
+/////////////////////////////////////////

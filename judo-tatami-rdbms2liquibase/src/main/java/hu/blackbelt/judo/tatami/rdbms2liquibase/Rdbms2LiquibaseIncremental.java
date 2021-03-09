@@ -23,23 +23,26 @@ import static java.util.Collections.singletonList;
 public class Rdbms2LiquibaseIncremental {
 
     public static void executeRdbms2LiquibaseIncrementalTransformation(RdbmsModel incrementalRdbmsModel,
+                                                                       LiquibaseModel dbCheckupLiquibaseModel,
                                                                        LiquibaseModel beforeIncrementalLiquibaseModel,
                                                                        LiquibaseModel afterIncrementalLiquibaseModel,
                                                                        LiquibaseModel incrementalLiquibaseModel,
                                                                        String dialect) throws Exception {
-        executeRdbms2LiquibaseIncrementalTransformation(incrementalRdbmsModel, beforeIncrementalLiquibaseModel, afterIncrementalLiquibaseModel, incrementalLiquibaseModel, new Slf4jLog(log), calculateRdbms2LiquibaseTransformationScriptURI(), dialect);
+        executeRdbms2LiquibaseIncrementalTransformation(incrementalRdbmsModel, dbCheckupLiquibaseModel, beforeIncrementalLiquibaseModel, afterIncrementalLiquibaseModel, incrementalLiquibaseModel, new Slf4jLog(log), calculateRdbms2LiquibaseTransformationScriptURI(), dialect);
     }
 
     public static void executeRdbms2LiquibaseIncrementalTransformation(RdbmsModel incrementalRdbmsModel,
+                                                                       LiquibaseModel dbCheckupLiquibaseModel,
                                                                        LiquibaseModel beforeIncrementalLiquibaseModel,
                                                                        LiquibaseModel afterIncrementalLiquibaseModel,
                                                                        LiquibaseModel incrementalLiquibaseModel,
                                                                        Log log,
                                                                        String dialect) throws Exception {
-        executeRdbms2LiquibaseIncrementalTransformation(incrementalRdbmsModel, beforeIncrementalLiquibaseModel, afterIncrementalLiquibaseModel, incrementalLiquibaseModel, log, calculateRdbms2LiquibaseTransformationScriptURI(), dialect);
+        executeRdbms2LiquibaseIncrementalTransformation(incrementalRdbmsModel, dbCheckupLiquibaseModel, beforeIncrementalLiquibaseModel, afterIncrementalLiquibaseModel, incrementalLiquibaseModel, log, calculateRdbms2LiquibaseTransformationScriptURI(), dialect);
     }
 
     public static void executeRdbms2LiquibaseIncrementalTransformation(RdbmsModel incrementalRdbmsModel,
+                                                                       LiquibaseModel dbCheckupLiquibaseModel,
                                                                        LiquibaseModel beforeIncrementalLiquibaseModel,
                                                                        LiquibaseModel afterIncrementalLiquibaseModel,
                                                                        LiquibaseModel incrementalLiquibaseModel,
@@ -55,6 +58,11 @@ public class Rdbms2LiquibaseIncremental {
                         wrappedEmfModelContextBuilder()
                                 .name("RDBMS")
                                 .resource(incrementalRdbmsModel.getResource())
+                                .build(),
+                        wrappedEmfModelContextBuilder()
+                                .name("DBCHECKUP")
+                                .aliases(singletonList("LIQUIBASE"))
+                                .resource(dbCheckupLiquibaseModel.getResource())
                                 .build(),
                         wrappedEmfModelContextBuilder()
                                 .name("BEFORE_INCREMENTAL")

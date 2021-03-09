@@ -134,18 +134,20 @@ public class Excel2RdbmsTest {
 
         saveRdbms(incrementalModel);
 
+        LiquibaseModel dbCheckupModel = buildLiquibaseModel().name("DbCheckup").build();
         LiquibaseModel beforeIncrementalModel = buildLiquibaseModel().name("BeforeIncremental").build();
         LiquibaseModel afterIncrementalModel = buildLiquibaseModel().name("AfterIncremental").build();
         LiquibaseModel incrementalLiquibaseModel = buildLiquibaseModel().name(INCREMENTAL_MODEL_NAME).build();
 
         executeRdbms2LiquibaseIncrementalTransformation(
                 incrementalModel,
+                dbCheckupModel,
                 beforeIncrementalModel,
                 afterIncrementalModel,
                 incrementalLiquibaseModel,
                 "hsqldb");
 
-
+        saveLiquibase(dbCheckupModel);
         saveLiquibase(beforeIncrementalModel);
         saveLiquibase(afterIncrementalModel);
         saveLiquibase(incrementalLiquibaseModel);

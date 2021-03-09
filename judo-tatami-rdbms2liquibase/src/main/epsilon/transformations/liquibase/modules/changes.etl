@@ -1,5 +1,3 @@
-import "../utils/changeset.eol";
-
 /////////////////////////////////////////
 // BACKUP TABLES
 
@@ -13,16 +11,22 @@ rule BackupTables
 
         t.tableName = useTable.sqlName;
         t.remarks = useTable.uuid;
+        // TODO fill data
 
         for(field in useTable.fields) {
             var column : new LIQUIBASE!Column;
-            var constraint : new LIQUIBASE!Constraints;
             column.name = field.sqlName;
             column.remarks = field.uuid;
             column.type = field.toFieldDefinition();
             if (field == field.eContainer.primaryKey or field.mandatory) {
-                constraint.primaryKey = field == field.eContainer.primaryKey;
-                constraint.nullable = not field.mandatory;
+                var constraint : new LIQUIBASE!Constraints;
+                if (field == field.eContainer.primaryKey) {
+                    constraint.primaryKey = true;
+                    constraint.primaryKeyName = "PK_" + field.sqlName;
+                }
+                if (field.mandatory) {
+                    constraint.nullable = false;
+                }
                 column.constraints = constraint;
             }
             t.column.add(column);
@@ -71,13 +75,18 @@ rule CreateTableOperationToCreateTable
 
         for(field in s.table.fields) {
             var column : new LIQUIBASE!Column;
-            var constraint : new LIQUIBASE!Constraints;
             column.name = field.sqlName;
             column.remarks = field.uuid;
             column.type = field.toFieldDefinition();
             if (field == field.eContainer.primaryKey or field.mandatory) {
-                constraint.primaryKey = field == field.eContainer.primaryKey;
-                constraint.nullable = not field.mandatory;
+                var constraint : new LIQUIBASE!Constraints;
+                if (field == field.eContainer.primaryKey) {
+                    constraint.primaryKey = true;
+                    constraint.primaryKeyName = "PK_" + field.sqlName;
+                }
+                if (field.mandatory) {
+                    constraint.nullable = false;
+                }
                 column.constraints = constraint;
             }
             t.column.add(column);
@@ -146,8 +155,16 @@ rule CreateFieldOperationToAddColumnDefOnExistingTable
         t.name = s.field.sqlName;
         t.type = s.field.toFieldDefinition();
         t.remarks = s.field.uuid;
-        if (s.field == s.field.eContainer.primaryKey) {
-            t.constraints = new LIQUIBASE!Constraints(primaryKey = true, nullable = not s.field.mandatory);
+        if (s.field == s.field.eContainer.primaryKey or s.field.mandatory) {
+            var constraint : new LIQUIBASE!Constraints;
+            if (s.field == s.field.eContainer.primaryKey) {
+                constraint.primaryKey = true;
+                constraint.primaryKeyName = "PK_" + s.field.sqlName;
+            }
+            if (s.field.mandatory) {
+                constraint.nullable = false;
+            }
+            t.constraints = constraint;
         }
 
         targetModel.createChangeSetIfNotExists("create-fields-for-" + s.eContainer.table.sqlName, "create-fields", dialect, context);

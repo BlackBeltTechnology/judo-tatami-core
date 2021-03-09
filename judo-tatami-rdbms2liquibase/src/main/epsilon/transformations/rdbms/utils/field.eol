@@ -13,6 +13,7 @@ operation RDBMS!RdbmsField isSqlTypeChanged(field : RDBMS!RdbmsField) : Boolean 
 operation RDBMS!RdbmsField isSizeChanged(field : RDBMS!RdbmsField) : Boolean {
 	return self.size <> field.size;
 }
+
 operation RDBMS!RdbmsField isPrecisionChanged(field : RDBMS!RdbmsField) : Boolean {
 	return self.precision <> field.precision;
 }

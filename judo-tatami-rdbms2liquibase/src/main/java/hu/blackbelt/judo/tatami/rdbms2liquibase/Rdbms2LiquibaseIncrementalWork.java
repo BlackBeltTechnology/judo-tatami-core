@@ -39,6 +39,7 @@ public class Rdbms2LiquibaseIncrementalWork extends AbstractTransformationWork {
 
         executeRdbms2LiquibaseIncrementalTransformation(
                 incrementalRdbmsModel,
+                getLiquibaseModel("liquibase-dbCheckup:" + dialect, "DbCheckup"),
                 getLiquibaseModel("liquibase-beforeIncremental:" + dialect, "BeforeIncremental"),
                 getLiquibaseModel("liquibase-afterIncremental:" + dialect, "AfterIncremental"),
                 getLiquibaseModel("liquibase-incremental:" + dialect, "Incremental"),
