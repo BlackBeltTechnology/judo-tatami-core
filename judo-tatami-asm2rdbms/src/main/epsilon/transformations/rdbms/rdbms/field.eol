@@ -4,33 +4,74 @@ operation RDBMS!RdbmsField fillType(type : String) {
         throw "Cannot resolve typemapping: " + type;
     }
 
-	self.rdbmsTypeName = typeMapping.rdbmsType;
-    self.size = typeMapping.rdbmsSize;
-    self.precision = typeMapping.rdbmsPrecision;
-    self.scale = typeMapping.rdbmsScale;
-	self.storageByte = -1;
+    self.rdbmsTypeName = typeMapping.rdbmsType;
+    
+    var rdbmsSize = typeMapping.rdbmsSize;
+    if (rdbmsSize.isDefined() and rdbmsSize.startsWith("#")) {
+        if (type == "java.lang.String") {
+            self.size = 255;
+        }
+    } else if (rdbmsSize.isDefined()) {
+        self.size = rdbmsSize.asFloat().asInteger();
+    }
+    
+    var rdbmsPrecision = typeMapping.rdbmsPrecision;
+    if (rdbmsPrecision.isDefined()) {
+        self.precision = rdbmsPrecision.asFloat().asInteger();
+    }
+    
+    var rdbmsScale = typeMapping.rdbmsScale;
+    if (rdbmsScale.isDefined()) {
+        self.scale = rdbmsScale.asFloat().asInteger();
+    }
+    
+    self.storageByte = -1;
+}
+
+operation RDBMS!RdbmsField fillType(type : String, attribute : ASM!EAttribute) {
+    var typeMapping : RDBMS!TypeMapping = RDBMS!TypeMapping.all.selectOne(m | m.asmType == type);
+    if (typeMapping.isUndefined()) {
+        throw "Cannot resolve typemapping: " + type;
+    }
+    self.rdbmsTypeName = typeMapping.rdbmsType;
+    
+    var rdbmsSize = typeMapping.rdbmsSize;
+    if (rdbmsSize.isDefined() and rdbmsSize.startsWith("#")) {
+        var maxLength = asmUtils.getExtensionAnnotationCustomValue(attribute, "constraints", "maxLength", false);
+        if (maxLength.isPresent()) {
+            self.size = maxLength.get().asInteger();
+        }
+    } else if (rdbmsSize.isDefined()) {
+        self.size = rdbmsSize.asFloat().asInteger();
+    }
+    
+    var rdbmsPrecision = typeMapping.rdbmsPrecision;
+    if (rdbmsPrecision.isDefined() and rdbmsPrecision.startsWith("#")) {
+        var precision = asmUtils.getExtensionAnnotationCustomValue(attribute, "constraints", "precision", false);
+        if (precision.isPresent()) {
+            self.precision = precision.get().asInteger();
+        }
+    } else if (rdbmsPrecision.isDefined()) {
+        self.precision = rdbmsPrecision.asFloat().asInteger();
+    }
+    
+    var rdbmsScale = typeMapping.rdbmsScale;
+    if (rdbmsScale.isDefined() and rdbmsScale.startsWith("#")) {
+        var scale = asmUtils.getExtensionAnnotationCustomValue(attribute, "constraints", "scale", false);
+        if (scale.isPresent()) {
+            self.scale = scale.get().asInteger();
+        }
+    } else if (rdbmsScale.isDefined()) {
+        self.scale = rdbmsScale.asFloat().asInteger();
+    }
+
+    self.storageByte = -1;
 }
 
 operation RDBMS!RdbmsField fromType(type : RDBMS!RdbmsField) {
-	self.rdbmsTypeName = type.rdbmsTypeName;
-	self.size = type.size;
-	self.precision = type.precision;
-	self.scale = type.scale;
-	self.storageByte = type.storageByte;
-}
-
-operation RDBMS!RdbmsField fillConstraintsFromAttribute(attribute : ASM!EAttribute) {
-    var maxLength = asmUtils.getExtensionAnnotationCustomValue(attribute, "constraints", "maxLength", false);
-//    var precision = asmUtils.getExtensionAnnotationCustomValue(attribute, "constraints", "precision", false);
-//    var scale = asmUtils.getExtensionAnnotationCustomValue(attribute, "constraints", "scale", false);
-
-    if (maxLength.isPresent()) {
-        self.size = maxLength.get().asInteger();
-    }
-//    if (precision.isPresent()) {
-//        self.precision = precision.get().asInteger();
-//    }
-//    if (scale.isPresent()) {
-//        self.scale = scale.get().asInteger();
-//    }
+    self.rdbmsTypeName = type.rdbmsTypeName;
+    self.size = type.size;
+    self.precision = type.precision;
+    self.scale = type.scale;
+    self.storageByte = type.storageByte;
 }
