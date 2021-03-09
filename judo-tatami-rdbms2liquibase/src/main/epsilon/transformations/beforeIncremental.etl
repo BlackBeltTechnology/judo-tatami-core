@@ -3,22 +3,6 @@ import "liquibase/utils/changeset.eol";
 /////////////////////////////////////////
 // INDEX
 
-rule DropAllIndexesChangeSet
-    transform s : RDBMS!RdbmsIndex
-    to t : BEFORE_INCREMENTAL!ChangeSet {
-        guard: previousModel.contains(s.eContainer)
-        t.id = "drop-indexes-from-" + s.eContainer.sqlName;
-        t.author = "tatami-rdbms2liquibase";
-        t.dbms = dialect;
-        t.context = RDBMS!RdbmsModel.all.first.version;
-        t.logicalFilePath = "drop-indexes";
-
-        if (not beforeIncrementalModel.changeSetExists(t.id)) {
-            beforeIncrementalModel.changeSet.add(t);
-            log.info("ChangeSet " + t.id + " created");
-        }
-}
-
 rule DropAllIndexes
     transform s : RDBMS!RdbmsIndex
     to t : BEFORE_INCREMENTAL!DropIndex {
@@ -26,29 +10,14 @@ rule DropAllIndexes
         t.tableName = s.eContainer.sqlName;
         t.indexName = s.sqlName;
 
-        beforeIncrementalModel.changeSetOf("drop-indexes-from-" + s.eContainer.sqlName).dropIndex.add(t);
+        beforeIncrementalModel.createChangeSetIfNotExists("drop-indexes-from-" + s.eContainer.sqlName, "drop-indexes", dialect, context);
+        beforeIncrementalModel.getChangeSet("drop-indexes-from-" + s.eContainer.sqlName).dropIndex.add(t);
         log.info("DropIndex added: " + t.indexName + "(" + t.tableName + ")");
 }
 
 // INDEX
 /////////////////////////////////////////
 // UNIQUE CONSTRAINT
-
-rule DropAllUniqueConstraintsChangeSet
-    transform s : RDBMS!RdbmsUniqueConstraint
-    to t : BEFORE_INCREMENTAL!ChangeSet {
-        guard: previousModel.contains(s.eContainer)
-        t.id = "drop-unique-constraint-from-" + s.eContainer.sqlName;
-        t.author = "tatami-rdbms2liquibase";
-        t.dbms = dialect;
-        t.context = RDBMS!RdbmsModel.all.first.version;
-        t.logicalFilePath = "drop-unique-constraint";
-
-        if (not beforeIncrementalModel.changeSetExists(t.id)) {
-            beforeIncrementalModel.changeSet.add(t);
-            log.info("ChangeSet " + t.id + " created");
-        }
-}
 
 rule DropAllUniqueConstraints
     transform s : RDBMS!RdbmsUniqueConstraint
@@ -64,48 +33,14 @@ rule DropAllUniqueConstraints
             }
         }
 
-        beforeIncrementalModel.changeSetOf("drop-unique-constraint-from-" + s.eContainer.sqlName).dropUniqueConstraint.add(t);
+        beforeIncrementalModel.createChangeSetIfNotExists("drop-unique-constraint-from-" + s.eContainer.sqlName, "drop-unique-constraint", dialect, context);
+        beforeIncrementalModel.getChangeSet("drop-unique-constraint-from-" + s.eContainer.sqlName).dropUniqueConstraint.add(t);
         log.info("DropUniqueConstraint added: " + t.uniqueColumns + "(" + t.tableName + ")");
 }
 
 // UNIQUE CONSTRAINT
 /////////////////////////////////////////
 // NOT NULL CONSTRAINT
-
-@abstract
-rule DropAllNotNullConstraintsChangeSet
-    transform s : RDBMS!RdbmsField
-    to t : BEFORE_INCREMENTAL!ChangeSet {
-        guard: previousModel.contains(s.eContainer) and s.mandatory
-        t.id = "drop-not-null-constraints-from-" + s.eContainer.sqlName;
-        t.author = "tatami-rdbms2liquibase";
-        t.dbms = dialect;
-        t.context = RDBMS!RdbmsModel.all.first.version;
-        t.logicalFilePath = "drop-not-null-constraints";
-
-        if (not beforeIncrementalModel.changeSetExists(t.id)) {
-            beforeIncrementalModel.changeSet.add(t);
-            log.info("ChangeSet " + t.id + " created");
-        }
-}
-
-rule DropAllNotNullConstraintsFromValueFieldChangeSet
-    transform s : RDBMS!RdbmsValueField
-    to t : BEFORE_INCREMENTAL!ChangeSet
-    extends DropAllNotNullConstraintsChangeSet {
-}
-
-rule DropAllNotNullConstraintsFromIdentifierFieldChangeSet
-    transform s : RDBMS!RdbmsIdentifierField
-    to t : BEFORE_INCREMENTAL!ChangeSet
-    extends DropAllNotNullConstraintsChangeSet {
-}
-
-rule DropAllNotNullConstraintsFromForeignKeyChangeSet
-    transform s : RDBMS!RdbmsForeignKey
-    to t : BEFORE_INCREMENTAL!ChangeSet
-    extends DropAllNotNullConstraintsChangeSet {
-}
 
 @abstract
 rule DropAllNotNullConstraints
@@ -115,7 +50,8 @@ rule DropAllNotNullConstraints
         t.tableName = s.eContainer.sqlName;
         t.columnName = s.sqlName;
 
-        beforeIncrementalModel.changeSetOf("drop-not-null-constraints-from-" + s.eContainer.sqlName).dropNotNullConstraint.add(t);
+        beforeIncrementalModel.createChangeSetIfNotExists("drop-not-null-constraints-from-" + s.eContainer.sqlName, "drop-not-null-constraints", dialect, context);
+        beforeIncrementalModel.getChangeSet("drop-not-null-constraints-from-" + s.eContainer.sqlName).dropNotNullConstraint.add(t);
         log.info("DropNotNullConstraint added to " + t.columnName + "(" + t.tableName + ")");
 }
 
@@ -142,22 +78,6 @@ rule DropAllNotNullConstraintsFromForeignKey
 /////////////////////////////////////////
 // FOREIGN KEY
 
-rule DropAllForeignKeysChangeSet
-    transform s : RDBMS!RdbmsForeignKey
-    to t : BEFORE_INCREMENTAL!ChangeSet {
-        guard: previousModel.contains(s.eContainer)
-        t.id = "drop-foreign-keys-from-" + s.eContainer.sqlName;
-        t.author = "tatami-rdbms2liquibase";
-        t.dbms = dialect;
-        t.context = RDBMS!RdbmsModel.all.first.version;
-        t.logicalFilePath = "drop-foreign-keys";
-
-        if (not beforeIncrementalModel.changeSetExists(t.id)) {
-            beforeIncrementalModel.changeSet.add(t);
-            log.info("ChangeSet " + t.id + " created");
-        }
-}
-
 rule DropAllForeignKeys
     transform s : RDBMS!RdbmsForeignKey
     to t : BEFORE_INCREMENTAL!DropForeignKeyConstraint {
@@ -165,7 +85,8 @@ rule DropAllForeignKeys
         t.baseTableName = s.eContainer.sqlName;
         t.constraintName = s.foreignKeySqlName;
 
-        beforeIncrementalModel.changeSetOf("drop-foreign-keys-from-" + s.eContainer.sqlName).dropForeignKeyConstraint.add(t);
+        beforeIncrementalModel.createChangeSetIfNotExists("drop-foreign-keys-from-" + s.eContainer.sqlName, "drop-foreign-keys", dialect, context);
+        beforeIncrementalModel.getChangeSet("drop-foreign-keys-from-" + s.eContainer.sqlName).dropForeignKeyConstraint.add(t);
         log.info("DropForeignKeyConstraint added: " + t.constraintName + "(" + t.baseTableName + ")");
 }
 

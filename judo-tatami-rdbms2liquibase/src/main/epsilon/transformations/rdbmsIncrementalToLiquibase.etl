@@ -17,6 +17,7 @@ pre {
         newModel = operationMeta.currentModel;
     }
 
+    var context = RDBMS!RdbmsModel.all.first.version;
     var targetModel : LIQUIBASE!databaseChangeLog = new LIQUIBASE!databaseChangeLog();
     var beforeIncrementalModel : BEFORE_INCREMENTAL!databaseChangeLog = new BEFORE_INCREMENTAL!databaseChangeLog();
     var afterIncrementalModel : AFTER_INCREMENTAL!databaseChangeLog = new AFTER_INCREMENTAL!databaseChangeLog();

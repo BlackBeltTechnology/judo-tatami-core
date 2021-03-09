@@ -1,8 +1,18 @@
-operation LIQUIBASE!databaseChangeLog changeSetOf(changeSetId : String) : LIQUIBASE!ChangeSet {
-    return self.changeSet.selectOne(cs | cs.id == changeSetId);
+operation LIQUIBASE!databaseChangeLog getChangeSet(id : String) : LIQUIBASE!ChangeSet {
+    return self.changeSet.selectOne(cs | cs.id == id);
 }
 
-operation LIQUIBASE!databaseChangeLog changeSetExists(changeSetId : String) : Boolean {
-    return self.changeSetOf(changeSetId).isDefined();
+operation LIQUIBASE!databaseChangeLog changeSetExists(id : String) : Boolean {
+    return self.getChangeSet(id).isDefined();
 }
 
+operation LIQUIBASE!databaseChangeLog createChangeSetIfNotExists(id : String, logicalFilePath : String, dbms : String, context : String) : LIQUIBASE!ChangeSet {
+    if (self.changeSetExists(id)) return self.getChangeSet(id);
+    var changeSet = new LIQUIBASE!ChangeSet(id = id,
+                                            author = "tatami-rdbms2liquibase",
+                                            logicalFilePath = logicalFilePath,
+                                            dbms = dbms,
+                                            context = context);
+    self.changeSet.add(changeSet);
+    return changeSet;
+}
