@@ -37,8 +37,8 @@ operation RDBMS!RdbmsField fillType(type : String, attribute : ASM!EAttribute) {
     
     var rdbmsSize = typeMapping.rdbmsSize;
     if (rdbmsSize.isDefined() and rdbmsSize.startsWith("#")) {
-        var annotation : String = rdbmsSize.getAnnotation();
-        var annotationKey : String = rdbmsSize.getAnnotationKey();
+        var annotation : String = rdbmsSize.parseAnnotationName();
+        var annotationKey : String = rdbmsSize.parseAnnotationDetailsKey();
         var maxLength = asmUtils.getExtensionAnnotationCustomValue(attribute, annotation, annotationKey, false);
         if (maxLength.isPresent()) {
             self.size = maxLength.get().asInteger();
@@ -49,8 +49,8 @@ operation RDBMS!RdbmsField fillType(type : String, attribute : ASM!EAttribute) {
     
     var rdbmsPrecision = typeMapping.rdbmsPrecision;
     if (rdbmsPrecision.isDefined() and rdbmsPrecision.startsWith("#")) {
-        var annotation : String = rdbmsPrecision.getAnnotation();
-        var annotationKey : String = rdbmsPrecision.getAnnotationKey();
+        var annotation : String = rdbmsPrecision.parseAnnotationName();
+        var annotationKey : String = rdbmsPrecision.parseAnnotationDetailsKey();
         var precision = asmUtils.getExtensionAnnotationCustomValue(attribute, annotation, annotationKey, false);
         if (precision.isPresent()) {
             self.precision = precision.get().asInteger();
@@ -61,8 +61,8 @@ operation RDBMS!RdbmsField fillType(type : String, attribute : ASM!EAttribute) {
     
     var rdbmsScale = typeMapping.rdbmsScale;
     if (rdbmsScale.isDefined() and rdbmsScale.startsWith("#")) {
-        var annotation : String = rdbmsScale.getAnnotation();
-        var annotationKey : String = rdbmsScale.getAnnotationKey();
+        var annotation : String = rdbmsScale.parseAnnotationName();
+        var annotationKey : String = rdbmsScale.parseAnnotationDetailsKey();
         var scale = asmUtils.getExtensionAnnotationCustomValue(attribute, annotation, annotationKey, false);
         if (scale.isPresent()) {
             self.scale = scale.get().asInteger();
@@ -82,10 +82,10 @@ operation RDBMS!RdbmsField fromType(type : RDBMS!RdbmsField) {
     self.storageByte = type.storageByte;
 }
 
-operation String getAnnotation() : String {
+operation String parseAnnotationName() : String {
     return self.substring(1).split(":").get(0);
 }
 
-operation String getAnnotationKey() : String {
+operation String parseAnnotationDetailsKey() : String {
     return self.substring(1).split(":").get(1);
 }
