@@ -52,8 +52,6 @@ rule CheckForeignKeys
 
 // FIELDS
 /////////////////////////////////////////
-// TODO PRIMARY KEY CONSTRAINTS
-/////////////////////////////////////////
 // FOREIGN KEY CONSTRAINTS
 
 rule CheckForeignKeyConstraints
