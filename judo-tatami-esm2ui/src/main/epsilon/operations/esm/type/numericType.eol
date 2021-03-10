@@ -1,0 +1,43 @@
+operation ESM!esm::type::NumericType input(dataField : ESM!esm::ui::DataField, application : UI!ui::Application): UI!ui::Input {
+    return self.fillInput(new UI!ui::NumericInput(), dataField.row.asReal(), dataField.col.asReal(), dataField.iconName);
+}
+
+// TODO: sprinf numberic format
+operation ESM!esm::type::NumericType formatted(): UI!ui::Formatted {
+    return self.fillFormatted(new UI!ui::Formatted(), "%s", 1d, 2d);
+}
+
+@cached
+operation ESM!esm::type::NumericType fqName() {
+    if (self.eContainer.isKindOf(ESM!esm::namespace::NamespaceElement)) {
+        return esmUtils.getNamespaceElementFQName(self.eContainer) + "." + self.name;
+    } else {
+        return self.eContainer.name + "." + self.name;
+    }
+}
+
+operation ESM!esm::type::NumericType createNumericType(application : UI!ui::Application) : UI!ui::data::NumericType {
+    var type = new UI!ui::data::NumericType();
+    type.name = self.fqName();
+    type.precision = self.precision;
+    type.scale = self.scale;
+    type.operator = self.mapTypeOperationEnumeration(application);
+    application.dataTypes.add(type);
+    return type;
+}
+
+operation ESM!esm::type::NumericType mapDataType(application : UI!ui::Application) : UI!ui::data::NumericType {
+    var type = application.dataTypes.selectOne(t | t.name = self.fqName());
+    if (type.isUndefined()) {
+        type = self.createNumericType(application);
+    }
+    return type;
+}
+
+operation ESM!esm::type::NumericType mapTypeOperationEnumeration(application : UI!ui::Application) : UI!ui::data::EnumerationType {
+    var type = application.dataTypes.selectOne(t | t.name = "_NumericOperation");
+    if (type.isUndefined()) {
+        type = createNumericOperationEnumeration(application);
+    }
+    return type;
+}

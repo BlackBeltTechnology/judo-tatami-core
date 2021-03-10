@@ -1,1 +1,8 @@
 import "type.eol";
+import "booleanType.eol";
+import "dateType.eol";
+import "enumerationType.eol";
+import "numericType.eol";
+import "passwordType.eol";
+import "stringType.eol";
+import "timestampType.eol";

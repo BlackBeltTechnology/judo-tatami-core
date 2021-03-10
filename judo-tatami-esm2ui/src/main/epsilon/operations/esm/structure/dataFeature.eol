@@ -17,6 +17,17 @@ operation ESM!esm::structure::DataFeature createAttributeTypeForClass(applicatio
     }
     attribute.isReadOnly = self.isReadOnly();
     
+    attribute.isFilterable = self.dataType.isKindOf(ESM!StringType) or
+                    self.dataType.isKindOf(ESM!NumericType) or
+                    self.dataType.isKindOf(ESM!DateType) or
+                    self.dataType.isKindOf(ESM!TimestampType) or
+                    self.dataType.isKindOf(ESM!BooleanType) or
+                    self.dataType.isKindOf(ESM!EnumerationType);
+                    
+    if (attribute.isFilterable) {
+    
+    }
+    
     attribute.dataType = self.dataType.mapDataType(application);
 
     clazz.attributes.add(attribute);
