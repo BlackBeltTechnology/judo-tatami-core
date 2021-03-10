@@ -22,6 +22,8 @@ import static java.util.Collections.singletonList;
 @Slf4j
 public class Rdbms2LiquibaseIncremental {
 
+    private static final String BACKUP_PREFIX = "BACKUP";
+
     public static void executeRdbms2LiquibaseIncrementalTransformation(RdbmsModel incrementalRdbmsModel,
                                                                        LiquibaseModel dbCheckupLiquibaseModel,
                                                                        LiquibaseModel beforeIncrementalLiquibaseModel,
@@ -87,7 +89,10 @@ public class Rdbms2LiquibaseIncremental {
         executionContext.executeProgram(
                 etlExecutionContextBuilder()
                         .source(UriUtil.resolve("rdbmsIncrementalToLiquibase.etl", scriptUri))
-                        .parameters(ImmutableList.of(programParameterBuilder().name("dialect").value(dialect).build()))
+                        .parameters(ImmutableList.of(
+                                programParameterBuilder().name("dialect").value(dialect).build(),
+                                programParameterBuilder().name("backupPrefix").value(BACKUP_PREFIX).build(),
+                                programParameterBuilder().name("backupPrefixLower").value(BACKUP_PREFIX.toLowerCase()).build()))
                         .build());
 
         executionContext.commit();

@@ -9,15 +9,14 @@ rule BackupTables
         if (s.isTypeOf(RDBMS!RdbmsModifyTableOperation)) useTable = s.previousTable;
         else useTable = s.table;
 
-        t.tableName = "BACKUP_" + useTable.sqlName;
-        t.remarks = "backup_" + useTable.uuid;
+        t.tableName = backupPrefix + "_" + useTable.sqlName;
+        t.remarks = backupPrefixLower + "_" + useTable.uuid;
 
         for(field in useTable.fields) {
             var column : new LIQUIBASE!Column;
             column.name = field.sqlName;
-            column.remarks = "backup_" + field.uuid;
+            column.remarks = backupPrefixLower + "_" + field.uuid;
             column.type = field.toFieldDefinition();
-            column.valueComputed = "select " + field.sqlName + " from " + useTable.sqlName + ";";
             if (field == field.eContainer.primaryKey or field.mandatory) {
                 var constraint : new LIQUIBASE!Constraints;
                 if (field == field.eContainer.primaryKey) {
@@ -33,21 +32,26 @@ rule BackupTables
         }
 
         targetModel.createChangeSetIfNotExists("backup-table-" + useTable.sqlName, "backup-table", dialect, context);
-        targetModel.getChangeSet("backup-table-" + useTable.sqlName).createTable.add(t);
+
+        var changeSet = targetModel.getChangeSet("backup-table-" + useTable.sqlName);
+        changeSet.createTable.add(t);
+        changeSet.sqlFile.add(new DBCHECKUP!SqlFile(path = "sql/backup_" + useTable.sqlName.toLowerCase() + "_data.sql",
+                                                    relativeToChangeLogFile = true,
+                                                    dbms = dialect));
 }
 
 rule BackupDeletedTables
     transform s : RDBMS!RdbmsDeleteTableOperation
     to t : LIQUIBASE!CreateTable
     extends BackupTables {
-        log.info("(Backup - Delete) CreateTable: BACKUP_" + s.table.sqlName + " created");
+        log.info("(Backup - Delete) CreateTable: " + backupPrefix + "_" + s.table.sqlName + " created");
 }
 
 rule BackupModifiedTables
     transform s : RDBMS!RdbmsModifyTableOperation
     to t : LIQUIBASE!CreateTable
     extends BackupTables {
-        log.info("(Backup - Modify) CreateTable: BACKUP_" + s.previousTable.sqlName + " created");
+        log.info("(Backup - Modify) CreateTable: " + backupPrefix + "_" + s.previousTable.sqlName + " created");
 }
 
 // BACKUP TABLES
