@@ -8,14 +8,13 @@ rule EAttributeToRdbmsField
 		
 		if (s.eType.isKindOf(ASM!EEnum)) {
 			// TODO: Make value constraints
-			t.fillType("java.lang.Integer");
+			t.fillType("java.lang.Integer", s);
 	    } else {
 	        if (s.eType.isUndefined()) {
 	        	log.warn("Could not determinate type (maybe enum?): " + s.eContainingClass.name + "#" + s.name);
-				t.fillType("java.lang.Integer");
+				t.fillType("java.lang.Integer", s);
 	        } else {
-				t.fillType(s.eType.instanceClassName);
-				t.fillConstraintsFromAttribute(s);
+				t.fillType(s.eType.instanceClassName, s);
 			}
 		}
 		t.sqlName = s.fieldSqlName();
