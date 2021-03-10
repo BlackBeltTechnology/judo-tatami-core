@@ -11,7 +11,6 @@ rule BackupTables
 
         t.tableName = "BACKUP_" + useTable.sqlName;
         t.remarks = "backup_" + useTable.uuid;
-        // TODO fill data
 
         for(field in useTable.fields) {
             var column : new LIQUIBASE!Column;

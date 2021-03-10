@@ -1,4 +1,4 @@
-import "liquibase/utils/changeset.eol";
+import "../utils/changeset.eol";
 
 /////////////////////////////////////////
 // INDEX
