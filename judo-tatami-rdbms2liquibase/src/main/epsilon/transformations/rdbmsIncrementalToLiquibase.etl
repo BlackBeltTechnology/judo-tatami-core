@@ -6,7 +6,7 @@ import "rdbms/utils/table.eol";
 // sorted in logical order
 import "liquibase/modules/dbCheckup.etl";
 import "liquibase/modules/beforeIncremental.etl";
-import "liquibase/modules/changes.etl";
+import "liquibase/modules/incremental.etl";
 import "liquibase/modules/afterIncremental.etl";
 
 pre {

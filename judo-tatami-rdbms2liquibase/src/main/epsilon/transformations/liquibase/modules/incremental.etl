@@ -40,12 +40,12 @@ rule CreateTables
         t.remarks = s.table.uuid;
 
         for(field in s.table.fields) {
-            var column : new LIQUIBASE!Column;
+            var column = new LIQUIBASE!Column;
             column.name = field.sqlName;
             column.remarks = field.uuid;
             column.type = field.toFieldDefinition();
             if (field == field.eContainer.primaryKey or field.mandatory) {
-                var constraint : new LIQUIBASE!Constraints;
+                var constraint = new LIQUIBASE!Constraints;
                 if (field == field.eContainer.primaryKey) {
                     constraint.primaryKey = true;
                     constraint.primaryKeyName = "PK_" + field.sqlName;
@@ -121,7 +121,7 @@ rule AddColumnDefs
         t.type = s.field.toFieldDefinition();
         t.remarks = s.field.uuid;
         if (s.field == s.field.eContainer.primaryKey or s.field.mandatory) {
-            var constraint : new LIQUIBASE!Constraints;
+            var constraint = new LIQUIBASE!Constraints;
             if (s.field == s.field.eContainer.primaryKey) {
                 constraint.primaryKey = true;
                 constraint.primaryKeyName = "PK_" + s.field.sqlName;

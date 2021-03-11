@@ -109,8 +109,6 @@ public class Rdbms2LiquibaseIncremental {
 
         executionContext.commit();
         executionContext.close();
-
-        executeRdbms2LiquibaseTransformation(incrementalRdbmsModel, incrementalLiquibaseModel, dialect);
     }
 
 }
