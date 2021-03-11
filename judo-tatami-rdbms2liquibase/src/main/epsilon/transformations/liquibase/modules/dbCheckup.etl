@@ -123,5 +123,26 @@ rule CheckIndexes
 
 // INDEX
 /////////////////////////////////////////
-// TODO UNIQUE CONSTRAINT
+// UNIQUE CONSTRAINT
+
+rule CheckUniqueConstraints
+    transform s : RDBMS!RdbmsUniqueConstraint
+    to t : DBCHECKUP!IndexExists {
+        guard: previousModel.contains(s.eContainer) and previousModel.tableOf(s.eContainer).contains(s)
+        t.tableName = s.eContainer.sqlName;
+        t.indexName = s.sqlName;
+        t.columnNames = s.fields[0].sqlName;
+        if (s.fields.size() > 1) {
+            var i = 1;
+            while (i < s.fields.size()) {
+                t.columnNames += "," + s.fields[i].sqlName;
+                i++;
+            }
+        }
+
+        dbCheckupModel.preConditions.indexExists.add(t);
+        log.info("IndexExists (UniqueConstraint) added: " + t.indexName + " (" + t.tableName + ": " + t.columnNames + ")");
+}
+
+// UNIQUE CONSTRAINT
 /////////////////////////////////////////
