@@ -494,7 +494,7 @@ operation ASM!ENamedElement builderName() : String {
 }
 
 operation ASM!EClass getDocumentation() : String {
-    var documentationAnnotation = asmUtils.getExtensionAnnotationValue(op, "documentation", false);
+    var documentationAnnotation = asmUtils.getExtensionAnnotationValue(self, "documentation", false);
     if (documentationAnnotation.isPresent()) {
         return documentationAnnotation.get().decorateWithAsterisks();
     }
@@ -502,7 +502,7 @@ operation ASM!EClass getDocumentation() : String {
 }
 
 operation ASM!EOperation getDocumentation() : String {
-    var documentationAnnotation = asmUtils.getExtensionAnnotationValue(op, "documentation", false);
+    var documentationAnnotation = asmUtils.getExtensionAnnotationValue(self, "documentation", false);
     if (documentationAnnotation.isPresent()) {
         return documentationAnnotation.get().decorateWithAsterisks();
     }
@@ -510,7 +510,7 @@ operation ASM!EOperation getDocumentation() : String {
 }
 
 operation ASM!EOperation getOutputDocumentation() : String {
-    var documentationAnnotation = asmUtils.getExtensionAnnotationValue(op, "outputDocumentation", false);
+    var documentationAnnotation = asmUtils.getExtensionAnnotationValue(self, "outputDocumentation", false);
     if (documentationAnnotation.isPresent()) {
         return documentationAnnotation.get().decorateWithAsterisks();
     }
@@ -518,7 +518,7 @@ operation ASM!EOperation getOutputDocumentation() : String {
 }
 
 operation ASM!EParameter getDocumentation() : String {
-    var documentationAnnotation = asmUtils.getExtensionAnnotationValue(op, "documentation", false);
+    var documentationAnnotation = asmUtils.getExtensionAnnotationValue(self, "documentation", false);
     if (documentationAnnotation.isPresent()) {
         return documentationAnnotation.get().decorateWithAsterisks();
     }
