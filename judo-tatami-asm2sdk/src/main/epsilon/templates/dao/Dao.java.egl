@@ -4,133 +4,134 @@
 %]
 
 [% 
-	var dtoTypeName = getSdkPrefix() + dto.getDtoTypeName();
-	var name = dto.getClassName() + "Dao"; 	
+    var dtoTypeName = getSdkPrefix() + dto.getDtoTypeName();
+    var name = dto.getClassName() + "Dao";
+    var dtoDoc = dto.getDocumentation();
 %]
 
-[% if (dto.getDocumentation() <> "") {%]
+[% if (dtoDoc <> "") {%]
 /**
-* [%= dto.getDocumentation() %]
+* [%= dtoDoc %]
 */
 [% } %]
 interface [%= name %] {
 
     /**
-     * Create a new instance of a(n) [%= dtoTypeName %].
+     * Creates a new instance of a(n) {@link [%= dtoTypeName %] }.
      *
-     * @param data   [%= dtoTypeName %] instance to create
+     * @param data   {@link [%= dtoTypeName %] } instance to create
      * @return [%= dtoTypeName %]
      */
-	[%= dtoTypeName %] create([%= dtoTypeName %] data);
+    [%= dtoTypeName %] create([%= dtoTypeName %] data);
 
     /**
-     * Delete a(n) [%= dtoTypeName %] instance.
+     * Deletes a(n) {@link [%= dtoTypeName %] } instance.
      *
-     * @param subject [%= dtoTypeName %] to delete
+     * @param subject the {@link [%= dtoTypeName %] } instance to delete
      */
-	void delete([%= dtoTypeName %] subject);
+    void delete([%= dtoTypeName %] subject);
 
     /**
-     * Get all instances of a(n) [%= dtoTypeName %].
+     * Returns a collection of all {@link [%= dtoTypeName %] } instances.
      *
-     * @return list of [%= dtoTypeName %] instances
+     * @return a collection of all {@link [%= dtoTypeName %] } instances
      */
-	java.util.Collection<[%= dtoTypeName %]> getAll();
+    java.util.Collection<[%= dtoTypeName %]> getAll();
 
      /**
-      * Get instance of a(n) [%= dtoTypeName %] by the given identifier.
+      * Returns an instance of a(n) {@link [%= dtoTypeName %] } by the given identifier.
       *
-      * @param id      uuid of a(n) [%= dtoTypeName %] instance
+      * @param id the uuid of a(n) {@link [%= dtoTypeName %] } instance
       * @return [%= dtoTypeName %]
       */
-	[%= dtoTypeName %] getById(java.util.UUID id);
+    [%= dtoTypeName %] getById(java.util.UUID id);
 
     /**
-     * Update a(n) [%= dtoTypeName %] instance.
+     * Updates a(n) {@link [%= dtoTypeName %] } instance.
      *
-     * @param data   [%= dtoTypeName %] instance to update
+     * @param data the {@link [%= dtoTypeName %] } instance to update
      * @return [%= dtoTypeName %]
      */
-	[%= dtoTypeName %] update([%= dtoTypeName %] data);
+    [%= dtoTypeName %] update([%= dtoTypeName %] data);
 
 
-	[% for (rel in singleRelations) {%]
-		[% var relatedDto = rel.getEReferenceType();
-			var relatedType = getSdkPrefix() + relatedDto.getDtoTypeName();
-		 %]
-
-    /**
-     * Create a(n) [%= relatedType %] instance linked to a(n) [%= dtoTypeName %] instance by the reference [%= rel.name.firstToUpperCase() %].
-     *
-     * @param object [%= dtoTypeName %] that the new instance will be linked to
-     * @param relatedObject   [%= relatedType %] instance to create
-     * @return created [%= relatedType %] instance
-     */
-	[%= relatedType %] create[%= rel.name.firstToUpperCase() %]([%= dtoTypeName %] object, [%= relatedType %] relatedObject);
+    [% for (rel in singleRelations) {%]
+        [% var relatedDto = rel.getEReferenceType();
+            var relatedType = getSdkPrefix() + relatedDto.getDtoTypeName();
+         %]
 
     /**
-     * Get a(n) [%= relatedType %] instance linked to a(n) [%= dtoTypeName %] instance by the reference [%= rel.name.firstToUpperCase() %].
+     * Creates a(n) {@link  [%= relatedType %] } instance linked to a(n) {@link [%= dtoTypeName %] } instance by the reference [%= rel.name.firstToUpperCase() %].
      *
-     * @param object    [%= dtoTypeName %] instance that the [%= relatedType %] instance is linked to
-     * @return [%= relatedType %] instance
+     * @param object the {@link [%= dtoTypeName %] } that the new instance will be linked to
+     * @param relatedObject the {@link  [%= relatedType %] } instance to create
+     * @return created {@link  [%= relatedType %] } instance
      */
-	[%= relatedType %] get[%= rel.name.firstToUpperCase() %]([%= dtoTypeName %] object);	
+    [%= relatedType %] create[%= rel.name.firstToUpperCase() %]([%= dtoTypeName %] object, [%= relatedType %] relatedObject);
 
     /**
-     * Set [%= rel.name.firstToUpperCase() %] reference of a(n) [%= dtoTypeName %] instance.
+     * Returns a(n) {@link  [%= relatedType %] } instance linked to a(n) {@link [%= dtoTypeName %] } instance by the reference [%= rel.name.firstToUpperCase() %].
      *
-     * @param object          [%= dtoTypeName %] instance
-     * @param relatedObject   [%= relatedType %] instance to be linked to the [%= dtoTypeName %] instance
+     * @param object the {@link [%= dtoTypeName %] } instance that the {@link  [%= relatedType %] } instance is linked to
+     * @return {@link  [%= relatedType %] } instance
      */
-	void set[%= rel.name.firstToUpperCase() %]([%= dtoTypeName %] object, [%= relatedType %] relatedObject);
+    [%= relatedType %] get[%= rel.name.firstToUpperCase() %]([%= dtoTypeName %] object);    
 
     /**
-     * Unset [%= rel.name.firstToUpperCase() %] reference of a(n) [%= dtoTypeName %] inastance.
+     * Sets [%= rel.name.firstToUpperCase() %] reference of a(n) {@link [%= dtoTypeName %] } instance.
      *
-     * @param object  [%= dtoTypeName %] instance which has the reference [%= rel.name.firstToUpperCase() %] to be unset
+     * @param object  the {@link [%= dtoTypeName %] } instance
+     * @param relatedObject  {@link  [%= relatedType %] } instance to be linked to the {@link [%= dtoTypeName %] } instance
      */
-	void unset[%= rel.name.firstToUpperCase() %]([%= dtoTypeName %] object);
-
-	[%}%]
-	
-	[% for (rel in multiRelations) {%]
-		[% var relatedDto = rel.getEReferenceType();
-			var relatedType = "java.util.Collection<" + getSdkPrefix() + relatedDto.getDtoTypeName() + ">";
-			var singleRelatedType = getSdkPrefix() + relatedDto.getDtoTypeName();
-		%]
+    void set[%= rel.name.firstToUpperCase() %]([%= dtoTypeName %] object, [%= relatedType %] relatedObject);
 
     /**
-     * Create  [%= singleRelatedType %] instances linked to a(n) [%= dtoTypeName %] instance by the reference [%= rel.name.firstToUpperCase() %].
+     * Unsets [%= rel.name.firstToUpperCase() %] reference of a(n) {@link [%= dtoTypeName %] } inastance.
      *
-     * @param object [%= dtoTypeName %] that the new instances will be linked to
-     * @param relatedObjects   collection of [%= singleRelatedType %] instances to create
-     * @return collection of created [%= singleRelatedType %] instances
+     * @param object  the {@link [%= dtoTypeName %] } instance which has the reference [%= rel.name.firstToUpperCase() %] to be unset
      */
-	[%= relatedType %] create[%= rel.name.firstToUpperCase() %]([%= dtoTypeName %] object, [%= relatedType %] relatedObjects);
+    void unset[%= rel.name.firstToUpperCase() %]([%= dtoTypeName %] object);
+
+    [%}%]
+    
+    [% for (rel in multiRelations) {%]
+        [% var relatedDto = rel.getEReferenceType();
+            var relatedType = "java.util.Collection<" + getSdkPrefix() + relatedDto.getDtoTypeName() + ">";
+            var singleRelatedType = getSdkPrefix() + relatedDto.getDtoTypeName();
+        %]
 
     /**
-     * Get all [%= singleRelatedType %] instances linked to a(n) [%= dtoTypeName %] instance by the reference [%= rel.name.firstToUpperCase() %].
+     * Creates  {@link [%= singleRelatedType %] } instances linked to a(n) {@link [%= dtoTypeName %] } instance by the reference [%= rel.name.firstToUpperCase() %].
      *
-     * @param object        [%= dtoTypeName %] instance that the [%= relatedType %] instances are linked to
-     * @return collection of [%= relatedType %] instances
+     * @param object the {@link [%= dtoTypeName %] } that the new instances will be linked to
+     * @param relatedObjects   a collection of {@link [%= singleRelatedType %] } instances to create
+     * @return collection of created {@link [%= singleRelatedType %] } instances
      */
-	[%= relatedType %] get[%= rel.name.firstToUpperCase() %]([%= dtoTypeName %] object);	
+    [%= relatedType %] create[%= rel.name.firstToUpperCase() %]([%= dtoTypeName %] object, [%= relatedType %] relatedObjects);
 
-	/**
-     * Remove [%= singleRelatedType %] instances linked to a(n) [%= dtoTypeName %] instance by the reference [%= rel.name.firstToUpperCase() %].
+    /**
+     * Returns all {@link [%= singleRelatedType %] } instances linked to a(n) {@link [%= dtoTypeName %] } instance by the reference [%= rel.name.firstToUpperCase() %].
      *
-     * @param object [%= dtoTypeName %] that the [%= singleRelatedType %] instances are linked to
-     * @param relatedObjects   collection of [%= singleRelatedType %] instances to remove
+     * @param object  the {@link [%= dtoTypeName %] } instance that the  {@link [%= singleRelatedType %] } instances are linked to
+     * @return collection of {@link  [%= relatedType %] } instances
      */
-	void remove[%= rel.name.firstToUpperCase() %]([%= dtoTypeName %] object, [%= relatedType %] relatedObjects);
+    [%= relatedType %] get[%= rel.name.firstToUpperCase() %]([%= dtoTypeName %] object);    
 
-	/**
-     * Add [%= singleRelatedType %] instances to the [%= rel.name.firstToUpperCase() %] collection of a(n) [%= dtoTypeName %] instance.
+    /**
+     * Removes the given {@link [%= singleRelatedType %] } instances linked to a(n) {@link [%= dtoTypeName %] } instance by the reference [%= rel.name.firstToUpperCase() %].
      *
-     * @param object [%= dtoTypeName %] that has a collection of [%= singleRelatedType %] instances
-     * @param relatedObjects   collection of [%= singleRelatedType %] instances to be added
+     * @param object the {@link [%= dtoTypeName %] } that the {@link [%= singleRelatedType %] } instances are linked to
+     * @param relatedObjects   collection of {@link [%= singleRelatedType %] } instances to remove
      */
-	void add[%= rel.name.firstToUpperCase() %]([%= dtoTypeName %] object, [%= relatedType %] relatedObjects);
+    void remove[%= rel.name.firstToUpperCase() %]([%= dtoTypeName %] object, [%= relatedType %] relatedObjects);
 
-	[% } %]		
+    /**
+     * Adds {@link [%= singleRelatedType %] } instances to the [%= rel.name.firstToUpperCase() %] collection of a(n) {@link [%= dtoTypeName %] } instance.
+     *
+     * @param object the {@link [%= dtoTypeName %] } that has a collection of {@link [%= singleRelatedType %] } instances
+     * @param relatedObjects   collection of {@link [%= singleRelatedType %] } instances to be added
+     */
+    void add[%= rel.name.firstToUpperCase() %]([%= dtoTypeName %] object, [%= relatedType %] relatedObjects);
+
+    [% } %]        
 }

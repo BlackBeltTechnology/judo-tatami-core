@@ -1,53 +1,59 @@
 [%
   import "../../operations/sdk.eol";
   out.setContentType("Java");
+
+  var dtoDoc = dto.getDocumentation();
 %]
 
 package [%= getCustomOperationsPrefix() + dto.getClassifierPackageName() %];
 
-[% if (dto.getDocumentation() <> "") {%]
+[% if (dtoDoc <> "") {%]
 /**
-* [%= dto.getDocumentation() %]
+* [%= dtoDoc %]
 */
 [% } %]
 public interface [%= dto.getClassName() %] {
 
-	[% for (op in dto.getCustomizableOperations()) { %]
-			[% var map = getOperationGenerationData(dto, op); %]
+    [% for (op in dto.getCustomizableOperations()) { %]
+            [% var map = getOperationGenerationData(dto, op);
+              var opDoc = op.getDocumentation();
+            %]
 
-			[% if (op.getDocumentation() <> "") {%]
-            /**
-            * [%= op.getDocumentation() %]
-            *
-            [% for (param in op.eParameters) { %]
-            * @param [%= param.name%]
-                [% if (param.getDocumentation() <> "") { %]
-                    [%= param.getDocumentation() %]
-                [% } else {
-                   var paramName = getSdkPrefix() + param.eType.getDtoTypeName();
-                    %]
-                    [%= paramName%]
-                [% } %]
-            [% } %]
+    [% if (opDoc <> "") {%]
+    /**
+    * [%= opDoc %]
+    *
+    [% for (param in op.eParameters) {
+       var paramDoc = param.getDocumentation(); %]
+    * @param [%= param.name%]
+        [% if (paramDoc <> "") { %]
+            [%= paramDoc %]
+        [% } else {
+           var paramName = getSdkPrefix() + param.eType.getDtoTypeName();
+            %]
+            [%= paramName%]
+        [% } %]
+    [% } %]
 
-            [% if (op.eType.isDefined()) {%]
-            * @return
-                [% if (op.getOutputDocumentation() <> "") {%]
-                    [%= op.getOutputDocumentation() %]
-                [% } else {
-                   var returnName = getSdkPrefix() + op.eType.getDtoTypeName();
-                    %]
-                    [%= returnName%]
-                [% } %]
-            [% } %]
-            */
-            [% } %]
-			@FunctionalInterface
-			interface [%= op.name.firstToUpperCase() %] extends [%= map.get("extendedInterface") %] {
+    [% if (op.eType.isDefined()) {
+        var paramDoc = op.getOutputDocumentation(1); %]
+    * @return
+        [% if (paramDoc <> "") {%]
+            [%= paramDoc %]
+        [% } else {
+           var returnName = getSdkPrefix() + op.eType.getDtoTypeName();
+            %]
+            [%= returnName%]
+        [% } %]
+    [% } %]
+    */
+    [% } %]
+    @FunctionalInterface
+    interface [%= op.name.firstToUpperCase() %] extends [%= map.get("extendedInterface") %] {
 
-				@Override
-				[%= map.get("extendedMethod") %];
-			}
-	[% } %] 
+        @Override
+        [%= map.get("extendedMethod") %];
+    }
+    [% } %] 
 
 }
