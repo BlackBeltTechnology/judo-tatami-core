@@ -1,0 +1,2 @@
+
+CREATE TABLE [%=backupPrefix%]_[%=table.sqlName%] AS (SELECT * FROM [%=table.sqlName%]);

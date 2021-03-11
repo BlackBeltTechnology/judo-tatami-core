@@ -3,6 +3,7 @@ package hu.blackbelt.judo.tatami.rdbms2liquibase;
 import com.google.common.collect.ImmutableList;
 import hu.blackbelt.epsilon.runtime.execution.ExecutionContext;
 import hu.blackbelt.epsilon.runtime.execution.api.Log;
+import hu.blackbelt.epsilon.runtime.execution.contexts.ProgramParameter;
 import hu.blackbelt.epsilon.runtime.execution.impl.Slf4jLog;
 import hu.blackbelt.judo.meta.liquibase.runtime.LiquibaseModel;
 import hu.blackbelt.judo.meta.rdbms.runtime.RdbmsModel;
@@ -12,6 +13,7 @@ import org.eclipse.epsilon.common.util.UriUtil;
 import java.net.URI;
 
 import static hu.blackbelt.epsilon.runtime.execution.ExecutionContext.executionContextBuilder;
+import static hu.blackbelt.epsilon.runtime.execution.contexts.EglExecutionContext.eglExecutionContextBuilder;
 import static hu.blackbelt.epsilon.runtime.execution.contexts.EtlExecutionContext.etlExecutionContextBuilder;
 import static hu.blackbelt.epsilon.runtime.execution.contexts.ProgramParameter.programParameterBuilder;
 import static hu.blackbelt.epsilon.runtime.execution.model.emf.WrappedEmfModelContext.wrappedEmfModelContextBuilder;
@@ -85,14 +87,24 @@ public class Rdbms2LiquibaseIncremental {
         // run the model / metadata loading
         executionContext.load();
 
+        final ImmutableList<ProgramParameter> parameters = ImmutableList.of(
+                programParameterBuilder().name("dialect").value(dialect).build(),
+                programParameterBuilder().name("backupPrefix").value(BACKUP_PREFIX).build(),
+                programParameterBuilder().name("backupPrefixLower").value(BACKUP_PREFIX.toLowerCase()).build());
+
         // Transformation script
         executionContext.executeProgram(
                 etlExecutionContextBuilder()
                         .source(UriUtil.resolve("rdbmsIncrementalToLiquibase.etl", scriptUri))
-                        .parameters(ImmutableList.of(
-                                programParameterBuilder().name("dialect").value(dialect).build(),
-                                programParameterBuilder().name("backupPrefix").value(BACKUP_PREFIX).build(),
-                                programParameterBuilder().name("backupPrefixLower").value(BACKUP_PREFIX.toLowerCase()).build()))
+                        .parameters(parameters)
+                        .build());
+
+        // Generation script
+        executionContext.executeProgram(
+                eglExecutionContextBuilder()
+                        .source(UriUtil.resolve("../generations/sql/main.egl", scriptUri))
+                        .outputRoot("target/generated-sources/sql")
+                        .parameters(parameters)
                         .build());
 
         executionContext.commit();

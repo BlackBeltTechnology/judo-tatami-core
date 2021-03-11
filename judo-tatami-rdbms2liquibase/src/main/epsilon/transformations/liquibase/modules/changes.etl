@@ -4,54 +4,31 @@
 @abstract
 rule BackupTables
     transform s : RDBMS!RdbmsTableOperation
-    to t : LIQUIBASE!CreateTable {
+    to t : LIQUIBASE!SqlFile {
         var useTable;
         if (s.isTypeOf(RDBMS!RdbmsModifyTableOperation)) useTable = s.previousTable;
         else useTable = s.table;
 
-        t.tableName = backupPrefix + "_" + useTable.sqlName;
-        t.remarks = backupPrefixLower + "_" + useTable.uuid;
+        t.path = "sql/backup_" + useTable.sqlName.toLowerCase() + "_data.sql";
+        t.relativeToChangeLogFile = true;
+        t.dbms = dialect;
 
-        for(field in useTable.fields) {
-            var column : new LIQUIBASE!Column;
-            column.name = field.sqlName;
-            column.remarks = backupPrefixLower + "_" + field.uuid;
-            column.type = field.toFieldDefinition();
-            if (field == field.eContainer.primaryKey or field.mandatory) {
-                var constraint : new LIQUIBASE!Constraints;
-                if (field == field.eContainer.primaryKey) {
-                    constraint.primaryKey = true;
-                    constraint.primaryKeyName = "PK_" + field.sqlName;
-                }
-                if (field.mandatory) {
-                    constraint.nullable = false;
-                }
-                column.constraints = constraint;
-            }
-            t.column.add(column);
-        }
-
-        targetModel.createChangeSetIfNotExists("backup-table-" + useTable.sqlName, "backup-table", dialect, context);
-
-        var changeSet = targetModel.getChangeSet("backup-table-" + useTable.sqlName);
-        changeSet.createTable.add(t);
-        changeSet.sqlFile.add(new DBCHECKUP!SqlFile(path = "sql/backup_" + useTable.sqlName.toLowerCase() + "_data.sql",
-                                                    relativeToChangeLogFile = true,
-                                                    dbms = dialect));
+        targetModel.createChangeSetIfNotExists("backup-tables", "backup-tables", dialect, context);
+        targetModel.getChangeSet("backup-tables").sqlFile.add(t);
 }
 
 rule BackupDeletedTables
     transform s : RDBMS!RdbmsDeleteTableOperation
-    to t : LIQUIBASE!CreateTable
+    to t : LIQUIBASE!SqlFile
     extends BackupTables {
-        log.info("(Backup - Delete) CreateTable: " + backupPrefix + "_" + s.table.sqlName + " created");
+        log.info("(Backup - Delete) SqlFile: " + backupPrefix + "_" + s.table.sqlName + " created");
 }
 
 rule BackupModifiedTables
     transform s : RDBMS!RdbmsModifyTableOperation
-    to t : LIQUIBASE!CreateTable
+    to t : LIQUIBASE!SqlFile
     extends BackupTables {
-        log.info("(Backup - Modify) CreateTable: " + backupPrefix + "_" + s.previousTable.sqlName + " created");
+        log.info("(Backup - Modify) SqlFile: " + backupPrefix + "_" + s.previousTable.sqlName + " created");
 }
 
 // BACKUP TABLES

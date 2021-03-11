@@ -1,0 +1,12 @@
+[%
+	for (op in RDBMS!RdbmsDeleteTableOperation) {
+        var tempTemplateFactory = TemplateFactory.load("BackupTableData.egl");
+        tempTemplateFactory.populate("table", op.table);
+        tempTemplateFactory.generate("backup_" + op.table.sqlName.toLowerCase() + "_data.sql");
+	}
+	for (op in RDBMS!RdbmsModifyTableOperation) {
+        var tempTemplateFactory = TemplateFactory.load("BackupTableData.egl");
+        tempTemplateFactory.populate("table", op.previousTable);
+        tempTemplateFactory.generate("backup_" + op.previousTable.sqlName.toLowerCase() + "_data.sql");
+	}
+%]
