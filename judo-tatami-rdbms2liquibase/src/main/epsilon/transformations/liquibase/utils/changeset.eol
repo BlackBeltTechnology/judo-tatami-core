@@ -14,5 +14,6 @@ operation LIQUIBASE!databaseChangeLog createChangeSetIfNotExists(id : String, lo
                                             dbms = dbms,
                                             context = context);
     self.changeSet.add(changeSet);
+    log.info("ChangeSet added: " + changeSet.id);
     return changeSet;
 }

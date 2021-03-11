@@ -1,23 +1,23 @@
 /////////////////////////////////////////
 // INDEX
 
-rule DropAllIndexes
+rule DropIndexes
     transform s : RDBMS!RdbmsIndex
     to t : BEFORE_INCREMENTAL!DropIndex {
         guard: previousModel.contains(s.eContainer)
         t.tableName = s.eContainer.sqlName;
         t.indexName = s.sqlName;
 
-        beforeIncrementalModel.createChangeSetIfNotExists("drop-indexes-from-" + s.eContainer.sqlName, "drop-indexes", dialect, context);
-        beforeIncrementalModel.getChangeSet("drop-indexes-from-" + s.eContainer.sqlName).dropIndex.add(t);
-        log.info("DropIndex added: " + t.indexName + "(" + t.tableName + ")");
+        beforeIncrementalModel.createChangeSetIfNotExists("drop-indexes-from-" + s.eContainer.sqlName, "drop-indexes", dialect, context)
+            .dropIndex.add(t);
+        log.info("DropIndex added: " + t.indexName + " (" + t.tableName + ")");
 }
 
 // INDEX
 /////////////////////////////////////////
 // UNIQUE CONSTRAINT
 
-rule DropAllUniqueConstraints
+rule DropUniqueConstraints
     transform s : RDBMS!RdbmsUniqueConstraint
     to t : BEFORE_INCREMENTAL!DropUniqueConstraint {
         guard: previousModel.contains(s.eContainer)
@@ -31,9 +31,9 @@ rule DropAllUniqueConstraints
             }
         }
 
-        beforeIncrementalModel.createChangeSetIfNotExists("drop-unique-constraint-from-" + s.eContainer.sqlName, "drop-unique-constraint", dialect, context);
-        beforeIncrementalModel.getChangeSet("drop-unique-constraint-from-" + s.eContainer.sqlName).dropUniqueConstraint.add(t);
-        log.info("DropUniqueConstraint added: " + t.uniqueColumns + "(" + t.tableName + ")");
+        beforeIncrementalModel.createChangeSetIfNotExists("drop-unique-constraints-from-" + s.eContainer.sqlName, "drop-unique-constraints", dialect, context)
+            .dropUniqueConstraint.add(t);
+        log.info("DropUniqueConstraint added: " + t.uniqueColumns + " (" + t.tableName + ")");
 }
 
 // UNIQUE CONSTRAINT
@@ -41,34 +41,34 @@ rule DropAllUniqueConstraints
 // NOT NULL CONSTRAINT
 
 @abstract
-rule DropAllNotNullConstraints
+rule DropNotNullConstraints
     transform s : RDBMS!RdbmsField
     to t : BEFORE_INCREMENTAL!DropNotNullConstraint {
         guard: previousModel.contains(s.eContainer) and s.mandatory
         t.tableName = s.eContainer.sqlName;
         t.columnName = s.sqlName;
 
-        beforeIncrementalModel.createChangeSetIfNotExists("drop-not-null-constraints-from-" + s.eContainer.sqlName, "drop-not-null-constraints", dialect, context);
-        beforeIncrementalModel.getChangeSet("drop-not-null-constraints-from-" + s.eContainer.sqlName).dropNotNullConstraint.add(t);
-        log.info("DropNotNullConstraint added to " + t.columnName + "(" + t.tableName + ")");
+        beforeIncrementalModel.createChangeSetIfNotExists("drop-not-null-constraints-from-" + s.eContainer.sqlName, "drop-not-null-constraints", dialect, context)
+            .dropNotNullConstraint.add(t);
+        log.info("DropNotNullConstraint added: " + t.columnName + " (" + t.tableName + ")");
 }
 
-rule DropAllNotNullConstraintsFromValueField
+rule DropNotNullConstraintsFromValueFields
     transform s : RDBMS!RdbmsValueField
     to t : BEFORE_INCREMENTAL!DropNotNullConstraint
-    extends DropAllNotNullConstraints {
+    extends DropNotNullConstraints {
 }
 
-rule DropAllNotNullConstraintsFromIdentifierField
+rule DropNotNullConstraintsFromIdentifierFields
     transform s : RDBMS!RdbmsIdentifierField
     to t : BEFORE_INCREMENTAL!DropNotNullConstraint
-    extends DropAllNotNullConstraints {
+    extends DropNotNullConstraints {
 }
 
-rule DropAllNotNullConstraintsFromForeignKey
+rule DropNotNullConstraintsFromForeignKeys
     transform s : RDBMS!RdbmsForeignKey
     to t : BEFORE_INCREMENTAL!DropNotNullConstraint
-    extends DropAllNotNullConstraints {
+    extends DropNotNullConstraints {
 }
 
 
@@ -76,16 +76,16 @@ rule DropAllNotNullConstraintsFromForeignKey
 /////////////////////////////////////////
 // FOREIGN KEY
 
-rule DropAllForeignKeys
+rule DropForeignKeyConstraints
     transform s : RDBMS!RdbmsForeignKey
     to t : BEFORE_INCREMENTAL!DropForeignKeyConstraint {
         guard: previousModel.contains(s.eContainer)
         t.baseTableName = s.eContainer.sqlName;
         t.constraintName = s.foreignKeySqlName;
 
-        beforeIncrementalModel.createChangeSetIfNotExists("drop-foreign-keys-from-" + s.eContainer.sqlName, "drop-foreign-keys", dialect, context);
-        beforeIncrementalModel.getChangeSet("drop-foreign-keys-from-" + s.eContainer.sqlName).dropForeignKeyConstraint.add(t);
-        log.info("DropForeignKeyConstraint added: " + t.constraintName + "(" + t.baseTableName + ")");
+        beforeIncrementalModel.createChangeSetIfNotExists("drop-foreign-keys-from-" + s.eContainer.sqlName, "drop-foreign-keys", dialect, context)
+            .dropForeignKeyConstraint.add(t);
+        log.info("DropForeignKeyConstraint added: " + t.constraintName + " (" + t.baseTableName + ")");
 }
 
 // FOREIGN KEY

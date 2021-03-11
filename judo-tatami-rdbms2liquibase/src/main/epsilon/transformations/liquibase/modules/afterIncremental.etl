@@ -1,7 +1,7 @@
 /////////////////////////////////////////
 // FOREIGN KEY
 
-rule AddAllForeignKeys
+rule AddForeignKeyConstraints
     transform s : RDBMS!RdbmsForeignKey
     to t : AFTER_INCREMENTAL!AddForeignKeyConstraint {
         guard: newModel.contains(s.eContainer)
@@ -11,9 +11,9 @@ rule AddAllForeignKeys
         t.referencedTableName = s.referenceKey.eContainer.sqlName;
         t.referencedColumnNames = s.referenceKey.sqlName;
 
-        afterIncrementalModel.createChangeSetIfNotExists("add-foreign-keys-to-" + s.eContainer.sqlName, "add-foreign-keys", dialect, context);
-        afterIncrementalModel.getChangeSet("add-foreign-keys-to-" + s.eContainer.sqlName).addForeignKeyConstraint.add(t);
-        log.info("AddForeignKeyConstraint added to " + t.baseColumnNames + "(" + t.baseTableName + "): " + t.constraintName + "(" + t.baseTableName + ")");
+        afterIncrementalModel.createChangeSetIfNotExists("add-foreign-keys-to-" + s.eContainer.sqlName, "add-foreign-keys", dialect, context)
+            .addForeignKeyConstraint.add(t);
+        log.info("AddForeignKeyConstraint added: " + t.constraintName);
 }
 
 // FOREIGN KEY
@@ -21,41 +21,41 @@ rule AddAllForeignKeys
 // NOT NULL CONSTRAINT
 
 @abstract
-rule AddAllNotNullConstraints
+rule AddNotNullConstraints
     transform s : RDBMS!RdbmsField
     to t : AFTER_INCREMENTAL!AddNotNullConstraint {
         guard: newModel.contains(s.eContainer) and s.mandatory and newModel.tableOf(s.eContainer).isDefined() and newModel.tableOf(s.eContainer).fieldOf(s).isDefined()
         t.tableName = s.eContainer.sqlName;
         t.columnName = s.sqlName;
 
-        afterIncrementalModel.createChangeSetIfNotExists("add-not-null-constraints-to-" + s.eContainer.sqlName, "add-not-null-constraints", dialect, context);
-        afterIncrementalModel.getChangeSet("add-not-null-constraints-to-" + s.eContainer.sqlName).addNotNullConstraint.add(t);
-        log.info("AddNotNullConstraint added to " + t.columnName + "(" + t.tableName + ")");
+        afterIncrementalModel.createChangeSetIfNotExists("add-not-null-constraints-to-" + s.eContainer.sqlName, "add-not-null-constraints", dialect, context)
+            .addNotNullConstraint.add(t);
+        log.info("AddNotNullConstraint added: " + t.columnName + " (" + t.tableName + ")");
 }
 
-rule AddAllNotNullConstraintsToValueField
+rule AddNotNullConstraintsToValueFields
     transform s : RDBMS!RdbmsValueField
     to t : AFTER_INCREMENTAL!AddNotNullConstraint
-    extends AddAllNotNullConstraints {
+    extends AddNotNullConstraints {
 }
 
-rule AddAllNotNullConstraintsToIdentifierField
+rule AddNotNullConstraintsToIdentifierFields
     transform s : RDBMS!RdbmsIdentifierField
     to t : AFTER_INCREMENTAL!AddNotNullConstraint
-    extends AddAllNotNullConstraints {
+    extends AddNotNullConstraints {
 }
 
-rule AddAllNotNullConstraintsToForeignKey
+rule AddNotNullConstraintsToForeignKeys
     transform s : RDBMS!RdbmsForeignKey
     to t : AFTER_INCREMENTAL!AddNotNullConstraint
-    extends AddAllNotNullConstraints {
+    extends AddNotNullConstraints {
 }
 
 // NOT NULL CONSTRAINT
 /////////////////////////////////////////
 // UNIQUE CONSTRAINT
 
-rule AddAllUniqueConstraints
+rule AddUniqueConstraints
     transform s : RDBMS!RdbmsUniqueConstraint
     to t : AFTER_INCREMENTAL!AddUniqueConstraint {
         guard: newModel.contains(s.eContainer)
@@ -69,16 +69,16 @@ rule AddAllUniqueConstraints
             }
         }
 
-        afterIncrementalModel.createChangeSetIfNotExists("add-unique-constraint-to-" + s.eContainer.sqlName, "add-unique-constraint", dialect, context);
-        afterIncrementalModel.getChangeSet("add-unique-constraint-to-" + s.eContainer.sqlName).addUniqueConstraint.add(t);
-        log.info("AddUniqueConstraint added: " + t.columnNames + "(" + t.tableName + ")");
+        afterIncrementalModel.createChangeSetIfNotExists("add-unique-constraints-to-" + s.eContainer.sqlName, "add-unique-constraints", dialect, context)
+            .addUniqueConstraint.add(t);
+        log.info("AddUniqueConstraint added: " + t.columnNames + " (" + t.tableName + ")");
 }
 
 // UNIQUE CONSTRAINT
 /////////////////////////////////////////
 // INDEX
 
-rule CreateAllIndexes
+rule AddIndexes
     transform s : RDBMS!RdbmsIndex
     to t : AFTER_INCREMENTAL!CreateIndex {
         guard: newModel.contains(s.eContainer)
@@ -86,9 +86,9 @@ rule CreateAllIndexes
         t.indexName = s.sqlName;
         t.column = s.fields.collect(f | new AFTER_INCREMENTAL!Column(name = f.sqlName));
 
-        afterIncrementalModel.createChangeSetIfNotExists("create-indexes-for-" + s.eContainer.sqlName, "create-indexes", dialect, context);
-        afterIncrementalModel.getChangeSet("create-indexes-for-" + s.eContainer.sqlName).createIndex.add(t);
-        log.info("CreateIndex added: " + t.indexName + "(" + t.tableName + ")");
+        afterIncrementalModel.createChangeSetIfNotExists("create-indexes-for-" + s.eContainer.sqlName, "create-indexes", dialect, context)
+            .createIndex.add(t);
+        log.info("CreateIndex added: " + t.indexName + " (" + t.tableName + ")");
 }
 
 // INDEX
@@ -105,22 +105,20 @@ rule DeleteBackupTables
 
         t.tableName = backupPrefix + "_" + useTable.sqlName;
 
-        afterIncrementalModel.createChangeSetIfNotExists("drop-backup-tables", "drop-backup-tables", dialect, context);
-        afterIncrementalModel.getChangeSet("drop-backup-tables").dropTable.add(t);
+        afterIncrementalModel.createChangeSetIfNotExists("drop-backup-tables", "drop-backup-tables", dialect, context).dropTable.add(t);
+        log.info("DropTable added: " + backupPrefix + "_" + useTable.sqlName);
 }
 
 rule DeleteBackupDeletedTables
     transform s : RDBMS!RdbmsDeleteTableOperation
     to t : AFTER_INCREMENTAL!DropTable
     extends DeleteBackupTables {
-        log.info("(Backup deleted table) DropTable: " + backupPrefix + "_" + s.table.sqlName + " created");
 }
 
 rule DeleteBackupModifiedTables
     transform s : RDBMS!RdbmsModifyTableOperation
     to t : AFTER_INCREMENTAL!DropTable
     extends DeleteBackupTables {
-        log.info("(Backup modified table) DropTable: " + backupPrefix + "_" + s.previousTable.sqlName + " created");
 }
 
 // BACKUP TABLES
