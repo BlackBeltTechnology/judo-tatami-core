@@ -38,6 +38,7 @@ rule CreateDocumentationAnnotationForInputParameter
     transform s : JUDOPSM!Parameter
     to t : ASM!EAnnotation
         extends CreateDocumentationAnnotation {
+        guard: s.isInput()
         s.equivalent("CreateInputParameter").eAnnotations.add(t);
     }
 
