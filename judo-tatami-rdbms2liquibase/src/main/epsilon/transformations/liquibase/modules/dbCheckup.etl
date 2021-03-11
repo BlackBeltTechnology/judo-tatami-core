@@ -33,7 +33,6 @@ rule CheckBackupTables
 
         if(dbCheckupModel.preConditions.`not`.size() == 0) {
             dbCheckupModel.preConditions.`not`.add(new DBCHECKUP!Not());
-            log.info("################################### New \"not\" created");
         }
         dbCheckupModel.preConditions.`not`[0].tableExists.add(t);
 }
@@ -42,14 +41,14 @@ rule CheckBackupDeletedTables
     transform s : RDBMS!RdbmsDeleteTableOperation
     to t : DBCHECKUP!TableExists
     extends CheckBackupTables {
-        log.info("Not TableExists added (Backup - Delete): " + backupPrefix + "_" + s.table.sqlName + " created");
+        log.info("Not TableExists added (Backup deleted table): " + backupPrefix + "_" + s.table.sqlName + " created");
 }
 
 rule CheckBackupModifiedTables
     transform s : RDBMS!RdbmsModifyTableOperation
     to t : DBCHECKUP!TableExists
     extends CheckBackupTables {
-        log.info("Not TableExists added (Backup - Modify): " + backupPrefix + "_" + s.previousTable.sqlName + " created");
+        log.info("Not TableExists added (Backup modified table): " + backupPrefix + "_" + s.previousTable.sqlName + " created");
 }
 
 // BACKUP TABLES

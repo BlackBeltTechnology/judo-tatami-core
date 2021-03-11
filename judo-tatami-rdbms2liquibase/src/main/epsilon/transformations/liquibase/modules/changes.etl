@@ -21,14 +21,14 @@ rule BackupDeletedTables
     transform s : RDBMS!RdbmsDeleteTableOperation
     to t : LIQUIBASE!SqlFile
     extends BackupTables {
-        log.info("(Backup - Delete) SqlFile: " + backupPrefix + "_" + s.table.sqlName + " created");
+        log.info("(Backup deleted table) SqlFile: " + backupPrefix + "_" + s.table.sqlName + " created");
 }
 
 rule BackupModifiedTables
     transform s : RDBMS!RdbmsModifyTableOperation
     to t : LIQUIBASE!SqlFile
     extends BackupTables {
-        log.info("(Backup - Modify) SqlFile: " + backupPrefix + "_" + s.previousTable.sqlName + " created");
+        log.info("(Backup modified table) SqlFile: " + backupPrefix + "_" + s.previousTable.sqlName + " created");
 }
 
 // BACKUP TABLES

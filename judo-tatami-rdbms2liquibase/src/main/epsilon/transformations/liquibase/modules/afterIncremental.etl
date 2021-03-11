@@ -1,5 +1,3 @@
-import "../utils/changeset.eol";
-
 /////////////////////////////////////////
 // FOREIGN KEY
 
@@ -115,14 +113,14 @@ rule DeleteBackupDeletedTables
     transform s : RDBMS!RdbmsDeleteTableOperation
     to t : AFTER_INCREMENTAL!DropTable
     extends DeleteBackupTables {
-        log.info("(Backup - Delete) DropTable: " + backupPrefix + "_" + s.table.sqlName + " created");
+        log.info("(Backup deleted table) DropTable: " + backupPrefix + "_" + s.table.sqlName + " created");
 }
 
 rule DeleteBackupModifiedTables
     transform s : RDBMS!RdbmsModifyTableOperation
     to t : AFTER_INCREMENTAL!DropTable
     extends DeleteBackupTables {
-        log.info("(Backup - Modify) DropTable: " + backupPrefix + "_" + s.previousTable.sqlName + " created");
+        log.info("(Backup modified table) DropTable: " + backupPrefix + "_" + s.previousTable.sqlName + " created");
 }
 
 // BACKUP TABLES
