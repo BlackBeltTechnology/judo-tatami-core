@@ -95,3 +95,35 @@ rule CreateAllIndexes
 
 // INDEX
 /////////////////////////////////////////
+// BACKUP TABLES
+
+@abstract
+rule DeleteBackupTables
+    transform s : RDBMS!RdbmsTableOperation
+    to t : AFTER_INCREMENTAL!DropTable {
+        var useTable;
+        if (s.isTypeOf(RDBMS!RdbmsModifyTableOperation)) useTable = s.previousTable;
+        else useTable = s.table;
+
+        t.tableName = backupPrefix + "_" + useTable.sqlName;
+
+        afterIncrementalModel.createChangeSetIfNotExists("drop-backup-tables", "drop-backup-tables", dialect, context);
+        afterIncrementalModel.getChangeSet("drop-backup-tables").dropTable.add(t);
+}
+
+rule DeleteBackupDeletedTables
+    transform s : RDBMS!RdbmsDeleteTableOperation
+    to t : AFTER_INCREMENTAL!DropTable
+    extends DeleteBackupTables {
+        log.info("(Backup - Delete) DropTable: " + backupPrefix + "_" + s.table.sqlName + " created");
+}
+
+rule DeleteBackupModifiedTables
+    transform s : RDBMS!RdbmsModifyTableOperation
+    to t : AFTER_INCREMENTAL!DropTable
+    extends DeleteBackupTables {
+        log.info("(Backup - Modify) DropTable: " + backupPrefix + "_" + s.previousTable.sqlName + " created");
+}
+
+// BACKUP TABLES
+/////////////////////////////////////////

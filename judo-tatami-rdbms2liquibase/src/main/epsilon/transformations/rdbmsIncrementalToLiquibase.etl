@@ -13,7 +13,7 @@ pre {
     var operationMeta = RDBMS!RdbmsOperationMeta.all.first();
     var previousModel;
     var newModel;
-    if (operationMeta.isDefined()) { // if defined in "if" block, transformations fail.....
+    if (operationMeta.isDefined()) { // if defined in "if" block, transformations might fail.....
         previousModel = operationMeta.previousModel;
         newModel = operationMeta.currentModel;
     }
