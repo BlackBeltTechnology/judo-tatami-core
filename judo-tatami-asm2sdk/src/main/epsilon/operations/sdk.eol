@@ -477,7 +477,6 @@ operation ASM!EClass getDtoTypeName() : String {
 	return self.getClassifierPackageName() + "." + self.name;
 }
 
-
 operation ASM!EClassifier getClassName() : String {
     return self.name;
 }
@@ -492,4 +491,40 @@ operation ASM!ENamedElement getterName() : String {
 
 operation ASM!ENamedElement builderName() : String {
 	return "with" + asmUtils.safeName(self.name.firstToUpperCase());
+}
+
+operation ASM!EClass getDocumentation() : String {
+    var documentationAnnotation = asmUtils.getExtensionAnnotationValue(op, "documentation", false);
+    if (documentationAnnotation.isPresent()) {
+        return documentationAnnotation.get().decorateWithAsterisks();
+    }
+    return "";
+}
+
+operation ASM!EOperation getDocumentation() : String {
+    var documentationAnnotation = asmUtils.getExtensionAnnotationValue(op, "documentation", false);
+    if (documentationAnnotation.isPresent()) {
+        return documentationAnnotation.get().decorateWithAsterisks();
+    }
+    return "";
+}
+
+operation ASM!EOperation getOutputDocumentation() : String {
+    var documentationAnnotation = asmUtils.getExtensionAnnotationValue(op, "outputDocumentation", false);
+    if (documentationAnnotation.isPresent()) {
+        return documentationAnnotation.get().decorateWithAsterisks();
+    }
+    return "";
+}
+
+operation ASM!EParameter getDocumentation() : String {
+    var documentationAnnotation = asmUtils.getExtensionAnnotationValue(op, "documentation", false);
+    if (documentationAnnotation.isPresent()) {
+        return documentationAnnotation.get().decorateWithAsterisks();
+    }
+    return "";
+}
+
+operation String decorateWithAsterisks() : String {
+    return self.replace("\n","\n* ");
 }

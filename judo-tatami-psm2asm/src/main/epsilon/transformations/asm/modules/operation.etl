@@ -1,4 +1,5 @@
 import "../utils/_importUtils.eol";
+import "namespace.etl";
 
 @abstract
 rule CreateParameter
@@ -33,6 +34,14 @@ rule CreateInputParameter
 }
 
 @greedy
+rule CreateDocumentationAnnotationForInputParameter
+    transform s : JUDOPSM!Parameter
+    to t : ASM!EAnnotation
+        extends CreateDocumentationAnnotation {
+        s.equivalent("CreateInputParameter").eAnnotations.add(t);
+    }
+
+@greedy
 rule CreateOutputParameterName
     transform s : JUDOPSM!OperationDeclaration
     to t : ASM!EAnnotation {
@@ -46,6 +55,17 @@ rule CreateOutputParameterName
         t.details.add(script);
 
         s.asmEquivalent().eAnnotations.add(t);
+    }
+
+@greedy
+rule CreateDocumentationAnnotationForOutputParameter
+    transform s : JUDOPSM!BoundOperation
+    to t : ASM!EAnnotation
+        extends CreateDocumentationAnnotation {
+        guard: s.output.isDefined()
+
+        t.source = asmUtils.getAnnotationUri("outputDocumentation");
+        s.equivalent("CreateBoundOperation").eAnnotations.add(t);
     }
 
 @greedy
@@ -160,6 +180,14 @@ rule CreateBoundOperation
 
         s.eContainer.equivalent("CreateEntityClass").eOperations.add(t);
 }
+
+@greedy
+rule CreateDocumentationAnnotationForBoundOperation
+    transform s : JUDOPSM!BoundOperation
+    to t : ASM!EAnnotation
+        extends CreateDocumentationAnnotation {
+        s.equivalent("CreateBoundOperation").eAnnotations.add(t);
+    }
 
 @greedy
 rule CreateInstanceRepresentationOfBoundOperation
@@ -344,3 +372,11 @@ rule AddBehaviourAnnotation
             s.binding.asmEquivalent().eAnnotations.add(bindingAnnotation);
         }
 }
+
+@greedy
+rule CreateDocumentationAnnotationForTransferOperation
+    transform s : JUDOPSM!TransferOperation
+    to t : ASM!EAnnotation
+        extends CreateDocumentationAnnotation {
+        s.asmEquivalent().eAnnotations.add(t);
+    }

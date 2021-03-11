@@ -5,6 +5,7 @@ rule CreateNamedElement
   transform s : ESM!NamedElement
   to t : JUDOPSM!NamedElement {
     t.name = s.name;
+    t.documentation = s.documentation;
 }
 
 @abstract

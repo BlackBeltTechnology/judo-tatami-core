@@ -5,44 +5,112 @@
 
 package [%= getSdkPrefix() + dto.getClassifierPackageName() %];
 
+[% if (dto.getDocumentation() <> "") {%]
+/**
+* [%= dto.getDocumentation() %]
+*/
+[% } %]
 public interface [%= dto.getClassName() %] {
 
+    /**
+    * Create an instance of [%= dto.getClassName() %]
+    *
+    * @return [%= dto.getClassName() %]
+    */
     static [%= dto.getClassName() %] create() {
         return hu.blackbelt.structured.map.proxy.MapProxy.builder([%= dto.getClassName() %].class).withEnumMappingMethod("getOrdinal").newInstance();
     }
 
+    /**
+    * Create a builder for [%= dto.getClassName() %]
+    *
+    * @return [%= dto.getClassName() %]Builder
+    */
     static [%= dto.getClassName() %]Builder builder() {
         return hu.blackbelt.structured.map.proxy.MapBuilderProxy.builder([%= dto.getClassName() %]Builder.class, [%= dto.getClassName() %].class).withEnumMappingMethod("getOrdinal").withBuilderMethodPrefix("with").newInstance();
     }
-    
+
+    /**
+    * Create a builder from a(n) [%= dto.getClassName() %] instance
+    *
+    * @param instance [%= dto.getClassName() %] instance from which the builder is created
+    * @return [%= dto.getClassName() %]Builder
+    */
     static [%= dto.getClassName() %]Builder builderFrom([%= dto.getClassName() %] instance) {
         return hu.blackbelt.structured.map.proxy.MapBuilderProxy.builder([%= dto.getClassName() %]Builder.class, instance).withEnumMappingMethod("getOrdinal").withBuilderMethodPrefix("with").newInstance();
     }
 
+    /**
+    * Get identifier of a(n) [%= dto.getClassName() %] instance
+    *
+    * @return [%= dto.idType() %]
+    */
     [%= dto.idType() %] get__identifier();
 
+    /**
+    * Set identifier of a(n) [%= dto.getClassName() %] instance
+    *
+    * @param __identifier [%= dto.idType() %] instance to be set as identifier of the [%= dto.getClassName() %] instance
+    */
     void set__identifier([%= dto.idType() %] __identifier);
 
+    /**
+    * Get the entity type of a(n) [%= dto.getClassName() %] instance as string
+    *
+    * @return string representation of the entity type of a(n) [%= dto.getClassName() %] instance
+    */
     String get__entityType();
 
+    /**
+    * Set string representation of the entity type of a(n) [%= dto.getClassName() %] instance
+    *
+    * @param __entityType String to be set
+    */
     void set__entityType(String __entityType);
 
     [% for (field in dto.eAllAttributes.includingAll(dto.eAllReferences)) { %]
+    /**
+    * Get [%= field.name %] of a(n) [%= dto.getClassName() %] instance
+    *
+    * @return [%= field.getTypeDefinition() %]
+    */
     [%= field.getTypeDefinition() %] [%= field.getterName() %]();
     [% } %]
 
     [% for (field in dto.eAllAttributes.includingAll(dto.eAllReferences)) { %]
+    /**
+    * Set [%= field.name %] of a(n) [%= dto.getClassName() %] instance
+    *
+    * @param [%= asmUtils.safeName(field.name.firstToLowerCase()) %] [%= field.name %] to be set
+    */
     void [%= field.setterName() %]([%= field.getTypeDefinition() %] [%= asmUtils.safeName(field.name.firstToLowerCase()) %]);
     [% } %]
 
 	interface [%= dto.getClassName() %]Builder {
 
 	    [% for (field in dto.eAllAttributes.includingAll(dto.eAllReferences)) { %]
+	    /**
+        * Builder for the [%= field.name %] field of a(n) [%= dto.getClassName() %]Builder instance.
+        *
+        * @param [%= asmUtils.safeName(field.name.firstToLowerCase()) %] [%= field.getTypeDefinition() %] instance to be set
+        * @retutn [%= dto.getClassName() %]Builder
+        */
 	    [%= dto.getClassName() %]Builder [%= field.builderName() %]([%= field.getTypeDefinition() %] [%= asmUtils.safeName(field.name.firstToLowerCase()) %]);
 	    [% } %]
-	
+
+	    /**
+        * Builder for the __identifier of a(n) [%= dto.getClassName() %]Builder instance.
+        *
+        * @param __identifier [%= dto.idType() %] instance to be set
+        * @retutn [%= dto.getClassName() %]Builder
+        */
 	    [%= dto.getClassName() %]Builder with__identifier([%= dto.idType() %] __identifier);
-	
+
+	    /**
+        * Creates a(n) [%= dto.getClassName() %] instance based on the [%= dto.getClassName() %]Builder instance.
+        *
+        * @retutn [%= dto.getClassName() %]
+        */
 	    [%= dto.getClassName() %] build();
     
 	}
@@ -53,7 +121,35 @@ public interface [%= dto.getClassName() %] {
 		[% for (op in dto.getSdkOperations()) { %]
 			[% var map = getOperationGenerationData(dto, op); %]
 
-			[%= map.get("operationMethod") %];
+        [% if (op.getDocumentation() <> "") {%]
+        /**
+        * [%= op.getDocumentation() %]
+        *
+        [% for (param in op.eParameters) { %]
+        * @param [%= param.name%]
+            [% if (param.getDocumentation() <> "") { %]
+                [%= param.getDocumentation() %]
+            [% } else {
+               var paramName = getSdkPrefix() + param.eType.getDtoTypeName();
+                %]
+                [%= paramName%]
+            [% } %]
+        [% } %]
+
+        [% if (op.eType.isDefined()) {%]
+        * @return
+            [% if (op.getOutputDocumentation() <> "") {%]
+                [%= op.getOutputDocumentation() %]
+            [% } else {
+               var returnName = getSdkPrefix() + op.eType.getDtoTypeName();
+                %]
+                [%= returnName%]
+            [% } %]
+        [% } %]
+        */
+        [% } %]
+
+		[%= map.get("operationMethod") %];
 			
 		[% } %]
 	}
