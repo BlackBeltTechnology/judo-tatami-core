@@ -27,14 +27,18 @@ Observer(builder: (_) {
         {{#each table.rowActions as |rowAction|}}
         {{#if rowAction.isViewAction}}
         navigateToViewPageAction: (element) async {
-            var response = await navigation.open(Routes.{{ fqVariable rowAction.target.name }}Page,
-            arguments: {{ fqClass rowAction.target.name }}PageArguments({{# unless relation.isAccess}}owner{{ className relation.owner.name }}Store: target{{ className relation.owner.name }}Store, {{/ unless}}target{{ className relation.target.name }}Store: element));
-            {{# unless relation.isMemberTypeTransient }}
-            if (response != null) {
-                {{ fqVariable page.name }}PageStore.get{{ fqClass relation.name }}({{# unless relation.isAccess}}target{{ className relation.owner.name }}Store{{/ unless}})
-                    .catchError((error) => ErrorHandler.errorDialog(context, error));
+            if (element != null) {
+                var response = await navigation.open(Routes.{{ fqVariable rowAction.target.name }}Page,
+                arguments: {{ fqClass rowAction.target.name }}PageArguments({{# unless relation.isAccess}}owner{{ className relation.owner.name }}Store: target{{ className relation.owner.name }}Store, {{/ unless}}target{{ className relation.target.name }}Store: element));
+                {{# unless relation.isMemberTypeTransient }}
+                    {{# unless page.isPageTypeOperationOutput}}
+                if (response != null) {
+                    {{ fqVariable page.name }}PageStore.refresh{{ className relation.owner.name }}(target{{ className relation.owner.name }}Store)
+                        .catchError((error) => ErrorHandler.errorDialog(context, error));
+                }
+                    {{/ unless }}
+                {{/ unless }}
             }
-            {{/ unless }}
         },
         {{/if}}
         {{#if rowAction.isEditAction}}
@@ -45,16 +49,18 @@ Observer(builder: (_) {
             arguments: {{ fqClass rowAction.target.name }}PageArguments(target{{ className relation.target.name }}Store: cloned, validatable: {{ fqVariable page.name }}PageStore.validatable));
             if (res != null) {
                 element.updateWith(cloned);
-                var updated = await {{ fqVariable page.name }}PageStore.update{{ className relation.name }}{{ className relation.target.name }}(element)
+                var updated = await {{ fqVariable page.name }}PageStore.update{{ className relation.name }}{{ className relation.target.name }}(element, target{{ className page.dataElement.target.name }}Store)
                     .catchError((error) => ErrorHandler.errorDialog(context, error));
                 {{# if (isValidateHere page) }}
                     {{# unless page.dataElement.isRelationKindAggregation }}
                         {{# unless page.dataElement.isRelationKindComposition }}
+                            {{# unless relation.isMemberTypeTransient }}
                 var validate = await {{ fqVariable page.name }}PageStore.validate({{# unless page.dataElement.isAccess}}owner{{ className page.dataElement.owner.name }}Store, {{/unless}}target{{ className page.dataElement.target.name }}Store)
                     .catchError((error) => ErrorHandler.errorDialog(context, error));
                 if (validate != null) {
                     target{{ className relation.owner.name }}Store.updateWith(validate);
                 }
+                            {{/unless}}
                         {{/unless}}
                     {{/unless}}
                 {{ else }}
@@ -68,7 +74,15 @@ Observer(builder: (_) {
         }{{# unless relation.isAccess}} : null{{/ unless}},
         {{/if}}
         {{#if rowAction.isRemoveAction}}
-        removeAction:{{# unless relation.isAccess}} target{{ className relation.owner.name }}Store.internal__updatable ?{{/ unless}} (element) => {{fqVariable page.name}}PageStore.remove{{ fqClass relation.name }}(target{{ className relation.owner.name }}Store, element){{# unless relation.isAccess}} : null{{/ unless}},
+        removeAction:{{# unless relation.isAccess}}{{# unless relation.isRelationKindStatic}} target{{ className relation.owner.name }}Store.internal__updatable ?{{/ unless}}{{/ unless}} (element) {
+            {{# if relation.isRelationBehaviourTypeRemovable }}
+            {{fqVariable page.name}}PageStore.remove{{ fqClass relation.name }}(target{{ className relation.owner.name }}Store, element);
+            {{ else }}
+            var temporaryList = List<{{ fqClass relation.target.name }}Store>.from(target{{ className relation.owner.name }}Store.{{ variable relation.name }})
+                ..remove(element);
+            target{{ className relation.owner.name }}Store.set{{ fqClass relation.name }}(temporaryList);
+            {{/ if }}
+        }{{# unless relation.isAccess}}{{# unless relation.isRelationKindStatic}} : null{{/ unless}}{{/ unless}},
         {{/if}}
         {{#if rowAction.isUnsetAction}}
         unsetAction:{{# unless relation.isAccess}}{{# unless relation.isRelationKindStatic}} target{{ className relation.owner.name }}Store.internal__updatable ?{{/ unless}}{{/ unless}} () async {

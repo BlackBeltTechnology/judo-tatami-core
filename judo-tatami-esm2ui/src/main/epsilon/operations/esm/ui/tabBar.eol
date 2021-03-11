@@ -1,25 +1,24 @@
-operation ESM!esm::ui::TabBar createTabController(application : UI!ui::Application) : UI!ui::TabController {
-	var ret : UI!ui::TabController = new UI!ui::TabController();
-	
-	ret.setVisualProperties(self, application);
-	ret.sourceId = self.getID();
+operation ESM!esm::ui::TabBar createTabController(application : UI!ui::Application, page : UI!ui::PageDefinition) : UI!ui::TabController {
+    var ret : UI!ui::TabController = new UI!ui::TabController();
     
-	for (t in self.tabs) {
-	
-		var tab : UI!ui::Tab = new UI!ui::Tab();
-		tab.name = t.name;
-		if (t.iconName.isDefined() and t.iconName.trim().length() > 0) {
-			tab.icon = new UI!ui::Icon();
-			tab.icon.name = t.iconName;
-		}
-		
-		tab.element = t.map(application);
-		ret.tabs.add(tab);
-	}
-
-	return ret;
+    ret.setVisualProperties(self, application);
+    ret.sourceId = self.getID();
+    
+    for (t in self.tabs) {
+        var tab : UI!ui::Tab = new UI!ui::Tab();
+        tab.name = t.name;
+        if (t.iconName.isDefined() and t.iconName.trim().length() > 0) {
+            tab.icon = new UI!ui::Icon();
+            tab.icon.name = t.iconName;
+        }
+        
+        tab.element = t.map(application, page);
+        ret.tabs.add(tab);
+    }
+    
+    return ret;
 }
 
-operation ESM!esm::ui::TabBar map(application : UI!ui::Application) : UI!ui::TabController {
-	return self.createTabController(application);
+operation ESM!esm::ui::TabBar map(application : UI!ui::Application, page : UI!ui::PageDefinition) : UI!ui::TabController {
+    return self.createTabController(application, page);
 }

@@ -14,21 +14,21 @@ rule Excel2TypeMapping
 
         t.rdbmsType = s.Type;
         if (s.Size.isDefined() and s.Size.trim() <> "") {
-            t.rdbmsSize = s.Size.asFloat().asInteger();
+            t.rdbmsSize = s.Size;
         } else {
-            t.rdbmsSize = -1;
+            t.rdbmsSize = "-1";
         }
 
         if (s.Precision.isDefined() and s.Precision.trim() <> "") {
-            t.rdbmsPrecision = s.Precision.asFloat().asInteger();
+            t.rdbmsPrecision = s.Precision;
         } else {
-            t.rdbmsPrecision = -1;
+            t.rdbmsPrecision = "-1";
         }
 
         if (s.Scale.isDefined() and s.Scale.trim() <> "") {
-            t.rdbmsScale = s.Scale.asFloat().asInteger();
+            t.rdbmsScale = s.Scale;
         } else {
-            t.rdbmsScale = -1;
+            t.rdbmsScale = "-1";
         }
 
         t.rdbmsJdbcType = s.JdbcType;

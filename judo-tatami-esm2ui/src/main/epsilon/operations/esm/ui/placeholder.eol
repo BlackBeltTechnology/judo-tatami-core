@@ -1,12 +1,12 @@
 operation ESM!esm::ui::Placeholder createSpacerFromPlaceholder(application : UI!ui::Application) : UI!ui::Spacer {
-	var ret : UI!ui::Spacer = new UI!ui::Spacer();
-	
-	ret.setVisualProperties(self, application);
-	ret.sourceId = self.getID();
+    var ret : UI!ui::Spacer = new UI!ui::Spacer();
     
-	return ret;
+    ret.setVisualProperties(self, application);
+    ret.sourceId = self.getID();
+    
+    return ret;
 }
 
-operation ESM!esm::ui::Placeholder map(application : UI!ui::Application) : UI!ui::Spacer {
-	return self.createSpacerFromPlaceholder(application);
+operation ESM!esm::ui::Placeholder map(application : UI!ui::Application, page : UI!ui::PageDefinition) : UI!ui::Spacer {
+    return self.createSpacerFromPlaceholder(application);
 }

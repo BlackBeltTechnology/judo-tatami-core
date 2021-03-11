@@ -136,12 +136,16 @@ public class FlutterHelper {
         context.registerFunction("isInputWidgetMapNeed", FlutterHelper.class.getDeclaredMethod("isInputWidgetMapNeed", new Class[]{PageDefinition.class}));
         context.registerFunction("isValidateHere", FlutterHelper.class.getDeclaredMethod("isValidateHere", new Class[]{PageDefinition.class}));
         context.registerFunction("isSingleRelationDashboardPage", FlutterHelper.class.getDeclaredMethod("isSingleRelationDashboardPage", new Class[]{PageDefinition.class}));
-        context.registerFunction("isViewTypePage", FlutterHelper.class.getDeclaredMethod("isViewTypePage", new Class[]{PageDefinition.class}));
+        context.registerFunction("isCollectionRelationDashboardPage", FlutterHelper.class.getDeclaredMethod("isCollectionRelationDashboardPage", new Class[]{PageDefinition.class}));
+        context.registerFunction("isRefreshViewTypePage", FlutterHelper.class.getDeclaredMethod("isRefreshViewTypePage", new Class[]{PageDefinition.class}));
+        context.registerFunction("isRefreshTableTypePage", FlutterHelper.class.getDeclaredMethod("isRefreshViewTypePage", new Class[]{PageDefinition.class}));
+        context.registerFunction("isViewTypePage", FlutterHelper.class.getDeclaredMethod("isRefreshTableTypePage", new Class[]{PageDefinition.class}));
         context.registerFunction("isCreateTypePage", FlutterHelper.class.getDeclaredMethod("isCreateTypePage", new Class[]{PageDefinition.class}));
         context.registerFunction("getInputWidgets", FlutterHelper.class.getDeclaredMethod("getInputWidgets", new Class[]{Container.class}));
         context.registerFunction("getPagesByRelation", FlutterHelper.class.getDeclaredMethod("getPagesByRelation", new Class[]{EList.class, DataElement.class}));
         context.registerFunction("safe", FlutterHelper.class.getDeclaredMethod("safe", new Class[]{String.class, String.class}));
         context.registerFunction("dart", FlutterHelper.class.getDeclaredMethod("dart", new Class[]{String.class}));
+        context.registerFunction("isObserverButton", FlutterHelper.class.getDeclaredMethod("isObserverButton", new Class[]{VisualElement.class, DataElement.class, Action.class}));
 
     }
 
@@ -386,9 +390,22 @@ public class FlutterHelper {
         if (page.getRelationType() == null) return false;
         return page.getIsPageTypeDashboard() && !page.getRelationType().isIsCollection();
     }
+    
+    public static boolean isCollectionRelationDashboardPage(PageDefinition page){
+        if (page.getRelationType() == null) return false;
+        return page.getIsPageTypeDashboard() && page.getRelationType().isIsCollection();
+    }
 
     public static boolean isViewTypePage(PageDefinition page) {
-        return page.getIsPageTypeView() || page.getIsPageTypeOperationOutput() || page.getIsPageTypeDashboard();
+        return page.getIsPageTypeView() || page.getIsPageTypeOperationOutput() || isSingleRelationDashboardPage(page);
+    }
+    
+    public static boolean isRefreshViewTypePage(PageDefinition page) {
+        return page.getIsPageTypeView() || isSingleRelationDashboardPage(page);
+    }
+    
+    public static boolean isRefreshTableTypePage(PageDefinition page) {
+        return page.getIsPageTypeTable() || isCollectionRelationDashboardPage(page);
     }
 
     public static boolean isCreateTypePage(PageDefinition page) {
@@ -431,5 +448,20 @@ public class FlutterHelper {
         return input
 //                .replaceAll("[^\\\\u(\\p{XDigit}{4})]", "_")
                 .replaceAll("[^\\.A-Za-z0-9_]", "_").toLowerCase();
+    }
+
+    public static boolean isObserverButton(VisualElement visualElement, DataElement relationType, Action action){
+        if (visualElement == null || relationType == null || action == null ) {
+            return false;
+        }
+
+        if (relationType instanceof OperationParameterType){
+            return (visualElement.getEnabledBy() != null) || (!((OperationParameterType) relationType).isIsCollection() && action.getIsCreateAction()) || action.getIsUnsetAction();
+        } else if (relationType instanceof RelationType){
+            return (visualElement.getEnabledBy() != null) || (!((RelationType) relationType).isIsCollection() && action.getIsCreateAction()) || action.getIsUnsetAction();
+        } else {
+            return false;
+        }
+
     }
 }

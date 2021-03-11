@@ -13,7 +13,7 @@ rule NavigationController
 rule AccessMenuNavigationItem
     transform s: ESM!esm::ui::MenuItemAccess
     to t : UI!ui::NavigationItem {
-		guard: not s.hidden
+        guard: not s.hidden
 
         log.debug("Create Access Navigation: " + s.access.fqName() );
 
@@ -32,19 +32,19 @@ rule AccessMenuNavigationItem
 rule AccessMenuNavigationItemTable
     transform s: ESM!esm::ui::MenuItemAccess
     to t : UI!ui::NavigationItem
-    	extends AccessMenuNavigationItem {
-		guard: s.access.target.isTableDefined() and (s.access.upper == -1 or s.access.upper > 1)
+        extends AccessMenuNavigationItem {
+        guard: s.access.target.isTableDefined() and s.access.upper <> 1
 
-		var application = s.access.eContainer.equivalent("Application");
+        var application = s.access.eContainer.equivalent("Application");
         t.target = s.access.mapTablePage(application, s.access.target);
 }
 
 rule AccessMenuNavigationItemView
     transform s: ESM!esm::ui::MenuItemAccess
     to t : UI!ui::NavigationItem
-    	extends AccessMenuNavigationItem {
-		guard: s.access.target.view.isDefined() and s.access.upper == 1
-	
-		var application = s.access.eContainer.equivalent("Application");
+        extends AccessMenuNavigationItem {
+        guard: s.access.target.view.isDefined() and s.access.upper == 1
+    
+        var application = s.access.eContainer.equivalent("Application");
         t.target = s.access.mapViewPage(application, s.access.target);
 }

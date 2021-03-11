@@ -66,7 +66,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class Esm2UiPreviewTest {
-	private final String TEST_SOURCE_MODEL_NAME = "urn:test.judo-meta-esm";
+    private final String TEST_SOURCE_MODEL_NAME = "urn:test.judo-meta-esm";
     private final String TEST = "test";
     private final String TARGET_TEST_CLASSES = "target/test-classes";
 
@@ -91,13 +91,13 @@ public class Esm2UiPreviewTest {
     }
     
     private void validateEsmTestModel() throws Exception {
-    	log.info(esmModel.getDiagnosticsAsString());
-    	assertTrue(esmModel.isValid());
-    	validateEsm(new Slf4jLog(log), esmModel, calculateEsmValidationScriptURI());
+        log.info(esmModel.getDiagnosticsAsString());
+        assertTrue(esmModel.isValid());
+        validateEsm(new Slf4jLog(log), esmModel, calculateEsmValidationScriptURI());
     }
     
     private void validateUiTestModel() throws Exception {
-    	log.info(uiModel.getDiagnosticsAsString());
+        log.info(uiModel.getDiagnosticsAsString());
         assertTrue(uiModel.isValid());
         validateUi(new Slf4jLog(log), uiModel, calculateUiValidationScriptURI());
     }
@@ -109,9 +109,9 @@ public class Esm2UiPreviewTest {
         esmModel.addContent(SimpleOrderModel.createSimpleOrderModel());
 
         validateEsmTestModel();
-    	String json = executeEsm2UiTransformation(esmModel, SimpleOrderModel.getViewForTest(), "default", 12, uiModel, new Slf4jLog(log));
-    	saveJson(json, SimpleOrderModel.getViewForTest().getName());
-    	savePrettyJson(json, SimpleOrderModel.getViewForTest().getName());
+        String json = executeEsm2UiTransformation(esmModel, SimpleOrderModel.getViewForTest(), "default", 12, false, uiModel, new Slf4jLog(log));
+        saveJson(json, SimpleOrderModel.getViewForTest().getName());
+        savePrettyJson(json, SimpleOrderModel.getViewForTest().getName());
         validateUiTestModel();
 
         final Optional<Application> application = allUi(Application.class).findAny();
@@ -125,9 +125,9 @@ public class Esm2UiPreviewTest {
         esmModel.addContent(SimpleOrderModel.createSimpleOrderModel());
 
         validateEsmTestModel();
-    	String json = executeEsm2UiTransformation(esmModel, SimpleOrderModel.getFormForTest(), "default", 12, uiModel, new Slf4jLog(log));
-    	saveJson(json, SimpleOrderModel.getFormForTest().getName());
-    	savePrettyJson(json, SimpleOrderModel.getFormForTest().getName());
+        String json = executeEsm2UiTransformation(esmModel, SimpleOrderModel.getFormForTest(), "default", 12, false, uiModel, new Slf4jLog(log));
+        saveJson(json, SimpleOrderModel.getFormForTest().getName());
+        savePrettyJson(json, SimpleOrderModel.getFormForTest().getName());
         validateUiTestModel();
 
         final Optional<Application> application = allUi(Application.class)
@@ -142,9 +142,9 @@ public class Esm2UiPreviewTest {
         esmModel.addContent(SimpleOrderModel.createSimpleOrderModel());
 
         validateEsmTestModel();
-    	String json = executeEsm2UiTransformation(esmModel, SimpleOrderModel.getTableForTest(), "default", 12, uiModel, new Slf4jLog(log));
-    	saveJson(json, SimpleOrderModel.getTableForTest().getName());
-    	savePrettyJson(json, SimpleOrderModel.getTableForTest().getName());
+        String json = executeEsm2UiTransformation(esmModel, SimpleOrderModel.getTableForTest(), "default", 12, false, uiModel, new Slf4jLog(log));
+        saveJson(json, SimpleOrderModel.getTableForTest().getName());
+        savePrettyJson(json, SimpleOrderModel.getTableForTest().getName());
         validateUiTestModel();
 
         final Optional<Application> application = allUi(Application.class)
@@ -164,12 +164,12 @@ public class Esm2UiPreviewTest {
         final Iterable<Notifier> esmContents = resourceSet::getAllContents;
 
         Optional<TransferObjectView> view = StreamSupport.stream(esmContents.spliterator(), true)
-        		.filter(e -> (TransferObjectView.class).isAssignableFrom(e.getClass()))
+                .filter(e -> (TransferObjectView.class).isAssignableFrom(e.getClass()))
                 .map(e -> (TransferObjectView) e).filter(v -> v.getName().equals("InternationalOrderInfoView")).findAny();
         
-    	String json = executeEsm2UiTransformation(esmModel, view.get(), "default", 12, uiModel, new Slf4jLog(log));
-    	saveJson(json, testName);
-    	savePrettyJson(json, testName);
+        String json = executeEsm2UiTransformation(esmModel, view.get(), "default", 12, false, uiModel, new Slf4jLog(log));
+        saveJson(json, testName);
+        savePrettyJson(json, testName);
         validateUiTestModel();
     }
     
@@ -185,12 +185,12 @@ public class Esm2UiPreviewTest {
         final Iterable<Notifier> esmContents = resourceSet::getAllContents;
 
         Optional<TransferObjectForm> form = StreamSupport.stream(esmContents.spliterator(), true)
-        		.filter(e -> (TransferObjectForm.class).isAssignableFrom(e.getClass()))
+                .filter(e -> (TransferObjectForm.class).isAssignableFrom(e.getClass()))
                 .map(e -> (TransferObjectForm) e).filter(v -> v.getName().equals("InternationalOrderInfoForm")).findAny();
         
-    	String json = executeEsm2UiTransformation(esmModel, form.get(), "default", 12, uiModel, new Slf4jLog(log));
-    	saveJson(json, testName);
-    	savePrettyJson(json, testName);
+        String json = executeEsm2UiTransformation(esmModel, form.get(), "default", 12, false, uiModel, new Slf4jLog(log));
+        saveJson(json, testName);
+        savePrettyJson(json, testName);
         validateUiTestModel();
     }
     
@@ -206,12 +206,12 @@ public class Esm2UiPreviewTest {
         final Iterable<Notifier> esmContents = resourceSet::getAllContents;
         
         Optional<TransferObjectTable> table = StreamSupport.stream(esmContents.spliterator(), true)
-        		.filter(e -> (TransferObjectTable.class).isAssignableFrom(e.getClass()))
+                .filter(e -> (TransferObjectTable.class).isAssignableFrom(e.getClass()))
                 .map(e -> (TransferObjectTable) e).filter(v -> v.getName().equals("InternationalOrderInfoTable")).findAny();
         
-    	String json = executeEsm2UiTransformation(esmModel, table.get(), "default", 12, uiModel, new Slf4jLog(log));
-    	saveJson(json, testName);
-    	savePrettyJson(json, testName);
+        String json = executeEsm2UiTransformation(esmModel, table.get(), "default", 12, false, uiModel, new Slf4jLog(log));
+        saveJson(json, testName);
+        savePrettyJson(json, testName);
         validateUiTestModel();
     }
 
@@ -282,7 +282,7 @@ public class Esm2UiPreviewTest {
 
         validateEsmTestModel();
 
-        String json = executeEsm2UiTransformation(esmModel, view, "default", 12, uiModel, new Slf4jLog(log));
+        String json = executeEsm2UiTransformation(esmModel, view, "default", 12, false, uiModel, new Slf4jLog(log));
         saveJson(json, testName);
         savePrettyJson(json, testName);
         validateUiTestModel();
@@ -302,7 +302,7 @@ public class Esm2UiPreviewTest {
     }
     
     private void saveJson(String json, String name) {
-    	 final File jsonFile = new File(TARGET_TEST_CLASSES, name + ".json");
+         final File jsonFile = new File(TARGET_TEST_CLASSES, name + ".json");
          try (final Writer targetFileWriter = new FileWriter(jsonFile)) {
              targetFileWriter.append(json);
          } catch (IOException ex) {
@@ -311,16 +311,16 @@ public class Esm2UiPreviewTest {
     }
     
     private void savePrettyJson(String json, String name) {
-    	
-	   	 final File jsonFile = new File(TARGET_TEST_CLASSES, name + "Pretty" + ".json");
-	     try (final Writer targetFileWriter = new FileWriter(jsonFile)) {
-	   	 
-	   	 	ObjectMapper mapper = new ObjectMapper();
-			Object jsonObject = mapper.readValue(json, Object.class);
-	    	String pretty = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(jsonObject);
-	        targetFileWriter.append(pretty);
-	     } catch (IOException ex) {
-	        log.error("Unable to create JSON output", ex);
-	     }
+        
+            final File jsonFile = new File(TARGET_TEST_CLASSES, name + "Pretty" + ".json");
+         try (final Writer targetFileWriter = new FileWriter(jsonFile)) {
+            
+                ObjectMapper mapper = new ObjectMapper();
+            Object jsonObject = mapper.readValue(json, Object.class);
+            String pretty = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(jsonObject);
+            targetFileWriter.append(pretty);
+         } catch (IOException ex) {
+            log.error("Unable to create JSON output", ex);
+         }
     }
 }

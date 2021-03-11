@@ -40,8 +40,9 @@ public class Esm2Ui {
      * @return The trace object list of the transformation conforms the meta model defined in {@link TransformationTraceUtil}.
      * @throws Exception
      */
-    public static Esm2UiTransformationTrace executeEsm2UiTransformation(EsmModel esmModel, String applicationType, Integer applicationColumns, UiModel uiModel) throws Exception {
-    	return executeEsm2UiTransformation(esmModel, applicationType, applicationColumns, uiModel, new Slf4jLog(log), calculateEsm2UiTransformationScriptURI());
+    public static Esm2UiTransformationTrace executeEsm2UiTransformation(EsmModel esmModel, String applicationType, Integer applicationColumns,
+            boolean allRowActions, UiModel uiModel) throws Exception {
+    	return executeEsm2UiTransformation(esmModel, applicationType, applicationColumns, allRowActions, uiModel, new Slf4jLog(log), calculateEsm2UiTransformationScriptURI());
     }
 
     /**
@@ -53,8 +54,9 @@ public class Esm2Ui {
      * @return The trace object list of the transformation conforms the meta model defined in {@link TransformationTraceUtil}.
      * @throws Exception
      */
-    public static Esm2UiTransformationTrace executeEsm2UiTransformation(EsmModel esmModel, String applicationType, Integer applicationColumns, UiModel uiModel, Log log) throws Exception {
-    	return executeEsm2UiTransformation(esmModel, applicationType, applicationColumns, uiModel, log, calculateEsm2UiTransformationScriptURI());
+    public static Esm2UiTransformationTrace executeEsm2UiTransformation(EsmModel esmModel, String applicationType, Integer applicationColumns,
+            boolean allRowActions, UiModel uiModel, Log log) throws Exception {
+    	return executeEsm2UiTransformation(esmModel, applicationType, applicationColumns, allRowActions, uiModel, log, calculateEsm2UiTransformationScriptURI());
     }
 
     /**
@@ -66,8 +68,9 @@ public class Esm2Ui {
      * @return The trace object list of the transformation conforms the meta model defined in {@link TransformationTraceUtil}.
      * @throws Exception
      */
-    public static Esm2UiTransformationTrace executeEsm2UiTransformation(EsmModel esmModel, String applicationType, Integer applicationColumns, UiModel uiModel, URI scriptDir) throws Exception {
-    	return executeEsm2UiTransformation(esmModel, applicationType, applicationColumns, uiModel, new Slf4jLog(log), scriptDir);
+    public static Esm2UiTransformationTrace executeEsm2UiTransformation(EsmModel esmModel, String applicationType, Integer applicationColumns,
+            boolean allRowActions, UiModel uiModel, URI scriptDir) throws Exception {
+    	return executeEsm2UiTransformation(esmModel, applicationType, applicationColumns, allRowActions, uiModel, new Slf4jLog(log), scriptDir);
     }
 
     /**
@@ -80,8 +83,8 @@ public class Esm2Ui {
      * @return The trace object list of the transformation conforms the meta model defined in {@link TransformationTraceUtil}.
      * @throws Exception
      */
-    public static Esm2UiTransformationTrace executeEsm2UiTransformation(EsmModel esmModel, String applicationType, Integer applicationColumns, UiModel uiModel, Log log,
-                                                                          URI scriptDir) throws Exception {
+    public static Esm2UiTransformationTrace executeEsm2UiTransformation(EsmModel esmModel, String applicationType, Integer applicationColumns,
+            boolean allRowActions, UiModel uiModel, Log log, URI scriptDir) throws Exception {
 
         EsmUtils esmUtils = new EsmUtils();
 
@@ -103,7 +106,8 @@ public class Esm2Ui {
                         "esmUtils", new EsmUtils(),
                         "uiUtils", new UiUtils(),
                         "applicationType", applicationType,
-                        "applicationColumns", applicationColumns
+                        "applicationColumns", applicationColumns,
+                        "allRowActions", allRowActions
                 ))
                 .build();
 

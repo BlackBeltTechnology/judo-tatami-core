@@ -1,152 +1,175 @@
 @cached
 operation ESM!esm::structure::ReferenceTypedElement fqName() {
-	return esmUtils.getNamespaceElementFQName(self.eContainer) + "." + self.name;
+    return esmUtils.getNamespaceElementFQName(self.eContainer) + "." + self.name;
 }
 
-
 operation ESM!esm::structure::ReferenceTypedElement mapViewPage(application : UI!ui::Application, target : ESM!esm::structure::TransferObjectType) : UI!ui::PageDefinition {
-	var page = application.pages.selectOne(p | p.~originalRelation == self and p.pageType == UI!ui::PageType#VIEW);
-	if (page.isDefined()) {
-		return page;
-	}
-	
-	log.debug("Create page for relation for view: " + target.name + " (relation: " + self.fqName() + ")");
-	
-	var page : UI!ui::PageDefinition = new UI!ui::PageDefinition();
-	page.~application = application;
-	page.~originalRelation = self;
-	
-	page.name = self.fqName().anchor("View");
-	page.pageType = UI!ui::PageType#VIEW;
-	page.label = target.view.getUiLabel();
+    var page = application.pages.selectOne(p | p.~originalRelation == self and p.pageType == UI!ui::PageType#VIEW);
+    if (page.isDefined()) {
+        return page;
+    } else {
+        return self.createViewPage(application, target);
+    }
+}
 
-	var pageContainer = new UI!ui::PageContainer();
+operation ESM!esm::structure::ReferenceTypedElement createViewPage(application : UI!ui::Application, target : ESM!esm::structure::TransferObjectType) : UI!ui::PageDefinition {
+
+    log.debug("Create page for relation for view: " + target.name + " (relation: " + self.fqName() + ")");
+    
+    var page : UI!ui::PageDefinition = new UI!ui::PageDefinition();
+    page.~application = application;
+    page.~originalRelation = self;
+    
+    page.name = self.fqName().anchor("View");
+    page.pageType = UI!ui::PageType#VIEW;
+    page.label = target.view.getUiLabel();
+
+    var pageContainer = new UI!ui::PageContainer();
     pageContainer.layoutType = application.layoutTypes.first;
-	pageContainer.name = "default";
-	pageContainer.direction = UI!Axis#VERTICAL;
-	pageContainer.col = applicationColumns.asReal();
-	page.containers.add(pageContainer);
+    pageContainer.name = "default";
+    pageContainer.direction = UI!Axis#VERTICAL;
+    pageContainer.mainAxisAlignment = UI!ui::MainAxisAlignment#START;
+    pageContainer.crossAxisAlignment = UI!ui::CrossAxisAlignment#START;
+    pageContainer.col = applicationColumns.asReal();
+    page.containers.add(pageContainer);
 
-	pageContainer.children.add(target.view.map(application));
-	
-	application.pages.add(page);
-	page.dataElement = self.mapRelationType(application, self.eContainer.mapClassType(application));
-	return page;
+    pageContainer.children.add(target.view.map(application, page));
+    
+    application.pages.add(page);
+    page.dataElement = self.mapRelationType(application, self.eContainer.mapClassType(application));
+    return page;
 }
 
 operation ESM!esm::structure::ReferenceTypedElement mapCreatePage(application : UI!ui::Application, target : ESM!esm::structure::TransferObjectType) : UI!ui::PageDefinition {
-	var page = application.pages.selectOne(p | p.~originalRelation == self and p.pageType == UI!ui::PageType#CREATE);
-	if (page.isDefined()) {
-		return page;
-	}
+    var page = application.pages.selectOne(p | p.~originalRelation == self and p.pageType == UI!ui::PageType#CREATE);
+    if (page.isDefined()) {
+        return page;
+    } else {
+        return self.createCreatePage(application, target);
+    }
+}
 
-	log.debug("Create page for relation for create: " + target.name + " (relation: " + self.fqName() + ")");
-	
-	var page : UI!ui::PageDefinition = new UI!ui::PageDefinition();
-	page.~application = application;
-	page.~originalRelation = self;
-	
-	page.name = self.fqName().anchor("Create");
-	page.pageType = UI!ui::PageType#CREATE;
-	page.label = target.form.getUiLabel();
+operation ESM!esm::structure::ReferenceTypedElement createCreatePage(application : UI!ui::Application, target : ESM!esm::structure::TransferObjectType) : UI!ui::PageDefinition {
+    
+    log.debug("Create page for relation for create: " + target.name + " (relation: " + self.fqName() + ")");
+    
+    var page : UI!ui::PageDefinition = new UI!ui::PageDefinition();
+    page.~application = application;
+    page.~originalRelation = self;
+    
+    page.name = self.fqName().anchor("Create");
+    page.pageType = UI!ui::PageType#CREATE;
+    page.label = target.form.getUiLabel();
 
-	var pageContainer = new UI!ui::PageContainer();
+    var pageContainer = new UI!ui::PageContainer();
     pageContainer.layoutType = application.layoutTypes.first;
-	pageContainer.name = "default";
-	pageContainer.direction = UI!Axis#VERTICAL;
-	pageContainer.col = applicationColumns.asReal();
-	page.containers.add(pageContainer);
+    pageContainer.name = "default";
+    pageContainer.direction = UI!Axis#VERTICAL;
+    pageContainer.mainAxisAlignment = UI!ui::MainAxisAlignment#START;
+    pageContainer.crossAxisAlignment = UI!ui::CrossAxisAlignment#START;
+    pageContainer.col = applicationColumns.asReal();
+    page.containers.add(pageContainer);
 
-    pageContainer.children.add(target.form.map(application));
-	application.pages.add(page);
-	page.dataElement = self.mapRelationType(application, self.eContainer.mapClassType(application));
+    pageContainer.children.add(target.form.map(application, page));
+    application.pages.add(page);
+    page.dataElement = self.mapRelationType(application, self.eContainer.mapClassType(application));
     return page;
 }
 
 operation ESM!esm::structure::ReferenceTypedElement mapUpdatePage(application : UI!ui::Application, target : ESM!esm::structure::TransferObjectType) : UI!ui::PageDefinition {
-	var page = application.pages.selectOne(p | p.~originalRelation == self and p.pageType == UI!ui::PageType#UPDATE);
-	if (page.isDefined()) {
-		return page;
-	}
+    var page = application.pages.selectOne(p | p.~originalRelation == self and p.pageType == UI!ui::PageType#UPDATE);
+    if (page.isDefined()) {
+        return page;
+    } else {
+        return self.createUpdatePage(application, target);
+    }
+}
 
-	log.debug("Create page for relation for update: " + target.name + " (relation: " + self.fqName() + ")");
-	
-	var page : UI!ui::PageDefinition = new UI!ui::PageDefinition();
-	page.~application = application;
-	page.~originalRelation = self;
-	
-	page.name = self.fqName().anchor("Edit");
-	page.pageType = UI!ui::PageType#UPDATE;
-	page.label = target.form.getUiLabel();
+operation ESM!esm::structure::ReferenceTypedElement createUpdatePage(application : UI!ui::Application, target : ESM!esm::structure::TransferObjectType) : UI!ui::PageDefinition {
+    
+    log.debug("Create page for relation for update: " + target.name + " (relation: " + self.fqName() + ")");
+    
+    var page : UI!ui::PageDefinition = new UI!ui::PageDefinition();
+    page.~application = application;
+    page.~originalRelation = self;
+    
+    page.name = self.fqName().anchor("Edit");
+    page.pageType = UI!ui::PageType#UPDATE;
+    page.label = target.view.getUiLabel();
 
-	var pageContainer = new UI!ui::PageContainer();
+    var pageContainer = new UI!ui::PageContainer();
     pageContainer.layoutType = application.layoutTypes.first;
-	pageContainer.name = "default";
-	pageContainer.direction = UI!Axis#VERTICAL;
-	pageContainer.col = applicationColumns.asReal();
-	page.containers.add(pageContainer);
+    pageContainer.name = "default";
+    pageContainer.direction = UI!Axis#VERTICAL;
+    pageContainer.mainAxisAlignment = UI!ui::MainAxisAlignment#START;
+    pageContainer.crossAxisAlignment = UI!ui::CrossAxisAlignment#START;
+    pageContainer.col = applicationColumns.asReal();
+    page.containers.add(pageContainer);
 
-    pageContainer.children.add(target.form.map(application));
-	application.pages.add(page);
-	
-	page.dataElement = self.mapRelationType(application, self.eContainer.mapClassType(application));
+    pageContainer.children.add(target.view.map(application, page));
+    application.pages.add(page);
+    
+    page.dataElement = self.mapRelationType(application, self.eContainer.mapClassType(application));
     return page;
 }
 
-
 operation ESM!esm::structure::ReferenceTypedElement mapTablePage(application : UI!ui::Application, target : ESM!esm::structure::TransferObjectType) : UI!ui::PageDefinition {
-	var page = application.pages.selectOne(p | p.~originalRelation == self and p.pageType == UI!ui::PageType#TABLE);
-	if (page.isDefined()) {
-		return page;
-	}
+    var page = application.pages.selectOne(p | p.~originalRelation == self and p.pageType == UI!ui::PageType#TABLE);
+    if (page.isDefined()) {
+        return page;
+    }
 
-	log.debug("Create page for relation for table: " + target.name + " (relation: " + self.fqName() + ")");
-	
-	var page : UI!ui::PageDefinition = new UI!ui::PageDefinition();
-	page.~application = application;
-	page.~originalRelation = self;
-	var relation = self.mapRelationType(application, self.eContainer.mapClassType(application));
+    log.debug("Create page for relation for table: " + target.name + " (relation: " + self.fqName() + ")");
+    
+    var page : UI!ui::PageDefinition = new UI!ui::PageDefinition();
+    page.~application = application;
+    page.~originalRelation = self;
+    var relation = self.mapRelationType(application, self.eContainer.mapClassType(application));
 
-	page.dataElement = relation;
-	page.name = self.fqName().anchor("Table");
-	page.pageType = UI!ui::PageType#TABLE;
-	page.label = target.table.getUiLabel();
+    page.dataElement = relation;
+    page.name = self.fqName().anchor("Table");
+    page.pageType = UI!ui::PageType#TABLE;
+    page.label = target.table.getUiLabel();
 
-	var pageContainer = new UI!ui::PageContainer();
+    var pageContainer = new UI!ui::PageContainer();
     pageContainer.layoutType = application.layoutTypes.first;
-	pageContainer.name = "default";
-	pageContainer.direction = UI!Axis#VERTICAL;
-	pageContainer.col = applicationColumns.asReal();
-	page.containers.add(pageContainer);
+    pageContainer.name = "default";
+    pageContainer.direction = UI!Axis#VERTICAL;
+    pageContainer.mainAxisAlignment = UI!ui::MainAxisAlignment#START;
+    pageContainer.crossAxisAlignment = UI!ui::CrossAxisAlignment#START;
+    pageContainer.col = applicationColumns.asReal();
+    page.containers.add(pageContainer);
 
     var flex = new UI!ui::Flex();
-	flex.name = self.name;
-	flex.direction = UI!Axis#VERTICAL;
-	flex.col = applicationColumns.asReal();
-	pageContainer.children.add(flex);
+    flex.name = self.name;
+    flex.direction = UI!Axis#VERTICAL;
+    flex.mainAxisAlignment = UI!ui::MainAxisAlignment#START;
+    flex.crossAxisAlignment = UI!ui::CrossAxisAlignment#START;
+    flex.col = applicationColumns.asReal();
+    pageContainer.children.add(flex);
     
     if (target.isTableDefined()) {
-		var table = target.table.createTableFromTransferObjectTable(application, relation);
-    	flex.children.add(table);
+        var table = target.table.createTableFromTransferObjectTable(application, relation, page);
+        flex.children.add(table);
     }
     
-    /*
-    if (target.table.masterDetail and target.view.isDefined()) {
-		var detail : UI!ui::PageDefinition = new UI!ui::PageDefinition();
-		detail.name = self.fqName().anchor("TableMasterDetail", target.fqName());
-		detail.dataElement = self.mapRelationType(application, self.eContainer.mapClassType(application));
-
-		var pageDetailContainer = new UI!ui::PageContainer();
-	    pageDetailContainer.layoutType = application.layoutTypes.first;
-		pageDetailContainer.name = self.name;
-		pageDetailContainer.direction = UI!Axis#VERTICAL;
-		detail.containers.add(pageDetailContainer);
-
-		application.pages.add(detail);
-	  	pageDetailContainer.children.add(target.view.map(application));
-	  	table.detail = detail;
-    } */
-	application.pages.add(page);
+    application.pages.add(page);
     
     return page;
+}
+
+operation ESM!esm::structure::ReferenceTypedElement isRefreshSupported() : Boolean {
+    return self.target.mapping.isDefined();
+}
+
+operation ESM!esm::structure::ReferenceTypedElement isUpdateSupported() : Boolean {
+    return self.target.mapping.isDefined() and self.isUpdateAllowed();
+}
+
+operation ESM!esm::structure::ReferenceTypedElement isValidateUpdateSupported() : Boolean {
+    return self.isUpdateSupported();
+}
+
+operation ESM!esm::structure::ReferenceTypedElement isDeleteSupported() : Boolean {
+    return self.target.mapping.isDefined() and self.isDeleteAllowed() and (self.lower < self.upper or self.upper == -1);
 }
