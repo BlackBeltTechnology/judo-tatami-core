@@ -11,7 +11,7 @@ rule AddForeignKeyConstraints
         t.referencedTableName = s.referenceKey.eContainer.sqlName;
         t.referencedColumnNames = s.referenceKey.sqlName;
 
-        afterIncrementalModel.createChangeSetIfNotExists("add-foreign-keys-to-" + s.eContainer.sqlName, "add-foreign-keys", dialect, context)
+        afterIncrementalModel.createChangeSetIfNotExists("add-foreign-keys-to-" + s.eContainer.sqlName + "-" + context, "add-foreign-keys", dialect, context)
             .addForeignKeyConstraint.add(t);
         log.info("AddForeignKeyConstraint added: " + t.constraintName);
 }
@@ -28,7 +28,7 @@ rule AddNotNullConstraints
         t.tableName = s.eContainer.sqlName;
         t.columnName = s.sqlName;
 
-        afterIncrementalModel.createChangeSetIfNotExists("add-not-null-constraints-to-" + s.eContainer.sqlName, "add-not-null-constraints", dialect, context)
+        afterIncrementalModel.createChangeSetIfNotExists("add-not-null-constraints-to-" + s.eContainer.sqlName + "-" + context, "add-not-null-constraints", dialect, context)
             .addNotNullConstraint.add(t);
         log.info("AddNotNullConstraint added: " + t.columnName + " (" + t.tableName + ")");
 }
@@ -69,7 +69,7 @@ rule AddUniqueConstraints
             }
         }
 
-        afterIncrementalModel.createChangeSetIfNotExists("add-unique-constraints-to-" + s.eContainer.sqlName, "add-unique-constraints", dialect, context)
+        afterIncrementalModel.createChangeSetIfNotExists("add-unique-constraints-to-" + s.eContainer.sqlName + "-" + context, "add-unique-constraints", dialect, context)
             .addUniqueConstraint.add(t);
         log.info("AddUniqueConstraint added: " + t.columnNames + " (" + t.tableName + ")");
 }
@@ -86,40 +86,10 @@ rule AddIndexes
         t.indexName = s.sqlName;
         t.column = s.fields.collect(f | new AFTER_INCREMENTAL!Column(name = f.sqlName));
 
-        afterIncrementalModel.createChangeSetIfNotExists("create-indexes-for-" + s.eContainer.sqlName, "create-indexes", dialect, context)
+        afterIncrementalModel.createChangeSetIfNotExists("create-indexes-for-" + s.eContainer.sqlName + "-" + context, "create-indexes", dialect, context)
             .createIndex.add(t);
         log.info("CreateIndex added: " + t.indexName + " (" + t.tableName + ")");
 }
 
 // INDEX
-/////////////////////////////////////////
-// BACKUP TABLES
-
-@abstract
-rule DeleteBackupTables
-    transform s : RDBMS!RdbmsTableOperation
-    to t : AFTER_INCREMENTAL!DropTable {
-        var useTable;
-        if (s.isTypeOf(RDBMS!RdbmsModifyTableOperation)) useTable = s.previousTable;
-        else useTable = s.table;
-
-        t.tableName = backupPrefix + "_" + useTable.sqlName;
-
-        afterIncrementalModel.createChangeSetIfNotExists("drop-backup-tables", "drop-backup-tables", dialect, context).dropTable.add(t);
-        log.info("DropTable added: " + backupPrefix + "_" + useTable.sqlName);
-}
-
-rule DeleteBackupDeletedTables
-    transform s : RDBMS!RdbmsDeleteTableOperation
-    to t : AFTER_INCREMENTAL!DropTable
-    extends DeleteBackupTables {
-}
-
-rule DeleteBackupModifiedTables
-    transform s : RDBMS!RdbmsModifyTableOperation
-    to t : AFTER_INCREMENTAL!DropTable
-    extends DeleteBackupTables {
-}
-
-// BACKUP TABLES
 /////////////////////////////////////////

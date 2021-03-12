@@ -8,7 +8,7 @@ rule DropIndexes
         t.tableName = s.eContainer.sqlName;
         t.indexName = s.sqlName;
 
-        beforeIncrementalModel.createChangeSetIfNotExists("drop-indexes-from-" + s.eContainer.sqlName, "drop-indexes", dialect, context)
+        beforeIncrementalModel.createChangeSetIfNotExists("drop-indexes-from-" + s.eContainer.sqlName + "-" + context, "drop-indexes", dialect, context)
             .dropIndex.add(t);
         log.info("DropIndex added: " + t.indexName + " (" + t.tableName + ")");
 }
@@ -31,7 +31,7 @@ rule DropUniqueConstraints
             }
         }
 
-        beforeIncrementalModel.createChangeSetIfNotExists("drop-unique-constraints-from-" + s.eContainer.sqlName, "drop-unique-constraints", dialect, context)
+        beforeIncrementalModel.createChangeSetIfNotExists("drop-unique-constraints-from-" + s.eContainer.sqlName + "-" + context, "drop-unique-constraints", dialect, context)
             .dropUniqueConstraint.add(t);
         log.info("DropUniqueConstraint added: " + t.uniqueColumns + " (" + t.tableName + ")");
 }
@@ -48,7 +48,7 @@ rule DropNotNullConstraints
         t.tableName = s.eContainer.sqlName;
         t.columnName = s.sqlName;
 
-        beforeIncrementalModel.createChangeSetIfNotExists("drop-not-null-constraints-from-" + s.eContainer.sqlName, "drop-not-null-constraints", dialect, context)
+        beforeIncrementalModel.createChangeSetIfNotExists("drop-not-null-constraints-from-" + s.eContainer.sqlName + "-" + context, "drop-not-null-constraints", dialect, context)
             .dropNotNullConstraint.add(t);
         log.info("DropNotNullConstraint added: " + t.columnName + " (" + t.tableName + ")");
 }
@@ -58,13 +58,13 @@ rule DropNotNullConstraintsFromValueFields
     to t : BEFORE_INCREMENTAL!DropNotNullConstraint
     extends DropNotNullConstraints {
 }
-
+/*
 rule DropNotNullConstraintsFromIdentifierFields
     transform s : RDBMS!RdbmsIdentifierField
     to t : BEFORE_INCREMENTAL!DropNotNullConstraint
     extends DropNotNullConstraints {
 }
-
+*/
 rule DropNotNullConstraintsFromForeignKeys
     transform s : RDBMS!RdbmsForeignKey
     to t : BEFORE_INCREMENTAL!DropNotNullConstraint
@@ -83,7 +83,7 @@ rule DropForeignKeyConstraints
         t.baseTableName = s.eContainer.sqlName;
         t.constraintName = s.foreignKeySqlName;
 
-        beforeIncrementalModel.createChangeSetIfNotExists("drop-foreign-keys-from-" + s.eContainer.sqlName, "drop-foreign-keys", dialect, context)
+        beforeIncrementalModel.createChangeSetIfNotExists("drop-foreign-keys-from-" + s.eContainer.sqlName + "-" + context, "drop-foreign-keys", dialect, context)
             .dropForeignKeyConstraint.add(t);
         log.info("DropForeignKeyConstraint added: " + t.constraintName + " (" + t.baseTableName + ")");
 }

@@ -40,9 +40,11 @@ public class Rdbms2LiquibaseIncrementalWork extends AbstractTransformationWork {
         executeRdbms2LiquibaseIncrementalTransformation(
                 incrementalRdbmsModel,
                 getLiquibaseModel("liquibase-dbCheckup:" + dialect, "DbCheckup"),
+                getLiquibaseModel("liquibase-dbBackup:" + dialect, "DbBackup"),
                 getLiquibaseModel("liquibase-beforeIncremental:" + dialect, "BeforeIncremental"),
-                getLiquibaseModel("liquibase-afterIncremental:" + dialect, "AfterIncremental"),
                 getLiquibaseModel("liquibase-incremental:" + dialect, "Incremental"),
+                getLiquibaseModel("liquibase-afterIncremental:" + dialect, "AfterIncremental"),
+                getLiquibaseModel("liquibase-dbDropBackup:" + dialect, "DbDropBackup"),
                 (Log) getTransformationContext().get(Log.class).orElseGet(() -> new Slf4jLog(log)),
                 transformationScriptRoot,
                 dialect);

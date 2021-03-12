@@ -18,7 +18,6 @@ import static hu.blackbelt.epsilon.runtime.execution.contexts.EtlExecutionContex
 import static hu.blackbelt.epsilon.runtime.execution.contexts.ProgramParameter.programParameterBuilder;
 import static hu.blackbelt.epsilon.runtime.execution.model.emf.WrappedEmfModelContext.wrappedEmfModelContextBuilder;
 import static hu.blackbelt.judo.tatami.rdbms2liquibase.Rdbms2Liquibase.calculateRdbms2LiquibaseTransformationScriptURI;
-import static hu.blackbelt.judo.tatami.rdbms2liquibase.Rdbms2Liquibase.executeRdbms2LiquibaseTransformation;
 import static java.util.Collections.singletonList;
 
 @Slf4j
@@ -28,28 +27,34 @@ public class Rdbms2LiquibaseIncremental {
 
     public static void executeRdbms2LiquibaseIncrementalTransformation(RdbmsModel incrementalRdbmsModel,
                                                                        LiquibaseModel dbCheckupLiquibaseModel,
+                                                                       LiquibaseModel dbBackupLiquibaseModel,
                                                                        LiquibaseModel beforeIncrementalLiquibaseModel,
-                                                                       LiquibaseModel afterIncrementalLiquibaseModel,
                                                                        LiquibaseModel incrementalLiquibaseModel,
+                                                                       LiquibaseModel afterIncrementalLiquibaseModel,
+                                                                       LiquibaseModel dbDropBackupLiquibaseModel,
                                                                        String dialect) throws Exception {
-        executeRdbms2LiquibaseIncrementalTransformation(incrementalRdbmsModel, dbCheckupLiquibaseModel, beforeIncrementalLiquibaseModel, afterIncrementalLiquibaseModel, incrementalLiquibaseModel, new Slf4jLog(log), calculateRdbms2LiquibaseTransformationScriptURI(), dialect);
+        executeRdbms2LiquibaseIncrementalTransformation(incrementalRdbmsModel, dbCheckupLiquibaseModel, dbBackupLiquibaseModel, beforeIncrementalLiquibaseModel, incrementalLiquibaseModel, afterIncrementalLiquibaseModel, dbDropBackupLiquibaseModel, new Slf4jLog(log), calculateRdbms2LiquibaseTransformationScriptURI(), dialect);
     }
 
     public static void executeRdbms2LiquibaseIncrementalTransformation(RdbmsModel incrementalRdbmsModel,
                                                                        LiquibaseModel dbCheckupLiquibaseModel,
+                                                                       LiquibaseModel dbBackupLiquibaseModel,
                                                                        LiquibaseModel beforeIncrementalLiquibaseModel,
-                                                                       LiquibaseModel afterIncrementalLiquibaseModel,
                                                                        LiquibaseModel incrementalLiquibaseModel,
+                                                                       LiquibaseModel afterIncrementalLiquibaseModel,
+                                                                       LiquibaseModel dbDropBackupLiquibaseModel,
                                                                        Log log,
                                                                        String dialect) throws Exception {
-        executeRdbms2LiquibaseIncrementalTransformation(incrementalRdbmsModel, dbCheckupLiquibaseModel, beforeIncrementalLiquibaseModel, afterIncrementalLiquibaseModel, incrementalLiquibaseModel, log, calculateRdbms2LiquibaseTransformationScriptURI(), dialect);
+        executeRdbms2LiquibaseIncrementalTransformation(incrementalRdbmsModel, dbCheckupLiquibaseModel, dbBackupLiquibaseModel, beforeIncrementalLiquibaseModel, incrementalLiquibaseModel, afterIncrementalLiquibaseModel, dbDropBackupLiquibaseModel, log, calculateRdbms2LiquibaseTransformationScriptURI(), dialect);
     }
 
     public static void executeRdbms2LiquibaseIncrementalTransformation(RdbmsModel incrementalRdbmsModel,
                                                                        LiquibaseModel dbCheckupLiquibaseModel,
+                                                                       LiquibaseModel dbBackupLiquibaseModel,
                                                                        LiquibaseModel beforeIncrementalLiquibaseModel,
-                                                                       LiquibaseModel afterIncrementalLiquibaseModel,
                                                                        LiquibaseModel incrementalLiquibaseModel,
+                                                                       LiquibaseModel afterIncrementalLiquibaseModel,
+                                                                       LiquibaseModel dbDropBackupLiquibaseModel,
                                                                        Log log,
                                                                        URI scriptUri,
                                                                        String dialect) throws Exception {
@@ -69,9 +74,18 @@ public class Rdbms2LiquibaseIncremental {
                                 .resource(dbCheckupLiquibaseModel.getResource())
                                 .build(),
                         wrappedEmfModelContextBuilder()
+                                .name("DBBACKUP")
+                                .aliases(singletonList("LIQUIBASE"))
+                                .resource(dbBackupLiquibaseModel.getResource())
+                                .build(),
+                        wrappedEmfModelContextBuilder()
                                 .name("BEFORE_INCREMENTAL")
                                 .aliases(singletonList("LIQUIBASE"))
                                 .resource(beforeIncrementalLiquibaseModel.getResource())
+                                .build(),
+                        wrappedEmfModelContextBuilder()
+                                .name("LIQUIBASE")
+                                .resource(incrementalLiquibaseModel.getResource())
                                 .build(),
                         wrappedEmfModelContextBuilder()
                                 .name("AFTER_INCREMENTAL")
@@ -79,8 +93,9 @@ public class Rdbms2LiquibaseIncremental {
                                 .resource(afterIncrementalLiquibaseModel.getResource())
                                 .build(),
                         wrappedEmfModelContextBuilder()
-                                .name("LIQUIBASE")
-                                .resource(incrementalLiquibaseModel.getResource())
+                                .name("DBDROPBACKUP")
+                                .aliases(singletonList("LIQUIBASE"))
+                                .resource(dbDropBackupLiquibaseModel.getResource())
                                 .build()))
                 .build();
 
@@ -104,6 +119,7 @@ public class Rdbms2LiquibaseIncremental {
                 eglExecutionContextBuilder()
                         .source(UriUtil.resolve("../generations/sql/main.egl", scriptUri))
                         .outputRoot("target/generated-sources/sql")
+                        //.outputRoot("target/test-classes/sql") for testing database
                         .parameters(parameters)
                         .build());
 

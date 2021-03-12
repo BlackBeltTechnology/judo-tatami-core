@@ -5,12 +5,14 @@ import hu.blackbelt.epsilon.runtime.execution.ExecutionContext;
 import hu.blackbelt.judo.meta.liquibase.runtime.LiquibaseModel;
 import hu.blackbelt.judo.meta.liquibase.runtime.LiquibaseModel.LiquibaseValidationException;
 import hu.blackbelt.judo.meta.liquibase.runtime.LiquibaseNamespaceFixUriHandler;
-import hu.blackbelt.judo.meta.rdbms.RdbmsTable;
 import hu.blackbelt.judo.meta.rdbms.runtime.RdbmsModel;
 import hu.blackbelt.judo.meta.rdbms.runtime.RdbmsModel.RdbmsValidationException;
-import hu.blackbelt.judo.meta.rdbms.runtime.RdbmsUtils;
-import hu.blackbelt.judo.meta.rdbms.util.builder.RdbmsIndexBuilder;
-import hu.blackbelt.judo.meta.rdbms.util.builder.RdbmsUniqueConstraintBuilder;
+import liquibase.Liquibase;
+import liquibase.database.Database;
+import liquibase.database.core.HsqlDatabase;
+import liquibase.database.jvm.HsqlConnection;
+import liquibase.exception.LiquibaseException;
+import liquibase.resource.FileSystemResourceAccessor;
 import org.eclipse.epsilon.common.util.UriUtil;
 import org.junit.jupiter.api.Test;
 
@@ -20,6 +22,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.sql.Connection;
+import java.sql.DriverManager;
 
 import static hu.blackbelt.epsilon.runtime.execution.ExecutionContext.executionContextBuilder;
 import static hu.blackbelt.epsilon.runtime.execution.contexts.EtlExecutionContext.etlExecutionContextBuilder;
@@ -38,7 +42,6 @@ import static org.junit.jupiter.api.Assertions.fail;
 
 public class Excel2RdbmsTest {
 
-    private static final String INCREMENTAL_MODEL_NAME = "IncrementalModel";
     private static final String ORIGINAL_MODEL_NAME = "OriginalModel";
     private static final String TARGET_TEST_CLASSES = "target/test-classes";
 
@@ -80,39 +83,39 @@ public class Excel2RdbmsTest {
         excelToRdbmsEtlContext.commit();
         excelToRdbmsEtlContext.close();
 
-        final RdbmsUtils rdbmsUtils = new RdbmsUtils(originalModel.getResourceSet());
-        final RdbmsTable rdbmsTable = rdbmsUtils.getRdbmsTables().get().get(0);
-        rdbmsTable.getIndexes().add(
-                RdbmsIndexBuilder.create()
-                        .withName("TestIndex")
-                        .withUuid(rdbmsTable.getUuid() + ".TestIndex")
-                        .withFields(rdbmsTable.getFields().get(0), rdbmsTable.getFields().get(1))
-                        .withSqlName("TestIndex".toUpperCase())
-                        .build());
-        rdbmsTable.getUniqueConstraints().add(
-                RdbmsUniqueConstraintBuilder.create()
-                        .withName("TestUniqueConstraint")
-                        .withUuid(rdbmsTable.getUuid() + ".TestUniqueConstraint")
-                        .withFields(rdbmsTable.getFields().get(2), rdbmsTable.getFields().get(3))
-                        .withSqlName("TestUniqueConstraint".toUpperCase())
-                        .build());
-
-        final RdbmsUtils rdbmsUtils2 = new RdbmsUtils(newModel.getResourceSet());
-        final RdbmsTable rdbmsTable2 = rdbmsUtils2.getRdbmsTables().get().get(0);
-        rdbmsTable2.getIndexes().add(
-                RdbmsIndexBuilder.create()
-                        .withName("TestIndex")
-                        .withUuid(rdbmsTable2.getUuid() + ".TestIndex")
-                        .withFields(rdbmsTable2.getFields().get(0), rdbmsTable2.getFields().get(1))
-                        .withSqlName("TestIndex".toUpperCase())
-                        .build());
-        rdbmsTable2.getUniqueConstraints().add(
-                RdbmsUniqueConstraintBuilder.create()
-                        .withName("TestUniqueConstraint")
-                        .withUuid(rdbmsTable2.getUuid() + ".TestUniqueConstraint")
-                        .withFields(rdbmsTable2.getFields().get(2), rdbmsTable2.getFields().get(3))
-                        .withSqlName("TestUniqueConstraint".toUpperCase())
-                        .build());
+//        final RdbmsUtils rdbmsUtils = new RdbmsUtils(originalModel.getResourceSet());
+//        final RdbmsTable rdbmsTable = rdbmsUtils.getRdbmsTables().get().get(0);
+//        rdbmsTable.getIndexes().add(
+//                RdbmsIndexBuilder.create()
+//                        .withName("TestIndex")
+//                        .withUuid(rdbmsTable.getUuid() + ".TestIndex")
+//                        .withFields(rdbmsTable.getFields().get(0), rdbmsTable.getFields().get(1))
+//                        .withSqlName("TestIndex".toUpperCase())
+//                        .build());
+//        rdbmsTable.getUniqueConstraints().add(
+//                RdbmsUniqueConstraintBuilder.create()
+//                        .withName("TestUniqueConstraint")
+//                        .withUuid(rdbmsTable.getUuid() + ".TestUniqueConstraint")
+//                        .withFields(rdbmsTable.getFields().get(2), rdbmsTable.getFields().get(3))
+//                        .withSqlName("TestUniqueConstraint".toUpperCase())
+//                        .build());
+//
+//        final RdbmsUtils rdbmsUtils2 = new RdbmsUtils(newModel.getResourceSet());
+//        final RdbmsTable rdbmsTable2 = rdbmsUtils2.getRdbmsTables().get().get(0);
+//        rdbmsTable2.getIndexes().add(
+//                RdbmsIndexBuilder.create()
+//                        .withName("TestIndex")
+//                        .withUuid(rdbmsTable2.getUuid() + ".TestIndex")
+//                        .withFields(rdbmsTable2.getFields().get(0), rdbmsTable2.getFields().get(1))
+//                        .withSqlName("TestIndex".toUpperCase())
+//                        .build());
+//        rdbmsTable2.getUniqueConstraints().add(
+//                RdbmsUniqueConstraintBuilder.create()
+//                        .withName("TestUniqueConstraint")
+//                        .withUuid(rdbmsTable2.getUuid() + ".TestUniqueConstraint")
+//                        .withFields(rdbmsTable2.getFields().get(2), rdbmsTable2.getFields().get(3))
+//                        .withSqlName("TestUniqueConstraint".toUpperCase())
+//                        .build());
 
         saveRdbms(originalModel);
         saveRdbms(newModel);
@@ -135,33 +138,64 @@ public class Excel2RdbmsTest {
         saveRdbms(incrementalModel);
 
         LiquibaseModel dbCheckupModel = buildLiquibaseModel().name("DbCheckup").build();
+        LiquibaseModel dbBackupLiquibaseModel = buildLiquibaseModel().name("DbBackup").build();
         LiquibaseModel beforeIncrementalModel = buildLiquibaseModel().name("BeforeIncremental").build();
+        LiquibaseModel incrementalLiquibaseModel = buildLiquibaseModel().name("IncrementalModel").build();
         LiquibaseModel afterIncrementalModel = buildLiquibaseModel().name("AfterIncremental").build();
-        LiquibaseModel incrementalLiquibaseModel = buildLiquibaseModel().name(INCREMENTAL_MODEL_NAME).build();
+        LiquibaseModel dbDropBackupLiquibaseModel = buildLiquibaseModel().name("DbDropBackup").build();
 
         executeRdbms2LiquibaseIncrementalTransformation(
                 incrementalModel,
                 dbCheckupModel,
+                dbBackupLiquibaseModel,
                 beforeIncrementalModel,
-                afterIncrementalModel,
                 incrementalLiquibaseModel,
+                afterIncrementalModel,
+                dbDropBackupLiquibaseModel,
                 "hsqldb");
 
         saveLiquibase(dbCheckupModel);
+        saveLiquibase(dbBackupLiquibaseModel);
         saveLiquibase(beforeIncrementalModel);
-        saveLiquibase(afterIncrementalModel);
         saveLiquibase(incrementalLiquibaseModel);
+        saveLiquibase(afterIncrementalModel);
+        saveLiquibase(dbDropBackupLiquibaseModel);
 
+        // $ java -cp hsqldb/lib/hsqldb.jar org.hsqldb.server.Server --database.0 file:mydb --dbname.0 xdb
+//        Connection connection = DriverManager.getConnection("jdbc:hsqldb:hsql://localhost:9001/xdb", "SA", "");
+//        connection.createStatement().execute("DROP SCHEMA PUBLIC CASCADE");
+//
+//        Database liquibaseDb = new HsqlDatabase();
+//        liquibaseDb.setConnection(new HsqlConnection(connection));
+//
+//        runLiquibaseChangeSet(originalLiquibaseModel, liquibaseDb);
+//        runLiquibaseChangeSet(dbCheckupModel, liquibaseDb);
+//        runLiquibaseChangeSet(beforeIncrementalModel, liquibaseDb);
+//        runLiquibaseChangeSet(incrementalLiquibaseModel, liquibaseDb);
+//        runLiquibaseChangeSet(afterIncrementalModel, liquibaseDb);
+//        runLiquibaseChangeSet(dbDropBackupLiquibaseModel, liquibaseDb);
+//
+//        liquibaseDb.close();
+    }
+
+    private void runLiquibaseChangeSet(LiquibaseModel liquibaseModel, Database liquibaseDb) throws LiquibaseException {
+        new Liquibase(getLiquibaseFileName(liquibaseModel),
+                      new FileSystemResourceAccessor(TARGET_TEST_CLASSES), liquibaseDb)
+                .update("");
     }
 
     private void saveRdbms(RdbmsModel rdbmsModel) {
-        File incrementalRdbmsFile = new File(TARGET_TEST_CLASSES, String.format("testContents-%s-rdbms.model", rdbmsModel.getName()));
+        File incrementalRdbmsFile = new File(TARGET_TEST_CLASSES, getRdbmsFileName(rdbmsModel));
         try {
             rdbmsModel.saveRdbmsModel(rdbmsSaveArgumentsBuilder().file(incrementalRdbmsFile));
         } catch (RdbmsValidationException | IOException ex) {
             fail(format("Model:\n%s\nDiagnostic:\n%s", rdbmsModel.asString(), rdbmsModel.getDiagnosticsAsString()));
         }
 
+    }
+
+    private static String getRdbmsFileName(final RdbmsModel rdbmsModel) {
+        return "test-" + rdbmsModel.getName() + "-rdbms.model";
     }
 
     private void saveLiquibase(LiquibaseModel liquibaseModel) throws IOException {
@@ -173,9 +207,11 @@ public class Excel2RdbmsTest {
         } catch (LiquibaseValidationException | IOException ex) {
             fail(format("Model:\n%s\nDiagnostic:\n%s", liquibaseModel.asString(), liquibaseModel.getDiagnosticsAsString()));
         }
-        String name = format("testContents-%s-liquibase.xml", liquibaseModel.getName());
-        stream.writeTo(new FileOutputStream(new File(TARGET_TEST_CLASSES, name)));
+        stream.writeTo(new FileOutputStream(new File(TARGET_TEST_CLASSES, getLiquibaseFileName(liquibaseModel))));
+    }
 
+    private static String getLiquibaseFileName(final LiquibaseModel liquibaseModel) {
+        return "test-" + liquibaseModel.getName() + "-liquibase.xml";
     }
 
     private URI getUri(Class clazz, String file) throws URISyntaxException {
