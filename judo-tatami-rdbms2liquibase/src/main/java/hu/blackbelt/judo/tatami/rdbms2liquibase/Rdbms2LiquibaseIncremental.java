@@ -119,7 +119,7 @@ public class Rdbms2LiquibaseIncremental {
                 eglExecutionContextBuilder()
                         .source(UriUtil.resolve("../generations/sql/main.egl", scriptUri))
                         .outputRoot("target/generated-sources/sql")
-                        //.outputRoot("target/test-classes/sql") for testing database
+//                        .outputRoot("target/test-classes/sql") // for testing database
                         .parameters(parameters)
                         .build());
 

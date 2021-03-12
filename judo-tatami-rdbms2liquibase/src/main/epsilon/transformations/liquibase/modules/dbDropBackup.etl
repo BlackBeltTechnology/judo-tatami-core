@@ -2,6 +2,32 @@
 // BACKUP TABLES
 
 @abstract
+rule CheckBackupTables
+    transform s : RDBMS!RdbmsTableOperation
+    to t : DBCHECKUP!TableExists {
+        var useTable;
+        if (s.isTypeOf(RDBMS!RdbmsModifyTableOperation)) useTable = s.previousTable;
+        else useTable = s.table;
+
+        t.tableName = backupPrefix + "_" + useTable.sqlName;
+
+        dbDropBackupModel.preConditions.tableExists.add(t);
+        log.info("Not TableExists added: " + backupPrefix + "_" + useTable.sqlName);
+}
+
+rule CheckBackupDeletedTables
+    transform s : RDBMS!RdbmsDeleteTableOperation
+    to t : DBCHECKUP!TableExists
+    extends CheckBackupTables {
+}
+
+rule CheckBackupModifiedTables
+    transform s : RDBMS!RdbmsModifyTableOperation
+    to t : DBCHECKUP!TableExists
+    extends CheckBackupTables {
+}
+
+@abstract
 rule DeleteBackupTables
     transform s : RDBMS!RdbmsTableOperation
     to t : AFTER_INCREMENTAL!DropTable {

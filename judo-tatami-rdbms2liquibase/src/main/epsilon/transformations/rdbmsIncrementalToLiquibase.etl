@@ -29,5 +29,5 @@ pre {
     var dbBackupModel : DBBACKUP!databaseChangeLog = new DBBACKUP!databaseChangeLog();
     var beforeIncrementalModel : BEFORE_INCREMENTAL!databaseChangeLog = new BEFORE_INCREMENTAL!databaseChangeLog();
     var afterIncrementalModel : AFTER_INCREMENTAL!databaseChangeLog = new AFTER_INCREMENTAL!databaseChangeLog();
-    var dbDropBackupModel : DBDROPBACKUP!databaseChangeLog = new DBDROPBACKUP!databaseChangeLog();
+    var dbDropBackupModel : DBDROPBACKUP!databaseChangeLog = new DBDROPBACKUP!databaseChangeLog(preConditions = new DBCHECKUP!PreConditions());
 }
