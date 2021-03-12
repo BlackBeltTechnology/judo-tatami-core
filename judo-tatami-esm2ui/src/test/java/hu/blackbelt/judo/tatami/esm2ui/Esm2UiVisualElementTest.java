@@ -189,11 +189,11 @@ public class Esm2UiVisualElementTest {
     }
 
     private void transform() throws Exception {
-    	log.info(esmModel.getDiagnosticsAsString());
-    	assertTrue(esmModel.isValid());
-    	validateEsm(new Slf4jLog(log), esmModel, calculateEsmValidationScriptURI());
+        log.info(esmModel.getDiagnosticsAsString());
+        assertTrue(esmModel.isValid());
+        validateEsm(new Slf4jLog(log), esmModel, calculateEsmValidationScriptURI());
         // Make transformation which returns the trace with the serialized URI's
-        esm2UiTransformationTrace = executeEsm2UiTransformation(esmModel, "default", 12, uiModel, new Slf4jLog(log),
+        esm2UiTransformationTrace = executeEsm2UiTransformation(esmModel, "default", 12, false, uiModel, new Slf4jLog(log),
                 calculateEsm2UiTransformationScriptURI());
 
         log.info(uiModel.getDiagnosticsAsString());
@@ -223,12 +223,12 @@ public class Esm2UiVisualElementTest {
         useEntityType(e1).withMappedEntity(e1).build();
         
         Access access1 = newAccessBuilder().withName("e1")
-        		.withTarget(e1)
-        		.withLower(0)
-        		.withUpper(-1)
-        		.withCreateable(true)
-        		.withTargetDefinedCRUD(false)
-        		.build();
+                .withTarget(e1)
+                .withLower(0)
+                .withUpper(-1)
+                .withCreateable(true)
+                .withTargetDefinedCRUD(false)
+                .build();
 
         useActorType(actor).withAccesses(access1).build();
         
@@ -238,12 +238,12 @@ public class Esm2UiVisualElementTest {
         SimpleOrderModel.addUiElementsToTransferObjects(model);
         
         useTransferObjectView(e1.getView()).withComponents(
-        		newGroupBuilder().withName("groupForActionButtons")
-        			.withComponents(
-        					newActionButtonBuilder().withName("action1").withLabel("CANCEL").withRow(4).withCol(2).withFit(Fit.LOOSE).withAction(Action.CANCEL).build(),
-        					newActionButtonBuilder().withName("action2").withLabel("SUBMIT").withRow(1).withCol(3).withFit(Fit.TIGHT).withAction(Action.SUBMIT).build()
-        					).build()
-        		).build();
+                newGroupBuilder().withName("groupForActionButtons")
+                    .withComponents(
+                            newActionButtonBuilder().withName("action1").withLabel("CANCEL").withRow(4).withCol(2).withFit(Fit.LOOSE).withAction(Action.CANCEL).build(),
+                            newActionButtonBuilder().withName("action2").withLabel("SUBMIT").withRow(1).withCol(3).withFit(Fit.TIGHT).withAction(Action.SUBMIT).build()
+                            ).build()
+                ).build();
         
         esmModel.addContent(model);
         
@@ -284,17 +284,17 @@ public class Esm2UiVisualElementTest {
         
         PasswordType password = newPasswordTypeBuilder().withName("password").build();
         StringType string = newStringTypeBuilder().withName("string").withMaxLength(256)
-        		.withRegExp(".*").build();
+                .withRegExp(".*").build();
         NumericType numeric = newNumericTypeBuilder().withName("numeric")
-        		.withPrecision(2).withScale(1).build();
+                .withPrecision(2).withScale(1).build();
         DataMember passwordAttribute = newDataMemberBuilder().withName("password").withDataType(password)
-        		.withMemberType(MemberType.STORED).build();
+                .withMemberType(MemberType.STORED).build();
         DataMember stringAttribute = newDataMemberBuilder().withName("name").withDataType(string)
-        		.withMemberType(MemberType.STORED).build();
+                .withMemberType(MemberType.STORED).build();
         DataMember numericAttribute = newDataMemberBuilder().withName("id").withDataType(numeric)
-        		.withMemberType(MemberType.STORED).build();
+                .withMemberType(MemberType.STORED).build();
         DataMember stringAttribute2 = newDataMemberBuilder().withName("name").withDataType(string)
-        		.withMemberType(MemberType.STORED).build();
+                .withMemberType(MemberType.STORED).build();
         
         ActorType actor = newActorTypeBuilder()
                 .withName(ACTOR_TYPE_NAME)
@@ -319,90 +319,90 @@ public class Esm2UiVisualElementTest {
         useEntityType(e2).withMappedEntity(e2).build();
         
         Access access1 = newAccessBuilder().withName("e1")
-        		.withTarget(e1)
-        		.withLower(0)
-        		.withUpper(-1)
-        		.withCreateable(true)
-        		.withTargetDefinedCRUD(false)
-        		.build();
+                .withTarget(e1)
+                .withLower(0)
+                .withUpper(-1)
+                .withCreateable(true)
+                .withTargetDefinedCRUD(false)
+                .build();
         
         Access access2 = newAccessBuilder().withName("e2")
-        		.withTarget(e2)
-        		.withLower(0)
-        		.withUpper(-1)
-        		.withCreateable(true)
-        		.withTargetDefinedCRUD(false)
-        		.build();
+                .withTarget(e2)
+                .withLower(0)
+                .withUpper(-1)
+                .withCreateable(true)
+                .withTargetDefinedCRUD(false)
+                .build();
 
         useActorType(actor).withAccesses(access1, access2).build();
         
         final Model model = newModelBuilder().withName(MODEL_NAME)
                 .withElements(actor, e1, numeric, password, string, e2).build();
 
-		DataField dataField1 = newDataFieldBuilder().withName(stringAttribute.getName()).withLabel(stringAttribute.getName().toUpperCase())
-					.withIconName(SimpleOrderModel.getIconName(stringAttribute)).withDataFeature(stringAttribute).withCol(3).withStretch(Stretch.BOTH).build();
-		DataField dataField2 = newDataFieldBuilder().withName(numericAttribute.getName()).withLabel(numericAttribute.getName().toUpperCase())
-				.withIconName(SimpleOrderModel.getIconName(numericAttribute)).withDataFeature(numericAttribute).withCol(3).withStretch(Stretch.BOTH).build();
-		DataField dataField3 = newDataFieldBuilder().withName(passwordAttribute.getName()).withLabel(passwordAttribute.getName().toUpperCase())
-				.withIconName(SimpleOrderModel.getIconName(passwordAttribute)).withDataFeature(passwordAttribute).withCol(3).withStretch(Stretch.BOTH).build();
-		
-		//stretch NONE, HORIZONTAL, VERTICAL, BOTH
-		//fit LOOSE, TIGHT
+        DataField dataField1 = newDataFieldBuilder().withName(stringAttribute.getName()).withLabel(stringAttribute.getName().toUpperCase())
+                    .withIconName(SimpleOrderModel.getIconName(stringAttribute)).withDataFeature(stringAttribute).withCol(3).withStretch(Stretch.BOTH).build();
+        DataField dataField2 = newDataFieldBuilder().withName(numericAttribute.getName()).withLabel(numericAttribute.getName().toUpperCase())
+                .withIconName(SimpleOrderModel.getIconName(numericAttribute)).withDataFeature(numericAttribute).withCol(3).withStretch(Stretch.BOTH).build();
+        DataField dataField3 = newDataFieldBuilder().withName(passwordAttribute.getName()).withLabel(passwordAttribute.getName().toUpperCase())
+                .withIconName(SimpleOrderModel.getIconName(passwordAttribute)).withDataFeature(passwordAttribute).withCol(3).withStretch(Stretch.BOTH).build();
+        
+        //stretch NONE, HORIZONTAL, VERTICAL, BOTH
+        //fit LOOSE, TIGHT
         Group group1 = newGroupBuilder().withName("group1").withLabel("G1").withCol(4).withRow(6)
-        		.withFrame(true)
-        		.withStretch(Stretch.NONE)
-        		.withFit(Fit.LOOSE)
-        		.withComponents(newPlaceholderBuilder().withName("ph").build())
-        		.build();
+                .withFrame(true)
+                .withStretch(Stretch.NONE)
+                .withFit(Fit.LOOSE)
+                .withComponents(newPlaceholderBuilder().withName("ph").build())
+                .build();
         
         Group group2 = newGroupBuilder().withName("group2").withLabel("G2").withCol(8).withRow(2)
-        		.withFrame(false)
-        		.withStretch(Stretch.HORIZONTAL)
-        		.withFit(Fit.LOOSE)
-        		.withComponents(newPlaceholderBuilder().withName("ph").build())
-        		.build();
+                .withFrame(false)
+                .withStretch(Stretch.HORIZONTAL)
+                .withFit(Fit.LOOSE)
+                .withComponents(newPlaceholderBuilder().withName("ph").build())
+                .build();
         
         Group group3 = newGroupBuilder().withName("group3").withLabel("G3").withCol(4).withRow(6)
-        		.withFrame(true)
-        		.withStretch(Stretch.VERTICAL)
-        		.withFit(Fit.TIGHT)
-        		.withComponents(newPlaceholderBuilder().withName("ph").build())
-        		.build();
+                .withFrame(true)
+                .withStretch(Stretch.VERTICAL)
+                .withFit(Fit.TIGHT)
+                .withComponents(newPlaceholderBuilder().withName("ph").build())
+                .build();
         
         Group group4 = newGroupBuilder().withName("group4").withLabel("G4").withCol(8).withRow(2)
-        		.withFrame(false)
-        		.withStretch(Stretch.BOTH)
-        		.withFit(Fit.TIGHT)
-        		.withComponents(newPlaceholderBuilder().withName("ph").build())
-        		.build();
+                .withFrame(false)
+                .withStretch(Stretch.BOTH)
+                .withFit(Fit.TIGHT)
+                .withComponents(newPlaceholderBuilder().withName("ph").build())
+                .build();
         
         //direction HORIZONTAL / VERTICAL / DEFAULT (gets the root's direction, which is horizontal if default)
         
         Group group5 = newGroupBuilder().withName("group5").withLabel("G5").withCol(4).withRow(6)
-        		.withFrame(true)
-        		.withLayout(Layout.HORIZONTAL)
-        		.build();
+                .withFrame(true)
+                .withLayout(Layout.HORIZONTAL)
+                .build();
         
         Group group6 = newGroupBuilder().withName("group6").withLabel("G6").withCol(8).withRow(2)
-        		.withFrame(false)
-        		.withLayout(Layout.VERTICAL)
-        		.build();
+                .withFrame(false)
+                .withLayout(Layout.VERTICAL)
+                .build();
         
         Group group7 = newGroupBuilder().withName("group7").withLabel("G7").withCol(8).withRow(2)
-        		.withFrame(false)
-        		.withLayout(Layout.DEFAULT)
-        		.build();
+                .withFrame(false)
+                .withLayout(Layout.DEFAULT)
+                .build();
         
         Group group8 = newGroupBuilder().withName("group8").withLabel("G8").withCol(8).withRow(2)
-        		.withFrame(false)
-        		.withLayout(Layout.VERTICAL)
-        		.withComponents(newGroupBuilder().withName("group").withLayout(Layout.DEFAULT).build())
-        		.build();
+                .withFrame(false)
+                .withLayout(Layout.VERTICAL)
+                .withComponents(newGroupBuilder().withName("group").withLayout(Layout.DEFAULT).build())
+                .build();
         
         TransferObjectView view2 = newTransferObjectViewBuilder().withName("VIEW").withLabel(e2.getName())
-        		.withComponents(group1, group2, group3, group4).build();
+                .withComponents(group1, group2, group3, group4).build();
         TransferObjectForm form2 = newTransferObjectFormBuilder().withName("FORM").withLabel(e2.getName())
-        		.withComponents(group5, group6, group7, group8).build();
+                .withComponents(group5, group6, group7, group8).build();
         
         useEntityType(e2).withForm(form2).withView(view2).build();
         
@@ -410,50 +410,50 @@ public class Esm2UiVisualElementTest {
         //align  START, END, STRETCH, CENTER
         
         Group group9 = newGroupBuilder().withName("group9").withLabel("G9").withCol(4).withRow(6)
-        		.withFrame(true)
-        		.withLayout(Layout.HORIZONTAL)
-        		.withHorizontal(Horizontal.LEFT)
-        		.withVertical(Vertical.TOP)
-        		.build();
+                .withFrame(true)
+                .withLayout(Layout.HORIZONTAL)
+                .withHorizontal(Horizontal.LEFT)
+                .withVertical(Vertical.TOP)
+                .build();
         
         Group group10 = newGroupBuilder().withName("group10").withLabel("G10").withCol(8).withRow(2)
-        		.withFrame(false)
-        		.withLayout(Layout.VERTICAL)
-        		.withHorizontal(Horizontal.RIGHT)
-        		.withVertical(Vertical.BOTTOM)
-        		.build();
+                .withFrame(false)
+                .withLayout(Layout.VERTICAL)
+                .withHorizontal(Horizontal.RIGHT)
+                .withVertical(Vertical.BOTTOM)
+                .build();
         
         Group group11 = newGroupBuilder().withName("group11").withLabel("G11").withCol(8).withRow(2)
-        		.withFrame(false)
-        		.withLayout(Layout.DEFAULT)
-        		.withHorizontal(Horizontal.CENTER)
-        		.withVertical(Vertical.CENTER)
-        		.build();
+                .withFrame(false)
+                .withLayout(Layout.DEFAULT)
+                .withHorizontal(Horizontal.CENTER)
+                .withVertical(Vertical.CENTER)
+                .build();
         
         Group group12 = newGroupBuilder().withName("group12").withLabel("G12").withCol(8).withRow(2)
-        		.withFrame(false)
-        		.withLayout(Layout.VERTICAL)
-        		.withHorizontal(Horizontal.CENTER)
-        		.withVertical(Vertical.CENTER)
-        		.withComponents(dataField1, dataField2, dataField3)
-        		.build();
+                .withFrame(false)
+                .withLayout(Layout.VERTICAL)
+                .withHorizontal(Horizontal.CENTER)
+                .withVertical(Vertical.CENTER)
+                .withComponents(dataField1, dataField2, dataField3)
+                .build();
         
         Group group13 = newGroupBuilder().withName("group13").withLabel("G13").withCol(8).withRow(2)
-        		.withFrame(false)
-        		.withLayout(Layout.VERTICAL)
-        		.withHorizontal(Horizontal.SPACE_AROUND)
-        		.withVertical(Vertical.SPACE_AROUND)
-        		.build();
+                .withFrame(false)
+                .withLayout(Layout.VERTICAL)
+                .withHorizontal(Horizontal.SPACE_AROUND)
+                .withVertical(Vertical.SPACE_AROUND)
+                .build();
         
         Group group14 = newGroupBuilder().withName("group14").withLabel("G14").withCol(8).withRow(2)
-        		.withFrame(false)
-        		.withLayout(Layout.HORIZONTAL)
-        		.withHorizontal(Horizontal.SPACE_BETWEEN)
-        		.withVertical(Vertical.SPACE_BETWEEN)
-        		.build();
+                .withFrame(false)
+                .withLayout(Layout.HORIZONTAL)
+                .withHorizontal(Horizontal.SPACE_BETWEEN)
+                .withVertical(Vertical.SPACE_BETWEEN)
+                .build();
         
         TransferObjectView view1 = newTransferObjectViewBuilder().withName("VIEW").withLabel(e1.getName())
-        		.withComponents(group9, group10, group11, group12, group13, group14).build();
+                .withComponents(group9, group10, group11, group12, group13, group14).build();
         
         useEntityType(e1).withView(view1).build();
         
@@ -621,9 +621,9 @@ public class Esm2UiVisualElementTest {
         final String ACTOR_TYPE_NAME = "Actor";
         
         StringType string = newStringTypeBuilder().withName("string").withMaxLength(256)
-        		.withRegExp(".*").build();
+                .withRegExp(".*").build();
         NumericType numeric = newNumericTypeBuilder().withName("numeric")
-        		.withPrecision(2).withScale(1).build();
+                .withPrecision(2).withScale(1).build();
         
         final EntityType e1 = newEntityTypeBuilder()
                 .withName(ENTITY_TYPE_NAME_1)
@@ -684,118 +684,118 @@ public class Esm2UiVisualElementTest {
                 .build();
         
         Access access1 = newAccessBuilder().withName("e1")
-        		.withTarget(e1)
-        		.withLower(0)
-        		.withUpper(-1)
-        		.withCreateable(true)
-        		.withTargetDefinedCRUD(false)
-        		.build();
+                .withTarget(e1)
+                .withLower(0)
+                .withUpper(-1)
+                .withCreateable(true)
+                .withTargetDefinedCRUD(false)
+                .build();
         
         Access access2 = newAccessBuilder().withName("e2")
-        		.withTarget(e2)
-        		.withLower(0)
-        		.withUpper(-1)
-        		.withCreateable(false)
-        		.withTargetDefinedCRUD(false)
-        		.build();
+                .withTarget(e2)
+                .withLower(0)
+                .withUpper(-1)
+                .withCreateable(false)
+                .withTargetDefinedCRUD(false)
+                .build();
         
         Access access3 = newAccessBuilder().withName("e3")
-        		.withTarget(e3)
-        		.withLower(0)
-        		.withUpper(-1)
-        		.withCreateable(false)
-        		.withTargetDefinedCRUD(false)
-        		.build();
+                .withTarget(e3)
+                .withLower(0)
+                .withUpper(-1)
+                .withCreateable(false)
+                .withTargetDefinedCRUD(false)
+                .build();
 
         /*
          * 2. if the relation represented by the tabular ref field is association - button is created, button action target is the table page of the relation target
          */
         OneWayRelationMember associationNotTargetDefined = newOneWayRelationMemberBuilder()
-        		.withName("associationNotTargetDefined")
-        		.withLower(0)
-        		.withUpper(-1)
-        		.withTarget(e6)
-        		.withMemberType(MemberType.STORED)
-        		.withRelationKind(RelationKind.ASSOCIATION)
-        		.build();
+                .withName("associationNotTargetDefined")
+                .withLower(0)
+                .withUpper(-1)
+                .withTarget(e6)
+                .withMemberType(MemberType.STORED)
+                .withRelationKind(RelationKind.ASSOCIATION)
+                .build();
         OneWayRelationMember associationTargetDefined = newOneWayRelationMemberBuilder()
-        		.withName("associationTargetDefined")
-        		.withLower(0)
-        		.withUpper(-1)
-        		.withTarget(e6)
-        		.withMemberType(MemberType.STORED)
-        		.withRelationKind(RelationKind.ASSOCIATION)
-        		.build();
+                .withName("associationTargetDefined")
+                .withLower(0)
+                .withUpper(-1)
+                .withTarget(e6)
+                .withMemberType(MemberType.STORED)
+                .withRelationKind(RelationKind.ASSOCIATION)
+                .build();
         
         useEntityType(e2).withRelations(associationNotTargetDefined, associationTargetDefined).build();
 
         TabularReferenceField tabular5 = newTabularReferenceFieldBuilder().withName(associationNotTargetDefined.getName())
-				.withLabel(associationNotTargetDefined.getName().toUpperCase()).withRelationFeature(associationNotTargetDefined).withCol(12)
-				.withTargetDefinedTabular(false)
-				.withColumns(newDataColumnBuilder().withName(idE6.getName()).withDataFeature(idE6).build(),
-    					newDataColumnBuilder().withName(nameE6.getName()).withDataFeature(nameE6).build())
-				.build();
+                .withLabel(associationNotTargetDefined.getName().toUpperCase()).withRelationFeature(associationNotTargetDefined).withCol(12)
+                .withTargetDefinedTabular(false)
+                .withColumns(newDataColumnBuilder().withName(idE6.getName()).withDataFeature(idE6).build(),
+                        newDataColumnBuilder().withName(nameE6.getName()).withDataFeature(nameE6).build())
+                .build();
         TabularReferenceField tabular6 = newTabularReferenceFieldBuilder().withName(associationTargetDefined.getName())
-				.withLabel(associationTargetDefined.getName().toUpperCase()).withRelationFeature(associationTargetDefined).withCol(12)
-				.withTargetDefinedTabular(true)
-				.build();
+                .withLabel(associationTargetDefined.getName().toUpperCase()).withRelationFeature(associationTargetDefined).withCol(12)
+                .withTargetDefinedTabular(true)
+                .build();
         
         useEntityType(e6).withTable(
-        		newTransferObjectTableBuilder().withName(e6.getName() + "TABLE")
-        			.withColumns(newDataColumnBuilder().withName(idE6.getName()).withDataFeature(idE6).build(),
-        					newDataColumnBuilder().withName(nameE6.getName()).withDataFeature(nameE6).build())
-        			.build()
-        		).build();
+                newTransferObjectTableBuilder().withName(e6.getName() + "TABLE")
+                    .withColumns(newDataColumnBuilder().withName(idE6.getName()).withDataFeature(idE6).build(),
+                            newDataColumnBuilder().withName(nameE6.getName()).withDataFeature(nameE6).build())
+                    .build()
+                ).build();
         
         useEntityType(e2).withView(
-        		newTransferObjectViewBuilder().withName(e2.getName() + "VIEW")
-        			.withComponents(tabular5, tabular6)
-        		).build();
+                newTransferObjectViewBuilder().withName(e2.getName() + "VIEW")
+                    .withComponents(tabular5, tabular6)
+                ).build();
         
         /*
          * 3. if the relation represented by the tabular ref field is composition / aggregation - table is created - target defined / not target defined
          */
         OneWayRelationMember compositionNotTargetDefined = newOneWayRelationMemberBuilder()
-        		.withName("compositionNotTargetDefined")
-        		.withLower(0)
-        		.withUpper(-1)
-        		.withTarget(e4)
-        		.withMemberType(MemberType.STORED)
-        		.withRelationKind(RelationKind.COMPOSITION)
-        		.build();
+                .withName("compositionNotTargetDefined")
+                .withLower(0)
+                .withUpper(-1)
+                .withTarget(e4)
+                .withMemberType(MemberType.STORED)
+                .withRelationKind(RelationKind.COMPOSITION)
+                .build();
         OneWayRelationMember compositionTargetDefined = newOneWayRelationMemberBuilder()
-        		.withName("compositionTargetDefined")
-        		.withLower(0)
-        		.withUpper(-1)
-        		.withTarget(e4)
-        		.withMemberType(MemberType.STORED)
-        		.withRelationKind(RelationKind.COMPOSITION)
-        		.build();
+                .withName("compositionTargetDefined")
+                .withLower(0)
+                .withUpper(-1)
+                .withTarget(e4)
+                .withMemberType(MemberType.STORED)
+                .withRelationKind(RelationKind.COMPOSITION)
+                .build();
         
         useEntityType(e3).withRelations(compositionNotTargetDefined, compositionTargetDefined).build();
 
         TabularReferenceField tabular7 = newTabularReferenceFieldBuilder().withName(compositionNotTargetDefined.getName())
-				.withLabel(compositionNotTargetDefined.getName().toUpperCase()).withRelationFeature(compositionNotTargetDefined).withCol(12)
-				.withTargetDefinedTabular(false)
-				.withColumns(newDataColumnBuilder().withName(idE4.getName()).withDataFeature(idE4).build(),
-    					newDataColumnBuilder().withName(nameE4.getName()).withDataFeature(nameE4).build())
-				.build();
+                .withLabel(compositionNotTargetDefined.getName().toUpperCase()).withRelationFeature(compositionNotTargetDefined).withCol(12)
+                .withTargetDefinedTabular(false)
+                .withColumns(newDataColumnBuilder().withName(idE4.getName()).withDataFeature(idE4).build(),
+                        newDataColumnBuilder().withName(nameE4.getName()).withDataFeature(nameE4).build())
+                .build();
         TabularReferenceField tabular8 = newTabularReferenceFieldBuilder().withName(compositionTargetDefined.getName())
-				.withLabel(compositionTargetDefined.getName().toUpperCase()).withRelationFeature(compositionTargetDefined).withCol(12)
-				.withTargetDefinedTabular(true)
-				.build();
+                .withLabel(compositionTargetDefined.getName().toUpperCase()).withRelationFeature(compositionTargetDefined).withCol(12)
+                .withTargetDefinedTabular(true)
+                .build();
         
         useEntityType(e4).withTable(
-        		newTransferObjectTableBuilder().withName(e4.getName() + "TABLE")
-        			.withColumns(newDataColumnBuilder().withName(idE4.getName()).withDataFeature(idE4).build(),
-        					newDataColumnBuilder().withName(nameE4.getName()).withDataFeature(nameE4).build())
-        			.build()
-        		).build();
+                newTransferObjectTableBuilder().withName(e4.getName() + "TABLE")
+                    .withColumns(newDataColumnBuilder().withName(idE4.getName()).withDataFeature(idE4).build(),
+                            newDataColumnBuilder().withName(nameE4.getName()).withDataFeature(nameE4).build())
+                    .build()
+                ).build();
         
         useEntityType(e3).withView(
-        		newTransferObjectViewBuilder().withName(e3.getName() + "VIEW")
-        			.withComponents(tabular7, tabular8)
-        		).build();
+                newTransferObjectViewBuilder().withName(e3.getName() + "VIEW")
+                    .withComponents(tabular7, tabular8)
+                ).build();
 
         useActorType(actor).withAccesses(access1, access2, access3).build();
         
@@ -858,50 +858,50 @@ public class Esm2UiVisualElementTest {
         
         PasswordType password = newPasswordTypeBuilder().withName("password").build();
         StringType string = newStringTypeBuilder().withName("string")
-        		.withMaxLength(256)
-        		.withRegExp(".*")
-        		.build();
+                .withMaxLength(256)
+                .withRegExp(".*")
+                .build();
         NumericType numeric = newNumericTypeBuilder().withName("numeric")
-        		.withPrecision(2)
-        		.withScale(1)
-        		.build();
+                .withPrecision(2)
+                .withScale(1)
+                .build();
         BooleanType booleanType = newBooleanTypeBuilder().withName("boolean").build();
         DateType dateType = newDateTypeBuilder().withName("date").build();
         TimestampType timestamp = newTimestampTypeBuilder().withName("timestamp").withBaseUnit(DurationType.HOUR)
-        		.build();
+                .build();
         EnumerationType enumeration = newEnumerationTypeBuilder().withName("enum")
-        		.withMembers(ImmutableList.of(
-        				newEnumerationMemberBuilder().withName("m1").withOrdinal(1).build(),
-        				newEnumerationMemberBuilder().withName("m2").withOrdinal(2).build()
-        				))
-        		.build();
+                .withMembers(ImmutableList.of(
+                        newEnumerationMemberBuilder().withName("m1").withOrdinal(1).build(),
+                        newEnumerationMemberBuilder().withName("m2").withOrdinal(2).build()
+                        ))
+                .build();
         
         DataMember passwordAttribute = newDataMemberBuilder().withName("password").withDataType(password)
-        		.withMemberType(MemberType.STORED).build();
+                .withMemberType(MemberType.STORED).build();
         DataMember stringAttribute1 = newDataMemberBuilder().withName("string1").withDataType(string)
-        		.withMemberType(MemberType.STORED).build();
+                .withMemberType(MemberType.STORED).build();
         DataMember stringAttribute2 = newDataMemberBuilder().withName("string2").withDataType(string)
-        		.withMemberType(MemberType.STORED).build();
+                .withMemberType(MemberType.STORED).build();
         DataMember stringAttribute3 = newDataMemberBuilder().withName("string3").withDataType(string)
-        		.withMemberType(MemberType.STORED).build();
+                .withMemberType(MemberType.STORED).build();
         DataMember stringAttribute4 = newDataMemberBuilder().withName("string4").withDataType(string)
-        		.withMemberType(MemberType.STORED).build();
+                .withMemberType(MemberType.STORED).build();
         DataMember numericAttribute = newDataMemberBuilder().withName("numeric").withDataType(numeric)
-        		.withMemberType(MemberType.STORED).build();
+                .withMemberType(MemberType.STORED).build();
         DataMember booleanAttribute = newDataMemberBuilder().withName("boolean").withDataType(booleanType)
-        		.withMemberType(MemberType.STORED).build();
+                .withMemberType(MemberType.STORED).build();
         DataMember dateAttribute = newDataMemberBuilder().withName("date").withDataType(dateType)
-        		.withMemberType(MemberType.STORED).build();
+                .withMemberType(MemberType.STORED).build();
         DataMember timestampAttribute = newDataMemberBuilder().withName("timestamp").withDataType(timestamp)
-        		.withMemberType(MemberType.STORED).build();
+                .withMemberType(MemberType.STORED).build();
         DataMember enumerationAttribute1 = newDataMemberBuilder().withName("enumeration1").withDataType(enumeration)
-        		.withMemberType(MemberType.STORED).build();
+                .withMemberType(MemberType.STORED).build();
         DataMember enumerationAttribute2 = newDataMemberBuilder().withName("enumeration2").withDataType(enumeration)
-        		.withMemberType(MemberType.STORED).build();
+                .withMemberType(MemberType.STORED).build();
         Operation operation = newOperationBuilder().withName("operation").withOperationType(OperationType.INSTANCE)
-        		.withInherited(newInheritedOperationReferenceBuilder().build())
-        		.withBinding("operation")
-        		.build();
+                .withInherited(newInheritedOperationReferenceBuilder().build())
+                .withBinding("operation")
+                .build();
         
         ActorType actor = newActorTypeBuilder()
                 .withName(ACTOR_TYPE_NAME)
@@ -929,55 +929,55 @@ public class Esm2UiVisualElementTest {
         e1.addGeneralization(e0);
         
         Access access1 = newAccessBuilder().withName("e1")
-        		.withTarget(e1)
-        		.withLower(0)
-        		.withUpper(-1)
-        		.withCreateable(true)
-        		.withTargetDefinedCRUD(false)
-        		.build();
+                .withTarget(e1)
+                .withLower(0)
+                .withUpper(-1)
+                .withCreateable(true)
+                .withTargetDefinedCRUD(false)
+                .build();
 
         useActorType(actor).withAccesses(access1).build();
         
         DataField dataFieldTextInput = newDataFieldBuilder().withName("TextInput").withLabel(stringAttribute1.getName().toUpperCase())
-				.withIconName(SimpleOrderModel.getIconName(stringAttribute1)).withDataFeature(stringAttribute1).withTextWidget(TextWidget.INPUT)
-				.withTextMultiLine(false).withCol(2).withRow(4)
-				.withStretch(Stretch.NONE).withFit(Fit.LOOSE).build();
+                .withIconName(SimpleOrderModel.getIconName(stringAttribute1)).withDataFeature(stringAttribute1).withTextWidget(TextWidget.INPUT)
+                .withTextMultiLine(false).withCol(2).withRow(4)
+                .withStretch(Stretch.NONE).withFit(Fit.LOOSE).build();
         DataField dataFieldText = newDataFieldBuilder().withName("Text").withLabel(stringAttribute2.getName().toUpperCase())
-				.withIconName(SimpleOrderModel.getIconName(stringAttribute2)).withDataFeature(stringAttribute2).withTextWidget(TextWidget.TEXT)
-				.withTextMultiLine(false).withCol(2).withRow(4)
-				.withStretch(Stretch.HORIZONTAL).withFit(Fit.TIGHT).build();
+                .withIconName(SimpleOrderModel.getIconName(stringAttribute2)).withDataFeature(stringAttribute2).withTextWidget(TextWidget.TEXT)
+                .withTextMultiLine(false).withCol(2).withRow(4)
+                .withStretch(Stretch.HORIZONTAL).withFit(Fit.TIGHT).build();
         DataField dataFieldTextAreaInput = newDataFieldBuilder().withName("TextAreaInput").withLabel(stringAttribute3.getName().toUpperCase())
-				.withIconName(SimpleOrderModel.getIconName(stringAttribute3)).withDataFeature(stringAttribute3).withTextWidget(TextWidget.INPUT)
-				.withTextMultiLine(true).withCol(2).withRow(6)
-				.withStretch(Stretch.HORIZONTAL).withFit(Fit.LOOSE).build();
+                .withIconName(SimpleOrderModel.getIconName(stringAttribute3)).withDataFeature(stringAttribute3).withTextWidget(TextWidget.INPUT)
+                .withTextMultiLine(true).withCol(2).withRow(6)
+                .withStretch(Stretch.HORIZONTAL).withFit(Fit.LOOSE).build();
         DataField dataFieldTextArea = newDataFieldBuilder().withName("TextArea").withLabel(stringAttribute4.getName().toUpperCase())
-				.withIconName(SimpleOrderModel.getIconName(stringAttribute4)).withDataFeature(stringAttribute4).withTextWidget(TextWidget.TEXT)
-				.withTextMultiLine(true).withCol(2).withRow(6)
-				.withStretch(Stretch.VERTICAL).withFit(Fit.TIGHT).build();
+                .withIconName(SimpleOrderModel.getIconName(stringAttribute4)).withDataFeature(stringAttribute4).withTextWidget(TextWidget.TEXT)
+                .withTextMultiLine(true).withCol(2).withRow(6)
+                .withStretch(Stretch.VERTICAL).withFit(Fit.TIGHT).build();
         DataField dataFieldNumeric = newDataFieldBuilder().withName(numericAttribute.getName()).withLabel(numericAttribute.getName().toUpperCase())
-				.withIconName(SimpleOrderModel.getIconName(numericAttribute)).withDataFeature(numericAttribute).withCol(3)
-				.withStretch(Stretch.HORIZONTAL).withFit(Fit.LOOSE).build();
+                .withIconName(SimpleOrderModel.getIconName(numericAttribute)).withDataFeature(numericAttribute).withCol(3)
+                .withStretch(Stretch.HORIZONTAL).withFit(Fit.LOOSE).build();
         DataField dataFieldSwitch = newDataFieldBuilder().withName(booleanAttribute.getName()).withLabel(booleanAttribute.getName().toUpperCase())
-				.withIconName(SimpleOrderModel.getIconName(booleanAttribute)).withDataFeature(booleanAttribute).withCol(3)
-				.withStretch(Stretch.BOTH).withFit(Fit.TIGHT).build();
+                .withIconName(SimpleOrderModel.getIconName(booleanAttribute)).withDataFeature(booleanAttribute).withCol(3)
+                .withStretch(Stretch.BOTH).withFit(Fit.TIGHT).build();
         DataField dataFieldDate = newDataFieldBuilder().withName(dateAttribute.getName()).withLabel(dateAttribute.getName().toUpperCase())
-				.withIconName(SimpleOrderModel.getIconName(dateAttribute)).withDataFeature(dateAttribute).withCol(3)
-				.withStretch(Stretch.NONE).withFit(Fit.LOOSE).build();
+                .withIconName(SimpleOrderModel.getIconName(dateAttribute)).withDataFeature(dateAttribute).withCol(3)
+                .withStretch(Stretch.NONE).withFit(Fit.LOOSE).build();
         DataField dataFieldDateTime = newDataFieldBuilder().withName(timestampAttribute.getName()).withLabel(timestampAttribute.getName().toUpperCase())
-				.withIconName(SimpleOrderModel.getIconName(timestampAttribute)).withDataFeature(timestampAttribute).withCol(3)
-				.withStretch(Stretch.BOTH).withFit(Fit.LOOSE).build();
+                .withIconName(SimpleOrderModel.getIconName(timestampAttribute)).withDataFeature(timestampAttribute).withCol(3)
+                .withStretch(Stretch.BOTH).withFit(Fit.LOOSE).build();
         DataField dataFieldRadio = newDataFieldBuilder().withName("radio").withLabel(enumerationAttribute1.getName().toUpperCase())
-				.withIconName(SimpleOrderModel.getIconName(enumerationAttribute1)).withDataFeature(enumerationAttribute1).withEnumWidget(EnumWidget.RADIO).withCol(3)
-				.withStretch(Stretch.HORIZONTAL).withFit(Fit.TIGHT).build();
+                .withIconName(SimpleOrderModel.getIconName(enumerationAttribute1)).withDataFeature(enumerationAttribute1).withEnumWidget(EnumWidget.RADIO).withCol(3)
+                .withStretch(Stretch.HORIZONTAL).withFit(Fit.TIGHT).build();
         DataField dataFieldCombo = newDataFieldBuilder().withName("combo").withLabel(enumerationAttribute2.getName().toUpperCase())
-				.withIconName(SimpleOrderModel.getIconName(enumerationAttribute2)).withDataFeature(enumerationAttribute2).withEnumWidget(EnumWidget.COMBO).withCol(3)
-				.withStretch(Stretch.VERTICAL).withFit(Fit.LOOSE).build();
+                .withIconName(SimpleOrderModel.getIconName(enumerationAttribute2)).withDataFeature(enumerationAttribute2).withEnumWidget(EnumWidget.COMBO).withCol(3)
+                .withStretch(Stretch.VERTICAL).withFit(Fit.LOOSE).build();
         DataField dataFieldPassword = newDataFieldBuilder().withName(passwordAttribute.getName()).withLabel(passwordAttribute.getName().toUpperCase())
- 				.withIconName(SimpleOrderModel.getIconName(passwordAttribute)).withDataFeature(passwordAttribute).withCol(3)
- 				.withStretch(Stretch.NONE).withFit(Fit.LOOSE).build();
+                 .withIconName(SimpleOrderModel.getIconName(passwordAttribute)).withDataFeature(passwordAttribute).withCol(3)
+                 .withStretch(Stretch.NONE).withFit(Fit.LOOSE).build();
         OperationForm operationForm = newOperationFormBuilder().withName("operation").withOperation("operation")
-        		.withRow(1).withCol(2).withFit(Fit.LOOSE).withStretch(Stretch.NONE)
-				.build();
+                .withRow(1).withCol(2).withFit(Fit.LOOSE).withStretch(Stretch.NONE)
+                .build();
         
         Divider divider = newDividerBuilder().withName("divider").withCol(4).withRow(2).withStretch(Stretch.HORIZONTAL).withFit(Fit.TIGHT).withLabel("label").build();
         Icon icon = newIconBuilder().withName("icon").withCol(2).withRow(2).withIconName("basket").withStretch(Stretch.NONE).withFit(Fit.LOOSE).build();
@@ -985,13 +985,13 @@ public class Esm2UiVisualElementTest {
         TextField textField = newTextFieldBuilder().withName("textField").withText("hello").withCol(3).withRow(2).withStretch(Stretch.HORIZONTAL).withFit(Fit.LOOSE).build();
         
         useEntityType(e1).withView(
-        			newTransferObjectViewBuilder().withName("View")
-        				.withComponents(dataFieldTextInput, dataFieldText, dataFieldTextAreaInput,
-        						dataFieldTextArea, dataFieldNumeric, dataFieldSwitch, dataFieldDate,
-        						dataFieldDateTime, dataFieldRadio, dataFieldCombo, dataFieldPassword,
-        						divider, icon, placeholder, textField, operationForm)
-        				.build()
-        		).build();
+                    newTransferObjectViewBuilder().withName("View")
+                        .withComponents(dataFieldTextInput, dataFieldText, dataFieldTextAreaInput,
+                                dataFieldTextArea, dataFieldNumeric, dataFieldSwitch, dataFieldDate,
+                                dataFieldDateTime, dataFieldRadio, dataFieldCombo, dataFieldPassword,
+                                divider, icon, placeholder, textField, operationForm)
+                        .build()
+                ).build();
         
         final Model model = newModelBuilder().withName(MODEL_NAME)
                 .withElements(actor, e0, e1, password, string, numeric, booleanType, dateType, timestamp, enumeration).build();
@@ -1004,7 +1004,7 @@ public class Esm2UiVisualElementTest {
                 .findAny();
         assertTrue(application.isPresent());
         final Optional<ClassType> uiE1 = application.get().getDataElements().stream().filter(e -> e instanceof ClassType && e.getName().equals(e1.getFQName()))
-        		.map(e -> (ClassType) e).findAny();
+                .map(e -> (ClassType) e).findAny();
         assertTrue(uiE1.isPresent());
         
         final Optional<PageDefinition> e1ViewPage = application.get().getPages().stream().filter(p -> p.getPageType().equals(PageType.VIEW) && p.getDataElement().getName().equals(access1.getName())).findAny();
@@ -1016,7 +1016,7 @@ public class Esm2UiVisualElementTest {
         Flex flexFromView = (Flex) flexFromViewOpt.get();
         
         final Optional<Formatted> uiText1 = flexFromView.getChildren().stream().filter(c -> c instanceof Formatted)
-        		.map(f -> (Formatted) f).filter(f -> f.getName().equals(dataFieldText.getName())).findAny();
+                .map(f -> (Formatted) f).filter(f -> f.getName().equals(dataFieldText.getName())).findAny();
         assertTrue(uiText1.isPresent());
         assertEquals(2d, uiText1.get().getCol());
         assertEquals(4d, uiText1.get().getRow());
@@ -1027,7 +1027,7 @@ public class Esm2UiVisualElementTest {
         assertEquals(hu.blackbelt.judo.meta.ui.Stretch.HORIZONTAL, uiText1.get().getStretch());
         
         final Optional<Formatted> uiText2 = flexFromView.getChildren().stream().filter(c -> c instanceof Formatted)
-        		.map(f -> (Formatted) f).filter(f -> f.getName().equals(dataFieldTextArea.getName())).findAny();
+                .map(f -> (Formatted) f).filter(f -> f.getName().equals(dataFieldTextArea.getName())).findAny();
         assertTrue(uiText2.isPresent());
         assertEquals(2d, uiText2.get().getCol());
         assertEquals(6d, uiText2.get().getRow());
@@ -1038,7 +1038,7 @@ public class Esm2UiVisualElementTest {
         assertEquals(hu.blackbelt.judo.meta.ui.Stretch.VERTICAL, uiText2.get().getStretch());
 
         final Optional<TextInput> uiText3 = flexFromView.getChildren().stream().filter(c -> c instanceof TextInput)
-        		.map(f -> (TextInput) f).filter(f -> f.getName().equals(dataFieldTextInput.getName())).findAny();
+                .map(f -> (TextInput) f).filter(f -> f.getName().equals(dataFieldTextInput.getName())).findAny();
         assertTrue(uiText3.isPresent());
         assertEquals(2d, uiText3.get().getCol());
         assertEquals(4d, uiText3.get().getRow());
@@ -1049,7 +1049,7 @@ public class Esm2UiVisualElementTest {
         assertEquals(hu.blackbelt.judo.meta.ui.Stretch.NONE, uiText3.get().getStretch());
         
         final Optional<TextArea> uiText4 = flexFromView.getChildren().stream().filter(c -> c instanceof TextArea)
-        		.map(f -> (TextArea) f).filter(f -> f.getName().equals(dataFieldTextAreaInput.getName())).findAny();
+                .map(f -> (TextArea) f).filter(f -> f.getName().equals(dataFieldTextAreaInput.getName())).findAny();
         assertTrue(uiText4.isPresent());
         assertEquals(2d, uiText4.get().getCol());
         assertEquals(6d, uiText4.get().getRow());
@@ -1060,7 +1060,7 @@ public class Esm2UiVisualElementTest {
         assertEquals(hu.blackbelt.judo.meta.ui.Stretch.HORIZONTAL, uiText4.get().getStretch());
         
         final Optional<NumericInput> uiNumeric = flexFromView.getChildren().stream().filter(c -> c instanceof NumericInput)
-        		.map(f -> (NumericInput) f).filter(f -> f.getName().equals(dataFieldNumeric.getName())).findAny();
+                .map(f -> (NumericInput) f).filter(f -> f.getName().equals(dataFieldNumeric.getName())).findAny();
         assertTrue(uiNumeric.isPresent());
         assertEquals(3d, uiNumeric.get().getCol());
         assertEquals(1d, uiNumeric.get().getRow());
@@ -1071,7 +1071,7 @@ public class Esm2UiVisualElementTest {
         assertEquals(hu.blackbelt.judo.meta.ui.Stretch.HORIZONTAL, uiNumeric.get().getStretch());
         
         final Optional<Switch> uiSwitch = flexFromView.getChildren().stream().filter(c -> c instanceof Switch)
-        		.map(f -> (Switch) f).filter(f -> f.getName().equals(dataFieldSwitch.getName())).findAny();
+                .map(f -> (Switch) f).filter(f -> f.getName().equals(dataFieldSwitch.getName())).findAny();
         assertTrue(uiSwitch.isPresent());
         assertEquals(3d, uiSwitch.get().getCol());
         assertEquals(1d, uiSwitch.get().getRow());
@@ -1082,7 +1082,7 @@ public class Esm2UiVisualElementTest {
         assertEquals(hu.blackbelt.judo.meta.ui.Stretch.BOTH, uiSwitch.get().getStretch());
         
         final Optional<DateInput> uiDateInput = flexFromView.getChildren().stream().filter(c -> c instanceof DateInput)
-        		.map(f -> (DateInput) f).filter(f -> f.getName().equals(dataFieldDate.getName())).findAny();
+                .map(f -> (DateInput) f).filter(f -> f.getName().equals(dataFieldDate.getName())).findAny();
         assertTrue(uiDateInput.isPresent());
         assertEquals(3d, uiDateInput.get().getCol());
         assertEquals(1d, uiDateInput.get().getRow());
@@ -1093,7 +1093,7 @@ public class Esm2UiVisualElementTest {
         assertEquals(hu.blackbelt.judo.meta.ui.Stretch.NONE, uiDateInput.get().getStretch());
         
         final Optional<DateTimeInput> uiDateTimeInput = flexFromView.getChildren().stream().filter(c -> c instanceof DateTimeInput)
-        		.map(f -> (DateTimeInput) f).filter(f -> f.getName().equals(dataFieldDateTime.getName())).findAny();
+                .map(f -> (DateTimeInput) f).filter(f -> f.getName().equals(dataFieldDateTime.getName())).findAny();
         assertTrue(uiDateTimeInput.isPresent());
         assertEquals(3d, uiDateTimeInput.get().getCol());
         assertEquals(1d, uiDateTimeInput.get().getRow());
@@ -1104,7 +1104,7 @@ public class Esm2UiVisualElementTest {
         assertEquals(hu.blackbelt.judo.meta.ui.Stretch.BOTH, uiDateTimeInput.get().getStretch());
         
         final Optional<EnumerationRadio> uiEnumerationRadio = flexFromView.getChildren().stream().filter(c -> c instanceof EnumerationRadio)
-        		.map(f -> (EnumerationRadio) f).filter(f -> f.getName().equals(dataFieldRadio.getName())).findAny();
+                .map(f -> (EnumerationRadio) f).filter(f -> f.getName().equals(dataFieldRadio.getName())).findAny();
         assertTrue(uiEnumerationRadio.isPresent());
         assertEquals(3d, uiEnumerationRadio.get().getCol());
         assertEquals(1d, uiEnumerationRadio.get().getRow());
@@ -1115,7 +1115,7 @@ public class Esm2UiVisualElementTest {
         assertEquals(hu.blackbelt.judo.meta.ui.Stretch.HORIZONTAL, uiEnumerationRadio.get().getStretch());
         
         final Optional<EnumerationCombo> uiEnumerationCombo = flexFromView.getChildren().stream().filter(c -> c instanceof EnumerationCombo)
-        		.map(f -> (EnumerationCombo) f).filter(f -> f.getName().equals(dataFieldCombo.getName())).findAny();
+                .map(f -> (EnumerationCombo) f).filter(f -> f.getName().equals(dataFieldCombo.getName())).findAny();
         assertTrue(uiEnumerationCombo.isPresent());
         assertEquals(3d, uiEnumerationCombo.get().getCol());
         assertEquals(1d, uiEnumerationCombo.get().getRow());
@@ -1126,7 +1126,7 @@ public class Esm2UiVisualElementTest {
         assertEquals(hu.blackbelt.judo.meta.ui.Stretch.VERTICAL, uiEnumerationCombo.get().getStretch());
         
         final Optional<PasswordInput> uiPasswordInput = flexFromView.getChildren().stream().filter(c -> c instanceof PasswordInput)
-        		.map(f -> (PasswordInput) f).filter(f -> f.getName().equals(dataFieldPassword.getName())).findAny();
+                .map(f -> (PasswordInput) f).filter(f -> f.getName().equals(dataFieldPassword.getName())).findAny();
         assertTrue(uiPasswordInput.isPresent());
         assertEquals(3d, uiPasswordInput.get().getCol());
         assertEquals(1d, uiPasswordInput.get().getRow());
@@ -1137,7 +1137,7 @@ public class Esm2UiVisualElementTest {
         assertEquals(hu.blackbelt.judo.meta.ui.Stretch.NONE, uiPasswordInput.get().getStretch());
         
         final Optional<Button> uiOperationButton = flexFromView.getChildren().stream().filter(c -> c instanceof Button)
-        		.map(f -> (Button) f).filter(f -> f.getName().equals(operationForm.getName())).findAny();
+                .map(f -> (Button) f).filter(f -> f.getName().equals(operationForm.getName())).findAny();
         assertTrue(uiOperationButton.isPresent());
         assertEquals(2d, uiOperationButton.get().getCol());
         assertEquals(1d, uiOperationButton.get().getRow());
@@ -1150,7 +1150,7 @@ public class Esm2UiVisualElementTest {
         assertEquals(((CallOperationAction)uiOperationButton.get().getAction()).getOperation(), uiOperationButton.get().getDataElement());
         
         final Optional<hu.blackbelt.judo.meta.ui.Divider> uiDivider = flexFromView.getChildren().stream().filter(c -> c instanceof hu.blackbelt.judo.meta.ui.Divider)
-        		.map(f -> (hu.blackbelt.judo.meta.ui.Divider) f).filter(f -> f.getName().equals(divider.getName())).findAny();
+                .map(f -> (hu.blackbelt.judo.meta.ui.Divider) f).filter(f -> f.getName().equals(divider.getName())).findAny();
         assertTrue(uiDivider.isPresent());
         assertEquals(4d, uiDivider.get().getCol());
         assertEquals(2d, uiDivider.get().getRow());
@@ -1158,7 +1158,7 @@ public class Esm2UiVisualElementTest {
         assertEquals(hu.blackbelt.judo.meta.ui.Stretch.HORIZONTAL, uiDivider.get().getStretch());
         
         final Optional<IconImage> uiIconImage = flexFromView.getChildren().stream().filter(c -> c instanceof IconImage)
-        		.map(f -> (IconImage) f).filter(f -> f.getName().equals(icon.getName())).findAny();
+                .map(f -> (IconImage) f).filter(f -> f.getName().equals(icon.getName())).findAny();
         assertTrue(uiIconImage.isPresent());
         assertEquals(icon.getIconName(), uiIconImage.get().getIcon().getName());
         assertEquals(2d, uiIconImage.get().getCol());
@@ -1167,7 +1167,7 @@ public class Esm2UiVisualElementTest {
         assertEquals(hu.blackbelt.judo.meta.ui.Stretch.NONE, uiIconImage.get().getStretch());
         
         final Optional<Spacer> uiSpacer = flexFromView.getChildren().stream().filter(c -> c instanceof Spacer)
-        		.map(f -> (Spacer) f).filter(f -> f.getName().equals(placeholder.getName())).findAny();
+                .map(f -> (Spacer) f).filter(f -> f.getName().equals(placeholder.getName())).findAny();
         assertTrue(uiSpacer.isPresent());
         assertEquals(4d, uiSpacer.get().getCol());
         assertEquals(2d, uiSpacer.get().getRow());
@@ -1175,7 +1175,7 @@ public class Esm2UiVisualElementTest {
         assertEquals(hu.blackbelt.judo.meta.ui.Stretch.BOTH, uiSpacer.get().getStretch());
         
         final Optional<Text> uiText = flexFromView.getChildren().stream().filter(c -> c instanceof Text)
-        		.map(f -> (Text) f).filter(f -> f.getName().equals(textField.getName())).findAny();
+                .map(f -> (Text) f).filter(f -> f.getName().equals(textField.getName())).findAny();
         assertTrue(uiText.isPresent());
         assertEquals(3d, uiText.get().getCol());
         assertEquals(2d, uiText.get().getRow());
@@ -1193,26 +1193,26 @@ public class Esm2UiVisualElementTest {
         
         PasswordType password = newPasswordTypeBuilder().withName("password").build();
         StringType string = newStringTypeBuilder().withName("string")
-        		.withMaxLength(256)
-        		.withRegExp(".*")
-        		.build();
+                .withMaxLength(256)
+                .withRegExp(".*")
+                .build();
         NumericType numeric = newNumericTypeBuilder().withName("numeric")
-        		.withPrecision(2)
-        		.withScale(1)
-        		.build();
+                .withPrecision(2)
+                .withScale(1)
+                .build();
         
         DataMember passwordAttribute = newDataMemberBuilder().withName("password").withDataType(password)
-        		.withMemberType(MemberType.STORED).build();
+                .withMemberType(MemberType.STORED).build();
         DataMember stringAttribute1 = newDataMemberBuilder().withName("string1").withDataType(string)
-        		.withMemberType(MemberType.STORED).build();
+                .withMemberType(MemberType.STORED).build();
         DataMember stringAttribute2 = newDataMemberBuilder().withName("string2").withDataType(string)
-        		.withMemberType(MemberType.STORED).build();
+                .withMemberType(MemberType.STORED).build();
         DataMember stringAttribute3 = newDataMemberBuilder().withName("string3").withDataType(string)
-        		.withMemberType(MemberType.STORED).build();
+                .withMemberType(MemberType.STORED).build();
         DataMember stringAttribute4 = newDataMemberBuilder().withName("string4").withDataType(string)
-        		.withMemberType(MemberType.STORED).build();
+                .withMemberType(MemberType.STORED).build();
         DataMember numericAttribute = newDataMemberBuilder().withName("numeric").withDataType(numeric)
-        		.withMemberType(MemberType.STORED).build();
+                .withMemberType(MemberType.STORED).build();
         
         ActorType actor = newActorTypeBuilder()
                 .withName(ACTOR_TYPE_NAME)
@@ -1229,37 +1229,37 @@ public class Esm2UiVisualElementTest {
         e1.setMappedEntity(e1);
         
         Access access1 = newAccessBuilder().withName("e1")
-        		.withTarget(e1)
-        		.withLower(0)
-        		.withUpper(-1)
-        		.withCreateable(true)
-        		.withTargetDefinedCRUD(false)
-        		.build();
+                .withTarget(e1)
+                .withLower(0)
+                .withUpper(-1)
+                .withCreateable(true)
+                .withTargetDefinedCRUD(false)
+                .build();
 
         useActorType(actor).withAccesses(access1).build();
         
         DataField dataFieldTextInput = newDataFieldBuilder().withName("TextInput").withLabel(stringAttribute1.getName().toUpperCase())
-				.withIconName(SimpleOrderModel.getIconName(stringAttribute1)).withDataFeature(stringAttribute1).withTextWidget(TextWidget.INPUT)
-				.withTextMultiLine(false).withCol(2).withRow(4)
-				.withStretch(Stretch.NONE).withFit(Fit.LOOSE).build();
+                .withIconName(SimpleOrderModel.getIconName(stringAttribute1)).withDataFeature(stringAttribute1).withTextWidget(TextWidget.INPUT)
+                .withTextMultiLine(false).withCol(2).withRow(4)
+                .withStretch(Stretch.NONE).withFit(Fit.LOOSE).build();
         DataField dataFieldText = newDataFieldBuilder().withName("Text").withLabel(stringAttribute2.getName().toUpperCase())
-				.withIconName(SimpleOrderModel.getIconName(stringAttribute2)).withDataFeature(stringAttribute2).withTextWidget(TextWidget.TEXT)
-				.withTextMultiLine(false).withCol(2).withRow(4)
-				.withStretch(Stretch.HORIZONTAL).withFit(Fit.TIGHT).build();
+                .withIconName(SimpleOrderModel.getIconName(stringAttribute2)).withDataFeature(stringAttribute2).withTextWidget(TextWidget.TEXT)
+                .withTextMultiLine(false).withCol(2).withRow(4)
+                .withStretch(Stretch.HORIZONTAL).withFit(Fit.TIGHT).build();
         DataField dataFieldTextAreaInput = newDataFieldBuilder().withName("TextAreaInput").withLabel(stringAttribute3.getName().toUpperCase())
-				.withIconName(SimpleOrderModel.getIconName(stringAttribute3)).withDataFeature(stringAttribute3).withTextWidget(TextWidget.INPUT)
-				.withTextMultiLine(true).withCol(2).withRow(6)
-				.withStretch(Stretch.HORIZONTAL).withFit(Fit.LOOSE).build();
+                .withIconName(SimpleOrderModel.getIconName(stringAttribute3)).withDataFeature(stringAttribute3).withTextWidget(TextWidget.INPUT)
+                .withTextMultiLine(true).withCol(2).withRow(6)
+                .withStretch(Stretch.HORIZONTAL).withFit(Fit.LOOSE).build();
         DataField dataFieldTextArea = newDataFieldBuilder().withName("TextArea").withLabel(stringAttribute4.getName().toUpperCase())
-				.withIconName(SimpleOrderModel.getIconName(stringAttribute4)).withDataFeature(stringAttribute4).withTextWidget(TextWidget.TEXT)
-				.withTextMultiLine(true).withCol(2).withRow(6)
-				.withStretch(Stretch.VERTICAL).withFit(Fit.TIGHT).build();
+                .withIconName(SimpleOrderModel.getIconName(stringAttribute4)).withDataFeature(stringAttribute4).withTextWidget(TextWidget.TEXT)
+                .withTextMultiLine(true).withCol(2).withRow(6)
+                .withStretch(Stretch.VERTICAL).withFit(Fit.TIGHT).build();
         DataField dataFieldNumeric = newDataFieldBuilder().withName(numericAttribute.getName()).withLabel(numericAttribute.getName().toUpperCase())
-				.withIconName(SimpleOrderModel.getIconName(numericAttribute)).withDataFeature(numericAttribute).withCol(3)
-				.withStretch(Stretch.HORIZONTAL).withFit(Fit.LOOSE).build();
+                .withIconName(SimpleOrderModel.getIconName(numericAttribute)).withDataFeature(numericAttribute).withCol(3)
+                .withStretch(Stretch.HORIZONTAL).withFit(Fit.LOOSE).build();
         DataField dataFieldPassword = newDataFieldBuilder().withName(passwordAttribute.getName()).withLabel(passwordAttribute.getName().toUpperCase())
- 				.withIconName(SimpleOrderModel.getIconName(passwordAttribute)).withDataFeature(passwordAttribute).withCol(3)
- 				.withStretch(Stretch.NONE).withFit(Fit.LOOSE).build();
+                 .withIconName(SimpleOrderModel.getIconName(passwordAttribute)).withDataFeature(passwordAttribute).withCol(3)
+                 .withStretch(Stretch.NONE).withFit(Fit.LOOSE).build();
         
         Divider divider = newDividerBuilder().withName("divider").withCol(4).withRow(2).withStretch(Stretch.HORIZONTAL).withFit(Fit.TIGHT).withLabel("label").build();
         Icon icon = newIconBuilder().withName("icon").withCol(2).withRow(2).withIconName("basket").withStretch(Stretch.NONE).withFit(Fit.LOOSE).build();
@@ -1267,21 +1267,21 @@ public class Esm2UiVisualElementTest {
         TextField textField = newTextFieldBuilder().withName("textField").withText("hello").withCol(3).withRow(2).withStretch(Stretch.HORIZONTAL).withFit(Fit.LOOSE).build();
         
         Group group1 = newGroupBuilder().withName("Tab1").withLabel("Tab1").withIconName("gesture")
-			.withComponents(dataFieldTextInput, dataFieldText, dataFieldTextAreaInput, dataFieldTextArea).build();
+            .withComponents(dataFieldTextInput, dataFieldText, dataFieldTextAreaInput, dataFieldTextArea).build();
         Group group2 = newGroupBuilder().withName("Tab2").withLabel("Tab2").withIconName(" ")
-			.withComponents(dataFieldNumeric, dataFieldPassword, divider).build();
+            .withComponents(dataFieldNumeric, dataFieldPassword, divider).build();
         Group group3 = newGroupBuilder().withName("Tab3").withLabel("Tab3")
-			.withComponents(icon, placeholder, textField).build();
+            .withComponents(icon, placeholder, textField).build();
         
         TabBar tabBar = newTabBarBuilder().withName("tabbar").withCol(8).withRow(10)
-        		.withTabs(group1, group2, group3)
-        		.build();
+                .withTabs(group1, group2, group3)
+                .build();
         
         useEntityType(e1).withView(
-        			newTransferObjectViewBuilder().withName("View")
-        				.withComponents(tabBar)
-        				.build()
-        		).build();
+                    newTransferObjectViewBuilder().withName("View")
+                        .withComponents(tabBar)
+                        .build()
+                ).build();
         
         final Model model = newModelBuilder().withName(MODEL_NAME)
                 .withElements(actor, e1, password, string, numeric).build();
@@ -1294,7 +1294,7 @@ public class Esm2UiVisualElementTest {
                 .findAny();
         assertTrue(application.isPresent());
         final Optional<ClassType> uiE1 = application.get().getDataElements().stream().filter(e -> e instanceof ClassType && e.getName().equals(e1.getFQName()))
-        		.map(e -> (ClassType) e).findAny();
+                .map(e -> (ClassType) e).findAny();
         assertTrue(uiE1.isPresent());
         
         final Optional<PageDefinition> e1ViewPage = application.get().getPages().stream().filter(p -> p.getPageType().equals(PageType.VIEW) && p.getDataElement().getName().equals(access1.getName())).findAny();
@@ -1306,25 +1306,25 @@ public class Esm2UiVisualElementTest {
         Flex flexFromView = (Flex) flexFromViewOpt.get();
         
         final Optional<TabController> tabController = flexFromView.getChildren().stream().filter(c -> c instanceof TabController)
-        		.map(f -> (TabController) f).filter(f -> f.getName().equals(tabBar.getName())).findAny();
+                .map(f -> (TabController) f).filter(f -> f.getName().equals(tabBar.getName())).findAny();
         assertTrue(tabController.isPresent());
         assertEquals(8d, tabController.get().getCol());
         assertEquals(10d, tabController.get().getRow());
         assertEquals(3, tabController.get().getTabs().size());
         
         final Optional<Flex> tab1 = tabController.get().getTabs().stream().map(t -> (Flex) t.getElement())
-        		.filter(t -> t.getName().equals("Tab1")).findAny();
+                .filter(t -> t.getName().equals("Tab1")).findAny();
         assertTrue(tab1.isPresent());
         assertNotNull(((hu.blackbelt.judo.meta.ui.Tab) tab1.get().eContainer()).getIcon());
         assertEquals(group1.getIconName(), ((hu.blackbelt.judo.meta.ui.Tab) tab1.get().eContainer()).getIcon().getName());
         assertEquals(4, tab1.get().getChildren().size());
         final Optional<Flex> tab2 = tabController.get().getTabs().stream().map(t -> (Flex) t.getElement())
-        		.filter(t -> t.getName().equals("Tab2")).findAny();
+                .filter(t -> t.getName().equals("Tab2")).findAny();
         assertTrue(tab2.isPresent());
         assertNull(((hu.blackbelt.judo.meta.ui.Tab) tab2.get().eContainer()).getIcon());
         assertEquals(3, tab2.get().getChildren().size());
         final Optional<Flex> tab3 = tabController.get().getTabs().stream().map(t -> (Flex) t.getElement())
-        		.filter(t -> t.getName().equals("Tab3")).findAny();
+                .filter(t -> t.getName().equals("Tab3")).findAny();
         assertTrue(tab3.isPresent());
         assertNull(((hu.blackbelt.judo.meta.ui.Tab) tab3.get().eContainer()).getIcon());
         assertEquals(3, tab3.get().getChildren().size());

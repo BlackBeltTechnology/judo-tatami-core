@@ -126,14 +126,16 @@ class {{ fqClass ap.name }}RepositoryStoreMapper {
 
     // Attributes
     {{# each attributes as |attribute|}}
-        {{# unless isReadOnly }}
-            {{~# if (isEnumType attribute.dataType) }}
+        {{# unless isMemberTypeTransient}}
+            {{# unless isReadOnly }}
+                {{~# if (isEnumType attribute.dataType) }}
     if ({{ variable class.name }}Store.{{ variable attribute.name }} != null) {
         {{ variable class.name }}.{{ variable attribute.name }} = {{ fqClass transferObjectTypeName }}ForCreateAndUpdate{{ className attribute.name }}Enum.values[{{ variable class.name }}Store.{{ variable attribute.name }}.index];
     }
-            {{ else }}
+                {{ else }}
     {{ variable class.name }}.{{ variable attribute.name }} = {{ variable class.name }}Store.{{ variable attribute.name }};
-            {{/ if }}
+                {{/ if }}
+            {{/ unless }}
         {{/ unless }}
     {{/ each }}
     // Relations

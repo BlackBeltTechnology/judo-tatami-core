@@ -3,72 +3,69 @@ import "../../operations/_importAll.eol";
 import "modules/accesspoint/application.etl";
 import "modules/accesspoint/pageDefinition.etl";
 import "modules/accesspoint/navigation.etl";
-import "modules/ui/ui.etl";
 
 post {
 
-	var ecoreUtil = new Native("org.eclipse.emf.ecore.util.EcoreUtil");
-	
-	for (application : UI!ui::Application in UI!ui::Application.all()) {
-		application.clonePagesOfInheritedRelations();
-	}
-	
-	for (page : UI!ui::PageDefinition in UI!ui::PageDefinition.all().select(p | p.dataElement.isDefined() and p.dataElement.isKindOf(UI!ui::data::RelationType))) {
-		page.updateRelationPageContent();
-	}
+    var ecoreUtil = new Native("org.eclipse.emf.ecore.util.EcoreUtil");
+    
+    for (application : UI!ui::Application in UI!ui::Application.all()) {
+        application.clonePagesOfInheritedRelations();
+    }
+    
+    for (page : UI!ui::PageDefinition in UI!ui::PageDefinition.all().select(p | p.dataElement.isDefined() and p.dataElement.isKindOf(UI!ui::data::RelationType))) {
+        page.updateRelationPageContent();
+    }
 
-	for (application : UI!ui::Application in UI!ui::Application.all()) {
-			log.debug("==============================================================");
-			log.debug("APP ================== : " + application.name);
-			log.debug("==============================================================");
-		//application.calculateRelationBehaviour();
-		application.resolveActionPageDefinitions();
-		application.calculatePageActions(false);
-	}
-	
-	for (action : UI!ui::Action in UI!ui::Action.all()) {
-		action.setIcon();
-		action.setLabel();
-		action.setIsNested();
-	}
+    for (application : UI!ui::Application in UI!ui::Application.all()) {
+            log.debug("==============================================================");
+            log.debug("APP ================== : " + application.name);
+            log.debug("==============================================================");
+        application.resolveActionPageDefinitions(); //resolve custom operation pages
+        application.calculatePageActions(false); //resolve generated actions
+    }
+    
+    for (action : UI!ui::Action in UI!ui::Action.all()) {
+        action.setIcon();
+        action.setLabel();
+        action.setIsNested();
+    }
 
-	for (input : UI!ui::Input in UI!ui::Input.all()) {
-		input.setIcon();
-	}
+    for (input : UI!ui::Input in UI!ui::Input.all()) {
+        input.setIcon();
+    }
 
-	for (classType : UI!ui::data::ClassType in UI!ui::data::ClassType.all()) {
-		classType.calculateRepresentation();
-	}
-	
-	for (application : UI!ui::Application in UI!ui::Application.all()) {
-		uiUtils.organizeApplication(application, "mobile", 4);
-    	uiUtils.organizeApplication(application, "tablet", 8);
-    	uiUtils.organizeApplication(application, "desktop", 12);
+    for (classType : UI!ui::data::ClassType in UI!ui::data::ClassType.all()) {
+        classType.calculateRepresentation();
+    }
+    
+    for (application : UI!ui::Application in UI!ui::Application.all()) {
+        uiUtils.organizeApplication(application, "mobile", 4);
+        uiUtils.organizeApplication(application, "tablet", 8);
+        uiUtils.organizeApplication(application, "desktop", 12);
 
-		var mobile = application.layoutTypes.selectOne(l | l.name == "mobile");
-		mobile.minimumResolution = 0;
-		mobile.maximumResolution = 599;
-		mobile.menuCollapsed = true;
+        var mobile = application.layoutTypes.selectOne(l | l.name == "mobile");
+        mobile.minimumResolution = 0;
+        mobile.maximumResolution = 599;
+        mobile.menuCollapsed = true;
 
-		var tablet = application.layoutTypes.selectOne(l | l.name == "tablet");
-		tablet.minimumResolution = 600;
-		tablet.maximumResolution = 839;
-		tablet.menuCollapsed = true;
-		
-		var desktop = application.layoutTypes.selectOne(l | l.name == "desktop");
-		desktop.minimumResolution = 840;
-		desktop.maximumResolution = 32767;
-		desktop.`default` = true;
+        var tablet = application.layoutTypes.selectOne(l | l.name == "tablet");
+        tablet.minimumResolution = 600;
+        tablet.maximumResolution = 839;
+        tablet.menuCollapsed = true;
+        
+        var desktop = application.layoutTypes.selectOne(l | l.name == "desktop");
+        desktop.minimumResolution = 840;
+        desktop.maximumResolution = 32767;
+        desktop.`default` = true;
 
-	}
-	
+    }
+    
     for (application : UI!ui::Application in UI!ui::Application.all()) {
         application.removeUnexposedElements();
     }
-	
-	var optionals = UI!ui::data::ClassType.all().select(c | c.isOptional);
-    for (classType : UI!ui::data::ClassType in optionals) {
-        classType.setRelationTargetsOptional();
+    
+    for (application : UI!ui::Application in UI!ui::Application.all()) {
+        application.setIsOptionalFlag();
     }
     
     for (application : UI!ui::Application in UI!ui::Application.all()) {

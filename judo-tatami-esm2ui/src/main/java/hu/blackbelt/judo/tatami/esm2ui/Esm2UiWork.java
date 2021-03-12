@@ -53,6 +53,7 @@ public class Esm2UiWork extends AbstractTransformationWork {
         Esm2UiTransformationTrace esm2UiTransformationTrace = executeEsm2UiTransformation(esmModel.get(), 
                 getTransformationContext().get(String.class, "applicationType").orElseGet(() -> "default"),
                 getTransformationContext().get(Integer.class, "applicationColumns").orElseGet(() -> new Integer(12)),
+                false,
                 uiModel,
                 getTransformationContext().getByClass(Log.class).orElseGet(() -> new Slf4jLog(log)),
                 transformationScriptRoot);
@@ -74,6 +75,7 @@ public class Esm2UiWork extends AbstractTransformationWork {
         executeEsm2UiTransformation(esmModel,
                 "default",
                 new Integer(12),
+                false,
                 uiModel,
                 new Slf4jLog(log),
                 Esm2Ui.calculateEsm2UiTransformationScriptURI());

@@ -46,7 +46,7 @@ abstract class _NavigationStore with Store {
                         {{/ if }}
                     {{/ if }}
                     {{# if page.isPageTypeUpdate }}
-                        {{# if relation.target.isClassBehaviourTypeUpdatable }}
+                        {{# if relation.isRelationBehaviourTypeUpdatable }}
     @action
     Future<{{ fqClass relation.target.name }}Store> update{{ fqClass relation.target.name }}({{ fqClass relation.target.name }}Store target{{ className page.dataElement.target.name }}Store) async {
         try {
@@ -61,7 +61,7 @@ abstract class _NavigationStore with Store {
                         {{/ if }}
                     {{/ if }}
                     {{# if page.isPageTypeView }}
-                        {{# if relation.target.isClassBehaviourTypeDeletable }}
+                        {{# if relation.isRelationBehaviourTypeDeletable }}
     @action
     Future<void> delete{{ fqClass relation.target.name }}({{ fqClass relation.target.name }}Store target{{ className page.dataElement.target.name }}Store) async {
         try {

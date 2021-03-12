@@ -123,11 +123,11 @@ public class Esm2UiPageDefinitionTest {
     }
 
     private void transform() throws Exception {
-    	log.info(esmModel.getDiagnosticsAsString());
-    	assertTrue(esmModel.isValid());
-    	validateEsm(new Slf4jLog(log), esmModel, calculateEsmValidationScriptURI());
+        log.info(esmModel.getDiagnosticsAsString());
+        assertTrue(esmModel.isValid());
+        validateEsm(new Slf4jLog(log), esmModel, calculateEsmValidationScriptURI());
         // Make transformation which returns the trace with the serialized URI's
-        esm2UiTransformationTrace = executeEsm2UiTransformation(esmModel, "default", 12, uiModel, new Slf4jLog(log),
+        esm2UiTransformationTrace = executeEsm2UiTransformation(esmModel, "default", 12, false, uiModel, new Slf4jLog(log),
                 calculateEsm2UiTransformationScriptURI());
         log.info(uiModel.getDiagnosticsAsString());
         assertTrue(uiModel.isValid());
@@ -158,23 +158,23 @@ public class Esm2UiPageDefinitionTest {
                 .withDeleteable(true)
                 .withAttributes(inputID)
                 .withTable(
-                		newTransferObjectTableBuilder()
-                		.withName("inputTable")
-                		.withColumns(
-                				newDataColumnBuilder()
-                				.withName("id")
-                				.withLabel("id")
-                				.withDataFeature(inputID).build()))
+                        newTransferObjectTableBuilder()
+                        .withName("inputTable")
+                        .withColumns(
+                                newDataColumnBuilder()
+                                .withName("id")
+                                .withLabel("id")
+                                .withDataFeature(inputID).build()))
                 .withForm(
-                		newTransferObjectFormBuilder()
-                		.withName("inputForm")
-                		.withComponents(
-                				newGroupBuilder()
-                				.withName("g")
-                				.withComponents(
-                						newDataFieldBuilder()
-                						.withName("id")
-                						.withDataFeature(inputID).build()).build()))
+                        newTransferObjectFormBuilder()
+                        .withName("inputForm")
+                        .withComponents(
+                                newGroupBuilder()
+                                .withName("g")
+                                .withComponents(
+                                        newDataFieldBuilder()
+                                        .withName("id")
+                                        .withDataFeature(inputID).build()).build()))
                 .build();
         useEntityType(inputType).withMappedEntity(inputType).build();
         
@@ -186,42 +186,42 @@ public class Esm2UiPageDefinitionTest {
                 .withDeleteable(true)
                 .withAttributes(outputID)
                 .withTable(
-                		newTransferObjectTableBuilder()
-                		.withName("outputTable")
-                		.withColumns(
-                				newDataColumnBuilder()
-                				.withName("id")
-                				.withLabel("id")
-                				.withDataFeature(outputID).build()))
+                        newTransferObjectTableBuilder()
+                        .withName("outputTable")
+                        .withColumns(
+                                newDataColumnBuilder()
+                                .withName("id")
+                                .withLabel("id")
+                                .withDataFeature(outputID).build()))
                 .withView(
-                		newTransferObjectViewBuilder()
-                		.withName("outputView")
-                		.withComponents(
-                				newGroupBuilder()
-                				.withName("g")
-                				.withComponents(
-                						newDataFieldBuilder()
-                						.withName("id")
-                						.withDataFeature(outputID).build()).build()))
+                        newTransferObjectViewBuilder()
+                        .withName("outputView")
+                        .withComponents(
+                                newGroupBuilder()
+                                .withName("g")
+                                .withComponents(
+                                        newDataFieldBuilder()
+                                        .withName("id")
+                                        .withDataFeature(outputID).build()).build()))
                 .build();
         useEntityType(outputType).withMappedEntity(outputType).build();
         
         Operation operation1 = newOperationBuilder().withName("op1")
-        		.withInput(newParameterBuilder().withName("input").withTarget(inputType).withUpper(-1).build())
-        		.withInherited(newInheritedOperationReferenceBuilder().build())
-        		.withBinding("op1")
-        		.build();
+                .withInput(newParameterBuilder().withName("input").withTarget(inputType).withUpper(-1).build())
+                .withInherited(newInheritedOperationReferenceBuilder().build())
+                .withBinding("op1")
+                .build();
         Operation operation2 = newOperationBuilder().withName("op2")
-        		.withOutput(newParameterBuilder().withName("output").withTarget(outputType).withUpper(-1).build())
-        		.withInherited(newInheritedOperationReferenceBuilder().build())
-        		.withBinding("op2")
-        		.build();
+                .withOutput(newParameterBuilder().withName("output").withTarget(outputType).withUpper(-1).build())
+                .withInherited(newInheritedOperationReferenceBuilder().build())
+                .withBinding("op2")
+                .build();
         Operation operation3 = newOperationBuilder().withName("op3")
-        		.withInput(newParameterBuilder().withName("input").withTarget(inputType).withUpper(-1).build())
-        		.withOutput(newParameterBuilder().withName("output").withTarget(outputType).withUpper(-1).build())
-        		.withInherited(newInheritedOperationReferenceBuilder().build())
-        		.withBinding("op3")
-        		.build();
+                .withInput(newParameterBuilder().withName("input").withTarget(inputType).withUpper(-1).build())
+                .withOutput(newParameterBuilder().withName("output").withTarget(outputType).withUpper(-1).build())
+                .withInherited(newInheritedOperationReferenceBuilder().build())
+                .withBinding("op3")
+                .build();
         
         final EntityType e1 = newEntityTypeBuilder()
                 .withName(ENTITY_TYPE_NAME_1)
@@ -229,21 +229,21 @@ public class Esm2UiPageDefinitionTest {
                 .withUpdateable(false)
                 .withDeleteable(false)
                 .withView(
-                		newTransferObjectViewBuilder()
-                		.withName("e1View")
-                		.withComponents(
-                				newGroupBuilder()
-                				.withName("g")
-                				.withComponents(
-                						newOperationFormBuilder()
-                						.withName("op1")
-                						.withOperation("op1")
-                						.build(),
-                						newOperationFormBuilder()
-                						.withName("op2")
-                						.withOperation("op2")
-                						.build())
-                				.build()))
+                        newTransferObjectViewBuilder()
+                        .withName("e1View")
+                        .withComponents(
+                                newGroupBuilder()
+                                .withName("g")
+                                .withComponents(
+                                        newOperationFormBuilder()
+                                        .withName("op1")
+                                        .withOperation("op1")
+                                        .build(),
+                                        newOperationFormBuilder()
+                                        .withName("op2")
+                                        .withOperation("op2")
+                                        .build())
+                                .build()))
                 .build();
         useEntityType(e1).withMappedEntity(e1).build();
         useEntityType(e1).withOperations(operation1,operation2).build();
@@ -255,21 +255,21 @@ public class Esm2UiPageDefinitionTest {
                 .withDeleteable(false)
                 .withGeneralizations(newGeneralizationBuilder().withTarget(e1).build())
                 .withView(
-                		newTransferObjectViewBuilder()
-                		.withName("e2View")
-                		.withComponents(
-                				newGroupBuilder()
-                				.withName("g")
-                				.withComponents(
-                						newOperationFormBuilder()
-                						.withName("op1")
-                						.withOperation("op1")
-                						.build(),
-                						newOperationFormBuilder()
-                						.withName("op2")
-                						.withOperation("op2")
-                						.build())
-                				.build()))
+                        newTransferObjectViewBuilder()
+                        .withName("e2View")
+                        .withComponents(
+                                newGroupBuilder()
+                                .withName("g")
+                                .withComponents(
+                                        newOperationFormBuilder()
+                                        .withName("op1")
+                                        .withOperation("op1")
+                                        .build(),
+                                        newOperationFormBuilder()
+                                        .withName("op2")
+                                        .withOperation("op2")
+                                        .build())
+                                .build()))
                 .build();
         useEntityType(e2).withMappedEntity(e2).build();
         final EntityType e3 = newEntityTypeBuilder()
@@ -279,43 +279,43 @@ public class Esm2UiPageDefinitionTest {
                 .withDeleteable(false)
                 .withGeneralizations(newGeneralizationBuilder().withTarget(e2).build())
                 .withView(
-                		newTransferObjectViewBuilder()
-                		.withName("e3View")
-                		.withComponents(
-                				newGroupBuilder()
-                				.withName("g")
-                				.withComponents(
-                						newOperationFormBuilder()
-                						.withName("op1")
-                						.withOperation("op1")
-                						.build(),
-                						newOperationFormBuilder()
-                						.withName("op2")
-                						.withOperation("op2")
-                						.build(),
-                						newOperationFormBuilder()
-                						.withName("op3")
-                						.withOperation("op3")
-                						.build())
-                				.build()))
+                        newTransferObjectViewBuilder()
+                        .withName("e3View")
+                        .withComponents(
+                                newGroupBuilder()
+                                .withName("g")
+                                .withComponents(
+                                        newOperationFormBuilder()
+                                        .withName("op1")
+                                        .withOperation("op1")
+                                        .build(),
+                                        newOperationFormBuilder()
+                                        .withName("op2")
+                                        .withOperation("op2")
+                                        .build(),
+                                        newOperationFormBuilder()
+                                        .withName("op3")
+                                        .withOperation("op3")
+                                        .build())
+                                .build()))
                 .build();
         useEntityType(e3).withMappedEntity(e3).build();
         useEntityType(e3).withOperations(operation3).build();
         
         Access access3 = newAccessBuilder().withName("e3")
-        		.withTarget(e3)
-        		.withLower(0)
-        		.withUpper(-1)
-        		.withCreateable(false)
-        		.withTargetDefinedCRUD(false)
-        		.build();
+                .withTarget(e3)
+                .withLower(0)
+                .withUpper(-1)
+                .withCreateable(false)
+                .withTargetDefinedCRUD(false)
+                .build();
         Access access2 = newAccessBuilder().withName("e2")
-        		.withTarget(e2)
-        		.withLower(0)
-        		.withUpper(-1)
-        		.withCreateable(false)
-        		.withTargetDefinedCRUD(false)
-        		.build();
+                .withTarget(e2)
+                .withLower(0)
+                .withUpper(-1)
+                .withCreateable(false)
+                .withTargetDefinedCRUD(false)
+                .build();
 
         useActorType(actor).withAccesses(access2, access3).build();
         
@@ -330,47 +330,47 @@ public class Esm2UiPageDefinitionTest {
                 .findAny();
         assertTrue(application.isPresent());
         final Optional<ClassType> uiE1 = application.get().getDataElements().stream().filter(e -> e instanceof ClassType)
-        		.map(e -> (ClassType) e).filter(c -> c.getName().equals(EsmUtils.getNamespaceElementFQName(e1))).findAny();
+                .map(e -> (ClassType) e).filter(c -> c.getName().equals(EsmUtils.getNamespaceElementFQName(e1))).findAny();
         assertFalse(uiE1.isPresent());
         final Optional<ClassType> uiE2 = application.get().getDataElements().stream().filter(e -> e instanceof ClassType)
-        		.map(e -> (ClassType) e).filter(c -> c.getName().equals(EsmUtils.getNamespaceElementFQName(e2))).findAny();
+                .map(e -> (ClassType) e).filter(c -> c.getName().equals(EsmUtils.getNamespaceElementFQName(e2))).findAny();
         assertTrue(uiE2.isPresent());
         final Optional<ClassType> uiE3 = application.get().getDataElements().stream().filter(e -> e instanceof ClassType)
-        		.map(e -> (ClassType) e).filter(c -> c.getName().equals(EsmUtils.getNamespaceElementFQName(e3))).findAny();
+                .map(e -> (ClassType) e).filter(c -> c.getName().equals(EsmUtils.getNamespaceElementFQName(e3))).findAny();
         assertTrue(uiE3.isPresent());
         
         final Optional<PageDefinition> e2op1InputPage = application.get().getPages().stream()
-        		.filter(c -> c.getPageType().equals(PageType.OPERATION_INPUT) && c.getName().endsWith(e2.getName()) && c.getName().contains(operation1.getName())).findAny();
+                .filter(c -> c.getPageType().equals(PageType.OPERATION_INPUT) && c.getName().endsWith(e2.getName()) && c.getName().contains(operation1.getName())).findAny();
         assertTrue(e2op1InputPage.isPresent());
         assertTrue(e2op1InputPage.get().getDataElement() instanceof OperationParameterType);
         assertTrue(e2op1InputPage.get().getDataElement().eContainer().eContainer().equals(uiE2.get()));
         
         final Optional<PageDefinition> e2op2OutputPage = application.get().getPages().stream()
-        		.filter(c -> c.getPageType().equals(PageType.OPERATION_OUTPUT) && c.getName().endsWith(e2.getName()) && c.getName().contains(operation2.getName())).findAny();
+                .filter(c -> c.getPageType().equals(PageType.OPERATION_OUTPUT) && c.getName().endsWith(e2.getName()) && c.getName().contains(operation2.getName())).findAny();
         assertTrue(e2op2OutputPage.isPresent());
         assertTrue(e2op2OutputPage.get().getDataElement() instanceof OperationParameterType);
         assertTrue(e2op2OutputPage.get().getDataElement().eContainer().eContainer().equals(uiE2.get()));
         
         final Optional<PageDefinition> e3op1InputPage = application.get().getPages().stream()
-        		.filter(c -> c.getPageType().equals(PageType.OPERATION_INPUT) && c.getName().endsWith(e3.getName()) && c.getName().contains(operation1.getName())).findAny();
+                .filter(c -> c.getPageType().equals(PageType.OPERATION_INPUT) && c.getName().endsWith(e3.getName()) && c.getName().contains(operation1.getName())).findAny();
         assertTrue(e3op1InputPage.isPresent());
         assertTrue(e3op1InputPage.get().getDataElement() instanceof OperationParameterType);
         assertTrue(e3op1InputPage.get().getDataElement().eContainer().eContainer().equals(uiE3.get()));
         
         final Optional<PageDefinition> e3op2OutputPage = application.get().getPages().stream()
-        		.filter(c -> c.getPageType().equals(PageType.OPERATION_OUTPUT) && c.getName().endsWith(e3.getName()) && c.getName().contains(operation2.getName())).findAny();
+                .filter(c -> c.getPageType().equals(PageType.OPERATION_OUTPUT) && c.getName().endsWith(e3.getName()) && c.getName().contains(operation2.getName())).findAny();
         assertTrue(e3op2OutputPage.isPresent());
         assertTrue(e3op2OutputPage.get().getDataElement() instanceof OperationParameterType);
         assertTrue(e3op2OutputPage.get().getDataElement().eContainer().eContainer().equals(uiE3.get()));
         
         final Optional<PageDefinition> e3op3InputPage = application.get().getPages().stream()
-        		.filter(c -> c.getPageType().equals(PageType.OPERATION_INPUT) && c.getName().endsWith(e3.getName()) && c.getName().contains(operation3.getName())).findAny();
+                .filter(c -> c.getPageType().equals(PageType.OPERATION_INPUT) && c.getName().endsWith(e3.getName()) && c.getName().contains(operation3.getName())).findAny();
         assertTrue(e3op3InputPage.isPresent());
         assertTrue(e3op3InputPage.get().getDataElement() instanceof OperationParameterType);
         assertTrue(e3op3InputPage.get().getDataElement().eContainer().eContainer().equals(uiE3.get()));
         
         final Optional<PageDefinition> e3op3OutputPage = application.get().getPages().stream()
-        		.filter(c -> c.getPageType().equals(PageType.OPERATION_OUTPUT) && c.getName().endsWith(e3.getName()) && c.getName().contains(operation3.getName())).findAny();
+                .filter(c -> c.getPageType().equals(PageType.OPERATION_OUTPUT) && c.getName().endsWith(e3.getName()) && c.getName().contains(operation3.getName())).findAny();
         assertTrue(e3op3OutputPage.isPresent());
         assertTrue(e3op3OutputPage.get().getDataElement() instanceof OperationParameterType);
         assertTrue(e3op3OutputPage.get().getDataElement().eContainer().eContainer().equals(uiE3.get()));
@@ -402,10 +402,10 @@ public class Esm2UiPageDefinitionTest {
                 .withUpdateable(false)
                 .withDeleteable(false)
                 .withAttributes(
-                		newDataMemberBuilder().withName("id")
-                			.withDataType(str)
-                			.withMemberType(MemberType.STORED)
-                			.build())
+                        newDataMemberBuilder().withName("id")
+                            .withDataType(str)
+                            .withMemberType(MemberType.STORED)
+                            .build())
                 .build();
         useEntityType(e1).withMappedEntity(e1).build();
         final EntityType e2 = newEntityTypeBuilder()
@@ -422,10 +422,10 @@ public class Esm2UiPageDefinitionTest {
                 .withUpdateable(false)
                 .withDeleteable(false)
                 .withAttributes(
-                		newDataMemberBuilder().withName("id")
-                			.withDataType(str)
-                			.withMemberType(MemberType.STORED)
-                			.build())
+                        newDataMemberBuilder().withName("id")
+                            .withDataType(str)
+                            .withMemberType(MemberType.STORED)
+                            .build())
                 .build();
         useEntityType(e3).withMappedEntity(e3).build();
         
@@ -435,10 +435,10 @@ public class Esm2UiPageDefinitionTest {
                 .withUpdateable(false)
                 .withDeleteable(false)
                 .withAttributes(
-                		newDataMemberBuilder().withName("id")
-                			.withDataType(str)
-                			.withMemberType(MemberType.STORED)
-                			.build())
+                        newDataMemberBuilder().withName("id")
+                            .withDataType(str)
+                            .withMemberType(MemberType.STORED)
+                            .build())
                 .build();
         useEntityType(e4).withMappedEntity(e4).build();
         
@@ -448,10 +448,10 @@ public class Esm2UiPageDefinitionTest {
                 .withUpdateable(false)
                 .withDeleteable(false)
                 .withAttributes(
-                		newDataMemberBuilder().withName("id")
-                			.withDataType(str)
-                			.withMemberType(MemberType.STORED)
-                			.build())
+                        newDataMemberBuilder().withName("id")
+                            .withDataType(str)
+                            .withMemberType(MemberType.STORED)
+                            .build())
                 .build();
         useEntityType(e5).withMappedEntity(e5).build();
         
@@ -461,59 +461,59 @@ public class Esm2UiPageDefinitionTest {
                 .withUpdateable(false)
                 .withDeleteable(false)
                 .withAttributes(
-                		newDataMemberBuilder().withName("id")
-                			.withDataType(str)
-                			.withMemberType(MemberType.STORED)
-                			.build())
+                        newDataMemberBuilder().withName("id")
+                            .withDataType(str)
+                            .withMemberType(MemberType.STORED)
+                            .build())
                 .build();
         useEntityType(e6).withMappedEntity(e6).build();
 
         Access access1 = newAccessBuilder().withName("e2")
-        		.withTarget(e2)
-        		.withLower(0)
-        		.withUpper(-1)
-        		.withCreateable(true)
-        		.withTargetDefinedCRUD(false)
-        		.build();
+                .withTarget(e2)
+                .withLower(0)
+                .withUpper(-1)
+                .withCreateable(true)
+                .withTargetDefinedCRUD(false)
+                .build();
         
         OneWayRelationMember relation1 = newOneWayRelationMemberBuilder()
-        		.withName("relation1")
-        		.withLower(0)
-        		.withUpper(-1)
-        		.withTarget(e3)
-        		.withMemberType(MemberType.STORED)
-        		.withRelationKind(RelationKind.ASSOCIATION)
-        		.withCreateable(true)
-        		.build();
+                .withName("relation1")
+                .withLower(0)
+                .withUpper(-1)
+                .withTarget(e3)
+                .withMemberType(MemberType.STORED)
+                .withRelationKind(RelationKind.ASSOCIATION)
+                .withCreateable(true)
+                .build();
         OneWayRelationMember relation2 = newOneWayRelationMemberBuilder()
-        		.withName("relation2")
-        		.withLower(0)
-        		.withUpper(-1)
-        		.withTarget(e4)
-        		.withMemberType(MemberType.STORED)
-        		.withRelationKind(RelationKind.COMPOSITION)
-        		.build();
+                .withName("relation2")
+                .withLower(0)
+                .withUpper(-1)
+                .withTarget(e4)
+                .withMemberType(MemberType.STORED)
+                .withRelationKind(RelationKind.COMPOSITION)
+                .build();
         OneWayRelationMember relation3 = newOneWayRelationMemberBuilder()
-        		.withName("relation3")
-        		.withLower(0)
-        		.withUpper(-1)
-        		.withTarget(e5)
-        		.withMemberType(MemberType.DERIVED)
-        		.withRelationKind(RelationKind.ASSOCIATION)
-        		.withDeleteable(true)
-        		.withGetterExpression(MODEL_NAME + "::" + ENTITY_TYPE_NAME_5)
-        		.build();
+                .withName("relation3")
+                .withLower(0)
+                .withUpper(-1)
+                .withTarget(e5)
+                .withMemberType(MemberType.DERIVED)
+                .withRelationKind(RelationKind.ASSOCIATION)
+                .withDeleteable(true)
+                .withGetterExpression(MODEL_NAME + "::" + ENTITY_TYPE_NAME_5)
+                .build();
         OneWayRelationMember relation4 = newOneWayRelationMemberBuilder()
-        		.withName("relation4")
-        		.withLower(0)
-        		.withUpper(1)
-        		.withTarget(e6)
-        		.withMemberType(MemberType.DERIVED)
-        		.withRelationKind(RelationKind.AGGREGATION)
-        		.withCreateable(true)
-        		.withUpdateable(true)
-        		.withGetterExpression(MODEL_NAME + "::" + ENTITY_TYPE_NAME_6)
-        		.build();
+                .withName("relation4")
+                .withLower(0)
+                .withUpper(1)
+                .withTarget(e6)
+                .withMemberType(MemberType.DERIVED)
+                .withRelationKind(RelationKind.AGGREGATION)
+                .withCreateable(true)
+                .withUpdateable(true)
+                .withGetterExpression(MODEL_NAME + "::" + ENTITY_TYPE_NAME_6)
+                .build();
         useEntityType(e1).withRelations(relation1, relation2, relation3).build();
         useEntityType(e2).withRelations(relation4).build();
 
@@ -531,88 +531,88 @@ public class Esm2UiPageDefinitionTest {
                 .findAny();
         assertTrue(application.isPresent());
         final Optional<ClassType> uiE1 = application.get().getDataElements().stream().filter(e -> e instanceof ClassType)
-        		.map(e -> (ClassType) e).filter(c -> c.getName().equals(EsmUtils.getNamespaceElementFQName(e1))).findAny();
+                .map(e -> (ClassType) e).filter(c -> c.getName().equals(EsmUtils.getNamespaceElementFQName(e1))).findAny();
         assertFalse(uiE1.isPresent());
         final Optional<ClassType> uiE2 = application.get().getDataElements().stream().filter(e -> e instanceof ClassType)
-        		.map(e -> (ClassType) e).filter(c -> c.getName().equals(EsmUtils.getNamespaceElementFQName(e2))).findAny();
+                .map(e -> (ClassType) e).filter(c -> c.getName().equals(EsmUtils.getNamespaceElementFQName(e2))).findAny();
         assertTrue(uiE2.isPresent());
         final Optional<ClassType> uiE3 = application.get().getDataElements().stream().filter(e -> e instanceof ClassType)
-        		.map(e -> (ClassType) e).filter(c -> c.getName().equals(EsmUtils.getNamespaceElementFQName(e3))).findAny();
+                .map(e -> (ClassType) e).filter(c -> c.getName().equals(EsmUtils.getNamespaceElementFQName(e3))).findAny();
         assertTrue(uiE3.isPresent());
         final Optional<ClassType> uiE4 = application.get().getDataElements().stream().filter(e -> e instanceof ClassType)
-        		.map(e -> (ClassType) e).filter(c -> c.getName().equals(EsmUtils.getNamespaceElementFQName(e4))).findAny();
+                .map(e -> (ClassType) e).filter(c -> c.getName().equals(EsmUtils.getNamespaceElementFQName(e4))).findAny();
         assertTrue(uiE4.isPresent());
         final Optional<ClassType> uiE5 = application.get().getDataElements().stream().filter(e -> e instanceof ClassType)
-        		.map(e -> (ClassType) e).filter(c -> c.getName().equals(EsmUtils.getNamespaceElementFQName(e5))).findAny();
+                .map(e -> (ClassType) e).filter(c -> c.getName().equals(EsmUtils.getNamespaceElementFQName(e5))).findAny();
         assertTrue(uiE5.isPresent());
         final Optional<ClassType> uiE6 = application.get().getDataElements().stream().filter(e -> e instanceof ClassType)
-        		.map(e -> (ClassType) e).filter(c -> c.getName().equals(EsmUtils.getNamespaceElementFQName(e6))).findAny();
+                .map(e -> (ClassType) e).filter(c -> c.getName().equals(EsmUtils.getNamespaceElementFQName(e6))).findAny();
         assertTrue(uiE6.isPresent());
         
         //exposed stored creatable association: view, create, table
         final Optional<PageDefinition> rel1Page = application.get().getPages().stream()
-        		.filter(c -> c.getPageType().equals(PageType.VIEW) && c.getName().equals(EsmUtils.getNamespaceElementFQName(e2) + "." + relation1.getName() + "#View")).findAny();
+                .filter(c -> c.getPageType().equals(PageType.VIEW) && c.getName().equals(EsmUtils.getNamespaceElementFQName(e2) + "." + relation1.getName() + "#View")).findAny();
         assertTrue(rel1Page.isPresent());
         assertTrue(uiE2.get().getRelations().contains(rel1Page.get().getDataElement()) && rel1Page.get().getDataElement().getName().equals(relation1.getName()));
         
         final Optional<PageDefinition> rel1PageCreate = application.get().getPages().stream()
-        		.filter(c -> c.getPageType().equals(PageType.CREATE) && c.getName().equals(EsmUtils.getNamespaceElementFQName(e2) + "." + relation1.getName() + "#Create")).findAny();
+                .filter(c -> c.getPageType().equals(PageType.CREATE) && c.getName().equals(EsmUtils.getNamespaceElementFQName(e2) + "." + relation1.getName() + "#Create")).findAny();
         assertTrue(rel1PageCreate.isPresent());
         assertTrue(uiE2.get().getRelations().contains(rel1PageCreate.get().getDataElement()) && rel1PageCreate.get().getDataElement().getName().equals(relation1.getName()));
         
         final Optional<PageDefinition> rel1PageUpdate = application.get().getPages().stream()
-        		.filter(c -> c.getPageType().equals(PageType.UPDATE) && c.getName().equals(EsmUtils.getNamespaceElementFQName(e2) + "." + relation1.getName() + "#Edit")).findAny();
+                .filter(c -> c.getPageType().equals(PageType.UPDATE) && c.getName().equals(EsmUtils.getNamespaceElementFQName(e2) + "." + relation1.getName() + "#Edit")).findAny();
         assertFalse(rel1PageUpdate.isPresent());
 
       //exposed stored composition: view
         final Optional<PageDefinition> rel2Page = application.get().getPages().stream()
-        		.filter(c -> c.getPageType().equals(PageType.VIEW) && c.getName().equals(EsmUtils.getNamespaceElementFQName(e2) + "." + relation2.getName() + "#View")).findAny();
+                .filter(c -> c.getPageType().equals(PageType.VIEW) && c.getName().equals(EsmUtils.getNamespaceElementFQName(e2) + "." + relation2.getName() + "#View")).findAny();
         assertTrue(rel2Page.isPresent());
         assertTrue(uiE2.get().getRelations().contains(rel2Page.get().getDataElement()) && rel2Page.get().getDataElement().getName().equals(relation2.getName()));
         
         final Optional<PageDefinition> rel2PageCreate = application.get().getPages().stream()
-        		.filter(c -> c.getPageType().equals(PageType.CREATE) && c.getName().equals(EsmUtils.getNamespaceElementFQName(e2) + "." + relation2.getName() + "#Create")).findAny();
+                .filter(c -> c.getPageType().equals(PageType.CREATE) && c.getName().equals(EsmUtils.getNamespaceElementFQName(e2) + "." + relation2.getName() + "#Create")).findAny();
         assertFalse(rel2PageCreate.isPresent());
         
         final Optional<PageDefinition> rel2PageUpdate = application.get().getPages().stream()
-        		.filter(c -> c.getPageType().equals(PageType.UPDATE) && c.getName().equals(EsmUtils.getNamespaceElementFQName(e2) + "." + relation2.getName() + "#Edit")).findAny();
+                .filter(c -> c.getPageType().equals(PageType.UPDATE) && c.getName().equals(EsmUtils.getNamespaceElementFQName(e2) + "." + relation2.getName() + "#Edit")).findAny();
         assertFalse(rel2PageUpdate.isPresent());
         
         final Optional<PageDefinition> rel2PageTable = application.get().getPages().stream()
-        		.filter(c -> c.getPageType().equals(PageType.TABLE) && c.getName().equals(EsmUtils.getNamespaceElementFQName(e2) + "." + relation2.getName() + "#Table")).findAny();
+                .filter(c -> c.getPageType().equals(PageType.TABLE) && c.getName().equals(EsmUtils.getNamespaceElementFQName(e2) + "." + relation2.getName() + "#Table")).findAny();
         assertFalse(rel2PageTable.isPresent());
         
         //exposed derived deletable aggregation: view
         final Optional<PageDefinition> rel3Page = application.get().getPages().stream()
-        		.filter(c -> c.getPageType().equals(PageType.VIEW) && c.getName().equals(EsmUtils.getNamespaceElementFQName(e2) + "." + relation3.getName() + "#View")).findAny();
+                .filter(c -> c.getPageType().equals(PageType.VIEW) && c.getName().equals(EsmUtils.getNamespaceElementFQName(e2) + "." + relation3.getName() + "#View")).findAny();
         assertTrue(rel3Page.isPresent());
         assertTrue(uiE2.get().getRelations().contains(rel3Page.get().getDataElement()) && rel3Page.get().getDataElement().getName().equals(relation3.getName()));
         
         final Optional<PageDefinition> rel3PageCreate = application.get().getPages().stream()
-        		.filter(c -> c.getPageType().equals(PageType.CREATE) && c.getName().equals(EsmUtils.getNamespaceElementFQName(e2) + "." + relation3.getName() + "#Create")).findAny();
+                .filter(c -> c.getPageType().equals(PageType.CREATE) && c.getName().equals(EsmUtils.getNamespaceElementFQName(e2) + "." + relation3.getName() + "#Create")).findAny();
         assertFalse(rel3PageCreate.isPresent());
         
         final Optional<PageDefinition> rel3PageUpdate = application.get().getPages().stream()
-        		.filter(c -> c.getPageType().equals(PageType.UPDATE) && c.getName().equals(EsmUtils.getNamespaceElementFQName(e2) + "." + relation3.getName() + "#Edit")).findAny();
+                .filter(c -> c.getPageType().equals(PageType.UPDATE) && c.getName().equals(EsmUtils.getNamespaceElementFQName(e2) + "." + relation3.getName() + "#Edit")).findAny();
         assertFalse(rel3PageUpdate.isPresent());
         
         //exposed derived updateable association: view, create, update, table
         final Optional<PageDefinition> rel4Page = application.get().getPages().stream()
-        		.filter(c -> c.getPageType().equals(PageType.VIEW) && c.getName().equals(EsmUtils.getNamespaceElementFQName(e2) + "." + relation4.getName() + "#View")).findAny();
+                .filter(c -> c.getPageType().equals(PageType.VIEW) && c.getName().equals(EsmUtils.getNamespaceElementFQName(e2) + "." + relation4.getName() + "#View")).findAny();
         assertTrue(rel4Page.isPresent());
         assertTrue(uiE2.get().getRelations().contains(rel4Page.get().getDataElement()) && rel4Page.get().getDataElement().getName().equals(relation4.getName()));
         
         final Optional<PageDefinition> rel4PageCreate = application.get().getPages().stream()
-        		.filter(c -> c.getPageType().equals(PageType.CREATE) && c.getName().equals(EsmUtils.getNamespaceElementFQName(e2) + "." + relation4.getName() + "#Create")).findAny();
+                .filter(c -> c.getPageType().equals(PageType.CREATE) && c.getName().equals(EsmUtils.getNamespaceElementFQName(e2) + "." + relation4.getName() + "#Create")).findAny();
         assertFalse(rel4PageCreate.isPresent());
         
         final Optional<PageDefinition> rel4PageUpdate = application.get().getPages().stream()
-        		.filter(c -> c.getPageType().equals(PageType.UPDATE) && c.getName().equals(EsmUtils.getNamespaceElementFQName(e2) + "." + relation4.getName() + "#Edit")).findAny();
+                .filter(c -> c.getPageType().equals(PageType.UPDATE) && c.getName().equals(EsmUtils.getNamespaceElementFQName(e2) + "." + relation4.getName() + "#Edit")).findAny();
         assertTrue(rel4PageUpdate.isPresent());
         assertTrue(uiE2.get().getRelations().contains(rel4PageUpdate.get().getDataElement()) && rel4PageUpdate.get().getDataElement().getName().equals(relation4.getName()));
         
         final Optional<PageDefinition> rel4PageTable = application.get().getPages().stream()
-        		.filter(c -> c.getPageType().equals(PageType.TABLE) && c.getName().equals(EsmUtils.getNamespaceElementFQName(e2) + "." + relation4.getName() + "#Table")).findAny();
+                .filter(c -> c.getPageType().equals(PageType.TABLE) && c.getName().equals(EsmUtils.getNamespaceElementFQName(e2) + "." + relation4.getName() + "#Table")).findAny();
         assertFalse(rel4PageTable.isPresent());
     }
     

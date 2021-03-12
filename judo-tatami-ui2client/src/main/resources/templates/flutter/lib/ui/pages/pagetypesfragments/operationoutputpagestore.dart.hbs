@@ -15,7 +15,7 @@ abstract class _{{ fqClass page.name }}PageStore with Store {
     // TODO: review that this is necessary in all cases
     bool validatable = false;
 
-    {{# if data.target.isClassBehaviourTypeRefreshable }}
+    {{# if data.isRelationBehaviourTypeRefreshable }}
     @action
     Future<void> refresh{{ className data.target.name }}({{ fqClass data.target.name }}Store target{{ className page.dataElement.target.name }}Store) async {
         try {
@@ -28,7 +28,7 @@ abstract class _{{ fqClass page.name }}PageStore with Store {
     }
 
     {{/ if}}
-    {{# if data.target.isClassBehaviourTypeUpdatable }}
+    {{# if data.isRelationBehaviourTypeUpdatable }}
     @action
     Future<{{ fqClass data.target.name }}Store> update{{ className data.target.name }}({{ fqClass data.target.name }}Store target{{ className page.dataElement.target.name }}Store) async {
         try {
@@ -41,7 +41,7 @@ abstract class _{{ fqClass page.name }}PageStore with Store {
     }
 
     {{/ if }}
-    {{# if data.target.isClassBehaviourTypeDeletable }}
+    {{# if data.isRelationBehaviourTypeDeletable }}
     @action
     Future<void> delete{{ className data.target.name }}({{ fqClass data.target.name }}Store target{{ className page.dataElement.target.name }}Store) async {
         try {

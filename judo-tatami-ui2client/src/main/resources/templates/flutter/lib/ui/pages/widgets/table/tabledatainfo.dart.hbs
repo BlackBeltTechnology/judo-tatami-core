@@ -33,14 +33,17 @@ class {{ fqClass table.pageDefinition.name }}{{ fqClass table.name }}{{ fqClass 
             {{/each}}
             {{#each table.rowActions as |action|}}
                 {{#unless action.isViewAction}}
-                    {{#unless action.isDeleteAction}}
-                        {{#unless action.isEditAction}}
-
+                    {{#if action.isEditAction}}
+                        {{# unless table.pageDefinition.isPageTypeOperationInput }}
                     DataColumn(
                         label: Text("")
                     ),
-                        {{/ unless}}
-                    {{/ unless}}
+                        {{/ unless }}
+                    {{ else }}
+                    DataColumn(
+                        label: Text("")
+                    ),
+                    {{/ if }}
                 {{/ unless}}
             {{/each}}
         ];
@@ -105,21 +108,6 @@ class {{ fqClass table.pageDefinition.name }}{{ fqClass table.name }}{{ fqClass 
                     onTap: disabled ? null : () => removeAction(target{{ className table.dataElement.target.name }}),
                 ),
                 {{/if}}
-                {{#if action.isUnsetAction}}
-                target{{ className table.dataElement.target.name }} != null
-                ? DataCell(
-                    Icon(
-                        Icons.{{action.icon.name}},
-                        color: disabled ? theme.disabledColor : theme.colorScheme.secondary,
-                    ),
-                    onTap: disabled ? null : () => unsetAction(),
-                  )
-                : DataCell(
-                    Text(''),
-                  ),
-                {{/if}}
-
-/*
                 {{#if action.isDeleteAction}}
                 target{{ className table.dataElement.target.name }}?.internal__deletable == true && deleteAction != null // function null if the owner is not updatable
                 ? DataCell(
@@ -133,19 +121,9 @@ class {{ fqClass table.pageDefinition.name }}{{ fqClass table.name }}{{ fqClass 
                     Text(''),
                   ),
                 {{/if}}
-*/
-                {{#if action.isCreateAction}}
-                DataCell(
-                    Icon(
-                        Icons.{{action.icon.name}},
-                        color: disabled ? theme.disabledColor : theme.colorScheme.secondary,
-                    ),
-                    onTap: disabled ? null : () => navigateToCreatePageAction(target{{ className table.dataElement.target.name }}),
-                ),
-                {{/if}}
-/*
                 {{#if action.isEditAction}}
-                target{{ className table.dataElement.target.name }}?.internal__updatable == true && navigateToEditPageAction != null
+                    {{# unless table.pageDefinition.isPageTypeOperationInput }}
+                SHOW_TABLE_ROW_ACTIONS ? (target{{ className table.dataElement.target.name }}?.internal__updatable == true && navigateToEditPageAction != null
                 ? DataCell(
                     Icon(
                         Icons.{{action.icon.name}},
@@ -155,9 +133,9 @@ class {{ fqClass table.pageDefinition.name }}{{ fqClass table.name }}{{ fqClass 
                   )
                 : DataCell(
                     Text(''),
-                  ),
+                  )) : DataCell(Text('')),
+                    {{/unless}}
                 {{/if}}
- */
                 {{/each}}
             ],
         );

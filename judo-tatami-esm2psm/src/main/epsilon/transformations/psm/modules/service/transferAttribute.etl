@@ -19,8 +19,7 @@ rule CreateTransferAttributeFromAttribute
 rule CreateTransferAttributeForDefaultValue
     transform s: ESM!DataMember
     to t: JUDOPSM!TransferAttribute {
-      guard: s.defaultExpression.isDefined() and
-               s.defaultExpression.trim().length() > 0 and
+      guard: s.isDefaultExpressionSupported() and
                s.eContainer.isMapped()
       
       t.name = s.getPSMDefaultEquivalent().name;

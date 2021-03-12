@@ -172,7 +172,7 @@ public class Ui2Client {
                 }  else {
                     log.error("Could not locate: " + location);
                 }
-            } catch (IOException e) {
+            } catch (Exception e) {
                 log.error("Could not resolve: " + location);
             }
         } else {
@@ -206,8 +206,8 @@ public class Ui2Client {
                 if (!outFile.exists() || (f.getOverwrite())) {
                     try {
                         ByteStreams.copy(new ByteArrayInputStream(f.getContent()), new FileOutputStream(outFile));
-                    } catch (IOException ioException) {
-                        log.error("Could not write file: " + outFile.getAbsolutePath(), ioException);
+                    } catch (Exception exception) {
+                        log.error("Could not write file: " + outFile.getAbsolutePath(), exception);
                     }
                 }
             });

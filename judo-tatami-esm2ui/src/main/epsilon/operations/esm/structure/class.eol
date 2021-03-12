@@ -1,151 +1,155 @@
 operation ESM!esm::structure::Class fqName() : String {
-	return esmUtils.getNamespaceElementFQName(self);
+    return esmUtils.getNamespaceElementFQName(self);
 }
 
 @cached
 operation ESM!esm::structure::Class getExposedTransferObjects() : Set {
-	return self.getExposedRelations.collect(r | r.target).asSet();
+    return self.getExposedRelations.collect(r | r.target).asSet();
 }
 
 @cached
 operation ESM!esm::structure::Class getExposedRelations() : Set {
-	return self.collectExposedRelations(new Set());
+    return self.collectExposedRelations(new Set());
 }
 
 operation ESM!esm::structure::Class collectExposedRelations(collected : Set) : Set {
-	for (relation in self.getAllRelations()) {
-		if (not collected.includes(relation)) {
-			collected.add(relation);
-			relation.target.collectExposedRelations(collected);		
-		}
-	}
-	return collected;
+    var relations = self.getAllRelations();
+    relations.addAll(self.getAllOperations().select(o | o.input.isDefined()).collect(o | o.input.target).collect(i | i.getAllRelations()).flatten());
+    relations.addAll(self.getAllOperations().select(o | o.output.isDefined()).collect(o | o.output.target).collect(o | o.getAllRelations()).flatten());
+
+    for (relation in relations) {
+        if (not collected.includes(relation)) {
+            collected.add(relation);
+            relation.target.collectExposedRelations(collected);
+        }
+    }
+    return collected;
 }
 
 @cached
 operation ESM!esm::structure::Class getExposedOperations() : Set {
-	var ret = new Set();
-	for (cl in self.getExposedTransferObjects()) {
-		ret.addAll(cl.operations);
-	}
-	return ret;
+    var ret = new Set();
+    for (cl in self.getExposedTransferObjects()) {
+        ret.addAll(cl.operations);
+    }
+    return ret;
 }
 
 operation ESM!esm::structure::Class createClassType(application : UI!ui::Application) : UI!ui::data::ClassType {
-	var clazz = new UI!ui::data::ClassType();	
+    var clazz = new UI!ui::data::ClassType();    
 
     clazz.~application = application;
     clazz.~originalClass = self;
     
     clazz.name = self.fqName();
     clazz.transferObjectTypeName = self.transferObjectTypeName();
-	
-	clazz.isMapped = self.isMapped();
+    
+    clazz.isMapped = self.isMapped();
 
-	if (esmUtils.isRefreshSupported(self)) {
-		clazz.behaviours.add(UI!ui::data::ClassBehaviourType#REFRESH);
-	}
-	if (esmUtils.isUpdateSupported(self)) {
-		clazz.behaviours.add(UI!ui::data::ClassBehaviourType#UPDATE);
-		clazz.isForCreateOrUpdateType = true;
-	}
-	if (esmUtils.isValidateUpdateSupported(self)) {
-		clazz.behaviours.add(UI!ui::data::ClassBehaviourType#VALIDATE_UPDATE);
-		clazz.isForCreateOrUpdateType = true;
-	}
+    if (esmUtils.isRefreshSupported(self)) {
+        clazz.behaviours.add(UI!ui::data::ClassBehaviourType#REFRESH);
+    }
+    if (esmUtils.isUpdateSupported(self)) {
+        clazz.behaviours.add(UI!ui::data::ClassBehaviourType#UPDATE);
+        clazz.isForCreateOrUpdateType = true;
+    }
+    if (esmUtils.isValidateUpdateSupported(self)) {
+        clazz.behaviours.add(UI!ui::data::ClassBehaviourType#VALIDATE_UPDATE);
+        clazz.isForCreateOrUpdateType = true;
+    }
 
-	if (esmUtils.isDeleteSupported(self)) {
-		clazz.behaviours.add(UI!ui::data::ClassBehaviourType#DELETE);
-	}
+    if (esmUtils.isDeleteSupported(self)) {
+        clazz.behaviours.add(UI!ui::data::ClassBehaviourType#DELETE);
+    }
 
-	if (esmUtils.isGetTemplateSupported(self)) {
-		clazz.behaviours.add(UI!ui::data::ClassBehaviourType#TEMPLATE);
-		clazz.isOptional = true;
-	}
-					
-	application.dataElements.add(clazz);
+    if (esmUtils.isGetTemplateSupported(self)) {
+        clazz.behaviours.add(UI!ui::data::ClassBehaviourType#TEMPLATE);
+        clazz.isOptional = true;
+    }
+                    
+    application.dataElements.add(clazz);
     clazz.isPrincipal = self.actorType.isDefined() and self.actorType == application.~originalActorType;
 
-	for (attribute in self.getAllAttributes()) {
-		attribute.mapAttributeType(application, clazz);
-	}
-	
-	for (relation in self.getAllRelations()) {
-		relation.createRelationTypeForClass(application, clazz);
-	}
-	
-	for (op in esmUtils.getAllOperations(self)) {
-		op.createOperationTypeForClass(application, clazz);
-	}
+    for (attribute in self.getAllAttributes()) {
+        attribute.mapAttributeType(application, clazz);
+    }
+    
+    for (relation in self.getAllRelations()) {
+        relation.createRelationTypeForClass(application, clazz);
+    }
+    
+    for (op in esmUtils.getAllOperations(self)) {
+        op.createOperationTypeForClass(application, clazz);
+    }
 
-	log.debug("Create class type: " + clazz.name);
-	return clazz;
+    log.debug("Create class type: " + clazz.name);
+    return clazz;
 }
 
 operation ESM!esm::structure::Class mapClassType(application : UI!ui::Application) : UI!ui::data::ClassType {
-	var clazz = application.dataElements.selectOne(r | r.name = self.fqName());
-	if (clazz.isUndefined()) {
-		clazz = self.createClassType(application);
-	}
-	return clazz;
+    var clazz = application.dataElements.selectOne(r | r.name = self.fqName());
+    if (clazz.isUndefined()) {
+        clazz = self.createClassType(application);
+    }
+    return clazz;
 }
 
 operation ESM!esm::structure::Class transferObjectTypeName() : String {
-	if (self.isKindOf(ESM!esm::structure::EntityType)) {
-		var fqName = esmUtils.getNamespaceElementFQName(self);
-		var splitAtFirstSeparator = fqName.split("::", 2);
-		var defaultPackageName = splitAtFirstSeparator.get(0) + "::" + "_default_transferobjecttypes" + "::";
-		return defaultPackageName + splitAtFirstSeparator.get(1);
-	}
-	
-	return esmUtils.getNamespaceElementFQName(self);
+    if (self.isKindOf(ESM!esm::structure::EntityType)) {
+        var fqName = esmUtils.getNamespaceElementFQName(self);
+        var splitAtFirstSeparator = fqName.split("::", 2);
+        var defaultPackageName = splitAtFirstSeparator.get(0) + "::" + "_default_transferobjecttypes" + "::";
+        return defaultPackageName + splitAtFirstSeparator.get(1);
+    }
+    
+    return esmUtils.getNamespaceElementFQName(self);
 }
 
 operation ESM!esm::structure::Class getAllPossibleRelationBehaviours() : Set {
-	
-	var references : Set = ESM!esm::structure::RelationFeature.all().select(r | r.target == self).asSet()
-		.includingAll(ESM!esm::accesspoint::Access.all().select(a | a.target == self).asSet());
-	var behaviours : Set = new Set;
-	for (ref in references) {
-		if (esmUtils.isListSupported(ref)) {
-			behaviours.add(UI!ui::data::RelationBehaviourType#LIST);
-		}
-		if (esmUtils.isCreateSupported(ref)) {
-			behaviours.add(UI!ui::data::RelationBehaviourType#CREATE);
-		}
+    
+    var references : Set = ESM!esm::structure::RelationFeature.all().select(r | r.target == self).asSet()
+        .includingAll(ESM!esm::accesspoint::Access.all().select(a | a.target == self).asSet());
+    var behaviours : Set = new Set;
+    for (ref in references) {
+        if (esmUtils.isListSupported(ref)) {
+            behaviours.add(UI!ui::data::RelationBehaviourType#LIST);
+        }
+        if (esmUtils.isCreateSupported(ref)) {
+            behaviours.add(UI!ui::data::RelationBehaviourType#CREATE);
+        }
 
-		if (ref.isKindOf(ESM!esm::accesspoint::Access)){
-			if (esmUtils.isValidateCreateSupported(ref)) {
-				behaviours.add(UI!ui::data::RelationBehaviourType#VALIDATE_CREATE);
-			}
-		}
-		
-		if (ref.isKindOf(ESM!esm::structure::RelationFeature)) {
-			if (esmUtils.isSetReferenceSupported(ref)) {
-				behaviours.add(UI!ui::data::RelationBehaviourType#SET);
-			}
-			if (esmUtils.isUnsetReferenceSupported(ref)) {
-				behaviours.add(UI!ui::data::RelationBehaviourType#UNSET);
-			}
-			if (esmUtils.isAddReferenceSupported(ref)) {
-				behaviours.add(UI!ui::data::RelationBehaviourType#ADD);
-			}
-			if (esmUtils.isRemoveReferenceSupported(ref)) {
-				behaviours.add(UI!ui::data::RelationBehaviourType#REMOVE);
-			}
-			if (esmUtils.isGetRangeSupported(ref)) {
-				behaviours.add(UI!ui::data::RelationBehaviourType#RANGE);
-			}
-			if (esmUtils.isValidateCreateSupported(ref)) {
-				behaviours.add(UI!ui::data::RelationBehaviourType#VALIDATE_CREATE);
-			}
-		}
-	}
-	
-	return behaviours;
+        if (ref.isKindOf(ESM!esm::accesspoint::Access)){
+            if (esmUtils.isValidateCreateSupported(ref)) {
+                behaviours.add(UI!ui::data::RelationBehaviourType#VALIDATE_CREATE);
+            }
+        }
+        
+        if (ref.isKindOf(ESM!esm::structure::RelationFeature)) {
+            if (esmUtils.isSetReferenceSupported(ref)) {
+                behaviours.add(UI!ui::data::RelationBehaviourType#SET);
+            }
+            if (esmUtils.isUnsetReferenceSupported(ref)) {
+                behaviours.add(UI!ui::data::RelationBehaviourType#UNSET);
+            }
+            if (esmUtils.isAddReferenceSupported(ref)) {
+                behaviours.add(UI!ui::data::RelationBehaviourType#ADD);
+            }
+            if (esmUtils.isRemoveReferenceSupported(ref)) {
+                behaviours.add(UI!ui::data::RelationBehaviourType#REMOVE);
+            }
+            if (esmUtils.isGetRangeSupported(ref)) {
+                behaviours.add(UI!ui::data::RelationBehaviourType#RANGE);
+            }
+            if (esmUtils.isValidateCreateSupported(ref)) {
+                behaviours.add(UI!ui::data::RelationBehaviourType#VALIDATE_CREATE);
+            }
+        }
+    }
+    
+    return behaviours;
 }
 
 operation ESM!esm::structure::TransferObjectType isTableDefined() : Boolean {
-	return self.table.isDefined() and self.table.columns.size() > 0;
+    return self.table.isDefined() and self.table.columns.size() > 0;
 }
 

@@ -61,17 +61,17 @@ Future<void> remove{{ fqClass relation.name }}({{ fqClass relation.owner.name }}
     try {
         errorMessage = null;
     {{# if relation.isAccess}}
-        {{ relation.name }}StoreList.clear();
-        {{ relation.name }}StoreList.addAll(await _{{ fqVariable application.actor.name }}Repository.{{ fqVariable relation.owner.name }}{{ fqClass relation.name }}List());
-        return {{ relation.name }}StoreList;
+        {{ variable relation.name }}StoreList.clear();
+        {{ variable relation.name }}StoreList.addAll(await _{{ fqVariable application.actor.name }}Repository.{{ fqVariable relation.owner.name }}{{ fqClass relation.name }}List());
+        return {{ variable relation.name }}StoreList;
     {{else}}
     {{# if relation.isCollection }}
-        owner{{ className relation.owner.name }}Store.{{ relation.name }}.clear();
-        owner{{ className relation.owner.name }}Store.{{ relation.name }}.addAll(await _{{ fqVariable application.actor.name }}Repository.{{ fqVariable relation.owner.name }}{{ fqClass relation.name }}List(owner{{ className relation.owner.name }}Store));
-        return owner{{ className relation.owner.name }}Store.{{ relation.name }};
+        owner{{ className relation.owner.name }}Store.{{ variable relation.name }}.clear();
+        owner{{ className relation.owner.name }}Store.{{ variable relation.name }}.addAll(await _{{ fqVariable application.actor.name }}Repository.{{ fqVariable relation.owner.name }}{{ fqClass relation.name }}List(owner{{ className relation.owner.name }}Store));
+        return owner{{ className relation.owner.name }}Store.{{ variable relation.name }};
     {{else}}
-        owner{{ className relation.owner.name }}Store.{{ relation.name }} = await _{{ fqVariable application.actor.name }}Repository.{{ fqVariable relation.owner.name }}{{ fqClass relation.name }}Get(owner{{ className relation.owner.name }}Store);
-        return owner{{ className relation.owner.name }}Store.{{ relation.name }};
+        owner{{ className relation.owner.name }}Store.{{ variable relation.name }} = await _{{ fqVariable application.actor.name }}Repository.{{ fqVariable relation.owner.name }}{{ fqClass relation.name }}Get(owner{{ className relation.owner.name }}Store);
+        return owner{{ className relation.owner.name }}Store.{{ variable relation.name }};
     {{/if}}
     {{/if}}
     } on ApiException catch (error) {
@@ -136,9 +136,9 @@ Future<void> unset{{ fqClass relation.name }}({{ fqClass relation.owner.name }}S
 }
 
 {{/if}}
-{{# if relation.target.isClassBehaviourTypeDeletable }}
+{{# if relation.isRelationBehaviourTypeDeletable }}
 @action
-Future<void> delete{{ className relation.name }}{{ className relation.target.name }}({{ fqClass relation.target.name }}Store target{{ className relation.target.name }}Store{{# unless relation.isAccess}}, {{ fqClass relation.owner.name }}Store owner{{ className relation.owner.name }}Store{{/unless}}) async {
+Future<void> delete{{ className relation.name }}{{ className relation.target.name }}({{ fqClass relation.target.name }}Store target{{ className relation.target.name }}Store, {{ fqClass relation.owner.name }}Store owner{{ className relation.owner.name }}Store) async {
     try {
         errorMessage = null;
     {{# if page.isPageTypeView }}
@@ -154,13 +154,15 @@ Future<void> delete{{ className relation.name }}{{ className relation.target.nam
 }
 
 {{/if}}
-{{# if relation.target.isClassBehaviourTypeUpdatable }}
+{{# if relation.isRelationBehaviourTypeUpdatable }}
 @action
-Future<{{ fqClass relation.target.name }}Store> update{{ className relation.name }}{{ className relation.target.name }}({{ fqClass relation.target.name }}Store target{{ className relation.target.name }}Store) async {
+Future<{{ fqClass relation.target.name }}Store> update{{ className relation.name }}{{ className relation.target.name }}({{ fqClass relation.target.name }}Store target{{ className relation.target.name }}Store, {{ fqClass relation.owner.name }}Store owner{{ className relation.owner.name }}Store) async {
     try {
         errorMessage = null;
     {{# if page.isPageTypeView }}
-        return await _{{ fqVariable application.actor.name }}Repository.{{fqVariable relation.target.name}}Update(target{{ className relation.target.name }}Store);
+        var result = await _{{ fqVariable application.actor.name }}Repository.{{fqVariable relation.target.name}}Update(target{{ className relation.target.name }}Store);
+        refresh{{ className relation.owner.name }}(owner{{ className relation.owner.name }}Store);
+        return result;
     {{ else }}
         return target{{ className relation.target.name }}Store;
     {{/ if }}
