@@ -1,7 +1,6 @@
 [%
   import "../../operations/sdk.eol";
   out.setContentType("Java");
-
   var dtoDoc = dto.getDocumentation();
 %]
 
@@ -15,9 +14,8 @@ package [%= getCustomOperationsPrefix() + dto.getClassifierPackageName() %];
 public interface [%= dto.getClassName() %] {
 
     [% for (op in dto.getCustomizableOperations()) { %]
-            [% var map = getOperationGenerationData(dto, op);
-              var opDoc = op.getDocumentation();
-            %]
+        [% var map = getOperationGenerationData(dto, op);
+          var opDoc = op.getDocumentation(); %]
 
     [% if (opDoc <> "") {%]
     /**
@@ -25,25 +23,19 @@ public interface [%= dto.getClassName() %] {
      *
     [% for (param in op.eParameters) {
        var paramDoc = param.getDocumentation(); %]
-     * @param [%= param.name%]
         [% if (paramDoc <> "") { %]
-            [%= paramDoc %]
-        [% } else {
-           var paramName = getSdkPrefix() + param.eType.getDtoTypeName();
-            %]
-            [%= paramName%]
+     * @param [%= param.name %] [%= paramDoc %]
+        [% } else { %]
+     * @param [%= param.name %] [%= getSdkPrefix() + param.eType.getDtoTypeName() %]
         [% } %]
     [% } %]
 
     [% if (op.eType.isDefined()) {
-        var paramDoc = op.getOutputDocumentation(1); %]
-     * @return
+        var paramDoc = op.getOutputDocumentation(); %]
         [% if (paramDoc <> "") {%]
-            [%= paramDoc %]
-        [% } else {
-           var returnName = getSdkPrefix() + op.eType.getDtoTypeName();
-            %]
-            [%= returnName%]
+     * @return [%= paramDoc %]
+        [% } else { %]
+     * @return [%= getSdkPrefix() + op.eType.getDtoTypeName() %]
         [% } %]
     [% } %]
      */
