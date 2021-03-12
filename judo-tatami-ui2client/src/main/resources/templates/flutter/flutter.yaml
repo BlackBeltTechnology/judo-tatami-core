@@ -293,6 +293,78 @@
   copy: true
 
 # ========================================
+# dialogs
+# ========================================
+- overwriteExpression: true
+  factoryExpression: "#application.tables.?[pageContainer.layoutType.original]"
+  pathExpression: >
+    'lib/' +
+    #path(#application.actor.name) +
+    '/ui/pages/dialogs/' +
+    #fqPath(#self.pageDefinition.name) +
+    '__'+
+    #fqPath(#self.name) +
+    '__dialog.dart'
+  templateName: flutter/lib/ui/pages/widgets/dialogs/select_dialog.dart.hbs
+  templateContext:
+    - name: table
+      expression: "#self"
+    - name: page
+      expression: "#self.pageDefinition"
+    - name: ap
+      expression: "#application.actor"
+
+- overwriteExpression: true
+  factoryExpression: "#application.layoutTypes.?[original]"
+  pathExpression: >
+    'lib/' +
+    #path(#application.actor.name) +
+    '/ui/pages/dialogs/' +
+    'package.dart'
+  templateName: flutter/lib/ui/pages/widgets/dialogs/package.dart.hbs
+
+- overwriteExpression: true
+  factoryExpression: "#application.tables.?[pageContainer.layoutType.original]"
+  pathExpression: >
+    'lib/' +
+    #path(#application.actor.name) +
+    '/ui/pages/dialogs/tables/' +
+    #fqPath(#self.pageDefinition.name) +
+    '__'+
+    #fqPath(#self.name) +
+    '__dialog_table.dart'
+  templateName: flutter/lib/ui/pages/widgets/dialogs/table/dialog_tabledatainfo.dart.hbs
+  templateContext:
+    - name: table
+      expression: "#self"
+
+- overwriteExpression: true
+  factoryExpression: "#application.layoutTypes.?[original]"
+  pathExpression: >
+    'lib/' +
+    #path(#application.actor.name) +
+    '/ui/pages/dialogs/tables/' +
+    'package.dart'
+  templateName: flutter/lib/ui/pages/widgets/dialogs/table/package.dart.hbs
+
+- overwriteExpression: true
+  factoryExpression: "{#application}"
+  pathExpression: "'lib/' + #path(#application.actor.name) + '/ui/pages/dialogs/dialog_helper.dart'"
+  templateName: flutter/lib/ui/pages/widgets/dialogs/dialog_helper.dart.hbs
+
+- overwriteExpression: true
+  factoryExpression: "{#application}"
+  pathExpression: "'lib/' + #path(#application.actor.name) + '/ui/pages/dialogs/helper_stores/filter_store.dart'"
+  templateName: flutter/lib/ui/pages/widgets/dialogs/helper_stores/filter_store.dart
+  copy: true
+
+- overwriteExpression: true
+  factoryExpression: "{#application}"
+  pathExpression: "'lib/' + #path(#application.actor.name) + '/ui/pages/dialogs/helper_stores/table_helper_store.dart'"
+  templateName: flutter/lib/ui/pages/widgets/dialogs/helper_stores/table_helper_store.dart
+  copy: true
+
+# ========================================
 # pages
 # ========================================
 - overwriteExpression: true
@@ -572,6 +644,12 @@
   factoryExpression: "{#application}"
   pathExpression: "'lib/' + #path(#application.actor.name) + '/utilities/navigation.dart'"
   templateName: flutter/lib/utilities/navigation.dart
+  copy: true
+
+- overwriteExpression: true
+  factoryExpression: "{#application}"
+  pathExpression: "'lib/' + #path(#application.actor.name) + '/utilities/string_to_enum.dart'"
+  templateName: flutter/lib/utilities/string_to_enum.dart
   copy: true
 
 - overwriteExpression: true

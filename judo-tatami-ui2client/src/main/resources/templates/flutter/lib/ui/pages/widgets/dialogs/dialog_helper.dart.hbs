@@ -1,0 +1,58 @@
+//////////////////////////////////////////////////////////////////////////////
+// G E N E R A T E D    C L A S S
+// ------------------------------
+// Factory expression: {{{ cleanup template.factoryExpression }}}
+// Path expression: {{{ cleanup template.pathExpression }}}
+// Overwrite: {{{ cleanup template.overwriteExpression }}}
+// Template name: {{ template.templateName }}
+// Application: {{ application.name }}
+
+part of {{ variable application.name }}.ui.pages.dialogs;
+
+Future<T> _judoShowMenu<T>({@required BuildContext context, @required List<PopupMenuEntry<T>> items, @required GlobalKey buttonKey}) async {
+  final RenderBox button = buttonKey.currentContext.findRenderObject() as RenderBox;
+  final RenderBox overlay = Navigator.of(context).overlay.context.findRenderObject() as RenderBox;
+  final RelativeRect position = RelativeRect.fromRect(
+    Rect.fromPoints(
+      button.localToGlobal(Offset.zero, ancestor: overlay),
+      button.localToGlobal(button.size.bottomRight(Offset.zero) + Offset.zero, ancestor: overlay),
+    ),
+    Offset.zero & overlay.size,
+  );
+
+  return await showMenu<T>(
+    context: context,
+    position: position,
+    items: items,
+
+  );
+}
+
+List<PopupMenuEntry<FilterStore>> _getPopupMenuItems(List<FilterStore> filterStoreList){
+  return filterStoreList.map<PopupMenuEntry<FilterStore>>( (filterStore) {
+    return PopupMenuItem<FilterStore>(
+      value: filterStore,
+      enabled: !filterStore.filterEnabled,
+      child: Text(filterStore.label),
+    );
+  }).toList();
+}
+
+List<Widget> _getInputFilterWidgets(Map<FilterStore, Widget> filterStoreWidgetMap){
+  return filterStoreWidgetMap.keys.map<Widget>( (filterStore) {
+    return Observer(
+      builder: (_) => filterStore.filterEnabled ?  Row(
+        children: [
+          filterStoreWidgetMap[filterStore],
+          IconButton(
+            icon: Icon(Icons.close),
+            tooltip: 'Remove filter field',
+            onPressed: () {
+              filterStore.changeFilterEnabled();
+            },
+          )
+        ],
+      ) : Container(),
+    );
+  }).toList();
+}

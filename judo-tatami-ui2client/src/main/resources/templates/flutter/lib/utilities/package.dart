@@ -5,3 +5,4 @@ import 'package:flutter/material.dart';
 part 'constants.dart';
 part 'navigation.dart';
 part 'info.dart';
+part 'string_to_enum.dart';

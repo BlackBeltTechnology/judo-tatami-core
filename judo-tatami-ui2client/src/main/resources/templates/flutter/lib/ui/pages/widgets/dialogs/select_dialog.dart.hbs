@@ -1,0 +1,208 @@
+{{log 'Dialog generation for' (variable application.name) '-' (fqClass page.name) level='info'}}
+//////////////////////////////////////////////////////////////////////////////
+// G E N E R A T E D    C L A S S
+// ------------------------------
+// Factory expression: {{{ cleanup template.factoryExpression }}}
+// Path expression: {{{ cleanup template.pathExpression }}}
+// Overwrite: {{{ cleanup template.overwriteExpression }}}
+// Template name: {{ template.templateName }}
+// Application: {{ application.name }}
+// Page: {{ page.name }}
+// Table: {{ table.name }}
+
+part of {{ variable application.name }}.ui.pages.dialogs;
+
+{{# with table.dataElement as |relation|}}
+Future<{{# if relation.isCollection }}List<{{ fqClass relation.target.name }}Store>{{ else }}{{ fqClass relation.target.name }}Store{{/ if }}> judoSelect{{ className relation.target.name }}DialogFor{{fqClass page.name}}Page({@required BuildContext context, {{fqClass page.name}}PageStore pageStore,{{# unless (isAccessTablePage page) }} {{ fqClass relation.owner.name }}Store ownerStore{{/ unless }} }) async {
+{{# unless (isAccessTablePage page) }}
+    var addFilterButtonKey = GlobalKey();
+    pageStore.getRangeFor{{ fqClass relation.name }}(ownerStore).catchError((error) => ErrorHandler.errorDialog(context, error));
+
+    Map<String, FilterStore> stringFilterStoreMap = {
+    {{# each table.columns as |column|}}
+        {{# if column.attributeType.isFilterable}}
+            {{# each column.attributeType.dataType.operator.members as |filterOperator|}}
+        '{{ variable column.attributeType.name }}{{ className filterOperator.name }}Filter' : FilterStore(label: '{{ className filterOperator.name }} {{ className column.attributeType.name }}', filterOperation: '{{ variable filterOperator.name }}', attributeName: '{{ variable column.attributeType.name }}'),
+            {{/each}}
+        {{/ if }}
+    {{/ each }}
+    };
+
+    Map<FilterStore, Widget> filterStoreWidgetMap = {
+    {{# each table.columns as |column|}}
+        {{# if column.attributeType.isFilterable}}
+            {{# each column.attributeType.dataType.operator.members as |filterOperator|}}
+        stringFilterStoreMap['{{ variable column.attributeType.name }}{{ className filterOperator.name }}Filter'] :
+                {{# if (isStringType column.attributeType.dataType) ~}}
+            JudoInputText(
+                col: 1,
+                label: stringFilterStoreMap['{{ variable column.attributeType.name }}{{ className filterOperator.name }}Filter'].label,
+                onChanged: (value) => stringFilterStoreMap['{{ variable column.attributeType.name }}{{ className filterOperator.name }}Filter'].setFilterValue(value),
+            ),
+                {{/ if }}
+                {{~# if (isNumericType column.attributeType.dataType) ~}}
+            JudoNumericInput(
+                col: 1,
+                label: stringFilterStoreMap['{{ variable column.attributeType.name }}{{ className filterOperator.name }}Filter'].label,
+                onChanged: (value) => stringFilterStoreMap['{{ variable column.attributeType.name }}{{ className filterOperator.name }}Filter'].setFilterValue({{ dartType column.attributeType.dataType }}.parse(value)),
+            ),
+                {{/ if }}
+                {{~# if (isDateType column.attributeType.dataType) ~}}
+            JudoDateInput(
+                col: 1,
+                label: stringFilterStoreMap['{{ variable column.attributeType.name }}{{ className filterOperator.name }}Filter'].label,
+                onChanged: (value) => stringFilterStoreMap['{{ variable column.attributeType.name }}{{ className filterOperator.name }}Filter'].setFilterValue(value),
+            ),
+                {{/ if }}
+                {{~# if (isTimestampType column.attributeType.dataType) ~}}
+            JudoDateTimeInput(
+                col: 1,
+                label: stringFilterStoreMap['{{ variable column.attributeType.name }}{{ className filterOperator.name }}Filter'].label,
+                onChanged: (value) => stringFilterStoreMap['{{ variable column.attributeType.name }}{{ className filterOperator.name }}Filter'].setFilterValue(value),
+            ),
+                {{/ if }}
+                {{# if (isBooleanType column.attributeType.dataType) ~}}
+            Observer(
+                builder: (_) => JudoSwitch(
+                    col: 1,
+                    label: stringFilterStoreMap['{{ variable column.attributeType.name }}{{ className filterOperator.name }}Filter'].label,
+                    onChanged: (value) => stringFilterStoreMap['{{ variable column.attributeType.name }}{{ className filterOperator.name }}Filter'].setFilterValue(value),
+                )
+            ),
+                {{/ if }}
+                {{~# if (isEnumType column.attributeType.dataType) }}
+            Observer(
+                builder: (_) => JudoComboBox<{{ className column.attributeType.dataType.name }}>(
+                    col: 1,
+                    label: stringFilterStoreMap['{{ variable column.attributeType.name }}{{ className filterOperator.name }}Filter'].label,
+                    onChanged: (value) => stringFilterStoreMap['{{ variable column.attributeType.name }}{{ className filterOperator.name }}Filter'].setFilterValue(value),
+                    items: {{ className attributeType.dataType.name }}.values,
+                    dropdownMenuShow: (value) => new DropdownMenuItem<{{ className attributeType.dataType.name }}>(
+                        value: value,
+                        child: new Text(value.toString().split('.').last)
+                    ),
+                )
+            ),
+                {{/ if }}
+            {{/each}}
+        {{/ if }}
+    {{/ each }}
+    };
+
+    ObservableList<String> selected = <String>[].asObservable();
+    var tableHelperStore = TableHelperStore(selected, ({{ fqClass relation.target.name }}Store value) => value.internal__identifier);
+
+  return await showDialog<{{# if relation.isCollection }}List<{{ fqClass relation.target.name }}Store>{{ else }}{{ fqClass relation.target.name }}Store{{/ if }}>(
+    context: context,
+    builder: (context) {
+      return AlertDialog(
+          content: GestureDetector(
+            onTap: () => FocusScope.of(context).requestFocus(new FocusNode()),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Column(
+                  children: _getInputFilterWidgets(filterStoreWidgetMap),
+                ),
+                Row(
+                  children: [
+                    Observer(
+                      builder: (_) => JudoButton(
+                        key: addFilterButtonKey,
+                        col: 1,
+                        alignment: Alignment.center,
+                        icon: Icon(Icons.add),
+                        label: 'Add filter',
+                        onPressed: () async {
+                          FilterStore result = await _judoShowMenu<FilterStore>(
+                            buttonKey: addFilterButtonKey,
+                            items: _getPopupMenuItems(stringFilterStoreMap.values.toList()),
+                            context: context,
+                          );
+                          if (result != null) {
+                            result.changeFilterEnabled();
+                          }
+                        },
+                      ),
+                    ),
+                    Observer(
+                      builder: (_) => JudoButton(
+                        col: 1,
+                        alignment: Alignment.center,
+                        icon: Icon(Icons.search),
+                        label: 'Search',
+                        onPressed: () async {
+                            pageStore.getRangeFor{{ fqClass relation.name }}(
+                                ownerStore,
+                                filterStoreList: stringFilterStoreMap.values.where((element) => element.filterEnabled).toList(),
+                            ).catchError((error) => ErrorHandler.errorDialog(context, error));
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+                Row(
+                  children: [
+                    // ignore: missing_return
+                    Observer(builder: (_) {
+                      switch(pageStore.{{ fqVariable relation.name }}StoreFuture.status){
+                        case FutureStatus.pending:
+                          return JudoLoadingProgress();
+                        case FutureStatus.rejected:
+                          return Container();
+                        case FutureStatus.fulfilled:
+                          var dataInfo = {{ fqClass table.pageDefinition.name }}{{ fqClass table.name }}DialogTable(disabled: false);
+                          return JudoSelectorTable(
+                            disabled: false,
+                            collectionSelector: {{ relation.isCollection}},
+                            col: 1,
+                            row: 5.0,
+                            dataInfo: dataInfo,
+                            sortAscending: pageStore.{{ fqVariable relation.name }}SortAsc,
+                            sortColumnIndex: pageStore.{{ fqVariable relation.name }}SortColumnIndex,
+                            onSort: (int columnIndex, bool asc) {
+                                pageStore.{{ fqVariable relation.name }}SetSortRange(
+                                  ownerStore,
+                                  context,
+                                  dataInfo.getColumnFieldByIndex(columnIndex, asc),
+                                  columnIndex,
+                                  asc,
+                                  dataInfo.getSortComparator(columnIndex, asc),
+                                  filterStoreList: stringFilterStoreMap.values.where((element) => element.filterEnabled).toList(),
+                              );
+                            },
+                            rowList: pageStore.{{ fqVariable relation.name }}StoreRangeList,
+                            multiSelectAction: ({{ fqClass relation.target.name }}Store element) => tableHelperStore.selectRow(element),
+                            singleSelectAction: ({{ fqClass relation.target.name }}Store element) => tableHelperStore.singleSelectRow(element),
+                            multiSelectedComparator: ({{ fqClass relation.target.name }}Store element) => tableHelperStore.selected.contains(tableHelperStore.getId(element)),
+                            singleSelectedComparator: ({{ fqClass relation.target.name }}Store element) => tableHelperStore.singleSelected == tableHelperStore.getId(element),
+                          );
+                      }
+                    }),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        actions: [
+          Padding(
+            padding: const EdgeInsets.all(10.0),
+            child: Observer(
+              builder: (_) => ElevatedButton(
+                child: Text('Select'),
+                onPressed: tableHelperStore.selectButtonEnabled ? () {
+                  var resultList = pageStore.{{ fqVariable relation.name }}StoreRangeList
+                        .where((element) => selected.contains(element.internal__identifier))
+                        .toList();
+                  Navigator.of(context).pop(resultList);
+                } : null,
+              ),
+            ),
+          ),
+        ],
+      );
+    },
+  );
+{{/ unless}}
+}
+{{/ with }}
