@@ -9,8 +9,8 @@ package [%= getCustomOperationsPrefix() + dto.getClassifierPackageName() %];
 
 [% if (dtoDoc <> "") {%]
 /**
-* [%= dtoDoc %]
-*/
+ * [%= dtoDoc %]
+ */
 [% } %]
 public interface [%= dto.getClassName() %] {
 
@@ -21,11 +21,11 @@ public interface [%= dto.getClassName() %] {
 
     [% if (opDoc <> "") {%]
     /**
-    * [%= opDoc %]
-    *
+     * [%= opDoc %]
+     *
     [% for (param in op.eParameters) {
        var paramDoc = param.getDocumentation(); %]
-    * @param [%= param.name%]
+     * @param [%= param.name%]
         [% if (paramDoc <> "") { %]
             [%= paramDoc %]
         [% } else {
@@ -37,7 +37,7 @@ public interface [%= dto.getClassName() %] {
 
     [% if (op.eType.isDefined()) {
         var paramDoc = op.getOutputDocumentation(1); %]
-    * @return
+     * @return
         [% if (paramDoc <> "") {%]
             [%= paramDoc %]
         [% } else {
@@ -46,7 +46,7 @@ public interface [%= dto.getClassName() %] {
             [%= returnName%]
         [% } %]
     [% } %]
-    */
+     */
     [% } %]
     @FunctionalInterface
     interface [%= op.name.firstToUpperCase() %] extends [%= map.get("extendedInterface") %] {

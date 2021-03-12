@@ -22,6 +22,19 @@ operation ASM!ETypedElement getTypeDefinition() : String {
 }
 
 @cached
+operation ASM!ETypedElement getTypeDocumentation() : String {
+    var prefix = "";
+
+    if (self.upperBound == -1 or self.upperBound > 1) {
+        prefix = "collection of ";
+    } else {
+        prefix = "instance of ";
+    }
+
+    return prefix + self.getSingleTypeDefinition();
+}
+
+@cached
 operation ASM!ETypedElement getSingleTypeDefinition() : String {
     var typeName;
     if (self.eType.instanceClass.isDefined()) {
@@ -58,6 +71,21 @@ operation ASM!EReference getTypeDefinition() : String {
         return self.eReferenceType.getBareTypeDefinition();
     }
 }
+
+@cached
+operation ASM!EReference getSingleTypeDefinition() : String {
+    return self.eReferenceType.getBareTypeDefinition();
+}
+
+@cached
+operation ASM!EReference getTypeDocumentation() : String {
+    if (self.upperBound == -1 or self.upperBound > 1) {
+        return "collection of " + self.eReferenceType.getBareTypeDefinition();
+    } else {
+        return "instance of " + self.eReferenceType.getBareTypeDefinition();
+    }
+}
+
 
 /*
  DTO
@@ -479,6 +507,10 @@ operation ASM!EClass getDtoTypeName() : String {
 
 operation ASM!EClassifier getClassName() : String {
     return self.name;
+}
+
+operation ASM!EClassifier getTypeDocumentation() : String {
+    return "instance of " + self.name;
 }
 
 operation ASM!ENamedElement setterName() : String {

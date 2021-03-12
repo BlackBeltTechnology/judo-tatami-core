@@ -8,8 +8,8 @@ package [%= getSdkPrefix() + e.getClassifierPackageName() %];
 
 [% if (eDoc <> "") {%]
 /**
-* [%= eDoc %]
-*/
+ * [%= eDoc %]
+ */
 [% } %]
 public enum [%= e.getClassName() %] {
 
@@ -18,8 +18,8 @@ public enum [%= e.getClassName() %] {
             var literalDoc = literal.getDocumentation(); %]
         [% if (literalDoc <> "") {%]
     /**
-    * [%= literalDoc %]
-    */
+     * [%= literalDoc %]
+     */
         [% } %]
     [%= asmUtils.safeName(enumerator.literal)%]([%= enumerator.value %], "[%= enumerator.name%]")[% if (hasMore) {%],[% }%]
         
@@ -35,16 +35,16 @@ public enum [%= e.getClassName() %] {
     }
 
     /**
-    * Returns the name of this enum constant.
-    *
-    * @return String
-    */
+     * Get the name of this enum constant.
+     *
+     * @return String
+     */
     public String getName() { return __name; }
 
     /**
-    * Returns the ordinal of this enum constant.
-    *
-    * @return String
-    */
+     * Get the ordinal of this enum constant.
+     *
+     * @return String
+     */
     public int getOrdinal() { return __ordinal; }
 }
