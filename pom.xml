@@ -56,23 +56,24 @@
 
         <judo-framework-version>2.0.0.20210218_001133_ed90077_develop</judo-framework-version>
 
+
         <!-- Model versions -->
-        <judo-meta-rdbms-version>1.0.0.20210310_085456_d3ecb9d_develop</judo-meta-rdbms-version>
-        <judo-meta-esm-version>1.1.0.20210222_143031_8fbe169_develop</judo-meta-esm-version>
-        <judo-meta-psm-version>1.1.0.20210304_112406_40da4b2_develop</judo-meta-psm-version>
-        <judo-meta-jql-version>1.0.1.20210222_023942_9019c24_develop</judo-meta-jql-version>
-        <judo-meta-jcl-version>1.0.1.20210222_025953_e0b43d4_develop</judo-meta-jcl-version>
-        <judo-meta-script-version>1.0.1.20210302_140058_417d9a0_develop</judo-meta-script-version>
-        <judo-meta-asm-version>1.1.0.20210222_023933_c11700f_develop</judo-meta-asm-version>
-        <judo-meta-expression-version>1.0.1.20210304_165823_5bcc389_develop</judo-meta-expression-version>
-        <judo-meta-measure-version>1.0.0.20210222_024736_61927e8_develop</judo-meta-measure-version>
-        <judo-meta-liquibase-version>1.0.0.20210222_024614_de57ff9_develop</judo-meta-liquibase-version>
-        <judo-meta-openapi-version>1.0.0.20210222_024752_4a53290_develop</judo-meta-openapi-version>
-        <judo-meta-ui-version>1.0.0.20210308_164911_e1d1384_develop</judo-meta-ui-version>
-        <judo-meta-keycloak-version>1.0.0.20210116_100528_3543c98_develop</judo-meta-keycloak-version>
+        <judo-meta-rdbms-version>1.0.0.20210313_104925_5cd6376_feature_JNG_2563_AddParallelExecution</judo-meta-rdbms-version>
+        <judo-meta-esm-version>1.1.0.20210313_101735_5b200a9_feature_JNG_2563_AddParallelExecution</judo-meta-esm-version>
+        <judo-meta-psm-version>1.1.0.20210313_101743_1b9283f_feature_JNG_2563_AddParallelExecution</judo-meta-psm-version>
+        <judo-meta-jql-version>1.0.1.20210313_121332_7aab4e8_feature_JNG_2563_AddParallelExecution</judo-meta-jql-version>
+        <judo-meta-jcl-version>1.0.1.20210313_120809_d96c920_feature_JNG_2563_AddParalelExecution</judo-meta-jcl-version>
+        <judo-meta-script-version>1.0.1.20210313_194819_7235398_feature_JNG_2365_AddParallelExecution</judo-meta-script-version>
+        <judo-meta-asm-version>1.1.0.20210313_101707_ba2b4dc_feature_JNG_2563_AddParallelExecution</judo-meta-asm-version>
+        <judo-meta-expression-version>1.0.1.20210313_184532_c76a777_feature_JNG_2563_AddParallelExecution</judo-meta-expression-version>
+        <judo-meta-measure-version>1.0.0.20210313_103932_9d4d016_feature_JNG_2563_AddParallelExecution</judo-meta-measure-version>
+        <judo-meta-liquibase-version>1.0.0.20210313_102948_018b3ae_feature_JNG_2563_AddParallelExecution</judo-meta-liquibase-version>
+        <judo-meta-openapi-version>1.0.0.20210313_104500_0bf7440_feature_JNG_2365_AddParallelExecution</judo-meta-openapi-version>
+        <judo-meta-ui-version>1.0.0.20210313_120523_da55125_feature_JNG_2563_AddParallelExecution</judo-meta-ui-version>
+        <judo-meta-keycloak-version>1.0.0.20210313_103938_db5e908_feature_JNG_2563_AddParallelExecution</judo-meta-keycloak-version>
         <judo-dao-api-version>1.0.2.20210223_122846_195d971_develop</judo-dao-api-version>
         <judo-dispatcher-api-version>1.0.2.20210302_135850_a9b5c54_develop</judo-dispatcher-api-version>
-        <judo-script-codegen-version>1.1.0.20210302_140424_e58852f_develop</judo-script-codegen-version>
+        <judo-script-codegen-version>1.1.0.20210314_003557_6fb711e_feature_JNG_2563_AddParallelExecution</judo-script-codegen-version>
         <judo-operation-utils-version>1.1.0.20210302_135929_49fd015_develop</judo-operation-utils-version>
 
         <structured-map-proxy-version>1.0.6.20210119_121627_130c6ee_develop</structured-map-proxy-version>
@@ -101,7 +102,7 @@
         <tinybundles-karaf-features-version>1.0.0</tinybundles-karaf-features-version>
         <google-karaf-features-version>1.0.6</google-karaf-features-version>
         <eclipse-emf-karaf-features-version>1.0.1</eclipse-emf-karaf-features-version>
-        <eclipse-epsilon-karaf-features-version>1.0.3</eclipse-epsilon-karaf-features-version>
+        <eclipse-epsilon-karaf-features-version>1.0.5</eclipse-epsilon-karaf-features-version>
         <eclipse-xtext-karaf-features-version>1.0.2</eclipse-xtext-karaf-features-version>
         <antlr-karaf-features-version>1.0.1</antlr-karaf-features-version>
         <apache-commons-karaf-features-version>1.0.5</apache-commons-karaf-features-version>
@@ -287,112 +288,42 @@
                 <groupId>hu.blackbelt.judo.meta</groupId>
                 <artifactId>hu.blackbelt.judo.meta.script.model</artifactId>
                 <version>${judo-meta-script-version}</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>org.eclipse.epsilon</groupId>
-                        <artifactId>epsilon-core</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.eclipse.epsilon</groupId>
-                        <artifactId>epsilon-emf</artifactId>
-                    </exclusion>
-                </exclusions>
             </dependency>
 
             <dependency>
                 <groupId>hu.blackbelt.judo.meta</groupId>
                 <artifactId>hu.blackbelt.judo.meta.jql.model</artifactId>
                 <version>${judo-meta-jql-version}</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>org.eclipse.epsilon</groupId>
-                        <artifactId>epsilon-core</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.eclipse.epsilon</groupId>
-                        <artifactId>epsilon-emf</artifactId>
-                    </exclusion>
-                </exclusions>
             </dependency>
 
             <dependency>
                 <groupId>hu.blackbelt.judo.meta</groupId>
                 <artifactId>hu.blackbelt.judo.meta.jcl.model</artifactId>
                 <version>${judo-meta-jcl-version}</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>org.eclipse.epsilon</groupId>
-                        <artifactId>epsilon-core</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.eclipse.epsilon</groupId>
-                        <artifactId>epsilon-emf</artifactId>
-                    </exclusion>
-                </exclusions>
             </dependency>
 
             <dependency>
                 <groupId>hu.blackbelt.judo.meta</groupId>
                 <artifactId>hu.blackbelt.judo.meta.script.builder.jcl</artifactId>
                 <version>${judo-meta-script-version}</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>org.eclipse.epsilon</groupId>
-                        <artifactId>epsilon-core</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.eclipse.epsilon</groupId>
-                        <artifactId>epsilon-emf</artifactId>
-                    </exclusion>
-                </exclusions>
             </dependency>
 
             <dependency>
                 <groupId>hu.blackbelt.judo.meta</groupId>
                 <artifactId>hu.blackbelt.judo.meta.script.builder.jcl.asm</artifactId>
                 <version>${judo-meta-script-version}</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>org.eclipse.epsilon</groupId>
-                        <artifactId>epsilon-core</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.eclipse.epsilon</groupId>
-                        <artifactId>epsilon-emf</artifactId>
-                    </exclusion>
-                </exclusions>
             </dependency>
 
             <dependency>
                 <groupId>hu.blackbelt.judo.meta</groupId>
                 <artifactId>hu.blackbelt.judo.meta.script.model.adapter.asm</artifactId>
                 <version>${judo-meta-script-version}</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>org.eclipse.epsilon</groupId>
-                        <artifactId>epsilon-core</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.eclipse.epsilon</groupId>
-                        <artifactId>epsilon-emf</artifactId>
-                    </exclusion>
-                </exclusions>
             </dependency>
 
             <dependency>
                 <groupId>hu.blackbelt.judo.script</groupId>
                 <artifactId>hu.blackbelt.judo.script.codegen.generator</artifactId>
                 <version>${judo-script-codegen-version}</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>org.eclipse.epsilon</groupId>
-                        <artifactId>epsilon-core</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.eclipse.epsilon</groupId>
-                        <artifactId>epsilon-emf</artifactId>
-                    </exclusion>
-                </exclusions>
             </dependency>
 
             <dependency>
@@ -428,198 +359,68 @@
                 <groupId>hu.blackbelt.judo.meta</groupId>
                 <artifactId>hu.blackbelt.judo.meta.psm.model</artifactId>
                 <version>${judo-meta-psm-version}</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>org.eclipse.epsilon</groupId>
-                        <artifactId>epsilon-core</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.eclipse.epsilon</groupId>
-                        <artifactId>epsilon-emf</artifactId>
-                    </exclusion>
-                </exclusions>
             </dependency>
             <dependency>
                 <groupId>hu.blackbelt.judo.meta</groupId>
                 <artifactId>hu.blackbelt.judo.meta.esm.model</artifactId>
                 <version>${judo-meta-esm-version}</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>org.eclipse.epsilon</groupId>
-                        <artifactId>epsilon-core</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.eclipse.epsilon</groupId>
-                        <artifactId>epsilon-emf</artifactId>
-                    </exclusion>
-                </exclusions>
             </dependency>
             <dependency>
                 <groupId>hu.blackbelt.judo.meta</groupId>
                 <artifactId>hu.blackbelt.judo.meta.esm.model.northwind</artifactId>
                 <version>${judo-meta-esm-version}</version>
                 <scope>test</scope>
-                <exclusions>
-                    <exclusion>
-                        <groupId>org.eclipse.epsilon</groupId>
-                        <artifactId>epsilon-core</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.eclipse.epsilon</groupId>
-                        <artifactId>epsilon-emf</artifactId>
-                    </exclusion>
-                </exclusions>
             </dependency>
             <dependency>
                 <groupId>hu.blackbelt.judo.meta</groupId>
                 <artifactId>hu.blackbelt.judo.meta.asm.model</artifactId>
                 <version>${judo-meta-asm-version}</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>org.eclipse.epsilon</groupId>
-                        <artifactId>epsilon-core</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.eclipse.epsilon</groupId>
-                        <artifactId>epsilon-emf</artifactId>
-                    </exclusion>
-                </exclusions>
             </dependency>
             <dependency>
                 <groupId>hu.blackbelt.judo.meta</groupId>
                 <artifactId>hu.blackbelt.judo.meta.expression.model</artifactId>
                 <version>${judo-meta-expression-version}</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>org.eclipse.epsilon</groupId>
-                        <artifactId>epsilon-core</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.eclipse.epsilon</groupId>
-                        <artifactId>epsilon-emf</artifactId>
-                    </exclusion>
-                </exclusions>
             </dependency>
             <dependency>
                 <groupId>hu.blackbelt.judo.meta</groupId>
                 <artifactId>hu.blackbelt.judo.meta.expression.builder.jql</artifactId>
                 <version>${judo-meta-expression-version}</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>org.eclipse.epsilon</groupId>
-                        <artifactId>epsilon-core</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.eclipse.epsilon</groupId>
-                        <artifactId>epsilon-emf</artifactId>
-                    </exclusion>
-                </exclusions>
             </dependency>
             <dependency>
                 <groupId>hu.blackbelt.judo.meta</groupId>
                 <artifactId>hu.blackbelt.judo.meta.expression.builder.jql.asm</artifactId>
                 <version>${judo-meta-expression-version}</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>org.eclipse.epsilon</groupId>
-                        <artifactId>epsilon-core</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.eclipse.epsilon</groupId>
-                        <artifactId>epsilon-emf</artifactId>
-                    </exclusion>
-                </exclusions>
             </dependency>
             <dependency>
                 <groupId>hu.blackbelt.judo.meta</groupId>
                 <artifactId>hu.blackbelt.judo.meta.expression.model.adapter.asm</artifactId>
                 <version>${judo-meta-expression-version}</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>org.eclipse.epsilon</groupId>
-                        <artifactId>epsilon-core</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.eclipse.epsilon</groupId>
-                        <artifactId>epsilon-emf</artifactId>
-                    </exclusion>
-                </exclusions>
             </dependency>
             <dependency>
                 <groupId>hu.blackbelt.judo.meta</groupId>
                 <artifactId>hu.blackbelt.judo.meta.expression.model.adapter.measure</artifactId>
                 <version>${judo-meta-expression-version}</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>org.eclipse.epsilon</groupId>
-                        <artifactId>epsilon-core</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.eclipse.epsilon</groupId>
-                        <artifactId>epsilon-emf</artifactId>
-                    </exclusion>
-                </exclusions>
             </dependency>
             <dependency>
                 <groupId>hu.blackbelt.judo.meta</groupId>
                 <artifactId>hu.blackbelt.judo.meta.expression.model.adapter.psm</artifactId>
                 <version>${judo-meta-expression-version}</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>org.eclipse.epsilon</groupId>
-                        <artifactId>epsilon-core</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.eclipse.epsilon</groupId>
-                        <artifactId>epsilon-emf</artifactId>
-                    </exclusion>
-                </exclusions>
             </dependency>
             <dependency>
                 <groupId>hu.blackbelt.judo.meta</groupId>
                 <artifactId>hu.blackbelt.judo.meta.expression.model.adapter.esm</artifactId>
                 <version>${judo-meta-expression-version}</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>org.eclipse.epsilon</groupId>
-                        <artifactId>epsilon-core</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.eclipse.epsilon</groupId>
-                        <artifactId>epsilon-emf</artifactId>
-                    </exclusion>
-                </exclusions>
             </dependency>
 
             <dependency>
                 <groupId>hu.blackbelt.judo.meta</groupId>
                 <artifactId>hu.blackbelt.judo.meta.rdbms.model</artifactId>
                 <version>${judo-meta-rdbms-version}</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>org.eclipse.epsilon</groupId>
-                        <artifactId>epsilon-core</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.eclipse.epsilon</groupId>
-                        <artifactId>epsilon-emf</artifactId>
-                    </exclusion>
-                </exclusions>
             </dependency>
             <dependency>
                 <groupId>hu.blackbelt.judo.meta</groupId>
                 <artifactId>hu.blackbelt.judo.meta.keycloak.model</artifactId>
                 <version>${judo-meta-keycloak-version}</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>org.eclipse.epsilon</groupId>
-                        <artifactId>epsilon-core</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.eclipse.epsilon</groupId>
-                        <artifactId>epsilon-emf</artifactId>
-                    </exclusion>
-                </exclusions>
             </dependency>
             <!--
              <dependency>
@@ -632,64 +433,24 @@
                 <groupId>hu.blackbelt.judo.meta</groupId>
                 <artifactId>hu.blackbelt.judo.meta.measure.model</artifactId>
                 <version>${judo-meta-measure-version}</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>org.eclipse.epsilon</groupId>
-                        <artifactId>epsilon-core</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.eclipse.epsilon</groupId>
-                        <artifactId>epsilon-emf</artifactId>
-                    </exclusion>
-                </exclusions>
             </dependency>
 
             <dependency>
                 <groupId>hu.blackbelt.judo.meta</groupId>
                 <artifactId>hu.blackbelt.judo.meta.liquibase.model</artifactId>
                 <version>${judo-meta-liquibase-version}</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>org.eclipse.epsilon</groupId>
-                        <artifactId>epsilon-core</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.eclipse.epsilon</groupId>
-                        <artifactId>epsilon-emf</artifactId>
-                    </exclusion>
-                </exclusions>
             </dependency>
 
             <dependency>
                 <groupId>hu.blackbelt.judo.meta</groupId>
                 <artifactId>hu.blackbelt.judo.meta.openapi.model</artifactId>
                 <version>${judo-meta-openapi-version}</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>org.eclipse.epsilon</groupId>
-                        <artifactId>epsilon-core</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.eclipse.epsilon</groupId>
-                        <artifactId>epsilon-emf</artifactId>
-                    </exclusion>
-                </exclusions>
             </dependency>
 
             <dependency>
                 <groupId>hu.blackbelt.judo.meta</groupId>
                 <artifactId>hu.blackbelt.judo.meta.ui.model</artifactId>
                 <version>${judo-meta-ui-version}</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>org.eclipse.epsilon</groupId>
-                        <artifactId>epsilon-core</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.eclipse.epsilon</groupId>
-                        <artifactId>epsilon-emf</artifactId>
-                    </exclusion>
-                </exclusions>
             </dependency>
 
             <dependency>
@@ -866,16 +627,6 @@
                 <artifactId>hu.blackbelt.judo.meta.psm.model.northwind</artifactId>
                 <version>${judo-meta-psm-version}</version>
                 <scope>test</scope>
-                <exclusions>
-                    <exclusion>
-                        <groupId>org.eclipse.epsilon</groupId>
-                        <artifactId>epsilon-core</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.eclipse.epsilon</groupId>
-                        <artifactId>epsilon-emf</artifactId>
-                    </exclusion>
-                </exclusions>
             </dependency>
         </dependencies>
     </dependencyManagement>
