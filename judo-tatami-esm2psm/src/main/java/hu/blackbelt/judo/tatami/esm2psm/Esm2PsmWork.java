@@ -17,7 +17,6 @@ import static hu.blackbelt.judo.meta.esm.runtime.EsmModel.LoadArguments.esmLoadA
 import static hu.blackbelt.judo.meta.psm.runtime.PsmModel.SaveArguments.psmSaveArgumentsBuilder;
 import static hu.blackbelt.judo.tatami.core.workflow.engine.WorkFlowEngineBuilder.aNewWorkFlowEngine;
 import static hu.blackbelt.judo.tatami.core.workflow.flow.SequentialFlow.Builder.aNewSequentialFlow;
-import static hu.blackbelt.judo.tatami.esm2psm.Esm2Psm.executeEsm2PsmTransformation;
 import static hu.blackbelt.judo.meta.psm.runtime.PsmModel.buildPsmModel;
 
 import java.io.File;
@@ -27,7 +26,7 @@ import java.net.URISyntaxException;
 import java.util.Optional;
 
 import static hu.blackbelt.judo.meta.psm.runtime.PsmModel.buildPsmModel;
-import static hu.blackbelt.judo.tatami.esm2psm.Esm2Psm.executeEsm2PsmTransformation;
+import static hu.blackbelt.judo.tatami.esm2psm.Esm2Psm.*;
 
 @Slf4j
 public class Esm2PsmWork extends AbstractTransformationWork {
@@ -38,7 +37,11 @@ public class Esm2PsmWork extends AbstractTransformationWork {
         this.transformationScriptRoot = transformationScriptRoot;
     }
 
-    @Override
+	public Esm2PsmWork(TransformationContext transformationContext) {
+		this(transformationContext, calculateEsm2PsmTransformationScriptURI());
+	}
+
+	@Override
     public void execute() throws Exception {
         Optional<EsmModel> esmModel = getTransformationContext().getByClass(EsmModel.class);
         esmModel.orElseThrow(() -> new IllegalArgumentException("ESM Model does not found in transformation context"));

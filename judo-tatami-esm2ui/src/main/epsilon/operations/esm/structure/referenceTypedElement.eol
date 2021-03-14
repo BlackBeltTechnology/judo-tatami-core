@@ -121,7 +121,7 @@ operation ESM!esm::structure::ReferenceTypedElement mapTablePage(application : U
 
     log.debug("Create page for relation for table: " + target.name + " (relation: " + self.fqName() + ")");
     
-    var page : UI!ui::PageDefinition = new UI!ui::PageDefinition();
+    page = new UI!ui::PageDefinition();
     page.~application = application;
     page.~originalRelation = self;
     var relation = self.mapRelationType(application, self.eContainer.mapClassType(application));

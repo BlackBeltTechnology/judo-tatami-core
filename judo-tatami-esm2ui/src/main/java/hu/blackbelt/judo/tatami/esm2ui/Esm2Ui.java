@@ -11,6 +11,7 @@ import hu.blackbelt.judo.meta.esm.runtime.EsmUtils;
 import hu.blackbelt.judo.meta.ui.runtime.UiUtils;
 import hu.blackbelt.judo.meta.ui.runtime.UiModel;
 import hu.blackbelt.judo.tatami.core.TransformationTraceUtil;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
 import org.eclipse.emf.ecore.EObject;
@@ -130,7 +131,8 @@ public class Esm2Ui {
                 .trace(resolveEsm2UiTrace(traceModel, esmModel, uiModel)).build();
     }
 
-    public static URI calculateEsm2UiTransformationScriptURI() throws URISyntaxException {
+    @SneakyThrows(URISyntaxException.class)
+    public static URI calculateEsm2UiTransformationScriptURI() {
         URI uiRoot = Esm2Ui.class.getProtectionDomain().getCodeSource().getLocation().toURI();
         if (uiRoot.toString().endsWith(".jar")) {
             uiRoot = new URI("jar:" + uiRoot.toString() + "!/" + SCRIPT_ROOT_TATAMI_ESM_2_UI);

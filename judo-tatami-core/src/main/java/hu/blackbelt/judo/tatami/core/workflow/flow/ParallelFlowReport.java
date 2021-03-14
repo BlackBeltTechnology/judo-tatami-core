@@ -5,6 +5,7 @@ import hu.blackbelt.judo.tatami.core.workflow.work.WorkStatus;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Aggregate report of all works reports.
@@ -81,4 +82,13 @@ public class ParallelFlowReport implements WorkReport {
         }
         return null;
     }
+
+    @Override
+    public String toString() {
+        return "ParallelFlowReport [\n\t" +
+                reports.stream().map(r -> r.toString()).collect(Collectors.joining(",\n\t")) +
+                ']';
+    }
+
+
 }
