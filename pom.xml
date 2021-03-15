@@ -58,23 +58,23 @@
 
 
         <!-- Model versions -->
-        <judo-meta-rdbms-version>1.0.0.20210315_015443_5fa05d4_develop</judo-meta-rdbms-version>
-        <judo-meta-esm-version>1.1.0.20210315_014613_44f9c2e_develop</judo-meta-esm-version>
-        <judo-meta-psm-version>1.1.0.20210315_015449_98728eb_develop</judo-meta-psm-version>
-        <judo-meta-jql-version>1.0.1.20210314_232335_005fc62_develop</judo-meta-jql-version>
-        <judo-meta-jcl-version>1.0.1.20210315_011245_1011653_develop</judo-meta-jcl-version>
-        <judo-meta-script-version>1.0.1.20210315_022806_b38e46c_develop</judo-meta-script-version>
-        <judo-meta-asm-version>1.1.0.20210315_013506_aedc547_develop</judo-meta-asm-version>
-        <judo-meta-expression-version>1.0.1.20210315_021309_828b4cc_develop</judo-meta-expression-version>
-        <judo-meta-measure-version>1.0.0.20210315_014624_6e19265_develop</judo-meta-measure-version>
-        <judo-meta-liquibase-version>1.0.0.20210315_014553_7eddb1f_develop</judo-meta-liquibase-version>
-        <judo-meta-openapi-version>1.0.0.20210315_015358_7101d5a_develop</judo-meta-openapi-version>
-        <judo-meta-ui-version>1.0.0.20210315_015423_2f56b43_develop</judo-meta-ui-version>
-        <judo-meta-keycloak-version>1.0.0.20210315_015432_bc7f295_develop</judo-meta-keycloak-version>
+        <judo-meta-rdbms-version>1.0.0.20210315_223934_ea3c1c0_develop</judo-meta-rdbms-version>
+        <judo-meta-esm-version>1.1.0.20210315_223934_2f8ec72_develop</judo-meta-esm-version>
+        <judo-meta-psm-version>1.1.0.20210315_224723_169e53e_develop</judo-meta-psm-version>
+        <judo-meta-jql-version>1.0.1.20210315_205707_cde1471_develop</judo-meta-jql-version>
+        <judo-meta-jcl-version>1.0.1.20210315_223224_e0a0441_develop</judo-meta-jcl-version>
+        <judo-meta-script-version>1.0.1.20210315_233709_502f264_develop</judo-meta-script-version>
+        <judo-meta-asm-version>1.1.0.20210315_223930_27faf98_develop</judo-meta-asm-version>
+        <judo-meta-expression-version>1.0.1.20210315_232035_340279f_develop</judo-meta-expression-version>
+        <judo-meta-measure-version>1.0.0.20210315_223927_3fd3bf1_develop</judo-meta-measure-version>
+        <judo-meta-liquibase-version>1.0.0.20210315_223933_3a341ce_develop</judo-meta-liquibase-version>
+        <judo-meta-openapi-version>1.0.0.20210315_223854_5bee19c_develop</judo-meta-openapi-version>
+        <judo-meta-ui-version>1.0.0.20210315_224739_8dd1fa6_develop</judo-meta-ui-version>
+        <judo-meta-keycloak-version>1.0.0.20210315_224710_14bda02_develop</judo-meta-keycloak-version>
         <judo-dao-api-version>1.0.2.20210223_122846_195d971_develop</judo-dao-api-version>
         <judo-dispatcher-api-version>1.0.2.20210302_135850_a9b5c54_develop</judo-dispatcher-api-version>
-        <judo-script-codegen-version>1.1.0.20210315_023826_e3599b5_develop</judo-script-codegen-version>
-        <judo-operation-utils-version>1.1.0.20210315_021242_ec29190_develop</judo-operation-utils-version>
+        <judo-script-codegen-version>1.1.0.20210315_234847_45c6777_develop</judo-script-codegen-version>
+        <judo-operation-utils-version>1.1.0.20210315_232016_d4ef6f4_develop</judo-operation-utils-version>
 
         <structured-map-proxy-version>1.0.6.20210119_121627_130c6ee_develop</structured-map-proxy-version>
 
