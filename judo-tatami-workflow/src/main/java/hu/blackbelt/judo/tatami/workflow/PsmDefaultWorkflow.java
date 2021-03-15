@@ -218,7 +218,7 @@ public class PsmDefaultWorkflow {
 			verifier.isClassExists(ScriptModel.class);
 		}
 
-		if (createOperationWork.isPresent()) {
+		if (createOpenAPIWork.isPresent()) {
 			verifier.isClassExists(OpenapiModel.class);
 			verifier.isClassExists(Asm2OpenAPITransformationTrace.class);
 		}
@@ -231,7 +231,7 @@ public class PsmDefaultWorkflow {
 			verifier.isMultipleKeyExists(InputStream.class, SDK_OUTPUT, SDK_OUTPUT_INTERNAL);
 		}
 
-		if (createJAXRSAPIWork.isPresent()) {
+		if (createOperationWork.isPresent()) {
 			verifier.isKeyExists(InputStream.class, OPERATION_OUTPUT);
 		}
 
