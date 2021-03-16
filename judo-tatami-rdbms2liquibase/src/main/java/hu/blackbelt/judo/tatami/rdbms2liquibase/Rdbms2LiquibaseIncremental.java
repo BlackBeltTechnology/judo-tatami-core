@@ -18,12 +18,15 @@ import static hu.blackbelt.epsilon.runtime.execution.contexts.EtlExecutionContex
 import static hu.blackbelt.epsilon.runtime.execution.contexts.ProgramParameter.programParameterBuilder;
 import static hu.blackbelt.epsilon.runtime.execution.model.emf.WrappedEmfModelContext.wrappedEmfModelContextBuilder;
 import static hu.blackbelt.judo.tatami.rdbms2liquibase.Rdbms2Liquibase.calculateRdbms2LiquibaseTransformationScriptURI;
+import static java.lang.Boolean.parseBoolean;
+import static java.lang.System.getenv;
 import static java.util.Collections.singletonList;
 
 @Slf4j
 public class Rdbms2LiquibaseIncremental {
 
     private static final String BACKUP_PREFIX = "BACKUP";
+    public static final boolean LIVE_DB_TEST = parseBoolean(getenv("LIVE_DB_TEST"));
 
     public static void executeRdbms2LiquibaseIncrementalTransformation(RdbmsModel incrementalRdbmsModel,
                                                                        LiquibaseModel dbCheckupLiquibaseModel,
@@ -118,8 +121,9 @@ public class Rdbms2LiquibaseIncremental {
         executionContext.executeProgram(
                 eglExecutionContextBuilder()
                         .source(UriUtil.resolve("../generations/sql/main.egl", scriptUri))
-                        .outputRoot("target/generated-sources/sql")
-//                        .outputRoot("target/test-classes/sql") // for testing database
+                        .outputRoot(LIVE_DB_TEST
+                                      ? "target/test-classes/sql"
+                                      : "target/generated-sources/sql")
                         .parameters(parameters)
                         .build());
 

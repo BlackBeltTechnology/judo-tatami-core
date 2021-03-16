@@ -17,6 +17,7 @@ import liquibase.database.core.HsqlDatabase;
 import liquibase.database.jvm.HsqlConnection;
 import liquibase.exception.LiquibaseException;
 import liquibase.resource.FileSystemResourceAccessor;
+import lombok.extern.slf4j.Slf4j;
 import org.eclipse.epsilon.common.util.UriUtil;
 import org.junit.jupiter.api.Test;
 
@@ -39,12 +40,14 @@ import static hu.blackbelt.judo.meta.rdbms.runtime.RdbmsIncremental.transformRdb
 import static hu.blackbelt.judo.meta.rdbms.runtime.RdbmsModel.SaveArguments.rdbmsSaveArgumentsBuilder;
 import static hu.blackbelt.judo.meta.rdbms.runtime.RdbmsModel.buildRdbmsModel;
 import static hu.blackbelt.judo.tatami.rdbms2liquibase.Rdbms2Liquibase.executeRdbms2LiquibaseTransformation;
+import static hu.blackbelt.judo.tatami.rdbms2liquibase.Rdbms2LiquibaseIncremental.LIVE_DB_TEST;
 import static hu.blackbelt.judo.tatami.rdbms2liquibase.Rdbms2LiquibaseIncremental.executeRdbms2LiquibaseIncrementalTransformation;
 import static java.lang.String.format;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.fail;
 
+@Slf4j
 public class Excel2RdbmsTest {
 
     private static final String ORIGINAL_MODEL_NAME = "OriginalModel";
@@ -177,21 +180,23 @@ public class Excel2RdbmsTest {
         saveLiquibase(dbDropBackupLiquibaseModel);
 
         // $ java -cp hsqldb/lib/hsqldb.jar org.hsqldb.server.Server --database.0 file:mydb --dbname.0 xdb
-//        Connection connection = DriverManager.getConnection("jdbc:hsqldb:hsql://localhost:9001/xdb", "SA", "");
-//        connection.createStatement().execute("DROP SCHEMA PUBLIC CASCADE");
-//
-//        Database liquibaseDb = new HsqlDatabase();
-//        liquibaseDb.setConnection(new HsqlConnection(connection));
-//
-//        runLiquibaseChangeSet(originalLiquibaseModel, liquibaseDb);
-//        runLiquibaseChangeSet(dbCheckupModel, liquibaseDb);
-//        runLiquibaseChangeSet(dbBackupLiquibaseModel, liquibaseDb);
-//        runLiquibaseChangeSet(beforeIncrementalModel, liquibaseDb);
-//        runLiquibaseChangeSet(incrementalLiquibaseModel, liquibaseDb);
-//        runLiquibaseChangeSet(afterIncrementalModel, liquibaseDb);
-//        runLiquibaseChangeSet(dbDropBackupLiquibaseModel, liquibaseDb);
-//
-//        liquibaseDb.close();
+        if (LIVE_DB_TEST) {
+            Connection connection = DriverManager.getConnection("jdbc:hsqldb:hsql://localhost:9001/xdb", "SA", "");
+            connection.createStatement().execute("DROP SCHEMA PUBLIC CASCADE");
+
+            Database liquibaseDb = new HsqlDatabase();
+            liquibaseDb.setConnection(new HsqlConnection(connection));
+
+            runLiquibaseChangeSet(originalLiquibaseModel, liquibaseDb);
+            runLiquibaseChangeSet(dbCheckupModel, liquibaseDb);
+            runLiquibaseChangeSet(dbBackupLiquibaseModel, liquibaseDb);
+            runLiquibaseChangeSet(beforeIncrementalModel, liquibaseDb);
+            runLiquibaseChangeSet(incrementalLiquibaseModel, liquibaseDb);
+            runLiquibaseChangeSet(afterIncrementalModel, liquibaseDb);
+            runLiquibaseChangeSet(dbDropBackupLiquibaseModel, liquibaseDb);
+
+            liquibaseDb.close();
+        }
     }
 
     private void runLiquibaseChangeSet(LiquibaseModel liquibaseModel, Database liquibaseDb) throws LiquibaseException {
