@@ -1,5 +1,6 @@
 package hu.blackbelt.judo.tatami.workflow;
 
+import hu.blackbelt.judo.meta.esm.runtime.EsmModel;
 import hu.blackbelt.judo.meta.psm.runtime.PsmModel;
 import lombok.Builder;
 import lombok.Getter;
@@ -19,6 +20,13 @@ public class DefaultWorkflowSetupParameters {
 
 	private URI psmModelSourceURI;
 
+	/**
+	 * When EsmModel is defined esmModelURI is ignored.
+	 */
+	private EsmModel esmModel;
+
+	private URI esmModelSourceURI;
+
 	@NonNull
 	private String modelName;
 
@@ -26,7 +34,16 @@ public class DefaultWorkflowSetupParameters {
 	private List<String> dialectList;
 
 	@Builder.Default
+	private Boolean runInParallel = true;
+
+	@Builder.Default
 	private Boolean enableMetrics = true;
+
+	@Builder.Default
+	private Boolean ignoreEsm2Psm = false;
+
+	@Builder.Default
+	private Boolean ignoreEsm2Ui = false;
 
 	@Builder.Default
 	private Boolean ignorePsm2Asm = false;

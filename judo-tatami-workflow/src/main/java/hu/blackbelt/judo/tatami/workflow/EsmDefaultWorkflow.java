@@ -1,28 +1,7 @@
 package hu.blackbelt.judo.tatami.workflow;
 
-import static hu.blackbelt.judo.meta.psm.runtime.PsmModel.loadPsmModel;
-import static hu.blackbelt.judo.meta.psm.runtime.PsmModel.LoadArguments.psmLoadArgumentsBuilder;
-import static hu.blackbelt.judo.tatami.asm2jaxrsapi.Asm2JAXRSAPIWork.JAXRSAPI_OUTPUT;
-import static hu.blackbelt.judo.tatami.asm2sdk.Asm2SDKWork.SDK_OUTPUT;
-import static hu.blackbelt.judo.tatami.asm2sdk.Asm2SDKWork.SDK_OUTPUT_INTERNAL;
-import static hu.blackbelt.judo.tatami.core.ThrowingSupplier.sneakyThrows;
-import static hu.blackbelt.judo.tatami.core.workflow.engine.WorkFlowEngineBuilder.aNewWorkFlowEngine;
-import static hu.blackbelt.judo.tatami.core.workflow.flow.ConditionalFlow.Builder.aNewConditionalFlow;
-import static hu.blackbelt.judo.tatami.core.workflow.flow.ParallelFlow.Builder.aNewParallelFlow;
-import static hu.blackbelt.judo.tatami.core.workflow.flow.SequentialFlow.Builder.aNewSequentialFlow;
-import static hu.blackbelt.judo.tatami.script2operation.Script2OperationWork.OPERATION_OUTPUT;
-import static java.util.Optional.of;
-import static java.util.Optional.ofNullable;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
-import com.google.common.collect.Lists;
-
 import hu.blackbelt.judo.meta.asm.runtime.AsmModel;
+import hu.blackbelt.judo.meta.esm.runtime.EsmModel;
 import hu.blackbelt.judo.meta.expression.runtime.ExpressionModel;
 import hu.blackbelt.judo.meta.keycloak.runtime.KeycloakModel;
 import hu.blackbelt.judo.meta.liquibase.runtime.LiquibaseModel;
@@ -31,6 +10,8 @@ import hu.blackbelt.judo.meta.openapi.runtime.OpenapiModel;
 import hu.blackbelt.judo.meta.psm.runtime.PsmModel;
 import hu.blackbelt.judo.meta.rdbms.runtime.RdbmsModel;
 import hu.blackbelt.judo.meta.script.runtime.ScriptModel;
+import hu.blackbelt.judo.meta.ui.runtime.UiModel;
+import hu.blackbelt.judo.tatami.asm2expression.Asm2ExpressionWork;
 import hu.blackbelt.judo.tatami.asm2jaxrsapi.Asm2JAXRSAPIWork;
 import hu.blackbelt.judo.tatami.asm2keycloak.Asm2KeycloakWork;
 import hu.blackbelt.judo.tatami.asm2openapi.Asm2OpenAPITransformationTrace;
@@ -40,24 +21,44 @@ import hu.blackbelt.judo.tatami.asm2rdbms.Asm2RdbmsWork;
 import hu.blackbelt.judo.tatami.asm2script.Asm2ScriptWork;
 import hu.blackbelt.judo.tatami.asm2sdk.Asm2SDKWork;
 import hu.blackbelt.judo.tatami.core.workflow.engine.WorkFlowEngine;
-import hu.blackbelt.judo.tatami.core.workflow.flow.ParallelFlow;
-import hu.blackbelt.judo.tatami.core.workflow.flow.SequentialFlow;
 import hu.blackbelt.judo.tatami.core.workflow.flow.WorkFlow;
-import hu.blackbelt.judo.tatami.core.workflow.work.*;
+import hu.blackbelt.judo.tatami.core.workflow.work.TransformationContext;
+import hu.blackbelt.judo.tatami.core.workflow.work.Work;
+import hu.blackbelt.judo.tatami.core.workflow.work.WorkReport;
+import hu.blackbelt.judo.tatami.core.workflow.work.WorkStatus;
+import hu.blackbelt.judo.tatami.esm.validation.EsmValidationWork;
+import hu.blackbelt.judo.tatami.esm2psm.Esm2PsmWork;
+import hu.blackbelt.judo.tatami.esm2ui.Esm2UiWork;
 import hu.blackbelt.judo.tatami.expression.asm.validation.ExpressionValidationOnAsmWork;
-import hu.blackbelt.judo.tatami.psm.validation.PsmValidationWork;
 import hu.blackbelt.judo.tatami.psm2asm.Psm2AsmTransformationTrace;
 import hu.blackbelt.judo.tatami.psm2asm.Psm2AsmWork;
 import hu.blackbelt.judo.tatami.psm2measure.Psm2MeasureTransformationTrace;
 import hu.blackbelt.judo.tatami.psm2measure.Psm2MeasureWork;
 import hu.blackbelt.judo.tatami.rdbms2liquibase.Rdbms2LiquibaseWork;
 import hu.blackbelt.judo.tatami.script2operation.Script2OperationWork;
-import hu.blackbelt.judo.tatami.asm2expression.Asm2ExpressionWork;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
+import java.io.InputStream;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import static hu.blackbelt.judo.meta.esm.runtime.EsmModel.LoadArguments.esmLoadArgumentsBuilder;
+import static hu.blackbelt.judo.meta.esm.runtime.EsmModel.loadEsmModel;
+import static hu.blackbelt.judo.tatami.asm2jaxrsapi.Asm2JAXRSAPIWork.JAXRSAPI_OUTPUT;
+import static hu.blackbelt.judo.tatami.asm2sdk.Asm2SDKWork.SDK_OUTPUT;
+import static hu.blackbelt.judo.tatami.asm2sdk.Asm2SDKWork.SDK_OUTPUT_INTERNAL;
+import static hu.blackbelt.judo.tatami.core.ThrowingSupplier.sneakyThrows;
+import static hu.blackbelt.judo.tatami.core.workflow.engine.WorkFlowEngineBuilder.aNewWorkFlowEngine;
+import static hu.blackbelt.judo.tatami.core.workflow.flow.ParallelFlow.Builder.aNewParallelFlow;
+import static hu.blackbelt.judo.tatami.core.workflow.flow.SequentialFlow.Builder.aNewSequentialFlow;
+import static hu.blackbelt.judo.tatami.script2operation.Script2OperationWork.OPERATION_OUTPUT;
+import static java.util.Optional.of;
+import static java.util.Optional.ofNullable;
+
 @Slf4j
-public class PsmDefaultWorkflow {
+public class EsmDefaultWorkflow {
 
 	@Getter
 	private TransformationContext transformationContext;
@@ -68,23 +69,23 @@ public class PsmDefaultWorkflow {
 
 	private WorkflowMetrics defaultMetrics = new DefaultWorkflowMetricsCollector();
 
-	public PsmDefaultWorkflow(DefaultWorkflowSetupParameters.DefaultWorkflowSetupParametersBuilder builder) {
+	public EsmDefaultWorkflow(DefaultWorkflowSetupParameters.DefaultWorkflowSetupParametersBuilder builder) {
 		this(builder.build());
 	}
 
-	public PsmDefaultWorkflow(DefaultWorkflowSetupParameters params) {
+	public EsmDefaultWorkflow(DefaultWorkflowSetupParameters params) {
 
-		// Loading Psm model here if it is not presented.
-		PsmModel psmModel = ofNullable(params.getPsmModel()).orElseGet(() ->
-				sneakyThrows(() -> loadPsmModel(psmLoadArgumentsBuilder()
+		// Loading Esm model here if it is not presented.
+		EsmModel esmModel = ofNullable(params.getEsmModel()).orElseGet(() ->
+				sneakyThrows(() -> loadEsmModel(esmLoadArgumentsBuilder()
 					.inputStream(
-						of(params.getPsmModelSourceURI()).orElseThrow(() ->
-							new IllegalArgumentException("psmModel or psmModelSourceUri have to be defined"))
+						of(params.getEsmModelSourceURI()).orElseThrow(() ->
+							new IllegalArgumentException("esmModel or esmModelSourceUri have to be defined"))
 							.toURL().openStream())
 					.name(params.getModelName()))));
 
 		transformationContext = new TransformationContext(params.getModelName());
-		transformationContext.put(psmModel);
+		transformationContext.put(esmModel);
 		this.parameters = params;
 	}
 
@@ -96,18 +97,20 @@ public class PsmDefaultWorkflow {
 		// ------------------ //
 		WorkflowMetrics metrics = parameters.getEnableMetrics() ? defaultMetrics : null;
 
-		if (parameters.getIgnorePsm2Asm() && parameters.getIgnorePsm2Measure()) {
-			throw new IllegalArgumentException("All transformation path are ignored");
-		}
+		Optional<Work> validateEsmWork = !parameters.getValidateModels() ? Optional.empty() :
+				Optional.of(new EsmValidationWork(transformationContext).withMetricsCollector(metrics));
 
-		Optional<Work> validatePsmWork = !parameters.getValidateModels() ? Optional.empty() :
-				Optional.of(new PsmValidationWork(transformationContext).withMetricsCollector(metrics));
+		Optional<Work> createPsmWork = parameters.getIgnoreEsm2Psm() ? Optional.empty() :
+				Optional.of(new Esm2PsmWork(transformationContext).withMetricsCollector(metrics));
 
-		Optional<Work> createMeasure = parameters.getIgnorePsm2Measure() ? Optional.empty() :
+		Optional<Work> createUiWork = parameters.getIgnoreEsm2Ui() ? Optional.empty() :
+				Optional.of(new Esm2UiWork(transformationContext).withMetricsCollector(metrics));
+
+		Optional<Work> createMeasure = (parameters.getIgnorePsm2Measure() || !createPsmWork.isPresent()) ? Optional.empty() :
 				Optional.of(new Psm2MeasureWork(transformationContext).withMetricsCollector(metrics));
-		Optional<Work> createAsmWork = parameters.getIgnorePsm2Asm() ? Optional.empty() :
-				Optional.of(new Psm2AsmWork(transformationContext).withMetricsCollector(metrics));
 
+		Optional<Work> createAsmWork = (parameters.getIgnorePsm2Asm() || !createPsmWork.isPresent()) ? Optional.empty() :
+				Optional.of(new Psm2AsmWork(transformationContext).withMetricsCollector(metrics));
 
 		Optional<Work> createExpressionWork = (parameters.getIgnoreAsm2Expression() || !createMeasure.isPresent() || !createAsmWork.isPresent()) ? Optional.empty() :
 				Optional.of(
@@ -152,9 +155,14 @@ public class PsmDefaultWorkflow {
 
 		if (parameters.getRunInParallel()) {
 			workflow = aNewSequentialFlow()
-					.named("ValidatePsm, PSM, ASM and Script transformations")
+					.named("Validate ESM and execute ESM, PSM and ASM transformations")
 					.execute(
-							validatePsmWork,
+							validateEsmWork,
+							Optional.of(
+									aNewParallelFlow()
+											.named("Parallel ESM Transformations")
+											.execute(Stream.of(createPsmWork, createUiWork))
+											.build()),
 							Optional.of(
 									aNewParallelFlow()
 											.named("Parallel PSM Transformations")
@@ -175,7 +183,7 @@ public class PsmDefaultWorkflow {
 					.named("Run all transformations sequentially")
 					.execute(
 							Stream.concat(
-									Stream.of(validatePsmWork,
+									Stream.of(validateEsmWork, createPsmWork, createUiWork,
 											createAsmWork, createMeasure,
 											createExpressionWork, createKeycloakWork, createJAXRSAPIWork, createSDKWork, createScriptWork, createOperationWork, createOpenAPIWork),
 									createRdbmsWorks
@@ -192,10 +200,19 @@ public class PsmDefaultWorkflow {
 
 		TransformationContext.TransformationContextVerifier verifier = transformationContext.transformationContextVerifier;
 
+		if (createPsmWork.isPresent()) {
+			verifier.isClassExists(PsmModel.class);
+		}
+
+		if (createUiWork.isPresent()) {
+			verifier.isClassExists(UiModel.class);
+		}
+
 		if (createMeasure.isPresent()) {
 			verifier.isClassExists(MeasureModel.class);
 			verifier.isClassExists(Psm2MeasureTransformationTrace.class);
 		}
+
 		if (createAsmWork.isPresent()) {
 			verifier.isClassExists(AsmModel.class);
 			verifier.isClassExists(Psm2AsmTransformationTrace.class);
@@ -244,7 +261,7 @@ public class PsmDefaultWorkflow {
 		}
 
 		if (parameters.getEnableMetrics()) {
-			log.info("PSM default workflow summary: {}", metrics.getExecutionTimes().entrySet().stream()
+			log.info("ESM default workflow summary: {}", metrics.getExecutionTimes().entrySet().stream()
 					.map(e -> "\n  - " + e.getKey() + ": " + e.getValue()).collect(Collectors.joining()));
 		}
 

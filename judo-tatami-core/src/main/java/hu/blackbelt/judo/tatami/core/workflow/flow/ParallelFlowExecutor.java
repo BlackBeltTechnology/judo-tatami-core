@@ -3,6 +3,7 @@ package hu.blackbelt.judo.tatami.core.workflow.flow;
 
 import hu.blackbelt.judo.tatami.core.workflow.work.Work;
 import hu.blackbelt.judo.tatami.core.workflow.work.WorkReport;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -15,6 +16,7 @@ import java.util.concurrent.Future;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+@Slf4j
 class ParallelFlowExecutor {
 
     private static final Logger LOGGER = Logger.getLogger(ParallelFlowExecutor.class.getName());
@@ -62,7 +64,7 @@ class ParallelFlowExecutor {
             try {
                 workReports.add(entry.getValue().get());
             } catch (InterruptedException | ExecutionException e) {
-                LOGGER.log(Level.WARNING, "Unable to get work report of work ''{0}''", entry.getKey().getName());
+                log.error(String.format("Unable to get work report of work ''{%s}''", entry.getKey().getName()), e);
             }
         }
 
