@@ -10,6 +10,7 @@ import hu.blackbelt.judo.meta.esm.runtime.EsmModel;
 
 import static hu.blackbelt.judo.meta.esm.runtime.EsmModel.LoadArguments.esmLoadArgumentsBuilder;
 import static hu.blackbelt.judo.meta.ui.runtime.UiModel.SaveArguments.uiSaveArgumentsBuilder;
+import static hu.blackbelt.judo.tatami.esm2ui.Esm2Ui.calculateEsm2UiTransformationScriptURI;
 import static hu.blackbelt.judo.tatami.esm2ui.Esm2Ui.executeEsm2UiTransformation;
 import static hu.blackbelt.judo.meta.ui.runtime.UiModel.buildUiModel;
 
@@ -23,6 +24,10 @@ public class Esm2UiWork extends AbstractTransformationWork {
     public static final String ESM_VALIDATION_SCRIPT_URI = "esmValidationScriptUri";
 
     final URI transformationScriptRoot;
+
+    public Esm2UiWork(TransformationContext transformationContext) {
+        this(transformationContext, calculateEsm2UiTransformationScriptURI());
+    }
 
     public Esm2UiWork(TransformationContext transformationContext, URI transformationScriptRoot) {
         super(transformationContext);

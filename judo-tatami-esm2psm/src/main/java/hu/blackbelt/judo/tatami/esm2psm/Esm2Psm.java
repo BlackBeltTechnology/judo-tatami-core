@@ -11,6 +11,7 @@ import hu.blackbelt.judo.meta.esm.runtime.EsmUtils;
 import hu.blackbelt.judo.meta.psm.PsmUtils;
 import hu.blackbelt.judo.meta.psm.runtime.PsmModel;
 import hu.blackbelt.judo.tatami.core.TransformationTraceUtil;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.epsilon.common.util.UriUtil;
@@ -114,7 +115,8 @@ public class Esm2Psm {
                 .trace(resolveEsm2PsmTrace(traceModel, esmModel, psmModel)).build();
     }
 
-    public static URI calculateEsm2PsmTransformationScriptURI() throws URISyntaxException {
+    @SneakyThrows(URISyntaxException.class)
+    public static URI calculateEsm2PsmTransformationScriptURI() {
         return calculateURI(SCRIPT_ROOT_TATAMI_ESM_2_PSM);
     }
 

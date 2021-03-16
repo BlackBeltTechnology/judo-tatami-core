@@ -38,6 +38,39 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
                 </configuration>
             </plugin>
 
+            <!-- Unpack ESM model -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>3.1.2</version>
+                <executions>
+                    <execution>
+                        <id>unpack-northwind-esm-model</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>unpack</goal>
+                        </goals>
+                        <configuration>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>hu.blackbelt.judo.meta</groupId>
+                                    <artifactId>hu.blackbelt.judo.meta.esm.model.northwind</artifactId>
+                                    <version>${judo-meta-esm-version}</version>
+                                    <outputDirectory>${basedir}/target/test-classes/esm</outputDirectory>
+                                </artifactItem>
+                            </artifactItems>
+                        </configuration>
+                    </execution>
+                </executions>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.slf4j</groupId>
+                        <artifactId>slf4j-simple</artifactId>
+                        <version>${slf4j-version}</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
+
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>exec-maven-plugin</artifactId>
@@ -52,7 +85,7 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
                         <configuration>
                             <mainClass>hu.blackbelt.model.northwind.Demo</mainClass>
                             <arguments>
-                                <argument>${basedir}/target/test-classes/northwind-psm.model</argument>
+                                <argument>${basedir}/target/test-classes/psm/northwind-psm.model</argument>
                             </arguments>
                             <includeProjectDependencies>true</includeProjectDependencies>
                             <includePluginDependencies>true</includePluginDependencies>
@@ -69,6 +102,7 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
                 </dependencies>
             </plugin>
 
+            
         </plugins>
         <pluginManagement>
         	<plugins>
@@ -108,10 +142,11 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
   </build>
     
     <dependencies>
+<!--
      <dependency>
             <groupId>org.eclipse.epsilon</groupId>
             <artifactId>epsilon-core</artifactId>
-        </dependency>
+        </dependency> -->
         <dependency>
             <groupId>hu.blackbelt.judo.tatami</groupId>
             <artifactId>judo-tatami-core</artifactId>
@@ -119,6 +154,10 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
         <dependency>
             <groupId>hu.blackbelt.judo.tatami</groupId>
             <artifactId>judo-tatami-esm2psm</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>hu.blackbelt.judo.tatami</groupId>
+            <artifactId>judo-tatami-esm2ui</artifactId>
         </dependency>
         <dependency>
             <groupId>hu.blackbelt.judo.tatami</groupId>
@@ -173,6 +212,11 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
 
         <dependency>
             <groupId>hu.blackbelt.judo.tatami</groupId>
+            <artifactId>judo-tatami-esm-validation</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>hu.blackbelt.judo.tatami</groupId>
             <artifactId>judo-tatami-psm-validation</artifactId>
         </dependency>
 
@@ -194,6 +238,10 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
         <dependency>
             <groupId>hu.blackbelt.judo.meta</groupId>
             <artifactId>hu.blackbelt.judo.meta.psm.model.northwind</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>hu.blackbelt.judo.meta</groupId>
+            <artifactId>hu.blackbelt.judo.meta.esm.model.northwind</artifactId>
         </dependency>
 
     </dependencies>

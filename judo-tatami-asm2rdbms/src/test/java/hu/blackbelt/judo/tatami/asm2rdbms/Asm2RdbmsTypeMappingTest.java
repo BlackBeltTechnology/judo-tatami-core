@@ -3,6 +3,8 @@ package hu.blackbelt.judo.tatami.asm2rdbms;
 import com.google.common.collect.ImmutableList;
 import hu.blackbelt.judo.meta.rdbms.RdbmsField;
 import lombok.extern.slf4j.Slf4j;
+
+import org.eclipse.emf.ecore.EAnnotation;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EDataType;
 import org.eclipse.emf.ecore.EPackage;
@@ -78,6 +80,28 @@ public class Asm2RdbmsTypeMappingTest extends Asm2RdbmsMappingTestBase {
         final EDataType javalangDouble = customEDataTypeBuilder("java.lang.Double");
         final EDataType javamathBigDecimal = customEDataTypeBuilder("java.math.BigDecimal");
 
+        final EAnnotation bigDecimalAttrAnnotation = newEAnnotationBuilder()
+                .withSource("http://blackbelt.hu/judo/meta/ExtendedMetadata/constraints")
+                .build();
+        bigDecimalAttrAnnotation.getDetails().put("precision", "64");
+        bigDecimalAttrAnnotation.getDetails().put("scale", "20");
+        
+        final EAnnotation bigIntegerAttrAnnotation = newEAnnotationBuilder()
+                .withSource("http://blackbelt.hu/judo/meta/ExtendedMetadata/constraints")
+                .build();
+        bigIntegerAttrAnnotation.getDetails().put("precision", "18");
+        
+        final EAnnotation javaMathBigIntegerAttrAnnotation = newEAnnotationBuilder()
+                .withSource("http://blackbelt.hu/judo/meta/ExtendedMetadata/constraints")
+                .build();
+        javaMathBigIntegerAttrAnnotation.getDetails().put("precision", "18");
+        
+        final EAnnotation javaMathBigDecimalAttrAnnotation = newEAnnotationBuilder()
+                .withSource("http://blackbelt.hu/judo/meta/ExtendedMetadata/constraints")
+                .build();
+        javaMathBigDecimalAttrAnnotation.getDetails().put("precision", "64");
+        javaMathBigDecimalAttrAnnotation.getDetails().put("scale", "20");
+        
         // create class with numeric type attributes
         final EClass eClass = newEClassBuilder()
                 .withName("TestNumericTypesClass")
@@ -86,10 +110,12 @@ public class Asm2RdbmsTypeMappingTest extends Asm2RdbmsMappingTestBase {
                                 newEAttributeBuilder()
                                         .withName("bigDecimalAttr")
                                         .withEType(ecore.getEBigDecimal())
+                                        .withEAnnotations(bigDecimalAttrAnnotation)
                                         .build(),
                                 newEAttributeBuilder()
                                         .withName("bigInteger")
                                         .withEType(ecore.getEBigInteger())
+                                        .withEAnnotations(bigIntegerAttrAnnotation)
                                         .build(),
                                 newEAttributeBuilder()
                                         .withName("doubleAttr")
@@ -134,6 +160,7 @@ public class Asm2RdbmsTypeMappingTest extends Asm2RdbmsMappingTestBase {
                                 newEAttributeBuilder()
                                         .withName("javamathBigIntegerAttr")
                                         .withEType(javamathBigInteger)
+                                        .withEAnnotations(javaMathBigIntegerAttrAnnotation)
                                         .build(),
                                 newEAttributeBuilder()
                                         .withName("javalangFloatAttr")
@@ -146,6 +173,7 @@ public class Asm2RdbmsTypeMappingTest extends Asm2RdbmsMappingTestBase {
                                 newEAttributeBuilder()
                                         .withName("javamathBigDecimalAttr")
                                         .withEType(javamathBigDecimal)
+                                        .withEAnnotations(javaMathBigDecimalAttrAnnotation)
                                         .build()
                         )
                 )
@@ -297,7 +325,17 @@ public class Asm2RdbmsTypeMappingTest extends Asm2RdbmsMappingTestBase {
 
         // create custom string-like type
         final EDataType javalangString = customEDataTypeBuilder("java.lang.String");
-
+        
+        EAnnotation annotationStringAttr = newEAnnotationBuilder()
+            .withSource("http://blackbelt.hu/judo/meta/ExtendedMetadata/constraints")
+            .build();
+        annotationStringAttr.getDetails().put("maxLength", "255");
+        
+        EAnnotation annotationJavalangStringAttr = newEAnnotationBuilder()
+                .withSource("http://blackbelt.hu/judo/meta/ExtendedMetadata/constraints")
+                .build();
+        annotationJavalangStringAttr.getDetails().put("maxLength", "255");
+        
         // create class with string-like type attributes
         final EClass eClass = newEClassBuilder()
                 .withName("TestStringlikeTypesClass")
@@ -306,10 +344,12 @@ public class Asm2RdbmsTypeMappingTest extends Asm2RdbmsMappingTestBase {
                                 newEAttributeBuilder()
                                         .withName("stringAttr")
                                         .withEType(ecore.getEString())
+                                        .withEAnnotations(annotationStringAttr)
                                         .build(),
                                 newEAttributeBuilder()
                                         .withName("javalangStringAttr")
                                         .withEType(javalangString)
+                                        .withEAnnotations(annotationJavalangStringAttr)
                                         .build()
                         )
                 )
