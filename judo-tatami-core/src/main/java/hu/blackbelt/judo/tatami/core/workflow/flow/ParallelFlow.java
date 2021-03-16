@@ -5,11 +5,9 @@ import hu.blackbelt.judo.tatami.core.workflow.work.Work;
 import hu.blackbelt.judo.tatami.core.workflow.work.WorkReport;
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * A parallel flow executes a set of works in parallel.
@@ -69,6 +67,16 @@ public class ParallelFlow extends AbstractWorkFlow {
 
         public ParallelFlow.Builder execute(Work... works) {
             this.works.addAll(Arrays.asList(works));
+            return this;
+        }
+
+        public ParallelFlow.Builder execute(Optional<Work>... works) {
+            this.works.addAll(Arrays.stream(works).filter(Optional::isPresent).map(Optional::get).collect(Collectors.toList()));
+            return this;
+        }
+
+        public ParallelFlow.Builder execute(Stream<Optional<Work>> works) {
+            this.works.addAll(works.filter(Optional::isPresent).map(Optional::get).collect(Collectors.toList()));
             return this;
         }
 
