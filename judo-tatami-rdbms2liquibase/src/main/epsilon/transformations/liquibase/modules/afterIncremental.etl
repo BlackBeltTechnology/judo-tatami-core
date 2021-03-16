@@ -55,7 +55,7 @@ rule AddUniqueConstraints
         guard: newModel.contains(s.eContainer)
         t.tableName = "";
         t.columnNames = "";
-        for (field in s.fields) { // works in theory, but fails when executed on db because UniqueConstraints must be unique
+        for (field in s.fields) { // works in theory, but fails when executed on db if there are more then 1 field because UniqueConstraints must be unique
             var addUniqueConstraint = new AFTER_INCREMENTAL!AddUniqueConstraint();
             addUniqueConstraint.constraintName = s.sqlName;
             addUniqueConstraint.tableName = field.eContainer.sqlName;

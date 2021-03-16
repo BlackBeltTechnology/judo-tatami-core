@@ -40,9 +40,10 @@ import static hu.blackbelt.judo.meta.rdbms.runtime.RdbmsIncremental.transformRdb
 import static hu.blackbelt.judo.meta.rdbms.runtime.RdbmsModel.SaveArguments.rdbmsSaveArgumentsBuilder;
 import static hu.blackbelt.judo.meta.rdbms.runtime.RdbmsModel.buildRdbmsModel;
 import static hu.blackbelt.judo.tatami.rdbms2liquibase.Rdbms2Liquibase.executeRdbms2LiquibaseTransformation;
-import static hu.blackbelt.judo.tatami.rdbms2liquibase.Rdbms2LiquibaseIncremental.LIVE_DB_TEST;
 import static hu.blackbelt.judo.tatami.rdbms2liquibase.Rdbms2LiquibaseIncremental.executeRdbms2LiquibaseIncrementalTransformation;
+import static java.lang.Boolean.parseBoolean;
 import static java.lang.String.format;
+import static java.lang.System.getenv;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.fail;
@@ -52,6 +53,9 @@ public class Excel2RdbmsTest {
 
     private static final String ORIGINAL_MODEL_NAME = "OriginalModel";
     private static final String TARGET_TEST_CLASSES = "target/test-classes";
+    private static final String GENERATED_SQL_LOCATION = TARGET_TEST_CLASSES + "/sql";
+
+    public static final boolean LIVE_DB_TEST = parseBoolean(getenv("LIVE_DB_TEST"));
 
     @Test
     public void executeExcel2RdbmsModel() throws Exception {
@@ -170,7 +174,8 @@ public class Excel2RdbmsTest {
                 incrementalLiquibaseModel,
                 afterIncrementalModel,
                 dbDropBackupLiquibaseModel,
-                "hsqldb");
+                "hsqldb",
+                GENERATED_SQL_LOCATION);
 
         saveLiquibase(dbCheckupModel);
         saveLiquibase(dbBackupLiquibaseModel);
@@ -179,8 +184,8 @@ public class Excel2RdbmsTest {
         saveLiquibase(afterIncrementalModel);
         saveLiquibase(dbDropBackupLiquibaseModel);
 
-        // $ java -cp hsqldb/lib/hsqldb.jar org.hsqldb.server.Server --database.0 file:mydb --dbname.0 xdb
         if (LIVE_DB_TEST) {
+            // $ java -cp hsqldb/lib/hsqldb.jar org.hsqldb.server.Server --database.0 file:mydb --dbname.0 xdb
             Connection connection = DriverManager.getConnection("jdbc:hsqldb:hsql://localhost:9001/xdb", "SA", "");
             connection.createStatement().execute("DROP SCHEMA PUBLIC CASCADE");
 

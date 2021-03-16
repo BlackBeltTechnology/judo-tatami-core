@@ -8,11 +8,13 @@ import hu.blackbelt.judo.tatami.core.workflow.work.AbstractTransformationWork;
 import hu.blackbelt.judo.tatami.core.workflow.work.TransformationContext;
 import lombok.extern.slf4j.Slf4j;
 
+import java.io.File;
 import java.net.URI;
 import java.util.Optional;
 
 import static hu.blackbelt.judo.meta.liquibase.runtime.LiquibaseModel.buildLiquibaseModel;
 import static hu.blackbelt.judo.tatami.rdbms2liquibase.Rdbms2LiquibaseIncremental.executeRdbms2LiquibaseIncrementalTransformation;
+import static java.nio.file.Files.createTempDirectory;
 
 @Slf4j
 public class Rdbms2LiquibaseIncrementalWork extends AbstractTransformationWork {
@@ -37,6 +39,14 @@ public class Rdbms2LiquibaseIncrementalWork extends AbstractTransformationWork {
                 .get(RdbmsModel.class, "rdbms-incremental:" + dialect)
                 .orElseThrow(() -> new RuntimeException("Required rdbms-incremental:" + dialect + " cannot be found in transformation context"));
 
+        Optional<String> sqlOutputOptional = getTransformationContext().get(String.class, "liquibase-incremental:" + dialect + "-sqlOutput");
+        if (!sqlOutputOptional.isPresent()) {
+            final File tempDir = createTempDirectory("liquibase-sql-" + dialect).toFile();
+            tempDir.deleteOnExit();
+            getTransformationContext().put("liquibase-incremental:" + dialect + "-sqlOutput", tempDir.getAbsolutePath());
+            sqlOutputOptional = Optional.of(tempDir.getAbsolutePath());
+        }
+
         executeRdbms2LiquibaseIncrementalTransformation(
                 incrementalRdbmsModel,
                 getLiquibaseModel("liquibase-dbCheckup:" + dialect, "DbCheckup"),
@@ -47,7 +57,8 @@ public class Rdbms2LiquibaseIncrementalWork extends AbstractTransformationWork {
                 getLiquibaseModel("liquibase-dbDropBackup:" + dialect, "DbDropBackup"),
                 (Log) getTransformationContext().get(Log.class).orElseGet(() -> new Slf4jLog(log)),
                 transformationScriptRoot,
-                dialect);
+                dialect,
+                sqlOutputOptional.get());
     }
 
     private LiquibaseModel getLiquibaseModel(String key, String modelName) {

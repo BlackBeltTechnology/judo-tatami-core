@@ -10,6 +10,7 @@ import hu.blackbelt.judo.meta.rdbms.runtime.RdbmsModel;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.epsilon.common.util.UriUtil;
 
+import java.io.File;
 import java.net.URI;
 
 import static hu.blackbelt.epsilon.runtime.execution.ExecutionContext.executionContextBuilder;
@@ -18,15 +19,12 @@ import static hu.blackbelt.epsilon.runtime.execution.contexts.EtlExecutionContex
 import static hu.blackbelt.epsilon.runtime.execution.contexts.ProgramParameter.programParameterBuilder;
 import static hu.blackbelt.epsilon.runtime.execution.model.emf.WrappedEmfModelContext.wrappedEmfModelContextBuilder;
 import static hu.blackbelt.judo.tatami.rdbms2liquibase.Rdbms2Liquibase.calculateRdbms2LiquibaseTransformationScriptURI;
-import static java.lang.Boolean.parseBoolean;
-import static java.lang.System.getenv;
 import static java.util.Collections.singletonList;
 
 @Slf4j
 public class Rdbms2LiquibaseIncremental {
 
     private static final String BACKUP_PREFIX = "BACKUP";
-    public static final boolean LIVE_DB_TEST = parseBoolean(getenv("LIVE_DB_TEST"));
 
     public static void executeRdbms2LiquibaseIncrementalTransformation(RdbmsModel incrementalRdbmsModel,
                                                                        LiquibaseModel dbCheckupLiquibaseModel,
@@ -35,8 +33,9 @@ public class Rdbms2LiquibaseIncremental {
                                                                        LiquibaseModel incrementalLiquibaseModel,
                                                                        LiquibaseModel afterIncrementalLiquibaseModel,
                                                                        LiquibaseModel dbDropBackupLiquibaseModel,
-                                                                       String dialect) throws Exception {
-        executeRdbms2LiquibaseIncrementalTransformation(incrementalRdbmsModel, dbCheckupLiquibaseModel, dbBackupLiquibaseModel, beforeIncrementalLiquibaseModel, incrementalLiquibaseModel, afterIncrementalLiquibaseModel, dbDropBackupLiquibaseModel, new Slf4jLog(log), calculateRdbms2LiquibaseTransformationScriptURI(), dialect);
+                                                                       String dialect,
+                                                                       String sqlOutput) throws Exception {
+        executeRdbms2LiquibaseIncrementalTransformation(incrementalRdbmsModel, dbCheckupLiquibaseModel, dbBackupLiquibaseModel, beforeIncrementalLiquibaseModel, incrementalLiquibaseModel, afterIncrementalLiquibaseModel, dbDropBackupLiquibaseModel, new Slf4jLog(log), calculateRdbms2LiquibaseTransformationScriptURI(), dialect, sqlOutput);
     }
 
     public static void executeRdbms2LiquibaseIncrementalTransformation(RdbmsModel incrementalRdbmsModel,
@@ -47,8 +46,9 @@ public class Rdbms2LiquibaseIncremental {
                                                                        LiquibaseModel afterIncrementalLiquibaseModel,
                                                                        LiquibaseModel dbDropBackupLiquibaseModel,
                                                                        Log log,
-                                                                       String dialect) throws Exception {
-        executeRdbms2LiquibaseIncrementalTransformation(incrementalRdbmsModel, dbCheckupLiquibaseModel, dbBackupLiquibaseModel, beforeIncrementalLiquibaseModel, incrementalLiquibaseModel, afterIncrementalLiquibaseModel, dbDropBackupLiquibaseModel, log, calculateRdbms2LiquibaseTransformationScriptURI(), dialect);
+                                                                       String dialect,
+                                                                       String sqlOutput) throws Exception {
+        executeRdbms2LiquibaseIncrementalTransformation(incrementalRdbmsModel, dbCheckupLiquibaseModel, dbBackupLiquibaseModel, beforeIncrementalLiquibaseModel, incrementalLiquibaseModel, afterIncrementalLiquibaseModel, dbDropBackupLiquibaseModel, log, calculateRdbms2LiquibaseTransformationScriptURI(), dialect, sqlOutput);
     }
 
     public static void executeRdbms2LiquibaseIncrementalTransformation(RdbmsModel incrementalRdbmsModel,
@@ -60,7 +60,8 @@ public class Rdbms2LiquibaseIncremental {
                                                                        LiquibaseModel dbDropBackupLiquibaseModel,
                                                                        Log log,
                                                                        URI scriptUri,
-                                                                       String dialect) throws Exception {
+                                                                       String dialect,
+                                                                       String sqlOutput) throws Exception {
 
         // Execution context
         ExecutionContext executionContext = executionContextBuilder()
@@ -107,8 +108,9 @@ public class Rdbms2LiquibaseIncremental {
 
         final ImmutableList<ProgramParameter> parameters = ImmutableList.of(
                 programParameterBuilder().name("dialect").value(dialect).build(),
-                programParameterBuilder().name("backupPrefix").value(BACKUP_PREFIX).build(),
-                programParameterBuilder().name("backupPrefixLower").value(BACKUP_PREFIX.toLowerCase()).build());
+                programParameterBuilder().name("backupTableNamePrefix").value(BACKUP_PREFIX).build(),
+                programParameterBuilder().name("backupChangeSetNamePrefix").value(BACKUP_PREFIX.toLowerCase()).build(),
+                programParameterBuilder().name("sqlOutput").value(new File(sqlOutput).getAbsolutePath()).build());
 
         // Transformation script
         executionContext.executeProgram(
@@ -121,9 +123,7 @@ public class Rdbms2LiquibaseIncremental {
         executionContext.executeProgram(
                 eglExecutionContextBuilder()
                         .source(UriUtil.resolve("../generations/sql/main.egl", scriptUri))
-                        .outputRoot(LIVE_DB_TEST
-                                      ? "target/test-classes/sql"
-                                      : "target/generated-sources/sql")
+                        .outputRoot(sqlOutput)
                         .parameters(parameters)
                         .build());
 

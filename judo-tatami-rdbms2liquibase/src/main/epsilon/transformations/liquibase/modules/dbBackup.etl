@@ -9,12 +9,11 @@ rule BackupTables
         if (s.isTypeOf(RDBMS!RdbmsModifyTableOperation)) useTable = s.previousTable;
         else useTable = s.table;
 
-        t.path = "sql/" + backupPrefixLower + "_" + useTable.sqlName.toLowerCase() + "_data.sql";
-        t.relativeToChangeLogFile = true;
+        t.path = sqlOutput + "/" + backupChangeSetNamePrefix + "_" + useTable.sqlName.toLowerCase() + "_data.sql";
         t.dbms = dialect;
 
         dbBackupModel.getOrCreateChangeSet("backup-tables-" + context, "backup-tables", dialect, context).sqlFile.add(t);
-        log.info("SqlFile added: " + backupPrefix + "_" + useTable.sqlName);
+        log.info("SqlFile added:\n    " + t.path);
 }
 
 rule BackupDeletedTables

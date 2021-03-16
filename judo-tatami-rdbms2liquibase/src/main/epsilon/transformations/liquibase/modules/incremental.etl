@@ -100,7 +100,6 @@ rule AddColumnDefs
             t.constraints = constraint;
         }
 
-
         var changeSet = targetModel.getOrCreateChangeSet("create-fields-in-" + s.eContainer.table.sqlName + "-" + context, "create-fields", dialect, context);
         if (changeSet.addColumn.size == 0) {
             changeSet.addColumn.add(new LIQUIBASE!AddColumn(tableName = s.eContainer.table.sqlName));

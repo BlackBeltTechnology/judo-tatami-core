@@ -9,10 +9,10 @@ rule CheckBackupTables
         if (s.isTypeOf(RDBMS!RdbmsModifyTableOperation)) useTable = s.previousTable;
         else useTable = s.table;
 
-        t.tableName = backupPrefix + "_" + useTable.sqlName;
+        t.tableName = backupTableNamePrefix + "_" + useTable.sqlName;
 
         dbDropBackupModel.preConditions.tableExists.add(t);
-        log.info("Not TableExists added: " + backupPrefix + "_" + useTable.sqlName);
+        log.info("Not TableExists added: " + backupTableNamePrefix + "_" + useTable.sqlName);
 }
 
 rule CheckBackupDeletedTables
@@ -35,10 +35,10 @@ rule DeleteBackupTables
         if (s.isTypeOf(RDBMS!RdbmsModifyTableOperation)) useTable = s.previousTable;
         else useTable = s.table;
 
-        t.tableName = backupPrefix + "_" + useTable.sqlName;
+        t.tableName = backupTableNamePrefix + "_" + useTable.sqlName;
 
         dbDropBackupModel.getOrCreateChangeSet("drop-backup-tables-" + context, "drop-backup-tables", dialect, context).dropTable.add(t);
-        log.info("DropTable added: " + backupPrefix + "_" + useTable.sqlName);
+        log.info("DropTable added: " + backupTableNamePrefix + "_" + useTable.sqlName);
 }
 
 rule DeleteBackupDeletedTables
