@@ -13,7 +13,7 @@ rule BackupTables
         t.relativeToChangeLogFile = true;
         t.dbms = dialect;
 
-        dbBackupModel.createChangeSetIfNotExists("backup-tables-" + context, "backup-tables", dialect, context).sqlFile.add(t);
+        dbBackupModel.getOrCreateChangeSet("backup-tables-" + context, "backup-tables", dialect, context).sqlFile.add(t);
         log.info("SqlFile added: " + backupPrefix + "_" + useTable.sqlName);
 }
 

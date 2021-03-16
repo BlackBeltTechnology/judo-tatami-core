@@ -6,7 +6,7 @@ operation LIQUIBASE!databaseChangeLog changeSetExists(id : String) : Boolean {
     return self.getChangeSet(id).isDefined();
 }
 
-operation LIQUIBASE!databaseChangeLog createChangeSetIfNotExists(id : String, logicalFilePath : String, dbms : String, context : String) : LIQUIBASE!ChangeSet {
+operation LIQUIBASE!databaseChangeLog getOrCreateChangeSet(id : String, logicalFilePath : String, dbms : String, context : String) : LIQUIBASE!ChangeSet {
     if (self.changeSetExists(id)) return self.getChangeSet(id);
     var changeSet = new LIQUIBASE!ChangeSet(id = id,
                                             author = "tatami-rdbms2liquibase",

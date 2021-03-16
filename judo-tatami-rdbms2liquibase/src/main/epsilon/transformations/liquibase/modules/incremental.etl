@@ -26,7 +26,7 @@ rule CreateTables
             t.column.add(column);
         }
 
-        targetModel.createChangeSetIfNotExists("create-table-" + s.table.sqlName + "-" + context, "create-tables", dialect, context).createTable.add(t);
+        targetModel.getOrCreateChangeSet("create-table-" + s.table.sqlName + "-" + context, "create-tables", dialect, context).createTable.add(t);
         log.info("CreateTable added: " + t.tableName);
 }
 
@@ -41,7 +41,7 @@ rule RanameTables
         t.oldTableName = s.previousTable.sqlName;
         t.newTableName = s.table.sqlName;
 
-        targetModel.createChangeSetIfNotExists("rename-tables-" + context, "rename-tables", dialect, context).renameTable.add(t);
+        targetModel.getOrCreateChangeSet("rename-tables-" + context, "rename-tables", dialect, context).renameTable.add(t);
         log.info("RenameTable added: " + t.oldTableName + " -> " + t.newTableName);
 }
 
@@ -58,7 +58,7 @@ rule RenameColumns
         t.tableName = s.eContainer.table.sqlName;
         t.remarks = s.field.uuid;
 
-        targetModel.createChangeSetIfNotExists("rename-fields-in-" + s.eContainer.table.sqlName + "-" + context, "rename-fields", dialect, context)
+        targetModel.getOrCreateChangeSet("rename-fields-in-" + s.eContainer.table.sqlName + "-" + context, "rename-fields", dialect, context)
             .renameColumn.add(t);
         log.info("RenameColumn added: " + t.oldColumnName + " -> " + t.newColumnName + " (" + t.tableName + ")");
 }
@@ -73,7 +73,7 @@ rule DropColumns
         t.tableName = s.eContainer.table.sqlName;
         t.columnName = s.field.sqlName;
 
-        targetModel.createChangeSetIfNotExists("drop-fields-in-" + s.eContainer.table.sqlName + "-" + context, "drop-fields", dialect, context)
+        targetModel.getOrCreateChangeSet("drop-fields-in-" + s.eContainer.table.sqlName + "-" + context, "drop-fields", dialect, context)
             .dropColumn.add(t);
         log.info("DropColumn added: " + t.columnName + " (" + t.tableName + ")");
 }
@@ -101,8 +101,7 @@ rule AddColumnDefs
         }
 
 
-        var changeSet = targetModel
-            .createChangeSetIfNotExists("create-fields-in-" + s.eContainer.table.sqlName + "-" + context, "create-fields", dialect, context);
+        var changeSet = targetModel.getOrCreateChangeSet("create-fields-in-" + s.eContainer.table.sqlName + "-" + context, "create-fields", dialect, context);
         if (changeSet.addColumn.size == 0) {
             changeSet.addColumn.add(new LIQUIBASE!AddColumn(tableName = s.eContainer.table.sqlName));
             log.info("AddColumn added: " + s.eContainer.table.sqlName);
@@ -123,7 +122,7 @@ rule ModifyDataTypes
         t.columnName = s.field.sqlName;
         t.newDataType = s.field.toFieldDefinition();
 
-        targetModel.createChangeSetIfNotExists("modify-data-types-in-" + s.eContainer.table.sqlName + "-" + context, "modify-data-types", dialect, context)
+        targetModel.getOrCreateChangeSet("modify-data-types-in-" + s.eContainer.table.sqlName + "-" + context, "modify-data-types", dialect, context)
             .modifyDataType.add(t);
         log.info("ModifyDataType added: " + t.columnName + " (" + t.tableName + ") ==> " + s.previousField.toFieldDefinition() + " -> " + s.field.toFieldDefinition());
 }
@@ -137,7 +136,7 @@ rule DropTables
     to t : LIQUIBASE!DropTable {
         t.tableName = s.table.sqlName;
 
-        targetModel.createChangeSetIfNotExists("drop-tables-" + context, "drop-tables", dialect, context).dropTable.add(t);
+        targetModel.getOrCreateChangeSet("drop-tables-" + context, "drop-tables", dialect, context).dropTable.add(t);
         log.info("DropTable added: " + t.tableName);
 }
 

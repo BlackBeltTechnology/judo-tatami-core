@@ -11,7 +11,7 @@ rule AddForeignKeyConstraints
         t.referencedTableName = s.referenceKey.eContainer.sqlName;
         t.referencedColumnNames = s.referenceKey.sqlName;
 
-        afterIncrementalModel.createChangeSetIfNotExists("add-foreign-keys-to-" + s.eContainer.sqlName + "-" + context, "add-foreign-keys", dialect, context)
+        afterIncrementalModel.getOrCreateChangeSet("add-foreign-keys-to-" + s.eContainer.sqlName + "-" + context, "add-foreign-keys", dialect, context)
             .addForeignKeyConstraint.add(t);
         log.info("AddForeignKeyConstraint added: " + t.constraintName);
 }
@@ -28,19 +28,13 @@ rule AddNotNullConstraints
         t.tableName = s.eContainer.sqlName;
         t.columnName = s.sqlName;
 
-        afterIncrementalModel.createChangeSetIfNotExists("add-not-null-constraints-to-" + s.eContainer.sqlName + "-" + context, "add-not-null-constraints", dialect, context)
+        afterIncrementalModel.getOrCreateChangeSet("add-not-null-constraints-to-" + s.eContainer.sqlName + "-" + context, "add-not-null-constraints", dialect, context)
             .addNotNullConstraint.add(t);
         log.info("AddNotNullConstraint added: " + t.columnName + " (" + t.tableName + ")");
 }
 
 rule AddNotNullConstraintsToValueFields
     transform s : RDBMS!RdbmsValueField
-    to t : AFTER_INCREMENTAL!AddNotNullConstraint
-    extends AddNotNullConstraints {
-}
-
-rule AddNotNullConstraintsToIdentifierFields
-    transform s : RDBMS!RdbmsIdentifierField
     to t : AFTER_INCREMENTAL!AddNotNullConstraint
     extends AddNotNullConstraints {
 }
@@ -61,12 +55,12 @@ rule AddUniqueConstraints
         guard: newModel.contains(s.eContainer)
         t.tableName = "";
         t.columnNames = "";
-        for (field in s.fields) {
+        for (field in s.fields) { // works in theory, but fails when executed on db because UniqueConstraints must be unique
             var addUniqueConstraint = new AFTER_INCREMENTAL!AddUniqueConstraint();
             addUniqueConstraint.constraintName = s.sqlName;
             addUniqueConstraint.tableName = field.eContainer.sqlName;
             addUniqueConstraint.columnNames = field.sqlName;
-            afterIncrementalModel.createChangeSetIfNotExists("add-unique-constraints-to-" + s.eContainer.sqlName + "-" + context, "add-unique-constraints", dialect, context)
+            afterIncrementalModel.getOrCreateChangeSet("add-unique-constraints-to-" + s.eContainer.sqlName + "-" + context, "add-unique-constraints", dialect, context)
                 .addUniqueConstraint.add(addUniqueConstraint);
             log.info("AddUniqueConstraint added: " + addUniqueConstraint.columnNames + " (" + addUniqueConstraint.tableName + ")");
         }
@@ -85,7 +79,7 @@ rule AddIndexes
         for (field in s.fields) {
             t.column.add(new AFTER_INCREMENTAL!Column(name = field.sqlName));
         }
-        afterIncrementalModel.createChangeSetIfNotExists("create-indexes-for-" + s.eContainer.sqlName + "-" + context, "create-indexes", dialect, context)
+        afterIncrementalModel.getOrCreateChangeSet("create-indexes-for-" + s.eContainer.sqlName + "-" + context, "create-indexes", dialect, context)
             .createIndex.add(t);
         log.info("CreateIndex added: " + t.indexName);
 }

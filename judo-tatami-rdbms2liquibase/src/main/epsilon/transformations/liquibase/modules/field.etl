@@ -79,7 +79,7 @@ rule IndexToCreateIndex
             t.column.add(new LIQUIBASE!Column(name = field.sqlName));
         }
 
-        targetModel.createChangeSetIfNotExists("create-indexes-in-" + s.eContainer.sqlName, "create-indexes", dialect, context)
+        targetModel.getOrCreateChangeSet("create-indexes-in-" + s.eContainer.sqlName, "create-indexes", dialect, context)
             .createIndex.add(t);
         log.info("CreateIndex added: " + t.indexName);
 }
@@ -94,7 +94,7 @@ rule AddUniqueConstraints
             addUniqueConstraint.constraintName = s.sqlName;
             addUniqueConstraint.tableName = field.eContainer.sqlName;
             addUniqueConstraint.columnNames = field.sqlName;
-            targetModel.createChangeSetIfNotExists("add-unique-constraints-to-" + s.eContainer.sqlName, "add-unique-constraints", dialect, context)
+            targetModel.getOrCreateChangeSet("add-unique-constraints-to-" + s.eContainer.sqlName, "add-unique-constraints", dialect, context)
                 .addUniqueConstraint.add(addUniqueConstraint);
             log.info("AddUniqueConstraint added: " + addUniqueConstraint.columnNames + " (" + addUniqueConstraint.tableName + ")");
         }
