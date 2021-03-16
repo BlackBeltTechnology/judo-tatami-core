@@ -41,6 +41,7 @@ import static hu.blackbelt.judo.meta.rdbms.runtime.RdbmsModel.buildRdbmsModel;
 import static hu.blackbelt.judo.tatami.rdbms2liquibase.Rdbms2Liquibase.executeRdbms2LiquibaseTransformation;
 import static hu.blackbelt.judo.tatami.rdbms2liquibase.Rdbms2LiquibaseIncremental.executeRdbms2LiquibaseIncrementalTransformation;
 import static java.lang.String.format;
+import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.fail;
 
@@ -87,41 +88,49 @@ public class Excel2RdbmsTest {
         excelToRdbmsEtlContext.commit();
         excelToRdbmsEtlContext.close();
 
-//        final RdbmsUtils rdbmsUtils = new RdbmsUtils(originalModel.getResourceSet());
-//        final RdbmsTable rdbmsTable = rdbmsUtils.getRdbmsTables().get().get(0);
-//        rdbmsTable.getIndexes().add(
-//                RdbmsIndexBuilder.create()
-//                        .withName("TestIndex")
-//                        .withUuid(rdbmsTable.getUuid() + ".TestIndex")
-//                        .withFields(rdbmsTable.getFields().get(0), rdbmsTable.getFields().get(1))
-//                        .withUnique(true)
-//                        .withSqlName("TestIndex".toUpperCase())
-//                        .build());
-//        rdbmsTable.getUniqueConstraints().add(
-//                RdbmsUniqueConstraintBuilder.create()
-//                        .withName("TestUniqueConstraint")
-//                        .withUuid(rdbmsTable.getUuid() + ".TestUniqueConstraint")
-//                        .withFields(rdbmsTable.getFields().get(2), rdbmsTable.getFields().get(3))
-//                        .withSqlName("TestUniqueConstraint".toUpperCase())
-//                        .build());
-//
-//        final RdbmsUtils rdbmsUtils2 = new RdbmsUtils(newModel.getResourceSet());
-//        final RdbmsTable rdbmsTable2 = rdbmsUtils2.getRdbmsTables().get().get(0);
-//        rdbmsTable2.getIndexes().add(
-//                RdbmsIndexBuilder.create()
-//                        .withName("TestIndex")
-//                        .withUuid(rdbmsTable2.getUuid() + ".TestIndex")
-//                        .withUnique(true)
-//                        .withFields(rdbmsTable2.getFields().get(0), rdbmsTable2.getFields().get(1))
-//                        .withSqlName("TestIndex".toUpperCase())
-//                        .build());
-//        rdbmsTable2.getUniqueConstraints().add(
-//                RdbmsUniqueConstraintBuilder.create()
-//                        .withName("TestUniqueConstraint")
-//                        .withUuid(rdbmsTable2.getUuid() + ".TestUniqueConstraint")
-//                        .withFields(rdbmsTable2.getFields().get(2), rdbmsTable2.getFields().get(3))
-//                        .withSqlName("TestUniqueConstraint".toUpperCase())
-//                        .build());
+        final RdbmsTable rdbmsTable = new RdbmsUtils(originalModel.getResourceSet()).getRdbmsTables().get().get(0);
+        rdbmsTable.getIndexes().add(
+                RdbmsIndexBuilder.create()
+                        .withName("TestIndex")
+                        .withUuid(rdbmsTable.getUuid() + ".TestIndex")
+                        .withFields(rdbmsTable.getFields().get(0), rdbmsTable.getFields().get(1))
+                        .withSqlName("TestIndex".toUpperCase())
+                        .build());
+        rdbmsTable.getUniqueConstraints().addAll(asList(
+                RdbmsUniqueConstraintBuilder.create()
+                        .withName("TestUniqueConstraint")
+                        .withUuid(rdbmsTable.getUuid() + ".TestUniqueConstraint")
+                        .withFields(rdbmsTable.getFields().get(2))
+                        .withSqlName("TestUniqueConstraint".toUpperCase())
+                        .build(),
+                RdbmsUniqueConstraintBuilder.create()
+                        .withName("TestUniqueConstraint2")
+                        .withUuid(rdbmsTable.getUuid() + ".TestUniqueConstraint2")
+                        .withFields(rdbmsTable.getFields().get(3))
+                        .withSqlName("TestUniqueConstraint2".toUpperCase())
+                        .build()));
+
+        final RdbmsTable rdbmsTable2 = new RdbmsUtils(newModel.getResourceSet()).getRdbmsTables().get().get(0);
+        rdbmsTable2.getIndexes().add(
+                RdbmsIndexBuilder.create()
+                        .withName("TestIndex")
+                        .withUuid(rdbmsTable2.getUuid() + ".TestIndex")
+                        .withFields(rdbmsTable2.getFields().get(0), rdbmsTable2.getFields().get(1))
+                        .withSqlName("TestIndex".toUpperCase())
+                        .build());
+        rdbmsTable2.getUniqueConstraints().addAll(asList(
+                RdbmsUniqueConstraintBuilder.create()
+                        .withName("TestUniqueConstraint")
+                        .withUuid(rdbmsTable2.getUuid() + ".TestUniqueConstraint")
+                        .withFields(rdbmsTable2.getFields().get(2))
+                        .withSqlName("TestUniqueConstraint".toUpperCase())
+                        .build(),
+                RdbmsUniqueConstraintBuilder.create()
+                        .withName("TestUniqueConstraint2")
+                        .withUuid(rdbmsTable2.getUuid() + ".TestUniqueConstraint2")
+                        .withFields(rdbmsTable2.getFields().get(3))
+                        .withSqlName("TestUniqueConstraint2".toUpperCase())
+                        .build()));
 
         saveRdbms(originalModel);
         saveRdbms(newModel);

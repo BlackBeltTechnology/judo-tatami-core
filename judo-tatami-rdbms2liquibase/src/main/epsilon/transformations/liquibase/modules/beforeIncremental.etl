@@ -5,9 +5,8 @@ rule DropIndexes
     transform s : RDBMS!RdbmsIndex
     to t : BEFORE_INCREMENTAL!DropIndex {
         guard: previousModel.contains(s.eContainer)
-        t.tableName = s.eContainer.sqlName;
         t.indexName = s.sqlName;
-
+        t.tableName = s.eContainer.sqlName;
         beforeIncrementalModel.createChangeSetIfNotExists("drop-indexes-from-" + s.eContainer.sqlName + "-" + context, "drop-indexes", dialect, context)
             .dropIndex.add(t);
         log.info("DropIndex added: " + t.indexName + " (" + t.tableName + ")");
@@ -21,19 +20,16 @@ rule DropUniqueConstraints
     transform s : RDBMS!RdbmsUniqueConstraint
     to t : BEFORE_INCREMENTAL!DropUniqueConstraint {
         guard: previousModel.contains(s.eContainer)
-        t.tableName = s.eContainer.sqlName;
-        t.uniqueColumns = s.fields[0].sqlName;
-        if (s.fields.size() > 1) {
-            var i = 1;
-            while (i < s.fields.size()) {
-                t.uniqueColumns += "," + s.fields[i].sqlName;
-                i++;
-            }
+        t.tableName = "";
+        for (field in s.fields) {
+            var dropUniqueConstraint = new BEFORE_INCREMENTAL!DropUniqueConstraint();
+            dropUniqueConstraint.constraintName = s.sqlName;
+            dropUniqueConstraint.tableName = field.eContainer.sqlName;
+            dropUniqueConstraint.uniqueColumns = field.sqlName;
+            beforeIncrementalModel.createChangeSetIfNotExists("drop-unique-constraints-from-" + s.eContainer.sqlName + "-" + context, "drop-unique-constraints", dialect, context)
+                .dropUniqueConstraint.add(dropUniqueConstraint);
+            log.info("DropUniqueConstraint added: " + dropUniqueConstraint.uniqueColumns + " (" + dropUniqueConstraint.tableName + ")");
         }
-
-        beforeIncrementalModel.createChangeSetIfNotExists("drop-unique-constraints-from-" + s.eContainer.sqlName + "-" + context, "drop-unique-constraints", dialect, context)
-            .dropUniqueConstraint.add(t);
-        log.info("DropUniqueConstraint added: " + t.uniqueColumns + " (" + t.tableName + ")");
 }
 
 // UNIQUE CONSTRAINT
@@ -58,19 +54,12 @@ rule DropNotNullConstraintsFromValueFields
     to t : BEFORE_INCREMENTAL!DropNotNullConstraint
     extends DropNotNullConstraints {
 }
-/*
-rule DropNotNullConstraintsFromIdentifierFields
-    transform s : RDBMS!RdbmsIdentifierField
-    to t : BEFORE_INCREMENTAL!DropNotNullConstraint
-    extends DropNotNullConstraints {
-}
-*/
+
 rule DropNotNullConstraintsFromForeignKeys
     transform s : RDBMS!RdbmsForeignKey
     to t : BEFORE_INCREMENTAL!DropNotNullConstraint
     extends DropNotNullConstraints {
 }
-
 
 // NOT NULL CONSTRAINT
 /////////////////////////////////////////

@@ -59,19 +59,17 @@ rule AddUniqueConstraints
     transform s : RDBMS!RdbmsUniqueConstraint
     to t : AFTER_INCREMENTAL!AddUniqueConstraint {
         guard: newModel.contains(s.eContainer)
-        t.tableName = s.eContainer.sqlName;
-        t.columnNames = s.fields[0].sqlName;
-        if (s.fields.size() > 1) {
-            var i = 1;
-            while (i < s.fields.size()) {
-                t.columnNames += "," + s.fields[i].sqlName;
-                i++;
-            }
+        t.tableName = "";
+        t.columnNames = "";
+        for (field in s.fields) {
+            var addUniqueConstraint = new AFTER_INCREMENTAL!AddUniqueConstraint();
+            addUniqueConstraint.constraintName = s.sqlName;
+            addUniqueConstraint.tableName = field.eContainer.sqlName;
+            addUniqueConstraint.columnNames = field.sqlName;
+            afterIncrementalModel.createChangeSetIfNotExists("add-unique-constraints-to-" + s.eContainer.sqlName + "-" + context, "add-unique-constraints", dialect, context)
+                .addUniqueConstraint.add(addUniqueConstraint);
+            log.info("AddUniqueConstraint added: " + addUniqueConstraint.columnNames + " (" + addUniqueConstraint.tableName + ")");
         }
-
-        afterIncrementalModel.createChangeSetIfNotExists("add-unique-constraints-to-" + s.eContainer.sqlName + "-" + context, "add-unique-constraints", dialect, context)
-            .addUniqueConstraint.add(t);
-        log.info("AddUniqueConstraint added: " + t.columnNames + " (" + t.tableName + ")");
 }
 
 // UNIQUE CONSTRAINT
@@ -82,13 +80,14 @@ rule AddIndexes
     transform s : RDBMS!RdbmsIndex
     to t : AFTER_INCREMENTAL!CreateIndex {
         guard: newModel.contains(s.eContainer)
-        t.tableName = s.eContainer.sqlName;
         t.indexName = s.sqlName;
-        t.column = s.fields.collect(f | new AFTER_INCREMENTAL!Column(name = f.sqlName));
-
+        t.tableName = s.eContainer.sqlName;
+        for (field in s.fields) {
+            t.column.add(new AFTER_INCREMENTAL!Column(name = field.sqlName));
+        }
         afterIncrementalModel.createChangeSetIfNotExists("create-indexes-for-" + s.eContainer.sqlName + "-" + context, "create-indexes", dialect, context)
             .createIndex.add(t);
-        log.info("CreateIndex added: " + t.indexName + " (" + t.tableName + ")");
+        log.info("CreateIndex added: " + t.indexName);
 }
 
 // INDEX
