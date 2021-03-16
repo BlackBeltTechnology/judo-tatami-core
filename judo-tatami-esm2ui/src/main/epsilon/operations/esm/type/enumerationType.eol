@@ -20,7 +20,7 @@ operation ESM!esm::type::EnumerationType input(dataField : ESM!esm::ui::DataFiel
             opt.enumerationMember = m;
             combo.options.add(opt);
         }
-        return self.fillInput(combo, dataField.row.asReal(), dataField.col.asReal());
+        return self.fillInput(combo, dataField.row.asReal(), dataField.col.asReal(), dataField.iconName);
     }
 }
 
