@@ -5,8 +5,12 @@ import hu.blackbelt.epsilon.runtime.execution.ExecutionContext;
 import hu.blackbelt.judo.meta.liquibase.runtime.LiquibaseModel;
 import hu.blackbelt.judo.meta.liquibase.runtime.LiquibaseModel.LiquibaseValidationException;
 import hu.blackbelt.judo.meta.liquibase.runtime.LiquibaseNamespaceFixUriHandler;
+import hu.blackbelt.judo.meta.rdbms.RdbmsTable;
 import hu.blackbelt.judo.meta.rdbms.runtime.RdbmsModel;
 import hu.blackbelt.judo.meta.rdbms.runtime.RdbmsModel.RdbmsValidationException;
+import hu.blackbelt.judo.meta.rdbms.runtime.RdbmsUtils;
+import hu.blackbelt.judo.meta.rdbms.util.builder.RdbmsIndexBuilder;
+import hu.blackbelt.judo.meta.rdbms.util.builder.RdbmsUniqueConstraintBuilder;
 import liquibase.Liquibase;
 import liquibase.database.Database;
 import liquibase.database.core.HsqlDatabase;
@@ -90,6 +94,7 @@ public class Excel2RdbmsTest {
 //                        .withName("TestIndex")
 //                        .withUuid(rdbmsTable.getUuid() + ".TestIndex")
 //                        .withFields(rdbmsTable.getFields().get(0), rdbmsTable.getFields().get(1))
+//                        .withUnique(true)
 //                        .withSqlName("TestIndex".toUpperCase())
 //                        .build());
 //        rdbmsTable.getUniqueConstraints().add(
@@ -106,6 +111,7 @@ public class Excel2RdbmsTest {
 //                RdbmsIndexBuilder.create()
 //                        .withName("TestIndex")
 //                        .withUuid(rdbmsTable2.getUuid() + ".TestIndex")
+//                        .withUnique(true)
 //                        .withFields(rdbmsTable2.getFields().get(0), rdbmsTable2.getFields().get(1))
 //                        .withSqlName("TestIndex".toUpperCase())
 //                        .build());
@@ -170,6 +176,7 @@ public class Excel2RdbmsTest {
 //
 //        runLiquibaseChangeSet(originalLiquibaseModel, liquibaseDb);
 //        runLiquibaseChangeSet(dbCheckupModel, liquibaseDb);
+//        runLiquibaseChangeSet(dbBackupLiquibaseModel, liquibaseDb);
 //        runLiquibaseChangeSet(beforeIncrementalModel, liquibaseDb);
 //        runLiquibaseChangeSet(incrementalLiquibaseModel, liquibaseDb);
 //        runLiquibaseChangeSet(afterIncrementalModel, liquibaseDb);
