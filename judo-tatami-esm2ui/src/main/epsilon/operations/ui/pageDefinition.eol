@@ -55,6 +55,10 @@ operation UI!ui::PageDefinition calculateActions(application : UI!ui::Applicatio
         for (container in self.containers) {
             var buttonGroup : UI!ui::Flex = container.createGroupForInstanceActionButtons();
             buttonGroup.children.add(createButton("refresh", "REFRESH", 2d, new UI!ui::RefreshAction()));
+            
+            if (relationType.isFilterable) {
+                buttonGroup.children.add(createButton("filter", "FILTER", 2d, new UI!ui::FilterAction()));
+            }
 
             if (not relationType.isAccess and self.pageType == UI!ui::PageType#TABLE) {
                 buttonGroup.children.add(createButton("back", "BACK", 2d, new UI!ui::BackAction()));
