@@ -200,38 +200,38 @@ public class Excel2RdbmsTest {
         saveLiquibase(afterIncrementalModel, dialect);
         saveLiquibase(dbDropBackupLiquibaseModel, dialect);
 
-        Database liquibaseDb;
-        Connection connection;
-        switch (dialect) {
-            case "hsqldb":
-                if (!HSQLDB_STARTED) return;
-                // hsqldb must be downloaded
-                // $ java -cp hsqldb/lib/hsqldb.jar org.hsqldb.server.Server --database.0 file:mydb --dbname.0 xdb
-                connection = DriverManager.getConnection("jdbc:hsqldb:hsql://localhost:9001/xdb", "SA", "");
-                liquibaseDb = new HsqlDatabase();
-                liquibaseDb.setConnection(new HsqlConnection(connection));
-                break;
-            case "postgresql":
-                connection = DriverManager.getConnection("jdbc:tc:postgresql:9.6.12:///test", "sa", "");
-                liquibaseDb = new PostgresDatabase();
-                liquibaseDb.setConnection(new JdbcConnection(connection));
-                break;
-            default:
-                log.info("Db testing is skipped");
-                return;
-        }
-
-        connection.createStatement().execute("DROP SCHEMA PUBLIC CASCADE");
-
-        runLiquibaseChangeSet(originalLiquibaseModel, liquibaseDb, dialect);
-        runLiquibaseChangeSet(dbCheckupModel, liquibaseDb, dialect);
-        runLiquibaseChangeSet(dbBackupLiquibaseModel, liquibaseDb, dialect);
-        runLiquibaseChangeSet(beforeIncrementalModel, liquibaseDb, dialect);
-        runLiquibaseChangeSet(incrementalLiquibaseModel, liquibaseDb, dialect);
-        runLiquibaseChangeSet(afterIncrementalModel, liquibaseDb, dialect);
-        runLiquibaseChangeSet(dbDropBackupLiquibaseModel, liquibaseDb, dialect);
-
-        liquibaseDb.close();
+//        Database liquibaseDb;
+//        Connection connection;
+//        switch (dialect) {
+//            case "hsqldb":
+//                if (!HSQLDB_STARTED) return;
+//                // hsqldb must be downloaded
+//                // $ java -cp hsqldb/lib/hsqldb.jar org.hsqldb.server.Server --database.0 file:mydb --dbname.0 xdb
+//                connection = DriverManager.getConnection("jdbc:hsqldb:hsql://localhost:9001/xdb", "SA", "");
+//                liquibaseDb = new HsqlDatabase();
+//                liquibaseDb.setConnection(new HsqlConnection(connection));
+//                break;
+//            case "postgresql":
+//                connection = DriverManager.getConnection("jdbc:tc:postgresql:9.6.12:///test", "sa", "");
+//                liquibaseDb = new PostgresDatabase();
+//                liquibaseDb.setConnection(new JdbcConnection(connection));
+//                break;
+//            default:
+//                log.info("Db testing is skipped");
+//                return;
+//        }
+//
+//        connection.createStatement().execute("DROP SCHEMA PUBLIC CASCADE");
+//
+//        runLiquibaseChangeSet(originalLiquibaseModel, liquibaseDb, dialect);
+//        runLiquibaseChangeSet(dbCheckupModel, liquibaseDb, dialect);
+//        runLiquibaseChangeSet(dbBackupLiquibaseModel, liquibaseDb, dialect);
+//        runLiquibaseChangeSet(beforeIncrementalModel, liquibaseDb, dialect);
+//        runLiquibaseChangeSet(incrementalLiquibaseModel, liquibaseDb, dialect);
+//        runLiquibaseChangeSet(afterIncrementalModel, liquibaseDb, dialect);
+//        runLiquibaseChangeSet(dbDropBackupLiquibaseModel, liquibaseDb, dialect);
+//
+//        liquibaseDb.close();
     }
 
     private void runLiquibaseChangeSet(LiquibaseModel liquibaseModel, Database liquibaseDb, String dialect) throws LiquibaseException {
