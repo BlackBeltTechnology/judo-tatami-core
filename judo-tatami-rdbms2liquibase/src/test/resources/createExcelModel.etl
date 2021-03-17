@@ -2,11 +2,11 @@ pre {
    var newModel = new NEW!RdbmsModel();
    newModel.version = "2.0";
    newModel.configuration = new NEW!RdbmsConfiguration();
-   newModel.configuration.dialect = "hsqldb";
+   newModel.configuration.dialect = dialect;
    var originalModel = new ORIGINAL!RdbmsModel();
    originalModel.version = "1.0";
    originalModel.configuration = new ORIGINAL!RdbmsConfiguration();
-   originalModel.configuration.dialect = "hsqldb";
+   originalModel.configuration.dialect = dialect;
 }
 
 rule transformOriginalTable

@@ -43,6 +43,7 @@ operation RDBMS!RdbmsField table() : RDBMS!RdbmsTable {
 operation RDBMS!RdbmsField toFieldDefinition () : String {
 	if (self.rdbmsTypeName.isDefined()) {
 		var typedef = self.rdbmsTypeName.toUpperCase();
+		if (dialect == "postgresql" and typedef == "INTEGER") return typedef;
 		if (self.precision > 0) {
 			typedef += "(" + self.precision;
 			if (self.scale > 0) {

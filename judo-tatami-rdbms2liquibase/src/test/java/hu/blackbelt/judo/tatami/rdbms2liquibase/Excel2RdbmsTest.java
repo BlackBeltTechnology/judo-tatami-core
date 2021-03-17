@@ -14,12 +14,15 @@ import hu.blackbelt.judo.meta.rdbms.util.builder.RdbmsUniqueConstraintBuilder;
 import liquibase.Liquibase;
 import liquibase.database.Database;
 import liquibase.database.core.HsqlDatabase;
+import liquibase.database.core.PostgresDatabase;
 import liquibase.database.jvm.HsqlConnection;
+import liquibase.database.jvm.JdbcConnection;
 import liquibase.exception.LiquibaseException;
 import liquibase.resource.FileSystemResourceAccessor;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.epsilon.common.util.UriUtil;
 import org.junit.jupiter.api.Test;
+import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -32,6 +35,7 @@ import java.sql.DriverManager;
 
 import static hu.blackbelt.epsilon.runtime.execution.ExecutionContext.executionContextBuilder;
 import static hu.blackbelt.epsilon.runtime.execution.contexts.EtlExecutionContext.etlExecutionContextBuilder;
+import static hu.blackbelt.epsilon.runtime.execution.contexts.ProgramParameter.programParameterBuilder;
 import static hu.blackbelt.epsilon.runtime.execution.model.emf.WrappedEmfModelContext.wrappedEmfModelContextBuilder;
 import static hu.blackbelt.epsilon.runtime.execution.model.excel.ExcelModelContext.excelModelContextBuilder;
 import static hu.blackbelt.judo.meta.liquibase.runtime.LiquibaseModel.SaveArguments.liquibaseSaveArgumentsBuilder;
@@ -49,16 +53,26 @@ import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.fail;
 
 @Slf4j
+@Testcontainers
 public class Excel2RdbmsTest {
 
     private static final String ORIGINAL_MODEL_NAME = "OriginalModel";
     private static final String TARGET_TEST_CLASSES = "target/test-classes";
     private static final String GENERATED_SQL_LOCATION = TARGET_TEST_CLASSES + "/sql";
 
-    public static final boolean LIVE_DB_TEST = parseBoolean(getenv("LIVE_DB_TEST"));
+    public static final boolean HSQLDB_STARTED = parseBoolean(getenv("HSQLDB_STARTED"));
 
     @Test
-    public void executeExcel2RdbmsModel() throws Exception {
+    public void testHsqldb() throws Exception {
+        executeExcel2RdbmsModel("hsqldb");
+    }
+
+    @Test
+    public void testPostgresql() throws Exception {
+        executeExcel2RdbmsModel("postgresql");
+    }
+
+    public void executeExcel2RdbmsModel(String dialect) throws Exception {
 
         RdbmsModel originalModel = buildRdbmsModel().name(ORIGINAL_MODEL_NAME).build();
         RdbmsModel newModel = buildRdbmsModel().name("NewModel").build();
@@ -83,14 +97,17 @@ public class Excel2RdbmsTest {
                                 .aliases(singletonList("NEW"))
                                 .resource(newModel.getResource())
                                 .build()))
-
                 .build();
 
         excelToRdbmsEtlContext.load();
 
         URI testRoot = getUri(Excel2RdbmsTest.class, "/");
 
-        excelToRdbmsEtlContext.executeProgram(etlExecutionContextBuilder().source(UriUtil.resolve("createExcelModel.etl", testRoot)).build());
+        excelToRdbmsEtlContext.executeProgram(
+                etlExecutionContextBuilder()
+                        .source(UriUtil.resolve("createExcelModel.etl", testRoot))
+                        .parameters(singletonList(programParameterBuilder().name("dialect").value(dialect).build()))
+                        .build());
 
         excelToRdbmsEtlContext.commit();
         excelToRdbmsEtlContext.close();
@@ -139,25 +156,25 @@ public class Excel2RdbmsTest {
                         .withSqlName("TestUniqueConstraint2".toUpperCase())
                         .build()));
 
-        saveRdbms(originalModel);
-        saveRdbms(newModel);
+        saveRdbms(originalModel, dialect);
+        saveRdbms(newModel, dialect);
 
         // fill models
         /////////////////////////////////////////
         // rdbms2liquibase (original)
         LiquibaseModel originalLiquibaseModel = buildLiquibaseModel().name(ORIGINAL_MODEL_NAME).build();
-        executeRdbms2LiquibaseTransformation(originalModel, originalLiquibaseModel, "hsqldb");
+        executeRdbms2LiquibaseTransformation(originalModel, originalLiquibaseModel, dialect);
 
-        saveLiquibase(originalLiquibaseModel);
+        saveLiquibase(originalLiquibaseModel, dialect);
 
         // rdbms2liquibase (original)
         /////////////////////////////////////////
         // delta model
 
         RdbmsModel incrementalModel = buildRdbmsModel().name("IncrementalModel").build();
-        transformRdbmsIncrementalModel(originalModel, newModel, incrementalModel, "hsqldb", true);
+        transformRdbmsIncrementalModel(originalModel, newModel, incrementalModel, dialect, true);
 
-        saveRdbms(incrementalModel);
+        saveRdbms(incrementalModel, dialect);
 
         LiquibaseModel dbCheckupModel = buildLiquibaseModel().name("DbCheckup").build();
         LiquibaseModel dbBackupLiquibaseModel = buildLiquibaseModel().name("DbBackup").build();
@@ -174,44 +191,58 @@ public class Excel2RdbmsTest {
                 incrementalLiquibaseModel,
                 afterIncrementalModel,
                 dbDropBackupLiquibaseModel,
-                "hsqldb",
+                dialect,
                 GENERATED_SQL_LOCATION);
 
-        saveLiquibase(dbCheckupModel);
-        saveLiquibase(dbBackupLiquibaseModel);
-        saveLiquibase(beforeIncrementalModel);
-        saveLiquibase(incrementalLiquibaseModel);
-        saveLiquibase(afterIncrementalModel);
-        saveLiquibase(dbDropBackupLiquibaseModel);
+        saveLiquibase(dbCheckupModel, dialect);
+        saveLiquibase(dbBackupLiquibaseModel, dialect);
+        saveLiquibase(beforeIncrementalModel, dialect);
+        saveLiquibase(incrementalLiquibaseModel, dialect);
+        saveLiquibase(afterIncrementalModel, dialect);
+        saveLiquibase(dbDropBackupLiquibaseModel, dialect);
 
-        if (LIVE_DB_TEST) {
-            // $ java -cp hsqldb/lib/hsqldb.jar org.hsqldb.server.Server --database.0 file:mydb --dbname.0 xdb
-            Connection connection = DriverManager.getConnection("jdbc:hsqldb:hsql://localhost:9001/xdb", "SA", "");
-            connection.createStatement().execute("DROP SCHEMA PUBLIC CASCADE");
-
-            Database liquibaseDb = new HsqlDatabase();
-            liquibaseDb.setConnection(new HsqlConnection(connection));
-
-            runLiquibaseChangeSet(originalLiquibaseModel, liquibaseDb);
-            runLiquibaseChangeSet(dbCheckupModel, liquibaseDb);
-            runLiquibaseChangeSet(dbBackupLiquibaseModel, liquibaseDb);
-            runLiquibaseChangeSet(beforeIncrementalModel, liquibaseDb);
-            runLiquibaseChangeSet(incrementalLiquibaseModel, liquibaseDb);
-            runLiquibaseChangeSet(afterIncrementalModel, liquibaseDb);
-            runLiquibaseChangeSet(dbDropBackupLiquibaseModel, liquibaseDb);
-
-            liquibaseDb.close();
+        Database liquibaseDb;
+        Connection connection;
+        switch (dialect) {
+            case "hsqldb":
+                if (!HSQLDB_STARTED) return;
+                // hsqldb must be downloaded
+                // $ java -cp hsqldb/lib/hsqldb.jar org.hsqldb.server.Server --database.0 file:mydb --dbname.0 xdb
+                connection = DriverManager.getConnection("jdbc:hsqldb:hsql://localhost:9001/xdb", "SA", "");
+                liquibaseDb = new HsqlDatabase();
+                liquibaseDb.setConnection(new HsqlConnection(connection));
+                break;
+            case "postgresql":
+                connection = DriverManager.getConnection("jdbc:tc:postgresql:9.6.12:///test", "sa", "");
+                liquibaseDb = new PostgresDatabase();
+                liquibaseDb.setConnection(new JdbcConnection(connection));
+                break;
+            default:
+                log.info("Db testing is skipped");
+                return;
         }
+
+        connection.createStatement().execute("DROP SCHEMA PUBLIC CASCADE");
+
+        runLiquibaseChangeSet(originalLiquibaseModel, liquibaseDb, dialect);
+        runLiquibaseChangeSet(dbCheckupModel, liquibaseDb, dialect);
+        runLiquibaseChangeSet(dbBackupLiquibaseModel, liquibaseDb, dialect);
+        runLiquibaseChangeSet(beforeIncrementalModel, liquibaseDb, dialect);
+        runLiquibaseChangeSet(incrementalLiquibaseModel, liquibaseDb, dialect);
+        runLiquibaseChangeSet(afterIncrementalModel, liquibaseDb, dialect);
+        runLiquibaseChangeSet(dbDropBackupLiquibaseModel, liquibaseDb, dialect);
+
+        liquibaseDb.close();
     }
 
-    private void runLiquibaseChangeSet(LiquibaseModel liquibaseModel, Database liquibaseDb) throws LiquibaseException {
-        new Liquibase(getLiquibaseFileName(liquibaseModel),
+    private void runLiquibaseChangeSet(LiquibaseModel liquibaseModel, Database liquibaseDb, String dialect) throws LiquibaseException {
+        new Liquibase(getLiquibaseFileName(liquibaseModel, dialect),
                       new FileSystemResourceAccessor(TARGET_TEST_CLASSES), liquibaseDb)
                 .update("");
     }
 
-    private void saveRdbms(RdbmsModel rdbmsModel) {
-        File incrementalRdbmsFile = new File(TARGET_TEST_CLASSES, getRdbmsFileName(rdbmsModel));
+    private void saveRdbms(RdbmsModel rdbmsModel, String dialect) {
+        File incrementalRdbmsFile = new File(TARGET_TEST_CLASSES, getRdbmsFileName(rdbmsModel, dialect));
         try {
             rdbmsModel.saveRdbmsModel(rdbmsSaveArgumentsBuilder().file(incrementalRdbmsFile));
         } catch (RdbmsValidationException | IOException ex) {
@@ -220,11 +251,11 @@ public class Excel2RdbmsTest {
 
     }
 
-    private static String getRdbmsFileName(final RdbmsModel rdbmsModel) {
-        return "test-" + rdbmsModel.getName() + "-rdbms.model";
+    private static String getRdbmsFileName(final RdbmsModel rdbmsModel, String dialect) {
+        return "test-" + dialect + "-" + rdbmsModel.getName() + "-rdbms.model";
     }
 
-    private void saveLiquibase(LiquibaseModel liquibaseModel) throws IOException {
+    private void saveLiquibase(LiquibaseModel liquibaseModel, String dialect) throws IOException {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         try {
             liquibaseModel.saveLiquibaseModel(
@@ -233,11 +264,11 @@ public class Excel2RdbmsTest {
         } catch (LiquibaseValidationException | IOException ex) {
             fail(format("Model:\n%s\nDiagnostic:\n%s", liquibaseModel.asString(), liquibaseModel.getDiagnosticsAsString()));
         }
-        stream.writeTo(new FileOutputStream(new File(TARGET_TEST_CLASSES, getLiquibaseFileName(liquibaseModel))));
+        stream.writeTo(new FileOutputStream(new File(TARGET_TEST_CLASSES, getLiquibaseFileName(liquibaseModel, dialect))));
     }
 
-    private static String getLiquibaseFileName(final LiquibaseModel liquibaseModel) {
-        return "test-" + liquibaseModel.getName() + "-liquibase.xml";
+    private static String getLiquibaseFileName(final LiquibaseModel liquibaseModel, String dialect) {
+        return "test-" + dialect + "-" + liquibaseModel.getName() + "-liquibase.xml";
     }
 
     private URI getUri(Class clazz, String file) throws URISyntaxException {
