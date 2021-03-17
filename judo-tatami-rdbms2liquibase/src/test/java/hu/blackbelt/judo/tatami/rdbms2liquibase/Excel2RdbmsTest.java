@@ -11,18 +11,16 @@ import hu.blackbelt.judo.meta.rdbms.runtime.RdbmsModel.RdbmsValidationException;
 import hu.blackbelt.judo.meta.rdbms.runtime.RdbmsUtils;
 import hu.blackbelt.judo.meta.rdbms.util.builder.RdbmsIndexBuilder;
 import hu.blackbelt.judo.meta.rdbms.util.builder.RdbmsUniqueConstraintBuilder;
+import hu.blackbelt.judo.tatami.rdbms2liquibase.datasource.RdbmsDatasourceByClassExtension;
+import hu.blackbelt.judo.tatami.rdbms2liquibase.datasource.RdbmsDatasourceFixture;
 import liquibase.Liquibase;
 import liquibase.database.Database;
-import liquibase.database.core.HsqlDatabase;
-import liquibase.database.core.PostgresDatabase;
-import liquibase.database.jvm.HsqlConnection;
-import liquibase.database.jvm.JdbcConnection;
 import liquibase.exception.LiquibaseException;
 import liquibase.resource.FileSystemResourceAccessor;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.epsilon.common.util.UriUtil;
 import org.junit.jupiter.api.Test;
-import org.testcontainers.junit.jupiter.Testcontainers;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -31,7 +29,6 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.sql.Connection;
-import java.sql.DriverManager;
 
 import static hu.blackbelt.epsilon.runtime.execution.ExecutionContext.executionContextBuilder;
 import static hu.blackbelt.epsilon.runtime.execution.contexts.EtlExecutionContext.etlExecutionContextBuilder;
@@ -45,33 +42,23 @@ import static hu.blackbelt.judo.meta.rdbms.runtime.RdbmsModel.SaveArguments.rdbm
 import static hu.blackbelt.judo.meta.rdbms.runtime.RdbmsModel.buildRdbmsModel;
 import static hu.blackbelt.judo.tatami.rdbms2liquibase.Rdbms2Liquibase.executeRdbms2LiquibaseTransformation;
 import static hu.blackbelt.judo.tatami.rdbms2liquibase.Rdbms2LiquibaseIncremental.executeRdbms2LiquibaseIncrementalTransformation;
-import static java.lang.Boolean.parseBoolean;
 import static java.lang.String.format;
-import static java.lang.System.getenv;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.fail;
 
 @Slf4j
+@ExtendWith(RdbmsDatasourceByClassExtension.class)
 public class Excel2RdbmsTest {
 
     private static final String ORIGINAL_MODEL_NAME = "OriginalModel";
     private static final String TARGET_TEST_CLASSES = "target/test-classes";
     private static final String GENERATED_SQL_LOCATION = TARGET_TEST_CLASSES + "/sql";
 
-    public static final boolean HSQLDB_STARTED = parseBoolean(getenv("HSQLDB_STARTED"));
-
     @Test
-    public void testHsqldb() throws Exception {
-        executeExcel2RdbmsModel("hsqldb");
-    }
-
-    @Test
-    public void testPostgresql() throws Exception {
-        executeExcel2RdbmsModel("postgresql");
-    }
-
-    public void executeExcel2RdbmsModel(String dialect) throws Exception {
+    public void executeExcel2RdbmsModel(RdbmsDatasourceFixture datasource) throws Exception {
+        // change dialect with -Ddialect maven property (default: hsqldb)
+        final String dialect = datasource.getDialect();
 
         RdbmsModel originalModel = buildRdbmsModel().name(ORIGINAL_MODEL_NAME).build();
         RdbmsModel newModel = buildRdbmsModel().name("NewModel").build();
@@ -111,6 +98,7 @@ public class Excel2RdbmsTest {
         excelToRdbmsEtlContext.commit();
         excelToRdbmsEtlContext.close();
 
+        // todo: transfer to test excel
         final RdbmsTable rdbmsTable = new RdbmsUtils(originalModel.getResourceSet()).getRdbmsTables().get().get(0);
         rdbmsTable.getIndexes().add(
                 RdbmsIndexBuilder.create()
@@ -200,38 +188,26 @@ public class Excel2RdbmsTest {
         saveLiquibase(afterIncrementalModel, dialect);
         saveLiquibase(dbDropBackupLiquibaseModel, dialect);
 
-//        Database liquibaseDb;
-//        Connection connection;
-//        switch (dialect) {
-//            case "hsqldb":
-//                if (!HSQLDB_STARTED) return;
-//                // hsqldb must be downloaded
-//                // $ java -cp hsqldb/lib/hsqldb.jar org.hsqldb.server.Server --database.0 file:mydb --dbname.0 xdb
-//                connection = DriverManager.getConnection("jdbc:hsqldb:hsql://localhost:9001/xdb", "SA", "");
-//                liquibaseDb = new HsqlDatabase();
-//                liquibaseDb.setConnection(new HsqlConnection(connection));
-//                break;
-//            case "postgresql":
-//                connection = DriverManager.getConnection("jdbc:tc:postgresql:9.6.12:///test", "sa", "");
-//                liquibaseDb = new PostgresDatabase();
-//                liquibaseDb.setConnection(new JdbcConnection(connection));
-//                break;
-//            default:
-//                log.info("Db testing is skipped");
-//                return;
-//        }
-//
-//        connection.createStatement().execute("DROP SCHEMA PUBLIC CASCADE");
-//
-//        runLiquibaseChangeSet(originalLiquibaseModel, liquibaseDb, dialect);
-//        runLiquibaseChangeSet(dbCheckupModel, liquibaseDb, dialect);
-//        runLiquibaseChangeSet(dbBackupLiquibaseModel, liquibaseDb, dialect);
-//        runLiquibaseChangeSet(beforeIncrementalModel, liquibaseDb, dialect);
-//        runLiquibaseChangeSet(incrementalLiquibaseModel, liquibaseDb, dialect);
-//        runLiquibaseChangeSet(afterIncrementalModel, liquibaseDb, dialect);
-//        runLiquibaseChangeSet(dbDropBackupLiquibaseModel, liquibaseDb, dialect);
-//
-//        liquibaseDb.close();
+        Connection connection = datasource.getDataSource().getConnection();
+        final Database liquibaseDb = datasource.getLiquibaseDb();
+        datasource.setLiquibaseDbDialect(connection);
+
+        connection.createStatement().execute("DROP SCHEMA PUBLIC CASCADE");
+
+        // todo: in excel use Number and String.
+        //  when rdbms model is built, change these types with "fitting" types
+        //  e.g.: Number(10)
+        //          hsqldb: INTEGER(10)
+        //          postgresql: INT (or DECIMAL(10))
+        runLiquibaseChangeSet(originalLiquibaseModel, liquibaseDb, dialect);
+        runLiquibaseChangeSet(dbCheckupModel, liquibaseDb, dialect);
+        runLiquibaseChangeSet(dbBackupLiquibaseModel, liquibaseDb, dialect);
+        runLiquibaseChangeSet(beforeIncrementalModel, liquibaseDb, dialect);
+        runLiquibaseChangeSet(incrementalLiquibaseModel, liquibaseDb, dialect);
+        runLiquibaseChangeSet(afterIncrementalModel, liquibaseDb, dialect);
+        runLiquibaseChangeSet(dbDropBackupLiquibaseModel, liquibaseDb, dialect);
+
+        liquibaseDb.close();
     }
 
     private void runLiquibaseChangeSet(LiquibaseModel liquibaseModel, Database liquibaseDb, String dialect) throws LiquibaseException {

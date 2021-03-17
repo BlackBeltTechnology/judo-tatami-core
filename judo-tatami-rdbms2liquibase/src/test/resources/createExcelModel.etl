@@ -24,7 +24,7 @@ rule transformOriginalValue
 	to t : ORIGINAL!RdbmsValueField  {
 		guard : f.type == "value"
 		t.name = f.name;
-		t.sqlName =f.sql_name;
+		t.sqlName = f.sql_name;
 		t.uuid = f.uuid;
 		t.mandatory = f.mandatory.asBoolean();
 		t.rdbmsTypeName = f.type_name;
@@ -56,7 +56,7 @@ rule transformOriginalId
 rule transformOriginalForeignKey
 	transform f : XLS!CasesOriginal
 	to t : ORIGINAL!RdbmsForeignKey {
-		guard : f.uuid.isDefined() and f.type <> "value" and f.type <> "id"	
+		guard : f.uuid.isDefined() and f.type.matches("table\\d+\\.id") // ex.: table1.id (foreign key)
 		t.name = f.name;
 		t.sqlName = f.sql_name;
 		t.uuid = f.uuid;
@@ -69,8 +69,39 @@ rule transformOriginalForeignKey
 		t.storageByte = f.storage_byte.asInteger();
 		XLS!TablesOriginal.allInstances.selectOne(table | table.uuid == f.table_uuid).equivalent("transformOriginalTable").fields.add(t);
 		t.referenceKey = XLS!CasesOriginal.allInstances.selectOne(field | field.uuid == f.type).equivalent("transformOriginalId");
-		t.foreignKeySqlName = "FK_"+t.sqlName;
+		t.foreignKeySqlName = "FK_" + t.sqlName;
 }
+
+/*
+rule transformOriginalIndex
+    transform f : XLS!CasesOriginal
+    to t : ORIGINAL!RdbmsIndex {
+        guard: f.uuid.isDefined() and f.type == "index"
+        t.name = f.name;
+        t.uuid = f.uuid;
+        t.sqlName = f.sql_name;
+        for (fieldUuid in f.target_column_uuid.split(",")) {
+            var tableID = fieldUuid.split("\\.")[0];
+            t.fields.add(originalModel.rdbmsTables.selectOne(table | table.uuid == tableID).fields.selectOne(field | field.uuid == fieldUuid));
+        }
+        f.equivalent("transformOriginalTable").indexes.add(t);
+}
+
+rule transformOriginalUniqueConstraint
+    transform s : XLS!CasesOriginal
+    to t : ORIGINAL!RdbmsUniqueConstraint
+    extends transformOriginalIndex {
+        guard: f.uuid.isDefined() and f.type == "unqiue"
+        t.name = f.name;
+        t.uuid = f.uuid;
+        t.sqlName = f.sql_name;
+        for (fieldUuid in f.target_column_uuid.split(",")) {
+            var tableID = fieldUuid.split("\\.")[0];
+            t.fields.add(originalModel.rdbmsTables.selectOne(table | table.uuid == tableID).fields.selectOne(field | field.uuid == fieldUuid));
+        }
+        f.equivalent("transformOriginalTable").uniquConstraints.add(t);
+}
+*/
 
 rule transformNewTable
 	transform f : XLS!TablesNew
@@ -133,6 +164,6 @@ rule transformNewForeignKey
 		t.storageByte = f.storage_byte.asInteger();
 		XLS!TablesNew.allInstances.selectOne(table | table.uuid == f.table_uuid).equivalent("transformNewTable").fields.add(t);
 		t.referenceKey = XLS!CasesNew.allInstances.selectOne(field | field.uuid == f.type).equivalent("transformNewId");
-		t.foreignKeySqlName = "FK_"+t.sqlName;
+		t.foreignKeySqlName = "FK_" + t.sqlName;
 		
 }
