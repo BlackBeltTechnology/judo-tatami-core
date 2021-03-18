@@ -1,12 +1,12 @@
 pre {
-   var newModel = new NEW!RdbmsModel();
-   newModel.version = "2.0";
-   newModel.configuration = new NEW!RdbmsConfiguration();
-   newModel.configuration.dialect = dialect;
    var originalModel = new ORIGINAL!RdbmsModel();
    originalModel.version = "1.0";
    originalModel.configuration = new ORIGINAL!RdbmsConfiguration();
    originalModel.configuration.dialect = dialect;
+   var newModel = new NEW!RdbmsModel();
+   newModel.version = "2.0";
+   newModel.configuration = new NEW!RdbmsConfiguration();
+   newModel.configuration.dialect = dialect;
 }
 
 rule transformOriginalTable
@@ -22,7 +22,7 @@ rule transformOriginalTable
 rule transformOriginalValue
 	transform f : XLS!CasesOriginal
 	to t : ORIGINAL!RdbmsValueField  {
-		guard : f.type == "value"
+		guard : f.uuid.isDefined() and f.type == "value"
 		t.name = f.name;
 		t.sqlName = f.sql_name;
 		t.uuid = f.uuid;
@@ -38,7 +38,7 @@ rule transformOriginalValue
 rule transformOriginalId
 	transform f : XLS!CasesOriginal
 	to t : ORIGINAL!RdbmsIdentifierField {
-		guard : f.type == "id"
+		guard : f.uuid.isDefined() and f.type == "id"
 		t.name = f.name;
 		t.sqlName = f.sql_name;
 		t.uuid = f.uuid;
@@ -60,7 +60,7 @@ rule transformOriginalForeignKey
 		t.name = f.name;
 		t.sqlName = f.sql_name;
 		t.uuid = f.uuid;
-		log.info("Test: " + f.uuid + " " + f.mandatory);
+		log.info("Test table: " + f.uuid + " mandatory:" + f.mandatory);
 		t.mandatory = f.mandatory.asBoolean();
 		t.rdbmsTypeName = f.type_name;
 		t.size = f.size.asInteger();
@@ -72,7 +72,6 @@ rule transformOriginalForeignKey
 		t.foreignKeySqlName = "FK_" + t.sqlName;
 }
 
-/*
 rule transformOriginalIndex
     transform f : XLS!CasesOriginal
     to t : ORIGINAL!RdbmsIndex {
@@ -82,31 +81,31 @@ rule transformOriginalIndex
         t.sqlName = f.sql_name;
         for (fieldUuid in f.target_column_uuid.split(",")) {
             var tableID = fieldUuid.split("\\.")[0];
-            t.fields.add(originalModel.rdbmsTables.selectOne(table | table.uuid == tableID).fields.selectOne(field | field.uuid == fieldUuid));
+            t.fields.add(originalModel
+                            .rdbmsTables.selectOne(table | table.uuid == tableID)
+                            .fields.selectOne(field | field.uuid == fieldUuid));
         }
-        f.equivalent("transformOriginalTable").indexes.add(t);
+        XLS!TablesOriginal.allInstances.selectOne(table | table.uuid == f.table_uuid).equivalent("transformOriginalTable").indexes.add(t);
 }
 
 rule transformOriginalUniqueConstraint
-    transform s : XLS!CasesOriginal
-    to t : ORIGINAL!RdbmsUniqueConstraint
-    extends transformOriginalIndex {
-        guard: f.uuid.isDefined() and f.type == "unqiue"
+    transform f : XLS!CasesOriginal
+    to t : ORIGINAL!RdbmsUniqueConstraint {
+        guard: f.uuid.isDefined() and f.type == "unique"
         t.name = f.name;
         t.uuid = f.uuid;
         t.sqlName = f.sql_name;
-        for (fieldUuid in f.target_column_uuid.split(",")) {
-            var tableID = fieldUuid.split("\\.")[0];
-            t.fields.add(originalModel.rdbmsTables.selectOne(table | table.uuid == tableID).fields.selectOne(field | field.uuid == fieldUuid));
-        }
-        f.equivalent("transformOriginalTable").uniquConstraints.add(t);
+        t.fields.add(originalModel
+                        .rdbmsTables.selectOne(table | table.uuid == f.target_column_uuid.split("\\.")[0])
+                        .fields.selectOne(field | field.uuid == f.target_column_uuid));
+
+        XLS!TablesOriginal.allInstances.selectOne(table | table.uuid == f.table_uuid).equivalent("transformOriginalTable").uniqueConstraints.add(t);
 }
-*/
 
 rule transformNewTable
 	transform f : XLS!TablesNew
 	to t : NEW!RdbmsTable {
-		guard : f.uuid <> null
+		guard : f.uuid.isDefined()
 		newModel.rdbmsTables.add(t);
 		t.name = f.name;
 		t.uuid = f.uuid;
@@ -117,7 +116,7 @@ rule transformNewTable
 rule transformNewValue
 	transform f : XLS!CasesNew
 	to t : NEW!RdbmsValueField {
-		guard : f.type == "value"
+		guard : f.uuid.isDefined() and f.type == "value"
 		t.name = f.name;
 		t.sqlName = f.sql_name;
 		t.uuid = f.uuid;
@@ -133,7 +132,7 @@ rule transformNewValue
 rule transformNewId
 	transform f : XLS!CasesNew
 	to t : NEW!RdbmsIdentifierField {
-		guard : f.type == "id"
+		guard : f.uuid.isDefined() and f.type == "id"
 		t.name = f.name;
 		t.sqlName = f.sql_name;
 		t.uuid = f.uuid;
@@ -152,7 +151,7 @@ rule transformNewId
 rule transformNewForeignKey
 	transform f : XLS!CasesNew
 	to t : NEW!RdbmsForeignKey {
-		guard : f.uuid.isDefined() and f.type <> "value" and f.type <> "id"	
+		guard : f.uuid.isDefined() and f.type.matches("table\\d+\\.id") // ex.: table1.id (foreign key)
 		t.name = f.name;
 		t.sqlName = f.sql_name;
 		t.uuid = f.uuid;
@@ -166,4 +165,34 @@ rule transformNewForeignKey
 		t.referenceKey = XLS!CasesNew.allInstances.selectOne(field | field.uuid == f.type).equivalent("transformNewId");
 		t.foreignKeySqlName = "FK_" + t.sqlName;
 		
+}
+
+rule transformNewIndex
+    transform f : XLS!CasesNew
+    to t : ORIGINAL!RdbmsIndex {
+        guard: f.uuid.isDefined() and f.type == "index"
+        t.name = f.name;
+        t.uuid = f.uuid;
+        t.sqlName = f.sql_name;
+        for (fieldUuid in f.target_column_uuid.split(",")) {
+            var tableID = fieldUuid.split("\\.")[0];
+            t.fields.add(newModel
+                            .rdbmsTables.selectOne(table | table.uuid == tableID)
+                            .fields.selectOne(field | field.uuid == fieldUuid));
+        }
+        XLS!TablesNew.allInstances.selectOne(table | table.uuid == f.table_uuid).equivalent("transformNewTable").indexes.add(t);
+}
+
+rule transformNewUniqueConstraint
+    transform f : XLS!CasesNew
+    to t : ORIGINAL!RdbmsUniqueConstraint {
+        guard: f.uuid.isDefined() and f.type == "unique"
+        t.name = f.name;
+        t.uuid = f.uuid;
+        t.sqlName = f.sql_name;
+        t.fields.add(newModel
+                        .rdbmsTables.selectOne(table | table.uuid == f.target_column_uuid.split("\\.")[0])
+                        .fields.selectOne(field | field.uuid == f.target_column_uuid));
+
+        XLS!TablesNew.allInstances.selectOne(table | table.uuid == f.table_uuid).equivalent("transformNewTable").uniqueConstraints.add(t);
 }

@@ -2,16 +2,14 @@ package hu.blackbelt.judo.tatami.rdbms2liquibase;
 
 import com.google.common.collect.ImmutableList;
 import hu.blackbelt.epsilon.runtime.execution.ExecutionContext;
+import hu.blackbelt.epsilon.runtime.execution.impl.Slf4jLog;
 import hu.blackbelt.judo.meta.liquibase.runtime.LiquibaseModel;
 import hu.blackbelt.judo.meta.liquibase.runtime.LiquibaseModel.LiquibaseValidationException;
 import hu.blackbelt.judo.meta.liquibase.runtime.LiquibaseNamespaceFixUriHandler;
 import hu.blackbelt.judo.meta.rdbms.RdbmsField;
-import hu.blackbelt.judo.meta.rdbms.RdbmsTable;
 import hu.blackbelt.judo.meta.rdbms.runtime.RdbmsModel;
 import hu.blackbelt.judo.meta.rdbms.runtime.RdbmsModel.RdbmsValidationException;
 import hu.blackbelt.judo.meta.rdbms.runtime.RdbmsUtils;
-import hu.blackbelt.judo.meta.rdbms.util.builder.RdbmsIndexBuilder;
-import hu.blackbelt.judo.meta.rdbms.util.builder.RdbmsUniqueConstraintBuilder;
 import hu.blackbelt.judo.tatami.rdbms2liquibase.datasource.RdbmsDatasourceByClassExtension;
 import hu.blackbelt.judo.tatami.rdbms2liquibase.datasource.RdbmsDatasourceFixture;
 import liquibase.Liquibase;
@@ -44,7 +42,6 @@ import static hu.blackbelt.judo.meta.rdbms.runtime.RdbmsModel.buildRdbmsModel;
 import static hu.blackbelt.judo.tatami.rdbms2liquibase.Rdbms2Liquibase.executeRdbms2LiquibaseTransformation;
 import static hu.blackbelt.judo.tatami.rdbms2liquibase.Rdbms2LiquibaseIncremental.executeRdbms2LiquibaseIncrementalTransformation;
 import static java.lang.String.format;
-import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.fail;
 
@@ -66,6 +63,7 @@ public class Excel2RdbmsTest {
 
         // Execution context
         ExecutionContext excelToRdbmsEtlContext = executionContextBuilder()
+                .log(new Slf4jLog(log))
                 .resourceSet(originalModel.getResourceSet())
                 .modelContexts(ImmutableList.of(
                         excelModelContextBuilder()
@@ -108,51 +106,6 @@ public class Excel2RdbmsTest {
         rdbmsUtilsNew.getAllRdbmsField()
                 .orElseThrow(() -> new RuntimeException("There are no fields in model: " + newModel.getName()))
                 .forEach(field -> replaceTypeNames(field, dialect));
-
-        // todo: transfer to test excel
-        final RdbmsTable rdbmsTable = rdbmsUtilsOriginal.getRdbmsTables().get().get(0);
-        rdbmsTable.getIndexes().add(
-                RdbmsIndexBuilder.create()
-                        .withName("TestIndex")
-                        .withUuid(rdbmsTable.getUuid() + ".TestIndex")
-                        .withFields(rdbmsTable.getFields().get(0), rdbmsTable.getFields().get(1))
-                        .withSqlName("TestIndex".toUpperCase())
-                        .build());
-        rdbmsTable.getUniqueConstraints().addAll(asList(
-                RdbmsUniqueConstraintBuilder.create()
-                        .withName("TestUniqueConstraint")
-                        .withUuid(rdbmsTable.getUuid() + ".TestUniqueConstraint")
-                        .withFields(rdbmsTable.getFields().get(2))
-                        .withSqlName("TestUniqueConstraint".toUpperCase())
-                        .build(),
-                RdbmsUniqueConstraintBuilder.create()
-                        .withName("TestUniqueConstraint2")
-                        .withUuid(rdbmsTable.getUuid() + ".TestUniqueConstraint2")
-                        .withFields(rdbmsTable.getFields().get(3))
-                        .withSqlName("TestUniqueConstraint2".toUpperCase())
-                        .build()));
-
-        final RdbmsTable rdbmsTable2 = rdbmsUtilsNew.getRdbmsTables().get().get(0);
-        rdbmsTable2.getIndexes().add(
-                RdbmsIndexBuilder.create()
-                        .withName("TestIndex")
-                        .withUuid(rdbmsTable2.getUuid() + ".TestIndex")
-                        .withFields(rdbmsTable2.getFields().get(0), rdbmsTable2.getFields().get(1))
-                        .withSqlName("TestIndex".toUpperCase())
-                        .build());
-        rdbmsTable2.getUniqueConstraints().addAll(asList(
-                RdbmsUniqueConstraintBuilder.create()
-                        .withName("TestUniqueConstraint")
-                        .withUuid(rdbmsTable2.getUuid() + ".TestUniqueConstraint")
-                        .withFields(rdbmsTable2.getFields().get(2))
-                        .withSqlName("TestUniqueConstraint".toUpperCase())
-                        .build(),
-                RdbmsUniqueConstraintBuilder.create()
-                        .withName("TestUniqueConstraint2")
-                        .withUuid(rdbmsTable2.getUuid() + ".TestUniqueConstraint2")
-                        .withFields(rdbmsTable2.getFields().get(3))
-                        .withSqlName("TestUniqueConstraint2".toUpperCase())
-                        .build()));
 
         saveRdbms(originalModel, dialect);
         saveRdbms(newModel, dialect);
