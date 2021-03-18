@@ -360,7 +360,7 @@ public class FlutterHelper {
         } else if (dataType instanceof StringType) {
             return "String";
         } else if (dataType instanceof EnumerationType) {
-            return "Enum";
+            return "Enumeration";
         } else {
             return "String";
         }

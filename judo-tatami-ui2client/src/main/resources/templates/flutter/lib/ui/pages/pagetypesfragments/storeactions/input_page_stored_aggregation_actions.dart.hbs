@@ -45,6 +45,9 @@ bool {{ fqVariable relation.name }}SortAsc;
 @observable
 Comparator {{ fqVariable relation.name }}SortCompare;
 
+@observable
+int {{ fqVariable relation.name }}QueryLimit = 5;
+
 @action
 void {{ fqVariable relation.name }}SetSortRange({{ fqClass relation.owner.name }}Store owner{{ className relation.owner.name }}Store, BuildContext context, String sortColumnName, int sortColumnIndex, bool asc, Comparator sortCompare, {List<FilterStore> filterStoreList}) {
 
@@ -63,13 +66,14 @@ void {{ fqVariable relation.name }}SetSortRange({{ fqClass relation.owner.name }
 }
 
 @action
-Future<List<{{fqClass relation.target.name}}Store>> getRangeFor{{ fqClass relation.name }}({{ fqClass relation.owner.name }}Store owner{{ className relation.owner.name }}Store, {List<FilterStore> filterStoreList}) async {
+Future<List<{{fqClass relation.target.name}}Store>> getRangeFor{{ fqClass relation.name }}({{ fqClass relation.owner.name }}Store owner{{ className relation.owner.name }}Store, {List<FilterStore> filterStoreList, int queryLimit}) async {
     try {
         errorMessage = null;
         {{ fqVariable relation.name }}StoreFuture = ObservableFuture(_{{ fqVariable application.actor.name }}Repository.{{ fqVariable relation.owner.name }}RangeOf{{ fqClass relation.name }}{{# if (isCreateTypePage page) }}ToCreate{{ else }}ToUpdate{{/ if }}(
             owner{{ className relation.owner.name }}Store,
             sortColumn: {{ fqVariable relation.name }}SortColumnName,
             sortAscending: {{ fqVariable relation.name }}SortAsc,
+            queryLimit: {{ fqVariable relation.name }}QueryLimit,
             filterStoreList: filterStoreList,
         ));
         {{ fqVariable relation.name }}StoreRangeList.clear();

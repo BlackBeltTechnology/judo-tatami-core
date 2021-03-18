@@ -9,31 +9,42 @@
 
 part of {{ variable application.name }}.ui.pages.dialogs;
 
-Future<T> _judoShowMenu<T>({@required BuildContext context, @required List<PopupMenuEntry<T>> items, @required GlobalKey buttonKey}) async {
+Future<FilterStore> _judoShowMenu({@required BuildContext context, @required List<PopupMenuEntry<FilterStore>> items, @required GlobalKey buttonKey}) async {
   final RenderBox button = buttonKey.currentContext.findRenderObject() as RenderBox;
   final RenderBox overlay = Navigator.of(context).overlay.context.findRenderObject() as RenderBox;
-  final RelativeRect position = RelativeRect.fromRect(
-    Rect.fromPoints(
-      button.localToGlobal(Offset.zero, ancestor: overlay),
-      button.localToGlobal(button.size.bottomRight(Offset.zero) + Offset.zero, ancestor: overlay),
-    ),
-    Offset.zero & overlay.size,
+  final RelativeRect position = RelativeRect.fromLTRB(
+    button.localToGlobal(button.size.topCenter(Offset.zero), ancestor: overlay).dx,
+    button.localToGlobal(button.size.topCenter(Offset.zero), ancestor: overlay).dy,
+    button.localToGlobal(button.size.bottomRight(Offset.zero) + Offset.zero, ancestor: overlay).dx,
+    button.localToGlobal(button.size.bottomRight(Offset.zero) + Offset.zero, ancestor: overlay).dy,
   );
 
-  return await showMenu<T>(
+  return await showMenu<FilterStore>(
     context: context,
     position: position,
     items: items,
-
   );
 }
 
-List<PopupMenuEntry<FilterStore>> _getPopupMenuItems(List<FilterStore> filterStoreList){
-  return filterStoreList.map<PopupMenuEntry<FilterStore>>( (filterStore) {
+List<PopupMenuEntry<FilterStore>> _getPopupMenuAttributeItems(List<FilterStore> filterStoreList){
+  var copiedList = List.from(filterStoreList);
+  var attributeList = copiedList.map((e) => e.attributeName).toSet();
+  copiedList.retainWhere((e) => attributeList.remove(e.attributeName));
+  return copiedList.map<PopupMenuEntry<FilterStore>>( (filterStore) {
+    return PopupMenuItem<FilterStore>(
+      value: filterStore,
+      child: Text(filterStore.attributeName),
+    );
+  }).toList();
+}
+
+List<PopupMenuEntry<FilterStore>> _getPopupMenuOperationItemsByAttribute(List<FilterStore> filterStoreList, FilterStore selectedAttribute){
+  var operationListByAttribute = filterStoreList.where((element) => element.attributeName == selectedAttribute.attributeName);
+  return operationListByAttribute.map<PopupMenuEntry<FilterStore>>( (filterStore) {
     return PopupMenuItem<FilterStore>(
       value: filterStore,
       enabled: !filterStore.filterEnabled,
-      child: Text(filterStore.label),
+      child: Text(filterStore.filterOperation),
     );
   }).toList();
 }

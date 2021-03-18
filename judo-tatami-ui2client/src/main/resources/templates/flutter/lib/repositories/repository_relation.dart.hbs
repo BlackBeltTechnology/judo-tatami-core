@@ -204,15 +204,15 @@ class {{ fqClass relation.owner.name }}{{ fqClass relation.name }}Repository {
   //////////////////////////////////////////////////////////////////////////////
   // GET CREATE RANGE FOR {{ variable targetRelation.name }}
   //////////////////////////////////////////////////////////////////////////////
-  Future<List<{{ fqClass targetRelation.target.name }}Store>> {{ fqVariable relation.owner.name }}{{ fqClass relation.name }}RangeOf{{ fqClass targetRelation.name }}ToCreate({{ fqClass relation.target.name }}Store target, { String sortColumn, bool sortAscending, List<FilterStore> filterStoreList }) async {
-    return await locator<{{ fqClass application.actor.name }}Repository>().{{ fqVariable relation.target.name }}RangeOf{{ fqClass targetRelation.name }}ToCreate(target, sortColumn: sortColumn, sortAscending: sortAscending, filterStoreList: filterStoreList);
+  Future<List<{{ fqClass targetRelation.target.name }}Store>> {{ fqVariable relation.owner.name }}{{ fqClass relation.name }}RangeOf{{ fqClass targetRelation.name }}ToCreate({{ fqClass relation.target.name }}Store target, { String sortColumn, bool sortAscending, List<FilterStore> filterStoreList, int queryLimit }) async {
+    return await locator<{{ fqClass application.actor.name }}Repository>().{{ fqVariable relation.target.name }}RangeOf{{ fqClass targetRelation.name }}ToCreate(target, sortColumn: sortColumn, sortAscending: sortAscending, filterStoreList: filterStoreList, queryLimit: queryLimit);
   }
 
   //////////////////////////////////////////////////////////////////////////////
   // GET UPDATE RANGE FOR {{ variable targetRelation.name }}
   //////////////////////////////////////////////////////////////////////////////
-  Future<List<{{ fqClass targetRelation.target.name }}Store>> {{ fqVariable relation.owner.name }}{{ fqClass relation.name }}RangeOf{{ fqClass targetRelation.name }}ToUpdate({{ fqClass relation.target.name }}Store target, { String sortColumn, bool sortAscending, List<FilterStore> filterStoreList }) async {
-    return await locator<{{ fqClass application.actor.name }}Repository>().{{ fqVariable relation.target.name }}RangeOf{{ fqClass targetRelation.name }}ToUpdate(target, sortColumn: sortColumn, sortAscending: sortAscending, filterStoreList: filterStoreList);
+  Future<List<{{ fqClass targetRelation.target.name }}Store>> {{ fqVariable relation.owner.name }}{{ fqClass relation.name }}RangeOf{{ fqClass targetRelation.name }}ToUpdate({{ fqClass relation.target.name }}Store target, { String sortColumn, bool sortAscending, List<FilterStore> filterStoreList, int queryLimit }) async {
+    return await locator<{{ fqClass application.actor.name }}Repository>().{{ fqVariable relation.target.name }}RangeOf{{ fqClass targetRelation.name }}ToUpdate(target, sortColumn: sortColumn, sortAscending: sortAscending, filterStoreList: filterStoreList, queryLimit: queryLimit);
   }
       {{/ if }}
       {{# if targetRelation.isRelationBehaviourTypeSetable }}

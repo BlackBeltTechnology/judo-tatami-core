@@ -16,13 +16,14 @@ part of {{ variable application.name }}.ui.pages.dialogs;
 Future<{{# if relation.isCollection }}List<{{ fqClass relation.target.name }}Store>{{ else }}{{ fqClass relation.target.name }}Store{{/ if }}> judoSelect{{ className relation.target.name }}DialogFor{{fqClass page.name}}Page({@required BuildContext context, {{fqClass page.name}}PageStore pageStore,{{# unless (isAccessTablePage page) }} {{ fqClass relation.owner.name }}Store ownerStore{{/ unless }} }) async {
 {{# unless (isAccessTablePage page) }}
     var addFilterButtonKey = GlobalKey();
-    pageStore.getRangeFor{{ fqClass relation.name }}(ownerStore).catchError((error) => ErrorHandler.errorDialog(context, error));
+    int tableQueryLimit = ({{ table.row }}-1).round();
+    pageStore.getRangeFor{{ fqClass relation.name }}(ownerStore, queryLimit: tableQueryLimit).catchError((error) => ErrorHandler.errorDialog(context, error));
 
     Map<String, FilterStore> stringFilterStoreMap = {
     {{# each table.columns as |column|}}
         {{# if column.attributeType.isFilterable}}
             {{# each column.attributeType.dataType.operator.members as |filterOperator|}}
-        '{{ variable column.attributeType.name }}{{ className filterOperator.name }}Filter' : FilterStore(label: '{{ className filterOperator.name }} {{ className column.attributeType.name }}', filterOperation: '{{ variable filterOperator.name }}', attributeName: '{{ variable column.attributeType.name }}'),
+        '{{ variable column.attributeType.name }}{{ className filterOperator.name }}Filter' : FilterStore(label: '{{ className column.attributeType.name }} {{ className filterOperator.name }}', filterOperation: '{{ variable filterOperator.name }}', attributeName: '{{ className column.attributeType.name }}'),
             {{/each}}
         {{/ if }}
     {{/ each }}
@@ -33,39 +34,40 @@ Future<{{# if relation.isCollection }}List<{{ fqClass relation.target.name }}Sto
         {{# if column.attributeType.isFilterable}}
             {{# each column.attributeType.dataType.operator.members as |filterOperator|}}
         stringFilterStoreMap['{{ variable column.attributeType.name }}{{ className filterOperator.name }}Filter'] :
-                {{# if (isStringType column.attributeType.dataType) ~}}
+                {{# if (isStringType column.attributeType.dataType) }}
             JudoInputText(
                 col: 1,
                 label: stringFilterStoreMap['{{ variable column.attributeType.name }}{{ className filterOperator.name }}Filter'].label,
                 onChanged: (value) => stringFilterStoreMap['{{ variable column.attributeType.name }}{{ className filterOperator.name }}Filter'].setFilterValue(value),
             ),
                 {{/ if }}
-                {{~# if (isNumericType column.attributeType.dataType) ~}}
+                {{~# if (isNumericType column.attributeType.dataType) }}
             JudoNumericInput(
                 col: 1,
                 label: stringFilterStoreMap['{{ variable column.attributeType.name }}{{ className filterOperator.name }}Filter'].label,
                 onChanged: (value) => stringFilterStoreMap['{{ variable column.attributeType.name }}{{ className filterOperator.name }}Filter'].setFilterValue({{ dartType column.attributeType.dataType }}.parse(value)),
             ),
                 {{/ if }}
-                {{~# if (isDateType column.attributeType.dataType) ~}}
+                {{~# if (isDateType column.attributeType.dataType) }}
             JudoDateInput(
                 col: 1,
                 label: stringFilterStoreMap['{{ variable column.attributeType.name }}{{ className filterOperator.name }}Filter'].label,
                 onChanged: (value) => stringFilterStoreMap['{{ variable column.attributeType.name }}{{ className filterOperator.name }}Filter'].setFilterValue(value),
             ),
                 {{/ if }}
-                {{~# if (isTimestampType column.attributeType.dataType) ~}}
+                {{~# if (isTimestampType column.attributeType.dataType) }}
             JudoDateTimeInput(
                 col: 1,
                 label: stringFilterStoreMap['{{ variable column.attributeType.name }}{{ className filterOperator.name }}Filter'].label,
                 onChanged: (value) => stringFilterStoreMap['{{ variable column.attributeType.name }}{{ className filterOperator.name }}Filter'].setFilterValue(value),
             ),
                 {{/ if }}
-                {{# if (isBooleanType column.attributeType.dataType) ~}}
+                {{~# if (isBooleanType column.attributeType.dataType) }}
             Observer(
                 builder: (_) => JudoSwitch(
                     col: 1,
                     label: stringFilterStoreMap['{{ variable column.attributeType.name }}{{ className filterOperator.name }}Filter'].label,
+                    initialValue: stringFilterStoreMap['{{ variable column.attributeType.name }}{{ className filterOperator.name }}Filter'].filterValue,
                     onChanged: (value) => stringFilterStoreMap['{{ variable column.attributeType.name }}{{ className filterOperator.name }}Filter'].setFilterValue(value),
                 )
             ),
@@ -114,14 +116,21 @@ Future<{{# if relation.isCollection }}List<{{ fqClass relation.target.name }}Sto
                         icon: Icon(Icons.add),
                         label: 'Add filter',
                         onPressed: () async {
-                          FilterStore result = await _judoShowMenu<FilterStore>(
-                            buttonKey: addFilterButtonKey,
-                            items: _getPopupMenuItems(stringFilterStoreMap.values.toList()),
-                            context: context,
-                          );
-                          if (result != null) {
-                            result.changeFilterEnabled();
-                          }
+                            FilterStore selectedAttribute = await _judoShowMenu(
+                                buttonKey: addFilterButtonKey,
+                                items: _getPopupMenuAttributeItems(stringFilterStoreMap.values.toList()),
+                                context: context,
+                            );
+                            if (selectedAttribute != null) {
+                                FilterStore result = await _judoShowMenu(
+                                    buttonKey: addFilterButtonKey,
+                                    items: _getPopupMenuOperationItemsByAttribute(stringFilterStoreMap.values.toList(), selectedAttribute),
+                                    context: context,
+                                );
+                                if (result != null) {
+                                    result.changeFilterEnabled();
+                                }
+                            }
                         },
                       ),
                     ),
@@ -134,6 +143,7 @@ Future<{{# if relation.isCollection }}List<{{ fqClass relation.target.name }}Sto
                         onPressed: () async {
                             pageStore.getRangeFor{{ fqClass relation.name }}(
                                 ownerStore,
+                                queryLimit: tableQueryLimit,
                                 filterStoreList: stringFilterStoreMap.values.where((element) => element.filterEnabled).toList(),
                             ).catchError((error) => ErrorHandler.errorDialog(context, error));
                         },
@@ -156,7 +166,7 @@ Future<{{# if relation.isCollection }}List<{{ fqClass relation.target.name }}Sto
                             disabled: false,
                             collectionSelector: {{ relation.isCollection}},
                             col: 1,
-                            row: 5.0,
+                            row: {{ table.row }} >= 5 ? {{ table.row }} : 5,
                             dataInfo: dataInfo,
                             sortAscending: pageStore.{{ fqVariable relation.name }}SortAsc,
                             sortColumnIndex: pageStore.{{ fqVariable relation.name }}SortColumnIndex,
@@ -181,6 +191,22 @@ Future<{{# if relation.isCollection }}List<{{ fqClass relation.target.name }}Sto
                     }),
                   ],
                 ),
+                Row(
+                    children: [
+                        Padding(
+                            padding: JudoComponentCustomizer.get().getDefaultPadding(),
+                            child: Observer(
+                                builder: (_) => Text(
+                                    'Showed ${pageStore.{{ fqVariable relation.name }}StoreRangeList.length} rows.',
+                                    style: TextStyle(
+                                        fontSize: 12,
+                                        color: Colors.black54
+                                    ),
+                                ),
+                            ),
+                        ),
+                    ],
+                )
               ],
             ),
           ),
