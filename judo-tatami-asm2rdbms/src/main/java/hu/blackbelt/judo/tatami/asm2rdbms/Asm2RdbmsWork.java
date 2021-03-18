@@ -46,10 +46,13 @@ public class Asm2RdbmsWork extends AbstractTransformationWork {
 		RdbmsModel rdbmsModel = getTransformationContext().getByClass(RdbmsModel.class)
 				.orElseGet(() -> buildRdbmsModel().name(asmModel.get().getName()).build());
 
+
 		// The RDBMS model resources have to know the mapping models
 		registerRdbmsNameMappingMetamodel(rdbmsModel.getResourceSet());
 		registerRdbmsDataTypesMetamodel(rdbmsModel.getResourceSet());
 		registerRdbmsTableMappingRulesMetamodel(rdbmsModel.getResourceSet());
+
+		// Load mapping model
 
 		getTransformationContext().put("rdbms:" + dialect, rdbmsModel);
 
