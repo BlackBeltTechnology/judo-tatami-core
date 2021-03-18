@@ -24,8 +24,8 @@ public class RdbmsDatasourceFixture {
     public static final String CONTAINER_NONE = "none";
     public static final String CONTAINER_POSTGRESQL = "postgresql";
     public static final String CONTAINER_YUGABYTEDB = "yugabytedb";
-    private static final String DIALECT_HSQLDB = "hsqldb";
-    private static final String DIALECT_POSTGRESQL = "postgresql";
+    public static final String DIALECT_HSQLDB = "hsqldb";
+    public static final String DIALECT_POSTGRESQL = "postgresql";
 
     @Getter
     protected String dialect = System.getProperty("dialect", DIALECT_HSQLDB);

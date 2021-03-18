@@ -41,6 +41,8 @@ import static hu.blackbelt.judo.meta.rdbms.runtime.RdbmsModel.SaveArguments.rdbm
 import static hu.blackbelt.judo.meta.rdbms.runtime.RdbmsModel.buildRdbmsModel;
 import static hu.blackbelt.judo.tatami.rdbms2liquibase.Rdbms2Liquibase.executeRdbms2LiquibaseTransformation;
 import static hu.blackbelt.judo.tatami.rdbms2liquibase.Rdbms2LiquibaseIncremental.executeRdbms2LiquibaseIncrementalTransformation;
+import static hu.blackbelt.judo.tatami.rdbms2liquibase.datasource.RdbmsDatasourceFixture.DIALECT_HSQLDB;
+import static hu.blackbelt.judo.tatami.rdbms2liquibase.datasource.RdbmsDatasourceFixture.DIALECT_POSTGRESQL;
 import static java.lang.String.format;
 import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.fail;
@@ -172,10 +174,10 @@ public class Excel2RdbmsTest {
     private static void replaceTypeNames(final RdbmsField field, final String dialect) {
         final String typeName = field.getRdbmsTypeName();
         if (typeName.equals("Number")) {
-            if (dialect.equals("hsqldb")) {
+            if (dialect.equals(DIALECT_HSQLDB)) {
                 field.setRdbmsTypeName("Integer");
                 log.info(field.getUuid() + ": Number -> Integer");
-            } else if (dialect.equals("postgresql")) {
+            } else if (dialect.equals(DIALECT_POSTGRESQL)) {
                 if (field.getPrecision() > 0 || field.getSize() > 0) {
                     field.setRdbmsTypeName("Decimal");
                     log.info(field.getUuid() + ": Number -> Decimal");

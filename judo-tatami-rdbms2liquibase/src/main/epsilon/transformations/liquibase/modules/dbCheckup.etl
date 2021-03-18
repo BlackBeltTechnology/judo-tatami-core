@@ -22,7 +22,7 @@ rule CheckJunctionTables
 // BACKUP TABLES
 
 @abstract
-rule CheckBackupTables
+rule PreCheckBackupTables
     transform s : RDBMS!RdbmsTableOperation
     to t : DBCHECKUP!TableExists {
         var useTable;
@@ -38,16 +38,16 @@ rule CheckBackupTables
         log.info("Not TableExists added: " + backupTableNamePrefix + "_" + useTable.sqlName);
 }
 
-rule CheckBackupDeletedTables
+rule PreCheckBackupDeletedTables
     transform s : RDBMS!RdbmsDeleteTableOperation
     to t : DBCHECKUP!TableExists
-    extends CheckBackupTables {
+    extends PreCheckBackupTables {
 }
 
-rule CheckBackupModifiedTables
+rule PreCheckBackupModifiedTables
     transform s : RDBMS!RdbmsModifyTableOperation
     to t : DBCHECKUP!TableExists
-    extends CheckBackupTables {
+    extends PreCheckBackupTables {
 }
 
 // BACKUP TABLES

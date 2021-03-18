@@ -2,7 +2,7 @@
 // BACKUP TABLES
 
 @abstract
-rule CheckBackupTables
+rule PostCheckBackupTables
     transform s : RDBMS!RdbmsTableOperation
     to t : DBCHECKUP!TableExists {
         var useTable;
@@ -12,19 +12,19 @@ rule CheckBackupTables
         t.tableName = backupTableNamePrefix + "_" + useTable.sqlName;
 
         dbDropBackupModel.preConditions.tableExists.add(t);
-        log.info("Not TableExists added: " + backupTableNamePrefix + "_" + useTable.sqlName);
+        log.info("TableExists added: " + backupTableNamePrefix + "_" + useTable.sqlName);
 }
 
-rule CheckBackupDeletedTables
+rule PostCheckBackupDeletedTables
     transform s : RDBMS!RdbmsDeleteTableOperation
     to t : DBCHECKUP!TableExists
-    extends CheckBackupTables {
+    extends PostCheckBackupTables {
 }
 
-rule CheckBackupModifiedTables
+rule PostCheckBackupModifiedTables
     transform s : RDBMS!RdbmsModifyTableOperation
     to t : DBCHECKUP!TableExists
-    extends CheckBackupTables {
+    extends PostCheckBackupTables {
 }
 
 @abstract
