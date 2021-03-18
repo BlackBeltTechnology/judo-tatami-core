@@ -5,6 +5,7 @@ import hu.blackbelt.epsilon.runtime.execution.ExecutionContext;
 import hu.blackbelt.judo.meta.liquibase.runtime.LiquibaseModel;
 import hu.blackbelt.judo.meta.liquibase.runtime.LiquibaseModel.LiquibaseValidationException;
 import hu.blackbelt.judo.meta.liquibase.runtime.LiquibaseNamespaceFixUriHandler;
+import hu.blackbelt.judo.meta.rdbms.RdbmsField;
 import hu.blackbelt.judo.meta.rdbms.RdbmsTable;
 import hu.blackbelt.judo.meta.rdbms.runtime.RdbmsModel;
 import hu.blackbelt.judo.meta.rdbms.runtime.RdbmsModel.RdbmsValidationException;
@@ -98,8 +99,18 @@ public class Excel2RdbmsTest {
         excelToRdbmsEtlContext.commit();
         excelToRdbmsEtlContext.close();
 
+        final RdbmsUtils rdbmsUtilsOriginal = new RdbmsUtils(originalModel.getResourceSet());
+        final RdbmsUtils rdbmsUtilsNew = new RdbmsUtils(newModel.getResourceSet());
+
+        rdbmsUtilsOriginal.getAllRdbmsField()
+                .orElseThrow(() -> new RuntimeException("There are no fields in model: " + originalModel.getName()))
+                .forEach(field -> replaceTypeNames(field, dialect));
+        rdbmsUtilsNew.getAllRdbmsField()
+                .orElseThrow(() -> new RuntimeException("There are no fields in model: " + newModel.getName()))
+                .forEach(field -> replaceTypeNames(field, dialect));
+
         // todo: transfer to test excel
-        final RdbmsTable rdbmsTable = new RdbmsUtils(originalModel.getResourceSet()).getRdbmsTables().get().get(0);
+        final RdbmsTable rdbmsTable = rdbmsUtilsOriginal.getRdbmsTables().get().get(0);
         rdbmsTable.getIndexes().add(
                 RdbmsIndexBuilder.create()
                         .withName("TestIndex")
@@ -121,7 +132,7 @@ public class Excel2RdbmsTest {
                         .withSqlName("TestUniqueConstraint2".toUpperCase())
                         .build()));
 
-        final RdbmsTable rdbmsTable2 = new RdbmsUtils(newModel.getResourceSet()).getRdbmsTables().get().get(0);
+        final RdbmsTable rdbmsTable2 = rdbmsUtilsNew.getRdbmsTables().get().get(0);
         rdbmsTable2.getIndexes().add(
                 RdbmsIndexBuilder.create()
                         .withName("TestIndex")
@@ -194,11 +205,6 @@ public class Excel2RdbmsTest {
 
         connection.createStatement().execute("DROP SCHEMA PUBLIC CASCADE");
 
-        // todo: in excel use Number and String.
-        //  when rdbms model is built, change these types with "fitting" types
-        //  e.g.: Number(10)
-        //          hsqldb: INTEGER(10)
-        //          postgresql: INT (or DECIMAL(10))
         runLiquibaseChangeSet(originalLiquibaseModel, liquibaseDb, dialect);
         runLiquibaseChangeSet(dbCheckupModel, liquibaseDb, dialect);
         runLiquibaseChangeSet(dbBackupLiquibaseModel, liquibaseDb, dialect);
@@ -210,13 +216,33 @@ public class Excel2RdbmsTest {
         liquibaseDb.close();
     }
 
-    private void runLiquibaseChangeSet(LiquibaseModel liquibaseModel, Database liquibaseDb, String dialect) throws LiquibaseException {
+    private static void replaceTypeNames(final RdbmsField field, final String dialect) {
+        final String typeName = field.getRdbmsTypeName();
+        if (typeName.equals("Number")) {
+            if (dialect.equals("hsqldb")) {
+                field.setRdbmsTypeName("Integer");
+                log.info(field.getUuid() + ": Number -> Integer");
+            } else if (dialect.equals("postgresql")) {
+                if (field.getPrecision() > 0 || field.getSize() > 0) {
+                    field.setRdbmsTypeName("Decimal");
+                    log.info(field.getUuid() + ": Number -> Decimal");
+                } else {
+                    field.setRdbmsTypeName("Integer");
+                    log.info(field.getUuid() + ": Number -> Integer");
+                }
+            } else {
+                throw new RuntimeException("Unknown dialect type: " + dialect);
+            }
+        }
+    }
+
+    private static void runLiquibaseChangeSet(LiquibaseModel liquibaseModel, Database liquibaseDb, String dialect) throws LiquibaseException {
         new Liquibase(getLiquibaseFileName(liquibaseModel, dialect),
                       new FileSystemResourceAccessor(TARGET_TEST_CLASSES), liquibaseDb)
                 .update("");
     }
 
-    private void saveRdbms(RdbmsModel rdbmsModel, String dialect) {
+    private static void saveRdbms(RdbmsModel rdbmsModel, String dialect) {
         File incrementalRdbmsFile = new File(TARGET_TEST_CLASSES, getRdbmsFileName(rdbmsModel, dialect));
         try {
             rdbmsModel.saveRdbmsModel(rdbmsSaveArgumentsBuilder().file(incrementalRdbmsFile));
@@ -230,7 +256,7 @@ public class Excel2RdbmsTest {
         return "test-" + dialect + "-" + rdbmsModel.getName() + "-rdbms.model";
     }
 
-    private void saveLiquibase(LiquibaseModel liquibaseModel, String dialect) throws IOException {
+    private static void saveLiquibase(LiquibaseModel liquibaseModel, String dialect) throws IOException {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         try {
             liquibaseModel.saveLiquibaseModel(
@@ -246,7 +272,7 @@ public class Excel2RdbmsTest {
         return "test-" + dialect + "-" + liquibaseModel.getName() + "-liquibase.xml";
     }
 
-    private URI getUri(Class clazz, String file) throws URISyntaxException {
+    private static URI getUri(Class clazz, String file) throws URISyntaxException {
         URI psmRoot = clazz.getProtectionDomain().getCodeSource().getLocation().toURI();
         if (psmRoot.toString().endsWith(".jar")) {
             psmRoot = new URI("jar:" + psmRoot.toString() + "!/" + file);
