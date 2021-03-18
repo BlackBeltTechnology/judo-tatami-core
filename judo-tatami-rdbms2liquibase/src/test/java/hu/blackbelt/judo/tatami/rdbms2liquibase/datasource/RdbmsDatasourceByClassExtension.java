@@ -4,7 +4,7 @@ import org.junit.jupiter.api.extension.*;
 
 public class RdbmsDatasourceByClassExtension implements BeforeAllCallback, AfterAllCallback, AfterEachCallback, ParameterResolver {
 
-    private RdbmsDatasourceFixture  rdbmsDatasourceFixture =  new RdbmsDatasourceFixture();
+    private final RdbmsDatasourceFixture rdbmsDatasourceFixture = new RdbmsDatasourceFixture();
 
     @Override
     public void beforeAll(ExtensionContext context) throws Exception {
