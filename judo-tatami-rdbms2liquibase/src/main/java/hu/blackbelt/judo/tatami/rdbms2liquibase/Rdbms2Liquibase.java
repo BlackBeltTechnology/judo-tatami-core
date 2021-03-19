@@ -69,15 +69,15 @@ public class Rdbms2Liquibase {
 
     @SneakyThrows(URISyntaxException.class)
     public static URI calculateRdbms2LiquibaseTransformationScriptURI() {
-        URI psmRoot = Rdbms2Liquibase.class.getProtectionDomain().getCodeSource().getLocation().toURI();
-        if (psmRoot.toString().endsWith(".jar")) {
-            psmRoot = new URI("jar:" + psmRoot.toString() + "!/" + SCRIPT_ROOT_TATAMI_RDBMS_2_LIQUIBASE);
-        } else if (psmRoot.toString().startsWith("jar:bundle:")) {
-            psmRoot = new URI(psmRoot.toString().substring(4, psmRoot.toString().indexOf("!")) + SCRIPT_ROOT_TATAMI_RDBMS_2_LIQUIBASE);
+        URI rdbmsRoot = Rdbms2Liquibase.class.getProtectionDomain().getCodeSource().getLocation().toURI();
+        if (rdbmsRoot.toString().endsWith(".jar")) {
+            rdbmsRoot = new URI("jar:" + rdbmsRoot.toString() + "!/" + SCRIPT_ROOT_TATAMI_RDBMS_2_LIQUIBASE);
+        } else if (rdbmsRoot.toString().startsWith("jar:bundle:")) {
+            rdbmsRoot = new URI(rdbmsRoot.toString().substring(4, rdbmsRoot.toString().indexOf("!")) + SCRIPT_ROOT_TATAMI_RDBMS_2_LIQUIBASE);
         } else {
-            psmRoot = new URI(psmRoot.toString() + "/" + SCRIPT_ROOT_TATAMI_RDBMS_2_LIQUIBASE);
+            rdbmsRoot = new URI(rdbmsRoot.toString() + "/" + SCRIPT_ROOT_TATAMI_RDBMS_2_LIQUIBASE);
         }
-        return psmRoot;
+        return rdbmsRoot;
     }
 
 }

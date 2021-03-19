@@ -96,6 +96,17 @@ rule AddColumnDefs
             }
             if (s.field.mandatory) {
                 constraint.nullable = false;
+
+                var changeSet = targetModel.getOrCreateChangeSet("create-fields-in-" + s.eContainer.table.sqlName + "-" + context, "create-fields", dialect, context);
+                var sqlFilePath = sqlScriptPath + "/" + dialect + "_" + s.eContainer.table.sqlName.toLowerCase() + "_" + t.name.toLowerCase() + "_create.sql";
+                log.info(sqlFilePath);
+                var file = new Native("java.io.File")(sqlFilePath);
+                if (file.exists()) {
+                    var sqlFile = new LIQUIBASE!SqlFile(path = file.getAbsolutePath(), dbms = dialect);
+                    changeSet.sqlFile.add(sqlFile);
+                } else {
+                    missingReviewScripts.put(sqlFilePath, "Sql script not found for new mandatory field [" + t.name + "] of [" + s.eContainer.table.sqlName + "]");
+                }
             }
             t.constraints = constraint;
         }
@@ -111,9 +122,9 @@ rule AddColumnDefs
 
 // CREATE FIELDS
 /////////////////////////////////////////
-// MODIFY TYPE/SIZE
+// MODIFY FIELD
 
-rule ModifyDataTypes
+rule ModifyFieldTypes
     transform s : RDBMS!RdbmsModifyFieldOperation
     to t : LIQUIBASE!ModifyDataType {
         guard: s.typeChanged or s.sizeChanged
@@ -121,12 +132,98 @@ rule ModifyDataTypes
         t.columnName = s.field.sqlName;
         t.newDataType = s.field.toFieldDefinition();
 
-        targetModel.getOrCreateChangeSet("modify-data-types-in-" + s.eContainer.table.sqlName + "-" + context, "modify-data-types", dialect, context)
-            .modifyDataType.add(t);
+        if (s.reviewRequired and s.typeChanged) {
+            var changeSet = targetModel.getOrCreateChangeSet("modify-data-types-in-" + t.tableName + "-" + context, "modify-data-types", dialect, context);
+            changeSet.modifyDataType.add(t);
+            var sqlFilePath = sqlScriptPath + "/" + dialect + "_" + t.tableName.toLowerCase() + "_" + t.columnName.toLowerCase() + "_type.sql";
+            log.info(sqlFilePath);
+            var file = new Native("java.io.File")(sqlFilePath);
+            if (file.exists()) {
+                var sqlFile = new LIQUIBASE!SqlFile(path = file.getAbsolutePath(), dbms = dialect);
+                changeSet.sqlFile.add(sqlFile);
+            } else {
+                missingReviewScripts.put(sqlFilePath, "Sql script not found for changed type of field [" + t.columnName + "] of [" + t.tableName + "]");
+            }
+        }
+
+        if (s.reviewRequired and s.sizeChanged) {
+            var changeSet = targetModel.getOrCreateChangeSet("modify-data-types-in-" + t.tableName + "-" + context, "modify-data-types", dialect, context);
+            changeSet.modifyDataType.add(t);
+            var sqlFilePath = sqlScriptPath + "/" + dialect + "_" + t.tableName.toLowerCase() + "_" + t.columnName.toLowerCase() + "_size.sql";
+            log.info(sqlFilePath);
+            var file = new Native("java.io.File")(sqlFilePath);
+            if (file.exists()) {
+                var sqlFile = new LIQUIBASE!SqlFile(path = file.getAbsolutePath(), dbms = dialect);
+                changeSet.sqlFile.add(sqlFile);
+            } else {
+                missingReviewScripts.put(sqlFilePath, "Sql script not found for changed size of field [" + columnName + "] of [" + tableName + "]");
+            }
+        }
+
         log.info("ModifyDataType added: " + t.columnName + " (" + t.tableName + ") ==> " + s.previousField.toFieldDefinition() + " -> " + s.field.toFieldDefinition());
 }
 
-// MODIFY TYPE/SIZE
+rule ModifyMandatory
+    transform s : RDBMS!RdbmsModifyFieldOperation
+    to t : LIQUIBASE!SqlFile {
+        guard: s.reviewRequired and s.mandatoryChanged
+        var tableName = s.eContainer.table.sqlName;
+        var columnName = s.field.sqlName;
+        var changeSet = targetModel.getOrCreateChangeSet("modify-mandatory-" + tableName + "-" + context, "modify-mandatory", dialect, context);
+
+        var sqlFilePath = sqlScriptPath + "/" + dialect + "_" + tableName.toLowerCase() + "_" + columnName.toLowerCase() + "_mandatory.sql";
+        var file = new Native("java.io.File")(sqlFilePath);
+        log.info(sqlFilePath);
+        if (file.exists()) {
+            t.path = file.getAbsolutePath();
+            t.dbms = dialect;
+            changeSet.sqlFile.add(t);
+        } else {
+            missingReviewScripts.put(sqlFilePath, "Sql script not found for mandatory field [" + columnName + "] of [" + tableName + "]");
+        }
+}
+
+rule ChangedValueFieldToForeignKey
+    transform s : RDBMS!RdbmsModifyFieldOperation
+    to t : LIQUIBASE!SqlFile {
+        guard: s.changedValueFieldToForeignKey
+        var tableName = s.eContainer.table.sqlName;
+        var columnName = s.field.sqlName;
+        var changeSet = targetModel.getOrCreateChangeSet("change-to-foreign-key-" + tableName + "-" + context, "change-to-foreign-key", dialect, context);
+
+        var sqlFilePath = sqlScriptPath + "/" + dialect + "_" + tableName.toLowerCase() + "_" + columnName.toLowerCase() + "_to_foreign_key.sql";
+        var file = new Native("java.io.File")(sqlFilePath);
+        log.info(sqlFilePath);
+        if (file.exists()) {
+            t.path = file.getAbsolutePath();
+            t.dbms = dialect;
+            changeSet.sqlFile.add(t);
+        } else {
+            missingReviewScripts.put(sqlFilePath, "Sql script not found for value field changed to foreign key [" + columnName + "] of [" + tableName + "]");
+        }
+}
+
+rule ChangedForeignKeyToValueField
+    transform s : RDBMS!RdbmsModifyFieldOperation
+    to t : LIQUIBASE!SqlFile {
+        guard: s.changedForeignKeyToValueField
+        var tableName = s.eContainer.table.sqlName;
+        var columnName = s.field.sqlName;
+        var changeSet = targetModel.getOrCreateChangeSet("change-to-value-field-" + tableName + "-" + context, "change-to-value-field", dialect, context);
+
+        var sqlFilePath = sqlScriptPath + "/" + dialect + "_" + tableName.toLowerCase() + "_" + columnName.toLowerCase() + "_to_value_field.sql";
+        var file = new Native("java.io.File")(sqlFilePath);
+        log.info(sqlFilePath);
+        if (file.exists()) {
+            t.path = file.getAbsolutePath();
+            t.dbms = dialect;
+            changeSet.sqlFile.add(t);
+        } else {
+            missingReviewScripts.put(sqlFilePath, "Sql script not found for foreign key changed to value field [" + columnName + "] of [" + tableName + "]");
+        }
+}
+
+// MODIFY FIELD
 /////////////////////////////////////////
 // DROP TABLES
 

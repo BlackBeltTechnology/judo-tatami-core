@@ -34,8 +34,11 @@ public class Rdbms2LiquibaseIncremental {
                                                                        LiquibaseModel afterIncrementalLiquibaseModel,
                                                                        LiquibaseModel dbDropBackupLiquibaseModel,
                                                                        String dialect,
-                                                                       String sqlOutput) throws Exception {
-        executeRdbms2LiquibaseIncrementalTransformation(incrementalRdbmsModel, dbCheckupLiquibaseModel, dbBackupLiquibaseModel, beforeIncrementalLiquibaseModel, incrementalLiquibaseModel, afterIncrementalLiquibaseModel, dbDropBackupLiquibaseModel, new Slf4jLog(log), calculateRdbms2LiquibaseTransformationScriptURI(), dialect, sqlOutput);
+                                                                       String sqlOutput,
+                                                                       String sqlScriptPath) throws Exception {
+        executeRdbms2LiquibaseIncrementalTransformation(incrementalRdbmsModel, dbCheckupLiquibaseModel, dbBackupLiquibaseModel,
+                beforeIncrementalLiquibaseModel, incrementalLiquibaseModel, afterIncrementalLiquibaseModel, dbDropBackupLiquibaseModel,
+                new Slf4jLog(log), calculateRdbms2LiquibaseTransformationScriptURI(), dialect, sqlOutput, sqlScriptPath);
     }
 
     public static void executeRdbms2LiquibaseIncrementalTransformation(RdbmsModel incrementalRdbmsModel,
@@ -47,8 +50,11 @@ public class Rdbms2LiquibaseIncremental {
                                                                        LiquibaseModel dbDropBackupLiquibaseModel,
                                                                        Log log,
                                                                        String dialect,
-                                                                       String sqlOutput) throws Exception {
-        executeRdbms2LiquibaseIncrementalTransformation(incrementalRdbmsModel, dbCheckupLiquibaseModel, dbBackupLiquibaseModel, beforeIncrementalLiquibaseModel, incrementalLiquibaseModel, afterIncrementalLiquibaseModel, dbDropBackupLiquibaseModel, log, calculateRdbms2LiquibaseTransformationScriptURI(), dialect, sqlOutput);
+                                                                       String sqlOutput,
+                                                                       String sqlScriptPath) throws Exception {
+        executeRdbms2LiquibaseIncrementalTransformation(incrementalRdbmsModel, dbCheckupLiquibaseModel, dbBackupLiquibaseModel,
+                beforeIncrementalLiquibaseModel, incrementalLiquibaseModel, afterIncrementalLiquibaseModel, dbDropBackupLiquibaseModel,
+                log, calculateRdbms2LiquibaseTransformationScriptURI(), dialect, sqlOutput, sqlScriptPath);
     }
 
     public static void executeRdbms2LiquibaseIncrementalTransformation(RdbmsModel incrementalRdbmsModel,
@@ -61,7 +67,8 @@ public class Rdbms2LiquibaseIncremental {
                                                                        Log log,
                                                                        URI scriptUri,
                                                                        String dialect,
-                                                                       String sqlOutput) throws Exception {
+                                                                       String sqlOutput,
+                                                                       String sqlScriptPath) throws Exception {
 
         // Execution context
         ExecutionContext executionContext = executionContextBuilder()
@@ -110,7 +117,9 @@ public class Rdbms2LiquibaseIncremental {
                 programParameterBuilder().name("dialect").value(dialect).build(),
                 programParameterBuilder().name("backupTableNamePrefix").value(BACKUP_PREFIX).build(),
                 programParameterBuilder().name("backupChangeSetNamePrefix").value(BACKUP_PREFIX.toLowerCase()).build(),
-                programParameterBuilder().name("sqlOutput").value(new File(sqlOutput).getAbsolutePath()).build());
+                programParameterBuilder().name("sqlOutput").value(new File(sqlOutput).getAbsolutePath()).build(),
+                programParameterBuilder().name("sqlScriptPath").value(sqlScriptPath).build()
+        );
 
         // Transformation script
         executionContext.executeProgram(

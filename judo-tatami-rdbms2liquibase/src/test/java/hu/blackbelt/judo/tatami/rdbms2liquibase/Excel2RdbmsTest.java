@@ -54,6 +54,7 @@ public class Excel2RdbmsTest {
     private static final String ORIGINAL_MODEL_NAME = "OriginalModel";
     private static final String TARGET_TEST_CLASSES = "target/test-classes";
     private static final String GENERATED_SQL_LOCATION = TARGET_TEST_CLASSES + "/sql";
+    private static final String GENERATED_REVIEW_LOCATION = "src/test/resources/review";
 
     @Test
     public void executeExcel2RdbmsModel(RdbmsDatasourceFixture datasource) throws Exception {
@@ -145,7 +146,8 @@ public class Excel2RdbmsTest {
                 afterIncrementalModel,
                 dbDropBackupLiquibaseModel,
                 dialect,
-                GENERATED_SQL_LOCATION);
+                GENERATED_SQL_LOCATION,
+                GENERATED_REVIEW_LOCATION);
 
         saveLiquibase(dbCheckupModel, dialect);
         saveLiquibase(dbBackupLiquibaseModel, dialect);
@@ -227,16 +229,16 @@ public class Excel2RdbmsTest {
         return "test-" + dialect + "-" + liquibaseModel.getName() + "-liquibase.xml";
     }
 
-    private static URI getUri(Class clazz, String file) throws URISyntaxException {
-        URI psmRoot = clazz.getProtectionDomain().getCodeSource().getLocation().toURI();
-        if (psmRoot.toString().endsWith(".jar")) {
-            psmRoot = new URI("jar:" + psmRoot.toString() + "!/" + file);
-        } else if (psmRoot.toString().startsWith("jar:bundle:")) {
-            psmRoot = new URI(psmRoot.toString().substring(4, psmRoot.toString().indexOf("!")) + file);
+    private URI getUri(Class clazz, String file) throws URISyntaxException {
+        URI rdbmsRoot = clazz.getProtectionDomain().getCodeSource().getLocation().toURI();
+        if (rdbmsRoot.toString().endsWith(".jar")) {
+            rdbmsRoot = new URI("jar:" + rdbmsRoot.toString() + "!/" + file);
+        } else if (rdbmsRoot.toString().startsWith("jar:bundle:")) {
+            rdbmsRoot = new URI(rdbmsRoot.toString().substring(4, rdbmsRoot.toString().indexOf("!")) + file);
         } else {
-            psmRoot = new URI(psmRoot.toString() + "/" + file);
+            rdbmsRoot = new URI(rdbmsRoot.toString() + "/" + file);
         }
-        return psmRoot;
+        return rdbmsRoot;
     }
 
     //// EMF Compare experiment

@@ -58,7 +58,8 @@ public class Rdbms2LiquibaseIncrementalWork extends AbstractTransformationWork {
                 (Log) getTransformationContext().get(Log.class).orElseGet(() -> new Slf4jLog(log)),
                 transformationScriptRoot,
                 dialect,
-                sqlOutputOptional.get());
+                sqlOutputOptional.get(),
+                "");
     }
 
     private LiquibaseModel getLiquibaseModel(String key, String modelName) {
