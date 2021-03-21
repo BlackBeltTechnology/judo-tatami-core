@@ -64,7 +64,7 @@ class ParallelFlowExecutor {
             try {
                 workReports.add(entry.getValue().get());
             } catch (InterruptedException | ExecutionException e) {
-                log.error(String.format("Unable to get work report of work ''{%s}''", entry.getKey().getName()), e);
+                log.error(String.format("Unable to get work report of work '%s'", entry.getKey().getName()), e);
             }
         }
 
