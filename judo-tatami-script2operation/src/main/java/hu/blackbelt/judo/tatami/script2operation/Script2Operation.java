@@ -174,6 +174,10 @@ public class Script2Operation {
                     new ByteArrayInputStream(s.getValue().getBytes(Charset.forName("UTF-8"))));
         });
 
+        scrXmlFilesByFqName.entrySet().forEach(s -> {
+            bundle.add("OSGI-INF/" + s.getKey() + ".xml",
+                    new ByteArrayInputStream(s.getValue().getBytes(Charset.forName("UTF-8"))));
+        });
 
         bundle.set( Constants.BUNDLE_MANIFESTVERSION, "2")
                 .set( Constants.BUNDLE_SYMBOLICNAME, modelName + "-script2operation" )
