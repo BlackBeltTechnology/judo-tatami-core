@@ -80,18 +80,16 @@ abstract class _{{ fqClass page.name }}PageStore with Store {
 {{/ each}}
 
     //OPERATIONS
-{{# each page.dataElement.target.operations as |operation| }}
+    {{# each page.dataElement.target.operations as |operation| }}
     @action
-    {{# if operation.output}}Future<{{fqClass operation.output.target.name}}Store>{{else}}Future<void>{{/if}} {{fqVariable operation.owner.name}}{{className operation.name}}({{#if operation.input}}{{fqClass operation.input.target.name}}Store {{fqVariable operation.input.target.name}}Store, {{/if}}{{#if operation.isMapped }}{{ fqClass operation.owner.name }}Store {{ fqVariable operation.owner.name }}Store{{/if}}) async {
+    {{# if operation.output}}Future<{{# if operation.output.isCollection }}List<{{fqClass operation.output.target.name}}Store>{{ else }}{{fqClass operation.output.target.name}}Store{{/if}}>{{else}}Future<void>{{/if}} {{fqVariable operation.owner.name}}{{className operation.name}}({{#if operation.input}}{{fqClass operation.input.target.name}}Store {{fqVariable operation.input.target.name}}Store, {{/if}}{{#if operation.isMapped }}{{ fqClass operation.owner.name }}Store {{ fqVariable operation.owner.name }}Store{{/if}}) async {
         try {
             errorMessage = null;
             {{# if operation.output}}return {{/if}}await _{{ fqVariable application.actor.name }}Repository.{{fqVariable operation.owner.name}}{{className operation.name}}({{#if operation.input}}{{fqVariable operation.input.target.name}}Store, {{/if}}{{#if operation.isMapped }}{{ fqVariable operation.owner.name }}Store{{/if}});
-        } on ApiException catch (error) {
+        } on ApiException {
             errorMessage = "Could not call operation {{operation.name}}";
-            throw error;
         }
     }
-
-{{/each}}
+    {{/each}}
 }
 //END operationoutputpagestore.dart.hbs-----{{page.name}}----------------------------------------------------------------------------------
