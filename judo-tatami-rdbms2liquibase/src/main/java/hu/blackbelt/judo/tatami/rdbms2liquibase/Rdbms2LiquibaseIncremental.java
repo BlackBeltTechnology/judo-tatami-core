@@ -14,6 +14,8 @@ import org.eclipse.epsilon.common.util.UriUtil;
 
 import java.io.File;
 import java.net.URI;
+import java.util.HashMap;
+import java.util.Map;
 
 import static hu.blackbelt.epsilon.runtime.execution.ExecutionContext.executionContextBuilder;
 import static hu.blackbelt.epsilon.runtime.execution.contexts.EglExecutionContext.eglExecutionContextBuilder;
@@ -28,7 +30,7 @@ public class Rdbms2LiquibaseIncremental {
 
     private static final String BACKUP_PREFIX = "BACKUP";
 
-    public static void executeRdbms2LiquibaseIncrementalTransformation(RdbmsModel incrementalRdbmsModel,
+    public static Map<String, String> executeRdbms2LiquibaseIncrementalTransformation(RdbmsModel incrementalRdbmsModel,
                                                                        LiquibaseModel dbCheckupLiquibaseModel,
                                                                        LiquibaseModel dbBackupLiquibaseModel,
                                                                        LiquibaseModel beforeIncrementalLiquibaseModel,
@@ -40,12 +42,12 @@ public class Rdbms2LiquibaseIncremental {
                                                                        String dialect,
                                                                        String sqlOutput,
                                                                        String sqlScriptPath) throws Exception {
-        executeRdbms2LiquibaseIncrementalTransformation(incrementalRdbmsModel, dbCheckupLiquibaseModel, dbBackupLiquibaseModel,
+        return executeRdbms2LiquibaseIncrementalTransformation(incrementalRdbmsModel, dbCheckupLiquibaseModel, dbBackupLiquibaseModel,
                 beforeIncrementalLiquibaseModel, updateDataBeforeIncrementalLiquibaseModel, incrementalLiquibaseModel, updateDataAfterIncrementalLiquibaseModel, afterIncrementalLiquibaseModel, dbDropBackupLiquibaseModel,
                 new Slf4jLog(log), calculateRdbms2LiquibaseTransformationScriptURI(), dialect, sqlOutput, sqlScriptPath);
     }
 
-    public static void executeRdbms2LiquibaseIncrementalTransformation(RdbmsModel incrementalRdbmsModel,
+    public static Map<String, String> executeRdbms2LiquibaseIncrementalTransformation(RdbmsModel incrementalRdbmsModel,
                                                                        LiquibaseModel dbCheckupLiquibaseModel,
                                                                        LiquibaseModel dbBackupLiquibaseModel,
                                                                        LiquibaseModel beforeIncrementalLiquibaseModel,
@@ -58,12 +60,12 @@ public class Rdbms2LiquibaseIncremental {
                                                                        String dialect,
                                                                        String sqlOutput,
                                                                        String sqlScriptPath) throws Exception {
-        executeRdbms2LiquibaseIncrementalTransformation(incrementalRdbmsModel, dbCheckupLiquibaseModel, dbBackupLiquibaseModel,
+        return executeRdbms2LiquibaseIncrementalTransformation(incrementalRdbmsModel, dbCheckupLiquibaseModel, dbBackupLiquibaseModel,
                 beforeIncrementalLiquibaseModel, updateDataBeforeIncrementalLiquibaseModel, incrementalLiquibaseModel, updateDataAfterIncrementalLiquibaseModel, afterIncrementalLiquibaseModel, dbDropBackupLiquibaseModel,
                 log, calculateRdbms2LiquibaseTransformationScriptURI(), dialect, sqlOutput, sqlScriptPath);
     }
 
-    public static void executeRdbms2LiquibaseIncrementalTransformation(RdbmsModel incrementalRdbmsModel,
+    public static Map<String, String> executeRdbms2LiquibaseIncrementalTransformation(RdbmsModel incrementalRdbmsModel,
                                                                        LiquibaseModel dbCheckupLiquibaseModel,
                                                                        LiquibaseModel dbBackupLiquibaseModel,
                                                                        LiquibaseModel beforeIncrementalLiquibaseModel,
@@ -78,11 +80,15 @@ public class Rdbms2LiquibaseIncremental {
                                                                        String sqlOutput,
                                                                        String sqlScriptPath) throws Exception {
 
+        Map<String, String> missingReviewScripts = new HashMap<>();
+
         // Execution context
         ExecutionContext executionContext = executionContextBuilder()
                 .log(log)
                 .resourceSet(incrementalRdbmsModel.getResourceSet())
-                .injectContexts(ImmutableMap.of("rdbmsUtils", new RdbmsUtils()))
+                .injectContexts(ImmutableMap.of(
+                        "rdbmsUtils", new RdbmsUtils(),
+                        "missingReviewScripts", missingReviewScripts))
                 .modelContexts(ImmutableList.of(
                         wrappedEmfModelContextBuilder()
                                 .name("RDBMS")
@@ -157,6 +163,8 @@ public class Rdbms2LiquibaseIncremental {
 
         executionContext.commit();
         executionContext.close();
+
+        return missingReviewScripts;
     }
 
 }

@@ -35,16 +35,4 @@ pre {
     var dataUpdateAfterIncrementalModel : DATA_UPDATE_AFTER_INCREMENTAL!databaseChangeLog = new DATA_UPDATE_AFTER_INCREMENTAL!databaseChangeLog();
     var afterIncrementalModel : AFTER_INCREMENTAL!databaseChangeLog = new AFTER_INCREMENTAL!databaseChangeLog();
     var dbDropBackupModel : DBDROPBACKUP!databaseChangeLog = new DBDROPBACKUP!databaseChangeLog(preConditions = new DBCHECKUP!PreConditions());
-
-    var missingReviewScripts : Map = new Map();
-}
-
-post {
-    if (not missingReviewScripts.isEmpty()) {
-        var msg = "Review of fields are required:\n";
-        for (k in missingReviewScripts.keySet()) {
-            msg = msg.concat(missingReviewScripts.get(k) + " - path: " + k + "\n");
-        }
-        throw msg;
-    }
 }

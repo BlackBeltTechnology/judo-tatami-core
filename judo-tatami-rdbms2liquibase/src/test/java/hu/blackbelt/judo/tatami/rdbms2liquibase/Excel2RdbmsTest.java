@@ -3,9 +3,11 @@ package hu.blackbelt.judo.tatami.rdbms2liquibase;
 import com.google.common.collect.ImmutableList;
 import hu.blackbelt.epsilon.runtime.execution.ExecutionContext;
 import hu.blackbelt.epsilon.runtime.execution.impl.Slf4jLog;
+import hu.blackbelt.judo.meta.liquibase.ChangeSet;
 import hu.blackbelt.judo.meta.liquibase.runtime.LiquibaseModel;
 import hu.blackbelt.judo.meta.liquibase.runtime.LiquibaseModel.LiquibaseValidationException;
 import hu.blackbelt.judo.meta.liquibase.runtime.LiquibaseNamespaceFixUriHandler;
+import hu.blackbelt.judo.meta.liquibase.runtime.LiquibaseUtils;
 import hu.blackbelt.judo.meta.rdbms.RdbmsField;
 import hu.blackbelt.judo.meta.rdbms.runtime.RdbmsModel;
 import hu.blackbelt.judo.meta.rdbms.runtime.RdbmsModel.RdbmsValidationException;
@@ -17,6 +19,7 @@ import liquibase.database.Database;
 import liquibase.exception.LiquibaseException;
 import liquibase.resource.FileSystemResourceAccessor;
 import lombok.extern.slf4j.Slf4j;
+import org.eclipse.emf.common.util.EList;
 import org.eclipse.epsilon.common.util.UriUtil;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -28,6 +31,8 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.sql.Connection;
+import java.util.Map;
+import java.util.Optional;
 
 import static hu.blackbelt.epsilon.runtime.execution.ExecutionContext.executionContextBuilder;
 import static hu.blackbelt.epsilon.runtime.execution.contexts.EtlExecutionContext.etlExecutionContextBuilder;
@@ -45,7 +50,7 @@ import static hu.blackbelt.judo.tatami.rdbms2liquibase.datasource.RdbmsDatasourc
 import static hu.blackbelt.judo.tatami.rdbms2liquibase.datasource.RdbmsDatasourceFixture.DIALECT_POSTGRESQL;
 import static java.lang.String.format;
 import static java.util.Collections.singletonList;
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.*;
 
 @Slf4j
 @ExtendWith(RdbmsDatasourceByClassExtension.class)
@@ -139,7 +144,7 @@ public class Excel2RdbmsTest {
         LiquibaseModel afterIncrementalModel = buildLiquibaseModel().name("AfterIncremental").build();
         LiquibaseModel dbDropBackupLiquibaseModel = buildLiquibaseModel().name("DbDropBackup").build();
 
-        executeRdbms2LiquibaseIncrementalTransformation(
+        Map<String, String> missingScripts = executeRdbms2LiquibaseIncrementalTransformation(
                 incrementalModel,
                 dbCheckupModel,
                 dbBackupLiquibaseModel,
@@ -161,6 +166,29 @@ public class Excel2RdbmsTest {
         saveLiquibase(updateDataAfterIncrementalModel, dialect);
         saveLiquibase(afterIncrementalModel, dialect);
         saveLiquibase(dbDropBackupLiquibaseModel, dialect);
+
+        assertEquals(8, missingScripts.keySet().size());
+        assertTrue(missingScripts.keySet().stream().anyMatch(k -> k.endsWith("hsqldb_table_2_table_1_11_type_after.sql")));
+        assertTrue(missingScripts.keySet().stream().anyMatch(k -> k.endsWith("hsqldb_table_9_value_5_size.sql")));
+        assertTrue(missingScripts.keySet().stream().anyMatch(k -> k.endsWith("hsqldb_table_3_value_1_create.sql")));
+        assertTrue(missingScripts.keySet().stream().anyMatch(k -> k.endsWith("hsqldb_table_2_table_1_to_value_field_after.sql")));
+        assertTrue(missingScripts.keySet().stream().anyMatch(k -> k.endsWith("hsqldb_table_2_table_1_12_to_value_field_before.sql")));
+        assertTrue(missingScripts.keySet().stream().anyMatch(k -> k.endsWith("hsqldb_table_2_table_1_10_mandatory.sql")));
+        assertTrue(missingScripts.keySet().stream().anyMatch(k -> k.endsWith("hsqldb_table_2_table_1_6_to_foreign_key_after.sql")));
+        assertTrue(missingScripts.keySet().stream().anyMatch(k -> k.endsWith("hsqldb_table_2_table_1_5_to_foreign_key_before.sql")));
+
+        LiquibaseUtils liquibaseUtils = new LiquibaseUtils(updateDataBeforeIncrementalModel.getResourceSet());
+        Optional<EList<ChangeSet>> optionalChangeSets = liquibaseUtils.getChangeSets();
+        assertTrue(optionalChangeSets.isPresent());
+        assertTrue(optionalChangeSets.get().stream().noneMatch(cs -> cs.getSqlFile().stream().anyMatch(f -> f.getPath().endsWith("hsqldb_table_9_value_4_size.sql"))));
+        assertTrue(optionalChangeSets.get().stream().noneMatch(cs -> cs.getSqlFile().stream().anyMatch(f -> f.getPath().endsWith("hsqldb_table_2_table_1_11_type_before.sql"))));
+        assertTrue(optionalChangeSets.get().stream().noneMatch(cs -> cs.getSqlFile().stream().anyMatch(f -> f.getPath().endsWith("hsqldb_table_1_value_12_type_before.sql"))));
+
+        liquibaseUtils = new LiquibaseUtils(updateDataAfterIncrementalModel.getResourceSet());
+        optionalChangeSets = liquibaseUtils.getChangeSets();
+        assertTrue(optionalChangeSets.isPresent());
+        assertTrue(optionalChangeSets.get().stream().noneMatch(cs -> cs.getSqlFile().stream().anyMatch(f -> f.getPath().endsWith("hsqldb_table_1_value_7_mandatory.sql"))));
+        assertTrue(optionalChangeSets.get().stream().noneMatch(cs -> cs.getSqlFile().stream().anyMatch(f -> f.getPath().endsWith("hsqldb_table_1_value_13_type_after.sql"))));
 
         Connection connection = datasource.getDataSource().getConnection();
         final Database liquibaseDb = datasource.getLiquibaseDb();

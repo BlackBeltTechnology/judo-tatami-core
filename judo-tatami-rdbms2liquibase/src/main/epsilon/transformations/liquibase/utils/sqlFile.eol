@@ -9,5 +9,6 @@ operation LIQUIBASE!SqlFile addSqlFileToChangeSet(changeSet: LIQUIBASE!ChangeSet
             }
         } else {
             missingReviewScripts.put(sqlFilePath, msg);
+            delete self;
         }
 }
