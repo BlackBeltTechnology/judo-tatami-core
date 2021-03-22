@@ -103,6 +103,11 @@ operation genDaoScrXml(dto : ASM!EClass) {
 	return filename;
 }
 
+operation providedDaoInterface(dto : ASM!EClass) {
+    return getSdkPrefix() + dto.getClassifierPackageName() + "." + dto.getClassName() + "$" + dto.getClassName() + "Dao";
+}
+
+
 @cached
 operation getDispatcherWrapperScrXmlFileName(dto : ASM!EClass) : String {
 	return "OSGI-INF/" + getInternalPrefix() + dto.getClassifierPackageName() + "." + dto.getClassName() + "OperationsDispatcherWrapper.xml";
@@ -160,6 +165,10 @@ operation genUnmappedInitializerScrXml(dto : ASM!EClass) {
 	var filename =  "OSGI-INF/" + getInternalPrefix() + dto.getClassifierPackageName() + "." + dto.getClassName() + "StaticInitializerImpl.xml";
 	template.generate(filename);
 	return filename;
+}
+
+operation providedUnmappedInitializerInterface(dto : ASM!EClass) {
+    return getSdkPrefix() + dto.getClassifierPackageName() + "." + dto.getClassName() + "$" + dto.getClassName() + "StaticInitializer";
 }
 
 operation genDtoInterface(dto: ASM!EClass) : String {
@@ -236,6 +245,18 @@ operation genInternalOperationInterfaces(dto : ASM!EClass) : Set {
 	}
 
     return generatedFiles;
+}
+
+operation providedSdkOperationInterfaces(dto : ASM!EClass) : Set {
+    var provided = new Set();
+	// the operation I can implement - only instance for entities or static
+	if (not dto.getSdkOperations().isEmpty()) {
+	    // the operations I can call, one for each transfer entity
+	    if (not asmUtils.isEntityType(dto)) {
+ 	        provided.add(getSdkPrefix() + dto.getClassifierPackageName() + "." +  dto.getClassName() + "$" +  dto.getClassName() + "Operations");
+		}
+	}
+    return provided;
 }
 
 @cached

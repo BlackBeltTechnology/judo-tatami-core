@@ -13,6 +13,7 @@ import 'package:flutter_breadcrumb/flutter_breadcrumb.dart';
 import 'package:judo_flutter_components/judo_flutter_components.dart';
 import 'package:{{ modelPackage application.name }}/{{ path application.name }}/injector/injector.dart';
 import 'package:{{ modelPackage application.name }}/{{ path application.name }}/app.dart';
+import 'package:{{ modelPackage application.name }}/{{ path application.name }}/app_theme.dart';
 import 'package:{{ modelPackage application.name }}/{{ path application.name }}/ui/navigation/navigation_state.dart';
 
 /// A responsive scaffold for our application.
@@ -40,8 +41,8 @@ class {{ fqClass application.name }}Scaffold extends StatelessWidget {
                         Column(
                             children: [
                                 Padding(
-                                    padding: EdgeInsets.fromLTRB(115, 16, 0, 10),
-                                    child:
+                                  padding: EdgeInsets.fromLTRB(new AppDesignCustomizer().getContentMargin(context), 16, 0, 10),
+                                  child:
                                     AppBar(
                                         automaticallyImplyLeading: drawer != null,
                                         title:
@@ -108,7 +109,7 @@ class {{ fqClass application.name }}Scaffold extends StatelessWidget {
                 body: GestureDetector(
                     onTap: () => FocusScope.of(context).requestFocus(new FocusNode()),
                     child: Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 116),
+                            padding: EdgeInsets.symmetric(horizontal: new AppDesignCustomizer().getContentMargin(context)),
                             child: body,
 //                    child: Column(
 //                        children: [
