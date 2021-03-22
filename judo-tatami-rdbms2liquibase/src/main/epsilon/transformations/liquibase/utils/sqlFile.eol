@@ -1,0 +1,13 @@
+operation LIQUIBASE!SqlFile addSqlFileToChangeSet(changeSet: LIQUIBASE!ChangeSet, sqlFilePath : String, msg : String) {
+        if (rdbmsUtils.isSqlScriptPathValid(sqlFilePath)) {
+            if (not rdbmsUtils.isSqlScriptEmpty(sqlFilePath)) {
+                self.path = rdbmsUtils.getSqlScriptAbsolutePath(sqlFilePath);
+                self.dbms = dialect;
+                changeSet.sqlFile.add(self);
+            } else {
+                delete self;
+            }
+        } else {
+            missingReviewScripts.put(sqlFilePath, msg);
+        }
+}

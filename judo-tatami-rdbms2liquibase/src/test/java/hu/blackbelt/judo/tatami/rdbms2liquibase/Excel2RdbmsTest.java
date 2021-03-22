@@ -133,7 +133,9 @@ public class Excel2RdbmsTest {
         LiquibaseModel dbCheckupModel = buildLiquibaseModel().name("DbCheckup").build();
         LiquibaseModel dbBackupLiquibaseModel = buildLiquibaseModel().name("DbBackup").build();
         LiquibaseModel beforeIncrementalModel = buildLiquibaseModel().name("BeforeIncremental").build();
+        LiquibaseModel updateDataBeforeIncrementalModel = buildLiquibaseModel().name("UpdateDataBeforeIncremental").build();
         LiquibaseModel incrementalLiquibaseModel = buildLiquibaseModel().name("IncrementalModel").build();
+        LiquibaseModel updateDataAfterIncrementalModel = buildLiquibaseModel().name("UpdateDataAfterIncremental").build();
         LiquibaseModel afterIncrementalModel = buildLiquibaseModel().name("AfterIncremental").build();
         LiquibaseModel dbDropBackupLiquibaseModel = buildLiquibaseModel().name("DbDropBackup").build();
 
@@ -142,7 +144,9 @@ public class Excel2RdbmsTest {
                 dbCheckupModel,
                 dbBackupLiquibaseModel,
                 beforeIncrementalModel,
+                updateDataBeforeIncrementalModel,
                 incrementalLiquibaseModel,
+                updateDataAfterIncrementalModel,
                 afterIncrementalModel,
                 dbDropBackupLiquibaseModel,
                 dialect,
@@ -152,7 +156,9 @@ public class Excel2RdbmsTest {
         saveLiquibase(dbCheckupModel, dialect);
         saveLiquibase(dbBackupLiquibaseModel, dialect);
         saveLiquibase(beforeIncrementalModel, dialect);
+        saveLiquibase(updateDataBeforeIncrementalModel, dialect);
         saveLiquibase(incrementalLiquibaseModel, dialect);
+        saveLiquibase(updateDataAfterIncrementalModel, dialect);
         saveLiquibase(afterIncrementalModel, dialect);
         saveLiquibase(dbDropBackupLiquibaseModel, dialect);
 

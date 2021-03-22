@@ -1,4 +1,5 @@
 import "liquibase/utils/changeset.eol";
+import "liquibase/utils/sqlFile.eol";
 import "rdbms/utils/field.eol";
 import "rdbms/utils/model.eol";
 import "rdbms/utils/table.eol";
@@ -7,7 +8,9 @@ import "rdbms/utils/table.eol";
 import "liquibase/modules/dbCheckup.etl";
 import "liquibase/modules/dbBackup.etl";
 import "liquibase/modules/beforeIncremental.etl";
+import "liquibase/modules/dataUpdateBeforeIncremental.etl";
 import "liquibase/modules/incremental.etl";
+import "liquibase/modules/dataUpdateAfterIncremental.etl";
 import "liquibase/modules/afterIncremental.etl";
 import "liquibase/modules/dbDropBackup.etl";
 
@@ -28,6 +31,8 @@ pre {
     var dbCheckupModel : DBCHECKUP!databaseChangeLog = new DBCHECKUP!databaseChangeLog(preConditions = new DBCHECKUP!PreConditions());
     var dbBackupModel : DBBACKUP!databaseChangeLog = new DBBACKUP!databaseChangeLog();
     var beforeIncrementalModel : BEFORE_INCREMENTAL!databaseChangeLog = new BEFORE_INCREMENTAL!databaseChangeLog();
+    var dataUpdateBeforeIncrementalModel : DATA_UPDATE_BEFORE_INCREMENTAL!databaseChangeLog = new DATA_UPDATE_BEFORE_INCREMENTAL!databaseChangeLog();
+    var dataUpdateAfterIncrementalModel : DATA_UPDATE_AFTER_INCREMENTAL!databaseChangeLog = new DATA_UPDATE_AFTER_INCREMENTAL!databaseChangeLog();
     var afterIncrementalModel : AFTER_INCREMENTAL!databaseChangeLog = new AFTER_INCREMENTAL!databaseChangeLog();
     var dbDropBackupModel : DBDROPBACKUP!databaseChangeLog = new DBDROPBACKUP!databaseChangeLog(preConditions = new DBCHECKUP!PreConditions());
 

@@ -10,7 +10,6 @@ operation RDBMS!RdbmsField fillType(type : String) {
     if (rdbmsSize.isDefined() and rdbmsSize.startsWith("#")) {
         if (type == "java.lang.String") {
             self.size = 255;
-            self.isString = true;
         }
     } else if (rdbmsSize.isDefined()) {
         self.size = rdbmsSize.asFloat().asInteger();
@@ -73,10 +72,6 @@ operation RDBMS!RdbmsField fillType(type : String, attribute : ASM!EAttribute) {
     }
     
     self.storageByte = -1;
-    
-    if (type == "java.lang.String") {
-        self.isString = true;
-    }
 }
 
 operation RDBMS!RdbmsField fromType(type : RDBMS!RdbmsField) {

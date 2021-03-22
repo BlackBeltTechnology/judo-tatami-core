@@ -47,19 +47,29 @@ public class Rdbms2LiquibaseIncrementalWork extends AbstractTransformationWork {
             sqlOutputOptional = Optional.of(tempDir.getAbsolutePath());
         }
 
+        Optional<String> sqlScriptOptional = getTransformationContext().get(String.class, "liquibase-incremental:" + dialect + "-sqlScriptPath");
+        if (!sqlScriptOptional.isPresent()) {
+            final File tempDir = createTempDirectory("liquibase-sql-script-" + dialect).toFile();
+            tempDir.deleteOnExit();
+            getTransformationContext().put("liquibase-incremental:" + dialect + "-sqlScriptPath", tempDir.getAbsolutePath());
+            sqlScriptOptional = Optional.of(tempDir.getAbsolutePath());
+        }
+
         executeRdbms2LiquibaseIncrementalTransformation(
                 incrementalRdbmsModel,
                 getLiquibaseModel("liquibase-dbCheckup:" + dialect, "DbCheckup"),
                 getLiquibaseModel("liquibase-dbBackup:" + dialect, "DbBackup"),
                 getLiquibaseModel("liquibase-beforeIncremental:" + dialect, "BeforeIncremental"),
+                getLiquibaseModel("liquibase-updateDataBeforeIncremental:" + dialect, "UpdateDataBeforeIncremental"),
                 getLiquibaseModel("liquibase-incremental:" + dialect, "Incremental"),
+                getLiquibaseModel("liquibase-updateDataAfterIncremental:" + dialect, "UpdateDataAfterIncremental"),
                 getLiquibaseModel("liquibase-afterIncremental:" + dialect, "AfterIncremental"),
                 getLiquibaseModel("liquibase-dbDropBackup:" + dialect, "DbDropBackup"),
                 (Log) getTransformationContext().get(Log.class).orElseGet(() -> new Slf4jLog(log)),
                 transformationScriptRoot,
                 dialect,
                 sqlOutputOptional.get(),
-                "");
+                sqlScriptOptional.get());
     }
 
     private LiquibaseModel getLiquibaseModel(String key, String modelName) {
