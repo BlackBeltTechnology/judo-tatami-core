@@ -4,10 +4,12 @@ import "../operations/sdk.eol";
 var sdkJavaClasses = new Set();
 var internalJavaClasses = new Set();
 var internalScrXmls = new Set();
+var providedSdkInterfaces = new Set();
 
 executionContext.getContext().put("sdkJavaClasses", sdkJavaClasses);
 executionContext.getContext().put("internalJavaClasses", internalJavaClasses);
 executionContext.getContext().put("internalScrXmls", internalScrXmls);
+executionContext.getContext().put("providedSdkInterfaces", providedSdkInterfaces);
 
 internalJavaClasses.add(genUtil("AbstractSdkDao"));
 internalJavaClasses.add(genUtil("SdkUtil"));
@@ -22,8 +24,10 @@ for (dto in getAllDTOs()) {
     var generatedFiles;
     if (asmUtils.isMappedTransferObjectType(dto)) {
 	    generatedFiles = genInternalDaoInterfaces(dto);
+	    providedSdkInterfaces.add(providedDaoInterface(dto));
 	} else {
 		generatedFiles = genUnmappedInitializerFiles(dto);
+	    providedSdkInterfaces.add(providedUnmappedInitializerInterface(dto));
 	}
 	
     for (file in generatedFiles) {
@@ -31,7 +35,7 @@ for (dto in getAllDTOs()) {
     		internalJavaClasses.add(file);
     	} else if (file.endsWith(".xml")){
 			internalScrXmls.add(file);
-	    	}    	
+        }
 	}
 	
 	generatedFiles = genSdkOperationInterfaces(dto);
@@ -39,6 +43,7 @@ for (dto in getAllDTOs()) {
 	    	sdkJavaClasses.add(generatedFile);
    	}
 	generatedFiles = genInternalOperationInterfaces(dto);
+	providedSdkInterfaces.addAll(providedSdkOperationInterfaces(dto));
 	for (generatedFile in generatedFiles) {
 		if (generatedFile.endsWith(".xml")) {
 			internalScrXmls.add(generatedFile);
@@ -54,6 +59,7 @@ for (dto in getAllEntities()) {
 	    	sdkJavaClasses.add(generatedFile);
    	}
     generatedFiles = genInternalOperationInterfaces(dto);
+	providedSdkInterfaces.addAll(providedSdkOperationInterfaces(dto));
 	for (generatedFile in generatedFiles) {
 		if (generatedFile.endsWith(".xml")) {
 			internalScrXmls.add(generatedFile);

@@ -63,6 +63,77 @@
 			</plugin>
 
 			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>exec-maven-plugin</artifactId>
+				<version>3.0.0</version>
+				<executions>
+
+					<execution>
+						<id>generate-hsqldb-mapping</id>
+						<phase>compile</phase>
+						<goals>
+							<goal>java</goal>
+						</goals>
+						<configuration>
+							<mainClass>hu.blackbelt.judo.tatami.asm2rdbms.ExcelMappingModels2Rdbms</mainClass>
+							<arguments>
+								<argument>${basedir}/target/classes/tatami/asm2rdbms/model/mapping-hsqldb-rdbms.model</argument>
+								<argument>hsqldb</argument>
+							</arguments>
+							<includeProjectDependencies>true</includeProjectDependencies>
+							<includePluginDependencies>true</includePluginDependencies>
+							<cleanupDaemonThreads>false</cleanupDaemonThreads>
+						</configuration>
+					</execution>
+
+					<execution>
+						<id>generate-postgresql-mapping</id>
+						<phase>compile</phase>
+						<goals>
+							<goal>java</goal>
+						</goals>
+						<configuration>
+							<mainClass>hu.blackbelt.judo.tatami.asm2rdbms.ExcelMappingModels2Rdbms</mainClass>
+							<arguments>
+								<argument>${basedir}/target/classes/tatami/asm2rdbms/model/mapping-postgresql-rdbms.model</argument>
+								<argument>postgresql</argument>
+							</arguments>
+							<includeProjectDependencies>true</includeProjectDependencies>
+							<includePluginDependencies>true</includePluginDependencies>
+							<cleanupDaemonThreads>false</cleanupDaemonThreads>
+						</configuration>
+					</execution>
+
+					<execution>
+						<id>generate-oracle-mapping</id>
+						<phase>compile</phase>
+						<goals>
+							<goal>java</goal>
+						</goals>
+						<configuration>
+							<mainClass>hu.blackbelt.judo.tatami.asm2rdbms.ExcelMappingModels2Rdbms</mainClass>
+							<arguments>
+								<argument>${basedir}/target/classes/tatami/asm2rdbms/model/mapping-oracle-rdbms.model</argument>
+								<argument>oracle</argument>
+							</arguments>
+							<includeProjectDependencies>true</includeProjectDependencies>
+							<includePluginDependencies>true</includePluginDependencies>
+							<cleanupDaemonThreads>false</cleanupDaemonThreads>
+						</configuration>
+					</execution>
+
+				</executions>
+				<dependencies>
+					<dependency>
+						<groupId>org.slf4j</groupId>
+						<artifactId>slf4j-simple</artifactId>
+						<version>${slf4j-version}</version>
+					</dependency>
+				</dependencies>
+			</plugin>
+
+
+			<plugin>
 				<groupId>org.apache.felix</groupId>
 				<artifactId>maven-bundle-plugin</artifactId>
 				<extensions>true</extensions>

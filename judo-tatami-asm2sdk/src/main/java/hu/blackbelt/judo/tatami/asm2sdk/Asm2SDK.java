@@ -92,6 +92,8 @@ public class Asm2SDK {
                 .stream().map(s -> s.replaceAll("//", "/")).collect(Collectors.toSet());
         Set<String> internalXmlFileNames = (Set<String>)executionContext.getContext().get("internalScrXmls");
 
+        Set<String> providedSdkInterfaces = (Set<String>)executionContext.getContext().get("providedSdkInterfaces");
+
         executionContext.commit();
         executionContext.close();
 
@@ -132,6 +134,7 @@ public class Asm2SDK {
                     sdkJavaFileNames,
                     internalJavaFileNames,
                     internalXmlFileNames,
+                    providedSdkInterfaces,
                     compiled);
         } catch (Exception ex) {
             packagingFailed = true;
@@ -160,7 +163,8 @@ public class Asm2SDK {
     }
 
     private static Asm2SDKBundleStreams generateBundlesAsStream(String name, String version, File sourceCodeOutputDir,
-			Set<String> sdkJavaFileNames, Set<String> internalJavaFileNames, Set<String> internalXmlFileNames, Iterable<JavaFileObject> compiled) throws Exception {
+			Set<String> sdkJavaFileNames, Set<String> internalJavaFileNames,
+            Set<String> internalXmlFileNames, Set<String> providedSdkInterfaces, Iterable<JavaFileObject> compiled) throws Exception {
         TinyBundle sdkBundle = bundle();
         TinyBundle internalBundle = bundle();
         
@@ -211,6 +215,7 @@ public class Asm2SDK {
         addExportedPackages(internalBundle, internalExportedPackages);
 
         addXmlDesciptors(internalBundle, sourceCodeOutputDir, internalXmlFileNames);
+        addProvidedCapabilities(internalBundle, providedSdkInterfaces);
         
         return new Asm2SDKBundleStreams(new CachingInputStream(sdkBundle.build()), new CachingInputStream(internalBundle.build()));
 	}
@@ -228,6 +233,11 @@ public class Asm2SDK {
         	bundle.set("Service-Component", Joiner.on(",").join(xmlFilenames));
         }
 	}
+
+	private static void addProvidedCapabilities(TinyBundle bundle, Set<String> providedServices) {
+        bundle.set( Constants.PROVIDE_CAPABILITY,
+                providedServices.stream().map(s -> "osgi.service;objectClass:List<String>=\"" + s + "\"").collect(Collectors.joining(",")));
+    }
 
 	private static void addCommonBundleHeaders(TinyBundle bundle, String version) {
 		bundle.set( Constants.BUNDLE_MANIFESTVERSION, "2")

@@ -47,7 +47,7 @@ public class SequentialFlow extends AbstractWorkFlow {
         for (Work work : works) {
             workReport = work.call();
             if (workReport != null && WorkReportPredicate.FAILED.apply(workReport)) {
-                log.error("Work '%s' has failed, skipping subsequent works", work.getName());
+                log.error(String.format("Work '%s' has failed, skipping subsequent works", work.getName()));
                 break;
             }
         }
