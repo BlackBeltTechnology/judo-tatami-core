@@ -1,0 +1,16 @@
+operation UI!ui::Formatted createFilter(application : UI!ui::Application) : UI!ui::Filter {
+    var filter = new UI!ui::Filter();
+
+    filter.name = self.name.anchor("Filter");
+    filter.sourceId = self.sourceId;
+    filter.attributeType = self.attributeType;
+    filter.fit = self.fit;
+    filter.col = self.col;
+    filter.row = self.row;
+    filter.label = self.label;
+    filter.disabled = self.disabled;
+    filter.stretch = self.stretch;
+    filter.enabledBy = self.enabledBy;
+
+    return filter;
+}

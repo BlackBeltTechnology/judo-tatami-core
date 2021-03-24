@@ -29,6 +29,9 @@ operation ESM!esm::ui::TabularReferenceField createTableFromTabularReferenceFiel
                 part.label = column.getUiLabel();
                 part.attributeType = column.dataFeature.getMember().mapAttributeType(application, relation.target.mapClassType(application));
                 table.parts.add(part);
+                if (part.attributeType.isFilterable) {
+                    table.filters.add(part.createFilter(application));
+                }
             }
         } else {
             table = new UI!ui::Table();
@@ -38,6 +41,9 @@ operation ESM!esm::ui::TabularReferenceField createTableFromTabularReferenceFiel
                 col.label = column.getUiLabel();
                 col.attributeType = column.dataFeature.getMember().mapAttributeType(application, relation.target.mapClassType(application));
                 table.columns.add(col);
+                if (col.attributeType.isFilterable) {
+                    table.filters.add(col.createFilter(application));
+                }
             }
         }
         
