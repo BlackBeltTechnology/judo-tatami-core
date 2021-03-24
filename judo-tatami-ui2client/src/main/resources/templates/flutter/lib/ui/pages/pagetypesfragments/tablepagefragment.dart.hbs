@@ -1,4 +1,5 @@
 //START tablepagefragment.dart.hbs-----{{page.name}}---------------------------------------------------------------------------------------
+{{# with page.relationType as |relation| }}
     {{#unless page.dataElement.isAccess}}
     final {{ fqClass page.dataElement.owner.name }}Store owner{{ className page.dataElement.owner.name }}Store;
     {{/unless}}
@@ -18,7 +19,77 @@ class _{{fqClass page.name}}PageState extends State<{{fqClass page.name}}Page> {
 
     final {{fqClass page.name}}PageStore {{fqVariable page.name}}PageStore = {{fqClass page.name}}PageStore();
 
+    {{# if relation.isFilterable }}
+    Map<FilterStore, Widget> filterStoreWidgetMap;
+    {{/ if }}
+
     _{{fqClass page.name}}PageState({{#unless page.dataElement.isAccess}}{@required this.owner{{ className page.dataElement.owner.name }}Store}{{/unless}}){
+
+    {{# if relation.isFilterable }}
+        filterStoreWidgetMap = {
+            {{# each relation.target.attributes as |attribute|}}
+                {{# if attribute.isFilterable}}
+                    {{# each attribute.dataType.operator.members as |filterOperator|}}
+            {{fqVariable page.name}}PageStore.stringFilterStoreMap['{{ variable attribute.name }}{{ className filterOperator.name }}Filter'] :
+                        {{# if (isStringType attribute.dataType) }}
+                JudoInputText(
+                    col: 1,
+                    label: {{fqVariable page.name}}PageStore.stringFilterStoreMap['{{ variable attribute.name }}{{ className filterOperator.name }}Filter'].label,
+                    onChanged: (value) => {{fqVariable page.name}}PageStore.stringFilterStoreMap['{{ variable attribute.name }}{{ className filterOperator.name }}Filter'].setFilterValue(value),
+                ),
+                        {{/ if }}
+                        {{~# if (isNumericType attribute.dataType) }}
+                JudoNumericInput(
+                    col: 1,
+                    label: {{fqVariable page.name}}PageStore.stringFilterStoreMap['{{ variable attribute.name }}{{ className filterOperator.name }}Filter'].label,
+                    onChanged: (value) => {{fqVariable page.name}}PageStore.stringFilterStoreMap['{{ variable attribute.name }}{{ className filterOperator.name }}Filter'].setFilterValue({{ dartType attribute.dataType }}.parse(value)),
+                ),
+                        {{/ if }}
+                        {{~# if (isDateType attribute.dataType) }}
+                JudoDateInput(
+                    col: 1,
+                    label: {{fqVariable page.name}}PageStore.stringFilterStoreMap['{{ variable attribute.name }}{{ className filterOperator.name }}Filter'].label,
+                    onChanged: (value) => {{fqVariable page.name}}PageStore.stringFilterStoreMap['{{ variable attribute.name }}{{ className filterOperator.name }}Filter'].setFilterValue(value),
+                ),
+                        {{/ if }}
+                        {{~# if (isTimestampType attribute.dataType) }}
+                JudoDateTimeInput(
+                    col: 1,
+                    label: {{fqVariable page.name}}PageStore.stringFilterStoreMap['{{ variable attribute.name }}{{ className filterOperator.name }}Filter'].label,
+                    onChanged: (value) => {{fqVariable page.name}}PageStore.stringFilterStoreMap['{{ variable attribute.name }}{{ className filterOperator.name }}Filter'].setFilterValue(value),
+                ),
+                        {{/ if }}
+                        {{~# if (isBooleanType attribute.dataType) }}
+                Observer(
+                    builder: (_) => JudoSwitch(
+                        col: 1,
+                        label: {{fqVariable page.name}}PageStore.stringFilterStoreMap['{{ variable attribute.name }}{{ className filterOperator.name }}Filter'].label,
+                        initialValue: {{fqVariable page.name}}PageStore.stringFilterStoreMap['{{ variable attribute.name }}{{ className filterOperator.name }}Filter'].filterValue,
+                        onChanged: (value) => {{fqVariable page.name}}PageStore.stringFilterStoreMap['{{ variable attribute.name }}{{ className filterOperator.name }}Filter'].setFilterValue(value),
+                    )
+                ),
+                        {{/ if }}
+                        {{~# if (isEnumType attribute.dataType) }}
+                Observer(
+                    builder: (_) => JudoComboBox<{{ className attribute.dataType.name }}>(
+                        col: 1,
+                        label: {{fqVariable page.name}}PageStore.stringFilterStoreMap['{{ variable attribute.name }}{{ className filterOperator.name }}Filter'].label,
+                        onChanged: (value) => {{fqVariable page.name}}PageStore.stringFilterStoreMap['{{ variable attribute.name }}{{ className filterOperator.name }}Filter'].setFilterValue(value),
+                        items: {{ className attribute.dataType.name }}.values,
+                        dropdownMenuShow: (value) => new DropdownMenuItem<{{ className attribute.dataType.name }}>(
+                            value: value,
+                            child: new Text(value.toString().split('.').last)
+                        ),
+                    )
+                ),
+                        {{/ if }}
+                    {{/each}}
+                {{/ if }}
+            {{/ each }}
+        };
+    {{/ if }}
+
         {{fqVariable page.name}}PageStore.get{{ fqClass page.dataElement.name }}({{#unless page.dataElement.isAccess}} owner{{ className page.dataElement.owner.name }}Store {{/unless}}).catchError((error) => ErrorHandler.errorDialog(context, error));
     }
+{{/ with }}
 //END tablepagefragment.dart.hbs-----{{page.name}}-----------------------------------------------------------------------------------------

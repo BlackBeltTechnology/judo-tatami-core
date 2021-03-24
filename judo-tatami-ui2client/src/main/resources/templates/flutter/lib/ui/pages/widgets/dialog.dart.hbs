@@ -1,8 +1,8 @@
 {{ log 'Select dialog generation for' (variable application.name) '-' (fqClass page.name)'page' (fqClass container.layoutType.name) (variable relation.name) level='debug' ~}}
 //START dialog.dart.hbs-----{{relation.name}}----------------------------------------------------------------------------------------------
-await judoSelect{{ className relation.target.name }}DialogFor{{fqClass page.name}}Page(
+await judoSelect{{ fqClass relation.name }}{{ className relation.target.name }}DialogFor{{fqClass page.name}}Page(
     context: context,
-    ownerStore: target{{ className relation.owner.name }}Store,
+    ownerStore: {{~# if page.isPageTypeTable ~}}{{~# unless page.dataElement.isAccess ~}}owner{{ else }}target{{/ unless }}{{ else }}target{{/ if }}{{ className relation.owner.name }}Store,
     pageStore: {{ fqVariable page.name }}PageStore,
 );
 //END dialog.dart.hbs-----{{relation.name}}----------------------------------------------------------------------------------------------

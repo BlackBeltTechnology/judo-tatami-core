@@ -69,6 +69,11 @@ void {{ fqVariable relation.name }}SetSortRange({{ fqClass relation.owner.name }
 Future<List<{{fqClass relation.target.name}}Store>> getRangeFor{{ fqClass relation.name }}({{ fqClass relation.owner.name }}Store owner{{ className relation.owner.name }}Store, {List<FilterStore> filterStoreList, int queryLimit}) async {
     try {
         errorMessage = null;
+
+        if (queryLimit != null) {
+            {{ fqVariable relation.name }}QueryLimit = queryLimit;
+        }
+
         {{ fqVariable relation.name }}StoreFuture = ObservableFuture(_{{ fqVariable application.actor.name }}Repository.{{ fqVariable relation.owner.name }}RangeOf{{ fqClass relation.name }}{{# if (isCreateTypePage page) }}ToCreate{{ else }}ToUpdate{{/ if }}(
             owner{{ className relation.owner.name }}Store,
             sortColumn: {{ fqVariable relation.name }}SortColumnName,

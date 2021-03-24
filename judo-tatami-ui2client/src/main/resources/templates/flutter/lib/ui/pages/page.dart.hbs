@@ -95,17 +95,20 @@ class {{ fqClass page.name }}Page extends StatefulWidget {
                             {{~/ if ~}}
 
                             {{~# if page.isPageTypeTable ~}}
-                            {{~# unless page.dataElement.isAccess ~}}
+                                {{~# unless page.dataElement.isAccess ~}}
                             , owner{{ className page.dataElement.owner.name }}Store
-                            {{~/ unless ~}}
+                                {{~/ unless ~}}
                             , {{fqVariable page.name}}PageStore
+                                {{~# if page.dataElement.isFilterable ~}}
+                            , filterStoreWidgetMap
+                                {{~/ if ~}}
                             {{~/ if ~}}
 
                             {{~# if page.isPageTypeView ~}}
                             , target{{ className page.dataElement.target.name }}Store
-                            {{~# unless page.dataElement.isAccess ~}}
+                                {{~# unless page.dataElement.isAccess ~}}
                             , owner{{ className page.dataElement.owner.name }}Store
-                            {{~/ unless ~}}
+                                {{~/ unless ~}}
                             , {{fqVariable page.name}}PageStore
                             {{~/ if ~}}
 
@@ -115,9 +118,9 @@ class {{ fqClass page.name }}Page extends StatefulWidget {
 
                             {{~# if page.isPageTypeCreate ~}}
                             , target{{ className page.dataElement.target.name }}Store
-                            {{~# unless page.dataElement.isAccess ~}}
+                                {{~# unless page.dataElement.isAccess ~}}
                             , owner{{ className page.dataElement.owner.name }}Store
-                            {{~/ unless ~}}
+                                {{~/ unless ~}}
                             , {{fqVariable page.name}}PageStore
                             {{~/ if ~}}
 
@@ -149,6 +152,9 @@ class {{ fqClass page.name }}Page extends StatefulWidget {
                         , owner{{ className page.dataElement.owner.name }}Store
                         {{~/ unless ~}}
                         , {{fqVariable page.name}}PageStore
+                            {{~# if page.dataElement.isFilterable ~}}
+                        , filterStoreWidgetMap
+                            {{~/ if ~}}
                         {{~/ if ~}}
 
                         {{~# if page.isPageTypeView ~}}

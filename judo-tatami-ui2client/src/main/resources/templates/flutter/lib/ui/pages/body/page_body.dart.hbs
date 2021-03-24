@@ -23,10 +23,13 @@ Widget get{{ fqClass page.name }}Page{{fqClass container.layoutType.name}}Body(B
         {{~/ if ~}}
 
         {{~# if page.isPageTypeTable ~}}
-        {{~# unless page.dataElement.isAccess ~}}
+            {{~# unless page.dataElement.isAccess ~}}
         , {{ fqClass page.dataElement.owner.name }}Store owner{{ className page.dataElement.owner.name }}Store
-        {{~/ unless ~}}
+            {{~/ unless ~}}
         , {{fqClass page.name}}PageStore {{fqVariable page.name}}PageStore
+            {{~# if page.dataElement.isFilterable ~}}
+        , Map<FilterStore, Widget> filterStoreWidgetMap
+            {{~/ if ~}}
         {{~/ if ~}}
 
         {{~# if page.isPageTypeView ~}}
@@ -64,6 +67,9 @@ Widget get{{ fqClass page.name }}Page{{fqClass container.layoutType.name}}Body(B
         {{~/ if ~}}
     ) {
     final navigation = locator<NavigationState>();
+    {{# if page.isPageTypeTable }}
+    var addFilterButtonKey = GlobalKey();
+    {{/if}}
 
     return CustomScrollView(
         slivers: [
@@ -72,18 +78,20 @@ Widget get{{ fqClass page.name }}Page{{fqClass container.layoutType.name}}Body(B
                 child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                        JudoColumn(
-                            col: {{ multiplyCol col }},
-                            row: {{ row }},
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                            {{# each this.children as |child| }}
-                                {{# if child }}
-                                {{> (getWidgetTemplate child) }}
-                                {{/ if }}
-                            {{/ each }}
-                            ],
-                        )
+                        {{# if page.isPageTypeTable }}Observer(
+                            builder: (_) => {{/ if }}JudoColumn(
+                                col: {{ multiplyCol col }},
+                                row: {{ row }}{{# if page.isPageTypeTable }} + {{ fqVariable page.name }}PageStore.getPlusRowSize + 1{{/ if }}, // +1 is for the text under table
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                {{# each this.children as |child| }}
+                                    {{# if child }}
+                                    {{> (getWidgetTemplate child) }}
+                                    {{/ if }}
+                                {{/ each }}
+                                ],
+                            ),{{# if page.isPageTypeTable }}
+                        ),{{/ if }}
                     ]
                 ),
             )

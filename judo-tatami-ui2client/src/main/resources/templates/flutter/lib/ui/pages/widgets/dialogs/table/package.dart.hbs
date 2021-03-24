@@ -16,6 +16,13 @@ import 'package:judo_flutter_components/judo_flutter_components.dart';
 
 import 'package:{{ modelPackage application.actor.name }}/{{ path application.actor.name }}/utilities/package.dart';
 
+// Tables
 {{# each tables as |table| }}
 part '{{ fqPath table.pageDefinition.name }}__{{ fqPath table.name }}__dialog_table.dart';
 {{/ each }}
+
+// Links
+{{# each links as |link| }}
+part '{{ fqPath link.pageDefinition.name }}__{{ fqPath link.name }}__dialog_table.dart';
+{{/ each }}
+

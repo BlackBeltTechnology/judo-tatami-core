@@ -9,6 +9,33 @@ abstract class _{{ fqClass page.name }}PageStore with Store {
     @observable
     String errorMessage;
 
+    {{# if relation.isFilterable }}
+    final Map<String, FilterStore> stringFilterStoreMap = {
+        {{# each relation.target.attributes as |attribute|}}
+            {{# if attribute.isFilterable }}
+                {{# each attribute.dataType.operator.members as |filterOperator|}}
+        '{{ variable attribute.name }}{{ className filterOperator.name }}Filter' : FilterStore(label: '{{ className attribute.name }} {{ className filterOperator.name }}', filterOperation: '{{ variable filterOperator.name }}', attributeName: '{{ className attribute.name }}'),
+                {{/each}}
+            {{/ if }}
+        {{/ each }}
+    };
+
+    @computed
+    int get getPlusRowSize => stringFilterStoreMap.values.where((element) => element.filterEnabled).toList().length;
+    {{/if}}
+
+    {{# each page.containers.[0].tables as |table| }}
+    @observable
+    int {{ fqVariable table.pageDefinition.relationType.name }}QueryLimit = ({{ table.row }}).round();
+    {{/ each }}
+
+    {{# each page.containers.[0].tables as |table| }}
+    @action
+    void set{{ fqClass table.pageDefinition.relationType.name }}QueryLimit(double queryLimit) {
+        {{ fqVariable table.pageDefinition.relationType.name }}QueryLimit = queryLimit.round();
+    }
+    {{/ each }}
+
     {{# if relation.isCollection }}
     {{# if page.dataElement.isAccess}}
     @observable
@@ -27,8 +54,6 @@ abstract class _{{ fqClass page.name }}PageStore with Store {
     @observable
     Comparator {{ fqVariable relation.name }}SortCompare;
 
-    @observable
-    int {{ fqVariable relation.name }}QueryLimit = 5;
 
         @action
     void {{ fqVariable relation.name }}SetSort({{# unless page.dataElement.isAccess}}{{ fqClass relation.owner.name }}Store owner{{ className relation.owner.name }}Store, {{/unless}}BuildContext context, String sortColumnName, int sortColumnIndex, bool asc, Comparator sortCompare) {
@@ -108,14 +133,23 @@ abstract class _{{ fqClass page.name }}PageStore with Store {
     {{/if}}
     {{# if relation.isRelationBehaviourTypeListable }}
     @action
-    {{# if relation.isCollection }}Future<List<{{ fqClass relation.target.name }}Store>>{{else}}Future<{{ fqClass relation.target.name }}Store>{{/if}} get{{ fqClass relation.name }}({{# unless page.dataElement.isAccess}}{{ fqClass relation.owner.name }}Store owner{{ className relation.owner.name }}Store{{/unless}}) async {
+    {{# if relation.isCollection }}Future<List<{{ fqClass relation.target.name }}Store>>{{else}}Future<{{ fqClass relation.target.name }}Store>{{/if}} get{{ fqClass relation.name }}({{# unless page.dataElement.isAccess}}{{ fqClass relation.owner.name }}Store owner{{ className relation.owner.name }}Store, {{/unless}}{ int queryLimit }) async {
         try {
             errorMessage = null;
+            {{# if relation.isCollection }}
+            if (queryLimit != null) {
+                {{ fqVariable relation.name }}QueryLimit = queryLimit;
+            }
+            {{/ if }}
             {{# if page.dataElement.isAccess}}
                 {{# if relation.isCollection }}
             {{ fqVariable relation.name }}StoreFuture = ObservableFuture(_{{ fqVariable application.actor.name }}Repository.{{ fqVariable relation.owner.name }}{{ fqClass relation.name }}List(
                 sortColumn: {{ fqVariable relation.name }}SortColumnName,
-                sortAscending: {{ fqVariable relation.name }}SortAsc
+                sortAscending: {{ fqVariable relation.name }}SortAsc,
+                    {{# if relation.isFilterable }}
+                filterStoreList: stringFilterStoreMap.values.where((element) => element.filterEnabled).toList(),
+                queryLimit: {{ fqVariable relation.name }}QueryLimit,
+                    {{/ if }}
             ));
             {{ fqVariable relation.name }}StoreList.clear();
             {{ fqVariable relation.name }}StoreList.addAll(await {{ fqVariable relation.name }}StoreFuture);
@@ -137,7 +171,11 @@ abstract class _{{ fqClass page.name }}PageStore with Store {
             {{ fqVariable relation.name }}StoreFuture = ObservableFuture(_{{ fqVariable application.actor.name }}Repository.{{ fqVariable relation.owner.name }}{{ fqClass relation.name }}List(
                 owner{{ className relation.owner.name }}Store,
                 sortColumn: {{ fqVariable relation.name }}SortColumnName,
-                sortAscending: {{ fqVariable relation.name }}SortAsc
+                sortAscending: {{ fqVariable relation.name }}SortAsc,
+                    {{# if relation.isFilterable }}
+                filterStoreList: stringFilterStoreMap.values.where((element) => element.filterEnabled).toList(),
+                queryLimit: {{ fqVariable relation.name }}QueryLimit,
+                    {{/ if }}
             ));
             owner{{ className relation.owner.name }}Store.{{ variable relation.name }}.clear();
             owner{{ className relation.owner.name }}Store.{{ variable relation.name }}.addAll(await {{ fqVariable relation.name }}StoreFuture);
@@ -177,13 +215,10 @@ abstract class _{{ fqClass page.name }}PageStore with Store {
     @observable
     Comparator {{ fqVariable relation.name }}SortCompare;
 
-    @observable
-    int {{ fqVariable relation.name }}QueryLimit = 5;
         {{/ unless }}
 
     @action
     void {{ fqVariable relation.name }}SetSortRange({{ fqClass relation.owner.name }}Store owner{{ className relation.owner.name }}Store, BuildContext context, String sortColumnName, int sortColumnIndex, bool asc, Comparator sortCompare, {List<FilterStore> filterStoreList}) {
-
         if ({{ fqVariable relation.name }}SortColumnIndex != sortColumnIndex) {
             {{ fqVariable relation.name }}SortAsc = true;
         } else {
@@ -199,9 +234,14 @@ abstract class _{{ fqClass page.name }}PageStore with Store {
     }
 
     @action
-    Future<List<{{fqClass relation.target.name}}Store>> getRangeFor{{ fqClass relation.name }}({{ fqClass relation.owner.name }}Store owner{{ className relation.owner.name }}Store, {List<FilterStore> filterStoreList}) async {
+    Future<List<{{fqClass relation.target.name}}Store>> getRangeFor{{ fqClass relation.name }}({{ fqClass relation.owner.name }}Store owner{{ className relation.owner.name }}Store, {List<FilterStore> filterStoreList, int queryLimit}) async {
         try {
             errorMessage = null;
+
+            if (queryLimit != null) {
+                {{ fqVariable relation.name }}QueryLimit = queryLimit;
+            }
+
             {{ fqVariable relation.name }}StoreFuture = ObservableFuture(_{{ fqVariable application.actor.name }}Repository.{{ fqVariable relation.owner.name }}RangeOf{{ fqClass relation.name }}ToUpdate(
                 owner{{ className relation.owner.name }}Store,
                 sortColumn: {{ fqVariable relation.name }}SortColumnName,

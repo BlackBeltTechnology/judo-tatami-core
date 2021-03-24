@@ -112,6 +112,7 @@ public class FlutterHelper {
         context.registerFunction("fqVariable", FlutterHelper.class.getDeclaredMethod("fqVariable", new Class[]{String.class}));
         context.registerFunction("fqClassWithoutModel", FlutterHelper.class.getDeclaredMethod("fqClassWithoutModel", new Class[]{String.class}));
         context.registerFunction("path", FlutterHelper.class.getDeclaredMethod("path", new Class[]{String.class}));
+        context.registerFunction("openApiDataType", FlutterHelper.class.getDeclaredMethod("openApiDataType", new Class[]{String.class}));
         context.registerFunction("className", FlutterHelper.class.getDeclaredMethod("className", new Class[]{String.class}));
         context.registerFunction("baseUrl", FlutterHelper.class.getDeclaredMethod("baseUrl", new Class[]{String.class}));
         context.registerFunction("modelName", FlutterHelper.class.getDeclaredMethod("modelName", new Class[]{String.class}));
@@ -273,6 +274,17 @@ public class FlutterHelper {
             return fq;
         }
 
+    }
+
+    public static String openApiDataType(String fqDataTypeName){
+        if (fqDataTypeName == null) {
+            return null;
+        }
+        String[] splitted = fqDataTypeName.split("\\.");
+        return stream(splitted)
+                .skip(splitted.length - 1)
+                .findFirst()
+                .get();
     }
 
     public static String className(String fqName) {

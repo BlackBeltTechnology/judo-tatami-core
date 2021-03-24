@@ -9,7 +9,7 @@
 
 part of {{ variable application.name }}.ui.pages.dialogs;
 
-Future<FilterStore> _judoShowMenu({@required BuildContext context, @required List<PopupMenuEntry<FilterStore>> items, @required GlobalKey buttonKey}) async {
+Future<FilterStore> judoShowMenu({@required BuildContext context, @required List<PopupMenuEntry<FilterStore>> items, @required GlobalKey buttonKey}) async {
   final RenderBox button = buttonKey.currentContext.findRenderObject() as RenderBox;
   final RenderBox overlay = Navigator.of(context).overlay.context.findRenderObject() as RenderBox;
   final RelativeRect position = RelativeRect.fromLTRB(
@@ -26,7 +26,7 @@ Future<FilterStore> _judoShowMenu({@required BuildContext context, @required Lis
   );
 }
 
-List<PopupMenuEntry<FilterStore>> _getPopupMenuAttributeItems(List<FilterStore> filterStoreList){
+List<PopupMenuEntry<FilterStore>> getPopupMenuAttributeItems(List<FilterStore> filterStoreList){
   var copiedList = List.from(filterStoreList);
   var attributeList = copiedList.map((e) => e.attributeName).toSet();
   copiedList.retainWhere((e) => attributeList.remove(e.attributeName));
@@ -38,7 +38,7 @@ List<PopupMenuEntry<FilterStore>> _getPopupMenuAttributeItems(List<FilterStore> 
   }).toList();
 }
 
-List<PopupMenuEntry<FilterStore>> _getPopupMenuOperationItemsByAttribute(List<FilterStore> filterStoreList, FilterStore selectedAttribute){
+List<PopupMenuEntry<FilterStore>> getPopupMenuOperationItemsByAttribute(List<FilterStore> filterStoreList, FilterStore selectedAttribute){
   var operationListByAttribute = filterStoreList.where((element) => element.attributeName == selectedAttribute.attributeName);
   return operationListByAttribute.map<PopupMenuEntry<FilterStore>>( (filterStore) {
     return PopupMenuItem<FilterStore>(
@@ -49,7 +49,7 @@ List<PopupMenuEntry<FilterStore>> _getPopupMenuOperationItemsByAttribute(List<Fi
   }).toList();
 }
 
-List<Widget> _getInputFilterWidgets(Map<FilterStore, Widget> filterStoreWidgetMap){
+List<Widget> getInputFilterWidgets(Map<FilterStore, Widget> filterStoreWidgetMap){
   return filterStoreWidgetMap.keys.map<Widget>( (filterStore) {
     return Observer(
       builder: (_) => filterStore.filterEnabled ?  Row(
@@ -66,4 +66,37 @@ List<Widget> _getInputFilterWidgets(Map<FilterStore, Widget> filterStoreWidgetMa
       ) : Container(),
     );
   }).toList();
+}
+
+List<Widget> getInputFilterWidgetsForTablePage(Map<FilterStore, Widget> filterStoreWidgetMap, double layoutMaxCols){
+    int colSize;
+    if(layoutMaxCols >= 12) {
+        colSize = 2;
+    } else if(layoutMaxCols >= 8) {
+        colSize = 1;
+    } else if(layoutMaxCols >= 4) {
+        colSize = 0;
+    } else {
+        colSize = 0;
+    }
+    return filterStoreWidgetMap.keys.map<Widget>( (filterStore) {
+        return Observer(
+            builder: (_) => filterStore.filterEnabled ?  JudoRow(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                col: 1,
+                row: 1,
+                children: [
+                    filterStoreWidgetMap[filterStore],
+                    IconButton(
+                        icon: Icon(Icons.close),
+                        tooltip: 'Remove filter field',
+                        onPressed: () {
+                            filterStore.changeFilterEnabled();
+                        },
+                    ),
+                    JudoSpacer(col: colSize, row: 1),
+                ],
+            ) : Container(),
+        );
+    }).toList();
 }

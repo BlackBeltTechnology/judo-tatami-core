@@ -305,7 +305,26 @@
     '__'+
     #fqPath(#self.name) +
     '__dialog.dart'
-  templateName: flutter/lib/ui/pages/widgets/dialogs/select_dialog.dart.hbs
+  templateName: flutter/lib/ui/pages/widgets/dialogs/select_dialog_for_table.dart.hbs
+  templateContext:
+    - name: table
+      expression: "#self"
+    - name: page
+      expression: "#self.pageDefinition"
+    - name: ap
+      expression: "#application.actor"
+
+- overwriteExpression: true
+  factoryExpression: "#application.links.?[pageContainer.layoutType.original]"
+  pathExpression: >
+    'lib/' +
+    #path(#application.actor.name) +
+    '/ui/pages/dialogs/' +
+    #fqPath(#self.pageDefinition.name) +
+    '__'+
+    #fqPath(#self.name) +
+    '__dialog.dart'
+  templateName: flutter/lib/ui/pages/widgets/dialogs/select_dialog_for_link.dart.hbs
   templateContext:
     - name: table
       expression: "#self"
@@ -334,6 +353,21 @@
     #fqPath(#self.name) +
     '__dialog_table.dart'
   templateName: flutter/lib/ui/pages/widgets/dialogs/table/dialog_tabledatainfo.dart.hbs
+  templateContext:
+    - name: table
+      expression: "#self"
+
+- overwriteExpression: true
+  factoryExpression: "#application.links.?[pageContainer.layoutType.original]"
+  pathExpression: >
+    'lib/' +
+    #path(#application.actor.name) +
+    '/ui/pages/dialogs/tables/' +
+    #fqPath(#self.pageDefinition.name) +
+    '__'+
+    #fqPath(#self.name) +
+    '__dialog_table.dart'
+  templateName: flutter/lib/ui/pages/widgets/dialogs/table/dialog_linktabledatainfo.dart.hbs
   templateContext:
     - name: table
       expression: "#self"
@@ -648,8 +682,8 @@
 
 - overwriteExpression: true
   factoryExpression: "{#application}"
-  pathExpression: "'lib/' + #path(#application.actor.name) + '/utilities/string_to_enum.dart'"
-  templateName: flutter/lib/utilities/string_to_enum.dart
+  pathExpression: "'lib/' + #path(#application.actor.name) + '/utilities/string_extension.dart'"
+  templateName: flutter/lib/utilities/string_extension.dart
   copy: true
 
 - overwriteExpression: true

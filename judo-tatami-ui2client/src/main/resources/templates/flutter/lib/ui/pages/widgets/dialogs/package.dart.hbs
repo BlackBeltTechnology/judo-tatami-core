@@ -23,7 +23,13 @@ import 'package:{{ modelPackage application.actor.name }}/{{ path application.ac
 import 'package:{{ modelPackage application.actor.name }}/{{ path application.actor.name }}/ui/pages/package.dart';
 import 'package:{{ modelPackage application.actor.name }}/{{ path application.actor.name }}/utilities/package.dart';
 
+// Tables
 {{# each tables as |table| }}
 part '{{ fqPath table.pageDefinition.name }}__{{ fqPath table.name }}__dialog.dart';
+{{/ each }}
+
+// Links
+{{# each links as |link| }}
+part '{{ fqPath link.pageDefinition.name }}__{{ fqPath link.name }}__dialog.dart';
 {{/ each }}
 part 'dialog_helper.dart';
