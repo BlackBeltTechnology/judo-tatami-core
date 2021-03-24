@@ -12,3 +12,28 @@ operation LIQUIBASE!SqlFile addSqlFileToChangeSet(changeSet: LIQUIBASE!ChangeSet
             delete self;
         }
 }
+
+operation addSqlFilesToChangeSet(changeLog : LIQUIBASE!databaseChangeLog, folder : Native("java.io.File"), postfix : String) {
+        var filesAdded = changeLog.changeSet
+            .collect(c | c.sqlFile)
+            .flatten()
+            .collect(s | s.path.split("/").last());
+        var filesToAdd = folder.listFiles()
+            .collect(f | f.getName())
+            .select(f | f.endsWith("_" + postfix + ".sql") and
+                not filesAdded.exists(n | n.equals(f)) and
+                not rdbmsUtils.isSqlScriptEmpty(sqlScriptPath + "/" + f))
+            .collect(f | rdbmsUtils.getSqlScriptAbsolutePath(sqlScriptPath + "/" + f));
+
+        if (filesToAdd.notEmpty()) {
+            var changeSet : LIQUIBASE!ChangeSet = changeLog
+                .getOrCreateChangeSet(postfix + "-scripts-" + context, postfix + "-scripts", dialect, context);
+
+            for (f in filesToAdd) {
+                var sqlFile = new LIQUIBASE!SqlFile();
+                sqlFile.path = f;
+                sqlFile.dbms = dialect;
+                changeSet.sqlFile.add(sqlFile);
+            }
+        }
+}

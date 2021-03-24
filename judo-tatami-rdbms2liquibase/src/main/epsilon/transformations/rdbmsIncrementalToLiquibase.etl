@@ -1,4 +1,4 @@
-import "liquibase/utils/changeset.eol";
+import "liquibase/utils/changeSet.eol";
 import "liquibase/utils/sqlFile.eol";
 import "rdbms/utils/field.eol";
 import "rdbms/utils/model.eol";
@@ -35,4 +35,10 @@ pre {
     var dataUpdateAfterIncrementalModel : DATA_UPDATE_AFTER_INCREMENTAL!databaseChangeLog = new DATA_UPDATE_AFTER_INCREMENTAL!databaseChangeLog();
     var afterIncrementalModel : AFTER_INCREMENTAL!databaseChangeLog = new AFTER_INCREMENTAL!databaseChangeLog();
     var dbDropBackupModel : DBDROPBACKUP!databaseChangeLog = new DBDROPBACKUP!databaseChangeLog(preConditions = new DBCHECKUP!PreConditions());
+}
+
+post {
+    var folder = new Native("java.io.File")(sqlScriptPath);
+    addSqlFilesToChangeSet(dataUpdateBeforeIncrementalModel, folder, "before");
+    addSqlFilesToChangeSet(dataUpdateAfterIncrementalModel, folder, "after");
 }
