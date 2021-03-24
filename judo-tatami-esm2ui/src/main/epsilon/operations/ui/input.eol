@@ -42,3 +42,10 @@ operation UI!ui::DateTimeInput setIcon() {
         self.leadingIcon.name = 'access_time';
     } 
 }
+
+operation UI!ui::EnumerationCombo setIcon() {
+    if (self.leadingIcon.isUndefined()) {
+        self.leadingIcon = new UI!ui::Icon();
+        self.leadingIcon.name = 'arrow_drop_down';
+    }
+}
