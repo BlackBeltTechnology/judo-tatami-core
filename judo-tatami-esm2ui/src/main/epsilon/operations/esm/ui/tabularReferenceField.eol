@@ -24,25 +24,19 @@ operation ESM!esm::ui::TabularReferenceField createTableFromTabularReferenceFiel
         if (relation.upper == 1) {
             table = new UI!ui::Link();
             for (column in self.columns.select(c | (c.dataFeature.getMember().memberType == ESM!esm::structure::MemberType#TRANSIENT implies parameterPage))) {
-                var part : UI!ui::Formatted = column.dataFeature.getMember().getDataType().formatted();
-                part.name = column.name;
-                part.label = column.getUiLabel();
-                part.attributeType = column.dataFeature.getMember().mapAttributeType(application, relation.target.mapClassType(application));
+                var part = column.createFormattedFromDataColumn(application);
                 table.parts.add(part);
                 if (part.attributeType.isFilterable) {
-                    table.filters.add(part.createFilter(application));
+                    table.filters.add(part.createFilter());
                 }
             }
         } else {
             table = new UI!ui::Table();
             for (column in self.columns.select(c | (c.dataFeature.getMember().memberType == ESM!esm::structure::MemberType#TRANSIENT implies parameterPage))) {
-                var col : UI!ui::Formatted = column.dataFeature.getMember().getDataType().formatted();
-                col.name = column.name;
-                col.label = column.getUiLabel();
-                col.attributeType = column.dataFeature.getMember().mapAttributeType(application, relation.target.mapClassType(application));
+                var col = column.createFormattedFromDataColumn(application);
                 table.columns.add(col);
                 if (col.attributeType.isFilterable) {
-                    table.filters.add(col.createFilter(application));
+                    table.filters.add(col.createFilter());
                 }
             }
         }

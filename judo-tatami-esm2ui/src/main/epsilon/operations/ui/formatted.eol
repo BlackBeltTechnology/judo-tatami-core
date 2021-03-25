@@ -1,4 +1,4 @@
-operation UI!ui::Formatted createFilter(application : UI!ui::Application) : UI!ui::Filter {
+operation UI!ui::Formatted createFilter() : UI!ui::Filter {
     var filter = new UI!ui::Filter();
 
     filter.name = self.name.anchor("Filter");
