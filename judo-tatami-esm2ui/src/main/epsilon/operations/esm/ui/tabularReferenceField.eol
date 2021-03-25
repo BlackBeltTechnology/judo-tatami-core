@@ -24,7 +24,8 @@ operation ESM!esm::ui::TabularReferenceField createTableFromTabularReferenceFiel
         if (relation.upper == 1) {
             table = new UI!ui::Link();
             for (column in self.columns.select(c | (c.dataFeature.getMember().memberType == ESM!esm::structure::MemberType#TRANSIENT implies parameterPage))) {
-                var part = column.createFormattedFromDataColumn(application);
+                var attributeType = column.dataFeature.getMember().mapAttributeType(application, relation.target.mapClassType(application));
+                var part = column.createFormattedFromDataColumn(application, attributeType);
                 table.parts.add(part);
                 if (part.attributeType.isFilterable) {
                     table.filters.add(part.createFilter());
@@ -33,7 +34,8 @@ operation ESM!esm::ui::TabularReferenceField createTableFromTabularReferenceFiel
         } else {
             table = new UI!ui::Table();
             for (column in self.columns.select(c | (c.dataFeature.getMember().memberType == ESM!esm::structure::MemberType#TRANSIENT implies parameterPage))) {
-                var col = column.createFormattedFromDataColumn(application);
+                var attributeType = column.dataFeature.getMember().mapAttributeType(application, relation.target.mapClassType(application));
+                var col = column.createFormattedFromDataColumn(application, attributeType);
                 table.columns.add(col);
                 if (col.attributeType.isFilterable) {
                     table.filters.add(col.createFilter());
