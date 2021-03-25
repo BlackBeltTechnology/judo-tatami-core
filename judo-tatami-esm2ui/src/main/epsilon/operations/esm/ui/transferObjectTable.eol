@@ -22,7 +22,11 @@ operation ESM!esm::ui::TransferObjectTable createLinkFromTransferObjectTable(app
     var t : UI!ui::Link = new UI!ui::Link();
     self.setPropertiesOfLinkAndTable(t, dataElement);
     for (column in self.columns.select(c | (c.dataFeature.getMember().memberType == ESM!esm::structure::MemberType#TRANSIENT implies parameterPage))) {
-        t.parts.add(column.map(application));
+        var part = column.createFormattedFromDataColumn(application);
+        t.parts.add(col);
+        if (part.attributeType.isFilterable) {
+            t.filters.add(part.createFilter());
+        }
     }
     t.row = 1d;
     return t;
