@@ -103,17 +103,19 @@ class {{ fqClass class.name }}Repository {
       if (filterStoreList != null && filterStoreList.isNotEmpty) {
           filterStoreList.forEach((element) {
                 {{# each relation.target.attributes as |attribute| }}
+                    {{# if attribute.isFilterable}}
             if (element.attributeName.uncapitalize() == "{{ variable attribute.name }}") {
                 var filter = {{ modelName relation.target.name }}ExtensionFilterBy{{ openApiDataType attribute.dataType.name }}();
-                    {{# if (isEnumType attribute.dataType) }}
+                        {{# if (isEnumType attribute.dataType) }}
                 filter.value = (element.filterValue.toString().split('.').last).toEnum<{{ modelName relation.target.name }}ExtensionFilterBy{{ openApiDataType attribute.dataType.name }}ValueEnum>({{ modelName relation.target.name }}ExtensionFilterBy{{ openApiDataType attribute.dataType.name }}ValueEnum.values);
                 filter.operator_ = element.filterOperation.toEnum<{{ modelName relation.target.name }}ExtensionFilterBy{{ openApiDataType attribute.dataType.name }}OperatorEnum>({{ modelName relation.target.name }}ExtensionFilterBy{{ openApiDataType attribute.dataType.name }}OperatorEnum.values);
-                    {{ else }}
+                        {{ else }}
                 filter.value = element.filterValue as {{ dartType attribute.dataType }};
                 filter.operator_ = element.filterOperation.toEnum<{{ modelName relation.target.name }}ExtensionFilterBy{{ openApiDataType attribute.dataType.name }}OperatorEnum>({{ modelName relation.target.name }}ExtensionFilterBy{{ openApiDataType attribute.dataType.name }}OperatorEnum.values);
-                    {{/if}}
+                        {{/if}}
                 queryCustomizer.{{ variable attribute.name }}.add(filter);
             }
+                    {{/ if }}
                 {{/ each }}
           });
       }
@@ -167,17 +169,19 @@ class {{ fqClass class.name }}Repository {
       if (filterStoreList != null && filterStoreList.isNotEmpty) {
           filterStoreList.forEach((element) {
                 {{# each relation.target.attributes as |attribute| }}
+                    {{# if attribute.isFilterable }}
             if (element.attributeName.uncapitalize() == "{{ variable attribute.name }}") {
                 var filter = {{ modelName relation.target.name }}ExtensionFilterBy{{ openApiDataType attribute.dataType.name }}();
-                    {{# if (isEnumType attribute.dataType) }}
+                        {{# if (isEnumType attribute.dataType) }}
                 filter.value = (element.filterValue.toString().split('.').last).toEnum<{{ modelName relation.target.name }}ExtensionFilterBy{{ openApiDataType attribute.dataType.name }}ValueEnum>({{ modelName relation.target.name }}ExtensionFilterBy{{ openApiDataType attribute.dataType.name }}ValueEnum.values);
                 filter.operator_ = element.filterOperation.toEnum<{{ modelName relation.target.name }}ExtensionFilterBy{{ openApiDataType attribute.dataType.name }}OperatorEnum>({{ modelName relation.target.name }}ExtensionFilterBy{{ openApiDataType attribute.dataType.name }}OperatorEnum.values);
-                    {{ else }}
+                        {{ else }}
                 filter.value = element.filterValue as {{ dartType attribute.dataType }};
                 filter.operator_ = element.filterOperation.toEnum<{{ modelName relation.target.name }}ExtensionFilterBy{{ openApiDataType attribute.dataType.name }}OperatorEnum>({{ modelName relation.target.name }}ExtensionFilterBy{{ openApiDataType attribute.dataType.name }}OperatorEnum.values);
-                    {{/if}}
+                        {{/if}}
                 queryCustomizer.{{ variable attribute.name }}.add(filter);
             }
+                    {{/ if }}
                 {{/ each }}
           });
       }
