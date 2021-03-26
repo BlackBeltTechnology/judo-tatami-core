@@ -112,6 +112,7 @@ public class FlutterHelper {
         context.registerFunction("fqVariable", FlutterHelper.class.getDeclaredMethod("fqVariable", new Class[]{String.class}));
         context.registerFunction("fqClassWithoutModel", FlutterHelper.class.getDeclaredMethod("fqClassWithoutModel", new Class[]{String.class}));
         context.registerFunction("path", FlutterHelper.class.getDeclaredMethod("path", new Class[]{String.class}));
+        context.registerFunction("openApiDataType", FlutterHelper.class.getDeclaredMethod("openApiDataType", new Class[]{String.class}));
         context.registerFunction("className", FlutterHelper.class.getDeclaredMethod("className", new Class[]{String.class}));
         context.registerFunction("baseUrl", FlutterHelper.class.getDeclaredMethod("baseUrl", new Class[]{String.class}));
         context.registerFunction("modelName", FlutterHelper.class.getDeclaredMethod("modelName", new Class[]{String.class}));
@@ -126,6 +127,7 @@ public class FlutterHelper {
         context.registerFunction("crossAxisAlignment", FlutterHelper.class.getDeclaredMethod("crossAxisAlignment", new Class[]{Flex.class}));
         context.registerFunction("mainAxisSize", FlutterHelper.class.getDeclaredMethod("mainAxisSize", new Class[]{Flex.class}));
         context.registerFunction("dartType", FlutterHelper.class.getDeclaredMethod("dartType", new Class[]{DataType.class}));
+        context.registerFunction("filterDataType", FlutterHelper.class.getDeclaredMethod("filterDataType", new Class[]{DataType.class}));
         context.registerFunction("isTransientAttribute", FlutterHelper.class.getDeclaredMethod("isTransientAttribute", new Class[]{AttributeType.class}));
         context.registerFunction("multiplyCol", FlutterHelper.class.getDeclaredMethod("multiplyCol", new Class[]{Double.class}));
         context.registerFunction("validatableFlagNeed", FlutterHelper.class.getDeclaredMethod("validatableFlagNeed", new Class[]{RelationType.class}));
@@ -133,10 +135,14 @@ public class FlutterHelper {
         context.registerFunction("isTimestampType", FlutterHelper.class.getDeclaredMethod("isTimestampType", new Class[]{DataType.class}));
         context.registerFunction("isBooleanDataType", FlutterHelper.class.getDeclaredMethod("isBooleanDataType", new Class[]{DataType.class}));
         context.registerFunction("isDateType", FlutterHelper.class.getDeclaredMethod("isDateType", new Class[]{DataType.class}));
+        context.registerFunction("isStringType", FlutterHelper.class.getDeclaredMethod("isStringType", new Class[]{DataType.class}));
+        context.registerFunction("isBooleanType", FlutterHelper.class.getDeclaredMethod("isBooleanType", new Class[]{DataType.class}));
+        context.registerFunction("isNumericType", FlutterHelper.class.getDeclaredMethod("isNumericType", new Class[]{DataType.class}));
         context.registerFunction("isInputWidgetMapNeed", FlutterHelper.class.getDeclaredMethod("isInputWidgetMapNeed", new Class[]{PageDefinition.class}));
         context.registerFunction("isValidateHere", FlutterHelper.class.getDeclaredMethod("isValidateHere", new Class[]{PageDefinition.class}));
         context.registerFunction("isSingleRelationDashboardPage", FlutterHelper.class.getDeclaredMethod("isSingleRelationDashboardPage", new Class[]{PageDefinition.class}));
         context.registerFunction("isCollectionRelationDashboardPage", FlutterHelper.class.getDeclaredMethod("isCollectionRelationDashboardPage", new Class[]{PageDefinition.class}));
+        context.registerFunction("isAccessTablePage", FlutterHelper.class.getDeclaredMethod("isAccessTablePage", new Class[]{PageDefinition.class}));
         context.registerFunction("isRefreshViewTypePage", FlutterHelper.class.getDeclaredMethod("isRefreshViewTypePage", new Class[]{PageDefinition.class}));
         context.registerFunction("isRefreshTableTypePage", FlutterHelper.class.getDeclaredMethod("isRefreshViewTypePage", new Class[]{PageDefinition.class}));
         context.registerFunction("isViewTypePage", FlutterHelper.class.getDeclaredMethod("isRefreshTableTypePage", new Class[]{PageDefinition.class}));
@@ -146,7 +152,10 @@ public class FlutterHelper {
         context.registerFunction("safe", FlutterHelper.class.getDeclaredMethod("safe", new Class[]{String.class, String.class}));
         context.registerFunction("dart", FlutterHelper.class.getDeclaredMethod("dart", new Class[]{String.class}));
         context.registerFunction("isObserverButton", FlutterHelper.class.getDeclaredMethod("isObserverButton", new Class[]{VisualElement.class, DataElement.class, Action.class}));
-
+        context.registerFunction("isFilterOperationLike", FlutterHelper.class.getDeclaredMethod("isFilterOperationLike", new Class[]{EnumerationMember.class}));
+        context.registerFunction("likeOperationHelperList", FlutterHelper.class.getDeclaredMethod("likeOperationHelperList", new Class[]{EnumerationMember.class}));
+        context.registerFunction("isFilterOperationTypeLikeContain", FlutterHelper.class.getDeclaredMethod("isFilterOperationTypeLikeContain", new Class[]{String.class}));
+        context.registerFunction("labelName", FlutterHelper.class.getDeclaredMethod("labelName", new Class[]{String.class}));
     }
 
     public static void registerHandlebars(Handlebars handlebars) {
@@ -270,6 +279,17 @@ public class FlutterHelper {
 
     }
 
+    public static String openApiDataType(String fqDataTypeName){
+        if (fqDataTypeName == null) {
+            return null;
+        }
+        String[] splitted = fqDataTypeName.split("\\.");
+        return stream(splitted)
+                .skip(splitted.length - 1)
+                .findFirst()
+                .get();
+    }
+
     public static String className(String fqName) {
         if (fqName == null) {
             return null;
@@ -338,6 +358,29 @@ public class FlutterHelper {
         }
     }
 
+    public static String filterDataType(DataType dataType) {
+        if (dataType instanceof NumericType) {
+            NumericType numericType = (NumericType) dataType;
+            if (numericType.getScale() > 0) {
+                return "Double";
+            } else {
+                return "Integer";
+            }
+        } else if (dataType instanceof BooleanType) {
+            return "Boolean";
+        } else if (dataType instanceof DateType) {
+            return "Date";
+        } else if (dataType instanceof TimestampType) {
+            return "Timestamp";
+        } else if (dataType instanceof StringType) {
+            return "String";
+        } else if (dataType instanceof EnumerationType) {
+            return "Enumeration";
+        } else {
+            return "String";
+        }
+    }
+
     public static boolean validatableFlagNeed (RelationType relationType) {
         return relationType.getIsRelationKindComposition() || relationType.getIsRelationKindAggregation() || relationType.getTarget().getRelations()
                 .stream()
@@ -356,6 +399,18 @@ public class FlutterHelper {
 
     public static boolean isDateType (DataType type) {
         return type instanceof DateType;
+    }
+
+    public static boolean isBooleanType (DataType type) {
+        return type instanceof BooleanType;
+    }
+
+    public static boolean isStringType (DataType type) {
+        return type instanceof StringType;
+    }
+
+    public static boolean isNumericType (DataType type)  {
+        return type instanceof NumericType;
     }
 
     public static boolean isInputWidgetMapNeed (PageDefinition page) {
@@ -394,6 +449,11 @@ public class FlutterHelper {
     public static boolean isCollectionRelationDashboardPage(PageDefinition page){
         if (page.getRelationType() == null) return false;
         return page.getIsPageTypeDashboard() && page.getRelationType().isIsCollection();
+    }
+
+    public static boolean isAccessTablePage(PageDefinition page){
+        if (page.getRelationType() == null) return false;
+        return page.getIsPageTypeDashboard() || (page.getIsPageTypeTable() && page.getRelationType().isIsAccess());
     }
 
     public static boolean isViewTypePage(PageDefinition page) {
@@ -464,4 +524,29 @@ public class FlutterHelper {
         }
 
     }
+
+    public static String labelName(String fqName) {
+        if (fqName == null) {
+            return null;
+        }
+        return fqName.replace("::", " ");
+    }
+
+    public static boolean isFilterOperationLike(EnumerationMember operator) {
+        return variable(operator.getName()).equals("like");
+    }
+
+    public static boolean isFilterOperationTypeLikeContain(String operator) {
+        return operator.equals("Contain");
+    }
+
+    public static List<String> likeOperationHelperList(EnumerationMember operator) {
+        if (isFilterOperationLike(operator)) {
+            return new ArrayList<String>(Arrays.asList("Contain","Begin::with"));
+        } else {
+            return new ArrayList<String>(Arrays.asList("like"));
+        }
+    }
+
+
 }

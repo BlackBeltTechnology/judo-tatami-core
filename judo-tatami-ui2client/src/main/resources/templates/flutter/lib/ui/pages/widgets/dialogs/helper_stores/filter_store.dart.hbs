@@ -1,0 +1,50 @@
+{{log 'Filter store generation for' (variable application.name) level='debug'}}
+//////////////////////////////////////////////////////////////////////////////
+// G E N E R A T E D    C L A S S
+// ------------------------------
+// Factory expression: {{{ cleanup template.factoryExpression }}}
+// Path expression: {{{ cleanup template.pathExpression }}}
+// Overwrite: {{{ cleanup template.overwriteExpression }}}
+// Template name: {{ template.templateName }}
+// Application: {{ application.name }}
+
+part of {{ variable application.name }}.ui.pages.dialogs.helperStores;
+
+class FilterStore extends _FilterStore with _$FilterStore {
+  String attributeLabel;
+  String filterOperationLabel;
+  String filterOperation;
+  String attributeName;
+
+  FilterStore({this.attributeLabel, this.filterOperationLabel, this.filterOperation, this.attributeName}) : super(attributeLabel, filterOperationLabel, filterOperation, attributeName);
+}
+
+abstract class _FilterStore with Store {
+  _FilterStore(this.attributeLabel, this.filterOperationLabel, this.filterOperation, this.attributeName);
+
+  String attributeLabel;
+
+  String filterOperationLabel;
+
+  String filterOperation;
+
+  String attributeName;
+
+  @observable
+  dynamic filterValue;
+
+  @observable
+  bool filterEnabled = false;
+
+  String get getWidgetLabel => attributeLabel + ' ' + filterOperationLabel;
+
+  @action
+  void setFilterValue(dynamic newValue) {
+    filterValue = newValue;
+  }
+
+  @action
+  void changeFilterEnabled(){
+    filterEnabled ? filterEnabled = false : filterEnabled = true;
+  }
+}

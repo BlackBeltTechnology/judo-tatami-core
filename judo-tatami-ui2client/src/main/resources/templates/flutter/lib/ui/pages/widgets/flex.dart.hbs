@@ -3,20 +3,22 @@
 {{# if isDirectionHorizontal }}
 JudoRow(
 {{ else }}
-JudoColumn(
+{{# if page.isPageTypeTable }}Observer(
+    builder: (_) => {{/ if }}JudoColumn(
 {{/ if }}
-    col: {{ multiplyCol col }},
-    row: {{ row }},
-    card: {{ frame }},
-    mainAxisAlignment: MainAxisAlignment.{{ mainAxisAlignment this }},
-    crossAxisAlignment: CrossAxisAlignment.{{ crossAxisAlignment this }},
-    mainAxisSize: MainAxisSize.{{ mainAxisSize this }},
-    children: [
-    {{# each children as |child| }}
-        {{# if child }}
-        {{> (getWidgetTemplate child) }}
-        {{/ if }}
-    {{/ each }}
-    ],
-),
+        col: {{ multiplyCol col }},
+        row: {{ row }}{{# unless isDirectionHorizontal }}{{# if page.isPageTypeTable }} + {{ fqVariable page.name }}PageStore.getPlusRowSize + 1{{/ if }}{{/ unless }},
+        card: {{ frame }},
+        mainAxisAlignment: MainAxisAlignment.{{ mainAxisAlignment this }},
+        crossAxisAlignment: CrossAxisAlignment.{{ crossAxisAlignment this }},
+        mainAxisSize: MainAxisSize.{{ mainAxisSize this }},
+        children: [
+        {{# each children as |child| }}
+            {{# if child }}
+            {{> (getWidgetTemplate child) }}
+            {{/ if }}
+        {{/ each }}
+        ],
+    ),{{# unless isDirectionHorizontal }}{{# if page.isPageTypeTable }}
+),{{/ if }}{{/ unless }}
 //END flex.dart.hbs-----{{page.name}}------------------------------------------------------------------------------------------------------

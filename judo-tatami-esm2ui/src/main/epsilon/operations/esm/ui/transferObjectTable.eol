@@ -3,7 +3,12 @@ operation ESM!esm::ui::TransferObjectTable createTableFromTransferObjectTable(ap
     var t : UI!ui::Table = new UI!ui::Table();
     self.setPropertiesOfLinkAndTable(t, dataElement);
     for (column in self.columns.select(c | (c.dataFeature.getMember().memberType == ESM!esm::structure::MemberType#TRANSIENT implies parameterPage))) {
-        t.columns.add(column.map(application));
+        var attributeType = column.dataFeature.getMember().mapAttributeType(application, column.getTransferObjectType().mapClassType(application));
+        var col = column.createFormattedFromDataColumn(application, attributeType);
+        t.columns.add(col);
+        if (col.attributeType.isFilterable) {
+            t.filters.add(col.createFilter());
+        }
     }
     if (dataElement.isCollection) {
         t.row = 31d;
@@ -18,7 +23,12 @@ operation ESM!esm::ui::TransferObjectTable createLinkFromTransferObjectTable(app
     var t : UI!ui::Link = new UI!ui::Link();
     self.setPropertiesOfLinkAndTable(t, dataElement);
     for (column in self.columns.select(c | (c.dataFeature.getMember().memberType == ESM!esm::structure::MemberType#TRANSIENT implies parameterPage))) {
-        t.parts.add(column.map(application));
+        var attributeType = column.dataFeature.getMember().mapAttributeType(application, column.getTransferObjectType().mapClassType(application));
+        var part = column.createFormattedFromDataColumn(application, attributeType);
+        t.parts.add(part);
+        if (part.attributeType.isFilterable) {
+            t.filters.add(part.createFilter());
+        }
     }
     t.row = 1d;
     return t;

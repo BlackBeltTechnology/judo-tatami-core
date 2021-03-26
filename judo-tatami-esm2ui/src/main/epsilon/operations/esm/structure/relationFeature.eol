@@ -99,7 +99,17 @@ operation ESM!esm::structure::RelationFeature createRelationTypeForClass(applica
                         a.dataType.isKindOf(ESM!DateType) or
                         a.dataType.isKindOf(ESM!TimestampType)));
 
-    relation.isFilterable = self.target.mapping.isDefined();
+    relation.isFilterable = self.target.mapping.isDefined() and
+                self.target.getAllAttributes().exists(a |
+                    a.memberType <> ESM!MemberType#TRANSIENT and
+                    (a.memberType == ESM!MemberType#MAPPED implies (a.binding.isDefined() and a.binding.memberType <> ESM!MemberType#TRANSIENT)) and
+                    (a.memberType == ESM!MemberType#DERIVED implies a.eContainer.mapping.isDefined()) and
+                    (a.dataType.isKindOf(ESM!StringType) or
+                        a.dataType.isKindOf(ESM!NumericType) or
+                        a.dataType.isKindOf(ESM!BooleanType) or
+                        a.dataType.isKindOf(ESM!DateType) or
+                        a.dataType.isKindOf(ESM!EnumerationType) or
+                        a.dataType.isKindOf(ESM!TimestampType)));
 
     clazz.relations.add(relation);
     

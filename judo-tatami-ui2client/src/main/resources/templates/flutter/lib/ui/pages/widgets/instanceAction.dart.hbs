@@ -2,6 +2,9 @@
 //START instanceAction.dart.hbs-----{{page.dataElement.target.name}}-----------------------------------------------------------------------
 {{# if (isObserverButton this page.dataElement action) }}Observer(
     builder: (_) => {{/ if }}JudoButton(
+        {{# if action.isFilterAction }}
+        key: addFilterButtonKey,
+        {{/ if }}
         row: {{ row }},
         col: {{ multiplyCol col }},
         disabled: {{disabled}}{{# if enabledBy }} || !((target{{ className page.relationType.target.name }}Store?.{{ variable enabledBy.name }}) ?? false){{/ if }},
@@ -108,6 +111,25 @@
             {{/if}}
         {{/ if }}
     {{/ if }}
+    {{# if action.isFilterAction }}
+        onPressed: () async {
+            FilterStore selectedAttribute = await judoShowMenu(
+                buttonKey: addFilterButtonKey,
+                items: getPopupMenuAttributeItems({{ fqVariable page.name }}PageStore.stringFilterStoreMap.values.toList()),
+                context: context,
+            );
+            if (selectedAttribute != null) {
+                FilterStore result = await judoShowMenu(
+                    buttonKey: addFilterButtonKey,
+                    items: getPopupMenuOperationItemsByAttribute({{ fqVariable page.name }}PageStore.stringFilterStoreMap.values.toList(), selectedAttribute),
+                    context: context,
+                );
+                if (result != null) {
+                    result.changeFilterEnabled();
+                }
+            }
+        },
+    {{/if}}
     {{# if action.isCreateAction }}
         onPressed:{{# unless page.dataElement.isCollection }} owner{{ className page.dataElement.owner.name }}Store.{{ variable page.dataElement.name }} == null{{/ unless }}{{# unless page.dataElement.isAccess}}{{# unless page.dataElement.isRelationKindStatic}}{{# unless page.dataElement.isCollection }} &&{{/ unless }} owner{{ className page.dataElement.owner.name }}Store.internal__updatable ?{{ else }}{{# unless page.dataElement.isCollection }} ?{{/ unless}}{{/ unless}}{{ else }}{{# unless page.dataElement.isCollection }} ?{{/ unless}}{{/ unless}} () async {
             var created = await navigation.open(Routes.{{ fqVariable action.target.name }}Page{{# unless page.dataElement.isAccess}},

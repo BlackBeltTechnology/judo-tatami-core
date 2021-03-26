@@ -16,7 +16,18 @@ operation ESM!esm::structure::DataFeature createAttributeTypeForClass(applicatio
         attribute.memberType = UI!ui::data::MemberType#STORED;
     }
     attribute.isReadOnly = self.isReadOnly();
-    
+                    
+    attribute.isFilterable = self.eContainer.mapping.isDefined() and
+                    self.memberType <> ESM!MemberType#TRANSIENT and
+                    (self.memberType == ESM!MemberType#MAPPED implies self.binding?.memberType <> ESM!MemberType#TRANSIENT) and
+                    (self.memberType == ESM!MemberType#DERIVED implies self.eContainer.mapping.isDefined()) and
+                    (self.dataType.isKindOf(ESM!StringType) or
+                        self.dataType.isKindOf(ESM!NumericType) or
+                        self.dataType.isKindOf(ESM!BooleanType) or
+                        self.dataType.isKindOf(ESM!DateType) or
+                        self.dataType.isKindOf(ESM!EnumerationType) or
+                        self.dataType.isKindOf(ESM!TimestampType));
+
     attribute.dataType = self.dataType.mapDataType(application);
 
     clazz.attributes.add(attribute);

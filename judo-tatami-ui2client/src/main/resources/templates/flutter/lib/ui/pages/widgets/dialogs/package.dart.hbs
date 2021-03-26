@@ -1,0 +1,34 @@
+{{log 'Dialog package generation for' (variable application.name) level='debug'}}
+//////////////////////////////////////////////////////////////////////////////
+// G E N E R A T E D    C L A S S
+// ------------------------------
+// Factory expression: {{{ cleanup template.factoryExpression }}}
+// Path expression: {{{ cleanup template.pathExpression }}}
+// Overwrite: {{{ cleanup template.overwriteExpression }}}
+// Template name: {{ template.templateName }}
+// Application: {{ application.name }}
+
+library {{ variable application.name }}.ui.pages.dialogs;
+
+import 'package:flutter/material.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:judo_flutter_components/judo_flutter_components.dart';
+import 'package:mobx/mobx.dart';
+
+import 'package:{{ modelPackage application.name }}/{{ path application.name }}/error/error_handler.dart';
+import 'package:{{ modelPackage application.name }}/{{ path application.name }}/store/package.dart';
+import 'package:{{ modelPackage application.name }}/{{ path application.name }}/ui/pages/dialogs/tables/package.dart';
+import 'package:{{ modelPackage application.name }}/{{ path application.name }}/ui/pages/dialogs/helper_stores/package.dart';
+import 'package:{{ modelPackage application.name }}/{{ path application.name }}/ui/pages/package.dart';
+import 'package:{{ modelPackage application.name }}/{{ path application.name }}/utilities/package.dart';
+import 'package:{{ modelPackage application.name }}/{{ path application.name }}/ui/filter_helper.dart';
+
+// Tables
+{{# each tables as |table| }}
+part '{{ fqPath table.pageDefinition.name }}__{{ fqPath table.name }}__dialog.dart';
+{{/ each }}
+
+// Links
+{{# each links as |link| }}
+part '{{ fqPath link.pageDefinition.name }}__{{ fqPath link.name }}__dialog.dart';
+{{/ each }}
