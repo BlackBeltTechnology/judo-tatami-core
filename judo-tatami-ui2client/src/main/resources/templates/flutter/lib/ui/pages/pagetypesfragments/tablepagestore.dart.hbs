@@ -9,27 +9,26 @@ abstract class _{{ fqClass page.name }}PageStore with Store {
     @observable
     String errorMessage;
 
-    {{# if relation.isFilterable }}
+
+    {{# each page.containers.[0].tables as |table| }}
+        {{# if table.pageDefinition.relationType.isFilterable }}
     final Map<String, FilterStore> stringFilterStoreMap = {
-        {{# each relation.target.attributes as |attribute|}}
-            {{# if attribute.isFilterable }}
-                {{# each attribute.dataType.operator.members as |filterOperator|}}
-        '{{ variable attribute.name }}{{ className filterOperator.name }}Filter' : FilterStore(label: '{{ className attribute.name }} {{ className filterOperator.name }}', filterOperation: '{{ variable filterOperator.name }}', attributeName: '{{ className attribute.name }}'),
+            {{# each table.filters as |filter|}}
+                {{# each filter.attributeType.dataType.operator.members as |filterOperator|}}
+                    {{# each (likeOperationHelperList filterOperator) as |likeOperator| }}
+        '{{ variable filter.attributeType.name }}{{# if (isFilterOperationLike filterOperator)}}{{ fqClass likeOperator }}{{ else }}{{ className filterOperator.name }}{{/ if }}Filter' : FilterStore(attributeLabel: '{{ filter.label }}', filterOperationLabel: {{# if (isFilterOperationLike filterOperator)}}'{{ labelName likeOperator }}'{{ else }}filterOperationLabels['{{ variable filterOperator.name }}']{{/ if }}, filterOperation: '{{ variable filterOperator.name }}', attributeName: '{{ className filter.attributeType.name }}'),
+                    {{/each}}
                 {{/each}}
-            {{/ if }}
-        {{/ each }}
+            {{/ each }}
     };
 
     @computed
     int get getPlusRowSize => stringFilterStoreMap.values.where((element) => element.filterEnabled).toList().length;
-    {{/if}}
 
-    {{# each page.containers.[0].tables as |table| }}
+        {{/if}}
     @observable
     int {{ fqVariable table.pageDefinition.relationType.name }}QueryLimit = ({{ table.row }}).round();
-    {{/ each }}
 
-    {{# each page.containers.[0].tables as |table| }}
     @action
     void set{{ fqClass table.pageDefinition.relationType.name }}QueryLimit(double queryLimit) {
         {{ fqVariable table.pageDefinition.relationType.name }}QueryLimit = queryLimit.round();

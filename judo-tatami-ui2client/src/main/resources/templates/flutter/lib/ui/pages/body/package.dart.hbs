@@ -26,7 +26,8 @@ import 'package:{{ modelPackage application.name }}/{{ path application.name }}/
 import 'package:{{ modelPackage application.name }}/{{ path application.name }}/utilities/package.dart';
 import 'package:{{ modelPackage application.name }}/{{ path application.name }}/error/error_handler.dart';
 import 'package:{{ modelPackage application.name }}/{{ path application.name }}/ui/pages/dialogs/package.dart';
-import 'package:{{ modelPackage application.name }}/{{ path application.name }}/ui/pages/dialogs/helper_stores/filter_store.dart';
+import 'package:{{ modelPackage application.name }}/{{ path application.name }}/ui/pages/dialogs/helper_stores/package.dart';
+import 'package:{{ modelPackage application.name }}/{{ path application.name }}/ui/filter_helper.dart';
 
 {{# each layout.pageContainers as |container| }}
 part '{{ fqPath container.owner.name }}__{{fqPath layout.name}}__body.dart';

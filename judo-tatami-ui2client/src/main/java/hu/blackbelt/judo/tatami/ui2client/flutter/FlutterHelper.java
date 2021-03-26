@@ -152,7 +152,10 @@ public class FlutterHelper {
         context.registerFunction("safe", FlutterHelper.class.getDeclaredMethod("safe", new Class[]{String.class, String.class}));
         context.registerFunction("dart", FlutterHelper.class.getDeclaredMethod("dart", new Class[]{String.class}));
         context.registerFunction("isObserverButton", FlutterHelper.class.getDeclaredMethod("isObserverButton", new Class[]{VisualElement.class, DataElement.class, Action.class}));
-
+        context.registerFunction("isFilterOperationLike", FlutterHelper.class.getDeclaredMethod("isFilterOperationLike", new Class[]{EnumerationMember.class}));
+        context.registerFunction("likeOperationHelperList", FlutterHelper.class.getDeclaredMethod("likeOperationHelperList", new Class[]{EnumerationMember.class}));
+        context.registerFunction("isFilterOperationTypeLikeContain", FlutterHelper.class.getDeclaredMethod("isFilterOperationTypeLikeContain", new Class[]{String.class}));
+        context.registerFunction("labelName", FlutterHelper.class.getDeclaredMethod("labelName", new Class[]{String.class}));
     }
 
     public static void registerHandlebars(Handlebars handlebars) {
@@ -521,4 +524,29 @@ public class FlutterHelper {
         }
 
     }
+
+    public static String labelName(String fqName) {
+        if (fqName == null) {
+            return null;
+        }
+        return fqName.replace("::", " ");
+    }
+
+    public static boolean isFilterOperationLike(EnumerationMember operator) {
+        return variable(operator.getName()).equals("like");
+    }
+
+    public static boolean isFilterOperationTypeLikeContain(String operator) {
+        return operator.equals("Contain");
+    }
+
+    public static List<String> likeOperationHelperList(EnumerationMember operator) {
+        if (isFilterOperationLike(operator)) {
+            return new ArrayList<String>(Arrays.asList("Contain","Begin::with"));
+        } else {
+            return new ArrayList<String>(Arrays.asList("like"));
+        }
+    }
+
+
 }

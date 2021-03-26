@@ -7,7 +7,10 @@
 // Template name: {{ template.templateName }}
 // Application: {{ application.name }}
 
-part of {{ variable application.name }}.ui.pages.dialogs;
+import 'package:flutter/material.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:judo_flutter_components/judo_flutter_components.dart';
+import 'package:{{ modelPackage application.name }}/{{ path application.name }}/ui/pages/dialogs/helper_stores/package.dart';
 
 Future<FilterStore> judoShowMenu({@required BuildContext context, @required List<PopupMenuEntry<FilterStore>> items, @required GlobalKey buttonKey}) async {
   final RenderBox button = buttonKey.currentContext.findRenderObject() as RenderBox;
@@ -33,7 +36,7 @@ List<PopupMenuEntry<FilterStore>> getPopupMenuAttributeItems(List<FilterStore> f
   return copiedList.map<PopupMenuEntry<FilterStore>>( (filterStore) {
     return PopupMenuItem<FilterStore>(
       value: filterStore,
-      child: Text(filterStore.attributeName),
+      child: Text(filterStore.attributeLabel),
     );
   }).toList();
 }
@@ -44,7 +47,7 @@ List<PopupMenuEntry<FilterStore>> getPopupMenuOperationItemsByAttribute(List<Fil
     return PopupMenuItem<FilterStore>(
       value: filterStore,
       enabled: !filterStore.filterEnabled,
-      child: Text(filterStore.filterOperation),
+      child: Text(filterStore.filterOperationLabel),
     );
   }).toList();
 }

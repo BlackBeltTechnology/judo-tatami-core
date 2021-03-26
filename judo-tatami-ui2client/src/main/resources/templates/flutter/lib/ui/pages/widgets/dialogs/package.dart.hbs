@@ -15,13 +15,13 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:judo_flutter_components/judo_flutter_components.dart';
 import 'package:mobx/mobx.dart';
 
-import 'package:{{ modelPackage application.actor.name }}/{{ path application.actor.name }}/error/error_handler.dart';
-import 'package:{{ modelPackage application.actor.name }}/{{ path application.actor.name }}/store/package.dart';
-import 'package:{{ modelPackage application.actor.name }}/{{ path application.actor.name }}/ui/pages/dialogs/tables/package.dart';
-import 'package:{{ modelPackage application.actor.name }}/{{ path application.actor.name }}/ui/pages/dialogs/helper_stores/filter_store.dart';
-import 'package:{{ modelPackage application.actor.name }}/{{ path application.actor.name }}/ui/pages/dialogs/helper_stores/table_helper_store.dart';
-import 'package:{{ modelPackage application.actor.name }}/{{ path application.actor.name }}/ui/pages/package.dart';
-import 'package:{{ modelPackage application.actor.name }}/{{ path application.actor.name }}/utilities/package.dart';
+import 'package:{{ modelPackage application.name }}/{{ path application.name }}/error/error_handler.dart';
+import 'package:{{ modelPackage application.name }}/{{ path application.name }}/store/package.dart';
+import 'package:{{ modelPackage application.name }}/{{ path application.name }}/ui/pages/dialogs/tables/package.dart';
+import 'package:{{ modelPackage application.name }}/{{ path application.name }}/ui/pages/dialogs/helper_stores/package.dart';
+import 'package:{{ modelPackage application.name }}/{{ path application.name }}/ui/pages/package.dart';
+import 'package:{{ modelPackage application.name }}/{{ path application.name }}/utilities/package.dart';
+import 'package:{{ modelPackage application.name }}/{{ path application.name }}/ui/filter_helper.dart';
 
 // Tables
 {{# each tables as |table| }}
@@ -32,4 +32,3 @@ part '{{ fqPath table.pageDefinition.name }}__{{ fqPath table.name }}__dialog.da
 {{# each links as |link| }}
 part '{{ fqPath link.pageDefinition.name }}__{{ fqPath link.name }}__dialog.dart';
 {{/ each }}
-part 'dialog_helper.dart';

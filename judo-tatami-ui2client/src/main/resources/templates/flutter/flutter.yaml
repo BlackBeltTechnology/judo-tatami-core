@@ -305,7 +305,7 @@
     '__'+
     #fqPath(#self.name) +
     '__dialog.dart'
-  templateName: flutter/lib/ui/pages/widgets/dialogs/select_dialog_for_table.dart.hbs
+  templateName: flutter/lib/ui/pages/widgets/dialogs/select_dialog.dart.hbs
   templateContext:
     - name: table
       expression: "#self"
@@ -324,7 +324,7 @@
     '__'+
     #fqPath(#self.name) +
     '__dialog.dart'
-  templateName: flutter/lib/ui/pages/widgets/dialogs/select_dialog_for_link.dart.hbs
+  templateName: flutter/lib/ui/pages/widgets/dialogs/select_dialog.dart.hbs
   templateContext:
     - name: table
       expression: "#self"
@@ -383,20 +383,24 @@
 
 - overwriteExpression: true
   factoryExpression: "{#application}"
-  pathExpression: "'lib/' + #path(#application.actor.name) + '/ui/pages/dialogs/dialog_helper.dart'"
-  templateName: flutter/lib/ui/pages/widgets/dialogs/dialog_helper.dart.hbs
+  pathExpression: "'lib/' + #path(#application.actor.name) + '/ui/filter_helper.dart'"
+  templateName: flutter/lib/ui/filter_helper.dart.hbs
 
 - overwriteExpression: true
   factoryExpression: "{#application}"
   pathExpression: "'lib/' + #path(#application.actor.name) + '/ui/pages/dialogs/helper_stores/filter_store.dart'"
-  templateName: flutter/lib/ui/pages/widgets/dialogs/helper_stores/filter_store.dart
-  copy: true
+  templateName: flutter/lib/ui/pages/widgets/dialogs/helper_stores/filter_store.dart.hbs
+
 
 - overwriteExpression: true
   factoryExpression: "{#application}"
   pathExpression: "'lib/' + #path(#application.actor.name) + '/ui/pages/dialogs/helper_stores/table_helper_store.dart'"
-  templateName: flutter/lib/ui/pages/widgets/dialogs/helper_stores/table_helper_store.dart
-  copy: true
+  templateName: flutter/lib/ui/pages/widgets/dialogs/helper_stores/table_helper_store.dart.hbs
+
+- overwriteExpression: true
+  factoryExpression: "{#application}"
+  pathExpression: "'lib/' + #path(#application.actor.name) + '/ui/pages/dialogs/helper_stores/package.dart'"
+  templateName: flutter/lib/ui/pages/widgets/dialogs/helper_stores/package.dart.hbs
 
 # ========================================
 # pages

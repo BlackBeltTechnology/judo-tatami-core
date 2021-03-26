@@ -12,7 +12,7 @@
 
 part of {{ variable application.name }}.ui.pages.dialogs;
 
-{{# with table.parts as |tableColumns| }}
+{{# with table.filters as |tableFilters| }}
 {{# with table.dataElement as |relation|}}
 Future<{{# if relation.isCollection }}List<{{ fqClass relation.target.name }}Store>{{ else }}{{ fqClass relation.target.name }}Store{{/ if }}> judoSelect{{ fqClass relation.name }}{{ className relation.target.name }}DialogFor{{fqClass page.name}}Page({@required BuildContext context, {{fqClass page.name}}PageStore pageStore,{{# unless (isAccessTablePage page) }} {{ fqClass relation.owner.name }}Store ownerStore{{/ unless }} }) async {
 {{# if relation.isRelationBehaviourTypeRangeable }}
@@ -22,64 +22,64 @@ Future<{{# if relation.isCollection }}List<{{ fqClass relation.target.name }}Sto
     pageStore.getRangeFor{{ fqClass relation.name }}(ownerStore, queryLimit: tableQueryLimit).catchError((error) => ErrorHandler.errorDialog(context, error));
 
     Map<String, FilterStore> stringFilterStoreMap = {
-    {{# each tableColumns as |column|}}
-        {{# if column.attributeType.isFilterable}}
-            {{# each column.attributeType.dataType.operator.members as |filterOperator|}}
-        '{{ variable column.attributeType.name }}{{ className filterOperator.name }}Filter' : FilterStore(label: '{{ className column.attributeType.name }} {{ className filterOperator.name }}', filterOperation: '{{ variable filterOperator.name }}', attributeName: '{{ className column.attributeType.name }}'),
+    {{# each tableFilters as |filter|}}
+        {{# each filter.attributeType.dataType.operator.members as |filterOperator|}}
+            {{# each (likeOperationHelperList filterOperator) as |likeOperator| }}
+                '{{ variable filter.attributeType.name }}{{# if (isFilterOperationLike filterOperator)}}{{ fqClass likeOperator }}{{ else }}{{ className filterOperator.name }}{{/ if }}Filter' : FilterStore(attributeLabel: '{{ filter.label }}', filterOperationLabel: {{# if (isFilterOperationLike filterOperator)}}'{{ labelName likeOperator }}'{{ else }}filterOperationLabels['{{ variable filterOperator.name }}']{{/ if }}, filterOperation: '{{ variable filterOperator.name }}', attributeName: '{{ className filter.attributeType.name }}'),
             {{/each}}
-        {{/ if }}
+        {{/each}}
     {{/ each }}
     };
 
     Map<FilterStore, Widget> filterStoreWidgetMap = {
-    {{# each tableColumns as |column|}}
-        {{# if column.attributeType.isFilterable}}
-            {{# each column.attributeType.dataType.operator.members as |filterOperator|}}
-        stringFilterStoreMap['{{ variable column.attributeType.name }}{{ className filterOperator.name }}Filter'] :
-                {{# if (isStringType column.attributeType.dataType) }}
+    {{# each tableFilters as |filter|}}
+            {{# each filter.attributeType.dataType.operator.members as |filterOperator|}}
+                {{# each (likeOperationHelperList filterOperator) as |likeOperator| }}
+                    stringFilterStoreMap['{{ variable filter.attributeType.name }}{{# if (isFilterOperationLike filterOperator)}}{{ fqClass likeOperator }}{{ else }}{{ className filterOperator.name }}{{/ if }}Filter'] :
+                    {{# if (isStringType filter.attributeType.dataType) }}
             JudoInputText(
                 col: 1,
-                label: stringFilterStoreMap['{{ variable column.attributeType.name }}{{ className filterOperator.name }}Filter'].label,
-                onChanged: (value) => stringFilterStoreMap['{{ variable column.attributeType.name }}{{ className filterOperator.name }}Filter'].setFilterValue(value),
+                label: stringFilterStoreMap['{{ variable filter.attributeType.name }}{{# if (isFilterOperationLike filterOperator)}}{{ fqClass likeOperator }}{{ else }}{{ className filterOperator.name }}{{/ if }}Filter'].getWidgetLabel,
+                onChanged: (value) => stringFilterStoreMap['{{ variable filter.attributeType.name }}{{# if (isFilterOperationLike filterOperator)}}{{ fqClass likeOperator }}{{ else }}{{ className filterOperator.name }}{{/ if }}Filter'].setFilterValue({{# if (isFilterOperationLike filterOperator)}}{{# if (isFilterOperationTypeLikeContain likeOperator) }}'%' + {{/ if }}value + '%'{{ else }}value{{/ if }}),
             ),
-                {{/ if }}
-                {{~# if (isNumericType column.attributeType.dataType) }}
+                    {{/ if }}
+                    {{~# if (isNumericType filter.attributeType.dataType) }}
             JudoNumericInput(
                 col: 1,
-                label: stringFilterStoreMap['{{ variable column.attributeType.name }}{{ className filterOperator.name }}Filter'].label,
-                onChanged: (value) => stringFilterStoreMap['{{ variable column.attributeType.name }}{{ className filterOperator.name }}Filter'].setFilterValue({{ dartType column.attributeType.dataType }}.parse(value)),
+                label: stringFilterStoreMap['{{ variable filter.attributeType.name }}{{ className filterOperator.name }}Filter'].getWidgetLabel,
+                onChanged: (value) => stringFilterStoreMap['{{ variable filter.attributeType.name }}{{ className filterOperator.name }}Filter'].setFilterValue({{ dartType filter.attributeType.dataType }}.parse(value)),
             ),
-                {{/ if }}
-                {{~# if (isDateType column.attributeType.dataType) }}
+                    {{/ if }}
+                    {{~# if (isDateType filter.attributeType.dataType) }}
             JudoDateInput(
                 col: 1,
-                label: stringFilterStoreMap['{{ variable column.attributeType.name }}{{ className filterOperator.name }}Filter'].label,
-                onChanged: (value) => stringFilterStoreMap['{{ variable column.attributeType.name }}{{ className filterOperator.name }}Filter'].setFilterValue(value),
+                label: stringFilterStoreMap['{{ variable filter.attributeType.name }}{{ className filterOperator.name }}Filter'].getWidgetLabel,
+                onChanged: (value) => stringFilterStoreMap['{{ variable filter.attributeType.name }}{{ className filterOperator.name }}Filter'].setFilterValue(value),
             ),
-                {{/ if }}
-                {{~# if (isTimestampType column.attributeType.dataType) }}
+                    {{/ if }}
+                    {{~# if (isTimestampType filter.attributeType.dataType) }}
             JudoDateTimeInput(
                 col: 1,
-                label: stringFilterStoreMap['{{ variable column.attributeType.name }}{{ className filterOperator.name }}Filter'].label,
-                onChanged: (value) => stringFilterStoreMap['{{ variable column.attributeType.name }}{{ className filterOperator.name }}Filter'].setFilterValue(value),
+                label: stringFilterStoreMap['{{ variable filter.attributeType.name }}{{ className filterOperator.name }}Filter'].getWidgetLabel,
+                onChanged: (value) => stringFilterStoreMap['{{ variable filter.attributeType.name }}{{ className filterOperator.name }}Filter'].setFilterValue(value),
             ),
-                {{/ if }}
-                {{~# if (isBooleanType column.attributeType.dataType) }}
+                    {{/ if }}
+                    {{~# if (isBooleanType filter.attributeType.dataType) }}
             Observer(
                 builder: (_) => JudoSwitch(
                     col: 1,
-                    label: stringFilterStoreMap['{{ variable column.attributeType.name }}{{ className filterOperator.name }}Filter'].label,
-                    initialValue: stringFilterStoreMap['{{ variable column.attributeType.name }}{{ className filterOperator.name }}Filter'].filterValue,
-                    onChanged: (value) => stringFilterStoreMap['{{ variable column.attributeType.name }}{{ className filterOperator.name }}Filter'].setFilterValue(value),
+                    label: stringFilterStoreMap['{{ variable filter.attributeType.name }}{{ className filterOperator.name }}Filter'].getWidgetLabel,
+                    initialValue: stringFilterStoreMap['{{ variable filter.attributeType.name }}{{ className filterOperator.name }}Filter'].filterValue,
+                    onChanged: (value) => stringFilterStoreMap['{{ variable filter.attributeType.name }}{{ className filterOperator.name }}Filter'].setFilterValue(value),
                 )
             ),
-                {{/ if }}
-                {{~# if (isEnumType column.attributeType.dataType) }}
+                    {{/ if }}
+                    {{~# if (isEnumType filter.attributeType.dataType) }}
             Observer(
-                builder: (_) => JudoComboBox<{{ className column.attributeType.dataType.name }}>(
+                builder: (_) => JudoComboBox<{{ className filter.attributeType.dataType.name }}>(
                     col: 1,
-                    label: stringFilterStoreMap['{{ variable column.attributeType.name }}{{ className filterOperator.name }}Filter'].label,
-                    onChanged: (value) => stringFilterStoreMap['{{ variable column.attributeType.name }}{{ className filterOperator.name }}Filter'].setFilterValue(value),
+                    label: stringFilterStoreMap['{{ variable filter.attributeType.name }}{{ className filterOperator.name }}Filter'].getWidgetLabel,
+                    onChanged: (value) => stringFilterStoreMap['{{ variable filter.attributeType.name }}{{ className filterOperator.name }}Filter'].setFilterValue(value),
                     items: {{ className attributeType.dataType.name }}.values,
                     dropdownMenuShow: (value) => new DropdownMenuItem<{{ className attributeType.dataType.name }}>(
                         value: value,
@@ -87,9 +87,9 @@ Future<{{# if relation.isCollection }}List<{{ fqClass relation.target.name }}Sto
                     ),
                 )
             ),
-                {{/ if }}
+                    {{/ if }}
+                {{/each}}
             {{/each}}
-        {{/ if }}
     {{/ each }}
     };
 
