@@ -71,7 +71,7 @@
         <judo-meta-openapi-version>1.0.0.20210326_235604_a271d89_develop</judo-meta-openapi-version>
         <judo-meta-ui-version>1.0.0.20210326_235650_ee4baea_develop</judo-meta-ui-version>
         <judo-meta-keycloak-version>1.0.0.20210326_235630_497d633_develop</judo-meta-keycloak-version>
-        <judo-dao-api-version>1.0.2.20210223_122846_195d971_develop</judo-dao-api-version>
+        <judo-dao-api-version>1.0.2.20210329_093943_f771502_develop</judo-dao-api-version>
         <judo-dispatcher-api-version>1.0.2.20210302_135850_a9b5c54_develop</judo-dispatcher-api-version>
         <judo-script-codegen-version>1.1.0.20210327_020745_5b39a3a_develop</judo-script-codegen-version>
         <judo-operation-utils-version>1.1.0.20210327_003202_25d3801_develop</judo-operation-utils-version>
