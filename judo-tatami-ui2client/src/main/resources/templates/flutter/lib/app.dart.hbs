@@ -25,6 +25,7 @@ import 'package:{{ modelPackage application.name }}/{{ path application.name }}/
 import 'package:{{ modelPackage application.name }}/{{ path application.name }}/utilities/package.dart';
 import 'package:{{ modelPackage application.name }}/{{ path application.name }}/injector/injector.dart';
 import 'package:{{ modelPackage application.name }}/{{ path application.name }}/oauth.dart';
+import 'package:{{ modelPackage application.name }}/{{ path application.name }}/l10n/app_localizations.dart';
 
 Future<bool> hasActorMenuAccess() async {
 {{# if application.principal }}
@@ -53,6 +54,8 @@ class {{ fqClass application.name }}Application extends StatelessWidget {
         final navigation = locator<NavigationState>();
         scheduleMicrotask(() => ErrorHandler.navigateToBuiltInPage()); // execute after main build methods are executed
         return MaterialApp(
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            supportedLocales:  AppLocalizations.supportedLocales,
             title: '{{ modelName application.name }}',
             theme: AppTheme.of(context),
             home: {{ fqClass application.name }}ApplicationPage()

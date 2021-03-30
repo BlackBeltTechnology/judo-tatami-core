@@ -12,10 +12,8 @@ import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.emf.ecore.xmi.XMIResource;
 import org.springframework.expression.spel.support.StandardEvaluationContext;
 
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.*;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import static java.util.Arrays.stream;
@@ -156,6 +154,7 @@ public class FlutterHelper {
         context.registerFunction("likeOperationHelperList", FlutterHelper.class.getDeclaredMethod("likeOperationHelperList", new Class[]{EnumerationMember.class}));
         context.registerFunction("isFilterOperationTypeLikeContain", FlutterHelper.class.getDeclaredMethod("isFilterOperationTypeLikeContain", new Class[]{String.class}));
         context.registerFunction("labelName", FlutterHelper.class.getDeclaredMethod("labelName", new Class[]{String.class}));
+        context.registerFunction("l10nLabelName", FlutterHelper.class.getDeclaredMethod("l10nLabelName", new Class[]{String.class}));
     }
 
     public static void registerHandlebars(Handlebars handlebars) {
@@ -530,6 +529,10 @@ public class FlutterHelper {
             return null;
         }
         return fqName.replace("::", " ");
+    }
+
+    public static String l10nLabelName(String label) {
+        return label.replace(" ", "_").toLowerCase();
     }
 
     public static boolean isFilterOperationLike(EnumerationMember operator) {

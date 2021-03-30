@@ -652,6 +652,17 @@
   templateName: flutter/lib/injector/injector.dart.hbs
 
 # ========================================
+# l10n
+# ========================================
+- overwriteExpression: true
+  factoryExpression: "{#application}"
+  pathExpression: >
+    'lib/' +
+    #path(#application.actor.name) +
+    '/l10n/app_localizations.dart'
+  templateName: flutter/lib/l10n/app_localizations.dart.hbs
+
+# ========================================
 # openapi generator
 # ========================================
 - overwriteExpression: true
