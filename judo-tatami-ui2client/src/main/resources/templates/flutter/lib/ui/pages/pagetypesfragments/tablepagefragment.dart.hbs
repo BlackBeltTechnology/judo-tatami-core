@@ -91,7 +91,7 @@ class _{{fqClass page.name}}PageState extends State<{{fqClass page.name}}Page> {
         {{/ if }}
     {{/ each }}
 
-        {{fqVariable page.name}}PageStore.get{{ fqClass page.dataElement.name }}({{#unless page.dataElement.isAccess}} owner{{ className page.dataElement.owner.name }}Store {{/unless}}).catchError((error) => ErrorHandler.errorDialog(context, error));
+        {{fqVariable page.name}}PageStore.get{{ fqClass page.dataElement.name }}({{#unless page.dataElement.isAccess}} owner{{ className page.dataElement.owner.name }}Store {{/unless}}).catchError((error) => ErrorHandler.showErrorSnack(context, error.message));
     }
 {{/ with }}
 //END tablepagefragment.dart.hbs-----{{page.name}}-----------------------------------------------------------------------------------------

@@ -67,7 +67,7 @@ abstract class _{{ fqClass page.name }}PageStore with Store {
         {{ fqVariable relation.name }}SortColumnName = sortColumnName;
         {{ fqVariable relation.name }}SortCompare = sortCompare;
         {{#if relation.isOrderable }}
-        get{{ fqClass relation.name }}({{# unless page.dataElement.isAccess}}owner{{ className relation.owner.name }}Store{{/unless}}).catchError((error) => ErrorHandler.errorDialog(context, error));
+        get{{ fqClass relation.name }}({{# unless page.dataElement.isAccess}}owner{{ className relation.owner.name }}Store{{/unless}}).catchError((error) => ErrorHandler.showErrorSnack(context, error.message));
         {{ else }}
             {{# unless page.dataElement.isAccess}}
         owner{{ className relation.owner.name }}Store.{{variable relation.name}}.sort(sortCompare);
@@ -228,7 +228,7 @@ abstract class _{{ fqClass page.name }}PageStore with Store {
         {{ fqVariable relation.name }}SortColumnName = sortColumnName;
         {{ fqVariable relation.name }}SortCompare = sortCompare;
 
-        getRangeFor{{ fqClass relation.name }}(owner{{ className relation.owner.name }}Store, filterStoreList: filterStoreList).catchError((error) => ErrorHandler.errorDialog(context, error));
+        getRangeFor{{ fqClass relation.name }}(owner{{ className relation.owner.name }}Store, filterStoreList: filterStoreList).catchError((error) => ErrorHandler.showErrorSnack(context, error.message));
 
     }
 

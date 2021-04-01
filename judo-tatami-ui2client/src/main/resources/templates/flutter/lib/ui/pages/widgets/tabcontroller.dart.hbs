@@ -18,7 +18,7 @@ JudoTab(
         {{#if tab.icon }}
             icon: Icon(Icons.{{ tab.icon.name }}),
         {{/if}}
-            text: "{{ tab.element.label }}",
+            text: AppLocalizations.of(context).lookUpValue(context, '{{ tab.element.label }}'),
         ),
     {{/ each }}
     ]

@@ -117,7 +117,7 @@ void {{ fqVariable relation.name }}SetSortRange({{ fqClass relation.owner.name }
     {{ fqVariable relation.name }}SortColumnName = sortColumnName;
     {{ fqVariable relation.name }}SortCompare = sortCompare;
 
-    getRangeFor{{ fqClass relation.name }}(owner{{ className relation.owner.name }}Store, filterStoreList: filterStoreList).catchError((error) => ErrorHandler.errorDialog(context, error));
+    getRangeFor{{ fqClass relation.name }}(owner{{ className relation.owner.name }}Store, filterStoreList: filterStoreList).catchError((error) => ErrorHandler.showErrorSnack(context, error.message));
 
 }
 

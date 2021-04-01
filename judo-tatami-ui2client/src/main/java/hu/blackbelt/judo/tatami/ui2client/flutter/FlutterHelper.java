@@ -532,7 +532,7 @@ public class FlutterHelper {
     }
 
     public static String l10nLabelName(String label) {
-        return label.replace(" ", "_").toLowerCase();
+        return label.replace(" ", "_").replace(".", "").toLowerCase();
     }
 
     public static boolean isFilterOperationLike(EnumerationMember operator) {

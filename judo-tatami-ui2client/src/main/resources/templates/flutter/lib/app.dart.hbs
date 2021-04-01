@@ -26,6 +26,7 @@ import 'package:{{ modelPackage application.name }}/{{ path application.name }}/
 import 'package:{{ modelPackage application.name }}/{{ path application.name }}/injector/injector.dart';
 import 'package:{{ modelPackage application.name }}/{{ path application.name }}/oauth.dart';
 import 'package:{{ modelPackage application.name }}/{{ path application.name }}/l10n/app_localizations.dart';
+import 'package:{{ modelPackage application.name }}/{{ path application.name }}/ui/scaffold.dart';
 
 Future<bool> hasActorMenuAccess() async {
 {{# if application.principal }}
@@ -89,10 +90,13 @@ class {{ fqClass application.name }}ApplicationPageState extends State<{{ fqClas
             children: <Widget>[
                 if (!navigation.isMenuCollapsed(context)) menu,
                 Expanded(
-                    child: ExtendedNavigator(
-                        key: navigation.navigatorKey,
-                        router: router.Router(),
-                        guards: [AuthGuard()],
+                    child: {{fqClass application.name}}Scaffold(
+                        key: navigation.scaffoldKey,
+                        body: ExtendedNavigator(
+                            key: navigation.navigatorKey,
+                            router: router.Router(),
+                            guards: [AuthGuard()],
+                        ),
                     ),
                 ),
             ],

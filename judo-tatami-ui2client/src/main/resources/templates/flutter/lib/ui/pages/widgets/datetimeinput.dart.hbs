@@ -9,7 +9,7 @@ Observer(
         disabled: {{ disabled }}{{# if enabledBy }} || !((target{{ className page.relationType.target.name }}Store?.{{ variable enabledBy.name }}) ?? false){{/ if }},
         use24HourFormat: true,
         initialDate: target{{ className page.dataElement.target.name }}Store.{{ variable attributeType.name }},
-        label: '{{ label }}',
+        label: AppLocalizations.of(context).lookUpValue(context, '{{ label }}'),
         icon: Icon(Icons.{{ this.leadingIcon.name }}),
         readOnly: true,
     ),
@@ -25,7 +25,7 @@ Observer(
         disabled: {{ disabled }}{{# if enabledBy }} || !((target{{ className page.relationType.target.name }}Store?.{{ variable enabledBy.name }}) ?? false){{/ if }},
         use24HourFormat: true,
         initialDate: target{{ className page.dataElement.target.name }}Store.{{ variable attributeType.name }},
-        label: '{{ label }}',
+        label: AppLocalizations.of(context).lookUpValue(context, '{{ label }}'),
         icon: Icon(Icons.{{ this.leadingIcon.name }}),
         onChanged: (value) => target{{ className page.dataElement.target.name }}Store.set{{ className attributeType.name }}(value),
         firstDate: DateTime(DateTime.now().year - 5), // TODO: revisit this line
@@ -44,7 +44,7 @@ Observer(
         disabled: {{ disabled }}{{# if enabledBy }} || !((target{{ className page.relationType.target.name }}Store?.{{ variable enabledBy.name }}) ?? false){{/ if }},
         use24HourFormat: true,
         initialDate: target{{ className page.dataElement.target.name }}Store.{{ variable attributeType.name }},
-        label: '{{ label }}',
+        label: AppLocalizations.of(context).lookUpValue(context, '{{ label }}'),
         icon: Icon(Icons.{{ this.leadingIcon.name }}),
         onChanged: (value) => target{{ className page.dataElement.target.name }}Store.set{{ className attributeType.name }}(value),
         firstDate: DateTime(DateTime.now().year - 5), // TODO: revisit this line

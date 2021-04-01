@@ -20,7 +20,7 @@ Future<{{# if relation.isCollection }}List<{{ fqClass relation.target.name }}Sto
 {{# unless relation.isMemberTypeTransient }}
     var addFilterButtonKey = GlobalKey();
     int tableQueryLimit = ({{ table.row }}-1).round();
-    pageStore.getRangeFor{{ fqClass relation.name }}(ownerStore, queryLimit: tableQueryLimit).catchError((error) => ErrorHandler.errorDialog(context, error));
+    pageStore.getRangeFor{{ fqClass relation.name }}(ownerStore, queryLimit: tableQueryLimit).catchError((error) => ErrorHandler.showErrorSnack(context, error.message));
 
     Map<String, FilterStore> stringFilterStoreMap = {
     {{# each tableFilters as |filter|}}
@@ -120,13 +120,13 @@ Future<{{# if relation.isCollection }}List<{{ fqClass relation.target.name }}Sto
                         onPressed: () async {
                             FilterStore selectedAttribute = await judoShowMenu(
                                 buttonKey: addFilterButtonKey,
-                                items: getPopupMenuAttributeItems(stringFilterStoreMap.values.toList()),
+                                items: getPopupMenuAttributeItems(context, stringFilterStoreMap.values.toList()),
                                 context: context,
                             );
                             if (selectedAttribute != null) {
                                 FilterStore result = await judoShowMenu(
                                     buttonKey: addFilterButtonKey,
-                                    items: getPopupMenuOperationItemsByAttribute(stringFilterStoreMap.values.toList(), selectedAttribute),
+                                    items: getPopupMenuOperationItemsByAttribute(context, stringFilterStoreMap.values.toList(), selectedAttribute),
                                     context: context,
                                 );
                                 if (result != null) {
@@ -145,7 +145,7 @@ Future<{{# if relation.isCollection }}List<{{ fqClass relation.target.name }}Sto
                                 ownerStore,
                                 queryLimit: tableQueryLimit,
                                 filterStoreList: stringFilterStoreMap.values.where((element) => element.filterEnabled).toList(),
-                            ).catchError((error) => ErrorHandler.errorDialog(context, error));
+                            ).catchError((error) => ErrorHandler.showErrorSnack(context, error.message));
                         },
                     ),
                   ],

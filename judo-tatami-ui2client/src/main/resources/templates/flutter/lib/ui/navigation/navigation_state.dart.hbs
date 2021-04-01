@@ -16,19 +16,33 @@ import 'package:injectable/injectable.dart';
 import 'package:judo_flutter_components/judo_flutter_components.dart';
 import 'package:{{ modelPackage application.name }}/{{ path application.name }}/ui/routes/router.gr.dart';
 import 'package:{{ modelPackage application.name }}/{{ path application.name }}/injector/injector.dart';
+import 'package:{{ modelPackage application.name }}/{{ path application.name }}/ui/pages/package.dart';
 import 'navigation_registry.dart';
 import 'navigation_service.dart';
 import 'page_navigation.dart';
+import 'package:mobx/mobx.dart';
+
+part 'navigation_state.g.dart';
 
 @lazySingleton
-class NavigationState {
+class NavigationState extends _NavigationState with _$NavigationState {}
+
+abstract class _NavigationState with Store {
     final navigatorKey = GlobalKey<ExtendedNavigatorState>();
+    final scaffoldKey = GlobalKey<ScaffoldState>(); // rethink this key place
+
     String currentRoute = Routes.{{ fqVariable application.dashboard.name }}Page;
     PageNavigation currentPageNavigation;
-    final List<BreadCrumbItem> breadcumbItems = [ BreadCrumbItem(content: Icon(Icons.home, color: Color(0xffdcdcdc), size: 16,))];
     final List<String> stack = [];
 
-    String currentTitle = "";
+    @observable
+    ObservableList<BreadCrumbItem> breadcumbItems = [ BreadCrumbItem(content: Icon(Icons.home, color: Color(0xffdcdcdc), size: 16,))].asObservable();
+
+    @observable
+    String currentTitle = {{ fqClass application.dashboard.name }}Page.title;
+
+    @action
+    void setCurrentTitle(String newTitle) => currentTitle = newTitle;
 
    bool isMenuCollapsed(BuildContext context) {
         {{#each application.layoutTypes as |layoutType|}}

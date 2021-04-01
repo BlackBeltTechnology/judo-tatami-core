@@ -106,6 +106,30 @@ class AppLocalizations {
             return AppLocalizations.of(context).{{ l10nLabelName 'BOUND_OPERATION_INSTANCE_NOT_FOUND'}}();
           case 'INTERNAL_SERVER_ERROR':
             return AppLocalizations.of(context).{{ l10nLabelName 'INTERNAL_SERVER_ERROR'}}('');
+          case 'Equal':
+            return AppLocalizations.of(context).{{ l10nLabelName 'Equal'}}();
+          case 'Equals':
+            return AppLocalizations.of(context).{{ l10nLabelName 'Equals'}}();
+          case 'Not equal':
+            return AppLocalizations.of(context).{{ l10nLabelName 'Not equal'}}();
+          case 'Not equals':
+            return AppLocalizations.of(context).{{ l10nLabelName 'Not equals'}}();
+          case 'Less than':
+            return AppLocalizations.of(context).{{ l10nLabelName 'Less than'}}();
+          case 'Greater than':
+            return AppLocalizations.of(context).{{ l10nLabelName 'Greater than'}}();
+          case 'Less or equal':
+            return AppLocalizations.of(context).{{ l10nLabelName 'Less or equal'}}();
+          case 'Greater or equal':
+            return AppLocalizations.of(context).{{ l10nLabelName 'Greater or equal'}}();
+          case 'Matches':
+            return AppLocalizations.of(context).{{ l10nLabelName 'Matches'}}();
+          case 'Like':
+            return AppLocalizations.of(context).{{ l10nLabelName 'Like'}}();
+          case 'Settings':
+            return AppLocalizations.of(context).{{ l10nLabelName 'Settings'}}();
+          case 'Something went wrong. Please contact with the system admins.':
+            return AppLocalizations.of(context).{{ l10nLabelName 'Something went wrong. Please contact with the system admins.'}}();
           default:
             return value;
         }
@@ -365,6 +389,102 @@ class AppLocalizations {
         name: '{{ l10nLabelName 'INTERNAL_SERVER_ERROR'}}',
         args: [exception],
         desc: 'Internat server error that could not fix by user or client, need to analyze by JUDO developers.',
+        locale: localeName,
+      );
+    }
+    String {{ l10nLabelName 'Equal'}}() {
+      return Intl.message(
+        'Equal',
+        name: '{{ l10nLabelName 'Equal'}}',
+        args: [],
+        locale: localeName,
+      );
+    }
+    String {{ l10nLabelName 'Equals'}}() {
+      return Intl.message(
+        'Equals',
+        name: '{{ l10nLabelName 'Equals'}}',
+        args: [],
+        locale: localeName,
+      );
+    }
+    String {{ l10nLabelName 'Not equal'}}() {
+      return Intl.message(
+        'Not equal',
+        name: '{{ l10nLabelName 'Not equal'}}',
+        args: [],
+        locale: localeName,
+      );
+    }
+    String {{ l10nLabelName 'Not equals'}}() {
+      return Intl.message(
+        'Not equals',
+        name: '{{ l10nLabelName 'Not equals'}}',
+        args: [],
+        locale: localeName,
+      );
+    }
+    String {{ l10nLabelName 'Less than'}}() {
+      return Intl.message(
+        'Less than',
+        name: '{{ l10nLabelName 'Less than'}}',
+        args: [],
+        locale: localeName,
+      );
+    }
+    String {{ l10nLabelName 'Greater than'}}() {
+      return Intl.message(
+        'Greater than',
+        name: '{{ l10nLabelName 'Greater than'}}',
+        args: [],
+        locale: localeName,
+      );
+    }
+    String {{ l10nLabelName 'Less or equal'}}() {
+      return Intl.message(
+        'Less or equal',
+        name: '{{ l10nLabelName 'Less or equal'}}',
+        args: [],
+        locale: localeName,
+      );
+    }
+    String {{ l10nLabelName 'Greater or equal'}}() {
+      return Intl.message(
+        'Greater or equal',
+        name: '{{ l10nLabelName 'Greater or equal'}}',
+        args: [],
+        locale: localeName,
+      );
+    }
+    String {{ l10nLabelName 'Matches'}}() {
+      return Intl.message(
+        'Matches',
+        name: '{{ l10nLabelName 'Matches'}}',
+        args: [],
+        locale: localeName,
+      );
+    }
+    String {{ l10nLabelName 'Like'}}() {
+      return Intl.message(
+        'Like',
+        name: '{{ l10nLabelName 'Like'}}',
+        args: [],
+        locale: localeName,
+      );
+    }
+    String {{ l10nLabelName 'Settings'}}() {
+      return Intl.message(
+        'Settings',
+        name: '{{ l10nLabelName 'Settings'}}',
+        args: [],
+        locale: localeName,
+      );
+    }
+    String {{ l10nLabelName 'Something went wrong. Please contact with the system admins.'}}() {
+      return Intl.message(
+        'Something went wrong. Please contact with the system admins.',
+        name: '{{ l10nLabelName 'Something went wrong. Please contact with the system admins.'}}',
+        args: [],
         locale: localeName,
       );
     }
