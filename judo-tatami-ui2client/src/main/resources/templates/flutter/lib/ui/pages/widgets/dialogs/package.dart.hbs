@@ -22,7 +22,9 @@ import 'package:{{ modelPackage application.name }}/{{ path application.name }}/
 import 'package:{{ modelPackage application.name }}/{{ path application.name }}/ui/pages/package.dart';
 import 'package:{{ modelPackage application.name }}/{{ path application.name }}/utilities/package.dart';
 import 'package:{{ modelPackage application.name }}/{{ path application.name }}/ui/filter_helper.dart';
-
+{{# if tables }}
+part 'package.g.dart';
+{{/if}}
 // Tables
 {{# each tables as |table| }}
 part '{{ fqPath table.pageDefinition.name }}__{{ fqPath table.name }}__dialog.dart';
