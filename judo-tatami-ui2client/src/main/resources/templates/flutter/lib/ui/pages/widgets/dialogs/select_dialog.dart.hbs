@@ -133,13 +133,13 @@ Future<{{# if relation.isCollection }}List<{{ fqClass relation.target.name }}Sto
                         onPressed: () async {
                             FilterStore selectedAttribute = await judoShowMenu(
                                 buttonKey: addFilterButtonKey,
-                                items: getPopupMenuAttributeItems(dialogHelperStore.stringFilterStoreMap.values.toList()),
+                                items: getPopupMenuAttributeItems(context, dialogHelperStore.stringFilterStoreMap.values.toList()),
                                 context: context,
                             );
                             if (selectedAttribute != null) {
                                 FilterStore result = await judoShowMenu(
                                     buttonKey: addFilterButtonKey,
-                                    items: getPopupMenuOperationItemsByAttribute(dialogHelperStore.stringFilterStoreMap.values.toList(), selectedAttribute),
+                                    items: getPopupMenuOperationItemsByAttribute(context, dialogHelperStore.stringFilterStoreMap.values.toList(), selectedAttribute),
                                     context: context,
                                 );
                                 if (result != null) {
