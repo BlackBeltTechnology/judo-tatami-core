@@ -24,6 +24,10 @@ class _{{fqClass page.name}}PageState extends State<{{fqClass page.name}}Page> {
     {{/ if }}
 
     _{{fqClass page.name}}PageState({{#unless page.dataElement.isAccess}}{@required this.owner{{ className page.dataElement.owner.name }}Store}{{/unless}}){
+        final navigation = locator<NavigationState>();
+        SchedulerBinding.instance.addPostFrameCallback((_) {
+            navigation.setCurrentTitle(AppLocalizations.of(context).lookUpValue(context, {{ fqClass page.name }}Page.title));
+        });
 
     {{# each page.containers.[0].tables as |table| }}
         {{# if table.pageDefinition.relationType.isFilterable }}

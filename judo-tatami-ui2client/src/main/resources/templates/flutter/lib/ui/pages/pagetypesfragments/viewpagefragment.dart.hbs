@@ -18,5 +18,10 @@ class _{{ fqClass page.name }}PageState extends State<{{ fqClass page.name }}Pag
 
     final {{fqClass page.name}}PageStore {{fqVariable page.name}}PageStore = {{fqClass page.name}}PageStore();
 
-    _{{ fqClass page.name }}PageState({@required this.target{{ className page.dataElement.target.name }}Store{{#unless page.dataElement.isAccess}}, @required this.owner{{ className page.dataElement.owner.name }}Store{{/unless}} });
+    _{{ fqClass page.name }}PageState({@required this.target{{ className page.dataElement.target.name }}Store{{#unless page.dataElement.isAccess}}, @required this.owner{{ className page.dataElement.owner.name }}Store{{/unless}} }){
+        final navigation = locator<NavigationState>();
+        SchedulerBinding.instance.addPostFrameCallback((_) {
+            navigation.setCurrentTitle(AppLocalizations.of(context).lookUpValue(context, {{ fqClass page.name }}Page.title));
+        });
+    }
 //END viewpagefragment.dart.hbs-----{{page.name}}------------------------------------------------------------------------------------------

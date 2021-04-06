@@ -76,11 +76,6 @@ class {{ fqClass page.name }}Page extends StatefulWidget {
 
     @override
     Widget build(BuildContext context) {
-        final navigation = locator<NavigationState>();
-        {{# unless page.isPageTypeDashboard }}
-        navigation.setCurrentTitle(AppLocalizations.of(context).lookUpValue(context, {{fqClass page.name}}Page.title));
-        {{/ unless }}
-
         {{# if (isSingleRelationDashboardPage page)  }}
         {{> templates/flutter/lib/ui/pages/pagetypesfragments/dashboardlayoutbuilder.dart.hbs }}
         {{else}}

@@ -29,27 +29,17 @@ class _{{ fqClass page.name }}PageState extends State<{{ fqClass page.name }}Pag
 
     final {{fqClass page.name}}PageStore {{fqVariable page.name}}PageStore = {{fqClass page.name}}PageStore();
 
-    {{#unless page.dataElement.isAccess}}
-    _{{ fqClass page.name }}PageState({ @required this.owner{{ className page.dataElement.owner.name }}Store{{# if (validatableFlagNeed page.dataElement) }}, this.validatable{{/ if }} })
-        {{~# if (validatableFlagNeed page.dataElement) ~}}
+
+    _{{ fqClass page.name }}PageState({ {{#unless page.dataElement.isAccess}} @required this.owner{{ className page.dataElement.owner.name }}Store,{{/unless}}{{# if (validatableFlagNeed page.dataElement) }} this.validatable{{/ if }} })
     {
+        final navigation = locator<NavigationState>();
+        SchedulerBinding.instance.addPostFrameCallback((_) {
+            navigation.setCurrentTitle(AppLocalizations.of(context).lookUpValue(context, {{ fqClass page.name }}Page.title));
+        });
+    {{# if (validatableFlagNeed page.dataElement) }}
         if (this.validatable != null) {
             {{fqVariable page.name}}PageStore.validatable = this.validatable;
         }
+    {{/ if }}
     }
-        {{~ else ~}}
-        ;
-        {{/ if }}
-    {{ else }}
-    _{{ fqClass page.name }}PageState({{# if (validatableFlagNeed page.dataElement) }}{ this.validatable }{{/ if }})
-        {{~# if (validatableFlagNeed page.dataElement) ~}}
-    {
-        if (this.validatable != null) {
-            {{fqVariable page.name}}PageStore.validatable = this.validatable;
-        }
-    }
-        {{~ else ~}}
-            ;
-        {{/ if }}
-    {{/unless}}
 //END createpagefragment.dart.hbs-----{{page.name}}----------------------------------------------------------------------------------------
