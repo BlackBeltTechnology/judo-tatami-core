@@ -15,7 +15,7 @@ Observer(builder: (_) {
         case FutureStatus.rejected:
             return Container();
         case FutureStatus.fulfilled:
-            var dataInfo = {{ fqClass pageDefinition.name }}{{ fqClass table.name }}{{ fqClass pageContainer.layoutType.name }}Table(disabled: {{disabled}});
+            var dataInfo = {{ fqClass pageDefinition.name }}{{ fqClass table.name }}{{ fqClass pageContainer.layoutType.name }}Table(context, disabled: {{disabled}});
             return JudoTable(
                 disabled: {{disabled}},
                 col: {{ multiplyCol col }},
@@ -106,7 +106,7 @@ Row(
             padding: JudoComponentCustomizer.get().getDefaultPadding(),
             child: Observer(
                 builder: (_) => Text(
-                    'Showed ${ {{# if page.dataElement.isAccess}}{{# if page.relationType.isCollection }}{{ fqVariable page.name }}PageStore.{{ fqVariable page.relationType.name }}StoreList.length{{else}}[{{ fqVariable page.name }}PageStore.{{variable page.relationType.name}}Store].length{{/ if}}{{else}}{{# if page.relationType.isCollection }}owner{{ className page.relationType.owner.name }}Store.{{variable page.relationType.name}}.length{{else}}[owner{{ className page.relationType.owner.name }}Store.{{variable page.relationType.name}}].length{{/ if}}{{/ if}} } rows.',
+                    AppLocalizations.of(context).lookUpValue(context, 'Showed rows: ') + '${ {{# if page.dataElement.isAccess}}{{# if page.relationType.isCollection }}{{ fqVariable page.name }}PageStore.{{ fqVariable page.relationType.name }}StoreList.length{{else}}[{{ fqVariable page.name }}PageStore.{{variable page.relationType.name}}Store].length{{/ if}}{{else}}{{# if page.relationType.isCollection }}owner{{ className page.relationType.owner.name }}Store.{{variable page.relationType.name}}.length{{else}}[owner{{ className page.relationType.owner.name }}Store.{{variable page.relationType.name}}].length{{/ if}}{{/ if}} }',
                     style: TextStyle(
                         fontSize: 12,
                         color: Colors.black54

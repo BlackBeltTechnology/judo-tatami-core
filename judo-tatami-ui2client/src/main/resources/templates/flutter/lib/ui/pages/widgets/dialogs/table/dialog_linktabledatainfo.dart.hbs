@@ -12,10 +12,9 @@ part of {{ variable application.name }}.ui.pages.dialogs.tables;
 
 class {{ fqClass table.pageDefinition.name }}{{ fqClass table.name }}DialogTable implements JudoTableDataInfo {
 
-    const {{ fqClass table.pageDefinition.name }}{{ fqClass table.name }}DialogTable({
-        this.disabled = false,
-    });
+    const {{ fqClass table.pageDefinition.name }}{{ fqClass table.name }}DialogTable(this.context, {this.disabled = false});
 
+    final BuildContext context;
     final bool disabled;
 
     @override

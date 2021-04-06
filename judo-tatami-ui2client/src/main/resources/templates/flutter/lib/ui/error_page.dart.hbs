@@ -31,11 +31,13 @@ class {{ fqClass application.name }}ErrorPage extends StatefulWidget {
 
 class _ErrorPageState extends State<{{ fqClass application.name }}ErrorPage> {
 
+    _ErrorPageState() {
+        final navigation = locator<NavigationState>();
+        navigation.setCurrentTitle(AppLocalizations.of(context).lookUpValue(context, widget.title ?? 'Error'));
+    }
+
   @override
   Widget build(BuildContext context) {
-    final navigation = locator<NavigationState>();
-    navigation.setCurrentTitle(AppLocalizations.of(context).lookUpValue(context, widget.title ?? 'Error'));
-
 
         return CustomScrollView(
           slivers: [

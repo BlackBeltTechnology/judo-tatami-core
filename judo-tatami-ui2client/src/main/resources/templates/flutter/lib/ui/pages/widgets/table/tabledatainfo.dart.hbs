@@ -12,10 +12,9 @@ part of {{ variable application.name }}.ui.pages.{{ fqVariable table.pageContain
 
 class {{ fqClass table.pageDefinition.name }}{{ fqClass table.name }}{{ fqClass table.pageContainer.layoutType.name }}Table implements JudoTableDataInfo {
 
-    const {{ fqClass table.pageDefinition.name }}{{ fqClass table.name }}{{ fqClass table.pageContainer.layoutType.name }}Table({
-        this.disabled = false,
-    });
+    const {{ fqClass table.pageDefinition.name }}{{ fqClass table.name }}{{ fqClass table.pageContainer.layoutType.name }}Table(this.context, {this.disabled = false});
 
+    final BuildContext context;
     final bool disabled;
 
     @override
@@ -23,7 +22,7 @@ class {{ fqClass table.pageDefinition.name }}{{ fqClass table.name }}{{ fqClass 
         return [
             {{# each columns}}
             DataColumn(
-                label: Text('{{label}}'),
+                label: Text(AppLocalizations.of(context).lookUpValue(context, '{{label}}')),
                 {{# unless (isBooleanDataType dataType) }}
                     {{# unless (isEnumType dataType) }}
                 onSort: onSort,

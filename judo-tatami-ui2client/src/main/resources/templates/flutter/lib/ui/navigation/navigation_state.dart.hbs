@@ -39,7 +39,7 @@ abstract class _NavigationState with Store {
     ObservableList<BreadCrumbItem> breadcumbItems = [ BreadCrumbItem(content: Icon(Icons.home, color: Color(0xffdcdcdc), size: 16,))].asObservable();
 
     @observable
-    String currentTitle = {{ fqClass application.dashboard.name }}Page.title;
+    String currentTitle = '';
 
     @action
     void setCurrentTitle(String newTitle) => currentTitle = newTitle;
