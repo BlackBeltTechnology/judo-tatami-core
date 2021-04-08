@@ -14,6 +14,7 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:openapi_dart_common/openapi.dart';
 import 'oauth.dart';
 import 'dart:async';
+import 'package:flutter/scheduler.dart';
 import 'repository/package.dart';
 
 import 'package:{{ modelPackage application.name }}/{{ path application.name }}/app_theme.dart';
@@ -52,8 +53,9 @@ class {{ fqClass application.name }}Application extends StatelessWidget {
 
     @override
     Widget build(BuildContext context) {
-        final navigation = locator<NavigationState>();
-        scheduleMicrotask(() => ErrorHandler.navigateToBuiltInPage()); // execute after main build methods are executed
+        SchedulerBinding.instance.addPostFrameCallback((_) {
+            ErrorHandler.navigateToBuiltInPage();
+        });
         return MaterialApp(
             localizationsDelegates: AppLocalizations.localizationsDelegates,
             supportedLocales:  AppLocalizations.supportedLocales,

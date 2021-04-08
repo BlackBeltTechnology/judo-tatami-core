@@ -12,6 +12,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:mobx/mobx.dart';
 import 'package:judo_flutter_components/judo_flutter_components.dart';
+import 'package:flutter/scheduler.dart';
 
 import 'package:{{ modelPackage application.name }}/{{ path application.name }}/oauth.dart';
 import 'package:{{ modelPackage application.name }}/{{ path application.name }}/injector/injector.dart';
@@ -64,13 +65,16 @@ class _{{ fqClass application.name }}SettingsPageState extends State<{{ fqClass 
     final {{ fqClass application.name }}SettingsPageStore store = {{ fqClass application.name }}SettingsPageStore();
 
     _{{ fqClass application.name }}SettingsPageState()  {
+        final navigation = locator<NavigationState>();
+        SchedulerBinding.instance.addPostFrameCallback((_) {
+            navigation.setCurrentTitle(AppLocalizations.of(context).lookUpValue(context, {{ fqClass application.name }}SettingsPage.title));
+        });
         store.loadApiUrl();
     }
 
     @override
     Widget build(BuildContext context) {
         final navigation = locator<NavigationState>();
-        navigation.setCurrentTitle(AppLocalizations.of(context).lookUpValue(context, {{ fqClass application.name }}SettingsPage.title));
 
         return Column(
                 mainAxisSize: MainAxisSize.min,

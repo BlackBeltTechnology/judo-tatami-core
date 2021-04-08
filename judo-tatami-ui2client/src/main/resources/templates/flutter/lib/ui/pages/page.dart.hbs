@@ -77,7 +77,7 @@ class {{ fqClass page.name }}Page extends StatefulWidget {
     @override
     Widget build(BuildContext context) {
 
-        {{# if page.isPageTypeTable}}
+        {{# if (isRefreshTableTypePage page) }}
             {{# each page.containers.[0].tables as |table| }}
                 {{# if table.pageDefinition.relationType.isFilterable }}
         filterStoreWidgetMap = {
@@ -156,6 +156,11 @@ class {{ fqClass page.name }}Page extends StatefulWidget {
 
                             {{~# if page.isPageTypeDashboard ~}}
                             , {{fqVariable page.name}}PageStore
+                                {{~# if (isRefreshTableTypePage page) ~}}
+                                    {{~# if page.dataElement.isFilterable ~}}
+                            , filterStoreWidgetMap
+                                    {{~/ if ~}}
+                                {{~/ if ~}}
                             {{~/ if ~}}
 
                             {{~# if page.isPageTypeTable ~}}
@@ -209,6 +214,11 @@ class {{ fqClass page.name }}Page extends StatefulWidget {
 
                         {{~# if page.isPageTypeDashboard ~}}
                         , {{fqVariable page.name}}PageStore
+                        {{~# if (isRefreshTableTypePage page) ~}}
+                            {{~# if page.dataElement.isFilterable ~}}
+                        , filterStoreWidgetMap
+                            {{~/ if ~}}
+                        {{~/ if ~}}
                         {{~/ if ~}}
 
                         {{~# if page.isPageTypeTable ~}}

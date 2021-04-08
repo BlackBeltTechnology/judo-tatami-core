@@ -12,6 +12,7 @@ import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.emf.ecore.xmi.XMIResource;
 import org.springframework.expression.spel.support.StandardEvaluationContext;
 
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -532,7 +533,15 @@ public class FlutterHelper {
     }
 
     public static String l10nLabelName(String label) {
-        return label.replace(" ", "_").replace(".", "").replace(":", "").toLowerCase();
+        String[] array = label.split("");
+        byte[] bytes = label.getBytes(StandardCharsets.UTF_8);
+
+        for(int i = 0; i < array.length; i++) {
+            if(array[i].matches("[^A-Za-z]")){
+                array[i] = String.valueOf(Byte.toUnsignedInt(bytes[i]));
+            }
+        }
+        return "_" + String.join("", array); // replace need, because minus bytes
     }
 
     public static boolean isFilterOperationLike(EnumerationMember operator) {

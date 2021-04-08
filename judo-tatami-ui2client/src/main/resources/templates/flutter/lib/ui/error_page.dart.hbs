@@ -9,6 +9,7 @@
 // Application: {{ application.name }}
 
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:{{ modelPackage application.name }}/{{ path application.name }}/l10n/app_localizations.dart';
 import 'package:{{ modelPackage application.name }}/{{ path application.name }}/injector/injector.dart';
 import 'package:{{ modelPackage application.name }}/{{ path application.name }}/ui/navigation/navigation_state.dart';
@@ -33,7 +34,9 @@ class _ErrorPageState extends State<{{ fqClass application.name }}ErrorPage> {
 
     _ErrorPageState() {
         final navigation = locator<NavigationState>();
-        navigation.setCurrentTitle(AppLocalizations.of(context).lookUpValue(context, widget.title ?? 'Error'));
+        SchedulerBinding.instance.addPostFrameCallback((_) {
+            navigation.setCurrentTitle(AppLocalizations.of(context).lookUpValue(context, widget.title ?? 'Error'));
+        });
     }
 
   @override

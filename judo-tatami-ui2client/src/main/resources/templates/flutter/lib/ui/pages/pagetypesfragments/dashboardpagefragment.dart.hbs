@@ -32,7 +32,7 @@ class _{{ fqClass page.name }}PageState extends State<{{ fqClass page.name }}Pag
                         {{fqVariable page.name}}PageStore.getterStatusSetRejected();
                     }
                 })
-                .catchError((error) => ErrorHandler.errorDialog(context, error));
+                .catchError((error) => ErrorHandler.showErrorSnack(context, error.message));
     {{/if}}
         }
 //END dashboardpagefragment.dart.hbs-----{{page.name}}-------------------------------------------------------------------------------------
