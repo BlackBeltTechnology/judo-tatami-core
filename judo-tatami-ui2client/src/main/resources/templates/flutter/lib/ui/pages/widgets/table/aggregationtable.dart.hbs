@@ -2,7 +2,7 @@
 //START aggregationtable.dart.hbs-----{{dataElement.name}}---------------------------------------------------------------------------------
 {{# with dataElement as |relation|}}
 Observer(builder: (_) {
-    var dataInfo = {{ fqClass pageDefinition.name }}{{ fqClass table.name }}{{ fqClass pageContainer.layoutType.name }}Table(disabled: {{disabled}});
+    var dataInfo = {{ fqClass pageDefinition.name }}{{ fqClass table.name }}{{ fqClass pageContainer.layoutType.name }}Table(context, disabled: {{disabled}});
     return JudoTable(
         disabled: {{disabled}},
         col: {{ multiplyCol col }},
@@ -34,7 +34,7 @@ Observer(builder: (_) {
                     {{# unless page.isPageTypeOperationOutput}}
                 if (response != null) {
                     {{ fqVariable page.name }}PageStore.refresh{{ className relation.owner.name }}(target{{ className relation.owner.name }}Store)
-                        .catchError((error) => ErrorHandler.errorDialog(context, error));
+                        .catchError((error) => ErrorHandler.showErrorSnack(context, error.message));
                 }
                     {{/ unless }}
                 {{/ unless }}
@@ -50,13 +50,13 @@ Observer(builder: (_) {
             if (res != null) {
                 element.updateWith(cloned);
                 var updated = await {{ fqVariable page.name }}PageStore.update{{ className relation.name }}{{ className relation.target.name }}(element, target{{ className page.dataElement.target.name }}Store)
-                    .catchError((error) => ErrorHandler.errorDialog(context, error));
+                    .catchError((error) => ErrorHandler.showErrorSnack(context, error.message));
                 {{# if (isValidateHere page) }}
                     {{# unless page.dataElement.isRelationKindAggregation }}
                         {{# unless page.dataElement.isRelationKindComposition }}
                             {{# unless relation.isMemberTypeTransient }}
                 var validate = await {{ fqVariable page.name }}PageStore.validate({{# unless page.dataElement.isAccess}}owner{{ className page.dataElement.owner.name }}Store, {{/unless}}target{{ className page.dataElement.target.name }}Store)
-                    .catchError((error) => ErrorHandler.errorDialog(context, error));
+                    .catchError((error) => ErrorHandler.showErrorSnack(context, error.message));
                 if (validate != null) {
                     target{{ className relation.owner.name }}Store.updateWith(validate);
                 }
@@ -67,7 +67,7 @@ Observer(builder: (_) {
                 if (updated != null) {
                     element.updateWith(updated);
                     {{ fqVariable page.name }}PageStore.get{{ fqClass relation.name }}({{# unless relation.isAccess}}target{{ className relation.owner.name }}Store{{/ unless}})
-                        .catchError((error) => ErrorHandler.errorDialog(context, error));
+                        .catchError((error) => ErrorHandler.showErrorSnack(context, error.message));
                 }
                 {{/if}}
             }
@@ -87,13 +87,13 @@ Observer(builder: (_) {
         {{#if rowAction.isUnsetAction}}
         unsetAction:{{# unless relation.isAccess}}{{# unless relation.isRelationKindStatic}} target{{ className relation.owner.name }}Store.internal__updatable ?{{/ unless}}{{/ unless}} () async {
             {{fqVariable page.name}}PageStore.unset{{ fqClass relation.name }}(target{{ className relation.owner.name }}Store)
-                .catchError((error) => ErrorHandler.errorDialog(context, error));
+                .catchError((error) => ErrorHandler.showErrorSnack(context, error.message));
         }{{# unless relation.isAccess}}{{# unless relation.isRelationKindStatic}} : null{{/ unless}}{{/ unless}},
         {{/if}}
         {{#if rowAction.isDeleteAction}}
         deleteAction:{{# unless relation.isAccess}} target{{ className relation.owner.name }}Store.internal__updatable ?{{/ unless}} (element) async {
             {{fqVariable page.name}}PageStore.delete{{ className relation.name }}{{ className relation.target.name }}(element{{# unless relation.isAccess}}, target{{ className relation.owner.name }}Store{{/unless}})
-                .catchError((error) => ErrorHandler.errorDialog(context, error));
+                .catchError((error) => ErrorHandler.showErrorSnack(context, error.message));
         }{{# unless relation.isAccess}} : null{{/ unless}},
         {{/if}}
         {{/each}}

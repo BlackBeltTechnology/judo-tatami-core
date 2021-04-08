@@ -3,7 +3,7 @@
 JudoLabel(
     col: {{ multiplyCol col }},
     row: {{ row }},
-    text: '{{label}}',
+    text: AppLocalizations.of(context).lookUpValue(context, '{{ label }}'),
 {{#if this.icon }}
     icon: Icon(Icons.{{ this.icon.name }}),
 {{/if}}

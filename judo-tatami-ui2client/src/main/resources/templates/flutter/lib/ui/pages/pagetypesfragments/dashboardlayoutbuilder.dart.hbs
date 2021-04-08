@@ -1,8 +1,6 @@
 //START dashboardlayoutbuilder.dart.hbs-----{{page.name}}-----------------------------------------------------------------------------------
-return {{fqClass application.name}}Scaffold(
-    pageTitle: navigation.currentTitle,
-    // ignore: missing_return
-    body: Observer(builder: (_) {
+// ignore: missing_return
+return Observer(builder: (_) {
         switch({{fqVariable page.name}}PageStore.getterStatus){
             case FutureStatus.pending:
                 return CustomScrollView(
@@ -54,6 +52,5 @@ return {{fqClass application.name}}Scaffold(
                     );
                 });
         }
-    }),
-);
+});
 //END dashboardlayoutbuilder.dart.hbs-----{{page.name}}-------------------------------------------------------------------------------------

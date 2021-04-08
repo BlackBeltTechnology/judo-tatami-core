@@ -8,10 +8,14 @@ class _{{ fqClass page.name }}PageState extends State<{{ fqClass page.name }}Pag
 
     {{# if page.dataElement }}
         {{ fqClass page.dataElement.target.name }}Store target{{ className page.dataElement.target.name }}Store;
-
+    {{/if}}
 
         _{{ fqClass page.name }}PageState(){
             final navigation = locator<NavigationState>();
+            SchedulerBinding.instance.addPostFrameCallback((_) {
+                navigation.setCurrentTitle(AppLocalizations.of(context).lookUpValue(context, {{ fqClass page.name }}Page.title));
+            });
+    {{# if page.dataElement }}
             final navigationRegistry = locator<NavigationRegistry>();
             {{fqVariable page.name}}PageStore.get{{ fqClass page.relationType.name }}()
                 .then((res) {
@@ -28,7 +32,7 @@ class _{{ fqClass page.name }}PageState extends State<{{ fqClass page.name }}Pag
                         {{fqVariable page.name}}PageStore.getterStatusSetRejected();
                     }
                 })
-                .catchError((error) => ErrorHandler.errorDialog(context, error));
-        }
+                .catchError((error) => ErrorHandler.showErrorSnack(context, error.message));
     {{/if}}
+        }
 //END dashboardpagefragment.dart.hbs-----{{page.name}}-------------------------------------------------------------------------------------

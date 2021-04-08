@@ -13,14 +13,149 @@ import 'package:{{ modelPackage application.name }}/{{ path application.name }}/
 import 'package:{{ modelPackage application.name }}/{{ path application.name }}/ui/navigation/navigation_state.dart';
 import 'package:{{ modelPackage application.name }}/{{ path application.name }}/utilities/package.dart';
 import 'package:{{ modelPackage application.name }}/{{ path application.name }}/ui/routes/router.gr.dart' as router;
+import 'package:{{ modelPackage application.name }}/{{ path application.name }}/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
+import 'dart:convert';
 import 'package:judo_flutter_components/judo_flutter_components.dart';
 import 'package:openapi_dart_common/openapi.dart';
 
+enum ErrorLevel {error, warning, info, complete}
+
 class ErrorHandler {
 
-    static void errorDialog(BuildContext context, ApiException error) {
-        judoAlert(context: context, title: 'Error', text: error.toString());
+    String message;
+    ErrorLevel level;
+    String location;
+    Map<String, dynamic> _details;
+    Map<String, String> get getDetails => _details.map((key, value) {
+      return MapEntry(key, value as String);
+    });
+
+
+    List<String> get getErrorParameters {
+      var copyList = List.of(getDetails.values);
+      copyList.removeLast();
+      return copyList;
+    }
+
+    static ErrorHandler fromJson(Map<String, dynamic> json) {
+      if (json == null) return null;
+      try{
+        var errorHandler = ErrorHandler();
+        errorHandler.message = (json[r'code'] == null) ? null : json[r'code'];
+        String level = (json[r'level'] == null) ? null : json[r'level'];
+        errorHandler.level = level.toEnum(ErrorLevel.values);
+        errorHandler.location = (json[r'location'] == null) ? null : json[r'location'];
+        errorHandler._details = (json[r'details'] == null) ? null : json[r'details'];
+        return errorHandler;
+      } on Error {
+        throw FormatException();
+      } on Exception {
+        throw FormatException();
+      }
+    }
+
+    static void showCompleteSnack(BuildContext context, String message) {
+      if (context == null || message == null) return;
+      _showJudoSnack(context, message, ErrorLevel.complete);
+    }
+
+    static void showErrorSnack(BuildContext context, String jsonMessage) {
+      if (context == null || jsonMessage == null) return;
+
+      List errorMessageList;
+      List errorList;
+      try {
+        errorMessageList = jsonDecode(jsonMessage);
+        errorList = (errorMessageList).map<ErrorHandler>((e) {
+          return fromJson(e);
+        }).toList();
+        errorList.forEach((element) => _showJudoSnack(context, AppLocalizations.of(context).lookUpValue(context, element.message), element.level));
+      } on Exception catch(error) {
+        print(error);
+        _showJudoSnack(context, AppLocalizations.of(context).lookUpValue(context, 'Something went wrong. Please contact with the system admins.'), ErrorLevel.error);
+      }
+    }
+
+    static void _showJudoSnack(BuildContext context, String message, ErrorLevel errorLevel) {
+      if (context == null || message == null) return;
+      final navigation = locator<NavigationState>();
+
+      ScaffoldMessenger.of(navigation.scaffoldKey.currentContext).showSnackBar(SnackBar(
+        content: Row(
+          children: [
+            Padding(
+              padding: JudoComponentCustomizer.get().getDefaultPadding(),
+              child: _getIconByErrorLevel(errorLevel),
+            ),
+            Text(
+              message,
+            ),
+          ],
+        ),
+        duration: _getDurationByErrorLevel(errorLevel),
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10.0),
+        ),
+        backgroundColor: _getBackgroundColorByErrorLevel(errorLevel),
+        padding: JudoComponentCustomizer.get().getDefaultPadding(),
+        action: SnackBarAction(
+          textColor: Colors.white,
+          label: "Ok",
+          onPressed: () {
+            ScaffoldMessenger.of(navigation.scaffoldKey.currentContext).hideCurrentSnackBar();
+          },
+        ),
+      ));
+    }
+
+    static Duration _getDurationByErrorLevel(ErrorLevel errorLevel) {
+      if (errorLevel == null) return null;
+      switch(errorLevel){
+        case ErrorLevel.error:
+          return Duration(days: 365);
+        case ErrorLevel.info:
+          return Duration(microseconds: 1500);
+        case ErrorLevel.warning:
+          return Duration(microseconds: 3000);
+        case ErrorLevel.complete:
+          return Duration(microseconds: 5000);
+        default:
+          return null;
+      }
+    }
+
+    static Color _getBackgroundColorByErrorLevel(ErrorLevel errorLevel) {
+      if (errorLevel == null) return null;
+      switch(errorLevel){
+        case ErrorLevel.error:
+          return Colors.red.shade900;
+        case ErrorLevel.info:
+          return Colors.black45;
+        case ErrorLevel.warning:
+          return Colors.amber.shade900;
+        case ErrorLevel.complete:
+          return Colors.green;
+        default:
+          return null;
+      }
+    }
+
+    static Icon _getIconByErrorLevel(ErrorLevel errorLevel) {
+      if (errorLevel == null) return null;
+      switch(errorLevel){
+        case ErrorLevel.error:
+          return Icon(Icons.error_outline, color: Colors.white,);
+        case ErrorLevel.info:
+          return Icon(Icons.info_outline, color: Colors.white,);
+        case ErrorLevel.warning:
+          return Icon(Icons.warning_amber_outlined, color: Colors.white,);
+        case ErrorLevel.complete:
+          return Icon(Icons.check_circle_outlined, color: Colors.white,);
+        default:
+          return null;
+      }
     }
 
     static void navigateToErrorPage(dynamic error) {

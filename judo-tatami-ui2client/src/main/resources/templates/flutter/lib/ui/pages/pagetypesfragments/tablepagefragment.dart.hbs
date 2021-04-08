@@ -24,74 +24,12 @@ class _{{fqClass page.name}}PageState extends State<{{fqClass page.name}}Page> {
     {{/ if }}
 
     _{{fqClass page.name}}PageState({{#unless page.dataElement.isAccess}}{@required this.owner{{ className page.dataElement.owner.name }}Store}{{/unless}}){
+        final navigation = locator<NavigationState>();
+        SchedulerBinding.instance.addPostFrameCallback((_) {
+            navigation.setCurrentTitle(AppLocalizations.of(context).lookUpValue(context, {{ fqClass page.name }}Page.title));
+        });
 
-    {{# each page.containers.[0].tables as |table| }}
-        {{# if table.pageDefinition.relationType.isFilterable }}
-        filterStoreWidgetMap = {
-                {{# each table.filters as |filter|}}
-                    {{# each filter.attributeType.dataType.operator.members as |filterOperator|}}
-                        {{# each (likeOperationHelperList filterOperator) as |likeOperator| }}
-            {{fqVariable page.name}}PageStore.stringFilterStoreMap['{{ variable filter.attributeType.name }}{{# if (isFilterOperationLike filterOperator)}}{{ fqClass likeOperator }}{{ else }}{{ className filterOperator.name }}{{/ if }}Filter'] :
-                            {{# if (isStringType filter.attributeType.dataType) }}
-                JudoInputText(
-                    col: 1,
-                    label: {{fqVariable page.name}}PageStore.stringFilterStoreMap['{{ variable filter.attributeType.name }}{{# if (isFilterOperationLike filterOperator)}}{{ fqClass likeOperator }}{{ else }}{{ className filterOperator.name }}{{/ if }}Filter'].getWidgetLabel,
-                    onChanged: (value) => {{fqVariable page.name}}PageStore.stringFilterStoreMap['{{ variable filter.attributeType.name }}{{# if (isFilterOperationLike filterOperator)}}{{ fqClass likeOperator }}{{ else }}{{ className filterOperator.name }}{{/ if }}Filter'].setFilterValue({{# if (isFilterOperationLike filterOperator)}}{{# if (isFilterOperationTypeLikeContain likeOperator) }}'%' + {{/ if }}value + '%'{{ else }}value{{/ if }}),
-                ),
-                            {{/ if }}
-                            {{~# if (isNumericType filter.attributeType.dataType) }}
-                JudoNumericInput(
-                    col: 1,
-                    label: {{fqVariable page.name}}PageStore.stringFilterStoreMap['{{ variable filter.attributeType.name }}{{ className filterOperator.name }}Filter'].getWidgetLabel,
-                    onChanged: (value) => {{fqVariable page.name}}PageStore.stringFilterStoreMap['{{ variable filter.attributeType.name }}{{ className filterOperator.name }}Filter'].setFilterValue({{ dartType filter.attributeType.dataType }}.parse(value)),
-                ),
-                            {{/ if }}
-                            {{~# if (isDateType filter.attributeType.dataType) }}
-                JudoDateInput(
-                    col: 1,
-                    label: {{fqVariable page.name}}PageStore.stringFilterStoreMap['{{ variable filter.attributeType.name }}{{ className filterOperator.name }}Filter'].getWidgetLabel,
-                    onChanged: (value) => {{fqVariable page.name}}PageStore.stringFilterStoreMap['{{ variable filter.attributeType.name }}{{ className filterOperator.name }}Filter'].setFilterValue(value),
-                ),
-                            {{/ if }}
-                            {{~# if (isTimestampType filter.attributeType.dataType) }}
-                JudoDateTimeInput(
-                    col: 1,
-                    label: {{fqVariable page.name}}PageStore.stringFilterStoreMap['{{ variable filter.attributeType.name }}{{ className filterOperator.name }}Filter'].getWidgetLabel,
-                    onChanged: (value) => {{fqVariable page.name}}PageStore.stringFilterStoreMap['{{ variable filter.attributeType.name }}{{ className filterOperator.name }}Filter'].setFilterValue(value),
-                ),
-                            {{/ if }}
-                            {{~# if (isBooleanType filter.attributeType.dataType) }}
-                Observer(
-                    builder: (_) => JudoSwitch(
-                        col: 1,
-                        label: {{fqVariable page.name}}PageStore.stringFilterStoreMap['{{ variable filter.attributeType.name }}{{ className filterOperator.name }}Filter'].getWidgetLabel,
-                        initialValue: {{fqVariable page.name}}PageStore.stringFilterStoreMap['{{ variable filter.attributeType.name }}{{ className filterOperator.name }}Filter'].filterValue,
-                        onChanged: (value) => {{fqVariable page.name}}PageStore.stringFilterStoreMap['{{ variable filter.attributeType.name }}{{ className filterOperator.name }}Filter'].setFilterValue(value),
-                    )
-                ),
-                            {{/ if }}
-                            {{~# if (isEnumType filter.attributeType.dataType) }}
-                Observer(
-                    builder: (_) => JudoComboBox<{{ className filter.attributeType.dataType.name }}>(
-                        col: 1,
-                        label: {{fqVariable page.name}}PageStore.stringFilterStoreMap['{{ variable filter.attributeType.name }}{{ className filterOperator.name }}Filter'].getWidgetLabel,
-                        onChanged: (value) => {{fqVariable page.name}}PageStore.stringFilterStoreMap['{{ variable filter.attributeType.name }}{{ className filterOperator.name }}Filter'].setFilterValue(value),
-                        items: {{ className filter.attributeType.dataType.name }}.values,
-                        dropdownMenuShow: (value) => new DropdownMenuItem<{{ className filter.attributeType.dataType.name }}>(
-                            value: value,
-                            child: new Text(value.toString().split('.').last)
-                        ),
-                    )
-                ),
-                            {{/ if }}
-                        {{/ each }}
-                    {{/each}}
-                {{/ each }}
-        };
-        {{/ if }}
-    {{/ each }}
-
-        {{fqVariable page.name}}PageStore.get{{ fqClass page.dataElement.name }}({{#unless page.dataElement.isAccess}} owner{{ className page.dataElement.owner.name }}Store {{/unless}}).catchError((error) => ErrorHandler.errorDialog(context, error));
+        {{fqVariable page.name}}PageStore.get{{ fqClass page.dataElement.name }}({{#unless page.dataElement.isAccess}} owner{{ className page.dataElement.owner.name }}Store {{/unless}}).catchError((error) => ErrorHandler.showErrorSnack(context, error.message));
     }
 {{/ with }}
 //END tablepagefragment.dart.hbs-----{{page.name}}-----------------------------------------------------------------------------------------

@@ -28,6 +28,7 @@ import 'package:{{ modelPackage application.name }}/{{ path application.name }}/
 import 'package:{{ modelPackage application.name }}/{{ path application.name }}/ui/pages/dialogs/package.dart';
 import 'package:{{ modelPackage application.name }}/{{ path application.name }}/ui/pages/dialogs/helper_stores/package.dart';
 import 'package:{{ modelPackage application.name }}/{{ path application.name }}/ui/filter_helper.dart';
+import 'package:{{ modelPackage application.name }}/{{ path application.name }}/l10n/app_localizations.dart';
 
 {{# each layout.pageContainers as |container| }}
 part '{{ fqPath container.owner.name }}__{{fqPath layout.name}}__body.dart';

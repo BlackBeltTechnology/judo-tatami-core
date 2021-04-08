@@ -41,7 +41,7 @@ Future<{{# if relation.isCollection }}List<{{ fqClass relation.target.name }}Sto
 {{# unless relation.isMemberTypeTransient }}
     var addFilterButtonKey = GlobalKey();
     int tableQueryLimit = ({{ table.row }}-1).round();
-    pageStore.getRangeFor{{ fqClass relation.name }}(ownerStore, queryLimit: tableQueryLimit).catchError((error) => ErrorHandler.errorDialog(context, error));
+    pageStore.getRangeFor{{ fqClass relation.name }}(ownerStore, queryLimit: tableQueryLimit).catchError((error) => ErrorHandler.showErrorSnack(context, error));
 
     var dialogHelperStore = {{ fqClass relation.name }}{{ className relation.target.name }}DialogFor{{fqClass page.name}}PageHelperStore();
 
@@ -53,28 +53,28 @@ Future<{{# if relation.isCollection }}List<{{ fqClass relation.target.name }}Sto
                     {{# if (isStringType filter.attributeType.dataType) }}
             JudoInputText(
                 col: 1,
-                label: dialogHelperStore.stringFilterStoreMap['{{ variable filter.attributeType.name }}{{# if (isFilterOperationLike filterOperator)}}{{ fqClass likeOperator }}{{ else }}{{ className filterOperator.name }}{{/ if }}Filter'].getWidgetLabel,
+                label: dialogHelperStore.stringFilterStoreMap['{{ variable filter.attributeType.name }}{{# if (isFilterOperationLike filterOperator)}}{{ fqClass likeOperator }}{{ else }}{{ className filterOperator.name }}{{/ if }}Filter'].getWidgetLabel(context),
                 onChanged: (value) => dialogHelperStore.stringFilterStoreMap['{{ variable filter.attributeType.name }}{{# if (isFilterOperationLike filterOperator)}}{{ fqClass likeOperator }}{{ else }}{{ className filterOperator.name }}{{/ if }}Filter'].setFilterValue({{# if (isFilterOperationLike filterOperator)}}{{# if (isFilterOperationTypeLikeContain likeOperator) }}'%' + {{/ if }}value + '%'{{ else }}value{{/ if }}),
             ),
                     {{/ if }}
                     {{~# if (isNumericType filter.attributeType.dataType) }}
             JudoNumericInput(
                 col: 1,
-                label: dialogHelperStore.stringFilterStoreMap['{{ variable filter.attributeType.name }}{{ className filterOperator.name }}Filter'].getWidgetLabel,
+                label: dialogHelperStore.stringFilterStoreMap['{{ variable filter.attributeType.name }}{{ className filterOperator.name }}Filter'].getWidgetLabel(context),
                 onChanged: (value) => dialogHelperStore.stringFilterStoreMap['{{ variable filter.attributeType.name }}{{ className filterOperator.name }}Filter'].setFilterValue({{ dartType filter.attributeType.dataType }}.parse(value)),
             ),
                     {{/ if }}
                     {{~# if (isDateType filter.attributeType.dataType) }}
             JudoDateInput(
                 col: 1,
-                label: dialogHelperStore.stringFilterStoreMap['{{ variable filter.attributeType.name }}{{ className filterOperator.name }}Filter'].getWidgetLabel,
+                label: dialogHelperStore.stringFilterStoreMap['{{ variable filter.attributeType.name }}{{ className filterOperator.name }}Filter'].getWidgetLabel(context),
                 onChanged: (value) => dialogHelperStore.stringFilterStoreMap['{{ variable filter.attributeType.name }}{{ className filterOperator.name }}Filter'].setFilterValue(value),
             ),
                     {{/ if }}
                     {{~# if (isTimestampType filter.attributeType.dataType) }}
             JudoDateTimeInput(
                 col: 1,
-                label: dialogHelperStore.stringFilterStoreMap['{{ variable filter.attributeType.name }}{{ className filterOperator.name }}Filter'].getWidgetLabel,
+                label: dialogHelperStore.stringFilterStoreMap['{{ variable filter.attributeType.name }}{{ className filterOperator.name }}Filter'].getWidgetLabel(context),
                 onChanged: (value) => dialogHelperStore.stringFilterStoreMap['{{ variable filter.attributeType.name }}{{ className filterOperator.name }}Filter'].setFilterValue(value),
             ),
                     {{/ if }}
@@ -82,7 +82,7 @@ Future<{{# if relation.isCollection }}List<{{ fqClass relation.target.name }}Sto
             Observer(
                 builder: (_) => JudoSwitch(
                     col: 1,
-                    label: dialogHelperStore.stringFilterStoreMap['{{ variable filter.attributeType.name }}{{ className filterOperator.name }}Filter'].getWidgetLabel,
+                    label: dialogHelperStore.stringFilterStoreMap['{{ variable filter.attributeType.name }}{{ className filterOperator.name }}Filter'].getWidgetLabel(context),
                     initialValue: dialogHelperStore.stringFilterStoreMap['{{ variable filter.attributeType.name }}{{ className filterOperator.name }}Filter'].filterValue,
                     onChanged: (value) => dialogHelperStore.stringFilterStoreMap['{{ variable filter.attributeType.name }}{{ className filterOperator.name }}Filter'].setFilterValue(value),
                 )
@@ -92,7 +92,7 @@ Future<{{# if relation.isCollection }}List<{{ fqClass relation.target.name }}Sto
             Observer(
                 builder: (_) => JudoComboBox<{{ className filter.attributeType.dataType.name }}>(
                     col: 1,
-                    label: dialogHelperStore.stringFilterStoreMap['{{ variable filter.attributeType.name }}{{ className filterOperator.name }}Filter'].getWidgetLabel,
+                    label: dialogHelperStore.stringFilterStoreMap['{{ variable filter.attributeType.name }}{{ className filterOperator.name }}Filter'].getWidgetLabel(context),
                     onChanged: (value) => dialogHelperStore.stringFilterStoreMap['{{ variable filter.attributeType.name }}{{ className filterOperator.name }}Filter'].setFilterValue(value),
                     items: {{ className attributeType.dataType.name }}.values,
                     dropdownMenuShow: (value) => new DropdownMenuItem<{{ className attributeType.dataType.name }}>(
@@ -133,13 +133,13 @@ Future<{{# if relation.isCollection }}List<{{ fqClass relation.target.name }}Sto
                         onPressed: () async {
                             FilterStore selectedAttribute = await judoShowMenu(
                                 buttonKey: addFilterButtonKey,
-                                items: getPopupMenuAttributeItems(dialogHelperStore.stringFilterStoreMap.values.toList()),
+                                items: getPopupMenuAttributeItems(context, dialogHelperStore.stringFilterStoreMap.values.toList()),
                                 context: context,
                             );
                             if (selectedAttribute != null) {
                                 FilterStore result = await judoShowMenu(
                                     buttonKey: addFilterButtonKey,
-                                    items: getPopupMenuOperationItemsByAttribute(dialogHelperStore.stringFilterStoreMap.values.toList(), selectedAttribute),
+                                    items: getPopupMenuOperationItemsByAttribute(context, dialogHelperStore.stringFilterStoreMap.values.toList(), selectedAttribute),
                                     context: context,
                                 );
                                 if (result != null) {
@@ -160,7 +160,7 @@ Future<{{# if relation.isCollection }}List<{{ fqClass relation.target.name }}Sto
                                   ownerStore,
                                   queryLimit: tableQueryLimit,
                                   filterStoreList: dialogHelperStore.stringFilterStoreMap.values.where((element) => element.filterEnabled).toList(),
-                              ).catchError((error) => ErrorHandler.errorDialog(context, error));
+                              ).catchError((error) => ErrorHandler.showErrorSnack(context, error));
                           },
                       ) : JudoSpacer(col: 1),
                     ),
@@ -176,7 +176,7 @@ Future<{{# if relation.isCollection }}List<{{ fqClass relation.target.name }}Sto
                         case FutureStatus.rejected:
                           return Container();
                         case FutureStatus.fulfilled:
-                          var dataInfo = {{ fqClass table.pageDefinition.name }}{{ fqClass table.name }}DialogTable(disabled: false);
+                          var dataInfo = {{ fqClass table.pageDefinition.name }}{{ fqClass table.name }}DialogTable(context, disabled: false);
                           return JudoSelectorTable(
                             disabled: false,
                             collectionSelector: {{ relation.isCollection}},
@@ -212,7 +212,7 @@ Future<{{# if relation.isCollection }}List<{{ fqClass relation.target.name }}Sto
                             padding: JudoComponentCustomizer.get().getDefaultPadding(),
                             child: Observer(
                                 builder: (_) => Text(
-                                    'Showed ${pageStore.{{ fqVariable relation.name }}StoreRangeList.length} rows.',
+                                    AppLocalizations.of(context).lookUpValue(context, 'Showed rows: ') + '${pageStore.{{ fqVariable relation.name }}StoreRangeList.length}',
                                     style: TextStyle(
                                         fontSize: 12,
                                         color: Colors.black54

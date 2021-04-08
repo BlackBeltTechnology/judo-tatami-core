@@ -11,10 +11,13 @@ rule ApplicationDashboardPage
         t.name = s.fqName().anchor("Dashboard");
         t.pageType = UI!ui::PageType#DASHBOARD;
 
-         var pageContainer = new UI!ui::PageContainer();
+        var pageContainer = new UI!ui::PageContainer();
         pageContainer.layoutType = application.layoutTypes.first;
         pageContainer.name = "default";
         pageContainer.direction = UI!Axis#VERTICAL;
+        pageContainer.mainAxisAlignment = UI!ui::MainAxisAlignment#START;
+        pageContainer.crossAxisAlignment = UI!ui::CrossAxisAlignment#START;
+        pageContainer.col = applicationColumns.asReal();
         t.containers.add(pageContainer);
          
          var dashboard = s.accesses.selectOne(a | a.appliedAnnotations.exists(annotation | annotation.name == "dashboard"));

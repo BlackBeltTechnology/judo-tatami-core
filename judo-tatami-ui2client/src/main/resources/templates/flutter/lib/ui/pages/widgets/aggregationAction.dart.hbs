@@ -14,7 +14,7 @@
             arguments: {{ fqClass action.target.name }}PageArguments(owner{{ className relation.owner.name }}Store: target{{ className relation.owner.name }}Store, validatable: {{ fqVariable page.name }}PageStore.validatable){{~/ unless}});
             if (created != null) {
                 {{ fqVariable page.name }}PageStore.create{{ fqClass relation.name }}({{# unless relation.isAccess}}target{{ className relation.owner.name }}Store ,{{/ unless}}created)
-                .catchError((error) => ErrorHandler.errorDialog(context, error));
+                .catchError((error) => ErrorHandler.showErrorSnack(context, error.message));
         {{# unless page.isPageTypeUpdate }}
             {{# unless page.isPageTypeView }}
                 {{# unless page.isPageTypeOperationOutput}}
@@ -22,7 +22,7 @@
                         {{# unless page.dataElement.isRelationKindComposition }}
                             {{# unless relation.isMemberTypeTransient }}
                 var validate = await {{ fqVariable page.name }}PageStore.validate({{# unless page.dataElement.isAccess}}owner{{ className page.dataElement.owner.name }}Store, {{/unless}}target{{ className page.dataElement.target.name }}Store)
-                    .catchError((error) => ErrorHandler.errorDialog(context, error));
+                    .catchError((error) => ErrorHandler.showErrorSnack(context, error.message));
                 if (validate != null) {
                     target{{ className relation.owner.name }}Store.updateWith(validate);
                 }
@@ -42,7 +42,7 @@
             if (selected != null) {
         {{# if relation.isRelationBehaviourTypeAddable }}
                 {{fqVariable page.name}}PageStore.add{{ fqClass relation.name }}(target{{ className relation.owner.name }}Store, selected)
-                    .catchError((error) => ErrorHandler.errorDialog(context, error));
+                    .catchError((error) => ErrorHandler.showErrorSnack(context, error.message));
         {{ else }}
             var temporaryList = List<{{ fqClass relation.target.name }}Store>.from(target{{ className relation.owner.name }}Store.{{ variable relation.name }})
                 ..addAll([selected]); // Need to revise after LIST selection
@@ -58,7 +58,7 @@
             if (selected != null) {
         {{# if relation.isRelationBehaviourTypeSetable }}
                 {{fqVariable page.name}}PageStore.set{{ fqClass relation.name }}(target{{ className relation.owner.name }}Store, selected)
-                    .catchError((error) => ErrorHandler.errorDialog(context, error));
+                    .catchError((error) => ErrorHandler.showErrorSnack(context, error.message));
         {{ else }}
                 target{{ className relation.owner.name }}Store.set{{ fqClass relation.name }}([selected]); // Need to revise after LIST selection
         {{/ if }}
@@ -68,7 +68,7 @@
     {{#if action.isUnsetAction}}
         onPressed:{{# unless page.relationType.isAccess}}{{# unless page.relationType.isRelationKindStatic}} target{{ className page.relationType.owner.name }}Store.internal__updatable ?{{/ unless}}{{/ unless}} () async {
             {{fqVariable page.name}}PageStore.unset{{ fqClass page.relationType.name }}(target{{ className page.relationType.owner.name }}Store)
-                .catchError((error) => ErrorHandler.errorDialog(context, error));
+                .catchError((error) => ErrorHandler.showErrorSnack(context, error.message));
         }{{# unless page.relationType.isAccess}}{{# unless page.relationType.isRelationKindStatic}} : null{{/ unless}}{{/ unless}},
     {{/if}}
     {{# if action.isNavigationToPageAction }}
@@ -78,7 +78,7 @@
         },
     {{/ if }}
     {{#if label }}
-        label: '{{label}}',
+        label: AppLocalizations.of(context).lookUpValue(context, '{{ label }}'),
     {{/if}}
     {{#if action.icon }}
         icon: Icon(Icons.{{ action.icon.name }}),
