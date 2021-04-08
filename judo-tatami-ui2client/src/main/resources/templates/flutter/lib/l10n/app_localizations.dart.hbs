@@ -124,10 +124,20 @@ class AppLocalizations {
             return AppLocalizations.of(context).{{ l10nLabelName 'Greater or equal'}}();
           case 'Matches':
             return AppLocalizations.of(context).{{ l10nLabelName 'Matches'}}();
+          case 'Contain':
+            return AppLocalizations.of(context).{{ l10nLabelName 'Contain'}}();
+          case 'Begin with':
+            return AppLocalizations.of(context).{{ l10nLabelName 'Begin with'}}();
           case 'Like':
             return AppLocalizations.of(context).{{ l10nLabelName 'Like'}}();
           case 'Settings':
             return AppLocalizations.of(context).{{ l10nLabelName 'Settings'}}();
+          case 'Login':
+            return AppLocalizations.of(context).{{ l10nLabelName 'Login'}}();
+          case 'Logout':
+            return AppLocalizations.of(context).{{ l10nLabelName 'Logout'}}();
+          case 'Showed rows: ':
+            return AppLocalizations.of(context).{{ l10nLabelName 'Showed rows: '}}();
           case 'Something went wrong. Please contact with the system admins.':
             return AppLocalizations.of(context).{{ l10nLabelName 'Something went wrong. Please contact with the system admins.'}}();
           default:
@@ -464,6 +474,22 @@ class AppLocalizations {
         locale: localeName,
       );
     }
+    String {{ l10nLabelName 'Contain'}}() {
+      return Intl.message(
+        'Contain',
+        name: '{{ l10nLabelName 'Contain'}}',
+        args: [],
+        locale: localeName,
+      );
+    }
+    String {{ l10nLabelName 'Begin with'}}() {
+      return Intl.message(
+        'Begin with',
+        name: '{{ l10nLabelName 'Begin with'}}',
+        args: [],
+        locale: localeName,
+      );
+    }
     String {{ l10nLabelName 'Like'}}() {
       return Intl.message(
         'Like',
@@ -476,6 +502,30 @@ class AppLocalizations {
       return Intl.message(
         'Settings',
         name: '{{ l10nLabelName 'Settings'}}',
+        args: [],
+        locale: localeName,
+      );
+    }
+    String {{ l10nLabelName 'Logout'}}() {
+      return Intl.message(
+        'Logout',
+        name: '{{ l10nLabelName 'Logout'}}',
+        args: [],
+        locale: localeName,
+      );
+    }
+    String {{ l10nLabelName 'Login'}}() {
+      return Intl.message(
+        'Login',
+        name: '{{ l10nLabelName 'Login'}}',
+        args: [],
+        locale: localeName,
+      );
+    }
+    String {{ l10nLabelName 'Showed rows: '}}() {
+      return Intl.message(
+        'Showed rows: ',
+        name: '{{ l10nLabelName 'Showed rows: '}}',
         args: [],
         locale: localeName,
       );

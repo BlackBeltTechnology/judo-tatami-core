@@ -20,6 +20,11 @@ Widget get{{ fqClass page.name }}Page{{fqClass container.layoutType.name}}Body(B
                 {{~/ if ~}}
             {{~/ unless ~}}
         , {{fqClass page.name}}PageStore {{fqVariable page.name}}PageStore
+            {{~# if (isRefreshTableTypePage page) ~}}
+                {{~# if page.dataElement.isFilterable ~}}
+        , Map<FilterStore, Widget> filterStoreWidgetMap
+                {{~/ if ~}}
+            {{~/ if ~}}
         {{~/ if ~}}
 
         {{~# if page.isPageTypeTable ~}}
@@ -67,7 +72,7 @@ Widget get{{ fqClass page.name }}Page{{fqClass container.layoutType.name}}Body(B
         {{~/ if ~}}
     ) {
     final navigation = locator<NavigationState>();
-    {{# if page.isPageTypeTable }}
+    {{# if (isRefreshTableTypePage page) }}
     var addFilterButtonKey = GlobalKey();
     {{/if}}
 
@@ -78,10 +83,10 @@ Widget get{{ fqClass page.name }}Page{{fqClass container.layoutType.name}}Body(B
                 child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                        {{# if page.isPageTypeTable }}Observer(
+                        {{# if (isRefreshTableTypePage page) }}Observer(
                             builder: (_) => {{/ if }}JudoColumn(
                                 col: {{ multiplyCol col }},
-                                row: {{ row }}{{# if page.isPageTypeTable }} + {{ fqVariable page.name }}PageStore.getPlusRowSize + 1{{/ if }}, // +1 is for the text under table
+                                row: {{ row }}{{# if (isRefreshTableTypePage page) }} + {{ fqVariable page.name }}PageStore.getPlusRowSize + 1{{/ if }}, // +1 is for the text under table
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
                                 {{# each this.children as |child| }}
@@ -90,7 +95,7 @@ Widget get{{ fqClass page.name }}Page{{fqClass container.layoutType.name}}Body(B
                                     {{/ if }}
                                 {{/ each }}
                                 ],
-                            ),{{# if page.isPageTypeTable }}
+                            ),{{# if (isRefreshTableTypePage page) }}
                         ),{{/ if }}
                     ]
                 ),

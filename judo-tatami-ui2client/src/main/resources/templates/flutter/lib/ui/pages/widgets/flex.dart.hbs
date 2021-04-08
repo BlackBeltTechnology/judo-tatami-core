@@ -3,11 +3,11 @@
 {{# if isDirectionHorizontal }}
 JudoRow(
 {{ else }}
-{{# if page.isPageTypeTable }}Observer(
+{{# if (isRefreshTableTypePage page) }}Observer(
     builder: (_) => {{/ if }}JudoColumn(
 {{/ if }}
         col: {{ multiplyCol col }},
-        row: {{ row }}{{# unless isDirectionHorizontal }}{{# if page.isPageTypeTable }} + {{ fqVariable page.name }}PageStore.getPlusRowSize + 1{{/ if }}{{/ unless }},
+        row: {{ row }}{{# unless isDirectionHorizontal }}{{# if (isRefreshTableTypePage page) }} + {{ fqVariable page.name }}PageStore.getPlusRowSize + 1{{/ if }}{{/ unless }},
         card: {{ frame }},
         mainAxisAlignment: MainAxisAlignment.{{ mainAxisAlignment this }},
         crossAxisAlignment: CrossAxisAlignment.{{ crossAxisAlignment this }},
@@ -19,6 +19,6 @@ JudoRow(
             {{/ if }}
         {{/ each }}
         ],
-    ),{{# unless isDirectionHorizontal }}{{# if page.isPageTypeTable }}
+    ),{{# unless isDirectionHorizontal }}{{# if (isRefreshTableTypePage page) }}
 ),{{/ if }}{{/ unless }}
 //END flex.dart.hbs-----{{page.name}}------------------------------------------------------------------------------------------------------

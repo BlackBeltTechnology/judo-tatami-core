@@ -2,7 +2,7 @@
 //START aggregationtable.dart.hbs-----{{dataElement.name}}---------------------------------------------------------------------------------
 {{# with dataElement as |relation|}}
 Observer(builder: (_) {
-    var dataInfo = {{ fqClass pageDefinition.name }}{{ fqClass table.name }}{{ fqClass pageContainer.layoutType.name }}Table(disabled: {{disabled}});
+    var dataInfo = {{ fqClass pageDefinition.name }}{{ fqClass table.name }}{{ fqClass pageContainer.layoutType.name }}Table(context, disabled: {{disabled}});
     return JudoTable(
         disabled: {{disabled}},
         col: {{ multiplyCol col }},

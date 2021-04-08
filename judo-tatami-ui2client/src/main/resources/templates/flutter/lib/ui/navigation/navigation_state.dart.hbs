@@ -39,7 +39,7 @@ abstract class _NavigationState with Store {
     ObservableList<BreadCrumbItem> breadcumbItems = [ BreadCrumbItem(content: Icon(Icons.home, color: Color(0xffdcdcdc), size: 16,))].asObservable();
 
     @observable
-    String currentTitle = {{ fqClass application.dashboard.name }}Page.title;
+    String currentTitle = '';
 
     @action
     void setCurrentTitle(String newTitle) => currentTitle = newTitle;
@@ -77,7 +77,6 @@ abstract class _NavigationState with Store {
             var targetPageNavigation = await NavigationService.whereToGo(currentPageNavigation);
             if(targetPageNavigation != null) {
                 currentRoute = targetPageNavigation.route;
-                currentTitle = targetPageNavigation.route;
                 navigatorKey.currentState.pushAndRemoveUntil(targetPageNavigation.route, (route) => false, arguments: targetPageNavigation.getPageArgumentObject());
                 return;
             } else if(targetPageNavigation == null && currentPageNavigation?.pageType == PageType.View) { // if create page is not existing, but we need to go to the empty view page
@@ -87,7 +86,6 @@ abstract class _NavigationState with Store {
                 return;
             }
 
-            currentTitle = route;
             navigatorKey.currentState.pushAndRemoveUntil(route, (route) => false);
         }
     }
@@ -114,7 +112,6 @@ abstract class _NavigationState with Store {
         );
 
         stack.add(currentTitle);
-        currentTitle = routeName;
         return await navigatorKey.currentState.push(routeName,
             arguments : arguments,
             queryParams : queryParams,
