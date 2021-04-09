@@ -446,6 +446,13 @@ rule CreateRefreshOperationForTransferObjectType
         t.name = "_refreshInstance" + "For" + esmUtils.getNamespaceElementFQName(s).replace("::", "_").firstToUpperCase();
         t.instanceRepresentation = s.getPSMTransferObjectTypeEquivalent();
 
+        t.input = new JUDOPSM!Parameter;
+        t.input.name = "input";
+        t.input.type = s.equivalent("CreateQueryCustomizerType");
+        t.input.cardinality = new JUDOPSM!Cardinality;
+        t.input.cardinality.lower = 0;
+        t.input.cardinality.upper = 1;
+
         t.output = new JUDOPSM!Parameter;
         t.output.name = "output";
         t.output.type = s.getPSMTransferObjectTypeEquivalent();
@@ -466,6 +473,13 @@ rule CreateRefreshTransferOperationForTransferObjectType
         t.behaviour = new JUDOPSM!TransferOperationBehaviour;
         t.behaviour.behaviourType = JUDOPSM!TransferOperationBehaviourType#REFRESH;
         t.behaviour.owner = s.getPSMTransferObjectTypeEquivalent();
+
+        t.input = new JUDOPSM!Parameter;
+        t.input.name = "input";
+        t.input.type = s.equivalent("CreateQueryCustomizerType");
+        t.input.cardinality = new JUDOPSM!Cardinality;
+        t.input.cardinality.lower = 0;
+        t.input.cardinality.upper = 1;
 
         t.output = new JUDOPSM!Parameter;
         t.output.name = "output";
