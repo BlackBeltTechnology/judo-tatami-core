@@ -90,6 +90,7 @@ class {{ fqClass page.name }}Page extends StatefulWidget {
                     col: 1,
                     label: {{fqVariable page.name}}PageStore.stringFilterStoreMap['{{ variable filter.attributeType.name }}{{# if (isFilterOperationLike filterOperator)}}{{ fqClass likeOperator }}{{ else }}{{ className filterOperator.name }}{{/ if }}Filter'].getWidgetLabel(context),
                     onChanged: (value) => {{fqVariable page.name}}PageStore.stringFilterStoreMap['{{ variable filter.attributeType.name }}{{# if (isFilterOperationLike filterOperator)}}{{ fqClass likeOperator }}{{ else }}{{ className filterOperator.name }}{{/ if }}Filter'].setFilterValue({{# if (isFilterOperationLike filterOperator)}}{{# if (isFilterOperationTypeLikeContain likeOperator) }}'%' + {{/ if }}value + '%'{{ else }}value{{/ if }}),
+                    onSubmitted: (_) => {{fqVariable page.name}}PageStore.get{{ fqClass table.dataElement.name }}({{#unless table.dataElement.isAccess}} owner{{ className page.dataElement.owner.name }}Store {{/unless}}).catchError((error) => ErrorHandler.showErrorSnack(context, error.message)),
                 ),
                                 {{/ if }}
                                 {{~# if (isNumericType filter.attributeType.dataType) }}
@@ -97,6 +98,7 @@ class {{ fqClass page.name }}Page extends StatefulWidget {
                     col: 1,
                     label: {{fqVariable page.name}}PageStore.stringFilterStoreMap['{{ variable filter.attributeType.name }}{{ className filterOperator.name }}Filter'].getWidgetLabel(context),
                     onChanged: (value) => {{fqVariable page.name}}PageStore.stringFilterStoreMap['{{ variable filter.attributeType.name }}{{ className filterOperator.name }}Filter'].setFilterValue({{ dartType filter.attributeType.dataType }}.parse(value)),
+                    onSubmitted: (_) => {{fqVariable page.name}}PageStore.get{{ fqClass table.dataElement.name }}({{#unless table.dataElement.isAccess}} owner{{ className page.dataElement.owner.name }}Store {{/unless}}).catchError((error) => ErrorHandler.showErrorSnack(context, error.message)),
                 ),
                                 {{/ if }}
                                 {{~# if (isDateType filter.attributeType.dataType) }}
@@ -104,6 +106,7 @@ class {{ fqClass page.name }}Page extends StatefulWidget {
                     col: 1,
                     label: {{fqVariable page.name}}PageStore.stringFilterStoreMap['{{ variable filter.attributeType.name }}{{ className filterOperator.name }}Filter'].getWidgetLabel(context),
                     onChanged: (value) => {{fqVariable page.name}}PageStore.stringFilterStoreMap['{{ variable filter.attributeType.name }}{{ className filterOperator.name }}Filter'].setFilterValue(value),
+                    onSubmitted: (_) => {{fqVariable page.name}}PageStore.get{{ fqClass table.dataElement.name }}({{#unless table.dataElement.isAccess}} owner{{ className page.dataElement.owner.name }}Store {{/unless}}).catchError((error) => ErrorHandler.showErrorSnack(context, error.message)),
                 ),
                                 {{/ if }}
                                 {{~# if (isTimestampType filter.attributeType.dataType) }}
@@ -111,6 +114,7 @@ class {{ fqClass page.name }}Page extends StatefulWidget {
                     col: 1,
                     label: {{fqVariable page.name}}PageStore.stringFilterStoreMap['{{ variable filter.attributeType.name }}{{ className filterOperator.name }}Filter'].getWidgetLabel(context),
                     onChanged: (value) => {{fqVariable page.name}}PageStore.stringFilterStoreMap['{{ variable filter.attributeType.name }}{{ className filterOperator.name }}Filter'].setFilterValue(value),
+                    onSubmitted: (_) => {{fqVariable page.name}}PageStore.get{{ fqClass table.dataElement.name }}({{#unless table.dataElement.isAccess}} owner{{ className page.dataElement.owner.name }}Store {{/unless}}).catchError((error) => ErrorHandler.showErrorSnack(context, error.message)),
                 ),
                                 {{/ if }}
                                 {{~# if (isBooleanType filter.attributeType.dataType) }}
@@ -119,7 +123,10 @@ class {{ fqClass page.name }}Page extends StatefulWidget {
                         col: 1,
                         label: {{fqVariable page.name}}PageStore.stringFilterStoreMap['{{ variable filter.attributeType.name }}{{ className filterOperator.name }}Filter'].getWidgetLabel(context),
                         initialValue: {{fqVariable page.name}}PageStore.stringFilterStoreMap['{{ variable filter.attributeType.name }}{{ className filterOperator.name }}Filter'].filterValue,
-                        onChanged: (value) => {{fqVariable page.name}}PageStore.stringFilterStoreMap['{{ variable filter.attributeType.name }}{{ className filterOperator.name }}Filter'].setFilterValue(value),
+                        onChanged: (value) {
+                            {{fqVariable page.name}}PageStore.stringFilterStoreMap['{{ variable filter.attributeType.name }}{{ className filterOperator.name }}Filter'].setFilterValue(value);
+                            {{fqVariable page.name}}PageStore.get{{ fqClass table.dataElement.name }}({{#unless table.dataElement.isAccess}} owner{{ className page.dataElement.owner.name }}Store {{/unless}}).catchError((error) => ErrorHandler.showErrorSnack(context, error.message));
+                        },
                     )
                 ),
                                 {{/ if }}
@@ -128,7 +135,10 @@ class {{ fqClass page.name }}Page extends StatefulWidget {
                     builder: (_) => JudoComboBox<{{ className filter.attributeType.dataType.name }}>(
                         col: 1,
                         label: {{fqVariable page.name}}PageStore.stringFilterStoreMap['{{ variable filter.attributeType.name }}{{ className filterOperator.name }}Filter'].getWidgetLabel(context),
-                        onChanged: (value) => {{fqVariable page.name}}PageStore.stringFilterStoreMap['{{ variable filter.attributeType.name }}{{ className filterOperator.name }}Filter'].setFilterValue(value),
+                        onChanged: (value) {
+                            {{fqVariable page.name}}PageStore.stringFilterStoreMap['{{ variable filter.attributeType.name }}{{ className filterOperator.name }}Filter'].setFilterValue(value);
+                            {{fqVariable page.name}}PageStore.get{{ fqClass table.dataElement.name }}({{#unless table.dataElement.isAccess}} owner{{ className page.dataElement.owner.name }}Store {{/unless}}).catchError((error) => ErrorHandler.showErrorSnack(context, error.message));
+                        },
                         items: {{ className filter.attributeType.dataType.name }}.values,
                         dropdownMenuShow: (value) => new DropdownMenuItem<{{ className filter.attributeType.dataType.name }}>(
                             value: value,
