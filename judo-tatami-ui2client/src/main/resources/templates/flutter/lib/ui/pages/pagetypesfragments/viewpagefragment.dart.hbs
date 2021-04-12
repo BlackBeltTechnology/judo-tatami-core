@@ -21,7 +21,7 @@ class _{{ fqClass page.name }}PageState extends State<{{ fqClass page.name }}Pag
     _{{ fqClass page.name }}PageState({@required this.target{{ className page.dataElement.target.name }}Store{{#unless page.dataElement.isAccess}}, @required this.owner{{ className page.dataElement.owner.name }}Store{{/unless}} }){
         final navigation = locator<NavigationState>();
         SchedulerBinding.instance.addPostFrameCallback((_) {
-            navigation.setCurrentTitle(AppLocalizations.of(context).lookUpValue(context, {{ fqClass page.name }}Page.title));
+            navigation.setCurrentTitle(AppLocalizations.of(context).lookUpValue(context, {{ fqClass page.name }}Page.title){{# if page.dataElement.target.representation }} + ' - ' + target{{ className page.dataElement.target.name }}Store.{{ variable page.dataElement.target.representation.name }}{{/ if }});
         });
     }
 //END viewpagefragment.dart.hbs-----{{page.name}}------------------------------------------------------------------------------------------

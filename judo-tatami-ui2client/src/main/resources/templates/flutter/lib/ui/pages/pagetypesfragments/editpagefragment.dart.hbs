@@ -24,7 +24,7 @@ class _{{ fqClass page.name }}PageState extends State<{{ fqClass page.name }}Pag
     {
         final navigation = locator<NavigationState>();
         SchedulerBinding.instance.addPostFrameCallback((_) {
-            navigation.setCurrentTitle(AppLocalizations.of(context).lookUpValue(context, {{ fqClass page.name }}Page.title));
+            navigation.setCurrentTitle(AppLocalizations.of(context).lookUpValue(context, {{ fqClass page.name }}Page.title){{# if page.dataElement.target.representation }} + ' - ' + target{{ className page.dataElement.target.name }}Store.{{ variable page.dataElement.target.representation.name }}{{/ if }});
         });
         {{# if (validatableFlagNeed page.dataElement) }}
         if (this.validatable != null) {
