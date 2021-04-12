@@ -60,12 +60,15 @@ public class [%= name%]Impl extends [%= getInternalPrefix() + getModelPackageNam
 			@Override
 			public [%= relatedType %] get[%= rel.name.firstToUpperCase() %]([%= dtoTypeName %] object) {
 		        org.eclipse.emf.ecore.EReference ref = [%= sdkUtil %].getReference(getEClass(FQ_NAME), "[%= rel.name %]");
-				hu.blackbelt.judo.dao.api.Payload resultPayload = dao.getNavigationResultAt(object.get__identifier(), ref).get(0);
-				return [%= sdkUtil %].fromPayload([%= relatedType %].class, resultPayload);	
+		        final java.util.List<hu.blackbelt.judo.dao.api.Payload> navigationResult = dao.getNavigationResultAt(object.get__identifier(), ref);
+		        if (navigationResult.isEmpty()) {
+		            return null;
+		        }
+				return [%= sdkUtil %].fromPayload([%= relatedType %].class, navigationResult.get(0));
 			}
 
 			@Override
-			public void set[%= rel.name.firstToUpperCase() %]([%= dtoTypeName %] object, [%= relatedType %] relatedObject) { 
+			public void set[%= rel.name.firstToUpperCase() %]([%= dtoTypeName %] object, [%= relatedType %] relatedObject) {
 				dao.setReference([%= sdkUtil %].getReference(getEClass(FQ_NAME), "[%= rel.name  %]"), object.get__identifier(), java.util.Arrays.asList(relatedObject.get__identifier()));
 			}
 
