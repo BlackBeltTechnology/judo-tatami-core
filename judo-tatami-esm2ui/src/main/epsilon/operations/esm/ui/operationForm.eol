@@ -10,6 +10,7 @@ operation ESM!esm::ui::OperationForm createButtonFromOperationForm(application :
     var callAction = new UI!ui::CallOperationAction();
     callAction.`operation` = op.mapOperationType(application, self.getRoot().eContainer.mapClassType(application));
     
+    //TODO: refactor and remove Icon
     if (self.iconName.isDefined()) {
         callAction.icon = new UI!ui::Icon();
         callAction.icon.name = self.iconName;

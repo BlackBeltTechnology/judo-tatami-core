@@ -4,6 +4,8 @@ operation ESM!esm::ui::TextField createTextFromTextField(application : UI!ui::Ap
     ret.setVisualProperties(self, application);
     ret.sourceId = self.getID();
     
+    ret.text = self.text;
+    
     return ret;
 }
 

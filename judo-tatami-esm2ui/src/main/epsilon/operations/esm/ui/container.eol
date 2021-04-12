@@ -6,6 +6,8 @@ operation ESM!esm::ui::Container createFlexFromContainer(application : UI!ui::Ap
     } else {
         ret.name = self.name;
         ret.label = self.getUiLabel();
+        ret.iconName = self.iconName;
+        ret.labelVisible = self.labelVisible;
         ret.col = applicationColumns.asReal();
         ret.stretch = UI!ui::Stretch#BOTH;
     }

@@ -38,7 +38,8 @@ operation ESM!esm::ui::TransferObjectTable setPropertiesOfLinkAndTable(element :
     element.name = self.name;
     element.col = applicationColumns.asReal();
     element.label = self.getUiLabel();
-    element.icon = self.iconName;
+    element.iconName = self.iconName;
+    //element.labelVisible = self.labelVisible;
     element.sourceId = self.getID();
     if (dataElement.isKindOf(UI!ui::data::RelationType)) {
         element.~originalRelation = dataElement.~originalRelation;

@@ -777,12 +777,14 @@ public class Esm2UiVisualElementTest {
         TabularReferenceField tabular7 = newTabularReferenceFieldBuilder().withName(compositionNotTargetDefined.getName())
                 .withLabel(compositionNotTargetDefined.getName().toUpperCase()).withRelationFeature(compositionNotTargetDefined).withCol(12)
                 .withTargetDefinedTabular(false)
+                .withLabelVisible(true)
                 .withColumns(newDataColumnBuilder().withName(idE4.getName()).withDataFeature(idE4).build(),
                         newDataColumnBuilder().withName(nameE4.getName()).withDataFeature(nameE4).build())
                 .build();
         TabularReferenceField tabular8 = newTabularReferenceFieldBuilder().withName(compositionTargetDefined.getName())
                 .withLabel(compositionTargetDefined.getName().toUpperCase()).withRelationFeature(compositionTargetDefined).withCol(12)
                 .withTargetDefinedTabular(true)
+                .withLabelVisible(true)
                 .build();
         
         useEntityType(e4).withTable(

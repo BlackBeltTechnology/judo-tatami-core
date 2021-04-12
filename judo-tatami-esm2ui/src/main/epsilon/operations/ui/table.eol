@@ -268,24 +268,20 @@ operation UI!ui::Table wrapAndLabelTable() {
     wrapper.children.add(self);
     tableContainer.children.add(tableIndex, wrapper);
     
-    if (not self.isTablePage() and (self.label.isDefined() or self.icon.isDefined())) {
-        var tableIndex : Integer = wrapper.children.indexOf(self);
-        var label : UI!ui::Label = new UI!ui::Label();
-        label.row = 1d;
-        label.col = self.col;
-        label.stretch = self.stretch;
-        label.name = self.name.anchor("Label");
+    var tableIndex : Integer = wrapper.children.indexOf(self);
+    var label : UI!ui::Label = new UI!ui::Label();
+    label.row = 1d;
+    label.col = self.col;
+    label.stretch = self.stretch;
+    label.name = self.name.anchor("Label");
 
-        if (self.label.isDefined()) {
-            label.label = self.label;
-        }
-        
-        if (self.icon.isDefined() and self.icon.trim().length() > 0) {
-            var icon : UI!ui::Icon = new UI!ui::Icon();
-            icon.name = self.icon;
-            label.icon = icon;
-        }
-        
-        wrapper.children.add(tableIndex, label);
+    label.label = self.label;
+    
+    if (self.iconName.isDefined() and self.iconName.trim().length() > 0) {
+        var icon : UI!ui::Icon = new UI!ui::Icon();
+        icon.name = self.iconName;
+        label.icon = icon;
     }
+    
+    wrapper.children.add(tableIndex, label);
 }

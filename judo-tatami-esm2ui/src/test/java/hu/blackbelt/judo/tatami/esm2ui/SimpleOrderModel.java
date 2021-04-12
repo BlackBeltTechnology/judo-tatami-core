@@ -566,7 +566,9 @@ public class SimpleOrderModel {
 
                 TabularReferenceField tabular = newTabularReferenceFieldBuilder().withName(r.getName())
                         .withLabel(r.getName().toUpperCase()).withRelationFeature(r).withCol(12)
-                        .withTargetDefinedTabular(false).build();
+                        .withTargetDefinedTabular(false)
+                        .withLabelVisible(true)
+                        .build();
                 TransferObjectType target = (TransferObjectType) (r.getTarget());
 
                 target.getAllAttributes().stream().forEach(a -> {
@@ -655,6 +657,7 @@ public class SimpleOrderModel {
 
                 TabularReferenceField tabular = newTabularReferenceFieldBuilder().withName(r.getName())
                         .withLabel(r.getName().toUpperCase()).withRelationFeature(r)
+                        .withLabelVisible(true)
                         .withCol(12).build();
                 TransferObjectType target = (TransferObjectType) (r.getTarget());
                 target.getAllAttributes().stream().forEach(a -> {

@@ -4,7 +4,7 @@
 Observer(builder: (_) {
     return JudoLink(
         label: AppLocalizations.of(context).lookUpValue(context, '{{ label }}'),
-        icon: Icon(Icons.{{ safe icon 'texture' }}),
+        icon: Icon(Icons.{{ safe iconName 'texture' }}),
         disabled: {{ disabled }},
         {{# if page.isPageTypeView }}
         readOnly: true,

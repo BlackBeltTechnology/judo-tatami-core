@@ -2,6 +2,8 @@ operation ESM!esm::ui::DataColumn createFormattedFromDataColumn(application : UI
     var ret : UI!ui::Formatted = self.dataFeature.getMember().getDataType().formatted();
     ret.name = self.name;
     ret.label = self.getUiLabel();
+    ret.iconName = self.iconName;
+    ret.labelVisible = self.labelVisible;
     ret.attributeType = attributeType;
     return ret;
 }

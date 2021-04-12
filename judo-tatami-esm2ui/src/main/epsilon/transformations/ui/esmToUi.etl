@@ -15,6 +15,20 @@ post {
     for (page : UI!ui::PageDefinition in UI!ui::PageDefinition.all().select(p | p.dataElement.isDefined() and p.dataElement.isKindOf(UI!ui::data::RelationType))) {
         page.updateRelationPageContent();
     }
+    
+    for (element in UI!ui::VisualElement.all().select(e | (e.isKindOf(UI!ui::EnumerationRadio) or
+            e.isKindOf(UI!ui::Divider) or e.isKindOf(UI!ui::Spacer) or e.isKindOf(UI!ui::Text) or e.isKindOf(UI!ui::Text))
+            and e.isLabelVisibleAndDefined())) {
+        element.wrapAndLabelVisualElement();
+    }
+    
+    for (flex in UI!ui::Flex.all().select(f | not f.isKindOf(UI!ui::PageContainer) and f.isLabelVisibleAndDefined())) {
+        flex.wrapAndLabelFlex();
+    }
+    
+    for (table : UI!ui::Table in UI!ui::Table.all().select(t | not t.isTablePage() and t.isLabelVisibleAndDefined())) {
+        table.wrapAndLabelTable();
+    }
 
     for (application : UI!ui::Application in UI!ui::Application.all()) {
             log.debug("==============================================================");
@@ -39,9 +53,9 @@ post {
     }
     
     for (application : UI!ui::Application in UI!ui::Application.all()) {
-        uiUtils.organizeApplication(application, "mobile", 4);
-        uiUtils.organizeApplication(application, "tablet", 8);
-        uiUtils.organizeApplication(application, "desktop", 12);
+        uiUtils.organizeApplication(application, "mobile", 4, 1/14d);
+        uiUtils.organizeApplication(application, "tablet", 8, 1/14d);
+        uiUtils.organizeApplication(application, "desktop", 12, 1/14d);
 
         var mobile = application.layoutTypes.selectOne(l | l.name == "mobile");
         mobile.minimumResolution = 0;

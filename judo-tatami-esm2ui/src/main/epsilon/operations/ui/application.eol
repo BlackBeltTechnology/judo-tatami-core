@@ -10,7 +10,6 @@ operation UI!ui::Application resolveActionPageDefinitions() {
 operation UI!ui::Application calculatePageActions(preview : Boolean) {
 
     for (table : UI!ui::Table in UI!ui::Table.all().select(t | t.getPageDefinition().eContainer() == self)) {
-        table.wrapAndLabelTable();
         table.calculateActions(self, preview);
     }
     for (link : UI!ui::Link in UI!ui::Link.all().select(t | t.getPageDefinition().eContainer() == self)) {
