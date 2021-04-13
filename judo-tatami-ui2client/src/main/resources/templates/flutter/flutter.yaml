@@ -703,6 +703,12 @@
 
 - overwriteExpression: true
   factoryExpression: "{#application}"
+  pathExpression: "'lib/' + #path(#application.actor.name) + '/utilities/url_util.dart'"
+  templateName: flutter/lib/utilities/url_util.dart
+  copy: true
+
+- overwriteExpression: true
+  factoryExpression: "{#application}"
   pathExpression: "'lib/' + #path(#application.actor.name) + '/utilities/package.dart'"
   templateName: flutter/lib/utilities/package.dart
   copy: true
