@@ -9,7 +9,8 @@ operation UI!ui::Formatted createFilter() : UI!ui::Filter {
     filter.row = self.row;
     filter.label = self.label;
     filter.iconName = self.iconName;
-    filter.labelVisible = self.labelVisible;
+    filter.showLabel = self.showLabel;
+    filter.showIcon = self.showIcon;
     filter.disabled = self.disabled;
     filter.stretch = self.stretch;
     filter.enabledBy = self.enabledBy;

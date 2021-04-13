@@ -50,8 +50,8 @@ operation UI!ui::VisualElement setVisualProperties(component : ESM!esm::ui::Comp
     self.name = component.name;
     self.label = component.getUiLabel();
     self.iconName = component.iconName;
-    self.labelVisible = component.labelVisible;
-
+    self.showLabel = component.showLabel;
+    self.showIcon = component.showIcon;
     self.col = component.col.asReal();
     self.row = component.row.asReal();
     
@@ -76,7 +76,7 @@ operation UI!ui::VisualElement setVisualProperties(component : ESM!esm::ui::Comp
     }
 }
 
-operation UI!ui::VisualElement wrapAndLabelVisualElement() {
+/*operation UI!ui::VisualElement wrapAndLabelVisualElement() {
     if (self.eContainer().isDefined() and self.eContainer().isKindOf(UI!ui::Container)) {
         var container : UI!ui::Container = self.eContainer();
         var index : Integer = container.children.indexOf(self);
@@ -122,4 +122,35 @@ operation UI!ui::VisualElement wrapAndLabelVisualElement() {
         
         wrapper.children.add(index, label);
     }
+}*/
+
+operation UI!ui::VisualElement wrapAndLabelVisualElement() : UI!ui::Flex {
+    var wrapper = createVerticalFlex(self.name, self.col, self.row + 1d);
+    wrapper.crossAxisAlignment = UI!ui::CrossAxisAlignment#CENTER;
+    wrapper.mainAxisAlignment = UI!ui::MainAxisAlignment#CENTER;
+    
+    wrapper.stretch = self.stretch;
+    self.stretch = UI!ui::Stretch#BOTH;
+    
+    var label : UI!ui::Label = new UI!ui::Label();
+    label.row = 1d;
+    label.col = self.col;
+    label.stretch = UI!ui::Stretch#BOTH;
+    label.name = self.name.anchor("Label");
+    
+    if (self.isLabelVisible()) {
+        label.label = self.label;
+    } else {
+        label.label = "";
+    }
+    
+    if (self.isIconVisible()) {
+    var icon : UI!ui::Icon = new UI!ui::Icon();
+        icon.name = self.iconName;
+        label.icon = icon;
+    }
+    
+    wrapper.children.add(label);
+    wrapper.children.add(self);
+    return wrapper;
 }

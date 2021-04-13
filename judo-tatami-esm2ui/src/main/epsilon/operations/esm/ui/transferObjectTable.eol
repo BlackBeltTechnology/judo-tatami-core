@@ -15,6 +15,7 @@ operation ESM!esm::ui::TransferObjectTable createTableFromTransferObjectTable(ap
     } else {
         t.row = 2d;
     }
+    
     return t;
 }
 
@@ -39,7 +40,8 @@ operation ESM!esm::ui::TransferObjectTable setPropertiesOfLinkAndTable(element :
     element.col = applicationColumns.asReal();
     element.label = self.getUiLabel();
     element.iconName = self.iconName;
-    //element.labelVisible = self.labelVisible;
+    element.showLabel = self.showLabel;
+    element.showIcon = self.showIcon;
     element.sourceId = self.getID();
     if (dataElement.isKindOf(UI!ui::data::RelationType)) {
         element.~originalRelation = dataElement.~originalRelation;

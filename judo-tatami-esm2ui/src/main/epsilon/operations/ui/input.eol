@@ -1,4 +1,12 @@
+operation UI!ui::Input fillInput(dataField : ESM!esm::ui::DataField, attributeType : UI!ui::data::AttributeType, application : UI!ui::Application) : UI!ui::Input{
+    self.setVisualProperties(dataField, application);
+    self.attributeType = attributeType;
+    self.sourceId = dataField.getID();
+    return self;
+}
+
 operation UI!ui::Input setIcon() {
+
 }
 
 operation UI!ui::TextArea setIcon() {
@@ -49,3 +57,4 @@ operation UI!ui::EnumerationCombo setIcon() {
         self.leadingIcon.name = 'arrow_drop_down';
     }
 }
+

@@ -214,22 +214,7 @@ operation UI!ui::Table createActionButtonGroupForTable() : UI!ui::Flex {
     return buttonGroup;
 }
 
-operation UI!ui::Table isTablePage() : Boolean {
-    
-    var pageDef = self.getPageDefinition();
-    
-    if (pageDef.isDefined()) {
-        var dataElement = self.getPageDefinition().dataElement;
-        if (dataElement.isDefined() and dataElement.isKindOf(UI!ui::data::RelationType)) {
-            return pageDef.pageType == UI!ui::PageType#TABLE or (pageDef.pageType == UI!ui::PageType#DASHBOARD and dataElement.isCollection);
-        }
-        return pageDef.pageType == UI!ui::PageType#TABLE; 
-    }
-    
-    return false;
-}
-
-operation UI!ui::Table wrapAndLabelTable() {
+/*operation UI!ui::Table wrapAndLabelTable() {
     var tableContainer : UI!ui::Container = self.eContainer();
     var tableIndex : Integer = tableContainer.children.indexOf(self);
     var wrapper = createVerticalFlex(self.name, self.col, self.row + 1d);
@@ -284,4 +269,34 @@ operation UI!ui::Table wrapAndLabelTable() {
     }
     
     wrapper.children.add(tableIndex, label);
+}*/
+
+operation UI!ui::Table wrapAndLabelTable() : UI!ui::Flex {
+    var wrapper = createVerticalFlex(self.name, self.col, self.row + 1d);
+    wrapper.crossAxisAlignment = UI!ui::CrossAxisAlignment#CENTER;
+    wrapper.stretch = self.stretch;
+    self.stretch = UI!ui::Stretch#BOTH;
+
+    var label : UI!ui::Label = new UI!ui::Label();
+    label.row = 1d;
+    label.col = self.col;
+    label.stretch = self.stretch;
+    label.name = self.name.anchor("Label"); 
+    
+    if (self.isLabelVisible()) {
+        label.label = self.label;
+    } else {
+        label = " ";
+    }
+    
+    if (self.isIconVisible()) {
+        var icon : UI!ui::Icon = new UI!ui::Icon();
+        icon.name = self.iconName;
+        label.icon = icon;
+    }
+    
+    wrapper.children.add(label);
+    wrapper.children.add(self);
+    
+    return wrapper;
 }

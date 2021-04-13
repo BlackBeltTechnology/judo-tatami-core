@@ -1,25 +1,9 @@
-operation ESM!esm::namespace::NamedElement fillInput(input : UI!ui::Input, row : Real, col : Real, leadingIcon: String): UI!ui::Input {
-    input.col = col;
-    input.row  = row;
-    
-    if (leadingIcon.isDefined() and leadingIcon.trim().length() > 0) {
-       input.leadingIcon = new UI!ui::Icon();
-       input.leadingIcon.name = leadingIcon;
-    }
-    return input;
-}
-
-operation ESM!esm::namespace::NamedElement fillInput(input : UI!ui::Input, row : Real, col : Real): UI!ui::Input {
-    input.col = col;
-    input.row  = row;
-    return input;
-}
-
-operation ESM!esm::namespace::NamedElement fillFormatted(formatted : UI!ui::Formatted, format : String, row : Real, col : Real): UI!ui::Formatted {
-    formatted.name = self.name;
-    formatted.col = col;
-    formatted.row  = row;
-    formatted.format = format;
+operation createFormatted(dataField : ESM!esm::ui::DataField, attributeType : UI!ui::data::AttributeType, application : UI!ui::Application) : UI!ui::Formatted {
+    var formatted = new UI!ui::Formatted();
+    formatted.setVisualProperties(dataField, application);
+    formatted.format = "%s";
+    formatted.attributeType = attributeType;
+    formatted.sourceId = dataField.getID();
     return formatted;
 }
 

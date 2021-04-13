@@ -172,3 +172,13 @@ operation UI!ui::PageDefinition hasInstanceActions() : Boolean {
         relationType.getIsRelationBehaviourTypeAddable();
 }
 
+operation UI!ui::PageDefinition isTablePage() : Boolean {
+
+    var dataElement = self.dataElement;
+    if (dataElement.isDefined() and dataElement.isKindOf(UI!ui::data::RelationType)) {
+        return self.pageType == UI!ui::PageType#TABLE or (self.pageType == UI!ui::PageType#DASHBOARD and dataElement.isCollection);
+    }
+    return self.pageType == UI!ui::PageType#TABLE; 
+    
+    return false;
+}

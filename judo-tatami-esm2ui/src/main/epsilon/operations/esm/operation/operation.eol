@@ -67,6 +67,11 @@ operation ESM!esm::`operation`::Operation createFormPageForOperationInput(applic
         pageContainer.children.add(flex);
         log.warn(self.input.target.fqName() + " has no form defined");
     } else {
+        page.label = self.input.target.form.getUiLabel() + " - " + self.name.replaceAll(
+             "(?<=[A-Z])(?=[A-Z][a-z])|" +
+             "(?<=[^A-Z])(?=[A-Z])|" +
+             "(?<=[A-Za-z \\u0080-\\u9fff])(?=[^A-Za-z \\u0080-\\u9fff])",
+            " ");
         pageContainer.children.add(self.input.target.form.map(application, page));
     }
     

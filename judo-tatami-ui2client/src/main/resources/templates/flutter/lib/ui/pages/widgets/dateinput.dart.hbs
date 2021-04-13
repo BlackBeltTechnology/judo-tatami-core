@@ -9,7 +9,7 @@ Observer(
         disabled: {{ disabled }}{{# if enabledBy }} || !((target{{ className page.relationType.target.name }}Store?.{{ variable enabledBy.name }}) ?? false){{/ if }},
         initialDate: target{{ className page.dataElement.target.name }}Store.{{ variable attributeType.name }},
         label: AppLocalizations.of(context).lookUpValue(context, '{{ label }}'),
-        icon: Icon(Icons.{{ this.leadingIcon.name }}),
+        icon: Icon(Icons.{{ this.iconName }}),
         readOnly: true,
     ),
 ),
@@ -24,7 +24,7 @@ Observer(
         disabled: {{ disabled }}{{# if enabledBy }} || !((target{{ className page.relationType.target.name }}Store?.{{ variable enabledBy.name }}) ?? false){{/ if }},
         initialDate: target{{ className page.dataElement.target.name }}Store.{{ variable attributeType.name }},
         label: AppLocalizations.of(context).lookUpValue(context, '{{ label }}'),
-        icon: Icon(Icons.{{ this.leadingIcon.name }}),
+        icon: Icon(Icons.{{ this.iconName }}),
         onChanged: (value) => target{{ className page.dataElement.target.name }}Store.set{{ className attributeType.name }}(value),
         firstDate: DateTime(DateTime.now().year - 5), // TODO: revisit this line
         lastDate: DateTime(DateTime.now().year + 5), // TODO: revisit this line
@@ -42,7 +42,7 @@ Observer(
         disabled: {{ disabled }}{{# if enabledBy }} || !((target{{ className page.relationType.target.name }}Store?.{{ variable enabledBy.name }}) ?? false){{/ if }},
         initialDate: target{{ className page.dataElement.target.name }}Store.{{ variable attributeType.name }},
         label: AppLocalizations.of(context).lookUpValue(context, '{{ label }}'),
-        icon: Icon(Icons.{{ this.leadingIcon.name }}),
+        icon: Icon(Icons.{{ this.iconName }}),
         onChanged: (value) => target{{ className page.dataElement.target.name }}Store.set{{ className attributeType.name }}(value),
         firstDate: DateTime(DateTime.now().year - 5), // TODO: revisit this line
         lastDate: DateTime(DateTime.now().year + 5), // TODO: revisit this line

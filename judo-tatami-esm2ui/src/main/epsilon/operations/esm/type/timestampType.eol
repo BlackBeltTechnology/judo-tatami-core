@@ -1,9 +1,10 @@
-operation ESM!esm::type::TimestampType input(dataField : ESM!esm::ui::DataField, application : UI!ui::Application): UI!ui::Input {
-    return self.fillInput(new UI!ui::DateTimeInput(), dataField.row.asReal(), dataField.col.asReal(), dataField.iconName);
+operation ESM!esm::type::TimestampType input(dataField : ESM!esm::ui::DataField, attributeType : UI!ui::data::AttributeType, application : UI!ui::Application): UI!ui::Input {
+    var input = new UI!ui::DateTimeInput();
+    return input.fillInput(dataField, attributeType, application);
 }
 
-operation ESM!esm::type::TimestampType formatted(): UI!ui::Formatted {
-    return self.fillFormatted(new UI!ui::Formatted(), "%s", 1d, 2d);
+operation ESM!esm::type::TimestampType formatted(dataField : ESM!esm::ui::DataField, attributeType : UI!ui::data::AttributeType, application : UI!ui::Application): UI!ui::Formatted {
+    return createFormatted(dataField, attributeType, application);
 }
 
 @cached
