@@ -52,6 +52,11 @@ operation ESM!esm::`operation`::Operation createFormPageForOperationInput(applic
         
     page.name = self.name.anchor("OperationInputPageForm", clazz.name);
     page.pageType = UI!ui::PageType#OPERATION_INPUT;
+    page.label = target.form.getUiLabel() + " - " + self.name.replaceAll(
+         "(?<=[A-Z])(?=[A-Z][a-z])|" +
+         "(?<=[^A-Z])(?=[A-Z])|" +
+         "(?<=[A-Za-z \\u0080-\\u9fff])(?=[^A-Za-z \\u0080-\\u9fff])",
+      " ");
 
     var pageContainer = new UI!ui::PageContainer();
     pageContainer.layoutType = application.layoutTypes.first;
