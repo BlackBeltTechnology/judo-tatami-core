@@ -11,9 +11,6 @@
 import 'package:flutter/material.dart';
 import 'package:openapi_dart_common/openapi.dart';
 import 'package:judo_flutter_components/judo_flutter_components.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:universal_platform/universal_platform.dart';
-import 'package:universal_html/html.dart';
 
 import '{{ path application.name }}/app_theme.dart';
 import '{{ path application.name }}/injector/injector.dart';
@@ -26,42 +23,10 @@ void main() async {
 
     configureDependencies();
 
-    // 1. Base URL is the generated default URL or defined in compile time
-    //    with --dart-define=API_DEFAULT_BASE_URL=http://some.nice.url/
-    var url = API_DEFAULT_BASE_URL + API_RELATIVE_PATH;
-    print("Default API URL: " + url);
-
-    // 2. When USE_REQUEST_BASE_URL_FOR_API is defined, uses the window location. It can be used
-    //    with web target only.
-    //    It can be defined in compile time
-    //    with --dart-define=USE_REQUEST_BASE_URL_FOR_API=true
-    if (UniversalPlatform.isWeb) {
-        if (USE_REQUEST_BASE_URL_FOR_API) {
-            var protocol =  window.location.protocol ?? "http";
-            var port = window.location.port;
-            if (protocol == 'http' && port != null && port == '80') {
-                port = null;
-            }
-            if (protocol == 'https' && port != null && port == '443') {
-                port = null;
-            }
-
-            url = protocol + "//" + window.location.host + (port != null ? ":" + port : '') + API_RELATIVE_PATH;
-            print("Use API URL from request URL: " + url);
-        }
-    }
-
-    // 4. When USE_REQUEST_BASE_URL_FROM_SETTINGS is defined, uses the location from settings page.
-    // When no value found the default or request URL is used.
-    if (USE_REQUEST_BASE_URL_FROM_SETTINGS) {
-        SharedPreferences prefs = await SharedPreferences.getInstance();
-        var urlPref = (prefs.getString('apiUrl') ?? url);
-        await prefs.setString('apiUrl', urlPref);
-        print("Override URL by settings preference: " + url);
-    }
+    var apiUrl = await UrlUtil.getApiUrl();
 
     // Call the meta data with no token refresh interceptor
-    ApiClient _apiClient = ApiClient(basePath: url, apiClientDelegate: DioClientDelegate());
+    ApiClient _apiClient = ApiClient(basePath: apiUrl, apiClientDelegate: DioClientDelegate());
     locator.registerSingleton<ApiClient>(_apiClient);
     try {
         await Oauth.loadClientMetaData();
@@ -76,7 +41,7 @@ void main() async {
         locator.unregister(instance: _apiClient);
 
         // Add the token refresh interceptor for the rest of the api calls
-        _apiClient = ApiClient(basePath: url, apiClientDelegate: Oauth.getDioDelegate());
+        _apiClient = ApiClient(basePath: apiUrl, apiClientDelegate: Oauth.getDioDelegate());
         locator.registerSingleton<ApiClient>(_apiClient);
 
         if (!isNavigateToSettingsPage) {
