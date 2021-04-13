@@ -55,6 +55,11 @@ Future<{{# if relation.isCollection }}List<{{ fqClass relation.target.name }}Sto
                 col: 1,
                 label: dialogHelperStore.stringFilterStoreMap['{{ variable filter.attributeType.name }}{{# if (isFilterOperationLike filterOperator)}}{{ fqClass likeOperator }}{{ else }}{{ className filterOperator.name }}{{/ if }}Filter'].getWidgetLabel(context),
                 onChanged: (value) => dialogHelperStore.stringFilterStoreMap['{{ variable filter.attributeType.name }}{{# if (isFilterOperationLike filterOperator)}}{{ fqClass likeOperator }}{{ else }}{{ className filterOperator.name }}{{/ if }}Filter'].setFilterValue({{# if (isFilterOperationLike filterOperator)}}{{# if (isFilterOperationTypeLikeContain likeOperator) }}'%' + {{/ if }}value + '%'{{ else }}value{{/ if }}),
+                onSubmitted: (_) => pageStore.getRangeFor{{ fqClass relation.name }}(
+                  ownerStore,
+                  queryLimit: tableQueryLimit,
+                  filterStoreList: dialogHelperStore.stringFilterStoreMap.values.where((element) => element.filterEnabled).toList(),
+                ).catchError((error) => ErrorHandler.showErrorSnack(context, error)),
             ),
                     {{/ if }}
                     {{~# if (isNumericType filter.attributeType.dataType) }}
@@ -62,6 +67,11 @@ Future<{{# if relation.isCollection }}List<{{ fqClass relation.target.name }}Sto
                 col: 1,
                 label: dialogHelperStore.stringFilterStoreMap['{{ variable filter.attributeType.name }}{{ className filterOperator.name }}Filter'].getWidgetLabel(context),
                 onChanged: (value) => dialogHelperStore.stringFilterStoreMap['{{ variable filter.attributeType.name }}{{ className filterOperator.name }}Filter'].setFilterValue({{ dartType filter.attributeType.dataType }}.parse(value)),
+                onSubmitted: (_) => pageStore.getRangeFor{{ fqClass relation.name }}(
+                  ownerStore,
+                  queryLimit: tableQueryLimit,
+                  filterStoreList: dialogHelperStore.stringFilterStoreMap.values.where((element) => element.filterEnabled).toList(),
+                ).catchError((error) => ErrorHandler.showErrorSnack(context, error)),
             ),
                     {{/ if }}
                     {{~# if (isDateType filter.attributeType.dataType) }}
@@ -69,6 +79,11 @@ Future<{{# if relation.isCollection }}List<{{ fqClass relation.target.name }}Sto
                 col: 1,
                 label: dialogHelperStore.stringFilterStoreMap['{{ variable filter.attributeType.name }}{{ className filterOperator.name }}Filter'].getWidgetLabel(context),
                 onChanged: (value) => dialogHelperStore.stringFilterStoreMap['{{ variable filter.attributeType.name }}{{ className filterOperator.name }}Filter'].setFilterValue(value),
+                onSubmitted: (_) => pageStore.getRangeFor{{ fqClass relation.name }}(
+                  ownerStore,
+                  queryLimit: tableQueryLimit,
+                  filterStoreList: dialogHelperStore.stringFilterStoreMap.values.where((element) => element.filterEnabled).toList(),
+                ).catchError((error) => ErrorHandler.showErrorSnack(context, error)),
             ),
                     {{/ if }}
                     {{~# if (isTimestampType filter.attributeType.dataType) }}
@@ -76,6 +91,11 @@ Future<{{# if relation.isCollection }}List<{{ fqClass relation.target.name }}Sto
                 col: 1,
                 label: dialogHelperStore.stringFilterStoreMap['{{ variable filter.attributeType.name }}{{ className filterOperator.name }}Filter'].getWidgetLabel(context),
                 onChanged: (value) => dialogHelperStore.stringFilterStoreMap['{{ variable filter.attributeType.name }}{{ className filterOperator.name }}Filter'].setFilterValue(value),
+                onSubmitted: (_) => pageStore.getRangeFor{{ fqClass relation.name }}(
+                  ownerStore,
+                  queryLimit: tableQueryLimit,
+                  filterStoreList: dialogHelperStore.stringFilterStoreMap.values.where((element) => element.filterEnabled).toList(),
+                ).catchError((error) => ErrorHandler.showErrorSnack(context, error)),
             ),
                     {{/ if }}
                     {{~# if (isBooleanType filter.attributeType.dataType) }}
@@ -84,7 +104,14 @@ Future<{{# if relation.isCollection }}List<{{ fqClass relation.target.name }}Sto
                     col: 1,
                     label: dialogHelperStore.stringFilterStoreMap['{{ variable filter.attributeType.name }}{{ className filterOperator.name }}Filter'].getWidgetLabel(context),
                     initialValue: dialogHelperStore.stringFilterStoreMap['{{ variable filter.attributeType.name }}{{ className filterOperator.name }}Filter'].filterValue,
-                    onChanged: (value) => dialogHelperStore.stringFilterStoreMap['{{ variable filter.attributeType.name }}{{ className filterOperator.name }}Filter'].setFilterValue(value),
+                    onChanged: (value) {
+                        dialogHelperStore.stringFilterStoreMap['{{ variable filter.attributeType.name }}{{ className filterOperator.name }}Filter'].setFilterValue(value);
+                        pageStore.getRangeFor{{ fqClass relation.name }}(
+                          ownerStore,
+                          queryLimit: tableQueryLimit,
+                          filterStoreList: dialogHelperStore.stringFilterStoreMap.values.where((element) => element.filterEnabled).toList(),
+                        ).catchError((error) => ErrorHandler.showErrorSnack(context, error));
+                    },
                 )
             ),
                     {{/ if }}
@@ -93,7 +120,14 @@ Future<{{# if relation.isCollection }}List<{{ fqClass relation.target.name }}Sto
                 builder: (_) => JudoComboBox<{{ className filter.attributeType.dataType.name }}>(
                     col: 1,
                     label: dialogHelperStore.stringFilterStoreMap['{{ variable filter.attributeType.name }}{{ className filterOperator.name }}Filter'].getWidgetLabel(context),
-                    onChanged: (value) => dialogHelperStore.stringFilterStoreMap['{{ variable filter.attributeType.name }}{{ className filterOperator.name }}Filter'].setFilterValue(value),
+                    onChanged: (value) {
+                        dialogHelperStore.stringFilterStoreMap['{{ variable filter.attributeType.name }}{{ className filterOperator.name }}Filter'].setFilterValue(value);
+                        pageStore.getRangeFor{{ fqClass relation.name }}(
+                          ownerStore,
+                          queryLimit: tableQueryLimit,
+                          filterStoreList: dialogHelperStore.stringFilterStoreMap.values.where((element) => element.filterEnabled).toList(),
+                        ).catchError((error) => ErrorHandler.showErrorSnack(context, error));
+                    },
                     items: {{ className attributeType.dataType.name }}.values,
                     dropdownMenuShow: (value) => new DropdownMenuItem<{{ className attributeType.dataType.name }}>(
                         value: value,
@@ -120,7 +154,14 @@ Future<{{# if relation.isCollection }}List<{{ fqClass relation.target.name }}Sto
               mainAxisSize: MainAxisSize.min,
               children: [
                 Column(
-                  children: getInputFilterWidgets(filterStoreWidgetMap),
+                  children: getInputFilterWidgets(
+                    filterStoreWidgetMap,
+                    () => pageStore.getRangeFor{{ fqClass relation.name }}(
+                        ownerStore,
+                        queryLimit: tableQueryLimit,
+                        filterStoreList: dialogHelperStore.stringFilterStoreMap.values.where((element) => element.filterEnabled).toList(),
+                    ).catchError((error) => ErrorHandler.showErrorSnack(context, error)), 
+                  ),
                 ),
                 Row(
                   children: [
