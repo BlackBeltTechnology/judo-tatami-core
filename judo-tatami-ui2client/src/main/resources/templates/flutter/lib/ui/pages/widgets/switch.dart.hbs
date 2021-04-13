@@ -21,6 +21,7 @@ Observer(
     builder: (_) => JudoSwitch(
         col: {{ multiplyCol col }},
         row: {{ row }},
+        mandatory: {{ attributeType.isRequired }},
         disabled: {{ disabled }}{{# if enabledBy }} || !((target{{ className page.relationType.target.name }}Store?.{{ variable enabledBy.name }}) ?? false){{/ if }},
         {{# if icon }}
             icon: Icon(Icons.{{ this.icon.name }}),
@@ -38,6 +39,7 @@ Observer(
     builder: (_) => JudoSwitch(
         col: {{ multiplyCol col }},
         row: {{ row }},
+        mandatory: {{ attributeType.isRequired }},
         disabled: {{ disabled }}{{# if enabledBy }} || !((target{{ className page.relationType.target.name }}Store?.{{ variable enabledBy.name }}) ?? false){{/ if }},
         {{# if icon }}
             icon: Icon(Icons.{{ this.icon.name }}),
