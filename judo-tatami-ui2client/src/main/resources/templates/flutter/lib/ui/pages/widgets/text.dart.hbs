@@ -1,7 +1,7 @@
 {{ log 'Text generation for' (variable application.name) '-' (fqClass page.name)'page' label level='debug' ~}}
 //START text.dart.hbs-----{{page.name}}----------------------------------------------------------------------------------------------------
 JudoText(
-    col: {{ multiplyCol col }},
+    col: {{ col }},
     row: {{ row }},
     text: AppLocalizations.of(context).lookUpValue(context, '{{ label }}'),
 ),

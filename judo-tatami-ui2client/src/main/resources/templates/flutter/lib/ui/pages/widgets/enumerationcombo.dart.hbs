@@ -4,16 +4,16 @@
 Observer(
     builder: (_) => JudoComboBox<{{ className attributeType.dataType.name }}>(
         key: UniqueKey(),
-        col: {{ multiplyCol col }},
+        col: {{ col }},
         row: {{ row }},
         icon: Icon(Icons.{{ this.leadingIcon.name }}),
-        label: '{{ label }}',
+        label: AppLocalizations.of(context).lookUpValue(context, '{{ label }}'),
         disabled: {{ disabled }}{{# if enabledBy }} || !((target{{ className page.relationType.target.name }}Store?.{{ variable enabledBy.name }}) ?? false){{/ if }},
         items: {{ className attributeType.dataType.name }}.values,
         value: target{{ className page.dataElement.target.name }}Store.{{ variable attributeType.name }},
         dropdownMenuShow: (value) => new DropdownMenuItem<{{ className attributeType.dataType.name }}>(
             value: value,
-            child: new Text(value.toString().split('.').last)
+            child: new Text(AppLocalizations.of(context).lookUpValue(context, value.toString().split('.').last))
         ),
         readOnly: true,
     )
@@ -24,17 +24,18 @@ Observer(
 Observer(
     builder: (_) => JudoComboBox<{{ className attributeType.dataType.name }}>(
         key: inputWidgetKeyMap['{{ name }}'],
-        col: {{ multiplyCol col }},
+        col: {{ col }},
         row: {{ row }},
+        mandatory: {{ attributeType.isRequired }},
         icon: Icon(Icons.{{ this.leadingIcon.name }}),
-        label: '{{ label }}',
+        label: AppLocalizations.of(context).lookUpValue(context, '{{ label }}'),
         disabled: {{ disabled }}{{# if enabledBy }} || !((target{{ className page.relationType.target.name }}Store?.{{ variable enabledBy.name }}) ?? false){{/ if }},
         items: {{ className attributeType.dataType.name }}.values,
         value: target{{ className page.dataElement.target.name }}Store.{{ variable attributeType.name }},
         onChanged: (value) => target{{ className page.dataElement.target.name }}Store.set{{ className attributeType.name }}(value),
         dropdownMenuShow: (value) => new DropdownMenuItem<{{ className attributeType.dataType.name }}>(
             value: value,
-            child: new Text(value.toString().split('.').last)
+            child: new Text(AppLocalizations.of(context).lookUpValue(context, value.toString().split('.').last))
         ),
         readOnly: {{attributeType.isReadOnly}},
     )
@@ -45,17 +46,18 @@ Observer(
 Observer(
     builder: (_) => JudoComboBox<{{ className attributeType.dataType.name }}>(
         key: inputWidgetKeyMap['{{ name }}'],
-        col: {{ multiplyCol col }},
+        col: {{ col }},
         row: {{ row }},
+        mandatory: {{ attributeType.isRequired }},
         icon: Icon(Icons.{{ this.leadingIcon.name }}),
-        label: '{{ label }}',
+        label: AppLocalizations.of(context).lookUpValue(context, '{{ label }}'),
         disabled: {{ disabled }}{{# if enabledBy }} || !((target{{ className page.relationType.target.name }}Store?.{{ variable enabledBy.name }}) ?? false){{/ if }},
         items: {{ className attributeType.dataType.name }}.values,
         value: target{{ className page.dataElement.target.name }}Store.{{ variable attributeType.name }},
         onChanged: (value) => target{{ className page.dataElement.target.name }}Store.set{{ className attributeType.name }}(value),
         dropdownMenuShow: (value) => new DropdownMenuItem<{{ className attributeType.dataType.name }}>(
             value: value,
-            child: new Text(value.toString().split('.').last)
+            child: new Text(AppLocalizations.of(context).lookUpValue(context, value.toString().split('.').last))
         ),
         readOnly: {{attributeType.isReadOnly}},
     )

@@ -6,7 +6,7 @@
         key: addFilterButtonKey,
         {{/ if }}
         row: {{ row }},
-        col: {{ multiplyCol col }},
+        col: {{ col }},
         disabled: {{disabled}}{{# if enabledBy }} || !((target{{ className page.relationType.target.name }}Store?.{{ variable enabledBy.name }}) ?? false){{/ if }},
     {{# unless disabled }}
         {{# if action.isSaveAction }}

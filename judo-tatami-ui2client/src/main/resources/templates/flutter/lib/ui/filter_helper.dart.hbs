@@ -74,7 +74,7 @@ List<Widget> getInputFilterWidgets(Map<FilterStore, Widget> filterStoreWidgetMap
 }
 
 List<Widget> getInputFilterWidgetsForTablePage(Map<FilterStore, Widget> filterStoreWidgetMap, double layoutMaxCols, Function getAction){
-    int colSize;
+    double colSize;
     if(layoutMaxCols >= 12) {
         colSize = 2;
     } else if(layoutMaxCols >= 8) {
