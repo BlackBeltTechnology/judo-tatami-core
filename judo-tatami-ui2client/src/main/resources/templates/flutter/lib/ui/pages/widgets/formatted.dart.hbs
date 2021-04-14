@@ -38,7 +38,7 @@ target{{ dataName }}?.{{ variable column.attributeType.name }} != null ? Text(
 {{ else }}
 {{ log 'Formatted text generation for' (variable application.name) '-' (fqClass page.name)'page'(variable page.dataElement.target.name) attributeType.name level='debug' ~}}
 JudoText(
-    col: {{ multiplyCol col }},
+    col: {{ col }},
     row: {{ row }},
     label: '{{ label }}',
     text: target{{ className page.dataElement.target.name }}Store.{{ variable attributeType.name }}.toString(),

@@ -4,7 +4,7 @@
 Observer(
     builder: (_) => JudoRadio<{{ className attributeType.dataType.name }}>(
         key: UniqueKey(),
-        col: {{ multiplyCol col }},
+        col: {{ col }},
         row: {{ row }},
         disabled: {{ disabled }}{{# if enabledBy }} || !((target{{ className page.relationType.target.name }}Store?.{{ variable enabledBy.name }}) ?? false){{/ if }},
         items: {{ className attributeType.dataType.name }}.values,
@@ -20,7 +20,7 @@ Observer(
 Observer(
     builder: (_) => JudoRadio<{{ className attributeType.dataType.name }}>(
         key: inputWidgetKeyMap['{{ name }}'],
-        col: {{ multiplyCol col }},
+        col: {{ col }},
         row: {{ row }},
         disabled: {{ disabled }}{{# if enabledBy }} || !((target{{ className page.relationType.target.name }}Store?.{{ variable enabledBy.name }}) ?? false){{/ if }},
         items: {{ className attributeType.dataType.name }}.values,
@@ -36,7 +36,7 @@ Observer(
 Observer(
     builder: (_) => JudoRadio<{{ className attributeType.dataType.name }}>(
         key: inputWidgetKeyMap['{{ name }}'],
-        col: {{ multiplyCol col }},
+        col: {{ col }},
         row: {{ row }},
         disabled: {{ disabled }}{{# if enabledBy }} || !((target{{ className page.relationType.target.name }}Store?.{{ variable enabledBy.name }}) ?? false){{/ if }},
         items: {{ className attributeType.dataType.name }}.values,

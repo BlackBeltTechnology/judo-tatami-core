@@ -4,7 +4,7 @@
 Observer(
     builder: (_) => JudoComboBox<{{ className attributeType.dataType.name }}>(
         key: UniqueKey(),
-        col: {{ multiplyCol col }},
+        col: {{ col }},
         row: {{ row }},
         icon: Icon(Icons.{{ this.leadingIcon.name }}),
         label: AppLocalizations.of(context).lookUpValue(context, '{{ label }}'),
@@ -24,7 +24,7 @@ Observer(
 Observer(
     builder: (_) => JudoComboBox<{{ className attributeType.dataType.name }}>(
         key: inputWidgetKeyMap['{{ name }}'],
-        col: {{ multiplyCol col }},
+        col: {{ col }},
         row: {{ row }},
         mandatory: {{ attributeType.isRequired }},
         icon: Icon(Icons.{{ this.leadingIcon.name }}),
@@ -46,7 +46,7 @@ Observer(
 Observer(
     builder: (_) => JudoComboBox<{{ className attributeType.dataType.name }}>(
         key: inputWidgetKeyMap['{{ name }}'],
-        col: {{ multiplyCol col }},
+        col: {{ col }},
         row: {{ row }},
         mandatory: {{ attributeType.isRequired }},
         icon: Icon(Icons.{{ this.leadingIcon.name }}),

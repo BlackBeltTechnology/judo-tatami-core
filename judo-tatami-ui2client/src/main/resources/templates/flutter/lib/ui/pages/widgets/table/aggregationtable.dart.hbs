@@ -5,7 +5,7 @@ Observer(builder: (_) {
     var dataInfo = {{ fqClass pageDefinition.name }}{{ fqClass table.name }}{{ fqClass pageContainer.layoutType.name }}Table(context, disabled: {{disabled}});
     return JudoTable(
         disabled: {{disabled}},
-        col: {{ multiplyCol col }},
+        col: {{ col }},
         row: {{row}},
         dataInfo: dataInfo,
         rowList: {{# if relation.isCollection }}target{{ className relation.owner.name }}Store.{{variable relation.name}}{{else}}[target{{ className relation.owner.name }}Store.{{variable relation.name}}].asObservable(){{/ if}},
