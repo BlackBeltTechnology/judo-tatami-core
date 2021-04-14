@@ -69,6 +69,7 @@ rule CreateExposedServicePostOperation
         guard: s.eContainer.isKindOf(ASM!EOperation) and s.source == asmUtils.getAnnotationUri("exposedBy") and (not s.eContainer.eParameters.isEmpty or asmUtils.annotatedAsTrue(s.eContainer, "stateful"))
 
         s.equivalent("CreateExposedServicePath").`post` = t;
+        t.consumes.add("application/json");
 }
 
 @abstract
