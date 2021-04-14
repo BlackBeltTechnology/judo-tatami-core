@@ -53,7 +53,7 @@ List<PopupMenuEntry<FilterStore>> getPopupMenuOperationItemsByAttribute(context,
   }).toList();
 }
 
-List<Widget> getInputFilterWidgets(Map<FilterStore, Widget> filterStoreWidgetMap){
+List<Widget> getInputFilterWidgets(Map<FilterStore, Widget> filterStoreWidgetMap, Function getRangeAction){
   return filterStoreWidgetMap.keys.map<Widget>( (filterStore) {
     return Observer(
       builder: (_) => filterStore.filterEnabled ?  Row(
@@ -64,6 +64,7 @@ List<Widget> getInputFilterWidgets(Map<FilterStore, Widget> filterStoreWidgetMap
             tooltip: 'Remove filter field',
             onPressed: () {
               filterStore.changeFilterEnabled();
+              getRangeAction();
             },
           )
         ],
@@ -72,7 +73,7 @@ List<Widget> getInputFilterWidgets(Map<FilterStore, Widget> filterStoreWidgetMap
   }).toList();
 }
 
-List<Widget> getInputFilterWidgetsForTablePage(Map<FilterStore, Widget> filterStoreWidgetMap, double layoutMaxCols){
+List<Widget> getInputFilterWidgetsForTablePage(Map<FilterStore, Widget> filterStoreWidgetMap, double layoutMaxCols, Function getAction){
     int colSize;
     if(layoutMaxCols >= 12) {
         colSize = 2;
@@ -96,6 +97,7 @@ List<Widget> getInputFilterWidgetsForTablePage(Map<FilterStore, Widget> filterSt
                         tooltip: 'Remove filter field',
                         onPressed: () {
                             filterStore.changeFilterEnabled();
+                            getAction();
                         },
                     ),
                     JudoSpacer(col: colSize, row: 1),
