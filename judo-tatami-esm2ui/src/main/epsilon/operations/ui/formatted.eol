@@ -8,12 +8,15 @@ operation UI!ui::Formatted createFilter() : UI!ui::Filter {
     filter.col = self.col;
     filter.row = self.row;
     filter.label = self.label;
-    filter.iconName = self.iconName;
     filter.showLabel = self.showLabel;
     filter.showIcon = self.showIcon;
     filter.disabled = self.disabled;
     filter.stretch = self.stretch;
     filter.enabledBy = self.enabledBy;
+    
+    if (self.icon.isDefined()) {
+        filter.createIconForLabeledElement(self.icon.name);
+    }
 
     return filter;
 }

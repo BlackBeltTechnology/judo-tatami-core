@@ -15,10 +15,12 @@ JudoTab(
     tabs: [
     {{# each tabs as |tab| }}
         Tab(
-        {{#if tab.icon }}
-            icon: Icon(Icons.{{ tab.icon.name }}),
+        {{#if tab.element.isIconVisible }}
+            icon: Icon(Icons.{{ tab.element.icon.name }}),
         {{/if}}
+        {{#if tab.element.isLabelVisible }}
             text: AppLocalizations.of(context).lookUpValue(context, '{{ tab.element.label }}'),
+        {{/if}}
         ),
     {{/ each }}
     ]

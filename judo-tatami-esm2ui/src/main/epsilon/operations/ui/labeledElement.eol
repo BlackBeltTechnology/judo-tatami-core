@@ -1,0 +1,7 @@
+operation UI!ui::LabeledElement createIconForLabeledElement(iconName : String) {
+    if (iconName.isDefined() and iconName.trim().length() > 0) {
+        var icon = new UI!ui::Icon();
+        icon.name = iconName;
+        self.icon = icon;
+    }
+}

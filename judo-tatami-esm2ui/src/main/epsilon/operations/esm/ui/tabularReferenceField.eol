@@ -58,7 +58,7 @@ operation ESM!esm::ui::TabularReferenceField createTableFromTabularReferenceFiel
     table.disabled = (page.pageType == UI!ui::PageType#CREATE or page.pageType == UI!ui::PageType#UPDATE or page.pageType == UI!ui::PageType#OPERATION_INPUT) and
                         not (table.dataElement.memberType == UI!ui::data::MemberType#STORED and table.dataElement.relationKind == UI!ui::data::RelationKind#AGGREGATION);
     
-    if (not page.isTablePage() and table.isKindOf(UI!ui::Table) and (table.isLabelVisible() or table.isIconVisible())) {
+    if (not page.isTablePage() and table.isKindOf(UI!ui::Table) and (table.getIsLabelVisible() or table.getIsIconVisible())) {
         return table.wrapAndLabelTable();
     }
     
@@ -113,7 +113,7 @@ operation ESM!esm::ui::TabularReferenceField map(application : UI!ui::Applicatio
         spacer.setVisualProperties(self, application);
         spacer.name = self.name.anchor("PlaceHolderForReferenceField");
         spacer.sourceId = self.getID();
-        if (spacer.isLabelVisible() or spacer.isIconVisible()) {
+        if (spacer.getIsLabelVisible() or spacer.getIsIconVisible()) {
             return spacer.wrapAndLabelVisualElement();
         }
         return spacer;

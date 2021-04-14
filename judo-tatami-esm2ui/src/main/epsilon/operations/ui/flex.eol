@@ -1,62 +1,7 @@
-/*operation UI!ui::Flex wrapAndLabelFlex() {
-    if (self.eContainer().isDefined() and self.eContainer().isKindOf(UI!ui::Container)) {
-        var flexContainer : UI!ui::Container = self.eContainer();
-        
-        var flexIndex : Integer = flexContainer.children.indexOf(self);
-        var wrapper = createVerticalFlex(self.name, self.col, self.row + 1d);
-        
-        if (self.frame) {
-            wrapper.frame = true;
-            self.frame = false;
-        }
-        
-        if (flexContainer.direction == UI!ui::Axis#HORIZONTAL) {
-            if (flexContainer.crossAxisAlignment == UI!ui::CrossAxisAlignment#START) {
-                wrapper.mainAxisAlignment = UI!ui::MainAxisAlignment#START;
-            } else if (flexContainer.crossAxisAlignment == UI!ui::CrossAxisAlignment#END) {
-                wrapper.mainAxisAlignment = UI!ui::MainAxisAlignment#END;
-            } else {
-                wrapper.mainAxisAlignment = UI!ui::MainAxisAlignment#CENTER;
-            }
-            wrapper.crossAxisAlignment = UI!ui::CrossAxisAlignment#CENTER;
-        } else {
-            if (flexContainer.mainAxisAlignment == UI!ui::MainAxisAlignment#START) {
-                wrapper.mainAxisAlignment = UI!ui::MainAxisAlignment#START;
-            } else if (flexContainer.mainAxisAlignment == UI!ui::MainAxisAlignment#END) {
-                wrapper.mainAxisAlignment = UI!ui::MainAxisAlignment#END;
-            } else {
-                wrapper.mainAxisAlignment = UI!ui::MainAxisAlignment#CENTER;
-            }
-            wrapper.crossAxisAlignment = UI!ui::CrossAxisAlignment#CENTER;
-        }
-        
-        wrapper.stretch = self.stretch;
-    
-        wrapper.children.add(self);
-        flexContainer.children.add(flexIndex, wrapper);
-        
-        var flexIndex : Integer = wrapper.children.indexOf(self);
-        var label : UI!ui::Label = new UI!ui::Label();
-        label.row = 1d;
-        label.col = self.col;
-        label.stretch = self.stretch;
-        label.name = self.name.anchor("Label");
-        label.label = self.label;
-        
-        if (self.iconName.isDefined() and self.iconName.trim().length() > 0) {
-            var icon : UI!ui::Icon = new UI!ui::Icon();
-	        icon.name = self.iconName;
-	        label.icon = icon;
-        }
-        
-        wrapper.children.add(flexIndex, label);
-    }
-}*/
-
 operation UI!ui::Flex wrapAndLabelFlex() : UI!ui::Flex {
     var wrapper = createVerticalFlex(self.name, self.col, self.row + 1d);
     wrapper.crossAxisAlignment = UI!ui::CrossAxisAlignment#CENTER;
-    wrapper.mainAxisAlignment = UI!ui::MainAxisAlignment#CENTER;
+    wrapper.mainAxisAlignment = UI!ui::MainAxisAlignment#START;
     if (self.frame) {
         wrapper.frame = true;
         self.frame = false;
@@ -68,19 +13,19 @@ operation UI!ui::Flex wrapAndLabelFlex() : UI!ui::Flex {
     var label : UI!ui::Label = new UI!ui::Label();
     label.row = 1d;
     label.col = self.col;
-    label.stretch = UI!ui::Stretch#BOTH;
+    label.stretch = UI!ui::Stretch#HORIZONTAL;
     label.name = self.name.anchor("Label");
     
-    if (self.isLabelVisible()) {
+    if (self.getIsLabelVisible()) {
         label.label = self.label;
-    } else {
-        label.label = "";
+        label.showLabel = true;
     }
     
-    if (self.isIconVisible()) {
-    var icon : UI!ui::Icon = new UI!ui::Icon();
-        icon.name = self.iconName;
+    if (self.getIsIconVisible()) {
+        var icon : UI!ui::Icon = new UI!ui::Icon();
+        icon.name = self.icon.name;
         label.icon = icon;
+        label.showIcon = true;
     }
     
     wrapper.children.add(label);

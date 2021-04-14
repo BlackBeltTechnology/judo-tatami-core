@@ -5,7 +5,7 @@ operation ESM!esm::ui::DataColumn createFormattedFromDataColumn(application : UI
     ret.row = 1d;
     ret.format = "%s";
     ret.label = self.getUiLabel();
-    ret.iconName = self.iconName;
+    ret.createIconForLabeledElement(self.iconName);
     ret.showLabel = self.showLabel;
     ret.showIcon = self.showIcon;
     ret.attributeType = attributeType;

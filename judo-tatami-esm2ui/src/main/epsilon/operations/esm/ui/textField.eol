@@ -6,7 +6,7 @@ operation ESM!esm::ui::TextField createTextFromTextField(application : UI!ui::Ap
     
     ret.text = self.text;
     
-    if (ret.isLabelVisible() or ret.isIconVisible()) {
+    if (ret.getIsLabelVisible() or ret.getIsIconVisible()) {
         return ret.wrapAndLabelVisualElement();
     }
     

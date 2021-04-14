@@ -10,3 +10,4 @@ import "visualElement.eol";
 import "pageContainer.eol";
 import "formatted.eol";
 import "flex.eol";
+import "labeledElement.eol";

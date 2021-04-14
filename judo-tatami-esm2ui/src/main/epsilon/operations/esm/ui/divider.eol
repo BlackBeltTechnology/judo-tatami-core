@@ -4,7 +4,7 @@ operation ESM!esm::ui::Divider createDividerFromDivider(application : UI!ui::App
     ret.setVisualProperties(self, application);
     ret.sourceId = self.getID();
     
-    if (ret.isLabelVisible() or ret.isIconVisible()) {
+    if (ret.getIsLabelVisible() or ret.getIsIconVisible()) {
         return ret.wrapAndLabelVisualElement();
     }
     

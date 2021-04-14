@@ -1335,18 +1335,18 @@ public class Esm2UiVisualElementTest {
         final Optional<Flex> tab1 = tabController.get().getTabs().stream().map(t -> (Flex) t.getElement())
                 .filter(t -> t.getName().equals("Tab1")).findAny();
         assertTrue(tab1.isPresent());
-        assertNotNull(((hu.blackbelt.judo.meta.ui.Tab) tab1.get().eContainer()).getIcon());
-        assertEquals(group1.getIconName(), ((hu.blackbelt.judo.meta.ui.Tab) tab1.get().eContainer()).getIcon().getName());
+        assertNotNull(tab1.get().getIcon());
+        assertEquals(group1.getIconName(), tab1.get().getIcon().getName());
         assertEquals(4, tab1.get().getChildren().size());
         final Optional<Flex> tab2 = tabController.get().getTabs().stream().map(t -> (Flex) t.getElement())
                 .filter(t -> t.getName().equals("Tab2")).findAny();
         assertTrue(tab2.isPresent());
-        assertNull(((hu.blackbelt.judo.meta.ui.Tab) tab2.get().eContainer()).getIcon());
+        assertNull(tab2.get().getIcon());
         assertEquals(3, tab2.get().getChildren().size());
         final Optional<Flex> tab3 = tabController.get().getTabs().stream().map(t -> (Flex) t.getElement())
                 .filter(t -> t.getName().equals("Tab3")).findAny();
         assertTrue(tab3.isPresent());
-        assertNull(((hu.blackbelt.judo.meta.ui.Tab) tab3.get().eContainer()).getIcon());
+        assertNull(tab3.get().getIcon());
         assertEquals(3, tab3.get().getChildren().size());
     }
     

@@ -19,12 +19,9 @@ rule AccessMenuNavigationItem
 
         t.name = s.access.fqName().anchor("NavigationItem");
         t.label = s.getUiLabel();
-        var icon = new UI!ui::Icon();
-        icon.name = s.iconName;
-        if (icon.name.isUndefined()) {
-            icon.name = "texture";
-        }
-        t.icon = icon;
+        t.showLabel = s.showLabel;
+        t.createIconForLabeledElement(s.iconName);
+        t.showIcon = s.showIcon;
         s.eContainer.equivalent("NavigationController").items.add(t);
         t.~pos = s.eContainer.getMenuItems().indexOf(s);
 }

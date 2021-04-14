@@ -7,14 +7,8 @@ operation ESM!esm::ui::TabBar createTabController(application : UI!ui::Applicati
     for (t in self.tabs) {
         var tab : UI!ui::Tab = new UI!ui::Tab();
         tab.name = t.name;
-        
-        //TODO: refactor and remove Icon - icon of element should be used
-        if (t.iconName.isDefined() and t.iconName.trim().length() > 0) {
-            tab.icon = new UI!ui::Icon();
-            tab.icon.name = t.iconName;
-        }
-        
-        tab.element = t.map(application, page);
+        tab.element = t.createFlexFromContainer(application, page);
+        tab.element.sourceId = self.getID();
         ret.tabs.add(tab);
     }
     

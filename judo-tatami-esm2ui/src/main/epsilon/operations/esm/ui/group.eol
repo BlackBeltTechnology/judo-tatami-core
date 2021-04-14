@@ -2,7 +2,7 @@ operation ESM!esm::ui::Group createFlexFromGroup(application : UI!ui::Applicatio
     var ret : UI!ui::Flex = self.createFlexFromContainer(application, page);
     ret.sourceId = self.getID();
     
-    if (ret.isLabelVisible() or ret.isIconVisible()) {
+    if (ret.getIsLabelVisible() or ret.getIsIconVisible()) {
         return ret.wrapAndLabelFlex();
     }
     
