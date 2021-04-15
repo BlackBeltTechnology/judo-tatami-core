@@ -8,7 +8,7 @@ target{{ dataName }}?.{{ variable column.attributeType.name }} != null ? Align(a
 {{ else }}
 {{# if (isEnumType column.attributeType.dataType) }}
 target{{ dataName }}?.{{ variable column.attributeType.name }} != null ? Text(
-    target{{ dataName }}.{{ variable column.attributeType.name }}.toString().split('.').last,
+    AppLocalizations.of(context).lookUpValue(context, target{{ dataName }}.{{ variable column.attributeType.name }}.toString().split('.').last),
 ) : Center(child: Icon(Icons.block, color: Colors.grey.shade200,)),
 {{ else }}
 {{#if (isTimestampType column.attributeType.dataType) }}
