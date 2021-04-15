@@ -54,14 +54,13 @@ operation UI!ui::PageDefinition calculateActions(application : UI!ui::Applicatio
         
         for (container in self.containers) {
             var buttonGroup : UI!ui::Flex = container.createGroupForInstanceActionButtons();
+            if (not relationType.isAccess and self.pageType == UI!ui::PageType#TABLE) {
+                buttonGroup.children.add(createButton("back", "Back", 2d, new UI!ui::BackAction()));
+            }
             buttonGroup.children.add(createButton("refresh", "Refresh", 2d, new UI!ui::RefreshAction()));
             
             if (relationType.isFilterable) {
                 buttonGroup.children.add(createButton("filter", "Filter", 2d, new UI!ui::FilterAction()));
-            }
-
-            if (not relationType.isAccess and self.pageType == UI!ui::PageType#TABLE) {
-                buttonGroup.children.add(createButton("back", "Back", 2d, new UI!ui::BackAction()));
             }
             
             if (relationType.getIsRelationBehaviourTypeCreatable()) {
