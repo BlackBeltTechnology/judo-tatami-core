@@ -39,9 +39,9 @@ post {
     }
     
     for (application : UI!ui::Application in UI!ui::Application.all()) {
-        uiUtils.organizeApplication(application, "mobile", 4, 1/14d);
-        uiUtils.organizeApplication(application, "tablet", 8, 1/14d);
-        uiUtils.organizeApplication(application, "desktop", 12, 1/14d);
+        uiUtils.organizeApplication(application, "mobile", 4);
+        uiUtils.organizeApplication(application, "tablet", 8);
+        uiUtils.organizeApplication(application, "desktop", 12);
 
         var mobile = application.layoutTypes.selectOne(l | l.name == "mobile");
         mobile.minimumResolution = 0;

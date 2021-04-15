@@ -93,6 +93,7 @@ operation UI!ui::VisualElement wrapAndLabelVisualElement() : UI!ui::Flex {
     if (self.getIsLabelVisible()) {
         label.label = self.label;
         label.showLabel = true;
+        label.labelMargin = new UI!ui::Margin();
     }
     
     if (self.getIsIconVisible()) {
@@ -100,6 +101,7 @@ operation UI!ui::VisualElement wrapAndLabelVisualElement() : UI!ui::Flex {
         icon.name = self.icon.name;
         label.icon = icon;
         label.showIcon = true;
+        label.iconMargin = new UI!ui::Margin();
     }
     
     wrapper.children.add(label);

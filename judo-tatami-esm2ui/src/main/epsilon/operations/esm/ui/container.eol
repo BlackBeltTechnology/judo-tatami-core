@@ -13,7 +13,10 @@ operation ESM!esm::ui::Container createFlexFromContainer(application : UI!ui::Ap
         ret.stretch = UI!ui::Stretch#BOTH;
     }
     
-    ret.frame = self.frame;
+    if (self.frame) {
+        ret.frame = new UI!ui::Frame();
+        ret.frame.margin = new UI!ui::Margin();
+    }
     ret.sourceId = self.getID();
 
     if (self.getEffectiveLayout() == ESM!esm::ui::Layout#HORIZONTAL) {

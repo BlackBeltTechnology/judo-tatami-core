@@ -3,11 +3,13 @@
 JudoLabel(
     col: {{ col }},
     row: {{ row }},
-  {{#if this.isLabelVisible }}
-    label: AppLocalizations.of(context).lookUpValue(context, '{{ this.label }}'),
+  {{#if isLabelVisible }}
+    label: AppLocalizations.of(context).lookUpValue(context, '{{ label }}'),
+    labelMargin: {{ labelMargin.left }},
   {{/if}}
-  {{#if this.isIconVisible }}
-    icon: Icon(Icons.{{ this.icon.name }}),
+  {{#if isIconVisible }}
+    icon: Icon(Icons.{{ icon.name }}),
+    iconMargin: {{ iconMargin.right }},
   {{/if}}
 ),
 //END label.dart.hbs-----{{page.name}}-----------------------------------------------------------------------------------------------------
