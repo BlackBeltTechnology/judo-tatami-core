@@ -85,7 +85,7 @@ Widget get{{ fqClass page.name }}Page{{fqClass container.layoutType.name}}Body(B
                     children: [
                         {{# if (isRefreshTableTypePage page) }}Observer(
                             builder: (_) => {{/ if }}JudoColumn(
-                                col: {{ multiplyCol col }},
+                                col: {{ col }},
                                 row: {{ row }}{{# if (isRefreshTableTypePage page) }} + {{ fqVariable page.name }}PageStore.getPlusRowSize + 1{{/ if }}, // +1 is for the text under table
                                 mainAxisSize: MainAxisSize.min,
                                 children: [

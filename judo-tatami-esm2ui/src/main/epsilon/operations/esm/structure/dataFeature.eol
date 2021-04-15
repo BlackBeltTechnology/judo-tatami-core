@@ -16,6 +16,7 @@ operation ESM!esm::structure::DataFeature createAttributeTypeForClass(applicatio
         attribute.memberType = UI!ui::data::MemberType#STORED;
     }
     attribute.isReadOnly = self.isReadOnly();
+    attribute.isRequired = self.required;
                     
     attribute.isFilterable = self.eContainer.mapping.isDefined() and
                     self.memberType <> ESM!MemberType#TRANSIENT and

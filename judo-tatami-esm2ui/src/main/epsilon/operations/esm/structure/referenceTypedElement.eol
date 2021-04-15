@@ -62,13 +62,13 @@ operation ESM!esm::structure::ReferenceTypedElement createCreatePage(application
     
     page.name = self.fqName().anchor("Create");
     page.pageType = UI!ui::PageType#CREATE;
-    page.label = target.form.getUiLabel() + " - " + target.name.replaceAll(
+    page.label = target.form.getUiLabel() + " - " + target.name.firstToUpperCase().replaceAll(
          "(?<=[A-Z])(?=[A-Z][a-z])|" +
          "(?<=[^A-Z])(?=[A-Z])|" +
          "(?<=[A-Za-z \\u0080-\\u9fff])(?=[^A-Za-z \\u0080-\\u9fff])",
       " ");
     page.icon = page.createIconForLabeledElement(target.form.iconName);
-    target.form.showLabel;
+    page.showLabel = target.form.showLabel;
     page.showIcon = target.form.showIcon;
 
     var pageContainer = new UI!ui::PageContainer();
@@ -142,7 +142,7 @@ operation ESM!esm::structure::ReferenceTypedElement mapTablePage(application : U
     page.dataElement = relation;
     page.name = self.fqName().anchor("Table");
     page.pageType = UI!ui::PageType#TABLE;
-    page.label = target.table.getUiLabel() + " - " + self.name.replaceAll(
+    page.label = target.table.getUiLabel() + " - " + self.name.firstToUpperCase().replaceAll(
          "(?<=[A-Z])(?=[A-Z][a-z])|" +
          "(?<=[^A-Z])(?=[A-Z])|" +
          "(?<=[A-Za-z \\u0080-\\u9fff])(?=[^A-Za-z \\u0080-\\u9fff])",

@@ -3,7 +3,7 @@
 {{#if (isViewTypePage page) }}
 Observer(
     builder: (_) => JudoSwitch(
-        col: {{ multiplyCol col }},
+        col: {{ col }},
         row: {{ row }},
         disabled: {{ disabled }}{{# if enabledBy }} || !((target{{ className page.relationType.target.name }}Store?.{{ variable enabledBy.name }}) ?? false){{/ if }},
       {{#if this.isLabelVisible }}
@@ -21,8 +21,9 @@ Observer(
 {{#if (isCreateTypePage page) }}
 Observer(
     builder: (_) => JudoSwitch(
-        col: {{ multiplyCol col }},
+        col: {{ col }},
         row: {{ row }},
+        mandatory: {{ attributeType.isRequired }},
         disabled: {{ disabled }}{{# if enabledBy }} || !((target{{ className page.relationType.target.name }}Store?.{{ variable enabledBy.name }}) ?? false){{/ if }},
       {{#if this.isLabelVisible }}
         label: AppLocalizations.of(context).lookUpValue(context, '{{ this.label }}'),
@@ -40,8 +41,9 @@ Observer(
 {{#if page.isPageTypeUpdate}}
 Observer(
     builder: (_) => JudoSwitch(
-        col: {{ multiplyCol col }},
+        col: {{ col }},
         row: {{ row }},
+        mandatory: {{ attributeType.isRequired }},
         disabled: {{ disabled }}{{# if enabledBy }} || !((target{{ className page.relationType.target.name }}Store?.{{ variable enabledBy.name }}) ?? false){{/ if }},
       {{#if this.isLabelVisible }}
         label: AppLocalizations.of(context).lookUpValue(context, '{{ this.label }}'),

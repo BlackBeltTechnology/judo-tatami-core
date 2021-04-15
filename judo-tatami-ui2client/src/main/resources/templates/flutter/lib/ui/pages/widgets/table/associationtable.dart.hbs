@@ -18,7 +18,7 @@ Observer(builder: (_) {
             var dataInfo = {{ fqClass pageDefinition.name }}{{ fqClass table.name }}{{ fqClass pageContainer.layoutType.name }}Table(context, disabled: {{disabled}});
             return JudoTable(
                 disabled: {{disabled}},
-                col: {{ multiplyCol col }},
+                col: {{ col }},
                 row: {{row}},
                 dataInfo: dataInfo,
                 rowList: {{# if page.dataElement.isAccess}}{{# if page.relationType.isCollection }}{{ fqVariable page.name }}PageStore.{{ fqVariable page.relationType.name }}StoreList.asObservable(){{else}}[{{ fqVariable page.name }}PageStore.{{variable page.relationType.name}}Store].asObservable(){{/ if}}{{else}}{{# if page.relationType.isCollection }}owner{{ className page.relationType.owner.name }}Store.{{variable page.relationType.name}}{{else}}[owner{{ className page.relationType.owner.name }}Store.{{variable page.relationType.name}}].asObservable(){{/ if}}{{/ if}},

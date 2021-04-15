@@ -1,7 +1,7 @@
 {{ log 'Label generation for' (variable application.name) '-' (fqClass page.name)'page' label level='debug' ~}}
 //START label.dart.hbs-----{{page.name}}---------------------------------------------------------------------------------------------------
 JudoLabel(
-    col: {{ multiplyCol col }},
+    col: {{ col }},
     row: {{ row }},
   {{#if this.isLabelVisible }}
     label: AppLocalizations.of(context).lookUpValue(context, '{{ this.label }}'),

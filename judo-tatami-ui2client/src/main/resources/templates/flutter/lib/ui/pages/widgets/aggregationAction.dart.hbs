@@ -2,7 +2,7 @@
 //START aggregationAction.dart.hbs-----{{relation.name}}-----------------------------------------------------------------------------------
 {{# if (isObserverButton this page.dataElement action) }}Observer(
     builder: (_) => {{/ if }}JudoButton(
-        col: {{ multiplyCol col }},
+        col: {{ col }},
         row: {{ row }},
         disabled: {{disabled}}{{# if enabledBy }} || !((target{{ className page.relationType.target.name }}Store?.{{ variable enabledBy.name }}) ?? false){{/ if }},
     {{# if action.isBackAction }}

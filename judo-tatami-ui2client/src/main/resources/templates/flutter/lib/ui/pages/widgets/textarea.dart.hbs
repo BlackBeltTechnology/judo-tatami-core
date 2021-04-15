@@ -4,7 +4,7 @@
 Observer(
     builder: (_) => JudoInputText(
         key: UniqueKey(),
-        col: {{ multiplyCol col }},
+        col: {{ col }},
         row: {{ row }},
         multiline: true,
         maxLength: {{attributeType.dataType.maxLength}} ?? 250,
@@ -25,8 +25,9 @@ Observer(
 {{# if enabledBy }}Observer(
     builder: (_) => {{/ if }}JudoInputText(
         key: inputWidgetKeyMap['{{ name }}'],
-        col: {{ multiplyCol col }},
+        col: {{ col }},
         row: {{ row }},
+        mandatory: {{ attributeType.isRequired }},
         multiline: true,
         maxLength: {{attributeType.dataType.maxLength}} ?? 250,
         disabled: {{ disabled }}{{# if enabledBy }} || !((target{{ className page.relationType.target.name }}Store?.{{ variable enabledBy.name }}) ?? false){{/ if }},
@@ -46,8 +47,9 @@ Observer(
 {{# if enabledBy }}Observer(
     builder: (_) => {{/ if }}JudoInputText(
         key: inputWidgetKeyMap['{{ name }}'],
-        col: {{ multiplyCol col }},
+        col: {{ col }},
         row: {{ row }},
+        mandatory: {{ attributeType.isRequired }},
         multiline: true,
         maxLength: {{attributeType.dataType.maxLength}} ?? 250,
         disabled: {{ disabled }}{{# if enabledBy }} || !((target{{ className page.relationType.target.name }}Store?.{{ variable enabledBy.name }}) ?? false){{/ if }},

@@ -6,7 +6,7 @@ JudoRow(
 {{# if (isRefreshTableTypePage page) }}Observer(
     builder: (_) => {{/ if }}JudoColumn(
 {{/ if }}
-        col: {{ multiplyCol col }},
+        col: {{ col }},
         row: {{ row }}{{# unless isDirectionHorizontal }}{{# if (isRefreshTableTypePage page) }} + {{ fqVariable page.name }}PageStore.getPlusRowSize + 1{{/ if }}{{/ unless }},
         card: {{ frame }},
         mainAxisAlignment: MainAxisAlignment.{{ mainAxisAlignment this }},

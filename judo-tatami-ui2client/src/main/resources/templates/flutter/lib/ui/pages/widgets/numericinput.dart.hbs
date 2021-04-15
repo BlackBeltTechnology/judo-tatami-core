@@ -4,7 +4,7 @@
 Observer(
     builder: (_) => JudoNumericInput(
         key: UniqueKey(),
-        col: {{ multiplyCol col }},
+        col: {{ col }},
         row: {{ row }},
         disabled: {{ disabled }}{{# if enabledBy }} || !((target{{ className page.relationType.target.name }}Store?.{{ variable enabledBy.name }}) ?? false){{/ if }},
       {{#if this.isLabelVisible }}
@@ -23,8 +23,9 @@ Observer(
 {{# if enabledBy }}Observer(
     builder: (_) => {{/ if }}JudoNumericInput(
         key: inputWidgetKeyMap['{{ name }}'],
-        col: {{ multiplyCol col }},
+        col: {{ col }},
         row: {{ row }},
+        mandatory: {{ attributeType.isRequired }},
         disabled: {{ disabled }}{{# if enabledBy }} || !((target{{ className page.relationType.target.name }}Store?.{{ variable enabledBy.name }}) ?? false){{/ if }},
       {{#if this.isLabelVisible }}
         label: AppLocalizations.of(context).lookUpValue(context, '{{ this.label }}'),
@@ -42,8 +43,9 @@ Observer(
 {{# if enabledBy }}Observer(
     builder: (_) => {{/ if }}JudoNumericInput(
         key: inputWidgetKeyMap['{{ name }}'],
-        col: {{ multiplyCol col }},
+        col: {{ col }},
         row: {{ row }},
+        mandatory: {{ attributeType.isRequired }},
         disabled: {{ disabled }}{{# if enabledBy }} || !((target{{ className page.relationType.target.name }}Store?.{{ variable enabledBy.name }}) ?? false){{/ if }},
       {{#if this.isLabelVisible }}
         label: AppLocalizations.of(context).lookUpValue(context, '{{ this.label }}'),
