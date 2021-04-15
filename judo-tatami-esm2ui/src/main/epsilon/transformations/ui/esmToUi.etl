@@ -24,6 +24,10 @@ post {
         application.calculatePageActions(false); //resolve generated actions
     }
     
+    for (navigation : UI!ui::NavigationController in UI!ui::NavigationController.all()) {
+        navigation.addMissingIcons();
+    }
+    
     for (action : UI!ui::Action in UI!ui::Action.all()) {
         action.setIcon();
         action.setLabel();

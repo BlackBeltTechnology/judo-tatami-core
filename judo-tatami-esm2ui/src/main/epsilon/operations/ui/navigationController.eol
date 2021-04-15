@@ -1,0 +1,35 @@
+operation UI!ui::NavigationController addMissingIcons() {
+    if (self.items.exists(i | i.getIsIconVisible()) and self.items.exists(i | not i.getIsIconVisible())) {
+        for (item in self.items) {
+            if (not item.getIsIconVisible() and item.icon.isUndefined()) {
+                var icon = new UI!ui::Icon();
+                icon.name = "texture";
+                item.icon = icon;
+            }
+            item.showIcon = true;
+            item.addMissingIcons();
+        }
+    } else {
+        for (item in self.items) {
+            item.addMissingIcons();
+        }
+    }
+}
+
+operation UI!ui::NavigationItem addMissingIcons() {
+    if (self.items.exists(i | i.getIsIconVisible()) and self.items.exists(i | not i.getIsIconVisible())) {
+        for (item in self.items) {
+            if (not item.getIsIconVisible() and item.icon.isUndefined()) {
+                var icon = new UI!ui::Icon();
+                icon.name = "texture";
+                item.icon = icon;
+            }
+            item.showIcon = true;
+            item.addMissingIcons();
+        }
+    } else {
+        for (item in self.items) {
+            item.addMissingIcons();
+        }
+    }
+}
