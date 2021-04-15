@@ -11,6 +11,10 @@ operation ESM!esm::ui::Container createFlexFromContainer(application : UI!ui::Ap
         ret.showIcon = self.showIcon;
         ret.col = applicationColumns.asReal();
         ret.stretch = UI!ui::Stretch#BOTH;
+        if (self.frame) {
+            ret.frame = new UI!ui::Frame();
+            ret.frame.margin = new UI!ui::Margin();
+        }
     }
     
     if (self.frame) {
