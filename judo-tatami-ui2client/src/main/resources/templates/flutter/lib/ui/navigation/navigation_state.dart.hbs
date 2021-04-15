@@ -36,7 +36,7 @@ abstract class _NavigationState with Store {
     final List<String> stack = [];
 
     @observable
-    ObservableList<BreadCrumbItem> breadcumbItems = [ BreadCrumbItem(content: Icon(Icons.home, color: Color(0xffdcdcdc), size: 16,))].asObservable();
+    ObservableList<BreadCrumbItem> breadcumbItems = [ BreadCrumbItem(content: Icon(Icons.home, color: Color(0xffdcdcdc), size: 20,))].asObservable();
 
     @observable
     String currentTitle = '';
@@ -67,7 +67,7 @@ abstract class _NavigationState with Store {
             Padding(
                 padding: EdgeInsets.fromLTRB(0, 0, 16, 0),
                 child:
-                  Icon(Icons.home, color: Color(0xffdcdcdc), size: 16,)
+                  Icon(Icons.home, color: Color(0xffdcdcdc), size: 20,)
                 )
               )
             );
@@ -102,7 +102,7 @@ abstract class _NavigationState with Store {
             BreadCrumbItem(
                 content:
                     Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                      padding: EdgeInsets.symmetric(horizontal: 16),
                       child:
                       Text(currentTitle,
                         style: JudoComponentCustomizer.get().getBreadcumbTextStyle(),
