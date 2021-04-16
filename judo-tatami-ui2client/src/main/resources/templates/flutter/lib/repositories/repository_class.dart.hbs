@@ -69,10 +69,64 @@ class {{ fqClass class.name }}Repository {
   //////////////////////////////////////////////////////////////////////////////
   // GET CREATE RANGE FOR {{ variable relation.name }}
   //////////////////////////////////////////////////////////////////////////////
-  Future<List<{{ fqClass relation.target.name }}Store>> {{ fqVariable class.name }}RangeOf{{ fqClass relation.name }}ToCreate({{ fqClass class.name }}Store target) async {
+  Future<List<{{ fqClass relation.target.name }}Store>> {{ fqVariable class.name }}RangeOf{{ fqClass relation.name }}ToCreate({{ fqClass class.name }}Store target, { String sortColumn, bool sortAscending, List<FilterStore> filterStoreList, int queryLimit }) async {
     // Use this when JNG-2028 is done
     // {{modelName ap.name}}Extension{{packageName class.name}}GetRangeInput{{className class.name}} {{ variable class.name }}Request = {{ fqClass ap.name }}RepositoryStoreMapper.create{{modelName ap.name}}Extension{{packageName class.name}}GetRangeInput{{className class.name}}From{{ fqClass class.name }}Store(target);
+
     var {{ variable class.name }}Request = {{modelName ap.name}}Extension{{packageName class.name}}GetRangeInput{{className class.name}}{{ className relation.name }}();
+
+    var queryCustomizer = {{ modelName relation.target.name }}Extension{{ packageName relation.target.name}}QueryCustomizer{{ className relation.target.name}}();
+
+    var seek = {{ modelName relation.target.name }}Extension{{ packageName relation.target.name}}Seek{{ className relation.target.name}}();
+
+            {{# if relation.isOrderable }}
+    var orderBy = {{ modelName relation.target.name }}Extension{{ packageName relation.target.name}}OrderingType{{ className relation.target.name}}();
+
+    // Sort Attributes
+    if (sortColumn != null) {
+                {{# each relation.target.attributes as |attribute| }}
+                    {{# unless (isEnumType attribute.dataType) }}
+                        {{# unless (isBooleanDataType attribute.dataType) }}
+      if (sortColumn == "{{ variable attribute.name }}" ) {
+        orderBy.attribute = {{ modelName relation.target.name }}Extension{{ packageName relation.target.name}}OrderingType{{ className relation.target.name}}AttributeEnum.{{ variable attribute.name }};
+      }
+                        {{/ unless }}
+                    {{/ unless }}
+                {{/ each }}
+      if (orderBy.attribute != null) {
+          orderBy.descending = sortAscending == null ? false : !sortAscending;
+          queryCustomizer.orderBy = [orderBy];
+      }
+    }
+            {{/ if}}
+            {{# if relation.isFilterable }}
+      if (filterStoreList != null && filterStoreList.isNotEmpty) {
+          filterStoreList.forEach((element) {
+                {{# each relation.target.attributes as |attribute| }}
+                    {{# if attribute.isFilterable}}
+            if (element.attributeName.uncapitalize() == "{{ variable attribute.name }}") {
+                var filter = {{ modelName relation.target.name }}ExtensionFilterBy{{ openApiDataType attribute.dataType.name }}();
+                        {{# if (isEnumType attribute.dataType) }}
+                filter.value = (element.filterValue.toString().split('.').last).toEnum<{{ modelName relation.target.name }}ExtensionFilterBy{{ openApiDataType attribute.dataType.name }}ValueEnum>({{ modelName relation.target.name }}ExtensionFilterBy{{ openApiDataType attribute.dataType.name }}ValueEnum.values);
+                filter.operator_ = element.filterOperation.toEnum<{{ modelName relation.target.name }}ExtensionFilterBy{{ openApiDataType attribute.dataType.name }}OperatorEnum>({{ modelName relation.target.name }}ExtensionFilterBy{{ openApiDataType attribute.dataType.name }}OperatorEnum.values);
+                        {{ else }}
+                filter.value = element.filterValue as {{ dartType attribute.dataType }};
+                filter.operator_ = element.filterOperation.toEnum<{{ modelName relation.target.name }}ExtensionFilterBy{{ openApiDataType attribute.dataType.name }}OperatorEnum>({{ modelName relation.target.name }}ExtensionFilterBy{{ openApiDataType attribute.dataType.name }}OperatorEnum.values);
+                        {{/if}}
+                queryCustomizer.{{ variable attribute.name }}.add(filter);
+            }
+                    {{/ if }}
+                {{/ each }}
+          });
+      }
+            {{/ if }}
+
+    seek.limit = queryLimit != null && queryLimit >= 5 ? queryLimit : 5;
+    queryCustomizer.seek = seek;
+
+    {{ variable class.name }}Request.queryCustomizer = queryCustomizer;
+
+
     List<{{ fqClass relation.target.transferObjectTypeName }}> {{ variable relation.target.name }}ListResponse = await DefaultApi(locator<ApiClient>()).{{ fqVariable class.transferObjectTypeName }}GetRangeReference{{ fqClass relation.name }}(input: {{ variable class.name }}Request);
     return {{ variable relation.target.name }}ListResponse.map<{{ fqClass relation.target.name }}Store>(
       {{ fqClass ap.name }}RepositoryStoreMapper.create{{ fqClass relation.target.name }}StoreFrom{{ fqClass relation.target.name }}).toList();
@@ -81,10 +135,63 @@ class {{ fqClass class.name }}Repository {
   //////////////////////////////////////////////////////////////////////////////
   // GET UPDATE RANGE FOR {{ variable relation.name }}
   //////////////////////////////////////////////////////////////////////////////
-  Future<List<{{ fqClass relation.target.name }}Store>> {{ fqVariable class.name }}RangeOf{{ fqClass relation.name }}ToUpdate({{ fqClass class.name }}Store target) async {
+  Future<List<{{ fqClass relation.target.name }}Store>> {{ fqVariable class.name }}RangeOf{{ fqClass relation.name }}ToUpdate({{ fqClass class.name }}Store target, { String sortColumn, bool sortAscending, List<FilterStore> filterStoreList, int queryLimit }) async {
     // Use this when JNG-2028 is done
     // {{modelName ap.name}}Extension{{packageName class.name}}GetRangeInput{{className class.name}} {{ variable class.name }}Request = {{ fqClass ap.name }}RepositoryStoreMapper.create{{modelName ap.name}}Extension{{packageName class.name}}GetRangeInput{{className class.name}}From{{ fqClass class.name }}Store(target);
+
     var {{ variable class.name }}Request = {{modelName ap.name}}Extension{{packageName class.name}}GetRangeInput{{className class.name}}{{ className relation.name }}();
+
+    var queryCustomizer = {{ modelName relation.target.name }}Extension{{ packageName relation.target.name}}QueryCustomizer{{ className relation.target.name}}();
+
+    var seek = {{ modelName relation.target.name }}Extension{{ packageName relation.target.name}}Seek{{ className relation.target.name}}();
+
+            {{# if relation.isOrderable }}
+    var orderBy = {{ modelName relation.target.name }}Extension{{ packageName relation.target.name}}OrderingType{{ className relation.target.name}}();
+
+    // Sort Attributes
+    if (sortColumn != null) {
+                {{# each relation.target.attributes as |attribute| }}
+                    {{# unless (isEnumType attribute.dataType) }}
+                        {{# unless (isBooleanDataType attribute.dataType) }}
+      if (sortColumn == "{{ variable attribute.name }}" ) {
+        orderBy.attribute = {{ modelName relation.target.name }}Extension{{ packageName relation.target.name}}OrderingType{{ className relation.target.name}}AttributeEnum.{{ variable attribute.name }};
+      }
+                        {{/ unless }}
+                    {{/ unless }}
+                {{/ each }}
+      if (orderBy.attribute != null) {
+          orderBy.descending = sortAscending == null ? false : !sortAscending;
+          queryCustomizer.orderBy = [orderBy];
+      }
+    }
+            {{/ if}}
+            {{# if relation.isFilterable }}
+      if (filterStoreList != null && filterStoreList.isNotEmpty) {
+          filterStoreList.forEach((element) {
+                {{# each relation.target.attributes as |attribute| }}
+                    {{# if attribute.isFilterable }}
+            if (element.attributeName.uncapitalize() == "{{ variable attribute.name }}") {
+                var filter = {{ modelName relation.target.name }}ExtensionFilterBy{{ openApiDataType attribute.dataType.name }}();
+                        {{# if (isEnumType attribute.dataType) }}
+                filter.value = (element.filterValue.toString().split('.').last).toEnum<{{ modelName relation.target.name }}ExtensionFilterBy{{ openApiDataType attribute.dataType.name }}ValueEnum>({{ modelName relation.target.name }}ExtensionFilterBy{{ openApiDataType attribute.dataType.name }}ValueEnum.values);
+                filter.operator_ = element.filterOperation.toEnum<{{ modelName relation.target.name }}ExtensionFilterBy{{ openApiDataType attribute.dataType.name }}OperatorEnum>({{ modelName relation.target.name }}ExtensionFilterBy{{ openApiDataType attribute.dataType.name }}OperatorEnum.values);
+                        {{ else }}
+                filter.value = element.filterValue as {{ dartType attribute.dataType }};
+                filter.operator_ = element.filterOperation.toEnum<{{ modelName relation.target.name }}ExtensionFilterBy{{ openApiDataType attribute.dataType.name }}OperatorEnum>({{ modelName relation.target.name }}ExtensionFilterBy{{ openApiDataType attribute.dataType.name }}OperatorEnum.values);
+                        {{/if}}
+                queryCustomizer.{{ variable attribute.name }}.add(filter);
+            }
+                    {{/ if }}
+                {{/ each }}
+          });
+      }
+            {{/ if }}
+
+    seek.limit = queryLimit != null && queryLimit >= 5 ? queryLimit : 5;
+    queryCustomizer.seek = seek;
+
+    {{ variable class.name }}Request.queryCustomizer = queryCustomizer;
+
     List<{{ fqClass relation.target.transferObjectTypeName }}> {{ variable relation.target.name }}ListResponse = await DefaultApi(locator<ApiClient>()).{{ fqVariable class.transferObjectTypeName }}GetRangeReference{{ fqClass relation.name }}(input: {{ variable class.name }}Request);
     return {{ variable relation.target.name }}ListResponse.map<{{ fqClass relation.target.name }}Store>(
       {{ fqClass ap.name }}RepositoryStoreMapper.create{{ fqClass relation.target.name }}StoreFrom{{ fqClass relation.target.name }}).toList();
@@ -156,7 +263,7 @@ class {{ fqClass class.name }}Repository {
       return {{ fqClass ap.name }}RepositoryStoreMapper.create{{ fqClass operation.output.target.name }}StoreFrom{{ fqClass operation.output.target.name }}({{fqVariable operation.output.target.name}}Output);
           {{/if}}
       {{else}}
-      return await DefaultApi(locator<ApiClient>()).{{fqVariable operation.owner.transferObjectTypeName}}{{className operation.name}}({{#if operation.isMapped }}{{ fqVariable class.name }}Store.internal__signedIdentifier, {{/if}}{{#if operation.input}}{{# if operation.input.isOptional}}input: {{/ if }}{{fqVariable operation.input.target.name}}Input{{/if}});
+      return await DefaultApi(locator<ApiClient>()).{{fqVariable operation.owner.transferObjectTypeName}}{{className operation.name}}({{#if operation.isMapped }}{{ fqVariable class.name }}Store.internal__signedIdentifier, {{/if}}{{#if operation.input}}{{# if operation.input.isOptional}}input: {{/ if }}{{#if operation.input.isCollection}}[{{fqVariable operation.input.target.name}}Input]{{else}}{{fqVariable operation.input.target.name}}Input{{/if}}{{/if}});
       {{/if}}
   }
 

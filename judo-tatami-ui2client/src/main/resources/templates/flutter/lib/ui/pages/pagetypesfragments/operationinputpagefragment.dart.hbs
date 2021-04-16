@@ -8,4 +8,11 @@ class _{{ fqClass page.name }}PageState extends State<{{ fqClass page.name }}Pag
     final {{ fqClass page.dataElement.target.name }}Store target{{ className page.dataElement.target.name }}Store = {{ fqClass page.dataElement.target.name }}Store();
 
     final {{fqClass page.name}}PageStore {{fqVariable page.name}}PageStore = {{fqClass page.name}}PageStore();
+
+    _{{ fqClass page.name }}PageState(){
+        final navigation = locator<NavigationState>();
+        SchedulerBinding.instance.addPostFrameCallback((_) {
+            navigation.setCurrentTitle(AppLocalizations.of(context).lookUpValue(context, {{ fqClass page.name }}Page.title));
+        });
+    }
 //END operationinputpagefragment.dart.hbs-----{{page.name}}--------------------------------------------------------------------------------

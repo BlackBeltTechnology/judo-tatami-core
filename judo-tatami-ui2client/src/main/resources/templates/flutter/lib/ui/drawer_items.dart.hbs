@@ -11,6 +11,7 @@
 import 'package:flutter/material.dart';
 import 'package:{{ modelPackage application.name }}/{{ path application.name }}/ui/routes/router.gr.dart';
 import 'package:{{ modelPackage application.name }}/{{ path application.name }}/utilities/package.dart';
+import 'package:{{ modelPackage application.name }}/{{ path application.name }}/l10n/app_localizations.dart';
 
 
 class {{ fqClass application.name }}NavigationItems {
@@ -20,7 +21,7 @@ class {{ fqClass application.name }}NavigationItems {
         NavigationItem(
             route: Routes.{{ fqVariable item.target.name }}Page,
             leading: Icon(Icons.{{item.icon.name}}),
-            title: Text('{{ item.label }}'),
+            title: '{{ item.label }}',
         ),
 
         {{/each}}

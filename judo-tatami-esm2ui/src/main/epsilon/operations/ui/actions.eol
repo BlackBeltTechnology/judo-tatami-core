@@ -102,6 +102,13 @@ operation UI!ui::Action setLabel() {
     } 
 }
 
+operation UI!ui::FilterAction setIcon() {
+    if (self.icon.isUndefined()) {
+        self.icon = new UI!ui::Icon();
+        self.icon.name = 'filter_alt';
+    }
+}
+
 
 operation UI!ui::NavigationToPageAction setLabel() {
     if (self.label.isUndefined()) {
@@ -174,6 +181,12 @@ operation UI!ui::RefreshAction setLabel() {
     if (self.label.isUndefined()) {
         self.label = 'Refresh';
     } 
+}
+
+operation UI!ui::FilterAction setLabel() {
+    if (self.label.isUndefined()) {
+        self.label = 'Add Filter';
+    }
 }
 
 operation UI!ui::CallOperationAction setLabel() {

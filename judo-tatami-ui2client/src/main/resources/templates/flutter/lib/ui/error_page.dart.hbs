@@ -9,7 +9,10 @@
 // Application: {{ application.name }}
 
 import 'package:flutter/material.dart';
-import 'package:{{ modelPackage application.name }}/{{ path application.name }}/ui/scaffold.dart';
+import 'package:flutter/scheduler.dart';
+import 'package:{{ modelPackage application.name }}/{{ path application.name }}/l10n/app_localizations.dart';
+import 'package:{{ modelPackage application.name }}/{{ path application.name }}/injector/injector.dart';
+import 'package:{{ modelPackage application.name }}/{{ path application.name }}/ui/navigation/navigation_state.dart';
 
 class {{ fqClass application.name }}ErrorPage extends StatefulWidget {
 
@@ -29,11 +32,17 @@ class {{ fqClass application.name }}ErrorPage extends StatefulWidget {
 
 class _ErrorPageState extends State<{{ fqClass application.name }}ErrorPage> {
 
+    _ErrorPageState() {
+        final navigation = locator<NavigationState>();
+        SchedulerBinding.instance.addPostFrameCallback((_) {
+            navigation.setCurrentTitle(AppLocalizations.of(context).lookUpValue(context, widget.title ?? 'Error'));
+        });
+    }
+
   @override
   Widget build(BuildContext context) {
-    return {{ fqClass application.name }}Scaffold(
-      pageTitle: widget.title ?? 'Error',
-      body: CustomScrollView(
+
+        return CustomScrollView(
           slivers: [
             SliverFillRemaining(
               hasScrollBody: false,
@@ -57,7 +66,6 @@ class _ErrorPageState extends State<{{ fqClass application.name }}ErrorPage> {
               ),
             )
           ]
-      ),
-    );
+      );
   }
 }

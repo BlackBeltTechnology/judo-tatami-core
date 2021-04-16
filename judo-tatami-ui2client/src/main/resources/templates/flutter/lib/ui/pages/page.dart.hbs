@@ -76,15 +76,89 @@ class {{ fqClass page.name }}Page extends StatefulWidget {
 
     @override
     Widget build(BuildContext context) {
-        final navigation = locator<NavigationState>();
-        navigation.currentTitle = {{fqClass page.name}}Page.title;
+
+        {{# if (isRefreshTableTypePage page) }}
+            {{# each page.containers.[0].tables as |table| }}
+                {{# if table.pageDefinition.relationType.isFilterable }}
+        filterStoreWidgetMap = {
+                    {{# each table.filters as |filter|}}
+                        {{# each filter.attributeType.dataType.operator.members as |filterOperator|}}
+                            {{# each (likeOperationHelperList filterOperator) as |likeOperator| }}
+            {{fqVariable page.name}}PageStore.stringFilterStoreMap['{{ variable filter.attributeType.name }}{{# if (isFilterOperationLike filterOperator)}}{{ fqClass likeOperator }}{{ else }}{{ className filterOperator.name }}{{/ if }}Filter'] :
+                                {{# if (isStringType filter.attributeType.dataType) }}
+                JudoInputText(
+                    col: 1,
+                    label: {{fqVariable page.name}}PageStore.stringFilterStoreMap['{{ variable filter.attributeType.name }}{{# if (isFilterOperationLike filterOperator)}}{{ fqClass likeOperator }}{{ else }}{{ className filterOperator.name }}{{/ if }}Filter'].getWidgetLabel(context),
+                    onChanged: (value) => {{fqVariable page.name}}PageStore.stringFilterStoreMap['{{ variable filter.attributeType.name }}{{# if (isFilterOperationLike filterOperator)}}{{ fqClass likeOperator }}{{ else }}{{ className filterOperator.name }}{{/ if }}Filter'].setFilterValue({{# if (isFilterOperationLike filterOperator)}}{{# if (isFilterOperationTypeLikeContain likeOperator) }}'%' + {{/ if }}value + '%'{{ else }}value{{/ if }}),
+                    onSubmitted: (_) => {{fqVariable page.name}}PageStore.get{{ fqClass table.dataElement.name }}({{#unless table.dataElement.isAccess}} owner{{ className page.dataElement.owner.name }}Store {{/unless}}).catchError((error) => ErrorHandler.showErrorSnack(context, error.message)),
+                ),
+                                {{/ if }}
+                                {{~# if (isNumericType filter.attributeType.dataType) }}
+                JudoNumericInput(
+                    col: 1,
+                    label: {{fqVariable page.name}}PageStore.stringFilterStoreMap['{{ variable filter.attributeType.name }}{{ className filterOperator.name }}Filter'].getWidgetLabel(context),
+                    onChanged: (value) => {{fqVariable page.name}}PageStore.stringFilterStoreMap['{{ variable filter.attributeType.name }}{{ className filterOperator.name }}Filter'].setFilterValue({{ dartType filter.attributeType.dataType }}.parse(value)),
+                    onSubmitted: (_) => {{fqVariable page.name}}PageStore.get{{ fqClass table.dataElement.name }}({{#unless table.dataElement.isAccess}} owner{{ className page.dataElement.owner.name }}Store {{/unless}}).catchError((error) => ErrorHandler.showErrorSnack(context, error.message)),
+                ),
+                                {{/ if }}
+                                {{~# if (isDateType filter.attributeType.dataType) }}
+                JudoDateInput(
+                    col: 1,
+                    label: {{fqVariable page.name}}PageStore.stringFilterStoreMap['{{ variable filter.attributeType.name }}{{ className filterOperator.name }}Filter'].getWidgetLabel(context),
+                    onChanged: (value) => {{fqVariable page.name}}PageStore.stringFilterStoreMap['{{ variable filter.attributeType.name }}{{ className filterOperator.name }}Filter'].setFilterValue(value),
+                    onSubmitted: (_) => {{fqVariable page.name}}PageStore.get{{ fqClass table.dataElement.name }}({{#unless table.dataElement.isAccess}} owner{{ className page.dataElement.owner.name }}Store {{/unless}}).catchError((error) => ErrorHandler.showErrorSnack(context, error.message)),
+                ),
+                                {{/ if }}
+                                {{~# if (isTimestampType filter.attributeType.dataType) }}
+                JudoDateTimeInput(
+                    col: 1,
+                    label: {{fqVariable page.name}}PageStore.stringFilterStoreMap['{{ variable filter.attributeType.name }}{{ className filterOperator.name }}Filter'].getWidgetLabel(context),
+                    onChanged: (value) => {{fqVariable page.name}}PageStore.stringFilterStoreMap['{{ variable filter.attributeType.name }}{{ className filterOperator.name }}Filter'].setFilterValue(value),
+                    onSubmitted: (_) => {{fqVariable page.name}}PageStore.get{{ fqClass table.dataElement.name }}({{#unless table.dataElement.isAccess}} owner{{ className page.dataElement.owner.name }}Store {{/unless}}).catchError((error) => ErrorHandler.showErrorSnack(context, error.message)),
+                ),
+                                {{/ if }}
+                                {{~# if (isBooleanType filter.attributeType.dataType) }}
+                Observer(
+                    builder: (_) => JudoSwitch(
+                        col: 1,
+                        label: {{fqVariable page.name}}PageStore.stringFilterStoreMap['{{ variable filter.attributeType.name }}{{ className filterOperator.name }}Filter'].getWidgetLabel(context),
+                        initialValue: {{fqVariable page.name}}PageStore.stringFilterStoreMap['{{ variable filter.attributeType.name }}{{ className filterOperator.name }}Filter'].filterValue,
+                        onChanged: (value) {
+                            {{fqVariable page.name}}PageStore.stringFilterStoreMap['{{ variable filter.attributeType.name }}{{ className filterOperator.name }}Filter'].setFilterValue(value);
+                            {{fqVariable page.name}}PageStore.get{{ fqClass table.dataElement.name }}({{#unless table.dataElement.isAccess}} owner{{ className page.dataElement.owner.name }}Store {{/unless}}).catchError((error) => ErrorHandler.showErrorSnack(context, error.message));
+                        },
+                    )
+                ),
+                                {{/ if }}
+                                {{~# if (isEnumType filter.attributeType.dataType) }}
+                Observer(
+                    builder: (_) => JudoComboBox<{{ className filter.attributeType.dataType.name }}>(
+                        col: 1,
+                        label: {{fqVariable page.name}}PageStore.stringFilterStoreMap['{{ variable filter.attributeType.name }}{{ className filterOperator.name }}Filter'].getWidgetLabel(context),
+                        onChanged: (value) {
+                            {{fqVariable page.name}}PageStore.stringFilterStoreMap['{{ variable filter.attributeType.name }}{{ className filterOperator.name }}Filter'].setFilterValue(value);
+                            {{fqVariable page.name}}PageStore.get{{ fqClass table.dataElement.name }}({{#unless table.dataElement.isAccess}} owner{{ className page.dataElement.owner.name }}Store {{/unless}}).catchError((error) => ErrorHandler.showErrorSnack(context, error.message));
+                        },
+                        items: {{ className filter.attributeType.dataType.name }}.values,
+                        dropdownMenuShow: (value) => new DropdownMenuItem<{{ className filter.attributeType.dataType.name }}>(
+                            value: value,
+                            child: new Text(value.toString().split('.').last)
+                        ),
+                    )
+                ),
+                                {{/ if }}
+                            {{/ each }}
+                        {{/each}}
+                    {{/ each }}
+        };
+                {{/ if }}
+            {{/ each }}
+        {{/if}}
 
         {{# if (isSingleRelationDashboardPage page)  }}
         {{> templates/flutter/lib/ui/pages/pagetypesfragments/dashboardlayoutbuilder.dart.hbs }}
         {{else}}
-        return {{fqClass application.name}}Scaffold(
-            pageTitle: navigation.currentTitle,
-            body: LayoutBuilder(builder: (context, constraints) {
+        return LayoutBuilder(builder: (context, constraints) {
                     {{#each page.containers as |pageContainer|}}
                     {{#unless pageContainer.layoutType.original}}
                     if (MediaQuery.of(context).size.width >= {{pageContainer.layoutType.minimumResolution}} && MediaQuery.of(context).size.width <= {{pageContainer.layoutType.maximumResolution}}) {
@@ -92,20 +166,28 @@ class {{ fqClass page.name }}Page extends StatefulWidget {
 
                             {{~# if page.isPageTypeDashboard ~}}
                             , {{fqVariable page.name}}PageStore
+                                {{~# if (isRefreshTableTypePage page) ~}}
+                                    {{~# if page.dataElement.isFilterable ~}}
+                            , filterStoreWidgetMap
+                                    {{~/ if ~}}
+                                {{~/ if ~}}
                             {{~/ if ~}}
 
                             {{~# if page.isPageTypeTable ~}}
-                            {{~# unless page.dataElement.isAccess ~}}
+                                {{~# unless page.dataElement.isAccess ~}}
                             , owner{{ className page.dataElement.owner.name }}Store
-                            {{~/ unless ~}}
+                                {{~/ unless ~}}
                             , {{fqVariable page.name}}PageStore
+                                {{~# if page.dataElement.isFilterable ~}}
+                            , filterStoreWidgetMap
+                                {{~/ if ~}}
                             {{~/ if ~}}
 
                             {{~# if page.isPageTypeView ~}}
                             , target{{ className page.dataElement.target.name }}Store
-                            {{~# unless page.dataElement.isAccess ~}}
+                                {{~# unless page.dataElement.isAccess ~}}
                             , owner{{ className page.dataElement.owner.name }}Store
-                            {{~/ unless ~}}
+                                {{~/ unless ~}}
                             , {{fqVariable page.name}}PageStore
                             {{~/ if ~}}
 
@@ -115,9 +197,9 @@ class {{ fqClass page.name }}Page extends StatefulWidget {
 
                             {{~# if page.isPageTypeCreate ~}}
                             , target{{ className page.dataElement.target.name }}Store
-                            {{~# unless page.dataElement.isAccess ~}}
+                                {{~# unless page.dataElement.isAccess ~}}
                             , owner{{ className page.dataElement.owner.name }}Store
-                            {{~/ unless ~}}
+                                {{~/ unless ~}}
                             , {{fqVariable page.name}}PageStore
                             {{~/ if ~}}
 
@@ -142,6 +224,11 @@ class {{ fqClass page.name }}Page extends StatefulWidget {
 
                         {{~# if page.isPageTypeDashboard ~}}
                         , {{fqVariable page.name}}PageStore
+                        {{~# if (isRefreshTableTypePage page) ~}}
+                            {{~# if page.dataElement.isFilterable ~}}
+                        , filterStoreWidgetMap
+                            {{~/ if ~}}
+                        {{~/ if ~}}
                         {{~/ if ~}}
 
                         {{~# if page.isPageTypeTable ~}}
@@ -149,6 +236,9 @@ class {{ fqClass page.name }}Page extends StatefulWidget {
                         , owner{{ className page.dataElement.owner.name }}Store
                         {{~/ unless ~}}
                         , {{fqVariable page.name}}PageStore
+                            {{~# if page.dataElement.isFilterable ~}}
+                        , filterStoreWidgetMap
+                            {{~/ if ~}}
                         {{~/ if ~}}
 
                         {{~# if page.isPageTypeView ~}}
@@ -185,8 +275,7 @@ class {{ fqClass page.name }}Page extends StatefulWidget {
                         , inputWidgetKeyMap
                         {{~/ if ~}}
                     );
-                }),
-        );
+        });
         {{/ if }}
     }
 }

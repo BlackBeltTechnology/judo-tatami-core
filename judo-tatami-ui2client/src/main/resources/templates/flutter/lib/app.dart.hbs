@@ -14,6 +14,7 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:openapi_dart_common/openapi.dart';
 import 'oauth.dart';
 import 'dart:async';
+import 'package:flutter/scheduler.dart';
 import 'repository/package.dart';
 
 import 'package:{{ modelPackage application.name }}/{{ path application.name }}/app_theme.dart';
@@ -25,6 +26,8 @@ import 'package:{{ modelPackage application.name }}/{{ path application.name }}/
 import 'package:{{ modelPackage application.name }}/{{ path application.name }}/utilities/package.dart';
 import 'package:{{ modelPackage application.name }}/{{ path application.name }}/injector/injector.dart';
 import 'package:{{ modelPackage application.name }}/{{ path application.name }}/oauth.dart';
+import 'package:{{ modelPackage application.name }}/{{ path application.name }}/l10n/app_localizations.dart';
+import 'package:{{ modelPackage application.name }}/{{ path application.name }}/ui/scaffold.dart';
 
 Future<bool> hasActorMenuAccess() async {
 {{# if application.principal }}
@@ -50,9 +53,12 @@ class {{ fqClass application.name }}Application extends StatelessWidget {
 
     @override
     Widget build(BuildContext context) {
-        final navigation = locator<NavigationState>();
-        scheduleMicrotask(() => ErrorHandler.navigateToBuiltInPage()); // execute after main build methods are executed
+        SchedulerBinding.instance.addPostFrameCallback((_) {
+            ErrorHandler.navigateToBuiltInPage();
+        });
         return MaterialApp(
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            supportedLocales:  AppLocalizations.supportedLocales,
             title: '{{ modelName application.name }}',
             theme: AppTheme.of(context),
             home: {{ fqClass application.name }}ApplicationPage()
@@ -86,10 +92,13 @@ class {{ fqClass application.name }}ApplicationPageState extends State<{{ fqClas
             children: <Widget>[
                 if (!navigation.isMenuCollapsed(context)) menu,
                 Expanded(
-                    child: ExtendedNavigator(
-                        key: navigation.navigatorKey,
-                        router: router.Router(),
-                        guards: [AuthGuard()],
+                    child: {{fqClass application.name}}Scaffold(
+                        key: navigation.scaffoldKey,
+                        body: ExtendedNavigator(
+                            key: navigation.navigatorKey,
+                            router: router.Router(),
+                            guards: [AuthGuard()],
+                        ),
                     ),
                 ),
             ],
@@ -181,7 +190,7 @@ class _{{ fqClass application.name }}DrawerState extends State<{{ fqClass applic
                                                 children: [
                                                     ListTile(
                                                         leading: Icon(Icons.settings),
-                                                        title: Text("Settings"),
+                                                        title: Text(AppLocalizations.of(context).lookUpValue(context, 'Settings')),
                                                         onTap: () {
                                                             navigationState.open(router.Routes.{{ fqVariable application.name }}SettingsPage);
                                                         },
@@ -190,13 +199,13 @@ class _{{ fqClass application.name }}DrawerState extends State<{{ fqClass applic
                                                         builder: (_) =>
                                                             Oauth.authInfo.loggedIn ? ListTile(
                                                                 leading: Icon(Icons.logout),
-                                                                title: Text("Logout"),
+                                                                title: Text(AppLocalizations.of(context).lookUpValue(context, 'Logout')),
                                                                 onTap: () {
                                                                     Oauth.logout();
                                                                 },
                                                             ) : ListTile(
                                                                 leading: Icon(Icons.login),
-                                                                title: Text("Login"),
+                                                                title: Text(AppLocalizations.of(context).lookUpValue(context, 'Login')),
                                                                 onTap: () {
                                                                     Oauth.loginAuthorizeAndExchangeCode();
                                                                 },
@@ -223,7 +232,7 @@ class _{{ fqClass application.name }}DrawerState extends State<{{ fqClass applic
             children: {{ fqClass application.name }}NavigationItems.navigationItems.map(
                 (e) => ListTile(
                     leading: e.leading,
-                    title: e.title,
+                    title: Text(AppLocalizations.of(context).lookUpValue(context, e.title)),
                     onTap: () {
                         if (Info.serverDown) {
                             ErrorHandler.navigateToBuiltInPage();
@@ -255,8 +264,8 @@ class _{{ fqClass application.name }}DrawerState extends State<{{ fqClass applic
                         mainAxisAlignment: MainAxisAlignment.start,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                            Text("{{ modelPackage application.name }}", style: Theme.of(context).textTheme.headline6.copyWith(fontWeight: FontWeight.w900),),
-                            Text("{{ path application.name }}", style: Theme.of(context).textTheme.subtitle1.copyWith(fontWeight: FontWeight.w100)),
+                            Text(AppLocalizations.of(context).lookUpValue(context, '{{ modelPackage application.name }}'), style: Theme.of(context).textTheme.headline6.copyWith(fontWeight: FontWeight.w900),),
+                            Text(AppLocalizations.of(context).lookUpValue(context, '{{ path application.name }}'), style: Theme.of(context).textTheme.subtitle1.copyWith(fontWeight: FontWeight.w100)),
                         ],
                     )
                 ),

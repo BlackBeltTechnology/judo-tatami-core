@@ -588,11 +588,13 @@ public class EsmOperation2PsmOperationTest {
         assertTrue(defaultD.get().getOperations().stream().anyMatch(o -> NAME_OF_REFRESH_D_OPERATION.equals(o.getName()) && (o instanceof BoundTransferOperation) &&
                 EcoreUtil.equals(((BoundTransferOperation) o).getBinding().getInstanceRepresentation().getEntityType(), d.get()) &&
                 o.getBehaviour() != null && o.getBehaviour().getBehaviourType() == TransferOperationBehaviourType.REFRESH && EcoreUtil.equals(o.getBehaviour().getOwner(), defaultD.get()) &&
-                o.getInput() == null && o.getOutput() != null && o.getFaults().isEmpty() &&
+                o.getInput() != null && o.getOutput() != null && o.getFaults().isEmpty() &&
+                o.getInput().getCardinality().getLower() == 0 && o.getInput().getCardinality().getUpper() == 1 &&
                 o.getOutput().getCardinality().getLower() == 1 && o.getOutput().getCardinality().getUpper() == 1 &&
                 EcoreUtil.equals(o.getOutput().getType(), defaultD.get()) &&
                 NAME_OF_REFRESH_D_OPERATION_ET.equals(((BoundTransferOperation) o).getBinding().getName()) &&
-                ((BoundTransferOperation) o).getBinding().getInput() == null && ((BoundTransferOperation) o).getBinding().getOutput() != null && ((BoundTransferOperation) o).getBinding().getFaults().isEmpty() &&
+                ((BoundTransferOperation) o).getBinding().getInput() != null && ((BoundTransferOperation) o).getBinding().getOutput() != null && ((BoundTransferOperation) o).getBinding().getFaults().isEmpty() &&
+                ((BoundTransferOperation) o).getBinding().getInput().getCardinality().getLower() == 0 && o.getInput().getCardinality().getUpper() == 1 &&
                 ((BoundTransferOperation) o).getBinding().getOutput().getCardinality().getLower() == 1 && o.getOutput().getCardinality().getUpper() == 1 &&
                 EcoreUtil.equals(((BoundTransferOperation) o).getBinding().getOutput().getType(), defaultD.get())
         ));
@@ -698,11 +700,13 @@ public class EsmOperation2PsmOperationTest {
         assertTrue(defaultE.get().getOperations().stream().anyMatch(o -> NAME_OF_REFRESH_E_OPERATION.equals(o.getName()) && (o instanceof BoundTransferOperation) &&
                 EcoreUtil.equals(((BoundTransferOperation) o).getBinding().getInstanceRepresentation().getEntityType(), e.get()) &&
                 o.getBehaviour() != null && o.getBehaviour().getBehaviourType() == TransferOperationBehaviourType.REFRESH && EcoreUtil.equals(o.getBehaviour().getOwner(), defaultE.get()) &&
-                o.getInput() == null && o.getOutput() != null && o.getFaults().isEmpty() &&
+                o.getInput() != null && o.getOutput() != null && o.getFaults().isEmpty() &&
+                o.getInput().getCardinality().getLower() == 0 && o.getInput().getCardinality().getUpper() == 1 &&
                 o.getOutput().getCardinality().getLower() == 1 && o.getOutput().getCardinality().getUpper() == 1 &&
                 EcoreUtil.equals(o.getOutput().getType(), defaultE.get()) &&
                 NAME_OF_REFRESH_E_OPERATION_ET.equals(((BoundTransferOperation) o).getBinding().getName()) &&
-                ((BoundTransferOperation) o).getBinding().getInput() == null && ((BoundTransferOperation) o).getBinding().getOutput() != null && ((BoundTransferOperation) o).getBinding().getFaults().isEmpty() &&
+                ((BoundTransferOperation) o).getBinding().getInput() != null && ((BoundTransferOperation) o).getBinding().getOutput() != null && ((BoundTransferOperation) o).getBinding().getFaults().isEmpty() &&
+                ((BoundTransferOperation) o).getBinding().getInput().getCardinality().getLower() == 0 && o.getInput().getCardinality().getUpper() == 1 &&
                 ((BoundTransferOperation) o).getBinding().getOutput().getCardinality().getLower() == 1 && o.getOutput().getCardinality().getUpper() == 1 &&
                 EcoreUtil.equals(((BoundTransferOperation) o).getBinding().getOutput().getType(), defaultE.get())
         ));
