@@ -3,7 +3,7 @@
 // {{ className relation.name }} aggregation actions
 
 @observable
-ObservableFuture {{ fqVariable relation.name }}StoreFuture;
+ObservableFuture {{ variable relation.owner.name}}{{ fqClass relation.name }}StoreFuture;
 
 {{# if relation.isRelationBehaviourTypeCreatable }}
 @action
@@ -130,7 +130,7 @@ Future<List<{{fqClass relation.target.name}}Store>> getRangeFor{{ fqClass relati
             {{ fqVariable relation.name }}QueryLimit = queryLimit;
         }
 
-        {{ fqVariable relation.name }}StoreFuture = ObservableFuture(_{{ fqVariable application.actor.name }}Repository.{{ fqVariable relation.owner.name }}RangeOf{{ fqClass relation.name }}{{# if (isCreateTypePage page) }}ToCreate{{ else }}ToUpdate{{/ if }}(
+        {{ variable relation.owner.name}}{{ fqClass relation.name }}StoreFuture = ObservableFuture(_{{ fqVariable application.actor.name }}Repository.{{ fqVariable relation.owner.name }}RangeOf{{ fqClass relation.name }}{{# if (isCreateTypePage page) }}ToCreate{{ else }}ToUpdate{{/ if }}(
             owner{{ className relation.owner.name }}Store,
             sortColumn: {{ fqVariable relation.name }}SortColumnName,
             sortAscending: {{ fqVariable relation.name }}SortAsc,
@@ -138,7 +138,7 @@ Future<List<{{fqClass relation.target.name}}Store>> getRangeFor{{ fqClass relati
             filterStoreList: filterStoreList,
         ));
         {{ fqVariable relation.name }}StoreRangeList.clear();
-        {{ fqVariable relation.name }}StoreRangeList.addAll(await {{ fqVariable relation.name }}StoreFuture);
+        {{ fqVariable relation.name }}StoreRangeList.addAll(await {{ variable relation.owner.name}}{{ fqClass relation.name }}StoreFuture);
         return {{ fqVariable relation.name }}StoreRangeList;
     } on ApiException catch (error) {
         errorMessage = "Could not get range of {{ relation.name }}";
